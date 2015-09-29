@@ -23,14 +23,14 @@
 var nconf = require('nconf');
 nconf.argv().env('__');
 
-var fs = require('fs'),
-	url = require('url'),
+var url = require('url'),
 	async = require('async'),
 	semver = require('semver'),
 	winston = require('winston'),
 	colors = require('colors'),
 	path = require('path'),
 	pkg = require('./package.json'),
+	file = require('./src/file'),
 	utils = require('./public/src/utils.js');
 
 global.env = process.env.NODE_ENV || 'production';
@@ -53,7 +53,7 @@ if (nconf.get('config')) {
 	configFile = path.resolve(__dirname, nconf.get('config'));
 }
 
-var configExists = fs.existsSync(configFile);
+var configExists = file.existsSync(configFile);
 
 loadConfig();
 

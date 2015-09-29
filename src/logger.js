@@ -10,6 +10,7 @@ var fs = require('fs'),
 	winston = require('winston'),
 	util = require('util'),
 	socketio = require('socket.io'),
+	file = require('./file'),
 	meta = require('./meta'),
 	morgan = require('morgan');
 
@@ -76,7 +77,7 @@ var opts = {
 		/* Open the streams to log to: either a path or stdout */
 		var stream;
 		if(value) {
-			if(fs.existsSync(value)) {
+			if(file.existsSync(value)) {
 				var stats = fs.statSync(value);
 				if(stats) {
 					if(stats.isDirectory()) {

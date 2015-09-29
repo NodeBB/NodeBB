@@ -2,6 +2,7 @@
 
 var meta = require('../meta'),
 	db = require('../database'),
+	file = require('../file'),
 	auth = require('../routes/authentication'),
 
 	path = require('path'),
@@ -21,7 +22,7 @@ var middleware = {};
 
 function setupFavicon(app) {
 	var faviconPath = path.join(__dirname, '../../', 'public', meta.config['brand:favicon'] ? meta.config['brand:favicon'] : 'favicon.ico');
-	if (fs.existsSync(faviconPath)) {
+	if (file.existsSync(faviconPath)) {
 		app.use(nconf.get('relative_path'), favicon(faviconPath));
 	}
 }

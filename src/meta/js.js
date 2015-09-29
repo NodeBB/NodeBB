@@ -8,7 +8,7 @@ var winston = require('winston'),
 	os = require('os'),
 	nconf = require('nconf'),
 	fs = require('fs'),
-
+	file = require('../file'),
 	plugins = require('../plugins'),
 	emitter = require('../emitter'),
 	utils = require('../../public/src/utils');
@@ -208,30 +208,31 @@ module.exports = function(Meta) {
 		var scriptPath = path.join(__dirname, '../../public/nodebb.min.js'),
 			mapPath = path.join(__dirname, '../../public/nodebb.min.js.map'),
 			paths = [scriptPath];
-		fs.exists(scriptPath, function(exists) {
-			if (exists) {
-				if (nconf.get('isPrimary') === 'true') {
-					fs.exists(mapPath, function(exists) {
-						if (exists) {
-							paths.push(mapPath);
-						}
-
-						winston.verbose('[meta/js] Reading client-side scripts from file');
-						async.map(paths, fs.readFile, function(err, files) {
-							Meta.js.cache = files[0];
-							Meta.js.map = files[1] || '';
-
-							emitter.emit('meta:js.compiled');
-							callback();
-						});
-					});
-				} else {
-					callback();
-				}
-			} else {
+		file.exists(scriptPath, function(exists) {
+			if (!exists) {
 				winston.warn('[meta/js] No script file found on disk, re-minifying');
-				Meta.js.minify.apply(Meta.js, arguments);
+				Meta.js.minify(minify, callback);
+				return;
 			}
+
+			if (nconf.get('isPrimary') !== 'true') {
+				return callback();
+			}
+
+			file.exists(mapPath, function(exists) {
+				if (exists) {
+					paths.push(mapPath);
+				}
+
+				winston.verbose('[meta/js] Reading client-side scripts from file');
+				async.map(paths, fs.readFile, function(err, files) {
+					Meta.js.cache = files[0];
+					Meta.js.map = files[1] || '';
+
+					emitter.emit('meta:js.compiled');
+					callback();
+				});
+			});
 		});
 	};
 

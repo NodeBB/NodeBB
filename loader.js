@@ -8,7 +8,7 @@ var	nconf = require('nconf'),
 
 	async = require('async'),
 	logrotate = require('logrotate-stream'),
-
+	file = require('./src/file'),
 	pkg = require('./package.json');
 
 nconf.argv().env().file({
@@ -243,7 +243,7 @@ Loader.notifyWorkers = function(msg, worker_pid) {
 fs.open(path.join(__dirname, 'config.json'), 'r', function(err) {
 	if (!err) {
 		if (nconf.get('daemon') !== 'false' && nconf.get('daemon') !== false) {
-			if (fs.existsSync(pidFilePath)) {
+			if (file.existsSync(pidFilePath)) {
 				try {
 					var	pid = fs.readFileSync(pidFilePath, { encoding: 'utf-8' });
 					process.kill(pid, 0);
