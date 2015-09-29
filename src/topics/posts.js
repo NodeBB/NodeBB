@@ -112,6 +112,45 @@ module.exports = function(Topics) {
 			},
 			privileges: function(next) {
 				privileges.posts.get(pids, uid, next);
+			},
+			parents: function(next) {
+				var parentPids = postData.map(function(postObj) {
+						return postObj.hasOwnProperty('toPid') ? parseInt(postObj.toPid, 10) : null
+					}).filter(Boolean),
+					parentUids;
+
+				if (parentPids) {
+					async.waterfall([
+						async.apply(posts.getPostsFields, parentPids, ['pid', 'tid', 'uid']),
+						function(postsArr, next) {
+							// To use Posts.getUserInfoForPosts would be overkill here...
+							parentUids = postsArr.map(function(postObj) { return parseInt(postObj.uid, 10); }).filter(function(uid, idx, users) {
+								return users.indexOf(uid) === idx;
+							});
+
+							user.getUsersFields(parentUids, ['username'], function(err, userDataArr) {
+								var userData = {};
+								userDataArr.forEach(function(user) {
+									userData[user.uid] = user;
+								});
+								next(err, postsArr, userData);
+							});
+						},
+						function(postsArr, userData, next) {
+							var returnData = {};
+							posts.getPostIndices(postsArr, uid, function(err, indices) {
+								postsArr.forEach(function(post, idx) {
+									var pid = parseInt(post.pid, 10);
+									returnData[pid] = _.clone(userData[parseInt(post.uid, 10)]);
+									returnData[pid].index = indices[idx]+0;
+								});
+								next(err, returnData);
+							});
+						}
+					], next);
+				} else {
+					next();
+				}
 			}
 		}, function(err, results) {
 			if (err) {
@@ -130,6 +169,7 @@ module.exports = function(Topics) {
 					postObj.display_moderator_tools = results.privileges[i].editable;
 					postObj.display_move_tools = results.privileges[i].move && postObj.index !== 0;
 					postObj.selfPost = parseInt(uid, 10) === parseInt(postObj.uid, 10);
+					postObj.parent = results.parents[parseInt(postObj.toPid, 10)];
 
 					if(postObj.deleted && !results.privileges[i].view_deleted) {
 						postObj.content = '[[topic:post_is_deleted]]';

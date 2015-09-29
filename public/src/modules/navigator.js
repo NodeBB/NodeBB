@@ -95,18 +95,17 @@ define('navigator', ['forum/pagination', 'components'], function(pagination, com
 		index = parseInt($(navigator.selector).first().attr('data-index'), 10);
 
 		$(navigator.selector).each(function() {
-			var el = $(this);
-
 			index++;
-			if (el.offset().top > middleOfViewport) {
+			if ($(this).offset().top > middleOfViewport) {
 				return false;
 			}
 		});
 
 		if (typeof navigator.callback === 'function') {
 			navigator.callback(index, count);
-			navigator.updateTextAndProgressBar();
 		}
+
+		navigator.updateTextAndProgressBar();
 	};
 
 	navigator.updateTextAndProgressBar = function() {

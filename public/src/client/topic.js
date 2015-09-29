@@ -57,6 +57,8 @@ define('forum/topic', [
 
 		addBlockQuoteHandler();
 
+		addParentHandler();
+
 		handleBookmark(tid);
 
 		handleKeys();
@@ -191,6 +193,11 @@ define('forum/topic', [
 		});
 	}
 
+	function addParentHandler() {
+		components.get('topic').on('click', '[component="post/parent"]', function() {
+			navigator.scrollToPost(parseInt(this.getAttribute('data-index'), 10), true);
+		});
+	}
 
 	function enableInfiniteLoadingOrPagination() {
 		if (!config.usePagination) {
