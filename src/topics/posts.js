@@ -114,37 +114,7 @@ module.exports = function(Topics) {
 				privileges.posts.get(pids, uid, next);
 			},
 			parents: function(next) {
-				var parentPids = postData.map(function(postObj) {
-						return postObj.hasOwnProperty('toPid') ? parseInt(postObj.toPid, 10) : null;
-					}).filter(Boolean);
-				var parentUids;
-
-				if (!parentPids.length) {
-					return next(null, []);
-				}
-				var parentPosts;
-				async.waterfall([
-					async.apply(posts.getPostsFields, parentPids, ['pid', 'uid']),
-					function(_parentPosts, next) {
-						parentPosts = _parentPosts;
-						parentUids = parentPosts.map(function(postObj) { return parseInt(postObj.uid, 10); }).filter(function(uid, idx, users) {
-							return users.indexOf(uid) === idx;
-						});
-
-						user.getUsersFields(parentUids, ['username'], next);
-					},
-					function (userData, next) {
-						var usersMap = {};
-						userData.forEach(function(user) {
-							usersMap[user.uid] = user.username;
-						});
-						var parents = {};
-						parentPosts.forEach(function(post, i) {
-							parents[parentPids[i]] = {username: usersMap[post.uid]};
-						});
-						next(null, parents);
-					}
-				], next);
+				Topics.addParentPosts(postData, next);
 			}
 		}, function(err, results) {
 			if (err) {
@@ -162,10 +132,9 @@ module.exports = function(Topics) {
 					postObj.votes = postObj.votes || 0;
 					postObj.display_moderator_tools = results.privileges[i].editable;
 					postObj.display_move_tools = results.privileges[i].move && postObj.index !== 0;
-					postObj.selfPost = parseInt(uid, 10) === parseInt(postObj.uid, 10);
-					postObj.parent = results.parents[parseInt(postObj.toPid, 10)];
+					postObj.selfPost = !!parseInt(uid, 10) && parseInt(uid, 10) === parseInt(postObj.uid, 10);
 
-					if(postObj.deleted && !results.privileges[i].view_deleted) {
+					if (postObj.deleted && !results.privileges[i].view_deleted) {
 						postObj.content = '[[topic:post_is_deleted]]';
 					}
 
@@ -178,6 +147,44 @@ module.exports = function(Topics) {
 
 			callback(null, postData);
 		});
+	};
+
+	Topics.addParentPosts = function(postData, callback) {
+		var parentPids = postData.map(function(postObj) {
+			return postObj && postObj.hasOwnProperty('toPid') ? parseInt(postObj.toPid, 10) : null;
+		}).filter(Boolean);
+
+		if (!parentPids.length) {
+			return callback();
+		}
+
+		var parentPosts;
+		async.waterfall([
+			async.apply(posts.getPostsFields, parentPids, ['uid']),
+			function(_parentPosts, next) {
+				parentPosts = _parentPosts;
+				var parentUids = parentPosts.map(function(postObj) { return parseInt(postObj.uid, 10); }).filter(function(uid, idx, users) {
+					return users.indexOf(uid) === idx;
+				});
+
+				user.getUsersFields(parentUids, ['username'], next);
+			},
+			function (userData, next) {
+				var usersMap = {};
+				userData.forEach(function(user) {
+					usersMap[user.uid] = user.username;
+				});
+				var parents = {};
+				parentPosts.forEach(function(post, i) {
+					parents[parentPids[i]] = {username: usersMap[post.uid]};
+				});
+
+				postData.forEach(function(post) {
+					post.parent = parents[post.toPid];
+				});
+				next();
+			}
+		], callback);
 	};
 
 	Topics.calculatePostIndices = function(posts, start, stop, postCount, reverse) {

@@ -22,6 +22,12 @@ define('forum/topic/posts', [
 			return;
 		}
 
+		data.posts.forEach(function(post) {
+			post.selfPost = !!app.user.uid && parseInt(post.uid, 10) === parseInt(app.user.uid, 10);
+			post.display_moderator_tools = post.selfPost || ajaxify.data.isAdminOrMod;
+			post.display_move_tools = ajaxify.data.isAdminOrMod;
+		});
+
 		updatePostCounts(data.posts);
 
 		if (config.usePagination) {
@@ -154,50 +160,12 @@ define('forum/topic/posts', [
 
 			infinitescroll.removeExtra(components.get('post'), direction, 40);
 
-			var pids = [];
-			for(var i=0; i<data.posts.length; ++i) {
-				pids.push(data.posts[i].pid);
-			}
-
 			$(window).trigger('action:posts.loaded', {posts: data.posts});
-			onNewPostsLoaded(html, pids);
+
+			Posts.processPage(html);
+
 			callback(html);
 		});
-	}
-
-	function onNewPostsLoaded(html, pids) {
-		if (app.user.uid) {
-			socket.emit('posts.getPrivileges', pids, function(err, privileges) {
-				if(err) {
-					return app.alertError(err.message);
-				}
-
-				for(var i=0; i<pids.length; ++i) {
-					toggleModTools(pids[i], privileges[i]);
-				}
-			});
-		} else {
-			for(var i=0; i<pids.length; ++i) {
-				toggleModTools(pids[i], {editable: false, move: false});
-			}
-		}
-
-		Posts.processPage(html);
-	}
-
-	function toggleModTools(pid, privileges) {
-		var postEl = components.get('post', 'pid', pid),
-			isSelfPost = parseInt(postEl.attr('data-uid'), 10) === parseInt(app.user.uid, 10);
-
-		if (!privileges.editable) {
-			postEl.find('[component="post/edit"], [component="post/delete"], [component="post/purge"]').remove();
-		}
-
-		if (!privileges.move) {
-			postEl.find('[component="post/move"]').remove();
-		}
-
-		postEl.find('[component="user/chat"], [component="post/flag"]').toggleClass('hidden', isSelfPost || !app.user.uid);
 	}
 
 	Posts.loadMorePosts = function(direction) {
