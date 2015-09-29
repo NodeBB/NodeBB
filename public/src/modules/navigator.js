@@ -147,17 +147,16 @@ define('navigator', ['forum/pagination', 'components'], function(pagination, com
 		}
 	};
 
-	navigator.scrollToPost = function(postIndex, highlight, duration, offset) {
+	navigator.scrollToPost = function(postIndex, highlight, duration) {
 		if (!utils.isNumber(postIndex) || !components.get('topic').length) {
 			return;
 		}
 
-		offset = offset || 0;
 		duration = duration !== undefined ? duration : 400;
 		navigator.scrollActive = true;
 
 		if (components.get('post/anchor', postIndex).length) {
-			return navigator.scrollToPostIndex(postIndex, highlight, duration, offset);
+			return navigator.scrollToPostIndex(postIndex, highlight, duration);
 		}
 
 		if (config.usePagination) {
@@ -165,10 +164,10 @@ define('navigator', ['forum/pagination', 'components'], function(pagination, com
 
 			if (parseInt(page, 10) !== pagination.currentPage) {
 				pagination.loadPage(page, function() {
-					navigator.scrollToPostIndex(postIndex, highlight, duration, offset);
+					navigator.scrollToPostIndex(postIndex, highlight, duration);
 				});
 			} else {
-				navigator.scrollToPostIndex(postIndex, highlight, duration, offset);
+				navigator.scrollToPostIndex(postIndex, highlight, duration);
 			}
 		} else {
 			navigator.scrollActive = false;
@@ -177,19 +176,20 @@ define('navigator', ['forum/pagination', 'components'], function(pagination, com
 		}
 	};
 
-	navigator.scrollToPostIndex = function(postIndex, highlight, duration, offset) {
+	navigator.scrollToPostIndex = function(postIndex, highlight, duration) {
 		var scrollTo = components.get('post/anchor', postIndex);
 
 		if (!scrollTo.length) {
 			navigator.scrollActive = false;
 			return;
 		}
-		offset = offset || 0;
+
 		duration = duration !== undefined ? duration : 400;
 		navigator.scrollActive = true;
 		var done = false;
+
 		function animateScroll() {
-			var scrollTop = (scrollTo.offset().top - ($(window).height() / 2) - offset) + 'px';
+			var scrollTop = (scrollTo.offset().top - ($(window).height() / 2)) + 'px';
 
 			$('html, body').animate({
 				scrollTop: scrollTop
