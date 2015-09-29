@@ -128,7 +128,7 @@ module.exports = function(Topics) {
 								return users.indexOf(uid) === idx;
 							});
 
-							user.getMultipleUserFields(parentUids, ['username'], function(err, userDataArr) {
+							user.getUsersFields(parentUids, ['username'], function(err, userDataArr) {
 								var userData = {};
 								userDataArr.forEach(function(user) {
 									userData[user.uid] = user;
