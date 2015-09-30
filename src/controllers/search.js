@@ -75,7 +75,7 @@ function buildCategories(uid, callback) {
 		];
 
 		categories = categories.filter(function(category) {
-			return !category.link && !parseInt(category.parentCid, 10);
+			return category && !category.link && !parseInt(category.parentCid, 10);
 		});
 
 		categories.forEach(function(category) {
