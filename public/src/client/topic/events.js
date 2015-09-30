@@ -102,7 +102,7 @@ define('forum/topic/events', [
 			topicTitle = components.get('topic/title'),
 			breadCrumb = components.get('breadcrumb/current');
 
-		if (topicTitle.length && data.topic.title) {
+		if (topicTitle.length && data.topic.title && topicTitle.html() !== data.topic.title) {
 			var newUrl = 'topic/' + data.topic.slug + (window.location.search ? window.location.search : '');
 			history.replaceState({url: newUrl}, null, window.location.protocol + '//' + window.location.host + config.relative_path + '/' + newUrl);
 
