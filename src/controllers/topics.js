@@ -134,8 +134,7 @@ topicsController.get = function(req, res, callback) {
 					url: nconf.get('relative_path') + '/category/' + topicData.category.slug
 				},
 				{
-					text: topicData.title,
-					url: nconf.get('relative_path') + '/topic/' + topicData.slug
+					text: topicData.title
 				}
 			];
 

@@ -99,7 +99,8 @@ define('forum/topic/events', [
 		}
 		var editedPostEl = components.get('post/content', data.post.pid),
 			editorEl = $('[data-pid="' + data.post.pid + '"] [component="post/editor"]'),
-			topicTitle = components.get('topic/title');
+			topicTitle = components.get('topic/title'),
+			breadCrumb = components.get('breadcrumb/current');
 
 		if (topicTitle.length && data.topic.title) {
 			var newUrl = 'topic/' + data.topic.slug + (window.location.search ? window.location.search : '');
@@ -107,6 +108,9 @@ define('forum/topic/events', [
 
 			topicTitle.fadeOut(250, function() {
 				topicTitle.html(data.topic.title).fadeIn(250);
+			});
+			breadCrumb.fadeOut(250, function() {
+				breadCrumb.html(data.topic.title).fadeIn(250);
 			});
 		}
 
