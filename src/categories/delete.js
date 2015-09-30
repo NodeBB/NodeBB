@@ -25,7 +25,7 @@ module.exports = function(Categories) {
 	};
 
 	function purgeCategory(cid, callback) {
-		async.parallel([
+		async.series([
 			function(next) {
 				db.sortedSetRemove('categories:cid', cid, next);
 			},
