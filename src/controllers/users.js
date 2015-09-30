@@ -45,7 +45,6 @@ usersController.getOnlineUsers = function(req, res, next) {
 			loadmore_display: results.count > 50 ? 'block' : 'hide',
 			users: results.users,
 			anonymousUserCount: websockets.getOnlineAnonCount(),
-			defaultGravatar: user.createGravatarURLFromEmail(''),
 			title: '[[pages:users/online]]',
 			breadcrumbs: helpers.buildBreadcrumbs([{text: '[[global:users]]', url: '/users'}, {text: '[[global:online]]'}])
 		};
