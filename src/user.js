@@ -142,25 +142,6 @@ var	async = require('async'),
 		return isOnline ? (status || 'online') : 'offline';
 	};
 
-	User.createGravatarURLFromEmail = function(email) {
-		var customGravatarDefaultImage = meta.config.customGravatarDefaultImage;
-		if (customGravatarDefaultImage && customGravatarDefaultImage.indexOf('http') === -1) {
-			customGravatarDefaultImage = nconf.get('url') + meta.config.customGravatarDefaultImage;
-		}
-
-		var options = {
-			size: parseInt(meta.config.profileImageDimension, 10) || 128,
-			default: customGravatarDefaultImage || meta.config.defaultGravatarImage || 'identicon',
-			rating: 'pg'
-		};
-
-		if (!email) {
-			email = '';
-		}
-
-		return gravatar.url(email, options, true);
-	};
-
 	User.hashPassword = function(password, callback) {
 		if (!password) {
 			return callback(null, password);

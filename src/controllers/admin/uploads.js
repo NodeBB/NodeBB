@@ -93,8 +93,8 @@ uploadsController.uploadLogo = function(req, res, next) {
 	upload('site-logo', req, res, next);
 };
 
-uploadsController.uploadGravatarDefault = function(req, res, next) {
-	upload('gravatar-default', req, res, next);
+uploadsController.uploadDefaultAvatar = function(req, res, next) {
+	upload('avatar-default', req, res, next);
 };
 
 function upload(name, req, res, next) {

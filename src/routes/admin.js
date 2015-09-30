@@ -15,7 +15,7 @@ function apiRoutes(router, middleware, controllers) {
 	router.post('/uploadfavicon', middlewares, controllers.admin.uploads.uploadFavicon);
 	router.post('/uploadTouchIcon', middlewares, controllers.admin.uploads.uploadTouchIcon);
 	router.post('/uploadlogo', middlewares, controllers.admin.uploads.uploadLogo);
-	router.post('/uploadgravatardefault', middlewares, controllers.admin.uploads.uploadGravatarDefault);
+	router.post('/uploadDefaultAvatar', middlewares, controllers.admin.uploads.uploadDefaultAvatar);
 }
 
 function adminRouter(middleware, controllers) {

@@ -21,7 +21,7 @@ var db = require('./database'),
 	schemaDate, thisSchemaDate,
 
 	// IMPORTANT: REMEMBER TO UPDATE VALUE OF latestSchema
-	latestSchema = Date.UTC(2015, 8, 27);
+	latestSchema = Date.UTC(2015, 8, 30);
 
 Upgrade.check = function(callback) {
 	db.get('schemaDate', function(err, value) {
@@ -505,6 +505,39 @@ Upgrade.upgrade = function(callback) {
 				})
 			} else {
 				winston.info('[2015/09/27] Generating user icons skipped');
+				next();
+			}
+		},
+		function(next) {
+			thisSchemaDate = Date.UTC(2015, 8, 30);
+			if (schemaDate < thisSchemaDate) {
+				updatesMade = true;
+				winston.info('[2015/09/30] Converting default Gravatar image to default User Avatar');
+
+				async.waterfall([
+					async.apply(db.isObjectField, 'config', 'customGravatarDefaultImage'),
+					function(keyExists, _next) {
+						if (keyExists) {
+							_next();
+						} else {
+							winston.info('[2015/09/30] Converting default Gravatar image to default User Avatar skipped');
+							Upgrade.update(thisSchemaDate, next);
+							next();
+						}
+					},
+					async.apply(db.getObjectField, 'config', 'customGravatarDefaultImage'),
+					async.apply(db.setObjectField, 'config', 'defaultAvatar'),
+					async.apply(db.deleteObjectField, 'config', 'customGravatarDefaultImage')
+				], function(err) {
+					if (err) {
+						return next(err);
+					}
+
+					winston.info('[2015/09/30] Converting default Gravatar image to default User Avatar done');
+					Upgrade.update(thisSchemaDate, next);
+				});
+			} else {
+				winston.info('[2015/09/30] Converting default Gravatar image to default User Avatar skipped');
 				next();
 			}
 		}

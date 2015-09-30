@@ -85,23 +85,11 @@
 			</div>
 
 			<div class="form-group">
-				<label>Default Gravatar Image</label>
-				<select class="form-control" data-field="defaultGravatarImage">
-					<option value="">default</option>
-					<option value="identicon">identicon</option>
-					<option value="mm">mystery-man</option>
-					<option value="monsterid">monsterid</option>
-					<option value="wavatar">wavatar</option>
-					<option value="retro">retro</option>
-				</select>
-			</div>
-
-			<div class="form-group">
-				<label>Custom Gravatar Default Image</label>
+				<label>Custom Default Avatar</label>
 				<div class="input-group">
-					<input id="customGravatarDefaultImage" type="text" class="form-control" placeholder="A custom image to use instead of gravatar defaults" data-field="customGravatarDefaultImage" />
+					<input id="defaultAvatar" type="text" class="form-control" placeholder="A custom image to use instead of user icons" data-field="defaultAvatar" />
 					<span class="input-group-btn">
-						<input data-action="upload" data-target="customGravatarDefaultImage" data-route="{config.relative_path}/api/admin/uploadgravatardefault" type="button" class="btn btn-default" value="Upload"></input>
+						<input data-action="upload" data-target="defaultAvatar" data-route="{config.relative_path}/api/admin/uploadDefaultAvatar" type="button" class="btn btn-default" value="Upload"></input>
 					</span>
 				</div>
 			</div>
