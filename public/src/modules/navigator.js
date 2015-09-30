@@ -90,30 +90,22 @@ define('navigator', ['forum/pagination', 'components'], function(pagination, com
 	navigator.update = function() {
 		toggle(!!count);
 
-		var topIndex = 0;
-		var bottomIndex = 0;
-		$(navigator.selector).each(function() {
-			var el = $(this);
+		var middleOfViewport = $(window).scrollTop() + $(window).height() / 2;
+		
+		index = parseInt($(navigator.selector).first().attr('data-index'), 10);
 
-			if (elementInView(el)) {
-				if (!topIndex) {
-					topIndex = parseInt(el.attr('data-index'), 10) + 1;
-				} else {
-					bottomIndex = parseInt(el.attr('data-index'), 10) + 1;
-				}
-			} else if (topIndex && bottomIndex) {
+		$(navigator.selector).each(function() {
+			index++;
+			if ($(this).offset().top > middleOfViewport) {
 				return false;
 			}
 		});
 
-		if (topIndex && !bottomIndex) {
-			bottomIndex = topIndex;
+		if (typeof navigator.callback === 'function') {
+			navigator.callback(index, count);
 		}
 
-		if (typeof navigator.callback === 'function' && topIndex && bottomIndex) {
-			index = navigator.callback(topIndex, bottomIndex, count);
-			navigator.updateTextAndProgressBar();
-		}
+		navigator.updateTextAndProgressBar();
 	};
 
 	navigator.updateTextAndProgressBar = function() {
@@ -155,27 +147,16 @@ define('navigator', ['forum/pagination', 'components'], function(pagination, com
 		}
 	};
 
-	function elementInView(el) {
-		var scrollTop = $(window).scrollTop() + $('#header-menu').height();
-		var scrollBottom = scrollTop + $(window).height();
-
-		var elTop = el.offset().top;
-		var elBottom = elTop + Math.floor(el.height());
-
-		return (elTop >= scrollTop && elBottom < scrollBottom) || (elTop < scrollTop && elBottom > scrollTop);
-	}
-
-	navigator.scrollToPost = function(postIndex, highlight, duration, offset) {
+	navigator.scrollToPost = function(postIndex, highlight, duration) {
 		if (!utils.isNumber(postIndex) || !components.get('topic').length) {
 			return;
 		}
 
-		offset = offset || 0;
 		duration = duration !== undefined ? duration : 400;
 		navigator.scrollActive = true;
 
 		if (components.get('post/anchor', postIndex).length) {
-			return navigator.scrollToPostIndex(postIndex, highlight, duration, offset);
+			return navigator.scrollToPostIndex(postIndex, highlight, duration);
 		}
 
 		if (config.usePagination) {
@@ -183,10 +164,10 @@ define('navigator', ['forum/pagination', 'components'], function(pagination, com
 
 			if (parseInt(page, 10) !== pagination.currentPage) {
 				pagination.loadPage(page, function() {
-					navigator.scrollToPostIndex(postIndex, highlight, duration, offset);
+					navigator.scrollToPostIndex(postIndex, highlight, duration);
 				});
 			} else {
-				navigator.scrollToPostIndex(postIndex, highlight, duration, offset);
+				navigator.scrollToPostIndex(postIndex, highlight, duration);
 			}
 		} else {
 			navigator.scrollActive = false;
@@ -195,19 +176,20 @@ define('navigator', ['forum/pagination', 'components'], function(pagination, com
 		}
 	};
 
-	navigator.scrollToPostIndex = function(postIndex, highlight, duration, offset) {
+	navigator.scrollToPostIndex = function(postIndex, highlight, duration) {
 		var scrollTo = components.get('post/anchor', postIndex);
 
 		if (!scrollTo.length) {
 			navigator.scrollActive = false;
 			return;
 		}
-		offset = offset || 0;
+
 		duration = duration !== undefined ? duration : 400;
 		navigator.scrollActive = true;
 		var done = false;
+
 		function animateScroll() {
-			var scrollTop = (scrollTo.offset().top - ($(window).height() / 2) - offset) + 'px';
+			var scrollTop = (scrollTo.offset().top - ($(window).height() / 2)) + 'px';
 
 			$('html, body').animate({
 				scrollTop: scrollTop

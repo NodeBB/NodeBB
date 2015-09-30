@@ -57,11 +57,13 @@ define('forum/topic', [
 
 		addBlockQuoteHandler();
 
+		addParentHandler();
+
 		handleBookmark(tid);
 
 		handleKeys();
 
-		navigator.init('[component="post"]', ajaxify.data.postcount, Topic.toTop, Topic.toBottom, Topic.navigatorCallback, Topic.calculateIndex);
+		navigator.init('[component="post/anchor"]', ajaxify.data.postcount, Topic.toTop, Topic.toBottom, Topic.navigatorCallback, Topic.calculateIndex);
 
 		$(window).on('scroll', updateTopicTitle);
 
@@ -191,6 +193,26 @@ define('forum/topic', [
 		});
 	}
 
+	function addParentHandler() {
+		components.get('topic').on('click', '[component="post/parent"]', function() {
+			var toPid = $(this).attr('data-topid');
+
+			var toPost = $('[component="post"][data-pid="' + toPid + '"]');
+			if (toPost.length) {
+				return navigator.scrollToPost(toPost.attr('data-index'), true);
+			}
+
+			socket.emit('posts.getPidIndex', {pid: toPid, tid: ajaxify.data.tid, topicPostSort: config.topicPostSort}, function(err, index) {
+				if (err) {
+					return app.alertError(err.message);
+				}
+
+				if (utils.isNumber(index)) {
+					navigator.scrollToPost(index, true);
+				}
+			});
+		});
+	}
 
 	function enableInfiniteLoadingOrPagination() {
 		if (!config.usePagination) {
@@ -219,43 +241,30 @@ define('forum/topic', [
 		return index;
 	};
 
-	Topic.navigatorCallback = function(topPostIndex, bottomPostIndex, elementCount) {
+	Topic.navigatorCallback = function(index, elementCount) {
 		var path = ajaxify.removeRelativePath(window.location.pathname.slice(1));
 		if (!path.startsWith('topic')) {
 			return 1;
-		}
-		var postIndex = topPostIndex;
-		var index = bottomPostIndex;
-		if (config.topicPostSort !== 'oldest_to_newest') {
-			if (bottomPostIndex === 0) {
-				index = 1;
-			} else  {
-				index = Math.max(elementCount - bottomPostIndex + 2, 1);
-			}
 		}
 
 		var bookmarkKey = 'topic:' + ajaxify.data.tid + ':bookmark';
 		var currentBookmark = ajaxify.data.bookmark || localStorage.getItem(bookmarkKey);
 
-		if (!currentBookmark || parseInt(postIndex, 10) > parseInt(currentBookmark, 10)) {
+		if (!currentBookmark || parseInt(index, 10) > parseInt(currentBookmark, 10)) {
 			if (app.user.uid) {
-				var payload = {
+				socket.emit('topics.bookmark', {
 					'tid': ajaxify.data.tid,
-					'index': postIndex
-				};
-				socket.emit('topics.bookmark', payload, function(err) {
-					if (err) {
-						console.warn('Error saving bookmark:', err);
-					}
-					ajaxify.data.bookmark = postIndex;
+					'index': index
+				}, function(err) {
+					ajaxify.data.bookmark = index;
 				});
 			} else {
-				localStorage.setItem(bookmarkKey, postIndex);
+				localStorage.setItem(bookmarkKey, index);
 			}
 		}
 
 		// removes the bookmark alert when we get to / past the bookmark
-		if (!currentBookmark || parseInt(postIndex, 10) >= parseInt(currentBookmark, 10)) {
+		if (!currentBookmark || parseInt(index, 10) >= parseInt(currentBookmark, 10)) {
 			app.removeAlert('bookmark');
 		}
 
@@ -264,14 +273,15 @@ define('forum/topic', [
 			var topicId = parts[1],
 				slug = parts[2];
 			var newUrl = 'topic/' + topicId + '/' + (slug ? slug : '');
-			if (postIndex > 1) {
-				newUrl += '/' + postIndex;
+			if (index > 1) {
+				newUrl += '/' + index;
 			}
 
 			if (newUrl !== currentUrl) {
 				if (Topic.replaceURLTimeout) {
 					clearTimeout(Topic.replaceURLTimeout);
 				}
+
 				Topic.replaceURLTimeout = setTimeout(function() {
 					Topic.replaceURLTimeout = 0;
 					if (history.replaceState) {
@@ -284,7 +294,6 @@ define('forum/topic', [
 				}, 500);
 			}
 		}
-		return index;
 	};
 
 

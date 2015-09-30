@@ -264,11 +264,12 @@
 		var fs = require('fs'),
 			path = require('path'),
 			winston = require('winston'),
+			file = require('../../../src/file'),
 			meta = require('../../../src/meta');
 
 		language = language || meta.config.defaultLang || 'en_GB';
 
-		if (!fs.existsSync(path.join(__dirname, '../../language', language))) {
+		if (!file.existsSync(path.join(__dirname, '../../language', language))) {
 			winston.warn('[translator] Language \'' + meta.config.defaultLang + '\' not found. Defaulting to \'en_GB\'');
 			language = 'en_GB';
 		}

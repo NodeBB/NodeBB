@@ -283,6 +283,9 @@ module.exports = function(Topics) {
 					topicInfo: function(next) {
 						Topics.getTopicFields(tid, ['tid', 'title', 'slug', 'cid', 'postcount'], next);
 					},
+					parents: function(next) {
+						Topics.addParentPosts([postData], next);
+					},
 					content: function(next) {
 						posts.parsePost(postData, next);
 					}

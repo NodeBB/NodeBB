@@ -14,6 +14,7 @@ var fs = require('fs'),
 	translator = require('../public/src/modules/translator'),
 	utils = require('../public/src/utils'),
 	hotswap = require('./hotswap'),
+	file = require('./file'),
 
 	controllers = require('./controllers'),
 	app, middleware;
@@ -103,7 +104,7 @@ var fs = require('fs'),
 					return path.join(__dirname, '../node_modules/', plugin);
 				});
 
-				async.filter(plugins, fs.exists, function(plugins){
+				async.filter(plugins, file.exists, function(plugins) {
 					async.eachSeries(plugins, Plugins.loadPlugin, next);
 				});
 			},

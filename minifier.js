@@ -4,6 +4,7 @@ var uglifyjs = require('uglify-js'),
 	less = require('less'),
 	async = require('async'),
 	fs = require('fs'),
+	file = require('./src/file'),
 	crypto = require('crypto'),
 	utils = require('./public/src/utils'),
 
@@ -14,16 +15,16 @@ var uglifyjs = require('uglify-js'),
 /* Javascript */
 Minifier.js.minify = function (scripts, minify, callback) {
 	scripts = scripts.filter(function(file) {
-		return fs.existsSync(file) && file.endsWith('.js');
+		return file && file.endsWith('.js');
 	});
 
-	if (minify) {
-		minifyScripts(scripts, function() {
-			callback.apply(this, arguments);
-		});
-	} else {
-		concatenateScripts(scripts, callback);
-	}
+	async.filter(scripts, file.exists, function(scripts) {
+		if (minify) {
+			minifyScripts(scripts, callback);
+		} else {
+			concatenateScripts(scripts, callback);
+		}
+	});
 };
 
 process.on('message', function(payload) {

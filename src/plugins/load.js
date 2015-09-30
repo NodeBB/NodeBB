@@ -6,6 +6,7 @@ var fs = require('fs'),
 	async = require('async'),
 	winston = require('winston'),
 	nconf = require('nconf'),
+	file = require('../file'),
 	utils = require('../../public/src/utils');
 
 
@@ -107,7 +108,7 @@ module.exports = function(Plugins) {
 				var realPath = pluginData.staticDirs[mappedPath];
 				var staticDir = path.join(pluginPath, realPath);
 
-				fs.exists(staticDir, function(exists) {
+				file.exists(staticDir, function(exists) {
 					if (exists) {
 						Plugins.staticDirs[pluginData.id + '/' + mappedPath] = staticDir;
 					} else {

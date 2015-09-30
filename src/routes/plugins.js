@@ -22,31 +22,18 @@ module.exports = function(app, middleware, controllers) {
 				} else {
 					return null;
 				}
-			}).filter(function(a) { return a; });
+			}).filter(Boolean);
 
-		if (matches) {
-			async.map(matches, function(mappedPath, next) {
-				var	filePath = path.join(plugins.staticDirs[mappedPath], decodeURIComponent(relPath.slice(mappedPath.length)));
+		if (!matches) {
+			return next();
+		}
 
-				fs.exists(filePath, function(exists) {
-					if (exists) {
-						next(null, filePath);
-					} else {
-						next();
-					}
-				});
-			}, function(err, matches) {
-				if (err) {
-					return next(err);
-				}
-				matches = matches.filter(Boolean);
+		matches = matches.map(function(mappedPath) {
+			return path.join(plugins.staticDirs[mappedPath], decodeURIComponent(relPath.slice(mappedPath.length)));
+		});
 
-				if (matches.length) {
-					res.sendFile(matches[0]);
-				} else {
-					next();
-				}
-			});
+		if (matches.length) {
+			res.sendFile(matches[0]);
 		} else {
 			next();
 		}

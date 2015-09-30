@@ -11,6 +11,7 @@ var winston = require('winston'),
 	plugins = require('../plugins'),
 	emitter = require('../emitter'),
 	db = require('../database'),
+	file = require('../file'),
 	utils = require('../../public/src/utils');
 
 module.exports = function(Meta) {
@@ -149,24 +150,25 @@ module.exports = function(Meta) {
 	Meta.css.getFromFile = function(callback) {
 		var cachePath = path.join(__dirname, '../../public/stylesheet.css'),
 			acpCachePath = path.join(__dirname, '../../public/admin.css');
-		fs.exists(cachePath, function(exists) {
-			if (exists) {
-				if (nconf.get('isPrimary') === 'true') {
-					winston.verbose('[meta/css] Reading stylesheets from file');
-					async.map([cachePath, acpCachePath], fs.readFile, function(err, files) {
-						Meta.css.cache = files[0];
-						Meta.css.acpCache = files[1];
-
-						emitter.emit('meta:css.compiled');
-						callback();
-					});
-				} else {
-					callback();
-				}
-			} else {
+		file.exists(cachePath, function(exists) {
+			if (!exists) {
 				winston.warn('[meta/css] No stylesheets found on disk, re-minifying');
-				Meta.css.minify.apply(Meta.css, arguments);
+				Meta.css.minify(callback);
+				return;
 			}
+
+			if (nconf.get('isPrimary') !== 'true') {
+				return callback();
+			}
+
+			winston.verbose('[meta/css] Reading stylesheets from file');
+			async.map([cachePath, acpCachePath], fs.readFile, function(err, files) {
+				Meta.css.cache = files[0];
+				Meta.css.acpCache = files[1];
+
+				emitter.emit('meta:css.compiled');
+				callback();
+			});
 		});
 	};
 
@@ -197,10 +199,10 @@ module.exports = function(Meta) {
 	}
 
 	function filterMissingFiles(files) {
-		return files.filter(function(file) {
-			var exists = fs.existsSync(path.join(__dirname, '../../node_modules', file));
+		return files.filter(function(filePath) {
+			var exists = file.existsSync(path.join(__dirname, '../../node_modules', filePath));
 			if (!exists) {
-				winston.warn('[meta/css] File not found! ' + file);
+				winston.warn('[meta/css] File not found! ' + filePath);
 			}
 			return exists;
 		});

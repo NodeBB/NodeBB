@@ -186,9 +186,10 @@ module.exports.testSocket = function(socketPath, callback) {
 		return callback(new Error('invalid socket path : ' + socketPath));
 	}
 	var net = require('net');
+	var file = require('./file');
 	async.series([
 		function(next) {
-			fs.exists(socketPath, function(exists) {
+			file.exists(socketPath, function(exists) {
 				if (exists) {
 					next();
 				} else {

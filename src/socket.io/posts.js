@@ -145,21 +145,6 @@ SocketPosts.getRawPost = function(socket, pid, callback) {
 	], callback);
 };
 
-
-SocketPosts.getPrivileges = function(socket, pids, callback) {
-	privileges.posts.get(pids, socket.uid, function(err, privileges) {
-		if (err) {
-			return callback(err);
-		}
-		if (!Array.isArray(privileges) || !privileges.length) {
-			return callback(new Error('[[error:invalid-data]]'));
-		}
-
-		callback(null, privileges);
-	});
-};
-
-
 SocketPosts.loadMoreFavourites = function(socket, data, callback) {
 	loadMorePosts('uid:' + data.uid + ':favourites', socket.uid, data, callback);
 };

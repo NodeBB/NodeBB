@@ -307,6 +307,9 @@ $(document).ready(function() {
 	}
 
 	app.load();
-	templates.cache['500'] = $('.tpl-500').html();
+
+	$('[data-template]').each(function() {
+		templates.cache[$(this).attr('data-template')] = $(this).html();
+	});
 
 });

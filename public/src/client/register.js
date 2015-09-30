@@ -176,6 +176,8 @@ define('forum/register', ['csrf', 'translator'], function(csrf, translator) {
 			showError(password_notify, '[[user:change_password_error_length]]');
 		} else if (!utils.isPasswordValid(password)) {
 			showError(password_notify, '[[user:change_password_error]]');
+		} else if (password === $('#username').val()) {
+			showError(password_notify, '[[user:password_same_as_username]]');
 		} else {
 			showSuccess(password_notify, successIcon);
 		}

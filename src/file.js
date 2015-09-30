@@ -8,7 +8,6 @@ var fs = require('fs'),
 	Magic = mmmagic.Magic,
 	mime = require('mime'),
 
-	meta = require('./meta'),
 	utils = require('../public/src/utils');
 
 var file = {};
@@ -63,6 +62,7 @@ file.isFileTypeAllowed = function(path, allowedExtensions, callback) {
 };
 
 file.allowedExtensions = function() {
+	var meta = require('./meta');
 	var allowedExtensions = (meta.config.allowedFileExtensions || '').trim();
 	if (!allowedExtensions) {
 		return [];
@@ -78,6 +78,23 @@ file.allowedExtensions = function() {
 	}
 
 	return allowedExtensions;
+};
+
+file.exists = function(path, callback) {
+	fs.stat(path, function(err, stat) {
+		callback(!err && stat);
+	});
+};
+
+file.existsSync = function(path) {
+	var exists = false;
+	try {
+		exists = fs.statSync(path);
+	} catch(err) {
+		exists = false;
+	}
+
+	return !!exists;
 };
 
 module.exports = file;

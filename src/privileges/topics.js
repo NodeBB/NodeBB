@@ -51,6 +51,7 @@ module.exports = function(privileges) {
 				editable: editable,
 				deletable: deletable,
 				view_deleted: isAdminOrMod || results.isOwner,
+				isAdminOrMod: isAdminOrMod,
 				disabled: disabled,
 				tid: tid,
 				uid: uid

@@ -263,6 +263,7 @@ topicsController.get = function(req, res, callback) {
 		data.rssFeedUrl = nconf.get('relative_path') + '/topic/' + data.tid + '.rss';
 		data.pagination = pagination.create(data.currentPage, data.pageCount);
 		data.pagination.rel.forEach(function(rel) {
+			rel.href = nconf.get('url') + '/topic/' + data.slug + rel.href;
 			res.locals.linkTags.push(rel);
 		});
 

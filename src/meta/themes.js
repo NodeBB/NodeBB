@@ -6,6 +6,8 @@ var nconf = require('nconf'),
 	fs = require('fs'),
 	path = require('path'),
 	async = require('async'),
+
+	file = require('../file'),
 	db = require('../database');
 
 module.exports = function(Meta) {
@@ -34,27 +36,24 @@ module.exports = function(Meta) {
 				async.map(themes, function (theme, next) {
 					var config = path.join(themePath, theme, 'theme.json');
 
-					if (fs.existsSync(config)) {
-						fs.readFile(config, function (err, file) {
-							if (err) {
-								return next();
-							} else {
-								var configObj = JSON.parse(file.toString());
+					fs.readFile(config, function (err, file) {
+						if (err) {
+							return next();
+						}
 
-								// Minor adjustments for API output
-								configObj.type = 'local';
-								if (configObj.screenshot) {
-									configObj.screenshot_url = nconf.get('relative_path') + '/css/previews/' + configObj.id;
-								} else {
-									configObj.screenshot_url = nconf.get('relative_path') + '/images/themes/default.png';
-								}
+						var configObj = JSON.parse(file.toString());
 
-								next(err, configObj);
-							}
-						});
-					} else {
-						next();
-					}
+						// Minor adjustments for API output
+						configObj.type = 'local';
+						if (configObj.screenshot) {
+							configObj.screenshot_url = nconf.get('relative_path') + '/css/previews/' + configObj.id;
+						} else {
+							configObj.screenshot_url = nconf.get('relative_path') + '/images/themes/default.png';
+						}
+
+						next(null, configObj);
+					});
+
 				}, function (err, themes) {
 					themes = themes.filter(function (theme) {
 						return (theme !== undefined);
@@ -145,7 +144,7 @@ module.exports = function(Meta) {
 
 		if (themeObj.templates) {
 			themePath = path.join(nconf.get('themes_path'), themeObj.id, themeObj.templates);
-		} else if (fs.existsSync(fallback)) {
+		} else if (file.existsSync(fallback)) {
 			themePath = fallback;
 		}
 
