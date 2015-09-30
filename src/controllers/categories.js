@@ -256,6 +256,7 @@ categoriesController.get = function(req, res, callback) {
 		data.pagination = pagination.create(data.currentPage, data.pageCount);
 		data.title = data.name;
 		data.pagination.rel.forEach(function(rel) {
+			rel.href = nconf.get('url') + '/category/' + data.slug + rel.href;
 			res.locals.linkTags.push(rel);
 		});
 
