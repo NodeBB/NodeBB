@@ -320,7 +320,17 @@ var db = require('./database'),
 	};
 
 	Messaging.markUnread = function(uid, toUid, callback) {
-		db.sortedSetAdd('uid:' + uid + ':chats:unread', Date.now(), toUid, callback);
+		async.waterfall([
+			function (next) {
+				user.exists(toUid, next);
+			},
+			function (exists, next) {
+				if (!exists) {
+					return next(new Error('[[error:no-user]]'));
+				}
+				db.sortedSetAdd('uid:' + uid + ':chats:unread', Date.now(), toUid, next);
+			}
+		], callback);
 	};
 
 	Messaging.notifyUser = function(fromuid, touid, messageObj) {

@@ -71,9 +71,12 @@ SocketModules.chats.canMessage = function(socket, toUid, callback) {
 
 SocketModules.chats.markRead = function(socket, touid, callback) {
 	Messaging.markRead(socket.uid, touid, function(err) {
-		if (!err) {
-			Messaging.pushUnreadCount(socket.uid);
+		if (err) {
+			return callback(err);
 		}
+
+		Messaging.pushUnreadCount(socket.uid);
+		callback();
 	});
 };
 
