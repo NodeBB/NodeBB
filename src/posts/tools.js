@@ -18,10 +18,16 @@ module.exports = function(Posts) {
 
 	function togglePostDelete(uid, pid, isDelete, callback) {
 		async.waterfall([
-			function(next) {
+			function (next) {
+				Posts.exists(pid, next);
+			},
+			function (exists, next) {
+				if (!exists) {
+					return next(new Error('[[error:no-post]]'));
+				}
 				Posts.getPostField(pid, 'deleted', next);
 			},
-			function(deleted, next) {
+			function (deleted, next) {
 				if (parseInt(deleted, 10) === 1 && isDelete) {
 					return next(new Error('[[error:post-already-deleted]]'));
 				} else if(parseInt(deleted, 10) !== 1 && !isDelete) {
@@ -30,13 +36,13 @@ module.exports = function(Posts) {
 
 				privileges.posts.canEdit(pid, uid, next);
 			},
-			function(canEdit, next) {
+			function (canEdit, next) {
 				if (!canEdit) {
 					return next(new Error('[[error:no-privileges]]'));
 				}
 				next();
 			}
-		], function(err) {
+		], function (err) {
 			if (err) {
 				return callback(err);
 			}
