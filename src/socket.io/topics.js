@@ -101,12 +101,6 @@ SocketTopics.bookmark = function(socket, data, callback) {
 	topics.setUserBookmark(data.tid, socket.uid, data.index, callback);
 };
 
-
-SocketTopics.emitToTopicAndCategory = function(event, data) {
-	websockets.in('topic_' + data.tid).emit(event, data);
-	websockets.in('category_' + data.cid).emit(event, data);
-};
-
 SocketTopics.createTopicFromPosts = function(socket, data, callback) {
 	if (!socket.uid) {
 		return callback(new Error('[[error:not-logged-in]]'));
@@ -118,33 +112,6 @@ SocketTopics.createTopicFromPosts = function(socket, data, callback) {
 
 	topics.createTopicFromPosts(socket.uid, data.title, data.pids, callback);
 };
-
-SocketTopics.sendNotificationToTopicOwner = function(tid, fromuid, notification) {
-	if (!tid || !fromuid) {
-		return;
-	}
-
-	async.parallel({
-		username: async.apply(user.getUserField, fromuid, 'username'),
-		topicData: async.apply(topics.getTopicFields, tid, ['uid', 'slug']),
-	}, function(err, results) {
-		if (err || fromuid === parseInt(results.topicData.uid, 10)) {
-			return;
-		}
-
-		notifications.create({
-			bodyShort: '[[' + notification + ', ' + results.username + ']]',
-			path: nconf.get('relative_path') + '/topic/' + results.topicData.slug,
-			nid: 'tid:' + tid + ':uid:' + fromuid,
-			from: fromuid
-		}, function(err, notification) {
-			if (!err && notification) {
-				notifications.push(notification, [results.topicData.uid]);
-			}
-		});
-	});
-};
-
 
 SocketTopics.toggleFollow = function(socket, tid, callback) {
 	followCommand(topics.toggleFollow, socket, tid, callback);

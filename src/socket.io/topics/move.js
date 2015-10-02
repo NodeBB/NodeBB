@@ -4,6 +4,7 @@ var async = require('async');
 var topics = require('../../topics');
 var categories = require('../../categories');
 var privileges = require('../../privileges');
+var socketHelpers = require('../helpers');
 
 module.exports = function(SocketTopics) {
 
@@ -37,9 +38,9 @@ module.exports = function(SocketTopics) {
 					return next(err);
 				}
 
-				SocketTopics.emitToTopicAndCategory('event:topic_moved', topicData);
+				socketHelpers.emitToTopicAndCategory('event:topic_moved', topicData);
 
-				SocketTopics.sendNotificationToTopicOwner(tid, socket.uid, 'notifications:moved_your_topic');
+				socketHelpers.sendNotificationToTopicOwner(tid, socket.uid, 'notifications:moved_your_topic');
 
 				next();
 			});

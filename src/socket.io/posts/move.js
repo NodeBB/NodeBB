@@ -3,7 +3,7 @@
 var async = require('async');
 var privileges = require('../../privileges');
 var topics = require('../../topics');
-
+var socketHelpers = require('../helpers');
 
 module.exports = function(SocketPosts) {
 
@@ -28,7 +28,7 @@ module.exports = function(SocketPosts) {
 				topics.movePostToTopic(data.pid, data.tid, next);
 			},
 			function (next) {
-				SocketPosts.sendNotificationToPostOwner(data.pid, socket.uid, 'notifications:moved_your_post');
+				socketHelpers.sendNotificationToPostOwner(data.pid, socket.uid, 'notifications:moved_your_post');
 				next();
 			}
 		], callback);
