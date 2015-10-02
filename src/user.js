@@ -168,11 +168,15 @@ var	async = require('async'),
 		Password.hash(nconf.get('bcrypt_rounds') || 12, password, callback);
 	};
 
-	User.exists = function(userslug, callback) {
+	User.exists = function(uid, callback) {
+		db.isSortedSetMember('users:joindate', uid, callback);
+	};
+
+	User.existsBySlug = function(userslug, callback) {
 		User.getUidByUserslug(userslug, function(err, exists) {
 			callback(err, !! exists);
 		});
-	};
+	}
 
 	User.getUidByUsername = function(username, callback) {
 		if (!username) {
