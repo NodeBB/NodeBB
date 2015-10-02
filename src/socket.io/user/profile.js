@@ -49,7 +49,7 @@ module.exports = function(SocketUser) {
 			function (_oldUserData, next) {
 				oldUserData = _oldUserData;
 				if (!oldUserData || !oldUserData.username) {
-					return next(new Error('[[error-invalid-data]]'));
+					return next(new Error('[[error:invalid-data]]'));
 				}
 
 				if (parseInt(meta.config['username:disableEdit'], 10) === 1) {

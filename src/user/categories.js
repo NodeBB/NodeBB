@@ -3,6 +3,7 @@
 var async = require('async');
 
 var db = require('../database');
+var categories = require('../categories');
 
 module.exports = function(User) {
 
@@ -34,13 +35,35 @@ module.exports = function(User) {
 		if (!uid) {
 			return callback();
 		}
-		db.sortedSetAdd('uid:' + uid + ':ignored:cids', Date.now(), cid, callback);
+
+		async.waterfall([
+			function (next) {
+				categories.exists(cid, next);
+			},
+			function (exists, next) {
+				if (!exists) {
+					return next(new Error('[[error:no-category]]'));
+				}
+				db.sortedSetAdd('uid:' + uid + ':ignored:cids', Date.now(), cid, next);
+			}
+		], callback);
 	};
 
 	User.watchCategory = function(uid, cid, callback) {
 		if (!uid) {
 			return callback();
 		}
-		db.sortedSetRemove('uid:' + uid + ':ignored:cids', cid, callback);
+
+		async.waterfall([
+			function (next) {
+				categories.exists(cid, next);
+			},
+			function (exists, next) {
+				if (!exists) {
+					return next(new Error('[[error:no-category]]'));
+				}
+				db.sortedSetRemove('uid:' + uid + ':ignored:cids', cid, next);
+			}
+		], callback);
 	};
 };
