@@ -34,6 +34,9 @@ module.exports = function(Posts) {
 				Posts.getPostData(data.pid, next);
 			},
 			function (_postData, next) {
+				if (!_postData) {
+					return next(new Error('[[error:no-post]]'));
+				}
 				postData = _postData;
 				postData.content = data.content;
 				postData.edited = now;
