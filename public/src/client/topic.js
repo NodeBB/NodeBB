@@ -1,7 +1,7 @@
 'use strict';
 
 
-/* globals define, app, templates, socket, bootbox, config, ajaxify, RELATIVE_PATH, utils */
+/* globals define, app, socket, config, ajaxify, RELATIVE_PATH, utils */
 
 define('forum/topic', [
 	'forum/pagination',
@@ -13,9 +13,8 @@ define('forum/topic', [
 	'forum/topic/posts',
 	'navigator',
 	'sort',
-	'components',
-	'translator'
-], function(pagination, infinitescroll, threadTools, postTools, events, browsing, posts, navigator, sort, components, translator) {
+	'components'
+], function(pagination, infinitescroll, threadTools, postTools, events, browsing, posts, navigator, sort, components) {
 	var	Topic = {},
 		currentUrl = '';
 
@@ -247,27 +246,6 @@ define('forum/topic', [
 			return 1;
 		}
 
-		var bookmarkKey = 'topic:' + ajaxify.data.tid + ':bookmark';
-		var currentBookmark = ajaxify.data.bookmark || localStorage.getItem(bookmarkKey);
-
-		if (!currentBookmark || parseInt(index, 10) > parseInt(currentBookmark, 10)) {
-			if (app.user.uid) {
-				socket.emit('topics.bookmark', {
-					'tid': ajaxify.data.tid,
-					'index': index
-				}, function(err) {
-					ajaxify.data.bookmark = index;
-				});
-			} else {
-				localStorage.setItem(bookmarkKey, index);
-			}
-		}
-
-		// removes the bookmark alert when we get to / past the bookmark
-		if (!currentBookmark || parseInt(index, 10) >= parseInt(currentBookmark, 10)) {
-			app.removeAlert('bookmark');
-		}
-
 		if (!navigator.scrollActive) {
 			var parts = ajaxify.removeRelativePath(window.location.pathname.slice(1)).split('/');
 			var topicId = parts[1],
@@ -283,6 +261,9 @@ define('forum/topic', [
 				}
 
 				Topic.replaceURLTimeout = setTimeout(function() {
+
+					updateUserBookmark(index);
+
 					Topic.replaceURLTimeout = 0;
 					if (history.replaceState) {
 						var search = (window.location.search ? window.location.search : '');
@@ -295,6 +276,33 @@ define('forum/topic', [
 			}
 		}
 	};
+
+	function updateUserBookmark(index) {
+		var bookmarkKey = 'topic:' + ajaxify.data.tid + ':bookmark';
+		var currentBookmark = ajaxify.data.bookmark || localStorage.getItem(bookmarkKey);
+
+		if (!currentBookmark || parseInt(index, 10) > parseInt(currentBookmark, 10)) {
+			if (app.user.uid) {
+				socket.emit('topics.bookmark', {
+					'tid': ajaxify.data.tid,
+					'index': index
+				}, function(err) {
+					if (err) {
+						return app.alertError(err.message);
+					}
+					ajaxify.data.bookmark = index;
+				});
+			} else {
+				localStorage.setItem(bookmarkKey, index);
+			}
+		}
+
+		// removes the bookmark alert when we get to / past the bookmark
+		if (!currentBookmark || parseInt(index, 10) >= parseInt(currentBookmark, 10)) {
+			app.removeAlert('bookmark');
+		}
+
+	}
 
 
 	return Topic;
