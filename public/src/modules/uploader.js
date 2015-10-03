@@ -35,7 +35,7 @@ define('uploader', ['csrf'], function(csrf) {
 
 				function showAlert(type, message) {
 					module.hideAlerts(uploadModal);
-					uploadM odal.find('#alert-' + type).translateText(message).removeClass('hide');
+					uploadModal.find('#alert-' + type).translateText(message).removeClass('hide');
 				}
 
 				showAlert('status', '[[uploads:uploading-file]]');
