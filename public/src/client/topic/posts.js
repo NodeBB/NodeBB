@@ -195,7 +195,7 @@ define('forum/topic/posts', [
 			indicatorEl.fadeOut();
 
 			if (data && data.posts && data.posts.length) {
-				createNewPosts(data, components.get('post').not('[data-index=0]').not('.new'), direction, done);
+				createNewPosts(data, replies, direction, done);
 			} else {
 				if (app.user.uid) {
 					socket.emit('topics.markAsRead', [tid]);
