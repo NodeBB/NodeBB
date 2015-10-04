@@ -157,8 +157,9 @@ app.cacheBuster = null;
 		}
 	}
 
-	app.createUserTooltips = function() {
-		$('img[title].teaser-pic,img[title].user-img').each(function() {
+	app.createUserTooltips = function(els) {
+		els = els || $('body');
+		els.find('img[title].teaser-pic,img[title].user-img').each(function() {
 			$(this).tooltip({
 				placement: 'top',
 				title: $(this).attr('title')
