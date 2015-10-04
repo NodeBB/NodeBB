@@ -51,6 +51,7 @@
     "confirm_password": "Confirmă Parola",
     "password": "Parolă",
     "username_taken_workaround": "Numele de utilizator pe care l-ai cerut este deja luat, așa că l-am modificat puțin. Acum ești cunoscut ca <strong>%1</strong>",
+    "password_same_as_username": "Your password is the same as your username, please select another password.",
     "upload_picture": "Uploadează poză",
     "upload_a_picture": "Uploadează o poză",
     "remove_uploaded_picture": "Remove Uploaded Picture",

@@ -51,6 +51,7 @@
     "confirm_password": "Xác nhận mật khẩu",
     "password": "Mật khẩu",
     "username_taken_workaround": "Tên truy cập này đã tồn tại, vì vậy chúng tôi đã sửa đổi nó một chút. Tên truy cập của bạn giờ là <strong>%1</strong>",
+    "password_same_as_username": "Your password is the same as your username, please select another password.",
     "upload_picture": "Tải lên hình ảnh",
     "upload_a_picture": "Tải lên một hình ảnh",
     "remove_uploaded_picture": "Remove Uploaded Picture",

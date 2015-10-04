@@ -51,6 +51,7 @@
     "confirm_password": "Confirmar contraseña",
     "password": "Contraseña",
     "username_taken_workaround": "El nombre de usuario que has solicitada ya está siendo usado, por tanto lo hemos alterado ligeramente. Ahora eres conocido como <strong>%1</strong>.",
+    "password_same_as_username": "Tu Constraseña es igual al nombre de Usuario, por favor seleccione otra Constraseña.",
     "upload_picture": "Subir foto",
     "upload_a_picture": "Subir una foto",
     "remove_uploaded_picture": "Remover Imagen subida",

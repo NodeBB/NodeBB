@@ -51,6 +51,7 @@
     "confirm_password": "Kinnita parool",
     "password": "Parool",
     "username_taken_workaround": "Kasutajanimi mida soovisid, ei olnud saadaval, seeg muutsime seda natukene. Sinu uus kasutajanimi on nüüd: <strong>%1</strong>",
+    "password_same_as_username": "Su parool kattub su kasutajanimega, palun vali mõni muu parool.",
     "upload_picture": "Laadi pilt",
     "upload_a_picture": "Lae pilt üles",
     "remove_uploaded_picture": "Eemalda üleslaetud pilt",

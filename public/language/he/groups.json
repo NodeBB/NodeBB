@@ -4,10 +4,10 @@
     "owner": "מנהל הקבוצה",
     "new_group": "צור קבוצה חדשה",
     "no_groups_found": "אין קבוצות לצפייה",
-    "pending.accept": "Accept",
-    "pending.reject": "Reject",
-    "pending.accept_all": "Accept All",
-    "pending.reject_all": "Reject All",
+    "pending.accept": "אשר",
+    "pending.reject": "דחה",
+    "pending.accept_all": "אשר הכל",
+    "pending.reject_all": "דחה הכל",
     "pending.none": "There are no pending members at this time",
     "invited.none": "There are no invited members at this time",
     "invited.uninvite": "Rescind Invitation",
@@ -48,6 +48,6 @@
     "membership.invitation-pending": "Invitation Pending",
     "membership.join-group": "Join Group",
     "membership.leave-group": "Leave Group",
-    "membership.reject": "Reject",
+    "membership.reject": "דחה",
     "new-group.group_name": "Group Name:"
 }

@@ -51,6 +51,7 @@
     "confirm_password": "Emeza Ijambobanga",
     "password": "Ijambobanga",
     "username_taken_workaround": "Izina ushaka kujya ukoresha twasanze ryarafashwe. Ntugire impungenge kuko twakuboneye iryo byenda kumera kimwe. Uzaba uzwi ku izina rya <strong>%1</strong>",
+    "password_same_as_username": "Your password is the same as your username, please select another password.",
     "upload_picture": "Gushyiraho ifoto",
     "upload_a_picture": "Shyiraho ifoto",
     "remove_uploaded_picture": "Remove Uploaded Picture",

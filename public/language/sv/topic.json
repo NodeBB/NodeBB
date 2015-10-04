@@ -25,7 +25,7 @@
     "tools": "Verktyg",
     "flag": "Rapportera",
     "locked": "Låst",
-    "bookmark_instructions": "Klicka här för att återgå till den senaste positionen eller stäng för att kasta.",
+    "bookmark_instructions": "Click here to return to the last unread post in this thread.",
     "flag_title": "Rapportera detta inlägg för granskning",
     "flag_confirm": "Är du säker på att du vill flagga det här inlägget?",
     "flag_success": "Det här inlägget har flaggats för moderering.",

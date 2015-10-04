@@ -25,7 +25,7 @@
     "tools": "Outils",
     "flag": "Signaler",
     "locked": "Verrouillé",
-    "bookmark_instructions": "Cliquez ici pour retourner à votre dernière position ou fermez pour ignorer.",
+    "bookmark_instructions": "Cliquez ici pour retourner au dernier message non lu dans ce fil de discussion.",
     "flag_title": "Signaler ce message à la modération",
     "flag_confirm": "Êtes-vous sûr de bien vouloir signaler ce message ?",
     "flag_success": "Ce message a bien été signalé aux modérateurs.",

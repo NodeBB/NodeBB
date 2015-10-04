@@ -51,6 +51,7 @@
     "confirm_password": "Potvrzení hesla",
     "password": "Heslo",
     "username_taken_workaround": "The username you requested was already taken, so we have altered it slightly. You are now known as <strong>%1</strong>",
+    "password_same_as_username": "Your password is the same as your username, please select another password.",
     "upload_picture": "Nahrát obrázek",
     "upload_a_picture": "Nahrát obrázek",
     "remove_uploaded_picture": "Remove Uploaded Picture",

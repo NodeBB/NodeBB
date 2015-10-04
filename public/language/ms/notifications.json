@@ -1,7 +1,7 @@
 {
     "title": "pemberitahuan",
     "no_notifs": "Anda tiada pemberitahuan baru",
-    "see_all": "See all notifications",
+    "see_all": "Lihat semua pemberitahuan",
     "mark_all_read": "Tandakan semua pemberitahuan sudah dibaca",
     "back_to_home": "Kembali ke %1",
     "outgoing_link": "Sambungan luar",
@@ -21,7 +21,7 @@
     "user_mentioned_you_in": "<strong>%1</strong> sebut anda di <strong>%2</strong>",
     "user_started_following_you": "<strong>%1</strong> mula mengikut anda.",
     "new_register": "<strong>%1</strong> menghantar jemputan pendaftaran.",
-    "email-confirmed": "EMel Disahkan",
+    "email-confirmed": "Emel Disahkan",
     "email-confirmed-message": "Terima kasih kerana mengesahkan emel anda. Akaun anda telah diaktifkan sepenuhnya.",
     "email-confirm-error-message": "Berlaku masalah semasa mengesahkan emel anda. Mungkin kod tidak sah atau tamat tempoh.",
     "email-confirm-sent": "Pengesahan emel telah dihantar."

@@ -25,7 +25,7 @@
     "tools": "Ferramentas",
     "flag": "Sinalizar",
     "locked": "Trancado",
-    "bookmark_instructions": "Clique aqui para voltar a sua última posição ou feche para descartar.",
+    "bookmark_instructions": "Click here to return to the last unread post in this thread.",
     "flag_title": "Sinalizar este post para moderação",
     "flag_confirm": "Tem certeza que deseja sinalizar este post?",
     "flag_success": "Este post foi sinalizado para ser moderado.",

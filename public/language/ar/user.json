@@ -51,6 +51,7 @@
     "confirm_password": "تأكيد كلمة السر",
     "password": "كلمة السر",
     "username_taken_workaround": "اسم المستخدم الذي اخترته سبق أخذه، لذا تم تغييره قليلا. أن الآن مسجل تحت الاسم <strong>%1</strong>",
+    "password_same_as_username": "Your password is the same as your username, please select another password.",
     "upload_picture": "ارفع الصورة",
     "upload_a_picture": "رفع صورة",
     "remove_uploaded_picture": "Remove Uploaded Picture",

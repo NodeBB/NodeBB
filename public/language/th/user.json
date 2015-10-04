@@ -51,6 +51,7 @@
     "confirm_password": "ยืนยันรหัสผ่าน",
     "password": "รหัสผ่าน",
     "username_taken_workaround": "ชื่อนี้มีคนใช้แล้ว เราเลยแก้ไขชื่อคุณ โดยคุณจะถูกรู้จักในชื่อ <strong>%1</strong>",
+    "password_same_as_username": "Your password is the same as your username, please select another password.",
     "upload_picture": "อัปโหลดรูป",
     "upload_a_picture": "อัปโหลดรูป",
     "remove_uploaded_picture": "Remove Uploaded Picture",

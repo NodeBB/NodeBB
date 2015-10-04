@@ -51,6 +51,7 @@
     "confirm_password": "Jelszó megerősítése",
     "password": "Jelszó",
     "username_taken_workaround": "A kívánt felhasználónév már foglalt, így változtatnunk kellett rajta egy kicsit. Mostantól <strong>%1</strong> nicknév alatt vagy ismert.",
+    "password_same_as_username": "Your password is the same as your username, please select another password.",
     "upload_picture": "Kép feltöltése",
     "upload_a_picture": "Egy kép feltöltése",
     "remove_uploaded_picture": "Remove Uploaded Picture",

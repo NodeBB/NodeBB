@@ -1,16 +1,16 @@
 {
-    "category": "Category",
-    "subcategories": "Subcategories",
-    "new_topic_button": "Nowy wątek",
+    "category": "Kategoria",
+    "subcategories": "Podkategorie",
+    "new_topic_button": "Nowy Temat",
     "guest-login-post": "Zaloguj się, aby napisać.",
-    "no_topics": "<strong>W tej kategorii nie ma jeszcze żadnych wątków.</strong><br />Dlaczego ty nie utworzysz jakiegoś?",
+    "no_topics": "<strong>W tej kategorii nie ma jeszcze żadnych tematów.</strong><br />Dlaczego nie spróbujesz jakiegoś utworzyć?",
     "browsing": "przegląda",
     "no_replies": "Nikt jeszcze nie odpowiedział",
-    "no_new_posts": "No new posts.",
+    "no_new_posts": "Brak nowych postów.",
     "share_this_category": "Udostępnij tę kategorię",
-    "watch": "Watch",
+    "watch": "Obserwuj",
     "ignore": "Ignoruj",
-    "watch.message": "You are now watching updates from this category",
-    "ignore.message": "You are now ignoring updates from this category",
-    "watched-categories": "Watched categories"
+    "watch.message": "Obserwujesz teraz aktualizacje tej kategorii",
+    "ignore.message": "Ignorujesz teraz aktualizacje tej kategorii",
+    "watched-categories": "Obserwowane kategorie"
 }

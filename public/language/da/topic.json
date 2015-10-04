@@ -25,7 +25,7 @@
     "tools": "Værktøjer",
     "flag": "Marker",
     "locked": "Låst",
-    "bookmark_instructions": "Klik her for at returnere til den sidste position eller luk for at kassere.",
+    "bookmark_instructions": "Click here to return to the last unread post in this thread.",
     "flag_title": "Meld dette indlæg til moderation",
     "flag_confirm": "Er du sikker på du ænsker at melde dette indlæg?",
     "flag_success": "Dette indlæg er blevet meldt til moderation.",

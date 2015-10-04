@@ -25,7 +25,7 @@
     "tools": "أدوات",
     "flag": "تبليغ",
     "locked": "مقفل",
-    "bookmark_instructions": "إضغط هنا للعودة إلى آخر موضع أو غلق للإلغاء",
+    "bookmark_instructions": "Click here to return to the last unread post in this thread.",
     "flag_title": "إشعار بمشاركة مخلة.",
     "flag_confirm": "هل تريد حقًّا التبليغ بهذه المشاركة؟",
     "flag_success": "تم الإشعار بهذه المشاركة على أنها مخلة",

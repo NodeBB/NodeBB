@@ -51,6 +51,7 @@
     "confirm_password": "Bekreft passord",
     "password": "Passord",
     "username_taken_workaround": "Brukernavnet du ønsket er opptatt, så vi har endret ditt litt. Du er nå kjent som <strong>%1</string>",
+    "password_same_as_username": "Ditt passord er det samme som ditt brukernavn, vennligst velg et annet passord.",
     "upload_picture": "Last opp bilde",
     "upload_a_picture": "Last opp et bilde",
     "remove_uploaded_picture": "Fjern Opplastet Bilde",

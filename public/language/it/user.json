@@ -12,7 +12,7 @@
     "delete_account": "Elimina Account",
     "delete_account_confirm": "Sei sicuro di voler cancellare il tuo account? <br /><strong>Questa azione è irreversibile e non potrai recuperare nessun dato</strong><br /><br />Inserisci il tuo username per confermare che vuoi eliminare questo account.",
     "delete_this_account_confirm": "Sei sicuro di voler cancellare questo account? <br /><strong>Questa azione è irreversibile e non potrai recuperare nessun dato</strong><br /><br />",
-    "account-deleted": "Account deleted",
+    "account-deleted": "Account eliminato",
     "fullname": "Nome e Cognome",
     "website": "Sito Internet",
     "location": "Località",
@@ -51,9 +51,10 @@
     "confirm_password": "Conferma la Password",
     "password": "Password",
     "username_taken_workaround": "Il nome utente che hai richiesto era già stato utilizzato, quindi lo abbiamo modificato leggermente. Ora il tuo è <strong>%1</strong>",
+    "password_same_as_username": "Your password is the same as your username, please select another password.",
     "upload_picture": "Carica foto",
     "upload_a_picture": "Carica una foto",
-    "remove_uploaded_picture": "Remove Uploaded Picture",
+    "remove_uploaded_picture": "Elimina foto caricata",
     "image_spec": "Puoi caricare solo file PNG, JPG o GIF",
     "settings": "Impostazioni",
     "show_email": "Mostra la mia Email",
@@ -88,7 +89,7 @@
     "grouptitle": "Seleziona il titolo del gruppo che vorresti vedere",
     "no-group-title": "Nessun titolo al gruppo",
     "select-skin": "Seleziona uno Skin",
-    "sso.title": "Single Sign-on Services",
-    "sso.associated": "Associated with",
-    "sso.not-associated": "Click here to associate with"
+    "sso.title": "Servizi Single-Sign-On",
+    "sso.associated": "Associa con",
+    "sso.not-associated": "Clicca qui per associare con"
 }

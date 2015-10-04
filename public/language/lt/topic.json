@@ -25,7 +25,7 @@
     "tools": "Įrankiai",
     "flag": "Pažymėti",
     "locked": "Užrakinta",
-    "bookmark_instructions": "Spauskite čia norėdami sugrįžti į savo paskutinę poziciją arba uždarykite šį pranešimą.",
+    "bookmark_instructions": "Click here to return to the last unread post in this thread.",
     "flag_title": "Pažymėti ši pranešimą moderatoriams",
     "flag_confirm": "Ar jūs tikras, kad norite pažymėti šį įrašą?",
     "flag_success": "Šis pranešimas buvo pažymėtas moderatorių patikrinimui.",

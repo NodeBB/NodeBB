@@ -1,7 +1,7 @@
 {
     "title": "Powiadomienia",
     "no_notifs": "Nie masz nowych powiadomień",
-    "see_all": "See all notifications",
+    "see_all": "Zobacz wszystkie powiadomienia",
     "mark_all_read": "Oznacz wszystkie powiadomienia jako przeczytane",
     "back_to_home": "Wróć do %1",
     "outgoing_link": "Łącze wychodzące",
@@ -20,7 +20,7 @@
     "user_posted_topic": "<strong>%1</strong> wysłał nowy temat: <strong>%2</strong>",
     "user_mentioned_you_in": "<strong>%1</strong> wspomniał cię w <strong>%2</strong>",
     "user_started_following_you": "<string>%1</strong> zaczął Cię śledzić.",
-    "new_register": "<strong>%1</strong> sent a registration request.",
+    "new_register": "<strong>%1</strong> wysłał żądanie rejestracji.",
     "email-confirmed": "E-mail potwierdzony",
     "email-confirmed-message": "Dziękujemy za potwierdzenie maila. Twoje konto zostało aktywowane.",
     "email-confirm-error-message": "Wystąpił problem przy aktywacji, - kod jest błędny lub przestarzały",

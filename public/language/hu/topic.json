@@ -25,7 +25,7 @@
     "tools": "Eszközök",
     "flag": "Jelentés",
     "locked": "Locked",
-    "bookmark_instructions": "Kattintson ide, hogy visszatérjen az utolsó pozícióra vagy close to discard.",
+    "bookmark_instructions": "Click here to return to the last unread post in this thread.",
     "flag_title": "A hozzászólás jelentése a moderátoroknál",
     "flag_confirm": "Are you sure you want to flag this post?",
     "flag_success": "This post has been flagged for moderation.",

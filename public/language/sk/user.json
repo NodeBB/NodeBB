@@ -51,6 +51,7 @@
     "confirm_password": "Potvrdenie hesla",
     "password": "Heslo",
     "username_taken_workaround": "Vaše požadované prihlasovacie meno je už obsadené, tak sme si ho dovolili mierne upraviť. Budeme Vás evidovať ako <strong>%1</strong>",
+    "password_same_as_username": "Your password is the same as your username, please select another password.",
     "upload_picture": "Nahrať obrázok",
     "upload_a_picture": "Nahrať obrázok",
     "remove_uploaded_picture": "Remove Uploaded Picture",

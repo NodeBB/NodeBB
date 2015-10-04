@@ -20,7 +20,7 @@
     "composer.hide_preview": "Скрыть предпросмотр",
     "composer.user_said_in": "%1 сказал %2:",
     "composer.user_said": "%1 сказал:",
-    "composer.discard": "Вы уверены, что хотите отказаться от этого поста?",
+    "composer.discard": "Вы уверены, что хотите отменить все изменения?",
     "composer.submit_and_lock": "Отправить и закрыть",
     "composer.toggle_dropdown": "Показать выпадающий список",
     "bootbox.ok": "ОК",

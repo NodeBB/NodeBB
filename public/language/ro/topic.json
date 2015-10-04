@@ -25,7 +25,7 @@
     "tools": "Unelte",
     "flag": "Semnalizează",
     "locked": "Închis",
-    "bookmark_instructions": "Apasă aici ca să te întorci la ultima pagină sau ignoră-mă.",
+    "bookmark_instructions": "Click here to return to the last unread post in this thread.",
     "flag_title": "Semnalizează acest mesaj pentru moderare",
     "flag_confirm": "Ești sigur că vrei să semnalezi acest mesaj?",
     "flag_success": "Acest mesaj a fost semnalizat pentru moderare.",

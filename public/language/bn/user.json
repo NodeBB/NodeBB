@@ -51,6 +51,7 @@
     "confirm_password": "পাসওয়ার্ড নিশ্চিত করুন",
     "password": "পাসওয়ার্ড",
     "username_taken_workaround": "আপনি যে ইউজারনেম চাচ্ছিলেন সেটি ইতিমধ্যে নেয়া হয়ে গেছে, কাজেই আমরা এটি কিঞ্চিং পরিবর্তন করেছি। আপনি এখন <strong>%1</strong> হিসেবে পরিচিত",
+    "password_same_as_username": "Your password is the same as your username, please select another password.",
     "upload_picture": "ছবি আপলোড করুন",
     "upload_a_picture": "ছবি (একটি) আপলোড করুন",
     "remove_uploaded_picture": "Remove Uploaded Picture",
