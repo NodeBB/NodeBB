@@ -146,12 +146,15 @@ define('forum/topic/postTools', ['share', 'navigator', 'components', 'translator
 		if (getData(button, 'data-uid') === '0') {
 			username = '';
 		}
+
+		var toPid = button.is('[component="post/reply"]') ? getData(button, 'data-pid') : null;
+
 		if (selectionText.length) {
 			$(window).trigger('action:composer.addQuote', {
 				tid: tid,
 				slug: ajaxify.data.slug,
 				index: getData(button, 'data-index'),
-				pid: getData(button, 'data-pid'),
+				pid: toPid,
 				topicName: topicName,
 				username: username,
 				text: selectionText
@@ -159,7 +162,7 @@ define('forum/topic/postTools', ['share', 'navigator', 'components', 'translator
 		} else {
 			$(window).trigger('action:composer.post.new', {
 				tid: tid,
-				pid: getData(button, 'data-pid'),
+				pid: toPid,
 				topicName: topicName,
 				text: username ? username + ' ' : ''
 			});
