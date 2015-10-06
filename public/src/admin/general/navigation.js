@@ -10,19 +10,19 @@ define('admin/general/navigation', ['translator', 'iconSelect'], function(transl
 
 		$('#enabled').html(translator.unescape($('#enabled').html()));
 
-		$('#main-nav').html(translator.unescape($('#main-nav').html()));
+		$('#active-navigation').html(translator.unescape($('#active-navigation').html()));
 
 		translator.translate(translator.unescape($('#available').html()), function(html) {
 			$('#available').html(html)
 				.find('li .drag-item').draggable({
-					connectToSortable: '#main-nav',
+					connectToSortable: '#active-navigation',
 					helper: 'clone',
 					distance: 10,
 					stop: drop
 				});
 		});
 
-		$('#main-nav').sortable().droppable({
+		$('#active-navigation').sortable().droppable({
 			accept: $('#available li .drag-item')
 		});
 
@@ -31,12 +31,12 @@ define('admin/general/navigation', ['translator', 'iconSelect'], function(transl
 			iconSelect.init(iconEl, function(el) {
 				var newIconClass = el.attr('value');
 				var index = iconEl.parents('[data-index]').attr('data-index');
-				$('#main-nav [data-index="' + index + '"] i').attr('class', 'fa fa-fw ' + newIconClass);
+				$('#active-navigation [data-index="' + index + '"] i').attr('class', 'fa fa-fw ' + newIconClass);
 				iconEl.siblings('[name="iconClass"]').val(newIconClass);
 			});
 		});
 
-		$('#main-nav').on('click', 'li', onSelect);
+		$('#active-navigation').on('click', 'li', onSelect);
 
 		$('#enabled')
 		 	.on('click', '.delete', remove)
@@ -47,7 +47,7 @@ define('admin/general/navigation', ['translator', 'iconSelect'], function(transl
 
 	function onSelect() {
 		var clickedIndex = $(this).attr('data-index');
-		$('#main-nav li').removeClass('active');
+		$('#active-navigation li').removeClass('active');
 		$(this).addClass('active');
 
 		var detailsForm = $('#enabled').children('[data-index="' + clickedIndex + '"]');
@@ -61,7 +61,7 @@ define('admin/general/navigation', ['translator', 'iconSelect'], function(transl
 
 	function drop(ev, ui) {
 		var id = ui.helper.attr('data-id'),
-			el = $('#main-nav [data-id="' + id + '"]'),
+			el = $('#active-navigation [data-id="' + id + '"]'),
 			data = id === 'custom' ? {iconClass: 'fa-navicon'} : available[id];
 
 		data.enabled = false;
@@ -83,7 +83,7 @@ define('admin/general/navigation', ['translator', 'iconSelect'], function(transl
 		var nav = [];
 
 		var indices = [];
-		$('#main-nav li').each(function() {
+		$('#active-navigation li').each(function() {
 			indices.push($(this).attr('data-index'));
 		});
 
@@ -123,7 +123,7 @@ define('admin/general/navigation', ['translator', 'iconSelect'], function(transl
 
 	function remove() {
 		var index = $(this).parents('[data-index]').attr('data-index');
-		$('#main-nav [data-index="' + index + '"]').remove();
+		$('#active-navigation [data-index="' + index + '"]').remove();
 		$('#enabled [data-index="' + index + '"]').remove();
 		return false;
 	}
