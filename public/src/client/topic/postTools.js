@@ -135,6 +135,10 @@ define('forum/topic/postTools', ['share', 'navigator', 'components', 'translator
 	}
 
 	function onReplyClicked(button, tid, topicName) {
+		if (ajaxify.data.lastposttime < (Date.now() - (1000*60*60*24*config.topicStaleDays))) {
+			return showStaleWarning();
+		}
+
 		var selectionText = '',
 			selection = window.getSelection ? window.getSelection() : document.selection.createRange();
 
@@ -170,6 +174,10 @@ define('forum/topic/postTools', ['share', 'navigator', 'components', 'translator
 	}
 
 	function onQuoteClicked(button, tid, topicName) {
+		if (ajaxify.data.lastposttime < (Date.now() - (1000*60*60*24*config.topicStaleDays))) {
+			return showStaleWarning();
+		}
+
 		var username = getUserName(button),
 			pid = getData(button, 'data-pid');
 
@@ -377,6 +385,18 @@ define('forum/topic/postTools', ['share', 'navigator', 'components', 'translator
 		app.openChat(post.attr('data-username'), post.attr('data-uid'));
 		button.parents('.btn-group').find('.dropdown-toggle').click();
 		return false;
+	}
+
+	function showStaleWarning() {
+		translator.translate('[[topic:stale_topic_warning]]', function(translated) {
+			bootbox.confirm(translated, function(create) {
+				if (create) {
+					$(window).trigger('action:composer.topic.new', {
+						cid: ajaxify.data.cid
+					});
+				}
+			});
+		});
 	}
 
 	return PostTools;

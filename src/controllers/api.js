@@ -41,6 +41,7 @@ apiController.getConfig = function(req, res, next) {
 	config.maximumTitleLength = meta.config.maximumTitleLength;
 	config.minimumPostLength = meta.config.minimumPostLength;
 	config.maximumPostLength = meta.config.maximumPostLength;
+	config.topicStaleDays = parseInt(meta.config.topicStaleDays, 10) || 60;
 	config.hasImageUploadPlugin = plugins.hasListeners('filter:uploadImage');
 	config.maximumProfileImageSize = meta.config.maximumProfileImageSize;
 	config.minimumUsernameLength = meta.config.minimumUsernameLength;
