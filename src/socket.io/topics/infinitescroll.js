@@ -68,15 +68,6 @@ module.exports = function(SocketTopics) {
 				},
 				posts: function(next) {
 					topics.getTopicPosts(data.tid, set, start, stop, socket.uid, reverse, next);
-				},
-				privileges: function(next) {
-					next(null, results.privileges);
-				},
-				'reputation:disabled': function(next) {
-					next(null, parseInt(meta.config['reputation:disabled'], 10) === 1);
-				},
-				'downvote:disabled': function(next) {
-					next(null, parseInt(meta.config['downvote:disabled'], 10) === 1);
 				}
 			}, function(err, topicData) {
 				if (err) {
@@ -85,6 +76,11 @@ module.exports = function(SocketTopics) {
 				if (topicData.mainPost) {
 					topicData.posts = [topicData.mainPost].concat(topicData.posts);
 				}
+
+				topicData.privileges = results.privileges;
+				topicData['reputation:disabled'] = parseInt(meta.config['reputation:disabled'], 10) === 1;
+				topicData['downvote:disabled'] = parseInt(meta.config['downvote:disabled'], 10) === 1;
+
 				topics.modifyByPrivilege(topicData.posts, results.privileges);
 				callback(null, topicData);
 			});
