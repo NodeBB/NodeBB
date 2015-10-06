@@ -59,6 +59,8 @@ function generateForTopic(req, res, next) {
 				return next();
 			}
 
+			topics.modifyByPrivilege(topicData.posts, userPrivileges);
+
 			var description = topicData.posts.length ? topicData.posts[0].content : '';
 			var image_url = topicData.posts.length ? topicData.posts[0].picture : '';
 			var author = topicData.posts.length ? topicData.posts[0].username : '';
