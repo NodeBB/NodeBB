@@ -66,6 +66,7 @@ function concatenateScripts(scripts, callback) {
 				type: 'error',
 				payload: err
 			});
+			return;
 		}
 
 		scripts = scripts.join(require('os').EOL + ';');
