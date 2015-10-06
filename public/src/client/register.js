@@ -16,6 +16,8 @@ define('forum/register', ['csrf', 'translator'], function(csrf, translator) {
 			register = $('#register'),
 			agreeTerms = $('#agree-terms');
 
+		handleLanguageOverride();
+
 		$('#referrer').val(app.previousUrl);
 
 		email.on('blur', function() {
@@ -223,6 +225,14 @@ define('forum/register', ['csrf', 'translator'], function(csrf, translator) {
 		});
 	}
 
+	function handleLanguageOverride() {
+		if (!app.user.uid && config.defaultLang !== config.userLang) {
+			var formEl = $('[component="register/local"]'),
+				langEl = $('<input type="hidden" name="userLang" value="' + config.userLang + '" />');
+
+			formEl.append(langEl);
+		}
+	}
 
 	return Register;
 });

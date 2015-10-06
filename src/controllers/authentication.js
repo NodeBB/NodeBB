@@ -69,6 +69,10 @@ authenticationController.register = function(req, res, next) {
 			return res.status(400).send(err.message);
 		}
 
+		if (req.body.userLang) {
+			user.setSetting(data.uid, 'userLang', req.body.userLang);
+		}
+
 		res.json(data);
 	});
 };
