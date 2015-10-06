@@ -26,7 +26,7 @@
 		<script>__lt_ie_9__ = 1;</script>
 	<![endif]-->
 
-		<script src="https://storage.googleapis.com/code.getmdl.io/1.0.3/material.min.js"></script>
+		<script src="http://cdn.bootcss.com/material-design-lite/1.0.3/material.min.js"></script>
 		<script type="text/javascript" src="{relative_path}/vendor/chart.js/chart.min.js?{cache-buster}"></script>
 		<script type="text/javascript" src="{relative_path}/vendor/hammer/hammer.min.js?{cache-buster}"></script>
 		<script type="text/javascript" src="{relative_path}/vendor/jquery/sortable/Sortable.js?{cache-buster}"></script>
