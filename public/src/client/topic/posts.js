@@ -139,6 +139,7 @@ define('forum/topic/posts', [
 		data.slug = ajaxify.data.slug;
 		data.tags = ajaxify.data.tags;
 		data.viewcount = ajaxify.data.viewcount;
+		data.isFollowing = ajaxify.data.isFollowing;
 
 		$(window).trigger('action:posts.loading', {posts: data.posts, after: after, before: before});
 
