@@ -3,7 +3,6 @@
 'use strict';
 
 var async = require('async'),
-	winston = require('winston'),
 	_ = require('underscore'),
 	validator = require('validator'),
 

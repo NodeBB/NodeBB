@@ -1,11 +1,9 @@
 "use strict";
 
 var async = require('async'),
-	validator = require('validator'),
 	_ = require('underscore'),
 
 	db = require('./database'),
-	meta = require('./meta'),
 	posts = require('./posts'),
 	utils = require('../public/src/utils'),
 	plugins = require('./plugins'),
