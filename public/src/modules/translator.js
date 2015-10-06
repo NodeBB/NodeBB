@@ -85,6 +85,10 @@
 			$('.timeago').timeago();
 			translator.timeagoShort = $.extend({}, jQuery.timeago.settings.strings);
 
+			// When language code is zh-CN, we try not to get from translations
+			// as there is no Chinese-SHORT translations available.
+			if ( languageCode == "zh-CN" ) return;
+
 			// Retrieve the shorthand timeago values as well
 			$.getScript(RELATIVE_PATH + '/vendor/jquery/timeago/locales/jquery.timeago.' + languageCode + '-short.js').success(function() {
 				// Switch back to long-form
