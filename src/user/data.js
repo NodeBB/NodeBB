@@ -106,6 +106,8 @@ module.exports = function(User) {
 
 			if (user.picture && user.picture === user.uploadedpicture) {
 				user.picture = user.uploadedpicture = user.picture.startsWith('http') ? user.picture : nconf.get('relative_path') + user.picture;
+			} else if (user.uploadedpicture) {
+				user.uploadedpicture = user.uploadedpicture.startsWith('http') ? user.uploadedpicture : nconf.get('relative_path') + user.uploadedpicture;
 			}
 
 			for(var i=0; i<fieldsToRemove.length; ++i) {
