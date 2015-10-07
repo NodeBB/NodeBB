@@ -135,66 +135,67 @@ define('forum/topic/postTools', ['share', 'navigator', 'components', 'translator
 	}
 
 	function onReplyClicked(button, tid, topicName) {
-		if (ajaxify.data.lastposttime < (Date.now() - (1000*60*60*24*config.topicStaleDays))) {
-			return showStaleWarning();
-		}
+		showStaleWarning(function(proceed) {
+			console.log('proceed is', proceed);
+			if (!proceed) {
+				var selectionText = '',
+					selection = window.getSelection ? window.getSelection() : document.selection.createRange();
 
-		var selectionText = '',
-			selection = window.getSelection ? window.getSelection() : document.selection.createRange();
+				if ($(selection.baseNode).parents('[component="post/content"]').length > 0) {
+					selectionText = selection.toString();
+				}
 
-		if ($(selection.baseNode).parents('[component="post/content"]').length > 0) {
-			selectionText = selection.toString();
-		}
+				var username = getUserName(selectionText ? $(selection.baseNode) : button);
+				if (getData(button, 'data-uid') === '0') {
+					username = '';
+				}
 
-		var username = getUserName(selectionText ? $(selection.baseNode) : button);
-		if (getData(button, 'data-uid') === '0') {
-			username = '';
-		}
+				var toPid = button.is('[component="post/reply"]') ? getData(button, 'data-pid') : null;
 
-		var toPid = button.is('[component="post/reply"]') ? getData(button, 'data-pid') : null;
-
-		if (selectionText.length) {
-			$(window).trigger('action:composer.addQuote', {
-				tid: tid,
-				slug: ajaxify.data.slug,
-				index: getData(button, 'data-index'),
-				pid: toPid,
-				topicName: topicName,
-				username: username,
-				text: selectionText
-			});
-		} else {
-			$(window).trigger('action:composer.post.new', {
-				tid: tid,
-				pid: toPid,
-				topicName: topicName,
-				text: username ? username + ' ' : ''
-			});
-		}
+				if (selectionText.length) {
+					$(window).trigger('action:composer.addQuote', {
+						tid: tid,
+						slug: ajaxify.data.slug,
+						index: getData(button, 'data-index'),
+						pid: toPid,
+						topicName: topicName,
+						username: username,
+						text: selectionText
+					});
+				} else {
+					$(window).trigger('action:composer.post.new', {
+						tid: tid,
+						pid: toPid,
+						topicName: topicName,
+						text: username ? username + ' ' : ''
+					});
+				}
+			}
+		});
 	}
 
 	function onQuoteClicked(button, tid, topicName) {
-		if (ajaxify.data.lastposttime < (Date.now() - (1000*60*60*24*config.topicStaleDays))) {
-			return showStaleWarning();
-		}
+		showStaleWarning(function(proceed) {
+			if (!proceed) {
+				var username = getUserName(button),
+					pid = getData(button, 'data-pid');
 
-		var username = getUserName(button),
-			pid = getData(button, 'data-pid');
+				socket.emit('posts.getRawPost', pid, function(err, post) {
+					if(err) {
+						return app.alertError(err.message);
+					}
 
-		socket.emit('posts.getRawPost', pid, function(err, post) {
-			if(err) {
-				return app.alertError(err.message);
+					$(window).trigger('action:composer.addQuote', {
+						tid: tid,
+						slug: ajaxify.data.slug,
+						index: getData(button, 'data-index'),
+						pid: pid,
+						username: username,
+						topicName: topicName,
+						text: post
+					});
+				});
 			}
-
-			$(window).trigger('action:composer.addQuote', {
-				tid: tid,
-				slug: ajaxify.data.slug,
-				index: getData(button, 'data-index'),
-				pid: pid,
-				username: username,
-				topicName: topicName,
-				text: post
-			});
 		});
 	}
 
@@ -387,16 +388,23 @@ define('forum/topic/postTools', ['share', 'navigator', 'components', 'translator
 		return false;
 	}
 
-	function showStaleWarning() {
-		translator.translate('[[topic:stale_topic_warning]]', function(translated) {
-			bootbox.confirm(translated, function(create) {
-				if (create) {
-					$(window).trigger('action:composer.topic.new', {
-						cid: ajaxify.data.cid
-					});
-				}
+	function showStaleWarning(callback) {
+		if (ajaxify.data.lastposttime < (Date.now() - (1000*60*60*24*config.topicStaleDays))) {
+			translator.translate('[[topic:stale_topic_warning]]', function(translated) {
+				bootbox.confirm(translated, function(create) {
+					if (create) {
+						$(window).trigger('action:composer.topic.new', {
+							cid: ajaxify.data.cid
+						});
+
+					}
+
+					callback(create);
+				});
 			});
-		});
+		} else {
+			callback(false);
+		}
 	}
 
 	return PostTools;
