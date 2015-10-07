@@ -25,7 +25,7 @@
     "tools": "도구",
     "flag": "신고",
     "locked": "잠김",
-    "bookmark_instructions": "여기를 누르면 마지막에 읽던 위치로 이동합니다.",
+    "bookmark_instructions": "Click here to return to the last unread post in this thread.",
     "flag_title": "이 게시물을 신고",
     "flag_confirm": "정말로 신고하시겠습니까?",
     "flag_success": "이 게시물은 신고되었습니다.",

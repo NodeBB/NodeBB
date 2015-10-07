@@ -88,7 +88,7 @@ define('forum/topic/posts', [
 		}
 
 		function removeAlreadyAddedPosts() {
-			var newPosts = components.get('topic').find('[data-index][data-index!="0"].new');
+			var newPosts = $('[component="post"].new');
 
 			if (newPosts.length === data.posts.length) {
 				var allSamePids = true;
@@ -117,7 +117,7 @@ define('forum/topic/posts', [
 			}
 
 			data.posts = data.posts.filter(function(post) {
-				return components.get('post', 'pid', post.pid).length === 0;
+				return $('[component="post"][data-pid="' + post.pid + '"]').length === 0;
 			});
 		}
 
@@ -137,7 +137,9 @@ define('forum/topic/posts', [
 
 		data.title = $('<div></div>').text(ajaxify.data.title).html();
 		data.slug = ajaxify.data.slug;
+		data.tags = ajaxify.data.tags;
 		data.viewcount = ajaxify.data.viewcount;
+		data.isFollowing = ajaxify.data.isFollowing;
 
 		$(window).trigger('action:posts.loading', {posts: data.posts, after: after, before: before});
 
@@ -157,7 +159,7 @@ define('forum/topic/posts', [
 				components.get('topic').append(html);
 			}
 
-			infinitescroll.removeExtra(components.get('post'), direction, 40);
+			infinitescroll.removeExtra($('[component="post"]'), direction, 40);
 
 			$(window).trigger('action:posts.loaded', {posts: data.posts});
 
@@ -195,7 +197,7 @@ define('forum/topic/posts', [
 			indicatorEl.fadeOut();
 
 			if (data && data.posts && data.posts.length) {
-				createNewPosts(data, components.get('post').not('[data-index=0]').not('.new'), direction, done);
+				createNewPosts(data, replies, direction, done);
 			} else {
 				if (app.user.uid) {
 					socket.emit('topics.markAsRead', [tid]);
@@ -207,7 +209,7 @@ define('forum/topic/posts', [
 	};
 
 	Posts.processPage = function(posts) {
-		app.createUserTooltips();
+		app.createUserTooltips(posts);
 		app.replaceSelfLinks(posts.find('a'));
 		utils.addCommasToNumbers(posts.find('.formatted-number'));
 		utils.makeNumbersHumanReadable(posts.find('.human-readable-number'));

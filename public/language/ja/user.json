@@ -51,6 +51,7 @@
     "confirm_password": "パスワードを再入力",
     "password": "パスワード",
     "username_taken_workaround": "このユーザー名はすでに使用されています。いまのユーザー名は <strong>%1</strong> です。",
+    "password_same_as_username": "Your password is the same as your username, please select another password.",
     "upload_picture": "画像をアップロード",
     "upload_a_picture": "画像をアップロード",
     "remove_uploaded_picture": "Remove Uploaded Picture",

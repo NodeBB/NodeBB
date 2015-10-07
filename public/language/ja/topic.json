@@ -25,7 +25,7 @@
     "tools": "ツール",
     "flag": "フラグ",
     "locked": "Locked",
-    "bookmark_instructions": "こちらをクリックして前の場所に戻ります。",
+    "bookmark_instructions": "Click here to return to the last unread post in this thread.",
     "flag_title": "リポートする",
     "flag_confirm": "本当にこのポストをリポートするか?",
     "flag_success": "このポストをリポートしました。",

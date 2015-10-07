@@ -3,9 +3,8 @@
 var topicsController = {},
 	async = require('async'),
 	S = require('string'),
-	validator = require('validator'),
 	nconf = require('nconf'),
-	qs = require('querystring'),
+
 	user = require('../user'),
 	meta = require('../meta'),
 	topics = require('../topics'),
@@ -124,6 +123,8 @@ topicsController.get = function(req, res, callback) {
 				topicData.pageCount = pageCount;
 				topicData.currentPage = page;
 
+				topics.modifyByPrivilege(topicData.posts, results.privileges);
+
 				plugins.fireHook('filter:controllers.topic.get', topicData, next);
 			});
 		},
@@ -134,8 +135,7 @@ topicsController.get = function(req, res, callback) {
 					url: nconf.get('relative_path') + '/category/' + topicData.category.slug
 				},
 				{
-					text: topicData.title,
-					url: nconf.get('relative_path') + '/topic/' + topicData.slug
+					text: topicData.title
 				}
 			];
 

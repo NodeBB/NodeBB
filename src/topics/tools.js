@@ -26,6 +26,12 @@ module.exports = function(Topics) {
 		var topicData;
 		async.waterfall([
 			function (next) {
+				Topics.exists(tid, next);
+			},
+			function (exists, next) {
+				if (!exists) {
+					return next(new Error('[[error:no-topic]]'));
+				}
 				privileges.topics.isOwnerOrAdminOrMod(tid, uid, next);
 			},
 			function (isOwnerOrAdminOrMod, next) {
@@ -158,7 +164,7 @@ module.exports = function(Topics) {
 			},
 			function (exists, next) {
 				if (!exists) {
-					return callback();
+					return callback(new Error('[[error:no-topic]]'));
 				}
 				Topics.getTopicFields(tid, ['cid', 'lastposttime'], next);
 			},
@@ -193,17 +199,23 @@ module.exports = function(Topics) {
 	topicTools.move = function(tid, cid, uid, callback) {
 		var topic;
 		async.waterfall([
-			function(next) {
+			function (next) {
+				Topics.exists(tid, next);
+			},
+			function (exists, next) {
+				if (!exists) {
+					return next(new Error('[[error:no-topic]]'));
+				}
 				Topics.getTopicFields(tid, ['cid', 'lastposttime', 'pinned', 'deleted', 'postcount'], next);
 			},
-			function(topicData, next) {
+			function (topicData, next) {
 				topic = topicData;
 				db.sortedSetsRemove([
 					'cid:' + topicData.cid + ':tids',
 					'cid:' + topicData.cid + ':tids:posts'
 				], tid, next);
 			},
-			function(next) {
+			function (next) {
 				var timestamp = parseInt(topic.pinned, 10) ? Math.pow(2, 53) : topic.lastposttime;
 				async.parallel([
 					function(next) {

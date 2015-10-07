@@ -9,6 +9,7 @@ var favourites = require('../../favourites');
 var plugins = require('../../plugins');
 var websockets = require('../index');
 var privileges = require('../../privileges');
+var socketHelpers = require('../helpers');
 
 module.exports = function(SocketPosts) {
 	SocketPosts.getVoters = function(socket, data, callback) {
@@ -148,7 +149,7 @@ module.exports = function(SocketPosts) {
 			}
 
 			if (result && notification) {
-				SocketPosts.sendNotificationToPostOwner(data.pid, socket.uid, notification);
+				socketHelpers.sendNotificationToPostOwner(data.pid, socket.uid, notification);
 			}
 			callback();
 		});

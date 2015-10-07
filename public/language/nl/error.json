@@ -78,7 +78,7 @@
     "chat-restricted": "Deze gebruiker heeft beperkingen aan de chatfunctie opgelegd waardoor deze eerst iemand moet volgen voordat deze persoon een nieuwe chat mag initiëren.",
     "too-many-messages": "Er zijn in korte tijd teveel berichten verzonden, een moment geduld.",
     "invalid-chat-message": "Ongeldige bericht",
-    "chat-message-too-long": "Chat message is too long",
+    "chat-message-too-long": "Het chatbericht is te lang",
     "reputation-system-disabled": "Reputatie systeem is uitgeschakeld.",
     "downvoting-disabled": "Negatief stemmen staat uitgeschakeld.",
     "not-enough-reputation-to-downvote": "Deze gebruikersaccount beschikt over onvoldoende reputatie om een negatieve stem uit te mogen brengen.",

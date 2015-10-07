@@ -25,7 +25,7 @@
     "tools": "Công cụ",
     "flag": "Flag",
     "locked": "Khóa",
-    "bookmark_instructions": "Bấm vào đây để quay về hoặc đóng lại để hủy",
+    "bookmark_instructions": "Click here to return to the last unread post in this thread.",
     "flag_title": "Flag bài viết này để chỉnh sửa",
     "flag_confirm": "Bạn có chắc là muốn flag bài viết này không?",
     "flag_success": "Chủ đề này đã được flag để chỉnh sửa",

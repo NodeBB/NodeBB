@@ -1,6 +1,5 @@
 'use strict';
 
-var async = require('async');
 var validator = require('validator');
 
 var db = require('../database');
@@ -32,7 +31,9 @@ module.exports = function(Topics) {
 			if (err || !topic) {
 				return callback(err);
 			}
-			modifyTopic(topic, callback);
+
+			modifyTopic(topic);
+			callback(null, topic);
 		});
 	};
 
@@ -47,18 +48,19 @@ module.exports = function(Topics) {
 			if (err) {
 				return callback(err);
 			}
-			async.map(topics, modifyTopic, callback);
+
+			topics.forEach(modifyTopic);
+			callback(null, topics);
 		});
 	};
 
-	function modifyTopic(topic, callback) {
+	function modifyTopic(topic) {
 		if (!topic) {
-			return callback(null, topic);
+			return;
 		}
 		topic.title = validator.escape(topic.title);
 		topic.relativeTime = utils.toISOString(topic.timestamp);
 		topic.lastposttimeISO = utils.toISOString(topic.lastposttime);
-		callback(null, topic);
 	}
 
 	Topics.getCategoryData = function(tid, callback) {

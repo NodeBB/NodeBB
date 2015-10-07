@@ -3,6 +3,7 @@
 var async = require('async');
 var topics = require('../../topics');
 var events = require('../../events');
+var socketHelpers = require('../helpers');
 
 module.exports = function(SocketTopics) {
 
@@ -55,7 +56,7 @@ module.exports = function(SocketTopics) {
 					return next(err);
 				}
 
-				SocketTopics.emitToTopicAndCategory(event, data);
+				socketHelpers.emitToTopicAndCategory(event, data);
 
 				if (action === 'delete' || action === 'restore' || action === 'purge') {
 					events.log({

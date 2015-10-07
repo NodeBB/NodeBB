@@ -29,40 +29,48 @@
 	<div class="col-sm-10 col-xs-12">
 		<form>
 			<div class="form-group">
-				<label>Seconds between Posts</label>
-				<input type="text" class="form-control" value="10" data-field="postDelay">
+				<label for="postDelay">Seconds between Posts</label>
+				<input id="postDelay" type="text" class="form-control" value="10" data-field="postDelay">
 			</div>
 			<div class="form-group">
-				<label>Seconds between Posts for New Users</label>
-				<input type="text" class="form-control" value="120" data-field="newbiePostDelay">
+				<label for="newbiePostDelay">Seconds between Posts for New Users</label>
+				<input id="newbiePostDelay" type="text" class="form-control" value="120" data-field="newbiePostDelay">
 			</div>
 			<div class="form-group">
-				<label>Reputation threshold before this restriction is lifted</label>
-				<input type="text" class="form-control" value="3" data-field="newbiePostDelayThreshold">
+				<label for="newbiePostDelayThreshold">Reputation threshold before this restriction is lifted</label>
+				<input id="newbiePostDelayThreshold" type="text" class="form-control" value="3" data-field="newbiePostDelayThreshold">
 			</div>
 			<div class="form-group">
-				<label>Seconds before new user can post</label>
-				<input type="text" class="form-control" value="10" data-field="initialPostDelay">
+				<label for="initialPostDelay">Seconds before new user can post</label>
+				<input id="initialPostDelay" type="text" class="form-control" value="10" data-field="initialPostDelay">
 			</div>
 			<div class="form-group">
-				<label>Number of seconds users are allowed to edit posts after posting. (0 disabled)</label>
-				<input type="text" class="form-control" value="0" data-field="postEditDuration">
+				<label for="postEditDuration">Number of seconds users are allowed to edit posts after posting. (0 disabled)</label>
+				<input id="postEditDuration" type="text" class="form-control" value="0" data-field="postEditDuration">
 			</div>
 			<div class="form-group">
-				<label>Minimum Title Length</label>
-				<input type="text" class="form-control" value="3" data-field="minimumTitleLength">
+				<label for="minimumTitleLength">Minimum Title Length</label>
+				<input id="minimumTitleLength" type="text" class="form-control" value="3" data-field="minimumTitleLength">
 			</div>
 			<div class="form-group">
-				<label>Maximum Title Length</label>
-				<input type="text" class="form-control" value="255" data-field="maximumTitleLength">
+				<label for="maximumTitleLength">Maximum Title Length</label>
+				<input id="maximumTitleLength" type="text" class="form-control" value="255" data-field="maximumTitleLength">
 			</div>
 			<div class="form-group">
-				<label>Minimum Post Length</label>
-				<input type="text" class="form-control" value="8" data-field="minimumPostLength">
+				<label for="minimumPostLength">Minimum Post Length</label>
+				<input id="minimumPostLength" type="text" class="form-control" value="8" data-field="minimumPostLength">
 			</div>
 			<div class="form-group">
-				<label>Maximum Post Length</label>
-				<input type="text" class="form-control" value="32767" data-field="maximumPostLength">
+				<label for="maximumPostLength">Maximum Post Length</label>
+				<input id="maximumPostLength" type="text" class="form-control" value="32767" data-field="maximumPostLength">
+			</div>
+			<div class="form-group">
+				<label for="topicStaleDays">Days until Topic is considered stale</label>
+				<input id="topicStaleDays" type="text" class="form-control" value="60" data-field="topicStaleDays">
+				<p class="help-block">
+					If a topic is considered "stale", then a warning will be shown to users who attempt to reply
+					to that topic.
+				</p>
 			</div>
 		</form>
 	</div>

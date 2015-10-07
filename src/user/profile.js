@@ -71,10 +71,13 @@ module.exports = function(User) {
 					return next();
 				}
 				User.getUserFields(uid, ['username', 'userslug'], function(err, userData) {
+					if (err) {
+						return next(err);
+					}
 
 					var userslug = utils.slugify(data.username);
 
-					if(userslug === userData.userslug) {
+					if (userslug === userData.userslug) {
 						return next();
 					}
 
@@ -86,12 +89,12 @@ module.exports = function(User) {
 						return next(new Error('[[error:username-too-long]]'));
 					}
 
-					if(!utils.isUserNameValid(data.username) || !userslug) {
+					if (!utils.isUserNameValid(data.username) || !userslug) {
 						return next(new Error('[[error:invalid-username]]'));
 					}
 
-					User.exists(userslug, function(err, exists) {
-						if(err) {
+					User.existsBySlug(userslug, function(err, exists) {
+						if (err) {
 							return next(err);
 						}
 

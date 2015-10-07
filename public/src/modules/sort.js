@@ -10,7 +10,7 @@ define('sort', ['components'], function(components) {
 		var currentSetting = threadSort.find('a[data-sort="' + config[field] + '"]');
 		currentSetting.find('i').addClass('fa-check');
 
-		threadSort.on('click', 'a', function() {
+		components.get('topic').on('click', '[component="thread/sort"] a', function() {
 			var newSetting = $(this).attr('data-sort');
 			socket.emit(method, newSetting, function(err) {
 				if (err) {

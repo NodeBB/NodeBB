@@ -25,7 +25,7 @@
     "tools": "工具",
     "flag": "檢舉",
     "locked": "已鎖定",
-    "bookmark_instructions": "點擊這裡返回到您的最後的位置或離開放棄",
+    "bookmark_instructions": "Click here to return to the last unread post in this thread.",
     "flag_title": "檢舉這篇文章, 交給仲裁者來審閱.",
     "flag_confirm": "你確定要檢舉這文章嗎？",
     "flag_success": "這文章已經被檢舉要求仲裁.",

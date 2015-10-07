@@ -25,7 +25,7 @@
     "tools": "টুলস",
     "flag": "ফ্ল্যাগ",
     "locked": "বন্ধ",
-    "bookmark_instructions": "আপনার সর্বশেষ অবস্থানে ফিরে যাবার জন্য এখানে ক্লিক করুন অথবা অগ্রাহ্য করতে চাইলে বন্ধ করুন",
+    "bookmark_instructions": "Click here to return to the last unread post in this thread.",
     "flag_title": "মডারেশনের জন্য এই পোস্টটি ফ্ল্যাগ করুন",
     "flag_confirm": "আপনি কি নিশ্চিত যে এই পোস্টটিকে আপনি ফ্ল্যাগ করতে চান? ",
     "flag_success": "এই পোস্টটি মডারেশনের জন্য ফ্ল্যাগ করা হয়েছে।",

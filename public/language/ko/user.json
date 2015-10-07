@@ -51,6 +51,7 @@
     "confirm_password": "패스워드 재입력",
     "password": "패스워드",
     "username_taken_workaround": "새 사용자 이름이 이미 존재하여 <strong>%1</strong>로 저장되었습니다.",
+    "password_same_as_username": "Your password is the same as your username, please select another password.",
     "upload_picture": "사진 업로드",
     "upload_a_picture": "사진 업로드",
     "remove_uploaded_picture": "Remove Uploaded Picture",

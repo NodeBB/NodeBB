@@ -5,7 +5,7 @@
 			<div class="panel-body">
 
 				<div class="clearfix">
-					<ul id="main-nav" class="nav navbar-nav">
+					<ul id="active-navigation" class="nav navbar-nav">
 						<!-- BEGIN navigation -->
 						<li data-index="{navigation.index}" class="{navigation.class} <!-- IF navigation.selected --> active <!-- ENDIF navigation.selected -->">
 							<a href="#" title="{navigation.route}" id="{navigation.id}">

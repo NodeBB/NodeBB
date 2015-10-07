@@ -25,7 +25,7 @@
     "tools": "Työkalut",
     "flag": "Ilmianna",
     "locked": "Lukittu",
-    "bookmark_instructions": "Click here to return to your last position or close to discard.",
+    "bookmark_instructions": "Click here to return to the last unread post in this thread.",
     "flag_title": "Ilmianna tämä viesti moderaattoreille",
     "flag_confirm": "Oletko varma, että haluat ilmiantaa tämän viestin?",
     "flag_success": "Tämä viesti ilmiannettiin moderaattoreille.",

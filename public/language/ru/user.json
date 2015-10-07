@@ -51,6 +51,7 @@
     "confirm_password": "Подтвердите пароль",
     "password": "Пароль",
     "username_taken_workaround": "Логин, который Вы запросили, уже занят. Мы его немного изменили. Теперь Ваш  логин <strong>%1</strong>",
+    "password_same_as_username": "Ваш пароль совпадает с именем пользователя, пожалуйста выберете другой пароль.",
     "upload_picture": "Загрузить фотографию",
     "upload_a_picture": "Загрузить фотографию",
     "remove_uploaded_picture": "Удалить загруженные фотографии",
@@ -88,7 +89,7 @@
     "grouptitle": "Выберите бейдж группы для отображения",
     "no-group-title": "Не показывать бейдж",
     "select-skin": "Выбрать скин",
-    "sso.title": "Сервис единого входа*(https://ru.wikipedia.org/wiki/%D0%A2%D0%B5%D1%85%D0%BD%D0%BE%D0%BB%D0%BE%D0%B3%D0%B8%D1%8F_%D0%B5%D0%B4%D0%B8%D0%BD%D0%BE%D0%B3%D0%BE_%D0%B2%D1%85%D0%BE%D0%B4%D0%B0)",
+    "sso.title": "Сервис единого входа",
     "sso.associated": "Связан с",
     "sso.not-associated": "Нажмите здесь, что бы связать себя с"
 }

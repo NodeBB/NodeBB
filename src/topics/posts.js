@@ -3,7 +3,6 @@
 'use strict';
 
 var async = require('async'),
-	winston = require('winston'),
 	_ = require('underscore'),
 	validator = require('validator'),
 
@@ -11,7 +10,6 @@ var async = require('async'),
 	user = require('../user'),
 	favourites = require('../favourites'),
 	posts = require('../posts'),
-	privileges = require('../privileges'),
 	meta = require('../meta');
 
 module.exports = function(Topics) {
@@ -110,9 +108,6 @@ module.exports = function(Topics) {
 					next(null, editorData);
 				});
 			},
-			privileges: function(next) {
-				privileges.posts.get(pids, uid, next);
-			},
 			parents: function(next) {
 				Topics.addParentPosts(postData, next);
 			}
@@ -130,13 +125,7 @@ module.exports = function(Topics) {
 					postObj.upvoted = results.voteData.upvotes[i];
 					postObj.downvoted = results.voteData.downvotes[i];
 					postObj.votes = postObj.votes || 0;
-					postObj.display_moderator_tools = results.privileges[i].editable;
-					postObj.display_move_tools = results.privileges[i].move && postObj.index !== 0;
 					postObj.selfPost = !!parseInt(uid, 10) && parseInt(uid, 10) === parseInt(postObj.uid, 10);
-
-					if (postObj.deleted && !results.privileges[i].view_deleted) {
-						postObj.content = '[[topic:post_is_deleted]]';
-					}
 
 					// Username override for guests, if enabled
 					if (parseInt(meta.config.allowGuestHandles, 10) === 1 && parseInt(postObj.uid, 10) === 0 && postObj.handle) {
@@ -146,6 +135,18 @@ module.exports = function(Topics) {
 			});
 
 			callback(null, postData);
+		});
+	};
+
+	Topics.modifyByPrivilege = function(postData, topicPrivileges) {
+		postData.forEach(function(post) {
+			if (post) {
+				post.display_moderator_tools = topicPrivileges.isAdminOrMod || post.selfPost;
+				post.display_move_tools = topicPrivileges.isAdminOrMod && post.index !== 0;
+				if (post.deleted && !(topicPrivileges.isAdminOrMod || post.selfPost)) {
+					post.content = '[[topic:post_is_deleted]]';
+				}
+			}
 		});
 	};
 

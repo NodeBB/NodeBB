@@ -198,7 +198,7 @@ module.exports = function(User) {
 			var	newUsername = '';
 			async.forever(function(next) {
 				newUsername = userData.username + (Math.floor(Math.random() * 255) + 1);
-				User.exists(newUsername, function(err, exists) {
+				User.existsBySlug(newUsername, function(err, exists) {
 					if (err) {
 						return callback(err);
 					}

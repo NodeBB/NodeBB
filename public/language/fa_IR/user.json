@@ -51,6 +51,7 @@
     "confirm_password": "تکرار گذرواژه",
     "password": "گذرواژه",
     "username_taken_workaround": "نام کاربری درخواستی شما در حال حاضر گرفته شده است، بنابراین ما آن را کمی تغییر داده‌ایم. شما هم‌اکنون با نام <strong>%1</strong  شناخته می‌شوید.",
+    "password_same_as_username": "Your password is the same as your username, please select another password.",
     "upload_picture": "بارگذاری تصویر",
     "upload_a_picture": "یک تصویر بارگذاری کنید",
     "remove_uploaded_picture": "Remove Uploaded Picture",

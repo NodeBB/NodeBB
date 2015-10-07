@@ -25,7 +25,7 @@
     "tools": "Araçlar",
     "flag": "Bayrak",
     "locked": "Kilitli",
-    "bookmark_instructions": "En son kaldığınız yere dönmek için buraya tıklayın.",
+    "bookmark_instructions": "Click here to return to the last unread post in this thread.",
     "flag_title": "Bu iletiyi moderatöre haber et",
     "flag_confirm": "Bu iletiyi yöneticilere bildirmek istiyor musun?",
     "flag_success": "Bu ileti yöneticilere bildirildi.",

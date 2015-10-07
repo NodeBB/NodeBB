@@ -30,7 +30,7 @@ var async = require('async'),
 	/* Assorted */
 	Meta.userOrGroupExists = function(slug, callback) {
 		async.parallel([
-			async.apply(user.exists, slug),
+			async.apply(user.existsBySlug, slug),
 			async.apply(groups.existsBySlug, slug)
 		], function(err, results) {
 			callback(err, results ? results.some(function(result) { return result; }) : false);

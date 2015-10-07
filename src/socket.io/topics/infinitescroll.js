@@ -15,11 +15,11 @@ module.exports = function(SocketTopics) {
 		}
 
 		async.parallel({
-			settings: function(next) {
-				user.getSettings(socket.uid, next);
-			},
 			privileges: function(next) {
 				privileges.topics.get(data.tid, socket.uid, next);
+			},
+			settings: function(next) {
+				user.getSettings(socket.uid, next);
 			},
 			topic: function(next) {
 				topics.getTopicFields(data.tid, ['postcount', 'deleted'], next);
@@ -68,22 +68,21 @@ module.exports = function(SocketTopics) {
 				},
 				posts: function(next) {
 					topics.getTopicPosts(data.tid, set, start, stop, socket.uid, reverse, next);
-				},
-				privileges: function(next) {
-					next(null, results.privileges);
-				},
-				'reputation:disabled': function(next) {
-					next(null, parseInt(meta.config['reputation:disabled'], 10) === 1);
-				},
-				'downvote:disabled': function(next) {
-					next(null, parseInt(meta.config['downvote:disabled'], 10) === 1);
 				}
-			}, function(err, results) {
-				if (results.mainPost) {
-					results.posts = [results.mainPost].concat(results.posts);
+			}, function(err, topicData) {
+				if (err) {
+					return callback(err);
+				}
+				if (topicData.mainPost) {
+					topicData.posts = [topicData.mainPost].concat(topicData.posts);
 				}
 
-				callback(err, results);
+				topicData.privileges = results.privileges;
+				topicData['reputation:disabled'] = parseInt(meta.config['reputation:disabled'], 10) === 1;
+				topicData['downvote:disabled'] = parseInt(meta.config['downvote:disabled'], 10) === 1;
+
+				topics.modifyByPrivilege(topicData.posts, results.privileges);
+				callback(null, topicData);
 			});
 		});
 	};

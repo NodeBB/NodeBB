@@ -25,7 +25,7 @@
     "tools": "เครื่องมือ",
     "flag": "ปักธง",
     "locked": "Locked",
-    "bookmark_instructions": "คลิกที่นี่เพื่อกลับคืนสู่ฐานะสุดท้าย หรือ คลิกปิดเพื่อยกเลิก",
+    "bookmark_instructions": "Click here to return to the last unread post in this thread.",
     "flag_title": "ปักธงโพสต์นี้เพื่อดำเนินการ",
     "flag_confirm": "มั่นใจแล้วหรือไม่ที่จะ Flag Post นี้?",
     "flag_success": "This post has been flagged for moderation.",

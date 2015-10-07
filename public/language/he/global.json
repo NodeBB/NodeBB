@@ -22,7 +22,7 @@
     "pagination.out_of": "%1 מתוך %2",
     "pagination.enter_index": "יש להכניס אינדקס",
     "header.admin": "ניהול",
-    "header.categories": "Categories",
+    "header.categories": "קטגוריות",
     "header.recent": "פוסטים אחרונים",
     "header.unread": "לא נקרא",
     "header.tags": "תגיות",
@@ -33,7 +33,7 @@
     "header.notifications": "התראות",
     "header.search": "חיפוש",
     "header.profile": "פרופיל",
-    "header.navigation": "Navigation",
+    "header.navigation": "ניווט",
     "notifications.loading": "טוען התראות",
     "chats.loading": "טוען צ'אטים",
     "motd.welcome": "ברוכים הבאים ל NodeBB, פלטפורמת הדיון של העתיד",
@@ -52,7 +52,7 @@
     "views": "צפיות",
     "reputation": "מוניטין",
     "read_more": "קרא עוד",
-    "more": "More",
+    "more": "עוד",
     "posted_ago_by_guest": "הפוסט הועלה ב %1 על ידי אורח",
     "posted_ago_by": "הפוסט עלה ב %1 על ידי %2",
     "posted_ago": "הפוסט הועלה ב %1",
@@ -68,7 +68,7 @@
     "recentposts": "פוסטים אחרונים",
     "recentips": "כתובות IP שנכנסו למערכת לאחרונה",
     "away": "לא נמצא",
-    "dnd": "Do not disturb",
+    "dnd": "נא לא להפריע",
     "invisible": "מוסתר",
     "offline": "מנותק",
     "email": "אימייל",
@@ -81,5 +81,5 @@
     "follow": "עקוב",
     "unfollow": "הפסק לעקוב",
     "delete_all": "מחק הכל",
-    "map": "Map"
+    "map": "מפה"
 }

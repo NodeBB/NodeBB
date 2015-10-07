@@ -25,7 +25,7 @@
     "tools": "工具",
     "flag": "举报",
     "locked": "已锁定",
-    "bookmark_instructions": "点击这里返回您最后浏览的位置。",
+    "bookmark_instructions": "点击这里返回最新的未读回帖。",
     "flag_title": "举报此帖",
     "flag_confirm": "您确认要举报此帖吗？",
     "flag_success": "已举报此回帖。",

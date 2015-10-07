@@ -68,7 +68,7 @@
     "post-already-restored": "Ten post został już przywrócony",
     "topic-already-deleted": "Ten temat został już skasowany",
     "topic-already-restored": "Ten temat został już przywrócony",
-    "cant-purge-main-post": "You can't purge the main post, please delete the topic instead",
+    "cant-purge-main-post": "Nie możesz wymazać głównego postu, zamiast tego usuń temat",
     "topic-thumbnails-are-disabled": "Miniatury tematów są wyłączone",
     "invalid-file": "Błędny plik",
     "uploads-are-disabled": "Uploadowanie jest wyłączone",

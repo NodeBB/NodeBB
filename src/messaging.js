@@ -76,7 +76,7 @@ var db = require('./database'),
 					async.apply(Messaging.updateChatTime, touid, fromuid),
 					async.apply(Messaging.markRead, fromuid, touid),
 					async.apply(Messaging.markUnread, touid, fromuid),
-				], function(err, results) {
+				], function(err) {
 					if (err) {
 						return callback(err);
 					}
@@ -320,7 +320,17 @@ var db = require('./database'),
 	};
 
 	Messaging.markUnread = function(uid, toUid, callback) {
-		db.sortedSetAdd('uid:' + uid + ':chats:unread', Date.now(), toUid, callback);
+		async.waterfall([
+			function (next) {
+				user.exists(toUid, next);
+			},
+			function (exists, next) {
+				if (!exists) {
+					return next(new Error('[[error:no-user]]'));
+				}
+				db.sortedSetAdd('uid:' + uid + ':chats:unread', Date.now(), toUid, next);
+			}
+		], callback);
 	};
 
 	Messaging.notifyUser = function(fromuid, touid, messageObj) {
@@ -365,29 +375,29 @@ var db = require('./database'),
 			return callback(new Error('[[error:chat-disabled]]'));
 		} else if (toUid === fromUid) {
 			return callback(new Error('[[error:cant-chat-with-yourself]]'));
-		} else if (fromUid === 0) {
+		} else if (!fromUid) {
 			return callback(new Error('[[error:not-logged-in]]'));
 		}
 
 		async.waterfall([
-			function(next) {
-				user.getUserFields(fromUid, ['banned', 'email:confirmed'], function(err, userData) {
-					if (err) {
-						return callback(err);
-					}
-
-					if (parseInt(userData.banned, 10) === 1) {
-						return callback(new Error('[[error:user-banned]]'));
-					}
-
-					if (parseInt(meta.config.requireEmailConfirmation, 10) === 1 && parseInt(userData['email:confirmed'], 10) !== 1) {
-						return callback(new Error('[[error:email-not-confirmed-chat]]'));
-					}
-
-					next();
-				});
+			function (next) {
+				user.exists(toUid, next);
 			},
-			function(next) {
+			function (exists, next) {
+				if (!exists) {
+					return next(new Error('[[error:no-user]]'));
+				}
+				user.getUserFields(fromUid, ['banned', 'email:confirmed'], next);
+			},
+			function (userData, next) {
+				if (parseInt(userData.banned, 10) === 1) {
+					return next(new Error('[[error:user-banned]]'));
+				}
+
+				if (parseInt(meta.config.requireEmailConfirmation, 10) === 1 && parseInt(userData['email:confirmed'], 10) !== 1) {
+					return next(new Error('[[error:email-not-confirmed-chat]]'));
+				}
+
 				user.getSettings(toUid, next);
 			},
 			function(settings, next) {

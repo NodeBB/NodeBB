@@ -22,20 +22,30 @@ SocketGroups.join = function(socket, data, callback) {
 		return callback(new Error('[[error:invalid-uid]]'));
 	}
 
-	if (meta.config.allowPrivateGroups !== '0') {
+	groups.exists(data.groupName, function(err, exists) {
+		if (err || !exists) {
+			return callback(err || new Error('[[error:no-group]]'));
+		}
+
+		if (parseInt(meta.config.allowPrivateGroups, 10) !== 1) {
+			return groups.join(data.groupName, socket.uid, callback);
+		}
+
 		async.parallel({
 			isAdmin: async.apply(user.isAdministrator, socket.uid),
 			isPrivate: async.apply(groups.isPrivate, data.groupName)
 		}, function(err, checks) {
+			if (err) {
+				return callback(err);
+			}
+
 			if (checks.isPrivate && !checks.isAdmin) {
 				groups.requestMembership(data.groupName, socket.uid, callback);
 			} else {
 				groups.join(data.groupName, socket.uid, callback);
 			}
 		});
-	} else {
-		groups.join(data.groupName, socket.uid, callback);
-	}
+	});
 };
 
 SocketGroups.leave = function(socket, data, callback) {

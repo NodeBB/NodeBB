@@ -115,5 +115,7 @@
 	"oldest_to_newest": "Oldest to Newest",
 	"newest_to_oldest": "Newest to Oldest",
 	"most_votes": "Most votes",
-	"most_posts": "Most posts"
+	"most_posts": "Most posts",
+
+	"stale_topic_warning": "The topic you are replying to is quite old. Would you like to create a new topic instead, and reference this one in your reply?"
 }

@@ -33,7 +33,7 @@
     "header.notifications": "Pemberitahuan",
     "header.search": "Cari",
     "header.profile": "Profil",
-    "header.navigation": "Navigation",
+    "header.navigation": "Navigasi",
     "notifications.loading": "Pemberitahuan sedang dimuatkan",
     "chats.loading": "Sembang sedang dimuatkan",
     "motd.welcome": "Selamat datang ke NodeBB, platfom perbincangan masa hadapan",
@@ -52,7 +52,7 @@
     "views": "Lihat",
     "reputation": "Reputasi",
     "read_more": "baca lagi",
-    "more": "More",
+    "more": "Lagi",
     "posted_ago_by_guest": "dikirim %1 oleh pelawat",
     "posted_ago_by": "dikirim %1 oleh %2",
     "posted_ago": "dikirim %1",
@@ -68,7 +68,7 @@
     "recentposts": "Kiriman terkini",
     "recentips": "IP berdaftar terkini",
     "away": "Jauh",
-    "dnd": "Do not disturb",
+    "dnd": "Jangan ganggu (dnd)",
     "invisible": "Halimunan",
     "offline": "Luar talian",
     "email": "Emel",
@@ -81,5 +81,5 @@
     "follow": "Ikut",
     "unfollow": "Nyah-ikut",
     "delete_all": "Padam Semua",
-    "map": "Map"
+    "map": "Peta"
 }

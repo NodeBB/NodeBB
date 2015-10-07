@@ -2,18 +2,14 @@
 
 var	async = require('async'),
 
-	winston = require('winston'),
-
-
 	posts = require('../posts'),
-	plugins = require('../plugins'),
 	privileges = require('../privileges'),
 	meta = require('../meta'),
 	topics = require('../topics'),
-	notifications = require('../notifications'),
 	user = require('../user'),
 	websockets = require('./index'),
 	socketTopics = require('./topics'),
+	socketHelpers = require('./helpers'),
 	utils = require('../../public/src/utils'),
 
 	SocketPosts = {};
@@ -26,7 +22,7 @@ require('./posts/tools')(SocketPosts);
 require('./posts/flag')(SocketPosts);
 
 SocketPosts.reply = function(socket, data, callback) {
-	if(!data || !data.tid || !data.content) {
+	if (!data || !data.tid || !data.content) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
 
@@ -53,75 +49,11 @@ SocketPosts.reply = function(socket, data, callback) {
 
 		user.updateOnlineUsers(socket.uid);
 
-		SocketPosts.notifyOnlineUsers(socket.uid, result);
+		socketHelpers.notifyOnlineUsers(socket.uid, result);
 
 		if (data.lock) {
 			socketTopics.doTopicAction('lock', 'event:topic_locked', socket, {tids: [postData.topic.tid], cid: postData.topic.cid});
 		}
-	});
-};
-
-SocketPosts.notifyOnlineUsers = function(uid, result) {
-	var cid = result.posts[0].topic.cid;
-	async.waterfall([
-		function(next) {
-			user.getUidsFromSet('users:online', 0, -1, next);
-		},
-		function(uids, next) {
-			privileges.categories.filterUids('read', cid, uids, next);
-		},
-		function(uids, next) {
-			plugins.fireHook('filter:sockets.sendNewPostToUids', {uidsTo: uids, uidFrom: uid, type: 'newPost'}, next);
-		}
-	], function(err, data) {
-		if (err) {
-			return winston.error(err.stack);
-		}
-
-		var uids = data.uidsTo;
-
-		for(var i=0; i<uids.length; ++i) {
-			if (parseInt(uids[i], 10) !== uid) {
-				websockets.in('uid_' + uids[i]).emit('event:new_post', result);
-			}
-		}
-	});
-};
-
-SocketPosts.sendNotificationToPostOwner = function(pid, fromuid, notification) {
-	if(!pid || !fromuid || !notification) {
-		return;
-	}
-	posts.getPostFields(pid, ['tid', 'uid', 'content'], function(err, postData) {
-		if (err) {
-			return;
-		}
-
-		if (!postData.uid || fromuid === parseInt(postData.uid, 10)) {
-			return;
-		}
-
-		async.parallel({
-			username: async.apply(user.getUserField, fromuid, 'username'),
-			topicTitle: async.apply(topics.getTopicField, postData.tid, 'title'),
-			postObj: async.apply(posts.parsePost, postData)
-		}, function(err, results) {
-			if (err) {
-				return;
-			}
-
-			notifications.create({
-				bodyShort: '[[' + notification + ', ' + results.username + ', ' + results.topicTitle + ']]',
-				bodyLong: results.postObj.content,
-				pid: pid,
-				nid: 'post:' + pid + ':uid:' + fromuid,
-				from: fromuid
-			}, function(err, notification) {
-				if (!err && notification) {
-					notifications.push(notification, [postData.uid]);
-				}
-			});
-		});
 	});
 };
 

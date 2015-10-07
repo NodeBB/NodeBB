@@ -174,7 +174,7 @@ module.exports = function(Topics) {
 			}
 
 			tids = tids.filter(function(tid, index) {
-				return !results.userScores[index] || results.userScores[index] < results.topicScores[index];
+				return results.topicScores[index] && (!results.userScores[index] || results.userScores[index] < results.topicScores[index]);
 			});
 
 			if (!tids.length) {

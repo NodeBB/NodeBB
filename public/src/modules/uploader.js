@@ -73,7 +73,7 @@ define('uploader', ['csrf'], function(csrf) {
 
 						showAlert('success', '[[uploads:upload-success]]');
 						setTimeout(function() {
-							module.hideAlerts();
+							module.hideAlerts(uploadModal);
 							uploadModal.modal('hide');
 						}, 750);
 					}

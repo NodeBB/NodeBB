@@ -5,11 +5,8 @@ var async = require('async'),
 	cron = require('cron').CronJob,
 	nconf = require('nconf'),
 	S = require('string'),
-	_ = require('underscore'),
 
 	db = require('./database'),
-	utils = require('../public/src/utils'),
-	events = require('./events'),
 	User = require('./user'),
 	groups = require('./groups'),
 	meta = require('./meta'),
@@ -232,30 +229,42 @@ var async = require('async'),
 			return callback();
 		}
 
-		db.getObjectField(nid, 'datetime', function(err, datetime) {
-			datetime = datetime || Date.now();
+		db.getObject('notification:' + nid, function(err, notification) {
+			if (err || !notification) {
+				return callback(err || new Error('[[error:no-notification]]'));
+			}
+			notification.datetime = notification.datetime || Date.now();
 
 			async.parallel([
 				async.apply(db.sortedSetRemove, 'uid:' + uid + ':notifications:read', nid),
-				async.apply(db.sortedSetAdd, 'uid:' + uid + ':notifications:unread', datetime, nid)
+				async.apply(db.sortedSetAdd, 'uid:' + uid + ':notifications:unread', notification.datetime, nid)
 			], callback);
 		});
 	};
 
 	Notifications.markReadMultiple = function(nids, uid, callback) {
 		callback = callback || function() {};
+		nids = nids.filter(Boolean);
 		if (!Array.isArray(nids) || !nids.length) {
 			return callback();
 		}
 
-		var notificationKeys = nids.filter(Boolean).map(function(nid) {
+		var notificationKeys = nids.map(function(nid) {
 			return 'notifications:' + nid;
 		});
 
-		db.getObjectsFields(notificationKeys, ['datetime'], function(err, notificationData) {
+		db.getObjectsFields(notificationKeys, ['nid', 'datetime'], function(err, notificationData) {
 			if (err) {
 				return callback(err);
 			}
+
+			notificationData = notificationData.filter(function(notification) {
+				return notification && notification.nid;
+			});
+
+			nids = notificationData.map(function(notification) {
+				return notification.nid;
+			});
 
 			var datetimes = notificationData.map(function(notification) {
 				return (notification && notification.datetime) || Date.now();
