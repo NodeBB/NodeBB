@@ -18,6 +18,8 @@ var topicsController = {},
 topicsController.get = function(req, res, callback) {
 	var tid = req.params.topic_id,
 		sort = req.query.sort,
+		currentPage = parseInt(req.query.page, 10) || 1,
+		pageCount = 1,
 		userPrivileges;
 
 	if ((req.params.post_index && !utils.isNumber(req.params.post_index)) || !utils.isNumber(tid)) {
@@ -56,14 +58,13 @@ topicsController.get = function(req, res, callback) {
 
 			var settings = results.settings;
 			var postCount = parseInt(results.topic.postcount, 10);
-			var pageCount = Math.max(1, Math.ceil((postCount - 1) / settings.postsPerPage));
-			var page = parseInt(req.query.page, 10) || 1;
+			pageCount = Math.max(1, Math.ceil((postCount - 1) / settings.postsPerPage));
 
 			if (utils.isNumber(req.params.post_index) && (req.params.post_index < 1 || req.params.post_index > postCount)) {
 				return helpers.redirect(res, '/topic/' + req.params.topic_id + '/' + req.params.slug + (req.params.post_index > postCount ? '/' + postCount : ''));
 			}
 
-			if (settings.usePagination && (page < 1 || page > pageCount)) {
+			if (settings.usePagination && (currentPage < 1 || currentPage > pageCount)) {
 				return callback();
 			}
 
@@ -105,10 +106,10 @@ topicsController.get = function(req, res, callback) {
 					index = Math.max(0, req.params.post_index - 1) || 0;
 				}
 
-				page = Math.max(1, Math.ceil(index / settings.postsPerPage));
+				currentPage = Math.max(1, Math.ceil(index / settings.postsPerPage));
 			}
 
-			var start = (page - 1) * settings.postsPerPage + postIndex,
+			var start = (currentPage - 1) * settings.postsPerPage + postIndex,
 				stop = start + settings.postsPerPage - 1;
 
 			topics.getTopicWithPosts(tid, set, req.uid, start, stop, reverse, function (err, topicData) {
@@ -119,9 +120,6 @@ topicsController.get = function(req, res, callback) {
 				if (err && !topicData) {
 					return next(err);
 				}
-
-				topicData.pageCount = pageCount;
-				topicData.currentPage = page;
 
 				topics.modifyByPrivilege(topicData.posts, results.privileges);
 
@@ -261,7 +259,7 @@ topicsController.get = function(req, res, callback) {
 		data['downvote:disabled'] = parseInt(meta.config['downvote:disabled'], 10) === 1;
 		data['feeds:disableRSS'] = parseInt(meta.config['feeds:disableRSS'], 10) === 1;
 		data.rssFeedUrl = nconf.get('relative_path') + '/topic/' + data.tid + '.rss';
-		data.pagination = pagination.create(data.currentPage, data.pageCount);
+		data.pagination = pagination.create(currentPage, pageCount);
 		data.pagination.rel.forEach(function(rel) {
 			rel.href = nconf.get('url') + '/topic/' + data.slug + rel.href;
 			res.locals.linkTags.push(rel);

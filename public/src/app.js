@@ -71,11 +71,13 @@ app.cacheBuster = null;
 				}
 			});
 
-			require(['taskbar', 'helpers'], function(taskbar, helpers) {
+			require(['taskbar', 'helpers', 'forum/pagination'], function(taskbar, helpers, pagination) {
 				taskbar.init();
 
 				// templates.js helpers
 				helpers.register();
+
+				pagination.init();
 
 				$(window).trigger('action:app.load');
 			});

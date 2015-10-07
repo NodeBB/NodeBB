@@ -45,7 +45,6 @@ module.exports = function(User) {
 					var pagination = User.paginate(page, uids);
 					uids = pagination.data;
 					searchResult.pagination = pagination.pagination;
-					searchResult.pageCount = pagination.pageCount;
 				}
 
 				User.getUsers(uids, uid, next);

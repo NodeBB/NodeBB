@@ -2,7 +2,6 @@
 /* global define, config, templates, app, utils, ajaxify, socket */
 
 define('forum/category', [
-	'forum/pagination',
 	'forum/infinitescroll',
 	'share',
 	'navigator',
@@ -10,8 +9,7 @@ define('forum/category', [
 	'sort',
 	'components',
 	'translator'
-
-], function(pagination, infinitescroll, share, navigator, categoryTools, sort, components, translator) {
+], function(infinitescroll, share, navigator, categoryTools, sort, components, translator) {
 	var Category = {};
 
 	$(window).on('action:ajaxify.start', function(ev, data) {
@@ -112,7 +110,7 @@ define('forum/category', [
 
 			if (config.usePagination) {
 				var page = Math.ceil((parseInt(bookmarkIndex, 10) + 1) / config.topicsPerPage);
-				if (parseInt(page, 10) !== pagination.currentPage) {
+				if (parseInt(page, 10) !== ajaxify.data.pagination.currentPage) {
 					pagination.loadPage(page, function() {
 						Category.scrollToTopic(bookmarkIndex, clickedIndex, 400);
 					});
@@ -176,7 +174,6 @@ define('forum/category', [
 			infinitescroll.init($('[component="category"]'), Category.loadMoreTopics);
 		} else {
 			navigator.hide();
-			pagination.init(ajaxify.data.currentPage, ajaxify.data.pageCount);
 		}
 	}
 

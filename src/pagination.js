@@ -10,7 +10,9 @@ pagination.create = function(currentPage, pageCount, queryObj) {
 			prev: {page: 1, active: currentPage > 1},
 			next: {page: 1, active: currentPage < pageCount},
 			rel: [],
-			pages: []
+			pages: [],
+			currentPage: 1,
+			pageCount: 1
 		};
 	}
 	pageCount = parseInt(pageCount, 10);
@@ -44,7 +46,7 @@ pagination.create = function(currentPage, pageCount, queryObj) {
 		}
 	}
 
-	var data = {rel: [], pages: pages};
+	var data = {rel: [], pages: pages, currentPage: currentPage, pageCount: pageCount};
 	queryObj.page = previous;
 	data.prev = {page: previous, active: currentPage > 1, qs: qs.stringify(queryObj)};
 	queryObj.page = next;

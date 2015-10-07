@@ -4,7 +4,6 @@
 /* globals define, app, socket, config, ajaxify, RELATIVE_PATH, utils */
 
 define('forum/topic', [
-	'forum/pagination',
 	'forum/infinitescroll',
 	'forum/topic/threadTools',
 	'forum/topic/postTools',
@@ -14,7 +13,7 @@ define('forum/topic', [
 	'navigator',
 	'sort',
 	'components'
-], function(pagination, infinitescroll, threadTools, postTools, events, browsing, posts, navigator, sort, components) {
+], function(infinitescroll, threadTools, postTools, events, browsing, posts, navigator, sort, components) {
 	var	Topic = {},
 		currentUrl = '';
 
@@ -147,7 +146,7 @@ define('forum/topic', [
 			if (components.get('post/anchor', postIndex).length) {
 				return navigator.scrollToPostIndex(postIndex, true);
 			}
-		} else if (bookmark && (!config.usePagination || (config.usePagination && pagination.currentPage === 1)) && ajaxify.data.postcount > 10) {
+		} else if (bookmark && (!config.usePagination || (config.usePagination && ajaxify.data.pagination.currentPage === 1)) && ajaxify.data.postcount > 10) {
 			app.alert({
 				alert_id: 'bookmark',
 				message: '[[topic:bookmark_instructions]]',
@@ -218,11 +217,8 @@ define('forum/topic', [
 			infinitescroll.init($('[component="topic"]'), posts.loadMorePosts);
 		} else {
 			navigator.hide();
-
-			pagination.init(parseInt(ajaxify.data.currentPage, 10), parseInt(ajaxify.data.pageCount, 10));
 		}
 	}
-
 
 	function updateTopicTitle() {
 		if ($(window).scrollTop() > 50) {
