@@ -65,6 +65,15 @@ categoriesController.list = function(req, res, next) {
 			return next(err);
 		}
 
+		data.categories.forEach(function(category) {
+			if (category && Array.isArray(category.posts) && category.posts.length) {
+				category.teaser = {
+					url: nconf.get('relative_path') + '/topic/' + category.posts[0].topic.slug + '/' + category.posts[0].index,
+					timestampISO: category.posts[0].relativeTime
+				};
+			}
+		});
+
 		data.title = '[[pages:categories]]';
 		if (req.path.startsWith('/api/categories') || req.path.startsWith('/categories')) {
 			data.breadcrumbs = helpers.buildBreadcrumbs([{text: data.title}]);
