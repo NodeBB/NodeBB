@@ -36,8 +36,6 @@ function mainRoutes(app, middleware, controllers) {
 }
 
 function topicRoutes(app, middleware, controllers) {
-	app.get('/api/topic/teaser/:topic_id', controllers.topics.teaser);
-
 	setupPageRoute(app, '/topic/:topic_id/:slug/:post_index?', middleware, [], controllers.topics.get);
 	setupPageRoute(app, '/topic/:topic_id/:slug?', middleware, [], controllers.topics.get);
 }
