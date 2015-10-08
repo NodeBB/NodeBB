@@ -17,11 +17,16 @@ define('admin/manage/categories', ['vendor/jquery/serializeObject/jquery.ba-seri
 
 		// Enable/Disable toggle events
 		$('.categories').on('click', 'button[data-action="toggle"]', function() {
-			var rowEl = $(this).parents('li'),
-				cid = rowEl.attr('data-cid'),
-				disabled = rowEl.hasClass('disabled');
+			var $this = $(this),
+				cid = $this.attr('data-cid'),
+				parentEl = $this.parents('li[data-cid="' + cid + '"]'),
+				disabled = parentEl.hasClass('disabled');
 
-			Categories.toggle(cid, !disabled);
+			var children = parentEl.find('li[data-cid]').map(function() {
+				return $(this).attr('data-cid');
+			}).get();
+
+			Categories.toggle([cid].concat(children), !disabled);
 			return false;
 		});
 	};
@@ -94,12 +99,14 @@ define('admin/manage/categories', ['vendor/jquery/serializeObject/jquery.ba-seri
 		}
 	};
 
-	Categories.toggle = function(cid, disabled) {
+	Categories.toggle = function(cids, disabled) {
 		var payload = {};
 
-		payload[cid] = {
-			disabled: disabled ? 1 : 0
-		};
+		cids.forEach(function(cid) {
+			payload[cid] = {
+				disabled: disabled ? 1 : 0
+			};
+		});
 
 		socket.emit('admin.categories.update', payload, function(err) {
 			if (err) {
