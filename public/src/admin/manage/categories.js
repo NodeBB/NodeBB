@@ -1,5 +1,5 @@
 "use strict";
-/*global define, socket, app, bootbox, templates, ajaxify, RELATIVE_PATH, Sortable */
+/*global define, socket, app, bootbox, templates, ajaxify, Sortable */
 
 define('admin/manage/categories', ['vendor/jquery/serializeObject/jquery.ba-serializeobject.min'], function() {
 	var	Categories = {}, newCategoryId = -1, sortables;
@@ -17,12 +17,12 @@ define('admin/manage/categories', ['vendor/jquery/serializeObject/jquery.ba-seri
 
 		// Enable/Disable toggle events
 		$('.categories').on('click', 'button[data-action="toggle"]', function() {
-			var self = $(this),
-				rowEl = self.parents('li'),
+			var rowEl = $(this).parents('li'),
 				cid = rowEl.attr('data-cid'),
 				disabled = rowEl.hasClass('disabled');
 
-			Categories.toggle(cid, disabled);
+			Categories.toggle(cid, !disabled);
+			return false;
 		});
 	};
 
@@ -101,7 +101,7 @@ define('admin/manage/categories', ['vendor/jquery/serializeObject/jquery.ba-seri
 			disabled: disabled ? 1 : 0
 		};
 
-		socket.emit('admin.categories.update', payload, function(err, result) {
+		socket.emit('admin.categories.update', payload, function(err) {
 			if (err) {
 				return app.alertError(err.message);
 			}
