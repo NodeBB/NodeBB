@@ -229,7 +229,7 @@ var async = require('async'),
 			return callback();
 		}
 
-		db.getObject('notification:' + nid, function(err, notification) {
+		db.getObject('notifications:' + nid, function(err, notification) {
 			if (err || !notification) {
 				return callback(err || new Error('[[error:no-notification]]'));
 			}
