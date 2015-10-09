@@ -273,30 +273,21 @@ module.exports = function(User) {
 			return callback(new Error('[[user:change_password_error]]'));
 		}
 
-		if(parseInt(uid, 10) !== parseInt(data.uid, 10)) {
+		if (parseInt(uid, 10) !== parseInt(data.uid, 10)) {
 			User.isAdministrator(uid, function(err, isAdmin) {
-				if(err || !isAdmin) {
+				if (err || !isAdmin) {
 					return callback(err || new Error('[[user:change_password_error_privileges'));
 				}
 
 				hashAndSetPassword(callback);
 			});
 		} else {
-			db.getObjectField('user:' + uid, 'password', function(err, currentPassword) {
-				if(err) {
-					return callback(err);
+			User.isPasswordCorrect(uid, data.currentPassword, function(err, correct) {
+				if (err || !correct) {
+					return callback(err || new Error('[[user:change_password_error_wrong_current]]'));
 				}
 
-				if (!currentPassword) {
-					return hashAndSetPassword(callback);
-				}
-
-				Password.compare(data.currentPassword, currentPassword, function(err, res) {
-					if (err || !res) {
-						return callback(err || new Error('[[user:change_password_error_wrong_current]]'));
-					}
-					hashAndSetPassword(callback);
-				});
+				hashAndSetPassword(callback);
 			});
 		}
 	};

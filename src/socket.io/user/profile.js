@@ -8,6 +8,47 @@ var events = require('../../events');
 
 module.exports = function(SocketUser) {
 
+	SocketUser.changeUsernameEmail = function(socket, data, callback) {
+		if (!data || !data.uid || !socket.uid) {
+			return callback(new Error('[[error:invalid-data]]'));
+		}
+
+		async.waterfall([
+			function (next) {
+				isAdminOrSelfAndPasswordMatch(socket.uid, data, next);
+			},
+			function (next) {
+				SocketUser.updateProfile(socket, data, next);
+			}
+		], callback);
+	};
+
+	function isAdminOrSelfAndPasswordMatch(uid, data, callback) {
+		async.parallel({
+			isAdmin: function(next) {
+				user.isAdministrator(uid, next);
+			},
+			passwordMatch: function(next) {
+				user.isPasswordCorrect(data.uid, data.password, next);
+			}
+		}, function(err, results) {
+			if (err) {
+				return callback(err);
+			}
+			var self = parseInt(uid, 10) === parseInt(data.uid, 10);
+
+			if (!results.isAdmin && !self) {
+				return callback(new Error('[[error:no-privileges]]'));
+			}
+
+			if (self && !results.passwordMatch) {
+				return callback(new Error('[[error:invalid-password]]'));
+			}
+
+			callback();
+		});
+	}
+
 	SocketUser.changePassword = function(socket, data, callback) {
 		if (!data || !data.uid || data.newPassword.length < meta.config.minimumPasswordLength) {
 			return callback(new Error('[[error:invalid-data]]'));
@@ -30,7 +71,6 @@ module.exports = function(SocketUser) {
 			callback();
 		});
 	};
-
 
 	SocketUser.updateProfile = function(socket, data, callback) {
 		if (!socket.uid) {
@@ -55,9 +95,10 @@ module.exports = function(SocketUser) {
 				if (parseInt(meta.config['username:disableEdit'], 10) === 1) {
 					data.username = oldUserData.username;
 				}
-				SocketUser.isAdminOrSelf(socket, data.uid, next);
+				user.isAdminOrSelf(socket.uid, data.uid, next);
 			},
 			function (next) {
+				console.log('updating profile', data)
 				user.updateProfile(data.uid, data, next);
 			},
 			function (userData, next) {

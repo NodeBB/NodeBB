@@ -28,7 +28,7 @@ module.exports = function(SocketUser) {
 
 		async.waterfall([
 			function (next) {
-				SocketUser.isAdminOrSelf(socket, data.uid, next);
+				user.isAdminOrSelf(socket.uid, data.uid, next);
 			},
 			function (next) {
 				user.getUserField(data.uid, type, next);
@@ -44,7 +44,7 @@ module.exports = function(SocketUser) {
 			return;
 		}
 
-		SocketUser.isAdminOrSelf(socket, data.uid, function(err) {
+		user.isAdminOrSelf(socket.uid, data.uid, function(err) {
 			if (err) {
 				return callback(err);
 			}
@@ -61,7 +61,7 @@ module.exports = function(SocketUser) {
 
 		async.waterfall([
 			function (next) {
-				SocketUser.isAdminOrSelf(socket, data.uid, next);
+				user.isAdminOrSelf(socket.uid, data.uid, next);
 			},
 			function (next) {
 				user.getUserField(data.uid, 'uploadedpicture', next);

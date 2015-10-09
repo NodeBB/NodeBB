@@ -3,14 +3,11 @@
 var	async = require('async'),
 	nconf = require('nconf'),
 	gravatar = require('gravatar'),
-	validator = require('validator'),
 
 	plugins = require('./plugins'),
 	db = require('./database'),
 	meta = require('./meta'),
 	topics = require('./topics'),
-	groups = require('./groups'),
-	Password = require('./password'),
 	privileges = require('./privileges'),
 	utils = require('../public/src/utils');
 
@@ -36,6 +33,7 @@ var	async = require('async'),
 	require('./user/picture')(User);
 	require('./user/approval')(User);
 	require('./user/invite')(User);
+	require('./user/password')(User);
 
 	User.updateLastOnlineTime = function(uid, callback) {
 		callback = callback || function() {};
@@ -160,14 +158,6 @@ var	async = require('async'),
 		return gravatar.url(email, options, true);
 	};
 
-	User.hashPassword = function(password, callback) {
-		if (!password) {
-			return callback(null, password);
-		}
-
-		Password.hash(nconf.get('bcrypt_rounds') || 12, password, callback);
-	};
-
 	User.exists = function(uid, callback) {
 		db.isSortedSetMember('users:joindate', uid, callback);
 	};
@@ -176,7 +166,7 @@ var	async = require('async'),
 		User.getUidByUserslug(userslug, function(err, exists) {
 			callback(err, !! exists);
 		});
-	}
+	};
 
 	User.getUidByUsername = function(username, callback) {
 		if (!username) {
@@ -240,6 +230,18 @@ var	async = require('async'),
 
 	User.isAdministrator = function(uid, callback) {
 		privileges.users.isAdministrator(uid, callback);
+	};
+
+	User.isAdminOrSelf = function(callerUid, uid, callback) {
+		if (parseInt(callerUid, 10) === parseInt(uid, 10)) {
+			return callback();
+		}
+		User.isAdministrator(callerUid, function(err, isAdmin) {
+			if (err || !isAdmin) {
+				return callback(err || new Error('[[error:no-privileges]]'));
+			}
+			callback();
+		});
 	};
 
 

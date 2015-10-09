@@ -14,6 +14,48 @@ var async = require('async'),
 var editController = {};
 
 editController.get = function(req, res, callback) {
+	accountHelpers.getUserDataByUserSlug(req.params.userslug, req.uid, function(err, userData) {
+		if (err || !userData) {
+			return callback(err);
+		}
+
+		userData.title = '[[pages:account/edit, ' + userData.username + ']]';
+		userData.breadcrumbs = helpers.buildBreadcrumbs([{text: userData.username, url: '/user/' + userData.userslug}, {text: '[[user:edit]]'}]);
+
+		res.render('account/edit', userData);
+	});
+};
+
+editController.password = function(req, res, next) {
+	renderRoute('password', req, res, next);
+};
+
+editController.username = function(req, res, next) {
+	renderRoute('username', req, res, next);
+};
+
+editController.email = function(req, res, next) {
+	renderRoute('email', req, res, next);
+};
+
+function renderRoute(name, req, res, next) {
+	getUserData(req, next, function(err, userData) {
+		if (err) {
+			return next(err);
+		}
+
+		userData.title = '[[pages:account/edit/' + name + ', ' + userData.username + ']]';
+		userData.breadcrumbs = helpers.buildBreadcrumbs([
+			{text: userData.username, url: '/user/' + userData.userslug},
+			{text: '[[user:edit]]', url: '/user/' + userData.userslug + '/edit'},
+			{text: '[[user:' + name + ']]'}
+		]);
+
+		res.render('account/edit/' + name, userData);
+	});
+}
+
+function getUserData(req, next, callback) {
 	var userData;
 	async.waterfall([
 		function(next) {
@@ -22,7 +64,7 @@ editController.get = function(req, res, callback) {
 		function(data, next) {
 			userData = data;
 			if (!userData) {
-				return callback();
+				return next();
 			}
 			db.getObjectField('user:' + userData.uid, 'password', next);
 		}
@@ -33,13 +75,9 @@ editController.get = function(req, res, callback) {
 
 		userData['username:disableEdit'] = parseInt(meta.config['username:disableEdit'], 10) === 1;
 		userData.hasPassword = !!password;
-		userData.title = '[[pages:account/edit, ' + userData.username + ']]';
-		userData.breadcrumbs = helpers.buildBreadcrumbs([{text: userData.username, url: '/user/' + userData.userslug}, {text: '[[user:edit]]'}]);
-
-		res.render('account/edit', userData);
+		callback(null, userData);
 	});
-};
-
+}
 
 editController.uploadPicture = function (req, res, next) {
 	var userPhoto = req.files.files[0];
