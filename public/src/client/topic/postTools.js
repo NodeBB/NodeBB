@@ -55,6 +55,13 @@ define('forum/topic/postTools', ['share', 'navigator', 'components', 'translator
 	}
 
 	function createTooltip(el, data) {
+		function doCreateTooltip(title) {
+			el.attr('title', title).tooltip('fixTitle').tooltip('show');
+			el.on('hidden.bs.tooltip', function() {
+				el.tooltip('destroy');
+				el.off('hidden.bs.tooltip');
+			});
+		}
 		var usernames = data.usernames;
 		if (!usernames.length) {
 			return;
@@ -63,11 +70,11 @@ define('forum/topic/postTools', ['share', 'navigator', 'components', 'translator
 			usernames = usernames.join(', ').replace(/,/g, '|');
 			translator.translate('[[topic:users_and_others, ' + usernames + ', ' + data.otherCount + ']]', function(translated) {
 				translated = translated.replace(/\|/g, ',');
-				el.attr('title', translated).tooltip('destroy').tooltip('show');
+				doCreateTooltip(translated);
 			});
 		} else {
 			usernames = usernames.join(', ');
-			el.attr('title', usernames).tooltip('destroy').tooltip('show');
+			doCreateTooltip(usernames);
 		}
 	}
 
