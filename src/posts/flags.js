@@ -87,7 +87,12 @@ module.exports = function(Posts) {
 	};
 
 	Posts.dismissAllFlags = function(callback) {
-		db.delete('posts:flagged', callback);
+		db.getSortedSetRange('posts:flagged', 0, -1, function(err, pids) {
+			if (err) {
+				return callback(err);
+			}
+			async.eachLimit(pids, 50, Posts.dismissFlag, callback);
+		});
 	};
 
 	Posts.getFlags = function(set, uid, start, stop, callback) {
