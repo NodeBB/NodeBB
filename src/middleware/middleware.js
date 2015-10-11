@@ -337,7 +337,7 @@ middleware.processRender = function(req, res, next) {
 
 		if (res.locals.isAPI) {
 			if (req.route && req.route.path === '/api/') {
-				options.title = '[[pages:home]]';
+				options.title = meta.config.title || '[[pages:home]]';
 			}
 
 			return res.json(options);
@@ -457,7 +457,7 @@ function redirectToLogin(req, res) {
 
 
 function modifyTitle(obj) {
-	var title = controllers.helpers.buildTitle('[[pages:home]]');
+	var title = controllers.helpers.buildTitle(meta.config.title || '[[pages:home]]');
 	obj.browserTitle = title;
 
 	if (obj.metaTags) {
