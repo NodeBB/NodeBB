@@ -143,7 +143,6 @@ define('forum/topic/postTools', ['share', 'navigator', 'components', 'translator
 
 	function onReplyClicked(button, tid, topicName) {
 		showStaleWarning(function(proceed) {
-			console.log('proceed is', proceed);
 			if (!proceed) {
 				var selectionText = '',
 					selection = window.getSelection ? window.getSelection() : document.selection.createRange();
