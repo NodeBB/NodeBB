@@ -221,7 +221,7 @@ define('forum/topic/posts', [
 			}
 		});
 		postTools.updatePostCount();
-		addBlockquoteEllipses(posts.find('[component="post/content"] > blockquote'));
+		addBlockquoteEllipses(posts.find('[component="post/content"] > blockquote > blockquote'));
 		hidePostToolsForDeletedPosts(posts);
 		showBottomPostBar();
 	};
