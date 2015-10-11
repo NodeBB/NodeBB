@@ -5,4 +5,4 @@ ENV NODE_ENV=production \
     silent=false
 
 CMD node app --setup && npm start
-EXPOSE 4567
+EXPOSE 1111
