@@ -22,15 +22,13 @@ search.search = function(data, callback) {
 			return callback(err);
 		}
 
-		result.search_query = validator.escape(query);
+		data.search_query = validator.escape(query);
 		if (searchIn === 'titles' || searchIn === 'titlesposts') {
 			searchIn = 'posts';
 		}
-		result[searchIn] = data.matches;
-		result.matchCount = data.matchCount;
-		result.pageCount = data.pageCount;
-		result.time = (process.elapsedTimeSince(start) / 1000).toFixed(2);
-		callback(null, result);
+
+		data.time = (process.elapsedTimeSince(start) / 1000).toFixed(2);
+		callback(null, data);
 	}
 
 	var start = process.hrtime();
@@ -38,18 +36,12 @@ search.search = function(data, callback) {
 	var query = data.query;
 	var searchIn = data.searchIn || 'titlesposts';
 
-	var result = {
-		posts: [],
-		users: [],
-		tags: []
-	};
-
 	if (searchIn === 'posts' || searchIn === 'titles' || searchIn === 'titlesposts') {
 		searchInContent(data, done);
 	} else if (searchIn === 'users') {
-		searchInUsers(data, done);
+		user.search(data, done);
 	} else if (searchIn === 'tags') {
-		searchInTags(query, done);
+		topics.searchAndLoadTags(data, done);
 	} else {
 		callback(new Error('[[error:unknown-search-filter]]'));
 	}
@@ -91,7 +83,7 @@ function searchInContent(data, callback) {
 
 			var matchCount = 0;
 			if (!results || (!results.pids.length && !results.tids.length)) {
-				return callback(null, {matches: [], matchCount: matchCount, pageCount: 1});
+				return callback(null, {posts: [], matchCount: matchCount, pageCount: 1});
 			}
 
 			async.waterfall([
@@ -118,7 +110,7 @@ function searchInContent(data, callback) {
 					posts.getPostSummaryByPids(pids, data.uid, {}, next);
 				},
 				function(posts, next) {
-					next(null, {matches: posts, matchCount: matchCount, pageCount: Math.max(1, Math.ceil(parseInt(matchCount, 10) / 10))});
+					next(null, {posts: posts, matchCount: matchCount, pageCount: Math.max(1, Math.ceil(parseInt(matchCount, 10) / 10))});
 				}
 			], callback);
 		});
@@ -421,25 +413,6 @@ function getSearchUids(data, callback) {
 	} else {
 		callback(null, []);
 	}
-}
-
-function searchInUsers(data, callback) {
-	user.search(data, function(err, results) {
-		if (err) {
-			return callback(err);
-		}
-		callback(null, {matches: results.users, matchCount: results.matchCount, pageCount: results.pageCount});
-	});
-}
-
-function searchInTags(query, callback) {
-	topics.searchAndLoadTags({query: query}, function(err, tags) {
-		if (err) {
-			return callback(err);
-		}
-
-		callback(null, {matches: tags, matchCount: tags.length, pageCount: 1});
-	});
 }
 
 search.searchQuery = function(index, content, cids, uids, callback) {

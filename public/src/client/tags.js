@@ -24,7 +24,7 @@ define('forum/tags', ['forum/infinitescroll'], function(infinitescroll) {
 					if (err) {
 						return app.alertError(err.message);
 					}
-					onTagsLoaded(results, true, function() {
+					onTagsLoaded(results.tags, true, function() {
 						timeoutId = 0;
 					});
 				});

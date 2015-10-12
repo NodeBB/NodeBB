@@ -2,12 +2,12 @@
 'use strict';
 
 var async = require('async'),
-	winston = require('winston'),
+
 	db = require('../database'),
 	meta = require('../meta'),
 	_ = require('underscore'),
-	plugins = require('../plugins'),
-	utils = require('../../public/src/utils');
+	plugins = require('../plugins');
+
 
 module.exports = function(Topics) {
 
@@ -248,7 +248,7 @@ module.exports = function(Topics) {
 	};
 
 	Topics.searchTags = function(data, callback) {
-		if (!data) {
+		if (!data || !data.query) {
 			return callback(null, []);
 		}
 
@@ -256,9 +256,7 @@ module.exports = function(Topics) {
 			if (err) {
 				return callback(null, []);
 			}
-			if (data.query === '') {
-				return callback(null, tags);
-			}
+
 			data.query = data.query.toLowerCase();
 
 			var matches = [];
@@ -279,8 +277,14 @@ module.exports = function(Topics) {
 	};
 
 	Topics.searchAndLoadTags = function(data, callback) {
+		var searchResult = {
+			tags: [],
+			matchCount: 0,
+			pageCount: 1
+		};
+
 		if (!data.query || !data.query.length) {
-			return callback(null, []);
+			return callback(null, searchResult);
 		}
 		Topics.searchTags(data, function(err, tags) {
 			if (err) {
@@ -307,8 +311,10 @@ module.exports = function(Topics) {
 				results.tagData.sort(function(a, b) {
 					return b.score - a.score;
 				});
-
-				callback(null, results.tagData);
+				searchResult.tags = results.tagData;
+				searchResult.matchCount = results.tagData.length;
+				searchResult.pageCount = 1;
+				callback(null, searchResult);
 			});
 		});
 	};
