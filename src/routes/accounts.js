@@ -23,5 +23,5 @@ module.exports = function (app, middleware, controllers) {
 	setupPageRoute(app, '/user/:userslug/settings', middleware, accountMiddlewares, controllers.accounts.settings.get);
 
 	setupPageRoute(app, '/notifications', middleware, [middleware.authenticate], controllers.accounts.notifications.get);
-	setupPageRoute(app, '/chats/:userslug?', middleware, [middleware.redirectToLoginIfGuest], controllers.accounts.chats.get);
+	setupPageRoute(app, '/chats/:userslug?', middleware, [middleware.authenticate], controllers.accounts.chats.get);
 };
