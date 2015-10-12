@@ -64,7 +64,7 @@ middleware.pageView = function(req, res, next) {
 middleware.pluginHooks = function(req, res, next) {
 	async.each(plugins.loadedHooks['filter:router.page'] || [], function(hookObj, next) {
 		hookObj.method(req, res, next);
-	}, function(req, res) {
+	}, function() {
 		// If it got here, then none of the subscribed hooks did anything, or there were no hooks
 		next();
 	});
@@ -180,33 +180,26 @@ middleware.privateTagListing = function(req, res, next) {
 };
 
 middleware.exposeGroupName = function(req, res, next) {
-	if (!req.params.hasOwnProperty('slug')) {
-		return next();
-	}
-
-	groups.getGroupNameByGroupSlug(req.params.slug, function(err, groupName) {
-		if (err) {
-			return next(err);
-		}
-
-		res.locals.groupName = groupName;
-		next();
-	});
+	expose('groupName', groups.getGroupNameByGroupSlug, 'slug', req, res, next);
 };
 
 middleware.exposeUid = function(req, res, next) {
-	if (!req.params.hasOwnProperty('userslug')) {
+	expose('uid', user.getUidByUserslug, 'userslug', req, res, next);
+};
+
+function expose(exposedField, method, field, req, res, next) {
+	if (!req.params.hasOwnProperty(field)) {
 		return next();
 	}
-	user.getUidByUserslug(req.params.userslug, function(err, uid) {
+	method(req.params[field], function(err, id) {
 		if (err) {
 			return next(err);
 		}
 
-		res.locals.uid = uid;
+		res.locals[exposedField] = id;
 		next();
 	});
-};
+}
 
 middleware.requireUser = function(req, res, next) {
 	if (req.user) {
