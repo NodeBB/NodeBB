@@ -315,16 +315,12 @@ function sortPosts(posts, data) {
 	}
 	data.sortBy = data.sortBy || 'timestamp';
 	data.sortDirection = data.sortDirection || 'desc';
+	var direction = data.sortDirection === 'desc' ? 1 : -1;
+
 	if (data.sortBy === 'timestamp') {
-		if (data.sortDirection === 'desc') {
-			posts.sort(function(p1, p2) {
-				return p2.timestamp - p1.timestamp;
-			});
-		} else {
-			posts.sort(function(p1, p2) {
-				return p1.timestamp - p2.timestamp;
-			});
-		}
+		posts.sort(function(p1, p2) {
+			return direction * (p2.timestamp - p1.timestamp);
+		});
 
 		return;
 	}
@@ -336,21 +332,13 @@ function sortPosts(posts, data) {
 		return;
 	}
 
-	var value = firstPost[fields[0]][fields[1]];
-	var isNumeric = utils.isNumber(value);
+	var isNumeric = utils.isNumber(firstPost[fields[0]][fields[1]]);
 
 	if (isNumeric) {
-		if (data.sortDirection === 'desc') {
-			posts.sort(function(p1, p2) {
-				return p2[fields[0]][fields[1]] - p1[fields[0]][fields[1]];
-			});
-		} else {
-			posts.sort(function(p1, p2) {
-				return p1[fields[0]][fields[1]] - p2[fields[0]][fields[1]];
-			});
-		}
+		posts.sort(function(p1, p2) {
+			return direction * (p2[fields[0]][fields[1]] - p1[fields[0]][fields[1]]);
+		});
 	} else {
-		var direction = data.sortDirection === 'desc' ? 1 : -1;
 		posts.sort(function(p1, p2) {
 			if (p1[fields[0]][fields[1]] > p2[fields[0]][fields[1]]) {
 				return direction;
