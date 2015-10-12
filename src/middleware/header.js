@@ -66,26 +66,12 @@ module.exports = function(app, middleware) {
 		templateValues.configJSON = JSON.stringify(res.locals.config);
 
 		async.parallel({
-			customCSS: function(next) {
-				templateValues.useCustomCSS = parseInt(meta.config.useCustomCSS, 10) === 1;
-				if (!templateValues.useCustomCSS || !meta.config.customCSS || !meta.config.renderedCustomCSS) {
-					return next(null, '');
-				}
-				next(null, meta.config.renderedCustomCSS);
-			},
-			customJS: function(next) {
-				templateValues.useCustomJS = parseInt(meta.config.useCustomJS, 10) === 1;
-				next(null, templateValues.useCustomJS ? meta.config.customJS : '');
-			},
 			settings: function(next) {
 				if (req.uid) {
 					user.getSettings(req.uid, next);
 				} else {
 					next();
 				}
-			},
-			title: function(next) {
-				next(null, controllers.helpers.buildTitle(data.title));
 			},
 			isAdmin: function(next) {
 				user.isAdministrator(req.uid, next);
@@ -115,7 +101,8 @@ module.exports = function(app, middleware) {
 				req.logout();
 				return res.redirect('/');
 			}
-			results.user.isAdmin = results.isAdmin || false;
+
+			results.user.isAdmin = results.isAdmin;
 			results.user.uid = parseInt(results.user.uid, 10);
 			results.user['email:confirmed'] = parseInt(results.user['email:confirmed'], 10) === 1;
 
@@ -123,15 +110,17 @@ module.exports = function(app, middleware) {
 				templateValues.bootswatchCSS = '//maxcdn.bootstrapcdn.com/bootswatch/latest/' + results.settings.bootswatchSkin + '/bootstrap.min.css';
 			}
 
-			templateValues.browserTitle = results.title;
+			templateValues.browserTitle = controllers.helpers.buildTitle(data.title);
 			templateValues.navigation = results.navigation;
 			templateValues.metaTags = results.tags.meta;
 			templateValues.linkTags = results.tags.link;
 			templateValues.isAdmin = results.user.isAdmin;
 			templateValues.user = results.user;
 			templateValues.userJSON = JSON.stringify(results.user);
-			templateValues.customCSS = results.customCSS;
-			templateValues.customJS = results.customJS;
+			templateValues.useCustomCSS = parseInt(meta.config.useCustomCSS, 10) === 1 && meta.config.customCSS;
+			templateValues.customCSS = templateValues.useCustomCSS ? (meta.config.renderedCustomCSS || '') : '';
+			templateValues.useCustomJS = parseInt(meta.config.useCustomJS, 10) === 1;
+			templateValues.customJS = templateValues.useCustomJS ? meta.config.customJS : '';
 			templateValues.maintenanceHeader = parseInt(meta.config.maintenanceMode, 10) === 1 && !results.isAdmin;
 			templateValues.defaultLang = meta.config.defaultLang || 'en_GB';
 
