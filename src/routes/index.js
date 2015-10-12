@@ -4,7 +4,6 @@ var nconf = require('nconf'),
 	path = require('path'),
 	winston = require('winston'),
 	controllers = require('../controllers'),
-	meta = require('../meta'),
 	plugins = require('../plugins'),
 	express = require('express'),
 
@@ -118,15 +117,7 @@ module.exports = function(app, middleware) {
 		require('./debug')(app, middleware, controllers);
 	}
 
-	app.use(function(req, res, next) {
-		if (req.user || parseInt(meta.config.privateUploads, 10) !== 1) {
-			return next();
-		}
-		if (req.path.startsWith('/uploads/files')) {
-			return res.status(403).json('not-allowed');
-		}
-		next();
-	});
+	app.use(middleware.privateUploads);
 
 	app.use(relativePath, express.static(path.join(__dirname, '../../', 'public'), {
 		maxAge: app.enabled('cache') ? 5184000000 : 0
