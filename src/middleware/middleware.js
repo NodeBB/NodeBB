@@ -196,7 +196,7 @@ middleware.exposeGroupName = function(req, res, next) {
 
 middleware.exposeUid = function(req, res, next) {
 	if (!req.params.hasOwnProperty('userslug')) {
-		return nex();
+		return next();
 	}
 	user.getUidByUserslug(req.params.userslug, function(err, uid) {
 		if (err) {
