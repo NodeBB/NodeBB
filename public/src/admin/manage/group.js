@@ -52,8 +52,7 @@ define('admin/manage/group', [
 						for (x = 0; x < numResults; x++) {
 							foundUser = $('<li />');
 							foundUser
-								.attr({title:
-									results.users[x].username,
+								.attr({title: results.users[x].username,
 									'data-uid': results.users[x].uid,
 									'data-username': results.users[x].username,
 									'data-userslug': results.users[x].userslug,
