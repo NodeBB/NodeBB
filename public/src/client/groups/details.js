@@ -1,17 +1,22 @@
 "use strict";
-/* globals define, socket, ajaxify, app, bootbox, RELATIVE_PATH, utils */
+/* globals define, socket, ajaxify, app, bootbox, utils */
 
-define('forum/groups/details', ['iconSelect', 'components', 'forum/infinitescroll', 'vendor/colorpicker/colorpicker', 'vendor/jquery/draggable-background/backgroundDraggable'], function(iconSelect, components, infinitescroll) {
+define('forum/groups/details', [
+	'forum/groups/memberlist',
+	'iconSelect',
+	'components',
+	'vendor/colorpicker/colorpicker',
+	'vendor/jquery/draggable-background/backgroundDraggable'
+], function(memberList, iconSelect, components) {
+
 	var Details = {
 			cover: {}
 		};
 
-	var searchInterval;
 	var groupName;
 
 	Details.init = function() {
-		var detailsPage = components.get('groups/container'),
-			settingsFormEl = detailsPage.find('form');
+		var detailsPage = components.get('groups/container');
 
 		groupName = ajaxify.data.group.name;
 
@@ -20,8 +25,8 @@ define('forum/groups/details', ['iconSelect', 'components', 'forum/infinitescrol
 			Details.initialiseCover();
 		}
 
-		handleMemberSearch();
-		handleMemberInfiniteScroll();
+		memberList.init();
+
 		handleMemberInvitations();
 
 		components.get('groups/activity').find('.content img:not(.not-responsive)').addClass('img-responsive');
@@ -291,44 +296,6 @@ define('forum/groups/details', ['iconSelect', 'components', 'forum/infinitescrol
 		});
 	};
 
-	function handleMemberSearch() {
-		$('[component="groups/members/search"]').on('keyup', function() {
-			var query = $(this).val();
-			if (searchInterval) {
-				clearInterval(searchInterval);
-				searchInterval = 0;
-			}
-
-			searchInterval = setTimeout(function() {
-				socket.emit('groups.searchMembers', {groupName: groupName, query: query}, function(err, results) {
-					if (err) {
-						return app.alertError(err.message);
-					}
-
-					infinitescroll.parseAndTranslate('groups/details', 'members', {
-						group: {
-							members: results.users,
-							isOwner: ajaxify.data.group.isOwner
-						}
-					}, function(html) {
-						$('[component="groups/members"] tbody').html(html);
-						$('[component="groups/members"]').attr('data-nextstart', 20);
-					});
-				});
-			}, 250);
-		});
-	}
-
-	function handleMemberInfiniteScroll() {
-		$('[component="groups/members"] tbody').on('scroll', function() {
-			var $this = $(this);
-			var bottom = ($this[0].scrollHeight - $this.height()) * 0.9;
-			if ($this.scrollTop() > bottom) {
-				loadMoreMembers();
-			}
-		});
-	}
-
 	function handleMemberInvitations() {
 		if (ajaxify.data.group.isOwner) {
 			var searchInput = $('[component="groups/members/invite"]');
@@ -347,49 +314,6 @@ define('forum/groups/details', ['iconSelect', 'components', 'forum/infinitescrol
 				});
 			});
 		}
-	}
-
-	function loadMoreMembers() {
-
-		var members = $('[component="groups/members"]');
-		if (members.attr('loading')) {
-			return;
-		}
-
-		members.attr('loading', 1);
-		socket.emit('groups.loadMoreMembers', {
-			groupName: groupName,
-			after: members.attr('data-nextstart')
-		}, function(err, data) {
-			if (err) {
-				return app.alertError(err.message);
-			}
-
-			if (data && data.users.length) {
-				onMembersLoaded(data.users, function() {
-					members.removeAttr('loading');
-					members.attr('data-nextstart', data.nextStart);
-				});
-			} else {
-				members.removeAttr('loading');
-			}
-		});
-	}
-
-	function onMembersLoaded(users, callback) {
-		users = users.filter(function(user) {
-			return !$('[component="groups/members"] [data-uid="' + user.uid + '"]').length;
-		});
-
-		infinitescroll.parseAndTranslate('groups/details', 'members', {
-			group: {
-				members: users,
-				isOwner: ajaxify.data.group.isOwner
-			}
-		}, function(html) {
-			$('[component="groups/members"] tbody').append(html);
-			callback();
-		});
 	}
 
 	return Details;

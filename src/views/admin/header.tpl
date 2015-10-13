@@ -37,6 +37,7 @@
 				waitSeconds: 3,
 				urlArgs: "{cache-buster}",
 				paths: {
+					'forum': '../client',
 					'admin': '../admin',
 					'vendor': '../../vendor',
 					'buzz': '../../vendor/buzz/buzz.min'

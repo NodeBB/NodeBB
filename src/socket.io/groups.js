@@ -62,8 +62,11 @@ SocketGroups.leave = function(socket, data, callback) {
 
 function isOwner(next) {
 	return function (socket, data, callback) {
-		groups.ownership.isOwner(socket.uid, data.groupName, function(err, isOwner) {
-			if (err || !isOwner) {
+		async.parallel({
+			isAdmin: async.apply(user.isAdmin, socket.uid),
+			isOwner: async.apply(groups.ownership.isOwner, socket.uid, data.groupName)
+		}, function(err, results) {
+			if (err || (!isOwner && !results.isAdmin)) {
 				return callback(err || new Error('[[error:no-privileges]]'));
 			}
 			next(socket, data, callback);
