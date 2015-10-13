@@ -58,6 +58,11 @@
 					</div>
 
 					<span class="badge badge-warning"><i class="fa fa-flag"></i> {posts.flags}</span>
+					<br/>
+					<!-- BEGIN posts.flagReasons -->
+					<a target="_blank" href="{config.relative_path}/user/{../user.userslug}"><img class="user-img" src="{../user.picture}">{../user.username}</a>: "{../reason}" <br/>
+					<!-- END posts.flagReasons -->
+					<br/>
 					<button class="btn btn-warning dismiss">Dismiss</button>
 					<button class="btn btn-danger delete">Delete</button>
 					<br/><br/>

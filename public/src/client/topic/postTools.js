@@ -1,6 +1,6 @@
 'use strict';
 
-/* globals define, app, ajaxify, bootbox, socket, templates, utils */
+/* globals define, app, ajaxify, bootbox, socket, templates, utils, config */
 
 define('forum/topic/postTools', ['share', 'navigator', 'components', 'translator'], function(share, navigator, components, translator) {
 
@@ -110,33 +110,36 @@ define('forum/topic/postTools', ['share', 'navigator', 'components', 'translator
 		});
 
 		postContainer.on('click', '[component="post/flag"]', function() {
-			flagPost(getData($(this), 'data-pid'));
+			var pid = getData($(this), 'data-pid');
+			require(['forum/topic/flag'], function(flag) {
+				flag.showFlagModal(pid);
+			});
 		});
 
-		postContainer.on('click', '[component="post/edit"]', function(e) {
+		postContainer.on('click', '[component="post/edit"]', function() {
 			var btn = $(this);
 			$(window).trigger('action:composer.post.edit', {
 				pid: getData(btn, 'data-pid')
 			});
 		});
 
-		postContainer.on('click', '[component="post/delete"]', function(e) {
+		postContainer.on('click', '[component="post/delete"]', function() {
 			togglePostDelete($(this), tid);
 		});
 
-		postContainer.on('click', '[component="post/restore"]', function(e) {
+		postContainer.on('click', '[component="post/restore"]', function() {
 			togglePostDelete($(this), tid);
 		});
 
-		postContainer.on('click', '[component="post/purge"]', function(e) {
+		postContainer.on('click', '[component="post/purge"]', function() {
 			purgePost($(this), tid);
 		});
 
-		postContainer.on('click', '[component="post/move"]', function(e) {
+		postContainer.on('click', '[component="post/move"]', function() {
 			openMovePostModal($(this));
 		});
 
-		postContainer.on('click', '[component="post/chat"]', function(e) {
+		postContainer.on('click', '[component="post/chat"]', function() {
 			openChat($(this));
 		});
 	}
@@ -369,22 +372,7 @@ define('forum/topic/postTools', ['share', 'navigator', 'components', 'translator
 		});
 	}
 
-	function flagPost(pid) {
-		translator.translate('[[topic:flag_confirm]]', function(message) {
-			bootbox.confirm(message, function(confirm) {
-				if (!confirm) {
-					return;
-				}
-				socket.emit('posts.flag', pid, function(err) {
-					if (err) {
-						return app.alertError(err.message);
-					}
 
-					app.alertSuccess('[[topic:flag_success]]');
-				});
-			});
-		});
-	}
 
 	function openChat(button) {
 		var post = button.parents('[data-pid]');
