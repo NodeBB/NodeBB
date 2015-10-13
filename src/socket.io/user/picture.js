@@ -23,7 +23,7 @@ module.exports = function(SocketUser) {
 		} else if (type === 'uploaded') {
 			type = 'uploadedpicture';
 		} else {
-			return callback(new Error('[[error:invalid-image-type, ' + ['gravatar', 'uploadedpicture'].join(', ') + ']]'));
+			return callback(new Error('[[error:invalid-image-type, ' + ['gravatar', 'uploadedpicture'].join('&#44; ') + ']]'));
 		}
 
 		async.waterfall([
