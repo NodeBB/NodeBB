@@ -20,7 +20,7 @@ define('admin/manage/group', [
 
 		var groupName = ajaxify.data.group.name;
 
-		memberList.init(true);
+		memberList.init();
 
 		changeGroupUserTitle.keyup(function() {
 			groupLabelPreview.text(changeGroupUserTitle.val());
