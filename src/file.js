@@ -54,7 +54,7 @@ file.isFileTypeAllowed = function(path, allowedExtensions, callback) {
 		var uploadedFileExtension = mime.extension(mimeType);
 
 		if (allowedExtensions.indexOf(uploadedFileExtension) === -1) {
-			return callback(new Error('[[error:invalid-file-type, ' + allowedExtensions.join(', ') + ']]'));
+			return callback(new Error('[[error:invalid-file-type, ' + allowedExtensions.join('&#44; ') + ']]'));
 		}
 
 		callback();
