@@ -31,32 +31,32 @@
 							<div class="row">
 								<div class="col-sm-6">
 
-									<div class="from-group">
-										<label>Icon Class:</label>
+									<div class="form-group">
+										<label>Icon:</label>
 										<br/>
 										<span class="iconPicker"><i class="fa fa-2x {enabled.iconClass}"></i>
 											<input class="form-control" type="hidden" name="iconClass" value="{enabled.iconClass}" />
 										</span>
 									</div>
 
-									<div class="from-group">
-										<label>Route: <small>ex. /unread</small></label>
+									<div class="form-group">
+										<label>Route:</label>
 										<input class="form-control" type="text" name="route" value="{enabled.route}" />
 									</div>
 
 									<div class="form-group">
-										<label>Title: <small>shown upon mouseover</small></label>
+										<label>Tooltip:</label>
 										<input class="form-control" type="text" name="title" value="{enabled.title}" />
 									</div>
 								</div>
 
 								<div class="col-sm-6">
-									<div class="from-group">
+									<div class="form-group">
 										<label>Text:</label>
 										<input class="form-control" type="text" name="text" value="{enabled.text}" />
 									</div>
 
-									<div class="from-group">
+									<div class="form-group">
 										<label>Text Class: <small>optional</small></label>
 										<input class="form-control" type="text" name="textClass" value="{enabled.textClass}" />
 									</div>
