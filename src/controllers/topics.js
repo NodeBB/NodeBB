@@ -236,7 +236,7 @@ topicsController.get = function(req, res, callback) {
 				},
 				{
 					rel: 'canonical',
-					href: nconf.get('url') + '/topic/' + topicData.slug
+					href: nconf.get('url') + '/topic/' + topicData.slug + (currentPage > 1 ? '?page=' + currentPage : '')
 				}
 			];
 
