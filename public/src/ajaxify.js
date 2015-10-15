@@ -222,9 +222,7 @@ $(document).ready(function() {
 
 				$(window).trigger('action:ajaxify.dataLoaded', {url: url, data: data});
 
-				if (callback) {
-					callback(null, data);
-				}
+				callback(null, data);
 			},
 			error: function(data, textStatus) {
 				if (data.status === 0 && textStatus === 'error') {

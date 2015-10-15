@@ -19,7 +19,7 @@ chatsController.get = function(req, res, callback) {
 	// In case a userNAME is passed in instead of a slug, the route should not 404
 	var slugified = utils.slugify(req.params.userslug);
 	if (req.params.userslug && req.params.userslug !== slugified) {
-		return res.redirect(nconf.get('relative_path') + '/chats/' + slugified);
+		return helpers.redirect(res, '/chats/' + slugified);
 	}
 
 	async.parallel({

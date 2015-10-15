@@ -140,7 +140,7 @@ define('forum/chats', ['components', 'string', 'sounds', 'forum/infinitescroll',
 
 	Chats.switchChat = function(uid, username) {
 		if (!$('[component="chat/messages"]').length) {
-			ajaxify.go('chats/' + username);
+			return ajaxify.go('chats/' + utils.slugify(username));
 		}
 
 		var contactEl = $('.chats-list [data-uid="' + uid + '"]');
