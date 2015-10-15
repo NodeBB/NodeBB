@@ -40,7 +40,7 @@ define('forum/topic/postTools', ['share', 'navigator', 'components', 'translator
 	};
 
 	function addVoteHandler() {
-		components.get('topic').on('mouseenter', '[data-pid] .votes', function() {
+		components.get('topic').on('mouseenter', '[data-pid] [component="post/vote-count"]', function() {
 			loadDataAndCreateTooltip($(this));
 		});
 	}

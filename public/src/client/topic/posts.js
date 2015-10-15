@@ -223,14 +223,12 @@ define('forum/topic/posts', [
 		postTools.updatePostCount();
 		addBlockquoteEllipses(posts.find('[component="post/content"] > blockquote > blockquote'));
 		hidePostToolsForDeletedPosts(posts);
-		showBottomPostBar();
+		Posts.showBottomPostBar();
 	};
 
-	function showBottomPostBar() {
-		if (components.get('post').length > 1 || !components.get('post', 'index', 0).length) {
-			$('.bottom-post-bar').removeClass('hidden');
-		}
-	}
+	Posts.showBottomPostBar = function() {
+		$('.bottom-post-bar').toggleClass('hidden', components.get('post').length <= 1 && !!components.get('post', 'index', 0).length);
+	};
 
 	function hidePostToolsForDeletedPosts(posts) {
 		posts.each(function() {

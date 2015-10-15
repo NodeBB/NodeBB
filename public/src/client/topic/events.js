@@ -162,6 +162,7 @@ define('forum/topic/events', [
 	function onPostPurged(pid) {
 		components.get('post', 'pid', pid).fadeOut(500, function() {
 			$(this).remove();
+			posts.showBottomPostBar();
 		});
 
 		postTools.updatePostCount();
