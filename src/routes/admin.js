@@ -80,6 +80,7 @@ function addRoutes(router, middleware, controllers) {
 	router.get('/advanced/post-cache', middlewares, controllers.admin.postCache.get);
 
 	router.get('/development/logger', middlewares, controllers.admin.logger.get);
+	router.get('/development/info', middlewares, controllers.admin.info.get);
 }
 
 module.exports = function(app, middleware, controllers) {
