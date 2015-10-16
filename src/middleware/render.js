@@ -29,6 +29,8 @@ module.exports = function(middleware) {
 			options.relative_path = nconf.get('relative_path');
 			options.template = {name: template};
 			options.template[template] = true;
+			options.bodyClass = buildBodyClass(req);
+
 			res.locals.template = template;
 
 			if (res.locals.isAPI) {
@@ -79,5 +81,15 @@ module.exports = function(middleware) {
 
 		next();
 	};
+
+	function buildBodyClass(req) {
+		var clean = req.path.replace(/^\/api/, '').replace(/^\//, '');
+		var parts = clean.split('/').slice(0, 3);
+		parts.forEach(function(p, index) {
+			parts[index] = index ? parts[index - 1] + '-' + p : 'page-' + (p || 'home');
+		});
+
+		return parts.join(' ');
+	}
 
 };

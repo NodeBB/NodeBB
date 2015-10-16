@@ -60,7 +60,8 @@ module.exports = function(app, middleware) {
 			allowRegistration: registrationType === 'normal' || registrationType === 'admin-approval',
 			searchEnabled: plugins.hasListeners('filter:search.query'),
 			config: res.locals.config,
-			relative_path: nconf.get('relative_path')
+			relative_path: nconf.get('relative_path'),
+			bodyClass: data.bodyClass
 		};
 
 		templateValues.configJSON = JSON.stringify(res.locals.config);
