@@ -201,6 +201,18 @@
 			var stats = results.stats;
 			var scale = 1024 * 1024;
 
+			results.listCollections = results.listCollections.map(function(collectionInfo) {
+				return {
+					name: collectionInfo.ns,
+					count: collectionInfo.count,
+					size: collectionInfo.size,
+					avgObjSize: collectionInfo.avgObjSize,
+					storageSize: collectionInfo.storageSize,
+					totalIndexSize: collectionInfo.totalIndexSize,
+					indexSizes: collectionInfo.indexSizes
+				};
+			});
+
 			stats.mem = results.serverStatus.mem;
 			stats.collectionData = results.listCollections;
 			stats.network = results.serverStatus.network;
