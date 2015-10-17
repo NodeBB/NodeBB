@@ -5,6 +5,10 @@
 			<div class="panel-heading"><i class="fa fa-hdd-o"></i> Mongo</div>
 			<div class="panel-body">
 				<div class="database-info">
+					<span>MongoDB Version</span> <span class="text-right">{mongo.version}</span><br/>
+					<hr/>
+					<span>Uptime in Seconds</span> <span class="text-right formatted-number">{mongo.uptime}</span><br/>
+					<span>Storage Engine</span> <span class="text-right">{mongo.storageEngine}</span><br/>
 					<span>Collections</span> <span class="text-right formatted-number">{mongo.collections}</span><br/>
 					<span>Objects</span> <span class="text-right formatted-number">{mongo.objects}</span><br/>
 					<span>Avg. Object Size</span> <span class="text-right">{mongo.avgObjSize} kb</span><br/>

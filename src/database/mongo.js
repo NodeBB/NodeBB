@@ -178,25 +178,43 @@
 
 	module.info = function(db, callback) {
 		async.parallel({
-			serverStats: function(next) {
+			serverStatus: function(next) {
 				db.command({'serverStatus': 1}, next);
 			},
 			stats: function(next) {
-				db.stats({scale:1024}, next);
+				db.stats({}, next);
+			},
+			listCollections: function(next) {
+				db.listCollections().toArray(function(err, items) {
+					if (err) {
+						return next(err);
+					}
+					async.map(items, function(collection, next) {
+						db.collection(collection.name).stats(next);
+					}, next);
+				});
 			}
 		}, function(err, results) {
 			if (err) {
 				return callback(err);
 			}
 			var stats = results.stats;
+			var scale = 1024 * 1024;
+
+			stats.mem = results.serverStatus.mem;
+			stats.collectionData = results.listCollections;
+			stats.network = results.serverStatus.network;
+			stats.raw = JSON.stringify(stats, null, 4);
 
 			stats.avgObjSize = (stats.avgObjSize / 1024).toFixed(2);
-			stats.dataSize = (stats.dataSize / 1024).toFixed(2);
-			stats.storageSize = (stats.storageSize / 1024).toFixed(2);
-			stats.fileSize = (stats.fileSize / 1024).toFixed(2);
-			stats.indexSize = (stats.indexSize / 1024).toFixed(2);
-			stats.mem = results.serverStats.mem;
-			stats.raw = JSON.stringify(stats, null, 4);
+			stats.dataSize = (stats.dataSize / scale).toFixed(2);
+			stats.storageSize = (stats.storageSize / scale).toFixed(2);
+			stats.fileSize = (stats.fileSize / scale).toFixed(2);
+			stats.indexSize = (stats.indexSize / scale).toFixed(2);
+			stats.storageEngine = results.serverStatus.storageEngine ? results.serverStatus.storageEngine.name : 'mmapv1';
+			stats.host = results.serverStatus.host;
+			stats.version = results.serverStatus.version;
+			stats.uptime = results.serverStatus.uptime;
 			stats.mongo = true;
 
 			callback(null, stats);
