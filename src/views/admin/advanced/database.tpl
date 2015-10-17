@@ -16,7 +16,9 @@
 					<span>Data Size</span> <span class="text-right">{mongo.dataSize} mb</span><br/>
 					<span>Storage Size</span> <span class="text-right">{mongo.storageSize} mb</span><br/>
 					<span>Index Size</span> <span class="text-right">{mongo.indexSize} mb</span><br/>
+					<!-- IF mongo.fileSize -->
 					<span>File Size</span> <span class="text-right">{mongo.fileSize} mb</span><br/>
+					<!-- ENDIF mongo.fileSize -->
 					<hr/>
 					<span>Resident Memory</span> <span class="text-right">{mongo.mem.resident} mb</span><br/>
 					<span>Virtual Memory</span> <span class="text-right">{mongo.mem.virtual} mb</span><br/>

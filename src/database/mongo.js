@@ -182,7 +182,7 @@
 				db.command({'serverStatus': 1}, next);
 			},
 			stats: function(next) {
-				db.stats({}, next);
+				db.command({'dbStats': 1}, next);
 			},
 			listCollections: function(next) {
 				db.listCollections().toArray(function(err, items) {
