@@ -221,7 +221,7 @@
 			stats.avgObjSize = (stats.avgObjSize / 1024).toFixed(2);
 			stats.dataSize = (stats.dataSize / scale).toFixed(2);
 			stats.storageSize = (stats.storageSize / scale).toFixed(2);
-			stats.fileSize = (stats.fileSize / scale).toFixed(2);
+			stats.fileSize = stats.fileSize ? (stats.fileSize / scale).toFixed(2) : 0;
 			stats.indexSize = (stats.indexSize / scale).toFixed(2);
 			stats.storageEngine = results.serverStatus.storageEngine ? results.serverStatus.storageEngine.name : 'mmapv1';
 			stats.host = results.serverStatus.host;
