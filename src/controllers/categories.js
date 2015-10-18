@@ -69,7 +69,7 @@ categoriesController.list = function(req, res, next) {
 			if (category && Array.isArray(category.posts) && category.posts.length) {
 				category.teaser = {
 					url: nconf.get('relative_path') + '/topic/' + category.posts[0].topic.slug + '/' + category.posts[0].index,
-					timestampISO: category.posts[0].relativeTime
+					timestampISO: category.posts[0].timestamp
 				};
 			}
 		});
@@ -203,8 +203,11 @@ categoriesController.get = function(req, res, callback) {
 			});
 		},
 		function(categoryData, next) {
+			if (!categoryData.children.length) {
+				return next(null, categoryData);
+			}
 			var allCategories = [];
-			categories.flattenCategories(allCategories, [categoryData]);
+			categories.flattenCategories(allCategories, categoryData.children);
 			categories.getRecentTopicReplies(allCategories, req.uid, function(err) {
 				next(err, categoryData);
 			});

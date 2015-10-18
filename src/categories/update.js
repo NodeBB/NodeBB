@@ -68,6 +68,8 @@ module.exports = function(Categories) {
 
 			if (key === 'order') {
 				updateOrder(cid, value, callback);
+			} else if (key === 'description') {
+				parseDescription(cid, value, callback);
 			} else {
 				callback();
 			}
@@ -116,6 +118,15 @@ module.exports = function(Categories) {
 					db.sortedSetAdd('cid:' + parentCid + ':children', order, cid, next);
 				}
 			], callback);
+		});
+	}
+
+	function parseDescription(cid, description, callback) {
+		plugins.fireHook('filter:parse.raw', description, function(err, parsedDescription) {
+			if (err) {
+				return callback(err);
+			}
+			Categories.setCategoryField(cid, 'descriptionParsed', parsedDescription, callback);
 		});
 	}
 
