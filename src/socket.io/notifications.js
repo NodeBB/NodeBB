@@ -12,6 +12,23 @@ SocketNotifs.get = function(socket, data, callback) {
 	}
 };
 
+SocketNotifs.loadMore = function(socket, data, callback) {
+	if (!data || !parseInt(data.after, 10)) {
+		return callback(new Error('[[error:invalid-data]]'));
+	}
+	if (!socket.uid) {
+		return;
+	}
+	var start = parseInt(data.after, 10);
+	var stop = start + 20;
+	user.notifications.getAll(socket.uid, start, stop, function(err, notifications) {
+		if (err) {
+			return callback(err);
+		}
+		callback(null, {notifications: notifications, nextStart: stop});
+	});
+};
+
 SocketNotifs.getCount = function(socket, data, callback) {
 	user.notifications.getUnreadCount(socket.uid, callback);
 };
