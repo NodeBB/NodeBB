@@ -1,5 +1,7 @@
 'use strict';
 
+var os = require('os');
+
 var infoController = {};
 
 infoController.get = function(req, res, next) {
@@ -14,6 +16,9 @@ infoController.get = function(req, res, next) {
 			versions: process.versions,
 			memoryUsage: process.memoryUsage(),
 			uptime: process.uptime()
+		},
+		os: {
+			hostname: os.hostname()
 		}
 	};
 
