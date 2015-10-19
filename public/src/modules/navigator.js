@@ -18,7 +18,7 @@ define('navigator', ['forum/pagination', 'components'], function(pagination, com
 		toTop = toTop || function() {};
 		toBottom = toBottom || function() {};
 
-		$(window).on('scroll', navigator.update);
+		$(window).off('scroll', navigator.update).on('scroll', navigator.update);
 
 		$('.pagination-block .dropdown-menu').off('click').on('click', function(e) {
 			e.stopPropagation();
@@ -74,7 +74,12 @@ define('navigator', ['forum/pagination', 'components'], function(pagination, com
 		toggle(true);
 	};
 
-	navigator.hide = function() {
+	navigator.disable = function() {
+		count = 0;
+		index = 1;
+		navigator.selector = navigator.callback = null;
+		$(window).off('scroll', navigator.update);
+
 		toggle(false);
 	};
 

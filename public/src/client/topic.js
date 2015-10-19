@@ -19,7 +19,7 @@ define('forum/topic', [
 
 	$(window).on('action:ajaxify.start', function(ev, data) {
 		if (ajaxify.currentPage !== data.url) {
-			navigator.hide();
+			navigator.disable();
 			components.get('navbar/title').find('span').text('').hide();
 			app.removeAlert('bookmark');
 
@@ -216,7 +216,7 @@ define('forum/topic', [
 		if (!config.usePagination) {
 			infinitescroll.init($('[component="topic"]'), posts.loadMorePosts);
 		} else {
-			navigator.hide();
+			navigator.disable();
 		}
 	}
 

@@ -14,7 +14,7 @@ define('forum/category', [
 
 	$(window).on('action:ajaxify.start', function(ev, data) {
 		if (ajaxify.currentPage !== data.url) {
-			navigator.hide();
+			navigator.disable();
 
 			removeListeners();
 		}
@@ -39,11 +39,11 @@ define('forum/category', [
 
 		sort.handleSort('categoryTopicSort', 'user.setCategorySort', 'category/' + ajaxify.data.slug);
 
-		enableInfiniteLoadingOrPagination();
-
 		if (!config.usePagination) {
 			navigator.init('[component="category/topic"]', ajaxify.data.topic_count, Category.toTop, Category.toBottom, Category.navigatorCallback);
 		}
+
+		enableInfiniteLoadingOrPagination();
 
 		$('[component="category"]').on('click', '[component="topic/header"]', function() {
 			var clickedIndex = $(this).parents('[data-index]').attr('data-index');
@@ -173,7 +173,7 @@ define('forum/category', [
 		if (!config.usePagination) {
 			infinitescroll.init($('[component="category"]'), Category.loadMoreTopics);
 		} else {
-			navigator.hide();
+			navigator.disable();
 		}
 	}
 
