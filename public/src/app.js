@@ -143,13 +143,24 @@ app.cacheBuster = null;
 				status: app.user.status
 			}, function(err) {
 				if (err) {
-					app.alertError(err.message);
-					return;
+					return app.alertError(err.message);
 				}
 				app.currentRoom = room;
 			});
 		}
 	};
+
+	app.leaveCurrentRoom = function() {
+		if (!socket) {
+			return;
+		}
+		socket.emit('meta.rooms.leaveCurrent', function(err) {
+			if (err) {
+				return app.alertError(err.message);
+			}
+			app.currentRoom = '';
+		});
+	}
 
 	function highlightNavigationLink() {
 		var path = window.location.pathname;

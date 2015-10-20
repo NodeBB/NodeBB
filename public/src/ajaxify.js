@@ -46,7 +46,7 @@ $(document).ready(function() {
 			return true;
 		}
 
-		app.enterRoom('');
+		app.leaveCurrentRoom();
 
 		$(window).off('scroll');
 
