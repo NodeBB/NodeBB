@@ -179,7 +179,8 @@ module.exports = function(privileges) {
 				'topics:create': results['topics:create'][0] || isAdminOrMod,
 				editable: isAdminOrMod,
 				view_deleted: isAdminOrMod,
-				read: results.read[0] || isAdminOrMod
+				read: results.read[0] || isAdminOrMod,
+				isAdminOrMod: isAdminOrMod
 			}, callback);
 		});
 	};
