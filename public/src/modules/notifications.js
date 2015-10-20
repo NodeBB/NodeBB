@@ -64,14 +64,6 @@ define('notifications', ['sounds', 'translator', 'components'], function(sound, 
 			Notifications.updateNotifCount(count);
 		}
 
-		socket.emit('notifications.getCount', function(err, count) {
-			if (!err) {
-				Notifications.updateNotifCount(count);
-			} else {
-				Notifications.updateNotifCount(0);
-			}
-		});
-
 		socket.on('event:new_notification', function(notifData) {
 			app.alert({
 				alert_id: 'new_notif',

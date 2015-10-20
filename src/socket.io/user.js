@@ -207,6 +207,17 @@ SocketUser.getUnreadChatCount = function(socket, data, callback) {
 	messaging.getUnreadCount(socket.uid, callback);
 };
 
+SocketUser.getUnreadCounts = function(socket, data, callback) {
+	if (!socket.uid) {
+		return callback(null, {});
+	}
+	async.parallel({
+		unreadTopicCount: async.apply(topics.getTotalUnread, socket.uid),
+		unreadChatCount: async.apply(messaging.getUnreadCount, socket.uid),
+		unreadNotificationCount: async.apply(user.notifications.getUnreadCount, socket.uid)
+	}, callback);
+};
+
 SocketUser.loadMore = function(socket, data, callback) {
 	if (!data || !data.set || parseInt(data.after, 10) < 0) {
 		return callback(new Error('[[error:invalid-data]]'));

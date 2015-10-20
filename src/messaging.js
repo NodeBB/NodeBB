@@ -314,7 +314,7 @@ var db = require('./database'),
 			if (err) {
 				return;
 			}
-			sockets.in('uid_' + uid).emit('event:unread.updateChatCount', null, unreadCount);
+			sockets.in('uid_' + uid).emit('event:unread.updateChatCount', unreadCount);
 		});
 	};
 
