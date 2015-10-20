@@ -5,31 +5,30 @@ define('sounds', ['buzz'], function(buzz) {
 	var	Sounds = {};
 
 	var loadedSounds = {};
-	var eventSoundMapping = {};
-	var files = {};
-
-	loadFiles();
-
-	loadMapping();
+	var eventSoundMapping;
+	var files;
 
 	socket.on('event:sounds.reloadMapping', loadMapping);
 
-	function loadFiles() {
-		socket.emit('modules.sounds.getSounds', function(err, sounds) {
-			if (err) {
-				return app.alertError('[sounds] Could not initialise!');
-			}
-
-			files = sounds;
-		});
-	}
-
-	function loadMapping() {
+	function loadMapping(callback) {
+		callback = callback || function() {};
 		socket.emit('modules.sounds.getMapping', function(err, mapping) {
 			if (err) {
 				return app.alertError('[sounds] Could not load sound mapping!');
 			}
 			eventSoundMapping = mapping;
+			callback();
+		});
+	}
+
+	function loadData(callback) {
+		socket.emit('modules.sounds.getData', function(err, data) {
+			if (err) {
+				return app.alertError('[sounds] Could not load sound mapping!');
+			}
+			eventSoundMapping = data.mapping;
+			files = data.files;
+			callback();
 		});
 	}
 
@@ -38,22 +37,37 @@ define('sounds', ['buzz'], function(buzz) {
 	}
 
 	function loadFile(fileName, callback) {
+		function createSound() {
+			if (files && files[fileName]) {
+				loadedSounds[fileName] = new buzz.sound(files[fileName]);
+			}
+			callback();
+		}
+
 		if (isSoundLoaded(fileName)) {
 			return callback();
 		}
 
-		if (files && files[fileName]) {
-			loadedSounds[fileName] = new buzz.sound(files[fileName]);
+		if (!files || !files[fileName]) {
+			return loadData(createSound);
 		}
-		callback();
+		createSound();
 	}
 
 	Sounds.play = function(name) {
+		function play() {
+			Sounds.playFile(eventSoundMapping[name]);
+		}
+
 		if (!config.notificationSounds) {
 			return;
 		}
 
-		Sounds.playFile(eventSoundMapping[name]);
+		if (!eventSoundMapping) {
+			return loadData(play);
+		}
+
+		play();
 	};
 
 	Sounds.playFile = function(fileName) {
