@@ -28,6 +28,8 @@ define('forum/topic/posts', [
 		});
 
 		updatePostCounts(data.posts);
+		ajaxify.data.postcount ++;
+		postTools.updatePostCount(ajaxify.data.postcount);
 
 		if (config.usePagination) {
 			onNewPostPagination(data);
@@ -220,7 +222,7 @@ define('forum/topic/posts', [
 				$this.wrap('<a href="' + $this.attr('src') + '" target="_blank">');
 			}
 		});
-		postTools.updatePostCount();
+
 		addBlockquoteEllipses(posts.find('[component="post/content"] > blockquote > blockquote'));
 		hidePostToolsForDeletedPosts(posts);
 		Posts.showBottomPostBar();

@@ -15,6 +15,8 @@ define('forum/topic/postTools', ['share', 'navigator', 'components', 'translator
 		share.addShareHandlers(topicName);
 
 		addVoteHandler();
+
+		PostTools.updatePostCount(ajaxify.data.postcount);
 	};
 
 	PostTools.toggle = function(pid, isDeleted) {
@@ -28,15 +30,11 @@ define('forum/topic/postTools', ['share', 'navigator', 'components', 'translator
 		postEl.find('[component="post/purge"]').toggleClass('hidden', !isDeleted);
 	};
 
-	PostTools.updatePostCount = function() {
-		socket.emit('topics.postcount', ajaxify.data.tid, function(err, postCount) {
-			if (!err) {
-				var postCountEl = components.get('topic/post-count');
-				postCountEl.html(postCount).attr('title', postCount);
-				utils.makeNumbersHumanReadable(postCountEl);
-				navigator.setCount(postCount);
-			}
-		});
+	PostTools.updatePostCount = function(postCount) {
+		var postCountEl = components.get('topic/post-count');
+		postCountEl.html(postCount).attr('title', postCount);
+		utils.makeNumbersHumanReadable(postCountEl);
+		navigator.setCount(postCount);
 	};
 
 	function addVoteHandler() {
