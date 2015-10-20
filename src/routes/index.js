@@ -133,7 +133,11 @@ module.exports = function(app, middleware) {
 };
 
 function handle404(app, middleware) {
-	app.use(function(req, res, next) {
+	var relativePath = nconf.get('relative_path');
+	var	isLanguage = new RegExp('^' + relativePath + '/language/[\\w]{2,}/.*.json'),
+		isClientScript = new RegExp('^' + relativePath + '\\/src\\/.+\\.js');
+
+	app.use(function(req, res) {
 		if (plugins.hasListeners('action:meta.override404')) {
 			return plugins.fireHook('action:meta.override404', {
 				req: req,
@@ -142,14 +146,12 @@ function handle404(app, middleware) {
 			});
 		}
 
-		var relativePath = nconf.get('relative_path');
-		var	isLanguage = new RegExp('^' + relativePath + '/language/[\\w]{2,}/.*.json'),
-			isClientScript = new RegExp('^' + relativePath + '\\/src\\/.+\\.js');
-
 		if (isClientScript.test(req.url)) {
 			res.type('text/javascript').status(200).send('');
 		} else if (isLanguage.test(req.url)) {
 			res.status(200).json({});
+		} else if (req.path.startsWith(relativePath + '/uploads')) {
+			res.status(404).send('');
 		} else if (req.accepts('html')) {
 			if (process.env.NODE_ENV === 'development') {
 				winston.warn('Route requested but not found: ' + req.url);
@@ -171,7 +173,7 @@ function handle404(app, middleware) {
 }
 
 function handleErrors(app, middleware) {
-	app.use(function(err, req, res, next) {
+	app.use(function(err, req, res) {
 		if (err.code === 'EBADCSRFTOKEN') {
 			winston.error(req.path + '\n', err.message);
 			return res.sendStatus(403);
