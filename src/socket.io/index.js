@@ -3,7 +3,6 @@
 var	SocketIO = require('socket.io'),
 	socketioWildcard = require('socketio-wildcard')(),
 	async = require('async'),
-	fs = require('fs'),
 	nconf = require('nconf'),
 	cookieParser = require('cookie-parser')(nconf.get('secret')),
 	winston = require('winston'),
