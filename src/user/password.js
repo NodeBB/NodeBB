@@ -25,4 +25,10 @@ module.exports = function(User) {
 		});
 	};
 
+	User.hasPassword = function(uid, callback) {
+		db.getObjectField('user:' + uid, 'password', function(err, hashedPassword) {
+			callback(err, !!hashedPassword);
+		});
+	};
+
 };

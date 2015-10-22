@@ -25,12 +25,9 @@ module.exports = function(SocketUser) {
 
 	function isAdminOrSelfAndPasswordMatch(uid, data, callback) {
 		async.parallel({
-			isAdmin: function(next) {
-				user.isAdministrator(uid, next);
-			},
-			passwordMatch: function(next) {
-				user.isPasswordCorrect(data.uid, data.password, next);
-			}
+			isAdmin: async.apply(user.isAdministrator, uid),
+			hasPassword: async.apply(user.hasPassword, data.uid),
+			passwordMatch: async.apply(user.isPasswordCorrect, data.uid, data.password)
 		}, function(err, results) {
 			if (err) {
 				return callback(err);
@@ -41,7 +38,7 @@ module.exports = function(SocketUser) {
 				return callback(new Error('[[error:no-privileges]]'));
 			}
 
-			if (self && !results.passwordMatch) {
+			if (self && results.hasPassword && !results.passwordMatch) {
 				return callback(new Error('[[error:invalid-password]]'));
 			}
 
