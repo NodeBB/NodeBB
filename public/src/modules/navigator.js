@@ -97,12 +97,18 @@ define('navigator', ['forum/pagination', 'components'], function(pagination, com
 
 		var middleOfViewport = $(window).scrollTop() + $(window).height() / 2;
 
-		index = parseInt($(navigator.selector).first().attr('data-index'), 10);
-
+		index = parseInt($(navigator.selector).first().attr('data-index'), 10) + 1;
+		var previousDistance = Number.MAX_VALUE;
 		$(navigator.selector).each(function() {
-			index++;
-			if ($(this).offset().top > middleOfViewport) {
+			var distanceToMiddle = Math.abs(middleOfViewport - $(this).offset().top);
+
+			if (distanceToMiddle > previousDistance) {
 				return false;
+			}
+
+			if (distanceToMiddle < previousDistance) {
+				index = parseInt($(this).attr('data-index'), 10) + 1;
+				previousDistance = distanceToMiddle;
 			}
 		});
 
