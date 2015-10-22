@@ -95,7 +95,6 @@ module.exports = function(SocketUser) {
 				user.isAdminOrSelf(socket.uid, data.uid, next);
 			},
 			function (next) {
-				console.log('updating profile', data)
 				user.updateProfile(data.uid, data, next);
 			},
 			function (userData, next) {
