@@ -125,20 +125,20 @@ module.exports = function(User) {
 	};
 
 	function deleteUserIps(uid, callback) {
-		db.getSortedSetRange('uid:' + uid + ':ip', 0, -1, function(err, ips) {
-			if (err) {
-				return callback(err);
+		async.waterfall([
+			function (next) {
+				db.getSortedSetRange('uid:' + uid + ':ip', 0, -1, next);
+			},
+			function (ips, next) {
+				var keys = ips.map(function(ip) {
+					return 'ip:' + ip + ':uid';
+				});
+				db.sortedSetsRemove(keys, uid, next);
+			},
+			function (next) {
+				db.delete('uid:' + uid + ':ip', next);
 			}
-
-			async.each(ips, function(ip, next) {
-				db.sortedSetRemove('ip:' + ip + ':uid', uid, next);
-			}, function(err) {
-				if (err) {
-					return callback(err);
-				}
-				db.delete('uid:' + uid + ':ip', callback);
-			});
-		});
+		], callback);
 	}
 
 	function deleteUserFromFollowers(uid, callback) {
