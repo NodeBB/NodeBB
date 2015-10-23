@@ -67,13 +67,6 @@ module.exports = function(app, middleware) {
 		templateValues.configJSON = JSON.stringify(res.locals.config);
 
 		async.parallel({
-			settings: function(next) {
-				if (req.uid) {
-					user.getSettings(req.uid, next);
-				} else {
-					next();
-				}
-			},
 			isAdmin: function(next) {
 				user.isAdministrator(req.uid, next);
 			},
@@ -107,8 +100,8 @@ module.exports = function(app, middleware) {
 			results.user.uid = parseInt(results.user.uid, 10);
 			results.user['email:confirmed'] = parseInt(results.user['email:confirmed'], 10) === 1;
 
-			if (results.settings && results.settings.bootswatchSkin && results.settings.bootswatchSkin !== 'default') {
-				templateValues.bootswatchCSS = '//maxcdn.bootstrapcdn.com/bootswatch/latest/' + results.settings.bootswatchSkin + '/bootstrap.min.css';
+			if (res.locals.config.bootswatchSkin !== 'default') {
+				templateValues.bootswatchCSS = '//maxcdn.bootstrapcdn.com/bootswatch/latest/' + res.locals.config.bootswatchSkin + '/bootstrap.min.css';
 			}
 
 			templateValues.browserTitle = controllers.helpers.buildTitle(data.title);
