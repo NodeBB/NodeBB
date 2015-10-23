@@ -152,6 +152,8 @@ function handle404(app, middleware) {
 			res.status(200).json({});
 		} else if (req.path.startsWith(relativePath + '/uploads')) {
 			res.status(404).send('');
+		} else if (req.path === '/favicon.ico') {
+			res.status(404).send('');
 		} else if (req.accepts('html')) {
 			if (process.env.NODE_ENV === 'development') {
 				winston.warn('Route requested but not found: ' + req.url);
