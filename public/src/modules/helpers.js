@@ -10,8 +10,11 @@
 	var helpers = {};
 
 	helpers.displayMenuItem = function(data, index) {
-		var item = data.navigation[index],
-			properties = item.properties;
+		var item = data.navigation[index];
+		if (!item) {
+			return false;
+		}
+		var properties = item.properties;
 
 		if (properties) {
 			if ((properties.loggedIn && !data.config.loggedIn) ||
