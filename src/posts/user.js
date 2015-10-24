@@ -40,10 +40,12 @@ module.exports = function(Posts) {
 						slug: group.slug,
 						labelColor: group.labelColor,
 						icon: group.icon,
-						userTitle: group.userTitle,
-						userTitleEnabled: group.userTitleEnabled,
-						selected: group.name === results.userSettings[i].groupTitle
+						userTitle: group.userTitle
 					};
+
+					if (group.name === results.userSettings[i].groupTitle && group.userTitleEnabled) {
+						userData.selectedGroup = userData.groups[index];
+					}
 				});
 				userData.status = user.getStatus(userData.status, results.online[i]);
 			});
