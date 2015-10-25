@@ -46,7 +46,7 @@ $(document).ready(function() {
 			return true;
 		}
 
-		app.enterRoom('');
+		app.leaveCurrentRoom();
 
 		$(window).off('scroll');
 
@@ -56,6 +56,7 @@ $(document).ready(function() {
 
 		url = ajaxify.start(url, quiet);
 
+		$('body').removeClass(ajaxify.data.bodyClass);
 		$('#footer, #content').removeClass('hide').addClass('ajaxifying');
 
 		ajaxify.loadData(url, function(err, data) {
@@ -141,6 +142,7 @@ $(document).ready(function() {
 
 		templates.parse(tpl_url, data, function(template) {
 			translator.translate(template, function(translatedTemplate) {
+				$('body').addClass(data.bodyClass);
 				$('#content').html(translatedTemplate);
 
 				ajaxify.end(url, tpl_url);
@@ -222,9 +224,7 @@ $(document).ready(function() {
 
 				$(window).trigger('action:ajaxify.dataLoaded', {url: url, data: data});
 
-				if (callback) {
-					callback(null, data);
-				}
+				callback(null, data);
 			},
 			error: function(data, textStatus) {
 				if (data.status === 0 && textStatus === 'error') {

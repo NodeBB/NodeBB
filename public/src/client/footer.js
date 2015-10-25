@@ -7,21 +7,13 @@ define('forum/footer', ['notifications', 'chat', 'components', 'translator'], fu
 	Chat.prepareDOM();
 	translator.prepareDOM();
 
-	function updateUnreadTopicCount(err, count) {
-		if (err) {
-			return console.warn('Error updating unread count', err);
-		}
-
+	function updateUnreadTopicCount(count) {
 		$('#unread-count i')
 			.toggleClass('unread-count', count > 0)
 			.attr('data-content', count > 20 ? '20+' : count);
 	}
 
-	function updateUnreadChatCount(err, count) {
-		if (err) {
-			return console.warn('Error updating unread count', err);
-		}
-
+	function updateUnreadChatCount(count) {
 		components.get('chat/icon')
 			.toggleClass('unread-count', count > 0)
 			.attr('data-content', count > 20 ? '20+' : count);
@@ -62,11 +54,20 @@ define('forum/footer', ['notifications', 'chat', 'components', 'translator'], fu
 		socket.on('event:new_post', onNewPost);
 	}
 
-	socket.on('event:unread.updateCount', updateUnreadTopicCount);
-	socket.emit('user.getUnreadCount', updateUnreadTopicCount);
+	if (app.user.uid) {
+		socket.emit('user.getUnreadCounts', function(err, data) {
+			if (err) {
+				return app.alert(err.message);
+			}
 
+			updateUnreadTopicCount(data.unreadTopicCount);
+			updateUnreadChatCount(data.unreadChatCount);
+			Notifications.updateNotifCount(data.unreadNotificationCount);
+		});
+	}
+
+	socket.on('event:unread.updateCount', updateUnreadTopicCount);
 	socket.on('event:unread.updateChatCount', updateUnreadChatCount);
-	socket.emit('user.getUnreadChatCount', updateUnreadChatCount);
 
 	initUnreadTopics();
 });

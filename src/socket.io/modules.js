@@ -147,4 +147,11 @@ SocketModules.sounds.getMapping = function(socket, data, callback) {
 	meta.sounds.getMapping(callback);
 };
 
+SocketModules.sounds.getData = function(socket, data, callback) {
+	async.parallel({
+		mapping: async.apply(meta.sounds.getMapping),
+		files: async.apply(meta.sounds.getFiles)
+	}, callback);
+};
+
 module.exports = SocketModules;

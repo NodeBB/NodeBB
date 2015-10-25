@@ -38,6 +38,8 @@
 
 	"profile_update_success": "Profile has been updated successfully!",
 	"change_picture": "Change Picture",
+	"change_username": "Change Username",
+	"change_email": "Change Email",
 	"edit": "Edit",
 	"default_picture": "Default Icon",
 	"uploaded_picture": "Uploaded Picture",

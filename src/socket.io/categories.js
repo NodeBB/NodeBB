@@ -15,7 +15,25 @@ SocketCategories.getRecentReplies = function(socket, cid, callback) {
 };
 
 SocketCategories.get = function(socket, data, callback) {
-	categories.getCategoriesByPrivilege('categories:cid', socket.uid, 'find', callback);
+	async.parallel({
+		isAdmin: async.apply(user.isAdministrator, socket.uid),
+		categories: function(next) {
+			async.waterfall([
+				async.apply(db.getSortedSetRange, 'categories:cid', 0, -1),
+				async.apply(categories.getCategoriesData),
+			], next);
+		}
+	}, function(err, results) {
+		if (err) {
+			return callback(err);
+		}
+
+		results.categories = results.categories.filter(function(category) {
+			return category && (!category.disabled || results.isAdmin);
+		});
+
+		callback(null, results.categories);
+	});
 };
 
 SocketCategories.getWatchedCategories = function(socket, data, callback) {

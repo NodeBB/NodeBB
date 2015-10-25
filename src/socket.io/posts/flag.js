@@ -13,9 +13,13 @@ var meta = require('../../meta');
 
 module.exports = function(SocketPosts) {
 
-	SocketPosts.flag = function(socket, pid, callback) {
+	SocketPosts.flag = function(socket, data, callback) {
 		if (!socket.uid) {
 			return callback(new Error('[[error:not-logged-in]]'));
+		}
+
+		if (!data || !data.pid || !data.reason) {
+			return callback(new Error('[[error:invalid-data]]'));
 		}
 
 		var flaggingUser = {},
@@ -23,7 +27,7 @@ module.exports = function(SocketPosts) {
 
 		async.waterfall([
 			function (next) {
-				posts.getPostFields(pid, ['pid', 'tid', 'uid', 'content', 'deleted'], next);
+				posts.getPostFields(data.pid, ['pid', 'tid', 'uid', 'content', 'deleted'], next);
 			},
 			function (postData, next) {
 				if (parseInt(postData.deleted, 10) === 1) {
@@ -55,7 +59,7 @@ module.exports = function(SocketPosts) {
 				flaggingUser = user.userData;
 				flaggingUser.uid = socket.uid;
 
-				posts.flag(post, socket.uid, next);
+				posts.flag(post, socket.uid, data.reason, next);
 			},
 			function (next) {
 				async.parallel({
@@ -74,8 +78,8 @@ module.exports = function(SocketPosts) {
 				notifications.create({
 					bodyShort: '[[notifications:user_flagged_post_in, ' + flaggingUser.username + ', ' + post.topic.title + ']]',
 					bodyLong: post.content,
-					pid: pid,
-					nid: 'post_flag:' + pid + ':uid:' + socket.uid,
+					pid: data.pid,
+					nid: 'post_flag:' + data.pid + ':uid:' + socket.uid,
 					from: socket.uid
 				}, function(err, notification) {
 					if (err || !notification) {

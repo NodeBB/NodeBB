@@ -240,7 +240,7 @@ define('admin/manage/category', [
 			}
 
 			categories = categories.filter(function(category) {
-				return category && parseInt(category.cid, 10) !== parseInt(ajaxify.data.category.cid, 10);
+				return category && !category.disabled && parseInt(category.cid, 10) !== parseInt(ajaxify.data.category.cid, 10);
 			});
 
 			templates.parse('partials/category_list', {

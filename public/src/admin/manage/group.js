@@ -1,16 +1,16 @@
 "use strict";
-/*global define, templates, socket, ajaxify, app, admin, bootbox, utils, config */
+/*global define, templates, socket, ajaxify, app, bootbox, translator */
 
 define('admin/manage/group', [
+	'forum/groups/memberlist',
 	'iconSelect',
 	'admin/modules/colorpicker'
-], function(iconSelect, colorpicker) {
+], function(memberList, iconSelect, colorpicker) {
 	var	Groups = {};
 
 	Groups.init = function() {
 		var	groupDetailsSearch = $('#group-details-search'),
 			groupDetailsSearchResults = $('#group-details-search-results'),
-			groupMembersEl = $('ul.current_members'),
 			groupIcon = $('#group-icon'),
 			changeGroupUserTitle = $('#change-group-user-title'),
 			changeGroupLabelColor = $('#change-group-label-color'),
@@ -19,6 +19,8 @@ define('admin/manage/group', [
 
 
 		var groupName = ajaxify.data.group.name;
+
+		memberList.init();
 
 		changeGroupUserTitle.keyup(function() {
 			groupLabelPreview.text(changeGroupUserTitle.val());
@@ -46,10 +48,16 @@ define('admin/manage/group', [
 						}
 
 						groupDetailsSearchResults.empty();
+
 						for (x = 0; x < numResults; x++) {
 							foundUser = $('<li />');
 							foundUser
-								.attr({title: results.users[x].username, 'data-uid': results.users[x].uid})
+								.attr({title: results.users[x].username,
+									'data-uid': results.users[x].uid,
+									'data-username': results.users[x].username,
+									'data-userslug': results.users[x].userslug,
+									'data-picture': results.users[x].picture
+								})
 								.append($('<img />').attr('src', results.users[x].picture))
 								.append($('<span />').html(results.users[x].username));
 
@@ -64,43 +72,72 @@ define('admin/manage/group', [
 
 		groupDetailsSearchResults.on('click', 'li[data-uid]', function() {
 			var userLabel = $(this),
-				uid = parseInt(userLabel.attr('data-uid'), 10),
-				members = [];
+				uid = parseInt(userLabel.attr('data-uid'), 10);
 
-			groupMembersEl.find('li[data-uid]').each(function() {
-				members.push(parseInt($(this).attr('data-uid'), 10));
-			});
-
-			if (members.indexOf(uid) === -1) {
-				socket.emit('admin.groups.join', {
-					groupName: groupName,
-					uid: uid
-				}, function(err, data) {
-					if (!err) {
-						groupMembersEl.append(userLabel.clone(true));
-					}
-				});
-			}
-		});
-
-		groupMembersEl.on('click', 'li[data-uid]', function() {
-			var uid = $(this).attr('data-uid');
-
-			bootbox.confirm('Are you sure you want to remove this user?', function(confirm) {
-				if (!confirm) {
-					return;
+			socket.emit('admin.groups.join', {
+				groupName: groupName,
+				uid: uid
+			}, function(err) {
+				if (err) {
+					return app.alertError(err.message);
 				}
 
-				socket.emit('admin.groups.leave', {
-					groupName: groupName,
-					uid: uid
-				}, function(err, data) {
-					if (err) {
-						return app.alertError(err.message);
-					}
-					groupMembersEl.find('li[data-uid="' + uid + '"]').remove();
+				var member = {
+					uid: userLabel.attr('data-uid'),
+					username: userLabel.attr('data-username'),
+					userslug: userLabel.attr('data-userslug'),
+					picture: userLabel.attr('data-picture')
+				};
+
+				templates.parse('partials/groups/memberlist', 'members', {group: {isOwner: ajaxify.data.group.isOwner, members: [member]}}, function(html) {
+					translator.translate(html, function(html) {
+						$('[component="groups/members"] tr').first().before(html);
+					});
 				});
 			});
+		});
+
+		$('[component="groups/members"]').on('click', '[data-action]', function() {
+			var btnEl = $(this),
+				userRow = btnEl.parents('[data-uid]'),
+				ownerFlagEl = userRow.find('.member-name i'),
+				isOwner = !ownerFlagEl.hasClass('invisible') ? true : false,
+				uid = userRow.attr('data-uid'),
+				action = btnEl.attr('data-action');
+
+			switch(action) {
+				case 'toggleOwnership':
+					socket.emit('groups.' + (isOwner ? 'rescind' : 'grant'), {
+						toUid: uid,
+						groupName: groupName
+					}, function(err) {
+						if (err) {
+							return app.alertError(err.message);
+						}
+						ownerFlagEl.toggleClass('invisible');
+					});
+					break;
+
+				case 'kick':
+					bootbox.confirm('Are you sure you want to remove this user?', function(confirm) {
+						if (!confirm) {
+							return;
+						}
+						socket.emit('admin.groups.leave', {
+							uid: uid,
+							groupName: groupName
+						}, function(err) {
+							if (err) {
+								return app.alertError(err.message);
+							}
+							userRow.slideUp().remove();
+						});
+
+					});
+					break;
+				default:
+					break;
+			}
 		});
 
 		$('#group-icon').on('click', function() {

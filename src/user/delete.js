@@ -4,6 +4,7 @@ var async = require('async'),
 	db = require('../database'),
 	posts = require('../posts'),
 	topics = require('../topics'),
+	favourites = require('../favourites'),
 	groups = require('../groups'),
 	plugins = require('../plugins'),
 	batch = require('../batch');
@@ -22,10 +23,33 @@ module.exports = function(User) {
 				deleteTopics(uid, next);
 			},
 			function(next) {
+				deleteVotes(uid, next);
+			},
+			function(next) {
 				User.deleteAccount(uid, next);
 			}
 		], callback);
 	};
+
+	function deleteVotes(uid, callback) {
+		async.waterfall([
+			function (next) {
+				async.parallel({
+					upvotedPids: async.apply(db.getSortedSetRange, 'uid:' + uid + ':upvote', 0, -1),
+					downvotedPids: async.apply(db.getSortedSetRange, 'uid:' + uid + ':downvote', 0, -1)
+				}, next);
+			},
+			function (pids, next) {
+				pids = pids.upvotedPids.concat(pids.downvotedPids).filter(function(pid, index, array) {
+					return pid && array.indexOf(pid) === index;
+				});
+
+				async.eachLimit(pids, 50, function(pid, next) {
+					favourites.unvote(pid, uid, next);
+				}, next);
+			}
+		], callback);
+	}
 
 	function deletePosts(uid, callback) {
 		deleteSortedSetElements('uid:' + uid + ':posts', posts.purge, callback);
@@ -125,20 +149,20 @@ module.exports = function(User) {
 	};
 
 	function deleteUserIps(uid, callback) {
-		db.getSortedSetRange('uid:' + uid + ':ip', 0, -1, function(err, ips) {
-			if (err) {
-				return callback(err);
+		async.waterfall([
+			function (next) {
+				db.getSortedSetRange('uid:' + uid + ':ip', 0, -1, next);
+			},
+			function (ips, next) {
+				var keys = ips.map(function(ip) {
+					return 'ip:' + ip + ':uid';
+				});
+				db.sortedSetsRemove(keys, uid, next);
+			},
+			function (next) {
+				db.delete('uid:' + uid + ':ip', next);
 			}
-
-			async.each(ips, function(ip, next) {
-				db.sortedSetRemove('ip:' + ip + ':uid', uid, next);
-			}, function(err) {
-				if (err) {
-					return callback(err);
-				}
-				db.delete('uid:' + uid + ':ip', callback);
-			});
-		});
+		], callback);
 	}
 
 	function deleteUserFromFollowers(uid, callback) {

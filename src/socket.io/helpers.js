@@ -3,6 +3,7 @@
 var async = require('async');
 var winston = require('winston');
 var nconf = require('nconf');
+var validator = require('validator');
 
 var websockets = require('./index');
 var user = require('../user');
@@ -86,14 +87,14 @@ SocketHelpers.sendNotificationToTopicOwner = function(tid, fromuid, notification
 
 	async.parallel({
 		username: async.apply(user.getUserField, fromuid, 'username'),
-		topicData: async.apply(topics.getTopicFields, tid, ['uid', 'slug']),
+		topicData: async.apply(topics.getTopicFields, tid, ['uid', 'slug', 'title']),
 	}, function(err, results) {
 		if (err || fromuid === parseInt(results.topicData.uid, 10)) {
 			return;
 		}
 
 		notifications.create({
-			bodyShort: '[[' + notification + ', ' + results.username + ']]',
+			bodyShort: '[[' + notification + ', ' + results.username + ', ' + results.topicData.title + ']]',
 			path: nconf.get('relative_path') + '/topic/' + results.topicData.slug,
 			nid: 'tid:' + tid + ':uid:' + fromuid,
 			from: fromuid

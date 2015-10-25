@@ -53,7 +53,7 @@ module.exports = function(db, module) {
 			}
 		}
 
-		db.collection('search' + key).find(searchQuery, {limit: limit}).toArray(function(err, results) {
+		db.collection('search' + key).find(searchQuery, {limit: limit, fields:{_id: 0, id: 1}}).toArray(function(err, results) {
 			if (err) {
 				return callback(err);
 			}

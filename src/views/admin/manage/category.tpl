@@ -90,7 +90,7 @@
 								<div class="form-group text-center">
 									<label for="cid-{category.cid}-parentCid">Parent Category</label>
 									<br/>
-									<div class="btn-group <!-- IF !category.parent.name -->hide<!-- ENDIF !category.parent.name-->">
+									<div class="btn-group <!-- IF !category.parent.name -->hide<!-- ENDIF !category.parent.name -->">
 										<button type="button" class="btn btn-default" data-action="changeParent" data-parentCid="{category.parent.cid}"><i class="fa {category.parent.icon}"></i> {category.parent.name}</button>
 										<button type="button" class="btn btn-warning" data-action="removeParent" data-parentCid="{category.parent.cid}"><i class="fa fa-times"></i></button>
 									</div>

@@ -116,19 +116,6 @@ SocketUser.reset.commit = function(socket, data, callback) {
 	});
 };
 
-
-SocketUser.isAdminOrSelf = function(socket, uid, callback) {
-	if (socket.uid === parseInt(uid, 10)) {
-		return callback();
-	}
-	user.isAdministrator(socket.uid, function(err, isAdmin) {
-		if (err || !isAdmin) {
-			return callback(err || new Error('[[error:no-privileges]]'));
-		}
-		callback();
-	});
-};
-
 SocketUser.follow = function(socket, data, callback) {
 	if (!socket.uid || !data) {
 		return;
@@ -182,7 +169,7 @@ SocketUser.saveSettings = function(socket, data, callback) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
 
-	SocketUser.isAdminOrSelf(socket, data.uid, function(err) {
+	user.isAdminOrSelf(socket.uid, data.uid, function(err) {
 		if (err) {
 			return callback(err);
 		}
@@ -218,6 +205,17 @@ SocketUser.getUnreadChatCount = function(socket, data, callback) {
 		return callback(null, 0);
 	}
 	messaging.getUnreadCount(socket.uid, callback);
+};
+
+SocketUser.getUnreadCounts = function(socket, data, callback) {
+	if (!socket.uid) {
+		return callback(null, {});
+	}
+	async.parallel({
+		unreadTopicCount: async.apply(topics.getTotalUnread, socket.uid),
+		unreadChatCount: async.apply(messaging.getUnreadCount, socket.uid),
+		unreadNotificationCount: async.apply(user.notifications.getUnreadCount, socket.uid)
+	}, callback);
 };
 
 SocketUser.loadMore = function(socket, data, callback) {

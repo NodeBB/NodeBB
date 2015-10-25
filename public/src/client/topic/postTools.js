@@ -1,6 +1,6 @@
 'use strict';
 
-/* globals define, app, ajaxify, bootbox, socket, templates, utils */
+/* globals define, app, ajaxify, bootbox, socket, templates, utils, config */
 
 define('forum/topic/postTools', ['share', 'navigator', 'components', 'translator'], function(share, navigator, components, translator) {
 
@@ -15,6 +15,8 @@ define('forum/topic/postTools', ['share', 'navigator', 'components', 'translator
 		share.addShareHandlers(topicName);
 
 		addVoteHandler();
+
+		PostTools.updatePostCount(ajaxify.data.postcount);
 	};
 
 	PostTools.toggle = function(pid, isDeleted) {
@@ -28,20 +30,16 @@ define('forum/topic/postTools', ['share', 'navigator', 'components', 'translator
 		postEl.find('[component="post/purge"]').toggleClass('hidden', !isDeleted);
 	};
 
-	PostTools.updatePostCount = function() {
-		socket.emit('topics.postcount', ajaxify.data.tid, function(err, postCount) {
-			if (!err) {
-				var postCountEl = components.get('topic/post-count');
-				postCountEl.html(postCount).attr('title', postCount);
-				utils.makeNumbersHumanReadable(postCountEl);
-				navigator.setCount(postCount);
-			}
-		});
+	PostTools.updatePostCount = function(postCount) {
+		var postCountEl = components.get('topic/post-count');
+		postCountEl.html(postCount).attr('title', postCount);
+		utils.makeNumbersHumanReadable(postCountEl);
+		navigator.setCount(postCount);
 	};
 
 	function addVoteHandler() {
-		components.get('topic').on('mouseenter', '[data-pid] .votes', function() {
-			loadDataAndCreateTooltip($(this));
+		components.get('topic').on('mouseenter', '[data-pid] [component="post/vote-count"]', function() {
+			loadDataAndCreateTooltip($(this).parent());
 		});
 	}
 
@@ -55,6 +53,13 @@ define('forum/topic/postTools', ['share', 'navigator', 'components', 'translator
 	}
 
 	function createTooltip(el, data) {
+		function doCreateTooltip(title) {
+			el.attr('title', title).tooltip('fixTitle').tooltip('show');
+			el.on('hidden.bs.tooltip', function() {
+				el.tooltip('destroy');
+				el.off('hidden.bs.tooltip');
+			});
+		}
 		var usernames = data.usernames;
 		if (!usernames.length) {
 			return;
@@ -63,11 +68,11 @@ define('forum/topic/postTools', ['share', 'navigator', 'components', 'translator
 			usernames = usernames.join(', ').replace(/,/g, '|');
 			translator.translate('[[topic:users_and_others, ' + usernames + ', ' + data.otherCount + ']]', function(translated) {
 				translated = translated.replace(/\|/g, ',');
-				el.attr('title', translated).tooltip('destroy').tooltip('show');
+				doCreateTooltip(translated);
 			});
 		} else {
 			usernames = usernames.join(', ');
-			el.attr('title', usernames).tooltip('destroy').tooltip('show');
+			doCreateTooltip(usernames);
 		}
 	}
 
@@ -103,40 +108,42 @@ define('forum/topic/postTools', ['share', 'navigator', 'components', 'translator
 		});
 
 		postContainer.on('click', '[component="post/flag"]', function() {
-			flagPost(getData($(this), 'data-pid'));
+			var pid = getData($(this), 'data-pid');
+			require(['forum/topic/flag'], function(flag) {
+				flag.showFlagModal(pid);
+			});
 		});
 
-		postContainer.on('click', '[component="post/edit"]', function(e) {
+		postContainer.on('click', '[component="post/edit"]', function() {
 			var btn = $(this);
 			$(window).trigger('action:composer.post.edit', {
 				pid: getData(btn, 'data-pid')
 			});
 		});
 
-		postContainer.on('click', '[component="post/delete"]', function(e) {
+		postContainer.on('click', '[component="post/delete"]', function() {
 			togglePostDelete($(this), tid);
 		});
 
-		postContainer.on('click', '[component="post/restore"]', function(e) {
+		postContainer.on('click', '[component="post/restore"]', function() {
 			togglePostDelete($(this), tid);
 		});
 
-		postContainer.on('click', '[component="post/purge"]', function(e) {
+		postContainer.on('click', '[component="post/purge"]', function() {
 			purgePost($(this), tid);
 		});
 
-		postContainer.on('click', '[component="post/move"]', function(e) {
+		postContainer.on('click', '[component="post/move"]', function() {
 			openMovePostModal($(this));
 		});
 
-		postContainer.on('click', '[component="post/chat"]', function(e) {
+		postContainer.on('click', '[component="post/chat"]', function() {
 			openChat($(this));
 		});
 	}
 
 	function onReplyClicked(button, tid, topicName) {
 		showStaleWarning(function(proceed) {
-			console.log('proceed is', proceed);
 			if (!proceed) {
 				var selectionText = '',
 					selection = window.getSelection ? window.getSelection() : document.selection.createRange();
@@ -363,22 +370,7 @@ define('forum/topic/postTools', ['share', 'navigator', 'components', 'translator
 		});
 	}
 
-	function flagPost(pid) {
-		translator.translate('[[topic:flag_confirm]]', function(message) {
-			bootbox.confirm(message, function(confirm) {
-				if (!confirm) {
-					return;
-				}
-				socket.emit('posts.flag', pid, function(err) {
-					if (err) {
-						return app.alertError(err.message);
-					}
 
-					app.alertSuccess('[[topic:flag_success]]');
-				});
-			});
-		});
-	}
 
 	function openChat(button) {
 		var post = button.parents('[data-pid]');

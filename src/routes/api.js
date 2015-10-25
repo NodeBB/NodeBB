@@ -2,8 +2,6 @@
 
 var express = require('express'),
 
-	posts = require('../posts'),
-	categories = require('../categories'),
 	uploadsController = require('../controllers/uploads');
 
 module.exports =  function(app, middleware, controllers) {
@@ -22,6 +20,7 @@ module.exports =  function(app, middleware, controllers) {
 	router.get('/categories/:cid/moderators', controllers.api.getModerators);
 	router.get('/recent/posts/:term?', controllers.api.getRecentPosts);
 	router.get('/unread/total', middleware.authenticate, controllers.unread.unreadTotal);
+	router.get('/topic/teaser/:topic_id', controllers.topics.teaser);
 
 	var multipart = require('connect-multiparty');
 	var multipartMiddleware = multipart();

@@ -28,6 +28,8 @@ define('forum/topic/posts', [
 		});
 
 		updatePostCounts(data.posts);
+		ajaxify.data.postcount ++;
+		postTools.updatePostCount(ajaxify.data.postcount);
 
 		if (config.usePagination) {
 			onNewPostPagination(data);
@@ -51,15 +53,15 @@ define('forum/topic/posts', [
 
 		var posts = data.posts;
 
-		pagination.pageCount = Math.max(1, Math.ceil((posts[0].topic.postcount - 1) / config.postsPerPage));
+		ajaxify.data.pagination.pageCount = Math.max(1, Math.ceil((posts[0].topic.postcount - 1) / config.postsPerPage));
 		var direction = config.topicPostSort === 'oldest_to_newest' || config.topicPostSort === 'most_votes' ? 1 : -1;
 
-		var isPostVisible = (pagination.currentPage === pagination.pageCount && direction === 1) || (pagination.currentPage === 1 && direction === -1);
+		var isPostVisible = (ajaxify.data.pagination.currentPage === ajaxify.data.pagination.pageCount && direction === 1) || (ajaxify.data.pagination.currentPage === 1 && direction === -1);
 
 		if (isPostVisible) {
 			createNewPosts(data, components.get('post').not('[data-index=0]'), direction, scrollToPost);
 		} else if (parseInt(posts[0].uid, 10) === parseInt(app.user.uid, 10)) {
-			pagination.loadPage(pagination.pageCount, scrollToPost);
+			pagination.loadPage(ajaxify.data.pagination.pageCount, scrollToPost);
 		}
 	}
 
@@ -220,17 +222,15 @@ define('forum/topic/posts', [
 				$this.wrap('<a href="' + $this.attr('src') + '" target="_blank">');
 			}
 		});
-		postTools.updatePostCount();
-		addBlockquoteEllipses(posts.find('[component="post/content"] > blockquote'));
+
+		addBlockquoteEllipses(posts.find('[component="post/content"] > blockquote > blockquote'));
 		hidePostToolsForDeletedPosts(posts);
-		showBottomPostBar();
+		Posts.showBottomPostBar();
 	};
 
-	function showBottomPostBar() {
-		if (components.get('post').length > 1 || !components.get('post', 'index', 0).length) {
-			$('.bottom-post-bar').removeClass('hidden');
-		}
-	}
+	Posts.showBottomPostBar = function() {
+		$('.bottom-post-bar').toggleClass('hidden', components.get('post').length <= 1 && !!components.get('post', 'index', 0).length);
+	};
 
 	function hidePostToolsForDeletedPosts(posts) {
 		posts.each(function() {

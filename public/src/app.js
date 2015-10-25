@@ -71,11 +71,13 @@ app.cacheBuster = null;
 				}
 			});
 
-			require(['taskbar', 'helpers'], function(taskbar, helpers) {
+			require(['taskbar', 'helpers', 'forum/pagination'], function(taskbar, helpers, pagination) {
 				taskbar.init();
 
 				// templates.js helpers
 				helpers.register();
+
+				pagination.init();
 
 				$(window).trigger('action:app.load');
 			});
@@ -143,13 +145,24 @@ app.cacheBuster = null;
 				'icon:text': app.user['icon:text']
 			}, function(err) {
 				if (err) {
-					app.alertError(err.message);
-					return;
+					return app.alertError(err.message);
 				}
 				app.currentRoom = room;
 			});
 		}
 	};
+
+	app.leaveCurrentRoom = function() {
+		if (!socket) {
+			return;
+		}
+		socket.emit('meta.rooms.leaveCurrent', function(err) {
+			if (err) {
+				return app.alertError(err.message);
+			}
+			app.currentRoom = '';
+		});
+	}
 
 	function highlightNavigationLink() {
 		var path = window.location.pathname;

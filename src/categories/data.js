@@ -53,17 +53,11 @@ module.exports = function(Categories) {
 		}
 
 		if (category.description) {
-			plugins.fireHook('filter:parse.raw', category.description, function(err, parsedDescription) {
-				if (err) {
-					return callback(err);
-				}
-				category.descriptionParsed = parsedDescription;
-				category.description = validator.escape(category.description);
-				callback(null, category);
-			});
-		} else {
-			callback(null, category);
+			category.description = validator.escape(category.description);
+			category.descriptionParsed = category.descriptionParsed || category.description;
 		}
+
+		callback(null, category);
 	}
 
 	Categories.getCategoryField = function(cid, field, callback) {

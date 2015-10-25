@@ -114,7 +114,7 @@ function validateUpload(req, res, next, uploadedFile, allowedTypes) {
 			}
 		});
 
-		res.json({error: '[[error:invalid-image-type, ' + allowedTypes.join(', ') + ']]'});
+		res.json({error: '[[error:invalid-image-type, ' + allowedTypes.join('&#44; ') + ']]'});
 		return false;
 	}
 

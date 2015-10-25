@@ -84,6 +84,7 @@ apiController.getConfig = function(req, res, next) {
 	config.categoryTopicSort = meta.config.categoryTopicSort || 'newest_to_oldest';
 	config.csrf_token = req.csrfToken();
 	config.searchEnabled = plugins.hasListeners('filter:search.query');
+	config.bootswatchSkin = 'default';
 
 	if (!req.user) {
 		return filterConfig();
@@ -103,6 +104,7 @@ apiController.getConfig = function(req, res, next) {
 		config.topicPostSort = settings.topicPostSort || config.topicPostSort;
 		config.categoryTopicSort = settings.categoryTopicSort || config.categoryTopicSort;
 		config.topicSearchEnabled = settings.topicSearchEnabled || false;
+		config.bootswatchSkin = settings.bootswatchSkin || config.bootswatchSkin;
 
 		filterConfig();
 	});

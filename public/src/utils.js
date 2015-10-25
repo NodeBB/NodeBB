@@ -381,6 +381,12 @@
 		};
 	}
 
+	if (typeof String.prototype.rtrim != 'function') {
+		String.prototype.rtrim = function() {
+			return this.replace(/\s+$/g, '');
+		};
+	}
+
 	if ('undefined' !== typeof window) {
 		window.utils = module.exports;
 	}

@@ -54,28 +54,20 @@
 					<label for="add-member">Add User to Group</label>
 					<input type="text" class="form-control" id="group-details-search" placeholder="Search Users" />
 					<ul class="members user-list" id="group-details-search-results"></ul>
+
 				</fieldset>
 
 				<fieldset>
-					<label>Members</label>
-					<p>Click on a user to remove them from the group</p>
-
 					<div class="panel panel-default">
+						<div class="panel-heading">
+							<h3 class="panel-title"><i class="fa fa-users"></i> [[groups:details.members]]</h3>
+						</div>
 						<div class="panel-body">
-							<ul class="members current_members user-list">
-								<!-- BEGIN group.members -->
-									<li data-uid="{group.members.uid}">
-										<!-- IF group.members.picture -->
-										<img src="{group.members.picture}" />
-										<!-- ELSE -->
-										<div class="user-icon" style="background-color: {group.members.icon:bgColor};">{group.members.icon:text}</div>
-										<!-- ENDIF group.members.picture -->
-										<span>{group.members.username}</span>
-									</li>
-								<!-- END group.members -->
-							</ul>
+							<!-- IMPORT partials/groups/memberlist.tpl -->
 						</div>
 					</div>
+
+
 				</fieldset>
 			</div>
 		</div>

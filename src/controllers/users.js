@@ -58,6 +58,9 @@ usersController.getUsersSortedByPosts = function(req, res, next) {
 };
 
 usersController.getUsersSortedByReputation = function(req, res, next) {
+	if (parseInt(meta.config['reputation:disabled'], 10) === 1) {
+		return next();
+	}
 	usersController.getUsers('users:reputation', 0, 49, req, res, next);
 };
 
@@ -217,6 +220,7 @@ usersController.getMap = function(req, res, next) {
 
 		res.render('usersMap', {
 			rooms: data,
+			'reputation:disabled': parseInt(meta.config['reputation:disabled'], 10) === 1,
 			title: '[[pages:users/map]]',
 			breadcrumbs: helpers.buildBreadcrumbs([{text: '[[global:users]]', url: '/users'}, {text: '[[global:map]]'}])
 		});
@@ -230,6 +234,7 @@ function render(req, res, data, next) {
 		}
 
 		data.templateData.inviteOnly = meta.config.registrationType === 'invite-only';
+		data.templateData['reputation:disabled'] = parseInt(meta.config['reputation:disabled'], 10) === 1;
 		res.render('users', data.templateData);
 	});
 }

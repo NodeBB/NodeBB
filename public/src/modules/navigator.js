@@ -18,7 +18,7 @@ define('navigator', ['forum/pagination', 'components'], function(pagination, com
 		toTop = toTop || function() {};
 		toBottom = toBottom || function() {};
 
-		$(window).on('scroll', navigator.update);
+		$(window).off('scroll', navigator.update).on('scroll', navigator.update);
 
 		$('.pagination-block .dropdown-menu').off('click').on('click', function(e) {
 			e.stopPropagation();
@@ -74,7 +74,12 @@ define('navigator', ['forum/pagination', 'components'], function(pagination, com
 		toggle(true);
 	};
 
-	navigator.hide = function() {
+	navigator.disable = function() {
+		count = 0;
+		index = 1;
+		navigator.selector = navigator.callback = null;
+		$(window).off('scroll', navigator.update);
+
 		toggle(false);
 	};
 
@@ -92,12 +97,18 @@ define('navigator', ['forum/pagination', 'components'], function(pagination, com
 
 		var middleOfViewport = $(window).scrollTop() + $(window).height() / 2;
 
-		index = parseInt($(navigator.selector).first().attr('data-index'), 10);
-
+		index = parseInt($(navigator.selector).first().attr('data-index'), 10) + 1;
+		var previousDistance = Number.MAX_VALUE;
 		$(navigator.selector).each(function() {
-			index++;
-			if ($(this).offset().top > middleOfViewport) {
+			var distanceToMiddle = Math.abs(middleOfViewport - $(this).offset().top);
+
+			if (distanceToMiddle > previousDistance) {
 				return false;
+			}
+
+			if (distanceToMiddle < previousDistance) {
+				index = parseInt($(this).attr('data-index'), 10) + 1;
+				previousDistance = distanceToMiddle;
 			}
 		});
 
@@ -162,7 +173,7 @@ define('navigator', ['forum/pagination', 'components'], function(pagination, com
 		if (config.usePagination) {
 			var page = Math.max(1, Math.ceil(postIndex / config.postsPerPage));
 
-			if (parseInt(page, 10) !== pagination.currentPage) {
+			if (parseInt(page, 10) !== ajaxify.data.pagination.currentPage) {
 				pagination.loadPage(page, function() {
 					navigator.scrollToPostIndex(postIndex, highlight, duration);
 				});

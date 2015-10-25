@@ -59,12 +59,13 @@ groupsController.get = function(req, res, callback) {
 			if (!exists) {
 				return callback();
 			}
-			groups.get(groupName, {uid: req.uid}, next);
+			groups.get(groupName, {uid: req.uid, truncateUserList: true, userListCount: 20}, next);
 		}
 	], function(err, group) {
 		if (err) {
 			return callback(err);
 		}
+		group.isOwner = true;
 		res.render('admin/manage/group', {group: group});
 	});
 };

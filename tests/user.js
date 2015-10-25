@@ -55,12 +55,12 @@ describe('User', function() {
 			});
 		});
 
-		it('should have a valid email, if using an email', function() {
-			assert.throws(
-				User.create({username: userData.username, password: userData.password, email: 'fakeMail'},function(){}),
-				Error,
-				'does not validate email'
-			);
+		it('should have a valid email, if using an email', function(done) {
+			User.create({username: userData.username, password: userData.password, email: 'fakeMail'},function(err) {
+				assert(err);
+				assert.equal(err.message, '[[error:invalid-email]]');
+				done();
+			});
 		});
 	});
 

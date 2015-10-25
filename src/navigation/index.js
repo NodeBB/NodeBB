@@ -2,8 +2,6 @@
 
 
 var navigation = {},
-	plugins = require('../plugins'),
-	db = require('../database'),
 	admin = require('./admin'),
 	translator = require('../../public/src/modules/translator');
 

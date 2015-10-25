@@ -2,7 +2,8 @@
 'use strict';
 
 var async = require('async'),
-	validator = require('validator'),
+
+	meta = require('../meta'),
 	plugins = require('../plugins'),
 	search = require('../search'),
 	categories = require('../categories'),
@@ -15,6 +16,10 @@ var searchController = {};
 searchController.search = function(req, res, next) {
 	if (!plugins.hasListeners('filter:search.query')) {
 		return next();
+	}
+
+	if (!req.user && parseInt(meta.config.allowGuestSearching, 10) !== 1) {
+		return helpers.notAllowed(req, res);
 	}
 
 	var page = Math.max(1, parseInt(req.query.page, 10)) || 1;
@@ -51,6 +56,7 @@ searchController.search = function(req, res, next) {
 		searchData.pagination = pagination.create(page, searchData.pageCount, req.query);
 		searchData.showAsPosts = !req.query.showAs || req.query.showAs === 'posts';
 		searchData.showAsTopics = req.query.showAs === 'topics';
+		searchData.title = '[[global:header.search]]';
 		searchData.breadcrumbs = helpers.buildBreadcrumbs([{text: '[[global:search]]'}]);
 		searchData.expandSearch = !req.params.term;
 

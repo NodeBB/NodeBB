@@ -142,7 +142,7 @@ module.exports = function(Topics) {
 			if (err) {
 				return callback(err);
 			}
-			require('../socket.io').in('uid_' + uid).emit('event:unread.updateCount', null, count);
+			require('../socket.io').in('uid_' + uid).emit('event:unread.updateCount', count);
 			callback();
 		});
 	};

@@ -47,7 +47,8 @@
 	function selectMenuItem(url) {
 		url = url
 			.replace(/\/\d+$/, '')
-			.split('/').slice(0, 3).join('/');
+			.split('/').slice(0, 3).join('/')
+			.split('?')[0];
 
 		// If index is requested, load the dashboard
 		if (url === 'admin') {

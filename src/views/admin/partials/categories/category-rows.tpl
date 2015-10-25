@@ -16,7 +16,7 @@
             <div class="col-md-3">
                 <div class="clearfix pull-right text-right">
                     <div class="btn-group">
-                        <button data-action="toggle" data-disabled="{categories.disabled}" class="btn <!-- IF categories.disabled -->btn-primary<!-- ELSE -->btn-danger<!-- ENDIF categories.disabled -->">
+                        <button data-cid="{categories.cid}" data-action="toggle" data-disabled="{categories.disabled}" class="btn <!-- IF categories.disabled -->btn-primary<!-- ELSE -->btn-danger<!-- ENDIF categories.disabled -->">
                             <!-- IF categories.disabled -->Enable<!-- ELSE -->Disable<!-- ENDIF categories.disabled -->
                         </button>
                         <a href="./categories/{categories.cid}" class="btn btn-default">Edit</a>

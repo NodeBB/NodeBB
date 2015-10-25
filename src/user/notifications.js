@@ -21,7 +21,7 @@ var async = require('async'),
 		if (!parseInt(uid, 10)) {
 			return callback(null , {read: [], unread: []});
 		}
-		getNotifications(uid, 10, function(err, notifications) {
+		getNotifications(uid, 0, 9, function(err, notifications) {
 			if (err) {
 				return callback(err);
 			}
@@ -38,8 +38,8 @@ var async = require('async'),
 		});
 	};
 
-	UserNotifications.getAll = function(uid, count, callback) {
-		getNotifications(uid, count, function(err, notifs) {
+	UserNotifications.getAll = function(uid, start, stop, callback) {
+		getNotifications(uid, start, stop, function(err, notifs) {
 			if (err) {
 				return callback(err);
 			}
@@ -52,13 +52,13 @@ var async = require('async'),
 		});
 	};
 
-	function getNotifications(uid, count, callback) {
+	function getNotifications(uid, start, stop, callback) {
 		async.parallel({
 			unread: function(next) {
-				getNotificationsFromSet('uid:' + uid + ':notifications:unread', false, uid, 0, count - 1, next);
+				getNotificationsFromSet('uid:' + uid + ':notifications:unread', false, uid, start, stop, next);
 			},
 			read: function(next) {
-				getNotificationsFromSet('uid:' + uid + ':notifications:read', true, uid, 0, count - 1, next);
+				getNotificationsFromSet('uid:' + uid + ':notifications:read', true, uid, start, stop, next);
 			}
 		}, callback);
 	}

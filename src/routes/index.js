@@ -4,7 +4,6 @@ var nconf = require('nconf'),
 	path = require('path'),
 	winston = require('winston'),
 	controllers = require('../controllers'),
-	meta = require('../meta'),
 	plugins = require('../plugins'),
 	express = require('express'),
 
@@ -30,14 +29,12 @@ function mainRoutes(app, middleware, controllers) {
 	setupPageRoute(app, '/compose', middleware, [middleware.authenticate], controllers.compose);
 	setupPageRoute(app, '/confirm/:code', middleware, [], controllers.confirmEmail);
 	setupPageRoute(app, '/outgoing', middleware, [], controllers.outgoing);
-	setupPageRoute(app, '/search/:term?', middleware, [middleware.guestSearchingAllowed], controllers.search.search);
+	setupPageRoute(app, '/search/:term?', middleware, [], controllers.search.search);
 	setupPageRoute(app, '/reset/:code?', middleware, [], controllers.reset);
 	setupPageRoute(app, '/tos', middleware, [], controllers.termsOfUse);
 }
 
 function topicRoutes(app, middleware, controllers) {
-	app.get('/api/topic/teaser/:topic_id', controllers.topics.teaser);
-
 	setupPageRoute(app, '/topic/:topic_id/:slug/:post_index?', middleware, [], controllers.topics.get);
 	setupPageRoute(app, '/topic/:topic_id/:slug?', middleware, [], controllers.topics.get);
 }
@@ -120,15 +117,7 @@ module.exports = function(app, middleware) {
 		require('./debug')(app, middleware, controllers);
 	}
 
-	app.use(function(req, res, next) {
-		if (req.user || parseInt(meta.config.privateUploads, 10) !== 1) {
-			return next();
-		}
-		if (req.path.startsWith('/uploads/files')) {
-			return res.status(403).json('not-allowed');
-		}
-		next();
-	});
+	app.use(middleware.privateUploads);
 
 	app.use(relativePath, express.static(path.join(__dirname, '../../', 'public'), {
 		maxAge: app.enabled('cache') ? 5184000000 : 0
@@ -144,7 +133,11 @@ module.exports = function(app, middleware) {
 };
 
 function handle404(app, middleware) {
-	app.use(function(req, res, next) {
+	var relativePath = nconf.get('relative_path');
+	var	isLanguage = new RegExp('^' + relativePath + '/language/[\\w]{2,}/.*.json'),
+		isClientScript = new RegExp('^' + relativePath + '\\/src\\/.+\\.js');
+
+	app.use(function(req, res) {
 		if (plugins.hasListeners('action:meta.override404')) {
 			return plugins.fireHook('action:meta.override404', {
 				req: req,
@@ -153,14 +146,14 @@ function handle404(app, middleware) {
 			});
 		}
 
-		var relativePath = nconf.get('relative_path');
-		var	isLanguage = new RegExp('^' + relativePath + '/language/[\\w]{2,}/.*.json'),
-			isClientScript = new RegExp('^' + relativePath + '\\/src\\/.+\\.js');
-
 		if (isClientScript.test(req.url)) {
 			res.type('text/javascript').status(200).send('');
 		} else if (isLanguage.test(req.url)) {
 			res.status(200).json({});
+		} else if (req.path.startsWith(relativePath + '/uploads')) {
+			res.status(404).send('');
+		} else if (req.path === '/favicon.ico') {
+			res.status(404).send('');
 		} else if (req.accepts('html')) {
 			if (process.env.NODE_ENV === 'development') {
 				winston.warn('Route requested but not found: ' + req.url);
@@ -182,7 +175,7 @@ function handle404(app, middleware) {
 }
 
 function handleErrors(app, middleware) {
-	app.use(function(err, req, res, next) {
+	app.use(function(err, req, res) {
 		if (err.code === 'EBADCSRFTOKEN') {
 			winston.error(req.path + '\n', err.message);
 			return res.sendStatus(403);

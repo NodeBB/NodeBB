@@ -4,14 +4,8 @@
 define('forum/pagination', function() {
 	var pagination = {};
 
-	pagination.currentPage = 0;
-	pagination.pageCount = 0;
-
-	pagination.init = function(currentPage, pageCount) {
-		pagination.currentPage = parseInt(currentPage, 10);
-		pagination.pageCount = parseInt(pageCount, 10);
-
-		$('.pagination').on('click', '.select-page', function(e) {
+	pagination.init = function() {
+		$('body').on('click', '.pagination .select-page', function(e) {
 			e.preventDefault();
 			bootbox.prompt('Enter page number:', function(pageNum) {
 				pagination.loadPage(pageNum);
@@ -22,10 +16,14 @@ define('forum/pagination', function() {
 	pagination.loadPage = function(page, callback) {
 		callback = callback || function() {};
 		page = parseInt(page, 10);
-		if (!utils.isNumber(page) || page < 1 || page > pagination.pageCount) {
+		if (!utils.isNumber(page) || page < 1 || page > ajaxify.data.pagination.pageCount) {
 			return;
 		}
-		var url = window.location.pathname.slice(1).split('/').slice(0, 3).join('/') + '?page=' + page;
+
+		var query = utils.params();
+		query.page = page;
+
+		var url = window.location.pathname + '?' + $.param(query);
 		ajaxify.go(url, callback);
 	};
 

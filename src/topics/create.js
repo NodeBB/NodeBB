@@ -101,6 +101,9 @@ module.exports = function(Topics) {
 				check(data.tags, meta.config.minimumTagsPerTopic, meta.config.maximumTagsPerTopic, 'not-enough-tags', 'too-many-tags', next);
 			},
 			function(next) {
+				if (data.content) {
+					data.content = data.content.rtrim();
+				}
 				check(data.content, meta.config.minimumPostLength, meta.config.maximumPostLength, 'content-too-short', 'content-too-long', next);
 			},
 			function(next) {
@@ -228,7 +231,7 @@ module.exports = function(Topics) {
 			function(filteredData, next) {
 				content = filteredData.content || data.content;
 				if (content) {
-					content = content.trim();
+					content = content.rtrim();
 				}
 
 				check(content, meta.config.minimumPostLength, meta.config.maximumPostLength, 'content-too-short', 'content-too-long', next);

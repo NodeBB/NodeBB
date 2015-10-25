@@ -1,5 +1,5 @@
 "use strict";
-/*global define, socket, app, admin, utils, bootbox, RELATIVE_PATH*/
+/*global define, socket, app, utils, bootbox*/
 
 define('admin/manage/tags', [
 	'forum/infinitescroll',
@@ -25,12 +25,12 @@ define('admin/manage/tags', [
 			}
 
 			timeoutId = setTimeout(function() {
-				socket.emit('topics.searchAndLoadTags', {query: $('#tag-search').val()}, function(err, tags) {
+				socket.emit('topics.searchAndLoadTags', {query: $('#tag-search').val()}, function(err, result) {
 					if (err) {
 						return app.alertError(err.message);
 					}
 
-					infinitescroll.parseAndTranslate('admin/manage/tags', 'tags', {tags: tags}, function(html) {
+					infinitescroll.parseAndTranslate('admin/manage/tags', 'tags', {tags: result.tags}, function(html) {
 						$('.tag-list').html(html);
 						utils.makeNumbersHumanReadable(html.find('.human-readable-number'));
 						timeoutId = 0;
@@ -43,7 +43,7 @@ define('admin/manage/tags', [
 	}
 
 	function handleModify() {
-		$('#modify').on('click', function(ev) {
+		$('#modify').on('click', function() {
 			var tagsToModify = $('.tag-row.selected');
 			if (!tagsToModify.length) {
 				return;

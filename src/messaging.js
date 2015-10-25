@@ -111,7 +111,8 @@ var db = require('./database'),
 			touid = params.touid,
 			since = params.since,
 			isNew = params.isNew,
-			count = params.count || parseInt(meta.config.chatMessageInboxSize, 10) || 250;
+			count = params.count || parseInt(meta.config.chatMessageInboxSize, 10) || 250,
+			markRead = params.markRead || true;
 
 		var uids = sortUids(fromuid, touid),
 			min = params.count ? 0 : Date.now() - (terms[since] || terms.day);
@@ -135,13 +136,15 @@ var db = require('./database'),
 			getMessages(mids, fromuid, touid, isNew, callback);
 		});
 
-		notifications.markRead('chat_' + touid + '_' + fromuid, fromuid, function(err) {
-			if (err) {
-				winston.error('[messaging] Could not mark notifications related to this chat as read: ' + err.message);
-			}
+		if (markRead) {
+			notifications.markRead('chat_' + touid + '_' + fromuid, fromuid, function(err) {
+				if (err) {
+					winston.error('[messaging] Could not mark notifications related to this chat as read: ' + err.message);
+				}
 
-			userNotifications.pushCount(fromuid);
-		});
+				userNotifications.pushCount(fromuid);
+			});
+		}
 	};
 
 	function getMessages(mids, fromuid, touid, isNew, callback) {
@@ -271,7 +274,8 @@ var db = require('./database'),
 							fromuid: fromuid,
 							touid: uid,
 							isNew: false,
-							count: 1
+							count: 1,
+							markRead: false
 						}, function(err, teaser) {
 							var teaser = teaser[0];
 							teaser.content = S(teaser.content).stripTags().decodeHTMLEntities().s;
@@ -286,7 +290,6 @@ var db = require('./database'),
 
 				results.users.forEach(function(user, index) {
 					if (user && parseInt(user.uid, 10)) {
-						Messaging.markRead(uid, uids[index]);
 						user.unread = results.unread[index];
 						user.status = sockets.isUserOnline(user.uid) ? user.status : 'offline';
 						user.teaser = results.teasers[index];
@@ -311,7 +314,7 @@ var db = require('./database'),
 			if (err) {
 				return;
 			}
-			sockets.in('uid_' + uid).emit('event:unread.updateChatCount', null, unreadCount);
+			sockets.in('uid_' + uid).emit('event:unread.updateChatCount', unreadCount);
 		});
 	};
 

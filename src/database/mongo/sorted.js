@@ -125,7 +125,7 @@ module.exports = function(db, module) {
 		if (withScores) {
 			fields.score = 1;
 		}
-		db.collection('objects').find({_key:key}, {fields: fields})
+		db.collection('objects').find({_key: key}, {fields: fields})
 			.limit(stop - start + 1)
 			.skip(start)
 			.sort({score: sort})

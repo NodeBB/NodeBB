@@ -1,15 +1,10 @@
 'use strict';
 
-var	nconf = require('nconf'),
-	winston = require('winston'),
-	validator = require('validator'),
+var	validator = require('validator'),
 
-	db = require('../database'),
 	meta = require('../meta'),
 	user = require('../user'),
 	topics = require('../topics'),
-	logger = require('../logger'),
-	plugins = require('../plugins'),
 	emitter = require('../emitter'),
 	rooms = require('./rooms'),
 
@@ -52,13 +47,7 @@ SocketMeta.rooms.enter = function(socket, data, callback) {
 		return callback(new Error('[[error:not-allowed]]'));
 	}
 
-	if (socket.currentRoom) {
-		rooms.leave(socket, socket.currentRoom);
-		if (socket.currentRoom.indexOf('topic') !== -1) {
-			websockets.in(socket.currentRoom).emit('event:user_leave', socket.uid);
-		}
-		socket.currentRoom = '';
-	}
+	leaveCurrentRoom(socket);
 
 	if (data.enter) {
 		rooms.enter(socket, data.enter);
@@ -74,6 +63,24 @@ SocketMeta.rooms.enter = function(socket, data, callback) {
 	}
 	callback();
 };
+
+SocketMeta.rooms.leaveCurrent = function(socket, data, callback) {
+	if (!socket.uid || !socket.currentRoom) {
+		return callback();
+	}
+	leaveCurrentRoom(socket);
+	callback();
+};
+
+function leaveCurrentRoom(socket) {
+	if (socket.currentRoom) {
+		rooms.leave(socket, socket.currentRoom);
+		if (socket.currentRoom.indexOf('topic') !== -1) {
+			websockets.in(socket.currentRoom).emit('event:user_leave', socket.uid);
+		}
+		socket.currentRoom = '';
+	}
+}
 
 SocketMeta.rooms.getAll = function(socket, data, callback) {
 	var roomClients = rooms.roomClients();

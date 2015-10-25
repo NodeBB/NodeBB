@@ -4,7 +4,6 @@
 /* globals define, app, socket, config, ajaxify, RELATIVE_PATH, utils */
 
 define('forum/topic', [
-	'forum/pagination',
 	'forum/infinitescroll',
 	'forum/topic/threadTools',
 	'forum/topic/postTools',
@@ -14,13 +13,13 @@ define('forum/topic', [
 	'navigator',
 	'sort',
 	'components'
-], function(pagination, infinitescroll, threadTools, postTools, events, browsing, posts, navigator, sort, components) {
+], function(infinitescroll, threadTools, postTools, events, browsing, posts, navigator, sort, components) {
 	var	Topic = {},
 		currentUrl = '';
 
 	$(window).on('action:ajaxify.start', function(ev, data) {
 		if (ajaxify.currentPage !== data.url) {
-			navigator.hide();
+			navigator.disable();
 			components.get('navbar/title').find('span').text('').hide();
 			app.removeAlert('bookmark');
 
@@ -147,7 +146,7 @@ define('forum/topic', [
 			if (components.get('post/anchor', postIndex).length) {
 				return navigator.scrollToPostIndex(postIndex, true);
 			}
-		} else if (bookmark && (!config.usePagination || (config.usePagination && pagination.currentPage === 1)) && ajaxify.data.postcount > 10) {
+		} else if (bookmark && (!config.usePagination || (config.usePagination && ajaxify.data.pagination.currentPage === 1)) && ajaxify.data.postcount > 5) {
 			app.alert({
 				alert_id: 'bookmark',
 				message: '[[topic:bookmark_instructions]]',
@@ -217,12 +216,9 @@ define('forum/topic', [
 		if (!config.usePagination) {
 			infinitescroll.init($('[component="topic"]'), posts.loadMorePosts);
 		} else {
-			navigator.hide();
-
-			pagination.init(parseInt(ajaxify.data.currentPage, 10), parseInt(ajaxify.data.pageCount, 10));
+			navigator.disable();
 		}
 	}
-
 
 	function updateTopicTitle() {
 		if ($(window).scrollTop() > 50) {
@@ -281,7 +277,7 @@ define('forum/topic', [
 		var bookmarkKey = 'topic:' + ajaxify.data.tid + ':bookmark';
 		var currentBookmark = ajaxify.data.bookmark || localStorage.getItem(bookmarkKey);
 
-		if (!currentBookmark || parseInt(index, 10) > parseInt(currentBookmark, 10)) {
+		if (ajaxify.data.postcount > 5 && (!currentBookmark || parseInt(index, 10) > parseInt(currentBookmark, 10))) {
 			if (app.user.uid) {
 				socket.emit('topics.bookmark', {
 					'tid': ajaxify.data.tid,

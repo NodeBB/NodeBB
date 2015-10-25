@@ -2,7 +2,6 @@
 /* global define, config, templates, app, utils, ajaxify, socket */
 
 define('forum/category', [
-	'forum/pagination',
 	'forum/infinitescroll',
 	'share',
 	'navigator',
@@ -10,13 +9,12 @@ define('forum/category', [
 	'sort',
 	'components',
 	'translator'
-
-], function(pagination, infinitescroll, share, navigator, categoryTools, sort, components, translator) {
+], function(infinitescroll, share, navigator, categoryTools, sort, components, translator) {
 	var Category = {};
 
 	$(window).on('action:ajaxify.start', function(ev, data) {
 		if (ajaxify.currentPage !== data.url) {
-			navigator.hide();
+			navigator.disable();
 
 			removeListeners();
 		}
@@ -41,11 +39,11 @@ define('forum/category', [
 
 		sort.handleSort('categoryTopicSort', 'user.setCategorySort', 'category/' + ajaxify.data.slug);
 
-		enableInfiniteLoadingOrPagination();
-
 		if (!config.usePagination) {
 			navigator.init('[component="category/topic"]', ajaxify.data.topic_count, Category.toTop, Category.toBottom, Category.navigatorCallback);
 		}
+
+		enableInfiniteLoadingOrPagination();
 
 		$('[component="category"]').on('click', '[component="topic/header"]', function() {
 			var clickedIndex = $(this).parents('[data-index]').attr('data-index');
@@ -112,7 +110,7 @@ define('forum/category', [
 
 			if (config.usePagination) {
 				var page = Math.ceil((parseInt(bookmarkIndex, 10) + 1) / config.topicsPerPage);
-				if (parseInt(page, 10) !== pagination.currentPage) {
+				if (parseInt(page, 10) !== ajaxify.data.pagination.currentPage) {
 					pagination.loadPage(page, function() {
 						Category.scrollToTopic(bookmarkIndex, clickedIndex, 400);
 					});
@@ -175,8 +173,7 @@ define('forum/category', [
 		if (!config.usePagination) {
 			infinitescroll.init($('[component="category"]'), Category.loadMoreTopics);
 		} else {
-			navigator.hide();
-			pagination.init(ajaxify.data.currentPage, ajaxify.data.pageCount);
+			navigator.disable();
 		}
 	}
 
