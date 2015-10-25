@@ -97,7 +97,7 @@ define('forum/topic/threadTools', ['forum/topic/fork', 'forum/topic/move', 'comp
 	};
 
 	function renderMenu() {
-		function render() {
+		$('.topic').on('show.bs.dropdown', '.thread-tools', function () {
 			var $this = $(this);
 			var dropdownMenu = $this.find('.dropdown-menu');
 			if (dropdownMenu.html()) {
@@ -115,10 +115,7 @@ define('forum/topic/threadTools', ['forum/topic/fork', 'forum/topic/move', 'comp
 					});
 				});
 			});
-		}
-
-		$('[component="topic"]').on('show.bs.dropdown', '.thread-tools', render);
-		$('.bottom-post-bar').on('show.bs.dropdown', '.thread-tools', render);
+		});
 	}
 
 	function topicCommand(command, tid) {
