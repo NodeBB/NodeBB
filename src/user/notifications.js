@@ -130,9 +130,9 @@ var async = require('async'),
 				notification.path = pidToPaths[notification.pid] || notification.path || '';
 
 				if (notification.nid.startsWith('chat')) {
-					notification.path = nconf.get('relative_path') + '/chats/' + notification.user.userslug;
+					notification.path = '/chats/' + notification.user.userslug;
 				} else if (notification.nid.startsWith('follow')) {
-					notification.path = nconf.get('relative_path') + '/user/' + notification.user.userslug;
+					notification.path = '/user/' + notification.user.userslug;
 				}
 
 				notification.datetimeISO = utils.toISOString(notification.datetime);
@@ -176,7 +176,7 @@ var async = require('async'),
 					var postIndex = utils.isNumber(results.indices[index]) ? parseInt(results.indices[index], 10) + 1 : null;
 
 					if (slug && postIndex) {
-						pidToPaths[pid] = nconf.get('relative_path') + '/topic/' + slug + '/' + postIndex;
+						pidToPaths[pid] = '/topic/' + slug + '/' + postIndex;
 					}
 				});
 
