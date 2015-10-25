@@ -230,8 +230,11 @@ define('forum/topic/posts', [
 
 	Posts.showBottomPostBar = function() {
 		var mainPost = components.get('post', 'index', 0);
-		if (!!mainPost.length && $('[component="post"]').length > 1) {
+		var posts = $('[component="post"]');
+		if (!!mainPost.length && posts.length > 1 && $('.post-bar').length < 2) {
 			$('.post-bar').clone().appendTo(mainPost);
+		} else if (mainPost.length && posts.length < 2) {
+			mainPost.find('.post-bar').remove();
 		}
 	};
 

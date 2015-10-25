@@ -81,7 +81,7 @@ define('forum/topic/events', [
 		$('[data-pid="' + data.post.pid + '"] .favouriteCount').html(data.post.reputation).attr('data-favourites', data.post.reputation);
 	}
 
-	function onTopicPurged(data) {
+	function onTopicPurged() {
 		if (ajaxify.data.category && ajaxify.data.category.slug) {
 			ajaxify.go('category/' + ajaxify.data.category.slug, null, true);
 		}
@@ -162,6 +162,8 @@ define('forum/topic/events', [
 	function onPostPurged(pid) {
 		components.get('post', 'pid', pid).fadeOut(500, function() {
 			$(this).remove();
+			ajaxify.data.postcount --;
+			postTools.updatePostCount(ajaxify.data.postcount);
 			posts.showBottomPostBar();
 		});
 
