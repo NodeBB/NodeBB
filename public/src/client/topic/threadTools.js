@@ -10,7 +10,7 @@ define('forum/topic/threadTools', ['forum/topic/fork', 'forum/topic/move', 'comp
 
 		renderMenu();
 
-		var topicContainer = $('[component="topic"]');
+		var topicContainer = $('.topic');
 
 		topicContainer.on('click', '[component="topic/delete"]', function() {
 			topicCommand('delete', tid);
@@ -97,7 +97,7 @@ define('forum/topic/threadTools', ['forum/topic/fork', 'forum/topic/move', 'comp
 	};
 
 	function renderMenu() {
-		$('[component="topic"]').on('show.bs.dropdown', '.thread-tools', function() {
+		function render() {
 			var $this = $(this);
 			var dropdownMenu = $this.find('.dropdown-menu');
 			if (dropdownMenu.html()) {
@@ -115,7 +115,10 @@ define('forum/topic/threadTools', ['forum/topic/fork', 'forum/topic/move', 'comp
 					});
 				});
 			});
-		});
+		}
+
+		$('[component="topic"]').on('show.bs.dropdown', '.thread-tools', render);
+		$('.bottom-post-bar').on('show.bs.dropdown', '.thread-tools', render);
 	}
 
 	function topicCommand(command, tid) {
