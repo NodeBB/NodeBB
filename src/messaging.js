@@ -374,12 +374,8 @@ var db = require('./database'),
 	};
 
 	Messaging.canMessage = function(fromUid, toUid, callback) {
-		if (parseInt(meta.config.disableChat) === 1) {
-			return callback(new Error('[[error:chat-disabled]]'));
-		} else if (toUid === fromUid) {
-			return callback(new Error('[[error:cant-chat-with-yourself]]'));
-		} else if (!fromUid) {
-			return callback(new Error('[[error:not-logged-in]]'));
+		if (parseInt(meta.config.disableChat) === 1 || !fromUid || toUid === fromUid) {
+			return callback(null, false);
 		}
 
 		async.waterfall([
@@ -388,17 +384,17 @@ var db = require('./database'),
 			},
 			function (exists, next) {
 				if (!exists) {
-					return next(new Error('[[error:no-user]]'));
+					return callback(null, false);
 				}
 				user.getUserFields(fromUid, ['banned', 'email:confirmed'], next);
 			},
 			function (userData, next) {
 				if (parseInt(userData.banned, 10) === 1) {
-					return next(new Error('[[error:user-banned]]'));
+					return callback(null, false);
 				}
 
 				if (parseInt(meta.config.requireEmailConfirmation, 10) === 1 && parseInt(userData['email:confirmed'], 10) !== 1) {
-					return next(new Error('[[error:email-not-confirmed-chat]]'));
+					return callback(null, false);
 				}
 
 				user.getSettings(toUid, next);
