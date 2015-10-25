@@ -31,7 +31,7 @@
 			<div class="post-container" data-next="{next}">
 				<!-- IF !posts.length -->
 				No flagged posts!
-				<!-- ENDIF !posts.length-->
+				<!-- ENDIF !posts.length -->
 
 				<!-- BEGIN posts -->
 				<div>
