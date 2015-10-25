@@ -36,7 +36,7 @@ define('forum/footer', ['notifications', 'chat', 'components', 'translator'], fu
 
 		function increaseUnreadCount() {
 			var count = parseInt($('#unread-count i').attr('data-content'), 10) + 1;
-			updateUnreadTopicCount(null, count);
+			updateUnreadTopicCount(count);
 		}
 
 		function markTopicsUnread(tid) {

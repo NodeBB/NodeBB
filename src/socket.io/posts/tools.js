@@ -6,9 +6,43 @@ var posts = require('../../posts');
 var events = require('../../events');
 var websockets = require('../index');
 var socketTopics = require('../topics');
+var privileges = require('../../privileges');
+var favourites = require('../../favourites');
 
 
 module.exports = function(SocketPosts) {
+
+	SocketPosts.loadPostTools = function(socket, data, callback) {
+		if (!socket.uid) {
+			return;
+		}
+		if (!data) {
+			return callback(new Error('[[error:invalid-data]]'))
+		}
+
+		async.parallel({
+			posts: function(next) {
+				posts.getPostFields(data.pid, ['deleted', 'reputation', 'uid'], next);
+			},
+			isAdminOrMod: function(next) {
+				privileges.categories.isAdminOrMod(data.cid, socket.uid, next);
+			},
+			favourited: function(next) {
+				favourites.getFavouritesByPostIDs([data.pid], socket.uid, next);
+			}
+		}, function(err, results) {
+			if (err) {
+				return callback(err);
+			}
+			results.posts.tools = []; // TODO: add filter for this
+			results.posts.deleted = parseInt(results.posts.deleted, 10) === 1;
+			results.posts.favourited = results.favourited[0];
+			results.posts.selfPost = socket.uid === parseInt(results.posts.uid, 10);
+			results.posts.display_moderator_tools = results.isAdminOrMod || results.posts.selfPost;
+			results.posts.display_move_tools = results.isAdminOrMod;
+			callback(null, results);
+		});
+	};
 
 	SocketPosts.delete = function(socket, data, callback) {
 		doPostAction('delete', 'event:post_deleted', socket, data, callback);

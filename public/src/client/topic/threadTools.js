@@ -1,48 +1,53 @@
 'use strict';
 
-/* globals define, app, ajaxify, socket, bootbox */
+/* globals define, app, ajaxify, socket, bootbox, templates */
 
 define('forum/topic/threadTools', ['forum/topic/fork', 'forum/topic/move', 'components', 'translator'], function(fork, move, components, translator) {
 
 	var ThreadTools = {};
 
 	ThreadTools.init = function(tid) {
-		components.get('topic/delete').on('click', function() {
+
+		renderMenu();
+
+		var topicContainer = $('.topic');
+
+		topicContainer.on('click', '[component="topic/delete"]', function() {
 			topicCommand('delete', tid);
 			return false;
 		});
 
-		components.get('topic/restore').on('click', function() {
+		topicContainer.on('click', '[component="topic/restore"]', function() {
 			topicCommand('restore', tid);
 			return false;
 		});
 
-		components.get('topic/purge').on('click', function() {
+		topicContainer.on('click', '[component="topic/purge"]', function() {
 			topicCommand('purge', tid);
 			return false;
 		});
 
-		components.get('topic/lock').on('click', function() {
+		topicContainer.on('click', '[component="topic/lock"]', function() {
 			socket.emit('topics.lock', {tids: [tid], cid: ajaxify.data.cid});
 			return false;
 		});
 
-		components.get('topic/unlock').on('click', function() {
+		topicContainer.on('click', '[component="topic/unlock"]', function() {
 			socket.emit('topics.unlock', {tids: [tid], cid: ajaxify.data.cid});
 			return false;
 		});
 
-		components.get('topic/pin').on('click', function() {
+		topicContainer.on('click', '[component="topic/pin"]', function() {
 			socket.emit('topics.pin', {tids: [tid], cid: ajaxify.data.cid});
 			return false;
 		});
 
-		components.get('topic/unpin').on('click', function() {
+		topicContainer.on('click', '[component="topic/unpin"]', function() {
 			socket.emit('topics.unpin', {tids: [tid], cid: ajaxify.data.cid});
 			return false;
 		});
 
-		components.get('topic/mark-unread-for-all').on('click', function() {
+		topicContainer.on('click', '[component="topic/mark-unread-for-all"]', function() {
 			var btn = $(this);
 			socket.emit('topics.markAsUnreadForAll', [tid], function(err) {
 				if (err) {
@@ -54,7 +59,7 @@ define('forum/topic/threadTools', ['forum/topic/fork', 'forum/topic/move', 'comp
 			return false;
 		});
 
-		components.get('topic/move').on('click', function(e) {
+		topicContainer.on('click', '[component="topic/move"]', function() {
 			move.init([tid], ajaxify.data.cid);
 			return false;
 		});
@@ -90,6 +95,28 @@ define('forum/topic/threadTools', ['forum/topic/fork', 'forum/topic/move', 'comp
 			return false;
 		}
 	};
+
+	function renderMenu() {
+		$('.topic').on('show.bs.dropdown', '.thread-tools', function () {
+			var $this = $(this);
+			var dropdownMenu = $this.find('.dropdown-menu');
+			if (dropdownMenu.html()) {
+				return;
+			}
+
+			socket.emit('topics.loadTopicTools', {tid: ajaxify.data.tid, cid: ajaxify.data.cid}, function(err, data) {
+				if (err) {
+					return app.alertError(err);
+				}
+
+				templates.parse('partials/topic/topic-menu-list', data, function(html) {
+					translator.translate(html, function(html) {
+						dropdownMenu.html(html);
+					});
+				});
+			});
+		});
+	}
 
 	function topicCommand(command, tid) {
 		translator.translate('[[topic:thread_tools.' + command + '_confirm]]', function(msg) {

@@ -31,7 +31,7 @@
 				<fieldset>
 					<div class="checkbox">
 						<label>
-							<input id="group-private" name="private" type="checkbox"<!-- IF group.private --> checked<!-- ENDIF group.private-->> <strong>[[groups:details.private]]</strong>
+							<input id="group-private" name="private" type="checkbox"<!-- IF group.private --> checked<!-- ENDIF group.private -->> <strong>[[groups:details.private]]</strong>
 							<p class="help-block">
 								[[groups:details.private_help]]
 							</p>
@@ -42,7 +42,7 @@
 				<fieldset>
 					<div class="checkbox">
 						<label>
-							<input id="group-hidden" name="hidden" type="checkbox"<!-- IF group.hidden --> checked<!-- ENDIF group.hidden-->> <strong>[[groups:details.hidden]]</strong>
+							<input id="group-hidden" name="hidden" type="checkbox"<!-- IF group.hidden --> checked<!-- ENDIF group.hidden -->> <strong>[[groups:details.hidden]]</strong>
 							<p class="help-block">
 								[[groups:details.hidden_help]]
 							</p>
