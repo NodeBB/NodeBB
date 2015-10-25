@@ -144,8 +144,10 @@ switch(process.argv[2]) {
 			if (err) {
 				process.stdout.write('\nError'.red + ': ' + err.message + '\n');
 			} else {
-				var message = 'NodeBB Upgrade Complete!',
-					spaces = new Array(Math.floor(process.stdout.columns / 2) - (message.length / 2) + 1).join(' ');
+				var message = 'NodeBB Upgrade Complete!';
+				// some consoles will return undefined/zero columns, so just use 2 spaces in upgrade script if we can't get our column count
+				var columns = process.stdout.columns;
+				var spaces = columns ? new Array(Math.floor(columns / 2) - (message.length / 2) + 1).join(' ') : "  ";
 
 				process.stdout.write('OK\n'.green);
 				process.stdout.write('\n' + spaces + message.green.bold + '\n\n'.reset);
