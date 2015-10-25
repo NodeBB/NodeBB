@@ -10,6 +10,8 @@ define('forum/topic/postTools', ['share', 'navigator', 'components', 'translator
 	PostTools.init = function(tid) {
 		topicName = ajaxify.data.title;
 
+		renderMenu();
+
 		addPostHandlers(tid);
 
 		share.addShareHandlers(topicName);
@@ -18,6 +20,30 @@ define('forum/topic/postTools', ['share', 'navigator', 'components', 'translator
 
 		PostTools.updatePostCount(ajaxify.data.postcount);
 	};
+
+	function renderMenu() {
+		$('[component="topic"]').on('show.bs.dropdown', '.moderator-tools', function() {
+			var $this = $(this);
+			var dropdownMenu = $this.find('.dropdown-menu');
+			if (dropdownMenu.html()) {
+				return;
+			}
+			var postEl = $this.parents('[data-pid]');
+			var pid = postEl.attr('data-pid');
+			var index = parseInt(postEl.attr('data-index'), 10);
+			socket.emit('posts.loadPostTools', {pid: pid, cid: ajaxify.data.cid}, function(err, data) {
+				if (err) {
+					return app.alertError(err);
+				}
+				data.posts.display_move_tools = data.posts.display_move_tools && index !== 0;
+				templates.parse('partials/topic/post-menu-list', data, function(html) {
+					translator.translate(html, function(html) {
+						dropdownMenu.html(html);
+					});
+				});
+			});
+		});
+	}
 
 	PostTools.toggle = function(pid, isDeleted) {
 		var postEl = components.get('post', 'pid', pid);
