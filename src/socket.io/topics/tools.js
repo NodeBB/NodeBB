@@ -4,6 +4,7 @@ var async = require('async');
 var topics = require('../../topics');
 var events = require('../../events');
 var privileges = require('../../privileges');
+var plugins = require('../../plugins');
 var socketHelpers = require('../helpers');
 
 module.exports = function(SocketTopics) {
@@ -13,28 +14,33 @@ module.exports = function(SocketTopics) {
 			return;
 		}
 		if (!data) {
-			return callback(new Error('[[error:invalid-data]]'))
+			return callback(new Error('[[error:invalid-data]]'));
 		}
-
-		async.parallel({
-			topic: function(next) {
-				topics.getTopicFields(data.tid, ['deleted', 'locked', 'pinned'], next);
+		var topic;
+		async.waterfall([
+			function (next) {
+				async.parallel({
+					topic: function(next) {
+						topics.getTopicData(data.tid, next);
+					},
+					privileges: function(next) {
+						privileges.topics.get(data.tid, socket.uid, next);
+					}
+				}, next);
 			},
-			privileges: function(next) {
-				privileges.topics.get(data.tid, socket.uid, next);
+			function (results, next) {
+				topic = results.topic;
+				topic.privileges = results.privileges;
+				plugins.fireHook('filter:topic.thread_tools', {topic: results.topic, uid: socket.uid, tools: []}, next);
+			},
+			function (data, next) {
+				topic.deleted = parseInt(topic.deleted, 10) === 1;
+				topic.locked = parseInt(topic.locked, 10) === 1;
+				topic.pinned = parseInt(topic.pinned, 10) === 1;
+				topic.thread_tools = data.tools;
+				next(null, topic);
 			}
-		}, function(err, results) {
-			if (err) {
-				return callback(err);
-			}
-
-			results.topic.deleted = parseInt(results.topic.deleted, 10) === 1;
-			results.topic.locked = parseInt(results.topic.locked, 10) === 1;
-			results.topic.pinned = parseInt(results.topic.pinned, 10) === 1;
-			results.topic.privileges = results.privileges;
-
-			callback(null, results.topic);
-		});
+		], callback);
 	};
 
 	SocketTopics.delete = function(socket, data, callback) {
