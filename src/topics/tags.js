@@ -25,22 +25,23 @@ module.exports = function(Topics) {
 			function (data, next) {
 				tags = data.tags.slice(0, meta.config.maximumTagsPerTopic || 5);
 
-				async.each(tags, function(tag, next) {
-					tag = Topics.cleanUpTag(tag);
-					if (tag.length < (meta.config.minimumTagLength || 3)) {
-						return next();
-					}
+				tags = tags.map(Topics.cleanUpTag).filter(function(tag) {
+					return tag && tag.length >= (meta.config.minimumTagLength || 3);
+				});
 
-					async.parallel([
-						async.apply(db.setAdd, 'topic:' + tid + ':tags', tag),
-						async.apply(db.sortedSetAdd, 'tag:' + tag + ':topics', timestamp, tid)
-					], function(err) {
-						if (err) {
-							return next(err);
-						}
-						updateTagCount(tag, next);
-					});
-				}, next);
+				var keys = tags.map(function(tag) {
+					return 'tag:' + tag + ':topics';
+				});
+
+				async.parallel([
+					async.apply(db.setAdd, 'topic:' + tid + ':tags', tags),
+					async.apply(db.sortedSetsAdd, keys, timestamp, tid)
+				], function(err) {
+					if (err) {
+						return next(err);
+					}
+					async.each(tags, updateTagCount, next);
+				});
 			}
 		], callback);
 	};
