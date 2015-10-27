@@ -66,9 +66,10 @@ module.exports = function(Topics) {
 	function updateTagCount(tag, callback) {
 		callback = callback || function() {};
 		Topics.getTagTopicCount(tag, function(err, count) {
-			if (err || !count) {
+			if (err) {
 				return callback(err);
 			}
+			count = count || 0;
 
 			db.sortedSetAdd('tags:topic:count', count, tag, callback);
 		});
