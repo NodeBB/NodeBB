@@ -61,7 +61,7 @@
     "rss": "^1.0.0",
     "semver": "^5.0.1",
     "serve-favicon": "^2.1.5",
-    "sitemap": "^1.0.0",
+    "sitemap": "^1.4.0",
     "socket.io": "^1.2.1",
     "socket.io-client": "^1.2.1",
     "socket.io-redis": "^0.1.3",

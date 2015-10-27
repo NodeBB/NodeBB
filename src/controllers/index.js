@@ -168,7 +168,10 @@ Controllers.sitemap = function(req, res, next) {
 
 	var sitemap = require('../sitemap.js');
 
-	sitemap.render(function(xml) {
+	sitemap.render(function(err, xml) {
+		if (err) {
+			return next(err);
+		}
 		res.header('Content-Type', 'application/xml');
 		res.send(xml);
 	});
