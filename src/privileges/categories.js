@@ -101,7 +101,12 @@ module.exports = function(privileges) {
 							});
 
 							groupNames = groups.getEphemeralGroups().concat(groupNames);
-							groupNames.splice(0, 0, groupNames.splice(groupNames.indexOf('registered-users'), 1)[0]);
+							var registeredUsersIndex = groupNames.indexOf('registered-users');
+							if (registeredUsersIndex !== -1) {
+								groupNames.splice(0, 0, groupNames.splice(registeredUsersIndex, 1)[0]);
+							} else {
+								groupNames = ['registered-users'].concat(groupNames);
+							}
 
 							var adminIndex = groupNames.indexOf('administrators');
 							if (adminIndex !== -1) {
