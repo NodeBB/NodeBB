@@ -43,7 +43,7 @@ module.exports = function(Posts) {
 						userTitle: group.userTitle
 					};
 
-					if (group.name === results.userSettings[i].groupTitle && group.userTitleEnabled) {
+					if (results.userSettings[i] && group.name === results.userSettings[i].groupTitle && group.userTitleEnabled) {
 						userData.selectedGroup = userData.groups[index];
 					}
 				});

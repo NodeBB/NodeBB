@@ -18,29 +18,31 @@ module.exports = function(Topics) {
 			return callback();
 		}
 
-		plugins.fireHook('filter:tags.filter', {tags: tags, tid: tid}, function(err, data) {
-			if (err) {
-				return callback(err);
-			}
+		async.waterfall([
+			function (next) {
+				plugins.fireHook('filter:tags.filter', {tags: tags, tid: tid}, next);
+			},
+			function (data, next) {
+				tags = data.tags.slice(0, meta.config.maximumTagsPerTopic || 5);
 
-			tags = data.tags.slice(0, meta.config.maximumTagsPerTopic || 5);
-
-			async.each(tags, function(tag, next) {
-				tag = Topics.cleanUpTag(tag);
-
-				if (tag.length < (meta.config.minimumTagLength || 3)) {
-					return next();
-				}
-				db.setAdd('topic:' + tid + ':tags', tag);
-
-				db.sortedSetAdd('tag:' + tag + ':topics', timestamp, tid, function(err) {
-					if (!err) {
-						updateTagCount(tag);
+				async.each(tags, function(tag, next) {
+					tag = Topics.cleanUpTag(tag);
+					if (tag.length < (meta.config.minimumTagLength || 3)) {
+						return next();
 					}
-					next(err);
-				});
-			}, callback);
-		});
+
+					async.parallel([
+						async.apply(db.setAdd, 'topic:' + tid + ':tags', tag),
+						async.apply(db.sortedSetAdd, 'tag:' + tag + ':topics', timestamp, tid)
+					], function(err) {
+						if (err) {
+							return next(err);
+						}
+						updateTagCount(tag, next);
+					});
+				}, next);
+			}
+		], callback);
 	};
 
 	Topics.cleanUpTag = function(tag) {

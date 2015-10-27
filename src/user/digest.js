@@ -98,7 +98,7 @@ var	async = require('async'),
 					}
 
 					for(var i=0; i<notifications.length; ++i) {
-						if (notifications[i].image.indexOf('http') !== 0) {
+						if (notifications[i].image && notifications[i].image.indexOf('http') !== 0) {
 							notifications[i].image = nconf.get('url') + notifications[i].image;
 						}
 					}

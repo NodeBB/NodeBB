@@ -84,6 +84,9 @@ module.exports = function(app, middleware) {
 	pluginRouter.render = function() {
 		app.render.apply(app, arguments);
 	};
+	controllers.render = function() {
+		app.render.apply(app, arguments);
+	};
 
 	// Set-up for hotswapping (when NodeBB reloads)
 	pluginRouter.hotswapId = 'plugins';
@@ -175,7 +178,7 @@ function handle404(app, middleware) {
 }
 
 function handleErrors(app, middleware) {
-	app.use(function(err, req, res) {
+	app.use(function(err, req, res, next) {
 		if (err.code === 'EBADCSRFTOKEN') {
 			winston.error(req.path + '\n', err.message);
 			return res.sendStatus(403);
@@ -190,7 +193,7 @@ function handleErrors(app, middleware) {
 		res.status(err.status || 500);
 
 		if (res.locals.isAPI) {
-			return res.json({path: req.path, error: err.message});
+			res.json({path: req.path, error: err.message});
 		} else {
 			middleware.buildHeader(req, res, function() {
 				res.render('500', {path: req.path, error: err.message});

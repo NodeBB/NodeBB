@@ -10,6 +10,7 @@ var async = require('async'),
 	posts = require('../posts'),
 	topics = require('../topics'),
 	plugins = require('../plugins'),
+	sitemap = require('../sitemap'),
 	categories = require('../categories'),
 	privileges = require('../privileges'),
 	helpers = require('./helpers');
@@ -161,14 +162,56 @@ Controllers.confirmEmail = function(req, res, next) {
 	});
 };
 
-Controllers.sitemap = function(req, res, next) {
+Controllers.sitemap = {};
+Controllers.sitemap.render = function(req, res, next) {
+	sitemap.render(function(err, tplData) {
+		Controllers.render('sitemap', tplData, function(err, xml) {
+			res.header('Content-Type', 'application/xml');
+			res.send(xml);
+		});
+	})
+};
+
+Controllers.sitemap.getPages = function(req, res, next) {
 	if (parseInt(meta.config['feeds:disableSitemap'], 10) === 1) {
 		return next();
 	}
 
-	var sitemap = require('../sitemap.js');
+	sitemap.getPages(function(err, xml) {
+		if (err) {
+			return next(err);
+		}
+		res.header('Content-Type', 'application/xml');
+		res.send(xml);
+	});
+};
 
-	sitemap.render(function(xml) {
+Controllers.sitemap.getCategories = function(req, res, next) {
+	if (parseInt(meta.config['feeds:disableSitemap'], 10) === 1) {
+		return next();
+	}
+
+	sitemap.getCategories(function(err, xml) {
+		if (err) {
+			return next(err);
+		}
+		res.header('Content-Type', 'application/xml');
+		res.send(xml);
+	});
+};
+
+Controllers.sitemap.getTopicPage = function(req, res, next) {
+	if (parseInt(meta.config['feeds:disableSitemap'], 10) === 1) {
+		return next();
+	}
+
+	sitemap.getTopicPage(parseInt(req.params[0], 10), function(err, xml) {
+		if (err) {
+			return next(err);
+		} else if (!xml) {
+			return next();
+		}
+
 		res.header('Content-Type', 'application/xml');
 		res.send(xml);
 	});

@@ -63,7 +63,7 @@ SocketGroups.leave = function(socket, data, callback) {
 function isOwner(next) {
 	return function (socket, data, callback) {
 		async.parallel({
-			isAdmin: async.apply(user.isAdmin, socket.uid),
+			isAdmin: async.apply(user.isAdministrator, socket.uid),
 			isOwner: async.apply(groups.ownership.isOwner, socket.uid, data.groupName)
 		}, function(err, results) {
 			if (err || (!isOwner && !results.isAdmin)) {
