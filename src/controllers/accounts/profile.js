@@ -76,6 +76,9 @@ profileController.get = function(req, res, callback) {
 				userData.profileviews = 1;
 			}
 
+			userData['cover:url'] = userData['cover:url'] || nconf.get('relative_path') + '/images/cover-default.png';
+			userData['cover:position'] = userData['cover:position'] || '50% 50%';
+
 			plugins.fireHook('filter:user.account', {userData: userData, uid: req.uid}, next);
 		}
 	], function(err, results) {
