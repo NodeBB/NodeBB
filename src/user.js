@@ -140,14 +140,6 @@ var	async = require('async'),
 		return isOnline ? (status || 'online') : 'offline';
 	};
 
-	User.hashPassword = function(password, callback) {
-		if (!password) {
-			return callback(null, password);
-		}
-
-		Password.hash(nconf.get('bcrypt_rounds') || 12, password, callback);
-	};
-
 	User.exists = function(uid, callback) {
 		db.isSortedSetMember('users:joindate', uid, callback);
 	};
