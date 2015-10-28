@@ -17,7 +17,6 @@ define('coverPhoto', [
 		coverPhoto.saveFn = saveFn;
 
 		coverEl.find('.upload').on('click', uploadFn);
-
 		coverEl.find('.resize').on('click', function() {
 			coverEl
 				.toggleClass('active', 1)
