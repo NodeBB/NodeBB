@@ -3,6 +3,7 @@
 
 var async = require('async'),
 	validator = require('validator'),
+	nconf = require('nconf'),
 
 	user = require('../../user'),
 	groups = require('../../groups'),
@@ -118,7 +119,7 @@ helpers.getBaseUser = function(userslug, callerUID, callback) {
 
 			async.parallel({
 				user: function(next) {
-					user.getUserFields(uid, ['uid', 'username', 'userslug'], next);
+					user.getUserFields(uid, ['uid', 'username', 'userslug', 'picture', 'cover:url', 'cover:position'], next);
 				},
 				isAdmin: function(next) {
 					user.isAdministrator(callerUID, next);
@@ -138,6 +139,10 @@ helpers.getBaseUser = function(userslug, callerUID, callback) {
 			results.user.isSelf = parseInt(callerUID, 10) === parseInt(results.user.uid, 10);
 			results.user.showHidden = results.user.isSelf || results.isAdmin;
 			results.user.profile_links = results.profile_links;
+
+			results['cover:url'] = results['cover:url'] || nconf.get('relative_path') + '/images/cover-default.png';
+			results['cover:position'] = results['cover:position'] || '50% 50%';
+
 			next(null, results.user);
 		}
 	], callback);
