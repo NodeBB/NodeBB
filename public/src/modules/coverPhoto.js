@@ -1,10 +1,9 @@
 "use strict";
-/* globals define, app, RELATIVE_PATH */
+/* globals define, app */
 
 define('coverPhoto', [
-	'uploader',
 	'vendor/jquery/draggable-background/backgroundDraggable'
-], function(uploader) {
+], function() {
 
 	var coverPhoto = {
 		coverEl: null,
@@ -12,16 +11,12 @@ define('coverPhoto', [
 		saveFn: null
 	};
 
-	coverPhoto.init = function(coverEl, getFn, saveFn) {
+	coverPhoto.init = function(coverEl, getFn, saveFn, uploadFn) {
 		coverPhoto.coverEl = coverEl;
 		coverPhoto.getFn = getFn;
 		coverPhoto.saveFn = saveFn;
 
-		coverEl.find('.upload').on('click', function() {
-			uploader.open(RELATIVE_PATH + '/api/groups/uploadpicture', { groupName: 'administrators' }, 0, function(imageUrlOnServer) {
-				coverPhoto.coverEl.css('background-image', 'url(' + imageUrlOnServer + '?' + new Date().getTime() + ')');
-			});
-		});
+		coverEl.find('.upload').on('click', uploadFn);
 
 		coverEl.find('.resize').on('click', function() {
 			coverEl

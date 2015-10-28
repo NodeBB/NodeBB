@@ -1,13 +1,14 @@
 "use strict";
-/* globals define, socket, ajaxify, app, bootbox, utils */
+/* globals define, socket, ajaxify, app, bootbox, utils, RELATIVE_PATH */
 
 define('forum/groups/details', [
 	'forum/groups/memberlist',
 	'iconSelect',
 	'components',
 	'coverPhoto',
+	'uploader',
 	'vendor/colorpicker/colorpicker'
-], function(memberList, iconSelect, components, coverPhoto) {
+], function(memberList, iconSelect, components, coverPhoto, uploader) {
 
 	var Details = {};
 	var groupName;
@@ -24,14 +25,19 @@ define('forum/groups/details', [
 				function(callback) {
 					socket.emit('groups.cover.get', {
 						groupName: groupName
-					}, callback)
+					}, callback);
 				},
 				function(imageData, position, callback) {
 					socket.emit('groups.cover.update', {
 						groupName: groupName,
-						imageData: coverPhoto.newCover || undefined,
-						position: components.get('groups/cover').css('background-position')
+						imageData: imageData,
+						position: position
 					}, callback);
+				},
+				function() {
+					uploader.open(RELATIVE_PATH + '/api/groups/uploadpicture', { groupName: groupName }, 0, function(imageUrlOnServer) {
+						components.get('groups/cover').css('background-image', 'url(' + imageUrlOnServer + ')');
+					});
 				}
 			);
 		}
