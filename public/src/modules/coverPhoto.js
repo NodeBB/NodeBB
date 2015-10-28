@@ -17,21 +17,24 @@ define('coverPhoto', [
 		coverPhoto.getFn = getFn;
 		coverPhoto.saveFn = saveFn;
 
-		coverEl.find('.change').on('click', function() {
+		coverEl.find('.upload').on('click', function() {
 			uploader.open(RELATIVE_PATH + '/api/groups/uploadpicture', { groupName: 'administrators' }, 0, function(imageUrlOnServer) {
-				console.log(imageUrlOnServer);
 				coverPhoto.coverEl.css('background-image', 'url(' + imageUrlOnServer + '?' + new Date().getTime() + ')');
 			});
-
-			return;
-			coverEl.toggleClass('active', 1);
-			coverEl.backgroundDraggable({
-				axis: 'y',
-				units: 'percent'
-			});
-			coverEl.on('dragover', coverPhoto.onDragOver);
-			coverEl.on('drop', coverPhoto.onDrop);
 		});
+
+		coverEl.find('.resize').on('click', function() {
+			coverEl
+				.toggleClass('active', 1)
+				.backgroundDraggable({
+					axis: 'y',
+					units: 'percent'
+				})
+		});
+
+		coverEl
+			.on('dragover', coverPhoto.onDragOver)
+			.on('drop', coverPhoto.onDrop);
 
 		coverEl.find('.save').on('click', coverPhoto.save);
 		coverEl.addClass('initialised');
@@ -75,6 +78,13 @@ define('coverPhoto', [
 			};
 
 			reader.readAsDataURL(files[0]);
+
+			coverPhoto.coverEl
+				.addClass('active', 1)
+				.backgroundDraggable({
+					axis: 'y',
+					units: 'percent'
+				})
 		}
 	};
 
