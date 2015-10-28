@@ -28,5 +28,7 @@ module.exports =  function(app, middleware, controllers) {
 	router.post('/post/upload', middlewares, uploadsController.uploadPost);
 	router.post('/topic/thumb/upload', middlewares, uploadsController.uploadThumb);
 	router.post('/user/:userslug/uploadpicture', middlewares.concat([middleware.authenticate, middleware.checkGlobalPrivacySettings, middleware.checkAccountPermissions]), controllers.accounts.edit.uploadPicture);
+
+	router.post('/groups/uploadpicture', middlewares.concat([middleware.authenticate]), controllers.groups.uploadCover);
 };
 

@@ -132,4 +132,19 @@ groupsController.members = function(req, res, next) {
 	});
 };
 
+groupsController.uploadCover = function(req, res, next) {
+	var params = JSON.parse(req.body.params);
+	
+	groups.updateCover({
+		file: req.files.files[0].path,
+		groupName: params.groupName
+	}, function(err, image) {
+		if (err) {
+			return next(err);
+		}
+
+		res.json([{url: image.url.startsWith('http') ? image.url : nconf.get('relative_path') + image.url}]);
+	})
+};
+
 module.exports = groupsController;

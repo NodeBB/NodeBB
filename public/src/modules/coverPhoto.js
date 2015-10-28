@@ -2,8 +2,9 @@
 /* globals define, app*/
 
 define('coverPhoto', [
+	'uploader',
 	'vendor/jquery/draggable-background/backgroundDraggable'
-], function() {
+], function(uploader) {
 
 	var coverPhoto = {
 		coverEl: null,
@@ -17,6 +18,12 @@ define('coverPhoto', [
 		coverPhoto.saveFn = saveFn;
 
 		coverEl.find('.change').on('click', function() {
+			uploader.open(RELATIVE_PATH + '/api/groups/uploadpicture', { groupName: 'administrators' }, 0, function(imageUrlOnServer) {
+				console.log(imageUrlOnServer);
+				coverPhoto.coverEl.css('background-image', 'url(' + imageUrlOnServer + '?' + new Date().getTime() + ')');
+			});
+
+			return;
 			coverEl.toggleClass('active', 1);
 			coverEl.backgroundDraggable({
 				axis: 'y',
