@@ -85,7 +85,6 @@ define('forum/account/edit', ['forum/account/header', 'uploader', 'translator'],
 							.text(ajaxify.data['icon:text']);
 
 						if (uploadedPicture) {
-							console.log("DERP");
 							modal.find('#user-uploaded-picture').attr('src', uploadedPicture);
 						}
 
