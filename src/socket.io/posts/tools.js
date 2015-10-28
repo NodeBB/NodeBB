@@ -13,9 +13,6 @@ var favourites = require('../../favourites');
 module.exports = function(SocketPosts) {
 
 	SocketPosts.loadPostTools = function(socket, data, callback) {
-		if (!socket.uid) {
-			return;
-		}
 		if (!data) {
 			return callback(new Error('[[error:invalid-data]]'))
 		}
@@ -37,7 +34,7 @@ module.exports = function(SocketPosts) {
 			results.posts.tools = []; // TODO: add filter for this
 			results.posts.deleted = parseInt(results.posts.deleted, 10) === 1;
 			results.posts.favourited = results.favourited[0];
-			results.posts.selfPost = socket.uid === parseInt(results.posts.uid, 10);
+			results.posts.selfPost = socket.uid && socket.uid === parseInt(results.posts.uid, 10);
 			results.posts.display_moderator_tools = results.isAdminOrMod || results.posts.selfPost;
 			results.posts.display_move_tools = results.isAdminOrMod;
 			callback(null, results);

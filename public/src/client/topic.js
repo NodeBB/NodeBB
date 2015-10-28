@@ -18,6 +18,11 @@ define('forum/topic', [
 		currentUrl = '';
 
 	$(window).on('action:ajaxify.start', function(ev, data) {
+		if (Topic.replaceURLTimeout) {
+			clearTimeout(Topic.replaceURLTimeout);
+			Topic.replaceURLTimeout = 0;
+		}
+
 		if (ajaxify.currentPage !== data.url) {
 			navigator.disable();
 			components.get('navbar/title').find('span').text('').hide();
