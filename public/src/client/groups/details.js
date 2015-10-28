@@ -22,11 +22,6 @@ define('forum/groups/details', [
 			Details.prepareSettings();
 
 			coverPhoto.init(components.get('groups/cover'),
-				function(callback) {
-					socket.emit('groups.cover.get', {
-						groupName: groupName
-					}, callback);
-				},
 				function(imageData, position, callback) {
 					socket.emit('groups.cover.update', {
 						groupName: groupName,

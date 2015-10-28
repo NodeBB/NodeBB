@@ -7,13 +7,11 @@ define('coverPhoto', [
 
 	var coverPhoto = {
 		coverEl: null,
-		getFn: null,
 		saveFn: null
 	};
 
-	coverPhoto.init = function(coverEl, getFn, saveFn, uploadFn) {
+	coverPhoto.init = function(coverEl, saveFn, uploadFn) {
 		coverPhoto.coverEl = coverEl;
-		coverPhoto.getFn = getFn;
 		coverPhoto.saveFn = saveFn;
 
 		coverEl.find('.upload').on('click', uploadFn);
@@ -32,24 +30,6 @@ define('coverPhoto', [
 
 		coverEl.find('.save').on('click', coverPhoto.save);
 		coverEl.addClass('initialised');
-	};
-
-	coverPhoto.load = function() {
-		coverPhoto.getFn(function(err, data) {
-			if (!err) {
-				if (data['cover:url']) {
-					coverPhoto.coverEl.css('background-image', 'url(' + data['cover:url'] + ')');
-				}
-
-				if (data['cover:position']) {
-					coverPhoto.coverEl.css('background-position', data['cover:position']);
-				}
-
-				delete coverPhoto.newCover;
-			} else {
-				app.alertError(err.message);
-			}
-		});
 	};
 
 	coverPhoto.onDragOver = function(e) {
@@ -91,7 +71,6 @@ define('coverPhoto', [
 				coverPhoto.coverEl.backgroundDraggable('disable');
 				coverPhoto.coverEl.off('dragover', coverPhoto.onDragOver);
 				coverPhoto.coverEl.off('drop', coverPhoto.onDrop);
-				coverPhoto.load();
 			} else {
 				app.alertError(err.message);
 			}

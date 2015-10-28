@@ -228,10 +228,6 @@ SocketGroups.loadMoreMembers = function(socket, data, callback) {
 
 SocketGroups.cover = {};
 
-SocketGroups.cover.get = function(socket, data, callback) {
-	groups.getGroupFields(data.groupName, ['cover:url', 'cover:position'], callback);
-};
-
 SocketGroups.cover.update = function(socket, data, callback) {
 	if (!socket.uid) {
 		return callback(new Error('[[error:no-privileges]]'));
