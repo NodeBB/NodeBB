@@ -191,6 +191,9 @@ module.exports = function(privileges) {
 	};
 
 	privileges.categories.isAdminOrMod = function(cid, uid, callback) {
+		if (!parseInt(uid, 10)) {
+			return callback(null, false);
+		}
 		helpers.some([
 			function (next) {
 				user.isModerator(uid, cid, next);
