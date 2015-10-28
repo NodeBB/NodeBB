@@ -5,13 +5,17 @@ var validator = require('validator');
 var winston = require('winston');
 
 var db = require('../database');
-var plugins = require('../plugins');
 
 module.exports = function(Categories) {
 
 	Categories.getCategoryData = function(cid, callback) {
-		Categories.getCategoriesData([cid], function(err, categories) {
-			callback(err, categories ? categories[0] : null);
+		db.getObject('category:' + cid, function(err, category) {
+			if (err) {
+				return callback(err);
+			}
+
+			modifyCategory(category);
+			callback(null, category);
 		});
 	};
 
@@ -28,13 +32,14 @@ module.exports = function(Categories) {
 				return callback(err, []);
 			}
 
-			async.map(categories, modifyCategory, callback);
+			categories.forEach(modifyCategory);
+			callback(null, categories);
 		});
 	};
 
-	function modifyCategory(category, callback) {
+	function modifyCategory(category) {
 		if (!category) {
-			return callback(null, null);
+			return;
 		}
 
 		category.name = validator.escape(category.name);
@@ -56,8 +61,6 @@ module.exports = function(Categories) {
 			category.description = validator.escape(category.description);
 			category.descriptionParsed = category.descriptionParsed || category.description;
 		}
-
-		callback(null, category);
 	}
 
 	Categories.getCategoryField = function(cid, field, callback) {
@@ -77,7 +80,9 @@ module.exports = function(Categories) {
 			if (err) {
 				return callback(err);
 			}
-			async.map(categories, modifyCategory, callback);
+
+			categories.forEach(modifyCategory);
+			callback(null, categories);
 		});
 	};
 

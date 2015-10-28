@@ -72,9 +72,7 @@ topicsController.get = function(req, res, callback) {
 				reverse = false;
 
 			// `sort` qs has priority over user setting
-			if (sort === 'oldest_to_newest') {
-				reverse = false;
-			} else if (sort === 'newest_to_oldest') {
+			if (sort === 'newest_to_oldest') {
 				reverse = true;
 			} else if (sort === 'most_votes') {
 				reverse = true;
