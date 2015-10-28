@@ -3,7 +3,6 @@
 var async = require('async'),
 	nconf = require('nconf'),
 	validator = require('validator'),
-	db = require('../database'),
 	meta = require('../meta'),
 	groups = require('../groups'),
 	user = require('../user'),
@@ -144,7 +143,7 @@ groupsController.uploadCover = function(req, res, next) {
 		}
 
 		res.json([{url: image.url.startsWith('http') ? image.url : nconf.get('relative_path') + image.url}]);
-	})
+	});
 };
 
 module.exports = groupsController;

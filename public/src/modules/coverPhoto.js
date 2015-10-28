@@ -1,5 +1,5 @@
 "use strict";
-/* globals define, app*/
+/* globals define, app, RELATIVE_PATH */
 
 define('coverPhoto', [
 	'uploader',
@@ -29,7 +29,7 @@ define('coverPhoto', [
 				.backgroundDraggable({
 					axis: 'y',
 					units: 'percent'
-				})
+				});
 		});
 
 		coverEl
@@ -84,7 +84,7 @@ define('coverPhoto', [
 				.backgroundDraggable({
 					axis: 'y',
 					units: 'percent'
-				})
+				});
 		}
 	};
 
