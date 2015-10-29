@@ -101,6 +101,9 @@ helpers.getUserDataByUserSlug = function(userslug, callerUID, callback) {
 			userData.signature = validator.escape(userData.signature);
 			userData.aboutme = validator.escape(userData.aboutme || '');
 
+			userData['cover:url'] = userData['cover:url'] || require('../../coverPhoto').getDefaultProfileCover(userData.uid);
+			userData['cover:position'] = userData['cover:position'] || '50% 50%';
+
 			next(null, userData);
 		}
 	], callback);
@@ -140,8 +143,8 @@ helpers.getBaseUser = function(userslug, callerUID, callback) {
 			results.user.showHidden = results.user.isSelf || results.isAdmin;
 			results.user.profile_links = results.profile_links;
 
-			results['cover:url'] = results['cover:url'] || require('../../coverPhoto').getDefaultProfileCover(results.user.uid);
-			results['cover:position'] = results['cover:position'] || '50% 50%';
+			results.user['cover:url'] = results.user['cover:url'] || require('../../coverPhoto').getDefaultProfileCover(results.user.uid);
+			results.user['cover:position'] = results.user['cover:position'] || '50% 50%';
 
 			next(null, results.user);
 		}
