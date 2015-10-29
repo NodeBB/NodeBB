@@ -163,11 +163,8 @@ var async = require('async'),
 				return callback(new Error('[[error:no-group]]'));
 			}
 
-			// Default image
-			if (!results.base['cover:url']) {
-				results.base['cover:url'] = nconf.get('relative_path') + '/images/cover-default.png';
-				results.base['cover:position'] = '50% 50%';
-			}
+			results.base['cover:url'] = results.base['cover:url'] || require('./coverPhoto').getDefaultCover(groupName);
+			results.base['cover:position'] = results.base['cover:position'] || '50% 50%';
 
 			plugins.fireHook('filter:parse.raw', results.base.description, function(err, descriptionParsed) {
 				if (err) {

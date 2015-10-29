@@ -28,6 +28,12 @@
 			<p class="help-block">
 				If enabled, users can create groups <em>(Default: disabled)</em>
 			</p>
+
+			<label for="groups:defaultCovers"><strong>Default Cover Images</strong></label>
+			<p class="help-block">
+				Add comma-separated default cover images for groups that don't have an uploaded cover image
+			</p>
+			<input type="text" class="form-control input-lg" id="groups:defaultCovers" data-field="groups:defaultCovers" value="{config.relative_path}/images/cover-default.png" placeholder="https://example.com/group1.png, https://example.com/group2.png" /><br />
 		</form>
 	</div>
 </div>
