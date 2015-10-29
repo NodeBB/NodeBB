@@ -4,7 +4,6 @@ var app,
 	middleware = {},
 	nconf = require('nconf'),
 	async = require('async'),
-	path = require('path'),
 	winston = require('winston'),
 	user = require('../user'),
 	meta = require('../meta'),
@@ -95,6 +94,12 @@ middleware.renderHeader = function(req, res, data, next) {
 			}
 			res.locals.config = results.config;
 
+			var acpPath = req.path.slice(1).split('/');
+			acpPath.forEach(function(path, i) {
+				acpPath[i] = path.charAt(0).toUpperCase() + path.slice(1);
+			});
+			acpPath = acpPath.join(' > ');
+
 			var templateValues = {
 				config: results.config,
 				configJSON: JSON.stringify(results.config),
@@ -106,7 +111,8 @@ middleware.renderHeader = function(req, res, data, next) {
 				authentication: results.custom_header.authentication,
 				scripts: results.scripts,
 				'cache-buster': meta.config['cache-buster'] ? 'v=' + meta.config['cache-buster'] : '',
-				env: process.env.NODE_ENV ? true : false
+				env: process.env.NODE_ENV ? true : false,
+				title: acpPath + ' | NodeBB Admin Control Panel'
 			};
 
 			templateValues.template = {name: res.locals.template};
