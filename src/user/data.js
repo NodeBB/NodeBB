@@ -113,6 +113,13 @@ module.exports = function(User) {
 			for(var i=0; i<fieldsToRemove.length; ++i) {
 				user[fieldsToRemove[i]] = undefined;
 			}
+
+			// User Icons
+			var backgrounds = ['#AB4642', '#DC9656', '#A1B56C', '#7CAFC2', '#BA8BAF', '#A16946'];
+			user['icon:text'] = (user.username[0] || '').toUpperCase();
+			user['icon:bgColor'] = backgrounds[Array.prototype.reduce.call(user.username, function(cur, next) {
+				return cur + next.charCodeAt();
+			}, 0) % backgrounds.length];
 		});
 
 		plugins.fireHook('filter:users.get', users, callback);

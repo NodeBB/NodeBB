@@ -33,7 +33,6 @@ var	async = require('async'),
 	require('./user/picture')(User);
 	require('./user/approval')(User);
 	require('./user/invite')(User);
-	require('./user/icon')(User);
 	require('./user/password')(User);
 
 	User.updateLastOnlineTime = function(uid, callback) {

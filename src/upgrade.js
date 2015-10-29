@@ -488,27 +488,6 @@ Upgrade.upgrade = function(callback) {
 			}
 		},
 		function(next) {
-			thisSchemaDate = Date.UTC(2015, 8, 27);
-			if (schemaDate < thisSchemaDate) {
-				updatesMade = true;
-				winston.info('[2015/09/27] Generating user icons');
-
-				db.getSortedSetRange('users:joindate', 0, -1, function(err, uids) {
-					async.eachLimit(uids, 20, User.icon.generate, function(err) {
-						if (err) {
-							return next(err);
-						}
-
-						winston.info('[2015/09/27] Generating user icons done');
-						Upgrade.update(thisSchemaDate, next);
-					})
-				})
-			} else {
-				winston.info('[2015/09/27] Generating user icons skipped');
-				next();
-			}
-		},
-		function(next) {
 			thisSchemaDate = Date.UTC(2015, 8, 30);
 			if (schemaDate < thisSchemaDate) {
 				updatesMade = true;

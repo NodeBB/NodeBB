@@ -126,8 +126,7 @@ module.exports = function(User) {
 										async.apply(User.reset.updateExpiry, userData.uid)
 									], next);
 								});
-							},
-							async.apply(User.icon.generate, userData.uid)
+							}
 						], next);
 					},
 					function(results, next) {
