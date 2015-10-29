@@ -69,6 +69,14 @@
 				$('#main-page-title').text(menu.text() + (menu.parents('.menu-item').children('a').text() === 'Settings' ? ' Settings' : ''));
 			}
 		});
+
+		var acpPath = url.replace('admin/', '').split('/');
+		acpPath.forEach(function(path, i) {
+			acpPath[i] = path.charAt(0).toUpperCase() + path.slice(1);
+		});
+		acpPath = acpPath.join(' > ');
+
+		document.title = (url === 'admin/general/dashboard' ? 'Dashboard' : acpPath) + ' | NodeBB Admin Control Panel';
 	}
 
 	function setupRestartLinks() {
