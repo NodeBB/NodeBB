@@ -171,7 +171,7 @@
 		if (topicObj.thumb) {
 			return '<img src="' + topicObj.thumb + '" class="img-circle user-img" title="' + topicObj.user.username + '" />';
 		} else {
-			return '<img src="' + topicObj.user.picture + '" class="user-img" title="' + topicObj.user.username + '" />';
+			return '<img data-component="user/picture" data-uid="' + topicObj.user.uid + '" src="' + topicObj.user.picture + '" class="user-img" title="' + topicObj.user.username + '" />';
 		}
 	};
 
