@@ -1,12 +1,25 @@
 'use strict';
-/* globals define, app, ajaxify */
+/* globals define, app, ajaxify, socket, RELATIVE_PATH */
 
-define('forum/account/header', function() {
-	var	AccountHeader = {};
+define('forum/account/header', [
+	'coverPhoto',
+	'uploader',
+	'components'
+], function(coverPhoto, uploader, components) {
+	var	AccountHeader = {},
+		yourid,
+		theirid;
 
 	AccountHeader.init = function() {
+		yourid = ajaxify.data.yourid;
+		theirid = ajaxify.data.theirid;
+
 		hidePrivateLinks();
 		selectActivePill();
+
+		if (parseInt(yourid, 10) === parseInt(theirid, 10)) {
+			setupCoverPhoto();
+		}
 	};
 
 	function hidePrivateLinks() {
@@ -24,6 +37,23 @@ define('forum/account/header', function() {
 				return false;
 			}
 		});
+	}
+
+	function setupCoverPhoto() {
+		coverPhoto.init(components.get('account/cover'),
+			function(imageData, position, callback) {
+				socket.emit('user.updateCover', {
+					uid: yourid,
+					imageData: imageData,
+					position: position
+				}, callback);
+			},
+			function() {
+				uploader.open(RELATIVE_PATH + '/api/user/uploadcover', { uid: yourid }, 0, function(imageUrlOnServer) {
+					components.get('account/cover').css('background-image', 'url(' + imageUrlOnServer + ')');
+				});
+			}
+		);
 	}
 
 	return AccountHeader;
