@@ -112,6 +112,7 @@ define('forum/topic/threadTools', ['forum/topic/fork', 'forum/topic/move', 'comp
 				templates.parse('partials/topic/topic-menu-list', data, function(html) {
 					translator.translate(html, function(html) {
 						dropdownMenu.html(html);
+						$(window).trigger('action:topic.tools.load');
 					});
 				});
 			});
