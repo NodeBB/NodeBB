@@ -120,7 +120,7 @@
 </div>
 
 <div class="row">
-	<div class="col-sm-2 col-xs-12 settings-header">Profile Cover</div>
+	<div class="col-sm-2 col-xs-12 settings-header">Profile Cover Image</div>
 	<div class="col-sm-10 col-xs-12">
 		<form>
 			<label for="profile:defaultCovers"><strong>Default Cover Images</strong></label>

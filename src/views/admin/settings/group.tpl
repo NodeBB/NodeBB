@@ -28,7 +28,14 @@
 			<p class="help-block">
 				If enabled, users can create groups <em>(Default: disabled)</em>
 			</p>
+		</form>
+	</div>
+</div>
 
+<div class="row">
+	<div class="col-sm-2 col-xs-12 settings-header">Group Cover Image</div>
+	<div class="col-sm-10 col-xs-12">
+		<form role="form">
 			<label for="groups:defaultCovers"><strong>Default Cover Images</strong></label>
 			<p class="help-block">
 				Add comma-separated default cover images for groups that don't have an uploaded cover image
