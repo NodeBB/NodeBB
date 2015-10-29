@@ -101,6 +101,9 @@ helpers.getUserDataByUserSlug = function(userslug, callerUID, callback) {
 			userData.signature = validator.escape(userData.signature);
 			userData.aboutme = validator.escape(userData.aboutme || '');
 
+			userData['cover:url'] = userData['cover:url'] || require('../../coverPhoto').getDefaultProfileCover(userData.uid);
+			userData['cover:position'] = userData['cover:position'] || '50% 50%';
+
 			next(null, userData);
 		}
 	], callback);
