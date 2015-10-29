@@ -20,7 +20,7 @@ module.exports = function(Posts) {
 				user.getMultipleUserSettings(uids, next);
 			},
 			userData: function(next) {
-				user.getUsersFields(uids, ['uid', 'username', 'userslug', 'reputation', 'postcount', 'picture', 'signature', 'banned', 'status', 'icon:bgColor', 'icon:text'], next);
+				user.getUsersFields(uids, ['uid', 'username', 'userslug', 'reputation', 'postcount', 'picture', 'signature', 'banned', 'status'], next);
 			},
 			online: function(next) {
 				require('../socket.io').isUsersOnline(uids, next);

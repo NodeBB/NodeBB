@@ -282,23 +282,6 @@ describe('User', function() {
 		});
 	});
 
-	describe('User.icon.generate()', function() {
-		it('should add icon text and bgColor fields to user hash', function(done) {
-			var backgrounds = ['#AB4642', '#DC9656', '#A1B56C', '#7CAFC2', '#BA8BAF', '#A16946'];
-
-			User.icon.generate(1, function(err) {
-				assert.ifError(err);
-
-				User.getUserFields(1, ['icon:text', 'icon:bgColor'], function(err, fields) {
-					assert.strictEquals('J', fields[0]);
-					assert(backgrounds.indexOf(fields[1]) !== -1);
-
-					done();
-				});
-			});
-		});
-	});
-
 	after(function() {
 		db.flushdb();
 	});
