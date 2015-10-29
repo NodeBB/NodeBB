@@ -163,11 +163,8 @@ var async = require('async'),
 				return callback(new Error('[[error:no-group]]'));
 			}
 
-			// Default image
-			if (!results.base['cover:url']) {
-				results.base['cover:url'] = nconf.get('relative_path') + '/images/cover-default.png';
-				results.base['cover:position'] = '50% 50%';
-			}
+			results.base['cover:url'] = results.base['cover:url'] || require('./coverPhoto').getDefaultGroupCover(groupName);
+			results.base['cover:position'] = results.base['cover:position'] || '50% 50%';
 
 			plugins.fireHook('filter:parse.raw', results.base.description, function(err, descriptionParsed) {
 				if (err) {
@@ -406,10 +403,9 @@ var async = require('async'),
 					group.hidden = parseInt(group.hidden, 10) === 1;
 					group.system = parseInt(group.system, 10) === 1;
 					group.private = parseInt(group.private, 10) === 1;
-					if (!group['cover:url']) {
-						group['cover:url'] = nconf.get('relative_path') + '/images/cover-default.png';
-						group['cover:position'] = '50% 50%';
-					}
+
+					group['cover:url'] = group['cover:url'] || require('./coverPhoto').getDefaultGroupCover(group.name);
+					group['cover:position'] = group['cover:position'] || '50% 50%';
 				}
 			});
 

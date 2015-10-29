@@ -32,4 +32,17 @@
 	</div>
 </div>
 
+<div class="row">
+	<div class="col-sm-2 col-xs-12 settings-header">Group Cover Image</div>
+	<div class="col-sm-10 col-xs-12">
+		<form role="form">
+			<label for="groups:defaultCovers"><strong>Default Cover Images</strong></label>
+			<p class="help-block">
+				Add comma-separated default cover images for groups that don't have an uploaded cover image
+			</p>
+			<input type="text" class="form-control input-lg" id="groups:defaultCovers" data-field="groups:defaultCovers" value="{config.relative_path}/images/cover-default.png" placeholder="https://example.com/group1.png, https://example.com/group2.png" /><br />
+		</form>
+	</div>
+</div>
+
 <!-- IMPORT admin/settings/footer.tpl -->

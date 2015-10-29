@@ -108,6 +108,19 @@
 </div>
 
 <div class="row">
+	<div class="col-sm-2 col-xs-12 settings-header">Profile Cover Image</div>
+	<div class="col-sm-10 col-xs-12">
+		<form>
+			<label for="profile:defaultCovers"><strong>Default Cover Images</strong></label>
+			<p class="help-block">
+				Add comma-separated default cover images for accounts that don't have an uploaded cover image
+			</p>
+			<input type="text" class="form-control input-lg" id="profile:defaultCovers" data-field="profile:defaultCovers" value="{config.relative_path}/images/cover-default.png" placeholder="https://example.com/group1.png, https://example.com/group2.png" />
+		</form>
+	</div>
+</div>
+
+<div class="row">
 	<div class="col-sm-2 col-xs-12 settings-header">Themes</div>
 	<div class="col-sm-10 col-xs-12">
 		<form>
