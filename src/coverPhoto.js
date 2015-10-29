@@ -5,20 +5,28 @@ var meta = require('./meta');
 var nconf = require('nconf');
 
 
-coverPhoto.getDefaultCover = function(groupName) {
+coverPhoto.getDefaultGroupCover = function(groupName) {
 	return getCover('groups', groupName);
 };
 
+coverPhoto.getDefaultProfileCover = function(uid) {
+	return getCover('profile', parseInt(uid, 10));
+};
+
 function getCover(type, id) {
-	var covers = meta.config[type + ':defaultCovers'].split(/\s*?,\s*?/g);
-	
-	if (typeof id === 'string') {
-		id = (id.charCodeAt(0) + id.charCodeAt(1)) % covers.length;
-	} else {
-		id = id % covers.length;
+	if (meta.config[type + ':defaultCovers']) {		
+		var covers = meta.config[type + ':defaultCovers'].split(/\s*?,\s*?/g);
+		
+		if (typeof id === 'string') {
+			id = (id.charCodeAt(0) + id.charCodeAt(1)) % covers.length;
+		} else {
+			id = id % covers.length;
+		}
+
+		return covers[id];
 	}
 
-	return covers && covers.length ? covers[id] : (nconf.get('relative_path') + '/images/cover-default.png');
+	return nconf.get('relative_path') + '/images/cover-default.png';
 }
 
 module.exports = coverPhoto;

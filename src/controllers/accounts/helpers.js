@@ -140,7 +140,7 @@ helpers.getBaseUser = function(userslug, callerUID, callback) {
 			results.user.showHidden = results.user.isSelf || results.isAdmin;
 			results.user.profile_links = results.profile_links;
 
-			results['cover:url'] = results['cover:url'] || nconf.get('relative_path') + '/images/cover-default.png';
+			results['cover:url'] = results['cover:url'] || require('../../coverPhoto').getDefaultProfileCover(results.user.uid);
 			results['cover:position'] = results['cover:position'] || '50% 50%';
 
 			next(null, results.user);

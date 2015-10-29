@@ -72,6 +72,11 @@ profileController.get = function(req, res, callback) {
 			userData.isFollowing = results.isFollowing;
 			userData.breadcrumbs = helpers.buildBreadcrumbs([{text: userData.username}]);
 			userData.title = userData.username;
+
+			userData['cover:url'] = userData['cover:url'] || require('../../coverPhoto').getDefaultProfileCover(userData.uid);
+			userData['cover:position'] = userData['cover:position'] || '50% 50%';
+			console.log(userData['cover:url']);
+
 			if (!userData.profileviews) {
 				userData.profileviews = 1;
 			}
