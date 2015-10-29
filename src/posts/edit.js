@@ -86,7 +86,7 @@ module.exports = function(Posts) {
 
 	function editMainPost(data, postData, callback) {
 		var tid = postData.tid;
-		var title = data.title.trim();
+		var title = data.title ? data.title.trim() : '';
 
 		async.parallel({
 			topic: function(next) {

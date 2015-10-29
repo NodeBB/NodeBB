@@ -2,7 +2,14 @@
 
 /* globals define, ajaxify, app, utils, socket, bootbox */
 
-define('forum/account/profile', ['forum/account/header', 'forum/infinitescroll', 'translator'], function(header, infinitescroll, translator) {
+define('forum/account/profile', [
+	'forum/account/header',
+	'forum/infinitescroll',
+	'translator',
+	'coverPhoto',
+	'uploader',
+	'components'
+], function(header, infinitescroll, translator, coverPhoto, uploader, components) {
 	var Account = {},
 		yourid,
 		theirid,
@@ -41,6 +48,10 @@ define('forum/account/profile', ['forum/account/header', 'forum/infinitescroll',
 		socket.on('event:user_status_change', onUserStatusChange);
 
 		infinitescroll.init(loadMorePosts);
+
+		if (parseInt(yourid, 10) === parseInt(theirid, 10)) {
+			setupCoverPhoto();
+		}
 	};
 
 	function processPage() {
@@ -159,6 +170,23 @@ define('forum/account/profile', ['forum/account/header', 'forum/infinitescroll',
 				});
 			});
 		});
+	}
+
+	function setupCoverPhoto() {
+		coverPhoto.init(components.get('account/cover'),
+			function(imageData, position, callback) {
+				socket.emit('user.updateCover', {
+					uid: yourid,
+					imageData: imageData,
+					position: position
+				}, callback);
+			},
+			function() {
+				uploader.open(RELATIVE_PATH + '/api/user/uploadcover', { uid: yourid }, 0, function(imageUrlOnServer) {
+					components.get('account/cover').css('background-image', 'url(' + imageUrlOnServer + ')');
+				});
+			}
+		);
 	}
 
 	return Account;

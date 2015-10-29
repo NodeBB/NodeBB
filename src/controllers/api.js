@@ -112,13 +112,11 @@ apiController.getConfig = function(req, res, next) {
 
 
 apiController.renderWidgets = function(req, res, next) {
-	var async = require('async'),
-		areas = {
-			template: req.query.template,
-			locations: req.query.locations,
-			url: req.query.url
-		},
-		renderedWidgets = [];
+	var areas = {
+		template: req.query.template,
+		locations: req.query.locations,
+		url: req.query.url
+	};
 
 	if (!areas.template || !areas.locations) {
 		return res.status(200).json({});

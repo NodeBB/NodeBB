@@ -217,15 +217,19 @@ define('forum/topic/posts', [
 		utils.addCommasToNumbers(posts.find('.formatted-number'));
 		utils.makeNumbersHumanReadable(posts.find('.human-readable-number'));
 		posts.find('.timeago').timeago();
+		Posts.wrapImagesInLinks(posts);
+
+		addBlockquoteEllipses(posts.find('[component="post/content"] > blockquote > blockquote'));
+		hidePostToolsForDeletedPosts(posts);
+	};
+
+	Posts.wrapImagesInLinks = function(posts) {
 		posts.find('[component="post/content"] img:not(.emoji)').each(function() {
 			var $this = $(this);
 			if (!$this.parent().is('a')) {
 				$this.wrap('<a href="' + $this.attr('src') + '" target="_blank">');
 			}
 		});
-
-		addBlockquoteEllipses(posts.find('[component="post/content"] > blockquote > blockquote'));
-		hidePostToolsForDeletedPosts(posts);
 	};
 
 	Posts.showBottomPostBar = function() {

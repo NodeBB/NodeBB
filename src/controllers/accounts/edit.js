@@ -120,4 +120,19 @@ editController.uploadPicture = function (req, res, next) {
 	});
 };
 
+editController.uploadCoverPicture = function(req, res, next) {
+	var params = JSON.parse(req.body.params);
+	
+	user.updateCoverPicture({
+		file: req.files.files[0].path,
+		uid: params.uid
+	}, function(err, image) {
+		if (err) {
+			return next(err);
+		}
+
+		res.json([{url: image.url.startsWith('http') ? image.url : nconf.get('relative_path') + image.url}]);
+	});
+};
+
 module.exports = editController;

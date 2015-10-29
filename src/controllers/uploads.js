@@ -93,7 +93,11 @@ uploadsController.uploadThumb = function(req, res, next) {
 };
 
 uploadsController.uploadGroupCover = function(data, next) {
-	uploadImage(0/*req.user.uid*/, data, next);
+	uploadImage(0, data, next);
+};
+
+uploadsController.uploadUserCover = function(data, next) {
+	uploadImage(data.uid, data, next);
 };
 
 function uploadImage(uid, image, callback) {

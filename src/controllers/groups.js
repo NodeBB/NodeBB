@@ -3,7 +3,6 @@
 var async = require('async'),
 	nconf = require('nconf'),
 	validator = require('validator'),
-	db = require('../database'),
 	meta = require('../meta'),
 	groups = require('../groups'),
 	user = require('../user'),
@@ -129,6 +128,21 @@ groupsController.members = function(req, res, next) {
 			loadmore_display: users.length > 50 ? 'block' : 'hide',
 			breadcrumbs: breadcrumbs
 		});
+	});
+};
+
+groupsController.uploadCover = function(req, res, next) {
+	var params = JSON.parse(req.body.params);
+	
+	groups.updateCover({
+		file: req.files.files[0].path,
+		groupName: params.groupName
+	}, function(err, image) {
+		if (err) {
+			return next(err);
+		}
+
+		res.json([{url: image.url.startsWith('http') ? image.url : nconf.get('relative_path') + image.url}]);
 	});
 };
 

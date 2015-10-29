@@ -7,17 +7,14 @@ var events = require('../../events');
 var websockets = require('../index');
 var socketTopics = require('../topics');
 var privileges = require('../../privileges');
+var plugins = require('../../plugins');
 var favourites = require('../../favourites');
-
 
 module.exports = function(SocketPosts) {
 
 	SocketPosts.loadPostTools = function(socket, data, callback) {
-		if (!socket.uid) {
-			return;
-		}
 		if (!data) {
-			return callback(new Error('[[error:invalid-data]]'))
+			return callback(new Error('[[error:invalid-data]]'));
 		}
 
 		async.parallel({
@@ -29,15 +26,18 @@ module.exports = function(SocketPosts) {
 			},
 			favourited: function(next) {
 				favourites.getFavouritesByPostIDs([data.pid], socket.uid, next);
+			},
+			tools: function(next) {
+				plugins.fireHook('filter:post.tools', {pid: data.pid, uid: socket.uid, tools: []}, next);
 			}
 		}, function(err, results) {
 			if (err) {
 				return callback(err);
 			}
-			results.posts.tools = []; // TODO: add filter for this
+			results.posts.tools = results.tools.tools;
 			results.posts.deleted = parseInt(results.posts.deleted, 10) === 1;
 			results.posts.favourited = results.favourited[0];
-			results.posts.selfPost = socket.uid === parseInt(results.posts.uid, 10);
+			results.posts.selfPost = socket.uid && socket.uid === parseInt(results.posts.uid, 10);
 			results.posts.display_moderator_tools = results.isAdminOrMod || results.posts.selfPost;
 			results.posts.display_move_tools = results.isAdminOrMod;
 			callback(null, results);

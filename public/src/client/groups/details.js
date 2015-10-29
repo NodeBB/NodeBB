@@ -1,18 +1,16 @@
 "use strict";
-/* globals define, socket, ajaxify, app, bootbox, utils */
+/* globals define, socket, ajaxify, app, bootbox, utils, RELATIVE_PATH */
 
 define('forum/groups/details', [
 	'forum/groups/memberlist',
 	'iconSelect',
 	'components',
-	'vendor/colorpicker/colorpicker',
-	'vendor/jquery/draggable-background/backgroundDraggable'
-], function(memberList, iconSelect, components) {
+	'coverPhoto',
+	'uploader',
+	'vendor/colorpicker/colorpicker'
+], function(memberList, iconSelect, components, coverPhoto, uploader) {
 
-	var Details = {
-			cover: {}
-		};
-
+	var Details = {};
 	var groupName;
 
 	Details.init = function() {
@@ -22,7 +20,21 @@ define('forum/groups/details', [
 
 		if (ajaxify.data.group.isOwner) {
 			Details.prepareSettings();
-			Details.initialiseCover();
+
+			coverPhoto.init(components.get('groups/cover'),
+				function(imageData, position, callback) {
+					socket.emit('groups.cover.update', {
+						groupName: groupName,
+						imageData: imageData,
+						position: position
+					}, callback);
+				},
+				function() {
+					uploader.open(RELATIVE_PATH + '/api/groups/uploadpicture', { groupName: groupName }, 0, function(imageUrlOnServer) {
+						components.get('groups/cover').css('background-image', 'url(' + imageUrlOnServer + ')');
+					});
+				}
+			);
 		}
 
 		memberList.init();
@@ -206,93 +218,6 @@ define('forum/groups/details', [
 					}
 				});
 			}
-		});
-	};
-
-	// Cover Photo Handling Code
-
-	Details.initialiseCover = function() {
-		var coverEl = components.get('groups/cover');
-		coverEl.find('.change').on('click', function() {
-			coverEl.toggleClass('active', 1);
-			coverEl.backgroundDraggable({
-				axis: 'y',
-				units: 'percent'
-			});
-			coverEl.on('dragover', Details.cover.onDragOver);
-			coverEl.on('drop', Details.cover.onDrop);
-		});
-
-		coverEl.find('.save').on('click', Details.cover.save);
-		coverEl.addClass('initialised');
-	};
-
-	Details.cover.load = function() {
-		socket.emit('groups.cover.get', {
-			groupName: groupName
-		}, function(err, data) {
-			if (!err) {
-				var coverEl = components.get('groups/cover');
-				if (data['cover:url']) {
-					coverEl.css('background-image', 'url(' + data['cover:url'] + ')');
-				}
-
-				if (data['cover:position']) {
-					coverEl.css('background-position', data['cover:position']);
-				}
-
-				delete Details.cover.newCover;
-			} else {
-				app.alertError(err.message);
-			}
-		});
-	};
-
-	Details.cover.onDragOver = function(e) {
-		e.stopPropagation();
-		e.preventDefault();
-		e.originalEvent.dataTransfer.dropEffect = 'copy';
-	};
-
-	Details.cover.onDrop = function(e) {
-		var coverEl = components.get('groups/cover');
-		e.stopPropagation();
-		e.preventDefault();
-
-		var files = e.originalEvent.dataTransfer.files,
-		reader = new FileReader();
-
-		if (files.length && files[0].type.match('image.*')) {
-			reader.onload = function(e) {
-				coverEl.css('background-image', 'url(' + e.target.result + ')');
-				Details.cover.newCover = e.target.result;
-			};
-
-			reader.readAsDataURL(files[0]);
-		}
-	};
-
-	Details.cover.save = function() {
-		var coverEl = components.get('groups/cover');
-
-		coverEl.addClass('saving');
-
-		socket.emit('groups.cover.update', {
-			groupName: groupName,
-			imageData: Details.cover.newCover || undefined,
-			position: components.get('groups/cover').css('background-position')
-		}, function(err) {
-			if (!err) {
-				coverEl.toggleClass('active', 0);
-				coverEl.backgroundDraggable('disable');
-				coverEl.off('dragover', Details.cover.onDragOver);
-				coverEl.off('drop', Details.cover.onDrop);
-				Details.cover.load();
-			} else {
-				app.alertError(err.message);
-			}
-
-			coverEl.removeClass('saving');
 		});
 	};
 
