@@ -118,7 +118,7 @@ module.exports = function(User) {
 			}
 
 			// User Icons
-			if (user.hasOwnProperty('picture')) {
+			if (user.hasOwnProperty('picture') && user.username) {
 				user['icon:text'] = (user.username[0] || '').toUpperCase();
 				user['icon:bgColor'] = iconBackgrounds[Array.prototype.reduce.call(user.username, function(cur, next) {
 					return cur + next.charCodeAt();
