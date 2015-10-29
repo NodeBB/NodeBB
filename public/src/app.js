@@ -174,7 +174,7 @@ app.cacheBuster = null;
 
 	app.createUserTooltips = function(els) {
 		els = els || $('body');
-		els.find('img[title].teaser-pic,img[title].user-img,div.user-icon').each(function() {
+		els.find('img[title].teaser-pic,img[title].user-img,div.user-icon,span.user-icon').each(function() {
 			$(this).tooltip({
 				placement: 'top',
 				title: $(this).attr('title')
