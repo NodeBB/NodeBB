@@ -9,6 +9,9 @@ var plugins = require('../plugins');
 
 module.exports = function(User) {
 
+	var iconBackgrounds = ['#f44336', '#e91e63', '#9c27b0', '#673ab7', '#3f51b5', '#2196f3',
+		'#009688', '#1b5e20', '#33691e', '#827717', '#e65100', '#ff5722', '#795548', '#607d8b'];
+
 	User.getUserField = function(uid, field, callback) {
 		User.getUserFields(uid, [field], function(err, user) {
 			callback(err, user ? user[field] : null);
@@ -115,11 +118,12 @@ module.exports = function(User) {
 			}
 
 			// User Icons
-			var backgrounds = ['#f44336', '#e91e63', '#9c27b0', '#673ab7', '#3f51b5', '#2196f3', '#009688', '#1b5e20', '#33691e', '#827717', '#e65100', '#ff5722', '#795548', '#607d8b'];
-			user['icon:text'] = (user.username[0] || '').toUpperCase();
-			user['icon:bgColor'] = backgrounds[Array.prototype.reduce.call(user.username, function(cur, next) {
-				return cur + next.charCodeAt();
-			}, 0) % backgrounds.length];
+			if (user.hasOwnProperty('picture') && user.username) {
+				user['icon:text'] = (user.username[0] || '').toUpperCase();
+				user['icon:bgColor'] = iconBackgrounds[Array.prototype.reduce.call(user.username, function(cur, next) {
+					return cur + next.charCodeAt();
+				}, 0) % iconBackgrounds.length];
+			}
 		});
 
 		plugins.fireHook('filter:users.get', users, callback);
