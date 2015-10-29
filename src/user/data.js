@@ -115,7 +115,7 @@ module.exports = function(User) {
 			}
 
 			// User Icons
-			var backgrounds = ['#AB4642', '#DC9656', '#A1B56C', '#7CAFC2', '#BA8BAF', '#A16946'];
+			var backgrounds = ['#f44336', '#e91e63', '#9c27b0', '#673ab7', '#3f51b5', '#2196f3', '#009688', '#1b5e20', '#33691e', '#827717', '#e65100', '#ff5722', '#795548', '#607d8b'];
 			user['icon:text'] = (user.username[0] || '').toUpperCase();
 			user['icon:bgColor'] = backgrounds[Array.prototype.reduce.call(user.username, function(cur, next) {
 				return cur + next.charCodeAt();
