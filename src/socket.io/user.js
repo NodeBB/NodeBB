@@ -116,6 +116,14 @@ SocketUser.reset.commit = function(socket, data, callback) {
 	});
 };
 
+SocketUser.isFollowing = function(socket, data, callback) {
+	if (!socket.uid || !data.uid) {
+		return;
+	}
+
+	user.isFollowing(socket.uid, data.uid, callback);
+};
+
 SocketUser.follow = function(socket, data, callback) {
 	if (!socket.uid || !data) {
 		return;
