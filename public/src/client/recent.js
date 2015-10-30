@@ -110,7 +110,7 @@ define('forum/recent', ['forum/infinitescroll', 'components'], function(infinite
 			return callback();
 		}
 
-		infinitescroll.parseAndTranslate(templateName, 'topics', {topics: topics, showSelect: showSelect}, function(html) {
+		app.parseAndTranslate(templateName, 'topics', {topics: topics, showSelect: showSelect}, function(html) {
 			$('#category-no-topics').remove();
 
 			$('[component="category"]').append(html);

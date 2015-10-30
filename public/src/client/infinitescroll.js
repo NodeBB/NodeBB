@@ -60,14 +60,6 @@ define('forum/infinitescroll', ['translator'], function(translator) {
 		});
 	};
 
-	scroll.parseAndTranslate = function(template, blockName, data, callback) {
-		templates.parse(template, blockName, data, function(html) {
-			translator.translate(html, function(translatedHTML) {
-				callback($(translatedHTML));
-			});
-		});
-	};
-
 	scroll.removeExtra = function(els, direction, count) {
 		if (els.length <= count) {
 			return;

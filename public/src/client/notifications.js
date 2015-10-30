@@ -47,7 +47,7 @@ define('forum/notifications', ['components', 'notifications', 'forum/infinitescr
 			if (!data.notifications || !data.notifications.length) {
 				return done();
 			}
-			infinitescroll.parseAndTranslate('notifications', 'notifications', {notifications: data.notifications}, function(html) {
+			app.parseAndTranslate('notifications', 'notifications', {notifications: data.notifications}, function(html) {
 				notifList.append(html);
 				html.find('.timeago').timeago();
 				done();

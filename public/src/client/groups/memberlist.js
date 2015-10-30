@@ -85,7 +85,7 @@ define('forum/groups/memberlist', ['components', 'forum/infinitescroll'], functi
 	}
 
 	function parseAndTranslate(users, callback) {
-		infinitescroll.parseAndTranslate('groups/details', 'members', {
+		app.parseAndTranslate('groups/details', 'members', {
 			group: {
 				members: users,
 				isOwner: ajaxify.data.group.isOwner

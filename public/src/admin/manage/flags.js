@@ -88,7 +88,7 @@ define('admin/manage/flags', [
 				after: $('[data-next]').attr('data-next')
 			}, function(data, done) {
 				if (data.posts && data.posts.length) {
-					infinitescroll.parseAndTranslate('admin/manage/flags', 'posts', {posts: data.posts}, function(html) {
+					app.parseAndTranslate('admin/manage/flags', 'posts', {posts: data.posts}, function(html) {
 						$('[data-next]').attr('data-next', data.next);
 						$('.post-container').append(html);
 						html.find('img:not(.not-responsive)').addClass('img-responsive');

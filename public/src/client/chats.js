@@ -366,7 +366,7 @@ define('forum/chats', ['components', 'string', 'sounds', 'forum/infinitescroll',
 			return callback();
 		}
 
-		infinitescroll.parseAndTranslate('chats', 'chats', {chats: users}, function(html) {
+		app.parseAndTranslate('chats', 'chats', {chats: users}, function(html) {
 			$('.recent-chats').append(html);
 			callback();
 		});

@@ -32,7 +32,7 @@ define('forum/account/followers', ['forum/account/header', 'forum/infinitescroll
 	};
 
 	function onUsersLoaded(tpl, users, callback) {
-		infinitescroll.parseAndTranslate(tpl, 'users', {users: users}, function(html) {
+		app.parseAndTranslate(tpl, 'users', {users: users}, function(html) {
 			$('#users-container').append(html);
 			utils.addCommasToNumbers(html.find('.formatted-number'));
 			callback();

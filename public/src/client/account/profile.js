@@ -112,7 +112,7 @@ define('forum/account/profile', [
 			return callback();
 		}
 
-		infinitescroll.parseAndTranslate('account/profile', 'posts', {posts: posts}, function(html) {
+		app.parseAndTranslate('account/profile', 'posts', {posts: posts}, function(html) {
 
 			$('[component="posts"]').append(html);
 			html.find('.timeago').timeago();

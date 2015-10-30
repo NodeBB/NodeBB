@@ -64,7 +64,7 @@ define('forum/tags', ['forum/infinitescroll'], function(infinitescroll) {
 
 	function onTagsLoaded(tags, replace, callback) {
 		callback = callback || function() {};
-		infinitescroll.parseAndTranslate('tags', 'tags', {tags: tags}, function(html) {
+		app.parseAndTranslate('tags', 'tags', {tags: tags}, function(html) {
 			$('.tag-list')[replace ? 'html' : 'append'](html);
 			utils.makeNumbersHumanReadable(html.find('.human-readable-number'));
 			callback();

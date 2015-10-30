@@ -30,7 +30,7 @@ define('admin/manage/tags', [
 						return app.alertError(err.message);
 					}
 
-					infinitescroll.parseAndTranslate('admin/manage/tags', 'tags', {tags: result.tags}, function(html) {
+					app.parseAndTranslate('admin/manage/tags', 'tags', {tags: result.tags}, function(html) {
 						$('.tag-list').html(html);
 						utils.makeNumbersHumanReadable(html.find('.human-readable-number'));
 						timeoutId = 0;

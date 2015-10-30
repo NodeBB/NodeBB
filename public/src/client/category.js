@@ -305,7 +305,7 @@ define('forum/category', [
 			before = topics.first();
 		}
 
-		infinitescroll.parseAndTranslate('category', 'topics', data, function(html) {
+		app.parseAndTranslate('category', 'topics', data, function(html) {
 			$('[component="category"]').removeClass('hidden');
 			$('.category-sidebar').removeClass('hidden');
 

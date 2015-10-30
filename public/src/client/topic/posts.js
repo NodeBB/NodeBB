@@ -145,7 +145,7 @@ define('forum/topic/posts', [
 
 		$(window).trigger('action:posts.loading', {posts: data.posts, after: after, before: before});
 
-		infinitescroll.parseAndTranslate('topic', 'posts', data, function(html) {
+		app.parseAndTranslate('topic', 'posts', data, function(html) {
 			if (after) {
 				html.insertAfter(after);
 			} else if (before) {
