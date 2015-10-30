@@ -86,9 +86,8 @@ module.exports = function(middleware) {
 		var clean = req.path.replace(/^\/api/, '').replace(/^\//, '');
 		var parts = clean.split('/').slice(0, 3);
 		parts.forEach(function(p, index) {
-			parts[index] = index ? parts[index - 1] + '-' + p : 'page-' + (p || 'home');
+			parts[index] = index ? parts[0] + '-' + p : 'page-' + (p || 'home');
 		});
-
 		return parts.join(' ');
 	}
 
