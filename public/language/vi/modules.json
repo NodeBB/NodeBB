@@ -23,6 +23,7 @@
     "composer.discard": "Bạn có chắc chắn hủy bỏ bài viết này?",
     "composer.submit_and_lock": "Submit and Lock",
     "composer.toggle_dropdown": "Toggle Dropdown",
+    "composer.uploading": "Uploading %1",
     "bootbox.ok": "OK",
     "bootbox.cancel": "Cancel",
     "bootbox.confirm": "Confirm"

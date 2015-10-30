@@ -23,6 +23,7 @@
     "composer.discard": "Sei sicuro di voler scartare questo post?",
     "composer.submit_and_lock": "Invia e Blocca",
     "composer.toggle_dropdown": "Mostra/Nascondi menu a discesa",
+    "composer.uploading": "Uploading %1",
     "bootbox.ok": "OK",
     "bootbox.cancel": "Annulla",
     "bootbox.confirm": "Conferma"

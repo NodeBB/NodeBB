@@ -1,16 +1,16 @@
 {
-    "category": "Category",
-    "subcategories": "Subcategories",
+    "category": "Kategori",
+    "subcategories": "Underkategori",
     "new_topic_button": "Nytt ämne",
     "guest-login-post": "Logga in för att posta",
     "no_topics": "<strong>Det finns inga ämnen i denna kategori.</strong><br />Varför skapar inte du ett ämne?",
     "browsing": "läser",
     "no_replies": "Ingen har svarat",
-    "no_new_posts": "No new posts.",
+    "no_new_posts": "Inga nya inlägg",
     "share_this_category": "Dela den här kategorin",
     "watch": "Bevaka",
     "ignore": "Ignorera",
     "watch.message": "Du bevakar nu uppdateringar ifrån denna kategori",
     "ignore.message": "Du ignorerar nu uppdateringar ifrån denna kategori",
-    "watched-categories": "Watched categories"
+    "watched-categories": "Bevakade kategorier"
 }

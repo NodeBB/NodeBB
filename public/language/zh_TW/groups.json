@@ -15,8 +15,6 @@
     "invited.notification_title": "You have been invited to join <strong>%1</strong>",
     "request.notification_title": "Group Membership Request from <strong>%1</strong>",
     "request.notification_text": "<strong>%1</strong> has requested to become a member of <strong>%2</strong>",
-    "cover-instructions": "拖拉一本相簿，並拖到此位置，以及點擊 <strong>儲存</strong>",
-    "cover-change": "變更",
     "cover-save": "儲存",
     "cover-saving": "儲存中",
     "details.title": "群組詳細信息",

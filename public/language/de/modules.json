@@ -23,6 +23,7 @@
     "composer.discard": "Bist du sicher, dass du diesen Beitrag verwerfen möchtest?",
     "composer.submit_and_lock": "Einreichen und Sperren",
     "composer.toggle_dropdown": "Menu aus-/einblenden",
+    "composer.uploading": "Uploading %1",
     "bootbox.ok": "OK",
     "bootbox.cancel": "Abbrechen",
     "bootbox.confirm": "Bestätigen"

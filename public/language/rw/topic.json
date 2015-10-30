@@ -27,7 +27,6 @@
     "locked": "Birafungiranye",
     "bookmark_instructions": "Click here to return to the last unread post in this thread.",
     "flag_title": "Bimenyeshe ubuyobozi",
-    "flag_confirm": "Wiringiye neza ko ushaka kumenyesha ibi ubuyobozi? ",
     "flag_success": "Bimaze kumenyeshwa ubuyobozi ngo bikurikiranwe. ",
     "deleted_message": "Iki kiganiro cyamaze gukurwaho. Abantu babifitiye uburenganzira ni bo bonyine bashobora kukibona. ",
     "following_topic.message": "Ntabwo uzongera kubimenyeshwa nihagira umuntu ugira icyo yandika kuri iki kiganiro. ",
@@ -96,5 +95,9 @@
     "oldest_to_newest": "Ibya Kera Ujya ku bya Vuba",
     "newest_to_oldest": "Ibya Vuba Ujya ku bya Kera",
     "most_votes": "Amajwi yiganje",
-    "most_posts": "Ibyashyizweho byiganje"
+    "most_posts": "Ibyashyizweho byiganje",
+    "stale_topic_warning": "The topic you are replying to is quite old. Would you like to create a new topic instead, and reference this one in your reply?",
+    "spam": "Spam",
+    "offensive": "Offensive",
+    "custom-flag-reason": "Enter a flagging reason"
 }

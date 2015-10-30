@@ -23,6 +23,7 @@
     "composer.discard": "Сигурни ли сте, че искате да отхвърлите тази публикация?",
     "composer.submit_and_lock": "Публикуване и заключване",
     "composer.toggle_dropdown": "Превключване на падащото меню",
+    "composer.uploading": "Uploading %1",
     "bootbox.ok": "Добре",
     "bootbox.cancel": "Отказ",
     "bootbox.confirm": "Потвърждаване"

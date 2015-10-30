@@ -15,8 +15,6 @@
     "invited.notification_title": "You have been invited to join <strong>%1</strong>",
     "request.notification_title": "Group Membership Request from <strong>%1</strong>",
     "request.notification_text": "<strong>%1</strong> has requested to become a member of <strong>%2</strong>",
-    "cover-instructions": "Drag and Drop a photo, drag to position, and hit <strong>Save</strong>",
-    "cover-change": "Change",
     "cover-save": "Save",
     "cover-saving": "Saving",
     "details.title": "Csoport részletek",

@@ -15,8 +15,6 @@
     "invited.notification_title": "Du har blitt invitert til <strong>%1</strong>",
     "request.notification_title": "Forespørsel om gruppemedlemskap fra <strong>%1</strong>",
     "request.notification_text": "<strong>%1</strong> har forespurt å bli medlem av <strong>%2</strong>",
-    "cover-instructions": "Dra og slipp et bilde, dra til posisjon, og trykk <strong>Lagre</strong>",
-    "cover-change": "Endre",
     "cover-save": "Lagre",
     "cover-saving": "Lagrer",
     "details.title": "Gruppedetaljer",

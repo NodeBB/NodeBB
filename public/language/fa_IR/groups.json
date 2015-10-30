@@ -15,8 +15,6 @@
     "invited.notification_title": "You have been invited to join <strong>%1</strong>",
     "request.notification_title": "Group Membership Request from <strong>%1</strong>",
     "request.notification_text": "<strong>%1</strong> has requested to become a member of <strong>%2</strong>",
-    "cover-instructions": "عکس را با کلیک موس بگیرید و بکشید به محل و رها کنید، سپس <strong>ذخیره</strong> را بزنید",
-    "cover-change": "تغییر",
     "cover-save": "ذخیره",
     "cover-saving": "در حال ذخیره کردن",
     "details.title": "جزئیات گروه",

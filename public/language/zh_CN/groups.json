@@ -15,8 +15,6 @@
     "invited.notification_title": "您已被邀请加入 <strong>%1</strong>",
     "request.notification_title": "来自 <strong>%1</strong> 的小组成员请求",
     "request.notification_text": "<strong>%1</strong> 已被邀请加入 <strong>%2</strong>",
-    "cover-instructions": "拖放照片到此位置，然后点击 <strong>保存</strong>",
-    "cover-change": "更改",
     "cover-save": "保存",
     "cover-saving": "正在保存",
     "details.title": "小组信息",

@@ -27,7 +27,6 @@
     "locked": "Kilitli",
     "bookmark_instructions": "Click here to return to the last unread post in this thread.",
     "flag_title": "Bu iletiyi moderatöre haber et",
-    "flag_confirm": "Bu iletiyi yöneticilere bildirmek istiyor musun?",
     "flag_success": "Bu ileti yöneticilere bildirildi.",
     "deleted_message": "Bu başlık silindi. Sadece başlık düzenleme yetkisi olan kullanıcılar görebilir.",
     "following_topic.message": "Artık bir kullanıcı bu başlığa ileti gönderdiğinde bildirim alacaksınız.",
@@ -96,5 +95,9 @@
     "oldest_to_newest": "En eskiden en yeniye",
     "newest_to_oldest": "En yeniden en eskiye",
     "most_votes": "En çok oy",
-    "most_posts": "En sık yayın"
+    "most_posts": "En sık yayın",
+    "stale_topic_warning": "The topic you are replying to is quite old. Would you like to create a new topic instead, and reference this one in your reply?",
+    "spam": "Spam",
+    "offensive": "Offensive",
+    "custom-flag-reason": "Enter a flagging reason"
 }

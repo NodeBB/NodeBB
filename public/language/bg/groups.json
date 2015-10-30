@@ -15,8 +15,6 @@
     "invited.notification_title": "Вие бяхте поканен/а да се присъедините към <strong>%1</strong>",
     "request.notification_title": "Заявка за членство в групата от <strong>%1</strong>",
     "request.notification_text": "<strong>%1</strong> поиска да стане член на <strong>%2</strong>",
-    "cover-instructions": "Плъзнете снимка, наместете я в предпочитаната позиция и натистнете <strong>Запазване</strong>",
-    "cover-change": "Промяна",
     "cover-save": "Запазване",
     "cover-saving": "Запазване",
     "details.title": "Подробности за групата",

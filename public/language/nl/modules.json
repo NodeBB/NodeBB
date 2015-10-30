@@ -23,6 +23,7 @@
     "composer.discard": "Bericht plaatsen annuleren?",
     "composer.submit_and_lock": "Plaats een bericht en vergrendel direct het onderwerp",
     "composer.toggle_dropdown": "Keuzelijst schakelen",
+    "composer.uploading": "Uploading %1",
     "bootbox.ok": "OK",
     "bootbox.cancel": "Anuleren",
     "bootbox.confirm": "Bevestig"

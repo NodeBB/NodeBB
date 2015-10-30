@@ -23,6 +23,7 @@
     "composer.discard": "Na pewno chcesz porzucić ten post?",
     "composer.submit_and_lock": "Prześlij i Zablokuj",
     "composer.toggle_dropdown": "Przełącz Listę Rozwijaną",
+    "composer.uploading": "Uploading %1",
     "bootbox.ok": "OK",
     "bootbox.cancel": "Anuluj",
     "bootbox.confirm": "Potwierdź"

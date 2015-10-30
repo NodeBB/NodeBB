@@ -27,7 +27,6 @@
     "locked": "Lukustatud",
     "bookmark_instructions": "Kliki siia, et naasta viimasele lugemata postitusele selles teemas.",
     "flag_title": "Märgista see postitus modereerimiseks",
-    "flag_confirm": "Oled kindel, et soovid märgistada antud postituse?",
     "flag_success": "See postitus on nüüd märgistatud modereerimiseks.",
     "deleted_message": "See teema on kustutatud. Ainult kasutajad kellel on piisavalt õigusi saavad seda näha.",
     "following_topic.message": "Sulle ei edastata enam teateid uutest postitustest kui keegi postitab siia teemasse.",
@@ -96,5 +95,9 @@
     "oldest_to_newest": "Vanematest uuemateni",
     "newest_to_oldest": "Uuematest vanemateni",
     "most_votes": "Kõige rohkem hääli",
-    "most_posts": "Kõige rohkem postitusi"
+    "most_posts": "Kõige rohkem postitusi",
+    "stale_topic_warning": "The topic you are replying to is quite old. Would you like to create a new topic instead, and reference this one in your reply?",
+    "spam": "Spam",
+    "offensive": "Offensive",
+    "custom-flag-reason": "Enter a flagging reason"
 }

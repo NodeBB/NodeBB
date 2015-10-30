@@ -15,8 +15,6 @@
     "invited.notification_title": "Je bent uitgenodigd voor de groep <strong>%1</strong>",
     "request.notification_title": "groepsverzoek gekregen van <strong>%1</strong>",
     "request.notification_text": "<strong>%1</strong> heeft een verzoek ingediend om een lid te zijn van de groep <strong>%2</strong>",
-    "cover-instructions": "Sleep een afbeelding, sleep om te positioneren en klik tenslotte op <strong>Opslaan</strong>",
-    "cover-change": "Bewerken",
     "cover-save": "Opslaan",
     "cover-saving": "Bezig met opslaan",
     "details.title": "Groepsdetails",

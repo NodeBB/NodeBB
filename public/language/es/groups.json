@@ -15,8 +15,6 @@
     "invited.notification_title": "Te han invitado a unirte a <strong>%1</strong>",
     "request.notification_title": "Petición de Membresía de Grupo de <strong>%1</strong>",
     "request.notification_text": "<strong>%1</strong> a pedido volverse miembro de <strong>%2</strong>",
-    "cover-instructions": "Arrastra y suelta una foto, arrastra a la posición, y pulsa <strong> Guardar </strong>",
-    "cover-change": "Cambiar",
     "cover-save": "Guardar",
     "cover-saving": "Guardando",
     "details.title": "Detalles de Grupo",

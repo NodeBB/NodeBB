@@ -15,8 +15,6 @@
     "invited.notification_title": "Você foi convidado a participar de <strong>%1</strong>",
     "request.notification_title": "Solicitação de Membro de Grupo de <strong>%1</strong>",
     "request.notification_text": "<strong>%1</strong> pediu para se tornar um membro de <strong>%2</strong>",
-    "cover-instructions": "Arraste e Solte uma foto, arraste para a posição correta, e clique em <strong>Salvar</strong>",
-    "cover-change": "Alterar",
     "cover-save": "Salvar",
     "cover-saving": "Salvando",
     "details.title": "Detalhes do Grupo",

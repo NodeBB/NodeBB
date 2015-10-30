@@ -27,7 +27,6 @@
     "locked": "Закрыт",
     "bookmark_instructions": "Нажмите здесь чтобы вернуться к последнему непрочитанному сообщению в теме.",
     "flag_title": "Отметить сообщение для модерирования",
-    "flag_confirm": "Вы уверены, что хотите отметить это сообщение?",
     "flag_success": "Это сообщение было помечено для модерации",
     "deleted_message": "Эта тема была удалена. Только пользователи с правами управления темами могут ее видеть.",
     "following_topic.message": "Теперь вы будете получать уведомления при обновлении этой темы.",
@@ -96,5 +95,9 @@
     "oldest_to_newest": "От старых к новым",
     "newest_to_oldest": "От новых к старым",
     "most_votes": "По голосам",
-    "most_posts": "По количеству ответов"
+    "most_posts": "По количеству ответов",
+    "stale_topic_warning": "The topic you are replying to is quite old. Would you like to create a new topic instead, and reference this one in your reply?",
+    "spam": "Spam",
+    "offensive": "Offensive",
+    "custom-flag-reason": "Enter a flagging reason"
 }

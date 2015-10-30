@@ -23,6 +23,7 @@
     "composer.discard": "Er du sikker på at du vil forkaste dette innlegget?",
     "composer.submit_and_lock": "Send og lås",
     "composer.toggle_dropdown": "Veksle nedtrekksfelt",
+    "composer.uploading": "Uploading %1",
     "bootbox.ok": "OK",
     "bootbox.cancel": "Avbryt",
     "bootbox.confirm": "Bekreft"

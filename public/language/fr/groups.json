@@ -15,8 +15,6 @@
     "invited.notification_title": "Vous avez été invité à rejoindre <strong>%1</strong>",
     "request.notification_title": "Requête d'Adhésion au Groupe de <strong>%1</strong>",
     "request.notification_text": "<strong>%1</strong> a demandé à devenir membre de <strong>%2</strong>",
-    "cover-instructions": "Glissez-déposez une image, ajustez la position, et cliquez sur <strong>Enregistrer</strong>",
-    "cover-change": "Modifier",
     "cover-save": "Enregistrer",
     "cover-saving": "Enregistrement",
     "details.title": "Informations du groupe",

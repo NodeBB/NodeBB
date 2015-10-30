@@ -27,7 +27,6 @@
     "locked": "বন্ধ",
     "bookmark_instructions": "Click here to return to the last unread post in this thread.",
     "flag_title": "মডারেশনের জন্য এই পোস্টটি ফ্ল্যাগ করুন",
-    "flag_confirm": "আপনি কি নিশ্চিত যে এই পোস্টটিকে আপনি ফ্ল্যাগ করতে চান? ",
     "flag_success": "এই পোস্টটি মডারেশনের জন্য ফ্ল্যাগ করা হয়েছে।",
     "deleted_message": "এই টপিকটি মুছে ফেলা হয়েছে। শুধুমাত্র টপিক ব্যবস্থাপনার ক্ষমতাপ্রাপ্ত সদস্যগণ এটি দেখতে পারবেন।",
     "following_topic.message": "এখন থেকে এই টপিকে অন্যকেউ পোস্ট করলে আপনি নোটিফিকেশন পাবেন।",
@@ -96,5 +95,9 @@
     "oldest_to_newest": "পুরাতন থেকে নতুন",
     "newest_to_oldest": "নতুন থেকে পুরাতন",
     "most_votes": "সর্বোচ্চ ভোট",
-    "most_posts": "Most posts"
+    "most_posts": "Most posts",
+    "stale_topic_warning": "The topic you are replying to is quite old. Would you like to create a new topic instead, and reference this one in your reply?",
+    "spam": "Spam",
+    "offensive": "Offensive",
+    "custom-flag-reason": "Enter a flagging reason"
 }

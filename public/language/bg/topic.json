@@ -27,7 +27,6 @@
     "locked": "Заключена",
     "bookmark_instructions": "Натиснете тук, за да се върнете на последната непрочетена публикация в тази тема.",
     "flag_title": "Докладване на тази публикация до модератор",
-    "flag_confirm": "Сигурни ли сте, че искате да докладвате тази публикация?",
     "flag_success": "Тази публикация е била докладвана до модератор.",
     "deleted_message": "Тази тема е била изтрита. Само потребители с права за управление на темите могат да я видят.",
     "following_topic.message": "Вече ще получавате известия когато някой публикува коментар в тази тема.",
@@ -96,5 +95,9 @@
     "oldest_to_newest": "Първо най-старите",
     "newest_to_oldest": "Първо най-новите",
     "most_votes": "Най-много гласове",
-    "most_posts": "Най-много публикации"
+    "most_posts": "Най-много публикации",
+    "stale_topic_warning": "The topic you are replying to is quite old. Would you like to create a new topic instead, and reference this one in your reply?",
+    "spam": "Spam",
+    "offensive": "Offensive",
+    "custom-flag-reason": "Enter a flagging reason"
 }

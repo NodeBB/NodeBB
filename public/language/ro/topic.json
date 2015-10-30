@@ -27,7 +27,6 @@
     "locked": "Închis",
     "bookmark_instructions": "Click here to return to the last unread post in this thread.",
     "flag_title": "Semnalizează acest mesaj pentru moderare",
-    "flag_confirm": "Ești sigur că vrei să semnalezi acest mesaj?",
     "flag_success": "Acest mesaj a fost semnalizat pentru moderare.",
     "deleted_message": "Acest subiect a fost șters. Doar utilizatorii cu privilegii pentru moderarea subiectelor îl poate vedea.",
     "following_topic.message": "Vei primi notificări când cineva va posta un nou mesaj in acest subiect.",
@@ -96,5 +95,9 @@
     "oldest_to_newest": "Vechi la Noi",
     "newest_to_oldest": "Noi la Vechi",
     "most_votes": "Cele mai votate",
-    "most_posts": "Most posts"
+    "most_posts": "Most posts",
+    "stale_topic_warning": "The topic you are replying to is quite old. Would you like to create a new topic instead, and reference this one in your reply?",
+    "spam": "Spam",
+    "offensive": "Offensive",
+    "custom-flag-reason": "Enter a flagging reason"
 }

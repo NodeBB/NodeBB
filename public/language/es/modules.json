@@ -23,6 +23,7 @@
     "composer.discard": "¿Estás seguro de que deseas descartar este mensaje?",
     "composer.submit_and_lock": "Enviar y Bloquear",
     "composer.toggle_dropdown": "Alternar desplegable",
+    "composer.uploading": "Uploading %1",
     "bootbox.ok": "OK",
     "bootbox.cancel": "Cancelar",
     "bootbox.confirm": "Confirmar"

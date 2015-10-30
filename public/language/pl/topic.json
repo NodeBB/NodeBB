@@ -27,7 +27,6 @@
     "locked": "Zablokowany",
     "bookmark_instructions": "Kliknij tutaj, aby powrócic do ostatniego nieprzeczytanego postu w tym wątku.",
     "flag_title": "Zgłoś post do moderacji",
-    "flag_confirm": "Na pewno chcesz oznaczyć ten post?",
     "flag_success": "Ten post został oznaczony do moderacji.",
     "deleted_message": "Ten temat został skasowany. Tylko użytkownicy z uprawnieniami do zarządzania mogą go zobaczyć.",
     "following_topic.message": "Będziesz od teraz otrzymywał powiadomienia, gdy ktoś odpowie w tym temacie.",
@@ -96,5 +95,9 @@
     "oldest_to_newest": "Najpierw najstarsze",
     "newest_to_oldest": "Najpierw najnowsze",
     "most_votes": "Najwięcej głosów",
-    "most_posts": "Najwięcej postów"
+    "most_posts": "Najwięcej postów",
+    "stale_topic_warning": "The topic you are replying to is quite old. Would you like to create a new topic instead, and reference this one in your reply?",
+    "spam": "Spam",
+    "offensive": "Offensive",
+    "custom-flag-reason": "Enter a flagging reason"
 }

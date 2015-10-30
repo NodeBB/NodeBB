@@ -23,6 +23,7 @@
     "composer.discard": "آیا از دور انداختن این دیدگاه اطمینان دارید؟",
     "composer.submit_and_lock": "ارسال و قفل",
     "composer.toggle_dropdown": "باز و بسته کردن کرکره",
+    "composer.uploading": "Uploading %1",
     "bootbox.ok": "OK",
     "bootbox.cancel": "Cancel",
     "bootbox.confirm": "Confirm"
