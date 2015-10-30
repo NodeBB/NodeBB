@@ -104,7 +104,9 @@ module.exports = function(Groups) {
 		async.parallel([
 			async.apply(db.setObjectField, 'group:' + groupName, 'hidden', hidden ? 1 : 0),
 			async.apply(updateVisibility, groupName, hidden)
-		], callback);
+		], function(err) {
+			callback(err);
+		});
 	}
 
 	Groups.updateCoverPosition = function(groupName, position, callback) {
