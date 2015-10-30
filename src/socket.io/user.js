@@ -118,7 +118,7 @@ SocketUser.reset.commit = function(socket, data, callback) {
 
 SocketUser.isFollowing = function(socket, data, callback) {
 	if (!socket.uid || !data.uid) {
-		return;
+		return callback(null, false);
 	}
 
 	user.isFollowing(socket.uid, data.uid, callback);
