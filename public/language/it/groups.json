@@ -15,8 +15,6 @@
     "invited.notification_title": "Sei stato invitato a entrare in <strong>%1</strong>",
     "request.notification_title": "Richiesta di iscrizione al gruppo da <strong>%1</strong>",
     "request.notification_text": "<strong>%1</strong> ha richiesto di essere iscritto a <strong>%2</strong>",
-    "cover-instructions": "Drag and Drop una fotografia, spostarla ad una posizione, e premere <strong>Salva</strong>",
-    "cover-change": "Cambia",
     "cover-save": "Salva",
     "cover-saving": "Salvando",
     "details.title": "Dettagli Gruppo",

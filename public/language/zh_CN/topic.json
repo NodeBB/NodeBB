@@ -27,7 +27,6 @@
     "locked": "已锁定",
     "bookmark_instructions": "点击这里返回最新的未读回帖。",
     "flag_title": "举报此帖",
-    "flag_confirm": "您确认要举报此帖吗？",
     "flag_success": "已举报此回帖。",
     "deleted_message": "此主题已被删除。只有拥有主题管理权限的用户可以查看。",
     "following_topic.message": "当有人回复此主题时，您会收到通知。",
@@ -96,5 +95,9 @@
     "oldest_to_newest": "从旧到新",
     "newest_to_oldest": "从新到旧",
     "most_votes": "最多投票",
-    "most_posts": "最多回复"
+    "most_posts": "最多回复",
+    "stale_topic_warning": "The topic you are replying to is quite old. Would you like to create a new topic instead, and reference this one in your reply?",
+    "spam": "Spam",
+    "offensive": "Offensive",
+    "custom-flag-reason": "Enter a flagging reason"
 }

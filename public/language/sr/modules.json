@@ -23,6 +23,7 @@
     "composer.discard": "Желите ли да одбаците ову поруку?",
     "composer.submit_and_lock": "Пошаљи и закључај",
     "composer.toggle_dropdown": "Toggle Dropdown",
+    "composer.uploading": "Uploading %1",
     "bootbox.ok": "OK",
     "bootbox.cancel": "Cancel",
     "bootbox.confirm": "Confirm"

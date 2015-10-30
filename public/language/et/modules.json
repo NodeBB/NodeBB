@@ -23,6 +23,7 @@
     "composer.discard": "Oled kindel, et soovid selle postituse tühistada?",
     "composer.submit_and_lock": "Kinnita ja Lukusta",
     "composer.toggle_dropdown": "Aktiveeri rippmenüü",
+    "composer.uploading": "Uploading %1",
     "bootbox.ok": "Olgu",
     "bootbox.cancel": "Katkesta",
     "bootbox.confirm": "Kinnita"

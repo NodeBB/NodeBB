@@ -27,7 +27,6 @@
     "locked": "Låst",
     "bookmark_instructions": "Klikk her for å returnere til siste uleste emne i denne tråden.",
     "flag_title": "Rapporter dette innlegget for granskning",
-    "flag_confirm": "Er du sikker på at du vil rapportere dette innlegget?",
     "flag_success": "Dette innlegget har blitt rapportert.",
     "deleted_message": "Dette emnet har blitt slettet. Bare brukere med emnehåndterings-privilegier kan se den.",
     "following_topic.message": "Du vil nå motta varsler når noen skriver i denne tråden.",
@@ -96,5 +95,9 @@
     "oldest_to_newest": "Eldste til nyeste",
     "newest_to_oldest": "Nyeste til eldste",
     "most_votes": "Flest stemmer",
-    "most_posts": "Flest innlegg"
+    "most_posts": "Flest innlegg",
+    "stale_topic_warning": "The topic you are replying to is quite old. Would you like to create a new topic instead, and reference this one in your reply?",
+    "spam": "Spam",
+    "offensive": "Offensive",
+    "custom-flag-reason": "Enter a flagging reason"
 }

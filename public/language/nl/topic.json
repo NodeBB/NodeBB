@@ -27,7 +27,6 @@
     "locked": "Gesloten",
     "bookmark_instructions": "Klik hier om terug te gaan om de nieuwste bericht te bekijken in deze onderwerp",
     "flag_title": "Bericht aan beheerders melden",
-    "flag_confirm": "Weet u het zeker dat u dit bericht wilt rapporteren?",
     "flag_success": "Het bericht is gerapporteerd aan beheer.",
     "deleted_message": "Dit onderwerp is verwijderd. Alleen gebruikers met beheerrechten op onderwerpniveau kunnen dit inzien.",
     "following_topic.message": "Vanaf nu worden meldingen ontvangen zodra iemand een reactie op dit onderwerp geeft.",
@@ -96,5 +95,9 @@
     "oldest_to_newest": "Oudste berichten bovenaan",
     "newest_to_oldest": "Meest recente berichten bovenaan",
     "most_votes": "Meeste aantal stemmen",
-    "most_posts": "Meeste aantal reacties"
+    "most_posts": "Meeste aantal reacties",
+    "stale_topic_warning": "The topic you are replying to is quite old. Would you like to create a new topic instead, and reference this one in your reply?",
+    "spam": "Spam",
+    "offensive": "Offensive",
+    "custom-flag-reason": "Enter a flagging reason"
 }

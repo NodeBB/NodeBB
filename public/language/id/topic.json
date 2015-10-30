@@ -27,7 +27,6 @@
     "locked": "Terkunci",
     "bookmark_instructions": "Click here to return to the last unread post in this thread.",
     "flag_title": "Tandai posting ini untuk moderasi",
-    "flag_confirm": "Kamu yakin ingin menandai posting ini?",
     "flag_success": "Posting ini telah ditandai untuk moderasi",
     "deleted_message": "Topik ini telah dihapus. Hanya pengguna dengan hak manajemen topik yang dapat melihatnya.",
     "following_topic.message": "Saat ini kamu akan menerima pemberitahuan saat seseorang membuat posting di dalam topik ini.",
@@ -96,5 +95,9 @@
     "oldest_to_newest": "Terlama ke Terbaru",
     "newest_to_oldest": "Terbaru ke Terlama",
     "most_votes": "Vote terbanyak",
-    "most_posts": "Postingan terbanyak"
+    "most_posts": "Postingan terbanyak",
+    "stale_topic_warning": "The topic you are replying to is quite old. Would you like to create a new topic instead, and reference this one in your reply?",
+    "spam": "Spam",
+    "offensive": "Offensive",
+    "custom-flag-reason": "Enter a flagging reason"
 }

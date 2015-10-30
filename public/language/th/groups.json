@@ -15,8 +15,6 @@
     "invited.notification_title": "You have been invited to join <strong>%1</strong>",
     "request.notification_title": "Group Membership Request from <strong>%1</strong>",
     "request.notification_text": "<strong>%1</strong> has requested to become a member of <strong>%2</strong>",
-    "cover-instructions": "ลากรูปภาพไปวางยังตำแหน่งที่ต้องการแล้วกดที่ปุ่ม <strong>บันทึก</strong>",
-    "cover-change": "ปรับปรุง",
     "cover-save": "บันทึก",
     "cover-saving": "กำลังบันทึก",
     "details.title": "ข้อมูล Group",

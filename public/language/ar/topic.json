@@ -27,7 +27,6 @@
     "locked": "مقفل",
     "bookmark_instructions": "Click here to return to the last unread post in this thread.",
     "flag_title": "إشعار بمشاركة مخلة.",
-    "flag_confirm": "هل تريد حقًّا التبليغ بهذه المشاركة؟",
     "flag_success": "تم الإشعار بهذه المشاركة على أنها مخلة",
     "deleted_message": "هذه المشاركة محذوفة. فقط من لهم صلاحية الإشراف على ا لمشاركات يمكنهم معاينتها.",
     "following_topic.message": "ستستلم تنبيها عند كل مشاركة جديدة في هذا الموضوع.",
@@ -96,5 +95,9 @@
     "oldest_to_newest": "من الأقدم إلى الأحدث",
     "newest_to_oldest": "من الأحدث إلى الأقدم",
     "most_votes": "الأكثر تصويتًا",
-    "most_posts": "اﻷكثر رداً"
+    "most_posts": "اﻷكثر رداً",
+    "stale_topic_warning": "The topic you are replying to is quite old. Would you like to create a new topic instead, and reference this one in your reply?",
+    "spam": "Spam",
+    "offensive": "Offensive",
+    "custom-flag-reason": "Enter a flagging reason"
 }

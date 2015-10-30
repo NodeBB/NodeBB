@@ -15,8 +15,6 @@
     "invited.notification_title": "Du wurdest eingeladen <strong>%1</strong> beizutreten.",
     "request.notification_title": "Mitgliedsanfrage von <strong>%1</strong>.",
     "request.notification_text": "<strong>%1</strong> möchte Mitglied von <strong>%2</strong> werden.",
-    "cover-instructions": "Foto auf eine Position bewegen, und <strong>Speichern</strong> drücken",
-    "cover-change": "Ändern",
     "cover-save": "Speichern",
     "cover-saving": "Speicherung läuft",
     "details.title": "Gruppendetails",

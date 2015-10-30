@@ -27,7 +27,6 @@
     "locked": "Lukittu",
     "bookmark_instructions": "Click here to return to the last unread post in this thread.",
     "flag_title": "Ilmianna tämä viesti moderaattoreille",
-    "flag_confirm": "Oletko varma, että haluat ilmiantaa tämän viestin?",
     "flag_success": "Tämä viesti ilmiannettiin moderaattoreille.",
     "deleted_message": "Tämä aihe on poistettu. Vain käyttäjät, joilla on aiheen hallintaoikeudet, voivat nähdä sen.",
     "following_topic.message": "Saat nyt ilmoituksen, kun joku kirjoittaa tähän aiheeseen.",
@@ -96,5 +95,9 @@
     "oldest_to_newest": "Oldest to Newest",
     "newest_to_oldest": "Newest to Oldest",
     "most_votes": "Most votes",
-    "most_posts": "Most posts"
+    "most_posts": "Most posts",
+    "stale_topic_warning": "The topic you are replying to is quite old. Would you like to create a new topic instead, and reference this one in your reply?",
+    "spam": "Spam",
+    "offensive": "Offensive",
+    "custom-flag-reason": "Enter a flagging reason"
 }

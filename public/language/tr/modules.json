@@ -23,6 +23,7 @@
     "composer.discard": "Bu iletiyi iptal etmek istediğinizden eminmisiniz?",
     "composer.submit_and_lock": "Gönder ve Kitle",
     "composer.toggle_dropdown": "Menü aç",
+    "composer.uploading": "Uploading %1",
     "bootbox.ok": "Tamam",
     "bootbox.cancel": "İptal",
     "bootbox.confirm": "Onayla"

@@ -23,6 +23,7 @@
     "composer.discard": "确定想要取消此帖？",
     "composer.submit_and_lock": "提交并锁定",
     "composer.toggle_dropdown": "标为 Dropdown",
+    "composer.uploading": "Uploading %1",
     "bootbox.ok": "确认",
     "bootbox.cancel": "取消",
     "bootbox.confirm": "确认"

@@ -27,7 +27,6 @@
     "locked": "Locked",
     "bookmark_instructions": "Click here to return to the last unread post in this thread.",
     "flag_title": "A hozzászólás jelentése a moderátoroknál",
-    "flag_confirm": "Are you sure you want to flag this post?",
     "flag_success": "This post has been flagged for moderation.",
     "deleted_message": "This topic has been deleted. Only users with topic management privileges can see it.",
     "following_topic.message": "You will now be receiving notifications when somebody posts to this topic.",
@@ -96,5 +95,9 @@
     "oldest_to_newest": "Oldest to Newest",
     "newest_to_oldest": "Newest to Oldest",
     "most_votes": "Most votes",
-    "most_posts": "Most posts"
+    "most_posts": "Most posts",
+    "stale_topic_warning": "The topic you are replying to is quite old. Would you like to create a new topic instead, and reference this one in your reply?",
+    "spam": "Spam",
+    "offensive": "Offensive",
+    "custom-flag-reason": "Enter a flagging reason"
 }

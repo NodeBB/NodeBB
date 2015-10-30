@@ -23,6 +23,7 @@
     "composer.discard": "Êtes-vous sûr de bien vouloir supprimer ce message ?",
     "composer.submit_and_lock": "Envoyer et verrouiller",
     "composer.toggle_dropdown": "Afficher/masquer le menu",
+    "composer.uploading": "Uploading %1",
     "bootbox.ok": "OK",
     "bootbox.cancel": "Annuler",
     "bootbox.confirm": "Confirmer"

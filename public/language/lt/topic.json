@@ -27,7 +27,6 @@
     "locked": "Užrakinta",
     "bookmark_instructions": "Click here to return to the last unread post in this thread.",
     "flag_title": "Pažymėti ši pranešimą moderatoriams",
-    "flag_confirm": "Ar jūs tikras, kad norite pažymėti šį įrašą?",
     "flag_success": "Šis pranešimas buvo pažymėtas moderatorių patikrinimui.",
     "deleted_message": "Ši tema buvo ištrinta. Tik Vartotojai su temos redagavimo privilegijomis gali matyti ja",
     "following_topic.message": "Dabar jūs gausite pranešimus kai kas nors atrašys šioje temoje.",
@@ -96,5 +95,9 @@
     "oldest_to_newest": "Nuo seniausių iki naujausių",
     "newest_to_oldest": "Nuo naujausių iki seniausių",
     "most_votes": "Daugiausiai balsų",
-    "most_posts": "Daugiausia įrašų"
+    "most_posts": "Daugiausia įrašų",
+    "stale_topic_warning": "The topic you are replying to is quite old. Would you like to create a new topic instead, and reference this one in your reply?",
+    "spam": "Spam",
+    "offensive": "Offensive",
+    "custom-flag-reason": "Enter a flagging reason"
 }

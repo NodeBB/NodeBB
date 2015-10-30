@@ -15,8 +15,6 @@
     "invited.notification_title": "Sind on kutsutud liituma grupiga <strong>%1</strong>",
     "request.notification_title": "Grupiga liitumise taotlus kasutajalt <strong>%1</strong>",
     "request.notification_text": "<strong>%1</strong> on avaldanud soovi liituda grupiga <strong>%2</strong>",
-    "cover-instructions": "Lohista kaanepilt siia ning vajuta <strong>salvesta</strong>",
-    "cover-change": "Muuda",
     "cover-save": "Salvesta",
     "cover-saving": "Salvestamine",
     "details.title": "Grupi detailid",

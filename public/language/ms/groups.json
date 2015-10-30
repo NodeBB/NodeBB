@@ -15,8 +15,6 @@
     "invited.notification_title": "Anda telah dijemput untuk menyertai <strong>%1</strong>",
     "request.notification_title": "Jemputan Ahli Kumpulan dari <strong>%1</strong>",
     "request.notification_text": "<strong>%1</strong> telah dijemput untuk menjadi ahli <strong>%2</strong>",
-    "cover-instructions": "Seret dan lepas gambar, lepas ke posisi, dan tekan <strong>Simpan</strong>",
-    "cover-change": "Ubah",
     "cover-save": "Simpan",
     "cover-saving": "Menyimpan",
     "details.title": "Perincian Kumpulan",

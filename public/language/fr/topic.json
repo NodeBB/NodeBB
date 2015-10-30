@@ -27,9 +27,8 @@
     "locked": "Verrouillé",
     "bookmark_instructions": "Cliquez ici pour retourner au dernier message non lu dans ce fil de discussion.",
     "flag_title": "Signaler ce message à la modération",
-    "flag_confirm": "Êtes-vous sûr de bien vouloir signaler ce message ?",
     "flag_success": "Ce message a bien été signalé aux modérateurs.",
-    "deleted_message": "Ce sujet a été supprimé. Seuls les utilsateurs avec les droits d'administration peuvent le voir.",
+    "deleted_message": "Ce sujet a été supprimé. Seuls les utilisateurs avec les droits d'administration peuvent le voir.",
     "following_topic.message": "Vous recevrez désormais des notifications lorsque quelqu'un postera dans ce sujet.",
     "not_following_topic.message": "Vous ne recevrez plus de notifications pour ce sujet.",
     "login_to_subscribe": "Veuillez vous enregistrer ou vous connecter afin de vous abonner à ce sujet.",
@@ -96,5 +95,9 @@
     "oldest_to_newest": "Du plus ancien au plus récent",
     "newest_to_oldest": "Du plus récent au plus ancien",
     "most_votes": "Les mieux notés",
-    "most_posts": "Nombre de messages"
+    "most_posts": "Nombre de messages",
+    "stale_topic_warning": "The topic you are replying to is quite old. Would you like to create a new topic instead, and reference this one in your reply?",
+    "spam": "Spam",
+    "offensive": "Offensive",
+    "custom-flag-reason": "Enter a flagging reason"
 }

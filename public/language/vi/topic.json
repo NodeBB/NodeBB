@@ -27,7 +27,6 @@
     "locked": "Khóa",
     "bookmark_instructions": "Click here to return to the last unread post in this thread.",
     "flag_title": "Flag bài viết này để chỉnh sửa",
-    "flag_confirm": "Bạn có chắc là muốn flag bài viết này không?",
     "flag_success": "Chủ đề này đã được flag để chỉnh sửa",
     "deleted_message": "Chủ đề này đã bị xóa. Chỉ ban quản trị mới xem được.",
     "following_topic.message": "Từ giờ bạn sẽ nhận được thông báo khi có ai đó gửi bài viết trong chủ đề này",
@@ -96,5 +95,9 @@
     "oldest_to_newest": "Cũ đến mới",
     "newest_to_oldest": "Mới đến cũ",
     "most_votes": "Bình chọn nhiều nhất",
-    "most_posts": "Có nhiều bài viết nhất"
+    "most_posts": "Có nhiều bài viết nhất",
+    "stale_topic_warning": "The topic you are replying to is quite old. Would you like to create a new topic instead, and reference this one in your reply?",
+    "spam": "Spam",
+    "offensive": "Offensive",
+    "custom-flag-reason": "Enter a flagging reason"
 }

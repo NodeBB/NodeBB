@@ -27,7 +27,6 @@
     "locked": "Kunci",
     "bookmark_instructions": "Click here to return to the last unread post in this thread.",
     "flag_title": "Tanda kiriman ini untuk diselia",
-    "flag_confirm": "Adakah anda pasti untuk menanda kiriman ini",
     "flag_success": "Kiriman ini telah ditandakan untuk diselia",
     "deleted_message": "Topik ini telah dipadam. Hanya pengguna dengan kuasa pengurusan boleh melihatnya.",
     "following_topic.message": "Anda akan menerima makluman apabila ada kiriman ke dalam topik ini",
@@ -96,5 +95,9 @@
     "oldest_to_newest": "Lama ke Baru",
     "newest_to_oldest": "Baru ke Lama",
     "most_votes": "Terbanyak Undi",
-    "most_posts": "Terbanyak Kiriman"
+    "most_posts": "Terbanyak Kiriman",
+    "stale_topic_warning": "The topic you are replying to is quite old. Would you like to create a new topic instead, and reference this one in your reply?",
+    "spam": "Spam",
+    "offensive": "Offensive",
+    "custom-flag-reason": "Enter a flagging reason"
 }

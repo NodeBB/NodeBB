@@ -27,7 +27,6 @@
     "locked": "נעול",
     "bookmark_instructions": "לחץ כאן כדי לחזור לפוסט האחרון שלא קראת באשכול זה",
     "flag_title": "דווח על פוסט זה למנהל",
-    "flag_confirm": "אתה בטוח שאתה רוצה לדווח על הפוסט הזה?",
     "flag_success": "התקבל דיווח על פוסט זה.",
     "deleted_message": "נושא זה נמחק. רק משתמשים עם ההרשאות המתאימות יכולים לצפות בו.",
     "following_topic.message": "מעתה, תקבל הודעות כאשר מישהו יעלה פוסט לנושא זה.",
@@ -96,5 +95,9 @@
     "oldest_to_newest": "מהישן לחדש",
     "newest_to_oldest": "מהחדש לישן",
     "most_votes": "הכי הרבה הצבעות",
-    "most_posts": "הכי הרבה פוסטים"
+    "most_posts": "הכי הרבה פוסטים",
+    "stale_topic_warning": "The topic you are replying to is quite old. Would you like to create a new topic instead, and reference this one in your reply?",
+    "spam": "Spam",
+    "offensive": "Offensive",
+    "custom-flag-reason": "Enter a flagging reason"
 }

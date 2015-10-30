@@ -27,7 +27,6 @@
     "locked": "Gesperrt",
     "bookmark_instructions": "Klicke hier um zum letzten ungelesenen Beitrag in diesem Thema zu springen.",
     "flag_title": "Diesen Beitrag zur Moderation markieren",
-    "flag_confirm": "Sind Sie sicher, dass Sie diesen Post markieren möchten?",
     "flag_success": "Dieser Beitrag wurde erfolgreich für die Moderation markiert.",
     "deleted_message": "Dieses Thema wurde gelöscht. Nur Nutzer mit entsprechenden Rechten können es sehen.",
     "following_topic.message": "Du erhälst nun eine Benachrichtigung, wenn jemand einen Beitrag zu diesem Thema verfasst.",
@@ -96,5 +95,9 @@
     "oldest_to_newest": "Älteste zuerst",
     "newest_to_oldest": "Neuste zuerst",
     "most_votes": "Die meisten Stimmen",
-    "most_posts": "Die meisten Beiträge"
+    "most_posts": "Die meisten Beiträge",
+    "stale_topic_warning": "The topic you are replying to is quite old. Would you like to create a new topic instead, and reference this one in your reply?",
+    "spam": "Spam",
+    "offensive": "Offensive",
+    "custom-flag-reason": "Enter a flagging reason"
 }

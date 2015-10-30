@@ -27,7 +27,6 @@
     "locked": "Κλειδωμένο",
     "bookmark_instructions": "Click here to return to the last unread post in this thread.",
     "flag_title": "Επισήμανση αυτής της δημοσίευσης για συντονισμό",
-    "flag_confirm": "Είσαι σίγουρος/η πως θες να επισημάνεις αυτή την δημοσίευση;",
     "flag_success": "Αυτή η δημοσίευση έχει επισημανθεί για συντονισμό.",
     "deleted_message": "Το θέμα αυτό έχει διαγραφεί. Μόνο οι χρήστες με δικαιώματα διαχειριστή θεμάτων μπορούν να το δουν.",
     "following_topic.message": "Θα λαμβάνεις ειδοποιήσεις όποτε κάποιος δημοσιεύει κάτι σε αυτό το θέμα.",
@@ -96,5 +95,9 @@
     "oldest_to_newest": "Παλαιότερο προς Νεότερο",
     "newest_to_oldest": "Νεότερο προς Παλαιότερο",
     "most_votes": "Περισσότερες ψήφοι",
-    "most_posts": "Most posts"
+    "most_posts": "Most posts",
+    "stale_topic_warning": "The topic you are replying to is quite old. Would you like to create a new topic instead, and reference this one in your reply?",
+    "spam": "Spam",
+    "offensive": "Offensive",
+    "custom-flag-reason": "Enter a flagging reason"
 }

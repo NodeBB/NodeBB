@@ -27,7 +27,6 @@
     "locked": "Cerrado",
     "bookmark_instructions": "Clic aquí para regresar al último aporte sin leer en este hilo.",
     "flag_title": "Reportar este mensaje",
-    "flag_confirm": "¿Estás seguro de que quieres reportar este mensaje?",
     "flag_success": "Este mensaje ha sido reportado para moderación.",
     "deleted_message": "Este tema ha sido borrado. Solo los usuarios que tengan privilegios de administración de temas pueden verlo.",
     "following_topic.message": "Ahora recibiras notificaciones cuando alguien publique en este tema.",
@@ -96,5 +95,9 @@
     "oldest_to_newest": "Más antiguo a más nuevo",
     "newest_to_oldest": "Más nuevo a más antiguo",
     "most_votes": "Mayor número de votos",
-    "most_posts": "Mayor número de mensajes"
+    "most_posts": "Mayor número de mensajes",
+    "stale_topic_warning": "The topic you are replying to is quite old. Would you like to create a new topic instead, and reference this one in your reply?",
+    "spam": "Spam",
+    "offensive": "Offensive",
+    "custom-flag-reason": "Enter a flagging reason"
 }
