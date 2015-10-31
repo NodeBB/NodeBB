@@ -113,15 +113,13 @@ define('forum/search', ['search', 'autocomplete'], function(searchModule, autoco
 		}
 	}
 
-
-
 	function highlightMatches(searchQuery) {
 		if (!searchQuery) {
 			return;
 		}
 
 		try {
-			var regexStr = searchQuery.trim().split(' ').join('|');
+			var regexStr = searchQuery.replace(/^"/, '').replace(/"$/, '').trim().split(' ').join('|');
 			var regex = new RegExp('(' + regexStr + ')', 'gi');
 
 			$('.search-result-text').each(function() {
