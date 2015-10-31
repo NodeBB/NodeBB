@@ -60,12 +60,16 @@ popularController.get = function(req, res, next) {
 			data.breadcrumbs = helpers.buildBreadcrumbs(breadcrumbs);
 		}
 
-		if (!req.uid) {
-			anonCache[term] = data;
-			lastUpdateTime = Date.now();
-		}
-
-		res.render('popular', data);
+		plugins.fireHook('filter:popular.topics.build', {req: req, res: res, templateData: data}, function(err, data) {
+      if (err) {
+        return next(err);
+      }
+      if (!req.uid) {
+        anonCache[term] = data.templateData;
+        lastUpdateTime = Date.now();
+      }
+      res.render('popular', data.templateData);
+    });
 	});
 };
 
