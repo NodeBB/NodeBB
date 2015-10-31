@@ -360,8 +360,8 @@ app.cacheBuster = null;
 		searchInput.on('blur', dismissSearch);
 
 		function dismissSearch(){
-			searchFields.addClass('hide');
-			searchButton.show();
+			searchFields.addClass('hidden');
+			searchButton.removeClass('hidden');
 		}
 
 		searchButton.on('click', function(e) {
@@ -391,8 +391,8 @@ app.cacheBuster = null;
 	};
 
 	app.prepareSearch = function() {
-		$("#search-fields").removeClass('hide');
-		$("#search-button").hide();
+		$("#search-fields").removeClass('hidden');
+		$("#search-button").addClass('hidden');
 		$('#search-fields input').focus();
 	};
 
