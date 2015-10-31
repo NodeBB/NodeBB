@@ -7,7 +7,8 @@ var tagsController = {},
 	meta = require('../meta'),
 	user = require('../user'),
 	topics = require('../topics'),
-	helpers =  require('./helpers');
+	helpers = require('./helpers'),
+	plugins = require('../plugins');
 
 tagsController.getTag = function(req, res, next) {
 	var tag = validator.escape(req.params.tag);

@@ -4,7 +4,8 @@
 var nconf = require('nconf'),
 	topics = require('../topics'),
 	meta = require('../meta'),
-	helpers = require('./helpers');
+	helpers = require('./helpers'),
+	plugins = require('../plugins');
 
 var popularController = {};
 
