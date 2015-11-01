@@ -10,6 +10,8 @@ before_install:
 before_script:
     - "until nc -z localhost 27017; do echo Waiting for MongoDB; sleep 1; done"
 language: node_js
+env:
+  - CXX=g++-4.8
 node_js:
     - "4.1"
     - "4.0"
