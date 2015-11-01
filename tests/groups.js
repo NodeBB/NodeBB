@@ -296,6 +296,34 @@ describe('Groups', function() {
 		});
 	});
 
+	describe('.show()', function() {
+		it('should make a group visible', function(done) {
+			Groups.show('Test', function(err) {
+				assert.ifError(err);
+				assert.equal(arguments.length, 1);
+				db.isSortedSetMember('groups:visible:createtime', 'Test', function(err, isMember) {
+					assert.ifError(err);
+					assert.strictEqual(isMember, true);
+					done();
+				});
+			});
+		});
+	});
+
+	describe('.hide()', function() {
+		it('should make a group hidden', function(done) {
+			Groups.hide('Test', function(err) {
+				assert.ifError(err);
+				assert.equal(arguments.length, 1);
+				db.isSortedSetMember('groups:visible:createtime', 'Test', function(err, isMember) {
+					assert.ifError(err);
+					assert.strictEqual(isMember, false);
+					done();
+				});
+			});
+		});
+	});
+
 	after(function() {
 		db.flushdb();
 	});
