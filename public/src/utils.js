@@ -237,6 +237,10 @@
 			return ((nua.indexOf('Mozilla/5.0') > -1 && nua.indexOf('Android ') > -1 && nua.indexOf('AppleWebKit') > -1) && !(nua.indexOf('Chrome') > -1));
 		},
 
+		isTouchDevice: function() {
+			return 'ontouchstart' in document.documentElement;
+		},
+
 		findBootstrapEnvironment: function() {
 			//http://stackoverflow.com/questions/14441456/how-to-detect-which-device-view-youre-on-using-twitter-bootstrap-api
 			var envs = ['xs', 'sm', 'md', 'lg'],
