@@ -9,7 +9,8 @@ var async = require('async'),
 	topics = require('../../topics'),
 	pagination = require('../../pagination'),
 	helpers = require('../helpers'),
-	accountHelpers = require('./helpers');
+	accountHelpers = require('./helpers'),
+	plugins = require('../../plugins');
 
 var postsController = {};
 
@@ -76,7 +77,16 @@ function getFromUserSet(tpl, set, crumb, method, type, req, res, next) {
 			userData.title = '[[pages:' + tpl + ', ' + userData.username + ']]';
 			userData.breadcrumbs = helpers.buildBreadcrumbs([{text: userData.username, url: '/user/' + userData.userslug}, {text: crumb}]);
 
-			res.render(tpl, userData);
+			if (type === 'topics') {
+				plugins.fireHook('filter:accounts.topics.build', {req: req, res: res, templateData: userData}, function(err, data) {
+					if (err) {
+						return next(err);
+					}
+					res.render(tpl, data.templateData);
+				});
+			} else {
+				res.render(tpl, userData);
+			}
 		});
 	});
 }
