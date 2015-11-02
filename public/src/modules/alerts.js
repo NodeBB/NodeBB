@@ -8,8 +8,6 @@ define('alerts', ['translator', 'components'], function(translator, components) 
 		params.alert_id = 'alert_button_' + (params.alert_id ? params.alert_id : new Date().getTime());
 		params.title = params.title ? params.title.trim() || '' : '';
 		params.message = params.message ? params.message.trim() : '';
-
-		params.location = params.location || 'right-top';
 		params.type = params.type || 'info';
 
 		var alert = $('#' + params.alert_id);
