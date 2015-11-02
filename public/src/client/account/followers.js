@@ -9,7 +9,7 @@ define('forum/account/followers', ['forum/account/header', 'forum/infinitescroll
 		header.init();
 
 		infinitescroll.init(function(direction) {
-			Followers.loadMore(direction, 'account/followers', 'followers:' + $('.account-username-box').attr('data-uid'));
+			Followers.loadMore(direction, 'account/followers', 'followers:' + ajaxify.data.uid);
 		});
 	};
 
