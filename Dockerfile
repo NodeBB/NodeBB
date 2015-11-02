@@ -1,4 +1,4 @@
-FROM node:0.10-onbuild
+FROM node
 
 ENV NODE_ENV=production \
     daemon=false \
