@@ -23,20 +23,7 @@ define('forum/account/profile', [
 		app.enterRoom('user/' + theirid);
 
 		processPage();
-
 		updateButtons();
-
-		$('#follow-btn').on('click', function() {
-			return toggleFollow('follow');
-		});
-
-		$('#unfollow-btn').on('click', function() {
-			return toggleFollow('unfollow');
-		});
-
-		$('#chat-btn').on('click', function() {
-			app.openChat($('.account-username').html(), theirid);
-		});
 
 		$('#banAccountBtn').on('click', banAccount);
 		$('#unbanAccountBtn').on('click', unbanAccount);
@@ -57,21 +44,6 @@ define('forum/account/profile', [
 		$('#follow-btn').toggleClass('hide', isFollowing || isSelfOrNotLoggedIn);
 		$('#unfollow-btn').toggleClass('hide', !isFollowing || isSelfOrNotLoggedIn);
 		$('#chat-btn').toggleClass('hide', isSelfOrNotLoggedIn);
-	}
-
-	function toggleFollow(type) {
-		socket.emit('user.' + type, {
-			uid: theirid
-		}, function(err) {
-			if (err) {
-				return app.alertError(err.message);
-			}
-
-			$('#follow-btn').toggleClass('hide', type === 'follow');
-			$('#unfollow-btn').toggleClass('hide', type === 'unfollow');
-			app.alertSuccess('[[global:alert.' + type + ', ' + $('.account-username').html() + ']]');
-		});
-		return false;
 	}
 
 	function onUserStatusChange(data) {
