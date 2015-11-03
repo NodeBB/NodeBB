@@ -22,16 +22,20 @@ define('forum/account/header', [
 		}
 
 		components.get('account/follow').on('click', function() {
-			return toggleFollow('follow');
+			toggleFollow('follow');
 		});
 
 		components.get('account/unfollow').on('click', function() {
-			return toggleFollow('unfollow');
+			toggleFollow('unfollow');
 		});
 
 		components.get('account/chat').on('click', function() {
 			app.openChat($('.account-username').html(), theirid);
 		});
+
+		components.get('account/ban').on('click', banAccount);
+		components.get('account/unban').on('click', unbanAccount);
+		components.get('account/delete').on('click', deleteAccount);
 	};
 
 	function hidePrivateLinks() {
@@ -81,6 +85,51 @@ define('forum/account/header', [
 			app.alertSuccess('[[global:alert.' + type + ', ' + $('.account-username').html() + ']]');
 		});
 		return false;
+	}
+
+	function banAccount() {
+		translator.translate('[[user:ban_account_confirm]]', function(translated) {
+			bootbox.confirm(translated, function(confirm) {
+				if (!confirm) {
+					return;
+				}
+				socket.emit('admin.user.banUsers', [ajaxify.data.theirid], function(err) {
+					if (err) {
+						return app.alertError(err.message);
+					}
+					$('#banAccountBtn').toggleClass('hide', true);
+					$('#banLabel, #unbanAccountBtn').toggleClass('hide', false);
+				});
+			});
+		});
+	}
+
+	function unbanAccount() {
+		socket.emit('admin.user.unbanUsers', [ajaxify.data.theirid], function(err) {
+			if (err) {
+				return app.alertError(err.message);
+			}
+			$('#banAccountBtn').toggleClass('hide', false);
+			$('#banLabel, #unbanAccountBtn').toggleClass('hide', true);
+		});
+	}
+
+	function deleteAccount() {
+		translator.translate('[[user:delete_this_account_confirm]]', function(translated) {
+			bootbox.confirm(translated, function(confirm) {
+				if (!confirm) {
+					return;
+				}
+
+				socket.emit('admin.user.deleteUsers', [ajaxify.data.theirid], function(err) {
+					if (err) {
+						return app.alertError(err.message);
+					}
+					app.alertSuccess('[[user:account-deleted]]');
+					history.back();
+				});
+			});
+		});
 	}
 
 	return AccountHeader;
