@@ -104,6 +104,9 @@ module.exports = function(Topics) {
 			function(next) {
 				async.parallel([
 					function(next) {
+						updateCategoryPostCount(postData.tid, tid, next);
+					},
+					function(next) {
 						Topics.decreasePostCount(postData.tid, next);
 					},
 					function(next) {
@@ -131,6 +134,24 @@ module.exports = function(Topics) {
 			callback();
 		});
 	};
+
+	function updateCategoryPostCount(oldTid, tid, callback) {
+		Topics.getTopicsFields([oldTid, tid], ['cid'], function(err, topicData) {
+			if (err) {
+				return callback(err);
+			}
+			if (!topicData[0].cid || !topicData[1].cid) {
+				return callback();
+			}
+			if (parseInt(topicData[0].cid, 10) === parseInt(topicData[1].cid, 10)) {
+				return callback();
+			}
+			async.parallel([
+				async.apply(db.incrObjectFieldBy, 'category:' + topicData[0].cid, 'post_count', -1),
+				async.apply(db.incrObjectFieldBy, 'category:' + topicData[1].cid, 'post_count', 1)
+			], callback);
+		});
+	}
 
 	function updateRecentTopic(tid, callback) {
 		async.waterfall([
