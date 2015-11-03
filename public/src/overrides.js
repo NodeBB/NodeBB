@@ -112,7 +112,11 @@ if ('undefined' !== typeof window) {
 			confirm = bootbox.confirm;
 
 		function translate(modal) {
-			var footer = modal.find('.modal-footer');
+			var header = modal.find('.modal-header'),
+				footer = modal.find('.modal-footer');
+			translator.translate(header.html(), function(html) {
+				header.html(html);
+			});
 			translator.translate(footer.html(), function(html) {
 				footer.html(html);
 			});

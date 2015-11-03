@@ -4,6 +4,7 @@ var async = require('async');
 var winston = require('winston');
 
 var user = require('../../user');
+var plugins = require('../../plugins');
 
 module.exports = function(SocketUser) {
 
@@ -18,23 +19,36 @@ module.exports = function(SocketUser) {
 
 		var type = data.type;
 
-		if (type === 'default') {
-			type = null;
-		} else if (type === 'uploaded') {
-			type = 'uploadedpicture';
-		} else {
-			return callback(new Error('[[error:invalid-image-type, ' + ['default', 'uploadedpicture'].join('&#44; ') + ']]'));
-		}
+		// if (type === 'default') {
+		// 	type = null;
+		// } else if (type === 'uploaded') {
+		// 	type = 'uploadedpicture';
+		// } else {
+		// 	return callback(new Error('[[error:invalid-image-type, ' + ['default', 'uploadedpicture'].join('&#44; ') + ']]'));
+		// }
 
 		async.waterfall([
 			function (next) {
 				user.isAdminOrSelf(socket.uid, data.uid, next);
 			},
 			function (next) {
-				if (!type) {
-					next(null, '');
+				switch(type) {
+					case 'default':
+						next(null, '');
+						break;
+					case 'uploaded':
+						user.getUserField(data.uid, 'uploadedpicture', next);
+						break;
+					default:
+						plugins.fireHook('filter:user.getPicture', {
+							uid: socket.uid,
+							type: type,
+							picture: undefined
+						}, function(err, returnData) {
+							next(null, returnData.picture || '');
+						});
+						break;
 				}
-				user.getUserField(data.uid, type, next);
 			},
 			function (picture, next) {
 				user.setUserField(data.uid, 'picture', picture, next);
@@ -83,5 +97,29 @@ module.exports = function(SocketUser) {
 				user.getUserField(data.uid, 'picture', next);
 			}
 		], callback);
+	};
+
+	SocketUser.getProfilePictures = function(socket, data, callback) {
+		async.parallel({
+			list: async.apply(plugins.fireHook, 'filter:user.listPictures', {
+				uid: socket.uid,
+				pictures: []
+			}),
+			uploaded: async.apply(user.getUserField, socket.uid, 'uploadedpicture')
+		}, function(err, data) {
+			if (err) {
+				return callback(err);
+			}
+
+			if (data.uploaded) {
+				data.list.pictures.push({
+					type: 'uploaded',
+					url: data.uploaded,
+					text: '[[user:uploaded_picture]]'
+				});
+			}
+
+			callback(null, data.list.pictures);
+		})
 	};
 };
