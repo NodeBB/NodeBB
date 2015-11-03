@@ -96,8 +96,8 @@
     "newest_to_oldest": "Първо най-новите",
     "most_votes": "Най-много гласове",
     "most_posts": "Най-много публикации",
-    "stale_topic_warning": "The topic you are replying to is quite old. Would you like to create a new topic instead, and reference this one in your reply?",
-    "spam": "Spam",
-    "offensive": "Offensive",
-    "custom-flag-reason": "Enter a flagging reason"
+    "stale_topic_warning": "Темата, в която отговаряте, е доста стара. Искате ли вместо това да създадете нова и да направите препратка към тази в отговора си?",
+    "spam": "Спам",
+    "offensive": "Обидно",
+    "custom-flag-reason": "Изберете причина за докладване"
 }

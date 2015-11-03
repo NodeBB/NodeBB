@@ -96,8 +96,8 @@
     "newest_to_oldest": "Du plus récent au plus ancien",
     "most_votes": "Les mieux notés",
     "most_posts": "Nombre de messages",
-    "stale_topic_warning": "The topic you are replying to is quite old. Would you like to create a new topic instead, and reference this one in your reply?",
+    "stale_topic_warning": "Le sujet auquel vous répondez est assez ancien. Ne préféreriez-vous pas créer un nouveau sujet à la place, et référencer celui-ci dans votre réponse ?",
     "spam": "Spam",
-    "offensive": "Offensive",
-    "custom-flag-reason": "Enter a flagging reason"
+    "offensive": "Offensif",
+    "custom-flag-reason": "Entrez une raison pour laquelle vous signalez ce message"
 }
