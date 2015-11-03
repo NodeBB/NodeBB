@@ -32,6 +32,7 @@
 	"signature": "Signature",
 	"birthday": "Birthday",
 	"chat": "Chat",
+	"chat_with": "Chat with %1",
 	"follow": "Follow",
 	"unfollow": "Unfollow",
 	"more": "More",
