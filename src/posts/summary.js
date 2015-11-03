@@ -65,6 +65,7 @@ module.exports = function(Posts) {
 
 				for (var i=0; i<posts.length; ++i) {
 					posts[i].index = utils.isNumber(results.indices[i]) ? parseInt(results.indices[i], 10) + 1 : 1;
+					posts[i].isMainPost = posts[i].index - 1 === 0;
 				}
 
 				posts = posts.filter(function(post) {
