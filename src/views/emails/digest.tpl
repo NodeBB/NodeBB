@@ -6,7 +6,14 @@
 <ul>
 	<!-- BEGIN notifications -->
 	<li style="text-decoration: none; list-style-type: none; padding-bottom: 0.5em;">
-		<a href="{url}{notifications.path}"><img style="vertical-align: middle; width: 16px; height: 16px; padding-right: 1em;" src="{notifications.image}" />{notifications.bodyShort}</a>
+		<a href="{url}{notifications.path}">
+			<!-- IF notifications.image -->
+			<img style="vertical-align: middle; width: 16px; height: 16px; padding-right: 1em;" src="{notifications.image}" />
+			<!-- ELSE -->
+			<div style="width: 16px; height: 16px; line-height: 16px; font-size: 10px; margin-right: 1em; background-color: {notifications.user.icon:bgColor}; color: white; text-align: center; display: inline-block;">{notifications.user.icon:text}</div>
+			<!-- ENDIF notifications.image -->
+			{notifications.bodyShort}
+		</a>
 	</li>
 	<!-- END notifications -->
 </ul>
@@ -19,7 +26,9 @@
 	<!-- IF recent.length -->
 	<!-- BEGIN recent -->
 	<li style="text-decoration: none; list-style-type: none; padding-bottom: 0.5em;">
-		<a href="{url}/topic/{recent.slug}"><img style="vertical-align: middle; width: 16px; height: 16px; padding-right: 1em;" src="<!-- IF recent.teaser -->{recent.teaser.user.picture}<!-- ELSE -->{recent.user.picture}<!-- ENDIF recent.teaser -->" title="<!-- IF recent.teaser -->{recent.teaser.user.username}<!-- ELSE -->{recent.user.username}<!-- ENDIF recent.teaser -->" />{recent.title}</a>
+		<a href="{url}/topic/{recent.slug}">
+			{function.renderDigestAvatar}{recent.title}
+		</a>
 	</li>
 	<!-- END recent -->
 	<!-- ELSE -->
