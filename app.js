@@ -76,6 +76,8 @@ if (nconf.get('setup') || nconf.get('install')) {
 	require('./src/reset').reset();
 } else if (nconf.get('activate')) {
 	activate();
+} else if (nconf.get('plugins')) {
+	listPlugins();
 } else {
 	start();
 }
@@ -283,6 +285,17 @@ function activate() {
 		winston.info('Activating plugin %s', plugin);
 
 		db.sortedSetAdd('plugins:active', 0, plugin, start);
+	});
+}
+
+function listPlugins() {
+	require('./src/database').init(function(err) {
+		var db = require('./src/database');
+
+		db.getSortedSetRange('plugins:active', 0, -1, function(err, plugins) {
+			winston.info('Active plugins: \n\t - ' + plugins.join('\n\t - '));
+			process.exit();
+		});
 	});
 }
 

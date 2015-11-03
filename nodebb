@@ -23,6 +23,13 @@ var getRunningPid = function(callback) {
 		});
 	};
 
+function fork(args) {
+	cproc.fork('app.js', args, {
+		cwd: __dirname,
+		silent: false
+	});
+}
+
 switch(process.argv[2]) {
 	case 'status':
 		getRunningPid(function(err, pid) {
@@ -107,22 +114,20 @@ switch(process.argv[2]) {
 	case 'reset':
 		var args = process.argv.slice(0);
 		args.unshift('--reset');
-
-		cproc.fork('app.js', args, {
-			cwd: __dirname,
-			silent: false
-		});
+		fork(args);
 		break;
 
 	case 'activate':
 		var args = process.argv.slice(0);
-			args.unshift('--activate');
+		args.unshift('--activate');
+		fork(args);
+		break;
 
-			cproc.fork('app.js', args, {
-				cwd: __dirname,
-				silent: false
-			});
-			break;
+	case 'plugins':
+		var args = process.argv.slice(0);
+		args.unshift('--plugins');
+		fork(args);
+		break;
 
 	case 'upgrade':
 		async.series([
@@ -165,6 +170,8 @@ switch(process.argv[2]) {
 		process.stdout.write('\t' + 'log'.yellow + '\tOpens the logging interface (useful for debugging)\n');
 		process.stdout.write('\t' + 'setup'.yellow + '\tRuns the NodeBB setup script\n');
 		process.stdout.write('\t' + 'reset'.yellow + '\tDisables all plugins, restores the default theme.\n');
+		process.stdout.write('\t' + 'activate'.yellow + '\tActivate a plugin on start up.\n');
+		process.stdout.write('\t' + 'plugins'.yellow + '\tList all plugins that have been installed.\n');
 		process.stdout.write('\t' + 'upgrade'.yellow + '\tRun NodeBB upgrade scripts, ensure packages are up-to-date\n');
 		process.stdout.write('\t' + 'dev'.yellow + '\tStart NodeBB in interactive development mode\n');
 		process.stdout.write('\t' + 'watch'.yellow + '\tStart NodeBB in development mode and watch for changes\n');
