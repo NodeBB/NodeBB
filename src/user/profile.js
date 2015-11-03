@@ -70,6 +70,7 @@ module.exports = function(User) {
 				if (!data.username) {
 					return next();
 				}
+				data.username = data.username.trim();
 				User.getUserFields(uid, ['username', 'userslug'], function(err, userData) {
 					if (err) {
 						return next(err);
