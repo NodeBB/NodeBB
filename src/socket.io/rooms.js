@@ -19,12 +19,12 @@ var roomClients = {};
 
 rooms.enter = function(socket, room) {
 	socket.join(room);
-	pubsub.publish('socket:join', {id: socket.id, room: room});
+	//pubsub.publish('socket:join', {id: socket.id, room: room});
 };
 
 rooms.leave = function(socket, room) {
 	socket.leave(room);
-	pubsub.publish('socket:leave', {id: socket.id, room: room});
+	//pubsub.publish('socket:leave', {id: socket.id, room: room});
 };
 
 rooms.leaveAll = function(socket, roomsToLeave) {

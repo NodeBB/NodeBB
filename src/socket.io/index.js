@@ -263,6 +263,14 @@ Sockets.isUsersOnline = function(uids, callback) {
 };
 
 Sockets.getUsersInRoom = function (uid, roomName, start, stop, callback) {
+	callback(null, {
+		users: [],
+		room: roomName,
+		total: 0,
+		hidden: 0
+	});
+	return;
+
 	if (!roomName) {
 		return;
 	}
