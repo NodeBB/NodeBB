@@ -213,7 +213,7 @@ define('admin/extend/plugins', function() {
 
 	Plugins.suggest = function(pluginId, callback) {
 		var nbbVersion = app.config.version.match(/^\d\.\d\.\d/);
-		$.ajax('https://packages.nodebb.org/api/v1/suggest', {
+		$.ajax((app.config.registry || 'https://packages.nodebb.org') + '/api/v1/suggest', {
 			type: 'GET',
 			data: {
 				package: pluginId,
