@@ -32,6 +32,7 @@ module.exports = function(Meta) {
 		db.getObject('config', function (err, config) {
 			config = config || {};
 			config.version = nconf.get('version');
+			config.registry = nconf.get('registry');
 			callback(err, config);
 		});
 	};
