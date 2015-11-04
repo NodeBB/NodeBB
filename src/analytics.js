@@ -1,8 +1,7 @@
 'use strict';
 
-var cronJob = require('cron').CronJob,
-	db = require('./database');
-
+var cronJob = require('cron').CronJob;
+var db = require('./database');
 
 (function(Analytics) {
 
@@ -61,6 +60,8 @@ var cronJob = require('cron').CronJob,
 			db.incrObjectFieldBy('global', 'uniqueIPCount', uniqueIPCount);
 			uniqueIPCount = 0;
 		}
+
+
 	};
 
 	Analytics.getUnwrittenPageviews = function() {

@@ -217,25 +217,32 @@ Sockets.in = function(room) {
 };
 
 Sockets.getSocketCount = function() {
-	return rooms.socketCount();
+	if (!io) {
+		return 0;
+	}
+	return io.sockets.sockets.length;
 };
 
 Sockets.getUserSocketCount = function(uid) {
-	return rooms.clients('uid_' + uid).length;
+	if (!io) {
+		return 0;
+	}
+	return io.sockets.adapter.rooms['uid_' + uid] ? Object.keys(io.sockets.adapter.rooms['uid_' + uid]).length : 0;
 };
 
 Sockets.getOnlineUserCount = function() {
-	var count = 0;
-	Object.keys(rooms.roomClients()).forEach(function(roomName) {
-		if (roomName.startsWith('uid_')) {
-			++ count;
-		}
-	});
-	return count;
+	if (!io) {
+		return 0;
+	}
+
+	return io.sockets.adapter.rooms.online_users ? Object.keys(io.sockets.adapter.rooms.online_users).length : 0;
 };
 
 Sockets.getOnlineAnonCount = function () {
-	return rooms.clients('online_guests').length;
+	if (!io) {
+		return 0;
+	}
+	return io.sockets.adapter.rooms.online_guests ? Object.keys(io.sockets.adapter.rooms.online_guests).length : 0;
 };
 
 Sockets.reqFromSocket = function(socket) {
