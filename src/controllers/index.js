@@ -36,7 +36,7 @@ Controllers.home = function(req, res, next) {
 	var route = meta.config.homePageRoute || meta.config.homePageCustom || 'categories';
 
 	user.getSettings(req.uid, function(err, settings) {
-		if (!err) route = settings.homePageRoute || route;
+		if (!err && settings.homePageRoute !== 'undefined' && settings.homePageRoute !== 'none') route = settings.homePageRoute || route;
 
 		var hook = 'action:homepage.get:' + route;
 
