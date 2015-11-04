@@ -90,11 +90,11 @@ function onDisconnect(socket, data) {
 		}
 
 		// see https://github.com/Automattic/socket.io/issues/1814
-		data.rooms.forEach(function(roomName) {
-			if (roomName.startsWith('topic')) {
-				io.in(roomName).emit('event:user_leave', socket.uid);
-			}
-		});
+		// data.rooms.forEach(function(roomName) {
+		// 	if (roomName.startsWith('topic')) {
+		// 		io.in(roomName).emit('event:user_leave', socket.uid);
+		// 	}
+		// });
 	}
 	rooms.leaveAll(socket, data.rooms);
 }
