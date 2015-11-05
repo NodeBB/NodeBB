@@ -89,44 +89,41 @@ var	async = require('async'),
 
 	User.getUsers = function(uids, uid, callback) {
 		var fields = ['uid', 'username', 'userslug', 'picture', 'status', 'banned', 'joindate', 'postcount', 'reputation', 'email:confirmed', 'lastonline'];
-		plugins.fireHook('filter:users.addFields', {fields: fields}, function(err, data) {
-			if (err) {
-				return callback(err);
-			}
-			data.fields = data.fields.filter(function(field, index, array) {
-				return array.indexOf(field) === index;
-			});
-			async.parallel({
-				userData: function(next) {
-					User.getUsersFields(uids, data.fields, next);
-				},
-				isAdmin: function(next) {
-					User.isAdministrator(uids, next);
-				}
-			}, function(err, results) {
-				if (err) {
-					return callback(err);
-				}
 
+		async.waterfall([
+			function (next) {
+				plugins.fireHook('filter:users.addFields', {fields: fields}, next);
+			},
+			function (data, next) {
+				data.fields = data.fields.filter(function(field, index, array) {
+					return array.indexOf(field) === index;
+				});
+
+				async.parallel({
+					userData: function(next) {
+						User.getUsersFields(uids, data.fields, next);
+					},
+					isAdmin: function(next) {
+						User.isAdministrator(uids, next);
+					}
+				}, next);
+			},
+			function (results, next) {
 				results.userData.forEach(function(user, index) {
-					if (!user) {
-						return;
+					if (user) {
+						user.status = User.getStatus(user);
+						user.joindateISO = utils.toISOString(user.joindate);
+						user.administrator = results.isAdmin[index];
+						user.banned = parseInt(user.banned, 10) === 1;
+						user['email:confirmed'] = parseInt(user['email:confirmed'], 10) === 1;
 					}
-					user.status = User.getStatus(user);
-					user.joindateISO = utils.toISOString(user.joindate);
-					user.administrator = results.isAdmin[index];
-					user.banned = parseInt(user.banned, 10) === 1;
-					user['email:confirmed'] = parseInt(user['email:confirmed'], 10) === 1;
 				});
-
-				plugins.fireHook('filter:userlist.get', {users: results.userData, uid: uid}, function(err, data) {
-					if (err) {
-						return callback(err);
-					}
-					callback(null, data.users);
-				});
-			});
-		});
+				plugins.fireHook('filter:userlist.get', {users: results.userData, uid: uid}, next);
+			},
+			function (data, next) {
+				next(null, data.users);
+			}
+		], callback);
 	};
 
 	User.getStatus = function(userData) {
