@@ -115,7 +115,8 @@ module.exports = function(User) {
 			sendPostNotifications: data.sendPostNotifications,
 			restrictChat: data.restrictChat,
 			topicSearchEnabled: data.topicSearchEnabled,
-			groupTitle: data.groupTitle
+			groupTitle: data.groupTitle,
+			homePageRoute: data.homePageCustom || data.homePageRoute
 		};
 
 		if (data.bootswatchSkin) {

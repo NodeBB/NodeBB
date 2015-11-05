@@ -57,6 +57,7 @@ apiController.getConfig = function(req, res, next) {
 	config.allowProfileImageUploads = parseInt(meta.config.allowProfileImageUploads) === 1;
 	config.allowTopicsThumbnail = parseInt(meta.config.allowTopicsThumbnail, 10) === 1;
 	config.allowAccountDelete = parseInt(meta.config.allowAccountDelete, 10) === 1;
+	config.allowUserHomePage = parseInt(meta.config.allowUserHomePage, 10) === 1;
 	config.privateUserInfo = parseInt(meta.config.privateUserInfo, 10) === 1;
 	config.privateTagListing = parseInt(meta.config.privateTagListing, 10) === 1;
 	config.usePagination = parseInt(meta.config.usePagination, 10) === 1;
