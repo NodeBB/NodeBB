@@ -47,7 +47,7 @@ settingsController.get = function(req, res, callback) {
 							privileges.categories.filterCids('find', cids, 0, next);
 						},
 						function(cids, next) {
-							categories.getMultipleCategoryFields(cids, ['name', 'slug'], next);
+							categories.getCategoriesFields(cids, ['name', 'slug'], next);
 						},
 						function(categoryData, next) {
 						categoryData = categoryData.map(function(category) {
