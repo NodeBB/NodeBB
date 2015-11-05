@@ -122,7 +122,7 @@ helpers.getBaseUser = function(userslug, callerUID, callback) {
 
 			async.parallel({
 				user: function(next) {
-					user.getUserFields(uid, ['uid', 'username', 'userslug', 'picture', 'cover:url', 'cover:position'], next);
+					user.getUserFields(uid, ['uid', 'username', 'userslug', 'picture', 'cover:url', 'cover:position', 'status', 'lastonline'], next);
 				},
 				isAdmin: function(next) {
 					user.isAdministrator(callerUID, next);
@@ -139,6 +139,7 @@ helpers.getBaseUser = function(userslug, callerUID, callback) {
 
 			results.user.yourid = callerUID;
 			results.user.theirid = results.user.uid;
+			results.user.status = user.getStatus(results.user);
 			results.user.isSelf = parseInt(callerUID, 10) === parseInt(results.user.uid, 10);
 			results.user.showHidden = results.user.isSelf || results.isAdmin;
 			results.user.profile_links = results.profile_links;
