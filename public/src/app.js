@@ -130,11 +130,7 @@ app.cacheBuster = null;
 
 	app.enterRoom = function (room, callback) {
 		callback = callback || function() {};
-		if (socket) {
-			if (app.currentRoom === room) {
-				return;
-			}
-
+		if (socket && app.user.uid && app.currentRoom !== room) {
 			socket.emit('meta.rooms.enter', {
 				enter: room,
 				username: app.user.username,
@@ -148,6 +144,7 @@ app.cacheBuster = null;
 					return app.alertError(err.message);
 				}
 				app.currentRoom = room;
+				callback();
 			});
 		}
 	};
