@@ -13,6 +13,7 @@ define('forum/topic/events', [
 	var Events = {};
 
 	var events = {
+		'event:user_status_change': onUserStatusChange,
 		'event:voted': updatePostVotesAndUserReputation,
 		'event:favourited': updateFavouriteCount,
 
@@ -64,6 +65,10 @@ define('forum/topic/events', [
 			}
 		}
 	};
+
+	function onUserStatusChange(data) {
+		app.updateUserStatus($('[data-uid="' + data.uid + '"] [component="user/status"]'), data.status);
+	}
 
 	function updatePostVotesAndUserReputation(data) {
 		var votes = components.get('post/vote-count', data.post.pid),
