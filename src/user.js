@@ -135,7 +135,7 @@ var	async = require('async'),
 	};
 
 	User.isOnline = function(uid, callback) {
-		User.getUserField(uid, 'lastonline', function(err, lastonline) {
+		db.sortedSetScore('users:online', uid, function(err, lastonline) {
 			if (err) {
 				return callback(err);
 			}

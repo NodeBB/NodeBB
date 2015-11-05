@@ -321,7 +321,7 @@ module.exports = function(db, module) {
 			return callback();
 		}
 		value = helpers.valueToString(value);
-		db.collection('objects').findOne({_key:key, value: value}, {fields:{_id: 0, score: 1}}, function(err, result) {
+		db.collection('objects').findOne({_key: key, value: value}, {fields:{_id: 0, score: 1}}, function(err, result) {
 			callback(err, result ? result.score : null);
 		});
 	};
