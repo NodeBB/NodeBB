@@ -131,7 +131,7 @@ editController.uploadCoverPicture = function(req, res, next) {
 			return next(err);
 		}
 
-		res.json([{url: image.url.startsWith('http') ? image.url : nconf.get('relative_path') + image.url}]);
+		res.json([{ url: image.url }]);
 	});
 };
 

@@ -23,6 +23,7 @@ define('coverPhoto', [
 					units: 'percent'
 				});
 		});
+		coverEl.find('.remove').on('click', coverPhoto.remove);
 
 		coverEl
 			.on('dragover', coverPhoto.onDragOver)
@@ -76,6 +77,18 @@ define('coverPhoto', [
 			}
 
 			coverPhoto.coverEl.removeClass('saving');
+		});
+	};
+
+	coverPhoto.remove = function() {
+		socket.emit('user.removeCover', {
+			uid: ajaxify.data.uid
+		}, function(err) {
+			if (!err) {
+				ajaxify.refresh();
+			} else {
+				app.alertError(err.message);
+			}
 		});
 	};
 

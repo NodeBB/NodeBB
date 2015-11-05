@@ -13,7 +13,8 @@ var async = require('async'),
 	plugins = require('../plugins'),
 	file = require('../file'),
 	image = require('../image'),
-	meta = require('../meta');
+	meta = require('../meta'),
+	db = require('../database');
 
 module.exports = function(User) {
 
@@ -198,4 +199,7 @@ module.exports = function(User) {
 		});
 	};
 
+	User.removeCoverPicture = function(data, callback) {
+		db.deleteObjectField('user:' + data.uid, 'cover:url', callback);
+	};
 };
