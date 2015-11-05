@@ -272,13 +272,13 @@ module.exports = function(Topics) {
 		var tid = postData.tid;
 		var uid = postData.uid;
 		async.waterfall([
-			function(next) {
+			function (next) {
 				Topics.markAsUnreadForAll(tid, next);
 			},
-			function(next) {
+			function (next) {
 				Topics.markAsRead([tid], uid, next);
 			},
-			function(next) {
+			function (markedRead, next) {
 				async.parallel({
 					userInfo: function(next) {
 						posts.getUserInfoForPosts([postData.uid], uid, next);
@@ -294,7 +294,7 @@ module.exports = function(Topics) {
 					}
 				}, next);
 			},
-			function(results, next) {
+			function (results, next) {
 				postData.user = results.userInfo[0];
 				postData.topic = results.topicInfo;
 

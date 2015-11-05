@@ -22,7 +22,7 @@ define('admin/general/dashboard', ['semver'], function(semver) {
 
 	Admin.init = function() {
 		app.enterRoom('admin');
-		socket.emit('meta.rooms.getAll', Admin.updateRoomUsage);
+		socket.emit('admin.rooms.getAll', Admin.updateRoomUsage);
 
 		isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 
@@ -439,7 +439,7 @@ define('admin/general/dashboard', ['semver'], function(semver) {
 
 		intervals.rooms = setInterval(function() {
 			if (app.isFocused && app.isConnected) {
-				socket.emit('meta.rooms.getAll', Admin.updateRoomUsage);
+				socket.emit('admin.rooms.getAll', Admin.updateRoomUsage);
 			}
 		}, realtime ? DEFAULTS.realtimeInterval : DEFAULTS.roomInterval);
 

@@ -63,15 +63,14 @@ module.exports = function(SocketPosts) {
 
 			async.parallel({
 				admins: async.apply(groups.getMembers, 'administrators', 0, -1),
-				moderators: async.apply(groups.getMembers, 'cid:' + result.topic.cid + ':privileges:mods', 0, -1),
-				uidsInTopic: async.apply(websockets.getUidsInRoom, 'topic_' + result.topic.tid)
+				moderators: async.apply(groups.getMembers, 'cid:' + result.topic.cid + ':privileges:mods', 0, -1)
 			}, function(err, results) {
 				if (err) {
 					return winston.error(err);
 				}
 
-				var uids = results.uidsInTopic.filter(function(uid) {
-					return (results.admins.indexOf(uid) !== -1 || results.moderators.indexOf(uid) !== -1) && parseInt(uid, 10) !== socket.uid;
+				var uids = results.admins.concat(results.moderators).filter(function(uid, index, array) {
+					return uid && array.indexOf(uid) === index;
 				});
 
 				uids.forEach(function(uid) {

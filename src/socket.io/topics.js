@@ -74,22 +74,6 @@ SocketTopics.post = function(socket, data, callback) {
 	});
 };
 
-SocketTopics.enter = function(socket, tid, callback) {
-	if (!parseInt(tid, 10) || !socket.uid) {
-		return;
-	}
-	async.parallel({
-		markAsRead: function(next) {
-			SocketTopics.markAsRead(socket, [tid], next);
-		},
-		users: function(next) {
-			websockets.getUsersInRoom(socket.uid, 'topic_' + tid, 0, 9, next);
-		}
-	}, function(err, result) {
-		callback(err, result ? result.users : null);
-	});
-};
-
 SocketTopics.postcount = function(socket, tid, callback) {
 	topics.getTopicField(tid, 'postcount', callback);
 };

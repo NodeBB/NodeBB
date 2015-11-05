@@ -8,15 +8,12 @@ module.exports = function(SocketUser) {
 		if (!socket.uid) {
 			return callback('[[error:invalid-uid]]');
 		}
-		var online = websockets.isUserOnline(uid);
-		if (!online) {
-			return callback(null, 'offline');
-		}
-		user.getUserField(uid, 'status', function(err, status) {
+
+		user.getUserFields(uid, ['lastonline', 'status'], function(err, userData) {
 			if (err) {
 				return callback(err);
 			}
-			status = status || 'online';
+			var status = user.getStatus(userData);
 			callback(null, status);
 		});
 	};

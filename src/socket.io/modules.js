@@ -7,7 +7,6 @@ var	meta = require('../meta'),
 	async = require('async'),
 
 	server = require('./'),
-	rooms = require('./rooms'),
 
 	SocketModules = {
 		chats: {},
@@ -103,37 +102,6 @@ SocketModules.chats.getRecentChats = function(socket, data, callback) {
 		stop = start + 9;
 
 	Messaging.getRecentChats(socket.uid, start, stop, callback);
-};
-
-SocketModules.chats.sync = function(socket, data, callback) {
-	var chats = [],
-		uids = [],
-		socketIds = rooms.clients('uid_' + socket.uid);
-
-	rooms.broadcast(socket, 'uid_' + socket.uid, 'query:chats.sync', {}, function(err, sessionData) {
-		sessionData.forEach(function(data) {
-			data.forEach(function(chat) {
-				if (uids.indexOf(chat.uid) === -1) {
-					chats.push(chat);
-					uids.push(chat.uid);
-				}
-			});
-		});
-
-		callback(err, chats);
-	});
-};
-
-SocketModules.chats.open = function(socket, data, callback) {
-	rooms.broadcast(socket, 'uid_' + socket.uid, 'event:chats.open', data);
-};
-
-SocketModules.chats.close = function(socket, data, callback) {
-	rooms.broadcast(socket, 'uid_' + socket.uid, 'event:chats.close', data);
-};
-
-SocketModules.chats.toggleNew = function(socket, data, callback) {
-	rooms.broadcast(socket, 'uid_' + socket.uid, 'event:chats.toggleNew', data);
 };
 
 

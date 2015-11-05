@@ -58,7 +58,7 @@ helpers.getUserDataByUserSlug = function(userslug, callerUID, callback) {
 			var self = parseInt(callerUID, 10) === parseInt(userData.uid, 10);
 
 			userData.joindate = utils.toISOString(userData.joindate);
-			userData.lastonline = userData.lastonline ? utils.toISOString(userData.lastonline) : userData.joindate;
+			userData.lastonlineISO = utils.toISOString(userData.lastonline || userData.joindate);
 			userData.age = userData.birthday ? Math.floor((new Date().getTime() - new Date(userData.birthday).getTime()) / 31536000000) : '';
 
 			if (!(isAdmin || self || (userData.email && userSettings.showemail))) {
@@ -86,7 +86,7 @@ helpers.getUserDataByUserSlug = function(userslug, callerUID, callback) {
 			userData['email:confirmed'] = !!parseInt(userData['email:confirmed'], 10);
 			userData.profile_links = results.profile_links;
 			userData.sso = results.sso.associations;
-			userData.status = require('../../socket.io').isUserOnline(userData.uid) ? (userData.status || 'online') : 'offline';
+			userData.status = user.getStatus(userData);
 			userData.banned = parseInt(userData.banned, 10) === 1;
 			userData.website = validator.escape(userData.website);
 			userData.websiteLink = !userData.website.startsWith('http') ? 'http://' + userData.website : userData.website;

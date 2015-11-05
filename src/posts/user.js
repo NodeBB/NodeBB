@@ -20,10 +20,7 @@ module.exports = function(Posts) {
 				user.getMultipleUserSettings(uids, next);
 			},
 			userData: function(next) {
-				user.getUsersFields(uids, ['uid', 'username', 'fullname', 'userslug', 'reputation', 'postcount', 'picture', 'signature', 'banned', 'status'], next);
-			},
-			online: function(next) {
-				require('../socket.io').isUsersOnline(uids, next);
+				user.getUsersFields(uids, ['uid', 'username', 'fullname', 'userslug', 'reputation', 'postcount', 'picture', 'signature', 'banned', 'status', 'lastonline'], next);
 			}
 		}, function(err, results) {
 			if (err) {
@@ -47,7 +44,7 @@ module.exports = function(Posts) {
 						userData.selectedGroup = userData.groups[index];
 					}
 				});
-				userData.status = user.getStatus(userData.status, results.online[i]);
+				userData.status = user.getStatus(userData);
 			});
 
 			async.map(userData, function(userData, next) {

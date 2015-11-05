@@ -125,6 +125,7 @@ topicsController.get = function(req, res, callback) {
 			});
 		},
 		function (topicData, next) {
+
 			var breadcrumbs = [
 				{
 					text: topicData.category.name,
@@ -264,6 +265,18 @@ topicsController.get = function(req, res, callback) {
 		});
 
 		topics.increaseViewCount(tid);
+
+		if (req.uid) {
+			topics.markAsRead([tid], req.uid, function(err, markedRead) {
+				if (err) {
+					return callback(err);
+				}
+				if (markedRead) {
+					topics.pushUnreadCount(req.uid);
+					topics.markTopicNotificationsRead(tid, req.uid);
+				}
+			});
+		}
 
 		plugins.fireHook('filter:topic.build', {req: req, res: res, templateData: data}, function(err, data) {
 			if (err) {

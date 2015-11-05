@@ -161,52 +161,45 @@ module.exports = function(Topics) {
 			return callback();
 		}
 
-		async.parallel({
-			topicScores: function(next) {
-				db.sortedSetScores('topics:recent', tids, next);
+		async.waterfall([
+			function (next) {
+				async.parallel({
+					topicScores: async.apply(db.sortedSetScores, 'topics:recent', tids),
+					userScores: async.apply(db.sortedSetScores, 'uid:' + uid + ':tids_read', tids)
+				}, next);
 			},
-			userScores: function(next) {
-				db.sortedSetScores('uid:' + uid + ':tids_read', tids, next);
-			}
-		}, function(err, results) {
-			if (err) {
-				return callback(err);
-			}
+			function (results, next) {
+				tids = tids.filter(function(tid, index) {
+					return results.topicScores[index] && (!results.userScores[index] || results.userScores[index] < results.topicScores[index]);
+				});
 
-			tids = tids.filter(function(tid, index) {
-				return results.topicScores[index] && (!results.userScores[index] || results.userScores[index] < results.topicScores[index]);
-			});
-
-			if (!tids.length) {
-				return callback();
-			}
-
-			var now = Date.now();
-			var scores = tids.map(function() {
-				return now;
-			});
-
-			async.parallel({
-				markRead: function(next) {
-					db.sortedSetAdd('uid:' + uid + ':tids_read', scores, tids, next);
-				},
-				topicData: function(next) {
-					Topics.getTopicsFields(tids, ['cid'], next);
-				}
-			}, function(err, results) {
-				if (err) {
-					return callback(err);
+				if (!tids.length) {
+					return callback();
 				}
 
+				var now = Date.now();
+				var scores = tids.map(function() {
+					return now;
+				});
+
+				async.parallel({
+					markRead: async.apply(db.sortedSetAdd, 'uid:' + uid + ':tids_read', scores, tids),
+					topicData: async.apply(	Topics.getTopicsFields, tids, ['cid'])
+				}, next);
+			},
+			function (results, next) {
 				var cids = results.topicData.map(function(topic) {
 					return topic && topic.cid;
 				}).filter(function(topic, index, array) {
 					return topic && array.indexOf(topic) === index;
 				});
 
-				categories.markAsRead(cids, uid, callback);
-			});
-		});
+				categories.markAsRead(cids, uid, next);
+			},
+			function (next) {
+				next(null, true);
+			}
+		], callback);
 	};
 
 	Topics.markTopicNotificationsRead = function(tid, uid) {
