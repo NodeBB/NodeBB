@@ -45,12 +45,6 @@ function onConnection(socket) {
 
 	onConnect(socket);
 
-	// see https://github.com/Automattic/socket.io/issues/1814 and
-	// http://stackoverflow.com/questions/25830415/get-the-list-of-rooms-the-client-is-currently-in-on-disconnect-event
-	socket.onclose = function(reason) {
-		Object.getPrototypeOf(this).onclose.call(this, {reason: reason, rooms: socket.rooms.slice()});
-	};
-
 	socket.on('disconnect', function(data) {
 		onDisconnect(socket, data);
 	});
@@ -79,7 +73,7 @@ function onConnect(socket) {
 	}
 }
 
-function onDisconnect(socket, data) {
+function onDisconnect(socket) {
 	if (socket.uid) {
 		var socketCount = Sockets.getUserSocketCount(socket.uid);
 		if (socketCount <= 1) {
