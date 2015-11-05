@@ -90,16 +90,6 @@ define('chat', ['components', 'taskbar', 'string', 'sounds', 'forum/chats', 'tra
 			var modal = module.getModal(data.uid);
 			app.updateUserStatus(modal.find('[component="user/status"]'), data.status);
 		});
-
-		$(window).on('action:taskbar.toggleNew', function(ev, uuid) {
-			var modal = $('.chat-modal[uuid="' + uuid + '"]'),
-				touid = modal.attr('touid');
-
-			socket.emit('modules.chats.toggleNew', {
-				uid: touid,
-				state: false
-			});
-		});
 	};
 
 	module.loadChatsDropdown = function(chatsListEl) {
