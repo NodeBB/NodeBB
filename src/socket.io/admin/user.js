@@ -88,7 +88,6 @@ User.banUser = function(uid, callback) {
 
 			websockets.in('uid_' + uid).emit('event:banned');
 
-			websockets.logoutUser(uid);
 			callback();
 		});
 	});
@@ -193,7 +192,6 @@ User.deleteUsers = function(socket, uids, callback) {
 					ip: socket.ip
 				});
 
-				websockets.logoutUser(uid);
 				next();
 			});
 		});

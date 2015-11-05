@@ -71,14 +71,12 @@ function onConnect(socket) {
 				return;
 			}
 
-			socket.emit('event:connect');
 			if (userData.status !== 'offline') {
 				socket.broadcast.emit('event:user_status_change', {uid: socket.uid, status: userData.status || 'online'});
 			}
 		});
 	} else {
 		rooms.enter(socket, 'online_guests');
-		socket.emit('event:connect');
 	}
 }
 
@@ -207,10 +205,6 @@ function callMethod(method, socket, params, callback) {
 		callback(err ? {message: err.message} : null, result);
 	});
 }
-
-Sockets.logoutUser = function(uid) {
-	io.in('uid_' + uid).emit('event:disconnect');
-};
 
 Sockets.in = function(room) {
 	return io.in(room);
