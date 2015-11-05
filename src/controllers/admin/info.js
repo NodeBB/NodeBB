@@ -2,6 +2,7 @@
 
 var async = require('async');
 var os = require('os');
+var nconf = require('nconf');
 var exec = require('child_process').exec;
 
 var rooms = require('../../socket.io/admin/rooms');
@@ -12,6 +13,7 @@ infoController.get = function(req, res, next) {
 
 	var data = {
 		process: {
+			port: nconf.get('port'),
 			pid: process.pid,
 			title: process.title,
 			arch: process.arch,
