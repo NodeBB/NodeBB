@@ -1,0 +1,19 @@
+{
+    "register": "Registracija",
+    "help.email": "Tvoj e-poštni naslov bo skrit po privzetih nastavitvah.",
+    "help.username_restrictions": "Unikatno uporabniško ime med %1 in %2 znakov. Drugi vas lahko omenijo v objavi z @<span id='yourUsername'>Uporabnik</span>.",
+    "help.minimum_password_length": "Tvoje geslo mora vsebovati najmanj %1 znakov.",
+    "email_address": "E-poštni naslov",
+    "email_address_placeholder": "Vnesi e-mail naslov",
+    "username": "Uporabniško ime",
+    "username_placeholder": "Vnesi uporabniško ime",
+    "password": "Geslo",
+    "password_placeholder": "Vnesi geslo",
+    "confirm_password": "Potrdi geslo",
+    "confirm_password_placeholder": "Potrdi geslo",
+    "register_now_button": "Registriraj se",
+    "alternative_registration": "Alternativna registracija",
+    "terms_of_use": "Pogoji uporabe",
+    "agree_to_terms_of_use": "Strinjam se s pogoji uporabe",
+    "registration-added-to-queue": "Registracija uporabniškega profila je v postopku. Ob potrditvi s strani administratorja boste prejeli sporočilo v vaš e-poštni predal."
+}

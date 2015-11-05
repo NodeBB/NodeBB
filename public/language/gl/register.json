@@ -1,0 +1,19 @@
+{
+    "register": "Rexistrarse",
+    "help.email": "Por defecto, o teu correo electrónico está oculto ao público.",
+    "help.username_restrictions": "O nome de usuario debe ter entre %1 e %2 caracteres. Os outros usuarios poden mencionarte escribindo @<span id='yourUsername'>usuario</span>.",
+    "help.minimum_password_length": "O teu contrasinal debe ter polo menos %1 caracteres.",
+    "email_address": "Correo electrónico",
+    "email_address_placeholder": "Introduce o teu correo electrónico",
+    "username": "Nome de Usuario",
+    "username_placeholder": "Introduce o teu nome de usuario",
+    "password": "Contrasinal",
+    "password_placeholder": "Introduce o teu contrasinal",
+    "confirm_password": "Confirma o teu contrasinal",
+    "confirm_password_placeholder": "Confirma o teu contrasinal",
+    "register_now_button": "Rexistrarse agora",
+    "alternative_registration": "Métodos de rexistro alternativos",
+    "terms_of_use": "Termos e Condicións de Uso",
+    "agree_to_terms_of_use": "Acepto os Termos e Condicións de Uso",
+    "registration-added-to-queue": "O teu rexistro foi engadido á cola de aprobación. Recibirás un correo electrónico cando sexa aceptado por un administrador."
+}
