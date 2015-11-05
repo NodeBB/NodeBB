@@ -11,12 +11,12 @@ var app,
 	validator = require('validator'),
 	nconf = require('nconf'),
 	ensureLoggedIn = require('connect-ensure-login'),
+	toobusy = require('toobusy-js'),
 
 	plugins = require('../plugins'),
 	meta = require('../meta'),
 	user = require('../user'),
 	groups = require('../groups'),
-
 
 	analytics = require('../analytics'),
 
@@ -24,6 +24,9 @@ var app,
 		api: require('./../controllers/api'),
 		helpers: require('../controllers/helpers')
 	};
+
+toobusy.maxLag(parseInt(meta.config.eventLoopLagThreshold, 10) || 70);
+toobusy.interval(parseInt(meta.config.eventLoopInterval, 10) || 500);
 
 middleware.authenticate = function(req, res, next) {
 	if (req.user) {
@@ -217,6 +220,13 @@ middleware.privateUploads = function(req, res, next) {
 	next();
 };
 
+middleware.busyCheck = function(req, res, next) {
+	if (toobusy()) {
+		res.type('text/html').sendFile(path.join(__dirname, '../../public/503.html'));
+	} else {
+		next();
+	}
+};
 
 module.exports = function(webserver) {
 	app = webserver;
