@@ -47,7 +47,7 @@ define('forum/account/profile', [
 			return;
 		}
 
-		app.updateUserStatus($('.account [component="user/status"]'), data.status);
+		app.updateUserStatus($('.account [data-uid="' + data.uid + '"] [component="user/status"]'), data.status);
 	}
 
 	function loadMorePosts(direction) {
