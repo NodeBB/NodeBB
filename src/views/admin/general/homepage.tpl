@@ -12,10 +12,17 @@
 					<option value="{routes.route}">{routes.name}</option>
 					<!-- END routes -->
 				</select>
-				<br>
 				<div id="homePageCustom" style="display: none;">
+					<br>
 					<label>Custom Route</label>
 					<input type="text" class="form-control" data-field="homePageCustom"/>
+				</div>
+				<br>
+				<div class="checkbox">
+					<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
+						<input class="mdl-switch__input" type="checkbox" data-field="allowUserHomePage">
+						<span class="mdl-switch__label"><strong>Allow User Home Pages</strong></span>
+					</label>
 				</div>
 			</div>
 		</form>

@@ -11,5 +11,4 @@ var accountsController = {
 	chats: require('./accounts/chats')
 };
 
-
 module.exports = accountsController;

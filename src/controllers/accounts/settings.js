@@ -7,6 +7,9 @@ var async = require('async'),
 	languages = require('../../languages'),
 	meta = require('../../meta'),
 	plugins = require('../../plugins'),
+	privileges = require('../../privileges'),
+	categories = require('../../categories'),
+	db = require('../../database'),
 	helpers = require('../helpers'),
 	accountHelpers = require('./helpers');
 
@@ -34,6 +37,52 @@ settingsController.get = function(req, res, callback) {
 				},
 				languages: function(next) {
 					languages.list(next);
+				},
+				homePageRoutes: function(next) {
+					async.waterfall([
+						function(next) {
+							db.getSortedSetRange('cid:0:children', 0, -1, next);
+						},
+						function(cids, next) {
+							privileges.categories.filterCids('find', cids, 0, next);
+						},
+						function(cids, next) {
+							categories.getMultipleCategoryFields(cids, ['name', 'slug'], next);
+						},
+						function(categoryData, next) {
+						categoryData = categoryData.map(function(category) {
+							return {
+									route: 'category/' + category.slug,
+									name: 'Category: ' + category.name
+								};
+							});
+							next(null, categoryData);
+						}
+					], function(err, categoryData) {
+						if (err || !categoryData) categoryData = [];
+
+						plugins.fireHook('filter:homepage.get', {routes: [
+							{
+								route: 'categories',
+								name: 'Categories'
+							},
+							{
+								route: 'recent',
+								name: 'Recent'
+							},
+							{
+								route: 'popular',
+								name: 'Popular'
+							}
+						].concat(categoryData)}, function(err, data) {
+							data.routes.push({
+								route: 'custom',
+								name: 'Custom'
+							});
+
+							next(null, data.routes);
+						});
+					});
 				}
 			}, next);
 		},
@@ -41,6 +90,7 @@ settingsController.get = function(req, res, callback) {
 			userData.settings = results.settings;
 			userData.languages = results.languages;
 			userData.userGroups = results.userGroups[0];
+			userData.homePageRoutes = results.homePageRoutes;
 			plugins.fireHook('filter:user.customSettings', {settings: results.settings, customSettings: [], uid: req.uid}, next);
 		},
 		function(data, next) {
@@ -94,6 +144,8 @@ settingsController.get = function(req, res, callback) {
 		});
 
 		userData.disableCustomUserSkins = parseInt(meta.config.disableCustomUserSkins, 10) === 1;
+
+		userData.allowUserHomePage = parseInt(meta.config.allowUserHomePage, 10) === 1;
 
 		userData.title = '[[pages:account/settings]]';
 		userData.breadcrumbs = helpers.buildBreadcrumbs([{text: userData.username, url: '/user/' + userData.userslug}, {text: '[[user:settings]]'}]);
