@@ -41,4 +41,33 @@
 	</div>
 </div>
 
+<div class="row">
+	<div class="col-sm-2 col-xs-12 settings-header">Traffic Management</div>
+	<div class="col-sm-10 col-xs-12">
+		<p class="help-block">
+			NodeBB deploys equipped with a module that automatically denies requests in high-traffic
+			situations. You can tune these settings here, although the defaults are a good starting
+			point.
+		</p>
+		<form>
+			<div class="form-group">
+				<label for="eventLoopLagThreshold">Event Loop Lag Threshold (in milliseconds)</label>
+				<input class="form-control" id="eventLoopLagThreshold" type="number" data-field="eventLoopLagThreshold" placeholder="Default: 70" step="10" value="70" />
+				<p class="help-block">
+					Lowering this value decreases wait times for page loads, but will also show the
+					"excessive load" message to more users. (Reload required)
+				</p>
+			</div>
+			<div class="form-group">
+				<label for="eventLoopInterval">Check Interval (in milliseconds)</label>
+				<input class="form-control" id="eventLoopInterval" type="number" data-field="eventLoopInterval" placeholder="Default: 500" value="500" step="50" />
+				<p class="help-block">
+					Lowering this value causes NodeBB to become more sensitive to spikes in load, but
+					may also cause the check to become too sensitive. (Reload required)
+				</p>
+			</div>
+		</form>
+	</div>
+</div>
+
 <!-- IMPORT admin/settings/footer.tpl -->
