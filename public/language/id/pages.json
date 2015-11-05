@@ -36,5 +36,6 @@
     "account/settings": "User Settings",
     "account/watched": "Topics watched by %1",
     "maintenance.text": "%1 saat ini sedang dalam masa pemeliharaan. Silahkan kembali lain waktu.",
-    "maintenance.messageIntro": "Tambahan, Administrator meninggalkan pesan ini:"
+    "maintenance.messageIntro": "Tambahan, Administrator meninggalkan pesan ini:",
+    "throttled.text": "%1 is currently unavailable due to excessive load. Please come back another time."
 }

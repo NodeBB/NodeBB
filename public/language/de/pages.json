@@ -36,5 +36,6 @@
     "account/settings": "Benutzer-Einstellungen",
     "account/watched": "Themen angeschaut von %1",
     "maintenance.text": "%1 befindet sich derzeit in der Wartung. Bitte komm später wieder.",
-    "maintenance.messageIntro": "Zusätzlich hat der Administrator diese Nachricht hinterlassen:"
+    "maintenance.messageIntro": "Zusätzlich hat der Administrator diese Nachricht hinterlassen:",
+    "throttled.text": "%1 is currently unavailable due to excessive load. Please come back another time."
 }

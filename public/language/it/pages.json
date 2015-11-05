@@ -36,5 +36,6 @@
     "account/settings": "Impostazioni Utente",
     "account/watched": "Discussioni osservate da %1",
     "maintenance.text": "%1 è attualmente in manutenzione. Per favore ritorna più tardi.",
-    "maintenance.messageIntro": "Inoltre, l'amministratore ha lasciato questo messaggio:"
+    "maintenance.messageIntro": "Inoltre, l'amministratore ha lasciato questo messaggio:",
+    "throttled.text": "%1 is currently unavailable due to excessive load. Please come back another time."
 }

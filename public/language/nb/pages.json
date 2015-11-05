@@ -36,5 +36,6 @@
     "account/settings": "Brukerinnstillinger",
     "account/watched": "Innlegg overvåket av %1",
     "maintenance.text": "%1 er for tiden under vedlikehold. Kom tilbake en annen gang.",
-    "maintenance.messageIntro": "I tillegg har administratoren skrevet denne meldingen:"
+    "maintenance.messageIntro": "I tillegg har administratoren skrevet denne meldingen:",
+    "throttled.text": "%1 is currently unavailable due to excessive load. Please come back another time."
 }

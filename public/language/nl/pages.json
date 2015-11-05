@@ -36,5 +36,6 @@
     "account/settings": "Gebruikersinstellingen",
     "account/watched": "Berichten die door %1 bekeken worden",
     "maintenance.text": "%1 is momenteel in onderhoud. Excuses voor het ongemak en probeer het later nog eens",
-    "maintenance.messageIntro": "Daarnaast heeft de beheerder het volgende bericht achtergelaten:"
+    "maintenance.messageIntro": "Daarnaast heeft de beheerder het volgende bericht achtergelaten:",
+    "throttled.text": "%1 is currently unavailable due to excessive load. Please come back another time."
 }

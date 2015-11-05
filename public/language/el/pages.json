@@ -36,5 +36,6 @@
     "account/settings": "User Settings",
     "account/watched": "Topics watched by %1",
     "maintenance.text": "Το %1 αυτή την στιγμή συντηρείται. Παρακαλώ έλα αργότερα.",
-    "maintenance.messageIntro": "Additionally, the administrator has left this message:"
+    "maintenance.messageIntro": "Additionally, the administrator has left this message:",
+    "throttled.text": "%1 is currently unavailable due to excessive load. Please come back another time."
 }

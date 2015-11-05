@@ -36,5 +36,6 @@
     "account/settings": "User Settings",
     "account/watched": "Topics watched by %1",
     "maintenance.text": "目前 %1 正在進行維修。請稍後再來。",
-    "maintenance.messageIntro": "此外，管理員有以下訊息："
+    "maintenance.messageIntro": "此外，管理員有以下訊息：",
+    "throttled.text": "%1 is currently unavailable due to excessive load. Please come back another time."
 }

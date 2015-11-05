@@ -36,5 +36,6 @@
     "account/settings": "Настройки пользователя",
     "account/watched": "Тему смотрели %1",
     "maintenance.text": "%1 в настоящее время на обслуживании. Пожалуйста, возвращайтесь позже.",
-    "maintenance.messageIntro": "Администратор оставил сообщение:"
+    "maintenance.messageIntro": "Администратор оставил сообщение:",
+    "throttled.text": "%1 is currently unavailable due to excessive load. Please come back another time."
 }

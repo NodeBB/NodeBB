@@ -36,5 +36,6 @@
     "account/settings": "User Settings",
     "account/watched": "Topics watched by %1",
     "maintenance.text": "جاري صيانة %1. المرجو العودة لاحقًا.",
-    "maintenance.messageIntro": "بالإضافة إلى ذلك، قام مدبر النظام بترك هذه الرسالة:"
+    "maintenance.messageIntro": "بالإضافة إلى ذلك، قام مدبر النظام بترك هذه الرسالة:",
+    "throttled.text": "%1 is currently unavailable due to excessive load. Please come back another time."
 }

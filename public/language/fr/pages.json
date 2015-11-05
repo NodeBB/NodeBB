@@ -36,5 +36,6 @@
     "account/settings": "Paramètres d'utilisateur",
     "account/watched": "Sujets surveillés par %1",
     "maintenance.text": "%1 est en maintenance. Veuillez revenir un peu plus tard.",
-    "maintenance.messageIntro": "De plus, l'administrateur a laissé ce message:"
+    "maintenance.messageIntro": "De plus, l'administrateur a laissé ce message:",
+    "throttled.text": "%1 is currently unavailable due to excessive load. Please come back another time."
 }

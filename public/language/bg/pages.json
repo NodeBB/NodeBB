@@ -36,5 +36,6 @@
     "account/settings": "Потребителски настройки",
     "account/watched": "Теми, следени от %1",
     "maintenance.text": "%1 в момента е в профилактика. Моля, върнете се по-късно.",
-    "maintenance.messageIntro": "В допълнение, администраторът е оставил това съобщение:"
+    "maintenance.messageIntro": "В допълнение, администраторът е оставил това съобщение:",
+    "throttled.text": "%1 is currently unavailable due to excessive load. Please come back another time."
 }

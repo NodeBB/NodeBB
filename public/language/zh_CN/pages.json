@@ -36,5 +36,6 @@
     "account/settings": "用户设置",
     "account/watched": "主题已被 %1 关注",
     "maintenance.text": "%1 正在进行维护。请稍后再来。",
-    "maintenance.messageIntro": "此外，管理员留下的消息："
+    "maintenance.messageIntro": "此外，管理员留下的消息：",
+    "throttled.text": "%1 is currently unavailable due to excessive load. Please come back another time."
 }

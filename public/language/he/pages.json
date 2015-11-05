@@ -36,5 +36,6 @@
     "account/settings": "הגדרות משתמש",
     "account/watched": "נושאים שנצפו על ידי %1",
     "maintenance.text": "%1 כרגע תחת עבודות תחזוקה. אנא חזור בזמן מאוחר יותר.",
-    "maintenance.messageIntro": "בנוסף, המנהל השאיר את ההודעה הזו:"
+    "maintenance.messageIntro": "בנוסף, המנהל השאיר את ההודעה הזו:",
+    "throttled.text": "%1 is currently unavailable due to excessive load. Please come back another time."
 }

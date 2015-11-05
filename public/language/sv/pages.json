@@ -36,5 +36,6 @@
     "account/settings": "Avnändarinställningar",
     "account/watched": "Topics watched by %1",
     "maintenance.text": "%1 genomgår underhåll just nu. Vänligen kom tillbaka lite senare.",
-    "maintenance.messageIntro": "Ytterligare så lämnade administratören detta meddelande:"
+    "maintenance.messageIntro": "Ytterligare så lämnade administratören detta meddelande:",
+    "throttled.text": "%1 is currently unavailable due to excessive load. Please come back another time."
 }

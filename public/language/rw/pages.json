@@ -36,5 +36,6 @@
     "account/settings": "User Settings",
     "account/watched": "Topics watched by %1",
     "maintenance.text": "%1 ntiboneka kuko ubu iri gutunganywa. Muze kongera kugaruka. ",
-    "maintenance.messageIntro": "Byongeye, kandi, umuyobozi yasize ubu butumwa: "
+    "maintenance.messageIntro": "Byongeye, kandi, umuyobozi yasize ubu butumwa: ",
+    "throttled.text": "%1 is currently unavailable due to excessive load. Please come back another time."
 }

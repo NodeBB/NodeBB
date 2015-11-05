@@ -36,5 +36,6 @@
     "account/settings": "تنظیمات کاربر",
     "account/watched": "Topics watched by %1",
     "maintenance.text": "1% در حال حاضر تحت تعمیر و نگهدارییست. لطفا زمان دیگری مراجعه کنید.",
-    "maintenance.messageIntro": "علاوه بر این، مدیر این پیام را گذاشته است:"
+    "maintenance.messageIntro": "علاوه بر این، مدیر این پیام را گذاشته است:",
+    "throttled.text": "%1 is currently unavailable due to excessive load. Please come back another time."
 }

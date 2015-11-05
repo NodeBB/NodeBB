@@ -36,5 +36,6 @@
     "account/settings": "Bruger instillinger",
     "account/watched": "Tråde fulgt af %1",
     "maintenance.text": "%1 er under vedligeholdelse. Kom venligst tilbage senere.",
-    "maintenance.messageIntro": "Administratoren har yderligere vedlagt denne besked:"
+    "maintenance.messageIntro": "Administratoren har yderligere vedlagt denne besked:",
+    "throttled.text": "%1 is currently unavailable due to excessive load. Please come back another time."
 }

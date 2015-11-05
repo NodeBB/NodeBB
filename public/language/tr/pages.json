@@ -36,5 +36,6 @@
     "account/settings": "Kullanıcı Ayarları",
     "account/watched": "%1 tarafından izlenen konular",
     "maintenance.text": "%1 şu anda bakımda. Lütfen bir süre sonra tekrar deneyin.",
-    "maintenance.messageIntro": "Ayrıca, yönetici şu mesaji bıraktı:"
+    "maintenance.messageIntro": "Ayrıca, yönetici şu mesaji bıraktı:",
+    "throttled.text": "%1 is currently unavailable due to excessive load. Please come back another time."
 }

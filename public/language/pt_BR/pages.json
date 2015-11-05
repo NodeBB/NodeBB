@@ -36,5 +36,6 @@
     "account/settings": "Configurações de Usuário",
     "account/watched": "Tópicos assistidos por %1",
     "maintenance.text": "%1 está atualmente sob manutenção. Por favor retorne em outro momento.",
-    "maintenance.messageIntro": "Adicionalmente, o administrador deixou esta mensagem:"
+    "maintenance.messageIntro": "Adicionalmente, o administrador deixou esta mensagem:",
+    "throttled.text": "%1 is currently unavailable due to excessive load. Please come back another time."
 }
