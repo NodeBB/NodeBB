@@ -17,16 +17,16 @@ app.isConnected = false;
 
 	socket = io(config.websocketAddress, ioParams);
 
-	socket.on('connect', onSocketConnect);
+	socket.on('connect', onConnect);
 
 	socket.on('reconnecting', onReconnecting);
+
+	socket.on('disconnect', onDisconnect);
 
 	socket.on('reconnect_failed', function() {
 		// Wait ten times the reconnection delay and then start over
 		setTimeout(socket.connect.bind(socket), parseInt(config.reconnectionDelay, 10) * 10);
 	});
-
-	socket.on('event:disconnect', onEventDisconnect);
 
 	socket.on('event:banned', onEventBanned);
 
@@ -34,11 +34,12 @@ app.isConnected = false;
 
 	socket.on('event:alert', app.alert);
 
-	function onSocketConnect() {
+	function onConnect() {
+		app.isConnected = true;
+
 		if (!reconnecting) {
 			app.showLoginMessage();
 			$(window).trigger('action:connected');
-			app.isConnected = true;
 		}
 
 		if (reconnecting) {
@@ -52,7 +53,6 @@ app.isConnected = false;
 
 			socket.emit('meta.reconnected');
 
-			app.isConnected = true;
 			$(window).trigger('action:reconnected');
 
 			setTimeout(function() {
@@ -95,7 +95,7 @@ app.isConnected = false;
 		app.enterRoom(room);
 	}
 
-	function onReconnecting(attempt) {
+	function onReconnecting() {
 		reconnecting = true;
 		var reconnectEl = $('#reconnect');
 
@@ -108,10 +108,9 @@ app.isConnected = false;
 		});
 	}
 
-	function onEventDisconnect() {
+	function onDisconnect() {
 		$(window).trigger('action:disconnected');
 		app.isConnected = false;
-		socket.connect();
 	}
 
 	function onEventBanned() {

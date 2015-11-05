@@ -206,10 +206,6 @@ function callMethod(method, socket, params, callback) {
 	});
 }
 
-Sockets.logoutUser = function(uid) {
-	io.in('uid_' + uid).emit('event:disconnect');
-};
-
 Sockets.in = function(room) {
 	return io.in(room);
 };

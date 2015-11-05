@@ -30,7 +30,6 @@ authenticationController.register = function(req, res, next) {
 		}
 	}
 
-	var uid;
 	async.waterfall([
 		function(next) {
 			if (registrationType === 'invite-only') {
@@ -255,7 +254,6 @@ authenticationController.localLogin = function(req, username, password, next) {
 authenticationController.logout = function(req, res, next) {
 	if (req.user && parseInt(req.user.uid, 10) > 0 && req.sessionID) {
 		var uid = parseInt(req.user.uid, 10);
-		require('../socket.io').logoutUser(req.user.uid);
 		db.sessionStore.destroy(req.sessionID, function(err) {
 			if (err) {
 				return next(err);
