@@ -4,6 +4,8 @@ var async = require('async');
 var os = require('os');
 var exec = require('child_process').exec;
 
+var rooms = require('../../socket.io/admin/rooms');
+
 var infoController = {};
 
 infoController.get = function(req, res, next) {
@@ -27,12 +29,14 @@ infoController.get = function(req, res, next) {
 			release: os.release()
 		}
 	};
+
 	getGitInfo(function(err, gitInfo) {
 		if (err) {
 			return next(err);
 		}
 		data.git = gitInfo;
-		res.render('admin/development/info', {info: JSON.stringify(data, null, 4)});
+
+		res.render('admin/development/info', {info: JSON.stringify(data, null, 4), stats: JSON.stringify(rooms.getStats(), null, 4)});
 	});
 };
 
