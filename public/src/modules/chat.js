@@ -10,9 +10,6 @@ define('chat', ['components', 'taskbar', 'string', 'sounds', 'forum/chats', 'tra
 		var	chatsToggleEl = components.get('chat/dropdown'),
 			chatsListEl = components.get('chat/list');
 
-		// Sync open chats between all user socket sessions
-		module.sync();
-
 		chatsToggleEl.on('click', function() {
 			if (chatsToggleEl.parent().hasClass('open')) {
 				return;
@@ -92,32 +89,6 @@ define('chat', ['components', 'taskbar', 'string', 'sounds', 'forum/chats', 'tra
 		socket.on('event:user_status_change', function(data) {
 			var modal = module.getModal(data.uid);
 			app.updateUserStatus(modal.find('[component="user/status"]'), data.status);
-		});
-
-		socket.on('query:chats.sync', function(data, callback) {
-			var chats = Array.prototype.map.call(taskbar.get('chat'), function(chatObj) {
-					return {
-						username: chatObj.options.title,
-						uid: chatObj.options.touid,
-						new: chatObj.element.hasClass('new')
-					};
-				});
-
-			callback(null, chats);
-		});
-
-		socket.on('event:chats.open', function(data) {
-			data.silent = true;
-			module.createModal(data);
-		});
-
-		socket.on('event:chats.close', function(uid) {
-			module.close(module.getModal(uid), true);
-		});
-
-		socket.on('event:chats.toggleNew', function(data) {
-			var uuid = module.getModal(data.uid).attr('UUID');
-			module.toggleNew(uuid, data.state, true);
 		});
 
 		$(window).on('action:taskbar.toggleNew', function(ev, uuid) {
@@ -318,10 +289,6 @@ define('chat', ['components', 'taskbar', 'string', 'sounds', 'forum/chats', 'tra
 					state: ''
 				});
 
-				if (!data.silent) {
-					socket.emit('modules.chats.open', data);
-				}
-
 				$(window).trigger('action:chat.loaded', chatModal);
 
 				if (typeof callback === 'function') {
@@ -342,10 +309,6 @@ define('chat', ['components', 'taskbar', 'string', 'sounds', 'forum/chats', 'tra
 		chatModal.data('modal', null);
 		taskbar.discard('chat', chatModal.attr('UUID'));
 		Chats.notifyTyping(chatModal.attr('touid'), false);
-
-		if (!silent) {
-			socket.emit('modules.chats.close', chatModal.attr('touid'));
-		}
 
 		if (chatModal.attr('data-mobile')) {
 			module.disableMobileBehaviour(chatModal);
@@ -423,27 +386,7 @@ define('chat', ['components', 'taskbar', 'string', 'sounds', 'forum/chats', 'tra
 		socket.emit('modules.chats.canMessage', toUid, callback);
 	};
 
-	module.sync = function() {
-		socket.emit('modules.chats.sync', function(err, users) {
-			if (err) {
-				return app.alertError(err.message);
-			}
 
-			users.forEach(function(user) {
-				if (!module.modalExists(user.uid)) {
-					module.createModal({
-						username: user.username,
-						touid: user.uid,
-						silent: true
-					}, function(modal) {
-						if (user.new) {
-							module.toggleNew(modal.attr('UUID'), true, true);
-						}
-					});
-				}
-			});
-		});
-	};
 
 	return module;
 });

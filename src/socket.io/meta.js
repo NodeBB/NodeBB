@@ -1,12 +1,9 @@
 'use strict';
 
-var	validator = require('validator'),
-
-	meta = require('../meta'),
+var meta = require('../meta'),
 	user = require('../user'),
 	topics = require('../topics'),
 	emitter = require('../emitter'),
-	rooms = require('./rooms'),
 
 	websockets = require('./'),
 
@@ -50,7 +47,7 @@ SocketMeta.rooms.enter = function(socket, data, callback) {
 	leaveCurrentRoom(socket);
 
 	if (data.enter) {
-		rooms.enter(socket, data.enter);
+		socket.join(data.enter);
 		socket.currentRoom = data.enter;
 	}
 	callback();
@@ -66,7 +63,7 @@ SocketMeta.rooms.leaveCurrent = function(socket, data, callback) {
 
 function leaveCurrentRoom(socket) {
 	if (socket.currentRoom) {
-		rooms.leave(socket, socket.currentRoom);
+		socket.leave(socket.currentRoom);
 		socket.currentRoom = '';
 	}
 }

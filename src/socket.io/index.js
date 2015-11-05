@@ -11,7 +11,6 @@ var	SocketIO = require('socket.io'),
 	user = require('../user'),
 	logger = require('../logger'),
 	ratelimit = require('../middleware/ratelimit'),
-	rooms = require('./rooms'),
 
 	Sockets = {},
 	Namespaces = {};
@@ -63,8 +62,8 @@ function onConnection(socket) {
 
 function onConnect(socket) {
 	if (socket.uid) {
-		rooms.enter(socket, 'uid_' + socket.uid);
-		rooms.enter(socket, 'online_users');
+		socket.join('uid_' + socket.uid);
+		socket.join('online_users');
 
 		user.getUserFields(socket.uid, ['status'], function(err, userData) {
 			if (err || !userData) {
@@ -76,7 +75,7 @@ function onConnect(socket) {
 			}
 		});
 	} else {
-		rooms.enter(socket, 'online_guests');
+		socket.join('online_guests');
 	}
 }
 
@@ -87,7 +86,6 @@ function onDisconnect(socket, data) {
 			socket.broadcast.emit('event:user_status_change', {uid: socket.uid, status: 'offline'});
 		}
 	}
-	rooms.leaveAll(socket, data.rooms);
 }
 
 function onMessage(socket, payload) {
@@ -249,11 +247,13 @@ Sockets.reqFromSocket = function(socket) {
 };
 
 Sockets.isUserOnline = function(uid) {
-	return !!rooms.clients('uid_' + uid).length;
+	winston.warn('[deprecated] Sockets.isUserOnline')
+	return false;
 };
 
 Sockets.isUsersOnline = function(uids, callback) {
-	callback(null, uids.map(Sockets.isUserOnline));
+	winston.warn('[deprecated] Sockets.isUsersOnline')
+	callback(null, uids.map(function() { return false; }));
 };
 
 Sockets.getUsersInRoom = function (uid, roomName, start, stop, callback) {

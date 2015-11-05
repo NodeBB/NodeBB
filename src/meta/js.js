@@ -52,7 +52,6 @@ module.exports = function(Meta) {
 				'public/src/client/recent.js',
 				'public/src/client/unread.js',
 				'public/src/client/topic.js',
-				'public/src/client/topic/browsing.js',
 				'public/src/client/topic/events.js',
 				'public/src/client/topic/flag.js',
 				'public/src/client/topic/fork.js',

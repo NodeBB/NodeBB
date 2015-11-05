@@ -8,12 +8,11 @@ define('forum/topic', [
 	'forum/topic/threadTools',
 	'forum/topic/postTools',
 	'forum/topic/events',
-	'forum/topic/browsing',
 	'forum/topic/posts',
 	'navigator',
 	'sort',
 	'components'
-], function(infinitescroll, threadTools, postTools, events, browsing, posts, navigator, sort, components) {
+], function(infinitescroll, threadTools, postTools, events, posts, navigator, sort, components) {
 	var	Topic = {},
 		currentUrl = '';
 

@@ -125,6 +125,7 @@ topicsController.get = function(req, res, callback) {
 			});
 		},
 		function (topicData, next) {
+
 			var breadcrumbs = [
 				{
 					text: topicData.category.name,

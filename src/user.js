@@ -1,12 +1,9 @@
 'use strict';
 
 var	async = require('async'),
-	nconf = require('nconf'),
-	gravatar = require('gravatar'),
 
 	plugins = require('./plugins'),
 	db = require('./database'),
-	meta = require('./meta'),
 	topics = require('./topics'),
 	privileges = require('./privileges'),
 	utils = require('../public/src/utils');
@@ -91,7 +88,7 @@ var	async = require('async'),
 	};
 
 	User.getUsers = function(uids, uid, callback) {
-		var fields = ['uid', 'username', 'userslug', 'picture', 'status', 'banned', 'joindate', 'postcount', 'reputation', 'email:confirmed'];
+		var fields = ['uid', 'username', 'userslug', 'picture', 'status', 'banned', 'joindate', 'postcount', 'reputation', 'email:confirmed', 'lastonline'];
 		plugins.fireHook('filter:users.addFields', {fields: fields}, function(err, data) {
 			if (err) {
 				return callback(err);
@@ -105,9 +102,6 @@ var	async = require('async'),
 				},
 				isAdmin: function(next) {
 					User.isAdministrator(uids, next);
-				},
-				isOnline: function(next) {
-					require('./socket.io').isUsersOnline(uids, next);
 				}
 			}, function(err, results) {
 				if (err) {
@@ -118,7 +112,7 @@ var	async = require('async'),
 					if (!user) {
 						return;
 					}
-					user.status = User.getStatus(user.status, results.isOnline[index]);
+					user.status = User.getStatus(user);
 					user.joindateISO = utils.toISOString(user.joindate);
 					user.administrator = results.isAdmin[index];
 					user.banned = parseInt(user.banned, 10) === 1;
@@ -135,8 +129,19 @@ var	async = require('async'),
 		});
 	};
 
-	User.getStatus = function(status, isOnline) {
-		return isOnline ? (status || 'online') : 'offline';
+	User.getStatus = function(userData) {
+		var isOnline = Date.now() - parseInt(userData.lastonline, 10) < 300000;
+		return isOnline ? (userData.status || 'online') : 'offline';
+	};
+
+	User.isOnline = function(uid, callback) {
+		User.getUserField(uid, 'lastonline', function(err, lastonline) {
+			if (err) {
+				return callback(err);
+			}
+			var isOnline = Date.now() - parseInt(lastonline, 10) < 300000;
+			callback(null, isOnline);
+		});
 	};
 
 	User.exists = function(uid, callback) {
