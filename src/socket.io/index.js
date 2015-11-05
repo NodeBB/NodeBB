@@ -71,14 +71,12 @@ function onConnect(socket) {
 				return;
 			}
 
-			socket.emit('event:connect');
 			if (userData.status !== 'offline') {
 				socket.broadcast.emit('event:user_status_change', {uid: socket.uid, status: userData.status || 'online'});
 			}
 		});
 	} else {
 		rooms.enter(socket, 'online_guests');
-		socket.emit('event:connect');
 	}
 }
 

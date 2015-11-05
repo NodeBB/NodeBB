@@ -26,8 +26,6 @@ app.isConnected = false;
 		setTimeout(socket.connect.bind(socket), parseInt(config.reconnectionDelay, 10) * 10);
 	});
 
-	socket.on('event:connect', onEventConnect);
-
 	socket.on('event:disconnect', onEventDisconnect);
 
 	socket.on('event:banned', onEventBanned);
@@ -37,6 +35,12 @@ app.isConnected = false;
 	socket.on('event:alert', app.alert);
 
 	function onSocketConnect() {
+		if (!reconnecting) {
+			app.showLoginMessage();
+			$(window).trigger('action:connected');
+			app.isConnected = true;
+		}
+
 		if (reconnecting) {
 			var reconnectEl = $('#reconnect');
 
@@ -102,13 +106,6 @@ app.isConnected = false;
 		reconnectEl.addClass('active').removeClass("hide").tooltip({
 			placement: 'bottom'
 		});
-	}
-
-	function onEventConnect() {
-		app.showLoginMessage();
-		app.replaceSelfLinks();
-		$(window).trigger('action:connected');
-		app.isConnected = true;
 	}
 
 	function onEventDisconnect() {
