@@ -137,11 +137,6 @@ SocketCategories.getTopicCount = function(socket, cid, callback) {
 	categories.getCategoryField(cid, 'topic_count', callback);
 };
 
-SocketCategories.getUsersInCategory = function(socket, cid, callback) {
-	var uids = websockets.getUidsInRoom('category_' + cid);
-	user.getUsersFields(uids, ['uid', 'userslug', 'username', 'picture'], callback);
-};
-
 SocketCategories.getCategoriesByPrivilege = function(socket, privilege, callback) {
 	categories.getCategoriesByPrivilege('categories:cid', socket.uid, privilege, callback);
 };

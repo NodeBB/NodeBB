@@ -86,13 +86,6 @@ function onDisconnect(socket, data) {
 		if (socketCount <= 1) {
 			socket.broadcast.emit('event:user_status_change', {uid: socket.uid, status: 'offline'});
 		}
-
-		// see https://github.com/Automattic/socket.io/issues/1814
-		// data.rooms.forEach(function(roomName) {
-		// 	if (roomName.startsWith('topic')) {
-		// 		io.in(roomName).emit('event:user_leave', socket.uid);
-		// 	}
-		// });
 	}
 	rooms.leaveAll(socket, data.rooms);
 }
@@ -264,6 +257,7 @@ Sockets.isUsersOnline = function(uids, callback) {
 };
 
 Sockets.getUsersInRoom = function (uid, roomName, start, stop, callback) {
+	winston.warn('[deprecated] Sockets.getUsersInRoom')
 	callback(null, {
 		users: [],
 		room: roomName,
@@ -271,69 +265,12 @@ Sockets.getUsersInRoom = function (uid, roomName, start, stop, callback) {
 		hidden: 0
 	});
 	return;
-
-	if (!roomName) {
-		return;
-	}
-
-	var	uids = Sockets.getUidsInRoom(roomName);
-	var total = uids.length;
-	if (stop !== -1) {
-		uids = uids.slice(start, stop);
-	}
-
-	if (uid && uids.indexOf(uid.toString()) === -1) {
-		uids = [uid].concat(uids);
-	}
-
-	if (!uids.length) {
-		return callback(null, {users: [], total: 0 , room: roomName});
-	}
-	user.getUsersFields(uids, ['uid', 'username', 'userslug', 'picture', 'status'], function(err, users) {
-		if (err) {
-			return callback(err);
-		}
-
-		users = users.filter(function(user) {
-			return user && user.status !== 'offline';
-		});
-
-		callback(null, {
-			users: users,
-			room: roomName,
-			total: users.length ? total : 0,
-			hidden: Math.max(0, total - uids.length)
-		});
-	});
 };
 
 Sockets.getUidsInRoom = function(roomName, callback) {
+	winston.warn('[deprecated] Sockets.getUidsInRoom')
 	callback = callback || function() {};
-
-	var uids = [];
-
-	var socketids = rooms.clients(roomName);
-	if (!Array.isArray(socketids) || !socketids.length) {
-		callback(null, []);
-		return [];
-	}
-
-	for(var i=0; i<socketids.length; ++i) {
-		var socketRooms = rooms.clientRooms(socketids[i]);
-		if (Array.isArray(socketRooms)) {
-			socketRooms.forEach(function(roomName) {
-				if (roomName.startsWith('uid_')) {
-					var uid = roomName.split('_')[1];
-					if (uids.indexOf(uid) === -1) {
-						uids.push(uid);
-					}
-				}
-			});
-		}
-	}
-
-	callback(null, uids);
-	return uids;
+	callback(null, []);
 };
 
 

@@ -70,16 +70,6 @@ define('forum/topic', [
 
 		$(window).on('scroll', updateTopicTitle);
 
-
-		if (app.user.uid) {
-			socket.emit('topics.enter', tid, function(err, data) {
-				if (err) {
-					return app.alertError(err.message);
-				}
-				browsing.onUpdateUsersInRoom(data);
-			});
-		}
-
 		handleTopicSearch();
 
 		$(window).trigger('action:topic.loaded');
