@@ -221,7 +221,7 @@ middleware.privateUploads = function(req, res, next) {
 };
 
 middleware.busyCheck = function(req, res, next) {
-	if (toobusy()) {
+	if (global.env === 'production' && toobusy()) {
 		res.type('text/html').sendFile(path.join(__dirname, '../../public/503.html'));
 	} else {
 		next();
