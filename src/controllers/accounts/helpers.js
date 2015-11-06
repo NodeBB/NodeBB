@@ -84,7 +84,7 @@ helpers.getUserDataByUserSlug = function(userslug, callerUID, callback) {
 			userData.groups = Array.isArray(results.groups) && results.groups.length ? results.groups[0] : [];
 			userData.disableSignatures = meta.config.disableSignatures !== undefined && parseInt(meta.config.disableSignatures, 10) === 1;
 			userData['email:confirmed'] = !!parseInt(userData['email:confirmed'], 10);
-			userData.profile_links = results.profile_links;
+			userData.profile_links = filterLinks(results.profile_links, self);
 			userData.sso = results.sso.associations;
 			userData.status = user.getStatus(userData);
 			userData.banned = parseInt(userData.banned, 10) === 1;
@@ -142,7 +142,7 @@ helpers.getBaseUser = function(userslug, callerUID, callback) {
 			results.user.status = user.getStatus(results.user);
 			results.user.isSelf = parseInt(callerUID, 10) === parseInt(results.user.uid, 10);
 			results.user.showHidden = results.user.isSelf || results.isAdmin;
-			results.user.profile_links = results.profile_links;
+			results.user.profile_links = filterLinks(results.profile_links, results.user.isSelf);
 
 			results.user['cover:url'] = results.user['cover:url'] || require('../../coverPhoto').getDefaultProfileCover(results.user.uid);
 			results.user['cover:position'] = results.user['cover:position'] || '50% 50%';
@@ -151,5 +151,11 @@ helpers.getBaseUser = function(userslug, callerUID, callback) {
 		}
 	], callback);
 };
+
+function filterLinks(links, self) {
+	return links.filter(function(link) {
+		return link && (link.public || self);
+	});
+}
 
 module.exports = helpers;
