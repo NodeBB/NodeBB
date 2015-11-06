@@ -76,6 +76,7 @@ define('admin/general/navigation', ['translator', 'iconSelect'], function(transl
 		templates.parse('admin/general/navigation', 'enabled', {enabled: [data]}, function(li) {
 			li = $(translator.unescape(li));
 			$('#enabled').append(li);
+			componentHandler.upgradeDom()
 		});
 	}
 
