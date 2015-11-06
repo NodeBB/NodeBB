@@ -118,7 +118,7 @@ Controllers.register = function(req, res, next) {
 			}
 		},
 		function(next) {
-			plugins.fireHook('filter:parse.post', {postData: {content: meta.config.termsOfUse}}, next);
+			plugins.fireHook('filter:parse.post', {postData: {content: meta.config.termsOfUse || ''}}, next);
 		},
 		function(tos, next) {
 			var loginStrategies = require('../routes/authentication').getLoginStrategies();
