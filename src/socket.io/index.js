@@ -241,17 +241,17 @@ Sockets.reqFromSocket = function(socket) {
 };
 
 Sockets.isUserOnline = function(uid) {
-	winston.warn('[deprecated] Sockets.isUserOnline')
+	winston.warn('[deprecated] Sockets.isUserOnline');
 	return false;
 };
 
 Sockets.isUsersOnline = function(uids, callback) {
-	winston.warn('[deprecated] Sockets.isUsersOnline')
+	winston.warn('[deprecated] Sockets.isUsersOnline');
 	callback(null, uids.map(function() { return false; }));
 };
 
 Sockets.getUsersInRoom = function (uid, roomName, start, stop, callback) {
-	winston.warn('[deprecated] Sockets.getUsersInRoom')
+	winston.warn('[deprecated] Sockets.getUsersInRoom');
 	callback(null, {
 		users: [],
 		room: roomName,
@@ -262,7 +262,7 @@ Sockets.getUsersInRoom = function (uid, roomName, start, stop, callback) {
 };
 
 Sockets.getUidsInRoom = function(roomName, callback) {
-	winston.warn('[deprecated] Sockets.getUidsInRoom')
+	winston.warn('[deprecated] Sockets.getUidsInRoom');
 	callback = callback || function() {};
 	callback(null, []);
 };
