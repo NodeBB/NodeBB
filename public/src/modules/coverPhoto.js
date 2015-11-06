@@ -10,7 +10,7 @@ define('coverPhoto', [
 		saveFn: null
 	};
 
-	coverPhoto.init = function(coverEl, saveFn, uploadFn) {
+	coverPhoto.init = function(coverEl, saveFn, uploadFn, removeFn) {
 		coverPhoto.coverEl = coverEl;
 		coverPhoto.saveFn = saveFn;
 
@@ -23,7 +23,7 @@ define('coverPhoto', [
 					units: 'percent'
 				});
 		});
-		coverEl.find('.remove').on('click', coverPhoto.remove);
+		coverEl.find('.remove').on('click', removeFn);
 
 		coverEl
 			.on('dragover', coverPhoto.onDragOver)
@@ -77,18 +77,6 @@ define('coverPhoto', [
 			}
 
 			coverPhoto.coverEl.removeClass('saving');
-		});
-	};
-
-	coverPhoto.remove = function() {
-		socket.emit('user.removeCover', {
-			uid: ajaxify.data.uid
-		}, function(err) {
-			if (!err) {
-				ajaxify.refresh();
-			} else {
-				app.alertError(err.message);
-			}
 		});
 	};
 

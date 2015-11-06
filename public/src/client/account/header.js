@@ -68,7 +68,8 @@ define('forum/account/header', [
 				uploader.open(RELATIVE_PATH + '/api/user/' + ajaxify.data.userslug + '/uploadcover', { uid: yourid }, 0, function(imageUrlOnServer) {
 					components.get('account/cover').css('background-image', 'url(' + imageUrlOnServer + ')');
 				});
-			}
+			},
+			removeCover
 		);
 	}
 
@@ -129,6 +130,18 @@ define('forum/account/header', [
 					history.back();
 				});
 			});
+		});
+	}
+
+	function removeCover() {
+		socket.emit('user.removeCover', {
+			uid: ajaxify.data.uid
+		}, function(err) {
+			if (!err) {
+				ajaxify.refresh();
+			} else {
+				app.alertError(err.message);
+			}
 		});
 	}
 
