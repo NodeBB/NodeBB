@@ -100,12 +100,16 @@ module.exports = function(SocketUser) {
 	};
 
 	SocketUser.getProfilePictures = function(socket, data, callback) {
+		if (!data || !data.uid) {
+			return callback(new Error('[[error:invalid-data]]'));
+		}
+
 		async.parallel({
 			list: async.apply(plugins.fireHook, 'filter:user.listPictures', {
-				uid: socket.uid,
+				uid: data.uid,
 				pictures: []
 			}),
-			uploaded: async.apply(user.getUserField, socket.uid, 'uploadedpicture')
+			uploaded: async.apply(user.getUserField, data.uid, 'uploadedpicture')
 		}, function(err, data) {
 			if (err) {
 				return callback(err);
