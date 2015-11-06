@@ -33,7 +33,6 @@
     "no-user": "Gebruiker bestaat niet",
     "no-teaser": "Dit voorproefje bestaat niet",
     "no-privileges": "Onvoldoende rechten om deze actie uit te voeren",
-    "no-emailers-configured": "Er zijn geen e-mailplugins geladen, een testbericht kan dus niet verzonden worden",
     "category-disabled": "Categorie uitgeschakeld",
     "topic-locked": "Onderwerp gesloten",
     "post-edit-duration-expired": "Het is slechts toegestaan om binnen %1 seconde(n) na plaatsen van het bericht, deze te bewerken.",

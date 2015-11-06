@@ -33,7 +33,6 @@
     "no-user": "ยังไม่มีผู้ใช้งานนี้",
     "no-teaser": "Teaser does not exist",
     "no-privileges": "คุณมีสิทธิ์ไม่เพียงพอที่จะทำรายการนี้",
-    "no-emailers-configured": "No email plugins were loaded, so a test email could not be sent",
     "category-disabled": "Category นี้ถูกปิดการใช้งานแล้ว",
     "topic-locked": "Topic Locked",
     "post-edit-duration-expired": "You are only allowed to edit posts for %1 second(s) after posting",

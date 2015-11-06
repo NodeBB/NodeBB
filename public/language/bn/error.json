@@ -33,7 +33,6 @@
     "no-user": "এই নামে কোন সদস্য নেই",
     "no-teaser": "টিজারটি খুজে পাওয়া যায় নি",
     "no-privileges": "এই কাজটির জন্য আপনার পর্যাপ্ত অধিকার নেই",
-    "no-emailers-configured": "কোন ইমেল প্লাগইন লোড করা নেই, কাজেই টেস্ট মেইল পাঠানো সম্ভব হচ্ছে না",
     "category-disabled": "বিভাগটি নিষ্ক্রিয়",
     "topic-locked": "টপিক বন্ধ",
     "post-edit-duration-expired": "You are only allowed to edit posts for %1 second(s) after posting",

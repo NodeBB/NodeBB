@@ -33,7 +33,6 @@
     "no-user": "Tokio vartotojo nėra",
     "no-teaser": "Anonsas neegzistuoja",
     "no-privileges": "Šiam veiksmui jūs neturite pakankamų privilegijų.",
-    "no-emailers-configured": "Jokie el.pašto priedai nebuvo pakrauti, bandomasis laiškas nebus išsiųstas",
     "category-disabled": "Kategorija išjungta",
     "topic-locked": "Tema užrakinta",
     "post-edit-duration-expired": "Jums galima redaguoti pranešims tik %1 sekunde(s) po parašymo",

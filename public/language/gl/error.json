@@ -33,7 +33,6 @@
     "no-user": "O usuario non existe",
     "no-teaser": "A vista previa do tema non existe",
     "no-privileges": "Non tes privilexios dabondo para ver este tema.",
-    "no-emailers-configured": "Non cargaron os plugins do correo polo que non se puido enviar o correo de proba",
     "category-disabled": "Categoría deshabilitada",
     "topic-locked": "Tema Pechado",
     "post-edit-duration-expired": "Só podes editar as publicacións %1 segundo(s) despois de envialas. ",

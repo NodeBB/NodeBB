@@ -33,7 +33,6 @@
     "no-user": "Uporabnik ne obstaja",
     "no-teaser": "Predogled ne obstaja",
     "no-privileges": "Nimate dovolj pravic.",
-    "no-emailers-configured": "E-mail vtičniki niso bili naloženi, zato ne moremo poslati testnega e-maila.",
     "category-disabled": "Kategorija onemogočena",
     "topic-locked": "Tema zaklenjena",
     "post-edit-duration-expired": "Urejanje objave je dovoljeno le %1 sekund po prvi objavi.",

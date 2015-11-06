@@ -33,7 +33,6 @@
     "no-user": "Kullanıcı Yok",
     "no-teaser": "İleti Yok",
     "no-privileges": "Bu işlemi yapmak için yeterli yetkiniz yok.",
-    "no-emailers-configured": "E-posta eklentisi kurulu değil bu yüzden test e-postası gönderilemedi",
     "category-disabled": "Kategori aktif değil",
     "topic-locked": "Başlık Kilitli",
     "post-edit-duration-expired": "Gönderilen iletiler %1 saniyeden sonra değiştirilemez",

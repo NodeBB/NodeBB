@@ -33,7 +33,6 @@
     "no-user": "Pengguna tidak wujud",
     "no-teaser": "Pengusik tidak wujud",
     "no-privileges": "Anda tidak mempunyai cukup keistimewaan untuk perbuatan ini.",
-    "no-emailers-configured": "Tiada plug-in emel dimuatkan, jadi emel percubaan tidak dihantar",
     "category-disabled": "Kategori dilumpuhkan",
     "topic-locked": "Topik Dikunci",
     "post-edit-duration-expired": "Anda hanya dibenarkan menyunting kiriman selepas %1 saat() berlalu",

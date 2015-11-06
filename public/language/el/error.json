@@ -33,7 +33,6 @@
     "no-user": "User does not exist",
     "no-teaser": "Teaser does not exist",
     "no-privileges": "You do not have enough privileges for this action.",
-    "no-emailers-configured": "Δεν έχουν φορτωθεί email plugins, οποτε το δοκιμαστικό email δεν μπορεί να σταλθεί",
     "category-disabled": "Η κατηγορία έχει απενεργοποιηθεί",
     "topic-locked": "Το θέμα έχει κλειδωθεί",
     "post-edit-duration-expired": "You are only allowed to edit posts for %1 second(s) after posting",

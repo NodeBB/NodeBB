@@ -37,5 +37,5 @@
     "account/watched": "Temas vistos por %1",
     "maintenance.text": "%1 está baixo mantemento. Por favor, volve máis tarde.",
     "maintenance.messageIntro": "A máis, o administrador deixou esta mensaxe: ",
-    "throttled.text": "%1 is currently unavailable due to excessive load. Please come back another time."
+    "throttled.text": "&1 non está dispoñible debido a unha carga excesiva. Por favor, volva noutro momento"
 }

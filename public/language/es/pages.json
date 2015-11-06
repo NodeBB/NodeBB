@@ -36,6 +36,6 @@
     "account/settings": "Preferencias",
     "account/watched": "Temas seguidos por %1",
     "maintenance.text": "%1 está en mantenimiento actualmente. Por favor vuelva en otro momento.",
-    "maintenance.messageIntro": "Adicionalmente, la administración ha dejado este mensaje:",
-    "throttled.text": "%1 is currently unavailable due to excessive load. Please come back another time."
+    "maintenance.messageIntro": "Además, la administración ha dejado este mensaje:",
+    "throttled.text": "%1 no está disponible debido a una carga excesiva. Por favor vuelva en otro momento"
 }

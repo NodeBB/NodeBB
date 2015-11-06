@@ -37,5 +37,5 @@
     "account/watched": "Sujets surveillés par %1",
     "maintenance.text": "%1 est en maintenance. Veuillez revenir un peu plus tard.",
     "maintenance.messageIntro": "De plus, l'administrateur a laissé ce message:",
-    "throttled.text": "%1 is currently unavailable due to excessive load. Please come back another time."
+    "throttled.text": "%1 est actuellement indisponible en raison d'une charge excessive. Merci de réessayer plus tard."
 }

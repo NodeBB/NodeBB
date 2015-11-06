@@ -33,7 +33,6 @@
     "no-user": "El usuario no existe",
     "no-teaser": "El resumen no existe",
     "no-privileges": "No tienes suficientes privilegios para realizar esta acción.",
-    "no-emailers-configured": "No se ha cargado ningún plugin de email, así que no se pudo enviar el email de prueba.",
     "category-disabled": "Categoría deshabilitada",
     "topic-locked": "Tema bloqueado",
     "post-edit-duration-expired": "Sólo puedes editar mensajes durante %1 segundo(s) después de haberlo escrito",

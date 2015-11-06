@@ -33,7 +33,6 @@
     "no-user": "Uživatel neexistuje",
     "no-teaser": "Teaser does not exist",
     "no-privileges": "Na tuto akci nemáte dostatečná práva",
-    "no-emailers-configured": "Protože není zaveden žádný emailový plugin, není možné odeslat testovací email.",
     "category-disabled": "Kategorie zakázána",
     "topic-locked": "Téma uzamčeno",
     "post-edit-duration-expired": "You are only allowed to edit posts for %1 second(s) after posting",

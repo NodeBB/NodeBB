@@ -33,7 +33,6 @@
     "no-user": "Nem létező felhasználó",
     "no-teaser": "Teaser does not exist",
     "no-privileges": "Nincs elég jogod ehhez a művelethez.",
-    "no-emailers-configured": "Nincs levelező beállítva, ezért a teszt e-mail nem került kiküldésre.",
     "category-disabled": "Kategória kikapcsolva",
     "topic-locked": "Téma lezárva",
     "post-edit-duration-expired": "You are only allowed to edit posts for %1 second(s) after posting",

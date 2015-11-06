@@ -33,7 +33,6 @@
     "no-user": "Brugeren eksisterer ikke",
     "no-teaser": "Teaser eksisterer ikke",
     "no-privileges": "Du har ikke nok rettigheder til at udføre denne handling",
-    "no-emailers-configured": "Ingen email plugin er blevet indlæst, så en test email kunne ikke sendes",
     "category-disabled": "Kategorien er deaktiveret",
     "topic-locked": "Tråden er låst",
     "post-edit-duration-expired": "Du kan kun redigere indlæg i %1 sekund(er) efter indlæg",

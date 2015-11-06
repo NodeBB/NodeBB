@@ -33,7 +33,6 @@
     "no-user": "User does not exist",
     "no-teaser": "Teaser does not exist",
     "no-privileges": "You do not have enough privileges for this action.",
-    "no-emailers-configured": "Nici un plugin pentru email nu a fost încărcat, așa că un email de test nu a fost trimis.",
     "category-disabled": "Categorie dezactivată",
     "topic-locked": "Subiect Închis",
     "post-edit-duration-expired": "You are only allowed to edit posts for %1 second(s) after posting",

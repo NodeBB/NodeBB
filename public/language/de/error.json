@@ -33,7 +33,6 @@
     "no-user": "Der Benutzer existiert nicht",
     "no-teaser": "Zusammenfassung existiert nicht",
     "no-privileges": "Du verfügst nicht über ausreichende Berechtigungen, um die Aktion durchzuführen.",
-    "no-emailers-configured": "Es wurde keine E-Mail-Plugins geladen, weshalb eine Test-E-Mail nicht gesendet werden konnte.",
     "category-disabled": "Kategorie ist deaktiviert",
     "topic-locked": "Thema ist gesperrt",
     "post-edit-duration-expired": "Entschuldigung, Sie dürfen Beiträge nur %1 Sekunde(n) nach dem veröffentlichen editieren.",

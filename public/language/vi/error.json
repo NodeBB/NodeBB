@@ -33,7 +33,6 @@
     "no-user": "Tài khoản không tồn tại",
     "no-teaser": "Trích lục không tồn tại",
     "no-privileges": "Bạn không đủ quyền để thực thi hành động này",
-    "no-emailers-configured": "Không có trình cắm email nào được tải, vì vậy email kiểm tra không thể gửi được",
     "category-disabled": "Danh mục bị khóa",
     "topic-locked": "Chủ đề bị khóa",
     "post-edit-duration-expired": "You are only allowed to edit posts for %1 second(s) after posting",

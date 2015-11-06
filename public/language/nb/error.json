@@ -33,7 +33,6 @@
     "no-user": "Bruker eksisterer ikke",
     "no-teaser": "Teaseren eksisterer ikke",
     "no-privileges": "Du har ikke nok rettigheter til å utføre denne handlingen.",
-    "no-emailers-configured": "Ingen e-post-tillegg ble lastet, så en test e-post kunne ikke sendes",
     "category-disabled": "Kategori deaktivert",
     "topic-locked": "Emne låst",
     "post-edit-duration-expired": "Du har bare lov til å redigere innlegg i %1 sekund(er) etter at det er sendt",

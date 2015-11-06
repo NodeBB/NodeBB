@@ -33,7 +33,6 @@
     "no-user": "Pengguna tidak ditemukan",
     "no-teaser": "Teaser tidak ditemukan",
     "no-privileges": "Kamu tidak punya cukup izin untuk melakukan ini",
-    "no-emailers-configured": "Tidak ada plugin email, jadi test email tidak dapat dikirim",
     "category-disabled": "Kategori ditiadakan",
     "topic-locked": "Topik dikunci",
     "post-edit-duration-expired": "You are only allowed to edit posts for %1 second(s) after posting",

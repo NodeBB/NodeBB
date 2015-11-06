@@ -33,7 +33,6 @@
     "no-user": "Kasutajat ei eksisteeri",
     "no-teaser": "Eelvaadet ei eksisteeri",
     "no-privileges": "Sul pole piisavalt õigusi.",
-    "no-emailers-configured": "Emaili rakendust ei ole laetud, seega test emaili ei ole võimalik saata",
     "category-disabled": "Kategooria keelatud",
     "topic-locked": "Teema lukustatud",
     "post-edit-duration-expired": "Te peate ootama %1 sekund(it), enne kui oma postitust muudate.",

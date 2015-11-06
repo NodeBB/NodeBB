@@ -33,7 +33,6 @@
     "no-user": "משתמש אינו קיים",
     "no-teaser": "תקציר אינו קיים",
     "no-privileges": "ההרשאות שלך אינן מספיקות לביצוע פעולה זו",
-    "no-emailers-configured": "לא נמצאו פלאגינים למייל, לכן אין אפשרות לשלוח מייל ניסיון.",
     "category-disabled": "קטגוריה לא פעילה",
     "topic-locked": "נושא נעול",
     "post-edit-duration-expired": "You are only allowed to edit posts for %1 second(s) after posting",

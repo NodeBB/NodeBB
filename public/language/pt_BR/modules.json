@@ -23,7 +23,7 @@
     "composer.discard": "Tem certeza que deseja descartar essa postagem?",
     "composer.submit_and_lock": "Enviar e Trancar",
     "composer.toggle_dropdown": "Alternar Dropdown",
-    "composer.uploading": "Uploading %1",
+    "composer.uploading": "Enviando %1",
     "bootbox.ok": "OK",
     "bootbox.cancel": "Cancelar",
     "bootbox.confirm": "Confirmar"

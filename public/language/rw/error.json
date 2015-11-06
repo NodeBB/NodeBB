@@ -33,7 +33,6 @@
     "no-user": "Umuntu utabaho",
     "no-teaser": "Inshamake itabaho",
     "no-privileges": "Ntabwo uragira uburenganzira buhagije ngo wemererwe iki gikorwa",
-    "no-emailers-configured": "Nta plugin yifashishwa mu kohereza email yari yashyirwamo. Email y'igerageza ntabwo yakunda. ",
     "category-disabled": "Icyiciro cyabujijwe",
     "topic-locked": "Ikiganiro Cyafungiranywe",
     "post-edit-duration-expired": "Wemerewe gusa kugira icyo uhindura ku byo washyizeho nyuma y'amasegonda (isegonda) %1 nyuma yo kubishyiraho",

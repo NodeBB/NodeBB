@@ -33,7 +33,6 @@
     "no-user": "L'User non esiste",
     "no-teaser": "Teaser non esiste",
     "no-privileges": "Tu non hai i privilegi giusti per questa azione",
-    "no-emailers-configured": "Nessun plugin per le email è caricato, quindi la mail di test non può essere inviata",
     "category-disabled": "Categoria disabilitata",
     "topic-locked": "Discussione Bloccata",
     "post-edit-duration-expired": "Ti è consentito modificare un post per %1 secondi dopo averlo inviato",

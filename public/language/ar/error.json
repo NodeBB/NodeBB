@@ -33,7 +33,6 @@
     "no-user": "اسم مستخدم غير موجود",
     "no-teaser": "مقتطف غير موجود",
     "no-privileges": "لاتملك الصلاحيات اللازمة للقيام بهذه العملية",
-    "no-emailers-configured": "لا يمكن إرسال رسالة إلكترونية تجريبية لعدم وجود قوالب خاصة بالرسائل الإلكترونية،",
     "category-disabled": "قائمة معطلة",
     "topic-locked": "الموضوع مقفول",
     "post-edit-duration-expired": "You are only allowed to edit posts for %1 second(s) after posting",

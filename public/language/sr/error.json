@@ -33,7 +33,6 @@
     "no-user": "Корисник не постоји",
     "no-teaser": "Исечак не постоји",
     "no-privileges": "Немате довољне привилегије за обављање ове радње.",
-    "no-emailers-configured": "No email plugins were loaded, so a test email could not be sent",
     "category-disabled": "Category disabled",
     "topic-locked": "Тема је закључана",
     "post-edit-duration-expired": "You are only allowed to edit posts for %1 second(s) after posting",

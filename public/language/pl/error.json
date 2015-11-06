@@ -33,7 +33,6 @@
     "no-user": "Użytkownik nie istnieje",
     "no-teaser": "Zwiastun nie istnieje",
     "no-privileges": "Nie masz przywileju wykonywania tej akcji",
-    "no-emailers-configured": "Nie zainstalowano żadnego dodatku obsługującego e-mail, więc nie można wysłać testowej wiadomości.",
     "category-disabled": "Kategoria wyłączona.",
     "topic-locked": "Temat Zablokowany",
     "post-edit-duration-expired": "Możesz edytować posty tylko przez %1 sekund(y) po ich napisaniu",

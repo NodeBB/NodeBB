@@ -33,7 +33,6 @@
     "no-user": "존재하지 않는 사용자입니다.",
     "no-teaser": "존재하지 않는 미리보기입니다.",
     "no-privileges": "이 작업을 할 수 있는 권한이 없습니다.",
-    "no-emailers-configured": "이메일 추가기능이 로드되지 않았으므로 테스트 메일을 발송할 수 없습니다.",
     "category-disabled": "비활성화된 카테고리입니다.",
     "topic-locked": "잠긴 주제입니다.",
     "post-edit-duration-expired": "You are only allowed to edit posts for %1 second(s) after posting",

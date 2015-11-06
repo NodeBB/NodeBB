@@ -25,7 +25,7 @@
     "tools": "Ferramentas",
     "flag": "Sinalizar",
     "locked": "Trancado",
-    "bookmark_instructions": "Click here to return to the last unread post in this thread.",
+    "bookmark_instructions": "Clique aqui para retornar ao último post não lido nesta thread.",
     "flag_title": "Sinalizar este post para moderação",
     "flag_success": "Este post foi sinalizado para ser moderado.",
     "deleted_message": "Este tópico foi deletado. Apenas usuários com privilégios de moderação de tópico podem vê-lo.",
@@ -96,8 +96,8 @@
     "newest_to_oldest": "Mais Recente para Mais Antigo",
     "most_votes": "Mais votados",
     "most_posts": "Mais posts",
-    "stale_topic_warning": "The topic you are replying to is quite old. Would you like to create a new topic instead, and reference this one in your reply?",
+    "stale_topic_warning": "O tópico que você está tentando responder é muito velho. Gostaria de criar um novo tópico ao invés disso, e referenciá-lo este em sua resposta?",
     "spam": "Spam",
-    "offensive": "Offensive",
-    "custom-flag-reason": "Enter a flagging reason"
+    "offensive": "Ofensivo",
+    "custom-flag-reason": "Informe um motivo para a sinalização"
 }

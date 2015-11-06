@@ -33,7 +33,6 @@
     "no-user": "Användaren finns inte",
     "no-teaser": "Förhandsvisningen finns inte",
     "no-privileges": "Du har inte tillräckliga rättigheter för den här åtgärden.",
-    "no-emailers-configured": "Inga tillägg för epostadress har laddats, så något textmeddelande kunde inte skickas",
     "category-disabled": "Kategorin inaktiverad",
     "topic-locked": "Ämnet låst",
     "post-edit-duration-expired": "Du kan endast ändra inlägg inom %1 sekund(er) efter att ha skickat det",

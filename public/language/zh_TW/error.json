@@ -33,7 +33,6 @@
     "no-user": "使用者並不存在",
     "no-teaser": "Teaser 並不存在",
     "no-privileges": "您似乎沒有執行這個行為的權限！",
-    "no-emailers-configured": "未載入電子郵件套件，所以無法寄送測試郵件",
     "category-disabled": "該類別已被關閉",
     "topic-locked": "該主題已被鎖定",
     "post-edit-duration-expired": "You are only allowed to edit posts for %1 second(s) after posting",
