@@ -21,7 +21,7 @@ var db = require('./database'),
 	schemaDate, thisSchemaDate,
 
 	// IMPORTANT: REMEMBER TO UPDATE VALUE OF latestSchema
-	latestSchema = Date.UTC(2015, 8, 30);
+	latestSchema = Date.UTC(2015, 10, 6);
 
 Upgrade.check = function(callback) {
 	db.get('schemaDate', function(err, value) {
@@ -519,8 +519,52 @@ Upgrade.upgrade = function(callback) {
 				winston.info('[2015/09/30] Converting default Gravatar image to default User Avatar skipped');
 				next();
 			}
-		}
+		},
+		function(next) {
+			thisSchemaDate = Date.UTC(2015, 10, 6);
+			if (schemaDate < thisSchemaDate) {
+				updatesMade = true;
+				winston.info('[2015/11/06] Removing gravatar');
 
+				db.getSortedSetRange('users:joindate', 0, -1, function(err, uids) {
+					if (err) {
+						return next(err);
+					}
+
+					async.eachLimit(uids, 500, function(uid, next) {
+						db.getObjectFields('user:' + uid, ['picture', 'gravatarpicture'], function(err, userData) {
+							if (err) {
+								return next(err);
+							}
+							console.log('deleting gravatar for uid ', uid);
+							if (!userData.picture || !userData.gravatarpicture) {
+								return next();
+							}
+
+							if (userData.gravatarpicture === userData.picture) {
+								async.series([
+									async.apply(db.setObjectField, 'user:' + uid, 'picture', ''),
+									async.apply(db.deleteObjectField, 'user:' + uid, 'gravatarpicture')
+								], next);
+							} else {
+								db.deleteObjectField('user:' + uid, 'gravatarpicture', next);
+							}
+						});
+					}, function(err) {
+						if (err) {
+							return next(err);
+						}
+
+						winston.info('[2015/11/06] Gravatar pictures removed!');
+						Upgrade.update(thisSchemaDate, next);
+					});
+				});
+
+			} else {
+				winston.info('[2015/11/06] Gravatar removal skipped');
+				next();
+			}
+		}
 
 		// Add new schema updates here
 		// IMPORTANT: REMEMBER TO UPDATE VALUE OF latestSchema IN LINE 24!!!
