@@ -74,7 +74,10 @@ define('forum/account/edit', ['forum/account/header', 'uploader', 'translator'],
 	function handleImageChange() {
 
 		$('#changePictureBtn').on('click', function() {
-			socket.emit('user.getProfilePictures', function(err, pictures) {
+			socket.emit('user.getProfilePictures', {uid: ajaxify.data.uid}, function(err, pictures) {
+				if (err) {
+					return app.alertError(err.message);
+				}
 				templates.parse('partials/modals/change_picture_modal', {
 					pictures: pictures,
 					uploaded: !!ajaxify.data.uploadedpicture
@@ -115,13 +118,6 @@ define('forum/account/edit', ['forum/account/header', 'uploader', 'translator'],
 									}
 								})
 							}
-							// if (uploadedPicture) {
-							// 	modal.find('#user-uploaded-picture').attr('src', uploadedPicture);
-							// }
-
-							// modal.find('#uploaded-box').toggle(!!uploadedPicture);
-							// modal.find('#default-box .fa-check').toggle(currentPicture !== uploadedPicture);
-							// modal.find('#uploaded-box .fa-check').toggle(currentPicture === uploadedPicture);
 						}
 
 						function selectImageType() {
@@ -141,40 +137,6 @@ define('forum/account/edit', ['forum/account/header', 'uploader', 'translator'],
 								ajaxify.refresh();
 							});
 						}
-
-						// var modal = $(html);
-						// modal.on('hidden.bs.modal', function() {
-						// 	modal.remove();
-						// });
-						// selectedImageType = '';
-						// updateImages();
-
-						// modal.modal('show');
-
-						// modal.find('#default-box').on('click', function() {
-						// 	selectImageType('default');
-						// });
-
-						// modal.find('#uploaded-box').on('click', function() {
-						// 	selectImageType('uploaded');
-						// });
-
-						// modal.find('#savePictureChangesBtn').on('click', function() {
-
-						// 	modal.modal('hide');
-
-						// 	if (!selectedImageType) {
-						// 		return;
-						// 	}
-						// 	changeUserPicture(selectedImageType, function(err) {
-						// 		if (err) {
-						// 			return app.alertError(err.message);
-						// 		}
-
-						// 		updateHeader(selectedImageType === 'uploaded' ? uploadedPicture : '');
-						// 		ajaxify.refresh();
-						// 	});
-						// });
 					});
 				});
 			});
