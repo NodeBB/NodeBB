@@ -42,14 +42,14 @@
 
 							<div class="form-group">
 								<label>Tooltip:</label>
-								<input class="form-control" type="text" name="title" value="{enabled.title}" />
+								<input class="form-control unescape" type="text" name="title" value="{enabled.title}" />
 							</div>
 						</div>
 
 						<div class="col-sm-6">
 							<div class="form-group">
 								<label>Text:</label>
-								<input class="form-control" type="text" name="text" value="{enabled.text}" />
+								<input class="form-control unescape" type="text" name="text" value="{enabled.text}" />
 							</div>
 
 							<div class="form-group">

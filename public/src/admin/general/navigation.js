@@ -1,5 +1,5 @@
 "use strict";
-/* global define, app, ajaxify, socket, templates, bootbox */
+/* global define, app, ajaxify, socket, templates */
 
 define('admin/general/navigation', ['translator', 'iconSelect'], function(translator, iconSelect) {
 	var navigation = {},
@@ -8,9 +8,9 @@ define('admin/general/navigation', ['translator', 'iconSelect'], function(transl
 	navigation.init = function() {
 		available = ajaxify.data.available;
 
-		$('#enabled').html(translator.unescape($('#enabled').html()));
-
-		$('#active-navigation').html(translator.unescape($('#active-navigation').html()));
+		$('#enabled .unescape').each(function() {
+			$(this).val(translator.unescape($(this).val()));
+		});
 
 		translator.translate(translator.unescape($('#available').html()), function(html) {
 			$('#available').html(html)
