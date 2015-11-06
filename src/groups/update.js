@@ -181,6 +181,10 @@ module.exports = function(Groups) {
 		});
 	};
 
+	Groups.removeCover = function(data, callback) {
+		db.deleteObjectField('group:' + data.groupName, 'cover:url', callback);
+	};
+
 	function updatePrivacy(groupName, newValue, callback) {
 		if (!newValue) {
 			return callback();

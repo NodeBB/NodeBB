@@ -33,7 +33,8 @@ define('forum/groups/details', [
 					uploader.open(RELATIVE_PATH + '/api/groups/uploadpicture', { groupName: groupName }, 0, function(imageUrlOnServer) {
 						components.get('groups/cover').css('background-image', 'url(' + imageUrlOnServer + ')');
 					});
-				}
+				},
+				removeCover
 			);
 		}
 
@@ -239,6 +240,18 @@ define('forum/groups/details', [
 				});
 			});
 		}
+	}
+
+	function removeCover() {
+		socket.emit('groups.cover.remove', {
+			groupName: ajaxify.data.group.name
+		}, function(err) {
+			if (!err) {
+				ajaxify.refresh();
+			} else {
+				app.alertError(err.message);
+			}
+		});
 	}
 
 	return Details;

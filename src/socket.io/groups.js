@@ -242,4 +242,18 @@ SocketGroups.cover.update = function(socket, data, callback) {
 	});
 };
 
+SocketGroups.cover.remove = function(socket, data, callback) {
+	if (!socket.uid) {
+		return callback(new Error('[[error:no-privileges]]'));
+	}
+
+	groups.ownership.isOwner(socket.uid, data.groupName, function(err, isOwner) {
+		if (!isOwner) {
+			return callback(new Error('[[error:no-privileges]]'));
+		}
+
+		groups.removeCover(data, callback);
+	});
+}
+
 module.exports = SocketGroups;
