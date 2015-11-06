@@ -41,7 +41,6 @@
 	"no-user": "User does not exist",
 	"no-teaser": "Teaser does not exist",
 	"no-privileges": "You do not have enough privileges for this action.",
-	"no-emailers-configured": "No email plugins were loaded, so a test email could not be sent",
 
 	"category-disabled": "Category disabled",
 

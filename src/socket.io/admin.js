@@ -199,14 +199,10 @@ SocketAdmin.settings.clearSitemapCache = function(socket, data, callback) {
 };
 
 SocketAdmin.email.test = function(socket, data, callback) {
-	if (plugins.hasListeners('filter:email.send')) {
-		emailer.send(data.template, socket.uid, {
-			subject: '[NodeBB] Test Email',
-			site_title: meta.config.title || 'NodeBB'
-		}, callback);
-	} else {
-		callback(new Error('[[error:no-emailers-configured]]'));
-	}
+	emailer.send(data.template, socket.uid, {
+		subject: '[NodeBB] Test Email',
+		site_title: meta.config.title || 'NodeBB'
+	}, callback);
 };
 
 SocketAdmin.analytics.get = function(socket, data, callback) {

@@ -20,10 +20,6 @@ var	async = require('async'),
 			return winston.verbose('[user/jobs] Did not send digests (' + interval + ') because subscription system is disabled.');
 		}
 
-		if (!plugins.hasListeners('filter:email.send')) {
-			return winston.error('[user/jobs] Did not send digests (' + interval + ') because no active email plugin was found.');
-		}
-
 		if (!interval) {
 			// interval is one of: day, week, month, or year
 			interval = 'day';

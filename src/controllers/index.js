@@ -85,13 +85,10 @@ Controllers.reset = function(req, res, next) {
 Controllers.login = function(req, res, next) {
 	var data = {},
 		loginStrategies = require('../routes/authentication').getLoginStrategies(),
-		emailersPresent = plugins.hasListeners('filter:email.send');
-
-	var registrationType = meta.config.registrationType || 'normal';
+		registrationType = meta.config.registrationType || 'normal';
 
 	data.alternate_logins = loginStrategies.length > 0;
 	data.authentication = loginStrategies;
-	data.showResetLink = emailersPresent;
 	data.allowLocalLogin = parseInt(meta.config.allowLocalLogin, 10) === 1 || parseInt(req.query.local, 10) === 1;
 	data.allowRegistration = registrationType === 'normal' || registrationType === 'admin-approval';
 	data.allowLoginWith = '[[login:' + (meta.config.allowLoginWith || 'username-email') + ']]';

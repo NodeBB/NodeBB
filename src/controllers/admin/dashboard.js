@@ -23,13 +23,6 @@ dashboardController.get = function(req, res, next) {
 					notDoneText:'Reload required'
 				},
 				{
-					done: plugins.hasListeners('filter:email.send'),
-					doneText: 'Emailer Installed',
-					notDoneText:'Emailer not installed',
-					tooltip:'Install an emailer plugin from the plugin page in order to activate registration emails and email digests',
-					link:'/admin/extend/plugins'
-				},
-				{
 					done: plugins.hasListeners('filter:search.query'),
 					doneText: 'Search Plugin Installed',
 					notDoneText:'Search Plugin not installed',
