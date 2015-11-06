@@ -113,7 +113,7 @@ define('forum/topic/postTools', ['share', 'navigator', 'components', 'translator
 			onReplyClicked($(this), tid, topicName);
 		});
 
-		components.get('topic/reply').on('click', function() {
+		$('.topic').on('click', '[component="topic/reply"]', function() {
 			onReplyClicked($(this), tid, topicName);
 		});
 
