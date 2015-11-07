@@ -536,7 +536,7 @@ Upgrade.upgrade = function(callback) {
 							if (err) {
 								return next(err);
 							}
-							
+
 							if (!userData.picture || !userData.gravatarpicture) {
 								return next();
 							}
@@ -548,7 +548,7 @@ Upgrade.upgrade = function(callback) {
 									},
 									function (next) {
 										db.deleteObjectField('user:' + uid, 'gravatarpicture', next);	
-									}									
+									}
 								], next);
 							} else {
 								db.deleteObjectField('user:' + uid, 'gravatarpicture', next);

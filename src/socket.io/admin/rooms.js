@@ -79,8 +79,8 @@ SocketRooms.getAll = function(socket, data, callback) {
 		totals.topics = {};
 		topTenTopics.forEach(function(topic, index) {
 			totals.topics[topic.tid] = {
-			 	value: topic.count || 0,
-			 	title: validator.escape(titles[index].title)
+				value: topic.count || 0,
+				title: validator.escape(titles[index].title)
 			};
 		});
 
