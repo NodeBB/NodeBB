@@ -131,6 +131,10 @@ settingsController.get = function(req, res, callback) {
 			{ "name": "Yeti", "value": "yeti" }
 		];
 
+		userData.homePageRoutes.forEach(function(route) {
+			route.selected = route.route === userData.settings.homePageRoute;
+		});
+
 		userData.bootswatchSkinOptions.forEach(function(skin) {
 			skin.selected = skin.value === userData.settings.bootswatchSkin;
 		});
