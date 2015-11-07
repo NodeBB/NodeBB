@@ -19,14 +19,6 @@ module.exports = function(SocketUser) {
 
 		var type = data.type;
 
-		// if (type === 'default') {
-		// 	type = null;
-		// } else if (type === 'uploaded') {
-		// 	type = 'uploadedpicture';
-		// } else {
-		// 	return callback(new Error('[[error:invalid-image-type, ' + ['default', 'uploadedpicture'].join('&#44; ') + ']]'));
-		// }
-
 		async.waterfall([
 			function (next) {
 				user.isAdminOrSelf(socket.uid, data.uid, next);
