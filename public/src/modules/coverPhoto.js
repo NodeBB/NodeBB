@@ -16,12 +16,7 @@ define('coverPhoto', [
 
 		coverEl.find('.upload').on('click', uploadFn);
 		coverEl.find('.resize').on('click', function() {
-			coverEl
-				.toggleClass('active', 1)
-				.backgroundDraggable({
-					axis: 'y',
-					units: 'percent'
-				});
+			enableDragging(coverEl);
 		});
 		coverEl.find('.remove').on('click', removeFn);
 
@@ -53,15 +48,17 @@ define('coverPhoto', [
 			};
 
 			reader.readAsDataURL(files[0]);
-
-			coverPhoto.coverEl
-				.addClass('active', 1)
-				.backgroundDraggable({
-					axis: 'y',
-					units: 'percent'
-				});
+			enableDragging(coverPhoto.coverEl);
 		}
 	};
+
+	function enableDragging(coverEl) {
+		coverEl.toggleClass('active', 1)
+			.backgroundDraggable({
+				axis: 'y',
+				units: 'percent'
+			});
+	}
 
 	coverPhoto.save = function() {
 		coverPhoto.coverEl.addClass('saving');
