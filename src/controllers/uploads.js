@@ -96,10 +96,6 @@ uploadsController.uploadGroupCover = function(data, next) {
 	uploadImage(0, data, next);
 };
 
-uploadsController.uploadUserCover = function(data, next) {
-	uploadImage(data.uid, data, next);
-};
-
 function uploadImage(uid, image, callback) {
 	if (plugins.hasListeners('filter:uploadImage')) {
 		return plugins.fireHook('filter:uploadImage', {image: image, uid: uid}, callback);

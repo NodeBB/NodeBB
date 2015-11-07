@@ -9,7 +9,6 @@ var async = require('async'),
 	request = require('request'),
 	mime = require('mime'),
 
-	uploadsController = require('../controllers/uploads'),
 	plugins = require('../plugins'),
 	file = require('../file'),
 	image = require('../image'),
@@ -141,8 +140,18 @@ module.exports = function(User) {
 			return User.updateCoverPosition(data.uid, data.position, callback);
 		}
 
-		async.series([
+		if (!data.imageData && !data.file) {
+			return callback(new Error('[[error:invalid-data]]'));
+		}
+
+		async.waterfall([
 			function(next) {
+				var size = data.file ? data.file.size : data.imageData.length;
+				meta.config.maximumCoverImageSize = meta.config.maximumCoverImageSize || 2048;
+				if (size > parseInt(meta.config.maximumCoverImageSize, 10) * 1024) {
+					return next(new Error('[[error:file-too-big, ' + meta.config.maximumCoverImageSize + ']]'));
+				}
+
 				if (data.file) {
 					return next();
 				}
@@ -150,12 +159,6 @@ module.exports = function(User) {
 				md5sum = crypto.createHash('md5');
 				md5sum.update(data.imageData);
 				md5sum = md5sum.digest('hex');
-				next();
-			},
-			function(next) {
-				if (data.file) {
-					return next();
-				}
 
 				tempPath = path.join(nconf.get('base_dir'), nconf.get('upload_path'), md5sum);
 				var buffer = new Buffer(data.imageData.slice(data.imageData.indexOf('base64') + 7), 'base64');
@@ -165,24 +168,39 @@ module.exports = function(User) {
 				}, next);
 			},
 			function(next) {
-				uploadsController.uploadUserCover({
+				var image = {
 					name: 'profileCover',
-					path: data.file ? data.file : tempPath,
+					path: data.file ? data.file.path : tempPath,
 					uid: data.uid
-				}, function(err, uploadData) {
+				};
+
+				if (plugins.hasListeners('filter:uploadImage')) {
+					return plugins.fireHook('filter:uploadImage', {image: image, uid: data.uid}, next);
+				}
+
+				var filename = data.uid + '-profilecover';
+				file.saveFileToLocal(filename, 'profile', image.path, function(err, upload) {
 					if (err) {
 						return next(err);
 					}
 
-					url = uploadData.url;
-					next();
+					next(null, {
+						url: nconf.get('relative_path') + upload.url,
+						name: image.name
+					});
 				});
 			},
-			function(next) {
-				User.setUserField(data.uid, 'cover:url', url, next);
+			function(uploadData, next) {
+				url = uploadData.url;
+				User.setUserField(data.uid, 'cover:url', uploadData.url, next);
 			},
 			function(next) {
-				require('fs').unlink(data.file ? data.file : tempPath, next);
+				require('fs').unlink(data.file ? data.file.path : tempPath, function(err) {
+					if (err) {
+						winston.error(err);
+					}
+					next();
+				});
 			}
 		], function(err) {
 			if (err) {

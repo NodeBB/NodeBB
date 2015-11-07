@@ -25,6 +25,7 @@
     "maximumSignatureLength": 255,
     "maximumAboutMeLength": 1000,
     "maximumProfileImageSize": 256,
+    "maximumCoverImageSize": 2048,
     "profileImageDimension": 128,
     "requireEmailConfirmation": 0,
     "profile:allowProfileImageUploads": 1,
