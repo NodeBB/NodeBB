@@ -543,8 +543,12 @@ Upgrade.upgrade = function(callback) {
 
 							if (userData.gravatarpicture === userData.picture) {
 								async.series([
-									async.apply(db.setObjectField, 'user:' + uid, 'picture', ''),
-									async.apply(db.deleteObjectField, 'user:' + uid, 'gravatarpicture')
+									function (next) {
+										db.setObjectField('user:' + uid, 'picture', '', next);
+									},
+									function (next) {
+										db.deleteObjectField('user:' + uid, 'gravatarpicture', next);	
+									}									
 								], next);
 							} else {
 								db.deleteObjectField('user:' + uid, 'gravatarpicture', next);
