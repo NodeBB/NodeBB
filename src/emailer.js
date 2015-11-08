@@ -2,9 +2,11 @@
 
 var	async = require('async'),
 	winston = require('winston'),
+	nconf = require('nconf'),
 	templates = require('templates.js'),
 	nodemailer = require('nodemailer'),
 	htmlToText = require('html-to-text'),
+	url = require('url'),
 
 	User = require('./user'),
 	Plugins = require('./plugins'),
@@ -66,10 +68,9 @@ var	async = require('async'),
 				}, next);
 			},
 			function (results, next) {
-
 				var data = {
 					to: email,
-					from: meta.config['email:from'] || 'no-reply@localhost.lan',
+					from: meta.config['email:from'] || 'no-reply@' + getHostname(),
 					from_name: meta.config['email:from_name'] || 'NodeBB',
 					subject: results.subject,
 					html: results.html,
@@ -128,6 +129,13 @@ var	async = require('async'),
 			}
 		], callback);
 	}
+
+	function getHostname() {
+		var configUrl = nconf.get('url'),
+			parsed = url.parse(configUrl);
+
+		return parsed.hostname;
+	};
 
 }(module.exports));
 
