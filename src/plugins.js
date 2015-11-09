@@ -376,6 +376,11 @@ var fs = require('fs'),
 			},
 			function(data, next) {
 				for (var x=0,numPaths=data.paths.length;x<numPaths;x++) {
+					// remove reference in module.parent -- http://fex.baidu.com/blog/2015/05/nodejs-hot-swapping/
+					var module = require.cache[data.paths[x]];
+					if (module.parent) {
+						module.parent.children.splice(module.parent.children.indexOf(module), 1);
+					}
 					delete require.cache[data.paths[x]];
 				}
 				winston.verbose('[plugins] Plugin libraries removed from Node.js cache');
