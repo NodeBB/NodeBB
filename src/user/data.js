@@ -105,6 +105,8 @@ module.exports = function(User) {
 				user.username = '[[global:guest]]';
 				user.userslug = '';
 				user.picture = '';
+				user['icon:text'] = '?';
+				user['icon:bgColor'] = '#aaa';
 			}
 
 			if (user.picture && user.picture === user.uploadedpicture) {
@@ -118,7 +120,7 @@ module.exports = function(User) {
 			}
 
 			// User Icons
-			if (user.hasOwnProperty('picture') && user.username) {
+			if (user.hasOwnProperty('picture') && user.username && parseInt(user.uid, 10)) {
 				user['icon:text'] = (user.username[0] || '').toUpperCase();
 				user['icon:bgColor'] = iconBackgrounds[Array.prototype.reduce.call(user.username, function(cur, next) {
 					return cur + next.charCodeAt();
