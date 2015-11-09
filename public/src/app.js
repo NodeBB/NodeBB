@@ -1,144 +1,98 @@
 "use strict";
-/*global io, templates, ajaxify, utils, bootbox, RELATIVE_PATH, config, Visibility*/
+/*global io, templates, ajaxify, utils, bootbox, overrides, socket, config, Visibility*/
 
-var	socket,
-	app = app || {};
+var app = app || {};
 
 app.isFocused = true;
-app.isConnected = false;
 app.currentRoom = null;
 app.widgets = {};
 app.cacheBuster = null;
 
 (function () {
-	var showWelcomeMessage = false;
-	var reconnecting = false;
+	var showWelcomeMessage = !!utils.params().loggedin;
 
-	function socketIOConnect() {
-		var ioParams = {
-			reconnectionAttempts: config.maxReconnectionAttempts,
-			reconnectionDelay: config.reconnectionDelay,
-			transports: config.socketioTransports,
-			path: config.relative_path + '/socket.io'
-		};
+	templates.setGlobal('config', config);
 
-		socket = io(config.websocketAddress, ioParams);
-		reconnecting = false;
+	app.cacheBuster = config['cache-buster'];
 
-		socket.on('event:connect', function () {
-			app.showLoginMessage();
-			app.replaceSelfLinks();
-			$(window).trigger('action:connected');
-			app.isConnected = true;
-		});
+	require(['csrf'], function(csrf) {
+		csrf.set(config.csrf_token);
+	});
 
-		socket.on('connect', onSocketConnect);
+	bootbox.setDefaults({
+		locale: config.userLang
+	});
 
-		socket.on('event:disconnect', function() {
-			$(window).trigger('action:disconnected');
-			app.isConnected = false;
-			socket.connect();
-		});
+	app.load = function() {
+		$('document').ready(function () {
+			var url = ajaxify.start(window.location.pathname.slice(1) + window.location.search, true);
+			ajaxify.end(url, app.template);
 
-		socket.on('reconnecting', function (attempt) {
-			reconnecting = true;
-			var reconnectEl = $('#reconnect');
+			handleStatusChange();
 
-			if (!reconnectEl.hasClass('active')) {
-				reconnectEl.html('<i class="fa fa-spinner fa-spin"></i>');
+			if (config.searchEnabled) {
+				app.handleSearch();
 			}
 
-			reconnectEl.addClass('active').removeClass("hide").tooltip({
-				placement: 'bottom'
-			});
-		});
+			handleNewTopic();
 
-		socket.on('event:banned', function() {
-			app.alert({
-				title: '[[global:alert.banned]]',
-				message: '[[global:alert.banned.message]]',
-				type: 'danger',
-				timeout: 1000
+			require(['components'], function(components) {
+				components.get('user/logout').on('click', app.logout);
 			});
 
-			setTimeout(function() {
-				window.location.href = config.relative_path + '/';
-			}, 1000);
+			Visibility.change(function(e, state){
+				if (state === 'visible') {
+					app.isFocused = true;
+					app.alternatingTitle('');
+				} else if (state === 'hidden') {
+					app.isFocused = false;
+				}
+			});
+
+			overrides.overrideBootbox();
+			overrides.overrideTimeago();
+			createHeaderTooltips();
+			app.showEmailConfirmWarning();
+
+			socket.removeAllListeners('event:nodebb.ready');
+			socket.on('event:nodebb.ready', function(data) {
+				if (!app.cacheBusters || app.cacheBusters['cache-buster'] !== data['cache-buster']) {
+					app.cacheBusters = data;
+
+					app.alert({
+						alert_id: 'forum_updated',
+						title: '[[global:updated.title]]',
+						message: '[[global:updated.message]]',
+						clickfn: function() {
+							window.location.reload();
+						},
+						type: 'warning'
+					});
+				}
+			});
+
+			require(['taskbar', 'helpers', 'forum/pagination'], function(taskbar, helpers, pagination) {
+				taskbar.init();
+
+				// templates.js helpers
+				helpers.register();
+
+				pagination.init();
+
+				$(window).trigger('action:app.load');
+			});
 		});
-
-		socket.on('event:logout', app.logout);
-
-		socket.on('event:alert', function(data) {
-			app.alert(data);
-		});
-
-		socket.on('reconnect_failed', function() {
-			// Wait ten times the reconnection delay and then start over
-			setTimeout(socket.connect.bind(socket), parseInt(config.reconnectionDelay, 10) * 10);
-		});
-	}
-
-	function onSocketConnect(data) {
-		if (reconnecting) {
-			var reconnectEl = $('#reconnect');
-
-			reconnectEl.tooltip('destroy');
-			reconnectEl.html('<i class="fa fa-check"></i>');
-			reconnecting = false;
-
-			// Rejoin room that was left when we disconnected
-			var	url_parts = window.location.pathname.slice(RELATIVE_PATH.length).split('/').slice(1);
-			var room;
-
-			switch(url_parts[0]) {
-				case 'user':
-					room = 'user/' + ajaxify.data.theirid;
-				break;
-				case 'topic':
-					room = 'topic_' + url_parts[1];
-				break;
-				case 'category':
-					room = 'category_' + url_parts[1];
-				break;
-				case 'recent':
-					room = 'recent_topics';
-				break;
-				case 'unread':
-					room = 'unread_topics';
-				break;
-				case 'popular':
-					room = 'popular_topics';
-				break;
-				case 'admin':
-					room = 'admin';
-				break;
-				case 'categories':
-					room = 'categories';
-				break;
-			}
-			app.currentRoom = '';
-			app.enterRoom(room);
-
-			socket.emit('meta.reconnected');
-
-			app.isConnected = true;
-			$(window).trigger('action:reconnected');
-
-			setTimeout(function() {
-				reconnectEl.removeClass('active').addClass('hide');
-			}, 3000);
-		}
-	}
+	};
 
 	app.logout = function() {
 		require(['csrf'], function(csrf) {
-			$.ajax(RELATIVE_PATH + '/logout', {
+			$.ajax(config.relative_path + '/logout', {
 				type: 'POST',
 				headers: {
 					'x-csrf-token': csrf.get()
 				},
 				success: function() {
-					window.location.href = RELATIVE_PATH + '/';
+					window.location.href = config.relative_path + '/';
 				}
 			});
 		});
@@ -176,56 +130,64 @@ app.cacheBuster = null;
 
 	app.enterRoom = function (room, callback) {
 		callback = callback || function() {};
-		if (socket) {
-			if (app.currentRoom === room) {
-				return;
-			}
-
+		if (socket && app.user.uid && app.currentRoom !== room) {
 			socket.emit('meta.rooms.enter', {
 				enter: room,
 				username: app.user.username,
 				userslug: app.user.userslug,
 				picture: app.user.picture,
-				status: app.user.status
+				status: app.user.status,
+				'icon:bgColor': app.user['icon:bgColor'],
+				'icon:text': app.user['icon:text']
 			}, function(err) {
 				if (err) {
-					app.alertError(err.message);
-					return;
+					return app.alertError(err.message);
 				}
 				app.currentRoom = room;
+				callback();
 			});
 		}
 	};
+
+	app.leaveCurrentRoom = function() {
+		if (!socket) {
+			return;
+		}
+		socket.emit('meta.rooms.leaveCurrent', function(err) {
+			if (err) {
+				return app.alertError(err.message);
+			}
+			app.currentRoom = '';
+		});
+	}
 
 	function highlightNavigationLink() {
 		var path = window.location.pathname;
 		$('#main-nav li').removeClass('active');
 		if (path) {
-			$('#main-nav li a').each(function () {
-				var href = $(this).attr('href');
-
-				if (href && path.startsWith(href)) {
-					$(this.parentNode).addClass('active');
-				 	return false;
-				}
-			});
+			$('#main-nav li').removeClass('active').find('a[href="' + path + '"]').parent().addClass('active');
 		}
 	}
 
-	app.createUserTooltips = function() {
-		$('img[title].teaser-pic,img[title].user-img').each(function() {
-			$(this).tooltip({
-				placement: 'top',
-				title: $(this).attr('title')
-			});
+	app.createUserTooltips = function(els) {
+		els = els || $('body');
+		els.find('img[title].teaser-pic,img[title].user-img,div.user-icon,span.user-icon').each(function() {
+			if (!utils.isTouchDevice()) {
+				$(this).tooltip({
+					placement: 'top',
+					title: $(this).attr('title')
+				});
+			}
 		});
 	};
 
 	app.createStatusTooltips = function() {
-		$('body').tooltip({
-			selector:'.fa-circle.status',
-			placement: 'top'
-		});
+		if (!utils.isTouchDevice()) {
+			$('body').tooltip({
+				selector:'.fa-circle.status',
+				placement: 'top'
+			});
+		}
 	};
 
 	app.replaceSelfLinks = function(selector) {
@@ -345,19 +307,16 @@ app.cacheBuster = null;
 		}
 	};
 
-	app.refreshTitle = function(url) {
-		if (!url) {
-			var a = document.createElement('a');
-			a.href = document.location;
-			url = a.pathname.slice(1);
+	app.refreshTitle = function(title) {
+		if (!title) {
+			return;
 		}
-
-		socket.emit('meta.buildTitle', url, function(err, title, numNotifications) {
-			if (err) {
-				return;
-			}
-			titleObj.titles[0] = (numNotifications > 0 ? '(' + numNotifications + ') ' : '') + title;
-			app.alternatingTitle('');
+		require(['translator'], function(translator) {
+			title = config.titleLayout.replace(/&#123;/g, '{').replace(/&#125;/g, '}').replace('{pageTitle}', title).replace('{browserTitle}', config.browserTitle);
+			translator.translate(title, function(translated) {
+				titleObj.titles[0] = translated;
+				app.alternatingTitle('');
+			});
 		});
 	};
 
@@ -368,38 +327,33 @@ app.cacheBuster = null;
 		}
 	};
 
-	app.exposeConfigToTemplates = function() {
-		$(document).ready(function() {
-			templates.setGlobal('loggedIn', config.loggedIn);
-			templates.setGlobal('relative_path', RELATIVE_PATH);
-			for(var key in config) {
-				if (config.hasOwnProperty(key)) {
-					templates.setGlobal('config.' + key, config[key]);
-				}
-			}
-		});
-	};
-
 	function createHeaderTooltips() {
-		if (utils.findBootstrapEnvironment() === 'xs') {
+		var env = utils.findBootstrapEnvironment();
+		if (env === 'xs' || env === 'sm') {
 			return;
 		}
 		$('#header-menu li a[title]').each(function() {
-			$(this).tooltip({
+			if (!utils.isTouchDevice()) {
+				$(this).tooltip({
+					placement: 'bottom',
+					title: $(this).attr('title')
+				});
+			}
+		});
+
+		if (!utils.isTouchDevice()) {
+			$('#search-form').parent().tooltip({
 				placement: 'bottom',
-				title: $(this).attr('title')
+				title: $('#search-button i').attr('title')
 			});
-		});
+		}
 
-		$('#search-form').parent().tooltip({
-			placement: 'bottom',
-			title: $('#search-button i').attr('title')
-		});
-
-		$('#user_dropdown').tooltip({
-			placement: 'bottom',
-			title: $('#user_dropdown').attr('title')
-		});
+		if (!utils.isTouchDevice()) {
+			$('#user_dropdown').tooltip({
+				placement: 'bottom',
+				title: $('#user_dropdown').attr('title')
+			});
+		}
 	}
 
 	app.handleSearch = function () {
@@ -407,12 +361,16 @@ app.cacheBuster = null;
 			searchFields = $("#search-fields"),
 			searchInput = $('#search-fields input');
 
+		$('#search-form .advanced-search-link').on('mousedown', function() {
+			ajaxify.go('/search');
+		});
+
 		$('#search-form').on('submit', dismissSearch);
 		searchInput.on('blur', dismissSearch);
 
 		function dismissSearch(){
-			searchFields.hide();
-			searchButton.show();
+			searchFields.addClass('hidden');
+			searchButton.removeClass('hidden');
 		}
 
 		searchButton.on('click', function(e) {
@@ -442,19 +400,22 @@ app.cacheBuster = null;
 	};
 
 	app.prepareSearch = function() {
-		$("#search-fields").removeClass('hide').show();
-		$("#search-button").hide();
+		$("#search-fields").removeClass('hidden');
+		$("#search-button").addClass('hidden');
 		$('#search-fields input').focus();
 	};
 
 	function handleStatusChange() {
-		$('#user-control-list .user-status').off('click').on('click', function(e) {
+		$('[component="header/usercontrol"] [data-status]').off('click').on('click', function(e) {
 			var status = $(this).attr('data-status');
 			socket.emit('user.setStatus', status, function(err, data) {
 				if(err) {
 					return app.alertError(err.message);
 				}
-				$('#logged-in-menu #user_label #user-profile-link>i').attr('class', 'fa fa-circle status ' + status);
+				$('[data-uid="' + app.user.uid + '"] [component="user/status"], [component="header/profilelink"] [component="user/status"]')
+					.removeClass('away online dnd offline')
+					.addClass(status);
+
 				app.user.status = status;
 			});
 			e.preventDefault();
@@ -466,11 +427,13 @@ app.cacheBuster = null;
 			return;
 		}
 
-		translator.translate('[[global:' + status + ']]', function(translated) {
-			el.removeClass('online offline dnd away')
-				.addClass(status)
-				.attr('title', translated)
-				.attr('data-original-title', translated);
+		require(['translator'], function(translator) {
+			translator.translate('[[global:' + status + ']]', function(translated) {
+				el.removeClass('online offline dnd away')
+					.addClass(status)
+					.attr('title', translated)
+					.attr('data-original-title', translated);
+			});
 		});
 	};
 
@@ -486,6 +449,9 @@ app.cacheBuster = null;
 					if (err) {
 						return app.alertError(err.message);
 					}
+					categories = categories.filter(function(category) {
+						return !category.link && !parseInt(category.parentCid, 10);
+					});
 					if (categories.length) {
 						$(window).trigger('action:composer.topic.new', {
 							cid: categories[0].cid
@@ -496,72 +462,12 @@ app.cacheBuster = null;
 		});
 	}
 
-	app.load = function() {
-		$('document').ready(function () {
-			var url = ajaxify.start(window.location.pathname.slice(1), true, window.location.search);
-			ajaxify.end(url, app.template);
-
-			handleStatusChange();
-
-			if (config.searchEnabled) {
-				app.handleSearch();
-			}
-
-			handleNewTopic();
-
-			$('#logout-link').on('click', app.logout);
-
-			Visibility.change(function(e, state){
-				if (state === 'visible') {
-					app.isFocused = true;
-					app.alternatingTitle('');
-				} else if (state === 'hidden') {
-					app.isFocused = false;
-				}
-			});
-
-			createHeaderTooltips();
-			app.showEmailConfirmWarning();
-
-			socket.removeAllListeners('event:nodebb.ready');
-			socket.on('event:nodebb.ready', function(cacheBusters) {
-				if (
-					!app.cacheBusters ||
-					app.cacheBusters.general !== cacheBusters.general ||
-					app.cacheBusters.css !== cacheBusters.css ||
-					app.cacheBusters.js !== cacheBusters.js
-				) {
-					app.cacheBusters = cacheBusters;
-
-					app.alert({
-						alert_id: 'forum_updated',
-						title: '[[global:updated.title]]',
-						message: '[[global:updated.message]]',
-						clickfn: function() {
-							window.location.reload();
-						},
-						type: 'warning'
-					});
-				}
-			});
-
-			require(['taskbar', 'helpers'], function(taskbar, helpers) {
-				taskbar.init();
-
-				// templates.js helpers
-				helpers.register();
-
-				$(window).trigger('action:app.load');
-			});
-		});
-	};
-
 	app.loadJQueryUI = function(callback) {
 		if (typeof $().autocomplete === 'function') {
 			return callback();
 		}
 
-		$.getScript(RELATIVE_PATH + '/vendor/jquery/js/jquery-ui-1.10.4.custom.js', callback);
+		$.getScript(config.relative_path + '/vendor/jquery/js/jquery-ui-1.10.4.custom.js', callback);
 	};
 
 	app.showEmailConfirmWarning = function(err) {
@@ -598,21 +504,20 @@ app.cacheBuster = null;
 		}
 	};
 
-	showWelcomeMessage = window.location.href.indexOf('loggedin') !== -1;
-
-	app.exposeConfigToTemplates();
-
-	socketIOConnect();
-
-	app.cacheBuster = config['cache-buster'];
-
-	require(['csrf'], function(csrf) {
-		csrf.set(config.csrf_token);
-	});
-
-	bootbox.setDefaults({
-		locale: config.userLang
-	});
-
-	app.alternatingTitle('');
+	app.parseAndTranslate = function(template, blockName, data, callback) {
+		if (typeof blockName === 'string') {
+			templates.parse(template, blockName, data, function(html) {
+				translator.translate(html, function(translatedHTML) {
+					callback($(translatedHTML));
+				});
+			});
+		} else {
+			callback = data, data = blockName;
+			templates.parse(template, data, function(html) {
+				translator.translate(html, function(translatedHTML) {
+					callback($(translatedHTML));
+				});
+			});
+		}
+	};
 }());

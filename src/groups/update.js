@@ -104,7 +104,7 @@ module.exports = function(Groups) {
 		async.parallel([
 			async.apply(db.setObjectField, 'group:' + groupName, 'hidden', hidden ? 1 : 0),
 			async.apply(updateVisibility, groupName, hidden)
-		], function(err, results) {
+		], function(err) {
 			callback(err);
 		});
 	}
@@ -123,6 +123,10 @@ module.exports = function(Groups) {
 
 		async.series([
 			function(next) {
+				if (data.file) {
+					return next();
+				}
+
 				// Calculate md5sum of image
 				// This is required because user data can be private
 				md5sum = crypto.createHash('md5');
@@ -131,6 +135,10 @@ module.exports = function(Groups) {
 				next();
 			},
 			function(next) {
+				if (data.file) {
+					return next();
+				}
+
 				// Save image
 				tempPath = path.join(nconf.get('base_dir'), nconf.get('upload_path'), md5sum);
 				var buffer = new Buffer(data.imageData.slice(data.imageData.indexOf('base64') + 7), 'base64');
@@ -141,7 +149,8 @@ module.exports = function(Groups) {
 			},
 			function(next) {
 				uploadsController.uploadGroupCover({
-					path: tempPath
+					name: 'groupCover',
+					path: data.file ? data.file : tempPath
 				}, function(err, uploadData) {
 					if (err) {
 						return next(err);
@@ -155,15 +164,25 @@ module.exports = function(Groups) {
 				Groups.setGroupField(data.groupName, 'cover:url', url, next);
 			},
 			function(next) {
-				fs.unlink(tempPath, next);	// Delete temporary file
+				fs.unlink(data.file ? data.file : tempPath, next);	// Delete temporary file
 			}
 		], function(err) {
 			if (err) {
 				return callback(err);
 			}
 
-			Groups.updateCoverPosition(data.groupName, data.position, callback);
+			if (data.position) {
+				Groups.updateCoverPosition(data.groupName, data.position, function(err) {
+					callback(err, {url: url});
+				});
+			} else {
+				callback(err, {url: url});
+			}
 		});
+	};
+
+	Groups.removeCover = function(data, callback) {
+		db.deleteObjectField('group:' + data.groupName, 'cover:url', callback);
 	};
 
 	function updatePrivacy(groupName, newValue, callback) {

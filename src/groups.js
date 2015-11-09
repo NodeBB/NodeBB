@@ -80,33 +80,38 @@ var async = require('async'),
 				});
 			}
 
-			async.parallel({
-				groups: function(next) {
-					Groups.getGroupsData(groupNames, next);
-				},
-				members: function(next) {
-					Groups.getMemberUsers(groupNames, 0, 3, next);
-				}
-			}, function (err, data) {
-				if (err) {
-					return callback(err);
-				}
-				data.groups.forEach(function(group, index) {
-					if (!group) {
-						return;
-					}
-					Groups.escapeGroupData(group);
-					group.members = data.members[index] || [];
-					group.truncated = group.memberCount > data.members.length;
-				});
-
-				callback(null, data.groups);
-			});
+			Groups.getGroupsAndMembers(groupNames, callback);
 		}
 	};
 
-	Groups.getGroups = function(start, stop, callback) {
-		db.getSortedSetRevRange('groups:createtime', start, stop, callback);
+	Groups.getGroups = function(set, start, stop, callback) {
+		db.getSortedSetRevRange(set, start, stop, callback);
+	};
+
+	Groups.getGroupsAndMembers = function(groupNames, callback) {
+		async.parallel({
+			groups: function(next) {
+				Groups.getGroupsData(groupNames, next);
+			},
+			members: function(next) {
+				Groups.getMemberUsers(groupNames, 0, 3, next);
+			}
+		}, function (err, data) {
+			if (err) {
+				return callback(err);
+			}
+
+			data.groups.forEach(function(group, index) {
+				if (!group) {
+					return;
+				}
+
+				group.members = data.members[index] || [];
+				group.truncated = group.memberCount > data.members.length;
+			});
+
+			callback(null, data.groups);
+		});
 	};
 
 	Groups.get = function(groupName, options, callback) {
@@ -114,7 +119,6 @@ var async = require('async'),
 			return callback(new Error('[[error:invalid-group]]'));
 		}
 
-		options.escape = options.hasOwnProperty('escape') ? options.escape : true;
 		var stop = -1;
 
 		async.parallel({
@@ -159,20 +163,15 @@ var async = require('async'),
 				return callback(new Error('[[error:no-group]]'));
 			}
 
-			// Default image
-			if (!results.base['cover:url']) {
-				results.base['cover:url'] = nconf.get('relative_path') + '/images/cover-default.png';
-				results.base['cover:position'] = '50% 50%';
-			}
+			results.base['cover:url'] = results.base['cover:url'] || require('./coverPhoto').getDefaultGroupCover(groupName);
+			results.base['cover:position'] = results.base['cover:position'] || '50% 50%';
 
 			plugins.fireHook('filter:parse.raw', results.base.description, function(err, descriptionParsed) {
 				if (err) {
 					return callback(err);
 				}
 
-				if (options.escape) {
-					Groups.escapeGroupData(results.base);
-				}
+				Groups.escapeGroupData(results.base);
 
 				results.base.descriptionParsed = descriptionParsed;
 				results.base.userTitleEnabled = results.base.userTitleEnabled ? !!parseInt(results.base.userTitleEnabled, 10) : true;
@@ -195,6 +194,10 @@ var async = require('async'),
 				});
 			});
 		});
+	};
+
+	Groups.getOwners = function(groupName, callback) {
+		db.getSetMembers('group:' + groupName + ':owners', callback);
 	};
 
 	Groups.getOwnersAndMembers = function(groupName, uid, start, stop, callback) {
@@ -296,11 +299,10 @@ var async = require('async'),
 	Groups.isHidden = function(groupName, callback) {
 		Groups.getGroupFields(groupName, ['hidden'], function(err, values) {
 			if (err) {
-				winston.warn('[groups.isHidden] Could not determine group hidden state (group: ' + groupName + ')');
-				return callback(null, true);	// Default true
+				return callback(err);
 			}
 
-			callback(null, parseInt(values.hidden, 10));
+			callback(null, parseInt(values.hidden, 10) === 1);
 		});
 	};
 
@@ -394,17 +396,16 @@ var async = require('async'),
 
 			groupData.forEach(function(group) {
 				if (group) {
-					group.userTitle = validator.escape(group.userTitle) || validator.escape(group.name);
+					Groups.escapeGroupData(group);
 					group.userTitleEnabled = group.userTitleEnabled ? parseInt(group.userTitleEnabled, 10) === 1 : true;
 					group.labelColor = group.labelColor || '#000000';
 					group.createtimeISO = utils.toISOString(group.createtime);
 					group.hidden = parseInt(group.hidden, 10) === 1;
 					group.system = parseInt(group.system, 10) === 1;
 					group.private = parseInt(group.private, 10) === 1;
-					if (!group['cover:url']) {
-						group['cover:url'] = nconf.get('relative_path') + '/images/cover-default.png';
-						group['cover:position'] = '50% 50%';
-					}
+
+					group['cover:url'] = group['cover:url'] || require('./coverPhoto').getDefaultGroupCover(group.name);
+					group['cover:position'] = group['cover:position'] || '50% 50%';
 				}
 			});
 

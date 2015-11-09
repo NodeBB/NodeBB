@@ -2,11 +2,12 @@
 
 var async = require('async'),
 	db = require('../database'),
-	meta = require('../meta');
+	meta = require('../meta'),
+	privileges = require('../privileges');
 
 module.exports = function(User) {
 
-	User.isReadyToPost = function(uid, callback) {
+	User.isReadyToPost = function(uid, cid, callback) {
 		if (parseInt(uid, 10) === 0) {
 			return callback();
 		}
@@ -18,8 +19,8 @@ module.exports = function(User) {
 			exists: function(next) {
 				db.exists('user:' + uid, next);
 			},
-			isAdmin: function(next) {
-				User.isAdministrator(uid, next);
+			isAdminOrMod: function(next) {
+				privileges.categories.isAdminOrMod(cid, uid, next);
 			}
 		}, function(err, results) {
 			if (err) {
@@ -30,7 +31,7 @@ module.exports = function(User) {
 				return callback(new Error('[[error:no-user]]'));
 			}
 
-			if (results.isAdmin) {
+			if (results.isAdminOrMod) {
 				return callback();
 			}
 
@@ -43,6 +44,7 @@ module.exports = function(User) {
 			if (parseInt(meta.config.requireEmailConfirmation, 10) === 1 && parseInt(userData['email:confirmed'], 10) !== 1) {
 				return callback(new Error('[[error:email-not-confirmed]]'));
 			}
+
 			var now = Date.now();
 			if (now - parseInt(userData.joindate, 10) < parseInt(meta.config.initialPostDelay, 10) * 1000) {
 				return callback(new Error('[[error:user-too-new, ' + meta.config.initialPostDelay + ']]'));
@@ -76,6 +78,13 @@ module.exports = function(User) {
 
 	User.addPostIdToUser = function(uid, pid, timestamp, callback) {
 		db.sortedSetAdd('uid:' + uid + ':posts', timestamp, pid, callback);
+	};
+
+	User.addTopicIdToUser = function(uid, tid, timestamp, callback) {
+		async.parallel([
+			async.apply(db.sortedSetAdd, 'uid:' + uid + ':topics', timestamp, tid),
+			async.apply(User.incrementUserFieldBy, uid, 'topiccount', 1)
+		], callback);
 	};
 
 	User.incrementUserPostCountBy = function(uid, value, callback) {

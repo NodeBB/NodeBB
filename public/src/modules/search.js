@@ -1,5 +1,5 @@
 "use strict";
-/* globals socket, ajaxify, app, define */
+/* globals socket, ajaxify, app, define, config */
 
 define('search', ['navigator', 'translator'], function(nav, translator) {
 
@@ -77,7 +77,7 @@ define('search', ['navigator', 'translator'], function(nav, translator) {
 			term: term
 		}, function(err, pids) {
 			if (err) {
-				return callback(err);
+				return app.alertError(err.message);
 			}
 
 			if (Array.isArray(pids)) {
@@ -126,8 +126,13 @@ define('search', ['navigator', 'translator'], function(nav, translator) {
 		if (Search.current.results.length > 0) {
 			topicSearchEl.find('.count').html((index+1) + ' / ' + Search.current.results.length);
 			topicSearchEl.find('.prev, .next').removeAttr('disabled');
-			socket.emit('posts.getPidIndex', Search.current.results[index], function(err, postIndex) {
-				nav.scrollToPost(postIndex-1, true);	// why -1? Ask @barisusakli
+			var data = {
+				pid: Search.current.results[index],
+				tid: Search.current.tid,
+				topicPostSort: config.topicPostSort
+			};
+			socket.emit('posts.getPidIndex', data, function(err, postIndex) {
+				nav.scrollToPost(postIndex, true);
 			});
 		} else {
 			translator.translate('[[search:no-matches]]', function(text) {

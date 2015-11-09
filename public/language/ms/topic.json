@@ -4,8 +4,8 @@
     "topic_id_placeholder": "Masukkan ID topik",
     "no_topics_found": "Tiada topik yang ditemui",
     "no_posts_found": "Tiada kirim yang dijumpai",
-    "post_is_deleted": "Kiriman ini di padam!",
-    "topic_is_deleted": "This topic is deleted!",
+    "post_is_deleted": "Kiriman ini dipadam!",
+    "topic_is_deleted": "Topik ini dipadam!",
     "profile": "Profil",
     "posted_by": "Dikirim oleh %1",
     "posted_by_guest": "Dikirim oleh pelawat",
@@ -25,9 +25,8 @@
     "tools": "Perkakas",
     "flag": "Tanda",
     "locked": "Kunci",
-    "bookmark_instructions": "Klik disini untuk kembali ke posisi sebelumnya atau tutup untuk mengabaikan",
+    "bookmark_instructions": "Klik disini untuk kembali ke kiriman terakhir yang anda telah baca di thread ini.",
     "flag_title": "Tanda kiriman ini untuk diselia",
-    "flag_confirm": "Adakah anda pasti untuk menanda kiriman ini",
     "flag_success": "Kiriman ini telah ditandakan untuk diselia",
     "deleted_message": "Topik ini telah dipadam. Hanya pengguna dengan kuasa pengurusan boleh melihatnya.",
     "following_topic.message": "Anda akan menerima makluman apabila ada kiriman ke dalam topik ini",
@@ -96,5 +95,9 @@
     "oldest_to_newest": "Lama ke Baru",
     "newest_to_oldest": "Baru ke Lama",
     "most_votes": "Terbanyak Undi",
-    "most_posts": "Terbanyak Kiriman"
+    "most_posts": "Terbanyak Kiriman",
+    "stale_topic_warning": "Topik yang anda ingin balas sudah terlalu lama. Adakah anda mahu membuka topik baru, dan merujuk kepada topik ini?",
+    "spam": "Spam",
+    "offensive": "Menyinggung",
+    "custom-flag-reason": "Nyatakan alasan anda"
 }

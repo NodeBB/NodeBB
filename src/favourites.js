@@ -26,13 +26,13 @@ var async = require('async'),
 
 			var now = Date.now();
 
-			if(type === 'upvote' && !unvote) {
+			if (type === 'upvote' && !unvote) {
 				db.sortedSetAdd('uid:' + uid + ':upvote', now, pid);
 			} else {
 				db.sortedSetRemove('uid:' + uid + ':upvote', pid);
 			}
 
-			if(type === 'upvote' || unvote) {
+			if (type === 'upvote' || unvote) {
 				db.sortedSetRemove('uid:' + uid + ':downvote', pid);
 			} else {
 				db.sortedSetAdd('uid:' + uid + ':downvote', now, pid);
@@ -106,7 +106,16 @@ var async = require('async'),
 			return callback(new Error('[[error:reputation-system-disabled]]'));
 		}
 
-		toggleVote('upvote', pid, uid, callback);
+		if (voteInProgress(pid, uid)) {
+			return callback(new Error('[[error:already-voting-for-this-post]]'));
+		}
+
+		putVoteInProgress(pid, uid);
+
+		toggleVote('upvote', pid, uid, function(err, data) {
+			clearVoteProgress(pid, uid);
+			callback(err, data);
+		});
 	};
 
 	Favourites.downvote = function(pid, uid, callback) {
@@ -118,6 +127,12 @@ var async = require('async'),
 			return callback(new Error('[[error:downvoting-disabled]]'));
 		}
 
+		if (voteInProgress(pid, uid)) {
+			return callback(new Error('[[error:already-voting-for-this-post]]'));
+		}
+
+		putVoteInProgress(pid, uid);
+
 		user.getUserField(uid, 'reputation', function(err, reputation) {
 			if (err) {
 				return callback(err);
@@ -127,7 +142,23 @@ var async = require('async'),
 				return callback(new Error('[[error:not-enough-reputation-to-downvote]]'));
 			}
 
-			toggleVote('downvote', pid, uid, callback);
+			toggleVote('downvote', pid, uid, function(err, data) {
+				clearVoteProgress(pid, uid);
+				callback(err, data);
+			});
+		});
+	};
+
+	Favourites.unvote = function(pid, uid, callback) {
+		if (voteInProgress(pid, uid)) {
+			return callback(new Error('[[error:already-voting-for-this-post]]'));
+		}
+
+		putVoteInProgress(pid, uid);
+
+		unvote(pid, uid, 'unvote', function(err, data) {
+			clearVoteProgress(pid, uid);
+			callback(err, data);
 		});
 	};
 
@@ -150,28 +181,14 @@ var async = require('async'),
 	}
 
 	function toggleVote(type, pid, uid, callback) {
-		function done(err, data) {
-			clearVoteProgress(pid, uid);
-			callback(err, data);
-		}
-
-		if (voteInProgress(pid, uid)) {
-			return callback(new Error('[[error:already-voting-for-this-post]]'));
-		}
-		putVoteInProgress(pid, uid);
-
 		unvote(pid, uid, type, function(err) {
 			if (err) {
-				return done(err);
+				return callback(err);
 			}
 
-			vote(type, false, pid, uid, done);
+			vote(type, false, pid, uid, callback);
 		});
 	}
-
-	Favourites.unvote = function(pid, uid, callback) {
-		unvote(pid, uid, 'unvote', callback);
-	};
 
 	function unvote(pid, uid, command, callback) {
 		async.parallel({
@@ -196,7 +213,7 @@ var async = require('async'),
 
 			if (voteStatus.upvoted && command === 'downvote' || voteStatus.downvoted && command === 'upvote') {	// e.g. User *has* upvoted, and clicks downvote
 				hook = command;
-			} else if (voteStatus.upvoted || voteStatus.downvoted) {	// e.g. User *has* upvotes, clicks upvote (so we "unvote")
+			} else if (voteStatus.upvoted || voteStatus.downvoted) {	// e.g. User *has* upvoted, clicks upvote (so we "unvote")
 				hook = 'unvote';
 			} else {	// e.g. User *has not* voted, clicks upvote
 				hook = command;

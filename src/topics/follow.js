@@ -9,7 +9,6 @@ var async = require('async'),
 	db = require('../database'),
 	user = require('../user'),
 	posts = require('../posts'),
-	postTools = require('../postTools'),
 	notifications = require('../notifications'),
 	privileges = require('../privileges'),
 	meta = require('../meta'),
@@ -46,6 +45,9 @@ module.exports = function(Topics) {
 
 	Topics.follow = function(tid, uid, callback) {
 		callback = callback || function() {};
+		if (!parseInt(uid, 10)) {
+			return callback();
+		}
 		async.waterfall([
 			function (next) {
 				Topics.exists(tid, next);
@@ -133,13 +135,14 @@ module.exports = function(Topics) {
 					bodyShort: '[[notifications:user_posted_to, ' + postData.user.username + ', ' + title + ']]',
 					bodyLong: postData.content,
 					pid: postData.pid,
-					nid: 'tid:' + postData.topic.tid + ':pid:' + postData.pid + ':uid:' + exceptUid,
+					nid: 'new_post:tid:' + postData.topic.tid + ':pid:' + postData.pid + ':uid:' + exceptUid,
 					tid: postData.topic.tid,
 					from: exceptUid
 				}, function(err, notification) {
 					if (err) {
 						return next(err);
 					}
+
 					if (notification) {
 						notifications.push(notification, followers);
 					}

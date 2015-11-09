@@ -33,6 +33,7 @@
     "header.notifications": "Ειδοποιήσεις",
     "header.search": "Αναζήτηση",
     "header.profile": "Προφίλ",
+    "header.navigation": "Navigation",
     "notifications.loading": "Φόρτωση Ειδοποιήσεων",
     "chats.loading": "Φόρτωση Συνομιλιών",
     "motd.welcome": "Καλωσόρισες στο NodeBB, την πλατφόρμα συζητήσεων του μέλλοντος.",
@@ -55,9 +56,11 @@
     "posted_ago_by_guest": "δημοσιεύτηκε πριν από %1 από Επισκέπτη",
     "posted_ago_by": "δημοσιεύτηκε πριν από %1 από τον/την %2",
     "posted_ago": "δημοσιεύτηκε πρίν από %1",
-    "posted_in_ago_by_guest": "δημοσιεύτηκε στο %1 πριν από %2 από Επισκέπτη",
-    "posted_in_ago_by": "δημοσιεύτηκε στο %1 πριν από %2 από τον/την %3",
+    "posted_in": "posted in %1",
+    "posted_in_by": "posted in %1 by %2",
     "posted_in_ago": "δημοσιεύτηκε στο %1 πριν από %2",
+    "posted_in_ago_by": "δημοσιεύτηκε στο %1 πριν από %2 από τον/την %3",
+    "posted_in_ago_by_guest": "δημοσιεύτηκε στο %1 πριν από %2 από Επισκέπτη",
     "replied_ago": "απαντήθηκε πριν από %1",
     "user_posted_ago": "Ο/Η %1 δημοσίευσε πριν από %2",
     "guest_posted_ago": "Επισκέπτης δημοσίευσε πριν από %1",
@@ -67,7 +70,7 @@
     "recentposts": "Πρόσφατες Δημοσιεύσεις",
     "recentips": "Πρόσφατη IP Σύνδεσης",
     "away": "Απών/ούσα",
-    "dnd": "Μην ενοχλείτε",
+    "dnd": "Do not disturb",
     "invisible": "Αόρατος/η",
     "offline": "Εκτός Σύνδεσης",
     "email": "Email",
@@ -79,5 +82,6 @@
     "privacy": "Privacy",
     "follow": "Follow",
     "unfollow": "Unfollow",
-    "delete_all": "Delete All"
+    "delete_all": "Delete All",
+    "map": "Map"
 }

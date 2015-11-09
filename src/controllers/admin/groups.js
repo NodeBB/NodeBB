@@ -34,7 +34,6 @@ groupsController.list = function(req, res, next) {
 			groups.getGroupsData(groupNames, next);
 		},
 		function(groupData, next) {
-			groupData.forEach(groups.escapeGroupData);
 			next(null, {groups: groupData, pagination: pagination.create(page, pageCount)});
 		}
 	], function(err, data) {
@@ -43,14 +42,14 @@ groupsController.list = function(req, res, next) {
 		}
 
 		res.render('admin/manage/groups', {
-	 		groups: data.groups,
-	 		pagination: data.pagination,
-	 		yourid: req.user.uid
-	 	});
+			groups: data.groups,
+			pagination: data.pagination,
+			yourid: req.user.uid
+		});
 	});
 };
 
-groupsController.get = function(req, res, next) {
+groupsController.get = function(req, res, callback) {
 	var groupName = req.params.name;
 	async.waterfall([
 		function(next){
@@ -58,14 +57,15 @@ groupsController.get = function(req, res, next) {
 		},
 		function(exists, next) {
 			if (!exists) {
-				return helpers.notFound(req, res);
+				return callback();
 			}
-			groups.get(groupName, {uid: req.uid}, next);
+			groups.get(groupName, {uid: req.uid, truncateUserList: true, userListCount: 20}, next);
 		}
 	], function(err, group) {
 		if (err) {
-			return next(err);
+			return callback(err);
 		}
+		group.isOwner = true;
 		res.render('admin/manage/group', {group: group});
 	});
 };

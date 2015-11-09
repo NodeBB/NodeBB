@@ -7,6 +7,7 @@ var admin = {},
 	db = require('../database'),
 	translator = require('../../public/src/modules/translator');
 
+admin.cache = null;
 
 admin.save = function(data, callback) {
 	var order = Object.keys(data),
@@ -23,6 +24,7 @@ admin.save = function(data, callback) {
 			return JSON.stringify(data);
 		});
 
+	admin.cache = null;
 	async.waterfall([
 		function(next) {
 			db.delete('navigation:enabled', next);
@@ -42,9 +44,15 @@ admin.getAdmin = function(callback) {
 
 admin.get = function(callback) {
 	db.getSortedSetRange('navigation:enabled', 0, -1, function(err, data) {
-		callback(err, data.map(function(item, idx) {
+		if (err) {
+			return callback(err);
+		}
+
+		data = data.map(function(item, idx) {
 			return JSON.parse(item)[idx];
-		}));
+		});
+
+		callback(null, data);
 	});
 };
 

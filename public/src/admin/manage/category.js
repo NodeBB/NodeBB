@@ -1,5 +1,5 @@
 "use strict";
-/*global define, app, socket, ajaxify, RELATIVE_PATH, bootbox */
+/*global define, app, socket, ajaxify, RELATIVE_PATH, bootbox, templates */
 
 define('admin/manage/category', [
 	'uploader',
@@ -50,11 +50,11 @@ define('admin/manage/category', [
 
 		function enableColorPicker(idx, inputEl) {
 			var $inputEl = $(inputEl),
-				previewEl = $inputEl.parents('[data-cid]').find('.preview-box');
+				previewEl = $inputEl.parents('[data-cid]').find('.category-preview');
 
 			colorpicker.enable($inputEl, function(hsb, hex) {
 				if ($inputEl.attr('data-name') === 'bgColor') {
-					previewEl.css('background', '#' + hex);
+					previewEl.css('background-color', '#' + hex);
 				} else if ($inputEl.attr('data-name') === 'color') {
 					previewEl.css('color', '#' + hex);
 				}
@@ -63,35 +63,29 @@ define('admin/manage/category', [
 			});
 		}
 
-		function setupEditTargets() {
-			$('[data-edit-target]').on('click', function() {
-				var $this = $(this),
-					target = $($this.attr('data-edit-target'));
 
-				$this.addClass('hide');
-				target.removeClass('hide').on('blur', function() {
-					$this.removeClass('hide').children('span').text(this.value).html();
-					$(this).addClass('hide');
-				}).val($this.children('span').html().text());
-
-				target.focus();
+		$('form.category input, form.category select')
+			.on('change', function(ev) {
+				modified(ev.target);
+			})
+			.on('keydown', function(ev) {
+				if (ev.which === 13) {
+					ev.preventDefault();
+					return false;
+				}
 			});
-		}
 
-		// If any inputs have changed, prepare it for saving
-		$('form.category input, form.category select').on('change', function(ev) {
-			modified(ev.target);
+		$('[data-name="imageClass"]').on('change', function(ev) {
+			$('.category-preview').css('background-size', $(this).val());
 		});
 
-		// Colour Picker
 		$('[data-name="bgColor"], [data-name="color"]').each(enableColorPicker);
 
-		$('.save').on('click', save);
-		$('.revert').on('click', ajaxify.refresh);
+		$('#save').on('click', save);
 		$('.purge').on('click', function(e) {
 			e.preventDefault();
 
-			bootbox.confirm('<p class="lead">Do you really want to purge this category "' + $('form.category').find('input[data-name="name"]').val() + '"?</p><p><strong class="text-danger">Warning!</strong> All topics and posts in this category will be purged!</p>', function(confirm) {
+			bootbox.confirm('<p class="lead">Do you really want to purge this category "' + $('form.category').find('input[data-name="name"]').val() + '"?</p><h5><strong class="text-danger">Warning!</strong> All topics and posts in this category will be purged!</h5> <p class="help-block">Purging a category will remove all topics and posts, and delete the category from the database. If you want to remove a category <em>temporarily</em>, you\'ll want to "disable" the category instead.</p>', function(confirm) {
 				if (!confirm) {
 					return;
 				}
@@ -105,7 +99,6 @@ define('admin/manage/category', [
 			});
 		});
 
-		// Image Uploader
 		$('.upload-button').on('click', function() {
 			var inputEl = $(this),
 				cid = inputEl.attr('data-cid');
@@ -113,13 +106,11 @@ define('admin/manage/category', [
 			uploader.open(RELATIVE_PATH + '/api/admin/category/uploadpicture', { cid: cid }, 0, function(imageUrlOnServer) {
 				inputEl.val(imageUrlOnServer);
 				var previewBox = inputEl.parent().parent().siblings('.category-preview');
-				previewBox.css('background', 'url(' + imageUrlOnServer + '?' + new Date().getTime() + ')')
-					.css('background-size', 'cover');
+				previewBox.css('background', 'url(' + imageUrlOnServer + '?' + new Date().getTime() + ')');
 				modified(inputEl[0]);
 			});
 		});
 
-		// Image Remover
 		$('.delete-image').on('click', function(e) {
 			e.preventDefault();
 
@@ -132,12 +123,10 @@ define('admin/manage/category', [
 			$(this).parent().addClass('hide').hide();
 		});
 
-		// Icon selection
 		$('.category-preview').on('click', function(ev) {
 			iconSelect.init($(this).find('i'), modified);
 		});
 
-		// Parent Category Selector
 		$('button[data-action="setParent"], button[data-action="changeParent"]').on('click', Category.launchParentSelector);
 		$('button[data-action="removeParent"]').on('click', function() {
 			var payload= {};
@@ -150,16 +139,15 @@ define('admin/manage/category', [
 					return app.alertError(err.message);
 				}
 				$('button[data-action="removeParent"]').parent().addClass('hide');
+				$('button[data-action="changeParent"]').parent().addClass('hide');
 				$('button[data-action="setParent"]').removeClass('hide');
 			});
 		});
 
-		setupEditTargets();
 		Category.setupPrivilegeTable();
 	};
 
 	Category.setupPrivilegeTable = function() {
-		// Checkbox event capture
 		$('.privilege-table-container').on('change', 'input[type="checkbox"]', function() {
 			var checkboxEl = $(this),
 				privilege = checkboxEl.parent().attr('data-privilege'),
@@ -247,6 +235,14 @@ define('admin/manage/category', [
 
 	Category.launchParentSelector = function() {
 		socket.emit('categories.get', function(err, categories) {
+			if (err) {
+				return app.alertError(err.message);
+			}
+
+			categories = categories.filter(function(category) {
+				return category && !category.disabled && parseInt(category.cid, 10) !== parseInt(ajaxify.data.category.cid, 10);
+			});
+
 			templates.parse('partials/category_list', {
 				categories: categories
 			}, function(html) {
@@ -267,10 +263,16 @@ define('admin/manage/category', [
 						if (err) {
 							return app.alertError(err.message);
 						}
+						var parent = categories.filter(function(category) {
+							return category && parseInt(category.cid, 10) === parseInt(parentCid, 10);
+						});
+						parent = parent[0];
 
 						modal.modal('hide');
 						$('button[data-action="removeParent"]').parent().removeClass('hide');
 						$('button[data-action="setParent"]').addClass('hide');
+						var buttonHtml = '<i class="fa ' + parent.icon + '"></i> ' + parent.name;
+						$('button[data-action="changeParent"]').html(buttonHtml).parent().removeClass('hide');
 					});
 				});
 			});

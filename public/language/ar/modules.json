@@ -5,7 +5,7 @@
     "chat.no_active": "لا يوجد لديك دردشات نشطة.",
     "chat.user_typing": "%1 يكتب رسالة...",
     "chat.user_has_messaged_you": "%1 أرسل لك رسالة.",
-    "chat.see_all": "معاينة كل الدردشات",
+    "chat.see_all": "عرض كل المحادثات",
     "chat.no-messages": "المرجو اختيار مرسل إليه لمعاينة تاريخ الدردشات",
     "chat.recent-chats": "آخر الدردشات",
     "chat.contacts": "الأصدقاء",
@@ -22,5 +22,9 @@
     "composer.user_said": "%1 كتب:",
     "composer.discard": "هل أنت متأكد أنك تريد التخلي عن التغييرات؟",
     "composer.submit_and_lock": "Submit and Lock",
-    "composer.toggle_dropdown": "Toggle Dropdown"
+    "composer.toggle_dropdown": "Toggle Dropdown",
+    "composer.uploading": "Uploading %1",
+    "bootbox.ok": "OK",
+    "bootbox.cancel": "إلغاء",
+    "bootbox.confirm": "تأكيد"
 }

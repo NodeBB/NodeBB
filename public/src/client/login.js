@@ -28,7 +28,7 @@ define('forum/login', ['csrf', 'translator'], function(csrf, translator) {
 						'x-csrf-token': csrf.get()
 					},
 					success: function(data, status) {
-						window.location.href = data;
+						window.location.href = data + '?loggedin';
 					},
 					error: function(data, status) {
 						errorEl.find('p').translateText(data.responseText);

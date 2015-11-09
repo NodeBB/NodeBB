@@ -39,6 +39,7 @@
 	"header.notifications": "Notifications",
 	"header.search": "Search",
 	"header.profile": "Profile",
+	"header.navigation": "Navigation",
 
 	"notifications.loading": "Loading Notifications",
 	"chats.loading": "Loading Chats",
@@ -71,9 +72,11 @@
 	"posted_ago_by": "posted %1 by %2",
 	"posted_ago": "posted %1",
 
-	"posted_in_ago_by_guest": "posted in %1 %2 by Guest",
-	"posted_in_ago_by": "posted in %1 %2 by %3",
+	"posted_in": "posted in %1",
+	"posted_in_by": "posted in %1 by %2",
 	"posted_in_ago": "posted in %1 %2",
+	"posted_in_ago_by": "posted in %1 %2 by %3",
+	"posted_in_ago_by_guest": "posted in %1 %2 by Guest",
 
 	"replied_ago": "replied %1",
 	"user_posted_ago": "%1 posted %2",
@@ -87,7 +90,7 @@
 
 	"online": "Online",
 	"away": "Away",
-	"dnd": "Do not Disturb",
+	"dnd": "Do not disturb",
 	"invisible": "Invisible",
 	"offline": "Offline",
 
@@ -103,5 +106,6 @@
 	"privacy": "Privacy",
 	"follow": "Follow",
 	"unfollow": "Unfollow",
-	"delete_all": "Delete All"
+	"delete_all": "Delete All",
+	"map": "Map"
 }

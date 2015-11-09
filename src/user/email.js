@@ -58,7 +58,7 @@ var async = require('async'),
 				}, next);
 			},
 			function(next) {
-				db.expireAt('confirm:' + confirm_code, Math.floor(Date.now() / 1000 + 60 * 60 * 2), next);
+				db.expireAt('confirm:' + confirm_code, Math.floor(Date.now() / 1000 + 60 * 60 * 24), next);
 			},
 			function(next) {
 				user.getUserField(uid, 'username', next);
@@ -80,11 +80,8 @@ var async = require('async'),
 					if (plugins.hasListeners('action:user.verify')) {
 						plugins.fireHook('action:user.verify', {uid: uid, data: data});
 						next();
-					} else if (plugins.hasListeners('action:email.send')) {
-						emailer.send('welcome', uid, data, next);
 					} else {
-						winston.warn('No emailer to send verification email!');
-						next();
+						emailer.send('welcome', uid, data, next);
 					}
 				});
 			}

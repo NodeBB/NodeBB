@@ -3,7 +3,6 @@
 'use strict';
 
 var async = require('async'),
-	winston = require('winston'),
 	_ = require('underscore'),
 	validator = require('validator'),
 
@@ -11,7 +10,6 @@ var async = require('async'),
 	user = require('../user'),
 	favourites = require('../favourites'),
 	posts = require('../posts'),
-	privileges = require('../privileges'),
 	meta = require('../meta');
 
 module.exports = function(Topics) {
@@ -44,12 +42,7 @@ module.exports = function(Topics) {
 				return callback(err);
 			}
 
-			var indices = Topics.calculatePostIndices(start, stop, results.postCount, reverse);
-			results.posts.forEach(function(post, index) {
-				if (post) {
-					post.index = indices[index];
-				}
-			});
+			Topics.calculatePostIndices(results.posts, start, stop, results.postCount, reverse);
 
 			Topics.addPostData(results.posts, uid, callback);
 		});
@@ -104,7 +97,7 @@ module.exports = function(Topics) {
 					}
 				}
 
-				user.getMultipleUserFields(editors, ['uid', 'username', 'userslug'], function(err, editors) {
+				user.getUsersFields(editors, ['uid', 'username', 'userslug'], function(err, editors) {
 					if (err) {
 						return next(err);
 					}
@@ -115,8 +108,8 @@ module.exports = function(Topics) {
 					next(null, editorData);
 				});
 			},
-			privileges: function(next) {
-				privileges.posts.get(pids, uid, next);
+			parents: function(next) {
+				Topics.addParentPosts(postData, next);
 			}
 		}, function(err, results) {
 			if (err) {
@@ -132,13 +125,7 @@ module.exports = function(Topics) {
 					postObj.upvoted = results.voteData.upvotes[i];
 					postObj.downvoted = results.voteData.downvotes[i];
 					postObj.votes = postObj.votes || 0;
-					postObj.display_moderator_tools = results.privileges[i].editable;
-					postObj.display_move_tools = results.privileges[i].move && postObj.index !== 0;
-					postObj.selfPost = parseInt(uid, 10) === parseInt(postObj.uid, 10);
-
-					if(postObj.deleted && !results.privileges[i].view_deleted) {
-						postObj.content = '[[topic:post_is_deleted]]';
-					}
+					postObj.selfPost = !!parseInt(uid, 10) && parseInt(uid, 10) === parseInt(postObj.uid, 10);
 
 					// Username override for guests, if enabled
 					if (parseInt(meta.config.allowGuestHandles, 10) === 1 && parseInt(postObj.uid, 10) === 0 && postObj.handle) {
@@ -151,17 +138,64 @@ module.exports = function(Topics) {
 		});
 	};
 
-	Topics.calculatePostIndices = function(start, stop, postCount, reverse) {
-		var indices = [];
-		var count = stop - start + 1;
-		for(var i=0; i<count; ++i) {
-			if (reverse) {
-				indices.push(postCount - (start + i + 1));
-			} else {
-				indices.push(start + i + 1);
+	Topics.modifyByPrivilege = function(postData, topicPrivileges) {
+		postData.forEach(function(post) {
+			if (post) {
+				post.display_moderator_tools = topicPrivileges.isAdminOrMod || post.selfPost;
+				post.display_move_tools = topicPrivileges.isAdminOrMod && post.index !== 0;
+				if (post.deleted && !(topicPrivileges.isAdminOrMod || post.selfPost)) {
+					post.content = '[[topic:post_is_deleted]]';
+				}
 			}
+		});
+	};
+
+	Topics.addParentPosts = function(postData, callback) {
+		var parentPids = postData.map(function(postObj) {
+			return postObj && postObj.hasOwnProperty('toPid') ? parseInt(postObj.toPid, 10) : null;
+		}).filter(Boolean);
+
+		if (!parentPids.length) {
+			return callback();
 		}
-		return indices;
+
+		var parentPosts;
+		async.waterfall([
+			async.apply(posts.getPostsFields, parentPids, ['uid']),
+			function(_parentPosts, next) {
+				parentPosts = _parentPosts;
+				var parentUids = parentPosts.map(function(postObj) { return parseInt(postObj.uid, 10); }).filter(function(uid, idx, users) {
+					return users.indexOf(uid) === idx;
+				});
+
+				user.getUsersFields(parentUids, ['username'], next);
+			},
+			function (userData, next) {
+				var usersMap = {};
+				userData.forEach(function(user) {
+					usersMap[user.uid] = user.username;
+				});
+				var parents = {};
+				parentPosts.forEach(function(post, i) {
+					parents[parentPids[i]] = {username: usersMap[post.uid]};
+				});
+
+				postData.forEach(function(post) {
+					post.parent = parents[post.toPid];
+				});
+				next();
+			}
+		], callback);
+	};
+
+	Topics.calculatePostIndices = function(posts, start, stop, postCount, reverse) {
+		posts.forEach(function(post, index) {
+			if (reverse) {
+				post.index = postCount - (start + index + 1);
+			} else {
+				post.index = start + index + 1;
+			}
+		});
 	};
 
 	Topics.getLatestUndeletedPid = function(tid, callback) {

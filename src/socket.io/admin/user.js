@@ -16,7 +16,7 @@ User.makeAdmins = function(socket, uids, callback) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
 
-	user.getMultipleUserFields(uids, ['banned'], function(err, userData) {
+	user.getUsersFields(uids, ['banned'], function(err, userData) {
 		if (err) {
 			return callback(err);
 		}
@@ -88,7 +88,6 @@ User.banUser = function(uid, callback) {
 
 			websockets.in('uid_' + uid).emit('event:banned');
 
-			websockets.logoutUser(uid);
 			callback();
 		});
 	});
@@ -133,7 +132,7 @@ User.sendValidationEmail = function(socket, uids, callback) {
 		return callback(new Error('[[error:email-confirmations-are-disabled]]'));
 	}
 
-	user.getMultipleUserFields(uids, ['uid', 'email'], function(err, usersData) {
+	user.getUsersFields(uids, ['uid', 'email'], function(err, usersData) {
 		if (err) {
 			return callback(err);
 		}
@@ -193,7 +192,6 @@ User.deleteUsers = function(socket, uids, callback) {
 					ip: socket.ip
 				});
 
-				websockets.logoutUser(uid);
 				next();
 			});
 		});
@@ -216,7 +214,7 @@ User.search = function(socket, data, callback) {
 
 		async.parallel({
 			users: function(next) {
-				user.getMultipleUserFields(uids, ['email'], next);
+				user.getUsersFields(uids, ['email'], next);
 			},
 			flagCounts: function(next) {
 				var sets = uids.map(function(uid) {

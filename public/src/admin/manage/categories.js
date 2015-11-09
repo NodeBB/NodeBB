@@ -1,5 +1,5 @@
 "use strict";
-/*global define, socket, app, bootbox, templates, ajaxify, RELATIVE_PATH, Sortable */
+/*global define, socket, app, bootbox, templates, ajaxify, Sortable */
 
 define('admin/manage/categories', ['vendor/jquery/serializeObject/jquery.ba-serializeobject.min'], function() {
 	var	Categories = {}, newCategoryId = -1, sortables;
@@ -17,20 +17,39 @@ define('admin/manage/categories', ['vendor/jquery/serializeObject/jquery.ba-seri
 
 		// Enable/Disable toggle events
 		$('.categories').on('click', 'button[data-action="toggle"]', function() {
-			var self = $(this),
-				rowEl = self.parents('li'),
-				cid = rowEl.attr('data-cid'),
-				disabled = rowEl.hasClass('disabled');
+			var $this = $(this),
+				cid = $this.attr('data-cid'),
+				parentEl = $this.parents('li[data-cid="' + cid + '"]'),
+				disabled = parentEl.hasClass('disabled');
 
-			Categories.toggle(cid, disabled);
+			var children = parentEl.find('li[data-cid]').map(function() {
+				return $(this).attr('data-cid');
+			}).get();
+
+			Categories.toggle([cid].concat(children), !disabled);
+			return false;
 		});
 	};
 
 	Categories.throwCreateModal = function() {
 		socket.emit('admin.categories.getNames', {}, function(err, categories) {
+			if (err) {
+				return app.alertError(err.message);
+			}
+
 			templates.parse('admin/partials/categories/create', {
 				categories: categories
 			}, function(html) {
+				function submit() {
+					var formData = modal.find('form').serializeObject();
+					formData.description = '';
+					formData.icon = 'fa-comments';
+
+					Categories.create(formData);
+					modal.modal('hide');
+					return false;
+				}
+
 				var modal = bootbox.dialog({
 					title: 'Create a Category',
 					message: html,
@@ -38,23 +57,19 @@ define('admin/manage/categories', ['vendor/jquery/serializeObject/jquery.ba-seri
 						save: {
 							label: 'Save',
 							className: 'btn-primary',
-							callback: function() {
-								var formData = modal.find('form').serializeObject();
-								formData.description = '';
-								formData.icon = 'fa-comments';
-
-								Categories.create(formData);
-							}
+							callback: submit
 						}
 					}
 				});
+
+				modal.find('form').on('submit', submit);
 			});
 		});
 	};
 
 	Categories.create = function(payload) {
 		socket.emit('admin.categories.create', payload, function(err, data) {
-			if(err) {
+			if (err) {
 				return app.alertError(err.message);
 			}
 
@@ -73,7 +88,7 @@ define('admin/manage/categories', ['vendor/jquery/serializeObject/jquery.ba-seri
 	Categories.render = function(categories){
 		var container = $('.categories');
 
-		if (!categories || categories.length == 0) {
+		if (!categories || !categories.length) {
 			$('<div></div>')
 				.addClass('alert alert-info text-center')
 				.text('You have no active categories.')
@@ -84,28 +99,30 @@ define('admin/manage/categories', ['vendor/jquery/serializeObject/jquery.ba-seri
 		}
 	};
 
-	Categories.toggle = function(cid, state) {
+	Categories.toggle = function(cids, disabled) {
 		var payload = {};
 
-		payload[cid] = {
-			disabled: !state | 0
-		};
+		cids.forEach(function(cid) {
+			payload[cid] = {
+				disabled: disabled ? 1 : 0
+			};
+		});
 
-		socket.emit('admin.categories.update', payload, function(err, result) {
+		socket.emit('admin.categories.update', payload, function(err) {
 			if (err) {
 				return app.alertError(err.message);
-			} else {
-				ajaxify.refresh();
 			}
+			ajaxify.refresh();
 		});
-	}
+	};
 
-	function itemDidAdd(e){
+	function itemDidAdd(e) {
 		newCategoryId = e.to.dataset.cid;
 	}
 
-	function itemDragDidEnd(e){
+	function itemDragDidEnd(e) {
 		var isCategoryUpdate = (newCategoryId != -1);
+
 		//Update needed?
 		if((e.newIndex != undefined && e.oldIndex != e.newIndex) || isCategoryUpdate){
 			var parentCategory = isCategoryUpdate ? sortables[newCategoryId] : sortables[e.from.dataset.cid],
@@ -114,14 +131,14 @@ define('admin/manage/categories', ['vendor/jquery/serializeObject/jquery.ba-seri
 			for(i; i < len; ++i) {
 				modified[list[i]] = {
 					order: (i + 1)
-				}
+				};
 			}
 
-			if(isCategoryUpdate){
-				modified[e.item.dataset.cid]['parentCid'] = newCategoryId;
+			if (isCategoryUpdate){
+				modified[e.item.dataset.cid].parentCid = newCategoryId;
 			}
 
-			newCategoryId = -1
+			newCategoryId = -1;
 			socket.emit('admin.categories.update', modified);
 		}
 	}
@@ -143,9 +160,7 @@ define('admin/manage/categories', ['vendor/jquery/serializeObject/jquery.ba-seri
 
 			// Handle and children categories in this level have
 			for(var x=0,numCategories=categories.length;x<numCategories;x++) {
-				if (categories[x].hasOwnProperty('children') && categories[x].children.length > 0) {
-					renderList(categories[x].children, $('li[data-cid="' + categories[x].cid + '"]'), categories[x].cid);
-				}
+				renderList(categories[x].children, $('li[data-cid="' + categories[x].cid + '"]'), categories[x].cid);
 			}
 
 			// Make list sortable

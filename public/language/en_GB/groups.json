@@ -14,9 +14,11 @@
 	"invited.none": "There are no invited members at this time",
 	"invited.uninvite": "Rescind Invitation",
 	"invited.search": "Search for a user to invite to this group",
+	"invited.notification_title": "You have been invited to join <strong>%1</strong>",
 
-	"cover-instructions": "Drag and Drop a photo, drag to position, and hit <strong>Save</strong>",
-	"cover-change": "Change",
+	"request.notification_title": "Group Membership Request from <strong>%1</strong>",
+	"request.notification_text": "<strong>%1</strong> has requested to become a member of <strong>%2</strong>",
+
 	"cover-save": "Save",
 	"cover-saving": "Saving",
 
@@ -47,10 +49,12 @@
 
 	"event.updated": "Group details have been updated",
 	"event.deleted": "The group \"%1\" has been deleted",
-  
-  "membership.accept-invitation": "Accept Invitation",
-  "membership.invitation-pending": "Invitation Pending",
-  "membership.join-group": "Join Group",
-  "membership.leave-group": "Leave Group",
-  "membership.reject": "Reject"
+
+	"membership.accept-invitation": "Accept Invitation",
+	"membership.invitation-pending": "Invitation Pending",
+	"membership.join-group": "Join Group",
+	"membership.leave-group": "Leave Group",
+	"membership.reject": "Reject",
+
+	"new-group.group_name": "Group Name:"
 }

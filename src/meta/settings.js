@@ -18,13 +18,19 @@ module.exports = function(Meta) {
 	};
 
 	Meta.settings.set = function(hash, values, callback) {
-		hash = 'settings:' + hash;
-		db.setObject(hash, values, function(err) {
-			if (!err) {
-				plugins.fireHook('action:settings.set', hash, values);
+		var key = 'settings:' + hash;
+		db.setObject(key, values, function(err) {
+			if (err) {
+				return callback(err);
 			}
 
-			callback.apply(this, arguments);
+			plugins.fireHook('action:settings.set', {
+				plugin: hash,
+				settings: values
+			});
+
+			Meta.reloadRequired = true;
+			callback();
 		});
 	};
 

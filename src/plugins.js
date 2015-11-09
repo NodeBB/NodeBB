@@ -14,6 +14,7 @@ var fs = require('fs'),
 	translator = require('../public/src/modules/translator'),
 	utils = require('../public/src/utils'),
 	hotswap = require('./hotswap'),
+	file = require('./file'),
 
 	controllers = require('./controllers'),
 	app, middleware;
@@ -31,6 +32,7 @@ var fs = require('fs'),
 	Plugins.clientScripts = [];
 	Plugins.customLanguages = [];
 	Plugins.libraryPaths = [];
+	Plugins.versionWarning = [];
 
 	Plugins.initialized = false;
 
@@ -74,6 +76,7 @@ var fs = require('fs'),
 		Plugins.libraries = {};
 		Plugins.loadedHooks = {};
 		Plugins.staticDirs = {};
+		Plugins.versionWarning = [];
 		Plugins.cssFiles.length = 0;
 		Plugins.lessFiles.length = 0;
 		Plugins.clientScripts.length = 0;
@@ -101,11 +104,21 @@ var fs = require('fs'),
 					return path.join(__dirname, '../node_modules/', plugin);
 				});
 
-				async.filter(plugins, fs.exists, function(plugins){
+				async.filter(plugins, file.exists, function(plugins) {
 					async.eachSeries(plugins, Plugins.loadPlugin, next);
 				});
 			},
 			function(next) {
+				// If some plugins are incompatible, throw the warning here
+				if (Plugins.versionWarning.length && nconf.get('isPrimary') === 'true') {
+					process.stdout.write('\n');
+					winston.warn('[plugins/load] The following plugins may not be compatible with your version of NodeBB. This may cause unintended behaviour or crashing. In the event of an unresponsive NodeBB caused by this plugin, run `./nodebb reset -p PLUGINNAME` to disable it.');
+					for(var x=0,numPlugins=Plugins.versionWarning.length;x<numPlugins;x++) {
+						process.stdout.write('  * '.yellow + Plugins.versionWarning[x].reset + '\n');
+					}
+					process.stdout.write('\n');
+				}
+
 				Object.keys(Plugins.loadedHooks).forEach(function(hook) {
 					var hooks = Plugins.loadedHooks[hook];
 					hooks = hooks.sort(function(a, b) {
@@ -170,17 +183,26 @@ var fs = require('fs'),
 		require('request')(url, {
 			json: true
 		}, function(err, res, body) {
+			if (res.statusCode === 404 || !body.payload) {
+				return callback(err, {});
+			}
+
 			Plugins.normalise([body.payload], function(err, normalised) {
 				normalised = normalised.filter(function(plugin) {
-					return plugin.id = id;
+					return plugin.id === id;
 				});
 				return callback(err, !err ? normalised[0] : undefined);
 			});
 		});
 	};
 
-	Plugins.getAll = function(callback) {
-		var url = (nconf.get('registry') || 'https://packages.nodebb.org') + '/api/v1/plugins?version=' + require('../package.json').version;
+	Plugins.list = function(matching, callback) {
+		if (arguments.length === 1 && typeof matching === 'function') {
+			callback = matching;
+			matching = true;
+		}
+
+		var url = (nconf.get('registry') || 'https://packages.nodebb.org') + '/api/v1/plugins' + (matching !== false ? '?version=' + require('../package.json').version : '');
 
 		require('request')(url, {
 			json: true
@@ -197,7 +219,9 @@ var fs = require('fs'),
 	};
 
 	Plugins.normalise = function(apiReturn, callback) {
-		var pluginMap = {};
+		var pluginMap = {},
+			dependencies = require.main.require('./package.json').dependencies;
+
 		for(var i=0; i<apiReturn.length; ++i) {
 			apiReturn[i].id = apiReturn[i].name;
 			apiReturn[i].installed = false;
@@ -211,6 +235,10 @@ var fs = require('fs'),
 			if (err) {
 				return callback(err);
 			}
+
+			installedPlugins = installedPlugins.filter(function(plugin) {
+				return plugin && !plugin.system;
+			});
 
 			async.each(installedPlugins, function(plugin, next) {
 				// If it errored out because a package.json or plugin.json couldn't be read, no need to do this stuff
@@ -231,7 +259,13 @@ var fs = require('fs'),
 				pluginMap[plugin.id].error = plugin.error || false;
 				pluginMap[plugin.id].active = plugin.active;
 				pluginMap[plugin.id].version = plugin.version;
-				pluginMap[plugin.id].latest = pluginMap[plugin.id].latest || plugin.version;
+
+				// If package.json defines a version to use, stick to that
+				if (dependencies.hasOwnProperty(plugin.id) && semver.valid(dependencies[plugin.id])) {
+					pluginMap[plugin.id].latest = dependencies[plugin.id];
+				} else {
+					pluginMap[plugin.id].latest = pluginMap[plugin.id].latest || plugin.version;
+				}
 				pluginMap[plugin.id].outdated = semver.gt(pluginMap[plugin.id].latest, pluginMap[plugin.id].version);
 				next();
 			}, function(err) {

@@ -1,12 +1,13 @@
 <!-- IMPORT admin/settings/header.tpl -->
 
-<div class="panel panel-default">
-	<div class="panel-heading">Tag Settings</div>
-	<div class="panel-body">
+<div class="row">
+	<div class="col-sm-2 col-xs-12 settings-header">Tag Settings</div>
+	<div class="col-sm-10 col-xs-12">
 		<form>
 			<div class="checkbox">
-				<label>
-					<input type="checkbox" data-field="privateTagListing"> Make the tags list private
+				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
+					<input class="mdl-switch__input" type="checkbox" data-field="privateTagListing">
+					<span class="mdl-switch__label">Make the tags list private</span>
 				</label>
 			</div>
 			<div class="form-group">

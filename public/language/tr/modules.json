@@ -5,7 +5,7 @@
     "chat.no_active": "Aktif sohbet mevcut değil",
     "chat.user_typing": "%1 yazıyor ...",
     "chat.user_has_messaged_you": "%1 size bir mesaj gönderdi.",
-    "chat.see_all": "Bütün mesajları gör",
+    "chat.see_all": "Bütün sohbetleri gör",
     "chat.no-messages": "Lütfen sohbet geçmişini görmek için bir kontak seçin",
     "chat.recent-chats": "Güncel Sohbetler",
     "chat.contacts": "Kontaklar",
@@ -22,5 +22,9 @@
     "composer.user_said": "%1 söyledi:",
     "composer.discard": "Bu iletiyi iptal etmek istediğinizden eminmisiniz?",
     "composer.submit_and_lock": "Gönder ve Kitle",
-    "composer.toggle_dropdown": "Menü aç"
+    "composer.toggle_dropdown": "Menü aç",
+    "composer.uploading": "Yükleniyor %1",
+    "bootbox.ok": "Tamam",
+    "bootbox.cancel": "İptal",
+    "bootbox.confirm": "Onayla"
 }

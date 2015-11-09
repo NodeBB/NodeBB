@@ -1,0 +1,11 @@
+{
+    "username-email": "Usuario / Correo electrónico",
+    "username": "Usuario",
+    "email": "Correo Electrónico",
+    "remember_me": "Lembrarme?",
+    "forgot_password": "Esqueciches o teu contrasinal?",
+    "alternative_logins": "Métodos alternativos",
+    "failed_login_attempt": "Erro ao iniciar sesión, téntao de novo.",
+    "login_successful": "Sesión iniciada con éxito!",
+    "dont_have_account": "Aínda non tes conta?"
+}

@@ -5,7 +5,7 @@
     "chat.no_active": "Você não tem chats ativos.",
     "chat.user_typing": "%1 está digitando ...",
     "chat.user_has_messaged_you": "%1 te enviou uma mensagem.",
-    "chat.see_all": "Vizualisar todos os Chats",
+    "chat.see_all": "Ver todos os chats",
     "chat.no-messages": "Por favor, escolha um destinatário para visualizar o histórico de conversas",
     "chat.recent-chats": "Conversas Recentes",
     "chat.contacts": "Contatos",
@@ -21,6 +21,10 @@
     "composer.user_said_in": "%1 disse em %2:",
     "composer.user_said": "%1 disse:",
     "composer.discard": "Tem certeza que deseja descartar essa postagem?",
-    "composer.submit_and_lock": "Envie e Tranque",
-    "composer.toggle_dropdown": "Alternar Dropdown"
+    "composer.submit_and_lock": "Enviar e Trancar",
+    "composer.toggle_dropdown": "Alternar Dropdown",
+    "composer.uploading": "Enviando %1",
+    "bootbox.ok": "OK",
+    "bootbox.cancel": "Cancelar",
+    "bootbox.confirm": "Confirmar"
 }

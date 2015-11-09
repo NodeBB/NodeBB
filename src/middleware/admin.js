@@ -4,7 +4,6 @@ var app,
 	middleware = {},
 	nconf = require('nconf'),
 	async = require('async'),
-	path = require('path'),
 	winston = require('winston'),
 	user = require('../user'),
 	meta = require('../meta'),
@@ -52,7 +51,7 @@ middleware.buildHeader = function(req, res, next) {
 	});
 };
 
-middleware.renderHeader = function(req, res, next) {
+middleware.renderHeader = function(req, res, data, next) {
 	var custom_header = {
 		'plugins': [],
 		'authentication': []
@@ -85,6 +84,9 @@ middleware.renderHeader = function(req, res, next) {
 			},
 			config: function(next) {
 				controllers.api.getConfig(req, res, next);
+			},
+			configs: function(next) {
+				meta.configs.list(next);
 			}
 		}, function(err, results) {
 			if (err) {
@@ -92,9 +94,17 @@ middleware.renderHeader = function(req, res, next) {
 			}
 			res.locals.config = results.config;
 
-			var data = {
-				relative_path: nconf.get('relative_path'),
+			var acpPath = req.path.slice(1).split('/');
+			acpPath.forEach(function(path, i) {
+				acpPath[i] = path.charAt(0).toUpperCase() + path.slice(1);
+			});
+			acpPath = acpPath.join(' > ');
+
+			var templateValues = {
+				config: results.config,
 				configJSON: JSON.stringify(results.config),
+				relative_path: results.config.relative_path,
+				adminConfigJSON: encodeURIComponent(JSON.stringify(results.configs)),
 				user: userData,
 				userJSON: JSON.stringify(userData).replace(/'/g, "\\'"),
 				plugins: results.custom_header.plugins,
@@ -102,12 +112,13 @@ middleware.renderHeader = function(req, res, next) {
 				scripts: results.scripts,
 				'cache-buster': meta.config['cache-buster'] ? 'v=' + meta.config['cache-buster'] : '',
 				env: process.env.NODE_ENV ? true : false,
+				title: (acpPath || 'Dashboard') + ' | NodeBB Admin Control Panel'
 			};
 
-			data.template = {name: res.locals.template};
-			data.template[res.locals.template] = true;
+			templateValues.template = {name: res.locals.template};
+			templateValues.template[res.locals.template] = true;
 
-			app.render('admin/header', data, next);
+			app.render('admin/header', templateValues, next);
 		});
 	});
 };

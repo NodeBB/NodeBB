@@ -3,7 +3,7 @@
 
 var async = require('async'),
 	plugins = require('../plugins'),
-	db = require('./../database');
+	db = require('../database');
 
 module.exports = function(User) {
 
@@ -24,34 +24,41 @@ module.exports = function(User) {
 			return callback(new Error('[[error:you-cant-follow-yourself]]'));
 		}
 
-		User.isFollowing(uid, theiruid, function(err, isFollowing) {
-			if (err) {
-				return callback(err);
-			}
-
-			if (type === 'follow') {
-				if (isFollowing) {
-					return callback(new Error('[[error:already-following]]'));
+		async.waterfall([
+			function (next) {
+				User.exists(theiruid, next);
+			},
+			function (exists, next) {
+				if (!exists) {
+					return next(new Error('[[error:no-user]]'));
 				}
-				var now = Date.now();
-				async.parallel([
-					async.apply(db.sortedSetAdd, 'following:' + uid, now, theiruid),
-					async.apply(db.sortedSetAdd, 'followers:' + theiruid, now, uid),
-					async.apply(User.incrementUserFieldBy, uid, 'followingCount', 1),
-					async.apply(User.incrementUserFieldBy, theiruid, 'followerCount', 1)
-				], callback);
-			} else {
-				if (!isFollowing) {
-					return callback(new Error('[[error:not-following]]'));
+				User.isFollowing(uid, theiruid, next);
+			},
+			function (isFollowing, next) {
+				if (type === 'follow') {
+					if (isFollowing) {
+						return next(new Error('[[error:already-following]]'));
+					}
+					var now = Date.now();
+					async.parallel([
+						async.apply(db.sortedSetAdd, 'following:' + uid, now, theiruid),
+						async.apply(db.sortedSetAdd, 'followers:' + theiruid, now, uid),
+						async.apply(User.incrementUserFieldBy, uid, 'followingCount', 1),
+						async.apply(User.incrementUserFieldBy, theiruid, 'followerCount', 1)
+					], next);
+				} else {
+					if (!isFollowing) {
+						return next(new Error('[[error:not-following]]'));
+					}
+					async.parallel([
+						async.apply(db.sortedSetRemove, 'following:' + uid, theiruid),
+						async.apply(db.sortedSetRemove, 'followers:' + theiruid, uid),
+						async.apply(User.decrementUserFieldBy, uid, 'followingCount', 1),
+						async.apply(User.decrementUserFieldBy, theiruid, 'followerCount', 1)
+					], next);
 				}
-				async.parallel([
-					async.apply(db.sortedSetRemove, 'following:' + uid, theiruid),
-					async.apply(db.sortedSetRemove, 'followers:' + theiruid, uid),
-					async.apply(User.decrementUserFieldBy, uid, 'followingCount', 1),
-					async.apply(User.decrementUserFieldBy, theiruid, 'followerCount', 1)
-				], callback);
 			}
-		});
+		], callback);
 	}
 
 	User.getFollowing = function(uid, start, stop, callback) {

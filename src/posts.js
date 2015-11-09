@@ -22,6 +22,7 @@ var async = require('async'),
 	require('./posts/summary')(Posts);
 	require('./posts/recent')(Posts);
 	require('./posts/flags')(Posts);
+	require('./posts/tools')(Posts);
 
 	Posts.exists = function(pid, callback) {
 		db.isSortedSetMember('posts:pid', pid, callback);
@@ -168,25 +169,13 @@ var async = require('async'),
 		});
 	};
 
-	Posts.getPidIndex = function(pid, uid, callback) {
-		async.parallel({
-			settings: function(next) {
-				user.getSettings(uid, next);
-			},
-			tid: function(next) {
-				Posts.getPostField(pid, 'tid', next);
+	Posts.getPidIndex = function(pid, tid, topicPostSort, callback) {
+		var set = topicPostSort === 'most_votes' ? 'tid:' + tid + ':posts:votes' : 'tid:' + tid + ':posts';
+		db.sortedSetRank(set, pid, function(err, index) {
+			if (!utils.isNumber(index)) {
+				return callback(err, 0);
 			}
-		}, function(err, results) {
-			if(err) {
-				return callback(err);
-			}
-			var set = results.settings.topicPostSort === 'most_votes' ? 'tid:' + results.tid + ':posts:votes' : 'tid:' + results.tid + ':posts';
-			db.sortedSetRank(set, pid, function(err, index) {
-				if (!utils.isNumber(index)) {
-					return callback(err, 1);
-				}
-				callback(err, parseInt(index, 10) + 2);
-			});
+			callback(err, parseInt(index, 10) + 1);
 		});
 	};
 

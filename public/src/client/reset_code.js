@@ -13,7 +13,7 @@ define('forum/reset_code', function() {
 			noticeEl = $('#notice');
 
 		resetEl.on('click', function() {
-			if (password.val().length < 6) {
+			if (password.val().length < config.minimumPasswordLength) {
 				app.alertError('[[reset_password:password_too_short]]');
 			} else if (password.val() !== repeat.val()) {
 				app.alertError('[[reset_password:passwords_do_not_match]]');

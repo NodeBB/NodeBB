@@ -33,6 +33,7 @@
     "header.notifications": "Értesítések",
     "header.search": "Keresés",
     "header.profile": "Profil",
+    "header.navigation": "Navigation",
     "notifications.loading": "Értesítések Betöltése",
     "chats.loading": "Chat Betöltése",
     "motd.welcome": "Üdvözlet a NodeBB-n, a jövő fórum platformján.",
@@ -55,9 +56,11 @@
     "posted_ago_by_guest": "posted %1 by Guest",
     "posted_ago_by": "posted %1 by %2",
     "posted_ago": "posted %1",
-    "posted_in_ago_by_guest": "posted in %1 %2 by Guest",
-    "posted_in_ago_by": "posted in %1 %2 by %3",
+    "posted_in": "posted in %1",
+    "posted_in_by": "posted in %1 by %2",
     "posted_in_ago": "posted in %1 %2",
+    "posted_in_ago_by": "posted in %1 %2 by %3",
+    "posted_in_ago_by_guest": "posted in %1 %2 by Guest",
     "replied_ago": "replied %1",
     "user_posted_ago": "%1 posted %2",
     "guest_posted_ago": "Guest posted %1",
@@ -67,7 +70,7 @@
     "recentposts": "Friss hozzászólások",
     "recentips": "Utoljára bejelentkezett IP címek",
     "away": "Távol van",
-    "dnd": "Elfoglalt",
+    "dnd": "Do not disturb",
     "invisible": "Láthatatlan",
     "offline": "Offline",
     "email": "Email",
@@ -79,5 +82,6 @@
     "privacy": "Titoktartás",
     "follow": "Követés",
     "unfollow": "Nem követem",
-    "delete_all": "Összes törlése"
+    "delete_all": "Összes törlése",
+    "map": "Map"
 }

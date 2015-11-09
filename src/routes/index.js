@@ -4,9 +4,10 @@ var nconf = require('nconf'),
 	path = require('path'),
 	winston = require('winston'),
 	controllers = require('../controllers'),
-	meta = require('../meta'),
 	plugins = require('../plugins'),
 	express = require('express'),
+
+	accountRoutes = require('./accounts'),
 
 	metaRoutes = require('./meta'),
 	apiRoutes = require('./api'),
@@ -28,14 +29,12 @@ function mainRoutes(app, middleware, controllers) {
 	setupPageRoute(app, '/compose', middleware, [middleware.authenticate], controllers.compose);
 	setupPageRoute(app, '/confirm/:code', middleware, [], controllers.confirmEmail);
 	setupPageRoute(app, '/outgoing', middleware, [], controllers.outgoing);
-	setupPageRoute(app, '/search/:term?', middleware, [middleware.guestSearchingAllowed], controllers.search.search);
+	setupPageRoute(app, '/search/:term?', middleware, [], controllers.search.search);
 	setupPageRoute(app, '/reset/:code?', middleware, [], controllers.reset);
 	setupPageRoute(app, '/tos', middleware, [], controllers.termsOfUse);
 }
 
 function topicRoutes(app, middleware, controllers) {
-	app.get('/api/topic/teaser/:topic_id', controllers.topics.teaser);
-
 	setupPageRoute(app, '/topic/:topic_id/:slug/:post_index?', middleware, [], controllers.topics.get);
 	setupPageRoute(app, '/topic/:topic_id/:slug?', middleware, [], controllers.topics.get);
 }
@@ -47,44 +46,22 @@ function tagRoutes(app, middleware, controllers) {
 
 function categoryRoutes(app, middleware, controllers) {
 	setupPageRoute(app, '/categories', middleware, [], controllers.categories.list);
-	setupPageRoute(app, '/popular/:term?', middleware, [], controllers.categories.popular);
-	setupPageRoute(app, '/recent', middleware, [], controllers.categories.recent);
-	setupPageRoute(app, '/unread', middleware, [middleware.authenticate], controllers.unread.unread);
+	setupPageRoute(app, '/popular/:term?', middleware, [], controllers.popular.get);
+	setupPageRoute(app, '/recent', middleware, [], controllers.recent.get);
+	setupPageRoute(app, '/unread', middleware, [middleware.authenticate], controllers.unread.get);
 
 	setupPageRoute(app, '/category/:category_id/:slug/:topic_index', middleware, [], controllers.categories.get);
 	setupPageRoute(app, '/category/:category_id/:slug?', middleware, [], controllers.categories.get);
 }
 
-function accountRoutes(app, middleware, controllers) {
-	var middlewares = [middleware.checkGlobalPrivacySettings];
-	var accountMiddlewares = [middleware.checkGlobalPrivacySettings, middleware.checkAccountPermissions];
-
-	setupPageRoute(app, '/user/:userslug', middleware, middlewares, controllers.accounts.getAccount);
-	setupPageRoute(app, '/user/:userslug/following', middleware, middlewares, controllers.accounts.getFollowing);
-	setupPageRoute(app, '/user/:userslug/followers', middleware, middlewares, controllers.accounts.getFollowers);
-	setupPageRoute(app, '/user/:userslug/posts', middleware, middlewares, controllers.accounts.getPosts);
-	setupPageRoute(app, '/user/:userslug/topics', middleware, middlewares, controllers.accounts.getTopics);
-	setupPageRoute(app, '/user/:userslug/groups', middleware, middlewares, controllers.accounts.getGroups);
-
-	setupPageRoute(app, '/user/:userslug/favourites', middleware, accountMiddlewares, controllers.accounts.getFavourites);
-	setupPageRoute(app, '/user/:userslug/watched', middleware, accountMiddlewares, controllers.accounts.getWatchedTopics);
-	setupPageRoute(app, '/user/:userslug/edit', middleware, accountMiddlewares, controllers.accounts.accountEdit);
-	setupPageRoute(app, '/user/:userslug/settings', middleware, accountMiddlewares, controllers.accounts.accountSettings);
-
-	setupPageRoute(app, '/notifications', middleware, [middleware.authenticate], controllers.accounts.getNotifications);
-	setupPageRoute(app, '/chats/:userslug?', middleware, [middleware.redirectToLoginIfGuest], controllers.accounts.getChats);
-}
-
 function userRoutes(app, middleware, controllers) {
 	var middlewares = [middleware.checkGlobalPrivacySettings];
 
-	setupPageRoute(app, '/users', middleware, middlewares, controllers.users.getOnlineUsers);
+	setupPageRoute(app, '/users', middleware, middlewares, controllers.users.getUsersSortedByJoinDate);
 	setupPageRoute(app, '/users/online', middleware, middlewares, controllers.users.getOnlineUsers);
 	setupPageRoute(app, '/users/sort-posts', middleware, middlewares, controllers.users.getUsersSortedByPosts);
 	setupPageRoute(app, '/users/sort-reputation', middleware, middlewares, controllers.users.getUsersSortedByReputation);
-	setupPageRoute(app, '/users/latest', middleware, middlewares, controllers.users.getUsersSortedByJoinDate);
 	setupPageRoute(app, '/users/search', middleware, middlewares, controllers.users.getUsersForSearch);
-	setupPageRoute(app, '/users/map', middleware, middlewares, controllers.users.getMap);
  }
 
 
@@ -100,9 +77,13 @@ module.exports = function(app, middleware) {
 	var router = express.Router(),
 		pluginRouter = express.Router(),
 		authRouter = express.Router(),
-		relativePath = nconf.get('relative_path');
+		relativePath = nconf.get('relative_path'),
+		ensureLoggedIn = require('connect-ensure-login');
 
 	pluginRouter.render = function() {
+		app.render.apply(app, arguments);
+	};
+	controllers.render = function() {
 		app.render.apply(app, arguments);
 	};
 
@@ -112,11 +93,9 @@ module.exports = function(app, middleware) {
 
 	app.use(middleware.maintenanceMode);
 
-	app.all(relativePath + '/api/?*', middleware.prepareAPI);
-	app.all(relativePath + '/api/admin/?*', middleware.isAdmin);
-
-	var ensureLoggedIn = require('connect-ensure-login');
-	app.all(relativePath + '/admin/?*', ensureLoggedIn.ensureLoggedIn(nconf.get('relative_path') + '/login?local=1'), middleware.applyCSRF, middleware.isAdmin);
+	app.all(relativePath + '(/api|/api/*?)', middleware.prepareAPI);
+	app.all(relativePath + '(/api/admin|/api/admin/*?)', middleware.isAdmin);
+	app.all(relativePath + '(/admin|/admin/*?)', ensureLoggedIn.ensureLoggedIn(nconf.get('relative_path') + '/login?local=1'), middleware.applyCSRF, middleware.isAdmin);
 
 	adminRoutes(router, middleware, controllers);
 	metaRoutes(router, middleware, controllers);
@@ -140,15 +119,7 @@ module.exports = function(app, middleware) {
 		require('./debug')(app, middleware, controllers);
 	}
 
-	app.use(function(req, res, next) {
-		if (req.user || parseInt(meta.config.privateUploads, 10) !== 1) {
-			return next();
-		}
-		if (req.path.startsWith('/uploads/files')) {
-			return res.status(403).json('not-allowed');
-		}
-		next();
-	});
+	app.use(middleware.privateUploads);
 
 	app.use(relativePath, express.static(path.join(__dirname, '../../', 'public'), {
 		maxAge: app.enabled('cache') ? 5184000000 : 0
@@ -164,7 +135,11 @@ module.exports = function(app, middleware) {
 };
 
 function handle404(app, middleware) {
-	app.use(function(req, res, next) {
+	var relativePath = nconf.get('relative_path');
+	var	isLanguage = new RegExp('^' + relativePath + '/language/[\\w]{2,}/.*.json'),
+		isClientScript = new RegExp('^' + relativePath + '\\/src\\/.+\\.js');
+
+	app.use(function(req, res) {
 		if (plugins.hasListeners('action:meta.override404')) {
 			return plugins.fireHook('action:meta.override404', {
 				req: req,
@@ -173,14 +148,14 @@ function handle404(app, middleware) {
 			});
 		}
 
-		var relativePath = nconf.get('relative_path');
-		var	isLanguage = new RegExp('^' + relativePath + '/language/[\\w]{2,}/.*.json'),
-			isClientScript = new RegExp('^' + relativePath + '\\/src\\/.+\\.js');
-
 		if (isClientScript.test(req.url)) {
 			res.type('text/javascript').status(200).send('');
 		} else if (isLanguage.test(req.url)) {
 			res.status(200).json({});
+		} else if (req.path.startsWith(relativePath + '/uploads')) {
+			res.status(404).send('');
+		} else if (req.path === '/favicon.ico') {
+			res.status(404).send('');
 		} else if (req.accepts('html')) {
 			if (process.env.NODE_ENV === 'development') {
 				winston.warn('Route requested but not found: ' + req.url);
@@ -189,11 +164,11 @@ function handle404(app, middleware) {
 			res.status(404);
 
 			if (res.locals.isAPI) {
-				return res.json({path: req.path});
+				return res.json({path: req.path.replace(/^\/api/, ''), title: '[[global:404.title]]'});
 			}
 
 			middleware.buildHeader(req, res, function() {
-				res.render('404', {path: req.path});
+				res.render('404', {path: req.path, title: '[[global:404.title]]'});
 			});
 		} else {
 			res.status(404).type('txt').send('Not found');
@@ -208,16 +183,16 @@ function handleErrors(app, middleware) {
 			return res.sendStatus(403);
 		}
 
-		winston.error(req.path + '\n', err.stack);
-
 		if (parseInt(err.status, 10) === 302 && err.path) {
 			return res.locals.isAPI ? res.status(302).json(err.path) : res.redirect(err.path);
 		}
 
+		winston.error(req.path + '\n', err.stack);
+
 		res.status(err.status || 500);
 
 		if (res.locals.isAPI) {
-			return res.json({path: req.path, error: err.message});
+			res.json({path: req.path, error: err.message});
 		} else {
 			middleware.buildHeader(req, res, function() {
 				res.render('500', {path: req.path, error: err.message});

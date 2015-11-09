@@ -46,7 +46,7 @@ module.exports = function(Posts) {
 
 			async.parallel({
 				users: function(next) {
-					user.getMultipleUserFields(uids, ['uid', 'username', 'userslug', 'picture'], next);
+					user.getUsersFields(uids, ['uid', 'username', 'userslug', 'picture'], next);
 				},
 				topicsAndCategories: function(next) {
 					getTopicAndCategories(topicKeys, next);
@@ -65,6 +65,7 @@ module.exports = function(Posts) {
 
 				for (var i=0; i<posts.length; ++i) {
 					posts[i].index = utils.isNumber(results.indices[i]) ? parseInt(results.indices[i], 10) + 1 : 1;
+					posts[i].isMainPost = posts[i].index - 1 === 0;
 				}
 
 				posts = posts.filter(function(post) {
@@ -124,7 +125,7 @@ module.exports = function(Posts) {
 				return topic && array.indexOf(topic) === index;
 			});
 
-			categories.getMultipleCategoryFields(cids, ['cid', 'name', 'icon', 'slug', 'parentCid', 'bgColor', 'color'], function(err, categories) {
+			categories.getCategoriesFields(cids, ['cid', 'name', 'icon', 'slug', 'parentCid', 'bgColor', 'color'], function(err, categories) {
 				callback(err, {topics: topics, categories: categories});
 			});
 		});

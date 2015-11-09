@@ -33,6 +33,7 @@
     "header.notifications": "Parrot Calls",
     "header.search": "Finderer",
     "header.profile": "Bunk",
+    "header.navigation": "Navigation",
     "notifications.loading": "Fetching yer Parrot Calls",
     "chats.loading": "Loading Yik-Yaks",
     "motd.welcome": "Welcome to NodeBB, th' discussion platform 'o th' future.",
@@ -55,9 +56,11 @@
     "posted_ago_by_guest": "posted %1 by Guest",
     "posted_ago_by": "posted %1 by %2",
     "posted_ago": "posted %1",
-    "posted_in_ago_by_guest": "posted in %1 %2 by Guest",
-    "posted_in_ago_by": "posted in %1 %2 by %3",
+    "posted_in": "posted in %1",
+    "posted_in_by": "posted in %1 by %2",
     "posted_in_ago": "posted in %1 %2",
+    "posted_in_ago_by": "posted in %1 %2 by %3",
+    "posted_in_ago_by_guest": "posted in %1 %2 by Guest",
     "replied_ago": "replied %1",
     "user_posted_ago": "%1 posted %2",
     "guest_posted_ago": "Guest posted %1",
@@ -67,7 +70,7 @@
     "recentposts": "Recent Messages",
     "recentips": "Recently Logged In IPs",
     "away": "Out to sea",
-    "dnd": "Do not Disturb",
+    "dnd": "Do not disturb",
     "invisible": "Magic usin'",
     "offline": "Dead",
     "email": "Email",
@@ -79,5 +82,6 @@
     "privacy": "Privacy",
     "follow": "Follow",
     "unfollow": "Unfollow",
-    "delete_all": "Delete All"
+    "delete_all": "Delete All",
+    "map": "Map"
 }

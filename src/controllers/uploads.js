@@ -74,7 +74,12 @@ uploadsController.uploadThumb = function(req, res, next) {
 
 			if (uploadedFile.type.match(/image./)) {
 				var size = meta.config.topicThumbSize || 120;
-				image.resizeImage(uploadedFile.path, path.extname(uploadedFile.name), size, size, function(err) {
+				image.resizeImage({
+					path: uploadedFile.path,
+					extension: path.extname(uploadedFile.name),
+					width: size,
+					height: size
+				}, function(err) {
 					if (err) {
 						return next(err);
 					}
@@ -88,7 +93,7 @@ uploadsController.uploadThumb = function(req, res, next) {
 };
 
 uploadsController.uploadGroupCover = function(data, next) {
-	uploadImage(0/*req.user.uid*/, data, next);
+	uploadImage(0, data, next);
 };
 
 function uploadImage(uid, image, callback) {
@@ -136,9 +141,14 @@ function uploadFile(uid, uploadedFile, callback) {
 }
 
 function deleteTempFiles(files) {
-	for(var i=0; i<files.length; ++i) {
-		fs.unlink(files[i].path);
-	}
+	async.each(files, function(file, next) {
+		fs.unlink(file.path, function(err) {
+			if (err) {
+				winston.error(err);
+			}
+			next();
+		});
+	});
 }
 
 

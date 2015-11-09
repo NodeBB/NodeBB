@@ -13,6 +13,8 @@ define('admin/extend/plugins', function() {
 			return;
 		}
 
+		$('#plugin-search').val('');
+
 		pluginsList.on('click', 'button[data-action="toggleActive"]', function() {
 			pluginID = $(this).parents('li').attr('data-plugin-id');
 			var btn = $(this);
@@ -36,6 +38,8 @@ define('admin/extend/plugins', function() {
 		});
 
 		pluginsList.on('click', 'button[data-action="toggleInstall"]', function() {
+			var btn = $(this);
+			btn.attr('disabled', true);
 			pluginID = $(this).parents('li').attr('data-plugin-id');
 
 			if ($(this).attr('data-installed') === '1') {
@@ -47,6 +51,8 @@ define('admin/extend/plugins', function() {
 					bootbox.confirm('<p>NodeBB could not reach the package manager, proceed with installation of latest version?</p><div class="alert alert-danger"><strong>Server returned (' + err.status + ')</strong>: ' + err.responseText + '</div>', function(confirm) {
 						if (confirm) {
 							Plugins.toggleInstall(pluginID, 'latest');
+						} else {
+							btn.removeAttr('disabled');
 						}
 					});
 					return;
@@ -56,9 +62,15 @@ define('admin/extend/plugins', function() {
 					if (payload.version !== 'latest') {
 						Plugins.toggleInstall(pluginID, payload.version);
 					} else if (payload.version === 'latest') {
-						confirmInstall(pluginID, function() {
-							Plugins.toggleInstall(pluginID, 'latest');
+						confirmInstall(pluginID, function(confirm) {
+							if (confirm) {
+								Plugins.toggleInstall(pluginID, 'latest');
+							} else {
+								btn.removeAttr('disabled');
+							}
 						});
+					} else {
+						btn.removeAttr('disabled');
 					}
 				});
 			});
@@ -135,9 +147,7 @@ define('admin/extend/plugins', function() {
 			'<p>In the event that NodeBB cannot boot properly:</p>' +
 			'<pre><code>$ ./nodebb reset plugin="' + pluginID + '"</code></pre>' +
 			'<p>Continue installation of latest version of this plugin?</p>', function(confirm) {
-			if (confirm) {
-				callback();
-			}
+				callback(confirm);
 		});
 	}
 
@@ -174,34 +184,18 @@ define('admin/extend/plugins', function() {
 	Plugins.toggleInstall = function(pluginID, version, callback) {
 		var btn = $('li[data-plugin-id="' + pluginID + '"] button[data-action="toggleInstall"]');
 		var activateBtn = btn.siblings('[data-action="toggleActive"]');
-		btn.html(btn.html() + 'ing')
-			.attr('disabled', true)
-			.find('i').attr('class', 'fa fa-refresh fa-spin');
+		btn.find('i').attr('class', 'fa fa-refresh fa-spin');
 
 		socket.emit('admin.plugins.toggleInstall', {
 			id: pluginID,
 			version: version
 		}, function(err, pluginData) {
 			if (err) {
+				btn.removeAttr('disabled');
 				return app.alertError(err.message);
 			}
 
-			var targetList = (pluginData.installed ? 'installed' : 'download'),
-				otherList = (pluginData.installed ? 'download' : 'installed'),
-				payload = {};
-
-			payload[targetList] = pluginData;
-			templates.parse('admin/partials/' + targetList + '_plugin_item', payload, function(html) {
-				var pluginList = $('ul.' + targetList);
-
-				pluginList.append(html);
-				$('ul.' + otherList).find('li[data-plugin-id="' + pluginID + '"]').slideUp('slow', function() {
-					$(this).remove();
-					$('html,body').animate({
-						scrollTop: pluginList.find('li').last().offset().top - 48
-					}, 1000);
-				});
-			});
+			ajaxify.refresh();
 
 			app.alert({
 				alert_id: 'plugin_toggled',
@@ -219,7 +213,7 @@ define('admin/extend/plugins', function() {
 
 	Plugins.suggest = function(pluginId, callback) {
 		var nbbVersion = app.config.version.match(/^\d\.\d\.\d/);
-		$.ajax('https://packages.nodebb.org/api/v1/suggest', {
+		$.ajax((app.config.registry || 'https://packages.nodebb.org') + '/api/v1/suggest', {
 			type: 'GET',
 			data: {
 				package: pluginId,

@@ -45,7 +45,6 @@ module.exports = function(User) {
 					var pagination = User.paginate(page, uids);
 					uids = pagination.data;
 					searchResult.pagination = pagination.pagination;
-					searchResult.pageCount = pagination.pageCount;
 				}
 
 				User.getUsers(uids, uid, next);
@@ -99,29 +98,16 @@ module.exports = function(User) {
 	function filterAndSortUids(uids, data, callback) {
 		var sortBy = data.sortBy || 'joindate';
 
-		var fields = ['uid', 'status', sortBy];
+		var fields = ['uid', 'status', 'lastonline', sortBy];
 
-		async.parallel({
-			userData: function(next) {
-				User.getMultipleUserFields(uids, fields, next);
-			},
-			isOnline: function(next) {
-				if (data.onlineOnly) {
-					require('../socket.io').isUsersOnline(uids, next);
-				} else {
-					next();
-				}
-			}
-		}, function(err, results) {
+		User.getUsersFields(uids, fields, function(err, userData) {
 			if (err) {
 				return callback(err);
 			}
 
-			var userData = results.userData;
-
 			if (data.onlineOnly) {
-				userData = userData.filter(function(user, index) {
-					return user && user.status !== 'offline' && results.isOnline[index];
+				userData = userData.filter(function(user) {
+					return user && user.status !== 'offline' && (Date.now() - parseInt(user.lastonline, 10) < 300000);
 				});
 			}
 

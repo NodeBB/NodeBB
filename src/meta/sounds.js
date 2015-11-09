@@ -99,7 +99,7 @@ module.exports = function(Meta) {
 				return callback(null, defaults);
 			}
 
-			callback.apply(null, arguments);
+			callback(null, sounds);
 		});
 	};
 };

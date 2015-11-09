@@ -13,6 +13,7 @@
 	"delete_account": "Delete Account",
 	"delete_account_confirm": "Are you sure you want to delete your account? <br /><strong>This action is irreversible and you will not be able to recover any of your data</strong><br /><br />Enter your username to confirm that you wish to destroy this account.",
 	"delete_this_account_confirm": "Are you sure you want to delete this account? <br /><strong>This action is irreversible and you will not be able to recover any data</strong><br /><br />",
+	"account-deleted": "Account deleted",
 
 	"fullname": "Full Name",
 	"website": "Website",
@@ -29,16 +30,19 @@
 	"following": "Following",
 	"aboutme": "About me",
 	"signature": "Signature",
-	"gravatar": "Gravatar",
 	"birthday": "Birthday",
 	"chat": "Chat",
+	"chat_with": "Chat with %1",
 	"follow": "Follow",
 	"unfollow": "Unfollow",
 	"more": "More",
 
 	"profile_update_success": "Profile has been updated successfully!",
 	"change_picture": "Change Picture",
+	"change_username": "Change Username",
+	"change_email": "Change Email",
 	"edit": "Edit",
+	"default_picture": "Default Icon",
 	"uploaded_picture": "Uploaded Picture",
 	"upload_new_picture": "Upload New Picture",
 	"upload_new_picture_from_url": "Upload New Picture From URL",
@@ -53,9 +57,11 @@
 	"confirm_password": "Confirm Password",
 	"password": "Password",
 	"username_taken_workaround": "The username you requested was already taken, so we have altered it slightly. You are now known as <strong>%1</strong>",
+	"password_same_as_username": "Your password is the same as your username, please select another password.",
 
 	"upload_picture": "Upload picture",
 	"upload_a_picture": "Upload a picture",
+	"remove_uploaded_picture" : "Remove Uploaded Picture",
 	"image_spec": "You may only upload PNG, JPG, or GIF files",
 
 	"settings": "Settings",
@@ -97,5 +103,17 @@
 	"follow_topics_you_create": "Follow topics you create",
 
 	"grouptitle": "Select the group title you would like to display",
-	"no-group-title": "No group title"
+	"no-group-title": "No group title",
+
+	"select-skin": "Select a Skin",
+
+	"select-homepage": "Select a Homepage",
+	"homepage": "Homepage",
+	"homepage_description": "Select a page to use as the forum homepage or 'None' to use the default homepage.",
+	"custom_route": "Custom Homepage Route",
+	"custom_route_help": "Enter a route name here, without any preceding slash (e.g. \"recent\", or \"popular\")",
+
+	"sso.title": "Single Sign-on Services",
+	"sso.associated": "Associated with",
+	"sso.not-associated": "Click here to associate with"
 }

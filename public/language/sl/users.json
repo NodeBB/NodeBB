@@ -1,0 +1,21 @@
+{
+    "latest_users": "Zadnji uporabniki",
+    "top_posters": "Najboljši uporabniki",
+    "most_reputation": "Največ ugleda",
+    "search": "Išči",
+    "enter_username": "Za iskanje vpiši uporabniško ime",
+    "load_more": "Naloži več",
+    "users-found-search-took": "%1 uporabnik(ov) najdenih! Iskanje je potrebovalo %2 sekunde.",
+    "filter-by": "Filtriraj po",
+    "online-only": "Samo dosegljivi",
+    "picture-only": "Samo s sliko",
+    "invite": "Povabi",
+    "invitation-email-sent": "Povabilo je bilo poslano na e-mail naslov %1",
+    "user_list": "Lista uporabnikov",
+    "recent_topics": "Zadnje teme",
+    "popular_topics": "Popularne teme",
+    "unread_topics": "Neprebrane teme",
+    "categories": "Kategorije",
+    "tags": "Oznake",
+    "map": "Zemljevid"
+}

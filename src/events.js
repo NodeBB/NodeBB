@@ -77,7 +77,7 @@ var async = require('async'),
 				user.isAdministrator(uids, next);
 			},
 			userData: function(next) {
-				user.getMultipleUserFields(uids, ['username', 'userslug', 'picture'], next);
+				user.getUsersFields(uids, ['username', 'userslug', 'picture'], next);
 			}
 		}, function(err, results) {
 			if (err) {

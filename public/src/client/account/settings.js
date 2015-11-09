@@ -45,7 +45,7 @@ define('forum/account/settings', ['forum/account/header'], function(header) {
 						config[key] = newSettings[key];
 					}
 				}
-				app.exposeConfigToTemplates();
+
 				if (requireReload && parseInt(app.user.uid, 10) === parseInt(ajaxify.data.theirid, 10)) {
 					app.alert({
 						id: 'setting-change',
@@ -61,7 +61,27 @@ define('forum/account/settings', ['forum/account/header'], function(header) {
 
 			return false;
 		});
+
+		$('#bootswatchSkin').on('change', function() {
+			var css = $('#bootswatchCSS'),
+				val = $(this).val() === 'default' ? config['theme:src'] : 'http://maxcdn.bootstrapcdn.com/bootswatch/latest/' + $(this).val() + '/bootstrap.min.css';
+
+			css.attr('href', val);
+		});
+
+		$('[data-property="homePageRoute"]').on('change', toggleCustomRoute);
+
+		toggleCustomRoute();
 	};
+
+	function toggleCustomRoute() {
+		$('[data-property="homePageCustom"]').val('');
+		if ($('[data-property="homePageRoute"]').val() === 'custom') {
+			$('#homePageCustom').show();
+		}else{
+			$('#homePageCustom').hide();
+		}
+	}
 
 	return AccountSettings;
 });

@@ -20,10 +20,7 @@ module.exports = function(Posts) {
 				user.getMultipleUserSettings(uids, next);
 			},
 			userData: function(next) {
-				user.getMultipleUserFields(uids, ['uid', 'username', 'userslug', 'reputation', 'postcount', 'picture', 'signature', 'banned', 'status'], next);
-			},
-			online: function(next) {
-				require('../socket.io').isUsersOnline(uids, next);
+				user.getUsersFields(uids, ['uid', 'username', 'fullname', 'userslug', 'reputation', 'postcount', 'picture', 'signature', 'banned', 'status', 'lastonline'], next);
 			}
 		}, function(err, results) {
 			if (err) {
@@ -40,12 +37,14 @@ module.exports = function(Posts) {
 						slug: group.slug,
 						labelColor: group.labelColor,
 						icon: group.icon,
-						userTitle: group.userTitle,
-						userTitleEnabled: group.userTitleEnabled,
-						selected: group.name === results.userSettings[i].groupTitle
+						userTitle: group.userTitle
 					};
+
+					if (results.userSettings[i] && group.name === results.userSettings[i].groupTitle && group.userTitleEnabled) {
+						userData.selectedGroup = userData.groups[index];
+					}
 				});
-				userData.status = user.getStatus(userData.status, results.online[i]);
+				userData.status = user.getStatus(userData);
 			});
 
 			async.map(userData, function(userData, next) {
@@ -55,7 +54,7 @@ module.exports = function(Posts) {
 				userData.reputation = userData.reputation || 0;
 				userData.postcount = userData.postcount || 0;
 				userData.banned = parseInt(userData.banned, 10) === 1;
-				userData.picture = userData.picture || user.createGravatarURLFromEmail('');
+				userData.picture = userData.picture || '';
 
 				async.parallel({
 					signature: function(next) {

@@ -1,30 +1,61 @@
 'use strict';
 
 var fs = require('fs'),
-	lwip = require('lwip'),
+	Jimp = require('jimp'),
+	async = require('async'),
 	plugins = require('./plugins');
 
 var image = {};
 
-image.resizeImage = function(path, extension, width, height, callback) {
+image.resizeImage = function(data, callback) {
 	if (plugins.hasListeners('filter:image.resize')) {
 		plugins.fireHook('filter:image.resize', {
-			path: path,
-			extension: extension,
-			width: width,
-			height: height
+			path: data.path,
+			extension: data.extension,
+			width: data.width,
+			height: data.height
 		}, function(err, data) {
 			callback(err);
 		});
 	} else {
-		lwip.open(path, function(err, image) {
-			image.batch()
-				.cover(width, height)
-				.crop(width, height)
-				.writeFile(path, function(err) {
-					callback(err)
-				})
+		new Jimp(data.path, function(err, image) {
+			if (err) {
+				return callback(err);
+			}
+
+			var w = image.bitmap.width,
+				h = image.bitmap.height,
+				origRatio = w/h,
+				desiredRatio = data.width/data.height,
+				x = 0,
+				y = 0,
+				crop;
+
+			if (desiredRatio > origRatio) {
+				desiredRatio = 1/desiredRatio;
+			}
+			if (origRatio >= 1) {
+				y = 0;	// height is the smaller dimension here
+				x = Math.floor((w/2) - (h * desiredRatio / 2));
+				crop = async.apply(image.crop.bind(image), x, y, h * desiredRatio, h);
+			} else {
+				x = 0;	// width is the smaller dimension here
+				y = Math.floor(h/2 - (w * desiredRatio / 2));
+				crop = async.apply(image.crop.bind(image), x, y, w, w * desiredRatio);
+			}
+
+			async.waterfall([
+				crop,
+				function(image, next) {
+					image.resize(data.width, data.height, next);
+				},
+				function(image, next) {
+					image.write(data.target || data.path, next);
+				}
+			], function(err) {
+				callback(err);
 			});
+		});
 	}
 };
 
@@ -37,11 +68,11 @@ image.normalise = function(path, extension, callback) {
 			callback(err);
 		});
 	} else {
-		lwip.open(path, function(err, image) {
+		new Jimp(path, function(err, image) {
 			if (err) {
 				return callback(err);
 			}
-			image.writeFile(path, 'png', callback)
+			image.write(path + '.png', callback);
 		});
 	}
 };

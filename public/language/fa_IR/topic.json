@@ -1,7 +1,7 @@
 {
     "topic": "جُستار",
-    "topic_id": "ID جستار",
-    "topic_id_placeholder": "ID جستار را بنویسید",
+    "topic_id": "شناسه جستار",
+    "topic_id_placeholder": "شناسه جستار را بنویسید",
     "no_topics_found": "هیچ جستاری یافت نشد!",
     "no_posts_found": "دیدگاهی یافت نشد!",
     "post_is_deleted": "این دیدگاه پاک شده!",
@@ -25,9 +25,8 @@
     "tools": "ابزارها",
     "flag": "پرچم",
     "locked": "قفل شده است",
-    "bookmark_instructions": "برای بازگشت به مکان پیشین اینجا را بفشارید یا برای رد دادن ببندید.",
+    "bookmark_instructions": "Click here to return to the last unread post in this thread.",
     "flag_title": "پرچم‌گذاری این جستار برای بررسی ناظران",
-    "flag_confirm": "آیا مطمئنید که می‌خواهید روی این دیدگاه پرچم بگذارید.",
     "flag_success": "این جستار برای بررسی ناظران پرچم گذاشته شد.",
     "deleted_message": "این جستار پاک شده است. تنها کاربرانِ با حق مدیریت جستار می‌توانند آن را ببینند.",
     "following_topic.message": "از این پس اگر کسی در این جستار دیدگاه بگذارد، شما آگاه خواهید شد.",
@@ -96,5 +95,9 @@
     "oldest_to_newest": "قدیمی‌ترین به جدید‌ترین",
     "newest_to_oldest": "جدید‌ترین به قدیمی‌ترین",
     "most_votes": "بیشترین رای‌ها",
-    "most_posts": "بیشتر دیدگاه ها"
+    "most_posts": "بیشتر دیدگاه ها",
+    "stale_topic_warning": "The topic you are replying to is quite old. Would you like to create a new topic instead, and reference this one in your reply?",
+    "spam": "Spam",
+    "offensive": "Offensive",
+    "custom-flag-reason": "Enter a flagging reason"
 }

@@ -30,7 +30,6 @@ authenticationController.register = function(req, res, next) {
 		}
 	}
 
-	var uid;
 	async.waterfall([
 		function(next) {
 			if (registrationType === 'invite-only') {
@@ -52,11 +51,7 @@ authenticationController.register = function(req, res, next) {
 				return next(new Error('[[error:username-too-long'));
 			}
 
-			if (!userData.password || userData.password.length < meta.config.minimumPasswordLength) {
-				return next(new Error('[[user:change_password_error_length]]'));
-			}
-
-			next();
+			user.isPasswordValid(userData.password, next);
 		},
 		function(next) {
 			plugins.fireHook('filter:register.check', {req: req, res: res, userData: userData}, next);
@@ -71,6 +66,10 @@ authenticationController.register = function(req, res, next) {
 	], function(err, data) {
 		if (err) {
 			return res.status(400).send(err.message);
+		}
+
+		if (req.body.userLang) {
+			user.setSetting(data.uid, 'userLang', req.body.userLang);
 		}
 
 		res.json(data);
@@ -255,7 +254,6 @@ authenticationController.localLogin = function(req, username, password, next) {
 authenticationController.logout = function(req, res, next) {
 	if (req.user && parseInt(req.user.uid, 10) > 0 && req.sessionID) {
 		var uid = parseInt(req.user.uid, 10);
-		require('../socket.io').logoutUser(req.user.uid);
 		db.sessionStore.destroy(req.sessionID, function(err) {
 			if (err) {
 				return next(err);

@@ -80,6 +80,7 @@ define('forum/search', ['search', 'autocomplete'], function(searchModule, autoco
 				$('#posted-by-user').val(params.by);
 			}
 
+
 			if (params.categories) {
 				$('#posted-in-categories').val(params.categories);
 			}
@@ -118,19 +119,19 @@ define('forum/search', ['search', 'autocomplete'], function(searchModule, autoco
 		}
 
 		try {
-			var regexStr = searchQuery.trim().split(' ').join('|');
+			var regexStr = searchQuery.replace(/^"/, '').replace(/"$/, '').trim().split(' ').join('|');
 			var regex = new RegExp('(' + regexStr + ')', 'gi');
 
 			$('.search-result-text').each(function() {
 				var result = $(this);
 
 				var text = result.html().replace(regex, '<strong>$1</strong>');
-				result.html(text).find('img').addClass('img-responsive').each(function() {
+				result.html(text).find('img:not(.not-responsive)').addClass('img-responsive').each(function() {
 					$(this).attr('src', $(this).attr('src').replace(/<strong>([\s\S]*?)<\/strong>/gi, '$1'));
 				});
 
 				result.find('a').each(function() {
-					$(this).attr('href', $(this).attr('href').replace(/<strong>([\s\S]*?)<\/strong>/gi, '$1'));	
+					$(this).attr('href', $(this).attr('href').replace(/<strong>([\s\S]*?)<\/strong>/gi, '$1'));
 				});
 			});
 		} catch(e) {

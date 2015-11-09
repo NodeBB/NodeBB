@@ -15,7 +15,25 @@ SocketCategories.getRecentReplies = function(socket, cid, callback) {
 };
 
 SocketCategories.get = function(socket, data, callback) {
-	categories.getCategoriesByPrivilege(socket.uid, 'find', callback);
+	async.parallel({
+		isAdmin: async.apply(user.isAdministrator, socket.uid),
+		categories: function(next) {
+			async.waterfall([
+				async.apply(db.getSortedSetRange, 'categories:cid', 0, -1),
+				async.apply(categories.getCategoriesData),
+			], next);
+		}
+	}, function(err, results) {
+		if (err) {
+			return callback(err);
+		}
+
+		results.categories = results.categories.filter(function(category) {
+			return category && (!category.disabled || results.isAdmin);
+		});
+
+		callback(null, results.categories);
+	});
 };
 
 SocketCategories.getWatchedCategories = function(socket, data, callback) {
@@ -61,7 +79,7 @@ SocketCategories.loadMore = function(socket, data, callback) {
 			return callback(new Error('[[error:no-privileges]]'));
 		}
 
-
+		var infScrollTopicsPerPage = 20;
 		var set = 'cid:' + data.cid + ':tids',
 			reverse = false;
 
@@ -72,8 +90,16 @@ SocketCategories.loadMore = function(socket, data, callback) {
 			set = 'cid:' + data.cid + ':tids:posts';
 		}
 
-		var start = parseInt(data.after, 10),
-			stop = start + results.settings.topicsPerPage - 1;
+		var start = Math.max(0, parseInt(data.after, 10)) + 1;
+
+		if (data.direction === -1) {
+			start = start - (reverse ? infScrollTopicsPerPage : -infScrollTopicsPerPage);
+		}
+
+		var stop = start + infScrollTopicsPerPage - 1;
+
+		start = Math.max(0, start);
+		stop = Math.max(0, stop);
 
 		if (results.targetUid) {
 			set = 'cid:' + data.cid + ':uid:' + results.targetUid + ':tids';
@@ -111,13 +137,8 @@ SocketCategories.getTopicCount = function(socket, cid, callback) {
 	categories.getCategoryField(cid, 'topic_count', callback);
 };
 
-SocketCategories.getUsersInCategory = function(socket, cid, callback) {
-	var uids = websockets.getUidsInRoom('category_' + cid);
-	user.getMultipleUserFields(uids, ['uid', 'userslug', 'username', 'picture'], callback);
-};
-
 SocketCategories.getCategoriesByPrivilege = function(socket, privilege, callback) {
-	categories.getCategoriesByPrivilege(socket.uid, privilege, callback);
+	categories.getCategoriesByPrivilege('categories:cid', socket.uid, privilege, callback);
 };
 
 SocketCategories.watch = function(socket, cid, callback) {

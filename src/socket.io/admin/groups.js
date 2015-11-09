@@ -1,5 +1,6 @@
 "use strict";
 
+var async = require('async');
 var groups = require('../../groups'),
 	Groups = {};
 
@@ -15,19 +16,22 @@ Groups.create = function(socket, data, callback) {
 	}, callback);
 };
 
-Groups.get = function(socket, groupName, callback) {
-	groups.get(groupName, {
-		escape: false,
-		uid: socket.uid
-	}, callback);
-};
-
 Groups.join = function(socket, data, callback) {
 	if (!data) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
 
-	groups.join(data.groupName, data.uid, callback);
+	async.waterfall([
+		function (next) {
+			groups.isMember(data.uid, data.groupName, next);
+		},
+		function (isMember, next) {
+			if (isMember) {
+				return next(new Error('[[error:group-already-member]]'));
+			}
+			groups.join(data.groupName, data.uid, next);
+		}
+	], callback);
 };
 
 Groups.leave = function(socket, data, callback) {
@@ -39,7 +43,17 @@ Groups.leave = function(socket, data, callback) {
 		return callback(new Error('[[error:cant-remove-self-as-admin]]'));
 	}
 
-	groups.leave(data.groupName, data.uid, callback);
+	async.waterfall([
+		function (next) {
+			groups.isMember(data.uid, data.groupName, next);
+		},
+		function (isMember, next) {
+			if (!isMember) {
+				return next(new Error('[[error:group-not-member]]'));
+			}
+			groups.leave(data.groupName, data.uid, next);
+		}
+	], callback);
 };
 
 Groups.update = function(socket, data, callback) {

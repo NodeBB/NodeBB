@@ -12,8 +12,9 @@
     "invited.none": "There are no invited members at this time",
     "invited.uninvite": "Rescind Invitation",
     "invited.search": "Search for a user to invite to this group",
-    "cover-instructions": "ลากรูปภาพไปวางยังตำแหน่งที่ต้องการแล้วกดที่ปุ่ม <strong>บันทึก</strong>",
-    "cover-change": "ปรับปรุง",
+    "invited.notification_title": "You have been invited to join <strong>%1</strong>",
+    "request.notification_title": "Group Membership Request from <strong>%1</strong>",
+    "request.notification_text": "<strong>%1</strong> has requested to become a member of <strong>%2</strong>",
     "cover-save": "บันทึก",
     "cover-saving": "กำลังบันทึก",
     "details.title": "ข้อมูล Group",
@@ -45,5 +46,6 @@
     "membership.invitation-pending": "Invitation Pending",
     "membership.join-group": "Join Group",
     "membership.leave-group": "Leave Group",
-    "membership.reject": "Reject"
+    "membership.reject": "Reject",
+    "new-group.group_name": "Group Name:"
 }

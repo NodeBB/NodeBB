@@ -1,27 +1,20 @@
 <!-- IMPORT admin/settings/header.tpl -->
 
-<div class="panel panel-default">
-	<div class="panel-heading">User List</div>
-	<div class="panel-body">
+<div class="row">
+	<div class="col-sm-2 col-xs-12 settings-header">Authentication</div>
+	<div class="col-sm-10 col-xs-12">
 		<form role="form">
 			<div class="checkbox">
-				<label>
-					<input type="checkbox" data-field="allowLocalLogin" checked> <strong>Allow local login</strong>
+				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
+					<input class="mdl-switch__input" type="checkbox" data-field="allowLocalLogin" checked>
+					<span class="mdl-switch__label"><strong>Allow local login</strong></span>
 				</label>
 			</div>
+
 			<div class="checkbox">
-				<label>
-					<input type="checkbox" data-field="allowAccountDelete" checked> <strong>Allow account deletion</strong>
-				</label>
-			</div>
-			<div class="checkbox">
-				<label>
-					<input type="checkbox" data-field="privateUserInfo"> <strong>Make user info private</strong>
-				</label>
-			</div>
-			<div class="checkbox">
-				<label>
-					<input type="checkbox" data-field="requireEmailConfirmation"> <strong>Require Email Confirmation</strong>
+				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
+					<input class="mdl-switch__input" type="checkbox" data-field="requireEmailConfirmation">
+					<span class="mdl-switch__label"><strong>Require Email Confirmation</strong></span>
 				</label>
 			</div>
 
@@ -47,38 +40,58 @@
 	</div>
 </div>
 
-<div class="panel panel-default">
-	<div class="panel-heading">Avatars</div>
-	<div class="panel-body">
+<div class="row">
+	<div class="col-sm-2 col-xs-12 settings-header">Account Settings</div>
+	<div class="col-sm-10 col-xs-12">
 		<form>
 			<div class="checkbox">
-				<label>
-					<input type="checkbox" data-field="allowProfileImageUploads"> <strong>Allow users to upload profile images</strong>
+				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
+					<input class="mdl-switch__input" type="checkbox" data-field="username:disableEdit">
+					<span class="mdl-switch__label"><strong>Disable username changes</strong></span>
+				</label>
+			</div>
+			<div class="checkbox">
+				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
+					<input class="mdl-switch__input" type="checkbox" data-field="allowAccountDelete" checked>
+					<span class="mdl-switch__label"><strong>Allow account deletion</strong></span>
+				</label>
+			</div>
+			<div class="checkbox">
+				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
+					<input class="mdl-switch__input" type="checkbox" data-field="privateUserInfo">
+					<span class="mdl-switch__label"><strong>Make user info private</strong></span>
+				</label>
+			</div>
+		</form>
+	</div>
+</div>
+
+<div class="row">
+	<div class="col-sm-2 col-xs-12 settings-header">Avatars</div>
+	<div class="col-sm-10 col-xs-12">
+		<form>
+			<div class="checkbox">
+				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
+					<input class="mdl-switch__input" type="checkbox" data-field="allowProfileImageUploads">
+					<span class="mdl-switch__label"><strong>Allow users to upload profile images</strong></span>
 				</label>
 			</div>
 
 			<div class="checkbox">
-				<label>
-					<input type="checkbox" data-field="profile:convertProfileImageToPNG"> <strong>Convert profile image uploads to PNG</strong>
+				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
+					<input class="mdl-switch__input" type="checkbox" data-field="profile:convertProfileImageToPNG">
+					<span class="mdl-switch__label"><strong>Convert profile image uploads to PNG</strong></span>
 				</label>
 			</div>
 
 			<div class="form-group">
-				<label>Default Gravatar Image</label>
-				<select class="form-control" data-field="defaultGravatarImage">
-					<option value="">default</option>
-					<option value="identicon">identicon</option>
-					<option value="mm">mystery-man</option>
-					<option value="monsterid">monsterid</option>
-					<option value="wavatar">wavatar</option>
-					<option value="retro">retro</option>
-				</select>
-			</div>
-
-			<div class="form-group">
-				<label>Custom Gravatar Default Image</label>
-				<input id="customGravatarDefaultImage" type="text" class="form-control" placeholder="A custom image to use instead of gravatar defaults" data-field="customGravatarDefaultImage" /><br />
-				<input data-action="upload" data-target="customGravatarDefaultImage" data-route="{config.relative_path}/api/admin/uploadgravatardefault" type="button" class="btn btn-default" value="Upload"></input>
+				<label>Custom Default Avatar</label>
+				<div class="input-group">
+					<input id="defaultAvatar" type="text" class="form-control" placeholder="A custom image to use instead of user icons" data-field="defaultAvatar" />
+					<span class="input-group-btn">
+						<input data-action="upload" data-target="defaultAvatar" data-route="{config.relative_path}/api/admin/uploadDefaultAvatar" type="button" class="btn btn-default" value="Upload"></input>
+					</span>
+				</div>
 			</div>
 
 			<div class="form-group">
@@ -87,16 +100,48 @@
 			</div>
 
 			<div class="form-group">
-				<label>Maximum User Image File Size</label>
+				<label>Maximum Profile Image File Size</label>
 				<input type="text" class="form-control" placeholder="Maximum size of uploaded user images in kilobytes" data-field="maximumProfileImageSize" />
+			</div>
+
+			<div class="form-group">
+				<label>Maximum Cover Image File Size</label>
+				<input type="text" class="form-control" placeholder="Maximum size of uploaded cover images in kilobytes" data-field="maximumCoverImageSize" />
 			</div>
 		</form>
 	</div>
 </div>
 
-<div class="panel panel-default">
-	<div class="panel-heading">Account Protection</div>
-	<div class="panel-body">
+<div class="row">
+	<div class="col-sm-2 col-xs-12 settings-header">Profile Cover Image</div>
+	<div class="col-sm-10 col-xs-12">
+		<form>
+			<label for="profile:defaultCovers"><strong>Default Cover Images</strong></label>
+			<p class="help-block">
+				Add comma-separated default cover images for accounts that don't have an uploaded cover image
+			</p>
+			<input type="text" class="form-control input-lg" id="profile:defaultCovers" data-field="profile:defaultCovers" value="{config.relative_path}/images/cover-default.png" placeholder="https://example.com/group1.png, https://example.com/group2.png" />
+		</form>
+	</div>
+</div>
+
+<div class="row">
+	<div class="col-sm-2 col-xs-12 settings-header">Themes</div>
+	<div class="col-sm-10 col-xs-12">
+		<form>
+			<div class="checkbox">
+				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
+					<input class="mdl-switch__input" type="checkbox" data-field="disableCustomUserSkins">
+					<span class="mdl-switch__label"><strong>Prevent users from choosing a custom skin</strong></span>
+				</label>
+			</div>
+		</form>
+	</div>
+</div>
+
+<div class="row">
+	<div class="col-sm-2 col-xs-12 settings-header">Account Protection</div>
+	<div class="col-sm-10 col-xs-12">
 		<form>
 			<div class="form-group">
 				<label for="loginAttempts">Login attempts per hour</label>
@@ -121,9 +166,9 @@
 	</div>
 </div>
 
-<div class="panel panel-default">
-	<div class="panel-heading">User Registration</div>
-	<div class="panel-body">
+<div class="row">
+	<div class="col-sm-2 col-xs-12 settings-header">User Registration</div>
+	<div class="col-sm-10 col-xs-12">
 		<form>
 			<div class="form-group">
 				<label>Minimum Username Length</label>
@@ -149,13 +194,73 @@
 	</div>
 </div>
 
-<div class="panel panel-default">
-	<div class="panel-heading">User Search</div>
-	<div class="panel-body">
+<div class="row">
+	<div class="col-sm-2 col-xs-12 settings-header">User Search</div>
+	<div class="col-sm-10 col-xs-12">
 		<form>
 			<div class="form-group">
 				<label>Number of results to display</label>
 				<input type="text" class="form-control" value="24" data-field="userSearchResultsPerPage">
+			</div>
+
+		</form>
+	</div>
+</div>
+
+<div class="row">
+	<div class="col-sm-2 col-xs-12 settings-header">Default User Settings</div>
+	<div class="col-sm-10 col-xs-12">
+		<form>
+			<div class="checkbox">
+				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
+					<input class="mdl-switch__input" type="checkbox" data-field="openOutgoingLinksInNewTab">
+					<span class="mdl-switch__label"><strong>[[user:open_links_in_new_tab]]</strong></span>
+				</label>
+			</div>
+
+			<div class="checkbox">
+				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
+					<input class="mdl-switch__input" type="checkbox" data-field="topicSearchEnabled">
+					<span class="mdl-switch__label"><strong>[[user:enable_topic_searching]]</strong></span>
+				</label>
+			</div>
+
+			<div class="form-group">
+				<label>[[user:digest_label]]</label>
+				<select class="form-control" data-field="dailyDigestFreq">
+					<option value="off">Off</option>
+					<option value="day">Daily</option>
+					<option value="week">Weekly</option>
+					<option value="month">Monthly</option>
+				</select>
+			</div>
+
+			<div class="checkbox">
+				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
+					<input class="mdl-switch__input" type="checkbox" data-field="sendChatNotifications">
+					<span class="mdl-switch__label"><strong>[[user:send_chat_notifications]]</strong></span>
+				</label>
+			</div>
+
+			<div class="checkbox">
+				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
+					<input class="mdl-switch__input" type="checkbox" data-field="sendPostNotifications">
+					<span class="mdl-switch__label"><strong>[[user:send_post_notifications]]</strong></span>
+				</label>
+			</div>
+
+			<div class="checkbox">
+				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
+					<input class="mdl-switch__input" type="checkbox" data-field="followTopicsOnCreate">
+					<span class="mdl-switch__label"><strong>[[user:follow_topics_you_create]]</strong></span>
+				</label>
+			</div>
+
+			<div class="checkbox">
+				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
+					<input class="mdl-switch__input" type="checkbox" data-field="followTopicsOnReply">
+					<span class="mdl-switch__label"><strong>[[user:follow_topics_you_reply_to]]</strong></span>
+				</label>
 			</div>
 
 		</form>

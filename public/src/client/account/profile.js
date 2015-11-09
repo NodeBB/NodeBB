@@ -1,8 +1,13 @@
 'use strict';
 
-/* globals define, ajaxify, app, utils, socket, bootbox */
+/* globals define, ajaxify, app, socket, bootbox */
 
-define('forum/account/profile', ['forum/account/header', 'forum/infinitescroll', 'translator'], function(header, infinitescroll, translator) {
+define('forum/account/profile', [
+	'forum/account/header',
+	'forum/infinitescroll',
+	'translator',
+	'components'
+], function(header, infinitescroll, translator) {
 	var Account = {},
 		yourid,
 		theirid,
@@ -18,24 +23,7 @@ define('forum/account/profile', ['forum/account/header', 'forum/infinitescroll',
 		app.enterRoom('user/' + theirid);
 
 		processPage();
-
 		updateButtons();
-
-		$('#follow-btn').on('click', function() {
-			return toggleFollow('follow');
-		});
-
-		$('#unfollow-btn').on('click', function() {
-			return toggleFollow('unfollow');
-		});
-
-		$('#chat-btn').on('click', function() {
-			app.openChat($('.account-username').html(), theirid);
-		});
-
-		$('#banAccountBtn').on('click', banAccount);
-		$('#unbanAccountBtn').on('click', unbanAccount);
-		$('#deleteAccountBtn').on('click', deleteAccount);
 
 		socket.removeListener('event:user_status_change', onUserStatusChange);
 		socket.on('event:user_status_change', onUserStatusChange);
@@ -44,7 +32,7 @@ define('forum/account/profile', ['forum/account/header', 'forum/infinitescroll',
 	};
 
 	function processPage() {
-		$('[component="posts"] img, [component="aboutme"] img').addClass('img-responsive');
+		$('[component="posts"] img:not(.not-responsive), [component="aboutme"] img:not(.not-responsive)').addClass('img-responsive');
 	}
 
 	function updateButtons() {
@@ -54,27 +42,12 @@ define('forum/account/profile', ['forum/account/header', 'forum/infinitescroll',
 		$('#chat-btn').toggleClass('hide', isSelfOrNotLoggedIn);
 	}
 
-	function toggleFollow(type) {
-		socket.emit('user.' + type, {
-			uid: theirid
-		}, function(err) {
-			if (err) {
-				return app.alertError(err.message);
-			}
-
-			$('#follow-btn').toggleClass('hide', type === 'follow');
-			$('#unfollow-btn').toggleClass('hide', type === 'unfollow');
-			app.alertSuccess('[[global:alert.' + type + ', ' + $('.account-username').html() + ']]');
-		});
-		return false;
-	}
-
 	function onUserStatusChange(data) {
 		if (parseInt(ajaxify.data.theirid, 10) !== parseInt(data.uid, 10)) {
 			return;
 		}
 
-		app.updateUserStatus($('.account [component="user/status"]'), data.status);
+		app.updateUserStatus($('.account [data-uid="' + data.uid + '"] [component="user/status"]'), data.status);
 	}
 
 	function loadMorePosts(direction) {
@@ -107,56 +80,12 @@ define('forum/account/profile', ['forum/account/header', 'forum/infinitescroll',
 			return callback();
 		}
 
-		infinitescroll.parseAndTranslate('account/profile', 'posts', {posts: posts}, function(html) {
+		app.parseAndTranslate('account/profile', 'posts', {posts: posts}, function(html) {
 
 			$('[component="posts"]').append(html);
 			html.find('.timeago').timeago();
 
 			callback();
-		});
-	}
-
-	function banAccount() {
-		translator.translate('[[user:ban_account_confirm]]', function(translated) {
-			bootbox.confirm(translated, function(confirm) {
-				if (!confirm) {
-					return;
-				}
-				socket.emit('admin.user.banUsers', [ajaxify.data.theirid], function(err) {
-					if (err) {
-						return app.alertError(err.message);
-					}
-					$('#banAccountBtn').toggleClass('hide', true);
-					$('#banLabel, #unbanAccountBtn').toggleClass('hide', false);
-				});
-			});
-		});
-	}
-
-	function unbanAccount() {
-		socket.emit('admin.user.unbanUsers', [ajaxify.data.theirid], function(err) {
-			if (err) {
-				return app.alertError(err.message);
-			}
-			$('#banAccountBtn').toggleClass('hide', false);
-			$('#banLabel, #unbanAccountBtn').toggleClass('hide', true);
-		});
-	}
-
-	function deleteAccount() {
-		translator.translate('[[user:delete_this_account_confirm]]', function(translated) {
-			bootbox.confirm(translated, function(confirm) {
-				if (!confirm) {
-					return;
-				}
-
-				socket.emit('admin.user.deleteUsers', [ajaxify.data.theirid], function(err) {
-					if (err) {
-						return app.alertError(err.message);
-					}
-					history.back();
-				});
-			});
 		});
 	}
 

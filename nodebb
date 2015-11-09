@@ -4,9 +4,7 @@ var colors = require('colors'),
 	cproc = require('child_process'),
 	argv = require('minimist')(process.argv.slice(2)),
 	fs = require('fs'),
-	async = require('async'),
-	touch = require('touch'),
-	npm = require('npm');
+	async = require('async');
 
 var getRunningPid = function(callback) {
 		fs.readFile(__dirname + '/pidfile', {
@@ -24,6 +22,13 @@ var getRunningPid = function(callback) {
 			}
 		});
 	};
+
+function fork(args) {
+	cproc.fork('app.js', args, {
+		cwd: __dirname,
+		silent: false
+	});
+}
 
 switch(process.argv[2]) {
 	case 'status':
@@ -109,42 +114,47 @@ switch(process.argv[2]) {
 	case 'reset':
 		var args = process.argv.slice(0);
 		args.unshift('--reset');
+		fork(args);
+		break;
 
-		cproc.fork('app.js', args, {
-			cwd: __dirname,
-			silent: false
-		});
+	case 'activate':
+		var args = process.argv.slice(0);
+		args.unshift('--activate');
+		fork(args);
+		break;
+
+	case 'plugins':
+		var args = process.argv.slice(0);
+		args.unshift('--plugins');
+		fork(args);
 		break;
 
 	case 'upgrade':
 		async.series([
 			function(next) {
-				process.stdout.write('1. '.bold + 'Bringing base dependencies up to date\n'.yellow);
-				npm.load({
-					loglevel: 'silent'
-				}, function() {
-					npm.commands.install(next);
-				});
+				process.stdout.write('1. '.bold + 'Bringing base dependencies up to date... '.yellow);
+				require('child_process').execFile('/usr/bin/env', ['npm', 'i', '--production'], next);
 			},
 			function(next) {
-				process.stdout.write('2. '.bold + 'Updating NodeBB data store schema\n'.yellow);
+				process.stdout.write('OK\n'.green);
+				process.stdout.write('2. '.bold + 'Updating NodeBB data store schema.\n'.yellow);
 				var upgradeProc = cproc.fork('app.js', ['--upgrade'], {
 					cwd: __dirname,
 					silent: false
 				});
 
 				upgradeProc.on('close', next)
-			},
-			function(next) {
-				process.stdout.write('3. '.bold + 'Storing upgrade date in "package.json"\n'.yellow);
-				touch(__dirname + '/package.json', {}, next);
 			}
 		], function(err) {
 			if (err) {
 				process.stdout.write('\nError'.red + ': ' + err.message + '\n');
 			} else {
-				var message = 'NodeBB Upgrade Complete!',
-					spaces = new Array(Math.floor(process.stdout.columns / 2) - (message.length / 2) + 1).join(' ');
+				var message = 'NodeBB Upgrade Complete!';
+				// some consoles will return undefined/zero columns, so just use 2 spaces in upgrade script if we can't get our column count
+				var columns = process.stdout.columns;
+				var spaces = columns ? new Array(Math.floor(columns / 2) - (message.length / 2) + 1).join(' ') : "  ";
+
+				process.stdout.write('OK\n'.green);
 				process.stdout.write('\n' + spaces + message.green.bold + '\n\n'.reset);
 			}
 		});
@@ -160,6 +170,8 @@ switch(process.argv[2]) {
 		process.stdout.write('\t' + 'log'.yellow + '\tOpens the logging interface (useful for debugging)\n');
 		process.stdout.write('\t' + 'setup'.yellow + '\tRuns the NodeBB setup script\n');
 		process.stdout.write('\t' + 'reset'.yellow + '\tDisables all plugins, restores the default theme.\n');
+		process.stdout.write('\t' + 'activate'.yellow + '\tActivate a plugin on start up.\n');
+		process.stdout.write('\t' + 'plugins'.yellow + '\tList all plugins that have been installed.\n');
 		process.stdout.write('\t' + 'upgrade'.yellow + '\tRun NodeBB upgrade scripts, ensure packages are up-to-date\n');
 		process.stdout.write('\t' + 'dev'.yellow + '\tStart NodeBB in interactive development mode\n');
 		process.stdout.write('\t' + 'watch'.yellow + '\tStart NodeBB in development mode and watch for changes\n');

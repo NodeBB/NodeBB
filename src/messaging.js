@@ -4,6 +4,8 @@ var db = require('./database'),
 	async = require('async'),
 	nconf = require('nconf'),
 	winston = require('winston'),
+	S = require('string'),
+
 	user = require('./user'),
 	plugins = require('./plugins'),
 	meta = require('./meta'),
@@ -28,14 +30,22 @@ var db = require('./database'),
 	}
 
 	Messaging.addMessage = function(fromuid, touid, content, timestamp, callback) {
-		var uids = sortUids(fromuid, touid);
-
 		if (typeof timestamp === 'function') {
 			callback = timestamp;
 			timestamp = Date.now();
 		} else {
 			timestamp = timestamp || Date.now();
 		}
+
+		if (!content) {
+			return callback(new Error('[[error:invalid-chat-message]]'));
+		}
+
+		if (content.length > (meta.config.maximumChatMessageLength || 1000)) {
+			return callback(new Error('[[error:chat-message-too-long]]'));
+		}
+
+		var uids = sortUids(fromuid, touid);
 
 		db.incrObjectField('global', 'nextMid', function(err, mid) {
 			if (err) {
@@ -66,7 +76,7 @@ var db = require('./database'),
 					async.apply(Messaging.updateChatTime, touid, fromuid),
 					async.apply(Messaging.markRead, fromuid, touid),
 					async.apply(Messaging.markUnread, touid, fromuid),
-				], function(err, results) {
+				], function(err) {
 					if (err) {
 						return callback(err);
 					}
@@ -96,11 +106,17 @@ var db = require('./database'),
 		});
 	};
 
-	Messaging.getMessages = function(fromuid, touid, since, isNew, callback) {
-		var uids = sortUids(fromuid, touid);
+	Messaging.getMessages = function(params, callback) {
+		var fromuid = params.fromuid,
+			touid = params.touid,
+			since = params.since,
+			isNew = params.isNew,
+			count = params.count || parseInt(meta.config.chatMessageInboxSize, 10) || 250,
+			markRead = params.markRead || true;
 
-		var count = parseInt(meta.config.chatMessageInboxSize, 10) || 250;
-		var min = Date.now() - (terms[since] || terms.day);
+		var uids = sortUids(fromuid, touid),
+			min = params.count ? 0 : Date.now() - (terms[since] || terms.day);
+
 		if (since === 'recent') {
 			count = 49;
 			min = 0;
@@ -120,17 +136,19 @@ var db = require('./database'),
 			getMessages(mids, fromuid, touid, isNew, callback);
 		});
 
-		notifications.markRead('chat_' + touid + '_' + fromuid, fromuid, function(err) {
-			if (err) {
-				winston.error('[messaging] Could not mark notifications related to this chat as read: ' + err.message);
-			}
+		if (markRead) {
+			notifications.markRead('chat_' + touid + '_' + fromuid, fromuid, function(err) {
+				if (err) {
+					winston.error('[messaging] Could not mark notifications related to this chat as read: ' + err.message);
+				}
 
-			userNotifications.pushCount(fromuid);
-		});
+				userNotifications.pushCount(fromuid);
+			});
+		}
 	};
 
 	function getMessages(mids, fromuid, touid, isNew, callback) {
-		user.getMultipleUserFields([fromuid, touid], ['uid', 'username', 'userslug', 'picture'], function(err, userData) {
+		user.getUsersFields([fromuid, touid], ['uid', 'username', 'userslug', 'picture', 'status'], function(err, userData) {
 			if(err) {
 				return callback(err);
 			}
@@ -153,6 +171,7 @@ var db = require('./database'),
 
 						Messaging.parse(message.content, message.fromuid, fromuid, userData[1], userData[0], isNew, function(result) {
 							message.content = result;
+							message.cleanedContent = S(result).stripTags().decodeHTMLEntities().s;
 							next(null, message);
 						});
 					}, next);
@@ -166,7 +185,7 @@ var db = require('./database'),
 							message.newSet = true;
 						} else if (index > 0 && message.fromuid !== messages[index-1].fromuid) {
 							// If the previous message was from the other person, this is also a new set
-							message.newSet = true
+							message.newSet = true;
 						}
 
 						return message;
@@ -247,32 +266,38 @@ var db = require('./database'),
 					db.isSortedSetMembers('uid:' + uid + ':chats:unread', uids, next);
 				},
 				users: function(next) {
-					user.getMultipleUserFields(uids, ['uid', 'username', 'picture', 'status'] , next);
+					user.getUsersFields(uids, ['uid', 'username', 'picture', 'status', 'lastonline'] , next);
+				},
+				teasers: function(next) {
+					async.map(uids, function(fromuid, next) {
+						Messaging.getMessages({
+							fromuid: fromuid,
+							touid: uid,
+							isNew: false,
+							count: 1,
+							markRead: false
+						}, function(err, teaser) {
+							var teaser = teaser[0];
+							teaser.content = S(teaser.content).stripTags().decodeHTMLEntities().s;
+							next(err, teaser);
+						});
+					}, next);
 				}
 			}, function(err, results) {
 				if (err) {
 					return callback(err);
 				}
 
-				results.users.forEach(function(user, index) {
-					if (user && !parseInt(user.uid, 10)) {
-						Messaging.markRead(uid, uids[index]);
+				results.users.forEach(function(userData, index) {
+					if (userData && parseInt(userData.uid, 10)) {
+						userData.unread = results.unread[index];
+						userData.status = user.getStatus(userData);
+						userData.teaser = results.teasers[index];
 					}
 				});
 
 				results.users = results.users.filter(function(user) {
 					return user && parseInt(user.uid, 10);
-				});
-
-				if (!results.users.length) {
-					return callback(null, {users: [], nextStart: stop + 1});
-				}
-
-				results.users.forEach(function(user, index) {
-					if (user) {
-						user.unread = results.unread[index];
-						user.status = sockets.isUserOnline(user.uid) ? user.status : 'offline';
-					}
 				});
 
 				callback(null, {users: results.users, nextStart: stop + 1});
@@ -289,7 +314,7 @@ var db = require('./database'),
 			if (err) {
 				return;
 			}
-			sockets.in('uid_' + uid).emit('event:unread.updateChatCount', null, unreadCount);
+			sockets.in('uid_' + uid).emit('event:unread.updateChatCount', unreadCount);
 		});
 	};
 
@@ -298,7 +323,17 @@ var db = require('./database'),
 	};
 
 	Messaging.markUnread = function(uid, toUid, callback) {
-		db.sortedSetAdd('uid:' + uid + ':chats:unread', Date.now(), toUid, callback);
+		async.waterfall([
+			function (next) {
+				user.exists(toUid, next);
+			},
+			function (exists, next) {
+				if (!exists) {
+					return next(new Error('[[error:no-user]]'));
+				}
+				db.sortedSetAdd('uid:' + uid + ':chats:unread', Date.now(), toUid, next);
+			}
+		], callback);
 	};
 
 	Messaging.notifyUser = function(fromuid, touid, messageObj) {
@@ -339,33 +374,29 @@ var db = require('./database'),
 	};
 
 	Messaging.canMessage = function(fromUid, toUid, callback) {
-		if (parseInt(meta.config.disableChat) === 1) {
-			return callback(new Error('[[error:chat-disabled]]'));
-		} else if (toUid === fromUid) {
-			return callback(new Error('[[error:cant-chat-with-yourself]]'));
-		} else if (fromUid === 0) {
-			return callback(new Error('[[error:not-logged-in]]'));
+		if (parseInt(meta.config.disableChat) === 1 || !fromUid || toUid === fromUid) {
+			return callback(null, false);
 		}
 
 		async.waterfall([
-			function(next) {
-				user.getUserFields(fromUid, ['banned', 'email:confirmed'], function(err, userData) {
-					if (err) {
-						return callback(err);
-					}
-
-					if (parseInt(userData.banned, 10) === 1) {
-						return callback(new Error('[[error:user-banned]]'));
-					}
-
-					if (parseInt(meta.config.requireEmailConfirmation, 10) === 1 && parseInt(userData['email:confirmed'], 10) !== 1) {
-						return callback(new Error('[[error:email-not-confirmed-chat]]'));
-					}
-
-					next();
-				});
+			function (next) {
+				user.exists(toUid, next);
 			},
-			function(next) {
+			function (exists, next) {
+				if (!exists) {
+					return callback(null, false);
+				}
+				user.getUserFields(fromUid, ['banned', 'email:confirmed'], next);
+			},
+			function (userData, next) {
+				if (parseInt(userData.banned, 10) === 1) {
+					return callback(null, false);
+				}
+
+				if (parseInt(meta.config.requireEmailConfirmation, 10) === 1 && parseInt(userData['email:confirmed'], 10) !== 1) {
+					return callback(null, false);
+				}
+
 				user.getSettings(toUid, next);
 			},
 			function(settings, next) {
@@ -385,35 +416,37 @@ var db = require('./database'),
 	};
 
 	function sendNotifications(fromuid, touid, messageObj, callback) {
-		if (sockets.isUserOnline(touid)) {
-			return callback();
-		}
-
-		notifications.create({
-			bodyShort: '[[notifications:new_message_from, ' + messageObj.fromUser.username + ']]',
-			bodyLong: messageObj.content,
-			nid: 'chat_' + fromuid + '_' + touid,
-			from: fromuid,
-			path: '/chats/' + messageObj.fromUser.username
-		}, function(err, notification) {
-			if (!err && notification) {
-				notifications.push(notification, [touid], callback);
+		user.isOnline(touid, function(err, isOnline) {
+			if (err || isOnline) {
+				return callback(err);
 			}
-		});
 
-		user.getSettings(messageObj.toUser.uid, function(err, settings) {
-			if (settings.sendChatNotifications && !parseInt(meta.config.disableEmailSubscriptions, 10)) {
-				emailer.send('notif_chat', touid, {
-					subject: '[[email:notif.chat.subject, ' + messageObj.fromUser.username + ']]',
-					username: messageObj.toUser.username,
-					userslug: utils.slugify(messageObj.toUser.username),
-					summary: '[[notifications:new_message_from, ' + messageObj.fromUser.username + ']]',
-					message: messageObj,
-					site_title: meta.config.title || 'NodeBB',
-					url: nconf.get('url'),
-					fromUserslug: utils.slugify(messageObj.fromUser.username)
-				});
-			}
+			notifications.create({
+				bodyShort: '[[notifications:new_message_from, ' + messageObj.fromUser.username + ']]',
+				bodyLong: messageObj.content,
+				nid: 'chat_' + fromuid + '_' + touid,
+				from: fromuid,
+				path: '/chats/' + messageObj.fromUser.username
+			}, function(err, notification) {
+				if (!err && notification) {
+					notifications.push(notification, [touid], callback);
+				}
+			});
+
+			user.getSettings(messageObj.toUser.uid, function(err, settings) {
+				if (settings.sendChatNotifications && !parseInt(meta.config.disableEmailSubscriptions, 10)) {
+					emailer.send('notif_chat', touid, {
+						subject: '[[email:notif.chat.subject, ' + messageObj.fromUser.username + ']]',
+						username: messageObj.toUser.username,
+						userslug: utils.slugify(messageObj.toUser.username),
+						summary: '[[notifications:new_message_from, ' + messageObj.fromUser.username + ']]',
+						message: messageObj,
+						site_title: meta.config.title || 'NodeBB',
+						url: nconf.get('url'),
+						fromUserslug: utils.slugify(messageObj.fromUser.username)
+					});
+				}
+			});
 		});
 	}
 

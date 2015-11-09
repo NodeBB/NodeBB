@@ -33,6 +33,7 @@
     "header.notifications": "Ilmoitukset",
     "header.search": "Hae",
     "header.profile": "Profiili",
+    "header.navigation": "Navigation",
     "notifications.loading": "Ladataan ilmoituksia",
     "chats.loading": "Ladataan keskusteluja",
     "motd.welcome": "Tervetuloa NodeBB:hen, tulevaisuuden keskustelualustalle.",
@@ -55,9 +56,11 @@
     "posted_ago_by_guest": "posted %1 by Guest",
     "posted_ago_by": "posted %1 by %2",
     "posted_ago": "lähetetty %1",
-    "posted_in_ago_by_guest": "posted in %1 %2 by Guest",
-    "posted_in_ago_by": "posted in %1 %2 by %3",
+    "posted_in": "posted in %1",
+    "posted_in_by": "posted in %1 by %2",
     "posted_in_ago": "posted in %1 %2",
+    "posted_in_ago_by": "posted in %1 %2 by %3",
+    "posted_in_ago_by_guest": "posted in %1 %2 by Guest",
     "replied_ago": "vastattu %1",
     "user_posted_ago": "%1 lähetti %2",
     "guest_posted_ago": "Vieras kirjoitti %1",
@@ -67,7 +70,7 @@
     "recentposts": "Viimeisimmät viestit",
     "recentips": "Äskettäin kirjautuneet IP-osoitteet",
     "away": "Poissa",
-    "dnd": "Älä häiritse",
+    "dnd": "Do not disturb",
     "invisible": "Näkymätön",
     "offline": "Offline",
     "email": "Sähköposti",
@@ -79,5 +82,6 @@
     "privacy": "Yksityisyys",
     "follow": "Seuraa",
     "unfollow": "Älä seuraa",
-    "delete_all": "Poista kaikki"
+    "delete_all": "Poista kaikki",
+    "map": "Map"
 }

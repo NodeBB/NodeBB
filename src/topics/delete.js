@@ -5,7 +5,8 @@ var async = require('async'),
 
 	user = require('../user'),
 	posts = require('../posts'),
-	plugins = require('../plugins');
+	plugins = require('../plugins'),
+	batch = require('../batch');
 
 
 module.exports = function(Topics) {
@@ -31,7 +32,9 @@ module.exports = function(Topics) {
 						db.sortedSetRemove('cid:' + topicData.cid + ':pids', pids, next);
 					});
 				}
-			], callback);
+			], function(err, results) {
+				callback(err);
+			});
 		});
 	};
 
@@ -76,8 +79,31 @@ module.exports = function(Topics) {
 						});
 					});
 				}
-			], callback);
+			], function(err, results) {
+				callback(err);
+			});
 		});
+	};
+
+	Topics.purgePostsAndTopic = function(tid, callback) {
+		var mainPid;
+		async.waterfall([
+			function (next) {
+				Topics.getTopicField(tid, 'mainPid', next);
+			},
+			function (_mainPid, next) {
+				mainPid = _mainPid;
+				batch.processSortedSet('tid:' + tid + ':posts', function(pids, next) {
+					async.eachLimit(pids, 10, posts.purge, next);
+				}, {alwaysStartAt: 0}, next);
+			},
+			function (next) {
+				posts.purge(mainPid, next);
+			},
+			function (next) {
+				Topics.purge(tid, next);
+			}
+		], callback);
 	};
 
 	Topics.purge = function(tid, callback) {
@@ -86,7 +112,8 @@ module.exports = function(Topics) {
 				db.deleteAll([
 					'tid:' + tid + ':followers',
 					'tid:' + tid + ':posts',
-					'tid:' + tid + ':posts:votes'
+					'tid:' + tid + ':posts:votes',
+					'tid:' + tid + ':bookmarks'
 				], next);
 			},
 			function(next) {

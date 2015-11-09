@@ -1,14 +1,15 @@
 "use strict";
 
 
-var navigation = {},
-	plugins = require('../plugins'),
-	db = require('../database'),
-	admin = require('./admin'),
-	translator = require('../../public/src/modules/translator');
-
+var navigation = {};
+var admin = require('./admin');
+var translator = require('../../public/src/modules/translator');
 
 navigation.get = function(callback) {
+	if (admin.cache) {
+		return callback(null, admin.cache);
+	}
+
 	admin.get(function(err, data) {
 		if (err) {
 			return callback(err);
@@ -24,6 +25,8 @@ navigation.get = function(callback) {
 			}
 			return item;
 		});
+
+		admin.cache = data;
 
 		callback(null, data);
 	});

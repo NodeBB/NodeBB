@@ -8,7 +8,6 @@ var fs = require('fs'),
 	Magic = mmmagic.Magic,
 	mime = require('mime'),
 
-	meta = require('./meta'),
 	utils = require('../public/src/utils');
 
 var file = {};
@@ -46,10 +45,6 @@ file.isFileTypeAllowed = function(path, allowedExtensions, callback) {
 		return callback();
 	}
 
-	allowedExtensions = allowedExtensions.filter(Boolean).map(function(extension) {
-		return extension.trim();
-	});
-
 	var magic = new Magic(mmmagic.MAGIC_MIME_TYPE);
 	magic.detectFile(path, function(err, mimeType) {
 		if (err) {
@@ -59,7 +54,7 @@ file.isFileTypeAllowed = function(path, allowedExtensions, callback) {
 		var uploadedFileExtension = mime.extension(mimeType);
 
 		if (allowedExtensions.indexOf(uploadedFileExtension) === -1) {
-			return callback(new Error('[[error:invalid-file-type, ' + allowedExtensions.join('-') + ']]'));
+			return callback(new Error('[[error:invalid-file-type, ' + allowedExtensions.join('&#44; ') + ']]'));
 		}
 
 		callback();
@@ -67,12 +62,39 @@ file.isFileTypeAllowed = function(path, allowedExtensions, callback) {
 };
 
 file.allowedExtensions = function() {
+	var meta = require('./meta');
 	var allowedExtensions = (meta.config.allowedFileExtensions || '').trim();
 	if (!allowedExtensions) {
 		return [];
 	}
 	allowedExtensions = allowedExtensions.split(',');
+	allowedExtensions = allowedExtensions.filter(Boolean).map(function(extension) {
+		extension = extension.trim();
+		return extension.replace(/\./g, '');
+	});
+
+	if (allowedExtensions.indexOf('jpg') !== -1 && allowedExtensions.indexOf('jpeg') === -1) {
+		allowedExtensions.push('jpeg');
+	}
+
 	return allowedExtensions;
+};
+
+file.exists = function(path, callback) {
+	fs.stat(path, function(err, stat) {
+		callback(!err && stat);
+	});
+};
+
+file.existsSync = function(path) {
+	var exists = false;
+	try {
+		exists = fs.statSync(path);
+	} catch(err) {
+		exists = false;
+	}
+
+	return !!exists;
 };
 
 module.exports = file;

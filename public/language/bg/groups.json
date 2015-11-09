@@ -12,8 +12,9 @@
     "invited.none": "В момента няма поканени членове",
     "invited.uninvite": "Отмяна на поканата",
     "invited.search": "Потърсете потребител, когото да поканите в тази група",
-    "cover-instructions": "Плъзнете снимка, наместете я в предпочитаната позиция и натистнете <strong>Запазване</strong>",
-    "cover-change": "Промяна",
+    "invited.notification_title": "Вие бяхте поканен/а да се присъедините към <strong>%1</strong>",
+    "request.notification_title": "Заявка за членство в групата от <strong>%1</strong>",
+    "request.notification_text": "<strong>%1</strong> поиска да стане член на <strong>%2</strong>",
     "cover-save": "Запазване",
     "cover-saving": "Запазване",
     "details.title": "Подробности за групата",
@@ -38,12 +39,13 @@
     "details.private_help": "Ако е включено, присъединяването към група изисква одобрението на собственика ѝ",
     "details.hidden": "Скрита",
     "details.hidden_help": "Ако е включено, тази група няма да бъде извеждана в списъка от групи и потребителите ще трябва да бъдат поканени лично",
-    "details.delete_group": "Delete Group",
+    "details.delete_group": "Изтриване на групата",
     "event.updated": "Подробностите за групата бяха обновени",
     "event.deleted": "Групата „%1“ беше изтрита",
     "membership.accept-invitation": "Приемане на поканата",
     "membership.invitation-pending": "Чакаща покана",
     "membership.join-group": "Присъединяване към групата",
     "membership.leave-group": "Напускане на групата",
-    "membership.reject": "Отхвърляне"
+    "membership.reject": "Отхвърляне",
+    "new-group.group_name": "Име на групата:"
 }

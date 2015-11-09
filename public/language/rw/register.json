@@ -1,0 +1,19 @@
+{
+    "register": "Iyandike",
+    "help.email": "Ubusanzwe, email yawe ntabwo iba ibonwa na bose",
+    "help.username_restrictions": "Izina rigomba kuba ryihariye kuri uru rubuga kandi rikaba rifite uburebure bw'inyuguti buva kuri %1 kugera kuri %2. Iryo zina ni ryo abantu bazajya bifashisha nka @<span id='yourUsername'>username</span> mu gihe bakoresheje izina ryawe mu byo banditse. ",
+    "help.minimum_password_length": "Umubare w'inyuguti n'ibimenyetso bigize ijambobanga ryawe ugomba kuba nibura %1.",
+    "email_address": "Aderesi ya Email",
+    "email_address_placeholder": "Shyiramo Aderesi ya Email",
+    "username": "Izina Ukoresha",
+    "username_placeholder": "Shyiramo Izina Ukoresha",
+    "password": "Ijambobanga",
+    "password_placeholder": "Shyiramo Ijambobanga",
+    "confirm_password": "Emeza Ijambobanga",
+    "confirm_password_placeholder": "Emeza Ijambobanga",
+    "register_now_button": "Iyandike",
+    "alternative_registration": "Ukundi Wakwiyandika",
+    "terms_of_use": "Amategeko n'Amabwiriza",
+    "agree_to_terms_of_use": "Nzakurikiza Amategeko n'Amabwiriza",
+    "registration-added-to-queue": "Icyifuzo cy'iyandikwa ryawe cyakiriwe ariko gitegereje isuzuma. Uzabimenyeshwa biciye muri email niba ubuyobozi bwakwemereye kwandikwa. "
+}

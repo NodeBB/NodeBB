@@ -2,8 +2,6 @@
 
 var express = require('express'),
 
-	posts = require('../posts'),
-	categories = require('../categories'),
 	uploadsController = require('../controllers/uploads');
 
 module.exports =  function(app, middleware, controllers) {
@@ -14,33 +12,24 @@ module.exports =  function(app, middleware, controllers) {
 	router.get('/config', middleware.applyCSRF, controllers.api.getConfig);
 	router.get('/widgets/render', controllers.api.renderWidgets);
 
-	router.get('/user/uid/:uid', middleware.checkGlobalPrivacySettings, controllers.accounts.getUserByUID);
-	router.get('/post/:pid', controllers.posts.getPost);
-	router.get('/categories/:cid/moderators', getModerators);
-	router.get('/recent/posts/:term?', getRecentPosts);
+	router.get('/user/uid/:uid', middleware.checkGlobalPrivacySettings, controllers.api.getUserByUID);
+	router.get('/:type/pid/:id', controllers.api.getObject);
+	router.get('/:type/tid/:id', controllers.api.getObject);
+	router.get('/:type/cid/:id', controllers.api.getObject);
+
+	router.get('/categories/:cid/moderators', controllers.api.getModerators);
+	router.get('/recent/posts/:term?', controllers.api.getRecentPosts);
 	router.get('/unread/total', middleware.authenticate, controllers.unread.unreadTotal);
+	router.get('/topic/teaser/:topic_id', controllers.topics.teaser);
 
 	var multipart = require('connect-multiparty');
 	var multipartMiddleware = multipart();
 	var middlewares = [multipartMiddleware, middleware.validateFiles, middleware.applyCSRF];
 	router.post('/post/upload', middlewares, uploadsController.uploadPost);
 	router.post('/topic/thumb/upload', middlewares, uploadsController.uploadThumb);
-	router.post('/user/:userslug/uploadpicture', middlewares.concat([middleware.authenticate, middleware.checkGlobalPrivacySettings, middleware.checkAccountPermissions]), controllers.accounts.uploadPicture);
+	router.post('/user/:userslug/uploadpicture', middlewares.concat([middleware.authenticate, middleware.checkGlobalPrivacySettings, middleware.checkAccountPermissions]), controllers.accounts.edit.uploadPicture);
+	
+	router.post('/user/:userslug/uploadcover', middlewares.concat([middleware.authenticate, middleware.checkGlobalPrivacySettings, middleware.checkAccountPermissions]), controllers.accounts.edit.uploadCoverPicture);
+	router.post('/groups/uploadpicture', middlewares.concat([middleware.authenticate]), controllers.groups.uploadCover);
 };
 
-function getModerators(req, res, next) {
-	categories.getModerators(req.params.cid, function(err, moderators) {
-		res.json({moderators: moderators});
-	});
-}
-
-
-function getRecentPosts(req, res, next) {
-	posts.getRecentPosts(req.uid, 0, 19, req.params.term, function (err, data) {
-		if (err) {
-			return next(err);
-		}
-
-		res.json(data);
-	});
-}

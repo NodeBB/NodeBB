@@ -5,7 +5,7 @@
     "chat.no_active": "Du har ingen aktive chatter.",
     "chat.user_typing": "%1 skriver ...",
     "chat.user_has_messaged_you": "%1 har sendt deg en melding",
-    "chat.see_all": "Se alle chatter",
+    "chat.see_all": "Se alle samtaler",
     "chat.no-messages": "Vennligst velg en mottaker for å vise chatte-melding historikk",
     "chat.recent-chats": "Nylige chatter",
     "chat.contacts": "Kontakter",
@@ -22,5 +22,9 @@
     "composer.user_said": "%1 sa: ",
     "composer.discard": "Er du sikker på at du vil forkaste dette innlegget?",
     "composer.submit_and_lock": "Send og lås",
-    "composer.toggle_dropdown": "Veksle nedtrekksfelt"
+    "composer.toggle_dropdown": "Veksle nedtrekksfelt",
+    "composer.uploading": "Uploading %1",
+    "bootbox.ok": "OK",
+    "bootbox.cancel": "Avbryt",
+    "bootbox.confirm": "Bekreft"
 }

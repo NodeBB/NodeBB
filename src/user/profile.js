@@ -70,11 +70,15 @@ module.exports = function(User) {
 				if (!data.username) {
 					return next();
 				}
+				data.username = data.username.trim();
 				User.getUserFields(uid, ['username', 'userslug'], function(err, userData) {
+					if (err) {
+						return next(err);
+					}
 
 					var userslug = utils.slugify(data.username);
 
-					if(userslug === userData.userslug) {
+					if (userslug === userData.userslug) {
 						return next();
 					}
 
@@ -86,12 +90,12 @@ module.exports = function(User) {
 						return next(new Error('[[error:username-too-long]]'));
 					}
 
-					if(!utils.isUserNameValid(data.username) || !userslug) {
+					if (!utils.isUserNameValid(data.username) || !userslug) {
 						return next(new Error('[[error:invalid-username]]'));
 					}
 
-					User.exists(userslug, function(err, exists) {
-						if(err) {
+					User.existsBySlug(userslug, function(err, exists) {
+						if (err) {
 							return next(err);
 						}
 
@@ -110,7 +114,7 @@ module.exports = function(User) {
 						return callback(err);
 					}
 					plugins.fireHook('action:user.updateProfile', {data: data, uid: uid});
-					User.getUserFields(uid, ['email', 'username', 'userslug', 'picture', 'gravatarpicture'], callback);
+					User.getUserFields(uid, ['email', 'username', 'userslug', 'picture'], callback);
 				});
 			});
 
@@ -155,11 +159,7 @@ module.exports = function(User) {
 					return callback(err);
 				}
 
-				var gravatarpicture = User.createGravatarURLFromEmail(newEmail);
 				async.parallel([
-					function(next) {
-						User.setUserField(uid, 'gravatarpicture', gravatarpicture, next);
-					},
 					function(next) {
 						db.sortedSetAdd('email:uid', uid, newEmail.toLowerCase(), next);
 					},
@@ -174,14 +174,7 @@ module.exports = function(User) {
 							User.email.sendValidationEmail(uid, newEmail);
 						}
 						User.setUserField(uid, 'email:confirmed', 0, next);
-					},
-					function(next) {
-						if (userData.picture !== userData.uploadedpicture) {
-							User.setUserField(uid, 'picture', gravatarpicture, next);
-						} else {
-							next();
-						}
-					},
+					}
 				], callback);
 			});
 		});
@@ -270,30 +263,21 @@ module.exports = function(User) {
 			return callback(new Error('[[user:change_password_error]]'));
 		}
 
-		if(parseInt(uid, 10) !== parseInt(data.uid, 10)) {
+		if (parseInt(uid, 10) !== parseInt(data.uid, 10)) {
 			User.isAdministrator(uid, function(err, isAdmin) {
-				if(err || !isAdmin) {
+				if (err || !isAdmin) {
 					return callback(err || new Error('[[user:change_password_error_privileges'));
 				}
 
 				hashAndSetPassword(callback);
 			});
 		} else {
-			db.getObjectField('user:' + uid, 'password', function(err, currentPassword) {
-				if(err) {
-					return callback(err);
+			User.isPasswordCorrect(uid, data.currentPassword, function(err, correct) {
+				if (err || !correct) {
+					return callback(err || new Error('[[user:change_password_error_wrong_current]]'));
 				}
 
-				if (!currentPassword) {
-					return hashAndSetPassword(callback);
-				}
-
-				Password.compare(data.currentPassword, currentPassword, function(err, res) {
-					if (err || !res) {
-						return callback(err || new Error('[[user:change_password_error_wrong_current]]'));
-					}
-					hashAndSetPassword(callback);
-				});
+				hashAndSetPassword(callback);
 			});
 		}
 	};

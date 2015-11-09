@@ -10,7 +10,4 @@
 	<a href="{confirm_link}">[[email:welcome.cta]]</a>
 </blockquote>
 
-<p>
-	[[email:closing]]<br />
-	<strong>{site_title}</strong>
-</p>
+{footer}

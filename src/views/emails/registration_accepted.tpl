@@ -6,7 +6,4 @@
 
 <p>[[email:welcome.text3]]</p>
 
-<p>
-	[[email:closing]]<br />
-	<strong>{site_title}</strong>
-</p>
+{footer}

@@ -3,14 +3,13 @@
 
 var async = require('async'),
 	winston = require('winston'),
+	validator = require('validator'),
 	_ = require('underscore'),
 
-	meta = require('../meta'),
 	db = require('../database'),
 	posts = require('../posts'),
 	topics = require('../topics'),
-	privileges = require('../privileges'),
-	plugins = require('../plugins');
+	privileges = require('../privileges');
 
 module.exports = function(Categories) {
 	Categories.getRecentReplies = function(cid, uid, count, callback) {
@@ -38,110 +37,135 @@ module.exports = function(Categories) {
 
 		async.waterfall([
 			function(next) {
-				async.map(categoryData, getRecentTopicPids, next);
+				async.map(categoryData, getRecentTopicTids, next);
 			},
 			function(results, next) {
-				var pids = _.flatten(results);
+				var tids = _.flatten(results);
 
-				pids = pids.filter(function(pid, index, array) {
-					return !!pid && array.indexOf(pid) === index;
+				tids = tids.filter(function(tid, index, array) {
+					return !!tid && array.indexOf(tid) === index;
 				});
-				privileges.posts.filter('read', pids, uid, next);
+				privileges.topics.filterTids('read', tids, uid, next);
 			},
-			function(pids, next) {
-				if (meta.config.teaserPost === 'first') {
-					getMainPosts(pids, uid, next);
-				} else {
-					posts.getPostSummaryByPids(pids, uid, {stripTags: true}, next);
-				}
+			function(tids, next) {
+				getTopics(tids, next);
 			},
-			function(posts, next) {
-				categoryData.forEach(function(category) {
-					assignPostsToCategory(category, posts);
-				});
+			function(topics, next) {
+				assignTopicsToCategories(categoryData, topics);
+
+				bubbleUpChildrenPosts(categoryData);
+
 				next();
 			}
 		], callback);
 	};
 
-	function getMainPosts(pids, uid, callback) {
-		async.waterfall([
-			function(next) {
-				var keys = pids.map(function(pid) {
-					return 'post:' + pid;
-				});
-				db.getObjectsFields(keys, ['tid'], next);
-			},
-			function(posts, next) {
-				var keys = posts.map(function(post) {
-					return 'topic:' + post.tid;
-				});
-				db.getObjectsFields(keys, ['mainPid'], next);
-			},
-			function(topics, next) {
-				var mainPids = topics.map(function(topic) {
-					return topic.mainPid;
-				});
-				posts.getPostSummaryByPids(mainPids, uid, {stripTags: true}, next);
-			}
-		], callback);
-	}
-
-	function assignPostsToCategory(category, posts) {
-		category.posts = posts.filter(function(post) {
-			return post.category && (parseInt(post.category.cid, 10) === parseInt(category.cid, 10) ||
-				parseInt(post.category.parentCid, 10) === parseInt(category.cid, 10));
-		}).sort(function(a, b) {
-			return b.timestamp - a.timestamp;
-		}).slice(0, parseInt(category.numRecentReplies, 10));
-	}
-
-	function getRecentTopicPids(category, callback) {
+	function getRecentTopicTids(category, callback) {
 		var count = parseInt(category.numRecentReplies, 10);
 		if (!count) {
 			return callback(null, []);
 		}
 
-		db.getSortedSetRevRange('cid:' + category.cid + ':pids', 0, 0, function(err, pids) {
-			if (err || !Array.isArray(pids) || !pids.length) {
-				return callback(err, []);
-			}
-
-			if (count === 1) {
-				return callback(null, pids);
-			}
-
-			async.parallel({
-				pinnedTids: function(next) {
-					db.getSortedSetRevRangeByScore('cid:' + category.cid + ':tids', 0, -1, '+inf', Date.now(), next);
+		if (count === 1) {
+			async.waterfall([
+				function (next) {
+					db.getSortedSetRevRange('cid:' + category.cid + ':pids', 0, 0, next);
 				},
-				tids: function(next) {
-					db.getSortedSetRevRangeByScore('cid:' + category.cid + ':tids', 0, Math.max(0, count), Date.now(), 0, next);
+				function (pid, next) {
+					posts.getPostField(pid, 'tid', next);
+				},
+				function (tid, next) {
+					next(null, [tid]);
 				}
-			}, function(err, results) {
-				if (err) {
-					return callback(err);
-				}
+			], callback);
+			return;
+		}
 
-				results.tids = results.tids.concat(results.pinnedTids);
+		async.parallel({
+			pinnedTids: function(next) {
+				db.getSortedSetRevRangeByScore('cid:' + category.cid + ':tids', 0, -1, '+inf', Date.now(), next);
+			},
+			tids: function(next) {
+				db.getSortedSetRevRangeByScore('cid:' + category.cid + ':tids', 0, Math.max(1, count), Date.now(), 0, next);
+			}
+		}, function(err, results) {
+			if (err) {
+				return callback(err);
+			}
 
-				async.map(results.tids, topics.getLatestUndeletedPid, function(err, topicPids) {
-					if (err) {
-						return callback(err);
-					}
+			results.tids = results.tids.concat(results.pinnedTids);
 
-					pids = pids.concat(topicPids).filter(function(pid, index, array) {
-						return !!pid && array.indexOf(pid) === index;
-					}).sort(function(a, b) {
-						return b - a;
-					}).slice(0, count);
-
-					callback(null, pids);
-				});
-			});
+			callback(null, results.tids);
 		});
 	}
 
+	function getTopics(tids, callback) {
+		var topicData;
+		async.waterfall([
+			function (next) {
+				topics.getTopicsFields(tids, ['tid', 'mainPid', 'slug', 'title', 'teaserPid', 'cid', 'postcount'], next);
+			},
+			function (_topicData, next) {
+				topicData = _topicData;
+				topicData.forEach(function(topic) {
+					topic.teaserPid = topic.teaserPid || topic.mainPid;
+				});
+
+				topics.getTeasers(topicData, next);
+			},
+			function (teasers, next) {
+				teasers.forEach(function(teaser, index) {
+					if (teaser) {
+						teaser.cid = topicData[index].cid;
+						teaser.tid = teaser.uid = teaser.user.uid = undefined;
+						teaser.topic = {
+							slug: topicData[index].slug,
+							title: validator.escape(topicData[index].title)
+						};
+					}
+				});
+				teasers = teasers.filter(Boolean);
+				next(null, teasers);
+			}
+		], callback);
+	}
+
+	function assignTopicsToCategories(categories, topics) {
+		categories.forEach(function(category) {
+			category.posts = topics.filter(function(topic) {
+				return topic.cid && parseInt(topic.cid, 10) === parseInt(category.cid, 10);
+			}).sort(function(a, b) {
+				return b.pid - a.pid;
+			}).slice(0, parseInt(category.numRecentReplies, 10));
+		});
+	}
+
+	function bubbleUpChildrenPosts(categoryData) {
+		categoryData.forEach(function(category) {
+			if (category.posts.length) {
+				return;
+			}
+			var posts = [];
+			getPostsRecursive(category, posts);
+
+			posts.sort(function(a, b) {
+				return b.pid - a.pid;
+			});
+			if (posts.length) {
+				category.posts = [posts[0]];
+			}
+		});
+	}
+
+	function getPostsRecursive(category, posts) {
+		category.posts.forEach(function(p) {
+			posts.push(p);
+		});
+
+		category.children.forEach(function(child) {
+			getPostsRecursive(child, posts);
+		});
+	}
 
 	Categories.moveRecentReplies = function(tid, oldCid, cid) {
 		updatePostCount(tid, oldCid, cid);

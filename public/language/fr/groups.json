@@ -12,8 +12,9 @@
     "invited.none": "Il n'y a aucun membre invité pour le moment",
     "invited.uninvite": "Résilier l'invitation",
     "invited.search": "Chercher un utilisateur a inviter dans ce groupe",
-    "cover-instructions": "Glissez-déposez une image, ajustez la position, et cliquez sur <strong>Enregistrer</strong>",
-    "cover-change": "Modifier",
+    "invited.notification_title": "Vous avez été invité à rejoindre <strong>%1</strong>",
+    "request.notification_title": "Requête d'Adhésion au Groupe de <strong>%1</strong>",
+    "request.notification_text": "<strong>%1</strong> a demandé à devenir membre de <strong>%2</strong>",
     "cover-save": "Enregistrer",
     "cover-saving": "Enregistrement",
     "details.title": "Informations du groupe",
@@ -38,12 +39,13 @@
     "details.private_help": "Si cette case est cochée, rejoindre un groupe nécessite l'accord d'un propriétaire du groupe.",
     "details.hidden": "Masqué",
     "details.hidden_help": "Si cette case est cochée, ce groupe n'est pas affiché dans la liste des groupes, et les utilisateurs devront être invités manuellement.",
-    "details.delete_group": "Delete Group",
+    "details.delete_group": "Supprimer le groupe",
     "event.updated": "Les détails du groupe ont été mis à jour",
     "event.deleted": "Le groupe \"%1\" a été supprimé",
     "membership.accept-invitation": "Accepter l'invitation",
     "membership.invitation-pending": "Invitation en attente",
     "membership.join-group": "Rejoindre le groupe",
     "membership.leave-group": "Quitter le groupe",
-    "membership.reject": "Refuser"
+    "membership.reject": "Refuser",
+    "new-group.group_name": "Nom du groupe :"
 }

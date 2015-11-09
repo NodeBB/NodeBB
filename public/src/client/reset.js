@@ -16,13 +16,13 @@ define('forum/reset', function() {
 						return app.alertError(err.message);
 					}
 
-					errorEl.addClass('hide').hide();
-					successEl.removeClass('hide').show();
+					errorEl.addClass('hide');
+					successEl.removeClass('hide');
 					inputEl.val('');
 				});
 			} else {
-				successEl.addClass('hide').hide();
-				errorEl.removeClass('hide').show();
+				successEl.addClass('hide');
+				errorEl.removeClass('hide');
 			}
 			return false;
 		});

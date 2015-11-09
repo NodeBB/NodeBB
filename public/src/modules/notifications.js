@@ -2,41 +2,30 @@
 
 /* globals define, socket, utils, config, app, ajaxify, templates, Tinycon*/
 
-define('notifications', ['sounds', 'translator'], function(sound, translator) {
+define('notifications', ['sounds', 'translator', 'components'], function(sound, translator, components) {
 	var Notifications = {};
 
 	Notifications.prepareDOM = function() {
-		var notifContainer = $('.notifications'),
+		var notifContainer = components.get('notifications'),
 			notifTrigger = notifContainer.children('a'),
-			notifList = $('#notif-list'),
-			notifIcon = $('.notification-icon');
+			notifList = components.get('notifications/list'),
+			notifIcon = components.get('notifications/icon');
 
-		notifTrigger.on('click', function(e) {
-			e.preventDefault();
-			if (notifContainer.hasClass('open')) {
-				return;
-			}
-
-			socket.emit('notifications.get', null, function(err, data) {
-				if (err) {
-					return app.alertError(err.message);
+		notifTrigger
+			.on('click', function(e) {
+				e.preventDefault();
+				if (notifContainer.hasClass('open')) {
+					return;
 				}
 
-				var notifs = data.unread.concat(data.read).sort(function(a, b) {
-					return parseInt(a.datetime, 10) > parseInt(b.datetime, 10) ? -1 : 1;
-				});
-
-				translator.toggleTimeagoShorthand();
-				for(var i=0; i<notifs.length; ++i) {
-					notifs[i].timeago = $.timeago(new Date(parseInt(notifs[i].datetime, 10)));
+				Notifications.loadNotifications(notifList);
+			})
+			.on('dblclick', function(e) {
+				e.preventDefault();
+				if (parseInt(notifIcon.attr('data-content'), 10) > 0) {
+					Notifications.markAllRead();
 				}
-				translator.toggleTimeagoShorthand();
-
-				templates.parse('partials/notifications_list', {notifications: notifs}, function(html) {
-					notifList.translateHtml(html);
-				});
 			});
-		});
 
 		notifList.on('click', '[data-nid]', function() {
 			var unread = $(this).hasClass('unread');
@@ -51,14 +40,7 @@ define('notifications', ['sounds', 'translator'], function(sound, translator) {
 			});
 		});
 
-		notifContainer.on('click', '.mark-all-read', function() {
-			socket.emit('notifications.markAllRead', function(err) {
-				if (err) {
-					app.alertError(err.message);
-				}
-				Notifications.updateNotifCount(0);
-			});
-		});
+		notifContainer.on('click', '.mark-all-read', Notifications.markAllRead);
 
 		notifList.on('click', '.mark-read', function(e) {
 			var liEl = $(this).parent(),
@@ -81,14 +63,6 @@ define('notifications', ['sounds', 'translator'], function(sound, translator) {
 			var count = parseInt(notifIcon.attr('data-content'), 10) + delta;
 			Notifications.updateNotifCount(count);
 		}
-
-		socket.emit('notifications.getCount', function(err, count) {
-			if (!err) {
-				Notifications.updateNotifCount(count);
-			} else {
-				Notifications.updateNotifCount(0);
-			}
-		});
 
 		socket.on('event:new_notification', function(notifData) {
 			app.alert({
@@ -114,8 +88,30 @@ define('notifications', ['sounds', 'translator'], function(sound, translator) {
 		});
 	};
 
+	Notifications.loadNotifications = function(notifList) {
+		socket.emit('notifications.get', null, function(err, data) {
+			if (err) {
+				return app.alertError(err.message);
+			}
+
+			var notifs = data.unread.concat(data.read).sort(function(a, b) {
+				return parseInt(a.datetime, 10) > parseInt(b.datetime, 10) ? -1 : 1;
+			});
+
+			translator.toggleTimeagoShorthand();
+			for(var i=0; i<notifs.length; ++i) {
+				notifs[i].timeago = $.timeago(new Date(parseInt(notifs[i].datetime, 10)));
+			}
+			translator.toggleTimeagoShorthand();
+
+			templates.parse('partials/notifications_list', {notifications: notifs}, function(html) {
+				notifList.translateHtml(html);
+			});
+		});
+	};
+
 	Notifications.updateNotifCount = function(count) {
-		var notifIcon = $('.notification-icon');
+		var notifIcon = components.get('notifications/icon');
 
 		if (count > 0) {
 			notifIcon.removeClass('fa-bell-o').addClass('fa-bell');
@@ -127,6 +123,15 @@ define('notifications', ['sounds', 'translator'], function(sound, translator) {
 		notifIcon.attr('data-content', count > 20 ? '20+' : count);
 
 		Tinycon.setBubble(count);
+	};
+
+	Notifications.markAllRead = function() {
+		socket.emit('notifications.markAllRead', function(err) {
+			if (err) {
+				app.alertError(err.message);
+			}
+			Notifications.updateNotifCount(0);
+		});
 	};
 
 	return Notifications;

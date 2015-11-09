@@ -20,7 +20,7 @@ Categories.create = function(socket, data, callback) {
 
 Categories.getAll = function(socket, data, callback) {
 	async.waterfall([
-		async.apply(db.getSortedSetRangeByScore, 'categories:cid', 0, -1, 0, Date.now()),
+		async.apply(db.getSortedSetRange, 'categories:cid', 0, -1),
 		async.apply(categories.getCategoriesData),
 		function(categories, next) {
 			//Hook changes, there is no req, and res

@@ -12,8 +12,7 @@ var async = require('async'),
 
 var unreadController = {};
 
-
-unreadController.unread = function(req, res, next) {
+unreadController.get = function(req, res, next) {
 	var stop = (parseInt(meta.config.topicsPerList, 10) || 20) - 1;
 	var results;
 	var cid = req.query.cid;
@@ -35,7 +34,7 @@ unreadController.unread = function(req, res, next) {
 			privileges.categories.filterCids('read', results.watchedCategories, req.uid, next);
 		},
 		function(cids, next) {
-			categories.getMultipleCategoryFields(cids, ['cid', 'name', 'slug', 'icon', 'link'], next);
+			categories.getCategoriesFields(cids, ['cid', 'name', 'slug', 'icon', 'link'], next);
 		},
 		function(categories, next) {
 			categories = categories.filter(function(category) {
@@ -56,6 +55,8 @@ unreadController.unread = function(req, res, next) {
 		}
 
 		data.breadcrumbs = helpers.buildBreadcrumbs([{text: '[[unread:title]]'}]);
+		data.title = '[[pages:unread]]';
+
 		res.render('unread', data);
 	});
 };

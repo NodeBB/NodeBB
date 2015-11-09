@@ -24,7 +24,6 @@ module.exports = function(User) {
 			if (err)  {
 				return callback(err);
 			}
-			var gravatar = User.createGravatarURLFromEmail(data.email);
 			var timestamp = data.timestamp || Date.now();
 
 			var userData = {
@@ -32,8 +31,7 @@ module.exports = function(User) {
 				'userslug': data.userslug,
 				'email': data.email,
 				'joindate': timestamp,
-				'picture': gravatar,
-				'gravatarpicture': gravatar,
+				'picture': '',
 				'fullname': '',
 				'location': '',
 				'birthday': '',
@@ -53,25 +51,13 @@ module.exports = function(User) {
 				renamedUsername: function(next) {
 					renameUsername(userData, next);
 				},
-				customFields: function(next) {
-					plugins.fireHook('filter:user.custom_fields', [], next);
-				},
 				userData: function(next) {
-					plugins.fireHook('filter:user.create', userData, next);
+					plugins.fireHook('filter:user.create', {user: userData, data: data}, next);
 				}
 			}, function(err, results) {
 				if (err) {
 					return callback(err);
 				}
-
-				var customData = {};
-				results.customFields.forEach(function(customField) {
-					if (data[customField]) {
-						customData[customField] = data[customField];
-					}
-				});
-
-				userData = utils.merge(results.userData, customData);
 
 				var userNameChanged = !!results.renamedUsername;
 
@@ -169,7 +155,7 @@ module.exports = function(User) {
 			},
 			passwordValid: function(next) {
 				if (userData.password) {
-					next(!utils.isPasswordValid(userData.password) ? new Error('[[error:invalid-password]]') : null);
+					User.isPasswordValid(userData.password, next);
 				} else {
 					next();
 				}
@@ -191,6 +177,17 @@ module.exports = function(User) {
 		});
 	};
 
+	User.isPasswordValid = function(password, callback) {
+		if (!password || !utils.isPasswordValid(password)) {
+			return callback(new Error('[[error:invalid-password]]'));
+		}
+
+		if (password.length < meta.config.minimumPasswordLength) {
+			return callback(new Error('[[user:change_password_error_length]]'));
+		}
+		callback();
+	};
+
 	function renameUsername(userData, callback) {
 		meta.userOrGroupExists(userData.userslug, function(err, exists) {
 			if (err || !exists) {
@@ -200,7 +197,7 @@ module.exports = function(User) {
 			var	newUsername = '';
 			async.forever(function(next) {
 				newUsername = userData.username + (Math.floor(Math.random() * 255) + 1);
-				User.exists(newUsername, function(err, exists) {
+				User.existsBySlug(newUsername, function(err, exists) {
 					if (err) {
 						return callback(err);
 					}

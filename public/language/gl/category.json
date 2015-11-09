@@ -1,0 +1,16 @@
+{
+    "category": "Categoría",
+    "subcategories": "Subcategoría",
+    "new_topic_button": "Novo tema",
+    "guest-login-post": "Inicia sesión para poder escribir mensaxes",
+    "no_topics": "<strong>Non hai temas nesta categoría.</strong><br />Por que non abres un?",
+    "browsing": "vendo agora",
+    "no_replies": "Ninguén respondeu",
+    "no_new_posts": "Non hai novas publicacións.",
+    "share_this_category": "Comparte esta categoría",
+    "watch": "Vixiar",
+    "ignore": "Ignorar",
+    "watch.message": "Agora vixías as novidades desta categoría",
+    "ignore.message": "Agora ignoras as novidades nesta categoría",
+    "watched-categories": "Categorías vixiadas"
+}
