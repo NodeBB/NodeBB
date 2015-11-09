@@ -4,8 +4,6 @@ var fs = require('fs'),
 	nconf = require('nconf'),
 	path = require('path'),
 	winston = require('winston'),
-	mmmagic = require('mmmagic'),
-	Magic = mmmagic.Magic,
 	mime = require('mime'),
 	jimp = require('jimp'),
 

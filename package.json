@@ -38,7 +38,6 @@
     "mime": "^1.3.4",
     "minimist": "^1.1.1",
     "mkdirp": "~0.5.0",
-    "mmmagic": "^0.4.0",
     "morgan": "^1.3.2",
     "nconf": "~0.8.2",
     "nodebb-plugin-composer-default": "1.0.21",
