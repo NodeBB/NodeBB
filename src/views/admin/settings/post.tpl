@@ -147,9 +147,6 @@
 				</label>
 			</div>
 			<strong>Topic Thumb Size</strong><br /> <input type="text" class="form-control" value="120" data-field="topicThumbSize"> <br />
-
-			<strong>Allowed file types, (ie png, jpg, pdf, zip). Leave empty to allow all.</strong><br /> <input type="text" class="form-control" value="" data-field="allowedFileExtensions"><br />
-
 		</form>
 	</div>
 </div>
