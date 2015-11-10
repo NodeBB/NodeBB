@@ -36,7 +36,7 @@ module.exports = function(User) {
 				next(!extension ? new Error('[[error:invalid-image-extension]]') : null);
 			},
 			function(next) {
-				file.isFileTypeAllowed(picture.path, ['png', 'jpeg', 'jpg', 'gif'], next);
+				file.isFileTypeAllowed(picture.path, next);
 			},
 			function(next) {
 				image.resizeImage({

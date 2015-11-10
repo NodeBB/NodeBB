@@ -84,7 +84,12 @@ define('forum/register', ['csrf', 'translator'], function(csrf, translator) {
 							if (data.referrer) {
 								window.location.href = data.referrer;
 							} else if (data.message) {
-								app.alert({message: data.message, timeout: 20000});
+								require(['translator'], function(translator) {
+									translator.translate(data.message, function(msg) {
+										bootbox.alert(msg);
+										ajaxify.go('/');
+									});
+								});
 							}
 						},
 						error: function(data, status) {

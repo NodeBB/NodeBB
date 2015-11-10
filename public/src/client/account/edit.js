@@ -89,6 +89,11 @@ define('forum/account/edit', ['forum/account/header', 'uploader', 'translator'],
 							message: html,
 							show: true,
 							buttons: {
+								close: {
+									label: '[[global:close]]',
+									callback: onCloseModal,
+									className: 'btn-link'
+								},
 								update: {
 									label: '[[global:save_changes]]',
 									callback: saveSelection
@@ -136,6 +141,10 @@ define('forum/account/edit', ['forum/account/header', 'uploader', 'translator'],
 								updateHeader(type === 'default' ? '' : src);
 								ajaxify.refresh();
 							});
+						}
+
+						function onCloseModal() {
+							modal.modal('hide');
 						}
 					});
 				});
