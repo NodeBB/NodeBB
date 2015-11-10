@@ -16,15 +16,15 @@
     "chat.thirty_days": "30 ימים",
     "chat.three_months": "3 חודשים",
     "composer.compose": "Compose",
-    "composer.show_preview": "Show Preview",
-    "composer.hide_preview": "Hide Preview",
+    "composer.show_preview": "הצג תצוגה מקדימה",
+    "composer.hide_preview": "הסתר תצוגה מקדימה",
     "composer.user_said_in": "%1 אמר ב%2:",
     "composer.user_said": "%1 אמר:",
     "composer.discard": "האם למחוק פוסט זה?",
     "composer.submit_and_lock": "Submit and Lock",
     "composer.toggle_dropdown": "Toggle Dropdown",
-    "composer.uploading": "Uploading %1",
-    "bootbox.ok": "OK",
-    "bootbox.cancel": "Cancel",
-    "bootbox.confirm": "Confirm"
+    "composer.uploading": "העלאה %1",
+    "bootbox.ok": "בסדר",
+    "bootbox.cancel": "בטל",
+    "bootbox.confirm": "אשר"
 }

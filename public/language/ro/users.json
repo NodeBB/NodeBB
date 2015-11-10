@@ -9,13 +9,13 @@
     "filter-by": "Filter By",
     "online-only": "Online only",
     "picture-only": "Picture only",
-    "invite": "Invite",
+    "invite": "Invită",
     "invitation-email-sent": "An invitation email has been sent to %1",
-    "user_list": "User List",
-    "recent_topics": "Recent Topics",
-    "popular_topics": "Popular Topics",
-    "unread_topics": "Unread Topics",
-    "categories": "Categories",
-    "tags": "Tags",
-    "map": "Map"
+    "user_list": "Listă utilizatori",
+    "recent_topics": "Subiecte Noi",
+    "popular_topics": "Subiecte Populare",
+    "unread_topics": "Subiecte Necitite",
+    "categories": "Categorii",
+    "tags": "Taguri",
+    "map": "Hartă"
 }

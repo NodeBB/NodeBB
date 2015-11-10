@@ -73,7 +73,7 @@
     "invalid-file": "Arquivo Inválido",
     "uploads-are-disabled": "As subidas están deshabilitadas",
     "signature-too-long": "Desculpa, a firma non pode ser maior de %1 carácter(es).",
-    "about-me-too-long": "Desculpa, o teu \"sobre min\" non pode superar-los %1 caracter(es),",
+    "about-me-too-long": "Desculpa, o teu \"sobre min\" non pode supera-los %1 caracteres,",
     "cant-chat-with-yourself": "Non podes falar contigo mesmo!",
     "chat-restricted": "Este usuario restrinxiu as charlas. Debedes seguirvos antes de que poidas falar con el. ",
     "too-many-messages": "Estás a enviar moitas mensaxes, por favor, agarda un anaco. ",
