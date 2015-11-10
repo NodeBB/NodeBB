@@ -26,5 +26,8 @@
     "composer.uploading": "Uploading %1",
     "bootbox.ok": "ОК",
     "bootbox.cancel": "Отмена",
-    "bootbox.confirm": "Подтвердить"
+    "bootbox.confirm": "Подтвердить",
+    "cover.dragging_title": "Cover Photo Positioning",
+    "cover.dragging_message": "Drag the cover photo to the desired position and click \"Save\"",
+    "cover.saved": "Cover photo image and position saved"
 }
