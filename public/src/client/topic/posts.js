@@ -212,6 +212,7 @@ define('forum/topic/posts', [
 
 	Posts.processPage = function(posts) {
 		Posts.showBottomPostBar();
+		posts.find('[component="post/content"] img:not(.not-responsive)').addClass('img-responsive');
 		app.createUserTooltips(posts);
 		app.replaceSelfLinks(posts.find('a'));
 		utils.addCommasToNumbers(posts.find('.formatted-number'));
