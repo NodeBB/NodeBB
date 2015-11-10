@@ -58,6 +58,13 @@ define('coverPhoto', [
 				axis: 'y',
 				units: 'percent'
 			});
+
+		app.alert({
+			alert_id: 'drag_start',
+			title: '[[modules:cover.dragging_title]]',
+			message: '[[modules:cover.dragging_message]]',
+			timeout: 5000
+		});
 	}
 
 	coverPhoto.save = function() {
@@ -69,6 +76,7 @@ define('coverPhoto', [
 				coverPhoto.coverEl.backgroundDraggable('disable');
 				coverPhoto.coverEl.off('dragover', coverPhoto.onDragOver);
 				coverPhoto.coverEl.off('drop', coverPhoto.onDrop);
+				app.alertSuccess('[[modules:cover.saved]]');
 			} else {
 				app.alertError(err.message);
 			}
