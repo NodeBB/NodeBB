@@ -203,15 +203,18 @@ topicsController.get = function(req, res, callback) {
 				},
 				{
 					property: "og:url",
-					content: nconf.get('url') + '/topic/' + topicData.slug + (req.params.post_index ? ('/' + req.params.post_index) : '')
+					content: nconf.get('url') + '/topic/' + topicData.slug + (req.params.post_index ? ('/' + req.params.post_index) : ''),
+					noEscape: true
 				},
 				{
 					property: 'og:image',
-					content: ogImageUrl
+					content: ogImageUrl,
+					noEscape: true
 				},
 				{
 					property: "og:image:url",
-					content: ogImageUrl
+					content: ogImageUrl,
+					noEscape: true
 				},
 				{
 					property: "article:published_time",

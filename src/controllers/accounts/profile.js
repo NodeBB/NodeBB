@@ -2,6 +2,7 @@
 
 var nconf = require('nconf'),
 	async = require('async'),
+	S = require('string'),
 
 	user = require('../../user'),
 	posts = require('../../posts'),
@@ -78,6 +79,42 @@ profileController.get = function(req, res, callback) {
 
 			if (!userData.profileviews) {
 				userData.profileviews = 1;
+			}
+
+			var plainAboutMe = S(userData.aboutme).decodeHTMLEntities().stripTags().s;
+
+			res.locals.metaTags = [
+				{
+					name: "title",
+					content: userData.fullname || userData.username
+				},
+				{
+					name: "description",
+					content: plainAboutMe
+				},
+				{
+					property: 'og:title',
+					content: userData.fullname || userData.username
+				},
+				{
+					property: 'og:description',
+					content: plainAboutMe
+				}
+			];
+
+			if (userData.picture) {
+				res.locals.metaTags.push(
+					{
+						property: 'og:image',
+						content: userData.picture,
+						noEscape: true
+					},
+					{
+						property: "og:image:url",
+						content: userData.picture,
+						noEscape: true
+					}
+				);
 			}
 
 			plugins.fireHook('filter:user.account', {userData: userData, uid: req.uid}, next);
