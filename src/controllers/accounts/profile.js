@@ -81,7 +81,7 @@ profileController.get = function(req, res, callback) {
 				userData.profileviews = 1;
 			}
 
-			var plainAboutMe = S(userData.aboutme).decodeHTMLEntities().stripTags().s;
+			var plainAboutMe = userData.aboutme ? S(userData.aboutme).decodeHTMLEntities().stripTags().s : '';
 
 			res.locals.metaTags = [
 				{
