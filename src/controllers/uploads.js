@@ -46,17 +46,17 @@ uploadsController.upload = function(req, res, filesIterator, next) {
 
 uploadsController.uploadPost = function(req, res, next) {
 	uploadsController.upload(req, res, function(uploadedFile, next) {
-		file.isFileTypeAllowed(uploadedFile.path, function(err) {
-			if (err) {
-				return next(err);
-			}
+		if (uploadedFile.type.match(/image./)) {
+			file.isFileTypeAllowed(uploadedFile.path, function(err) {
+				if (err) {
+					return next(err);
+				}
 
-			if (uploadedFile.type.match(/image./)) {
 				uploadImage(req.user.uid, uploadedFile, next);
-			} else {
-				uploadFile(req.user.uid, uploadedFile, next);
-			}
-		});
+			});
+		} else {
+			uploadFile(req.user.uid, uploadedFile, next);
+		}
 	}, next);
 };
 
