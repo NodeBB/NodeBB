@@ -23,33 +23,10 @@ module.exports = function(User) {
 				deleteTopics(uid, next);
 			},
 			function(next) {
-				deleteVotes(uid, next);
-			},
-			function(next) {
 				User.deleteAccount(uid, next);
 			}
 		], callback);
 	};
-
-	function deleteVotes(uid, callback) {
-		async.waterfall([
-			function (next) {
-				async.parallel({
-					upvotedPids: async.apply(db.getSortedSetRange, 'uid:' + uid + ':upvote', 0, -1),
-					downvotedPids: async.apply(db.getSortedSetRange, 'uid:' + uid + ':downvote', 0, -1)
-				}, next);
-			},
-			function (pids, next) {
-				pids = pids.upvotedPids.concat(pids.downvotedPids).filter(function(pid, index, array) {
-					return pid && array.indexOf(pid) === index;
-				});
-
-				async.eachLimit(pids, 50, function(pid, next) {
-					favourites.unvote(pid, uid, next);
-				}, next);
-			}
-		], callback);
-	}
 
 	function deletePosts(uid, callback) {
 		deleteSortedSetElements('uid:' + uid + ':posts', posts.purge, callback);
@@ -66,18 +43,19 @@ module.exports = function(User) {
 	}
 
 	User.deleteAccount = function(uid, callback) {
-		User.getUserFields(uid, ['username', 'userslug', 'fullname', 'email'], function(err, userData) {
-			if (err)  {
-				return callback(err);
-			}
-
-			plugins.fireHook('static:user.delete', {
-				uid: uid
-			}, function(err) {
-				if (err) {
-					return callback(err);
-				}
-
+		var userData;
+		async.waterfall([
+			function (next) {
+				User.getUserFields(uid, ['username', 'userslug', 'fullname', 'email'], next);
+			},
+			function (_userData, next)  {
+				userData = _userData;
+				plugins.fireHook('static:user.delete', {uid: uid}, next);
+			},
+			function (next) {
+				deleteVotes(uid, next);
+			},
+			function (next) {
 				async.parallel([
 					function(next) {
 						db.sortedSetRemove('username:uid', userData.username, next);
@@ -137,16 +115,35 @@ module.exports = function(User) {
 						// Deprecated as of v0.7.4, remove in v1.0.0
 						plugins.fireHook('filter:user.delete', uid, next);
 					}
-				], function(err) {
-					if (err) {
-						return callback(err);
-					}
-
-					db.deleteAll(['followers:' + uid, 'following:' + uid, 'user:' + uid], callback);
-				});
-			});
-		});
+				], next);
+			},
+			function (results, next) {
+				db.deleteAll(['followers:' + uid, 'following:' + uid, 'user:' + uid], next);
+			}
+		], callback);
 	};
+
+	function deleteVotes(uid, callback) {
+		async.waterfall([
+			function (next) {
+				async.parallel({
+					upvotedPids: async.apply(db.getSortedSetRange, 'uid:' + uid + ':upvote', 0, -1),
+					downvotedPids: async.apply(db.getSortedSetRange, 'uid:' + uid + ':downvote', 0, -1)
+				}, next);
+			},
+			function (pids, next) {
+				pids = pids.upvotedPids.concat(pids.downvotedPids).filter(function(pid, index, array) {
+					return pid && array.indexOf(pid) === index;
+				});
+
+				async.eachLimit(pids, 50, function(pid, next) {
+					favourites.unvote(pid, uid, next);
+				}, next);
+			}
+		], function(err) {
+			callback(err);
+		});
+	}
 
 	function deleteUserIps(uid, callback) {
 		async.waterfall([
