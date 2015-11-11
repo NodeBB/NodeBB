@@ -58,7 +58,7 @@
     "upload_picture": "上传头像",
     "upload_a_picture": "上传头像",
     "remove_uploaded_picture": "删除已上传的头像",
-    "image_spec": "您只能上传 PNG, JPG 或者 GIF 图片文件",
+    "image_spec": "You may only upload PNG, JPG, or BMP files",
     "settings": "设置",
     "show_email": "显示我的电子邮箱",
     "show_fullname": "显示我的全名",

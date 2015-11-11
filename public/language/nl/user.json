@@ -58,7 +58,7 @@
     "upload_picture": "Upload afbeelding",
     "upload_a_picture": "Upload een afbeelding",
     "remove_uploaded_picture": "Verwijder gëuploade foto",
-    "image_spec": "Alleen afbeeldingsbestanden van het type PNG, JPG/JPEG, of GIF worden ondersteund.",
+    "image_spec": "You may only upload PNG, JPG, or BMP files",
     "settings": "Instellingen",
     "show_email": "Inschakelen weergave van e-mailadres op profielpagina",
     "show_fullname": "Laat mijn volledige naam zien",

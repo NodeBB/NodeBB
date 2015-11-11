@@ -58,7 +58,7 @@
     "upload_picture": "Resim Yükle",
     "upload_a_picture": "Bir Resim Yükle",
     "remove_uploaded_picture": "Yüklenmiş fotoğrafı kaldır",
-    "image_spec": "Sadece PNG, JPG veya GIF dosyaları yükleyebilirsiniz",
+    "image_spec": "You may only upload PNG, JPG, or BMP files",
     "settings": "Ayarlar",
     "show_email": "E-postamı göster",
     "show_fullname": "Tam ismimi göster",

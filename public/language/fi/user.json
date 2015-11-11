@@ -58,7 +58,7 @@
     "upload_picture": "Lataa kuva",
     "upload_a_picture": "Lataa kuva",
     "remove_uploaded_picture": "Remove Uploaded Picture",
-    "image_spec": "Voit ladata vain PNG-, JPG- tai GIF-tiedostoja",
+    "image_spec": "You may only upload PNG, JPG, or BMP files",
     "settings": "Asetukset",
     "show_email": "Näytä sähköpostiosoitteeni",
     "show_fullname": "Näytä koko nimeni",

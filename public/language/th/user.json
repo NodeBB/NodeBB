@@ -58,7 +58,7 @@
     "upload_picture": "อัปโหลดรูป",
     "upload_a_picture": "อัปโหลดรูป",
     "remove_uploaded_picture": "Remove Uploaded Picture",
-    "image_spec": "คุณสามารถอัปโหลด PNG, JPG หรือ GIF ไฟล์เท่านั้น",
+    "image_spec": "You may only upload PNG, JPG, or BMP files",
     "settings": "ตั้งค่า",
     "show_email": "แสดงอีเมล์",
     "show_fullname": "แสดงชื่อจริง",

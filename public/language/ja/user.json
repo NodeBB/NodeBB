@@ -58,7 +58,7 @@
     "upload_picture": "画像をアップロード",
     "upload_a_picture": "画像をアップロード",
     "remove_uploaded_picture": "Remove Uploaded Picture",
-    "image_spec": "PNG、JPGかGIFフォーマットの画像をアップロードしてください。",
+    "image_spec": "You may only upload PNG, JPG, or BMP files",
     "settings": "設定",
     "show_email": "メールアドレスを表示",
     "show_fullname": "Show My Full Name",
