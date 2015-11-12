@@ -14,7 +14,7 @@
     "test": "mocha ./tests -t 10000"
   },
   "dependencies": {
-    "async": "~1.4.2",
+    "async": "~1.5.0",
     "bcryptjs": "~2.3.0",
     "body-parser": "^1.9.0",
     "colors": "^1.1.0",
@@ -70,7 +70,7 @@
     "string": "^3.0.0",
     "templates.js": "0.3.0",
     "toobusy-js": "^0.4.2",
-    "uglify-js": "^2.4.24",
+    "uglify-js": "^2.5.0",
     "underscore": "~1.8.3",
     "underscore.deep": "^0.5.1",
     "validator": "^4.0.5",
