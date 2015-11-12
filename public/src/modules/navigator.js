@@ -95,11 +95,14 @@ define('navigator', ['forum/pagination', 'components'], function(pagination, com
 	navigator.update = function() {
 		toggle(!!count);
 
-		var middleOfViewport = $(window).scrollTop() + $(window).height() / 2;
+		var els = $(navigator.selector);
+		if (els.length) {
+			index = parseInt(els.first().attr('data-index'), 10) + 1;
+		}
 
-		index = parseInt($(navigator.selector).first().attr('data-index'), 10) + 1;
+		var middleOfViewport = $(window).scrollTop() + $(window).height() / 2;
 		var previousDistance = Number.MAX_VALUE;
-		$(navigator.selector).each(function() {
+		els.each(function() {
 			var distanceToMiddle = Math.abs(middleOfViewport - $(this).offset().top);
 
 			if (distanceToMiddle > previousDistance) {
