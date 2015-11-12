@@ -74,7 +74,7 @@
     "underscore": "~1.8.3",
     "underscore.deep": "^0.5.1",
     "validator": "^4.0.5",
-    "winston": "^1.0.1",
+    "winston": "^2.1.0",
     "xregexp": "~3.0.0"
   },
   "devDependencies": {
