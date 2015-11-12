@@ -170,6 +170,8 @@ var async = require('async'),
 	};
 
 	Posts.getPidIndex = function(pid, tid, topicPostSort, callback) {
+		if(callback === undefined)
+			return;
 		var set = topicPostSort === 'most_votes' ? 'tid:' + tid + ':posts:votes' : 'tid:' + tid + ':posts';
 		db.sortedSetRank(set, pid, function(err, index) {
 			if (!utils.isNumber(index)) {
