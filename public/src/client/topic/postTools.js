@@ -437,15 +437,6 @@ define('forum/topic/postTools', ['share', 'navigator', 'components', 'translator
 
 				warning.modal();
 			});
-			// 	bootbox.confirm(translated, function(create) {
-			// 		if (create) {
-						
-
-			// 		}
-
-			// 		callback(create);
-			// 	});
-			// });
 		} else {
 			callback(false);
 		}
