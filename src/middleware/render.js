@@ -45,13 +45,15 @@ module.exports = function(middleware) {
 				fn = defaultFn;
 			}
 
-			var ajaxifyData = encodeURIComponent(JSON.stringify(options));
+			var ajaxifyData = JSON.stringify(options);
+			
 			render.call(self, template, options, function(err, str) {
 				if (err) {
 					return fn(err);
 				}
+								
+				str = str + '<script id="ajaxify-data" type="application/json">' + ajaxifyData + '</script>';
 
-				str = str + '<input type="hidden" ajaxify-data="' + ajaxifyData + '" />';
 				str = (res.locals.postHeader ? res.locals.postHeader : '') + str + (res.locals.preFooter ? res.locals.preFooter : '');
 
 				if (res.locals.footer) {
