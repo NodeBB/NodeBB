@@ -96,7 +96,11 @@
     "newest_to_oldest": "Ibya Vuba Ujya ku bya Kera",
     "most_votes": "Amajwi yiganje",
     "most_posts": "Ibyashyizweho byiganje",
-    "stale_topic_warning": "The topic you are replying to is quite old. Would you like to create a new topic instead, and reference this one in your reply?",
+    "stale.title": "Create new topic instead?",
+    "stale.warning": "The topic you are replying to is quite old. Would you like to create a new topic instead, and reference this one in your reply?",
+    "stale.create": "Create a new topic",
+    "stale.reply_anyway": "Reply to this topic anyway",
+    "stale.link_back": "Re: [%1](%2)",
     "spam": "Spam",
     "offensive": "Offensive",
     "custom-flag-reason": "Enter a flagging reason"
