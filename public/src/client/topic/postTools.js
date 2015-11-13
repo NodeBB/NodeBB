@@ -408,18 +408,44 @@ define('forum/topic/postTools', ['share', 'navigator', 'components', 'translator
 
 	function showStaleWarning(callback) {
 		if (ajaxify.data.lastposttime < (Date.now() - (1000*60*60*24*config.topicStaleDays))) {
-			translator.translate('[[topic:stale_topic_warning]]', function(translated) {
-				bootbox.confirm(translated, function(create) {
-					if (create) {
-						$(window).trigger('action:composer.topic.new', {
-							cid: ajaxify.data.cid
-						});
+			translator.translate('[[topic:stale.warning]]', function(translated) {
+				var warning = bootbox.dialog({
+						title: '[[topic:stale.title]]',
+						message: translated,
+						buttons: {
+							reply: {
+								label: '[[topic:stale.reply_anyway]]',
+								className: 'btn-link',
+								callback: function() {
+									callback(false);
+								}
+							},
+							create: {
+								label: '[[topic:stale.create]]',
+								className: 'btn-primary',
+								callback: function() {
+									translator.translate('[[topic:stale.link_back, ' + ajaxify.data.title + ', ' + config.relative_path + '/topic/' + ajaxify.data.slug + ']]', function(body) {
+										$(window).trigger('action:composer.topic.new', {
+											cid: ajaxify.data.cid,
+											body: body
+										});
+									});
+								}
+							}
+						}
+					});
 
-					}
-
-					callback(create);
-				});
+				warning.modal();
 			});
+			// 	bootbox.confirm(translated, function(create) {
+			// 		if (create) {
+						
+
+			// 		}
+
+			// 		callback(create);
+			// 	});
+			// });
 		} else {
 			callback(false);
 		}
