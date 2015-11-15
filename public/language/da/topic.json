@@ -25,7 +25,7 @@
     "tools": "Værktøjer",
     "flag": "Marker",
     "locked": "Låst",
-    "bookmark_instructions": "Click here to return to the last unread post in this thread.",
+    "bookmark_instructions": "Klik her for at returnere til det seneste ulæste indlæg i denne tråd.",
     "flag_title": "Meld dette indlæg til moderation",
     "flag_success": "Dette indlæg er blevet meldt til moderation.",
     "deleted_message": "Denne tråd er blevet slettet. Kun brugere med emne behandlings privilegier kan se den.",
@@ -96,8 +96,12 @@
     "newest_to_oldest": "Nyeste til ældste",
     "most_votes": "Flest stemmer",
     "most_posts": "Flest indlæg",
-    "stale_topic_warning": "The topic you are replying to is quite old. Would you like to create a new topic instead, and reference this one in your reply?",
+    "stale.title": "Create new topic instead?",
+    "stale.warning": "The topic you are replying to is quite old. Would you like to create a new topic instead, and reference this one in your reply?",
+    "stale.create": "Create a new topic",
+    "stale.reply_anyway": "Reply to this topic anyway",
+    "stale.link_back": "Re: [%1](%2)",
     "spam": "Spam",
-    "offensive": "Offensive",
+    "offensive": "Stødende",
     "custom-flag-reason": "Enter a flagging reason"
 }

@@ -96,7 +96,11 @@
     "newest_to_oldest": "Máis novo a máis antigo",
     "most_votes": "Maior número de votos",
     "most_posts": "Maior número de respostas",
-    "stale_topic_warning": "O tema non ten respostas dende hai bastante tempo. Queres crear un novo tema no seu canto e crear unha referencia deste na publicación?",
+    "stale.title": "Create new topic instead?",
+    "stale.warning": "The topic you are replying to is quite old. Would you like to create a new topic instead, and reference this one in your reply?",
+    "stale.create": "Create a new topic",
+    "stale.reply_anyway": "Reply to this topic anyway",
+    "stale.link_back": "Re: [%1](%2)",
     "spam": "Spam",
     "offensive": "Ofensivo",
     "custom-flag-reason": "Describe o motivo do reporte"
