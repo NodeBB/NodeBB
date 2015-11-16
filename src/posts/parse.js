@@ -24,7 +24,10 @@ module.exports = function(Posts) {
 			if (err) {
 				return callback(err);
 			}
-			cache.set(data.postData.pid, data.postData.content);
+
+			if (global.env === 'production') {
+				cache.set(data.postData.pid, data.postData.content);
+			}
 
 			callback(null, data.postData);
 		});
