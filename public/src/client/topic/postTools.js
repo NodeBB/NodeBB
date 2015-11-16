@@ -255,7 +255,9 @@ define('forum/topic/postTools', ['share', 'navigator', 'components', 'translator
 			pid: post.attr('data-pid'),
 			room_id: app.currentRoom
 		}, function(err) {
-			if (err) {
+			if (err.message === 'self-vote') {
+				showVotes(post.attr('data-pid'));
+			} else {
 				app.alertError(err.message);
 			}
 		});

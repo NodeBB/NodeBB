@@ -204,7 +204,7 @@ var async = require('async'),
 			}
 
 			if (parseInt(uid, 10) === parseInt(results.owner, 10)) {
-				return callback(new Error('[[error:cant-vote-self-post]]'));
+				return callback(new Error('self-vote'));
 			}
 
 			var voteStatus = results.voteStatus,
