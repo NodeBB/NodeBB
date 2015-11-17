@@ -119,6 +119,10 @@ topicsController.get = function(req, res, callback) {
 					return next(err);
 				}
 
+				if (topicData.category.disabled) {
+					return callback();
+				}
+
 				topics.modifyByPrivilege(topicData.posts, results.privileges);
 
 				plugins.fireHook('filter:controllers.topic.get', topicData, next);
