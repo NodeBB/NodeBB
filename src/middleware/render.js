@@ -32,6 +32,7 @@ module.exports = function(middleware) {
 			options.bodyClass = buildBodyClass(req);
 
 			res.locals.template = template;
+			options._locals = undefined;
 
 			if (res.locals.isAPI) {
 				if (req.route && req.route.path === '/api/') {
@@ -46,12 +47,14 @@ module.exports = function(middleware) {
 			}
 
 			var ajaxifyData = JSON.stringify(options);
-			
+
 			render.call(self, template, options, function(err, str) {
 				if (err) {
 					return fn(err);
 				}
-								
+
+				ajaxifyData = ajaxifyData.replace(/<\//g, '<\\/');
+
 				str = str + '<script id="ajaxify-data" type="application/json">' + ajaxifyData + '</script>';
 
 				str = (res.locals.postHeader ? res.locals.postHeader : '') + str + (res.locals.preFooter ? res.locals.preFooter : '');
