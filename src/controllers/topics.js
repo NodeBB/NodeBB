@@ -41,7 +41,6 @@ topicsController.get = function(req, res, callback) {
 			}, next);
 		},
 		function (results, next) {
-
 			if (!results.topic.slug) {
 				return callback();
 			}
@@ -178,7 +177,7 @@ topicsController.get = function(req, res, callback) {
 				ogImageUrl = '/logo.png';
 			}
 
-			if (ogImageUrl.indexOf('http') === -1) {
+			if (typeof ogImageUrl === 'string' && ogImageUrl.indexOf('http') === -1) {
 				ogImageUrl = nconf.get('url') + ogImageUrl;
 			}
 
