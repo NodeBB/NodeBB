@@ -47,15 +47,12 @@ module.exports = function(middleware) {
 			}
 
 			var ajaxifyData = JSON.stringify(options);
+			ajaxifyData = ajaxifyData.replace(/<\//g, '<\\/');
 
 			render.call(self, template, options, function(err, str) {
 				if (err) {
 					return fn(err);
 				}
-
-				ajaxifyData = ajaxifyData.replace(/<\//g, '<\\/');
-
-				str = str + '<script id="ajaxify-data" type="application/json">' + ajaxifyData + '</script>';
 
 				str = (res.locals.postHeader ? res.locals.postHeader : '') + str + (res.locals.preFooter ? res.locals.preFooter : '');
 
@@ -75,10 +72,12 @@ module.exports = function(middleware) {
 						var language = res.locals.config ? res.locals.config.userLang || 'en_GB' : 'en_GB';
 						language = req.query.lang || language;
 						translator.translate(str, language, function(translated) {
+							translated = translated + '<script id="ajaxify-data" type="application/json">' + ajaxifyData + '</script>';
 							fn(err, translated);
 						});
 					});
 				} else {
+					str = str + '<script id="ajaxify-data" type="application/json">' + ajaxifyData + '</script>';
 					fn(err, str);
 				}
 			});
