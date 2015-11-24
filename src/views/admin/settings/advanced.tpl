@@ -51,6 +51,12 @@
 		</p>
 		<form>
 			<div class="form-group">
+				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="eventLoopCheckEnabled">
+					<input class="mdl-switch__input" id="eventLoopCheckEnabled" type="checkbox" data-field="eventLoopCheckEnabled" checked />
+					<span class="mdl-switch__label">Enable Traffic Management</span>
+				</label>
+			</div>
+			<div class="form-group">
 				<label for="eventLoopLagThreshold">Event Loop Lag Threshold (in milliseconds)</label>
 				<input class="form-control" id="eventLoopLagThreshold" type="number" data-field="eventLoopLagThreshold" placeholder="Default: 70" step="10" value="70" />
 				<p class="help-block">
