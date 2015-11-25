@@ -150,10 +150,24 @@ define('admin/general/dashboard', ['semver'], function(semver) {
 
 		for (var i = currentHour, ii = currentHour - 24; i > ii; i--) {
 			var hour = i < 0 ? 24 + i : i;
-			labels.push(hour + ':00 ');
+			labels.push(hour + ':00');
 		}
 
 		return labels.reverse();
+	}
+
+	function getDaysArray() {
+		var currentDay = new Date().getTime(),
+			months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+			labels = [],
+			tmpDate;
+
+		for(var x=29;x>=0;x--) {
+			tmpDate = new Date(currentDay - (1000*60*60*24*x));
+			labels.push(months[tmpDate.getMonth()] + ' ' + tmpDate.getDate());
+		}
+
+		return labels;
 	}
 
 	function setupGraphs() {
@@ -263,6 +277,10 @@ define('admin/general/dashboard', ['semver'], function(semver) {
 
 		$(window).on('resize', adjustPieCharts);
 		adjustPieCharts();
+
+		$('[data-action="updateGraph"]').on('click', function() {
+			updateTrafficGraph($(this).attr('data-units'));
+		})
 	}
 
 	function adjustPieCharts() {
@@ -277,26 +295,44 @@ define('admin/general/dashboard', ['semver'], function(semver) {
 		});
 	}
 
-	function updateTrafficGraph() {
+	function updateTrafficGraph(units) {
 		if (!app.isFocused) {
 			return;
 		}
 
-		socket.emit('admin.analytics.get', {graph: "traffic"}, function (err, data) {
+		socket.emit('admin.analytics.get', {
+			graph: 'traffic',
+			units: units || 'hours'
+		}, function (err, data) {
 			if (JSON.stringify(graphData.traffic) === JSON.stringify(data)) {
 				return;
 			}
 
 			graphData.traffic = data;
 
-			for (var i = 0, ii = data.pageviews.length; i < ii;  i++) {
-				graphs.traffic.datasets[0].points[i].value = data.pageviews[i];
-				graphs.traffic.datasets[1].points[i].value = data.uniqueVisitors[i];
+			// If new data set contains fewer points than currently shown, truncate
+			while(graphs.traffic.datasets[0].points.length > data.pageviews.length) {
+				graphs.traffic.removeData();
 			}
 
-			var currentHour = new Date().getHours();
+			if (units === 'days') {
+				graphs.traffic.scale.xLabels = getDaysArray();
+			} else {
+				graphs.traffic.scale.xLabels = getHoursArray();
+			}
 
-			graphs.traffic.scale.xLabels = getHoursArray();
+			for (var i = 0, ii = data.pageviews.length; i < ii;  i++) {
+				if (graphs.traffic.datasets[0].points[i]) {
+					graphs.traffic.datasets[0].points[i].value = data.pageviews[i];
+					graphs.traffic.datasets[0].points[i].label = graphs.traffic.scale.xLabels[i];
+					graphs.traffic.datasets[1].points[i].value = data.uniqueVisitors[i];
+					graphs.traffic.datasets[1].points[i].label = graphs.traffic.scale.xLabels[i];
+				} else {
+					// No points to replace? Add data.
+					graphs.traffic.addData([data.pageviews[i], data.uniqueVisitors[i]], graphs.traffic.scale.xLabels[i]);
+				}
+			}
+
 			graphs.traffic.update();
 
 			$('#pageViewsThisMonth').html(data.monthlyPageViews.thisMonth);
