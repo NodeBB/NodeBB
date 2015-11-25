@@ -12,7 +12,10 @@ define('admin/general/dashboard', ['semver'], function(semver) {
 			rooms: {},
 			traffic: {}
 		},
-		currentGraph = 'hours';
+		currentGraph = {
+			units: 'hours',
+			until: undefined
+		};
 
 	var DEFAULTS = {
 		roomInterval: 10000,
@@ -157,8 +160,8 @@ define('admin/general/dashboard', ['semver'], function(semver) {
 		return labels.reverse();
 	}
 
-	function getDaysArray() {
-		var currentDay = new Date().getTime(),
+	function getDaysArray(from) {
+		var currentDay = new Date(from || Date.now()).getTime(),
 			months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
 			labels = [],
 			tmpDate;
@@ -280,8 +283,15 @@ define('admin/general/dashboard', ['semver'], function(semver) {
 		adjustPieCharts();
 
 		$('[data-action="updateGraph"]').on('click', function() {
-			updateTrafficGraph($(this).attr('data-units'));
-		})
+			var until = undefined;
+			switch($(this).attr('data-until')) {
+				case 'last-month':
+					var lastMonth = new Date();
+					lastMonth.setDate(lastMonth.getDate()-30);
+					until = lastMonth.getTime();
+			}
+			updateTrafficGraph($(this).attr('data-units'), until);
+		});
 	}
 
 	function adjustPieCharts() {
@@ -296,20 +306,20 @@ define('admin/general/dashboard', ['semver'], function(semver) {
 		});
 	}
 
-	function updateTrafficGraph(units) {
+	function updateTrafficGraph(units, until) {
 		if (!app.isFocused) {
 			return;
 		}
 
-		units = units || currentGraph;
-
 		socket.emit('admin.analytics.get', {
 			graph: 'traffic',
-			units: units
+			units: units || 'hours',
+			until: until
 		}, function (err, data) {
 			if (JSON.stringify(graphData.traffic) === JSON.stringify(data)) {
 				return;
 			}
+			console.log(data);
 
 			graphData.traffic = data;
 
@@ -319,7 +329,7 @@ define('admin/general/dashboard', ['semver'], function(semver) {
 			}
 
 			if (units === 'days') {
-				graphs.traffic.scale.xLabels = getDaysArray();
+				graphs.traffic.scale.xLabels = getDaysArray(until);
 			} else {
 				graphs.traffic.scale.xLabels = getHoursArray();
 			}
@@ -337,7 +347,8 @@ define('admin/general/dashboard', ['semver'], function(semver) {
 			}
 
 			graphs.traffic.update();
-			currentGraph = units;
+			currentGraph.units = units;
+			currentGraph.until = until;
 
 			$('#pageViewsThisMonth').html(data.monthlyPageViews.thisMonth);
 			$('#pageViewsLastMonth').html(data.monthlyPageViews.lastMonth);
@@ -483,7 +494,9 @@ define('admin/general/dashboard', ['semver'], function(semver) {
 			}
 		}, realtime ? DEFAULTS.realtimeInterval : DEFAULTS.roomInterval);
 
-		intervals.graphs = setInterval(updateTrafficGraph, realtime ? DEFAULTS.realtimeInterval : DEFAULTS.graphInterval);
+		intervals.graphs = setInterval(function() {
+			updateTrafficGraph(currentGraph.units, currentGraph.until);
+		}, realtime ? DEFAULTS.realtimeInterval : DEFAULTS.graphInterval);
 	}
 
 	return Admin;

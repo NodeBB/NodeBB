@@ -13,7 +13,7 @@
 				<hr/>
 				<div class="text-center pull-left monthly-pageviews">
 					<div><strong id="pageViewsLastMonth"></strong></div>
-					<div>Page views Last Month</div>
+					<div><a href="#" data-action="updateGraph" data-units="days" data-until="last-month">Page views Last Month</a></div>
 				</div>
 				<div class="text-center pull-left monthly-pageviews">
 					<div><strong id="pageViewsThisMonth"></strong></div>

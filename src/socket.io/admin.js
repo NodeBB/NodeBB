@@ -218,16 +218,16 @@ SocketAdmin.analytics.get = function(socket, data, callback) {
 			async.parallel({
 				uniqueVisitors: function(next) {
 					if (data.units === 'days') {
-						getDailyStatsForSet('analytics:uniquevisitors', Date.now(), data.amount, next);
+						getDailyStatsForSet('analytics:uniquevisitors', data.until || Date.now(), data.amount, next);
 					} else {
-						getHourlyStatsForSet('analytics:uniquevisitors', Date.now(), data.amount, next);
+						getHourlyStatsForSet('analytics:uniquevisitors', data.until || Date.now(), data.amount, next);
 					}
 				},
 				pageviews: function(next) {
 					if (data.units === 'days') {
-						getDailyStatsForSet('analytics:pageviews', Date.now(), data.amount, next);
+						getDailyStatsForSet('analytics:pageviews', data.until || Date.now(), data.amount, next);
 					} else {
-						getHourlyStatsForSet('analytics:pageviews', Date.now(), data.amount, next);
+						getHourlyStatsForSet('analytics:pageviews', data.until || Date.now(), data.amount, next);
 					}
 				},
 				monthlyPageViews: function(next) {
