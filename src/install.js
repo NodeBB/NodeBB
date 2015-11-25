@@ -460,10 +460,15 @@ function createWelcomePost(next) {
 			db.getObjectField('global', 'topicCount', next);
 		}
 	], function(err, results) {
+		if (err) {
+			return next(err);
+		}
+
 		var content = results[0],
 			numTopics = results[1];
 
 		if (!parseInt(numTopics, 10)) {
+			process.stdout.write('Creating welcome post!\n');
 			Topics.post({
 				uid: 1,
 				cid: 2,
