@@ -58,7 +58,7 @@
     "upload_picture": "Envoyer l'image",
     "upload_a_picture": "Envoyer une image",
     "remove_uploaded_picture": "Supprimer l'image envoyée",
-    "image_spec": "You may only upload PNG, JPG, or BMP files",
+    "image_spec": "Vous ne pouvez envoyer que des fichiers PNG, JPG ou BMP",
     "settings": "Paramètres",
     "show_email": "Afficher mon email",
     "show_fullname": "Afficher mon nom complet",

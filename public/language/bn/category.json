@@ -1,16 +1,16 @@
 {
-    "category": "Category",
-    "subcategories": "Subcategories",
+    "category": "বিভাগ",
+    "subcategories": "উপবিভাগ",
     "new_topic_button": "নতুন টপিক",
-    "guest-login-post": "Log in to post",
-    "no_topics": "<strong>এই বিভাগে কোন টপিক নেই! </strong><br /> আপনি চাইলে একটি পোষ্ট করতে পারেন।",
+    "guest-login-post": "উত্তর দিতে লগিন করুন",
+    "no_topics": "<strong>এই বিভাগে কোন আলোচনা নেই! </strong><br /> আপনি চাইলে নতুন আলোচনা শুরু করতে পারেন।",
     "browsing": "ব্রাউজিং",
     "no_replies": "কোন রিপ্লাই নেই",
-    "no_new_posts": "No new posts.",
+    "no_new_posts": "নতুন কোন পোস্ট নাই",
     "share_this_category": "এই বিভাগটি অন্যের সাথে ভাগাভাগি করুন",
-    "watch": "Watch",
+    "watch": "নজর রাখুন",
     "ignore": "উপেক্ষা করুন",
-    "watch.message": "You are now watching updates from this category",
-    "ignore.message": "You are now ignoring updates from this category",
-    "watched-categories": "Watched categories"
+    "watch.message": "আপনি এই বিভাগটিতে নজর রাখছেন",
+    "ignore.message": "আপনি এই বিভাগটির উপেক্ষা করছেন ",
+    "watched-categories": "প্রেক্ষিত বিভাগসমূহ"
 }

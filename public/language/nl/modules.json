@@ -23,11 +23,11 @@
     "composer.discard": "Bericht plaatsen annuleren?",
     "composer.submit_and_lock": "Plaats een bericht en vergrendel direct het onderwerp",
     "composer.toggle_dropdown": "Keuzelijst schakelen",
-    "composer.uploading": "Uploading %1",
+    "composer.uploading": "Uploaden van %1",
     "bootbox.ok": "OK",
     "bootbox.cancel": "Anuleren",
     "bootbox.confirm": "Bevestig",
-    "cover.dragging_title": "Cover Photo Positioning",
-    "cover.dragging_message": "Drag the cover photo to the desired position and click \"Save\"",
-    "cover.saved": "Cover photo image and position saved"
+    "cover.dragging_title": "Omslag Foto Positionering",
+    "cover.dragging_message": "Sleep de omslag foto voor de gewilde positie en klik \"Opslaan\"",
+    "cover.saved": "Omslag foto en positie opgeslagen"
 }

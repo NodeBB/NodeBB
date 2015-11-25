@@ -27,7 +27,7 @@
     "bootbox.ok": "OK",
     "bootbox.cancel": "Annuler",
     "bootbox.confirm": "Confirmer",
-    "cover.dragging_title": "Cover Photo Positioning",
-    "cover.dragging_message": "Drag the cover photo to the desired position and click \"Save\"",
-    "cover.saved": "Cover photo image and position saved"
+    "cover.dragging_title": "Positionnement de la photo de couverture",
+    "cover.dragging_message": "Déplacez la photo de couverture à la position désiré et cliquez sur \"Enregistrer\"",
+    "cover.saved": "Photo de couverture et position sauvegardé. "
 }

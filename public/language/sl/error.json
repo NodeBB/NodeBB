@@ -48,7 +48,6 @@
     "not-enough-tags": "Ni dovolj oznak. Tema mora vsebovati vsaj %1 znak(ov)",
     "too-many-tags": "Preveč oznak. Tema ne sme imeti več kot %1 znak(ov)",
     "file-too-big": "Največja dovoljena velikost datoteke je %1 kB - prosimo naložite manjšo datoteko",
-    "cant-vote-self-post": "Ne morete glasovati za svojo objavo",
     "already-favourited": "To objavo ste že dodali med priljubljene",
     "already-unfavourited": "To objavo ste že odstranili iz priljubljenih",
     "cant-ban-other-admins": "Ne morete blokirati drugih administratorjev!",

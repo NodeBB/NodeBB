@@ -23,11 +23,11 @@
     "composer.discard": "Bist du sicher, dass du diesen Beitrag verwerfen möchtest?",
     "composer.submit_and_lock": "Einreichen und Sperren",
     "composer.toggle_dropdown": "Menu aus-/einblenden",
-    "composer.uploading": "Uploading %1",
+    "composer.uploading": "Lade %1 hoch",
     "bootbox.ok": "OK",
     "bootbox.cancel": "Abbrechen",
     "bootbox.confirm": "Bestätigen",
-    "cover.dragging_title": "Cover Photo Positioning",
-    "cover.dragging_message": "Drag the cover photo to the desired position and click \"Save\"",
-    "cover.saved": "Cover photo image and position saved"
+    "cover.dragging_title": "Titelbildpositionierung",
+    "cover.dragging_message": "Ziehe das Titelbild an die gewünschte Position und klicke auf \"Speichern\"",
+    "cover.saved": "Titelbild und -position gespeichert"
 }

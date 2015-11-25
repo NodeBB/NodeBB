@@ -48,7 +48,6 @@
     "not-enough-tags": "Not enough tags. Topics must have at least %1 tag(s)",
     "too-many-tags": "Too many tags. Topics can't have more than %1 tag(s)",
     "file-too-big": "Maximum allowed file size is %1 kB - please upload a smaller file",
-    "cant-vote-self-post": "Et voi antaa ääntä omalle viestillesi",
     "already-favourited": "Tämä viesti on jo suosikeissasi",
     "already-unfavourited": "Olet jo poistanut tämän viestin suosikeistasi",
     "cant-ban-other-admins": "Et voi estää muita ylläpitäjiä!",

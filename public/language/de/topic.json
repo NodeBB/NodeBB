@@ -96,12 +96,12 @@
     "newest_to_oldest": "Neuste zuerst",
     "most_votes": "Die meisten Stimmen",
     "most_posts": "Die meisten Beiträge",
-    "stale.title": "Create new topic instead?",
-    "stale.warning": "The topic you are replying to is quite old. Would you like to create a new topic instead, and reference this one in your reply?",
-    "stale.create": "Create a new topic",
-    "stale.reply_anyway": "Reply to this topic anyway",
+    "stale.title": "Stattdessen ein neues Thema erstellen?",
+    "stale.warning": "Das Thema auf das du antworten möchtest ist ziemlich alt. Möchtest du stattdessen ein neues Thema erstellen und auf dieses in deiner Antwort hinweisen?",
+    "stale.create": "Ein neues Thema erstellen",
+    "stale.reply_anyway": "Auf dieses Thema trotzdem antworten",
     "stale.link_back": "Re: [%1](%2)",
     "spam": "Spam",
-    "offensive": "Offensive",
-    "custom-flag-reason": "Enter a flagging reason"
+    "offensive": "Beleidigend",
+    "custom-flag-reason": "Gib einen Grund für die Markierung ein"
 }

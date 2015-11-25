@@ -24,9 +24,9 @@
     "chats": "Chats",
     "chat": "Chatter med %1",
     "account/edit": "Redigere \"%1\"",
-    "account/edit/password": "Editing password of \"%1\"",
-    "account/edit/username": "Editing username of \"%1\"",
-    "account/edit/email": "Editing email of \"%1\"",
+    "account/edit/password": "Redigerer adgangskode  for \"%1\"",
+    "account/edit/username": "Redigerer brugernavn for \"%1\"",
+    "account/edit/email": "Redigerer email for \"%1\"",
     "account/following": "Personer som %1 følger",
     "account/followers": "Personer som følger %1",
     "account/posts": "Indlæg oprettet af %1",
@@ -37,5 +37,5 @@
     "account/watched": "Tråde fulgt af %1",
     "maintenance.text": "%1 er under vedligeholdelse. Kom venligst tilbage senere.",
     "maintenance.messageIntro": "Administratoren har yderligere vedlagt denne besked:",
-    "throttled.text": "%1 is currently unavailable due to excessive load. Please come back another time."
+    "throttled.text": "%1 er ikke tilgængelig på grund af overbelastning. Venligst kom tilbage senere."
 }

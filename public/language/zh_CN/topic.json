@@ -96,12 +96,12 @@
     "newest_to_oldest": "从新到旧",
     "most_votes": "最多投票",
     "most_posts": "最多回复",
-    "stale.title": "Create new topic instead?",
-    "stale.warning": "The topic you are replying to is quite old. Would you like to create a new topic instead, and reference this one in your reply?",
-    "stale.create": "Create a new topic",
-    "stale.reply_anyway": "Reply to this topic anyway",
-    "stale.link_back": "Re: [%1](%2)",
-    "spam": "Spam",
-    "offensive": "Offensive",
-    "custom-flag-reason": "Enter a flagging reason"
+    "stale.title": "接受建议，创建新主题？",
+    "stale.warning": "您回复的主题已经非常老了。开个新帖，然后在新帖中引用这个老帖的内容，可以吗？",
+    "stale.create": "创建新主题",
+    "stale.reply_anyway": "仍然回复此帖",
+    "stale.link_back": "回复: [%1](%2)",
+    "spam": "垃圾帖",
+    "offensive": "人身攻击",
+    "custom-flag-reason": "输入举报原因"
 }

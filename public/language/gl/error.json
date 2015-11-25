@@ -48,7 +48,6 @@
     "not-enough-tags": "Non hai etiquetas dabondas. Os temas deben ter %1 etiqueta(s) como mínimo.",
     "too-many-tags": "Moitas etiquetas. Os temas non poden ter máis de %1 etiqueta(s).",
     "file-too-big": "O tamaño máximo permitido é %1 kB - por favor, sube un arquivo máis pequeno",
-    "cant-vote-self-post": "Non podes votar pola túa publicación",
     "already-favourited": "Marcache como favorita esta publicación",
     "already-unfavourited": "Desmarcache como favorita esta publicación",
     "cant-ban-other-admins": "Non podes botar outros administradores!",

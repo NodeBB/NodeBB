@@ -48,7 +48,6 @@
     "not-enough-tags": "Not enough tags. Topics must have at least %1 tag(s)",
     "too-many-tags": "Too many tags. Topics can't have more than %1 tag(s)",
     "file-too-big": "Maximum allowed file size is %1 kB - please upload a smaller file",
-    "cant-vote-self-post": "شما نمی‌توانید به دیدگاه خود رای بدهید.",
     "already-favourited": "شما قبلا این دیدگاه را محبوب کرده اید",
     "already-unfavourited": "شما قبلا این دیدگاه را نامحبوب کرده اید",
     "cant-ban-other-admins": "شما نمی‌توانید دیگر مدیران را محروم کنید!",

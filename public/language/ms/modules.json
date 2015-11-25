@@ -27,7 +27,7 @@
     "bootbox.ok": "Ok",
     "bootbox.cancel": "Batal",
     "bootbox.confirm": "Pasti",
-    "cover.dragging_title": "Cover Photo Positioning",
-    "cover.dragging_message": "Drag the cover photo to the desired position and click \"Save\"",
-    "cover.saved": "Cover photo image and position saved"
+    "cover.dragging_title": "Kedudukan Gambar Muka",
+    "cover.dragging_message": "Seret gambar muka ke kedudukan yang diingini dan klik \"Simpan\"",
+    "cover.saved": "Gambar muka dan kedudukan disimpan"
 }

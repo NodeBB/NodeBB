@@ -48,7 +48,6 @@
     "not-enough-tags": "Pas assez de mots-clés. Les sujets doivent avoir au moins %1 mots-clé(s).",
     "too-many-tags": "Trop de mots-clés. Les sujets ne peuvent avoir au plus que %1 mots-clé(s).",
     "file-too-big": "La taille maximale autorisée pour un fichier est de %1 kb. Veuillez envoyer un fichier plus petit.",
-    "cant-vote-self-post": "Vous ne pouvez pas voter pour vos propres messages",
     "already-favourited": "Vous avez déjà mis ce message en favoris",
     "already-unfavourited": "Vous avez déjà retiré ce message des favoris",
     "cant-ban-other-admins": "Vous ne pouvez pas bannir les autres administrateurs !",

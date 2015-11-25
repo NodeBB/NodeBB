@@ -24,9 +24,9 @@
     "chats": "聊天",
     "chat": "与 %1 聊天",
     "account/edit": "正在编辑 \"%1\"",
-    "account/edit/password": "Editing password of \"%1\"",
-    "account/edit/username": "Editing username of \"%1\"",
-    "account/edit/email": "Editing email of \"%1\"",
+    "account/edit/password": "正在编辑 \"%1\" 的密码",
+    "account/edit/username": "正在编辑 \"%1\" 的用户名",
+    "account/edit/email": "正在编辑 \"%1\" 的电子邮箱",
     "account/following": "%1 关注",
     "account/followers": "关注 %1 的人",
     "account/posts": "%1 发布的帖子",
@@ -37,5 +37,5 @@
     "account/watched": "主题已被 %1 关注",
     "maintenance.text": "%1 正在进行维护。请稍后再来。",
     "maintenance.messageIntro": "此外，管理员留下的消息：",
-    "throttled.text": "%1 is currently unavailable due to excessive load. Please come back another time."
+    "throttled.text": "%1 因负荷超载暂不可用。请稍后再来。"
 }

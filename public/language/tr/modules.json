@@ -27,7 +27,7 @@
     "bootbox.ok": "Tamam",
     "bootbox.cancel": "İptal",
     "bootbox.confirm": "Onayla",
-    "cover.dragging_title": "Cover Photo Positioning",
-    "cover.dragging_message": "Drag the cover photo to the desired position and click \"Save\"",
-    "cover.saved": "Cover photo image and position saved"
+    "cover.dragging_title": "Kapak Görseli Konumlandırma",
+    "cover.dragging_message": "Kapak görselini istediğin pozisyona getir ve kaydet",
+    "cover.saved": "Kapak görseli ve pozisyonu kaydedildi"
 }

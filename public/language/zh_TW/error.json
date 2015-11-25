@@ -48,7 +48,6 @@
     "not-enough-tags": "Not enough tags. Topics must have at least %1 tag(s)",
     "too-many-tags": "Too many tags. Topics can't have more than %1 tag(s)",
     "file-too-big": "Maximum allowed file size is %1 kB - please upload a smaller file",
-    "cant-vote-self-post": "你不能對自己的文章說讚！",
     "already-favourited": "你已經收藏了這篇文章",
     "already-unfavourited": "你已放棄收藏這篇文章",
     "cant-ban-other-admins": "您無法禁止其他的管理員！",

@@ -27,7 +27,7 @@
     "bootbox.ok": "Добре",
     "bootbox.cancel": "Отказ",
     "bootbox.confirm": "Потвърждаване",
-    "cover.dragging_title": "Cover Photo Positioning",
-    "cover.dragging_message": "Drag the cover photo to the desired position and click \"Save\"",
-    "cover.saved": "Cover photo image and position saved"
+    "cover.dragging_title": "Наместване на снимката",
+    "cover.dragging_message": "Преместете снимката на желаното положение и натиснете „Запазване“",
+    "cover.saved": "Снимката и мястото ѝ бяха запазени"
 }

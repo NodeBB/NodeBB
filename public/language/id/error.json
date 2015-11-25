@@ -48,7 +48,6 @@
     "not-enough-tags": "Not enough tags. Topics must have at least %1 tag(s)",
     "too-many-tags": "Too many tags. Topics can't have more than %1 tag(s)",
     "file-too-big": "Maximum allowed file size is %1 kB - please upload a smaller file",
-    "cant-vote-self-post": "Kamu tidak dapat vote postingan sendiri",
     "already-favourited": "Post ini sudah kamu favorit",
     "already-unfavourited": "Postingan ini sudah kamu unfavorit",
     "cant-ban-other-admins": "Kamu tidak dapat ban admin lainnya!",

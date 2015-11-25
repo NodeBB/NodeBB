@@ -48,7 +48,6 @@
     "not-enough-tags": "Not enough tags. Topics must have at least %1 tag(s)",
     "too-many-tags": "Too many tags. Topics can't have more than %1 tag(s)",
     "file-too-big": "Maximum allowed file size is %1 kB - please upload a smaller file",
-    "cant-vote-self-post": "לא ניתן להצביע לפוסט שלך",
     "already-favourited": "כבר הוספת פוסט זה למועדפים",
     "already-unfavourited": "כבר הסרת פוסט זה מהמועדפים",
     "cant-ban-other-admins": "אינך יכול לחסום מנהלים אחרים!",

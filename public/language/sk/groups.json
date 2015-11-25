@@ -1,7 +1,7 @@
 {
     "groups": "Groups",
-    "view_group": "View Group",
-    "owner": "Group Owner",
+    "view_group": "Zobraz skupinu",
+    "owner": "Majiteľ skupiny",
     "new_group": "Create New Group",
     "no_groups_found": "There are no groups to see",
     "pending.accept": "Accept",

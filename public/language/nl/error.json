@@ -48,7 +48,6 @@
     "not-enough-tags": "Niet genoeg labels. Onderwerp moeten tenminste %1 label(s) hebben",
     "too-many-tags": "Teveel labels. Onderwerpen kunnen niet meer dan %1 label(s) hebben",
     "file-too-big": "Maximum toegestane bestandsgrootte is %1 kB - probeer een kleiner bestand te verzenden",
-    "cant-vote-self-post": "Het is niet mogelijk om op eigen berichten te stemmen",
     "already-favourited": "Dit bericht staat al tussen de favorieten",
     "already-unfavourited": "Dit bericht is al uit favorieten verwijderd",
     "cant-ban-other-admins": "Het is niet toegestaan andere beheerders te verbannen!",
