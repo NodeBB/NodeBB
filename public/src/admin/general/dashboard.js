@@ -332,6 +332,13 @@ define('admin/general/dashboard', ['semver'], function(semver) {
 				graphs.traffic.scale.xLabels = getDaysArray(until);
 			} else {
 				graphs.traffic.scale.xLabels = getHoursArray();
+
+				$('#pageViewsThisMonth').html(data.monthlyPageViews.thisMonth);
+				$('#pageViewsLastMonth').html(data.monthlyPageViews.lastMonth);
+				$('#pageViewsPastDay').html(data.pastDay);
+				utils.addCommasToNumbers($('#pageViewsThisMonth'));
+				utils.addCommasToNumbers($('#pageViewsLastMonth'));
+				utils.addCommasToNumbers($('#pageViewsPastDay'));
 			}
 
 			for (var i = 0, ii = data.pageviews.length; i < ii;  i++) {
@@ -349,13 +356,6 @@ define('admin/general/dashboard', ['semver'], function(semver) {
 			graphs.traffic.update();
 			currentGraph.units = units;
 			currentGraph.until = until;
-
-			$('#pageViewsThisMonth').html(data.monthlyPageViews.thisMonth);
-			$('#pageViewsLastMonth').html(data.monthlyPageViews.lastMonth);
-			$('#pageViewsPastDay').html(data.pastDay);
-			utils.addCommasToNumbers($('#pageViewsThisMonth'));
-			utils.addCommasToNumbers($('#pageViewsLastMonth'));
-			utils.addCommasToNumbers($('#pageViewsPastDay'));
 		});
 	}
 
