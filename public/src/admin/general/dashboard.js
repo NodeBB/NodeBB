@@ -319,7 +319,6 @@ define('admin/general/dashboard', ['semver'], function(semver) {
 			if (JSON.stringify(graphData.traffic) === JSON.stringify(data)) {
 				return;
 			}
-			console.log(data);
 
 			graphData.traffic = data;
 
