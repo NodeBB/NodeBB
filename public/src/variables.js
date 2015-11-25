@@ -9,6 +9,7 @@
 		var dataEl = $('#ajaxify-data');
 		if (dataEl.length) {
 			ajaxify.data = JSON.parse(dataEl.text());
+			dataEl.remove();
 		}
 	};
 }(ajaxify || {}));
