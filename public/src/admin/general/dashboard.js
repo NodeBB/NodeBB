@@ -11,7 +11,8 @@ define('admin/general/dashboard', ['semver'], function(semver) {
 		graphData = {
 			rooms: {},
 			traffic: {}
-		};
+		},
+		currentGraph = 'hours';
 
 	var DEFAULTS = {
 		roomInterval: 10000,
@@ -302,7 +303,7 @@ define('admin/general/dashboard', ['semver'], function(semver) {
 
 		socket.emit('admin.analytics.get', {
 			graph: 'traffic',
-			units: units || 'hours'
+			units: units || currentGraph
 		}, function (err, data) {
 			if (JSON.stringify(graphData.traffic) === JSON.stringify(data)) {
 				return;
@@ -334,6 +335,7 @@ define('admin/general/dashboard', ['semver'], function(semver) {
 			}
 
 			graphs.traffic.update();
+			currentGraph = units;
 
 			$('#pageViewsThisMonth').html(data.monthlyPageViews.thisMonth);
 			$('#pageViewsLastMonth').html(data.monthlyPageViews.lastMonth);
