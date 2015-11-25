@@ -301,9 +301,11 @@ define('admin/general/dashboard', ['semver'], function(semver) {
 			return;
 		}
 
+		units = units || currentGraph;
+
 		socket.emit('admin.analytics.get', {
 			graph: 'traffic',
-			units: units || currentGraph
+			units: units
 		}, function (err, data) {
 			if (JSON.stringify(graphData.traffic) === JSON.stringify(data)) {
 				return;
