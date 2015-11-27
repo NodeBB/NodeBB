@@ -9,9 +9,8 @@ module.exports = function(Posts) {
 	Posts.parsePost = function(postData, callback) {
 		postData.content = postData.content || '';
 
-		var cachedContent = cache.get(postData.pid);
-		if (cachedContent) {
-			postData.content = cachedContent;
+		if (postData.pid && cache.has(postData.pid)) {
+			postData.content = cache.get(postData.pid);
 			return callback(null, postData);
 		}
 
