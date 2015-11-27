@@ -150,14 +150,26 @@ usersController.getUsersForSearch = function(req, res, next) {
 };
 
 function render(req, res, data, next) {
-	plugins.fireHook('filter:users.build', {req: req, res: res, templateData: data}, function(err, data) {
+	plugins.fireHook('filter:users.build', { req: req, res: res, templateData: data }, function(err, data) {
 		if (err) {
 			return next(err);
 		}
 
-		data.templateData.inviteOnly = meta.config.registrationType === 'invite-only';
-		data.templateData['reputation:disabled'] = parseInt(meta.config['reputation:disabled'], 10) === 1;
-		res.render('users', data.templateData);
+		if (!req.uid) {
+			return next(new Error('[[error:no-privileges]]'));
+		}
+
+		user.getInvitesNumber(req.uid, function(err, num) {
+			if (err) {
+				return next(err);
+			}
+
+			data.templateData.invites = num;
+			data.templateData.maximumInvites = meta.config.maximumInvites;
+			data.templateData.inviteOnly = meta.config.registrationType === 'invite-only';
+			data.templateData['reputation:disabled'] = parseInt(meta.config['reputation:disabled'], 10) === 1;
+			res.render('users', data.templateData);
+		});
 	});
 }
 

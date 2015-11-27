@@ -36,6 +36,15 @@
 					<option value="disabled">No registration</option>
 				</select>
 			</div>
+
+			<div class="form-group">
+				<label>Maximum Invitations per User</label>
+				<input type="number" class="form-control" data-field="maximumInvites" placeholder="0">
+				<p class="help-block">
+					0 for no restriction. Admins get infinite invitations<br>
+					Only applicable for "Invite Only"
+				</p>
+			</div>
 		</form>
 	</div>
 </div>

@@ -16,13 +16,68 @@ var async = require('async'),
 
 module.exports = function(User) {
 
+	User.getInvites = function(uid, callback) {
+		db.getSetMembers('invitation:uid:' + uid, callback);
+	};
+
+	User.getInvitesNumber = function(uid, callback) {
+		db.setCount('invitation:uid:' + uid, callback);
+	};
+
+	User.getInvitingUsers = function(callback) {
+		db.getSetMembers('invitation:uids', callback);
+	};
+
+	User.getAllInvites = function(callback) {
+		var uids;
+		async.waterfall([
+			User.getInvitingUsers,
+			function(_uids, next) {
+				uids = _uids;
+				async.map(uids, User.getInvites, next);
+			},
+			function(invitations, next) {
+				invitations = invitations.map(function(invites, index) {
+					return {
+						uid: uids[index],
+						invitations: invites
+					};
+				});
+				next(null, invitations);
+			}
+		], callback);
+	};
+
 	User.sendInvitationEmail = function(uid, email, callback) {
 		callback = callback || function() {};
+
 		var token = utils.generateUUID();
-		var registerLink = nconf.get('url') + '/register?token=' + token + '&email=' + email;
+		var registerLink = nconf.get('url') + '/register?token=' + token + '&email=' + encodeURIComponent(email);
 
 		var oneDay = 86400000;
+
 		async.waterfall([
+			function(next) {
+				User.getUidByEmail(email, next);
+			},
+			function(exists, next) {
+				if (exists) {
+					return next(new Error('[[error:email-taken]]'));
+				}
+				next();
+			},
+			function(next) {
+				async.parallel([
+					function(next) {
+						db.setAdd('invitation:uid:' + uid, email, next);
+					},
+					function(next) {
+						db.setAdd('invitation:uids', uid, next);
+					}
+				], function(err) {
+					next(err);
+				});
+			},
 			function(next) {
 				db.set('invitation:email:' + email, token, next);
 			},
