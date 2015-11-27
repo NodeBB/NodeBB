@@ -26,5 +26,8 @@
     "composer.uploading": "Subiendo %1",
     "bootbox.ok": "OK",
     "bootbox.cancel": "Cancelar",
-    "bootbox.confirm": "Confirmar"
+    "bootbox.confirm": "Confirmar",
+    "cover.dragging_title": "Colocar la foto de portada",
+    "cover.dragging_message": "Arrastra la foto de portada al lugar que quieras y haz click en \"Guardar\"",
+    "cover.saved": "Imagen y posición de la foto de portada guardadas."
 }

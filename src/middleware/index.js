@@ -6,9 +6,7 @@ var meta = require('../meta'),
 	auth = require('../routes/authentication'),
 
 	path = require('path'),
-	fs = require('fs'),
 	nconf = require('nconf'),
-	winston = require('winston'),
 	flash = require('connect-flash'),
 	templates = require('templates.js'),
 	bodyParser = require('body-parser'),
@@ -51,7 +49,7 @@ module.exports = function(app) {
 	app.use(cookieParser());
 
 	var cookie = {
-		maxAge: 1000 * 60 * 60 * 24 * parseInt(meta.config.loginDays || 14, 10)
+		maxAge: 1000 * 60 * 60 * 24 * (parseInt(meta.config.loginDays, 10) || 14)
 	};
 
 	if (meta.config.cookieDomain) {

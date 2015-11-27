@@ -48,7 +48,6 @@
     "not-enough-tags": "Yeterince etiket yok. Başlılar en az %1 etikete sahip olmalıdır",
     "too-many-tags": "Etiket sayısı çok fazla. Başlıklar en fazla %1 etikete sahip olabilir",
     "file-too-big": "İzin verilen en büyük dosya boyutu %1 kb - lütfen daha küçük bir dosya yükleyin",
-    "cant-vote-self-post": "Kendi iletinize oy veremezsiniz",
     "already-favourited": "Bu iletiyi zaten favorilerinize eklediniz",
     "already-unfavourited": "Bu iletiyi zaten favorilerinizden çıkardınız",
     "cant-ban-other-admins": "Başka yöneticileri yasaklayamazsınız!",

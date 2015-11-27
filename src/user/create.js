@@ -151,7 +151,7 @@ module.exports = function(User) {
 				}
 			},
 			userNameValid: function(next) {
-				next((!utils.isUserNameValid(userData.username) || !userData.userslug) ? new Error('[[error:invalid-username]]') : null);
+				next((!utils.isUserNameValid(userData.username) || !userData.userslug) ? new Error('[[error:invalid-username, ' + userData.username + ']]') : null);
 			},
 			passwordValid: function(next) {
 				if (userData.password) {

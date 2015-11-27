@@ -26,5 +26,8 @@
     "composer.uploading": "Memuat naik %1",
     "bootbox.ok": "Ok",
     "bootbox.cancel": "Batal",
-    "bootbox.confirm": "Pasti"
+    "bootbox.confirm": "Pasti",
+    "cover.dragging_title": "Kedudukan Gambar Muka",
+    "cover.dragging_message": "Seret gambar muka ke kedudukan yang diingini dan klik \"Simpan\"",
+    "cover.saved": "Gambar muka dan kedudukan disimpan"
 }

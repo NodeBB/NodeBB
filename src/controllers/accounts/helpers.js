@@ -57,7 +57,7 @@ helpers.getUserDataByUserSlug = function(userslug, callerUID, callback) {
 			var isAdmin = results.isAdmin;
 			var self = parseInt(callerUID, 10) === parseInt(userData.uid, 10);
 
-			userData.joindate = utils.toISOString(userData.joindate);
+			userData.joindateISO = utils.toISOString(userData.joindate);
 			userData.lastonlineISO = utils.toISOString(userData.lastonline || userData.joindate);
 			userData.age = userData.birthday ? Math.floor((new Date().getTime() - new Date(userData.birthday).getTime()) / 31536000000) : '';
 

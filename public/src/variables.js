@@ -6,9 +6,9 @@
 	ajaxify.variables = {};
 
 	ajaxify.variables.parse = function() {
-		var dataEl = $('#content [ajaxify-data]');
+		var dataEl = $('#ajaxify-data');
 		if (dataEl.length) {
-			ajaxify.data = JSON.parse(decodeURIComponent(dataEl.attr('ajaxify-data')));
+			ajaxify.data = JSON.parse(dataEl.text());
 			dataEl.remove();
 		}
 	};

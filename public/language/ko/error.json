@@ -48,7 +48,6 @@
     "not-enough-tags": "Not enough tags. Topics must have at least %1 tag(s)",
     "too-many-tags": "Too many tags. Topics can't have more than %1 tag(s)",
     "file-too-big": "Maximum allowed file size is %1 kB - please upload a smaller file",
-    "cant-vote-self-post": "자신의 게시물에는 투표할 수 없습니다.",
     "already-favourited": "You have already favourited this post",
     "already-unfavourited": "You have already unfavourited this post",
     "cant-ban-other-admins": "다른 관리자를 차단할 수 없습니다.",

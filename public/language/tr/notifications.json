@@ -12,7 +12,7 @@
     "you_have_unread_notifications": "Okunmamış bildirimleriniz var.",
     "new_message_from": "<strong>%1</strong> size bir mesaj gönderdi",
     "upvoted_your_post_in": "<strong>%1</strong> iletinizi beğendi. <strong>%2</strong>",
-    "moved_your_post": "<strong>%1</strong> has moved your post to <strong>%2</strong>",
+    "moved_your_post": "<strong>%1</strong> senin iletin <strong>%2</strong> taşındı",
     "moved_your_topic": "<strong>%1</strong> has moved <strong>%2</strong>",
     "favourited_your_post_in": "<strong>%1</strong> iletinizi favorilerine ekledi. <strong>%2</strong>.",
     "user_flagged_post_in": "<strong>%1</strong> bir iletiyi bayrakladı. <strong>%2</strong>",

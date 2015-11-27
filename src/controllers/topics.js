@@ -41,7 +41,6 @@ topicsController.get = function(req, res, callback) {
 			}, next);
 		},
 		function (results, next) {
-
 			if (!results.topic.slug) {
 				return callback();
 			}
@@ -119,6 +118,10 @@ topicsController.get = function(req, res, callback) {
 					return next(err);
 				}
 
+				if (topicData.category.disabled) {
+					return callback();
+				}
+
 				topics.modifyByPrivilege(topicData.posts, results.privileges);
 
 				plugins.fireHook('filter:controllers.topic.get', topicData, next);
@@ -174,7 +177,7 @@ topicsController.get = function(req, res, callback) {
 				ogImageUrl = '/logo.png';
 			}
 
-			if (ogImageUrl.indexOf('http') === -1) {
+			if (typeof ogImageUrl === 'string' && ogImageUrl.indexOf('http') === -1) {
 				ogImageUrl = nconf.get('url') + ogImageUrl;
 			}
 
@@ -203,15 +206,18 @@ topicsController.get = function(req, res, callback) {
 				},
 				{
 					property: "og:url",
-					content: nconf.get('url') + '/topic/' + topicData.slug + (req.params.post_index ? ('/' + req.params.post_index) : '')
+					content: nconf.get('url') + '/topic/' + topicData.slug + (req.params.post_index ? ('/' + req.params.post_index) : ''),
+					noEscape: true
 				},
 				{
 					property: 'og:image',
-					content: ogImageUrl
+					content: ogImageUrl,
+					noEscape: true
 				},
 				{
 					property: "og:image:url",
-					content: ogImageUrl
+					content: ogImageUrl,
+					noEscape: true
 				},
 				{
 					property: "article:published_time",
@@ -232,10 +238,6 @@ topicsController.get = function(req, res, callback) {
 					rel: 'alternate',
 					type: 'application/rss+xml',
 					href: nconf.get('url') + '/topic/' + tid + '.rss'
-				},
-				{
-					rel: 'canonical',
-					href: nconf.get('url') + '/topic/' + topicData.slug + (currentPage > 1 ? '?page=' + currentPage : '')
 				}
 			];
 

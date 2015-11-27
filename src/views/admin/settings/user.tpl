@@ -100,8 +100,13 @@
 			</div>
 
 			<div class="form-group">
-				<label>Maximum User Image File Size</label>
+				<label>Maximum Profile Image File Size</label>
 				<input type="text" class="form-control" placeholder="Maximum size of uploaded user images in kilobytes" data-field="maximumProfileImageSize" />
+			</div>
+
+			<div class="form-group">
+				<label>Maximum Cover Image File Size</label>
+				<input type="text" class="form-control" placeholder="Maximum size of uploaded cover images in kilobytes" data-field="maximumCoverImageSize" />
 			</div>
 		</form>
 	</div>

@@ -16,12 +16,7 @@ define('coverPhoto', [
 
 		coverEl.find('.upload').on('click', uploadFn);
 		coverEl.find('.resize').on('click', function() {
-			coverEl
-				.toggleClass('active', 1)
-				.backgroundDraggable({
-					axis: 'y',
-					units: 'percent'
-				});
+			enableDragging(coverEl);
 		});
 		coverEl.find('.remove').on('click', removeFn);
 
@@ -53,15 +48,24 @@ define('coverPhoto', [
 			};
 
 			reader.readAsDataURL(files[0]);
-
-			coverPhoto.coverEl
-				.addClass('active', 1)
-				.backgroundDraggable({
-					axis: 'y',
-					units: 'percent'
-				});
+			enableDragging(coverPhoto.coverEl);
 		}
 	};
+
+	function enableDragging(coverEl) {
+		coverEl.toggleClass('active', 1)
+			.backgroundDraggable({
+				axis: 'y',
+				units: 'percent'
+			});
+
+		app.alert({
+			alert_id: 'drag_start',
+			title: '[[modules:cover.dragging_title]]',
+			message: '[[modules:cover.dragging_message]]',
+			timeout: 5000
+		});
+	}
 
 	coverPhoto.save = function() {
 		coverPhoto.coverEl.addClass('saving');
@@ -72,6 +76,7 @@ define('coverPhoto', [
 				coverPhoto.coverEl.backgroundDraggable('disable');
 				coverPhoto.coverEl.off('dragover', coverPhoto.onDragOver);
 				coverPhoto.coverEl.off('drop', coverPhoto.onDrop);
+				app.alertSuccess('[[modules:cover.saved]]');
 			} else {
 				app.alertError(err.message);
 			}

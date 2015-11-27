@@ -48,7 +48,6 @@
     "not-enough-tags": "Zbyt mało tagów. Tematy muszą posiadać przynajmniej %1 tag(ów)",
     "too-many-tags": "Zbyt wiele tagów. Tematy nie mogą posiadać więcej niż %1 tag(ów)",
     "file-too-big": "Maksymalny dopuszczalny rozmiar pliku to %1kB - prosimy przesłać mniejszy plik",
-    "cant-vote-self-post": "Nie możesz głosować na własny post",
     "already-favourited": "Już polubiłeś ten post",
     "already-unfavourited": "Już przestałeś lubić ten post",
     "cant-ban-other-admins": "Nie możesz zbanować innych adminów!",

@@ -48,7 +48,6 @@
     "not-enough-tags": "Not enough tags. Topics must have at least %1 tag(s)",
     "too-many-tags": "Too many tags. Topics can't have more than %1 tag(s)",
     "file-too-big": "Maximum allowed file size is %1 kB - please upload a smaller file",
-    "cant-vote-self-post": "لايمكنك التصويت لردك",
     "already-favourited": "لقد سبق وأضفت هذا الرد إلى المفضلة",
     "already-unfavourited": "لقد سبق وحذفت هذا الرد من المفضلة",
     "cant-ban-other-admins": "لايمكن حظر مدبر نظام آخر.",

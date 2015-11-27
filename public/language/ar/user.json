@@ -58,7 +58,7 @@
     "upload_picture": "ارفع الصورة",
     "upload_a_picture": "رفع صورة",
     "remove_uploaded_picture": "Remove Uploaded Picture",
-    "image_spec": "لايمكنك رفع إلا الصور ذات الصيغ PNG أو JPG أو GIF.",
+    "image_spec": "You may only upload PNG, JPG, or BMP files",
     "settings": "خيارات",
     "show_email": "أظهر بريدي الإلكتروني",
     "show_fullname": "أظهر اسمي الكامل",

@@ -48,7 +48,6 @@
     "not-enough-tags": "Ej tillräckligt många märkord. Ämnen måste ha minst %1 märkord",
     "too-many-tags": "För många märkord. Ämnen kan ej har mer än %1 märkord",
     "file-too-big": "Den maximalt tillåtna filstorleken är %1 kB - ladda upp en mindre fil",
-    "cant-vote-self-post": "Du kan inte rösta på ditt eget inlägg.",
     "already-favourited": "Du har redan favoriserat det här inlägget",
     "already-unfavourited": "Du har redan avfavoriserat det här inlägget",
     "cant-ban-other-admins": "Du kan inte bannlysa andra administratörer.",

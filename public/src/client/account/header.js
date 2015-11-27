@@ -66,7 +66,7 @@ define('forum/account/header', [
 			},
 			function() {
 				uploader.open(RELATIVE_PATH + '/api/user/' + ajaxify.data.userslug + '/uploadcover', { uid: yourid }, 0, function(imageUrlOnServer) {
-					components.get('account/cover').css('background-image', 'url(' + imageUrlOnServer + ')');
+					components.get('account/cover').css('background-image', 'url(' + imageUrlOnServer + '?v=' + Date.now() + ')');
 				});
 			},
 			removeCover

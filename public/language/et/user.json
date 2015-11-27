@@ -58,7 +58,7 @@
     "upload_picture": "Laadi pilt",
     "upload_a_picture": "Lae pilt üles",
     "remove_uploaded_picture": "Eemalda üleslaetud pilt",
-    "image_spec": "Failid peavad olema PNG, JPG või GIF vormingus.",
+    "image_spec": "You may only upload PNG, JPG, or BMP files",
     "settings": "Seaded",
     "show_email": "Näita minu emaili",
     "show_fullname": "Näita minu täisnime",

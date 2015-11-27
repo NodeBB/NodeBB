@@ -96,7 +96,11 @@
     "newest_to_oldest": "Baru ke Lama",
     "most_votes": "Terbanyak Undi",
     "most_posts": "Terbanyak Kiriman",
-    "stale_topic_warning": "Topik yang anda ingin balas sudah terlalu lama. Adakah anda mahu membuka topik baru, dan merujuk kepada topik ini?",
+    "stale.title": "Bukan topik baru?",
+    "stale.warning": "Topik yang anda nak balas agak lapuk. Adakah anda ingin buka topik baru dan rujukkan topik ini dalam balasan anda?",
+    "stale.create": "Buka topik baru",
+    "stale.reply_anyway": "Tetap balas topik ini",
+    "stale.link_back": "Bls: [%1](%2)",
     "spam": "Spam",
     "offensive": "Menyinggung",
     "custom-flag-reason": "Nyatakan alasan anda"

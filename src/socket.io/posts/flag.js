@@ -47,13 +47,17 @@ module.exports = function(SocketPosts) {
 						privileges.categories.isAdminOrMod(post.topic.cid, socket.uid, next);
 					},
 					userData: function(next) {
-						user.getUserFields(socket.uid, ['username', 'reputation'], next);
+						user.getUserFields(socket.uid, ['username', 'reputation', 'banned'], next);
 					}
 				}, next);
 			},
 			function (user, next) {
 				if (!user.isAdminOrMod && parseInt(user.userData.reputation, 10) < parseInt(meta.config['privileges:flag'] || 1, 10)) {
 					return next(new Error('[[error:not-enough-reputation-to-flag]]'));
+				}
+
+				if (parseInt(user.banned, 10) === 1) {
+					return next(new Error('[[error:user-banned]]'));
 				}
 
 				flaggingUser = user.userData;

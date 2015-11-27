@@ -58,7 +58,7 @@
     "upload_picture": "사진 업로드",
     "upload_a_picture": "사진 업로드",
     "remove_uploaded_picture": "Remove Uploaded Picture",
-    "image_spec": "PNG, JPG, GIF 파일만 업로드할 수 있습니다.",
+    "image_spec": "You may only upload PNG, JPG, or BMP files",
     "settings": "설정",
     "show_email": "이메일 공개",
     "show_fullname": "실명 공개",

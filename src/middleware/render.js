@@ -32,6 +32,7 @@ module.exports = function(middleware) {
 			options.bodyClass = buildBodyClass(req);
 
 			res.locals.template = template;
+			options._locals = undefined;
 
 			if (res.locals.isAPI) {
 				if (req.route && req.route.path === '/api/') {
@@ -45,13 +46,14 @@ module.exports = function(middleware) {
 				fn = defaultFn;
 			}
 
-			var ajaxifyData = encodeURIComponent(JSON.stringify(options));
+			var ajaxifyData = JSON.stringify(options);
+			ajaxifyData = ajaxifyData.replace(/<\//g, '<\\/');
+
 			render.call(self, template, options, function(err, str) {
 				if (err) {
 					return fn(err);
 				}
 
-				str = str + '<input type="hidden" ajaxify-data="' + ajaxifyData + '" />';
 				str = (res.locals.postHeader ? res.locals.postHeader : '') + str + (res.locals.preFooter ? res.locals.preFooter : '');
 
 				if (res.locals.footer) {
@@ -70,10 +72,12 @@ module.exports = function(middleware) {
 						var language = res.locals.config ? res.locals.config.userLang || 'en_GB' : 'en_GB';
 						language = req.query.lang || language;
 						translator.translate(str, language, function(translated) {
+							translated = translated + '<script id="ajaxify-data" type="application/json">' + ajaxifyData + '</script>';
 							fn(err, translated);
 						});
 					});
 				} else {
+					str = str + '<script id="ajaxify-data" type="application/json">' + ajaxifyData + '</script>';
 					fn(err, str);
 				}
 			});

@@ -122,9 +122,9 @@ editController.uploadPicture = function (req, res, next) {
 
 editController.uploadCoverPicture = function(req, res, next) {
 	var params = JSON.parse(req.body.params);
-	
+
 	user.updateCoverPicture({
-		file: req.files.files[0].path,
+		file: req.files.files[0],
 		uid: params.uid
 	}, function(err, image) {
 		if (err) {

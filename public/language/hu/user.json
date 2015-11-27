@@ -58,7 +58,7 @@
     "upload_picture": "Kép feltöltése",
     "upload_a_picture": "Egy kép feltöltése",
     "remove_uploaded_picture": "Remove Uploaded Picture",
-    "image_spec": "Csak PNG, JPG vagy GIF kiterjesztésű fájlokat tölthetsz fel",
+    "image_spec": "You may only upload PNG, JPG, or BMP files",
     "settings": "Beállítások",
     "show_email": "E-mail címem mutatása",
     "show_fullname": "A teljes nevem mutatása",

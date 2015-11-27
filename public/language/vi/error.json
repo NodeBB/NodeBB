@@ -48,7 +48,6 @@
     "not-enough-tags": "Not enough tags. Topics must have at least %1 tag(s)",
     "too-many-tags": "Too many tags. Topics can't have more than %1 tag(s)",
     "file-too-big": "Maximum allowed file size is %1 kB - please upload a smaller file",
-    "cant-vote-self-post": "Bạn không thể vote cho chính bài viết của bạn",
     "already-favourited": "Bạn đã bấm yêu thích cho bài viết này rồi",
     "already-unfavourited": "Bạn đã bỏ thích bài này rồi",
     "cant-ban-other-admins": "Bạn không thể ban được các admin khác",

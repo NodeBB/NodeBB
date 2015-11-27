@@ -104,7 +104,9 @@ define('forum/category', [
 			var bookmarkIndex = localStorage.getItem('category:' + cid + ':bookmark');
 			var clickedIndex = localStorage.getItem('category:' + cid + ':bookmark:clicked');
 
-			if (!bookmarkIndex) {
+			bookmarkIndex = Math.max(0, parseInt(bookmarkIndex, 10) || 0);
+			clickedIndex = Math.max(0, parseInt(clickedIndex, 10) || 0);
+			if (!parseInt(bookmarkIndex, 10)) {
 				return;
 			}
 
@@ -123,13 +125,9 @@ define('forum/category', [
 					return;
 				}
 
-				if (bookmarkIndex < 0) {
-					bookmarkIndex = 0;
-				}
-
 				$('[component="category"]').empty();
 
-				loadTopicsAfter(bookmarkIndex - 1, 1, function() {
+				loadTopicsAfter(Math.max(0, bookmarkIndex - 1), 1, function() {
 					Category.scrollToTopic(bookmarkIndex, clickedIndex, 0);
 				});
 			}

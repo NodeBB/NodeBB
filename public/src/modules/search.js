@@ -35,9 +35,11 @@ define('search', ['navigator', 'translator'], function(nav, translator) {
 	};
 
 	function createQueryString(data) {
-		var searchIn = data.in || 'titlesposts';
+		var searchIn = data['in'] || 'titlesposts';
 		var postedBy = data.by || '';
-		var query = {in: searchIn};
+		var query = {
+				'in': searchIn
+			};
 
 		if (postedBy && (searchIn === 'posts' || searchIn === 'titles' || searchIn === 'titlesposts')) {
 			query.by = postedBy;

@@ -96,7 +96,11 @@
     "newest_to_oldest": "Más nuevo a más antiguo",
     "most_votes": "Mayor número de votos",
     "most_posts": "Mayor número de mensajes",
-    "stale_topic_warning": "El tema no ha sido respondido desde hace bastante tiempo. ¿Quieres crear un nuevo tema en su lugar, y crear una referencia de éste en su respuesta?",
+    "stale.title": "¿Crear un nuevo hilo en su lugar?",
+    "stale.warning": "El hilo al que estás respondiendo es muy antiguo. ¿Quieres crear un nuevo hilo en su lugar y añadir una referencia a este en tu mensaje?",
+    "stale.create": "Crear un nuevo hilo",
+    "stale.reply_anyway": "Publicar este hilo de todos modos.",
+    "stale.link_back": "Re: [%1](%2)",
     "spam": "SPAM",
     "offensive": "Ofensivo",
     "custom-flag-reason": "Introduzca una razón indicatoria."

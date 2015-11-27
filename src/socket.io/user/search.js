@@ -5,6 +5,7 @@ var async = require('async');
 var db = require('../../database');
 var user = require('../../user');
 var meta = require('../../meta');
+var pagination = require('../../pagination');
 
 module.exports = function(SocketUser) {
 	SocketUser.search = function(socket, data, callback) {
@@ -21,7 +22,13 @@ module.exports = function(SocketUser) {
 			sortBy: data.sortBy,
 			onlineOnly: data.onlineOnly,
 			uid: socket.uid
-		}, callback);
+		}, function(err, result) {
+			if (err) {
+				return callback(err);
+			}
+			result.pagination = pagination.create(data.page, result.pageCount);
+			callback(null, result);
+		});
 	};
 
 	SocketUser.loadSearchPage = function(socket, data, callback) {

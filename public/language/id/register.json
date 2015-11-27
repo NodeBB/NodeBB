@@ -2,7 +2,7 @@
     "register": "Daftar",
     "help.email": "Secara default, emailmu akan disembunyikan dari publik.",
     "help.username_restrictions": "Nama Pengguna yang unik antara %1 dan %2 karakter. Pengguna lain dapat menyebutmu dengan menggunakan @<span id='Nama Pengguna mu'>nama pengguna</span>.",
-    "help.minimum_password_length": "Panjang passwordmu harus memuat setidaknya %1 karakter.",
+    "help.minimum_password_length": "Panjang password harus setidaknya %1 karakter.",
     "email_address": "Alamat Email",
     "email_address_placeholder": "Masukkan Alamat Email",
     "username": "Nama Pengguna",

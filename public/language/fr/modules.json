@@ -26,5 +26,8 @@
     "composer.uploading": "Envoi en cours %1",
     "bootbox.ok": "OK",
     "bootbox.cancel": "Annuler",
-    "bootbox.confirm": "Confirmer"
+    "bootbox.confirm": "Confirmer",
+    "cover.dragging_title": "Positionnement de la photo de couverture",
+    "cover.dragging_message": "Déplacez la photo de couverture à la position désiré et cliquez sur \"Enregistrer\"",
+    "cover.saved": "Photo de couverture et position sauvegardé. "
 }

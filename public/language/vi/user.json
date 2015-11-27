@@ -58,7 +58,7 @@
     "upload_picture": "Tải lên hình ảnh",
     "upload_a_picture": "Tải lên một hình ảnh",
     "remove_uploaded_picture": "Remove Uploaded Picture",
-    "image_spec": "Bạn chỉ có thể tải lên được các file PNG, JPG hoặc GIF",
+    "image_spec": "You may only upload PNG, JPG, or BMP files",
     "settings": "Thiết lập",
     "show_email": "Hiện Email của tôi",
     "show_fullname": "Hiện tên đầy đủ",

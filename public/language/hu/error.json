@@ -48,7 +48,6 @@
     "not-enough-tags": "Not enough tags. Topics must have at least %1 tag(s)",
     "too-many-tags": "Too many tags. Topics can't have more than %1 tag(s)",
     "file-too-big": "Maximum allowed file size is %1 kB - please upload a smaller file",
-    "cant-vote-self-post": "Nem szavazhatsz a saját hozzászólásodra",
     "already-favourited": "Már bejelölted Kedvencnek ezt a hozzászólást",
     "already-unfavourited": "Már kivetted a Kedvenceid közül ezt a hozzászólást",
     "cant-ban-other-admins": "Nem tilthatsz ki másik adminisztrátort!",

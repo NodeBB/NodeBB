@@ -24,7 +24,7 @@ module.exports = function(Posts) {
 			if (err) {
 				return callback(err);
 			}
-			
+
 			if (global.env === 'production' && data.postData.pid) {
 				cache.set(data.postData.pid, data.postData.content);
 			}

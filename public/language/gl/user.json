@@ -58,7 +58,7 @@
     "upload_picture": "Subir foto",
     "upload_a_picture": "Subir unha foto",
     "remove_uploaded_picture": "Borrar unha foto subida",
-    "image_spec": "Só podes subir archivos en formato PNG, JPG ou GIF.",
+    "image_spec": "Só podes subir imaxes en formato PNG, JPG ou BMP",
     "settings": "Opcións",
     "show_email": "Amosa-lo meu Email",
     "show_fullname": "Amosa-lo meu Nome Completo",
@@ -96,7 +96,7 @@
     "homepage": "Páxina de inicio",
     "homepage_description": "Escolla unha páxina para o seu uso habitual como a páxina principal do foro ou \"Ningún\" para empregar a páxina de inicio",
     "custom_route": "Modificar páxina de ruta",
-    "custom_route_help": "Introduza o nome de ruta aquí, sen ningunha barra anterior (por exemplo, \"recente\", ou \"popular\")",
+    "custom_route_help": "Introduza o nome de ruta aquí, sen ningunha barra (por exemplo, \"recente\", ou \"popular\")",
     "sso.title": "Servizos de Inicio de Sesión Único",
     "sso.associated": "Asociado con",
     "sso.not-associated": "Pica aquí para asociarte con"

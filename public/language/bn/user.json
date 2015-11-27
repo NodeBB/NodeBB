@@ -58,7 +58,7 @@
     "upload_picture": "ছবি আপলোড করুন",
     "upload_a_picture": "ছবি (একটি) আপলোড করুন",
     "remove_uploaded_picture": "Remove Uploaded Picture",
-    "image_spec": "আপনি কেবলমাত্র PNG, JPG অথবা GIF ফাইল আপলোড করতে পারবেন",
+    "image_spec": "You may only upload PNG, JPG, or BMP files",
     "settings": "সেটিংস",
     "show_email": "আমার ইমেইল দেখাও",
     "show_fullname": "আমার সম্পূর্ণ নাম দেখাও",

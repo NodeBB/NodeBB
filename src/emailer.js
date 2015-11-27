@@ -2,14 +2,20 @@
 
 var	async = require('async'),
 	winston = require('winston'),
+	nconf = require('nconf'),
 	templates = require('templates.js'),
 	nodemailer = require('nodemailer'),
+	htmlToText = require('html-to-text'),
+	url = require('url'),
 
 	User = require('./user'),
 	Plugins = require('./plugins'),
 	meta = require('./meta'),
 	translator = require('../public/src/modules/translator'),
 
+	transports = {
+		direct: nodemailer.createTransport('direct')
+	},
 	app;
 
 (function(Emailer) {
@@ -54,9 +60,6 @@ var	async = require('async'),
 					html: function(next) {
 						renderAndTranslate('emails/' + template, params, lang, next);
 					},
-					plaintext: function(next) {
-						renderAndTranslate('emails/' + template + '_plaintext', params, lang, next);
-					},
 					subject: function(next) {
 						translator.translate(params.subject, lang, function(translated) {
 							next(null, translated);
@@ -67,11 +70,13 @@ var	async = require('async'),
 			function (results, next) {
 				var data = {
 					to: email,
-					from: meta.config['email:from'] || 'no-reply@localhost.lan',
+					from: meta.config['email:from'] || 'no-reply@' + getHostname(),
 					from_name: meta.config['email:from_name'] || 'NodeBB',
 					subject: results.subject,
 					html: results.html,
-					plaintext: results.plaintext,
+					plaintext: htmlToText.fromString(results.html, {
+						ignoreImage: true
+					}),
 					template: template,
 					uid: params.uid,
 					pid: params.pid,
@@ -96,8 +101,7 @@ var	async = require('async'),
 		data.text = data.plaintext;
 		delete data.plaintext;
 
-		nodemailer.mail(data);
-		callback(null);
+		transports.direct.sendMail(data, callback);
 	};
 
 	function render(tpl, params, next) {
@@ -125,6 +129,13 @@ var	async = require('async'),
 			}
 		], callback);
 	}
+
+	function getHostname() {
+		var configUrl = nconf.get('url'),
+			parsed = url.parse(configUrl);
+
+		return parsed.hostname;
+	};
 
 }(module.exports));
 

@@ -100,6 +100,9 @@ module.exports = function(SocketPosts) {
 	};
 
 	function favouriteCommand(socket, command, eventName, notification, data, callback) {
+		if (!socket.uid) {
+			return callback(new Error('[[error:not-logged-in]]'))
+		}
 		if(!data || !data.pid || !data.room_id) {
 			return callback(new Error('[[error:invalid-data]]'));
 		}

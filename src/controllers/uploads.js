@@ -46,17 +46,17 @@ uploadsController.upload = function(req, res, filesIterator, next) {
 
 uploadsController.uploadPost = function(req, res, next) {
 	uploadsController.upload(req, res, function(uploadedFile, next) {
-		file.isFileTypeAllowed(uploadedFile.path, file.allowedExtensions(), function(err) {
-			if (err) {
-				return next(err);
-			}
+		if (uploadedFile.type.match(/image./)) {
+			file.isFileTypeAllowed(uploadedFile.path, function(err) {
+				if (err) {
+					return next(err);
+				}
 
-			if (uploadedFile.type.match(/image./)) {
 				uploadImage(req.user.uid, uploadedFile, next);
-			} else {
-				uploadFile(req.user.uid, uploadedFile, next);
-			}
-		});
+			});
+		} else {
+			uploadFile(req.user.uid, uploadedFile, next);
+		}
 	}, next);
 };
 
@@ -67,7 +67,7 @@ uploadsController.uploadThumb = function(req, res, next) {
 	}
 
 	uploadsController.upload(req, res, function(uploadedFile, next) {
-		file.isFileTypeAllowed(uploadedFile.path, file.allowedExtensions(), function(err) {
+		file.isFileTypeAllowed(uploadedFile.path, function(err) {
 			if (err) {
 				return next(err);
 			}
@@ -94,10 +94,6 @@ uploadsController.uploadThumb = function(req, res, next) {
 
 uploadsController.uploadGroupCover = function(data, next) {
 	uploadImage(0, data, next);
-};
-
-uploadsController.uploadUserCover = function(data, next) {
-	uploadImage(data.uid, data, next);
 };
 
 function uploadImage(uid, image, callback) {

@@ -96,8 +96,12 @@
     "newest_to_oldest": "Meest recente berichten bovenaan",
     "most_votes": "Meeste aantal stemmen",
     "most_posts": "Meeste aantal reacties",
-    "stale_topic_warning": "The topic you are replying to is quite old. Would you like to create a new topic instead, and reference this one in your reply?",
+    "stale.title": "Een nieuw onderwerp maken in de plaats?",
+    "stale.warning": "Het onderwerp waar je op antwoord is vrij oud. Zou je graag een nieuw onderwerp maken met een referentie naar dit onderwerp in je antwoord?",
+    "stale.create": "Maak een nieuw onderwerp",
+    "stale.reply_anyway": "Antwoord toch op dit onderwerp",
+    "stale.link_back": "Re: [%1](%2)",
     "spam": "Spam",
-    "offensive": "Offensive",
-    "custom-flag-reason": "Enter a flagging reason"
+    "offensive": "Onbeleefd",
+    "custom-flag-reason": "Geef een reden voor de melding."
 }

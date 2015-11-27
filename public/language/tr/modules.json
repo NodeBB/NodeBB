@@ -26,5 +26,8 @@
     "composer.uploading": "Yükleniyor %1",
     "bootbox.ok": "Tamam",
     "bootbox.cancel": "İptal",
-    "bootbox.confirm": "Onayla"
+    "bootbox.confirm": "Onayla",
+    "cover.dragging_title": "Kapak Görseli Konumlandırma",
+    "cover.dragging_message": "Kapak görselini istediğin pozisyona getir ve kaydet",
+    "cover.saved": "Kapak görseli ve pozisyonu kaydedildi"
 }

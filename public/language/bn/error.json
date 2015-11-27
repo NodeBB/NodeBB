@@ -48,7 +48,6 @@
     "not-enough-tags": "Not enough tags. Topics must have at least %1 tag(s)",
     "too-many-tags": "Too many tags. Topics can't have more than %1 tag(s)",
     "file-too-big": "Maximum allowed file size is %1 kB - please upload a smaller file",
-    "cant-vote-self-post": "আপনি নিজের পোস্টে ভোট দিতে পারবেন না।",
     "already-favourited": "আপনি ইতিমধ্যে এই পোষ্টটি পছন্দের তালিকায় যোগ করেছেন",
     "already-unfavourited": "আপনি ইতিমধ্যে এই পোষ্টটি আপনার পছন্দের তালিকা থেকে সরিয়ে ফেলেছেন",
     "cant-ban-other-admins": "আপনি অন্য এ্যাডমিনদের নিষিদ্ধ করতে পারেন না!",
