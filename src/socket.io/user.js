@@ -270,36 +270,41 @@ SocketUser.invite = function(socket, email, callback) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
 
-	if (meta.config.registrationType !== 'invite-only') {
+	var registrationType = meta.config.registrationType
+
+	if (registrationType !== 'invite-only' && registrationType !== 'admin-invite-only') {
 		return callback(new Error('[[error:forum-not-invite-only]]'));
 	}
 
 	var max = meta.config.maximumInvites;
 
-	if (max) {
-		async.waterfall([
-			function(next) {
-				user.getInvitesNumber(socket.uid, next);
-			},
-			function(invites, next) {
-				user.isAdministrator(socket.uid, function(err, admin) {
-					next(err, invites, admin);
-				});
-			},
-			function(invites, admin, next) {
-				console.log(admin, invites, max);
-				if (!admin && invites > max) {
-					return next(new Error('[[error:invite-maximum-met, ' + invites + ', ' + max + ']]'));
+	user.isAdministrator(socket.uid, function(err, admin) {
+		if (err) {
+			return callback(err);
+		}
+		if (registrationType === 'admin-invite-only' && !admin) {
+			return callback(new Error('[[error:no-privileges]]'));
+		}
+		if (max) {
+			async.waterfall([
+				function(next) {
+					user.getInvitesNumber(socket.uid, next);
+				},
+				function(invites, next) {
+					if (!admin && invites > max) {
+						return next(new Error('[[error:invite-maximum-met, ' + invites + ', ' + max + ']]'));
+					}
+					next();
+				},
+				function(next) {
+					user.sendInvitationEmail(socket.uid, email, next);
 				}
-				next();
-			},
-			function(next) {
-				user.sendInvitationEmail(socket.uid, email, next);
-			}
-		], callback);
-	} else {
-		user.sendInvitationEmail(socket.uid, email, callback);
-	}
+			], callback);
+		} else {
+			user.sendInvitationEmail(socket.uid, email, callback);
+		}
+	});
+
 };
 
 

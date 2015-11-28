@@ -155,9 +155,11 @@ function render(req, res, data, next) {
 			return next(err);
 		}
 
-		if (!req.uid) {
-			return next(new Error('[[error:no-privileges]]'));
-		}
+		var registrationType = meta.config.registrationType;
+
+		data.templateData.maximumInvites = meta.config.maximumInvites;
+		data.templateData.inviteOnly = registrationType === 'invite-only' || registrationType === 'admin-invite-only';
+		data.templateData['reputation:disabled'] = parseInt(meta.config['reputation:disabled'], 10) === 1;
 
 		user.getInvitesNumber(req.uid, function(err, num) {
 			if (err) {
@@ -165,11 +167,9 @@ function render(req, res, data, next) {
 			}
 
 			data.templateData.invites = num;
-			data.templateData.maximumInvites = meta.config.maximumInvites;
-			data.templateData.inviteOnly = meta.config.registrationType === 'invite-only';
-			data.templateData['reputation:disabled'] = parseInt(meta.config['reputation:disabled'], 10) === 1;
 			res.render('users', data.templateData);
 		});
+
 	});
 }
 
