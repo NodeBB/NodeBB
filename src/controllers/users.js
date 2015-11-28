@@ -159,6 +159,7 @@ function render(req, res, data, next) {
 
 		data.templateData.maximumInvites = meta.config.maximumInvites;
 		data.templateData.inviteOnly = registrationType === 'invite-only' || registrationType === 'admin-invite-only';
+		data.templateData.adminInviteOnly = registrationType === 'admin-invite-only';
 		data.templateData['reputation:disabled'] = parseInt(meta.config['reputation:disabled'], 10) === 1;
 
 		user.getInvitesNumber(req.uid, function(err, num) {
