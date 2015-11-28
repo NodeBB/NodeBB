@@ -89,5 +89,5 @@
     "wrong-login-type-email": "Please use your email to login",
     "wrong-login-type-username": "Please use your username to login",
 
-		"invite-maximum-met": "You have invited the maximum amount of people (%1 out of %2)."
+    "invite-maximum-met": "You have invited the maximum amount of people (%1 out of %2)."
 }
