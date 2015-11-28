@@ -39,6 +39,7 @@ module.exports = function(Meta) {
 					content: Meta.config['brand:logo'] || '',
 					noEscape: true
 				}];
+				if (link !== undefined) defaultTags.splice(4, 1);
 				plugins.fireHook('filter:meta.getMetaTags', defaultTags, next);
 			},
 			links: function(next) {
