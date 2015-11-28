@@ -263,7 +263,7 @@ categoriesController.get = function(req, res, callback) {
 
 		data['feeds:disableRSS'] = parseInt(meta.config['feeds:disableRSS'], 10) === 1;
 		data.rssFeedUrl = nconf.get('relative_path') + '/category/' + data.cid + '.rss';
-		data.title = data.name;
+		data.title = data.title || data.name;
 		data.pagination = pagination.create(currentPage, pageCount);
 		data.pagination.rel.forEach(function(rel) {
 			rel.href = nconf.get('url') + '/category/' + data.slug + rel.href;
