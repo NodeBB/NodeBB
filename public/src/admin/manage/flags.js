@@ -40,7 +40,7 @@ define('admin/manage/flags', [
 					return app.alertError(err.message);
 				}
 
-				$('.post-container').empty().text('No flagged posts!');
+				ajaxify.refresh();
 			});
 		});
 	}
