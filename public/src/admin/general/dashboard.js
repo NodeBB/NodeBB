@@ -61,9 +61,6 @@ define('admin/general/dashboard', ['semver'], function(semver) {
 			} else if (semver.gt(latestVersion, version)) {
 				checkEl.removeClass('alert-info').addClass('alert-danger');
 				checkEl.append('<p>A new version (v' + latestVersion + ') has been released. Consider upgrading your NodeBB.</p>');
-			} else if (semver.gt(version, latestVersion)) {
-				checkEl.removeClass('alert-info').addClass('alert-warning');
-				checkEl.append('<p>You are running a <strong>development version</strong>! Unintended bugs may occur. <i class="fa fa-warning"></i></p>');
 			}
 		});
 
