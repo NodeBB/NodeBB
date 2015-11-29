@@ -60,7 +60,7 @@ define('admin/general/dashboard', ['semver'], function(semver) {
 				checkEl.append('<p>You are <strong>up-to-date</strong> <i class="fa fa-check"></i></p>');
 			} else if (semver.gt(latestVersion, version)) {
 				checkEl.removeClass('alert-info').addClass('alert-danger');
-				checkEl.append('<p>A new version (v' + latestVersion + ') has been released. Consider upgrading your NodeBB.</p>');
+				checkEl.append('<p>A new version (v' + latestVersion + ') has been released. Consider <a href="https://docs.nodebb.org/en/latest/upgrading/index.html">upgrading your NodeBB</a>.</p>');
 			}
 		});
 
