@@ -268,6 +268,11 @@ define('forum/topic/postTools', ['share', 'navigator', 'components', 'translator
 	function showVotes(pid) {
 		socket.emit('posts.getVoters', {pid: pid, cid: ajaxify.data.cid}, function(err, data) {
 			if (err) {
+				if (err.message === '[[error:no-privileges]]') {
+					return;
+				}
+
+				// Only show error if it's an unexpected error.
 				return app.alertError(err.message);
 			}
 
