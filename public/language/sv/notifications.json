@@ -18,7 +18,6 @@
     "user_flagged_post_in": "<strong>%1</strong> flaggade ett inlägg i <strong>%2</strong>",
     "user_posted_to": "<strong>%1</strong> har skrivit ett svar på: <strong>%2</strong>",
     "user_posted_topic": "<strong>%1</strong> har skapat ett nytt ämne: <strong>%2</strong>",
-    "user_mentioned_you_in": "<strong>%1</strong> nämnde dig i <strong>%2</strong>",
     "user_started_following_you": "<strong>%1</strong> började följa dig.",
     "new_register": "<strong>%1</strong> skickade en registreringsförfrågan.",
     "email-confirmed": "Epost bekräftad",

@@ -18,7 +18,6 @@
     "user_flagged_post_in": "<strong>%1</strong> sinalizou um post em <strong>%2</strong>",
     "user_posted_to": "<strong>%1</strong> postou uma resposta para: <strong>%2</strong>",
     "user_posted_topic": "<strong>%1</strong> postou um novo tópico: <strong>%2</strong>",
-    "user_mentioned_you_in": "<strong>%1</strong> mencionou você em <strong>%2</strong>",
     "user_started_following_you": "<strong>%1</strong> começou a seguir você.",
     "new_register": "<strong>%1</strong> lhe enviou um pedido de cadastro.",
     "email-confirmed": "Email Confirmado",

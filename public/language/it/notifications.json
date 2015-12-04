@@ -18,7 +18,6 @@
     "user_flagged_post_in": "<strong>%1</strong> ha segnalato un post in <strong>%2</strong>",
     "user_posted_to": "<strong>%1</strong> ha postato una risposta a: <strong>%2</strong>",
     "user_posted_topic": "<strong>%1</strong> ha postato un nuovo Topic: <strong>%2</strong>",
-    "user_mentioned_you_in": "<strong>%1</strong> ti ha menzionato in <strong>%2</strong>",
     "user_started_following_you": "<strong>%1</strong> ha iniziato a seguirti.",
     "new_register": "<strong>%1</strong> ha inviato una richiesta di registrazione.",
     "email-confirmed": "Email Confermata",

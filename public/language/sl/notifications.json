@@ -18,7 +18,6 @@
     "user_flagged_post_in": "<strong>%1</strong>je prijavil vašo objavo v <strong>%2</strong>",
     "user_posted_to": "<strong>%1</strong> je odgovoril na: <strong>%2</strong>",
     "user_posted_topic": "<strong>%1</strong> je odprl novo temo: <strong>%2</strong>",
-    "user_mentioned_you_in": "<strong>%1</strong> te je omenil v <strong>%2</strong>",
     "user_started_following_you": "<strong>%1</strong> te sledi.",
     "new_register": "<strong>%1</strong> je poslal prošnjo za registracijo.",
     "email-confirmed": "E-mail naslov potrjen",

@@ -18,7 +18,6 @@
     "user_flagged_post_in": "<strong>%1</strong> أشعَرَ بمشاركة مخلة في <strong>%2</strong>",
     "user_posted_to": "<strong>%1</strong> أضاف ردا إلى: <strong>%2</strong>",
     "user_posted_topic": "<strong>%1</strong> أنشأ موضوعًا جديدًا: <strong>%2</strong>",
-    "user_mentioned_you_in": "<strong>%1</strong> ذكرَ اسمك في <strong>%2</strong>",
     "user_started_following_you": "<strong>%1</strong> صار يتابعك.",
     "new_register": "<strong>%1</strong> sent a registration request.",
     "email-confirmed": "تم التحقق من عنوان البريد الإلكتروني",
