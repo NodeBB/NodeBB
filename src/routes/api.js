@@ -13,6 +13,9 @@ module.exports =  function(app, middleware, controllers) {
 	router.get('/widgets/render', controllers.api.renderWidgets);
 
 	router.get('/user/uid/:uid', middleware.checkGlobalPrivacySettings, controllers.api.getUserByUID);
+	router.get('/user/username/:username', middleware.checkGlobalPrivacySettings, controllers.api.getUserByUsername);
+	router.get('/user/email/:email', middleware.checkGlobalPrivacySettings, controllers.api.getUserByEmail);
+
 	router.get('/:type/pid/:id', controllers.api.getObject);
 	router.get('/:type/tid/:id', controllers.api.getObject);
 	router.get('/:type/cid/:id', controllers.api.getObject);
@@ -28,7 +31,7 @@ module.exports =  function(app, middleware, controllers) {
 	router.post('/post/upload', middlewares, uploadsController.uploadPost);
 	router.post('/topic/thumb/upload', middlewares, uploadsController.uploadThumb);
 	router.post('/user/:userslug/uploadpicture', middlewares.concat([middleware.authenticate, middleware.checkGlobalPrivacySettings, middleware.checkAccountPermissions]), controllers.accounts.edit.uploadPicture);
-	
+
 	router.post('/user/:userslug/uploadcover', middlewares.concat([middleware.authenticate, middleware.checkGlobalPrivacySettings, middleware.checkAccountPermissions]), controllers.accounts.edit.uploadCoverPicture);
 	router.post('/groups/uploadpicture', middlewares.concat([middleware.authenticate]), controllers.groups.uploadCover);
 };
