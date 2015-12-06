@@ -195,50 +195,52 @@ apiController.getUserByUID = function(req, res, next) {
 };
 
 
-apiController.getUserByUsername = function (req, res, next) {
+apiController.getUserByUsername = function(req, res, next) {
 	var username = req.params.username ? req.params.username : 0;
 
 	async.waterfall([
-		function (next) {
+		function(next) {
 			user.getUidByUsername(username, next);
 		},
-		async.parallel({
-			userData: async.apply(user.getUserData, uid),
-			settings: async.apply(user.getSettings, uid)
-		}, function (err, results) {
-			if (err || !results.userData) {
-				return next(err);
-			}
-			results.userData.email = results.settings.showemail ? results.userData.email : undefined;
-			results.userData.fullname = results.settings.showfullname ? results.userData.fullname : undefined;
+		function(uid, next) {
+			async.parallel({
+				userData: async.apply(user.getUserData, uid),
+				settings: async.apply(user.getSettings, uid)
+			}, function(err, results) {
+				if (err || !results.userData) {
+					return next(err);
+				}
+				results.userData.email = results.settings.showemail ? results.userData.email : undefined;
+				results.userData.fullname = results.settings.showfullname ? results.userData.fullname : undefined;
 
-			res.json(results.userData);
-		})
-
+				res.json(results.userData);
+			});
+		}
 	], next);
 };
 
 
-apiController.getUserByEmail = function (req, res, next) {
+apiController.getUserByEmail = function(req, res, next) {
 	var email = req.params.email ? req.params.email : 0;
 
 	async.waterfall([
-		function (next) {
+		function(next) {
 			user.getUidByEmail(email, next);
 		},
-		async.parallel({
-			userData: async.apply(user.getUserData, uid),
-			settings: async.apply(user.getSettings, uid)
-		}, function (err, results) {
-			if (err || !results.userData) {
-				return next(err);
-			}
-			results.userData.email = results.settings.showemail ? results.userData.email : undefined;
-			results.userData.fullname = results.settings.showfullname ? results.userData.fullname : undefined;
+		function(uid, next) {
+			async.parallel({
+				userData: async.apply(user.getUserData, uid),
+				settings: async.apply(user.getSettings, uid)
+			}, function(err, results) {
+				if (err || !results.userData) {
+					return next(err);
+				}
+				results.userData.email = results.settings.showemail ? results.userData.email : undefined;
+				results.userData.fullname = results.settings.showfullname ? results.userData.fullname : undefined;
 
-			res.json(results.userData);
-		})
-
+				res.json(results.userData);
+			});
+		}
 	], next);
 };
 
