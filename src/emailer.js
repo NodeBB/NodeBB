@@ -5,6 +5,7 @@ var	async = require('async'),
 	nconf = require('nconf'),
 	templates = require('templates.js'),
 	nodemailer = require('nodemailer'),
+	htmlToText = require('html-to-text'),
 	url = require('url'),
 
 	User = require('./user'),

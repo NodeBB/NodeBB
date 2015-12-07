@@ -29,6 +29,7 @@
     "express": "^4.9.5",
     "express-session": "^1.8.2",
     "heapdump": "^0.3.0",
+    "html-to-text": "1.5.0",
     "jimp": "0.2.20",
     "less": "^2.0.0",
     "logrotate-stream": "^0.2.3",
