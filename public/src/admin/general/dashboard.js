@@ -60,10 +60,7 @@ define('admin/general/dashboard', ['semver'], function(semver) {
 				checkEl.append('<p>You are <strong>up-to-date</strong> <i class="fa fa-check"></i></p>');
 			} else if (semver.gt(latestVersion, version)) {
 				checkEl.removeClass('alert-info').addClass('alert-danger');
-				checkEl.append('<p>A new version (v' + latestVersion + ') has been released. Consider upgrading your NodeBB.</p>');
-			} else if (semver.gt(version, latestVersion)) {
-				checkEl.removeClass('alert-info').addClass('alert-warning');
-				checkEl.append('<p>You are running a <strong>development version</strong>! Unintended bugs may occur. <i class="fa fa-warning"></i></p>');
+				checkEl.append('<p>A new version (v' + latestVersion + ') has been released. Consider <a href="https://docs.nodebb.org/en/latest/upgrading/index.html">upgrading your NodeBB</a>.</p>');
 			}
 		});
 
@@ -319,7 +316,6 @@ define('admin/general/dashboard', ['semver'], function(semver) {
 			if (JSON.stringify(graphData.traffic) === JSON.stringify(data)) {
 				return;
 			}
-			console.log(data);
 
 			graphData.traffic = data;
 
@@ -332,6 +328,13 @@ define('admin/general/dashboard', ['semver'], function(semver) {
 				graphs.traffic.scale.xLabels = getDaysArray(until);
 			} else {
 				graphs.traffic.scale.xLabels = getHoursArray();
+
+				$('#pageViewsThisMonth').html(data.monthlyPageViews.thisMonth);
+				$('#pageViewsLastMonth').html(data.monthlyPageViews.lastMonth);
+				$('#pageViewsPastDay').html(data.pastDay);
+				utils.addCommasToNumbers($('#pageViewsThisMonth'));
+				utils.addCommasToNumbers($('#pageViewsLastMonth'));
+				utils.addCommasToNumbers($('#pageViewsPastDay'));
 			}
 
 			for (var i = 0, ii = data.pageviews.length; i < ii;  i++) {
@@ -349,13 +352,6 @@ define('admin/general/dashboard', ['semver'], function(semver) {
 			graphs.traffic.update();
 			currentGraph.units = units;
 			currentGraph.until = until;
-
-			$('#pageViewsThisMonth').html(data.monthlyPageViews.thisMonth);
-			$('#pageViewsLastMonth').html(data.monthlyPageViews.lastMonth);
-			$('#pageViewsPastDay').html(data.pastDay);
-			utils.addCommasToNumbers($('#pageViewsThisMonth'));
-			utils.addCommasToNumbers($('#pageViewsLastMonth'));
-			utils.addCommasToNumbers($('#pageViewsPastDay'));
 		});
 	}
 

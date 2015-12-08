@@ -18,7 +18,6 @@
     "user_flagged_post_in": "<strong>%1</strong> har flagget et innlegg i <strong>%2</strong>",
     "user_posted_to": "<strong>%1</strong> har skrevet et svar til: <strong>%2</strong>",
     "user_posted_topic": "<strong>%1</strong> har skrevet et nytt emne: <strong>%2</strong>",
-    "user_mentioned_you_in": "<strong>%1</strong> nevnte deg i <strong>%2</strong>",
     "user_started_following_you": "<strong>%1</strong> begynte å følge deg.",
     "new_register": "<strong>%1</strong> sendte en forespørsel om registrering",
     "email-confirmed": "E-post bekreftet",

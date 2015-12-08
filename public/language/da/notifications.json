@@ -18,7 +18,6 @@
     "user_flagged_post_in": "<strong>%1</strong> har anmeldt et indlæg i <strong>%2</strong>",
     "user_posted_to": "<strong>%1</strong> har skrevet et svar til: <strong>%2</strong>",
     "user_posted_topic": "<strong>%1</strong> har oprettet en ny tråd: <strong>%2</strong>",
-    "user_mentioned_you_in": "<strong>%1</strong> nævnte dig i <strong>%2</strong>",
     "user_started_following_you": "<strong>%1</strong> har valgt at følge dig.",
     "new_register": "<strong>%1</strong> har sendt en registrerings anmodning.",
     "email-confirmed": "Email bekræftet",

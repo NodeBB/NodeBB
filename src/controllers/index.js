@@ -50,7 +50,16 @@ Controllers.home = function(req, res, next) {
 			} else if (route === 'popular') {
 				Controllers.popular.get(req, res, next);
 			} else {
-				res.redirect(route);
+				var match = /^category\/(\d+)\/(.*)$/.exec(route);
+
+				if (match) {
+					req.params.topic_index = "1";
+					req.params.category_id = match[1];
+					req.params.slug = match[2];
+					Controllers.categories.get(req, res, next);
+				} else {
+					res.redirect(route);
+				}
 			}
 		}
 	});

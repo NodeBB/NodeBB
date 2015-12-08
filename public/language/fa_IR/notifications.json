@@ -18,7 +18,6 @@
     "user_flagged_post_in": "<strong>%1</strong> دیدگاه شما را در <strong>%2</strong> علامتدار کرده",
     "user_posted_to": "پاسخ دادن به <strong>%2</strong> از سوی <strong>%1</strong>",
     "user_posted_topic": "<strong>%1</strong> یک جستار جدید ارسال کرده: <strong>%2</strong>",
-    "user_mentioned_you_in": "<strong>%1</strong> در \n<strong>%1</strong> mentioned you in <strong>%2</strong> از شما نام برده",
     "user_started_following_you": "<strong>%1</strong> شروع به دنبال کردن شما کرده",
     "new_register": "<strong>%1</strong> یک درخواست ثبت نام ارسال کرده است",
     "email-confirmed": "رایانامه تایید شد",

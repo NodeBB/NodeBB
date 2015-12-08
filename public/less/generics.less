@@ -55,3 +55,14 @@
 		vertical-align: middle;
 	}
 }
+
+.avatar {
+	/* Contains the user icon class as a mixin, so there's no need to include that in the template */
+	.user-icon;
+
+	&.avatar-sm {
+		width: 24px;
+		height: 24px;
+		.user-icon-style(24px, 1.5rem);
+	}
+}

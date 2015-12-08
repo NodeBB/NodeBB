@@ -18,7 +18,6 @@
     "user_flagged_post_in": "<strong>%1</strong> докладва Ваша публикация в <strong>%2</strong>",
     "user_posted_to": "<strong>%1</strong> публикува отговор на: <strong>%2</strong>",
     "user_posted_topic": "<strong>%1</strong> публикува нова тема: <strong>%2</strong>",
-    "user_mentioned_you_in": "<strong>%1</strong> Ви спомена в <strong>%2</strong>",
     "user_started_following_you": "<strong>%1</strong> започна да Ви следва.",
     "new_register": "<strong>%1</strong> изпрати заявка за регистрация.",
     "email-confirmed": "Е-пощата беше потвърдена",

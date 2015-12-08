@@ -14,13 +14,26 @@ var	async = require('async'),
 	translator = require('../public/src/modules/translator'),
 
 	transports = {
-		direct: nodemailer.createTransport('direct')
+		direct: nodemailer.createTransport('direct'),
+		gmail: undefined
 	},
 	app;
 
 (function(Emailer) {
 	Emailer.registerApp = function(expressApp) {
 		app = expressApp;
+
+		// Enable Gmail transport if enabled in ACP
+		if (parseInt(meta.config['email:GmailTransport:enabled'], 10) === 1) {
+			transports.gmail = nodemailer.createTransport('SMTP', {
+				service: 'Gmail',
+				auth: {
+					user: meta.config['email:GmailTransport:user'],
+					pass: meta.config['email:GmailTransport:pass']
+				}
+			});
+		}
+
 		return Emailer;
 	};
 
@@ -101,7 +114,8 @@ var	async = require('async'),
 		data.text = data.plaintext;
 		delete data.plaintext;
 
-		transports.direct.sendMail(data, callback);
+		winston.verbose('[emailer] Sending email to uid ' + data.uid);
+		transports[transports.gmail ? 'gmail' : 'direct'].sendMail(data, callback);
 	};
 
 	function render(tpl, params, next) {

@@ -18,7 +18,6 @@
     "user_flagged_post_in": "<strong>%1</strong> 在 <strong>%2</strong> 标记了一个帖子",
     "user_posted_to": "<strong>%1</strong> 回复了：<strong>%2</strong>",
     "user_posted_topic": "<strong>%1</strong> 发表了新主题：<strong>%2</strong>",
-    "user_mentioned_you_in": "<strong>%1</strong> 在 <strong>%2</strong> 中提到了您",
     "user_started_following_you": "<strong>%1</strong>关注了您。",
     "new_register": "<strong>%1</strong> 发出了注册请求",
     "email-confirmed": "电子邮箱已确认",

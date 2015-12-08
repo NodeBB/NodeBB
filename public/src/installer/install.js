@@ -115,7 +115,7 @@ $('document').ready(function() {
 
 		$.post('/launch', function() {
 			setInterval(function() {
-				$.get('/admin', function(data) {
+				$.get('/admin').done(function(data) {
 					window.location = 'admin';
 				});
 			}, 750);

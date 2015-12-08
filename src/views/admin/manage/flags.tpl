@@ -30,42 +30,63 @@
 
 			<div class="post-container" data-next="{next}">
 				<!-- IF !posts.length -->
-				No flagged posts!
+				<div class="alert alert-success">
+					No flagged posts!
+				</div>
 				<!-- ENDIF !posts.length -->
 
 				<!-- BEGIN posts -->
-				<div>
-					<div class="panel panel-default" data-pid="{posts.pid}" data-tid="{posts.topic.tid}">
-						<div class="panel-body">
-							<a href="{config.relative_path}/user/{posts.user.userslug}">
-								<img title="{posts.user.username}" class="img-rounded user-img" src="{posts.user.picture}">
-							</a>
+				<div class="row">
+					<div class="col-sm-8">
+						<div class="panel panel-default" data-pid="{posts.pid}" data-tid="{posts.topic.tid}">
+							<div class="panel-body flag-post-body">
+								<a href="{config.relative_path}/user/{../user.userslug}">
+									<!-- IF ../user.picture -->
+									<img title="{posts.user.username}" src="{../user.picture}">
+									<!-- ELSE -->
+									<div class="user-icon" style="background-color: {../user.icon:bgColor};">{../user.icon:text}</div>
+									<!-- ENDIF ../user.picture -->
+								</a>
 
-							<a href="{config.relative_path}/user/{posts.user.userslug}">
-								<strong><span>{posts.user.username}</span></strong>
-							</a>
-							<div class="content">
-								<p>{posts.content}</p>
-								<p class="fade-out"></p>
+								<a href="{config.relative_path}/user/{../user.userslug}">
+									<strong><span>{../user.username}</span></strong>
+								</a>
+								<div class="content">
+									<p>{posts.content}</p>
+									<p class="fade-out"></p>
+								</div>
+								<small>
+									<span class="pull-right">
+										Posted in <a href="{config.relative_path}/category/{posts.category.slug}" target="_blank"><i class="fa {posts.category.icon}"></i> {posts.category.name}</a>, <span class="timeago" title="{posts.relativeTime}"></span> &bull;
+										<a href="{config.relative_path}/topic/{posts.topic.slug}/{posts.index}" target="_blank">Read More</a>
+									</span>
+								</small>
 							</div>
-							<small>
-								<span class="pull-right">
-									Posted in <a href="{config.relative_path}/category/{posts.category.slug}" target="_blank"><i class="fa {posts.category.icon}"></i> {posts.category.name}</a>, <span class="timeago" title="{posts.relativeTime}"></span> &bull;
-									<a href="{config.relative_path}/topic/{posts.topic.slug}/{posts.index}" target="_blank">Read More</a>
-								</span>
-							</small>
 						</div>
 					</div>
-
-					<span class="badge badge-warning"><i class="fa fa-flag"></i> {posts.flags}</span>
-					<br/>
-					<!-- BEGIN posts.flagReasons -->
-					<a target="_blank" href="{config.relative_path}/user/{../user.userslug}"><img class="user-img" src="{../user.picture}">{../user.username}</a>: "{../reason}" <br/>
-					<!-- END posts.flagReasons -->
-					<br/>
-					<button class="btn btn-warning dismiss">Dismiss</button>
-					<button class="btn btn-danger delete">Delete</button>
-					<br/><br/>
+					<div class="col-sm-4">
+						<i class="fa fa-flag"></i> This post has been flagged {posts.flags} time(s):
+						<blockquote class="flag-reporters">
+							<ul>
+								<!-- BEGIN posts.flagReasons -->
+								<li>
+									<a target="_blank" href="{config.relative_path}/user/{../user.userslug}">
+										<!-- IF ../user.picture -->
+										<img src="{../user.picture}" />
+										<!-- ELSE -->
+										<div class="user-icon" style="background-color: {../user.icon:bgColor};">{../user.icon:text}</div>
+										<!-- ENDIF ../user.picture -->
+										{../user.username}
+									</a>: "{../reason}"
+								</li>
+								<!-- END posts.flagReasons -->
+							</ul>
+						</blockquote>
+						<div class="btn-group">
+							<button class="btn btn-sm btn-success dismiss">Dismiss</button>
+							<button class="btn btn-sm btn-danger delete">Delete</button>
+						</div>
+					</div>
 				</div>
 				<!-- END posts -->
 			</div>
