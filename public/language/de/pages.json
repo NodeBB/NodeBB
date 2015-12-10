@@ -27,7 +27,7 @@
     "account/edit/password": "Bearbeite Passwort von \"%1\"",
     "account/edit/username": "Bearbeite Benutzernamen von \"%1\"",
     "account/edit/email": "Bearbeite E-Mail von \"%1\"",
-    "account/following": "Nutzer, die %1 folgt",
+    "account/following": "Nutzer, denen %1 folgt",
     "account/followers": "Nutzer, die %1 folgen",
     "account/posts": "Beiträge von %1",
     "account/topics": "Themen verfasst von %1",
