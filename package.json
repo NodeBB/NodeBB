@@ -56,6 +56,7 @@
     "passport": "^0.3.0",
     "passport-local": "1.0.0",
     "prompt": "^0.2.14",
+    "redisearch": "^0.0.6",
     "request": "^2.44.0",
     "rimraf": "~2.4.2",
     "rss": "^1.0.0",
