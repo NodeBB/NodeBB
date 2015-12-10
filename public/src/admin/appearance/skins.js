@@ -10,14 +10,20 @@ define('admin/appearance/skins', function() {
 		$('body').append(scriptEl);
 
 		$('#skins').on('click', function(e){
-			var target = $(e.target),
-				action = target.attr('data-action');
+			var target = $(e.target);
+
+			if (!target.attr('data-action')) {
+				target = target.parents('[data-action]');
+			}
+
+			var action = target.attr('data-action');
 
 			if (action && action === 'use') {
 				var parentEl = target.parents('[data-theme]'),
 					themeType = parentEl.attr('data-type'),
 					cssSrc = parentEl.attr('data-css'),
 					themeId = parentEl.attr('data-theme');
+
 
 				socket.emit('admin.themes.set', {
 					type: themeType,

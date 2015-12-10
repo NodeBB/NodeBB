@@ -18,7 +18,6 @@
     "user_flagged_post_in": "<strong>%1</strong>님이 <strong>%2</strong>의 게시물을 신고했습니다.",
     "user_posted_to": "<strong>%1</strong>님이 <strong>%2</strong>에 답글을 작성했습니다.",
     "user_posted_topic": "<strong>%1</strong>님이 새 주제를 작성했습니다: <strong>%2</strong>",
-    "user_mentioned_you_in": "<strong>%1</strong>님이 <strong>%2</strong>에서 나를 언급했습니다.",
     "user_started_following_you": "<strong>%1</strong>님이 나를 팔로우합니다.",
     "new_register": "<strong>%1</strong> sent a registration request.",
     "email-confirmed": "확인된 이메일",

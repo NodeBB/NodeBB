@@ -18,7 +18,6 @@
     "user_flagged_post_in": "<strong>%1</strong> menandai sebuah posting di <strong>%2</strong>",
     "user_posted_to": "<strong>%1</strong> telah mengirim sebuah balasan kepada: <strong>%2</strong>",
     "user_posted_topic": "<strong>%1</strong> telah membuat topik baru: <strong>%2</strong>",
-    "user_mentioned_you_in": "<strong>%1</strong> menyebut mu di <strong>%2</strong>",
     "user_started_following_you": "<strong>%1</strong> mulai mengikutimu.",
     "new_register": "<strong>%1</strong> mengirim permintaan registrasi.",
     "email-confirmed": "Email telah Dikonfirmasi",

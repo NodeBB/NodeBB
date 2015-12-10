@@ -6,7 +6,7 @@
     "greeting_with_name": "Hallo %1",
     "welcome.text1": "Vielen Dank für die Registrierung bei %1!",
     "welcome.text2": "Um dein Konto vollständig zu aktivieren, müssen wir überprüfen, ob du Besitzer der E-Mail-Adresse bist, mit der du dich registriert hast.",
-    "welcome.text3": "Ein Administrator hat deine Registration aktzeptiert. Du kannst dich jetzt mit deinem Benutzernamen/Passwort einloggen.",
+    "welcome.text3": "Ein Administrator hat deine Registrierung aktzeptiert. Du kannst dich jetzt mit deinem Benutzernamen/Passwort einloggen.",
     "welcome.cta": "Klicke hier, um deine E-Mail-Adresse zu bestätigen.",
     "invitation.text1": "%1 hat dich eingeladen %2 beizutreten",
     "invitation.ctr": "Klicke hier, um ein Konto zu erstellen.",
@@ -25,7 +25,7 @@
     "notif.chat.cta": "Klicke hier, um die Unterhaltung fortzusetzen",
     "notif.chat.unsub.info": "Diese Chat-Benachrichtigung wurde dir aufgrund deiner Abonnement-Einstellungen gesendet.",
     "notif.post.cta": "Hier klicken, um das gesamte Thema zu lesen",
-    "notif.post.unsub.info": "Diese Mitteilung wurde wegen ihrer Abonnement-Einstellung gesendet.",
+    "notif.post.unsub.info": "Diese Mitteilung wurde dir aufgrund deiner Abonnement-Einstellungen gesendet.",
     "test.text1": "Dies ist eine Test-E-Mail, um zu überprüfen, ob der E-Mailer deines NodeBB korrekt eingestellt wurde.",
     "unsub.cta": "Klicke hier, um diese Einstellungen zu ändern.",
     "closing": "Danke!"

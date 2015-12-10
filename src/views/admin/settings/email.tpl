@@ -4,9 +4,6 @@
 	<div class="col-sm-2 col-xs-12 settings-header">Email Settings</div>
 	<div class="col-sm-10 col-xs-12">
 		<form>
-			<p>
-				Please ensure that you have installed a third-party emailer (e.g. PostageApp, Mailgun, Mandrill, SendGrid, etc), otherwise emails will not be sent by NodeBB
-			</p>
 			<div class="form-group">
 				<label for="email:from"><strong>Email Address</strong></label>
 				<p class="help-block">
@@ -20,6 +17,31 @@
 					The from name to display in the email.
 				</p>
 				<input type="text" class="form-control input-lg" id="email:from_name" data-field="email:from_name" placeholder="NodeBB" /><br />
+			</div>
+		</form>
+	</div>
+</div>
+
+<div class="row">
+	<div class="col-sm-2 col-xs-12 settings-header">Gmail Routing</div>
+	<div class="col-sm-10 col-xs-12">
+		<form>
+			<div class="checkbox">
+				<label for="email:GmailTransport:enabled" class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
+					<input class="mdl-switch__input" type="checkbox" id="email:GmailTransport:enabled" data-field="email:GmailTransport:enabled" name="email:GmailTransport:enabled" />
+					<span class="mdl-switch__label">Route emails through a Gmail/Google Apps account</span>
+				</label>
+			</div>
+			<div class="form-group">
+				<label for="email:GmailTransport:user"><strong>Username</strong></label>
+				<input type="text" class="form-control input-lg" id="email:GmailTransport:user" data-field="email:GmailTransport:user" placeholder="admin@example.org" /><br />
+				<p class="help-block">
+					Enter the full email address here, especially if you are using a Google Apps managed domain.
+				</p>
+			</div>
+			<div class="form-group">
+				<label for="email:GmailTransport:pass"><strong>Password</strong></label>
+				<input type="password" class="form-control input-lg" id="email:GmailTransport:pass" data-field="email:GmailTransport:pass" /><br />
 			</div>
 		</form>
 	</div>

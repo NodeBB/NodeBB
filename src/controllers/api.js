@@ -179,21 +179,68 @@ apiController.getObject = function(req, res, next) {
 apiController.getUserByUID = function(req, res, next) {
 	var uid = req.params.uid ? req.params.uid : 0;
 
+	getUserByUID(uid, function(err, userData) {
+		if (err || !userData) {
+			return next(err);
+		}
+		res.json(userData);
+	});
+};
+
+
+apiController.getUserByUsername = function(req, res, next) {
+	var username = req.params.username ? req.params.username : 0;
+
+	async.waterfall([
+		function(next) {
+			user.getUidByUsername(username, next);
+		},
+		function(uid, next) {
+			getUserByUID(uid, next);
+		}
+	], function(err, userData) {
+		if (err || !userData) {
+			return next(err);
+		}
+		res.json(userData);
+	});
+};
+
+
+apiController.getUserByEmail = function(req, res, next) {
+	var email = req.params.email ? req.params.email : 0;
+
+	async.waterfall([
+		function(next) {
+			user.getUidByEmail(email, next);
+		},
+		function(uid, next) {
+			getUserByUID(uid, next);
+		}
+	], function(err, userData) {
+		if (err || !userData) {
+			return next(err);
+		}
+		res.json(userData);
+	});
+};
+
+
+function getUserByUID(uid, callback) {
 	async.parallel({
 		userData: async.apply(user.getUserData, uid),
 		settings: async.apply(user.getSettings, uid)
 	}, function(err, results) {
 		if (err || !results.userData) {
-			return next(err);
+			return callback(err, null);
 		}
 
 		results.userData.email = results.settings.showemail ? results.userData.email : undefined;
 		results.userData.fullname = results.settings.showfullname ? results.userData.fullname : undefined;
 
-		res.json(results.userData);
+		callback(null, results.userData);
 	});
-};
-
+}
 
 apiController.getModerators = function(req, res, next) {
 	categories.getModerators(req.params.cid, function(err, moderators) {

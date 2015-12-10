@@ -6,6 +6,7 @@ var nconf = require('nconf'),
 	controllers = require('../controllers'),
 	plugins = require('../plugins'),
 	express = require('express'),
+	validator = require('validator'),
 
 	accountRoutes = require('./accounts'),
 
@@ -195,7 +196,7 @@ function handleErrors(app, middleware) {
 			res.json({path: req.path, error: err.message});
 		} else {
 			middleware.buildHeader(req, res, function() {
-				res.render('500', {path: req.path, error: err.message});
+				res.render('500', {path: req.path, error: validator.escape(err.message)});
 			});
 		}
 	});

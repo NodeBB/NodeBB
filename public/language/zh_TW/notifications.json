@@ -18,7 +18,6 @@
     "user_flagged_post_in": "<strong>%1</strong> 舉報了 <strong>%2</strong>裡的一個post。",
     "user_posted_to": "<strong>%1</strong> 發布一個回覆給: <strong>%2</strong>",
     "user_posted_topic": "<strong>%1</strong> 發布了一個新的主題： <strong>%2</strong>",
-    "user_mentioned_you_in": "<strong>%1</strong> 在 <strong>%2</strong>提到你",
     "user_started_following_you": "<strong>%1</strong> 開始關注你。",
     "new_register": "<strong>%1</strong> sent a registration request.",
     "email-confirmed": "已確認電郵",

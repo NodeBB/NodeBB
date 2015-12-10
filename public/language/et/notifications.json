@@ -18,7 +18,6 @@
     "user_flagged_post_in": "<strong>%1</strong> raporteeris postitust <strong>%2</strong>",
     "user_posted_to": "Kasutaja <strong>%1</strong> postitas vastuse teemasse <strong>%2</strong>",
     "user_posted_topic": "<strong>%1</strong> on postitanud uue teema: <strong>%2</strong>",
-    "user_mentioned_you_in": "<strong>%1</strong> mainis sind postituses <strong>%2</strong>",
     "user_started_following_you": "<strong>%1</strong> hakkas sind jälgima.",
     "new_register": "<strong>%1</strong> saatis registreerimistaotluse.",
     "email-confirmed": "Emaili aadress kinnitatud",

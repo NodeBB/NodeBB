@@ -22,7 +22,7 @@
     "pagination.out_of": "%2 এর মাঝে %1",
     "pagination.enter_index": "সূচক লিখুন",
     "header.admin": "অ্যাডমিন",
-    "header.categories": "Categories",
+    "header.categories": "বিভাগ",
     "header.recent": "সাম্প্রতিক",
     "header.unread": "অপঠিত",
     "header.tags": "ট্যাগ",
@@ -52,7 +52,7 @@
     "views": "দেখেছেন",
     "reputation": "সন্মাননা",
     "read_more": "আরো পড়ুন",
-    "more": "More",
+    "more": "আরো...",
     "posted_ago_by_guest": "অতিথি পোস্ট করেছেন %1",
     "posted_ago_by": " %1 %2 দ্বারা পোস্টকৃত",
     "posted_ago": "পোস্ট করেছেন %1",
@@ -83,5 +83,5 @@
     "follow": "Follow",
     "unfollow": "Unfollow",
     "delete_all": "সব মুছে ফেলুন",
-    "map": "Map"
+    "map": "ম্যাপ"
 }

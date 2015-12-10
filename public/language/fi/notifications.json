@@ -18,7 +18,6 @@
     "user_flagged_post_in": "<strong>%1</strong> flagged a post in <strong>%2</strong>",
     "user_posted_to": "<strong>%1</strong> on vastannut viestiin: <strong>%2</strong>",
     "user_posted_topic": "<strong>%1</strong> on kirjoittanut uuden aiheen: <strong>%2</strong>",
-    "user_mentioned_you_in": "<strong>%1</strong> mainitsi sinut viestissä <strong>%2</strong>",
     "user_started_following_you": "<strong>%1</strong> alkoi seurata sinua.",
     "new_register": "<strong>%1</strong> sent a registration request.",
     "email-confirmed": "Sähköpostiosoite vahvistettu",

@@ -38,13 +38,8 @@ define('forum/chats', ['components', 'string', 'sounds', 'forum/infinitescroll',
 	};
 
 	Chats.addEventListeners = function() {
-		$('.chats-list').on('click', 'li', function(e) {
-			var env = utils.findBootstrapEnvironment();
-			if (env === 'xs' || env === 'sm') {
-				app.openChat($(this).attr('data-username'), $(this).attr('data-uid'));
-			} else {
-				Chats.switchChat(parseInt($(this).attr('data-uid'), 10), $(this).attr('data-username'));
-			}
+		components.get('chat/recent').on('click', 'li', function(e) {
+			Chats.switchChat(parseInt($(this).attr('data-uid'), 10), $(this).attr('data-username'));
 		});
 
 		Chats.addSendHandlers(Chats.getRecipientUid(), $('.chat-input'), $('.expanded-chat button[data-action="send"]'));

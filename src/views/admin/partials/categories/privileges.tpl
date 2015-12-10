@@ -8,7 +8,13 @@
 						<!-- IF privileges.users.length -->
 						<!-- BEGIN privileges.users -->
 						<tr data-uid="{privileges.users.uid}">
-							<td><img src="{privileges.users.picture}" title="{privileges.users.username}" /></td>
+							<td>
+								<!-- IF ../picture -->
+								<img class="avatar avatar-sm" src="{privileges.users.picture}" title="{privileges.users.username}" />
+								<!-- ELSE -->
+								<div class="avatar avatar-sm" style="background-color: {../icon:bgColor};">{../icon:text}</div>
+								<!-- ENDIF ../picture -->
+							</td>
 							<td>{privileges.users.username}</td>
 							{function.spawnPrivilegeStates, privileges.users.username, privileges}
 						</tr>

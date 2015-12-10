@@ -58,7 +58,7 @@
     "group-name-too-short": "Grup ismi çok kısa",
     "group-already-exists": "Grup zaten var",
     "group-name-change-not-allowed": "Grup ismini değiştiremezsiniz",
-    "group-already-member": "Already part of this group",
+    "group-already-member": "Bu grubun zaten bir parçasısın.",
     "group-not-member": "Bu grubun bir üyesi yok",
     "group-needs-owner": "Bu grubu en az bir kişi sahiplenmesi gerekiyor",
     "group-already-invited": "Bu kullanıcı zaten davet edilmiş",

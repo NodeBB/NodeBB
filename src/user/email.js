@@ -32,7 +32,7 @@ var async = require('async'),
 		var confirm_code = utils.generateUUID(),
 			confirm_link = nconf.get('url') + '/confirm/' + confirm_code;
 
-		var emailInterval = 10;
+		var emailInterval = meta.config.hasOwnProperty('emailConfirmInterval') ? parseInt(meta.config.emailConfirmInterval, 10) : 10;
 
 		async.waterfall([
 			function(next) {

@@ -255,10 +255,12 @@ define('forum/topic/postTools', ['share', 'navigator', 'components', 'translator
 			pid: post.attr('data-pid'),
 			room_id: app.currentRoom
 		}, function(err) {
-			if (err.message === 'self-vote') {
-				showVotes(post.attr('data-pid'));
-			} else {
-				app.alertError(err.message);
+			if (err) {
+				if (err.message === 'self-vote') {
+					showVotes(post.attr('data-pid'));
+				} else {
+					app.alertError(err.message);
+				}
 			}
 		});
 
@@ -268,6 +270,11 @@ define('forum/topic/postTools', ['share', 'navigator', 'components', 'translator
 	function showVotes(pid) {
 		socket.emit('posts.getVoters', {pid: pid, cid: ajaxify.data.cid}, function(err, data) {
 			if (err) {
+				if (err.message === '[[error:no-privileges]]') {
+					return;
+				}
+
+				// Only show error if it's an unexpected error.
 				return app.alertError(err.message);
 			}
 

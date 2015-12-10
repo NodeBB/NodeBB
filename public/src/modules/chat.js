@@ -19,11 +19,6 @@ define('chat', ['components', 'taskbar', 'string', 'sounds', 'forum/chats', 'tra
 		});
 
 		socket.on('event:chats.receive', function(data) {
-			if (ajaxify.currentPage.slice(0, 6) === 'chats/') {
-				// User is on the chats page, so do nothing (src/forum/chats.js will handle it)
-				return;
-			}
-
 			var username = data.message.fromUser.username;
 			var isSelf = parseInt(data.message.fromUser.uid, 10) === parseInt(app.user.uid, 10);
 			data.message.self = data.self;
