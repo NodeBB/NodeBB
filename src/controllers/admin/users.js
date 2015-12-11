@@ -1,6 +1,7 @@
 "use strict";
 
-var user = require('../../user'),
+var async = require('async'),
+	user = require('../../user'),
 	meta = require('../../meta');
 
 
@@ -31,12 +32,50 @@ usersController.banned = function(req, res, next) {
 };
 
 usersController.registrationQueue = function(req, res, next) {
-	user.getRegistrationQueue(0, -1, function(err, data) {
+	var invitations;
+	async.parallel({
+		users: function(next) {
+			user.getRegistrationQueue(0, -1, next);
+		},
+		invites: function(next) {
+			async.waterfall([
+				function(next) {
+					user.getAllInvites(next);
+				},
+				function(_invitations, next) {
+					invitations = _invitations;
+					async.map(invitations, function(invites, next) {
+						user.getUserField(invites.uid, 'username', next);
+					}, next);
+				},
+				function(usernames, next) {
+					invitations.forEach(function(invites, index) {
+						invites.username = usernames[index];
+					});
+					async.map(invitations, function(invites, next) {
+						async.map(invites.invitations, user.getUsernameByEmail, next);
+					}, next);
+				},
+				function(usernames, next) {
+					invitations.forEach(function(invites, index) {
+						invites.invitations = invites.invitations.map(function(email, i) {
+							return {
+								email: email,
+								username: usernames[index][i] === '[[global:guest]]' ? '' : usernames[index][i]
+							};
+						});
+					});
+					next(null, invitations);
+				}
+			], next);
+		}
+	}, function(err, data) {
 		if (err) {
 			return next(err);
 		}
-		res.render('admin/manage/registration', {users: data});
-	})
+		res.render('admin/manage/registration', data);
+	});
+
 };
 
 function getUsers(set, req, res, next) {

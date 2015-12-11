@@ -267,14 +267,44 @@ SocketUser.loadMore = function(socket, data, callback) {
 
 SocketUser.invite = function(socket, email, callback) {
 	if (!email || !socket.uid) {
-		return callback(new Error('[[error:invald-data]]'));
+		return callback(new Error('[[error:invalid-data]]'));
 	}
 
-	if (meta.config.registrationType !== 'invite-only') {
+	var registrationType = meta.config.registrationType
+
+	if (registrationType !== 'invite-only' && registrationType !== 'admin-invite-only') {
 		return callback(new Error('[[error:forum-not-invite-only]]'));
 	}
 
-	user.sendInvitationEmail(socket.uid, email, callback);
+	var max = meta.config.maximumInvites;
+
+	user.isAdministrator(socket.uid, function(err, admin) {
+		if (err) {
+			return callback(err);
+		}
+		if (registrationType === 'admin-invite-only' && !admin) {
+			return callback(new Error('[[error:no-privileges]]'));
+		}
+		if (max) {
+			async.waterfall([
+				function(next) {
+					user.getInvitesNumber(socket.uid, next);
+				},
+				function(invites, next) {
+					if (!admin && invites > max) {
+						return next(new Error('[[error:invite-maximum-met, ' + invites + ', ' + max + ']]'));
+					}
+					next();
+				},
+				function(next) {
+					user.sendInvitationEmail(socket.uid, email, next);
+				}
+			], callback);
+		} else {
+			user.sendInvitationEmail(socket.uid, email, callback);
+		}
+	});
+
 };
 
 

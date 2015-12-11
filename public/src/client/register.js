@@ -28,7 +28,7 @@ define('forum/register', ['csrf', 'translator'], function(csrf, translator) {
 
 		var query = utils.params();
 		if (query.email && query.token) {
-			email.val(query.email);
+			email.val(decodeURIComponent(query.email));
 			$('#token').val(query.token);
 		}
 
@@ -160,7 +160,7 @@ define('forum/register', ['csrf', 'translator'], function(csrf, translator) {
 			socket.emit('user.exists', {
 				username: username
 			}, function(err, exists) {
-				if(err) {
+				if (err) {
 					return app.alertError(err.message);
 				}
 
