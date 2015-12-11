@@ -179,14 +179,8 @@ apiController.getObject = function(req, res, next) {
 apiController.getUserByUID = function(req, res, next) {
 	var uid = req.params.uid ? req.params.uid : 0;
 
-	getUserByUID(uid, function(err, userData) {
-		if (err || !userData) {
-			return next(err);
-		}
-		res.json(userData);
-	});
+	getUserByUID(uid, res, next);
 };
-
 
 apiController.getUserByUsername = function(req, res, next) {
 	var username = req.params.username ? req.params.username : 0;
@@ -196,16 +190,10 @@ apiController.getUserByUsername = function(req, res, next) {
 			user.getUidByUsername(username, next);
 		},
 		function(uid, next) {
-			getUserByUID(uid, next);
+			getUserByUID(uid, res, next);
 		}
-	], function(err, userData) {
-		if (err || !userData) {
-			return next(err);
-		}
-		res.json(userData);
-	});
+	], next);
 };
-
 
 apiController.getUserByEmail = function(req, res, next) {
 	var email = req.params.email ? req.params.email : 0;
@@ -215,30 +203,24 @@ apiController.getUserByEmail = function(req, res, next) {
 			user.getUidByEmail(email, next);
 		},
 		function(uid, next) {
-			getUserByUID(uid, next);
+			getUserByUID(uid, res, next);
 		}
-	], function(err, userData) {
-		if (err || !userData) {
-			return next(err);
-		}
-		res.json(userData);
-	});
+	], next);
 };
 
-
-function getUserByUID(uid, callback) {
+function getUserByUID(uid, res, next) {
 	async.parallel({
 		userData: async.apply(user.getUserData, uid),
 		settings: async.apply(user.getSettings, uid)
 	}, function(err, results) {
 		if (err || !results.userData) {
-			return callback(err, null);
+			return next(err);
 		}
 
 		results.userData.email = results.settings.showemail ? results.userData.email : undefined;
 		results.userData.fullname = results.settings.showfullname ? results.userData.fullname : undefined;
 
-		callback(null, results.userData);
+		res.json(results.userData);
 	});
 }
 
