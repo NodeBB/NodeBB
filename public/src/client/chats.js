@@ -63,6 +63,17 @@ define('forum/chats', ['components', 'string', 'sounds', 'forum/infinitescroll',
 			});
 		});
 
+		components.get('chat/messages')
+			.on('click', '[data-action="edit"]', function() {
+				var messageId = $(this).parents('[data-mid]').attr('data-mid');
+				var inputEl = components.get('chat/input');
+				Chats.prepEdit(inputEl, messageId);
+			})
+			.on('click', '[data-action="delete"]', function() {
+				var messageId = $(this).parents('[data-mid]').attr('data-mid');
+				Chats.delete(messageId);
+			});
+
 		$('.recent-chats').on('scroll', function() {
 			var $this = $(this);
 			var bottom = ($this[0].scrollHeight - $this.height()) * 0.9;
@@ -94,6 +105,49 @@ define('forum/chats', ['components', 'string', 'sounds', 'forum/infinitescroll',
 			}
 
 			$('[component="chat/input"]').focus();
+		});
+		Mousetrap.bind('up', function(e) {
+			if (e.target === components.get('chat/input').get(0)) {
+				// Retrieve message id from messages list
+				var message = components.get('chat/messages').find('.chat-message[data-self="1"]').last();
+				var lastMid = message.attr('data-mid');
+				var inputEl = components.get('chat/input');
+
+				Chats.prepEdit(inputEl, lastMid);
+			}
+		});
+	};
+
+	Chats.prepEdit = function(inputEl, messageId) {
+		socket.emit('modules.chats.getRaw', { mid: messageId }, function(err, raw) {
+			// Populate the input field with the raw message content
+			if (inputEl.val().length === 0) {
+				// By setting the `data-mid` attribute, I tell the chat code that I am editing a
+				// message, instead of posting a new one.
+				inputEl.attr('data-mid', messageId).addClass('editing');
+				inputEl.val(raw);
+			}
+		});
+	};
+
+	Chats.delete = function(messageId) {
+		translator.translate('[[modules:chat.delete_message_confirm]]', function(translated) {
+			bootbox.confirm(translated, function(ok) {
+				if (ok) {
+					socket.emit('modules.chats.delete', {
+						messageId: messageId
+					}, function(err) {
+						if (err) {
+							return app.alertError(err.message);
+						}
+
+						// Remove message from list
+						components.get('chat/message', messageId).slideUp('slow', function() {
+							$(this).remove();
+						});
+					});
+				}
+			});
 		});
 	};
 
@@ -253,6 +307,22 @@ define('forum/chats', ['components', 'string', 'sounds', 'forum/infinitescroll',
 		socket.on('event:user_status_change', function(data) {
 			app.updateUserStatus($('.chats-list [data-uid="' + data.uid + '"] [component="user/status"]'), data.status);
 		});
+
+		socket.on('event:chats.edit', function(data) {
+			var message;
+
+			data.messages.forEach(function(message) {
+				templates.parse('partials/chat_message', {
+					messages: message
+				}, function(html) {
+					body = components.get('chat/message', message.messageId);
+					if (body.length) {
+						body.replaceWith(html);
+						components.get('chat/message', message.messageId).find('.timeago').timeago();
+					}
+				});
+			});
+		});
 	};
 
 	Chats.resizeMainWindow = function() {
@@ -278,7 +348,9 @@ define('forum/chats', ['components', 'string', 'sounds', 'forum/infinitescroll',
 	};
 
 	Chats.sendMessage = function(toUid, inputEl) {
-		var msg = inputEl.val();
+		var msg = inputEl.val(),
+			mid = inputEl.attr('data-mid');
+
 		if (msg.length > config.maximumChatMessageLength) {
 			return app.alertError('[[error:chat-message-too-long]]');
 		}
@@ -288,20 +360,35 @@ define('forum/chats', ['components', 'string', 'sounds', 'forum/infinitescroll',
 		}
 
 		inputEl.val('');
-		socket.emit('modules.chats.send', {
-			touid: toUid,
-			message: msg
-		}, function(err) {
-			if (err) {
-				if (err.message === '[[error:email-not-confirmed-chat]]') {
-					return app.showEmailConfirmWarning(err);
-				}
-				return app.alertError(err.message);
-			}
+		inputEl.removeAttr('data-mid');
 
-			sounds.play('chat-outgoing');
-			Chats.notifyTyping(toUid, false);
-		});
+		if (!mid) {
+			socket.emit('modules.chats.send', {
+				touid: toUid,
+				message: msg
+			}, function(err) {
+				if (err) {
+					if (err.message === '[[error:email-not-confirmed-chat]]') {
+						return app.showEmailConfirmWarning(err);
+					}
+					return app.alertError(err.message);
+				}
+
+				sounds.play('chat-outgoing');
+				Chats.notifyTyping(toUid, false);
+			});
+		} else {
+			socket.emit('modules.chats.edit', {
+				mid: mid,
+				message: msg
+			}, function(err) {
+				if (err) {
+					return app.alertError(err.message);
+				}
+
+				Chats.notifyTyping(toUid, false);
+			});
+		}
 	};
 
 	Chats.scrollToBottom = function(containerEl) {

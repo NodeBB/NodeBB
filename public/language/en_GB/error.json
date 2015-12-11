@@ -101,6 +101,7 @@
 	"too-many-messages": "You have sent too many messages, please wait awhile.",
 	"invalid-chat-message": "Invalid chat message",
 	"chat-message-too-long": "Chat message is too long",
+	"cant-edit-chat-message": "You are not allowed to edit this message",
 
 	"reputation-system-disabled": "Reputation system is disabled.",
 	"downvoting-disabled": "Downvoting is disabled",

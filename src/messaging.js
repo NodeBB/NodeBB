@@ -106,6 +106,81 @@ var db = require('./database'),
 		});
 	};
 
+	Messaging.editMessage = function(mid, content, callback) {
+		async.series([
+			function(next) {
+				// Verify that the message actually changed
+				Messaging.getMessageField(mid, 'content', function(err, raw) {
+					if (raw === content) {
+						// No dice.
+						return callback();
+					}
+
+					next();
+				});
+			},
+			async.apply(Messaging.setMessageFields, mid, {
+				content: content,
+				edited: Date.now()
+			}),
+			function(next) {
+				Messaging.getMessageFields(mid, ['fromuid', 'touid'], function(err, data) {
+					getMessages([mid], data.fromuid, data.touid, true, function(err, messages) {
+						sockets.in('uid_' + data.fromuid).emit('event:chats.edit', {
+							messages: messages
+						});
+						sockets.in('uid_' + data.touid).emit('event:chats.edit', {
+							messages: messages
+						});
+						next();
+					});
+				});
+			}
+		], callback);
+	};
+
+	Messaging.deleteMessage = function(mid, callback) {
+		var uids = [];
+		async.series([
+			function(next) {
+				db.getObject('message:' + mid, function(err, messageObj) {
+					messageObj.fromuid = parseInt(messageObj.fromuid, 10);
+					messageObj.touid = parseInt(messageObj.touid, 10);
+					uids.push(messageObj.fromuid, messageObj.touid);
+					uids.sort(function(a, b) {
+						return a > b ? 1 : -1;
+					});
+					next();
+				});
+			},
+			function(next) {
+				next();
+			},
+			function(next) {
+				db.sortedSetRemove('messages:uid:' + uids[0] + ':to:' + uids[1], mid, next);
+			},
+			async.apply(db.delete, 'message:' + mid)
+		], callback);
+	};
+
+	Messaging.getMessageField = function(mid, field, callback) {
+		Messaging.getMessageFields(mid, [field], function(err, fields) {
+			callback(err, fields[field]);
+		});
+	};
+
+	Messaging.getMessageFields = function(mid, fields, callback) {
+		db.getObjectFields('message:' + mid, fields, callback);
+	};
+
+	Messaging.setMessageField = function(mid, field, content, callback) {
+		db.setObjectField('message:' + mid, field, content, callback);
+	};
+
+	Messaging.setMessageFields = function(mid, data, callback) {
+		db.setObject('message:' + mid, data, callback);
+	};
+
 	Messaging.getMessages = function(params, callback) {
 		var fromuid = params.fromuid,
 			touid = params.touid,
@@ -160,7 +235,12 @@ var db = require('./database'),
 			async.waterfall([
 				async.apply(db.getObjects, keys),
 				function(messages, next) {
-					messages = messages.filter(Boolean);
+					messages = messages.map(function(msg, idx) {
+						if (msg) {
+							msg.messageId = parseInt(mids[idx], 10);
+						}
+						return msg;
+					}).filter(Boolean);
 					async.map(messages, function(message, next) {
 						var self = parseInt(message.fromuid, 10) === parseInt(fromuid, 10);
 						message.fromUser = self ? userData[0] : userData[1];
@@ -168,6 +248,10 @@ var db = require('./database'),
 						message.timestampISO = utils.toISOString(message.timestamp);
 						message.self = self ? 1 : 0;
 						message.newSet = false;
+
+						if (message.hasOwnProperty('edited')) {
+							message.editedISO = new Date(parseInt(message.edited, 10)).toISOString();
+						}
 
 						Messaging.parse(message.content, message.fromuid, fromuid, userData[1], userData[0], isNew, function(result) {
 							message.content = result;
@@ -177,21 +261,50 @@ var db = require('./database'),
 					}, next);
 				},
 				function(messages, next) {
-					// Add a spacer in between messages with time gaps between them
-					messages = messages.map(function(message, index) {
-						// Compare timestamps with the previous message, and check if a spacer needs to be added
-						if (index > 0 && parseInt(message.timestamp, 10) > parseInt(messages[index-1].timestamp, 10) + (1000*60*5)) {
-							// If it's been 5 minutes, this is a new set of messages
-							message.newSet = true;
-						} else if (index > 0 && message.fromuid !== messages[index-1].fromuid) {
-							// If the previous message was from the other person, this is also a new set
-							message.newSet = true;
-						}
+					if (messages.length > 1) {
+						// Add a spacer in between messages with time gaps between them
+						messages = messages.map(function(message, index) {
+							// Compare timestamps with the previous message, and check if a spacer needs to be added
+							if (index > 0 && parseInt(message.timestamp, 10) > parseInt(messages[index-1].timestamp, 10) + (1000*60*5)) {
+								// If it's been 5 minutes, this is a new set of messages
+								message.newSet = true;
+							} else if (index > 0 && message.fromuid !== messages[index-1].fromuid) {
+								// If the previous message was from the other person, this is also a new set
+								message.newSet = true;
+							}
 
-						return message;
-					});
+							return message;
+						});
 
-					next(undefined, messages);
+						next(undefined, messages);
+					} else {
+						// For single messages, we don't know the context, so look up the previous message and compare
+						var uids = [fromuid, touid].sort(function(a, b) { return a > b ? 1 : -1 });
+						var key = 'messages:uid:' + uids[0] + ':to:' + uids[1];
+						async.waterfall([
+							async.apply(db.sortedSetRank, key, messages[0].messageId),
+							function(index, next) {
+								db.getSortedSetRange(key, index-1, index-1, next);
+							},
+							function(mid, next) {
+								Messaging.getMessageFields(mid, ['fromuid', 'timestamp'], next);
+							}
+						], function(err, fields) {
+							if (err) {
+								return next(err);
+							}
+
+							if (
+								(parseInt(messages[0].timestamp, 10) > parseInt(fields.timestamp, 10) + (1000*60*5)) ||
+								(parseInt(messages[0].fromuid, 10) !== parseInt(fields.fromuid, 10))
+							) {
+								// If it's been 5 minutes, this is a new set of messages
+								messages[0].newSet = true;
+							}
+
+							next(undefined, messages);
+						});
+					}
 				}
 			], callback);
 		});
@@ -277,7 +390,7 @@ var db = require('./database'),
 							count: 1,
 							markRead: false
 						}, function(err, teaser) {
-							var teaser = teaser[0];
+							teaser = teaser[0];
 							teaser.content = S(teaser.content).stripTags().decodeHTMLEntities().s;
 							next(err, teaser);
 						});
@@ -411,6 +524,39 @@ var db = require('./database'),
 					return callback(null, true);
 				}
 				user.isFollowing(toUid, fromUid, next);
+			}
+		], callback);
+	};
+
+	Messaging.canEdit = function(messageId, uid, callback) {
+		if (parseInt(meta.config.disableChat) === 1) {
+			return callback(null, false);
+		}
+
+		async.waterfall([
+			function (next) {
+				user.getUserFields(uid, ['banned', 'email:confirmed'], next);
+			},
+			function (userData, next) {
+				if (parseInt(userData.banned, 10) === 1) {
+					return callback(null, false);
+				}
+
+				if (parseInt(meta.config.requireEmailConfirmation, 10) === 1 && parseInt(userData['email:confirmed'], 10) !== 1) {
+					return callback(null, false);
+				}
+
+				Messaging.getMessageField(messageId, 'fromuid', next);
+			},
+			function(fromUid, next) {
+				if (parseInt(fromUid, 10) === parseInt(uid, 10)) {
+					return callback(null, true);
+				}
+
+				user.isAdministrator(uid, next);
+			},
+			function(isAdmin, next) {
+				next(null, isAdmin);
 			}
 		], callback);
 	};
