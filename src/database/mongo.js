@@ -124,7 +124,7 @@
 			require('./mongo/sorted')(db, module);
 			require('./mongo/list')(db, module);
 
-			if(nconf.get('mongo:password') && nconf.get('mongo:username')) {
+			if (nconf.get('mongo:password') && nconf.get('mongo:username')) {
 				db.authenticate(nconf.get('mongo:username'), nconf.get('mongo:password'), function (err) {
 					if (err) {
 						winston.error(err.stack);
@@ -138,30 +138,21 @@
 			}
 
 			function createIndices() {
-				winston.info('[database] Checking database indices.')
+				winston.info('[database] Checking database indices.');
 				async.parallel([
 					async.apply(createIndex, 'objects', {_key: 1, score: -1}, {background: true}),
 					async.apply(createIndex, 'objects', {_key: 1, value: -1}, {background: true, unique: true, sparse: true}),
-
-					async.apply(createIndex, 'objects', {expireAt: 1}, {expireAfterSeconds: 0, background: true}),
-
-					async.apply(createIndex, 'searchtopic', {content: 'text', uid: 1, cid: 1}, {background: true}),
-					async.apply(createIndex, 'searchtopic', {id: 1}, {background: true}),
-
-					async.apply(createIndex, 'searchpost', {content: 'text', uid: 1, cid: 1}, {background: true}),
-					async.apply(createIndex, 'searchpost', {id: 1}, {background: true})
+					async.apply(createIndex, 'objects', {expireAt: 1}, {expireAfterSeconds: 0, background: true})
 				], function(err) {
-					callback(err);
-				});
-			}
-
-			function createIndex(collection, index, options, callback) {
-				db.collection(collection).ensureIndex(index, options, function(err) {
 					if (err) {
 						winston.error('Error creating index ' + err.message);
 					}
 					callback(err);
 				});
+			}
+
+			function createIndex(collection, index, options, callback) {
+				db.collection(collection).ensureIndex(index, options, callback);
 			}
 		});
 	};

@@ -4,16 +4,11 @@
 
 	var winston = require('winston'),
 		nconf = require('nconf'),
-		path = require('path'),
 		semver = require('semver'),
 		session = require('express-session'),
-		utils = require('./../../public/src/utils.js'),
 		redis,
 		connectRedis,
-		redisSearch,
-		redisClient,
-		postSearch,
-		topicSearch;
+		redisClient;
 
 	module.questions = [
 		{
@@ -43,7 +38,6 @@
 		try {
 			redis = require('redis');
 			connectRedis = require('connect-redis')(session);
-			redisSearch = require('redisearch');
 		} catch (err) {
 			winston.error('Unable to initialize Redis! Is Redis installed? Error :' + err.message);
 			process.exit();
@@ -57,9 +51,6 @@
 			client: redisClient,
 			ttl: 60 * 60 * 24 * 14
 		});
-
-		module.postSearch = redisSearch.createSearch('nodebbpostsearch', redisClient);
-		module.topicSearch = redisSearch.createSearch('nodebbtopicsearch', redisClient);
 
 		require('./redis/main')(redisClient, module);
 		require('./redis/hash')(redisClient, module);
