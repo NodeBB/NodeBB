@@ -284,7 +284,13 @@ var db = require('./database'),
 						async.waterfall([
 							async.apply(db.sortedSetRank, key, messages[0].messageId),
 							function(index, next) {
-								db.getSortedSetRange(key, index-1, index-1, next);
+								// Continue only if this isn't the first message in sorted set
+								if (index > 0) {
+									db.getSortedSetRange(key, index-1, index-1, next);
+								} else {
+									messages[0].newSet = true;
+									return next(undefined, messages);
+								}
 							},
 							function(mid, next) {
 								Messaging.getMessageFields(mid, ['fromuid', 'timestamp'], next);
@@ -390,7 +396,7 @@ var db = require('./database'),
 							count: 1,
 							markRead: false
 						}, function(err, teaser) {
-							var teaser = teaser[0];
+							teaser = teaser[0];
 							teaser.content = S(teaser.content).stripTags().decodeHTMLEntities().s;
 							next(err, teaser);
 						});
