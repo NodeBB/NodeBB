@@ -390,7 +390,7 @@ var db = require('./database'),
 							count: 1,
 							markRead: false
 						}, function(err, teaser) {
-							teaser = teaser[0];
+							var teaser = teaser[0];
 							teaser.content = S(teaser.content).stripTags().decodeHTMLEntities().s;
 							next(err, teaser);
 						});
