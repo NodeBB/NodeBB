@@ -251,11 +251,6 @@ module.exports = function(Topics) {
 					Topics.follow(postData.tid, uid);
 				}
 
-				posts.getPidIndex(postData.pid, postData.tid, settings.topicPostSort, next);
-			},
-			function(postIndex, next) {
-				postData.index = postIndex;
-
 				if (parseInt(uid, 10)) {
 					Topics.notifyFollowers(postData, uid);
 					user.setUserField(uid, 'lastonline', Date.now());
@@ -297,6 +292,7 @@ module.exports = function(Topics) {
 			function (results, next) {
 				postData.user = results.userInfo[0];
 				postData.topic = results.topicInfo;
+				postData.index = parseInt(results.topicInfo.postcount, 10) - 1;
 
 				// Username override for guests, if enabled
 				if (parseInt(meta.config.allowGuestHandles, 10) === 1 && parseInt(postData.uid, 10) === 0 && data.handle) {
