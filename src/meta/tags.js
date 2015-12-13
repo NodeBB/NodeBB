@@ -17,7 +17,8 @@ module.exports = function(Meta) {
 					content: 'width=device-width, initial-scale=1.0, user-scalable=no'
 				}, {
 					name: 'content-type',
-					content: 'text/html; charset=UTF-8'
+					content: 'text/html; charset=UTF-8',
+					noEscape: true
 				}, {
 					name: 'apple-mobile-web-app-capable',
 					content: 'yes'
