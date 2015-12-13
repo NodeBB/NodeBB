@@ -55,7 +55,7 @@ module.exports = function(SocketTopics) {
 
 		async.waterfall([
 			function (next) {
-				privileges.categories.canMoveAllTopics(data.currentCid, data.cid, data.uid, next);
+				privileges.categories.canMoveAllTopics(data.currentCid, data.cid, socket.uid, next);
 			},
 			function (canMove, next) {
 				if (!canMove) {
