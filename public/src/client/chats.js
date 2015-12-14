@@ -27,6 +27,11 @@ define('forum/chats', ['components', 'string', 'sounds', 'forum/infinitescroll',
 		Chats.scrollToBottom($('.expanded-chat ul'));
 
 		Chats.initialised = true;
+
+		if (ajaxify.data.hasOwnProperty('meta') && ajaxify.data.meta.hasOwnProperty('uid')) {
+			// This is an active chat, focus on the input box
+			components.get('chat/input').focus();
+		}
 	};
 
 	Chats.getRecipientUid = function() {
@@ -93,8 +98,6 @@ define('forum/chats', ['components', 'string', 'sounds', 'forum/infinitescroll',
 			if (prev.length) {
 				Chats.switchChat(parseInt(prev.attr('data-uid'), 10), prev.attr('data-username'));
 			}
-
-			$('[component="chat/input"]').focus();
 		});
 		Mousetrap.bind('ctrl+down', function() {
 			var activeContact = $('.chats-list .bg-primary'),
@@ -103,8 +106,6 @@ define('forum/chats', ['components', 'string', 'sounds', 'forum/infinitescroll',
 			if (next.length) {
 				Chats.switchChat(parseInt(next.attr('data-uid'), 10), next.attr('data-username'));
 			}
-
-			$('[component="chat/input"]').focus();
 		});
 		Mousetrap.bind('up', function(e) {
 			if (e.target === components.get('chat/input').get(0)) {
@@ -195,11 +196,12 @@ define('forum/chats', ['components', 'string', 'sounds', 'forum/infinitescroll',
 		var contactEl = $('.chats-list [data-uid="' + uid + '"]');
 
 		Chats.loadChatSince(uid, $('.chat-content'), 'recent');
-		Chats.addSendHandlers(uid, $('[component="chat/input"]'), $('[data-action="send"]'));
+		Chats.addSendHandlers(uid, components.get('chat/input'), $('[data-action="send"]'));
 		contactEl.addClass('bg-primary').siblings().removeClass('bg-primary');
-		$('[component="chat/title"]').text(username);
-		$('[component="chat/messages"]').attr('data-uid', uid).attr('data-username', username);
-		$('[component="breadcrumb/current"]').text(username);
+		components.get('chat/title').text(username);
+		components.get('chat/messages').attr('data-uid', uid).attr('data-username', username);
+		components.get('breadcrumb/current').text(username);
+		components.get('chat/input').focus();
 
 		if (window.history && window.history.pushState) {
 			var url = 'chats/' + utils.slugify(username);
