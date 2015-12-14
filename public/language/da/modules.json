@@ -15,6 +15,7 @@
     "chat.seven_days": "7 dage",
     "chat.thirty_days": "30 dage",
     "chat.three_months": "3 måneder",
+    "chat.delete_message_confirm": "Are you sure you wish to delete this message?",
     "composer.compose": "Skriv",
     "composer.show_preview": "Vis forhåndsvisning",
     "composer.hide_preview": "Fjern forhåndsvisning",

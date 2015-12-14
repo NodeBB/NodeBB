@@ -78,6 +78,7 @@
     "too-many-messages": "Вы отправили слишком много сообщений, подождите немного.",
     "invalid-chat-message": "Неверное сообщение чата",
     "chat-message-too-long": "Слишком длинное сообщение чата",
+    "cant-edit-chat-message": "You are not allowed to edit this message",
     "reputation-system-disabled": "Система репутации отключена.",
     "downvoting-disabled": "Понижение оценки отключено",
     "not-enough-reputation-to-downvote": "У Вас недостаточно репутации для понижения оценки сообщения",

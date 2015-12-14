@@ -78,6 +78,7 @@
     "too-many-messages": "שלחת יותר מדי הודעות, אנא המתן לזמן מה.",
     "invalid-chat-message": "Invalid chat message",
     "chat-message-too-long": "Chat message is too long",
+    "cant-edit-chat-message": "You are not allowed to edit this message",
     "reputation-system-disabled": "מערכת המוניטין לא פעילה.",
     "downvoting-disabled": "היכולת להצביע נגד לא פעילה",
     "not-enough-reputation-to-downvote": "אין לך מספיק מוניטין כדי להוריד את הדירוג של פוסט זה",

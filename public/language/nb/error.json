@@ -78,6 +78,7 @@
     "too-many-messages": "Du har sendt for mange meldinger, vennligst vent en stund.",
     "invalid-chat-message": "Ugyldig samtalemelding",
     "chat-message-too-long": "Samtalemeldingen er for lang",
+    "cant-edit-chat-message": "You are not allowed to edit this message",
     "reputation-system-disabled": "Ryktesystemet er deaktivert.",
     "downvoting-disabled": "Nedstemming er deaktivert",
     "not-enough-reputation-to-downvote": "Du har ikke nok rykte til å nedstemme det innlegget",

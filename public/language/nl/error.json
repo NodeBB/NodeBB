@@ -78,6 +78,7 @@
     "too-many-messages": "Er zijn in korte tijd teveel berichten verzonden, een moment geduld.",
     "invalid-chat-message": "Ongeldig bericht",
     "chat-message-too-long": "Het chatbericht is te lang",
+    "cant-edit-chat-message": "You are not allowed to edit this message",
     "reputation-system-disabled": "Reputatie systeem is uitgeschakeld.",
     "downvoting-disabled": "Negatief stemmen staat uitgeschakeld.",
     "not-enough-reputation-to-downvote": "Dit gebruikersaccount beschikt over onvoldoende reputatie om een negatieve stem uit te mogen brengen.",

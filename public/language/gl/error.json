@@ -78,6 +78,7 @@
     "too-many-messages": "Estás a enviar moitas mensaxes, por favor, agarda un anaco. ",
     "invalid-chat-message": "Mensaxe inválida",
     "chat-message-too-long": "Mensaxe moi longa",
+    "cant-edit-chat-message": "You are not allowed to edit this message",
     "reputation-system-disabled": "O sistema de reputación está deshabilitado",
     "downvoting-disabled": "Os votos negativos están deshabilitados",
     "not-enough-reputation-to-downvote": "Non tes reputación dabonda para esta acción",

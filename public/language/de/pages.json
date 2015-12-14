@@ -35,7 +35,7 @@
     "account/favourites": "Von %1 favorisierte Beiträge",
     "account/settings": "Benutzer-Einstellungen",
     "account/watched": "Themen angeschaut von %1",
-    "maintenance.text": "%1 befindet sich derzeit in der Wartung. Bitte komm später wieder.",
+    "maintenance.text": "%1 befindet sich derzeit in der Wartung. Bitte komme später wieder.",
     "maintenance.messageIntro": "Zusätzlich hat der Administrator diese Nachricht hinterlassen:",
     "throttled.text": "%1 ist momentan aufgrund von Überlastung nicht verfügbar. Bitte komm später wieder."
 }

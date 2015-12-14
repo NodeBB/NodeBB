@@ -78,6 +78,7 @@
     "too-many-messages": "Túl sok üzenetet küldtél, kérlek várj egy picit.",
     "invalid-chat-message": "Invalid chat message",
     "chat-message-too-long": "Chat message is too long",
+    "cant-edit-chat-message": "You are not allowed to edit this message",
     "reputation-system-disabled": "Hírnév funkció kikapcsolva.",
     "downvoting-disabled": "Leszavazás funkció kikapcsolva",
     "not-enough-reputation-to-downvote": "Nem rendelkezel elég Hírnév ponttal, hogy leszavazhasd ezt a hozzászólást",

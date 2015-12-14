@@ -78,6 +78,7 @@
     "too-many-messages": "Išsiuntėte per daug pranešimų, kurį laiką prašome palaukti.",
     "invalid-chat-message": "Invalid chat message",
     "chat-message-too-long": "Chat message is too long",
+    "cant-edit-chat-message": "You are not allowed to edit this message",
     "reputation-system-disabled": "Reputacijos sistema išjungta.",
     "downvoting-disabled": "Downvoting yra išjungtas",
     "not-enough-reputation-to-downvote": "Jūs neturite pakankamai reputacijos balsuoti prieš šį pranešimą",

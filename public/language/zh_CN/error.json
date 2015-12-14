@@ -78,6 +78,7 @@
     "too-many-messages": "您发送了太多消息，请稍等片刻。",
     "invalid-chat-message": "无效的聊天信息",
     "chat-message-too-long": "聊天信息太长",
+    "cant-edit-chat-message": "You are not allowed to edit this message",
     "reputation-system-disabled": "威望系统已禁用。",
     "downvoting-disabled": "扣分功能已禁用",
     "not-enough-reputation-to-downvote": "您的威望不足以给此帖扣分",

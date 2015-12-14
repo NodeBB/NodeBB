@@ -15,6 +15,7 @@
     "chat.seven_days": "7 Dagar",
     "chat.thirty_days": "30 Dagar",
     "chat.three_months": "3 Månader",
+    "chat.delete_message_confirm": "Are you sure you wish to delete this message?",
     "composer.compose": "Komponera",
     "composer.show_preview": "Visa förhandsgranskning",
     "composer.hide_preview": "Dölj förhandsgranskning",
