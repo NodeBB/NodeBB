@@ -423,7 +423,9 @@ define('forum/chats', ['components', 'string', 'sounds', 'forum/infinitescroll',
 	Chats.parseMessage = function(data, callback) {
 		templates.parse('partials/chat_message' + (Array.isArray(data) ? 's' : ''), {
 			messages: data
-		}, callback);
+		}, function(html) {
+			translator.translate(html, callback);
+		});
 	};
 
 	function loadMoreRecentChats() {
