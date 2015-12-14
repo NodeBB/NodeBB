@@ -118,7 +118,7 @@ define('forum/topic/fork', ['components'], function(components) {
 
 			if (pids.length) {
 				pids.sort(function(a,b) { return a - b; });
-				forkModal.find('#fork-pids').html(pids.toString());
+				forkModal.find('#fork-pids').html(pids.join(', '));
 			} else {
 				showNoPostsSelected();
 			}
