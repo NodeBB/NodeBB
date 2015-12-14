@@ -189,7 +189,7 @@ define('forum/chats', ['components', 'string', 'sounds', 'forum/infinitescroll',
 	};
 
 	Chats.switchChat = function(uid, username) {
-		if (!$('[component="chat/messages"]').length) {
+		if (!$('#content [component="chat/messages"]').length) {
 			return ajaxify.go('chats/' + utils.slugify(username));
 		}
 
