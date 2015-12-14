@@ -263,7 +263,6 @@ define('forum/chats', ['components', 'string', 'sounds', 'forum/infinitescroll',
 
 	Chats.addSocketListeners = function() {
 		socket.on('event:chats.receive', function(data) {
-			console.log(data);
 			if (Chats.isCurrentChat(data.withUid)) {
 				newMessage = data.self === 0;
 				data.message.self = data.self;
