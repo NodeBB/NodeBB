@@ -151,10 +151,10 @@ middleware.isAdmin = function(req, res, next) {
 };
 
 middleware.routeTouchIcon = function(req, res) {
-	if (meta.config['brand:logo'] && validator.isURL(meta.config['brand:logo'])) {
-		return res.redirect(meta.config['brand:logo']);
+	if (meta.config['brand:touchIcon'] && validator.isURL(meta.config['brand:touchIcon'])) {
+		return res.redirect(meta.config['brand:touchIcon']);
 	} else {
-		return res.sendFile(path.join(__dirname, '../../public', meta.config['brand:logo'] || '/logo.png'), {
+		return res.sendFile(path.join(__dirname, '../../public', meta.config['brand:touchIcon'] || '/logo.png'), {
 			maxAge: app.enabled('cache') ? 5184000000 : 0
 		});
 	}
