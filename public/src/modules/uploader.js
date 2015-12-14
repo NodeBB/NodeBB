@@ -2,12 +2,24 @@
 
 /* globals define, templates, translator */
 
-define('uploader', ['csrf'], function(csrf) {
+define('uploader', ['csrf', 'translator'], function(csrf, translator) {
 
 	var module = {};
 
 	module.open = function(route, params, fileSize, callback) {
-		parseModal(function(uploadModal) {
+		console.warn('[uploader] uploader.open() is deprecated, please use uploader.show() instead, and pass parameters as a singe option with callback, e.g. uploader.show({}, callback);');
+		module.show({
+			route: route,
+			params: params,
+			fileSize: fileSize
+		}, callback);
+	};
+
+	module.show = function(data, callback) {
+		parseModal({
+			showHelp: data.hasOwnProperty('showHelp') && data.showHelp !== undefined ? data.showHelp : true,
+			fileSize: data.hasOwnProperty('fileSize') && data.fileSize !== undefined ? parseInt(data.fileSize, 10) : false
+		}, function(uploadModal) {
 			uploadModal = $(uploadModal);
 
 			uploadModal.modal('show');
@@ -16,16 +28,8 @@ define('uploader', ['csrf'], function(csrf) {
 			});
 
 			var uploadForm = uploadModal.find('#uploadForm');
-			uploadForm.attr('action', route);
-			uploadForm.find('#params').val(JSON.stringify(params));
-
-			if (fileSize) {
-				uploadForm.find('#file-size-block')
-					.translateText('([[uploads:maximum-file-size, ' + fileSize + ']])')
-					.removeClass('hide');
-			} else {
-				uploadForm.find('#file-size-block').addClass('hide');
-			}
+			uploadForm.attr('action', data.route);
+			uploadForm.find('#params').val(JSON.stringify(data.params));
 
 			uploadModal.find('#pictureUploadSubmitBtn').off('click').on('click', function() {
 				uploadForm.submit();
@@ -84,8 +88,8 @@ define('uploader', ['csrf'], function(csrf) {
 		});
 	};
 
-	function parseModal(callback) {
-		templates.parse('partials/modals/upload_picture_modal', {}, function(html) {
+	function parseModal(tplVals, callback) {
+		templates.parse('partials/modals/upload_picture_modal', tplVals, function(html) {
 			translator.translate(html, callback);
 		});
 	}

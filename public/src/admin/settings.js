@@ -110,7 +110,12 @@ define('admin/settings', ['uploader', 'sounds'], function(uploader, sounds) {
 		$('#content input[data-action="upload"]').each(function() {
 			var uploadBtn = $(this);
 			uploadBtn.on('click', function() {
-				uploader.open(uploadBtn.attr('data-route'), {}, 0, function(image) {
+				uploader.show({
+					route: uploadBtn.attr('data-route'),
+					params: {},
+					fileSize: 0,
+					showHelp: uploadBtn.attr('data-help') ? uploadBtn.attr('data-help') === 1 : undefined
+				}, function(image) {
 					$('#' + uploadBtn.attr('data-target')).val(image);
 				});
 			});
