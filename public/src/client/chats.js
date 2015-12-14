@@ -197,7 +197,12 @@ define('forum/chats', ['components', 'string', 'sounds', 'forum/infinitescroll',
 
 		Chats.loadChatSince(uid, $('.chat-content'), 'recent');
 		Chats.addSendHandlers(uid, components.get('chat/input'), $('[data-action="send"]'));
-		contactEl.addClass('bg-primary').siblings().removeClass('bg-primary');
+
+		contactEl
+			.removeClass('unread')
+			.addClass('bg-primary')
+			.siblings().removeClass('bg-primary');
+
 		components.get('chat/title').text(username);
 		components.get('chat/messages').attr('data-uid', uid).attr('data-username', username);
 		components.get('breadcrumb/current').text(username);

@@ -27,6 +27,9 @@ SocketModules.chats.get = function(socket, data, callback) {
 		since: data.since,
 		isNew: false
 	}, callback);
+
+	// Mark chat as read
+	Messaging.markRead(socket.uid, data.touid);
 };
 
 SocketModules.chats.getRaw = function(socket, data, callback) {
