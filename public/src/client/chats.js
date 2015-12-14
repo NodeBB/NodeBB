@@ -263,6 +263,7 @@ define('forum/chats', ['components', 'string', 'sounds', 'forum/infinitescroll',
 
 	Chats.addSocketListeners = function() {
 		socket.on('event:chats.receive', function(data) {
+			console.log(data);
 			if (Chats.isCurrentChat(data.withUid)) {
 				newMessage = data.self === 0;
 				data.message.self = data.self;
@@ -270,18 +271,22 @@ define('forum/chats', ['components', 'string', 'sounds', 'forum/infinitescroll',
 				Chats.appendChatMessage($('.expanded-chat .chat-content'), data.message);
 			} else {
 				var contactEl = $('[component="chat/recent"] li[data-uid="' + data.withUid + '"]'),
-					userKey = data.withUid === data.message.fromuid ? 'fromUser' : 'toUser';
+					userKey = parseInt(data.withUid, 10) === parseInt(data.message.fromuid, 10) ? 'fromUser' : 'toUser';
 
 				// Spawn a new contact if required
-				templates.parse('partials/chat_contact', {
-					uid: data.withUid,
-					username: data.message[userKey].username,
-					status: data.message[userKey].status,
-					picture: data.message[userKey].picture,
-					teaser: {
-						content: data.message.cleanedContent,
-						timestampISO: new Date(Date.now()).toISOString()
-					}
+				templates.parse('partials/chat_contacts', {
+					contacts: [{
+						uid: data.message[userKey].uid,
+						username: data.message[userKey].username,
+						status: data.message[userKey].status,
+						picture: data.message[userKey].picture,
+						'icon:text': data.message[userKey]['icon:text'],
+						'icon:bgColor': data.message[userKey]['icon:bgColor'],
+						teaser: {
+							content: data.message.cleanedContent,
+							timestampISO: new Date(Date.now()).toISOString()
+						}
+					}]
 				}, function(html) {
 					translator.translate(html, function(translatedHTML) {
 						if (contactEl.length) {
