@@ -113,8 +113,6 @@ define('admin/settings', ['uploader', 'sounds'], function(uploader, sounds) {
 				uploader.open(uploadBtn.attr('data-route'), {}, 0, function(image) {
 					$('#' + uploadBtn.attr('data-target')).val(image);
 				});
-
-				uploader.hideAlerts();
 			});
 		});
 	}

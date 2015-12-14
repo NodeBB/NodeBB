@@ -21,7 +21,7 @@ define('uploader', ['csrf'], function(csrf) {
 
 			if (fileSize) {
 				uploadForm.find('#file-size-block')
-					.translateText('[[uploads:maximum-file-size, ' + fileSize + ']]')
+					.translateText('([[uploads:maximum-file-size, ' + fileSize + ']])')
 					.removeClass('hide');
 			} else {
 				uploadForm.find('#file-size-block').addClass('hide');
@@ -102,7 +102,7 @@ define('uploader', ['csrf'], function(csrf) {
 	}
 
 	module.hideAlerts = function(modal) {
-		modal.find('#alert-status, #alert-success, #alert-error, #upload-progress-box').addClass('hide');
+		$(modal).find('#alert-status, #alert-success, #alert-error, #upload-progress-box').addClass('hide');
 	};
 
 	return module;
