@@ -3,8 +3,13 @@
 var async = require('async');
 
 var db = require('../database');
+var user = require('../user');
 
 module.exports = function(Messaging) {
+
+	Messaging.isUserInRoom = function(uid, roomId, callback) {
+		db.isSortedSetMember('chat:room:' + roomId + ':uids', uid, callback);
+	};
 
 	Messaging.roomExists = function(roomId, callback) {
 		db.exists('chat:room:' + roomId + ':uids', callback);
@@ -42,6 +47,17 @@ module.exports = function(Messaging) {
 
 	Messaging.getUidsInRoom = function(roomId, start, stop, callback) {
 		db.getSortedSetRange('chat:room:' + roomId + ':uids', start, stop, callback);
+	};
+
+	Messaging.getUsersInRoom = function(roomId, start, stop, callback) {
+		async.waterfall([
+			function (next) {
+				Messaging.getUidsInRoom(roomId, start, stop, next);
+			},
+			function (uids, next) {
+				user.getUsersFields(uids, ['username', 'uid', 'picture', 'status'], next);
+			}
+		], callback);
 	};
 
 };

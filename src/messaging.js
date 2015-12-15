@@ -260,7 +260,7 @@ var async = require('async'),
 							if (err) {
 								return next(err);
 							}
-							uids = uids.filter(function(value, index, array) {
+							uids = uids.filter(function(value) {
 								return value && parseInt(value, 10) !== parseInt(uid, 10);
 							});
 							user.getUsersFields(uids, ['uid', 'username', 'picture', 'status', 'lastonline'] , next);
@@ -348,20 +348,20 @@ var async = require('async'),
 		}, 1000*60);	// wait 60s before sending
 	};
 
-	Messaging.canMessage = function(fromUid, toUid, callback) {
-		if (parseInt(meta.config.disableChat) === 1 || !fromUid || toUid === fromUid) {
+	Messaging.canMessage = function(uid, roomId, callback) {
+		if (parseInt(meta.config.disableChat) === 1 || !uid) {
 			return callback(null, false);
 		}
 
 		async.waterfall([
 			function (next) {
-				user.exists(toUid, next);
+				Messaging.roomExists(roomId, next);
 			},
-			function (exists, next) {
-				if (!exists) {
+			function (roomExists, next) {
+				if (!roomExists) {
 					return callback(null, false);
 				}
-				user.getUserFields(fromUid, ['banned', 'email:confirmed'], next);
+				user.getUserFields(uid, ['banned', 'email:confirmed'], next);
 			},
 			function (userData, next) {
 				if (parseInt(userData.banned, 10) === 1) {
@@ -372,20 +372,7 @@ var async = require('async'),
 					return callback(null, false);
 				}
 
-				user.getSettings(toUid, next);
-			},
-			function(settings, next) {
-				if (!settings.restrictChat) {
-					return callback(null, true);
-				}
-
-				user.isAdministrator(fromUid, next);
-			},
-			function(isAdmin, next) {
-				if (isAdmin) {
-					return callback(null, true);
-				}
-				user.isFollowing(toUid, fromUid, next);
+				next(null, true);
 			}
 		], callback);
 	};
