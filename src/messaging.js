@@ -16,6 +16,13 @@ var db = require('./database'),
 	sockets = require('./socket.io');
 
 (function(Messaging) {
+
+	require('./create')(Messaging);
+	require('./delete')(Messaging);
+	require('./edit')(Messaging);
+	require('./rooms')(Messaging);
+	require('./unread')(Messaging);
+
 	Messaging.notifyQueue = {};	// Only used to notify a user of a new chat message, see Messaging.notifyUser
 
 	var terms = {
@@ -28,140 +35,6 @@ var db = require('./database'),
 	function sortUids(fromuid, touid) {
 		return [fromuid, touid].sort();
 	}
-
-	Messaging.addMessage = function(fromuid, touid, content, timestamp, callback) {
-		if (typeof timestamp === 'function') {
-			callback = timestamp;
-			timestamp = Date.now();
-		} else {
-			timestamp = timestamp || Date.now();
-		}
-
-		if (!content) {
-			return callback(new Error('[[error:invalid-chat-message]]'));
-		}
-
-		if (content.length > (meta.config.maximumChatMessageLength || 1000)) {
-			return callback(new Error('[[error:chat-message-too-long]]'));
-		}
-
-		var uids = sortUids(fromuid, touid);
-
-		db.incrObjectField('global', 'nextMid', function(err, mid) {
-			if (err) {
-				return callback(err);
-			}
-			var message = {
-				content: content,
-				timestamp: timestamp,
-				fromuid: fromuid,
-				touid: touid
-			};
-
-			async.waterfall([
-				function(next) {
-					plugins.fireHook('filter:messaging.save', message, next);
-				},
-				function(message, next) {
-					db.setObject('message:' + mid, message, next);
-				}
-			], function(err) {
-				if (err) {
-					return callback(err);
-				}
-
-				async.parallel([
-					async.apply(db.sortedSetAdd, 'messages:uid:' + uids[0] + ':to:' + uids[1], timestamp, mid),
-					async.apply(Messaging.updateChatTime, fromuid, touid),
-					async.apply(Messaging.updateChatTime, touid, fromuid),
-					async.apply(Messaging.markRead, fromuid, touid),
-					async.apply(Messaging.markUnread, touid, fromuid),
-				], function(err) {
-					if (err) {
-						return callback(err);
-					}
-
-					async.waterfall([
-						function(next) {
-							getMessages([mid], fromuid, touid, true, next);
-						},
-						function(messages, next) {
-							Messaging.isNewSet(fromuid, touid, mid, function(err, isNewSet) {
-								if (err) {
-									return next(err);
-								}
-
-								if (!messages || !messages[0]) {
-									return next(null, null);
-								}
-
-								messages[0].newSet = isNewSet;
-								messages[0].mid = mid;
-								next(null, messages[0]);
-							});
-						}
-					], callback);
-				});
-			});
-		});
-	};
-
-	Messaging.editMessage = function(mid, content, callback) {
-		async.series([
-			function(next) {
-				// Verify that the message actually changed
-				Messaging.getMessageField(mid, 'content', function(err, raw) {
-					if (raw === content) {
-						// No dice.
-						return callback();
-					}
-
-					next();
-				});
-			},
-			async.apply(Messaging.setMessageFields, mid, {
-				content: content,
-				edited: Date.now()
-			}),
-			function(next) {
-				Messaging.getMessageFields(mid, ['fromuid', 'touid'], function(err, data) {
-					getMessages([mid], data.fromuid, data.touid, true, function(err, messages) {
-						sockets.in('uid_' + data.fromuid).emit('event:chats.edit', {
-							messages: messages
-						});
-						sockets.in('uid_' + data.touid).emit('event:chats.edit', {
-							messages: messages
-						});
-						next();
-					});
-				});
-			}
-		], callback);
-	};
-
-	Messaging.deleteMessage = function(mid, callback) {
-		var uids = [];
-		async.series([
-			function(next) {
-				db.getObject('message:' + mid, function(err, messageObj) {
-					messageObj.fromuid = parseInt(messageObj.fromuid, 10);
-					messageObj.touid = parseInt(messageObj.touid, 10);
-					uids.push(messageObj.fromuid, messageObj.touid);
-					uids.sort(function(a, b) {
-						return a > b ? 1 : -1;
-					});
-					next();
-				});
-			},
-			function(next) {
-				next();
-			},
-			function(next) {
-				db.sortedSetRemove('messages:uid:' + uids[0] + ':to:' + uids[1], mid, next);
-			},
-			async.apply(db.delete, 'message:' + mid)
-		], callback);
-	};
 
 	Messaging.getMessageField = function(mid, field, callback) {
 		Messaging.getMessageFields(mid, [field], function(err, fields) {
@@ -208,7 +81,7 @@ var db = require('./database'),
 
 			mids.reverse();
 
-			getMessages(mids, fromuid, touid, isNew, callback);
+			Messaging.getMessagesData(mids, fromuid, touid, isNew, callback);
 		});
 
 		if (markRead) {
@@ -222,7 +95,7 @@ var db = require('./database'),
 		}
 	};
 
-	function getMessages(mids, fromuid, touid, isNew, callback) {
+	Messaging.getMessagesData = function(mids, fromuid, touid, isNew, callback) {
 		user.getUsersFields([fromuid, touid], ['uid', 'username', 'userslug', 'picture', 'status'], function(err, userData) {
 			if(err) {
 				return callback(err);
@@ -279,7 +152,7 @@ var db = require('./database'),
 						next(undefined, messages);
 					} else {
 						// For single messages, we don't know the context, so look up the previous message and compare
-						var uids = [fromuid, touid].sort(function(a, b) { return a > b ? 1 : -1 });
+						var uids = [fromuid, touid].sort(function(a, b) { return a > b ? 1 : -1; });
 						var key = 'messages:uid:' + uids[0] + ':to:' + uids[1];
 						async.waterfall([
 							async.apply(db.sortedSetRank, key, messages[0].messageId),
@@ -314,7 +187,7 @@ var db = require('./database'),
 				}
 			], callback);
 		});
-	}
+	};
 
 	Messaging.parse = function (message, fromuid, myuid, toUserData, myUserData, isNew, callback) {
 		plugins.fireHook('filter:parse.raw', message, function(err, parsed) {
@@ -369,10 +242,6 @@ var db = require('./database'),
 		], callback);
 	};
 
-	Messaging.updateChatTime = function(uid, toUid, callback) {
-		callback = callback || function() {};
-		db.sortedSetAdd('uid:' + uid + ':chats', Date.now(), toUid, callback);
-	};
 
 	Messaging.getRecentChats = function(uid, start, stop, callback) {
 		db.getSortedSetRevRange('uid:' + uid + ':chats', start, stop, function(err, uids) {
@@ -424,36 +293,7 @@ var db = require('./database'),
 		});
 	};
 
-	Messaging.getUnreadCount = function(uid, callback) {
-		db.sortedSetCard('uid:' + uid + ':chats:unread', callback);
-	};
 
-	Messaging.pushUnreadCount = function(uid) {
-		Messaging.getUnreadCount(uid, function(err, unreadCount) {
-			if (err) {
-				return;
-			}
-			sockets.in('uid_' + uid).emit('event:unread.updateChatCount', unreadCount);
-		});
-	};
-
-	Messaging.markRead = function(uid, toUid, callback) {
-		db.sortedSetRemove('uid:' + uid + ':chats:unread', toUid, callback);
-	};
-
-	Messaging.markUnread = function(uid, toUid, callback) {
-		async.waterfall([
-			function (next) {
-				user.exists(toUid, next);
-			},
-			function (exists, next) {
-				if (!exists) {
-					return next(new Error('[[error:no-user]]'));
-				}
-				db.sortedSetAdd('uid:' + uid + ':chats:unread', Date.now(), toUid, next);
-			}
-		], callback);
-	};
 
 	Messaging.notifyUser = function(fromuid, touid, messageObj) {
 		// Immediate notifications
@@ -534,38 +374,6 @@ var db = require('./database'),
 		], callback);
 	};
 
-	Messaging.canEdit = function(messageId, uid, callback) {
-		if (parseInt(meta.config.disableChat) === 1) {
-			return callback(null, false);
-		}
-
-		async.waterfall([
-			function (next) {
-				user.getUserFields(uid, ['banned', 'email:confirmed'], next);
-			},
-			function (userData, next) {
-				if (parseInt(userData.banned, 10) === 1) {
-					return callback(null, false);
-				}
-
-				if (parseInt(meta.config.requireEmailConfirmation, 10) === 1 && parseInt(userData['email:confirmed'], 10) !== 1) {
-					return callback(null, false);
-				}
-
-				Messaging.getMessageField(messageId, 'fromuid', next);
-			},
-			function(fromUid, next) {
-				if (parseInt(fromUid, 10) === parseInt(uid, 10)) {
-					return callback(null, true);
-				}
-
-				user.isAdministrator(uid, next);
-			},
-			function(isAdmin, next) {
-				next(null, isAdmin);
-			}
-		], callback);
-	};
 
 	function sendNotifications(fromuid, touid, messageObj, callback) {
 		user.isOnline(touid, function(err, isOnline) {

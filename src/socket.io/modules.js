@@ -61,7 +61,7 @@ SocketModules.chats.send = function(socket, data, callback) {
 			return callback(err || new Error('[[error:chat-restricted]]'));
 		}
 
-		Messaging.addMessage(socket.uid, touid, data.message, function(err, message) {
+		Messaging.addMessage(socket.uid, touid, data.message, now, function(err, message) {
 			if (err) {
 				return callback(err);
 			}
@@ -88,13 +88,13 @@ SocketModules.chats.edit = function(socket, data, callback) {
 };
 
 SocketModules.chats.delete = function(socket, data, callback) {
-	if (!data) {
+	if (!data || !data.roomId || !data.messageId) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
 
 	Messaging.canEdit(data.messageId, socket.uid, function(err, allowed) {
 		if (allowed) {
-			Messaging.deleteMessage(data.messageId, callback);
+			Messaging.deleteMessage(data.messageId, data.roomId, callback);
 		}
 	});
 }
