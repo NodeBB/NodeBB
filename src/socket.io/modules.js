@@ -73,16 +73,16 @@ SocketModules.chats.send = function(socket, data, callback) {
 };
 
 SocketModules.chats.edit = function(socket, data, callback) {
-	if (!data) {
+	if (!data || !data.roomId) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
 
 	Messaging.canEdit(data.mid, socket.uid, function(err, allowed) {
-		if (allowed) {
-			Messaging.editMessage(data.mid, data.message, callback);
-		} else {
-			return callback(new Error('[[error:cant-edit-chat-message]]'));
+		if (err || !allowed) {
+			return callback(err || new Error('[[error:cant-edit-chat-message]]'));
 		}
+
+		Messaging.editMessage(socket.uid, data.mid, data.roomId, data.message, callback);
 	});
 };
 
