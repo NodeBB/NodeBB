@@ -1,5 +1,5 @@
 "use strict";
-/* globals app, config, define, socket, templates, utils, ajaxify */
+/* globals app, define, socket, templates, utils, ajaxify */
 
 define('chat', ['components', 'taskbar', 'string', 'sounds', 'forum/chats', 'translator'], function(components, taskbar, S, sounds, Chats, translator) {
 
@@ -90,15 +90,16 @@ define('chat', ['components', 'taskbar', 'string', 'sounds', 'forum/chats', 'tra
 	module.loadChatsDropdown = function(chatsListEl) {
 		var dropdownEl;
 
-		socket.emit('modules.chats.getRecentChats', {after: 0}, function(err, chats) {
+		socket.emit('modules.chats.getRecentChats', {after: 0}, function(err, data) {
 			if (err) {
 				return app.alertError(err.message);
 			}
-			chats = chats.users;
+
+			var rooms = data.rooms;
 
 			chatsListEl.empty();
 
-			if (!chats.length) {
+			if (!rooms.length) {
 				translator.translate('[[modules:chat.no_active]]', function(str) {
 					$('<li />')
 						.addClass('no_active')
@@ -108,17 +109,23 @@ define('chat', ['components', 'taskbar', 'string', 'sounds', 'forum/chats', 'tra
 				return;
 			}
 
-			chats.forEach(function(userObj) {
-				dropdownEl = $('<li class="' + (userObj.unread ? 'unread' : '') + '"/>')
-					.attr('data-uid', userObj.uid)
-					.html('<a data-ajaxify="false">'+
+			rooms.forEach(function(roomObj) {
+				function createUserImage(userObj) {
+					return '<a data-ajaxify="false">' +
 						(userObj.picture ?
 							'<img src="' +	userObj.picture + '" title="' +	userObj.username +'" />' :
 							'<div class="user-icon" style="background-color: ' + userObj['icon:bgColor'] + '">' + userObj['icon:text'] + '</div>') +
 						'<i class="fa fa-circle status ' + userObj.status + '"></i> ' +
-						userObj.username + '</a>')
+						userObj.username + '</a>';
+				}
+
+				dropdownEl = $('<li class="' + (roomObj.unread ? 'unread' : '') + '"/>')
+					.attr('data-roomId', roomObj.roomId)
 					.appendTo(chatsListEl);
 
+				roomObj.users.forEach(function(userObj) {
+					dropdownEl.append(createUserImage(userObj));
+				});
 
 				dropdownEl.click(function() {
 					if (!ajaxify.currentPage.match(/^chats\//)) {
@@ -229,7 +236,7 @@ define('chat', ['components', 'taskbar', 'string', 'sounds', 'forum/chats', 'tra
 				chatModal.find('.modal-header').on('dblclick', gotoChats);
 				chatModal.find('button[data-action="maximize"]').on('click', gotoChats);
 
-				chatModal.on('click', function(e) {
+				chatModal.on('click', function() {
 					module.bringModalToTop(chatModal);
 
 					if (!dragged) {

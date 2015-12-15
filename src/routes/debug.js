@@ -57,7 +57,12 @@ module.exports = function(app, middleware, controllers) {
 	});
 
 	router.get('/test', function(req, res) {
-		res.redirect(404);
+		//res.redirect(404);
+		var messaging = require('../messaging');
+
+		messaging.getRecentChats(1, 0, 9, function(err, data) {
+			res.json(data);
+		})
 	});
 
 	app.use(nconf.get('relative_path') + '/debug', router);

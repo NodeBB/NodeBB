@@ -1,27 +1,28 @@
 'use strict';
 
-var db = require('./database'),
-	async = require('async'),
-	nconf = require('nconf'),
+
+var async = require('async'),
 	winston = require('winston'),
 	S = require('string'),
+	nconf = require('nconf'),
 
+	db = require('./database'),
 	user = require('./user'),
 	plugins = require('./plugins'),
 	meta = require('./meta'),
+	emailer = require('./emailer'),
 	utils = require('../public/src/utils'),
 	notifications = require('./notifications'),
 	userNotifications = require('./user/notifications'),
-	emailer = require('./emailer'),
 	sockets = require('./socket.io');
 
 (function(Messaging) {
 
-	require('./create')(Messaging);
-	require('./delete')(Messaging);
-	require('./edit')(Messaging);
-	require('./rooms')(Messaging);
-	require('./unread')(Messaging);
+	require('./messaging/create')(Messaging);
+	require('./messaging/delete')(Messaging);
+	require('./messaging/edit')(Messaging);
+	require('./messaging/rooms')(Messaging);
+	require('./messaging/unread')(Messaging);
 
 	Messaging.notifyQueue = {};	// Only used to notify a user of a new chat message, see Messaging.notifyUser
 
@@ -32,13 +33,9 @@ var db = require('./database'),
 		threemonths: 7776000000
 	};
 
-	function sortUids(fromuid, touid) {
-		return [fromuid, touid].sort();
-	}
-
 	Messaging.getMessageField = function(mid, field, callback) {
 		Messaging.getMessageFields(mid, [field], function(err, fields) {
-			callback(err, fields[field]);
+			callback(err, fields ? fields[field] : null);
 		});
 	};
 
@@ -55,22 +52,21 @@ var db = require('./database'),
 	};
 
 	Messaging.getMessages = function(params, callback) {
-		var fromuid = params.fromuid,
-			touid = params.touid,
+		var uid = params.uid,
+			roomId = params.roomId,
 			since = params.since,
 			isNew = params.isNew,
 			count = params.count || parseInt(meta.config.chatMessageInboxSize, 10) || 250,
 			markRead = params.markRead || true;
 
-		var uids = sortUids(fromuid, touid),
-			min = params.count ? 0 : Date.now() - (terms[since] || terms.day);
+		var min = params.count ? 0 : Date.now() - (terms[since] || terms.day);
 
 		if (since === 'recent') {
 			count = 49;
 			min = 0;
 		}
 
-		db.getSortedSetRevRangeByScore('messages:uid:' + uids[0] + ':to:' + uids[1], 0, count, '+inf', min, function(err, mids) {
+		db.getSortedSetRevRangeByScore('uid:' + uid + ':chat:room:' + roomId + ':mids', 0, count, '+inf', min, function(err, mids) {
 			if (err) {
 				return callback(err);
 			}
@@ -81,115 +77,122 @@ var db = require('./database'),
 
 			mids.reverse();
 
-			Messaging.getMessagesData(mids, fromuid, touid, isNew, callback);
+			Messaging.getMessagesData(mids, uid, roomId, isNew, callback);
 		});
 
 		if (markRead) {
-			notifications.markRead('chat_' + touid + '_' + fromuid, fromuid, function(err) {
+			notifications.markRead('chat_' + roomId + '_' + uid, uid, function(err) {
 				if (err) {
 					winston.error('[messaging] Could not mark notifications related to this chat as read: ' + err.message);
 				}
 
-				userNotifications.pushCount(fromuid);
+				userNotifications.pushCount(uid);
 			});
 		}
 	};
 
-	Messaging.getMessagesData = function(mids, fromuid, touid, isNew, callback) {
-		user.getUsersFields([fromuid, touid], ['uid', 'username', 'userslug', 'picture', 'status'], function(err, userData) {
-			if(err) {
-				return callback(err);
-			}
+	Messaging.getMessagesData = function(mids, uid, roomId, isNew, callback) {
 
-			var keys = mids.map(function(mid) {
-				return 'message:' + mid;
-			});
+		var keys = mids.map(function(mid) {
+			return 'message:' + mid;
+		});
 
-			async.waterfall([
-				async.apply(db.getObjects, keys),
-				function(messages, next) {
-					messages = messages.map(function(msg, idx) {
-						if (msg) {
-							msg.messageId = parseInt(mids[idx], 10);
+		var messages;
+
+		async.waterfall([
+			function (next) {
+				db.getObjects(keys, next);
+			},
+			function (_messages, next) {
+				messages = _messages.map(function(msg, idx) {
+					if (msg) {
+						msg.messageId = parseInt(mids[idx], 10);
+					}
+					return msg;
+				}).filter(Boolean);
+
+				var uids = messages.map(function(msg) {
+					return msg && msg.fromuid;
+				});
+
+				user.getUsersFields(uids, ['uid', 'username', 'userslug', 'picture', 'status'], next);
+			},
+			function (users, next) {
+				messages.forEach(function(message, index) {
+					message.fromUser = users[index];
+					var self = parseInt(message.fromuid, 10) === parseInt(uid, 10);
+					message.self = self ? 1 : 0;
+					message.timestampISO = utils.toISOString(message.timestamp);
+					message.newSet = false;
+					if (message.hasOwnProperty('edited')) {
+						message.editedISO = new Date(parseInt(message.edited, 10)).toISOString();
+					}
+				});
+
+				async.map(messages, function(message, next) {
+					Messaging.parse(message.content, message.fromuid, uid, roomId, isNew, function(result) {
+						message.content = result;
+						message.cleanedContent = S(result).stripTags().decodeHTMLEntities().s;
+						next(null, message);
+					});
+				}, next);
+			},
+			function(messages, next) {
+				if (messages.length > 1) {
+					// Add a spacer in between messages with time gaps between them
+					messages = messages.map(function(message, index) {
+						// Compare timestamps with the previous message, and check if a spacer needs to be added
+						if (index > 0 && parseInt(message.timestamp, 10) > parseInt(messages[index-1].timestamp, 10) + (1000*60*5)) {
+							// If it's been 5 minutes, this is a new set of messages
+							message.newSet = true;
+						} else if (index > 0 && message.fromuid !== messages[index-1].fromuid) {
+							// If the previous message was from the other person, this is also a new set
+							message.newSet = true;
 						}
-						return msg;
-					}).filter(Boolean);
-					async.map(messages, function(message, next) {
-						var self = parseInt(message.fromuid, 10) === parseInt(fromuid, 10);
-						message.fromUser = self ? userData[0] : userData[1];
-						message.toUser = self ? userData[1] : userData[0];
-						message.timestampISO = utils.toISOString(message.timestamp);
-						message.self = self ? 1 : 0;
-						message.newSet = false;
 
-						if (message.hasOwnProperty('edited')) {
-							message.editedISO = new Date(parseInt(message.edited, 10)).toISOString();
-						}
+						return message;
+					});
 
-						Messaging.parse(message.content, message.fromuid, fromuid, userData[1], userData[0], isNew, function(result) {
-							message.content = result;
-							message.cleanedContent = S(result).stripTags().decodeHTMLEntities().s;
-							next(null, message);
-						});
-					}, next);
-				},
-				function(messages, next) {
-					if (messages.length > 1) {
-						// Add a spacer in between messages with time gaps between them
-						messages = messages.map(function(message, index) {
-							// Compare timestamps with the previous message, and check if a spacer needs to be added
-							if (index > 0 && parseInt(message.timestamp, 10) > parseInt(messages[index-1].timestamp, 10) + (1000*60*5)) {
-								// If it's been 5 minutes, this is a new set of messages
-								message.newSet = true;
-							} else if (index > 0 && message.fromuid !== messages[index-1].fromuid) {
-								// If the previous message was from the other person, this is also a new set
-								message.newSet = true;
+					next(undefined, messages);
+				} else {
+					// For single messages, we don't know the context, so look up the previous message and compare
+					var key = 'uid:' + uid + ':chat:room:' + roomId + ':mids';
+					async.waterfall([
+						async.apply(db.sortedSetRank, key, messages[0].messageId),
+						function(index, next) {
+							// Continue only if this isn't the first message in sorted set
+							if (index > 0) {
+								db.getSortedSetRange(key, index-1, index-1, next);
+							} else {
+								messages[0].newSet = true;
+								return next(undefined, messages);
 							}
+						},
+						function(mid, next) {
+							Messaging.getMessageFields(mid, ['fromuid', 'timestamp'], next);
+						}
+					], function(err, fields) {
+						if (err) {
+							return next(err);
+						}
 
-							return message;
-						});
+						if (
+							(parseInt(messages[0].timestamp, 10) > parseInt(fields.timestamp, 10) + (1000*60*5)) ||
+							(parseInt(messages[0].fromuid, 10) !== parseInt(fields.fromuid, 10))
+						) {
+							// If it's been 5 minutes, this is a new set of messages
+							messages[0].newSet = true;
+						}
 
 						next(undefined, messages);
-					} else {
-						// For single messages, we don't know the context, so look up the previous message and compare
-						var uids = [fromuid, touid].sort(function(a, b) { return a > b ? 1 : -1; });
-						var key = 'messages:uid:' + uids[0] + ':to:' + uids[1];
-						async.waterfall([
-							async.apply(db.sortedSetRank, key, messages[0].messageId),
-							function(index, next) {
-								// Continue only if this isn't the first message in sorted set
-								if (index > 0) {
-									db.getSortedSetRange(key, index-1, index-1, next);
-								} else {
-									messages[0].newSet = true;
-									return next(undefined, messages);
-								}
-							},
-							function(mid, next) {
-								Messaging.getMessageFields(mid, ['fromuid', 'timestamp'], next);
-							}
-						], function(err, fields) {
-							if (err) {
-								return next(err);
-							}
-
-							if (
-								(parseInt(messages[0].timestamp, 10) > parseInt(fields.timestamp, 10) + (1000*60*5)) ||
-								(parseInt(messages[0].fromuid, 10) !== parseInt(fields.fromuid, 10))
-							) {
-								// If it's been 5 minutes, this is a new set of messages
-								messages[0].newSet = true;
-							}
-
-							next(undefined, messages);
-						});
-					}
+					});
 				}
-			], callback);
-		});
+			}
+		], callback);
+
 	};
 
-	Messaging.parse = function (message, fromuid, myuid, toUserData, myUserData, isNew, callback) {
+	Messaging.parse = function (message, fromuid, uid, roomId, isNew, callback) {
 		plugins.fireHook('filter:parse.raw', message, function(err, parsed) {
 			if (err) {
 				return callback(message);
@@ -199,9 +202,8 @@ var db = require('./database'),
 				message: message,
 				parsed: parsed,
 				fromuid: fromuid,
-				myuid: myuid,
-				toUserData: toUserData,
-				myUserData: myUserData,
+				uid: uid,
+				roomId: roomId,
 				isNew: isNew,
 				parsedMessage: parsed
 			};
@@ -212,15 +214,14 @@ var db = require('./database'),
 		});
 	};
 
-	Messaging.isNewSet = function(fromuid, touid, mid, callback) {
-		var uids = sortUids(fromuid, touid),
-			setKey = 'messages:uid:' + uids[0] + ':to:' + uids[1];
+	Messaging.isNewSet = function(uid, roomId, mid, callback) {
+		var setKey = 'uid:' + uid + ':chat:room:' + roomId + ':mids';
 
 		async.waterfall([
 			async.apply(db.sortedSetRank, setKey, mid),
 			function(index, next) {
 				if (index > 0) {
-					db.getSortedSetRange(setKey, index-1, index, next);
+					db.getSortedSetRange(setKey, index - 1, index, next);
 				} else {
 					next(null, true);
 				}
@@ -244,23 +245,33 @@ var db = require('./database'),
 
 
 	Messaging.getRecentChats = function(uid, start, stop, callback) {
-		db.getSortedSetRevRange('uid:' + uid + ':chats', start, stop, function(err, uids) {
+		db.getSortedSetRevRange('uid:' + uid + ':chat:rooms', start, stop, function(err, roomIds) {
 			if (err) {
 				return callback(err);
 			}
 
 			async.parallel({
 				unread: function(next) {
-					db.isSortedSetMembers('uid:' + uid + ':chats:unread', uids, next);
+					db.isSortedSetMembers('uid:' + uid + ':chat:rooms:unread', roomIds, next);
 				},
 				users: function(next) {
-					user.getUsersFields(uids, ['uid', 'username', 'picture', 'status', 'lastonline'] , next);
+					async.map(roomIds, function(roomId, next) {
+						db.getSortedSetRevRange('chat:room:' + roomId + ':uids', 0, 3, function(err, uids) {
+							if (err) {
+								return next(err);
+							}
+							uids = uids.filter(function(value, index, array) {
+								return value && parseInt(value, 10) !== parseInt(uid, 10);
+							});
+							user.getUsersFields(uids, ['uid', 'username', 'picture', 'status', 'lastonline'] , next);
+						});
+					}, next);
 				},
 				teasers: function(next) {
-					async.map(uids, function(fromuid, next) {
+					async.map(roomIds, function(roomId, next) {
 						Messaging.getMessages({
-							fromuid: fromuid,
-							touid: uid,
+							uid: uid,
+							roomId: roomId,
 							isNew: false,
 							count: 1,
 							markRead: false
@@ -275,20 +286,25 @@ var db = require('./database'),
 				if (err) {
 					return callback(err);
 				}
-
-				results.users.forEach(function(userData, index) {
-					if (userData && parseInt(userData.uid, 10)) {
-						userData.unread = results.unread[index];
-						userData.status = user.getStatus(userData);
-						userData.teaser = results.teasers[index];
-					}
+				var rooms = results.users.map(function(users, index) {
+					var data = {
+						users: users,
+						unread: results.unread[index],
+						roomId: roomIds[index],
+						teaser: results.teasers[index]
+					};
+					data.users.forEach(function(userData) {
+						if (userData && parseInt(userData.uid, 10)) {
+							userData.status = user.getStatus(userData);
+						}
+					});
+					data.users = data.users.filter(function(user) {
+						return user && parseInt(user.uid, 10);
+					});
+					return data;
 				});
 
-				results.users = results.users.filter(function(user) {
-					return user && parseInt(user.uid, 10);
-				});
-
-				callback(null, {users: results.users, nextStart: stop + 1});
+				callback(null, {rooms: rooms, nextStart: stop + 1});
 			});
 		});
 	};

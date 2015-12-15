@@ -22,14 +22,13 @@ SocketModules.chats.get = function(socket, data, callback) {
 	}
 
 	Messaging.getMessages({
-		fromuid: socket.uid,
-		touid: data.touid,
+		uid: socket.uid,
+		roomId: data.roomId,
 		since: data.since,
 		isNew: false
 	}, callback);
 
-	// Mark chat as read
-	Messaging.markRead(socket.uid, data.touid);
+	Messaging.markRead(socket.uid, data.roomId);
 };
 
 SocketModules.chats.getRaw = function(socket, data, callback) {

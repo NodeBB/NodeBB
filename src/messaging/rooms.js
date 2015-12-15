@@ -43,4 +43,5 @@ module.exports = function(Messaging) {
 	Messaging.getUidsInRoom = function(roomId, start, stop, callback) {
 		db.getSortedSetRange('chat:room:' + roomId + ':uids', start, stop, callback);
 	};
+
 };

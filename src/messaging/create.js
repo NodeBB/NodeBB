@@ -95,7 +95,7 @@ module.exports = function(Messaging) {
 				], next);
 			},
 			function (results, next) {
-				getMessages([mid], fromuid, touid, true, next);
+				Messaging.getMessagesData([mid], fromuid, touid, true, next);
 			},
 			function (messages, next) {
 				Messaging.isNewSet(fromuid, touid, mid, next);
@@ -119,7 +119,7 @@ module.exports = function(Messaging) {
 		var keys = uids.map(function(uid) {
 			return 'uid:' + uid + ':chat:rooms';
 		});
-		db.sortedSetsAdd(keys, timestamp, roomId, next);
+		db.sortedSetsAdd(keys, timestamp, roomId, callback);
 	};
 
 	Messaging.addMessageToUsers = function(roomId, uids, mid, timestamp, callback) {
