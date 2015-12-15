@@ -10,35 +10,36 @@ var sockets = require('../socket.io');
 
 module.exports = function(Messaging) {
 
-	Messaging.editMessage = function(mid, content, callback) {
-		async.series([
+	Messaging.editMessage = function(uid, mid, roomId, content, callback) {
+		var uids;
+		async.waterfall([
 			function(next) {
-				// Verify that the message actually changed
-				Messaging.getMessageField(mid, 'content', function(err, raw) {
-					if (raw === content) {
-						// No dice.
-						return callback();
-					}
-
-					next();
-				});
+				Messaging.getMessageField(mid, 'content', next);
 			},
-			async.apply(Messaging.setMessageFields, mid, {
-				content: content,
-				edited: Date.now()
-			}),
-			function(next) {
-				Messaging.getMessageFields(mid, ['fromuid', 'touid'], function(err, data) {
-					Messaging.getMessagesData([mid], data.fromuid, data.touid, true, function(err, messages) {
-						sockets.in('uid_' + data.fromuid).emit('event:chats.edit', {
-							messages: messages
-						});
-						sockets.in('uid_' + data.touid).emit('event:chats.edit', {
-							messages: messages
-						});
-						next();
+			function (raw, next) {
+				if (raw === content) {
+					return callback();
+				}
+
+				Messaging.setMessageFields(mid, {
+					content: content,
+					edited: Date.now()
+				}, next);
+			},
+			function (next) {
+				Messaging.getUidsInRoom(roomId, 0, -1, next);
+			},
+			function (_uids, next) {
+				uids = _uids;
+				Messaging.getMessagesData([mid], uid, roomId, true, next);
+			},
+			function (messages, next) {
+				uids.forEach(function(uid) {
+					sockets.in('uid_' + uid).emit('event:chats.edit', {
+						messages: messages
 					});
 				});
+				next();
 			}
 		], callback);
 	};
