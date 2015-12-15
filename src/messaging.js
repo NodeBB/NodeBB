@@ -311,7 +311,7 @@ var async = require('async'),
 
 
 
-	Messaging.notifyUser = function(fromuid, touid, messageObj) {
+	Messaging.notifyUser = function(uid, roomId, messageObj) {
 		// Immediate notifications
 		// Recipient
 		Messaging.pushUnreadCount(touid);
@@ -355,10 +355,10 @@ var async = require('async'),
 
 		async.waterfall([
 			function (next) {
-				Messaging.roomExists(roomId, next);
+				Messaging.isUserInRoom(uid, roomId, next);
 			},
-			function (roomExists, next) {
-				if (!roomExists) {
+			function (inRoom, next) {
+				if (!inRoom) {
 					return callback(null, false);
 				}
 				user.getUserFields(uid, ['banned', 'email:confirmed'], next);

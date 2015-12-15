@@ -10,7 +10,7 @@ var db = require('../database');
 module.exports = function(Messaging) {
 
 
-	Messaging.newMessage = function(fromuid, toUids, content, timestamp, callback) {
+	Messaging.newMessage = function(uid, toUids, content, timestamp, callback) {
 		var roomId;
 		async.waterfall([
 			function (next) {
@@ -21,30 +21,30 @@ module.exports = function(Messaging) {
 			},
 			function (_roomId, next) {
 				roomId = _roomId;
-				db.sortedSetAdd('chat:room:' + roomId + ':uids', timestamp, fromuid, next);
+				db.sortedSetAdd('chat:room:' + roomId + ':uids', timestamp, uid, next);
 			},
 			function (next) {
-				Messaging.addUsersToRoom(fromuid, toUids, roomId, next);
+				Messaging.addUsersToRoom(uid, toUids, roomId, next);
 			},
 			function (next) {
-				Messaging.sendMessage(fromuid, roomId, content, timestamp, next);
+				Messaging.sendMessage(uid, roomId, content, timestamp, next);
 			}
 		], callback);
 	};
 
-	Messaging.sendMessage = function(fromuid, roomId, content, timestamp, callback) {
+	Messaging.sendMessage = function(uid, roomId, content, timestamp, callback) {
 		async.waterfall([
 			function (next) {
 				Messaging.checkContent(content, next);
 			},
 			function (next) {
-				Messaging.roomExists(roomId, next);
+				Messaging.isUserInRoom(uid, roomId, next);
 			},
-			function (exists, next) {
-				if (!exists) {
-					return next(new Error('[[error:chat-room-does-not-exist]]'));
+			function (inRoom, next) {
+				if (!inRoom) {
+					return next(new Error('[[error:not-allowed]]'));
 				}
-				Messaging.addMessage(fromuid, roomId, content, timestamp, next);
+				Messaging.addMessage(uid, roomId, content, timestamp, next);
 			}
 		], callback);
 	};
@@ -74,8 +74,7 @@ module.exports = function(Messaging) {
 				message = {
 					content: content,
 					timestamp: timestamp,
-					fromuid: fromuid,
-					roomId: roomId
+					fromuid: fromuid
 				};
 
 				plugins.fireHook('filter:messaging.save', message, next);
@@ -95,19 +94,19 @@ module.exports = function(Messaging) {
 				], next);
 			},
 			function (results, next) {
-				Messaging.getMessagesData([mid], fromuid, touid, true, next);
+				async.parallel({
+					messages: async.apply(Messaging.getMessagesData, [mid], fromuid, roomId, true),
+					isNewSet: async.apply(Messaging.isNewSet, fromuid, roomId, mid)
+				}, next);
 			},
-			function (messages, next) {
-				Messaging.isNewSet(fromuid, touid, mid, next);
-			},
-			function (isNewSet, next) {
-				if (!messages || !messages[0]) {
+			function (results, next) {
+				if (!results.messages || !results.messages[0]) {
 					return next(null, null);
 				}
 
-				messages[0].newSet = isNewSet;
-				messages[0].mid = mid;
-				next(null, messages[0]);
+				results.messages[0].newSet = results.isNewSet;
+				results.messages[0].mid = mid;
+				next(null, results.messages[0]);
 			}
 		], callback);
 	};

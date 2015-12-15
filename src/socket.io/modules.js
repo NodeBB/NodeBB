@@ -40,12 +40,11 @@ SocketModules.chats.getRaw = function(socket, data, callback) {
 };
 
 SocketModules.chats.send = function(socket, data, callback) {
-	if (!data) {
+	if (!data || !data.roomId) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
 
-	var now = Date.now(),
-		touid = parseInt(data.touid, 10);
+	var now = Date.now();
 
 	// Websocket rate limiting
 	socket.lastChatMessageTime = socket.lastChatMessageTime || 0;
@@ -55,17 +54,17 @@ SocketModules.chats.send = function(socket, data, callback) {
 		socket.lastChatMessageTime = now;
 	}
 
-	Messaging.canMessage(socket.uid, touid, function(err, allowed) {
+	Messaging.canMessage(socket.uid, data.roomId, function(err, allowed) {
 		if (err || !allowed) {
 			return callback(err || new Error('[[error:chat-restricted]]'));
 		}
 
-		Messaging.addMessage(socket.uid, touid, data.message, now, function(err, message) {
+		Messaging.sendMessage(socket.uid, data.roomId, data.message, now, function(err, message) {
 			if (err) {
 				return callback(err);
 			}
 
-			Messaging.notifyUser(socket.uid, touid, message);
+			Messaging.notifyUser(socket.uid, data.roomId, message);
 
 			callback();
 		});
