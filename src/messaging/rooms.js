@@ -89,7 +89,7 @@ module.exports = function(Messaging) {
 	};
 
 	Messaging.getUidsInRoom = function(roomId, start, stop, callback) {
-		db.getSortedSetRange('chat:room:' + roomId + ':uids', start, stop, callback);
+		db.getSortedSetRevRange('chat:room:' + roomId + ':uids', start, stop, callback);
 	};
 
 	Messaging.getUsersInRoom = function(roomId, start, stop, callback) {
