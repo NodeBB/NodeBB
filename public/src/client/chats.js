@@ -34,14 +34,6 @@ define('forum/chats', ['components', 'string', 'sounds', 'forum/infinitescroll',
 		}
 	};
 
-	Chats.getRecipientUid = function() {
-		return parseInt($('.expanded-chat').attr('data-uid'), 10);
-	};
-
-	Chats.isCurrentChat = function(uid) {
-		return Chats.getRecipientUid() === parseInt(uid, 10);
-	};
-
 	Chats.addEventListeners = function() {
 		$('[component="chat/recent"]').on('click', '[component="chat/recent/room"]', function() {
 			Chats.switchChat($(this).attr('data-roomid'));
@@ -280,42 +272,11 @@ define('forum/chats', ['components', 'string', 'sounds', 'forum/infinitescroll',
 
 	Chats.addSocketListeners = function() {
 		socket.on('event:chats.receive', function(data) {
-			if (Chats.isCurrentChat(data.withUid)) {
+			if (parseInt(data.roomId, 10) === parseInt(ajaxify.data.roomId, 10)) {
 				newMessage = data.self === 0;
 				data.message.self = data.self;
 
 				Chats.appendChatMessage($('.expanded-chat .chat-content'), data.message);
-			} else {
-				var contactEl = $('[component="chat/recent"] li[data-uid="' + data.withUid + '"]'),
-					userKey = parseInt(data.withUid, 10) === parseInt(data.message.fromuid, 10) ? 'fromUser' : 'toUser';
-
-				// Spawn a new contact if required
-				templates.parse('partials/chat_contacts', {
-					contacts: [{
-						uid: data.message[userKey].uid,
-						username: data.message[userKey].username,
-						status: data.message[userKey].status,
-						picture: data.message[userKey].picture,
-						'icon:text': data.message[userKey]['icon:text'],
-						'icon:bgColor': data.message[userKey]['icon:bgColor'],
-						teaser: {
-							content: data.message.cleanedContent,
-							timestampISO: new Date(Date.now()).toISOString()
-						}
-					}]
-				}, function(html) {
-					translator.translate(html, function(translatedHTML) {
-						if (contactEl.length) {
-							contactEl.replaceWith(translatedHTML);
-						} else {
-							$('[component="chat/recent"]').prepend(translatedHTML);
-						}
-
-						// Mark that contact list entry unread
-						$('.chats-list li[data-uid="' + data.withUid + '"]').addClass('unread').find('.timeago').timeago();
-						app.alternatingTitle('[[modules:chat.user_has_messaged_you, ' + data.message.fromUser.username + ']]');
-					});
-				});
 			}
 		});
 

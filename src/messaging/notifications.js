@@ -5,7 +5,7 @@ var nconf = require('nconf');
 
 var user = require('../user');
 var emailer = require('../emailer');
-var notifications = require('./notifications');
+var notifications = require('../notifications');
 var meta = require('../meta');
 var utils = require('../../public/src/utils');
 var sockets = require('../socket.io');
@@ -26,7 +26,7 @@ module.exports = function(Messaging) {
 				message: messageObj
 			};
 			uids.forEach(function(uid) {
-				data.self = parseInt(uid, 10) === parseInt(fromUid) ?  1 : 0;
+				data.self = parseInt(uid, 10) === parseInt(fromUid) ? 1 : 0;
 				Messaging.pushUnreadCount(uid);
 				sockets.in('uid_' + uid).emit('event:chats.receive', data);
 			});
@@ -99,7 +99,6 @@ module.exports = function(Messaging) {
 						fromUserslug: utils.slugify(messageObj.fromUser.username)
 					}, next);
 				}, callback);
-
 			});
 		});
 	}

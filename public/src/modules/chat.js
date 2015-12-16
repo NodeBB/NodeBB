@@ -20,14 +20,12 @@ define('chat', ['components', 'taskbar', 'string', 'sounds', 'forum/chats', 'tra
 
 		socket.on('event:chats.receive', function(data) {
 			var username = data.message.fromUser.username;
-			var isSelf = parseInt(data.message.fromUser.uid, 10) === parseInt(app.user.uid, 10);
+			var isSelf = data.self === 1;
 			data.message.self = data.self;
-			if (isSelf) {
-				username = data.message.toUser.username;
-			}
+
 			newMessage = data.self === 0;
-			if (module.modalExists(data.withUid)) {
-				var modal = module.getModal(data.withUid);
+			if (module.modalExists(data.roomId)) {
+				var modal = module.getModal(data.roomId);
 
 				Chats.appendChatMessage(modal.find('.chat-content'), data.message);
 
@@ -49,8 +47,7 @@ define('chat', ['components', 'taskbar', 'string', 'sounds', 'forum/chats', 'tra
 				}
 			} else {
 				module.createModal({
-					username: username,
-					touid: data.withUid,
+					roomId: data.roomId,
 					silent: true
 				}, function(modal) {
 					module.toggleNew(modal.attr('UUID'), true, true);

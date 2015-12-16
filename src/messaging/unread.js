@@ -36,7 +36,8 @@ module.exports = function(Messaging) {
 				var keys = uids.map(function(uid) {
 					return 'uid:' + uid + ':chat:rooms:unread';
 				});
-				db.sortedSetAdd(keys, Date.now(), roomId, next);
+
+				db.sortedSetsAdd(keys, Date.now(), roomId, next);
 			}
 		], callback);
 	};

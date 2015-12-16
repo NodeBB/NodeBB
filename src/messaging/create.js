@@ -21,6 +21,7 @@ module.exports = function(Messaging) {
 				if (!inRoom) {
 					return next(new Error('[[error:not-allowed]]'));
 				}
+
 				Messaging.addMessage(uid, roomId, content, timestamp, next);
 			}
 		], callback);
@@ -34,11 +35,13 @@ module.exports = function(Messaging) {
 		if (content.length > (meta.config.maximumChatMessageLength || 1000)) {
 			return callback(new Error('[[error:chat-message-too-long]]'));
 		}
+		callback();
 	};
 
 	Messaging.addMessage = function(fromuid, roomId, content, timestamp, callback) {
 		var mid;
 		var message;
+
 		async.waterfall([
 			function (next) {
 				Messaging.checkContent(content, next);

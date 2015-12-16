@@ -197,10 +197,20 @@ SocketModules.chats.userStopTyping = function(socket, data, callback) {
 };
 
 function sendTypingNotification(event, socket, data, callback) {
-	if (!socket.uid || !data) {
+	if (!socket.uid || !data || !data.roomId) {
 		return;
 	}
-	server.in('uid_' + data.touid).emit(event, data.fromUid);
+
+	Messaging.getUidsInRoom(data.roomId, 0, -1, function(err, uids) {
+		if (err) {
+			return callback(err);
+		}
+		uids.forEach(function(uid) {
+			if (socket.uid !== parseInt(uid, 10)) {
+				server.in('uid_' + uid).emit(event, data.fromUid);
+			}
+		});
+	});
 }
 
 SocketModules.chats.getRecentChats = function(socket, data, callback) {
