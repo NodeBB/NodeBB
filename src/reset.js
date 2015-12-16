@@ -123,7 +123,7 @@ function resetPlugins(callback) {
 }
 
 function resetWidgets(callback) {
-	require('./src/widgets').reset(function(err) {
+	require('./widgets').reset(function(err) {
 		winston.info('[reset] All Widgets moved to Draft Zone');
 		if (typeof callback === 'function') {
 			callback(err);
