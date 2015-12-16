@@ -59,7 +59,7 @@ module.exports = function(Messaging) {
 			}
 
 			uids = uids.filter(function(uid, index) {
-				return isOnline[index];
+				return isOnline[index] && parseInt(fromuid, 10) !== parseInt(uid, 10);
 			});
 
 			if (!uids.length) {
@@ -71,7 +71,7 @@ module.exports = function(Messaging) {
 				bodyLong: messageObj.content,
 				nid: 'chat_' + fromuid + '_' + roomId,
 				from: fromuid,
-				path: '/chats/' + messageObj.fromUser.username
+				path: '/chats/' + messageObj.roomId
 			}, function(err, notification) {
 				if (!err && notification) {
 					notifications.push(notification, uids, callback);
