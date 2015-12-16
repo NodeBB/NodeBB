@@ -209,6 +209,10 @@ define('forum/chats', ['components', 'string', 'sounds', 'forum/infinitescroll',
 			});
 		});
 
+		tagEl.on('beforeItemRemove', function(event) {
+			event.cancel = !ajaxify.data.owner;
+		});
+
 		tagEl.on('itemRemoved', function(event) {
 			socket.emit('modules.chats.removeUserFromRoom', {roomId: roomId, username: event.item});
 		});

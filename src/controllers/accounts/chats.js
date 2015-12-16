@@ -46,7 +46,8 @@ chatsController.get = function(req, res, callback) {
 						since: 'recent',
 						isNew: false
 					}),
-					allowed: async.apply(messaging.canMessageRoom, req.uid, req.params.roomid)
+					allowed: async.apply(messaging.canMessageRoom, req.uid, req.params.roomid),
+					owner: async.apply(messaging.isRoomOwner, req.uid, req.params.roomid)
 				}, next);
 			}
 		], function(err, data) {
@@ -58,21 +59,18 @@ chatsController.get = function(req, res, callback) {
 				return user && parseInt(user.uid, 10) !== req.uid;
 			});
 
-			var usernames = data.users.map(function(user) {
+			data.usernames = data.users.map(function(user) {
 				return user && user.username;
 			}).join(', ');
 
-			res.render('chats', {
-				roomId: req.params.roomid,
-				rooms: recentChats.rooms,
-				nextStart: recentChats.nextStart,
-				users: data.users,
-				usernames: usernames,
-				messages: data.messages,
-				allowed: data.allowed,
-				title: '[[pages:chat, ' + usernames + ']]',
-				breadcrumbs: helpers.buildBreadcrumbs([{text: '[[pages:chats]]', url: '/chats'}, {text: usernames}])
-			});
+
+			data.roomId = req.params.roomid;
+			data.rooms = recentChats.rooms;
+			data.nextStart = recentChats.nextStart;
+			data.title = '[[pages:chat, ' + data.usernames + ']]';
+			data.breadcrumbs = helpers.buildBreadcrumbs([{text: '[[pages:chats]]', url: '/chats'}, {text: data.usernames}]);
+
+			res.render('chats', data);
 		});
 	});
 };

@@ -53,10 +53,10 @@ module.exports = function(Messaging) {
 	Messaging.addUsersToRoom = function(uid, uids, roomId, callback) {
 		async.waterfall([
 			function (next) {
-				Messaging.isRoomOwner(uid, roomId, next);
+				Messaging.isUserInRoom(uid, roomId, next);
 			},
-			function (isOwner, next) {
-				if (!isOwner) {
+			function (inRoom, next) {
+				if (!inRoom) {
 					return next(new Error('[[error:cant-add-users-to-chat-room]]'));
 				}
 				var now = Date.now();

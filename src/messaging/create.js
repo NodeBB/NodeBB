@@ -69,12 +69,12 @@ module.exports = function(Messaging) {
 				async.parallel([
 					async.apply(Messaging.addRoomToUsers, roomId, uids, timestamp),
 					async.apply(Messaging.addMessageToUsers, roomId, uids, mid, timestamp),
-					async.apply(Messaging.markRead, fromuid, roomId),
 					async.apply(Messaging.markUnread, uids, roomId)
 				], next);
 			},
 			function (results, next) {
 				async.parallel({
+					markRead: async.apply(Messaging.markRead, fromuid, roomId),
 					messages: async.apply(Messaging.getMessagesData, [mid], fromuid, roomId, true),
 					isNewSet: async.apply(Messaging.isNewSet, fromuid, roomId, mid)
 				}, next);
