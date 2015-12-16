@@ -390,7 +390,7 @@ define('forum/chats', ['components', 'string', 'sounds', 'forum/infinitescroll',
 			$('.expanded-chat input').focus();
 		}
 		$('.chats-list li').removeClass('bg-primary');
-		$('.chats-list li[data-uid="' + recipientUid + '"]').addClass('bg-primary');
+		$('.chats-list li[data-roomid="' + ajaxify.data.roomId + '"]').addClass('bg-primary');
 	};
 
 	Chats.parseMessage = function(data, callback) {
