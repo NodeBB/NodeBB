@@ -1,14 +1,13 @@
 "use strict";
 
-var	meta = require('../meta'),
-	Messaging = require('../messaging'),
-	utils = require('../../public/src/utils'),
+var async = require('async');
+var	meta = require('../meta');
+var Messaging = require('../messaging');
+var utils = require('../../public/src/utils');
+var server = require('./');
+var user = require('../user');
 
-	async = require('async'),
-
-	server = require('./'),
-
-	SocketModules = {
+var SocketModules = {
 		chats: {},
 		sounds: {},
 		settings: {}
@@ -39,7 +38,7 @@ SocketModules.chats.getRaw = function(socket, data, callback) {
 	Messaging.getMessageField(data.mid, 'content', callback);
 };
 
-SocketModules.chats.newMessage = function(socket, data, callback) {
+SocketModules.chats.newRoom = function(socket, data, callback) {
 	if (!data) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
@@ -57,15 +56,7 @@ SocketModules.chats.newMessage = function(socket, data, callback) {
 			return callback(err || new Error('[[error:chat-restricted]]'));
 		}
 
-		Messaging.newMessage(socket.uid, [data.touid], data.content, now, function(err, message) {
-			if (err) {
-				return callback(err);
-			}
-
-			Messaging.notifyUsersInRoom(socket.uid, message.roomId, message);
-
-			callback();
-		});
+		Messaging.newRoom(socket.uid, [data.touid], callback);
 	});
 };
 
@@ -99,6 +90,59 @@ SocketModules.chats.send = function(socket, data, callback) {
 			callback();
 		});
 	});
+};
+
+SocketModules.chats.getUsersInRoom = function(socket, data, callback) {
+	if (!data || !data.roomId) {
+		return callback(new Error('[[error:invalid-data]]'));
+	}
+
+	async.waterfall([
+		function (next) {
+			Messaging.isUserInRoom(socket.uid, data.roomId, next);
+		},
+		function (inRoom, next) {
+			if (!inRoom) {
+				return next(new Error('[[error:not-allowerd]]'));
+			}
+			Messaging.getUsersInRoom(data.roomId, 0, -1, next);
+		}
+	], callback);
+};
+
+SocketModules.chats.addUserToRoom = function(socket, data, callback) {
+	if (!data || !data.roomId || !data.username) {
+		return callback(new Error('[[error:invalid-data]]'));
+	}
+	async.waterfall([
+		function (next) {
+			user.getUidByUsername(data.username, next);
+		},
+		function (uid, next) {
+			if (!uid) {
+				return next(new Error('[[error:no-user]]'));
+			}
+			Messaging.addUsersToRoom(socket.uid, [uid], data.roomId, next);
+		}
+	], callback);
+};
+
+SocketModules.chats.removeUserFromRoom = function(socket, data, callback) {
+	if (!data || !data.roomId) {
+		return callback(new Error('[[error:invalid-data]]'));
+	}
+	async.waterfall([
+		function (next) {
+			user.getUidByUsername(data.username, next);
+		},
+		function (uid, next) {
+			if (!uid) {
+				return next(new Error('[[error:no-user]]'));
+			}
+
+			Messaging.removeUsersFromRoom(socket.uid, [uid], data.roomId, next);
+		}
+	], callback);
 };
 
 SocketModules.chats.edit = function(socket, data, callback) {

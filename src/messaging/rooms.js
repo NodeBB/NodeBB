@@ -7,6 +7,29 @@ var user = require('../user');
 
 module.exports = function(Messaging) {
 
+	Messaging.newRoom = function(uid, toUids, callback) {
+		var roomId;
+		var now = Date.now();
+		async.waterfall([
+			function (next) {
+				db.incrObjectField('global', 'nextChatRoomId', next);
+			},
+			function (_roomId, next) {
+				roomId = _roomId;
+				db.sortedSetAdd('chat:room:' + roomId + ':uids', now, uid, next);
+			},
+			function (next) {
+				Messaging.addUsersToRoom(uid, toUids, roomId, next);
+			},
+			function (next) {
+				Messaging.addRoomToUsers(roomId, [uid].concat(toUids), now, next);
+			},
+			function (next) {
+				next(null, roomId);
+			}
+		], callback);
+	};
+
 	Messaging.isUserInRoom = function(uid, roomId, callback) {
 		db.isSortedSetMember('chat:room:' + roomId + ':uids', uid, callback);
 	};
@@ -27,31 +50,40 @@ module.exports = function(Messaging) {
 		});
 	};
 
-	Messaging.addUsersToRoom = function(fromuid, toUids, roomId, callback) {
+	Messaging.addUsersToRoom = function(uid, uids, roomId, callback) {
 		async.waterfall([
 			function (next) {
-				Messaging.isRoomOwner(fromuid, roomId, next);
+				Messaging.isRoomOwner(uid, roomId, next);
 			},
 			function (isOwner, next) {
 				if (!isOwner) {
 					return next(new Error('[[error:cant-add-users-to-chat-room]]'));
 				}
 				var now = Date.now();
-				var timestamps = toUids.map(function() {
+				var timestamps = uids.map(function() {
 					return now;
 				});
-				db.sortedSetAdd('chat:room:' + roomId + ':uids', timestamps, toUids, next);
+				db.sortedSetAdd('chat:room:' + roomId + ':uids', timestamps, uids, next);
 			}
 		], callback);
 	};
 
-	Messaging.leaveRoom = function(uid, roomId, callback) {
+	Messaging.removeUsersFromRoom = function(uid, uids, roomId, callback) {
 		async.waterfall([
 			function (next) {
-				db.sortedSetRemove('chat:room:' + roomId + ':uids', uid, next);
+				Messaging.isRoomOwner(uid, roomId, next);
+			},
+			function (isOwner, next) {
+				if (!isOwner) {
+					return next(new Error('[[error:cant-add-users-to-chat-room]]'));
+				}
+				db.sortedSetRemove('chat:room:' + roomId + ':uids', uids, next);
 			},
 			function (next) {
-				db.sortedSetRemove('uid:' + uid + ':chat:rooms', roomId, next);
+				var keys = uids.map(function(uid) {
+					return 'uid:' + uid + ':chat:rooms';
+				});
+				db.sortedSetsRemove(keys, roomId, next);
 			}
 		], callback);
 	};

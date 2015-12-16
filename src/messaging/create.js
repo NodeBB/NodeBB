@@ -9,29 +9,6 @@ var db = require('../database');
 
 module.exports = function(Messaging) {
 
-
-	Messaging.newMessage = function(uid, toUids, content, timestamp, callback) {
-		var roomId;
-		async.waterfall([
-			function (next) {
-				Messaging.checkContent(content, next);
-			},
-			function (next) {
-				db.incrObjectField('global', 'nextChatRoomId', next);
-			},
-			function (_roomId, next) {
-				roomId = _roomId;
-				db.sortedSetAdd('chat:room:' + roomId + ':uids', timestamp, uid, next);
-			},
-			function (next) {
-				Messaging.addUsersToRoom(uid, toUids, roomId, next);
-			},
-			function (next) {
-				Messaging.sendMessage(uid, roomId, content, timestamp, next);
-			}
-		], callback);
-	};
-
 	Messaging.sendMessage = function(uid, roomId, content, timestamp, callback) {
 		async.waterfall([
 			function (next) {
@@ -87,7 +64,7 @@ module.exports = function(Messaging) {
 			},
 			function (uids, next) {
 				async.parallel([
-					async.apply(Messaging.updateChatTime, roomId, uids, timestamp),
+					async.apply(Messaging.addRoomToUsers, roomId, uids, timestamp),
 					async.apply(Messaging.addMessageToUsers, roomId, uids, mid, timestamp),
 					async.apply(Messaging.markRead, fromuid, roomId),
 					async.apply(Messaging.markUnread, uids, roomId)
@@ -112,7 +89,7 @@ module.exports = function(Messaging) {
 		], callback);
 	};
 
-	Messaging.updateChatTime = function(roomId, uids, timestamp, callback) {
+	Messaging.addRoomToUsers = function(roomId, uids, timestamp, callback) {
 		if (!uids.length) {
 			return callback();
 		}

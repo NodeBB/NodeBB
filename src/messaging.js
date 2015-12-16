@@ -274,7 +274,9 @@ var async = require('async'),
 							markRead: false
 						}, function(err, teaser) {
 							teaser = teaser[0];
-							teaser.content = S(teaser.content).stripTags().decodeHTMLEntities().s;
+							if (teaser && teaser.content) {
+								teaser.content = S(teaser.content).stripTags().decodeHTMLEntities().s;
+							}
 							next(err, teaser);
 						});
 					}, next);

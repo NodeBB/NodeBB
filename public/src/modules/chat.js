@@ -229,7 +229,7 @@ define('chat', ['components', 'taskbar', 'string', 'sounds', 'forum/chats', 'tra
 						components.get('chat/input').val(text);
 					});
 
-					ajaxify.go('chats/' + utils.slugify(data.username));
+					ajaxify.go('chats/' + chatModal.attr('roomId'));
 					module.close(chatModal);
 				}
 
@@ -240,7 +240,7 @@ define('chat', ['components', 'taskbar', 'string', 'sounds', 'forum/chats', 'tra
 					module.bringModalToTop(chatModal);
 
 					if (!dragged) {
-						chatModal.find('#chat-message-input').focus();
+						//chatModal.find('#chat-message-input').focus();
 					} else {
 						dragged = false;
 					}
@@ -273,6 +273,8 @@ define('chat', ['components', 'taskbar', 'string', 'sounds', 'forum/chats', 'tra
 				Chats.addSinceHandler(chatModal.attr('roomId'), chatModal.find('.chat-content'), chatModal.find('[data-since]'));
 
 				Chats.addSendHandlers(chatModal.attr('roomId'), chatModal.find('#chat-message-input'), chatModal.find('#chat-message-send-btn'));
+
+				Chats.createTagsInput(data.roomId, data.users);
 
 				Chats.loadChatSince(chatModal.attr('roomId'), chatModal.find('.chat-content'), 'recent');
 

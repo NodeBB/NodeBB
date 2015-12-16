@@ -14,7 +14,7 @@ chatsController.get = function(req, res, callback) {
 		return callback();
 	}
 
-	messaging.getRecentChats(req.user.uid, 0, 19, function(err, recentChats) {
+	messaging.getRecentChats(req.uid, 0, 19, function(err, recentChats) {
 		if (err) {
 			return callback(err);
 		}
@@ -41,18 +41,22 @@ chatsController.get = function(req, res, callback) {
 				async.parallel({
 					users: async.apply(messaging.getUsersInRoom, req.params.roomid, 0, -1),
 					messages: async.apply(messaging.getMessages, {
-						uid: req.user.uid,
+						uid: req.uid,
 						roomId: req.params.roomid,
 						since: 'recent',
 						isNew: false
 					}),
-					allowed: async.apply(messaging.canMessageRoom, req.user.uid, req.params.roomid)
+					allowed: async.apply(messaging.canMessageRoom, req.uid, req.params.roomid)
 				}, next);
 			}
 		], function(err, data) {
 			if (err) {
 				return callback(err);
 			}
+
+			data.users = data.users.filter(function(user) {
+				return user && parseInt(user.uid, 10) !== req.uid;
+			});
 
 			var usernames = data.users.map(function(user) {
 				return user && user.username;
