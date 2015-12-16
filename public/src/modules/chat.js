@@ -129,9 +129,9 @@ define('chat', ['components', 'taskbar', 'string', 'sounds', 'forum/chats', 'tra
 
 				dropdownEl.click(function() {
 					if (!ajaxify.currentPage.match(/^chats\//)) {
-						app.openChat(userObj.username, userObj.uid);
+						app.openChat(roomObj.roomId);
 					} else {
-						ajaxify.go('chats/' + utils.slugify(userObj.username));
+						ajaxify.go('chats/' + roomObj.roomId);
 					}
 				});
 			});
@@ -156,12 +156,12 @@ define('chat', ['components', 'taskbar', 'string', 'sounds', 'forum/chats', 'tra
 		chatModal.css('zIndex', topZ + 1);
 	};
 
-	module.getModal = function(touid) {
-		return $('#chat-modal-' + touid);
+	module.getModal = function(roomId) {
+		return $('#chat-modal-' + roomId);
 	};
 
-	module.modalExists = function(touid) {
-		return $('#chat-modal-' + touid).length !== 0;
+	module.modalExists = function(roomId) {
+		return $('#chat-modal-' + roomId).length !== 0;
 	};
 
 	function checkStatus(chatModal) {
@@ -182,8 +182,8 @@ define('chat', ['components', 'taskbar', 'string', 'sounds', 'forum/chats', 'tra
 					uuid = utils.generateUUID(),
 					dragged = false;
 
-				chatModal.attr('id', 'chat-modal-' + data.touid);
-				chatModal.attr('touid', data.touid);
+				chatModal.attr('id', 'chat-modal-' + data.roomId);
+				chatModal.attr('roomId', data.roomId);
 				chatModal.attr('intervalId', 0);
 				chatModal.attr('UUID', uuid);
 				chatModal.css('position', 'fixed');
@@ -254,7 +254,7 @@ define('chat', ['components', 'taskbar', 'string', 'sounds', 'forum/chats', 'tra
 
 				chatModal.on('mousemove keypress click', function() {
 					if (newMessage) {
-						socket.emit('modules.chats.markRead', data.touid);
+						socket.emit('modules.chats.markRead', data.roomId);
 						newMessage = false;
 					}
 				});
@@ -270,15 +270,15 @@ define('chat', ['components', 'taskbar', 'string', 'sounds', 'forum/chats', 'tra
 						Chats.delete(messageId);
 					});
 
-				Chats.addSinceHandler(chatModal.attr('touid'), chatModal.find('.chat-content'), chatModal.find('[data-since]'));
+				Chats.addSinceHandler(chatModal.attr('roomId'), chatModal.find('.chat-content'), chatModal.find('[data-since]'));
 
-				Chats.addSendHandlers(chatModal.attr('touid'), chatModal.find('#chat-message-input'), chatModal.find('#chat-message-send-btn'));
+				Chats.addSendHandlers(chatModal.attr('roomId'), chatModal.find('#chat-message-input'), chatModal.find('#chat-message-send-btn'));
 
-				Chats.loadChatSince(chatModal.attr('touid'), chatModal.find('.chat-content'), 'recent');
+				Chats.loadChatSince(chatModal.attr('roomId'), chatModal.find('.chat-content'), 'recent');
 
 				checkStatus(chatModal);
 
-				module.canMessage(data.touid, function(err) {
+				module.canMessage(data.roomId, function(err) {
 					if (err) {
 						// Disable the text input
 						chatModal.find('input[type="text"]').attr('disabled', true);
@@ -287,7 +287,7 @@ define('chat', ['components', 'taskbar', 'string', 'sounds', 'forum/chats', 'tra
 
 				taskbar.push('chat', chatModal.attr('UUID'), {
 					title: data.username,
-					touid: data.touid,
+					roomId: data.roomId,
 					icon: 'fa-comment',
 					state: ''
 				});
@@ -311,7 +311,7 @@ define('chat', ['components', 'taskbar', 'string', 'sounds', 'forum/chats', 'tra
 		chatModal.remove();
 		chatModal.data('modal', null);
 		taskbar.discard('chat', chatModal.attr('UUID'));
-		Chats.notifyTyping(chatModal.attr('touid'), false);
+		Chats.notifyTyping(chatModal.attr('roomId'), false);
 
 		if (chatModal.attr('data-mobile')) {
 			module.disableMobileBehaviour(chatModal);
@@ -334,14 +334,14 @@ define('chat', ['components', 'taskbar', 'string', 'sounds', 'forum/chats', 'tra
 	};
 
 	module.load = function(uuid) {
-		var chatModal = $('div[UUID="'+uuid+'"]');
+		var chatModal = $('div[UUID="' + uuid + '"]');
 		chatModal.removeClass('hide');
 		checkStatus(chatModal);
 		taskbar.updateActive(uuid);
 		Chats.scrollToBottom(chatModal.find('.chat-content'));
 		module.bringModalToTop(chatModal);
 		module.focusInput(chatModal);
-		socket.emit('modules.chats.markRead', chatModal.attr('touid'));
+		socket.emit('modules.chats.markRead', chatModal.attr('roomId'));
 
 		var env = utils.findBootstrapEnvironment();
 		if (env === 'xs' || env === 'sm') {
@@ -380,13 +380,13 @@ define('chat', ['components', 'taskbar', 'string', 'sounds', 'forum/chats', 'tra
 		taskbar.minimize('chat', uuid);
 		clearInterval(chatModal.attr('intervalId'));
 		chatModal.attr('intervalId', 0);
-		Chats.notifyTyping(chatModal.attr('touid'), false);
+		Chats.notifyTyping(chatModal.attr('roomId'), false);
 	};
 
 	module.toggleNew = taskbar.toggleNew;
 
-	module.canMessage = function(toUid, callback) {
-		socket.emit('modules.chats.canMessage', toUid, callback);
+	module.canMessage = function(roomId, callback) {
+		socket.emit('modules.chats.canMessage', roomId, callback);
 	};
 
 

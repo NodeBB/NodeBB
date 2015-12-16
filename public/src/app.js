@@ -239,11 +239,7 @@ app.cacheBuster = null;
 		}
 	};
 
-	app.openChat = function (username, touid) {
-		if (username === app.user.username) {
-			return app.alertError('[[error:cant-chat-with-yourself]]');
-		}
-
+	app.openChat = function (roomId) {
 		if (!app.user.uid) {
 			return app.alertError('[[error:not-logged-in]]');
 		}
@@ -255,13 +251,12 @@ app.cacheBuster = null;
 				chat.focusInput(chatModal);
 			}
 
-			if (!chat.modalExists(touid)) {
+			if (!chat.modalExists(roomId)) {
 				chat.createModal({
-					username: username,
-					touid: touid
+					roomId: roomId
 				}, loadAndCenter);
 			} else {
-				loadAndCenter(chat.getModal(touid));
+				loadAndCenter(chat.getModal(roomId));
 			}
 		});
 	};

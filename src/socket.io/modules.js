@@ -17,7 +17,7 @@ var	meta = require('../meta'),
 /* Chat */
 
 SocketModules.chats.get = function(socket, data, callback) {
-	if(!data) {
+	if(!data || !data.roomId) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
 
@@ -97,14 +97,14 @@ SocketModules.chats.delete = function(socket, data, callback) {
 	});
 }
 
-SocketModules.chats.canMessage = function(socket, toUid, callback) {
-	Messaging.canMessage(socket.uid, toUid, function(err, allowed) {
+SocketModules.chats.canMessage = function(socket, roomId, callback) {
+	Messaging.canMessage(socket.uid, roomId, function(err, allowed) {
 		callback(!allowed ? new Error('[[error:chat-restricted]]') : undefined);
 	});
 };
 
-SocketModules.chats.markRead = function(socket, touid, callback) {
-	Messaging.markRead(socket.uid, touid, function(err) {
+SocketModules.chats.markRead = function(socket, roomId, callback) {
+	Messaging.markRead(socket.uid, roomId, function(err) {
 		if (err) {
 			return callback(err);
 		}
