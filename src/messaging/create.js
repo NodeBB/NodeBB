@@ -41,6 +41,7 @@ module.exports = function(Messaging) {
 	Messaging.addMessage = function(fromuid, roomId, content, timestamp, callback) {
 		var mid;
 		var message;
+		var isNewSet;
 
 		async.waterfall([
 			function (next) {
@@ -63,6 +64,10 @@ module.exports = function(Messaging) {
 				db.setObject('message:' + mid, message, next);
 			},
 			function (next) {
+				Messaging.isNewSet(fromuid, roomId, timestamp, next);
+			},
+			function (_isNewSet, next) {
+				isNewSet = _isNewSet;
 				db.getSortedSetRange('chat:room:' + roomId + ':uids', 0, -1, next);
 			},
 			function (uids, next) {
@@ -75,8 +80,7 @@ module.exports = function(Messaging) {
 			function (results, next) {
 				async.parallel({
 					markRead: async.apply(Messaging.markRead, fromuid, roomId),
-					messages: async.apply(Messaging.getMessagesData, [mid], fromuid, roomId, true),
-					isNewSet: async.apply(Messaging.isNewSet, fromuid, roomId, mid)
+					messages: async.apply(Messaging.getMessagesData, [mid], fromuid, roomId, true)					
 				}, next);
 			},
 			function (results, next) {
@@ -84,7 +88,7 @@ module.exports = function(Messaging) {
 					return next(null, null);
 				}
 
-				results.messages[0].newSet = results.isNewSet;
+				results.messages[0].newSet = isNewSet;
 				results.messages[0].mid = mid;
 				results.messages[0].roomId = roomId;
 				next(null, results.messages[0]);

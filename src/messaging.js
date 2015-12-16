@@ -211,32 +211,20 @@ var async = require('async'),
 		});
 	};
 
-	Messaging.isNewSet = function(uid, roomId, mid, callback) {
+	Messaging.isNewSet = function(uid, roomId, timestamp, callback) {
 		var setKey = 'uid:' + uid + ':chat:room:' + roomId + ':mids';
 
 		async.waterfall([
-			async.apply(db.sortedSetRank, setKey, mid),
-			function(index, next) {
-				if (index > 0) {
-					db.getSortedSetRange(setKey, index - 1, index, next);
+			function(next) {
+				db.getSortedSetRevRangeWithScores(setKey, 0, 0, next);
+			},
+			function(messages, next) {
+				if (messages && messages.length) {
+					next(null, parseInt(timestamp, 10) > parseInt(messages[0].score, 10) + (1000 * 60 * 5));
 				} else {
 					next(null, true);
 				}
-			},
-			function(mids, next) {
-				if (typeof mids !== 'boolean' && mids && mids.length) {
-					db.getObjects(['message:' + mids[0], 'message:' + mids[1]], next);
-				} else {
-					next(null, mids);
-				}
-			},
-			function(messages, next) {
-				if (typeof messages !== 'boolean' && messages && messages.length) {
-					next(null, parseInt(messages[1].timestamp, 10) > parseInt(messages[0].timestamp, 10) + (1000*60*5));
-				} else {
-					next(null, messages);
-				}
-			}
+			}			
 		], callback);
 	};
 
