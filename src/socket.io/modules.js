@@ -128,7 +128,7 @@ SocketModules.chats.delete = function(socket, data, callback) {
 };
 
 SocketModules.chats.canMessage = function(socket, roomId, callback) {
-	Messaging.canMessage(socket.uid, roomId, function(err, allowed) {
+	Messaging.canMessageRoom(socket.uid, roomId, function(err, allowed) {
 		callback(!allowed ? new Error('[[error:chat-restricted]]') : undefined);
 	});
 };

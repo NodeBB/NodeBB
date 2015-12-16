@@ -12,6 +12,8 @@ var sockets = require('../socket.io');
 
 module.exports = function(Messaging) {
 
+	Messaging.notifyQueue = {};	// Only used to notify a user of a new chat message, see Messaging.notifyUser
+
 	Messaging.notifyUsersInRoom = function(fromUid, roomId, messageObj) {
 		Messaging.getUidsInRoom(roomId, 0, -1, function(err, uids) {
 			if (err) {

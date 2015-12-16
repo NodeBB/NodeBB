@@ -261,6 +261,13 @@ app.cacheBuster = null;
 		});
 	};
 
+	app.newChat = function (touid) {
+		if (!app.user.uid) {
+			return app.alertError('[[error:not-logged-in]]');
+		}
+
+	};
+
 	var	titleObj = {
 			active: false,
 			interval: undefined,

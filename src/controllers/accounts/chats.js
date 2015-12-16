@@ -46,7 +46,7 @@ chatsController.get = function(req, res, callback) {
 						since: 'recent',
 						isNew: false
 					}),
-					allowed: async.apply(messaging.canMessage, req.user.uid, req.params.roomid)
+					allowed: async.apply(messaging.canMessageRoom, req.user.uid, req.params.roomid)
 				}, next);
 			}
 		], function(err, data) {

@@ -23,8 +23,6 @@ var async = require('async'),
 	require('./messaging/unread')(Messaging);
 	require('./messaging/notifications')(Messaging);
 
-	Messaging.notifyQueue = {};	// Only used to notify a user of a new chat message, see Messaging.notifyUser
-
 	var terms = {
 		day: 86400000,
 		week: 604800000,

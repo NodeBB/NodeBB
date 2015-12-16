@@ -45,6 +45,17 @@ module.exports = function(Messaging) {
 		], callback);
 	};
 
+	Messaging.leaveRoom = function(uid, roomId, callback) {
+		async.waterfall([
+			function (next) {
+				db.sortedSetRemove('chat:room:' + roomId + ':uids', uid, next);
+			},
+			function (next) {
+				db.sortedSetRemove('uid:' + uid + ':chat:rooms', roomId, next);
+			}
+		], callback);
+	};
+
 	Messaging.getUidsInRoom = function(roomId, start, stop, callback) {
 		db.getSortedSetRange('chat:room:' + roomId + ':uids', start, stop, callback);
 	};
