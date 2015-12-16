@@ -331,5 +331,50 @@ var async = require('async'),
 		});
 	};
 
+	Notifications.merge = function(notifications, callback) {
+		// When passed a set of notification objects, merge any that can be merged
+		var mergeIds = ['notifications:favourited_your_post_in'],
+			isolated, modifyIndex;
+
+		notifications = mergeIds.reduce(function(notifications, mergeId) {
+			isolated = notifications.filter(function(notifObj) {
+				return notifObj.mergeId === mergeId;
+			});
+
+			if (isolated.length <= 1) {
+				return notifications;	// Nothing to merge
+			}
+
+			modifyIndex = notifications.indexOf(isolated[0]);
+
+			switch(mergeId) {
+				case 'notifications:favourited_your_post_in':
+					var usernames = isolated.map(function(notifObj) {
+						return notifObj.user.username;
+					});
+					var numUsers = usernames.length;
+
+					// Update bodyShort
+					if (numUsers === 2) {
+						isolated[0].bodyShort = '[[notifications:favourited_your_post_in_dual, ' + usernames.join(', ') + ', Welcome to your NodeBB!]]'
+					} else {
+						isolated[0].bodyShort = '[[notifications:favourited_your_post_in_multiple, ' + usernames[0] + ', ' + (numUsers-1) + ', Welcome to your NodeBB!]]'
+					}
+					break;
+			}
+
+			// Filter out duplicates
+			return notifications.filter(function(notifObj, idx) {
+				return notifObj.mergeId !== mergeId || idx === modifyIndex;
+			});
+		}, notifications);
+
+		plugins.fireHook('filter:notifications.merge', {
+			notifications: notifications
+		}, function(err, data) {
+			callback(err, data.notifications);
+		});
+	};
+
 }(exports));
 
