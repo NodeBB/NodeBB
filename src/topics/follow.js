@@ -137,7 +137,9 @@ module.exports = function(Topics) {
 					pid: postData.pid,
 					nid: 'new_post:tid:' + postData.topic.tid + ':pid:' + postData.pid + ':uid:' + exceptUid,
 					tid: postData.topic.tid,
-					from: exceptUid
+					from: exceptUid,
+					mergeId: 'notifications:user_posted_to|' + postData.topic.tid,
+					topicTitle: title
 				}, function(err, notification) {
 					if (err) {
 						return next(err);

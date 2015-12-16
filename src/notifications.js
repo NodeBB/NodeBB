@@ -333,12 +333,18 @@ var async = require('async'),
 
 	Notifications.merge = function(notifications, callback) {
 		// When passed a set of notification objects, merge any that can be merged
-		var mergeIds = ['notifications:favourited_your_post_in'],
+		var mergeIds = [
+				'notifications:favourited_your_post_in',
+				'notifications:upvoted_your_post_in',
+				'notifications:user_started_following_you',
+				'notifications:user_posted_to',
+				'notifications:user_flagged_post_in'
+			],
 			isolated, modifyIndex;
 
 		notifications = mergeIds.reduce(function(notifications, mergeId) {
 			isolated = notifications.filter(function(notifObj) {
-				return notifObj.mergeId === mergeId;
+				return notifObj.mergeId.split('|')[0] === mergeId;
 			});
 
 			if (isolated.length <= 1) {
@@ -348,7 +354,11 @@ var async = require('async'),
 			modifyIndex = notifications.indexOf(isolated[0]);
 
 			switch(mergeId) {
-				case 'notifications:favourited_your_post_in':
+				case 'notifications:favourited_your_post_in':	// intentional fall-through
+				case 'notifications:upvoted_your_post_in':
+				case 'notifications:user_started_following_you':
+				case 'notifications:user_posted_to':
+				case 'notifications:user_flagged_post_in':
 					var usernames = isolated.map(function(notifObj) {
 						return notifObj.user.username;
 					});
@@ -356,9 +366,9 @@ var async = require('async'),
 
 					// Update bodyShort
 					if (numUsers === 2) {
-						isolated[0].bodyShort = '[[notifications:favourited_your_post_in_dual, ' + usernames.join(', ') + ', Welcome to your NodeBB!]]'
+						isolated[0].bodyShort = '[[' + mergeId.split('|') + '_dual, ' + usernames.join(', ') + ', ' + isolated[0].topicTitle + ']]'
 					} else {
-						isolated[0].bodyShort = '[[notifications:favourited_your_post_in_multiple, ' + usernames[0] + ', ' + (numUsers-1) + ', Welcome to your NodeBB!]]'
+						isolated[0].bodyShort = '[[' + mergeId.split('|') + '_multiple, ' + usernames[0] + ', ' + (numUsers-1) + ', ' + isolated[0].topicTitle + ']]'
 					}
 					break;
 			}
