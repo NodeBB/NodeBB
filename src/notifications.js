@@ -340,7 +340,7 @@ var async = require('async'),
 				'notifications:user_posted_to',
 				'notifications:user_flagged_post_in'
 			],
-			isolated, modifyIndex;
+			isolated, differentiator, modifyIndex;
 
 		notifications = mergeIds.reduce(function(notifications, mergeId) {
 			isolated = notifications.filter(function(notifObj) {
@@ -354,6 +354,8 @@ var async = require('async'),
 			if (isolated.length <= 1) {
 				return notifications;	// Nothing to merge
 			}
+
+			differentiator = isolated[0].mergeId.split('|')[1];
 
 			modifyIndex = notifications.indexOf(isolated[0]);
 
@@ -370,16 +372,16 @@ var async = require('async'),
 
 					// Update bodyShort
 					if (numUsers === 2) {
-						isolated[0].bodyShort = '[[' + mergeId.split('|') + '_dual, ' + usernames.join(', ') + ', ' + isolated[0].topicTitle + ']]'
+						isolated[0].bodyShort = '[[' + mergeId + '_dual, ' + usernames.join(', ') + ', ' + isolated[0].topicTitle + ']]'
 					} else {
-						isolated[0].bodyShort = '[[' + mergeId.split('|') + '_multiple, ' + usernames[0] + ', ' + (numUsers-1) + ', ' + isolated[0].topicTitle + ']]'
+						isolated[0].bodyShort = '[[' + mergeId + '_multiple, ' + usernames[0] + ', ' + (numUsers-1) + ', ' + isolated[0].topicTitle + ']]'
 					}
 					break;
 			}
 
 			// Filter out duplicates
 			return notifications.filter(function(notifObj, idx) {
-				return notifObj.mergeId !== mergeId || idx === modifyIndex;
+				return notifObj.mergeId !== mergeId + '|' + differentiator || idx === modifyIndex;
 			});
 		}, notifications);
 
