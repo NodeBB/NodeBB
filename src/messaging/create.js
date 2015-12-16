@@ -106,6 +106,7 @@ module.exports = function(Messaging) {
 
 				results.messages[0].newSet = results.isNewSet;
 				results.messages[0].mid = mid;
+				results.messages[0].roomId = roomId;
 				next(null, results.messages[0]);
 			}
 		], callback);

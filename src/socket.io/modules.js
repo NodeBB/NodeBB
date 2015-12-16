@@ -39,6 +39,36 @@ SocketModules.chats.getRaw = function(socket, data, callback) {
 	Messaging.getMessageField(data.mid, 'content', callback);
 };
 
+SocketModules.chats.newMessage = function(socket, data, callback) {
+	if (!data) {
+		return callback(new Error('[[error:invalid-data]]'));
+	}
+	var now = Date.now();
+	// Websocket rate limiting
+	socket.lastChatMessageTime = socket.lastChatMessageTime || 0;
+	if (now - socket.lastChatMessageTime < 200) {
+		return callback(new Error('[[error:too-many-messages]]'));
+	} else {
+		socket.lastChatMessageTime = now;
+	}
+
+	Messaging.canMessageUser(socket.uid, data.touid, function(err, allowed) {
+		if (err || !allowed) {
+			return callback(err || new Error('[[error:chat-restricted]]'));
+		}
+
+		Messaging.newMessage(socket.uid, [data.touid], data.content, now, function(err, message) {
+			if (err) {
+				return callback(err);
+			}
+
+			Messaging.notifyUsersInRoom(socket.uid, message.roomId, message);
+
+			callback();
+		});
+	});
+};
+
 SocketModules.chats.send = function(socket, data, callback) {
 	if (!data || !data.roomId) {
 		return callback(new Error('[[error:invalid-data]]'));
@@ -54,7 +84,7 @@ SocketModules.chats.send = function(socket, data, callback) {
 		socket.lastChatMessageTime = now;
 	}
 
-	Messaging.canMessage(socket.uid, data.roomId, function(err, allowed) {
+	Messaging.canMessageRoom(socket.uid, data.roomId, function(err, allowed) {
 		if (err || !allowed) {
 			return callback(err || new Error('[[error:chat-restricted]]'));
 		}
@@ -64,7 +94,7 @@ SocketModules.chats.send = function(socket, data, callback) {
 				return callback(err);
 			}
 
-			Messaging.notifyUser(socket.uid, data.roomId, message);
+			Messaging.notifyUsersInRoom(socket.uid, data.roomId, message);
 
 			callback();
 		});
@@ -95,7 +125,7 @@ SocketModules.chats.delete = function(socket, data, callback) {
 			Messaging.deleteMessage(data.messageId, data.roomId, callback);
 		}
 	});
-}
+};
 
 SocketModules.chats.canMessage = function(socket, roomId, callback) {
 	Messaging.canMessage(socket.uid, roomId, function(err, allowed) {

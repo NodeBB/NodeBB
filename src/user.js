@@ -132,13 +132,27 @@ var	async = require('async'),
 	};
 
 	User.isOnline = function(uid, callback) {
-		db.sortedSetScore('users:online', uid, function(err, lastonline) {
-			if (err) {
-				return callback(err);
-			}
-			var isOnline = Date.now() - parseInt(lastonline, 10) < 300000;
-			callback(null, isOnline);
-		});
+		if (Array.isArray(uid)) {
+			db.sortedSetScores('users:online', uid, function(err, lastonline) {
+				if (err) {
+					return callback(err);
+				}
+				var now = Date.now();
+				var isOnline = uid.map(function(uid, index) {
+					return now - lastonline[index] < 300000;
+				});
+				callback(null, isOnline);
+			});
+		} else {
+			db.sortedSetScore('users:online', uid, function(err, lastonline) {
+				if (err) {
+					return callback(err);
+				}
+				var isOnline = Date.now() - parseInt(lastonline, 10) < 300000;
+				callback(null, isOnline);
+			});
+		}
+
 	};
 
 	User.exists = function(uid, callback) {

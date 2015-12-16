@@ -4,17 +4,15 @@
 var async = require('async'),
 	winston = require('winston'),
 	S = require('string'),
-	nconf = require('nconf'),
+
 
 	db = require('./database'),
 	user = require('./user'),
 	plugins = require('./plugins'),
 	meta = require('./meta'),
-	emailer = require('./emailer'),
 	utils = require('../public/src/utils'),
 	notifications = require('./notifications'),
-	userNotifications = require('./user/notifications'),
-	sockets = require('./socket.io');
+	userNotifications = require('./user/notifications');
 
 (function(Messaging) {
 
@@ -23,6 +21,7 @@ var async = require('async'),
 	require('./messaging/edit')(Messaging);
 	require('./messaging/rooms')(Messaging);
 	require('./messaging/unread')(Messaging);
+	require('./messaging/notifications')(Messaging);
 
 	Messaging.notifyQueue = {};	// Only used to notify a user of a new chat message, see Messaging.notifyUser
 
@@ -309,46 +308,50 @@ var async = require('async'),
 		});
 	};
 
-
-
-	Messaging.notifyUser = function(uid, roomId, messageObj) {
-		// Immediate notifications
-		// Recipient
-		Messaging.pushUnreadCount(touid);
-		sockets.in('uid_' + touid).emit('event:chats.receive', {
-			withUid: fromuid,
-			message: messageObj,
-			self: 0
-		});
-		// Sender
-		Messaging.pushUnreadCount(fromuid);
-		sockets.in('uid_' + fromuid).emit('event:chats.receive', {
-			withUid: touid,
-			message: messageObj,
-			self: 1
-		});
-
-		// Delayed notifications
-		var queueObj = Messaging.notifyQueue[fromuid + ':' + touid];
-		if (queueObj) {
-			queueObj.message.content += '\n' + messageObj.content;
-			clearTimeout(queueObj.timeout);
-		} else {
-			queueObj = Messaging.notifyQueue[fromuid + ':' + touid] = {
-				message: messageObj
-			};
+	Messaging.canMessageUser = function(uid, toUid, callback) {
+		if (parseInt(meta.config.disableChat) === 1 || !uid || uid === toUid) {
+			return callback(null, false);
 		}
 
-		queueObj.timeout = setTimeout(function() {
-			sendNotifications(fromuid, touid, queueObj.message, function(err) {
-				if (!err) {
-					delete Messaging.notifyQueue[fromuid + ':' + touid];
+		async.waterfall([
+			function (next) {
+				user.exists(toUid, next);
+			},
+			function (exists, next) {
+				if (!exists) {
+					return callback(null, false);
 				}
-			});
-		}, 1000*60);	// wait 60s before sending
+				user.getUserFields(uid, ['banned', 'email:confirmed'], next);
+			},
+			function (userData, next) {
+				if (parseInt(userData.banned, 10) === 1) {
+					return callback(null, false);
+				}
+
+				if (parseInt(meta.config.requireEmailConfirmation, 10) === 1 && parseInt(userData['email:confirmed'], 10) !== 1) {
+					return callback(null, false);
+				}
+
+				user.getSettings(toUid, next);
+			},
+			function(settings, next) {
+				if (!settings.restrictChat) {
+					return callback(null, true);
+				}
+
+				user.isAdministrator(uid, next);
+			},
+			function(isAdmin, next) {
+				if (isAdmin) {
+					return callback(null, true);
+				}
+				user.isFollowing(toUid, uid, next);
+			}
+		], callback);
+
 	};
 
-	Messaging.canMessage = function(uid, roomId, callback) {
+	Messaging.canMessageRoom = function(uid, roomId, callback) {
 		if (parseInt(meta.config.disableChat) === 1 || !uid) {
 			return callback(null, false);
 		}
@@ -377,40 +380,5 @@ var async = require('async'),
 		], callback);
 	};
 
-
-	function sendNotifications(fromuid, touid, messageObj, callback) {
-		user.isOnline(touid, function(err, isOnline) {
-			if (err || isOnline) {
-				return callback(err);
-			}
-
-			notifications.create({
-				bodyShort: '[[notifications:new_message_from, ' + messageObj.fromUser.username + ']]',
-				bodyLong: messageObj.content,
-				nid: 'chat_' + fromuid + '_' + touid,
-				from: fromuid,
-				path: '/chats/' + messageObj.fromUser.username
-			}, function(err, notification) {
-				if (!err && notification) {
-					notifications.push(notification, [touid], callback);
-				}
-			});
-
-			user.getSettings(messageObj.toUser.uid, function(err, settings) {
-				if (settings.sendChatNotifications && !parseInt(meta.config.disableEmailSubscriptions, 10)) {
-					emailer.send('notif_chat', touid, {
-						subject: '[[email:notif.chat.subject, ' + messageObj.fromUser.username + ']]',
-						username: messageObj.toUser.username,
-						userslug: utils.slugify(messageObj.toUser.username),
-						summary: '[[notifications:new_message_from, ' + messageObj.fromUser.username + ']]',
-						message: messageObj,
-						site_title: meta.config.title || 'NodeBB',
-						url: nconf.get('url'),
-						fromUserslug: utils.slugify(messageObj.fromUser.username)
-					});
-				}
-			});
-		});
-	}
 
 }(exports));
