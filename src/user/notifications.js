@@ -78,8 +78,8 @@ var async = require('async'),
 
 				notifs.forEach(function(notification, index) {
 					if (!notification) {
-						winston.verbose('[notifications.get] nid ' + nids[index] + ' not found. Removing.');
-						deletedNids.push(nids[index]);
+						winston.verbose('[notifications.get] nid ' + notification.nid + ' not found. Removing.');
+						deletedNids.push(notification.nid);
 					} else {
 						notification.read = read;
 						notification.readClass = !notification.read ? 'unread' : '';
