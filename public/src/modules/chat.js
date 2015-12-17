@@ -214,8 +214,6 @@ define('chat', ['components', 'taskbar', 'string', 'sounds', 'forum/chats', 'tra
 					});
 				});
 
-				chatModal.find('#chat-with-name').html(data.username);
-
 				chatModal.find('#chat-close-btn').on('click', function() {
 					module.close(chatModal);
 				});
@@ -236,9 +234,7 @@ define('chat', ['components', 'taskbar', 'string', 'sounds', 'forum/chats', 'tra
 				chatModal.on('click', function() {
 					module.bringModalToTop(chatModal);
 
-					if (!dragged) {
-						//chatModal.find('#chat-message-input').focus();
-					} else {
+					if (dragged) {
 						dragged = false;
 					}
 				});
@@ -285,7 +281,7 @@ define('chat', ['components', 'taskbar', 'string', 'sounds', 'forum/chats', 'tra
 				});
 
 				taskbar.push('chat', chatModal.attr('UUID'), {
-					title: data.username,
+					title: data.users.length ? data.users[0].username : '',
 					roomId: data.roomId,
 					icon: 'fa-comment',
 					state: ''
