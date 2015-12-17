@@ -68,7 +68,7 @@ define('forum/chats', ['components', 'string', 'sounds', 'forum/infinitescroll',
 			})
 			.on('click', '[data-action="delete"]', function() {
 				var messageId = $(this).parents('[data-mid]').attr('data-mid');
-				Chats.delete(messageId);
+				Chats.delete(messageId, ajaxify.data.roomId);
 			});
 
 		$('.recent-chats').on('scroll', function() {
@@ -126,7 +126,7 @@ define('forum/chats', ['components', 'string', 'sounds', 'forum/infinitescroll',
 		});
 	};
 
-	Chats.delete = function(messageId) {
+	Chats.delete = function(messageId, roomId) {
 		translator.translate('[[modules:chat.delete_message_confirm]]', function(translated) {
 			bootbox.confirm(translated, function(ok) {
 				if (!ok) {
@@ -134,7 +134,8 @@ define('forum/chats', ['components', 'string', 'sounds', 'forum/infinitescroll',
 				}
 
 				socket.emit('modules.chats.delete', {
-					messageId: messageId
+					messageId: messageId,
+					roomId: roomId
 				}, function(err) {
 					if (err) {
 						return app.alertError(err.message);
@@ -366,6 +367,7 @@ define('forum/chats', ['components', 'string', 'sounds', 'forum/infinitescroll',
 			});
 		} else {
 			socket.emit('modules.chats.edit', {
+				roomId: roomId,
 				mid: mid,
 				message: msg
 			}, function(err) {

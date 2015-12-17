@@ -174,9 +174,11 @@ SocketModules.chats.delete = function(socket, data, callback) {
 	}
 
 	Messaging.canEdit(data.messageId, socket.uid, function(err, allowed) {
-		if (allowed) {
-			Messaging.deleteMessage(data.messageId, data.roomId, callback);
+		if (err || !allowed) {
+			return callback(err || new Error('[[error:cant-delete-chat-message]]'));
 		}
+
+		Messaging.deleteMessage(data.messageId, data.roomId, callback);
 	});
 };
 

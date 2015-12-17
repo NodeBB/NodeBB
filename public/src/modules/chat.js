@@ -260,7 +260,7 @@ define('chat', ['components', 'taskbar', 'string', 'sounds', 'forum/chats', 'tra
 					})
 					.on('click', '[data-action="delete"]', function() {
 						var messageId = $(this).parents('[data-mid]').attr('data-mid');
-						Chats.delete(messageId);
+						Chats.delete(messageId, data.roomId);
 					});
 
 				Chats.addSinceHandler(chatModal.attr('roomId'), chatModal.find('.chat-content'), chatModal.find('[data-since]'));
