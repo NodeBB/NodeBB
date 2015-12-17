@@ -71,7 +71,7 @@ define('forum/chats', ['components', 'string', 'sounds', 'forum/infinitescroll',
 				Chats.delete(messageId, ajaxify.data.roomId);
 			});
 
-		$('.recent-chats').on('scroll', function() {
+		$('[component="chat/recent"]').on('scroll', function() {
 			var $this = $(this);
 			var bottom = ($this[0].scrollHeight - $this.height()) * 0.9;
 			if ($this.scrollTop() > bottom) {
@@ -406,7 +406,7 @@ define('forum/chats', ['components', 'string', 'sounds', 'forum/infinitescroll',
 	};
 
 	function loadMoreRecentChats() {
-		var recentChats = $('.recent-chats');
+		var recentChats = $('[component="chat/recent"]');
 		if (recentChats.attr('loading')) {
 			return;
 		}
@@ -418,8 +418,8 @@ define('forum/chats', ['components', 'string', 'sounds', 'forum/infinitescroll',
 				return app.alertError(err.message);
 			}
 
-			if (data && data.users.length) {
-				onRecentChatsLoaded(data.users, function() {
+			if (data && data.rooms.length) {
+				onRecentChatsLoaded(data, function() {
 					recentChats.removeAttr('loading');
 					recentChats.attr('data-nextstart', data.nextStart);
 				});
@@ -429,17 +429,14 @@ define('forum/chats', ['components', 'string', 'sounds', 'forum/infinitescroll',
 		});
 	}
 
-	function onRecentChatsLoaded(users, callback) {
-		users = users.filter(function(user) {
-			return !$('.recent-chats li[data-uid=' + user.uid + ']').length;
-		});
-
-		if (!users.length) {
+	function onRecentChatsLoaded(data, callback) {
+		if (!data.rooms.length) {
 			return callback();
 		}
 
-		app.parseAndTranslate('chats', 'chats', {chats: users}, function(html) {
-			$('.recent-chats').append(html);
+		app.parseAndTranslate('chats', 'rooms', data, function(html) {
+			$('[component="chat/recent"]').append(html);
+			html.find('.timeago').timeago();
 			callback();
 		});
 	}
