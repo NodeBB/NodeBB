@@ -254,19 +254,7 @@ var async = require('async'),
 				},
 				teasers: function(next) {
 					async.map(roomIds, function(roomId, next) {
-						Messaging.getMessages({
-							uid: uid,
-							roomId: roomId,
-							isNew: false,
-							count: 1,
-							markRead: false
-						}, function(err, teaser) {
-							teaser = teaser[0];
-							if (teaser && teaser.content) {
-								teaser.content = S(teaser.content).stripTags().decodeHTMLEntities().s;
-							}
-							next(err, teaser);
-						});
+						Messaging.getTeaser(uid, roomId, next);
 					}, next);
 				}
 			}, function(err, results) {
@@ -298,6 +286,28 @@ var async = require('async'),
 				callback(null, {rooms: rooms, nextStart: stop + 1});
 			});
 		});
+	};
+
+	Messaging.getTeaser = function (uid, roomId, callback) {
+		async.waterfall([
+			function (next) {
+				db.getSortedSetRevRange('uid:' + uid + ':chat:room:' + roomId + ':mids', 0, 0, next);
+			},
+			function (mids, next) {
+				if (!mids || !mids.length) {
+					return next(null, null);
+				}
+				Messaging.getMessageFields(mids[0], ['content', 'timestamp'], next);
+			},
+			function (teaser, next) {
+				if (teaser && teaser.content) {
+					teaser.content = S(teaser.content).stripTags().decodeHTMLEntities().s;
+					teaser.timestampISO = utils.toISOString(teaser.timestamp);
+			 	}
+
+				next(null, teaser);
+			}
+		], callback);
 	};
 
 	Messaging.canMessageUser = function(uid, toUid, callback) {
