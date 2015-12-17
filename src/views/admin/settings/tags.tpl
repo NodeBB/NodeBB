@@ -31,4 +31,15 @@
 	</div>
 </div>
 
+<div class="row">
+	<div class="col-sm-2 col-xs-12 settings-header">Related Topics</div>
+	<div class="col-sm-10 col-xs-12">
+		<form>
+			<div class="form-group">
+				<label for="maximumRelatedTopics">Maximum related topics to display (if supported by theme)</label>
+				<input id="maximumRelatedTopics" type="text" class="form-control" value="5" data-field="maximumRelatedTopics">
+			</div>
+	</div>
+</div>
+
 <!-- IMPORT admin/settings/footer.tpl -->

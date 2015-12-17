@@ -324,7 +324,9 @@ module.exports = function(Topics) {
 	};
 
 	Topics.getRelatedTopics = function(topicData, callback) {
-		if (!topicData.tags.length) {
+		var maximumTopics = typeof meta.config.maximumRelatedTopics !== 'undefined' ? parseInt(meta.config.maximumRelatedTopics, 10) : 5;
+
+		if (!topicData.tags.length || maximumTopics === 0) {
 			return callback(null, topicData);
 		}
 
@@ -353,7 +355,7 @@ module.exports = function(Topics) {
 					});
 				}
 
-				related = _.shuffle(related).slice(0, 5);
+				related = _.shuffle(related).slice(0, maximumTopics);
 
 				topicData.related = related;
 				callback(err, topicData);
