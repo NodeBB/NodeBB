@@ -260,7 +260,7 @@ define('chat', ['components', 'taskbar', 'string', 'sounds', 'forum/chats', 'tra
 					.on('click', '[data-action="edit"]', function() {
 						var messageId = $(this).parents('[data-mid]').attr('data-mid');
 						var inputEl = chatModal.find('[component="chat/input"]');
-						Chats.prepEdit(inputEl, messageId);
+						Chats.prepEdit(inputEl, messageId, data.roomId);
 					})
 					.on('click', '[data-action="delete"]', function() {
 						var messageId = $(this).parents('[data-mid]').attr('data-mid');

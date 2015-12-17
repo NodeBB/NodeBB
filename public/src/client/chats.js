@@ -64,7 +64,7 @@ define('forum/chats', ['components', 'string', 'sounds', 'forum/infinitescroll',
 			.on('click', '[data-action="edit"]', function() {
 				var messageId = $(this).parents('[data-mid]').attr('data-mid');
 				var inputEl = components.get('chat/input');
-				Chats.prepEdit(inputEl, messageId);
+				Chats.prepEdit(inputEl, messageId, ajaxify.data.roomId);
 			})
 			.on('click', '[data-action="delete"]', function() {
 				var messageId = $(this).parents('[data-mid]').attr('data-mid');
@@ -106,13 +106,13 @@ define('forum/chats', ['components', 'string', 'sounds', 'forum/infinitescroll',
 				var lastMid = message.attr('data-mid');
 				var inputEl = components.get('chat/input');
 
-				Chats.prepEdit(inputEl, lastMid);
+				Chats.prepEdit(inputEl, lastMid, ajaxify.data.roomId);
 			}
 		});
 	};
 
-	Chats.prepEdit = function(inputEl, messageId) {
-		socket.emit('modules.chats.getRaw', { mid: messageId }, function(err, raw) {
+	Chats.prepEdit = function(inputEl, messageId, roomId) {
+		socket.emit('modules.chats.getRaw', { mid: messageId, roomId: roomId }, function(err, raw) {
 			if (err) {
 				return app.alertError(err.message);
 			}

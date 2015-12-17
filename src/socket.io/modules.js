@@ -31,11 +31,20 @@ SocketModules.chats.get = function(socket, data, callback) {
 };
 
 SocketModules.chats.getRaw = function(socket, data, callback) {
-	if(!data || !data.hasOwnProperty('mid')) {
+	if (!data || !data.hasOwnProperty('mid')) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
-
-	Messaging.getMessageField(data.mid, 'content', callback);
+	async.waterfall([
+		function (next) {
+			Messaging.isUserInRoom(socket.uid, data.roomId, next);
+		},
+		function (inRoom, next) {
+			if (!inRoom) {
+				return next(new Error('[[error:not-allowed]]'));
+			}
+			Messaging.getMessageField(data.mid, 'content', next);
+		}
+	], callback);
 };
 
 SocketModules.chats.newRoom = function(socket, data, callback) {
