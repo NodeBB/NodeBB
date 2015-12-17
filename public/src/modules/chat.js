@@ -113,16 +113,16 @@ define('chat', ['components', 'taskbar', 'string', 'sounds', 'forum/chats', 'tra
 							'<img src="' +	userObj.picture + '" title="' +	userObj.username +'" />' :
 							'<div class="user-icon" style="background-color: ' + userObj['icon:bgColor'] + '">' + userObj['icon:text'] + '</div>') +
 						'<i class="fa fa-circle status ' + userObj.status + '"></i> ' +
-						userObj.username + '</a>';
+						roomObj.usernames + '</a>';
 				}
 
 				dropdownEl = $('<li class="' + (roomObj.unread ? 'unread' : '') + '"/>')
 					.attr('data-roomId', roomObj.roomId)
 					.appendTo(chatsListEl);
 
-				roomObj.users.forEach(function(userObj) {
-					dropdownEl.append(createUserImage(userObj));
-				});
+				if (roomObj.lastUser) {
+					dropdownEl.append(createUserImage(roomObj.lastUser));
+				}
 
 				dropdownEl.click(function() {
 					if (!ajaxify.currentPage.match(/^chats\//)) {

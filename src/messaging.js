@@ -224,7 +224,7 @@ var async = require('async'),
 				} else {
 					next(null, true);
 				}
-			}			
+			}
 		], callback);
 	};
 
@@ -288,6 +288,10 @@ var async = require('async'),
 					data.users = data.users.filter(function(user) {
 						return user && parseInt(user.uid, 10);
 					});
+					data.lastUser = data.users[0];
+					data.usernames = data.users.map(function(user) {
+						return user.username;
+					}).join(', ');
 					return data;
 				});
 

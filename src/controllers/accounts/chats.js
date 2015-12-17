@@ -68,7 +68,7 @@ chatsController.get = function(req, res, callback) {
 			data.rooms = recentChats.rooms;
 			data.nextStart = recentChats.nextStart;
 			data.title = '[[pages:chat, ' + data.usernames + ']]';
-			data.breadcrumbs = helpers.buildBreadcrumbs([{text: '[[pages:chats]]', url: '/chats'}, {text: data.usernames}]);
+			data.breadcrumbs = helpers.buildBreadcrumbs([{text: '[[pages:chats]]', url: '/chats'}, {text: data.roomId}]);
 
 			res.render('chats', data);
 		});
