@@ -218,13 +218,13 @@ module.exports = function(Groups) {
 		});
 	}
 
-	function checkNameChange(oldName, newName, callback) {
-		if (oldName === newName) {
+	function checkNameChange(currentName, newName, callback) {
+		if (currentName === newName) {
 			return callback();
 		}
-		var oldSlug = utils.slugify(oldName);
+		var currentSlug = utils.slugify(currentName);
 		var newSlug = utils.slugify(newName);
-		if (oldSlug === newSlug) {
+		if (currentSlug === newSlug) {
 			return callback();
 		}
 		Groups.existsBySlug(newSlug, function(err, exists) {
