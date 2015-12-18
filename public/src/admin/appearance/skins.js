@@ -5,9 +5,11 @@ define('admin/appearance/skins', function() {
 	var Skins = {};
 	
 	Skins.init = function() {
-		var scriptEl = $('<script />');
-		scriptEl.attr('src', '//bootswatch.aws.af.cm/3/?callback=bootswatchListener');
-		$('body').append(scriptEl);
+		// Populate skins from Bootswatch API
+		$.ajax({
+			method: 'get',
+			url: 'https://bootswatch.com/api/3.json'
+		}).done(Skins.render);
 
 		$('#skins').on('click', function(e){
 			var target = $(e.target);
