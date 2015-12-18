@@ -84,7 +84,9 @@ module.exports = function(SocketPosts) {
 					bodyLong: post.content,
 					pid: data.pid,
 					nid: 'post_flag:' + data.pid + ':uid:' + socket.uid,
-					from: socket.uid
+					from: socket.uid,
+					mergeId: 'notifications:user_flagged_post_in|' + data.pid,
+					topicTitle: post.topic.title
 				}, function(err, notification) {
 					if (err || !notification) {
 						return next(err);

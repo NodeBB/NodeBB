@@ -69,7 +69,9 @@ SocketHelpers.sendNotificationToPostOwner = function(pid, fromuid, notification)
 				bodyLong: results.postObj.content,
 				pid: pid,
 				nid: 'post:' + pid + ':uid:' + fromuid,
-				from: fromuid
+				from: fromuid,
+				mergeId: notification + '|' + postData.tid,
+				topicTitle: results.topicTitle
 			}, function(err, notification) {
 				if (!err && notification) {
 					notifications.push(notification, [postData.uid]);

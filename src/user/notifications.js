@@ -64,29 +64,22 @@ var async = require('async'),
 	}
 
 	function getNotificationsFromSet(set, read, uid, start, stop, callback) {
-		db.getSortedSetRevRange(set, start, stop, function(err, nids) {
-			if (err) {
-				return callback(err);
-			}
-
-			if(!Array.isArray(nids) || !nids.length) {
-				return callback(null, []);
-			}
-
-			UserNotifications.getNotifications(nids, uid, function(err, notifications) {
-				if (err) {
-					return callback(err);
+		async.waterfall([
+			async.apply(db.getSortedSetRevRange, set, start, stop),
+			function(nids, next) {
+				if(!Array.isArray(nids) || !nids.length) {
+					return callback(null, []);
 				}
 
+				UserNotifications.getNotifications(nids, uid, next);
+			},
+			function(notifs, next) {
 				var deletedNids = [];
 
-				notifications.forEach(function(notification, index) {
+				notifs.forEach(function(notification, index) {
 					if (!notification) {
-						if (process.env.NODE_ENV === 'development') {
-							winston.info('[notifications.get] nid ' + nids[index] + ' not found. Removing.');
-						}
-
-						deletedNids.push(nids[index]);
+						winston.verbose('[notifications.get] nid ' + notification.nid + ' not found. Removing.');
+						deletedNids.push(notification.nid);
 					} else {
 						notification.read = read;
 						notification.readClass = !notification.read ? 'unread' : '';
@@ -97,9 +90,9 @@ var async = require('async'),
 					db.sortedSetRemove(set, deletedNids);
 				}
 
-				callback(null, notifications);
-			});
-		});
+				notifications.merge(notifs, next);
+			}
+		], callback);
 	}
 
 	UserNotifications.getNotifications = function(nids, uid, callback) {
