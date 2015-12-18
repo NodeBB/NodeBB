@@ -9,11 +9,3 @@
 		</button>
 	</div>
 </div>
-
-<script>
-	var bootswatchListener = function(data) {
-		require(['admin/appearance/skins'], function(t) {
-			t.render(data);
-		});
-	};
-</script>
