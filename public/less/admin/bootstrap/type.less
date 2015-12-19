@@ -211,7 +211,7 @@ dd {
     &:extend(.clearfix all); // Clear the floated `dt` if an empty `dd` is present
   }
 
-  @media (min-width: @grid-float-breakpoint) {
+  @media (min-width: @dl-horizontal-breakpoint) {
     dt {
       float: left;
       width: (@dl-horizontal-offset - 20);
@@ -238,7 +238,7 @@ abbr[data-original-title] {
 }
 .initialism {
   font-size: 90%;
-  text-transform: uppercase;
+  .text-uppercase();
 }
 
 // Blockquotes

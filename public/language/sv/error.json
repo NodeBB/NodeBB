@@ -78,6 +78,7 @@
     "too-many-messages": "Du har skickat för många meddelanden, var god vänta",
     "invalid-chat-message": "Ogiltigt chattmeddelande",
     "chat-message-too-long": "Chattmeddelande är för långt",
+    "cant-edit-chat-message": "You are not allowed to edit this message",
     "reputation-system-disabled": "Ryktessystemet är inaktiverat.",
     "downvoting-disabled": "Nedröstning är inaktiverat",
     "not-enough-reputation-to-downvote": "Du har inte tillräckligt förtroende för att rösta ner det här meddelandet",

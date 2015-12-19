@@ -27,6 +27,17 @@ SocketModules.chats.get = function(socket, data, callback) {
 		since: data.since,
 		isNew: false
 	}, callback);
+
+	// Mark chat as read
+	Messaging.markRead(socket.uid, data.touid);
+};
+
+SocketModules.chats.getRaw = function(socket, data, callback) {
+	if(!data || !data.hasOwnProperty('mid')) {
+		return callback(new Error('[[error:invalid-data]]'));
+	}
+
+	Messaging.getMessageField(data.mid, 'content', callback);
 };
 
 SocketModules.chats.send = function(socket, data, callback) {
@@ -61,6 +72,32 @@ SocketModules.chats.send = function(socket, data, callback) {
 		});
 	});
 };
+
+SocketModules.chats.edit = function(socket, data, callback) {
+	if (!data) {
+		return callback(new Error('[[error:invalid-data]]'));
+	}
+
+	Messaging.canEdit(data.mid, socket.uid, function(err, allowed) {
+		if (allowed) {
+			Messaging.editMessage(data.mid, data.message, callback);
+		} else {
+			return callback(new Error('[[error:cant-edit-chat-message]]'));
+		}
+	});
+};
+
+SocketModules.chats.delete = function(socket, data, callback) {
+	if (!data) {
+		return callback(new Error('[[error:invalid-data]]'));
+	}
+
+	Messaging.canEdit(data.messageId, socket.uid, function(err, allowed) {
+		if (allowed) {
+			Messaging.deleteMessage(data.messageId, callback);
+		}
+	});
+}
 
 SocketModules.chats.canMessage = function(socket, toUid, callback) {
 	Messaging.canMessage(socket.uid, toUid, function(err, allowed) {

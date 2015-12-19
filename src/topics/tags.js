@@ -322,4 +322,33 @@ module.exports = function(Topics) {
 		});
 	};
 
+	Topics.getRelatedTopics = function(topicData, uid, callback) {
+		if (plugins.hasListeners('filter:topic.getRelatedTopics')) {
+			return plugins.fireHook('filter:topic.getRelatedTopics', {topic: topicData, uid: uid}, callback);
+		}
+
+		var maximumTopics = parseInt(meta.config.maximumRelatedTopics, 10) || 5;
+
+		if (!topicData.tags.length || maximumTopics === 0) {
+			return callback(null, topicData);
+		}
+
+		async.waterfall([
+			function (next) {
+				async.map(topicData.tags, function (tag, next) {
+					Topics.getTagTids(tag.value, 0, 5, next);
+				}, next);
+			},
+			function (tids, next) {
+				tids = _.shuffle(_.unique(_.flatten(tids))).slice(0, maximumTopics);
+				Topics.getTopics(tids, uid, next);
+			},
+			function (topics, next) {
+				topics = topics.filter(function(topic) {
+					return topic && !topic.deleted && parseInt(topic.uid, 10) !== parseInt(uid, 10);
+				});
+				next(null, topics);
+			}
+		], callback);
+	};
 };

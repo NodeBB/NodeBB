@@ -78,6 +78,7 @@
     "too-many-messages": "Du har sendt for mange beskeder, vent venligt lidt.",
     "invalid-chat-message": "Ugyldig chat besked",
     "chat-message-too-long": "Chat beskeden er for lang",
+    "cant-edit-chat-message": "You are not allowed to edit this message",
     "reputation-system-disabled": "Vurderingssystem er slået fra.",
     "downvoting-disabled": "Nedvurdering er slået fra",
     "not-enough-reputation-to-downvote": "Du har ikke nok omdømme til at nedstemme dette indlæg",

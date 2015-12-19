@@ -331,5 +331,66 @@ var async = require('async'),
 		});
 	};
 
+	Notifications.merge = function(notifications, callback) {
+		// When passed a set of notification objects, merge any that can be merged
+		var mergeIds = [
+				'notifications:favourited_your_post_in',
+				'notifications:upvoted_your_post_in',
+				'notifications:user_started_following_you',
+				'notifications:user_posted_to',
+				'notifications:user_flagged_post_in'
+			],
+			isolated, differentiator, modifyIndex;
+
+		notifications = mergeIds.reduce(function(notifications, mergeId) {
+			isolated = notifications.filter(function(notifObj) {
+				if (!notifObj.hasOwnProperty('mergeId')) {
+					return false;
+				}
+
+				return notifObj.mergeId.split('|')[0] === mergeId;
+			});
+
+			if (isolated.length <= 1) {
+				return notifications;	// Nothing to merge
+			}
+
+			differentiator = isolated[0].mergeId.split('|')[1];
+
+			modifyIndex = notifications.indexOf(isolated[0]);
+
+			switch(mergeId) {
+				case 'notifications:favourited_your_post_in':	// intentional fall-through
+				case 'notifications:upvoted_your_post_in':
+				case 'notifications:user_started_following_you':
+				case 'notifications:user_posted_to':
+				case 'notifications:user_flagged_post_in':
+					var usernames = isolated.map(function(notifObj) {
+						return notifObj.user.username;
+					});
+					var numUsers = usernames.length;
+
+					// Update bodyShort
+					if (numUsers === 2) {
+						isolated[0].bodyShort = '[[' + mergeId + '_dual, ' + usernames.join(', ') + ', ' + isolated[0].topicTitle + ']]'
+					} else {
+						isolated[0].bodyShort = '[[' + mergeId + '_multiple, ' + usernames[0] + ', ' + (numUsers-1) + ', ' + isolated[0].topicTitle + ']]'
+					}
+					break;
+			}
+
+			// Filter out duplicates
+			return notifications.filter(function(notifObj, idx) {
+				return notifObj.mergeId !== mergeId + '|' + differentiator || idx === modifyIndex;
+			});
+		}, notifications);
+
+		plugins.fireHook('filter:notifications.merge', {
+			notifications: notifications
+		}, function(err, data) {
+			callback(err, data.notifications);
+		});
+	};
+
 }(exports));
 

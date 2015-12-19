@@ -15,6 +15,7 @@
     "chat.seven_days": "৭ দিন",
     "chat.thirty_days": "৩০ দিন",
     "chat.three_months": "৩ মাস",
+    "chat.delete_message_confirm": "Are you sure you wish to delete this message?",
     "composer.compose": "Compose",
     "composer.show_preview": "Show Preview",
     "composer.hide_preview": "Hide Preview",

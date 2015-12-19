@@ -78,6 +78,7 @@
     "too-many-messages": "Wohereje ubutumwa bwinshi cyane. Ba utegerejeho gato. ",
     "invalid-chat-message": "Invalid chat message",
     "chat-message-too-long": "Chat message is too long",
+    "cant-edit-chat-message": "You are not allowed to edit this message",
     "reputation-system-disabled": "Ibijyanye n'itangwa ry'amanota ntibyemerewe. ",
     "downvoting-disabled": "Kwambura amanota ntibyemerewe",
     "not-enough-reputation-to-downvote": "Ntabwo ufite amanota ahagije ngo ube wakwemererwa kugira uwo wambura amanota",

@@ -78,6 +78,7 @@
     "too-many-messages": "Poslali ste veliko število sporočil, prosimo počakajte nekaj časa.",
     "invalid-chat-message": "Invalid chat message",
     "chat-message-too-long": "Chat message is too long",
+    "cant-edit-chat-message": "You are not allowed to edit this message",
     "reputation-system-disabled": "Možnost ugleda je onemogočena.",
     "downvoting-disabled": "Negativno glasovanje je onemogočeno",
     "not-enough-reputation-to-downvote": "Nimate dovolj ugleda za negativno glasovanje",

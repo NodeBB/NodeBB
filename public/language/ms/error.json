@@ -78,6 +78,7 @@
     "too-many-messages": "Anda menghantar terlalu banyak pesanan, sila tunggu seketika.",
     "invalid-chat-message": "Mesej borak tidak sah",
     "chat-message-too-long": "Mesej borak terlalu panjang",
+    "cant-edit-chat-message": "You are not allowed to edit this message",
     "reputation-system-disabled": "Sistem reputasi dilumpuhkan.",
     "downvoting-disabled": "Undi turun dilumpuhkan",
     "not-enough-reputation-to-downvote": "Anda tidak mempunyai reputasi mencukupi untuk mengundi turun kiriman ini",

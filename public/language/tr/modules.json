@@ -15,6 +15,7 @@
     "chat.seven_days": "7 Gün",
     "chat.thirty_days": "30 Gün",
     "chat.three_months": "3 Ay",
+    "chat.delete_message_confirm": "Bu mesajı silmek istediğinden emin misin?",
     "composer.compose": "Yaz",
     "composer.show_preview": "Önizleme Göster",
     "composer.hide_preview": "Önizleme Sakla",

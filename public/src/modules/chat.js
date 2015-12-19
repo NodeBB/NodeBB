@@ -252,6 +252,17 @@ define('chat', ['components', 'taskbar', 'string', 'sounds', 'forum/chats', 'tra
 					}
 				});
 
+				chatModal.find('[component="chat/messages"]')
+					.on('click', '[data-action="edit"]', function() {
+						var messageId = $(this).parents('[data-mid]').attr('data-mid');
+						var inputEl = chatModal.find('[component="chat/input"]');
+						Chats.prepEdit(inputEl, messageId);
+					})
+					.on('click', '[data-action="delete"]', function() {
+						var messageId = $(this).parents('[data-mid]').attr('data-mid');
+						Chats.delete(messageId);
+					});
+
 				Chats.addSinceHandler(chatModal.attr('touid'), chatModal.find('.chat-content'), chatModal.find('[data-since]'));
 
 				Chats.addSendHandlers(chatModal.attr('touid'), chatModal.find('#chat-message-input'), chatModal.find('#chat-message-send-btn'));

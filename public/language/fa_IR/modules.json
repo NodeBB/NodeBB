@@ -5,7 +5,7 @@
     "chat.no_active": "شما هیچ گفتگوی فعالی ندارید.",
     "chat.user_typing": "%1 در حال نوشتن است...",
     "chat.user_has_messaged_you": "%1 به شما پیام داده است.",
-    "chat.see_all": "See all chats",
+    "chat.see_all": "دیدن همه ی چت ها",
     "chat.no-messages": "مشخص کنید تاریخچه گفتگوهایتان با چه کاربری را می‌خواهید ببینید",
     "chat.recent-chats": "گفتگوهای اخیر",
     "chat.contacts": "تماس‌ها",
@@ -15,6 +15,7 @@
     "chat.seven_days": "7 روز",
     "chat.thirty_days": "30 روز",
     "chat.three_months": "3 ماه",
+    "chat.delete_message_confirm": "آیا مطمئن هستید که می خواهید این پیغام را حذف کنید؟",
     "composer.compose": "ارسال",
     "composer.show_preview": "نمایش پیش‌نمایش",
     "composer.hide_preview": "مخفی کردن پیش‌نمایش",
@@ -23,11 +24,11 @@
     "composer.discard": "آیا از دور انداختن این دیدگاه اطمینان دارید؟",
     "composer.submit_and_lock": "ارسال و قفل",
     "composer.toggle_dropdown": "باز و بسته کردن کرکره",
-    "composer.uploading": "Uploading %1",
+    "composer.uploading": "در حال بارگزاری 1%",
     "bootbox.ok": "OK",
     "bootbox.cancel": "Cancel",
-    "bootbox.confirm": "Confirm",
-    "cover.dragging_title": "Cover Photo Positioning",
-    "cover.dragging_message": "Drag the cover photo to the desired position and click \"Save\"",
-    "cover.saved": "Cover photo image and position saved"
+    "bootbox.confirm": "تایید",
+    "cover.dragging_title": "تنظیم مکان عکس کاور",
+    "cover.dragging_message": "عکس کاور با کلیک موس گرفته و در مکان دلخواه رها کنید و بر روی \"ذخیره\" کلیک کنید",
+    "cover.saved": "عکس کاور و مکان آن ذخیره شد"
 }

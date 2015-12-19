@@ -27,6 +27,11 @@ define('forum/chats', ['components', 'string', 'sounds', 'forum/infinitescroll',
 		Chats.scrollToBottom($('.expanded-chat ul'));
 
 		Chats.initialised = true;
+
+		if (ajaxify.data.hasOwnProperty('meta') && ajaxify.data.meta.hasOwnProperty('uid')) {
+			// This is an active chat, focus on the input box
+			components.get('chat/input').focus();
+		}
 	};
 
 	Chats.getRecipientUid = function() {
@@ -63,6 +68,17 @@ define('forum/chats', ['components', 'string', 'sounds', 'forum/infinitescroll',
 			});
 		});
 
+		components.get('chat/messages')
+			.on('click', '[data-action="edit"]', function() {
+				var messageId = $(this).parents('[data-mid]').attr('data-mid');
+				var inputEl = components.get('chat/input');
+				Chats.prepEdit(inputEl, messageId);
+			})
+			.on('click', '[data-action="delete"]', function() {
+				var messageId = $(this).parents('[data-mid]').attr('data-mid');
+				Chats.delete(messageId);
+			});
+
 		$('.recent-chats').on('scroll', function() {
 			var $this = $(this);
 			var bottom = ($this[0].scrollHeight - $this.height()) * 0.9;
@@ -82,8 +98,6 @@ define('forum/chats', ['components', 'string', 'sounds', 'forum/infinitescroll',
 			if (prev.length) {
 				Chats.switchChat(parseInt(prev.attr('data-uid'), 10), prev.attr('data-username'));
 			}
-
-			$('[component="chat/input"]').focus();
 		});
 		Mousetrap.bind('ctrl+down', function() {
 			var activeContact = $('.chats-list .bg-primary'),
@@ -92,8 +106,49 @@ define('forum/chats', ['components', 'string', 'sounds', 'forum/infinitescroll',
 			if (next.length) {
 				Chats.switchChat(parseInt(next.attr('data-uid'), 10), next.attr('data-username'));
 			}
+		});
+		Mousetrap.bind('up', function(e) {
+			if (e.target === components.get('chat/input').get(0)) {
+				// Retrieve message id from messages list
+				var message = components.get('chat/messages').find('.chat-message[data-self="1"]').last();
+				var lastMid = message.attr('data-mid');
+				var inputEl = components.get('chat/input');
 
-			$('[component="chat/input"]').focus();
+				Chats.prepEdit(inputEl, lastMid);
+			}
+		});
+	};
+
+	Chats.prepEdit = function(inputEl, messageId) {
+		socket.emit('modules.chats.getRaw', { mid: messageId }, function(err, raw) {
+			// Populate the input field with the raw message content
+			if (inputEl.val().length === 0) {
+				// By setting the `data-mid` attribute, I tell the chat code that I am editing a
+				// message, instead of posting a new one.
+				inputEl.attr('data-mid', messageId).addClass('editing');
+				inputEl.val(raw);
+			}
+		});
+	};
+
+	Chats.delete = function(messageId) {
+		translator.translate('[[modules:chat.delete_message_confirm]]', function(translated) {
+			bootbox.confirm(translated, function(ok) {
+				if (ok) {
+					socket.emit('modules.chats.delete', {
+						messageId: messageId
+					}, function(err) {
+						if (err) {
+							return app.alertError(err.message);
+						}
+
+						// Remove message from list
+						components.get('chat/message', messageId).slideUp('slow', function() {
+							$(this).remove();
+						});
+					});
+				}
+			});
 		});
 	};
 
@@ -134,18 +189,24 @@ define('forum/chats', ['components', 'string', 'sounds', 'forum/infinitescroll',
 	};
 
 	Chats.switchChat = function(uid, username) {
-		if (!$('[component="chat/messages"]').length) {
+		if (!$('#content [component="chat/messages"]').length) {
 			return ajaxify.go('chats/' + utils.slugify(username));
 		}
 
 		var contactEl = $('.chats-list [data-uid="' + uid + '"]');
 
 		Chats.loadChatSince(uid, $('.chat-content'), 'recent');
-		Chats.addSendHandlers(uid, $('[component="chat/input"]'), $('[data-action="send"]'));
-		contactEl.addClass('bg-primary').siblings().removeClass('bg-primary');
-		$('[component="chat/title"]').text(username);
-		$('[component="chat/messages"]').attr('data-uid', uid).attr('data-username', username);
-		$('[component="breadcrumb/current"]').text(username);
+		Chats.addSendHandlers(uid, components.get('chat/input'), $('[data-action="send"]'));
+
+		contactEl
+			.removeClass('unread')
+			.addClass('bg-primary')
+			.siblings().removeClass('bg-primary');
+
+		components.get('chat/title').text(username);
+		components.get('chat/messages').attr('data-uid', uid).attr('data-username', username);
+		components.get('breadcrumb/current').text(username);
+		components.get('chat/input').focus();
 
 		if (window.history && window.history.pushState) {
 			var url = 'chats/' + utils.slugify(username);
@@ -214,18 +275,22 @@ define('forum/chats', ['components', 'string', 'sounds', 'forum/infinitescroll',
 				Chats.appendChatMessage($('.expanded-chat .chat-content'), data.message);
 			} else {
 				var contactEl = $('[component="chat/recent"] li[data-uid="' + data.withUid + '"]'),
-					userKey = data.withUid === data.message.fromuid ? 'fromUser' : 'toUser';
+					userKey = parseInt(data.withUid, 10) === parseInt(data.message.fromuid, 10) ? 'fromUser' : 'toUser';
 
 				// Spawn a new contact if required
-				templates.parse('partials/chat_contact', {
-					uid: data.withUid,
-					username: data.message[userKey].username,
-					status: data.message[userKey].status,
-					picture: data.message[userKey].picture,
-					teaser: {
-						content: data.message.cleanedContent,
-						timestampISO: new Date(Date.now()).toISOString()
-					}
+				templates.parse('partials/chat_contacts', {
+					contacts: [{
+						uid: data.message[userKey].uid,
+						username: data.message[userKey].username,
+						status: data.message[userKey].status,
+						picture: data.message[userKey].picture,
+						'icon:text': data.message[userKey]['icon:text'],
+						'icon:bgColor': data.message[userKey]['icon:bgColor'],
+						teaser: {
+							content: data.message.cleanedContent,
+							timestampISO: new Date(Date.now()).toISOString()
+						}
+					}]
 				}, function(html) {
 					translator.translate(html, function(translatedHTML) {
 						if (contactEl.length) {
@@ -253,6 +318,22 @@ define('forum/chats', ['components', 'string', 'sounds', 'forum/infinitescroll',
 		socket.on('event:user_status_change', function(data) {
 			app.updateUserStatus($('.chats-list [data-uid="' + data.uid + '"] [component="user/status"]'), data.status);
 		});
+
+		socket.on('event:chats.edit', function(data) {
+			var message;
+
+			data.messages.forEach(function(message) {
+				templates.parse('partials/chat_message', {
+					messages: message
+				}, function(html) {
+					body = components.get('chat/message', message.messageId);
+					if (body.length) {
+						body.replaceWith(html);
+						components.get('chat/message', message.messageId).find('.timeago').timeago();
+					}
+				});
+			});
+		});
 	};
 
 	Chats.resizeMainWindow = function() {
@@ -278,7 +359,9 @@ define('forum/chats', ['components', 'string', 'sounds', 'forum/infinitescroll',
 	};
 
 	Chats.sendMessage = function(toUid, inputEl) {
-		var msg = inputEl.val();
+		var msg = inputEl.val(),
+			mid = inputEl.attr('data-mid');
+
 		if (msg.length > config.maximumChatMessageLength) {
 			return app.alertError('[[error:chat-message-too-long]]');
 		}
@@ -288,20 +371,35 @@ define('forum/chats', ['components', 'string', 'sounds', 'forum/infinitescroll',
 		}
 
 		inputEl.val('');
-		socket.emit('modules.chats.send', {
-			touid: toUid,
-			message: msg
-		}, function(err) {
-			if (err) {
-				if (err.message === '[[error:email-not-confirmed-chat]]') {
-					return app.showEmailConfirmWarning(err);
-				}
-				return app.alertError(err.message);
-			}
+		inputEl.removeAttr('data-mid');
 
-			sounds.play('chat-outgoing');
-			Chats.notifyTyping(toUid, false);
-		});
+		if (!mid) {
+			socket.emit('modules.chats.send', {
+				touid: toUid,
+				message: msg
+			}, function(err) {
+				if (err) {
+					if (err.message === '[[error:email-not-confirmed-chat]]') {
+						return app.showEmailConfirmWarning(err);
+					}
+					return app.alertError(err.message);
+				}
+
+				sounds.play('chat-outgoing');
+				Chats.notifyTyping(toUid, false);
+			});
+		} else {
+			socket.emit('modules.chats.edit', {
+				mid: mid,
+				message: msg
+			}, function(err) {
+				if (err) {
+					return app.alertError(err.message);
+				}
+
+				Chats.notifyTyping(toUid, false);
+			});
+		}
 	};
 
 	Chats.scrollToBottom = function(containerEl) {
@@ -325,7 +423,9 @@ define('forum/chats', ['components', 'string', 'sounds', 'forum/infinitescroll',
 	Chats.parseMessage = function(data, callback) {
 		templates.parse('partials/chat_message' + (Array.isArray(data) ? 's' : ''), {
 			messages: data
-		}, callback);
+		}, function(html) {
+			translator.translate(html, callback);
+		});
 	};
 
 	function loadMoreRecentChats() {

@@ -125,6 +125,14 @@ function uploadFile(uid, uploadedFile, callback) {
 		return callback(new Error('[[error:file-too-big, ' + meta.config.maximumFileSize + ']]'));
 	}
 
+	if (meta.config.hasOwnProperty('allowedFileExtensions')) {
+		var allowed = meta.config.allowedFileExtensions.split(',').filter(Boolean);
+		var extension = path.extname(uploadedFile.name).slice(1);
+		if (allowed.length > 0 && allowed.indexOf(extension) === -1) {
+			return callback(new Error('[[error:invalid-file-type, ' + allowed.join('&#44; ') + ']]'));
+		}
+	}
+
 	var filename = uploadedFile.name || 'upload';
 
 	filename = Date.now() + '-' + validator.escape(filename).substr(0, 255);

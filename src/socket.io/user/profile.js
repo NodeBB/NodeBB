@@ -117,12 +117,17 @@ module.exports = function(SocketUser) {
 					return next(new Error('[[error:invalid-data]]'));
 				}
 
-				if (parseInt(meta.config['username:disableEdit'], 10) === 1) {
+				user.isAdministrator(socket.uid, next);
+			},
+			function(isAdmin, next) {
+				if (!isAdmin && socket.uid !== parseInt(data.uid, 10)) {
+					return next(new Error('[[error:no-privileges]]'));
+				}
+
+				if (!isAdmin && parseInt(meta.config['username:disableEdit'], 10) === 1) {
 					data.username = oldUserData.username;
 				}
-				user.isAdminOrSelf(socket.uid, data.uid, next);
-			},
-			function (next) {
+
 				user.updateProfile(data.uid, data, next);
 			},
 			function (userData, next) {

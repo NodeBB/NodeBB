@@ -45,6 +45,7 @@ module.exports = function(Groups) {
 			}
 
 			async.series([
+				async.apply(checkNameChange, groupName, values.name),
 				async.apply(updatePrivacy, groupName, values.private),
 				function(next) {
 					if (values.hasOwnProperty('hidden')) {
@@ -214,6 +215,23 @@ module.exports = function(Groups) {
 			} else {
 				callback();
 			}
+		});
+	}
+
+	function checkNameChange(currentName, newName, callback) {
+		if (currentName === newName) {
+			return callback();
+		}
+		var currentSlug = utils.slugify(currentName);
+		var newSlug = utils.slugify(newName);
+		if (currentSlug === newSlug) {
+			return callback();
+		}
+		Groups.existsBySlug(newSlug, function(err, exists) {
+			if (err || exists) {
+				return callback(err || new Error('[[error:group-already-exists]]'));
+			}
+			callback();
 		});
 	}
 

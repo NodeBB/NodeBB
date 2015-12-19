@@ -78,6 +78,7 @@
     "too-many-messages": "Você enviou muitas mensagens, por favor aguarde um momento.",
     "invalid-chat-message": "Mensagem de chat inválida",
     "chat-message-too-long": "A mensagem de chat é muito longa",
+    "cant-edit-chat-message": "You are not allowed to edit this message",
     "reputation-system-disabled": "O sistema de reputação está desabilitado.",
     "downvoting-disabled": "Negativação está desabilitada",
     "not-enough-reputation-to-downvote": "Você não possui reputação suficiente para negativar este post",

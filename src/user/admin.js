@@ -1,9 +1,9 @@
 
 'use strict';
 
-var async = require('async'),
-	db = require('./../database');
-
+var async = require('async');
+var db = require('../database');
+var plugins = require('../plugins');
 
 module.exports = function(User) {
 
@@ -17,7 +17,7 @@ module.exports = function(User) {
 
 	User.getIPs = function(uid, stop, callback) {
 		db.getSortedSetRevRange('uid:' + uid + ':ip', 0, stop, function(err, ips) {
-			if(err) {
+			if (err) {
 				return callback(err);
 			}
 
@@ -31,17 +31,17 @@ module.exports = function(User) {
 		var csvContent = '';
 
 		async.waterfall([
-			function(next) {
+			function (next) {
 				db.getSortedSetRangeWithScores('username:uid', 0, -1, next);
 			},
-			function(users, next) {
+			function (users, next) {
 				var uids = users.map(function(user) {
 					return user.score;
 				});
 				User.getUsersFields(uids, ['uid', 'email', 'username'], next);
 			},
-			function(usersData, next) {
-				usersData.forEach(function(user, index) {
+			function (usersData, next) {
+				usersData.forEach(function(user) {
 					if (user) {
 						csvContent += user.email + ',' + user.username + ',' + user.uid + '\n';
 					}
@@ -53,22 +53,34 @@ module.exports = function(User) {
 	};
 
 	User.ban = function(uid, callback) {
-		User.setUserField(uid, 'banned', 1, function(err) {
-			if (err) {
-				return callback(err);
+		async.waterfall([
+			function (next) {
+				User.setUserField(uid, 'banned', 1, next);
+			},
+			function (next) {
+				db.sortedSetAdd('users:banned', Date.now(), uid, next);
+			},
+			function (next) {
+				plugins.fireHook('action:user.banned', {uid: uid});
+				next();
 			}
-			db.sortedSetAdd('users:banned', Date.now(), uid, callback);
-		});
+		], callback);
 	};
 
 	User.unban = function(uid, callback) {
 		db.delete('uid:' + uid + ':flagged_by');
-		User.setUserField(uid, 'banned', 0, function(err) {
-			if (err) {
-				return callback(err);
+		async.waterfall([
+			function (next) {
+				User.setUserField(uid, 'banned', 0, next);
+			},
+			function (next) {
+				db.sortedSetRemove('users:banned', uid, next);
+			},
+			function (next) {
+				plugins.fireHook('action:user.unbanned', {uid: uid});
+				next();
 			}
-			db.sortedSetRemove('users:banned', uid, callback);
-		});
+		], callback);
 	};
 
 	User.resetFlags = function(uids, callback) {

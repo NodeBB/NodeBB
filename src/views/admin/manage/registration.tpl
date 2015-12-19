@@ -1,4 +1,14 @@
-<div class="registration">
+<div class="registration panel panel-primary">
+	<div class="panel-heading">
+		Queue
+	</div>
+	<!-- IF !users.length -->
+	<p class="panel-body">
+		There are no users in the registration queue. <br>
+		To enable this feature, go to <a href="{config.relative_path}/admin/settings/user">Settings -> User -> Authentication</a> and set
+		<strong>Registration Type</strong> to "Admin Approval".
+	</p>
+	<!-- ENDIF !users.length -->
 	<table class="table table-striped users-list">
 		<tr>
 			<th>Name</th>
@@ -7,11 +17,6 @@
 			<th>Time</th>
 			<th></th>
 		</tr>
-		<!-- IF !users.length -->
-		<p>
-			There are no users in the registration queue. To enable this feature go to <a href="{config.relative_path}/admin/settings/user">Settings -> User -> Authentication</a> and set <strong>Registration Type</strong> to "Admin Approval".
-		</p>
-		<!-- ENDIF !users.length -->
 		<!-- BEGIN users -->
 		<tr data-username="{users.username}">
 			<td>
@@ -49,5 +54,32 @@
 			</td>
 		</tr>
 		<!-- END users -->
+	</table>
+</div>
+
+<div class="invitations panel panel-success">
+	<div class="panel-heading">
+		Invitations
+	</div>
+	<p class="panel-body">
+		Below is a complete list of invitations sent. Use ctrl-f to search through the list by email or username.
+		<br><br>
+		The username will be displayed to the right of the emails for users who have redeemed their invitations.
+	</p>
+	<table class="table table-striped users-list">
+		<tr>
+			<th>Inviter Username</th>
+			<th>Invitee Email</th>
+			<th>Invitee Username (if registered)</th>
+		</tr>
+		<!-- BEGIN invites -->
+		<tr>
+			<!-- BEGIN invites.invitations -->
+			<td><!-- IF @first -->{invites.username}<!-- ENDIF @first --></td>
+			<td>{invites.invitations.email}</td>
+			<td>{invites.invitations.username}</td>
+		</tr>
+		<!-- END invites.invitations -->
+		<!-- END invites -->
 	</table>
 </div>

@@ -15,6 +15,7 @@
     "chat.seven_days": "7 Päeva",
     "chat.thirty_days": "30 Päeva",
     "chat.three_months": "3 Kuud",
+    "chat.delete_message_confirm": "Are you sure you wish to delete this message?",
     "composer.compose": "Koosta",
     "composer.show_preview": "Kuva eelvaadet",
     "composer.hide_preview": "Peida eelvaade",

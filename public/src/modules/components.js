@@ -35,6 +35,13 @@ define('components', function() {
 
 		'categories/category': function(name, value) {
 			return $('[component="categories/category"][data-' + name + '="' + value + '"]');
+		},
+
+		'chat/message': function(messageId) {
+			return $('[component="chat/message"][data-mid="' + messageId + '"]');
+		},
+		'chat/message/body': function(messageId) {
+			return $('[component="chat/message"][data-mid="' + messageId + '"] [component="chat/message/body"]');
 		}
 	};
 

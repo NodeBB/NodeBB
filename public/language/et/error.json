@@ -78,6 +78,7 @@
     "too-many-messages": "Oled saatnud liiga palju sõnumeid, oota natukene.",
     "invalid-chat-message": "Vigane vestluse sõnum",
     "chat-message-too-long": "Vestluse sõnum on liiga pikk",
+    "cant-edit-chat-message": "You are not allowed to edit this message",
     "reputation-system-disabled": "Reputatsiooni süsteem ei ole aktiveeritud",
     "downvoting-disabled": "Negatiivsete häälte andmine ei ole võimaldatud",
     "not-enough-reputation-to-downvote": "Sul ei ole piisavalt reputatsiooni, et anda negatiivset hinnangut sellele postitusele.",
