@@ -25,7 +25,7 @@ define('admin/manage/flags', [
 	function handleDismiss() {
 		$('.flags').on('click', '.dismiss', function() {
 			var btn = $(this);
-			var pid = btn.siblings('[data-pid]').attr('data-pid');
+			var pid = btn.parents('[data-pid]').attr('data-pid');
 
 			socket.emit('admin.dismissFlag', pid, function(err) {
 				done(err, btn);
@@ -49,11 +49,11 @@ define('admin/manage/flags', [
 		$('.flags').on('click', '.delete', function() {
 			var btn = $(this);
 			bootbox.confirm('Do you really want to delete this post?', function(confirm) {
-				if(!confirm) {
+				if (!confirm) {
 					return;
 				}
-				var pid = btn.siblings('[data-pid]').attr('data-pid');
-				var tid = btn.siblings('[data-pid]').attr('data-tid');
+				var pid = btn.parents('[data-pid]').attr('data-pid');
+				var tid = btn.parents('[data-pid]').attr('data-tid');
 				socket.emit('posts.delete', {pid: pid, tid: tid}, function(err) {
 					done(err, btn);
 				});
@@ -65,7 +65,7 @@ define('admin/manage/flags', [
 		if (err) {
 			return app.alertError(err.messaage);
 		}
-		btn.parent().fadeOut(function() {
+		btn.parents('[data-pid]').fadeOut(function() {
 			$(this).remove();
 			if (!$('.flags [data-pid]').length) {
 				$('.post-container').text('No flagged posts!');

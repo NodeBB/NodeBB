@@ -36,9 +36,9 @@
 				<!-- ENDIF !posts.length -->
 
 				<!-- BEGIN posts -->
-				<div class="row">
+				<div class="row" data-pid="{posts.pid}" data-tid="{posts.topic.tid}">
 					<div class="col-sm-8">
-						<div class="panel panel-default" data-pid="{posts.pid}" data-tid="{posts.topic.tid}">
+						<div class="panel panel-default">
 							<div class="panel-body flag-post-body">
 								<a href="{config.relative_path}/user/{../user.userslug}">
 									<!-- IF ../user.picture -->
