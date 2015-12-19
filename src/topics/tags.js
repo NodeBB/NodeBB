@@ -5,7 +5,6 @@ var async = require('async'),
 
 	db = require('../database'),
 	meta = require('../meta'),
-	user = require('../user'),
 	_ = require('underscore'),
 	plugins = require('../plugins');
 
@@ -323,43 +322,33 @@ module.exports = function(Topics) {
 		});
 	};
 
-	Topics.getRelatedTopics = function(topicData, callback) {
-		var maximumTopics = typeof meta.config.maximumRelatedTopics !== 'undefined' ? parseInt(meta.config.maximumRelatedTopics, 10) : 5;
+	Topics.getRelatedTopics = function(topicData, uid, callback) {
+		if (plugins.hasListeners('filter:topic.getRelatedTopics')) {
+			return plugins.fireHook('filter:topic.getRelatedTopics', {topic: topicData, uid: uid}, callback);
+		}
+
+		var maximumTopics = parseInt(meta.config.maximumRelatedTopics, 10) || 5;
 
 		if (!topicData.tags.length || maximumTopics === 0) {
 			return callback(null, topicData);
 		}
 
-		var related = [];
-
-		user.isAdministrator(topicData.threadTools.uid, function(err, isAdministrator) {
-			async.each(topicData.tags, function(tag, next) {
-				tag = tag.value;
-
-				Topics.getTagTids(tag, 0, 5, function(err, tids) {
-					Topics.getTopics(tids, topicData.threadTools.uid, function(err, topics) {
-						related = related.concat(topics.filter(function(topic) {
-							var doesntOwnTopic = parseInt(topic.uid, 10) !== parseInt(topicData.threadTools.uid, 10);
-							var isntSameTopic = parseInt(topic.tid, 10) !== parseInt(topicData.threadTools.topic.tid, 10);
-
-							return doesntOwnTopic && isntSameTopic;
-						}));
-
-						next(err);
-					});
+		async.waterfall([
+			function (next) {
+				async.map(topicData.tags, function (tag, next) {
+					Topics.getTagTids(tag.value, 0, 5, next);
+				}, next);
+			},
+			function (tids, next) {
+				tids = _.shuffle(_.unique(_.flatten(tids))).slice(0, maximumTopics);
+				Topics.getTopics(tids, uid, next);
+			},
+			function (topics, next) {
+				topics = topics.filter(function(topic) {
+					return topic && !topic.deleted && parseInt(topic.uid, 10) !== parseInt(uid, 10);
 				});
-			}, function(err) {
-				if (!isAdministrator) {
-					related = related.filter(function(topic) {
-						return topic && !topic.deleted;
-					});
-				}
-
-				related = _.shuffle(related).slice(0, maximumTopics);
-
-				topicData.related = related;
-				callback(err, topicData);
-			});
-		});
+				next(null, topics);
+			}
+		], callback);
 	};
 };

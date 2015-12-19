@@ -148,6 +148,9 @@ SocketGroups.update = isOwner(function(socket, data, callback) {
 
 
 SocketGroups.kick = isOwner(function(socket, data, callback) {
+	if (socket.uid === parseInt(data.uid, 10)) {
+		return callback(new Error('[[error:cant-kick-self]]'));
+	}
 	groups.leave(data.groupName, data.uid, callback);
 });
 
