@@ -84,9 +84,9 @@ SocketModules.chats.send = function(socket, data, callback) {
 		socket.lastChatMessageTime = now;
 	}
 
-	Messaging.canMessageRoom(socket.uid, data.roomId, function(err, allowed) {
+	Messaging.canMessageRoom(socket.uid, data.roomId, function(err, allowed, notAllowedMessage) {
 		if (err || !allowed) {
-			return callback(err || new Error('[[error:chat-restricted]]'));
+			return callback(err || new Error(notAllowedMessage));
 		}
 
 		Messaging.sendMessage(socket.uid, data.roomId, data.message, now, function(err, message) {
@@ -183,8 +183,11 @@ SocketModules.chats.delete = function(socket, data, callback) {
 };
 
 SocketModules.chats.canMessage = function(socket, roomId, callback) {
-	Messaging.canMessageRoom(socket.uid, roomId, function(err, allowed) {
-		callback(!allowed ? new Error('[[error:chat-restricted]]') : undefined);
+	Messaging.canMessageRoom(socket.uid, roomId, function(err, allowed, notAllowedMessage) {
+		if (err || !allowed) {
+			return callback(err || new Error(notAllowedMessage));
+		}
+		callback();
 	});
 };
 

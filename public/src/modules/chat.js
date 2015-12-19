@@ -273,13 +273,6 @@ define('chat', ['components', 'taskbar', 'string', 'sounds', 'forum/chats', 'tra
 
 				checkStatus(chatModal);
 
-				module.canMessage(data.roomId, function(err) {
-					if (err) {
-						// Disable the text input
-						chatModal.find('input[type="text"]').attr('disabled', true);
-					}
-				});
-
 				taskbar.push('chat', chatModal.attr('UUID'), {
 					title: data.users.length ? data.users[0].username : '',
 					roomId: data.roomId,
@@ -379,11 +372,6 @@ define('chat', ['components', 'taskbar', 'string', 'sounds', 'forum/chats', 'tra
 	};
 
 	module.toggleNew = taskbar.toggleNew;
-
-	module.canMessage = function(roomId, callback) {
-		socket.emit('modules.chats.canMessage', roomId, callback);
-	};
-
 
 
 	return module;
