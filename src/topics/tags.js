@@ -330,7 +330,7 @@ module.exports = function(Topics) {
 		var maximumTopics = parseInt(meta.config.maximumRelatedTopics, 10) || 5;
 
 		if (!topicData.tags.length || maximumTopics === 0) {
-			return callback(null, topicData);
+			return callback(null, []);
 		}
 
 		async.waterfall([
