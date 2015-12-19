@@ -246,33 +246,8 @@ function setupDefaultConfigs(next) {
 			return next(err);
 		}
 
-		if (install.values) {
-			async.parallel([
-				async.apply(setIfPaired, 'social:twitter:key', 'social:twitter:secret'),
-				async.apply(setIfPaired, 'social:google:id', 'social:google:secret'),
-				async.apply(setIfPaired, 'social:facebook:app_id', 'social:facebook:secret')
-			], function(err) {
-				if (err) {
-					return next(err);
-				}
-				meta.configs.init(next);
-			});
-		} else {
-			meta.configs.init(next);
-		}
+		meta.configs.init(next);
 	});
-}
-
-function setIfPaired(key1, key2, callback) {
-	var meta = require('./meta');
-	if (install.values[key1] && install.values[key2]) {
-		async.parallel([
-			async.apply(meta.configs.setOnEmpty, key1, install.values[key1]),
-			async.apply(meta.configs.setOnEmpty, key2, install.values[key2])
-		], callback);
-	} else {
-		callback();
-	}
 }
 
 function enableDefaultTheme(next) {
