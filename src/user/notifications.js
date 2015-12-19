@@ -64,6 +64,8 @@ var async = require('async'),
 	}
 
 	function getNotificationsFromSet(set, read, uid, start, stop, callback) {
+		var setNids;
+
 		async.waterfall([
 			async.apply(db.getSortedSetRevRange, set, start, stop),
 			function(nids, next) {
@@ -71,6 +73,7 @@ var async = require('async'),
 					return callback(null, []);
 				}
 
+				setNids = nids;
 				UserNotifications.getNotifications(nids, uid, next);
 			},
 			function(notifs, next) {
@@ -78,8 +81,8 @@ var async = require('async'),
 
 				notifs.forEach(function(notification, index) {
 					if (!notification) {
-						winston.verbose('[notifications.get] nid ' + notification.nid + ' not found. Removing.');
-						deletedNids.push(notification.nid);
+						winston.verbose('[notifications.get] nid ' + setNids[index] + ' not found. Removing.');
+						deletedNids.push(setNids[index]);
 					} else {
 						notification.read = read;
 						notification.readClass = !notification.read ? 'unread' : '';
