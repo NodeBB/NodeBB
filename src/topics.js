@@ -192,25 +192,22 @@ var async = require('async'),
 				}, next);
 			},
 			function(results, next) {
-				if (plugins.hasListeners('filter:topic.getRelatedTopics')) {
-					plugins.fireHook('filter:topic.getRelatedTopics', results, next);
-				} else {
-					Topics.getRelatedTopics(results, next);
-				}
-			}, function(results, next) {
 				topicData.posts = results.posts;
 				topicData.category = results.category;
 				topicData.thread_tools = results.threadTools.tools;
 				topicData.tags = results.tags;
 				topicData.isFollowing = results.isFollowing[0];
 				topicData.bookmark = results.bookmark;
-				topicData.related = results.related || [];
 
 				topicData.unreplied = parseInt(topicData.postcount, 10) === 1;
 				topicData.deleted = parseInt(topicData.deleted, 10) === 1;
 				topicData.locked = parseInt(topicData.locked, 10) === 1;
 				topicData.pinned = parseInt(topicData.pinned, 10) === 1;
 
+				Topics.getRelatedTopics(topicData, uid, next);
+			},
+			function(related, next) {
+				topicData.related = related || [];
 				plugins.fireHook('filter:topic.get', {topic: topicData, uid: uid}, next);
 			},
 			function(data, next) {
