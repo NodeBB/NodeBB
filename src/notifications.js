@@ -344,7 +344,7 @@ var async = require('async'),
 
 		notifications = mergeIds.reduce(function(notifications, mergeId) {
 			isolated = notifications.filter(function(notifObj) {
-				if (!notifObj.hasOwnProperty('mergeId')) {
+				if (!notifObj || !notifObj.hasOwnProperty('mergeId')) {
 					return false;
 				}
 
