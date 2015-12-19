@@ -1,5 +1,5 @@
 "use strict";
-/*global io, templates, ajaxify, utils, bootbox, overrides, socket, config, Visibility*/
+/*global templates, translator, ajaxify, utils, bootbox, overrides, socket, config, Visibility*/
 
 var app = app || {};
 
@@ -159,7 +159,7 @@ app.cacheBuster = null;
 			}
 			app.currentRoom = '';
 		});
-	}
+	};
 
 	function highlightNavigationLink() {
 		var path = window.location.pathname;
@@ -239,11 +239,7 @@ app.cacheBuster = null;
 		}
 	};
 
-	app.openChat = function (username, touid) {
-		if (username === app.user.username) {
-			return app.alertError('[[error:cant-chat-with-yourself]]');
-		}
-
+	app.openChat = function (roomId) {
 		if (!app.user.uid) {
 			return app.alertError('[[error:not-logged-in]]');
 		}
@@ -255,14 +251,35 @@ app.cacheBuster = null;
 				chat.focusInput(chatModal);
 			}
 
-			if (!chat.modalExists(touid)) {
-				chat.createModal({
-					username: username,
-					touid: touid
-				}, loadAndCenter);
+			if (chat.modalExists(roomId)) {
+				loadAndCenter(chat.getModal(roomId));
 			} else {
-				loadAndCenter(chat.getModal(touid));
+				socket.emit('modules.chats.getUsersInRoom', {roomId: roomId}, function(err, users) {
+					if (err) {
+						return app.alertError(err.message);
+					}
+					users = users.filter(function(user) {
+						return user && parseInt(user.uid, 10) !== parseInt(app.user.uid, 10);
+					});
+					chat.createModal({
+						roomId: roomId,
+						users: users
+					}, loadAndCenter);
+				});
 			}
+		});
+	};
+
+	app.newChat = function (touid) {
+		if (!app.user.uid) {
+			return app.alertError('[[error:not-logged-in]]');
+		}
+
+		socket.emit('modules.chats.newRoom', {touid: touid}, function(err, roomId) {
+			if (err) {
+				return app.alertError(err.message);
+			}
+			app.openChat(roomId);
 		});
 	};
 
@@ -408,7 +425,7 @@ app.cacheBuster = null;
 	function handleStatusChange() {
 		$('[component="header/usercontrol"] [data-status]').off('click').on('click', function(e) {
 			var status = $(this).attr('data-status');
-			socket.emit('user.setStatus', status, function(err, data) {
+			socket.emit('user.setStatus', status, function(err) {
 				if(err) {
 					return app.alertError(err.message);
 				}

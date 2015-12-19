@@ -22,6 +22,10 @@ SocketGroups.join = function(socket, data, callback) {
 		return callback(new Error('[[error:invalid-uid]]'));
 	}
 
+	if (data.groupName === 'administrators' || groups.isPrivilegeGroup(data.groupName)) {
+		return callback(new Error('[[error:not-allowed]]'));
+	}
+
 	groups.exists(data.groupName, function(err, exists) {
 		if (err || !exists) {
 			return callback(err || new Error('[[error:no-group]]'));

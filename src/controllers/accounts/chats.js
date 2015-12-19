@@ -1,13 +1,11 @@
 'use strict';
 
-var async = require('async'),
-	nconf = require('nconf'),
+var async = require('async');
 
-	user = require('../../user'),
-	messaging = require('../../messaging'),
-	meta = require('../../meta'),
-	helpers = require('../helpers'),
-	utils = require('../../../public/src/utils');
+var messaging = require('../../messaging');
+var meta = require('../../meta');
+var helpers = require('../helpers');
+
 
 var chatsController = {};
 
@@ -16,35 +14,15 @@ chatsController.get = function(req, res, callback) {
 		return callback();
 	}
 
-	// In case a userNAME is passed in instead of a slug, the route should not 404
-	var slugified = utils.slugify(req.params.userslug);
-	if (req.params.userslug && req.params.userslug !== slugified) {
-		return helpers.redirect(res, '/chats/' + slugified);
-	}
-
-	async.parallel({
-		contacts: async.apply(user.getFollowing, req.user.uid, 0, 199),
-		recentChats: async.apply(messaging.getRecentChats, req.user.uid, 0, 19)
-	}, function(err, results) {
+	messaging.getRecentChats(req.uid, 0, 19, function(err, recentChats) {
 		if (err) {
 			return callback(err);
 		}
 
-		if (results.recentChats.users && results.recentChats.users.length) {
-			var contactUids = results.recentChats.users.map(function(chatObj) {
-					return parseInt(chatObj.uid, 10);
-				});
-
-			results.contacts = results.contacts.filter(function(contact) {
-				return contactUids.indexOf(parseInt(contact.uid, 10)) === -1;
-			});
-		}
-
-		if (!req.params.userslug) {
+		if (!req.params.roomid) {
 			return res.render('chats', {
-				chats: results.recentChats.users,
-				nextStart: results.recentChats.nextStart,
-				contacts: results.contacts,
+				rooms: recentChats.rooms,
+				nextStart: recentChats.nextStart,
 				allowed: true,
 				title: '[[pages:chats]]',
 				breadcrumbs: helpers.buildBreadcrumbs([{text: '[[pages:chats]]'}])
@@ -52,21 +30,24 @@ chatsController.get = function(req, res, callback) {
 		}
 
 		async.waterfall([
-			async.apply(user.getUidByUserslug, req.params.userslug),
-			function(toUid, next) {
-				if (!toUid || parseInt(toUid, 10) === parseInt(req.user.uid, 10)) {
+			function (next) {
+				messaging.isUserInRoom(req.uid, req.params.roomid, next);
+			},
+			function (inRoom, next) {
+				if (!inRoom) {
 					return callback();
 				}
 
 				async.parallel({
-					toUser: async.apply(user.getUserFields, toUid, ['uid', 'username']),
+					users: async.apply(messaging.getUsersInRoom, req.params.roomid, 0, -1),
 					messages: async.apply(messaging.getMessages, {
-						fromuid: req.user.uid,
-						touid: toUid,
+						uid: req.uid,
+						roomId: req.params.roomid,
 						since: 'recent',
 						isNew: false
 					}),
-					allowed: async.apply(messaging.canMessage, req.user.uid, toUid)
+					allowed: async.apply(messaging.canMessageRoom, req.uid, req.params.roomid),
+					owner: async.apply(messaging.isRoomOwner, req.uid, req.params.roomid)
 				}, next);
 			}
 		], function(err, data) {
@@ -74,16 +55,22 @@ chatsController.get = function(req, res, callback) {
 				return callback(err);
 			}
 
-			res.render('chats', {
-				chats: results.recentChats.users,
-				nextStart: results.recentChats.nextStart,
-				contacts: results.contacts,
-				meta: data.toUser,
-				messages: data.messages,
-				allowed: data.allowed,
-				title: '[[pages:chat, ' + data.toUser.username + ']]',
-				breadcrumbs: helpers.buildBreadcrumbs([{text: '[[pages:chats]]', url: '/chats'}, {text: data.toUser.username}])
+			data.users = data.users.filter(function(user) {
+				return user && parseInt(user.uid, 10) !== req.uid;
 			});
+
+			data.usernames = data.users.map(function(user) {
+				return user && user.username;
+			}).join(', ');
+
+
+			data.roomId = req.params.roomid;
+			data.rooms = recentChats.rooms;
+			data.nextStart = recentChats.nextStart;
+			data.title = '[[pages:chat, ' + data.usernames + ']]';
+			data.breadcrumbs = helpers.buildBreadcrumbs([{text: '[[pages:chats]]', url: '/chats'}, {text: data.roomId}]);
+
+			res.render('chats', data);
 		});
 	});
 };

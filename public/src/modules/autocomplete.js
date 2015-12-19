@@ -10,6 +10,9 @@ define('autocomplete', function() {
 		app.loadJQueryUI(function() {
 			input.autocomplete({
 				delay: 100,
+				open: function() {
+					$(this).autocomplete('widget').css('z-index', 20000);
+				},
 				select: onselect,
 				source: function(request, response) {
 					socket.emit('user.search', {query: request.term}, function(err, result) {

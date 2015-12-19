@@ -125,9 +125,7 @@ var async = require('async'),
 
 				notification.path = pidToPaths[notification.pid] || notification.path || '';
 
-				if (notification.nid.startsWith('chat')) {
-					notification.path = '/chats/' + notification.user.userslug;
-				} else if (notification.nid.startsWith('follow')) {
+				if (notification.nid.startsWith('follow')) {
 					notification.path = '/user/' + notification.user.userslug;
 				}
 

@@ -10,7 +10,7 @@ var db = require('./database'),
 	schemaDate, thisSchemaDate,
 
 	// IMPORTANT: REMEMBER TO UPDATE VALUE OF latestSchema
-	latestSchema = Date.UTC(2015, 10, 6);
+	latestSchema = Date.UTC(2015, 11, 15);
 
 Upgrade.check = function(callback) {
 	db.get('schemaDate', function(err, value) {
@@ -122,7 +122,7 @@ Upgrade.upgrade = function(callback) {
 										db.setObjectField('user:' + uid, 'picture', '', next);
 									},
 									function (next) {
-										db.deleteObjectField('user:' + uid, 'gravatarpicture', next);	
+										db.deleteObjectField('user:' + uid, 'gravatarpicture', next);
 									}
 								], next);
 							} else {
@@ -143,8 +143,96 @@ Upgrade.upgrade = function(callback) {
 				winston.info('[2015/11/06] Gravatar removal skipped');
 				next();
 			}
-		}
+		},
+		function(next) {
+			thisSchemaDate = Date.UTC(2015, 11, 15);
 
+			if (schemaDate < thisSchemaDate) {
+				updatesMade = true;
+				winston.info('[2015/12/15] Upgrading chats');
+
+				db.getObjectFields('global', ['nextMid', 'nextChatRoomId'], function(err, globalData) {
+					if (err) {
+						return next(err);
+					}
+
+					var rooms = {};
+					var roomId = globalData.nextChatRoomId || 1;
+					var currentMid = 1;
+
+					async.whilst(function() {
+						return currentMid < globalData.nextMid;
+					}, function(next) {
+						db.getObject('message:' + currentMid, function(err, message) {
+							function addMessageToUids(roomId, callback) {
+								async.parallel([
+									function(next) {
+										db.sortedSetAdd('uid:' + message.fromuid + ':chat:room:' + roomId + ':mids', msgTime, currentMid, next);
+									},
+									function(next) {
+										db.sortedSetAdd('uid:' + message.touid + ':chat:room:' + roomId + ':mids', msgTime, currentMid, next);
+									}
+								], callback);
+							}
+
+							if (err || !message)  {
+								winston.info('skipping chat message ', currentMid);
+								currentMid ++;
+								return next(err);
+							}
+
+							var pairID = [parseInt(message.fromuid, 10), parseInt(message.touid, 10)].sort().join(':');
+							var msgTime = parseInt(message.timestamp, 10);
+
+							if (rooms[pairID]) {
+								winston.info('adding message ' + currentMid + ' to existing roomID ' + roomId);
+								addMessageToUids(rooms[pairID], function(err) {
+									if (err) {
+										return next(err);
+									}
+									currentMid ++;
+									next();
+								});
+							} else {
+								winston.info('adding message ' + currentMid + ' to new roomID ' + roomId);
+								async.parallel([
+									function(next) {
+										db.sortedSetAdd('uid:' + message.fromuid + ':chat:rooms', msgTime, roomId, next);
+									},
+									function(next) {
+										db.sortedSetAdd('uid:' + message.touid + ':chat:rooms', msgTime, roomId, next);
+									},
+									function(next) {
+										db.sortedSetAdd('chat:room:' + roomId + ':uids', [msgTime, msgTime + 1], [message.fromuid, message.touid], next);
+									},
+									function(next) {
+										addMessageToUids(roomId, next);
+									}
+								], function(err) {
+									if (err) {
+										return next(err);
+									}
+									rooms[pairID] = roomId;
+									roomId ++;
+									currentMid ++;
+									db.setObjectField('global', 'nextChatRoomId', roomId, next);
+								});
+							}
+						});
+					}, function(err) {
+						if (err) {
+							return next(err);
+						}
+
+						winston.info('[2015/12/15] Chats upgrade done!');
+						Upgrade.update(thisSchemaDate, next);
+					});
+				});
+			} else {
+				winston.info('[2015/12/15] Chats upgrade skipped!');
+				next();
+			}
+		}
 		// Add new schema updates here
 		// IMPORTANT: REMEMBER TO UPDATE VALUE OF latestSchema IN LINE 24!!!
 	], function(err) {

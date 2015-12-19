@@ -30,7 +30,7 @@ define('forum/account/header', [
 		});
 
 		components.get('account/chat').on('click', function() {
-			app.openChat($('.account-username').html(), theirid);
+			app.newChat(theirid);
 		});
 
 		components.get('account/ban').on('click', banAccount);
