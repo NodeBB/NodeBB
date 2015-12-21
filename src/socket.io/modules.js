@@ -1,7 +1,7 @@
 "use strict";
 
 var async = require('async');
-var	meta = require('../meta');
+var meta = require('../meta');
 var Messaging = require('../messaging');
 var utils = require('../../public/src/utils');
 var server = require('./');
