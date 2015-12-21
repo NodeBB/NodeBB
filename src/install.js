@@ -145,7 +145,7 @@ function setupConfig(next) {
 		var	config = {},
 			redisQuestions = require('./database/redis').questions,
 			mongoQuestions = require('./database/mongo').questions,
-			question, x, numQ, allQuestions = questions.main.concat(questions.optional).concat(redisQuestions).concat(mongoQuestions);
+			allQuestions = questions.main.concat(questions.optional).concat(redisQuestions).concat(mongoQuestions);
 
 		allQuestions.forEach(function (question) {
 			config[question.name] = install.values[question.name] || question['default'] || undefined;
