@@ -117,6 +117,12 @@ define('forum/topic/postTools', ['share', 'navigator', 'components', 'translator
 			onReplyClicked($(this), tid, topicName);
 		});
 
+		$('.topic').on('click', '[component="topic/reply-as-topic"]', function() {
+			$(window).trigger('action:composer.topic.new', {
+				cid: ajaxify.data.cid,
+			});
+		});
+
 		postContainer.on('click', '[component="post/favourite"]', function() {
 			favouritePost($(this), getData($(this), 'data-pid'));
 		});
