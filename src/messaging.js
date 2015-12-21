@@ -151,7 +151,7 @@ var async = require('async'),
 					});
 
 					next(undefined, messages);
-				} else {
+				} else if (messages.length === 1) {
 					// For single messages, we don't know the context, so look up the previous message and compare
 					var key = 'uid:' + uid + ':chat:room:' + roomId + ':mids';
 					async.waterfall([
@@ -183,6 +183,8 @@ var async = require('async'),
 
 						next(undefined, messages);
 					});
+				} else {
+					next(null, []);
 				}
 			}
 		], callback);
