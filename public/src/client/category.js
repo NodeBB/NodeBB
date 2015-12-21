@@ -8,8 +8,10 @@ define('forum/category', [
 	'forum/categoryTools',
 	'sort',
 	'components',
-	'translator'
-], function(infinitescroll, share, navigator, categoryTools, sort, components, translator) {
+	'translator',
+	'topicSelect',
+	'forum/pagination'
+], function(infinitescroll, share, navigator, categoryTools, sort, components, translator, topicSelect, pagination) {
 	var Category = {};
 
 	$(window).on('action:ajaxify.start', function(ev, data) {
@@ -254,8 +256,9 @@ define('forum/category', [
 	};
 
 	function loadTopicsAfter(after, direction, callback) {
+		callback = callback || function() {};
 		if (!utils.isNumber(after) || (after === 0 && components.get('category/topic', 'index', 0).length)) {
-			return;
+			return callback();
 		}
 
 		$(window).trigger('action:categories.loading');
@@ -272,6 +275,7 @@ define('forum/category', [
 			}
 
 			$(window).trigger('action:categories.loaded');
+			callback();
 		});
 	}
 
@@ -322,7 +326,9 @@ define('forum/category', [
 				$('[component="category"]').append(html);
 			}
 
-			infinitescroll.removeExtra($('[component="category/topic"]'), direction, 60);
+			if (!topicSelect.getSelectedTids().length) {
+				infinitescroll.removeExtra($('[component="category/topic"]'), direction, 60);
+			}
 
 			html.find('.timeago').timeago();
 			app.createUserTooltips();
