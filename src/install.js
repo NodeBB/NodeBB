@@ -6,16 +6,7 @@ var async = require('async'),
 	prompt = require('prompt'),
 	winston = require('winston'),
 	nconf = require('nconf'),
-	utils = require('../public/src/utils.js'),
-
-	DATABASES = {
-		"redis": {
-			"dependencies": ["redis@~2.4.2", "connect-redis@~2.0.0"]
-		},
-		"mongo": {
-			"dependencies": ["mongodb@~2.0.0", "connect-mongo@~0.8.2"]
-		}
-	};
+	utils = require('../public/src/utils.js');
 
 
 var install = {},
@@ -40,7 +31,7 @@ questions.main = [
 	{
 		name: 'database',
 		description: 'Which database to use',
-		'default': nconf.get('database') || 'redis'
+		'default': nconf.get('database') || 'mongo'
 	}
 ];
 
@@ -145,22 +136,9 @@ function setupConfig(next) {
 				process.exit();
 			}
 
-			if (nconf.get('advanced')) {
-				prompt.get({
-					name: 'secondary_database',
-					description: 'Select secondary database',
-					'default': nconf.get('secondary_database') || 'none'
-				}, function(err, dbConfig) {
-					config.secondary_database = dbConfig.secondary_database;
-					configureDatabases(err, config, DATABASES, function(err, config) {
-						completeConfigSetup(err, config, next);
-					});
-				});
-			} else {
-				configureDatabases(err, config, DATABASES, function(err, config) {
-					completeConfigSetup(err, config, next);
-				});
-			}
+			configureDatabases(config, function(err, config) {
+				completeConfigSetup(err, config, next);
+			});
 		});
 	} else {
 		// Use provided values, fall back to defaults
@@ -169,12 +147,11 @@ function setupConfig(next) {
 			mongoQuestions = require('./database/mongo').questions,
 			question, x, numQ, allQuestions = questions.main.concat(questions.optional).concat(redisQuestions).concat(mongoQuestions);
 
-		for(x=0,numQ=allQuestions.length;x<numQ;x++) {
-			question = allQuestions[x];
+		allQuestions.forEach(function (question) {
 			config[question.name] = install.values[question.name] || question['default'] || undefined;
-		}
+		});
 
-		configureDatabases(null, config, DATABASES, function(err, config) {
+		configureDatabases(config, function(err, config) {
 			completeConfigSetup(err, config, next);
 		});
 	}
@@ -200,39 +177,9 @@ function completeConfigSetup(err, config, next) {
 			return next(err);
 		}
 
-		setupDatabase(config, next);
-	});
-}
-
-function setupDatabase(server_conf, next) {
-	install.installDbDependencies(server_conf, function(err) {
-		if (err) {
-			return next(err);
-		}
-
 		require('./database').init(next);
 	});
 }
-
-install.installDbDependencies = function(server_conf, next) {
-	var	npm = require('npm'),
-		packages = [];
-
-	npm.load({}, function(err) {
-		if (err) {
-			return next(err);
-		}
-
-		npm.config.set('spin', false);
-
-		packages = packages.concat(DATABASES[server_conf.database].dependencies);
-		if (server_conf.secondary_database) {
-			packages = packages.concat(DATABASES[server_conf.secondary_database].dependencies);
-		}
-
-		npm.commands.install(packages, next);
-	});
-};
 
 function setupDefaultConfigs(next) {
 	process.stdout.write('Populating database with default configs, if not already set...\n');
@@ -457,7 +404,6 @@ function createWelcomePost(next) {
 }
 
 function enableDefaultPlugins(next) {
-	var Plugins = require('./plugins');
 
 	process.stdout.write('Enabling default plugins\n');
 
