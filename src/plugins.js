@@ -207,11 +207,8 @@ var fs = require('fs'),
 		require('request')(url, {
 			json: true
 		}, function(err, res, body) {
-			var plugins = [];
-
 			if (err) {
 				winston.error('Error parsing plugins : ' + err.message);
-				plugins = [];
 			}
 
 			Plugins.normalise(body, callback);
@@ -220,8 +217,8 @@ var fs = require('fs'),
 
 	Plugins.normalise = function(apiReturn, callback) {
 		var pluginMap = {},
-			dependencies = require.main.require('./package.json').dependencies;
-
+		var dependencies = require.main.require('./package.json').dependencies;
+		apiReturn = apiReturn || [];
 		for(var i=0; i<apiReturn.length; ++i) {
 			apiReturn[i].id = apiReturn[i].name;
 			apiReturn[i].installed = false;
