@@ -101,20 +101,27 @@ SocketModules.chats.send = function(socket, data, callback) {
 	});
 };
 
-SocketModules.chats.getUsersInRoom = function(socket, data, callback) {
+SocketModules.chats.loadRoom = function(socket, data, callback) {
 	if (!data || !data.roomId) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
-
+	var isOwner = false;
 	async.waterfall([
 		function (next) {
-			Messaging.isUserInRoom(socket.uid, data.roomId, next);
+			async.parallel({
+				inRoom: async.apply(Messaging.isUserInRoom, socket.uid, data.roomId),
+				isOwner: async.apply(Messaging.isRoomOwner, socket.uid, data.roomId)
+			}, next);
 		},
-		function (inRoom, next) {
-			if (!inRoom) {
+		function (results, next) {
+			if (!results.inRoom) {
 				return next(new Error('[[error:not-allowerd]]'));
 			}
+			isOwner = results.isOwner;
 			Messaging.getUsersInRoom(data.roomId, 0, -1, next);
+		},
+		function (users, next) {
+			next(null, {users: users, owner: isOwner});
 		}
 	], callback);
 };

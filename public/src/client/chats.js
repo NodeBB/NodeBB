@@ -18,7 +18,7 @@ define('forum/chats', ['components', 'string', 'sounds', 'forum/infinitescroll',
 		}
 
 		Chats.addEventListeners();
-		Chats.createTagsInput(ajaxify.data.roomId, ajaxify.data.users);
+		Chats.createTagsInput($('[component="chat/messages"] .users-tag-input'), ajaxify.data);
 
 		if (env === 'md' || env === 'lg') {
 			Chats.resizeMainWindow();
@@ -185,16 +185,14 @@ define('forum/chats', ['components', 'string', 'sounds', 'forum/infinitescroll',
 		});
 	};
 
-	Chats.createTagsInput = function(roomId, users) {
-		var tagEl = $('.users-tag-input');
-
+	Chats.createTagsInput = function(tagEl, data) {
 		tagEl.tagsinput({
 			confirmKeys: [13, 44],
 			trimValue: true
 		});
 
-		if (users && users.length) {
-			users.forEach(function(user) {
+		if (data.users && data.users.length) {
+			data.users.forEach(function(user) {
 				tagEl.tagsinput('add', user.username);
 			});
 		}
@@ -203,7 +201,7 @@ define('forum/chats', ['components', 'string', 'sounds', 'forum/infinitescroll',
 			if (event.item === app.user.username) {
 				return;
 			}
-			socket.emit('modules.chats.addUserToRoom', {roomId: roomId, username: event.item}, function(err) {
+			socket.emit('modules.chats.addUserToRoom', {roomId: data.roomId, username: event.item}, function(err) {
 				if (err && err.message === '[[error:no-user]]') {
 					tagEl.tagsinput('remove', event.item);
 				}
@@ -211,11 +209,11 @@ define('forum/chats', ['components', 'string', 'sounds', 'forum/infinitescroll',
 		});
 
 		tagEl.on('beforeItemRemove', function(event) {
-			event.cancel = !ajaxify.data.owner;
+			event.cancel = !data.owner;
 		});
 
 		tagEl.on('itemRemoved', function(event) {
-			socket.emit('modules.chats.removeUserFromRoom', {roomId: roomId, username: event.item});
+			socket.emit('modules.chats.removeUserFromRoom', {roomId: data.roomId, username: event.item});
 		});
 
 		var input = $('.users-tag-container').find('.bootstrap-tagsinput input');

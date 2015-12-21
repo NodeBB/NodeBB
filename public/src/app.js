@@ -254,16 +254,17 @@ app.cacheBuster = null;
 			if (chat.modalExists(roomId)) {
 				loadAndCenter(chat.getModal(roomId));
 			} else {
-				socket.emit('modules.chats.getUsersInRoom', {roomId: roomId}, function(err, users) {
+				socket.emit('modules.chats.loadRoom', {roomId: roomId}, function(err, roomData) {
 					if (err) {
 						return app.alertError(err.message);
 					}
-					users = users.filter(function(user) {
+					roomData.users = roomData.users.filter(function(user) {
 						return user && parseInt(user.uid, 10) !== parseInt(app.user.uid, 10);
 					});
 					chat.createModal({
 						roomId: roomId,
-						users: users
+						users: roomData.users,
+						owner: roomData.owner
 					}, loadAndCenter);
 				});
 			}

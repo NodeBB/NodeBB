@@ -59,7 +59,7 @@ module.exports = function(Messaging) {
 			}
 
 			uids = uids.filter(function(uid, index) {
-				return isOnline[index] && parseInt(fromuid, 10) !== parseInt(uid, 10);
+				return !isOnline[index] && parseInt(fromuid, 10) !== parseInt(uid, 10);
 			});
 
 			if (!uids.length) {

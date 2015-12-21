@@ -29,14 +29,14 @@ define('chat', ['components', 'taskbar', 'string', 'sounds', 'forum/chats', 'tra
 
 				Chats.appendChatMessage(modal.find('.chat-content'), data.message);
 
-				if (modal.is(":visible")) {
+				if (modal.is(':visible')) {
 					taskbar.updateActive(modal.attr('UUID'));
 					Chats.scrollToBottom(modal.find('.chat-content'));
 				} else {
 					module.toggleNew(modal.attr('UUID'), true, true);
 				}
 
-				if (!isSelf && (!modal.is(":visible") || !app.isFocused)) {
+				if (!isSelf && (!modal.is(':visible') || !app.isFocused)) {
 					app.alternatingTitle('[[modules:chat.user_has_messaged_you, ' + username + ']]');
 					sounds.play('chat-incoming');
 
@@ -46,15 +46,25 @@ define('chat', ['components', 'taskbar', 'string', 'sounds', 'forum/chats', 'tra
 					});
 				}
 			} else {
-				module.createModal({
-					roomId: data.roomId,
-					silent: true
-				}, function(modal) {
-					module.toggleNew(modal.attr('UUID'), true, true);
-					if (!isSelf) {
-						app.alternatingTitle('[[modules:chat.user_has_messaged_you, ' + username + ']]');
-						sounds.play('chat-incoming');
+				socket.emit('modules.chats.loadRoom', {roomId: data.roomId}, function(err, roomData) {
+					if (err) {
+						return app.alertError(err.message);
 					}
+					roomData.users = roomData.users.filter(function(user) {
+						return user && parseInt(user.uid, 10) !== parseInt(app.user.uid, 10);
+					});
+					module.createModal({
+						roomId: data.roomId,
+						users: roomData.users,
+						owner: roomData.owner,
+						silent: true
+					}, function(modal) {
+						module.toggleNew(modal.attr('UUID'), true, true);
+						if (!isSelf) {
+							app.alternatingTitle('[[modules:chat.user_has_messaged_you, ' + username + ']]');
+							sounds.play('chat-incoming');
+						}
+					});
 				});
 			}
 		});
@@ -267,7 +277,7 @@ define('chat', ['components', 'taskbar', 'string', 'sounds', 'forum/chats', 'tra
 
 				Chats.addSendHandlers(chatModal.attr('roomId'), chatModal.find('#chat-message-input'), chatModal.find('#chat-message-send-btn'));
 
-				Chats.createTagsInput(data.roomId, data.users);
+				Chats.createTagsInput(chatModal.find('.users-tag-input'), data);
 
 				Chats.loadChatSince(chatModal.attr('roomId'), chatModal.find('.chat-content'), 'recent');
 
