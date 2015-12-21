@@ -370,7 +370,7 @@ var async = require('async'),
 					return notifObj.mergeId === (mergeId + '|' + differentiator);
 				});
 				modifyIndex = notifications.indexOf(set[0]);
-				if (modifyIndex === -1) {
+				if (modifyIndex === -1 || set.length === 1) {
 					return notifications;
 				}
 
