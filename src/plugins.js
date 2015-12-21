@@ -216,7 +216,7 @@ var fs = require('fs'),
 	};
 
 	Plugins.normalise = function(apiReturn, callback) {
-		var pluginMap = {},
+		var pluginMap = {};
 		var dependencies = require.main.require('./package.json').dependencies;
 		apiReturn = apiReturn || [];
 		for(var i=0; i<apiReturn.length; ++i) {
