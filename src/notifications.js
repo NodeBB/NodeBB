@@ -340,7 +340,7 @@ var async = require('async'),
 				'notifications:user_posted_to',
 				'notifications:user_flagged_post_in'
 			],
-			isolated, differentiator, modifyIndex;
+			isolated, differentiators, differentiator, modifyIndex, set;
 
 		notifications = mergeIds.reduce(function(notifications, mergeId) {
 			isolated = notifications.filter(function(notifObj) {
@@ -355,34 +355,54 @@ var async = require('async'),
 				return notifications;	// Nothing to merge
 			}
 
-			differentiator = isolated[0].mergeId.split('|')[1];
+			// Each isolated mergeId may have multiple differentiators, so process each separately
+			differentiators = isolated.reduce(function(cur, next) {
+				differentiator = next.mergeId.split('|')[1];
+				if (cur.indexOf(differentiator) === -1) {
+					cur.push(differentiator);
+				}
 
-			modifyIndex = notifications.indexOf(isolated[0]);
+				return cur;
+			}, []);
+			
+			differentiators.forEach(function(differentiator) {
+				set = isolated.filter(function(notifObj) {
+					return notifObj.mergeId === (mergeId + '|' + differentiator);
+				});
+				modifyIndex = notifications.indexOf(set[0]);
+				if (modifyIndex === -1) {
+					return notifications;
+				}
 
-			switch(mergeId) {
-				case 'notifications:favourited_your_post_in':	// intentional fall-through
-				case 'notifications:upvoted_your_post_in':
-				case 'notifications:user_started_following_you':
-				case 'notifications:user_posted_to':
-				case 'notifications:user_flagged_post_in':
-					var usernames = isolated.map(function(notifObj) {
-						return notifObj.user.username;
-					});
-					var numUsers = usernames.length;
+				switch(mergeId) {
+					case 'notifications:favourited_your_post_in':	// intentional fall-through
+					case 'notifications:upvoted_your_post_in':
+					case 'notifications:user_started_following_you':
+					case 'notifications:user_posted_to':
+					case 'notifications:user_flagged_post_in':
+						var usernames = set.map(function(notifObj) {
+							return notifObj.user.username;
+						});
+						var numUsers = usernames.length;
 
-					// Update bodyShort
-					if (numUsers === 2) {
-						isolated[0].bodyShort = '[[' + mergeId + '_dual, ' + usernames.join(', ') + ', ' + isolated[0].topicTitle + ']]'
-					} else {
-						isolated[0].bodyShort = '[[' + mergeId + '_multiple, ' + usernames[0] + ', ' + (numUsers-1) + ', ' + isolated[0].topicTitle + ']]'
+						// Update bodyShort
+						if (numUsers === 2) {
+							notifications[modifyIndex].bodyShort = '[[' + mergeId + '_dual, ' + usernames.join(', ') + ', ' + notifications[modifyIndex].topicTitle + ']]'
+						} else {
+							notifications[modifyIndex].bodyShort = '[[' + mergeId + '_multiple, ' + usernames[0] + ', ' + (numUsers-1) + ', ' + notifications[modifyIndex].topicTitle + ']]'
+						}
+						break;
+				}
+
+				// Filter out duplicates
+				notifications = notifications.filter(function(notifObj, idx) {
+					if (notifObj.mergeId === (mergeId + '|' + differentiator) && idx !== modifyIndex) {
 					}
-					break;
-			}
-
-			// Filter out duplicates
-			return notifications.filter(function(notifObj, idx) {
-				return notifObj.mergeId !== mergeId + '|' + differentiator || idx === modifyIndex;
+					return !(notifObj.mergeId === (mergeId + '|' + differentiator) && idx !== modifyIndex);
+				});
 			});
+
+			return notifications;
 		}, notifications);
 
 		plugins.fireHook('filter:notifications.merge', {
