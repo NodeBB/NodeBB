@@ -1,8 +1,8 @@
 {
     "register": "نام‌نویسی",
-    "help.email": "به طور پیش‌فرض، رایانامه‌ی شما از دید همگان پنهان می‌شود.",
-    "help.username_restrictions": "یک نام کاربری یکتا بین %1 و %2 نویسه. دیگران می‌توانند با @<span id='yourUsername'>نام‌کاربری</span> به شما اشاره کنند.",
-    "help.minimum_password_length": "گذرواژه شما باید دست‌کم %1 نویسه داشته باشد.",
+    "help.email": "به طور پیش‌فرض، ایمیل‌ی شما از دید همگان پنهان می‌شود.",
+    "help.username_restrictions": "یک نام کاربری یکتا بین %1 و %2 کاراکتر. دیگران می‌توانند با @<span id='yourUsername'>نام‌کاربری</span> به شما اشاره کنند.",
+    "help.minimum_password_length": "کلمه عبور شما باید دست‌کم %1 کاراکتر داشته باشد.",
     "email_address": "نشانی رایانامه",
     "email_address_placeholder": "نوشتن نشانی رایانامه",
     "username": "نام کاربری",
@@ -12,8 +12,8 @@
     "confirm_password": "تأیید گذرواژه",
     "confirm_password_placeholder": "تکرار گذرواژه",
     "register_now_button": "اکنون نام‌نویسی کنید",
-    "alternative_registration": "روش نام‌نویسی جایگزین",
+    "alternative_registration": "روش ثبت نام جایگزین",
     "terms_of_use": "شرایط استفاده",
     "agree_to_terms_of_use": "با شرایط استفاده موافقم",
-    "registration-added-to-queue": "ثبت نام شما به صف تایید اضافه شد. وقتی توسط یک مدیر تایید شد شما رایانامه ای دریافت خواهید کرد."
+    "registration-added-to-queue": "ثبت نام شما به صف تایید اضافه شد. وقتی توسط یک مدیر تایید شد شما ایمیلی دریافت خواهید کرد."
 }
