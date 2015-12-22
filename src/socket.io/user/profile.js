@@ -42,11 +42,10 @@ module.exports = function(SocketUser) {
 			return callback(new Error('[[error:no-privileges]]'));
 		}
 
-		user.isAdministrator(socket.uid, function(err, isAdmin) {
-			if (!isAdmin && data.uid !== socket.uid) {
-				return callback(new Error('[[error:no-privileges]]'));
+		user.isAdminOrSelf(socket.uid, data.uid, function(err) {
+			if (err) {
+				return callback(err);
 			}
-
 			user.removeCoverPicture(data, callback);
 		});
 	};
