@@ -396,8 +396,10 @@ var async = require('async'),
 
 				// Filter out duplicates
 				notifications = notifications.filter(function(notifObj, idx) {
-					if (notifObj.mergeId === (mergeId + '|' + differentiator) && idx !== modifyIndex) {
+					if (!notifObj.mergeId) {
+						return true;
 					}
+
 					return !(notifObj.mergeId === (mergeId + '|' + differentiator) && idx !== modifyIndex);
 				});
 			});
