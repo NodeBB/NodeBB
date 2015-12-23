@@ -231,11 +231,22 @@ define('forum/chats', ['components', 'string', 'sounds', 'forum/infinitescroll',
 		});
 
 		tagEl.on('beforeItemRemove', function(event) {
-			event.cancel = !data.isOwner;
+			event.cancel = !data.isOwner || data.users.length < 2;
+			if (!data.owner) {
+				return app.alertError('[[error:not-allowed]]');
+			}
+
+			if (data.users.length < 2) {
+				return app.alertError('[[error:cant-remove-last-user]]');
+			}
 		});
 
 		tagEl.on('itemRemoved', function(event) {
-			socket.emit('modules.chats.removeUserFromRoom', {roomId: data.roomId, username: event.item});
+			socket.emit('modules.chats.removeUserFromRoom', {roomId: data.roomId, username: event.item}, function(err) {
+				if (err) {
+					return app.alertError(err.message);
+				}
+			});
 		});
 
 		var input = $('.users-tag-container').find('.bootstrap-tagsinput input');

@@ -58,7 +58,7 @@ chatsController.get = function(req, res, callback) {
 
 			room.isOwner = parseInt(room.owner, 10) === parseInt(req.uid, 10);
 			room.users = data.users.filter(function(user) {
-				return user && parseInt(user.uid, 10) !== req.uid;
+				return user && parseInt(user.uid, 10) && parseInt(user.uid, 10) !== req.uid;
 			});
 
 			room.usernames = data.users.map(function(user) {

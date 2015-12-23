@@ -56,6 +56,10 @@ module.exports = function(Messaging) {
 		db.exists('chat:room:' + roomId + ':uids', callback);
 	};
 
+	Messaging.getUserCountInRoom = function(roomId, callback) {
+		db.sortedSetCard('chat:room:' + roomId + ':uids', callback);
+	};
+
 	Messaging.isRoomOwner = function(uid, roomId, callback) {
 		db.getObjectField('chat:room:' + roomId, 'owner', function(err, owner) {
 			if (err) {
@@ -87,12 +91,19 @@ module.exports = function(Messaging) {
 	Messaging.removeUsersFromRoom = function(uid, uids, roomId, callback) {
 		async.waterfall([
 			function (next) {
-				Messaging.isRoomOwner(uid, roomId, next);
+				async.parallel({
+					isOwner: async.apply(Messaging.isRoomOwner, uid, roomId),
+					userCount: async.apply(Messaging.getUserCountInRoom, roomId)
+				}, next);
 			},
-			function (isOwner, next) {
-				if (!isOwner) {
+			function (results, next) {
+				if (!results.isOwner) {
 					return next(new Error('[[error:cant-add-users-to-chat-room]]'));
 				}
+				if (results.userCount === 2) {
+					return next(new Error('[[error:cant-remove-last-user]]'));
+				}
+
 				db.sortedSetRemove('chat:room:' + roomId + ':uids', uids, next);
 			},
 			function (next) {
