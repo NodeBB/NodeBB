@@ -15,7 +15,7 @@ sessionController.revoke = function(req, res, next) {
 	var _id;
 
 	async.waterfall([
-		async.apply(db.getObjectField, 'sessionUUID:sessionId', req.params.uuid),
+		async.apply(db.getObjectField, 'uid:' + req.uid + ':sessionUUID:sessionId', req.params.uuid),
 		function(sessionId, next) {
 			if (!sessionId) {
 				return next(new Error('[[error:no-session-found]]'));

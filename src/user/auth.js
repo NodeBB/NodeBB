@@ -89,7 +89,7 @@ module.exports = function(User) {
 					expired = !sessionObj || !sessionObj.hasOwnProperty('passport')
 						|| !sessionObj.passport.hasOwnProperty('user')
 						|| parseInt(sessionObj.passport.user, 10) !== parseInt(uid, 10);
-					
+
 					if (expired) {
 						expiredSids.push(_sids[idx]);
 					}
@@ -121,7 +121,7 @@ module.exports = function(User) {
 
 		db.sessionStore.get(sessionId, function(err, sessionObj) {
 			async.parallel([
-				async.apply(db.deleteObjectField, 'sessionUUID:sessionId', sessionObj.meta.uuid),
+				async.apply(db.deleteObjectField, 'uid:' + uid + ':sessionUUID:sessionId', sessionObj.meta.uuid),
 				async.apply(db.sortedSetRemove, 'uid:' + uid + ':sessions', sessionId),
 				async.apply(db.sessionStore.destroy.bind(db.sessionStore), sessionId)
 			], callback);

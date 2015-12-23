@@ -197,7 +197,7 @@ function continueLogin(req, res, next) {
 
 					// Associate login session with user
 					user.auth.addSession(userData.uid, req.sessionID);
-					db.setObjectField('sessionUUID:sessionId', uuid, req.sessionID);
+					db.setObjectField('uid:' + userData.uid + 'sessionUUID:sessionId', uuid, req.sessionID);
 
 					plugins.fireHook('action:user.loggedIn', userData.uid);
 				}
