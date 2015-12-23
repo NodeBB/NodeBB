@@ -219,29 +219,41 @@ define('forum/chats', ['components', 'string', 'sounds', 'forum/infinitescroll',
 			});
 		}
 
+		tagEl.on('beforeItemAdd', function(event) {
+			event.cancel = event.item === app.user.username;
+		});
+
 		tagEl.on('itemAdded', function(event) {
 			if (event.item === app.user.username) {
 				return;
 			}
 			socket.emit('modules.chats.addUserToRoom', {roomId: data.roomId, username: event.item}, function(err) {
-				if (err && err.message === '[[error:no-user]]') {
-					tagEl.tagsinput('remove', event.item);
+				if (err) {
+					app.alertError(err.message);
+					tagEl.tagsinput('remove', event.item, {nouser: true});
 				}
 			});
 		});
 
 		tagEl.on('beforeItemRemove', function(event) {
-			event.cancel = !data.isOwner || data.users.length < 2;
+			if (event.options && event.options.nouser) {
+				return;
+			}
+
+			event.cancel = !data.isOwner || tagEl.tagsinput('items').length < 2;
 			if (!data.owner) {
 				return app.alertError('[[error:not-allowed]]');
 			}
 
-			if (data.users.length < 2) {
+			if (tagEl.tagsinput('items').length < 2) {
 				return app.alertError('[[error:cant-remove-last-user]]');
 			}
 		});
 
 		tagEl.on('itemRemoved', function(event) {
+			if (event.options && event.options.nouser) {
+				return;
+			}
 			socket.emit('modules.chats.removeUserFromRoom', {roomId: data.roomId, username: event.item}, function(err) {
 				if (err) {
 					return app.alertError(err.message);
