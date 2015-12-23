@@ -1,11 +1,25 @@
 'use strict';
 
 var async = require('async');
+var validator = require('validator');
 
 var db = require('../database');
 var user = require('../user');
 
 module.exports = function(Messaging) {
+
+	Messaging.getRoomData = function(roomId, callback) {
+		db.getObject('chat:room:' + roomId, function(err, data) {
+			if (err || !data) {
+				return callback(err || new Error('[[error:no-chat-room]]'));
+			}
+			data.roomName = data.roomName || '[[modules:chat.roomname, ' + roomId + ']]';
+			if (data.roomName) {
+				data.roomName = validator.escape(data.roomName);
+			}
+			callback(null, data);
+		});
+	};
 
 	Messaging.newRoom = function(uid, toUids, callback) {
 		var roomId;
@@ -101,6 +115,24 @@ module.exports = function(Messaging) {
 			},
 			function (uids, next) {
 				user.getUsersFields(uids, ['username', 'uid', 'picture', 'status'], next);
+			}
+		], callback);
+	};
+
+	Messaging.renameRoom = function(uid, roomId, newName, callback) {
+		if (!newName) {
+			return callback(new Error('[[error:invalid-name]]'));
+		}
+
+		async.waterfall([
+			function (next) {
+				Messaging.isRoomOwner(uid, roomId, next);
+			},
+			function (isOwner, next) {
+				if (!isOwner) {
+					return next(new Error('[[error:no-privileges]]'));
+				}
+				db.setObjectField('chat:room:' + roomId, 'roomName', newName, next);
 			}
 		], callback);
 	};

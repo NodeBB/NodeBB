@@ -46,30 +46,32 @@ chatsController.get = function(req, res, callback) {
 						since: 'recent',
 						isNew: false
 					}),
-					owner: async.apply(messaging.isRoomOwner, req.uid, req.params.roomid)
+					room: async.apply(messaging.getRoomData, req.params.roomid)
 				}, next);
 			}
 		], function(err, data) {
 			if (err) {
 				return callback(err);
 			}
+			var room = data.room;
+			room.messages = data.messages;
 
-			data.users = data.users.filter(function(user) {
+			room.isOwner = parseInt(room.owner, 10) === parseInt(req.uid, 10);
+			room.users = data.users.filter(function(user) {
 				return user && parseInt(user.uid, 10) !== req.uid;
 			});
 
-			data.usernames = data.users.map(function(user) {
+			room.usernames = data.users.map(function(user) {
 				return user && user.username;
 			}).join(', ');
 
 
-			data.roomId = req.params.roomid;
-			data.rooms = recentChats.rooms;
-			data.nextStart = recentChats.nextStart;
-			data.title = '[[pages:chat, ' + data.usernames + ']]';
-			data.breadcrumbs = helpers.buildBreadcrumbs([{text: '[[pages:chats]]', url: '/chats'}, {text: data.roomId}]);
+			room.rooms = recentChats.rooms;
+			room.nextStart = recentChats.nextStart;
+			room.title = room.roomName;
+			room.breadcrumbs = helpers.buildBreadcrumbs([{text: '[[pages:chats]]', url: '/chats'}, {text: room.roomName}]);
 
-			res.render('chats', data);
+			res.render('chats', room);
 		});
 	});
 };

@@ -261,11 +261,7 @@ app.cacheBuster = null;
 					roomData.users = roomData.users.filter(function(user) {
 						return user && parseInt(user.uid, 10) !== parseInt(app.user.uid, 10);
 					});
-					chat.createModal({
-						roomId: roomId,
-						users: roomData.users,
-						owner: roomData.owner
-					}, loadAndCenter);
+					chat.createModal(roomData, loadAndCenter);
 				});
 			}
 		});

@@ -1,6 +1,8 @@
 "use strict";
 
 var async = require('async');
+var validator = require('validator');
+
 var meta = require('../meta');
 var Messaging = require('../messaging');
 var utils = require('../../public/src/utils');
@@ -105,23 +107,25 @@ SocketModules.chats.loadRoom = function(socket, data, callback) {
 	if (!data || !data.roomId) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
-	var isOwner = false;
+
 	async.waterfall([
 		function (next) {
+			Messaging.isUserInRoom(socket.uid, data.roomId, next);
+		},
+		function (inRoom, next) {
+			if (!inRoom) {
+				return next(new Error('[[error:not-allowed]]'));
+			}
+
 			async.parallel({
-				inRoom: async.apply(Messaging.isUserInRoom, socket.uid, data.roomId),
-				isOwner: async.apply(Messaging.isRoomOwner, socket.uid, data.roomId)
+				roomData: async.apply(Messaging.getRoomData, data.roomId),
+				users: async.apply(Messaging.getUsersInRoom, data.roomId, 0, -1)
 			}, next);
 		},
 		function (results, next) {
-			if (!results.inRoom) {
-				return next(new Error('[[error:not-allowerd]]'));
-			}
-			isOwner = results.isOwner;
-			Messaging.getUsersInRoom(data.roomId, 0, -1, next);
-		},
-		function (users, next) {
-			next(null, {users: users, owner: isOwner});
+			results.roomData.users = results.users;
+			results.roomData.isOwner = parseInt(results.roomData.owner, 10) === socket.uid;
+			next(null, results.roomData);
 		}
 	], callback);
 };
@@ -207,6 +211,28 @@ SocketModules.chats.markRead = function(socket, roomId, callback) {
 		Messaging.pushUnreadCount(socket.uid);
 		callback();
 	});
+};
+
+SocketModules.chats.renameRoom = function(socket, data, callback) {
+	if (!data) {
+		return callback(new Error('[[error:invalid-name]]'));
+	}
+
+	async.waterfall([
+		function (next) {
+			Messaging.renameRoom(socket.uid, data.roomId, data.newName, next);
+		},
+		function (next) {
+			Messaging.getUidsInRoom(data.roomId, 0, -1, next);
+		},
+		function (uids, next) {
+			var eventData = {roomId: data.roomId, newName: validator.escape(data.newName)};
+			uids.forEach(function(uid) {
+				server.in('uid_' + uid).emit('event:chats.roomRename', eventData);
+			});
+			next();
+		}
+	], callback);
 };
 
 SocketModules.chats.userStartTyping = function(socket, data, callback) {

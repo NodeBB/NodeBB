@@ -161,7 +161,7 @@ Upgrade.upgrade = function(callback) {
 					var currentMid = 1;
 
 					async.whilst(function() {
-						return currentMid < globalData.nextMid;
+						return currentMid <= globalData.nextMid;
 					}, function(next) {
 						db.getObject('message:' + currentMid, function(err, message) {
 							function addMessageToUids(roomId, callback) {
@@ -246,7 +246,7 @@ Upgrade.upgrade = function(callback) {
 					}
 					var currentChatRoomId = 1;
 					async.whilst(function() {
-						return currentChatRoomId < nextChatRoomId;
+						return currentChatRoomId <= nextChatRoomId;
 					}, function(next) {
 						db.getSortedSetRange('chat:room:' + currentChatRoomId + ':uids', 0, 0, function(err, uids) {
 							if (err) {

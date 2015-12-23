@@ -16,6 +16,7 @@
 	"chat.thirty_days": "30 Days",
 	"chat.three_months": "3 Months",
 	"chat.delete_message_confirm": "Are you sure you wish to delete this message?",
+	"chat.roomname": "Chat Room %1",
 
 	"composer.compose": "Compose",
 	"composer.show_preview": "Show Preview",

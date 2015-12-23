@@ -80,6 +80,7 @@ define('forum/chats', ['components', 'string', 'sounds', 'forum/infinitescroll',
 		});
 
 		Chats.addSinceHandler(ajaxify.data.roomId, $('.expanded-chat .chat-content'), $('.expanded-chat [data-since]'));
+		Chats.addRenameHandler(ajaxify.data.roomId, $('[component="chat/room/name"]'));
 	};
 
 	Chats.addHotkeys = function() {
@@ -159,6 +160,27 @@ define('forum/chats', ['components', 'string', 'sounds', 'forum/infinitescroll',
 		});
 	};
 
+	Chats.addRenameHandler = function(roomId, inputEl) {
+		var oldName = inputEl.val();
+		inputEl.on('blur keypress', function(ev) {
+			if (ev.type === 'keypress' && ev.keyCode !== 13) {
+				return;
+			}
+			var newName = inputEl.val();
+
+			if (oldName === newName) {
+				return;
+			}
+			socket.emit('modules.chats.renameRoom', {roomId: roomId, newName: newName}, function(err) {
+				if (err) {
+					return app.alertError(err.message);
+				}
+				oldName = newName;
+				inputEl.blur();
+			});
+		});
+	};
+
 	Chats.addSendHandlers = function(roomId, inputEl, sendEl) {
 
 		inputEl.off('keypress').on('keypress', function(e) {
@@ -209,7 +231,7 @@ define('forum/chats', ['components', 'string', 'sounds', 'forum/infinitescroll',
 		});
 
 		tagEl.on('beforeItemRemove', function(event) {
-			event.cancel = !data.owner;
+			event.cancel = !data.isOwner;
 		});
 
 		tagEl.on('itemRemoved', function(event) {
@@ -308,6 +330,10 @@ define('forum/chats', ['components', 'string', 'sounds', 'forum/infinitescroll',
 					}
 				});
 			});
+		});
+
+		socket.on('event:chats.roomRename', function(data) {
+			$('[component="chat/room/name"]').val(data.newName);
 		});
 	};
 

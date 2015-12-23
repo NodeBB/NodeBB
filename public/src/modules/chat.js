@@ -53,12 +53,8 @@ define('chat', ['components', 'taskbar', 'string', 'sounds', 'forum/chats', 'tra
 					roomData.users = roomData.users.filter(function(user) {
 						return user && parseInt(user.uid, 10) !== parseInt(app.user.uid, 10);
 					});
-					module.createModal({
-						roomId: data.roomId,
-						users: roomData.users,
-						owner: roomData.owner,
-						silent: true
-					}, function(modal) {
+					roomData.silent = true;
+					module.createModal(roomData, function(modal) {
 						module.toggleNew(modal.attr('UUID'), true, true);
 						if (!isSelf) {
 							app.alternatingTitle('[[modules:chat.user_has_messaged_you, ' + username + ']]');
@@ -91,6 +87,10 @@ define('chat', ['components', 'taskbar', 'string', 'sounds', 'forum/chats', 'tra
 		socket.on('event:user_status_change', function(data) {
 			var modal = module.getModal(data.uid);
 			app.updateUserStatus(modal.find('[component="user/status"]'), data.status);
+		});
+
+		socket.on('event:chats.roomRename', function(data) {
+			module.getModal(data.roomId).find('[component="chat/room/name"]').val(data.newName);
 		});
 	};
 
@@ -182,7 +182,7 @@ define('chat', ['components', 'taskbar', 'string', 'sounds', 'forum/chats', 'tra
 	}
 
 	module.createModal = function(data, callback) {
-		templates.parse('chat', {}, function(chatTpl) {
+		templates.parse('chat', data, function(chatTpl) {
 			translator.translate(chatTpl, function (chatTpl) {
 
 				var chatModal = $(chatTpl),
@@ -274,6 +274,7 @@ define('chat', ['components', 'taskbar', 'string', 'sounds', 'forum/chats', 'tra
 					});
 
 				Chats.addSinceHandler(chatModal.attr('roomId'), chatModal.find('.chat-content'), chatModal.find('[data-since]'));
+				Chats.addRenameHandler(chatModal.attr('roomId'), chatModal.find('[component="chat/room/name"]'));
 
 				Chats.addSendHandlers(chatModal.attr('roomId'), chatModal.find('#chat-message-input'), chatModal.find('#chat-message-send-btn'));
 
