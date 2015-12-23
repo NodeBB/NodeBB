@@ -13,7 +13,8 @@ var meta = require('../meta'),
 	cookieParser = require('cookie-parser'),
 	compression = require('compression'),
 	favicon = require('serve-favicon'),
-	session = require('express-session');
+	session = require('express-session'),
+	useragent = require('express-useragent');
 
 
 var middleware = {};
@@ -47,6 +48,7 @@ module.exports = function(app) {
 	app.use(bodyParser.urlencoded({extended: true}));
 	app.use(bodyParser.json());
 	app.use(cookieParser());
+	app.use(useragent.express());
 
 	var cookie = {
 		maxAge: 1000 * 60 * 60 * 24 * (parseInt(meta.config.loginDays, 10) || 14)

@@ -1,6 +1,7 @@
 'use strict';
 
 var async = require('async'),
+	winston = require('winston'),
 	db = require('../database'),
 	meta = require('../meta'),
 	events = require('../events');
@@ -56,6 +57,83 @@ module.exports = function(User) {
 		async.parallel([
 			async.apply(db.delete, 'loginAttempts:' + uid),
 			async.apply(db.delete, 'lockout:' + uid)
+		], callback);
+	};
+
+	User.auth.getSessions = function(uid, curSessionId, callback) {
+		var _sids;
+
+		// curSessionId is optional
+		if (arguments.length === 2 && typeof curSessionId === 'function') {
+			callback = curSessionId;
+			curSessionId = undefined;
+		}
+
+		async.waterfall([
+			async.apply(db.getSortedSetRange, 'uid:' + uid + ':sessions', 0, -1),
+			function(sids, next) {
+				_sids = sids;
+				async.map(sids, db.sessionStore.get.bind(db.sessionStore), next);
+			},
+			function(sessions, next) {
+				sessions = sessions.map(function(sessionObj, idx) {
+					sessionObj.meta.current = curSessionId === _sids[idx];
+					return sessionObj;
+				});
+
+				// Revoke any sessions that have expired, return filtered list
+				var expiredSids = [],
+					expired;
+
+				sessions = sessions.filter(function(sessionObj, idx) {
+					expired = !sessionObj || !sessionObj.hasOwnProperty('passport')
+						|| !sessionObj.passport.hasOwnProperty('user')
+						|| parseInt(sessionObj.passport.user, 10) !== parseInt(uid, 10);
+					
+					if (expired) {
+						expiredSids.push(_sids[idx]);
+					}
+
+					return !expired;
+				}, [])
+
+				async.each(expiredSids, function(sid, next) {
+					User.auth.revokeSession(sid, uid, next);
+				}, function(err) {
+					next(null, sessions);
+				});
+			}
+		], function(err, sessions) {
+			callback(err, sessions ? sessions.map(function(sessObj) {
+				sessObj.meta.datetimeISO = new Date(sessObj.meta.datetime).toISOString();
+				return sessObj.meta;
+			}) : undefined);
+		});
+	};
+
+	User.auth.addSession = function(uid, sessionId, callback) {
+		callback = callback || function() {};
+		db.sortedSetAdd('uid:' + uid + ':sessions', Date.now(), sessionId, callback);
+	};
+
+	User.auth.revokeSession = function(sessionId, uid, callback) {
+		winston.verbose('[user.auth] Revoking session ' + sessionId + ' for user ' + uid);
+
+		db.sessionStore.get(sessionId, function(err, sessionObj) {
+			async.parallel([
+				async.apply(db.deleteObjectField, 'sessionUUID:sessionId', sessionObj.meta.uuid),
+				async.apply(db.sortedSetRemove, 'uid:' + uid + ':sessions', sessionId),
+				async.apply(db.sessionStore.destroy.bind(db.sessionStore), sessionId)
+			], callback);
+		});
+	};
+
+	User.auth.revokeAllSessions = function(uid, callback) {
+		async.waterfall([
+			async.apply(db.getSortedSetRange, 'uid:' + uid + ':sessions', 0, -1),
+			function(sids, next) {
+				async.each(sids, User.auth.revokeSession, next);
+			}
 		], callback);
 	};
 };

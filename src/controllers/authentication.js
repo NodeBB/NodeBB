@@ -5,6 +5,7 @@ var async = require('async'),
 	passport = require('passport'),
 	nconf = require('nconf'),
 	validator = require('validator'),
+	_ = require('underscore'),
 
 	db = require('../database'),
 	meta = require('../meta'),
@@ -176,8 +177,27 @@ function continueLogin(req, res, next) {
 				if (err) {
 					return res.status(403).send(err.message);
 				}
+
 				if (userData.uid) {
+					var uuid = utils.generateUUID();
+					req.session.meta = {};
+
+					// Associate IP used during login with user account
 					user.logIP(userData.uid, req.ip);
+					req.session.meta.ip = req.ip;
+
+					// Associate metadata retrieved via user-agent
+					req.session.meta = _.extend(req.session.meta, {
+						uuid: uuid,
+						datetime: Date.now(),
+						platform: req.useragent.platform,
+						browser: req.useragent.browser,
+						version: req.useragent.version
+					});
+
+					// Associate login session with user
+					user.auth.addSession(userData.uid, req.sessionID);
+					db.setObjectField('sessionUUID:sessionId', uuid, req.sessionID);
 
 					plugins.fireHook('action:user.loggedIn', userData.uid);
 				}
@@ -254,7 +274,7 @@ authenticationController.localLogin = function(req, username, password, next) {
 authenticationController.logout = function(req, res, next) {
 	if (req.user && parseInt(req.user.uid, 10) > 0 && req.sessionID) {
 		var uid = parseInt(req.user.uid, 10);
-		db.sessionStore.destroy(req.sessionID, function(err) {
+		user.auth.revokeSession(req.sessionID, uid, function(err) {
 			if (err) {
 				return next(err);
 			}

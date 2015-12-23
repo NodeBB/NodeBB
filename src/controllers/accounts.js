@@ -8,7 +8,8 @@ var accountsController = {
 	follow: require('./accounts/follow'),
 	posts: require('./accounts/posts'),
 	notifications: require('./accounts/notifications'),
-	chats: require('./accounts/chats')
+	chats: require('./accounts/chats'),
+	session: require('./accounts/session')
 };
 
 module.exports = accountsController;

@@ -83,7 +83,8 @@ settingsController.get = function(req, res, callback) {
 							next(null, data.routes);
 						});
 					});
-				}
+				},
+				sessions: async.apply(user.auth.getSessions, userData.uid, req.sessionID)
 			}, next);
 		},
 		function(results, next) {
@@ -91,6 +92,7 @@ settingsController.get = function(req, res, callback) {
 			userData.languages = results.languages;
 			userData.userGroups = results.userGroups[0];
 			userData.homePageRoutes = results.homePageRoutes;
+			userData.sessions = results.sessions;
 			plugins.fireHook('filter:user.customSettings', {settings: results.settings, customSettings: [], uid: req.uid}, next);
 		},
 		function(data, next) {

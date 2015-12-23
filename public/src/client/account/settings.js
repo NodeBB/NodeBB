@@ -2,7 +2,7 @@
 
 /*global define, socket, app, ajaxify, config*/
 
-define('forum/account/settings', ['forum/account/header'], function(header) {
+define('forum/account/settings', ['forum/account/header', 'components', 'csrf'], function(header, components, csrf) {
 	var	AccountSettings = {};
 
 	AccountSettings.init = function() {
@@ -72,6 +72,9 @@ define('forum/account/settings', ['forum/account/header'], function(header) {
 		$('[data-property="homePageRoute"]').on('change', toggleCustomRoute);
 
 		toggleCustomRoute();
+
+		components.get('user/sessions').find('.timeago').timeago();
+		prepareSessionRevoking();
 	};
 
 	function toggleCustomRoute() {
@@ -81,6 +84,29 @@ define('forum/account/settings', ['forum/account/header'], function(header) {
 		}else{
 			$('#homePageCustom').hide();
 		}
+	}
+
+	function prepareSessionRevoking() {
+		components.get('user/sessions').on('click', '[data-action]', function() {
+			var parentEl = $(this).parents('[data-uuid]'),
+				uuid = parentEl.attr('data-uuid');
+
+			if (uuid) {
+				// This is done via DELETE because a user shouldn't be able to
+				// revoke his own session! This is what logout is for
+				$.ajax({
+					url: config.relative_path + '/user/' + ajaxify.data.userslug + '/session/' + uuid,
+					method: 'delete',
+					headers: {
+						'x-csrf-token': csrf.get()
+					}
+				}).done(function() {
+					parentEl.remove();
+				}).fail(function(err) {
+					app.alertError(err.responseText);
+				})
+			}
+		});
 	}
 
 	return AccountSettings;
