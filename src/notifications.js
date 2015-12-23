@@ -396,7 +396,7 @@ var async = require('async'),
 
 				// Filter out duplicates
 				notifications = notifications.filter(function(notifObj, idx) {
-					if (!notifObj.mergeId) {
+					if (!notifObj || !notifObj.mergeId) {
 						return true;
 					}
 
