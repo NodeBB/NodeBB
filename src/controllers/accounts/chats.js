@@ -61,11 +61,6 @@ chatsController.get = function(req, res, callback) {
 				return user && parseInt(user.uid, 10) && parseInt(user.uid, 10) !== req.uid;
 			});
 
-			room.usernames = data.users.map(function(user) {
-				return user && user.username;
-			}).join(', ');
-
-
 			room.rooms = recentChats.rooms;
 			room.nextStart = recentChats.nextStart;
 			room.title = room.roomName;
