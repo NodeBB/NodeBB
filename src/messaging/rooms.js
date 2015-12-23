@@ -16,10 +16,14 @@ module.exports = function(Messaging) {
 			},
 			function (_roomId, next) {
 				roomId = _roomId;
-				db.sortedSetAdd('chat:room:' + roomId + ':uids', now, uid, next);
+				var room = {
+					owner: uid,
+					roomId: roomId
+				};
+				db.setObject('chat:room:' + roomId, room, next);
 			},
 			function (next) {
-				Messaging.addUsersToRoom(uid, toUids, roomId, next);
+				Messaging.addUsersToRoom(uid, [uid].concat(toUids), roomId, next);
 			},
 			function (next) {
 				Messaging.addRoomToUsers(roomId, [uid].concat(toUids), now, next);
@@ -39,14 +43,12 @@ module.exports = function(Messaging) {
 	};
 
 	Messaging.isRoomOwner = function(uid, roomId, callback) {
-		db.getSortedSetRange('chat:room:' + roomId + ':uids', 0, 0, function(err, uids) {
+		db.getObjectField('chat:room:' + roomId, 'owner', function(err, owner) {
 			if (err) {
 				return callback(err);
 			}
-			if (!Array.isArray(uids) || !uids.length) {
-				return callback(null, false);
-			}
-			callback(null, parseInt(uids[0], 10) === parseInt(uid, 10));
+
+			callback(null, parseInt(uid, 10) === parseInt(owner, 10));
 		});
 	};
 

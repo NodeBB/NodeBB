@@ -74,13 +74,14 @@ module.exports = function(Messaging) {
 				async.parallel([
 					async.apply(Messaging.addRoomToUsers, roomId, uids, timestamp),
 					async.apply(Messaging.addMessageToUsers, roomId, uids, mid, timestamp),
-					async.apply(Messaging.markUnread, uids, roomId)
+					async.apply(Messaging.markUnread, uids, roomId),
+					async.apply(Messaging.addUsersToRoom, fromuid, [fromuid], roomId)
 				], next);
 			},
 			function (results, next) {
 				async.parallel({
 					markRead: async.apply(Messaging.markRead, fromuid, roomId),
-					messages: async.apply(Messaging.getMessagesData, [mid], fromuid, roomId, true)					
+					messages: async.apply(Messaging.getMessagesData, [mid], fromuid, roomId, true)
 				}, next);
 			},
 			function (results, next) {

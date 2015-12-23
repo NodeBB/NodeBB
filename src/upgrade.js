@@ -10,7 +10,7 @@ var db = require('./database'),
 	schemaDate, thisSchemaDate,
 
 	// IMPORTANT: REMEMBER TO UPDATE VALUE OF latestSchema
-	latestSchema = Date.UTC(2015, 11, 15);
+	latestSchema = Date.UTC(2015, 11, 23);
 
 Upgrade.check = function(callback) {
 	db.get('schemaDate', function(err, value) {
@@ -230,6 +230,52 @@ Upgrade.upgrade = function(callback) {
 				});
 			} else {
 				winston.info('[2015/12/15] Chats upgrade skipped!');
+				next();
+			}
+		},
+		function(next) {
+			thisSchemaDate = Date.UTC(2015, 11, 23);
+
+			if (schemaDate < thisSchemaDate) {
+				updatesMade = true;
+				winston.info('[2015/12/23] Upgrading chat room hashes');
+
+				db.getObjectField('global', 'nextChatRoomId', function(err, nextChatRoomId) {
+					if (err) {
+						return next(err);
+					}
+					var currentChatRoomId = 1;
+					async.whilst(function() {
+						return currentChatRoomId < nextChatRoomId;
+					}, function(next) {
+						db.getSortedSetRange('chat:room:' + currentChatRoomId + ':uids', 0, 0, function(err, uids) {
+							if (err) {
+								return next(err);
+							}
+							if (!Array.isArray(uids) || !uids.length || !uids[0]) {
+								++ currentChatRoomId;
+								return next();
+							}
+
+							db.setObject('chat:room:' + currentChatRoomId, {owner: uids[0], roomId: currentChatRoomId}, function(err) {
+								if (err) {
+									return next(err);
+								}
+								++ currentChatRoomId;
+								next();
+							});
+						});
+					}, function(err) {
+						if (err) {
+							return next(err);
+						}
+
+						winston.info('[2015/12/23] Chats room hashes upgrade done!');
+						Upgrade.update(thisSchemaDate, next);
+					});
+				});
+			} else {
+				winston.info('[2015/12/23] Chats room hashes upgrade skipped!');
 				next();
 			}
 		}
