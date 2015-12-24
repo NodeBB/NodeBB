@@ -59,6 +59,9 @@ module.exports = function(User) {
 				deleteChats(uid, next);
 			},
 			function (next) {
+				User.auth.revokeAllSessions(uid, next);
+			},
+			function (next) {
 				async.parallel([
 					function(next) {
 						db.sortedSetRemove('username:uid', userData.username, next);
@@ -102,7 +105,8 @@ module.exports = function(User) {
 							'uid:' + uid + ':chats', 'uid:' + uid + ':chats:unread',
 							'uid:' + uid + ':chat:rooms', 'uid:' + uid + ':chat:rooms:unread',
 							'uid:' + uid + ':upvote', 'uid:' + uid + ':downvote',
-							'uid:' + uid + ':ignored:cids', 'uid:' + uid + ':flag:pids'
+							'uid:' + uid + ':ignored:cids', 'uid:' + uid + ':flag:pids',
+							'uid:' + uid + ':sessions', 'uid:' + uid + ':sessionUUID:sessionId'
 						];
 						db.deleteAll(keys, next);
 					},
