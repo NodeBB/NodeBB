@@ -65,6 +65,8 @@ chatsController.get = function(req, res, callback) {
 			room.nextStart = recentChats.nextStart;
 			room.title = room.roomName;
 			room.breadcrumbs = helpers.buildBreadcrumbs([{text: '[[pages:chats]]', url: '/chats'}, {text: room.roomName}]);
+			room.maximumUsersInChatRoom = parseInt(meta.config.maximumUsersInChatRoom, 10) || 0;
+			room.showUserInput = !room.maximumUsersInChatRoom || room.maximumUsersInChatRoom > 2;
 
 			res.render('chats', room);
 		});

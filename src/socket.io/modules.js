@@ -125,6 +125,8 @@ SocketModules.chats.loadRoom = function(socket, data, callback) {
 		function (results, next) {
 			results.roomData.users = results.users;
 			results.roomData.isOwner = parseInt(results.roomData.owner, 10) === socket.uid;
+			results.roomData.maximumUsersInChatRoom = parseInt(meta.config.maximumUsersInChatRoom, 10) || 0;
+			results.roomData.showUserInput = !results.roomData.maximumUsersInChatRoom || results.roomData.maximumUsersInChatRoom > 2;
 			next(null, results.roomData);
 		}
 	], callback);
@@ -135,6 +137,16 @@ SocketModules.chats.addUserToRoom = function(socket, data, callback) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
 	async.waterfall([
+		function (next) {
+			Messaging.getUserCountInRoom(data.roomId, next);
+		},
+		function (userCount, next) {
+			var maxUsers = parseInt(meta.config.maximumUsersInChatRoom, 10) || 0;
+			if (maxUsers && userCount >= maxUsers) {
+				return next(new Error('[[error:cant-add-more-users-to-chat-room]]'));
+			}
+			next();
+		},
 		function (next) {
 			user.getUidByUsername(data.username, next);
 		},

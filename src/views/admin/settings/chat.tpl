@@ -20,6 +20,11 @@
 			<label>Maximum length of chat messages</label>
 			<input type="text" class="form-control" value="1000" data-field="maximumChatMessageLength">
 		</div>
+
+		<div class="form-group">
+			<label>Maximum number of users in chat rooms</label>
+			<input type="text" class="form-control" value="0" data-field="maximumUsersInChatRoom">
+		</div>
 	</div>
 </div>
 
