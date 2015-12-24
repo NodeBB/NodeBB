@@ -5,9 +5,8 @@
 				<!-- BEGIN navigation -->
 				<li data-index="{navigation.index}" class="{navigation.class} <!-- IF navigation.selected --> active <!-- ENDIF navigation.selected -->">
 					<a href="#" title="{navigation.route}" id="{navigation.id}">
-						<!-- IF navigation.iconClass -->
-						<i class="fa fa-fw {navigation.iconClass}"></i>
-						<!-- ENDIF navigation.iconClass -->
+
+						<i class="fa fa-fw <!-- IF navigation.iconClass -->{navigation.iconClass}<!-- ENDIF navigation.iconClass -->"></i>
 
 						<!-- IF navigation.text -->
 						<span class="{navigation.textClass}">{navigation.text}</span>
@@ -31,6 +30,7 @@
 								<label>Icon:</label>
 								<br/>
 								<span class="iconPicker"><i class="fa fa-2x {enabled.iconClass}"></i>
+									<a class="change-icon-link <!-- IF enabled.iconClass -->hidden<!-- ENDIF enabled.iconClass -->" href="#">change</a>
 									<input class="form-control" type="hidden" name="iconClass" value="{enabled.iconClass}" />
 								</span>
 							</div>

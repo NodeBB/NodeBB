@@ -33,6 +33,7 @@ define('admin/general/navigation', ['translator', 'iconSelect'], function(transl
 				var index = iconEl.parents('[data-index]').attr('data-index');
 				$('#active-navigation [data-index="' + index + '"] i').attr('class', 'fa fa-fw ' + newIconClass);
 				iconEl.siblings('[name="iconClass"]').val(newIconClass);
+				iconEl.siblings('.change-icon-link').toggleClass('hidden', !!newIconClass);
 			});
 		});
 
