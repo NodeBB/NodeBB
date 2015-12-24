@@ -2,7 +2,13 @@
 
 /* globals define, app, ajaxify, socket, bootbox, templates */
 
-define('forum/topic/threadTools', ['forum/topic/fork', 'forum/topic/move', 'components', 'translator'], function(fork, move, components, translator) {
+define('forum/topic/threadTools', [
+	'forum/topic/fork',
+	'forum/topic/move',
+	'forum/topic/delete-posts',
+	'components',
+	'translator'
+], function(fork, move, deletePosts, components, translator) {
 
 	var ThreadTools = {};
 
@@ -64,6 +70,7 @@ define('forum/topic/threadTools', ['forum/topic/fork', 'forum/topic/move', 'comp
 			return false;
 		});
 
+		deletePosts.init();
 		fork.init();
 
 		components.get('topic').on('click', '[component="topic/follow"], [component="topic/unfollow"]', follow);

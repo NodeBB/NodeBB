@@ -52,6 +52,24 @@ module.exports = function(SocketPosts) {
 		doPostAction('restore', 'event:post_restored', socket, data, callback);
 	};
 
+	SocketPosts.deletePosts = function(socket, data, callback) {
+		if (!data || !Array.isArray(data.pids)) {
+			return callback(new Error('[[error:invalid-data]]'));
+		}
+		async.each(data.pids, function(pid, next) {
+			SocketPosts.delete(socket, {pid: pid, tid: data.tid}, next);
+		}, callback);
+	};
+
+	SocketPosts.purgePosts = function(socket, data, callback) {
+		if (!data || !Array.isArray(data.pids)) {
+			return callback(new Error('[[error:invalid-data]]'));
+		}
+		async.each(data.pids, function(pid, next) {
+			SocketPosts.purge(socket, {pid: pid, tid: data.tid}, next);
+		}, callback);
+	};
+
 	function doPostAction(command, eventName, socket, data, callback) {
 		if (!data) {
 			return callback(new Error('[[error:invalid-data]]'));
