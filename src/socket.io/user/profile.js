@@ -127,6 +127,10 @@ module.exports = function(SocketUser) {
 					data.username = oldUserData.username;
 				}
 
+				if (!isAdmin && parseInt(meta.config['email:disableEdit'], 10) === 1) {
+					data.email = oldUserData.email;
+				}
+
 				user.updateProfile(data.uid, data, next);
 			},
 			function (userData, next) {

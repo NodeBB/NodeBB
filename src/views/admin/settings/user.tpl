@@ -68,6 +68,12 @@
 			</div>
 			<div class="checkbox">
 				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
+					<input class="mdl-switch__input" type="checkbox" data-field="email:disableEdit">
+					<span class="mdl-switch__label"><strong>Disable email changes</strong></span>
+				</label>
+			</div>
+			<div class="checkbox">
+				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
 					<input class="mdl-switch__input" type="checkbox" data-field="allowAccountDelete" checked>
 					<span class="mdl-switch__label"><strong>Allow account deletion</strong></span>
 				</label>

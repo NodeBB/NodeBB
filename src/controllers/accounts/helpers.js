@@ -1,15 +1,14 @@
 'use strict';
 
 
-var async = require('async'),
-	validator = require('validator'),
-	nconf = require('nconf'),
+var async = require('async');
+var validator = require('validator');
 
-	user = require('../../user'),
-	groups = require('../../groups'),
-	plugins =require('../../plugins'),
-	meta = require('../../meta'),
-	utils = require('../../../public/src/utils');
+var user = require('../../user');
+var groups = require('../../groups');
+var plugins =require('../../plugins');
+var meta = require('../../meta');
+var utils = require('../../../public/src/utils');
 
 var helpers = {};
 
@@ -103,6 +102,8 @@ helpers.getUserDataByUserSlug = function(userslug, callerUID, callback) {
 
 			userData['cover:url'] = userData['cover:url'] || require('../../coverPhoto').getDefaultProfileCover(userData.uid);
 			userData['cover:position'] = userData['cover:position'] || '50% 50%';
+			userData['username:disableEdit'] = !userData.isAdmin && parseInt(meta.config['username:disableEdit'], 10) === 1;
+			userData['email:disableEdit'] = !userData.isAdmin && parseInt(meta.config['email:disableEdit'], 10) === 1;
 
 			next(null, userData);
 		}

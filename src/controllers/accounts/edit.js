@@ -1,15 +1,14 @@
 'use strict';
 
-var async = require('async'),
-	fs = require('fs'),
-	nconf = require('nconf'),
-	winston = require('winston'),
+var async = require('async');
+var fs = require('fs');
+var nconf = require('nconf');
+var winston = require('winston');
 
-	db = require('../../database'),
-	user = require('../../user'),
-	meta = require('../../meta'),
-	helpers = require('../helpers'),
-	accountHelpers = require('./helpers');
+var db = require('../../database');
+var user = require('../../user');
+var helpers = require('../helpers');
+var accountHelpers = require('./helpers');
 
 var editController = {};
 
@@ -19,7 +18,6 @@ editController.get = function(req, res, callback) {
 			return callback(err);
 		}
 
-		userData['username:disableEdit'] = !userData.isAdmin && parseInt(meta.config['username:disableEdit'], 10) === 1;
 		userData.title = '[[pages:account/edit, ' + userData.username + ']]';
 		userData.breadcrumbs = helpers.buildBreadcrumbs([{text: userData.username, url: '/user/' + userData.userslug}, {text: '[[user:edit]]'}]);
 
@@ -43,6 +41,9 @@ function renderRoute(name, req, res, next) {
 	getUserData(req, next, function(err, userData) {
 		if (err) {
 			return next(err);
+		}
+		if ((name === 'username' && userData['username:disableEdit']) || (name === 'email' && userData['email:disableEdit'])) {
+			return next();
 		}
 
 		userData.title = '[[pages:account/edit/' + name + ', ' + userData.username + ']]';
@@ -74,7 +75,6 @@ function getUserData(req, next, callback) {
 			return callback(err);
 		}
 
-		userData['username:disableEdit'] = parseInt(meta.config['username:disableEdit'], 10) === 1;
 		userData.hasPassword = !!password;
 		callback(null, userData);
 	});
