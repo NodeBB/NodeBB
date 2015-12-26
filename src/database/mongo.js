@@ -209,7 +209,7 @@
 			stats.network = results.serverStatus.network;
 			stats.raw = JSON.stringify(stats, null, 4);
 
-			stats.avgObjSize = (stats.avgObjSize / 1024).toFixed(2);
+			stats.avgObjSize = stats.avgObjSize.toFixed(2);
 			stats.dataSize = (stats.dataSize / scale).toFixed(2);
 			stats.storageSize = (stats.storageSize / scale).toFixed(2);
 			stats.fileSize = stats.fileSize ? (stats.fileSize / scale).toFixed(2) : 0;

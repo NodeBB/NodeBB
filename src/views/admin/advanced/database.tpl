@@ -11,7 +11,7 @@
 					<span>Storage Engine</span> <span class="text-right">{mongo.storageEngine}</span><br/>
 					<span>Collections</span> <span class="text-right formatted-number">{mongo.collections}</span><br/>
 					<span>Objects</span> <span class="text-right formatted-number">{mongo.objects}</span><br/>
-					<span>Avg. Object Size</span> <span class="text-right">{mongo.avgObjSize} kb</span><br/>
+					<span>Avg. Object Size</span> <span class="text-right">{mongo.avgObjSize} b</span><br/>
 					<hr/>
 					<span>Data Size</span> <span class="text-right">{mongo.dataSize} mb</span><br/>
 					<span>Storage Size</span> <span class="text-right">{mongo.storageSize} mb</span><br/>
