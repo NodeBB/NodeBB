@@ -37,7 +37,10 @@ module.exports = function(Messaging) {
 				db.setObject('chat:room:' + roomId, room, next);
 			},
 			function (next) {
-				Messaging.addUsersToRoom(uid, [uid].concat(toUids), roomId, next);
+				db.sortedSetAdd('chat:room:' + roomId + ':uids', now, uid, next);
+			},
+			function (next) {
+				Messaging.addUsersToRoom(uid, toUids, roomId, next);
 			},
 			function (next) {
 				Messaging.addRoomToUsers(roomId, [uid].concat(toUids), now, next);
@@ -98,7 +101,7 @@ module.exports = function(Messaging) {
 			},
 			function (results, next) {
 				if (!results.isOwner) {
-					return next(new Error('[[error:cant-add-users-to-chat-room]]'));
+					return next(new Error('[[error:cant-remove-users-to-chat-room]]'));
 				}
 				if (results.userCount === 2) {
 					return next(new Error('[[error:cant-remove-last-user]]'));
