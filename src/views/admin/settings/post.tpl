@@ -139,6 +139,13 @@
 					<span class="mdl-switch__label"><strong>Make uploaded files private</strong></span>
 				</label>
 			</div>
+
+			<div class="checkbox">
+				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
+					<input class="mdl-switch__input" type="checkbox" data-field="useAdvanceUpload">
+					<span class="mdl-switch__label"><strong>Use advance file upload</strong></span>
+				</label>
+			</div>
 			
 			<div class="form-group">
 				<label for="maximumFileSize">Maximum File Size</label>

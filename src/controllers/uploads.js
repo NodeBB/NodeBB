@@ -136,16 +136,30 @@ function uploadFile(uid, uploadedFile, callback) {
 	var filename = uploadedFile.name || 'upload';
 
 	filename = Date.now() + '-' + validator.escape(filename).substr(0, 255);
-	file.saveFileToLocal(filename, 'files', uploadedFile.path, function(err, upload) {
-		if (err) {
-			return callback(err);
-		}
+	if (parseInt(meta.config.useAdvanceUpload, 10) !== 1) {
+		file.saveFileToLocal(filename, 'files', uploadedFile.path, function (err, upload) {
+			if (err) {
+				return callback(err);
+			}
 
-		callback(null, {
-			url: nconf.get('relative_path') + upload.url,
-			name: uploadedFile.name
+			callback(null, {
+				url: nconf.get('relative_path') + upload.url,
+				name: uploadedFile.name
+			});
 		});
-	});
+	} else {
+		file.saveFileToOtherHost(filename, 'files', uploadedFile.path, function (err, upload) {
+			if (err) {
+				return callback(err);
+			}
+
+			callback(null, {
+				url: nconf.get('new_host_url') + upload.url,
+				name: uploadedFile.name
+			});
+		});
+	}
+
 }
 
 function deleteTempFiles(files) {
