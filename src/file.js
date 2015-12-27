@@ -59,7 +59,7 @@ file.saveFileToOtherHost = function(filename, folder, tempPath, callback) {
 
 	is.on('end', function () {
 		callback(null, {
-			url: nconf.get('upload_url') + folder + '/' + filename
+			url: nconf.get('new_upload_url') + folder + '/' + filename
 		});
 	});
 
