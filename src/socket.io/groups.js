@@ -22,6 +22,10 @@ SocketGroups.join = function(socket, data, callback) {
 		return callback(new Error('[[error:invalid-uid]]'));
 	}
 
+	if (data.groupName === 'administrators' || groups.isPrivilegeGroup(data.groupName)) {
+		return callback(new Error('[[error:not-allowed]]'));
+	}
+
 	groups.exists(data.groupName, function(err, exists) {
 		if (err || !exists) {
 			return callback(err || new Error('[[error:no-group]]'));
@@ -39,10 +43,10 @@ SocketGroups.join = function(socket, data, callback) {
 				return callback(err);
 			}
 
-			if (checks.isPrivate && !checks.isAdmin) {
-				groups.requestMembership(data.groupName, socket.uid, callback);
-			} else {
+			if (!checks.isPrivate || checks.isAdmin) {
 				groups.join(data.groupName, socket.uid, callback);
+			} else {
+				groups.requestMembership(data.groupName, socket.uid, callback);
 			}
 		});
 	});
