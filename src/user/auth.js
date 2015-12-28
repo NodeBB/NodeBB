@@ -120,8 +120,17 @@ module.exports = function(User) {
 		winston.verbose('[user.auth] Revoking session ' + sessionId + ' for user ' + uid);
 
 		db.sessionStore.get(sessionId, function(err, sessionObj) {
+			if (err) {
+				return callback(err);
+			}
 			async.parallel([
-				async.apply(db.deleteObjectField, 'uid:' + uid + ':sessionUUID:sessionId', sessionObj.meta.uuid),
+				function (next) {
+					if (sessionObj && sessionObj.meta && sessionObj.meta.uuid) {
+						db.deleteObjectField('uid:' + uid + ':sessionUUID:sessionId', sessionObj.meta.uuid, next);
+					} else {
+						next();
+					}
+				},
 				async.apply(db.sortedSetRemove, 'uid:' + uid + ':sessions', sessionId),
 				async.apply(db.sessionStore.destroy.bind(db.sessionStore), sessionId)
 			], callback);
