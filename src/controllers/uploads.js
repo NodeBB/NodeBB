@@ -1,19 +1,18 @@
 "use strict";
 
-var uploadsController = {},
+var fs = require('fs');
+var path = require('path');
+var async = require('async');
+var nconf = require('nconf');
+var validator = require('validator');
+var winston = require('winston');
 
-	fs = require('fs'),
-	path = require('path'),
-	async = require('async'),
-	nconf = require('nconf'),
-	validator = require('validator'),
+var meta = require('../meta');
+var file = require('../file');
+var plugins = require('../plugins');
+var image = require('../image');
 
-	meta = require('../meta'),
-	file = require('../file'),
-	plugins = require('../plugins'),
-	utils = require('../../public/src/utils'),
-	image = require('../image');
-
+var uploadsController = {};
 
 uploadsController.upload = function(req, res, filesIterator, next) {
 	var files = req.files.files;
@@ -126,8 +125,8 @@ function uploadFile(uid, uploadedFile, callback) {
 	}
 
 	if (meta.config.hasOwnProperty('allowedFileExtensions')) {
-		var allowed = meta.config.allowedFileExtensions.split(',').filter(Boolean);
-		var extension = path.extname(uploadedFile.name).slice(1);
+		var allowed = file.allowedExtensions();
+		var extension = path.extname(uploadedFile.name);
 		if (allowed.length > 0 && allowed.indexOf(extension) === -1) {
 			return callback(new Error('[[error:invalid-file-type, ' + allowed.join('&#44; ') + ']]'));
 		}

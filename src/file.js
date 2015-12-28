@@ -4,7 +4,6 @@ var fs = require('fs'),
 	nconf = require('nconf'),
 	path = require('path'),
 	winston = require('winston'),
-	mime = require('mime'),
 	jimp = require('jimp'),
 
 	utils = require('../public/src/utils');
@@ -44,6 +43,28 @@ file.isFileTypeAllowed = function(path, callback) {
 	jimp.read(path, function(err) {
 		callback(err);
 	});
+};
+
+file.allowedExtensions = function() {
+	var meta = require('./meta');
+	var allowedExtensions = (meta.config.allowedFileExtensions || '').trim();
+	if (!allowedExtensions) {
+		return [];
+	}
+	allowedExtensions = allowedExtensions.split(',');
+	allowedExtensions = allowedExtensions.filter(Boolean).map(function(extension) {
+		extension = extension.trim();
+		if (!extension.startsWith('.')) {
+			extension = '.' + extension;
+		}
+		return extension;
+	});
+
+	if (allowedExtensions.indexOf('.jpg') !== -1 && allowedExtensions.indexOf('.jpeg') === -1) {
+		allowedExtensions.push('.jpeg');
+	}
+
+	return allowedExtensions;
 };
 
 file.exists = function(path, callback) {
