@@ -1,14 +1,14 @@
 'use strict';
 
-var	async = require('async'),
-	db = require('../database'),
-	categories = require('../categories'),
-	privileges = require('../privileges'),
-	user = require('../user'),
-	topics = require('../topics'),
-	websockets = require('./index'),
+var	async = require('async');
+var db = require('../database');
+var categories = require('../categories');
+var privileges = require('../privileges');
+var user = require('../user');
+var topics = require('../topics');
 
-	SocketCategories = {};
+
+var SocketCategories = {};
 
 SocketCategories.getRecentReplies = function(socket, cid, callback) {
 	categories.getRecentReplies(cid, socket.uid, 4, callback);
@@ -139,6 +139,32 @@ SocketCategories.getTopicCount = function(socket, cid, callback) {
 
 SocketCategories.getCategoriesByPrivilege = function(socket, privilege, callback) {
 	categories.getCategoriesByPrivilege('categories:cid', socket.uid, privilege, callback);
+};
+
+SocketCategories.getMoveCategories = function(socket, data, callback) {
+	async.parallel({
+		isAdmin: async.apply(user.isAdministrator, socket.uid),
+		categories: function(next) {
+			async.waterfall([
+				function (next) {
+					db.getSortedSetRange('cid:0:children', 0, -1, next);
+				},
+				function (cids, next) {
+					categories.getCategories(cids, socket.uid, next);
+				}
+			], next);
+		}
+	}, function(err, results) {
+		if (err) {
+			return callback(err);
+		}
+
+		results.categories = results.categories.filter(function(category) {
+			return category && (!category.disabled || results.isAdmin) && !category.link;
+		});
+
+		callback(null, results.categories);
+	});
 };
 
 SocketCategories.watch = function(socket, cid, callback) {

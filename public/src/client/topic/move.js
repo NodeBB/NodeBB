@@ -15,7 +15,7 @@ define('forum/topic/move', function() {
 		Move.onComplete = onComplete;
 		Move.moveAll = tids ? false : true;
 
-		socket.emit('categories.get', onCategoriesLoaded);
+		socket.emit('categories.getMoveCategories', onCategoriesLoaded);
 	};
 
 	function onCategoriesLoaded(err, categories) {
@@ -23,8 +23,7 @@ define('forum/topic/move', function() {
 			return app.alertError(err.message);
 		}
 
-		parseModal(categories, function(html) {
-			modal = $(html);
+		parseModal(categories, function() {
 
 			modal.on('hidden.bs.modal', function() {
 				modal.remove();
@@ -36,7 +35,7 @@ define('forum/topic/move', function() {
 				modal.find('.modal-header h3').translateText('[[topic:move_topics]]');
 			}
 
-			modal.on('click', '.category-list li[data-cid]', function(e) {
+			modal.on('click', '.category-list li[data-cid]', function() {
 				selectCategory($(this));
 			});
 
@@ -47,8 +46,41 @@ define('forum/topic/move', function() {
 	}
 
 	function parseModal(categories, callback) {
-		templates.parse('partials/move_thread_modal', {categories: categories}, function(html) {
-			translator.translate(html, callback);
+		templates.parse('partials/move_thread_modal', {categories: []}, function(html) {
+			translator.translate(html, function(html) {
+				modal = $(html);
+				categories.forEach(function(category) {
+					if (!category.link) {
+						buildRecursive(modal.find('.category-list'), category, '');
+					}
+				});
+				callback();
+			});
+		});
+	}
+
+	function buildRecursive(parentEl, category, level) {
+		var categoryEl = $('<li/>');
+
+		if (category.bgColor) {
+			categoryEl.css('background-color', category.bgColor);
+		}
+		if (category.color) {
+			categoryEl.css('color', category.color);
+		}
+		categoryEl.toggleClass('disabled', !!category.disabled);
+		categoryEl.attr('data-cid', category.cid);
+		categoryEl.html('<i class="fa fa-fw ' + category.icon + '"></i> ' + category.name);
+
+		parentEl.append(level);
+		parentEl.append(categoryEl);
+		parentEl.append('<br/>');
+
+		var indent = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
+		category.children.forEach(function(childCategory) {
+			if (!childCategory.link) {
+				buildRecursive(parentEl, childCategory, indent + level);
+			}
 		});
 	}
 
