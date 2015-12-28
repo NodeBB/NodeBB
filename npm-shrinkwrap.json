@@ -192,11 +192,6 @@
       "from": "brace-expansion@>=1.0.0 <2.0.0",
       "resolved": "https://registry.npmjs.org/brace-expansion/-/brace-expansion-1.1.2.tgz"
     },
-    "bufferutil": {
-      "version": "1.2.1",
-      "from": "bufferutil@>=1.2.0 <1.3.0",
-      "resolved": "https://registry.npmjs.org/bufferutil/-/bufferutil-1.2.1.tgz"
-    },
     "byt": {
       "version": "0.1.0",
       "from": "byt@>=0.1.0 <0.2.0",
@@ -3173,11 +3168,6 @@
       "version": "3.1.0",
       "from": "url-regex@>=3.0.0 <4.0.0",
       "resolved": "https://registry.npmjs.org/url-regex/-/url-regex-3.1.0.tgz"
-    },
-    "utf-8-validate": {
-      "version": "1.2.1",
-      "from": "utf-8-validate@>=1.2.0 <1.3.0",
-      "resolved": "https://registry.npmjs.org/utf-8-validate/-/utf-8-validate-1.2.1.tgz"
     },
     "utf8": {
       "version": "2.1.0",
