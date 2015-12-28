@@ -55,7 +55,7 @@ var async = require('async'),
 		async.series([
 			function (next) {
 				plugins.fireHook('static:app.reload', {}, next);
-			}
+			},
 			async.apply(plugins.clearRequireCache),
 			async.apply(plugins.reload),
 			async.apply(plugins.reloadRoutes),
