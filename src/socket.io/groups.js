@@ -43,10 +43,10 @@ SocketGroups.join = function(socket, data, callback) {
 				return callback(err);
 			}
 
-			if (checks.isPrivate && !checks.isAdmin) {
-				groups.requestMembership(data.groupName, socket.uid, callback);
-			} else {
+			if (!checks.isPrivate || checks.isAdmin) {
 				groups.join(data.groupName, socket.uid, callback);
+			} else {
+				groups.requestMembership(data.groupName, socket.uid, callback);
 			}
 		});
 	});
