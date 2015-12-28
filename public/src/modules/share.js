@@ -32,7 +32,7 @@ define('share', function() {
 		});
 
 		addHandler('.twitter-share', function () {
-			return openShare('https://twitter.com/intent/tweet?text=' + name + '&url=', getPostUrl($(this)), 550, 420);
+			return openShare('https://twitter.com/intent/tweet?text=' + encodeURIComponent(name) + '&url=', getPostUrl($(this)), 550, 420);
 		});
 
 		addHandler('.facebook-share', function () {
