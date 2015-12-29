@@ -430,10 +430,10 @@ var utils = require('../public/src/utils');
 			},
 			function(groupNames, next) {
 				var groupSets = groupNames.map(function(name) {
-		 			return 'group:' + name + ':members';
-		 		});
+					return 'group:' + name + ':members';
+				});
 
-		 		async.map(uids, function(uid, next) {
+				async.map(uids, function(uid, next) {
 					db.isMemberOfSortedSets(groupSets, uid, function(err, isMembers) {
 						if (err) {
 							return next(err);
