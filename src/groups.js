@@ -311,8 +311,8 @@ var utils = require('../public/src/utils');
 					return utils.slugify(groupName);
 				});
 			async.parallel([
-				function(next) {
-					callback(null, slugs.map(function(slug) {
+				function (next) {
+					next(null, slugs.map(function(slug) {
 						return ephemeralGroups.indexOf(slug) !== -1;
 					}));
 				},
@@ -321,15 +321,14 @@ var utils = require('../public/src/utils');
 				if (err) {
 					return callback(err);
 				}
-
-				callback(null, results.map(function(result) {
-					return result[0] || result[1];
+				callback(null, name.map(function(n, index) {
+					return results[0][index] || results[1][index];
 				}));
 			});
 		} else {
 			var slug = utils.slugify(name);
 			async.parallel([
-				function(next) {
+				function (next) {
 					next(null, ephemeralGroups.indexOf(slug) !== -1);
 				},
 				async.apply(db.isSortedSetMember, 'groups:createtime', name)
