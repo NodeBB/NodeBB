@@ -139,6 +139,16 @@ describe('Groups', function() {
 				done();
 			});
 		});
+
+		it('should check if group exists using an array', function(done) {
+			Groups.exists(['Test', 'Derp'], function(err, groupsExists) {
+				if (err) return done(err);
+
+				assert.strictEqual(groupsExists[0], true);
+				assert.strictEqual(groupsExists[1], false);
+				done();
+			});
+		});
 	});
 
 	describe('.create()', function() {
