@@ -382,11 +382,15 @@ var async = require('async'),
 					case 'notifications:user_flagged_post_in':
 						var usernames = set.map(function(notifObj) {
 							return notifObj.user.username;
+						}).filter(function(username, idx, array) {
+							return array.indexOf(username) === idx
 						});
 						var numUsers = usernames.length;
 
 						// Update bodyShort
-						if (numUsers === 2) {
+						if (numUsers === 1) {
+							// No need to change anything, actually...
+						} else if (numUsers === 2) {
 							notifications[modifyIndex].bodyShort = '[[' + mergeId + '_dual, ' + usernames.join(', ') + ', ' + notifications[modifyIndex].topicTitle + ']]'
 						} else {
 							notifications[modifyIndex].bodyShort = '[[' + mergeId + '_multiple, ' + usernames[0] + ', ' + (numUsers-1) + ', ' + notifications[modifyIndex].topicTitle + ']]'
