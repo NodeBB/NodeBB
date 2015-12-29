@@ -157,8 +157,10 @@ define('admin/manage/group', [
 					description: $('#change-group-desc').val(),
 					icon: groupIcon.attr('value'),
 					labelColor: changeGroupLabelColor.val(),
+					userTitleEnabled: $('#group-userTitleEnabled').is(':checked'),
 					private: $('#group-private').is(':checked'),
-					hidden: $('#group-hidden').is(':checked')
+					hidden: $('#group-hidden').is(':checked'),
+					disableJoinRequests: $('#group-disableJoinRequests').is(':checked')
 				}
 			}, function(err) {
 				if (err) {

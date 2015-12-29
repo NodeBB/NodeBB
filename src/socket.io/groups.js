@@ -37,13 +37,17 @@ SocketGroups.join = function(socket, data, callback) {
 
 		async.parallel({
 			isAdmin: async.apply(user.isAdministrator, socket.uid),
-			isPrivate: async.apply(groups.isPrivate, data.groupName)
-		}, function(err, checks) {
+			groupData: async.apply(groups.getGroupData, data.groupName)
+		}, function(err, results) {
 			if (err) {
 				return callback(err);
 			}
 
-			if (!checks.isPrivate || checks.isAdmin) {
+			if (results.groupData.private && results.groupData.disableJoinRequests) {
+				return callback(new Error('[[error:join-requests-disabled]]'));
+			}
+
+			if (!results.groupData.isPrivate || results.isAdmin) {
 				groups.join(data.groupName, socket.uid, callback);
 			} else {
 				groups.requestMembership(data.groupName, socket.uid, callback);
@@ -261,6 +265,6 @@ SocketGroups.cover.remove = function(socket, data, callback) {
 
 		groups.removeCover(data, callback);
 	});
-}
+};
 
 module.exports = SocketGroups;

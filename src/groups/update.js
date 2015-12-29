@@ -44,6 +44,10 @@ module.exports = function(Groups) {
 				payload.private = values.private ? '1' : '0';
 			}
 
+			if (values.hasOwnProperty('disableJoinRequests')) {
+				payload.disableJoinRequests = values.disableJoinRequests ? '1' : '0';
+			}
+
 			async.series([
 				async.apply(checkNameChange, groupName, values.name),
 				async.apply(updatePrivacy, groupName, values.private),

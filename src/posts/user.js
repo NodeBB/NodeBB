@@ -16,7 +16,7 @@ module.exports = function(Posts) {
 			groups: function(next) {
 				groups.getUserGroups(uids, next);
 			},
-			userSettings: function(next){
+			userSettings: function(next) {
 				user.getMultipleUserSettings(uids, next);
 			},
 			userData: function(next) {

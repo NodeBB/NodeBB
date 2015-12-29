@@ -1,16 +1,14 @@
 'use strict';
 
-var async = require('async'),
-	winston = require('winston'),
-	nconf = require('nconf'),
-	validator = require('validator'),
+var async = require('async');
+var validator = require('validator');
 
-	user = require('./user'),
-	db = require('./database'),
-	plugins = require('./plugins'),
-	posts = require('./posts'),
-	privileges = require('./privileges'),
-	utils = require('../public/src/utils');
+var user = require('./user');
+var db = require('./database');
+var plugins = require('./plugins');
+var posts = require('./posts');
+var privileges = require('./privileges');
+var utils = require('../public/src/utils');
 
 (function(Groups) {
 
@@ -184,6 +182,7 @@ var async = require('async'),
 				results.base.hidden = !!parseInt(results.base.hidden, 10);
 				results.base.system = !!parseInt(results.base.system, 10);
 				results.base.private = results.base.private ? !!parseInt(results.base.private, 10) : true;
+				results.base.disableJoinRequests = parseInt(results.base.disableJoinRequests, 10) === 1;
 				results.base.isMember = results.isMember;
 				results.base.isPending = results.isPending;
 				results.base.isInvited = results.isInvited;
@@ -228,7 +227,7 @@ var async = require('async'),
 				}
 			});
 
-			results.members = results.members.filter(function(user, index, array) {
+			results.members = results.members.filter(function(user) {
 				return user && user.uid && ownerUids.indexOf(user.uid.toString()) === -1;
 			});
 			results.members = results.owners.concat(results.members);
@@ -369,19 +368,27 @@ var async = require('async'),
 		], callback);
 	};
 
+	Groups.getGroupData = function(groupName, callback) {
+		Groups.getGroupsData([groupName], function(err, groupsData) {
+			callback(err, Array.isArray(groupsData) && groupsData[0] ? groupsData[0] : null);
+		});
+	};
+
 	Groups.getGroupsData = function(groupNames, callback) {
 		if (!Array.isArray(groupNames) || !groupNames.length) {
 			return callback(null, []);
 		}
+
 		var keys = groupNames.map(function(groupName) {
-				return 'group:' + groupName;
-			}),
-			ephemeralIdx = groupNames.reduce(function(memo, cur, idx) {
-				if (ephemeralGroups.indexOf(cur) !== -1) {
-					memo.push(idx);
-				}
-				return memo;
-			}, []);
+			return 'group:' + groupName;
+		});
+
+		var ephemeralIdx = groupNames.reduce(function(memo, cur, idx) {
+			if (ephemeralGroups.indexOf(cur) !== -1) {
+				memo.push(idx);
+			}
+			return memo;
+		}, []);
 
 		db.getObjects(keys, function(err, groupData) {
 			if (err) {
@@ -403,6 +410,7 @@ var async = require('async'),
 					group.hidden = parseInt(group.hidden, 10) === 1;
 					group.system = parseInt(group.system, 10) === 1;
 					group.private = parseInt(group.private, 10) === 1;
+					group.disableJoinRequests = parseInt(group.disableJoinRequests) === 1;
 
 					group['cover:url'] = group['cover:url'] || require('./coverPhoto').getDefaultGroupCover(group.name);
 					group['cover:position'] = group['cover:position'] || '50% 50%';

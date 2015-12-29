@@ -31,10 +31,26 @@
 				<fieldset>
 					<div class="checkbox">
 						<label>
+							<input id="group-userTitleEnabled" name="userTitleEnabled" type="checkbox"<!-- IF group.userTitleEnabled --> checked<!-- ENDIF group.userTitleEnabled -->> <strong>[[groups:details.userTitleEnabled]]</strong>
+						</label>
+					</div>
+				</fieldset>
+
+				<fieldset>
+					<div class="checkbox">
+						<label>
 							<input id="group-private" name="private" type="checkbox"<!-- IF group.private --> checked<!-- ENDIF group.private -->> <strong>[[groups:details.private]]</strong>
 							<p class="help-block">
 								[[groups:details.private_help]]
 							</p>
+						</label>
+					</div>
+				</fieldset>
+
+				<fieldset>
+					<div class="checkbox">
+						<label>
+							<input id="group-disableJoinRequests" name="disableJoinRequests" type="checkbox"<!-- IF group.disableJoinRequests --> checked<!-- ENDIF group.disableJoinRequests -->> <strong>[[groups:details.disableJoinRequests]]</strong>
 						</label>
 					</div>
 				</fieldset>
