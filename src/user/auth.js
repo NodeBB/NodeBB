@@ -140,8 +140,10 @@ module.exports = function(User) {
 	User.auth.revokeAllSessions = function(uid, callback) {
 		async.waterfall([
 			async.apply(db.getSortedSetRange, 'uid:' + uid + ':sessions', 0, -1),
-			function(sids, next) {
-				async.each(sids, User.auth.revokeSession, next);
+			function (sids, next) {
+				async.each(sids, function(sid, next) {
+					User.auth.revokeSession(sid, uid, next);
+				}, next);
 			}
 		], callback);
 	};
