@@ -38,6 +38,35 @@ file.saveFileToLocal = function(filename, folder, tempPath, callback) {
 	is.pipe(os);
 };
 
+file.saveFileToOtherHost = function(filename, folder, tempPath, callback) {
+	//TODO: add ftp and sftp support!
+	/*
+	 * remarkable doesn't allow spaces in hyperlinks, once that's fixed, remove this.
+	 */
+	filename = filename.split('.');
+	filename.forEach(function(name, idx) {
+		filename[idx] = utils.slugify(name);
+	});
+	filename = filename.join('.');
+
+	var uploadPath = path.join(nconf.get('new_upload_base_dir'), nconf.get('new_upload_url'), folder, filename);
+
+	winston.verbose('Saving file '+ filename +' to : ' + uploadPath);
+
+	var is = fs.createReadStream(tempPath);
+	var os = fs.createWriteStream(uploadPath);
+
+	is.on('end', function () {
+		callback(null, {
+			url: nconf.get('new_upload_url') + folder + '/' + filename
+		});
+	});
+
+	os.on('error', callback);
+
+	is.pipe(os);
+};
+
 file.isFileTypeAllowed = function(path, callback) {
 	// Attempt to read the file, if it passes, file type is allowed
 	jimp.read(path, function(err) {

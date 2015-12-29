@@ -124,6 +124,12 @@ function start() {
 	nconf.set('relative_path', relativePath);
 	nconf.set('port', urlObject.port || nconf.get('port') || nconf.get('PORT') || 4567);
 	nconf.set('upload_url', '/uploads/');
+    //Like base_url
+	nconf.set('new_upload_base_dir', nconf.get('new_upload_base_dir') || '');
+    //Like upload_url
+    nconf.set('new_upload_url', nconf.get('new_upload_url') || '');
+    //Like url
+    nconf.set('new_host_url', nconf.get('new_host_url') || '');
 
 	if (nconf.get('isPrimary') === 'true') {
 		winston.info('Time: %s', (new Date()).toString());
