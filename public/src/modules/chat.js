@@ -95,7 +95,7 @@ define('chat', ['components', 'taskbar', 'string', 'sounds', 'forum/chats', 'tra
 	};
 
 	module.loadChatsDropdown = function(chatsListEl) {
-		var dropdownEl;
+
 
 		socket.emit('modules.chats.getRecentChats', {after: 0}, function(err, data) {
 			if (err) {
@@ -126,12 +126,16 @@ define('chat', ['components', 'taskbar', 'string', 'sounds', 'forum/chats', 'tra
 						roomObj.usernames + '</a>';
 				}
 
-				dropdownEl = $('<li class="' + (roomObj.unread ? 'unread' : '') + '"/>')
+				var dropdownEl = $('<li class="' + (roomObj.unread ? 'unread' : '') + '"/>')
 					.attr('data-roomId', roomObj.roomId)
 					.appendTo(chatsListEl);
 
 				if (roomObj.lastUser) {
 					dropdownEl.append(createUserImage(roomObj.lastUser));
+				} else {
+					translator.translate('[[modules:chat.no-users-in-room]]', function(str) {
+						dropdownEl.append(str);
+					});
 				}
 
 				dropdownEl.click(function() {
