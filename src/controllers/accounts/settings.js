@@ -39,50 +39,7 @@ settingsController.get = function(req, res, callback) {
 					languages.list(next);
 				},
 				homePageRoutes: function(next) {
-					async.waterfall([
-						function(next) {
-							db.getSortedSetRange('cid:0:children', 0, -1, next);
-						},
-						function(cids, next) {
-							privileges.categories.filterCids('find', cids, 0, next);
-						},
-						function(cids, next) {
-							categories.getCategoriesFields(cids, ['name', 'slug'], next);
-						},
-						function(categoryData, next) {
-						categoryData = categoryData.map(function(category) {
-							return {
-									route: 'category/' + category.slug,
-									name: 'Category: ' + category.name
-								};
-							});
-							next(null, categoryData);
-						}
-					], function(err, categoryData) {
-						if (err || !categoryData) categoryData = [];
-
-						plugins.fireHook('filter:homepage.get', {routes: [
-							{
-								route: 'categories',
-								name: 'Categories'
-							},
-							{
-								route: 'recent',
-								name: 'Recent'
-							},
-							{
-								route: 'popular',
-								name: 'Popular'
-							}
-						].concat(categoryData)}, function(err, data) {
-							data.routes.push({
-								route: 'custom',
-								name: 'Custom'
-							});
-
-							next(null, data.routes);
-						});
-					});
+					getHomePageRoutes(next);
 				},
 				sessions: async.apply(user.auth.getSessions, userData.uid, req.sessionID)
 			}, next);
@@ -160,6 +117,60 @@ settingsController.get = function(req, res, callback) {
 	});
 };
 
+
+function getHomePageRoutes(callback) {
+	async.waterfall([
+		function (next) {
+			db.getSortedSetRange('cid:0:children', 0, -1, next);
+		},
+		function (cids, next) {
+			privileges.categories.filterCids('find', cids, 0, next);
+		},
+		function (cids, next) {
+			categories.getCategoriesFields(cids, ['name', 'slug'], next);
+		},
+		function (categoryData, next) {
+			categoryData = categoryData.map(function(category) {
+				return {
+					route: 'category/' + category.slug,
+					name: 'Category: ' + category.name
+				};
+			});
+			next(null, categoryData);
+		}
+	], function(err, categoryData) {
+		if (err) {
+			return callback(err);
+		}
+		categoryData = categoryData || [];
+
+		plugins.fireHook('filter:homepage.get', {routes: [
+			{
+				route: 'categories',
+				name: 'Categories'
+			},
+			{
+				route: 'recent',
+				name: 'Recent'
+			},
+			{
+				route: 'popular',
+				name: 'Popular'
+			}
+		].concat(categoryData)}, function(err, data) {
+			if (err) {
+				return callback(err);
+			}
+
+			data.routes.push({
+				route: 'custom',
+				name: 'Custom'
+			});
+
+			callback(null, data.routes);
+		});
+	});
+}
 
 
 module.exports = settingsController;
