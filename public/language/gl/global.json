@@ -83,5 +83,7 @@
     "follow": "Seguir",
     "unfollow": "Deixar de seguir",
     "delete_all": "Borrar todo",
-    "map": "Mapa"
+    "map": "Mapa",
+    "sessions": "Login Sessions",
+    "ip_address": "Enderezo IP"
 }

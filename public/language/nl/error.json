@@ -75,10 +75,12 @@
     "about-me-too-long": "Sorry, je beschrijving kan niet langer zijn da %1 karakter(s).",
     "cant-chat-with-yourself": "Het is niet mogelijk om met jezelf een chatgesprek te houden.",
     "chat-restricted": "Deze gebruiker heeft beperkingen aan de chatfunctie opgelegd waardoor deze eerst iemand moet volgen voordat deze persoon een nieuwe chat mag initiëren.",
+    "chat-disabled": "Chat systeem uitgeschakeld",
     "too-many-messages": "Er zijn in korte tijd teveel berichten verzonden, een moment geduld.",
     "invalid-chat-message": "Ongeldig bericht",
     "chat-message-too-long": "Het chatbericht is te lang",
     "cant-edit-chat-message": "Het is niet toegestaan om dit bericht aan te passen",
+    "cant-remove-last-user": "Je kan de laatste gebruiker niet verwijderen",
     "reputation-system-disabled": "Reputatie systeem is uitgeschakeld.",
     "downvoting-disabled": "Negatief stemmen staat uitgeschakeld.",
     "not-enough-reputation-to-downvote": "Dit gebruikersaccount beschikt over onvoldoende reputatie om een negatieve stem uit te mogen brengen.",
@@ -88,5 +90,7 @@
     "registration-error": "Fout tijdens registratie",
     "parse-error": "Tijdens het verwerken van het antwoord van de server is er iets misgegaan.",
     "wrong-login-type-email": "Gebruik het e-mailadres voor aanmelden",
-    "wrong-login-type-username": "Geef de gebruikersnaam voor aanmelden"
+    "wrong-login-type-username": "Geef de gebruikersnaam voor aanmelden",
+    "invite-maximum-met": "Je heb het maximum aantal mensen uitgenodigd (%1 van de %2).",
+    "no-session-found": "Geen login sessie gevonden!"
 }

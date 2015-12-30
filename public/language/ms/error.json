@@ -75,10 +75,12 @@
     "about-me-too-long": "Maaf, penerangan tentang anda tidak boleh lebih %1 aksara().",
     "cant-chat-with-yourself": "Anda tidak boleh sembang dengan diri sendiri!",
     "chat-restricted": "Pengguna ini menyekat ruangan sembangnya. Dia hendaklah mengikut anda sebelum kalian dapat bersembang",
+    "chat-disabled": "Chat system disabled",
     "too-many-messages": "Anda menghantar terlalu banyak pesanan, sila tunggu seketika.",
     "invalid-chat-message": "Mesej borak tidak sah",
     "chat-message-too-long": "Mesej borak terlalu panjang",
     "cant-edit-chat-message": "You are not allowed to edit this message",
+    "cant-remove-last-user": "You can't remove the last user",
     "reputation-system-disabled": "Sistem reputasi dilumpuhkan.",
     "downvoting-disabled": "Undi turun dilumpuhkan",
     "not-enough-reputation-to-downvote": "Anda tidak mempunyai reputasi mencukupi untuk mengundi turun kiriman ini",
@@ -88,5 +90,7 @@
     "registration-error": "Ralat pendaftaran.",
     "parse-error": "Sesuatu tidak kena berlaku ketika menghuraikan repson pelayan (server)",
     "wrong-login-type-email": "Sila guna emel anda untuk log masuk",
-    "wrong-login-type-username": "Sila guna nama pengguna anda untuk log masuk"
+    "wrong-login-type-username": "Sila guna nama pengguna anda untuk log masuk",
+    "invite-maximum-met": "You have invited the maximum amount of people (%1 out of %2).",
+    "no-session-found": "No login session found!"
 }

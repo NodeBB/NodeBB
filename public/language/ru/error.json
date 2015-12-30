@@ -75,10 +75,12 @@
     "about-me-too-long": "К сожалению поле \"О себе\" не может быть длиннее чем %1 символа(ов).",
     "cant-chat-with-yourself": "Вы не можете общаться с самим собой",
     "chat-restricted": "Пользователь ограничил прием сообщений. Он должен быть подписан на Вас, чтобы Вы могли вести переписку с ним.",
+    "chat-disabled": "Chat system disabled",
     "too-many-messages": "Вы отправили слишком много сообщений, подождите немного.",
     "invalid-chat-message": "Неверное сообщение чата",
     "chat-message-too-long": "Слишком длинное сообщение чата",
     "cant-edit-chat-message": "У вас нет доступа для редактирования этого сообщения",
+    "cant-remove-last-user": "You can't remove the last user",
     "reputation-system-disabled": "Система репутации отключена.",
     "downvoting-disabled": "Понижение оценки отключено",
     "not-enough-reputation-to-downvote": "У Вас недостаточно репутации для понижения оценки сообщения",
@@ -88,5 +90,7 @@
     "registration-error": "Ошибка при регистрации",
     "parse-error": "Похоже, что-то пошло не так в процессе обработки ответа сервера.",
     "wrong-login-type-email": "Пожалуйста, используйте свой E-mail для входа.",
-    "wrong-login-type-username": "Пожалуйста, используйте своё имя пользователя для входа."
+    "wrong-login-type-username": "Пожалуйста, используйте своё имя пользователя для входа.",
+    "invite-maximum-met": "You have invited the maximum amount of people (%1 out of %2).",
+    "no-session-found": "No login session found!"
 }

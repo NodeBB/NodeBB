@@ -83,5 +83,7 @@
     "follow": "Ikut",
     "unfollow": "Nyah-ikut",
     "delete_all": "Padam Semua",
-    "map": "Peta"
+    "map": "Peta",
+    "sessions": "Login Sessions",
+    "ip_address": "IP Address"
 }

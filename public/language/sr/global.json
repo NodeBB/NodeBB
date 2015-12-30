@@ -83,5 +83,7 @@
     "follow": "Прати",
     "unfollow": "Не прати",
     "delete_all": "Обриши све",
-    "map": "Map"
+    "map": "Map",
+    "sessions": "Login Sessions",
+    "ip_address": "IP Address"
 }

@@ -75,10 +75,12 @@
     "about-me-too-long": "抱歉，您的‘关于我’不能超过 %1 个字符。",
     "cant-chat-with-yourself": "您不能和自己聊天！",
     "chat-restricted": "此用户限制了他的聊天消息。必须他先关注您，您才能和他聊天。",
+    "chat-disabled": "Chat system disabled",
     "too-many-messages": "您发送了太多消息，请稍等片刻。",
     "invalid-chat-message": "无效的聊天信息",
     "chat-message-too-long": "聊天信息太长",
     "cant-edit-chat-message": "You are not allowed to edit this message",
+    "cant-remove-last-user": "You can't remove the last user",
     "reputation-system-disabled": "威望系统已禁用。",
     "downvoting-disabled": "扣分功能已禁用",
     "not-enough-reputation-to-downvote": "您的威望不足以给此帖扣分",
@@ -88,5 +90,7 @@
     "registration-error": "注册错误",
     "parse-error": "服务器响应解析出错",
     "wrong-login-type-email": "请输入您的电子邮箱地址登录",
-    "wrong-login-type-username": "请输入您的用户名登录"
+    "wrong-login-type-username": "请输入您的用户名登录",
+    "invite-maximum-met": "You have invited the maximum amount of people (%1 out of %2).",
+    "no-session-found": "No login session found!"
 }

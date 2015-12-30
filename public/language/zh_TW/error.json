@@ -75,10 +75,12 @@
     "about-me-too-long": "Sorry, your about me cannot be longer than %1 character(s).",
     "cant-chat-with-yourself": "你不能與自己聊天！",
     "chat-restricted": "此用戶已限制了他的聊天功能。你要在他關注你之後，才能跟他聊天",
+    "chat-disabled": "Chat system disabled",
     "too-many-messages": "You have sent too many messages, please wait awhile.",
     "invalid-chat-message": "Invalid chat message",
     "chat-message-too-long": "Chat message is too long",
     "cant-edit-chat-message": "You are not allowed to edit this message",
+    "cant-remove-last-user": "You can't remove the last user",
     "reputation-system-disabled": "信譽系統已停用。",
     "downvoting-disabled": "Downvoting已停用",
     "not-enough-reputation-to-downvote": "你沒有足夠的信譽downvote這個帖子",
@@ -88,5 +90,7 @@
     "registration-error": "註冊錯誤",
     "parse-error": "Something went wrong while parsing server response",
     "wrong-login-type-email": "請使用您的電子郵件進行登錄",
-    "wrong-login-type-username": "請使用您的使用者名稱進行登錄"
+    "wrong-login-type-username": "請使用您的使用者名稱進行登錄",
+    "invite-maximum-met": "You have invited the maximum amount of people (%1 out of %2).",
+    "no-session-found": "No login session found!"
 }

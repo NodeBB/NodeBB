@@ -75,10 +75,12 @@
     "about-me-too-long": "Desculpe, o sobre não pode ser maior que %1 caractere(s).",
     "cant-chat-with-yourself": "Você não pode iniciar um chat consigo mesmo!",
     "chat-restricted": "Este usuário restringiu suas mensagens de chat. Eles devem seguir você antes que você possa conversar com eles",
+    "chat-disabled": "Chat system disabled",
     "too-many-messages": "Você enviou muitas mensagens, por favor aguarde um momento.",
     "invalid-chat-message": "Mensagem de chat inválida",
     "chat-message-too-long": "A mensagem de chat é muito longa",
     "cant-edit-chat-message": "You are not allowed to edit this message",
+    "cant-remove-last-user": "You can't remove the last user",
     "reputation-system-disabled": "O sistema de reputação está desabilitado.",
     "downvoting-disabled": "Negativação está desabilitada",
     "not-enough-reputation-to-downvote": "Você não possui reputação suficiente para negativar este post",
@@ -88,5 +90,7 @@
     "registration-error": "Erro de Cadastro",
     "parse-error": "Algo deu errado ao receber a resposta do servidor",
     "wrong-login-type-email": "Por favor use seu email para se logar",
-    "wrong-login-type-username": "Por favor use o seu nome de usuário para se logar"
+    "wrong-login-type-username": "Por favor use o seu nome de usuário para se logar",
+    "invite-maximum-met": "You have invited the maximum amount of people (%1 out of %2).",
+    "no-session-found": "No login session found!"
 }

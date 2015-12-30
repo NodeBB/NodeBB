@@ -75,10 +75,12 @@
     "about-me-too-long": "Beklager, om meg kan ikke være lengre enn %1 tegn.",
     "cant-chat-with-yourself": "Du kan ikke chatte med deg selv!",
     "chat-restricted": "Denne brukeren har begrenset sine samtalemeldinger. De må følge deg før du kan chatte med dem",
+    "chat-disabled": "Chat system disabled",
     "too-many-messages": "Du har sendt for mange meldinger, vennligst vent en stund.",
     "invalid-chat-message": "Ugyldig samtalemelding",
     "chat-message-too-long": "Samtalemeldingen er for lang",
     "cant-edit-chat-message": "You are not allowed to edit this message",
+    "cant-remove-last-user": "You can't remove the last user",
     "reputation-system-disabled": "Ryktesystemet er deaktivert.",
     "downvoting-disabled": "Nedstemming er deaktivert",
     "not-enough-reputation-to-downvote": "Du har ikke nok rykte til å nedstemme det innlegget",
@@ -88,5 +90,7 @@
     "registration-error": "Feil under registrering",
     "parse-error": "Noe gikk feil under analysering av serversvar",
     "wrong-login-type-email": "Vennligst benytt e-posten din for å logge inn",
-    "wrong-login-type-username": "Vennligst benytt brukernavnet ditt for å logge inn"
+    "wrong-login-type-username": "Vennligst benytt brukernavnet ditt for å logge inn",
+    "invite-maximum-met": "You have invited the maximum amount of people (%1 out of %2).",
+    "no-session-found": "No login session found!"
 }

@@ -83,5 +83,7 @@
     "follow": "Takip et",
     "unfollow": "Takip etmeyi bırak",
     "delete_all": "Hepsini Sil",
-    "map": "Harita"
+    "map": "Harita",
+    "sessions": "Login Sessions",
+    "ip_address": "IP Address"
 }

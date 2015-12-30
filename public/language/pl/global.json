@@ -83,5 +83,7 @@
     "follow": "Obserwuj",
     "unfollow": "Przestań śledzić",
     "delete_all": "Usuń wszystko",
-    "map": "Mapa"
+    "map": "Mapa",
+    "sessions": "Login Sessions",
+    "ip_address": "IP Address"
 }

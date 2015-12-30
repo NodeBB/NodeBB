@@ -75,10 +75,12 @@
     "about-me-too-long": "Vabandage, teie tutvustus ei saa olaa pikem kui %1 tähemärk(i).",
     "cant-chat-with-yourself": "Sa ei saa endaga vestelda!",
     "chat-restricted": "Kasutaja on piiranud sõnumite saatmist. Privaatsõnumi saatmiseks peab kasutaja sind jälgima",
+    "chat-disabled": "Chat system disabled",
     "too-many-messages": "Oled saatnud liiga palju sõnumeid, oota natukene.",
     "invalid-chat-message": "Vigane vestluse sõnum",
     "chat-message-too-long": "Vestluse sõnum on liiga pikk",
     "cant-edit-chat-message": "You are not allowed to edit this message",
+    "cant-remove-last-user": "You can't remove the last user",
     "reputation-system-disabled": "Reputatsiooni süsteem ei ole aktiveeritud",
     "downvoting-disabled": "Negatiivsete häälte andmine ei ole võimaldatud",
     "not-enough-reputation-to-downvote": "Sul ei ole piisavalt reputatsiooni, et anda negatiivset hinnangut sellele postitusele.",
@@ -88,5 +90,7 @@
     "registration-error": "Viga registreerimisel",
     "parse-error": "Midagi läks valesti...",
     "wrong-login-type-email": "Sisse logimiseks kasuta oma emaili",
-    "wrong-login-type-username": "Sisse logimiseks kasuta oma kasutajanime"
+    "wrong-login-type-username": "Sisse logimiseks kasuta oma kasutajanime",
+    "invite-maximum-met": "You have invited the maximum amount of people (%1 out of %2).",
+    "no-session-found": "No login session found!"
 }

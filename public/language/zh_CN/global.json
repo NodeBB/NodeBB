@@ -83,5 +83,7 @@
     "follow": "关注",
     "unfollow": "取消关注",
     "delete_all": "全部删除",
-    "map": "地图"
+    "map": "地图",
+    "sessions": "Login Sessions",
+    "ip_address": "IP Address"
 }

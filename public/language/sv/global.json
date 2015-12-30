@@ -83,5 +83,7 @@
     "follow": "Följ",
     "unfollow": "Sluta följ",
     "delete_all": "Ta bort Alla",
-    "map": "Map"
+    "map": "Map",
+    "sessions": "Login Sessions",
+    "ip_address": "IP Address"
 }

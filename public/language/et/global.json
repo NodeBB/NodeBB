@@ -83,5 +83,7 @@
     "follow": "Jälgi",
     "unfollow": "Ära jälgi",
     "delete_all": "Kustuta kõik",
-    "map": "Kaart"
+    "map": "Kaart",
+    "sessions": "Login Sessions",
+    "ip_address": "IP Address"
 }

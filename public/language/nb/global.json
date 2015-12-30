@@ -83,5 +83,7 @@
     "follow": "Følg",
     "unfollow": "Avfølg",
     "delete_all": "Slett alle",
-    "map": "Kart"
+    "map": "Kart",
+    "sessions": "Login Sessions",
+    "ip_address": "IP Address"
 }

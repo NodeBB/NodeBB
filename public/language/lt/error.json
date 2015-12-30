@@ -75,10 +75,12 @@
     "about-me-too-long": "Atsiprašome, bet aprašymas apie jus negali būti ilgesnis negu %1 simbolis (ių)",
     "cant-chat-with-yourself": "Jūs negalite susirašinėti su savimi!",
     "chat-restricted": "Šis vartotojas apribojo savo žinutes. Jie turi sekti jus kad jūs galėtumėte pradėti bendrauti su jais",
+    "chat-disabled": "Chat system disabled",
     "too-many-messages": "Išsiuntėte per daug pranešimų, kurį laiką prašome palaukti.",
     "invalid-chat-message": "Invalid chat message",
     "chat-message-too-long": "Chat message is too long",
     "cant-edit-chat-message": "You are not allowed to edit this message",
+    "cant-remove-last-user": "You can't remove the last user",
     "reputation-system-disabled": "Reputacijos sistema išjungta.",
     "downvoting-disabled": "Downvoting yra išjungtas",
     "not-enough-reputation-to-downvote": "Jūs neturite pakankamai reputacijos balsuoti prieš šį pranešimą",
@@ -88,5 +90,7 @@
     "registration-error": "Registracijos klaida",
     "parse-error": "Kažkokia klaida įvyko bandant gaut serverio atsaykmą",
     "wrong-login-type-email": "Prisijungimui prašom naudoti jūsų el. adresą",
-    "wrong-login-type-username": "Prisijungimui prašome naudoti vartotojo vardą"
+    "wrong-login-type-username": "Prisijungimui prašome naudoti vartotojo vardą",
+    "invite-maximum-met": "You have invited the maximum amount of people (%1 out of %2).",
+    "no-session-found": "No login session found!"
 }

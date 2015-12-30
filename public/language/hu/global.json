@@ -83,5 +83,7 @@
     "follow": "Követés",
     "unfollow": "Nem követem",
     "delete_all": "Összes törlése",
-    "map": "Map"
+    "map": "Map",
+    "sessions": "Login Sessions",
+    "ip_address": "IP Address"
 }

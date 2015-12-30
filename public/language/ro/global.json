@@ -83,5 +83,7 @@
     "follow": "Urmăreşte",
     "unfollow": "Nu mai urmări",
     "delete_all": "Şterge Tot",
-    "map": "Hartă"
+    "map": "Hartă",
+    "sessions": "Login Sessions",
+    "ip_address": "IP Address"
 }

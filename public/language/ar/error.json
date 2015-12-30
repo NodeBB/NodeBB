@@ -75,10 +75,12 @@
     "about-me-too-long": "Sorry, your about me cannot be longer than %1 character(s).",
     "cant-chat-with-yourself": "لايمكنك فتح محادثة مع نفسك",
     "chat-restricted": "هذا المستخدم عطل المحادثات الواردة عليه. يجب أن يتبعك حتى تتمكن من فتح محادثة معه.",
+    "chat-disabled": "Chat system disabled",
     "too-many-messages": "لقد أرسلت الكثير من الرسائل، الرجاء اﻹنتظار قليلاً",
     "invalid-chat-message": "Invalid chat message",
     "chat-message-too-long": "Chat message is too long",
     "cant-edit-chat-message": "You are not allowed to edit this message",
+    "cant-remove-last-user": "You can't remove the last user",
     "reputation-system-disabled": "نظام السمعة معطل",
     "downvoting-disabled": "التصويتات السلبية معطلة",
     "not-enough-reputation-to-downvote": "ليس لديك سمعة تكفي لإضافة صوت سلبي لهذا الموضوع",
@@ -88,5 +90,7 @@
     "registration-error": "حدث خطأ أثناء التسجيل",
     "parse-error": "حدث خطأ ما أثناء تحليل استجابة الخادم",
     "wrong-login-type-email": "الرجاء استعمال بريدك اﻹلكتروني للدخول",
-    "wrong-login-type-username": "الرجاء استعمال اسم المستخدم الخاص بك للدخول"
+    "wrong-login-type-username": "الرجاء استعمال اسم المستخدم الخاص بك للدخول",
+    "invite-maximum-met": "You have invited the maximum amount of people (%1 out of %2).",
+    "no-session-found": "No login session found!"
 }

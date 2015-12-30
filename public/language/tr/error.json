@@ -75,10 +75,12 @@
     "about-me-too-long": "Hakkınızda kısmı en fazla %1 karakter olabilir.",
     "cant-chat-with-yourself": "Kendinizle sohbet edemezsiniz!",
     "chat-restricted": "Bu kullanıcı sohbet ayarlarını kısıtlamış. Bu kişiye mesaj gönderebilmeniz için sizi takip etmeleri gerekiyor",
+    "chat-disabled": "Chat system disabled",
     "too-many-messages": "Ardı ardına çok fazla mesaj yolladınız, lütfen biraz bekleyiniz.",
     "invalid-chat-message": "Geçersiz sohbet mesajı",
     "chat-message-too-long": "Sohbet mesajı çok uzun",
     "cant-edit-chat-message": "Bu mesajı düzenlemek için izin verilmez",
+    "cant-remove-last-user": "You can't remove the last user",
     "reputation-system-disabled": "Saygınlık sistemi kapatılmış.",
     "downvoting-disabled": "Aşagı oylama kapatılmış",
     "not-enough-reputation-to-downvote": "Bu iletiyi aşagı oylamak için yeterince saygınlığınız yok.",
@@ -88,5 +90,7 @@
     "registration-error": "Kayıt Hatası",
     "parse-error": "Sunucu yanıtı çözümlemesi sırasında bir şeyler ters gitti",
     "wrong-login-type-email": "Lütfen giriş için e-posta adresinizi kullanın",
-    "wrong-login-type-username": "Lütfen giriş için kullanıcı adınızı kullanın"
+    "wrong-login-type-username": "Lütfen giriş için kullanıcı adınızı kullanın",
+    "invite-maximum-met": "You have invited the maximum amount of people (%1 out of %2).",
+    "no-session-found": "No login session found!"
 }

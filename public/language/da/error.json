@@ -75,10 +75,12 @@
     "about-me-too-long": "Beklager, men din om mig side kan ikke være længere end %1 karakter(er).",
     "cant-chat-with-yourself": "Du kan ikke chatte med dig selv!",
     "chat-restricted": "Denne bruger har spæret adgangen til chat beskeder. Brugeren må følge dig før du kan chatte med ham/hende",
+    "chat-disabled": "Chat system disabled",
     "too-many-messages": "Du har sendt for mange beskeder, vent venligt lidt.",
     "invalid-chat-message": "Ugyldig chat besked",
     "chat-message-too-long": "Chat beskeden er for lang",
     "cant-edit-chat-message": "You are not allowed to edit this message",
+    "cant-remove-last-user": "You can't remove the last user",
     "reputation-system-disabled": "Vurderingssystem er slået fra.",
     "downvoting-disabled": "Nedvurdering er slået fra",
     "not-enough-reputation-to-downvote": "Du har ikke nok omdømme til at nedstemme dette indlæg",
@@ -88,5 +90,7 @@
     "registration-error": "Registeringsfejl",
     "parse-error": "Noget gik galt under fortolknings er serverens respons",
     "wrong-login-type-email": "Brug venligt din email til login",
-    "wrong-login-type-username": "Brug venligt dit brugernavn til login"
+    "wrong-login-type-username": "Brug venligt dit brugernavn til login",
+    "invite-maximum-met": "You have invited the maximum amount of people (%1 out of %2).",
+    "no-session-found": "No login session found!"
 }

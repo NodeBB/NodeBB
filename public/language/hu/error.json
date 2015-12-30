@@ -75,10 +75,12 @@
     "about-me-too-long": "Sorry, your about me cannot be longer than %1 character(s).",
     "cant-chat-with-yourself": "Nem cseveghetsz magaddal!",
     "chat-restricted": "Ez a felhasználó korlátozta a chat beállításait. Csak akkor cseveghetsz vele, miután felvett a követettek közé téged",
+    "chat-disabled": "Chat system disabled",
     "too-many-messages": "Túl sok üzenetet küldtél, kérlek várj egy picit.",
     "invalid-chat-message": "Invalid chat message",
     "chat-message-too-long": "Chat message is too long",
     "cant-edit-chat-message": "You are not allowed to edit this message",
+    "cant-remove-last-user": "You can't remove the last user",
     "reputation-system-disabled": "Hírnév funkció kikapcsolva.",
     "downvoting-disabled": "Leszavazás funkció kikapcsolva",
     "not-enough-reputation-to-downvote": "Nem rendelkezel elég Hírnév ponttal, hogy leszavazhasd ezt a hozzászólást",
@@ -88,5 +90,7 @@
     "registration-error": "Regisztrációs hiba",
     "parse-error": "Hiba történt a szerver válaszának feldolgozása közben",
     "wrong-login-type-email": "Kérlek az e-mail címedet használd a belépéshez",
-    "wrong-login-type-username": "Kérlek a felhasználónevedet használd a belépéshez"
+    "wrong-login-type-username": "Kérlek a felhasználónevedet használd a belépéshez",
+    "invite-maximum-met": "You have invited the maximum amount of people (%1 out of %2).",
+    "no-session-found": "No login session found!"
 }

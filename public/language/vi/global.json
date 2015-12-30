@@ -83,5 +83,7 @@
     "follow": "Theo dõi",
     "unfollow": "Huỷ theo dõi",
     "delete_all": "Xóa hết",
-    "map": "Map"
+    "map": "Map",
+    "sessions": "Login Sessions",
+    "ip_address": "IP Address"
 }

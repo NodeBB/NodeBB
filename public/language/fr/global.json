@@ -83,5 +83,7 @@
     "follow": "Suivre",
     "unfollow": "Ne plus suivre",
     "delete_all": "Tout supprimer",
-    "map": "Carte"
+    "map": "Carte",
+    "sessions": "Login Sessions",
+    "ip_address": "IP Address"
 }

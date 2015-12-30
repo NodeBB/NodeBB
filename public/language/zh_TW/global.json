@@ -83,5 +83,7 @@
     "follow": "追蹤",
     "unfollow": "取消追蹤",
     "delete_all": "全部刪除",
-    "map": "Map"
+    "map": "Map",
+    "sessions": "Login Sessions",
+    "ip_address": "IP Address"
 }

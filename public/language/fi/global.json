@@ -83,5 +83,7 @@
     "follow": "Seuraa",
     "unfollow": "Älä seuraa",
     "delete_all": "Poista kaikki",
-    "map": "Map"
+    "map": "Map",
+    "sessions": "Login Sessions",
+    "ip_address": "IP Address"
 }

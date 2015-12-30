@@ -75,10 +75,12 @@
     "about-me-too-long": "با عرض پوزش محتوای 'درباره ی من' نمی تواند طولانی تر از %1 کاراکتر باشد",
     "cant-chat-with-yourself": "شما نمی‌توانید با خودتان چت کنید!",
     "chat-restricted": "این کاربر پیام های چتی خود را محدود کرده است . آنها بایدشما را دنبال کنند تا اینکه شما بتوانید به آنها پیامی بفرستید",
+    "chat-disabled": "Chat system disabled",
     "too-many-messages": "شما پیامهای خیلی زیادی فرستاده اید، لطفا مدتی صبر نمایید",
     "invalid-chat-message": "پیام نامعتبر",
     "chat-message-too-long": "پیام طولانی تر از حد مجاز است",
     "cant-edit-chat-message": "شما اجازه ی ویرایش این پیام را ندارید",
+    "cant-remove-last-user": "You can't remove the last user",
     "reputation-system-disabled": "سیستم اعتبار غیر فعال شده است",
     "downvoting-disabled": "رأی منفی غیر فعال شده است",
     "not-enough-reputation-to-downvote": "شما اعتبار کافی برای دادن رأی منفی به این پست را ندارید.",
@@ -88,5 +90,7 @@
     "registration-error": "خطای ثبت نام",
     "parse-error": "هنگام تجزیه پاسخ سرور اشتباهی پیش امد",
     "wrong-login-type-email": "لطفا از ایمیل خود برای ورود استفاده کنید",
-    "wrong-login-type-username": "لطفا از نام کاربری خود برای ورود استفاده کنید"
+    "wrong-login-type-username": "لطفا از نام کاربری خود برای ورود استفاده کنید",
+    "invite-maximum-met": "You have invited the maximum amount of people (%1 out of %2).",
+    "no-session-found": "No login session found!"
 }

@@ -75,10 +75,12 @@
     "about-me-too-long": "Sorry, your about me cannot be longer than %1 character(s).",
     "cant-chat-with-yourself": "Kamu tidak dapat chat dengan akun sendiri",
     "chat-restricted": "Pengguna ini telah membatasi percakapa mereka. Mereka harus mengikutimu sebelum kamu dapat melakukan percakapan dengan mereka ",
+    "chat-disabled": "Chat system disabled",
     "too-many-messages": "You have sent too many messages, please wait awhile.",
     "invalid-chat-message": "Invalid chat message",
     "chat-message-too-long": "Chat message is too long",
     "cant-edit-chat-message": "You are not allowed to edit this message",
+    "cant-remove-last-user": "You can't remove the last user",
     "reputation-system-disabled": "Sistem reputasi ditiadakan.",
     "downvoting-disabled": "Downvoting ditiadakan",
     "not-enough-reputation-to-downvote": "Tidak cukup reputation untuk downvote post ini",
@@ -88,5 +90,7 @@
     "registration-error": "Registrasti Error",
     "parse-error": "Something went wrong while parsing server response",
     "wrong-login-type-email": "Please use your email to login",
-    "wrong-login-type-username": "Please use your username to login"
+    "wrong-login-type-username": "Please use your username to login",
+    "invite-maximum-met": "You have invited the maximum amount of people (%1 out of %2).",
+    "no-session-found": "No login session found!"
 }

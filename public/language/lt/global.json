@@ -83,5 +83,7 @@
     "follow": "Sekti",
     "unfollow": "Nebesekti",
     "delete_all": "Viską ištrinti",
-    "map": "Map"
+    "map": "Map",
+    "sessions": "Login Sessions",
+    "ip_address": "IP Address"
 }

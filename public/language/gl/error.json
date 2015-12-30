@@ -75,10 +75,12 @@
     "about-me-too-long": "Desculpa, o teu \"sobre min\" non pode supera-los %1 caracteres,",
     "cant-chat-with-yourself": "Non podes falar contigo mesmo!",
     "chat-restricted": "Este usuario restrinxiu as charlas. Debedes seguirvos antes de que poidas falar con el. ",
+    "chat-disabled": "Charlas desactivadas",
     "too-many-messages": "Estás a enviar moitas mensaxes, por favor, agarda un anaco. ",
     "invalid-chat-message": "Mensaxe inválida",
     "chat-message-too-long": "Mensaxe moi longa",
-    "cant-edit-chat-message": "You are not allowed to edit this message",
+    "cant-edit-chat-message": "Non tes permitido editar esta mensaxe.",
+    "cant-remove-last-user": "Non podes quitar o último usuario",
     "reputation-system-disabled": "O sistema de reputación está deshabilitado",
     "downvoting-disabled": "Os votos negativos están deshabilitados",
     "not-enough-reputation-to-downvote": "Non tes reputación dabonda para esta acción",
@@ -88,5 +90,7 @@
     "registration-error": "Erro de rexistro",
     "parse-error": "Algo foi mal namentras se agardaba a resposta do servidor",
     "wrong-login-type-email": "Por favor, emprega o teu correo para contectarte",
-    "wrong-login-type-username": "Por favor, usa o teu nome de usuario para conectarte"
+    "wrong-login-type-username": "Por favor, usa o teu nome de usuario para conectarte",
+    "invite-maximum-met": "Convidaches á cantidade máxima de persoas  (%1 de %2).",
+    "no-session-found": "No login session found!"
 }

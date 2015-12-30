@@ -83,5 +83,7 @@
     "follow": "Sledi",
     "unfollow": "Prenehaj slediti",
     "delete_all": "Izbriši vse",
-    "map": "Map"
+    "map": "Map",
+    "sessions": "Login Sessions",
+    "ip_address": "IP Address"
 }

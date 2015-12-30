@@ -83,5 +83,7 @@
     "follow": "دنبال کن",
     "unfollow": "دنبال نکن",
     "delete_all": "حذف همه",
-    "map": "نقشه"
+    "map": "نقشه",
+    "sessions": "Login Sessions",
+    "ip_address": "IP Address"
 }

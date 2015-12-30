@@ -83,5 +83,7 @@
     "follow": "Follow",
     "unfollow": "Unfollow",
     "delete_all": "সব মুছে ফেলুন",
-    "map": "ম্যাপ"
+    "map": "ম্যাপ",
+    "sessions": "Login Sessions",
+    "ip_address": "IP Address"
 }

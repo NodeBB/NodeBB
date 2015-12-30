@@ -75,10 +75,12 @@
     "about-me-too-long": "Sorry, your about me cannot be longer than %1 character(s).",
     "cant-chat-with-yourself": "Nemôžete chatovat so samým sebou.",
     "chat-restricted": "This user has restricted their chat messages. They must follow you before you can chat with them",
+    "chat-disabled": "Chat system disabled",
     "too-many-messages": "You have sent too many messages, please wait awhile.",
     "invalid-chat-message": "Invalid chat message",
     "chat-message-too-long": "Chat message is too long",
     "cant-edit-chat-message": "You are not allowed to edit this message",
+    "cant-remove-last-user": "You can't remove the last user",
     "reputation-system-disabled": "Reputation system is disabled.",
     "downvoting-disabled": "Downvoting is disabled",
     "not-enough-reputation-to-downvote": "You do not have enough reputation to downvote this post",
@@ -88,5 +90,7 @@
     "registration-error": "Registration Error",
     "parse-error": "Something went wrong while parsing server response",
     "wrong-login-type-email": "Please use your email to login",
-    "wrong-login-type-username": "Please use your username to login"
+    "wrong-login-type-username": "Please use your username to login",
+    "invite-maximum-met": "You have invited the maximum amount of people (%1 out of %2).",
+    "no-session-found": "No login session found!"
 }

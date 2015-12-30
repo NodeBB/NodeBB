@@ -83,5 +83,7 @@
     "follow": "Volgen",
     "unfollow": "Ontvolgen",
     "delete_all": "Alles verwijderen",
-    "map": "Kaart"
+    "map": "Kaart",
+    "sessions": "Login Sessies",
+    "ip_address": "IP Adres"
 }

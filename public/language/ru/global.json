@@ -83,5 +83,7 @@
     "follow": "Подписаться",
     "unfollow": "Отписаться",
     "delete_all": "Удалить все",
-    "map": "Карта"
+    "map": "Карта",
+    "sessions": "Login Sessions",
+    "ip_address": "IP Address"
 }

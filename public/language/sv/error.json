@@ -75,10 +75,12 @@
     "about-me-too-long": "Din om mig kan inte vara längre än %1 tecken.",
     "cant-chat-with-yourself": "Du kan inte chatta med dig själv.",
     "chat-restricted": "Denna användaren har begränsat sina chatt-meddelanden. Användaren måste följa dig innan ni kan chatta med varann",
+    "chat-disabled": "Chat system disabled",
     "too-many-messages": "Du har skickat för många meddelanden, var god vänta",
     "invalid-chat-message": "Ogiltigt chattmeddelande",
     "chat-message-too-long": "Chattmeddelande är för långt",
     "cant-edit-chat-message": "You are not allowed to edit this message",
+    "cant-remove-last-user": "You can't remove the last user",
     "reputation-system-disabled": "Ryktessystemet är inaktiverat.",
     "downvoting-disabled": "Nedröstning är inaktiverat",
     "not-enough-reputation-to-downvote": "Du har inte tillräckligt förtroende för att rösta ner det här meddelandet",
@@ -88,5 +90,7 @@
     "registration-error": "Registreringsfel",
     "parse-error": "Något gick fel vid tolkning av svar från servern",
     "wrong-login-type-email": "Använd din e-post adress för att logga in",
-    "wrong-login-type-username": "Använd ditt användarnamn för att logga in"
+    "wrong-login-type-username": "Använd ditt användarnamn för att logga in",
+    "invite-maximum-met": "You have invited the maximum amount of people (%1 out of %2).",
+    "no-session-found": "No login session found!"
 }

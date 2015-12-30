@@ -83,5 +83,7 @@
     "follow": "Kurikira",
     "unfollow": "Reka Gukurikira",
     "delete_all": "Siba Byose",
-    "map": "Map"
+    "map": "Map",
+    "sessions": "Login Sessions",
+    "ip_address": "IP Address"
 }

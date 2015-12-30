@@ -83,5 +83,7 @@
     "follow": "עקוב",
     "unfollow": "הפסק לעקוב",
     "delete_all": "מחק הכל",
-    "map": "מפה"
+    "map": "מפה",
+    "sessions": "Login Sessions",
+    "ip_address": "IP Address"
 }
