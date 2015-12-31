@@ -1,11 +1,11 @@
 {
-    "username-email": "نام کاربری / رایانامه",
+    "username-email": "نام کاربری / ایمیل",
     "username": "نام کاربری",
     "email": "ایمیل",
-    "remember_me": "مرا به یاد بسپار؟",
-    "forgot_password": "گذرواژه را فراموش کرده‌اید؟",
-    "alternative_logins": "روش‌های درون آمدن جایگزین",
-    "failed_login_attempt": "شکست در درون آمدن، لطفا دوباره تلاش کنید.",
-    "login_successful": "شما با موفقیت به درون آمده‌اید!",
+    "remember_me": "مرا به یاد بسپار.",
+    "forgot_password": "کلمه عبور را فراموش کرده‌اید؟",
+    "alternative_logins": "روش‌های جایگرین برای ورود",
+    "failed_login_attempt": "شکست در ورود، لطفا دوباره تلاش کنید.",
+    "login_successful": "شما با موفقیت وارد شدید!",
     "dont_have_account": "حساب کاربری ندارید؟"
 }
