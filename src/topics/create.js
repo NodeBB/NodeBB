@@ -252,10 +252,10 @@ module.exports = function(Topics) {
 				}
 
 				if (parseInt(uid, 10)) {
-					Topics.notifyFollowers(postData, uid);
 					user.setUserField(uid, 'lastonline', Date.now());
 				}
 
+				Topics.notifyFollowers(postData, uid);
 				plugins.fireHook('action:topic.reply', postData);
 
 				next(null, postData);

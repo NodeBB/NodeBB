@@ -9,7 +9,7 @@
 
 	var	languages = {},
 		regexes = {
-			match: /\[\[\w+:.*?\]\]/g,
+			match: /\[\[\w+:[^\[]*?\]\]/g,
 			split: /[,][\s]*/,
 			replace: /\]+$/
 		};
@@ -153,7 +153,12 @@
 			translateKey(key, data, language, function(translated) {
 				--count;
 				if (count <= 0) {
-					callback(translated.text);
+					keys = translated.text.match(regexes.match);
+					if (!keys) {
+						callback(translated.text);
+					} else {
+						translateKeys(keys, translated.text, language, callback);
+					}
 				}
 			});
 		});
