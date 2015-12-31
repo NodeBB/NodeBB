@@ -1,8 +1,8 @@
 {
-    "chat.chatting_with": "گفتگو با <span id=\"chat-with-name\"></span>",
-    "chat.placeholder": "پیام گفتگو را اینجا بنویسید، دکمه Enter را بزنید تا فرستاده شود.",
+    "chat.chatting_with": "چت با <span id=\"chat-with-name\"></span>",
+    "chat.placeholder": "پیام چت را اینجا بنویسید، دکمه Enter را بزنید تا فرستاده شود.",
     "chat.send": "فرستادن",
-    "chat.no_active": "شما هیچ گفتگوی فعالی ندارید.",
+    "chat.no_active": "شما هیچ چت فعالی ندارید.",
     "chat.user_typing": "%1 در حال نوشتن است...",
     "chat.user_has_messaged_you": "%1 به شما پیام داده است.",
     "chat.see_all": "دیدن همه ی چت ها",
