@@ -66,7 +66,7 @@ helpers.getUserDataByUserSlug = function(userslug, callerUID, callback) {
 
 			userData.emailClass = (self && !userSettings.showemail) ? '' : 'hide';
 
-			if (!self && !userSettings.showfullname) {
+			if (!isAdmin && !self && !userSettings.showfullname) {
 				userData.fullname = '';
 			}
 
