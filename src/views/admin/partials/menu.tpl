@@ -31,6 +31,7 @@
 			<li><a href="{relative_path}/admin/settings/user">User</a></li>
 			<li><a href="{relative_path}/admin/settings/group">Group</a></li>
 			<li><a href="{relative_path}/admin/settings/guest">Guests</a></li>
+			<li><a href="{relative_path}/admin/settings/uploads">Uploads</a></li>
 			<li><a href="{relative_path}/admin/settings/post">Post</a></li>
 			<li><a href="{relative_path}/admin/settings/chat">Chat</a></li>
 			<li><a href="{relative_path}/admin/settings/pagination">Pagination</a></li>
@@ -181,6 +182,7 @@
 					<li><a href="{relative_path}/admin/settings/user">User</a></li>
 					<li><a href="{relative_path}/admin/settings/group">Group</a></li>
 					<li><a href="{relative_path}/admin/settings/guest">Guests</a></li>
+					<li><a href="{relative_path}/admin/settings/uploads">Uploads</a></li>
 					<li><a href="{relative_path}/admin/settings/post">Post</a></li>
 					<li><a href="{relative_path}/admin/settings/chat">Chat</a></li>
 					<li><a href="{relative_path}/admin/settings/pagination">Pagination</a></li>

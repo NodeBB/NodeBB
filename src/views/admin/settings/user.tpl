@@ -89,65 +89,6 @@
 </div>
 
 <div class="row">
-	<div class="col-sm-2 col-xs-12 settings-header">Avatars</div>
-	<div class="col-sm-10 col-xs-12">
-		<form>
-			<div class="checkbox">
-				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
-					<input class="mdl-switch__input" type="checkbox" data-field="allowProfileImageUploads">
-					<span class="mdl-switch__label"><strong>Allow users to upload profile images</strong></span>
-				</label>
-			</div>
-
-			<div class="checkbox">
-				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
-					<input class="mdl-switch__input" type="checkbox" data-field="profile:convertProfileImageToPNG">
-					<span class="mdl-switch__label"><strong>Convert profile image uploads to PNG</strong></span>
-				</label>
-			</div>
-
-			<div class="form-group">
-				<label>Custom Default Avatar</label>
-				<div class="input-group">
-					<input id="defaultAvatar" type="text" class="form-control" placeholder="A custom image to use instead of user icons" data-field="defaultAvatar" />
-					<span class="input-group-btn">
-						<input data-action="upload" data-target="defaultAvatar" data-route="{config.relative_path}/api/admin/uploadDefaultAvatar" type="button" class="btn btn-default" value="Upload"></input>
-					</span>
-				</div>
-			</div>
-
-			<div class="form-group">
-				<label for="profileImageDimension">Profile Image Dimension</label>
-				<input id="profileImageDimension" type="text" class="form-control" data-field="profileImageDimension" placeholder="128" />
-			</div>
-
-			<div class="form-group">
-				<label>Maximum Profile Image File Size</label>
-				<input type="text" class="form-control" placeholder="Maximum size of uploaded user images in kilobytes" data-field="maximumProfileImageSize" />
-			</div>
-
-			<div class="form-group">
-				<label>Maximum Cover Image File Size</label>
-				<input type="text" class="form-control" placeholder="Maximum size of uploaded cover images in kilobytes" data-field="maximumCoverImageSize" />
-			</div>
-		</form>
-	</div>
-</div>
-
-<div class="row">
-	<div class="col-sm-2 col-xs-12 settings-header">Profile Cover Image</div>
-	<div class="col-sm-10 col-xs-12">
-		<form>
-			<label for="profile:defaultCovers"><strong>Default Cover Images</strong></label>
-			<p class="help-block">
-				Add comma-separated default cover images for accounts that don't have an uploaded cover image
-			</p>
-			<input type="text" class="form-control input-lg" id="profile:defaultCovers" data-field="profile:defaultCovers" value="{config.relative_path}/images/cover-default.png" placeholder="https://example.com/group1.png, https://example.com/group2.png" />
-		</form>
-	</div>
-</div>
-
-<div class="row">
 	<div class="col-sm-2 col-xs-12 settings-header">Themes</div>
 	<div class="col-sm-10 col-xs-12">
 		<form>

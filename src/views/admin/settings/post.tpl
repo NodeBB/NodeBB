@@ -123,53 +123,6 @@
 </div>
 
 <div class="row">
-	<div class="col-sm-2 col-xs-12 settings-header">Upload Settings</div>
-	<div class="col-sm-10 col-xs-12">
-		<form>
-			<div class="checkbox">
-				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
-					<input class="mdl-switch__input" type="checkbox" data-field="allowFileUploads">
-					<span class="mdl-switch__label"><strong>Allow users to upload regular files</strong></span>
-				</label>
-			</div>
-
-			<div class="checkbox">
-				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
-					<input class="mdl-switch__input" type="checkbox" data-field="privateUploads">
-					<span class="mdl-switch__label"><strong>Make uploaded files private</strong></span>
-				</label>
-			</div>
-			
-			<div class="form-group">
-				<label for="maximumFileSize">Maximum File Size</label>
-				<input type="text" class="form-control" value="2048" data-field="maximumFileSize">
-			</div>
-
-			<div class="checkbox">
-				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
-					<input class="mdl-switch__input" type="checkbox" data-field="allowTopicsThumbnail">
-					<span class="mdl-switch__label"><strong>Allow users to upload topic thumbnails</strong></span>
-				</label>
-			</div>
-
-			<div class="form-group">
-				<label for="topicThumbSize">Topic Thumb Size</label>
-				<input type="text" class="form-control" value="120" data-field="topicThumbSize"> 
-			</div>
-
-			<div class="form-group">
-				<label for="allowedFileExtensions">Allowed File Extensions</label>
-				<input type="text" class="form-control" value="" data-field="allowedFileExtensions" />
-				<p class="help-block">
-					Enter comma-separated list of file extensions here (e.g. <code>pdf,xls,doc</code>).
-					An empty list means all extensions are allowed.
-				</p>
-			</div>
-		</form>
-	</div>
-</div>
-
-<div class="row">
 	<div class="col-sm-2 col-xs-12 settings-header">Composer Settings</div>
 	<div class="col-sm-10 col-xs-12">
 		<form>

@@ -17,9 +17,9 @@ var uploadsController = {};
 uploadsController.upload = function(req, res, filesIterator, next) {
 	var files = req.files.files;
 
-	if (!req.user) {
+	if (!req.user && meta.config.allowGuestUploads !== '1') {
 		deleteTempFiles(files);
-		return res.status(403).json('not allowed');
+		return res.status(403).json('[[error:guest-upload-disabled]]');
 	}
 
 	if (!Array.isArray(files)) {
@@ -51,10 +51,10 @@ uploadsController.uploadPost = function(req, res, next) {
 					return next(err);
 				}
 
-				uploadImage(req.user.uid, uploadedFile, next);
+				uploadImage(req.user ? req.user.uid : 0, uploadedFile, next);
 			});
 		} else {
-			uploadFile(req.user.uid, uploadedFile, next);
+			uploadFile(req.user ? req.user.uid : 0, uploadedFile, next);
 		}
 	}, next);
 };
@@ -82,7 +82,7 @@ uploadsController.uploadThumb = function(req, res, next) {
 					if (err) {
 						return next(err);
 					}
-					uploadImage(req.user.uid, uploadedFile, next);
+					uploadImage(req.user ? req.user.uid : 0, uploadedFile, next);
 				});
 			} else {
 				next(new Error('[[error:invalid-file]]'));
