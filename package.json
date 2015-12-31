@@ -15,6 +15,7 @@
   },
   "dependencies": {
     "async": "~1.5.0",
+    "autoprefixer": "^6.2.3",
     "bcryptjs": "~2.3.0",
     "body-parser": "^1.9.0",
     "colors": "^1.1.0",
@@ -59,6 +60,7 @@
     "npm": "^2.1.4",
     "passport": "^0.3.0",
     "passport-local": "1.0.0",
+    "postcss": "^5.0.13",
     "prompt": "^0.2.14",
     "redis": "~2.4.2",
     "request": "^2.44.0",

@@ -7,6 +7,8 @@ var winston = require('winston'),
 	less = require('less'),
 	crypto = require('crypto'),
 	async = require('async'),
+	autoprefixer = require('autoprefixer'),
+	postcss = require('postcss'),
 
 	plugins = require('../plugins'),
 	emitter = require('../emitter'),
@@ -185,16 +187,24 @@ module.exports = function(Meta) {
 				return;
 			}
 
-			Meta.css[destination] = lessOutput.css;
+			winston.verbose('[meta/css] Running PostCSS Plugins');
+			postcss([ autoprefixer ]).process(lessOutput.css).then(function (result) {
+				result.warnings().forEach(function (warn) {
+					winston.verbose(warn.toString());
+				});
 
-			// Save the compiled CSS in public/ so things like nginx can serve it
-			if (nconf.get('isPrimary') === 'true') {
-				Meta.css.commitToFile(destination);
-			}
+				Meta.css[destination] = result.css;
 
-			if (typeof callback === 'function') {
-				callback(null, lessOutput.css);
-			}
+				// Save the compiled CSS in public/ so things like nginx can serve it
+				if (nconf.get('isPrimary') === 'true') {
+					Meta.css.commitToFile(destination);
+				}
+
+				if (typeof callback === 'function') {
+					callback(null, result.css);
+				}
+			});
+
 		});
 	}
 
