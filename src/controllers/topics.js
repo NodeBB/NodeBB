@@ -266,7 +266,11 @@ topicsController.get = function(req, res, callback) {
 			res.locals.linkTags.push(rel);
 		});
 
-		topics.increaseViewCount(tid);
+		req.session.tids_viewed = req.session.tids_viewed || {};
+		if (!req.session.tids_viewed[tid] || req.session.tids_viewed[tid] < Date.now() - 3600000) {
+			topics.increaseViewCount(tid);
+			req.session.tids_viewed[tid] = Date.now();
+		}
 
 		if (req.uid) {
 			topics.markAsRead([tid], req.uid, function(err, markedRead) {
