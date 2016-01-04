@@ -50,7 +50,7 @@
     "topics": "Themen",
     "posts": "Beiträge",
     "views": "Aufrufe",
-    "reputation": "Reputation",
+    "reputation": "Ansehen",
     "read_more": "weiterlesen",
     "more": "Mehr",
     "posted_ago_by_guest": "%1 von einem Gast geschrieben",
@@ -84,6 +84,6 @@
     "unfollow": "Entfolgen",
     "delete_all": "Alles löschen",
     "map": "Karte",
-    "sessions": "Login Sessions",
-    "ip_address": "IP Address"
+    "sessions": "Login-Sitzungen",
+    "ip_address": "IP-Adresse"
 }

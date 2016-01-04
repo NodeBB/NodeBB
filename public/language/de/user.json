@@ -7,7 +7,7 @@
     "email": "E-Mail",
     "confirm_email": "E-Mail bestätigen",
     "ban_account": "Konto sperren",
-    "ban_account_confirm": "Sind Sie sicher, dass Sie diesen Benutzer sperren möchten?",
+    "ban_account_confirm": "Bist du sicher, dass du diesen Benutzer sperren möchtest?",
     "unban_account": "Konto entsperren",
     "delete_account": "Konto löschen",
     "delete_account_confirm": "Bist du sicher, dass du dein Konto löschen möchtest? <br /><strong>Diese Aktion kann nicht rückgängig gemacht werden und du kannst deine Daten nicht wiederherstellen</strong><br /><br />Gebe deinen Benutzernamen ein, um zu bestätigen, dass du dieses Konto löschen möchtest.",
@@ -21,7 +21,7 @@
     "lastonline": "Zuletzt online",
     "profile": "Profil",
     "profile_views": "Profilaufrufe",
-    "reputation": "Reputation",
+    "reputation": "Ansehen",
     "favourites": "Favoriten",
     "watched": "Beobachtet",
     "followers": "Follower",
@@ -99,5 +99,5 @@
     "custom_route_help": "Gib hier einen Pfadnamen ohne vorangehenden Slash ein (z.B. \"recent\" oder \"popular\")",
     "sso.title": "Einmalanmeldungsdienste",
     "sso.associated": "Verbunden mit",
-    "sso.not-associated": "Hier klicken um Dich mit %1 zu verbinden"
+    "sso.not-associated": "Verbinde dich hier mit"
 }
