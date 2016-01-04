@@ -93,6 +93,18 @@
 
 
 <div class="row">
+	<div class="col-sm-2 col-xs-12 settings-header">Unread Settings</div>
+	<div class="col-sm-10 col-xs-12">
+		<form>
+			<div class="form-group">
+				<label for="unreadCutoff">Unread cutoff days</label>
+				<input id="unreadCutoff" type="text" class="form-control" value="2" data-field="unreadCutoff">
+			</div>
+		</form>
+	</div>
+</div>
+
+<div class="row">
 	<div class="col-sm-2 col-xs-12 settings-header">Signature Settings</div>
 	<div class="col-sm-10 col-xs-12">
 		<form>

@@ -14,25 +14,7 @@ module.exports = function(SocketTopics) {
 			return callback(new Error('[[error:invalid-data]]'));
 		}
 
-		if (!tids.length) {
-			return callback();
-		}
-		tids = tids.filter(function(tid) {
-			return tid && utils.isNumber(tid);
-		});
-
-		topics.markAsRead(tids, socket.uid, function(err) {
-			if (err) {
-				return callback(err);
-			}
-
-			topics.pushUnreadCount(socket.uid);
-
-			for (var i=0; i<tids.length; ++i) {
-				topics.markTopicNotificationsRead(tids[i], socket.uid);
-			}
-			callback();
-		});
+		topics.markAsRead(tids, socket.uid, callback);
 	};
 
 	SocketTopics.markTopicNotificationsRead = function(socket, tid, callback) {
@@ -43,13 +25,7 @@ module.exports = function(SocketTopics) {
 	};
 
 	SocketTopics.markAllRead = function(socket, data, callback) {
-		db.getSortedSetRevRangeByScore('topics:recent', 0, -1, '+inf', Date.now() - topics.unreadCutoff, function(err, tids) {
-			if (err) {
-				return callback(err);
-			}
-
-			SocketTopics.markAsRead(socket, tids, callback);
-		});
+		topics.markAllRead(socket.uid, callback);
 	};
 
 	SocketTopics.markCategoryTopicsRead = function(socket, cid, callback) {
