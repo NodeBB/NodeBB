@@ -79,6 +79,11 @@ module.exports = function(app) {
 		} else {
 			res.setHeader('X-Frame-Options', 'SAMEORIGIN');
 		}
+		
+		// CORS Support
+		res.setHeader('Access-Control-Allow-Origin','*');
+		res.setHeader('Access-Control-Allow-Methods','GET,OPTIONS');
+		res.setHeader('Access-Control-Allow-Headers','X-Requested-With,Content-Type');
 
 		next();
 	});
