@@ -199,9 +199,10 @@ SocketAdmin.settings.clearSitemapCache = function(socket, data, callback) {
 };
 
 SocketAdmin.email.test = function(socket, data, callback) {
+	var site_title = meta.config.title || 'NodeBB';
 	emailer.send(data.template, socket.uid, {
-		subject: '[NodeBB] Test Email',
-		site_title: meta.config.title || 'NodeBB'
+		subject: '[' + site_title + '] Test Email',
+		site_title: site_title
 	}, callback);
 };
 
