@@ -25,7 +25,7 @@ module.exports = function(middleware) {
 				options = {};
 			}
 
-			options.loggedIn = req.user ? parseInt(req.user.uid, 10) !== 0 : false;
+			options.loggedIn = !!req.uid;
 			options.relative_path = nconf.get('relative_path');
 			options.template = {name: template};
 			options.template[template] = true;

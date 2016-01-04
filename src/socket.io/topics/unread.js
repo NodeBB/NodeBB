@@ -1,11 +1,11 @@
 'use strict';
 
-var async = require('async'),
+var async = require('async');
 
-	db = require('../../database'),
-	user = require('../../user'),
-	topics = require('../../topics'),
-	utils = require('../../../public/src/utils');
+var db = require('../../database');
+var user = require('../../user');
+var topics = require('../../topics');
+var utils = require('../../../public/src/utils');
 
 module.exports = function(SocketTopics) {
 
@@ -59,6 +59,19 @@ module.exports = function(SocketTopics) {
 			}
 
 			SocketTopics.markAsRead(socket, tids, callback);
+		});
+	};
+
+	SocketTopics.markUnread = function(socket, tid, callback) {
+		if (!tid || !socket.uid) {
+			return callback();
+		}
+		topics.markUnread(tid, socket.uid, function(err) {
+			if (err) {
+				return callback(err);
+			}
+
+			topics.pushUnreadCount(socket.uid);
 		});
 	};
 

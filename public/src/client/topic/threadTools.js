@@ -53,6 +53,11 @@ define('forum/topic/threadTools', [
 			return false;
 		});
 
+		topicContainer.on('click', '[component="topic/mark-unread"]', function() {
+			socket.emit('topics.markUnread', tid);
+			return false;
+		});
+
 		topicContainer.on('click', '[component="topic/mark-unread-for-all"]', function() {
 			var btn = $(this);
 			socket.emit('topics.markAsUnreadForAll', [tid], function(err) {

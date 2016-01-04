@@ -1,14 +1,14 @@
 
 'use strict';
 
-var async = require('async'),
-	winston = require('winston'),
+var async = require('async');
+var winston = require('winston');
 
-	db = require('../database'),
-	user = require('../user'),
-	notifications = require('../notifications'),
-	categories = require('../categories'),
-	privileges = require('../privileges');
+var db = require('../database');
+var user = require('../user');
+var notifications = require('../notifications');
+var categories = require('../categories');
+var privileges = require('../privileges');
 
 module.exports = function(Topics) {
 
@@ -69,13 +69,16 @@ module.exports = function(Topics) {
 			},
 			userScores: function(next) {
 				db.getSortedSetRevRangeByScoreWithScores('uid:' + uid + ':tids_read', 0, -1, '+inf', cutoff, next);
+			},
+			tids_unread: function(next) {
+				db.getSortedSetRevRangeWithScores('uid:' + uid + ':tids_unread', 0, -1, next);
 			}
 		}, function(err, results) {
 			if (err) {
 				return callback(err);
 			}
 
-			if (results.recentTids && !results.recentTids.length) {
+			if (results.recentTids && !results.recentTids.length && !results.tids_unread.length) {
 				return callback(null, []);
 			}
 
@@ -84,11 +87,17 @@ module.exports = function(Topics) {
 				userRead[userItem.value] = userItem.score;
 			});
 
+			results.recentTids = results.recentTids.concat(results.tids_unread);
+			results.recentTids.sort(function(a, b) {
+				return b.score - a.score;
+			});
 
-			var tids = results.recentTids.filter(function(recentTopic, index) {
+			var tids = results.recentTids.filter(function(recentTopic) {
 				return !userRead[recentTopic.value] || recentTopic.score > userRead[recentTopic.value];
 			}).map(function(topic) {
 				return topic.value;
+			}).filter(function(tid, index, array) {
+				return array.indexOf(tid) === index;
 			});
 
 			tids = tids.slice(0, 100);
@@ -142,6 +151,7 @@ module.exports = function(Topics) {
 			if (err) {
 				return callback(err);
 			}
+
 			require('../socket.io').in('uid_' + uid).emit('event:unread.updateCount', count);
 			callback();
 		});
@@ -184,6 +194,7 @@ module.exports = function(Topics) {
 
 				async.parallel({
 					markRead: async.apply(db.sortedSetAdd, 'uid:' + uid + ':tids_read', scores, tids),
+					markUnread: async.apply(db.sortedSetRemove, 'uid:' + uid + ':tids_unread', tids),
 					topicData: async.apply(	Topics.getTopicsFields, tids, ['cid'])
 				}, next);
 			},
@@ -227,7 +238,7 @@ module.exports = function(Topics) {
 	};
 
 	Topics.hasReadTopics = function(tids, uid, callback) {
-		if(!parseInt(uid, 10)) {
+		if (!parseInt(uid, 10)) {
 			return callback(null, tids.map(function() {
 				return false;
 			}));
@@ -239,14 +250,20 @@ module.exports = function(Topics) {
 			},
 			userScores: function(next) {
 				db.sortedSetScores('uid:' + uid + ':tids_read', tids, next);
+			},
+			tids_unread: function (next) {
+				db.sortedSetScores('uid:' + uid + ':tids_unread', tids, next);
 			}
 		}, function(err, results) {
 			if (err) {
 				return callback(err);
 			}
+
 			var cutoff = Date.now() - unreadCutoff;
 			var result = tids.map(function(tid, index) {
-				return results.recentScores[index] < cutoff || !!(results.userScores[index] && results.userScores[index] >= results.recentScores[index]);
+				return !results.tids_unread[index] &&
+					(results.recentScores[index] < cutoff ||
+					!!(results.userScores[index] && results.userScores[index] >= results.recentScores[index]));
 			});
 
 			callback(null, result);
@@ -259,5 +276,21 @@ module.exports = function(Topics) {
 		});
 	};
 
+	Topics.markUnread = function(tid, uid, callback) {
+		async.waterfall([
+			function (next) {
+				Topics.exists(tid, next);
+			},
+			function (exists, next) {
+				if (!exists) {
+					return next(new Error('[[error:no-topic]]'));
+				}
+				db.sortedSetRemove('uid:' + uid + ':tids_read', tid, next);
+			},
+			function (next) {
+				db.sortedSetAdd('uid:' + uid + ':tids_unread', Date.now(), tid, next);
+			}
+		], callback);
+	};
 
 };

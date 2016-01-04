@@ -42,6 +42,7 @@
 	"login_to_subscribe": "Please register or log in in order to subscribe to this topic.",
 
 	"markAsUnreadForAll.success" : "Topic marked as unread for all.",
+	"mark_unread": "Mark unread",
 
 	"watch": "Watch",
 	"unwatch": "Unwatch",
