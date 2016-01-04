@@ -214,11 +214,6 @@ module.exports = function(Topics) {
 				categories.markAsRead(cids, uid, next);
 			},
 			function (next) {
-				Topics.pushUnreadCount(uid);
-
-				for (var i=0; i<tids.length; ++i) {
-					Topics.markTopicNotificationsRead(tids[i], uid);
-				}
 				next(null, true);
 			}
 		], callback);
@@ -230,6 +225,9 @@ module.exports = function(Topics) {
 				db.getSortedSetRevRangeByScore('topics:recent', 0, -1, '+inf', Topics.unreadCutoff(), next);
 			},
 			function (tids, next) {
+				for (var i=0; i<tids.length; ++i) {
+					Topics.markTopicNotificationsRead(tids[i], uid);
+				}
 				Topics.markAsRead(uid, tids, next);
 			},
 			function (markedRead, next) {

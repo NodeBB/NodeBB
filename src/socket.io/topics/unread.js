@@ -2,10 +2,8 @@
 
 var async = require('async');
 
-var db = require('../../database');
 var user = require('../../user');
 var topics = require('../../topics');
-var utils = require('../../../public/src/utils');
 
 module.exports = function(SocketTopics) {
 
@@ -14,7 +12,17 @@ module.exports = function(SocketTopics) {
 			return callback(new Error('[[error:invalid-data]]'));
 		}
 
-		topics.markAsRead(tids, socket.uid, callback);
+		topics.markAsRead(tids, socket.uid, function(err) {
+			if (err) {
+				return callback(err);
+			}
+
+			Topics.pushUnreadCount(uid);
+
+			for (var i=0; i<tids.length; ++i) {
+				Topics.markTopicNotificationsRead(tids[i], uid);
+			}
+		});
 	};
 
 	SocketTopics.markTopicNotificationsRead = function(socket, tid, callback) {
@@ -25,7 +33,15 @@ module.exports = function(SocketTopics) {
 	};
 
 	SocketTopics.markAllRead = function(socket, data, callback) {
-		topics.markAllRead(socket.uid, callback);
+		topics.markAllRead(socket.uid, function(err) {
+			if (err) {
+				return callback(err);
+			}
+
+			Topics.pushUnreadCount(uid);
+
+			callback();
+		});
 	};
 
 	SocketTopics.markCategoryTopicsRead = function(socket, cid, callback) {
