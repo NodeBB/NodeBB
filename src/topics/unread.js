@@ -169,8 +169,8 @@ module.exports = function(Topics) {
 			return callback();
 		}
 
-		tids = tids.filter(function(tid) {
-			return tid && utils.isNumber(tid);
+		tids = tids.filter(function(tid, index, array) {
+			return tid && utils.isNumber(tid) && array.indexOf(tid) === index;
 		});
 
 		if (!tids.length) {
