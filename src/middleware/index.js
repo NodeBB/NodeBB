@@ -71,18 +71,7 @@ module.exports = function(app) {
 		saveUninitialized: true
 	}));
 
-	app.use(function (req, res, next) {
-		res.setHeader('X-Powered-By', 'NodeBB');
-
-		if (meta.config['allow-from-uri']) {
-			res.setHeader('X-Frame-Options', 'ALLOW-FROM ' + meta.config['allow-from-uri']);
-		} else {
-			res.setHeader('X-Frame-Options', 'SAMEORIGIN');
-		}
-
-		next();
-	});
-
+	app.use(middleware.addHeaders);
 	app.use(middleware.processRender);
 	auth.initialize(app, middleware);
 

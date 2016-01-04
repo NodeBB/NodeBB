@@ -7,6 +7,7 @@ var app,
 	async = require('async'),
 	path = require('path'),
 	csrf = require('csurf'),
+	_ = require('underscore'),
 
 	validator = require('validator'),
 	nconf = require('nconf'),
@@ -62,6 +63,30 @@ middleware.pageView = function(req, res, next) {
 	} else {
 		next();
 	}
+};
+
+middleware.addHeaders = function (req, res, next) {
+	var defaults = {
+		'X-Powered-By': 'NodeBB',
+		'X-Frame-Options': 'SAMEORIGIN',
+		'Access-Control-Allow-Origin': 'null'	// yes, string null.
+	};
+	var headers = {
+		'X-Powered-By': meta.config['powered-by'],
+		'X-Frame-Options': meta.config['allow-from-uri'] ? 'ALLOW-FROM ' + meta.config['allow-from-uri'] : undefined,
+		'Access-Control-Allow-Origin': meta.config['access-control-allow-origin'],
+		'Access-Control-Allow-Methods': meta.config['access-control-allow-methods'],
+		'Access-Control-Allow-Headers': meta.config['access-control-allow-headers']
+	};
+
+	_.defaults(headers, defaults);
+	headers = _.pick(headers, Boolean);		// Remove falsy headers
+
+	for(var key in headers) {
+		res.setHeader(key, headers[key]);
+	}
+
+	next();
 };
 
 middleware.pluginHooks = function(req, res, next) {

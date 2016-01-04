@@ -23,13 +23,40 @@
 </div>
 
 <div class="row">
-	<div class="col-sm-2 col-xs-12 settings-header">Domain Settings</div>
+	<div class="col-sm-2 col-xs-12 settings-header">Headers</div>
 	<div class="col-sm-10 col-xs-12">
 		<form>
 			<div class="form-group">
-				<label for="allow-from-uri">Set ALLOW-FROM to Place NodeBB in an iFrame:</label>
+				<label for="allow-from-uri">Set ALLOW-FROM to Place NodeBB in an iFrame</label>
 				<input class="form-control" id="allow-from-uri" type="text" placeholder="external-domain.com" data-field="allow-from-uri" /><br />
 			</div>
+			<div class="form-group">
+				<label for="powered-by">Customise the "Powered By" header sent by NodeBB</label>
+				<input class="form-control" id="powered-by" type="text" placeholder="NodeBB" data-field="powered-by" /><br />
+			</div>
+			<div class="form-group">
+				<label for="access-control-allow-origin">Access-Control-Allow-Origin</label>
+				<input class="form-control" id="access-control-allow-origin" type="text" placeholder="null" value="null" data-field="access-control-allow-origin" /><br />
+				<p class="help-block">
+					To deny access to all sites, leave empty or set to <code>null</code>
+				</p>
+			</div>
+			<div class="form-group">
+				<label for="access-control-allow-methods">Access-Control-Allow-Methods</label>
+				<input class="form-control" id="access-control-allow-methods" type="text" placeholder="" data-field="access-control-allow-methods" /><br />
+			</div>
+			<div class="form-group">
+				<label for="access-control-allow-headers">Access-Control-Allow-Headers</label>
+				<input class="form-control" id="access-control-allow-headers" type="text" placeholder="" data-field="access-control-allow-headers" /><br />
+			</div>
+		</form>
+	</div>
+</div>
+
+<div class="row">
+	<div class="col-sm-2 col-xs-12 settings-header">Cookies</div>
+	<div class="col-sm-10 col-xs-12">
+		<form>
 			<div class="form-group">
 				<label for="cookieDomain">Set domain for session cookie</label>
 				<input class="form-control" id="cookieDomain" type="text" placeholder=".domain.tld" data-field="cookieDomain" /><br />
