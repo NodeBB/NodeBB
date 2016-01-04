@@ -24,6 +24,7 @@
     "details.has_no_posts": "Group นี้ยังไม่มีโพสจากสมาชิก",
     "details.latest_posts": "โพสล่าสุด",
     "details.private": "ส่วนตัว",
+    "details.disableJoinRequests": "Disable join requests",
     "details.grant": "Grant/Rescind Ownership",
     "details.kick": "เตะออก",
     "details.owner_options": "การจัดการ Group",

@@ -24,6 +24,7 @@
     "details.has_no_posts": "Anggota grup ini belum membuat posting satupun.",
     "details.latest_posts": "Posting Terkini",
     "details.private": "Private",
+    "details.disableJoinRequests": "Disable join requests",
     "details.grant": "Grant/Rescind Ownership",
     "details.kick": "Kick",
     "details.owner_options": "Group Administration",

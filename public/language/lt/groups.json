@@ -24,6 +24,7 @@
     "details.has_no_posts": "Šios grupės nariai neatliko jokių įrašų.",
     "details.latest_posts": "Vėliausi įrašai",
     "details.private": "Asmeniška",
+    "details.disableJoinRequests": "Disable join requests",
     "details.grant": "Duoti/Atšaukti Nuosavybę",
     "details.kick": "Išmesti",
     "details.owner_options": "Grupės Administratorius",

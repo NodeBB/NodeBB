@@ -24,6 +24,7 @@
     "details.has_no_posts": "Членовете на тази група не са публикували нищо.",
     "details.latest_posts": "Скорошни публикации",
     "details.private": "Частна",
+    "details.disableJoinRequests": "Disable join requests",
     "details.grant": "Даване/отнемане на собственост",
     "details.kick": "Изгонване",
     "details.owner_options": "Администрация на групата",

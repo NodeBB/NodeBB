@@ -24,6 +24,7 @@
     "details.has_no_posts": "此小组的会员尚未发表任何帖子。",
     "details.latest_posts": "最新帖子",
     "details.private": "私有",
+    "details.disableJoinRequests": "Disable join requests",
     "details.grant": "授予/取消管理权",
     "details.kick": "踢出小组",
     "details.owner_options": "小组管理",

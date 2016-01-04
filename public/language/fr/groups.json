@@ -24,6 +24,7 @@
     "details.has_no_posts": "Les membres de ce groupe n'ont envoyé aucun message.",
     "details.latest_posts": "Derniers messages",
     "details.private": "Privé",
+    "details.disableJoinRequests": "Désactiver les demandes d'adhésion",
     "details.grant": "Promouvoir/rétrograder comme propriétaire",
     "details.kick": "Exclure",
     "details.owner_options": "Administration du groupe",

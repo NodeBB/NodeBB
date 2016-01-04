@@ -24,6 +24,7 @@
     "details.has_no_posts": "This group's members have not made any posts.",
     "details.latest_posts": "Latest Posts",
     "details.private": "Private",
+    "details.disableJoinRequests": "Disable join requests",
     "details.grant": "Grant/Rescind Ownership",
     "details.kick": "Kick",
     "details.owner_options": "Group Administration",

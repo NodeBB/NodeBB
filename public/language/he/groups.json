@@ -24,6 +24,7 @@
     "details.has_no_posts": "חברי הקבוצה הזו לא העלו אף פוסט.",
     "details.latest_posts": "פוסטים אחרונים",
     "details.private": "פרטי",
+    "details.disableJoinRequests": "Disable join requests",
     "details.grant": "Grant/Rescind Ownership",
     "details.kick": "Kick",
     "details.owner_options": "ניהול הקבוצה",

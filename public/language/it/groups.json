@@ -24,6 +24,7 @@
     "details.has_no_posts": "I membri di questo gruppo non hanno ancora postato.",
     "details.latest_posts": "Ultimi Post",
     "details.private": "Privato",
+    "details.disableJoinRequests": "Disable join requests",
     "details.grant": "Concedi / Rimuovi la Proprietà",
     "details.kick": "Espelli",
     "details.owner_options": "Amministratore del Grupo",

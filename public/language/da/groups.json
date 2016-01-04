@@ -24,6 +24,7 @@
     "details.has_no_posts": "Medlemmer af denne gruppe har ikke oprettet indlæg.",
     "details.latest_posts": "seneste indlæg",
     "details.private": "Privat",
+    "details.disableJoinRequests": "Disable join requests",
     "details.grant": "Giv/ophæv ejerskab",
     "details.kick": "Spark",
     "details.owner_options": "Gruppe administration",

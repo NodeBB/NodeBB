@@ -24,6 +24,7 @@
     "details.has_no_posts": "Člani skupine še niso ustvarili objave.",
     "details.latest_posts": "Zadnje objave",
     "details.private": "Zasebno",
+    "details.disableJoinRequests": "Disable join requests",
     "details.grant": "Odobri/prekliči avtorstvo",
     "details.kick": "Odstrani člana iz skupine",
     "details.owner_options": "Administratorji skupine",

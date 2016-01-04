@@ -24,6 +24,7 @@
     "details.has_no_posts": "أعضاء هذه المجموعة لم يضيفوا أية مشاركة",
     "details.latest_posts": "آخر المشاركات",
     "details.private": "خاص",
+    "details.disableJoinRequests": "Disable join requests",
     "details.grant": "منح/سحب المِلكية",
     "details.kick": "طرد",
     "details.owner_options": "إدارة المجموعة",

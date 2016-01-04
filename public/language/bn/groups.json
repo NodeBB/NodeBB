@@ -24,6 +24,7 @@
     "details.has_no_posts": "এই গ্রুপের সদস্যরা এখনো কোন পোষ্ট করেন নি",
     "details.latest_posts": "সর্বশেষ পোষ্টসমূহ",
     "details.private": "Private",
+    "details.disableJoinRequests": "Disable join requests",
     "details.grant": "Grant/Rescind Ownership",
     "details.kick": "Kick",
     "details.owner_options": "Group Administration",

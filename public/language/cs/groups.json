@@ -24,6 +24,7 @@
     "details.has_no_posts": "Členové této skupiny dosud neodeslali ani jeden příspěvek.",
     "details.latest_posts": "Nejnovější příspěvky",
     "details.private": "Private",
+    "details.disableJoinRequests": "Disable join requests",
     "details.grant": "Grant/Rescind Ownership",
     "details.kick": "Kick",
     "details.owner_options": "Group Administration",

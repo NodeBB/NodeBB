@@ -24,6 +24,7 @@
     "details.has_no_posts": "Τα μέλη αυτής της ομάδας δεν έχουν δημοσιεύσει τίποτα.",
     "details.latest_posts": "Τελευταίες δημοσιεύσεις.",
     "details.private": "Private",
+    "details.disableJoinRequests": "Disable join requests",
     "details.grant": "Grant/Rescind Ownership",
     "details.kick": "Kick",
     "details.owner_options": "Group Administration",

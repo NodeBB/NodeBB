@@ -24,6 +24,7 @@
     "details.has_no_posts": "Członkowie tej grupy nie napisali żadnych postów.",
     "details.latest_posts": "Ostatnie posty",
     "details.private": "Prywatna",
+    "details.disableJoinRequests": "Disable join requests",
     "details.grant": "Nadaj/Cofnij prawa Właściciela",
     "details.kick": "Wykop",
     "details.owner_options": "Administracja grupy",

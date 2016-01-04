@@ -24,6 +24,7 @@
     "details.has_no_posts": "這個群組的成員還未發出任何帖子。",
     "details.latest_posts": "最新文章",
     "details.private": "私人",
+    "details.disableJoinRequests": "Disable join requests",
     "details.grant": "准許/撤銷 所有權",
     "details.kick": "剔除",
     "details.owner_options": "群組管理員",

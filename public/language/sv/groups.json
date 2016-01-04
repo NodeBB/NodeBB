@@ -24,6 +24,7 @@
     "details.has_no_posts": "Den här gruppens medlemmar har inte skrivit några inlägg.",
     "details.latest_posts": "Senaste inlägg",
     "details.private": "Privat",
+    "details.disableJoinRequests": "Disable join requests",
     "details.grant": "Ge/Ta ifrån ägarskap",
     "details.kick": "Sparka ut",
     "details.owner_options": "Gruppadministration",

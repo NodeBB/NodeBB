@@ -24,6 +24,7 @@
     "details.has_no_posts": "اعضای این گروه هیچ پستی ایجاد نکرده اند",
     "details.latest_posts": "آخرین پست ها",
     "details.private": "خصوصی",
+    "details.disableJoinRequests": "Disable join requests",
     "details.grant": "اعطاء/خلع مالکیت",
     "details.kick": "بیرون انداختن",
     "details.owner_options": "مدیر گروه",

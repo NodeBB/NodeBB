@@ -24,6 +24,7 @@
     "details.has_no_posts": "Чланови ове групе нису написали ниједну поруку.",
     "details.latest_posts": "Последње поруке",
     "details.private": "Приватна",
+    "details.disableJoinRequests": "Disable join requests",
     "details.grant": "Grant/Rescind Ownership",
     "details.kick": "Избаци",
     "details.owner_options": "Администрација групе",

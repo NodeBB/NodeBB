@@ -24,6 +24,7 @@
     "details.has_no_posts": "Medlemmene i denne gruppen har ikke skrevet noen innlegg.",
     "details.latest_posts": "Seneste innlegg",
     "details.private": "Privat",
+    "details.disableJoinRequests": "Disable join requests",
     "details.grant": "Gi/Opphev Eierskap",
     "details.kick": "Kast ut",
     "details.owner_options": "Gruppeadministrasjon",
