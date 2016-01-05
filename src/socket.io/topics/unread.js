@@ -17,10 +17,10 @@ module.exports = function(SocketTopics) {
 				return callback(err);
 			}
 
-			Topics.pushUnreadCount(uid);
+			topics.pushUnreadCount(socket.uid);
 
 			for (var i=0; i<tids.length; ++i) {
-				Topics.markTopicNotificationsRead(tids[i], uid);
+				topics.markTopicNotificationsRead(tids[i], socket.uid);
 			}
 		});
 	};
@@ -38,7 +38,7 @@ module.exports = function(SocketTopics) {
 				return callback(err);
 			}
 
-			Topics.pushUnreadCount(uid);
+			topics.pushUnreadCount(socket.uid);
 
 			callback();
 		});
