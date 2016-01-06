@@ -1,23 +1,19 @@
 "use strict";
 
-var async = require('async'),
-	nconf = require('nconf'),
-	validator = require('validator'),
-	winston = require('winston'),
+var async = require('async');
+var nconf = require('nconf');
+var validator = require('validator');
 
-	meta = require('../meta'),
-	user = require('../user'),
-	posts = require('../posts'),
-	topics = require('../topics'),
-	plugins = require('../plugins'),
-	sitemap = require('../sitemap'),
-	categories = require('../categories'),
-	privileges = require('../privileges'),
-	helpers = require('./helpers');
+var meta = require('../meta');
+var user = require('../user');
+var plugins = require('../plugins');
+var sitemap = require('../sitemap');
+var helpers = require('./helpers');
 
 var Controllers = {
 	topics: require('./topics'),
 	categories: require('./categories'),
+	category: require('./category'),
 	unread: require('./unread'),
 	recent: require('./recent'),
 	popular: require('./popular'),
@@ -36,7 +32,12 @@ Controllers.home = function(req, res, next) {
 	var route = meta.config.homePageRoute || meta.config.homePageCustom || 'categories';
 
 	user.getSettings(req.uid, function(err, settings) {
-		if (!err && settings.homePageRoute !== 'undefined' && settings.homePageRoute !== 'none') route = settings.homePageRoute || route;
+		if (err) {
+			return next(err);
+		}
+		if (settings.homePageRoute !== 'undefined' && settings.homePageRoute !== 'none') {
+			route = settings.homePageRoute || route;
+		}
 
 		var hook = 'action:homepage.get:' + route;
 
@@ -180,7 +181,7 @@ Controllers.sitemap.render = function(req, res, next) {
 			res.header('Content-Type', 'application/xml');
 			res.send(xml);
 		});
-	})
+	});
 };
 
 Controllers.sitemap.getPages = function(req, res, next) {
@@ -280,7 +281,7 @@ Controllers.manifest = function(req, res) {
 			sizes: '192x192',
 			type: 'image/png',
 			density: 4.0
-		})
+		});
 	}
 
 	res.status(200).json(manifest);

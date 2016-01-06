@@ -51,8 +51,8 @@ function categoryRoutes(app, middleware, controllers) {
 	setupPageRoute(app, '/recent', middleware, [], controllers.recent.get);
 	setupPageRoute(app, '/unread', middleware, [middleware.authenticate], controllers.unread.get);
 
-	setupPageRoute(app, '/category/:category_id/:slug/:topic_index', middleware, [], controllers.categories.get);
-	setupPageRoute(app, '/category/:category_id/:slug?', middleware, [], controllers.categories.get);
+	setupPageRoute(app, '/category/:category_id/:slug/:topic_index', middleware, [], controllers.category.get);
+	setupPageRoute(app, '/category/:category_id/:slug?', middleware, [], controllers.category.get);
 }
 
 function userRoutes(app, middleware, controllers) {
