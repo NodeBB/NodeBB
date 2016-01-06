@@ -114,6 +114,10 @@ var	async = require('async'),
 		data.text = data.plaintext;
 		delete data.plaintext;
 
+		// NodeMailer uses a combined "from"
+		data.from = data.from_name + '<' + data.from + '>';
+		delete data.from_name;
+
 		winston.verbose('[emailer] Sending email to uid ' + data.uid);
 		transports[transports.gmail ? 'gmail' : 'direct'].sendMail(data, callback);
 	};
