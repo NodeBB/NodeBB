@@ -27,7 +27,7 @@ categoryController.get = function(req, res, callback) {
 	}
 
 	async.waterfall([
-		function(next) {
+		function (next) {
 			async.parallel({
 				categoryData: function(next) {
 					categories.getCategoryFields(cid, ['slug', 'disabled', 'topic_count'], next);
@@ -40,7 +40,7 @@ categoryController.get = function(req, res, callback) {
 				}
 			}, next);
 		},
-		function(results, next) {
+		function (results, next) {
 			userPrivileges = results.privileges;
 
 			if (!results.categoryData.slug || (results.categoryData && parseInt(results.categoryData.disabled, 10) === 1)) {
@@ -98,7 +98,7 @@ categoryController.get = function(req, res, callback) {
 				uid: req.uid
 			});
 		},
-		function(payload, next) {
+		function (payload, next) {
 			user.getUidByUserslug(req.query.author, function(err, uid) {
 				payload.targetUid = uid;
 				if (uid) {
@@ -107,10 +107,10 @@ categoryController.get = function(req, res, callback) {
 				next(err, payload);
 			});
 		},
-		function(payload, next) {
+		function (payload, next) {
 			categories.getCategoryById(payload, next);
 		},
-		function(categoryData, next) {
+		function (categoryData, next) {
 			if (categoryData.link) {
 				db.incrObjectField('category:' + categoryData.cid, 'timesClicked');
 				return res.redirect(categoryData.link);
@@ -130,7 +130,7 @@ categoryController.get = function(req, res, callback) {
 				next(null, categoryData);
 			});
 		},
-		function(categoryData, next) {
+		function (categoryData, next) {
 			if (!categoryData.children.length) {
 				return next(null, categoryData);
 			}
