@@ -32,7 +32,7 @@ module.exports = function(User) {
 				'email': data.email,
 				'joindate': timestamp,
 				'picture': '',
-				'fullname': '',
+				'fullname': data.fullname,
 				'location': '',
 				'birthday': '',
 				'website': '',
