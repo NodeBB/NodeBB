@@ -113,6 +113,9 @@ module.exports = function(Messaging) {
 				var keys = uids.map(function(uid) {
 					return 'uid:' + uid + ':chat:rooms';
 				});
+				keys.concat(uids.map(function(uid) {
+					return 'uid:' + uid + ':chat:rooms:unread';
+				}));
 				db.sortedSetsRemove(keys, roomId, next);
 			}
 		], callback);
