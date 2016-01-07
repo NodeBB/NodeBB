@@ -32,12 +32,6 @@
 			</div>
 		</div>
 
-		<div class="panel panel-default">
-			<div class="panel-heading">Heap Snapshot</div>
-			<div class="panel-body">
-				<button class="btn btn-primary" id="heap-snapshot">Take Heap Snapshot</button>
-			</div>
-		</div>
 	</div>
 
 	<div class="col-lg-3 acp-sidebar">
@@ -54,14 +48,5 @@
 <script>
 	require(['admin/settings'], function(Settings) {
 		Settings.prepare();
-
-		$('#heap-snapshot').on('click', function() {
-			socket.emit('admin.takeHeapSnapshot', function(err, filename) {
-				if (err) {
-					return app.alertError(err.message);
-				}
-				app.alertSuccess('Heap Snapshot saved! ' + filename);
-			});
-		})
 	});
 </script>

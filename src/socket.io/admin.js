@@ -2,17 +2,13 @@
 
 var	async = require('async'),
 	winston = require('winston'),
-	fs = require('fs'),
-	path = require('path'),
 
-	groups = require('../groups'),
+
 	meta = require('../meta'),
 	plugins = require('../plugins'),
 	widgets = require('../widgets'),
 	user = require('../user'),
-	topics = require('../topics'),
 	posts = require('../posts'),
-	categories = require('../categories'),
 	logger = require('../logger'),
 	events = require('../events'),
 	emailer = require('../emailer'),
@@ -277,7 +273,7 @@ function getHourlyStatsForSet(set, hour, numHours, callback) {
 		var termsArr = [];
 
 		hoursArr.reverse();
-		hoursArr.forEach(function(hour, idx) {
+		hoursArr.forEach(function(hour) {
 			termsArr.push(terms[hour]);
 		});
 
@@ -307,7 +303,7 @@ function getDailyStatsForSet(set, day, numDays, callback) {
 	}, function(err) {
 		callback(err, daysArr);
 	});
-};
+}
 
 SocketAdmin.getMoreEvents = function(socket, next, callback) {
 	var start = parseInt(next, 10);
@@ -357,10 +353,6 @@ SocketAdmin.getMoreFlags = function(socket, data, callback) {
 			callback(err, {posts: posts, next: stop + 1});
 		});
 	}
-};
-
-SocketAdmin.takeHeapSnapshot = function(socket, data, callback) {
-	require('heapdump').writeSnapshot(callback);
 };
 
 module.exports = SocketAdmin;
