@@ -280,8 +280,11 @@ authenticationController.logout = function(req, res, next) {
 			}
 			req.logout();
 
+			// action:user.loggedOut deprecated in > v0.9.3
 			plugins.fireHook('action:user.loggedOut', {req: req, res: res, uid: uid});
-			res.status(200).send('');
+			plugins.fireHook('static:user.loggedOut', {req: req, res: res, uid: uid}, function() {
+				res.status(200).send('');
+			});
 		});
 	} else {
 		res.status(200).send('');
