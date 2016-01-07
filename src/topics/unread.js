@@ -228,7 +228,7 @@ module.exports = function(Topics) {
 				for (var i=0; i<tids.length; ++i) {
 					Topics.markTopicNotificationsRead(tids[i], uid);
 				}
-				Topics.markAsRead(uid, tids, next);
+				Topics.markAsRead(tids, uid, next);
 			},
 			function (markedRead, next) {
 				db.delete('uid:' + uid + ':tids_unread', next);
