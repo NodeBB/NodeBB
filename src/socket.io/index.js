@@ -199,7 +199,7 @@ Sockets.getSocketCount = function() {
 	if (!io) {
 		return 0;
 	}
-	return io.sockets.sockets.length;
+	return Object.keys(io.sockets.sockets).length;
 };
 
 Sockets.getUserSocketCount = function(uid) {

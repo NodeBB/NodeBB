@@ -6,10 +6,9 @@
 
 var fs = require('fs'),
 	path = require('path'),
-	express = require('express'),
 	winston = require('winston'),
 	util = require('util'),
-	socketio = require('socket.io'),
+
 	file = require('./file'),
 	meta = require('./meta'),
 	morgan = require('morgan');
@@ -160,16 +159,22 @@ var opts = {
 		/*
 		 * Restore all hijacked sockets to their original emit/on functions
 		 */
-		var clients = []; //socket.io.sockets.clients(); doesn't work in socket.io 1.x
-		clients.forEach(function(client) {
-			if(client.oEmit && client.oEmit !== client.emit) {
-				client.emit = client.oEmit;
-			}
+		if (!socket || !socket.io || !socket.io.sockets || !socket.io.sockets.sockets) {
+			return;
+		}
+		var clients = socket.io.sockets.sockets;
+		for (var sid in clients) {
+			if (clients.hasOwnProperty(sid)) {
+				var client = clients[sid];
+				if(client.oEmit && client.oEmit !== client.emit) {
+					client.emit = client.oEmit;
+				}
 
-			if(client.$oEmit && client.$oEmit !== client.$emit) {
-				client.$emit = client.$oEmit;
+				if(client.$oEmit && client.$oEmit !== client.$emit) {
+					client.$emit = client.$oEmit;
+				}
 			}
-		});
+		}
 	};
 
 	Logger.io = function(socket) {
@@ -177,15 +182,16 @@ var opts = {
 		 * Go through all of the currently established sockets & hook their .emit/.on
 		 */
 
-		if (!socket || !socket.io || !socket.io.sockets || !Array.isArray(socket.io.sockets.sockets)) {
+		if (!socket || !socket.io || !socket.io.sockets || !socket.io.sockets.sockets) {
 			return;
 		}
 
 		var clients = socket.io.sockets.sockets;
-
-		clients.forEach(function(client) {
-			Logger.io_one(client, client.uid);
-		});
+		for(var sid in clients) {
+			if (clients.hasOwnProperty(sid)) {
+				Logger.io_one(clients[sid], clients[sid].uid);
+			}
+		}
 	};
 
 	Logger.io_one = function(socket, uid) {
