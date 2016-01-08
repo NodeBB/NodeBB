@@ -270,7 +270,7 @@ function getHourlyStatsForSet(set, hour, numHours, callback) {
 		}
 
 		hoursArr.forEach(function(term, index) {
-			terms[term] = counts[index] || 0;
+			terms[term] = parseInt(counts[index], 10) || 0;
 		});
 
 		var termsArr = [];
