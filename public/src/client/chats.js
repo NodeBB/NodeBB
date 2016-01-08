@@ -35,6 +35,11 @@ define('forum/chats', ['components', 'string', 'sounds', 'forum/infinitescroll',
 	};
 
 	Chats.addEventListeners = function() {
+		$('[component="chat/recent"]').on('click', '[component="chat/leave"]', function() {
+			Chats.leave($(this).parents('[data-roomid]'));
+			return false;
+		});
+
 		$('[component="chat/recent"]').on('click', '[component="chat/recent/room"]', function() {
 			Chats.switchChat($(this).attr('data-roomid'));
 		});
@@ -265,6 +270,20 @@ define('forum/chats', ['components', 'string', 'sounds', 'forum/infinitescroll',
 
 		require(['autocomplete'], function(autocomplete) {
 			autocomplete.user(input);
+		});
+	};
+
+	Chats.leave = function(el) {
+		var roomId = el.attr('data-roomid');
+		socket.emit('modules.chats.leave', roomId, function(err) {
+			if (err) {
+				return app.alertError(err.message);
+			}
+			if (parseInt(roomId, 10) === ajaxify.data.roomId) {
+				ajaxify.go('chats');
+			} else {
+				el.remove();
+			}
 		});
 	};
 

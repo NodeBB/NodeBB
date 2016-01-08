@@ -180,6 +180,15 @@ SocketModules.chats.removeUserFromRoom = function(socket, data, callback) {
 	], callback);
 };
 
+SocketModules.chats.leave = function(socket, roomid, callback) {
+	if (!socket.uid || !roomid) {
+		return callback(new Error('[[error:invalid-data]]'));
+	}
+
+	Messaging.leaveRoom([socket.uid], roomid, callback);
+};
+
+
 SocketModules.chats.edit = function(socket, data, callback) {
 	if (!data || !data.roomId) {
 		return callback(new Error('[[error:invalid-data]]'));

@@ -101,12 +101,19 @@ module.exports = function(Messaging) {
 			},
 			function (results, next) {
 				if (!results.isOwner) {
-					return next(new Error('[[error:cant-remove-users-to-chat-room]]'));
+					return next(new Error('[[error:cant-remove-users-from-chat-room]]'));
 				}
 				if (results.userCount === 2) {
 					return next(new Error('[[error:cant-remove-last-user]]'));
 				}
+				Messaging.leaveRoom(uids, roomId, next);
+			}
+		], callback);
+	};
 
+	Messaging.leaveRoom = function(uids, roomId, callback) {
+		async.waterfall([
+			function (next) {
 				db.sortedSetRemove('chat:room:' + roomId + ':uids', uids, next);
 			},
 			function (next) {
