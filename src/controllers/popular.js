@@ -3,6 +3,7 @@
 
 var nconf = require('nconf'),
 	topics = require('../topics'),
+	plugins = require('../plugins'),
 	meta = require('../meta'),
 	helpers = require('./helpers');
 
@@ -65,7 +66,12 @@ popularController.get = function(req, res, next) {
 			lastUpdateTime = Date.now();
 		}
 
-		res.render('popular', data);
+		plugins.fireHook('filter:popular.build', {req: req, res: res, term: term, templateData: data}, function(err, data) {
+			if (err) {
+				return next(err);
+			}
+			res.render('popular', data.templateData);
+		});
 	});
 };
 
