@@ -29,6 +29,7 @@ var async = require('async'),
 
 	/* Assorted */
 	Meta.userOrGroupExists = function(slug, callback) {
+		slug = utils.slugify(slug);
 		async.parallel([
 			async.apply(user.existsBySlug, slug),
 			async.apply(groups.existsBySlug, slug)

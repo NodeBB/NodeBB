@@ -25,7 +25,7 @@ require('./user/picture')(SocketUser);
 
 SocketUser.exists = function(socket, data, callback) {
 	if (data && data.username) {
-		meta.userOrGroupExists(utils.slugify(data.username), callback);
+		meta.userOrGroupExists(data.username, callback);
 	}
 };
 
