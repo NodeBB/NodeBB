@@ -174,7 +174,6 @@ switch(process.argv[2]) {
 		process.stdout.write('\t' + 'plugins'.yellow + '\tList all plugins that have been installed.\n');
 		process.stdout.write('\t' + 'upgrade'.yellow + '\tRun NodeBB upgrade scripts, ensure packages are up-to-date\n');
 		process.stdout.write('\t' + 'dev'.yellow + '\tStart NodeBB in interactive development mode\n');
-		process.stdout.write('\t' + 'watch'.yellow + '\tStart NodeBB in development mode and watch for changes\n');
 		process.stdout.write('\n'.reset);
 		break;
 }
