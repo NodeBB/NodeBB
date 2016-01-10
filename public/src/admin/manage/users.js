@@ -208,7 +208,7 @@ define('admin/manage/users', ['admin/modules/selectable'], function(selectable) 
 
 				socket.emit('admin.user.createUser', user, function(err) {
 					if(err) {
-						return errorEl.html('<strong>Error</strong><p>' + err.message + '</p>').removeClass('hide');
+						return errorEl.translateHtml('<strong>Error</strong><p>' + err.message + '</p>').removeClass('hide');
 					}
 					$('#create-modal').modal('hide');
 					$('#create-modal').on('hidden.bs.modal', function() {
