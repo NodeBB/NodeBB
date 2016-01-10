@@ -1,17 +1,13 @@
 
 'use strict';
 
-var async = require('async'),
-	validator = require('validator'),
-	url = require('url'),
-	S = require('string'),
+var async = require('async');
+var S = require('string');
 
-	utils = require('../../public/src/utils'),
-	meta = require('../meta'),
-	events = require('../events'),
-	db = require('../database'),
-	Password = require('../password'),
-	plugins = require('../plugins');
+var utils = require('../../public/src/utils');
+var meta = require('../meta');
+var db = require('../database');
+var plugins = require('../plugins');
 
 module.exports = function(User) {
 
@@ -246,39 +242,32 @@ module.exports = function(User) {
 			return callback(new Error('[[error:invalid-uid]]'));
 		}
 
-		function hashAndSetPassword(callback) {
-			User.hashPassword(data.newPassword, function(err, hash) {
-				if (err) {
-					return callback(err);
+		async.waterfall([
+			function (next) {
+				User.isPasswordValid(data.newPassword, next);
+			},
+			function (next) {
+				if (parseInt(uid, 10) !== parseInt(data.uid, 10)) {
+					User.isAdministrator(uid, next);
+				} else {
+					User.isPasswordCorrect(uid, data.currentPassword, next);
+				}
+			},
+			function (isAdminOrPasswordMatch, next) {
+				if (!isAdminOrPasswordMatch) {
+					return next(new Error('[[error:change_password_error_wrong_current]]'));
 				}
 
+				User.hashPassword(data.newPassword, next);
+			},
+			function (hashedPassword, next) {
 				async.parallel([
-					async.apply(User.setUserField, data.uid, 'password', hash),
+					async.apply(User.setUserField, data.uid, 'password', hashedPassword),
 					async.apply(User.reset.updateExpiry, data.uid)
-				], callback);
-			});
-		}
-
-		if (!utils.isPasswordValid(data.newPassword)) {
-			return callback(new Error('[[user:change_password_error]]'));
-		}
-
-		if (parseInt(uid, 10) !== parseInt(data.uid, 10)) {
-			User.isAdministrator(uid, function(err, isAdmin) {
-				if (err || !isAdmin) {
-					return callback(err || new Error('[[user:change_password_error_privileges'));
-				}
-
-				hashAndSetPassword(callback);
-			});
-		} else {
-			User.isPasswordCorrect(uid, data.currentPassword, function(err, correct) {
-				if (err || !correct) {
-					return callback(err || new Error('[[user:change_password_error_wrong_current]]'));
-				}
-
-				hashAndSetPassword(callback);
-			});
-		}
+				], function(err) {
+					next(err);
+				});
+			}
+		], callback);
 	};
 };

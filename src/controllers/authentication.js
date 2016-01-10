@@ -216,25 +216,28 @@ function continueLogin(req, res, next) {
 }
 
 authenticationController.localLogin = function(req, username, password, next) {
-	if (!username || !password) {
-		return next(new Error('[[error:invalid-password]]'));
+	if (!username) {
+		return next(new Error('[[error:invalid-username]]'));
 	}
 
 	var userslug = utils.slugify(username);
 	var uid, userData = {};
 
 	async.waterfall([
-		function(next) {
+		function (next) {
+			user.isPasswordValid(password, next);
+		},
+		function (next) {
 			user.getUidByUserslug(userslug, next);
 		},
-		function(_uid, next) {
+		function (_uid, next) {
 			if (!_uid) {
 				return next(new Error('[[error:no-user]]'));
 			}
 			uid = _uid;
 			user.auth.logAttempt(uid, req.ip, next);
 		},
-		function(next) {
+		function (next) {
 			async.parallel({
 				userData: function(next) {
 					db.getObjectFields('user:' + uid, ['password', 'banned', 'passwordExpiry'], next);
@@ -244,7 +247,7 @@ authenticationController.localLogin = function(req, username, password, next) {
 				}
 			}, next);
 		},
-		function(result, next) {
+		function (result, next) {
 			userData = result.userData;
 			userData.uid = uid;
 			userData.isAdmin = result.isAdmin;
@@ -261,7 +264,7 @@ authenticationController.localLogin = function(req, username, password, next) {
 			}
 			Password.compare(password, userData.password, next);
 		},
-		function(passwordMatch, next) {
+		function (passwordMatch, next) {
 			if (!passwordMatch) {
 				return next(new Error('[[error:invalid-password]]'));
 			}

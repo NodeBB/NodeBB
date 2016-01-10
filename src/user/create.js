@@ -185,6 +185,11 @@ module.exports = function(User) {
 		if (password.length < meta.config.minimumPasswordLength) {
 			return callback(new Error('[[user:change_password_error_length]]'));
 		}
+
+		if (password.length > 4096) {
+			return callback(new Error('[[error:password-too-long]]'));
+		}
+
 		callback();
 	};
 

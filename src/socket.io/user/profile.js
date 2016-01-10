@@ -74,7 +74,7 @@ module.exports = function(SocketUser) {
 	}
 
 	SocketUser.changePassword = function(socket, data, callback) {
-		if (!data || !data.uid || data.newPassword.length < meta.config.minimumPasswordLength) {
+		if (!data || !data.uid) {
 			return callback(new Error('[[error:invalid-data]]'));
 		}
 		if (!socket.uid) {
