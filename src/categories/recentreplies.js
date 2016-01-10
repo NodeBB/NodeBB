@@ -32,7 +32,7 @@ module.exports = function(Categories) {
 
 	Categories.getRecentTopicReplies = function(categoryData, uid, callback) {
 		if (!Array.isArray(categoryData) || !categoryData.length) {
-			return callback(null, []);
+			return callback();
 		}
 
 		async.waterfall([
