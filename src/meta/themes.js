@@ -8,7 +8,8 @@ var nconf = require('nconf'),
 	async = require('async'),
 
 	file = require('../file'),
-	db = require('../database');
+	db = require('../database'),
+	meta = require('../meta');
 
 module.exports = function(Meta) {
 	Meta.themes = {};
@@ -76,6 +77,15 @@ module.exports = function(Meta) {
 		switch(data.type) {
 		case 'local':
 			async.waterfall([
+				async.apply(meta.configs.get, 'theme:id'),
+				function(current, next) {
+					async.series([
+						async.apply(db.sortedSetRemove, 'plugins:active', current),
+						async.apply(db.sortedSetAdd, 'plugins:active', 0, data.id)
+					], function(err) {
+						next(err);
+					});
+				},
 				function(next) {
 					fs.readFile(path.join(nconf.get('themes_path'), data.id, 'theme.json'), function(err, config) {
 						if (!err) {

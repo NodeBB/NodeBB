@@ -10,7 +10,7 @@ var db = require('./database'),
 	schemaDate, thisSchemaDate,
 
 	// IMPORTANT: REMEMBER TO UPDATE VALUE OF latestSchema
-	latestSchema = Date.UTC(2015, 11, 23);
+	latestSchema = Date.UTC(2016, 0, 11);
 
 Upgrade.check = function(callback) {
 	db.get('schemaDate', function(err, value) {
@@ -276,6 +276,29 @@ Upgrade.upgrade = function(callback) {
 				});
 			} else {
 				winston.info('[2015/12/23] Chats room hashes upgrade skipped!');
+				next();
+			}
+		},
+		function(next) {
+			thisSchemaDate = Date.UTC(2016, 0, 11);
+
+			if (schemaDate < thisSchemaDate) {
+				updatesMade = true;
+				winston.info('[2015/12/23] Adding theme to active plugins sorted set');
+
+				async.waterfall([
+					async.apply(db.getObjectField, 'config', 'theme:id'),
+					async.apply(db.sortedSetAdd, 'plugins:active', 0)
+				], function(err) {
+					if (err) {
+						return next(err);
+					}
+
+					winston.info('[2015/12/23] Adding theme to active plugins sorted set done!');
+					Upgrade.update(thisSchemaDate, next);
+				})
+			} else {
+				winston.info('[2015/12/23] Adding theme to active plugins sorted set skipped!');
 				next();
 			}
 		}

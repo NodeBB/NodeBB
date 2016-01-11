@@ -72,7 +72,6 @@ Templates.compile = function(callback) {
 
 			coreTpls = !coreTpls ? [] : coreTpls.map(function(tpl) { return tpl.replace(coreTemplatesPath, ''); });
 			baseTpls = !baseTpls ? [] : baseTpls.map(function(tpl) { return tpl.replace(baseTemplatesPath, ''); });
-			themeTpls = !themeTpls ? [] : themeTpls.map(function(tpl) { return tpl.replace(themeTemplatesPath, ''); });
 
 			coreTpls.forEach(function(el, i) {
 				paths[coreTpls[i]] = path.join(coreTemplatesPath, coreTpls[i]);
@@ -82,9 +81,6 @@ Templates.compile = function(callback) {
 				paths[baseTpls[i]] = path.join(baseTemplatesPath, baseTpls[i]);
 			});
 
-			themeTpls.forEach(function(el, i) {
-				paths[themeTpls[i]] = path.join(themeTemplatesPath, themeTpls[i]);
-			});
 
 			for (var tpl in pluginTemplates) {
 				if (pluginTemplates.hasOwnProperty(tpl)) {

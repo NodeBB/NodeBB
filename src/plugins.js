@@ -96,8 +96,6 @@ var fs = require('fs'),
 					return next();
 				}
 
-				plugins.push(meta.config['theme:id']);
-
 				plugins = plugins.filter(function(plugin){
 					return plugin && typeof plugin === 'string';
 				}).map(function(plugin){
