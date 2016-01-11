@@ -156,14 +156,22 @@ Controllers.register = function(req, res, next) {
 };
 
 Controllers.compose = function(req, res, next) {
-	if (req.query.p && !res.locals.isAPI) {
-		if (req.query.p.startsWith(nconf.get('relative_path'))) {
-			req.query.p = req.query.p.replace(nconf.get('relative_path'), '');
+	plugins.fireHook('filter:composer.build', {
+		req: req,
+		res: res,
+		next: next,
+		templateData: {}
+	}, function(err, data) {
+		if (err) {
+			return next(err);
 		}
-		return helpers.redirect(res, req.query.p);
-	}
 
-	res.render('', {});
+		if (data.templateData.disabled) {
+			res.render('', {});
+		} else {
+			res.render('compose', data.templateData);
+		}
+	});
 };
 
 Controllers.confirmEmail = function(req, res, next) {
