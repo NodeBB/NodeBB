@@ -20,7 +20,7 @@ module.exports = function(Meta) {
 				encoding: 'utf-8'
 			}, function(err, pkgData) {
 				// If a bundled plugin/theme is not present, skip the dep check (#3384)
-				if (err && err.code === 'ENOENT' && (module.startsWith('nodebb-plugin') || module.startsWith('nodebb-theme'))) {
+				if (err && err.code === 'ENOENT' && (module === 'nodebb-rewards-essentials' || module.startsWith('nodebb-plugin') || module.startsWith('nodebb-theme'))) {
 					winston.warn('[meta/dependencies] Bundled plugin ' + module + ' not found, skipping dependency check.');
 					return next(true);
 				}
