@@ -133,8 +133,8 @@ groupsController.members = function(req, res, next) {
 
 groupsController.uploadCover = function(req, res, next) {
 	var params = JSON.parse(req.body.params);
-	
-	groups.updateCover({
+
+	groups.updateCover(req.uid, {
 		file: req.files.files[0].path,
 		groupName: params.groupName
 	}, function(err, image) {

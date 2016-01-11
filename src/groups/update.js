@@ -118,7 +118,7 @@ module.exports = function(Groups) {
 		Groups.setGroupField(groupName, 'cover:position', position, callback);
 	};
 
-	Groups.updateCover = function(data, callback) {
+	Groups.updateCover = function(uid, data, callback) {
 		var tempPath, md5sum, url;
 
 		// Position only? That's fine
@@ -153,7 +153,7 @@ module.exports = function(Groups) {
 				}, next);
 			},
 			function(next) {
-				uploadsController.uploadGroupCover({
+				uploadsController.uploadGroupCover(uid, {
 					name: 'groupCover',
 					path: data.file ? data.file : tempPath
 				}, function(err, uploadData) {

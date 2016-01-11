@@ -91,8 +91,16 @@ uploadsController.uploadThumb = function(req, res, next) {
 	}, next);
 };
 
-uploadsController.uploadGroupCover = function(data, next) {
-	uploadImage(0, data, next);
+uploadsController.uploadGroupCover = function(uid, uploadedFile, callback) {
+	if (plugins.hasListeners('filter:uploadImage')) {
+		return plugins.fireHook('filter:uploadImage', {image: uploadedFile, uid: uid}, callback);
+	}
+
+	if (plugins.hasListeners('filter:uploadFile')) {
+		return plugins.fireHook('filter:uploadFile', {file: uploadedFile, uid: uid}, callback);
+	}
+
+	saveFileToLocal(uploadedFile, callback);
 };
 
 function uploadImage(uid, image, callback) {
@@ -132,6 +140,10 @@ function uploadFile(uid, uploadedFile, callback) {
 		}
 	}
 
+	saveFileToLocal(uploadedFile, callback);
+}
+
+function saveFileToLocal(uploadedFile, callback) {
 	var filename = uploadedFile.name || 'upload';
 
 	filename = Date.now() + '-' + validator.escape(filename).substr(0, 255);
