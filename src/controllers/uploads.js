@@ -72,7 +72,7 @@ uploadsController.uploadThumb = function(req, res, next) {
 			}
 
 			if (uploadedFile.type.match(/image./)) {
-				var size = meta.config.topicThumbSize || 120;
+				var size = parseInt(meta.config.topicThumbSize, 10) || 120;
 				image.resizeImage({
 					path: uploadedFile.path,
 					extension: path.extname(uploadedFile.name),
