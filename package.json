@@ -63,7 +63,7 @@
     "prompt": "^0.2.14",
     "redis": "~2.4.2",
     "request": "^2.44.0",
-    "rimraf": "~2.4.2",
+    "rimraf": "~2.5.0",
     "rss": "^1.0.0",
     "semver": "^5.0.1",
     "serve-favicon": "^2.1.5",
