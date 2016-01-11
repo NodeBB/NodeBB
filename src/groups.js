@@ -18,6 +18,7 @@ var utils = require('../public/src/utils');
 	require('./groups/membership')(Groups);
 	require('./groups/ownership')(Groups);
 	require('./groups/search')(Groups);
+	require('./groups/cover')(Groups);
 
 	var ephemeralGroups = ['guests'],
 
@@ -412,6 +413,7 @@ var utils = require('../public/src/utils');
 					group.disableJoinRequests = parseInt(group.disableJoinRequests) === 1;
 
 					group['cover:url'] = group['cover:url'] || require('./coverPhoto').getDefaultGroupCover(group.name);
+					group['cover:thumb:url'] = group['cover:thumb:url'] || group['cover:url'];
 					group['cover:position'] = group['cover:position'] || '50% 50%';
 				}
 			});
