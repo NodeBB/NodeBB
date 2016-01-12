@@ -283,6 +283,7 @@ define('chat', ['components', 'taskbar', 'string', 'sounds', 'forum/chats', 'tra
 				Chats.addSendHandlers(chatModal.attr('roomId'), chatModal.find('#chat-message-input'), chatModal.find('#chat-message-send-btn'));
 
 				Chats.createTagsInput(chatModal.find('.users-tag-input'), data);
+				Chats.createAutoComplete(chatModal.find('[component="chat/input"]'));
 
 				Chats.loadChatSince(chatModal.attr('roomId'), chatModal.find('.chat-content'), 'recent');
 

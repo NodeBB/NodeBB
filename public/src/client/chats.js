@@ -19,6 +19,7 @@ define('forum/chats', ['components', 'string', 'sounds', 'forum/infinitescroll',
 
 		Chats.addEventListeners();
 		Chats.createTagsInput($('[component="chat/messages"] .users-tag-input'), ajaxify.data);
+		Chats.createAutoComplete($('[component="chat/input"]');
 
 		if (env === 'md' || env === 'lg') {
 			Chats.resizeMainWindow();
@@ -210,6 +211,26 @@ define('forum/chats', ['components', 'string', 'sounds', 'forum/infinitescroll',
 			inputEl.focus();
 			return false;
 		});
+	};
+
+	Chats.createAutoComplete = function(element) {
+		var data = {
+			element: element,
+			strategies: [],
+			options: {
+				zIndex: 20000,
+				listPosition: function(position) {
+					this.$el.css(this._applyPlacement(position));
+					this.$el.css('position', 'absolute');
+					return this;
+				}
+			}
+		};
+
+		$(window).trigger('chat:autocomplete:init', data);
+		if (data.strategies.length) {
+			data.element.textcomplete(data.strategies, data.options);
+		}
 	};
 
 	Chats.createTagsInput = function(tagEl, data) {
