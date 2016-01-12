@@ -19,7 +19,7 @@ define('forum/chats', ['components', 'string', 'sounds', 'forum/infinitescroll',
 
 		Chats.addEventListeners();
 		Chats.createTagsInput($('[component="chat/messages"] .users-tag-input'), ajaxify.data);
-		Chats.createAutoComplete($('[component="chat/input"]');
+		Chats.createAutoComplete($('[component="chat/input"]'));
 
 		if (env === 'md' || env === 'lg') {
 			Chats.resizeMainWindow();
