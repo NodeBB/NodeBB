@@ -47,7 +47,7 @@ SocketGroups.join = function(socket, data, callback) {
 				return callback(new Error('[[error:join-requests-disabled]]'));
 			}
 
-			if (!results.groupData.isPrivate || results.isAdmin) {
+			if (!results.groupData.private || results.isAdmin) {
 				groups.join(data.groupName, socket.uid, callback);
 			} else {
 				groups.requestMembership(data.groupName, socket.uid, callback);
