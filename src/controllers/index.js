@@ -167,8 +167,11 @@ Controllers.compose = function(req, res, next) {
 		}
 
 		if (data.templateData.disabled) {
-			res.render('', {});
+			res.render('', {
+				title: '[[modules:composer.compose]]'
+			});
 		} else {
+			data.templateData.title = '[[modules:composer.compose]]';
 			res.render('compose', data.templateData);
 		}
 	});
