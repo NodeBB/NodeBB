@@ -4,7 +4,6 @@ var async = require('async'),
 
 	db = require('../../database'),
 	groups = require('../../groups'),
-	user = require('../../user'),
 	categories = require('../../categories'),
 	privileges = require('../../privileges'),
 	plugins = require('../../plugins'),
@@ -71,5 +70,42 @@ Categories.setPrivilege = function(socket, data, callback) {
 Categories.getPrivilegeSettings = function(socket, cid, callback) {
 	privileges.categories.list(cid, callback);
 };
+
+Categories.copyPrivilegesToChildren = function(socket, cid, callback) {
+	async.parallel({
+		category: function(next) {
+			categories.getCategories([cid], socket.uid, next);
+		},
+		privileges: function(next) {
+			privileges.categories.list(cid, next);
+		}
+	}, function(err, results) {
+		if (err) {
+			return callback(err);
+		}
+		var category = results.category[0];
+
+		async.eachSeries(category.children, function(child, next) {
+			copyPrivilegesToChildrenRecursive(child, results.privileges.groups, next);
+		}, callback);
+	});
+};
+
+function copyPrivilegesToChildrenRecursive(category, privilegeGroups, callback) {
+	async.eachSeries(privilegeGroups, function(privGroup, next) {
+		var privs = Object.keys(privGroup.privileges);
+		async.each(privs, function(privilege, next) {
+			var isSet = privGroup.privileges[privilege];
+			groups[isSet ? 'join' : 'leave']('cid:' + category.cid + ':privileges:' + privilege, privGroup.name, next);
+		}, next);
+	}, function(err) {
+		if (err) {
+			return callback(err);
+		}
+		async.eachSeries(category.children, function(child, next) {
+			copyPrivilegesToChildrenRecursive(child, privilegeGroups, next);
+		}, callback);
+	});
+}
 
 module.exports = Categories;

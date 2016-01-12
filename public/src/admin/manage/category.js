@@ -176,6 +176,7 @@ define('admin/manage/category', [
 
 		$('.privilege-table-container').on('click', '[data-action="search.user"]', Category.addUserToPrivilegeTable);
 		$('.privilege-table-container').on('click', '[data-action="search.group"]', Category.addGroupToPrivilegeTable);
+		$('.privilege-table-container').on('click', '[data-action="copyToChildren"]', Category.copyPrivilegesToChildren);
 
 		Category.exposeAssumedPrivileges();
 	};
@@ -332,6 +333,15 @@ define('admin/manage/category', [
 					modal.modal('hide');
 				});
 			});
+		});
+	};
+
+	Category.copyPrivilegesToChildren = function() {
+		socket.emit('admin.categories.copyPrivilegesToChildren', ajaxify.data.category.cid, function(err) {
+			if (err) {
+				return app.alertError(err.message);
+			}
+			app.alertSuccess('Privileges copied!');
 		});
 	};
 

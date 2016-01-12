@@ -41,7 +41,6 @@
 							<th class="text-center">{privileges.labels.groups.name}</th>
 							<!-- END privileges.labels.groups -->
 						</tr>
-						<!-- IF privileges.groups.length -->
 						<!-- BEGIN privileges.groups -->
 						<tr data-group-name="{privileges.groups.name}" data-private="<!-- IF privileges.groups.isPrivate -->1<!-- ELSE -->0<!-- ENDIF privileges.groups.isPrivate -->">
 							<td>
@@ -56,17 +55,12 @@
 						<!-- END privileges.groups -->
 						<tr>
 							<td colspan="{privileges.columnCount}">
-								<button type="button" class="btn btn-primary pull-right" data-ajaxify="false" data-action="search.group"> Add Group</button>
+								<div class="btn-toolbar">
+									<button type="button" class="btn btn-primary pull-right" data-ajaxify="false" data-action="search.group"> Add Group</button>
+									<button type="button" class="btn btn-info pull-right" data-ajaxify="false" data-action="copyToChildren"> Copy to Children</button>
+								</div>
 							</td>
 						</tr>
-						<!-- ELSE -->
-						<tr>
-							<td colspan="{privileges.columnCount}">
-								<button type="button" class="btn btn-primary pull-right" data-ajaxify="false" data-action="search.group"> Add Group</button>
-								No group-specific privileges in this category.
-							</td>
-						</tr>
-						<!-- ENDIF privileges.groups.length -->
 					</table>
 					<div class="help-block">
 						If the <code>registered-users</code> group is granted a specific privilege, all other groups receive an
