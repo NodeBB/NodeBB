@@ -42,25 +42,25 @@ Controllers.home = function(req, res, next) {
 		var hook = 'action:homepage.get:' + route;
 
 		if (plugins.hasListeners(hook)) {
-			plugins.fireHook(hook, {req: req, res: res, next: next});
-		} else {
-			if (route === 'categories' || route === '/') {
-				Controllers.categories.list(req, res, next);
-			} else if (route === 'recent') {
-				Controllers.recent.get(req, res, next);
-			} else if (route === 'popular') {
-				Controllers.popular.get(req, res, next);
-			} else {
-				var match = /^category\/(\d+)\/(.*)$/.exec(route);
+			return plugins.fireHook(hook, {req: req, res: res, next: next});
+		}
 
-				if (match) {
-					req.params.topic_index = "1";
-					req.params.category_id = match[1];
-					req.params.slug = match[2];
-					Controllers.categories.get(req, res, next);
-				} else {
-					res.redirect(route);
-				}
+		if (route === 'categories' || route === '/') {
+			Controllers.categories.list(req, res, next);
+		} else if (route === 'recent') {
+			Controllers.recent.get(req, res, next);
+		} else if (route === 'popular') {
+			Controllers.popular.get(req, res, next);
+		} else {
+			var match = /^category\/(\d+)\/(.*)$/.exec(route);
+
+			if (match) {
+				req.params.topic_index = "1";
+				req.params.category_id = match[1];
+				req.params.slug = match[2];
+				Controllers.category.get(req, res, next);
+			} else {
+				res.redirect(route);
 			}
 		}
 	});
