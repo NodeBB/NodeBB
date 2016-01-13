@@ -116,6 +116,7 @@ var	async = require('async'),
 						user.administrator = results.isAdmin[index];
 						user.banned = parseInt(user.banned, 10) === 1;
 						user['email:confirmed'] = parseInt(user['email:confirmed'], 10) === 1;
+						user.lastonlineISO = utils.toISOString(user.lastonline);
 					}
 				});
 				plugins.fireHook('filter:userlist.get', {users: results.userData, uid: uid}, next);
