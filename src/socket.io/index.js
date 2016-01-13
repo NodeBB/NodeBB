@@ -199,6 +199,7 @@ Sockets.getSocketCount = function() {
 	if (!io) {
 		return 0;
 	}
+
 	return Object.keys(io.sockets.sockets).length;
 };
 
@@ -206,22 +207,24 @@ Sockets.getUserSocketCount = function(uid) {
 	if (!io) {
 		return 0;
 	}
-	return io.sockets.adapter.rooms['uid_' + uid] ? Object.keys(io.sockets.adapter.rooms['uid_' + uid]).length : 0;
+	var room = io.sockets.adapter.rooms['uid_' + uid];
+	return room ? room.length : 0;
 };
 
 Sockets.getOnlineUserCount = function() {
 	if (!io) {
 		return 0;
 	}
-
-	return io.sockets.adapter.rooms.online_users ? Object.keys(io.sockets.adapter.rooms.online_users).length : 0;
+	var room = io.sockets.adapter.rooms.online_users;
+	return room ? room.length : 0;
 };
 
 Sockets.getOnlineAnonCount = function () {
 	if (!io) {
 		return 0;
 	}
-	return io.sockets.adapter.rooms.online_guests ? Object.keys(io.sockets.adapter.rooms.online_guests).length : 0;
+	var room = io.sockets.adapter.rooms.online_guests;
+	return room ? room.length : 0;
 };
 
 Sockets.reqFromSocket = function(socket) {
