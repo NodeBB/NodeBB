@@ -1,6 +1,6 @@
 {
-    "username-email": "Имя пользователя / E-mail",
-    "username": "Имя пользователя",
+    "username-email": "Логин / E-mail",
+    "username": "Логин",
     "email": "Email",
     "remember_me": "Запомнить меня",
     "forgot_password": "Забыли пароль?",
