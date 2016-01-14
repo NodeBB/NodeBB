@@ -153,8 +153,8 @@ var fs = require('fs'),
 
 		Plugins.showInstalled(function(err, plugins) {
 			async.each(plugins, function(plugin, next) {
-				if (plugin.templates && plugin.id && plugin.active) {
-					var templatesPath = path.join(__dirname, '../node_modules', plugin.id, plugin.templates);
+				if (plugin.id && plugin.active && (plugin.templates || plugin.id.startsWith('nodebb-theme-'))) {
+					var templatesPath = path.join(__dirname, '../node_modules', plugin.id, plugin.templates || 'templates');
 					utils.walk(templatesPath, function(err, pluginTemplates) {
 						if (pluginTemplates) {
 							pluginTemplates.forEach(function(pluginTemplate) {
