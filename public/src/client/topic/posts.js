@@ -21,6 +21,7 @@ define('forum/topic/posts', [
 			return;
 		}
 
+		data.loggedIn = app.user.uid ? true : false;
 		data.posts.forEach(function(post) {
 			post.selfPost = !!app.user.uid && parseInt(post.uid, 10) === parseInt(app.user.uid, 10);
 			post.display_moderator_tools = post.selfPost || ajaxify.data.isAdminOrMod;
