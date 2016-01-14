@@ -76,9 +76,10 @@ module.exports = function(User) {
 				async.map(sids, db.sessionStore.get.bind(db.sessionStore), next);
 			},
 			function(sessions, next) {
-				sessions = sessions.map(function(sessionObj, idx) {
-					sessionObj.meta.current = curSessionId === _sids[idx];
-					return sessionObj;
+				sessions.forEach(function(sessionObj, idx) {
+					if (sessionObj && sessionObj.meta) {
+						sessionObj.meta.current = curSessionId === _sids[idx];
+					}
 				});
 
 				// Revoke any sessions that have expired, return filtered list
