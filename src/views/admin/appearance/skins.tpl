@@ -1,6 +1,6 @@
 <div id="skins" class="row skins">
 	<div class="directory row" id="bootstrap_themes">
-		<i class="fa fa-refresh fa-spin"></i> Loading Themes
+		<i class="fa fa-refresh fa-spin"></i> Loading Skins
 	</div>
 
 	<div data-type="bootswatch" data-theme="" data-css="">
