@@ -1,6 +1,6 @@
 'use strict';
 
-/* globals define, socket, app, ajaxify, templates */
+/* globals define, socket, app, templates, bootbox */
 
 define('forum/users', ['translator'], function(translator) {
 	var	Users = {};
@@ -104,14 +104,11 @@ define('forum/users', ['translator'], function(translator) {
 
 	function doSearch(page) {
 		var username = $('#search-user').val();
-		var notify = $('#user-notfound-notify');
 		page = page || 1;
 
 		if (!username) {
 			return loadPage(page);
 		}
-
-		notify.html('<i class="fa fa-spinner fa-spin"></i>');
 
 		socket.emit('user.search', {
 			query: username,
@@ -121,28 +118,15 @@ define('forum/users', ['translator'], function(translator) {
 			onlineOnly: $('.search .online-only').is(':checked')
 		}, function(err, data) {
 			if (err) {
-				resetSearchNotify();
 				return app.alertError(err.message);
-			}
-
-			if (!data) {
-				return resetSearchNotify();
 			}
 
 			renderSearchResults(data);
 		});
 	}
 
-	function resetSearchNotify() {
-		var notify = $('#user-notfound-notify');
-		notify.html('<i class="fa fa-search"></i>');
-		notify.parent().removeClass('btn-warning label-warning btn-success label-success');
-	}
-
-
 	function loadPage(page) {
 		socket.emit('user.loadSearchPage', {page: page, onlineOnly: $('.search .online-only').is(':checked')}, function(err, data) {
-			resetSearchNotify();
 			if (err) {
 				return app.alertError(err.message);
 			}
@@ -152,7 +136,7 @@ define('forum/users', ['translator'], function(translator) {
 	}
 
 	function renderSearchResults(data) {
-		var notify = $('#user-notfound-notify');
+		$('#load-more-users-btn').addClass('hide');
 		templates.parse('partials/paginator', {pagination: data.pagination}, function(html) {
 			$('.pagination-container').replaceWith(html);
 		});
@@ -160,20 +144,9 @@ define('forum/users', ['translator'], function(translator) {
 		templates.parse('users', 'users', data, function(html) {
 			translator.translate(html, function(translated) {
 				$('#users-container').html(translated);
-
-				if (!data.users.length) {
-					translator.translate('[[error:no-user]]', function(translated) {
-						notify.html(translated);
-						notify.parent().removeClass('btn-success label-success').addClass('btn-warning label-warning');
-					});
-				} else {
-					translator.translate('[[users:users-found-search-took, ' + data.matchCount + ', ' + data.timing + ']]', function(translated) {
-						notify.html(translated);
-						notify.parent().removeClass('btn-warning label-warning').addClass('btn-success label-success');
-					});
-				}
 			});
 		});
+
 	}
 
 	function onUserStatusChange(data) {

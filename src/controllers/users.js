@@ -41,7 +41,6 @@ usersController.getOnlineUsers = function(req, res, next) {
 
 		var userData = {
 			'route_users:online': true,
-			search_display: 'hidden',
 			loadmore_display: results.count > 50 ? 'block' : 'hide',
 			users: results.users,
 			anonymousUserCount: websockets.getOnlineAnonCount(),
@@ -94,7 +93,6 @@ usersController.getUsers = function(set, start, stop, req, res, next) {
 
 		var pageCount = Math.ceil(data.count / (parseInt(meta.config.userSearchResultsPerPage, 10) || 20));
 		var userData = {
-			search_display: 'hidden',
 			loadmore_display: data.count > (stop - start + 1) ? 'block' : 'hide',
 			users: data.users,
 			pagination: pagination.create(1, pageCount),
@@ -123,29 +121,6 @@ usersController.getUsersAndCount = function(set, uid, start, stop, callback) {
 		});
 
 		callback(null, results);
-	});
-};
-
-usersController.getUsersForSearch = function(req, res, next) {
-	if (!req.uid && parseInt(meta.config.allowGuestUserSearching, 10) !== 1) {
-		return helpers.notAllowed(req, res);
-	}
-	var resultsPerPage = parseInt(meta.config.userSearchResultsPerPage, 10) || 20;
-
-	usersController.getUsersAndCount('users:joindate', req.uid, 0, resultsPerPage - 1, function(err, data) {
-		if (err) {
-			return next(err);
-		}
-
-		var userData = {
-			search_display: 'block',
-			loadmore_display: 'hidden',
-			users: data.users,
-			title: '[[pages:users/search]]',
-			breadcrumbs: helpers.buildBreadcrumbs([{text: '[[global:users]]', url: '/users'}, {text: '[[global:search]]'}])
-		};
-
-		render(req, res, userData, next);
 	});
 };
 
