@@ -61,7 +61,8 @@ define('admin/appearance/skins', function() {
 					description: theme.description,
 					screenshot_url: theme.thumbnail,
 					url: theme.preview,
-					css: theme.cssCdn
+					css: theme.cssCdn,
+					skin: true
 				};
 			}),
 			showRevert: true
@@ -84,7 +85,7 @@ define('admin/appearance/skins', function() {
 			.find('[data-action="use"]').each(function() {
 				if ($(this).parents('[data-theme]').attr('data-theme')) {
 					$(this)
-						.html('Select Theme')
+						.html('Select Skin')
 						.removeClass('btn-success')
 						.addClass('btn-primary');
 				}
@@ -97,7 +98,7 @@ define('admin/appearance/skins', function() {
 		$('[data-theme="' + themeId + '"]')
 			.addClass('selected')
 			.find('[data-action="use"]')
-				.html('Current Theme')
+				.html('Current Skin')
 				.removeClass('btn-primary')
 				.addClass('btn-success');
 	}
