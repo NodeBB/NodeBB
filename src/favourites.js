@@ -92,9 +92,8 @@ var meta = require('./meta');
 					return callback(err);
 				}
 				var voteCount = parseInt(results.upvotes, 10) - parseInt(results.downvotes, 10);
-console.log("WE ARE HERE")
+
 				posts.updatePostVoteCount(postData, voteCount, function(err) {
-					console.log("NOT HERE")
 					callback(err, voteCount);
 				});
 			});
