@@ -10,7 +10,7 @@ var db = require('./database'),
 	schemaDate, thisSchemaDate,
 
 	// IMPORTANT: REMEMBER TO UPDATE VALUE OF latestSchema
-	latestSchema = Date.UTC(2016, 0, 11);
+	latestSchema = Date.UTC(2016, 0, 14);
 
 Upgrade.check = function(callback) {
 	db.get('schemaDate', function(err, value) {
@@ -296,9 +296,43 @@ Upgrade.upgrade = function(callback) {
 
 					winston.info('[2015/12/23] Adding theme to active plugins sorted set done!');
 					Upgrade.update(thisSchemaDate, next);
-				})
+				});
 			} else {
 				winston.info('[2015/12/23] Adding theme to active plugins sorted set skipped!');
+				next();
+			}
+		},
+		function(next) {
+			thisSchemaDate = Date.UTC(2016, 0, 14);
+
+			if (schemaDate < thisSchemaDate || 1) {
+				updatesMade = true;
+				winston.info('[2016/01/14] Creating user best post sorted sets');
+
+				var batch = require('./batch');
+
+				batch.processSortedSet('posts:pid', function(ids, next) {
+					async.eachSeries(ids, function(id, next) {
+						db.getObjectFields('post:' + id, ['pid', 'uid', 'votes'], function(err, postData) {
+							if (err) {
+								return next(err);
+							}
+							if (!postData || !parseInt(postData.votes, 10) || !parseInt(postData.uid, 10)) {
+								return next();
+							}
+							winston.info('processing pid: ' + postData.pid + ' uid: ' + postData.uid + ' votes: ' + postData.votes);
+							db.sortedSetAdd('uid:' + postData.uid + ':posts:votes', postData.votes, postData.pid, next);
+						});
+					}, next);
+				}, {}, function(err) {
+					if (err) {
+						return next(err);
+					}
+					winston.info('[2016/01/14] Creating user best post sorted sets done!');
+					Upgrade.update(thisSchemaDate, next);
+				});
+			} else {
+				winston.info('[2016/01/14] Creating user best post sorted sets skipped!');
 				next();
 			}
 		}

@@ -1,12 +1,11 @@
 "use strict";
 
-var async = require('async'),
-	winston = require('winston'),
-	db = require('./database'),
-	posts = require('./posts'),
-	user = require('./user'),
-	plugins = require('./plugins'),
-	meta = require('./meta');
+var async = require('async');
+var db = require('./database');
+var posts = require('./posts');
+var user = require('./user');
+var plugins = require('./plugins');
+var meta = require('./meta');
 
 (function (Favourites) {
 
@@ -19,7 +18,7 @@ var async = require('async'),
 			return callback(new Error('[[error:not-logged-in]]'));
 		}
 
-		posts.getPostFields(pid, ['pid', 'uid'], function (err, postData) {
+		posts.getPostFields(pid, ['pid', 'uid', 'tid'], function (err, postData) {
 			if (err) {
 				return callback(err);
 			}
@@ -47,7 +46,7 @@ var async = require('async'),
 					db.sortedSetAdd('users:reputation', newreputation, postData.uid);
 				}
 
-				adjustPostVotes(pid, uid, type, unvote, function(err, votes) {
+				adjustPostVotes(postData, uid, type, unvote, function(err, votes) {
 					postData.votes = votes;
 					callback(err, {
 						user: {
@@ -62,19 +61,19 @@ var async = require('async'),
 		});
 	}
 
-	function adjustPostVotes(pid, uid, type, unvote, callback) {
+	function adjustPostVotes(postData, uid, type, unvote, callback) {
 		var notType = (type === 'upvote' ? 'downvote' : 'upvote');
 
 		async.series([
 			function(next) {
 				if (unvote) {
-					db.setRemove('pid:' + pid + ':' + type, uid, next);
+					db.setRemove('pid:' + postData.pid + ':' + type, uid, next);
 				} else {
-					db.setAdd('pid:' + pid + ':' + type, uid, next);
+					db.setAdd('pid:' + postData.pid + ':' + type, uid, next);
 				}
 			},
 			function(next) {
-				db.setRemove('pid:' + pid + ':' + notType, uid, next);
+				db.setRemove('pid:' + postData.pid + ':' + notType, uid, next);
 			}
 		], function(err) {
 			if (err) {
@@ -83,18 +82,19 @@ var async = require('async'),
 
 			async.parallel({
 				upvotes: function(next) {
-					db.setCount('pid:' + pid + ':upvote', next);
+					db.setCount('pid:' + postData.pid + ':upvote', next);
 				},
 				downvotes: function(next) {
-					db.setCount('pid:' + pid + ':downvote', next);
+					db.setCount('pid:' + postData.pid + ':downvote', next);
 				}
 			}, function(err, results) {
 				if (err) {
 					return callback(err);
 				}
 				var voteCount = parseInt(results.upvotes, 10) - parseInt(results.downvotes, 10);
-
-				posts.updatePostVoteCount(pid, voteCount, function(err) {
+console.log("WE ARE HERE")
+				posts.updatePostVoteCount(postData, voteCount, function(err) {
+					console.log("NOT HERE")
 					callback(err, voteCount);
 				});
 			});

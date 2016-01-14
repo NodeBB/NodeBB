@@ -85,6 +85,18 @@ SocketPosts.loadMoreUserPosts = function(socket, data, callback) {
 	loadMorePosts('uid:' + data.uid + ':posts', socket.uid, data, callback);
 };
 
+SocketPosts.loadMoreBestPosts = function(socket, data, callback) {
+	loadMorePosts('uid:' + data.uid + ':posts:votes', socket.uid, data, callback);
+};
+
+SocketPosts.loadMoreUpVotedPosts = function(socket, data, callback) {
+	loadMorePosts('uid:' + data.uid + ':upvote', socket.uid, data, callback);
+};
+
+SocketPosts.loadMoreDownVotedPosts = function(socket, data, callback) {
+	loadMorePosts('uid:' + data.uid + ':downvote', socket.uid, data, callback);
+};
+
 function loadMorePosts(set, uid, data, callback) {
 	if (!data || !utils.isNumber(data.uid) || !utils.isNumber(data.after)) {
 		return callback(new Error('[[error:invalid-data]]'));
