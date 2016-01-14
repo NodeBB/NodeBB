@@ -8,6 +8,7 @@ var meta = require('../../meta');
 var pagination = require('../../pagination');
 
 module.exports = function(SocketUser) {
+
 	SocketUser.search = function(socket, data, callback) {
 		if (!data) {
 			return callback(new Error('[[error:invalid-data]]'));
@@ -27,6 +28,7 @@ module.exports = function(SocketUser) {
 				return callback(err);
 			}
 			result.pagination = pagination.create(data.page, result.pageCount);
+			result['route_users:' + data.sortBy] = true;
 			callback(null, result);
 		});
 	};
@@ -44,6 +46,7 @@ module.exports = function(SocketUser) {
 				pagination: pagination.create(data.page, pageCount),
 				pageCount: pageCount
 			};
+			userData['route_users:' + data.sortBy] = true;
 
 			callback(null, userData);
 		}
@@ -69,7 +72,7 @@ module.exports = function(SocketUser) {
 				}
 			}, done);
 		} else {
-			controllers.getUsersAndCount('users:joindate', socket.uid, start, stop, done);
+			controllers.getUsersAndCount('users:' + data.sortBy, socket.uid, start, stop, done);
 		}
 	};
 

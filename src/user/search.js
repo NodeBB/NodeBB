@@ -108,7 +108,7 @@ module.exports = function(User) {
 	}
 
 	function sortUsers(userData, sortBy) {
-		if (sortBy === 'joindate' || sortBy === 'postcount') {
+		if (sortBy === 'joindate' || sortBy === 'postcount' || sortBy === 'reputation') {
 			userData.sort(function(u1, u2) {
 				return u2[sortBy] - u1[sortBy];
 			});
