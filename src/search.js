@@ -22,18 +22,13 @@ search.search = function(data, callback) {
 			return callback(err);
 		}
 
-		data.search_query = validator.escape(query);
-		if (searchIn === 'titles' || searchIn === 'titlesposts') {
-			searchIn = 'posts';
-		}
-
+		data.search_query = validator.escape(data.query);
 		data.time = (process.elapsedTimeSince(start) / 1000).toFixed(2);
 		callback(null, data);
 	}
 
 	var start = process.hrtime();
 
-	var query = data.query;
 	var searchIn = data.searchIn || 'titlesposts';
 
 	if (searchIn === 'posts' || searchIn === 'titles' || searchIn === 'titlesposts') {
