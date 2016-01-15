@@ -195,7 +195,14 @@ $(document).ready(function() {
 	ajaxify.loadScript = function(tpl_url, callback) {
 		var location = !app.inAdmin ? 'forum/' : '';
 
-		require([location + tpl_url], function(script) {
+		var data = {
+			tpl_url: tpl_url,
+			scripts: [location + tpl_url]
+		};
+
+		$(window).trigger('action:script.load', data);
+
+		require(data.scripts, function(script) {
 			if (script && script.init) {
 				script.init();
 			}
