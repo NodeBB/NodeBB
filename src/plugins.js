@@ -31,6 +31,7 @@ var fs = require('fs'),
 	Plugins.lessFiles = [];
 	Plugins.clientScripts = [];
 	Plugins.customLanguages = [];
+	Plugins.customLanguageFallbacks = {};
 	Plugins.libraryPaths = [];
 	Plugins.versionWarning = [];
 
@@ -393,12 +394,10 @@ var fs = require('fs'),
 			translator.addTranslation(language, filename, lang.file);
 		});
 
-		var fallbackPath;
 		for(var resource in Plugins.customLanguageFallbacks) {
-			fallbackPath = Plugins.customLanguageFallbacks[resource];
 			params.router.get('/language/:lang/' + resource + '.json', function(req, res, next) {
-				winston.verbose('[translator] No resource file found for ' + req.params.lang + '/' + resource + ', using provided fallback language file');
-				res.sendFile(fallbackPath);
+				winston.verbose('[translator] No resource file found for ' + req.params.lang + '/' + path.basename(req.path, '.json') + ', using provided fallback language file');
+				res.sendFile(Plugins.customLanguageFallbacks[path.basename(req.path, '.json')]);
 			});
 		}
 
