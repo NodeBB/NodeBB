@@ -98,8 +98,8 @@ define('forum/account/header', [
 					if (err) {
 						return app.alertError(err.message);
 					}
-					$('#banAccountBtn').toggleClass('hide', true);
-					$('#banLabel, #unbanAccountBtn').toggleClass('hide', false);
+					components.get('account/ban').parent().addClass('hide');
+					components.get('account/unban').parent().removeClass('hide');
 				});
 			});
 		});
@@ -110,8 +110,9 @@ define('forum/account/header', [
 			if (err) {
 				return app.alertError(err.message);
 			}
-			$('#banAccountBtn').toggleClass('hide', false);
-			$('#banLabel, #unbanAccountBtn').toggleClass('hide', true);
+
+			components.get('account/ban').parent().removeClass('hide');
+			components.get('account/unban').parent().addClass('hide');
 		});
 	}
 
