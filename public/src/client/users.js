@@ -118,7 +118,7 @@ define('forum/users', ['translator'], function(translator) {
 			page: page,
 			searchBy: 'username',
 			sortBy: $('.search select').val() || getSortBy(),
-			onlineOnly: $('.search .online-only').is(':checked')
+			onlineOnly: $('.search .online-only').is(':checked') || (getActiveSection() === 'online')
 		}, function(err, data) {
 			if (err) {
 				return app.alertError(err.message);
@@ -142,15 +142,9 @@ define('forum/users', ['translator'], function(translator) {
 	}
 
 	function loadPage(page) {
-		socket.emit('user.loadSearchPage', {
-			page: page,
-			sortBy: getSortBy(),
-			onlineOnly: $('.search .online-only').is(':checked')
-		}, function(err, data) {
-			if (err) {
-				return app.alertError(err.message);
-			}
-
+		var section = getActiveSection();
+		section = section !== 'users' ? section : '';
+		$.get('/api/users/' + section + '?page=' + page, function(data) {
 			renderSearchResults(data);
 		});
 	}
