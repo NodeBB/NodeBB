@@ -55,7 +55,7 @@ define('chat', ['components', 'taskbar', 'string', 'sounds', 'forum/chats', 'tra
 					});
 					roomData.silent = true;
 					module.createModal(roomData, function(modal) {
-						module.toggleNew(modal.attr('UUID'), true, true);
+						module.toggleNew(modal.attr('UUID'), !isSelf, true);
 						if (!isSelf) {
 							app.alternatingTitle('[[modules:chat.user_has_messaged_you, ' + username + ']]');
 							sounds.play('chat-incoming');
