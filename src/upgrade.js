@@ -305,7 +305,7 @@ Upgrade.upgrade = function(callback) {
 		function(next) {
 			thisSchemaDate = Date.UTC(2016, 0, 14);
 
-			if (schemaDate < thisSchemaDate || 1) {
+			if (schemaDate < thisSchemaDate) {
 				updatesMade = true;
 				winston.info('[2016/01/14] Creating user best post sorted sets');
 
