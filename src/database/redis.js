@@ -4,15 +4,11 @@
 
 	var winston = require('winston'),
 		nconf = require('nconf'),
-		path = require('path'),
+		semver = require('semver'),
 		session = require('express-session'),
-		utils = require('./../../public/src/utils.js'),
 		redis,
 		connectRedis,
-		redisSearch,
-		redisClient,
-		postSearch,
-		topicSearch;
+		redisClient;
 
 	module.questions = [
 		{
@@ -42,7 +38,6 @@
 		try {
 			redis = require('redis');
 			connectRedis = require('connect-redis')(session);
-			redisSearch = require('redisearch');
 		} catch (err) {
 			winston.error('Unable to initialize Redis! Is Redis installed? Error :' + err.message);
 			process.exit();
@@ -56,9 +51,6 @@
 			client: redisClient,
 			ttl: 60 * 60 * 24 * 14
 		});
-
-		module.postSearch = redisSearch.createSearch('nodebbpostsearch', redisClient);
-		module.topicSearch = redisSearch.createSearch('nodebbtopicsearch', redisClient);
 
 		require('./redis/main')(redisClient, module);
 		require('./redis/hash')(redisClient, module);
@@ -109,6 +101,21 @@
 		}
 
 		return cxn;
+	};
+
+	module.checkCompatibility = function(callback) {
+		module.info(module.client, function(err, info) {
+			if (err) {
+				return callback(err);
+			}
+
+			if (semver.lt(info.redis_version, '2.8.9')) {
+				err = new Error('Your Redis version is not new enough to support NodeBB, please upgrade Redis to v2.8.9 or higher.');
+				err.stacktrace = false;
+			}
+
+			callback(err);
+		});
 	};
 
 	module.close = function() {

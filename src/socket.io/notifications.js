@@ -5,7 +5,28 @@ var	user = require('../user'),
 	SocketNotifs = {};
 
 SocketNotifs.get = function(socket, data, callback) {
-	user.notifications.get(socket.uid, callback);
+	if (data && Array.isArray(data.nids) && socket.uid) {
+		user.notifications.getNotifications(data.nids, socket.uid, callback);
+	} else {
+		user.notifications.get(socket.uid, callback);
+	}
+};
+
+SocketNotifs.loadMore = function(socket, data, callback) {
+	if (!data || !parseInt(data.after, 10)) {
+		return callback(new Error('[[error:invalid-data]]'));
+	}
+	if (!socket.uid) {
+		return;
+	}
+	var start = parseInt(data.after, 10);
+	var stop = start + 20;
+	user.notifications.getAll(socket.uid, start, stop, function(err, notifications) {
+		if (err) {
+			return callback(err);
+		}
+		callback(null, {notifications: notifications, nextStart: stop});
+	});
 };
 
 SocketNotifs.getCount = function(socket, data, callback) {

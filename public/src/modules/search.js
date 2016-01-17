@@ -1,5 +1,5 @@
 "use strict";
-/* globals socket, ajaxify, app, define */
+/* globals socket, ajaxify, app, define, config */
 
 define('search', ['navigator', 'translator'], function(nav, translator) {
 
@@ -11,7 +11,7 @@ define('search', ['navigator', 'translator'], function(nav, translator) {
 		var term = data.term;
 
 		// Detect if a tid was specified
-		var topicSearch = term.match(/in:topic-([\d]+)/);
+		var topicSearch = term.match(/^in:topic-([\d]+) /);
 
 		if (!topicSearch) {
 			term = term.replace(/^[ ?#]*/, '');
@@ -28,14 +28,18 @@ define('search', ['navigator', 'translator'], function(nav, translator) {
 			var cleanedTerm = term.replace(topicSearch[0], ''),
 				tid = topicSearch[1];
 
-			Search.queryTopic(tid, cleanedTerm, callback);
+			if (cleanedTerm.length > 0) {
+				Search.queryTopic(tid, cleanedTerm, callback);
+			}
 		}
 	};
 
 	function createQueryString(data) {
-		var searchIn = data.in || 'titlesposts';
+		var searchIn = data['in'] || 'titlesposts';
 		var postedBy = data.by || '';
-		var query = {in: searchIn};
+		var query = {
+				'in': searchIn
+			};
 
 		if (postedBy && (searchIn === 'posts' || searchIn === 'titles' || searchIn === 'titlesposts')) {
 			query.by = postedBy;
@@ -75,7 +79,7 @@ define('search', ['navigator', 'translator'], function(nav, translator) {
 			term: term
 		}, function(err, pids) {
 			if (err) {
-				return callback(err);
+				return app.alertError(err.message);
 			}
 
 			if (Array.isArray(pids)) {
@@ -96,7 +100,7 @@ define('search', ['navigator', 'translator'], function(nav, translator) {
 	};
 
 	Search.checkPagePresence = function(tid, callback) {
-		if (parseInt(ajaxify.variables.get('topic_id'), 10) !== parseInt(tid, 10)) {
+		if (parseInt(ajaxify.data.tid, 10) !== parseInt(tid, 10)) {
 			ajaxify.go('topic/' + tid, callback);
 		} else {
 			callback();
@@ -124,8 +128,13 @@ define('search', ['navigator', 'translator'], function(nav, translator) {
 		if (Search.current.results.length > 0) {
 			topicSearchEl.find('.count').html((index+1) + ' / ' + Search.current.results.length);
 			topicSearchEl.find('.prev, .next').removeAttr('disabled');
-			socket.emit('posts.getPidIndex', Search.current.results[index], function(err, postIndex) {
-				nav.scrollToPost(postIndex-1, true);	// why -1? Ask @barisusakli
+			var data = {
+				pid: Search.current.results[index],
+				tid: Search.current.tid,
+				topicPostSort: config.topicPostSort
+			};
+			socket.emit('posts.getPidIndex', data, function(err, postIndex) {
+				nav.scrollToPost(postIndex, true);
 			});
 		} else {
 			translator.translate('[[search:no-matches]]', function(text) {

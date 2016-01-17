@@ -1,15 +1,13 @@
 'use strict';
 /* globals define, templates */
 
-define('alerts', ['translator'], function(translator) {
+define('alerts', ['translator', 'components'], function(translator, components) {
 	var module = {};
 
 	module.alert = function (params) {
 		params.alert_id = 'alert_button_' + (params.alert_id ? params.alert_id : new Date().getTime());
 		params.title = params.title ? params.title.trim() || '' : '';
 		params.message = params.message ? params.message.trim() : '';
-
-		params.location = params.location || 'right-top';
 		params.type = params.type || 'info';
 
 		var alert = $('#' + params.alert_id);
@@ -30,7 +28,7 @@ define('alerts', ['translator'], function(translator) {
 				alert = $(translatedHTML);
 				alert.fadeIn(200);
 
-				$('.alert-' + params.location).prepend(alert);
+				components.get('toaster/tray').prepend(alert);
 
 				if(typeof params.closefn === 'function') {
 					alert.find('button').on('click', function() {

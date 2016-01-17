@@ -1,0 +1,10 @@
+{
+    "title": "Непрочитано",
+    "no_unread_topics": "Нема непрочитаних тема.",
+    "load_more": "Учитај више",
+    "mark_as_read": "Означи као прочитано",
+    "selected": "Изабране",
+    "all": "Све",
+    "all_categories": "All categories",
+    "topics_marked_as_read.success": "Теме означене као прочитане!"
+}

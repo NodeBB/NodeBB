@@ -5,18 +5,24 @@ define('admin/settings', ['uploader', 'sounds'], function(uploader, sounds) {
 	var Settings = {};
 
 	Settings.init = function() {
-		Settings.prepare();
+		if (!app.config) {
+			$(window).on('action:config.loaded', Settings.prepare);
+		} else {
+			Settings.prepare();
+		}
+	};
+
+	Settings.populateTOC = function() {
+		$('.settings-header').each(function() {
+			var header = $(this).text(),
+				anchor = header.toLowerCase().replace(/ /g, '-').trim();
+
+			$(this).prepend('<a name="' + anchor + '"></a>');
+			$('.section-content ul').append('<li><a href="#' + anchor + '">' + header + '</a></li>');
+		});
 	};
 
 	Settings.prepare = function(callback) {
-		// Come back in 125ms if the config isn't ready yet
-		if (!app.config) {
-			setTimeout(function() {
-				Settings.prepare(callback);
-			}, 125);
-			return;
-		}
-
 		// Populate the fields on the page from the config
 		var fields = $('#content [data-field]'),
 			numFields = fields.length,
@@ -40,7 +46,9 @@ define('admin/settings', ['uploader', 'sounds'], function(uploader, sounds) {
 						break;
 
 					case 'checkbox':
-						field.prop('checked', parseInt(app.config[key], 10) === 1);
+						var checked = parseInt(app.config[key], 10) === 1;
+						field.prop('checked', checked);
+						field.parents('.mdl-switch').toggleClass('is-checked', checked);
 						break;
 					}
 				}
@@ -84,16 +92,6 @@ define('admin/settings', ['uploader', 'sounds'], function(uploader, sounds) {
 
 		handleUploads();
 
-		$('button[data-action="email.test"]').off('click').on('click', function() {
-			socket.emit('admin.email.test', function(err) {
-				if (err) {
-					return app.alertError(err.message);
-				}
-				app.alertSuccess('Test Email Sent');
-			});
-			return false;
-		});
-
 		$('#clear-sitemap-cache').off('click').on('click', function() {
 			socket.emit('admin.settings.clearSitemapCache', function() {
 				app.alertSuccess('Sitemap Cache Cleared!');
@@ -104,17 +102,22 @@ define('admin/settings', ['uploader', 'sounds'], function(uploader, sounds) {
 		if (typeof callback === 'function') {
 			callback();
 		}
+
+		$(window).trigger('action:admin.settingsLoaded');
 	};
 
 	function handleUploads() {
 		$('#content input[data-action="upload"]').each(function() {
 			var uploadBtn = $(this);
 			uploadBtn.on('click', function() {
-				uploader.open(uploadBtn.attr('data-route'), {}, 0, function(image) {
+				uploader.show({
+					route: uploadBtn.attr('data-route'),
+					params: {},
+					fileSize: 0,
+					showHelp: uploadBtn.attr('data-help') ? uploadBtn.attr('data-help') === 1 : undefined
+				}, function(image) {
 					$('#' + uploadBtn.attr('data-target')).val(image);
 				});
-
-				uploader.hideAlerts();
 			});
 		});
 	}

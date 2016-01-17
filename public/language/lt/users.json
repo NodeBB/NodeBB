@@ -7,6 +7,15 @@
     "load_more": "Įkelti daugiau",
     "users-found-search-took": "Rasta %1 vartotojas(-ai)! Paieška užtruko %2 sekundes.",
     "filter-by": "Filtruoti pagal",
-    "online-only": "Online only",
-    "picture-only": "Tik paveikslėlis"
+    "online-only": "Tik prisijunge",
+    "picture-only": "Tik paveikslėlis",
+    "invite": "Pakviesti",
+    "invitation-email-sent": "Pakvietimas el.paštu buvo išsiųstas į %1!",
+    "user_list": "Vartotojų sąrašas",
+    "recent_topics": "Paskutinės temos",
+    "popular_topics": "Populiarios temos",
+    "unread_topics": "Neperskaitytos temos",
+    "categories": "Kategorijos",
+    "tags": "Žymos",
+    "map": "Žemėlapis"
 }

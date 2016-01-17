@@ -3,10 +3,19 @@
     "top_posters": "Najwięcej postów",
     "most_reputation": "Największa reputacja",
     "search": "Szukaj",
-    "enter_username": "Wpisz nazwę użytkownika",
-    "load_more": "Więcej",
+    "enter_username": "Wpisz wyszukiwaną nazwę użytkownika",
+    "load_more": "Wczytaj Więcej",
     "users-found-search-took": "Znaleziono %1 użytkownik(ów). Szukanie zajęło %2 sek.",
     "filter-by": "Filtruj",
     "online-only": "Tylko dostępny",
-    "picture-only": "Tylko ze zdjęciem"
+    "picture-only": "Tylko ze zdjęciem",
+    "invite": "Zaproś",
+    "invitation-email-sent": "Email z zaproszeniem został wysłany do %1",
+    "user_list": "Lista Użytkowników",
+    "recent_topics": "Ostatnie Tematy",
+    "popular_topics": "Popularne Tematy",
+    "unread_topics": "Nieprzeczytane Tematy",
+    "categories": "Kategorie",
+    "tags": "Tagi",
+    "map": "Mapa"
 }

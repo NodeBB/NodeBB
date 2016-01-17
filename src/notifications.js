@@ -5,11 +5,8 @@ var async = require('async'),
 	cron = require('cron').CronJob,
 	nconf = require('nconf'),
 	S = require('string'),
-	_ = require('underscore'),
 
 	db = require('./database'),
-	utils = require('../public/src/utils'),
-	events = require('./events'),
 	User = require('./user'),
 	groups = require('./groups'),
 	meta = require('./meta'),
@@ -59,7 +56,7 @@ var async = require('async'),
 						if (err) {
 							return next(err);
 						}
-						notification.image = userData.picture;
+						notification.image = userData.picture || null;
 						notification.user = userData;
 						next(null, notification);
 					});
@@ -232,30 +229,42 @@ var async = require('async'),
 			return callback();
 		}
 
-		db.getObjectField(nid, 'datetime', function(err, datetime) {
-			datetime = datetime || Date.now();
+		db.getObject('notifications:' + nid, function(err, notification) {
+			if (err || !notification) {
+				return callback(err || new Error('[[error:no-notification]]'));
+			}
+			notification.datetime = notification.datetime || Date.now();
 
 			async.parallel([
 				async.apply(db.sortedSetRemove, 'uid:' + uid + ':notifications:read', nid),
-				async.apply(db.sortedSetAdd, 'uid:' + uid + ':notifications:unread', datetime, nid)
+				async.apply(db.sortedSetAdd, 'uid:' + uid + ':notifications:unread', notification.datetime, nid)
 			], callback);
 		});
 	};
 
 	Notifications.markReadMultiple = function(nids, uid, callback) {
 		callback = callback || function() {};
+		nids = nids.filter(Boolean);
 		if (!Array.isArray(nids) || !nids.length) {
 			return callback();
 		}
 
-		var notificationKeys = nids.filter(Boolean).map(function(nid) {
+		var notificationKeys = nids.map(function(nid) {
 			return 'notifications:' + nid;
 		});
 
-		db.getObjectsFields(notificationKeys, ['datetime'], function(err, notificationData) {
+		db.getObjectsFields(notificationKeys, ['nid', 'datetime'], function(err, notificationData) {
 			if (err) {
 				return callback(err);
 			}
+
+			notificationData = notificationData.filter(function(notification) {
+				return notification && notification.nid;
+			});
+
+			nids = notificationData.map(function(notification) {
+				return notification.nid;
+			});
 
 			var datetimes = notificationData.map(function(notification) {
 				return (notification && notification.datetime) || Date.now();
@@ -319,6 +328,93 @@ var async = require('async'),
 					return winston.error('Encountered error pruning notifications: ' + err.message);
 				}
 			});
+		});
+	};
+
+	Notifications.merge = function(notifications, callback) {
+		// When passed a set of notification objects, merge any that can be merged
+		var mergeIds = [
+				'notifications:favourited_your_post_in',
+				'notifications:upvoted_your_post_in',
+				'notifications:user_started_following_you',
+				'notifications:user_posted_to',
+				'notifications:user_flagged_post_in'
+			],
+			isolated, differentiators, differentiator, modifyIndex, set;
+
+		notifications = mergeIds.reduce(function(notifications, mergeId) {
+			isolated = notifications.filter(function(notifObj) {
+				if (!notifObj || !notifObj.hasOwnProperty('mergeId')) {
+					return false;
+				}
+
+				return notifObj.mergeId.split('|')[0] === mergeId;
+			});
+
+			if (isolated.length <= 1) {
+				return notifications;	// Nothing to merge
+			}
+
+			// Each isolated mergeId may have multiple differentiators, so process each separately
+			differentiators = isolated.reduce(function(cur, next) {
+				differentiator = next.mergeId.split('|')[1];
+				if (cur.indexOf(differentiator) === -1) {
+					cur.push(differentiator);
+				}
+
+				return cur;
+			}, []);
+			
+			differentiators.forEach(function(differentiator) {
+				set = isolated.filter(function(notifObj) {
+					return notifObj.mergeId === (mergeId + '|' + differentiator);
+				});
+				modifyIndex = notifications.indexOf(set[0]);
+				if (modifyIndex === -1 || set.length === 1) {
+					return notifications;
+				}
+
+				switch(mergeId) {
+					case 'notifications:favourited_your_post_in':	// intentional fall-through
+					case 'notifications:upvoted_your_post_in':
+					case 'notifications:user_started_following_you':
+					case 'notifications:user_posted_to':
+					case 'notifications:user_flagged_post_in':
+						var usernames = set.map(function(notifObj) {
+							return notifObj.user.username;
+						}).filter(function(username, idx, array) {
+							return array.indexOf(username) === idx
+						});
+						var numUsers = usernames.length;
+
+						// Update bodyShort
+						if (numUsers === 1) {
+							// No need to change anything, actually...
+						} else if (numUsers === 2) {
+							notifications[modifyIndex].bodyShort = '[[' + mergeId + '_dual, ' + usernames.join(', ') + ', ' + notifications[modifyIndex].topicTitle + ']]'
+						} else {
+							notifications[modifyIndex].bodyShort = '[[' + mergeId + '_multiple, ' + usernames[0] + ', ' + (numUsers-1) + ', ' + notifications[modifyIndex].topicTitle + ']]'
+						}
+						break;
+				}
+
+				// Filter out duplicates
+				notifications = notifications.filter(function(notifObj, idx) {
+					if (!notifObj || !notifObj.mergeId) {
+						return true;
+					}
+
+					return !(notifObj.mergeId === (mergeId + '|' + differentiator) && idx !== modifyIndex);
+				});
+			});
+
+			return notifications;
+		}, notifications);
+
+		plugins.fireHook('filter:notifications.merge', {
+			notifications: notifications
+		}, function(err, data) {
+			callback(err, data.notifications);
 		});
 	};
 

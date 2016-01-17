@@ -1,5 +1,9 @@
 'use strict';
 
+/* global bootbox, translator */
+
+var overrides = overrides || {};
+
 if ('undefined' !== typeof window) {
 
 	(function ($, undefined) {
@@ -79,25 +83,75 @@ if ('undefined' !== typeof window) {
 
 	})(jQuery || {fn:{}});
 
-
-	// FIX FOR #1245 - https://github.com/NodeBB/NodeBB/issues/1245
-	// from http://stackoverflow.com/questions/15931962/bootstrap-dropdown-disappear-with-right-click-on-firefox
-	// obtain a reference to the original handler
-	var _clearMenus = $._data(document, "events").click.filter(function (el) {
-		return el.namespace === 'bs.data-api.dropdown' && el.selector === undefined;
-	});
-
-	if(_clearMenus.length) {
-		_clearMenus = _clearMenus[0].handler;
-	}
-
-	// disable the old listener
-	$(document)
-		.off('click.data-api.dropdown', _clearMenus)
-		.on('click.data-api.dropdown', function (e) {
-			// call the handler only when not right-click
-			if (e.button !== 2) {
-				_clearMenus();
-			}
+	(function(){
+		// FIX FOR #1245 - https://github.com/NodeBB/NodeBB/issues/1245
+		// from http://stackoverflow.com/questions/15931962/bootstrap-dropdown-disappear-with-right-click-on-firefox
+		// obtain a reference to the original handler
+		var _clearMenus = $._data(document, "events").click.filter(function (el) {
+			return el.namespace === 'bs.data-api.dropdown' && el.selector === undefined;
 		});
+
+		if(_clearMenus.length) {
+			_clearMenus = _clearMenus[0].handler;
+		}
+
+		// disable the old listener
+		$(document)
+			.off('click.data-api.dropdown', _clearMenus)
+			.on('click.data-api.dropdown', function (e) {
+				// call the handler only when not right-click
+				if (e.button !== 2) {
+					_clearMenus();
+				}
+			});
+	})();
+
+	overrides.overrideBootbox = function () {
+		var dialog = bootbox.dialog,
+			prompt = bootbox.prompt,
+			confirm = bootbox.confirm;
+
+		function translate(modal) {
+			var header = modal.find('.modal-header'),
+				footer = modal.find('.modal-footer');
+			translator.translate(header.html(), function(html) {
+				header.html(html);
+			});
+			translator.translate(footer.html(), function(html) {
+				footer.html(html);
+			});
+		}
+
+		bootbox.dialog = function() {
+			var modal = $(dialog.apply(this, arguments)[0]);
+			translate(modal);
+			return modal;
+		};
+
+		bootbox.prompt = function() {
+			var modal = $(prompt.apply(this, arguments)[0]);
+			translate(modal);
+			return modal;
+		};
+
+		bootbox.confirm = function() {
+			var modal = $(confirm.apply(this, arguments)[0]);
+			translate(modal);
+			return modal;
+		};
+	};
+
+	overrides.overrideTimeago = function() {
+		var timeagoFn = $.fn.timeago;
+		$.fn.timeago = function() {
+			var els = timeagoFn.apply(this, arguments);
+
+			if (els) {
+				els.each(function() {
+					$(this).attr('title', (new Date($(this).attr('title'))).toString());
+				});
+			}
+		};
+	};
+
 }

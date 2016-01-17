@@ -1,11 +1,9 @@
 "use strict";
-/* global config, socket, define, templates, bootbox, app, ajaxify,  */
+/* global config, socket, define, templates, bootbox, app, ajaxify  */
 define('admin/manage/users', ['admin/modules/selectable'], function(selectable) {
 	var Users = {};
 
 	Users.init = function() {
-		var yourid = ajaxify.variables.get('yourid');
-
 		selectable.enable('#users-container', '.user-selectable');
 
 		function getSelectedUids() {
@@ -94,7 +92,7 @@ define('admin/manage/users', ['admin/modules/selectable'], function(selectable) 
 				return;
 			}
 
-			if (uids.indexOf(yourid) !== -1) {
+			if (uids.indexOf(app.user.uid.toString()) !== -1) {
 				app.alertError('You can\'t remove yourself as Administrator!');
 			} else {
 				socket.emit('admin.user.makeAdmins', uids, done('User(s) are now administrators.', '.administrator', true));
@@ -108,7 +106,7 @@ define('admin/manage/users', ['admin/modules/selectable'], function(selectable) 
 				return;
 			}
 
-			if (uids.indexOf(yourid.toString()) !== -1) {
+			if (uids.indexOf(app.user.uid.toString()) !== -1) {
 				app.alertError('You can\'t remove yourself as Administrator!');
 			} else {
 				bootbox.confirm('Do you really want to remove admins?', function(confirm) {
@@ -210,7 +208,7 @@ define('admin/manage/users', ['admin/modules/selectable'], function(selectable) 
 
 				socket.emit('admin.user.createUser', user, function(err) {
 					if(err) {
-						return errorEl.html('<strong>Error</strong><p>' + err.message + '</p>').removeClass('hide');
+						return errorEl.translateHtml('<strong>Error</strong><p>' + err.message + '</p>').removeClass('hide');
 					}
 					$('#create-modal').modal('hide');
 					$('#create-modal').on('hidden.bs.modal', function() {
@@ -250,7 +248,7 @@ define('admin/manage/users', ['admin/modules/selectable'], function(selectable) 
 			timeoutId = setTimeout(function() {
 				$('.fa-spinner').removeClass('hidden');
 
-				socket.emit('admin.user.search', {searchBy: [type], query: $this.val()}, function(err, data) {
+				socket.emit('admin.user.search', {searchBy: type, query: $this.val()}, function(err, data) {
 					if (err) {
 						return app.alertError(err.message);
 					}

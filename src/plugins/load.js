@@ -6,6 +6,8 @@ var fs = require('fs'),
 	async = require('async'),
 	winston = require('winston'),
 	nconf = require('nconf'),
+	_ = require('underscore'),
+	file = require('../file'),
 	utils = require('../../public/src/utils');
 
 
@@ -20,7 +22,7 @@ module.exports = function(Plugins) {
 				return callback(pluginPath.match('nodebb-theme') ? null : err);
 			}
 
-			versionWarning(pluginData);
+			checkVersion(pluginData);
 
 			async.parallel([
 				function(next) {
@@ -53,31 +55,25 @@ module.exports = function(Plugins) {
 		});
 	};
 
-	function versionWarning(pluginData) {
-		function display() {
-			process.stdout.write('\n');
-			winston.warn('[plugins/' + pluginData.id + '] This plugin may not be compatible with your version of NodeBB. This may cause unintended behaviour or crashing.');
-			winston.warn('[plugins/' + pluginData.id + '] In the event of an unresponsive NodeBB caused by this plugin, run ./nodebb reset plugin="' + pluginData.id + '".');
-			process.stdout.write('\n');
+	function checkVersion(pluginData) {
+		function add() {
+			if (Plugins.versionWarning.indexOf(pluginData.id) === -1) {
+				Plugins.versionWarning.push(pluginData.id);
+			}
 		}
 
 		if (pluginData.nbbpm && pluginData.nbbpm.compatibility && semver.validRange(pluginData.nbbpm.compatibility)) {
-			if (!semver.gtr(nconf.get('version'), pluginData.nbbpm.compatibility)) {
-				display();
+			if (!semver.satisfies(nconf.get('version'), pluginData.nbbpm.compatibility)) {
+				add();
 			}
 		} else {
-			display();
+			add();
 		}
 	}
 
 	function registerHooks(pluginData, pluginPath, callback) {
-		function libraryNotFound() {
-			winston.warn('[plugins.reload] Library not found for plugin: ' + pluginData.id);
-			callback();
-		}
-
 		if (!pluginData.library) {
-			return libraryNotFound();
+			return callback();
 		}
 
 		var libraryPath = path.join(pluginPath, pluginData.library);
@@ -96,7 +92,8 @@ module.exports = function(Plugins) {
 			}
 		} catch(err) {
 			winston.error(err.stack);
-			libraryNotFound();
+			winston.warn('[plugins] Unable to parse library for: ' + pluginData.id);
+			callback();
 		}
 	}
 
@@ -112,7 +109,7 @@ module.exports = function(Plugins) {
 				var realPath = pluginData.staticDirs[mappedPath];
 				var staticDir = path.join(pluginPath, realPath);
 
-				fs.exists(staticDir, function(exists) {
+				file.exists(staticDir, function(exists) {
 					if (exists) {
 						Plugins.staticDirs[pluginData.id + '/' + mappedPath] = staticDir;
 					} else {
@@ -163,7 +160,8 @@ module.exports = function(Plugins) {
 			return callback();
 		}
 
-		var pathToFolder = path.join(__dirname, '../../node_modules/', pluginData.id, pluginData.languages);
+		var pathToFolder = path.join(__dirname, '../../node_modules/', pluginData.id, pluginData.languages),
+			fallbackMap = {};
 
 		utils.walk(pathToFolder, function(err, languages) {
 			var arr = [];
@@ -187,13 +185,20 @@ module.exports = function(Plugins) {
 						route: pathToLang.replace(pathToFolder, '')
 					});
 
+					if (pluginData.defaultLang && pathToLang.endsWith(pluginData.defaultLang + '/' + path.basename(pathToLang))) {
+						fallbackMap[path.basename(pathToLang, '.json')] = path.join(pathToFolder, pluginData.defaultLang, path.basename(pathToLang));
+					}
+
 					next();
 				});
 			}, function(err) {
 				if (err) {
 					return callback(err);
 				}
+
 				Plugins.customLanguages = Plugins.customLanguages.concat(arr);
+				_.extendOwn(Plugins.customLanguageFallbacks, fallbackMap);
+
 				callback();
 			});
 		});

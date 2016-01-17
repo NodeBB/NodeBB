@@ -5,12 +5,10 @@ var async = require('async'),
 	winston = require('winston'),
 
 	db = require('../database'),
-
+	user = require('../user'),
 	posts = require('../posts'),
 	privileges = require('../privileges'),
-	postTools = require('../postTools'),
-	plugins = require('../plugins'),
-	threadTools = require('../threadTools');
+	plugins = require('../plugins');
 
 
 module.exports = function(Topics) {
@@ -32,37 +30,30 @@ module.exports = function(Topics) {
 			return a - b;
 		});
 		var mainPid = pids[0];
-
-		async.parallel({
-			postData: function(callback) {
-				posts.getPostData(mainPid, callback);
+		var cid;
+		var tid;
+		async.waterfall([
+			function(next) {
+				posts.getCidByPid(mainPid, next);
 			},
-			cid: function(callback) {
-				posts.getCidByPid(mainPid, callback);
-			}
-		}, function(err, results) {
-			if (err) {
-				return callback(err);
-			}
-			
-			Topics.create({uid: results.postData.uid, title: title, cid: results.cid}, function(err, tid) {
-				if (err) {
-					return callback(err);
-				}
-
-				async.eachSeries(pids, move, function(err) {
-					if (err) {
-						return callback(err);
+			function(_cid, next) {
+				cid = _cid;
+				async.parallel({
+					postData: function(next) {
+						posts.getPostData(mainPid, next);
+					},
+					isAdminOrMod: function(next) {
+						privileges.categories.isAdminOrMod(cid, uid, next);
 					}
-
-					Topics.updateTimestamp(tid, Date.now(), function(err) {
-						if (err) {
-							return callback(err);
-						}
-						Topics.getTopicData(tid, callback);
-					});
-				});
-
+				}, next);
+			},
+			function(results, next) {
+				if (!results.isAdminOrMod) {
+					return next(new Error('[[error:no-privileges]]'));
+				}
+				Topics.create({uid: results.postData.uid, title: title, cid: cid}, next);
+			},
+			function(_tid, next) {
 				function move(pid, next) {
 					privileges.posts.canEdit(pid, uid, function(err, canEdit) {
 						if(err || !canEdit) {
@@ -72,8 +63,16 @@ module.exports = function(Topics) {
 						Topics.movePostToTopic(pid, tid, next);
 					});
 				}
-			});
-		});
+				tid = _tid;
+				async.eachSeries(pids, move, next);
+			},
+			function(next) {
+				Topics.updateTimestamp(tid, Date.now(), next);
+			},
+			function(next) {
+				Topics.getTopicData(tid, next);
+			}
+		], callback);
 	};
 
 	Topics.movePostToTopic = function(pid, tid, callback) {
@@ -94,7 +93,7 @@ module.exports = function(Topics) {
 				}
 
 				if (parseInt(post.tid, 10) === parseInt(tid, 10)) {
-					return next(new Error('[[error:cant-move-to-same-topic]]'))
+					return next(new Error('[[error:cant-move-to-same-topic]]'));
 				}
 
 				postData = post;
@@ -104,6 +103,9 @@ module.exports = function(Topics) {
 			},
 			function(next) {
 				async.parallel([
+					function(next) {
+						updateCategoryPostCount(postData.tid, tid, next);
+					},
 					function(next) {
 						Topics.decreasePostCount(postData.tid, next);
 					},
@@ -117,6 +119,12 @@ module.exports = function(Topics) {
 						Topics.addPostToTopic(tid, pid, postData.timestamp, postData.votes, next);
 					}
 				], next);
+			},
+			function(results, next) {
+				async.parallel([
+					async.apply(updateRecentTopic, tid),
+					async.apply(updateRecentTopic, postData.tid)
+				], next);
 			}
 		], function(err) {
 			if (err) {
@@ -126,4 +134,41 @@ module.exports = function(Topics) {
 			callback();
 		});
 	};
+
+	function updateCategoryPostCount(oldTid, tid, callback) {
+		Topics.getTopicsFields([oldTid, tid], ['cid'], function(err, topicData) {
+			if (err) {
+				return callback(err);
+			}
+			if (!topicData[0].cid || !topicData[1].cid) {
+				return callback();
+			}
+			if (parseInt(topicData[0].cid, 10) === parseInt(topicData[1].cid, 10)) {
+				return callback();
+			}
+			async.parallel([
+				async.apply(db.incrObjectFieldBy, 'category:' + topicData[0].cid, 'post_count', -1),
+				async.apply(db.incrObjectFieldBy, 'category:' + topicData[1].cid, 'post_count', 1)
+			], callback);
+		});
+	}
+
+	function updateRecentTopic(tid, callback) {
+		async.waterfall([
+			function(next) {
+				Topics.getLatestUndeletedPid(tid, next);
+			},
+			function(pid, next) {
+				if (!pid) {
+					return callback();
+				}
+				posts.getPostField(pid, 'timestamp', next);
+			},
+			function(timestamp, next) {
+				Topics.updateTimestamp(tid, timestamp, next);
+			}
+		], callback);
+	}
+
+
 };

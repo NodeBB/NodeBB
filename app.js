@@ -23,16 +23,15 @@
 var nconf = require('nconf');
 nconf.argv().env('__');
 
-var fs = require('fs'),
-	os = require('os'),
-	url = require('url'),
+var url = require('url'),
 	async = require('async'),
 	semver = require('semver'),
 	winston = require('winston'),
+	colors = require('colors'),
 	path = require('path'),
 	pkg = require('./package.json'),
+	file = require('./src/file'),
 	utils = require('./public/src/utils.js');
-
 
 global.env = process.env.NODE_ENV || 'production';
 
@@ -43,39 +42,49 @@ winston.add(winston.transports.Console, {
 		var date = new Date();
 		return date.getDate() + '/' + (date.getMonth() + 1) + ' ' + date.toTimeString().substr(0,5) + ' [' + global.process.pid + ']';
 	},
-	level: (global.env === 'production' || nconf.get('log-level') === 'info') ? 'info' : 'verbose'
+	level: nconf.get('log-level') || (global.env === 'production' ? 'info' : 'verbose')
 });
 
-if(os.platform() === 'linux') {
-	require('child_process').exec('/usr/bin/which convert', function(err, stdout, stderr) {
-		if(err || !stdout) {
-			winston.warn('Couldn\'t find convert. Did you install imagemagick?');
-		}
-	});
-}
 
 // Alternate configuration file support
-var	configFile = path.join(__dirname, '/config.json'),
-	configExists;
+var	configFile = path.join(__dirname, '/config.json');
 
 if (nconf.get('config')) {
 	configFile = path.resolve(__dirname, nconf.get('config'));
 }
-configExists = fs.existsSync(configFile);
 
-if (!nconf.get('setup') && !nconf.get('install') && !nconf.get('upgrade') && !nconf.get('reset') && configExists) {
-	start();
-} else if (nconf.get('setup') || nconf.get('install')) {
+var configExists = file.existsSync(configFile);
+
+loadConfig();
+
+if (!process.send) {
+	// If run using `node app`, log GNU copyright info along with server info
+	winston.info('NodeBB v' + nconf.get('version') + ' Copyright (C) 2013-2014 NodeBB Inc.');
+	winston.info('This program comes with ABSOLUTELY NO WARRANTY.');
+	winston.info('This is free software, and you are welcome to redistribute it under certain conditions.');
+	winston.info('');
+}
+
+
+if (nconf.get('setup') || nconf.get('install')) {
 	setup();
 } else if (!configExists) {
 	require('./install/web').install(nconf.get('port'));
 } else if (nconf.get('upgrade')) {
 	upgrade();
 } else if (nconf.get('reset')) {
-	reset();
+	require('./src/reset').reset();
+} else if (nconf.get('activate')) {
+	activate();
+} else if (nconf.get('plugins')) {
+	listPlugins();
+} else {
+	start();
 }
 
 function loadConfig() {
+	winston.verbose('* using configuration stored in: %s', configFile);
+
 	nconf.file({
 		file: configFile
 	});
@@ -95,19 +104,12 @@ function loadConfig() {
 	// Ensure themes_path is a full filepath
 	nconf.set('themes_path', path.resolve(__dirname, nconf.get('themes_path')));
 	nconf.set('core_templates_path', path.join(__dirname, 'src/views'));
-	nconf.set('base_templates_path', path.join(nconf.get('themes_path'), 'nodebb-theme-vanilla/templates'));
-
-	if (!process.send) {
-		// If run using `node app`, log GNU copyright info along with server info
-		winston.info('NodeBB v' + nconf.get('version') + ' Copyright (C) 2013-2014 NodeBB Inc.');
-		winston.info('This program comes with ABSOLUTELY NO WARRANTY.');
-		winston.info('This is free software, and you are welcome to redistribute it under certain conditions.');
-		winston.info('');
-	}
+	nconf.set('base_templates_path', path.join(nconf.get('themes_path'), 'nodebb-theme-persona/templates'));
 }
 
+
 function start() {
-	loadConfig();
+	var db = require('./src/database');
 
 	// nconf defaults, if not set in config
 	if (!nconf.get('upload_path')) {
@@ -116,6 +118,8 @@ function start() {
 	// Parse out the relative_url and other goodies from the configured URL
 	var urlObject = url.parse(nconf.get('url'));
 	var relativePath = urlObject.pathname !== '/' ? urlObject.pathname : '';
+	nconf.set('base_url', urlObject.protocol + '//' + urlObject.host);
+	nconf.set('secure', urlObject.protocol === 'https');
 	nconf.set('use_port', !!urlObject.port);
 	nconf.set('relative_path', relativePath);
 	nconf.set('port', urlObject.port || nconf.get('port') || nconf.get('PORT') || 4567);
@@ -124,7 +128,7 @@ function start() {
 	if (nconf.get('isPrimary') === 'true') {
 		winston.info('Time: %s', (new Date()).toString());
 		winston.info('Initializing NodeBB v%s', nconf.get('version'));
-		winston.verbose('* using configuration stored in: %s', configFile);
+
 
 		var host = nconf.get(nconf.get('database') + ':host'),
 			storeLocation = host ? 'at ' + host + (host.indexOf('/') === -1 ? ':' + nconf.get(nconf.get('database') + ':port') : '') : '';
@@ -149,14 +153,12 @@ function start() {
 			case 'js-propagate':
 				meta.js.cache = message.cache;
 				meta.js.map = message.map;
-				meta.js.hash = message.hash;
 				emitter.emit('meta:js.compiled');
 				winston.verbose('[cluster] Client-side javascript and mapping propagated to worker %s', process.pid);
 			break;
 			case 'css-propagate':
 				meta.css.cache = message.cache;
 				meta.css.acpCache = message.acpCache;
-				meta.css.hash = message.hash;
 				emitter.emit('meta:css.compiled');
 				winston.verbose('[cluster] Stylesheets propagated to worker %s', process.pid);
 			break;
@@ -175,22 +177,18 @@ function start() {
 	});
 
 	async.waterfall([
-		function(next) {
-			require('./src/database').init(next);
-		},
+		async.apply(db.init),
+		async.apply(db.checkCompatibility),
 		function(next) {
 			require('./src/meta').configs.init(next);
 		},
 		function(next) {
+			require('./src/meta').dependencies.check(next);
+		},
+		function(next) {
 			require('./src/upgrade').check(next);
 		},
-		function(schema_ok, next) {
-			if (!schema_ok && nconf.get('check-schema') !== false) {
-				winston.warn('Your NodeBB schema is out-of-date. Please run the following command to bring your dataset up to spec:');
-				winston.warn('    ./nodebb upgrade');
-				process.exit();
-				return;
-			}
+		function(next) {
 			var webserver = require('./src/webserver');
 			require('./src/socket.io').init(webserver.server);
 
@@ -203,15 +201,31 @@ function start() {
 		}
 	], function(err) {
 		if (err) {
-			winston.error(err.stack);
+			switch(err.message) {
+				case 'schema-out-of-date':
+					winston.warn('Your NodeBB schema is out-of-date. Please run the following command to bring your dataset up to spec:');
+					winston.warn('    ./nodebb upgrade');
+					break;
+				case 'dependencies-out-of-date':
+					winston.warn('One or more of NodeBB\'s dependent packages are out-of-date. Please run the following command to update them:');
+					winston.warn('    ./nodebb upgrade');
+					break;
+				default:
+					if (err.stacktrace !== false) {
+						winston.error(err.stack);
+					} else {
+						winston.error(err.message);
+					}
+					break;
+			}
+
+			// Either way, bad stuff happened. Abort start.
 			process.exit();
 		}
 	});
 }
 
 function setup() {
-	loadConfig();
-
 	winston.info('NodeBB Setup Triggered via Command Line');
 
 	var install = require('./src/install');
@@ -252,8 +266,6 @@ function setup() {
 }
 
 function upgrade() {
-	loadConfig();
-
 	require('./src/database').init(function(err) {
 		if (err) {
 			winston.error(err.stack);
@@ -265,107 +277,28 @@ function upgrade() {
 	});
 }
 
-function reset() {
-	loadConfig();
-
+function activate() {
 	require('./src/database').init(function(err) {
-		if (err) {
-			winston.error(err.message);
-			process.exit();
-		}
+		var plugin = nconf.get('activate'),
+			db = require('./src/database');
 
-		if (nconf.get('theme')) {
-			resetThemes();
-		} else if (nconf.get('plugin')) {
-			resetPlugin(nconf.get('plugin'));
-		} else if (nconf.get('plugins')) {
-			resetPlugins();
-		} else if (nconf.get('widgets')) {
-			resetWidgets();
-		} else if (nconf.get('settings')) {
-			resetSettings();
-		} else if (nconf.get('all')) {
-			require('async').series([resetWidgets, resetThemes, resetPlugins, resetSettings], function(err) {
-				if (!err) {
-					winston.info('[reset] Reset complete.');
-				} else {
-					winston.error('[reset] Errors were encountered while resetting your forum settings: %s', err.message);
-				}
-				process.exit();
-			});
-		} else {
-			winston.warn('[reset] Nothing reset.');
-			winston.info('Use ./nodebb reset {theme|plugins|widgets|settings|all}');
-			winston.info(' or');
-			winston.info('Use ./nodebb reset plugin="nodebb-plugin-pluginName"');
-			process.exit();
-		}
+		winston.info('Activating plugin %s', plugin);
+
+		db.sortedSetAdd('plugins:active', 0, plugin, start);
 	});
 }
 
-function resetSettings(callback) {
-	var meta = require('./src/meta');
-	meta.configs.set('allowLocalLogin', 1, function(err) {
-		winston.info('[reset] Settings reset to default');
-		if (typeof callback === 'function') {
-			callback(err);
-		} else {
+function listPlugins() {
+	require('./src/database').init(function(err) {
+		var db = require('./src/database');
+
+		db.getSortedSetRange('plugins:active', 0, -1, function(err, plugins) {
+			winston.info('Active plugins: \n\t - ' + plugins.join('\n\t - '));
 			process.exit();
-		}
+		});
 	});
 }
 
-function resetThemes(callback) {
-	var meta = require('./src/meta');
-
-	meta.themes.set({
-		type: 'local',
-		id: 'nodebb-theme-vanilla'
-	}, function(err) {
-		winston.info('[reset] Theme reset to Vanilla');
-		if (typeof callback === 'function') {
-			callback(err);
-		} else {
-			process.exit();
-		}
-	});
-}
-
-function resetPlugin(pluginId) {
-	var db = require('./src/database');
-	db.sortedSetRemove('plugins:active', pluginId, function(err) {
-		if (err) {
-			winston.error('[reset] Could not disable plugin: %s encountered error %s', pluginId, err.message);
-		} else {
-			winston.info('[reset] Plugin `%s` disabled', pluginId);
-		}
-
-		process.exit();
-	});
-}
-
-function resetPlugins(callback) {
-	var db = require('./src/database');
-	db.delete('plugins:active', function(err) {
-		winston.info('[reset] All Plugins De-activated');
-		if (typeof callback === 'function') {
-			callback(err);
-		} else {
-			process.exit();
-		}
-	});
-}
-
-function resetWidgets(callback) {
-	require('./src/widgets').reset(function(err) {
-		winston.info('[reset] All Widgets moved to Draft Zone');
-		if (typeof callback === 'function') {
-			callback(err);
-		} else {
-			process.exit();
-		}
-	});
-}
 
 function shutdown(code) {
 	winston.info('[app] Shutdown (SIGTERM/SIGINT) Initialised.');

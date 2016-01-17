@@ -9,7 +9,7 @@
 
 	var	languages = {},
 		regexes = {
-			match: /\[\[.*?\]\]/g,
+			match: /\[\[\w+:[^\[]*?\]\]/g,
 			split: /[,][\s]*/,
 			replace: /\]+$/
 		};
@@ -44,11 +44,14 @@
 	};
 
 	translator.prepareDOM = function() {
-		// Load the appropriate timeago locale file
-		if (config.userLang !== 'en_GB' && config.userLang !== 'en_US') {
-			// Correct NodeBB language codes to timeago codes, if necessary
-			var	languageCode;
-			switch(config.userLang) {
+		// Load the appropriate timeago locale file, and correct NodeBB language codes to timeago codes, if necessary
+		var	languageCode;
+		switch(config.userLang) {
+			case 'en_GB':
+			case 'en_US':
+				languageCode = 'en';
+				break;
+
 			case 'cs':
 				languageCode = 'cz';
 				break;
@@ -76,56 +79,49 @@
 			default:
 				languageCode = config.userLang;
 				break;
-			}
+		}
 
-			$.getScript(RELATIVE_PATH + '/vendor/jquery/timeago/locales/jquery.timeago.' + languageCode + '.js').success(function() {
-				$('.timeago').timeago();
+		$.getScript(RELATIVE_PATH + '/vendor/jquery/timeago/locales/jquery.timeago.' + languageCode + '.js').success(function() {
+			$('.timeago').timeago();
+			translator.timeagoShort = $.extend({}, jQuery.timeago.settings.strings);
+
+			// Retrieve the shorthand timeago values as well
+			$.getScript(RELATIVE_PATH + '/vendor/jquery/timeago/locales/jquery.timeago.' + languageCode + '-short.js').success(function() {
+				// Switch back to long-form
+				translator.toggleTimeagoShorthand();
 			}).fail(function() {
+				$.getScript(RELATIVE_PATH + '/vendor/jquery/timeago/locales/jquery.timeago.en-short.js').success(function() {
+					// Switch back to long-form
+					translator.toggleTimeagoShorthand();
+				});
+			});
+		}).fail(function() {
+			$.getScript(RELATIVE_PATH + '/vendor/jquery/timeago/locales/jquery.timeago.en-short.js').success(function() {
+				// Switch back to long-form
+				translator.toggleTimeagoShorthand();
 				$.getScript(RELATIVE_PATH + '/vendor/jquery/timeago/locales/jquery.timeago.en.js');
 			});
+		});
 
-			// Add directional code if necessary
-			translator.translate('[[language:dir]]', function(value) {
-				if (value) {
-					$('html').css('direction', value).attr('data-dir', value);
-				}
-			});
-		}
+		// Add directional code if necessary
+		translator.translate('[[language:dir]]', function(value) {
+			if (value) {
+				$('html').css('direction', value).attr('data-dir', value);
+			}
+		});
 	};
 
 	translator.toggleTimeagoShorthand = function() {
-		if (!translator.timeagoStrings) {
-			translator.timeagoStrings = $.extend({}, jQuery.timeago.settings.strings);
-			jQuery.timeago.settings.strings = {
-				prefixAgo: null,
-				prefixFromNow: null,
-				suffixAgo: "",
-				suffixFromNow: "",
-				seconds: "1m",
-				minute: "1m",
-				minutes: "%dm",
-				hour: "1h",
-				hours: "%dh",
-				day: "1d",
-				days: "%dd",
-				month: "1mo",
-				months: "%dmo",
-				year: "1yr",
-				years: "%dyr",
-				wordSeparator: " ",
-				numbers: []
-			};
-		} else {
-			jQuery.timeago.settings.strings = $.extend({}, translator.timeagoStrings);
-			delete translator.timeagoStrings;
-		}
+		var tmp = $.extend({}, jQuery.timeago.settings.strings);
+		jQuery.timeago.settings.strings = $.extend({}, translator.timeagoShort);
+		translator.timeagoShort = $.extend({}, tmp);
 	};
 
 	translator.translate = function (text, language, callback) {
 		if (typeof language === 'function') {
 			callback = language;
 			if ('undefined' !== typeof window && config) {
-				language = config.userLang || 'en_GB';
+				language = utils.params().lang || config.userLang || 'en_GB';
 			} else {
 				var meta = require('../../../src/meta');
 				language = meta.config.defaultLang || 'en_GB';
@@ -157,7 +153,12 @@
 			translateKey(key, data, language, function(translated) {
 				--count;
 				if (count <= 0) {
-					callback(translated.text);
+					keys = translated.text.match(regexes.match);
+					if (!keys) {
+						callback(translated.text);
+					} else {
+						translateKeys(keys, translated.text, language, callback);
+					}
 				}
 			});
 		});
@@ -168,6 +169,7 @@
 		var variables = key.split(regexes.split);
 
 		var parsedKey = key.replace('[[', '').replace(']]', '').split(':');
+		parsedKey = [parsedKey[0]].concat(parsedKey.slice(1).join(':'));
 		if (!(parsedKey[0] && parsedKey[1])) {
 			return callback(data);
 		}
@@ -267,27 +269,47 @@
 		var fs = require('fs'),
 			path = require('path'),
 			winston = require('winston'),
+			file = require('../../../src/file'),
+			plugins = require('../../../src/plugins'),
 			meta = require('../../../src/meta');
 
 		language = language || meta.config.defaultLang || 'en_GB';
 
-		if (!fs.existsSync(path.join(__dirname, '../../language', language))) {
+		if (!file.existsSync(path.join(__dirname, '../../language', language))) {
 			winston.warn('[translator] Language \'' + meta.config.defaultLang + '\' not found. Defaulting to \'en_GB\'');
 			language = 'en_GB';
 		}
 
 		fs.readFile(path.join(__dirname, '../../language', language, filename + '.json'), function(err, data) {
-			if (err) {
-				winston.error('Could not load `' + filename + '`: ' + err.message + '. Skipping...');
-				return callback({});
+			var onData = function(data) {
+				try {
+					data = JSON.parse(data.toString());
+				} catch (e) {
+					winston.error('Could not parse `' + filename + '.json`, syntax error? Skipping...');
+					data = {};
+				}
+				callback(data);
 			}
 
-			try {
-				callback(JSON.parse(data.toString()));
-			} catch (e) {
-				winston.error('Could not parse `' + filename + '.json`, syntax error? Skipping...');
-				callback({});
+			if (err) {
+				if (err.code === 'ENOENT' && plugins.customLanguageFallbacks.hasOwnProperty(filename)) {
+					// Resource non-existant but fallback exists
+					return fs.readFile(plugins.customLanguageFallbacks[filename], {
+						encoding: 'utf-8'
+					}, function(err, data) {
+						if (err) {
+							return winston.error('[translator] Could not load fallback language file for resource ' + filename);
+						}
+
+						onData(data);
+					})
+				} else {
+					winston.error('[translator] Could not load `' + filename + '`: ' + err.message + '. Skipping...');
+					return callback({});
+				}
 			}
+
+			onData(data);
 		});
 	}
 
@@ -295,11 +317,15 @@
 	if (typeof define === 'function' && define.amd) {
 		define('translator', translator);
 
+		var _translator = translator;
+
 		// Expose a global `translator` object for backwards compatibility
 		window.translator = {
 			translate: function() {
-				console.warn('[translator] Global invocation of the translator is now deprecated, please `require` the module instead.');
-				translator.translate.apply(translator, arguments);
+				if (typeof console !== 'undefined' && console.warn) {
+					console.warn('[translator] Global invocation of the translator is now deprecated, please `require` the module instead.');
+				}
+				_translator.translate.apply(_translator, arguments);
 			}
 		}
 	}

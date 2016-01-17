@@ -14,5 +14,6 @@
     "register_now_button": "Regisztrálás Most",
     "alternative_registration": "Alternatív Regisztráció",
     "terms_of_use": "Használtai feltételek",
-    "agree_to_terms_of_use": "Egyetértek a Használtai Feltételekkel"
+    "agree_to_terms_of_use": "Egyetértek a Használtai Feltételekkel",
+    "registration-added-to-queue": "Your registration has been added to the approval queue. You will receive an email when it is accepted by an administrator."
 }

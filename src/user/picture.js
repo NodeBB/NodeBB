@@ -4,6 +4,7 @@ var async = require('async'),
 	path = require('path'),
 	fs = require('fs'),
 	nconf = require('nconf'),
+	crypto = require('crypto'),
 	winston = require('winston'),
 	request = require('request'),
 	mime = require('mime'),
@@ -11,7 +12,8 @@ var async = require('async'),
 	plugins = require('../plugins'),
 	file = require('../file'),
 	image = require('../image'),
-	meta = require('../meta');
+	meta = require('../meta'),
+	db = require('../database');
 
 module.exports = function(User) {
 
@@ -34,19 +36,24 @@ module.exports = function(User) {
 				next(!extension ? new Error('[[error:invalid-image-extension]]') : null);
 			},
 			function(next) {
-				file.isFileTypeAllowed(picture.path, ['png', 'jpeg', 'jpg', 'gif'], next);
+				file.isFileTypeAllowed(picture.path, next);
 			},
 			function(next) {
-				image.resizeImage(picture.path, extension, imageDimension, imageDimension, next);
+				image.resizeImage({
+					path: picture.path,
+					extension: extension,
+					width: imageDimension,
+					height: imageDimension
+				}, next);
 			},
 			function(next) {
 				if (convertToPNG) {
-					image.convertImageToPng(picture.path, extension, next);
+					image.normalise(picture.path, extension, next);
 				} else {
 					next();
 				}
 			}
-		], function(err, result) {
+		], function(err) {
 			function done(err, image) {
 				if (err) {
 					return callback(err);
@@ -90,21 +97,11 @@ module.exports = function(User) {
 	};
 
 	User.uploadFromUrl = function(uid, url, callback) {
-		var filename = 'uid:' + uid + ':tmp-image';
-		downloadFromUrl(url, filename, function(err, downloadedImage) {
-			if (err) {
-				return callback(err);
-			}
+		if (!plugins.hasListeners('filter:uploadImage')) {
+			return callback(new Error('[[error:no-plugin]]'));
+		}
 
-			User.uploadPicture(uid, downloadedImage, function(err, image) {
-				fs.unlink(filename);
-				callback(err, image);
-			});
-		});
-	};
-
-	function downloadFromUrl(url, filename, callback) {
-		request.head(url, function(err, res, body) {
+		request.head(url, function(err, res) {
 			if (err) {
 				return callback(err);
 			}
@@ -113,21 +110,114 @@ module.exports = function(User) {
 			var type = res.headers['content-type'];
 			var extension = mime.extension(type);
 
+			if (['png', 'jpeg', 'jpg', 'gif'].indexOf(extension) === -1) {
+				return callback(new Error('[[error:invalid-image-extension]]'));
+			}
+
 			if (size > uploadSize * 1024) {
 				return callback(new Error('[[error:file-too-big, ' + uploadSize + ']]'));
 			}
 
-			request.get(url)
-				.on('error', function(err) {
-					winston.error(err);
-				})
-				.pipe(fs.createWriteStream(filename))
-				.on('close', function(err) {
-					if (err) {
-						return callback(err);
-					}
-					callback(null, {path: filename, size: size, type: type, name: filename + '.' + extension});
-				});
+			var picture = {url: url, name: ''};
+			plugins.fireHook('filter:uploadImage', {image: picture, uid: uid}, function(err, image) {
+				if (err) {
+					return callback(err);
+				}
+				User.setUserFields(uid, {uploadedpicture: image.url, picture: image.url});
+				callback(null, image);
+			});
 		});
-	}
+	};
+
+	User.updateCoverPosition = function(uid, position, callback) {
+		User.setUserField(uid, 'cover:position', position, callback);
+	};
+
+	User.updateCoverPicture = function(data, callback) {
+		var tempPath, url, md5sum;
+
+		if (!data.imageData && data.position) {
+			return User.updateCoverPosition(data.uid, data.position, callback);
+		}
+
+		if (!data.imageData && !data.file) {
+			return callback(new Error('[[error:invalid-data]]'));
+		}
+
+		async.waterfall([
+			function(next) {
+				var size = data.file ? data.file.size : data.imageData.length;
+				meta.config.maximumCoverImageSize = meta.config.maximumCoverImageSize || 2048;
+				if (size > parseInt(meta.config.maximumCoverImageSize, 10) * 1024) {
+					return next(new Error('[[error:file-too-big, ' + meta.config.maximumCoverImageSize + ']]'));
+				}
+
+				if (data.file) {
+					return next();
+				}
+
+				md5sum = crypto.createHash('md5');
+				md5sum.update(data.imageData);
+				md5sum = md5sum.digest('hex');
+
+				tempPath = path.join(nconf.get('base_dir'), nconf.get('upload_path'), md5sum);
+				var buffer = new Buffer(data.imageData.slice(data.imageData.indexOf('base64') + 7), 'base64');
+
+				fs.writeFile(tempPath, buffer, {
+					encoding: 'base64'
+				}, next);
+			},
+			function(next) {
+				var image = {
+					name: 'profileCover',
+					path: data.file ? data.file.path : tempPath,
+					uid: data.uid
+				};
+
+				if (plugins.hasListeners('filter:uploadImage')) {
+					return plugins.fireHook('filter:uploadImage', {image: image, uid: data.uid}, next);
+				}
+
+				var filename = data.uid + '-profilecover';
+				file.saveFileToLocal(filename, 'profile', image.path, function(err, upload) {
+					if (err) {
+						return next(err);
+					}
+
+					next(null, {
+						url: nconf.get('relative_path') + upload.url,
+						name: image.name
+					});
+				});
+			},
+			function(uploadData, next) {
+				url = uploadData.url;
+				User.setUserField(data.uid, 'cover:url', uploadData.url, next);
+			},
+			function(next) {
+				require('fs').unlink(data.file ? data.file.path : tempPath, function(err) {
+					if (err) {
+						winston.error(err);
+					}
+					next();
+				});
+			}
+		], function(err) {
+			if (err) {
+				return callback(err);
+			}
+
+			if (data.position) {
+				User.updateCoverPosition(data.uid, data.position, function(err) {
+					callback(err, {url: url});
+				});
+			} else {
+				callback(err, {url: url});
+			}
+		});
+	};
+
+	User.removeCoverPicture = function(data, callback) {
+		db.deleteObjectField('user:' + data.uid, 'cover:url', callback);
+	};
 };

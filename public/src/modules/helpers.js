@@ -10,22 +10,25 @@
 	var helpers = {};
 
 	helpers.displayMenuItem = function(data, index) {
-		var item = data.navigation[index],
-			properties = item.properties;
+		var item = data.navigation[index];
+		if (!item) {
+			return false;
+		}
+		var properties = item.properties;
 
 		if (properties) {
-			if ((properties.loggedIn && !data.loggedIn) ||
+			if ((properties.loggedIn && !data.config.loggedIn) ||
 				(properties.adminOnly && !data.isAdmin) ||
 				(properties.installed && properties.installed.search && !data.searchEnabled)) {
 				return false;
 			}
 		}
 
-		if (item.route.match('/users') && data.privateUserInfo && !data.loggedIn) {
+		if (item.route.match('/users') && data.config.privateUserInfo && !data.config.loggedIn) {
 			return false;
 		}
 
-		if (item.route.match('/tags') && data.privateTagListing && !data.loggedIn) {
+		if (item.route.match('/tags') && data.config.privateTagListing && !data.config.loggedIn) {
 			return false;
 		}
 
@@ -37,7 +40,17 @@
 			property = tag.property ? 'property="' + tag.property + '" ' : '',
 			content = tag.content ? 'content="' + tag.content.replace(/\n/g, ' ') + '" ' : '';
 
-		return '<meta ' + name + property + content + '/>';
+		return '<meta ' + name + property + content + '/>\n\t';
+	};
+
+	helpers.buildLinkTag = function(tag) {
+		var link = tag.link ? 'link="' + tag.link + '" ' : '',
+			rel = tag.rel ? 'rel="' + tag.rel + '" ' : '',
+			type = tag.type ? 'type="' + tag.type + '" ' : '',
+			href = tag.href ? 'href="' + tag.href + '" ' : '',
+			sizes = tag.sizes ? 'sizes="' + tag.sizes + '" ' : '';
+
+		return '<link ' + link + rel + type + sizes + href + '/>\n\t';
 	};
 
 	helpers.stringify = function(obj) {
@@ -63,6 +76,9 @@
 	};
 
 	helpers.generateCategoryBackground = function(category) {
+		if (!category) {
+			return '';
+		}
 		var style = [];
 
 		if (category.bgColor) {
@@ -109,17 +125,27 @@
 		return (topic.index || 0) + 1;
 	};
 
+	helpers.displayUserSearch = function(data, allowGuestUserSearching) {
+		return data.loggedIn || allowGuestUserSearching === 'true';
+	};
+
 	// Groups helpers
 	helpers.membershipBtn = function(groupObj) {
+		if (groupObj.name === 'administrators') {
+			return '';
+		}
+
 		if (groupObj.isMember) {
-			return '<button class="btn btn-danger" data-action="leave" data-group="' + groupObj.name + '"><i class="fa fa-times"></i> Leave Group</button>';
+			return '<button class="btn btn-danger" data-action="leave" data-group="' + groupObj.displayName + '"><i class="fa fa-times"></i> [[groups:membership.leave-group]]</button>';
 		} else {
 			if (groupObj.isPending) {
-				return '<button class="btn btn-warning disabled"><i class="fa fa-clock-o"></i> Invitation Pending</button>';
+				return '<button class="btn btn-warning disabled"><i class="fa fa-clock-o"></i> [[groups:membership.invitation-pending]]</button>';
 			} else if (groupObj.isInvited) {
-				return '<button class="btn btn-link" data-action="rejectInvite" data-group="' + groupObj.name + '">Reject</button><button class="btn btn-success" data-action="acceptInvite" data-group="' + groupObj.name + '"><i class="fa fa-plus"></i> Accept Invitation</button>';
+				return '<button class="btn btn-link" data-action="rejectInvite" data-group="' + groupObj.displayName + '">[[groups:membership.reject]]</button><button class="btn btn-success" data-action="acceptInvite" data-group="' + groupObj.name + '"><i class="fa fa-plus"></i> [[groups:membership.accept-invitation]]</button>';
+			} else if (!groupObj.disableJoinRequests) {
+				return '<button class="btn btn-success" data-action="join" data-group="' + groupObj.displayName + '"><i class="fa fa-plus"></i> [[groups:membership.join-group]]</button>';
 			} else {
-				return '<button class="btn btn-success" data-action="join" data-group="' + groupObj.name + '"><i class="fa fa-plus"></i> Join Group</button>';
+				return '';
 			}
 		}
 	};
@@ -138,6 +164,86 @@
 			return '<td class="text-center" data-privilege="' + priv.name + '"><input type="checkbox"' + (priv.state ? ' checked' : '') + (member === 'guests' && priv.name === 'groups:moderate' ? ' disabled="disabled"' : '') + ' /></td>';
 		}).join('');
 	};
+
+	helpers.localeToHTML = function(locale) {
+		return locale.replace('_', '-');
+	};
+
+	helpers.renderTopicImage = function(topicObj) {
+		if (topicObj.thumb) {
+			return '<img src="' + topicObj.thumb + '" class="img-circle user-img" title="' + topicObj.user.username + '" />';
+		} else {
+			return '<img component="user/picture" data-uid="' + topicObj.user.uid + '" src="' + topicObj.user.picture + '" class="user-img" title="' + topicObj.user.username + '" />';
+		}
+	};
+
+	helpers.renderDigestAvatar = function(block) {
+		if (block.teaser) {
+			if (block.teaser.user.picture) {
+				return '<img style="vertical-align: middle; width: 16px; height: 16px; padding-right: 1em;" src="' + block.teaser.user.picture + '" title="' + block.teaser.user.username + '" />';
+			} else {
+				return '<div style="width: 16px; height: 16px; line-height: 16px; font-size: 10px; margin-right: 1em; background-color: ' + block.teaser.user['icon:bgColor'] + '; color: white; text-align: center; display: inline-block;">' + block.teaser.user['icon:text'] + '</div>';
+			}
+		} else {
+			if (block.user.picture) {
+				return '<img style="vertical-align: middle; width: 16px; height: 16px; padding-right: 1em;" src="' + block.user.picture + '" title="' + block.user.username + '" />';
+			} else {
+				return '<div style="width: 16px; height: 16px; line-height: 16px; font-size: 10px; margin-right: 1em; background-color: ' + block.user['icon:bgColor'] + '; color: white; text-align: center; display: inline-block;">' + block.user['icon:text'] + '</div>';
+			}
+		}
+	};
+
+	helpers.userAgentIcons = function(data) {
+		var icons = '';
+
+		switch(data.platform) {
+			case 'Linux':
+				icons += '<i class="fa fa-fw fa-linux"></i>';
+				break;
+			case 'Microsoft Windows':
+				icons += '<i class="fa fa-fw fa-windows"></i>';
+				break;
+			case 'Mac':
+				icons += '<i class="fa fa-fw fa-apple"></i>';
+				break;
+			case 'Android':
+				icons += '<i class="fa fa-fw fa-android"></i>';
+				break;
+			case 'iPad':
+				icons += '<i class="fa fa-fw fa-tablet"></i>';
+				break;
+			case 'iPod':	// intentional fall-through
+			case 'iPhone':
+				icons += '<i class="fa fa-fw fa-mobile"></i>';
+				break;
+			default:
+				icons += '<i class="fa fa-fw fa-question-circle"></i>';
+				break;
+		}
+
+		switch(data.browser) {
+			case 'Chrome':
+				icons += '<i class="fa fa-fw fa-chrome"></i>';
+				break;
+			case 'Firefox':
+				icons += '<i class="fa fa-fw fa-firefox"></i>';
+				break;
+			case 'Safari':
+				icons += '<i class="fa fa-fw fa-safari"></i>';
+				break;
+			case 'IE':
+				icons += '<i class="fa fa-fw fa-internet-explorer"></i>';
+				break;
+			case 'Edge':
+				icons += '<i class="fa fa-fw fa-edge"></i>';
+				break;
+			default:
+				icons += '<i class="fa fa-fw fa-question-circle"></i>';
+				break;
+		}
+
+		return icons;
+	}
 
 	exports.register = function() {
 		var templates;

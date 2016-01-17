@@ -4,11 +4,11 @@
 			<div class="panel-heading"><i class="fa fa-user"></i> Users</div>
 			<div class="panel-body">
 				<ul class="nav nav-pills">
-					<li class='active'><a href='{config.relative_path}/admin/manage/users/latest'>Latest Users</a></li>
-					<li class=''><a href='{config.relative_path}/admin/manage/users/sort-posts'>Top Posters</a></li>
-					<li class=''><a href='{config.relative_path}/admin/manage/users/sort-reputation'>Most Reputation</a></li>
-					<li class=''><a href='{config.relative_path}/admin/manage/users/banned'>Banned</a></li>
-					<li class=''><a href='{config.relative_path}/admin/manage/users/search'>User Search</a></li>
+					<li><a href='{config.relative_path}/admin/manage/users/latest'>Latest Users</a></li>
+					<li><a href='{config.relative_path}/admin/manage/users/sort-posts'>Top Posters</a></li>
+					<li><a href='{config.relative_path}/admin/manage/users/sort-reputation'>Most Reputation</a></li>
+					<li><a href='{config.relative_path}/admin/manage/users/banned'>Banned</a></li>
+					<li><a href='{config.relative_path}/admin/manage/users/search'>User Search</a></li>
 
 
 					<div class="btn-group pull-right">
@@ -51,7 +51,11 @@
 					<!-- BEGIN users -->
 					<div class="users-box" data-uid="{users.uid}" data-username="{users.username}">
 						<div class="user-image">
+							<!-- IF users.picture -->
 							<img src="{users.picture}" class="img-thumbnail user-selectable"/>
+							<!-- ELSE -->
+							<div class="user-icon user-selectable" style="background-color: {users.icon:bgColor};">{users.icon:text}</div>
+							<!-- ENDIF users.picture -->
 							<div class="labels">
 								<!-- IF config.requireEmailConfirmation -->
 								<!-- IF !users.email:confirmed -->
@@ -118,7 +122,6 @@
 				<div class="text-center {loadmore_display}">
 					<button id="load-more-users-btn" class="btn btn-primary">Load More</button>
 				</div>
-				<input type="hidden" template-variable="yourid" value="{yourid}" />
 
 			</div>
 		</div>

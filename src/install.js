@@ -6,16 +6,7 @@ var async = require('async'),
 	prompt = require('prompt'),
 	winston = require('winston'),
 	nconf = require('nconf'),
-	utils = require('../public/src/utils.js'),
-
-	DATABASES = {
-		"redis": {
-			"dependencies": ["redis@~0.10.1", "connect-redis@~2.0.0"]
-		},
-		"mongo": {
-			"dependencies": ["mongodb@~2.0.0", "connect-mongo"]
-		}
-	};
+	utils = require('../public/src/utils.js');
 
 
 var install = {},
@@ -40,7 +31,7 @@ questions.main = [
 	{
 		name: 'database',
 		description: 'Which database to use',
-		'default': nconf.get('database') || 'redis'
+		'default': nconf.get('database') || 'mongo'
 	}
 ];
 
@@ -145,36 +136,22 @@ function setupConfig(next) {
 				process.exit();
 			}
 
-			if (nconf.get('advanced')) {
-				prompt.get({
-					name: 'secondary_database',
-					description: 'Select secondary database',
-					'default': nconf.get('secondary_database') || 'none'
-				}, function(err, dbConfig) {
-					config.secondary_database = dbConfig.secondary_database;
-					configureDatabases(err, config, DATABASES, function(err, config) {
-						completeConfigSetup(err, config, next);
-					});
-				});
-			} else {
-				configureDatabases(err, config, DATABASES, function(err, config) {
-					completeConfigSetup(err, config, next);
-				});
-			}
+			configureDatabases(config, function(err, config) {
+				completeConfigSetup(err, config, next);
+			});
 		});
 	} else {
 		// Use provided values, fall back to defaults
 		var	config = {},
 			redisQuestions = require('./database/redis').questions,
 			mongoQuestions = require('./database/mongo').questions,
-			question, x, numQ, allQuestions = questions.main.concat(questions.optional).concat(redisQuestions).concat(mongoQuestions);
+			allQuestions = questions.main.concat(questions.optional).concat(redisQuestions).concat(mongoQuestions);
 
-		for(x=0,numQ=allQuestions.length;x<numQ;x++) {
-			question = allQuestions[x];
+		allQuestions.forEach(function (question) {
 			config[question.name] = install.values[question.name] || question['default'] || undefined;
-		}
+		});
 
-		configureDatabases(null, config, DATABASES, function(err, config) {
+		configureDatabases(config, function(err, config) {
 			completeConfigSetup(err, config, next);
 		});
 	}
@@ -200,64 +177,24 @@ function completeConfigSetup(err, config, next) {
 			return next(err);
 		}
 
-		setupDatabase(config, next);
-	});
-}
-
-function setupDatabase(server_conf, next) {
-	install.installDbDependencies(server_conf, function(err) {
-		if (err) {
-			return next(err);
-		}
-
 		require('./database').init(next);
 	});
 }
-
-install.installDbDependencies = function(server_conf, next) {
-	var	npm = require('npm'),
-		packages = [];
-
-	npm.load({}, function(err) {
-		if (err) {
-			return next(err);
-		}
-
-		npm.config.set('spin', false);
-
-		packages = packages.concat(DATABASES[server_conf.database].dependencies);
-		if (server_conf.secondary_database) {
-			packages = packages.concat(DATABASES[server_conf.secondary_database].dependencies);
-		}
-
-		npm.commands.install(packages, next);
-	});
-};
 
 function setupDefaultConfigs(next) {
 	process.stdout.write('Populating database with default configs, if not already set...\n');
 	var meta = require('./meta'),
 		defaults = require(path.join(__dirname, '../', 'install/data/defaults.json'));
 
-	async.each(defaults, function (configObj, next) {
-		meta.configs.setOnEmpty(configObj.field, configObj.value, next);
+	async.each(Object.keys(defaults), function (key, next) {
+		meta.configs.setOnEmpty(key, defaults[key], next);
 	}, function (err) {
+		if (err) {
+			return next(err);
+		}
+
 		meta.configs.init(next);
 	});
-
-	if (install.values) {
-		setIfPaired('social:twitter:key', 'social:twitter:secret');
-		setIfPaired('social:google:id', 'social:google:secret');
-		setIfPaired('social:facebook:app_id', 'social:facebook:secret');
-	}
-}
-
-function setIfPaired(key1, key2) {
-	var meta = require('./meta');
-	if (install.values[key1] && install.values[key2]) {
-		meta.configs.setOnEmpty(key1, install.values[key1]);
-		meta.configs.setOnEmpty(key2, install.values[key2]);
-	}
 }
 
 function enableDefaultTheme(next) {
@@ -268,19 +205,22 @@ function enableDefaultTheme(next) {
 			process.stdout.write('Previous theme detected, skipping enabling default theme\n');
 			return next(err);
 		}
-
-		process.stdout.write('Enabling default theme: Lavender\n');
+		var defaultTheme = nconf.get('defaultTheme') || 'nodebb-theme-persona';
+		process.stdout.write('Enabling default theme: ' + defaultTheme + '\n');
 		meta.themes.set({
 			type: 'local',
-			id: 'nodebb-theme-lavender'
+			id: defaultTheme
 		}, next);
 	});
 }
 
 function createAdministrator(next) {
 	var Groups = require('./groups');
-	Groups.get('administrators', {}, function (err, groupObj) {
-		if (!err && groupObj && groupObj.memberCount > 0) {
+	Groups.getMemberCount('administrators', function (err, memberCount) {
+		if (err) {
+			return next(err);
+		}
+		if (memberCount > 0) {
 			process.stdout.write('Administrator found, skipping Admin setup\n');
 			next();
 		} else {
@@ -329,16 +269,26 @@ function createAdmin(callback) {
 				winston.warn("Passwords did not match, please try again");
 				return retryPassword(results);
 			}
-
-			User.create({username: results.username, password: results.password, email: results.email}, function (err, uid) {
-				if (err) {
-					winston.warn(err.message + ' Please try again.');
-					return callback(new Error('invalid-values'));
+			var adminUid;
+			async.waterfall([
+				function(next) {
+					User.create({username: results.username, password: results.password, email: results.email}, next);
+				},
+				function(uid, next) {
+					adminUid = uid;
+					Groups.join('administrators', uid, next);
+				},
+				function(next) {
+					Groups.show('administrators', next);
+				},
+				function(next) {
+					Groups.ownership.grant(adminUid, 'administrators', next);
 				}
-
-				Groups.join('administrators', uid, function(err) {
-					callback(err, password ? results : undefined);
-				});
+			], function(err) {
+				if (err) {
+					return callback(err);
+				}
+				callback(null, password ? results : undefined);
 			});
 		},
 		retryPassword = function (originalResults) {
@@ -407,10 +357,17 @@ function createCategories(next) {
 }
 
 function createMenuItems(next) {
-	var navigation = require('./navigation/admin'),
-		data = require('../install/data/navigation.json');
+	var db = require('./database');
 
-	navigation.save(data, next);
+	db.exists('navigation:enabled', function(err, exists) {
+		if (err || exists) {
+			return next(err);
+		}
+		var navigation = require('./navigation/admin'),
+			data = require('../install/data/navigation.json');
+
+		navigation.save(data, next);
+	});
 }
 
 function createWelcomePost(next) {
@@ -425,10 +382,15 @@ function createWelcomePost(next) {
 			db.getObjectField('global', 'topicCount', next);
 		}
 	], function(err, results) {
+		if (err) {
+			return next(err);
+		}
+
 		var content = results[0],
 			numTopics = results[1];
 
 		if (!parseInt(numTopics, 10)) {
+			process.stdout.write('Creating welcome post!\n');
 			Topics.post({
 				uid: 1,
 				cid: 2,
@@ -442,18 +404,39 @@ function createWelcomePost(next) {
 }
 
 function enableDefaultPlugins(next) {
-	var Plugins = require('./plugins');
 
 	process.stdout.write('Enabling default plugins\n');
 
 	var defaultEnabled = [
-		'nodebb-plugin-markdown',
-		'nodebb-plugin-mentions',
-		'nodebb-widget-essentials',
-		'nodebb-rewards-essentials',
-		'nodebb-plugin-soundpack-default'
-	];
-	var	db = require('./database');
+			'nodebb-plugin-composer-default',
+			'nodebb-plugin-markdown',
+			'nodebb-plugin-mentions',
+			'nodebb-widget-essentials',
+			'nodebb-rewards-essentials',
+			'nodebb-plugin-soundpack-default',
+			'nodebb-plugin-emoji-extended'
+		],
+		customDefaults = nconf.get('defaultPlugins');
+
+	winston.info('[install/defaultPlugins] customDefaults', customDefaults);
+
+	if (customDefaults && customDefaults.length) {
+		try {
+			customDefaults = JSON.parse(customDefaults);
+			defaultEnabled = defaultEnabled.concat(customDefaults);
+		} catch (e) {
+			// Invalid value received
+			winston.warn('[install/enableDefaultPlugins] Invalid defaultPlugins value received. Ignoring.');
+		}
+	}
+
+	defaultEnabled = defaultEnabled.filter(function(plugin, index, array) {
+		return array.indexOf(plugin) === index;
+	});
+
+	winston.info('[install/enableDefaultPlugins] activating default plugins', defaultEnabled);
+
+	var db = require('./database');
 	var order = defaultEnabled.map(function(plugin, index) {
 		return index;
 	});

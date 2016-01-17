@@ -9,7 +9,7 @@ define('forum/account/topics', ['forum/account/header', 'forum/infinitescroll'],
 	AccountTopics.init = function() {
 		header.init();
 
-		AccountTopics.handleInfiniteScroll('account/topics', 'uid:' + ajaxify.variables.get('theirid') + ':topics');
+		AccountTopics.handleInfiniteScroll('account/topics', 'uid:' + ajaxify.data.theirid + ':topics');
 	};
 
 	AccountTopics.handleInfiniteScroll = function(_template, _set) {
@@ -41,7 +41,7 @@ define('forum/account/topics', ['forum/account/header', 'forum/infinitescroll'],
 	}
 
 	function onTopicsLoaded(topics, callback) {
-		infinitescroll.parseAndTranslate('account/topics', 'topics', {topics: topics}, function(html) {
+		app.parseAndTranslate('account/topics', 'topics', {topics: topics}, function(html) {
 			$('[component="category"]').append(html);
 			html.find('.timeago').timeago();
 			app.createUserTooltips();

@@ -1,41 +1,79 @@
 'use strict';
 
 var fs = require('fs'),
-	gm = require('gm').subClass({imageMagick: true});
+	Jimp = require('jimp'),
+	async = require('async'),
+	plugins = require('./plugins');
 
 var image = {};
 
-image.resizeImage = function(path, extension, width, height, callback) {
-	function done(err, stdout, stderr) {
-		callback(err);
-	}
-
-	if(extension === '.gif') {
-		gm().in(path)
-			.in('-coalesce')
-			.in('-resize')
-			.in(width+'x'+height+'^')
-			.write(path, done);
+image.resizeImage = function(data, callback) {
+	if (plugins.hasListeners('filter:image.resize')) {
+		plugins.fireHook('filter:image.resize', {
+			path: data.path,
+			extension: data.extension,
+			width: data.width,
+			height: data.height
+		}, function(err, data) {
+			callback(err);
+		});
 	} else {
-		gm(path)
-			.in('-resize')
-			.in(width+'x'+height+'^')
-			.gravity('Center')
-			.crop(width, height)
-			.write(path, done);
-	}
-};
-
-image.convertImageToPng = function(path, extension, callback) {
-	if(extension !== '.png') {
-		gm(path).toBuffer('png', function(err, buffer) {
+		new Jimp(data.path, function(err, image) {
 			if (err) {
 				return callback(err);
 			}
-			fs.writeFile(path, buffer, 'binary', callback);
+
+			var w = image.bitmap.width,
+				h = image.bitmap.height,
+				origRatio = w/h,
+				desiredRatio = data.width/data.height,
+				x = 0,
+				y = 0,
+				crop;
+
+			if (desiredRatio > origRatio) {
+				desiredRatio = 1/desiredRatio;
+			}
+			if (origRatio >= 1) {
+				y = 0;	// height is the smaller dimension here
+				x = Math.floor((w/2) - (h * desiredRatio / 2));
+				crop = async.apply(image.crop.bind(image), x, y, h * desiredRatio, h);
+			} else {
+				x = 0;	// width is the smaller dimension here
+				y = Math.floor(h/2 - (w * desiredRatio / 2));
+				crop = async.apply(image.crop.bind(image), x, y, w, w * desiredRatio);
+			}
+
+			async.waterfall([
+				crop,
+				function(image, next) {
+					image.resize(data.width, data.height, next);
+				},
+				function(image, next) {
+					image.write(data.target || data.path, next);
+				}
+			], function(err) {
+				callback(err);
+			});
+		});
+	}
+};
+
+image.normalise = function(path, extension, callback) {
+	if (plugins.hasListeners('filter:image.normalise')) {
+		plugins.fireHook('filter:image.normalise', {
+			path: path,
+			extension: extension
+		}, function(err, data) {
+			callback(err);
 		});
 	} else {
-		callback();
+		new Jimp(path, function(err, image) {
+			if (err) {
+				return callback(err);
+			}
+			image.write(path + '.png', callback);
+		});
 	}
 };
 

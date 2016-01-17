@@ -46,7 +46,7 @@ module.exports = function(Posts) {
 
 			async.parallel({
 				users: function(next) {
-					user.getMultipleUserFields(uids, ['uid', 'username', 'userslug', 'picture'], next);
+					user.getUsersFields(uids, ['uid', 'username', 'userslug', 'picture'], next);
 				},
 				topicsAndCategories: function(next) {
 					getTopicAndCategories(topicKeys, next);
@@ -65,6 +65,7 @@ module.exports = function(Posts) {
 
 				for (var i=0; i<posts.length; ++i) {
 					posts[i].index = utils.isNumber(results.indices[i]) ? parseInt(results.indices[i], 10) + 1 : 1;
+					posts[i].isMainPost = posts[i].index - 1 === 0;
 				}
 
 				posts = posts.filter(function(post) {
@@ -72,6 +73,11 @@ module.exports = function(Posts) {
 				});
 
 				async.map(posts, function(post, next) {
+					// If the post author isn't represented in the retrieved users' data, then it means they were deleted, assume guest.
+					if (!results.users.hasOwnProperty(post.uid)) {
+						post.uid = 0;
+					}
+
 					post.user = results.users[post.uid];
 					post.topic = results.topics[post.tid];
 					post.category = results.categories[post.topic.cid];
@@ -119,7 +125,7 @@ module.exports = function(Posts) {
 				return topic && array.indexOf(topic) === index;
 			});
 
-			categories.getMultipleCategoryFields(cids, ['cid', 'name', 'icon', 'slug', 'parentCid', 'bgColor', 'color'], function(err, categories) {
+			categories.getCategoriesFields(cids, ['cid', 'name', 'icon', 'slug', 'parentCid', 'bgColor', 'color'], function(err, categories) {
 				callback(err, {topics: topics, categories: categories});
 			});
 		});

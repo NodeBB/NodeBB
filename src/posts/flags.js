@@ -9,7 +9,10 @@ var async = require('async'),
 
 module.exports = function(Posts) {
 
-	Posts.flag = function(post, uid, callback) {
+	Posts.flag = function(post, uid, reason, callback) {
+		if (!parseInt(uid, 10) || !reason) {
+			return callback();
+		}
 		async.parallel({
 			hasFlagged: async.apply(hasFlagged, post.pid, uid),
 			exists: async.apply(Posts.exists, post.pid)
@@ -37,6 +40,9 @@ module.exports = function(Posts) {
 					db.sortedSetAdd('pid:' + post.pid + ':flag:uids', now, uid, next);
 				},
 				function(next) {
+					db.sortedSetAdd('pid:' + post.pid + ':flag:uid:reason', 0, uid + ':' + reason, next);
+				},
+				function(next) {
 					if (parseInt(post.uid, 10)) {
 						db.sortedSetAdd('uid:' + post.uid + ':flag:pids', now, post.pid, next);
 					} else {
@@ -50,7 +56,7 @@ module.exports = function(Posts) {
 						next();
 					}
 				}
-			], function(err, results) {
+			], function(err) {
 				callback(err);
 			});
 		});
@@ -80,25 +86,74 @@ module.exports = function(Posts) {
 			},
 			function(next) {
 				db.delete('pid:' + pid + ':flag:uids', next);
+			},
+			function(next) {
+				db.delete('pid:' + pid + ':flag:uid:reason', next);
 			}
-		], function(err, results) {
+		], function(err) {
 			callback(err);
 		});
 	};
 
 	Posts.dismissAllFlags = function(callback) {
-		db.delete('posts:flagged', callback);
-	};
-
-	Posts.getFlags = function(set, uid, start, stop, callback) {
-		db.getSortedSetRevRange(set, start, stop, function(err, pids) {
+		db.getSortedSetRange('posts:flagged', 0, -1, function(err, pids) {
 			if (err) {
 				return callback(err);
 			}
-
-			Posts.getPostSummaryByPids(pids, uid, {stripTags: false, extraFields: ['flags']}, callback);
+			async.eachLimit(pids, 50, Posts.dismissFlag, callback);
 		});
 	};
+
+	Posts.getFlags = function(set, uid, start, stop, callback) {
+		async.waterfall([
+			function (next) {
+				db.getSortedSetRevRange(set, start, stop, next);
+			},
+			function (pids, next) {
+				getFlaggedPostsWithReasons(pids, uid, next);
+			}
+		], callback);
+	};
+
+	function getFlaggedPostsWithReasons(pids, uid, callback) {
+		async.waterfall([
+			function (next) {
+				async.parallel({
+					uidsReasons: function(next) {
+						async.map(pids, function(pid, next) {
+							db.getSortedSetRange('pid:' + pid + ':flag:uid:reason', 0, -1, next);
+						}, next);
+					},
+					posts: function(next) {
+						Posts.getPostSummaryByPids(pids, uid, {stripTags: false, extraFields: ['flags']}, next);
+					}
+				}, next);
+			},
+			function (results, next) {
+				async.map(results.uidsReasons, function(uidReasons, next) {
+					async.map(uidReasons, function(uidReason, next) {
+						var uid = uidReason.split(':')[0];
+						var reason = uidReason.substr(uidReason.indexOf(':') + 1);
+						user.getUserFields(uid, ['username', 'userslug', 'picture'], function(err, userData) {
+							next(err, {user: userData, reason: reason});
+						});
+					}, next);
+				}, function(err, reasons) {
+					if (err) {
+						return callback(err);
+					}
+
+					results.posts.forEach(function(post, index) {
+						if (post) {
+							post.flagReasons = reasons[index];
+						}
+					});
+
+					next(null, results.posts);
+				});
+			}
+		], callback);
+	}
 
 	Posts.getUserFlags = function(byUsername, sortBy, callerUID, start, stop, callback) {
 		async.waterfall([
@@ -112,7 +167,7 @@ module.exports = function(Posts) {
 				db.getSortedSetRevRange('uid:' + uid + ':flag:pids', 0, -1, next);
 			},
 			function(pids, next) {
-				Posts.getPostSummaryByPids(pids, callerUID, {stripTags: false, extraFields: ['flags']}, next);
+				getFlaggedPostsWithReasons(pids, callerUID, next);
 			},
 			function(posts, next) {
 				if (sortBy === 'count') {
@@ -120,6 +175,7 @@ module.exports = function(Posts) {
 						return b.flags - a.flags;
 					});
 				}
+
 				next(null, posts.slice(start, stop));
 			}
 		], callback);

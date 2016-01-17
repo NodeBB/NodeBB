@@ -4,7 +4,7 @@ define('components', function() {
 
 	components.core = {
 		'post': function(name, value) {
-			return $('[data-' + name + '="' + value + '"]');
+			return $('[component="post"][data-' + name + '="' + value + '"]');
 		},
 		'post/content': function(pid) {
 			return components.core.post('pid', pid).find('[component="post/content"]');
@@ -35,6 +35,13 @@ define('components', function() {
 
 		'categories/category': function(name, value) {
 			return $('[component="categories/category"][data-' + name + '="' + value + '"]');
+		},
+
+		'chat/message': function(messageId) {
+			return $('[component="chat/message"][data-mid="' + messageId + '"]');
+		},
+		'chat/message/body': function(messageId) {
+			return $('[component="chat/message"][data-mid="' + messageId + '"] [component="chat/message/body"]');
 		}
 	};
 

@@ -41,7 +41,11 @@ module.exports = function(Meta) {
 
 					// Link paths
 					async.each(filePaths, function(filePath, next) {
-						fs.symlink(filePath, path.join(soundsPath, path.basename(filePath)), 'file', next);
+						if (process.platform === 'win32') {
+							fs.link(filePath, path.join(soundsPath, path.basename(filePath)), next);
+						} else {
+							fs.symlink(filePath, path.join(soundsPath, path.basename(filePath)), 'file', next);
+						}
 					}, function(err) {
 						if (!err) {
 							winston.verbose('[sounds] Sounds OK');
@@ -95,7 +99,7 @@ module.exports = function(Meta) {
 				return callback(null, defaults);
 			}
 
-			callback.apply(null, arguments);
+			callback(null, sounds);
 		});
 	};
 };

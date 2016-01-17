@@ -1,6 +1,7 @@
 'use strict';
 
 var async = require('async'),
+	_ = require('underscore'),
 
 	meta = require('../meta'),
 	db = require('../database'),
@@ -91,7 +92,7 @@ module.exports = function(Posts) {
 				});
 			},
 			function(postData, next) {
-				plugins.fireHook('action:post.save', postData);
+				plugins.fireHook('action:post.save', _.clone(postData));
 				next(null, postData);
 			}
 		], callback);

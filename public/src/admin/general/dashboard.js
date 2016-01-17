@@ -7,20 +7,28 @@ define('admin/general/dashboard', ['semver'], function(semver) {
 			rooms: false,
 			graphs: false
 		},
-		isMobile = false;
+		isMobile = false,
+		graphData = {
+			rooms: {},
+			traffic: {}
+		},
+		currentGraph = {
+			units: 'hours',
+			until: undefined
+		};
+
+	var DEFAULTS = {
+		roomInterval: 10000,
+		graphInterval: 15000,
+		realtimeInterval: 1500
+	};
 
 
 	Admin.init = function() {
 		app.enterRoom('admin');
-		socket.emit('meta.rooms.getAll', Admin.updateRoomUsage);
+		socket.emit('admin.rooms.getAll', Admin.updateRoomUsage);
 
 		isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-
-		intervals.rooms = setInterval(function() {
-			if (app.isFocused && app.isConnected) {
-				socket.emit('meta.rooms.getAll', Admin.updateRoomUsage);
-			}
-		}, 10000);
 
 		$(window).on('action:ajaxify.start', function(ev, data) {
 			clearInterval(intervals.rooms);
@@ -28,10 +36,10 @@ define('admin/general/dashboard', ['semver'], function(semver) {
 
 			intervals.rooms = null;
 			intervals.graphs = null;
+			graphData.rooms = null;
+			graphData.traffic = null;
 			usedTopicColors.length = 0;
 		});
-
-		$('[component="logout"]').on('click', app.logout);
 
 		$.get('https://api.github.com/repos/NodeBB/NodeBB/tags', function(releases) {
 			// Re-sort the releases, as they do not follow Semver (wrt pre-releases)
@@ -52,20 +60,27 @@ define('admin/general/dashboard', ['semver'], function(semver) {
 				checkEl.append('<p>You are <strong>up-to-date</strong> <i class="fa fa-check"></i></p>');
 			} else if (semver.gt(latestVersion, version)) {
 				checkEl.removeClass('alert-info').addClass('alert-danger');
-				checkEl.append('<p>A new version (v' + latestVersion + ') has been released. Consider upgrading your NodeBB.</p>');
-			} else if (semver.gt(version, latestVersion)) {
-				checkEl.removeClass('alert-info').addClass('alert-warning');
-				checkEl.append('<p>You are running a <strong>development version</strong>! Unintended bugs may occur. <i class="fa fa-warning"></i></p>');
+				checkEl.append('<p>A new version (v' + latestVersion + ') has been released. Consider <a href="https://docs.nodebb.org/en/latest/upgrading/index.html">upgrading your NodeBB</a>.</p>');
 			}
 		});
 
+		$('[data-toggle="tooltip"]').tooltip();
+
+		setupRealtimeButton();
 		setupGraphs();
+		initiateDashboard();
 	};
 
 	Admin.updateRoomUsage = function(err, data) {
 		if (err) {
 			return app.alertError(err.message);
 		}
+
+		if (JSON.stringify(graphData.rooms) === JSON.stringify(data)) {
+			return;
+		}
+
+		graphData.rooms = data;
 
 		var html = '<div class="text-center pull-left">' +
 						'<div>'+ data.onlineRegisteredCount +'</div>' +
@@ -136,10 +151,24 @@ define('admin/general/dashboard', ['semver'], function(semver) {
 
 		for (var i = currentHour, ii = currentHour - 24; i > ii; i--) {
 			var hour = i < 0 ? 24 + i : i;
-			labels.push(hour + ':00 ');
+			labels.push(hour + ':00');
 		}
 
 		return labels.reverse();
+	}
+
+	function getDaysArray(from) {
+		var currentDay = new Date(from || Date.now()).getTime(),
+			months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+			labels = [],
+			tmpDate;
+
+		for(var x=29;x>=0;x--) {
+			tmpDate = new Date(currentDay - (1000*60*60*24*x));
+			labels.push(months[tmpDate.getMonth()] + ' ' + tmpDate.getDate());
+		}
+
+		return labels;
 	}
 
 	function setupGraphs() {
@@ -225,7 +254,13 @@ define('admin/general/dashboard', ['semver'], function(semver) {
 				value: 1,
 				color: "#949FB1",
 				highlight: "#A8B3C5",
-				label: "Recent/Unread"
+				label: "Recent"
+			},
+			{
+				value: 1,
+				color: "#9FB194",
+				highlight: "#A8B3C5",
+				label: "Unread"
 			}
 			], {
 				responsive: true
@@ -239,11 +274,21 @@ define('admin/general/dashboard', ['semver'], function(semver) {
 			}
 		};
 
-		intervals.graphs = setInterval(updateTrafficGraph, 15000);
 		updateTrafficGraph();
 
 		$(window).on('resize', adjustPieCharts);
 		adjustPieCharts();
+
+		$('[data-action="updateGraph"]').on('click', function() {
+			var until = undefined;
+			switch($(this).attr('data-until')) {
+				case 'last-month':
+					var lastMonth = new Date();
+					lastMonth.setDate(lastMonth.getDate()-30);
+					until = lastMonth.getTime();
+			}
+			updateTrafficGraph($(this).attr('data-units'), until);
+		});
 	}
 
 	function adjustPieCharts() {
@@ -258,28 +303,55 @@ define('admin/general/dashboard', ['semver'], function(semver) {
 		});
 	}
 
-	function updateTrafficGraph() {
+	function updateTrafficGraph(units, until) {
 		if (!app.isFocused) {
 			return;
 		}
 
-		socket.emit('admin.analytics.get', {graph: "traffic"}, function (err, data) {
-			for (var i = 0, ii = data.pageviews.length; i < ii;  i++) {
-				graphs.traffic.datasets[0].points[i].value = data.pageviews[i];
-				graphs.traffic.datasets[1].points[i].value = data.uniqueVisitors[i];
+		socket.emit('admin.analytics.get', {
+			graph: 'traffic',
+			units: units || 'hours',
+			until: until
+		}, function (err, data) {
+			if (JSON.stringify(graphData.traffic) === JSON.stringify(data)) {
+				return;
 			}
 
-			var currentHour = new Date().getHours();
+			graphData.traffic = data;
 
-			graphs.traffic.scale.xLabels = getHoursArray();
+			// If new data set contains fewer points than currently shown, truncate
+			while(graphs.traffic.datasets[0].points.length > data.pageviews.length) {
+				graphs.traffic.removeData();
+			}
+
+			if (units === 'days') {
+				graphs.traffic.scale.xLabels = getDaysArray(until);
+			} else {
+				graphs.traffic.scale.xLabels = getHoursArray();
+
+				$('#pageViewsThisMonth').html(data.monthlyPageViews.thisMonth);
+				$('#pageViewsLastMonth').html(data.monthlyPageViews.lastMonth);
+				$('#pageViewsPastDay').html(data.pastDay);
+				utils.addCommasToNumbers($('#pageViewsThisMonth'));
+				utils.addCommasToNumbers($('#pageViewsLastMonth'));
+				utils.addCommasToNumbers($('#pageViewsPastDay'));
+			}
+
+			for (var i = 0, ii = data.pageviews.length; i < ii;  i++) {
+				if (graphs.traffic.datasets[0].points[i]) {
+					graphs.traffic.datasets[0].points[i].value = data.pageviews[i];
+					graphs.traffic.datasets[0].points[i].label = graphs.traffic.scale.xLabels[i];
+					graphs.traffic.datasets[1].points[i].value = data.uniqueVisitors[i];
+					graphs.traffic.datasets[1].points[i].label = graphs.traffic.scale.xLabels[i];
+				} else {
+					// No points to replace? Add data.
+					graphs.traffic.addData([data.pageviews[i], data.uniqueVisitors[i]], graphs.traffic.scale.xLabels[i]);
+				}
+			}
+
 			graphs.traffic.update();
-
-			$('#pageViewsThisMonth').html(data.monthlyPageViews.thisMonth);
-			$('#pageViewsLastMonth').html(data.monthlyPageViews.lastMonth);
-			$('#pageViewsPastDay').html(data.pastDay);
-			utils.addCommasToNumbers($('#pageViewsThisMonth'));
-			utils.addCommasToNumbers($('#pageViewsLastMonth'));
-			utils.addCommasToNumbers($('#pageViewsPastDay'));
+			currentGraph.units = units;
+			currentGraph.until = until;
 		});
 	}
 
@@ -294,6 +366,8 @@ define('admin/general/dashboard', ['semver'], function(semver) {
 		graphs.presence.segments[1].value = users.topics;
 		graphs.presence.segments[2].value = users.category;
 		graphs.presence.segments[3].value = users.recent;
+		graphs.presence.segments[4].value = users.unread;
+
 
 		graphs.presence.update();
 	}
@@ -389,6 +463,36 @@ define('admin/general/dashboard', ['semver'], function(semver) {
 		buildTopicsLegend();
 
 		graphs.topics.update();
+	}
+
+	function setupRealtimeButton() {
+		$('#toggle-realtime .fa').on('click', function() {
+			var $this = $(this);
+			if ($this.hasClass('fa-toggle-on')) {
+				$this.removeClass('fa-toggle-on').addClass('fa-toggle-off');
+				$this.parent().find('strong').html('OFF');
+				initiateDashboard(false);
+			} else {
+				$this.removeClass('fa-toggle-off').addClass('fa-toggle-on');
+				$this.parent().find('strong').html('ON');
+				initiateDashboard(true);
+			}
+		});
+	}
+
+	function initiateDashboard(realtime) {
+		clearInterval(intervals.rooms);
+		clearInterval(intervals.graphs);
+
+		intervals.rooms = setInterval(function() {
+			if (app.isFocused && app.isConnected) {
+				socket.emit('admin.rooms.getAll', Admin.updateRoomUsage);
+			}
+		}, realtime ? DEFAULTS.realtimeInterval : DEFAULTS.roomInterval);
+
+		intervals.graphs = setInterval(function() {
+			updateTrafficGraph(currentGraph.units, currentGraph.until);
+		}, realtime ? DEFAULTS.realtimeInterval : DEFAULTS.graphInterval);
 	}
 
 	return Admin;

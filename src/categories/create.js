@@ -3,12 +3,15 @@
 var async = require('async'),
 	db = require('../database'),
 	privileges = require('../privileges'),
+	plugins = require('../plugins'),
 	utils = require('../../public/src/utils');
 
 module.exports = function(Categories) {
 
 	Categories.create = function(data, callback) {
 		var category;
+		var parentCid = data.parentCid ? data.parentCid : 0;
+
 		async.waterfall([
 			function(next) {
 				db.incrObjectField('global', 'nextCid', next);
@@ -26,7 +29,7 @@ module.exports = function(Categories) {
 					bgColor: data.bgColor || colours[0],
 					color: data.color || colours[1],
 					slug: slug,
-					parentCid: ( data.parentCid ? data.parentCid : 0 ),
+					parentCid: parentCid,
 					topic_count: 0,
 					post_count: 0,
 					disabled: 0,
@@ -34,20 +37,27 @@ module.exports = function(Categories) {
 					link: '',
 					numRecentReplies: 1,
 					class: ( data.class ? data.class : 'col-md-3 col-xs-6' ),
-					imageClass: 'auto'
+					imageClass: 'cover'
 				};
+
+				plugins.fireHook('filter:category.create', {category: category, data: data}, next);
+			},
+			function(data, next) {
+				category = data.category;
 
 				var defaultPrivileges = ['find', 'read', 'topics:create', 'topics:reply'];
 
 				async.series([
-					async.apply(db.setObject, 'category:' + cid, category),
-					async.apply(db.sortedSetAdd, 'categories:cid', order, cid),
-					async.apply(privileges.categories.give, defaultPrivileges, cid, 'administrators'),
-					async.apply(privileges.categories.give, defaultPrivileges, cid, 'registered-users'),
-					async.apply(privileges.categories.give, ['find', 'read'], cid, 'guests')
+					async.apply(db.setObject, 'category:' + category.cid, category),
+					async.apply(db.sortedSetAdd, 'categories:cid', category.order, category.cid),
+					async.apply(db.sortedSetAdd, 'cid:' + parentCid + ':children', category.order, category.cid),
+					async.apply(privileges.categories.give, defaultPrivileges, category.cid, 'administrators'),
+					async.apply(privileges.categories.give, defaultPrivileges, category.cid, 'registered-users'),
+					async.apply(privileges.categories.give, ['find', 'read'], category.cid, 'guests')
 				], next);
 			},
 			function(results, next) {
+				plugins.fireHook('action:category.create', category);
 				next(null, category);
 			}
 		], callback);

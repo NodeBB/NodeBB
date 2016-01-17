@@ -16,7 +16,7 @@ User.makeAdmins = function(socket, uids, callback) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
 
-	user.getMultipleUserFields(uids, ['banned'], function(err, userData) {
+	user.getUsersFields(uids, ['banned'], function(err, userData) {
 		if (err) {
 			return callback(err);
 		}
@@ -36,10 +36,6 @@ User.makeAdmins = function(socket, uids, callback) {
 User.removeAdmins = function(socket, uids, callback) {
 	if(!Array.isArray(uids)) {
 		return callback(new Error('[[error:invalid-data]]'));
-	}
-
-	if (uids.indexOf(socket.uid.toString()) !== -1) {
-		return callback(new Error('[[error:cant-remove-self-as-admin]]'));
 	}
 
 	async.eachSeries(uids, function(uid, next) {
@@ -92,7 +88,6 @@ User.banUser = function(uid, callback) {
 
 			websockets.in('uid_' + uid).emit('event:banned');
 
-			websockets.logoutUser(uid);
 			callback();
 		});
 	});
@@ -137,7 +132,7 @@ User.sendValidationEmail = function(socket, uids, callback) {
 		return callback(new Error('[[error:email-confirmations-are-disabled]]'));
 	}
 
-	user.getMultipleUserFields(uids, ['uid', 'email'], function(err, usersData) {
+	user.getUsersFields(uids, ['uid', 'email'], function(err, usersData) {
 		if (err) {
 			return callback(err);
 		}
@@ -197,7 +192,6 @@ User.deleteUsers = function(socket, uids, callback) {
 					ip: socket.ip
 				});
 
-				websockets.logoutUser(uid);
 				next();
 			});
 		});
@@ -205,7 +199,7 @@ User.deleteUsers = function(socket, uids, callback) {
 };
 
 User.search = function(socket, data, callback) {
-	user.search({query: data.query, searchBy: data.searchBy, startsWith: false, uid: socket.uid}, function(err, searchData) {
+	user.search({query: data.query, searchBy: data.searchBy, uid: socket.uid}, function(err, searchData) {
 		if (err) {
 			return callback(err);
 		}
@@ -220,7 +214,7 @@ User.search = function(socket, data, callback) {
 
 		async.parallel({
 			users: function(next) {
-				user.getMultipleUserFields(uids, ['email'], next);
+				user.getUsersFields(uids, ['email'], next);
 			},
 			flagCounts: function(next) {
 				var sets = uids.map(function(uid) {
@@ -244,5 +238,14 @@ User.search = function(socket, data, callback) {
 		});
 	});
 };
+
+User.acceptRegistration = function(socket, data, callback) {
+	user.acceptRegistration(data.username, callback);
+};
+
+User.rejectRegistration = function(socket, data, callback) {
+	user.rejectRegistration(data.username, callback);
+};
+
 
 module.exports = User;

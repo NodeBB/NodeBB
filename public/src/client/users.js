@@ -1,6 +1,6 @@
 'use strict';
 
-/* globals define, socket, app, ajaxify, templates */
+/* globals define, socket, app, templates, bootbox */
 
 define('forum/users', ['translator'], function(translator) {
 	var	Users = {};
@@ -8,19 +8,13 @@ define('forum/users', ['translator'], function(translator) {
 	var loadingMoreUsers = false;
 
 	Users.init = function() {
+		app.enterRoom('user_list');
 
-		var active = getActiveSection();
-
-		$('.nav-pills li').removeClass('active');
-		$('.nav-pills li a').each(function() {
-			var $this = $(this);
-			if ($this.attr('href').match(active)) {
-				$this.parent().addClass('active');
-				return false;
-			}
-		});
+		$('.nav-pills li').removeClass('active').find('a[href="' + window.location.pathname + '"]').parent().addClass('active');
 
 		handleSearch();
+
+		handleInvite();
 
 		socket.removeListener('event:user_status_change', onUserStatusChange);
 		socket.on('event:user_status_change', onUserStatusChange);
@@ -37,16 +31,19 @@ define('forum/users', ['translator'], function(translator) {
 	};
 
 	function loadMoreUsers() {
+		if ($('#search-user').val()) {
+			return;
+		}
 		var set = '';
 		var activeSection = getActiveSection();
-		if (activeSection === 'latest') {
-			set = 'users:joindate';
-		} else if (activeSection === 'sort-posts') {
+		if (activeSection === 'sort-posts') {
 			set = 'users:postcount';
 		} else if (activeSection === 'sort-reputation') {
 			set = 'users:reputation';
-		} else if (activeSection === 'online' || activeSection === 'users') {
+		} else if (activeSection === 'online') {
 			set = 'users:online';
+		} else if (activeSection === 'users') {
+			set = 'users:joindate';
 		}
 
 		if (set) {
@@ -79,8 +76,8 @@ define('forum/users', ['translator'], function(translator) {
 		templates.parse('users', 'users', data, function(html) {
 			translator.translate(html, function(translated) {
 				translated = $(translated);
-				translated.find('span.timeago').timeago();
 				$('#users-container').append(translated);
+				translated.find('span.timeago').timeago();
 				$('#users-container .anon-user').appendTo($('#users-container'));
 			});
 		});
@@ -109,71 +106,67 @@ define('forum/users', ['translator'], function(translator) {
 	}
 
 	function doSearch(page) {
-		function reset() {
-			notify.html('<i class="fa fa-search"></i>');
-			notify.parent().removeClass('btn-warning label-warning btn-success label-success');
-		}
-
 		var username = $('#search-user').val();
-		var notify = $('#user-notfound-notify');
 		page = page || 1;
 
-		notify.html('<i class="fa fa-spinner fa-spin"></i>');
-		var filters = [];
-		$('.user-filter').each(function() {
-			var $this = $(this);
-			if($this.is(':checked')) {
-				filters.push({
-					field:$this.attr('data-filter-field'),
-					type: $this.attr('data-filter-type'),
-					value: $this.attr('data-filter-value')
-				});
-			}
-		});
+		if (!username) {
+			return loadPage(page);
+		}
 
 		socket.emit('user.search', {
 			query: username,
 			page: page,
-			searchBy: ['username', 'fullname'],
-			sortBy: $('.search select').val(),
-			filterBy: filters
+			searchBy: 'username',
+			sortBy: $('.search select').val() || getSortBy(),
+			onlineOnly: $('.search .online-only').is(':checked') || (getActiveSection() === 'online')
 		}, function(err, data) {
 			if (err) {
-				reset();
 				return app.alertError(err.message);
 			}
 
-			if (!data) {
-				return reset();
-			}
+			renderSearchResults(data);
+		});
+	}
 
-			templates.parse('partials/paginator', {pagination: data.pagination}, function(html) {
-				$('.pagination-container').replaceWith(html);
-			});
+	function getSortBy() {
+		var sortBy;
+		var activeSection = getActiveSection();
+		if (activeSection === 'sort-posts') {
+			sortBy = 'postcount';
+		} else if (activeSection === 'sort-reputation') {
+			sortBy = 'reputation';
+		} else if (activeSection === 'users') {
+			sortBy = 'joindate';
+		}
+		return sortBy;
+	}
 
-			templates.parse('users', 'users', data, function(html) {
-				translator.translate(html, function(translated) {
-					$('#users-container').html(translated);
+	function loadPage(page) {
+		var section = getActiveSection();
+		section = section !== 'users' ? section : '';
+		$.get('/api/users/' + section + '?page=' + page, function(data) {
+			renderSearchResults(data);
+		});
+	}
 
-					if (!data.users.length) {
-						translator.translate('[[error:no-user]]', function(translated) {
-							notify.html(translated);
-							notify.parent().removeClass('btn-success label-success').addClass('btn-warning label-warning');
-						});
-					} else {
-						translator.translate('[[users:users-found-search-took, ' + data.matchCount + ', ' + data.timing + ']]', function(translated) {
-							notify.html(translated);
-							notify.parent().removeClass('btn-warning label-warning').addClass('btn-success label-success');
-						});
-					}
-				});
+	function renderSearchResults(data) {
+		$('#load-more-users-btn').addClass('hide');
+		templates.parse('partials/paginator', {pagination: data.pagination}, function(html) {
+			$('.pagination-container').replaceWith(html);
+		});
+
+		templates.parse('users', 'users', data, function(html) {
+			translator.translate(html, function(translated) {
+				translated = $(translated)
+				$('#users-container').html(translated);
+				translated.find('span.timeago').timeago();
 			});
 		});
 	}
 
 	function onUserStatusChange(data) {
 		var section = getActiveSection();
-		
+
 		if ((section.startsWith('online') || section.startsWith('users'))) {
 			updateUser(data);
 		}
@@ -187,6 +180,23 @@ define('forum/users', ['translator'], function(translator) {
 		var url = window.location.href,
 			parts = url.split('/');
 		return parts[parts.length - 1];
+	}
+
+	function handleInvite() {
+		$('[component="user/invite"]').on('click', function() {
+			bootbox.prompt('Email: ', function(email) {
+				if (!email) {
+					return;
+				}
+
+				socket.emit('user.invite', email, function(err) {
+					if (err) {
+						return app.alertError(err.message);
+					}
+					app.alertSuccess('[[users:invitation-email-sent, ' + email + ']]');
+				});
+			});
+		});
 	}
 
 	return Users;

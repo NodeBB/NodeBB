@@ -14,5 +14,6 @@
     "register_now_button": "马上注册",
     "alternative_registration": "其他方式注册",
     "terms_of_use": "使用条款",
-    "agree_to_terms_of_use": "我同意使用条款"
+    "agree_to_terms_of_use": "我同意使用条款",
+    "registration-added-to-queue": "您的注册正在等待批准。一旦通过，管理员会发送邮件通知您。"
 }

@@ -125,7 +125,7 @@ module.exports = function(db, module) {
 		if (withScores) {
 			fields.score = 1;
 		}
-		db.collection('objects').find({_key:key}, {fields: fields})
+		db.collection('objects').find({_key: key}, {fields: fields})
 			.limit(stop - start + 1)
 			.skip(start)
 			.sort({score: sort})
@@ -321,7 +321,7 @@ module.exports = function(db, module) {
 			return callback();
 		}
 		value = helpers.valueToString(value);
-		db.collection('objects').findOne({_key:key, value: value}, {fields:{_id: 0, score: 1}}, function(err, result) {
+		db.collection('objects').findOne({_key: key, value: value}, {fields:{_id: 0, score: 1}}, function(err, result) {
 			callback(err, result ? result.score : null);
 		});
 	};
@@ -507,6 +507,30 @@ module.exports = function(db, module) {
 
 		db.collection('objects').findAndModify({_key: key, value: value}, {}, {$inc: data}, {new: true, upsert: true}, function(err, result) {
 			callback(err, result && result.value ? result.value.score : null);
+		});
+	};
+
+	module.getSortedSetRangeByLex = function(key, min, max, start, count, callback) {
+		var query = {_key: key};
+		if (min !== '-') {
+			query.value = {$gte: min};
+		}
+		if (max !== '+') {
+			query.value = query.value || {};
+			query.value.$lte = max;
+		}
+		db.collection('objects').find(query, {_id: 0, value: 1})
+			.sort({value: 1})
+			.skip(start)
+			.limit(count === -1 ? 0 : count)
+			.toArray(function(err, data) {
+				if (err) {
+					return callback(err);
+				}
+				data = data.map(function(item) {
+					return item && item.value;
+				});
+				callback(err, data);
 		});
 	};
 };

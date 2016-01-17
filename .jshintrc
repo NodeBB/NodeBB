@@ -24,7 +24,7 @@
                                 // "single" : require single quotes
                                 // "double" : require double quotes
     "undef" : true, // true: Require all non-global variables to be declared (prevents global leaks)
-    "unused" : false, // true: Require all defined variables be used TODO: Set this to true, update codebase.
+    "unused" : true, // true: Require all defined variables be used
     "strict" : true, // true: Requires all functions run in ES5 Strict Mode
     "trailing" : false, // true: Prohibit trailing whitespaces
     "maxparams" : false, // {int} Max number of formal params allowed per function

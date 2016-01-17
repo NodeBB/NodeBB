@@ -1,8 +1,7 @@
 'use strict';
 
-var cronJob = require('cron').CronJob,
-	db = require('./database');
-
+var cronJob = require('cron').CronJob;
+var db = require('./database');
 
 (function(Analytics) {
 
@@ -61,7 +60,30 @@ var cronJob = require('cron').CronJob,
 			db.incrObjectFieldBy('global', 'uniqueIPCount', uniqueIPCount);
 			uniqueIPCount = 0;
 		}
+
+
 	};
 
+	Analytics.getUnwrittenPageviews = function() {
+		return pageViews;
+	};
+
+	Analytics.getMonthlyPageViews = function(callback) {
+		var thisMonth = new Date();
+		var lastMonth = new Date();
+		thisMonth.setMonth(thisMonth.getMonth(), 1);
+		thisMonth.setHours(0, 0, 0, 0);
+		lastMonth.setMonth(thisMonth.getMonth() - 1, 1);
+		lastMonth.setHours(0, 0, 0, 0);
+
+		var values = [thisMonth.getTime(), lastMonth.getTime()];
+
+		db.sortedSetScores('analytics:pageviews:month', values, function(err, scores) {
+			if (err) {
+				return callback(err);
+			}
+			callback(null, {thisMonth: scores[0] || 0, lastMonth: scores[1] || 0});
+		});
+	};
 
 }(exports));

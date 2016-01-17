@@ -2,21 +2,18 @@
 
 var	async = require('async'),
 	winston = require('winston'),
-	fs = require('fs'),
-	path = require('path'),
 
-	groups = require('../groups'),
+
 	meta = require('../meta'),
 	plugins = require('../plugins'),
 	widgets = require('../widgets'),
 	user = require('../user'),
-	topics = require('../topics'),
 	posts = require('../posts'),
-	categories = require('../categories'),
 	logger = require('../logger'),
 	events = require('../events'),
 	emailer = require('../emailer'),
 	db = require('../database'),
+	analytics = require('../analytics'),
 	index = require('./index'),
 
 
@@ -27,6 +24,7 @@ var	async = require('async'),
 		tags: require('./admin/tags'),
 		rewards: require('./admin/rewards'),
 		navigation: require('./admin/navigation'),
+		rooms: require('./admin/rooms'),
 		themes: {},
 		plugins: {},
 		widgets: {},
@@ -37,7 +35,7 @@ var	async = require('async'),
 		logs: {}
 	};
 
-SocketAdmin.before = function(socket, method, next) {
+SocketAdmin.before = function(socket, method, data, next) {
 	if (!socket.uid) {
 		return;
 	}
@@ -75,7 +73,7 @@ SocketAdmin.restart = function(socket, data, callback) {
 };
 
 SocketAdmin.fireEvent = function(socket, data, callback) {
-	index.server.sockets.emit(data.name, data.payload || {});
+	index.server.emit(data.name, data.payload || {});
 };
 
 SocketAdmin.themes.getInstalled = function(socket, data, callback) {
@@ -88,19 +86,13 @@ SocketAdmin.themes.set = function(socket, data, callback) {
 	}
 
 	var wrappedCallback = function(err) {
-		meta.themes.set(data, function() {
-			callback();
-		});
+		meta.themes.set(data, callback);
 	};
 	if (data.type === 'bootswatch') {
 		wrappedCallback();
 	} else {
 		widgets.reset(wrappedCallback);
 	}
-};
-
-SocketAdmin.themes.updateBranding = function(socket, data, callback) {
-	meta.css.updateBranding();
 };
 
 SocketAdmin.plugins.toggleActive = function(socket, plugin_id, callback) {
@@ -137,10 +129,6 @@ SocketAdmin.widgets.set = function(socket, data, callback) {
 	}
 
 	widgets.setArea(data, callback);
-};
-
-SocketAdmin.config.get = function(socket, data, callback) {
-	meta.configs.list(callback);
 };
 
 SocketAdmin.config.set = function(socket, data, callback) {
@@ -207,35 +195,44 @@ SocketAdmin.settings.clearSitemapCache = function(socket, data, callback) {
 };
 
 SocketAdmin.email.test = function(socket, data, callback) {
-	if (plugins.hasListeners('action:email.send')) {
-		emailer.send('test', socket.uid, {
-			subject: '[NodeBB] Test Email',
-			site_title: meta.config.title || 'NodeBB'
-		});
-		callback();
-	} else {
-		callback(new Error('[[error:no-emailers-configured]]'));
-	}
+	var site_title = meta.config.title || 'NodeBB';
+	emailer.send(data.template, socket.uid, {
+		subject: '[' + site_title + '] Test Email',
+		site_title: site_title
+	}, callback);
 };
 
 SocketAdmin.analytics.get = function(socket, data, callback) {
-	data.units = 'hours'; // temp
-	data.amount = 24;
+	// Default returns views from past 24 hours, by hour
+	if (data.units === 'days') {
+		data.amount = 30;
+	} else {
+		data.amount = 24;
+	}
 
 	if (data && data.graph && data.units && data.amount) {
 		if (data.graph === 'traffic') {
 			async.parallel({
 				uniqueVisitors: function(next) {
-					getHourlyStatsForSet('analytics:uniquevisitors', data.amount, next);
+					if (data.units === 'days') {
+						getDailyStatsForSet('analytics:uniquevisitors', data.until || Date.now(), data.amount, next);
+					} else {
+						getHourlyStatsForSet('analytics:uniquevisitors', data.until || Date.now(), data.amount, next);
+					}
 				},
 				pageviews: function(next) {
-					getHourlyStatsForSet('analytics:pageviews', data.amount, next);
+					if (data.units === 'days') {
+						getDailyStatsForSet('analytics:pageviews', data.until || Date.now(), data.amount, next);
+					} else {
+						getHourlyStatsForSet('analytics:pageviews', data.until || Date.now(), data.amount, next);
+					}
 				},
 				monthlyPageViews: function(next) {
-					getMonthlyPageViews(next);
+					analytics.getMonthlyPageViews(next);
 				}
 			}, function(err, data) {
 				data.pastDay = data.pageviews.reduce(function(a, b) {return parseInt(a, 10) + parseInt(b, 10);});
+				data.pageviews[data.pageviews.length - 1] = parseInt(data.pageviews[data.pageviews.length - 1], 10) + analytics.getUnwrittenPageviews();
 				callback(err, data);
 			});
 		}
@@ -252,14 +249,14 @@ SocketAdmin.logs.clear = function(socket, data, callback) {
 	meta.logs.clear(callback);
 };
 
-function getHourlyStatsForSet(set, hours, callback) {
-	var hour = new Date(),
-		terms = {},
+function getHourlyStatsForSet(set, hour, numHours, callback) {
+	var terms = {},
 		hoursArr = [];
 
+	hour = new Date(hour);
 	hour.setHours(hour.getHours(), 0, 0, 0);
 
-	for (var i = 0, ii = hours; i < ii; i++) {
+	for (var i = 0, ii = numHours; i < ii; i++) {
 		hoursArr.push(hour.getTime());
 		hour.setHours(hour.getHours() - 1, 0, 0, 0);
 	}
@@ -270,13 +267,13 @@ function getHourlyStatsForSet(set, hours, callback) {
 		}
 
 		hoursArr.forEach(function(term, index) {
-			terms[term] = counts[index] || 0;
+			terms[term] = parseInt(counts[index], 10) || 0;
 		});
 
 		var termsArr = [];
 
 		hoursArr.reverse();
-		hoursArr.forEach(function(hour, idx) {
+		hoursArr.forEach(function(hour) {
 			termsArr.push(terms[hour]);
 		});
 
@@ -284,21 +281,27 @@ function getHourlyStatsForSet(set, hours, callback) {
 	});
 }
 
-function getMonthlyPageViews(callback) {
-	var thisMonth = new Date();
-	var lastMonth = new Date();
-	thisMonth.setMonth(thisMonth.getMonth(), 1);
-	thisMonth.setHours(0, 0, 0, 0);
-	lastMonth.setMonth(thisMonth.getMonth() - 1, 1);
-	lastMonth.setHours(0, 0, 0, 0);
+function getDailyStatsForSet(set, day, numDays, callback) {
+	var daysArr = [];
 
-	var values = [thisMonth.getTime(), lastMonth.getTime()];
+	day = new Date(day);
+	day.setHours(0, 0, 0, 0);
 
-	db.sortedSetScores('analytics:pageviews:month', values, function(err, scores) {
-		if (err) {
-			return callback(err);
-		}
-		callback(null, {thisMonth: scores[0] || 0, lastMonth: scores[1] || 0});
+	async.whilst(function() {
+		return numDays--;
+	}, function(next) {
+		getHourlyStatsForSet(set, day.getTime()-(1000*60*60*24*numDays), 24, function(err, day) {
+			if (err) {
+				return next(err);
+			}
+
+			daysArr.push(day.reduce(function(cur, next) {
+				return cur+next;
+			}));
+			next();
+		});
+	}, function(err) {
+		callback(err, daysArr);
 	});
 }
 
@@ -350,10 +353,6 @@ SocketAdmin.getMoreFlags = function(socket, data, callback) {
 			callback(err, {posts: posts, next: stop + 1});
 		});
 	}
-};
-
-SocketAdmin.takeHeapSnapshot = function(socket, data, callback) {
-	require('heapdump').writeSnapshot(callback);
 };
 
 module.exports = SocketAdmin;

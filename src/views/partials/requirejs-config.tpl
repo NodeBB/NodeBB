@@ -2,9 +2,9 @@
 	require.config({
 		baseUrl: "{relative_path}/src/modules",
 		waitSeconds: 3,
-		urlArgs: "{cache-buster}",
+		urlArgs: "{config.cache-buster}",
 		paths: {
-			'forum': '../forum',
+			'forum': '../client',
 			'vendor': '../../vendor',
 			'mousetrap': '../../bower/mousetrap/mousetrap'
 		}

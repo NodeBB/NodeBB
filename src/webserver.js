@@ -117,28 +117,11 @@ function cacheStaticFiles(callback) {
 
 	app.enable('cache');
 	app.enable('minification');
-
-	// Configure cache-buster timestamp
-	require('child_process').exec('git describe --tags', {
-		cwd: path.join(__dirname, '../')
-	}, function(err, stdOut) {
-		if (!err) {
-			meta.config['cache-buster'] = stdOut.trim();
-			callback();
-		} else {
-			fs.stat(path.join(__dirname, '../package.json'), function(err, stats) {
-				if (err) {
-					return callback(err);
-				}
-				meta.config['cache-buster'] = new Date(stats.mtime).getTime();
-				callback();
-			});
-		}
-	});
+	callback();
 }
 
 function listen(callback) {
-	var port = nconf.get('port');
+	var port = parseInt(nconf.get('port'), 10);
 
 	if (Array.isArray(port)) {
 		if (!port.length) {
@@ -155,7 +138,7 @@ function listen(callback) {
 		}
 	}
 
-	if (port !== 80 && port !== 443 && nconf.get('use_port') === false) {
+	if ((port !== 80 && port !== 443) || nconf.get('trust_proxy') === true) {
 		winston.info('Enabling \'trust proxy\'');
 		app.enable('trust proxy');
 	}
@@ -203,9 +186,10 @@ module.exports.testSocket = function(socketPath, callback) {
 		return callback(new Error('invalid socket path : ' + socketPath));
 	}
 	var net = require('net');
+	var file = require('./file');
 	async.series([
 		function(next) {
-			fs.exists(socketPath, function(exists) {
+			file.exists(socketPath, function(exists) {
 				if (exists) {
 					next();
 				} else {

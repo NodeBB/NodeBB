@@ -1,0 +1,16 @@
+{
+    "category": "Kategori",
+    "subcategories": "Underkategorier",
+    "new_topic_button": "Nyt emne",
+    "guest-login-post": "Log ind",
+    "no_topics": "<strong>Der er ikke nogen nye emner i denne kategori.</strong><br /> Hvorfor  prøver du ikke at lave et?",
+    "browsing": "browse",
+    "no_replies": "Ingen har svaret",
+    "no_new_posts": "Ingen nye indlæg",
+    "share_this_category": "Del denne kategori",
+    "watch": "Overvåg",
+    "ignore": "Ignorer",
+    "watch.message": "Du overvåger nu opdateringer fra denne kategori",
+    "ignore.message": "Du ignorere nu opdateringer fra denne kategori",
+    "watched-categories": "Fulgte kategorier"
+}

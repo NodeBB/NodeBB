@@ -6,10 +6,10 @@
 
 var fs = require('fs'),
 	path = require('path'),
-	express = require('express'),
 	winston = require('winston'),
 	util = require('util'),
-	socketio = require('socket.io'),
+
+	file = require('./file'),
 	meta = require('./meta'),
 	morgan = require('morgan');
 
@@ -76,7 +76,7 @@ var opts = {
 		/* Open the streams to log to: either a path or stdout */
 		var stream;
 		if(value) {
-			if(fs.existsSync(value)) {
+			if(file.existsSync(value)) {
 				var stats = fs.statSync(value);
 				if(stats) {
 					if(stats.isDirectory()) {
@@ -159,64 +159,68 @@ var opts = {
 		/*
 		 * Restore all hijacked sockets to their original emit/on functions
 		 */
-		var clients = []; //socket.io.sockets.clients(); doesn't work in socket.io 1.x
-		clients.forEach(function(client) {
-			if(client.oEmit && client.oEmit !== client.emit) {
-				client.emit = client.oEmit;
-			}
+		if (!socket || !socket.io || !socket.io.sockets || !socket.io.sockets.sockets) {
+			return;
+		}
+		var clients = socket.io.sockets.sockets;
+		for (var sid in clients) {
+			if (clients.hasOwnProperty(sid)) {
+				var client = clients[sid];
+				if(client.oEmit && client.oEmit !== client.emit) {
+					client.emit = client.oEmit;
+				}
 
-			if(client.$oEmit && client.$oEmit !== client.$emit) {
-				client.$emit = client.$oEmit;
+				if(client.$oEmit && client.$oEmit !== client.$emit) {
+					client.$emit = client.$oEmit;
+				}
 			}
-		});
+		}
 	};
 
 	Logger.io = function(socket) {
 		/*
 		 * Go through all of the currently established sockets & hook their .emit/.on
 		 */
-		if(!socket && !socket.io.sockets) {
+
+		if (!socket || !socket.io || !socket.io.sockets || !socket.io.sockets.sockets) {
 			return;
 		}
 
-		var clients = []; //socket.io.sockets.clients(); doesn't work in socket.io 1.x
-
-		clients.forEach(function(client) {
-			Logger.io_one(client, client.uid);
-		});
+		var clients = socket.io.sockets.sockets;
+		for(var sid in clients) {
+			if (clients.hasOwnProperty(sid)) {
+				Logger.io_one(clients[sid], clients[sid].uid);
+			}
+		}
 	};
 
 	Logger.io_one = function(socket, uid) {
 		/*
 		 * This function replaces a socket's .emit/.on functions in order to intercept events
 		 */
-		if(socket && meta.config.loggerIOStatus > 0) {
-
-			(function() {
-				function override(method, name, errorMsg) {
-					return function() {
-						if(opts.streams.log.f) {
-							opts.streams.log.f.write(Logger.prepare_io_string(name, uid, arguments));
-						}
-
-						try {
-							method.apply(socket, arguments);
-						} catch(err) {
-							winston.info(errorMsg, err);
-						}
-					};
+		function override(method, name, errorMsg) {
+			return function() {
+				if(opts.streams.log.f) {
+					opts.streams.log.f.write(Logger.prepare_io_string(name, uid, arguments));
 				}
 
-				// courtesy of: http://stackoverflow.com/a/9674248
-				socket.oEmit = socket.emit;
-				var emit = socket.emit;
-				socket.emit = override(emit, 'emit', 'Logger.io_one: emit.apply: Failed');
+				try {
+					method.apply(socket, arguments);
+				} catch(err) {
+					winston.info(errorMsg, err);
+				}
+			};
+		}
 
-				socket.$oEmit = socket.$emit;
-				var $emit = socket.$emit;
-				socket.$emit = override($emit, 'on', 'Logger.io_one: $emit.apply: Failed');
+		if (socket && meta.config.loggerIOStatus > 0) {
+			// courtesy of: http://stackoverflow.com/a/9674248
+			socket.oEmit = socket.emit;
+			var emit = socket.emit;
+			socket.emit = override(emit, 'emit', 'Logger.io_one: emit.apply: Failed');
 
-			})();
+			socket.$oEmit = socket.$emit;
+			var $emit = socket.$emit;
+			socket.$emit = override($emit, 'on', 'Logger.io_one: $emit.apply: Failed');
 		}
 	};
 

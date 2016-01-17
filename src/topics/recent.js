@@ -47,7 +47,9 @@ module.exports = function(Topics) {
 			function(next) {
 				Topics.setTopicField(tid, 'lastposttime', timestamp, next);
 			}
-		], callback);
+		], function(err, results) {
+			callback(err);
+		});
 	};
 
 	Topics.updateRecent = function(tid, timestamp, callback) {

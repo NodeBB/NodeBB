@@ -55,12 +55,12 @@ describe('User', function() {
 			});
 		});
 
-		it('should have a valid email, if using an email', function() {
-			assert.throws(
-				User.create({username: userData.username, password: userData.password, email: 'fakeMail'},function(){}),
-				Error,
-				'does not validate email'
-			);
+		it('should have a valid email, if using an email', function(done) {
+			User.create({username: userData.username, password: userData.password, email: 'fakeMail'},function(err) {
+				assert(err);
+				assert.equal(err.message, '[[error:invalid-email]]');
+				done();
+			});
 		});
 	});
 
@@ -186,7 +186,7 @@ describe('User', function() {
 		it('should delete a user account', function(done) {
 			User.delete(uid, function(err) {
 				assert.ifError(err);
-				User.exists('usertodelete', function(err, exists) {
+				User.existsBySlug('usertodelete', function(err, exists) {
 					assert.ifError(err);
 					assert.equal(exists, false);
 					done();

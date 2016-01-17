@@ -14,5 +14,6 @@
     "register_now_button": "Registrati Ora",
     "alternative_registration": "Altri metodi di registrazione",
     "terms_of_use": "Termini di Utilizzo",
-    "agree_to_terms_of_use": "Accetto i Termini di Utilizzo"
+    "agree_to_terms_of_use": "Accetto i Termini di Utilizzo",
+    "registration-added-to-queue": "La tua registrazione è stata aggiunta alla coda di moderazione. Riceverai una mail quando verrà accettata da un amministratore."
 }

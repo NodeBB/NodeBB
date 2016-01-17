@@ -5,8 +5,17 @@
     "search": "Sök",
     "enter_username": "Ange ett användarnamn för att söka",
     "load_more": "Ladda fler",
-    "users-found-search-took": "%1 user(s) found! Search took %2 seconds.",
-    "filter-by": "Filter By",
-    "online-only": "Online only",
-    "picture-only": "Picture only"
+    "users-found-search-took": "%1 användare hittades! Sökningen tog %2 sekunder.",
+    "filter-by": "Filtrera på",
+    "online-only": "Endast online",
+    "picture-only": "Endast bild",
+    "invite": "Bjud in",
+    "invitation-email-sent": "En inbjudan har skickats till %1",
+    "user_list": "Användarlista",
+    "recent_topics": "Senaste ämnen",
+    "popular_topics": "Populära ämnen",
+    "unread_topics": "Olästa ämnen",
+    "categories": "Kategorier",
+    "tags": "Märkord",
+    "map": "Karta"
 }

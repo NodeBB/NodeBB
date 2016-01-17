@@ -4,11 +4,8 @@ var fs = require('fs'),
 	nconf = require('nconf'),
 	path = require('path'),
 	winston = require('winston'),
-	mmmagic = require('mmmagic'),
-	Magic = mmmagic.Magic,
-	mime = require('mime'),
+	jimp = require('jimp'),
 
-	meta = require('./meta'),
 	utils = require('../public/src/utils');
 
 var file = {};
@@ -41,38 +38,50 @@ file.saveFileToLocal = function(filename, folder, tempPath, callback) {
 	is.pipe(os);
 };
 
-file.isFileTypeAllowed = function(path, allowedExtensions, callback) {
-	if (!Array.isArray(allowedExtensions) || !allowedExtensions.length) {
-		return callback();
-	}
-
-	allowedExtensions = allowedExtensions.filter(Boolean).map(function(extension) {
-		return extension.trim();
-	});
-
-	var magic = new Magic(mmmagic.MAGIC_MIME_TYPE);
-	magic.detectFile(path, function(err, mimeType) {
-		if (err) {
-			return callback(err);
-		}
-
-		var uploadedFileExtension = mime.extension(mimeType);
-
-		if (allowedExtensions.indexOf(uploadedFileExtension) === -1) {
-			return callback(new Error('[[error:invalid-file-type, ' + allowedExtensions.join('-') + ']]'));
-		}
-
-		callback();
+file.isFileTypeAllowed = function(path, callback) {
+	// Attempt to read the file, if it passes, file type is allowed
+	jimp.read(path, function(err) {
+		callback(err);
 	});
 };
 
 file.allowedExtensions = function() {
+	var meta = require('./meta');
 	var allowedExtensions = (meta.config.allowedFileExtensions || '').trim();
 	if (!allowedExtensions) {
 		return [];
 	}
 	allowedExtensions = allowedExtensions.split(',');
+	allowedExtensions = allowedExtensions.filter(Boolean).map(function(extension) {
+		extension = extension.trim();
+		if (!extension.startsWith('.')) {
+			extension = '.' + extension;
+		}
+		return extension;
+	});
+
+	if (allowedExtensions.indexOf('.jpg') !== -1 && allowedExtensions.indexOf('.jpeg') === -1) {
+		allowedExtensions.push('.jpeg');
+	}
+
 	return allowedExtensions;
+};
+
+file.exists = function(path, callback) {
+	fs.stat(path, function(err, stat) {
+		callback(!err && stat);
+	});
+};
+
+file.existsSync = function(path) {
+	var exists = false;
+	try {
+		exists = fs.statSync(path);
+	} catch(err) {
+		exists = false;
+	}
+
+	return !!exists;
 };
 
 module.exports = file;

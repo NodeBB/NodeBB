@@ -1,0 +1,11 @@
+{
+    "username-email": "Brugernavn / Email",
+    "username": "Brugernavn",
+    "email": "Email",
+    "remember_me": "Husk mig?",
+    "forgot_password": "Glemt kodeord?",
+    "alternative_logins": "alternative logins",
+    "failed_login_attempt": "Login mislykkedes, venligt prøv igen.",
+    "login_successful": "Du har successfuldt logged in!",
+    "dont_have_account": "Har du ikke en konto?"
+}

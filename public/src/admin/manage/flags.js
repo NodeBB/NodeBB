@@ -2,15 +2,15 @@
 /*global define, socket, app, admin, utils, bootbox, RELATIVE_PATH*/
 
 define('admin/manage/flags', [
-	'forum/infinitescroll', 
-	'admin/modules/selectable', 
+	'forum/infinitescroll',
+	'admin/modules/selectable',
 	'autocomplete'
 ], function(infinitescroll, selectable, autocomplete) {
 
 	var	Flags = {};
 
 	Flags.init = function() {
-		$('.post-container .content img').addClass('img-responsive');
+		$('.post-container .content img:not(.not-responsive)').addClass('img-responsive');
 
 		var params = utils.params();
 		$('#flag-sort-by').val(params.sortBy);
@@ -25,7 +25,7 @@ define('admin/manage/flags', [
 	function handleDismiss() {
 		$('.flags').on('click', '.dismiss', function() {
 			var btn = $(this);
-			var pid = btn.siblings('[data-pid]').attr('data-pid');
+			var pid = btn.parents('[data-pid]').attr('data-pid');
 
 			socket.emit('admin.dismissFlag', pid, function(err) {
 				done(err, btn);
@@ -40,7 +40,7 @@ define('admin/manage/flags', [
 					return app.alertError(err.message);
 				}
 
-				$('.post-container').empty().text('No flagged posts!');
+				ajaxify.refresh();
 			});
 		});
 	}
@@ -49,11 +49,11 @@ define('admin/manage/flags', [
 		$('.flags').on('click', '.delete', function() {
 			var btn = $(this);
 			bootbox.confirm('Do you really want to delete this post?', function(confirm) {
-				if(!confirm) {
+				if (!confirm) {
 					return;
 				}
-				var pid = btn.siblings('[data-pid]').attr('data-pid');
-				var tid = btn.siblings('[data-pid]').attr('data-tid');
+				var pid = btn.parents('[data-pid]').attr('data-pid');
+				var tid = btn.parents('[data-pid]').attr('data-tid');
 				socket.emit('posts.delete', {pid: pid, tid: tid}, function(err) {
 					done(err, btn);
 				});
@@ -65,7 +65,7 @@ define('admin/manage/flags', [
 		if (err) {
 			return app.alertError(err.messaage);
 		}
-		btn.parent().fadeOut(function() {
+		btn.parents('[data-pid]').fadeOut(function() {
 			$(this).remove();
 			if (!$('.flags [data-pid]').length) {
 				$('.post-container').text('No flagged posts!');
@@ -88,10 +88,10 @@ define('admin/manage/flags', [
 				after: $('[data-next]').attr('data-next')
 			}, function(data, done) {
 				if (data.posts && data.posts.length) {
-					infinitescroll.parseAndTranslate('admin/manage/flags', 'posts', {posts: data.posts}, function(html) {
+					app.parseAndTranslate('admin/manage/flags', 'posts', {posts: data.posts}, function(html) {
 						$('[data-next]').attr('data-next', data.next);
 						$('.post-container').append(html);
-						html.find('img').addClass('img-responsive');
+						html.find('img:not(.not-responsive)').addClass('img-responsive');
 						done();
 					});
 				} else {

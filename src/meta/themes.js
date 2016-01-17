@@ -6,7 +6,10 @@ var nconf = require('nconf'),
 	fs = require('fs'),
 	path = require('path'),
 	async = require('async'),
-	db = require('../database');
+
+	file = require('../file'),
+	db = require('../database'),
+	meta = require('../meta');
 
 module.exports = function(Meta) {
 	Meta.themes = {};
@@ -34,27 +37,24 @@ module.exports = function(Meta) {
 				async.map(themes, function (theme, next) {
 					var config = path.join(themePath, theme, 'theme.json');
 
-					if (fs.existsSync(config)) {
-						fs.readFile(config, function (err, file) {
-							if (err) {
-								return next();
-							} else {
-								var configObj = JSON.parse(file.toString());
+					fs.readFile(config, function (err, file) {
+						if (err) {
+							return next();
+						}
 
-								// Minor adjustments for API output
-								configObj.type = 'local';
-								if (configObj.screenshot) {
-									configObj.screenshot_url = nconf.get('relative_path') + '/css/previews/' + configObj.id;
-								} else {
-									configObj.screenshot_url = nconf.get('relative_path') + '/images/themes/default.png';
-								}
+						var configObj = JSON.parse(file.toString());
 
-								next(err, configObj);
-							}
-						});
-					} else {
-						next();
-					}
+						// Minor adjustments for API output
+						configObj.type = 'local';
+						if (configObj.screenshot) {
+							configObj.screenshot_url = nconf.get('relative_path') + '/css/previews/' + configObj.id;
+						} else {
+							configObj.screenshot_url = nconf.get('relative_path') + '/images/themes/default.png';
+						}
+
+						next(null, configObj);
+					});
+
 				}, function (err, themes) {
 					themes = themes.filter(function (theme) {
 						return (theme !== undefined);
@@ -77,6 +77,15 @@ module.exports = function(Meta) {
 		switch(data.type) {
 		case 'local':
 			async.waterfall([
+				async.apply(meta.configs.get, 'theme:id'),
+				function(current, next) {
+					async.series([
+						async.apply(db.sortedSetRemove, 'plugins:active', current),
+						async.apply(db.sortedSetAdd, 'plugins:active', 0, data.id)
+					], function(err) {
+						next(err);
+					});
+				},
 				function(next) {
 					fs.readFile(path.join(nconf.get('themes_path'), data.id, 'theme.json'), function(err, config) {
 						if (!err) {
@@ -119,7 +128,7 @@ module.exports = function(Meta) {
 				return callback(err);
 			}
 
-			var themeId = data.currentThemeId || 'nodebb-theme-vanilla';
+			var themeId = data.currentThemeId || 'nodebb-theme-persona';
 
 			var	themeObj = data.themesData.filter(function(themeObj) {
 					return themeObj.id === themeId;
@@ -145,7 +154,7 @@ module.exports = function(Meta) {
 
 		if (themeObj.templates) {
 			themePath = path.join(nconf.get('themes_path'), themeObj.id, themeObj.templates);
-		} else if (fs.existsSync(fallback)) {
+		} else if (file.existsSync(fallback)) {
 			themePath = fallback;
 		}
 

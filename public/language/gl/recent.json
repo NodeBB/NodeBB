@@ -1,0 +1,19 @@
+{
+    "title": "Recentes",
+    "day": "Día",
+    "week": "Semana",
+    "month": "Mes",
+    "year": "Ano",
+    "alltime": "Dende o principio",
+    "no_recent_topics": "Non hai temas recentes",
+    "no_popular_topics": "Non hai temas populares",
+    "there-is-a-new-topic": "Hai un novo tema",
+    "there-is-a-new-topic-and-a-new-post": "Hai un novo tema e unha nova publicación",
+    "there-is-a-new-topic-and-new-posts": "Hai un novo tema e %1 nova publicación",
+    "there-are-new-topics": "Hai %1 novos temas.",
+    "there-are-new-topics-and-a-new-post": "Hay %1 novos temas e unha nova publicación.",
+    "there-are-new-topics-and-new-posts": "Hay %1 novos temas e %2 novas publicacións",
+    "there-is-a-new-post": "Hai unha nova publicación",
+    "there-are-new-posts": "Hay %1 novas publicacións.",
+    "click-here-to-reload": "Pica aquí para recargar."
+}

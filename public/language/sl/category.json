@@ -1,0 +1,16 @@
+{
+    "category": "Kategorija",
+    "subcategories": "Podkategorija",
+    "new_topic_button": "Nova tema",
+    "guest-login-post": "Za objavljanje moraš biti prijavljen",
+    "no_topics": "<strong>V tej kategoriji ni tem.</strong><br />Boš odprl novo temo?",
+    "browsing": "brskanje",
+    "no_replies": "Nihče ni odgovoril",
+    "no_new_posts": "Ni novih objav.",
+    "share_this_category": "Deli to kategorijo",
+    "watch": "Spremljaj",
+    "ignore": "Ne spremljaj",
+    "watch.message": "Trenutno spremljaš nove objave v tej kategoriji",
+    "ignore.message": "Ne spremljaš novih objav v tej kategoriji",
+    "watched-categories": "Watched categories"
+}

@@ -1,31 +1,6 @@
 "use strict";
 
 module.exports = function(redisClient, module) {
-	module.searchIndex = function(key, data, id, callback) {
-		var method = key === 'post' ? module.postSearch : module.topicSearch;
-
-		method.index(data, id, function(err, res) {
-			callback(err);
-		});
-	};
-
-	module.search = function(key, data, limit, callback) {
-		var method = key === 'post' ? module.postSearch : module.topicSearch;
-
-		method.query(data, 0, limit - 1, callback);
-	};
-
-	module.searchRemove = function(key, id, callback) {
-		callback = callback || function() {};
-		if (!id) {
-			return callback();
-		}
-		var method = key === 'post' ? module.postSearch : module.topicSearch;
-
-		method.remove(id, function(err, res) {
-			callback(err);
-		});
-	};
 
 	module.flushdb = function(callback) {
 		redisClient.send_command('flushdb', [], function(err) {
@@ -34,8 +9,6 @@ module.exports = function(redisClient, module) {
 			}
 		});
 	};
-
-
 
 	module.exists = function(key, callback) {
 		redisClient.exists(key, function(err, exists) {

@@ -1,59 +1,99 @@
 <div id="navigation">
-	<div class="col-lg-6">
-		<div class="panel panel-default">
-			<div class="panel-heading">Active Navigation</div>
-			<div class="panel-body">
-				<ul id="enabled">
-					<!-- BEGIN enabled -->
-					<li class="well">
-						<form>
-							<label>ID: <small>optional</small>
-								<input class="form-control" type="text" name="id" value="{enabled.id}" />
-							</label>
-							<label>Route: <small>ex. /unread</small>
-								<input class="form-control" type="text" name="route" value="{enabled.route}" />
-							</label>
-							<label>Title: <small>shown upon mouseover</small>
-								<input class="form-control" type="text" name="title" value="{enabled.title}" />
-							</label>
-							<label>Text:
-								<input class="form-control" type="text" name="text" value="{enabled.text}" />
-							</label>
-							<label>Icon Class: <small><a href="http://fortawesome.github.io/Font-Awesome/cheatsheet/" target="_blank">pick one</a></small>
-								<input class="form-control" type="text" name="iconClass" value="{enabled.iconClass}" />
-							</label>
-							<label>Text Class: <small>optional</small>
-								<input class="form-control" type="text" name="textClass" value="{enabled.textClass}" />
-							</label>
+	<div class="col-lg-9">
+		<div class="clearfix">
+			<ul id="active-navigation" class="nav navbar-nav">
+				<!-- BEGIN navigation -->
+				<li data-index="{navigation.index}" class="{navigation.class} <!-- IF navigation.selected --> active <!-- ENDIF navigation.selected -->">
+					<a href="#" title="{navigation.route}" id="{navigation.id}">
 
-							<hr />
-							<strong>Properties:</strong>
-							<div class="checkbox">
-								<label>
-									<input type="checkbox" name="property:isAdmin" <!-- IF enabled.properties.isAdmin -->checked<!-- ENDIF enabled.properties.isAdmin -->/> <strong>Only display to Admins</strong>
-								</label>
-							</div>
-							<div class="checkbox">
-								<label>
-									<input type="checkbox" name="property:loggedIn" <!-- IF enabled.properties.loggedIn -->checked<!-- ENDIF enabled.properties.loggedIn -->/> <strong>Only display to logged in users</strong>
-								</label>
-							</div>
+						<i class="fa fa-fw <!-- IF navigation.iconClass -->{navigation.iconClass}<!-- ENDIF navigation.iconClass -->"></i>
 
-
-							<hr />
-							<button class="btn btn-danger delete">Delete</button>
-							<!-- IF enabled.enabled -->
-							<button class="btn btn-warning toggle">Disable</button>
-							<!-- ELSE -->
-							<button class="btn btn-success toggle">Enable</button>
-							<!-- ENDIF enabled.enabled -->
-							<input type="hidden" name="enabled" value="{enabled.enabled}" />
-						</form>
-					</li>
-					<!-- END enabled -->
-				</ul>
-			</div>
+						<!-- IF navigation.text -->
+						<span class="{navigation.textClass}">{navigation.text}</span>
+						<!-- ENDIF navigation.text -->
+					</a>
+				</li>
+				<!-- END navigation -->
+			</ul>
 		</div>
+
+		<hr/>
+
+		<ul id="enabled">
+			<!-- BEGIN enabled -->
+			<li data-index="{enabled.index}" class="well <!-- IF !enabled.selected -->hidden<!-- ENDIF !enabled.selected -->">
+				<form>
+					<div class="row">
+						<div class="col-sm-6">
+
+							<div class="form-group">
+								<label>Icon:</label>
+								<br/>
+								<span class="iconPicker"><i class="fa fa-2x {enabled.iconClass}"></i>
+									<a class="change-icon-link <!-- IF enabled.iconClass -->hidden<!-- ENDIF enabled.iconClass -->" href="#">change</a>
+									<input class="form-control" type="hidden" name="iconClass" value="{enabled.iconClass}" />
+								</span>
+							</div>
+
+							<div class="form-group">
+								<label>Route:</label>
+								<input class="form-control" type="text" name="route" value="{enabled.route}" />
+							</div>
+
+							<div class="form-group">
+								<label>Tooltip:</label>
+								<input class="form-control unescape" type="text" name="title" value="{enabled.title}" />
+							</div>
+						</div>
+
+						<div class="col-sm-6">
+							<div class="form-group">
+								<label>Text:</label>
+								<input class="form-control unescape" type="text" name="text" value="{enabled.text}" />
+							</div>
+
+							<div class="form-group">
+								<label>Text Class: <small>optional</small></label>
+								<input class="form-control" type="text" name="textClass" value="{enabled.textClass}" />
+							</div>
+
+							<div class="form-group">
+								<label>ID: <small>optional</small></label>
+								<input class="form-control" type="text" name="id" value="{enabled.id}" />
+							</div>
+						</div>
+					</div>
+
+					<strong>Properties:</strong>
+					<div class="checkbox">
+						<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
+							<input class="mdl-switch__input" type="checkbox" name="property:adminOnly" <!-- IF enabled.properties.adminOnly -->checked<!-- ENDIF enabled.properties.adminOnly -->/>
+							<span class="mdl-switch__label"><strong>Only display to Admins</strong></span>
+						</label>
+					</div>
+					<div class="checkbox">
+						<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
+							<input class="mdl-switch__input" type="checkbox" name="property:loggedIn" <!-- IF enabled.properties.loggedIn -->checked<!-- ENDIF enabled.properties.loggedIn -->/> <span class="mdl-switch__label"><strong>Only display to logged in users</strong></span>
+						</label>
+					</div>
+					<div class="checkbox">
+						<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
+							<input class="mdl-switch__input" type="checkbox" name="property:targetBlank" <!-- IF enabled.properties.targetBlank -->checked<!-- ENDIF enabled.properties.targetBlank -->/>
+							<span class="mdl-switch__label"><strong>Open in a new window</strong></span>
+						</label>
+					</div>
+
+					<button class="btn btn-danger delete">Delete</button>
+					<!-- IF enabled.enabled -->
+					<button class="btn btn-warning toggle">Disable</button>
+					<!-- ELSE -->
+					<button class="btn btn-success toggle">Enable</button>
+					<!-- ENDIF enabled.enabled -->
+					<input type="hidden" name="enabled" value="{enabled.enabled}" />
+				</form>
+			</li>
+			<!-- END enabled -->
+		</ul>
 	</div>
 
 	<div class="col-lg-3">
@@ -61,27 +101,31 @@
 			<div class="panel-heading">Available Menu Items</div>
 			<div class="panel-body">
 				<ul id="available">
-					<li data-id="custom" class="alert alert-warning">
-						<strong>Custom Route</strong>
+					<li data-id="custom" class="clearfix">
+						<div data-id="custom" class="drag-item alert alert-success pull-left">
+							<i class="fa fa-fw fa-plus-circle"></i>
+						</div>
+						<p>
+							<strong>Custom Route</strong>
+						</p>
 					</li>
 					<!-- BEGIN available -->
-					<li data-id="@index" class="alert <!-- IF available.core -->alert-info<!-- ELSE -->alert-success<!-- ENDIF available.core -->">
-						<strong>{available.text}</strong> {available.route}
-						<span class="pull-right badge"><!-- IF available.core -->core<!-- ELSE -->plugin<!-- ENDIF available.core --></span>
+					<li data-id="@index" class="clearfix">
+						<div data-id="@index" class="drag-item alert <!-- IF available.core -->alert-warning<!-- ELSE -->alert-info<!-- ENDIF available.core --> pull-left">
+							<i class="fa fa-fw <!-- IF available.iconClass -->{available.iconClass}<!-- ELSE -->fa-navicon<!-- ENDIF available.iconClass -->"></i>
+						</div>
+						<p>
+							<strong>{available.text}</strong> {available.route} <br/>
+							<!-- IF available.core --> core <!-- ELSE --> plugin <!-- ENDIF available.core -->
+						</p>
 					</li>
 					<!-- END available -->
-					<input type="hidden" template-variable="available" value="{function.stringify, available}" />
 				</ul>
 			</div>
 		</div>
 	</div>
-
-	<div class="col-lg-3 acp-sidebar">
-		<div class="panel panel-default">
-			<div class="panel-heading">Navigation Control</div>
-			<div class="panel-body">
-				<button class="btn btn-primary btn-md" id="save">Save Changes</button>
-			</div>
-		</div>
-	</div>
 </div>
+
+<button id="save" class="floating-button mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored">
+	<i class="material-icons">save</i>
+</button>

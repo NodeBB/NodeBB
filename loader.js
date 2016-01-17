@@ -8,7 +8,7 @@ var	nconf = require('nconf'),
 
 	async = require('async'),
 	logrotate = require('logrotate-stream'),
-
+	file = require('./src/file'),
 	pkg = require('./package.json');
 
 nconf.argv().env().file({
@@ -17,7 +17,7 @@ nconf.argv().env().file({
 
 var	pidFilePath = __dirname + '/pidfile',
 	output = logrotate({ file: __dirname + '/logs/output.log', size: '1m', keep: 3, compress: true }),
-	silent = nconf.get('silent') !== false,
+	silent = nconf.get('silent') === 'false' ? false : nconf.get('silent') !== false,
 	numProcs,
 	workers = [],
 
@@ -90,8 +90,7 @@ Loader.addWorkerEvents = function(worker) {
 						worker.send({
 							action: 'js-propagate',
 							cache: Loader.js.cache,
-							map: Loader.js.map,
-							hash: Loader.js.hash
+							map: Loader.js.map
 						});
 					}
 
@@ -99,8 +98,7 @@ Loader.addWorkerEvents = function(worker) {
 						worker.send({
 							action: 'css-propagate',
 							cache: Loader.css.cache,
-							acpCache: Loader.css.acpCache,
-							hash: Loader.css.hash
+							acpCache: Loader.css.acpCache
 						});
 					}
 
@@ -117,25 +115,21 @@ Loader.addWorkerEvents = function(worker) {
 				case 'js-propagate':
 					Loader.js.cache = message.cache;
 					Loader.js.map = message.map;
-					Loader.js.hash = message.hash;
 
 					Loader.notifyWorkers({
 						action: 'js-propagate',
 						cache: message.cache,
-						map: message.map,
-						hash: message.hash
+						map: message.map
 					}, worker.pid);
 				break;
 				case 'css-propagate':
 					Loader.css.cache = message.cache;
 					Loader.css.acpCache = message.acpCache;
-					Loader.css.hash = message.hash;
 
 					Loader.notifyWorkers({
 						action: 'css-propagate',
 						cache: message.cache,
-						acpCache: message.acpCache,
-						hash: message.hash
+						acpCache: message.acpCache
 					}, worker.pid);
 				break;
 				case 'templates:compiled':
@@ -248,8 +242,8 @@ Loader.notifyWorkers = function(msg, worker_pid) {
 
 fs.open(path.join(__dirname, 'config.json'), 'r', function(err) {
 	if (!err) {
-		if (nconf.get('daemon') !== false) {
-			if (fs.existsSync(pidFilePath)) {
+		if (nconf.get('daemon') !== 'false' && nconf.get('daemon') !== false) {
+			if (file.existsSync(pidFilePath)) {
 				try {
 					var	pid = fs.readFileSync(pidFilePath, { encoding: 'utf-8' });
 					process.kill(pid, 0);

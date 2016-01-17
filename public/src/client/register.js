@@ -16,6 +16,8 @@ define('forum/register', ['csrf', 'translator'], function(csrf, translator) {
 			register = $('#register'),
 			agreeTerms = $('#agree-terms');
 
+		handleLanguageOverride();
+
 		$('#referrer').val(app.previousUrl);
 
 		email.on('blur', function() {
@@ -23,6 +25,12 @@ define('forum/register', ['csrf', 'translator'], function(csrf, translator) {
 				validateEmail(email.val());
 			}
 		});
+
+		var query = utils.params();
+		if (query.email && query.token) {
+			email.val(decodeURIComponent(query.email));
+			$('#token').val(query.token);
+		}
 
 		// Update the "others can mention you via" text
 		username.on('keyup', function() {
@@ -69,7 +77,20 @@ define('forum/register', ['csrf', 'translator'], function(csrf, translator) {
 							'x-csrf-token': csrf.get()
 						},
 						success: function(data, status) {
-							window.location.href = data;
+							registerBtn.removeClass('disabled');
+							if (!data) {
+								return;
+							}
+							if (data.referrer) {
+								window.location.href = data.referrer;
+							} else if (data.message) {
+								require(['translator'], function(translator) {
+									translator.translate(data.message, function(msg) {
+										bootbox.alert(msg);
+										ajaxify.go('/');
+									});
+								});
+							}
 						},
 						error: function(data, status) {
 							var errorEl = $('#register-error-notify');
@@ -84,7 +105,7 @@ define('forum/register', ['csrf', 'translator'], function(csrf, translator) {
 			});
 		});
 
-		if(agreeTerms.length) {
+		if (agreeTerms.length) {
 			agreeTerms.on('click', function() {
 				if ($(this).prop('checked')) {
 					register.removeAttr('disabled');
@@ -139,7 +160,7 @@ define('forum/register', ['csrf', 'translator'], function(csrf, translator) {
 			socket.emit('user.exists', {
 				username: username
 			}, function(err, exists) {
-				if(err) {
+				if (err) {
 					return app.alertError(err.message);
 				}
 
@@ -162,6 +183,8 @@ define('forum/register', ['csrf', 'translator'], function(csrf, translator) {
 			showError(password_notify, '[[user:change_password_error_length]]');
 		} else if (!utils.isPasswordValid(password)) {
 			showError(password_notify, '[[user:change_password_error]]');
+		} else if (password === $('#username').val()) {
+			showError(password_notify, '[[user:password_same_as_username]]');
 		} else {
 			showSuccess(password_notify, successIcon);
 		}
@@ -207,6 +230,14 @@ define('forum/register', ['csrf', 'translator'], function(csrf, translator) {
 		});
 	}
 
+	function handleLanguageOverride() {
+		if (!app.user.uid && config.defaultLang !== config.userLang) {
+			var formEl = $('[component="register/local"]'),
+				langEl = $('<input type="hidden" name="userLang" value="' + config.userLang + '" />');
+
+			formEl.append(langEl);
+		}
+	}
 
 	return Register;
 });

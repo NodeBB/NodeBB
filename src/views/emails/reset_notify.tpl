@@ -4,7 +4,4 @@
 
 <p>[[email:reset.notify.text2]]</p>
 
-<p>
-	[[email:closing]]<br />
-	<strong>{site_title}</strong>
-</p>
+{footer}

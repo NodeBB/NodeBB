@@ -1,6 +1,6 @@
 'use strict';
 
-/* globals define, app, ajaxify, bootbox, socket, templates, utils */
+/* globals define, app, ajaxify, bootbox, socket, templates, utils, config */
 
 define('forum/topic/postTools', ['share', 'navigator', 'components', 'translator'], function(share, navigator, components, translator) {
 
@@ -8,14 +8,42 @@ define('forum/topic/postTools', ['share', 'navigator', 'components', 'translator
 		topicName;
 
 	PostTools.init = function(tid) {
-		topicName = ajaxify.variables.get('topic_name');
+		topicName = ajaxify.data.title;
+
+		renderMenu();
 
 		addPostHandlers(tid);
 
 		share.addShareHandlers(topicName);
 
 		addVoteHandler();
+
+		PostTools.updatePostCount(ajaxify.data.postcount);
 	};
+
+	function renderMenu() {
+		$('[component="topic"]').on('show.bs.dropdown', '.moderator-tools', function() {
+			var $this = $(this);
+			var dropdownMenu = $this.find('.dropdown-menu');
+			if (dropdownMenu.html()) {
+				return;
+			}
+			var postEl = $this.parents('[data-pid]');
+			var pid = postEl.attr('data-pid');
+			var index = parseInt(postEl.attr('data-index'), 10);
+			socket.emit('posts.loadPostTools', {pid: pid, cid: ajaxify.data.cid}, function(err, data) {
+				if (err) {
+					return app.alertError(err);
+				}
+				data.posts.display_move_tools = data.posts.display_move_tools && index !== 0;
+				templates.parse('partials/topic/post-menu-list', data, function(html) {
+					translator.translate(html, function(html) {
+						dropdownMenu.html(html);
+					});
+				});
+			});
+		});
+	}
 
 	PostTools.toggle = function(pid, isDeleted) {
 		var postEl = components.get('post', 'pid', pid);
@@ -28,20 +56,16 @@ define('forum/topic/postTools', ['share', 'navigator', 'components', 'translator
 		postEl.find('[component="post/purge"]').toggleClass('hidden', !isDeleted);
 	};
 
-	PostTools.updatePostCount = function() {
-		socket.emit('topics.postcount', ajaxify.variables.get('topic_id'), function(err, postCount) {
-			if (!err) {
-				var postCountEl = components.get('topic/post-count');
-				postCountEl.html(postCount).attr('title', postCount);
-				utils.makeNumbersHumanReadable(postCountEl);
-				navigator.setCount(postCount);
-			}
-		});
+	PostTools.updatePostCount = function(postCount) {
+		var postCountEl = components.get('topic/post-count');
+		postCountEl.html(postCount).attr('title', postCount);
+		utils.makeNumbersHumanReadable(postCountEl);
+		navigator.setCount(postCount);
 	};
 
 	function addVoteHandler() {
-		components.get('topic').on('mouseenter', '[data-pid] .votes', function() {
-			loadDataAndCreateTooltip($(this));
+		components.get('topic').on('mouseenter', '[data-pid] [component="post/vote-count"]', function() {
+			loadDataAndCreateTooltip($(this).parent());
 		});
 	}
 
@@ -55,6 +79,13 @@ define('forum/topic/postTools', ['share', 'navigator', 'components', 'translator
 	}
 
 	function createTooltip(el, data) {
+		function doCreateTooltip(title) {
+			el.attr('title', title).tooltip('fixTitle').tooltip('show');
+			el.on('hidden.bs.tooltip', function() {
+				el.tooltip('destroy');
+				el.off('hidden.bs.tooltip');
+			});
+		}
 		var usernames = data.usernames;
 		if (!usernames.length) {
 			return;
@@ -63,11 +94,11 @@ define('forum/topic/postTools', ['share', 'navigator', 'components', 'translator
 			usernames = usernames.join(', ').replace(/,/g, '|');
 			translator.translate('[[topic:users_and_others, ' + usernames + ', ' + data.otherCount + ']]', function(translated) {
 				translated = translated.replace(/\|/g, ',');
-				el.attr('title', translated).tooltip('destroy').tooltip('show');
+				doCreateTooltip(translated);
 			});
 		} else {
 			usernames = usernames.join(', ');
-			el.attr('title', usernames).tooltip('destroy').tooltip('show');
+			doCreateTooltip(usernames);
 		}
 	}
 
@@ -82,8 +113,14 @@ define('forum/topic/postTools', ['share', 'navigator', 'components', 'translator
 			onReplyClicked($(this), tid, topicName);
 		});
 
-		components.get('topic/reply').on('click', function() {
+		$('.topic').on('click', '[component="topic/reply"]', function() {
 			onReplyClicked($(this), tid, topicName);
+		});
+
+		$('.topic').on('click', '[component="topic/reply-as-topic"]', function() {
+			$(window).trigger('action:composer.topic.new', {
+				cid: ajaxify.data.cid,
+			});
 		});
 
 		postContainer.on('click', '[component="post/favourite"]', function() {
@@ -103,84 +140,101 @@ define('forum/topic/postTools', ['share', 'navigator', 'components', 'translator
 		});
 
 		postContainer.on('click', '[component="post/flag"]', function() {
-			flagPost(getData($(this), 'data-pid'));
-		});
-
-		postContainer.on('click', '[component="post/edit"]', function(e) {
-			var btn = $(this);
-			require(['composer'], function(composer) {
-				composer.editPost(getData(btn, 'data-pid'));
+			var pid = getData($(this), 'data-pid');
+			require(['forum/topic/flag'], function(flag) {
+				flag.showFlagModal(pid);
 			});
 		});
 
-		postContainer.on('click', '[component="post/delete"]', function(e) {
+		postContainer.on('click', '[component="post/edit"]', function() {
+			var btn = $(this);
+			$(window).trigger('action:composer.post.edit', {
+				pid: getData(btn, 'data-pid')
+			});
+		});
+
+		postContainer.on('click', '[component="post/delete"]', function() {
 			togglePostDelete($(this), tid);
 		});
 
-		postContainer.on('click', '[component="post/restore"]', function(e) {
+		postContainer.on('click', '[component="post/restore"]', function() {
 			togglePostDelete($(this), tid);
 		});
 
-		postContainer.on('click', '[component="post/purge"]', function(e) {
+		postContainer.on('click', '[component="post/purge"]', function() {
 			purgePost($(this), tid);
 		});
 
-		postContainer.on('click', '[component="post/move"]', function(e) {
+		postContainer.on('click', '[component="post/move"]', function() {
 			openMovePostModal($(this));
 		});
 
-		postContainer.on('click', '[component="post/chat"]', function(e) {
+		postContainer.on('click', '[component="post/chat"]', function() {
 			openChat($(this));
 		});
 	}
 
 	function onReplyClicked(button, tid, topicName) {
-		require(['composer'], function(composer) {
-			var selectionText = '',
-				selection = window.getSelection ? window.getSelection() : document.selection.createRange(),
-				topicUUID = composer.findByTid(tid);
+		showStaleWarning(function(proceed) {
+			if (!proceed) {
+				var selectionText = '',
+					selection = window.getSelection ? window.getSelection() : document.selection.createRange();
 
-			if ($(selection.baseNode).parents('[component="post/content"]').length > 0) {
-				var snippet = selection.toString();
-				if (snippet.length) {
-					selectionText = '> ' + snippet.replace(/\n/g, '\n> ') + '\n\n';
+				if ($(selection.baseNode).parents('[component="post/content"]').length > 0) {
+					selectionText = selection.toString();
+				}
+
+				var username = getUserName(selectionText ? $(selection.baseNode) : button);
+				if (getData(button, 'data-uid') === '0') {
+					username = '';
+				}
+
+				var toPid = button.is('[component="post/reply"]') ? getData(button, 'data-pid') : null;
+
+				if (selectionText.length) {
+					$(window).trigger('action:composer.addQuote', {
+						tid: tid,
+						slug: ajaxify.data.slug,
+						index: getData(button, 'data-index'),
+						pid: toPid,
+						topicName: topicName,
+						username: username,
+						text: selectionText
+					});
+				} else {
+					$(window).trigger('action:composer.post.new', {
+						tid: tid,
+						pid: toPid,
+						topicName: topicName,
+						text: username ? username + ' ' : ''
+					});
 				}
 			}
-
-			var username = getUserName(selectionText ? $(selection.baseNode) : button);
-			if (getData(button, 'data-uid') === '0') {
-				username = '';
-			}
-			if (selectionText.length) {
-				composer.addQuote(tid, ajaxify.variables.get('topic_slug'), getData(button, 'data-index'), getData(button, 'data-pid'), topicName, username, selectionText, topicUUID);
-			} else {
-				composer.newReply(tid, getData(button, 'data-pid'), topicName, username ? username + ' ' : '');
-			}
 		});
-
 	}
 
 	function onQuoteClicked(button, tid, topicName) {
-		require(['composer'], function(composer) {
-			var username = getUserName(button),
-				pid = getData(button, 'data-pid'),
-				topicUUID = composer.findByTid(tid);
+		showStaleWarning(function(proceed) {
+			if (!proceed) {
+				var username = getUserName(button),
+					pid = getData(button, 'data-pid');
 
-			socket.emit('posts.getRawPost', pid, function(err, post) {
-				if(err) {
-					return app.alertError(err.message);
-				}
-				var quoted = '';
-				if(post) {
-					quoted = '> ' + post.replace(/\n/g, '\n> ') + '\n\n';
-				}
+				socket.emit('posts.getRawPost', pid, function(err, post) {
+					if(err) {
+						return app.alertError(err.message);
+					}
 
-				if(topicUUID) {
-					composer.addQuote(tid, ajaxify.variables.get('topic_slug'), getData(button, 'data-index'), pid, topicName, username, quoted, topicUUID);
-				} else {
-					composer.newReply(tid, pid, topicName, '[[modules:composer.user_said, ' + username + ']]\n' + quoted);
-				}
-			});
+					$(window).trigger('action:composer.addQuote', {
+						tid: tid,
+						slug: ajaxify.data.slug,
+						index: getData(button, 'data-index'),
+						pid: pid,
+						username: username,
+						topicName: topicName,
+						text: post
+					});
+				});
+			}
 		});
 	}
 
@@ -208,7 +262,11 @@ define('forum/topic/postTools', ['share', 'navigator', 'components', 'translator
 			room_id: app.currentRoom
 		}, function(err) {
 			if (err) {
-				app.alertError(err.message);
+				if (err.message === 'self-vote') {
+					showVotes(post.attr('data-pid'));
+				} else {
+					app.alertError(err.message);
+				}
 			}
 		});
 
@@ -216,8 +274,13 @@ define('forum/topic/postTools', ['share', 'navigator', 'components', 'translator
 	}
 
 	function showVotes(pid) {
-		socket.emit('posts.getVoters', {pid: pid, cid: ajaxify.variables.get('category_id')}, function(err, data) {
+		socket.emit('posts.getVoters', {pid: pid, cid: ajaxify.data.cid}, function(err, data) {
 			if (err) {
+				if (err.message === '[[error:no-privileges]]') {
+					return;
+				}
+
+				// Only show error if it's an unexpected error.
 				return app.alertError(err.message);
 			}
 
@@ -243,7 +306,9 @@ define('forum/topic/postTools', ['share', 'navigator', 'components', 'translator
 	function getUserName(button) {
 		var username = '',
 			post = button.parents('[data-pid]');
-
+		if (button.attr('component') === 'topic/reply') {
+			return username;
+		}
 		if (post.length) {
 			username = post.attr('data-username').replace(/\s/g, '-');
 		}
@@ -286,79 +351,108 @@ define('forum/topic/postTools', ['share', 'navigator', 'components', 'translator
 	}
 
 	function openMovePostModal(button) {
-		var moveModal = $('#move-post-modal'),
-			moveBtn = moveModal.find('#move_post_commit'),
-			topicId = moveModal.find('#topicId');
+		parseMoveModal(function(html) {
+			var moveModal = $(html);
 
-		showMoveModal();
+			var	moveBtn = moveModal.find('#move_post_commit'),
+				topicId = moveModal.find('#topicId');
 
-		moveModal.find('.close,#move_post_cancel').on('click', function() {
-			moveModal.addClass('hide');
-		});
+			moveModal.on('hidden.bs.modal', function() {
+				moveModal.remove();
+			});
 
-		topicId.on('change', function() {
-			if(topicId.val().length) {
-				moveBtn.removeAttr('disabled');
-			} else {
-				moveBtn.attr('disabled', true);
-			}
-		});
+			showMoveModal(moveModal);
 
-		moveBtn.on('click', function() {
-			movePost(button.parents('[data-pid]'), getData(button, 'data-pid'), topicId.val());
+			moveModal.find('.close, #move_post_cancel').on('click', function() {
+				moveModal.addClass('hide');
+			});
+
+			topicId.on('keyup change', function() {
+				moveBtn.attr('disabled', !topicId.val())
+			});
+
+			moveBtn.on('click', function() {
+				movePost(button.parents('[data-pid]'), getData(button, 'data-pid'), topicId.val(), function() {
+					moveModal.modal('hide');
+					topicId.val('');
+				});
+			});
+
 		});
 	}
 
-	function showMoveModal() {
-		$('#move-post-modal').removeClass('hide')
+	function parseMoveModal(callback) {
+		templates.parse('partials/move_post_modal', {}, function(html) {
+			translator.translate(html, callback);
+		});
+	}
+
+	function showMoveModal(modal) {
+		modal.modal('show')
 			.css("position", "fixed")
-			.css("left", Math.max(0, (($(window).width() - $($('#move-post-modal')).outerWidth()) / 2) + $(window).scrollLeft()) + "px")
+			.css("left", Math.max(0, (($(window).width() - modal.outerWidth()) / 2) + $(window).scrollLeft()) + "px")
 			.css("top", "0px")
 			.css("z-index", "2000");
 	}
 
-	function movePost(post, pid, tid) {
-		socket.emit('topics.movePost', {pid: pid, tid: tid}, function(err) {
-			$('#move-post-modal').addClass('hide');
-
+	function movePost(post, pid, tid, callback) {
+		socket.emit('posts.movePost', {pid: pid, tid: tid}, function(err) {
 			if (err) {
-				$('#topicId').val('');
-				return app.alertError(err.message);
+				app.alertError(err.message);
+				return callback();
 			}
 
 			post.fadeOut(500, function() {
 				post.remove();
 			});
 
-			$('#topicId').val('');
-
 			app.alertSuccess('[[topic:post_moved]]');
-		});
-	}
-
-	function flagPost(pid) {
-		translator.translate('[[topic:flag_confirm]]', function(message) {
-			bootbox.confirm(message, function(confirm) {
-				if (!confirm) {
-					return;
-				}
-				socket.emit('posts.flag', pid, function(err) {
-					if (err) {
-						return app.alertError(err.message);
-					}
-
-					app.alertSuccess('[[topic:flag_success]]');
-				});
-			});
+			callback();
 		});
 	}
 
 	function openChat(button) {
 		var post = button.parents('[data-pid]');
 
-		app.openChat(post.attr('data-username'), post.attr('data-uid'));
+		app.newChat(post.attr('data-uid'));
 		button.parents('.btn-group').find('.dropdown-toggle').click();
 		return false;
+	}
+
+	function showStaleWarning(callback) {
+		if (ajaxify.data.lastposttime < (Date.now() - (1000*60*60*24*config.topicStaleDays))) {
+			translator.translate('[[topic:stale.warning]]', function(translated) {
+				var warning = bootbox.dialog({
+						title: '[[topic:stale.title]]',
+						message: translated,
+						buttons: {
+							reply: {
+								label: '[[topic:stale.reply_anyway]]',
+								className: 'btn-link',
+								callback: function() {
+									callback(false);
+								}
+							},
+							create: {
+								label: '[[topic:stale.create]]',
+								className: 'btn-primary',
+								callback: function() {
+									translator.translate('[[topic:stale.link_back, ' + ajaxify.data.title + ', ' + config.relative_path + '/topic/' + ajaxify.data.slug + ']]', function(body) {
+										$(window).trigger('action:composer.topic.new', {
+											cid: ajaxify.data.cid,
+											body: body
+										});
+									});
+								}
+							}
+						}
+					});
+
+				warning.modal();
+			});
+		} else {
+			callback(false);
+		}
 	}
 
 	return PostTools;

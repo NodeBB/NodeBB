@@ -1,17 +1,13 @@
 
 'use strict';
 
-var async = require('async'),
-	validator = require('validator'),
-	url = require('url'),
-	S = require('string'),
+var async = require('async');
+var S = require('string');
 
-	utils = require('../../public/src/utils'),
-	meta = require('../meta'),
-	events = require('../events'),
-	db = require('../database'),
-	Password = require('../password'),
-	plugins = require('../plugins');
+var utils = require('../../public/src/utils');
+var meta = require('../meta');
+var db = require('../database');
+var plugins = require('../plugins');
 
 module.exports = function(User) {
 
@@ -70,11 +66,15 @@ module.exports = function(User) {
 				if (!data.username) {
 					return next();
 				}
+				data.username = data.username.trim();
 				User.getUserFields(uid, ['username', 'userslug'], function(err, userData) {
+					if (err) {
+						return next(err);
+					}
 
 					var userslug = utils.slugify(data.username);
 
-					if(userslug === userData.userslug) {
+					if (userslug === userData.userslug) {
 						return next();
 					}
 
@@ -86,12 +86,12 @@ module.exports = function(User) {
 						return next(new Error('[[error:username-too-long]]'));
 					}
 
-					if(!utils.isUserNameValid(data.username) || !userslug) {
+					if (!utils.isUserNameValid(data.username) || !userslug) {
 						return next(new Error('[[error:invalid-username]]'));
 					}
 
-					User.exists(userslug, function(err, exists) {
-						if(err) {
+					User.existsBySlug(userslug, function(err, exists) {
+						if (err) {
 							return next(err);
 						}
 
@@ -110,7 +110,7 @@ module.exports = function(User) {
 						return callback(err);
 					}
 					plugins.fireHook('action:user.updateProfile', {data: data, uid: uid});
-					User.getUserFields(uid, ['email', 'username', 'userslug', 'picture', 'gravatarpicture'], callback);
+					User.getUserFields(uid, ['email', 'username', 'userslug', 'picture'], callback);
 				});
 			});
 
@@ -129,23 +129,6 @@ module.exports = function(User) {
 					return updateFullname(uid, data.fullname, next);
 				} else if (field === 'signature') {
 					data[field] = S(data[field]).stripTags().s;
-				} else if (field === 'website') {
-					if (data[field].length > 0) {
-						var urlObj = url.parse(data[field], false, true);
-						if (!urlObj.protocol) {
-							urlObj.protocol = 'http';
-							urlObj.slashes = true;
-						}
-						if (!urlObj.hostname && urlObj.pathname) {
-							urlObj.hostname = urlObj.pathname;
-							urlObj.pathname = null;
-						}
-						if (urlObj.pathname === '/') {
-							urlObj.pathname = null;
-						}
-					}
-
-					data[field] = url.format(urlObj);
 				}
 
 				User.setUserField(uid, field, data[field], next);
@@ -164,19 +147,20 @@ module.exports = function(User) {
 			if (userData.email === newEmail) {
 				return callback();
 			}
-
-			db.sortedSetRemove('email:uid', userData.email.toLowerCase(), function(err) {
+			async.series([
+				async.apply(db.sortedSetRemove, 'email:uid', userData.email.toLowerCase()),
+				async.apply(db.sortedSetRemove, 'email:sorted', userData.email.toLowerCase() + ':' + uid)
+			], function(err) {
 				if (err) {
 					return callback(err);
 				}
 
-				var gravatarpicture = User.createGravatarURLFromEmail(newEmail);
 				async.parallel([
 					function(next) {
-						User.setUserField(uid, 'gravatarpicture', gravatarpicture, next);
+						db.sortedSetAdd('email:uid', uid, newEmail.toLowerCase(), next);
 					},
 					function(next) {
-						db.sortedSetAdd('email:uid', uid, newEmail.toLowerCase(), next);
+						db.sortedSetAdd('email:sorted',  0, newEmail.toLowerCase() + ':' + uid, next);
 					},
 					function(next) {
 						User.setUserField(uid, 'email', newEmail, next);
@@ -186,14 +170,7 @@ module.exports = function(User) {
 							User.email.sendValidationEmail(uid, newEmail);
 						}
 						User.setUserField(uid, 'email:confirmed', 0, next);
-					},
-					function(next) {
-						if (userData.picture !== userData.uploadedpicture) {
-							User.setUserField(uid, 'picture', gravatarpicture, next);
-						} else {
-							next();
-						}
-					},
+					}
 				], callback);
 			});
 		});
@@ -216,7 +193,13 @@ module.exports = function(User) {
 				function(next) {
 					var newUserslug = utils.slugify(newUsername);
 					updateUidMapping('userslug', uid, newUserslug, userData.userslug, next);
-				}
+				},
+				function(next) {
+					async.series([
+						async.apply(db.sortedSetRemove, 'username:sorted', userData.username.toLowerCase() + ':' + uid),
+						async.apply(db.sortedSetAdd, 'username:sorted', 0, newUsername.toLowerCase() + ':' + uid)
+					], next);
+				},
 			], callback);
 		});
 	}
@@ -259,48 +242,32 @@ module.exports = function(User) {
 			return callback(new Error('[[error:invalid-uid]]'));
 		}
 
-		function hashAndSetPassword(callback) {
-			User.hashPassword(data.newPassword, function(err, hash) {
-				if (err) {
-					return callback(err);
+		async.waterfall([
+			function (next) {
+				User.isPasswordValid(data.newPassword, next);
+			},
+			function (next) {
+				if (parseInt(uid, 10) !== parseInt(data.uid, 10)) {
+					User.isAdministrator(uid, next);
+				} else {
+					User.isPasswordCorrect(uid, data.currentPassword, next);
+				}
+			},
+			function (isAdminOrPasswordMatch, next) {
+				if (!isAdminOrPasswordMatch) {
+					return next(new Error('[[error:change_password_error_wrong_current]]'));
 				}
 
+				User.hashPassword(data.newPassword, next);
+			},
+			function (hashedPassword, next) {
 				async.parallel([
-					async.apply(User.setUserField, data.uid, 'password', hash),
+					async.apply(User.setUserField, data.uid, 'password', hashedPassword),
 					async.apply(User.reset.updateExpiry, data.uid)
-				], callback);
-			});
-		}
-
-		if (!utils.isPasswordValid(data.newPassword)) {
-			return callback(new Error('[[user:change_password_error]]'));
-		}
-
-		if(parseInt(uid, 10) !== parseInt(data.uid, 10)) {
-			User.isAdministrator(uid, function(err, isAdmin) {
-				if(err || !isAdmin) {
-					return callback(err || new Error('[[user:change_password_error_privileges'));
-				}
-
-				hashAndSetPassword(callback);
-			});
-		} else {
-			db.getObjectField('user:' + uid, 'password', function(err, currentPassword) {
-				if(err) {
-					return callback(err);
-				}
-
-				if (!currentPassword) {
-					return hashAndSetPassword(callback);
-				}
-
-				Password.compare(data.currentPassword, currentPassword, function(err, res) {
-					if (err || !res) {
-						return callback(err || new Error('[[user:change_password_error_wrong_current]]'));
-					}
-					hashAndSetPassword(callback);
+				], function(err) {
+					next(err);
 				});
-			});
-		}
+			}
+		], callback);
 	};
 };

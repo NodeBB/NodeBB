@@ -1,18 +1,19 @@
 {
     "register": "تسجيل",
-    "help.email": "افتراضيا، سيتم إخفاء بريدك الإلكتروني من الجمهور.",
+    "help.email": "افتراضيا، سيتم إخفاء بريدك الإلكتروني من العامة.",
     "help.username_restrictions": "اسم مستخدم فريدة من نوعها بين1% و2% حرفا. يمكن للآخرين ذكرك @ <'span id='your-username> اسم المستخدم </span>.",
-    "help.minimum_password_length": "كلمتك السر يجب أن تكون على الأقل متألفة من 1% أحرف",
+    "help.minimum_password_length": "كلمة المرور يجب أن تكون على الأقل بها 1% أحرف",
     "email_address": "عنوان البريد الإلكتروني",
     "email_address_placeholder": "ادخل عنوان البريد الإلكتروني",
     "username": "اسم المستخدم",
     "username_placeholder": "أدخل اسم المستخدم",
-    "password": "كلمة السر",
-    "password_placeholder": "أدخل كلمة السر",
-    "confirm_password": "تأكيد كلمة السر",
-    "confirm_password_placeholder": "تأكيد كلمة السر",
+    "password": "كلمة المرور",
+    "password_placeholder": "أدخل كلمة المرور",
+    "confirm_password": "تأكيد كلمة المرور",
+    "confirm_password_placeholder": "تأكيد كلمة المرور",
     "register_now_button": "قم بالتسجيل الآن",
     "alternative_registration": "طريقة تسجيل بديلة",
     "terms_of_use": "شروط الاستخدام",
-    "agree_to_terms_of_use": "أوافق على شروط الاستخدام"
+    "agree_to_terms_of_use": "أوافق على شروط الاستخدام",
+    "registration-added-to-queue": "Your registration has been added to the approval queue. You will receive an email when it is accepted by an administrator."
 }

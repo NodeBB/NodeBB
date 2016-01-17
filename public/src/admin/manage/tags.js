@@ -1,5 +1,5 @@
 "use strict";
-/*global define, socket, app, admin, utils, bootbox, RELATIVE_PATH*/
+/*global define, socket, app, utils, bootbox*/
 
 define('admin/manage/tags', [
 	'forum/infinitescroll',
@@ -10,7 +10,6 @@ define('admin/manage/tags', [
 		timeoutId = 0;
 
 	Tags.init = function() {
-		handleColorPickers();
 		selectable.enable('.tag-management', '.tag-row');
 
 		handleSearch();
@@ -26,12 +25,12 @@ define('admin/manage/tags', [
 			}
 
 			timeoutId = setTimeout(function() {
-				socket.emit('topics.searchAndLoadTags', {query: $('#tag-search').val()}, function(err, tags) {
+				socket.emit('topics.searchAndLoadTags', {query: $('#tag-search').val()}, function(err, result) {
 					if (err) {
 						return app.alertError(err.message);
 					}
 
-					infinitescroll.parseAndTranslate('admin/manage/tags', 'tags', {tags: tags}, function(html) {
+					app.parseAndTranslate('admin/manage/tags', 'tags', {tags: result.tags}, function(html) {
 						$('.tag-list').html(html);
 						utils.makeNumbersHumanReadable(html.find('.human-readable-number'));
 						timeoutId = 0;
@@ -44,7 +43,7 @@ define('admin/manage/tags', [
 	}
 
 	function handleModify() {
-		$('#modify').on('click', function(ev) {
+		$('#modify').on('click', function() {
 			var tagsToModify = $('.tag-row.selected');
 			if (!tagsToModify.length) {
 				return;
@@ -53,7 +52,7 @@ define('admin/manage/tags', [
 			var firstTag = $(tagsToModify[0]),
 				title = tagsToModify.length > 1 ? 'Editing multiple tags' : 'Editing ' + firstTag.find('.tag-item').text() + ' tag';
 
-			bootbox.dialog({
+			var modal = bootbox.dialog({
 				title:  title,
 				message: firstTag.find('.tag-modal').html(),
 				buttons: {
@@ -79,9 +78,7 @@ define('admin/manage/tags', [
 				}
 			});
 
-			setTimeout(function() {
-				handleColorPickers();
-			}, 500);
+			handleColorPickers(modal);
 		});
 	}
 
@@ -110,21 +107,13 @@ define('admin/manage/tags', [
 		});
 	}
 
-	function handleColorPickers() {
+	function handleColorPickers(modal) {
 		function enableColorPicker(idx, inputEl) {
-			var $inputEl = $(inputEl),
-				previewEl = $inputEl.parents('.tag-row').find('.tag-item');
-
-			colorpicker.enable($inputEl, function(hsb, hex) {
-				if ($inputEl.attr('data-name') === 'bgColor') {
-					previewEl.css('background-color', '#' + hex);
-				} else if ($inputEl.attr('data-name') === 'color') {
-					previewEl.css('color', '#' + hex);
-				}
-			});
+			var $inputEl = $(inputEl);
+			colorpicker.enable($inputEl);
 		}
 
-		$('[data-name="bgColor"], [data-name="color"]').each(enableColorPicker);
+		modal.find('[data-name="bgColor"], [data-name="color"]').each(enableColorPicker);
 	}
 
 	function save(tag) {

@@ -5,12 +5,9 @@
 
 <a href="{url}/chats/{fromUserslug}">[[email:notif.chat.cta]]</a>
 
-<p>
-	[[email:closing]]<br />
-	<strong>{site_title}</strong>
-</p>
+{footer}
 
 <hr />
 <p>
-	[[email:notif.chat.unsub.info]] <a href="{url}/user/{username}/settings">[[email:unsub.cta]]</a>.
+	[[email:notif.chat.unsub.info]] <a href="{url}/user/{userslug}/settings">[[email:unsub.cta]]</a>.
 </p>

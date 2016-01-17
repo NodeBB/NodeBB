@@ -5,5 +5,6 @@
     "mark_as_read": "既読にする",
     "selected": "選択済み",
     "all": "すべて",
+    "all_categories": "All categories",
     "topics_marked_as_read.success": "すべてのスレッドを既読にしました。"
 }

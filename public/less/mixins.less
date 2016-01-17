@@ -52,3 +52,33 @@
 	text-overflow: ellipsis;
 	white-space: nowrap;
 }
+
+.fix-lists {
+	ul {
+		> li {
+			list-style-type: disc;
+
+			ul > li {
+				list-style-type: circle;
+
+				ul > li {
+					list-style-type: square;
+				}
+			}
+		}
+
+		margin-bottom: 10px;
+	}
+
+	ol {
+		margin-bottom: 10px;
+	}
+}
+
+.user-icon-style(@size: 32px, @font-size: 1.5rem, @border-radius: inherit) {
+	border-radius: @border-radius;
+	width: @size;
+	height: @size;
+	line-height: @size;
+	font-size: @font-size;
+}

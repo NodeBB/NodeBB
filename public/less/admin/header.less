@@ -1,0 +1,92 @@
+.header {
+	.no-select;
+	position: relative;
+	background: #333;
+	width: 100%;
+	height: 200px;
+	margin-bottom: 50px;
+	font-size: 16px;
+
+	#main-page-title {
+		position: absolute;
+		left: 48px;
+		bottom: 17px;
+		color: #aaa;
+		font-size: 47px;
+		font-weight: 300;
+	}
+
+	#user_label {
+		position: absolute;
+		right: 30px;
+		bottom: 125px;
+
+		.dropdown {
+			margin-right: 0px;
+
+			.dropdown-toggle i {
+				padding: 0 1rem;
+			}
+		}
+
+		#user_dropdown {
+			font-size: 25px;
+			color: #eee;
+
+			i {
+				margin-top: 12px;
+				display: block;
+			}
+		}
+	}
+
+	#acp-search {
+		margin-top: 2px;
+		margin-right: 20px;
+
+		input {
+			padding: 10px 20px;
+			width: 250px;
+			height: 44px;
+			background-color: rgba(0, 0, 0, 0.2);
+			border-radius: 3px;
+			box-shadow: none;
+			.transition(.4s ease background-color);
+
+			&:focus {
+				background-color: #eee;
+				color: #333;
+			}
+		}
+
+		.search-match {
+			font-weight: 700;
+			color: black;
+		}
+	}
+
+	> ul {
+		list-style-type: none;
+		padding: 0px;
+		position: absolute;
+		bottom: -11px;
+		left: 50px;
+
+		> li {
+			float: left;
+			margin-right: 30px;
+
+			&.active {
+				border-bottom: 4px solid @brand-primary;
+    			padding-bottom: 10px;
+			}
+
+			> a {
+				color: white;
+				text-transform: uppercase;
+				text-decoration: none;
+				outline: none;
+			}
+		}
+	}
+}

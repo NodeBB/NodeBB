@@ -22,6 +22,7 @@ var async = require('async'),
 	require('./posts/summary')(Posts);
 	require('./posts/recent')(Posts);
 	require('./posts/flags')(Posts);
+	require('./posts/tools')(Posts);
 
 	Posts.exists = function(pid, callback) {
 		db.isSortedSetMember('posts:pid', pid, callback);
@@ -168,25 +169,13 @@ var async = require('async'),
 		});
 	};
 
-	Posts.getPidIndex = function(pid, uid, callback) {
-		async.parallel({
-			settings: function(next) {
-				user.getSettings(uid, next);
-			},
-			tid: function(next) {
-				Posts.getPostField(pid, 'tid', next);
+	Posts.getPidIndex = function(pid, tid, topicPostSort, callback) {
+		var set = topicPostSort === 'most_votes' ? 'tid:' + tid + ':posts:votes' : 'tid:' + tid + ':posts';
+		db.sortedSetRank(set, pid, function(err, index) {
+			if (!utils.isNumber(index)) {
+				return callback(err, 0);
 			}
-		}, function(err, results) {
-			if(err) {
-				return callback(err);
-			}
-			var set = results.settings.topicPostSort === 'most_votes' ? 'tid:' + results.tid + ':posts:votes' : 'tid:' + results.tid + ':posts';
-			db.sortedSetRank(set, pid, function(err, index) {
-				if (!utils.isNumber(index)) {
-					return callback(err, 1);
-				}
-				callback(err, parseInt(index, 10) + 2);
-			});
+			callback(err, parseInt(index, 10) + 1);
 		});
 	};
 
@@ -230,28 +219,37 @@ var async = require('async'),
 		});
 	};
 
-	Posts.updatePostVoteCount = function(pid, voteCount, callback) {
+	Posts.updatePostVoteCount = function(postData, voteCount, callback) {
+		if (!postData || !postData.pid || !postData.tid) {
+			return callback();
+		}
 		async.parallel([
-			function(next) {
-				Posts.getPostField(pid, 'tid', function(err, tid) {
-					if (err) {
-						return next(err);
-					}
-					topics.getTopicField(tid, 'mainPid', function(err, mainPid) {
-						if (err) {
-							return next(err);
-						}
-						if (parseInt(mainPid, 10) === parseInt(pid, 10)) {
+			function (next) {
+				if (postData.uid) {
+					db.sortedSetAdd('uid:' + postData.uid + ':posts:votes', voteCount, postData.pid, next);
+				} else {
+					next();
+				}
+			},
+			function (next) {
+				async.waterfall([
+					function (next) {
+						topics.getTopicField(postData.tid, 'mainPid', next);
+					},
+					function (mainPid, next) {
+						if (parseInt(mainPid, 10) === parseInt(postData.pid, 10)) {
 							return next();
 						}
-						db.sortedSetAdd('tid:' + tid + ':posts:votes', voteCount, pid, next);
-					});
-				});
+						db.sortedSetAdd('tid:' + postData.tid + ':posts:votes', voteCount, postData.pid, next);
+					}
+				], next);
 			},
-			function(next) {
-				Posts.setPostField(pid, 'votes', voteCount, next);
+			function (next) {
+				Posts.setPostField(postData.pid, 'votes', voteCount, next);
 			}
-		], callback);
+		], function(err) {
+			callback(err);
+		});
 	};
 
 }(exports));

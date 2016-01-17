@@ -15,11 +15,11 @@ tagsController.getTag = function(req, res, next) {
 
 	async.waterfall([
 		function(next) {
-			topics.getTagTids(tag, 0, stop, next);
+			topics.getTagTids(req.params.tag, 0, stop, next);
 		},
 		function(tids, next) {
 			if (Array.isArray(tids) && !tids.length) {
-				topics.deleteTag(tag);
+				topics.deleteTag(req.params.tag);
 				return res.render('tag', {
 					topics: [],
 					tag: tag,
@@ -62,7 +62,8 @@ tagsController.getTag = function(req, res, next) {
 			topics: results.topics,
 			tag: tag,
 			nextStart: stop + 1,
-			breadcrumbs: helpers.buildBreadcrumbs([{text: '[[tags:tags]]', url: '/tags'}, {text: tag}])
+			breadcrumbs: helpers.buildBreadcrumbs([{text: '[[tags:tags]]', url: '/tags'}, {text: tag}]),
+			title: '[[pages:tag, ' + tag + ']]'
 		};
 		res.render('tag', data);
 	});
@@ -76,7 +77,8 @@ tagsController.getTags = function(req, res, next) {
 		var data = {
 			tags: tags,
 			nextStart: 100,
-			breadcrumbs: helpers.buildBreadcrumbs([{text: '[[tags:tags]]'}])
+			breadcrumbs: helpers.buildBreadcrumbs([{text: '[[tags:tags]]'}]),
+			title: '[[pages:tags]]'
 		};
 		res.render('tags', data);
 	});

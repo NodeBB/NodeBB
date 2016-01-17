@@ -1,26 +1,25 @@
 "use strict";
 
-var uploadsController = {},
+var fs = require('fs');
+var path = require('path');
+var async = require('async');
+var nconf = require('nconf');
+var validator = require('validator');
+var winston = require('winston');
 
-	fs = require('fs'),
-	path = require('path'),
-	async = require('async'),
-	nconf = require('nconf'),
-	validator = require('validator'),
+var meta = require('../meta');
+var file = require('../file');
+var plugins = require('../plugins');
+var image = require('../image');
 
-	meta = require('../meta'),
-	file = require('../file'),
-	plugins = require('../plugins'),
-	utils = require('../../public/src/utils'),
-	image = require('../image');
-
+var uploadsController = {};
 
 uploadsController.upload = function(req, res, filesIterator, next) {
 	var files = req.files.files;
 
-	if (!req.user) {
+	if (!req.user && meta.config.allowGuestUploads !== '1') {
 		deleteTempFiles(files);
-		return res.status(403).json('not allowed');
+		return res.status(403).json('[[error:guest-upload-disabled]]');
 	}
 
 	if (!Array.isArray(files)) {
@@ -46,17 +45,17 @@ uploadsController.upload = function(req, res, filesIterator, next) {
 
 uploadsController.uploadPost = function(req, res, next) {
 	uploadsController.upload(req, res, function(uploadedFile, next) {
-		file.isFileTypeAllowed(uploadedFile.path, file.allowedExtensions(), function(err) {
-			if (err) {
-				return next(err);
-			}
+		if (uploadedFile.type.match(/image./)) {
+			file.isFileTypeAllowed(uploadedFile.path, function(err) {
+				if (err) {
+					return next(err);
+				}
 
-			if (uploadedFile.type.match(/image./)) {
-				uploadImage(req.user.uid, uploadedFile, next);
-			} else {
-				uploadFile(req.user.uid, uploadedFile, next);
-			}
-		});
+				uploadImage(req.user ? req.user.uid : 0, uploadedFile, next);
+			});
+		} else {
+			uploadFile(req.user ? req.user.uid : 0, uploadedFile, next);
+		}
 	}, next);
 };
 
@@ -67,18 +66,23 @@ uploadsController.uploadThumb = function(req, res, next) {
 	}
 
 	uploadsController.upload(req, res, function(uploadedFile, next) {
-		file.isFileTypeAllowed(uploadedFile.path, file.allowedExtensions(), function(err) {
+		file.isFileTypeAllowed(uploadedFile.path, function(err) {
 			if (err) {
 				return next(err);
 			}
 
 			if (uploadedFile.type.match(/image./)) {
-				var size = meta.config.topicThumbSize || 120;
-				image.resizeImage(uploadedFile.path, path.extname(uploadedFile.name), size, size, function(err) {
+				var size = parseInt(meta.config.topicThumbSize, 10) || 120;
+				image.resizeImage({
+					path: uploadedFile.path,
+					extension: path.extname(uploadedFile.name),
+					width: size,
+					height: size
+				}, function(err) {
 					if (err) {
 						return next(err);
 					}
-					uploadImage(req.user.uid, uploadedFile, next);
+					uploadImage(req.user ? req.user.uid : 0, uploadedFile, next);
 				});
 			} else {
 				next(new Error('[[error:invalid-file]]'));
@@ -87,8 +91,16 @@ uploadsController.uploadThumb = function(req, res, next) {
 	}, next);
 };
 
-uploadsController.uploadGroupCover = function(data, next) {
-	uploadImage(0/*req.user.uid*/, data, next);
+uploadsController.uploadGroupCover = function(uid, uploadedFile, callback) {
+	if (plugins.hasListeners('filter:uploadImage')) {
+		return plugins.fireHook('filter:uploadImage', {image: uploadedFile, uid: uid}, callback);
+	}
+
+	if (plugins.hasListeners('filter:uploadFile')) {
+		return plugins.fireHook('filter:uploadFile', {file: uploadedFile, uid: uid}, callback);
+	}
+
+	saveFileToLocal(uploadedFile, callback);
 };
 
 function uploadImage(uid, image, callback) {
@@ -120,6 +132,18 @@ function uploadFile(uid, uploadedFile, callback) {
 		return callback(new Error('[[error:file-too-big, ' + meta.config.maximumFileSize + ']]'));
 	}
 
+	if (meta.config.hasOwnProperty('allowedFileExtensions')) {
+		var allowed = file.allowedExtensions();
+		var extension = path.extname(uploadedFile.name);
+		if (allowed.length > 0 && allowed.indexOf(extension) === -1) {
+			return callback(new Error('[[error:invalid-file-type, ' + allowed.join('&#44; ') + ']]'));
+		}
+	}
+
+	saveFileToLocal(uploadedFile, callback);
+}
+
+function saveFileToLocal(uploadedFile, callback) {
 	var filename = uploadedFile.name || 'upload';
 
 	filename = Date.now() + '-' + validator.escape(filename).substr(0, 255);
@@ -136,9 +160,14 @@ function uploadFile(uid, uploadedFile, callback) {
 }
 
 function deleteTempFiles(files) {
-	for(var i=0; i<files.length; ++i) {
-		fs.unlink(files[i].path);
-	}
+	async.each(files, function(file, next) {
+		fs.unlink(file.path, function(err) {
+			if (err) {
+				winston.error(err);
+			}
+			next();
+		});
+	});
 }
 
 

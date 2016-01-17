@@ -1,68 +1,68 @@
 'use strict';
 
-/* globals define, app, ajaxify, socket */
+/* globals define, app, ajaxify, socket, templates, translator */
 
-define('forum/topic/fork', ['components'], function(components) {
+define('forum/topic/fork', ['components', 'postSelect'], function(components, postSelect) {
 
 	var Fork = {},
 		forkModal,
-		forkCommit,
-		pids = [];
+		forkCommit;
 
 	Fork.init = function() {
-		components.get('topic/fork').on('click', onForkThreadClicked);
+		$('.topic').on('click', '[component="topic/fork"]', onForkThreadClicked);
 	};
 
-	function disableClicks() {
-		return false;
-	}
-
-	function disableClicksOnPosts() {
-		components.get('post').on('click', 'button,a', disableClicks);
-	}
-
-	function enableClicksOnPosts() {
-		components.get('post').off('click', 'button,a', disableClicks);
-	}
-
 	function onForkThreadClicked() {
-		forkModal = $('#fork-thread-modal');
-		forkCommit = forkModal.find('#fork_thread_commit');
-		pids.length = 0;
+		parseModal(function(html) {
+			forkModal = $(html);
 
-		showForkModal();
-		showNoPostsSelected();
+			forkModal.on('hidden.bs.modal', function() {
+				forkModal.remove();
+			});
 
-		forkModal.find('.close,#fork_thread_cancel').on('click', closeForkModal);
-		forkModal.find('#fork-title').on('change', checkForkButtonEnable);
-		components.get('topic').on('click', '[data-pid]', function() {
-			togglePostSelection($(this));
+			forkCommit = forkModal.find('#fork_thread_commit');
+
+			showForkModal();
+
+			forkModal.find('.close,#fork_thread_cancel').on('click', closeForkModal);
+			forkModal.find('#fork-title').on('change', checkForkButtonEnable);
+
+			postSelect.init(function() {
+				checkForkButtonEnable();
+				showPostsSelected();
+			});
+			showPostsSelected();
+
+			forkCommit.on('click', createTopicFromPosts);
 		});
+	}
 
-		disableClicksOnPosts();
-
-		forkCommit.on('click', createTopicFromPosts);
+	function parseModal(callback) {
+		templates.parse('partials/fork_thread_modal', {}, function(html) {
+			translator.translate(html, callback);
+		});
 	}
 
 	function showForkModal() {
-		forkModal.removeClass('hide')
+		forkModal.modal({backdrop: false, show: true})
 			.css('position', 'fixed')
-			.css('left', Math.max(0, (($(window).width() - $(forkModal).outerWidth()) / 2) + $(window).scrollLeft()) + 'px')
+			.css('left', Math.max(0, (($(window).width() - forkModal.outerWidth()) / 2) + $(window).scrollLeft()) + 'px')
 			.css('top', '0px')
 			.css('z-index', '2000');
 	}
 
 	function createTopicFromPosts() {
+		forkCommit.attr('disabled', true);
 		socket.emit('topics.createTopicFromPosts', {
 			title: forkModal.find('#fork-title').val(),
-			pids: pids
+			pids: postSelect.pids
 		}, function(err, newTopic) {
 			function fadeOutAndRemove(pid) {
 				components.get('post', 'pid', pid).fadeOut(500, function() {
 					$(this).remove();
 				});
 			}
-
+			forkCommit.removeAttr('disabled');
 			if (err) {
 				return app.alertError(err.message);
 			}
@@ -77,46 +77,24 @@ define('forum/topic/fork', ['components'], function(components) {
 				}
 			});
 
-			for(var i=0; i<pids.length; ++i) {
-				fadeOutAndRemove(pids[i]);
-			}
+			postSelect.pids.forEach(function(pid) {
+				fadeOutAndRemove(pid);
+			});
+
 			closeForkModal();
 		});
 	}
 
-	function togglePostSelection(post) {
-		var newPid = post.attr('data-pid');
-
-		if(parseInt(post.attr('data-index'), 10) === 0) {
-			return;
+	function showPostsSelected() {
+		if (postSelect.pids.length) {
+			forkModal.find('#fork-pids').text(postSelect.pids.join(', '));
+		} else {
+			forkModal.find('#fork-pids').translateHtml('[[topic:fork_no_pids]]');
 		}
-
-		if(newPid) {
-			var index = pids.indexOf(newPid);
-			if(index === -1) {
-				pids.push(newPid);
-				post.css('opacity', '0.5');
-			} else {
-				pids.splice(index, 1);
-				post.css('opacity', '1.0');
-			}
-
-			if (pids.length) {
-				pids.sort(function(a,b) { return a - b; });
-				forkModal.find('#fork-pids').html(pids.toString());
-			} else {
-				showNoPostsSelected();
-			}
-			checkForkButtonEnable();
-		}
-	}
-
-	function showNoPostsSelected() {
-		forkModal.find('#fork-pids').translateHtml('[[topic:fork_no_pids]]');
 	}
 
 	function checkForkButtonEnable() {
-		if(forkModal.find('#fork-title').length && pids.length) {
+		if (forkModal.find('#fork-title').length && postSelect.pids.length) {
 			forkCommit.removeAttr('disabled');
 		} else {
 			forkCommit.attr('disabled', true);
@@ -124,13 +102,14 @@ define('forum/topic/fork', ['components'], function(components) {
 	}
 
 	function closeForkModal() {
-		for(var i=0; i<pids.length; ++i) {
-			components.get('post', 'pid', pids[i]).css('opacity', 1);
-		}
+		postSelect.pids.forEach(function(pid) {
+			components.get('post', 'pid', pid).css('opacity', 1);
+		});
 
-		forkModal.addClass('hide');
+		forkModal.modal('hide');
+
 		components.get('topic').off('click', '[data-pid]');
-		enableClicksOnPosts();
+		postSelect.enableClicksOnPosts();
 	}
 
 	return Fork;

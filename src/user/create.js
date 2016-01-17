@@ -20,11 +20,10 @@ module.exports = function(User) {
 			data.email = validator.escape(data.email.trim());
 		}
 
-		isDataValid(data, function(err) {
+		User.isDataValid(data, function(err) {
 			if (err)  {
 				return callback(err);
 			}
-			var gravatar = User.createGravatarURLFromEmail(data.email);
 			var timestamp = data.timestamp || Date.now();
 
 			var userData = {
@@ -32,9 +31,8 @@ module.exports = function(User) {
 				'userslug': data.userslug,
 				'email': data.email,
 				'joindate': timestamp,
-				'picture': gravatar,
-				'gravatarpicture': gravatar,
-				'fullname': '',
+				'picture': '',
+				'fullname': data.fullname,
 				'location': '',
 				'birthday': '',
 				'website': '',
@@ -53,25 +51,13 @@ module.exports = function(User) {
 				renamedUsername: function(next) {
 					renameUsername(userData, next);
 				},
-				customFields: function(next) {
-					plugins.fireHook('filter:user.custom_fields', [], next);
-				},
 				userData: function(next) {
-					plugins.fireHook('filter:user.create', userData, next);
+					plugins.fireHook('filter:user.create', {user: userData, data: data}, next);
 				}
 			}, function(err, results) {
 				if (err) {
 					return callback(err);
 				}
-
-				var customData = {};
-				results.customFields.forEach(function(customField) {
-					if (data[customField]) {
-						customData[customField] = data[customField];
-					}
-				});
-
-				userData = utils.merge(results.userData, customData);
 
 				var userNameChanged = !!results.renamedUsername;
 
@@ -91,7 +77,13 @@ module.exports = function(User) {
 					function(next) {
 						async.parallel([
 							function(next) {
+								db.incrObjectField('global', 'userCount', next);
+							},
+							function(next) {
 								db.sortedSetAdd('username:uid', userData.uid, userData.username, next);
+							},
+							function(next) {
+								db.sortedSetAdd('username:sorted', 0, userData.username.toLowerCase() + ':' + userData.uid, next);
 							},
 							function(next) {
 								db.sortedSetAdd('userslug:uid', userData.uid, userData.userslug, next);
@@ -107,7 +99,11 @@ module.exports = function(User) {
 							},
 							function(next) {
 								if (userData.email) {
-									db.sortedSetAdd('email:uid', userData.uid, userData.email.toLowerCase(), next);
+									async.parallel([
+										async.apply(db.sortedSetAdd, 'email:uid', userData.uid, userData.email.toLowerCase()),
+										async.apply(db.sortedSetAdd, 'email:sorted', 0, userData.email.toLowerCase() + ':' + userData.uid)
+									], next);
+
 									if (parseInt(userData.uid, 10) !== 1 && parseInt(meta.config.requireEmailConfirmation, 10) === 1) {
 										User.email.sendValidationEmail(userData.uid, userData.email);
 									}
@@ -134,9 +130,6 @@ module.exports = function(User) {
 						], next);
 					},
 					function(results, next) {
-						User.updateUserCount(next);
-					},
-					function(next) {
 						if (userNameChanged) {
 							User.notifications.sendNameChangeNotification(userData.uid, userData.username);
 						}
@@ -148,16 +141,7 @@ module.exports = function(User) {
 		});
 	};
 
-	User.updateUserCount = function(callback) {
-		db.sortedSetCard('users:joindate', function(err, count) {
-			if (err) {
-				return callback(err);
-			}
-			db.setObjectField('global', 'userCount', count, callback);
-		});
-	};
-
-	function isDataValid(userData, callback) {
+	User.isDataValid = function(userData, callback) {
 		async.parallel({
 			emailValid: function(next) {
 				if (userData.email) {
@@ -167,11 +151,11 @@ module.exports = function(User) {
 				}
 			},
 			userNameValid: function(next) {
-				next((!utils.isUserNameValid(userData.username) || !userData.userslug) ? new Error('[[error:invalid-username]]') : null);
+				next((!utils.isUserNameValid(userData.username) || !userData.userslug) ? new Error('[[error:invalid-username, ' + userData.username + ']]') : null);
 			},
 			passwordValid: function(next) {
 				if (userData.password) {
-					next(!utils.isPasswordValid(userData.password) ? new Error('[[error:invalid-password]]') : null);
+					User.isPasswordValid(userData.password, next);
 				} else {
 					next();
 				}
@@ -188,8 +172,26 @@ module.exports = function(User) {
 					next();
 				}
 			}
-		}, callback);
-	}
+		}, function(err, results) {
+			callback(err);
+		});
+	};
+
+	User.isPasswordValid = function(password, callback) {
+		if (!password || !utils.isPasswordValid(password)) {
+			return callback(new Error('[[error:invalid-password]]'));
+		}
+
+		if (password.length < meta.config.minimumPasswordLength) {
+			return callback(new Error('[[user:change_password_error_length]]'));
+		}
+
+		if (password.length > 4096) {
+			return callback(new Error('[[error:password-too-long]]'));
+		}
+
+		callback();
+	};
 
 	function renameUsername(userData, callback) {
 		meta.userOrGroupExists(userData.userslug, function(err, exists) {
@@ -200,7 +202,7 @@ module.exports = function(User) {
 			var	newUsername = '';
 			async.forever(function(next) {
 				newUsername = userData.username + (Math.floor(Math.random() * 255) + 1);
-				User.exists(newUsername, function(err, exists) {
+				User.existsBySlug(newUsername, function(err, exists) {
 					if (err) {
 						return callback(err);
 					}

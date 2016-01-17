@@ -2,6 +2,7 @@
 'use strict';
 
 var async = require('async'),
+	winston = require('winston'),
 
 	db = require('../database'),
 	topics = require('../topics'),
@@ -50,6 +51,7 @@ module.exports = function(privileges) {
 				editable: editable,
 				deletable: deletable,
 				view_deleted: isAdminOrMod || results.isOwner,
+				isAdminOrMod: isAdminOrMod,
 				disabled: disabled,
 				tid: tid,
 				uid: uid
@@ -85,7 +87,7 @@ module.exports = function(privileges) {
 
 				async.parallel({
 					categories: function(next) {
-						categories.getMultipleCategoryFields(cids, ['disabled'], next);
+						categories.getCategoriesFields(cids, ['disabled'], next);
 					},
 					allowedTo: function(next) {
 						helpers.isUserAllowedTo(privilege, uid, cids, next);
@@ -169,22 +171,41 @@ module.exports = function(privileges) {
 		], callback);
 	};
 
+	privileges.topics.canPurge = function(tid, uid, callback) {
+		async.waterfall([
+			function (next) {
+				topics.getTopicField(tid, 'cid', next);
+			},
+			function (cid, next) {
+				async.parallel({
+					purge: async.apply(privileges.categories.isUserAllowedTo, 'purge', cid, uid),
+					owner: async.apply(topics.isOwner, tid, uid),
+					isAdminOrMod: async.apply(privileges.categories.isAdminOrMod, cid, uid)
+				}, next);
+			},
+			function (results, next) {
+				next(null, results.isAdminOrMod || (results.purge && results.owner));
+			}
+		], callback);
+	};
+
 	privileges.topics.canEdit = function(tid, uid, callback) {
+		privileges.topics.isOwnerOrAdminOrMod(tid, uid, callback);
+	};
+
+	privileges.topics.isOwnerOrAdminOrMod = function(tid, uid, callback) {
 		helpers.some([
 			function(next) {
 				topics.isOwner(tid, uid, next);
 			},
 			function(next) {
-				isAdminOrMod(tid, uid, next);
+				privileges.topics.isAdminOrMod(tid, uid, next);
 			}
 		], callback);
 	};
 
-	privileges.topics.canMove = function(tid, uid, callback) {
-		isAdminOrMod(tid, uid, callback);
-	};
 
-	function isAdminOrMod(tid, uid, callback) {
+	privileges.topics.isAdminOrMod = function(tid, uid, callback) {
 		helpers.some([
 			function(next) {
 				topics.getTopicField(tid, 'cid', function(err, cid) {
@@ -198,5 +219,5 @@ module.exports = function(privileges) {
 				user.isAdministrator(uid, next);
 			}
 		], callback);
-	}
+	};
 };

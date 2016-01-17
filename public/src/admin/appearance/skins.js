@@ -5,19 +5,27 @@ define('admin/appearance/skins', function() {
 	var Skins = {};
 	
 	Skins.init = function() {
-		var scriptEl = $('<script />');
-		scriptEl.attr('src', '//bootswatch.aws.af.cm/3/?callback=bootswatchListener');
-		$('body').append(scriptEl);
+		// Populate skins from Bootswatch API
+		$.ajax({
+			method: 'get',
+			url: 'https://bootswatch.com/api/3.json'
+		}).done(Skins.render);
 
-		$('#bootstrap_themes').on('click', function(e){
-			var target = $(e.target),
-				action = target.attr('data-action');
+		$('#skins').on('click', function(e){
+			var target = $(e.target);
+
+			if (!target.attr('data-action')) {
+				target = target.parents('[data-action]');
+			}
+
+			var action = target.attr('data-action');
 
 			if (action && action === 'use') {
-				var parentEl = target.parents('li'),
+				var parentEl = target.parents('[data-theme]'),
 					themeType = parentEl.attr('data-type'),
 					cssSrc = parentEl.attr('data-css'),
 					themeId = parentEl.attr('data-theme');
+
 
 				socket.emit('admin.themes.set', {
 					type: themeType,
@@ -33,7 +41,7 @@ define('admin/appearance/skins', function() {
 						alert_id: 'admin:theme',
 						type: 'info',
 						title: 'Skin Updated',
-						message: themeId + ' skin was successfully applied',
+						message: themeId ? (themeId + ' skin was successfully applied') : 'Skin reverted to base colours',
 						timeout: 5000
 					});
 				});
@@ -53,18 +61,46 @@ define('admin/appearance/skins', function() {
 					description: theme.description,
 					screenshot_url: theme.thumbnail,
 					url: theme.preview,
-					css: theme.cssCdn
+					css: theme.cssCdn,
+					skin: true
 				};
 			}),
 			showRevert: true
 		}, function(html) {
 			themeContainer.html(html);
+
+			if (config['theme:src']) {
+				var skin = config['theme:src']
+					.match(/latest\/(\S+)\/bootstrap.min.css/)[1]
+					.replace(/(^|\s)([a-z])/g , function(m,p1,p2){return p1+p2.toUpperCase();});
+
+				highlightSelectedTheme(skin);
+			}
 		});
 	};
 
 	function highlightSelectedTheme(themeId) {
-		$('.themes li[data-theme]').removeClass('btn-warning');
-		$('.themes li[data-theme="' + themeId + '"]').addClass('btn-warning');
+		$('[data-theme]')
+			.removeClass('selected')
+			.find('[data-action="use"]').each(function() {
+				if ($(this).parents('[data-theme]').attr('data-theme')) {
+					$(this)
+						.html('Select Skin')
+						.removeClass('btn-success')
+						.addClass('btn-primary');
+				}
+			});
+
+		if (!themeId) {
+			return;
+		}
+
+		$('[data-theme="' + themeId + '"]')
+			.addClass('selected')
+			.find('[data-action="use"]')
+				.html('Current Skin')
+				.removeClass('btn-primary')
+				.addClass('btn-success');
 	}
 
 	return Skins;

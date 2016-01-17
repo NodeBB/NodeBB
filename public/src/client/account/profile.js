@@ -1,8 +1,13 @@
 'use strict';
 
-/* globals define, ajaxify, app, utils, socket */
+/* globals define, ajaxify, app, socket, bootbox */
 
-define('forum/account/profile', ['forum/account/header', 'forum/infinitescroll', 'translator'], function(header, infinitescroll, translator) {
+define('forum/account/profile', [
+	'forum/account/header',
+	'forum/infinitescroll',
+	'translator',
+	'components'
+], function(header, infinitescroll, translator) {
 	var Account = {},
 		yourid,
 		theirid,
@@ -11,27 +16,14 @@ define('forum/account/profile', ['forum/account/header', 'forum/infinitescroll',
 	Account.init = function() {
 		header.init();
 
-		yourid = ajaxify.variables.get('yourid');
-		theirid = ajaxify.variables.get('theirid');
-		isFollowing = ajaxify.variables.get('isFollowing');
+		yourid = ajaxify.data.yourid;
+		theirid = ajaxify.data.theirid;
+		isFollowing = ajaxify.data.isFollowing;
 
 		app.enterRoom('user/' + theirid);
 
 		processPage();
-
 		updateButtons();
-
-		$('#follow-btn').on('click', function() {
-			return toggleFollow('follow');
-		});
-
-		$('#unfollow-btn').on('click', function() {
-			return toggleFollow('unfollow');
-		});
-
-		$('#chat-btn').on('click', function() {
-			app.openChat($('.account-username').html(), theirid);
-		});
 
 		socket.removeListener('event:user_status_change', onUserStatusChange);
 		socket.on('event:user_status_change', onUserStatusChange);
@@ -40,7 +32,7 @@ define('forum/account/profile', ['forum/account/header', 'forum/infinitescroll',
 	};
 
 	function processPage() {
-		$('[component="posts"] img, [component="aboutme"] img').addClass('img-responsive');
+		$('[component="posts"] img:not(.not-responsive), [component="aboutme"] img:not(.not-responsive)').addClass('img-responsive');
 	}
 
 	function updateButtons() {
@@ -50,27 +42,12 @@ define('forum/account/profile', ['forum/account/header', 'forum/infinitescroll',
 		$('#chat-btn').toggleClass('hide', isSelfOrNotLoggedIn);
 	}
 
-	function toggleFollow(type) {
-		socket.emit('user.' + type, {
-			uid: theirid
-		}, function(err) {
-			if (err) {
-				return app.alertError(err.message);
-			}
-
-			$('#follow-btn').toggleClass('hide', type === 'follow');
-			$('#unfollow-btn').toggleClass('hide', type === 'unfollow');
-			app.alertSuccess('[[global:alert.' + type + ', ' + $('.account-username').html() + ']]');
-		});
-		return false;
-	}
-
 	function onUserStatusChange(data) {
-		if (parseInt(ajaxify.variables.get('theirid'), 10) !== parseInt(data.uid, 10)) {
+		if (parseInt(ajaxify.data.theirid, 10) !== parseInt(data.uid, 10)) {
 			return;
 		}
 
-		app.updateUserStatus($('.account [component="user/status"]'), data.status);
+		app.updateUserStatus($('.account [data-uid="' + data.uid + '"] [component="user/status"]'), data.status);
 	}
 
 	function loadMorePosts(direction) {
@@ -103,7 +80,7 @@ define('forum/account/profile', ['forum/account/header', 'forum/infinitescroll',
 			return callback();
 		}
 
-		infinitescroll.parseAndTranslate('account/profile', 'posts', {posts: posts}, function(html) {
+		app.parseAndTranslate('account/profile', 'posts', {posts: posts}, function(html) {
 
 			$('[component="posts"]').append(html);
 			html.find('.timeago').timeago();

@@ -50,12 +50,8 @@ define(function() {
 			return false;
 		});
 
-		$('.sidebar-nav a').each(function(idx, link) {
+		$('#main-menu a').each(function(idx, link) {
 			routes.push($(link).attr('href'));
-		});
-
-		input.on('blur', function() {
-			$(this).val('').attr('placeholder', '/');
 		});
 
 		input.on('keyup focus', function() {
@@ -66,8 +62,6 @@ define(function() {
 			function toUpperCase(txt){
 				return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
 			}
-
-			$input.attr('placeholder', '');
 
 			firstResult = null;
 
@@ -101,15 +95,14 @@ define(function() {
 					}
 				}
 
-				if (menuItems.html() !== '') {
-					menuItems.append('<li role="presentation" class="divider"></li>');
-				} else {
+				if (menuItems.html() === '') {
 					menuItems.append('<li role="presentation"><a role="menuitem" href="#">No results...</a></li>');
 				}
 			}
 
 			if (value.length > 0) {
 				if (config.searchEnabled) {
+					menuItems.append('<li role="presentation" class="divider"></li>');
 					menuItems.append('<li role="presentation"><a role="menuitem" target="_top" href="' + RELATIVE_PATH + '/search/' + value + '">Search the forum for <strong>' + value + '</strong></a></li>');
 				} else if (value.length < 3) {
 					menuItems.append('<li role="presentation"><a role="menuitem" href="#">Type more to see results...</a></li>');

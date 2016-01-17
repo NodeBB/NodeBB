@@ -1,51 +1,69 @@
 "use strict";
 
-var async = require('async'),
-	nconf = require('nconf'),
-	validator = require('validator'),
-	winston = require('winston'),
+var async = require('async');
+var nconf = require('nconf');
+var validator = require('validator');
 
-	auth = require('../routes/authentication'),
-	meta = require('../meta'),
-	user = require('../user'),
-	posts = require('../posts'),
-	topics = require('../topics'),
-	plugins = require('../plugins'),
-	categories = require('../categories'),
-	privileges = require('../privileges'),
-	helpers = require('./helpers');
+var meta = require('../meta');
+var user = require('../user');
+var plugins = require('../plugins');
+var sitemap = require('../sitemap');
+var helpers = require('./helpers');
 
 var Controllers = {
-	posts: require('./posts'),
 	topics: require('./topics'),
 	categories: require('./categories'),
+	category: require('./category'),
+	unread: require('./unread'),
+	recent: require('./recent'),
+	popular: require('./popular'),
 	tags: require('./tags'),
 	search: require('./search'),
 	users: require('./users'),
 	groups: require('./groups'),
 	accounts: require('./accounts'),
+	authentication: require('./authentication'),
 	api: require('./api'),
 	admin: require('./admin')
 };
 
 
 Controllers.home = function(req, res, next) {
-	var route = meta.config.homePageRoute || 'categories',
-		hook = 'action:homepage.get:' + route;
+	var route = meta.config.homePageRoute || meta.config.homePageCustom || 'categories';
 
-	if (plugins.hasListeners(hook)) {
-		plugins.fireHook(hook, {req: req, res: res, next: next});
-	} else {
-		if (route === 'categories') {
+	user.getSettings(req.uid, function(err, settings) {
+		if (err) {
+			return next(err);
+		}
+		if (settings.homePageRoute !== 'undefined' && settings.homePageRoute !== 'none') {
+			route = settings.homePageRoute || route;
+		}
+
+		var hook = 'action:homepage.get:' + route;
+
+		if (plugins.hasListeners(hook)) {
+			return plugins.fireHook(hook, {req: req, res: res, next: next});
+		}
+
+		if (route === 'categories' || route === '/') {
 			Controllers.categories.list(req, res, next);
 		} else if (route === 'recent') {
-			Controllers.categories.recent(req, res, next);
+			Controllers.recent.get(req, res, next);
 		} else if (route === 'popular') {
-			Controllers.categories.popular(req, res, next);
+			Controllers.popular.get(req, res, next);
 		} else {
-			next();
+			var match = /^category\/(\d+)\/(.*)$/.exec(route);
+
+			if (match) {
+				req.params.topic_index = "1";
+				req.params.category_id = match[1];
+				req.params.slug = match[2];
+				Controllers.category.get(req, res, next);
+			} else {
+				res.redirect(route);
+			}
 		}
-	}
+	});
 };
 
 Controllers.reset = function(req, res, next) {
@@ -58,7 +76,8 @@ Controllers.reset = function(req, res, next) {
 				valid: valid,
 				displayExpiryNotice: req.session.passwordExpired,
 				code: req.params.code ? req.params.code : null,
-				breadcrumbs: helpers.buildBreadcrumbs([{text: '[[reset_password:reset_password]]', url: '/reset'}, {text: '[[reset_password:update_password]]'}])
+				breadcrumbs: helpers.buildBreadcrumbs([{text: '[[reset_password:reset_password]]', url: '/reset'}, {text: '[[reset_password:update_password]]'}]),
+				title: '[[pages:reset]]'
 			});
 
 			delete req.session.passwordExpired;
@@ -66,7 +85,8 @@ Controllers.reset = function(req, res, next) {
 	} else {
 		res.render('reset', {
 			code: req.params.code ? req.params.code : null,
-			breadcrumbs: helpers.buildBreadcrumbs([{text: '[[reset_password:reset_password]]'}])
+			breadcrumbs: helpers.buildBreadcrumbs([{text: '[[reset_password:reset_password]]'}]),
+			title: '[[pages:reset]]'
 		});
 	}
 
@@ -74,60 +94,88 @@ Controllers.reset = function(req, res, next) {
 
 Controllers.login = function(req, res, next) {
 	var data = {},
-		loginStrategies = auth.getLoginStrategies(),
-		emailersPresent = plugins.hasListeners('action:email.send');
+		loginStrategies = require('../routes/authentication').getLoginStrategies(),
+		registrationType = meta.config.registrationType || 'normal';
 
 	data.alternate_logins = loginStrategies.length > 0;
 	data.authentication = loginStrategies;
-	data.showResetLink = emailersPresent;
 	data.allowLocalLogin = parseInt(meta.config.allowLocalLogin, 10) === 1 || parseInt(req.query.local, 10) === 1;
-	data.allowRegistration = parseInt(meta.config.allowRegistration, 10) === 1;
+	data.allowRegistration = registrationType === 'normal' || registrationType === 'admin-approval';
 	data.allowLoginWith = '[[login:' + (meta.config.allowLoginWith || 'username-email') + ']]';
 	data.breadcrumbs = helpers.buildBreadcrumbs([{text: '[[global:login]]'}]);
 	data.error = req.flash('error')[0];
+	data.title = '[[pages:login]]';
 
 	res.render('login', data);
 };
 
 Controllers.register = function(req, res, next) {
-	if(meta.config.allowRegistration !== undefined && parseInt(meta.config.allowRegistration, 10) === 0) {
-		return res.redirect(nconf.get('relative_path') + '/403');
+	var registrationType = meta.config.registrationType || 'normal';
+
+	if (registrationType === 'disabled') {
+		return next();
 	}
 
-	var data = {},
-		loginStrategies = auth.getLoginStrategies();
+	async.waterfall([
+		function(next) {
+			if (registrationType === 'invite-only' || registrationType === 'admin-invite-only') {
+				user.verifyInvitation(req.query, next);
+			} else {
+				next();
+			}
+		},
+		function(next) {
+			plugins.fireHook('filter:parse.post', {postData: {content: meta.config.termsOfUse || ''}}, next);
+		},
+		function(tos, next) {
+			var loginStrategies = require('../routes/authentication').getLoginStrategies();
+			var data = {
+				'register_window:spansize': loginStrategies.length ? 'col-md-6' : 'col-md-12',
+				'alternate_logins': !!loginStrategies.length
+			};
 
-	if (loginStrategies.length === 0) {
-		data = {
-			'register_window:spansize': 'col-md-12',
-			'alternate_logins': false
-		};
-	} else {
-		data = {
-			'register_window:spansize': 'col-md-6',
-			'alternate_logins': true
-		};
-	}
+			data.authentication = loginStrategies;
 
-	data.authentication = loginStrategies;
+			data.minimumUsernameLength = meta.config.minimumUsernameLength;
+			data.maximumUsernameLength = meta.config.maximumUsernameLength;
+			data.minimumPasswordLength = meta.config.minimumPasswordLength;
+			data.termsOfUse = tos.postData.content;
+			data.breadcrumbs = helpers.buildBreadcrumbs([{text: '[[register:register]]'}]);
+			data.regFormEntry = [];
+			data.error = req.flash('error')[0];
+			data.title = '[[pages:register]]';
 
-	data.minimumUsernameLength = meta.config.minimumUsernameLength;
-	data.maximumUsernameLength = meta.config.maximumUsernameLength;
-	data.minimumPasswordLength = meta.config.minimumPasswordLength;
-	data.termsOfUse = meta.config.termsOfUse;
-	data.breadcrumbs = helpers.buildBreadcrumbs([{text: '[[register:register]]'}]);
-	data.regFormEntry = [];
-	data.error = req.flash('error')[0];
-
-	plugins.fireHook('filter:register.build', {req: req, res: res, templateData: data}, function(err, data) {
-		if (err && global.env === 'development') {
-			winston.warn(JSON.stringify(err));
+			plugins.fireHook('filter:register.build', {req: req, res: res, templateData: data}, next);
+		}
+	], function(err, data) {
+		if (err) {
 			return next(err);
 		}
 		res.render('register', data.templateData);
 	});
 };
 
+Controllers.compose = function(req, res, next) {
+	plugins.fireHook('filter:composer.build', {
+		req: req,
+		res: res,
+		next: next,
+		templateData: {}
+	}, function(err, data) {
+		if (err) {
+			return next(err);
+		}
+
+		if (data.templateData.disabled) {
+			res.render('', {
+				title: '[[modules:composer.compose]]'
+			});
+		} else {
+			data.templateData.title = '[[modules:composer.compose]]';
+			res.render('compose', data.templateData);
+		}
+	});
+};
 
 Controllers.confirmEmail = function(req, res, next) {
 	user.email.confirm(req.params.code, function (err) {
@@ -137,14 +185,56 @@ Controllers.confirmEmail = function(req, res, next) {
 	});
 };
 
-Controllers.sitemap = function(req, res, next) {
+Controllers.sitemap = {};
+Controllers.sitemap.render = function(req, res, next) {
+	sitemap.render(function(err, tplData) {
+		Controllers.render('sitemap', tplData, function(err, xml) {
+			res.header('Content-Type', 'application/xml');
+			res.send(xml);
+		});
+	});
+};
+
+Controllers.sitemap.getPages = function(req, res, next) {
 	if (parseInt(meta.config['feeds:disableSitemap'], 10) === 1) {
-		return helpers.notFound(req, res);
+		return next();
 	}
 
-	var sitemap = require('../sitemap.js');
+	sitemap.getPages(function(err, xml) {
+		if (err) {
+			return next(err);
+		}
+		res.header('Content-Type', 'application/xml');
+		res.send(xml);
+	});
+};
 
-	sitemap.render(function(xml) {
+Controllers.sitemap.getCategories = function(req, res, next) {
+	if (parseInt(meta.config['feeds:disableSitemap'], 10) === 1) {
+		return next();
+	}
+
+	sitemap.getCategories(function(err, xml) {
+		if (err) {
+			return next(err);
+		}
+		res.header('Content-Type', 'application/xml');
+		res.send(xml);
+	});
+};
+
+Controllers.sitemap.getTopicPage = function(req, res, next) {
+	if (parseInt(meta.config['feeds:disableSitemap'], 10) === 1) {
+		return next();
+	}
+
+	sitemap.getTopicPage(parseInt(req.params[0], 10), function(err, xml) {
+		if (err) {
+			return next(err);
+		} else if (!xml) {
+			return next();
+		}
+
 		res.header('Content-Type', 'application/xml');
 		res.send(xml);
 	});
@@ -162,10 +252,56 @@ Controllers.robots = function (req, res) {
 	}
 };
 
+Controllers.manifest = function(req, res) {
+	var manifest = {
+			name: meta.config.title || 'NodeBB',
+			start_url: nconf.get('relative_path') + '/',
+			display: 'standalone',
+			orientation: 'portrait',
+			icons: []
+		};
+
+	if (meta.config['brand:touchIcon']) {
+		manifest.icons.push({
+			src: nconf.get('relative_path') + '/uploads/system/touchicon-36.png',
+			sizes: '36x36',
+			type: 'image/png',
+			density: 0.75
+		}, {
+			src: nconf.get('relative_path') + '/uploads/system/touchicon-48.png',
+			sizes: '48x48',
+			type: 'image/png',
+			density: 1.0
+		}, {
+			src: nconf.get('relative_path') + '/uploads/system/touchicon-72.png',
+			sizes: '72x72',
+			type: 'image/png',
+			density: 1.5
+		}, {
+			src: nconf.get('relative_path') + '/uploads/system/touchicon-96.png',
+			sizes: '96x96',
+			type: 'image/png',
+			density: 2.0
+		}, {
+			src: nconf.get('relative_path') + '/uploads/system/touchicon-144.png',
+			sizes: '144x144',
+			type: 'image/png',
+			density: 3.0
+		}, {
+			src: nconf.get('relative_path') + '/uploads/system/touchicon-192.png',
+			sizes: '192x192',
+			type: 'image/png',
+			density: 4.0
+		});
+	}
+
+	res.status(200).json(manifest);
+};
+
 Controllers.outgoing = function(req, res, next) {
 	var url = req.query.url,
 		data = {
-			url: url,
+			url: validator.escape(url),
 			title: meta.config.title,
 			breadcrumbs: helpers.buildBreadcrumbs([{text: '[[notifications:outgoing_link]]'}])
 		};
@@ -179,7 +315,7 @@ Controllers.outgoing = function(req, res, next) {
 
 Controllers.termsOfUse = function(req, res, next) {
 	if (!meta.config.termsOfUse) {
-		return helpers.notFound(req, res);
+		return next();
 	}
 	res.render('tos', {termsOfUse: meta.config.termsOfUse});
 };
