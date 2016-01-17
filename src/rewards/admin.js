@@ -115,6 +115,7 @@ function getActiveRewards(callback) {
 			}
 		}, function(err, data) {
 			if (data.main) {
+				data.main.disabled = data.main.disabled === 'true';
 				data.main.rewards = data.rewards;
 				activeRewards.push(data.main);
 			}
