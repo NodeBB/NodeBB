@@ -110,6 +110,11 @@ if ('undefined' !== typeof window) {
 		var dialog = bootbox.dialog,
 			prompt = bootbox.prompt,
 			confirm = bootbox.confirm;
+			
+		var translator;
+		require(['translator'], function(_translator) {
+			translator = _translator;
+		});
 
 		function translate(modal) {
 			var header = modal.find('.modal-header'),
