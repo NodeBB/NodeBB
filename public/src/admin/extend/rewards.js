@@ -41,10 +41,10 @@ define('admin/extend/rewards', function() {
 			})
 			.on('click', '.toggle', function() {
 				var btn = $(this),
-					disabled = btn.hasClass('btn-success'),
+					disabled = btn.html() === 'Enable',
 					id = $(this).parents('[data-id]').attr('data-id');
 
-				btn.toggleClass('btn-warning').toggleClass('btn-success').html(disabled ? 'Disable' : 'Enable');
+				btn.toggleClass('btn-warning').toggleClass('btn-success').html(disabled ? 'Enable' : 'Disable');
 				// send disable api call
 				return false;
 			});
@@ -165,7 +165,7 @@ define('admin/extend/rewards', function() {
 			});
 
 			data.id = $(this).attr('data-id');
-			data.disabled = $(this).find('.toggle').hasClass('btn-success');
+			data.disabled = $(this).find('.toggle').html() === 'Enable';
 
 			activeRewards.push(data);
 		});
