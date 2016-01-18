@@ -9,7 +9,7 @@
 
 	var	languages = {},
 		regexes = {
-			match: /\[\[\w+:[^\[]*?\]\]/g,
+			match: /\[\[\w+:((?!\[\[).)*?\]\]/g,
 			split: /[,][\s]*/,
 			replace: /\]+$/
 		};
@@ -138,7 +138,14 @@
 			return callback(text);
 		}
 
-		translateKeys(keys, text, language, callback);
+		translateKeys(keys, text, language, function(translated) {
+			keys = translated.match(regexes.match);
+			if (!keys) {
+				callback(translated);
+			} else {
+				translateKeys(keys, translated, language, callback);
+			}
+		});
 	};
 
 	function translateKeys(keys, text, language, callback) {
@@ -153,12 +160,7 @@
 			translateKey(key, data, language, function(translated) {
 				--count;
 				if (count <= 0) {
-					keys = translated.text.match(regexes.match);
-					if (!keys) {
-						callback(translated.text);
-					} else {
-						translateKeys(keys, translated.text, language, callback);
-					}
+					callback(translated.text);
 				}
 			});
 		});
