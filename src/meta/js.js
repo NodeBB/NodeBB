@@ -123,7 +123,7 @@ module.exports = function(Meta) {
 		});
 	};
 
-	Meta.js.minify = function(minify, callback) {
+	Meta.js.minify = function(callback) {
 		if (nconf.get('isPrimary') === 'true') {
 			/**
 			 * Check if the parent process is running with the debug option --debug (or --debug-brk)
@@ -218,14 +218,14 @@ module.exports = function(Meta) {
 		});
 	};
 
-	Meta.js.getFromFile = function(minify, callback) {
+	Meta.js.getFromFile = function(callback) {
 		var scriptPath = path.join(__dirname, '../../public/nodebb.min.js'),
 			mapPath = path.join(__dirname, '../../public/nodebb.min.js.map'),
 			paths = [scriptPath];
 		file.exists(scriptPath, function(exists) {
 			if (!exists) {
 				winston.warn('[meta/js] No script file found on disk, re-minifying');
-				Meta.js.minify(minify, callback);
+				Meta.js.minify(callback);
 				return;
 			}
 
