@@ -294,6 +294,12 @@ SocketModules.chats.getRecentChats = function(socket, data, callback) {
 	Messaging.getRecentChats(socket.uid, start, stop, callback);
 };
 
+SocketModules.chats.hasPrivateChat = function(socket, uid, callback) {
+	if (!socket.uid || !uid) {
+		return callback(null, new Error('[[error:invalid-data]]'));
+	}
+	Messaging.hasPrivateChat(socket.uid, uid, callback);
+};
 
 /* Sounds */
 SocketModules.sounds.getSounds = function(socket, data, callback) {

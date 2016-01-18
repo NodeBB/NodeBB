@@ -384,5 +384,44 @@ var async = require('async'),
 		], callback);
 	};
 
+	Messaging.hasPrivateChat = function(uid, withUid, callback) {
+		async.waterfall([
+			function (next) {
+				async.parallel({
+					myRooms: async.apply(db.getSortedSetRevRange, 'uid:' + uid + ':chat:rooms', 0, -1),
+					theirRooms: async.apply(db.getSortedSetRevRange, 'uid:' + withUid + ':chat:rooms', 0, -1)
+				}, next);
+			},
+			function (results, next) {
+				var roomIds = results.myRooms.filter(function(roomId) {
+					return roomId && results.theirRooms.indexOf(roomId) !== -1;
+				});
+
+				if (!roomIds.length) {
+					return callback();
+				}
+
+				var index = 0;
+				var roomId = 0;
+				async.whilst(function() {
+					return index < roomIds.length && !roomId;
+				}, function(next) {
+					Messaging.getUserCountInRoom(roomIds[index], function(err, count) {
+						if (err) {
+							return next(err);
+						}
+						if (count === 2) {
+							roomId = roomIds[index];
+							next(null, roomId);
+						} else {
+							++ index;
+							next();
+						}
+					});
+				}, next);
+			}
+		], callback);
+	};
+
 
 }(exports));
