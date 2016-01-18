@@ -82,7 +82,62 @@ module.exports = function(Meta) {
 		}
 	};
 
-	Meta.js.prepare = function (callback) {
+	Meta.js.minify = function(callback) {
+		if (nconf.get('isPrimary') !== 'true') {
+			if (typeof callback === 'function') {
+				callback();
+			}
+
+			return;
+		}
+
+		var forkProcessParams = setupDebugging();
+		var minifier = Meta.js.minifierProc = fork('minifier.js', [], forkProcessParams);
+
+		Meta.js.prepare(function() {
+			minifier.send({
+				action: 'js',
+				minify: global.env !== 'development',
+				scripts: Meta.js.scripts.all
+			});
+		});
+
+		minifier.on('message', function(message) {
+			switch(message.type) {
+			case 'end':
+				Meta.js.cache = message.minified;
+				Meta.js.map = message.sourceMap;
+				winston.verbose('[meta/js] Minification complete');
+				minifier.kill();
+
+				if (process.send) {
+					process.send({
+						action: 'js-propagate',
+						cache: Meta.js.cache,
+						map: Meta.js.map
+					});
+				}
+
+				Meta.js.commitToFile();
+
+				if (typeof callback === 'function') {
+					callback();
+				}
+				break;
+			case 'error':
+				winston.error('[meta/js] Could not compile client-side scripts! ' + message.payload.message);
+				minifier.kill();
+				if (typeof callback === 'function') {
+					callback(new Error(message.payload.message));
+				} else {
+					process.exit(0);
+				}
+				break;
+			}
+		});
+	};
+
+	Meta.js.prepare = function(callback) {
 		async.parallel([
 			async.apply(getPluginScripts),	// plugin scripts via filter:scripts.get
 			function(next) {	// client scripts via "scripts" config in plugin.json
@@ -121,68 +176,6 @@ module.exports = function(Meta) {
 			});
 			callback();
 		});
-	};
-
-	Meta.js.minify = function(callback) {
-		if (nconf.get('isPrimary') === 'true') {
-			var forkProcessParams = setupDebugging();
-
-			var minifier = Meta.js.minifierProc = fork('minifier.js', [], forkProcessParams),
-				onComplete = function(err) {
-					if (err) {
-						winston.error('[meta/js] Minification failed: ' + err.message);
-						process.exit(0);
-					}
-
-					winston.verbose('[meta/js] Minification complete');
-					minifier.kill();
-
-					if (process.send) {
-						process.send({
-							action: 'js-propagate',
-							cache: Meta.js.cache,
-							map: Meta.js.map
-						});
-					}
-
-					Meta.js.commitToFile();
-
-					if (typeof callback === 'function') {
-						callback();
-					}
-				};
-
-			minifier.on('message', function(message) {
-				switch(message.type) {
-				case 'end':
-					Meta.js.cache = message.minified;
-					Meta.js.map = message.sourceMap;
-					onComplete();
-					break;
-				case 'error':
-					winston.error('[meta/js] Could not compile client-side scripts! ' + message.payload.message);
-					minifier.kill();
-					if (typeof callback === 'function') {
-						callback(new Error(message.payload.message));
-					} else {
-						process.exit(0);
-					}
-					break;
-				}
-			});
-
-			Meta.js.prepare(function() {
-				minifier.send({
-					action: 'js',
-					minify: global.env !== 'development',
-					scripts: Meta.js.scripts.all
-				});
-			});
-		} else {
-			if (typeof callback === 'function') {
-				callback();
-			}
-		}
 	};
 
 	Meta.js.killMinifier = function() {
