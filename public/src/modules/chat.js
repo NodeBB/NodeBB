@@ -95,8 +95,6 @@ define('chat', ['components', 'taskbar', 'string', 'sounds', 'forum/chats', 'tra
 	};
 
 	module.loadChatsDropdown = function(chatsListEl) {
-
-
 		socket.emit('modules.chats.getRecentChats', {after: 0}, function(err, data) {
 			if (err) {
 				return app.alertError(err.message);
