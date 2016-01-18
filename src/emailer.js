@@ -5,6 +5,7 @@ var	async = require('async'),
 	nconf = require('nconf'),
 	templates = require('templates.js'),
 	nodemailer = require('nodemailer'),
+	sendmailTransport = require('nodemailer-sendmail-transport'),
 	htmlToText = require('html-to-text'),
 	url = require('url'),
 
@@ -14,10 +15,10 @@ var	async = require('async'),
 	translator = require('../public/src/modules/translator'),
 
 	transports = {
-		direct: nodemailer.createTransport('direct'),
+		sendmail: nodemailer.createTransport(sendmailTransport()),
 		gmail: undefined
 	},
-	app;
+	app, fallbackTransport;
 
 (function(Emailer) {
 	Emailer.registerApp = function(expressApp) {
@@ -25,13 +26,15 @@ var	async = require('async'),
 
 		// Enable Gmail transport if enabled in ACP
 		if (parseInt(meta.config['email:GmailTransport:enabled'], 10) === 1) {
-			transports.gmail = nodemailer.createTransport('SMTP', {
+			fallbackTransport = transports.gmail = nodemailer.createTransport('SMTP', {
 				service: 'Gmail',
 				auth: {
 					user: meta.config['email:GmailTransport:user'],
 					pass: meta.config['email:GmailTransport:pass']
 				}
 			});
+		} else {
+			fallbackTransport = transports.sendmail;
 		}
 
 		return Emailer;
@@ -119,7 +122,7 @@ var	async = require('async'),
 		delete data.from_name;
 
 		winston.verbose('[emailer] Sending email to uid ' + data.uid);
-		transports[transports.gmail ? 'gmail' : 'direct'].sendMail(data, callback);
+		fallbackTransport.sendMail(data, callback);
 	};
 
 	function render(tpl, params, next) {
