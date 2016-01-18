@@ -164,10 +164,10 @@ module.exports = function(Meta) {
 
 			var basePath = path.resolve(__dirname, '../..');
 
-			if (target === 'nodebb.min.js') {				
-				Meta.js.target[target].scripts = Meta.js.scripts.base.concat(pluginsScripts, Meta.js.scripts.rjs);
-			} else {
-				Meta.js.target[target].scripts = pluginsScripts;
+			Meta.js.target[target].scripts = Meta.js.scripts.base.concat(pluginsScripts);
+
+			if (target === 'nodebb.min.js') {
+				Meta.js.target[target].scripts = Meta.js.target[target].scripts.concat(Meta.js.scripts.rjs);
 			}
 
 			Meta.js.target[target].scripts = Meta.js.target[target].scripts.map(function(script) {
