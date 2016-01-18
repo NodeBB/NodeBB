@@ -108,7 +108,7 @@ module.exports = function(Meta) {
 			case 'end':
 				Meta.js.target[target].cache = message.minified;
 				Meta.js.target[target].map = message.sourceMap;
-				winston.verbose('[meta/js] Minification complete');
+				winston.verbose('[meta/js] ' + target + ' minification complete');
 				minifier.kill();
 
 				if (process.send) {
@@ -126,7 +126,7 @@ module.exports = function(Meta) {
 				}
 				break;
 			case 'error':
-				winston.error('[meta/js] Could not compile client-side scripts! ' + message.payload.message);
+				winston.error('[meta/js] Could not compile ' + target + ': ' + message.payload.message);
 				minifier.kill();
 				if (typeof callback === 'function') {
 					callback(new Error(message.payload.message));
@@ -191,7 +191,7 @@ module.exports = function(Meta) {
 				process.exit(0);
 			}
 
-			winston.verbose('[meta/js] Client-side minfile committed to disk.');
+			winston.verbose('[meta/js] ' + target + ' committed to disk.');
 			emitter.emit('meta:js.compiled');
 		});
 	};
@@ -203,7 +203,7 @@ module.exports = function(Meta) {
 
 		file.exists(scriptPath, function(exists) {
 			if (!exists) {
-				winston.warn('[meta/js] No script file found on disk, re-minifying');
+				winston.warn('[meta/js] ' + target + ' not found on disk, re-minifying');
 				Meta.js.minify(target, callback);
 				return;
 			}
@@ -217,7 +217,6 @@ module.exports = function(Meta) {
 					paths.push(mapPath);
 				}
 
-				winston.verbose('[meta/js] Reading client-side scripts from file');
 				async.map(paths, fs.readFile, function(err, files) {
 					Meta.js.target[target] = {
 						cache: files[0],
