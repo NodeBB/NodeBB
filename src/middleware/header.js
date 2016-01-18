@@ -67,6 +67,19 @@ module.exports = function(app, middleware) {
 		templateValues.configJSON = JSON.stringify(res.locals.config);
 
 		async.parallel({
+			scripts: function(next) {
+				plugins.fireHook('filter:scripts.get', [], function(err, scripts) {
+					if (err) {
+						return next(err);
+					}
+					var arr = [];
+					scripts.forEach(function(script) {
+						arr.push({src: script});
+					});
+
+					next(null, arr);
+				});
+			},
 			isAdmin: function(next) {
 				user.isAdministrator(req.uid, next);
 			},
@@ -120,6 +133,8 @@ module.exports = function(app, middleware) {
 
 			templateValues.template = {name: res.locals.template};
 			templateValues.template[res.locals.template] = true;
+
+			templateValues.scripts = results.scripts;
 
 			if (req.route && req.route.path === '/') {
 				modifyTitle(templateValues);

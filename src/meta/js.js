@@ -141,44 +141,31 @@ module.exports = function(Meta) {
 	Meta.js.prepare = function(target, callback) {
 		var pluginsScripts = [];
 
-		async.parallel([
-			function(next) {
-				if (target === 'nodebb.min.js') {
-					getPluginScripts(next);
-				} else {
-					next();
-				}
-			},
-			function(next) {
-				// client scripts via "scripts" config in plugin.json
-				var pluginDirectories = [];
+		var pluginDirectories = [];
 
-				pluginsScripts = plugins[target === 'nodebb.min.js' ? 'clientScripts' : 'acpScripts'].filter(function(path) {
-					if (path.endsWith('.js')) {
-						return true;
-					} else {
-						pluginDirectories.push(path);
-						return false;
-					}
-				});
-
-				async.each(pluginDirectories, function(directory, next) {
-					utils.walk(directory, function(err, scripts) {
-						pluginsScripts = pluginsScripts.concat(scripts);
-						next(err);
-					});
-				}, next);
+		pluginsScripts = plugins[target === 'nodebb.min.js' ? 'clientScripts' : 'acpScripts'].filter(function(path) {
+			if (path.endsWith('.js')) {
+				return true;
 			}
-		], function(err) {
+
+			pluginDirectories.push(path);
+			return false;
+		});
+
+		async.each(pluginDirectories, function(directory, next) {
+			utils.walk(directory, function(err, scripts) {
+				pluginsScripts = pluginsScripts.concat(scripts);
+				next(err);
+			});
+		}, function(err) {
 			if (err) {
 				return callback(err);
 			}
 
-			// Convert all scripts to paths relative to the NodeBB base directory
 			var basePath = path.resolve(__dirname, '../..');
 
 			if (target === 'nodebb.min.js') {				
-				Meta.js.target[target].scripts = Meta.js.scripts.base.concat(pluginsScripts, Meta.js.scripts.rjs, Meta.js.scripts.plugin);
+				Meta.js.target[target].scripts = Meta.js.scripts.base.concat(pluginsScripts, Meta.js.scripts.rjs);
 			} else {
 				Meta.js.target[target].scripts = pluginsScripts;
 			}
@@ -243,38 +230,6 @@ module.exports = function(Meta) {
 			});
 		});
 	};
-
-	function getPluginScripts(callback) {
-		plugins.fireHook('filter:scripts.get', [], function(err, scripts) {
-			if (err) {
-				callback(err, []);
-			}
-
-			var jsPaths = scripts.map(function (jsPath) {
-					jsPath = path.normalize(jsPath);
-
-					var	matches = _.map(plugins.staticDirs, function(realPath, mappedPath) {
-						if (jsPath.match(mappedPath)) {
-							return mappedPath;
-						} else {
-							return null;
-						}
-					}).filter(function(a) { return a; });
-
-					if (matches.length) {
-						var	relPath = jsPath.slice(('plugins/' + matches[0]).length);
-
-						return plugins.staticDirs[matches[0]] + relPath;
-					} else {
-						winston.warn('[meta.scripts.get] Could not resolve mapped path: ' + jsPath + '. Are you sure it is defined by a plugin?');
-						return null;
-					}
-				});
-
-			Meta.js.scripts.plugin = jsPaths.filter(Boolean);
-			callback();
-		});
-	}
 
 	function setupDebugging() {
 		/**
