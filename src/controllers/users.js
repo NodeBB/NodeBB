@@ -74,7 +74,7 @@ usersController.getUsers = function(set, uid, page, callback) {
 		'users:postcount': '[[users:top_posters]]',
 		'users:reputation': '[[users:most_reputation]]',
 		'users:joindate': '[[global:users]]',
-		'usesr:online': '[[global:online]]'
+		'users:online': '[[global:online]]'
 	};
 
 	var breadcrumbs = [{text: setToCrumbs[set]}];
