@@ -62,7 +62,8 @@ var async = require('async'),
 			async.apply(plugins.reloadRoutes),
 			function(next) {
 				async.parallel([
-					async.apply(Meta.js.minify),
+					async.apply(Meta.js.minify, 'nodebb.min.js'),
+					async.apply(Meta.js.minify, 'acp.min.js'),
 					async.apply(Meta.css.minify),
 					async.apply(Meta.sounds.init),
 					async.apply(Meta.templates.compile),

@@ -5,7 +5,7 @@ var meta = require('../meta'),
 
 
 function sendMinifiedJS(req, res, next) {
-	res.type('text/javascript').send(meta.js.cache);
+	res.type('text/javascript').send(meta.js.target['nodebb.min.js'].cache);
 }
 
 // The portions of code involving the source map are commented out as they're broken in UglifyJS2

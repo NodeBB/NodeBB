@@ -31,6 +31,8 @@ pidfile
 /public/admin.css
 /public/nodebb.min.js
 /public/nodebb.min.js.map
+/public/acp.min.js
+/public/acp.min.js.map
 
 # Covers JetBrains IDEs: IntelliJ, RubyMine, PhpStorm, AppCode, PyCharm, CLion, Android Studio
 *.iml

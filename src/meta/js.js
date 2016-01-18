@@ -15,8 +15,7 @@ var winston = require('winston'),
 module.exports = function(Meta) {
 
 	Meta.js = {
-		cache: '',
-		map: '',
+		target: {},
 		scripts: {
 			base: [
 				'public/vendor/jquery/js/jquery.js',
@@ -82,7 +81,7 @@ module.exports = function(Meta) {
 		}
 	};
 
-	Meta.js.minify = function(callback) {
+	Meta.js.minify = function(target, callback) {
 		if (nconf.get('isPrimary') !== 'true') {
 			if (typeof callback === 'function') {
 				callback();
@@ -94,31 +93,33 @@ module.exports = function(Meta) {
 		var forkProcessParams = setupDebugging();
 		var minifier = Meta.js.minifierProc = fork('minifier.js', [], forkProcessParams);
 
-		Meta.js.prepare(function() {
+		Meta.js.target[target] = {};
+
+		Meta.js.prepare(target, function() {
 			minifier.send({
 				action: 'js',
 				minify: global.env !== 'development',
-				scripts: Meta.js.scripts.all
+				scripts: Meta.js.target[target].scripts
 			});
 		});
 
 		minifier.on('message', function(message) {
 			switch(message.type) {
 			case 'end':
-				Meta.js.cache = message.minified;
-				Meta.js.map = message.sourceMap;
+				Meta.js.target[target].cache = message.minified;
+				Meta.js.target[target].map = message.sourceMap;
 				winston.verbose('[meta/js] Minification complete');
 				minifier.kill();
 
 				if (process.send) {
 					process.send({
 						action: 'js-propagate',
-						cache: Meta.js.cache,
-						map: Meta.js.map
+						cache: Meta.js.target[target].cache,
+						map: Meta.js.target[target].map
 					});
 				}
 
-				Meta.js.commitToFile();
+				Meta.js.commitToFile(target);
 
 				if (typeof callback === 'function') {
 					callback();
@@ -137,14 +138,22 @@ module.exports = function(Meta) {
 		});
 	};
 
-	Meta.js.prepare = function(callback) {
-		async.parallel([
-			async.apply(getPluginScripts),	// plugin scripts via filter:scripts.get
-			function(next) {	// client scripts via "scripts" config in plugin.json
-				var pluginsScripts = [],
-					pluginDirectories = [];
+	Meta.js.prepare = function(target, callback) {
+		var pluginsScripts = [];
 
-				pluginsScripts = plugins.clientScripts.filter(function(path) {
+		async.parallel([
+			function(next) {
+				if (target === 'nodebb.min.js') {
+					getPluginScripts(next);
+				} else {
+					next();
+				}
+			},
+			function(next) {
+				// client scripts via "scripts" config in plugin.json
+				var pluginDirectories = [];
+
+				pluginsScripts = plugins[target === 'nodebb.min.js' ? 'clientScripts' : 'acpScripts'].filter(function(path) {
 					if (path.endsWith('.js')) {
 						return true;
 					} else {
@@ -153,13 +162,9 @@ module.exports = function(Meta) {
 					}
 				});
 
-				// Add plugin scripts
-				Meta.js.scripts.client = pluginsScripts;
-
-				// Add plugin script directories
 				async.each(pluginDirectories, function(directory, next) {
 					utils.walk(directory, function(err, scripts) {
-						Meta.js.scripts.client = Meta.js.scripts.client.concat(scripts);
+						pluginsScripts = pluginsScripts.concat(scripts);
 						next(err);
 					});
 				}, next);
@@ -171,9 +176,17 @@ module.exports = function(Meta) {
 
 			// Convert all scripts to paths relative to the NodeBB base directory
 			var basePath = path.resolve(__dirname, '../..');
-			Meta.js.scripts.all = Meta.js.scripts.base.concat(Meta.js.scripts.rjs, Meta.js.scripts.plugin, Meta.js.scripts.client).map(function(script) {
+
+			if (target === 'nodebb.min.js') {				
+				Meta.js.target[target].scripts = Meta.js.scripts.base.concat(pluginsScripts, Meta.js.scripts.rjs, Meta.js.scripts.plugin);
+			} else {
+				Meta.js.target[target].scripts = pluginsScripts;
+			}
+
+			Meta.js.target[target].scripts = Meta.js.target[target].scripts.map(function(script) {
 				return path.relative(basePath, script).replace(/\\/g, '/');
 			});
+
 			callback();
 		});
 	};
@@ -184,8 +197,8 @@ module.exports = function(Meta) {
 		}
 	};
 
-	Meta.js.commitToFile = function() {
-		fs.writeFile(path.join(__dirname, '../../public/nodebb.min.js'), Meta.js.cache, function (err) {
+	Meta.js.commitToFile = function(target) {
+		fs.writeFile(path.join(__dirname, '../../public/' + target), Meta.js.target[target].cache, function (err) {
 			if (err) {
 				winston.error('[meta/js] ' + err.message);
 				process.exit(0);
@@ -196,14 +209,15 @@ module.exports = function(Meta) {
 		});
 	};
 
-	Meta.js.getFromFile = function(callback) {
-		var scriptPath = path.join(__dirname, '../../public/nodebb.min.js'),
-			mapPath = path.join(__dirname, '../../public/nodebb.min.js.map'),
+	Meta.js.getFromFile = function(target, callback) {
+		var scriptPath = path.join(__dirname, '../../public/' + target),
+			mapPath = path.join(__dirname, '../../public/' + target + '.map'),
 			paths = [scriptPath];
+
 		file.exists(scriptPath, function(exists) {
 			if (!exists) {
 				winston.warn('[meta/js] No script file found on disk, re-minifying');
-				Meta.js.minify(callback);
+				Meta.js.minify(target, callback);
 				return;
 			}
 
@@ -218,8 +232,10 @@ module.exports = function(Meta) {
 
 				winston.verbose('[meta/js] Reading client-side scripts from file');
 				async.map(paths, fs.readFile, function(err, files) {
-					Meta.js.cache = files[0];
-					Meta.js.map = files[1] || '';
+					Meta.js.target[target] = {
+						cache: files[0],
+						map: files[1] || ''
+					};
 
 					emitter.emit('meta:js.compiled');
 					callback();

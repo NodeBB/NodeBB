@@ -92,7 +92,8 @@ function initializeNodeBB(callback) {
 		function(next) {
 			async.parallel([
 				async.apply(meta.templates.compile),
-				async.apply(!skipJS ? meta.js.minify : meta.js.getFromFile),
+				async.apply(!skipJS ? meta.js.minify : meta.js.getFromFile, 'nodebb.min.js'),
+				async.apply(!skipJS ? meta.js.minify : meta.js.getFromFile, 'acp.min.js'),
 				async.apply(!skipLess ? meta.css.minify : meta.css.getFromFile),
 				async.apply(meta.sounds.init)
 			], next);

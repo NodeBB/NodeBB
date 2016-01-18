@@ -30,6 +30,7 @@ var fs = require('fs'),
 	Plugins.cssFiles = [];
 	Plugins.lessFiles = [];
 	Plugins.clientScripts = [];
+	Plugins.acpScripts = [];
 	Plugins.customLanguages = [];
 	Plugins.customLanguageFallbacks = {};
 	Plugins.libraryPaths = [];
@@ -81,6 +82,7 @@ var fs = require('fs'),
 		Plugins.cssFiles.length = 0;
 		Plugins.lessFiles.length = 0;
 		Plugins.clientScripts.length = 0;
+		Plugins.acpScripts.length = 0;
 		Plugins.libraryPaths.length = 0;
 
 		Plugins.registerHook('core', {
