@@ -4,6 +4,7 @@ var async = require('async');
 var validator = require('validator');
 
 var meta = require('../meta');
+var notifications = require('../notifications');
 var Messaging = require('../messaging');
 var utils = require('../../public/src/utils');
 var server = require('./');
@@ -129,7 +130,19 @@ SocketModules.chats.loadRoom = function(socket, data, callback) {
 			results.roomData.showUserInput = !results.roomData.maximumUsersInChatRoom || results.roomData.maximumUsersInChatRoom > 2;
 			next(null, results.roomData);
 		}
-	], callback);
+	], function(err, room) {
+		if (!err) {
+			// Mark notification read
+			var nids = room.users.filter(function(user) {
+				return parseInt(user.uid, 10) !== socket.uid;
+			}).map(function(user) {
+				return 'chat_' + user.uid + '_' + data.roomId;
+			});
+			notifications.markReadMultiple(nids, socket.uid);
+		}
+
+		callback(err, room);
+	});
 };
 
 SocketModules.chats.addUserToRoom = function(socket, data, callback) {
