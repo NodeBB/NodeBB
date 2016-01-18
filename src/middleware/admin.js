@@ -73,7 +73,7 @@ middleware.renderHeader = function(req, res, data, next) {
 					}
 					var arr = [];
 					scripts.forEach(function(script) {
-						arr.push({src: nconf.get('url') + script});
+						arr.push({src: script});
 					});
 
 					next(null, arr);
