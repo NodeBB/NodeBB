@@ -24,6 +24,7 @@
     "confirm-email-already-sent": "Potrditveni e-mail naslov je že poslan. Prosimo počakajte %1 minut(o) za ponovno pošiljanje.",
     "username-too-short": "Uporabniško ime je prekratko",
     "username-too-long": "Uporabniško ime je predolgo",
+    "password-too-long": "Password too long",
     "user-banned": "Uporabnik je blokiran",
     "user-too-new": "Oprostite, počakajte %1 sekund pred vašo prvo objavo",
     "no-category": "Kategorija ne obstaja",

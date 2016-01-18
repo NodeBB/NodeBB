@@ -24,6 +24,7 @@
     "confirm-email-already-sent": "确认邮件已发出，如需重新发送请等待 %1 分钟后再试。",
     "username-too-short": "用户名太短",
     "username-too-long": "用户名太长",
+    "password-too-long": "Password too long",
     "user-banned": "用户已禁止",
     "user-too-new": "抱歉，您需要等待 %1 秒后，才可以发帖！",
     "no-category": "版块不存在",

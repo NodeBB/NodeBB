@@ -5,7 +5,7 @@
     "mark_all_read": "标记全部为已读",
     "back_to_home": "返回 %1",
     "outgoing_link": "站外链接",
-    "outgoing_link_message": "您正在离开 %1。",
+    "outgoing_link_message": "You are now leaving %1",
     "continue_to": "继续前往 %1",
     "return_to": "返回 %1",
     "new_notification": "新通知",

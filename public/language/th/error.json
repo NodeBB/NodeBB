@@ -24,6 +24,7 @@
     "confirm-email-already-sent": "Confirmation email already sent, please wait %1 minute(s) to send another one.",
     "username-too-short": "ชื่อบัญชีผู้ใช้ สั้นเกินไป",
     "username-too-long": "ชื่อบัญชีผู้ใช้ ยาวเกินไป",
+    "password-too-long": "Password too long",
     "user-banned": "User banned",
     "user-too-new": "Sorry, you are required to wait %1 second(s) before making your first post",
     "no-category": "ยังไม่มี Category นี้",

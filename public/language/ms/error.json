@@ -24,6 +24,7 @@
     "confirm-email-already-sent": "Pengesahan emel telah dihantar, sila tunggu %1 minit() untuk menghantar yang baru.",
     "username-too-short": "Nama pengunna terlalu pendek",
     "username-too-long": "Nama pengunna terlalu panjang",
+    "password-too-long": "Password too long",
     "user-banned": "Pengguna diharamkan",
     "user-too-new": "Maaf, anda dikehendaki menunggu %1 saat() sebelum membuat kiriman pertama anda",
     "no-category": "Kategori tidak wujud",

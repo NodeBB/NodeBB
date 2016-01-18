@@ -24,6 +24,7 @@
     "confirm-email-already-sent": "Confirmation email already sent, please wait %1 minute(s) to send another one.",
     "username-too-short": "使用者名稱太簡短",
     "username-too-long": "使用者名稱太長",
+    "password-too-long": "Password too long",
     "user-banned": "該使用者已被停用",
     "user-too-new": "抱歉，發表您第一篇文章須要等待 %1 秒",
     "no-category": "類別並不存在",

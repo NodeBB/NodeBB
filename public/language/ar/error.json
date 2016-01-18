@@ -24,6 +24,7 @@
     "confirm-email-already-sent": "لقد تم ارسال بريد التأكيد، الرجاء اﻹنتظار 1% دقائق لإعادة اﻹرسال",
     "username-too-short": "اسم المستخدم قصير.",
     "username-too-long": "اسم المستخدم طويل",
+    "password-too-long": "Password too long",
     "user-banned": "المستخدم محظور",
     "user-too-new": "عذرا, يجب أن تنتظر 1% ثواني قبل قيامك بأول مشاركة",
     "no-category": "قائمة غير موجودة",

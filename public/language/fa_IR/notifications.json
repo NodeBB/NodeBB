@@ -5,7 +5,7 @@
     "mark_all_read": "همه اطلاعیه ها را خوانده شده علامت بزن",
     "back_to_home": "بازگشت به %1",
     "outgoing_link": "پیوند برون‌رو",
-    "outgoing_link_message": "در حال ترک %1 هستید.",
+    "outgoing_link_message": "You are now leaving %1",
     "continue_to": "ادامه به %1",
     "return_to": "بازگشت به %1",
     "new_notification": "آکاه‌سازی تازه",

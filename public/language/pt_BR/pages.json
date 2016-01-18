@@ -16,7 +16,7 @@
     "tags": "Tags",
     "tag": "Tópicos com a tag \"%1\"",
     "register": "Registrar uma conta",
-    "login": "Login na sua conta",
+    "login": "Entrar na sua conta",
     "reset": "Redefinir a senha da sua conta",
     "categories": "Categorias",
     "groups": "Grupos",
@@ -35,7 +35,10 @@
     "account/favourites": "Posts Favoritos de %1",
     "account/settings": "Configurações de Usuário",
     "account/watched": "Tópicos assistidos por %1",
+    "account/upvoted": "Posts upvoted by %1",
+    "account/downvoted": "Posts downvoted by %1",
+    "account/best": "Best posts made by %1",
     "maintenance.text": "%1 está atualmente sob manutenção. Por favor retorne em outro momento.",
     "maintenance.messageIntro": "Adicionalmente, o administrador deixou esta mensagem:",
-    "throttled.text": "%1 está atualmente indisponível devido a excesso de carga. Por favor retorne em outro momento"
+    "throttled.text": "%1 está atualmente indisponível devido a excesso de contingente. Por favor retorne em outro momento."
 }

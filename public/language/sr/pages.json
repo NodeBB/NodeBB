@@ -18,7 +18,7 @@
     "register": "Register an account",
     "login": "Login to your account",
     "reset": "Reset your account password",
-    "categories": "Categories",
+    "categories": "Категорије",
     "groups": "Groups",
     "group": "%1 group",
     "chats": "Chats",
@@ -35,6 +35,9 @@
     "account/favourites": "%1's Favourite Posts",
     "account/settings": "User Settings",
     "account/watched": "Topics watched by %1",
+    "account/upvoted": "Posts upvoted by %1",
+    "account/downvoted": "Posts downvoted by %1",
+    "account/best": "Best posts made by %1",
     "maintenance.text": "%1 is currently undergoing maintenance. Please come back another time.",
     "maintenance.messageIntro": "Additionally, the administrator has left this message:",
     "throttled.text": "%1 is currently unavailable due to excessive load. Please come back another time."

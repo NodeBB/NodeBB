@@ -24,6 +24,7 @@
     "confirm-email-already-sent": "Bekræftelses email er allerede afsendt, vent venligt %1 minut(ter) for at sende endnu en.",
     "username-too-short": "Brugernavn er for kort",
     "username-too-long": "Brugernavn er for langt",
+    "password-too-long": "Password too long",
     "user-banned": "Bruger er bortvist",
     "user-too-new": "Beklager, du er nødt til at vente %1 sekund(er) før du opretter dit indlæg",
     "no-category": "Kategorien eksisterer ikke",

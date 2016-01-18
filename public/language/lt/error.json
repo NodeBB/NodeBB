@@ -24,6 +24,7 @@
     "confirm-email-already-sent": "Patvirtinimo laiškas išsiųstas, prašome palaukti %1 minute(s) kad išsiųstume kita",
     "username-too-short": "Slapyvardis per trumpas",
     "username-too-long": "Vartotojo vardas per ilgas",
+    "password-too-long": "Password too long",
     "user-banned": "Vartotojas užblokuotas",
     "user-too-new": "Atsiprašome, jūs įpareigoti palaukti %1 sekunde(s) prieš rašant pirmą pranešimą",
     "no-category": "Tokios kategorijos nėra",

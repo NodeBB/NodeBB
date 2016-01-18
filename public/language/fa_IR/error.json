@@ -24,6 +24,7 @@
     "confirm-email-already-sent": "ایمیل فعال‌سازی قبلا فرستاده شده، لطفا %1 دقیقه صبر کنید تا ایمیل دیگری بفرستید.",
     "username-too-short": "نام کاربری خیلی کوتاه است.",
     "username-too-long": "نام کاربری بسیار طولانیست",
+    "password-too-long": "Password too long",
     "user-banned": "کاربر محروم شد.",
     "user-too-new": "با عرض پوزش، شما باید %1 ثانیه پیش از فرستادن پست نخست خود صبر کنید",
     "no-category": "دسته بندی وجود ندارد",

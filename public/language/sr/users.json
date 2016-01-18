@@ -9,13 +9,13 @@
     "filter-by": "Филтрирај према",
     "online-only": "Само корисници на вези",
     "picture-only": "Само слике",
-    "invite": "Invite",
-    "invitation-email-sent": "An invitation email has been sent to %1",
-    "user_list": "User List",
-    "recent_topics": "Recent Topics",
-    "popular_topics": "Popular Topics",
-    "unread_topics": "Unread Topics",
-    "categories": "Categories",
-    "tags": "Tags",
-    "map": "Map"
+    "invite": "Позови",
+    "invitation-email-sent": "Активациони емејл је послат на %1",
+    "user_list": "Листа корисника",
+    "recent_topics": "Скорашње теме",
+    "popular_topics": "Популарне теме",
+    "unread_topics": "Непрочитане теме",
+    "categories": "Категорије",
+    "tags": "Ознаке",
+    "map": "Мапа"
 }

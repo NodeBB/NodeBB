@@ -24,6 +24,7 @@
     "confirm-email-already-sent": "Email yo kwemeza yamaze koherezwa. Tegereza iminota (umunota) %1 mbere yo kohereza indi. ",
     "username-too-short": "Izina ni rigufi cyane",
     "username-too-long": "Izina ni rirerire cyane",
+    "password-too-long": "Password too long",
     "user-banned": "Umuntu wirukanwe",
     "user-too-new": "Wihangena kuko usabwa gutegereza amasegonda (isegonda) %1 mbere yo gushyiraho ikintu cyawe cya mbere",
     "no-category": "Icyiciro kitabaho",

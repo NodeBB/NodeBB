@@ -35,6 +35,9 @@
     "account/favourites": "%1 收藏的帖子",
     "account/settings": "用户设置",
     "account/watched": "主题已被 %1 关注",
+    "account/upvoted": "Posts upvoted by %1",
+    "account/downvoted": "Posts downvoted by %1",
+    "account/best": "Best posts made by %1",
     "maintenance.text": "%1 正在进行维护。请稍后再来。",
     "maintenance.messageIntro": "此外，管理员留下的消息：",
     "throttled.text": "%1 因负荷超载暂不可用。请稍后再来。"

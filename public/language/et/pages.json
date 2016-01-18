@@ -35,6 +35,9 @@
     "account/favourites": "Kasutaja %1 lemmikud postitused",
     "account/settings": "Kasutaja sätted",
     "account/watched": "Teemasid jälgib %1 kasutajat",
+    "account/upvoted": "Posts upvoted by %1",
+    "account/downvoted": "Posts downvoted by %1",
+    "account/best": "Best posts made by %1",
     "maintenance.text": "%1 foorumil on käimas hooldustööd. Palun külastage meid mõne aja pärast uuesti.",
     "maintenance.messageIntro": "Administraator on jätnud ka omaltpoolt sõnumi:",
     "throttled.text": "%1 is currently unavailable due to excessive load. Please come back another time."

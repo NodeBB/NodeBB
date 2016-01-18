@@ -24,6 +24,7 @@
     "confirm-email-already-sent": "Die Bestätigungsmail wurde verschickt, bitte warte %1 Minute(n) um eine Weitere zu verschicken.",
     "username-too-short": "Benutzername ist zu kurz",
     "username-too-long": "Benutzername ist zu lang",
+    "password-too-long": "Password too long",
     "user-banned": "Benutzer ist gesperrt",
     "user-too-new": "Entschuldigung, du musst %1 Sekunde(n) warten, bevor du deinen ersten Beitrag schreiben kannst.",
     "no-category": "Die Kategorie existiert nicht",

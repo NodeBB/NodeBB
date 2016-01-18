@@ -7,7 +7,7 @@
     "titles-posts": "Títulos e Posts",
     "posted-by": "Postado por",
     "in-categories": "Nas Categorias",
-    "search-child-categories": "Buscar categorias filhas",
+    "search-child-categories": "Pesquisar subcategorias",
     "reply-count": "Contagem de Respostas",
     "at-least": "No mínimo",
     "at-most": "No máximo",
@@ -34,7 +34,7 @@
     "ascending": "Em ordem ascendente",
     "save-preferences": "Salvar preferências",
     "clear-preferences": "Limpar preferências",
-    "search-preferences-saved": "Preferências de busca salvas",
-    "search-preferences-cleared": "Preferências de busca limpas",
+    "search-preferences-saved": "Preferências de pesquisa salvas",
+    "search-preferences-cleared": "Preferências de pesquisa limpas",
     "show-results-as": "Mostrar resultados como"
 }

@@ -35,6 +35,9 @@
     "account/favourites": "%1'in Favori İletileri",
     "account/settings": "Kullanıcı Ayarları",
     "account/watched": "%1 tarafından izlenen konular",
+    "account/upvoted": "Posts upvoted by %1",
+    "account/downvoted": "Posts downvoted by %1",
+    "account/best": "Best posts made by %1",
     "maintenance.text": "%1 şu anda bakımda. Lütfen bir süre sonra tekrar deneyin.",
     "maintenance.messageIntro": "Ayrıca, yönetici şu mesaji bıraktı:",
     "throttled.text": "%1 şu anda kullanılamıyor. Lütfen daha sonra tekrar dene."

@@ -24,6 +24,7 @@
     "confirm-email-already-sent": "Kinnituskiri on juba saadetud, palun oota %1 minut(it) uue kirja saatmiseks.",
     "username-too-short": "Kasutajanimi on liiga lühike",
     "username-too-long": "Kasutajanimi on liiga pikk",
+    "password-too-long": "Password too long",
     "user-banned": "Kasutaja bannitud",
     "user-too-new": "Vabandust, te peate ootama %1 sekund(it) enne esimese postituse loomist.",
     "no-category": "Kategooriat ei eksisteeri",

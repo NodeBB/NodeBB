@@ -49,6 +49,9 @@
     "users": "Пользователи",
     "topics": "Темы",
     "posts": "Сообщения",
+    "best": "Best",
+    "upvoted": "Upvoted",
+    "downvoted": "Downvoted",
     "views": "Просмотры",
     "reputation": "Репутация",
     "read_more": "читать дальше",
@@ -84,6 +87,6 @@
     "unfollow": "Отписаться",
     "delete_all": "Удалить все",
     "map": "Карта",
-    "sessions": "Login Sessions",
-    "ip_address": "IP Address"
+    "sessions": "Сессии входа",
+    "ip_address": "IP адрес"
 }

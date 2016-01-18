@@ -35,6 +35,9 @@
     "account/favourites": "Favoritos de %1",
     "account/settings": "Preferencias",
     "account/watched": "Temas seguidos por %1",
+    "account/upvoted": "Posts upvoted by %1",
+    "account/downvoted": "Posts downvoted by %1",
+    "account/best": "Best posts made by %1",
     "maintenance.text": "%1 está en mantenimiento actualmente. Por favor vuelva en otro momento.",
     "maintenance.messageIntro": "Además, la administración ha dejado este mensaje:",
     "throttled.text": "%1 no está disponible debido a una carga excesiva. Por favor vuelva en otro momento"

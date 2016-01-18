@@ -77,6 +77,9 @@
     "has_no_posts": "Dieser Nutzer hat noch nichts gepostet.",
     "has_no_topics": "Dieser Nutzer hat noch keine Themen gepostet.",
     "has_no_watched_topics": "Dieser Nutzer beobachtet keine Themen.",
+    "has_no_upvoted_posts": "This user hasn't upvoted any posts yet.",
+    "has_no_downvoted_posts": "This user hasn't downvoted any posts yet.",
+    "has_no_voted_posts": "This user has no voted posts",
     "email_hidden": "E-Mail Adresse versteckt",
     "hidden": "versteckt",
     "paginate_description": "Themen und Beiträge in Seiten aufteilen, anstelle unendlich zu scrollen",
@@ -99,5 +102,5 @@
     "custom_route_help": "Gib hier einen Pfadnamen ohne vorangehenden Slash ein (z.B. \"recent\" oder \"popular\")",
     "sso.title": "Einmalanmeldungsdienste",
     "sso.associated": "Verbunden mit",
-    "sso.not-associated": "Verbinde dich hier mit"
+    "sso.not-associated": "Verbinde dich mit"
 }

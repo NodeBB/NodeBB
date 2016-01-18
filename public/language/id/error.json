@@ -24,6 +24,7 @@
     "confirm-email-already-sent": "Confirmation email already sent, please wait %1 minute(s) to send another one.",
     "username-too-short": "Username terlalu pendek",
     "username-too-long": "Username terlalu panjang",
+    "password-too-long": "Password too long",
     "user-banned": "Pengguna dibanned",
     "user-too-new": "Sorry, you are required to wait %1 second(s) before making your first post",
     "no-category": "Kategori tidak ditemukan",

@@ -1,6 +1,6 @@
 {
     "home": "Home",
-    "search": "Procurar",
+    "search": "Pesquisar",
     "buttons.close": "Fechar",
     "403.title": "Acesso Negado",
     "403.message": "Parece que você chegou à uma página à qual você não tem acesso.",
@@ -31,7 +31,7 @@
     "header.groups": "Grupos",
     "header.chats": "Chats",
     "header.notifications": "Notificações",
-    "header.search": "Procurar",
+    "header.search": "Pesquisar",
     "header.profile": "Perfil",
     "header.navigation": "Navegação",
     "notifications.loading": "Carregando Notificações",
@@ -49,6 +49,9 @@
     "users": "Usuários",
     "topics": "Tópicos",
     "posts": "Posts",
+    "best": "Best",
+    "upvoted": "Upvoted",
+    "downvoted": "Downvoted",
     "views": "Visualizações",
     "reputation": "Reputação",
     "read_more": "ler mais",
@@ -57,7 +60,7 @@
     "posted_ago_by": "postado %1 por %2",
     "posted_ago": "postou %1",
     "posted_in": "postado em %1",
-    "posted_in_by": "postado %1 por %2",
+    "posted_in_by": "postado em %1 por %2",
     "posted_in_ago": "postado em %1 %2",
     "posted_in_ago_by": "postado em %1 %2 por %3",
     "posted_in_ago_by_guest": "postado em %1 %2 por Visitante",
@@ -84,6 +87,6 @@
     "unfollow": "Deixar de seguir",
     "delete_all": "Deletar Tudo",
     "map": "Mapa",
-    "sessions": "Login Sessions",
-    "ip_address": "IP Address"
+    "sessions": "Sessões de Login",
+    "ip_address": "Endereço IP"
 }

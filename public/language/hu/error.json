@@ -24,6 +24,7 @@
     "confirm-email-already-sent": "Confirmation email already sent, please wait %1 minute(s) to send another one.",
     "username-too-short": "Túl rövid felhasználónév",
     "username-too-long": "Túl hosszú felhasználónév",
+    "password-too-long": "Password too long",
     "user-banned": "Kitiltott felhasználó",
     "user-too-new": "Sorry, you are required to wait %1 second(s) before making your first post",
     "no-category": "Nem létező kategória",

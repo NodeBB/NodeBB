@@ -24,6 +24,7 @@
     "confirm-email-already-sent": "Bekräftningsbrev redan skickat, var god vänta %1 minut(er) innan du skickar ett nytt.",
     "username-too-short": "Användarnamnet är för kort",
     "username-too-long": "Användarnamnet är för långt",
+    "password-too-long": "Password too long",
     "user-banned": "Användare bannlyst",
     "user-too-new": "När du är ny medlem måste du vänta %1 sekund(er) innan du gör ditt första inlägg",
     "no-category": "Kategorin finns inte",

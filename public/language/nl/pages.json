@@ -35,6 +35,9 @@
     "account/favourites": "Favoriete berichten van %1",
     "account/settings": "Gebruikersinstellingen",
     "account/watched": "Berichten die door %1 bekeken worden",
+    "account/upvoted": "Posts upvoted by %1",
+    "account/downvoted": "Posts downvoted by %1",
+    "account/best": "Best posts made by %1",
     "maintenance.text": "%1 is momenteel in onderhoud. Excuses voor het ongemak en probeer het later nog eens.",
     "maintenance.messageIntro": "Daarnaast heeft de beheerder het volgende bericht achtergelaten:",
     "throttled.text": "%1 is momenteel niet beschikbaar door overmatig gebruikt. Excuses voor het ongemak en probeer het later nog eens."

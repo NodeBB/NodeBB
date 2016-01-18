@@ -24,6 +24,7 @@
     "confirm-email-already-sent": "Confirmation email already sent, please wait %1 minute(s) to send another one.",
     "username-too-short": "খুব ছোট ইউজারনেম",
     "username-too-long": "ইউজারনেম বড় হয়ে গিয়েছে",
+    "password-too-long": "Password too long",
     "user-banned": "ব্যবহারকারী নিষিদ্ধ",
     "user-too-new": "Sorry, you are required to wait %1 second(s) before making your first post",
     "no-category": "বিভাগটি খুজে পাওয়া যায় নি",

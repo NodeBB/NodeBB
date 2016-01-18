@@ -24,6 +24,7 @@
     "confirm-email-already-sent": "Confirmation email already sent, please wait %1 minute(s) to send another one.",
     "username-too-short": "Uživatelské jméno je příliš krátké",
     "username-too-long": "Uživatelské jméno je příliš dlouhé",
+    "password-too-long": "Password too long",
     "user-banned": "Uživatel byl zakázán",
     "user-too-new": "Sorry, you are required to wait %1 second(s) before making your first post",
     "no-category": "Kategorie neexistuje",

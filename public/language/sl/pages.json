@@ -35,6 +35,9 @@
     "account/favourites": "Priljubljene objave uporabnika %1",
     "account/settings": "Uporabniške nastavitve",
     "account/watched": "Teme, ki jih spremlja uporabnik %1",
+    "account/upvoted": "Posts upvoted by %1",
+    "account/downvoted": "Posts downvoted by %1",
+    "account/best": "Best posts made by %1",
     "maintenance.text": "%1 je trenutno v prenovi. Prosimo pridite nazaj kasneje.",
     "maintenance.messageIntro": "Administrator obvešča:",
     "throttled.text": "%1 is currently unavailable due to excessive load. Please come back another time."

@@ -49,6 +49,9 @@
     "users": "Usuarios",
     "topics": "Temas",
     "posts": "Posts",
+    "best": "Best",
+    "upvoted": "Upvoted",
+    "downvoted": "Downvoted",
     "views": "Visitas",
     "reputation": "Reputación",
     "read_more": "leer más",
@@ -84,6 +87,6 @@
     "unfollow": "Dejar de Seguir",
     "delete_all": "Eliminar todo",
     "map": "Mapa",
-    "sessions": "Login Sessions",
-    "ip_address": "IP Address"
+    "sessions": "Inicios de sesión",
+    "ip_address": "Direcciones IP"
 }

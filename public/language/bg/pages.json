@@ -35,6 +35,9 @@
     "account/favourites": "Любимите публикации на %1",
     "account/settings": "Потребителски настройки",
     "account/watched": "Теми, следени от %1",
+    "account/upvoted": "Posts upvoted by %1",
+    "account/downvoted": "Posts downvoted by %1",
+    "account/best": "Best posts made by %1",
     "maintenance.text": "%1 в момента е в профилактика. Моля, върнете се по-късно.",
     "maintenance.messageIntro": "В допълнение, администраторът е оставил това съобщение:",
     "throttled.text": "%1 в момента е недостъпен, поради прекомерно натоварване. Моля, върнете се отново по-късно."
