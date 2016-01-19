@@ -189,6 +189,7 @@ define('forum/account/edit', ['forum/account/header', 'uploader', 'translator'],
 			$('#user-current-picture, img.avatar').attr('src', urlOnServer);
 			updateHeader(urlOnServer);
 			uploadedPicture = urlOnServer;
+			ajaxify.refresh();
 		}
 
 		function onRemoveComplete(urlOnServer) {
