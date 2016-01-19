@@ -29,8 +29,6 @@ SocketModules.chats.get = function(socket, data, callback) {
 		since: data.since,
 		isNew: false
 	}, callback);
-
-	Messaging.markRead(socket.uid, data.roomId);
 };
 
 SocketModules.chats.getRaw = function(socket, data, callback) {
@@ -130,19 +128,7 @@ SocketModules.chats.loadRoom = function(socket, data, callback) {
 			results.roomData.showUserInput = !results.roomData.maximumUsersInChatRoom || results.roomData.maximumUsersInChatRoom > 2;
 			next(null, results.roomData);
 		}
-	], function(err, room) {
-		if (!err) {
-			// Mark notification read
-			var nids = room.users.filter(function(user) {
-				return parseInt(user.uid, 10) !== socket.uid;
-			}).map(function(user) {
-				return 'chat_' + user.uid + '_' + data.roomId;
-			});
-			notifications.markReadMultiple(nids, socket.uid);
-		}
-
-		callback(err, room);
-	});
+	], callback);
 };
 
 SocketModules.chats.addUserToRoom = function(socket, data, callback) {
@@ -240,12 +226,27 @@ SocketModules.chats.canMessage = function(socket, roomId, callback) {
 };
 
 SocketModules.chats.markRead = function(socket, roomId, callback) {
-	Messaging.markRead(socket.uid, roomId, function(err) {
+	async.parallel({
+		usersInRoom: async.apply(Messaging.getUidsInRoom, roomId, 0, -1),
+		markRead: async.apply(Messaging.markRead, socket.uid, roomId)
+	}, function(err, results) {
 		if (err) {
 			return callback(err);
 		}
 
 		Messaging.pushUnreadCount(socket.uid);
+	
+		// Mark notification read
+		var nids = results.usersInRoom.filter(function(uid) {
+			return parseInt(uid, 10) !== socket.uid;
+		}).map(function(uid) {
+			return 'chat_' + uid + '_' + roomId;
+		});
+		
+		notifications.markReadMultiple(nids, socket.uid, function() {
+			user.notifications.pushCount(socket.uid);
+		});
+		
 		callback();
 	});
 };

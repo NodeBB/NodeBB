@@ -48,7 +48,7 @@ module.exports = function(Messaging) {
 						delete Messaging.notifyQueue[fromUid + ':' + roomId];
 					}
 				});
-			}, 1000*60); // wait 60s before sending
+			}, 1000 * 60); // wait 60s before sending
 		});
 	};
 
