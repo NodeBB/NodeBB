@@ -33,7 +33,7 @@
 	<!-- END recent -->
 	<!-- ELSE -->
 	<li style="text-decoration: none; list-style-type: none; padding-bottom: 0.5em; font-style: italic;">
-		[[email:digest.no_topics, {interval}]]
+		[[email:digest.no_topics, [[email:digest.{interval}]]]]
 	</li>
 	<!-- ENDIF recent.length -->
 </ul>
