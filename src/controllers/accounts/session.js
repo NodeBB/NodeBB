@@ -1,9 +1,9 @@
 'use strict';
 
-var async = require('async'),
+var async = require('async');
 
-	user = require('../../user'),
-	db = require('../../database');
+var db = require('../../database');
+var user = require('../../user');
 
 var sessionController = {};
 
@@ -15,21 +15,30 @@ sessionController.revoke = function(req, res, next) {
 	var _id;
 
 	async.waterfall([
-		async.apply(db.getObjectField, 'uid:' + req.uid + ':sessionUUID:sessionId', req.params.uuid),
-		function(sessionId, next) {
-			if (!sessionId) {
+		function (next) {
+			db.getSortedSetRange('uid:' + req.uid + ':sessions', 0, -1, next);
+		},
+		function (sids, done) {
+			async.eachSeries(sids, function(sid, next) {
+				db.sessionStore.get(sid, function(err, sessionObj) {
+					if (err) {
+						return next(err);
+					}
+					if (sessionObj && sessionObj.meta && sessionObj.meta.uuid === req.params.uuid) {
+						_id = sid;
+						done();
+					} else {
+						next();
+					}
+				});
+			}, next);
+		},
+		function (next) {
+			if (!_id) {
 				return next(new Error('[[error:no-session-found]]'));
 			}
 
-			_id = sessionId;
-			db.isSortedSetMember('uid:' + req.uid + ':sessions', sessionId, next)
-		},
-		function(isMember, next) {
-			if (isMember) {
-				user.auth.revokeSession(_id, req.uid, next);
-			} else {
-				next(new Error('[[error:no-session-found]]'));
-			}
+			user.auth.revokeSession(_id, req.uid, next);
 		}
 	], function(err) {
 		if (err) {
