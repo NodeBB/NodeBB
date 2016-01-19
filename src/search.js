@@ -17,14 +17,14 @@ var search = {};
 module.exports = search;
 
 search.search = function(data, callback) {
-	function done(err, data) {
+	function done(err, result) {
 		if (err) {
 			return callback(err);
 		}
 
-		data.search_query = validator.escape(data.query);
-		data.time = (process.elapsedTimeSince(start) / 1000).toFixed(2);
-		callback(null, data);
+		result.search_query = validator.escape(data.query);
+		result.time = (process.elapsedTimeSince(start) / 1000).toFixed(2);
+		callback(null, result);
 	}
 
 	var start = process.hrtime();
