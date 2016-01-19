@@ -123,6 +123,9 @@ define('notifications', ['sounds', 'translator', 'components'], function(sound, 
 		notifIcon.attr('data-content', count > 20 ? '20+' : count);
 
 		Tinycon.setBubble(count);
+		$(window).trigger('action:notification.updateCount', {
+			count: count
+		});
 	};
 
 	Notifications.markAllRead = function() {
