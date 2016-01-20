@@ -5,8 +5,9 @@
 			<div class="panel-body">
 				<ul class="nav nav-pills">
 					<li><a href='{config.relative_path}/admin/manage/users/latest'>Latest Users</a></li>
-					<li><a href='{config.relative_path}/admin/manage/users/sort-posts'>Top Posters</a></li>
-					<li><a href='{config.relative_path}/admin/manage/users/sort-reputation'>Most Reputation</a></li>
+					<li><a href='{config.relative_path}/admin/manage/users/not-validated'>Not validated</a></li>
+					<li><a href='{config.relative_path}/admin/manage/users/no-posts'>No Posts</a></li>
+					<li><a href='{config.relative_path}/admin/manage/users/inactive'>Inactive</a></li>
 					<li><a href='{config.relative_path}/admin/manage/users/banned'>Banned</a></li>
 					<li><a href='{config.relative_path}/admin/manage/users/search'>User Search</a></li>
 
@@ -46,6 +47,12 @@
 					<i class="fa fa-spinner fa-spin hidden"></i>
 					<span id="user-notfound-notify" class="label label-danger hide">User not found!</span><br/>
 				</div>
+				<!-- IF inactive -->
+				<a href="{config.relative_path}/admin/manage/users/inactive?months=3" class="btn btn-default">3 months</a>
+				<a href="{config.relative_path}/admin/manage/users/inactive?months=6" class="btn btn-default">6 months</a>
+				<a href="{config.relative_path}/admin/manage/users/inactive?months=12" class="btn btn-default">12 months</a>
+				<!-- ENDIF inactive -->
+
 
 				<ul id="users-container">
 					<!-- BEGIN users -->
@@ -71,12 +78,19 @@
 						<!-- IF users.email -->
 						<small><span title="{users.email}">{users.email}</span></small>
 						<!-- ENDIF users.email -->
+
+						joined <span class="timeago" title="{users.joindateISO}"></span><br/>
+						login <span class="timeago" title="{users.lastonlineISO}"></span><br/>
+						posts {users.postcount}
+
 						<!-- IF users.flags -->
 						<div><small><span><i class="fa fa-flag"></i> {users.flags}</span></small></div>
 						<!-- ENDIF users.flags -->
 					</div>
 					<!-- END users -->
 				</ul>
+
+				<!-- IMPORT partials/paginator.tpl -->
 
 				<div class="modal fade" id="create-modal">
 					<div class="modal-dialog">
@@ -115,12 +129,6 @@
 							</div>
 						</div>
 					</div>
-				</div>
-
-
-
-				<div class="text-center {loadmore_display}">
-					<button id="load-more-users-btn" class="btn btn-primary">Load More</button>
 				</div>
 
 			</div>

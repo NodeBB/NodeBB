@@ -58,8 +58,9 @@ function addRoutes(router, middleware, controllers) {
 	router.get('/manage/users', middlewares, controllers.admin.users.sortByJoinDate);
 	router.get('/manage/users/search', middlewares, controllers.admin.users.search);
 	router.get('/manage/users/latest', middlewares, controllers.admin.users.sortByJoinDate);
-	router.get('/manage/users/sort-posts', middlewares, controllers.admin.users.sortByPosts);
-	router.get('/manage/users/sort-reputation', middlewares, controllers.admin.users.sortByReputation);
+	router.get('/manage/users/not-validated', middlewares, controllers.admin.users.notValidated);
+	router.get('/manage/users/no-posts', middlewares, controllers.admin.users.noPosts);
+	router.get('/manage/users/inactive', middlewares, controllers.admin.users.inactive);
 	router.get('/manage/users/banned', middlewares, controllers.admin.users.banned);
 	router.get('/manage/registration', middlewares, controllers.admin.users.registrationQueue);
 

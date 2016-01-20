@@ -1,5 +1,7 @@
 "use strict";
-/* global config, socket, define, templates, bootbox, app, ajaxify  */
+
+/* global socket, define, templates, bootbox, app, ajaxify  */
+
 define('admin/manage/users', ['admin/modules/selectable'], function(selectable) {
 	var Users = {};
 
@@ -196,7 +198,7 @@ define('admin/manage/users', ['admin/modules/selectable'], function(selectable) 
 					passwordAgain = $('#create-user-password-again').val();
 
 
-				if(password !== passwordAgain) {
+				if (password !== passwordAgain) {
 					return errorEl.html('<strong>Error</strong><p>Passwords must match!</p>').removeClass('hide');
 				}
 
@@ -220,21 +222,9 @@ define('admin/manage/users', ['admin/modules/selectable'], function(selectable) 
 			});
 		}
 
-		var timeoutId = 0,
-			loadingMoreUsers = false;
+		var timeoutId = 0;
 
-		var url = window.location.href,
-			parts = url.split('/'),
-			active = parts[parts.length - 1];
-
-		$('.nav-pills li').removeClass('active');
-		$('.nav-pills li a').each(function() {
-			var $this = $(this);
-			if ($this.attr('href').match(active)) {
-				$this.parent().addClass('active');
-				return false;
-			}
-		});
+		$('.nav-pills li').removeClass('active').find('a[href="' + window.location.pathname + '"]').parent().addClass('active');
 
 		$('#search-user-name, #search-user-email, #search-user-ip').on('keyup', function() {
 			if (timeoutId !== 0) {
@@ -277,50 +267,6 @@ define('admin/manage/users', ['admin/modules/selectable'], function(selectable) 
 		});
 
 		handleUserCreate();
-
-		$('#load-more-users-btn').on('click', loadMoreUsers);
-
-		$(window).off('scroll').on('scroll', function() {
-			var bottom = ($(document).height() - $(window).height()) * 0.9;
-
-			if ($(window).scrollTop() > bottom && !loadingMoreUsers) {
-				loadMoreUsers();
-			}
-		});
-
-
-		function loadMoreUsers() {
-			if (active === 'search') {
-				return;
-			}
-			var set = 'users:joindate';
-			if (active === 'sort-posts') {
-				set = 'users:postcount';
-			} else if (active === 'sort-reputation') {
-				set = 'users:reputation';
-			} else if (active === 'banned') {
-				set = 'users:banned';
-			}
-
-			loadingMoreUsers = true;
-			socket.emit('user.loadMore', {
-				set: set,
-				after: $('#users-container').children().length
-			}, function(err, data) {
-				if (data && data.users.length) {
-					onUsersLoaded(data.users);
-				}
-				loadingMoreUsers = false;
-			});
-		}
-
-		function onUsersLoaded(users) {
-			templates.parse('admin/manage/users', 'users', {users: users, requireEmailConfirmation: config.requireEmailConfirmation}, function(html) {
-				$('#users-container').append($(html));
-				selectable.enable('#users-container', '.user-selectable');
-			});
-		}
-
 
 	};
 

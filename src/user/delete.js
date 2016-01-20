@@ -91,7 +91,8 @@ module.exports = function(User) {
 							'users:postcount',
 							'users:reputation',
 							'users:banned',
-							'users:online'
+							'users:online',
+							'users:notvalidated'
 						], uid, next);
 					},
 					function(next) {

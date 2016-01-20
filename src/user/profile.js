@@ -170,6 +170,9 @@ module.exports = function(User) {
 							User.email.sendValidationEmail(uid, newEmail);
 						}
 						User.setUserField(uid, 'email:confirmed', 0, next);
+					},
+					function (next) {
+						db.sortedSetAdd('users:notvalidated', Date.now(), uid, next);
 					}
 				], callback);
 			});

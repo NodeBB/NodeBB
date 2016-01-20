@@ -10,7 +10,7 @@ var db = require('./database'),
 	schemaDate, thisSchemaDate,
 
 	// IMPORTANT: REMEMBER TO UPDATE VALUE OF latestSchema
-	latestSchema = Date.UTC(2016, 0, 14);
+	latestSchema = Date.UTC(2016, 0, 20);
 
 Upgrade.check = function(callback) {
 	db.get('schemaDate', function(err, value) {
@@ -333,6 +333,40 @@ Upgrade.upgrade = function(callback) {
 				});
 			} else {
 				winston.info('[2016/01/14] Creating user best post sorted sets skipped!');
+				next();
+			}
+		},
+		function(next) {
+			thisSchemaDate = Date.UTC(2016, 0, 20);
+
+			if (schemaDate < thisSchemaDate) {
+				updatesMade = true;
+				winston.info('[2016/01/20] Creating users:notvalidated');
+
+				var batch = require('./batch');
+				var now = Date.now();
+				batch.processSortedSet('users:joindate', function(ids, next) {
+					async.eachSeries(ids, function(id, next) {
+						db.getObjectFields('user:' + id, ['uid', 'email:confirmed'], function(err, userData) {
+							if (err) {
+								return next(err);
+							}
+							if (!userData || !parseInt(userData.uid, 10) || parseInt(userData['email:confirmed'], 10) === 1) {
+								return next();
+							}
+							winston.info('processing uid: ' + userData.uid + ' email:confirmed: ' + userData['email:confirmed']);
+							db.sortedSetAdd('users:notvalidated', now, userData.uid, next);
+						});
+					}, next);
+				}, {}, function(err) {
+					if (err) {
+						return next(err);
+					}
+					winston.info('[2016/01/20] Creating users:notvalidated done!');
+					Upgrade.update(thisSchemaDate, next);
+				});
+			} else {
+				winston.info('[2016/01/20] Creating users:notvalidated skipped!');
 				next();
 			}
 		}

@@ -1,17 +1,16 @@
 
 'use strict';
 
-var async = require('async'),
-	nconf = require('nconf'),
-	winston = require('winston'),
+var async = require('async');
+var nconf = require('nconf');
 
-	user = require('../user'),
-	utils = require('../../public/src/utils'),
-	translator = require('../../public/src/modules/translator'),
-	plugins = require('../plugins'),
-	db = require('../database'),
-	meta = require('../meta'),
-	emailer = require('../emailer');
+var user = require('../user');
+var utils = require('../../public/src/utils');
+var translator = require('../../public/src/modules/translator');
+var plugins = require('../plugins');
+var db = require('../database');
+var meta = require('../meta');
+var emailer = require('../emailer');
 
 (function(UserEmail) {
 
@@ -97,7 +96,10 @@ var async = require('async'),
 			if (confirmObj && confirmObj.uid && confirmObj.email) {
 				async.series([
 					async.apply(user.setUserField, confirmObj.uid, 'email:confirmed', 1),
-					async.apply(db.delete, 'confirm:' + code)
+					async.apply(db.delete, 'confirm:' + code),
+					function(next) {
+						db.sortedSetRemove('users:notvalidated', confirmObj.uid, next);
+					}
 				], function(err) {
 					callback(err ? new Error('[[error:email-confirm-failed]]') : null);
 				});

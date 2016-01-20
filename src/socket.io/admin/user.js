@@ -120,7 +120,12 @@ User.validateEmail = function(socket, uids, callback) {
 
 	async.each(uids, function(uid, next) {
 		user.setUserField(uid, 'email:confirmed', 1, next);
-	}, callback);
+	}, function(err) {
+		if (err) {
+			return callback(err);
+		}
+		db.sortedSetRemove('users:notvalidated', uids, callback);
+	});
 };
 
 User.sendValidationEmail = function(socket, uids, callback) {
