@@ -131,12 +131,10 @@ define('forum/topic/events', [
 		};
 
 		templates.parse('partials/topic/post-editor', editData, function(html) {
-			require(['translator'], function(translator) {
-				translator.translate(html, function(translated) {
-					html = $(translated);
-					editorEl.replaceWith(html);
-					html.find('.timeago').timeago();
-				});
+			translator.translate(html, function(translated) {
+				html = $(translated);
+				editorEl.replaceWith(html);
+				html.find('.timeago').timeago();
 			});
 		});
 
