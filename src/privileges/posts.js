@@ -1,17 +1,14 @@
 
 'use strict';
 
-var async = require('async'),
-	winston = require('winston'),
+var async = require('async');
 
-	meta = require('../meta'),
-	posts = require('../posts'),
-	topics = require('../topics'),
-	user = require('../user'),
-	helpers = require('./helpers'),
-	groups = require('../groups'),
-	categories = require('../categories'),
-	plugins = require('../plugins');
+var meta = require('../meta');
+var posts = require('../posts');
+var topics = require('../topics');
+var user = require('../user');
+var helpers = require('./helpers');
+var plugins = require('../plugins');
 
 module.exports = function(privileges) {
 
@@ -168,15 +165,6 @@ module.exports = function(privileges) {
 				next(null, {editable: isOwner});
 			}
 		], callback);
-	}
-
-	function isPostTopicLocked(pid, callback) {
-		posts.getPostField(pid, 'tid', function(err, tid) {
-			if (err) {
-				return callback(err);
-			}
-			topics.isLocked(tid, callback);
-		});
 	}
 
 	function isAdminOrMod(pid, uid, callback) {
