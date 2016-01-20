@@ -4,11 +4,11 @@
 /* globals config, app, ajaxify, define, socket, templates, utils */
 
 define('forum/topic/events', [
-    'forum/topic/postTools',
-    'forum/topic/threadTools',
-    'forum/topic/posts',
-    'components',
-    'translator'
+	'forum/topic/postTools',
+	'forum/topic/threadTools',
+	'forum/topic/posts',
+	'components',
+	'translator'
 ], function(postTools, threadTools, posts, components, translator) {
 
 	var Events = {};
