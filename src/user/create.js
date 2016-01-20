@@ -33,7 +33,7 @@ module.exports = function(User) {
 				'joindate': timestamp,
 				'lastonline': timestamp,
 				'picture': '',
-				'fullname': data.fullname,
+				'fullname': data.fullname || '',
 				'location': '',
 				'birthday': '',
 				'website': '',
