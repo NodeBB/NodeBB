@@ -327,11 +327,12 @@ module.exports = function(Topics) {
 			return plugins.fireHook('filter:topic.getRelatedTopics', {topic: topicData, uid: uid}, callback);
 		}
 
-		var maximumTopics = parseInt(meta.config.maximumRelatedTopics, 10) || 5;
-
-		if (!topicData.tags.length || maximumTopics === 0) {
+		var maximumTopics = parseInt(meta.config.maximumRelatedTopics, 10);
+		if (maximumTopics === 0 || !topicData.tags.length) {
 			return callback(null, []);
 		}
+
+		maximumTopics = maximumTopics || 5;
 
 		async.waterfall([
 			function (next) {
