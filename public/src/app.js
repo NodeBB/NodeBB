@@ -1,5 +1,5 @@
 "use strict";
-/*global templates, translator, ajaxify, utils, bootbox, overrides, socket, config, Visibility*/
+/*global templates, ajaxify, utils, bootbox, overrides, socket, config, Visibility*/
 
 var app = app || {};
 
@@ -519,19 +519,21 @@ app.cacheBuster = null;
 	};
 
 	app.parseAndTranslate = function(template, blockName, data, callback) {
-		if (typeof blockName === 'string') {
-			templates.parse(template, blockName, data, function(html) {
-				translator.translate(html, function(translatedHTML) {
-					callback($(translatedHTML));
+		require(['translator'], function(translator) {
+			if (typeof blockName === 'string') {
+				templates.parse(template, blockName, data, function(html) {
+					translator.translate(html, function(translatedHTML) {
+						callback($(translatedHTML));
+					});
 				});
-			});
-		} else {
-			callback = data, data = blockName;
-			templates.parse(template, data, function(html) {
-				translator.translate(html, function(translatedHTML) {
-					callback($(translatedHTML));
+			} else {
+				callback = data, data = blockName;
+				templates.parse(template, data, function(html) {
+					translator.translate(html, function(translatedHTML) {
+						callback($(translatedHTML));
+					});
 				});
-			});
-		}
+			}
+		});
 	};
 }());
