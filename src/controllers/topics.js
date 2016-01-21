@@ -127,24 +127,24 @@ topicsController.get = function(req, res, callback) {
 				plugins.fireHook('filter:controllers.topic.get', {topicData: topicData, uid: req.uid}, next);
 			});
 		},
-		function (topicData, next) {
+		function (data, next) {
 
 			var breadcrumbs = [
 				{
-					text: topicData.category.name,
-					url: nconf.get('relative_path') + '/category/' + topicData.category.slug
+					text: data.topicData.category.name,
+					url: nconf.get('relative_path') + '/category/' + data.topicData.category.slug
 				},
 				{
-					text: topicData.title
+					text: data.topicData.title
 				}
 			];
 
-			helpers.buildCategoryBreadcrumbs(topicData.category.parentCid, function(err, crumbs) {
+			helpers.buildCategoryBreadcrumbs(data.topicData.category.parentCid, function(err, crumbs) {
 				if (err) {
 					return next(err);
 				}
-				topicData.breadcrumbs = crumbs.concat(breadcrumbs);
-				next(null, topicData);
+				data.topicData.breadcrumbs = crumbs.concat(breadcrumbs);
+				next(null, data.topicData);
 			});
 		},
 		function (topicData, next) {
