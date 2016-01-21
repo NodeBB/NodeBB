@@ -100,16 +100,18 @@
 	function launchSnackbar(params) {
 		var message = (params.title ? "<strong>" + params.title + "</strong>" : '') + (params.message ? params.message : '');
 
-		translator.translate(message, function(html) {
-			var bar = $.snackbar({
-				content: html,
-				timeout: 3000,
-				htmlAllowed: true
-			});
+		require(['translator'], function(translator) {
+			translator.translate(message, function(html) {
+				var bar = $.snackbar({
+					content: html,
+					timeout: 3000,
+					htmlAllowed: true
+				});
 
-			if (params.clickfn) {
-				bar.on('click', params.clickfn);
-			}
+				if (params.clickfn) {
+					bar.on('click', params.clickfn);
+				}
+			});
 		});
 	}
 
