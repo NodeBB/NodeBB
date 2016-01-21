@@ -1,116 +1,108 @@
 "use strict";
 
-var async = require('async'),
-	rss = require('rss'),
-	nconf = require('nconf'),
+var async = require('async');
+var rss = require('rss');
+var nconf = require('nconf');
 
-	posts = require('../posts'),
-	topics = require('../topics'),
-	user = require('../user'),
-	categories = require('../categories'),
-	meta = require('../meta'),
-	helpers = require('../controllers/helpers'),
-	privileges = require('../privileges');
+var posts = require('../posts');
+var topics = require('../topics');
+var user = require('../user');
+var categories = require('../categories');
+var meta = require('../meta');
+var helpers = require('../controllers/helpers');
+var privileges = require('../privileges');
 
-function hasTopicPrivileges(req, res, next) {
-	var tid = req.params.topic_id;
 
-	hasPrivileges(privileges.topics.can, tid, req, res, next);
-}
-
-function hasCategoryPrivileges(req, res, next) {
-	var cid = req.params.category_id;
-
-	hasPrivileges(privileges.categories.can, cid, req, res, next);
-}
-
-function hasPrivileges(method, id, req, res, next) {
-	method('read', id, req.uid, function(err, canRead) {
-		if (err) {
-			return next(err);
-		}
-
-		if (!canRead) {
-			return helpers.notAllowed(req, res);
-		}
-
-		return next();
-	});
-}
-
-function generateForTopic(req, res, next) {
+function generateForTopic(req, res, callback) {
 	if (parseInt(meta.config['feeds:disableRSS'], 10) === 1) {
-		return next();
+		return callback();
 	}
 
 	var tid = req.params.topic_id;
-
-	privileges.topics.get(tid, req.uid, function(err, userPrivileges) {
+	var userPrivileges;
+	async.waterfall([
+		function (next) {
+			async.parallel({
+				privileges: function(next) {
+					privileges.topics.get(tid, req.uid, next);
+				},
+				topic: function(next) {
+					topics.getTopicData(tid, next);
+				}
+			}, next);
+		},
+		function (results, next) {
+			if (!results.topic) {
+				return callback();
+			}
+			if (parseInt(results.topic.deleted, 10) && !results.privileges.view_deleted) {
+				return callback();
+			}
+			if (!results.privileges.read) {
+				return helpers.notAllowed(req, res);
+			}
+			userPrivileges = results.privileges;
+			topics.getTopicWithPosts(results.topic, 'tid:' + tid + ':posts', req.uid, 0, 25, false, next);
+		}
+	], function(err, topicData) {
 		if (err) {
-			return next(err);
+			return callback(err);
 		}
 
-		topics.getTopicWithPosts(tid, 'tid:' + tid + ':posts', req.uid, 0, 25, false, function (err, topicData) {
-			if (err) {
-				return next(err);
+		topics.modifyByPrivilege(topicData.posts, userPrivileges);
+
+		var description = topicData.posts.length ? topicData.posts[0].content : '';
+		var image_url = topicData.posts.length ? topicData.posts[0].picture : '';
+		var author = topicData.posts.length ? topicData.posts[0].username : '';
+
+		var feed = new rss({
+				title: topicData.title,
+				description: description,
+				feed_url: nconf.get('url') + '/topic/' + tid + '.rss',
+				site_url: nconf.get('url') + '/topic/' + topicData.slug,
+				image_url: image_url,
+				author: author,
+				ttl: 60
+			}),
+			dateStamp;
+
+		if (topicData.posts.length > 0) {
+			feed.pubDate = new Date(parseInt(topicData.posts[0].timestamp, 10)).toUTCString();
+		}
+
+		topicData.posts.forEach(function(postData) {
+			if (!postData.deleted) {
+				dateStamp = new Date(parseInt(parseInt(postData.edited, 10) === 0 ? postData.timestamp : postData.edited, 10)).toUTCString();
+
+				feed.item({
+					title: 'Reply to ' + topicData.title + ' on ' + dateStamp,
+					description: postData.content,
+					url: nconf.get('url') + '/topic/' + topicData.slug + (postData.index ? '/' + (postData.index + 1) : ''),
+					author: postData.user ? postData.user.username : '',
+					date: dateStamp
+				});
 			}
-
-			if (topicData.deleted && !userPrivileges.view_deleted) {
-				return next();
-			}
-
-			topics.modifyByPrivilege(topicData.posts, userPrivileges);
-
-			var description = topicData.posts.length ? topicData.posts[0].content : '';
-			var image_url = topicData.posts.length ? topicData.posts[0].picture : '';
-			var author = topicData.posts.length ? topicData.posts[0].username : '';
-
-			var feed = new rss({
-					title: topicData.title,
-					description: description,
-					feed_url: nconf.get('url') + '/topic/' + tid + '.rss',
-					site_url: nconf.get('url') + '/topic/' + topicData.slug,
-					image_url: image_url,
-					author: author,
-					ttl: 60
-				}),
-				dateStamp;
-
-			if (topicData.posts.length > 0) {
-				feed.pubDate = new Date(parseInt(topicData.posts[0].timestamp, 10)).toUTCString();
-			}
-
-			topicData.posts.forEach(function(postData) {
-				if (!postData.deleted) {
-					dateStamp = new Date(parseInt(parseInt(postData.edited, 10) === 0 ? postData.timestamp : postData.edited, 10)).toUTCString();
-
-					feed.item({
-						title: 'Reply to ' + topicData.title + ' on ' + dateStamp,
-						description: postData.content,
-						url: nconf.get('url') + '/topic/' + topicData.slug + (postData.index ? '/' + (postData.index + 1) : ''),
-						author: postData.user ? postData.user.username : '',
-						date: dateStamp
-					});
-				}
-			});
-
-			sendFeed(feed, res);
 		});
+
+		sendFeed(feed, res);
 	});
 }
 
-function generateForUserTopics(req, res, next) {
+function generateForUserTopics(req, res, callback) {
 	if (parseInt(meta.config['feeds:disableRSS'], 10) === 1) {
-		return next();
+		return callback();
 	}
 
 	var userslug = req.params.userslug;
 
 	async.waterfall([
-		function(next) {
+		function (next) {
 			user.getUidByUserslug(userslug, next);
 		},
-		function(uid, next) {
+		function (uid, next) {
+			if (!uid) {
+				return callback();
+			}
 			user.getUserFields(uid, ['uid', 'username'], next);
 		}
 	], function(err, userData) {
@@ -134,30 +126,41 @@ function generateForCategory(req, res, next) {
 	}
 	var cid = req.params.category_id;
 
-	categories.getCategoryById({
-		cid: cid,
-		set: 'cid:' + cid + ':tids',
-		reverse: true,
-		start: 0,
-		stop: 25,
-		uid: req.uid
-	}, function (err, categoryData) {
+	async.waterfall([
+		function (next) {
+			async.parallel({
+				privileges: function(next) {
+					privileges.categories.get(cid, req.uid, next);
+				},
+				category: function(next) {
+					categories.getCategoryById({
+						cid: cid,
+						set: 'cid:' + cid + ':tids',
+						reverse: true,
+						start: 0,
+						stop: 25,
+						uid: req.uid
+					}, next);
+				}
+			}, next);
+		},
+		function (results, next) {
+			if (!results.privileges.read) {
+				return helpers.notAllowed(req, res);
+			}
+			generateTopicsFeed({
+				uid: req.uid,
+				title: results.category.name,
+				description: results.category.description,
+				feed_url: '/category/' + cid + '.rss',
+				site_url: '/category/' + results.category.cid,
+			}, results.category.topics, next);
+		}
+	], function(err, feed) {
 		if (err) {
 			return next(err);
 		}
-
-		generateTopicsFeed({
-			uid: req.uid,
-			title: categoryData.name,
-			description: categoryData.description,
-			feed_url: '/category/' + cid + '.rss',
-			site_url: '/category/' + categoryData.cid,
-		}, categoryData.topics, function(err, feed) {
-			if (err) {
-				return next(err);
-			}
-			sendFeed(feed, res);
-		});
+		sendFeed(feed, res);
 	});
 }
 
@@ -300,6 +303,9 @@ function generateForCategoryRecentPosts(req, res, next) {
 	var cid = req.params.category_id;
 
 	async.parallel({
+		privileges: function(next) {
+			privileges.categories.get(cid, req.uid, next);
+		},
 		category: function(next) {
 			categories.getCategoryData(cid, next);
 		},
@@ -310,16 +316,20 @@ function generateForCategoryRecentPosts(req, res, next) {
 		if (err) {
 			return next(err);
 		}
+		if (!results.category) {
+			return next();
+		}
 
-		var category = results.category;
-		var posts = results.posts;
+		if (!results.privileges.read) {
+			return helpers.notAllowed(req, res);
+		}
 
 		var feed = generateForPostsFeed({
-			title: category.name + ' Recent Posts',
-			description: 'A list of recent posts from ' + category.name,
+			title: results.category.name + ' Recent Posts',
+			description: 'A list of recent posts from ' + results.category.name,
 			feed_url: '/category/' + cid + '/recentposts.rss',
 			site_url: '/category/' + cid + '/recentposts'
-		}, posts);
+		}, results.posts);
 
 		sendFeed(feed, res);
 	});
@@ -355,12 +365,12 @@ function sendFeed(feed, res) {
 }
 
 module.exports = function(app, middleware, controllers){
-	app.get('/topic/:topic_id.rss', hasTopicPrivileges, generateForTopic);
-	app.get('/category/:category_id.rss', hasCategoryPrivileges, generateForCategory);
+	app.get('/topic/:topic_id.rss', generateForTopic);
+	app.get('/category/:category_id.rss', generateForCategory);
 	app.get('/recent.rss', generateForRecent);
 	app.get('/popular.rss', generateForPopular);
 	app.get('/popular/:term.rss', generateForPopular);
 	app.get('/recentposts.rss', generateForRecentPosts);
-	app.get('/category/:category_id/recentposts.rss', hasCategoryPrivileges, generateForCategoryRecentPosts);
+	app.get('/category/:category_id/recentposts.rss', generateForCategoryRecentPosts);
 	app.get('/user/:userslug/topics.rss', generateForUserTopics);
 };

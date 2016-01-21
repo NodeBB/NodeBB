@@ -170,28 +170,19 @@ var async = require('async'),
 		], callback);
 	};
 
-	Topics.getTopicWithPosts = function(tid, set, uid, start, stop, reverse, callback) {
-		var topicData;
+	Topics.getTopicWithPosts = function(topicData, set, uid, start, stop, reverse, callback) {
 		async.waterfall([
-			function(next) {
-				Topics.getTopicData(tid, next);
-			},
-			function(_topicData, next) {
-				topicData = _topicData;
-				if (!topicData) {
-					return callback(new Error('[[error:no-topic]]'));
-				}
-
+			function (next) {
 				async.parallel({
 					posts: async.apply(getMainPostAndReplies, topicData, set, uid, start, stop, reverse),
-					category: async.apply(Topics.getCategoryData, tid),
+					category: async.apply(Topics.getCategoryData, topicData.tid),
 					threadTools: async.apply(plugins.fireHook, 'filter:topic.thread_tools', {topic: topicData, uid: uid, tools: []}),
-					tags: async.apply(Topics.getTopicTagsObjects, tid),
-					isFollowing: async.apply(Topics.isFollowing, [tid], uid),
-					bookmark: async.apply(Topics.getUserBookmark, tid, uid)
+					tags: async.apply(Topics.getTopicTagsObjects, topicData.tid),
+					isFollowing: async.apply(Topics.isFollowing, [topicData.tid], uid),
+					bookmark: async.apply(Topics.getUserBookmark, topicData.tid, uid)
 				}, next);
 			},
-			function(results, next) {
+			function (results, next) {
 				topicData.posts = results.posts;
 				topicData.category = results.category;
 				topicData.thread_tools = results.threadTools.tools;
@@ -206,11 +197,11 @@ var async = require('async'),
 
 				Topics.getRelatedTopics(topicData, uid, next);
 			},
-			function(related, next) {
+			function (related, next) {
 				topicData.related = related || [];
 				plugins.fireHook('filter:topic.get', {topic: topicData, uid: uid}, next);
 			},
-			function(data, next) {
+			function (data, next) {
 				next(null, data.topic);
 			}
 		], callback);
