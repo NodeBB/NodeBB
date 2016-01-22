@@ -56,17 +56,13 @@ Templates.compile = function(callback) {
 			},
 			baseTpls: function(next) {
 				utils.walk(baseTemplatesPath, next);
-			},
-			themeTpls: function(next) {
-				utils.walk(themeTemplatesPath, next);
 			}
 		}, function(err, data) {
 			var coreTpls = data.coreTpls,
 				baseTpls = data.baseTpls,
-				themeTpls = data.themeTpls,
 				paths = {};
 
-			if (!baseTpls || !themeTpls) {
+			if (!baseTpls) {
 				winston.warn('[meta/templates] Could not find base template files at: ' + baseTemplatesPath);
 			}
 
@@ -80,7 +76,7 @@ Templates.compile = function(callback) {
 			baseTpls.forEach(function(el, i) {
 				paths[baseTpls[i]] = path.join(baseTemplatesPath, baseTpls[i]);
 			});
-
+// console.log(pluginTemplates);
 
 			for (var tpl in pluginTemplates) {
 				if (pluginTemplates.hasOwnProperty(tpl)) {

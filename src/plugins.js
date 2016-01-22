@@ -152,16 +152,48 @@ var fs = require('fs'),
 	};
 
 	Plugins.getTemplates = function(callback) {
-		var templates = {};
+		var templates = {},
+			tplName;
 
-		Plugins.showInstalled(function(err, plugins) {
+		async.waterfall([
+			async.apply(db.getSortedSetRange, 'plugins:active', 0, -1),
+			function(plugins, next) {
+				var pluginBasePath = path.join(__dirname, '../node_modules');
+				var paths = plugins.map(function(plugin) {
+					return path.join(pluginBasePath, plugin);
+				});
+
+				// Filter out plugins with invalid paths
+				async.filter(paths, function(path, next) {
+					fs.access(path, fs.R_OK, function(err) {
+						next(!err);
+					});
+				}, function(paths) {
+					next(null, paths);
+				});
+			},
+			function(paths, next) {
+				async.map(paths, Plugins.loadPluginInfo, next);
+			}
+		], function(err, plugins) {
+			if (err) {
+				return callback(err);
+			}
+
 			async.each(plugins, function(plugin, next) {
-				if (plugin.id && plugin.active && (plugin.templates || plugin.id.startsWith('nodebb-theme-'))) {
+				if (plugin.templates || plugin.id.startsWith('nodebb-theme-')) {
+					winston.verbose('[plugins] Loading templates (' + plugin.id + ')');
 					var templatesPath = path.join(__dirname, '../node_modules', plugin.id, plugin.templates || 'templates');
 					utils.walk(templatesPath, function(err, pluginTemplates) {
 						if (pluginTemplates) {
 							pluginTemplates.forEach(function(pluginTemplate) {
-								templates["/" + pluginTemplate.replace(templatesPath, '').substring(1)] = pluginTemplate;
+								tplName = "/" + pluginTemplate.replace(templatesPath, '').substring(1);
+
+								if (templates.hasOwnProperty(tplName)) {
+									winston.verbose('[plugins] ' + tplName + ' replaced by ' + plugin.id);
+								}
+
+								templates[tplName] = pluginTemplate;
 							});
 						} else {
 							winston.warn('[plugins/' + plugin.id + '] A templates directory was defined for this plugin, but was not found.');
