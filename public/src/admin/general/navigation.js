@@ -132,7 +132,7 @@ define('admin/general/navigation', ['translator', 'iconSelect'], function(transl
 
 	function toggle() {
 		var btn = $(this),
-			disabled = btn.html() === 'Enable';
+			disabled = btn.hasClass('btn-success');
 
 		btn.toggleClass('btn-warning').toggleClass('btn-success').html(!disabled ? 'Enable' : 'Disable');
 		btn.parents('li').find('[name="enabled"]').val(!disabled ? '' : 'on');
