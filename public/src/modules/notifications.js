@@ -122,10 +122,15 @@ define('notifications', ['sounds', 'translator', 'components'], function(sound, 
 		notifIcon.toggleClass('unread-count', count > 0);
 		notifIcon.attr('data-content', count > 20 ? '20+' : count);
 
-		Tinycon.setBubble(count);
-		$(window).trigger('action:notification.updateCount', {
-			count: count
-		});
+		var payload = {
+			count: count,
+			updateFavicon: true
+		};
+		$(window).trigger('action:notification.updateCount', payload);
+
+		if (payload.updateFavicon) {
+			Tinycon.setBubble(count);
+		}
 	};
 
 	Notifications.markAllRead = function() {
