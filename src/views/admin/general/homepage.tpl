@@ -5,7 +5,7 @@
 			Choose what page is shown when users navigate to the root URL of your forum.
 		</p>
 		<form class="row">
-			<div class="col-xs-6">
+			<div class="col-sm-6">
 				<label>Home Page Route</label>
 				<select class="form-control" data-field="homePageRoute">
 					<!-- BEGIN routes -->
