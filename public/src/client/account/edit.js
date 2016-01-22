@@ -170,6 +170,7 @@ define('forum/account/edit', ['forum/account/header', 'uploader', 'translator'],
 							if (err) {
 								app.alertError(err.message);
 							}
+							app.logout();
 						});
 					}
 				});

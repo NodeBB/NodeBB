@@ -1,21 +1,20 @@
 'use strict';
 
-var	async = require('async'),
+var	async = require('async');
 
 
-	user = require('../user'),
-	topics = require('../topics'),
-	notifications = require('../notifications'),
-	messaging = require('../messaging'),
-	plugins = require('../plugins'),
-	utils = require('../../public/src/utils'),
-	websockets = require('./index'),
-	meta = require('../meta'),
-	events = require('../events'),
-	emailer = require('../emailer'),
-	db = require('../database'),
+var user = require('../user');
+var topics = require('../topics');
+var notifications = require('../notifications');
+var messaging = require('../messaging');
+var plugins = require('../plugins');
+var websockets = require('./index');
+var meta = require('../meta');
+var events = require('../events');
+var emailer = require('../emailer');
+var db = require('../database');
 
-	SocketUser = {};
+var SocketUser = {};
 
 
 require('./user/profile')(SocketUser);
@@ -33,20 +32,29 @@ SocketUser.deleteAccount = function(socket, data, callback) {
 	if (!socket.uid) {
 		return;
 	}
-	user.isAdministrator(socket.uid, function(err, isAdmin) {
-		if (err || isAdmin) {
-			return callback(err || new Error('[[error:cant-delete-admin]]'));
-		}
 
-		socket.broadcast.emit('event:user_status_change', {uid: socket.uid, status: 'offline'});
-		user.deleteAccount(socket.uid, function(err) {
-			if (err) {
-				return callback(err);
+	async.waterfall([
+		function (next) {
+			user.isAdministrator(socket.uid, next);
+		},
+		function (isAdmin, next) {
+			if (isAdmin) {
+				return next(new Error('[[error:cant-delete-admin]]'));
 			}
-			websockets.in('uid_' + socket.uid).emit('event:logout');
-			callback();
-		});
-	});
+			user.deleteAccount(socket.uid, next);
+		},
+		function (next) {
+			socket.broadcast.emit('event:user_status_change', {uid: socket.uid, status: 'offline'});
+
+			events.log({
+				type: 'user-delete',
+				uid: socket.uid,
+				targetUid: socket.uid,
+				ip: socket.ip
+			});
+			next();
+		}
+	], callback);
 };
 
 SocketUser.emailExists = function(socket, data, callback) {
@@ -271,7 +279,7 @@ SocketUser.invite = function(socket, email, callback) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
 
-	var registrationType = meta.config.registrationType
+	var registrationType = meta.config.registrationType;
 
 	if (registrationType !== 'invite-only' && registrationType !== 'admin-invite-only') {
 		return callback(new Error('[[error:forum-not-invite-only]]'));

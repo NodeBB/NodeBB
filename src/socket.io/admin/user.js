@@ -180,26 +180,27 @@ User.deleteUsers = function(socket, uids, callback) {
 	}
 
 	async.each(uids, function(uid, next) {
-		user.isAdministrator(uid, function(err, isAdmin) {
-			if (err || isAdmin) {
-				return callback(err || new Error('[[error:cant-delete-other-admins]]'));
-			}
-
-			user.delete(uid, function(err) {
-				if (err) {
-					return next(err);
+		async.waterfall([
+			function (next) {
+				user.isAdministrator(uid, next);
+			},
+			function (isAdmin, next) {
+				if (isAdmin) {
+					return next(new Error('[[error:cant-delete-other-admins]]'));
 				}
 
+				user.delete(uid, next);
+			},
+			function (next) {
 				events.log({
 					type: 'user-delete',
 					uid: socket.uid,
 					targetUid: uid,
 					ip: socket.ip
 				});
-
 				next();
-			});
-		});
+			}
+		], next);
 	}, callback);
 };
 
