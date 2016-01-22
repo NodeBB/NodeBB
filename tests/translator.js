@@ -57,11 +57,26 @@ describe('Translator', function(){
 			});
 		});
 
+		it('should handle language keys inside language keys with all parameters as language keys', function(done) {
+			translator.translate('[[notifications:user_posted_to, [[global:guest]], [[global:guest]]]]', function(translated) {
+				assert.strictEqual(translated, '<strong>Guest</strong> has posted a reply to: <strong>Guest</strong>');
+				done();
+			});
+		});
+
 		it('should properly handle parameters that contain square brackets', function(done) {
 			translator.translate('[[global:pagination.out_of, [guest], [[global:home]]]]', function(translated) {
 				assert.strictEqual(translated, '[guest] out of Home');
 				done();
 			});
 		});
+
+		it('should not translate language key parameters with HTML in them', function(done) {
+			var key = '[[global:403.login, <strong>test</strong>]]';
+			translator.translate(key, function(translated) {
+				assert.strictEqual(translated, key);
+				done();
+			});
+		})
 	});
 });

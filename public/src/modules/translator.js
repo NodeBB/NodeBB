@@ -9,7 +9,7 @@
 
 	var	languages = {},
 		regexes = {
-			match: /\[\[\w+:((?!\[\[).)*?\]\]/g,
+			match: /\[\[\w+:[\w\.]+((?!\[\[|<|>|\(|\)).)*?\]\]/g,	// see tests/translator.js for an explanation re: this monster
 			split: /[,][\s]*/,
 			replace: /\]+$/
 		};
