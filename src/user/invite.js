@@ -1,17 +1,14 @@
 
 'use strict';
 
-var async = require('async'),
-	nconf = require('nconf'),
-	winston = require('winston'),
-	db = require('./../database'),
+var async = require('async');
+var nconf = require('nconf');
 
-	meta = require('../meta'),
-	emailer = require('../emailer'),
-
-	plugins = require('../plugins'),
-	translator = require('../../public/src/modules/translator'),
-	utils = require('../../public/src/utils');
+var db = require('./../database');
+var meta = require('../meta');
+var emailer = require('../emailer');
+var translator = require('../../public/src/modules/translator');
+var utils = require('../../public/src/utils');
 
 
 module.exports = function(User) {
