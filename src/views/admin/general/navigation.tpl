@@ -5,12 +5,7 @@
 				<!-- BEGIN navigation -->
 				<li data-index="{navigation.index}" class="{navigation.class} <!-- IF navigation.selected --> active <!-- ENDIF navigation.selected -->">
 					<a href="#" title="{navigation.route}" id="{navigation.id}">
-
 						<i class="fa fa-fw <!-- IF navigation.iconClass -->{navigation.iconClass}<!-- ENDIF navigation.iconClass -->"></i>
-
-						<!-- IF navigation.text -->
-						<span class="{navigation.textClass}">{navigation.text}</span>
-						<!-- ENDIF navigation.text -->
 					</a>
 				</li>
 				<!-- END navigation -->
