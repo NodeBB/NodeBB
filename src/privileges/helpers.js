@@ -1,12 +1,8 @@
 
 'use strict';
 
-var async = require('async'),
-	db = require('../database'),
-	meta = require('../meta'),
-	user = require('../user'),
-	groups = require('../groups'),
-	categories = require('../categories');
+var async = require('async');
+var groups = require('../groups');
 
 var helpers = {};
 
