@@ -1,18 +1,17 @@
 
 'use strict';
 
-var async = require('async'),
-	nconf = require('nconf'),
-	S = require('string'),
-	winston = require('winston'),
+var async = require('async');
+var nconf = require('nconf');
+var S = require('string');
+var winston = require('winston');
 
-	db = require('../database'),
-	user = require('../user'),
-	posts = require('../posts'),
-	notifications = require('../notifications'),
-	privileges = require('../privileges'),
-	meta = require('../meta'),
-	emailer = require('../emailer');
+var db = require('../database');
+var user = require('../user');
+var notifications = require('../notifications');
+var privileges = require('../privileges');
+var meta = require('../meta');
+var emailer = require('../emailer');
 
 module.exports = function(Topics) {
 
@@ -104,10 +103,10 @@ module.exports = function(Topics) {
 		var followers, title;
 
 		async.waterfall([
-			function(next) {
+			function (next) {
 				Topics.getFollowers(postData.topic.tid, next);
 			},
-			function(followers, next) {
+			function (followers, next) {
 				if (!Array.isArray(followers) || !followers.length) {
 					return callback();
 				}
@@ -121,7 +120,7 @@ module.exports = function(Topics) {
 
 				privileges.topics.filterUids('read', postData.topic.tid, followers, next);
 			},
-			function(_followers, next) {
+			function (_followers, next) {
 				followers = _followers;
 				if (!followers.length) {
 					return callback();
@@ -151,13 +150,21 @@ module.exports = function(Topics) {
 					next();
 				});
 			},
-			function(next) {
+			function (next) {
+
+				if (parseInt(meta.config.disableEmailSubscriptions, 10) === 1) {
+					return next();
+				}
+
 				async.eachLimit(followers, 3, function(toUid, next) {
 					async.parallel({
 						userData: async.apply(user.getUserFields, toUid, ['username', 'userslug']),
 						userSettings: async.apply(user.getSettings, toUid)
 					}, function(err, data) {
-						if (data.userSettings.hasOwnProperty('sendPostNotifications') && data.userSettings.sendPostNotifications) {
+						if (err) {
+							return next(err);
+						}
+						if (data.userSettings.sendPostNotifications) {
 							emailer.send('notif_post', toUid, {
 								pid: postData.pid,
 								subject: '[' + (meta.config.title || 'NodeBB') + '] ' + title,
@@ -171,6 +178,7 @@ module.exports = function(Topics) {
 							}, next);
 						} else {
 							winston.debug('[topics.notifyFollowers] uid ' + toUid + ' does not have post notifications enabled, skipping.');
+							next();
 						}
 					});
 				});

@@ -81,13 +81,13 @@ module.exports = function(User) {
 		});
 	}
 
-	function getSetting(settings, key, base) {
+	function getSetting(settings, key, defaultValue) {
 		if (settings[key] || settings[key] === 0) {
 			return settings[key];
 		} else if (meta.config[key] || meta.config[key] === 0) {
 			return meta.config[key];
 		}
-		return base;
+		return defaultValue;
 	}
 
 	User.saveSettings = function(uid, data, callback) {
@@ -122,7 +122,7 @@ module.exports = function(User) {
 		if (data.bootswatchSkin) {
 			settings.bootswatchSkin = data.bootswatchSkin;
 		}
-		
+
 		async.waterfall([
 			function(next) {
 				db.setObject('user:' + uid + ':settings', settings, next);
