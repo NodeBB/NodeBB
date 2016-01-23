@@ -90,7 +90,7 @@ module.exports = function(User) {
 								db.sortedSetAdd('userslug:uid', userData.uid, userData.userslug, next);
 							},
 							function(next) {
-								db.sortedSetAdd(['users:joindate', 'users:online', 'users:notvalidated'], timestamp, userData.uid, next);
+								db.sortedSetsAdd(['users:joindate', 'users:online', 'users:notvalidated'], timestamp, userData.uid, next);
 							},
 							function(next) {
 								db.sortedSetsAdd(['users:postcount', 'users:reputation'], 0, userData.uid, next);
