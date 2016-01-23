@@ -89,12 +89,10 @@ define('navigator', ['forum/pagination', 'components'], function(pagination, com
 			return;
 		}
 
-		$('.pagination-block').toggleClass('invisible', !flag);
+		$('.pagination-block').toggleClass('ready', flag);
 	}
 
 	navigator.update = function() {
-		toggle(!!count);
-
 		var els = $(navigator.selector);
 		if (els.length) {
 			index = parseInt(els.first().attr('data-index'), 10) + 1;
@@ -120,6 +118,7 @@ define('navigator', ['forum/pagination', 'components'], function(pagination, com
 		}
 
 		navigator.updateTextAndProgressBar();
+		toggle(!!count);
 	};
 
 	navigator.updateTextAndProgressBar = function() {
