@@ -32,6 +32,9 @@ helpers.getUserDataByUserSlug = function(userslug, callerUID, callback) {
 				isAdmin : function(next) {
 					user.isAdministrator(callerUID, next);
 				},
+				isGlobalModerator: function(next) {
+					user.isGlobalModerator(callerUID, next);
+				},
 				ips: function(next) {
 					user.getIPs(uid, 4, next);
 				},
@@ -78,6 +81,8 @@ helpers.getUserDataByUserSlug = function(userslug, callerUID, callback) {
 			userData.yourid = callerUID;
 			userData.theirid = userData.uid;
 			userData.isAdmin = isAdmin;
+			userData.isGlobalModerator = results.isGlobalModerator;
+			userData.canBan = isAdmin || results.isGlobalModerator;
 			userData.isSelf = self;
 			userData.showHidden = self || isAdmin;
 			userData.groups = Array.isArray(results.groups) && results.groups.length ? results.groups[0] : [];

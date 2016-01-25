@@ -10,7 +10,7 @@ var db = require('./database'),
 	schemaDate, thisSchemaDate,
 
 	// IMPORTANT: REMEMBER TO UPDATE VALUE OF latestSchema
-	latestSchema = Date.UTC(2016, 0, 20);
+	latestSchema = Date.UTC(2016, 0, 23);
 
 Upgrade.check = function(callback) {
 	db.get('schemaDate', function(err, value) {
@@ -367,6 +367,46 @@ Upgrade.upgrade = function(callback) {
 				});
 			} else {
 				winston.info('[2016/01/20] Creating users:notvalidated skipped!');
+				next();
+			}
+		},
+		function(next) {
+			thisSchemaDate = Date.UTC(2016, 0, 23);
+
+			if (schemaDate < thisSchemaDate) {
+				updatesMade = true;
+				winston.info('[2016/01/23] Creating Global moderators group');
+
+				var groups = require('./groups');
+				async.waterfall([
+					function (next) {
+						groups.exists('Global Moderators', next);
+					},
+					function (exists, next) {
+						if (exists) {
+							return next();
+						}
+						groups.create({
+							name: 'Global Moderators',
+							description: 'Forum wide moderators',
+							hidden: 0,
+							private: 1,
+							disableJoinRequests: 1
+						}, next);
+					},
+					function (groupData, next) {
+						groups.show('Global Moderators', next);
+					}
+				], function(err) {
+					if (err) {
+						return next(err);
+					}
+
+					winston.info('[2016/01/23] Creating Global moderators group done!');
+					Upgrade.update(thisSchemaDate, next);
+				});
+			} else {
+				winston.info('[2016/01/23] Creating Global moderators group skipped!');
 				next();
 			}
 		}

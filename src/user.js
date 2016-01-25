@@ -230,6 +230,10 @@ var	async = require('async'),
 		privileges.users.isAdministrator(uid, callback);
 	};
 
+	User.isGlobalModerator = function(uid, callback) {
+		privileges.users.isGlobalModerator(uid, callback);
+	};
+
 	User.isAdminOrSelf = function(callerUid, uid, callback) {
 		if (parseInt(callerUid, 10) === parseInt(uid, 10)) {
 			return callback();

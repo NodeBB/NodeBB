@@ -1,15 +1,14 @@
 "use strict";
 
 
-var async = require('async'),
-	db = require('../../database'),
-	groups = require('../../groups'),
-	user = require('../../user'),
-	events = require('../../events'),
-	meta = require('../../meta'),
-	websockets = require('../index'),
-	User = {};
+var async = require('async');
+var db = require('../../database');
+var groups = require('../../groups');
+var user = require('../../user');
+var events = require('../../events');
+var meta = require('../../meta');
 
+var User = {};
 
 User.makeAdmins = function(socket, uids, callback) {
 	if(!Array.isArray(uids)) {
@@ -60,38 +59,6 @@ User.createUser = function(socket, userData, callback) {
 	user.create(userData, callback);
 };
 
-User.banUsers = function(socket, uids, callback) {
-	toggleBan(uids, User.banUser, callback);
-};
-
-User.unbanUsers = function(socket, uids, callback) {
-	toggleBan(uids, user.unban, callback);
-};
-
-function toggleBan(uids, method, callback) {
-	if(!Array.isArray(uids)) {
-		return callback(new Error('[[error:invalid-data]]'));
-	}
-	async.each(uids, method, callback);
-}
-
-User.banUser = function(uid, callback) {
-	user.isAdministrator(uid, function(err, isAdmin) {
-		if (err || isAdmin) {
-			return callback(err || new Error('[[error:cant-ban-other-admins]]'));
-		}
-
-		user.ban(uid, function(err) {
-			if (err) {
-				return callback(err);
-			}
-
-			websockets.in('uid_' + uid).emit('event:banned');
-
-			callback();
-		});
-	});
-};
 
 User.resetLockouts = function(socket, uids, callback) {
 	if (!Array.isArray(uids)) {

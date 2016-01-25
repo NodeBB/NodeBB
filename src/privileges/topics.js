@@ -1,16 +1,13 @@
 
 'use strict';
 
-var async = require('async'),
-	winston = require('winston'),
+var async = require('async');
 
-	db = require('../database'),
-	topics = require('../topics'),
-	user = require('../user'),
-	helpers = require('./helpers'),
-	groups = require('../groups'),
-	categories = require('../categories'),
-	plugins = require('../plugins');
+var topics = require('../topics');
+var user = require('../user');
+var helpers = require('./helpers');
+var categories = require('../categories');
+var plugins = require('../plugins');
 
 module.exports = function(privileges) {
 

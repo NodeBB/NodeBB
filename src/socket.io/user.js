@@ -8,7 +8,6 @@ var topics = require('../topics');
 var notifications = require('../notifications');
 var messaging = require('../messaging');
 var plugins = require('../plugins');
-var websockets = require('./index');
 var meta = require('../meta');
 var events = require('../events');
 var emailer = require('../emailer');
@@ -16,11 +15,11 @@ var db = require('../database');
 
 var SocketUser = {};
 
-
 require('./user/profile')(SocketUser);
 require('./user/search')(SocketUser);
 require('./user/status')(SocketUser);
 require('./user/picture')(SocketUser);
+require('./user/ban')(SocketUser);
 
 SocketUser.exists = function(socket, data, callback) {
 	if (data && data.username) {

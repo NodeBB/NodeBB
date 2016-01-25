@@ -52,7 +52,7 @@ define('admin/manage/users', ['admin/modules/selectable'], function(selectable) 
 
 			bootbox.confirm('Do you really want to ban?', function(confirm) {
 				if (confirm) {
-					socket.emit('admin.user.banUsers', uids, done('User(s) banned!', '.ban', true));
+					socket.emit('user.banUsers', uids, done('User(s) banned!', '.ban', true));
 				}
 			});
 			return false;
@@ -64,7 +64,7 @@ define('admin/manage/users', ['admin/modules/selectable'], function(selectable) 
 				return;
 			}
 
-			socket.emit('admin.user.unbanUsers', uids, done('User(s) unbanned!', '.ban', false));
+			socket.emit('user.unbanUsers', uids, done('User(s) unbanned!', '.ban', false));
 			return false;
 		});
 

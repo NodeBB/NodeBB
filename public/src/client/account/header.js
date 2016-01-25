@@ -103,7 +103,7 @@ define('forum/account/header', [
 				if (!confirm) {
 					return;
 				}
-				socket.emit('admin.user.banUsers', [ajaxify.data.theirid], function(err) {
+				socket.emit('user.banUsers', [ajaxify.data.theirid], function(err) {
 					if (err) {
 						return app.alertError(err.message);
 					}
@@ -115,7 +115,7 @@ define('forum/account/header', [
 	}
 
 	function unbanAccount() {
-		socket.emit('admin.user.unbanUsers', [ajaxify.data.theirid], function(err) {
+		socket.emit('user.unbanUsers', [ajaxify.data.theirid], function(err) {
 			if (err) {
 				return app.alertError(err.message);
 			}

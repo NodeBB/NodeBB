@@ -9,7 +9,7 @@ var async = require('async'),
 module.exports = function(Groups) {
 
 	Groups.create = function(data, callback) {
-		var system = data.name === 'administrators' || data.name === 'registered-users' || Groups.isPrivilegeGroup(data.name);
+		var system = data.name === 'administrators' || data.name === 'registered-users' || data.name === 'Global Moderators' || Groups.isPrivilegeGroup(data.name);
 		var groupData;
 		var timestamp = data.timestamp || Date.now();
 
@@ -26,6 +26,7 @@ module.exports = function(Groups) {
 				}
 
 				var memberCount = data.hasOwnProperty('ownerUid') ? 1 : 0;
+				var isPrivate = data.hasOwnProperty('private') ? parseInt(data.private, 10) : 1;
 				var slug = utils.slugify(data.name);
 				groupData = {
 					name: data.name,
@@ -34,10 +35,11 @@ module.exports = function(Groups) {
 					userTitle: data.name,
 					description: data.description || '',
 					memberCount: memberCount,
-					deleted: '0',
-					hidden: data.hidden || '0',
-					system: system ? '1' : '0',
-					private: data.private || '1'
+					deleted: 0,
+					hidden: parseInt(data.hidden, 10) === 1 ? 1 : 0,
+					system: system ? 1 : 0,
+					private: isPrivate,
+					disableJoinRequests: parseInt(data.disableJoinRequests, 10) === 1 ? 1 : 0
 				};
 				plugins.fireHook('filter:group.create', {group: groupData, data: data}, next);
 			},

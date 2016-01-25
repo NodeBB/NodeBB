@@ -1,16 +1,10 @@
 
 'use strict';
 
-var async = require('async'),
-	winston = require('winston'),
+var async = require('async');
 
-	db = require('../database'),
-	topics = require('../topics'),
-	user = require('../user'),
-	helpers = require('./helpers'),
-	groups = require('../groups'),
-	categories = require('../categories'),
-	plugins = require('../plugins');
+var groups = require('../groups');
+var plugins = require('../plugins');
 
 module.exports = function(privileges) {
 
@@ -21,6 +15,14 @@ module.exports = function(privileges) {
 			groups.isMembers(uid, 'administrators', callback);
 		} else {
 			groups.isMember(uid, 'administrators', callback);
+		}
+	};
+
+	privileges.users.isGlobalModerator = function(uid, callback) {
+		if (Array.isArray(uid)) {
+			groups.isMembers(uid, 'Global Moderators', callback);
+		} else {
+			groups.isMember(uid, 'Global Moderators', callback);
 		}
 	};
 
@@ -41,44 +43,56 @@ module.exports = function(privileges) {
 			return filterIsModerator(cids, uid, cids.map(function() {return false;}), callback);
 		}
 
-		var uniqueCids = cids.filter(function(cid, index, array) {
-			return array.indexOf(cid) === index;
-		});
-
-		var groupNames = uniqueCids.map(function(cid) {
-				return 'cid:' + cid + ':privileges:mods';	// At some point we should *probably* change this to "moderate" as well
-			}),
-			groupListNames = uniqueCids.map(function(cid) {
-				return 'cid:' + cid + ':privileges:groups:moderate';
-			});
-
-		async.parallel({
-			user: async.apply(groups.isMemberOfGroups, uid, groupNames),
-			group: async.apply(groups.isMemberOfGroupsList, uid, groupListNames)
-		}, function(err, checks) {
+		privileges.users.isGlobalModerator(uid, function(err, isGlobalModerator) {
 			if (err) {
 				return callback(err);
 			}
+			if (isGlobalModerator) {
+				return filterIsModerator(cids, uid, cids.map(function() {return true;}), callback);
+			}
 
-			var isMembers = checks.user.map(function(isMember, idx) {
-					return isMember || checks.group[idx];
-				}),
-				map = {};
 
-			uniqueCids.forEach(function(cid, index) {
-				map[cid] = isMembers[index];
+			var uniqueCids = cids.filter(function(cid, index, array) {
+				return array.indexOf(cid) === index;
 			});
 
-			var isModerator = cids.map(function(cid) {
-				return map[cid];
+			var groupNames = uniqueCids.map(function(cid) {
+				return 'cid:' + cid + ':privileges:mods';	// At some point we should *probably* change this to "moderate" as well
 			});
 
-			filterIsModerator(cids, uid, isModerator, callback);
+			var groupListNames = uniqueCids.map(function(cid) {
+				return 'cid:' + cid + ':privileges:groups:moderate';
+			});
+
+			async.parallel({
+				user: async.apply(groups.isMemberOfGroups, uid, groupNames),
+				group: async.apply(groups.isMemberOfGroupsList, uid, groupListNames)
+			}, function(err, checks) {
+				if (err) {
+					return callback(err);
+				}
+
+				var isMembers = checks.user.map(function(isMember, idx) {
+						return isMember || checks.group[idx];
+					}),
+					map = {};
+
+				uniqueCids.forEach(function(cid, index) {
+					map[cid] = isMembers[index];
+				});
+
+				var isModerator = cids.map(function(cid) {
+					return map[cid];
+				});
+
+				filterIsModerator(cids, uid, isModerator, callback);
+			});
 		});
 	}
 
 	function isModeratorsOfCategory(cid, uids, callback) {
 		async.parallel([
+			async.apply(privileges.users.isGlobalModerator, uids),
 			async.apply(groups.isMembers, uids, 'cid:' + cid + ':privileges:mods'),
 			async.apply(groups.isMembersOfGroupList, uids, 'cid:' + cid + ':privileges:groups:moderate')
 		], function(err, checks) {
@@ -87,8 +101,8 @@ module.exports = function(privileges) {
 			}
 
 			var isModerator = checks[0].map(function(isMember, idx) {
-					return isMember || checks[1][idx];
-				});
+				return isMember || checks[1][idx] || checks[2][idx];
+			});
 
 			filterIsModerator(cid, uids, isModerator, callback);
 		});
@@ -96,6 +110,7 @@ module.exports = function(privileges) {
 
 	function isModeratorOfCategory(cid, uid, callback) {
 		async.parallel([
+			async.apply(privileges.users.isGlobalModerator, uid),
 			async.apply(groups.isMember, uid, 'cid:' + cid + ':privileges:mods'),
 			async.apply(groups.isMemberOfGroupList, uid, 'cid:' + cid + ':privileges:groups:moderate')
 		], function(err, checks) {
@@ -103,7 +118,7 @@ module.exports = function(privileges) {
 				return callback(err);
 			}
 
-			var isModerator = checks[0] || checks[1];
+			var isModerator = checks[0] || checks[1] || checks[2];
 			filterIsModerator(cid, uid, isModerator, callback);
 		});
 	}
