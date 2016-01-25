@@ -195,9 +195,12 @@ var async = require('async'),
 
 			var websockets = require('./socket.io');
 			if (websockets.server) {
-				for(var i=0; i<uids.length; ++i) {
-					websockets.in('uid_' + uids[i]).emit('event:new_notification', notification);
-				}
+				// Add notification paths to sent notification object as well
+				async.eachLimit(uids, 50, function(uid, next) {
+					User.notifications.generateNotificationPaths([notification], uid, function(err, notifications) {
+						websockets.in('uid_' + uid).emit('event:new_notification', notifications[0]);
+					});
+				});
 			}
 
 			callback();

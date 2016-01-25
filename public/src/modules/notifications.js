@@ -65,13 +65,30 @@ define('notifications', ['sounds', 'translator', 'components'], function(sound, 
 		}
 
 		socket.on('event:new_notification', function(notifData) {
-			app.alert({
-				alert_id: 'new_notif',
-				title: '[[notifications:new_notification]]',
-				message: '[[notifications:you_have_unread_notifications]]',
-				type: 'warning',
-				timeout: 2000
-			});
+			// If a path is defined, show notif data, otherwise show generic data
+			var payload;
+			if (notifData.path) {
+				payload = {
+					alert_id: 'new_notif',
+					title: '[[notifications:new_notification]]',
+					message: notifData.bodyShort,
+					type: 'info',
+					timeout: 2000,
+					clickfn: function() {
+						ajaxify.go(notifData.path);
+					}
+				};
+			} else {
+				payload = {
+					alert_id: 'new_notif',
+					title: '[[notifications:new_notification]]',
+					message: '[[notifications:you_have_unread_notifications]]',
+					type: 'warning',
+					timeout: 2000
+				};
+			}
+
+			app.alert(payload);
 			app.refreshTitle();
 
 			if (ajaxify.currentPage === 'notifications') {
