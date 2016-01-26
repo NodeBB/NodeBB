@@ -117,7 +117,7 @@ define('forum/recent', ['forum/infinitescroll', 'components'], function(infinite
 			html.find('.timeago').timeago();
 			app.createUserTooltips();
 			utils.makeNumbersHumanReadable(html.find('.human-readable-number'));
-			$(window).trigger('action:topics.loaded');
+			$(window).trigger('action:topics.loaded', {topics: topics});
 			callback();
 		});
 	};

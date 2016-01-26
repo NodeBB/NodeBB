@@ -334,6 +334,8 @@ define('forum/category', [
 			app.createUserTooltips();
 			utils.makeNumbersHumanReadable(html.find('.human-readable-number'));
 
+			$(window).trigger('action:topics.loaded', {topics: data.topics});
+
 			callback();
 		});
 	};
