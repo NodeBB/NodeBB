@@ -180,7 +180,7 @@ var fs = require('fs'),
 				return callback(err);
 			}
 
-			async.each(plugins, function(plugin, next) {
+			async.eachSeries(plugins, function(plugin, next) {
 				if (plugin.templates || plugin.id.startsWith('nodebb-theme-')) {
 					winston.verbose('[plugins] Loading templates (' + plugin.id + ')');
 					var templatesPath = path.join(__dirname, '../node_modules', plugin.id, plugin.templates || 'templates');
