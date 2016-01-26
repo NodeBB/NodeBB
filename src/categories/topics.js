@@ -1,11 +1,11 @@
 'use strict';
 
-var async = require('async'),
-	db = require('../database'),
-	user = require('../user'),
-	topics = require('../topics'),
-	plugins = require('../plugins'),
-	privileges = require('../privileges');
+var async = require('async');
+
+var db = require('../database');
+var topics = require('../topics');
+var plugins = require('../plugins');
+var privileges = require('../privileges');
 
 module.exports = function(Categories) {
 
@@ -60,10 +60,18 @@ module.exports = function(Categories) {
 	};
 
 	Categories.getTopicIds = function(set, reverse, start, stop, callback) {
-		if (reverse) {
-			db.getSortedSetRevRange(set, start, stop, callback);
+		if (Array.isArray(set)) {
+			if (reverse) {
+				db.getSortedSetRevUnion(set, start, stop, callback);
+			} else {
+				db.getSortedSetUnion(set, start, stop, callback);
+			}
 		} else {
-			db.getSortedSetRange(set, start, stop, callback);
+			if (reverse) {
+				db.getSortedSetRevRange(set, start, stop, callback);
+			} else {
+				db.getSortedSetRange(set, start, stop, callback);
+			}
 		}
 	};
 
