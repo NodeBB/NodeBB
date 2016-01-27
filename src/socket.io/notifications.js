@@ -1,8 +1,10 @@
 "use strict";
 
-var	user = require('../user'),
-	notifications = require('../notifications'),
-	SocketNotifs = {};
+var async = require('async');
+var	user = require('../user');
+var notifications = require('../notifications');
+
+var SocketNotifs = {};
 
 SocketNotifs.get = function(socket, data, callback) {
 	if (data && Array.isArray(data.nids) && socket.uid) {
@@ -51,6 +53,30 @@ SocketNotifs.markUnread = function(socket, nid, callback) {
 
 SocketNotifs.markAllRead = function(socket, data, callback) {
 	notifications.markAllRead(socket.uid, callback);
+};
+
+SocketNotifs.generatePath = function(socket, nid, callback) {
+	if (!socket.uid) {
+		return;
+	}
+	async.waterfall([
+		function (next) {
+			notifications.get(nid, next);
+		},
+		function (notification, next) {
+			if (!notification) {
+				return next(null, '');
+			}
+			user.notifications.generateNotificationPaths([notification], socket.uid, next);
+		},
+		function (notificationsData, next) {
+			if (notificationsData && notificationsData.length) {
+				next(null, notificationsData[0].path);
+			} else {
+				next();
+			}
+		}
+	], callback);
 };
 
 module.exports = SocketNotifs;

@@ -195,11 +195,8 @@ var async = require('async'),
 
 			var websockets = require('./socket.io');
 			if (websockets.server) {
-				// Add notification paths to sent notification object as well
-				async.eachLimit(uids, 50, function(uid, next) {
-					User.notifications.generateNotificationPaths([notification], uid, function(err, notifications) {
-						websockets.in('uid_' + uid).emit('event:new_notification', notifications[0]);
-					});
+				uids.forEach(function(uid) {
+					websockets.in('uid_' + uid).emit('event:new_notification', notification);
 				});
 			}
 
@@ -386,7 +383,7 @@ var async = require('async'),
 						var usernames = set.map(function(notifObj) {
 							return notifObj.user.username;
 						}).filter(function(username, idx, array) {
-							return array.indexOf(username) === idx
+							return array.indexOf(username) === idx;
 						});
 						var numUsers = usernames.length;
 

@@ -66,26 +66,28 @@ define('notifications', ['sounds', 'translator', 'components'], function(sound, 
 
 		socket.on('event:new_notification', function(notifData) {
 			// If a path is defined, show notif data, otherwise show generic data
-			var payload;
+			var payload = {
+				alert_id: 'new_notif',
+				title: '[[notifications:new_notification]]',
+				timeout: 2000
+			};
+
 			if (notifData.path) {
-				payload = {
-					alert_id: 'new_notif',
-					title: '[[notifications:new_notification]]',
-					message: notifData.bodyShort,
-					type: 'info',
-					timeout: 2000,
-					clickfn: function() {
-						ajaxify.go(notifData.path);
-					}
+				payload.message = notifData.bodyShort;
+				payload.type = 'info';
+				payload.clickfn = function() {
+					socket.emit('notifications.generatePath', notifData.nid, function(err, path) {
+						if (err) {
+							return app.alertError(err.message);
+						}
+						if (path) {
+							ajaxify.go(path);
+						}
+					});
 				};
 			} else {
-				payload = {
-					alert_id: 'new_notif',
-					title: '[[notifications:new_notification]]',
-					message: '[[notifications:you_have_unread_notifications]]',
-					type: 'warning',
-					timeout: 2000
-				};
+				payload.message: '[[notifications:you_have_unread_notifications]]';
+				payload.type = 'warning';
 			}
 
 			app.alert(payload);
