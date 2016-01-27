@@ -2,14 +2,21 @@
 	"use strict";
 	/* globals RELATIVE_PATH, config, define */
 
+	var S;
+
 	// export the class if we are in a Node-like system.
 	if (typeof module === 'object' && module.exports === translator) {
 		exports = module.exports = translator;
+		S = require('string');
+	} else {
+		require(['string'], function(stringLib) {
+			S = stringLib;
+		});
 	}
 
 	var	languages = {},
 		regexes = {
-			match: /\[\[\w+:[\w\.]+((?!\[\[|<|>|\(|\)).)*?\]\]/g,	// see tests/translator.js for an explanation re: this monster
+			match: /\[\[\w+:[\w\.]+((?!\[\[).)*?\]\]/g,	// see tests/translator.js for an explanation re: this monster
 			split: /[,][\s]*/,
 			replace: /\]+$/
 		};
@@ -187,8 +194,9 @@
 
 	function insertLanguage(text, key, value, variables) {
 		if (value) {
+			var variable;
 			for (var i = 1, ii = variables.length; i < ii; i++) {
-				var variable = variables[i].replace(']]', '');
+				variable = S(variables[i]).chompRight(']]').collapseWhitespace().escapeHTML().s;
 				value = value.replace('%' + i, variable);
 			}
 

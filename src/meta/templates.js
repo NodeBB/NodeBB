@@ -76,7 +76,6 @@ Templates.compile = function(callback) {
 			baseTpls.forEach(function(el, i) {
 				paths[baseTpls[i]] = path.join(baseTemplatesPath, baseTpls[i]);
 			});
-// console.log(pluginTemplates);
 
 			for (var tpl in pluginTemplates) {
 				if (pluginTemplates.hasOwnProperty(tpl)) {

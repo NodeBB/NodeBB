@@ -71,10 +71,17 @@ describe('Translator', function(){
 			});
 		});
 
+		it('should properly handle parameters that contain parentheses', function(done) {
+			translator.translate('[[global:pagination.out_of, (foobar), [[global:home]]]]', function(translated) {
+				assert.strictEqual(translated, '(foobar) out of Home');
+				done();
+			});
+		});
+
 		it('should not translate language key parameters with HTML in them', function(done) {
 			var key = '[[global:403.login, <strong>test</strong>]]';
 			translator.translate(key, function(translated) {
-				assert.strictEqual(translated, key);
+				assert.strictEqual(translated, 'Perhaps you should <a href=\'&lt;strong&gt;test&lt;/strong&gt;/login\'>try logging in</a>?');
 				done();
 			});
 		})
