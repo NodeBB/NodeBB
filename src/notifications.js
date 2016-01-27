@@ -387,12 +387,9 @@ var async = require('async'),
 						});
 						var numUsers = usernames.length;
 
-						// Update bodyShort
-						if (numUsers === 1) {
-							// No need to change anything, actually...
-						} else if (numUsers === 2) {
+						if (numUsers === 2) {
 							notifications[modifyIndex].bodyShort = '[[' + mergeId + '_dual, ' + usernames.join(', ') + ', ' + notifications[modifyIndex].topicTitle + ']]'
-						} else {
+						} else if (numUsers > 2) {
 							notifications[modifyIndex].bodyShort = '[[' + mergeId + '_multiple, ' + usernames[0] + ', ' + (numUsers-1) + ', ' + notifications[modifyIndex].topicTitle + ']]'
 						}
 						break;
