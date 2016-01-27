@@ -138,7 +138,7 @@ module.exports = function(Topics) {
 		});
 	};
 
-	Topics.modifyByPrivilege = function(postData, topicPrivileges) {
+	Topics.modifyPostsByPrivilege = function(postData, topicPrivileges) {
 		postData.forEach(function(post) {
 			if (post) {
 				post.display_moderator_tools = topicPrivileges.isAdminOrMod || post.selfPost;

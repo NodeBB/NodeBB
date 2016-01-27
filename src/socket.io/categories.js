@@ -119,6 +119,8 @@ SocketCategories.loadMore = function(socket, data, callback) {
 				return callback(err);
 			}
 
+			categories.modifyTopicsByPrivilege(data.topics, results.privileges);
+
 			data.privileges = results.privileges;
 			data.template = {
 				category: true,
