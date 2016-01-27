@@ -50,14 +50,11 @@ module.exports = function(User) {
 			nid: 'new_register:' + username,
 			path: '/admin/manage/registration'
 		}, function(err, notification) {
-			if (err) {
+			if (err || !notification) {
 				return callback(err);
 			}
-			if (notification) {
-				notifications.pushGroup(notification, 'administrators', callback);
-			} else {
-				callback();
-			}
+
+			notifications.pushGroup(notification, 'administrators', callback);
 		});
 	}
 

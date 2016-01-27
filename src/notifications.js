@@ -90,7 +90,7 @@ var async = require('async'),
 
 			if (oldNotification) {
 				if (parseInt(oldNotification.pid, 10) === parseInt(data.pid, 10) && parseInt(oldNotification.importance, 10) > parseInt(data.importance, 10)) {
-					return callback();
+					return callback(null, null);
 				}
 			}
 
@@ -367,7 +367,7 @@ var async = require('async'),
 
 				return cur;
 			}, []);
-			
+
 			differentiators.forEach(function(differentiator) {
 				set = isolated.filter(function(notifObj) {
 					return notifObj.mergeId === (mergeId + '|' + differentiator);

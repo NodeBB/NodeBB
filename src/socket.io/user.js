@@ -137,13 +137,13 @@ SocketUser.follow = function(socket, data, callback) {
 	}
 	var userData;
 	async.waterfall([
-		function(next) {
+		function (next) {
 			toggleFollow('follow', socket.uid, data.uid, next);
 		},
-		function(next) {
+		function (next) {
 			user.getUserFields(socket.uid, ['username', 'userslug'], next);
 		},
-		function(_userData, next) {
+		function (_userData, next) {
 			userData = _userData;
 			notifications.create({
 				bodyShort: '[[notifications:user_started_following_you, ' + userData.username + ']]',
@@ -153,7 +153,10 @@ SocketUser.follow = function(socket, data, callback) {
 				mergeId: 'notifications:user_started_following_you'
 			}, next);
 		},
-		function(notification, next) {
+		function (notification, next) {
+			if (!notification) {
+				return next();
+			}
 			notification.user = userData;
 			notifications.push(notification, [data.uid], next);
 		}

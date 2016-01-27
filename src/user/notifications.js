@@ -295,14 +295,11 @@ var async = require('async'),
 			path: path,
 			nid: 'welcome_' + uid
 		}, function(err, notification) {
-			if (err) {
+			if (err || !notification) {
 				return callback(err);
 			}
-			if (notification) {
-				notifications.push(notification, [uid], callback);
-			} else {
-				callback();
-			}
+
+			notifications.push(notification, [uid], callback);
 		});
 	};
 

@@ -74,26 +74,30 @@ module.exports = function(Groups) {
 	Groups.requestMembership = function(groupName, uid, callback) {
 		async.waterfall([
 			async.apply(inviteOrRequestMembership, groupName, uid, 'request'),
-			function(next) {
-				user.getUserField(uid, 'username', function(err, username) {
-					if (err) {
-						return next(err);
+			function (next) {
+				user.getUserField(uid, 'username', next);
+			},
+			function (username, next) {
+				async.parallel({
+					notification: function(next) {
+						notifications.create({
+							bodyShort: '[[groups:request.notification_title, ' + username + ']]',
+							bodyLong: '[[groups:request.notification_text, ' + username + ', ' + groupName + ']]',
+							nid: 'group:' + groupName + ':uid:' + uid + ':request',
+							path: '/groups/' + utils.slugify(groupName)
+						}, next);
+					},
+					owners: function(next) {
+						Groups.getOwners(groupName, next);
 					}
-					next(null, {
-						bodyShort: '[[groups:request.notification_title, ' + username + ']]',
-						bodyLong: '[[groups:request.notification_text, ' + username + ', ' + groupName + ']]',
-						nid: 'group:' + groupName + ':uid:' + uid + ':request',
-						path: '/groups/' + utils.slugify(groupName)
-					});
-				});
+				}, next);
 			},
-			async.apply(notifications.create),
-			function(notification, next) {
-				Groups.getOwners(groupName, function(err, ownerUids) {
-					next(null, notification, ownerUids);
-				});
-			},
-			async.apply(notifications.push)
+			function (results, next) {
+				if (!results.notification || !results.owners.length) {
+					return next();
+				}
+				notifications.push(results.notification, results.owners, next);
+			}
 		], callback);
 	};
 
@@ -123,10 +127,13 @@ module.exports = function(Groups) {
 				nid: 'group:' + groupName + ':uid:' + uid + ':invite',
 				path: '/groups/' + utils.slugify(groupName)
 			}),
-			function(notification, next) {
-				next(null, notification, [uid]);
-			},
-			async.apply(notifications.push)
+			function (notification, next) {
+				if (!notification) {
+					return next();
+				}
+
+				notifications.push(notification, [uid]);
+			}
 		], callback);
 	};
 

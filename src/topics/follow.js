@@ -139,18 +139,12 @@ module.exports = function(Topics) {
 					from: exceptUid,
 					mergeId: 'notifications:user_posted_to|' + postData.topic.tid,
 					topicTitle: title
-				}, function(err, notification) {
-					if (err) {
-						return next(err);
-					}
-
-					if (notification) {
-						notifications.push(notification, followers);
-					}
-					next();
-				});
+				}, next);
 			},
-			function (next) {
+			function (notification, next) {
+				if (notification) {
+					notifications.push(notification, followers);
+				}
 
 				if (parseInt(meta.config.disableEmailSubscriptions, 10) === 1) {
 					return next();
