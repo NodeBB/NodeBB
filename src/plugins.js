@@ -164,11 +164,7 @@ var fs = require('fs'),
 				});
 
 				// Filter out plugins with invalid paths
-				async.filter(paths, function(path, next) {
-					fs.access(path, fs.R_OK, function(err) {
-						next(!err);
-					});
-				}, function(paths) {
+				async.filter(paths, file.exists, function(paths) {
 					next(null, paths);
 				});
 			},
