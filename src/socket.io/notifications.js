@@ -1,7 +1,7 @@
 "use strict";
 
 var async = require('async');
-var	user = require('../user');
+var user = require('../user');
 var notifications = require('../notifications');
 
 var SocketNotifs = {};
