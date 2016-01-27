@@ -321,7 +321,7 @@ app.cacheBuster = null;
 		}
 	};
 
-	app.refreshTitle = function(title) {
+	app.refreshTitle = function(title, callback) {
 		if (!title) {
 			return;
 		}
@@ -330,6 +330,7 @@ app.cacheBuster = null;
 			translator.translate(title, function(translated) {
 				titleObj.titles[0] = translated;
 				app.alternatingTitle('');
+				callback && callback();
 			});
 		});
 	};
