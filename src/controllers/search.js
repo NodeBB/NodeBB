@@ -40,7 +40,8 @@ searchController.search = function(req, res, next) {
 		sortBy: req.query.sortBy,
 		sortDirection: req.query.sortDirection,
 		page: page,
-		uid: req.uid
+		uid: req.uid,
+		qs: req.query
 	};
 
 	async.parallel({
