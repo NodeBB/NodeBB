@@ -128,8 +128,9 @@ module.exports = function(Meta) {
 			case 'error':
 				winston.error('[meta/js] Could not compile ' + target + ': ' + message.payload.message);
 				minifier.kill();
+
 				if (typeof callback === 'function') {
-					callback(new Error(message.payload.message));
+					callback(new Error(message.payload));
 				} else {
 					process.exit(0);
 				}

@@ -86,7 +86,7 @@ define('notifications', ['sounds', 'translator', 'components'], function(sound, 
 					});
 				};
 			} else {
-				payload.message: '[[notifications:you_have_unread_notifications]]';
+				payload.message = '[[notifications:you_have_unread_notifications]]';
 				payload.type = 'warning';
 			}
 
