@@ -95,7 +95,8 @@ categoryController.get = function(req, res, callback) {
 				reverse: reverse,
 				start: start,
 				stop: stop,
-				uid: req.uid
+				uid: req.uid,
+				settings: settings
 			});
 		},
 		function (payload, next) {
