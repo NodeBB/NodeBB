@@ -92,8 +92,6 @@ function registerAndLoginUser(req, res, userData, callback) {
 
 			user.deleteInvitation(userData.email);
 
-			user.notifications.sendWelcomeNotification(uid);
-
 			plugins.fireHook('filter:register.complete', {uid: uid, referrer: req.body.referrer || nconf.get('relative_path') + '/'}, next);
 		}
 	], callback);

@@ -99,6 +99,9 @@ module.exports = function(User) {
 								groups.join('registered-users', userData.uid, next);
 							},
 							function(next) {
+								user.notifications.sendWelcomeNotification(uid, next);
+							},
+							function(next) {
 								if (userData.email) {
 									async.parallel([
 										async.apply(db.sortedSetAdd, 'email:uid', userData.uid, userData.email.toLowerCase()),

@@ -1,17 +1,16 @@
 
 'use strict';
 
-var async = require('async'),
-	nconf = require('nconf'),
-	request = require('request'),
+var async = require('async');
+var request = require('request');
 
-	db = require('../database'),
-	meta = require('../meta'),
-	emailer = require('../emailer'),
-	notifications = require('../notifications'),
-	groups = require('../groups'),
-	translator = require('../../public/src/modules/translator'),
-	utils = require('../../public/src/utils');
+var db = require('../database');
+var meta = require('../meta');
+var emailer = require('../emailer');
+var notifications = require('../notifications');
+var groups = require('../groups');
+var translator = require('../../public/src/modules/translator');
+var utils = require('../../public/src/utils');
 
 
 module.exports = function(User) {
@@ -89,9 +88,6 @@ module.exports = function(User) {
 
 					emailer.send('registration_accepted', uid, data, next);
 				});
-			},
-			function(next) {
-				User.notifications.sendWelcomeNotification(uid, next);
 			},
 			function(next) {
 				removeFromQueue(username, next);
