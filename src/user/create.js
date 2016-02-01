@@ -99,7 +99,7 @@ module.exports = function(User) {
 								groups.join('registered-users', userData.uid, next);
 							},
 							function(next) {
-								user.notifications.sendWelcomeNotification(uid, next);
+								User.notifications.sendWelcomeNotification(uid, next);
 							},
 							function(next) {
 								if (userData.email) {
