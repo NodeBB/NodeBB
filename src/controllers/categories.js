@@ -29,9 +29,13 @@ categoriesController.list = function(req, res, next) {
 	}];
 
 	if (meta.config['brand:logo']) {
+		var brandLogo = meta.config['brand:logo'];
+		if (!brandLogo.startsWith('http')) {
+			brandLogo = nconf.get('url') + brandLogo;
+		}
 		res.locals.metaTags.push({
 			property: 'og:image',
-			content: meta.config['brand:logo']
+			content: brandLogo
 		});
 	}
 
