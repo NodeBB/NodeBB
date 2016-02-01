@@ -59,9 +59,9 @@ authenticationController.register = function(req, res, next) {
 		},
 		function(data, next) {
 			if (registrationType === 'normal' || registrationType === 'invite-only') {
-				registerAndLoginUser(req, res, userData, next);
+				registerAndLoginUser(req, userData, next);
 			} else if (registrationType === 'admin-approval') {
-				addToApprovalQueue(req, res, userData, next);
+				addToApprovalQueue(req, userData, next);
 			}
 		}
 	], function(err, data) {
@@ -77,7 +77,7 @@ authenticationController.register = function(req, res, next) {
 	});
 };
 
-function registerAndLoginUser(req, res, userData, callback) {
+function registerAndLoginUser(req, userData, callback) {
 	var uid;
 	async.waterfall([
 		function(next) {
@@ -97,7 +97,7 @@ function registerAndLoginUser(req, res, userData, callback) {
 	], callback);
 }
 
-function addToApprovalQueue(req, res, userData, callback) {
+function addToApprovalQueue(req, userData, callback) {
 	async.waterfall([
 		function(next) {
 			userData.ip = req.ip;
