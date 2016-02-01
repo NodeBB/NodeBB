@@ -85,21 +85,19 @@ SocketModules.chats.send = function(socket, data, callback) {
 		socket.lastChatMessageTime = now;
 	}
 
-	Messaging.canMessageRoom(socket.uid, data.roomId, function(err, allowed, notAllowedMessage) {
-		if (err || !allowed) {
-			return callback(err || new Error(notAllowedMessage));
-		}
-
-		Messaging.sendMessage(socket.uid, data.roomId, data.message, now, function(err, message) {
-			if (err) {
-				return callback(err);
-			}
-
+	async.waterfall([
+		function (next) {
+			Messaging.canMessageRoom(socket.uid, data.roomId, next);
+		},
+		function (next) {
+			Messaging.sendMessage(socket.uid, data.roomId, data.message, now, next);
+		},
+		function (message, next) {
 			Messaging.notifyUsersInRoom(socket.uid, data.roomId, message);
-
-			callback();
-		});
-	});
+			user.updateOnlineUsers(socket.uid);
+			next();
+		}
+	], callback);
 };
 
 SocketModules.chats.loadRoom = function(socket, data, callback) {
@@ -217,12 +215,7 @@ SocketModules.chats.delete = function(socket, data, callback) {
 };
 
 SocketModules.chats.canMessage = function(socket, roomId, callback) {
-	Messaging.canMessageRoom(socket.uid, roomId, function(err, allowed, notAllowedMessage) {
-		if (err || !allowed) {
-			return callback(err || new Error(notAllowedMessage));
-		}
-		callback();
-	});
+	Messaging.canMessageRoom(socket.uid, roomId, callback);
 };
 
 SocketModules.chats.markRead = function(socket, roomId, callback) {
@@ -235,18 +228,18 @@ SocketModules.chats.markRead = function(socket, roomId, callback) {
 		}
 
 		Messaging.pushUnreadCount(socket.uid);
-	
+
 		// Mark notification read
 		var nids = results.usersInRoom.filter(function(uid) {
 			return parseInt(uid, 10) !== socket.uid;
 		}).map(function(uid) {
 			return 'chat_' + uid + '_' + roomId;
 		});
-		
+
 		notifications.markReadMultiple(nids, socket.uid, function() {
 			user.notifications.pushCount(socket.uid);
 		});
-		
+
 		callback();
 	});
 };

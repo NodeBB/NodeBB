@@ -357,7 +357,7 @@ var async = require('async'),
 
 	Messaging.canMessageRoom = function(uid, roomId, callback) {
 		if (parseInt(meta.config.disableChat) === 1 || !uid) {
-			return callback(null, false, '[[error:chat-disabled]]');
+			return callback(new Error('[[error:chat-disabled]]'));
 		}
 
 		async.waterfall([
@@ -366,20 +366,20 @@ var async = require('async'),
 			},
 			function (inRoom, next) {
 				if (!inRoom) {
-					return callback(null, false, '[[error:not-in-room]]');
+					return next(new Error('[[error:not-in-room]]'));
 				}
 				user.getUserFields(uid, ['banned', 'email:confirmed'], next);
 			},
 			function (userData, next) {
 				if (parseInt(userData.banned, 10) === 1) {
-					return callback(null, false, '[[error:user-banned]]');
+					return next(new Error('[[error:user-banned]]'));
 				}
 
 				if (parseInt(meta.config.requireEmailConfirmation, 10) === 1 && parseInt(userData['email:confirmed'], 10) !== 1) {
-					return callback(null, false, '[[error:email-not-confirmed-chat]]');
+					return next(new Error('[[error:email-not-confirmed-chat]]'));
 				}
 
-				next(null, true);
+				next();
 			}
 		], callback);
 	};
