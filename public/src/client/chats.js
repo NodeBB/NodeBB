@@ -380,8 +380,15 @@ define('forum/chats', ['components', 'string', 'sounds', 'forum/infinitescroll',
 			app.updateUserStatus($('.chats-list [data-uid="' + data.uid + '"] [component="user/status"]'), data.status);
 		});
 
-		socket.on('event:chats.edit', function(data) {
+		Chats.onChatEdit();
 
+		socket.on('event:chats.roomRename', function(data) {
+			$('[component="chat/room/name"]').val(data.newName);
+		});
+	};
+
+	Chats.onChatEdit = function() {
+		socket.on('event:chats.edit', function(data) {
 			data.messages.forEach(function(message) {
 				templates.parse('partials/chat_message', {
 					messages: message
@@ -393,10 +400,6 @@ define('forum/chats', ['components', 'string', 'sounds', 'forum/infinitescroll',
 					}
 				});
 			});
-		});
-
-		socket.on('event:chats.roomRename', function(data) {
-			$('[component="chat/room/name"]').val(data.newName);
 		});
 	};
 
