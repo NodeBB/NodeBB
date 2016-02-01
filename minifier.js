@@ -1,24 +1,29 @@
 "use strict";
 
-var uglifyjs = require('uglify-js'),
-	less = require('less'),
-	async = require('async'),
-	fs = require('fs'),
-	file = require('./src/file'),
-	crypto = require('crypto'),
-	utils = require('./public/src/utils'),
+var uglifyjs = require('uglify-js');
+var async = require('async');
+var fs = require('fs');
+var file = require('./src/file');
 
-	Minifier = {
-		js: {}
-	};
+var Minifier = {
+	js: {}
+};
 
 /* Javascript */
 Minifier.js.minify = function (scripts, minify, callback) {
+
 	scripts = scripts.filter(function(file) {
 		return file && file.endsWith('.js');
 	});
 
-	async.filter(scripts, file.exists, function(scripts) {
+	async.filter(scripts, function(script, next) {
+		file.exists(script, function(exists) {
+			if (!exists) {
+				console.warn('[minifier] file not found, ' + script);
+			}
+			next(exists);
+		});
+	}, function(scripts) {
 		if (minify) {
 			minifyScripts(scripts, callback);
 		} else {
@@ -54,7 +59,7 @@ function minifyScripts(scripts, callback) {
 	} catch(err) {
 		process.send({
 			type: 'error',
-			payload: err.message
+			message: err.message
 		});
 	}
 }
@@ -64,7 +69,7 @@ function concatenateScripts(scripts, callback) {
 		if (err) {
 			process.send({
 				type: 'error',
-				payload: err
+				message: err.message
 			});
 			return;
 		}

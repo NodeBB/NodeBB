@@ -126,11 +126,11 @@ module.exports = function(Meta) {
 				}
 				break;
 			case 'error':
-				winston.error('[meta/js] Could not compile ' + target + ': ' + message.payload.message);
+				winston.error('[meta/js] Could not compile ' + target + ': ' + message.message);
 				minifier.kill();
 
 				if (typeof callback === 'function') {
-					callback(new Error(message.payload));
+					callback(new Error(message.message));
 				} else {
 					process.exit(0);
 				}
