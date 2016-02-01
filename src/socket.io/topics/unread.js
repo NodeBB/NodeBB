@@ -56,7 +56,7 @@ module.exports = function(SocketTopics) {
 
 	SocketTopics.markUnread = function(socket, tid, callback) {
 		if (!tid || !socket.uid) {
-			return callback();
+			return callback(new Error('[[error:invalid-data]]'));
 		}
 		topics.markUnread(tid, socket.uid, function(err) {
 			if (err) {
@@ -64,6 +64,7 @@ module.exports = function(SocketTopics) {
 			}
 
 			topics.pushUnreadCount(socket.uid);
+			callback();
 		});
 	};
 

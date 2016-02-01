@@ -54,7 +54,12 @@ define('forum/topic/threadTools', [
 		});
 
 		topicContainer.on('click', '[component="topic/mark-unread"]', function() {
-			socket.emit('topics.markUnread', tid);
+			socket.emit('topics.markUnread', tid, function(err) {
+				if (err) {
+					return app.alertError(err);
+				}
+				app.alertSuccess('[[topic:mark_unread.success]]');
+			});
 			return false;
 		});
 

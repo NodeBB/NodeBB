@@ -43,6 +43,7 @@
 
 	"markAsUnreadForAll.success" : "Topic marked as unread for all.",
 	"mark_unread": "Mark unread",
+	"mark_unread.success": "Topic marked as unread.",
 
 	"watch": "Watch",
 	"unwatch": "Unwatch",
