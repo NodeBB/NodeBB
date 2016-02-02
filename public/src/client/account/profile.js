@@ -9,21 +9,16 @@ define('forum/account/profile', [
 	'components'
 ], function(header, infinitescroll, translator) {
 	var Account = {},
-		yourid,
-		theirid,
-		isFollowing;
+		theirid;
 
 	Account.init = function() {
 		header.init();
 
-		yourid = ajaxify.data.yourid;
 		theirid = ajaxify.data.theirid;
-		isFollowing = ajaxify.data.isFollowing;
 
 		app.enterRoom('user/' + theirid);
 
 		processPage();
-		updateButtons();
 
 		socket.removeListener('event:user_status_change', onUserStatusChange);
 		socket.on('event:user_status_change', onUserStatusChange);
@@ -33,13 +28,6 @@ define('forum/account/profile', [
 
 	function processPage() {
 		$('[component="posts"] img:not(.not-responsive), [component="aboutme"] img:not(.not-responsive)').addClass('img-responsive');
-	}
-
-	function updateButtons() {
-		var isSelfOrNotLoggedIn = yourid === theirid || parseInt(yourid, 10) === 0;
-		$('#follow-btn').toggleClass('hide', isFollowing || isSelfOrNotLoggedIn);
-		$('#unfollow-btn').toggleClass('hide', !isFollowing || isSelfOrNotLoggedIn);
-		$('#chat-btn').toggleClass('hide', isSelfOrNotLoggedIn);
 	}
 
 	function onUserStatusChange(data) {
