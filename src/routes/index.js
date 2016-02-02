@@ -2,6 +2,7 @@
 
 var nconf = require('nconf'),
 	path = require('path'),
+	async = require('async'),
 	winston = require('winston'),
 	controllers = require('../controllers'),
 	plugins = require('../plugins'),
@@ -130,8 +131,10 @@ module.exports = function(app, middleware) {
 
 
 	// Add plugin routes
-	plugins.reloadRoutes();
-	authRoutes.reloadRoutes();
+	async.series([
+		async.apply(plugins.reloadRoutes),
+		async.apply(authRoutes.reloadRoutes)
+	]);
 };
 
 function handle404(app, middleware) {
