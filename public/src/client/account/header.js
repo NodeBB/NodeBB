@@ -90,8 +90,8 @@ define('forum/account/header', [
 				return app.alertError(err.message);
 			}
 
-			$('#follow-btn').toggleClass('hide', type === 'follow');
-			$('#unfollow-btn').toggleClass('hide', type === 'unfollow');
+			components.get('account/follow').toggleClass('hide', type === 'follow');
+			components.get('account/unfollow').toggleClass('hide', type === 'unfollow');
 			app.alertSuccess('[[global:alert.' + type + ', ' + ajaxify.data.username + ']]');
 		});
 		return false;
