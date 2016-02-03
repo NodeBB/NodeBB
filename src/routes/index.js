@@ -36,6 +36,10 @@ function mainRoutes(app, middleware, controllers) {
 	setupPageRoute(app, '/tos', middleware, [], controllers.termsOfUse);
 }
 
+function postRoutes(app, middleware, controllers) {
+	setupPageRoute(app, '/posts/flagged', middleware, [], controllers.posts.flagged);
+}
+
 function topicRoutes(app, middleware, controllers) {
 	setupPageRoute(app, '/topic/:topic_id/:slug/:post_index?', middleware, [], controllers.topics.get);
 	setupPageRoute(app, '/topic/:topic_id/:slug?', middleware, [], controllers.topics.get);
@@ -107,6 +111,7 @@ module.exports = function(app, middleware) {
 
 	mainRoutes(router, middleware, controllers);
 	topicRoutes(router, middleware, controllers);
+	postRoutes(router, middleware, controllers);
 	tagRoutes(router, middleware, controllers);
 	categoryRoutes(router, middleware, controllers);
 	accountRoutes(router, middleware, controllers);
