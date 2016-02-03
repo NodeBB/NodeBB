@@ -246,12 +246,15 @@ SocketUser.loadMore = function(socket, data, callback) {
 		return callback(new Error('[[error:no-privileges]]'));
 	}
 
-	var start = parseInt(data.after, 10),
-		stop = start + 19;
+	var start = parseInt(data.after, 10);
+	var stop = start + 19;
 
 	async.parallel({
 		isAdmin: function(next) {
 			user.isAdministrator(socket.uid, next);
+		},
+		isGlobalMod: function(next) {
+			user.isGlobalModerator(socket.uid, next);
 		},
 		users: function(next) {
 			user.getUsersFromSet(data.set, socket.uid, start, stop, next);
@@ -261,6 +264,9 @@ SocketUser.loadMore = function(socket, data, callback) {
 			return callback(err);
 		}
 
+		if (data.set === 'users:banned' && !results.isAdmin && !results.isGlobalMod) {
+			return callback(new Error('[[error:no-privileges]]'));
+		}
 
 		if (!results.isAdmin && data.set === 'users:online') {
 			results.users = results.users.filter(function(user) {

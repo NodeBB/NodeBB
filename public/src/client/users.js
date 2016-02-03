@@ -1,6 +1,6 @@
 'use strict';
 
-/* globals define, socket, app, templates, bootbox */
+/* globals define, socket, app, templates, bootbox, ajaxify */
 
 define('forum/users', ['translator'], function(translator) {
 	var	Users = {};
@@ -34,20 +34,9 @@ define('forum/users', ['translator'], function(translator) {
 		if ($('#search-user').val()) {
 			return;
 		}
-		var set = '';
-		var activeSection = getActiveSection();
-		if (activeSection === 'sort-posts') {
-			set = 'users:postcount';
-		} else if (activeSection === 'sort-reputation') {
-			set = 'users:reputation';
-		} else if (activeSection === 'online') {
-			set = 'users:online';
-		} else if (activeSection === 'users') {
-			set = 'users:joindate';
-		}
 
-		if (set) {
-			startLoading(set, $('#users-container').children('.registered-user').length);
+		if (ajaxify.data.setName) {
+			startLoading(ajaxify.data.setName, $('#users-container').children('.registered-user').length);
 		}
 	}
 
@@ -157,7 +146,7 @@ define('forum/users', ['translator'], function(translator) {
 
 		templates.parse('users', 'users', data, function(html) {
 			translator.translate(html, function(translated) {
-				translated = $(translated)
+				translated = $(translated);
 				$('#users-container').html(translated);
 				translated.find('span.timeago').timeago();
 			});

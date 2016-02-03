@@ -13,7 +13,6 @@ var helpers = require('./helpers');
 var usersController = {};
 
 usersController.getOnlineUsers = function(req, res, next) {
-
 	async.parallel({
 		userData: function(next) {
 			usersController.getUsers('users:online', req.uid, req.query.page, next);
@@ -53,6 +52,30 @@ usersController.getUsersSortedByJoinDate = function(req, res, next) {
 	usersController.renderUsersPage('users:joindate', req, res, next);
 };
 
+usersController.getBannedUsers = function(req, res, next) {
+	async.parallel({
+		userData: function(next) {
+			usersController.getUsers('users:banned', req.uid, req.query.page, next);
+		},
+		isAdministrator: function(next) {
+			user.isAdministrator(req.uid, next);
+		},
+		isGlobalMod: function(next) {
+			user.isGlobalModerator(req.uid, next);
+		}
+	}, function(err, results) {
+		if (err) {
+			return next(err);
+		}
+
+		if (!results.isAdministrator && !results.isGlobalMod) {
+			return next();
+		}
+
+		render(req, res, results.userData, next);
+	});
+};
+
 usersController.renderUsersPage = function(set, req, res, next) {
 	usersController.getUsers(set, req.uid, req.query.page, function(err, userData) {
 		if (err) {
@@ -67,14 +90,16 @@ usersController.getUsers = function(set, uid, page, callback) {
 		'users:postcount': '[[pages:users/sort-posts]]',
 		'users:reputation': '[[pages:users/sort-reputation]]',
 		'users:joindate': '[[pages:users/latest]]',
-		'users:online': '[[pages:users/online]]'
+		'users:online': '[[pages:users/online]]',
+		'users:banned': '[[pages:users/banned]]'
 	};
 
 	var setToCrumbs = {
 		'users:postcount': '[[users:top_posters]]',
 		'users:reputation': '[[users:most_reputation]]',
 		'users:joindate': '[[global:users]]',
-		'users:online': '[[global:online]]'
+		'users:online': '[[global:online]]',
+		'users:banned': '[[user:banned]]'
 	};
 
 	var breadcrumbs = [{text: setToCrumbs[set]}];
@@ -102,6 +127,7 @@ usersController.getUsers = function(set, uid, page, callback) {
 			breadcrumbs: helpers.buildBreadcrumbs(breadcrumbs)
 		};
 		userData['route_' + set] = true;
+		userData.setName = set;
 		callback(null, userData);
 	});
 };
@@ -115,6 +141,8 @@ usersController.getUsersAndCount = function(set, uid, start, stop, callback) {
 			if (set === 'users:online') {
 				var now = Date.now();
 				db.sortedSetCount('users:online', now - 300000, now, next);
+			} else if (set === 'users:banned') {
+				db.sortedSetCard('users:banned', next);
 			} else {
 				db.getObjectField('global', 'userCount', next);
 			}
@@ -132,7 +160,7 @@ usersController.getUsersAndCount = function(set, uid, start, stop, callback) {
 };
 
 function render(req, res, data, next) {
-	plugins.fireHook('filter:users.build', { req: req, res: res, templateData: data }, function(err, data) {
+	plugins.fireHook('filter:users.build', {req: req, res: res, templateData: data }, function(err, data) {
 		if (err) {
 			return next(err);
 		}
@@ -152,7 +180,6 @@ function render(req, res, data, next) {
 			data.templateData.invites = num;
 			res.render('users', data.templateData);
 		});
-
 	});
 }
 
