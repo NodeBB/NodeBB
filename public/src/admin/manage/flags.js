@@ -27,7 +27,7 @@ define('admin/manage/flags', [
 			var btn = $(this);
 			var pid = btn.parents('[data-pid]').attr('data-pid');
 
-			socket.emit('admin.dismissFlag', pid, function(err) {
+			socket.emit('posts.dismissFlag', pid, function(err) {
 				done(err, btn);
 			});
  		});
@@ -35,7 +35,7 @@ define('admin/manage/flags', [
 
 	function handleDismissAll() {
 		$('#dismissAll').on('click', function() {
-			socket.emit('admin.dismissAllFlags', function(err) {
+			socket.emit('posts.dismissAllFlags', function(err) {
 				if (err) {
 					return app.alertError(err.message);
 				}
@@ -82,7 +82,7 @@ define('admin/manage/flags', [
 			var sortBy = params.sortBy || 'count';
 			var byUsername = params.byUsername || '';
 
-			infinitescroll.loadMore('admin.getMoreFlags', {
+			infinitescroll.loadMore('posts.getMoreFlags', {
 				byUsername: byUsername,
 				sortBy: sortBy,
 				after: $('[data-next]').attr('data-next')
