@@ -73,6 +73,9 @@ module.exports = function(SocketPosts) {
 					admins: function(next) {
 						groups.getMembers('administrators', 0, -1, next);
 					},
+					globalMods: function (next) {
+						groups.getMembers('Global Moderators', 0, -1, next);
+					},
 					moderators: function(next) {
 						groups.getMembers('cid:' + post.topic.cid + ':privileges:mods', 0, -1, next);
 					}
@@ -93,7 +96,7 @@ module.exports = function(SocketPosts) {
 					}
 
 					plugins.fireHook('action:post.flag', {post: post, flaggingUser: flaggingUser});
-					notifications.push(notification, results.admins.concat(results.moderators), next);
+					notifications.push(notification, results.admins.concat(results.moderators).concat(results.globalMods), next);
 				});
 			}
 		], callback);

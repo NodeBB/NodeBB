@@ -120,8 +120,8 @@ var async = require('async'),
 			uids = [uids];
 		}
 
-		uids = uids.filter(function(uid) {
-			return parseInt(uid, 10);
+		uids = uids.filter(function(uid, index, array) {
+			return parseInt(uid, 10) && array.indexOf(uid) === index;
 		});
 
 		if (!uids.length) {
