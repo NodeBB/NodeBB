@@ -13,27 +13,20 @@ var helpers = require('./helpers');
 var usersController = {};
 
 usersController.getOnlineUsers = function(req, res, next) {
-	async.parallel({
-		userData: function(next) {
-			usersController.getUsers('users:online', req.uid, req.query.page, next);
-		},
-		isAdministrator: function(next) {
-			user.isAdministrator(req.uid, next);
-		}
-	}, function(err, results) {
+	usersController.getUsers('users:online', req.uid, req.query.page, function(err, userData) {
 		if (err) {
 			return next(err);
 		}
 
-		if (!results.isAdministrator) {
-			results.userData.users = results.userData.users.filter(function(user) {
+		if (!userData.isAdminOrGlobalMod) {
+			userData.users = userData.users.filter(function(user) {
 				return user && user.status !== 'offline';
 			});
 		}
 
-		results.userData.anonymousUserCount = require('../socket.io').getOnlineAnonCount();
+		userData.anonymousUserCount = require('../socket.io').getOnlineAnonCount();
 
-		render(req, res, results.userData, next);
+		render(req, res, userData, next);
 	});
 };
 
@@ -53,26 +46,16 @@ usersController.getUsersSortedByJoinDate = function(req, res, next) {
 };
 
 usersController.getBannedUsers = function(req, res, next) {
-	async.parallel({
-		userData: function(next) {
-			usersController.getUsers('users:banned', req.uid, req.query.page, next);
-		},
-		isAdministrator: function(next) {
-			user.isAdministrator(req.uid, next);
-		},
-		isGlobalMod: function(next) {
-			user.isGlobalModerator(req.uid, next);
-		}
-	}, function(err, results) {
+	usersController.getUsers('users:banned', req.uid, req.query.page, function(err, userData) {
 		if (err) {
 			return next(err);
 		}
 
-		if (!results.isAdministrator && !results.isGlobalMod) {
+		if (!userData.isAdminOrGlobalMod) {
 			return next();
 		}
 
-		render(req, res, results.userData, next);
+		render(req, res, userData, next);
 	});
 };
 
@@ -113,21 +96,32 @@ usersController.getUsers = function(set, uid, page, callback) {
 	var start = Math.max(0, page - 1) * resultsPerPage;
 	var stop = start + resultsPerPage - 1;
 
-	usersController.getUsersAndCount(set, uid, start, stop, function(err, data) {
+	async.parallel({
+		isAdministrator: function(next) {
+			user.isAdministrator(uid, next);
+		},
+		isGlobalMod: function(next) {
+			user.isGlobalModerator(uid, next);
+		},
+		usersData: function(next) {
+			usersController.getUsersAndCount(set, uid, start, stop, next);
+		}
+	}, function(err, results) {
 		if (err) {
 			return callback(err);
 		}
 
-		var pageCount = Math.ceil(data.count / resultsPerPage);
+		var pageCount = Math.ceil(results.usersData.count / resultsPerPage);
 		var userData = {
-			loadmore_display: data.count > (stop - start + 1) ? 'block' : 'hide',
-			users: data.users,
+			loadmore_display: results.usersData.count > (stop - start + 1) ? 'block' : 'hide',
+			users: results.usersData.users,
 			pagination: pagination.create(page, pageCount),
 			title: setToTitles[set] || '[[pages:users/latest]]',
-			breadcrumbs: helpers.buildBreadcrumbs(breadcrumbs)
+			breadcrumbs: helpers.buildBreadcrumbs(breadcrumbs),
+			setName: set,
+			isAdminOrGlobalMod: results.isAdministrator || results.isGlobalMod
 		};
 		userData['route_' + set] = true;
-		userData.setName = set;
 		callback(null, userData);
 	});
 };
