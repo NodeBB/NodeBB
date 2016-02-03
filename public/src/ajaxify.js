@@ -195,6 +195,9 @@ $(document).ready(function() {
 	ajaxify.loadScript = function(tpl_url, callback) {
 		var location = !app.inAdmin ? 'forum/' : '';
 
+		if (tpl_url.startsWith('admin')) {
+			location = '';
+		}
 		var data = {
 			tpl_url: tpl_url,
 			scripts: [location + tpl_url]

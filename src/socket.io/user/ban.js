@@ -34,13 +34,10 @@ module.exports = function(SocketUser) {
 
 		async.waterfall([
 			function (next) {
-				async.parallel({
-					isAdmin: async.apply(user.isAdministrator, uid),
-					isGlobalMod: async.apply(user.isGlobalModerator, uid)
-				}, next);
+				user.isAdminOrGlobalMod(uid, next);
 			},
-			function (results, next) {
-				if (!results.isAdmin && !results.isGlobalMod) {
+			function (isAdminOrGlobalMod, next) {
+				if (!isAdminOrGlobalMod) {
 					return next(new Error('[[error:no-privileges]]'));
 				}
 				async.each(uids, method, next);

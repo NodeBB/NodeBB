@@ -39,12 +39,13 @@ SocketAdmin.before = function(socket, method, data, next) {
 	if (!socket.uid) {
 		return;
 	}
+
 	user.isAdministrator(socket.uid, function(err, isAdmin) {
-		if (!err && isAdmin) {
-			next();
-		} else {
-			winston.warn('[socket.io] Call to admin method ( ' + method + ' ) blocked (accessed by uid ' + socket.uid + ')');
+		if (err || isAdmin) {
+			return next(err);
 		}
+
+		winston.warn('[socket.io] Call to admin method ( ' + method + ' ) blocked (accessed by uid ' + socket.uid + ')');
 	});
 };
 
@@ -323,36 +324,5 @@ SocketAdmin.deleteAllEvents = function(socket, data, callback) {
 	events.deleteAll(callback);
 };
 
-SocketAdmin.dismissFlag = function(socket, pid, callback) {
-	if (!pid) {
-		return callback('[[error:invalid-data]]');
-	}
-
-	posts.dismissFlag(pid, callback);
-};
-
-SocketAdmin.dismissAllFlags = function(socket, data, callback) {
-	posts.dismissAllFlags(callback);
-};
-
-SocketAdmin.getMoreFlags = function(socket, data, callback) {
-	if (!data || !parseInt(data.after, 10)) {
-		return callback('[[error:invalid-data]]');
-	}
-	var sortBy = data.sortBy || 'count';
-	var byUsername = data.byUsername ||  '';
-	var start = parseInt(data.after, 10);
-	var stop = start + 19;
-	if (byUsername) {
-		posts.getUserFlags(byUsername, sortBy, socket.uid, start, stop, function(err, posts) {
-			callback(err, {posts: posts, next: stop + 1});
-		});
-	} else {
-		var set = sortBy === 'count' ? 'posts:flags:count' : 'posts:flagged';
-		posts.getFlags(set, socket.uid, start, stop, function(err, posts) {
-			callback(err, {posts: posts, next: stop + 1});
-		});
-	}
-};
 
 module.exports = SocketAdmin;

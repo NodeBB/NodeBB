@@ -37,7 +37,7 @@ function mainRoutes(app, middleware, controllers) {
 }
 
 function postRoutes(app, middleware, controllers) {
-	setupPageRoute(app, '/posts/flagged', middleware, [], controllers.posts.flagged);
+	setupPageRoute(app, '/posts/flags', middleware, [], controllers.posts.flagged);
 }
 
 function topicRoutes(app, middleware, controllers) {

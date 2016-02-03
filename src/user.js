@@ -234,6 +234,15 @@ var	async = require('async'),
 		privileges.users.isGlobalModerator(uid, callback);
 	};
 
+	User.isAdminOrGlobalMod = function(uid, callback) {
+		async.parallel({
+			isAdmin: async.apply(User.isAdministrator, uid),
+			isGlobalMod: async.apply(User.isGlobalModerator, uid)
+		}, function(err, results) {
+			callback(err, results ? (results.isAdmin || results.isGlobalMod) : false);
+		});
+	};
+
 	User.isAdminOrSelf = function(callerUid, uid, callback) {
 		if (parseInt(callerUid, 10) === parseInt(uid, 10)) {
 			return callback();
