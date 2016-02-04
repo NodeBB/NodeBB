@@ -38,6 +38,17 @@ file.saveFileToLocal = function(filename, folder, tempPath, callback) {
 	is.pipe(os);
 };
 
+file.base64ToLocal = function(imageData, uploadPath, callback) {
+	var buffer = new Buffer(imageData.slice(imageData.indexOf('base64') + 7), 'base64');
+	uploadPath = path.join(nconf.get('base_dir'), nconf.get('upload_path'), uploadPath);
+
+	fs.writeFile(uploadPath, buffer, {
+		encoding: 'base64'
+	}, function(err) {
+		callback(err, uploadPath);
+	});
+};
+
 file.isFileTypeAllowed = function(path, callback) {
 	// Attempt to read the file, if it passes, file type is allowed
 	jimp.read(path, function(err) {
