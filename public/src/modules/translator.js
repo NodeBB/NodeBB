@@ -2,15 +2,19 @@
 	"use strict";
 	/* globals RELATIVE_PATH, config, define */
 
-	var S;
+	var S = null;
+	var stringDefer = null;
 
 	// export the class if we are in a Node-like system.
 	if (typeof module === 'object' && module.exports === translator) {
 		exports = module.exports = translator;
 		S = require('string');
+		stringDefer.resolve(S);
 	} else {
+		stringDefer = $.Deferred();
 		require(['string'], function(stringLib) {
 			S = stringLib;
+			stringDefer.resolve(S);
 		});
 	}
 
@@ -160,6 +164,12 @@
 		var count = keys.length;
 		if (!count) {
 			return callback(text);
+		}
+		
+		if (S === null) { // browser environment and S not yet initialized
+			// we need to wait for async require call
+			stringDefer.then(function () { translateKeys(keys, text, language, callback); });
+			return;
 		}
 
 		var data = {text: text};
