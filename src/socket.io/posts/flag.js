@@ -108,7 +108,7 @@ module.exports = function(SocketPosts) {
 		}
 		async.waterfall([
 			function (next) {
-				user.isAdminOrGlobalModerator(socket.uid, next);
+				user.isAdminOrGlobalMod(socket.uid, next);
 			},
 			function (isAdminOrGlobalModerator, next) {
 				if (!isAdminOrGlobalModerator) {
@@ -122,7 +122,7 @@ module.exports = function(SocketPosts) {
 	SocketPosts.dismissAllFlags = function(socket, data, callback) {
 		async.waterfall([
 			function (next) {
-				user.isAdminOrGlobalModerator(socket.uid, next);
+				user.isAdminOrGlobalMod(socket.uid, next);
 			},
 			function (isAdminOrGlobalModerator, next) {
 				if (!isAdminOrGlobalModerator) {
@@ -144,7 +144,7 @@ module.exports = function(SocketPosts) {
 
 		async.waterfall([
 			function (next) {
-				user.isAdminOrGlobalModerator(socket.uid, next);
+				user.isAdminOrGlobalMod(socket.uid, next);
 			},
 			function (isAdminOrGlobalModerator, next) {
 				if (!isAdminOrGlobalModerator) {
