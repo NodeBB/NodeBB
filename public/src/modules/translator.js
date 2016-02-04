@@ -9,7 +9,6 @@
 	if (typeof module === 'object' && module.exports === translator) {
 		exports = module.exports = translator;
 		S = require('string');
-		stringDefer.resolve(S);
 	} else {
 		stringDefer = $.Deferred();
 		require(['string'], function(stringLib) {
