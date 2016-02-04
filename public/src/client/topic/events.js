@@ -32,7 +32,8 @@ define('forum/topic/events', [
 
 		'event:post_edited': onPostEdited,
 		'event:post_purged': onPostPurged,
-
+		'event:post_moved': onPostPurged,
+		
 		'event:post_deleted': togglePostDeleteState,
 		'event:post_restored': togglePostDeleteState,
 
