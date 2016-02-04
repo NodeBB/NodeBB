@@ -24,7 +24,13 @@ flagsController.get = function(req, res, next) {
 		if (err) {
 			return next(err);
 		}
-		res.render('admin/manage/flags', {posts: posts, next: stop + 1, byUsername: byUsername});
+		var data = {
+			posts: posts, 
+			next: stop + 1, 
+			byUsername: byUsername,
+			title: '[[pages:flagged-posts]]'
+		};
+		res.render('admin/manage/flags', data);
 	});
 };
 
