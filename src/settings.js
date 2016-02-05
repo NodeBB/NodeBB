@@ -20,6 +20,7 @@ function expandObjBy(obj1, obj2) {
 }
 
 function trim(obj1, obj2) {
+	if (obj1 instanceof Array) { return; }
 	var key, val1;
 	for (key in obj1) {
 		if (obj1.hasOwnProperty(key)) {
@@ -29,7 +30,7 @@ function trim(obj1, obj2) {
 			} else if (typeof val1 === 'object') {
 				trim(val1, obj2[key]);
 			}
-		}	
+		}
 	}
 }
 
