@@ -343,6 +343,7 @@ function createGlobalModeratorsGroup(next) {
 			}
 			groups.create({
 				name: 'Global Moderators',
+				userTitle: 'Global Moderator',
 				description: 'Forum wide moderators',
 				hidden: 0,
 				private: 1,

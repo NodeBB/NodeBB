@@ -32,7 +32,7 @@ module.exports = function(Groups) {
 					name: data.name,
 					slug: slug,
 					createtime: timestamp,
-					userTitle: data.name,
+					userTitle: data.userTitle || data.name,
 					description: data.description || '',
 					memberCount: memberCount,
 					deleted: 0,
