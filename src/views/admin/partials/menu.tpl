@@ -119,7 +119,7 @@
 				</a>
 				<ul id="user-control-list" class="dropdown-menu" aria-labelledby="user_dropdown">
 					<li>
-						<a href="{relative_path}/" target="_blank" title="View Forum">
+						<a href="{relative_path}/" target="_top" title="View Forum">
 							View Forum
 						</a>
 					</li>
