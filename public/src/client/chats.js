@@ -321,7 +321,7 @@ define('forum/chats', ['components', 'string', 'sounds', 'forum/infinitescroll',
 				return app.alertError(err.message);
 			}
 
-			chatContentEl.find('.chat-message').remove();
+			chatContentEl.find('[component="chat/message"]').remove();
 
 			Chats.appendChatMessage(chatContentEl, messages);
 		});
