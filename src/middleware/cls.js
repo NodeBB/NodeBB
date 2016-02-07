@@ -6,14 +6,12 @@ var namespace = continuationLocalStorage.createNamespace(NAMESPACE);
 
 var cls = function (req, res, next) {
 	namespace.run(function() {
-		var value = {req: req};
+		var routeData = {req: req, res: res};
+
 		if (process.env.NODE_ENV == 'development') {
-			value.audit = {created: process.hrtime()};
+			routeData.audit = {created: process.hrtime()};
 		}
-		namespace.set('route', {
-			req: req,
-			res: res
-		});
+		namespace.set('route', routeData);
 		next();
 	});
 };
