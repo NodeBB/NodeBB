@@ -1,9 +1,8 @@
 'use strict';
 /*global require*/
 
-var assert = require('assert'),
-	db = require('./mocks/databasemock'),
-	translator = require('../public/src/modules/translator.js');
+var assert = require('assert');
+var translator = require('../public/src/modules/translator.js');
 
 
 describe('Translator', function(){
@@ -84,6 +83,14 @@ describe('Translator', function(){
 				assert.strictEqual(translated, 'Perhaps you should <a href=\'&lt;strong&gt;test&lt;/strong&gt;/login\'>try logging in</a>?');
 				done();
 			});
-		})
+		});
+
+		it('should translate titles with ampersand properly', function(done) {
+			var key = '[[topic:composer.replying_to, "Discussion: NodeBB Plugins & Themes section"]]';
+			translator.translate(key, function(translated) {
+				assert.strictEqual(translated, 'Replying to "Discussion: NodeBB Plugins & Themes section"');
+				done();
+			});
+		});
 	});
 });
