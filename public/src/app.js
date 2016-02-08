@@ -276,7 +276,12 @@ app.cacheBuster = null;
 			if (err) {
 				return app.alertError(err.message);
 			}
-			app.openChat(roomId);
+				if (!ajaxify.currentPage.match(/^chats\//)) {
+				app.openChat(roomId);
+			}
+			else {
+				ajaxify.go('chats/' + roomId);
+			}
 		});
 	};
 
