@@ -52,7 +52,7 @@ file.base64ToLocal = function(imageData, uploadPath, callback) {
 file.isFileTypeAllowed = function(path, callback) {
 	// Attempt to read the file, if it passes, file type is allowed
 	jimp.read(path, function(err) {
-		callback(err);
+		callback(err, path);
 	});
 };
 
