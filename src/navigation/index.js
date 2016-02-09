@@ -1,9 +1,10 @@
 "use strict";
 
-
-var navigation = {};
+var nconf = require('nconf');
 var admin = require('./admin');
 var translator = require('../../public/src/modules/translator');
+
+var navigation = {};
 
 navigation.get = function(callback) {
 	if (admin.cache) {
@@ -18,6 +19,10 @@ navigation.get = function(callback) {
 		data = data.filter(function(item) {
 			return item && item.enabled;
 		}).map(function(item) {
+			if (!item.route.startsWith('http')) {
+				item.route = nconf.get('relative_path') + item.route;
+			}
+
 			for (var i in item) {
 				if (item.hasOwnProperty(i)) {
 					item[i] = translator.unescape(item[i]);
