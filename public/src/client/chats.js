@@ -546,11 +546,11 @@ define('forum/chats', ['components', 'string', 'sounds', 'forum/infinitescroll',
 		});
 		
 		function doSearch() {
-            var username = components.get('chat/search').val();
-            var chatsListEl = $('[component="chat/search/list"]');
+            		var username = components.get('chat/search').val();
+            		var chatsListEl = $('[component="chat/search/list"]');
             
-            if(username) {
-	            socket.emit('user.search', {
+            		if(username) {
+	            		socket.emit('user.search', {
 	    			query: username,
 	    			searchBy: 'username'
 	        		}, function(err, data) {
@@ -558,26 +558,25 @@ define('forum/chats', ['components', 'string', 'sounds', 'forum/infinitescroll',
 	        				return app.alertError(err.message);
 	        			}
 	                    
-	                    chatsListEl.empty();
+	                    		chatsListEl.empty();
 	                    
-	                    if (data.users.length === 0) {
-	                    	chatsListEl.append('<li><div><span>No users found!</span></div></li>');
-	                    }
-	                    else {
-		                    data.users.forEach(function(userObj) {
+	                    		if (data.users.length === 0) {
+	                    			chatsListEl.append('<li><div><span>No users found!</span></div></li>');
+	                    		} else {
+		                    		data.users.forEach(function(userObj) {
 		        				function createUserImage() {
-									return (userObj.picture ?
-											'<img src="' +	userObj.picture + '" title="' +	userObj.username +'" />' :
-											'<div class="user-icon" style="background-color: ' + userObj['icon:bgColor'] + '">' + userObj['icon:text'] + '</div>') +
-										'<i class="fa fa-circle status ' + userObj.status + '"></i> ' +
-										userObj.username;
-								}
+								return (userObj.picture ?
+									'<img src="' +	userObj.picture + '" title="' +	userObj.username +'" />' :
+									'<div class="user-icon" style="background-color: ' + userObj['icon:bgColor'] + '">' + userObj['icon:text'] + '</div>') +
+									'<i class="fa fa-circle status ' + userObj.status + '"></i> ' +
+									userObj.username;
+							}
 		        
 		        				var chatEl = $('<li component="chat/search/user" />')
-									.attr('data-uid', userObj.uid)
-									.appendTo(chatsListEl);
+								.attr('data-uid', userObj.uid)
+								.appendTo(chatsListEl);
 		        
-		        			    chatEl.append(createUserImage());
+		        			    	chatEl.append(createUserImage());
 		        				
 		        				chatEl.click(function() {
 		        					socket.emit('modules.chats.hasPrivateChat', userObj.uid, function(err, roomId) {
@@ -592,15 +591,13 @@ define('forum/chats', ['components', 'string', 'sounds', 'forum/infinitescroll',
 		                 			});
 		        				});
 		        			});
-		            	}
+		            		}
 	                    
-	        	});
-            }
-            else {
-            	chatsListEl.empty();
-            }
-        }
+	        		});
+            		} else {
+            			chatsListEl.empty();
+            		}
+        	}
 	};
-
 	return Chats;
 });
