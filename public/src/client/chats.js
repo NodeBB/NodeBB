@@ -580,15 +580,15 @@ define('forum/chats', ['components', 'string', 'sounds', 'forum/infinitescroll',
 		        				
 		        				chatEl.click(function() {
 		        					socket.emit('modules.chats.hasPrivateChat', userObj.uid, function(err, roomId) {
-		                 				if (err) {
-		                 					return app.alertError(err.message);
-		                 				}
-		                 				if (roomId) {
-		                 					ajaxify.go('chats/' + roomId);
-		                 				} else {
-		                 				    app.newChat(userObj.uid);
-		                 				}
-		                 			});
+			                 				if (err) {
+			                 					return app.alertError(err.message);
+			                 				}
+			                 				if (roomId) {
+			                 					ajaxify.go('chats/' + roomId);
+			                 				} else {
+			                 				    app.newChat(userObj.uid);
+			                 				}
+			                 			});
 		        				});
 		        			});
 		            		}
