@@ -390,7 +390,7 @@ define('forum/topic/postTools', ['share', 'navigator', 'components', 'translator
 	}
 
 	function movePost(post, pid, tid, callback) {
-		socket.emit('posts.movePost', {pid: pid, tid: tid}, function(err) {
+		socket.emit('posts.movePost', {pid: pid, tid: tid, from_tid: ajaxify.data.tid}, function(err) {
 			if (err) {
 				app.alertError(err.message);
 				return callback();
