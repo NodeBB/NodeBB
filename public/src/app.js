@@ -276,7 +276,7 @@ app.cacheBuster = null;
 			if (err) {
 				return app.alertError(err.message);
 			}
-			if (!ajaxify.currentPage.match(/^chats\//)) {
+			if (!ajaxify.currentPage.startsWith('chats/')) {
 				app.openChat(roomId);
 			} else {
 				ajaxify.go('chats/' + roomId);
