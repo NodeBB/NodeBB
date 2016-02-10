@@ -1,14 +1,15 @@
 
 'use strict';
 
-/* globals config, app, ajaxify, define, socket, templates, translator, utils */
+/* globals config, app, ajaxify, define, socket, templates, utils */
 
 define('forum/topic/events', [
 	'forum/topic/postTools',
 	'forum/topic/threadTools',
 	'forum/topic/posts',
-	'components'
-], function(postTools, threadTools, posts, components) {
+	'components',
+	'translator'
+], function(postTools, threadTools, posts, components, translator) {
 
 	var Events = {};
 
@@ -31,6 +32,7 @@ define('forum/topic/events', [
 
 		'event:post_edited': onPostEdited,
 		'event:post_purged': onPostPurged,
+		'event:post_moved': onPostPurged,
 
 		'event:post_deleted': togglePostDeleteState,
 		'event:post_restored': togglePostDeleteState,

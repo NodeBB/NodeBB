@@ -4,6 +4,7 @@ var async = require('async');
 var privileges = require('../../privileges');
 var topics = require('../../topics');
 var socketHelpers = require('../helpers');
+var websockets = require('../index');
 
 module.exports = function(SocketPosts) {
 
@@ -12,7 +13,7 @@ module.exports = function(SocketPosts) {
 			return callback(new Error('[[error:not-logged-in]]'));
 		}
 
-		if (!data || !data.pid || !data.tid) {
+		if (!data || !data.pid || !data.tid || !data.from_tid) {
 			return callback(new Error('[[error:invalid-data]]'));
 		}
 
@@ -29,6 +30,8 @@ module.exports = function(SocketPosts) {
 			},
 			function (next) {
 				socketHelpers.sendNotificationToPostOwner(data.pid, socket.uid, 'notifications:moved_your_post');
+				websockets.in('topic_' + data.from_tid).emit('event:post_moved', data.pid);
+
 				next();
 			}
 		], callback);
