@@ -7,7 +7,7 @@
 		<div class="form-group">
 			<div class="checkbox">
 				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
-					<input type="checkbox" class="mdl-switch__input" id="showSiteTitle" data-field="disableChat">
+					<input type="checkbox" class="mdl-switch__input" id="disableChat" data-field="disableChat">
 					<span class="mdl-switch__label"><strong>Disable chat</strong></span>
 				</label>
 			</div>
