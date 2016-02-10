@@ -55,11 +55,12 @@ authenticationController.register = function(req, res, next) {
 			user.isPasswordValid(userData.password, next);
 		},
 		function(next) {
+			res.locals.processLogin = true;	// set it to false in plugin if you wish to just register only
 			plugins.fireHook('filter:register.check', {req: req, res: res, userData: userData}, next);
 		},
 		function(data, next) {
 			if (registrationType === 'normal' || registrationType === 'invite-only') {
-				registerAndLoginUser(req, userData, next);
+				registerAndLoginUser(req, res, userData, next);
 			} else if (registrationType === 'admin-approval') {
 				addToApprovalQueue(req, userData, next);
 			}
@@ -77,7 +78,7 @@ authenticationController.register = function(req, res, next) {
 	});
 };
 
-function registerAndLoginUser(req, userData, callback) {
+function registerAndLoginUser(req, res, userData, callback) {
 	var uid;
 	async.waterfall([
 		function(next) {
@@ -85,13 +86,15 @@ function registerAndLoginUser(req, userData, callback) {
 		},
 		function(_uid, next) {
 			uid = _uid;
-			req.login({uid: uid}, next);
+			if (res.locals.processLogin === true) {
+				user.logIP(uid, req.ip);
+				req.login({uid: uid}, next);
+			} else {
+				next();
+			}
 		},
 		function(next) {
-			user.logIP(uid, req.ip);
-
 			user.deleteInvitation(userData.email);
-
 			plugins.fireHook('filter:register.complete', {uid: uid, referrer: req.body.referrer || nconf.get('relative_path') + '/'}, next);
 		}
 	], callback);
