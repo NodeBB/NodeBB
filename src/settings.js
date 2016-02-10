@@ -20,7 +20,7 @@ function expandObjBy(obj1, obj2) {
 }
 
 function trim(obj1, obj2) {
-	if (obj1 instanceof Array) { return; }
+	if (Array.isArray(obj1)) { return; }
 	var key, val1;
 	for (key in obj1) {
 		if (obj1.hasOwnProperty(key)) {
