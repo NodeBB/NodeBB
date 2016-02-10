@@ -274,19 +274,19 @@ define('forum/account/edit', ['forum/account/header', 'uploader', 'translator'],
 
 	function updateSignature() {
 		var el = $('#inputSignature');
-		$('#signatureCharCountLeft').html(getCharsLeft(el, config.maximumSignatureLength));
+		$('#signatureCharCountLeft').html(getCharsLeft(el, ajaxify.data.maximumSignatureLength));
 
 		el.on('keyup change', function() {
-			$('#signatureCharCountLeft').html(getCharsLeft(el, config.maximumSignatureLength));
+			$('#signatureCharCountLeft').html(getCharsLeft(el, ajaxify.data.maximumSignatureLength));
 		});
 	}
 
 	function updateAboutMe() {
 		var el = $('#inputAboutMe');
-		$('#aboutMeCharCountLeft').html(getCharsLeft(el, config.maximumAboutMeLength));
+		$('#aboutMeCharCountLeft').html(getCharsLeft(el, ajaxify.data.maximumAboutMeLength));
 
 		el.on('keyup change', function() {
-			$('#aboutMeCharCountLeft').html(getCharsLeft(el, config.maximumAboutMeLength));
+			$('#aboutMeCharCountLeft').html(getCharsLeft(el, ajaxify.data.maximumAboutMeLength));
 		});
 	}
 

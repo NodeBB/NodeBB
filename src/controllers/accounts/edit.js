@@ -7,6 +7,7 @@ var winston = require('winston');
 
 var db = require('../../database');
 var user = require('../../user');
+var meta = require('../../meta');
 var helpers = require('../helpers');
 var accountHelpers = require('./helpers');
 
@@ -17,6 +18,9 @@ editController.get = function(req, res, callback) {
 		if (err || !userData) {
 			return callback(err);
 		}
+
+		userData.maximumSignatureLength = parseInt(meta.config.maximumSignatureLength, 10) || 255;
+		userData.maximumAboutMeLength = parseInt(meta.config.maximumAboutMeLength, 10) || 1000;
 
 		userData.title = '[[pages:account/edit, ' + userData.username + ']]';
 		userData.breadcrumbs = helpers.buildBreadcrumbs([{text: userData.username, url: '/user/' + userData.userslug}, {text: '[[user:edit]]'}]);
