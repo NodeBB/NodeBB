@@ -1,5 +1,5 @@
 "use strict";
-/*globals define, app, ajaxify, socket, RELATIVE_PATH*/
+/*globals define, app, ajaxify, socket, config*/
 
 define('forum/reset_code', function() {
 	var	ResetCode = {};
@@ -7,13 +7,12 @@ define('forum/reset_code', function() {
 	ResetCode.init = function() {
 		var reset_code = ajaxify.data.code;
 
-		var resetEl = $('#reset'),
-			password = $('#password'),
-			repeat = $('#repeat'),
-			noticeEl = $('#notice');
+		var resetEl = $('#reset');
+		var password = $('#password');
+		var repeat = $('#repeat');
 
 		resetEl.on('click', function() {
-			if (password.val().length < config.minimumPasswordLength) {
+			if (password.val().length < ajaxify.data.minimumPasswordLength) {
 				app.alertError('[[reset_password:password_too_short]]');
 			} else if (password.val() !== repeat.val()) {
 				app.alertError('[[reset_password:passwords_do_not_match]]');
@@ -28,7 +27,7 @@ define('forum/reset_code', function() {
 						return app.alertError(err.message);
 					}
 
-					window.location.href = RELATIVE_PATH + '/login';
+					window.location.href = config.relative_path + '/login';
 				});
 			}
 			return false;

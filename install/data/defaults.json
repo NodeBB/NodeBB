@@ -28,6 +28,6 @@
     "maximumCoverImageSize": 2048,
     "profileImageDimension": 128,
     "requireEmailConfirmation": 0,
-    "profile:allowProfileImageUploads": 1,
+    "allowProfileImageUploads": 1,
     "teaserPost": "last"
 }

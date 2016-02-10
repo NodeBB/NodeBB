@@ -426,10 +426,10 @@ define('forum/chats', ['components', 'string', 'sounds', 'forum/infinitescroll',
 	};
 
 	Chats.sendMessage = function(roomId, inputEl) {
-		var msg = inputEl.val(),
-			mid = inputEl.attr('data-mid');
+		var msg = inputEl.val();
+		var mid = inputEl.attr('data-mid');
 
-		if (msg.length > config.maximumChatMessageLength) {
+		if (msg.length > ajaxify.data.maximumChatMessageLength) {
 			return app.alertError('[[error:chat-message-too-long]]');
 		}
 
