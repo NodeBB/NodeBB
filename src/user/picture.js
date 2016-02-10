@@ -38,7 +38,7 @@ module.exports = function(User) {
 			function(next) {
 				file.isFileTypeAllowed(picture.path, next);
 			},
-			function(next) {
+			function(path, next) {
 				image.resizeImage({
 					path: picture.path,
 					extension: extension,
