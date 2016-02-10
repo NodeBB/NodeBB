@@ -420,7 +420,7 @@ define('forum/topic/postTools', ['share', 'navigator', 'components', 'translator
 	}
 
 	function showStaleWarning(callback) {
-		if (ajaxify.data.lastposttime < (Date.now() - (1000*60*60*24*config.topicStaleDays))) {
+		if (ajaxify.data.lastposttime < (Date.now() - (1000 * 60 * 60 * 24 * ajaxify.data.topicStaleDays))) {
 			translator.translate('[[topic:stale.warning]]', function(translated) {
 				var warning = bootbox.dialog({
 						title: '[[topic:stale.title]]',

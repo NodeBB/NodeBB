@@ -36,12 +36,11 @@ apiController.getConfig = function(req, res, next) {
 	config.browserTitle = validator.escape(meta.config.browserTitle || meta.config.title || 'NodeBB');
 	config.titleLayout = (meta.config.titleLayout || '{pageTitle} | {browserTitle}').replace(/{/g, '&#123;').replace(/}/g, '&#125;');
 	config.showSiteTitle = parseInt(meta.config.showSiteTitle, 10) === 1;
-	config.postDelay = meta.config.postDelay;
 	config.minimumTitleLength = meta.config.minimumTitleLength;
 	config.maximumTitleLength = meta.config.maximumTitleLength;
 	config.minimumPostLength = meta.config.minimumPostLength;
 	config.maximumPostLength = meta.config.maximumPostLength;
-	config.topicStaleDays = parseInt(meta.config.topicStaleDays, 10) || 60;
+
 	config.hasImageUploadPlugin = plugins.hasListeners('filter:uploadImage');
 	config.maximumProfileImageSize = meta.config.maximumProfileImageSize;
 	config.minimumUsernameLength = meta.config.minimumUsernameLength;

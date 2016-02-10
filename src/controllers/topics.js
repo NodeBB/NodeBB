@@ -249,6 +249,7 @@ topicsController.get = function(req, res, callback) {
 		}
 
 		data.privileges = userPrivileges;
+		data.topicStaleDays = parseInt(meta.config.topicStaleDays, 10) || 60;
 		data['reputation:disabled'] = parseInt(meta.config['reputation:disabled'], 10) === 1;
 		data['downvote:disabled'] = parseInt(meta.config['downvote:disabled'], 10) === 1;
 		data['feeds:disableRSS'] = parseInt(meta.config['feeds:disableRSS'], 10) === 1;
