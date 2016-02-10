@@ -85,12 +85,5 @@ describe('Translator', function(){
 			});
 		});
 
-		it('should translate titles with ampersand properly', function(done) {
-			var key = '[[topic:composer.replying_to, "Discussion: NodeBB Plugins & Themes section"]]';
-			translator.translate(key, function(translated) {
-				assert.strictEqual(translated, 'Replying to "Discussion: NodeBB Plugins & Themes section"');
-				done();
-			});
-		});
 	});
 });
