@@ -74,7 +74,7 @@ module.exports = function(app) {
 
 	app.use(middleware.addHeaders);
 	app.use(middleware.processRender);
-	app.use(cls);
+	app.use(cls.http);
 	auth.initialize(app, middleware);
 
 	return middleware;

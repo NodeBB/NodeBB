@@ -11,6 +11,7 @@ var	SocketIO = require('socket.io'),
 	user = require('../user'),
 	logger = require('../logger'),
 	ratelimit = require('../middleware/ratelimit'),
+	cls = require('../middleware/cls'),
 
 	Sockets = {},
 	Namespaces = {};
@@ -43,14 +44,20 @@ function onConnection(socket) {
 
 	logger.io_one(socket, socket.uid);
 
-	onConnect(socket);
+	cls.socket(socket, null, 'connection', function () {
+		onConnect(socket);
+	});
 
-	socket.on('disconnect', function(data) {
-		onDisconnect(socket, data);
+	socket.on('disconnect', function(payload) {
+		cls.socket(socket, payload, 'disconnect', function () {
+			onDisconnect(socket, payload);
+		});
 	});
 
 	socket.on('*', function(payload) {
-		onMessage(socket, payload);
+		cls.socket(socket, payload, null, function() {
+			onMessage(socket, payload);
+		});
 	});
 }
 
