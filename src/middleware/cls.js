@@ -17,7 +17,7 @@ cls.socket = function (socket, payload, event, next) {
 		namespace.set('ws', {
 			socket: socket,
 			payload: payload,
-			// if it's a '*' event, then we grab it from the payload
+			// if it's a null event, then we grab it from the payload
 			event: event || ((payload || {}).data || [])[0]});
 		next();
 	});
