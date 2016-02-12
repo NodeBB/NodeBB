@@ -1,6 +1,6 @@
 'use strict';
 
-/* globals define, ajaxify, socket, app, config, utils */
+/* globals define, ajaxify, socket, app, utils */
 
 define('forum/account/edit/password', ['forum/account/header', 'translator'], function(header, translator) {
 	var AccountEditPassword = {};
@@ -21,7 +21,7 @@ define('forum/account/edit/password', ['forum/account/header', 'translator'], fu
 		var passwordsmatch = false;
 
 		function onPasswordChanged() {
-			if (password.val().length < config.minimumPasswordLength) {
+			if (password.val().length < ajaxify.data.minimumPasswordLength) {
 				showError(password_notify, '[[user:change_password_error_length]]');
 				passwordvalid = false;
 			} else if (!utils.isPasswordValid(password.val())) {

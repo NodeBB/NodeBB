@@ -7,6 +7,7 @@ var winston = require('winston');
 
 var db = require('../../database');
 var user = require('../../user');
+var meta = require('../../meta');
 var helpers = require('../helpers');
 var accountHelpers = require('./helpers');
 
@@ -17,6 +18,12 @@ editController.get = function(req, res, callback) {
 		if (err || !userData) {
 			return callback(err);
 		}
+
+		userData.maximumSignatureLength = parseInt(meta.config.maximumSignatureLength, 10) || 255;
+		userData.maximumAboutMeLength = parseInt(meta.config.maximumAboutMeLength, 10) || 1000;
+		userData.maximumProfileImageSize = parseInt(meta.config.maximumProfileImageSize, 10);
+		userData.allowProfileImageUploads = parseInt(meta.config.allowProfileImageUploads) === 1;
+		userData.allowAccountDelete = parseInt(meta.config.allowAccountDelete, 10) === 1;
 
 		userData.title = '[[pages:account/edit, ' + userData.username + ']]';
 		userData.breadcrumbs = helpers.buildBreadcrumbs([{text: userData.username, url: '/user/' + userData.userslug}, {text: '[[user:edit]]'}]);
@@ -44,6 +51,10 @@ function renderRoute(name, req, res, next) {
 		}
 		if ((name === 'username' && userData['username:disableEdit']) || (name === 'email' && userData['email:disableEdit'])) {
 			return next();
+		}
+
+		if (name === 'password') {
+			userData.minimumPasswordLength = parseInt(meta.config.minimumPasswordLength, 10);
 		}
 
 		userData.title = '[[pages:account/edit/' + name + ', ' + userData.username + ']]';

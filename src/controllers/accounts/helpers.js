@@ -92,17 +92,17 @@ helpers.getUserDataByUserSlug = function(userslug, callerUID, callback) {
 			userData.sso = results.sso.associations;
 			userData.status = user.getStatus(userData);
 			userData.banned = parseInt(userData.banned, 10) === 1;
-			userData.website = validator.escape(userData.website);
+			userData.website = validator.escape(userData.website || '');
 			userData.websiteLink = !userData.website.startsWith('http') ? 'http://' + userData.website : userData.website;
 			userData.websiteName = userData.website.replace(validator.escape('http://'), '').replace(validator.escape('https://'), '');
 			userData.followingCount = parseInt(userData.followingCount, 10) || 0;
 			userData.followerCount = parseInt(userData.followerCount, 10) || 0;
 
-			userData.username = validator.escape(userData.username);
-			userData.email = validator.escape(userData.email);
-			userData.fullname = validator.escape(userData.fullname);
-			userData.location = validator.escape(userData.location);
-			userData.signature = validator.escape(userData.signature);
+			userData.username = validator.escape(userData.username || '');
+			userData.email = validator.escape(userData.email || '');
+			userData.fullname = validator.escape(userData.fullname || '');
+			userData.location = validator.escape(userData.location || '');
+			userData.signature = validator.escape(userData.signature || '');
 			userData.aboutme = validator.escape(userData.aboutme || '');
 
 			userData['cover:url'] = userData['cover:url'] || require('../../coverPhoto').getDefaultProfileCover(userData.uid);

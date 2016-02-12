@@ -38,7 +38,7 @@ module.exports = function(User) {
 			function(next) {
 				file.isFileTypeAllowed(picture.path, next);
 			},
-			function(next) {
+			function(path, next) {
 				image.resizeImage({
 					path: picture.path,
 					extension: extension,
@@ -168,6 +168,9 @@ module.exports = function(User) {
 				}, next);
 			},
 			function(next) {
+				file.isFileTypeAllowed(tempPath, next);
+			},
+			function(tempPath, next) {
 				var image = {
 					name: 'profileCover',
 					path: data.file ? data.file.path : tempPath,
@@ -204,7 +207,9 @@ module.exports = function(User) {
 			}
 		], function(err) {
 			if (err) {
-				return callback(err);
+				return fs.unlink(tempPath, function(unlinkErr) {
+					callback(err);	// send back the original error
+				});
 			}
 
 			if (data.position) {

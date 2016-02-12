@@ -46,7 +46,7 @@ uploadsController.upload = function(req, res, filesIterator, next) {
 uploadsController.uploadPost = function(req, res, next) {
 	uploadsController.upload(req, res, function(uploadedFile, next) {
 		if (uploadedFile.type.match(/image./)) {
-			file.isFileTypeAllowed(uploadedFile.path, function(err) {
+			file.isFileTypeAllowed(uploadedFile.path, function(err, tempPath) {
 				if (err) {
 					return next(err);
 				}
@@ -66,7 +66,7 @@ uploadsController.uploadThumb = function(req, res, next) {
 	}
 
 	uploadsController.upload(req, res, function(uploadedFile, next) {
-		file.isFileTypeAllowed(uploadedFile.path, function(err) {
+		file.isFileTypeAllowed(uploadedFile.path, function(err, tempPath) {
 			if (err) {
 				return next(err);
 			}

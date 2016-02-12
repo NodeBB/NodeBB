@@ -10,13 +10,13 @@ define('forum/footer', ['notifications', 'chat', 'components', 'translator'], fu
 	function updateUnreadTopicCount(count) {
 		$('#unread-count i')
 			.toggleClass('unread-count', count > 0)
-			.attr('data-content', count > 20 ? '20+' : count);
+			.attr('data-content', count > 99 ? '99+' : count);
 	}
 
 	function updateUnreadChatCount(count) {
 		components.get('chat/icon')
 			.toggleClass('unread-count', count > 0)
-			.attr('data-content', count > 20 ? '20+' : count);
+			.attr('data-content', count > 99 ? '99+' : count);
 	}
 
 	function initUnreadTopics() {

@@ -130,6 +130,8 @@ module.exports = function(app, middleware) {
 			templateValues.customJS = templateValues.useCustomJS ? meta.config.customJS : '';
 			templateValues.maintenanceHeader = parseInt(meta.config.maintenanceMode, 10) === 1 && !results.isAdmin;
 			templateValues.defaultLang = meta.config.defaultLang || 'en_GB';
+			templateValues.privateUserInfo = parseInt(meta.config.privateUserInfo, 10) === 1;
+			templateValues.privateTagListing = parseInt(meta.config.privateTagListing, 10) === 1;
 
 			templateValues.template = {name: res.locals.template};
 			templateValues.template[res.locals.template] = true;

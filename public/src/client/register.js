@@ -150,9 +150,9 @@ define('forum/register', ['csrf', 'translator'], function(csrf, translator) {
 
 		var username_notify = $('#username-notify');
 
-		if (username.length < config.minimumUsernameLength) {
+		if (username.length < ajaxify.data.minimumUsernameLength) {
 			showError(username_notify, '[[error:username-too-short]]');
-		} else if (username.length > config.maximumUsernameLength) {
+		} else if (username.length > ajaxify.data.maximumUsernameLength) {
 			showError(username_notify, '[[error:username-too-long]]');
 		} else if (!utils.isUserNameValid(username) || !utils.slugify(username)) {
 			showError(username_notify, '[[error:invalid-username]]');
@@ -179,7 +179,7 @@ define('forum/register', ['csrf', 'translator'], function(csrf, translator) {
 		var password_notify = $('#password-notify'),
 			password_confirm_notify = $('#password-confirm-notify');
 
-		if (password.length < config.minimumPasswordLength) {
+		if (password.length < ajaxify.data.minimumPasswordLength) {
 			showError(password_notify, '[[user:change_password_error_length]]');
 		} else if (!utils.isPasswordValid(password)) {
 			showError(password_notify, '[[user:change_password_error]]');

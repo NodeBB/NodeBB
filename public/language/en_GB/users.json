@@ -17,5 +17,6 @@
 	"unread_topics": "Unread Topics",
 	"categories": "Categories",
 	"tags": "Tags",
-	"map": "Map"
+	"map": "Map",
+	"no-users-found": "No users found!"
 }

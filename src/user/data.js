@@ -94,7 +94,7 @@ module.exports = function(User) {
 				return;
 			}
 
-			user.username = validator.escape(user.username);
+			user.username = validator.escape(user.username || '');
 
 			if (user.password) {
 				user.password = undefined;

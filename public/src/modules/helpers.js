@@ -24,11 +24,11 @@
 			}
 		}
 
-		if (item.route.match('/users') && data.config.privateUserInfo && !data.config.loggedIn) {
+		if (item.route.match('/users') && data.privateUserInfo && !data.config.loggedIn) {
 			return false;
 		}
 
-		if (item.route.match('/tags') && data.config.privateTagListing && !data.config.loggedIn) {
+		if (item.route.match('/tags') && data.privateTagListing && !data.config.loggedIn) {
 			return false;
 		}
 

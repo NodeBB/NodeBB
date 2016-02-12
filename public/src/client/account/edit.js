@@ -80,7 +80,8 @@ define('forum/account/edit', ['forum/account/header', 'uploader', 'translator'],
 				}
 				templates.parse('partials/modals/change_picture_modal', {
 					pictures: pictures,
-					uploaded: !!ajaxify.data.uploadedpicture
+					uploaded: !!ajaxify.data.uploadedpicture,
+					allowProfileImageUploads: ajaxify.data.allowProfileImageUploads
 				}, function(html) {
 					translator.translate(html, function(html) {
 						var modal = bootbox.dialog({
@@ -201,7 +202,7 @@ define('forum/account/edit', ['forum/account/header', 'uploader', 'translator'],
 
 		modal.find('[data-action="upload"]').on('click', function() {
 			modal.modal('hide');
-			uploader.open(config.relative_path + '/api/user/' + ajaxify.data.userslug + '/uploadpicture', {}, config.maximumProfileImageSize, function(imageUrlOnServer) {
+			uploader.open(config.relative_path + '/api/user/' + ajaxify.data.userslug + '/uploadpicture', {}, ajaxify.data.maximumProfileImageSize, function(imageUrlOnServer) {
 				onUploadComplete(imageUrlOnServer);
 			});
 
@@ -274,19 +275,19 @@ define('forum/account/edit', ['forum/account/header', 'uploader', 'translator'],
 
 	function updateSignature() {
 		var el = $('#inputSignature');
-		$('#signatureCharCountLeft').html(getCharsLeft(el, config.maximumSignatureLength));
+		$('#signatureCharCountLeft').html(getCharsLeft(el, ajaxify.data.maximumSignatureLength));
 
 		el.on('keyup change', function() {
-			$('#signatureCharCountLeft').html(getCharsLeft(el, config.maximumSignatureLength));
+			$('#signatureCharCountLeft').html(getCharsLeft(el, ajaxify.data.maximumSignatureLength));
 		});
 	}
 
 	function updateAboutMe() {
 		var el = $('#inputAboutMe');
-		$('#aboutMeCharCountLeft').html(getCharsLeft(el, config.maximumAboutMeLength));
+		$('#aboutMeCharCountLeft').html(getCharsLeft(el, ajaxify.data.maximumAboutMeLength));
 
 		el.on('keyup change', function() {
-			$('#aboutMeCharCountLeft').html(getCharsLeft(el, config.maximumAboutMeLength));
+			$('#aboutMeCharCountLeft').html(getCharsLeft(el, ajaxify.data.maximumAboutMeLength));
 		});
 	}
 

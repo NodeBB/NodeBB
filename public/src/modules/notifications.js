@@ -139,7 +139,7 @@ define('notifications', ['sounds', 'translator', 'components'], function(sound, 
 		}
 
 		notifIcon.toggleClass('unread-count', count > 0);
-		notifIcon.attr('data-content', count > 20 ? '20+' : count);
+		notifIcon.attr('data-content', count > 99 ? '99+' : count);
 
 		var payload = {
 			count: count,
