@@ -241,8 +241,8 @@ var utils = require('../public/src/utils');
 		if (group) {
 			group.nameEncoded = encodeURIComponent(group.name);
 			group.displayName = validator.escape(group.name);
-			group.description = validator.escape(group.description);
-			group.userTitle = validator.escape(group.userTitle) || group.displayName;
+			group.description = validator.escape(group.description || '');
+			group.userTitle = validator.escape(group.userTitle || '') || group.displayName;
 		}
 	};
 
