@@ -54,7 +54,13 @@ module.exports = function(SocketUser) {
 		async.parallel({
 			isAdmin: async.apply(user.isAdministrator, uid),
 			hasPassword: async.apply(user.hasPassword, data.uid),
-			passwordMatch: async.apply(user.isPasswordCorrect, data.uid, data.password)
+			passwordMatch: function(next) {
+				if (data.password) {
+					user.isPasswordCorrect(data.uid, data.password, next);
+				} else {
+					next(null, false);
+				}
+			}
 		}, function(err, results) {
 			if (err) {
 				return callback(err);
