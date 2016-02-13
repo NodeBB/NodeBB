@@ -5,6 +5,11 @@
 	$(document).ready(function() {
 		setupKeybindings();
 
+		// on page reload show correct tab if url has #
+		if (window.location.hash) {
+			$('.nav-pills a[href=' + window.location.hash + ']').tab('show');
+		}
+
 		if(!/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
 			require(['admin/modules/search'], function(search) {
 				search.init();

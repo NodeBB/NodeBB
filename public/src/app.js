@@ -25,7 +25,7 @@ app.cacheBuster = null;
 
 	app.load = function() {
 		$('document').ready(function () {
-			var url = ajaxify.start(window.location.pathname.slice(1) + window.location.search, true);
+			var url = ajaxify.start(window.location.pathname.slice(1) + window.location.search + window.location.hash, true);
 			ajaxify.end(url, app.template);
 
 			handleStatusChange();
