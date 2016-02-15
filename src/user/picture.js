@@ -3,6 +3,7 @@
 var async = require('async'),
 	path = require('path'),
 	fs = require('fs'),
+	os = require('os'),
 	nconf = require('nconf'),
 	crypto = require('crypto'),
 	winston = require('winston'),
@@ -160,20 +161,23 @@ module.exports = function(User) {
 				md5sum.update(data.imageData);
 				md5sum = md5sum.digest('hex');
 
-				tempPath = path.join(nconf.get('base_dir'), nconf.get('upload_path'), md5sum);
+				data.file = {
+					path: path.join(os.tmpdir(), md5sum)
+				};
+
 				var buffer = new Buffer(data.imageData.slice(data.imageData.indexOf('base64') + 7), 'base64');
 
-				fs.writeFile(tempPath, buffer, {
+				fs.writeFile(data.file.path, buffer, {
 					encoding: 'base64'
 				}, next);
 			},
 			function(next) {
-				file.isFileTypeAllowed(tempPath, next);
+				file.isFileTypeAllowed(data.file.path, next);
 			},
 			function(tempPath, next) {
 				var image = {
 					name: 'profileCover',
-					path: data.file ? data.file.path : tempPath,
+					path: tempPath,
 					uid: data.uid
 				};
 
@@ -198,7 +202,7 @@ module.exports = function(User) {
 				User.setUserField(data.uid, 'cover:url', uploadData.url, next);
 			},
 			function(next) {
-				require('fs').unlink(data.file ? data.file.path : tempPath, function(err) {
+				fs.unlink(data.file.path, function(err) {
 					if (err) {
 						winston.error(err);
 					}
@@ -207,7 +211,7 @@ module.exports = function(User) {
 			}
 		], function(err) {
 			if (err) {
-				return fs.unlink(tempPath, function(unlinkErr) {
+				return fs.unlink(data.file.path, function(unlinkErr) {
 					callback(err);	// send back the original error
 				});
 			}
