@@ -418,7 +418,9 @@ var async = require('async'),
 							next();
 						}
 					});
-				}, next);
+				}, function(err) {
+					next(err, roomId);
+				});
 			}
 		], callback);
 	};
