@@ -58,7 +58,7 @@ define('uploader', ['csrf', 'translator'], function(csrf, translator) {
 					},
 					error: function(xhr) {
 						xhr = maybeParse(xhr);
-						showAlert('error', xhr.responseJSON ? xhr.responseJSON.error : 'error uploading, code : ' + xhr.status);
+						showAlert('error', xhr.responseJSON ? (xhr.responseJSON.error || xhr.statusText) : 'error uploading, code : ' + xhr.status);
 					},
 
 					uploadProgress: function(event, position, total, percent) {

@@ -122,18 +122,18 @@ module.exports = function(SocketUser) {
 					return next(new Error('[[error:invalid-data]]'));
 				}
 
-				user.isAdministrator(socket.uid, next);
+				user.isAdminOrGlobalMod(socket.uid, next);
 			},
-			function(isAdmin, next) {
-				if (!isAdmin && socket.uid !== parseInt(data.uid, 10)) {
+			function(isAdminOrGlobalMod, next) {
+				if (!isAdminOrGlobalMod && socket.uid !== parseInt(data.uid, 10)) {
 					return next(new Error('[[error:no-privileges]]'));
 				}
 
-				if (!isAdmin && parseInt(meta.config['username:disableEdit'], 10) === 1) {
+				if (!isAdminOrGlobalMod && parseInt(meta.config['username:disableEdit'], 10) === 1) {
 					data.username = oldUserData.username;
 				}
 
-				if (!isAdmin && parseInt(meta.config['email:disableEdit'], 10) === 1) {
+				if (!isAdminOrGlobalMod && parseInt(meta.config['email:disableEdit'], 10) === 1) {
 					data.email = oldUserData.email;
 				}
 

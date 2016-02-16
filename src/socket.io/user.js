@@ -188,12 +188,20 @@ SocketUser.saveSettings = function(socket, data, callback) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
 
-	user.isAdminOrSelf(socket.uid, data.uid, function(err) {
-		if (err) {
-			return callback(err);
+	async.waterfall([
+		function(next) {
+			if (socket.uid === parseInt(data.uid, 10)) {
+				return next(null, true);
+			}
+			user.isAdminOrGlobalMod(socket.uid, next);
+		}, 
+		function(allowed, next) {
+			if (!allowed) {
+				return next(new Error('[[error:no-privileges]]'));
+			}
+			user.saveSettings(data.uid, data.settings, next);
 		}
-		user.saveSettings(data.uid, data.settings, callback);
-	});
+	], callback);
 };
 
 SocketUser.setTopicSort = function(socket, sort, callback) {

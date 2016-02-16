@@ -57,23 +57,24 @@ helpers.getUserDataByUserSlug = function(userslug, callerUID, callback) {
 			var userData = results.userData;
 			var userSettings = results.userSettings;
 			var isAdmin = results.isAdmin;
+			var isGlobalModerator = results.isGlobalModerator;
 			var self = parseInt(callerUID, 10) === parseInt(userData.uid, 10);
 
 			userData.joindateISO = utils.toISOString(userData.joindate);
 			userData.lastonlineISO = utils.toISOString(userData.lastonline || userData.joindate);
 			userData.age = Math.max(0, userData.birthday ? Math.floor((new Date().getTime() - new Date(userData.birthday).getTime()) / 31536000000) : 0);
 
-			if (!(isAdmin || self || (userData.email && userSettings.showemail))) {
+			if (!(isAdmin || isGlobalModerator || self || (userData.email && userSettings.showemail))) {
 				userData.email = '';
 			}
 
 			userData.emailClass = (self && !userSettings.showemail) ? '' : 'hide';
 
-			if (!isAdmin && !self && !userSettings.showfullname) {
+			if (!isAdmin && !isGlobalModerator && !self && !userSettings.showfullname) {
 				userData.fullname = '';
 			}
 
-			if (isAdmin || self) {
+			if (isAdmin || isGlobalModerator || self) {
 				userData.ips = results.ips;
 			}
 
@@ -81,10 +82,11 @@ helpers.getUserDataByUserSlug = function(userslug, callerUID, callback) {
 			userData.yourid = callerUID;
 			userData.theirid = userData.uid;
 			userData.isAdmin = isAdmin;
-			userData.isGlobalModerator = results.isGlobalModerator;
-			userData.canBan = isAdmin || results.isGlobalModerator;
+			userData.isGlobalModerator = isGlobalModerator;
+			userData.canBan = isAdmin || isGlobalModerator;
+			userData.canChangePassword = isAdmin || self;
 			userData.isSelf = self;
-			userData.showHidden = self || isAdmin;
+			userData.showHidden = self || isAdmin || isGlobalModerator;
 			userData.groups = Array.isArray(results.groups) && results.groups.length ? results.groups[0] : [];
 			userData.disableSignatures = meta.config.disableSignatures !== undefined && parseInt(meta.config.disableSignatures, 10) === 1;
 			userData['email:confirmed'] = !!parseInt(userData['email:confirmed'], 10);
@@ -133,6 +135,9 @@ helpers.getBaseUser = function(userslug, callerUID, callback) {
 				isAdmin: function(next) {
 					user.isAdministrator(callerUID, next);
 				},
+				isGlobalModerator: function(next) {
+					user.isGlobalModerator(callerUID, next);
+				},
 				profile_links: function(next) {
 					plugins.fireHook('filter:user.profileLinks', [], next);
 				}
@@ -147,7 +152,7 @@ helpers.getBaseUser = function(userslug, callerUID, callback) {
 			results.user.theirid = results.user.uid;
 			results.user.status = user.getStatus(results.user);
 			results.user.isSelf = parseInt(callerUID, 10) === parseInt(results.user.uid, 10);
-			results.user.showHidden = results.user.isSelf || results.isAdmin;
+			results.user.showHidden = results.user.isSelf || results.isAdmin || results.isGlobalModerator;
 			results.user.profile_links = filterLinks(results.profile_links, results.user.isSelf);
 
 			results.user['cover:url'] = results.user['cover:url'] || require('../../coverPhoto').getDefaultProfileCover(results.user.uid);

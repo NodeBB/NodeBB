@@ -78,6 +78,7 @@ define('forum/account/edit', ['forum/account/header', 'uploader', 'translator'],
 				if (err) {
 					return app.alertError(err.message);
 				}
+			
 				templates.parse('partials/modals/change_picture_modal', {
 					pictures: pictures,
 					uploaded: !!ajaxify.data.uploadedpicture,
@@ -191,7 +192,6 @@ define('forum/account/edit', ['forum/account/header', 'uploader', 'translator'],
 			$('#user-current-picture, img.avatar').attr('src', urlOnServer);
 			updateHeader(urlOnServer);
 			uploadedPicture = urlOnServer;
-			ajaxify.refresh();
 		}
 
 		function onRemoveComplete(urlOnServer) {

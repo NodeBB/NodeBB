@@ -145,7 +145,7 @@ middleware.checkAccountPermissions = function(req, res, next) {
 				return next(null, true);
 			}
 
-			user.isAdministrator(req.uid, next);
+			user.isAdminOrGlobalMod(req.uid, next);
 		}
 	], function (err, allowed) {
 		if (err || allowed) {
