@@ -15,17 +15,26 @@ module.exports = function(Groups) {
 		function join() {
 			var tasks = [
 				async.apply(db.sortedSetAdd, 'group:' + groupName + ':members', Date.now(), uid),
-				async.apply(db.incrObjectField, 'group:' + groupName, 'memberCount'),
-				async.apply(db.sortedSetIncrBy, 'groups:visible:memberCount', 1, groupName)
+				async.apply(db.incrObjectField, 'group:' + groupName, 'memberCount')				
 			];
 
 			async.waterfall([
 				function(next) {
-					user.isAdministrator(uid, next);
+					async.parallel({
+						isAdmin: function(next) {
+							user.isAdministrator(uid, next);		
+						},
+						isHidden: function(next) {
+							Groups.isHidden(groupName, next);
+						}
+					}, next);					
 				},
-				function(isAdmin, next) {
-					if (isAdmin) {
+				function(results, next) {
+					if (results.isAdmin) {
 						tasks.push(async.apply(db.setAdd, 'group:' + groupName + ':owners', uid));
+					}
+					if (!results.isHidden) {
+						tasks.push(async.apply(db.sortedSetIncrBy, 'groups:visible:memberCount', 1, groupName));
 					}
 					async.parallel(tasks, next);
 				},
@@ -181,7 +190,6 @@ module.exports = function(Groups) {
 
 		var tasks = [
 			async.apply(db.sortedSetRemove, 'group:' + groupName + ':members', uid),
-			async.apply(db.sortedSetIncrBy, 'groups:visible:memberCount', -1, groupName),
 			async.apply(db.setRemove, 'group:' + groupName + ':owners', uid),
 			async.apply(db.decrObjectField, 'group:' + groupName, 'memberCount')
 		];
@@ -204,7 +212,11 @@ module.exports = function(Groups) {
 				if (parseInt(groupData.hidden, 10) === 1 && parseInt(groupData.memberCount, 10) === 0) {
 					Groups.destroy(groupName, callback);
 				} else {
-					callback();
+					if (parseInt(groupData.hidden, 10) !== 1) {
+						db.sortedSetAdd('groups:visible:memberCount', groupData.memberCount, groupName, next);			
+					} else {
+						callback();	
+					}					
 				}
 			});
 		});
