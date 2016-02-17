@@ -1,45 +1,44 @@
 'use strict';
 
-var async = require('async'),
-	validator = require('validator'),
+var async = require('async');
+var validator = require('validator');
 
-	db = require('./database'),
-	posts = require('./posts'),
-	topics = require('./topics'),
-	categories = require('./categories'),
-	user = require('./user'),
-	plugins = require('./plugins'),
-	privileges = require('./privileges'),
-	utils = require('../public/src/utils');
+var db = require('./database');
+var posts = require('./posts');
+var topics = require('./topics');
+var categories = require('./categories');
+var user = require('./user');
+var plugins = require('./plugins');
+var privileges = require('./privileges');
+var utils = require('../public/src/utils');
 
 var search = {};
 
 module.exports = search;
 
 search.search = function(data, callback) {
-	function done(err, result) {
-		if (err) {
-			return callback(err);
-		}
-
-		result.search_query = validator.escape(data.query);
-		result.time = (process.elapsedTimeSince(start) / 1000).toFixed(2);
-		callback(null, result);
-	}
 
 	var start = process.hrtime();
-
 	var searchIn = data.searchIn || 'titlesposts';
 
-	if (searchIn === 'posts' || searchIn === 'titles' || searchIn === 'titlesposts') {
-		searchInContent(data, done);
-	} else if (searchIn === 'users') {
-		user.search(data, done);
-	} else if (searchIn === 'tags') {
-		topics.searchAndLoadTags(data, done);
-	} else {
-		callback(new Error('[[error:unknown-search-filter]]'));
-	}
+	async.waterfall([
+		function (next) {
+			if (searchIn === 'posts' || searchIn === 'titles' || searchIn === 'titlesposts') {
+				searchInContent(data, next);
+			} else if (searchIn === 'users') {
+				user.search(data, next);
+			} else if (searchIn === 'tags') {
+				topics.searchAndLoadTags(data, next);
+			} else {
+				next(new Error('[[error:unknown-search-filter]]'));
+			}
+		},
+		function (result, next) {
+			result.search_query = validator.escape(data.query || '');
+			result.time = (process.elapsedTimeSince(start) / 1000).toFixed(2);
+			next(null, result);
+		}
+	], callback);
 };
 
 function searchInContent(data, callback) {

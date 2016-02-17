@@ -25,7 +25,7 @@ app.cacheBuster = null;
 
 	app.load = function() {
 		$('document').ready(function () {
-			var url = ajaxify.start(window.location.pathname.slice(1) + window.location.search, true);
+			var url = ajaxify.start(window.location.pathname.slice(1) + window.location.search + window.location.hash, true);
 			ajaxify.end(url, app.template);
 
 			handleStatusChange();
@@ -276,7 +276,7 @@ app.cacheBuster = null;
 			if (err) {
 				return app.alertError(err.message);
 			}
-			if (!ajaxify.currentPage.startsWith('chats/')) {
+			if (!ajaxify.currentPage.startsWith('chats')) {
 				app.openChat(roomId);
 			} else {
 				ajaxify.go('chats/' + roomId);

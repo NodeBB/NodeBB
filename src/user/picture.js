@@ -3,6 +3,7 @@
 var async = require('async'),
 	path = require('path'),
 	fs = require('fs'),
+	os = require('os'),
 	nconf = require('nconf'),
 	crypto = require('crypto'),
 	winston = require('winston'),
@@ -24,6 +25,7 @@ module.exports = function(User) {
 		var updateUid = uid;
 		var imageDimension = parseInt(meta.config.profileImageDimension, 10) || 128;
 		var convertToPNG = parseInt(meta.config['profile:convertProfileImageToPNG'], 10) === 1;
+		var uploadedImage;
 
 		async.waterfall([
 			function(next) {
@@ -52,48 +54,42 @@ module.exports = function(User) {
 				} else {
 					next();
 				}
-			}
-		], function(err) {
-			function done(err, image) {
-				if (err) {
-					return callback(err);
+			},
+			function(next) {
+				if (plugins.hasListeners('filter:uploadImage')) {
+					return plugins.fireHook('filter:uploadImage', {image: picture, uid: updateUid}, next);
 				}
 
-				User.setUserFields(updateUid, {uploadedpicture: image.url, picture: image.url});
+				var filename = updateUid + '-profileimg' + (convertToPNG ? '.png' : extension);
+				
+				async.waterfall([
+					function(next) {
+						User.getUserField(updateUid, 'uploadedpicture', next);
+					},
+					function(oldpicture, next) {
+						if (!oldpicture) {
+							return file.saveFileToLocal(filename, 'profile', picture.path, next);
+						}		
+						var oldpicturePath = path.join(nconf.get('base_dir'), nconf.get('upload_path'), 'profile', path.basename(oldpicture));
 
-				callback(null, image);
+						fs.unlink(oldpicturePath, function (err) {
+							if (err) {
+								winston.error(err);
+							}
+
+							file.saveFileToLocal(filename, 'profile', picture.path, next);
+						});
+					},					
+				], next);
+			},
+			function(_image, next) {
+				uploadedImage = _image;
+				User.setUserFields(updateUid, {uploadedpicture: uploadedImage.url, picture: uploadedImage.url}, next);
+			},
+			function(next) {
+				next(null, uploadedImage);
 			}
-
-			if (err) {
-				return callback(err);
-			}
-
-			if (plugins.hasListeners('filter:uploadImage')) {
-				return plugins.fireHook('filter:uploadImage', {image: picture, uid: updateUid}, done);
-			}
-
-			var filename = updateUid + '-profileimg' + (convertToPNG ? '.png' : extension);
-
-			User.getUserField(updateUid, 'uploadedpicture', function (err, oldpicture) {
-				if (err) {
-					return callback(err);
-				}
-
-				if (!oldpicture) {
-					return file.saveFileToLocal(filename, 'profile', picture.path, done);
-				}
-
-				var absolutePath = path.join(nconf.get('base_dir'), nconf.get('upload_path'), 'profile', path.basename(oldpicture));
-
-				fs.unlink(absolutePath, function (err) {
-					if (err) {
-						winston.error(err);
-					}
-
-					file.saveFileToLocal(filename, 'profile', picture.path, done);
-				});
-			});
-		});
+		], callback);
 	};
 
 	User.uploadFromUrl = function(uid, url, callback) {
@@ -134,7 +130,7 @@ module.exports = function(User) {
 	};
 
 	User.updateCoverPicture = function(data, callback) {
-		var tempPath, url, md5sum;
+		var url, md5sum;
 
 		if (!data.imageData && data.position) {
 			return User.updateCoverPosition(data.uid, data.position, callback);
@@ -160,20 +156,23 @@ module.exports = function(User) {
 				md5sum.update(data.imageData);
 				md5sum = md5sum.digest('hex');
 
-				tempPath = path.join(nconf.get('base_dir'), nconf.get('upload_path'), md5sum);
+				data.file = {
+					path: path.join(os.tmpdir(), md5sum)
+				};
+
 				var buffer = new Buffer(data.imageData.slice(data.imageData.indexOf('base64') + 7), 'base64');
 
-				fs.writeFile(tempPath, buffer, {
+				fs.writeFile(data.file.path, buffer, {
 					encoding: 'base64'
 				}, next);
 			},
 			function(next) {
-				file.isFileTypeAllowed(tempPath, next);
+				file.isFileTypeAllowed(data.file.path, next);
 			},
 			function(tempPath, next) {
 				var image = {
 					name: 'profileCover',
-					path: data.file ? data.file.path : tempPath,
+					path: tempPath,
 					uid: data.uid
 				};
 
@@ -198,7 +197,7 @@ module.exports = function(User) {
 				User.setUserField(data.uid, 'cover:url', uploadData.url, next);
 			},
 			function(next) {
-				require('fs').unlink(data.file ? data.file.path : tempPath, function(err) {
+				fs.unlink(data.file.path, function(err) {
 					if (err) {
 						winston.error(err);
 					}
@@ -207,7 +206,7 @@ module.exports = function(User) {
 			}
 		], function(err) {
 			if (err) {
-				return fs.unlink(tempPath, function(unlinkErr) {
+				return fs.unlink(data.file.path, function(unlinkErr) {
 					callback(err);	// send back the original error
 				});
 			}

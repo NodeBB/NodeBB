@@ -80,6 +80,12 @@ define('forum/groups/list', ['forum/infinitescroll'], function(infinitescroll) {
 				filterHidden: true
 			}
 		}, function(err, groups) {
+			if (err) {
+				return app.alertError(err.message);
+			}
+			groups = groups.filter(function(group) {
+				return group.name !== 'registered-users' && group.name !== 'guests';
+			});
 			templates.parse('partials/groups/list', {
 				groups: groups
 			}, function(html) {

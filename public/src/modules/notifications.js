@@ -51,7 +51,7 @@ define('notifications', ['sounds', 'translator', 'components'], function(sound, 
 
 			socket.emit('notifications.mark' + (unread ? 'Read' : 'Unread'), liEl.attr('data-nid'), function(err) {
 				if (err) {
-					app.alertError(err.message);
+					return app.alertError(err.message);
 				}
 
 				liEl.toggleClass('unread');
@@ -131,7 +131,7 @@ define('notifications', ['sounds', 'translator', 'components'], function(sound, 
 
 	Notifications.updateNotifCount = function(count) {
 		var notifIcon = components.get('notifications/icon');
-
+		count = Math.max(0, count);
 		if (count > 0) {
 			notifIcon.removeClass('fa-bell-o').addClass('fa-bell');
 		} else {

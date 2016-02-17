@@ -24,6 +24,7 @@ editController.get = function(req, res, callback) {
 		userData.maximumProfileImageSize = parseInt(meta.config.maximumProfileImageSize, 10);
 		userData.allowProfileImageUploads = parseInt(meta.config.allowProfileImageUploads) === 1;
 		userData.allowAccountDelete = parseInt(meta.config.allowAccountDelete, 10) === 1;
+		
 
 		userData.title = '[[pages:account/edit, ' + userData.username + ']]';
 		userData.breadcrumbs = helpers.buildBreadcrumbs([{text: userData.username, url: '/user/' + userData.userslug}, {text: '[[user:edit]]'}]);
@@ -94,30 +95,25 @@ function getUserData(req, next, callback) {
 editController.uploadPicture = function (req, res, next) {
 	var userPhoto = req.files.files[0];
 
-	var updateUid = req.uid;
+	var updateUid;
 
 	async.waterfall([
 		function(next) {
 			user.getUidByUserslug(req.params.userslug, next);
 		},
 		function(uid, next) {
-			if (parseInt(updateUid, 10) === parseInt(uid, 10)) {
-				return next();
+			updateUid = uid;
+			if (parseInt(req.uid, 10) === parseInt(uid, 10)) {
+				return next(null, true);
 			}
 
-			user.isAdministrator(req.uid, function(err, isAdmin) {
-				if (err) {
-					return next(err);
-				}
-
-				if (!isAdmin) {
-					return helpers.notAllowed(req, res);
-				}
-				updateUid = uid;
-				next();
-			});
+			user.isAdminOrGlobalMod(req.uid, next);
 		},
-		function(next) {
+		function(isAllowed, next) {
+			if (!isAllowed) {
+				return helpers.notAllowed(req, res);
+			}
+			
 			user.uploadPicture(updateUid, userPhoto, next);
 		}
 	], function(err, image) {
