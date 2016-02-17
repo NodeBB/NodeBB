@@ -59,7 +59,7 @@ define('forum/categories', ['components', 'translator'], function(components, tr
 	}
 
 	function parseAndTranslate(posts, callback) {
-		templates.parse('categories', 'posts', {categories: {posts: posts}}, function(html) {
+		templates.parse('categories', 'categories.posts', {categories: {posts: posts}}, function(html) {
 			translator.translate(html, function(translatedHTML) {
 				translatedHTML = $(translatedHTML);
 				translatedHTML.find('img:not(.not-responsive)').addClass('img-responsive');
