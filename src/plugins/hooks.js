@@ -10,6 +10,9 @@ module.exports = function(Plugins) {
 		'action:user.loggedOut': 'static:user.loggedOut'
 	};
 
+	// todo: remove when breaking all hooks params by removing req/res/socket/uid
+	Plugins.clsDeprecatedParamsWarnedHooks = {};
+
 	/*
 		`data` is an object consisting of (* is required):
 			`data.hook`*, the name of the NodeBB hook
@@ -29,7 +32,7 @@ module.exports = function(Plugins) {
 		var method;
 
 		if (Object.keys(Plugins.deprecatedHooks).indexOf(data.hook) !== -1) {
-			winston.warn('[plugins/' + id + '] Hook `' + data.hook + '` is deprecated, ' + 
+			winston.warn('[plugins/' + id + '] Hook `' + data.hook + '` is deprecated, ' +
 				(Plugins.deprecatedHooks[data.hook] ?
 					'please use `' + Plugins.deprecatedHooks[data.hook] + '` instead.' :
 					'there is no alternative.'
@@ -70,6 +73,20 @@ module.exports = function(Plugins) {
 
 		var hookList = Plugins.loadedHooks[hook];
 		var hookType = hook.split(':')[0];
+
+		// todo: remove when breaking all hooks params by removing req/res/socket/uid
+		if (!Plugins.clsDeprecatedParamsWarnedHooks[hook]
+				&& params
+				&& Array.isArray(hookList)
+				&& hookList.length
+				&& (params.req || params.res || params.socket || params.uid)) {
+
+			Plugins.clsDeprecatedParamsWarnedHooks[hook] = true;
+
+			winston.warn('[plugins] hook `' + hook + '` \'s `params.req`, `params.res`, `params.uid` and `params.socket` are being deprecated, '
+			+ 'plugins should use the `middleware/cls` module instead to get a reference to the http-req/res and socket (which you can get the current `uid`) '
+			+ '- for more info, visit https://docs.nodebb.org/en/latest/plugins/create.html#getting-a-reference-to-req-res-socket-and-uid-within-any-plugin-hook');
+		}
 
 		switch (hookType) {
 			case 'filter':
