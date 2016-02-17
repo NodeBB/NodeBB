@@ -1,15 +1,13 @@
 
 'use strict';
 
-var async = require('async'),
-	nconf = require('nconf'),
+var async = require('async');
 
-	db = require('./database'),
-	user = require('./user'),
-	Groups = require('./groups'),
-	plugins = require('./plugins'),
-	validator = require('validator'),
-	privileges = require('./privileges');
+var db = require('./database');
+var user = require('./user');
+var Groups = require('./groups');
+var plugins = require('./plugins');
+var privileges = require('./privileges');
 
 (function(Categories) {
 
@@ -27,37 +25,40 @@ var async = require('async'),
 	};
 
 	Categories.getCategoryById = function(data, callback) {
-		Categories.getCategories([data.cid], data.uid, function(err, categories) {
-			if (err || !Array.isArray(categories) || !categories[0]) {
-				return callback(err || new Error('[[error:invalid-cid]]'));
-			}
-			var category = categories[0];
-
-			if (parseInt(data.uid, 10)) {
-				Categories.markAsRead([data.cid], data.uid);
-			}
-
-			async.parallel({
-				topics: function(next) {
-					Categories.getCategoryTopics(data, next);
-				},
-				isIgnored: function(next) {
-					Categories.isIgnored([data.cid], data.uid, next);
+		var category;
+		async.waterfall([
+			function (next) {
+				Categories.getCategories([data.cid], data.uid, next);
+			},
+			function (categories, next) {
+				if (!Array.isArray(categories) || !categories[0]) {
+					return next(new Error('[[error:invalid-cid]]'));
 				}
-			}, function(err, results) {
-				if(err) {
-					return callback(err);
+				category = categories[0];
+				if (parseInt(data.uid, 10)) {
+					Categories.markAsRead([data.cid], data.uid);
 				}
 
+				async.parallel({
+					topics: function(next) {
+						Categories.getCategoryTopics(data, next);
+					},
+					isIgnored: function(next) {
+						Categories.isIgnored([data.cid], data.uid, next);
+					}
+				}, next);
+			},
+			function (results, next) {
 				category.topics = results.topics.topics;
 				category.nextStart = results.topics.nextStart;
 				category.isIgnored = results.isIgnored[0];
 
-				plugins.fireHook('filter:category.get', {category: category, uid: data.uid}, function(err, data) {
-					callback(err, data ? data.category : null);
-				});
-			});
-		});
+				plugins.fireHook('filter:category.get', {category: category, uid: data.uid}, next);
+			},
+			function (data, next) {
+				next(null, data.category);
+			}
+		], callback);
 	};
 
 	Categories.isIgnored = function(cids, uid, callback) {
