@@ -171,7 +171,7 @@ app.cacheBuster = null;
 
 	app.createUserTooltips = function(els) {
 		els = els || $('body');
-		els.find('img[title].teaser-pic,img[title].user-img,div.user-icon,span.user-icon').each(function() {
+		els.find('.avatar,img[title].teaser-pic,img[title].user-img,div.user-icon,span.user-icon').each(function() {
 			if (!utils.isTouchDevice()) {
 				$(this).tooltip({
 					placement: 'top',
