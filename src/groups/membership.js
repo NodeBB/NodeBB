@@ -15,19 +15,19 @@ module.exports = function(Groups) {
 		function join() {
 			var tasks = [
 				async.apply(db.sortedSetAdd, 'group:' + groupName + ':members', Date.now(), uid),
-				async.apply(db.incrObjectField, 'group:' + groupName, 'memberCount')				
+				async.apply(db.incrObjectField, 'group:' + groupName, 'memberCount')
 			];
 
 			async.waterfall([
 				function(next) {
 					async.parallel({
 						isAdmin: function(next) {
-							user.isAdministrator(uid, next);		
+							user.isAdministrator(uid, next);
 						},
 						isHidden: function(next) {
 							Groups.isHidden(groupName, next);
 						}
-					}, next);					
+					}, next);
 				},
 				function(results, next) {
 					if (results.isAdmin) {
@@ -213,10 +213,10 @@ module.exports = function(Groups) {
 					Groups.destroy(groupName, callback);
 				} else {
 					if (parseInt(groupData.hidden, 10) !== 1) {
-						db.sortedSetAdd('groups:visible:memberCount', groupData.memberCount, groupName, next);			
+						db.sortedSetAdd('groups:visible:memberCount', groupData.memberCount, groupName, callback);
 					} else {
-						callback();	
-					}					
+						callback();
+					}
 				}
 			});
 		});
