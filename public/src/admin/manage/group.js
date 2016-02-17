@@ -61,7 +61,9 @@ define('admin/manage/group', [
 									'data-usericon-bgColor': results.users[x]['icon:bgColor'],
 									'data-usericon-text': results.users[x]['icon:text']
 								})
-								.append(results.users[x].picture ? $('<img />').attr('src', results.users[x].picture) : $('<div />').addClass('user-icon').css('background-color', results.users[x]['icon:bgColor']).html(results.users[x]['icon:text']))
+								.append(results.users[x].picture ?
+									$('<img />').addClass('avatar avatar-sm').attr('src', results.users[x].picture) :
+									$('<div />').addClass('avatar avatar-sm').css('background-color', results.users[x]['icon:bgColor']).html(results.users[x]['icon:text']))
 								.append($('<span />').html(results.users[x].username));
 
 							groupDetailsSearchResults.append(foundUser);
