@@ -156,6 +156,7 @@ describe('Topic\'s', function() {
 					assert.ifError(err);
 					assert.strictEqual(topicData.titleEscaped, titleEscaped);
 					assert.strictEqual(topicData.title, title);
+					done();
 				});
 			});
 		});
