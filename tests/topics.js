@@ -1,11 +1,12 @@
 'use strict';
 /*global require, before, beforeEach, after*/
 
-var	assert = require('assert'),
-	db = require('./mocks/databasemock'),
-	topics = require('../src/topics'),
-	categories = require('../src/categories'),
-	User = require('../src/user');
+var	assert = require('assert');
+var validator = require('validator');
+var db = require('./mocks/databasemock');
+var topics = require('../src/topics');
+var categories = require('../src/categories');
+var User = require('../src/user');
 
 describe('Topic\'s', function() {
 	var topic,
@@ -140,6 +141,22 @@ describe('Topic\'s', function() {
 		describe('.getTopicData', function() {
 			it('should not receive errors', function(done) {
 				topics.getTopicData(newTopic.tid, done);
+			});
+		});
+	});
+
+	describe('Title escaping', function() {
+
+		it('should properly escape topic title', function(done) {
+			var title = '"<script>alert(\'ok1\');</script> new topic test';
+			var titleEscaped = validator.escape(title);
+			topics.post({uid: topic.userId, title: title, content: topic.content, cid: topic.categoryId}, function(err, result) {
+				assert.ifError(err);
+				topics.getTopicData(result.topicData.tid, function(err, topicData) {
+					assert.ifError(err);
+					assert.strictEqual(topicData.titleEscaped, titleEscaped);
+					assert.strictEqual(topicData.title, title);
+				});
 			});
 		});
 	});

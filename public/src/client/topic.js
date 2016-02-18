@@ -215,10 +215,11 @@ define('forum/topic', [
 	}
 
 	function updateTopicTitle() {
+		var span = components.get('navbar/title').find('span');
 		if ($(window).scrollTop() > 50) {
-			components.get('navbar/title').find('span').text(ajaxify.data.title).show();
+			span.html(ajaxify.data.titleEscaped).show();
 		} else {
-			components.get('navbar/title').find('span').text('').hide();
+			span.html('').hide();
 		}
 		app.removeAlert('bookmark');
 	}

@@ -138,12 +138,6 @@ define('forum/topic/posts', [
 			before = repliesSelector.first();
 		}
 
-		data.title = $('<div></div>').text(ajaxify.data.title).html();
-		data.slug = ajaxify.data.slug;
-		data.tags = ajaxify.data.tags;
-		data.viewcount = ajaxify.data.viewcount;
-		data.isFollowing = ajaxify.data.isFollowing;
-
 		$(window).trigger('action:posts.loading', {posts: data.posts, after: after, before: before});
 
 		app.parseAndTranslate('topic', 'posts', data, function(html) {
