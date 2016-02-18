@@ -97,8 +97,6 @@ module.exports = function(User) {
 				});
 			}
 			
-			console.log(userData);
-			
 			if(data.bannedOnly) {
 				userData = userData.filter(function(user) {
 					return user && user.banned;
