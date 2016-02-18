@@ -131,7 +131,7 @@ topicsController.get = function(req, res, callback) {
 					url: nconf.get('relative_path') + '/category/' + data.topicData.category.slug
 				},
 				{
-					text: validator.escape(data.topicData.title)
+					text: data.topicData.title
 				}
 			];
 

@@ -154,8 +154,8 @@ describe('Topic\'s', function() {
 				assert.ifError(err);
 				topics.getTopicData(result.topicData.tid, function(err, topicData) {
 					assert.ifError(err);
-					assert.strictEqual(topicData.titleEscaped, titleEscaped);
-					assert.strictEqual(topicData.title, title);
+					assert.strictEqual(topicData.titleRaw, title);
+					assert.strictEqual(topicData.title, titleEscaped);
 					done();
 				});
 			});

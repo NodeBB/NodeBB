@@ -217,7 +217,7 @@ define('forum/topic', [
 	function updateTopicTitle() {
 		var span = components.get('navbar/title').find('span');
 		if ($(window).scrollTop() > 50) {
-			span.html(ajaxify.data.titleEscaped).show();
+			span.html(ajaxify.data.title).show();
 		} else {
 			span.html('').hide();
 		}

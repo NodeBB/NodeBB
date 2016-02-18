@@ -194,7 +194,7 @@ define('forum/topic/postTools', ['share', 'navigator', 'components', 'translator
 						slug: ajaxify.data.slug,
 						index: getData(button, 'data-index'),
 						pid: toPid,
-						topicName: ajaxify.data.title,
+						topicName: ajaxify.data.titleRaw,
 						username: username,
 						text: selectionText
 					});
@@ -202,7 +202,7 @@ define('forum/topic/postTools', ['share', 'navigator', 'components', 'translator
 					$(window).trigger('action:composer.post.new', {
 						tid: tid,
 						pid: toPid,
-						topicName: ajaxify.data.title,
+						topicName: ajaxify.data.titleRaw,
 						text: username ? username + ' ' : ''
 					});
 				}
@@ -227,7 +227,7 @@ define('forum/topic/postTools', ['share', 'navigator', 'components', 'translator
 						index: getData(button, 'data-index'),
 						pid: pid,
 						username: username,
-						topicName: ajaxify.data.title,
+						topicName: ajaxify.data.titleRaw,
 						text: post
 					});
 				});
