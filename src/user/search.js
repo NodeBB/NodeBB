@@ -84,7 +84,7 @@ module.exports = function(User) {
 	function filterAndSortUids(uids, data, callback) {
 		var sortBy = data.sortBy || 'joindate';
 
-		var fields = ['uid', 'status', 'lastonline', sortBy];
+		var fields = ['uid', 'status', 'lastonline', 'banned', sortBy];
 
 		User.getUsersFields(uids, fields, function(err, userData) {
 			if (err) {
@@ -94,6 +94,14 @@ module.exports = function(User) {
 			if (data.onlineOnly) {
 				userData = userData.filter(function(user) {
 					return user && user.status !== 'offline' && (Date.now() - parseInt(user.lastonline, 10) < 300000);
+				});
+			}
+			
+			console.log(userData);
+			
+			if(data.bannedOnly) {
+				userData = userData.filter(function(user) {
+					return user && user.banned;
 				});
 			}
 
