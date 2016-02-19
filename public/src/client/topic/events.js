@@ -44,10 +44,7 @@ define('forum/topic/events', [
 		'posts.unvote': togglePostVote,
 
 		'event:new_notification': onNewNotification,
-		'event:new_post': posts.onNewPost,
-
-		'event:topic.notifyTyping': onNotifyTyping,
-		'event:topic.stopNotifyTyping': onStopNotifyTyping
+		'event:new_post': posts.onNewPost
 	};
 
 	Events.init = function() {
@@ -219,25 +216,5 @@ define('forum/topic/events', [
 		}
 	}
 
-	function onNotifyTyping(data) {
-		var userEl = $('.thread_active_users [data-uid="' + data.uid + '"]');
-		userEl.addClass('replying');
-
-		var timeoutId = userEl.attr('timeoutId');
-		if (timeoutId) {
-			clearTimeout(timeoutId);
-			timeoutId = 0;
-		}
-		timeoutId = setTimeout(function() {
-			userEl.removeClass('replying');
-		}, 7000);
-		userEl.attr('timeoutId', timeoutId);
-	}
-
-	function onStopNotifyTyping(data) {
-		$('.thread_active_users [data-uid="' + data.uid + '"]').removeClass('replying');
-	}
-
 	return Events;
-
 });
