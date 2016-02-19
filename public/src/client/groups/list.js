@@ -1,7 +1,7 @@
 "use strict";
 /* globals app, define, ajaxify, socket, bootbox, utils, templates */
 
-define('forum/groups/list', ['forum/infinitescroll'], function(infinitescroll) {
+define('forum/groups/list', ['forum/infinitescroll', 'translator'], function(infinitescroll, translator) {
 	var Groups = {};
 
 	Groups.init = function() {
@@ -17,18 +17,20 @@ define('forum/groups/list', ['forum/infinitescroll'], function(infinitescroll) {
 
 		// Group creation
 		$('button[data-action="new"]').on('click', function() {
-			bootbox.prompt('[[group:new-group.group_name]]', function(name) {
-				if (name && name.length) {
-					socket.emit('groups.create', {
-						name: name
-					}, function(err) {
-						if (!err) {
-							ajaxify.go('groups/' + utils.slugify(name));
-						} else {
-							app.alertError(err.message);
-						}
-					});
-				}
+			translator.translate('[[groups:new-group.group_name]]', function(translated) {
+				bootbox.prompt(translated, function(name) {
+					if (name && name.length) {
+						socket.emit('groups.create', {
+							name: name
+						}, function(err) {
+							if (!err) {
+								ajaxify.go('groups/' + utils.slugify(name));
+							} else {
+								app.alertError(err.message);
+							}
+						});
+					}
+				});
 			});
 		});
 		var params = utils.params();
