@@ -32,7 +32,7 @@
     "express": "^4.9.5",
     "express-session": "^1.8.2",
     "express-useragent": "0.2.4",
-    "html-to-text": "1.5.1",
+    "html-to-text": "1.6.1",
     "jimp": "0.2.21",
     "less": "^2.0.0",
     "logrotate-stream": "^0.2.3",
