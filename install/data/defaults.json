@@ -29,5 +29,6 @@
     "profileImageDimension": 128,
     "requireEmailConfirmation": 0,
     "allowProfileImageUploads": 1,
-    "teaserPost": "last"
+    "teaserPost": "last",
+    "allowPrivateGroups": 1
 }
