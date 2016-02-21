@@ -1,11 +1,12 @@
 "use strict";
 
-var	async = require('async');
+var async = require('async');
 var winston = require('winston');
 var nconf = require('nconf');
 var templates = require('templates.js');
 var nodemailer = require('nodemailer');
 var sendmailTransport = require('nodemailer-sendmail-transport');
+var smtpTransport = require('nodemailer-smtp-transport');
 var htmlToText = require('html-to-text');
 var url = require('url');
 
@@ -28,13 +29,15 @@ var fallbackTransport;
 
 		// Enable Gmail transport if enabled in ACP
 		if (parseInt(meta.config['email:GmailTransport:enabled'], 10) === 1) {
-			fallbackTransport = transports.gmail = nodemailer.createTransport('SMTP', {
-				service: 'Gmail',
+			fallbackTransport = transports.gmail = nodemailer.createTransport(smtpTransport({
+				host: 'smtp.gmail.com',
+				port: 465,
+				secure: true,
 				auth: {
 					user: meta.config['email:GmailTransport:user'],
 					pass: meta.config['email:GmailTransport:pass']
 				}
-			});
+			}));
 		} else {
 			fallbackTransport = transports.sendmail;
 		}
