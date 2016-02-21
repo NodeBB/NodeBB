@@ -392,6 +392,8 @@ define('forum/chats', ['components', 'string', 'sounds', 'forum/infinitescroll',
 	Chats.onChatEdit = function() {
 		socket.on('event:chats.edit', function(data) {
 			data.messages.forEach(function(message) {
+				var self = parseInt(message.fromuid, 10) === parseInt(app.user.uid);
+				message.self = self ? 1 : 0;
 				templates.parse('partials/chat_message', {
 					messages: message
 				}, function(html) {

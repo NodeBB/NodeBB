@@ -106,6 +106,7 @@
 	"chat-message-too-long": "Chat message is too long",
 	"cant-edit-chat-message": "You are not allowed to edit this message",
 	"cant-remove-last-user": "You can't remove the last user",
+	"cant-delete-chat-message": "You are not allowed to delete this message",
 
 	"reputation-system-disabled": "Reputation system is disabled.",
 	"downvoting-disabled": "Downvoting is disabled",
@@ -122,5 +123,6 @@
 
 	"invite-maximum-met": "You have invited the maximum amount of people (%1 out of %2).",
 
-	"no-session-found": "No login session found!"
+	"no-session-found": "No login session found!",
+	"not-in-room": "User not in room"
 }
