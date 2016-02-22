@@ -182,7 +182,7 @@ define('forum/topic/postTools', ['share', 'navigator', 'components', 'translator
 				}
 
 				var username = getUserName(selectionText ? $(selection.baseNode) : button);
-				if (getData(button, 'data-uid') === '0') {
+				if (getData(button, 'data-uid') === '0' || !getData(button, 'data-userslug')) {
 					username = '';
 				}
 
