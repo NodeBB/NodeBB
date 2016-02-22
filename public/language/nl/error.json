@@ -24,7 +24,7 @@
     "confirm-email-already-sent": "Bevestigingsbericht per e-mail al zojuist verzonden, wacht even een %1 tal minuutjes voordat opnieuw een bericht verzonden wordt.",
     "username-too-short": "Gebruikersnaam bevat niet voldoende tekens",
     "username-too-long": "Gebruikersnaam bevat meer dan het toegestane aantal tekens",
-    "password-too-long": "Password too long",
+    "password-too-long": "Wachtwoord te lang",
     "user-banned": "Gebruiker verbannen",
     "user-too-new": "Helaas, het is een vereiste om %1 seconde(n) te wachten voordat het eerste bericht geplaatst kan worden.",
     "no-category": "Categorie bestaat niet",

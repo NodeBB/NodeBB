@@ -51,11 +51,14 @@ function preparePaths(baseTemplatesPaths, callback) {
 	var coreTemplatesPath = nconf.get('core_templates_path'),
 		viewsPath = nconf.get('views_dir');
 
-	plugins.getTemplates(function(err, pluginTemplates) {
+	async.waterfall([
+		async.apply(plugins.fireHook, 'static:templates.precompile', {}),
+		async.apply(plugins.getTemplates)
+	], function(err, pluginTemplates) {
 		if (err) {
 			return callback(err);
 		}
-		
+
 		winston.verbose('[meta/templates] Compiling templates');
 		rimraf.sync(viewsPath);
 		mkdirp.sync(viewsPath);

@@ -24,7 +24,7 @@
     "confirm-email-already-sent": "O correo de confirmación foi enviado, agarda %1 minute(s) para enviar outro.",
     "username-too-short": "Nome de usuario demasiado curto",
     "username-too-long": "Nome de usuario demasiado longo.",
-    "password-too-long": "Password too long",
+    "password-too-long": "Contrasinal moi longa",
     "user-banned": "Usuario expulsado",
     "user-too-new": "Desculpa, agarda %1 second(s) antes de facer a túa primeira publicación.",
     "no-category": "A categoría non existe",
@@ -49,7 +49,7 @@
     "too-many-tags": "Moitas etiquetas. Os temas non poden ter máis de %1 etiqueta(s).",
     "still-uploading": "Por favor, agarda a que remate a subida.",
     "file-too-big": "O tamaño máximo permitido é %1 kB - por favor, sube un arquivo máis pequeno",
-    "guest-upload-disabled": "Guest uploading has been disabled",
+    "guest-upload-disabled": "As subidas están deshabilitadas para os convidados",
     "already-favourited": "Marcache como favorita esta publicación",
     "already-unfavourited": "Desmarcache como favorita esta publicación",
     "cant-ban-other-admins": "Non podes botar outros administradores!",
@@ -94,5 +94,5 @@
     "wrong-login-type-email": "Por favor, emprega o teu correo para contectarte",
     "wrong-login-type-username": "Por favor, usa o teu nome de usuario para conectarte",
     "invite-maximum-met": "Convidaches á cantidade máxima de persoas  (%1 de %2).",
-    "no-session-found": "No login session found!"
+    "no-session-found": "Non se atopa ningún inicio de sesión!"
 }

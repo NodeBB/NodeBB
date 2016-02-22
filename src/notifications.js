@@ -44,9 +44,6 @@ var async = require('async'),
 					return next(null, null);
 				}
 
-				if (notification.bodyShort) {
-					notification.bodyShort = S(notification.bodyShort).escapeHTML().s;
-				}
 				if (notification.bodyLong) {
 					notification.bodyLong = S(notification.bodyLong).escapeHTML().s;
 				}
@@ -388,9 +385,9 @@ var async = require('async'),
 						var numUsers = usernames.length;
 
 						if (numUsers === 2) {
-							notifications[modifyIndex].bodyShort = '[[' + mergeId + '_dual, ' + usernames.join(', ') + ', ' + notifications[modifyIndex].topicTitle + ']]'
+							notifications[modifyIndex].bodyShort = '[[' + mergeId + '_dual, ' + usernames.join(', ') + ', ' + notifications[modifyIndex].topicTitle + ']]';
 						} else if (numUsers > 2) {
-							notifications[modifyIndex].bodyShort = '[[' + mergeId + '_multiple, ' + usernames[0] + ', ' + (numUsers-1) + ', ' + notifications[modifyIndex].topicTitle + ']]'
+							notifications[modifyIndex].bodyShort = '[[' + mergeId + '_multiple, ' + usernames[0] + ', ' + (numUsers-1) + ', ' + notifications[modifyIndex].topicTitle + ']]';
 						}
 						break;
 				}

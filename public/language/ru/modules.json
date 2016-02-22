@@ -7,7 +7,7 @@
     "chat.user_has_messaged_you": "%1 отправил вам сообщение.",
     "chat.see_all": "Посмотреть все чаты",
     "chat.no-messages": "Пожалуйста, выберите собеседника для просмотра истории сообщений",
-    "chat.no-users-in-room": "No users in this room",
+    "chat.no-users-in-room": "В этой комнате нет пользователей",
     "chat.recent-chats": "Последние переписки",
     "chat.contacts": "Контакты",
     "chat.message-history": "История сообщений",
@@ -17,8 +17,8 @@
     "chat.thirty_days": "30 дней",
     "chat.three_months": "3 месяца",
     "chat.delete_message_confirm": "Вы уверены, что хотите удалить это сообщение?",
-    "chat.roomname": "Chat Room %1",
-    "chat.add-users-to-room": "Add users to room",
+    "chat.roomname": "Комната %1",
+    "chat.add-users-to-room": "Добавить пользователей в комнату",
     "composer.compose": "Редактор",
     "composer.show_preview": "Показать предпросмотр",
     "composer.hide_preview": "Скрыть предпросмотр",
@@ -31,7 +31,7 @@
     "bootbox.ok": "ОК",
     "bootbox.cancel": "Отмена",
     "bootbox.confirm": "Подтвердить",
-    "cover.dragging_title": "Cover Photo Positioning",
-    "cover.dragging_message": "Drag the cover photo to the desired position and click \"Save\"",
-    "cover.saved": "Cover photo image and position saved"
+    "cover.dragging_title": "Позиционирование обложки",
+    "cover.dragging_message": "Перетащите обложку на желаемое положение и нажмите \"Сохранить\"",
+    "cover.saved": "Обложка и расположение сохранены"
 }

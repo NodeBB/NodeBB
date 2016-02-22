@@ -1,26 +1,29 @@
 "use strict";
 
-var topicsController = {},
-	async = require('async'),
-	S = require('string'),
-	nconf = require('nconf'),
 
-	user = require('../user'),
-	meta = require('../meta'),
-	topics = require('../topics'),
-	posts = require('../posts'),
-	privileges = require('../privileges'),
-	plugins = require('../plugins'),
-	helpers = require('./helpers'),
-	pagination = require('../pagination'),
-	utils = require('../../public/src/utils');
+var async = require('async');
+var S = require('string');
+var nconf = require('nconf');
+var validator = require('validator');
+
+var user = require('../user');
+var meta = require('../meta');
+var topics = require('../topics');
+var posts = require('../posts');
+var privileges = require('../privileges');
+var plugins = require('../plugins');
+var helpers = require('./helpers');
+var pagination = require('../pagination');
+var utils = require('../../public/src/utils');
+
+var topicsController = {};
 
 topicsController.get = function(req, res, callback) {
-	var tid = req.params.topic_id,
-		sort = req.query.sort,
-		currentPage = parseInt(req.query.page, 10) || 1,
-		pageCount = 1,
-		userPrivileges;
+	var tid = req.params.topic_id;
+	var sort = req.query.sort;
+	var currentPage = parseInt(req.query.page, 10) || 1;
+	var pageCount = 1;
+	var userPrivileges;
 
 	if ((req.params.post_index && !utils.isNumber(req.params.post_index)) || !utils.isNumber(tid)) {
 		return callback();
@@ -187,7 +190,7 @@ topicsController.get = function(req, res, callback) {
 				},
 				{
 					property: 'og:title',
-					content: topicData.title.replace(/&amp;/g, '&')
+					content: topicData.title
 				},
 				{
 					property: 'og:description',

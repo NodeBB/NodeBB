@@ -1,11 +1,11 @@
 {
-    "username-email": "Username / Email",
-    "username": "Username",
-    "email": "Email",
+    "username-email": "ユーザー名またはメールアドレス",
+    "username": "ユーザー名",
+    "email": "メール",
     "remember_me": "ログイン情報を記憶",
-    "forgot_password": "パスワードがわからない？",
+    "forgot_password": "パスワードを忘れましたか？",
     "alternative_logins": "ほかのログイン方法",
     "failed_login_attempt": "ログインに失敗しました.ユーザー名やパスワードをご確認ください。",
     "login_successful": "ログインしました！",
-    "dont_have_account": "Don't have an account?"
+    "dont_have_account": "アカウントをもっていませんか?"
 }

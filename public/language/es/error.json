@@ -24,7 +24,7 @@
     "confirm-email-already-sent": "El email de confirmación ya ha sido enviado, por favor espera %1 minuto(s) para enviar otro.",
     "username-too-short": "Nombre de usuario es demasiado corto",
     "username-too-long": "Nombre de usuario demasiado largo",
-    "password-too-long": "Password too long",
+    "password-too-long": "Contraseña muy corta",
     "user-banned": "Usuario baneado",
     "user-too-new": "Lo sentimos, es necesario que esperes %1 segundo(s) antes poder hacer tu primera publicación",
     "no-category": "La categoría no existe",
