@@ -17,20 +17,18 @@ define('forum/groups/list', ['forum/infinitescroll', 'translator'], function(inf
 
 		// Group creation
 		$('button[data-action="new"]').on('click', function() {
-			translator.translate('[[groups:new-group.group_name]]', function(translated) {
-				bootbox.prompt(translated, function(name) {
-					if (name && name.length) {
-						socket.emit('groups.create', {
-							name: name
-						}, function(err) {
-							if (!err) {
-								ajaxify.go('groups/' + utils.slugify(name));
-							} else {
-								app.alertError(err.message);
-							}
-						});
-					}
-				});
+			bootbox.prompt('[[groups:new-group.group_name]]', function(name) {
+				if (name && name.length) {
+					socket.emit('groups.create', {
+						name: name
+					}, function(err) {
+						if (!err) {
+							ajaxify.go('groups/' + utils.slugify(name));
+						} else {
+							app.alertError(err.message);
+						}
+					});
+				}
 			});
 		});
 		var params = utils.params();
