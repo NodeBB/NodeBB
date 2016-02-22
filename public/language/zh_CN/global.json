@@ -4,9 +4,9 @@
     "buttons.close": "关闭",
     "403.title": "禁止访问",
     "403.message": "您遇到了没有权限访问的页面。",
-    "403.login": "或许您应该 <a href='%1/login'>试试登入</a>?",
+    "403.login": "或许您应该 <a href='%1/login'>试试登录</a>?",
     "404.title": "未找到",
-    "404.message": "您遇到了不存在的页面。返回<a href='%1/'>首页</a>。",
+    "404.message": "您访问的页面不存在。返回<a href='%1/'>首页</a>。",
     "500.title": "内部错误。",
     "500.message": "哎呀！看来是哪里出错了！",
     "register": "注册",
@@ -49,7 +49,7 @@
     "users": "会员",
     "topics": "主题",
     "posts": "帖子",
-    "best": "Best",
+    "best": "最佳",
     "upvoted": "Upvoted",
     "downvoted": "Downvoted",
     "views": "浏览",
@@ -87,6 +87,6 @@
     "unfollow": "取消关注",
     "delete_all": "全部删除",
     "map": "地图",
-    "sessions": "已登陆的会话",
+    "sessions": "已登录的会话",
     "ip_address": "IP地址"
 }

@@ -24,7 +24,7 @@
     "details.has_no_posts": "Пользователями этой группы не публиковали никаких записей",
     "details.latest_posts": "Последние записи",
     "details.private": "Приватная",
-    "details.disableJoinRequests": "Disable join requests",
+    "details.disableJoinRequests": "Отключить запросы на приглашение",
     "details.grant": "Выдать/забрать администратора",
     "details.kick": "Исключить",
     "details.owner_options": "Настройки группы",

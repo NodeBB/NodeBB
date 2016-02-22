@@ -49,9 +49,9 @@
     "users": "Usuarios ",
     "topics": "Temas",
     "posts": "Publicacións",
-    "best": "Best",
-    "upvoted": "Upvoted",
-    "downvoted": "Downvoted",
+    "best": "Mellor",
+    "upvoted": "Votado positivamente",
+    "downvoted": "Votado negativamente",
     "views": "Vistas",
     "reputation": "Reputación",
     "read_more": "ler máis",
@@ -87,6 +87,6 @@
     "unfollow": "Deixar de seguir",
     "delete_all": "Borrar todo",
     "map": "Mapa",
-    "sessions": "Login Sessions",
+    "sessions": "Inicios de sesión",
     "ip_address": "Enderezo IP"
 }

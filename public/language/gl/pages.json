@@ -35,9 +35,9 @@
     "account/favourites": "%1's Publicacións Favoritas",
     "account/settings": "Opcións de Usuario",
     "account/watched": "Temas vistos por %1",
-    "account/upvoted": "Posts upvoted by %1",
-    "account/downvoted": "Posts downvoted by %1",
-    "account/best": "Best posts made by %1",
+    "account/upvoted": "Mensaxes votadas positivamente por %1",
+    "account/downvoted": "Mensaxes votadas negativamente por %1",
+    "account/best": "Mellores mensaxes escritas por %1",
     "maintenance.text": "%1 está baixo mantemento. Por favor, volve máis tarde.",
     "maintenance.messageIntro": "A máis, o administrador deixou esta mensaxe: ",
     "throttled.text": "&1 non está dispoñible debido a unha carga excesiva. Por favor, volva noutro momento"

@@ -25,7 +25,7 @@
     "chat": "Чат с %1",
     "account/edit": "Редактирование \"%1\"",
     "account/edit/password": "Редактирование пароля \"%1\"",
-    "account/edit/username": "Editing username of \"%1\"",
+    "account/edit/username": "Редактирование имени пользователя \"%1\"",
     "account/edit/email": "Редактирование email \"%1\"",
     "account/following": "Наблюдают %1",
     "account/followers": "Кто наблюдает %1",

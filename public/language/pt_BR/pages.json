@@ -35,9 +35,9 @@
     "account/favourites": "Posts Favoritos de %1",
     "account/settings": "Configurações de Usuário",
     "account/watched": "Tópicos assistidos por %1",
-    "account/upvoted": "Posts upvoted by %1",
-    "account/downvoted": "Posts downvoted by %1",
-    "account/best": "Best posts made by %1",
+    "account/upvoted": "Posts votados positivamente por %1",
+    "account/downvoted": "Posts votados negativamente por %1",
+    "account/best": "Melhores posts de %1",
     "maintenance.text": "%1 está atualmente sob manutenção. Por favor retorne em outro momento.",
     "maintenance.messageIntro": "Adicionalmente, o administrador deixou esta mensagem:",
     "throttled.text": "%1 está atualmente indisponível devido a excesso de contingente. Por favor retorne em outro momento."

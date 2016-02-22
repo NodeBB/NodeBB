@@ -1,7 +1,7 @@
 {
     "register": "登録",
-    "help.email": "デフォルト設定ではメールアドレスは公開されません。",
-    "help.username_restrictions": "%1 から %2 文字までのユニークなユーザー名.Twitter の @<span id='yourUsername'>username</span> 方式でメンションすることができます。",
+    "help.email": "初期設定ではメールアドレスは公開されません。",
+    "help.username_restrictions": "%1から%2 文字までのユニークなユーザー名.ツイッター（twitter）の@<span id='yourUsername'>username</span> 方式でメンションすることができます。",
     "help.minimum_password_length": "パスワードには最小 %1 文字が必要です。",
     "email_address": "メールアドレス",
     "email_address_placeholder": "メールアドレスを入力ください",
@@ -15,5 +15,5 @@
     "alternative_registration": "ほかの登録方法",
     "terms_of_use": "利用規約",
     "agree_to_terms_of_use": "利用規約に同意する",
-    "registration-added-to-queue": "Your registration has been added to the approval queue. You will receive an email when it is accepted by an administrator."
+    "registration-added-to-queue": "あなたの登録申請は承認キューに追加されました。管理者によって受け入れられた時に、メールを受信します。"
 }
