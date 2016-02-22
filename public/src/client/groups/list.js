@@ -1,7 +1,7 @@
 "use strict";
 /* globals app, define, ajaxify, socket, bootbox, utils, templates */
 
-define('forum/groups/list', ['forum/infinitescroll', 'translator'], function(infinitescroll, translator) {
+define('forum/groups/list', ['forum/infinitescroll'], function(infinitescroll) {
 	var Groups = {};
 
 	Groups.init = function() {
