@@ -348,7 +348,7 @@ define('chat', ['components', 'taskbar', 'string', 'sounds', 'forum/chats', 'tra
 		socket.emit('modules.chats.markRead', chatModal.attr('roomId'));
 
 		var env = utils.findBootstrapEnvironment();
-		if (env === 'xs') {
+		if (env === 'xs' || env === 'sm') {
 			module.enableMobileBehaviour(chatModal);
 		}
 	};
