@@ -42,7 +42,7 @@
 	<a href="{url}">[[email:digest.cta, {site_title}]]</a>
 </p>
 
-{footer}
+<!-- IMPORT emails/partials/footer.tpl -->
 
 <hr />
 <p>

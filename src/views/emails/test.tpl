@@ -2,4 +2,4 @@
 
 <p>[[email:test.text1]]</p>
 
-{footer}
+<!-- IMPORT emails/partials/footer.tpl -->

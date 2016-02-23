@@ -10,4 +10,4 @@
 	<a href="{confirm_link}">[[email:welcome.cta]]</a>
 </blockquote>
 
-{footer}
+<!-- IMPORT emails/partials/footer.tpl -->

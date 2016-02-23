@@ -140,20 +140,11 @@ var fallbackTransport;
 	}
 
 	function renderAndTranslate(tpl, params, lang, callback) {
-		async.waterfall([
-			function(next) {
-				render('emails/partials/footer' + (tpl.indexOf('_plaintext') !== -1 ? '_plaintext' : ''), params, next);
-			},
-			function(footer, next) {
-				params.footer = footer;
-				render(tpl, params, next);
-			},
-			function(html, next) {
-				translator.translate(html, lang, function(translated) {
-					next(null, translated);
-				});
-			}
-		], callback);
+		render(tpl, params, function(err, html) {
+			translator.translate(html, lang, function(translated) {
+				callback(err, translated);
+			});
+		});
 	}
 
 	function getHostname() {

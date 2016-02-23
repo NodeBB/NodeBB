@@ -4,4 +4,4 @@
 
 <p>[[email:reset.notify.text2]]</p>
 
-{footer}
+<!-- IMPORT emails/partials/footer.tpl -->
