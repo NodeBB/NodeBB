@@ -55,6 +55,11 @@ var async = require('async'),
 						}
 						notification.image = userData.picture || null;
 						notification.user = userData;
+
+						if (userData.username === '[[global:guest]]') {
+							notification.bodyShort = notification.bodyShort.replace(/([\s\S]*?),[\s\S]*?,([\s\S]*?)/, '$1, [[global:guest]], $2');
+						}
+						
 						next(null, notification);
 					});
 					return;
