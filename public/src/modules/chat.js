@@ -277,6 +277,13 @@ define('chat', ['components', 'taskbar', 'string', 'sounds', 'forum/chats', 'tra
 						Chats.delete(messageId, data.roomId);
 					});
 
+				chatModal.find('[component="chat/controlsToggle"]').on('click', function() {
+					var messagesEl = chatModal.find('[component="chat/messages"]');
+
+					chatModal.find('[component="chat/controls"]').toggle();
+					messagesEl.css('height', module.calculateChatListHeight(chatModal));
+				});
+
 				Chats.addSinceHandler(chatModal.attr('roomId'), chatModal.find('.chat-content'), chatModal.find('[data-since]'));
 				Chats.addRenameHandler(chatModal.attr('roomId'), chatModal.find('[component="chat/room/name"]'));
 
@@ -375,7 +382,7 @@ define('chat', ['components', 'taskbar', 'string', 'sounds', 'forum/chats', 'tra
 			sinceHeight = modalEl.find('.since-bar').outerHeight(true),
 			inputGroupHeight = modalEl.find('.input-group').outerHeight();
 
-		return totalHeight - padding - contentMargin - sinceHeight - inputGroupHeight;
+		return totalHeight - padding - contentMargin - inputGroupHeight;
 	};
 
 	module.minimize = function(uuid) {
