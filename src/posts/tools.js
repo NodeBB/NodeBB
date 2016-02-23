@@ -1,9 +1,9 @@
 'use strict';
 
-var async = require('async'),
+var async = require('async');
 
-	privileges = require('../privileges'),
-	cache = require('./cache');
+var privileges = require('../privileges');
+var cache = require('./cache');
 
 module.exports = function(Posts) {
 	Posts.tools = {};
@@ -40,25 +40,20 @@ module.exports = function(Posts) {
 				if (!canEdit) {
 					return next(new Error('[[error:no-privileges]]'));
 				}
-				next();
-			}
-		], function (err) {
-			if (err) {
-				return callback(err);
-			}
 
-			if (isDelete) {
-				cache.del(pid);
-				Posts.delete(pid, callback);
-			} else {
-				Posts.restore(pid, function(err, postData) {
-					if (err) {
-						return callback(err);
-					}
-					Posts.parsePost(postData, callback);
-				});
+				if (isDelete) {
+					cache.del(pid);
+					Posts.delete(pid, uid, next);
+				} else {
+					Posts.restore(pid, uid, function(err, postData) {
+						if (err) {
+							return next(err);
+						}
+						Posts.parsePost(postData, next);
+					});
+				}
 			}
-		});
+		], callback);
 	}
 
 	Posts.tools.purge = function(uid, pid, callback) {
@@ -71,7 +66,7 @@ module.exports = function(Posts) {
 					return next(new Error('[[error:no-privileges]]'));
 				}
 				cache.del(pid);
-				Posts.purge(pid, next);
+				Posts.purge(pid, uid, next);
 			}
 		], callback);
 	};

@@ -1,31 +1,32 @@
 'use strict';
 
-var async = require('async'),
-	_ = require('underscore'),
+var async = require('async');
+var _ = require('underscore');
 
-	db = require('../database'),
-	topics = require('../topics'),
-	user = require('../user'),
-	plugins = require('../plugins');
+var db = require('../database');
+var topics = require('../topics');
+var user = require('../user');
+var plugins = require('../plugins');
 
 module.exports = function(Posts) {
 
-	Posts.delete = function(pid, callback) {
+	Posts.delete = function(pid, uid, callback) {
 		var postData;
 		async.waterfall([
-			function(next) {
+			function (next) {
+				plugins.fireHook('filter:post.delete', {pid: pid, uid: uid}, next);
+			},
+			function (data, next) {
 				Posts.setPostField(pid, 'deleted', 1, next);
 			},
-			function(next) {
+			function (next) {
 				Posts.getPostFields(pid, ['pid', 'tid', 'uid', 'timestamp'], next);
 			},
-			function(_post, next) {
+			function (_post, next) {
 				postData = _post;
 				topics.getTopicField(_post.tid, 'cid', next);
 			},
-			function(cid, next) {
-				plugins.fireHook('action:post.delete', pid);
-
+			function (cid, next) {
 				async.parallel([
 					function(next) {
 						updateTopicTimestamp(postData.tid, next);
@@ -40,29 +41,31 @@ module.exports = function(Posts) {
 						topics.updateTeaser(postData.tid, next);
 					}
 				], function(err) {
+					plugins.fireHook('action:post.delete', pid);
 					next(err, postData);
 				});
 			}
 		], callback);
 	};
 
-	Posts.restore = function(pid, callback) {
+	Posts.restore = function(pid, uid, callback) {
 		var postData;
 		async.waterfall([
-			function(next) {
+			function (next) {
+				plugins.fireHook('filter:post.restore', {pid: pid, uid: uid}, next);
+			},
+			function (data, next) {
 				Posts.setPostField(pid, 'deleted', 0, next);
 			},
-			function(next) {
+			function (next) {
 				Posts.getPostFields(pid, ['pid', 'tid', 'uid', 'content', 'timestamp'], next);
 			},
-			function(_post, next) {
+			function (_post, next) {
 				postData = _post;
 				topics.getTopicField(_post.tid, 'cid', next);
 			},
-			function(cid, next) {
+			function (cid, next) {
 				postData.cid = cid;
-				plugins.fireHook('action:post.restore', _.clone(postData));
-
 				async.parallel([
 					function(next) {
 						updateTopicTimestamp(postData.tid, next);
@@ -74,6 +77,7 @@ module.exports = function(Posts) {
 						topics.updateTeaser(postData.tid, next);
 					}
 				], function(err) {
+					plugins.fireHook('action:post.restore', _.clone(postData));
 					next(err, postData);
 				});
 			}
@@ -99,40 +103,46 @@ module.exports = function(Posts) {
 		});
 	}
 
-	Posts.purge = function(pid, callback) {
-		Posts.exists(pid, function(err, exists) {
-			if (err || !exists) {
-				return callback(err);
+	Posts.purge = function(pid, uid, callback) {
+		async.waterfall([
+			function (next) {
+				Posts.exists(pid, next);
+			},
+			function (exists, next) {
+				if (!exists) {
+					return callback();
+				}
+				plugins.fireHook('filter:post.purge', {pid: pid, uid: uid}, next);
+			},
+			function (data, next) {
+				async.parallel([
+					function (next) {
+						deletePostFromTopicAndUser(pid, next);
+					},
+					function (next) {
+						deletePostFromCategoryRecentPosts(pid, next);
+					},
+					function (next) {
+						deletePostFromUsersFavourites(pid, next);
+					},
+					function (next) {
+						deletePostFromUsersVotes(pid, next);
+					},
+					function (next) {
+						db.sortedSetsRemove(['posts:pid', 'posts:flagged'], pid, next);
+					},
+					function (next) {
+						Posts.dismissFlag(pid, next);
+					}
+				], function(err) {
+					if (err) {
+						return next(err);
+					}
+					plugins.fireHook('action:post.purge', pid);
+					db.delete('post:' + pid, next);
+				});
 			}
-
-			async.parallel([
-				function(next) {
-					deletePostFromTopicAndUser(pid, next);
-				},
-				function(next) {
-					deletePostFromCategoryRecentPosts(pid, next);
-				},
-				function(next) {
-					deletePostFromUsersFavourites(pid, next);
-				},
-				function(next) {
-					deletePostFromUsersVotes(pid, next);
-				},
-				function(next) {
-					db.sortedSetsRemove(['posts:pid', 'posts:flagged'], pid, next);
-				},
-				function(next) {
-					Posts.dismissFlag(pid, next);
-				}
-			], function(err) {
-				if (err) {
-					return callback(err);
-				}
-
-				plugins.fireHook('action:post.purge', pid);
-				db.delete('post:' + pid, callback);
-			});
-		});
+		], callback);
 	};
 
 	function deletePostFromTopicAndUser(pid, callback) {
