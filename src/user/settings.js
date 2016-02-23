@@ -91,8 +91,12 @@ module.exports = function(User) {
 	}
 
 	User.saveSettings = function(uid, data, callback) {
-		if (invalidPaginationSettings(data)) {
-			return callback(new Error('[[error:invalid-pagination-value]]'));
+		if (!data.postsPerPage || parseInt(data.postsPerPage, 10) <= 1 || parseInt(data.postsPerPage, 10) > meta.config.postsPerPage) {
+			return callback(new Error('[[error:invalid-pagination-value, 2, ' + meta.config.postsPerPage + ']]'));
+		}
+
+		if (!data.topicsPerPage || parseInt(data.topicsPerPage, 10) <= 1 || parseInt(data.topicsPerPage, 10) > meta.config.topicsPerPage) {
+			return callback(new Error('[[error:invalid-pagination-value, 2, ' + meta.config.topicsPerPage + ']]'));
 		}
 
 		data.userLang = data.userLang || meta.config.defaultLang;
@@ -135,12 +139,6 @@ module.exports = function(User) {
 			}
 		], callback);
 	};
-
-	function invalidPaginationSettings(data) {
-		return !data.topicsPerPage || !data.postsPerPage ||
-			parseInt(data.topicsPerPage, 10) <= 0 || parseInt(data.postsPerPage, 10) <= 0 ||
-			parseInt(data.topicsPerPage, 10) > meta.config.topicsPerPage || parseInt(data.postsPerPage, 10) > meta.config.postsPerPage;
-	}
 
 	function updateDigestSetting(uid, dailyDigestFreq, callback) {
 		async.waterfall([

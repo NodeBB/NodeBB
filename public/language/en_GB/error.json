@@ -18,7 +18,7 @@
 	"invalid-username-or-password": "Please specify both a username and password",
 	"invalid-search-term": "Invalid search term",
 
-	"invalid-pagination-value": "Invalid pagination value",
+	"invalid-pagination-value": "Invalid pagination value, must be at least %1 and at most %2",
 
 	"username-taken": "Username taken",
 	"email-taken": "Email taken",
