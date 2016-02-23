@@ -186,12 +186,12 @@ module.exports = function(Topics) {
 	};
 
 	Topics.reply = function(data, callback) {
-		var tid = data.tid,
-			uid = data.uid,
-			content = data.content,
-			postData;
-
+		var tid = data.tid;
+		var uid = data.uid;
+		var content = data.content;
+		var postData;
 		var cid;
+
 		async.waterfall([
 			function(next) {
 				Topics.getTopicField(tid, 'cid', next);

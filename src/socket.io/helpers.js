@@ -3,7 +3,6 @@
 var async = require('async');
 var winston = require('winston');
 var nconf = require('nconf');
-var validator = require('validator');
 
 var websockets = require('./index');
 var user = require('../user');
@@ -16,13 +15,12 @@ var plugins = require('../plugins');
 var SocketHelpers = {};
 
 SocketHelpers.notifyOnlineUsers = function(uid, result) {
-	var cid = result.posts[0].topic.cid;
 	async.waterfall([
 		function(next) {
 			user.getUidsFromSet('users:online', 0, -1, next);
 		},
 		function(uids, next) {
-			privileges.categories.filterUids('read', cid, uids, next);
+			privileges.topics.filterUids('read', result.posts[0].topic.tid, uids, next);
 		},
 		function(uids, next) {
 			plugins.fireHook('filter:sockets.sendNewPostToUids', {uidsTo: uids, uidFrom: uid, type: 'newPost'}, next);
