@@ -123,7 +123,7 @@ var async = require('async'),
 					return null;
 				}
 
-				notification.path = pidToPaths[notification.pid] || notification.path || '';
+				notification.path = pidToPaths[notification.pid] || notification.path || null;
 
 				if (notification.nid.startsWith('follow')) {
 					notification.path = '/user/' + notification.user.userslug;
@@ -131,6 +131,9 @@ var async = require('async'),
 
 				notification.datetimeISO = utils.toISOString(notification.datetime);
 				return notification;
+			}).filter(function(notification) {
+				// Remove notifications that do not resolve to a path
+				return notification.path !== null;
 			});
 
 			callback(null, notifications);
@@ -157,7 +160,7 @@ var async = require('async'),
 					posts.getPostIndices(postData, uid, next);
 				},
 				topics: function(next) {
-					db.getObjectsFields(topicKeys, ['slug'], next);
+					db.getObjectsFields(topicKeys, ['slug', 'deleted'], next);
 				}
 			}, function(err, results) {
 				if (err) {
@@ -166,6 +169,11 @@ var async = require('async'),
 
 				var pidToPaths = {};
 				pids.forEach(function(pid, index) {
+					if (parseInt(results.topics[index].deleted, 10) === 1) {
+						pidToPaths[pid] = null;
+						return;
+					}
+
 					var slug = results.topics[index] ? results.topics[index].slug : null;
 					var postIndex = utils.isNumber(results.indices[index]) ? parseInt(results.indices[index], 10) + 1 : null;
 
