@@ -69,7 +69,13 @@ module.exports = function(grunt) {
 	});
 
 	grunt.loadNpmTasks('grunt-contrib-watch');
-	grunt.registerTask('default', ['watch']);
+
+	if (grunt.option('skip')) {
+		grunt.registerTask('default', ['watch:serverUpdated']);
+	} else {
+		grunt.registerTask('default', ['watch']);
+	}
+	
 
 	env.NODE_ENV = 'development';
 
