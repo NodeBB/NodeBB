@@ -411,10 +411,13 @@ define('forum/chats', ['components', 'string', 'sounds', 'forum/infinitescroll',
 		if (messagesList.length) {
 			var	margin = $('.expanded-chat ul').outerHeight(true) - $('.expanded-chat ul').height(),
 				inputHeight = $('.chat-input').outerHeight(true),
-				fromTop = messagesList.offset().top;
+				fromTop = messagesList.offset().top,
+				searchHeight = $('.chat-search').height(),
+				searchListHeight = $('[component="chat/search/list"]').outerHeight(true) - $('[component="chat/search/list"]').height();
 
 			messagesList.height($(window).height() - (fromTop + inputHeight + (margin * 4)));
-			components.get('chat/recent').height($('.expanded-chat').height());
+			components.get('chat/recent').height($('.expanded-chat').height() - (searchHeight + searchListHeight));
+			$('[component="chat/search/list"]').css('max-height', components.get('chat/recent').height()/2 + 'px');
 		}
 
 		Chats.setActive();
