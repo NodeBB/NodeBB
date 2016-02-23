@@ -14,7 +14,7 @@
     "invalid-password": "Ijambobanga Ntiryemewe",
     "invalid-username-or-password": "Tanga izina ukoresha n'ijambobanga",
     "invalid-search-term": "Icyashatswe nticyemewe",
-    "invalid-pagination-value": "Umubare wa paji watanzwe ntiwemewe",
+    "invalid-pagination-value": "Invalid pagination value, must be at least %1 and at most %2",
     "username-taken": "Izina ryarafashwe mbere",
     "email-taken": "Email yarafashwe mbere",
     "email-not-confirmed": "Email yawe ntabwo iremezwa. Kanda hano kugirango wemeze email yawe.",
@@ -83,6 +83,7 @@
     "chat-message-too-long": "Chat message is too long",
     "cant-edit-chat-message": "You are not allowed to edit this message",
     "cant-remove-last-user": "You can't remove the last user",
+    "cant-delete-chat-message": "You are not allowed to delete this message",
     "reputation-system-disabled": "Ibijyanye n'itangwa ry'amanota ntibyemerewe. ",
     "downvoting-disabled": "Kwambura amanota ntibyemerewe",
     "not-enough-reputation-to-downvote": "Ntabwo ufite amanota ahagije ngo ube wakwemererwa kugira uwo wambura amanota",
@@ -94,5 +95,6 @@
     "wrong-login-type-email": "Koresha email yawe kugirango winjiremo",
     "wrong-login-type-username": "Koresha izina ry'umukoresha ryawe kugirango winjiremo",
     "invite-maximum-met": "You have invited the maximum amount of people (%1 out of %2).",
-    "no-session-found": "No login session found!"
+    "no-session-found": "No login session found!",
+    "not-in-room": "User not in room"
 }

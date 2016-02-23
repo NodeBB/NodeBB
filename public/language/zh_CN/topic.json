@@ -35,6 +35,7 @@
     "login_to_subscribe": "请注册或登录后，再订阅此主题。",
     "markAsUnreadForAll.success": "将全部主题标为未读。",
     "mark_unread": "标记为未读",
+    "mark_unread.success": "Topic marked as unread.",
     "watch": "关注",
     "unwatch": "取消关注",
     "watch.title": "当此主题有新回复时，通知我",
@@ -104,7 +105,7 @@
     "stale.warning": "您回复的主题已经非常老了。开个新帖，然后在新帖中引用这个老帖的内容，可以吗？",
     "stale.create": "创建新主题",
     "stale.reply_anyway": "仍然回复此帖",
-    "stale.link_back": "回复: [%1](%2)",
+    "link_back": "Re: [%1](%2)",
     "spam": "垃圾帖",
     "offensive": "人身攻击",
     "custom-flag-reason": "输入举报原因"

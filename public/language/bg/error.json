@@ -14,7 +14,7 @@
     "invalid-password": "Невалидна парола",
     "invalid-username-or-password": "Моля, посочете потребителско име и парола",
     "invalid-search-term": "Невалиден текст за търсене",
-    "invalid-pagination-value": "Невалиден номер на страница",
+    "invalid-pagination-value": "Invalid pagination value, must be at least %1 and at most %2",
     "username-taken": "Потребителското име е заето",
     "email-taken": "Е-пощата е заета",
     "email-not-confirmed": "Вашата е-поща все още не е потвърдена. Моля, натиснете тук, за да потвърдите е-пощата си.",
@@ -83,6 +83,7 @@
     "chat-message-too-long": "Съобщението е твърде дълго",
     "cant-edit-chat-message": "Нямате право да редактирате това съобщение",
     "cant-remove-last-user": "Не можете да премахнете последния потребител",
+    "cant-delete-chat-message": "You are not allowed to delete this message",
     "reputation-system-disabled": "Системата за репутация е изключена.",
     "downvoting-disabled": "Отрицателното гласуване е изключено",
     "not-enough-reputation-to-downvote": "Нямате достатъчно репутация, за да гласувате отрицателно за тази публикация",
@@ -94,5 +95,6 @@
     "wrong-login-type-email": "Моля, използвайте е-пощата си, за да влезете",
     "wrong-login-type-username": "Моля, използвайте потребителското си име, за да влезете",
     "invite-maximum-met": "Вие сте поканили максимално позволения брой хора (%1 от %2).",
-    "no-session-found": "Не е открита сесия за вход!"
+    "no-session-found": "Не е открита сесия за вход!",
+    "not-in-room": "User not in room"
 }

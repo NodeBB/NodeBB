@@ -35,6 +35,7 @@
     "login_to_subscribe": "Por favor, identifícate para subscribirte a este tema.",
     "markAsUnreadForAll.success": "Publicación marcada como non lida para todos.",
     "mark_unread": "Marcar coma non lido",
+    "mark_unread.success": "Topic marked as unread.",
     "watch": "Vixiar",
     "unwatch": "Deixar de vixiar",
     "watch.title": "Serás notificado canto haxa novas respostas neste tema",
@@ -104,7 +105,7 @@
     "stale.warning": "O tema no que queres publicar é bastante vello. Queres crear un novo tema no seu lugar e incluir unha referencia a este na túa mensaxe?",
     "stale.create": "Crear un novo tema",
     "stale.reply_anyway": "Publicar neste tema de tódolos xeitos",
-    "stale.link_back": "Re: [%1](%2)",
+    "link_back": "Re: [%1](%2)",
     "spam": "Spam",
     "offensive": "Ofensivo",
     "custom-flag-reason": "Describe o motivo do reporte"

@@ -35,6 +35,7 @@
     "login_to_subscribe": "Пожалуйста зарегистрируйтесь, или войдите под своим аккаунтом, чтобы подписаться на эту тему.",
     "markAsUnreadForAll.success": "Тема помечена как непрочитанная для всех.",
     "mark_unread": "Отметить как непрочитанное",
+    "mark_unread.success": "Topic marked as unread.",
     "watch": "Следить",
     "unwatch": "Не следить",
     "watch.title": "Сообщать мне об ответах в этой теме",
@@ -104,7 +105,7 @@
     "stale.warning": "The topic you are replying to is quite old. Would you like to create a new topic instead, and reference this one in your reply?",
     "stale.create": "Создать новую тему",
     "stale.reply_anyway": "Всё равно ответить в этой теме",
-    "stale.link_back": "Re: [%1](%2)",
+    "link_back": "Re: [%1](%2)",
     "spam": "Спам",
     "offensive": "Offensive",
     "custom-flag-reason": "Enter a flagging reason"

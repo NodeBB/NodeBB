@@ -8,7 +8,6 @@
     "users-found-search-took": "%1 utilisateur(s) trouvé(s)! La recherche a pris %2 secondes.",
     "filter-by": "Filtrer par",
     "online-only": "En ligne uniquement",
-    "picture-only": "Avec image uniquement",
     "invite": "Invitation",
     "invitation-email-sent": "Un email d'invitation a été envoyé à %1",
     "user_list": "Liste d'Utilisateurs",
@@ -17,5 +16,5 @@
     "unread_topics": "Sujets Non-Lus",
     "categories": "Catégories",
     "tags": "Mots-clés",
-    "map": "Carte"
+    "no-users-found": "No users found!"
 }

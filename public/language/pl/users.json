@@ -8,7 +8,6 @@
     "users-found-search-took": "Znaleziono %1 użytkownik(ów). Szukanie zajęło %2 sek.",
     "filter-by": "Filtruj",
     "online-only": "Tylko dostępny",
-    "picture-only": "Tylko ze zdjęciem",
     "invite": "Zaproś",
     "invitation-email-sent": "Email z zaproszeniem został wysłany do %1",
     "user_list": "Lista Użytkowników",
@@ -17,5 +16,5 @@
     "unread_topics": "Nieprzeczytane Tematy",
     "categories": "Kategorie",
     "tags": "Tagi",
-    "map": "Mapa"
+    "no-users-found": "No users found!"
 }

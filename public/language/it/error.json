@@ -14,7 +14,7 @@
     "invalid-password": "Password non valida",
     "invalid-username-or-password": "Si prega di specificare sia un nome utente che una password",
     "invalid-search-term": "Termine di ricerca non valido",
-    "invalid-pagination-value": "Valore di paginazione non valido",
+    "invalid-pagination-value": "Invalid pagination value, must be at least %1 and at most %2",
     "username-taken": "Nome utente già preso",
     "email-taken": "Email già esistente",
     "email-not-confirmed": "La tua Email deve essere ancora confermata, per favore clicca qui per confermare la tua Email.",
@@ -83,6 +83,7 @@
     "chat-message-too-long": "Il messaggio chat è troppo lungo",
     "cant-edit-chat-message": "You are not allowed to edit this message",
     "cant-remove-last-user": "You can't remove the last user",
+    "cant-delete-chat-message": "You are not allowed to delete this message",
     "reputation-system-disabled": "Il sistema di reputazione è disabilitato.",
     "downvoting-disabled": "Il Downvoting è disabilitato",
     "not-enough-reputation-to-downvote": "Non hai i privilegi per votare negativamente questo post",
@@ -94,5 +95,6 @@
     "wrong-login-type-email": "Per favore usa la tua email per accedere",
     "wrong-login-type-username": "Per favore usa il tuo nome utente per accedere",
     "invite-maximum-met": "You have invited the maximum amount of people (%1 out of %2).",
-    "no-session-found": "No login session found!"
+    "no-session-found": "No login session found!",
+    "not-in-room": "User not in room"
 }

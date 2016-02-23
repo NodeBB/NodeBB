@@ -8,7 +8,6 @@
     "users-found-search-took": "%1 användare hittades! Sökningen tog %2 sekunder.",
     "filter-by": "Filtrera på",
     "online-only": "Endast online",
-    "picture-only": "Endast bild",
     "invite": "Bjud in",
     "invitation-email-sent": "En inbjudan har skickats till %1",
     "user_list": "Användarlista",
@@ -17,5 +16,5 @@
     "unread_topics": "Olästa ämnen",
     "categories": "Kategorier",
     "tags": "Märkord",
-    "map": "Karta"
+    "no-users-found": "No users found!"
 }

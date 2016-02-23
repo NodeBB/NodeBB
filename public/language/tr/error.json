@@ -14,7 +14,7 @@
     "invalid-password": "Geçersiz Şifre",
     "invalid-username-or-password": "Lütfen kullanıcı ismi ve parola girin.",
     "invalid-search-term": "Geçersiz arama",
-    "invalid-pagination-value": "Geçersiz Sayfa Değeri",
+    "invalid-pagination-value": "Invalid pagination value, must be at least %1 and at most %2",
     "username-taken": "Kullanıcı İsmi Alınmış",
     "email-taken": "E-posta Alınmış",
     "email-not-confirmed": "E-postanız onaylanmamış, onaylamak için lütfen buraya tıklayın.",
@@ -83,6 +83,7 @@
     "chat-message-too-long": "Sohbet mesajı çok uzun",
     "cant-edit-chat-message": "Bu mesajı düzenlemek için izin verilmez",
     "cant-remove-last-user": "Son kullanıcıyı silemezsiniz",
+    "cant-delete-chat-message": "You are not allowed to delete this message",
     "reputation-system-disabled": "Saygınlık sistemi kapatılmış.",
     "downvoting-disabled": "Aşagı oylama kapatılmış",
     "not-enough-reputation-to-downvote": "Bu iletiyi aşagı oylamak için yeterince saygınlığınız yok.",
@@ -94,5 +95,6 @@
     "wrong-login-type-email": "Lütfen giriş için e-posta adresinizi kullanın",
     "wrong-login-type-username": "Lütfen giriş için kullanıcı adınızı kullanın",
     "invite-maximum-met": "Sen maksimum miktarda insanı davet ettin (%2 üzerinden %1).",
-    "no-session-found": "Giriş yapılmış bir oturum bulunamadı!"
+    "no-session-found": "Giriş yapılmış bir oturum bulunamadı!",
+    "not-in-room": "User not in room"
 }

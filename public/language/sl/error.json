@@ -14,7 +14,7 @@
     "invalid-password": "Napačno geslo",
     "invalid-username-or-password": "Prosimo vpišite uporabniško ime in geslo",
     "invalid-search-term": "Napačna iskalna poizvedba",
-    "invalid-pagination-value": "Napačna številka strani",
+    "invalid-pagination-value": "Invalid pagination value, must be at least %1 and at most %2",
     "username-taken": "Uporabniško ime je že zasedeno",
     "email-taken": "E-mail naslov je že zaseden",
     "email-not-confirmed": "Vaš e-mail naslov še ni bil potrjen. Prosimo kliknite tu za potrditev vašega e-mail naslova.",
@@ -83,6 +83,7 @@
     "chat-message-too-long": "Chat message is too long",
     "cant-edit-chat-message": "You are not allowed to edit this message",
     "cant-remove-last-user": "You can't remove the last user",
+    "cant-delete-chat-message": "You are not allowed to delete this message",
     "reputation-system-disabled": "Možnost ugleda je onemogočena.",
     "downvoting-disabled": "Negativno glasovanje je onemogočeno",
     "not-enough-reputation-to-downvote": "Nimate dovolj ugleda za negativno glasovanje",
@@ -94,5 +95,6 @@
     "wrong-login-type-email": "Uporabite svoj e-mail naslov za prijavo",
     "wrong-login-type-username": "Uporabite svoje uporabniško ime za prijavo",
     "invite-maximum-met": "You have invited the maximum amount of people (%1 out of %2).",
-    "no-session-found": "No login session found!"
+    "no-session-found": "No login session found!",
+    "not-in-room": "User not in room"
 }

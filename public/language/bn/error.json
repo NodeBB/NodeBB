@@ -14,7 +14,7 @@
     "invalid-password": "ভুল পাসওয়ার্ড",
     "invalid-username-or-password": "অনুগ্রহ পূর্বক ইউজারনেম এবং পাসওয়ার্ড উভয়ই প্রদান করুন",
     "invalid-search-term": "অগ্রহনযোগ্য সার্চ টার্ম",
-    "invalid-pagination-value": "ভুল পৃষ্ঠা নাম্বার",
+    "invalid-pagination-value": "Invalid pagination value, must be at least %1 and at most %2",
     "username-taken": "ইউজারনেম আগেই ব্যবহৃত",
     "email-taken": "ইমেইল আগেই ব্যবহৃত",
     "email-not-confirmed": "আপনার ইমেইল এড্রেস নিশ্চিত করা হয় নি, নিশ্চিত করতে এখানে ক্লিক করুন।",
@@ -83,6 +83,7 @@
     "chat-message-too-long": "Chat message is too long",
     "cant-edit-chat-message": "You are not allowed to edit this message",
     "cant-remove-last-user": "You can't remove the last user",
+    "cant-delete-chat-message": "You are not allowed to delete this message",
     "reputation-system-disabled": "সম্মাননা ব্যাবস্থা নিস্ক্রীয় রাখা হয়েছে",
     "downvoting-disabled": "ঋণাত্মক ভোট নিস্ক্রীয় রাখা হয়েছে।",
     "not-enough-reputation-to-downvote": "আপনার এই পোস্ট downvote করার জন্য পর্যাপ্ত সম্মাননা নেই",
@@ -94,5 +95,6 @@
     "wrong-login-type-email": "Please use your email to login",
     "wrong-login-type-username": "Please use your username to login",
     "invite-maximum-met": "You have invited the maximum amount of people (%1 out of %2).",
-    "no-session-found": "No login session found!"
+    "no-session-found": "No login session found!",
+    "not-in-room": "User not in room"
 }

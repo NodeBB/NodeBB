@@ -8,7 +8,6 @@
     "users-found-search-took": "找到 %1 位用户！耗时 %2 毫秒。",
     "filter-by": "过滤选项",
     "online-only": "只看在线",
-    "picture-only": "只看图片",
     "invite": "邀请注册",
     "invitation-email-sent": "已发送邀请给 %1",
     "user_list": "会员列表",
@@ -17,5 +16,5 @@
     "unread_topics": "未读主题",
     "categories": "版面",
     "tags": "话题",
-    "map": "地图"
+    "no-users-found": "No users found!"
 }

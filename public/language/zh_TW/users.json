@@ -8,7 +8,6 @@
     "users-found-search-took": "發現 %1 用戶！搜尋只用 %2 秒。",
     "filter-by": "Filter By",
     "online-only": "線上僅有",
-    "picture-only": "圖片僅有",
     "invite": "Invite",
     "invitation-email-sent": "An invitation email has been sent to %1",
     "user_list": "User List",
@@ -17,5 +16,5 @@
     "unread_topics": "Unread Topics",
     "categories": "Categories",
     "tags": "Tags",
-    "map": "Map"
+    "no-users-found": "No users found!"
 }

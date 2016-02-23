@@ -97,9 +97,9 @@
     "select-skin": "Vali välimus",
     "select-homepage": "Vali avaleht",
     "homepage": "Avaleht",
-    "homepage_description": "Select a page to use as the forum homepage or 'None' to use the default homepage.",
-    "custom_route": "Custom Homepage Route",
-    "custom_route_help": "Enter a route name here, without any preceding slash (e.g. \"recent\", or \"popular\")",
+    "homepage_description": "Valige leht, mida kasutada foorumi esilehena või 'None', et kasutada vaikimisi esilehte.",
+    "custom_route": "Kohandatud Esilehe Teekond",
+    "custom_route_help": "Sisestage tee nimi siia, ilma eelnevate kaldkriipsudeta (nt. \"recent\", või \"popular\")",
     "sso.title": "Ühekordse sisselogimisega teenused",
     "sso.associated": "Seotud koos",
     "sso.not-associated": "Kliki siia, et siduda koos"

@@ -14,7 +14,7 @@
     "invalid-password": "รหัสผ่านไม่ถูกต้อง",
     "invalid-username-or-password": "กรุณาระบุชื่อผู้ใช้และรหัสผ่าน",
     "invalid-search-term": "ข้อความค้นหาไม่ถูกต้อง",
-    "invalid-pagination-value": "Invalid pagination value",
+    "invalid-pagination-value": "Invalid pagination value, must be at least %1 and at most %2",
     "username-taken": "ชื่อผู้ใช้นี้มีการใช้แล้ว",
     "email-taken": "อีเมลนี้มีการใช้แล้ว",
     "email-not-confirmed": "ยังไม่มีการยืนยันอีเมลของคุณ, โปรดกดยืนยันอีเมลของคุณตรงนี้",
@@ -83,6 +83,7 @@
     "chat-message-too-long": "Chat message is too long",
     "cant-edit-chat-message": "You are not allowed to edit this message",
     "cant-remove-last-user": "You can't remove the last user",
+    "cant-delete-chat-message": "You are not allowed to delete this message",
     "reputation-system-disabled": "Reputation system is disabled.",
     "downvoting-disabled": "Downvoting is disabled",
     "not-enough-reputation-to-downvote": "You do not have enough reputation to downvote this post",
@@ -94,5 +95,6 @@
     "wrong-login-type-email": "Please use your email to login",
     "wrong-login-type-username": "Please use your username to login",
     "invite-maximum-met": "You have invited the maximum amount of people (%1 out of %2).",
-    "no-session-found": "No login session found!"
+    "no-session-found": "No login session found!",
+    "not-in-room": "User not in room"
 }

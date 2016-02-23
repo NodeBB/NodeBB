@@ -8,7 +8,6 @@
     "users-found-search-took": "Habonetse abantu (umuntu) %1! Byatwaye amasegonda %2 gusa.",
     "filter-by": "Yungurura Ukurikije",
     "online-only": "Abari ku murongo gusa",
-    "picture-only": "Ifoto gusa",
     "invite": "Tumira",
     "invitation-email-sent": "Ubutumire bwa email bwohererejwe %1",
     "user_list": "Urutonde rw'Abantu",
@@ -17,5 +16,5 @@
     "unread_topics": "Ibiganiro Bitarasomwa",
     "categories": "Ibyiciro",
     "tags": "Ibimenyetso",
-    "map": "Ikarita"
+    "no-users-found": "No users found!"
 }

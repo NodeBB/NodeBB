@@ -14,7 +14,7 @@
     "invalid-password": "كلمة السر غير مقبولة",
     "invalid-username-or-password": "المرجود تحديد اسم مستخدم و كلمة مرور",
     "invalid-search-term": "كلمة البحث غير صحيحة",
-    "invalid-pagination-value": "رقم الصفحة غير موجود",
+    "invalid-pagination-value": "Invalid pagination value, must be at least %1 and at most %2",
     "username-taken": "اسم المستخدم مأخوذ",
     "email-taken": "البريد الالكتروني مأخوذ",
     "email-not-confirmed": "عنوان بريدك الإلكتروني غير مفعل بعد. انقر هنا لتفعيله من فضلك.",
@@ -83,6 +83,7 @@
     "chat-message-too-long": "Chat message is too long",
     "cant-edit-chat-message": "You are not allowed to edit this message",
     "cant-remove-last-user": "You can't remove the last user",
+    "cant-delete-chat-message": "You are not allowed to delete this message",
     "reputation-system-disabled": "نظام السمعة معطل",
     "downvoting-disabled": "التصويتات السلبية معطلة",
     "not-enough-reputation-to-downvote": "ليس لديك سمعة تكفي لإضافة صوت سلبي لهذا الموضوع",
@@ -94,5 +95,6 @@
     "wrong-login-type-email": "الرجاء استعمال بريدك اﻹلكتروني للدخول",
     "wrong-login-type-username": "الرجاء استعمال اسم المستخدم الخاص بك للدخول",
     "invite-maximum-met": "You have invited the maximum amount of people (%1 out of %2).",
-    "no-session-found": "No login session found!"
+    "no-session-found": "No login session found!",
+    "not-in-room": "User not in room"
 }

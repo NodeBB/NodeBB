@@ -14,7 +14,7 @@
     "invalid-password": "올바르지 않은 비밀번호입니다.",
     "invalid-username-or-password": "사용자 이름과 패스워드를 모두 설정해주세요.",
     "invalid-search-term": "올바르지 않은 검색어입니다.",
-    "invalid-pagination-value": "올바르지 않은 페이지입니다.",
+    "invalid-pagination-value": "Invalid pagination value, must be at least %1 and at most %2",
     "username-taken": "이미 사용 중인 사용자 이름입니다.",
     "email-taken": "이미 사용 중인 이메일입니다.",
     "email-not-confirmed": "아직 이메일이 인증되지 않았습니다. 여기를 누르면 인증 메일을 발송할 수 있습니다.",
@@ -83,6 +83,7 @@
     "chat-message-too-long": "메시지가 너무 깁니다.",
     "cant-edit-chat-message": "편집 할 수 있는 권한이 없습니다.",
     "cant-remove-last-user": "마지막 사용자를 삭제할 수 없습니다.",
+    "cant-delete-chat-message": "You are not allowed to delete this message",
     "reputation-system-disabled": "인지도 기능이 비활성 상태입니다.",
     "downvoting-disabled": "비추천 기능이 비활성 상태입니다.",
     "not-enough-reputation-to-downvote": "인지도가 낮아 이 게시물에 반대할 수 없습니다.",
@@ -94,5 +95,6 @@
     "wrong-login-type-email": "이메일 주소를 통해 로그인하세요.",
     "wrong-login-type-username": "사용자명을 통해 로그인하세요.",
     "invite-maximum-met": "초대가능한 사용자를 모두 초대했습니다. (%2명 중 %1을 초대)",
-    "no-session-found": "로그인 세션을 찾을 수 없습니다."
+    "no-session-found": "로그인 세션을 찾을 수 없습니다.",
+    "not-in-room": "User not in room"
 }

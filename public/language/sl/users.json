@@ -8,7 +8,6 @@
     "users-found-search-took": "%1 uporabnik(ov) najdenih! Iskanje je potrebovalo %2 sekunde.",
     "filter-by": "Filtriraj po",
     "online-only": "Samo dosegljivi",
-    "picture-only": "Samo s sliko",
     "invite": "Povabi",
     "invitation-email-sent": "Povabilo je bilo poslano na e-mail naslov %1",
     "user_list": "Lista uporabnikov",
@@ -17,5 +16,5 @@
     "unread_topics": "Neprebrane teme",
     "categories": "Kategorije",
     "tags": "Oznake",
-    "map": "Zemljevid"
+    "no-users-found": "No users found!"
 }

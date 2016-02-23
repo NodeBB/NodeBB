@@ -8,7 +8,6 @@
     "users-found-search-took": "%1 käyttäjä(ä) löytyi! Haku kesti %2 sekuntia.",
     "filter-by": "Suodata",
     "online-only": "Vain verkossa olevat",
-    "picture-only": "Picture only",
     "invite": "Invite",
     "invitation-email-sent": "An invitation email has been sent to %1",
     "user_list": "User List",
@@ -17,5 +16,5 @@
     "unread_topics": "Unread Topics",
     "categories": "Categories",
     "tags": "Tags",
-    "map": "Map"
+    "no-users-found": "No users found!"
 }

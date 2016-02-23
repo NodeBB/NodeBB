@@ -14,7 +14,7 @@
     "invalid-password": "Password Salah",
     "invalid-username-or-password": "Mohon spesifikasikan username dan password",
     "invalid-search-term": "Kata pencarian salah",
-    "invalid-pagination-value": "Nilai halaman salah",
+    "invalid-pagination-value": "Invalid pagination value, must be at least %1 and at most %2",
     "username-taken": "Username sudah terdaftar",
     "email-taken": "Email sudah terdaftar",
     "email-not-confirmed": "Email kamu belum dikonfirmasi, klik disini untuk mengkonfirmasi email.",
@@ -83,6 +83,7 @@
     "chat-message-too-long": "Chat message is too long",
     "cant-edit-chat-message": "You are not allowed to edit this message",
     "cant-remove-last-user": "You can't remove the last user",
+    "cant-delete-chat-message": "You are not allowed to delete this message",
     "reputation-system-disabled": "Sistem reputasi ditiadakan.",
     "downvoting-disabled": "Downvoting ditiadakan",
     "not-enough-reputation-to-downvote": "Tidak cukup reputation untuk downvote post ini",
@@ -94,5 +95,6 @@
     "wrong-login-type-email": "Please use your email to login",
     "wrong-login-type-username": "Please use your username to login",
     "invite-maximum-met": "You have invited the maximum amount of people (%1 out of %2).",
-    "no-session-found": "No login session found!"
+    "no-session-found": "No login session found!",
+    "not-in-room": "User not in room"
 }

@@ -14,7 +14,7 @@
     "invalid-password": "Ogiltigt lösenord",
     "invalid-username-or-password": "Specificera både användarnamn och lösenord",
     "invalid-search-term": "Ogiltig sökterm",
-    "invalid-pagination-value": "Ogiltigt sidnummer",
+    "invalid-pagination-value": "Invalid pagination value, must be at least %1 and at most %2",
     "username-taken": "Användarnamn upptaget",
     "email-taken": "Epostadress upptagen",
     "email-not-confirmed": "Din epostadress är ännu inte bekräftad. Klicka här för att bekräfta din epostadress.",
@@ -83,6 +83,7 @@
     "chat-message-too-long": "Chattmeddelande är för långt",
     "cant-edit-chat-message": "You are not allowed to edit this message",
     "cant-remove-last-user": "You can't remove the last user",
+    "cant-delete-chat-message": "You are not allowed to delete this message",
     "reputation-system-disabled": "Ryktessystemet är inaktiverat.",
     "downvoting-disabled": "Nedröstning är inaktiverat",
     "not-enough-reputation-to-downvote": "Du har inte tillräckligt förtroende för att rösta ner det här meddelandet",
@@ -94,5 +95,6 @@
     "wrong-login-type-email": "Använd din e-post adress för att logga in",
     "wrong-login-type-username": "Använd ditt användarnamn för att logga in",
     "invite-maximum-met": "You have invited the maximum amount of people (%1 out of %2).",
-    "no-session-found": "No login session found!"
+    "no-session-found": "No login session found!",
+    "not-in-room": "User not in room"
 }

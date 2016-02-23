@@ -14,7 +14,7 @@
     "invalid-password": "Contrasinal Inválido",
     "invalid-username-or-password": "Especifica ámbolos dous por favor, nome de usuario e contrasinal",
     "invalid-search-term": "Termo de búsqueda inválido",
-    "invalid-pagination-value": "Valor de paxinación Inválido",
+    "invalid-pagination-value": "Invalid pagination value, must be at least %1 and at most %2",
     "username-taken": "Nome de usuario en uso",
     "email-taken": "Correo en uso",
     "email-not-confirmed": "O teu correo aínda non está confirmado, por favor pica aquí para confirmalo.",
@@ -83,6 +83,7 @@
     "chat-message-too-long": "Mensaxe moi longa",
     "cant-edit-chat-message": "Non tes permitido editar esta mensaxe.",
     "cant-remove-last-user": "Non podes quitar o último usuario",
+    "cant-delete-chat-message": "You are not allowed to delete this message",
     "reputation-system-disabled": "O sistema de reputación está deshabilitado",
     "downvoting-disabled": "Os votos negativos están deshabilitados",
     "not-enough-reputation-to-downvote": "Non tes reputación dabonda para esta acción",
@@ -94,5 +95,6 @@
     "wrong-login-type-email": "Por favor, emprega o teu correo para contectarte",
     "wrong-login-type-username": "Por favor, usa o teu nome de usuario para conectarte",
     "invite-maximum-met": "Convidaches á cantidade máxima de persoas  (%1 de %2).",
-    "no-session-found": "Non se atopa ningún inicio de sesión!"
+    "no-session-found": "Non se atopa ningún inicio de sesión!",
+    "not-in-room": "User not in room"
 }

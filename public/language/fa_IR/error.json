@@ -14,7 +14,7 @@
     "invalid-password": "کلمه عبور نامعتبر است.",
     "invalid-username-or-password": "لطفا هم نام کاربری و هم کلمه عبور را مشخص کنید",
     "invalid-search-term": "کلمه جستجو نامعتبر است",
-    "invalid-pagination-value": "عدد صفحه‌بندی نامعتبر است.",
+    "invalid-pagination-value": "Invalid pagination value, must be at least %1 and at most %2",
     "username-taken": "این نام کاربری گرفته شده است.",
     "email-taken": "این ایمیل گرفته شده است.",
     "email-not-confirmed": "ایمیل شما تاکنون تایید نشده است، برای تایید ایمیل خود را اینجا را کلیک کنید.",
@@ -83,6 +83,7 @@
     "chat-message-too-long": "پیام طولانی تر از حد مجاز است",
     "cant-edit-chat-message": "شما اجازه ی ویرایش این پیام را ندارید",
     "cant-remove-last-user": "You can't remove the last user",
+    "cant-delete-chat-message": "You are not allowed to delete this message",
     "reputation-system-disabled": "سیستم اعتبار غیر فعال شده است",
     "downvoting-disabled": "رأی منفی غیر فعال شده است",
     "not-enough-reputation-to-downvote": "شما اعتبار کافی برای دادن رأی منفی به این پست را ندارید.",
@@ -94,5 +95,6 @@
     "wrong-login-type-email": "لطفا از ایمیل خود برای ورود استفاده کنید",
     "wrong-login-type-username": "لطفا از نام کاربری خود برای ورود استفاده کنید",
     "invite-maximum-met": "You have invited the maximum amount of people (%1 out of %2).",
-    "no-session-found": "No login session found!"
+    "no-session-found": "No login session found!",
+    "not-in-room": "User not in room"
 }

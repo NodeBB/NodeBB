@@ -8,7 +8,6 @@
     "users-found-search-took": "%1人のユーザーを見つけました！(検索まで%2秒掛かりました。)",
     "filter-by": "フィルタ",
     "online-only": "オンラインのみ",
-    "picture-only": "写真のみ",
     "invite": "招待",
     "invitation-email-sent": "招待メールが%1に送られました。",
     "user_list": "ユーザー一覧",
@@ -17,5 +16,5 @@
     "unread_topics": "未読トピック",
     "categories": "カテゴリ",
     "tags": "タグ",
-    "map": "マプ"
+    "no-users-found": "No users found!"
 }

@@ -35,6 +35,7 @@
     "login_to_subscribe": "Sila daftar atau log masuk untuk melanggani topik ini",
     "markAsUnreadForAll.success": "Topik ditanda sebagai belum dibaca untuk semua",
     "mark_unread": "Mark unread",
+    "mark_unread.success": "Topic marked as unread.",
     "watch": "Lihat",
     "unwatch": "Batal lihat",
     "watch.title": "Akan dimaklumkan sekiranya ada balasan dalam topik ini",
@@ -104,7 +105,7 @@
     "stale.warning": "Topik yang anda nak balas agak lapuk. Adakah anda ingin buka topik baru dan rujukkan topik ini dalam balasan anda?",
     "stale.create": "Buka topik baru",
     "stale.reply_anyway": "Tetap balas topik ini",
-    "stale.link_back": "Bls: [%1](%2)",
+    "link_back": "Re: [%1](%2)",
     "spam": "Spam",
     "offensive": "Menyinggung",
     "custom-flag-reason": "Nyatakan alasan anda"
