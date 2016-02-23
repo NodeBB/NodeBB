@@ -1,6 +1,7 @@
 <ul class="nav nav-pills">
 	<li class="active"><a href="#installed" data-toggle="tab">Installed Plugins</a></li>
 	<li><a href="#download" data-toggle="tab">Download Plugins</a></li>
+	<li><a href="#upgrade" data-toggle="tab">Upgradable Plugins</a></li>
 </ul>
 <br />
 
@@ -15,13 +16,14 @@
 				</ul>
 			</div>
 			<div class="tab-pane fade" id="download">
-				<div class="panel-body">
-					<ul class="download">
-						<!-- BEGIN download -->
-						<!-- IMPORT admin/partials/download_plugin_item.tpl -->
-						<!-- END download -->
-					</ul>
-				</div>
+				<ul class="download">
+					<!-- BEGIN download -->
+					<!-- IMPORT admin/partials/download_plugin_item.tpl -->
+					<!-- END download -->
+				</ul>
+			</div>
+			<div class="tab-pane fade" id="upgrade">
+				<ul class="upgrade"></ul>
 			</div>
 		</div>
 	</div>

@@ -139,6 +139,8 @@ define('admin/extend/plugins', function() {
 				$('#order-active-plugins-modal').modal('hide');
 			});
 		});
+
+		populateUpgradeablePlugins();
 	};
 
 	function confirmInstall(pluginID, callback) {
@@ -224,6 +226,14 @@ define('admin/extend/plugins', function() {
 			callback(undefined, payload);
 		}).fail(callback);
 	};
+
+	function populateUpgradeablePlugins() {
+		$('#installed ul li').each(function() {
+			if ($(this).children('[data-action="upgrade"]').length) {
+				$('#upgrade ul').append($(this));
+			}
+		});
+	}
 
 	return Plugins;
 });
