@@ -185,6 +185,8 @@ define('forum/register', ['csrf', 'translator'], function(csrf, translator) {
 			showError(password_notify, '[[user:change_password_error]]');
 		} else if (password === $('#username').val()) {
 			showError(password_notify, '[[user:password_same_as_username]]');
+		} else if (password === $('#email').val()) {
+			showError(password_notify, '[[user:password_same_as_email]]');
 		} else {
 			showSuccess(password_notify, successIcon);
 		}

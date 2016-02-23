@@ -58,6 +58,7 @@
 	"password": "Password",
 	"username_taken_workaround": "The username you requested was already taken, so we have altered it slightly. You are now known as <strong>%1</strong>",
 	"password_same_as_username": "Your password is the same as your username, please select another password.",
+	"password_same_as_email": "Your password is the same as your email, please select another password.",
 
 	"upload_picture": "Upload picture",
 	"upload_a_picture": "Upload a picture",
