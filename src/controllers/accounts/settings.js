@@ -21,7 +21,13 @@ settingsController.get = function(req, res, callback) {
 	var userData;
 	async.waterfall([
 		function(next) {
-			accountHelpers.getBaseUser(req.params.userslug, req.uid, next);
+			user.getIPs(req.uid, 4, next);
+		},
+		function(ips, next) {
+			accountHelpers.getBaseUser(req.params.userslug, req.uid, function(err, data) {
+				data.ips = ips;
+				next(err, data);
+			});
 		},
 		function(_userData, next) {
 			userData = _userData;
