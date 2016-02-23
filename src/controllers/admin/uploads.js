@@ -93,6 +93,33 @@ uploadsController.uploadLogo = function(req, res, next) {
 	upload('site-logo', req, res, next);
 };
 
+uploadsController.uploadSound = function(req, res, next) {
+	var uploadedFile = req.files.files[0];
+
+	file.saveFileToLocal(uploadedFile.name, 'sounds', uploadedFile.path, function(err) {
+		if (err) {
+			return next(err);
+		}
+
+		var	soundsPath = path.join(__dirname, '../../../public/sounds'),
+			filePath = path.join(__dirname, '../../../public/uploads/sounds', uploadedFile.name);
+
+		if (process.platform === 'win32') {
+			fs.link(filePath, path.join(soundsPath, path.basename(filePath)));
+		} else {
+			fs.symlink(filePath, path.join(soundsPath, path.basename(filePath)), 'file');
+		}
+
+		fs.unlink(uploadedFile.path, function(err) {
+			if (err) {
+				return next(err);
+			}
+
+			res.json([{}]);
+		});
+	});
+};
+
 uploadsController.uploadDefaultAvatar = function(req, res, next) {
 	upload('avatar-default', req, res, next);
 };
@@ -131,7 +158,9 @@ function uploadImage(filename, folder, uploadedFile, req, res, next) {
 		if (err) {
 			return next(err);
 		}
+
 		res.json([{name: uploadedFile.name, url: image.url.startsWith('http') ? image.url : nconf.get('relative_path') + image.url}]);
+		next();
 	}
 
 	if (plugins.hasListeners('filter:uploadImage')) {
