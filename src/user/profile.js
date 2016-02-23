@@ -74,10 +74,6 @@ module.exports = function(User) {
 
 					var userslug = utils.slugify(data.username);
 
-					if (userslug === userData.userslug) {
-						return next();
-					}
-
 					if (data.username.length < meta.config.minimumUsernameLength) {
 						return next(new Error('[[error:username-too-short]]'));
 					}
@@ -88,6 +84,10 @@ module.exports = function(User) {
 
 					if (!utils.isUserNameValid(data.username) || !userslug) {
 						return next(new Error('[[error:invalid-username]]'));
+					}
+
+					if (userslug === userData.userslug) {
+						return next();
 					}
 
 					User.existsBySlug(userslug, function(err, exists) {
@@ -110,7 +110,7 @@ module.exports = function(User) {
 						return callback(err);
 					}
 					plugins.fireHook('action:user.updateProfile', {data: data, uid: uid});
-					User.getUserFields(uid, ['email', 'username', 'userslug', 'picture'], callback);
+					User.getUserFields(uid, ['email', 'username', 'userslug', 'picture', 'icon:text', 'icon:bgColor'], callback);
 				});
 			});
 
