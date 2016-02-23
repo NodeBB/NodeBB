@@ -1,46 +1,42 @@
 "use strict";
 
-var tagsController = {},
-	async = require('async'),
-	nconf = require('nconf'),
-	validator = require('validator'),
-	meta = require('../meta'),
-	user = require('../user'),
-	topics = require('../topics'),
-	helpers =  require('./helpers');
+
+var async = require('async');
+var nconf = require('nconf');
+var validator = require('validator');
+
+var meta = require('../meta');
+var topics = require('../topics');
+var helpers =  require('./helpers');
+
+var tagsController = {};
 
 tagsController.getTag = function(req, res, next) {
 	var tag = validator.escape(req.params.tag);
 	var stop = (parseInt(meta.config.topicsPerList, 10) || 20) - 1;
 
+	var templateData = {
+		topics: [],
+		tag: tag,
+		breadcrumbs: helpers.buildBreadcrumbs([{text: '[[tags:tags]]', url: '/tags'}, {text: tag}]),
+		title: '[[pages:tag, ' + tag + ']]'
+	};
+
 	async.waterfall([
-		function(next) {
+		function (next) {
 			topics.getTagTids(req.params.tag, 0, stop, next);
 		},
-		function(tids, next) {
+		function (tids, next) {
 			if (Array.isArray(tids) && !tids.length) {
 				topics.deleteTag(req.params.tag);
-				return res.render('tag', {
-					topics: [],
-					tag: tag,
-					breadcrumbs: helpers.buildBreadcrumbs([{text: '[[tags:tags]]', url: '/tags'}, {text: tag}])
-				});
+				return res.render('tag', templateData);
 			}
 
-			async.parallel({
-				isAdmin: async.apply(user.isAdministrator, req.uid),
-				topics: async.apply(topics.getTopics, tids, req.uid)
-			}, next);
+			topics.getTopics(tids, req.uid, next);
 		}
-	], function(err, results) {
+	], function(err, topics) {
 		if (err) {
 			return next(err);
-		}
-
-		if (!results.isAdmin) {
-			results.topics = results.topics.filter(function(topic) {
-				return topic && !topic.deleted;
-			});
 		}
 
 		res.locals.metaTags = [
@@ -57,15 +53,10 @@ tagsController.getTag = function(req, res, next) {
 				content: nconf.get('url') + '/tags/' + tag
 			}
 		];
+		templateData.topics = topics;
+		templateData.nextStart = stop + 1;
 
-		var data = {
-			topics: results.topics,
-			tag: tag,
-			nextStart: stop + 1,
-			breadcrumbs: helpers.buildBreadcrumbs([{text: '[[tags:tags]]', url: '/tags'}, {text: tag}]),
-			title: '[[pages:tag, ' + tag + ']]'
-		};
-		res.render('tag', data);
+		res.render('tag', templateData);
 	});
 };
 
