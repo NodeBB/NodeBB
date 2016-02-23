@@ -76,6 +76,13 @@ module.exports = function(User) {
 						db.setObject('user:' + uid, userData, next);
 					},
 					function(next) {
+						if (parseInt(meta.config['sounds:default_enabled'], 10) === 1) {
+							return User.setSetting(userData.uid, 'notificationSounds', 1, next);
+						}
+
+						next();
+					},
+					function(next) {
 						async.parallel([
 							function(next) {
 								db.incrObjectField('global', 'userCount', next);

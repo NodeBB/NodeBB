@@ -64,6 +64,26 @@
 	</div>
 </div>
 
+
+<div class="row">
+	<div class="col-sm-2 col-xs-12 settings-header">
+		Sounds
+	</div>
+	<div class="col-sm-10 col-xs-12">
+		<div class="form-group">
+			<div class="checkbox">
+				<label for="sounds:default_enabled" class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
+					<input type="checkbox" class="mdl-switch__input" id="sounds:default_enabled" data-field="sounds:default_enabled" name="sounds:default_enabled" />
+					<span class="mdl-switch__label">Force enabling of notification sounds for new users</span>
+				</label>
+			</div>
+			<p class="help-block">
+				Users can toggle this setting in their profile settings page.
+			</p>
+		</div>
+	</div>
+</div>
+
 <div class="row">
 	<div class="col-sm-2 col-xs-12 settings-header">
 		Favicon
