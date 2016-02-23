@@ -115,8 +115,11 @@ define('forum/topic/postTools', ['share', 'navigator', 'components', 'translator
 		});
 
 		$('.topic').on('click', '[component="topic/reply-as-topic"]', function() {
-			$(window).trigger('action:composer.topic.new', {
-				cid: ajaxify.data.cid,
+			translator.translate('[[topic:link_back, ' + ajaxify.data.title + ', ' + config.relative_path + '/topic/' + ajaxify.data.slug + ']]', function(body) {
+				$(window).trigger('action:composer.topic.new', {
+					cid: ajaxify.data.cid,
+					body: body
+				});
 			});
 		});
 
@@ -434,7 +437,7 @@ define('forum/topic/postTools', ['share', 'navigator', 'components', 'translator
 								label: '[[topic:stale.create]]',
 								className: 'btn-primary',
 								callback: function() {
-									translator.translate('[[topic:stale.link_back, ' + ajaxify.data.title + ', ' + config.relative_path + '/topic/' + ajaxify.data.slug + ']]', function(body) {
+									translator.translate('[[topic:link_back, ' + ajaxify.data.title + ', ' + config.relative_path + '/topic/' + ajaxify.data.slug + ']]', function(body) {
 										$(window).trigger('action:composer.topic.new', {
 											cid: ajaxify.data.cid,
 											body: body
