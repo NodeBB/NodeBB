@@ -79,9 +79,9 @@
 	"confirm_move": "Move",
 	"confirm_fork": "Fork",
 
-	"favourite": "Favourite",
-	"favourites": "Favourites",
-	"favourites.has_no_favourites": "You don't have any favourites, favourite some posts to see them here!",
+	"favourite": "Bookmark",
+	"favourites": "Bookmarks",
+	"favourites.has_no_favourites": "You haven't bookmarked any posts yet.",
 
 	"loading_more_posts": "Loading More Posts",
 	"move_topic": "Move Topic",
