@@ -124,5 +124,6 @@
 	"invite-maximum-met": "You have invited the maximum amount of people (%1 out of %2).",
 
 	"no-session-found": "No login session found!",
-	"not-in-room": "User not in room"
+	"not-in-room": "User not in room",
+	"no-users-in-room": "No users in this room"
 }
