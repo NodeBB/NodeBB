@@ -128,7 +128,9 @@ widgets.setArea = function(area, callback) {
 
 widgets.reset = function(callback) {
 	var defaultAreas = [
-		{ name: 'Draft Zone', template: 'global', location: 'drafts' }
+		{ name: 'Draft Zone', template: 'global', location: 'header' },
+		{ name: 'Draft Zone', template: 'global', location: 'footer' },
+		{ name: 'Draft Zone', template: 'global', location: 'sidebar' }
 	];
 
 	plugins.fireHook('filter:widgets.getAreas', defaultAreas, function(err, areas) {
