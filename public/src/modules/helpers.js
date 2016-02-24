@@ -203,7 +203,7 @@
 			case 'Microsoft Windows':
 				icons += '<i class="fa fa-fw fa-windows"></i>';
 				break;
-			case 'Mac':
+			case 'Apple Mac':
 				icons += '<i class="fa fa-fw fa-apple"></i>';
 				break;
 			case 'Android':
