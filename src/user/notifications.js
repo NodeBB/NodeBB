@@ -133,7 +133,7 @@ var async = require('async'),
 				return notification;
 			}).filter(function(notification) {
 				// Remove notifications that do not resolve to a path
-				return notification.path !== null;
+				return notification && notification.path !== null;
 			});
 
 			callback(null, notifications);
