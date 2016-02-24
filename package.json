@@ -32,7 +32,7 @@
     "express": "^4.9.5",
     "express-session": "^1.8.2",
     "express-useragent": "0.2.4",
-    "html-to-text": "1.6.1",
+    "html-to-text": "2.0.0",
     "jimp": "0.2.21",
     "less": "^2.0.0",
     "logrotate-stream": "^0.2.3",
@@ -61,7 +61,7 @@
     "passport": "^0.3.0",
     "passport-local": "1.0.0",
     "postcss": "^5.0.13",
-    "prompt": "^0.2.14",
+    "prompt": "^1.0.0",
     "redis": "~2.4.2",
     "request": "^2.44.0",
     "rimraf": "~2.5.0",
@@ -79,9 +79,9 @@
     "uglify-js": "^2.6.0",
     "underscore": "~1.8.3",
     "underscore.deep": "^0.5.1",
-    "validator": "^4.7.1",
+    "validator": "^5.0.0",
     "winston": "^2.1.0",
-    "xregexp": "~3.0.0"
+    "xregexp": "~3.1.0"
   },
   "devDependencies": {
     "mocha": "~1.13.0",
