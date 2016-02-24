@@ -143,6 +143,7 @@ module.exports = function(Topics) {
 			if (post) {
 				post.display_moderator_tools = topicPrivileges.isAdminOrMod || post.selfPost;
 				post.display_move_tools = topicPrivileges.isAdminOrMod && post.index !== 0;
+				post.display_post_menu = topicPrivileges.isAdminOrMod || post.selfPost || !post.deleted;
 				if (post.deleted && !(topicPrivileges.isAdminOrMod || post.selfPost)) {
 					post.content = '[[topic:post_is_deleted]]';
 				}
