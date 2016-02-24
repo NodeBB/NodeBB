@@ -2,9 +2,8 @@
 
 'use strict';
 
-var async = require('async'),
-	winston = require('winston'),
-	db = require('../database');
+var async = require('async');
+var db = require('../database');
 
 module.exports = function(Topics) {
 	var terms = {
@@ -42,12 +41,22 @@ module.exports = function(Topics) {
 	Topics.updateTimestamp = function(tid, timestamp, callback) {
 		async.parallel([
 			function(next) {
-				Topics.updateRecent(tid, timestamp, next);
+				async.waterfall([
+					function (next) {
+						Topics.getTopicField(tid, 'deleted', next);
+					},
+					function (deleted, next) {
+						if (parseInt(deleted, 10) === 1) {
+							return next();
+						}
+						Topics.updateRecent(tid, timestamp, next);
+					}
+				], next);
 			},
 			function(next) {
 				Topics.setTopicField(tid, 'lastposttime', timestamp, next);
 			}
-		], function(err, results) {
+		], function(err) {
 			callback(err);
 		});
 	};
