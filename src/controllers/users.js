@@ -17,14 +17,17 @@ usersController.getOnlineUsers = function(req, res, next) {
 		if (err) {
 			return next(err);
 		}
-
+		var hiddenCount = 0;
 		if (!userData.isAdminOrGlobalMod) {
 			userData.users = userData.users.filter(function(user) {
+				if (user && user.status === 'offline') {
+					hiddenCount ++;
+				}
 				return user && user.status !== 'offline';
 			});
 		}
 
-		userData.anonymousUserCount = require('../socket.io').getOnlineAnonCount();
+		userData.anonymousUserCount = require('../socket.io').getOnlineAnonCount() + hiddenCount;
 
 		render(req, res, userData, next);
 	});
