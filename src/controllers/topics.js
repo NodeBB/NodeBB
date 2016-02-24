@@ -70,8 +70,8 @@ topicsController.get = function(req, res, callback) {
 				return callback();
 			}
 
-			var set = 'tid:' + tid + ':posts',
-				reverse = false;
+			var set = 'tid:' + tid + ':posts';
+			var reverse = false;
 
 			// `sort` qs has priority over user setting
 			if (sort === 'newest_to_oldest') {
@@ -93,6 +93,7 @@ topicsController.get = function(req, res, callback) {
 				req.params.post_index = 0;
 			}
 			if (!settings.usePagination) {
+				currentPage = 1;
 				if (reverse) {
 					postIndex = Math.max(0, postCount - (req.params.post_index || postCount) - Math.ceil(settings.postsPerPage / 2));
 				} else {
