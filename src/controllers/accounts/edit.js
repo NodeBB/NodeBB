@@ -8,6 +8,7 @@ var winston = require('winston');
 var db = require('../../database');
 var user = require('../../user');
 var meta = require('../../meta');
+var plugins = require('../../plugins');
 var helpers = require('../helpers');
 var accountHelpers = require('./helpers');
 
@@ -28,8 +29,15 @@ editController.get = function(req, res, callback) {
 
 		userData.title = '[[pages:account/edit, ' + userData.username + ']]';
 		userData.breadcrumbs = helpers.buildBreadcrumbs([{text: userData.username, url: '/user/' + userData.userslug}, {text: '[[user:edit]]'}]);
+		userData.editButtons = [];
 
-		res.render('account/edit', userData);
+		plugins.fireHook('filter:user.account.edit', userData, function(err, userData) {
+			if (err) {
+				return next(err);
+			}
+
+			res.render('account/edit', userData);
+		});
 	});
 };
 
