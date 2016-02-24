@@ -63,7 +63,7 @@ module.exports = function(User) {
 	};
 
 	User.onNewPostMade = function(postData, callback) {
-		async.parallel([
+		async.series([
 			function(next) {
 				User.addPostIdToUser(postData.uid, postData.pid, postData.timestamp, next);
 			},

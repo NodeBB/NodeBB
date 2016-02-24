@@ -15,7 +15,7 @@ var async = require('async'),
 module.exports = function(Topics) {
 
 	Topics.onNewPostMade = function(postData, callback) {
-		async.parallel([
+		async.series([
 			function(next) {
 				Topics.increasePostCount(postData.tid, next);
 			},
