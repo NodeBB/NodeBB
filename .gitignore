@@ -23,6 +23,8 @@ pidfile
 # templates
 /public/templates
 
+/public/uploads
+/public/sounds
 
 # compiled files
 /public/stylesheet.css
