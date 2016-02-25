@@ -84,7 +84,6 @@ var db = require('./database');
 
 		if (Object.keys(counters).length > 0) {
 			for(var key in counters) {
-				console.log('flushing', key, 'with a value of', counters[key]);
 				dbQueue.push(async.apply(db.sortedSetIncrBy, 'analytics:' + key, counters[key], today.getTime()));
 				delete counters[key];
 			}
