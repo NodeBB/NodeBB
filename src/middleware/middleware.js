@@ -48,7 +48,11 @@ middleware.applyCSRF = csrf();
 middleware.ensureLoggedIn = ensureLoggedIn.ensureLoggedIn(nconf.get('relative_path') + '/login');
 
 middleware.pageView = function(req, res, next) {
-	analytics.pageView(req.ip);
+	analytics.pageView({
+		ip: req.ip,
+		path: req.path,
+		uid: req.hasOwnProperty('user') && req.user.hasOwnProperty('uid') ? parseInt(req.user.uid, 10) : 0
+	});
 
 	plugins.fireHook('action:middleware.pageView', {req: req});
 

@@ -145,32 +145,6 @@ define('admin/general/dashboard', ['semver'], function(semver) {
 		return (usePound?"#":"") + (g | (b << 8) | (r << 16)).toString(16);
 	}
 
-	function getHoursArray() {
-		var currentHour = new Date().getHours(),
-			labels = [];
-
-		for (var i = currentHour, ii = currentHour - 24; i > ii; i--) {
-			var hour = i < 0 ? 24 + i : i;
-			labels.push(hour + ':00');
-		}
-
-		return labels.reverse();
-	}
-
-	function getDaysArray(from) {
-		var currentDay = new Date(from || Date.now()).getTime(),
-			months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-			labels = [],
-			tmpDate;
-
-		for(var x=29;x>=0;x--) {
-			tmpDate = new Date(currentDay - (1000*60*60*24*x));
-			labels.push(months[tmpDate.getMonth()] + ' ' + tmpDate.getDate());
-		}
-
-		return labels;
-	}
-
 	function setupGraphs() {
 		var trafficCanvas = document.getElementById('analytics-traffic'),
 			registeredCanvas = document.getElementById('analytics-registered'),
@@ -180,7 +154,7 @@ define('admin/general/dashboard', ['semver'], function(semver) {
 			registeredCtx = registeredCanvas.getContext('2d'),
 			presenceCtx = presenceCanvas.getContext('2d'),
 			topicsCtx = topicsCanvas.getContext('2d'),
-			trafficLabels = getHoursArray();
+			trafficLabels = utils.getHoursArray();
 
 		if (isMobile) {
 			Chart.defaults.global.showTooltips = false;
@@ -325,9 +299,9 @@ define('admin/general/dashboard', ['semver'], function(semver) {
 			}
 
 			if (units === 'days') {
-				graphs.traffic.scale.xLabels = getDaysArray(until);
+				graphs.traffic.scale.xLabels = utils.getDaysArray(until);
 			} else {
-				graphs.traffic.scale.xLabels = getHoursArray();
+				graphs.traffic.scale.xLabels = utils.getHoursArray();
 
 				$('#pageViewsThisMonth').html(data.monthlyPageViews.thisMonth);
 				$('#pageViewsLastMonth').html(data.monthlyPageViews.lastMonth);

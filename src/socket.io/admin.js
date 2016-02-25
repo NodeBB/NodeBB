@@ -217,16 +217,16 @@ SocketAdmin.analytics.get = function(socket, data, callback) {
 			async.parallel({
 				uniqueVisitors: function(next) {
 					if (data.units === 'days') {
-						getDailyStatsForSet('analytics:uniquevisitors', data.until || Date.now(), data.amount, next);
+						analytics.getDailyStatsForSet('analytics:uniquevisitors', data.until || Date.now(), data.amount, next);
 					} else {
-						getHourlyStatsForSet('analytics:uniquevisitors', data.until || Date.now(), data.amount, next);
+						analytics.getHourlyStatsForSet('analytics:uniquevisitors', data.until || Date.now(), data.amount, next);
 					}
 				},
 				pageviews: function(next) {
 					if (data.units === 'days') {
-						getDailyStatsForSet('analytics:pageviews', data.until || Date.now(), data.amount, next);
+						analytics.getDailyStatsForSet('analytics:pageviews', data.until || Date.now(), data.amount, next);
 					} else {
-						getHourlyStatsForSet('analytics:pageviews', data.until || Date.now(), data.amount, next);
+						analytics.getHourlyStatsForSet('analytics:pageviews', data.until || Date.now(), data.amount, next);
 					}
 				},
 				monthlyPageViews: function(next) {
@@ -250,62 +250,6 @@ SocketAdmin.logs.get = function(socket, data, callback) {
 SocketAdmin.logs.clear = function(socket, data, callback) {
 	meta.logs.clear(callback);
 };
-
-function getHourlyStatsForSet(set, hour, numHours, callback) {
-	var terms = {},
-		hoursArr = [];
-
-	hour = new Date(hour);
-	hour.setHours(hour.getHours(), 0, 0, 0);
-
-	for (var i = 0, ii = numHours; i < ii; i++) {
-		hoursArr.push(hour.getTime());
-		hour.setHours(hour.getHours() - 1, 0, 0, 0);
-	}
-
-	db.sortedSetScores(set, hoursArr, function(err, counts) {
-		if (err) {
-			return callback(err);
-		}
-
-		hoursArr.forEach(function(term, index) {
-			terms[term] = parseInt(counts[index], 10) || 0;
-		});
-
-		var termsArr = [];
-
-		hoursArr.reverse();
-		hoursArr.forEach(function(hour) {
-			termsArr.push(terms[hour]);
-		});
-
-		callback(null, termsArr);
-	});
-}
-
-function getDailyStatsForSet(set, day, numDays, callback) {
-	var daysArr = [];
-
-	day = new Date(day);
-	day.setHours(0, 0, 0, 0);
-
-	async.whilst(function() {
-		return numDays--;
-	}, function(next) {
-		getHourlyStatsForSet(set, day.getTime()-(1000*60*60*24*numDays), 24, function(err, day) {
-			if (err) {
-				return next(err);
-			}
-
-			daysArr.push(day.reduce(function(cur, next) {
-				return cur+next;
-			}));
-			next();
-		});
-	}, function(err) {
-		callback(err, daysArr);
-	});
-}
 
 SocketAdmin.getMoreEvents = function(socket, next, callback) {
 	var start = parseInt(next, 10);

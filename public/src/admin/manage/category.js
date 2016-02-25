@@ -1,5 +1,5 @@
 "use strict";
-/*global define, app, socket, ajaxify, RELATIVE_PATH, bootbox, templates */
+/*global define, app, socket, ajaxify, RELATIVE_PATH, bootbox, templates, Chart */
 
 define('admin/manage/category', [
 	'uploader',
@@ -145,6 +145,12 @@ define('admin/manage/category', [
 		});
 
 		Category.setupPrivilegeTable();
+		
+		if (window.location.hash === '#analytics') {
+			Category.setupGraphs();
+		} else {
+			$('a[href="#analytics"]').on('shown.bs.tab', Category.setupGraphs);
+		}
 	};
 
 	Category.setupPrivilegeTable = function() {
@@ -342,6 +348,107 @@ define('admin/manage/category', [
 				return app.alertError(err.message);
 			}
 			app.alertSuccess('Privileges copied!');
+		});
+	};
+
+	Category.setupGraphs = function() {
+		var hourlyCanvas = document.getElementById('pageviews:hourly'),
+			dailyCanvas = document.getElementById('pageviews:daily'),
+			topicsCanvas = document.getElementById('topics:daily'),
+			postsCanvas = document.getElementById('posts:daily'),
+			hourlyLabels = utils.getHoursArray().map(function(text, idx) {
+				return idx % 3 ? '' : text;
+			}),
+			dailyLabels = utils.getDaysArray().map(function(text, idx) {
+				return idx % 3 ? '' : text;
+			});
+
+		if (utils.isMobile()) {
+			Chart.defaults.global.showTooltips = false;
+		}
+
+		var data = {
+			'pageviews:hourly': {
+				labels: hourlyLabels,
+				datasets: [
+					{
+						label: "",
+						fillColor: "rgba(220,220,220,0.2)",
+						strokeColor: "rgba(220,220,220,1)",
+						pointColor: "rgba(220,220,220,1)",
+						pointStrokeColor: "#fff",
+						pointHighlightFill: "#fff",
+						pointHighlightStroke: "rgba(220,220,220,1)",
+						data: ajaxify.data.analytics['pageviews:hourly']
+					}
+				]
+			},
+			'pageviews:daily': {
+				labels: dailyLabels,
+				datasets: [
+					{
+						label: "",
+						fillColor: "rgba(151,187,205,0.2)",
+						strokeColor: "rgba(151,187,205,1)",
+						pointColor: "rgba(151,187,205,1)",
+						pointStrokeColor: "#fff",
+						pointHighlightFill: "#fff",
+						pointHighlightStroke: "rgba(151,187,205,1)",
+						data: ajaxify.data.analytics['pageviews:daily']
+					}
+				]
+			},
+			'topics:daily': {
+				labels: dailyLabels.slice(-7),
+				datasets: [
+					{
+						label: "",
+						fillColor: "rgba(151,187,205,0.2)",
+						strokeColor: "rgba(151,187,205,1)",
+						pointColor: "rgba(151,187,205,1)",
+						pointStrokeColor: "#fff",
+						pointHighlightFill: "#fff",
+						pointHighlightStroke: "rgba(151,187,205,1)",
+						data: ajaxify.data.analytics['topics:daily']
+					}
+				]
+			},
+			'posts:daily': {
+				labels: dailyLabels.slice(-7),
+				datasets: [
+					{
+						label: "",
+						fillColor: "rgba(151,187,205,0.2)",
+						strokeColor: "rgba(151,187,205,1)",
+						pointColor: "rgba(151,187,205,1)",
+						pointStrokeColor: "#fff",
+						pointHighlightFill: "#fff",
+						pointHighlightStroke: "rgba(151,187,205,1)",
+						data: ajaxify.data.analytics['posts:daily']
+					}
+				]
+			},
+		};
+
+		hourlyCanvas.width = $(hourlyCanvas).parent().width();
+		dailyCanvas.width = $(dailyCanvas).parent().width();
+		topicsCanvas.width = $(topicsCanvas).parent().width();
+		postsCanvas.width = $(postsCanvas).parent().width();
+		new Chart(hourlyCanvas.getContext('2d')).Line(data['pageviews:hourly'], {
+			responsive: true,
+			animation: false
+		});
+		new Chart(dailyCanvas.getContext('2d')).Line(data['pageviews:daily'], {
+			responsive: true,
+			animation: false
+		});
+		new Chart(topicsCanvas.getContext('2d')).Line(data['topics:daily'], {
+			responsive: true,
+			animation: false
+		});
+		new Chart(postsCanvas.getContext('2d')).Line(data['posts:daily'], {
+			responsive: true,
+			animation: false
 		});
 	};
 
