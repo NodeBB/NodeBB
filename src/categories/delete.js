@@ -8,10 +8,10 @@ var async = require('async'),
 
 module.exports = function(Categories) {
 
-	Categories.purge = function(cid, callback) {
+	Categories.purge = function(cid, uid, callback) {
 		batch.processSortedSet('cid:' + cid + ':tids', function(tids, next) {
 			async.eachLimit(tids, 10, function(tid, next) {
-				topics.purgePostsAndTopic(tid, next);
+				topics.purgePostsAndTopic(tid, uid, next);
 			}, next);
 		}, {alwaysStartAt: 0}, function(err) {
 			if (err) {
