@@ -5,11 +5,11 @@ define('forum/pagination', function() {
 	var pagination = {};
 
 	pagination.init = function() {
-		$('body').on('click', '.pagination .select-page', function(e) {
-			e.preventDefault();
-			bootbox.prompt('Enter page number:', function(pageNum) {
+		$('body').on('click', '[component="pagination/select-page"]', function() {
+			bootbox.prompt('[[global:enter_page_number]]', function(pageNum) {
 				pagination.loadPage(pageNum);
 			});
+			return false;
 		});
 	};
 
