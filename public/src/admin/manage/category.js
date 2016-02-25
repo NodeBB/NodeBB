@@ -373,12 +373,12 @@ define('admin/manage/category', [
 				datasets: [
 					{
 						label: "",
-						fillColor: "rgba(220,220,220,0.2)",
-						strokeColor: "rgba(220,220,220,1)",
-						pointColor: "rgba(220,220,220,1)",
+						fillColor: "rgba(186,139,175,0.2)",
+						strokeColor: "rgba(186,139,175,1)",
+						pointColor: "rgba(186,139,175,1)",
 						pointStrokeColor: "#fff",
 						pointHighlightFill: "#fff",
-						pointHighlightStroke: "rgba(220,220,220,1)",
+						pointHighlightStroke: "rgba(186,139,175,1)",
 						data: ajaxify.data.analytics['pageviews:hourly']
 					}
 				]
@@ -403,12 +403,12 @@ define('admin/manage/category', [
 				datasets: [
 					{
 						label: "",
-						fillColor: "rgba(151,187,205,0.2)",
-						strokeColor: "rgba(151,187,205,1)",
-						pointColor: "rgba(151,187,205,1)",
+						fillColor: "rgba(171,70,66,0.2)",
+						strokeColor: "rgba(171,70,66,1)",
+						pointColor: "rgba(171,70,66,1)",
 						pointStrokeColor: "#fff",
 						pointHighlightFill: "#fff",
-						pointHighlightStroke: "rgba(151,187,205,1)",
+						pointHighlightStroke: "rgba(171,70,66,1)",
 						data: ajaxify.data.analytics['topics:daily']
 					}
 				]
@@ -418,12 +418,12 @@ define('admin/manage/category', [
 				datasets: [
 					{
 						label: "",
-						fillColor: "rgba(151,187,205,0.2)",
-						strokeColor: "rgba(151,187,205,1)",
-						pointColor: "rgba(151,187,205,1)",
+						fillColor: "rgba(161,181,108,0.2)",
+						strokeColor: "rgba(161,181,108,1)",
+						pointColor: "rgba(161,181,108,1)",
 						pointStrokeColor: "#fff",
 						pointHighlightFill: "#fff",
-						pointHighlightStroke: "rgba(151,187,205,1)",
+						pointHighlightStroke: "rgba(161,181,108,1)",
 						data: ajaxify.data.analytics['posts:daily']
 					}
 				]
