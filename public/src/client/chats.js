@@ -29,7 +29,7 @@ define('forum/chats', ['components', 'string', 'sounds', 'forum/infinitescroll',
 		Chats.scrollToBottom($('.expanded-chat ul'));
 
 		Chats.initialised = true;
-		
+
 		Chats.handleSearch();
 
 		if (ajaxify.data.hasOwnProperty('roomId')) {
@@ -535,71 +535,70 @@ define('forum/chats', ['components', 'string', 'sounds', 'forum/infinitescroll',
 			callback();
 		});
 	}
-	
+
 	Chats.handleSearch = function() {
 		var timeoutId = 0;
-		
+
 		components.get('chat/search').on('keyup', function() {
 			if (timeoutId) {
 				clearTimeout(timeoutId);
 				timeoutId = 0;
 			}
 
-			timeoutId = setTimeout(doSearch, 250);	
+			timeoutId = setTimeout(doSearch, 250);
 		});
-		
+
 		function doSearch() {
-            		var username = components.get('chat/search').val();
-            		var chatsListEl = $('[component="chat/search/list"]');
+			var username = components.get('chat/search').val();
+			var chatsListEl = $('[component="chat/search/list"]');
 
 			if (!username) {
-    				return chatsListEl.empty();
+				return chatsListEl.empty();
 			}
 
-	            	socket.emit('user.search', {
-	    			query: username,
-	    			searchBy: 'username'
-	        	}, function(err, data) {
-	        		if (err) {
-	        			return app.alertError(err.message);
-	        		}
-	                    
-	                    	chatsListEl.empty();
-	                    
-	                    	if (data.users.length === 0) {
-	                    		chatsListEl.translateHtml('<li><div><span>[[users:no-users-found]]</span></div></li>');
-	                    	} else {
-		                    	data.users.forEach(function(userObj) {
-		        			function createUserImage() {
-							return (userObj.picture ?
-								'<img src="' +	userObj.picture + '" title="' +	userObj.username +'" />' :
-								'<div class="user-icon" style="background-color: ' + userObj['icon:bgColor'] + '">' + userObj['icon:text'] + '</div>') +
-								'<i class="fa fa-circle status ' + userObj.status + '"></i> ' + userObj.username;
-						}
-		        
-		        			var chatEl = $('<li component="chat/search/user" />')
+			socket.emit('user.search', {
+				query: username,
+				searchBy: 'username'
+			}, function(err, data) {
+				if (err) {
+					return app.alertError(err.message);
+				}
+
+				chatsListEl.empty();
+
+				if (data.users.length === 0) {
+					return chatsListEl.translateHtml('<li><div><span>[[users:no-users-found]]</span></div></li>');
+				}
+
+				data.users.forEach(function(userObj) {
+					function createUserImage() {
+						return (userObj.picture ?
+							'<img src="' +	userObj.picture + '" title="' +	userObj.username +'" />' :
+							'<div class="user-icon" style="background-color: ' + userObj['icon:bgColor'] + '">' + userObj['icon:text'] + '</div>') +
+							'<i class="fa fa-circle status ' + userObj.status + '"></i> ' + userObj.username;
+					}
+
+					var chatEl = $('<li component="chat/search/user" />')
 							.attr('data-uid', userObj.uid)
 							.appendTo(chatsListEl);
-		        
-		        			chatEl.append(createUserImage());
-		        				
-		        			chatEl.click(function() {
-		        				socket.emit('modules.chats.hasPrivateChat', userObj.uid, function(err, roomId) {
-			                 			if (err) {
-			                 				return app.alertError(err.message);
-			                 			}
-			                 			if (roomId) {
-			                 				ajaxify.go('chats/' + roomId);
-			                 			} else {
-			                 				app.newChat(userObj.uid);
-			                 			}
-			                 		});
-		        			});
-		        		});
-		            	}
-	                    
-	        	});
-        	}
+
+					chatEl.append(createUserImage());
+
+					chatEl.on('click', function() {
+						socket.emit('modules.chats.hasPrivateChat', userObj.uid, function(err, roomId) {
+							if (err) {
+								return app.alertError(err.message);
+							}
+							if (roomId) {
+								ajaxify.go('chats/' + roomId);
+							} else {
+								app.newChat(userObj.uid);
+							}
+						});
+					});
+		        });
+			});
+	    }
 	};
 	return Chats;
 });
