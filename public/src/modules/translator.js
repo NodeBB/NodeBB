@@ -27,8 +27,18 @@
 	translator.addTranslation = function(language, filename, translations) {
 		languages[language] = languages[language] || {};
 		languages[language].loaded = languages[language].loaded || {};
-		languages[language].loaded[filename] = translations;
 		languages[language].loading = languages[language].loading || {};
+
+		if (languages[language].loaded[filename]) {
+			var existing = languages[language].loaded[filename];
+			for (var t in translations) {
+				if (translations.hasOwnProperty(t)) {
+					languages[language].loaded[filename][t] = translations[t];
+				}
+			}
+		} else {
+			languages[language].loaded[filename] = translations;
+		}
 	};
 
 	translator.getTranslations = function(language, filename, callback) {
