@@ -162,6 +162,32 @@ describe('Topic\'s', function() {
 		});
 	});
 
+	describe('.purge/.delete', function() {
+		var newTopic;
+
+		before(function(done) {
+			topics.post({uid: topic.userId, title: topic.title, content: topic.content, cid: topic.categoryId}, function(err, result) {
+				newTopic = result.topicData;
+				done();
+			});
+		});
+
+		it('should delete the topic', function(done) {
+			topics.delete(newTopic.tid, function(err) {
+				assert.ifError(err);
+				done();
+			});
+		});
+
+		it('should purge the topic', function(done) {
+			topics.purge(newTopic.tid, function(err) {
+				assert.ifError(err);
+				done();
+			});
+		});
+	});
+
+
 	after(function() {
 		db.flushdb();
 	});
