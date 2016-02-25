@@ -3,16 +3,19 @@
 var meta = require('./meta');
 
 function expandObjBy(obj1, obj2) {
-	var key, val1, val2, changed = false;
+	var key, val1, val2, xorValIsArray, changed = false;
 	for (key in obj2) {
 		if (obj2.hasOwnProperty(key)) {
 			val2 = obj2[key];
 			val1 = obj1[key];
-			if (!obj1.hasOwnProperty(key) || typeof val2 !== typeof val1) {
+			xorValIsArray = Array.isArray(val1) ^ Array.isArray(val2);
+			if (xorValIsArray || !obj1.hasOwnProperty(key) || typeof val2 !== typeof val1) {
 				obj1[key] = val2;
 				changed = true;
-			} else if (typeof val2 === 'object' && expandObjBy(val1, val2)) {
-				changed = true;
+			} else if (typeof val2 === 'object' && !Array.isArray(val2)) {
+				if (expandObjBy(val1, val2)) {
+					changed = true;
+				}
 			}
 		}
 	}
@@ -20,14 +23,13 @@ function expandObjBy(obj1, obj2) {
 }
 
 function trim(obj1, obj2) {
-	if (Array.isArray(obj1)) { return; }
 	var key, val1;
 	for (key in obj1) {
 		if (obj1.hasOwnProperty(key)) {
 			val1 = obj1[key];
 			if (!obj2.hasOwnProperty(key)) {
 				delete obj1[key];
-			} else if (typeof val1 === 'object') {
+			} else if (typeof val1 === 'object' && !Array.isArray(val1)) {
 				trim(val1, obj2[key]);
 			}
 		}
