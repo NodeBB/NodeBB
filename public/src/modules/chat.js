@@ -65,25 +65,6 @@ define('chat', ['components', 'taskbar', 'string', 'sounds', 'forum/chats', 'tra
 			}
 		});
 
-		socket.on('event:chats.userStartTyping', function(withUid) {
-			var modal = module.getModal(withUid);
-			var chatContent = modal.find('.chat-content');
-			if (!chatContent.length) {
-				return;
-			}
-			var atBottom = chatContent[0].scrollHeight - chatContent.scrollTop() === chatContent.innerHeight();
-
-			modal.find('.user-typing').removeClass('hide');
-			if (atBottom) {
-				Chats.scrollToBottom(chatContent);
-			}
-		});
-
-		socket.on('event:chats.userStopTyping', function(withUid) {
-			var modal = module.getModal(withUid);
-			modal.find('.user-typing').addClass('hide');
-		});
-
 		socket.on('event:user_status_change', function(data) {
 			var modal = module.getModal(data.uid);
 			app.updateUserStatus(modal.find('[component="user/status"]'), data.status);
@@ -322,7 +303,6 @@ define('chat', ['components', 'taskbar', 'string', 'sounds', 'forum/chats', 'tra
 		chatModal.remove();
 		chatModal.data('modal', null);
 		taskbar.discard('chat', chatModal.attr('UUID'));
-		Chats.notifyTyping(chatModal.attr('roomId'), false);
 
 		if (chatModal.attr('data-mobile')) {
 			module.disableMobileBehaviour(chatModal);
@@ -391,7 +371,6 @@ define('chat', ['components', 'taskbar', 'string', 'sounds', 'forum/chats', 'tra
 		taskbar.minimize('chat', uuid);
 		clearInterval(chatModal.attr('intervalId'));
 		chatModal.attr('intervalId', 0);
-		Chats.notifyTyping(chatModal.attr('roomId'), false);
 	};
 
 	module.toggleNew = taskbar.toggleNew;

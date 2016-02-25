@@ -204,7 +204,6 @@ define('forum/chats', ['components', 'string', 'sounds', 'forum/infinitescroll',
 				return;
 			}
 
-			Chats.notifyTyping(roomId, val);
 			$(this).attr('data-typing', val);
 		});
 
@@ -370,14 +369,6 @@ define('forum/chats', ['components', 'string', 'sounds', 'forum/infinitescroll',
 			}
 		});
 
-		socket.on('event:chats.userStartTyping', function(withUid) {
-			$('.chats-list li[data-uid="' + withUid + '"]').addClass('typing');
-		});
-
-		socket.on('event:chats.userStopTyping', function(withUid) {
-			$('.chats-list li[data-uid="' + withUid + '"]').removeClass('typing');
-		});
-
 		socket.on('event:user_status_change', function(data) {
 			app.updateUserStatus($('.chats-list [data-uid="' + data.uid + '"] [component="user/status"]'), data.status);
 		});
@@ -423,13 +414,6 @@ define('forum/chats', ['components', 'string', 'sounds', 'forum/infinitescroll',
 		Chats.setActive();
 	};
 
-	Chats.notifyTyping = function(roomId, typing) {
-		socket.emit('modules.chats.user' + (typing ? 'Start' : 'Stop') + 'Typing', {
-			roomId: roomId,
-			fromUid: app.user.uid
-		});
-	};
-
 	Chats.sendMessage = function(roomId, inputEl) {
 		var msg = inputEl.val();
 		var mid = inputEl.attr('data-mid');
@@ -458,7 +442,6 @@ define('forum/chats', ['components', 'string', 'sounds', 'forum/infinitescroll',
 				}
 
 				sounds.play('chat-outgoing');
-				Chats.notifyTyping(roomId, false);
 			});
 		} else {
 			socket.emit('modules.chats.edit', {
@@ -470,7 +453,6 @@ define('forum/chats', ['components', 'string', 'sounds', 'forum/infinitescroll',
 					return app.alertError(err.message);
 				}
 
-				Chats.notifyTyping(roomId, false);
 			});
 		}
 	};
