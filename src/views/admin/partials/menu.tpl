@@ -7,6 +7,7 @@
 			<li><a href="{relative_path}/admin/general/navigation">Navigation</a></li>
 			<li><a href="{relative_path}/admin/general/languages">Languages</a></li>
 			<li><a href="{relative_path}/admin/general/sounds">Sounds</a></li>
+			<li><a href="{relative_path}/admin/general/social">Social</a></li>
 		</ul>
 	</section>
 
@@ -160,6 +161,7 @@
 					<li><a href="{relative_path}/admin/general/navigation">Navigation</a></li>
 					<li><a href="{relative_path}/admin/general/languages">Languages</a></li>
 					<li><a href="{relative_path}/admin/general/sounds">Sounds</a></li>
+					<li><a href="{relative_path}/admin/general/social">Social</a></li>
 				</ul>
 			</li>
 			<li class="dropdown menu-item">

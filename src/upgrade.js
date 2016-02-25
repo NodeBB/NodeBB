@@ -10,7 +10,7 @@ var db = require('./database'),
 	schemaDate, thisSchemaDate,
 
 	// IMPORTANT: REMEMBER TO UPDATE VALUE OF latestSchema
-	latestSchema = Date.UTC(2016, 0, 23);
+	latestSchema = Date.UTC(2016, 1, 25);
 
 Upgrade.check = function(callback) {
 	db.get('schemaDate', function(err, value) {
@@ -408,6 +408,34 @@ Upgrade.upgrade = function(callback) {
 				});
 			} else {
 				winston.info('[2016/01/23] Creating Global moderators group skipped!');
+				next();
+			}
+		},
+		function(next) {
+			thisSchemaDate = Date.UTC(2016, 1, 25);
+
+			if (schemaDate < thisSchemaDate) {
+				updatesMade = true;
+				winston.info('[2016/02/25] Social: Post Sharing');
+
+				var social = require('./social');
+				async.parallel([
+					function (next) {
+						social.setActivePostSharingNetworks(['facebook', 'google', 'twitter'], next);
+					},
+					function (next) {
+						db.deleteObjectField('config', 'disableSocialButtons', next);
+					}
+				], function(err) {
+					if (err) {
+						return next(err);
+					}
+
+					winston.info('[2016/02/25] Social: Post Sharing done!');
+					Upgrade.update(thisSchemaDate, next);
+				});
+			} else {
+				winston.info('[2016/02/25] Social: Post Sharing skipped!');
 				next();
 			}
 		}

@@ -22,6 +22,7 @@ var adminController = {
 	sounds: require('./admin/sounds'),
 	homepage: require('./admin/homepage'),
 	navigation: require('./admin/navigation'),
+	social: require('./admin/social'),
 	themes: require('./admin/themes'),
 	users: require('./admin/users'),
 	uploads: require('./admin/uploads'),

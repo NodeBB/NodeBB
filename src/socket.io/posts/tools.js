@@ -8,6 +8,7 @@ var websockets = require('../index');
 var socketTopics = require('../topics');
 var privileges = require('../../privileges');
 var plugins = require('../../plugins');
+var social = require('../../social');
 var favourites = require('../../favourites');
 
 module.exports = function(SocketPosts) {
@@ -29,6 +30,9 @@ module.exports = function(SocketPosts) {
 			},
 			tools: function(next) {
 				plugins.fireHook('filter:post.tools', {pid: data.pid, uid: socket.uid, tools: []}, next);
+			},
+			postSharing: function(next) {
+				social.getPostSharing(next);
 			}
 		}, function(err, results) {
 			if (err) {
