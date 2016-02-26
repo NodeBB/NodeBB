@@ -117,7 +117,7 @@ define('forum/topic/postTools', ['share', 'navigator', 'components', 'translator
 		});
 
 		$('.topic').on('click', '[component="topic/reply-as-topic"]', function() {
-			translator.translate('[[topic:link_back, ' + ajaxify.data.title + ', ' + config.relative_path + '/topic/' + ajaxify.data.slug + ']]', function(body) {
+			translator.translate('[[topic:link_back, ' + ajaxify.data.titleRaw + ', ' + config.relative_path + '/topic/' + ajaxify.data.slug + ']]', function(body) {
 				$(window).trigger('action:composer.topic.new', {
 					cid: ajaxify.data.cid,
 					body: body
