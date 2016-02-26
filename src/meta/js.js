@@ -33,7 +33,6 @@ module.exports = function(Meta) {
 				'public/vendor/xregexp/xregexp.js',
 				'public/vendor/xregexp/unicode/unicode-base.js',
 				'public/vendor/buzz/buzz.min.js',
-				'public/vendor/mousetrap/mousetrap.js',
 				'public/vendor/autosize.js',
 				'./node_modules/templates.js/lib/templates.js',
 				'public/src/utils.js',
@@ -84,7 +83,8 @@ module.exports = function(Meta) {
 
 			// modules listed below are symlinked to public/src/modules so they can be defined anonymously
 			modules: [
-				'./node_modules/chart.js/Chart.js'
+				'./node_modules/chart.js/Chart.js',
+				'./node_modules/mousetrap/mousetrap.js'
 			]
 		}
 	};

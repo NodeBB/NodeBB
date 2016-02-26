@@ -1,8 +1,8 @@
 'use strict';
 
-/* globals define, config, app, ajaxify, utils, socket, templates, Mousetrap, bootbox */
+/* globals define, config, app, ajaxify, utils, socket, templates, bootbox */
 
-define('forum/chats', ['components', 'string', 'sounds', 'forum/infinitescroll', 'translator'], function(components, S, sounds, infinitescroll, translator) {
+define('forum/chats', ['components', 'string', 'sounds', 'forum/infinitescroll', 'translator', 'mousetrap'], function(components, S, sounds, infinitescroll, translator, mousetrap) {
 	var Chats = {
 		initialised: false
 	};
@@ -92,7 +92,7 @@ define('forum/chats', ['components', 'string', 'sounds', 'forum/infinitescroll',
 	};
 
 	Chats.addHotkeys = function() {
-		Mousetrap.bind('ctrl+up', function() {
+		mousetrap.bind('ctrl+up', function() {
 			var activeContact = $('.chats-list .bg-primary'),
 				prev = activeContact.prev();
 
@@ -100,7 +100,7 @@ define('forum/chats', ['components', 'string', 'sounds', 'forum/infinitescroll',
 				Chats.switchChat(prev.attr('data-roomid'));
 			}
 		});
-		Mousetrap.bind('ctrl+down', function() {
+		mousetrap.bind('ctrl+down', function() {
 			var activeContact = $('.chats-list .bg-primary'),
 				next = activeContact.next();
 
@@ -108,7 +108,7 @@ define('forum/chats', ['components', 'string', 'sounds', 'forum/infinitescroll',
 				Chats.switchChat(next.attr('data-roomid'));
 			}
 		});
-		Mousetrap.bind('up', function(e) {
+		mousetrap.bind('up', function(e) {
 			if (e.target === components.get('chat/input').get(0)) {
 				// Retrieve message id from messages list
 				var message = components.get('chat/messages').find('.chat-message[data-self="1"]').last();

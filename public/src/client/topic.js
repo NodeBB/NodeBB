@@ -93,7 +93,7 @@ define('forum/topic', [
 	}
 
 	function handleTopicSearch() {
-		require(['search', 'mousetrap'], function(search, Mousetrap) {
+		require(['search', 'mousetrap'], function(search, mousetrap) {
 			$('.topic-search')
 				.on('click', '.prev', function() {
 					search.topicDOM.prev();
@@ -102,7 +102,7 @@ define('forum/topic', [
 					search.topicDOM.next();
 				});
 
-			Mousetrap.bind('ctrl+f', function(e) {
+			mousetrap.bind('ctrl+f', function(e) {
 				if (config.topicSearchEnabled) {
 					// If in topic, open search window and populate, otherwise regular behaviour
 					var match = ajaxify.currentPage.match(/^topic\/([\d]+)/),
