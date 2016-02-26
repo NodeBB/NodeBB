@@ -37,8 +37,7 @@
 				paths: {
 					'forum': '../client',
 					'admin': '../admin',
-					'vendor': '../../vendor',
-					'buzz': '../../vendor/buzz/buzz.min'
+					'vendor': '../../vendor'
 				}
 			});
 
