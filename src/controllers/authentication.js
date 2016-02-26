@@ -87,8 +87,7 @@ function registerAndLoginUser(req, res, userData, callback) {
 		function(_uid, next) {
 			uid = _uid;
 			if (res.locals.processLogin === true) {
-				user.logIP(uid, req.ip);
-				req.login({uid: uid}, next);
+				doLogin(req, uid, next);
 			} else {
 				next();
 			}
@@ -172,35 +171,9 @@ function continueLogin(req, res, next) {
 				res.status(200).send(nconf.get('relative_path') + '/reset/' + code);
 			});
 		} else {
-			req.login({
-				uid: userData.uid
-			}, function(err) {
+			doLogin(req, userData.uid, function(err) {
 				if (err) {
 					return res.status(403).send(err.message);
-				}
-
-				if (userData.uid) {
-					var uuid = utils.generateUUID();
-					req.session.meta = {};
-
-					// Associate IP used during login with user account
-					user.logIP(userData.uid, req.ip);
-					req.session.meta.ip = req.ip;
-
-					// Associate metadata retrieved via user-agent
-					req.session.meta = _.extend(req.session.meta, {
-						uuid: uuid,
-						datetime: Date.now(),
-						platform: req.useragent.platform,
-						browser: req.useragent.browser,
-						version: req.useragent.version
-					});
-
-					// Associate login session with user
-					user.auth.addSession(userData.uid, req.sessionID);
-					db.setObjectField('uid:' + userData.uid + 'sessionUUID:sessionId', uuid, req.sessionID);
-
-					plugins.fireHook('action:user.loggedIn', userData.uid);
 				}
 
 				if (!req.session.returnTo) {
@@ -214,6 +187,40 @@ function continueLogin(req, res, next) {
 			});
 		}
 	})(req, res, next);
+}
+
+function doLogin(req, uid, callback) {
+	req.login({uid: uid}, function(err) {
+		if (err) {
+			return callback(err);
+		}
+
+		if (uid) {
+			var uuid = utils.generateUUID();
+			req.session.meta = {};
+
+			// Associate IP used during login with user account
+			user.logIP(uid, req.ip);
+			req.session.meta.ip = req.ip;
+
+			// Associate metadata retrieved via user-agent
+			req.session.meta = _.extend(req.session.meta, {
+				uuid: uuid,
+				datetime: Date.now(),
+				platform: req.useragent.platform,
+				browser: req.useragent.browser,
+				version: req.useragent.version
+			});
+
+			// Associate login session with user
+			user.auth.addSession(uid, req.sessionID);
+			db.setObjectField('uid:' + uid + 'sessionUUID:sessionId', uuid, req.sessionID);
+
+			plugins.fireHook('action:user.loggedIn', uid);
+		}
+
+		callback();
+	});
 }
 
 authenticationController.localLogin = function(req, username, password, next) {
