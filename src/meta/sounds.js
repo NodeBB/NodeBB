@@ -38,6 +38,11 @@ module.exports = function(Meta) {
 		], function(err, files) {
 			var	localList = {};
 
+			// Filter out hidden files
+			files = files.filter(function(filename) {
+				return !filename.startsWith('.');
+			});
+
 			if (err) {
 				winston.error('Could not get local sound files:' + err.message);
 				console.log(err.stack);
