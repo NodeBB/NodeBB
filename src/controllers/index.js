@@ -182,7 +182,8 @@ Controllers.compose = function(req, res, next) {
 Controllers.confirmEmail = function(req, res, next) {
 	user.email.confirm(req.params.code, function (err) {
 		res.render('confirm', {
-			error: err ? err.message : ''
+			error: err ? err.message : '',
+			title: '[[pages:confirm]]',
 		});
 	});
 };

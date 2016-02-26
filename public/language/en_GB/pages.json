@@ -45,6 +45,8 @@
 	"account/downvoted": "Posts downvoted by %1",
 	"account/best": "Best posts made by %1",
 
+	"confirm": "Email Confirmed",
+
 	"maintenance.text": "%1 is currently undergoing maintenance. Please come back another time.",
 	"maintenance.messageIntro": "Additionally, the administrator has left this message:",
 
