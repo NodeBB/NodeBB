@@ -7,6 +7,7 @@ var winston = require('winston'),
 	_ = require('underscore'),
 	nconf = require('nconf'),
 	fs = require('fs'),
+	rimraf = require('rimraf'),
 	file = require('../file'),
 	plugins = require('../plugins'),
 	emitter = require('../emitter'),
@@ -43,6 +44,8 @@ module.exports = function(Meta) {
 				'public/src/variables.js',
 				'public/src/widgets.js'
 			],
+
+			// files listed below are only available client-side, or are bundled in to reduce # of network requests on cold load
 			rjs: [
 				'public/src/client/footer.js',
 				'public/src/client/chats.js',
@@ -77,8 +80,49 @@ module.exports = function(Meta) {
 				'public/src/modules/helpers.js',
 				'public/src/modules/sounds.js',
 				'public/src/modules/string.js'
+			],
+
+			// modules listed below are symlinked to public/src/modules so they can be defined anonymously
+			modules: [
+				'./node_modules/chart.js/Chart.js'
 			]
 		}
+	};
+
+	Meta.js.symlinkModules = function(callback) {
+		// Symlink all defined modules to /public/src/modules
+		var modulesLoaded = 0,
+			targetPath;
+
+		async.series([
+			function(next) {
+				async.each(Meta.js.scripts.modules, function(localPath, next) {
+					targetPath = path.join(__dirname, '../../public/src/modules', path.basename(localPath));
+
+					async.waterfall([
+						async.apply(fs.access, localPath, fs.R_OK),
+						async.apply(rimraf, targetPath),
+						async.apply(fs.link, localPath, targetPath)
+					], function(err) {
+						if (err) {
+							winston.error('[meta/js] Could not symlink `' + localPath + '` to modules folder');
+						} else {
+							winston.verbose('[meta/js] Symlinked `' + localPath + '` to modules folder');
+							++modulesLoaded;
+						}
+
+						next(err);
+					});
+				}, next);
+			}
+		], function(err) {
+			if (err) {
+				winston.error('[meta/js] Encountered error while symlinking modules:' + err.message);
+			}
+
+			winston.verbose('[meta/js] ' + modulesLoaded + ' of ' + Meta.js.scripts.modules.length + ' modules symlinked');
+			callback(err);
+		});
 	};
 
 	Meta.js.minify = function(target, callback) {

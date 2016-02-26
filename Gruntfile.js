@@ -57,7 +57,7 @@ module.exports = function(grunt) {
 				files: ['public/**/*.less', 'node_modules/nodebb-*/*.less', 'node_modules/nodebb-*/*/*.less', 'node_modules/nodebb-*/*/*/*.less', 'node_modules/nodebb-*/*/*/*/*.less']
 			},
 			clientUpdated: {
-				files: ['public/src/**/*.js', 'node_modules/nodebb-*/*.js', 'node_modules/nodebb-*/*/*.js', 'node_modules/nodebb-*/*/*/*.js', 'node_modules/nodebb-*/*/*/*/*.js', 'node_modules/templates.js/lib/templates.js']
+				files: ['public/src/**/*.js', '!public/src/modules/*.js', 'node_modules/nodebb-*/*.js', 'node_modules/nodebb-*/*/*.js', 'node_modules/nodebb-*/*/*/*.js', 'node_modules/nodebb-*/*/*/*/*.js', 'node_modules/templates.js/lib/templates.js']
 			},
 			serverUpdated: {
 				files: ['*.js', 'install/*.js', 'src/**/*.js']
