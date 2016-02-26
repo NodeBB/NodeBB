@@ -148,7 +148,7 @@ define('notifications', ['sounds', 'translator', 'components'], function(sound, 
 		$(window).trigger('action:notification.updateCount', payload);
 
 		if (payload.updateFavicon) {
-			Tinycon.setBubble(count);
+			Tinycon.setBubble(count > 99 ? '99+' : count);
 		}
 	};
 

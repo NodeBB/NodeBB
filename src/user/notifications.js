@@ -208,7 +208,7 @@ var async = require('async'),
 		if (!parseInt(uid, 10)) {
 			return callback(null, 0);
 		}
-		db.getSortedSetRevRange('uid:' + uid + ':notifications:unread', 0, 20, function(err, nids) {
+		db.getSortedSetRevRange('uid:' + uid + ':notifications:unread', 0, 99, function(err, nids) {
 			callback(err, Array.isArray(nids) ? nids.length : 0);
 		});
 	};
