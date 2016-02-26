@@ -20,7 +20,7 @@
 	var defaults = {
 		width: 7,
 		height: 9,
-		font: 10 * r + 'px arial',
+		font: 9 * r + 'px arial',
 		colour: '#ffffff',
 		background: '#F03D25',
 		fallback: true,

@@ -15,7 +15,7 @@ var utils = require('../../public/src/utils');
 module.exports = function(Topics) {
 
 	Topics.getTotalUnread = function(uid, callback) {
-		Topics.getUnreadTids(0, uid, 0, 20, function(err, tids) {
+		Topics.getUnreadTids(0, uid, 0, 99, function(err, tids) {
 			callback(err, tids ? tids.length : 0);
 		});
 	};
