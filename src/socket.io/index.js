@@ -1,11 +1,5 @@
 "use strict";
 
-var	SocketIO = require('socket.io'),
-	socketioWildcard = require('socketio-wildcard')(),
-	async = require('async'),
-	nconf = require('nconf'),
-	cookieParser = require('cookie-parser')(nconf.get('secret')),
-	winston = require('winston'),
 var	SocketIO = require('socket.io');
 var socketioWildcard = require('socketio-wildcard')();
 var async = require('async');
