@@ -10,8 +10,27 @@ module.exports = function(Plugins) {
 		'action:user.loggedOut': 'static:user.loggedOut'
 	};
 
-	// todo: remove when breaking all hooks params by removing req/res/socket/uid
-	Plugins.clsDeprecatedParamsWarnedHooks = {};
+	Plugins.deprecatedHooksParams = {
+		'action:homepage.get': '{req, res}',
+		'filter:register.check': '{req, res}',
+		'action:user.loggedOut': '{req, res}',
+		'static:user.loggedOut': '{req, res}',
+		'filter:categories.build': '{req, res}',
+		'filter:category.build': '{req, res}',
+		'filter:group.build': '{req, res}',
+		'filter:register.build': '{req, res}',
+		'filter:composer.build': '{req, res}',
+		'filter:popular.build': '{req, res}',
+		'filter:recent.build': '{req, res}',
+		'filter:topic.build': '{req, res}',
+		'filter:users.build': '{req, res}',
+		'filter:admin.category.get': '{req, res}',
+		'filter:middleware.renderHeader': '{req, res}',
+		'filter:widget.render': '{req, res}',
+		'filter:middleware.buildHeader': '{req, locals}',
+		'action:middleware.pageView': '{req}',
+		'action:meta.override404': '{req}'
+	};
 
 	/*
 		`data` is an object consisting of (* is required):
@@ -38,6 +57,17 @@ module.exports = function(Plugins) {
 					'there is no alternative.'
 				)
 			);
+		} else {
+			// handle hook's startsWith, i.e. action:homepage.get
+			var _parts = data.hook.split(':');
+			_parts.pop();
+			var _hook = _parts.join(':');
+			if (Plugins.deprecatedHooksParams[_hook]) {
+				winston.warn('[plugins/' + id + '] Hook `' + _hook + '` parameters: `' + Plugins.deprecatedHooksParams[_hook] + '`, are being deprecated, '
+				+ 'all plugins should now use the `middleware/cls` module instead of hook\'s arguments to get a reference to the `req`, `res` and/or `socket` object(s) (from which you can get the current `uid` if you need to.) '
+				+ '- for more info, visit https://docs.nodebb.org/en/latest/plugins/create.html#getting-a-reference-to-req-res-socket-and-uid-within-any-plugin-hook')
+				delete Plugins.deprecatedHooksParams[_hook];
+			}
 		}
 
 		if (data.hook && data.method) {
@@ -73,20 +103,6 @@ module.exports = function(Plugins) {
 
 		var hookList = Plugins.loadedHooks[hook];
 		var hookType = hook.split(':')[0];
-
-		// todo: remove when breaking all hooks params by removing req/res/socket/uid
-		if (!Plugins.clsDeprecatedParamsWarnedHooks[hook]
-				&& params
-				&& Array.isArray(hookList)
-				&& hookList.length
-				&& (params.req || params.res || params.socket || params.uid)) {
-
-			Plugins.clsDeprecatedParamsWarnedHooks[hook] = true;
-
-			winston.warn('[plugins] hook `' + hook + '` \'s `params.req`, `params.res`, `params.uid` and `params.socket` are being deprecated, '
-			+ 'plugins should use the `middleware/cls` module instead to get a reference to the http-req/res and socket (which you can get the current `uid`) '
-			+ '- for more info, visit https://docs.nodebb.org/en/latest/plugins/create.html#getting-a-reference-to-req-res-socket-and-uid-within-any-plugin-hook');
-		}
 
 		switch (hookType) {
 			case 'filter':
