@@ -4,17 +4,14 @@
 
 define('forum/topic/postTools', ['share', 'navigator', 'components', 'translator'], function(share, navigator, components, translator) {
 
-	var PostTools = {},
-		topicName;
+	var PostTools = {};
 
 	PostTools.init = function(tid) {
-		topicName = ajaxify.data.title;
-
 		renderMenu();
 
 		addPostHandlers(tid);
 
-		share.addShareHandlers(topicName);
+		share.addShareHandlers(ajaxify.data.title);
 
 		addVoteHandler();
 
@@ -36,6 +33,8 @@ define('forum/topic/postTools', ['share', 'navigator', 'components', 'translator
 					return app.alertError(err);
 				}
 				data.posts.display_move_tools = data.posts.display_move_tools && index !== 0;
+				data.postSharing = data.postSharing.filter(function(share) { return share.activated === true; });
+				
 				templates.parse('partials/topic/post-menu-list', data, function(html) {
 					translator.translate(html, function(html) {
 						dropdownMenu.html(html);
@@ -106,20 +105,23 @@ define('forum/topic/postTools', ['share', 'navigator', 'components', 'translator
 		var postContainer = components.get('topic');
 
 		postContainer.on('click', '[component="post/quote"]', function() {
-			onQuoteClicked($(this), tid, topicName);
+			onQuoteClicked($(this), tid);
 		});
 
 		postContainer.on('click', '[component="post/reply"]', function() {
-			onReplyClicked($(this), tid, topicName);
+			onReplyClicked($(this), tid);
 		});
 
 		$('.topic').on('click', '[component="topic/reply"]', function() {
-			onReplyClicked($(this), tid, topicName);
+			onReplyClicked($(this), tid);
 		});
 
 		$('.topic').on('click', '[component="topic/reply-as-topic"]', function() {
-			$(window).trigger('action:composer.topic.new', {
-				cid: ajaxify.data.cid,
+			translator.translate('[[topic:link_back, ' + ajaxify.data.titleRaw + ', ' + config.relative_path + '/topic/' + ajaxify.data.slug + ']]', function(body) {
+				$(window).trigger('action:composer.topic.new', {
+					cid: ajaxify.data.cid,
+					body: body
+				});
 			});
 		});
 
@@ -174,7 +176,7 @@ define('forum/topic/postTools', ['share', 'navigator', 'components', 'translator
 		});
 	}
 
-	function onReplyClicked(button, tid, topicName) {
+	function onReplyClicked(button, tid) {
 		showStaleWarning(function(proceed) {
 			if (!proceed) {
 				var selectionText = '',
@@ -185,7 +187,7 @@ define('forum/topic/postTools', ['share', 'navigator', 'components', 'translator
 				}
 
 				var username = getUserName(selectionText ? $(selection.baseNode) : button);
-				if (getData(button, 'data-uid') === '0') {
+				if (getData(button, 'data-uid') === '0' || !getData(button, 'data-userslug')) {
 					username = '';
 				}
 
@@ -197,7 +199,7 @@ define('forum/topic/postTools', ['share', 'navigator', 'components', 'translator
 						slug: ajaxify.data.slug,
 						index: getData(button, 'data-index'),
 						pid: toPid,
-						topicName: topicName,
+						topicName: ajaxify.data.titleRaw,
 						username: username,
 						text: selectionText
 					});
@@ -205,7 +207,7 @@ define('forum/topic/postTools', ['share', 'navigator', 'components', 'translator
 					$(window).trigger('action:composer.post.new', {
 						tid: tid,
 						pid: toPid,
-						topicName: topicName,
+						topicName: ajaxify.data.titleRaw,
 						text: username ? username + ' ' : ''
 					});
 				}
@@ -213,7 +215,7 @@ define('forum/topic/postTools', ['share', 'navigator', 'components', 'translator
 		});
 	}
 
-	function onQuoteClicked(button, tid, topicName) {
+	function onQuoteClicked(button, tid) {
 		showStaleWarning(function(proceed) {
 			if (!proceed) {
 				var username = getUserName(button),
@@ -230,7 +232,7 @@ define('forum/topic/postTools', ['share', 'navigator', 'components', 'translator
 						index: getData(button, 'data-index'),
 						pid: pid,
 						username: username,
-						topicName: topicName,
+						topicName: ajaxify.data.titleRaw,
 						text: post
 					});
 				});
@@ -368,7 +370,7 @@ define('forum/topic/postTools', ['share', 'navigator', 'components', 'translator
 			});
 
 			topicId.on('keyup change', function() {
-				moveBtn.attr('disabled', !topicId.val())
+				moveBtn.attr('disabled', !topicId.val());
 			});
 
 			moveBtn.on('click', function() {
@@ -437,7 +439,7 @@ define('forum/topic/postTools', ['share', 'navigator', 'components', 'translator
 								label: '[[topic:stale.create]]',
 								className: 'btn-primary',
 								callback: function() {
-									translator.translate('[[topic:stale.link_back, ' + ajaxify.data.title + ', ' + config.relative_path + '/topic/' + ajaxify.data.slug + ']]', function(body) {
+									translator.translate('[[topic:link_back, ' + ajaxify.data.title + ', ' + config.relative_path + '/topic/' + ajaxify.data.slug + ']]', function(body) {
 										$(window).trigger('action:composer.topic.new', {
 											cid: ajaxify.data.cid,
 											body: body

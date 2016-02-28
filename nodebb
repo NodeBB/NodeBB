@@ -72,8 +72,9 @@ switch(process.argv[2]) {
 		getRunningPid(function(err, pid) {
 			if (!err) {
 				process.kill(pid, 'SIGHUP');
+				process.stdout.write('\nRestarting NodeBB\n'.bold);
 			} else {
-				process.stdout.write('NodeBB could not be restarted, as a running instance could not be found.');
+				process.stdout.write('NodeBB could not be restarted, as a running instance could not be found.\n');
 			}
 		});
 		break;
@@ -83,7 +84,7 @@ switch(process.argv[2]) {
 			if (!err) {
 				process.kill(pid, 'SIGUSR2');
 			} else {
-				process.stdout.write('NodeBB could not be reloaded, as a running instance could not be found.');
+				process.stdout.write('NodeBB could not be reloaded, as a running instance could not be found.\n');
 			}
 		});
 		break;

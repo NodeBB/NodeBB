@@ -8,7 +8,6 @@
     "users-found-search-took": "%1 user(s) found! Search took %2 seconds.",
     "filter-by": "Filter By",
     "online-only": "Online only",
-    "picture-only": "Picture only",
     "invite": "Invite",
     "invitation-email-sent": "An invitation email has been sent to %1",
     "user_list": "User List",
@@ -17,5 +16,5 @@
     "unread_topics": "Unread Topics",
     "categories": "Categories",
     "tags": "Tagy",
-    "map": "Map"
+    "no-users-found": "No users found!"
 }

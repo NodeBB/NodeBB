@@ -8,7 +8,6 @@
     "users-found-search-took": "%1 pengguna dijumpai! Pencarian ambil masa %2 saat.",
     "filter-by": "Saring dengan",
     "online-only": "Atas talian sahaja",
-    "picture-only": "Gambar sahaja",
     "invite": "Jemput",
     "invitation-email-sent": "Emel jemputan telah dihantar ke %1",
     "user_list": "Senarai Pengguna",
@@ -17,5 +16,5 @@
     "unread_topics": "Topik Belum Dibaca",
     "categories": "Kategori",
     "tags": "Tag",
-    "map": "Peta"
+    "no-users-found": "No users found!"
 }

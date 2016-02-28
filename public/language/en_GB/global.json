@@ -110,5 +110,6 @@
 	"delete_all": "Delete All",
 	"map": "Map",
 	"sessions": "Login Sessions",
-	"ip_address": "IP Address"
+	"ip_address": "IP Address",
+	"enter_page_number": "Enter page number"
 }

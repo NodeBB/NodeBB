@@ -6,15 +6,20 @@ var	SocketIO = require('socket.io'),
 	nconf = require('nconf'),
 	cookieParser = require('cookie-parser')(nconf.get('secret')),
 	winston = require('winston'),
+var	SocketIO = require('socket.io');
+var socketioWildcard = require('socketio-wildcard')();
+var async = require('async');
+var nconf = require('nconf');
+var cookieParser = require('cookie-parser')(nconf.get('secret'));
+var winston = require('winston');
 
-	db = require('../database'),
-	user = require('../user'),
-	logger = require('../logger'),
-	ratelimit = require('../middleware/ratelimit'),
-	cls = require('../middleware/cls'),
+var db = require('../database');
+var user = require('../user');
+var logger = require('../logger');
+var ratelimit = require('../middleware/ratelimit');
 
-	Sockets = {},
-	Namespaces = {};
+var Sockets = {};
+var Namespaces = {};
 
 var io;
 
@@ -102,15 +107,15 @@ function onMessage(socket, payload) {
 		return winston.warn('[socket.io] Empty method name');
 	}
 
-	var parts = eventName.toString().split('.'),
-		namespace = parts[0],
-		methodToCall = parts.reduce(function(prev, cur) {
-			if (prev !== null && prev[cur]) {
-				return prev[cur];
-			} else {
-				return null;
-			}
-		}, Namespaces);
+	var parts = eventName.toString().split('.');
+	var namespace = parts[0];
+	var methodToCall = parts.reduce(function(prev, cur) {
+		if (prev !== null && prev[cur]) {
+			return prev[cur];
+		} else {
+			return null;
+		}
+	}, Namespaces);
 
 	if(!methodToCall) {
 		if (process.env.NODE_ENV === 'development') {
@@ -130,16 +135,23 @@ function onMessage(socket, payload) {
 		return socket.disconnect();
 	}
 
-	if (Namespaces[namespace].before) {
-		Namespaces[namespace].before(socket, eventName, params, function(err) {
-			if (err) {
-				return callback({message: err.message});
+	async.waterfall([
+		function (next) {
+			validateSession(socket, next);
+		},
+		function (next) {
+			if (Namespaces[namespace].before) {
+				Namespaces[namespace].before(socket, eventName, params, next);
+			} else {
+				next();
 			}
-			callMethod(methodToCall, socket, params, callback);
-		});
-	} else {
-		callMethod(methodToCall, socket, params, callback);
-	}
+		},
+		function (next) {
+			methodToCall(socket, params, next);
+		}
+	], function(err, result) {
+		callback(err ? {message: err.message} : null, result);
+	});
 }
 
 function requireModules() {
@@ -152,19 +164,33 @@ function requireModules() {
 	});
 }
 
-function authorize(socket, callback) {
-	var handshake = socket.request;
+function validateSession(socket, callback) {
+	var req = socket.request;
+	if (!req.signedCookies || !req.signedCookies['express.sid']) {
+		return callback(new Error('[[error:invalid-session]]'));
+	}
+	db.sessionStore.get(req.signedCookies['express.sid'], function(err, sessionData) {
+		if (err || !sessionData) {
+			return callback(err || new Error('[[error:invalid-session]]'));
+		}
 
-	if (!handshake) {
+		callback();
+	});
+}
+
+function authorize(socket, callback) {
+	var request = socket.request;
+
+	if (!request) {
 		return callback(new Error('[[error:not-authorized]]'));
 	}
 
 	async.waterfall([
 		function(next) {
-			cookieParser(handshake, {}, next);
+			cookieParser(request, {}, next);
 		},
 		function(next) {
-			db.sessionStore.get(handshake.signedCookies['express.sid'], function(err, sessionData) {
+			db.sessionStore.get(request.signedCookies['express.sid'], function(err, sessionData) {
 				if (err) {
 					return next(err);
 				}
@@ -190,12 +216,6 @@ function addRedisAdapter(io) {
 	} else if (nconf.get('isCluster') === 'true') {
 		winston.warn('[socket.io] Clustering detected, you are advised to configure Redis as a websocket store.');
 	}
-}
-
-function callMethod(method, socket, params, callback) {
-	method(socket, params, function(err, result) {
-		callback(err ? {message: err.message} : null, result);
-	});
 }
 
 Sockets.in = function(room) {
@@ -235,9 +255,9 @@ Sockets.getOnlineAnonCount = function () {
 };
 
 Sockets.reqFromSocket = function(socket) {
-	var headers = socket.request.headers,
-		host = headers.host,
-		referer = headers.referer || '';
+	var headers = socket.request.headers;
+	var host = headers.host;
+	var referer = headers.referer || '';
 
 	return {
 		ip: headers['x-forwarded-for'] || socket.ip,

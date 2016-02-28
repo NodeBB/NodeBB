@@ -8,7 +8,6 @@
     "users-found-search-took": "Найдено %1 пользователя(ей). Поиск занял %2 секунд.",
     "filter-by": "Сортировать по",
     "online-only": "Только онлайн",
-    "picture-only": "Только с аватаром",
     "invite": "Пригласить",
     "invitation-email-sent": "По электронной почте было отправлено приглашение для %1",
     "user_list": "Список пользователей",
@@ -17,5 +16,5 @@
     "unread_topics": "Непрочитанные темы",
     "categories": "Категории",
     "tags": "Теги",
-    "map": "Карта"
+    "no-users-found": "No users found!"
 }

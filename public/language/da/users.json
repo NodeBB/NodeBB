@@ -8,7 +8,6 @@
     "users-found-search-took": "%1 bruger(e) fundet! Søgning tog %2 sekunder.",
     "filter-by": "Filtre Efter",
     "online-only": "Kun online",
-    "picture-only": "Kun billeder",
     "invite": "Invitér",
     "invitation-email-sent": "En invitations email er blevet sendt til %1",
     "user_list": "Bruger Liste",
@@ -17,5 +16,5 @@
     "unread_topics": "Ulæste Tråde",
     "categories": "Kategorier",
     "tags": "Tags",
-    "map": "Kort"
+    "no-users-found": "No users found!"
 }

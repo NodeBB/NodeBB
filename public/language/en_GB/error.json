@@ -18,7 +18,7 @@
 	"invalid-username-or-password": "Please specify both a username and password",
 	"invalid-search-term": "Invalid search term",
 
-	"invalid-pagination-value": "Invalid pagination value",
+	"invalid-pagination-value": "Invalid pagination value, must be at least %1 and at most %2",
 
 	"username-taken": "Username taken",
 	"email-taken": "Email taken",
@@ -64,8 +64,8 @@
 	"file-too-big": "Maximum allowed file size is %1 kB - please upload a smaller file",
 	"guest-upload-disabled": "Guest uploading has been disabled",
 
-	"already-favourited": "You have already favourited this post",
-	"already-unfavourited": "You have already unfavourited this post",
+	"already-favourited": "You have already bookmarked this post",
+	"already-unfavourited": "You have already unbookmarked this post",
 
 	"cant-ban-other-admins": "You can't ban other admins!",
 	"cant-remove-last-admin": "You are the only administrator. Add another user as an administrator before removing yourself as admin",
@@ -106,6 +106,7 @@
 	"chat-message-too-long": "Chat message is too long",
 	"cant-edit-chat-message": "You are not allowed to edit this message",
 	"cant-remove-last-user": "You can't remove the last user",
+	"cant-delete-chat-message": "You are not allowed to delete this message",
 
 	"reputation-system-disabled": "Reputation system is disabled.",
 	"downvoting-disabled": "Downvoting is disabled",
@@ -122,5 +123,7 @@
 
 	"invite-maximum-met": "You have invited the maximum amount of people (%1 out of %2).",
 
-	"no-session-found": "No login session found!"
+	"no-session-found": "No login session found!",
+	"not-in-room": "User not in room",
+	"no-users-in-room": "No users in this room"
 }

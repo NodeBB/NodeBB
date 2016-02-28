@@ -1,24 +1,27 @@
 "use strict";
 
-var	async = require('async'),
-	winston = require('winston'),
-	nconf = require('nconf'),
-	templates = require('templates.js'),
-	nodemailer = require('nodemailer'),
-	sendmailTransport = require('nodemailer-sendmail-transport'),
-	htmlToText = require('html-to-text'),
-	url = require('url'),
+var async = require('async');
+var winston = require('winston');
+var nconf = require('nconf');
+var templates = require('templates.js');
+var nodemailer = require('nodemailer');
+var sendmailTransport = require('nodemailer-sendmail-transport');
+var smtpTransport = require('nodemailer-smtp-transport');
+var htmlToText = require('html-to-text');
+var url = require('url');
 
-	User = require('./user'),
-	Plugins = require('./plugins'),
-	meta = require('./meta'),
-	translator = require('../public/src/modules/translator'),
+var User = require('./user');
+var Plugins = require('./plugins');
+var meta = require('./meta');
+var translator = require('../public/src/modules/translator');
 
-	transports = {
-		sendmail: nodemailer.createTransport(sendmailTransport()),
-		gmail: undefined
-	},
-	app, fallbackTransport;
+var transports = {
+	sendmail: nodemailer.createTransport(sendmailTransport()),
+	gmail: undefined
+};
+
+var app;
+var fallbackTransport;
 
 (function(Emailer) {
 	Emailer.registerApp = function(expressApp) {
@@ -26,13 +29,15 @@ var	async = require('async'),
 
 		// Enable Gmail transport if enabled in ACP
 		if (parseInt(meta.config['email:GmailTransport:enabled'], 10) === 1) {
-			fallbackTransport = transports.gmail = nodemailer.createTransport('SMTP', {
-				service: 'Gmail',
+			fallbackTransport = transports.gmail = nodemailer.createTransport(smtpTransport({
+				host: 'smtp.gmail.com',
+				port: 465,
+				secure: true,
 				auth: {
 					user: meta.config['email:GmailTransport:user'],
 					pass: meta.config['email:GmailTransport:pass']
 				}
-			});
+			}));
 		} else {
 			fallbackTransport = transports.sendmail;
 		}
@@ -135,28 +140,19 @@ var	async = require('async'),
 	}
 
 	function renderAndTranslate(tpl, params, lang, callback) {
-		async.waterfall([
-			function(next) {
-				render('emails/partials/footer' + (tpl.indexOf('_plaintext') !== -1 ? '_plaintext' : ''), params, next);
-			},
-			function(footer, next) {
-				params.footer = footer;
-				render(tpl, params, next);
-			},
-			function(html, next) {
-				translator.translate(html, lang, function(translated) {
-					next(null, translated);
-				});
-			}
-		], callback);
+		render(tpl, params, function(err, html) {
+			translator.translate(html, lang, function(translated) {
+				callback(err, translated);
+			});
+		});
 	}
 
 	function getHostname() {
-		var configUrl = nconf.get('url'),
-			parsed = url.parse(configUrl);
+		var configUrl = nconf.get('url');
+		var parsed = url.parse(configUrl);
 
 		return parsed.hostname;
-	};
+	}
 
 }(module.exports));
 

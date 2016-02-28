@@ -14,7 +14,7 @@
     "invalid-password": "Ugyldig Adgangskode",
     "invalid-username-or-password": "Venligst angiv både brugernavn og adgangskode",
     "invalid-search-term": "Ugyldig søgeterm",
-    "invalid-pagination-value": "Ugyldig sidetalsværdi",
+    "invalid-pagination-value": "Invalid pagination value, must be at least %1 and at most %2",
     "username-taken": "Brugernavn optaget",
     "email-taken": "Emailadresse allerede i brug",
     "email-not-confirmed": "Din email adresse er ikke blevet bekræftet endnu, venligst klik her for at bekrætige den.",
@@ -83,6 +83,7 @@
     "chat-message-too-long": "Chat beskeden er for lang",
     "cant-edit-chat-message": "You are not allowed to edit this message",
     "cant-remove-last-user": "You can't remove the last user",
+    "cant-delete-chat-message": "You are not allowed to delete this message",
     "reputation-system-disabled": "Vurderingssystem er slået fra.",
     "downvoting-disabled": "Nedvurdering er slået fra",
     "not-enough-reputation-to-downvote": "Du har ikke nok omdømme til at nedstemme dette indlæg",
@@ -94,5 +95,6 @@
     "wrong-login-type-email": "Brug venligt din email til login",
     "wrong-login-type-username": "Brug venligt dit brugernavn til login",
     "invite-maximum-met": "You have invited the maximum amount of people (%1 out of %2).",
-    "no-session-found": "No login session found!"
+    "no-session-found": "No login session found!",
+    "not-in-room": "User not in room"
 }

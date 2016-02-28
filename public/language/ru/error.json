@@ -14,7 +14,7 @@
     "invalid-password": "Неверный пароль",
     "invalid-username-or-password": "Пожалуйста, укажите и имя пользователя и пароль",
     "invalid-search-term": "Неверный поисковой запрос",
-    "invalid-pagination-value": "Неверное значение пагинации",
+    "invalid-pagination-value": "Invalid pagination value, must be at least %1 and at most %2",
     "username-taken": "Имя пользователя занято",
     "email-taken": "Email занят",
     "email-not-confirmed": "Ваш email не подтвержден, нажмите для подтверждения.",
@@ -83,6 +83,7 @@
     "chat-message-too-long": "Слишком длинное сообщение чата",
     "cant-edit-chat-message": "У вас нет доступа для редактирования этого сообщения",
     "cant-remove-last-user": "Вы не можете убрать последнего пользователя",
+    "cant-delete-chat-message": "You are not allowed to delete this message",
     "reputation-system-disabled": "Система репутации отключена.",
     "downvoting-disabled": "Понижение оценки отключено",
     "not-enough-reputation-to-downvote": "У Вас недостаточно репутации для понижения оценки сообщения",
@@ -94,5 +95,6 @@
     "wrong-login-type-email": "Пожалуйста, используйте свой E-mail для входа.",
     "wrong-login-type-username": "Пожалуйста, используйте своё имя пользователя для входа.",
     "invite-maximum-met": "Вы пригласили максимальное количество людей (%1 из %2).",
-    "no-session-found": "Сессия входа не найдена!"
+    "no-session-found": "Сессия входа не найдена!",
+    "not-in-room": "User not in room"
 }

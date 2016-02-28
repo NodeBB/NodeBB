@@ -27,8 +27,18 @@
 	translator.addTranslation = function(language, filename, translations) {
 		languages[language] = languages[language] || {};
 		languages[language].loaded = languages[language].loaded || {};
-		languages[language].loaded[filename] = translations;
 		languages[language].loading = languages[language].loading || {};
+
+		if (languages[language].loaded[filename]) {
+			var existing = languages[language].loaded[filename];
+			for (var t in translations) {
+				if (translations.hasOwnProperty(t)) {
+					languages[language].loaded[filename][t] = translations[t];
+				}
+			}
+		} else {
+			languages[language].loaded[filename] = translations;
+		}
 	};
 
 	translator.getTranslations = function(language, filename, callback) {
@@ -164,7 +174,7 @@
 		if (!count) {
 			return callback(text);
 		}
-		
+
 		if (S === null) { // browser environment and S not yet initialized
 			// we need to wait for async require call
 			stringDefer.then(function () { translateKeys(keys, text, language, callback); });
@@ -205,6 +215,10 @@
 		if (value) {
 			var variable;
 			for (var i = 1, ii = variables.length; i < ii; i++) {
+
+				// see https://github.com/NodeBB/NodeBB/issues/1951
+				variables[i] = variables[i].replace(/&#37;/g, '%').replace(/&#44;/g, ',');
+
 				variable = S(variables[i]).chompRight(']]').collapseWhitespace().escapeHTML().s;
 				value = value.replace('%' + i, variable);
 			}

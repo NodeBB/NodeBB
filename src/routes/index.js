@@ -173,11 +173,11 @@ function handle404(app, middleware) {
 			res.status(404);
 
 			if (res.locals.isAPI) {
-				return res.json({path: req.path.replace(/^\/api/, ''), title: '[[global:404.title]]'});
+				return res.json({path: validator.escape(req.path.replace(/^\/api/, '') || ''), title: '[[global:404.title]]'});
 			}
 
 			middleware.buildHeader(req, res, function() {
-				res.render('404', {path: req.path, title: '[[global:404.title]]'});
+				res.render('404', {path: validator.escape(req.path || ''), title: '[[global:404.title]]'});
 			});
 		} else {
 			res.status(404).type('txt').send('Not found');
@@ -201,10 +201,10 @@ function handleErrors(app, middleware) {
 		res.status(err.status || 500);
 
 		if (res.locals.isAPI) {
-			res.json({path: req.path, error: err.message});
+			res.json({path: validator.escape(req.path || ''), error: err.message});
 		} else {
 			middleware.buildHeader(req, res, function() {
-				res.render('500', {path: req.path, error: validator.escape(err.message)});
+				res.render('500', {path: validator.escape(req.path || ''), error: validator.escape(err.message)});
 			});
 		}
 	});

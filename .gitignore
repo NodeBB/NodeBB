@@ -22,9 +22,9 @@ pidfile
 
 # templates
 /public/templates
-/public/sounds
 
 /public/uploads
+/public/sounds
 
 # compiled files
 /public/stylesheet.css

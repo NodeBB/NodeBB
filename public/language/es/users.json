@@ -8,7 +8,6 @@
     "users-found-search-took": "¡%1 usuario(s) encontrado! La búsqueda ha llevado %2 segundos.",
     "filter-by": "Filtrar Por",
     "online-only": "Sólo en línea",
-    "picture-only": "Sólo imagen",
     "invite": "Invitar",
     "invitation-email-sent": "Un correo de invitación ha sido enviado a %1",
     "user_list": "Lista de Usuarios",
@@ -17,5 +16,5 @@
     "unread_topics": "Temas no leídos",
     "categories": "Categorías ",
     "tags": "Etiquetas",
-    "map": "Actividad"
+    "no-users-found": "No users found!"
 }

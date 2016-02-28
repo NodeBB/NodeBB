@@ -85,7 +85,7 @@
 			</div>
 			<div class="form-group">
 				<label for="eventLoopLagThreshold">Event Loop Lag Threshold (in milliseconds)</label>
-				<input class="form-control" id="eventLoopLagThreshold" type="number" data-field="eventLoopLagThreshold" placeholder="Default: 70" step="10" value="70" />
+				<input class="form-control" id="eventLoopLagThreshold" type="number" data-field="eventLoopLagThreshold" placeholder="Default: 70" step="10" min="10" value="70" />
 				<p class="help-block">
 					Lowering this value decreases wait times for page loads, but will also show the
 					"excessive load" message to more users. (Reload required)

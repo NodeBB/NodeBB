@@ -78,10 +78,15 @@ define('forum/account/edit', ['forum/account/header', 'uploader', 'translator'],
 				if (err) {
 					return app.alertError(err.message);
 				}
+
+				// boolean to signify whether an uploaded picture is present in the pictures list
+				var uploaded = pictures.reduce(function(memo, cur) {
+					return memo || cur.type === 'uploaded'
+				}, false);
 			
 				templates.parse('partials/modals/change_picture_modal', {
 					pictures: pictures,
-					uploaded: !!ajaxify.data.uploadedpicture,
+					uploaded: uploaded,
 					allowProfileImageUploads: ajaxify.data.allowProfileImageUploads
 				}, function(html) {
 					translator.translate(html, function(html) {
@@ -172,7 +177,7 @@ define('forum/account/edit', ['forum/account/header', 'uploader', 'translator'],
 							if (err) {
 								app.alertError(err.message);
 							}
-							app.logout();
+							window.location.href = config.relative_path + '/';
 						});
 					}
 				});
@@ -189,15 +194,21 @@ define('forum/account/edit', ['forum/account/header', 'uploader', 'translator'],
 		function onUploadComplete(urlOnServer) {
 			urlOnServer = urlOnServer + '?' + new Date().getTime();
 
-			$('#user-current-picture, img.avatar').attr('src', urlOnServer);
 			updateHeader(urlOnServer);
-			uploadedPicture = urlOnServer;
+
+			if (ajaxify.data.picture.length) {
+				$('#user-current-picture, img.avatar').attr('src', urlOnServer);
+				uploadedPicture = urlOnServer;
+			} else {
+				ajaxify.refresh();
+			}
 		}
 
-		function onRemoveComplete(urlOnServer) {
-			$('#user-current-picture').attr('src', urlOnServer);
-			updateHeader(urlOnServer);
-			uploadedPicture = '';
+		function onRemoveComplete() {
+			if (ajaxify.data.uploadedpicture === ajaxify.data.picture) {
+				ajaxify.refresh();
+				updateHeader();
+			}
 		}
 
 		modal.find('[data-action="upload"]').on('click', function() {
@@ -239,12 +250,12 @@ define('forum/account/edit', ['forum/account/header', 'uploader', 'translator'],
 		});
 
 		modal.find('[data-action="remove-uploaded"]').on('click', function() {
-			socket.emit('user.removeUploadedPicture', {uid: ajaxify.data.theirid}, function(err, imageUrlOnServer) {
+			socket.emit('user.removeUploadedPicture', {uid: ajaxify.data.theirid}, function(err) {
 				modal.modal('hide');
 				if (err) {
 					return app.alertError(err.message);
 				}
-				onRemoveComplete(imageUrlOnServer);
+				onRemoveComplete();
 			});
 		});
 	}

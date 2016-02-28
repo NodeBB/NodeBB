@@ -34,7 +34,9 @@ app.cacheBuster = null;
 				app.handleSearch();
 			}
 
-			handleNewTopic();
+			$('#content').on('click', '#new_topic', function(){
+				app.newTopic();
+			});
 
 			require(['components'], function(components) {
 				components.get('user/logout').on('click', app.logout);
@@ -171,7 +173,7 @@ app.cacheBuster = null;
 
 	app.createUserTooltips = function(els) {
 		els = els || $('body');
-		els.find('img[title].teaser-pic,img[title].user-img,div.user-icon,span.user-icon').each(function() {
+		els.find('.avatar,img[title].teaser-pic,img[title].user-img,div.user-icon,span.user-icon').each(function() {
 			if (!utils.isTouchDevice()) {
 				$(this).tooltip({
 					placement: 'top',
@@ -455,30 +457,28 @@ app.cacheBuster = null;
 		});
 	};
 
-	function handleNewTopic() {
-		$('#content').on('click', '#new_topic', function() {
-			var cid = ajaxify.data.cid;
-			if (cid) {
-				$(window).trigger('action:composer.topic.new', {
-					cid: cid
+	app.newTopic = function (cid) {
+		cid = cid || ajaxify.data.cid;
+		if (cid) {
+			$(window).trigger('action:composer.topic.new', {
+				cid: cid
+			});
+		} else {
+			socket.emit('categories.getCategoriesByPrivilege', 'topics:create', function(err, categories) {
+				if (err) {
+					return app.alertError(err.message);
+				}
+				categories = categories.filter(function(category) {
+					return !category.link && !parseInt(category.parentCid, 10);
 				});
-			} else {
-				socket.emit('categories.getCategoriesByPrivilege', 'topics:create', function(err, categories) {
-					if (err) {
-						return app.alertError(err.message);
-					}
-					categories = categories.filter(function(category) {
-						return !category.link && !parseInt(category.parentCid, 10);
+				if (categories.length) {
+					$(window).trigger('action:composer.topic.new', {
+						cid: categories[0].cid
 					});
-					if (categories.length) {
-						$(window).trigger('action:composer.topic.new', {
-							cid: categories[0].cid
-						});
-					}
-				});
-			}
-		});
-	}
+				}
+			});
+		}
+	};
 
 	app.loadJQueryUI = function(callback) {
 		if (typeof $().autocomplete === 'function') {

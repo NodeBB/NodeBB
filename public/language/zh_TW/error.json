@@ -14,7 +14,7 @@
     "invalid-password": "無效的密碼",
     "invalid-username-or-password": "請指定用戶名和密碼",
     "invalid-search-term": "無效的搜索字詞",
-    "invalid-pagination-value": "無效的分頁數值",
+    "invalid-pagination-value": "Invalid pagination value, must be at least %1 and at most %2",
     "username-taken": "該使用者名稱已被使用",
     "email-taken": "該信箱已被使用",
     "email-not-confirmed": "您的電郵尚未得到確認，請點擊此處確認您的電子郵件。",
@@ -83,6 +83,7 @@
     "chat-message-too-long": "Chat message is too long",
     "cant-edit-chat-message": "You are not allowed to edit this message",
     "cant-remove-last-user": "You can't remove the last user",
+    "cant-delete-chat-message": "You are not allowed to delete this message",
     "reputation-system-disabled": "信譽系統已停用。",
     "downvoting-disabled": "Downvoting已停用",
     "not-enough-reputation-to-downvote": "你沒有足夠的信譽downvote這個帖子",
@@ -94,5 +95,6 @@
     "wrong-login-type-email": "請使用您的電子郵件進行登錄",
     "wrong-login-type-username": "請使用您的使用者名稱進行登錄",
     "invite-maximum-met": "You have invited the maximum amount of people (%1 out of %2).",
-    "no-session-found": "No login session found!"
+    "no-session-found": "No login session found!",
+    "not-in-room": "User not in room"
 }

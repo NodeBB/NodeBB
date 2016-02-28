@@ -19,6 +19,7 @@ module.exports = function(SocketUser) {
 			searchBy: data.searchBy,
 			sortBy: data.sortBy,
 			onlineOnly: data.onlineOnly,
+			bannedOnly: data.bannedOnly,
 			uid: socket.uid
 		}, function(err, result) {
 			if (err) {

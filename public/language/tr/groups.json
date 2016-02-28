@@ -24,7 +24,7 @@
     "details.has_no_posts": "Bu grubun üyeleri henüz bir ileti göndermedi.",
     "details.latest_posts": "En son iletiler",
     "details.private": "Özel",
-    "details.disableJoinRequests": "Disable join requests",
+    "details.disableJoinRequests": "Katılma isteklerini devre dışı bırak",
     "details.grant": "Gurup sahibi yap/yapma",
     "details.kick": "Dışarı at",
     "details.owner_options": "Grup Yöneticisi",

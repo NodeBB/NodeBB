@@ -1,17 +1,17 @@
 'use strict';
 
-var async = require('async'),
+var async = require('async');
 
-	user = require('../../user'),
-	groups = require('../../groups'),
-	languages = require('../../languages'),
-	meta = require('../../meta'),
-	plugins = require('../../plugins'),
-	privileges = require('../../privileges'),
-	categories = require('../../categories'),
-	db = require('../../database'),
-	helpers = require('../helpers'),
-	accountHelpers = require('./helpers');
+var user = require('../../user');
+var groups = require('../../groups');
+var languages = require('../../languages');
+var meta = require('../../meta');
+var plugins = require('../../plugins');
+var privileges = require('../../privileges');
+var categories = require('../../categories');
+var db = require('../../database');
+var helpers = require('../helpers');
+var accountHelpers = require('./helpers');
 
 
 var settingsController = {};
@@ -41,14 +41,18 @@ settingsController.get = function(req, res, callback) {
 				homePageRoutes: function(next) {
 					getHomePageRoutes(next);
 				},
+				ips: function (next) {
+					user.getIPs(req.uid, 4, next);
+				},
 				sessions: async.apply(user.auth.getSessions, userData.uid, req.sessionID)
 			}, next);
 		},
 		function(results, next) {
 			userData.settings = results.settings;
-			userData.languages = results.languages;
 			userData.userGroups = results.userGroups[0];
+			userData.languages = results.languages;
 			userData.homePageRoutes = results.homePageRoutes;
+			userData.ips = results.ips;
 			userData.sessions = results.sessions;
 			plugins.fireHook('filter:user.customSettings', {settings: results.settings, customSettings: [], uid: req.uid}, next);
 		},

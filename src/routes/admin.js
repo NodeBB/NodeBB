@@ -15,6 +15,7 @@ function apiRoutes(router, middleware, controllers) {
 	router.post('/uploadfavicon', middlewares, controllers.admin.uploads.uploadFavicon);
 	router.post('/uploadTouchIcon', middlewares, controllers.admin.uploads.uploadTouchIcon);
 	router.post('/uploadlogo', middlewares, controllers.admin.uploads.uploadLogo);
+	router.post('/upload/sound', middlewares, controllers.admin.uploads.uploadSound);
 	router.post('/uploadDefaultAvatar', middlewares, controllers.admin.uploads.uploadDefaultAvatar);
 }
 
@@ -47,6 +48,7 @@ function addRoutes(router, middleware, controllers) {
 	router.get('/general/sounds', middlewares, controllers.admin.sounds.get);
 	router.get('/general/navigation', middlewares, controllers.admin.navigation.get);
 	router.get('/general/homepage', middlewares, controllers.admin.homepage.get);
+	router.get('/general/social', middlewares, controllers.admin.social.get);
 
 	router.get('/manage/categories', middlewares, controllers.admin.categories.getAll);
 	router.get('/manage/categories/:category_id', middlewares, controllers.admin.categories.get);

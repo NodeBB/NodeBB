@@ -1,7 +1,7 @@
 {
     "results_matching": "נמצאו %1 תוצאות עבור החיפוש \"%2\", (%3 שניות)",
     "no-matches": "לא נמצאו תוצאות",
-    "advanced-search": "Advanced Search",
+    "advanced-search": "חיפוש מתקדם",
     "in": "ב",
     "titles": "כותרות",
     "titles-posts": "כותרות ופוסטים",
@@ -32,9 +32,9 @@
     "category": "קטגוריה",
     "descending": "בסדר יורד",
     "ascending": "בסדר עולה",
-    "save-preferences": "Save preferences",
-    "clear-preferences": "Clear preferences",
-    "search-preferences-saved": "Search preferences saved",
-    "search-preferences-cleared": "Search preferences cleared",
-    "show-results-as": "Show results as"
+    "save-preferences": "שמור העדפות",
+    "clear-preferences": "נקה העדפות",
+    "search-preferences-saved": "חפש העדפות שנשמרו",
+    "search-preferences-cleared": "חפש העדפות שנוקו",
+    "show-results-as": "צפה בתוצאות בתור"
 }

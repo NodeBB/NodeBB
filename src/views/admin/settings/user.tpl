@@ -174,6 +174,28 @@
 	<div class="col-sm-2 col-xs-12 settings-header">Default User Settings</div>
 	<div class="col-sm-10 col-xs-12">
 		<form>
+
+			<div class="checkbox">
+				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
+					<input class="mdl-switch__input" type="checkbox" data-field="showemail">
+					<span class="mdl-switch__label"><strong>[[user:show_email]]</strong></span>
+				</label>
+			</div>
+
+			<div class="checkbox">
+				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
+					<input class="mdl-switch__input" type="checkbox" data-field="showfullname">
+					<span class="mdl-switch__label"><strong>[[user:show_fullname]]</strong></span>
+				</label>
+			</div>
+
+			<div class="checkbox">
+				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
+					<input class="mdl-switch__input" type="checkbox" data-field="restrictChat">
+					<span class="mdl-switch__label"><strong>[[user:restrict_chats]]</strong></span>
+				</label>
+			</div>
+
 			<div class="checkbox">
 				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
 					<input class="mdl-switch__input" type="checkbox" data-field="openOutgoingLinksInNewTab">
@@ -223,6 +245,13 @@
 				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
 					<input class="mdl-switch__input" type="checkbox" data-field="followTopicsOnReply">
 					<span class="mdl-switch__label"><strong>[[user:follow_topics_you_reply_to]]</strong></span>
+				</label>
+			</div>
+
+			<div class="checkbox">
+				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
+					<input class="mdl-switch__input" type="checkbox" data-field="notificationSounds" />
+					<span class="mdl-switch__label">[[user:notification_sounds]]</span>
 				</label>
 			</div>
 

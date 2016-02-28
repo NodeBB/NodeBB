@@ -65,25 +65,6 @@ define('chat', ['components', 'taskbar', 'string', 'sounds', 'forum/chats', 'tra
 			}
 		});
 
-		socket.on('event:chats.userStartTyping', function(withUid) {
-			var modal = module.getModal(withUid);
-			var chatContent = modal.find('.chat-content');
-			if (!chatContent.length) {
-				return;
-			}
-			var atBottom = chatContent[0].scrollHeight - chatContent.scrollTop() === chatContent.innerHeight();
-
-			modal.find('.user-typing').removeClass('hide');
-			if (atBottom) {
-				Chats.scrollToBottom(chatContent);
-			}
-		});
-
-		socket.on('event:chats.userStopTyping', function(withUid) {
-			var modal = module.getModal(withUid);
-			modal.find('.user-typing').addClass('hide');
-		});
-
 		socket.on('event:user_status_change', function(data) {
 			var modal = module.getModal(data.uid);
 			app.updateUserStatus(modal.find('[component="user/status"]'), data.status);
@@ -277,6 +258,13 @@ define('chat', ['components', 'taskbar', 'string', 'sounds', 'forum/chats', 'tra
 						Chats.delete(messageId, data.roomId);
 					});
 
+				chatModal.find('[component="chat/controlsToggle"]').on('click', function() {
+					var messagesEl = chatModal.find('[component="chat/messages"]');
+
+					chatModal.find('[component="chat/controls"]').toggle();
+					messagesEl.css('height', module.calculateChatListHeight(chatModal));
+				});
+
 				Chats.addSinceHandler(chatModal.attr('roomId'), chatModal.find('.chat-content'), chatModal.find('[data-since]'));
 				Chats.addRenameHandler(chatModal.attr('roomId'), chatModal.find('[component="chat/room/name"]'));
 
@@ -315,7 +303,6 @@ define('chat', ['components', 'taskbar', 'string', 'sounds', 'forum/chats', 'tra
 		chatModal.remove();
 		chatModal.data('modal', null);
 		taskbar.discard('chat', chatModal.attr('UUID'));
-		Chats.notifyTyping(chatModal.attr('roomId'), false);
 
 		if (chatModal.attr('data-mobile')) {
 			module.disableMobileBehaviour(chatModal);
@@ -348,7 +335,7 @@ define('chat', ['components', 'taskbar', 'string', 'sounds', 'forum/chats', 'tra
 		socket.emit('modules.chats.markRead', chatModal.attr('roomId'));
 
 		var env = utils.findBootstrapEnvironment();
-		if (env === 'xs') {
+		if (env === 'xs' || env === 'sm') {
 			module.enableMobileBehaviour(chatModal);
 		}
 	};
@@ -375,7 +362,7 @@ define('chat', ['components', 'taskbar', 'string', 'sounds', 'forum/chats', 'tra
 			sinceHeight = modalEl.find('.since-bar').outerHeight(true),
 			inputGroupHeight = modalEl.find('.input-group').outerHeight();
 
-		return totalHeight - padding - contentMargin - sinceHeight - inputGroupHeight;
+		return totalHeight - padding - contentMargin - inputGroupHeight;
 	};
 
 	module.minimize = function(uuid) {
@@ -384,7 +371,6 @@ define('chat', ['components', 'taskbar', 'string', 'sounds', 'forum/chats', 'tra
 		taskbar.minimize('chat', uuid);
 		clearInterval(chatModal.attr('intervalId'));
 		chatModal.attr('intervalId', 0);
-		Chats.notifyTyping(chatModal.attr('roomId'), false);
 	};
 
 	module.toggleNew = taskbar.toggleNew;

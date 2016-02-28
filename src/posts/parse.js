@@ -1,8 +1,8 @@
 
 'use strict';
 
-var cache = require('./cache'),
-	plugins = require('../plugins');
+var cache = require('./cache');
+var plugins = require('../plugins');
 
 module.exports = function(Posts) {
 

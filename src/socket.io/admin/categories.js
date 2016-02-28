@@ -42,7 +42,7 @@ Categories.getNames = function(socket, data, callback) {
 };
 
 Categories.purge = function(socket, cid, callback) {
-	categories.purge(cid, callback);
+	categories.purge(cid, socket.uid, callback);
 };
 
 Categories.update = function(socket, data, callback) {

@@ -36,8 +36,10 @@ profileController.get = function(req, res, callback) {
 			}
 			userData = _userData;
 
-			if (req.uid !== parseInt(userData.uid, 10)) {
+			req.session.uids_viewed = req.session.uids_viewed || {};
+			if (req.uid !== parseInt(userData.uid, 10) && (!req.session.uids_viewed[userData.uid] || req.session.uids_viewed[userData.uid] < Date.now() - 3600000)) {
 				user.incrementUserFieldBy(userData.uid, 'profileviews', 1);
+				req.session.uids_viewed[userData.uid] = Date.now();
 			}
 
 			async.parallel({

@@ -6,6 +6,7 @@ var async = require('async'),
 	db = require('../database'),
 	utils = require('../../public/src/utils'),
 	plugins = require('../plugins'),
+	analytics = require('../analytics'),
 	user = require('../user'),
 	meta = require('../meta'),
 	posts = require('../posts'),
@@ -15,7 +16,7 @@ var async = require('async'),
 module.exports = function(Topics) {
 
 	Topics.create = function(data, callback) {
-		// This is an interal method, consider using Topics.post instead
+		// This is an internal method, consider using Topics.post instead
 		var timestamp = data.timestamp || Date.now();
 		var topicData;
 
@@ -171,6 +172,7 @@ module.exports = function(Topics) {
 				data.topicData.mainPost = data.postData;
 				data.postData.index = 0;
 
+				analytics.increment(['topics', 'topics:byCid:' + data.topicData.cid]);
 				plugins.fireHook('action:topic.post', data.topicData);
 
 				if (parseInt(uid, 10)) {
@@ -186,12 +188,12 @@ module.exports = function(Topics) {
 	};
 
 	Topics.reply = function(data, callback) {
-		var tid = data.tid,
-			uid = data.uid,
-			content = data.content,
-			postData;
-
+		var tid = data.tid;
+		var uid = data.uid;
+		var content = data.content;
+		var postData;
 		var cid;
+
 		async.waterfall([
 			function(next) {
 				Topics.getTopicField(tid, 'cid', next);
@@ -256,6 +258,7 @@ module.exports = function(Topics) {
 				}
 
 				Topics.notifyFollowers(postData, uid);
+				analytics.increment(['posts', 'posts:byCid:' + cid]);
 				plugins.fireHook('action:topic.reply', postData);
 
 				next(null, postData);

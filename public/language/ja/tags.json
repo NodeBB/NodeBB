@@ -1,7 +1,7 @@
 {
-    "no_tag_topics": "There are no topics with this tag.",
-    "tags": "Tags",
-    "enter_tags_here": "Enter tags here, between %1 and %2 characters each.",
-    "enter_tags_here_short": "Enter tags...",
-    "no_tags": "There are no tags yet."
+    "no_tag_topics": "このタグに関連するトピックはありません。",
+    "tags": "タグ",
+    "enter_tags_here": "ここにタグを入れます。一つのタグが%1から%2までの文字にして下さい。",
+    "enter_tags_here_short": "タグを入れます…",
+    "no_tags": "タグがありません"
 }

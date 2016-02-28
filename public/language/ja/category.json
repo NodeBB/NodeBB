@@ -1,16 +1,16 @@
 {
-    "category": "Category",
-    "subcategories": "Subcategories",
-    "new_topic_button": "新規スレッド",
-    "guest-login-post": "Log in to post",
-    "no_topics": "<strong>まだスレッドはありません.</strong><br />一番目のスレッドを書いてみないか？",
+    "category": "カテゴリ",
+    "subcategories": "サブカテゴリ",
+    "new_topic_button": "新規トピック",
+    "guest-login-post": "投稿するにはログインしてください",
+    "no_topics": "<strong>まだトピックはありません.</strong><br />一番目のトピックを書いてみませんか？",
     "browsing": "閲覧中",
     "no_replies": "返事はまだありません",
-    "no_new_posts": "No new posts.",
-    "share_this_category": "この板を共有",
-    "watch": "Watch",
-    "ignore": "Ignore",
-    "watch.message": "You are now watching updates from this category",
-    "ignore.message": "You are now ignoring updates from this category",
-    "watched-categories": "Watched categories"
+    "no_new_posts": "新しい投稿はありません",
+    "share_this_category": "このカテゴリを共有する",
+    "watch": "ウォッチする",
+    "ignore": "無視する",
+    "watch.message": "このカテゴリの更新をウォッチする",
+    "ignore.message": "このカテゴリの更新を無視する",
+    "watched-categories": "ウォッチ中のカテゴリ"
 }

@@ -266,31 +266,6 @@ SocketModules.chats.renameRoom = function(socket, data, callback) {
 	], callback);
 };
 
-SocketModules.chats.userStartTyping = function(socket, data, callback) {
-	sendTypingNotification('event:chats.userStartTyping', socket, data, callback);
-};
-
-SocketModules.chats.userStopTyping = function(socket, data, callback) {
-	sendTypingNotification('event:chats.userStopTyping', socket, data, callback);
-};
-
-function sendTypingNotification(event, socket, data, callback) {
-	if (!socket.uid || !data || !data.roomId) {
-		return;
-	}
-
-	Messaging.getUidsInRoom(data.roomId, 0, -1, function(err, uids) {
-		if (err) {
-			return callback(err);
-		}
-		uids.forEach(function(uid) {
-			if (socket.uid !== parseInt(uid, 10)) {
-				server.in('uid_' + uid).emit(event, data.fromUid);
-			}
-		});
-	});
-}
-
 SocketModules.chats.getRecentChats = function(socket, data, callback) {
 	if (!data || !utils.isNumber(data.after)) {
 		return callback(new Error('[[error:invalid-data]]'));

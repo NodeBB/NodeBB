@@ -24,8 +24,9 @@ define('forum/topic/posts', [
 		data.loggedIn = app.user.uid ? true : false;
 		data.posts.forEach(function(post) {
 			post.selfPost = !!app.user.uid && parseInt(post.uid, 10) === parseInt(app.user.uid, 10);
-			post.display_moderator_tools = post.selfPost || ajaxify.data.isAdminOrMod;
-			post.display_move_tools = ajaxify.data.isAdminOrMod;
+			post.display_moderator_tools = post.selfPost || ajaxify.data.privileges.isAdminOrMod;
+			post.display_move_tools = ajaxify.data.privileges.isAdminOrMod;
+			post.display_post_menu = post.selfPost || ajaxify.data.privileges.isAdminOrMod;
 		});
 
 		updatePostCounts(data.posts);
@@ -138,12 +139,8 @@ define('forum/topic/posts', [
 			before = repliesSelector.first();
 		}
 
-		data.title = $('<div></div>').text(ajaxify.data.title).html();
 		data.slug = ajaxify.data.slug;
-		data.tags = ajaxify.data.tags;
-		data.viewcount = ajaxify.data.viewcount;
-		data.isFollowing = ajaxify.data.isFollowing;
-
+		
 		$(window).trigger('action:posts.loading', {posts: data.posts, after: after, before: before});
 
 		app.parseAndTranslate('topic', 'posts', data, function(html) {

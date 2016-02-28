@@ -8,4 +8,4 @@
 	<a href="{registerLink}">[[email:invitation.ctr]]</a>
 </blockquote>
 
-{footer}
+<!-- IMPORT emails/partials/footer.tpl -->

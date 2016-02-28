@@ -85,5 +85,15 @@ describe('Translator', function(){
 			});
 		});
 
+		it('should properly escape % and ,', function(done) {
+			var title = 'Test 1, 2, 3 % salmon';
+			title = title.replace(/%/g, '&#37;').replace(/,/g, '&#44;');
+			var key = "[[topic:composer.replying_to, " + title + "]]";
+			translator.translate(key, function(translated) {
+				assert.strictEqual(translated, 'Replying to Test 1, 2, 3 % salmon');
+				done();
+			});
+		});
+
 	});
 });

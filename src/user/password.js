@@ -20,16 +20,20 @@ module.exports = function(User) {
 		password = password || '';
 		async.waterfall([
 			function (next) {
-				User.isPasswordValid(password, next);
-			},
-			function (next) {
 				db.getObjectField('user:' + uid, 'password', next);
 			},
 			function (hashedPassword, next) {
 				if (!hashedPassword) {
-					return callback();
+					return callback(null, true);
 				}
-				Password.compare(password, hashedPassword, next);
+
+				User.isPasswordValid(password, function(err) {
+					if (err) {
+						return next(err);
+					}
+
+					Password.compare(password, hashedPassword, next);
+				});
 			}
 		], callback);
 	};

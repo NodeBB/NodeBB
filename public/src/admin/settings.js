@@ -116,7 +116,12 @@ define('admin/settings', ['uploader', 'sounds'], function(uploader, sounds) {
 					fileSize: 0,
 					showHelp: uploadBtn.attr('data-help') ? uploadBtn.attr('data-help') === 1 : undefined
 				}, function(image) {
-					$('#' + uploadBtn.attr('data-target')).val(image);
+					// need to move these into template, ex data-callback
+					if (ajaxify.currentPage === 'admin/general/sounds') {
+						ajaxify.refresh();
+					} else {
+						$('#' + uploadBtn.attr('data-target')).val(image);
+					}
 				});
 			});
 		});

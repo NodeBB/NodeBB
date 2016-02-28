@@ -359,7 +359,7 @@ var async = require('async'),
 		if (parseInt(meta.config.disableChat) === 1 || !uid) {
 			return callback(new Error('[[error:chat-disabled]]'));
 		}
-
+		
 		async.waterfall([
 			function (next) {
 				Messaging.isUserInRoom(uid, roomId, next);
@@ -368,6 +368,14 @@ var async = require('async'),
 				if (!inRoom) {
 					return next(new Error('[[error:not-in-room]]'));
 				}
+				
+				Messaging.getUserCountInRoom(roomId, next);
+			},
+			function(count, next) {
+				if (count < 2) {
+					return next(new Error('[[error:no-users-in-room]]'));
+				}
+				
 				user.getUserFields(uid, ['banned', 'email:confirmed'], next);
 			},
 			function (userData, next) {

@@ -8,7 +8,6 @@
     "users-found-search-took": "Rasta %1 vartotojas(-ai)! Paieška užtruko %2 sekundes.",
     "filter-by": "Filtruoti pagal",
     "online-only": "Tik prisijunge",
-    "picture-only": "Tik paveikslėlis",
     "invite": "Pakviesti",
     "invitation-email-sent": "Pakvietimas el.paštu buvo išsiųstas į %1!",
     "user_list": "Vartotojų sąrašas",
@@ -17,5 +16,5 @@
     "unread_topics": "Neperskaitytos temos",
     "categories": "Kategorijos",
     "tags": "Žymos",
-    "map": "Žemėlapis"
+    "no-users-found": "No users found!"
 }

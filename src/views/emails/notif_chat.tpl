@@ -5,7 +5,7 @@
 
 <a href="{url}/chats/{fromUserslug}">[[email:notif.chat.cta]]</a>
 
-{footer}
+<!-- IMPORT emails/partials/footer.tpl -->
 
 <hr />
 <p>

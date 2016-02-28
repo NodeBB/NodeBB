@@ -279,7 +279,7 @@ function upgrade() {
 
 function activate() {
 	require('./src/database').init(function(err) {
-		var plugin = nconf.get('activate'),
+		var plugin = nconf.get('_')[1] ? nconf.get('_')[1] : nconf.get('activate'),
 			db = require('./src/database');
 
 		winston.info('Activating plugin %s', plugin);

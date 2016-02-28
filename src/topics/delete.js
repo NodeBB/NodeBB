@@ -85,7 +85,7 @@ module.exports = function(Topics) {
 		});
 	};
 
-	Topics.purgePostsAndTopic = function(tid, callback) {
+	Topics.purgePostsAndTopic = function(tid, uid, callback) {
 		var mainPid;
 		async.waterfall([
 			function (next) {
@@ -94,11 +94,13 @@ module.exports = function(Topics) {
 			function (_mainPid, next) {
 				mainPid = _mainPid;
 				batch.processSortedSet('tid:' + tid + ':posts', function(pids, next) {
-					async.eachLimit(pids, 10, posts.purge, next);
+					async.eachLimit(pids, 10, function(pid, next) {
+						posts.purge(pid, uid, next);
+					}, next);
 				}, {alwaysStartAt: 0}, next);
 			},
 			function (next) {
-				posts.purge(mainPid, next);
+				posts.purge(mainPid, uid, next);
 			},
 			function (next) {
 				Topics.purge(tid, next);

@@ -29,7 +29,7 @@ define('forum/chats', ['components', 'string', 'sounds', 'forum/infinitescroll',
 		Chats.scrollToBottom($('.expanded-chat ul'));
 
 		Chats.initialised = true;
-		
+
 		Chats.handleSearch();
 
 		if (ajaxify.data.hasOwnProperty('roomId')) {
@@ -204,7 +204,6 @@ define('forum/chats', ['components', 'string', 'sounds', 'forum/infinitescroll',
 				return;
 			}
 
-			Chats.notifyTyping(roomId, val);
 			$(this).attr('data-typing', val);
 		});
 
@@ -370,14 +369,6 @@ define('forum/chats', ['components', 'string', 'sounds', 'forum/infinitescroll',
 			}
 		});
 
-		socket.on('event:chats.userStartTyping', function(withUid) {
-			$('.chats-list li[data-uid="' + withUid + '"]').addClass('typing');
-		});
-
-		socket.on('event:chats.userStopTyping', function(withUid) {
-			$('.chats-list li[data-uid="' + withUid + '"]').removeClass('typing');
-		});
-
 		socket.on('event:user_status_change', function(data) {
 			app.updateUserStatus($('.chats-list [data-uid="' + data.uid + '"] [component="user/status"]'), data.status);
 		});
@@ -392,10 +383,10 @@ define('forum/chats', ['components', 'string', 'sounds', 'forum/infinitescroll',
 	Chats.onChatEdit = function() {
 		socket.on('event:chats.edit', function(data) {
 			data.messages.forEach(function(message) {
-				templates.parse('partials/chat_message', {
-					messages: message
-				}, function(html) {
-					var body = components.get('chat/message', message.messageId);
+				var self = parseInt(message.fromuid, 10) === parseInt(app.user.uid);
+				message.self = self ? 1 : 0;
+				Chats.parseMessage(message, function(html) {
+				    var body = components.get('chat/message', message.messageId);
 					if (body.length) {
 						body.replaceWith(html);
 						components.get('chat/message', message.messageId).find('.timeago').timeago();
@@ -411,20 +402,16 @@ define('forum/chats', ['components', 'string', 'sounds', 'forum/infinitescroll',
 		if (messagesList.length) {
 			var	margin = $('.expanded-chat ul').outerHeight(true) - $('.expanded-chat ul').height(),
 				inputHeight = $('.chat-input').outerHeight(true),
-				fromTop = messagesList.offset().top;
+				fromTop = messagesList.offset().top,
+				searchHeight = $('.chat-search').height(),
+				searchListHeight = $('[component="chat/search/list"]').outerHeight(true) - $('[component="chat/search/list"]').height();
 
 			messagesList.height($(window).height() - (fromTop + inputHeight + (margin * 4)));
-			components.get('chat/recent').height($('.expanded-chat').height());
+			components.get('chat/recent').height($('.expanded-chat').height() - (searchHeight + searchListHeight));
+			$('[component="chat/search/list"]').css('max-height', components.get('chat/recent').height()/2 + 'px');
 		}
 
 		Chats.setActive();
-	};
-
-	Chats.notifyTyping = function(roomId, typing) {
-		socket.emit('modules.chats.user' + (typing ? 'Start' : 'Stop') + 'Typing', {
-			roomId: roomId,
-			fromUid: app.user.uid
-		});
 	};
 
 	Chats.sendMessage = function(roomId, inputEl) {
@@ -455,7 +442,6 @@ define('forum/chats', ['components', 'string', 'sounds', 'forum/infinitescroll',
 				}
 
 				sounds.play('chat-outgoing');
-				Chats.notifyTyping(roomId, false);
 			});
 		} else {
 			socket.emit('modules.chats.edit', {
@@ -467,7 +453,6 @@ define('forum/chats', ['components', 'string', 'sounds', 'forum/infinitescroll',
 					return app.alertError(err.message);
 				}
 
-				Chats.notifyTyping(roomId, false);
 			});
 		}
 	};
@@ -532,71 +517,70 @@ define('forum/chats', ['components', 'string', 'sounds', 'forum/infinitescroll',
 			callback();
 		});
 	}
-	
+
 	Chats.handleSearch = function() {
 		var timeoutId = 0;
-		
+
 		components.get('chat/search').on('keyup', function() {
 			if (timeoutId) {
 				clearTimeout(timeoutId);
 				timeoutId = 0;
 			}
 
-			timeoutId = setTimeout(doSearch, 250);	
+			timeoutId = setTimeout(doSearch, 250);
 		});
-		
+
 		function doSearch() {
-            		var username = components.get('chat/search').val();
-            		var chatsListEl = $('[component="chat/search/list"]');
+			var username = components.get('chat/search').val();
+			var chatsListEl = $('[component="chat/search/list"]');
 
 			if (!username) {
-    				return chatsListEl.empty();
+				return chatsListEl.empty();
 			}
 
-	            	socket.emit('user.search', {
-	    			query: username,
-	    			searchBy: 'username'
-	        	}, function(err, data) {
-	        		if (err) {
-	        			return app.alertError(err.message);
-	        		}
-	                    
-	                    	chatsListEl.empty();
-	                    
-	                    	if (data.users.length === 0) {
-	                    		chatsListEl.translateHtml('<li><div><span>[[users:no-users-found]]</span></div></li>');
-	                    	} else {
-		                    	data.users.forEach(function(userObj) {
-		        			function createUserImage() {
-							return (userObj.picture ?
-								'<img src="' +	userObj.picture + '" title="' +	userObj.username +'" />' :
-								'<div class="user-icon" style="background-color: ' + userObj['icon:bgColor'] + '">' + userObj['icon:text'] + '</div>') +
-								'<i class="fa fa-circle status ' + userObj.status + '"></i> ' + userObj.username;
-						}
-		        
-		        			var chatEl = $('<li component="chat/search/user" />')
+			socket.emit('user.search', {
+				query: username,
+				searchBy: 'username'
+			}, function(err, data) {
+				if (err) {
+					return app.alertError(err.message);
+				}
+
+				chatsListEl.empty();
+
+				if (data.users.length === 0) {
+					return chatsListEl.translateHtml('<li><div><span>[[users:no-users-found]]</span></div></li>');
+				}
+
+				data.users.forEach(function(userObj) {
+					function createUserImage() {
+						return (userObj.picture ?
+							'<img src="' +	userObj.picture + '" title="' +	userObj.username +'" />' :
+							'<div class="user-icon" style="background-color: ' + userObj['icon:bgColor'] + '">' + userObj['icon:text'] + '</div>') +
+							'<i class="fa fa-circle status ' + userObj.status + '"></i> ' + userObj.username;
+					}
+
+					var chatEl = $('<li component="chat/search/user" />')
 							.attr('data-uid', userObj.uid)
 							.appendTo(chatsListEl);
-		        
-		        			chatEl.append(createUserImage());
-		        				
-		        			chatEl.click(function() {
-		        				socket.emit('modules.chats.hasPrivateChat', userObj.uid, function(err, roomId) {
-			                 			if (err) {
-			                 				return app.alertError(err.message);
-			                 			}
-			                 			if (roomId) {
-			                 				ajaxify.go('chats/' + roomId);
-			                 			} else {
-			                 				app.newChat(userObj.uid);
-			                 			}
-			                 		});
-		        			});
-		        		});
-		            	}
-	                    
-	        	});
-        	}
+
+					chatEl.append(createUserImage());
+
+					chatEl.on('click', function() {
+						socket.emit('modules.chats.hasPrivateChat', userObj.uid, function(err, roomId) {
+							if (err) {
+								return app.alertError(err.message);
+							}
+							if (roomId) {
+								ajaxify.go('chats/' + roomId);
+							} else {
+								app.newChat(userObj.uid);
+							}
+						});
+					});
+		        });
+			});
+	    }
 	};
 	return Chats;
 });

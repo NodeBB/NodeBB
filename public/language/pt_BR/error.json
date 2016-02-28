@@ -14,7 +14,7 @@
     "invalid-password": "Senha Inválida",
     "invalid-username-or-password": "Por favor especifique ambos nome de usuário e senha",
     "invalid-search-term": "Termo de pesquisa inválido",
-    "invalid-pagination-value": "Valor de paginação inválido",
+    "invalid-pagination-value": "Invalid pagination value, must be at least %1 and at most %2",
     "username-taken": "Nome de usuário já existe",
     "email-taken": "Email já cadastrado",
     "email-not-confirmed": "O seu email ainda não foi confirmado, por favor clique aqui para confirmar seu email.",
@@ -24,7 +24,7 @@
     "confirm-email-already-sent": "O email de confirmação já foi enviado, por favor aguarde %1 minuto(s) para enviar outro.",
     "username-too-short": "Nome de usuário muito curto",
     "username-too-long": "Nome de usuário muito longo",
-    "password-too-long": "Password too long",
+    "password-too-long": "A senha é muito grande",
     "user-banned": "Usuário banido",
     "user-too-new": "Desculpe, é necessário que você aguarde %1 segundo(s) antes de fazer o seu primeiro post.",
     "no-category": "A categoria não existe",
@@ -83,6 +83,7 @@
     "chat-message-too-long": "A mensagem de chat é muito longa",
     "cant-edit-chat-message": "Você não tem permissão para editar esta mensagem",
     "cant-remove-last-user": "Você não pode excluir o último usuário",
+    "cant-delete-chat-message": "You are not allowed to delete this message",
     "reputation-system-disabled": "O sistema de reputação está desabilitado.",
     "downvoting-disabled": "Negativação está desabilitada",
     "not-enough-reputation-to-downvote": "Você não possui reputação suficiente para negativar este post",
@@ -94,5 +95,6 @@
     "wrong-login-type-email": "Por favor use seu email para fazer login",
     "wrong-login-type-username": "Por favor use o seu nome de usuário para fazer login",
     "invite-maximum-met": "Você já convidou o número máximo de pessoas (%1 de %2).",
-    "no-session-found": "Nenhuma sessão de login encontrada!"
+    "no-session-found": "Nenhuma sessão de login encontrada!",
+    "not-in-room": "User not in room"
 }

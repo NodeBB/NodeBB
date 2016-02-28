@@ -8,7 +8,6 @@
     "users-found-search-took": "تم إيجاد %1 مستخدمـ(ين)! استغرق البحث %2 ثانية.",
     "filter-by": "Filter By",
     "online-only": "المتصلون فقط",
-    "picture-only": "صورة فقط",
     "invite": "دعوة",
     "invitation-email-sent": "An invitation email has been sent to %1",
     "user_list": "قائمة اﻷعضاء",
@@ -17,5 +16,5 @@
     "unread_topics": "المواضيع الغير مقروءة",
     "categories": "الفئات",
     "tags": "الكلمات الدلالية",
-    "map": "Map"
+    "no-users-found": "No users found!"
 }

@@ -14,7 +14,7 @@
     "invalid-password": "Ongeldig wachtwoord",
     "invalid-username-or-password": "Geef zowel een gebruikersnaam als wachtwoord op",
     "invalid-search-term": "Ongeldig zoekopdracht, een of meerdere termen",
-    "invalid-pagination-value": "Ongeldig waarde voor paginering",
+    "invalid-pagination-value": "Invalid pagination value, must be at least %1 and at most %2",
     "username-taken": "Gebruikersnaam is al in gebruik ",
     "email-taken": "E-mailadres is al eens eerder gebruikt",
     "email-not-confirmed": "Het e-mailadres van dit account is nog niet bevestigd. Klik hier om het e-mailadres te bevestigen en de registratie af te ronden.",
@@ -24,7 +24,7 @@
     "confirm-email-already-sent": "Bevestigingsbericht per e-mail al zojuist verzonden, wacht even een %1 tal minuutjes voordat opnieuw een bericht verzonden wordt.",
     "username-too-short": "Gebruikersnaam bevat niet voldoende tekens",
     "username-too-long": "Gebruikersnaam bevat meer dan het toegestane aantal tekens",
-    "password-too-long": "Password too long",
+    "password-too-long": "Wachtwoord te lang",
     "user-banned": "Gebruiker verbannen",
     "user-too-new": "Helaas, het is een vereiste om %1 seconde(n) te wachten voordat het eerste bericht geplaatst kan worden.",
     "no-category": "Categorie bestaat niet",
@@ -83,6 +83,7 @@
     "chat-message-too-long": "Het chatbericht is te lang",
     "cant-edit-chat-message": "Het is niet toegestaan om dit bericht aan te passen",
     "cant-remove-last-user": "Je kan de laatste gebruiker niet verwijderen",
+    "cant-delete-chat-message": "You are not allowed to delete this message",
     "reputation-system-disabled": "Reputatie systeem is uitgeschakeld.",
     "downvoting-disabled": "Negatief stemmen staat uitgeschakeld.",
     "not-enough-reputation-to-downvote": "Dit gebruikersaccount beschikt over onvoldoende reputatie om een negatieve stem uit te mogen brengen.",
@@ -94,5 +95,6 @@
     "wrong-login-type-email": "Gebruik het e-mailadres voor aanmelden",
     "wrong-login-type-username": "Geef de gebruikersnaam voor aanmelden",
     "invite-maximum-met": "Je heb het maximum aantal mensen uitgenodigd (%1 van de %2).",
-    "no-session-found": "Geen login sessie gevonden!"
+    "no-session-found": "Geen login sessie gevonden!",
+    "not-in-room": "User not in room"
 }

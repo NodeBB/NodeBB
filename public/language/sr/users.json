@@ -8,7 +8,6 @@
     "users-found-search-took": "Нађено је %1 корисника! Претрага је завршена за %2 секунде.",
     "filter-by": "Филтрирај према",
     "online-only": "Само корисници на вези",
-    "picture-only": "Само слике",
     "invite": "Позови",
     "invitation-email-sent": "Активациони емејл је послат на %1",
     "user_list": "Листа корисника",
@@ -17,5 +16,5 @@
     "unread_topics": "Непрочитане теме",
     "categories": "Категорије",
     "tags": "Ознаке",
-    "map": "Мапа"
+    "no-users-found": "No users found!"
 }

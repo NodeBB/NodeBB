@@ -58,14 +58,14 @@ module.exports = function(User) {
 			var defaultTopicsPerPage = parseInt(meta.config.topicsPerPage, 10) || 20;
 			var defaultPostsPerPage = parseInt(meta.config.postsPerPage, 10) || 20;
 
-			settings.showemail = parseInt(settings.showemail, 10) === 1;
-			settings.showfullname = parseInt(settings.showfullname, 10) === 1;
+			settings.showemail = parseInt(getSetting(settings, 'showemail', 0), 10) === 1;
+			settings.showfullname = parseInt(getSetting(settings, 'showfullname', 0), 10) === 1;
 			settings.openOutgoingLinksInNewTab = parseInt(getSetting(settings, 'openOutgoingLinksInNewTab', 0), 10) === 1;
 			settings.dailyDigestFreq = getSetting(settings, 'dailyDigestFreq', 'off');
 			settings.usePagination = parseInt(getSetting(settings, 'usePagination', 0), 10) === 1;
 			settings.topicsPerPage = Math.min(settings.topicsPerPage ? parseInt(settings.topicsPerPage, 10) : defaultTopicsPerPage, defaultTopicsPerPage);
 			settings.postsPerPage = Math.min(settings.postsPerPage ? parseInt(settings.postsPerPage, 10) : defaultPostsPerPage, defaultPostsPerPage);
-			settings.notificationSounds = parseInt(settings.notificationSounds, 10) === 1;
+			settings.notificationSounds = parseInt(getSetting(settings, 'notificationSounds', 0), 10) === 1;
 			settings.userLang = settings.userLang || meta.config.defaultLang || 'en_GB';
 			settings.topicPostSort = getSetting(settings, 'topicPostSort', 'oldest_to_newest');
 			settings.categoryTopicSort = getSetting(settings, 'categoryTopicSort', 'newest_to_oldest');
@@ -73,7 +73,7 @@ module.exports = function(User) {
 			settings.followTopicsOnReply = parseInt(getSetting(settings, 'followTopicsOnReply', 0), 10) === 1;
 			settings.sendChatNotifications = parseInt(getSetting(settings, 'sendChatNotifications', 0), 10) === 1;
 			settings.sendPostNotifications = parseInt(getSetting(settings, 'sendPostNotifications', 0), 10) === 1;
-			settings.restrictChat = parseInt(settings.restrictChat, 10) === 1;
+			settings.restrictChat = parseInt(getSetting(settings, 'restrictChat', 0), 10) === 1;
 			settings.topicSearchEnabled = parseInt(getSetting(settings, 'topicSearchEnabled', 0), 10) === 1;
 			settings.bootswatchSkin = settings.bootswatchSkin || 'default';
 
@@ -91,8 +91,12 @@ module.exports = function(User) {
 	}
 
 	User.saveSettings = function(uid, data, callback) {
-		if (invalidPaginationSettings(data)) {
-			return callback(new Error('[[error:invalid-pagination-value]]'));
+		if (!data.postsPerPage || parseInt(data.postsPerPage, 10) <= 1 || parseInt(data.postsPerPage, 10) > meta.config.postsPerPage) {
+			return callback(new Error('[[error:invalid-pagination-value, 2, ' + meta.config.postsPerPage + ']]'));
+		}
+
+		if (!data.topicsPerPage || parseInt(data.topicsPerPage, 10) <= 1 || parseInt(data.topicsPerPage, 10) > meta.config.topicsPerPage) {
+			return callback(new Error('[[error:invalid-pagination-value, 2, ' + meta.config.topicsPerPage + ']]'));
 		}
 
 		data.userLang = data.userLang || meta.config.defaultLang;
@@ -135,12 +139,6 @@ module.exports = function(User) {
 			}
 		], callback);
 	};
-
-	function invalidPaginationSettings(data) {
-		return !data.topicsPerPage || !data.postsPerPage ||
-			parseInt(data.topicsPerPage, 10) <= 0 || parseInt(data.postsPerPage, 10) <= 0 ||
-			parseInt(data.topicsPerPage, 10) > meta.config.topicsPerPage || parseInt(data.postsPerPage, 10) > meta.config.postsPerPage;
-	}
 
 	function updateDigestSetting(uid, dailyDigestFreq, callback) {
 		async.waterfall([

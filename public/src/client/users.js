@@ -107,7 +107,8 @@ define('forum/users', ['translator'], function(translator) {
 			page: page,
 			searchBy: 'username',
 			sortBy: $('.search select').val() || getSortBy(),
-			onlineOnly: $('.search .online-only').is(':checked') || (getActiveSection() === 'online')
+			onlineOnly: $('.search .online-only').is(':checked') || (getActiveSection() === 'online'),
+			bannedOnly: getActiveSection() === 'banned'
 		}, function(err, data) {
 			if (err) {
 				return app.alertError(err.message);

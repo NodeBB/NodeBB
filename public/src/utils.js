@@ -5,7 +5,7 @@
 
 	if ('undefined' === typeof window) {
 		fs = require('fs');
-		XRegExp = require('xregexp').XRegExp;
+		XRegExp = require('xregexp');
 
 		process.profile = function(operation, start) {
 			console.log('%s took %d milliseconds', operation, process.elapsedTimeSince(start));
@@ -257,6 +257,39 @@
 					return env;
 				}
 			}
+		},
+
+		isMobile: function() {
+			var env = utils.findBootstrapEnvironment();
+			return ['xs', 'sm'].some(function(targetEnv) {
+				return targetEnv === env;
+			});
+		},
+
+		getHoursArray: function() {
+			var currentHour = new Date().getHours(),
+				labels = [];
+
+			for (var i = currentHour, ii = currentHour - 24; i > ii; i--) {
+				var hour = i < 0 ? 24 + i : i;
+				labels.push(hour + ':00');
+			}
+
+			return labels.reverse();
+		},
+
+		getDaysArray: function(from) {
+			var currentDay = new Date(from || Date.now()).getTime(),
+				months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+				labels = [],
+				tmpDate;
+
+			for(var x=29;x>=0;x--) {
+				tmpDate = new Date(currentDay - (1000*60*60*24*x));
+				labels.push(months[tmpDate.getMonth()] + ' ' + tmpDate.getDate());
+			}
+
+			return labels;
 		},
 
 		// get all the url params in a single key/value hash

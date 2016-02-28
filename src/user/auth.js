@@ -70,7 +70,7 @@ module.exports = function(User) {
 		}
 
 		async.waterfall([
-			async.apply(db.getSortedSetRange, 'uid:' + uid + ':sessions', 0, -1),
+			async.apply(db.getSortedSetRevRange, 'uid:' + uid + ':sessions', 0, -1),
 			function (sids, next) {
 				_sids = sids;
 				async.map(sids, db.sessionStore.get.bind(db.sessionStore), next);

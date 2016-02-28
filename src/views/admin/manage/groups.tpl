@@ -1,11 +1,7 @@
 <div class="groups">
 	<div class="col-lg-9">
 		<div class="panel panel-default">
-			<div class="panel-heading"><i class="fa fa-group"></i> Groups List</div>
 			<div class="panel-body">
-
-				<input id="group-search" type="text" class="form-control" placeholder="Search" /><br/>
-
 				<table class="table table-striped groups-list">
 					<tr>
 						<th>Group Name</th>
@@ -38,10 +34,9 @@
 
 	<div class="col-lg-3 acp-sidebar">
 		<div class="panel panel-default">
-			<div class="panel-heading">Groups Control Panel</div>
 			<div class="panel-body">
 				<div>
-					<button class="btn btn-primary" id="create">New Group</button>
+					<input id="group-search" type="text" class="form-control" placeholder="Search" />
 				</div>
 			</div>
 		</div>
@@ -78,4 +73,6 @@
 </div>
 
 
-
+<button id="create" class="floating-button mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored">
+    <i class="material-icons">add</i>
+</button>

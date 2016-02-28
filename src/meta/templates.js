@@ -12,7 +12,8 @@ var mkdirp = require('mkdirp'),
 	plugins = require('../plugins'),
 	utils = require('../../public/src/utils'),
 
-	Templates = {};
+	Templates = {},
+	searchIndex = {};
 
 Templates.compile = function(callback) {
 	callback = callback || function() {};
@@ -27,25 +28,37 @@ Templates.compile = function(callback) {
 		return callback();
 	}
 
-	var coreTemplatesPath = nconf.get('core_templates_path'),
-		baseTemplatesPath = nconf.get('base_templates_path'),
-		viewsPath = nconf.get('views_dir'),
-		themeTemplatesPath = nconf.get('theme_templates_path'),
-		themeConfig = require(nconf.get('theme_config'));
+	compile(callback);
+};
 
-	if (themeConfig.baseTheme) {
-		var pathToBaseTheme = path.join(nconf.get('themes_path'), themeConfig.baseTheme);
-		baseTemplatesPath = require(path.join(pathToBaseTheme, 'theme.json')).templates;
 
-		if (!baseTemplatesPath){
-			baseTemplatesPath = path.join(pathToBaseTheme, 'templates');
-		}
+function getBaseTemplates(theme) {
+	var baseTemplatesPaths = [],
+		baseThemePath, baseThemeConfig;
+
+	while (theme) {
+		baseThemePath = path.join(nconf.get('themes_path'), theme);
+		baseThemeConfig = require(path.join(baseThemePath, 'theme.json'));
+
+		baseTemplatesPaths.push(path.join(baseThemePath, baseThemeConfig.templates || 'templates'));
+		theme = baseThemeConfig.baseTheme;
 	}
 
-	plugins.getTemplates(function(err, pluginTemplates) {
+	return baseTemplatesPaths.reverse();
+}
+
+function preparePaths(baseTemplatesPaths, callback) {
+	var coreTemplatesPath = nconf.get('core_templates_path'),
+		viewsPath = nconf.get('views_dir');
+
+	async.waterfall([
+		async.apply(plugins.fireHook, 'static:templates.precompile', {}),
+		async.apply(plugins.getTemplates)
+	], function(err, pluginTemplates) {
 		if (err) {
 			return callback(err);
 		}
+
 		winston.verbose('[meta/templates] Compiling templates');
 		rimraf.sync(viewsPath);
 		mkdirp.sync(viewsPath);
@@ -54,27 +67,33 @@ Templates.compile = function(callback) {
 			coreTpls: function(next) {
 				utils.walk(coreTemplatesPath, next);
 			},
-			baseTpls: function(next) {
-				utils.walk(baseTemplatesPath, next);
+			baseThemes: function(next) {
+				async.map(baseTemplatesPaths, function(baseTemplatePath, next) {
+					utils.walk(baseTemplatePath, function(err, paths) {
+						paths = paths.map(function(tpl) {
+							return {
+								base: baseTemplatePath,
+								path: tpl.replace(baseTemplatePath, '')
+							};
+						});
+
+						next(err, paths);
+					});
+				}, next);
 			}
 		}, function(err, data) {
-			var coreTpls = data.coreTpls,
-				baseTpls = data.baseTpls,
+			var baseThemes = data.baseThemes,
+				coreTpls = data.coreTpls,
 				paths = {};
 
-			if (!baseTpls) {
-				winston.warn('[meta/templates] Could not find base template files at: ' + baseTemplatesPath);
-			}
-
-			coreTpls = !coreTpls ? [] : coreTpls.map(function(tpl) { return tpl.replace(coreTemplatesPath, ''); });
-			baseTpls = !baseTpls ? [] : baseTpls.map(function(tpl) { return tpl.replace(baseTemplatesPath, ''); });
-
 			coreTpls.forEach(function(el, i) {
-				paths[coreTpls[i]] = path.join(coreTemplatesPath, coreTpls[i]);
+				paths[coreTpls[i].replace(coreTemplatesPath, '')] = coreTpls[i];
 			});
 
-			baseTpls.forEach(function(el, i) {
-				paths[baseTpls[i]] = path.join(baseTemplatesPath, baseTpls[i]);
+			baseThemes.forEach(function(baseTpls) {
+				baseTpls.forEach(function(el, i) {
+					paths[baseTpls[i].path] = path.join(baseTpls[i].base, baseTpls[i].path);
+				});
 			});
 
 			for (var tpl in pluginTemplates) {
@@ -83,51 +102,65 @@ Templates.compile = function(callback) {
 				}
 			}
 
-			async.each(Object.keys(paths), function(relativePath, next) {
-				var file = fs.readFileSync(paths[relativePath]).toString(),
-					matches = null,
-					regex = /[ \t]*<!-- IMPORT ([\s\S]*?)? -->[ \t]*/;
+			callback(err, paths);
+		});
+	});
+}
 
-				while((matches = file.match(regex)) !== null) {
-					var partial = "/" + matches[1];
+function compile(callback) {
+	var themeConfig = require(nconf.get('theme_config')),
+		baseTemplatesPaths = themeConfig.baseTheme ? getBaseTemplates(themeConfig.baseTheme) : [nconf.get('base_templates_path')],
+		viewsPath = nconf.get('views_dir');
+	
 
-					if (paths[partial] && relativePath !== partial) {
-						file = file.replace(regex, fs.readFileSync(paths[partial]).toString());
-					} else {
-						winston.warn('[meta/templates] Partial not loaded: ' + matches[1]);
-						file = file.replace(regex, "");
-					}
+	preparePaths(baseTemplatesPaths, function(err, paths) {
+		if (err) {
+			return callback(err);
+		}
+
+		async.each(Object.keys(paths), function(relativePath, next) {
+			var file = fs.readFileSync(paths[relativePath]).toString(),
+				matches = null,
+				regex = /[ \t]*<!-- IMPORT ([\s\S]*?)? -->[ \t]*/;
+
+			while((matches = file.match(regex)) !== null) {
+				var partial = "/" + matches[1];
+
+				if (paths[partial] && relativePath !== partial) {
+					file = file.replace(regex, fs.readFileSync(paths[partial]).toString());
+				} else {
+					winston.warn('[meta/templates] Partial not loaded: ' + matches[1]);
+					file = file.replace(regex, "");
 				}
+			}
 
-				if (relativePath.match(/^\/admin\/[\s\S]*?/)) {
-					addIndex(relativePath, file);
+			if (relativePath.match(/^\/admin\/[\s\S]*?/)) {
+				addIndex(relativePath, file);
+			}
+
+			mkdirp.sync(path.join(viewsPath, relativePath.split('/').slice(0, -1).join('/')));
+			fs.writeFile(path.join(viewsPath, relativePath), file, next);
+		}, function(err) {
+			if (err) {
+				winston.error('[meta/templates] ' + err.stack);
+				return callback(err);
+			}
+
+			compileIndex(viewsPath, function() {
+				winston.verbose('[meta/templates] Successfully compiled templates.');
+
+				emitter.emit('templates:compiled');
+				if (process.send) {
+					process.send({
+						action: 'templates:compiled'
+					});
 				}
-
-				mkdirp.sync(path.join(viewsPath, relativePath.split('/').slice(0, -1).join('/')));
-				fs.writeFile(path.join(viewsPath, relativePath), file, next);
-			}, function(err) {
-				if (err) {
-					winston.error('[meta/templates] ' + err.stack);
-					return callback(err);
-				}
-
-				compileIndex(viewsPath, function() {
-					winston.verbose('[meta/templates] Successfully compiled templates.');
-
-					emitter.emit('templates:compiled');
-					if (process.send) {
-						process.send({
-							action: 'templates:compiled'
-						});
-					}
-					callback();
-				});
+				callback();
 			});
 		});
 	});
-};
+}
 
-var searchIndex = {};
 
 function addIndex(path, file) {
 	searchIndex[path] = file;

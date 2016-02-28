@@ -1,26 +1,29 @@
 "use strict";
 
-var topicsController = {},
-	async = require('async'),
-	S = require('string'),
-	nconf = require('nconf'),
 
-	user = require('../user'),
-	meta = require('../meta'),
-	topics = require('../topics'),
-	posts = require('../posts'),
-	privileges = require('../privileges'),
-	plugins = require('../plugins'),
-	helpers = require('./helpers'),
-	pagination = require('../pagination'),
-	utils = require('../../public/src/utils');
+var async = require('async');
+var S = require('string');
+var nconf = require('nconf');
+var validator = require('validator');
+
+var user = require('../user');
+var meta = require('../meta');
+var topics = require('../topics');
+var posts = require('../posts');
+var privileges = require('../privileges');
+var plugins = require('../plugins');
+var helpers = require('./helpers');
+var pagination = require('../pagination');
+var utils = require('../../public/src/utils');
+
+var topicsController = {};
 
 topicsController.get = function(req, res, callback) {
-	var tid = req.params.topic_id,
-		sort = req.query.sort,
-		currentPage = parseInt(req.query.page, 10) || 1,
-		pageCount = 1,
-		userPrivileges;
+	var tid = req.params.topic_id;
+	var sort = req.query.sort;
+	var currentPage = parseInt(req.query.page, 10) || 1;
+	var pageCount = 1;
+	var userPrivileges;
 
 	if ((req.params.post_index && !utils.isNumber(req.params.post_index)) || !utils.isNumber(tid)) {
 		return callback();
@@ -67,8 +70,8 @@ topicsController.get = function(req, res, callback) {
 				return callback();
 			}
 
-			var set = 'tid:' + tid + ':posts',
-				reverse = false;
+			var set = 'tid:' + tid + ':posts';
+			var reverse = false;
 
 			// `sort` qs has priority over user setting
 			if (sort === 'newest_to_oldest') {
@@ -90,6 +93,7 @@ topicsController.get = function(req, res, callback) {
 				req.params.post_index = 0;
 			}
 			if (!settings.usePagination) {
+				currentPage = 1;
 				if (reverse) {
 					postIndex = Math.max(0, postCount - (req.params.post_index || postCount) - Math.ceil(settings.postsPerPage / 2));
 				} else {
@@ -187,7 +191,7 @@ topicsController.get = function(req, res, callback) {
 				},
 				{
 					property: 'og:title',
-					content: topicData.title.replace(/&amp;/g, '&')
+					content: topicData.title
 				},
 				{
 					property: 'og:description',

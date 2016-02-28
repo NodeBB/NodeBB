@@ -5,7 +5,7 @@
 
 <a href="{url}">[[email:notif.post.cta]]</a>
 
-{footer}
+<!-- IMPORT emails/partials/footer.tpl -->
 
 <hr />
 <p>

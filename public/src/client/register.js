@@ -1,6 +1,6 @@
 'use strict';
 
-/* globals define, app, utils, socket, config */
+/* globals define, app, utils, socket, config, ajaxify, bootbox */
 
 
 define('forum/register', ['csrf', 'translator'], function(csrf, translator) {
@@ -67,41 +67,44 @@ define('forum/register', ['csrf', 'translator'], function(csrf, translator) {
 
 		register.on('click', function(e) {
 			var registerBtn = $(this);
+			var errorEl = $('#register-error-notify');
+			errorEl.addClass('hidden');
 			e.preventDefault();
 			validateForm(function() {
-				if (!validationError) {
-					registerBtn.addClass('disabled');
+				if (validationError) {
+					return;
+				}
 
-					registerBtn.parents('form').ajaxSubmit({
-						headers: {
-							'x-csrf-token': csrf.get()
-						},
-						success: function(data, status) {
-							registerBtn.removeClass('disabled');
-							if (!data) {
-								return;
-							}
-							if (data.referrer) {
-								window.location.href = data.referrer;
-							} else if (data.message) {
-								require(['translator'], function(translator) {
-									translator.translate(data.message, function(msg) {
-										bootbox.alert(msg);
-										ajaxify.go('/');
-									});
+				registerBtn.addClass('disabled');
+
+				registerBtn.parents('form').ajaxSubmit({
+					headers: {
+						'x-csrf-token': csrf.get()
+					},
+					success: function(data) {
+						registerBtn.removeClass('disabled');
+						if (!data) {
+							return;
+						}
+						if (data.referrer) {
+							window.location.href = data.referrer;
+						} else if (data.message) {
+							require(['translator'], function(translator) {
+								translator.translate(data.message, function(msg) {
+									bootbox.alert(msg);
+									ajaxify.go('/');
 								});
-							}
-						},
-						error: function(data, status) {
-							var errorEl = $('#register-error-notify');
-							translator.translate(data.responseText, config.defaultLang, function(translated) {
-								errorEl.find('p').text(translated);
-								errorEl.show();
-								registerBtn.removeClass('disabled');
 							});
 						}
-					});
-				}
+					},
+					error: function(data) {
+						translator.translate(data.responseText, config.defaultLang, function(translated) {
+							errorEl.find('p').text(translated);
+							errorEl.removeClass('hidden');
+							registerBtn.removeClass('disabled');
+						});
+					}
+				});
 			});
 		});
 
@@ -181,10 +184,14 @@ define('forum/register', ['csrf', 'translator'], function(csrf, translator) {
 
 		if (password.length < ajaxify.data.minimumPasswordLength) {
 			showError(password_notify, '[[user:change_password_error_length]]');
+		} else if (password.length > 4096) {
+			showError(password_notify, '[[error:password-too-long]]');
 		} else if (!utils.isPasswordValid(password)) {
 			showError(password_notify, '[[user:change_password_error]]');
 		} else if (password === $('#username').val()) {
 			showError(password_notify, '[[user:password_same_as_username]]');
+		} else if (password === $('#email').val()) {
+			showError(password_notify, '[[user:password_same_as_email]]');
 		} else {
 			showSuccess(password_notify, successIcon);
 		}

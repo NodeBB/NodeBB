@@ -1,9 +1,11 @@
 'use strict';
 
-/* globals define, socket, utils, config, app, ajaxify, templates, Tinycon*/
+/* globals define, socket, app, ajaxify, templates, Tinycon*/
 
 define('notifications', ['sounds', 'translator', 'components'], function(sound, translator, components) {
 	var Notifications = {};
+
+	var unreadNotifs = {};
 
 	Notifications.prepareDOM = function() {
 		var notifContainer = components.get('notifications'),
@@ -29,34 +31,40 @@ define('notifications', ['sounds', 'translator', 'components'], function(sound, 
 
 		notifList.on('click', '[data-nid]', function() {
 			var unread = $(this).hasClass('unread');
+			var nid = $(this).attr('data-nid');
 			if (!unread) {
 				return;
 			}
-			socket.emit('notifications.markRead', $(this).attr('data-nid'), function(err) {
+			socket.emit('notifications.markRead', nid, function(err) {
 				if (err) {
 					return app.alertError(err.message);
 				}
 				incrementNotifCount(-1);
+				if (unreadNotifs[nid]) {
+					delete unreadNotifs[nid];
+				}
 			});
 		});
 
 		notifContainer.on('click', '.mark-all-read', Notifications.markAllRead);
 
-		notifList.on('click', '.mark-read', function(e) {
-			var liEl = $(this).parent(),
-				unread = liEl.hasClass('unread');
+		notifList.on('click', '.mark-read', function() {
+			var liEl = $(this).parent();
+			var unread = liEl.hasClass('unread');
+			var nid = liEl.attr('data-nid');
 
-			e.preventDefault();
-			e.stopPropagation();
-
-			socket.emit('notifications.mark' + (unread ? 'Read' : 'Unread'), liEl.attr('data-nid'), function(err) {
+			socket.emit('notifications.mark' + (unread ? 'Read' : 'Unread'), nid, function(err) {
 				if (err) {
 					return app.alertError(err.message);
 				}
 
 				liEl.toggleClass('unread');
 				incrementNotifCount(unread ? -1 : 1);
+				if (unread && unreadNotifs[nid]) {
+					delete unreadNotifs[nid];
+				}
 			});
+			return false;
 		});
 
 		function incrementNotifCount(delta) {
@@ -96,10 +104,13 @@ define('notifications', ['sounds', 'translator', 'components'], function(sound, 
 			if (ajaxify.currentPage === 'notifications') {
 				ajaxify.refresh();
 			}
+			
+			if (!unreadNotifs[notifData.nid]) {
+				incrementNotifCount(1);
 
-			incrementNotifCount(1);
-
-			sound.play('notification');
+				sound.play('notification');
+				unreadNotifs[notifData.nid] = true;	
+			}			
 		});
 
 		socket.on('event:notifications.updateCount', function(count) {
@@ -148,7 +159,7 @@ define('notifications', ['sounds', 'translator', 'components'], function(sound, 
 		$(window).trigger('action:notification.updateCount', payload);
 
 		if (payload.updateFavicon) {
-			Tinycon.setBubble(count);
+			Tinycon.setBubble(count > 99 ? '99+' : count);
 		}
 	};
 
@@ -158,6 +169,7 @@ define('notifications', ['sounds', 'translator', 'components'], function(sound, 
 				app.alertError(err.message);
 			}
 			Notifications.updateNotifCount(0);
+			unreadNotifs = {};
 		});
 	};
 

@@ -6,4 +6,4 @@
 
 <p>[[email:welcome.text3]]</p>
 
-{footer}
+<!-- IMPORT emails/partials/footer.tpl -->

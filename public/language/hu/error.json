@@ -14,7 +14,7 @@
     "invalid-password": "Érvénytelen jelszó",
     "invalid-username-or-password": "Kérlek adj meg egy felhasználónevet és egy jelszót",
     "invalid-search-term": "Érvénytelen keresési feltétel",
-    "invalid-pagination-value": "Érvénytelen lapozó érték",
+    "invalid-pagination-value": "Invalid pagination value, must be at least %1 and at most %2",
     "username-taken": "Foglalt felhasználónév",
     "email-taken": "Foglalt e-mail",
     "email-not-confirmed": "Az e-mail címed még nem lett ellenőrizve, kérlek kattints ide az e-mail címed ellenőrzéséhez!",
@@ -83,6 +83,7 @@
     "chat-message-too-long": "Chat message is too long",
     "cant-edit-chat-message": "You are not allowed to edit this message",
     "cant-remove-last-user": "You can't remove the last user",
+    "cant-delete-chat-message": "You are not allowed to delete this message",
     "reputation-system-disabled": "Hírnév funkció kikapcsolva.",
     "downvoting-disabled": "Leszavazás funkció kikapcsolva",
     "not-enough-reputation-to-downvote": "Nem rendelkezel elég Hírnév ponttal, hogy leszavazhasd ezt a hozzászólást",
@@ -94,5 +95,6 @@
     "wrong-login-type-email": "Kérlek az e-mail címedet használd a belépéshez",
     "wrong-login-type-username": "Kérlek a felhasználónevedet használd a belépéshez",
     "invite-maximum-met": "You have invited the maximum amount of people (%1 out of %2).",
-    "no-session-found": "No login session found!"
+    "no-session-found": "No login session found!",
+    "not-in-room": "User not in room"
 }

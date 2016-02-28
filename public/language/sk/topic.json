@@ -35,6 +35,7 @@
     "login_to_subscribe": "Prosím Zaregistrujte sa alebo sa Prihláste, aby ste mohli odoberať túto Tému",
     "markAsUnreadForAll.success": "Téma označená ako neprečítaná pre všetkých.",
     "mark_unread": "Mark unread",
+    "mark_unread.success": "Topic marked as unread.",
     "watch": "Sledovať",
     "unwatch": "Unwatch",
     "watch.title": "Buďte informovaní o nových odpovediach k tejto téme",
@@ -104,7 +105,7 @@
     "stale.warning": "The topic you are replying to is quite old. Would you like to create a new topic instead, and reference this one in your reply?",
     "stale.create": "Create a new topic",
     "stale.reply_anyway": "Reply to this topic anyway",
-    "stale.link_back": "Re: [%1](%2)",
+    "link_back": "Re: [%1](%2)",
     "spam": "Spam",
     "offensive": "Offensive",
     "custom-flag-reason": "Enter a flagging reason"

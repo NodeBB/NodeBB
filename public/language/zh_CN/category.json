@@ -1,6 +1,6 @@
 {
-    "category": "版面",
-    "subcategories": "子版面",
+    "category": "版块",
+    "subcategories": "子版块",
     "new_topic_button": "新主题",
     "guest-login-post": "登录后发表",
     "no_topics": "<strong>此版块还没有任何内容。</strong><br />赶紧来发帖吧！",
@@ -12,5 +12,5 @@
     "ignore": "忽略",
     "watch.message": "您现在已经关注了此版块",
     "ignore.message": "您现在已经取消了此版块的关注",
-    "watched-categories": "已关注的版面"
+    "watched-categories": "已关注的版块"
 }
