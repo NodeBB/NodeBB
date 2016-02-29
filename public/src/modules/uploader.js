@@ -1,6 +1,6 @@
 'use strict';
 
-/* globals define, templates, translator */
+/* globals define, templates */
 
 define('uploader', ['csrf', 'translator'], function(csrf, translator) {
 
@@ -35,62 +35,60 @@ define('uploader', ['csrf', 'translator'], function(csrf, translator) {
 			uploadForm.attr('action', data.route);
 			uploadForm.find('#params').val(JSON.stringify(data.params));
 
-			uploadModal.find('#fileUploadSubmitBtn').off('click').on('click', function() {
+			uploadModal.find('#fileUploadSubmitBtn').on('click', function() {
 				uploadForm.submit();
 			});
 
-			uploadForm.off('submit').submit(function() {
-
-				function showAlert(type, message) {
-					module.hideAlerts(uploadModal);
-					uploadModal.find('#alert-' + type).translateText(message).removeClass('hide');
-				}
-
-				showAlert('status', '[[uploads:uploading-file]]');
-
-				uploadModal.find('#upload-progress-bar').css('width', '0%');
-				uploadModal.find('#upload-progress-box').show().removeClass('hide');
-
-				if (!uploadModal.find('#fileInput').val()) {
-					showAlert('error', '[[uploads:select-file-to-upload]]');
-					return false;
-				}
-
-				$(this).ajaxSubmit({
-					headers: {
-						'x-csrf-token': csrf.get()
-					},
-					error: function(xhr) {
-						xhr = maybeParse(xhr);
-						showAlert('error', xhr.responseJSON ? (xhr.responseJSON.error || xhr.statusText) : 'error uploading, code : ' + xhr.status);
-					},
-
-					uploadProgress: function(event, position, total, percent) {
-						uploadModal.find('#upload-progress-bar').css('width', percent + '%');
-					},
-
-					success: function(response) {
-						response = maybeParse(response);
-
-						if (response.error) {
-							showAlert('error', response.error);
-							return;
-						}
-
-						callback(response[0].url);
-
-						showAlert('success', '[[uploads:upload-success]]');
-						setTimeout(function() {
-							module.hideAlerts(uploadModal);
-							uploadModal.modal('hide');
-						}, 750);
-					}
-				});
-
+			uploadForm.submit(function() {
+				onSubmit(uploadModal, callback);
 				return false;
 			});
 		});
 	};
+
+	function onSubmit(uploadModal, callback) {
+		function showAlert(type, message) {
+			module.hideAlerts(uploadModal);
+			uploadModal.find('#alert-' + type).translateText(message).removeClass('hide');
+		}
+
+		showAlert('status', '[[uploads:uploading-file]]');
+
+		uploadModal.find('#upload-progress-bar').css('width', '0%');
+		uploadModal.find('#upload-progress-box').show().removeClass('hide');
+
+		if (!uploadModal.find('#fileInput').val()) {
+			return showAlert('error', '[[uploads:select-file-to-upload]]');
+		}
+
+		uploadModal.find('#uploadForm').ajaxSubmit({
+			headers: {
+				'x-csrf-token': csrf.get()
+			},
+			error: function(xhr) {
+				xhr = maybeParse(xhr);
+				showAlert('error', xhr.responseJSON ? (xhr.responseJSON.error || xhr.statusText) : 'error uploading, code : ' + xhr.status);
+			},
+			uploadProgress: function(event, position, total, percent) {
+				uploadModal.find('#upload-progress-bar').css('width', percent + '%');
+			},
+			success: function(response) {
+				response = maybeParse(response);
+
+				if (response.error) {
+					return showAlert('error', response.error);
+				}
+
+				callback(response[0].url);
+
+				showAlert('success', '[[uploads:upload-success]]');
+				setTimeout(function() {
+					module.hideAlerts(uploadModal);
+					uploadModal.modal('hide');
+				}, 750);
+			}
+		});
+	}
 
 	function parseModal(tplVals, callback) {
 		templates.parse('partials/modals/upload_file_modal', tplVals, function(html) {
