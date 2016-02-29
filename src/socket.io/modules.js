@@ -62,8 +62,8 @@ SocketModules.chats.newRoom = function(socket, data, callback) {
 	}
 
 	Messaging.canMessageUser(socket.uid, data.touid, function(err, allowed) {
-		if (err || !allowed) {
-			return callback(err || new Error('[[error:chat-restricted]]'));
+		if (err) {
+			return callback(err);
 		}
 
 		Messaging.newRoom(socket.uid, [data.touid], callback);
