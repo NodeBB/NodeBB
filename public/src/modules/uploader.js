@@ -18,7 +18,11 @@ define('uploader', ['csrf', 'translator'], function(csrf, translator) {
 	module.show = function(data, callback) {
 		parseModal({
 			showHelp: data.hasOwnProperty('showHelp') && data.showHelp !== undefined ? data.showHelp : true,
-			fileSize: data.hasOwnProperty('fileSize') && data.fileSize !== undefined ? parseInt(data.fileSize, 10) : false
+			fileSize: data.hasOwnProperty('fileSize') && data.fileSize !== undefined ? parseInt(data.fileSize, 10) : false,
+			title: data.title || '[[global:upload_file]]',
+			description: data.description || '',
+			button: data.button || '[[global:upload]]',
+			accept: data.accept ? data.accept.replace(/,/g, '&#44;') : ''
 		}, function(uploadModal) {
 			uploadModal = $(uploadModal);
 
@@ -31,7 +35,7 @@ define('uploader', ['csrf', 'translator'], function(csrf, translator) {
 			uploadForm.attr('action', data.route);
 			uploadForm.find('#params').val(JSON.stringify(data.params));
 
-			uploadModal.find('#pictureUploadSubmitBtn').off('click').on('click', function() {
+			uploadModal.find('#fileUploadSubmitBtn').off('click').on('click', function() {
 				uploadForm.submit();
 			});
 
@@ -47,7 +51,7 @@ define('uploader', ['csrf', 'translator'], function(csrf, translator) {
 				uploadModal.find('#upload-progress-bar').css('width', '0%');
 				uploadModal.find('#upload-progress-box').show().removeClass('hide');
 
-				if (!uploadModal.find('#userPhotoInput').val()) {
+				if (!uploadModal.find('#fileInput').val()) {
 					showAlert('error', '[[uploads:select-file-to-upload]]');
 					return false;
 				}

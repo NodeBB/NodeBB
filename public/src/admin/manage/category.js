@@ -1,5 +1,5 @@
 "use strict";
-/*global define, app, socket, ajaxify, RELATIVE_PATH, bootbox, templates, Chart */
+/*global config, define, app, socket, ajaxify, bootbox, templates, Chart, utils */
 
 define('admin/manage/category', [
 	'uploader',
@@ -75,7 +75,7 @@ define('admin/manage/category', [
 				}
 			});
 
-		$('[data-name="imageClass"]').on('change', function(ev) {
+		$('[data-name="imageClass"]').on('change', function() {
 			$('.category-preview').css('background-size', $(this).val());
 		});
 
@@ -103,7 +103,11 @@ define('admin/manage/category', [
 			var inputEl = $(this),
 				cid = inputEl.attr('data-cid');
 
-			uploader.open(RELATIVE_PATH + '/api/admin/category/uploadpicture', { cid: cid }, 0, function(imageUrlOnServer) {
+			uploader.show({
+				title: 'Upload category image',
+				route: config.relative_path + '/api/admin/category/uploadpicture',
+				params: {cid: cid}
+			}, function(imageUrlOnServer) {
 				inputEl.val(imageUrlOnServer);
 				var previewBox = inputEl.parent().parent().siblings('.category-preview');
 				previewBox.css('background', 'url(' + imageUrlOnServer + '?' + new Date().getTime() + ')');
@@ -123,7 +127,7 @@ define('admin/manage/category', [
 			$(this).parent().addClass('hide').hide();
 		});
 
-		$('.category-preview').on('click', function(ev) {
+		$('.category-preview').on('click', function() {
 			iconSelect.init($(this).find('i'), modified);
 		});
 
@@ -145,7 +149,7 @@ define('admin/manage/category', [
 		});
 
 		Category.setupPrivilegeTable();
-		
+
 		if (window.location.hash === '#analytics') {
 			Category.setupGraphs();
 		} else {

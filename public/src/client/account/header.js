@@ -74,7 +74,12 @@ define('forum/account/header', [
 				}, callback);
 			},
 			function() {
-				uploader.open(config.relative_path + '/api/user/' + ajaxify.data.userslug + '/uploadcover', { uid: yourid }, 0, function(imageUrlOnServer) {
+				uploader.show({
+					title: '[[user:upload_cover_picture]]',
+					route: config.relative_path + '/api/user/' + ajaxify.data.userslug + '/uploadcover',
+					params: {uid: yourid },
+					accept: '.png,.jpg,.bmp'
+				}, function(imageUrlOnServer) {
 					components.get('account/cover').css('background-image', 'url(' + imageUrlOnServer + '?v=' + Date.now() + ')');
 				});
 			},

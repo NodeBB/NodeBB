@@ -30,7 +30,11 @@ define('forum/groups/details', [
 					}, callback);
 				},
 				function() {
-					uploader.open(RELATIVE_PATH + '/api/groups/uploadpicture', { groupName: groupName }, 0, function(imageUrlOnServer) {
+					uploader.show({
+						title: '[[groups:upload-group-cover]]',
+						route: config.relative_path + '/api/groups/uploadpicture',
+						params: {groupname: groupName}
+					}, function(imageUrlOnServer) {
 						components.get('groups/cover').css('background-image', 'url(' + imageUrlOnServer + ')');
 					});
 				},

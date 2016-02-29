@@ -111,10 +111,12 @@ define('admin/settings', ['uploader', 'sounds'], function(uploader, sounds) {
 			var uploadBtn = $(this);
 			uploadBtn.on('click', function() {
 				uploader.show({
+					title: uploadBtn.attr('data-title'),
+					description: uploadBtn.attr('data-description'),
 					route: uploadBtn.attr('data-route'),
 					params: {},
-					fileSize: 0,
-					showHelp: uploadBtn.attr('data-help') ? uploadBtn.attr('data-help') === 1 : undefined
+					showHelp: uploadBtn.attr('data-help') ? uploadBtn.attr('data-help') === 1 : undefined,
+					accept: uploadBtn.attr('data-accept')
 				}, function(image) {
 					// need to move these into template, ex data-callback
 					if (ajaxify.currentPage === 'admin/general/sounds') {
