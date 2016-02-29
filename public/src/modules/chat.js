@@ -83,7 +83,9 @@ define('chat', ['components', 'taskbar', 'string', 'sounds', 'forum/chats', 'tra
 				return app.alertError(err.message);
 			}
 
-			var rooms = data.rooms;
+			var rooms = data.rooms.filter(function(room) {
+			    return room.teaser;
+			});
 
 			chatsListEl.empty();
 
