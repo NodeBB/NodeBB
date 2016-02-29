@@ -93,7 +93,7 @@ define('uploader', ['csrf', 'translator'], function(csrf, translator) {
 	};
 
 	function parseModal(tplVals, callback) {
-		templates.parse('partials/modals/upload_picture_modal', tplVals, function(html) {
+		templates.parse('partials/modals/upload_file_modal', tplVals, function(html) {
 			translator.translate(html, callback);
 		});
 	}
