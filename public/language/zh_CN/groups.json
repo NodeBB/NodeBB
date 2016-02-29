@@ -48,5 +48,6 @@
     "membership.join-group": "加入小组",
     "membership.leave-group": "退出小组",
     "membership.reject": "拒绝",
-    "new-group.group_name": "组名: "
+    "new-group.group_name": "组名: ",
+    "upload-group-cover": "Upload group cover"
 }

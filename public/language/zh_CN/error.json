@@ -50,8 +50,8 @@
     "still-uploading": "请等待上传完成",
     "file-too-big": "上传文件的大小限制为 %1 KB - 请缩减文件大小",
     "guest-upload-disabled": "未登录用户不允许上传",
-    "already-favourited": "您已收藏该帖",
-    "already-unfavourited": "您已取消收藏此帖",
+    "already-favourited": "You have already bookmarked this post",
+    "already-unfavourited": "You have already unbookmarked this post",
     "cant-ban-other-admins": "您不能封禁其他管理员！",
     "cant-remove-last-admin": "您是唯一的管理员。在删除您的管理员权限前，请添加另一个管理员。",
     "invalid-image-type": "无效的图像类型。允许的类型有：%1",
@@ -96,5 +96,6 @@
     "wrong-login-type-username": "请输入您的用户名登录",
     "invite-maximum-met": "您的邀请人数超出了上限 (%1 超过了 %2)。",
     "no-session-found": "未登录!",
-    "not-in-room": "User not in room"
+    "not-in-room": "User not in room",
+    "no-users-in-room": "No users in this room"
 }

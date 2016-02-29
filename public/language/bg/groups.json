@@ -48,5 +48,6 @@
     "membership.join-group": "Присъединяване към групата",
     "membership.leave-group": "Напускане на групата",
     "membership.reject": "Отхвърляне",
-    "new-group.group_name": "Име на групата:"
+    "new-group.group_name": "Име на групата:",
+    "upload-group-cover": "Upload group cover"
 }

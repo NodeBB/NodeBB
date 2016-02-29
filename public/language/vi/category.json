@@ -1,16 +1,16 @@
 {
-    "category": "Danh mục",
-    "subcategories": "Danh mục con",
+    "category": "Chuyên mục",
+    "subcategories": "Chuyên mục con",
     "new_topic_button": "Chủ đề mới",
     "guest-login-post": "Đăng nhập để viết bài",
     "no_topics": "<strong>Không có bài viết trong danh mục này.</strong><br />Hãy đăng một bài viết mới.",
     "browsing": "đang xem",
     "no_replies": "Chưa có bình luận nào",
     "no_new_posts": "Không có bài mới.",
-    "share_this_category": "Chia sẻ thư mục này",
+    "share_this_category": "Chia sẻ chuyên mục này",
     "watch": "Theo dõi",
     "ignore": "Bỏ qua",
     "watch.message": "Bạn đang theo dõi các cập nhật của danh mục này",
-    "ignore.message": "Bạn đang gỡ bỏ theo dõi danh mục này",
-    "watched-categories": "Watched categories"
+    "ignore.message": "Bạn đã tắt cập nhật từ chuyên mục này",
+    "watched-categories": "Chuyên mục đang theo dõi"
 }

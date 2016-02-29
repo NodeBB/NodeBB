@@ -86,5 +86,9 @@
     "delete_all": "Обриши све",
     "map": "Мапа",
     "sessions": "Логин сесија",
-    "ip_address": "IP адреса"
+    "ip_address": "IP адреса",
+    "enter_page_number": "Enter page number",
+    "upload_file": "Upload file",
+    "upload": "Upload",
+    "allowed-file-types": "Allowed file types are %1"
 }

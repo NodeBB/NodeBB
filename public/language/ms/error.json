@@ -50,8 +50,8 @@
     "still-uploading": "Sila tunggu muatnaik untuk siap.",
     "file-too-big": "Maksimum saiz fail yang dibenarkan ialah %1 kB - sila muatnaik fail yang lebih kecil",
     "guest-upload-disabled": "Guest uploading has been disabled",
-    "already-favourited": "Anda telah pun menggemari kiriman ini",
-    "already-unfavourited": "Anda telah pun nyah-gemar kiriman ini",
+    "already-favourited": "You have already bookmarked this post",
+    "already-unfavourited": "You have already unbookmarked this post",
     "cant-ban-other-admins": "Anda tidak boleh haramkan admin / pentadbir!",
     "cant-remove-last-admin": "Anda satu-satunya pentadbir. Tambah pentadbir lain sebelum membuang diri anda sebagai pentadbir",
     "invalid-image-type": "Jenis imej tak sah. Jenis yang dibenarkan ialah: %1",
@@ -96,5 +96,6 @@
     "wrong-login-type-username": "Sila guna nama pengguna anda untuk log masuk",
     "invite-maximum-met": "You have invited the maximum amount of people (%1 out of %2).",
     "no-session-found": "No login session found!",
-    "not-in-room": "User not in room"
+    "not-in-room": "User not in room",
+    "no-users-in-room": "No users in this room"
 }

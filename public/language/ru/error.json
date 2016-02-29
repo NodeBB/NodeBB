@@ -24,7 +24,7 @@
     "confirm-email-already-sent": "Сообщение для подтверждения уже выслано на E-mail. Повторная отправка возможна через %1 мин.",
     "username-too-short": "Слишком короткое имя пользователя",
     "username-too-long": "Имя пользователя слишком длинное",
-    "password-too-long": "Password too long",
+    "password-too-long": "Пароль слишком длинный",
     "user-banned": "Пользователь заблокирован",
     "user-too-new": "Вы можете написать свое первой сообщение через %1 сек.",
     "no-category": "Категория не существует",
@@ -50,8 +50,8 @@
     "still-uploading": "Пожалуйста, подождите завершения загрузки.",
     "file-too-big": "Слишком большой файл. Максимальный размер: %1 Кбайт.",
     "guest-upload-disabled": "Загрузка для гостей была отключена",
-    "already-favourited": "Вы уже добавили это сообщение в избранное",
-    "already-unfavourited": "Вы уже удалили это сообщение из избранного",
+    "already-favourited": "You have already bookmarked this post",
+    "already-unfavourited": "You have already unbookmarked this post",
     "cant-ban-other-admins": "Вы не можете забанить других администраторов!",
     "cant-remove-last-admin": "Вы единственный администратор. Назначьте другого пользователя администратором, прежде чем складывать с себя полномочия админа",
     "invalid-image-type": "Неверный формат изображения. Поддерживаемые форматы: %1",
@@ -83,7 +83,7 @@
     "chat-message-too-long": "Слишком длинное сообщение чата",
     "cant-edit-chat-message": "У вас нет доступа для редактирования этого сообщения",
     "cant-remove-last-user": "Вы не можете убрать последнего пользователя",
-    "cant-delete-chat-message": "You are not allowed to delete this message",
+    "cant-delete-chat-message": "У вас нет доступа на удаление этого сообщения",
     "reputation-system-disabled": "Система репутации отключена.",
     "downvoting-disabled": "Понижение оценки отключено",
     "not-enough-reputation-to-downvote": "У Вас недостаточно репутации для понижения оценки сообщения",
@@ -96,5 +96,6 @@
     "wrong-login-type-username": "Пожалуйста, используйте своё имя пользователя для входа.",
     "invite-maximum-met": "Вы пригласили максимальное количество людей (%1 из %2).",
     "no-session-found": "Сессия входа не найдена!",
-    "not-in-room": "User not in room"
+    "not-in-room": "Пользователь не в комнате",
+    "no-users-in-room": "No users in this room"
 }

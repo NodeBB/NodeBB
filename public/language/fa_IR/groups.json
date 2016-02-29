@@ -48,5 +48,6 @@
     "membership.join-group": "ورود به گروه",
     "membership.leave-group": "خروج از گروه",
     "membership.reject": "رد",
-    "new-group.group_name": "نام گروه"
+    "new-group.group_name": "نام گروه",
+    "upload-group-cover": "Upload group cover"
 }

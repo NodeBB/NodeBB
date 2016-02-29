@@ -65,7 +65,7 @@
     "posted_in_ago_by": "geplaatst in %1 %2 door %3",
     "user_posted_ago": "%1 plaatste %2",
     "guest_posted_ago": "Gast plaatste %1",
-    "last_edited_by": "last edited by %1",
+    "last_edited_by": "voor het laatst aangepast door %1",
     "norecentposts": "Geen recente berichten",
     "norecenttopics": "Geen recente onderwerpen",
     "recentposts": "Recente berichten",
@@ -86,5 +86,9 @@
     "delete_all": "Alles verwijderen",
     "map": "Kaart",
     "sessions": "Login Sessies",
-    "ip_address": "IP Adres"
+    "ip_address": "IP Adres",
+    "enter_page_number": "Enter page number",
+    "upload_file": "Upload file",
+    "upload": "Upload",
+    "allowed-file-types": "Allowed file types are %1"
 }

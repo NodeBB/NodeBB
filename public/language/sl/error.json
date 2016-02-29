@@ -50,8 +50,8 @@
     "still-uploading": "Prosimo počakajte, da se prenosi končajo.",
     "file-too-big": "Največja dovoljena velikost datoteke je %1 kB - prosimo naložite manjšo datoteko",
     "guest-upload-disabled": "Guest uploading has been disabled",
-    "already-favourited": "To objavo ste že dodali med priljubljene",
-    "already-unfavourited": "To objavo ste že odstranili iz priljubljenih",
+    "already-favourited": "You have already bookmarked this post",
+    "already-unfavourited": "You have already unbookmarked this post",
     "cant-ban-other-admins": "Ne morete blokirati drugih administratorjev!",
     "cant-remove-last-admin": "Ste edini administrator. Dodajte novega administratorja preden boste odstranili sebe.",
     "invalid-image-type": "Nedovoljen format slike. Dovoljeni formati so: %1",
@@ -96,5 +96,6 @@
     "wrong-login-type-username": "Uporabite svoje uporabniško ime za prijavo",
     "invite-maximum-met": "You have invited the maximum amount of people (%1 out of %2).",
     "no-session-found": "No login session found!",
-    "not-in-room": "User not in room"
+    "not-in-room": "User not in room",
+    "no-users-in-room": "No users in this room"
 }

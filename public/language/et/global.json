@@ -65,7 +65,7 @@
     "posted_in_ago_by": "%3 postitas %2 kategooriasse %1",
     "user_posted_ago": "%1 postitas %2",
     "guest_posted_ago": "Külaline postitas %1",
-    "last_edited_by": "last edited by %1",
+    "last_edited_by": "viimati muudetud %1 poolt",
     "norecentposts": "Hiljutisi postitusi ei ole",
     "norecenttopics": "Hiljutisi teemasid ei ole",
     "recentposts": "Hiljutised postitused",
@@ -86,5 +86,9 @@
     "delete_all": "Kustuta kõik",
     "map": "Kaart",
     "sessions": "Logitud Sessioonid",
-    "ip_address": "IP Aadress"
+    "ip_address": "IP Aadress",
+    "enter_page_number": "Enter page number",
+    "upload_file": "Upload file",
+    "upload": "Upload",
+    "allowed-file-types": "Allowed file types are %1"
 }

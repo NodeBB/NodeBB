@@ -50,8 +50,8 @@
     "still-uploading": "請等待上傳完成。",
     "file-too-big": "Maximum allowed file size is %1 kB - please upload a smaller file",
     "guest-upload-disabled": "Guest uploading has been disabled",
-    "already-favourited": "你已經收藏了這篇文章",
-    "already-unfavourited": "你已放棄收藏這篇文章",
+    "already-favourited": "You have already bookmarked this post",
+    "already-unfavourited": "You have already unbookmarked this post",
     "cant-ban-other-admins": "您無法禁止其他的管理員！",
     "cant-remove-last-admin": "You are the only administrator. Add another user as an administrator before removing yourself as admin",
     "invalid-image-type": "無效的圖像類型。允許的類型：%1",
@@ -96,5 +96,6 @@
     "wrong-login-type-username": "請使用您的使用者名稱進行登錄",
     "invite-maximum-met": "You have invited the maximum amount of people (%1 out of %2).",
     "no-session-found": "No login session found!",
-    "not-in-room": "User not in room"
+    "not-in-room": "User not in room",
+    "no-users-in-room": "No users in this room"
 }

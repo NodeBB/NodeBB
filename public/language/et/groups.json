@@ -48,5 +48,6 @@
     "membership.join-group": "Liitu grupiga",
     "membership.leave-group": "Lahku grupist",
     "membership.reject": "Lükka tagasi",
-    "new-group.group_name": "Grupi nimi:"
+    "new-group.group_name": "Grupi nimi:",
+    "upload-group-cover": "Upload group cover"
 }

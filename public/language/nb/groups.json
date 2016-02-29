@@ -48,5 +48,6 @@
     "membership.join-group": "Bli med i gruppe",
     "membership.leave-group": "Forlat gruppe",
     "membership.reject": "Avslå",
-    "new-group.group_name": "Gruppenavn:"
+    "new-group.group_name": "Gruppenavn:",
+    "upload-group-cover": "Upload group cover"
 }
