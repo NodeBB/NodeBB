@@ -5,6 +5,7 @@ var async = require('async'),
 	cron = require('cron').CronJob,
 	nconf = require('nconf'),
 	S = require('string'),
+	_ = require('underscore'),
 
 	db = require('./database'),
 	User = require('./user'),
@@ -77,6 +78,36 @@ var async = require('async'),
 				}
 
 			}, callback);
+		});
+	};
+
+	Notifications.findRelated = function(mergeIds, set, callback) {
+		// A related notification is one in a zset that has the same mergeId
+		var _nids;
+
+		async.waterfall([
+			async.apply(db.getSortedSetRevRange, set, 0, -1),
+			function(nids, next) {
+				_nids = nids;
+
+				var keys = nids.map(function(nid) {
+					return 'notifications:' + nid;
+				});
+
+				db.getObjectsFields(keys, ['mergeId'], next);
+			},
+		], function(err, sets) {
+			if (err) {
+				return callback(err);
+			}
+
+			sets = sets.map(function(set) {
+				return set.mergeId;
+			});
+
+			callback(null, _nids.filter(function(nid, idx) {
+				return mergeIds.indexOf(sets[idx]) !== -1
+			}));
 		});
 	};
 
@@ -255,15 +286,39 @@ var async = require('async'),
 			return 'notifications:' + nid;
 		});
 
-		db.getObjectsFields(notificationKeys, ['nid', 'datetime'], function(err, notificationData) {
+		async.waterfall([
+			async.apply(db.getObjectsFields, notificationKeys, ['mergeId']),
+			function(mergeIds, next) {
+				// Isolate mergeIds and find related notifications
+				mergeIds = mergeIds.map(function(set) {
+					return set.mergeId;
+				}).reduce(function(memo, mergeId, idx, arr) {
+					if (mergeId && idx === arr.indexOf(mergeId)) {
+						memo.push(mergeId);
+					}
+					return memo;
+				}, []);
+
+				Notifications.findRelated(mergeIds, 'uid:' + uid + ':notifications:unread', next);
+			},
+			function(relatedNids, next) {
+				notificationKeys = _.union(nids, relatedNids).map(function(nid) {
+					return 'notifications:' + nid;
+				});
+
+				db.getObjectsFields(notificationKeys, ['nid', 'datetime'], next);
+			}
+		], function(err, notificationData) {
 			if (err) {
 				return callback(err);
 			}
 
+			// Filter out notifications that didn't exist
 			notificationData = notificationData.filter(function(notification) {
 				return notification && notification.nid;
 			});
 
+			// Extract nid
 			nids = notificationData.map(function(notification) {
 				return notification.nid;
 			});
