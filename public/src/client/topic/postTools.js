@@ -28,6 +28,7 @@ define('forum/topic/postTools', ['share', 'navigator', 'components', 'translator
 			var postEl = $this.parents('[data-pid]');
 			var pid = postEl.attr('data-pid');
 			var index = parseInt(postEl.attr('data-index'), 10);
+
 			socket.emit('posts.loadPostTools', {pid: pid, cid: ajaxify.data.cid}, function(err, data) {
 				if (err) {
 					return app.alertError(err);
@@ -38,6 +39,7 @@ define('forum/topic/postTools', ['share', 'navigator', 'components', 'translator
 				templates.parse('partials/topic/post-menu-list', data, function(html) {
 					translator.translate(html, function(html) {
 						dropdownMenu.html(html);
+						$(window).trigger('action:post.tools.load');
 					});
 				});
 			});
