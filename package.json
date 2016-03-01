@@ -77,7 +77,7 @@
     "templates.js": "0.3.1",
     "toobusy-js": "^0.4.2",
     "uglify-js": "^2.6.0",
-    "underscore": "~1.8.3",
+    "underscore": "^1.8.3",
     "underscore.deep": "^0.5.1",
     "validator": "^5.0.0",
     "winston": "^2.1.0",
