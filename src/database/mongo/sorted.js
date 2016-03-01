@@ -535,11 +535,12 @@ module.exports = function(db, module) {
 	};
 
 	module.processSortedSet = function(setKey, process, batch, callback) {
-		var done = false, ids = [], cursor = db.collection('objects').
-			find({_key: setKey}).
-			sort({score: 1}).
-			project({_id: 0, value: 1}).
-			batchSize(batch);
+		var done = false;
+		var ids = [];
+		var cursor = db.collection('objects').find({_key: setKey})
+			.sort({score: 1})
+			.project({_id: 0, value: 1})
+			.batchSize(batch);
 
 		async.whilst(
 			function() {
