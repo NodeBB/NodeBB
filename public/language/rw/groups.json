@@ -48,5 +48,6 @@
     "membership.join-group": "Injira mu Itsinda",
     "membership.leave-group": "Va mu Itsinda",
     "membership.reject": "Hakanira",
-    "new-group.group_name": "Izina ry'Itsinda:"
+    "new-group.group_name": "Izina ry'Itsinda:",
+    "upload-group-cover": "Upload group cover"
 }

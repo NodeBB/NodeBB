@@ -48,5 +48,6 @@
     "membership.join-group": "Gruba Katıl",
     "membership.leave-group": "Gruptan Ayrıl",
     "membership.reject": "Reddet",
-    "new-group.group_name": "Grup İsmi:"
+    "new-group.group_name": "Grup İsmi:",
+    "upload-group-cover": "Upload group cover"
 }

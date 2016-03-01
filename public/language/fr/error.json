@@ -14,7 +14,7 @@
     "invalid-password": "Mot de passe invalide",
     "invalid-username-or-password": "Veuillez entrer un nom d'utilisateur et un mot de passe",
     "invalid-search-term": "Données de recherche invalides",
-    "invalid-pagination-value": "Invalid pagination value, must be at least %1 and at most %2",
+    "invalid-pagination-value": "Valeur de pagination invalide. Celle-ci doit être comprise entre %1 et %2.",
     "username-taken": "Nom d’utilisateur déjà utilisé",
     "email-taken": "Email déjà utilisé",
     "email-not-confirmed": "Votre adresse email n'est pas confirmée, cliquez ici pour la valider.",
@@ -50,8 +50,8 @@
     "still-uploading": "Veuillez patienter pendant le téléchargement.",
     "file-too-big": "La taille maximale autorisée pour un fichier est de %1 kb. Veuillez envoyer un fichier plus petit.",
     "guest-upload-disabled": "Le téléversement est désactivé pour les Invités.",
-    "already-favourited": "Vous avez déjà mis ce message en favoris",
-    "already-unfavourited": "Vous avez déjà retiré ce message des favoris",
+    "already-favourited": "You have already bookmarked this post",
+    "already-unfavourited": "You have already unbookmarked this post",
     "cant-ban-other-admins": "Vous ne pouvez pas bannir les autres administrateurs !",
     "cant-remove-last-admin": "Vous seul êtes administrateur. Ajouter un autre utilisateur en tant qu'administrateur avant de vous en retirer.",
     "invalid-image-type": "Type d'image invalide. Les types autorisés sont: %1",
@@ -83,7 +83,7 @@
     "chat-message-too-long": "Le message de Chat est trop long",
     "cant-edit-chat-message": "Vous n'avez pas l'autorisation de modifier ce message",
     "cant-remove-last-user": "Vous ne pouvez pas supprimer le dernier utilisateur",
-    "cant-delete-chat-message": "You are not allowed to delete this message",
+    "cant-delete-chat-message": "Vous n'avez pas l'autorisation de supprimer ce message",
     "reputation-system-disabled": "Le système de réputation est désactivé",
     "downvoting-disabled": "Les votes négatifs ne sont pas autorisés",
     "not-enough-reputation-to-downvote": "Vous n'avez pas une réputation assez élevée pour noter négativement ce message",
@@ -96,5 +96,6 @@
     "wrong-login-type-username": "Veuillez utiliser votre identifiant pour vous connecter",
     "invite-maximum-met": "Vous avez invité la quantité maximale de personnes (%1 de %2).",
     "no-session-found": "Pas de session de connexion trouvé!",
-    "not-in-room": "User not in room"
+    "not-in-room": "L'utilisateur n'est pas dans cette salle",
+    "no-users-in-room": "No users in this room"
 }

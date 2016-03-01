@@ -314,7 +314,7 @@ var async = require('async'),
 
 	Messaging.canMessageUser = function(uid, toUid, callback) {
 		if (parseInt(meta.config.disableChat) === 1 || !uid || uid === toUid) {
-			return callback(null, false);
+			return callback(new Error('[[error:chat-disabled]]'));
 		}
 
 		async.waterfall([
@@ -323,43 +323,40 @@ var async = require('async'),
 			},
 			function (exists, next) {
 				if (!exists) {
-					return callback(null, false);
+					return callback(new Error('[[error:no-user]]'));
 				}
 				user.getUserFields(uid, ['banned', 'email:confirmed'], next);
 			},
 			function (userData, next) {
 				if (parseInt(userData.banned, 10) === 1) {
-					return callback(null, false);
+					return callback(new Error('[[error:user-banned]]'));
 				}
 
 				if (parseInt(meta.config.requireEmailConfirmation, 10) === 1 && parseInt(userData['email:confirmed'], 10) !== 1) {
-					return callback(null, false);
+					return callback(new Error('[[error:email-not-confirmed-chat]]'));
 				}
 
-				user.getSettings(toUid, next);
+				async.parallel({
+					settings: async.apply(user.getSettings, toUid),
+					isAdmin: async.apply(user.isAdministrator, uid),
+					isFollowing: async.apply(user.isFollowing, toUid, uid)
+				}, next);
 			},
-			function(settings, next) {
-				if (!settings.restrictChat) {
-					return callback(null, true);
+			function(results, next) {
+				if (!results.settings.restrictChat || results.isAdmin || results.isFollowing) {
+					return next();
 				}
 
-				user.isAdministrator(uid, next);
-			},
-			function(isAdmin, next) {
-				if (isAdmin) {
-					return callback(null, true);
-				}
-				user.isFollowing(toUid, uid, next);
+ 				next(new Error('[[error:chat-restricted]]'));
 			}
 		], callback);
-
 	};
 
 	Messaging.canMessageRoom = function(uid, roomId, callback) {
 		if (parseInt(meta.config.disableChat) === 1 || !uid) {
 			return callback(new Error('[[error:chat-disabled]]'));
 		}
-		
+
 		async.waterfall([
 			function (next) {
 				Messaging.isUserInRoom(uid, roomId, next);
@@ -368,14 +365,14 @@ var async = require('async'),
 				if (!inRoom) {
 					return next(new Error('[[error:not-in-room]]'));
 				}
-				
+
 				Messaging.getUserCountInRoom(roomId, next);
 			},
 			function(count, next) {
 				if (count < 2) {
 					return next(new Error('[[error:no-users-in-room]]'));
 				}
-				
+
 				user.getUserFields(uid, ['banned', 'email:confirmed'], next);
 			},
 			function (userData, next) {

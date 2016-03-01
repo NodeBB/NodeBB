@@ -48,5 +48,6 @@
     "membership.join-group": "Unirse al grupo",
     "membership.leave-group": "Dejar el grupo",
     "membership.reject": "Rechazar",
-    "new-group.group_name": "Nombre de Grupo:"
+    "new-group.group_name": "Nombre de Grupo:",
+    "upload-group-cover": "Upload group cover"
 }

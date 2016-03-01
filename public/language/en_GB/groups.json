@@ -57,5 +57,6 @@
 	"membership.leave-group": "Leave Group",
 	"membership.reject": "Reject",
 
-	"new-group.group_name": "Group Name:"
+	"new-group.group_name": "Group Name:",
+	"upload-group-cover": "Upload group cover"
 }

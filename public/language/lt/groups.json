@@ -48,5 +48,6 @@
     "membership.join-group": "Prisijungti Prie Grupės",
     "membership.leave-group": "Palikti Grupę",
     "membership.reject": "Atšaukti",
-    "new-group.group_name": "Group Name:"
+    "new-group.group_name": "Group Name:",
+    "upload-group-cover": "Upload group cover"
 }

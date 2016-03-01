@@ -50,8 +50,8 @@
     "still-uploading": "الرجاء انتظار الرفع",
     "file-too-big": "Maximum allowed file size is %1 kB - please upload a smaller file",
     "guest-upload-disabled": "Guest uploading has been disabled",
-    "already-favourited": "لقد سبق وأضفت هذا الرد إلى المفضلة",
-    "already-unfavourited": "لقد سبق وحذفت هذا الرد من المفضلة",
+    "already-favourited": "You have already bookmarked this post",
+    "already-unfavourited": "You have already unbookmarked this post",
     "cant-ban-other-admins": "لايمكن حظر مدبر نظام آخر.",
     "cant-remove-last-admin": "You are the only administrator. Add another user as an administrator before removing yourself as admin",
     "invalid-image-type": "Invalid image type. Allowed types are: %1",
@@ -96,5 +96,6 @@
     "wrong-login-type-username": "الرجاء استعمال اسم المستخدم الخاص بك للدخول",
     "invite-maximum-met": "You have invited the maximum amount of people (%1 out of %2).",
     "no-session-found": "No login session found!",
-    "not-in-room": "User not in room"
+    "not-in-room": "User not in room",
+    "no-users-in-room": "No users in this room"
 }

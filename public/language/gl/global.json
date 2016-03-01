@@ -65,7 +65,7 @@
     "posted_in_ago_by": "Publicado en %1 %2 por %3",
     "user_posted_ago": "%1 publicado %2",
     "guest_posted_ago": "Invitado publicou %1",
-    "last_edited_by": "last edited by %1",
+    "last_edited_by": "última edición por %1",
     "norecentposts": "Non hai mensaxes recentes",
     "norecenttopics": "Non hai temas recentes",
     "recentposts": "Mensaxes recentes",
@@ -86,5 +86,9 @@
     "delete_all": "Borrar todo",
     "map": "Mapa",
     "sessions": "Inicios de sesión",
-    "ip_address": "Enderezo IP"
+    "ip_address": "Enderezo IP",
+    "enter_page_number": "Enter page number",
+    "upload_file": "Upload file",
+    "upload": "Upload",
+    "allowed-file-types": "Allowed file types are %1"
 }

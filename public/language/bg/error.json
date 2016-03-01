@@ -14,7 +14,7 @@
     "invalid-password": "Невалидна парола",
     "invalid-username-or-password": "Моля, посочете потребителско име и парола",
     "invalid-search-term": "Невалиден текст за търсене",
-    "invalid-pagination-value": "Invalid pagination value, must be at least %1 and at most %2",
+    "invalid-pagination-value": "Грешен номер на страница, трябва да бъде между %1 и %2",
     "username-taken": "Потребителското име е заето",
     "email-taken": "Е-пощата е заета",
     "email-not-confirmed": "Вашата е-поща все още не е потвърдена. Моля, натиснете тук, за да потвърдите е-пощата си.",
@@ -50,8 +50,8 @@
     "still-uploading": "Моля, изчакайте качването да приключи.",
     "file-too-big": "Максималният разрешен размер на файл е %1 КБ – моля, качете по-малък файл",
     "guest-upload-disabled": "Качването не е разрешено за гости",
-    "already-favourited": "Вече сте отбелязали тази публикация като любима",
-    "already-unfavourited": "Вече сте премахнали тази публикация от любимите си",
+    "already-favourited": "You have already bookmarked this post",
+    "already-unfavourited": "You have already unbookmarked this post",
     "cant-ban-other-admins": "Не можете да блокирате другите администратори!",
     "cant-remove-last-admin": "Вие сте единственият администратор. Добавете друг потребител като администратор, преди да премахнете себе си като администратор",
     "invalid-image-type": "Грешен тип на изображение. Позволените типове са: %1",
@@ -83,7 +83,7 @@
     "chat-message-too-long": "Съобщението е твърде дълго",
     "cant-edit-chat-message": "Нямате право да редактирате това съобщение",
     "cant-remove-last-user": "Не можете да премахнете последния потребител",
-    "cant-delete-chat-message": "You are not allowed to delete this message",
+    "cant-delete-chat-message": "Нямате право да изтриете това съобщение",
     "reputation-system-disabled": "Системата за репутация е изключена.",
     "downvoting-disabled": "Отрицателното гласуване е изключено",
     "not-enough-reputation-to-downvote": "Нямате достатъчно репутация, за да гласувате отрицателно за тази публикация",
@@ -96,5 +96,6 @@
     "wrong-login-type-username": "Моля, използвайте потребителското си име, за да влезете",
     "invite-maximum-met": "Вие сте поканили максимално позволения брой хора (%1 от %2).",
     "no-session-found": "Не е открита сесия за вход!",
-    "not-in-room": "User not in room"
+    "not-in-room": "Потребителят не е в стаята",
+    "no-users-in-room": "No users in this room"
 }

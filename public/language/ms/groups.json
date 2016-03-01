@@ -48,5 +48,6 @@
     "membership.join-group": "Masuk Kumpulan",
     "membership.leave-group": "Keluar Kumpulan",
     "membership.reject": "Tolak",
-    "new-group.group_name": "Nama Kumpulan:"
+    "new-group.group_name": "Nama Kumpulan:",
+    "upload-group-cover": "Upload group cover"
 }

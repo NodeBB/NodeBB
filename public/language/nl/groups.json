@@ -48,5 +48,6 @@
     "membership.join-group": "Deelnemen aan groep",
     "membership.leave-group": "Verlaat groep",
     "membership.reject": "Afwijzen",
-    "new-group.group_name": "Groepsnaam:"
+    "new-group.group_name": "Groepsnaam:",
+    "upload-group-cover": "Upload group cover"
 }
