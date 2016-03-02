@@ -89,6 +89,8 @@ helpers.getUserDataByUserSlug = function(userslug, callerUID, callback) {
 			userData.showHidden = self || isAdmin || isGlobalModerator;
 			userData.groups = Array.isArray(results.groups) && results.groups.length ? results.groups[0] : [];
 			userData.disableSignatures = meta.config.disableSignatures !== undefined && parseInt(meta.config.disableSignatures, 10) === 1;
+			userData['reputation:disabled'] = parseInt(meta.config['reputation:disabled'], 10) === 1;
+			userData['downvote:disabled'] = parseInt(meta.config['downvote:disabled'], 10) === 1;
 			userData['email:confirmed'] = !!parseInt(userData['email:confirmed'], 10);
 			userData.profile_links = filterLinks(results.profile_links, self);
 			userData.sso = results.sso.associations;
