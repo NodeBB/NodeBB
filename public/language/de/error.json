@@ -50,8 +50,8 @@
     "still-uploading": "Bitte warte bis der Vorgang abgeschlossen ist.",
     "file-too-big": "Die maximale Dateigröße ist %1 kB, bitte lade eine kleinere Datei hoch.",
     "guest-upload-disabled": "Uploads für Gäste wurden deaktiviert.",
-    "already-favourited": "Dieser Beitrag ist bereits in deinen Favoriten enthalten",
-    "already-unfavourited": "Du hast diesen Beitrag bereits aus deinen Favoriten entfernt",
+    "already-favourited": "You have already bookmarked this post",
+    "already-unfavourited": "You have already unbookmarked this post",
     "cant-ban-other-admins": "Du kannst andere Administratoren nicht sperren!",
     "cant-remove-last-admin": "Du bist der einzige Administrator. Füge zuerst einen anderen Administrator hinzu, bevor du dich selbst als Administrator entfernst",
     "invalid-image-type": "Falsche Bildart. Erlaubte Arten sind: %1",
@@ -96,5 +96,6 @@
     "wrong-login-type-username": "Bitte nutze deinen Benutzernamen zum einloggen",
     "invite-maximum-met": "Du hast bereits die maximale Anzahl an Personen eingeladen (%1 von %2).",
     "no-session-found": "Keine Login-Sitzung gefunden!",
-    "not-in-room": "User not in room"
+    "not-in-room": "User not in room",
+    "no-users-in-room": "No users in this room"
 }

@@ -50,8 +50,8 @@
     "still-uploading": "アップロードが完成するまでお待ちください。",
     "file-too-big": "%1kBより大きいサイズファイルが許されません－より小さいファイルをアップして下さい。",
     "guest-upload-disabled": "ゲストさんからのアップを無効にしています",
-    "already-favourited": "あなたはこの投稿をお気に入りにしました",
-    "already-unfavourited": "あなたはこの投稿をお気に入り解除しました",
+    "already-favourited": "You have already bookmarked this post",
+    "already-unfavourited": "You have already unbookmarked this post",
     "cant-ban-other-admins": "ほかの管理者を停止することはできません！",
     "cant-remove-last-admin": "あなたが唯一の管理者です。管理者としてあなた自身を削除する前に、管理者として別のユーザーを追加します。",
     "invalid-image-type": "無効なイメージタイプです。許可された種類は: %1",
@@ -96,5 +96,6 @@
     "wrong-login-type-username": "Please use your username to login",
     "invite-maximum-met": "You have invited the maximum amount of people (%1 out of %2).",
     "no-session-found": "No login session found!",
-    "not-in-room": "User not in room"
+    "not-in-room": "User not in room",
+    "no-users-in-room": "No users in this room"
 }

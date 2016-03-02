@@ -5,6 +5,7 @@ var async = require('async'),
 	cron = require('cron').CronJob,
 	nconf = require('nconf'),
 	S = require('string'),
+	_ = require('underscore'),
 
 	db = require('./database'),
 	User = require('./user'),
@@ -77,6 +78,36 @@ var async = require('async'),
 				}
 
 			}, callback);
+		});
+	};
+
+	Notifications.findRelated = function(mergeIds, set, callback) {
+		// A related notification is one in a zset that has the same mergeId
+		var _nids;
+
+		async.waterfall([
+			async.apply(db.getSortedSetRevRange, set, 0, -1),
+			function(nids, next) {
+				_nids = nids;
+
+				var keys = nids.map(function(nid) {
+					return 'notifications:' + nid;
+				});
+
+				db.getObjectsFields(keys, ['mergeId'], next);
+			},
+		], function(err, sets) {
+			if (err) {
+				return callback(err);
+			}
+
+			sets = sets.map(function(set) {
+				return set.mergeId;
+			});
+
+			callback(null, _nids.filter(function(nid, idx) {
+				return mergeIds.indexOf(sets[idx]) !== -1
+			}));
 		});
 	};
 
@@ -255,15 +286,39 @@ var async = require('async'),
 			return 'notifications:' + nid;
 		});
 
-		db.getObjectsFields(notificationKeys, ['nid', 'datetime'], function(err, notificationData) {
+		async.waterfall([
+			async.apply(db.getObjectsFields, notificationKeys, ['mergeId']),
+			function(mergeIds, next) {
+				// Isolate mergeIds and find related notifications
+				mergeIds = mergeIds.map(function(set) {
+					return set.mergeId;
+				}).reduce(function(memo, mergeId, idx, arr) {
+					if (mergeId && idx === arr.indexOf(mergeId)) {
+						memo.push(mergeId);
+					}
+					return memo;
+				}, []);
+
+				Notifications.findRelated(mergeIds, 'uid:' + uid + ':notifications:unread', next);
+			},
+			function(relatedNids, next) {
+				notificationKeys = _.union(nids, relatedNids).map(function(nid) {
+					return 'notifications:' + nid;
+				});
+
+				db.getObjectsFields(notificationKeys, ['nid', 'datetime'], next);
+			}
+		], function(err, notificationData) {
 			if (err) {
 				return callback(err);
 			}
 
+			// Filter out notifications that didn't exist
 			notificationData = notificationData.filter(function(notification) {
 				return notification && notification.nid;
 			});
 
+			// Extract nid
 			nids = notificationData.map(function(notification) {
 				return notification.nid;
 			});
@@ -340,7 +395,8 @@ var async = require('async'),
 				'notifications:upvoted_your_post_in',
 				'notifications:user_started_following_you',
 				'notifications:user_posted_to',
-				'notifications:user_flagged_post_in'
+				'notifications:user_flagged_post_in',
+				'new_register'
 			],
 			isolated, differentiators, differentiator, modifyIndex, set;
 
@@ -359,7 +415,7 @@ var async = require('async'),
 
 			// Each isolated mergeId may have multiple differentiators, so process each separately
 			differentiators = isolated.reduce(function(cur, next) {
-				differentiator = next.mergeId.split('|')[1];
+				differentiator = next.mergeId.split('|')[1] || 0;
 				if (cur.indexOf(differentiator) === -1) {
 					cur.push(differentiator);
 				}
@@ -368,9 +424,14 @@ var async = require('async'),
 			}, []);
 
 			differentiators.forEach(function(differentiator) {
-				set = isolated.filter(function(notifObj) {
-					return notifObj.mergeId === (mergeId + '|' + differentiator);
-				});
+				if (differentiator === 0 && differentiators.length === 1) {
+					set = isolated;
+				} else {
+					set = isolated.filter(function(notifObj) {
+						return notifObj.mergeId === (mergeId + '|' + differentiator);
+					});
+				}
+
 				modifyIndex = notifications.indexOf(set[0]);
 				if (modifyIndex === -1 || set.length === 1) {
 					return notifications;
@@ -394,6 +455,10 @@ var async = require('async'),
 						} else if (numUsers > 2) {
 							notifications[modifyIndex].bodyShort = '[[' + mergeId + '_multiple, ' + usernames[0] + ', ' + (numUsers-1) + ', ' + notifications[modifyIndex].topicTitle + ']]';
 						}
+						break;
+
+					case 'new_register':
+						notifications[modifyIndex].bodyShort = '[[notifications:' + mergeId + '_multiple, ' + set.length + ']]';
 						break;
 				}
 

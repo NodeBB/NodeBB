@@ -25,7 +25,7 @@
     "details.latest_posts": "פוסטים אחרונים",
     "details.private": "פרטי",
     "details.disableJoinRequests": "בטל בקשות הצטרפות",
-    "details.grant": "Grant/Rescind Ownership",
+    "details.grant": "הענק/בטל בעלות",
     "details.kick": "גרש",
     "details.owner_options": "ניהול הקבוצה",
     "details.group_name": "שם הקבוצה",
@@ -39,7 +39,7 @@
     "details.userTitleEnabled": "הצג סמל",
     "details.private_help": "אם מאופשר, הצטרפות לקבוצות דורשות אישור מבעל הקבוצה",
     "details.hidden": "מוסתר",
-    "details.hidden_help": "If enabled, this group will not be found in the groups listing, and users will have to be invited manually",
+    "details.hidden_help": "אם מאופשר, הקבוצה לא תופיע ברשימת הקבוצות, ומשתמשים יצטרכו להיות מוזמנים ידנית",
     "details.delete_group": "מחק קבוצה",
     "event.updated": "פרטי הקבוצה עודכנו",
     "event.deleted": "קבוצת \"%1\" נמחקה",
@@ -48,5 +48,6 @@
     "membership.join-group": "הצטרף לקבוצה",
     "membership.leave-group": "עזוב קבוצה",
     "membership.reject": "דחה",
-    "new-group.group_name": "שם קבוצה"
+    "new-group.group_name": "שם קבוצה",
+    "upload-group-cover": "Upload group cover"
 }

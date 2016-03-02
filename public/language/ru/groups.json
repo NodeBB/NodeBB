@@ -48,5 +48,6 @@
     "membership.join-group": "Вступить",
     "membership.leave-group": "Покинуть",
     "membership.reject": "Отклонить",
-    "new-group.group_name": "Название группы:"
+    "new-group.group_name": "Название группы:",
+    "upload-group-cover": "Upload group cover"
 }

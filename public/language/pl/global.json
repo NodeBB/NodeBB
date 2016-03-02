@@ -86,5 +86,9 @@
     "delete_all": "Usuń wszystko",
     "map": "Mapa",
     "sessions": "Login Sessions",
-    "ip_address": "IP Address"
+    "ip_address": "IP Address",
+    "enter_page_number": "Enter page number",
+    "upload_file": "Upload file",
+    "upload": "Upload",
+    "allowed-file-types": "Allowed file types are %1"
 }

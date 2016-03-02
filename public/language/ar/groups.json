@@ -48,5 +48,6 @@
     "membership.join-group": "انظم للمجموعة",
     "membership.leave-group": "غادر المجموعة",
     "membership.reject": "رفض",
-    "new-group.group_name": "اسم المجموعة"
+    "new-group.group_name": "اسم المجموعة",
+    "upload-group-cover": "Upload group cover"
 }

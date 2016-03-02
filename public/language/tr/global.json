@@ -65,7 +65,7 @@
     "posted_in_ago_by": "%1 içinde %3 tarafından %2 yayımlandı",
     "user_posted_ago": "%1 %2 yayımladı",
     "guest_posted_ago": "Ziyaretçi %1 yayımladı",
-    "last_edited_by": "last edited by %1",
+    "last_edited_by": "en son düzenleyen %1",
     "norecentposts": "Güncel İletiler Yok",
     "norecenttopics": "Güncel Başlıklar Yok",
     "recentposts": "Güncel İletiler",
@@ -86,5 +86,9 @@
     "delete_all": "Hepsini Sil",
     "map": "Harita",
     "sessions": "Giriş Oturumları",
-    "ip_address": "IP Adresleri"
+    "ip_address": "IP Adresleri",
+    "enter_page_number": "Enter page number",
+    "upload_file": "Upload file",
+    "upload": "Upload",
+    "allowed-file-types": "Allowed file types are %1"
 }

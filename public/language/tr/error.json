@@ -14,7 +14,7 @@
     "invalid-password": "Geçersiz Şifre",
     "invalid-username-or-password": "Lütfen kullanıcı ismi ve parola girin.",
     "invalid-search-term": "Geçersiz arama",
-    "invalid-pagination-value": "Invalid pagination value, must be at least %1 and at most %2",
+    "invalid-pagination-value": "Geçersiz sayfalama değeri, en az %1 ve en fazla %2 olabilir",
     "username-taken": "Kullanıcı İsmi Alınmış",
     "email-taken": "E-posta Alınmış",
     "email-not-confirmed": "E-postanız onaylanmamış, onaylamak için lütfen buraya tıklayın.",
@@ -50,8 +50,8 @@
     "still-uploading": "Lütfen yüklemelerin bitmesini bekleyin.",
     "file-too-big": "İzin verilen en büyük dosya boyutu %1 kb - lütfen daha küçük bir dosya yükleyin",
     "guest-upload-disabled": "Ziyaretçilerin yükleme yapması devre dışı bırakıldı",
-    "already-favourited": "Bu iletiyi zaten favorilerinize eklediniz",
-    "already-unfavourited": "Bu iletiyi zaten favorilerinizden çıkardınız",
+    "already-favourited": "You have already bookmarked this post",
+    "already-unfavourited": "You have already unbookmarked this post",
     "cant-ban-other-admins": "Başka yöneticileri yasaklayamazsınız!",
     "cant-remove-last-admin": "Tek yönetici sizsiniz. Kendinizi adminlikten çıkarmadan önce başka bir kullanıcıyı admin olarak ekleyiniz",
     "invalid-image-type": "Geçersiz resim uzantısı. Izin verilen uzantılar: %1",
@@ -83,7 +83,7 @@
     "chat-message-too-long": "Sohbet mesajı çok uzun",
     "cant-edit-chat-message": "Bu mesajı düzenlemek için izin verilmez",
     "cant-remove-last-user": "Son kullanıcıyı silemezsiniz",
-    "cant-delete-chat-message": "You are not allowed to delete this message",
+    "cant-delete-chat-message": "Bu mesajı silmek için izin verilmez",
     "reputation-system-disabled": "Saygınlık sistemi kapatılmış.",
     "downvoting-disabled": "Aşagı oylama kapatılmış",
     "not-enough-reputation-to-downvote": "Bu iletiyi aşagı oylamak için yeterince saygınlığınız yok.",
@@ -96,5 +96,6 @@
     "wrong-login-type-username": "Lütfen giriş için kullanıcı adınızı kullanın",
     "invite-maximum-met": "Sen maksimum miktarda insanı davet ettin (%2 üzerinden %1).",
     "no-session-found": "Giriş yapılmış bir oturum bulunamadı!",
-    "not-in-room": "User not in room"
+    "not-in-room": "Odada kullanıcı yok",
+    "no-users-in-room": "No users in this room"
 }

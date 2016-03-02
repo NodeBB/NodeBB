@@ -1,10 +1,10 @@
 {
-    "username-email": "Username / Email",
-    "username": "Username",
+    "username-email": "Tên đăng nhập / Email",
+    "username": "Tên đăng nhập",
     "email": "Email",
-    "remember_me": "Ghi nhớ tôi?",
+    "remember_me": "Ghi nhớ?",
     "forgot_password": "Quên mật khẩu?",
-    "alternative_logins": "Đăng nhập bằng tên khác",
+    "alternative_logins": "Đăng nhập bằng tài khoản khác",
     "failed_login_attempt": "Đăng nhập thất bại, xin hãy thử lại",
     "login_successful": "Bạn đã đăng nhập thành công!",
     "dont_have_account": "Chưa có tài khoản?"

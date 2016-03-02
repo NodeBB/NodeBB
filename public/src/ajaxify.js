@@ -96,7 +96,9 @@ $(document).ready(function() {
 			app.previousUrl = window.location.href;
 		}
 
-		ajaxify.currentPage = url;
+		var location = document.createElement('a');
+		location.href = url;
+		ajaxify.currentPage = location.pathname;
 
 		if (window.history && window.history.pushState) {
 			window.history[!quiet ? 'pushState' : 'replaceState']({

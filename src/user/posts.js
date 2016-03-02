@@ -72,6 +72,9 @@ module.exports = function(User) {
 			},
 			function(next) {
 				User.setUserField(postData.uid, 'lastposttime', postData.timestamp, next);
+			},
+			function(next) {
+				User.updateLastOnlineTime(postData.uid, next);
 			}
 		], callback);
 	};

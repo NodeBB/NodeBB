@@ -78,4 +78,8 @@ module.exports = function(Topics) {
 		db.setObjectField('topic:' + tid, field, value, callback);
 	};
 
+	Topics.deleteTopicField = function(tid, field, callback) {
+		db.deleteObjectField('topic:' + tid, field, callback);
+	};
+
 };

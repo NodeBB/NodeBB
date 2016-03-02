@@ -50,8 +50,8 @@
     "still-uploading": "Vennligst vent til opplastingene er fullført.",
     "file-too-big": "Største tillatte filstørrelse er %1 kB – vennligst last opp en mindre fil",
     "guest-upload-disabled": "Guest uploading has been disabled",
-    "already-favourited": "Du har allerede favorittmerket dette innlegget",
-    "already-unfavourited": "Du har allerede avfavorisert dette innlegget",
+    "already-favourited": "You have already bookmarked this post",
+    "already-unfavourited": "You have already unbookmarked this post",
     "cant-ban-other-admins": "Du kan ikke utestenge andre administratorer!",
     "cant-remove-last-admin": "Du er den eneste administratoren. Legg til en annen bruker som administrator før du fjerner deg selv.",
     "invalid-image-type": "Ugyldig bildetype. Tilatte typer er: %1",
@@ -96,5 +96,6 @@
     "wrong-login-type-username": "Vennligst benytt brukernavnet ditt for å logge inn",
     "invite-maximum-met": "You have invited the maximum amount of people (%1 out of %2).",
     "no-session-found": "No login session found!",
-    "not-in-room": "User not in room"
+    "not-in-room": "User not in room",
+    "no-users-in-room": "No users in this room"
 }

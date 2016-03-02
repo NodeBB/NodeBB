@@ -48,5 +48,6 @@
     "membership.join-group": "Pridruži se skupini",
     "membership.leave-group": "Zapusti skupino",
     "membership.reject": "Zavrni",
-    "new-group.group_name": "Ime skupine:"
+    "new-group.group_name": "Ime skupine:",
+    "upload-group-cover": "Upload group cover"
 }

@@ -533,4 +533,41 @@ module.exports = function(db, module) {
 				callback(err, data);
 		});
 	};
+
+	module.processSortedSet = function(setKey, process, batch, callback) {
+		var done = false;
+		var ids = [];
+		var cursor = db.collection('objects').find({_key: setKey})
+			.sort({score: 1})
+			.project({_id: 0, value: 1})
+			.batchSize(batch);
+
+		async.whilst(
+			function() {
+				return !done;
+			},
+			function(next) {
+				cursor.next(function(err, item) {
+					if (err) {
+						return next(err);
+					}
+					if (item === null) {
+						done = true;
+					} else {
+						ids.push(item.value);
+					}
+
+					if (ids.length < batch && (!done || ids.length === 0)) {
+						return next(null);
+					}
+
+					process(ids, function(err) {
+						ids = [];
+						return next(err);
+					});
+				});
+			},
+			callback
+		);
+	};
 };
