@@ -26,6 +26,7 @@ nconf.argv().env('__');
 var url = require('url'),
 	async = require('async'),
 	winston = require('winston'),
+	colors = require('colors'),
 	path = require('path'),
 	pkg = require('./package.json'),
 	file = require('./src/file');
