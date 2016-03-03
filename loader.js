@@ -85,7 +85,7 @@ Loader.addWorkerEvents = function(worker) {
 		if (message && typeof message === 'object' && message.action) {
 			switch (message.action) {
 				case 'ready':
-					if (Loader.js.target['nodebb.min.js'].cache && !worker.isPrimary) {
+					if (Loader.js.target['nodebb.min.js'] && Loader.js.target['nodebb.min.js'].cache && !worker.isPrimary) {
 						worker.send({
 							action: 'js-propagate',
 							cache: Loader.js.target['nodebb.min.js'].cache,
@@ -94,7 +94,7 @@ Loader.addWorkerEvents = function(worker) {
 						});
 					}
 
-					if (Loader.js.target['acp.min.js'].cache && !worker.isPrimary) {
+					if (Loader.js.target['acp.min.js'] && Loader.js.target['acp.min.js'].cache && !worker.isPrimary) {
 						worker.send({
 							action: 'js-propagate',
 							cache: Loader.js.target['acp.min.js'].cache,
@@ -130,7 +130,7 @@ Loader.addWorkerEvents = function(worker) {
 						action: 'js-propagate',
 						cache: message.cache,
 						map: message.map,
-						loader: message.loader
+						target: message.target
 					}, worker.pid);
 				break;
 				case 'css-propagate':
