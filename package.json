@@ -45,7 +45,7 @@
     "nconf": "~0.8.2",
     "nodebb-plugin-composer-default": "3.0.6",
     "nodebb-plugin-dbsearch": "0.3.2",
-    "nodebb-plugin-emoji-extended": "0.5.0",
+    "nodebb-plugin-emoji-extended": "1.0.3",
     "nodebb-plugin-markdown": "4.0.17",
     "nodebb-plugin-mentions": "1.0.18",
     "nodebb-plugin-soundpack-default": "0.1.6",
