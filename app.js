@@ -148,6 +148,7 @@ function start() {
 				meta.reload();
 			break;
 			case 'js-propagate':
+				meta.js.target[message.target] = meta.js.target[message.target] || {};
 				meta.js.target[message.target].cache = message.cache;
 				meta.js.target[message.target].map = message.map;
 				emitter.emit('meta:js.compiled');
