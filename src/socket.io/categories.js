@@ -192,7 +192,7 @@ SocketCategories.isModerator = function(socket, cid, callback) {
 	user.isModerator(socket.uid, cid, callback);
 };
 
-SocketCategories.getCategory = function(socket, cid, callback){
+SocketCategories.getCategory = function(socket, cid, callback) {
 	async.waterfall([
 		function (next) {
 			privileges.categories.can('read', cid, socket.uid, next);
