@@ -24,8 +24,7 @@ var	pidFilePath = __dirname + '/pidfile',
 	Loader = {
 		timesStarted: 0,
 		js: {
-			cache: undefined,
-			map: undefined
+			target: {}
 		},
 		css: {
 			cache: undefined,
@@ -86,11 +85,12 @@ Loader.addWorkerEvents = function(worker) {
 		if (message && typeof message === 'object' && message.action) {
 			switch (message.action) {
 				case 'ready':
-					if (Loader.js.cache && !worker.isPrimary) {
+					if (Loader.js[message.target].cache && !worker.isPrimary) {
 						worker.send({
 							action: 'js-propagate',
-							cache: Loader.js.cache,
-							map: Loader.js.map
+							cache: Loader.js[message.target].cache,
+							map: Loader.js[message.target].map,
+							target: message.target
 						});
 					}
 
@@ -113,13 +113,15 @@ Loader.addWorkerEvents = function(worker) {
 					Loader.reload();
 				break;
 				case 'js-propagate':
-					Loader.js.cache = message.cache;
-					Loader.js.map = message.map;
+					Loader.js.target[message.target] = Loader.js.target[message.target] || {};
+					Loader.js.target[message.target].cache = message.cache;
+					Loader.js.target[message.target].map = message.map;
 
 					Loader.notifyWorkers({
 						action: 'js-propagate',
 						cache: message.cache,
-						map: message.map
+						map: message.map,
+						loader: message.loader
 					}, worker.pid);
 				break;
 				case 'css-propagate':
