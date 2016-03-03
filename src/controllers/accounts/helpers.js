@@ -102,7 +102,6 @@ helpers.getUserDataByUserSlug = function(userslug, callerUID, callback) {
 			userData.followingCount = parseInt(userData.followingCount, 10) || 0;
 			userData.followerCount = parseInt(userData.followerCount, 10) || 0;
 
-			userData.username = validator.escape(userData.username || '');
 			userData.email = validator.escape(userData.email || '');
 			userData.fullname = validator.escape(userData.fullname || '');
 			userData.location = validator.escape(userData.location || '');
