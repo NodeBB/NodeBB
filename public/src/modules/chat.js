@@ -71,7 +71,7 @@ define('chat', ['components', 'taskbar', 'string', 'sounds', 'forum/chats', 'tra
 		});
 
 		socket.on('event:chats.roomRename', function(data) {
-			module.getModal(data.roomId).find('[component="chat/room/name"]').val(data.newName);
+			module.getModal(data.roomId).find('[component="chat/room/name"]').val($('<div/>').html(data.newName).text());
 		});
 
 		Chats.onChatEdit();
