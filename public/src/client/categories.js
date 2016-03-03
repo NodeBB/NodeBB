@@ -14,9 +14,8 @@ define('forum/categories', ['components', 'translator'], function(components, tr
 	categories.init = function() {
 		app.enterRoom('categories');
 
-		// enable once https://github.com/NodeBB/NodeBB/issues/4302 is fixed
-		// socket.removeListener('event:new_post', categories.onNewPost);
-		// socket.on('event:new_post', categories.onNewPost);
+		socket.removeListener('event:new_post', categories.onNewPost);
+		socket.on('event:new_post', categories.onNewPost);
 
 		$('.category-header').tooltip({
 			placement: 'bottom'
