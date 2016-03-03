@@ -25,13 +25,10 @@ nconf.argv().env('__');
 
 var url = require('url'),
 	async = require('async'),
-	semver = require('semver'),
 	winston = require('winston'),
-	colors = require('colors'),
 	path = require('path'),
 	pkg = require('./package.json'),
-	file = require('./src/file'),
-	utils = require('./public/src/utils.js');
+	file = require('./src/file');
 
 global.env = process.env.NODE_ENV || 'production';
 
