@@ -307,7 +307,7 @@ module.exports = function(Topics) {
 				postData.display_moderator_tools = true;
 				postData.display_move_tools = true;
 				postData.selfPost = false;
-				postData.relativeTime = utils.toISOString(postData.timestamp);
+				postData.timestampISO = utils.toISOString(postData.timestamp);
 				postData.topic.title = validator.escape(postData.topic.title);
 
 				next(null, postData);

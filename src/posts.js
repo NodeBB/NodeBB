@@ -56,8 +56,8 @@ var async = require('async'),
 						return next();
 					}
 
-					post.relativeTime = utils.toISOString(post.timestamp);
-					post.relativeEditTime = parseInt(post.edited, 10) !== 0 ? utils.toISOString(post.edited) : '';
+					post.timestampISO = utils.toISOString(post.timestamp);
+					post.editedISO = parseInt(post.edited, 10) !== 0 ? utils.toISOString(post.edited) : '';
 					Posts.parsePost(post, next);
 				}, next);
 			},

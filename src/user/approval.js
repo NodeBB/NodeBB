@@ -149,7 +149,7 @@ module.exports = function(User) {
 			function(users, next) {
 				users.forEach(function(user, index) {
 					if (user) {
-						user.timestamp = utils.toISOString(data[index].score);
+						user.timestampISO = utils.toISOString(data[index].score);
 					}
 				});
 

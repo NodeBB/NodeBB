@@ -81,7 +81,7 @@ module.exports = function(Posts) {
 					post.user = results.users[post.uid];
 					post.topic = results.topics[post.tid];
 					post.category = results.categories[post.topic.cid];
-					post.relativeTime = utils.toISOString(post.timestamp);
+					post.timestampISO = utils.toISOString(post.timestamp);
 
 					if (!post.content || !options.parse) {
 						if (options.stripTags) {
