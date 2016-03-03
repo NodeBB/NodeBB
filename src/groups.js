@@ -357,7 +357,7 @@ var utils = require('../public/src/utils');
 				var keys = uids.map(function(uid) {
 					return 'uid:' + uid + ':posts';
 				});
-				db.getSortedSetRevUnion(keys, 0, max - 1, next);
+				db.getSortedSetRevRange(keys, 0, max - 1, next);
 			},
 			function(pids, next) {
 				privileges.posts.filter('read', pids, uid, next);

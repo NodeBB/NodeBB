@@ -125,6 +125,11 @@ module.exports = function(db, module) {
 		if (withScores) {
 			fields.score = 1;
 		}
+
+		if (Array.isArray(key)) {
+			key = {$in: key};
+		}
+
 		db.collection('objects').find({_key: key}, {fields: fields})
 			.limit(stop - start + 1)
 			.skip(start)
@@ -458,6 +463,7 @@ module.exports = function(db, module) {
 	module.getSortedSetRevUnion = function(sets, start, stop, callback) {
 		getSortedSetUnion(sets, -1, start, stop, callback);
 	};
+
 
 	function getSortedSetUnion(sets, sort, start, stop, callback) {
 		if (!Array.isArray(sets) || !sets.length) {
