@@ -66,7 +66,7 @@ categoriesController.list = function(req, res, next) {
 				if (category && Array.isArray(category.posts) && category.posts.length) {
 					category.teaser = {
 						url: nconf.get('relative_path') + '/topic/' + category.posts[0].topic.slug + '/' + category.posts[0].index,
-						timestampISO: category.posts[0].timestamp
+						timestampISO: category.posts[0].timestampISO
 					};
 				}
 			});
