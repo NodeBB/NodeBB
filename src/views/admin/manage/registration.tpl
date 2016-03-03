@@ -44,7 +44,7 @@
 				{users.ip}
 			</td>
 			<td>
-				<span class="timeago" title="{users.timestamp}"></span>
+				<span class="timeago" title="{users.timestampISO}"></span>
 			</td>
 			<td>
 				<div class="btn-group pull-right">
