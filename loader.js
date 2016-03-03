@@ -85,12 +85,21 @@ Loader.addWorkerEvents = function(worker) {
 		if (message && typeof message === 'object' && message.action) {
 			switch (message.action) {
 				case 'ready':
-					if (Loader.js[message.target].cache && !worker.isPrimary) {
+					if (Loader.js.target['nodebb.min.js'].cache && !worker.isPrimary) {
 						worker.send({
 							action: 'js-propagate',
-							cache: Loader.js[message.target].cache,
-							map: Loader.js[message.target].map,
-							target: message.target
+							cache: Loader.js.target['nodebb.min.js'].cache,
+							map: Loader.js.target['nodebb.min.js'].map,
+							target: 'nodebb.min.js'
+						});
+					}
+
+					if (Loader.js.target['acp.min.js'].cache && !worker.isPrimary) {
+						worker.send({
+							action: 'js-propagate',
+							cache: Loader.js.target['acp.min.js'].cache,
+							map: Loader.js.target['acp.min.js'].map,
+							target: 'acp.min.js'
 						});
 					}
 
