@@ -126,4 +126,24 @@ SocketTopics.isModerator = function(socket, tid, callback) {
 	});
 };
 
+SocketTopics.getTopic = function (socket, tid, callback) {
+	async.waterfall([
+		function (next) {
+			privileges.topics.can('read', tid, socket.uid, next);
+		},
+		function (canRead, next) {
+			if (!canRead) {
+				return next(new Error('[[error:no-privileges]]'));
+			}
+			topics.getTopicData(tid, next);
+		},
+		function (topicData, next) {
+			if (parseInt(topicData.deleted, 10) === 1) {
+				return next(new Error('[[error:no-topic]]'));
+			}
+			next(null, topicData);
+		}
+	], callback);
+};
+
 module.exports = SocketTopics;

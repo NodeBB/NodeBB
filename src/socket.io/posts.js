@@ -77,6 +77,26 @@ SocketPosts.getRawPost = function(socket, pid, callback) {
 	], callback);
 };
 
+SocketPosts.getPost = function(socket, pid, callback) {
+	async.waterfall([
+		function(next) {
+			privileges.posts.can('read', pid, socket.uid, next);
+		},
+		function(canRead, next) {
+			if (!canRead) {
+				return next(new Error('[[error:no-privileges]]'));
+			}
+			posts.getPostData(pid, next);
+		},
+		function(postData, next) {
+			if (parseInt(postData.deleted, 10) === 1) {
+				return next(new Error('[[error:no-post]]'));
+			}
+			next(null, postData);
+		}
+	], callback);
+};
+
 SocketPosts.loadMoreFavourites = function(socket, data, callback) {
 	loadMorePosts('uid:' + data.uid + ':favourites', socket.uid, data, callback);
 };
