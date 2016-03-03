@@ -151,8 +151,8 @@ function start() {
 				meta.reload();
 			break;
 			case 'js-propagate':
-				meta.js.cache = message.cache;
-				meta.js.map = message.map;
+				meta.js.target[message.target].cache = message.cache;
+				meta.js.target[message.target].map = message.map;
 				emitter.emit('meta:js.compiled');
 				winston.verbose('[cluster] Client-side javascript and mapping propagated to worker %s', process.pid);
 			break;

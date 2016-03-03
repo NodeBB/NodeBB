@@ -115,7 +115,8 @@ module.exports = function(Meta) {
 					process.send({
 						action: 'js-propagate',
 						cache: Meta.js.target[target].cache,
-						map: Meta.js.target[target].map
+						map: Meta.js.target[target].map,
+						target: target
 					});
 				}
 
