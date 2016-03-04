@@ -242,7 +242,7 @@ define('forum/chats', ['components', 'string', 'sounds', 'forum/infinitescroll',
 
 		if (data.users && data.users.length) {
 			data.users.forEach(function(user) {
-				tagEl.tagsinput('add', user.username);
+				tagEl.tagsinput('add', $('<div/>').html(user.username).text());
 			});
 		}
 
