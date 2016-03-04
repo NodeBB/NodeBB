@@ -122,6 +122,7 @@ module.exports = function(User) {
 
 	User.deleteInvitation = function(email, callback) {
 		callback = callback || function() {};
+		console.log('invitation:email:' + email);
 		db.delete('invitation:email:' + email, callback);
 	};
 

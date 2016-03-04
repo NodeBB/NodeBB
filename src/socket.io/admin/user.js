@@ -212,6 +212,10 @@ User.search = function(socket, data, callback) {
 	});
 };
 
+User.deleteInvitation = function(socket, data, callback) {
+	user.deleteInvitation(data.email, callback);
+};
+
 User.acceptRegistration = function(socket, data, callback) {
 	user.acceptRegistration(data.username, callback);
 };

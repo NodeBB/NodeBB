@@ -66,18 +66,23 @@
 		<br><br>
 		The username will be displayed to the right of the emails for users who have redeemed their invitations.
 	</p>
-	<table class="table table-striped users-list">
+	<table class="table table-striped invites-list">
 		<tr>
 			<th>Inviter Username</th>
 			<th>Invitee Email</th>
 			<th>Invitee Username (if registered)</th>
 		</tr>
 		<!-- BEGIN invites -->
-		<tr>
-			<!-- BEGIN invites.invitations -->
+		<!-- BEGIN invites.invitations -->
+		<tr data-invitation-mail="{invites.invitations.email}">
+			<!-- TODO: Upon deletion, this will result in an incorrect visual state until page is reloaded -->
 			<td><!-- IF @first -->{invites.username}<!-- ENDIF @first --></td>
 			<td>{invites.invitations.email}</td>
-			<td>{invites.invitations.username}</td>
+			<td>{invites.invitations.username}
+				<div class="btn-group pull-right">
+					<button class="btn btn-danger btn-xs" data-action="delete"><i class="fa fa-times"></i></button>
+				</div>
+			</td>
 		</tr>
 		<!-- END invites.invitations -->
 		<!-- END invites -->
