@@ -119,8 +119,9 @@ $(document).ready(function() {
 				if (data.responseJSON) {
 					data.responseJSON.config = config;
 				}
+				
 				$('#footer, #content').removeClass('hide').addClass('ajaxifying');
-				return renderTemplate(url, status.toString(), data.responseJSON, callback);
+				return renderTemplate(url, status.toString(), data.responseJSON || {}, callback);
 			} else if (status === 401) {
 				app.alertError('[[global:please_log_in]]');
 				app.previousUrl = url;
