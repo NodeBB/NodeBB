@@ -105,28 +105,26 @@ function getLocalStats(callback) {
 		onlineRegisteredCount: websockets.getOnlineUserCount(),
 		socketCount: websockets.getSocketCount(),
 		users: {
-			categories: roomClients.categories ? Object.keys(roomClients.categories).length : 0,
-			recent: roomClients.recent_topics ? Object.keys(roomClients.recent_topics).length : 0,
-			unread: roomClients.unread_topics ? Object.keys(roomClients.unread_topics).length: 0,
+			categories: roomClients.categories ? roomClients.categories.length : 0,
+			recent: roomClients.recent_topics ? roomClients.recent_topics.length : 0,
+			unread: roomClients.unread_topics ? roomClients.unread_topics.length: 0,
 			topics: 0,
 			category: 0
 		},
 		topics: {}
 	};
 
-	var	topTenTopics = [],
-		tid;
+	var	topTenTopics = [];
+	var tid;
 
 	for (var room in roomClients) {
 		if (roomClients.hasOwnProperty(room)) {
 			tid = room.match(/^topic_(\d+)/);
 			if (tid) {
-				var length = Object.keys(roomClients[room]).length;
-				socketData.users.topics += length;
-
-				topTenTopics.push({tid: tid[1], count: length});
+				socketData.users.topics += roomClients[room].length;
+				topTenTopics.push({tid: tid[1], count: roomClients[room].length});
 			} else if (room.match(/^category/)) {
-				socketData.users.category += Object.keys(roomClients[room]).length;
+				socketData.users.category += roomClients[room].length;
 			}
 		}
 	}
