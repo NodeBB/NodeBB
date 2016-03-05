@@ -384,7 +384,7 @@ Upgrade.upgrade = function(callback) {
 					},
 					function (exists, next) {
 						if (exists) {
-							return next();
+							return next(null, null);
 						}
 						groups.create({
 							name: 'Global Moderators',
