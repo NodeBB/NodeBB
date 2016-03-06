@@ -76,7 +76,7 @@
 		<!-- BEGIN invites.invitations -->
 		<tr data-invitation-mail="{invites.invitations.email}"
 				data-invited-by="{invites.username}">
-			<td><!-- IF @first -->{invites.username}<!-- ENDIF @first --></td>
+			<td class ="invited-by"><!-- IF @first -->{invites.username}<!-- ENDIF @first --></td>
 			<td>{invites.invitations.email}</td>
 			<td>{invites.invitations.username}
 				<div class="btn-group pull-right">
