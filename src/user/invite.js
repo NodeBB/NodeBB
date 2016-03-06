@@ -120,9 +120,32 @@ module.exports = function(User) {
 		], callback);
 	};
 
-	User.deleteInvitation = function(email, callback) {
+	User.deleteInvitation = function(invitedBy, email, callback) {
 		callback = callback || function() {};
-		console.log('invitation:email:' + email);
+		async.waterfall([
+			function getInvitedByUid(next) {
+				User.getUidByUsername(invitedBy, next);
+			},
+			function deleteRegistries(invitedByUid, next) {
+				if (!invitedByUid) {
+					return next(new Error('[[error:invalid-username]]'));
+				}
+				async.parallel([
+					function deleteFromReferenceList(next) {
+						db.setRemove('invitation:uid:' + invitedByUid, email, next);
+					},
+					function deleteInviteKey(next) {
+						db.delete('invitation:email:' + email, callback);
+					}
+				], function(err) {
+					next(err)
+				});
+			}
+		], callback);
+	};
+
+	User.deleteInvitationKey = function(email, callback) {
+		callback = callback || function() {};
 		db.delete('invitation:email:' + email, callback);
 	};
 

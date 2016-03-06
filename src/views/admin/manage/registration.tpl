@@ -74,8 +74,8 @@
 		</tr>
 		<!-- BEGIN invites -->
 		<!-- BEGIN invites.invitations -->
-		<tr data-invitation-mail="{invites.invitations.email}">
-			<!-- TODO: Upon deletion, this will result in an incorrect visual state until page is reloaded -->
+		<tr data-invitation-mail="{invites.invitations.email}"
+				data-invited-by="{invites.username}">
 			<td><!-- IF @first -->{invites.username}<!-- ENDIF @first --></td>
 			<td>{invites.invitations.email}</td>
 			<td>{invites.invitations.username}
