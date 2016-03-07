@@ -275,17 +275,26 @@ $(document).ready(function() {
 		$(document.body).on('click', 'a', function (e) {
 			if (this.target !== '' || (this.protocol !== 'http:' && this.protocol !== 'https:')) {
 				return;
-			} else if (hrefEmpty(this.href) || this.protocol === 'javascript:' || $(this).attr('data-ajaxify') === 'false' || $(this).attr('href') === '#') {
+			}
+
+			var internalLink = this.host === '' ||	// Relative paths are always internal links
+				(this.host === window.location.host && this.protocol === window.location.protocol &&	// Otherwise need to check if protocol and host match
+				(RELATIVE_PATH.length > 0 ? this.pathname.indexOf(RELATIVE_PATH) === 0 : true));	// Subfolder installs need this additional check
+
+			if ($(this).attr('data-ajaxify') === 'false') {
+				if (!internalLink) {
+					return;
+				} else {
+					return e.preventDefault();
+				}
+			}
+
+			if (hrefEmpty(this.href) || this.protocol === 'javascript:' || $(this).attr('href') === '#') {
 				return e.preventDefault();
 			}
 
 			if (!e.ctrlKey && !e.shiftKey && !e.metaKey && e.which === 1) {
-				if (
-					this.host === '' ||	// Relative paths are always internal links...
-					(this.host === window.location.host && this.protocol === window.location.protocol &&	// Otherwise need to check that protocol and host match
-					(RELATIVE_PATH.length > 0 ? this.pathname.indexOf(RELATIVE_PATH) === 0 : true))	// Subfolder installs need this additional check
-				) {
-					// Internal link
+				if (internalLink) {
 					var pathname = this.href.replace(rootUrl + RELATIVE_PATH + '/', '');
 
 					// Special handling for urls with hashes
@@ -297,7 +306,6 @@ $(document).ready(function() {
 						}
 					}
 				} else if (window.location.pathname !== '/outgoing') {
-					// External Link
 					if (config.openOutgoingLinksInNewTab) {
 						window.open(this.href, '_blank');
 						e.preventDefault();
