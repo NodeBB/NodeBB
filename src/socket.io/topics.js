@@ -1,18 +1,17 @@
 
 'use strict';
 
-var nconf = require('nconf'),
-	async = require('async'),
-	winston = require('winston'),
+var async = require('async');
+var winston = require('winston');
 
-	topics = require('../topics'),
-	privileges = require('../privileges'),
-	plugins = require('../plugins'),
-	notifications = require('../notifications'),
-	websockets = require('./index'),
-	user = require('../user'),
+var topics = require('../topics');
+var privileges = require('../privileges');
+var plugins = require('../plugins');
+var websockets = require('./index');
+var user = require('../user');
+var apiController = require('../controllers/api');
 
-	SocketTopics = {};
+var SocketTopics = {};
 
 require('./topics/unread')(SocketTopics);
 require('./topics/move')(SocketTopics);
@@ -124,6 +123,20 @@ SocketTopics.isModerator = function(socket, tid, callback) {
 		}
 		user.isModerator(socket.uid, cid, callback);
 	});
+};
+
+SocketTopics.getTopic = function (socket, tid, callback) {
+	async.waterfall([
+		function (next) {
+			apiController.getObjectByType(socket.uid, 'topic', tid, next);
+		},
+		function (topicData, next) {
+			if (parseInt(topicData.deleted, 10) === 1) {
+				return next(new Error('[[error:no-topic]]'));
+			}
+			next(null, topicData);
+		}
+	], callback);
 };
 
 module.exports = SocketTopics;

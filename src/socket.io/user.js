@@ -12,6 +12,7 @@ var meta = require('../meta');
 var events = require('../events');
 var emailer = require('../emailer');
 var db = require('../database');
+var apiController = require('../controllers/api');
 
 var SocketUser = {};
 
@@ -194,7 +195,7 @@ SocketUser.saveSettings = function(socket, data, callback) {
 				return next(null, true);
 			}
 			user.isAdminOrGlobalMod(socket.uid, next);
-		}, 
+		},
 		function(allowed, next) {
 			if (!allowed) {
 				return next(new Error('[[error:no-privileges]]'));
@@ -330,6 +331,18 @@ SocketUser.invite = function(socket, email, callback) {
 		}
 	});
 
+};
+
+SocketUser.getUserByUID = function(socket, uid, callback) {
+	apiController.getUserDataByUID(socket.uid, uid, callback);
+};
+
+SocketUser.getUserByUsername = function(socket, username, callback) {
+	apiController.getUserDataByUsername(socket.uid, username, callback);
+};
+
+SocketUser.getUserByEmail = function(socket, email, callback) {
+	apiController.getUserDataByEmail(socket.uid, email, callback);
 };
 
 
