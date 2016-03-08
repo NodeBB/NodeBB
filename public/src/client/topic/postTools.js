@@ -35,7 +35,7 @@ define('forum/topic/postTools', ['share', 'navigator', 'components', 'translator
 				}
 				data.posts.display_move_tools = data.posts.display_move_tools && index !== 0;
 				data.postSharing = data.postSharing.filter(function(share) { return share.activated === true; });
-				
+
 				templates.parse('partials/topic/post-menu-list', data, function(html) {
 					translator.translate(html, function(html) {
 						dropdownMenu.html(html);
@@ -181,14 +181,16 @@ define('forum/topic/postTools', ['share', 'navigator', 'components', 'translator
 	function onReplyClicked(button, tid) {
 		showStaleWarning(function(proceed) {
 			if (!proceed) {
-				var selectionText = '',
-					selection = window.getSelection ? window.getSelection() : document.selection.createRange();
+				var selectionText = '';
+				var selection = window.getSelection ? window.getSelection() : document.selection.createRange();
+				var selectionNode = $(selection.baseNode || selection.anchorNode);
 
-				if ($(selection.baseNode).parents('[component="post/content"]').length > 0) {
+				if (selectionNode.parents('[component="post/content"]').length > 0) {
 					selectionText = selection.toString();
 				}
 
-				var username = getUserName(selectionText ? $(selection.baseNode) : button);
+				button = selectionText ? selectionNode : button;
+				var username = getUserName(button);
 				if (getData(button, 'data-uid') === '0' || !getData(button, 'data-userslug')) {
 					username = '';
 				}
@@ -308,11 +310,13 @@ define('forum/topic/postTools', ['share', 'navigator', 'components', 'translator
 	}
 
 	function getUserName(button) {
-		var username = '',
-			post = button.parents('[data-pid]');
+		var username = '';
+		var post = button.parents('[data-pid]');
+
 		if (button.attr('component') === 'topic/reply') {
 			return username;
 		}
+
 		if (post.length) {
 			username = post.attr('data-username').replace(/\s/g, '-');
 		}
