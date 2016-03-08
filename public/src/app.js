@@ -134,13 +134,7 @@ app.cacheBuster = null;
 		callback = callback || function() {};
 		if (socket && app.user.uid && app.currentRoom !== room) {
 			socket.emit('meta.rooms.enter', {
-				enter: room,
-				username: app.user.username,
-				userslug: app.user.userslug,
-				picture: app.user.picture,
-				status: app.user.status,
-				'icon:bgColor': app.user['icon:bgColor'],
-				'icon:text': app.user['icon:text']
+				enter: room
 			}, function(err) {
 				if (err) {
 					return app.alertError(err.message);
