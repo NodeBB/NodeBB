@@ -39,7 +39,6 @@ var	async = require('async'),
 			if (err || userData.status === 'offline' || now - parseInt(userData.lastonline, 10) < 300000) {
 				return callback(err);
 			}
-
 			User.setUserField(uid, 'lastonline', now, callback);
 		});
 	};
@@ -257,4 +256,3 @@ var	async = require('async'),
 
 
 }(exports));
-

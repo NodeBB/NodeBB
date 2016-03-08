@@ -93,7 +93,7 @@ function registerAndLoginUser(req, res, userData, callback) {
 			}
 		},
 		function(next) {
-			user.deleteInvitation(userData.email);
+			user.deleteInvitationKey(userData.email);
 			plugins.fireHook('filter:register.complete', {uid: uid, referrer: req.body.referrer || nconf.get('relative_path') + '/'}, next);
 		}
 	], callback);
