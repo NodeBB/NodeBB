@@ -36,8 +36,7 @@ var async = require('async'),
 		var code = utils.generateUUID();
 		async.parallel([
 			async.apply(db.setObjectField, 'reset:uid', code, uid),
-			async.apply(db.sortedSetAdd, 'reset:issueDate', Date.now(), code),
-			async.apply(db.sortedSetAdd, 'reset:issueDate:uid', Date.now(), uid),
+			async.apply(db.sortedSetAdd, 'reset:issueDate', Date.now(), code)
 		], function(err) {
 			callback(err, code);
 		});
@@ -70,6 +69,9 @@ var async = require('async'),
 
 				uid = _uid;
 				canGenerate(uid, next);
+			},
+			function(next) {
+				db.sortedSetAdd('reset:issueDate:uid', Date.now(), uid, next);
 			},
 			function(next) {
 				UserReset.generate(uid, next);
