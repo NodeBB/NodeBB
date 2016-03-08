@@ -225,6 +225,7 @@ Sockets.getUserSocketCount = function(uid) {
 	if (!io) {
 		return 0;
 	}
+
 	var room = io.sockets.adapter.rooms['uid_' + uid];
 	return room ? room.length : 0;
 };
@@ -233,8 +234,14 @@ Sockets.getOnlineUserCount = function() {
 	if (!io) {
 		return 0;
 	}
-	var room = io.sockets.adapter.rooms.online_users;
-	return room ? room.length : 0;
+	var count = 0;
+	for (var key in io.sockets.adapter.rooms) {
+		if (io.sockets.adapter.rooms.hasOwnProperty(key) && key.startsWith('uid_')) {
+			++ count;
+		}
+	}
+	
+	return count;
 };
 
 Sockets.getOnlineAnonCount = function () {
