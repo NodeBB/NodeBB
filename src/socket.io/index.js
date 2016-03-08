@@ -59,6 +59,9 @@ function onConnect(socket) {
 		socket.join('uid_' + socket.uid);
 		socket.join('online_users');
 
+		if (Sockets.getUserSocketCount(socket.uid) > 1) {
+			return;
+		}
 		user.getUserFields(socket.uid, ['status'], function(err, userData) {
 			if (err || !userData) {
 				return;
