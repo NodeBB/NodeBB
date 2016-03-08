@@ -60,7 +60,7 @@ var async = require('async'),
 						if (userData.username === '[[global:guest]]') {
 							notification.bodyShort = notification.bodyShort.replace(/([\s\S]*?),[\s\S]*?,([\s\S]*?)/, '$1, [[global:guest]], $2');
 						}
-						
+
 						next(null, notification);
 					});
 					return;
@@ -444,7 +444,7 @@ var async = require('async'),
 					case 'notifications:user_posted_to':
 					case 'notifications:user_flagged_post_in':
 						var usernames = set.map(function(notifObj) {
-							return notifObj.user.username;
+							return notifObj && notifObj.user && notifObj.user.username;
 						}).filter(function(username, idx, array) {
 							return array.indexOf(username) === idx;
 						});
