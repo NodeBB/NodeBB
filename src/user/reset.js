@@ -36,11 +36,26 @@ var async = require('async'),
 		var code = utils.generateUUID();
 		async.parallel([
 			async.apply(db.setObjectField, 'reset:uid', code, uid),
-			async.apply(db.sortedSetAdd, 'reset:issueDate', Date.now(), code)
+			async.apply(db.sortedSetAdd, 'reset:issueDate', Date.now(), code),
+			async.apply(db.sortedSetAdd, 'reset:issueDate:uid', Date.now(), uid),
 		], function(err) {
 			callback(err, code);
 		});
 	};
+
+	function canGenerate(uid, callback) {
+		async.waterfall([
+			function (next) {
+				db.sortedSetScore('reset:issueDate:uid', uid, next);
+			},
+			function (score, next) {
+				if (score > Date.now() - 1000 * 60) {
+					return next(new Error('[[error:cant-reset-password-more-than-once-a-minute]]'));
+				}
+				next();
+			}
+		], callback);
+	}
 
 	UserReset.send = function(email, callback) {
 		var uid;
@@ -54,6 +69,9 @@ var async = require('async'),
 				}
 
 				uid = _uid;
+				canGenerate(uid, next);
+			},
+			function(next) {
 				UserReset.generate(uid, next);
 			},
 			function(code, next) {
@@ -102,6 +120,7 @@ var async = require('async'),
 					async.apply(user.setUserField, uid, 'password', hash),
 					async.apply(db.deleteObjectField, 'reset:uid', code),
 					async.apply(db.sortedSetRemove, 'reset:issueDate', code),
+					async.apply(db.sortedSetRemove, 'reset:issueDate:uid', uid),
 					async.apply(user.reset.updateExpiry, uid),
 					async.apply(user.auth.resetLockout, uid)
 				], next);
@@ -110,9 +129,9 @@ var async = require('async'),
 	};
 
 	UserReset.updateExpiry = function(uid, callback) {
-		var oneDay = 1000*60*60*24,
-			expireDays = parseInt(meta.config.passwordExpiryDays || 0, 10),
-			expiry = Date.now() + (oneDay * expireDays);
+		var oneDay = 1000 * 60 * 60 * 24;
+		var expireDays = parseInt(meta.config.passwordExpiryDays || 0, 10);
+		var expiry = Date.now() + (oneDay * expireDays);
 
 		callback = callback || function() {};
 		user.setUserField(uid, 'passwordExpiry', expireDays > 0 ? expiry : 0, callback);
@@ -120,16 +139,26 @@ var async = require('async'),
 
 	UserReset.clean = function(callback) {
 		async.waterfall([
-			async.apply(db.getSortedSetRangeByScore, 'reset:issueDate', 0, -1, 0, Date.now() - twoHours),
-			function(tokens, next) {
-				if (!tokens.length) {
+			function(next) {
+				async.parallel({
+					tokens: function(next) {
+						db.getSortedSetRangeByScore('reset:issueDate', 0, -1, 0, Date.now() - twoHours, next);
+					},
+					uids: function(next) {
+						db.getSortedSetRangeByScore('reset:issueDate:uid', 0, -1, 0, Date.now() - twoHours, next);
+					}
+				}, next);
+			},
+			function(results, next) {
+				if (!results.tokens.length && !results.uids.length) {
 					return next();
 				}
 
-				winston.verbose('[UserReset.clean] Removing ' + tokens.length + ' reset tokens from database');
+				winston.verbose('[UserReset.clean] Removing ' + results.tokens.length + ' reset tokens from database');
 				async.parallel([
-					async.apply(db.deleteObjectFields, 'reset:uid', tokens),
-					async.apply(db.sortedSetRemove, 'reset:issueDate', tokens)
+					async.apply(db.deleteObjectFields, 'reset:uid', results.tokens),
+					async.apply(db.sortedSetRemove, 'reset:issueDate', results.tokens),
+					async.apply(db.sortedSetRemove, 'reset:issueDate:uid', results.uids)
 				], next);
 			}
 		], callback);
