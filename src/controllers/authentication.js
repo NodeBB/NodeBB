@@ -1,20 +1,20 @@
 "use strict";
 
-var async = require('async'),
-	winston = require('winston'),
-	passport = require('passport'),
-	nconf = require('nconf'),
-	validator = require('validator'),
-	_ = require('underscore'),
+var async = require('async');
+var winston = require('winston');
+var passport = require('passport');
+var nconf = require('nconf');
+var validator = require('validator');
+var _ = require('underscore');
 
-	db = require('../database'),
-	meta = require('../meta'),
-	user = require('../user'),
-	plugins = require('../plugins'),
-	utils = require('../../public/src/utils'),
-	Password = require('../password'),
+var db = require('../database');
+var meta = require('../meta');
+var user = require('../user');
+var plugins = require('../plugins');
+var utils = require('../../public/src/utils');
+var Password = require('../password');
 
-	authenticationController = {};
+var authenticationController = {};
 
 authenticationController.register = function(req, res, next) {
 	var registrationType = meta.config.registrationType || 'normal';
@@ -86,8 +86,8 @@ function registerAndLoginUser(req, res, userData, callback) {
 		},
 		function(_uid, next) {
 			uid = _uid;
-			if (res.locals.processLogin === true) {
-				doLogin(req, uid, next);
+			if (res.locals.processLogin) {
+				authenticationController.doLogin(req, uid, next);
 			} else {
 				next();
 			}
@@ -171,7 +171,7 @@ function continueLogin(req, res, next) {
 				res.status(200).send(nconf.get('relative_path') + '/reset/' + code);
 			});
 		} else {
-			doLogin(req, userData.uid, function(err) {
+			authenticationController.doLogin(req, userData.uid, function(err) {
 				if (err) {
 					return res.status(403).send(err.message);
 				}
@@ -189,39 +189,49 @@ function continueLogin(req, res, next) {
 	})(req, res, next);
 }
 
-function doLogin(req, uid, callback) {
+authenticationController.doLogin = function(req, uid, callback) {
+	if (!uid) {
+		return callback();
+	}
+
 	req.login({uid: uid}, function(err) {
 		if (err) {
 			return callback(err);
 		}
 
-		if (uid) {
-			var uuid = utils.generateUUID();
-			req.session.meta = {};
+		var uuid = utils.generateUUID();
+		req.session.meta = {};
 
-			// Associate IP used during login with user account
-			user.logIP(uid, req.ip);
-			req.session.meta.ip = req.ip;
+		// Associate IP used during login with user account
+		user.logIP(uid, req.ip);
+		req.session.meta.ip = req.ip;
 
-			// Associate metadata retrieved via user-agent
-			req.session.meta = _.extend(req.session.meta, {
-				uuid: uuid,
-				datetime: Date.now(),
-				platform: req.useragent.platform,
-				browser: req.useragent.browser,
-				version: req.useragent.version
-			});
+		// Associate metadata retrieved via user-agent
+		req.session.meta = _.extend(req.session.meta, {
+			uuid: uuid,
+			datetime: Date.now(),
+			platform: req.useragent.platform,
+			browser: req.useragent.browser,
+			version: req.useragent.version
+		});
 
-			// Associate login session with user
-			user.auth.addSession(uid, req.sessionID);
-			db.setObjectField('uid:' + uid + 'sessionUUID:sessionId', uuid, req.sessionID);
-
+		// Associate login session with user
+		async.parallel([
+			function (next) {
+				user.auth.addSession(uid, req.sessionID, next);
+			},
+			function (next) {
+				db.setObjectField('uid:' + uid + 'sessionUUID:sessionId', uuid, req.sessionID, next);
+			}
+		], function(err) {
+			if (err) {
+				return callback(err);
+			}
 			plugins.fireHook('action:user.loggedIn', uid);
-		}
-
-		callback();
+			callback();
+		});
 	});
-}
+};
 
 authenticationController.localLogin = function(req, username, password, next) {
 	if (!username) {
