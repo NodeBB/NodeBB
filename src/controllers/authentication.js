@@ -199,37 +199,42 @@ authenticationController.doLogin = function(req, uid, callback) {
 			return callback(err);
 		}
 
-		var uuid = utils.generateUUID();
-		req.session.meta = {};
+		authenticationController.onSuccessfulLogin(req, uid, callback);
+	});
+};
 
-		// Associate IP used during login with user account
-		user.logIP(uid, req.ip);
-		req.session.meta.ip = req.ip;
+authenticationController.onSuccessfulLogin = function(req, uid, callback) {
+	callback = callback || function() {};
+	var uuid = utils.generateUUID();
+	req.session.meta = {};
 
-		// Associate metadata retrieved via user-agent
-		req.session.meta = _.extend(req.session.meta, {
-			uuid: uuid,
-			datetime: Date.now(),
-			platform: req.useragent.platform,
-			browser: req.useragent.browser,
-			version: req.useragent.version
-		});
+	// Associate IP used during login with user account
+	user.logIP(uid, req.ip);
+	req.session.meta.ip = req.ip;
 
-		// Associate login session with user
-		async.parallel([
-			function (next) {
-				user.auth.addSession(uid, req.sessionID, next);
-			},
-			function (next) {
-				db.setObjectField('uid:' + uid + 'sessionUUID:sessionId', uuid, req.sessionID, next);
-			}
-		], function(err) {
-			if (err) {
-				return callback(err);
-			}
-			plugins.fireHook('action:user.loggedIn', uid);
-			callback();
-		});
+	// Associate metadata retrieved via user-agent
+	req.session.meta = _.extend(req.session.meta, {
+		uuid: uuid,
+		datetime: Date.now(),
+		platform: req.useragent.platform,
+		browser: req.useragent.browser,
+		version: req.useragent.version
+	});
+
+	// Associate login session with user
+	async.parallel([
+		function (next) {
+			user.auth.addSession(uid, req.sessionID, next);
+		},
+		function (next) {
+			db.setObjectField('uid:' + uid + 'sessionUUID:sessionId', uuid, req.sessionID, next);
+		}
+	], function(err) {
+		if (err) {
+			return callback(err);
+		}
+		plugins.fireHook('action:user.loggedIn', uid);
+		callback();
 	});
 };
 
