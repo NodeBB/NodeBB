@@ -1,17 +1,17 @@
 
 'use strict';
 
-var async = require('async'),
-	validator = require('validator'),
-	db = require('../database'),
-	utils = require('../../public/src/utils'),
-	plugins = require('../plugins'),
-	analytics = require('../analytics'),
-	user = require('../user'),
-	meta = require('../meta'),
-	posts = require('../posts'),
-	privileges = require('../privileges'),
-	categories = require('../categories');
+var async = require('async');
+var validator = require('validator');
+var db = require('../database');
+var utils = require('../../public/src/utils');
+var plugins = require('../plugins');
+var analytics = require('../analytics');
+var user = require('../user');
+var meta = require('../meta');
+var posts = require('../posts');
+var privileges = require('../privileges');
+var categories = require('../categories');
 
 module.exports = function(Topics) {
 
@@ -25,21 +25,13 @@ module.exports = function(Topics) {
 				db.incrObjectField('global', 'nextTid', next);
 			},
 			function(tid, next) {
-				var slug = utils.slugify(data.title);
-
-				if (!slug.length) {
-					return callback(new Error('[[error:invalid-title]]'));
-				}
-
-				slug = tid + '/' + slug;
-
 				topicData = {
 					'tid': tid,
 					'uid': data.uid,
 					'cid': data.cid,
 					'mainPid': 0,
 					'title': data.title,
-					'slug': slug,
+					'slug': tid + '/' + (utils.slugify(data.title) || 'topic'),
 					'timestamp': timestamp,
 					'lastposttime': 0,
 					'postcount': 0,
