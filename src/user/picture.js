@@ -38,38 +38,38 @@ module.exports = function(User) {
 				next(!extension ? new Error('[[error:invalid-image-extension]]') : null);
 			},
 			function(next) {
-				file.isFileTypeAllowed(picture.path, next);
-			},
-			function(path, next) {
-				image.resizeImage({
-					path: picture.path,
-					extension: extension,
-					width: imageDimension,
-					height: imageDimension
-				}, next);
-			},
-			function(next) {
-				if (convertToPNG) {
-					image.normalise(picture.path, extension, next);
-				} else {
-					next();
-				}
-			},
-			function(next) {
 				if (plugins.hasListeners('filter:uploadImage')) {
 					return plugins.fireHook('filter:uploadImage', {image: picture, uid: updateUid}, next);
 				}
 
 				var filename = updateUid + '-profileimg' + (convertToPNG ? '.png' : extension);
-				
+
 				async.waterfall([
+					function(next) {
+						file.isFileTypeAllowed(picture.path, next);
+					},
+					function(next) {
+						image.resizeImage({
+							path: picture.path,
+							extension: extension,
+							width: imageDimension,
+							height: imageDimension
+						}, next);
+					},
+					function(next) {
+						if (convertToPNG) {
+							image.normalise(picture.path, extension, next);
+						} else {
+							next();
+						}
+					},
 					function(next) {
 						User.getUserField(updateUid, 'uploadedpicture', next);
 					},
 					function(oldpicture, next) {
 						if (!oldpicture) {
 							return file.saveFileToLocal(filename, 'profile', picture.path, next);
-						}		
+						}
 						var oldpicturePath = path.join(nconf.get('base_dir'), nconf.get('upload_path'), 'profile', path.basename(oldpicture));
 
 						fs.unlink(oldpicturePath, function (err) {
@@ -79,7 +79,7 @@ module.exports = function(User) {
 
 							file.saveFileToLocal(filename, 'profile', picture.path, next);
 						});
-					},					
+					},
 				], next);
 			},
 			function(_image, next) {
@@ -167,12 +167,9 @@ module.exports = function(User) {
 				}, next);
 			},
 			function(next) {
-				file.isFileTypeAllowed(data.file.path, next);
-			},
-			function(tempPath, next) {
 				var image = {
 					name: 'profileCover',
-					path: tempPath,
+					path: data.file.path,
 					uid: data.uid
 				};
 
@@ -181,16 +178,20 @@ module.exports = function(User) {
 				}
 
 				var filename = data.uid + '-profilecover';
-				file.saveFileToLocal(filename, 'profile', image.path, function(err, upload) {
-					if (err) {
-						return next(err);
+				async.waterfall([
+					function (next) {
+						file.isFileTypeAllowed(data.file.path, next);
+					},
+					function (next) {
+						file.saveFileToLocal(filename, 'profile', image.path, next);
+					},
+					function (upload, next) {
+						next(null, {
+							url: nconf.get('relative_path') + upload.url,
+							name: image.name
+						});
 					}
-
-					next(null, {
-						url: nconf.get('relative_path') + upload.url,
-						name: image.name
-					});
-				});
+				], next);
 			},
 			function(uploadData, next) {
 				url = uploadData.url;

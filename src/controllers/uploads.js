@@ -60,7 +60,7 @@ uploadsController.uploadThumb = function(req, res, next) {
 	}
 
 	uploadsController.upload(req, res, function(uploadedFile, next) {
-		file.isFileTypeAllowed(uploadedFile.path, function(err, tempPath) {
+		file.isFileTypeAllowed(uploadedFile.path, function(err) {
 			if (err) {
 				return next(err);
 			}
@@ -94,7 +94,12 @@ uploadsController.uploadGroupCover = function(uid, uploadedFile, callback) {
 		return plugins.fireHook('filter:uploadFile', {file: uploadedFile, uid: uid}, callback);
 	}
 
-	saveFileToLocal(uploadedFile, callback);
+	file.isFileTypeAllowed(uploadedFile.path, function(err) {
+		if (err) {
+			return callback(err);
+		}
+		saveFileToLocal(uploadedFile, callback);
+	});
 };
 
 function uploadImage(uid, image, callback) {
@@ -102,7 +107,7 @@ function uploadImage(uid, image, callback) {
 		return plugins.fireHook('filter:uploadImage', {image: image, uid: uid}, callback);
 	}
 
-	file.isFileTypeAllowed(image.path, function(err, tempPath) {
+	file.isFileTypeAllowed(image.path, function(err) {
 		if (err) {
 			return callback(err);
 		}
