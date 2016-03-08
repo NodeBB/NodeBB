@@ -21,12 +21,15 @@ define('forum/account/edit/password', ['forum/account/header', 'translator'], fu
 		var passwordsmatch = false;
 
 		function onPasswordChanged() {
+			passwordvalid = false;
 			if (password.val().length < ajaxify.data.minimumPasswordLength) {
 				showError(password_notify, '[[user:change_password_error_length]]');
-				passwordvalid = false;
 			} else if (!utils.isPasswordValid(password.val())) {
 				showError(password_notify, '[[user:change_password_error]]');
-				passwordvalid = false;
+			} else if (password.val() === ajaxify.data.username) {
+				showError(password_notify, '[[user:password_same_as_username]]');
+			} else if (password.val() === ajaxify.data.email) {
+				showError(password_notify, '[[user:password_same_as_email]]');
 			} else {
 				showSuccess(password_notify);
 				passwordvalid = true;
