@@ -215,11 +215,7 @@
 		if (value) {
 			var variable;
 			for (var i = 1, ii = variables.length; i < ii; i++) {
-
-				// see https://github.com/NodeBB/NodeBB/issues/1951
-				variables[i] = variables[i].replace(/&#37;/g, '%').replace(/&#44;/g, ',');
-
-				variable = S(variables[i]).chompRight(']]').collapseWhitespace().escapeHTML().s;
+				variable = S(variables[i]).chompRight(']]').collapseWhitespace().decodeHTMLEntities().escapeHTML().s;
 				value = value.replace('%' + i, variable);
 			}
 
