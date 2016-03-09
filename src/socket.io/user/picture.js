@@ -51,7 +51,7 @@ module.exports = function(SocketUser) {
 
 	SocketUser.uploadProfileImageFromUrl = function(socket, data, callback) {
 		if (!socket.uid || !data.url || !data.uid) {
-			return;
+			return callback(new Error('[[error:invalid-data]]'));
 		}
 
 		user.isAdminOrSelf(socket.uid, data.uid, function(err) {
@@ -66,7 +66,7 @@ module.exports = function(SocketUser) {
 
 	SocketUser.removeUploadedPicture = function(socket, data, callback) {
 		if (!socket.uid || !data.uid) {
-			return;
+			return callback(new Error('[[error:invalid-data]]'));
 		}
 
 		async.waterfall([

@@ -8,7 +8,7 @@ var	async = require('async'),
 	plugins = require('../plugins'),
 	widgets = require('../widgets'),
 	user = require('../user'),
-	posts = require('../posts'),
+
 	logger = require('../logger'),
 	events = require('../events'),
 	emailer = require('../emailer'),
@@ -60,6 +60,7 @@ SocketAdmin.reload = function(socket, data, callback) {
 		process.send({
 			action: 'reload'
 		});
+		callback();
 	} else {
 		meta.reload(callback);
 	}
@@ -72,10 +73,12 @@ SocketAdmin.restart = function(socket, data, callback) {
 		ip: socket.ip
 	});
 	meta.restart();
+	callback();
 };
 
 SocketAdmin.fireEvent = function(socket, data, callback) {
 	index.server.emit(data.name, data.payload || {});
+	callback();
 };
 
 SocketAdmin.themes.getInstalled = function(socket, data, callback) {
@@ -83,7 +86,7 @@ SocketAdmin.themes.getInstalled = function(socket, data, callback) {
 };
 
 SocketAdmin.themes.set = function(socket, data, callback) {
-	if(!data) {
+	if (!data) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
 
@@ -134,16 +137,16 @@ SocketAdmin.widgets.set = function(socket, data, callback) {
 };
 
 SocketAdmin.config.set = function(socket, data, callback) {
-	if(!data) {
+	if (!data) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
 
 	meta.configs.set(data.key, data.value, function(err) {
-		if(err) {
+		if (err) {
 			return callback(err);
 		}
 
-		callback(null);
+		callback();
 
 		plugins.fireHook('action:config.set', {
 			key: data.key,
@@ -155,7 +158,7 @@ SocketAdmin.config.set = function(socket, data, callback) {
 };
 
 SocketAdmin.config.setMultiple = function(socket, data, callback) {
-	if(!data) {
+	if (!data) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
 
@@ -179,8 +182,9 @@ SocketAdmin.config.setMultiple = function(socket, data, callback) {
 	});
 };
 
-SocketAdmin.config.remove = function(socket, key) {
+SocketAdmin.config.remove = function(socket, key, callback) {
 	meta.configs.remove(key);
+	callback();
 };
 
 SocketAdmin.settings.get = function(socket, data, callback) {
