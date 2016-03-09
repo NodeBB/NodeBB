@@ -158,6 +158,7 @@ define('admin/general/dashboard', ['semver'], function(semver) {
 
 		if (isMobile) {
 			Chart.defaults.global.showTooltips = false;
+			Chart.defaults.global.animation = false;
 		}
 
 		var data = {
@@ -186,7 +187,7 @@ define('admin/general/dashboard', ['semver'], function(semver) {
 				]
 			};
 
-		trafficCanvas.width = $(trafficCanvas).parent().width(); // is this necessary
+		trafficCanvas.width = $(trafficCanvas).parent().width();
 		graphs.traffic = new Chart(trafficCtx).Line(data, {
 			responsive: true
 		});
