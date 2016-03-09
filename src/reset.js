@@ -16,7 +16,11 @@ Reset.reset = function() {
 		}
 
 		if (nconf.get('t')) {
-			resetThemes();
+			if(nconf.get('t') === true) {
+				resetThemes();
+			} else {
+				resetTheme(nconf.get('t'));
+			}
 		} else if (nconf.get('p')) {
 			if (nconf.get('p') === true) {
 				resetPlugins();
@@ -46,8 +50,8 @@ Reset.reset = function() {
 			process.stdout.write('    -s\tsettings\n');
 			process.stdout.write('    -a\tall of the above\n');
 
-			process.stdout.write('\nPlugin reset flag (-p) can take a single argument\n');
-			process.stdout.write('    e.g. ./nodebb reset -p nodebb-plugin-mentions\n');
+			process.stdout.write('\nPlugin and theme reset flags (-p & -t) can take a single argument\n');
+			process.stdout.write('    e.g. ./nodebb reset -p nodebb-plugin-mentions, ./nodebb reset -t nodebb-theme-persona\n');
 			process.exit();
 		}
 	});
@@ -61,6 +65,26 @@ function resetSettings(callback) {
 			callback(err);
 		} else {
 			process.exit();
+		}
+	});
+}
+
+function resetTheme(themeId) {
+	var meta = require('./meta');
+	var fs = require('fs');
+	
+	fs.open('node_modules/' + themeId + '/package.json', 'r', function(err, fd) {
+		if (err) {
+			winston.warn('[reset] Theme `%s` is not installed on this forum', themeId);
+			process.exit();
+		} else {
+			meta.themes.set({
+				type: 'local',
+				id: themeId
+			}, function(err) {
+				winston.info('[reset] Theme reset to ' + themeId);
+				process.exit();
+			});		
 		}
 	});
 }
