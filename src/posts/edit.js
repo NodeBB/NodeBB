@@ -41,7 +41,7 @@ module.exports = function(Posts) {
 				postData.content = data.content;
 				postData.edited = now;
 				postData.editor = data.uid;
-				plugins.fireHook('filter:post.edit', {post: postData, uid: data.uid}, next);
+				plugins.fireHook('filter:post.edit', {req: data.req, post: postData, uid: data.uid}, next);
 			},
 			function (result, next) {
 				postData = result.post;
@@ -128,9 +128,9 @@ module.exports = function(Posts) {
 			data.tags = data.tags || [];
 
 			async.waterfall([
-				async.apply(plugins.fireHook,'filter:topic.edit', topicData),
-				function(topicData, next) {
-					db.setObject('topic:' + tid, topicData, next);
+				async.apply(plugins.fireHook, 'filter:topic.edit', {req: data.req, topic: topicData}),
+				function(results, next) {
+					db.setObject('topic:' + tid, results.topicData, next);
 				},
 				function(next) {
 					topics.updateTags(tid, data.tags, next);
