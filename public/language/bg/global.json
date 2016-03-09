@@ -87,8 +87,8 @@
     "map": "Карта",
     "sessions": "Сесии за вход",
     "ip_address": "IP адрес",
-    "enter_page_number": "Enter page number",
-    "upload_file": "Upload file",
-    "upload": "Upload",
-    "allowed-file-types": "Allowed file types are %1"
+    "enter_page_number": "Въведете номер на страница",
+    "upload_file": "Качване на файл",
+    "upload": "Качване",
+    "allowed-file-types": "Разрешените файлови типове са: %1"
 }

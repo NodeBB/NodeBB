@@ -87,8 +87,8 @@
     "map": "Karte",
     "sessions": "Login-Sitzungen",
     "ip_address": "IP-Adresse",
-    "enter_page_number": "Enter page number",
-    "upload_file": "Upload file",
-    "upload": "Upload",
-    "allowed-file-types": "Allowed file types are %1"
+    "enter_page_number": "Seitennummer eingeben",
+    "upload_file": "Datei hochladen",
+    "upload": "Hochladen",
+    "allowed-file-types": "Erlaubte Dateitypen sind %1"
 }

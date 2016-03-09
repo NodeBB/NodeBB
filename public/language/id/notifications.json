@@ -30,6 +30,7 @@
     "user_started_following_you_dual": "<strong>%1</strong> and <strong>%2</strong> started following you.",
     "user_started_following_you_multiple": "<strong>%1</strong> and %2 others started following you.",
     "new_register": "<strong>%1</strong> mengirim permintaan registrasi.",
+    "new_register_multiple": "There are <strong>%1</strong> registration requests awaiting review.",
     "email-confirmed": "Email telah Dikonfirmasi",
     "email-confirmed-message": "Terimakasih telah melakukan validasi email. Akunmu saat ini telah aktif sepenuhnya.",
     "email-confirm-error-message": "Terjadi masalah saat melakukan validasi emailmu. Mungkin terjadi kesalahan kode atau waktu habis.",

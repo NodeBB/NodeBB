@@ -50,8 +50,8 @@
     "still-uploading": "업로드가 끝날 때까지 기다려주세요.",
     "file-too-big": "업로드 가능한 파일크기는 최대 %1 KB 입니다 - 파일의 용량을 줄이거나 압축을 활용하세요.",
     "guest-upload-disabled": "손님의 파일 업로드는 제한되어 있습니다.",
-    "already-favourited": "You have already bookmarked this post",
-    "already-unfavourited": "You have already unbookmarked this post",
+    "already-favourited": "이미 이 게시물을 북마크 했습니다.",
+    "already-unfavourited": "이미 이 게시물을 북마크 해제했습니다.",
     "cant-ban-other-admins": "다른 관리자를 차단할 수 없습니다.",
     "cant-remove-last-admin": "귀하는 유일한 관리자입니다. 관리자를 그만두시기 전에 다른 사용자를 관리자로 선임하세요.",
     "invalid-image-type": "올바르지 않은 이미지입니다. 사용가능한 유형: %1",
@@ -96,6 +96,6 @@
     "wrong-login-type-username": "사용자명을 통해 로그인하세요.",
     "invite-maximum-met": "초대가능한 사용자를 모두 초대했습니다. (%2명 중 %1을 초대)",
     "no-session-found": "로그인 세션을 찾을 수 없습니다.",
-    "not-in-room": "없는 유저입니다.",
-    "no-users-in-room": "No users in this room"
+    "not-in-room": "없는 사용자입니다.",
+    "no-users-in-room": "사용자가 없습니다."
 }

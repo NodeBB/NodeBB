@@ -30,6 +30,7 @@
     "user_started_following_you_dual": "<strong>%1</strong> ja <strong>%2</strong> hakkasid sind jälgima.",
     "user_started_following_you_multiple": "<strong>%1</strong> ja %2 hakkasid sind jälgima.",
     "new_register": "<strong>%1</strong> saatis registreerimistaotluse.",
+    "new_register_multiple": "There are <strong>%1</strong> registration requests awaiting review.",
     "email-confirmed": "Emaili aadress kinnitatud",
     "email-confirmed-message": "Täname, et kinnitasite oma emaili aadressi. Teie kasutaja on nüüd täielikult aktiveeritud.",
     "email-confirm-error-message": "Emaili aadressi kinnitamisel tekkis viga. Võibolla kinnituskood oli vale või aegunud.",

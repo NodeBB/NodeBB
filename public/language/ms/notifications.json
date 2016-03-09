@@ -30,6 +30,7 @@
     "user_started_following_you_dual": "<strong>%1</strong> dan <strong>%2</strong> mula mengikuti anda.",
     "user_started_following_you_multiple": "<strong>%1</strong> dan %2 lagi mula mengikuti anda.",
     "new_register": "<strong>%1</strong> menghantar jemputan pendaftaran.",
+    "new_register_multiple": "There are <strong>%1</strong> registration requests awaiting review.",
     "email-confirmed": "Emel Disahkan",
     "email-confirmed-message": "Terima kasih kerana mengesahkan emel anda. Akaun anda telah diaktifkan sepenuhnya.",
     "email-confirm-error-message": "Berlaku masalah semasa mengesahkan emel anda. Mungkin kod tidak sah atau tamat tempoh.",

@@ -30,6 +30,7 @@
     "user_started_following_you_dual": "<strong>%1</strong> and <strong>%2</strong> started following you.",
     "user_started_following_you_multiple": "<strong>%1</strong> and %2 others started following you.",
     "new_register": "<strong>%1</strong> sent a registration request.",
+    "new_register_multiple": "There are <strong>%1</strong> registration requests awaiting review.",
     "email-confirmed": "Το Εmail Επιβεβαιώθηκε",
     "email-confirmed-message": "Ευχαριστούμε που επιβεβαίωσες το email σου. Ο λογαριασμός σου είναι πλέον πλήρως ενεργοποιημένος.",
     "email-confirm-error-message": "Υπήρξε κάποιο πρόβλημα με την επιβεβαίωση της διεύθυνσής email σου. Ίσως ο κώδικας να είναι άκυρος ή να έχει λήξει.",

@@ -30,6 +30,7 @@
     "user_started_following_you_dual": "<strong>%1</strong> and <strong>%2</strong> started following you.",
     "user_started_following_you_multiple": "<strong>%1</strong> and %2 others started following you.",
     "new_register": "<strong>%1</strong> wysłał żądanie rejestracji.",
+    "new_register_multiple": "There are <strong>%1</strong> registration requests awaiting review.",
     "email-confirmed": "E-mail potwierdzony",
     "email-confirmed-message": "Dziękujemy za potwierdzenie maila. Twoje konto zostało aktywowane.",
     "email-confirm-error-message": "Wystąpił problem przy aktywacji, - kod jest błędny lub przestarzały",

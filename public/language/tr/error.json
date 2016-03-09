@@ -50,8 +50,8 @@
     "still-uploading": "Lütfen yüklemelerin bitmesini bekleyin.",
     "file-too-big": "İzin verilen en büyük dosya boyutu %1 kb - lütfen daha küçük bir dosya yükleyin",
     "guest-upload-disabled": "Ziyaretçilerin yükleme yapması devre dışı bırakıldı",
-    "already-favourited": "You have already bookmarked this post",
-    "already-unfavourited": "You have already unbookmarked this post",
+    "already-favourited": "Bu iletiyi zaten yer imlerinize eklediniz",
+    "already-unfavourited": "Bu iletiyi zaten yer imlerinizden çıkardınız",
     "cant-ban-other-admins": "Başka yöneticileri yasaklayamazsınız!",
     "cant-remove-last-admin": "Tek yönetici sizsiniz. Kendinizi adminlikten çıkarmadan önce başka bir kullanıcıyı admin olarak ekleyiniz",
     "invalid-image-type": "Geçersiz resim uzantısı. Izin verilen uzantılar: %1",
@@ -97,5 +97,5 @@
     "invite-maximum-met": "Sen maksimum miktarda insanı davet ettin (%2 üzerinden %1).",
     "no-session-found": "Giriş yapılmış bir oturum bulunamadı!",
     "not-in-room": "Odada kullanıcı yok",
-    "no-users-in-room": "No users in this room"
+    "no-users-in-room": "Bu odada kullanıcı yok"
 }

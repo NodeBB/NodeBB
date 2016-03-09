@@ -30,6 +30,7 @@
     "user_started_following_you_dual": "<strong>%1</strong> et <strong>%2</strong> vous suivent.",
     "user_started_following_you_multiple": "<strong>%1</strong> et %2 autres vous suivent.",
     "new_register": "<strong>%1</strong> a envoyé une demande d'incription.",
+    "new_register_multiple": "There are <strong>%1</strong> registration requests awaiting review.",
     "email-confirmed": "Email vérifié",
     "email-confirmed-message": "Merci pour la validation de votre adresse email. Votre compte est désormais activé.",
     "email-confirm-error-message": "Il y a un un problème dans la vérification de votre adresse email. Le code est peut être invalide ou a expiré.",

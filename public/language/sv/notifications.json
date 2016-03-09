@@ -30,6 +30,7 @@
     "user_started_following_you_dual": "<strong>%1</strong> and <strong>%2</strong> started following you.",
     "user_started_following_you_multiple": "<strong>%1</strong> and %2 others started following you.",
     "new_register": "<strong>%1</strong> skickade en registreringsförfrågan.",
+    "new_register_multiple": "There are <strong>%1</strong> registration requests awaiting review.",
     "email-confirmed": "Epost bekräftad",
     "email-confirmed-message": "Tack för att du bekräftat din epostadress. Ditt konto är nu fullt ut aktiverat.",
     "email-confirm-error-message": "Det uppstod ett fel med att bekräfta din epostadress. Kanske var koden ogiltig eller har gått ut.",

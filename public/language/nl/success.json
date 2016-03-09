@@ -1,6 +1,6 @@
 {
     "success": "Geslaagd",
-    "topic-post": "Bericht succesvol geplaatst",
-    "authentication-successful": "Aanmelden geslaagd",
+    "topic-post": "Je bericht is met succes geplaatst.",
+    "authentication-successful": "Authenticatie Geslaagd",
     "settings-saved": "Instellingen opgeslagen!"
 }

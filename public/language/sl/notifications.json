@@ -30,6 +30,7 @@
     "user_started_following_you_dual": "<strong>%1</strong> and <strong>%2</strong> started following you.",
     "user_started_following_you_multiple": "<strong>%1</strong> and %2 others started following you.",
     "new_register": "<strong>%1</strong> je poslal prošnjo za registracijo.",
+    "new_register_multiple": "There are <strong>%1</strong> registration requests awaiting review.",
     "email-confirmed": "E-mail naslov potrjen",
     "email-confirmed-message": "Hvala ker ste potrdili svoj naslov. Račun je sedaj aktiviran.",
     "email-confirm-error-message": "Prišlo je do napake pri preverjanju vašega e-mail naslova. Morda je bila koda napačna ali pa je potekla.",

@@ -30,6 +30,7 @@
     "user_started_following_you_dual": "<strong>%1</strong> 和 <strong>%2</strong> 关注了您。",
     "user_started_following_you_multiple": "<strong>%1</strong> 和 %2 个其他人关注了您。",
     "new_register": "<strong>%1</strong> 发出了注册请求",
+    "new_register_multiple": "There are <strong>%1</strong> registration requests awaiting review.",
     "email-confirmed": "电子邮箱已确认",
     "email-confirmed-message": "感谢您验证您的电子邮箱。您的帐户现已全面激活。",
     "email-confirm-error-message": "验证您电子邮箱地址时出现了问题。可能是因为验证码无效或已过期。",

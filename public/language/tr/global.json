@@ -87,8 +87,8 @@
     "map": "Harita",
     "sessions": "Giriş Oturumları",
     "ip_address": "IP Adresleri",
-    "enter_page_number": "Enter page number",
-    "upload_file": "Upload file",
-    "upload": "Upload",
-    "allowed-file-types": "Allowed file types are %1"
+    "enter_page_number": "Sayfa numarasını girin",
+    "upload_file": "Dosya yükle",
+    "upload": "Yükle",
+    "allowed-file-types": "İzin verilen dosya tipleri %1"
 }
