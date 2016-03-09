@@ -339,7 +339,7 @@ function createGlobalModeratorsGroup(next) {
 		function (exists, next) {
 			if (exists) {
 				winston.info('Global Moderators group found, skipping creation!');
-				return next();
+				return next(null, null);
 			}
 			groups.create({
 				name: 'Global Moderators',
