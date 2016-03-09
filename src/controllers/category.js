@@ -196,7 +196,6 @@ categoryController.get = function(req, res, callback) {
 			});
 
 			plugins.fireHook('filter:category.build', {req: req, res: res, templateData: categoryData}, next);
-			next(null, categoryData);
 		}
 	], function (err, data) {
 		if (err) {
