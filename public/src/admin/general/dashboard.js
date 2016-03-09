@@ -22,24 +22,23 @@ define('admin/general/dashboard', ['semver'], function(semver) {
 		graphInterval: 15000,
 		realtimeInterval: 1500
 	};
+	
+	$(window).on('action:ajaxify.start', function(ev, data) {
+		clearInterval(intervals.rooms);
+		clearInterval(intervals.graphs);
 
+		intervals.rooms = null;
+		intervals.graphs = null;
+		graphData.rooms = null;
+		graphData.traffic = null;
+		usedTopicColors.length = 0;
+	});
 
 	Admin.init = function() {
 		app.enterRoom('admin');
 		socket.emit('admin.rooms.getAll', Admin.updateRoomUsage);
 
 		isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-
-		$(window).on('action:ajaxify.start', function(ev, data) {
-			clearInterval(intervals.rooms);
-			clearInterval(intervals.graphs);
-
-			intervals.rooms = null;
-			intervals.graphs = null;
-			graphData.rooms = null;
-			graphData.traffic = null;
-			usedTopicColors.length = 0;
-		});
 
 		$.get('https://api.github.com/repos/NodeBB/NodeBB/tags', function(releases) {
 			// Re-sort the releases, as they do not follow Semver (wrt pre-releases)
