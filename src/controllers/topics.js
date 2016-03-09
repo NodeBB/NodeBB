@@ -183,7 +183,7 @@ topicsController.get = function(req, res, callback) {
 			res.locals.metaTags = [
 				{
 					name: "title",
-					content: topicData.title
+					content: topicData.titleRaw
 				},
 				{
 					name: "description",
@@ -191,7 +191,7 @@ topicsController.get = function(req, res, callback) {
 				},
 				{
 					property: 'og:title',
-					content: topicData.title
+					content: topicData.titleRaw
 				},
 				{
 					property: 'og:description',
