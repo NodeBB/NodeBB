@@ -213,14 +213,6 @@ Sockets.in = function(room) {
 	return io.in(room);
 };
 
-Sockets.getSocketCount = function() {
-	if (!io) {
-		return 0;
-	}
-
-	return Object.keys(io.sockets.sockets).length;
-};
-
 Sockets.getUserSocketCount = function(uid) {
 	if (!io) {
 		return 0;
@@ -230,27 +222,6 @@ Sockets.getUserSocketCount = function(uid) {
 	return room ? room.length : 0;
 };
 
-Sockets.getOnlineUserCount = function() {
-	if (!io) {
-		return 0;
-	}
-	var count = 0;
-	for (var key in io.sockets.adapter.rooms) {
-		if (io.sockets.adapter.rooms.hasOwnProperty(key) && key.startsWith('uid_')) {
-			++ count;
-		}
-	}
-	
-	return count;
-};
-
-Sockets.getOnlineAnonCount = function () {
-	if (!io) {
-		return 0;
-	}
-	var room = io.sockets.adapter.rooms.online_guests;
-	return room ? room.length : 0;
-};
 
 Sockets.reqFromSocket = function(socket) {
 	var headers = socket.request.headers;
@@ -268,33 +239,5 @@ Sockets.reqFromSocket = function(socket) {
 	};
 };
 
-Sockets.isUserOnline = function(uid) {
-	winston.warn('[deprecated] Sockets.isUserOnline');
-	return false;
-};
 
-Sockets.isUsersOnline = function(uids, callback) {
-	winston.warn('[deprecated] Sockets.isUsersOnline');
-	callback(null, uids.map(function() { return false; }));
-};
-
-Sockets.getUsersInRoom = function (uid, roomName, start, stop, callback) {
-	winston.warn('[deprecated] Sockets.getUsersInRoom');
-	callback(null, {
-		users: [],
-		room: roomName,
-		total: 0,
-		hidden: 0
-	});
-	return;
-};
-
-Sockets.getUidsInRoom = function(roomName, callback) {
-	winston.warn('[deprecated] Sockets.getUidsInRoom');
-	callback = callback || function() {};
-	callback(null, []);
-};
-
-
-/* Exporting */
 module.exports = Sockets;

@@ -13,10 +13,18 @@ var helpers = require('./helpers');
 var usersController = {};
 
 usersController.getOnlineUsers = function(req, res, next) {
-	usersController.getUsers('users:online', req.uid, req.query.page, function(err, userData) {
+	async.parallel({
+		users: function(next) {
+			usersController.getUsers('users:online', req.uid, req.query.page, next);
+		},
+		guests: function(next) {
+			require('../socket.io/admin/rooms').getTotalGuestCount(next);
+		}
+	}, function(err, results) {
 		if (err) {
 			return next(err);
 		}
+		var userData = results.users;
 		var hiddenCount = 0;
 		if (!userData.isAdminOrGlobalMod) {
 			userData.users = userData.users.filter(function(user) {
@@ -27,7 +35,7 @@ usersController.getOnlineUsers = function(req, res, next) {
 			});
 		}
 
-		userData.anonymousUserCount = require('../socket.io').getOnlineAnonCount() + hiddenCount;
+		userData.anonymousUserCount = results.guests + hiddenCount;
 
 		render(req, res, userData, next);
 	});

@@ -217,10 +217,6 @@ SocketUser.setCategorySort = function(socket, sort, callback) {
 	}
 };
 
-SocketUser.getOnlineAnonCount = function(socket, data, callback) {
-	callback(null, module.parent.exports.getOnlineAnonCount());
-};
-
 SocketUser.getUnreadCount = function(socket, data, callback) {
 	if (!socket.uid) {
 		return callback(null, 0);

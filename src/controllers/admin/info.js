@@ -2,24 +2,45 @@
 
 var async = require('async');
 var os = require('os');
+var winston = require('winston');
 var nconf = require('nconf');
 var exec = require('child_process').exec;
 
+var pubsub = require('../../pubsub');
 var rooms = require('../../socket.io/admin/rooms');
 
 var infoController = {};
 
-infoController.get = function(req, res, next) {
+var info = [];
 
+infoController.get = function(req, res, next) {
+	info = [];
+	pubsub.publish('sync:node:info:start');
+	setTimeout(function() {
+		res.render('admin/development/info', {info: info, infoJSON: JSON.stringify(info, null, 4), host: os.hostname(), port: nconf.get('port')});
+	}, 100);
+};
+
+pubsub.on('sync:node:info:start', function() {
+	getNodeInfo(function(err, data) {
+		if (err) {
+			return winston.error(err);
+		}
+		pubsub.publish('sync:node:info:end', data);
+	});
+});
+
+pubsub.on('sync:node:info:end', function(data) {
+	info.push(data);
+});
+
+function getNodeInfo(callback) {
 	var data = {
 		process: {
 			port: nconf.get('port'),
 			pid: process.pid,
 			title: process.title,
-			arch: process.arch,
-			platform: process.platform,
 			version: process.version,
-			versions: process.versions,
 			memoryUsage: process.memoryUsage(),
 			uptime: process.uptime()
 		},
@@ -28,19 +49,28 @@ infoController.get = function(req, res, next) {
 			type: os.type(),
 			platform: os.platform(),
 			arch: os.arch(),
-			release: os.release()
+			release: os.release(),
+			load: os.loadavg().map(function(load){ return load.toFixed(2); }).join(', ')
 		}
 	};
 
-	getGitInfo(function(err, gitInfo) {
-		if (err) {
-			return next(err);
+	async.parallel({
+		pubsub: function(next) {
+			pubsub.publish('sync:stats:start');
+			next();
+		},
+		gitInfo: function(next) {
+			getGitInfo(next);
 		}
-		data.git = gitInfo;
-
-		res.render('admin/development/info', {info: JSON.stringify(data, null, 4), stats: JSON.stringify(rooms.getStats(), null, 4)});
+	}, function(err, results) {
+		if (err) {
+			return callback(err);
+		}
+		data.git = results.gitInfo;
+		data.stats = rooms.stats[data.os.hostname + ':' + data.process.port];
+		callback(null, data);
 	});
-};
+}
 
 function getGitInfo(callback) {
 	function get(cmd,  callback) {
