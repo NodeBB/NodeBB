@@ -81,13 +81,13 @@ function getStatsForSet(set, field, callback) {
 	var now = Date.now();
 	async.parallel({
 		day: function(next) {
-			db.sortedSetCount(set, now - terms.day, now, next);
+			db.sortedSetCount(set, now - terms.day, '+inf', next);
 		},
 		week: function(next) {
-			db.sortedSetCount(set, now - terms.week, now, next);
+			db.sortedSetCount(set, now - terms.week, '+inf', next);
 		},
 		month: function(next) {
-			db.sortedSetCount(set, now - terms.month, now, next);
+			db.sortedSetCount(set, now - terms.month, '+inf', next);
 		},
 		alltime: function(next) {
 			getGlobalField(field, next);

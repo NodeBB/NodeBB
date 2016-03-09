@@ -145,7 +145,7 @@ usersController.getUsersAndCount = function(set, uid, start, stop, callback) {
 		count: function(next) {
 			if (set === 'users:online') {
 				var now = Date.now();
-				db.sortedSetCount('users:online', now - 300000, now, next);
+				db.sortedSetCount('users:online', now - 300000, '+inf', next);
 			} else if (set === 'users:banned') {
 				db.sortedSetCard('users:banned', next);
 			} else {
