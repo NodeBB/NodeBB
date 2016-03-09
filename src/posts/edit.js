@@ -130,7 +130,7 @@ module.exports = function(Posts) {
 			async.waterfall([
 				async.apply(plugins.fireHook, 'filter:topic.edit', {req: data.req, topic: topicData}),
 				function(results, next) {
-					db.setObject('topic:' + tid, results.topicData, next);
+					db.setObject('topic:' + tid, results.topic, next);
 				},
 				function(next) {
 					topics.updateTags(tid, data.tags, next);
