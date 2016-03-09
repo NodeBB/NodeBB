@@ -73,7 +73,7 @@ function resetTheme(themeId) {
 	var meta = require('./meta');
 	var fs = require('fs');
 	
-	fs.open('node_modules/' + themeId + '/package.json', 'r', function(err, fd) {
+	fs.access('node_modules/' + themeId + '/package.json', function(err, fd) {
 		if (err) {
 			winston.warn('[reset] Theme `%s` is not installed on this forum', themeId);
 			process.exit();
