@@ -8,7 +8,6 @@ var cookieParser = require('cookie-parser')(nconf.get('secret'));
 var winston = require('winston');
 
 var db = require('../database');
-var user = require('../user');
 var logger = require('../logger');
 var ratelimit = require('../middleware/ratelimit');
 
@@ -45,10 +44,6 @@ function onConnection(socket) {
 
 	onConnect(socket);
 
-	socket.on('disconnect', function(data) {
-		onDisconnect(socket, data);
-	});
-
 	socket.on('*', function(payload) {
 		onMessage(socket, payload);
 	});
@@ -58,32 +53,11 @@ function onConnect(socket) {
 	if (socket.uid) {
 		socket.join('uid_' + socket.uid);
 		socket.join('online_users');
-
-		if (Sockets.getUserSocketCount(socket.uid) > 1) {
-			return;
-		}
-		user.getUserFields(socket.uid, ['status'], function(err, userData) {
-			if (err || !userData) {
-				return;
-			}
-
-			if (userData.status !== 'offline') {
-				socket.broadcast.emit('event:user_status_change', {uid: socket.uid, status: userData.status || 'online'});
-			}
-		});
 	} else {
 		socket.join('online_guests');
 	}
 }
 
-function onDisconnect(socket) {
-	if (socket.uid) {
-		var socketCount = Sockets.getUserSocketCount(socket.uid);
-		if (socketCount <= 1) {
-			socket.broadcast.emit('event:user_status_change', {uid: socket.uid, status: 'offline'});
-		}
-	}
-}
 
 function onMessage(socket, payload) {
 	if (!payload.data.length) {
