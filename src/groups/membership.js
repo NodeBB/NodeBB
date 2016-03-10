@@ -425,8 +425,7 @@ module.exports = function(Groups) {
 					if (numOwners <= 1) {
 						return next(new Error('[[error:group-needs-owner]]'));
 					}
-					Groups.leave(groupName, uid, callback);
-					next();
+					Groups.leave(groupName, uid, next);
 				}
 			], callback);
 		} else {
