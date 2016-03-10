@@ -18,7 +18,7 @@ infoController.get = function(req, res, next) {
 	pubsub.publish('sync:node:info:start');
 	setTimeout(function() {
 		res.render('admin/development/info', {info: info, infoJSON: JSON.stringify(info, null, 4), host: os.hostname(), port: nconf.get('port')});
-	}, 100);
+	}, 200);
 };
 
 pubsub.on('sync:node:info:start', function() {
