@@ -40,6 +40,11 @@
 					<div class="checkbox">
 						<label>
 							<input id="group-private" name="private" type="checkbox"<!-- IF group.private --> checked<!-- ENDIF group.private -->> <strong>[[groups:details.private]]</strong>
+							<!-- IF !allowPrivateGroups -->
+							<p class="help-block">
+								[[groups:details.private_system_help]]
+							</p>
+							<!-- ENDIF !allowPrivateGroups -->
 							<p class="help-block">
 								[[groups:details.private_help]]
 							</p>
