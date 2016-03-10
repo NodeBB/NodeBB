@@ -21,7 +21,7 @@ infoController.get = function(req, res, next) {
 			return (a.os.hostname < b.os.hostname) ? -1 : (a.os.hostname > b.os.hostname) ? 1 : 0;
 		});
 		res.render('admin/development/info', {info: info, infoJSON: JSON.stringify(info, null, 4), host: os.hostname(), port: nconf.get('port')});
-	}, 200);
+	}, 300);
 };
 
 pubsub.on('sync:node:info:start', function() {
