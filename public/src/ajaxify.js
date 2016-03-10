@@ -4,13 +4,14 @@ var ajaxify = ajaxify || {};
 
 $(document).ready(function() {
 
-	/*global app, templates, utils, socket, config, RELATIVE_PATH*/
+	/*global app, templates, socket, config, RELATIVE_PATH*/
 
-	var location = document.location || window.location,
-		rootUrl = location.protocol + '//' + (location.hostname || location.host) + (location.port ? ':' + location.port : ''),
-		apiXHR = null,
+	var location = document.location || window.location;
+	var rootUrl = location.protocol + '//' + (location.hostname || location.host) + (location.port ? ':' + location.port : '');
+	var apiXHR = null;
 
-		translator;
+	var translator;
+	var retry = true;
 
 	// Dumb hack to fool ajaxify into thinking translator is still a global
 	// When ajaxify is migrated to a require.js module, then this can be merged into the "define" call
@@ -63,7 +64,7 @@ $(document).ready(function() {
 			if (err) {
 				return onAjaxError(err, url, callback, quiet);
 			}
-
+			retry = true;
 			app.template = data.template.name;
 
 			require(['translator'], function(translator) {
@@ -107,19 +108,23 @@ $(document).ready(function() {
 	};
 
 	function onAjaxError(err, url, callback, quiet) {
-		var data = err.data,
-			textStatus = err.textStatus;
+		var data = err.data;
+		var textStatus = err.textStatus;
 
 		if (data) {
 			var status = parseInt(data.status, 10);
 			if (status === 403 || status === 404 || status === 500 || status === 502 || status === 503) {
+				if (status === 502 && retry) {
+					retry = false;
+					return ajaxify.go(url, callback, quiet);
+				}
 				if (status === 502) {
 					status = 500;
 				}
 				if (data.responseJSON) {
 					data.responseJSON.config = config;
 				}
-				
+
 				$('#footer, #content').removeClass('hide').addClass('ajaxifying');
 				return renderTemplate(url, status.toString(), data.responseJSON || {}, callback);
 			} else if (status === 401) {
