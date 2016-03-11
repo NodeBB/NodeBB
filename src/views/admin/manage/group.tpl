@@ -39,10 +39,15 @@
 				<fieldset>
 					<div class="checkbox">
 						<label>
-							<input id="group-private" name="private" type="checkbox"<!-- IF group.private --> checked<!-- ENDIF group.private -->> <strong>Private</strong>
+							<input id="group-private" name="private" type="checkbox"<!-- IF group.private --> checked<!-- ENDIF group.private -->> <strong>[[groups:details.private]]</strong>
 							<p class="help-block">
-								If enabled, joining of groups requires approval from a group owner
+								If enabled, joining of groups requires approval from a group owner.
 							</p>
+							<!-- IF !allowPrivateGroups -->
+							<p class="help-block">
+								Warning: Private groups is disabled at system level, which overrides this option.
+							</p>
+							<!-- ENDIF !allowPrivateGroups -->
 						</label>
 					</div>
 				</fieldset>
