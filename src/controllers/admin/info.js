@@ -11,16 +11,20 @@ var rooms = require('../../socket.io/admin/rooms');
 
 var infoController = {};
 
-var info = [];
+var info = {};
 
 infoController.get = function(req, res, next) {
-	info = [];
+	info = {};
 	pubsub.publish('sync:node:info:start');
 	setTimeout(function() {
-		info.sort(function(a, b) {
+		var data = [];
+		Object.keys(info).forEach(function(key) {
+			data.push(info[key]);
+		});
+		data.sort(function(a, b) {
 			return (a.os.hostname < b.os.hostname) ? -1 : (a.os.hostname > b.os.hostname) ? 1 : 0;
 		});
-		res.render('admin/development/info', {info: info, infoJSON: JSON.stringify(info, null, 4), host: os.hostname(), port: nconf.get('port')});
+		res.render('admin/development/info', {info: data, infoJSON: JSON.stringify(data, null, 4), host: os.hostname(), port: nconf.get('port')});
 	}, 300);
 };
 
@@ -29,12 +33,12 @@ pubsub.on('sync:node:info:start', function() {
 		if (err) {
 			return winston.error(err);
 		}
-		pubsub.publish('sync:node:info:end', data);
+		pubsub.publish('sync:node:info:end', {data: data, id: os.hostname() + ':' + nconf.get('port')});
 	});
 });
 
 pubsub.on('sync:node:info:end', function(data) {
-	info.push(data);
+	info[data.id] = data.data;
 });
 
 function getNodeInfo(callback) {
