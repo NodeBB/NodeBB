@@ -47,39 +47,47 @@ var getRunningPid = function(callback) {
 			files: async.apply(fs.readdir, path.join(__dirname, 'node_modules')),
 			deps: async.apply(fs.readFile, path.join(__dirname, 'package.json'), { encoding: 'utf-8' })
 		}, function(err, payload) {
+			var isNbbModule = /^nodebb-(?:plugin|theme|widget|rewards)-[\w\-]+$/,
+				moduleName, isGitRepo;
+
+			payload.files = payload.files.filter(function(file) {
+				return isNbbModule.test(file);
+			});
+
 			try {
-				var isNbbModule = /^nodebb-(?:plugin|theme|widget|rewards)-[\w\-]+$/,
-					moduleName;
-
-				payload.files = payload.files.filter(function(file) {
-					return isNbbModule.test(file);
-				});
-
 				payload.deps = JSON.parse(payload.deps).dependencies;
 				payload.bundled = [];
 				payload.installed = [];
+			} catch (err) {
+				return callback(err);
+			}
 
-				for (moduleName in payload.deps) {
-					if (isNbbModule.test(moduleName)) {
-						payload.bundled.push(moduleName);
-					}
+			for (moduleName in payload.deps) {
+				if (isNbbModule.test(moduleName)) {
+					payload.bundled.push(moduleName);
+				}
+			}
+
+			// Whittle down deps to send back only extraneously installed plugins/themes/etc
+			payload.files.forEach(function(moduleName) {
+				try {
+					fs.accessSync(path.join(__dirname, 'node_modules/' + moduleName, '.git'));
+					isGitRepo = true;
+				} catch(e) {
+					isGitRepo = false;
 				}
 
-				// Whittle down deps to send back only extraneously installed plugins/themes/etc
-				payload.files.forEach(function(moduleName) {
-					if (
-						payload.files.indexOf(moduleName) !== -1	// found in `node_modules/`
-						&& payload.bundled.indexOf(moduleName) === -1	// not found in `package.json`
-						&& !fs.lstatSync(path.join(__dirname, 'node_modules/' + moduleName)).isSymbolicLink()	// is not a symlink
-					) {
-						payload.installed.push(moduleName);
-					}
-				});
+				if (
+					payload.files.indexOf(moduleName) !== -1	// found in `node_modules/`
+					&& payload.bundled.indexOf(moduleName) === -1	// not found in `package.json`
+					&& !fs.lstatSync(path.join(__dirname, 'node_modules/' + moduleName)).isSymbolicLink()	// is not a symlink
+					&& !isGitRepo	// .git/ does not exist, so it is not a git repository
+				) {
+					payload.installed.push(moduleName);
+				}
+			});
 
-				getModuleVersions(payload.installed, callback);
-			} catch (err) {
-				callback(err);
-			}
+			getModuleVersions(payload.installed, callback);
 		});
 	},
 	getModuleVersions = function(modules, callback) {
