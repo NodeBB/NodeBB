@@ -23,7 +23,7 @@
 					</div>
 				</div>
 
-				<button type="submit" class="btn btn-primary">[[global:search]]</button>
+				<button type="submit" class="btn btn-primary">Search</button>
 			</form>
 			<br />
 			<hr/>
