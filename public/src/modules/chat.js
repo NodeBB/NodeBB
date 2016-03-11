@@ -7,7 +7,7 @@ define('chat', ['components', 'taskbar', 'string', 'sounds', 'forum/chats', 'tra
 	var newMessage = false;
 
 	module.prepareDOM = function() {
-		var	chatsToggleEl = components.get('chat/dropdown');
+		var chatsToggleEl = components.get('chat/dropdown');
 		var chatsListEl = components.get('chat/list');
 
 		chatsToggleEl.on('click', function() {
