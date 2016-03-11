@@ -42,7 +42,7 @@
 							<input id="group-private" name="private" type="checkbox"<!-- IF group.private --> checked<!-- ENDIF group.private -->> <strong>[[groups:details.private]]</strong>
 							<!-- IF !allowPrivateGroups -->
 							<p class="help-block">
-								[[groups:details.private_system_help]]
+								Private groups is disabled at system level, this option does not do anything
 							</p>
 							<!-- ENDIF !allowPrivateGroups -->
 							<p class="help-block">
