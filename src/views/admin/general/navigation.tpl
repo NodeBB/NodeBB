@@ -68,6 +68,12 @@
 					</div>
 					<div class="checkbox">
 						<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
+							<input class="mdl-switch__input" type="checkbox" name="property:globalMod" <!-- IF enabled.properties.globalMod -->checked<!-- ENDIF enabled.properties.globalMod -->/>
+							<span class="mdl-switch__label"><strong>Only display to Global Moderators and Admins</strong></span>
+						</label>
+					</div>
+					<div class="checkbox">
+						<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
 							<input class="mdl-switch__input" type="checkbox" name="property:loggedIn" <!-- IF enabled.properties.loggedIn -->checked<!-- ENDIF enabled.properties.loggedIn -->/> <span class="mdl-switch__label"><strong>Only display to logged in users</strong></span>
 						</label>
 					</div>
