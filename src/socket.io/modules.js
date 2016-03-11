@@ -61,7 +61,7 @@ SocketModules.chats.newRoom = function(socket, data, callback) {
 		socket.lastChatMessageTime = now;
 	}
 
-	Messaging.canMessageUser(socket.uid, data.touid, function(err, allowed) {
+	Messaging.canMessageUser(socket.uid, data.touid, function(err) {
 		if (err) {
 			return callback(err);
 		}
@@ -242,6 +242,18 @@ SocketModules.chats.markRead = function(socket, roomId, callback) {
 
 		callback();
 	});
+};
+
+SocketModules.chats.markAllRead = function(socket, data, callback) {
+	async.waterfall([
+		function (next) {
+			Messaging.markAllRead(socket.uid, next);
+		},
+		function (next) {
+			Messaging.pushUnreadCount(socket.uid);
+			next();
+		}
+	], callback);
 };
 
 SocketModules.chats.renameRoom = function(socket, data, callback) {

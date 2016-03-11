@@ -7,8 +7,8 @@ define('chat', ['components', 'taskbar', 'string', 'sounds', 'forum/chats', 'tra
 	var newMessage = false;
 
 	module.prepareDOM = function() {
-		var	chatsToggleEl = components.get('chat/dropdown'),
-			chatsListEl = components.get('chat/list');
+		var	chatsToggleEl = components.get('chat/dropdown');
+		var chatsListEl = components.get('chat/list');
 
 		chatsToggleEl.on('click', function() {
 			if (chatsToggleEl.parent().hasClass('open')) {
@@ -16,6 +16,14 @@ define('chat', ['components', 'taskbar', 'string', 'sounds', 'forum/chats', 'tra
 			}
 
 			module.loadChatsDropdown(chatsListEl);
+		});
+
+		$('[component="chats/mark-all-read"]').on('click', function() {
+			socket.emit('modules.chats.markAllRead', function(err) {
+				if (err) {
+					return app.alertError(err);
+				}
+			});
 		});
 
 		socket.on('event:chats.receive', function(data) {
