@@ -100,6 +100,23 @@
 		return style.join('; ') + ';';
 	};
 
+	helpers.generateChildrenCategories = function(category, relative_path) {
+		var html = '';
+		category.children.forEach(function(child) {
+			if (!child) {
+				return;
+			}
+			var link = child.link ? child.link : ('/category/' + child.slug);
+			html += '<a href="' + link + '">' +
+					'<span class="fa-stack fa-lg">' +
+					'<i style="color:' + child.bgColor + ';" class="fa fa-circle fa-stack-2x"></i>' +
+					'<i style="color:' + child.color + ';" class="fa fa-stack-1x ' + child.icon + '"></i>' +
+					'</span><small>' + child.name + '</small></a> ';
+		});
+		html = html ? ('<br/><span class="category-children">' + html + '</span>') : html;
+		return html;
+	};
+
 	helpers.generateTopicClass = function(topic) {
 		var style = [];
 
@@ -244,7 +261,7 @@
 		}
 
 		return icons;
-	}
+	};
 
 	exports.register = function() {
 		var templates;
