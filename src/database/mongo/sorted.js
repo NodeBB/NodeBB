@@ -95,7 +95,16 @@ module.exports = function(db, module) {
 		if (!Array.isArray(keys) || !keys.length) {
 			return callback();
 		}
-		db.collection('objects').remove({_key: {$in: keys}, score: {$lte: max, $gte: min}}, function(err) {
+
+		var scoreQuery = {};
+		if (min !== '-inf') {
+			scoreQuery.$gte = min;
+		}
+		if (max !== '+inf') {
+			scoreQuery.$lte = max;
+		}
+
+		db.collection('objects').remove({_key: {$in: keys}, score: scoreQuery}, function(err) {
 			callback(err);
 		});
 	};

@@ -188,10 +188,9 @@ var async = require('async'),
 	}
 
 	UserNotifications.getDailyUnread = function(uid, callback) {
-		var	now = Date.now(),
-			yesterday = now - (1000*60*60*24);	// Approximate, can be more or less depending on time changes, makes no difference really.
+		var yesterday = Date.now() - (1000 * 60 * 60 * 24);	// Approximate, can be more or less depending on time changes, makes no difference really.
 
-		db.getSortedSetRevRangeByScore('uid:' + uid + ':notifications:unread', 0, 20, now, yesterday, function(err, nids) {
+		db.getSortedSetRevRangeByScore('uid:' + uid + ':notifications:unread', 0, 20, '+inf', yesterday, function(err, nids) {
 			if (err) {
 				return callback(err);
 			}

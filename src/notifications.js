@@ -214,10 +214,10 @@ var async = require('async'),
 				db.sortedSetsRemove(readKeys, notification.nid, next);
 			},
 			function(next) {
-				db.sortedSetsRemoveRangeByScore(unreadKeys, 0, oneWeekAgo, next);
+				db.sortedSetsRemoveRangeByScore(unreadKeys, '-inf', oneWeekAgo, next);
 			},
 			function(next) {
-				db.sortedSetsRemoveRangeByScore(readKeys, 0, oneWeekAgo, next);
+				db.sortedSetsRemoveRangeByScore(readKeys, '-inf', oneWeekAgo, next);
 			}
 		], function(err) {
 			if (err) {
@@ -358,7 +358,7 @@ var async = require('async'),
 
 		var	cutoffTime = Date.now() - week;
 
-		db.getSortedSetRangeByScore('notifications', 0, 500, 0, cutoffTime, function(err, nids) {
+		db.getSortedSetRangeByScore('notifications', 0, 500, '-inf', cutoffTime, function(err, nids) {
 			if (err) {
 				return winston.error(err.message);
 			}

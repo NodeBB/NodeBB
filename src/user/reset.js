@@ -144,10 +144,10 @@ var async = require('async'),
 			function(next) {
 				async.parallel({
 					tokens: function(next) {
-						db.getSortedSetRangeByScore('reset:issueDate', 0, -1, 0, Date.now() - twoHours, next);
+						db.getSortedSetRangeByScore('reset:issueDate', 0, -1, '-inf', Date.now() - twoHours, next);
 					},
 					uids: function(next) {
-						db.getSortedSetRangeByScore('reset:issueDate:uid', 0, -1, 0, Date.now() - twoHours, next);
+						db.getSortedSetRangeByScore('reset:issueDate:uid', 0, -1, '-inf', Date.now() - twoHours, next);
 					}
 				}, next);
 			},
