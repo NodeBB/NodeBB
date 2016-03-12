@@ -156,7 +156,7 @@ User.deleteUsers = function(socket, uids, callback) {
 					return next(new Error('[[error:cant-delete-other-admins]]'));
 				}
 
-				user.delete(uid, next);
+				user.delete(socket.uid, uid, next);
 			},
 			function (next) {
 				events.log({
@@ -210,6 +210,10 @@ User.search = function(socket, data, callback) {
 			callback(null, searchData);
 		});
 	});
+};
+
+User.deleteInvitation = function(socket, data, callback) {
+	user.deleteInvitation(data.invitedBy, data.email, callback);
 };
 
 User.acceptRegistration = function(socket, data, callback) {

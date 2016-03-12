@@ -30,6 +30,7 @@
     "user_started_following_you_dual": "<strong>%1</strong> и <strong>%2</strong> подписались на вас.",
     "user_started_following_you_multiple": "<strong>%1</strong> и %2 подписались на вас.",
     "new_register": "<strong>%1</strong> отправил запрос на регистрацию.",
+    "new_register_multiple": "There are <strong>%1</strong> registration requests awaiting review.",
     "email-confirmed": "Email подтвержден",
     "email-confirmed-message": "Спасибо за подтверждение Вашего Email-адреса. Ваш аккаунт активирован.",
     "email-confirm-error-message": "Ошибка проверки Email-адреса. Возможно, код неверен, либо у него истек срок действия.",

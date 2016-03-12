@@ -11,7 +11,7 @@ var async = require('async'),
 
 module.exports = function(Topics) {
 
-	Topics.delete = function(tid, callback) {
+	Topics.delete = function(tid, uid, callback) {
 		Topics.getTopicFields(tid, ['cid'], function(err, topicData) {
 			if (err) {
 				return callback(err);
@@ -38,7 +38,7 @@ module.exports = function(Topics) {
 		});
 	};
 
-	Topics.restore = function(tid, callback) {
+	Topics.restore = function(tid, uid, callback) {
 		Topics.getTopicFields(tid, ['cid', 'lastposttime', 'postcount', 'viewcount'], function(err, topicData) {
 			if (err) {
 				return callback(err);
@@ -103,12 +103,12 @@ module.exports = function(Topics) {
 				posts.purge(mainPid, uid, next);
 			},
 			function (next) {
-				Topics.purge(tid, next);
+				Topics.purge(tid, uid, next);
 			}
 		], callback);
 	};
 
-	Topics.purge = function(tid, callback) {
+	Topics.purge = function(tid, uid, callback) {
 		async.parallel([
 			function(next) {
 				db.deleteAll([

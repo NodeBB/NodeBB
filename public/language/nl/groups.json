@@ -1,8 +1,8 @@
 {
     "groups": "Groepen",
-    "view_group": "Weergeven groep",
+    "view_group": "Bekijk Groep",
     "owner": "Groepseigenaar",
-    "new_group": "Nieuwe groep",
+    "new_group": "Nieuwe groep aanmaken",
     "no_groups_found": "Geen groepen voor weergave",
     "pending.accept": "Accepteer",
     "pending.reject": "Afwijzen",
@@ -49,5 +49,5 @@
     "membership.leave-group": "Verlaat groep",
     "membership.reject": "Afwijzen",
     "new-group.group_name": "Groepsnaam:",
-    "upload-group-cover": "Upload group cover"
+    "upload-group-cover": "Upload groepscover"
 }

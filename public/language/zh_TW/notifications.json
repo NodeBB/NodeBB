@@ -30,6 +30,7 @@
     "user_started_following_you_dual": "<strong>%1</strong> and <strong>%2</strong> started following you.",
     "user_started_following_you_multiple": "<strong>%1</strong> and %2 others started following you.",
     "new_register": "<strong>%1</strong> sent a registration request.",
+    "new_register_multiple": "There are <strong>%1</strong> registration requests awaiting review.",
     "email-confirmed": "已確認電郵",
     "email-confirmed-message": "感謝您驗證您的電郵。您的帳戶現已全面啟用。",
     "email-confirm-error-message": "驗證您的電郵地址時出現問題。也許啟動碼無效或已過期。",

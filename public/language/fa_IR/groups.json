@@ -24,7 +24,7 @@
     "details.has_no_posts": "اعضای این گروه هیچ پستی ایجاد نکرده اند",
     "details.latest_posts": "آخرین پست ها",
     "details.private": "خصوصی",
-    "details.disableJoinRequests": "Disable join requests",
+    "details.disableJoinRequests": "غیر فعال کردن درخواستهای عضویت",
     "details.grant": "اعطاء/خلع مالکیت",
     "details.kick": "بیرون انداختن",
     "details.owner_options": "مدیر گروه",
@@ -49,5 +49,5 @@
     "membership.leave-group": "خروج از گروه",
     "membership.reject": "رد",
     "new-group.group_name": "نام گروه",
-    "upload-group-cover": "Upload group cover"
+    "upload-group-cover": "آپلود کاور گروه"
 }

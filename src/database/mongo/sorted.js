@@ -95,7 +95,16 @@ module.exports = function(db, module) {
 		if (!Array.isArray(keys) || !keys.length) {
 			return callback();
 		}
-		db.collection('objects').remove({_key: {$in: keys}, score: {$lte: max, $gte: min}}, function(err) {
+
+		var scoreQuery = {};
+		if (min !== '-inf') {
+			scoreQuery.$gte = min;
+		}
+		if (max !== '+inf') {
+			scoreQuery.$lte = max;
+		}
+
+		db.collection('objects').remove({_key: {$in: keys}, score: scoreQuery}, function(err) {
 			callback(err);
 		});
 	};
@@ -125,6 +134,11 @@ module.exports = function(db, module) {
 		if (withScores) {
 			fields.score = 1;
 		}
+
+		if (Array.isArray(key)) {
+			key = {$in: key};
+		}
+
 		db.collection('objects').find({_key: key}, {fields: fields})
 			.limit(stop - start + 1)
 			.skip(start)
@@ -459,6 +473,7 @@ module.exports = function(db, module) {
 		getSortedSetUnion(sets, -1, start, stop, callback);
 	};
 
+
 	function getSortedSetUnion(sets, sort, start, stop, callback) {
 		if (!Array.isArray(sets) || !sets.length) {
 			return callback();
@@ -532,5 +547,42 @@ module.exports = function(db, module) {
 				});
 				callback(err, data);
 		});
+	};
+
+	module.processSortedSet = function(setKey, process, batch, callback) {
+		var done = false;
+		var ids = [];
+		var cursor = db.collection('objects').find({_key: setKey})
+			.sort({score: 1})
+			.project({_id: 0, value: 1})
+			.batchSize(batch);
+
+		async.whilst(
+			function() {
+				return !done;
+			},
+			function(next) {
+				cursor.next(function(err, item) {
+					if (err) {
+						return next(err);
+					}
+					if (item === null) {
+						done = true;
+					} else {
+						ids.push(item.value);
+					}
+
+					if (ids.length < batch && (!done || ids.length === 0)) {
+						return next(null);
+					}
+
+					process(ids, function(err) {
+						ids = [];
+						return next(err);
+					});
+				});
+			},
+			callback
+		);
 	};
 };

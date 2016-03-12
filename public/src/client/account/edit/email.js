@@ -19,6 +19,10 @@ define('forum/account/edit/email', ['forum/account/header'], function(header) {
 				return;
 			}
 
+			if (userData.email === userData.password) {
+				return app.alertError('[[user:email_same_as_password]]');
+			}
+
 			var btn = $(this);
 			btn.addClass('disabled').find('i').removeClass('hide');
 

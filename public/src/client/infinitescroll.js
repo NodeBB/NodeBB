@@ -23,6 +23,9 @@ define('forum/infinitescroll', ['translator'], function(translator) {
 	};
 
 	function onScroll() {
+		if (loadingMore) {
+			return;
+		}
 		var currentScrollTop = $(window).scrollTop();
 		var wh = $(window).height();
 		var viewportHeight = container.height() - wh;

@@ -68,20 +68,13 @@ module.exports = function(app, middleware) {
 
 		async.parallel({
 			scripts: function(next) {
-				plugins.fireHook('filter:scripts.get', [], function(err, scripts) {
-					if (err) {
-						return next(err);
-					}
-					var arr = [];
-					scripts.forEach(function(script) {
-						arr.push({src: script});
-					});
-
-					next(null, arr);
-				});
+				plugins.fireHook('filter:scripts.get', [], next);
 			},
 			isAdmin: function(next) {
 				user.isAdministrator(req.uid, next);
+			},
+			isGlobalMod: function(next) {
+				user.isGlobalModerator(req.uid, next);
 			},
 			user: function(next) {
 				if (req.uid) {
@@ -110,6 +103,7 @@ module.exports = function(app, middleware) {
 			}
 
 			results.user.isAdmin = results.isAdmin;
+			results.user.isGlobalMod = results.isGlobalMod;
 			results.user.uid = parseInt(results.user.uid, 10);
 			results.user['email:confirmed'] = parseInt(results.user['email:confirmed'], 10) === 1;
 
@@ -122,6 +116,7 @@ module.exports = function(app, middleware) {
 			templateValues.metaTags = results.tags.meta;
 			templateValues.linkTags = results.tags.link;
 			templateValues.isAdmin = results.user.isAdmin;
+			templateValues.isGlobalMod = results.user.isGlobalMod;
 			templateValues.user = results.user;
 			templateValues.userJSON = JSON.stringify(results.user);
 			templateValues.useCustomCSS = parseInt(meta.config.useCustomCSS, 10) === 1 && meta.config.customCSS;
@@ -136,7 +131,9 @@ module.exports = function(app, middleware) {
 			templateValues.template = {name: res.locals.template};
 			templateValues.template[res.locals.template] = true;
 
-			templateValues.scripts = results.scripts;
+			templateValues.scripts = results.scripts.map(function(script) {
+				return {src: script};
+			});
 
 			if (req.route && req.route.path === '/') {
 				modifyTitle(templateValues);

@@ -36,7 +36,7 @@ Controllers.home = function(req, res, next) {
 		if (err) {
 			return next(err);
 		}
-		if (settings.homePageRoute !== 'undefined' && settings.homePageRoute !== 'none') {
+		if (parseInt(meta.config.allowUserHomePage, 10) === 1 && settings.homePageRoute !== 'undefined' && settings.homePageRoute !== 'none') {
 			route = settings.homePageRoute || route;
 		}
 

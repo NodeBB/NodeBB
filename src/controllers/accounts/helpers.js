@@ -89,6 +89,8 @@ helpers.getUserDataByUserSlug = function(userslug, callerUID, callback) {
 			userData.showHidden = self || isAdmin || isGlobalModerator;
 			userData.groups = Array.isArray(results.groups) && results.groups.length ? results.groups[0] : [];
 			userData.disableSignatures = meta.config.disableSignatures !== undefined && parseInt(meta.config.disableSignatures, 10) === 1;
+			userData['reputation:disabled'] = parseInt(meta.config['reputation:disabled'], 10) === 1;
+			userData['downvote:disabled'] = parseInt(meta.config['downvote:disabled'], 10) === 1;
 			userData['email:confirmed'] = !!parseInt(userData['email:confirmed'], 10);
 			userData.profile_links = filterLinks(results.profile_links, self);
 			userData.sso = results.sso.associations;
@@ -100,7 +102,6 @@ helpers.getUserDataByUserSlug = function(userslug, callerUID, callback) {
 			userData.followingCount = parseInt(userData.followingCount, 10) || 0;
 			userData.followerCount = parseInt(userData.followerCount, 10) || 0;
 
-			userData.username = validator.escape(userData.username || '');
 			userData.email = validator.escape(userData.email || '');
 			userData.fullname = validator.escape(userData.fullname || '');
 			userData.location = validator.escape(userData.location || '');
@@ -155,6 +156,8 @@ helpers.getBaseUser = function(userslug, callerUID, callback) {
 			results.user.showHidden = results.user.isSelf || results.isAdmin || results.isGlobalModerator;
 			results.user.profile_links = filterLinks(results.profile_links, results.user.isSelf);
 
+			results.user['reputation:disabled'] = parseInt(meta.config['reputation:disabled'], 10) === 1;
+			results.user['downvote:disabled'] = parseInt(meta.config['downvote:disabled'], 10) === 1;
 			results.user['cover:url'] = results.user['cover:url'] || require('../../coverPhoto').getDefaultProfileCover(results.user.uid);
 			results.user['cover:position'] = results.user['cover:position'] || '50% 50%';
 

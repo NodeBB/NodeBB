@@ -39,7 +39,6 @@ var	async = require('async'),
 			if (err || userData.status === 'offline' || now - parseInt(userData.lastonline, 10) < 300000) {
 				return callback(err);
 			}
-
 			User.setUserField(uid, 'lastonline', now, callback);
 		});
 	};
@@ -70,7 +69,7 @@ var	async = require('async'),
 		if (set === 'users:online') {
 			var count = parseInt(stop, 10) === -1 ? stop : stop - start + 1;
 			var now = Date.now();
-			db.getSortedSetRevRangeByScore(set, start, count, now, now - 300000, callback);
+			db.getSortedSetRevRangeByScore(set, start, count, '+inf', now - 300000, callback);
 		} else {
 			db.getSortedSetRevRange(set, start, stop, callback);
 		}
@@ -257,4 +256,3 @@ var	async = require('async'),
 
 
 }(exports));
-

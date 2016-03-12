@@ -1,32 +1,21 @@
 "use strict";
 
-var async = require('async'),
-	validator = require('validator'),
-	nconf = require('nconf'),
+var async = require('async');
+var validator = require('validator');
+var nconf = require('nconf');
 
-	meta = require('../meta'),
-	user = require('../user'),
-	posts = require('../posts'),
-	topics = require('../topics'),
-	categories = require('../categories'),
-	privileges = require('../privileges'),
-	plugins = require('../plugins'),
-	helpers = require('./helpers'),
-	widgets = require('../widgets');
+var meta = require('../meta');
+var user = require('../user');
+var posts = require('../posts');
+var topics = require('../topics');
+var categories = require('../categories');
+var privileges = require('../privileges');
+var plugins = require('../plugins');
+var widgets = require('../widgets');
 
 var apiController = {};
 
 apiController.getConfig = function(req, res, next) {
-	function filterConfig() {
-		plugins.fireHook('filter:config.get', config, function(err, config) {
-			if (res.locals.isAPI) {
-				res.status(200).json(config);
-			} else {
-				next(err, config);
-			}
-		});
-	}
-
 	var config = {};
 	config.environment = process.env.NODE_ENV;
 	config.relative_path = nconf.get('relative_path');
@@ -51,7 +40,6 @@ apiController.getConfig = function(req, res, next) {
 	config.allowFileUploads = parseInt(meta.config.allowFileUploads, 10) === 1;
 	config.allowTopicsThumbnail = parseInt(meta.config.allowTopicsThumbnail, 10) === 1;
 	config.usePagination = parseInt(meta.config.usePagination, 10) === 1;
-	config.disableSocialButtons = parseInt(meta.config.disableSocialButtons, 10) === 1;
 	config.disableChat = parseInt(meta.config.disableChat, 10) === 1;
 	config.socketioTransports = nconf.get('socket.io:transports') || ['polling', 'websocket'];
 	config.websocketAddress = nconf.get('socket.io:address') || '';
@@ -73,27 +61,41 @@ apiController.getConfig = function(req, res, next) {
 	config.searchEnabled = plugins.hasListeners('filter:search.query');
 	config.bootswatchSkin = 'default';
 
-	if (!req.user) {
-		return filterConfig();
-	}
-
-	user.getSettings(req.user.uid, function(err, settings) {
+	async.waterfall([
+		function (next) {
+			if (!req.user) {
+				return next(null, config);
+			}
+			user.getSettings(req.uid, function(err, settings) {
+				if (err) {
+					return next(err);
+				}
+				config.usePagination = settings.usePagination;
+				config.topicsPerPage = settings.topicsPerPage;
+				config.postsPerPage = settings.postsPerPage;
+				config.notificationSounds = settings.notificationSounds;
+				config.userLang = req.query.lang || settings.userLang || config.defaultLang;
+				config.openOutgoingLinksInNewTab = settings.openOutgoingLinksInNewTab;
+				config.topicPostSort = settings.topicPostSort || config.topicPostSort;
+				config.categoryTopicSort = settings.categoryTopicSort || config.categoryTopicSort;
+				config.topicSearchEnabled = settings.topicSearchEnabled || false;
+				config.bootswatchSkin = settings.bootswatchSkin || config.bootswatchSkin;
+				next(null, config);
+			});
+		},
+		function (config, next) {
+			plugins.fireHook('filter:config.get', config, next);
+		}
+	], function(err, config) {
 		if (err) {
 			return next(err);
 		}
 
-		config.usePagination = settings.usePagination;
-		config.topicsPerPage = settings.topicsPerPage;
-		config.postsPerPage = settings.postsPerPage;
-		config.notificationSounds = settings.notificationSounds;
-		config.userLang = req.query.lang || settings.userLang || config.defaultLang;
-		config.openOutgoingLinksInNewTab = settings.openOutgoingLinksInNewTab;
-		config.topicPostSort = settings.topicPostSort || config.topicPostSort;
-		config.categoryTopicSort = settings.categoryTopicSort || config.categoryTopicSort;
-		config.topicSearchEnabled = settings.topicSearchEnabled || false;
-		config.bootswatchSkin = settings.bootswatchSkin || config.bootswatchSkin;
-
-		filterConfig();
+		if (res.locals.isAPI) {
+			res.json(config);
+		} else {
+			next(null, config);
+		}
 	});
 };
 
@@ -126,6 +128,16 @@ apiController.renderWidgets = function(req, res, next) {
 };
 
 apiController.getObject = function(req, res, next) {
+	apiController.getObjectByType(req.uid, req.params.type, req.params.id, function(err, results) {
+		if (err) {
+			return next(err);
+		}
+
+		res.json(results);
+	});
+};
+
+apiController.getObjectByType = function(uid, type, id, callback) {
 	var methods = {
 		post: {
 			canRead: privileges.posts.can,
@@ -141,74 +153,101 @@ apiController.getObject = function(req, res, next) {
 		}
 	};
 
-	if (!methods[req.params.type]) {
-		return next();
+	if (!methods[type]) {
+		return callback();
 	}
 
-	async.parallel({
-		canRead: async.apply(methods[req.params.type].canRead, 'read', req.params.id, req.uid),
-		data: async.apply(methods[req.params.type].data, req.params.id)
-	}, function(err, results) {
-		if (err || !results.data) {
-			return next(err);
+	async.waterfall([
+		function (next) {
+			methods[type].canRead('read', id, uid, next);
+		},
+		function (canRead, next) {
+			if (!canRead) {
+				return next(new Error('[[error:no-privileges]]'));
+			}
+			methods[type].data(id, next);
 		}
-
-		if (!results.canRead) {
-			return helpers.notAllowed(req, res);
-		}
-
-		res.json(results.data);
-	});
+	], callback);
 };
-
 
 apiController.getUserByUID = function(req, res, next) {
 	var uid = req.params.uid ? req.params.uid : 0;
 
-	getUserByUID(uid, res, next);
+	apiController.getUserDataByUID(req.uid, uid, function(err, data) {
+		if (err) {
+			return next(err);
+		}
+		res.json(data);
+	});
 };
 
 apiController.getUserByUsername = function(req, res, next) {
 	var username = req.params.username ? req.params.username : 0;
 
-	async.waterfall([
-		function(next) {
-			user.getUidByUsername(username, next);
-		},
-		function(uid, next) {
-			getUserByUID(uid, res, next);
+	apiController.getUserDataByUsername(req.uid, username, function(err, data) {
+		if (err) {
+			return next(err);
 		}
-	], next);
+		res.json(data);
+	});
 };
 
 apiController.getUserByEmail = function(req, res, next) {
 	var email = req.params.email ? req.params.email : 0;
 
+	apiController.getUserDataByEmail(req.uid, email, function(err, data) {
+		if (err) {
+			return next(err);
+		}
+		res.json(data);
+	});
+};
+
+apiController.getUserDataByUsername = function(callerUid, username, callback) {
+	async.waterfall([
+		function(next) {
+			user.getUidByUsername(username, next);
+		},
+		function(uid, next) {
+			apiController.getUserDataByUID(callerUid, uid, next);
+		}
+	], callback);
+};
+
+apiController.getUserDataByEmail = function(callerUid, email, callback) {
 	async.waterfall([
 		function(next) {
 			user.getUidByEmail(email, next);
 		},
 		function(uid, next) {
-			getUserByUID(uid, res, next);
+			apiController.getUserDataByUID(callerUid, uid, next);
 		}
-	], next);
+	], callback);
 };
 
-function getUserByUID(uid, res, next) {
+apiController.getUserDataByUID = function(callerUid, uid, callback) {
+	if (!parseInt(callerUid, 10) && parseInt(meta.config.privateUserInfo, 10) === 1) {
+		return callback(new Error('[[error:no-privileges]]'));
+	}
+
+	if (!parseInt(uid, 10)) {
+		return callback(new Error('[[error:no-user]]'));
+	}
+
 	async.parallel({
 		userData: async.apply(user.getUserData, uid),
 		settings: async.apply(user.getSettings, uid)
 	}, function(err, results) {
 		if (err || !results.userData) {
-			return next(err);
+			return callback(err || new Error('[[error:no-user]]'));
 		}
 
 		results.userData.email = results.settings.showemail ? results.userData.email : undefined;
 		results.userData.fullname = results.settings.showfullname ? results.userData.fullname : undefined;
 
-		res.json(results.userData);
+		callback(null, results.userData);
 	});
-}
+};
 
 apiController.getModerators = function(req, res, next) {
 	categories.getModerators(req.params.cid, function(err, moderators) {

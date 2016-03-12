@@ -2,7 +2,7 @@
     "home": "Home",
     "search": "Zoeken",
     "buttons.close": "Sluiten",
-    "403.title": "Geen toegang",
+    "403.title": "Toegang Geweigerd",
     "403.message": "Deze account heeft onvoldoende systeemrechten om toegang tot de pagina te krijgen.",
     "403.login": "Wellicht proberen <a href='%1/login'>aan te melden</a>?",
     "404.title": "Niet gevonden",
@@ -87,8 +87,8 @@
     "map": "Kaart",
     "sessions": "Login Sessies",
     "ip_address": "IP Adres",
-    "enter_page_number": "Enter page number",
-    "upload_file": "Upload file",
+    "enter_page_number": "Voer paginanummer in",
+    "upload_file": "Upload bestand",
     "upload": "Upload",
-    "allowed-file-types": "Allowed file types are %1"
+    "allowed-file-types": "Toegestane bestandstypen zijn %1"
 }

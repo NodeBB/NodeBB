@@ -46,15 +46,9 @@ uploadsController.upload = function(req, res, filesIterator, next) {
 uploadsController.uploadPost = function(req, res, next) {
 	uploadsController.upload(req, res, function(uploadedFile, next) {
 		if (uploadedFile.type.match(/image./)) {
-			file.isFileTypeAllowed(uploadedFile.path, function(err, tempPath) {
-				if (err) {
-					return next(err);
-				}
-
-				uploadImage(req.user ? req.user.uid : 0, uploadedFile, next);
-			});
+			uploadImage(req.uid, uploadedFile, next);
 		} else {
-			uploadFile(req.user ? req.user.uid : 0, uploadedFile, next);
+			uploadFile(req.uid, uploadedFile, next);
 		}
 	}, next);
 };
@@ -66,7 +60,7 @@ uploadsController.uploadThumb = function(req, res, next) {
 	}
 
 	uploadsController.upload(req, res, function(uploadedFile, next) {
-		file.isFileTypeAllowed(uploadedFile.path, function(err, tempPath) {
+		file.isFileTypeAllowed(uploadedFile.path, function(err) {
 			if (err) {
 				return next(err);
 			}
@@ -82,7 +76,7 @@ uploadsController.uploadThumb = function(req, res, next) {
 					if (err) {
 						return next(err);
 					}
-					uploadImage(req.user ? req.user.uid : 0, uploadedFile, next);
+					uploadImage(req.uid, uploadedFile, next);
 				});
 			} else {
 				next(new Error('[[error:invalid-file]]'));
@@ -100,7 +94,12 @@ uploadsController.uploadGroupCover = function(uid, uploadedFile, callback) {
 		return plugins.fireHook('filter:uploadFile', {file: uploadedFile, uid: uid}, callback);
 	}
 
-	saveFileToLocal(uploadedFile, callback);
+	file.isFileTypeAllowed(uploadedFile.path, function(err) {
+		if (err) {
+			return callback(err);
+		}
+		saveFileToLocal(uploadedFile, callback);
+	});
 };
 
 function uploadImage(uid, image, callback) {
@@ -108,11 +107,16 @@ function uploadImage(uid, image, callback) {
 		return plugins.fireHook('filter:uploadImage', {image: image, uid: uid}, callback);
 	}
 
-	if (parseInt(meta.config.allowFileUploads, 10)) {
-		uploadFile(uid, image, callback);
-	} else {
-		callback(new Error('[[error:uploads-are-disabled]]'));
-	}
+	file.isFileTypeAllowed(image.path, function(err) {
+		if (err) {
+			return callback(err);
+		}
+		if (parseInt(meta.config.allowFileUploads, 10)) {
+			uploadFile(uid, image, callback);
+		} else {
+			callback(new Error('[[error:uploads-are-disabled]]'));
+		}
+	});
 }
 
 function uploadFile(uid, uploadedFile, callback) {

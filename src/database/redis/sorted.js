@@ -76,29 +76,41 @@ module.exports = function(redisClient, module) {
 	};
 
 	module.getSortedSetRange = function(key, start, stop, callback) {
-		redisClient.zrange(key, start, stop, callback);
+		sortedSetRange('zrange', key, start, stop, false, callback);
 	};
 
 	module.getSortedSetRevRange = function(key, start, stop, callback) {
-		redisClient.zrevrange(key, start, stop, callback);
+		sortedSetRange('zrevrange', key, start, stop, false, callback);
 	};
 
 	module.getSortedSetRangeWithScores = function(key, start, stop, callback) {
-		sortedSetRangeWithScores('zrange', key, start, stop, callback);
+		sortedSetRange('zrange', key, start, stop, true, callback);
 	};
 
 	module.getSortedSetRevRangeWithScores = function(key, start, stop, callback) {
-		sortedSetRangeWithScores('zrevrange', key, start, stop, callback);
+		sortedSetRange('zrevrange', key, start, stop, true, callback);
 	};
 
-	function sortedSetRangeWithScores(method, key, start, stop, callback) {
-		redisClient[method]([key, start, stop, 'WITHSCORES'], function(err, data) {
+	function sortedSetRange(method, key, start, stop, withScores, callback) {
+		if (Array.isArray(key)) {
+			return sortedSetUnion(method, key, start, stop, withScores, callback);
+		}
+
+		var params = [key, start, stop];
+		if (withScores) {
+			params.push('WITHSCORES');
+		}
+
+		redisClient[method](params, function(err, data) {
 			if (err) {
 				return callback(err);
 			}
+			if (!withScores) {
+				return callback(null, data);
+			}
 			var objects = [];
 			for(var i=0; i<data.length; i+=2) {
-				objects.push({value: data[i], score: data[i+1]});
+				objects.push({value: data[i], score: data[i + 1]});
 			}
 			callback(null, objects);
 		});
@@ -221,25 +233,39 @@ module.exports = function(redisClient, module) {
 	};
 
 	module.getSortedSetUnion = function(sets, start, stop, callback) {
-		sortedSetUnion(sets, false, start, stop, callback);
+		sortedSetUnion('zrange', sets, start, stop, false, callback);
 	};
 
 	module.getSortedSetRevUnion = function(sets, start, stop, callback) {
-		sortedSetUnion(sets, true, start, stop, callback);
+		sortedSetUnion('zrevrange', sets, start, stop, false, callback);
 	};
 
-	function sortedSetUnion(sets, reverse, start, stop, callback) {
+	function sortedSetUnion(method, sets, start, stop, withScores, callback) {
+
+		var tempSetName = 'temp_' + Date.now();
+
+		var params = [tempSetName, start, stop];
+		if (withScores) {
+			params.push('WITHSCORES');
+		}
+
 		var	multi = redisClient.multi();
-
-		// zunionstore prep
-		sets.unshift(sets.length);
-		sets.unshift('temp');
-
-		multi.zunionstore.apply(multi, sets);
-		multi[reverse ? 'zrevrange' : 'zrange']('temp', start, stop);
-		multi.del('temp');
+		multi.zunionstore([tempSetName, sets.length].concat(sets));
+		multi[method](params);
+		multi.del(tempSetName);
 		multi.exec(function(err, results) {
-			callback(err, results ? results[1] : null);
+			if (err) {
+				return callback(err);
+			}
+			if (!withScores) {
+				return callback(null, results ? results[1] : null);
+			}
+			results = results[1] || [];
+			var objects = [];
+			for(var i=0; i<results.length; i+=2) {
+				objects.push({value: results[i], score: results[i + 1]});
+			}
+			callback(null, objects);
 		});
 	}
 

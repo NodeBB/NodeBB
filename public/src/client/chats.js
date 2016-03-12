@@ -242,7 +242,7 @@ define('forum/chats', ['components', 'string', 'sounds', 'forum/infinitescroll',
 
 		if (data.users && data.users.length) {
 			data.users.forEach(function(user) {
-				tagEl.tagsinput('add', user.username);
+				tagEl.tagsinput('add', $('<div/>').html(user.username).text());
 			});
 		}
 
@@ -376,7 +376,7 @@ define('forum/chats', ['components', 'string', 'sounds', 'forum/infinitescroll',
 		Chats.onChatEdit();
 
 		socket.on('event:chats.roomRename', function(data) {
-			$('[component="chat/room/name"]').val(data.newName);
+			$('[component="chat/room/name"]').val($('<div/>').html(data.newName).text());
 		});
 	};
 

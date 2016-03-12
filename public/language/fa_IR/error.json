@@ -24,7 +24,7 @@
     "confirm-email-already-sent": "ایمیل فعال‌سازی قبلا فرستاده شده، لطفا %1 دقیقه صبر کنید تا ایمیل دیگری بفرستید.",
     "username-too-short": "نام کاربری خیلی کوتاه است.",
     "username-too-long": "نام کاربری بسیار طولانیست",
-    "password-too-long": "Password too long",
+    "password-too-long": "کلمه عبور بسیار طولانیست",
     "user-banned": "کاربر محروم شد.",
     "user-too-new": "با عرض پوزش، شما باید %1 ثانیه پیش از فرستادن پست نخست خود صبر کنید",
     "no-category": "دسته بندی وجود ندارد",
@@ -97,5 +97,5 @@
     "invite-maximum-met": "You have invited the maximum amount of people (%1 out of %2).",
     "no-session-found": "No login session found!",
     "not-in-room": "User not in room",
-    "no-users-in-room": "No users in this room"
+    "no-users-in-room": "هیچ کاربری در این گفتگو نیست"
 }

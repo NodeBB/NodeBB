@@ -87,8 +87,8 @@
     "map": "מפה",
     "sessions": "סשני התחברות",
     "ip_address": "כתובת IP",
-    "enter_page_number": "Enter page number",
-    "upload_file": "Upload file",
-    "upload": "Upload",
-    "allowed-file-types": "Allowed file types are %1"
+    "enter_page_number": "הכנס מספר עמוד",
+    "upload_file": "העלה קובץ",
+    "upload": "העלה",
+    "allowed-file-types": "פורמטי הקבצים המורשים הם %1"
 }

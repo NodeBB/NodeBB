@@ -155,9 +155,15 @@ SocketGroups.kick = isOwner(function(socket, data, callback) {
 	if (socket.uid === parseInt(data.uid, 10)) {
 		return callback(new Error('[[error:cant-kick-self]]'));
 	}
-	groups.leave(data.groupName, data.uid, callback);
-});
+	
+	groups.ownership.isOwner(data.uid, data.groupName, function(err, isOwner) {
+		if (err) {
+			return callback(err);
+		}
+		groups.kick(data.uid, data.groupName, isOwner, callback);
+	});
 
+});
 
 SocketGroups.create = function(socket, data, callback) {
 	if (!socket.uid) {

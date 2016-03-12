@@ -147,7 +147,10 @@ module.exports = function(Messaging) {
 		if (!newName) {
 			return callback(new Error('[[error:invalid-name]]'));
 		}
-
+		newName = newName.trim();
+		if (newName.length > 75) {
+			return callback(new Error('[[error:chat-room-name-too-long]]'));
+		}
 		async.waterfall([
 			function (next) {
 				Messaging.isRoomOwner(uid, roomId, next);

@@ -35,7 +35,7 @@
     "login_to_subscribe": "请注册或登录后，再订阅此主题。",
     "markAsUnreadForAll.success": "将全部主题标为未读。",
     "mark_unread": "标记为未读",
-    "mark_unread.success": "Topic marked as unread.",
+    "mark_unread.success": "未读话题",
     "watch": "关注",
     "unwatch": "取消关注",
     "watch.title": "当此主题有新回复时，通知我",

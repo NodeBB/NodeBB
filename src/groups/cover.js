@@ -7,7 +7,6 @@ var fs = require('fs');
 var crypto = require('crypto');
 var Jimp = require('jimp');
 
-
 var db = require('../database');
 var file = require('../file');
 var uploadsController = require('../controllers/uploads');
@@ -39,11 +38,7 @@ module.exports = function(Groups) {
 				writeImageDataToFile(data.imageData, next);
 			},
 			function (_tempPath, next) {
-				tempPath = _tempPath;	// set in local var so it can be deleted if file type invalid
-				next(null, tempPath);
-			},
-			async.apply(file.isFileTypeAllowed),
-			function (_tempPath, next) {
+				tempPath = _tempPath;
 				uploadsController.uploadGroupCover(uid, {
 					name: 'groupCover',
 					path: tempPath

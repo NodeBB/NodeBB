@@ -31,7 +31,7 @@ usersController.noPosts = function(req, res, next) {
 usersController.inactive = function(req, res, next) {
 	var timeRange = 1000 * 60 * 60 * 24 * 30 * (parseInt(req.query.months, 10) || 3);
 	var cutoff = Date.now() - timeRange;
-	getUsersByScore('users:online', 'inactive', 0, cutoff, req, res, next);
+	getUsersByScore('users:online', 'inactive', '-inf', cutoff, req, res, next);
 };
 
 function getUsersByScore(set, section, min, max, req, res, callback) {

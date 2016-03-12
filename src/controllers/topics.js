@@ -55,7 +55,11 @@ topicsController.get = function(req, res, callback) {
 			}
 
 			if ((!req.params.slug || results.topic.slug !== tid + '/' + req.params.slug) && (results.topic.slug && results.topic.slug !== tid + '/')) {
-				return helpers.redirect(res, '/topic/' + encodeURI(results.topic.slug));
+				var url = '/topic/' + encodeURI(results.topic.slug);
+				if (req.params.post_index){
+					url += '/'+req.params.post_index;
+				}
+				return helpers.redirect(res, url);
 			}
 
 			var settings = results.settings;
@@ -183,7 +187,7 @@ topicsController.get = function(req, res, callback) {
 			res.locals.metaTags = [
 				{
 					name: "title",
-					content: topicData.title
+					content: topicData.titleRaw
 				},
 				{
 					name: "description",
@@ -191,7 +195,7 @@ topicsController.get = function(req, res, callback) {
 				},
 				{
 					property: 'og:title',
-					content: topicData.title
+					content: topicData.titleRaw
 				},
 				{
 					property: 'og:description',

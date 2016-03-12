@@ -1,14 +1,14 @@
 
 'use strict';
 
-var async = require('async'),
-
-	meta = require('../meta'),
-	categories = require('../categories'),
-	privileges = require('../privileges'),
-	user = require('../user'),
-	topics = require('../topics'),
-	helpers = require('./helpers');
+var async = require('async');
+var meta = require('../meta');
+var categories = require('../categories');
+var privileges = require('../privileges');
+var user = require('../user')
+var topics = require('../topics');
+var helpers = require('./helpers');
+var plugins = require('../plugins');
 
 var unreadController = {};
 
@@ -47,17 +47,18 @@ unreadController.get = function(req, res, next) {
 				}
 			});
 			results.unreadTopics.categories = categories;
-			next(null, results.unreadTopics);
+
+			results.unreadTopics.breadcrumbs = helpers.buildBreadcrumbs([{text: '[[unread:title]]'}]);
+			results.unreadTopics.title = '[[pages:unread]]';
+
+			plugins.fireHook('filter:unread.build', {req: req, res: res, templateData: results.unreadTopics}, next);
 		}
 	], function(err, data) {
 		if (err) {
 			return next(err);
 		}
 
-		data.breadcrumbs = helpers.buildBreadcrumbs([{text: '[[unread:title]]'}]);
-		data.title = '[[pages:unread]]';
-
-		res.render('unread', data);
+		res.render('unread', data.templateData);
 	});
 };
 

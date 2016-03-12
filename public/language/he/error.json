@@ -50,8 +50,8 @@
     "still-uploading": "אנא המתן לסיום ההעלאות",
     "file-too-big": "הגודל המקסימלי של הקובץ הוא %1 קילובייט - אנא העלה קובץ קטן יותר",
     "guest-upload-disabled": "העלאת אורחים אינה מאופשרת",
-    "already-favourited": "You have already bookmarked this post",
-    "already-unfavourited": "You have already unbookmarked this post",
+    "already-favourited": "כבר סימנת את הפוסט הזה",
+    "already-unfavourited": "כבר הסרת את הסימון מפוסט זה",
     "cant-ban-other-admins": "אינך יכול לחסום מנהלים אחרים!",
     "cant-remove-last-admin": "אתה המנהל היחיד. הוסף משתמש אחר לניהול לפני שאתה מוריד את עצמך מניהול",
     "invalid-image-type": "פורמט תמונה לא תקין. הפורמטים המורשים הם: %1",
@@ -97,5 +97,5 @@
     "invite-maximum-met": "הזמנת את הכמות המירבית של אנשים (%1 מתוך %2).",
     "no-session-found": "לא נמצאו סשני התחברות!",
     "not-in-room": "משתמש זה לא בצ'אט",
-    "no-users-in-room": "No users in this room"
+    "no-users-in-room": "אין משתמש בחדר הזה"
 }

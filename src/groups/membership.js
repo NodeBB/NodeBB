@@ -413,4 +413,23 @@ module.exports = function(Groups) {
 		}
 		db.getSetMembers('group:' + groupName + ':pending', callback);
 	};
+	
+	Groups.kick = function(uid, groupName, isOwner, callback) {
+		if (isOwner) {
+			// If the owners set only contains one member, error out!
+			async.waterfall([
+				function (next) {
+					db.setCount('group:' + groupName + ':owners', next);
+				},
+				function (numOwners, next) {
+					if (numOwners <= 1) {
+						return next(new Error('[[error:group-needs-owner]]'));
+					}
+					Groups.leave(groupName, uid, next);
+				}
+			], callback);
+		} else {
+			Groups.leave(groupName, uid, callback);
+		}
+	};
 };

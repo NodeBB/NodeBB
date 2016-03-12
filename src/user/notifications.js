@@ -188,10 +188,9 @@ var async = require('async'),
 	}
 
 	UserNotifications.getDailyUnread = function(uid, callback) {
-		var	now = Date.now(),
-			yesterday = now - (1000*60*60*24);	// Approximate, can be more or less depending on time changes, makes no difference really.
+		var yesterday = Date.now() - (1000 * 60 * 60 * 24);	// Approximate, can be more or less depending on time changes, makes no difference really.
 
-		db.getSortedSetRevRangeByScore('uid:' + uid + ':notifications:unread', 0, 20, now, yesterday, function(err, nids) {
+		db.getSortedSetRevRangeByScore('uid:' + uid + ':notifications:unread', 0, 20, '+inf', yesterday, function(err, nids) {
 			if (err) {
 				return callback(err);
 			}
@@ -208,8 +207,30 @@ var async = require('async'),
 		if (!parseInt(uid, 10)) {
 			return callback(null, 0);
 		}
-		db.getSortedSetRevRange('uid:' + uid + ':notifications:unread', 0, 99, function(err, nids) {
-			callback(err, Array.isArray(nids) ? nids.length : 0);
+
+		// Collapse any notifications with identical mergeIds
+		async.waterfall([
+			async.apply(db.getSortedSetRevRange, 'uid:' + uid + ':notifications:unread', 0, 99),
+			function(nids, next) {
+				var keys = nids.map(function(nid) {
+					return 'notifications:' + nid;
+				});
+
+				db.getObjectsFields(keys, ['mergeId'], next);
+			}
+		], function(err, mergeIds) {
+			// A missing (null) mergeId means that notification is counted separately.
+			mergeIds = mergeIds.map(function(set) {
+				return set.mergeId;
+			});
+
+			callback(err, mergeIds.reduce(function(count, cur, idx, arr) {
+				if (cur === null || idx === arr.indexOf(cur)) {
+					++count;
+				}
+
+				return count;
+			}, 0));
 		});
 	};
 

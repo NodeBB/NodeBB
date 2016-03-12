@@ -11,7 +11,7 @@
     "users/latest": "最新会员",
     "users/sort-posts": "最多发帖的会员",
     "users/sort-reputation": "最多积分的会员",
-    "users/banned": "Banned Users",
+    "users/banned": "被封禁的用户",
     "users/search": "会员搜索",
     "notifications": "提醒",
     "tags": "话题",
@@ -39,7 +39,7 @@
     "account/upvoted": "帖子被 %1 顶过",
     "account/downvoted": "帖子被 %1 踩过",
     "account/best": "%1 发布的最佳帖子",
-    "confirm": "Email Confirmed",
+    "confirm": "电子邮箱已确认",
     "maintenance.text": "%1 正在进行维护。请稍后再来。",
     "maintenance.messageIntro": "此外，管理员留下的消息：",
     "throttled.text": "%1 因负荷超载暂不可用。请稍后再来。"

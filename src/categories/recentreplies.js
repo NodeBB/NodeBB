@@ -86,7 +86,7 @@ module.exports = function(Categories) {
 				db.getSortedSetRevRangeByScore('cid:' + category.cid + ':tids', 0, -1, '+inf', Date.now(), next);
 			},
 			tids: function(next) {
-				db.getSortedSetRevRangeByScore('cid:' + category.cid + ':tids', 0, Math.max(1, count), Date.now(), 0, next);
+				db.getSortedSetRevRangeByScore('cid:' + category.cid + ':tids', 0, Math.max(1, count), Date.now(), '-inf', next);
 			}
 		}, function(err, results) {
 			if (err) {

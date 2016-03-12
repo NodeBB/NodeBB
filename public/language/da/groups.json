@@ -24,7 +24,7 @@
     "details.has_no_posts": "Medlemmer af denne gruppe har ikke oprettet indlæg.",
     "details.latest_posts": "seneste indlæg",
     "details.private": "Privat",
-    "details.disableJoinRequests": "Disable join requests",
+    "details.disableJoinRequests": "Deaktiver Anmodninger",
     "details.grant": "Giv/ophæv ejerskab",
     "details.kick": "Spark",
     "details.owner_options": "Gruppe administration",
@@ -49,5 +49,5 @@
     "membership.leave-group": "Forlad Gruppe",
     "membership.reject": "Afvis",
     "new-group.group_name": "Gruppe Navn:",
-    "upload-group-cover": "Upload group cover"
+    "upload-group-cover": "Upload Gruppe coverbillede"
 }
