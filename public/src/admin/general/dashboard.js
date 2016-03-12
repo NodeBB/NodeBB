@@ -8,6 +8,7 @@ define('admin/general/dashboard', ['semver'], function(semver) {
 			graphs: false
 		},
 		isMobile = false,
+		isPrerelease = /^v?\d+\.\d+\.\d+-.+$/,
 		graphData = {
 			rooms: {},
 			traffic: {}
@@ -46,20 +47,28 @@ define('admin/general/dashboard', ['semver'], function(semver) {
 				a = a.name.replace(/^v/, '');
 				b = b.name.replace(/^v/, '');
 				return semver.lt(a, b) ? 1 : -1;
+			}).filter(function(version) {
+				return !isPrerelease.test(version.name);	// filter out automated prerelease versions
 			});
 
 			var	version = $('#version').html(),
 				latestVersion = releases[0].name.slice(1),
 				checkEl = $('.version-check');
-			checkEl.html($('.version-check').html().replace('<i class="fa fa-spinner fa-spin"></i>', 'v' + latestVersion));
 
 			// Alter box colour accordingly
 			if (semver.eq(latestVersion, version)) {
 				checkEl.removeClass('alert-info').addClass('alert-success');
 				checkEl.append('<p>You are <strong>up-to-date</strong> <i class="fa fa-check"></i></p>');
 			} else if (semver.gt(latestVersion, version)) {
-				checkEl.removeClass('alert-info').addClass('alert-danger');
-				checkEl.append('<p>A new version (v' + latestVersion + ') has been released. Consider <a href="https://docs.nodebb.org/en/latest/upgrading/index.html">upgrading your NodeBB</a>.</p>');
+				checkEl.removeClass('alert-info').addClass('alert-warning');
+				if (!isPrerelease.test(version)) {
+					checkEl.append('<p>A new version (v' + latestVersion + ') has been released. Consider <a href="https://docs.nodebb.org/en/latest/upgrading/index.html">upgrading your NodeBB</a>.</p>');
+				} else {
+					checkEl.append('<p>This is an outdated pre-release version of NodeBB. A new version (v' + latestVersion + ') has been released. Consider <a href="https://docs.nodebb.org/en/latest/upgrading/index.html">upgrading your NodeBB</a>.</p>');
+				}
+			} else if (isPrerelease.test(version)) {
+				checkEl.removeClass('alert-info').addClass('alert-info');
+				checkEl.append('<p>This is a <strong>pre-release</strong> version of NodeBB. Unintended bugs may occur. <i class="fa fa-exclamation-triangle"></i>.</p>');
 			}
 		});
 
