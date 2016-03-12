@@ -11,16 +11,16 @@ var async = require('async'),
 
 module.exports = function(User) {
 
-	User.delete = function(uid, callback) {
+	User.delete = function(callerUid, uid, callback) {
 		if (!parseInt(uid, 10)) {
 			return callback(new Error('[[error:invalid-uid]]'));
 		}
 		async.waterfall([
 			function(next) {
-				deletePosts(uid, next);
+				deletePosts(callerUid, uid, next);
 			},
 			function(next) {
-				deleteTopics(uid, next);
+				deleteTopics(callerUid, uid, next);
 			},
 			function(next) {
 				User.deleteAccount(uid, next);
@@ -28,17 +28,19 @@ module.exports = function(User) {
 		], callback);
 	};
 
-	function deletePosts(uid, callback) {
-		deleteSortedSetElements('uid:' + uid + ':posts', posts.purge, callback);
+	function deletePosts(callerUid, uid, callback) {
+		batch.processSortedSet('uid:' + uid + ':posts', function(ids, next) {
+			async.eachSeries(ids, function(pid, netx) {
+				posts.purge(pid, callerUid, next);
+			}, next);
+		}, {alwaysStartAt: 0}, callback);
 	}
 
-	function deleteTopics(uid, callback) {
-		deleteSortedSetElements('uid:' + uid + ':topics', topics.purge, callback);
-	}
-
-	function deleteSortedSetElements(set, deleteMethod, callback) {
-		batch.processSortedSet(set, function(ids, next) {
-			async.eachLimit(ids, 10, deleteMethod, next);
+	function deleteTopics(callerUid, uid, callback) {
+		batch.processSortedSet('uid:' + uid + ':topics', function(ids, next) {
+			async.eachSeries(ids, function(tid, next) {
+				topics.purge(tid, callerUid, next);
+			}, next);
 		}, {alwaysStartAt: 0}, callback);
 	}
 
@@ -145,7 +147,7 @@ module.exports = function(User) {
 					return pid && array.indexOf(pid) === index;
 				});
 
-				async.eachLimit(pids, 50, function(pid, next) {
+				async.eachSeries(pids, function(pid, next) {
 					favourites.unvote(pid, uid, next);
 				}, next);
 			}

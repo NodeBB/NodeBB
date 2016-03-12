@@ -156,7 +156,7 @@ User.deleteUsers = function(socket, uids, callback) {
 					return next(new Error('[[error:cant-delete-other-admins]]'));
 				}
 
-				user.delete(uid, next);
+				user.delete(socket.uid, uid, next);
 			},
 			function (next) {
 				events.log({
