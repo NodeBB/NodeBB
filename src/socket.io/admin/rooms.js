@@ -29,15 +29,16 @@ pubsub.on('sync:stats:end', function(data) {
 	stats[data.id] = data.stats;
 });
 
+pubsub.on('sync:stats:guests', function() {
+	var io = require('../index').server;
+
+	var roomClients = io.sockets.adapter.rooms;
+	var guestCount = roomClients.online_guests ? roomClients.online_guests.length : 0;
+	pubsub.publish('sync:stats:guests:end', guestCount);
+});
+
 SocketRooms.getTotalGuestCount = function(callback) {
 	var count = 0;
-	pubsub.once('sync:stats:guests', function() {
-		var io = require('../index').server;
-
-		var roomClients = io.sockets.adapter.rooms;
-		var guestCount = roomClients.online_guests ? roomClients.online_guests.length : 0;
-		pubsub.publish('sync:stats:guests:end', guestCount);
-	});
 
 	pubsub.on('sync:stats:guests:end', function(guestCount) {
 		count += guestCount;
