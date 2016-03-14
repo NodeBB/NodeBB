@@ -88,7 +88,7 @@ module.exports = function(SocketTopics) {
 	};
 
 	SocketTopics.loadMoreUnreadTopics = function(socket, data, callback) {
-		if (!data || !data.after) {
+		if (!data || !utils.isNumber(data.after) || parseInt(data.after, 10) < 0) {
 			return callback(new Error('[[error:invalid-data]]'));
 		}
 
@@ -99,7 +99,7 @@ module.exports = function(SocketTopics) {
 	};
 
 	SocketTopics.loadMoreFromSet = function(socket, data, callback) {
-		if (!data || !data.after || !data.set) {
+		if (!data || !utils.isNumber(data.after) || parseInt(data.after, 10) < 0 || !data.set) {
 			return callback(new Error('[[error:invalid-data]]'));
 		}
 
