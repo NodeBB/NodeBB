@@ -33,6 +33,7 @@
     "express-session": "^1.8.2",
     "express-useragent": "0.2.4",
     "html-to-text": "2.0.0",
+    "ip": "1.1.2",
     "jimp": "0.2.21",
     "less": "^2.0.0",
     "logrotate-stream": "^0.2.3",

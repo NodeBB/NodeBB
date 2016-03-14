@@ -187,9 +187,14 @@ function handle404(app, middleware) {
 
 function handleErrors(app, middleware) {
 	app.use(function(err, req, res, next) {
-		if (err.code === 'EBADCSRFTOKEN') {
-			winston.error(req.path + '\n', err.message);
-			return res.sendStatus(403);
+		switch (err.code) {
+			case 'EBADCSRFTOKEN':
+				winston.error(req.path + '\n', err.message);
+				return res.sendStatus(403);
+				break;
+			case 'blacklisted-ip':
+				return res.status(403).type('text/plain').send(err.message);
+				break;
 		}
 
 		if (parseInt(err.status, 10) === 302 && err.path) {

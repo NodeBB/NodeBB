@@ -33,7 +33,8 @@ var	async = require('async'),
 		settings: {},
 		email: {},
 		analytics: {},
-		logs: {}
+		logs: {},
+		blacklist: {}
 	};
 
 SocketAdmin.before = function(socket, method, data, next) {
@@ -273,5 +274,8 @@ SocketAdmin.deleteAllEvents = function(socket, data, callback) {
 	events.deleteAll(callback);
 };
 
+SocketAdmin.blacklist.validate = function(socket, data, callback) {
+	meta.blacklist.validate(data.rules, callback);
+};
 
 module.exports = SocketAdmin;
