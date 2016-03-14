@@ -54,7 +54,7 @@ topicsController.get = function(req, res, callback) {
 				return helpers.notAllowed(req, res);
 			}
 
-			if ((!req.params.slug || results.topic.slug !== tid + '/' + req.params.slug) && (results.topic.slug && results.topic.slug !== tid + '/')) {
+			if (!res.locals.isAPI && (!req.params.slug || results.topic.slug !== tid + '/' + req.params.slug) && (results.topic.slug && results.topic.slug !== tid + '/')) {
 				var url = '/topic/' + encodeURI(results.topic.slug);
 				if (req.params.post_index){
 					url += '/'+req.params.post_index;
