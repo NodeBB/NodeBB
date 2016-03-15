@@ -36,8 +36,9 @@ function mainRoutes(app, middleware, controllers) {
 	setupPageRoute(app, '/tos', middleware, [], controllers.termsOfUse);
 }
 
-function postRoutes(app, middleware, controllers) {
-	setupPageRoute(app, '/posts/flags', middleware, [], controllers.posts.flagged);
+function globalModRoutes(app, middleware, controllers) {
+	setupPageRoute(app, '/ip-blacklist', middleware, [], controllers.globalMods.ipBlacklist);
+	setupPageRoute(app, '/posts/flags', middleware, [], controllers.globalMods.flagged);
 }
 
 function topicRoutes(app, middleware, controllers) {
@@ -111,7 +112,7 @@ module.exports = function(app, middleware) {
 
 	mainRoutes(router, middleware, controllers);
 	topicRoutes(router, middleware, controllers);
-	postRoutes(router, middleware, controllers);
+	globalModRoutes(router, middleware, controllers);
 	tagRoutes(router, middleware, controllers);
 	categoryRoutes(router, middleware, controllers);
 	accountRoutes(router, middleware, controllers);
@@ -191,10 +192,8 @@ function handleErrors(app, middleware) {
 			case 'EBADCSRFTOKEN':
 				winston.error(req.path + '\n', err.message);
 				return res.sendStatus(403);
-				break;
 			case 'blacklisted-ip':
 				return res.status(403).type('text/plain').send(err.message);
-				break;
 		}
 
 		if (parseInt(err.status, 10) === 302 && err.path) {

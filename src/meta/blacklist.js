@@ -1,10 +1,9 @@
 'use strict';
 
-var ip = require('ip'),
-	winston = require('winston'),
-	async = require('async');
-
-var	meta = module.parent.exports;
+var ip = require('ip');
+var winston = require('winston');
+var async = require('async');
+var db = require('../database');
 
 var Blacklist = {
 		_rules: []
@@ -12,7 +11,7 @@ var Blacklist = {
 
 Blacklist.load = function(callback) {
 	async.waterfall([
-		async.apply(meta.settings.getOne, 'blacklist', 'rules'),
+		async.apply(db.get, 'ip-blacklist-rules'),
 		async.apply(Blacklist.validate)
 	], function(err, rules) {
 		if (err) {
@@ -32,6 +31,19 @@ Blacklist.load = function(callback) {
 
 		callback();
 	});
+};
+
+Blacklist.save = function(rules, callback) {
+	db.set('ip-blacklist-rules', rules, function(err) {
+		if (err) {
+			return callback(err);
+		}
+		Blacklist.load(callback);
+	});
+};
+
+Blacklist.get = function(callback) {
+	db.get('ip-blacklist-rules', callback);
 };
 
 Blacklist.test = function(clientIp, callback) {
@@ -60,11 +72,11 @@ Blacklist.test = function(clientIp, callback) {
 };
 
 Blacklist.validate = function(rules, callback) {
-	var rules = (rules || '').split('\n'),
-		ipv4 = [],
-		ipv6 = [],
-		cidr = [],
-		invalid = [];
+	rules = (rules || '').split('\n');
+	var ipv4 = [];
+	var ipv6 = [];
+	var cidr = [];
+	var invalid = [];
 
 	var isCidrSubnet = /^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\/([0-9]|[1-2][0-9]|3[0-2]))$/;
 

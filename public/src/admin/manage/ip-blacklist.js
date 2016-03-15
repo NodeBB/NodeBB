@@ -1,23 +1,22 @@
 'use strict';
-/* globals $, app, socket, templates */
+/* globals $, app, socket, templates, define, bootbox */
 
-define('admin/manage/ip-blacklist', ['settings'], function(Settings) {
+define('admin/manage/ip-blacklist', [], function() {
 
 	var Blacklist = {};
 
 	Blacklist.init = function() {
-		var blacklist = ace.edit("blacklist-rules");
+		var blacklist = $('#blacklist-rules');
 
-		blacklist.on('change', function(e) {
-		    $('#blacklist-rules-holder').val(blacklist.getValue());
-		}); 
-
-		Settings.load('blacklist', $('.blacklist-settings'), function(err, settings) {
-			blacklist.setValue(settings.rules);
+		blacklist.on('keyup', function() {
+		    $('#blacklist-rules-holder').val(blacklist.val());
 		});
 
 		$('[data-action="apply"]').on('click', function() {
-			Settings.save('blacklist', $('.blacklist-settings'), function() {
+			socket.emit('blacklist.save', blacklist.val(), function(err) {
+				if (err) {
+					return app.alertError(err.message);
+				}
 				app.alert({
 					type: 'success',
 					alert_id: 'blacklist-saved',
@@ -27,8 +26,8 @@ define('admin/manage/ip-blacklist', ['settings'], function(Settings) {
 		});
 
 		$('[data-action="test"]').on('click', function() {
-			socket.emit('admin.blacklist.validate', {
-				rules: blacklist.getValue()
+			socket.emit('blacklist.validate', {
+				rules: blacklist.val()
 			}, function(err, data) {
 				templates.parse('admin/partials/blacklist-validate', data, function(html) {
 					bootbox.alert(html);

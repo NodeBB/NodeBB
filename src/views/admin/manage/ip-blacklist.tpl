@@ -11,10 +11,7 @@
 
 		<div class="row">
 			<div class="col-sm-6">
-				<div id="blacklist-rules"></div>
-				<form class="blacklist-settings">
-					<input type="hidden" id="blacklist-rules-holder" value="" name="rules" />
-				</form>
+				<textarea id="blacklist-rules">{rules}</textarea>
 			</div>
 			<div class="col-sm-6">
 				<div class="panel panel-default">
