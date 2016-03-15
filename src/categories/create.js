@@ -17,15 +17,15 @@ module.exports = function(Categories) {
 				db.incrObjectField('global', 'nextCid', next);
 			},
 			function(cid, next) {
-				var slug = cid + '/' + utils.slugify(data.name),
-					order = data.order || cid,	// If no order provided, place it at the end
-					colours = Categories.assignColours();
+				var slug = cid + '/' + utils.slugify(data.name);
+				var order = data.order || cid;	// If no order provided, place it at the end
+				var colours = Categories.assignColours();
 
 				category = {
 					cid: cid,
 					name: data.name,
-					description: ( data.description ? data.description : '' ),
-					icon: ( data.icon ? data.icon : '' ),
+					description: data.description ? data.description : '',
+					icon: data.icon ? data.icon : '',
 					bgColor: data.bgColor || colours[0],
 					color: data.color || colours[1],
 					slug: slug,
@@ -49,6 +49,7 @@ module.exports = function(Categories) {
 
 				async.series([
 					async.apply(db.setObject, 'category:' + category.cid, category),
+					async.apply(Categories.parseDescription, category.cid, category.description),
 					async.apply(db.sortedSetAdd, 'categories:cid', category.order, category.cid),
 					async.apply(db.sortedSetAdd, 'cid:' + parentCid + ':children', category.order, category.cid),
 					async.apply(privileges.categories.give, defaultPrivileges, category.cid, 'administrators'),

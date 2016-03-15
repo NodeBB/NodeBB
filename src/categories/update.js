@@ -72,7 +72,7 @@ module.exports = function(Categories) {
 			if (key === 'order') {
 				updateOrder(cid, value, callback);
 			} else if (key === 'description') {
-				parseDescription(cid, value, callback);
+				Categories.parseDescription(cid, value, callback);
 			} else {
 				callback();
 			}
@@ -100,7 +100,7 @@ module.exports = function(Categories) {
 				function (next) {
 					db.setObjectField('category:' + cid, 'parentCid', newParent, next);
 				}
-			], function(err, results) {
+			], function(err) {
 				callback(err);
 			});
 		});
@@ -124,13 +124,13 @@ module.exports = function(Categories) {
 		});
 	}
 
-	function parseDescription(cid, description, callback) {
+	Categories.parseDescription = function(cid, description, callback) {
 		plugins.fireHook('filter:parse.raw', description, function(err, parsedDescription) {
 			if (err) {
 				return callback(err);
 			}
 			Categories.setCategoryField(cid, 'descriptionParsed', parsedDescription, callback);
 		});
-	}
+	};
 
 };
