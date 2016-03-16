@@ -79,7 +79,7 @@ define('forum/topic/posts', [
 	}
 
 	function scrollToPostIfSelf(post) {
-		var isSelfPost = parseInt(post.uid, 10) === parseInt(app.user.uid, 10);
+		var isSelfPost = config.scrollToMyPost && parseInt(post.uid, 10) === parseInt(app.user.uid, 10);
 		if (isSelfPost) {
 			navigator.scrollBottom(post.index);
 		}
