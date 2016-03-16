@@ -21,6 +21,18 @@
 						<button type="button" class="btn btn-primary" data-action="apply"><i class="fa fa-save"></i> Apply Blacklist</button>
 					</div>
 				</div>
+				<div class="panel panel-default">
+					<div class="panel-heading">Syntax Hints</div>
+					<div class="panel-body">
+						<p>
+							Define a single IP addresses per line. You can add IP blocks as long as they follow the CIDR format (e.g.
+							<code>192.168.100.0/22</code>).
+						</p>
+						<p>
+							You can add in comments by starting lines with the <code>#</code> symbol.
+						</p>
+					</div>
+				</div>
 			</div>
 		</div>
 	</div>
