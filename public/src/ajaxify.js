@@ -22,10 +22,16 @@ $(document).ready(function() {
 	$(window).on('popstate', function (ev) {
 		ev = ev.originalEvent;
 
-		if (ev !== null && ev.state && ev.state.url !== undefined) {
-			ajaxify.go(ev.state.url, function() {
-				$(window).trigger('action:popstate', {url: ev.state.url});
-			}, true);
+		if (ev !== null && ev.state) {
+			if (ev.state.url === null && ev.state.returnPath !== undefined) {
+				window.history.replaceState({
+					url: ev.state.returnPath
+				}, ev.state.returnPath, config.relative_path + '/' + ev.state.returnPath);
+			} else if (ev.state.url !== undefined) {
+				ajaxify.go(ev.state.url, function() {
+					$(window).trigger('action:popstate', {url: ev.state.url});
+				}, true);
+			}
 		}
 	});
 
