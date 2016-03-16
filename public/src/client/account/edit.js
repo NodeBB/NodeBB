@@ -17,7 +17,8 @@ define('forum/account/edit', ['forum/account/header', 'uploader', 'translator'],
 			$('#inputBirthday').datepicker({
 				changeMonth: true,
 				changeYear: true,
-				yearRange: '1900:+0'
+				yearRange: '1900:-5y',
+				defaultDate: '-13y'
 			});
 		});
 
