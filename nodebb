@@ -119,6 +119,7 @@ var getRunningPid = function(callback) {
 			}),
 			function(payload, next) {
 				if (!payload.plugins.length) {
+					process.stdout.write('OK'.green + '\n'.reset);
 					return next(null, []);	// no extraneous plugins installed
 				}
 
