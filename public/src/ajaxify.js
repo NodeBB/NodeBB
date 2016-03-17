@@ -154,6 +154,7 @@ $(document).ready(function() {
 
 		templates.parse(tpl_url, data, function(template) {
 			translator.translate(template, function(translatedTemplate) {
+				translatedTemplate = translator.unescape(translatedTemplate);
 				$('body').addClass(data.bodyClass);
 				$('#content').html(translatedTemplate);
 
