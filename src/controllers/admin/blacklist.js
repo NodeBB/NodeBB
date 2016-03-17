@@ -9,7 +9,7 @@ blacklistController.get = function(req, res, next) {
 		if (err) {
 			return next(err);
 		}
-		res.render('admin/manage/ip-blacklist', {rules: rules});
+		res.render('admin/manage/ip-blacklist', {rules: rules, title: 'IP Blacklist'});
 	});
 };
 
