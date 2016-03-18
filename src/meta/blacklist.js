@@ -78,16 +78,24 @@ Blacklist.validate = function(rules, callback) {
 	var cidr = [];
 	var invalid = [];
 
-	var isCidrSubnet = /^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\/([0-9]|[1-2][0-9]|3[0-2]))$/;
+	var isCidrSubnet = /^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\/([0-9]|[1-2][0-9]|3[0-2]))$/,
+		inlineCommentMatch = /#.*$/,
+		whitelist = ['127.0.0.1', '::1', '::ffff:0:127.0.0.1'];
 
 	// Filter out blank lines and lines starting with the hash character (comments)
+	// Also trim inputs and remove inline comments
 	rules = rules.map(function(rule) {
-		rule = rule.trim();
+		rule = rule.replace(inlineCommentMatch, '').trim();
 		return rule.length && !rule.startsWith('#') ? rule : null;
 	}).filter(Boolean);
 
 	// Filter out invalid rules
 	rules = rules.filter(function(rule) {
+		if (whitelist.indexOf(rule) !== -1) {
+			invalid.push(rule);
+			return false;
+		}
+
 		if (ip.isV4Format(rule)) {
 			ipv4.push(rule);
 			return true;
