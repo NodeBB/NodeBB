@@ -33,12 +33,12 @@ define('forum/topic/posts', [
 		ajaxify.data.postcount ++;
 		postTools.updatePostCount(ajaxify.data.postcount);
 
-		if (config.scrollToMyPost) {
-		  if (config.usePagination) {
-			  onNewPostPagination(data);
-		  } else {
-			  onNewPostInfiniteScroll(data);
-		  }
+		if (ajaxify.data.scrollToMyPost) {
+			if (config.usePagination) {
+				onNewPostPagination(data);
+			} else {
+				onNewPostInfiniteScroll(data);
+			}
 		}
 	};
 
@@ -142,7 +142,7 @@ define('forum/topic/posts', [
 		}
 
 		data.slug = ajaxify.data.slug;
-		
+
 		$(window).trigger('action:posts.loading', {posts: data.posts, after: after, before: before});
 
 		app.parseAndTranslate('topic', 'posts', data, function(html) {

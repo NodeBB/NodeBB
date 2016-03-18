@@ -4,7 +4,6 @@
 var async = require('async');
 var S = require('string');
 var nconf = require('nconf');
-var validator = require('validator');
 
 var user = require('../user');
 var meta = require('../meta');
@@ -24,6 +23,7 @@ topicsController.get = function(req, res, callback) {
 	var currentPage = parseInt(req.query.page, 10) || 1;
 	var pageCount = 1;
 	var userPrivileges;
+	var settings;
 
 	if ((req.params.post_index && !utils.isNumber(req.params.post_index)) || !utils.isNumber(tid)) {
 		return callback();
@@ -62,7 +62,7 @@ topicsController.get = function(req, res, callback) {
 				return helpers.redirect(res, url);
 			}
 
-			var settings = results.settings;
+			settings = results.settings;
 			var postCount = parseInt(results.topic.postcount, 10);
 			pageCount = Math.max(1, Math.ceil((postCount - 1) / settings.postsPerPage));
 
@@ -261,6 +261,7 @@ topicsController.get = function(req, res, callback) {
 		data['reputation:disabled'] = parseInt(meta.config['reputation:disabled'], 10) === 1;
 		data['downvote:disabled'] = parseInt(meta.config['downvote:disabled'], 10) === 1;
 		data['feeds:disableRSS'] = parseInt(meta.config['feeds:disableRSS'], 10) === 1;
+		data.scrollToMyPost = settings.scrollToMyPost;
 		data.rssFeedUrl = nconf.get('relative_path') + '/topic/' + data.tid + '.rss';
 		data.pagination = pagination.create(currentPage, pageCount);
 		data.pagination.rel.forEach(function(rel) {
