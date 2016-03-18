@@ -350,45 +350,4 @@ SocketUser.getUserByEmail = function(socket, email, callback) {
 };
 
 
-SocketUser.getUserByUID = getUserByUID;
-
-function getUserByUID(socket, uid, callback) {
-	async.parallel({
-		userData: async.apply(user.getUserData, uid),
-		settings: async.apply(user.getSettings, uid)
-	}, function(err, results) {
-		if (err || !results.userData) {
-			return callback(err||new Error('[[error:no-user]]'));
-		}
-
-		results.userData.email = results.settings.showemail ? results.userData.email : undefined;
-		results.userData.fullname = results.settings.showfullname ? results.userData.fullname : undefined;
-
-		callback(null,results.userData);
-	});
-}
-
-SocketUser.getUserByUsername = function(socket, username, callback) {
-	async.waterfall([
-		function(next) {
-			user.getUidByUsername(username || 0, next);
-		},
-		function(uid, next) {
-			getUserByUID(socket, uid, next);
-		}
-	], callback);
-};
-
-SocketUser.getUserByEmail = function(socket, email, callback) {
-
-	async.waterfall([
-		function(next) {
-			user.getUidByEmail(email || 0, next);
-		},
-		function(uid, next) {
-			getUserByUID(socket, uid, next);
-		}
-	], callback);
-};
-
 module.exports = SocketUser;
