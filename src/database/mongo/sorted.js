@@ -37,7 +37,7 @@ module.exports = function(db, module) {
 			bulk.find({_key: key, value: values[i]}).upsert().updateOne({$set: {score: parseInt(scores[i], 10)}});
 		}
 
-		bulk.execute(function(err, result) {
+		bulk.execute(function(err) {
 			callback(err);
 		});
 	}
@@ -55,7 +55,7 @@ module.exports = function(db, module) {
 			bulk.find({_key: keys[i], value: value}).upsert().updateOne({$set: {score: parseInt(score, 10)}});
 		}
 
-		bulk.execute(function(err, result) {
+		bulk.execute(function(err) {
 			callback(err);
 		});
 	};
@@ -85,7 +85,7 @@ module.exports = function(db, module) {
 		}
 		value = helpers.valueToString(value);
 
-		db.collection('objects').remove({_key: {$in: keys}, value: value}, function(err, res) {
+		db.collection('objects').remove({_key: {$in: keys}, value: value}, function(err) {
 			callback(err);
 		});
 	};
@@ -95,16 +95,17 @@ module.exports = function(db, module) {
 		if (!Array.isArray(keys) || !keys.length) {
 			return callback();
 		}
+		var query = {_key: {$in: keys}};
 
-		var scoreQuery = {};
 		if (min !== '-inf') {
-			scoreQuery.$gte = min;
+			query.score = {$gte: min};
 		}
 		if (max !== '+inf') {
-			scoreQuery.$lte = max;
+			query.score = query.score || {};
+			query.score.$lte = max;
 		}
 
-		db.collection('objects').remove({_key: {$in: keys}, score: scoreQuery}, function(err) {
+		db.collection('objects').remove(query, function(err) {
 			callback(err);
 		});
 	};
@@ -182,12 +183,14 @@ module.exports = function(db, module) {
 			count = 0;
 		}
 
-		var scoreQuery = {};
+		var query = {_key: key};
+
 		if (min !== '-inf') {
-			scoreQuery.$gte = min;
+			query.score = {$gte: min};
 		}
 		if (max !== '+inf') {
-			scoreQuery.$lte = max;
+			query.score = query.score || {};
+			query.score.$lte = max;
 		}
 
 		var fields = {_id: 0, value: 1};
@@ -195,7 +198,7 @@ module.exports = function(db, module) {
 			fields.score = 1;
 		}
 
-		db.collection('objects').find({_key:key, score: scoreQuery}, {fields: fields})
+		db.collection('objects').find(query, {fields: fields})
 			.limit(count)
 			.skip(start)
 			.sort({score: sort})

@@ -26,6 +26,7 @@ var async = require('async'),
 	require('./meta/tags')(Meta);
 	require('./meta/dependencies')(Meta);
 	Meta.templates = require('./meta/templates');
+	Meta.blacklist = require('./meta/blacklist');
 
 	/* Assorted */
 	Meta.userOrGroupExists = function(slug, callback) {

@@ -113,7 +113,7 @@
 					'<i style="color:' + child.color + ';" class="fa fa-stack-1x ' + child.icon + '"></i>' +
 					'</span><small>' + child.name + '</small></a> ';
 		});
-		html = html ? ('<br/><span class="category-children">' + html + '</span>') : html;
+		html = html ? ('<span class="category-children">' + html + '</span>') : html;
 		return html;
 	};
 

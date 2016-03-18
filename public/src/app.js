@@ -521,6 +521,7 @@ app.cacheBuster = null;
 			if (typeof blockName === 'string') {
 				templates.parse(template, blockName, data, function(html) {
 					translator.translate(html, function(translatedHTML) {
+						translatedHTML = translator.unescape(translatedHTML);
 						callback($(translatedHTML));
 					});
 				});
@@ -528,6 +529,7 @@ app.cacheBuster = null;
 				callback = data, data = blockName;
 				templates.parse(template, data, function(html) {
 					translator.translate(html, function(translatedHTML) {
+						translatedHTML = translator.unescape(translatedHTML);
 						callback($(translatedHTML));
 					});
 				});

@@ -20,6 +20,7 @@
 			<li><a href="{relative_path}/admin/manage/registration">Registration Queue</a></li>
 			<li><a href="{relative_path}/admin/manage/groups">Groups</a></li>
 			<li><a href="{relative_path}/admin/manage/flags">Flags</a></li>
+			<li><a href="{relative_path}/admin/manage/ip-blacklist">IP Blacklist</a></li>
 		</ul>
 	</section>
 
@@ -173,6 +174,7 @@
 					<li><a href="{relative_path}/admin/manage/registration">Registration Queue</a></li>
 					<li><a href="{relative_path}/admin/manage/groups">Groups</a></li>
 					<li><a href="{relative_path}/admin/manage/flags">Flags</a></li>
+					<li><a href="{relative_path}/admin/manage/ip-blacklist">IP Blacklist</a></li>
 				</ul>
 			</li>
 			<li class="dropdown menu-item">

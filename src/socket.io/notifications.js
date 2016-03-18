@@ -3,6 +3,7 @@
 var async = require('async');
 var user = require('../user');
 var notifications = require('../notifications');
+var utils = require('../../public/src/utils');
 
 var SocketNotifs = {};
 
@@ -15,7 +16,7 @@ SocketNotifs.get = function(socket, data, callback) {
 };
 
 SocketNotifs.loadMore = function(socket, data, callback) {
-	if (!data || !parseInt(data.after, 10)) {
+	if (!data || !utils.isNumber(data.after) || parseInt(data.after, 10) < 0) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
 	if (!socket.uid) {

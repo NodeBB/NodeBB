@@ -76,6 +76,7 @@ module.exports = function(User) {
 			settings.restrictChat = parseInt(getSetting(settings, 'restrictChat', 0), 10) === 1;
 			settings.topicSearchEnabled = parseInt(getSetting(settings, 'topicSearchEnabled', 0), 10) === 1;
 			settings.bootswatchSkin = settings.bootswatchSkin || 'default';
+			settings.scrollToMyPost = parseInt(getSetting(settings, 'scrollToMyPost', 1), 10) ===1;
 
 			callback(null, settings);
 		});
@@ -120,7 +121,8 @@ module.exports = function(User) {
 			restrictChat: data.restrictChat,
 			topicSearchEnabled: data.topicSearchEnabled,
 			groupTitle: data.groupTitle,
-			homePageRoute: data.homePageCustom || data.homePageRoute
+			homePageRoute: data.homePageCustom || data.homePageRoute,
+			scrollToMyPost: data.scrollToMyPost
 		};
 
 		if (data.bootswatchSkin) {
