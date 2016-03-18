@@ -33,10 +33,12 @@ define('forum/topic/posts', [
 		ajaxify.data.postcount ++;
 		postTools.updatePostCount(ajaxify.data.postcount);
 
-		if (config.usePagination) {
-			onNewPostPagination(data);
-		} else {
-			onNewPostInfiniteScroll(data);
+		if (config.scrollToMyPost) {
+		  if (config.usePagination) {
+			  onNewPostPagination(data);
+		  } else {
+			  onNewPostInfiniteScroll(data);
+		  }
 		}
 	};
 
