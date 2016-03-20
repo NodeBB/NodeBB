@@ -13,7 +13,7 @@ module.exports = function(middleware) {
 				req = this.req,
 				defaultFn = function(err, str){
 					if (err) {
-						return req.next(err);
+						return next(err);
 					}
 
 					self.send(str);
