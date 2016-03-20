@@ -98,7 +98,7 @@ define('admin/manage/group', [
 
 				templates.parse('partials/groups/memberlist', 'members', {group: {isOwner: ajaxify.data.group.isOwner, members: [member]}}, function(html) {
 					translator.translate(html, function(html) {
-						$('[component="groups/members"]').prepend(html);
+						$('[component="groups/members"] tbody').prepend(html);
 					});
 				});
 			});
