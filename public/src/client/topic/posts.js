@@ -26,7 +26,7 @@ define('forum/topic/posts', [
 			post.selfPost = !!app.user.uid && parseInt(post.uid, 10) === parseInt(app.user.uid, 10);
 			post.display_moderator_tools = post.selfPost || ajaxify.data.privileges.isAdminOrMod;
 			post.display_move_tools = ajaxify.data.privileges.isAdminOrMod;
-			post.display_post_menu = post.selfPost || ajaxify.data.privileges.isAdminOrMod;
+			post.display_post_menu = post.selfPost || ajaxify.data.privileges.isAdminOrMod || !post.deleted;
 		});
 
 		updatePostCounts(data.posts);
