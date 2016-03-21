@@ -41,7 +41,7 @@ helpers.redirect = function(res, url) {
 	if (res.locals.isAPI) {
 		res.status(308).json(url);
 	} else {
-		res.redirect(nconf.get('relative_path') + url);
+		res.redirect(nconf.get('relative_path') + encodeURI(url));
 	}
 };
 
