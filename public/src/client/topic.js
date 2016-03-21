@@ -221,7 +221,9 @@ define('forum/topic', [
 		} else {
 			span.html('').hide();
 		}
-		app.removeAlert('bookmark');
+		if ($(window).scrollTop() > 300) {
+			app.removeAlert('bookmark');
+		}
 	}
 
 	Topic.calculateIndex = function(index, elementCount) {
