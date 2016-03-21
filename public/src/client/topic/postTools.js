@@ -34,7 +34,6 @@ define('forum/topic/postTools', ['share', 'navigator', 'components', 'translator
 					return app.alertError(err);
 				}
 				data.posts.display_move_tools = data.posts.display_move_tools && index !== 0;
-				data.postSharing = data.postSharing.filter(function(share) { return share.activated === true; });
 
 				templates.parse('partials/topic/post-menu-list', data, function(html) {
 					translator.translate(html, function(html) {

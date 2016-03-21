@@ -59,7 +59,7 @@ module.exports = function(Topics) {
 			return;
 		}
 		topic.titleRaw = topic.title;
-		topic.title = validator.escape(topic.title);
+		topic.title = validator.escape(String(topic.title));
 		topic.timestampISO = utils.toISOString(topic.timestamp);
 		topic.lastposttimeISO = utils.toISOString(topic.lastposttime);
 	}

@@ -1,16 +1,15 @@
 
-
 'use strict';
 
-var async = require('async'),
-	_ = require('underscore'),
-	validator = require('validator'),
+var async = require('async');
+var _ = require('underscore');
+var validator = require('validator');
 
-	db = require('../database'),
-	user = require('../user'),
-	favourites = require('../favourites'),
-	posts = require('../posts'),
-	meta = require('../meta');
+var db = require('../database');
+var user = require('../user');
+var favourites = require('../favourites');
+var posts = require('../posts');
+var meta = require('../meta');
 
 module.exports = function(Topics) {
 
@@ -138,12 +137,13 @@ module.exports = function(Topics) {
 		});
 	};
 
-	Topics.modifyPostsByPrivilege = function(postData, topicPrivileges) {
-		postData.forEach(function(post) {
+	Topics.modifyPostsByPrivilege = function(topicData, topicPrivileges) {
+		var loggedIn = !!parseInt(topicPrivileges.uid, 10);
+		topicData.posts.forEach(function(post) {
 			if (post) {
 				post.display_moderator_tools = topicPrivileges.isAdminOrMod || post.selfPost;
 				post.display_move_tools = topicPrivileges.isAdminOrMod && post.index !== 0;
-				post.display_post_menu = topicPrivileges.isAdminOrMod || post.selfPost || !post.deleted;
+				post.display_post_menu = topicPrivileges.isAdminOrMod || post.selfPost || ((loggedIn || topicData.postSharing.length) && !post.deleted);
 				post.ip = topicPrivileges.isAdminOrMod ? post.ip : undefined;
 
 				if (post.deleted && !(topicPrivileges.isAdminOrMod || post.selfPost)) {
