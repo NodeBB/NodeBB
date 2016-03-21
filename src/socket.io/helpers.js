@@ -2,6 +2,7 @@
 
 var async = require('async');
 var winston = require('winston');
+var S = require('string');
 var nconf = require('nconf');
 
 var websockets = require('./index');
@@ -62,8 +63,11 @@ SocketHelpers.sendNotificationToPostOwner = function(pid, fromuid, notification)
 				return;
 			}
 
+			var title = S(results.topicTitle).decodeHTMLEntities().s;
+			var titleEscaped = title.replace(/%/g, '&#37;').replace(/,/g, '&#44;');
+
 			notifications.create({
-				bodyShort: '[[' + notification + ', ' + results.username + ', ' + results.topicTitle + ']]',
+				bodyShort: '[[' + notification + ', ' + results.username + ', ' + titleEscaped + ']]',
 				bodyLong: results.postObj.content,
 				pid: pid,
 				nid: 'post:' + pid + ':uid:' + fromuid,
@@ -93,8 +97,11 @@ SocketHelpers.sendNotificationToTopicOwner = function(tid, fromuid, notification
 			return;
 		}
 
+		var title = S(results.topicData.title).decodeHTMLEntities().s;
+		var titleEscaped = title.replace(/%/g, '&#37;').replace(/,/g, '&#44;');
+
 		notifications.create({
-			bodyShort: '[[' + notification + ', ' + results.username + ', ' + results.topicData.title + ']]',
+			bodyShort: '[[' + notification + ', ' + results.username + ', ' + titleEscaped + ']]',
 			path: nconf.get('relative_path') + '/topic/' + results.topicData.slug,
 			nid: 'tid:' + tid + ':uid:' + fromuid,
 			from: fromuid
