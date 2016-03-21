@@ -106,7 +106,7 @@ var async = require('async'),
 			});
 
 			callback(null, _nids.filter(function(nid, idx) {
-				return mergeIds.indexOf(sets[idx]) !== -1
+				return mergeIds.indexOf(sets[idx]) !== -1;
 			}));
 		});
 	};
@@ -452,11 +452,12 @@ var async = require('async'),
 
 						var title = S(notifications[modifyIndex].topicTitle || '').decodeHTMLEntities().s;
 						var titleEscaped = title.replace(/%/g, '&#37;').replace(/,/g, '&#44;');
+						titleEscaped = titleEscaped ? (', ' + titleEscaped) : '';
 
 						if (numUsers === 2) {
-							notifications[modifyIndex].bodyShort = '[[' + mergeId + '_dual, ' + usernames.join(', ') + ', ' + titleEscaped + ']]';
+							notifications[modifyIndex].bodyShort = '[[' + mergeId + '_dual, ' + usernames.join(', ') + titleEscaped + ']]';
 						} else if (numUsers > 2) {
-							notifications[modifyIndex].bodyShort = '[[' + mergeId + '_multiple, ' + usernames[0] + ', ' + (numUsers-1) + ', ' + titleEscaped + ']]';
+							notifications[modifyIndex].bodyShort = '[[' + mergeId + '_multiple, ' + usernames[0] + ', ' + (numUsers - 1) + titleEscaped + ']]';
 						}
 						break;
 
