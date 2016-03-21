@@ -50,9 +50,7 @@ define('forum/topic/posts', [
 
 	function onNewPostPagination(data) {
 		function scrollToPost() {
-			if (config.scrollToMyPost) {
-				scrollToPostIfSelf(data.posts[0]);
-			}
+			scrollToPostIfSelf(data.posts[0]);
 		}
 
 		var posts = data.posts;
