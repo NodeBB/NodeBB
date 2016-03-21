@@ -124,7 +124,7 @@ topicsController.get = function(req, res, callback) {
 				return callback();
 			}
 
-			topics.modifyPostsByPrivilege(topicData.posts, userPrivileges);
+			topics.modifyPostsByPrivilege(topicData, userPrivileges);
 
 			plugins.fireHook('filter:controllers.topic.get', {topicData: topicData, uid: req.uid}, next);
 		},

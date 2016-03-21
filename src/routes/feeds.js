@@ -49,7 +49,7 @@ function generateForTopic(req, res, callback) {
 			return callback(err);
 		}
 
-		topics.modifyPostsByPrivilege(topicData.posts, userPrivileges);
+		topics.modifyPostsByPrivilege(topicData, userPrivileges);
 
 		var description = topicData.posts.length ? topicData.posts[0].content : '';
 		var image_url = topicData.posts.length ? topicData.posts[0].picture : '';
