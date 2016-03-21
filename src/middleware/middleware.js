@@ -259,7 +259,6 @@ middleware.busyCheck = function(req, res, next) {
 
 middleware.applyBlacklist = function(req, res, next) {
 	meta.blacklist.test(req.ip, function(err) {
-		console.log('blacklist returned:', err);
 		next(err);
 	});
 };
