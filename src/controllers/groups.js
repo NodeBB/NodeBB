@@ -113,7 +113,7 @@ groupsController.members = function(req, res, next) {
 			user.getUsersFromSet('group:' + groupName + ':members', req.uid, 0, 49, next);
 		},
 	], function(err, users) {
-		if (err) {
+		if (err || !groupName) {
 			return next(err);
 		}
 
