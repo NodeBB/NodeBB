@@ -450,7 +450,7 @@ var async = require('async'),
 						});
 						var numUsers = usernames.length;
 
-						var title = S(notifications[modifyIndex].topicTitle).decodeHTMLEntities().s;
+						var title = S(notifications[modifyIndex].topicTitle || '').decodeHTMLEntities().s;
 						var titleEscaped = title.replace(/%/g, '&#37;').replace(/,/g, '&#44;');
 
 						if (numUsers === 2) {
