@@ -50,7 +50,8 @@ define('chat', ['components', 'taskbar', 'string', 'sounds', 'forum/chats', 'tra
 
 					taskbar.push('chat', modal.attr('UUID'), {
 						title: username,
-						touid: data.message.fromUser.uid
+						touid: data.message.fromUser.uid,
+						roomId: data.roomId
 					});
 				}
 			} else {
