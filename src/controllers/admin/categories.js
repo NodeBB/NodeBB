@@ -1,11 +1,12 @@
 "use strict";
 
-var async = require('async'),
-	
-	categories = require('../../categories'),
-	privileges = require('../../privileges'),
-	analytics = require('../../analytics'),
-	plugins = require('../../plugins');
+var async = require('async');
+
+var categories = require('../../categories');
+var privileges = require('../../privileges');
+var analytics = require('../../analytics');
+var plugins = require('../../plugins');
+var translator = require('../../../public/src/modules/translator')
 
 
 var categoriesController = {};
@@ -24,7 +25,7 @@ categoriesController.get = function(req, res, next) {
 			if (err) {
 				return next(err);
 			}
-
+			data.category.name = translator.escape(data.category.name);
 			res.render('admin/manage/category', {
 				category: data.category,
 				privileges: data.privileges,

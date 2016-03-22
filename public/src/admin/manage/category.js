@@ -155,12 +155,6 @@ define('admin/manage/category', [
 		} else {
 			$('a[href="#analytics"]').on('shown.bs.tab', Category.setupGraphs);
 		}
-
-		// Fix the input field for the category name, as it can contain a translation key
-		var nameInput = $('#cid-' + ajaxify.data.cid + '-name');
-		if (ajaxify.data.category.name !== nameInput.val()) {
-			$('#cid-' + ajaxify.data.category.cid + '-name').val(ajaxify.data.category.name);
-		}
 	};
 
 	Category.setupPrivilegeTable = function() {
