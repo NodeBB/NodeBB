@@ -124,7 +124,7 @@ usersController.registrationQueue = function(req, res, next) {
 
 function getUsers(set, section, req, res, next) {
 	var page = parseInt(req.query.page, 10) || 1;
-	var resultsPerPage = 50;
+	var resultsPerPage = 25;
 	var start = Math.max(0, page - 1) * resultsPerPage;
 	var stop = start + resultsPerPage - 1;
 
