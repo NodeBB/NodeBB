@@ -124,7 +124,7 @@ define('forum/topic/events', [
 
 		var editData = {
 			editor: data.editor,
-			relativeEditTime: utils.toISOString(data.post.edited)
+			editedISO: utils.toISOString(data.post.edited)
 		};
 
 		templates.parse('partials/topic/post-editor', editData, function(html) {
