@@ -26,7 +26,7 @@
     "tools": "Tools",
     "flag": "Flag",
     "locked": "Locked",
-    "bookmark_instructions": "Click here to return to the last unread post in this thread.",
+    "bookmark_instructions": "Click here to return to the last read post in this thread.",
     "flag_title": "Flag this post for moderation",
     "flag_success": "This post has been flagged for moderation.",
     "deleted_message": "This topic has been deleted. Only users with topic management privileges can see it.",
