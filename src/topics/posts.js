@@ -148,6 +148,9 @@ module.exports = function(Topics) {
 
 				if (post.deleted && !(topicPrivileges.isAdminOrMod || post.selfPost)) {
 					post.content = '[[topic:post_is_deleted]]';
+					if (post.user) {
+						post.user.signature = '';
+					}
 				}
 			}
 		});
