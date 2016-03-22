@@ -26,7 +26,7 @@
     "tools": "Perangkat",
     "flag": "Tandai",
     "locked": "Terkunci",
-    "bookmark_instructions": "Click here to return to the last read post in this thread.",
+    "bookmark_instructions": "Click here to return to the last unread post in this thread.",
     "flag_title": "Tandai posting ini untuk moderasi",
     "flag_success": "Posting ini telah ditandai untuk moderasi",
     "deleted_message": "Topik ini telah dihapus. Hanya pengguna dengan hak manajemen topik yang dapat melihatnya.",

@@ -26,7 +26,7 @@
     "tools": "Εργαλεία",
     "flag": "Σημαία",
     "locked": "Κλειδωμένο",
-    "bookmark_instructions": "Click here to return to the last read post in this thread.",
+    "bookmark_instructions": "Click here to return to the last unread post in this thread.",
     "flag_title": "Επισήμανση αυτής της δημοσίευσης για συντονισμό",
     "flag_success": "Αυτή η δημοσίευση έχει επισημανθεί για συντονισμό.",
     "deleted_message": "Το θέμα αυτό έχει διαγραφεί. Μόνο οι χρήστες με δικαιώματα διαχειριστή θεμάτων μπορούν να το δουν.",
