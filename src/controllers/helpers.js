@@ -105,7 +105,11 @@ helpers.buildTitle = function(pageTitle) {
 
 	var browserTitle = validator.escape(meta.config.browserTitle || meta.config.title || 'NodeBB');
 	pageTitle = pageTitle || '';
-	var title = titleLayout.replace('{pageTitle}', pageTitle).replace('{browserTitle}', browserTitle);
+	var title = titleLayout.replace('{pageTitle}', function() {
+		return pageTitle;
+	}).replace('{browserTitle}', function() {
+		return browserTitle;
+	});
 	return title;
 };
 
