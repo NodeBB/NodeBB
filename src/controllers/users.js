@@ -103,7 +103,7 @@ usersController.getUsers = function(set, uid, page, callback) {
 	}
 
 	page = parseInt(page, 10) || 1;
-	var resultsPerPage = parseInt(meta.config.userSearchResultsPerPage, 10) || 20;
+	var resultsPerPage = parseInt(meta.config.userSearchResultsPerPage, 10) || 50;
 	var start = Math.max(0, page - 1) * resultsPerPage;
 	var stop = start + resultsPerPage - 1;
 
