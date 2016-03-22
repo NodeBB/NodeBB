@@ -92,6 +92,23 @@
 			return str;
 		},
 
+		cleanUpTag: function(tag, maxLength) {
+			if (typeof tag !== 'string' || !tag.length ) {
+				return '';
+			}
+
+			tag = tag.trim().toLowerCase();
+			// see https://github.com/NodeBB/NodeBB/issues/4378
+			tag = tag.replace(/\u202E/gi, '');
+			tag = tag.replace(/[,\/#!$%\^\*;:{}=_`<>'"~()?\|]/g, '');
+			tag = tag.substr(0, maxLength || 15).trim();
+			var matches = tag.match(/^[.-]*(.+?)[.-]*$/);
+			if (matches && matches.length > 1) {
+				tag = matches[1];
+			}
+			return tag;
+		},
+
 		removePunctuation: function(str) {
 			return str.replace(/[\.,-\/#!$%\^&\*;:{}=\-_`<>'"~()?]/g, '');
 		},
