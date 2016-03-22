@@ -131,6 +131,14 @@ var social = require('./social');
 					hasRead: function(next) {
 						Topics.hasReadTopics(tids, uid, next);
 					},
+					bookmarks: function(next) {
+						if (!parseInt(uid, 10)) {
+							return next(null, tids.map(function() {
+								return null;
+							}));
+						}
+						Topics.getUserBookmarks(tids, uid, next);
+					},
 					teasers: function(next) {
 						Topics.getTeasers(topics, next);
 					},
@@ -155,6 +163,7 @@ var social = require('./social');
 						topics[i].locked = parseInt(topics[i].locked, 10) === 1;
 						topics[i].deleted = parseInt(topics[i].deleted, 10) === 1;
 						topics[i].unread = !results.hasRead[i];
+						topics[i].bookmark = results.bookmarks[i];
 						topics[i].unreplied = !topics[i].teaser;
 					}
 				}
@@ -290,6 +299,12 @@ var social = require('./social');
 
 	Topics.getUserBookmark = function (tid, uid, callback) {
 		db.sortedSetScore('tid:' + tid + ':bookmarks', uid, callback);
+	};
+
+	Topics.getUserBookmarks = function(tids, uid, callback) {
+		db.sortedSetsScore(tids.map(function(tid) {
+			return 'tid:' + tid + ':bookmarks';
+		}), uid, callback);
 	};
 
 	Topics.setUserBookmark = function(tid, uid, index, callback) {
