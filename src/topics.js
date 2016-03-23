@@ -126,7 +126,7 @@ var social = require('./social');
 						user.getUsersFields(uids, ['uid', 'username', 'fullname', 'userslug', 'reputation', 'postcount', 'picture', 'signature', 'banned', 'status'], next);
 					},
 					categories: function(next) {
-						categories.getCategoriesFields(cids, ['cid', 'name', 'slug', 'icon', 'bgColor', 'color', 'disabled'], next);
+						categories.getCategoriesFields(cids, ['cid', 'name', 'slug', 'icon', 'image', 'bgColor', 'color', 'disabled'], next);
 					},
 					hasRead: function(next) {
 						Topics.hasReadTopics(tids, uid, next);
