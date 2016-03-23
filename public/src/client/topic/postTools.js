@@ -64,17 +64,21 @@ define('forum/topic/postTools', ['share', 'navigator', 'components', 'translator
 	};
 
 	function addVoteHandler() {
-		components.get('topic').on('mouseenter', '[data-pid] [component="post/vote-count"]', function() {
-			loadDataAndCreateTooltip($(this).parent());
-		});
+		components.get('topic').on('mouseenter', '[data-pid] [component="post/vote-count"]', loadDataAndCreateTooltip);
 	}
 
-	function loadDataAndCreateTooltip(el) {
-		var pid = el.parents('[data-pid]').attr('data-pid');
+	function loadDataAndCreateTooltip() {
+		var $this = $(this),
+			el = $this.parent(),
+			pid = el.parents('[data-pid]').attr('data-pid');
+
+		$this.off('mouseenter', loadDataAndCreateTooltip);
 		socket.emit('posts.getUpvoters', [pid], function(err, data) {
 			if (!err && data.length) {
 				createTooltip(el, data[0]);
 			}
+
+			$this.on('mouseenter', loadDataAndCreateTooltip);
 		});
 	}
 
