@@ -132,11 +132,6 @@ var social = require('./social');
 						Topics.hasReadTopics(tids, uid, next);
 					},
 					bookmarks: function(next) {
-						if (!parseInt(uid, 10)) {
-							return next(null, tids.map(function() {
-								return null;
-							}));
-						}
 						Topics.getUserBookmarks(tids, uid, next);
 					},
 					teasers: function(next) {
@@ -302,6 +297,11 @@ var social = require('./social');
 	};
 
 	Topics.getUserBookmarks = function(tids, uid, callback) {
+		if (!parseInt(uid, 10)) {
+			return callback(null, tids.map(function() {
+				return null;
+			}));
+		}
 		db.sortedSetsScore(tids.map(function(tid) {
 			return 'tid:' + tid + ':bookmarks';
 		}), uid, callback);
