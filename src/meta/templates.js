@@ -21,10 +21,10 @@ Templates.compile = function(callback) {
 
 	if (nconf.get('isPrimary') === 'false' || fromFile.match('tpl')) {
 		if (fromFile.match('tpl')) {
+			emitter.emit('templates:compiled');
 			winston.info('[minifier] Compiling templates skipped');
 		}
 
-		emitter.emit('templates:compiled');
 		return callback();
 	}
 
@@ -48,20 +48,28 @@ function getBaseTemplates(theme) {
 }
 
 function preparePaths(baseTemplatesPaths, callback) {
-	var coreTemplatesPath = nconf.get('core_templates_path'),
-		viewsPath = nconf.get('views_dir');
+	var coreTemplatesPath = nconf.get('core_templates_path');
+	var viewsPath = nconf.get('views_dir');
 
 	async.waterfall([
-		async.apply(plugins.fireHook, 'static:templates.precompile', {}),
-		async.apply(plugins.getTemplates)
+		function (next) {
+			rimraf(viewsPath, next);
+		},
+		function (next) {
+			mkdirp(viewsPath, next);
+		},
+		function(viewsPath, next) {
+			plugins.fireHook('static:templates.precompile', {}, next);
+		},
+		function(next) {
+			plugins.getTemplates(next);
+		}
 	], function(err, pluginTemplates) {
 		if (err) {
 			return callback(err);
 		}
 
 		winston.verbose('[meta/templates] Compiling templates');
-		rimraf.sync(viewsPath);
-		mkdirp.sync(viewsPath);
 
 		async.parallel({
 			coreTpls: function(next) {
@@ -111,7 +119,7 @@ function compile(callback) {
 	var themeConfig = require(nconf.get('theme_config')),
 		baseTemplatesPaths = themeConfig.baseTheme ? getBaseTemplates(themeConfig.baseTheme) : [nconf.get('base_templates_path')],
 		viewsPath = nconf.get('views_dir');
-	
+
 
 	preparePaths(baseTemplatesPaths, function(err, paths) {
 		if (err) {
