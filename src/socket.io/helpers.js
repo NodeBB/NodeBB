@@ -16,6 +16,11 @@ var plugins = require('../plugins');
 var SocketHelpers = {};
 
 SocketHelpers.notifyOnlineUsers = function(uid, result) {
+	winston.warn('[deprecated] SocketHelpers.notifyOnlineUsers, consider using socketHelpers.notifyNew(uid, \'newPost\', result);');
+	SocketHelpers.notifyNew(uid, 'newPost', result);
+};
+
+SocketHelpers.notifyNew = function(uid, type, result) {
 	async.waterfall([
 		function(next) {
 			user.getUidsFromSet('users:online', 0, -1, next);
@@ -24,20 +29,23 @@ SocketHelpers.notifyOnlineUsers = function(uid, result) {
 			privileges.topics.filterUids('read', result.posts[0].topic.tid, uids, next);
 		},
 		function(uids, next) {
-			plugins.fireHook('filter:sockets.sendNewPostToUids', {uidsTo: uids, uidFrom: uid, type: 'newPost'}, next);
+			plugins.fireHook('filter:sockets.sendNewPostToUids', {uidsTo: uids, uidFrom: uid, type: type}, next);
 		}
 	], function(err, data) {
 		if (err) {
 			return winston.error(err.stack);
 		}
 
-		var uids = data.uidsTo;
+		result.posts[0].ip = undefined;
 
-		for(var i=0; i<uids.length; ++i) {
-			if (parseInt(uids[i], 10) !== uid) {
-				websockets.in('uid_' + uids[i]).emit('event:new_post', result);
+		data.uidsTo.forEach(function(toUid) {
+			if (parseInt(toUid, 10) !== uid) {
+				websockets.in('uid_' + toUid).emit('event:new_post', result);
+				if (result.topic && type === 'newTopic') {
+					websockets.in('uid_' + toUid).emit('event:new_topic', result.topic);
+				}
 			}
-		}
+		});
 	});
 };
 
