@@ -76,7 +76,7 @@ module.exports = function(User) {
 			settings.restrictChat = parseInt(getSetting(settings, 'restrictChat', 0), 10) === 1;
 			settings.topicSearchEnabled = parseInt(getSetting(settings, 'topicSearchEnabled', 0), 10) === 1;
 			settings.bootswatchSkin = settings.bootswatchSkin || 'default';
-			settings.scrollToMyPost = parseInt(getSetting(settings, 'scrollToMyPost', 1), 10) != 0;
+			settings.scrollToMyPost = parseInt(getSetting(settings, 'scrollToMyPost', 1), 10) === 1;
 
 			callback(null, settings);
 		});
