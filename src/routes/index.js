@@ -146,8 +146,8 @@ module.exports = function(app, middleware) {
 
 function handle404(app, middleware) {
 	var relativePath = nconf.get('relative_path');
-	var	isLanguage = new RegExp('^' + relativePath + '/language/.*/.*.json'),
-		isClientScript = new RegExp('^' + relativePath + '\\/src\\/.+\\.js');
+	var isLanguage = new RegExp('^' + relativePath + '/language/.*/.*.json');
+	var isClientScript = new RegExp('^' + relativePath + '\\/src\\/.+\\.js');
 
 	app.use(function(req, res) {
 		if (plugins.hasListeners('action:meta.override404')) {
