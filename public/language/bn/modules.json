@@ -6,6 +6,7 @@
     "chat.user_typing": "%1 লিখছেন",
     "chat.user_has_messaged_you": "%1 আপনাকে বার্তা পাঠিয়েছেন",
     "chat.see_all": "See all chats",
+    "chat.mark_all_read": "Mark all chats read",
     "chat.no-messages": "মেসেজ হিস্টোরী দেখতে প্রাপক নির্বাচন করুন",
     "chat.no-users-in-room": "No users in this room",
     "chat.recent-chats": "সাম্প্রতিক চ্যাটসমূহ",

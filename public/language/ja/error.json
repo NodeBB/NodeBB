@@ -27,6 +27,7 @@
     "password-too-long": "パスワードが長すぎます",
     "user-banned": "ユーザーは停止されています",
     "user-too-new": "申し訳ありません。登録後に投稿を行うには%1秒お待ち下さい。",
+    "blacklisted-ip": "Sorry, your IP address has been banned from this community. If you feel this is in error, please contact an administrator.",
     "no-category": "カテゴリは存在しません",
     "no-topic": "トピックは存在しません",
     "no-post": "投稿は存在しません",
@@ -97,5 +98,6 @@
     "invite-maximum-met": "You have invited the maximum amount of people (%1 out of %2).",
     "no-session-found": "No login session found!",
     "not-in-room": "User not in room",
-    "no-users-in-room": "No users in this room"
+    "no-users-in-room": "No users in this room",
+    "cant-kick-self": "You can't kick yourself from the group"
 }

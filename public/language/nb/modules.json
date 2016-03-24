@@ -6,6 +6,7 @@
     "chat.user_typing": "%1 skriver ...",
     "chat.user_has_messaged_you": "%1 har sendt deg en melding",
     "chat.see_all": "Se alle samtaler",
+    "chat.mark_all_read": "Mark all chats read",
     "chat.no-messages": "Vennligst velg en mottaker for å vise chatte-melding historikk",
     "chat.no-users-in-room": "No users in this room",
     "chat.recent-chats": "Nylige chatter",

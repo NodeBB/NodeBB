@@ -6,6 +6,7 @@
     "chat.user_typing": "%1 正在輸入中...",
     "chat.user_has_messaged_you": "%1 已傳送訊息給你了",
     "chat.see_all": "See all chats",
+    "chat.mark_all_read": "Mark all chats read",
     "chat.no-messages": "請選擇收件人來查看聊天記錄",
     "chat.no-users-in-room": "No users in this room",
     "chat.recent-chats": "最近的聊天記錄",

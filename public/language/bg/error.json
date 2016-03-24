@@ -27,6 +27,7 @@
     "password-too-long": "Паролата е твърде дълга",
     "user-banned": "Потребителят е блокиран",
     "user-too-new": "Съжаляваме, но трябва да изчакате поне %1 секунда/и, преди да направите първата си публикация",
+    "blacklisted-ip": "Sorry, your IP address has been banned from this community. If you feel this is in error, please contact an administrator.",
     "no-category": "Категорията не съществува",
     "no-topic": "Темата не съществува",
     "no-post": "Публикацията не съществува",
@@ -60,8 +61,8 @@
     "group-name-too-short": "Името на групата е твърде кратко",
     "group-already-exists": "Вече съществува такава група",
     "group-name-change-not-allowed": "Промяната на името на групата не е разрешено",
-    "group-already-member": "Вече членувате в тази група",
-    "group-not-member": "Не членувате в тази група",
+    "group-already-member": "Потребителят вече членува в тази група",
+    "group-not-member": "Потребителят не членува в тази група",
     "group-needs-owner": "Тази група се нуждае от поне един собственик",
     "group-already-invited": "Този потребител вече е бил поканен",
     "group-already-requested": "Вашата заявка за членство вече е била изпратена",
@@ -97,5 +98,6 @@
     "invite-maximum-met": "Вие сте поканили максимално позволения брой хора (%1 от %2).",
     "no-session-found": "Не е открита сесия за вход!",
     "not-in-room": "Потребителят не е в стаята",
-    "no-users-in-room": "Няма потребители в тази стая"
+    "no-users-in-room": "Няма потребители в тази стая",
+    "cant-kick-self": "You can't kick yourself from the group"
 }

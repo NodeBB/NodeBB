@@ -6,6 +6,7 @@
     "chat.user_typing": "%1 está a escribir...",
     "chat.user_has_messaged_you": "%1 enviouche unha mensaxe.",
     "chat.see_all": "Ver tódalas chamadas",
+    "chat.mark_all_read": "Mark all chats read",
     "chat.no-messages": "Por favor, seleccione un destinatario para ver o historial das mensaxes ",
     "chat.no-users-in-room": "Non hai usuarios nesta sala",
     "chat.recent-chats": "Charlas Recentes",

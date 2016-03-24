@@ -27,6 +27,7 @@
     "password-too-long": "הסיסמה ארוכה מדי",
     "user-banned": "המשתמש מושעה",
     "user-too-new": "אנא המתן  %1 שניות לפני פרסום ההודעה",
+    "blacklisted-ip": "Sorry, your IP address has been banned from this community. If you feel this is in error, please contact an administrator.",
     "no-category": "קטגוריה אינה קיימת",
     "no-topic": "נושא אינו קיים",
     "no-post": "פוסט אינו קיים",
@@ -97,5 +98,6 @@
     "invite-maximum-met": "הזמנת את הכמות המירבית של אנשים (%1 מתוך %2).",
     "no-session-found": "לא נמצאו סשני התחברות!",
     "not-in-room": "משתמש זה לא בצ'אט",
-    "no-users-in-room": "אין משתמש בחדר הזה"
+    "no-users-in-room": "אין משתמש בחדר הזה",
+    "cant-kick-self": "You can't kick yourself from the group"
 }

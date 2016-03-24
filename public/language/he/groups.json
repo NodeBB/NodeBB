@@ -41,6 +41,7 @@
     "details.hidden": "מוסתר",
     "details.hidden_help": "אם מאופשר, הקבוצה לא תופיע ברשימת הקבוצות, ומשתמשים יצטרכו להיות מוזמנים ידנית",
     "details.delete_group": "מחק קבוצה",
+    "details.private_system_help": "Private groups is disabled at system level, this option does not do anything",
     "event.updated": "פרטי הקבוצה עודכנו",
     "event.deleted": "קבוצת \"%1\" נמחקה",
     "membership.accept-invitation": "קבל הזמנה",

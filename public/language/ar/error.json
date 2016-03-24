@@ -27,6 +27,7 @@
     "password-too-long": "Password too long",
     "user-banned": "المستخدم محظور",
     "user-too-new": "عذرا, يجب أن تنتظر 1% ثواني قبل قيامك بأول مشاركة",
+    "blacklisted-ip": "Sorry, your IP address has been banned from this community. If you feel this is in error, please contact an administrator.",
     "no-category": "قائمة غير موجودة",
     "no-topic": "موضوع غير موجود",
     "no-post": "رد غير موجود",
@@ -97,5 +98,6 @@
     "invite-maximum-met": "You have invited the maximum amount of people (%1 out of %2).",
     "no-session-found": "No login session found!",
     "not-in-room": "User not in room",
-    "no-users-in-room": "No users in this room"
+    "no-users-in-room": "No users in this room",
+    "cant-kick-self": "You can't kick yourself from the group"
 }

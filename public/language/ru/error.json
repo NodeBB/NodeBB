@@ -27,6 +27,7 @@
     "password-too-long": "Пароль слишком длинный",
     "user-banned": "Пользователь заблокирован",
     "user-too-new": "Вы можете написать свое первой сообщение через %1 сек.",
+    "blacklisted-ip": "Sorry, your IP address has been banned from this community. If you feel this is in error, please contact an administrator.",
     "no-category": "Категория не существует",
     "no-topic": "Тема не существует",
     "no-post": "Сообщение не существует",
@@ -50,7 +51,7 @@
     "still-uploading": "Пожалуйста, подождите завершения загрузки.",
     "file-too-big": "Слишком большой файл. Максимальный размер: %1 Кбайт.",
     "guest-upload-disabled": "Загрузка для гостей была отключена",
-    "already-favourited": "You have already bookmarked this post",
+    "already-favourited": "Вы уже добавили это сообщение в закладки",
     "already-unfavourited": "You have already unbookmarked this post",
     "cant-ban-other-admins": "Вы не можете забанить других администраторов!",
     "cant-remove-last-admin": "Вы единственный администратор. Назначьте другого пользователя администратором, прежде чем складывать с себя полномочия админа",
@@ -97,5 +98,6 @@
     "invite-maximum-met": "Вы пригласили максимальное количество людей (%1 из %2).",
     "no-session-found": "Сессия входа не найдена!",
     "not-in-room": "Пользователь не в комнате",
-    "no-users-in-room": "No users in this room"
+    "no-users-in-room": "В этой комнате нет пользователей",
+    "cant-kick-self": "You can't kick yourself from the group"
 }

@@ -41,6 +41,7 @@
     "details.hidden": "Скрита",
     "details.hidden_help": "Ако е включено, тази група няма да бъде извеждана в списъка от групи и потребителите ще трябва да бъдат поканени лично",
     "details.delete_group": "Изтриване на групата",
+    "details.private_system_help": "Private groups is disabled at system level, this option does not do anything",
     "event.updated": "Подробностите за групата бяха обновени",
     "event.deleted": "Групата „%1“ беше изтрита",
     "membership.accept-invitation": "Приемане на поканата",

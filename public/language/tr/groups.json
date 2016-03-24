@@ -41,6 +41,7 @@
     "details.hidden": "Gizli",
     "details.hidden_help": "Bu grup eğer etkinse grup listelerinde bulunmaz, ve kullanıcılar bizzat davet eder",
     "details.delete_group": "Grubu Sil",
+    "details.private_system_help": "Private groups is disabled at system level, this option does not do anything",
     "event.updated": "Grup detayları güncellenmiştir",
     "event.deleted": "\"%1\" grubu silinmiş",
     "membership.accept-invitation": "Daveti Kabul Et",

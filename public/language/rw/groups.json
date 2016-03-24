@@ -41,6 +41,7 @@
     "details.hidden": "Ahishe",
     "details.hidden_help": "Nubyemera, iri tsinda ntabwo rizajya rigaragara ku rutonde rw'andi matsinda kandi abantu bazajya basabwa kuritumirwamo buri wese ku giti cye mbere yo kurijyamo",
     "details.delete_group": "Senya Itsinda",
+    "details.private_system_help": "Private groups is disabled at system level, this option does not do anything",
     "event.updated": "Amakuru ku itsinda yahinduweho bijyanye n'igihe",
     "event.deleted": "Itsinda rya \"%1\" ryakuweho",
     "membership.accept-invitation": "Emera Ubutumire",

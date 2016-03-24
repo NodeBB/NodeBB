@@ -6,6 +6,7 @@
     "chat.user_typing": "%1b đang gõ...",
     "chat.user_has_messaged_you": "%1 đã gửi tin cho bạn.",
     "chat.see_all": "Xem tất cả",
+    "chat.mark_all_read": "Mark all chats read",
     "chat.no-messages": "Hãy chọn 1 tài khoản để xem lịch sử chat",
     "chat.no-users-in-room": "Không có người nào trong phòng này.",
     "chat.recent-chats": "Vừa chat",

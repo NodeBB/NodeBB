@@ -8,7 +8,7 @@
     "outgoing_link_message": "U verlaat nu %1",
     "continue_to": "Door naar %1",
     "return_to": "Terug naar %1",
-    "new_notification": "Nieuwe melding",
+    "new_notification": "Nieuwe notificatie",
     "you_have_unread_notifications": "Je hebt nieuwe notificaties.",
     "new_message_from": "Nieuw bericht van <strong>%1</strong>",
     "upvoted_your_post_in": "<strong>%1</strong> heeft voor een bericht gestemd in <strong>%2</strong>.",
@@ -30,9 +30,9 @@
     "user_started_following_you_dual": "<strong>%1</strong> en <strong>%2</strong> volgen jou nu.",
     "user_started_following_you_multiple": "<strong%1>%1</strong> en %2 andere volgen jou nu.",
     "new_register": "<strong>%1</strong> heeft een registratie verzoek aangevraagd.",
-    "new_register_multiple": "There are <strong>%1</strong> registration requests awaiting review.",
+    "new_register_multiple": "Er is/zijn <strong>%1</strong> registratieverzoek(en) die wacht(en) op goedkeuring.",
     "email-confirmed": "E-mailadres bevestigd",
-    "email-confirmed-message": "Bedankt voor het bevestigen van je e-mailadres. Dit account is nu volledig geactiveerd.",
+    "email-confirmed-message": "Bedankt voor het bevestigen van je e-mailadres. Je account is nu volledig geactiveerd.",
     "email-confirm-error-message": "Er was een probleem met het bevestigen van dit e-mailadres. Misschien is de code niet goed ingevoerd of was de beschikbare tijd inmiddels verstreken.",
     "email-confirm-sent": "Bevestigingsmail verstuurd."
 }

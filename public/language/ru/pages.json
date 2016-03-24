@@ -38,8 +38,8 @@
     "account/watched": "Тему смотрели %1",
     "account/upvoted": "Posts upvoted by %1",
     "account/downvoted": "Posts downvoted by %1",
-    "account/best": "Лучшее сообщение написано %1",
-    "confirm": "Email Confirmed",
+    "account/best": "Лучшие сообщения написанные %1",
+    "confirm": "Email подтвержден",
     "maintenance.text": "%1 в настоящее время на обслуживании. Пожалуйста, возвращайтесь позже.",
     "maintenance.messageIntro": "Администратор оставил сообщение:",
     "throttled.text": "%1 is currently unavailable due to excessive load. Please come back another time."

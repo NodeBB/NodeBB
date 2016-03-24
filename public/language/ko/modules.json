@@ -6,6 +6,7 @@
     "chat.user_typing": "%1님이 입력 중입니다.",
     "chat.user_has_messaged_you": "%1님이 메시지를 보냈습니다.",
     "chat.see_all": "모든 대화 보기",
+    "chat.mark_all_read": "Mark all chats read",
     "chat.no-messages": "대화 기록을 보려면 대화 상대를 선택하세요.",
     "chat.no-users-in-room": "사용자가 없습니다.",
     "chat.recent-chats": "최근 대화 내용",

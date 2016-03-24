@@ -27,6 +27,7 @@
     "password-too-long": "Mot de passe trop long",
     "user-banned": "Utilisateur banni",
     "user-too-new": "Désolé, vous devez attendre encore %1 seconde(s) avant d'envoyer votre premier message",
+    "blacklisted-ip": "Sorry, your IP address has been banned from this community. If you feel this is in error, please contact an administrator.",
     "no-category": "Cette catégorie n'existe pas",
     "no-topic": "Ce sujet n'existe pas",
     "no-post": "Ce message n'existe pas",
@@ -50,8 +51,8 @@
     "still-uploading": "Veuillez patienter pendant le téléchargement.",
     "file-too-big": "La taille maximale autorisée pour un fichier est de %1 kb. Veuillez envoyer un fichier plus petit.",
     "guest-upload-disabled": "Le téléversement est désactivé pour les Invités.",
-    "already-favourited": "You have already bookmarked this post",
-    "already-unfavourited": "You have already unbookmarked this post",
+    "already-favourited": "Vous avez déjà mis un marque-page",
+    "already-unfavourited": "Vous avez déjà retiré un marque-page",
     "cant-ban-other-admins": "Vous ne pouvez pas bannir les autres administrateurs !",
     "cant-remove-last-admin": "Vous seul êtes administrateur. Ajouter un autre utilisateur en tant qu'administrateur avant de vous en retirer.",
     "invalid-image-type": "Type d'image invalide. Les types autorisés sont: %1",
@@ -97,5 +98,6 @@
     "invite-maximum-met": "Vous avez invité la quantité maximale de personnes (%1 de %2).",
     "no-session-found": "Pas de session de connexion trouvé!",
     "not-in-room": "L'utilisateur n'est pas dans cette salle",
-    "no-users-in-room": "No users in this room"
+    "no-users-in-room": "Aucun utilisateur dans cette salle",
+    "cant-kick-self": "You can't kick yourself from the group"
 }

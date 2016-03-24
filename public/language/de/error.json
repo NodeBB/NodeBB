@@ -27,6 +27,7 @@
     "password-too-long": "Passwort ist zu lang",
     "user-banned": "Benutzer ist gesperrt",
     "user-too-new": "Entschuldigung, du musst %1 Sekunde(n) warten, bevor du deinen ersten Beitrag schreiben kannst.",
+    "blacklisted-ip": "Sorry, your IP address has been banned from this community. If you feel this is in error, please contact an administrator.",
     "no-category": "Die Kategorie existiert nicht",
     "no-topic": "Das Thema existiert nicht",
     "no-post": "Der Beitrag existiert nicht",
@@ -60,7 +61,7 @@
     "group-name-too-short": "Gruppenname zu kurz",
     "group-already-exists": "Gruppe existiert bereits",
     "group-name-change-not-allowed": "Du kannst den Namen der Gruppe nicht ändern",
-    "group-already-member": "Du bist bereits Teil dieser Gruppe",
+    "group-already-member": "Bereits Teil dieser Gruppe",
     "group-not-member": "Du bist kein Mitglied dieser Gruppe",
     "group-needs-owner": "Diese Gruppe muss mindestens einen Besitzer vorweisen",
     "group-already-invited": "Dieser Benutzer wurde bereits eingeladen",
@@ -97,5 +98,6 @@
     "invite-maximum-met": "Du hast bereits die maximale Anzahl an Personen eingeladen (%1 von %2).",
     "no-session-found": "Keine Login-Sitzung gefunden!",
     "not-in-room": "Benutzer nicht in Raum",
-    "no-users-in-room": "In diesem Raum befinden sich keine Benutzer."
+    "no-users-in-room": "In diesem Raum befinden sich keine Benutzer.",
+    "cant-kick-self": "You can't kick yourself from the group"
 }
