@@ -62,7 +62,7 @@ define('forum/topic/posts', [
 
 		if (isPostVisible) {
 			createNewPosts(data, components.get('post').not('[data-index=0]'), direction, scrollToPost);
-		} else if (config.scrollToMyPost && parseInt(posts[0].uid, 10) === parseInt(app.user.uid, 10)) {
+		} else if (ajaxify.data.scrollToMyPost && parseInt(posts[0].uid, 10) === parseInt(app.user.uid, 10)) {
 			pagination.loadPage(ajaxify.data.pagination.pageCount, scrollToPost);
 		}
 	}
@@ -79,7 +79,7 @@ define('forum/topic/posts', [
 	}
 
 	function scrollToPostIfSelf(post) {
-		if (!config.scrollToMyPost) {
+		if (!ajaxify.data.scrollToMyPost) {
 		    return;
 		}
 		var isSelfPost = parseInt(post.uid, 10) === parseInt(app.user.uid, 10);
