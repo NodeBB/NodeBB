@@ -147,6 +147,12 @@ define('forum/topic/posts', [
 		$(window).trigger('action:posts.loading', {posts: data.posts, after: after, before: before});
 
 		app.parseAndTranslate('topic', 'posts', data, function(html) {
+
+			html = html.filter(function(index, el) {
+				var pid = $(this).attr('data-pid');
+				return pid && $('[component="post"][data-pid="' + pid + '"]').length === 0;
+			});
+
 			if (after) {
 				html.insertAfter(after);
 			} else if (before) {
