@@ -65,30 +65,43 @@ define('forum/topic/postTools', ['share', 'navigator', 'components', 'translator
 
 	function addVoteHandler() {
 		components.get('topic').on('mouseenter', '[data-pid] [component="post/vote-count"]', loadDataAndCreateTooltip);
+		components.get('topic').on('mouseout', '[data-pid] [component="post/vote-count"]', function() {
+			var el = $(this).parent();
+			el.on('shown.bs.tooltip', function() {
+				$('.tooltip').tooltip('destroy');
+				el.off('shown.bs.tooltip');
+			});
+
+			$('.tooltip').tooltip('destroy');
+		});
 	}
 
-	function loadDataAndCreateTooltip() {
-		var $this = $(this),
-			el = $this.parent(),
-			pid = el.parents('[data-pid]').attr('data-pid');
+	function loadDataAndCreateTooltip(e) {
+		e.stopPropagation();
 
+		var $this = $(this);
+		var el = $this.parent();
+		var pid = el.parents('[data-pid]').attr('data-pid');
+
+		$('.tooltip').tooltip('destroy');
 		$this.off('mouseenter', loadDataAndCreateTooltip);
+
 		socket.emit('posts.getUpvoters', [pid], function(err, data) {
-			if (!err && data.length) {
-				createTooltip(el, data[0]);
+			if (err) {
+				return app.alertError(err.message);
 			}
 
-			$this.on('mouseenter', loadDataAndCreateTooltip);
+			if (data.length) {
+				createTooltip(el, data[0]);
+			}
+			$this.off('mouseenter').on('mouseenter', loadDataAndCreateTooltip);
 		});
+		return false;
 	}
 
 	function createTooltip(el, data) {
 		function doCreateTooltip(title) {
 			el.attr('title', title).tooltip('fixTitle').tooltip('show');
-			el.on('hidden.bs.tooltip', function() {
-				el.tooltip('destroy');
-				el.off('hidden.bs.tooltip');
-			});
 		}
 		var usernames = data.usernames;
 		if (!usernames.length) {
