@@ -80,11 +80,22 @@ module.exports = function(Meta) {
 
 				source = '@import "./theme";\n' + source;
 
+				var fromFile = nconf.get('from-file') || '';
 				async.parallel([
 					function(next) {
+						if (fromFile.match('clientLess')) {
+							winston.info('[minifier] Compiling front-end LESS files skipped');
+							return Meta.css.getFromFile(path.join(__dirname, '../../public/stylesheet.css'), Meta.css.cache, next);
+						}
+
 						minify(source, paths, 'cache', next);
 					},
 					function(next) {
+						if (fromFile.match('acpLess')) {
+							winston.info('[minifier] Compiling ACP LESS files skipped');
+							return Meta.css.getFromFile(path.join(__dirname, '../../public/admin.css'), Meta.css.acpCache, next);
+						}
+						
 						minify(acpSource, paths, 'acpCache', next);
 					}
 				], function(err, minified) {
@@ -151,28 +162,12 @@ module.exports = function(Meta) {
 		});
 	};
 
-	Meta.css.getFromFile = function(callback) {
-		var cachePath = path.join(__dirname, '../../public/stylesheet.css'),
-			acpCachePath = path.join(__dirname, '../../public/admin.css');
-		file.exists(cachePath, function(exists) {
-			if (!exists) {
-				winston.warn('[meta/css] No stylesheets found on disk, re-minifying');
-				Meta.css.minify(callback);
-				return;
-			}
+	Meta.css.getFromFile = function(filePath, cache, callback) {
+		winston.verbose('[meta/css] Reading stylesheet ' + filePath.split('/').pop() + ' from file');
 
-			if (nconf.get('isPrimary') !== 'true') {
-				return callback();
-			}
-
-			winston.verbose('[meta/css] Reading stylesheets from file');
-			async.map([cachePath, acpCachePath], fs.readFile, function(err, files) {
-				Meta.css.cache = files[0];
-				Meta.css.acpCache = files[1];
-
-				emitter.emit('meta:css.compiled');
-				callback();
-			});
+		fs.readFile(filePath, function(err, file) {
+			cache = file;
+			callback();
 		});
 	};
 
