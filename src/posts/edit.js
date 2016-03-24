@@ -118,7 +118,7 @@ module.exports = function(Posts) {
 
 			if (title) {
 				topicData.title = title;
-				topicData.slug = tid + '/' + utils.slugify(title);
+				topicData.slug = tid + '/' + (utils.slugify(title) || 'topic');
 			}
 
 			if (data.topic_thumb) {

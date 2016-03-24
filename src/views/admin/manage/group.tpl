@@ -63,7 +63,7 @@
 				<fieldset>
 					<div class="checkbox">
 						<label>
-							<input id="group-hidden" name="hidden" type="checkbox"<!-- IF group.hidden --> checked<!-- ENDIF group.hidden -->> <strong>[Hidden</strong>
+							<input id="group-hidden" name="hidden" type="checkbox"<!-- IF group.hidden --> checked<!-- ENDIF group.hidden -->> <strong>Hidden</strong>
 							<p class="help-block">
 								If enabled, this group will not be found in the groups listing, and users will have to be invited manually
 							</p>

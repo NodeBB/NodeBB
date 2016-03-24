@@ -326,7 +326,10 @@ app.cacheBuster = null;
 			return;
 		}
 		require(['translator'], function(translator) {
-			title = config.titleLayout.replace(/&#123;/g, '{').replace(/&#125;/g, '}').replace('{pageTitle}', title).replace('{browserTitle}', config.browserTitle);
+			title = config.titleLayout.replace(/&#123;/g, '{').replace(/&#125;/g, '}')
+				.replace('{pageTitle}', function() { return title; })
+				.replace('{browserTitle}', function() { return config.browserTitle; });
+
 			translator.translate(title, function(translated) {
 				titleObj.titles[0] = translated;
 				app.alternatingTitle('');

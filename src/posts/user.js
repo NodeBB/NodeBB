@@ -1,6 +1,7 @@
 'use strict';
 
 var async = require('async'),
+	validator = require('validator'),
 
 	db = require('../database'),
 	user = require('../user'),
@@ -69,6 +70,8 @@ module.exports = function(Posts) {
 				userData.picture = userData.picture || '';
 				userData.status = user.getStatus(userData);
 				userData.groupTitle = results.groupTitles[i].groupTitle;
+				userData.signature = validator.escape(userData.signature || '');
+				userData.fullname = validator.escape(userData.fullname || '');
 			});
 
 			async.map(userData, function(userData, next) {

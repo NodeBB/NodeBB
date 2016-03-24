@@ -84,6 +84,15 @@
 						</label>
 					</div>
 
+					<strong>Installed Plugins Required:</strong>
+
+					<div class="checkbox">
+						<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
+							<input class="mdl-switch__input" type="checkbox" name="property:searchInstalled" <!-- IF enabled.properties.searchInstalled -->checked<!-- ENDIF enabled.properties.searchInstalled -->/>
+							<span class="mdl-switch__label"><strong>Search plugin</strong></span>
+						</label>
+					</div>
+
 					<button class="btn btn-danger delete">Delete</button>
 					<!-- IF enabled.enabled -->
 					<button class="btn btn-warning toggle">Disable</button>

@@ -240,6 +240,7 @@ SocketModules.chats.markRead = function(socket, roomId, callback) {
 			user.notifications.pushCount(socket.uid);
 		});
 
+		server.in('uid_' + socket.uid).emit('event:chats.markedAsRead', {roomId: roomId});
 		callback();
 	});
 };

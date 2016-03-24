@@ -52,7 +52,7 @@ categoryController.get = function(req, res, callback) {
 			}
 
 			if (!res.locals.isAPI && (!req.params.slug || results.categoryData.slug !== cid + '/' + req.params.slug) && (results.categoryData.slug && results.categoryData.slug !== cid + '/')) {
-				return helpers.redirect(res, '/category/' + encodeURI(results.categoryData.slug));
+				return helpers.redirect(res, '/category/' + results.categoryData.slug);
 			}
 
 			var settings = results.userSettings;

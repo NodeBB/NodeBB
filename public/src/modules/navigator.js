@@ -225,7 +225,7 @@ define('navigator', ['forum/pagination', 'components'], function(pagination, com
 				scrollTo.parents('[component="post"]').addClass('highlight');
 				setTimeout(function() {
 					scrollTo.parents('[component="post"]').removeClass('highlight');
-				}, 3000);
+				}, 10000);
 			}
 		}
 

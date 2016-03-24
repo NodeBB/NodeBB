@@ -26,7 +26,7 @@ define('forum/topic/posts', [
 			post.selfPost = !!app.user.uid && parseInt(post.uid, 10) === parseInt(app.user.uid, 10);
 			post.display_moderator_tools = post.selfPost || ajaxify.data.privileges.isAdminOrMod;
 			post.display_move_tools = ajaxify.data.privileges.isAdminOrMod;
-			post.display_post_menu = post.selfPost || ajaxify.data.privileges.isAdminOrMod;
+			post.display_post_menu = ajaxify.data.privileges.isAdminOrMod || post.selfPost || ((app.user.uid || ajaxify.data.postSharing.length) && !post.deleted);
 		});
 
 		updatePostCounts(data.posts);
@@ -50,9 +50,7 @@ define('forum/topic/posts', [
 
 	function onNewPostPagination(data) {
 		function scrollToPost() {
-			if (ajaxify.data.scrollToMyPost) {
-				scrollToPostIfSelf(data.posts[0]);
-			}
+			scrollToPostIfSelf(data.posts[0]);
 		}
 
 		var posts = data.posts;
