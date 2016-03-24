@@ -121,9 +121,7 @@ module.exports = function(Posts) {
 				topicData.slug = tid + '/' + (utils.slugify(title) || 'topic');
 			}
 
-			if (data.topic_thumb) {
-				topicData.thumb = data.topic_thumb;
-			}
+			topicData.thumb = data.topic_thumb || '';
 
 			data.tags = data.tags || [];
 
