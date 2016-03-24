@@ -85,7 +85,7 @@ module.exports = function(Meta) {
 					function(next) {
 						if (fromFile.match('clientLess')) {
 							winston.info('[minifier] Compiling front-end LESS files skipped');
-							return Meta.css.getFromFile(path.join(__dirname, '../../public/stylesheet.css'), Meta.css.cache, next);
+							return Meta.css.getFromFile(path.join(__dirname, '../../public/stylesheet.css'), 'cache', next);
 						}
 
 						minify(source, paths, 'cache', next);
@@ -93,7 +93,7 @@ module.exports = function(Meta) {
 					function(next) {
 						if (fromFile.match('acpLess')) {
 							winston.info('[minifier] Compiling ACP LESS files skipped');
-							return Meta.css.getFromFile(path.join(__dirname, '../../public/admin.css'), Meta.css.acpCache, next);
+							return Meta.css.getFromFile(path.join(__dirname, '../../public/admin.css'), 'acpCache', next);
 						}
 						
 						minify(acpSource, paths, 'acpCache', next);
@@ -107,8 +107,8 @@ module.exports = function(Meta) {
 					if (process.send) {
 						process.send({
 							action: 'css-propagate',
-							cache: minified[0],
-							acpCache: minified[1]
+							cache: fromFile.match('clientLess') ? Meta.css.cache : minified[0],
+							acpCache: fromFile.match('acpLess') ? Meta.css.acpCache : minified[1]
 						});
 					}
 
@@ -162,11 +162,11 @@ module.exports = function(Meta) {
 		});
 	};
 
-	Meta.css.getFromFile = function(filePath, cache, callback) {
+	Meta.css.getFromFile = function(filePath, filename, callback) {
 		winston.verbose('[meta/css] Reading stylesheet ' + filePath.split('/').pop() + ' from file');
 
 		fs.readFile(filePath, function(err, file) {
-			cache = file;
+			Meta.css[filename] = file;
 			callback();
 		});
 	};
