@@ -146,7 +146,7 @@ module.exports = function(app, middleware) {
 
 function handle404(app, middleware) {
 	var relativePath = nconf.get('relative_path');
-	var	isLanguage = new RegExp('^' + relativePath + '/language/[\\w]{2,}/.*.json'),
+	var	isLanguage = new RegExp('^' + relativePath + '/language/.*/.*.json'),
 		isClientScript = new RegExp('^' + relativePath + '\\/src\\/.+\\.js');
 
 	app.use(function(req, res) {
