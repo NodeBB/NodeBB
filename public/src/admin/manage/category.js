@@ -100,26 +100,31 @@ define('admin/manage/category', [
 		});
 
 		$('.upload-button').on('click', function() {
-			var inputEl = $(this),
-				cid = inputEl.attr('data-cid');
+			var inputEl = $(this);
+			var cid = inputEl.attr('data-cid');
 
 			uploader.show({
 				title: 'Upload category image',
 				route: config.relative_path + '/api/admin/category/uploadpicture',
 				params: {cid: cid}
 			}, function(imageUrlOnServer) {
-				inputEl.val(imageUrlOnServer);
+				$('#category-image').val(imageUrlOnServer);
 				var previewBox = inputEl.parent().parent().siblings('.category-preview');
 				previewBox.css('background', 'url(' + imageUrlOnServer + '?' + new Date().getTime() + ')');
-				modified(inputEl[0]);
+
+				modified($('#category-image'));
 			});
+		});
+
+		$('#category-image').on('change', function() {
+			$('.category-preview').css('background-image', $(this).val() ? ('url("' + $(this).val() + '")') : '');
 		});
 
 		$('.delete-image').on('click', function(e) {
 			e.preventDefault();
 
-			var inputEl = $('.upload-button'),
-				previewBox = inputEl.parent().parent().siblings('.category-preview');
+			var inputEl = $('#category-image');
+			var previewBox = $('.category-preview');
 
 			inputEl.val('');
 			previewBox.css('background-image', '');
