@@ -148,7 +148,7 @@ define('forum/topic/posts', [
 
 		app.parseAndTranslate('topic', 'posts', data, function(html) {
 
-			html = html.filter(function(index, el) {
+			html = html.filter(function() {
 				var pid = $(this).attr('data-pid');
 				return pid && $('[component="post"][data-pid="' + pid + '"]').length === 0;
 			});
