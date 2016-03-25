@@ -24,7 +24,7 @@ module.exports = function(Meta) {
 				'public/vendor/visibility/visibility.min.js',
 				'public/vendor/bootstrap/js/bootstrap.min.js',
 				'public/vendor/jquery/bootstrap-tagsinput/bootstrap-tagsinput.min.js',
-				'public/vendor/jquery/textcomplete/jquery.textcomplete.min.js',
+				'public/vendor/jquery/textcomplete/jquery.textcomplete.js',
 				'public/vendor/requirejs/require.js',
 				'public/vendor/bootbox/bootbox.min.js',
 				'public/vendor/tinycon/tinycon.js',
