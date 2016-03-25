@@ -41,7 +41,7 @@
     "details.hidden": "Versteckt",
     "details.hidden_help": "Wenn aktiviert, wird diese Gruppe in der Gruppenliste nicht zu finden sein, und Benutzer werden manuell eingeladen werden müssen.",
     "details.delete_group": "Gruppe löschen",
-    "details.private_system_help": "Private groups is disabled at system level, this option does not do anything",
+    "details.private_system_help": "Private Gruppen wurden systemweit deaktiviert. Diese Einstellung hat keine Funktion.",
     "event.updated": "Gruppendetails wurden aktualisiert",
     "event.deleted": "Die Gruppe \"%1\" wurde gelöscht.",
     "membership.accept-invitation": "Einladung akzeptieren",

@@ -27,7 +27,7 @@
     "password-too-long": "A senha é muito grande",
     "user-banned": "Usuário banido",
     "user-too-new": "Desculpe, é necessário que você aguarde %1 segundo(s) antes de fazer o seu primeiro post.",
-    "blacklisted-ip": "Sorry, your IP address has been banned from this community. If you feel this is in error, please contact an administrator.",
+    "blacklisted-ip": "Desculpe, o seu endereço IP foi banido desta comunidade. Se você acha que isso é um engano, por favor contate um administrador.",
     "no-category": "A categoria não existe",
     "no-topic": "O tópico não existe",
     "no-post": "O post não existe",
@@ -99,5 +99,5 @@
     "no-session-found": "Nenhuma sessão de login encontrada!",
     "not-in-room": "O usuário não está na sala",
     "no-users-in-room": "Nenhum usuário nesta sala",
-    "cant-kick-self": "You can't kick yourself from the group"
+    "cant-kick-self": "Você não pode kickar a si mesmo do grupo"
 }

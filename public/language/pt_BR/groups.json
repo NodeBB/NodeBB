@@ -41,7 +41,7 @@
     "details.hidden": "Oculto",
     "details.hidden_help": "Se habilitado, este grupo não se encontrará na listagem de grupos e os usuários terão de ser convivados manualmente",
     "details.delete_group": "Deletar Grupo",
-    "details.private_system_help": "Private groups is disabled at system level, this option does not do anything",
+    "details.private_system_help": "Grupos particulares estão desabilitados em escala de sistema, esta opção não é válida",
     "event.updated": "Os detalhes do grupo foram atualizados",
     "event.deleted": "O grupo \"%1\" foi deletado",
     "membership.accept-invitation": "Aceitar Convite",

@@ -27,7 +27,7 @@
     "password-too-long": "Passwort ist zu lang",
     "user-banned": "Benutzer ist gesperrt",
     "user-too-new": "Entschuldigung, du musst %1 Sekunde(n) warten, bevor du deinen ersten Beitrag schreiben kannst.",
-    "blacklisted-ip": "Sorry, your IP address has been banned from this community. If you feel this is in error, please contact an administrator.",
+    "blacklisted-ip": "Deine IP-Adresse ist für diese Plattform gesperrt. Sollte dies ein Irrtum sein, dann kontaktiere bitte einen Administrator.",
     "no-category": "Die Kategorie existiert nicht",
     "no-topic": "Das Thema existiert nicht",
     "no-post": "Der Beitrag existiert nicht",
@@ -97,7 +97,7 @@
     "wrong-login-type-username": "Bitte nutze deinen Benutzernamen zum einloggen",
     "invite-maximum-met": "Du hast bereits die maximale Anzahl an Personen eingeladen (%1 von %2).",
     "no-session-found": "Keine Login-Sitzung gefunden!",
-    "not-in-room": "Benutzer nicht in Raum",
+    "not-in-room": "Benutzer nicht im Raum",
     "no-users-in-room": "In diesem Raum befinden sich keine Benutzer.",
-    "cant-kick-self": "You can't kick yourself from the group"
+    "cant-kick-self": "Du kannst dich nicht selber aus der Gruppe entfernen."
 }

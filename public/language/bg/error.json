@@ -27,7 +27,7 @@
     "password-too-long": "Паролата е твърде дълга",
     "user-banned": "Потребителят е блокиран",
     "user-too-new": "Съжаляваме, но трябва да изчакате поне %1 секунда/и, преди да направите първата си публикация",
-    "blacklisted-ip": "Sorry, your IP address has been banned from this community. If you feel this is in error, please contact an administrator.",
+    "blacklisted-ip": "Съжаляваме, но Вашият IP адрес е забранен за ползване в тази общност. Ако смятате, че това е грешка, моля, свържете се с администратор.",
     "no-category": "Категорията не съществува",
     "no-topic": "Темата не съществува",
     "no-post": "Публикацията не съществува",
@@ -99,5 +99,5 @@
     "no-session-found": "Не е открита сесия за вход!",
     "not-in-room": "Потребителят не е в стаята",
     "no-users-in-room": "Няма потребители в тази стая",
-    "cant-kick-self": "You can't kick yourself from the group"
+    "cant-kick-self": "Не можете да изритате себе си от групата"
 }
