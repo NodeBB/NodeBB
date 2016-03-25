@@ -3,7 +3,6 @@
 		<ul class="nav nav-pills">
 			<li class="active"><a href="#category-settings" data-toggle="tab">Category Settings</a></li>
 			<li><a href="#privileges" data-toggle="tab">Privileges</a></li>
-			<li><a href="#analytics" data-toggle="tab">Analytics</a></li>
 		</ul>
 		<br />
 		<div class="tab-content">
@@ -126,37 +125,6 @@
 				<hr />
 				<div class="privilege-table-container">
 					<!-- IMPORT admin/partials/categories/privileges.tpl -->
-				</div>
-			</div>
-
-			<div class="tab-pane fade col-xs-12" id="analytics">
-				<div class="row">
-					<div class="col-sm-6 text-center">
-						<div><canvas id="pageviews:hourly" height="250"></canvas></div>
-						<p>
-							<small><strong>Figure 1</strong> &ndash; Hourly page views for this category</small>
-						</p>
-					</div>
-					<div class="col-sm-6 text-center">
-						<div><canvas id="pageviews:daily" height="250"></canvas></div>
-						<p>
-							<small><strong>Figure 2</strong> &ndash; Daily page views for this category</small>
-						</p>
-					</div>
-				</div>
-				<div class="row">
-					<div class="col-sm-6 text-center">
-						<div><canvas id="topics:daily" height="250"></canvas></div>
-						<p>
-							<small><strong>Figure 3</strong> &ndash; Daily topics created in this category</small>
-						</p>
-					</div>
-					<div class="col-sm-6 text-center">
-						<div><canvas id="posts:daily" height="250"></canvas></div>
-						<p>
-							<small><strong>Figure 4</strong> &ndash; Daily posts made in this category</small>
-						</p>
-					</div>
 				</div>
 			</div>
 		</div>

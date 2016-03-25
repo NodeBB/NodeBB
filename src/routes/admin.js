@@ -52,6 +52,7 @@ function addRoutes(router, middleware, controllers) {
 
 	router.get('/manage/categories', middlewares, controllers.admin.categories.getAll);
 	router.get('/manage/categories/:category_id', middlewares, controllers.admin.categories.get);
+	router.get('/manage/categories/:category_id/analytics', middlewares, controllers.admin.categories.getAnalytics);
 
 	router.get('/manage/tags', middlewares, controllers.admin.tags.get);
 	router.get('/manage/flags', middlewares, controllers.admin.flags.get);
