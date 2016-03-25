@@ -199,13 +199,23 @@ define('forum/topic/postTools', ['share', 'navigator', 'components', 'translator
 			if (!proceed) {
 				var selectionText = '';
 				var selection = window.getSelection ? window.getSelection() : document.selection.createRange();
-				var selectionNode = $(selection.baseNode || selection.anchorNode);
+				var content = button.parents('[component="post"]').find('[component="post/content"]').get(0);
 
-				if (selectionNode.parents('[component="post/content"]').length > 0) {
-					selectionText = selection.toString();
+				if (selection.containsNode(content, true)) {
+					var bounds = document.createRange();
+					bounds.selectNodeContents(content);
+					var range = selection.getRangeAt(0).cloneRange();
+					if (range.compareBoundaryPoints(Range.START_TO_START, bounds) < 0) {
+						range.setStart(bounds.startContainer, bounds.startOffset);
+					}
+					if (range.compareBoundaryPoints(Range.END_TO_END, bounds) > 0) {
+						range.setEnd(bounds.endContainer, bounds.endOffset);
+					}
+					bounds.detach();
+					selectionText = range.toString();
+					range.detach();
 				}
 
-				button = selectionText ? selectionNode : button;
 				var username = getUserName(button);
 				if (getData(button, 'data-uid') === '0' || !getData(button, 'data-userslug')) {
 					username = '';
