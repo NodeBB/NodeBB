@@ -147,13 +147,18 @@ module.exports = function(User) {
 				db.getObjects(keys, next);
 			},
 			function(users, next) {
-				users.forEach(function(user, index) {
-					if (user) {
-						user.timestampISO = utils.toISOString(data[index].score);
+				users = users.map(function(user, index) {
+					if (!user) {
+						return null;
 					}
-				});
 
-				async.map(users, function(user, next) {
+					user.timestampISO = utils.toISOString(data[index].score);
+					delete user.hashedPassword;
+
+					return user;
+				}).filter(Boolean);
+
+				async.mapLimit(users, 20, function(user, next) {
 					if (!user) {
 						return next(null, user);
 					}
@@ -161,18 +166,25 @@ module.exports = function(User) {
 					// temporary: see http://www.stopforumspam.com/forum/viewtopic.php?id=6392
 					user.ip = user.ip.replace('::ffff:', '');
 
-					request('http://api.stopforumspam.org/api?ip=' + user.ip + '&email=' + user.email + '&username=' + user.username + '&f=json', function (err, response, body) {
+					request({
+						method: 'get',
+						url: 'http://api.stopforumspam.org/api' +
+								'?ip=' + encodeURIComponent(user.ip) +
+								'&email=' + encodeURIComponent(user.email) +
+								'&username=' + encodeURIComponent(user.username) +
+								'&f=json',
+						json: true
+					}, function (err, response, body) {
 						if (err) {
 							return next(null, user);
 						}
 						if (response.statusCode === 200) {
-							var data = JSON.parse(body);
-							user.spamData = data;
-
-							user.usernameSpam = data.username.frequency > 0 || data.username.appears > 0;
-							user.emailSpam = data.email.frequency > 0 || data.email.appears > 0;
-							user.ipSpam = data.ip.frequency > 0 || data.ip.appears > 0;
+							user.spamData = body;
+							user.usernameSpam = body.username.frequency > 0 || body.username.appears > 0;
+							user.emailSpam = body.email.frequency > 0 || body.email.appears > 0;
+							user.ipSpam = body.ip.frequency > 0 || body.ip.appears > 0;
 						}
+
 						next(null, user);
 					});
 				}, next);
