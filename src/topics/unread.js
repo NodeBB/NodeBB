@@ -14,13 +14,23 @@ var utils = require('../../public/src/utils');
 
 module.exports = function(Topics) {
 
-	Topics.getTotalUnread = function(uid, callback) {
-		Topics.getUnreadTids(0, uid, 0, 99, function(err, tids) {
+	Topics.getTotalUnread = function(uid, allowSeen, callback) {
+		if (!callback) {
+			callback = allowSeen;
+			allowSeen = true;
+		}
+
+		Topics.getUnreadTids(0, uid, 0, 99, allowSeen, function(err, tids) {
 			callback(err, tids ? tids.length : 0);
 		});
 	};
 
-	Topics.getUnreadTopics = function(cid, uid, start, stop, callback) {
+	Topics.getUnreadTopics = function(cid, uid, start, stop, allowSeen, callback) {
+		if (!callback) {
+			callback = allowSeen;
+			allowSeen = true;
+		}
+
 
 		var unreadTopics = {
 			showSelect: true,
@@ -30,7 +40,7 @@ module.exports = function(Topics) {
 
 		async.waterfall([
 			function(next) {
-				Topics.getUnreadTids(cid, uid, start, stop, next);
+				Topics.getUnreadTids(cid, uid, start, stop, allowSeen, next);
 			},
 			function(tids, next) {
 				if (!tids.length) {
@@ -54,7 +64,12 @@ module.exports = function(Topics) {
 		return Date.now() - (parseInt(meta.config.unreadCutoff, 10) || 2) * 86400000;
 	};
 
-	Topics.getUnreadTids = function(cid, uid, start, stop, callback) {
+	Topics.getUnreadTids = function(cid, uid, start, stop, allowSeen, callback) {
+		if (!callback) {
+			callback = allowSeen;
+			allowSeen = true;
+		}
+
 		uid = parseInt(uid, 10);
 		if (uid === 0) {
 			return callback(null, []);
@@ -95,7 +110,7 @@ module.exports = function(Topics) {
 			});
 
 			var tids = results.recentTids.filter(function(recentTopic) {
-				return !userRead[recentTopic.value] || recentTopic.score > userRead[recentTopic.value];
+				return !userRead[recentTopic.value] || allowSeen && recentTopic.score > userRead[recentTopic.value];
 			}).map(function(topic) {
 				return topic.value;
 			}).filter(function(tid, index, array) {
