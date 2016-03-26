@@ -16,6 +16,7 @@ unreadController.get = function(req, res, next) {
 	var stop = (parseInt(meta.config.topicsPerList, 10) || 20) - 1;
 	var results;
 	var cid = req.query.cid;
+	var seen = !req.query.unseen;
 
 	async.waterfall([
 		function(next) {
@@ -24,7 +25,7 @@ unreadController.get = function(req, res, next) {
 					user.getWatchedCategories(req.uid, next);
 				},
 				unreadTopics: function(next) {
-					topics.getUnreadTopics(cid, req.uid, 0, stop, next);
+					topics.getUnreadTopics(cid, req.uid, 0, stop, seen, next);
 				}
 			}, next);
 		},
@@ -64,7 +65,7 @@ unreadController.get = function(req, res, next) {
 
 
 unreadController.unreadTotal = function(req, res, next) {
-	topics.getTotalUnread(req.uid, function (err, data) {
+	topics.getTotalUnread(req.uid, !req.query.unseen, function (err, data) {
 		if (err) {
 			return next(err);
 		}
