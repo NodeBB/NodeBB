@@ -12,9 +12,9 @@
     "invited.none": "Nta banyamuryango batumiwe bahari",
     "invited.uninvite": "Kuraho Ubutumire",
     "invited.search": "Shaka umuntu wo gutumira muri iri tsinda",
-    "invited.notification_title": "You have been invited to join <strong>%1</strong>",
-    "request.notification_title": "Group Membership Request from <strong>%1</strong>",
-    "request.notification_text": "<strong>%1</strong> has requested to become a member of <strong>%2</strong>",
+    "invited.notification_title": "Utumiwe kwinjira muri <strong>%1</strong>",
+    "request.notification_title": "Ubusabe bwo Kujya mu Itsinda Buturutse <strong>%1</strong>",
+    "request.notification_text": "<strong>%1</strong> yasabye kuba umunyamuryango w'itsinda rya <strong>%2</strong>",
     "cover-save": "Bika",
     "cover-saving": "Kubika",
     "details.title": "Ibijyanye n'Itsinda",
@@ -41,7 +41,7 @@
     "details.hidden": "Ahishe",
     "details.hidden_help": "Nubyemera, iri tsinda ntabwo rizajya rigaragara ku rutonde rw'andi matsinda kandi abantu bazajya basabwa kuritumirwamo buri wese ku giti cye mbere yo kurijyamo",
     "details.delete_group": "Senya Itsinda",
-    "details.private_system_help": "Private groups is disabled at system level, this option does not do anything",
+    "details.private_system_help": "Amatsinda aheza ntabwo ari kwemerera aha, hano ntabwo byahahindurirwa",
     "event.updated": "Amakuru ku itsinda yahinduweho bijyanye n'igihe",
     "event.deleted": "Itsinda rya \"%1\" ryakuweho",
     "membership.accept-invitation": "Emera Ubutumire",
@@ -50,5 +50,5 @@
     "membership.leave-group": "Va mu Itsinda",
     "membership.reject": "Hakanira",
     "new-group.group_name": "Izina ry'Itsinda:",
-    "upload-group-cover": "Upload group cover"
+    "upload-group-cover": "Shyiraho ifoto yo hejuru iranga itsinda"
 }
