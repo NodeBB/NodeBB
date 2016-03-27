@@ -190,7 +190,12 @@ define('navigator', ['forum/pagination', 'components'], function(pagination, com
 	};
 
 	navigator.scrollToPostIndex = function(postIndex, highlight, duration) {
-		var scrollTo = components.get('post/anchor', postIndex);
+		var scrollTo = components.get('post/anchor', postIndex),
+			postEl = components.get('post', 'index', postIndex),
+			postHeight = postEl.height(),
+			viewportHeight = $(window).height(),
+			navbarHeight = components.get('navbar').height();
+
 
 		if (!scrollTo.length) {
 			navigator.scrollActive = false;
@@ -202,7 +207,12 @@ define('navigator', ['forum/pagination', 'components'], function(pagination, com
 		var done = false;
 
 		function animateScroll() {
-			var scrollTop = (scrollTo.offset().top - ($(window).height() / 2)) + 'px';
+			var scrollTop = 0;
+			if (postHeight < viewportHeight) {
+				scrollTop = (scrollTo.offset().top - (viewportHeight / 2) + (postHeight / 2)) + 'px';
+			} else {
+				scrollTop = scrollTo.offset().top - navbarHeight;
+			}
 
 			$('html, body').animate({
 				scrollTop: scrollTop
