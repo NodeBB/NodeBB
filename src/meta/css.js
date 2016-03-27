@@ -72,6 +72,7 @@ module.exports = function(Meta) {
 				source += '\n@import "..' + path.sep + '..' + path.sep + 'public/less/blacklist.less";';
 				source += '\n@import "..' + path.sep + '..' + path.sep + 'public/less/generics.less";';
 				source += '\n@import "..' + path.sep + '..' + path.sep + 'public/less/mixins.less";';
+				source += '\n@import "..' + path.sep + '..' + path.sep + 'public/less/global.less";';
 
 				var acpSource = '\n@import "..' + path.sep + 'public/less/admin/admin";\n' + source;
 				acpSource += '\n@import "..' + path.sep + 'public/less/generics.less";';

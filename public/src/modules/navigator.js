@@ -1,7 +1,7 @@
 
 'use strict';
 
-/* globals app, define, ajaxify, utils, config */
+/* globals define, ajaxify, utils, config */
 
 
 define('navigator', ['forum/pagination', 'components'], function(pagination, components) {
@@ -56,7 +56,6 @@ define('navigator', ['forum/pagination', 'components'], function(pagination, com
 		});
 
 		navigator.setCount(count);
-		navigator.update();
 	};
 
 	function generateUrl(index) {
@@ -92,7 +91,13 @@ define('navigator', ['forum/pagination', 'components'], function(pagination, com
 		$('.pagination-block').toggleClass('ready', flag);
 	}
 
-	navigator.update = function() {
+	navigator.update = function(threshold) {
+		threshold = typeof threshold === 'number' ? threshold : undefined;
+
+		/*
+			The "threshold" is defined as the distance from the top of the page to
+			a spot where a user is expecting to begin reading.
+		*/
 		var els = $(navigator.selector);
 		if (els.length) {
 			index = parseInt(els.first().attr('data-index'), 10) + 1;
@@ -114,7 +119,7 @@ define('navigator', ['forum/pagination', 'components'], function(pagination, com
 		});
 
 		if (typeof navigator.callback === 'function') {
-			navigator.callback(index, count);
+			navigator.callback(index, count, threshold);
 		}
 
 		navigator.updateTextAndProgressBar();
@@ -202,6 +207,9 @@ define('navigator', ['forum/pagination', 'components'], function(pagination, com
 			return;
 		}
 
+		// Temporarily disable navigator update on scroll
+		$(window).off('scroll', navigator.update);
+
 		duration = duration !== undefined ? duration : 400;
 		navigator.scrollActive = true;
 		var done = false;
@@ -209,21 +217,24 @@ define('navigator', ['forum/pagination', 'components'], function(pagination, com
 		function animateScroll() {
 			var scrollTop = 0;
 			if (postHeight < viewportHeight) {
-				scrollTop = (scrollTo.offset().top - (viewportHeight / 2) + (postHeight / 2)) + 'px';
+				scrollTop = (scrollTo.offset().top - (viewportHeight / 2) + (postHeight / 2));
 			} else {
 				scrollTop = scrollTo.offset().top - navbarHeight;
 			}
 
 			$('html, body').animate({
-				scrollTop: scrollTop
+				scrollTop: scrollTop + 'px'
 			}, duration, function() {
 				if (done) {
+					// Re-enable onScroll behaviour
+					$(window).on('scroll', navigator.update);
+					var scrollToRect = scrollTo.get(0).getBoundingClientRect();
+					navigator.update(scrollToRect.top);
 					return;
 				}
 				done = true;
 
 				navigator.scrollActive = false;
-				navigator.update();
 				highlightPost();
 				$('body').scrollTop($('body').scrollTop() - 1);
 				$('html').scrollTop($('html').scrollTop() - 1);

@@ -231,6 +231,66 @@ define('forum/topic/posts', [
 		hidePostToolsForDeletedPosts(posts);
 	};
 
+	Posts.loadImages = function(threshold) {
+		/*
+			If threshold is defined, images loaded above this threshold will modify
+			the user's scroll position so they are not scrolled away from content
+			they were reading. Images loaded below this threshold will push down content.
+
+			If no threshold is defined, loaded images will push down content, as per
+			default
+		*/
+
+		var images = components.get('post/content').find('img[data-state="unloaded"]'),
+			visible = images.filter(function() {
+				return utils.isElementInViewport(this);
+			}),
+			scrollTop = $(window).scrollTop(),
+			adjusting = false,
+			adjustQueue = [],
+			adjustPosition = function() {
+				adjusting = true;
+				oldHeight = document.body.clientHeight;
+
+				// Display the image
+				$(this).attr('data-state', 'loaded');
+				newHeight = document.body.clientHeight;
+
+				var imageRect = this.getBoundingClientRect();
+				if (imageRect.top < threshold) {
+					scrollTop = scrollTop + (newHeight - oldHeight);
+					$(window).scrollTop(scrollTop);
+				}
+
+				if (adjustQueue.length) {
+					adjustQueue.pop()();
+				} else {
+					adjusting = false;
+				}
+			},
+			oldHeight, newHeight;
+
+		// For each image, reset the source and adjust scrollTop when loaded
+		visible.attr('data-state', 'loading');
+		visible.each(function(index, image) {
+			image = $(image);
+
+			image.on('load', function() {
+				if (!adjusting) {
+					adjustPosition.call(this);
+				} else {
+					adjustQueue.push(adjustPosition.bind(this));
+				}
+			});
+
+			image.attr('src', image.attr('data-src'));
+			if (image.parent().attr('href')) {
+				image.parent().attr('href', image.attr('data-src'));
+			}
+			image.removeAttr('data-src');
+		});
+	};
+
 	Posts.wrapImagesInLinks = function(posts) {
 		posts.find('[component="post/content"] img:not(.emoji)').each(function() {
 			var $this = $(this);

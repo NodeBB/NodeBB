@@ -1,0 +1,21 @@
+/*
+	This stylesheet is applied to all themes and all pages.
+	They can be overridden by themes, though their presence (or initial settings) may be depended upon by
+	client-side logic in core.
+
+	==========
+*/
+
+/* Prevent viewport shuffling on image load by restricting image dimensions until viewed by the browser */
+[component="post/content"] img:not(.not-responsive) {
+	height: 1rem;
+	opacity: 0;
+	transition: width 500ms ease;
+	transition: height 500ms ease;
+	transition: opacity 500ms ease;
+
+	&[data-state="loaded"] {
+		height: auto;
+		opacity: 1;
+	}
+}

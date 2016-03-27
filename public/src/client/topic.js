@@ -61,11 +61,11 @@ define('forum/topic', [
 
 		addParentHandler();
 
-		handleBookmark(tid);
-
 		handleKeys();
 
 		navigator.init('[component="post/anchor"]', ajaxify.data.postcount, Topic.toTop, Topic.toBottom, Topic.navigatorCallback, Topic.calculateIndex);
+
+		handleBookmark(tid);
 
 		$(window).on('scroll', updateTopicTitle);
 
@@ -141,6 +141,7 @@ define('forum/topic', [
 				return navigator.scrollToPostIndex(postIndex, true);
 			}
 		} else if (bookmark && (!config.usePagination || (config.usePagination && ajaxify.data.pagination.currentPage === 1)) && ajaxify.data.postcount > 5) {
+			navigator.update();
 			app.alert({
 				alert_id: 'bookmark',
 				message: '[[topic:bookmark_instructions]]',
@@ -156,6 +157,8 @@ define('forum/topic', [
 			setTimeout(function() {
 				app.removeAlert('bookmark');
 			}, 10000);
+		} else {
+			navigator.update();
 		}
 	}
 
@@ -233,7 +236,7 @@ define('forum/topic', [
 		return index;
 	};
 
-	Topic.navigatorCallback = function(index, elementCount) {
+	Topic.navigatorCallback = function(index, elementCount, threshold) {
 		var path = ajaxify.removeRelativePath(window.location.pathname.slice(1));
 		if (!path.startsWith('topic')) {
 			return 1;
@@ -248,13 +251,13 @@ define('forum/topic', [
 				newUrl += '/' + index;
 			}
 
+			posts.loadImages(threshold);
+
 			if (newUrl !== currentUrl) {
 				if (Topic.replaceURLTimeout) {
 					clearTimeout(Topic.replaceURLTimeout);
 				}
-
 				Topic.replaceURLTimeout = setTimeout(function() {
-
 					updateUserBookmark(index);
 
 					Topic.replaceURLTimeout = 0;
