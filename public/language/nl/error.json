@@ -27,7 +27,7 @@
     "password-too-long": "Wachtwoord is te lang",
     "user-banned": "Gebruiker verbannen",
     "user-too-new": "Helaas, het is een vereiste om %1 seconde(n) te wachten voordat het eerste bericht geplaatst kan worden.",
-    "blacklisted-ip": "Sorry, your IP address has been banned from this community. If you feel this is in error, please contact an administrator.",
+    "blacklisted-ip": "Sorry, uw IP-adres is verbannen uit deze community. Als u meent dat dit onterecht is, neem dan contact op met een beheerder.",
     "no-category": "Categorie bestaat niet",
     "no-topic": "Onderwerp bestaat niet",
     "no-post": "Bericht bestaat niet",
@@ -99,5 +99,5 @@
     "no-session-found": "Geen login sessie gevonden!",
     "not-in-room": "Gebruiker niet in de chat",
     "no-users-in-room": "Er zijn geen gebruikers in deze chat",
-    "cant-kick-self": "You can't kick yourself from the group"
+    "cant-kick-self": "Je kunt jezelf niet uit een groep schoppen"
 }
