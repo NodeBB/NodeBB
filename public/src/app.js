@@ -24,65 +24,65 @@ app.cacheBuster = null;
 	});
 
 	app.load = function() {
-		$('document').ready(function () {
-			var url = ajaxify.start(window.location.pathname.slice(1) + window.location.search + window.location.hash, true);
-			ajaxify.end(url, app.template);
+		app.loadProgressiveStylesheet();
 
-			handleStatusChange();
+		var url = ajaxify.start(window.location.pathname.slice(1) + window.location.search + window.location.hash, true);
+		ajaxify.end(url, app.template);
 
-			if (config.searchEnabled) {
-				app.handleSearch();
+		handleStatusChange();
+
+		if (config.searchEnabled) {
+			app.handleSearch();
+		}
+
+		$('#content').on('click', '#new_topic', function(){
+			app.newTopic();
+		});
+
+		require(['components'], function(components) {
+			components.get('user/logout').on('click', app.logout);
+		});
+
+		Visibility.change(function(e, state){
+			if (state === 'visible') {
+				app.isFocused = true;
+				app.alternatingTitle('');
+			} else if (state === 'hidden') {
+				app.isFocused = false;
 			}
+		});
 
-			$('#content').on('click', '#new_topic', function(){
-				app.newTopic();
-			});
+		overrides.overrideBootbox();
+		overrides.overrideTimeago();
+		createHeaderTooltips();
+		app.showEmailConfirmWarning();
 
-			require(['components'], function(components) {
-				components.get('user/logout').on('click', app.logout);
-			});
+		socket.removeAllListeners('event:nodebb.ready');
+		socket.on('event:nodebb.ready', function(data) {
+			if (!app.cacheBusters || app.cacheBusters['cache-buster'] !== data['cache-buster']) {
+				app.cacheBusters = data;
 
-			Visibility.change(function(e, state){
-				if (state === 'visible') {
-					app.isFocused = true;
-					app.alternatingTitle('');
-				} else if (state === 'hidden') {
-					app.isFocused = false;
-				}
-			});
+				app.alert({
+					alert_id: 'forum_updated',
+					title: '[[global:updated.title]]',
+					message: '[[global:updated.message]]',
+					clickfn: function() {
+						window.location.reload();
+					},
+					type: 'warning'
+				});
+			}
+		});
 
-			overrides.overrideBootbox();
-			overrides.overrideTimeago();
-			createHeaderTooltips();
-			app.showEmailConfirmWarning();
+		require(['taskbar', 'helpers', 'forum/pagination'], function(taskbar, helpers, pagination) {
+			taskbar.init();
 
-			socket.removeAllListeners('event:nodebb.ready');
-			socket.on('event:nodebb.ready', function(data) {
-				if (!app.cacheBusters || app.cacheBusters['cache-buster'] !== data['cache-buster']) {
-					app.cacheBusters = data;
+			// templates.js helpers
+			helpers.register();
 
-					app.alert({
-						alert_id: 'forum_updated',
-						title: '[[global:updated.title]]',
-						message: '[[global:updated.message]]',
-						clickfn: function() {
-							window.location.reload();
-						},
-						type: 'warning'
-					});
-				}
-			});
+			pagination.init();
 
-			require(['taskbar', 'helpers', 'forum/pagination'], function(taskbar, helpers, pagination) {
-				taskbar.init();
-
-				// templates.js helpers
-				helpers.register();
-
-				pagination.init();
-
-				$(window).trigger('action:app.load');
-			});
+			$(window).trigger('action:app.load');
 		});
 	};
 
@@ -539,4 +539,12 @@ app.cacheBuster = null;
 			}
 		});
 	};
+
+	app.loadProgressiveStylesheet = function() {
+		var linkEl = document.createElement('link');
+		linkEl.rel = 'stylesheet';
+		linkEl.href = config.relative_path + '/js-enabled.css';
+
+		document.head.appendChild(linkEl);
+	}
 }());

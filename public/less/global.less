@@ -7,14 +7,19 @@
 */
 
 /* Prevent viewport shuffling on image load by restricting image dimensions until viewed by the browser */
-[component="post/content"] img:not(.not-responsive) {
-	height: 1rem;
-	opacity: 0;
+[component="post/content"] img {
 	transition: width 500ms ease;
 	transition: height 500ms ease;
 	transition: opacity 500ms ease;
 
+	&[data-state="unloaded"], &[data-state="loading"] {
+		display: inherit;
+		height: 1rem;
+		opacity: 0;
+	}
+
 	&[data-state="loaded"] {
+		display: inherit;
 		height: auto;
 		opacity: 1;
 	}
