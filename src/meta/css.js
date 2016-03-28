@@ -67,12 +67,12 @@ module.exports = function(Meta) {
 
 				source += '\n@import (inline) "..' + path.sep + '..' + path.sep + 'public/vendor/jquery/css/smoothness/jquery-ui-1.10.4.custom.min.css";';
 				source += '\n@import (inline) "..' + path.sep + '..' + path.sep + 'public/vendor/jquery/bootstrap-tagsinput/bootstrap-tagsinput.css";';
-				source += '\n@import (inline) "..' + path.sep + '..' + path.sep + 'public/vendor/jquery/textcomplete/jquery.textcomplete.css";';
 				source += '\n@import (inline) "..' + path.sep + '..' + path.sep + 'public/vendor/colorpicker/colorpicker.css";';
 				source += '\n@import "..' + path.sep + '..' + path.sep + 'public/less/flags.less";';
 				source += '\n@import "..' + path.sep + '..' + path.sep + 'public/less/blacklist.less";';
 				source += '\n@import "..' + path.sep + '..' + path.sep + 'public/less/generics.less";';
 				source += '\n@import "..' + path.sep + '..' + path.sep + 'public/less/mixins.less";';
+				source += '\n@import "..' + path.sep + '..' + path.sep + 'public/less/global.less";';
 
 				var acpSource = '\n@import "..' + path.sep + 'public/less/admin/admin";\n' + source;
 				acpSource += '\n@import "..' + path.sep + 'public/less/generics.less";';
@@ -80,11 +80,22 @@ module.exports = function(Meta) {
 
 				source = '@import "./theme";\n' + source;
 
+				var fromFile = nconf.get('from-file') || '';
 				async.parallel([
 					function(next) {
+						if (fromFile.match('clientLess')) {
+							winston.info('[minifier] Compiling front-end LESS files skipped');
+							return Meta.css.getFromFile(path.join(__dirname, '../../public/stylesheet.css'), 'cache', next);
+						}
+
 						minify(source, paths, 'cache', next);
 					},
 					function(next) {
+						if (fromFile.match('acpLess')) {
+							winston.info('[minifier] Compiling ACP LESS files skipped');
+							return Meta.css.getFromFile(path.join(__dirname, '../../public/admin.css'), 'acpCache', next);
+						}
+						
 						minify(acpSource, paths, 'acpCache', next);
 					}
 				], function(err, minified) {
@@ -96,8 +107,8 @@ module.exports = function(Meta) {
 					if (process.send) {
 						process.send({
 							action: 'css-propagate',
-							cache: minified[0],
-							acpCache: minified[1]
+							cache: fromFile.match('clientLess') ? Meta.css.cache : minified[0],
+							acpCache: fromFile.match('acpLess') ? Meta.css.acpCache : minified[1]
 						});
 					}
 
@@ -151,28 +162,12 @@ module.exports = function(Meta) {
 		});
 	};
 
-	Meta.css.getFromFile = function(callback) {
-		var cachePath = path.join(__dirname, '../../public/stylesheet.css'),
-			acpCachePath = path.join(__dirname, '../../public/admin.css');
-		file.exists(cachePath, function(exists) {
-			if (!exists) {
-				winston.warn('[meta/css] No stylesheets found on disk, re-minifying');
-				Meta.css.minify(callback);
-				return;
-			}
+	Meta.css.getFromFile = function(filePath, filename, callback) {
+		winston.verbose('[meta/css] Reading stylesheet ' + filePath.split('/').pop() + ' from file');
 
-			if (nconf.get('isPrimary') !== 'true') {
-				return callback();
-			}
-
-			winston.verbose('[meta/css] Reading stylesheets from file');
-			async.map([cachePath, acpCachePath], fs.readFile, function(err, files) {
-				Meta.css.cache = files[0];
-				Meta.css.acpCache = files[1];
-
-				emitter.emit('meta:css.compiled');
-				callback();
-			});
+		fs.readFile(filePath, function(err, file) {
+			Meta.css[filename] = file;
+			callback();
 		});
 	};
 

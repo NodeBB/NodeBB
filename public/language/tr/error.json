@@ -27,6 +27,7 @@
     "password-too-long": "Parola çok uzun",
     "user-banned": "Kullanıcı Yasaklı",
     "user-too-new": "Özür dileriz, ilk iletinizi yapmadan önce %1 saniye beklemeniz gerekiyor",
+    "blacklisted-ip": "Üzgünüz, IP adresiniz, bu toplulukta yasaklandı. Bunun bir hata olduğunu düşünüyorsanız, bir yönetici ile irtibata geçiniz.",
     "no-category": "Kategori Yok",
     "no-topic": "Başlık Yok",
     "no-post": "İleti Yok",
@@ -97,5 +98,6 @@
     "invite-maximum-met": "Sen maksimum miktarda insanı davet ettin (%2 üzerinden %1).",
     "no-session-found": "Giriş yapılmış bir oturum bulunamadı!",
     "not-in-room": "Odada kullanıcı yok",
-    "no-users-in-room": "Bu odada kullanıcı yok"
+    "no-users-in-room": "Bu odada kullanıcı yok",
+    "cant-kick-self": "Kendinizi gruptan atamazsınız."
 }

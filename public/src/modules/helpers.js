@@ -20,7 +20,7 @@
 			if ((properties.loggedIn && !data.config.loggedIn) ||
 				(properties.globalMod && !data.isGlobalMod && !data.isAdmin) ||
 				(properties.adminOnly && !data.isAdmin) ||
-				(properties.installed && properties.installed.search && !data.searchEnabled)) {
+				(properties.searchInstalled && !data.searchEnabled)) {
 				return false;
 			}
 		}

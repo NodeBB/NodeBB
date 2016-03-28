@@ -27,6 +27,7 @@
     "password-too-long": "Parool liiga pikk",
     "user-banned": "Kasutaja bannitud",
     "user-too-new": "Vabandust, te peate ootama %1 sekund(it) enne esimese postituse loomist.",
+    "blacklisted-ip": "Sorry, your IP address has been banned from this community. If you feel this is in error, please contact an administrator.",
     "no-category": "Kategooriat ei eksisteeri",
     "no-topic": "Teemat ei eksisteeri",
     "no-post": "Postitust ei eksisteeri",
@@ -97,5 +98,6 @@
     "invite-maximum-met": "Sa oled kutsunud maksimaalse lubatud inimeste arvu (%1 %2 'st).",
     "no-session-found": "Sisse logimis sessiooni ei leitud!",
     "not-in-room": "Kasutaja pole ruumis",
-    "no-users-in-room": "No users in this room"
+    "no-users-in-room": "No users in this room",
+    "cant-kick-self": "You can't kick yourself from the group"
 }

@@ -30,7 +30,7 @@
     "user_started_following_you_dual": "<strong>%1</strong> ve <strong>%2</strong> seni takip etmeye başladı.\n",
     "user_started_following_you_multiple": "<strong>%1</strong> ve %2 kişi daha seni takip etmeye başladı.",
     "new_register": "<strong>%1</strong> kayıt olma isteği gönderdi.",
-    "new_register_multiple": "There are <strong>%1</strong> registration requests awaiting review.",
+    "new_register_multiple": "Beklemede <strong>%1</strong> kayıt olma isteği bulunmaktadır.",
     "email-confirmed": "E-posta onaylandı",
     "email-confirmed-message": "E-postanızı onaylandığınız için teşekkürler. Hesabınız tamamen aktive edildi.",
     "email-confirm-error-message": "E-posta adresinizi onaylarken bir hata oluştu. Kodunuz geçersiz ya da eski olabilir.",

@@ -103,7 +103,7 @@ $(document).ready(function() {
 			app.previousUrl = window.location.href;
 		}
 
-		ajaxify.currentPage = url;
+		ajaxify.currentPage = url.split(/[?#]/)[0];
 
 		if (window.history && window.history.pushState) {
 			window.history[!quiet ? 'pushState' : 'replaceState']({
@@ -202,7 +202,7 @@ $(document).ready(function() {
 			e.preventDefault();
 		}
 
-		ajaxify.go(ajaxify.currentPage, callback, true);
+		ajaxify.go(ajaxify.currentPage + window.location.search + window.location.hash, callback, true);
 	};
 
 	ajaxify.loadScript = function(tpl_url, callback) {

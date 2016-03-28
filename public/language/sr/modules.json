@@ -6,6 +6,7 @@
     "chat.user_typing": "%1 куца ...",
     "chat.user_has_messaged_you": "%1 вам посла поруку.",
     "chat.see_all": "Погледајте сва ћаскања",
+    "chat.mark_all_read": "Mark all chats read",
     "chat.no-messages": "Изаберите примаоца да бисте видели историју ћаскања",
     "chat.no-users-in-room": "Нема корисника у овој соби",
     "chat.recent-chats": "Недавна ћаскања",

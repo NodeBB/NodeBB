@@ -20,14 +20,16 @@ module.exports = function(SocketTopics) {
 			return callback(new Error('[[error:invalid-data]]'));
 		}
 
-		var start = parseInt(data.after, 10),
-			stop = start + 99;
+		var start = parseInt(data.after, 10);
+		var stop = start + 99;
 
 		topics.getTags(start, stop, function(err, tags) {
 			if (err) {
 				return callback(err);
 			}
-
+			tags = tags.filter(function(tag) {
+				return tag && tag.score > 0;
+			});
 			callback(null, {tags: tags, nextStart: stop + 1});
 		});
 	};

@@ -19,6 +19,7 @@
                         <button data-cid="{categories.cid}" data-action="toggle" data-disabled="{categories.disabled}" class="btn <!-- IF categories.disabled -->btn-primary<!-- ELSE -->btn-danger<!-- ENDIF categories.disabled -->">
                             <!-- IF categories.disabled -->Enable<!-- ELSE -->Disable<!-- ENDIF categories.disabled -->
                         </button>
+                        <a href="./categories/{categories.cid}/analytics" class="btn btn-default"><i class="fa fa-line-chart"></i></a>
                         <a href="./categories/{categories.cid}" class="btn btn-default">Edit</a>
                     </div>
                 </div>

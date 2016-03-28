@@ -27,6 +27,7 @@
     "password-too-long": "Password too long",
     "user-banned": "Uporabnik je blokiran",
     "user-too-new": "Oprostite, počakajte %1 sekund pred vašo prvo objavo",
+    "blacklisted-ip": "Sorry, your IP address has been banned from this community. If you feel this is in error, please contact an administrator.",
     "no-category": "Kategorija ne obstaja",
     "no-topic": "Tema ne obstaja",
     "no-post": "Objava ne obstaja",
@@ -97,5 +98,6 @@
     "invite-maximum-met": "You have invited the maximum amount of people (%1 out of %2).",
     "no-session-found": "No login session found!",
     "not-in-room": "User not in room",
-    "no-users-in-room": "No users in this room"
+    "no-users-in-room": "No users in this room",
+    "cant-kick-self": "You can't kick yourself from the group"
 }

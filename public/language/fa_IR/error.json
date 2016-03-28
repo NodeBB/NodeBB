@@ -27,6 +27,7 @@
     "password-too-long": "کلمه عبور بسیار طولانیست",
     "user-banned": "کاربر محروم شد.",
     "user-too-new": "با عرض پوزش، شما باید %1 ثانیه پیش از فرستادن پست نخست خود صبر کنید",
+    "blacklisted-ip": "Sorry, your IP address has been banned from this community. If you feel this is in error, please contact an administrator.",
     "no-category": "دسته بندی وجود ندارد",
     "no-topic": "موضوع وجود ندارد.",
     "no-post": "پست وجود ندارد",
@@ -97,5 +98,6 @@
     "invite-maximum-met": "You have invited the maximum amount of people (%1 out of %2).",
     "no-session-found": "No login session found!",
     "not-in-room": "User not in room",
-    "no-users-in-room": "هیچ کاربری در این گفتگو نیست"
+    "no-users-in-room": "هیچ کاربری در این گفتگو نیست",
+    "cant-kick-self": "You can't kick yourself from the group"
 }

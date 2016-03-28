@@ -126,10 +126,13 @@ var social = require('./social');
 						user.getUsersFields(uids, ['uid', 'username', 'fullname', 'userslug', 'reputation', 'postcount', 'picture', 'signature', 'banned', 'status'], next);
 					},
 					categories: function(next) {
-						categories.getCategoriesFields(cids, ['cid', 'name', 'slug', 'icon', 'bgColor', 'color', 'disabled'], next);
+						categories.getCategoriesFields(cids, ['cid', 'name', 'slug', 'icon', 'image', 'bgColor', 'color', 'disabled'], next);
 					},
 					hasRead: function(next) {
 						Topics.hasReadTopics(tids, uid, next);
+					},
+					bookmarks: function(next) {
+						Topics.getUserBookmarks(tids, uid, next);
 					},
 					teasers: function(next) {
 						Topics.getTeasers(topics, next);
@@ -155,6 +158,7 @@ var social = require('./social');
 						topics[i].locked = parseInt(topics[i].locked, 10) === 1;
 						topics[i].deleted = parseInt(topics[i].deleted, 10) === 1;
 						topics[i].unread = !results.hasRead[i];
+						topics[i].bookmark = results.bookmarks[i];
 						topics[i].unreplied = !topics[i].teaser;
 					}
 				}
@@ -290,6 +294,17 @@ var social = require('./social');
 
 	Topics.getUserBookmark = function (tid, uid, callback) {
 		db.sortedSetScore('tid:' + tid + ':bookmarks', uid, callback);
+	};
+
+	Topics.getUserBookmarks = function(tids, uid, callback) {
+		if (!parseInt(uid, 10)) {
+			return callback(null, tids.map(function() {
+				return null;
+			}));
+		}
+		db.sortedSetsScore(tids.map(function(tid) {
+			return 'tid:' + tid + ':bookmarks';
+		}), uid, callback);
 	};
 
 	Topics.setUserBookmark = function(tid, uid, index, callback) {

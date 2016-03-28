@@ -30,7 +30,7 @@
     "user_started_following_you_dual": "<strong>%1</strong>님과 <strong>%2</strong>님이 당신을 팔로우 시작했습니다.",
     "user_started_following_you_multiple": "<strong>%1</strong>님외 %2명이 당신을 팔로우 시작했습니다.",
     "new_register": "<strong>%1</strong>님이 가입요청을 했습니다.",
-    "new_register_multiple": "There are <strong>%1</strong> registration requests awaiting review.",
+    "new_register_multiple": "<strong>%1<strong> 개의 회원가입 요청이 승인 대기중입니다.",
     "email-confirmed": "확인된 이메일",
     "email-confirmed-message": "이메일을 확인해주셔서 감사합니다. 계정이 완전히 활성화되었습니다.",
     "email-confirm-error-message": "이메일 주소를 검증하지 못했습니다. 코드가 올바르지 않거나 만료되었을 수 있습니다.",

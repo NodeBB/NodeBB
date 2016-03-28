@@ -65,7 +65,7 @@
     "posted_in_ago_by": "postado em %1 %2 por %3",
     "user_posted_ago": "%1 postou %2",
     "guest_posted_ago": "Visitante postou %1",
-    "last_edited_by": "last edited by %1",
+    "last_edited_by": "editado por último por %1",
     "norecentposts": "Nenhum  Post Recente",
     "norecenttopics": "Sem Tópicos Recentes",
     "recentposts": "Posts Recentes",
@@ -87,8 +87,8 @@
     "map": "Mapa",
     "sessions": "Sessões de Login",
     "ip_address": "Endereço IP",
-    "enter_page_number": "Enter page number",
-    "upload_file": "Upload file",
+    "enter_page_number": "Digite o número da página",
+    "upload_file": "Fazer upload de arquivo",
     "upload": "Upload",
-    "allowed-file-types": "Allowed file types are %1"
+    "allowed-file-types": "Os tipos de arquivo permitidos são %1"
 }
