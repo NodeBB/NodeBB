@@ -233,12 +233,17 @@ define('forum/topic/posts', [
 	};
 
 	Posts.unloadImages = function(posts) {
-		var images = posts.find('[component="post/content"] img:not(.not-responsive)');
+		var images = posts.find('[component="post/content"] img:not(.not-responsive)'),
+			scrollTop = $(window).scrollTop(),
+			height = $(document).height();
+
 		images.each(function() {
 			$(this).attr('data-src', $(this).attr('src'));
 			$(this).attr('data-state', 'unloaded');
 			$(this).attr('src', 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7');
 		});
+
+		$(window).scrollTop(scrollTop + $(document).height() - height);
 	};
 
 	Posts.loadImages = function(threshold) {
@@ -313,10 +318,13 @@ define('forum/topic/posts', [
 	Posts.showBottomPostBar = function() {
 		var mainPost = components.get('post', 'index', 0);
 		var posts = $('[component="post"]');
+		var height = $(document).height();
 		if (!!mainPost.length && posts.length > 1 && $('.post-bar').length < 2) {
 			$('.post-bar').clone().appendTo(mainPost);
+			$(window).scrollTop($(window).scrollTop() + $(document).height() - height);
 		} else if (mainPost.length && posts.length < 2) {
 			mainPost.find('.post-bar').remove();
+			$(window).scrollTop($(window).scrollTop() - $(document).height() - height);
 		}
 	};
 
