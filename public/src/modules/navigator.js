@@ -119,7 +119,7 @@ define('navigator', ['forum/pagination', 'components'], function(pagination, com
 		});
 
 		// If a threshold is undefined, try to determine one based on new index
-		if (threshold === undefined) {
+		if (threshold === undefined && ajaxify.currentPage.startsWith('topic')) {
 			var anchorEl = components.get('post/anchor', index - 1),
 				anchorRect = anchorEl.get(0).getBoundingClientRect();
 
