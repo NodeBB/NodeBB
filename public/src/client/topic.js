@@ -141,7 +141,7 @@ define('forum/topic', [
 				return navigator.scrollToPostIndex(postIndex, true);
 			}
 		} else if (bookmark && (!config.usePagination || (config.usePagination && ajaxify.data.pagination.currentPage === 1)) && ajaxify.data.postcount > 5) {
-			navigator.update();
+			navigator.update(0);
 			app.alert({
 				alert_id: 'bookmark',
 				message: '[[topic:bookmark_instructions]]',
@@ -158,7 +158,7 @@ define('forum/topic', [
 				app.removeAlert('bookmark');
 			}, 10000);
 		} else {
-			navigator.update();
+			navigator.update(0);
 		}
 	}
 

@@ -92,12 +92,12 @@ define('navigator', ['forum/pagination', 'components'], function(pagination, com
 	}
 
 	navigator.update = function(threshold) {
-		threshold = typeof threshold === 'number' ? threshold : undefined;
-
 		/*
 			The "threshold" is defined as the distance from the top of the page to
 			a spot where a user is expecting to begin reading.
 		*/
+		threshold = typeof threshold === 'number' ? threshold : undefined;
+
 		var els = $(navigator.selector);
 		if (els.length) {
 			index = parseInt(els.first().attr('data-index'), 10) + 1;
@@ -117,6 +117,15 @@ define('navigator', ['forum/pagination', 'components'], function(pagination, com
 				previousDistance = distanceToMiddle;
 			}
 		});
+
+		// If a threshold is undefined, try to determine one based on new index
+		if (threshold === undefined) {
+			var anchorEl = components.get('post/anchor', index - 1),
+				anchorRect = anchorEl.get(0).getBoundingClientRect();
+
+			threshold = anchorRect.top;
+			console.log('new index', index, anchorEl, threshold);
+		}
 
 		if (typeof navigator.callback === 'function') {
 			navigator.callback(index, count, threshold);

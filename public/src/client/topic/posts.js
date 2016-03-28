@@ -218,7 +218,7 @@ define('forum/topic/posts', [
 	};
 
 	Posts.processPage = function(posts) {
-		Posts.unloadImages();
+		Posts.unloadImages(posts);
 		Posts.showBottomPostBar();
 		posts.find('[component="post/content"] img:not(.not-responsive)').addClass('img-responsive');
 		app.createUserTooltips(posts);
@@ -232,8 +232,8 @@ define('forum/topic/posts', [
 		hidePostToolsForDeletedPosts(posts);
 	};
 
-	Posts.unloadImages = function() {
-		var images = components.get('post/content').find('img:not(.not-responsive)');
+	Posts.unloadImages = function(posts) {
+		var images = posts.find('[component="post/content"] img:not(.not-responsive)');
 		images.each(function() {
 			$(this).attr('data-src', $(this).attr('src'));
 			$(this).attr('data-state', 'unloaded');
