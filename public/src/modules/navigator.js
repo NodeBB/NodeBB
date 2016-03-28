@@ -124,7 +124,6 @@ define('navigator', ['forum/pagination', 'components'], function(pagination, com
 				anchorRect = anchorEl.get(0).getBoundingClientRect();
 
 			threshold = anchorRect.top;
-			console.log('new index', index, anchorEl, threshold);
 		}
 
 		if (typeof navigator.callback === 'function') {
