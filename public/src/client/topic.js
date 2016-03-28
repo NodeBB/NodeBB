@@ -82,6 +82,9 @@ define('forum/topic', [
 
 	function onKeyDown(ev) {
 		if (ev.target.nodeName === 'BODY') {
+			if (ev.shiftKey || ev.ctrlKey || ev.altKey) {
+				return;
+			}
 			if (ev.which === 36) { // home key
 				Topic.toTop();
 				return false;
