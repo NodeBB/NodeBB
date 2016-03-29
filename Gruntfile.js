@@ -60,7 +60,8 @@ module.exports = function(grunt) {
 				files: [
 					'public/*.less',
 					'node_modules/nodebb-*/*.less', 'node_modules/nodebb-*/**/*.less',
-					'!node_modules/nodebb-*/node_modules/**'
+					'!node_modules/nodebb-*/node_modules/**',
+					'!node_modules/nodebb-*/.git/**'
 				]
 			},
 			lessUpdated_Admin: {
@@ -71,7 +72,8 @@ module.exports = function(grunt) {
 					'public/src/**/*.js',
 					'node_modules/nodebb-*/*.js', 'node_modules/nodebb-*/**/*.js',
 					'!node_modules/nodebb-*/node_modules/**',
-					'node_modules/templates.js/lib/templates.js'
+					'node_modules/templates.js/lib/templates.js',
+					'!node_modules/nodebb-*/.git/**'
 				]
 			},
 			serverUpdated: {
@@ -81,7 +83,8 @@ module.exports = function(grunt) {
 				files: [
 					'src/views/**/*.tpl',
 					'node_modules/nodebb-*/*.tpl', 'node_modules/nodebb-*/**/*.tpl',
-					'!node_modules/nodebb-*/node_modules/**'
+					'!node_modules/nodebb-*/node_modules/**',
+					'!node_modules/nodebb-*/.git/**'
 				]
 			}
 		}
