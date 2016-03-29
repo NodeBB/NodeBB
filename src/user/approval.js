@@ -3,8 +3,6 @@
 
 var async = require('async');
 var request = require('request');
-var LRU = require('lru-cache');
-var checksum = require('checksum');
 
 var db = require('../database');
 var meta = require('../meta');
@@ -13,11 +11,6 @@ var notifications = require('../notifications');
 var groups = require('../groups');
 var translator = require('../../public/src/modules/translator');
 var utils = require('../../public/src/utils');
-
-var sfsCache = LRU({
-	max: 500,
-	maxAge: 1000*60*60*24	// one day
-});
 
 
 module.exports = function(User) {
@@ -165,19 +158,8 @@ module.exports = function(User) {
 					return user;
 				}).filter(Boolean);
 
-				async.mapLimit(users, 20, function(user, next) {
+				async.map(users, function(user, next) {
 					if (!user) {
-						return next(null, user);
-					}
-
-					var sum = checksum(user.ip+user.email+user.username);
-					if (sfsCache.has(sum)) {
-						var cached = sfsCache.get(sum);
-						user.spamData = cached;
-						user.usernameSpam = cached.username.frequency > 0 || cached.username.appears > 0;
-						user.emailSpam = cached.email.frequency > 0 || cached.email.appears > 0;
-						user.ipSpam = cached.ip.frequency > 0 || cached.ip.appears > 0;
-
 						return next(null, user);
 					}
 
@@ -197,7 +179,6 @@ module.exports = function(User) {
 							return next(null, user);
 						}
 						if (response.statusCode === 200) {
-							sfsCache.set(sum, body);
 							user.spamData = body;
 							user.usernameSpam = body.username.frequency > 0 || body.username.appears > 0;
 							user.emailSpam = body.email.frequency > 0 || body.email.appears > 0;
