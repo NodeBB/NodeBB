@@ -57,19 +57,32 @@ module.exports = function(grunt) {
 	grunt.initConfig({
 		watch: {
 			lessUpdated_Client: {
-				files: ['public/*.less', 'node_modules/nodebb-*/*.less', 'node_modules/nodebb-*/*/*.less', 'node_modules/nodebb-*/*/*/*.less', 'node_modules/nodebb-*/*/*/*/*.less']
+				files: [
+					'public/*.less',
+					'node_modules/nodebb-*/*.less', 'node_modules/nodebb-*/**/*.less',
+					'!node_modules/nodebb-*/node_modules/**'
+				]
 			},
 			lessUpdated_Admin: {
 				files: ['public/**/*.less']
 			},
 			clientUpdated: {
-				files: ['public/src/**/*.js', 'node_modules/nodebb-*/*.js', 'node_modules/nodebb-*/*/*.js', 'node_modules/nodebb-*/*/*/*.js', 'node_modules/nodebb-*/*/*/*/*.js', 'node_modules/templates.js/lib/templates.js']
+				files: [
+					'public/src/**/*.js',
+					'node_modules/nodebb-*/*.js', 'node_modules/nodebb-*/**/*.js',
+					'!node_modules/nodebb-*/node_modules/**',
+					'node_modules/templates.js/lib/templates.js'
+				]
 			},
 			serverUpdated: {
 				files: ['*.js', 'install/*.js', 'src/**/*.js']
 			},
 			templatesUpdated: {
-				files: ['src/views/**/*.tpl', 'node_modules/nodebb-*/*.tpl', 'node_modules/nodebb-*/*/*.tpl', 'node_modules/nodebb-*/*/*/*.tpl', 'node_modules/nodebb-*/*/*/*/*.tpl', 'node_modules/nodebb-*/*/*/*/*/*.tpl']
+				files: [
+					'src/views/**/*.tpl',
+					'node_modules/nodebb-*/*.tpl', 'node_modules/nodebb-*/**/*.tpl',
+					'!node_modules/nodebb-*/node_modules/**'
+				]
 			}
 		}
 	});
