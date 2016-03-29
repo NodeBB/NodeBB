@@ -222,10 +222,10 @@ define('forum/topic', [
 
 	function updateTopicTitle() {
 		var span = components.get('navbar/title').find('span');
-		if ($(window).scrollTop() > 50) {
-			span.html(ajaxify.data.title).show();
-		} else {
-			span.html('').hide();
+		if ($(window).scrollTop() > 50 && span.hasClass('hidden')) {
+			span.html(ajaxify.data.title).removeClass('hidden');
+		} else if ($(window).scrollTop() <= 50 && !span.hasClass('hidden')) {
+			span.html('').addClass('hidden');
 		}
 		if ($(window).scrollTop() > 300) {
 			app.removeAlert('bookmark');
