@@ -100,13 +100,13 @@
 		return style.join('; ') + ';';
 	};
 
-	helpers.generateChildrenCategories = function(category, relative_path) {
+	helpers.generateChildrenCategories = function(category) {
 		var html = '';
 		category.children.forEach(function(child) {
 			if (!child) {
 				return;
 			}
-			var link = child.link ? child.link : ('/category/' + child.slug);
+			var link = child.link ? child.link : (config.relative_path + '/category/' + child.slug);
 			html += '<a href="' + link + '">' +
 					'<span class="fa-stack fa-lg">' +
 					'<i style="color:' + child.bgColor + ';" class="fa fa-circle fa-stack-2x"></i>' +
