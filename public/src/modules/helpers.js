@@ -1,6 +1,6 @@
 ;(function(exports) {
 	"use strict";
-	/* globals define, utils */
+	/* globals define, utils, config */
 
 	// export the class if we are in a Node-like system.
 	if (typeof module === 'object' && module.exports === exports) {
@@ -102,11 +102,13 @@
 
 	helpers.generateChildrenCategories = function(category) {
 		var html = '';
+		var relative_path = (typeof config !== 'undefined' ? config.relative_path : require('nconf').get('relative_path'));
+		
 		category.children.forEach(function(child) {
 			if (!child) {
 				return;
 			}
-			var link = child.link ? child.link : (config.relative_path + '/category/' + child.slug);
+			var link = child.link ? child.link : (relative_path + '/category/' + child.slug);
 			html += '<a href="' + link + '">' +
 					'<span class="fa-stack fa-lg">' +
 					'<i style="color:' + child.bgColor + ';" class="fa fa-circle fa-stack-2x"></i>' +
