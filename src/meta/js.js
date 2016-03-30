@@ -112,12 +112,10 @@ module.exports = function(Meta) {
 				winston.verbose('[meta/js] ' + target + ' minification complete');
 				minifier.kill();
 
-				if (process.send) {
+				if (process.send && Meta.js.target.length > 1) {
 					process.send({
 						action: 'js-propagate',
-						cache: Meta.js.target[target].cache,
-						map: Meta.js.target[target].map,
-						target: target
+						data: Meta.js.target
 					});
 				}
 
