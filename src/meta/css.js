@@ -43,7 +43,8 @@ module.exports = function(Meta) {
 					path.join(__dirname, '../../public/vendor/fontawesome/less'),
 					path.join(__dirname, '../../public/vendor/bootstrap/less')
 				],
-				source = '@import "font-awesome";';
+				source = '@import "font-awesome";',
+				acpSource = '@import "font-awesome";';
 
 			plugins.lessFiles = filterMissingFiles(plugins.lessFiles);
 			plugins.cssFiles = filterMissingFiles(plugins.cssFiles);
@@ -67,20 +68,20 @@ module.exports = function(Meta) {
 
 				source += '\n@import (inline) "..' + path.sep + '..' + path.sep + 'public/vendor/jquery/css/smoothness/jquery-ui-1.10.4.custom.min.css";';
 				source += '\n@import (inline) "..' + path.sep + '..' + path.sep + 'public/vendor/jquery/bootstrap-tagsinput/bootstrap-tagsinput.css";';
-				source += '\n@import (inline) "..' + path.sep + '..' + path.sep + 'public/vendor/colorpicker/colorpicker.css";';
 				source += '\n@import "..' + path.sep + '..' + path.sep + 'public/less/flags.less";';
 				source += '\n@import "..' + path.sep + '..' + path.sep + 'public/less/blacklist.less";';
 				source += '\n@import "..' + path.sep + '..' + path.sep + 'public/less/generics.less";';
 				source += '\n@import "..' + path.sep + '..' + path.sep + 'public/less/mixins.less";';
 				source += '\n@import "..' + path.sep + '..' + path.sep + 'public/less/global.less";';
+				source = '@import "./theme";\n' + source;
 
-				var acpSource = '\n@import "..' + path.sep + 'public/less/admin/admin";\n' + source;
+				acpSource += '\n@import "..' + path.sep + 'public/less/admin/admin";\n';
 				acpSource += '\n@import "..' + path.sep + 'public/less/generics.less";';
 				acpSource += '\n@import (inline) "..' + path.sep + 'public/vendor/colorpicker/colorpicker.css";';
 
-				source = '@import "./theme";\n' + source;
 
 				var fromFile = nconf.get('from-file') || '';
+				
 				async.series([
 					function(next) {
 						if (fromFile.match('clientLess')) {
