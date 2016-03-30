@@ -10,9 +10,7 @@ define('forum/topic/posts', [
 	'components'
 ], function(pagination, infinitescroll, postTools, navigator, components) {
 
-	var Posts = {
-		_threshold: 0
-	};
+	var Posts = {};
 
 	Posts.onNewPost = function(data) {
 		if (!data || !data.posts || !data.posts.length) {
@@ -257,7 +255,6 @@ define('forum/topic/posts', [
 			If no threshold is defined, loaded images will push down content, as per
 			default
 		*/
-		Posts._threshold = threshold;
 
 		var images = components.get('post/content').find('img[data-state="unloaded"]'),
 			visible = images.filter(function() {
@@ -275,7 +272,7 @@ define('forum/topic/posts', [
 				newHeight = document.body.clientHeight;
 
 				var imageRect = this.getBoundingClientRect();
-				if (imageRect.top < Posts._threshold) {
+				if (imageRect.top < threshold) {
 					scrollTop = scrollTop + (newHeight - oldHeight);
 					$(window).scrollTop(scrollTop);
 				}
