@@ -33,7 +33,7 @@ settingsController.get = function(req, res, callback) {
 					user.getSettings(userData.uid, next);
 				},
 				userGroups: function(next) {
-					groups.getUserGroups([userData.uid], next);
+					groups.getUserGroupsFromSet('groups:createtime', [userData.uid], next);
 				},
 				languages: function(next) {
 					languages.list(next);
@@ -49,7 +49,9 @@ settingsController.get = function(req, res, callback) {
 		},
 		function(results, next) {
 			userData.settings = results.settings;
-			userData.userGroups = results.userGroups[0];
+			userData.userGroups = results.userGroups[0].filter(function(group) {
+				return group && group.userTitleEnabled && !groups.isPrivilegeGroup(group.name);
+			});
 			userData.languages = results.languages;
 			userData.homePageRoutes = results.homePageRoutes;
 			userData.ips = results.ips;
