@@ -112,7 +112,7 @@ module.exports = function(Meta) {
 				winston.verbose('[meta/js] ' + target + ' minification complete');
 				minifier.kill();
 
-				if (process.send && Meta.js.target.length > 1) {
+				if (process.send && Meta.js.target['nodebb.min.js'] && Meta.js.target['acp.min.js']) {
 					process.send({
 						action: 'js-propagate',
 						data: Meta.js.target
@@ -193,7 +193,6 @@ module.exports = function(Meta) {
 				process.exit(0);
 			}
 
-			winston.verbose('[meta/js] ' + target + ' committed to disk.');
 			emitter.emit('meta:js.compiled');
 			callback();
 		});
