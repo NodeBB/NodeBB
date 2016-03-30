@@ -50,7 +50,7 @@ settingsController.get = function(req, res, callback) {
 		function(results, next) {
 			userData.settings = results.settings;
 			userData.userGroups = results.userGroups[0].filter(function(group) {
-				return group && group.userTitleEnabled && !groups.isPrivilegeGroup(group.name);
+				return group && group.userTitleEnabled && !groups.isPrivilegeGroup(group.name) && group.name !== 'registered-users';
 			});
 			userData.languages = results.languages;
 			userData.homePageRoutes = results.homePageRoutes;
