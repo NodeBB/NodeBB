@@ -81,7 +81,7 @@ module.exports = function(Meta) {
 				source = '@import "./theme";\n' + source;
 
 				var fromFile = nconf.get('from-file') || '';
-				async.parallel([
+				async.series([
 					function(next) {
 						if (fromFile.match('clientLess')) {
 							winston.info('[minifier] Compiling front-end LESS files skipped');
