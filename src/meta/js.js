@@ -89,6 +89,8 @@ module.exports = function(Meta) {
 			return;
 		}
 
+		winston.verbose('[meta/js] Minifying ' + target);
+
 		var forkProcessParams = setupDebugging();
 		var minifier = Meta.js.minifierProc = fork('minifier.js', [], forkProcessParams);
 
@@ -119,11 +121,12 @@ module.exports = function(Meta) {
 					});
 				}
 
-				Meta.js.commitToFile(target);
+				Meta.js.commitToFile(target, function() {					
+					if (typeof callback === 'function') {
+						callback();
+					}
+				});
 
-				if (typeof callback === 'function') {
-					callback();
-				}
 				break;
 			case 'error':
 				winston.error('[meta/js] Could not compile ' + target + ': ' + message.message);
@@ -185,7 +188,7 @@ module.exports = function(Meta) {
 		}
 	};
 
-	Meta.js.commitToFile = function(target) {
+	Meta.js.commitToFile = function(target, callback) {
 		fs.writeFile(path.join(__dirname, '../../public/' + target), Meta.js.target[target].cache, function (err) {
 			if (err) {
 				winston.error('[meta/js] ' + err.message);
@@ -194,6 +197,7 @@ module.exports = function(Meta) {
 
 			winston.verbose('[meta/js] ' + target + ' committed to disk.');
 			emitter.emit('meta:js.compiled');
+			callback();
 		});
 	};
 

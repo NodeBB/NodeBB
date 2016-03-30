@@ -150,7 +150,7 @@ module.exports = function(Meta) {
 		});
 	}
 
-	Meta.css.commitToFile = function(filename) {
+	Meta.css.commitToFile = function(filename, callback) {
 		var file = (filename === 'acpCache' ? 'admin' : 'stylesheet') + '.css';
 
 		fs.writeFile(path.join(__dirname, '../../public/' + file), Meta.css[filename], function(err) {
@@ -160,6 +160,8 @@ module.exports = function(Meta) {
 				winston.error('[meta/css] ' + err.message);
 				process.exit(0);
 			}
+
+			callback();
 		});
 	};
 
@@ -195,7 +197,11 @@ module.exports = function(Meta) {
 
 				// Save the compiled CSS in public/ so things like nginx can serve it
 				if (nconf.get('isPrimary') === 'true') {
-					Meta.css.commitToFile(destination);
+					return Meta.css.commitToFile(destination, function() {
+						if (typeof callback === 'function') {
+							callback(null, result.css);
+						}
+					});
 				}
 
 				if (typeof callback === 'function') {
