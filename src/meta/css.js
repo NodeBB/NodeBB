@@ -187,7 +187,6 @@ module.exports = function(Meta) {
 				return;
 			}
 
-			winston.verbose('[meta/css] Running PostCSS Plugins');
 			postcss([ autoprefixer ]).process(lessOutput.css).then(function (result) {
 				result.warnings().forEach(function (warn) {
 					winston.verbose(warn.toString());
