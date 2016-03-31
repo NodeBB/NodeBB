@@ -235,9 +235,7 @@ define('forum/topic/posts', [
 	};
 
 	Posts.unloadImages = function(posts) {
-		var images = posts.find('[component="post/content"] img:not(.not-responsive)'),
-			scrollTop = $(window).scrollTop(),
-			height = $(document).height();
+		var images = posts.find('[component="post/content"] img:not(.not-responsive)');
 
 		images.each(function() {
 			$(this).attr('data-src', $(this).attr('src'));
