@@ -66,7 +66,7 @@ define('uploader', ['csrf', 'translator'], function(csrf, translator) {
 		if (!fileInput.val()) {
 			return showAlert('error', '[[uploads:select-file-to-upload]]');
 		}
-		if (hasValidFileSize(fileInput[0], fileSize) === false) {
+		if (!hasValidFileSize(fileInput[0], fileSize)) {
 			return showAlert('error', '[[error:file-too-big, ' + fileSize + ']]');
 		}
 
@@ -120,6 +120,7 @@ define('uploader', ['csrf', 'translator'], function(csrf, translator) {
 		if (window.FileReader && maxSize) {
 			return fileElement.files[0].size <= maxSize * 1000;
 		}
+		return true;
 	}
 
 	return module;
