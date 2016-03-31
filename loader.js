@@ -34,8 +34,9 @@ var	pidFilePath = __dirname + '/pidfile',
 
 Loader.init = function(callback) {
 	if (silent) {
-		console.log = function(value) {
-			output.write(value + '\n');
+		console.log = function() {
+			var args = Array.prototype.slice.call(arguments);
+			output.write(args.join(' ') + '\n');
 		};
 	}
 
