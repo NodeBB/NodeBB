@@ -36,14 +36,14 @@
 				'    "host": "127.0.0.1",' + '\n' +
 				'    "port": "6379",' + '\n' +
 				'    "password": "",' + '\n' +
-				'    "database": "1"' + '\n' +
+				'    "database": "redis"' + '\n' +
 			'}\n'+
 			' or (mongo):\n' +
 				'"test_database": {' + '\n' +
 				'    "host": "127.0.0.1",' + '\n' +
 				'    "port": "27017",' + '\n' +
 				'    "password": "",' + '\n' +
-				'    "database": "1"' + '\n' +
+				'    "database": "mongo"' + '\n' +
 			'}\n'+
 			' or (mongo) in a replicaset' + '\n' +
 			'"test_database": {' + '\n' +
