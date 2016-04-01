@@ -1,16 +1,16 @@
 "use strict";
 
-var async = require('async'),
+var async = require('async');
 
-	db = require('../../database'),
-	groups = require('../../groups'),
-	categories = require('../../categories'),
-	privileges = require('../../privileges'),
-	plugins = require('../../plugins'),
-	Categories = {};
+var db = require('../../database');
+var groups = require('../../groups');
+var categories = require('../../categories');
+var privileges = require('../../privileges');
+var plugins = require('../../plugins');
+var Categories = {};
 
 Categories.create = function(socket, data, callback) {
-	if(!data) {
+	if (!data) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
 
@@ -46,7 +46,7 @@ Categories.purge = function(socket, cid, callback) {
 };
 
 Categories.update = function(socket, data, callback) {
-	if(!data) {
+	if (!data) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
 
@@ -107,5 +107,9 @@ function copyPrivilegesToChildrenRecursive(category, privilegeGroups, callback) 
 		}, callback);
 	});
 }
+
+Categories.copySettingsFrom = function(socket, data, callback) {
+	categories.copySettingsFrom(data.fromCid, data.toCid, callback);
+};
 
 module.exports = Categories;
