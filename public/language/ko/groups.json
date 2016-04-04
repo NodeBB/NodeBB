@@ -41,7 +41,7 @@
     "details.hidden": "숨김",
     "details.hidden_help": "활성 시 그룹 목록에 노출되지 않습니다. 또한 구성원은 초대를 통해서만 가입이 가능합니다.",
     "details.delete_group": "그룹 삭제",
-    "details.private_system_help": "Private groups is disabled at system level, this option does not do anything",
+    "details.private_system_help": "비공개 그룹은 시스템에 의해 비활성화 되었으며, 이 옵션은 아무 기능도 하지 않습니다",
     "event.updated": "그룹 정보가 업데이트 되었습니다.",
     "event.deleted": "%1 그룹이 삭제되었습니다.",
     "membership.accept-invitation": "초대 수락",

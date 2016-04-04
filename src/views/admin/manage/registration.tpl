@@ -55,6 +55,8 @@
 		</tr>
 		<!-- END users -->
 	</table>
+
+	<!-- IMPORT partials/paginator.tpl -->
 </div>
 
 <div class="invitations panel panel-success">

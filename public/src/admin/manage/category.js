@@ -99,6 +99,48 @@ define('admin/manage/category', [
 			});
 		});
 
+		$('.copy-settings').on('click', function(e) {
+			e.preventDefault();
+			socket.emit('admin.categories.getNames', function(err, categories) {
+				if (err) {
+					return app.alertError(err.message);
+				}
+
+				templates.parse('admin/partials/categories/select-category', {
+					categories: categories
+				}, function(html) {
+					function submit() {
+						var formData = modal.find('form').serializeObject();
+
+						socket.emit('admin.categories.copySettingsFrom', {fromCid: formData['select-cid'], toCid: ajaxify.data.category.cid}, function(err) {
+							if (err) {
+								return app.alertError(err.message);
+							}
+							app.alertSuccess('Settings Copied!');
+							ajaxify.refresh();
+						});
+
+						modal.modal('hide');
+						return false;
+					}
+
+					var modal = bootbox.dialog({
+						title: 'Select a Category',
+						message: html,
+						buttons: {
+							save: {
+								label: 'Copy',
+								className: 'btn-primary',
+								callback: submit
+							}
+						}
+					});
+
+					modal.find('form').on('submit', submit);
+				});
+			});
+		});
+
 		$('.upload-button').on('click', function() {
 			var inputEl = $(this);
 			var cid = inputEl.attr('data-cid');

@@ -34,8 +34,9 @@ var	pidFilePath = __dirname + '/pidfile',
 
 Loader.init = function(callback) {
 	if (silent) {
-		console.log = function(value) {
-			output.write(value + '\n');
+		console.log = function() {
+			var args = Array.prototype.slice.call(arguments);
+			output.write(args.join(' ') + '\n');
 		};
 	}
 
@@ -122,15 +123,11 @@ Loader.addWorkerEvents = function(worker) {
 					Loader.reload();
 				break;
 				case 'js-propagate':
-					Loader.js.target[message.target] = Loader.js.target[message.target] || {};
-					Loader.js.target[message.target].cache = message.cache;
-					Loader.js.target[message.target].map = message.map;
+					Loader.js.target = message.data;
 
 					Loader.notifyWorkers({
 						action: 'js-propagate',
-						cache: message.cache,
-						map: message.map,
-						target: message.target
+						data: message.data
 					}, worker.pid);
 				break;
 				case 'css-propagate':

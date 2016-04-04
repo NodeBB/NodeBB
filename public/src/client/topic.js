@@ -82,6 +82,9 @@ define('forum/topic', [
 
 	function onKeyDown(ev) {
 		if (ev.target.nodeName === 'BODY') {
+			if (ev.shiftKey || ev.ctrlKey || ev.altKey) {
+				return;
+			}
 			if (ev.which === 36) { // home key
 				Topic.toTop();
 				return false;
@@ -219,10 +222,10 @@ define('forum/topic', [
 
 	function updateTopicTitle() {
 		var span = components.get('navbar/title').find('span');
-		if ($(window).scrollTop() > 50) {
-			span.html(ajaxify.data.title).show();
-		} else {
-			span.html('').hide();
+		if ($(window).scrollTop() > 50 && span.hasClass('hidden')) {
+			span.html(ajaxify.data.title).removeClass('hidden');
+		} else if ($(window).scrollTop() <= 50 && !span.hasClass('hidden')) {
+			span.html('').addClass('hidden');
 		}
 		if ($(window).scrollTop() > 300) {
 			app.removeAlert('bookmark');

@@ -93,7 +93,8 @@ module.exports = function(Groups) {
 							bodyShort: '[[groups:request.notification_title, ' + username + ']]',
 							bodyLong: '[[groups:request.notification_text, ' + username + ', ' + groupName + ']]',
 							nid: 'group:' + groupName + ':uid:' + uid + ':request',
-							path: '/groups/' + utils.slugify(groupName)
+							path: '/groups/' + utils.slugify(groupName),
+							from: uid
 						}, next);
 					},
 					owners: function(next) {

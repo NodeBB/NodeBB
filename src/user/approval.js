@@ -158,7 +158,7 @@ module.exports = function(User) {
 					return user;
 				}).filter(Boolean);
 
-				async.mapLimit(users, 20, function(user, next) {
+				async.map(users, function(user, next) {
 					if (!user) {
 						return next(null, user);
 					}

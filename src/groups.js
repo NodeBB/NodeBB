@@ -425,9 +425,13 @@ var utils = require('../public/src/utils');
 	};
 
 	Groups.getUserGroups = function(uids, callback) {
+		Groups.getUserGroupsFromSet('groups:visible:createtime', uids, callback);
+	};
+
+	Groups.getUserGroupsFromSet = function (set, uids, callback) {
 		async.waterfall([
 			function(next) {
-				db.getSortedSetRevRange('groups:visible:createtime', 0, -1, next);
+				db.getSortedSetRevRange(set, 0, -1, next);
 			},
 			function(groupNames, next) {
 				var groupSets = groupNames.map(function(name) {
