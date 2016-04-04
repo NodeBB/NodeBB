@@ -104,9 +104,9 @@
     "stale.title": "Een nieuw onderwerp maken in de plaats?",
     "stale.warning": "Het onderwerp waar je op antwoord is vrij oud. Zou je graag een nieuw onderwerp maken met een referentie naar dit onderwerp in je antwoord?",
     "stale.create": "Maak een nieuw onderwerp",
-    "stale.reply_anyway": "Antwoord toch op dit onderwerp",
+    "stale.reply_anyway": "Reageer toch op dit onderwerp",
     "link_back": "Re: [%1](%2)",
     "spam": "Spam",
-    "offensive": "Onbeleefd",
+    "offensive": "Aanstootgevend",
     "custom-flag-reason": "Geef een reden voor de melding."
 }

@@ -14,7 +14,7 @@
     "invalid-password": "Contraseña no válida",
     "invalid-username-or-password": "Por favor especifica tanto un usuario como contraseña",
     "invalid-search-term": "Término de búsqueda inválido",
-    "invalid-pagination-value": "Invalid pagination value, must be at least %1 and at most %2",
+    "invalid-pagination-value": "Número de página inválido, debe estar entre %1 y %2",
     "username-taken": "Nombre de usuario ocupado",
     "email-taken": "Correo electrónico ocupado",
     "email-not-confirmed": "Su cuenta de correo electrónico no ha sido confirmada aún, por favor haga click aquí para confirmarla.",
@@ -84,7 +84,7 @@
     "chat-message-too-long": "Mensaje de Chat es demasiado largo",
     "cant-edit-chat-message": "No tienes permiso para editar este mensaje",
     "cant-remove-last-user": "No puedes eliminar el último usuario",
-    "cant-delete-chat-message": "You are not allowed to delete this message",
+    "cant-delete-chat-message": "No tienes permiso para eliminar este mensaje",
     "reputation-system-disabled": "El sistema de reputación está deshabilitado.",
     "downvoting-disabled": "La votación negativa está deshabilitada.",
     "not-enough-reputation-to-downvote": "No tienes suficiente reputación para votar negativo este post",
@@ -97,7 +97,7 @@
     "wrong-login-type-username": "Por favor introduce tu nombre de usuario para acceder",
     "invite-maximum-met": "Has alcanzado el número máximo de personas invitadas (%1 de %2).",
     "no-session-found": "¡No se ha encontrado ningún inicio de sesión!",
-    "not-in-room": "User not in room",
-    "no-users-in-room": "No users in this room",
-    "cant-kick-self": "You can't kick yourself from the group"
+    "not-in-room": "El usuario no está en la sala",
+    "no-users-in-room": "No hay usuarios en esta sala",
+    "cant-kick-self": "No te puedes expulsar a ti mismo del grupo"
 }

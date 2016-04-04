@@ -27,7 +27,7 @@
     "password-too-long": "密码太长",
     "user-banned": "用户已禁止",
     "user-too-new": "抱歉，您需要等待 %1 秒后，才可以发帖！",
-    "blacklisted-ip": "Sorry, your IP address has been banned from this community. If you feel this is in error, please contact an administrator.",
+    "blacklisted-ip": "对不起，您的IP地址已被社区禁用。如果您认为这是一个错误，请与管理员联系。",
     "no-category": "版块不存在",
     "no-topic": "主题不存在",
     "no-post": "帖子不存在",
@@ -99,5 +99,5 @@
     "no-session-found": "未登录!",
     "not-in-room": "用户已不在聊天室中",
     "no-users-in-room": "这个聊天室中没有用户",
-    "cant-kick-self": "You can't kick yourself from the group"
+    "cant-kick-self": "你不能把自己踢出群组"
 }

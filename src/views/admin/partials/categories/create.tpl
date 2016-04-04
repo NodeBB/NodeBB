@@ -12,4 +12,14 @@
 			<!-- END categories -->
 		</select>
 	</div>
+
+	<div class="form-group">
+		<label for="cloneFromCid">(Optional) Clone Settings From Category</label>
+		<select class="form-control" name="cloneFromCid" id="cloneFromCid">
+			<option value=""></option>
+			<!-- BEGIN categories -->
+			<option value="{categories.cid}">{categories.name}</option>
+			<!-- END categories -->
+		</select>
+	</div>
 </form>

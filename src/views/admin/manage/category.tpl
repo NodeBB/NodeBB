@@ -105,7 +105,8 @@
 									<button type="button" class="btn btn-default btn-block <!-- IF category.parent.name -->hide<!-- ENDIF category.parent.name -->" data-action="setParent"><i class="fa fa-sitemap"></i> (None)</button>
 								</div>
 							</fieldset>
-
+							<hr/>
+							<button class="btn btn-info btn-block copy-settings"><i class="fa fa-files-o"></i> Copy Settings From</button>
 							<hr />
 							<button class="btn btn-danger btn-block purge"><i class="fa fa-eraser"></i> Purge Category</button>
 						</div>

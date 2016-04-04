@@ -472,7 +472,7 @@ var async = require('async'),
 						return true;
 					}
 
-					return !(notifObj.mergeId === (mergeId + '|' + differentiator) && idx !== modifyIndex);
+					return !(notifObj.mergeId === (mergeId + (differentiator ? '|' + differentiator : '')) && idx !== modifyIndex);
 				});
 			});
 

@@ -103,7 +103,10 @@ define('navigator', ['forum/pagination', 'components'], function(pagination, com
 			index = parseInt(els.first().attr('data-index'), 10) + 1;
 		}
 
-		var middleOfViewport = $(window).scrollTop() + $(window).height() / 2;
+		var scrollTop = $(window).scrollTop();
+		var windowHeight = $(window).height();
+		var documentHeight = $(document).height();
+		var middleOfViewport = scrollTop + windowHeight / 2;
 		var previousDistance = Number.MAX_VALUE;
 		els.each(function() {
 			var distanceToMiddle = Math.abs(middleOfViewport - $(this).offset().top);
@@ -118,12 +121,24 @@ define('navigator', ['forum/pagination', 'components'], function(pagination, com
 			}
 		});
 
-		// If a threshold is undefined, try to determine one based on new index
-		if (threshold === undefined && ajaxify.currentPage.startsWith('topic')) {
-			var anchorEl = components.get('post/anchor', index - 1),
-				anchorRect = anchorEl.get(0).getBoundingClientRect();
+		var atTop = scrollTop === 0 && parseInt(els.first().attr('data-index'), 10) === 0,
+			nearBottom = scrollTop + windowHeight > documentHeight - 100 && parseInt(els.last().attr('data-index'), 10) === count - 1;
 
-			threshold = anchorRect.top;
+		if (atTop) {
+			index = 1;
+		} else if (nearBottom) {
+			index = count;
+		}
+
+		// If a threshold is undefined, try to determine one based on new index
+		if (threshold === undefined) {
+			if (atTop) {
+				threshold = 0;
+			} else {
+				var anchorEl = components.get('post/anchor', index - 1);
+				var anchorRect = anchorEl.get(0).getBoundingClientRect();
+				threshold = anchorRect.top;
+			}
 		}
 
 		if (typeof navigator.callback === 'function') {
