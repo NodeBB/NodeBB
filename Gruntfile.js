@@ -70,6 +70,7 @@ module.exports = function(grunt) {
 			clientUpdated: {
 				files: [
 					'public/src/**/*.js',
+					'!public/src/modules/*.js',
 					'node_modules/nodebb-*/*.js', 'node_modules/nodebb-*/**/*.js',
 					'!node_modules/nodebb-*/node_modules/**',
 					'node_modules/templates.js/lib/templates.js',
