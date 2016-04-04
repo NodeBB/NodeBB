@@ -72,7 +72,9 @@ image.normalise = function(path, extension, callback) {
 			if (err) {
 				return callback(err);
 			}
-			image.write(path + '.png', callback);
+			image.write(path + '.png', function(err) {
+				callback(err);
+			});
 		});
 	}
 };

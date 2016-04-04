@@ -65,7 +65,7 @@
     "posted_in_ago_by": "публикувано в %1 %2 от %3",
     "user_posted_ago": "%1 публикува %2",
     "guest_posted_ago": "гост публикува %1",
-    "last_edited_by": "last edited by %1",
+    "last_edited_by": "последно редактирано от %1",
     "norecentposts": "Няма скорошни публикации",
     "norecenttopics": "Няма скорошни теми",
     "recentposts": "Скорошни публикации",
@@ -86,5 +86,9 @@
     "delete_all": "Изтриване на всичко",
     "map": "Карта",
     "sessions": "Сесии за вход",
-    "ip_address": "IP адрес"
+    "ip_address": "IP адрес",
+    "enter_page_number": "Въведете номер на страница",
+    "upload_file": "Качване на файл",
+    "upload": "Качване",
+    "allowed-file-types": "Разрешените файлови типове са: %1"
 }

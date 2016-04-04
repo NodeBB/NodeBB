@@ -6,6 +6,7 @@
     "chat.user_typing": "%1 печатает ...",
     "chat.user_has_messaged_you": "%1 отправил вам сообщение.",
     "chat.see_all": "Посмотреть все чаты",
+    "chat.mark_all_read": "Mark all chats read",
     "chat.no-messages": "Пожалуйста, выберите собеседника для просмотра истории сообщений",
     "chat.no-users-in-room": "В этой комнате нет пользователей",
     "chat.recent-chats": "Последние переписки",

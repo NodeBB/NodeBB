@@ -8,9 +8,13 @@ var validator = require('validator');
 var topics = require('../../topics');
 var pubsub = require('../../pubsub');
 
-var SocketRooms = {};
-
 var stats = {};
+var totals = {};
+var SocketRooms = {
+	stats: stats,
+	totals: totals
+};
+
 
 pubsub.on('sync:stats:start', function() {
 	getLocalStats(function(err, stats) {
@@ -25,20 +29,43 @@ pubsub.on('sync:stats:end', function(data) {
 	stats[data.id] = data.stats;
 });
 
+pubsub.on('sync:stats:guests', function() {
+	var io = require('../index').server;
+
+	var roomClients = io.sockets.adapter.rooms;
+	var guestCount = roomClients.online_guests ? roomClients.online_guests.length : 0;
+	pubsub.publish('sync:stats:guests:end', guestCount);
+});
+
+SocketRooms.getTotalGuestCount = function(callback) {
+	var count = 0;
+
+	pubsub.on('sync:stats:guests:end', function(guestCount) {
+		count += guestCount;
+	});
+
+	pubsub.publish('sync:stats:guests');
+
+	setTimeout(function() {
+		pubsub.removeAllListeners('sync:stats:guests:end');
+		callback(null, count);
+	}, 100);
+}
+
+
 SocketRooms.getAll = function(socket, data, callback) {
 	pubsub.publish('sync:stats:start');
-	var totals = {
-		onlineGuestCount: 0,
-		onlineRegisteredCount: 0,
-		socketCount: 0,
-		users: {
-			categories: 0,
-			recent: 0,
-			unread: 0,
-			topics: 0,
-			category: 0
-		},
-		topics: {}
+
+	totals.onlineGuestCount = 0;
+	totals.onlineRegisteredCount = 0;
+	totals.socketCount = 0;
+	totals.topics = {};
+	totals.users = {
+		categories: 0,
+		recent: 0,
+		unread: 0,
+		topics: 0,
+		category: 0
 	};
 
 	for(var instance in stats) {
@@ -88,45 +115,53 @@ SocketRooms.getAll = function(socket, data, callback) {
 	});
 };
 
-SocketRooms.getStats = function() {
-	return stats;
+SocketRooms.getOnlineUserCount = function(io) {
+	if (!io) {
+		return 0;
+	}
+	var count = 0;
+	for (var key in io.sockets.adapter.rooms) {
+		if (io.sockets.adapter.rooms.hasOwnProperty(key) && key.startsWith('uid_')) {
+			++ count;
+		}
+	}
+
+	return count;
 };
 
 function getLocalStats(callback) {
-	var websockets = require('../index');
-	var io = websockets.server;
+	var io = require('../index').server;
+
 	if (!io) {
 		return callback();
 	}
 
 	var roomClients = io.sockets.adapter.rooms;
 	var socketData = {
-		onlineGuestCount: websockets.getOnlineAnonCount(),
-		onlineRegisteredCount: websockets.getOnlineUserCount(),
-		socketCount: websockets.getSocketCount(),
+		onlineGuestCount: roomClients.online_guests ? roomClients.online_guests.length : 0,
+		onlineRegisteredCount: SocketRooms.getOnlineUserCount(io),
+		socketCount: Object.keys(io.sockets.sockets).length,
 		users: {
-			categories: roomClients.categories ? Object.keys(roomClients.categories).length : 0,
-			recent: roomClients.recent_topics ? Object.keys(roomClients.recent_topics).length : 0,
-			unread: roomClients.unread_topics ? Object.keys(roomClients.unread_topics).length: 0,
+			categories: roomClients.categories ? roomClients.categories.length : 0,
+			recent: roomClients.recent_topics ? roomClients.recent_topics.length : 0,
+			unread: roomClients.unread_topics ? roomClients.unread_topics.length: 0,
 			topics: 0,
 			category: 0
 		},
 		topics: {}
 	};
 
-	var	topTenTopics = [],
-		tid;
+	var	topTenTopics = [];
+	var tid;
 
 	for (var room in roomClients) {
 		if (roomClients.hasOwnProperty(room)) {
 			tid = room.match(/^topic_(\d+)/);
 			if (tid) {
-				var length = Object.keys(roomClients[room]).length;
-				socketData.users.topics += length;
-
-				topTenTopics.push({tid: tid[1], count: length});
+				socketData.users.topics += roomClients[room].length;
+				topTenTopics.push({tid: tid[1], count: roomClients[room].length});
 			} else if (room.match(/^category/)) {
-				socketData.users.category += Object.keys(roomClients[room]).length;
+				socketData.users.category += roomClients[room].length;
 			}
 		}
 	}

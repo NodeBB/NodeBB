@@ -27,6 +27,7 @@
     "password-too-long": "Password too long",
     "user-banned": "Użytkownik zbanowany",
     "user-too-new": "Przepraszamy, musisz odczekać %1 sekund(y) przed utworzeniem pierwszego posta",
+    "blacklisted-ip": "Sorry, your IP address has been banned from this community. If you feel this is in error, please contact an administrator.",
     "no-category": "Kategoria nie istnieje",
     "no-topic": "Temat nie istnieje",
     "no-post": "Post nie istnieje",
@@ -50,8 +51,8 @@
     "still-uploading": "Poczekaj na pełne załadowanie",
     "file-too-big": "Maksymalny dopuszczalny rozmiar pliku to %1kB - prosimy przesłać mniejszy plik",
     "guest-upload-disabled": "Guest uploading has been disabled",
-    "already-favourited": "Już polubiłeś ten post",
-    "already-unfavourited": "Już przestałeś lubić ten post",
+    "already-favourited": "You have already bookmarked this post",
+    "already-unfavourited": "You have already unbookmarked this post",
     "cant-ban-other-admins": "Nie możesz zbanować innych adminów!",
     "cant-remove-last-admin": "Jesteś jedynym administratorem. Dodaj innego użytkownika jako administratora przed usunięciem siebie z tej grupy",
     "invalid-image-type": "Błędny typ obrazka. Dozwolone typy to: %1",
@@ -96,5 +97,7 @@
     "wrong-login-type-username": "Zaloguj się używając nazwy użytkownika",
     "invite-maximum-met": "You have invited the maximum amount of people (%1 out of %2).",
     "no-session-found": "No login session found!",
-    "not-in-room": "User not in room"
+    "not-in-room": "User not in room",
+    "no-users-in-room": "No users in this room",
+    "cant-kick-self": "You can't kick yourself from the group"
 }

@@ -1,5 +1,5 @@
 {
-    "latest_users": "Meest recente gebruikers",
+    "latest_users": "Laatste gebruikers",
     "top_posters": "Meest actieve leden",
     "most_reputation": "Meeste reputatie",
     "search": "Zoeken",
@@ -16,5 +16,5 @@
     "unread_topics": "Ongelezen onderwerpen",
     "categories": "Categorieën",
     "tags": "Tags",
-    "no-users-found": "No users found!"
+    "no-users-found": "Geen gebruikers gevonden!"
 }

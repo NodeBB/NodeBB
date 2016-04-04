@@ -68,7 +68,7 @@ function getIDsByCondition(condition, callback) {
 }
 
 function filterCompletedRewards(uid, rewards, callback) {
-	db.getSortedSetRangeByScoreWithScores('uid:' + uid + ':rewards', 0, -1, 1, Infinity, function(err, data) {
+	db.getSortedSetRangeByScoreWithScores('uid:' + uid + ':rewards', 0, -1, 1, '+inf', function(err, data) {
 		if (err) {
 			return callback(err);
 		}

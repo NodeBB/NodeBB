@@ -32,7 +32,7 @@ module.exports = function(SocketPosts) {
 				plugins.fireHook('filter:post.tools', {pid: data.pid, uid: socket.uid, tools: []}, next);
 			},
 			postSharing: function(next) {
-				social.getPostSharing(next);
+				social.getActivePostSharing(next);
 			}
 		}, function(err, results) {
 			if (err) {

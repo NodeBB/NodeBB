@@ -41,6 +41,7 @@
     "details.hidden": "Sembunyi",
     "details.hidden_help": "Jika dibolehkan, kumpulan ini tidak akan dijumpai di senarai kumpulan, dan pengguna hendaklah di jemput secara manual",
     "details.delete_group": "Padam Kumpulan",
+    "details.private_system_help": "Private groups is disabled at system level, this option does not do anything",
     "event.updated": "Perincian kumpulan telah dikemaskini",
     "event.deleted": "Kumpulan \"%1\" telah dipadam",
     "membership.accept-invitation": "Terima Jemputan",
@@ -48,5 +49,6 @@
     "membership.join-group": "Masuk Kumpulan",
     "membership.leave-group": "Keluar Kumpulan",
     "membership.reject": "Tolak",
-    "new-group.group_name": "Nama Kumpulan:"
+    "new-group.group_name": "Nama Kumpulan:",
+    "upload-group-cover": "Upload group cover"
 }

@@ -34,6 +34,7 @@
 
 	"user-banned": "User banned",
 	"user-too-new": "Sorry, you are required to wait %1 second(s) before making your first post",
+	"blacklisted-ip": "Sorry, your IP address has been banned from this community. If you feel this is in error, please contact an administrator.",
 
 	"no-category": "Category does not exist",
 	"no-topic": "Topic does not exist",
@@ -125,5 +126,6 @@
 
 	"no-session-found": "No login session found!",
 	"not-in-room": "User not in room",
-	"no-users-in-room": "No users in this room"
+	"no-users-in-room": "No users in this room",
+	"cant-kick-self": "You can't kick yourself from the group"
 }

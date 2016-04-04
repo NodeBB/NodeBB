@@ -63,7 +63,7 @@
 			<div class="panel-body">
 				<div class="input-group">
 					<span class="input-group-btn">
-						<input data-action="upload" data-target="logoUrl" data-route="{config.relative_path}/api/admin/upload/sound" type="button" class="btn btn-primary btn-block" value="Upload New Sound"></input>
+						<input data-action="upload" data-title="Upload Sound" data-route="{config.relative_path}/api/admin/upload/sound" type="button" class="btn btn-primary btn-block" value="Upload New Sound"></input>
 					</span>
 				</div>
 			</div>

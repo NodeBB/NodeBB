@@ -2,6 +2,7 @@
 
 var async = require('async');
 var winston = require('winston');
+var S = require('string');
 var nconf = require('nconf');
 
 var websockets = require('./index');
@@ -15,6 +16,11 @@ var plugins = require('../plugins');
 var SocketHelpers = {};
 
 SocketHelpers.notifyOnlineUsers = function(uid, result) {
+	winston.warn('[deprecated] SocketHelpers.notifyOnlineUsers, consider using socketHelpers.notifyNew(uid, \'newPost\', result);');
+	SocketHelpers.notifyNew(uid, 'newPost', result);
+};
+
+SocketHelpers.notifyNew = function(uid, type, result) {
 	async.waterfall([
 		function(next) {
 			user.getUidsFromSet('users:online', 0, -1, next);
@@ -23,20 +29,23 @@ SocketHelpers.notifyOnlineUsers = function(uid, result) {
 			privileges.topics.filterUids('read', result.posts[0].topic.tid, uids, next);
 		},
 		function(uids, next) {
-			plugins.fireHook('filter:sockets.sendNewPostToUids', {uidsTo: uids, uidFrom: uid, type: 'newPost'}, next);
+			plugins.fireHook('filter:sockets.sendNewPostToUids', {uidsTo: uids, uidFrom: uid, type: type}, next);
 		}
 	], function(err, data) {
 		if (err) {
 			return winston.error(err.stack);
 		}
 
-		var uids = data.uidsTo;
+		result.posts[0].ip = undefined;
 
-		for(var i=0; i<uids.length; ++i) {
-			if (parseInt(uids[i], 10) !== uid) {
-				websockets.in('uid_' + uids[i]).emit('event:new_post', result);
+		data.uidsTo.forEach(function(toUid) {
+			if (parseInt(toUid, 10) !== uid) {
+				websockets.in('uid_' + toUid).emit('event:new_post', result);
+				if (result.topic && type === 'newTopic') {
+					websockets.in('uid_' + toUid).emit('event:new_topic', result.topic);
+				}
 			}
-		}
+		});
 	});
 };
 
@@ -62,8 +71,11 @@ SocketHelpers.sendNotificationToPostOwner = function(pid, fromuid, notification)
 				return;
 			}
 
+			var title = S(results.topicTitle).decodeHTMLEntities().s;
+			var titleEscaped = title.replace(/%/g, '&#37;').replace(/,/g, '&#44;');
+
 			notifications.create({
-				bodyShort: '[[' + notification + ', ' + results.username + ', ' + results.topicTitle + ']]',
+				bodyShort: '[[' + notification + ', ' + results.username + ', ' + titleEscaped + ']]',
 				bodyLong: results.postObj.content,
 				pid: pid,
 				nid: 'post:' + pid + ':uid:' + fromuid,
@@ -93,8 +105,11 @@ SocketHelpers.sendNotificationToTopicOwner = function(tid, fromuid, notification
 			return;
 		}
 
+		var title = S(results.topicData.title).decodeHTMLEntities().s;
+		var titleEscaped = title.replace(/%/g, '&#37;').replace(/,/g, '&#44;');
+
 		notifications.create({
-			bodyShort: '[[' + notification + ', ' + results.username + ', ' + results.topicData.title + ']]',
+			bodyShort: '[[' + notification + ', ' + results.username + ', ' + titleEscaped + ']]',
 			path: nconf.get('relative_path') + '/topic/' + results.topicData.slug,
 			nid: 'tid:' + tid + ':uid:' + fromuid,
 			from: fromuid

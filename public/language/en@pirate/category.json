@@ -6,11 +6,11 @@
     "no_topics": "<strong>Thar be no topics in 'tis category.</strong><br />Why don't ye give a go' postin' one?",
     "browsing": "browsin'",
     "no_replies": "No one has replied to ye message",
-    "no_new_posts": "No new posts.",
+    "no_new_posts": "Thar be no new posts.",
     "share_this_category": "Share this category",
     "watch": "Watch",
     "ignore": "Ignore",
-    "watch.message": "You are now watching updates from this category",
-    "ignore.message": "You are now ignoring updates from this category",
+    "watch.message": "Ye now be watchin' updates from 'tis category",
+    "ignore.message": "Ye now be ignorin' updates from 'tis category",
     "watched-categories": "Watched categories"
 }

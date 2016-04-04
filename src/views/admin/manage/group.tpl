@@ -9,12 +9,12 @@
 
 				<fieldset>
 					<label for="change-group-desc">Description</label>
-					<input type="text" class="form-control" id="change-group-desc" placeholder="A short description about your group" value="{group.description}" /><br />
+					<input type="text" class="form-control" id="change-group-desc" placeholder="A short description about your group" value="{group.description}" maxlength="255" /><br />
 				</fieldset>
 
 				<fieldset>
 					<label for="change-group-user-title">Title of Members</label>
-					<input type="text" class="form-control" id="change-group-user-title" placeholder="The title of users if they are a member of this group" value="{group.userTitle}"/><br />
+					<input type="text" class="form-control" id="change-group-user-title" placeholder="The title of users if they are a member of this group" value="{group.userTitle}" maxlength="40" /><br />
 				</fieldset>
 
 				<fieldset>
@@ -31,7 +31,7 @@
 				<fieldset>
 					<div class="checkbox">
 						<label>
-							<input id="group-userTitleEnabled" name="userTitleEnabled" type="checkbox"<!-- IF group.userTitleEnabled --> checked<!-- ENDIF group.userTitleEnabled -->> <strong>[[groups:details.userTitleEnabled]]</strong>
+							<input id="group-userTitleEnabled" name="userTitleEnabled" type="checkbox"<!-- IF group.userTitleEnabled --> checked<!-- ENDIF group.userTitleEnabled -->> <strong>Show Badge</strong>
 						</label>
 					</div>
 				</fieldset>
@@ -41,26 +41,31 @@
 						<label>
 							<input id="group-private" name="private" type="checkbox"<!-- IF group.private --> checked<!-- ENDIF group.private -->> <strong>[[groups:details.private]]</strong>
 							<p class="help-block">
-								[[groups:details.private_help]]
+								If enabled, joining of groups requires approval from a group owner.
 							</p>
-						</label>
-					</div>
-				</fieldset>
-
-				<fieldset>
-					<div class="checkbox">
-						<label>
-							<input id="group-disableJoinRequests" name="disableJoinRequests" type="checkbox"<!-- IF group.disableJoinRequests --> checked<!-- ENDIF group.disableJoinRequests -->> <strong>[[groups:details.disableJoinRequests]]</strong>
-						</label>
-					</div>
-				</fieldset>
-
-				<fieldset>
-					<div class="checkbox">
-						<label>
-							<input id="group-hidden" name="hidden" type="checkbox"<!-- IF group.hidden --> checked<!-- ENDIF group.hidden -->> <strong>[[groups:details.hidden]]</strong>
+							<!-- IF !allowPrivateGroups -->
 							<p class="help-block">
-								[[groups:details.hidden_help]]
+								Warning: Private groups is disabled at system level, which overrides this option.
+							</p>
+							<!-- ENDIF !allowPrivateGroups -->
+						</label>
+					</div>
+				</fieldset>
+
+				<fieldset>
+					<div class="checkbox">
+						<label>
+							<input id="group-disableJoinRequests" name="disableJoinRequests" type="checkbox"<!-- IF group.disableJoinRequests --> checked<!-- ENDIF group.disableJoinRequests -->> <strong>Disable join requests</strong>
+						</label>
+					</div>
+				</fieldset>
+
+				<fieldset>
+					<div class="checkbox">
+						<label>
+							<input id="group-hidden" name="hidden" type="checkbox"<!-- IF group.hidden --> checked<!-- ENDIF group.hidden -->> <strong>Hidden</strong>
+							<p class="help-block">
+								If enabled, this group will not be found in the groups listing, and users will have to be invited manually
 							</p>
 						</label>
 					</div>
@@ -76,7 +81,7 @@
 				<fieldset>
 					<div class="panel panel-default">
 						<div class="panel-heading">
-							<h3 class="panel-title"><i class="fa fa-users"></i> [[groups:details.members]]</h3>
+							<h3 class="panel-title"><i class="fa fa-users"></i> Member List</h3>
 						</div>
 						<div class="panel-body">
 							<!-- IMPORT partials/groups/memberlist.tpl -->

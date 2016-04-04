@@ -1,5 +1,5 @@
 "use strict";
-/*global define, app, socket, ajaxify, RELATIVE_PATH, bootbox, templates */
+/*global config, define, app, socket, ajaxify, bootbox, templates */
 
 define('admin/manage/category', [
 	'uploader',
@@ -76,7 +76,7 @@ define('admin/manage/category', [
 				}
 			});
 
-		$('[data-name="imageClass"]').on('change', function(ev) {
+		$('[data-name="imageClass"]').on('change', function() {
 			$('.category-preview').css('background-size', $(this).val());
 		});
 
@@ -100,23 +100,74 @@ define('admin/manage/category', [
 			});
 		});
 
-		$('.upload-button').on('click', function() {
-			var inputEl = $(this),
-				cid = inputEl.attr('data-cid');
+		$('.copy-settings').on('click', function(e) {
+			e.preventDefault();
+			socket.emit('admin.categories.getNames', function(err, categories) {
+				if (err) {
+					return app.alertError(err.message);
+				}
 
-			uploader.open(RELATIVE_PATH + '/api/admin/category/uploadpicture', { cid: cid }, 0, function(imageUrlOnServer) {
-				inputEl.val(imageUrlOnServer);
+				templates.parse('admin/partials/categories/select-category', {
+					categories: categories
+				}, function(html) {
+					function submit() {
+						var formData = modal.find('form').serializeObject();
+
+						socket.emit('admin.categories.copySettingsFrom', {fromCid: formData['select-cid'], toCid: ajaxify.data.category.cid}, function(err) {
+							if (err) {
+								return app.alertError(err.message);
+							}
+							app.alertSuccess('Settings Copied!');
+							ajaxify.refresh();
+						});
+
+						modal.modal('hide');
+						return false;
+					}
+
+					var modal = bootbox.dialog({
+						title: 'Select a Category',
+						message: html,
+						buttons: {
+							save: {
+								label: 'Copy',
+								className: 'btn-primary',
+								callback: submit
+							}
+						}
+					});
+
+					modal.find('form').on('submit', submit);
+				});
+			});
+		});
+
+		$('.upload-button').on('click', function() {
+			var inputEl = $(this);
+			var cid = inputEl.attr('data-cid');
+
+			uploader.show({
+				title: 'Upload category image',
+				route: config.relative_path + '/api/admin/category/uploadpicture',
+				params: {cid: cid}
+			}, function(imageUrlOnServer) {
+				$('#category-image').val(imageUrlOnServer);
 				var previewBox = inputEl.parent().parent().siblings('.category-preview');
 				previewBox.css('background', 'url(' + imageUrlOnServer + '?' + new Date().getTime() + ')');
-				modified(inputEl[0]);
+
+				modified($('#category-image'));
 			});
+		});
+
+		$('#category-image').on('change', function() {
+			$('.category-preview').css('background-image', $(this).val() ? ('url("' + $(this).val() + '")') : '');
 		});
 
 		$('.delete-image').on('click', function(e) {
 			e.preventDefault();
 
-			var inputEl = $('.upload-button'),
-				previewBox = inputEl.parent().parent().siblings('.category-preview');
+			var inputEl = $('#category-image');
+			var previewBox = $('.category-preview');
 
 			inputEl.val('');
 			previewBox.css('background-image', '');
@@ -124,7 +175,7 @@ define('admin/manage/category', [
 			$(this).parent().addClass('hide').hide();
 		});
 
-		$('.category-preview').on('click', function(ev) {
+		$('.category-preview').on('click', function() {
 			iconSelect.init($(this).find('i'), modified);
 		});
 
@@ -146,12 +197,6 @@ define('admin/manage/category', [
 		});
 
 		Category.setupPrivilegeTable();
-		
-		if (window.location.hash === '#analytics') {
-			Category.setupGraphs();
-		} else {
-			$('a[href="#analytics"]').on('shown.bs.tab', Category.setupGraphs);
-		}
 	};
 
 	Category.setupPrivilegeTable = function() {
@@ -349,107 +394,6 @@ define('admin/manage/category', [
 				return app.alertError(err.message);
 			}
 			app.alertSuccess('Privileges copied!');
-		});
-	};
-
-	Category.setupGraphs = function() {
-		var hourlyCanvas = document.getElementById('pageviews:hourly'),
-			dailyCanvas = document.getElementById('pageviews:daily'),
-			topicsCanvas = document.getElementById('topics:daily'),
-			postsCanvas = document.getElementById('posts:daily'),
-			hourlyLabels = utils.getHoursArray().map(function(text, idx) {
-				return idx % 3 ? '' : text;
-			}),
-			dailyLabels = utils.getDaysArray().map(function(text, idx) {
-				return idx % 3 ? '' : text;
-			});
-
-		if (utils.isMobile()) {
-			Chart.defaults.global.showTooltips = false;
-		}
-
-		var data = {
-			'pageviews:hourly': {
-				labels: hourlyLabels,
-				datasets: [
-					{
-						label: "",
-						fillColor: "rgba(186,139,175,0.2)",
-						strokeColor: "rgba(186,139,175,1)",
-						pointColor: "rgba(186,139,175,1)",
-						pointStrokeColor: "#fff",
-						pointHighlightFill: "#fff",
-						pointHighlightStroke: "rgba(186,139,175,1)",
-						data: ajaxify.data.analytics['pageviews:hourly']
-					}
-				]
-			},
-			'pageviews:daily': {
-				labels: dailyLabels,
-				datasets: [
-					{
-						label: "",
-						fillColor: "rgba(151,187,205,0.2)",
-						strokeColor: "rgba(151,187,205,1)",
-						pointColor: "rgba(151,187,205,1)",
-						pointStrokeColor: "#fff",
-						pointHighlightFill: "#fff",
-						pointHighlightStroke: "rgba(151,187,205,1)",
-						data: ajaxify.data.analytics['pageviews:daily']
-					}
-				]
-			},
-			'topics:daily': {
-				labels: dailyLabels.slice(-7),
-				datasets: [
-					{
-						label: "",
-						fillColor: "rgba(171,70,66,0.2)",
-						strokeColor: "rgba(171,70,66,1)",
-						pointColor: "rgba(171,70,66,1)",
-						pointStrokeColor: "#fff",
-						pointHighlightFill: "#fff",
-						pointHighlightStroke: "rgba(171,70,66,1)",
-						data: ajaxify.data.analytics['topics:daily']
-					}
-				]
-			},
-			'posts:daily': {
-				labels: dailyLabels.slice(-7),
-				datasets: [
-					{
-						label: "",
-						fillColor: "rgba(161,181,108,0.2)",
-						strokeColor: "rgba(161,181,108,1)",
-						pointColor: "rgba(161,181,108,1)",
-						pointStrokeColor: "#fff",
-						pointHighlightFill: "#fff",
-						pointHighlightStroke: "rgba(161,181,108,1)",
-						data: ajaxify.data.analytics['posts:daily']
-					}
-				]
-			},
-		};
-
-		hourlyCanvas.width = $(hourlyCanvas).parent().width();
-		dailyCanvas.width = $(dailyCanvas).parent().width();
-		topicsCanvas.width = $(topicsCanvas).parent().width();
-		postsCanvas.width = $(postsCanvas).parent().width();
-		new Chart(hourlyCanvas.getContext('2d')).Line(data['pageviews:hourly'], {
-			responsive: true,
-			animation: false
-		});
-		new Chart(dailyCanvas.getContext('2d')).Line(data['pageviews:daily'], {
-			responsive: true,
-			animation: false
-		});
-		new Chart(topicsCanvas.getContext('2d')).Line(data['topics:daily'], {
-			responsive: true,
-			animation: false
-		});
-		new Chart(postsCanvas.getContext('2d')).Line(data['posts:daily'], {
-			responsive: true,
-			animation: false
 		});
 	};
 

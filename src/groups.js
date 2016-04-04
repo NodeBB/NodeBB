@@ -240,9 +240,9 @@ var utils = require('../public/src/utils');
 	Groups.escapeGroupData = function(group) {
 		if (group) {
 			group.nameEncoded = encodeURIComponent(group.name);
-			group.displayName = validator.escape(group.name);
-			group.description = validator.escape(group.description || '');
-			group.userTitle = validator.escape(group.userTitle || '') || group.displayName;
+			group.displayName = validator.escape(String(group.name));
+			group.description = validator.escape(String(group.description || ''));
+			group.userTitle = validator.escape(String(group.userTitle || '')) || group.displayName;
 		}
 	};
 
@@ -357,7 +357,7 @@ var utils = require('../public/src/utils');
 				var keys = uids.map(function(uid) {
 					return 'uid:' + uid + ':posts';
 				});
-				db.getSortedSetRevUnion(keys, 0, max - 1, next);
+				db.getSortedSetRevRange(keys, 0, max - 1, next);
 			},
 			function(pids, next) {
 				privileges.posts.filter('read', pids, uid, next);
@@ -425,9 +425,13 @@ var utils = require('../public/src/utils');
 	};
 
 	Groups.getUserGroups = function(uids, callback) {
+		Groups.getUserGroupsFromSet('groups:visible:createtime', uids, callback);
+	};
+
+	Groups.getUserGroupsFromSet = function (set, uids, callback) {
 		async.waterfall([
 			function(next) {
-				db.getSortedSetRevRange('groups:visible:createtime', 0, -1, next);
+				db.getSortedSetRevRange(set, 0, -1, next);
 			},
 			function(groupNames, next) {
 				var groupSets = groupNames.map(function(name) {

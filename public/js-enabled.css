@@ -1,0 +1,7 @@
+/*
+    The following stylesheet is only included on pages that can execute javascript
+*/
+
+[component="post/content"] img:not(.not-responsive):not([data-state]) {
+	display: none !important;
+}

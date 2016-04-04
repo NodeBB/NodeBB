@@ -6,6 +6,7 @@
     "chat.user_typing": "%1 يكتب رسالة...",
     "chat.user_has_messaged_you": "%1 أرسل لك رسالة.",
     "chat.see_all": "عرض كل المحادثات",
+    "chat.mark_all_read": "Mark all chats read",
     "chat.no-messages": "المرجو اختيار مرسل إليه لمعاينة تاريخ الدردشات",
     "chat.no-users-in-room": "No users in this room",
     "chat.recent-chats": "آخر الدردشات",

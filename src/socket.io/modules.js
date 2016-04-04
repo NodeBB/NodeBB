@@ -61,9 +61,9 @@ SocketModules.chats.newRoom = function(socket, data, callback) {
 		socket.lastChatMessageTime = now;
 	}
 
-	Messaging.canMessageUser(socket.uid, data.touid, function(err, allowed) {
-		if (err || !allowed) {
-			return callback(err || new Error('[[error:chat-restricted]]'));
+	Messaging.canMessageUser(socket.uid, data.touid, function(err) {
+		if (err) {
+			return callback(err);
 		}
 
 		Messaging.newRoom(socket.uid, [data.touid], callback);
@@ -240,8 +240,21 @@ SocketModules.chats.markRead = function(socket, roomId, callback) {
 			user.notifications.pushCount(socket.uid);
 		});
 
+		server.in('uid_' + socket.uid).emit('event:chats.markedAsRead', {roomId: roomId});
 		callback();
 	});
+};
+
+SocketModules.chats.markAllRead = function(socket, data, callback) {
+	async.waterfall([
+		function (next) {
+			Messaging.markAllRead(socket.uid, next);
+		},
+		function (next) {
+			Messaging.pushUnreadCount(socket.uid);
+			next();
+		}
+	], callback);
 };
 
 SocketModules.chats.renameRoom = function(socket, data, callback) {

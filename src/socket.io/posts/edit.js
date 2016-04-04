@@ -37,7 +37,8 @@ module.exports = function(SocketPosts) {
 			title: data.title,
 			content: data.content,
 			topic_thumb: data.topic_thumb,
-			tags: data.tags
+			tags: data.tags,
+			req: websockets.reqFromSocket(socket)
 		}, function(err, result) {
 			if (err) {
 				return callback(err);

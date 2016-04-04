@@ -41,6 +41,7 @@
     "details.hidden": "Gizli",
     "details.hidden_help": "Bu grup eğer etkinse grup listelerinde bulunmaz, ve kullanıcılar bizzat davet eder",
     "details.delete_group": "Grubu Sil",
+    "details.private_system_help": "Özel gruplar sistem seviyesinde devre dışı bırakıldı. Bu seçenek hiçbir şeyi değiştirmeyecek.",
     "event.updated": "Grup detayları güncellenmiştir",
     "event.deleted": "\"%1\" grubu silinmiş",
     "membership.accept-invitation": "Daveti Kabul Et",
@@ -48,5 +49,6 @@
     "membership.join-group": "Gruba Katıl",
     "membership.leave-group": "Gruptan Ayrıl",
     "membership.reject": "Reddet",
-    "new-group.group_name": "Grup İsmi:"
+    "new-group.group_name": "Grup İsmi:",
+    "upload-group-cover": "Grup kapağı yükle"
 }

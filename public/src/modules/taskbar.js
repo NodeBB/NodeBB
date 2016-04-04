@@ -55,7 +55,7 @@ define('taskbar', function() {
 
 		$(window).trigger('filter:taskbar.push', data);
 
-		if (!element.length) {
+		if (!element.length && data.module) {
 			createTaskbar(data);
 		}
 	};

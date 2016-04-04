@@ -100,7 +100,9 @@ module.exports = function(Topics) {
 
 	Topics.notifyFollowers = function(postData, exceptUid, callback) {
 		callback = callback || function() {};
-		var followers, title;
+		var followers;
+		var title;
+		var titleEscaped;
 
 		async.waterfall([
 			function (next) {
@@ -126,12 +128,14 @@ module.exports = function(Topics) {
 					return callback();
 				}
 				title = postData.topic.title;
+
 				if (title) {
 					title = S(title).decodeHTMLEntities().s;
+					titleEscaped = title.replace(/%/g, '&#37;').replace(/,/g, '&#44;');
 				}
 
 				notifications.create({
-					bodyShort: '[[notifications:user_posted_to, ' + postData.user.username + ', ' + title + ']]',
+					bodyShort: '[[notifications:user_posted_to, ' + postData.user.username + ', ' + titleEscaped + ']]',
 					bodyLong: postData.content,
 					pid: postData.pid,
 					nid: 'new_post:tid:' + postData.topic.tid + ':pid:' + postData.pid + ':uid:' + exceptUid,
@@ -162,7 +166,7 @@ module.exports = function(Topics) {
 							emailer.send('notif_post', toUid, {
 								pid: postData.pid,
 								subject: '[' + (meta.config.title || 'NodeBB') + '] ' + title,
-								intro: '[[notifications:user_posted_to, ' + postData.user.username + ', ' + title + ']]',
+								intro: '[[notifications:user_posted_to, ' + postData.user.username + ', ' + titleEscaped + ']]',
 								postBody: postData.content.replace(/"\/\//g, '"http://'),
 								site_title: meta.config.title || 'NodeBB',
 								username: data.userData.username,

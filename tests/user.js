@@ -184,7 +184,7 @@ describe('User', function() {
 		});
 
 		it('should delete a user account', function(done) {
-			User.delete(uid, function(err) {
+			User.delete(1, uid, function(err) {
 				assert.ifError(err);
 				User.existsBySlug('usertodelete', function(err, exists) {
 					assert.ifError(err);

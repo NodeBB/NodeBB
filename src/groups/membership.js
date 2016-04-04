@@ -93,7 +93,8 @@ module.exports = function(Groups) {
 							bodyShort: '[[groups:request.notification_title, ' + username + ']]',
 							bodyLong: '[[groups:request.notification_text, ' + username + ', ' + groupName + ']]',
 							nid: 'group:' + groupName + ':uid:' + uid + ':request',
-							path: '/groups/' + utils.slugify(groupName)
+							path: '/groups/' + utils.slugify(groupName),
+							from: uid
 						}, next);
 					},
 					owners: function(next) {
@@ -412,5 +413,24 @@ module.exports = function(Groups) {
 			return callback(null, []);
 		}
 		db.getSetMembers('group:' + groupName + ':pending', callback);
+	};
+	
+	Groups.kick = function(uid, groupName, isOwner, callback) {
+		if (isOwner) {
+			// If the owners set only contains one member, error out!
+			async.waterfall([
+				function (next) {
+					db.setCount('group:' + groupName + ':owners', next);
+				},
+				function (numOwners, next) {
+					if (numOwners <= 1) {
+						return next(new Error('[[error:group-needs-owner]]'));
+					}
+					Groups.leave(groupName, uid, next);
+				}
+			], callback);
+		} else {
+			Groups.leave(groupName, uid, callback);
+		}
 	};
 };

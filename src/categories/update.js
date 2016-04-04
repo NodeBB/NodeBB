@@ -4,6 +4,7 @@
 var async = require('async'),
 	db = require('../database'),
 	utils = require('../../public/src/utils'),
+	translator = require('../../public/src/modules/translator'),
 	plugins = require('../plugins');
 
 module.exports = function(Categories) {
@@ -27,7 +28,9 @@ module.exports = function(Categories) {
 
 
 			if (modifiedFields.hasOwnProperty('name')) {
-				modifiedFields.slug = cid + '/' + utils.slugify(modifiedFields.name);
+				translator.translate(modifiedFields.name, function(translated) {
+					modifiedFields.slug = cid + '/' + utils.slugify(translated);
+				});
 			}
 
 			plugins.fireHook('filter:category.update', {category: modifiedFields}, function(err, categoryData) {
@@ -69,7 +72,7 @@ module.exports = function(Categories) {
 			if (key === 'order') {
 				updateOrder(cid, value, callback);
 			} else if (key === 'description') {
-				parseDescription(cid, value, callback);
+				Categories.parseDescription(cid, value, callback);
 			} else {
 				callback();
 			}
@@ -97,7 +100,7 @@ module.exports = function(Categories) {
 				function (next) {
 					db.setObjectField('category:' + cid, 'parentCid', newParent, next);
 				}
-			], function(err, results) {
+			], function(err) {
 				callback(err);
 			});
 		});
@@ -121,13 +124,13 @@ module.exports = function(Categories) {
 		});
 	}
 
-	function parseDescription(cid, description, callback) {
+	Categories.parseDescription = function(cid, description, callback) {
 		plugins.fireHook('filter:parse.raw', description, function(err, parsedDescription) {
 			if (err) {
 				return callback(err);
 			}
 			Categories.setCategoryField(cid, 'descriptionParsed', parsedDescription, callback);
 		});
-	}
+	};
 
 };

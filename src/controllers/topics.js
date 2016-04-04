@@ -4,7 +4,6 @@
 var async = require('async');
 var S = require('string');
 var nconf = require('nconf');
-var validator = require('validator');
 
 var user = require('../user');
 var meta = require('../meta');
@@ -24,6 +23,7 @@ topicsController.get = function(req, res, callback) {
 	var currentPage = parseInt(req.query.page, 10) || 1;
 	var pageCount = 1;
 	var userPrivileges;
+	var settings;
 
 	if ((req.params.post_index && !utils.isNumber(req.params.post_index)) || !utils.isNumber(tid)) {
 		return callback();
@@ -54,11 +54,15 @@ topicsController.get = function(req, res, callback) {
 				return helpers.notAllowed(req, res);
 			}
 
-			if ((!req.params.slug || results.topic.slug !== tid + '/' + req.params.slug) && (results.topic.slug && results.topic.slug !== tid + '/')) {
-				return helpers.redirect(res, '/topic/' + encodeURI(results.topic.slug));
+			if (!res.locals.isAPI && (!req.params.slug || results.topic.slug !== tid + '/' + req.params.slug) && (results.topic.slug && results.topic.slug !== tid + '/')) {
+				var url = '/topic/' + results.topic.slug;
+				if (req.params.post_index){
+					url += '/'+req.params.post_index;
+				}
+				return helpers.redirect(res, url);
 			}
 
-			var settings = results.settings;
+			settings = results.settings;
 			var postCount = parseInt(results.topic.postcount, 10);
 			pageCount = Math.max(1, Math.ceil((postCount - 1) / settings.postsPerPage));
 
@@ -120,7 +124,7 @@ topicsController.get = function(req, res, callback) {
 				return callback();
 			}
 
-			topics.modifyPostsByPrivilege(topicData.posts, userPrivileges);
+			topics.modifyPostsByPrivilege(topicData, userPrivileges);
 
 			plugins.fireHook('filter:controllers.topic.get', {topicData: topicData, uid: req.uid}, next);
 		},
@@ -183,7 +187,7 @@ topicsController.get = function(req, res, callback) {
 			res.locals.metaTags = [
 				{
 					name: "title",
-					content: topicData.title
+					content: topicData.titleRaw
 				},
 				{
 					name: "description",
@@ -191,7 +195,7 @@ topicsController.get = function(req, res, callback) {
 				},
 				{
 					property: 'og:title',
-					content: topicData.title
+					content: topicData.titleRaw
 				},
 				{
 					property: 'og:description',
@@ -257,6 +261,7 @@ topicsController.get = function(req, res, callback) {
 		data['reputation:disabled'] = parseInt(meta.config['reputation:disabled'], 10) === 1;
 		data['downvote:disabled'] = parseInt(meta.config['downvote:disabled'], 10) === 1;
 		data['feeds:disableRSS'] = parseInt(meta.config['feeds:disableRSS'], 10) === 1;
+		data.scrollToMyPost = settings.scrollToMyPost;
 		data.rssFeedUrl = nconf.get('relative_path') + '/topic/' + data.tid + '.rss';
 		data.pagination = pagination.create(currentPage, pageCount);
 		data.pagination.rel.forEach(function(rel) {

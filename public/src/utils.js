@@ -92,6 +92,23 @@
 			return str;
 		},
 
+		cleanUpTag: function(tag, maxLength) {
+			if (typeof tag !== 'string' || !tag.length ) {
+				return '';
+			}
+
+			tag = tag.trim().toLowerCase();
+			// see https://github.com/NodeBB/NodeBB/issues/4378
+			tag = tag.replace(/\u202E/gi, '');
+			tag = tag.replace(/[,\/#!$%\^\*;:{}=_`<>'"~()?\|]/g, '');
+			tag = tag.substr(0, maxLength || 15).trim();
+			var matches = tag.match(/^[.-]*(.+?)[.-]*$/);
+			if (matches && matches.length > 1) {
+				tag = matches[1];
+			}
+			return tag;
+		},
+
 		removePunctuation: function(str) {
 			return str.replace(/[\.,-\/#!$%\^&\*;:{}=\-_`<>'"~()?]/g, '');
 		},
@@ -290,6 +307,23 @@
 			}
 
 			return labels;
+		},
+
+		/* Retrieved from http://stackoverflow.com/a/7557433 @ 27 Mar 2016 */
+		isElementInViewport: function(el) {
+			//special bonus for those using jQuery
+			if (typeof jQuery === "function" && el instanceof jQuery) {
+				el = el[0];
+			}
+
+			var rect = el.getBoundingClientRect();
+
+			return (
+				rect.top >= 0 &&
+				rect.left >= 0 &&
+				rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) && /*or $(window).height() */
+				rect.right <= (window.innerWidth || document.documentElement.clientWidth) /*or $(window).width() */
+			);
 		},
 
 		// get all the url params in a single key/value hash

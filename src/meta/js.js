@@ -4,7 +4,6 @@ var winston = require('winston'),
 	fork = require('child_process').fork,
 	path = require('path'),
 	async = require('async'),
-	_ = require('underscore'),
 	nconf = require('nconf'),
 	fs = require('fs'),
 	rimraf = require('rimraf'),
@@ -26,7 +25,7 @@ module.exports = function(Meta) {
 				'public/vendor/visibility/visibility.min.js',
 				'public/vendor/bootstrap/js/bootstrap.min.js',
 				'public/vendor/jquery/bootstrap-tagsinput/bootstrap-tagsinput.min.js',
-				'public/vendor/jquery/textcomplete/jquery.textcomplete.min.js',
+				'public/vendor/jquery/textcomplete/jquery.textcomplete.js',
 				'public/vendor/requirejs/require.js',
 				'public/vendor/bootbox/bootbox.min.js',
 				'public/vendor/tinycon/tinycon.js',
@@ -135,6 +134,8 @@ module.exports = function(Meta) {
 			return;
 		}
 
+		winston.verbose('[meta/js] Minifying ' + target);
+
 		var forkProcessParams = setupDebugging();
 		var minifier = Meta.js.minifierProc = fork('minifier.js', [], forkProcessParams);
 
@@ -156,19 +157,19 @@ module.exports = function(Meta) {
 				winston.verbose('[meta/js] ' + target + ' minification complete');
 				minifier.kill();
 
-				if (process.send) {
+				if (process.send && Meta.js.target['nodebb.min.js'] && Meta.js.target['acp.min.js']) {
 					process.send({
 						action: 'js-propagate',
-						cache: Meta.js.target[target].cache,
-						map: Meta.js.target[target].map
+						data: Meta.js.target
 					});
 				}
 
-				Meta.js.commitToFile(target);
+				Meta.js.commitToFile(target, function() {					
+					if (typeof callback === 'function') {
+						callback();
+					}
+				});
 
-				if (typeof callback === 'function') {
-					callback();
-				}
 				break;
 			case 'error':
 				winston.error('[meta/js] Could not compile ' + target + ': ' + message.message);
@@ -230,15 +231,15 @@ module.exports = function(Meta) {
 		}
 	};
 
-	Meta.js.commitToFile = function(target) {
+	Meta.js.commitToFile = function(target, callback) {
 		fs.writeFile(path.join(__dirname, '../../public/' + target), Meta.js.target[target].cache, function (err) {
 			if (err) {
 				winston.error('[meta/js] ' + err.message);
 				process.exit(0);
 			}
 
-			winston.verbose('[meta/js] ' + target + ' committed to disk.');
 			emitter.emit('meta:js.compiled');
+			callback();
 		});
 	};
 

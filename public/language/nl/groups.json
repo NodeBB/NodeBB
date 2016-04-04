@@ -1,9 +1,9 @@
 {
     "groups": "Groepen",
-    "view_group": "Weergeven groep",
+    "view_group": "Bekijk groep",
     "owner": "Groepseigenaar",
-    "new_group": "Nieuwe groep",
-    "no_groups_found": "Geen groepen voor weergave",
+    "new_group": "Nieuwe groep aanmaken",
+    "no_groups_found": "Er zijn geen groepen om weer te geven",
     "pending.accept": "Accepteer",
     "pending.reject": "Afwijzen",
     "pending.accept_all": "Iedereen accepteren",
@@ -41,6 +41,7 @@
     "details.hidden": "Niet getoond",
     "details.hidden_help": "Indien geactiveerd zal deze groep niet getoond worden in de groepslijst en zullen gebruikers handmatig uitgenodigd moeten worden.",
     "details.delete_group": "Groep verwijderen",
+    "details.private_system_help": "Private groups is disabled at system level, this option does not do anything",
     "event.updated": "Groepsdetails zijn bijgewerkt",
     "event.deleted": "De groep \"%1\" is verwijderd",
     "membership.accept-invitation": "Uitnodiging accepteren",
@@ -48,5 +49,6 @@
     "membership.join-group": "Deelnemen aan groep",
     "membership.leave-group": "Verlaat groep",
     "membership.reject": "Afwijzen",
-    "new-group.group_name": "Groepsnaam:"
+    "new-group.group_name": "Groepsnaam:",
+    "upload-group-cover": "Upload groepscover"
 }

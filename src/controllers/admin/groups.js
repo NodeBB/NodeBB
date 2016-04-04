@@ -66,7 +66,7 @@ groupsController.get = function(req, res, callback) {
 			return callback(err);
 		}
 		group.isOwner = true;
-		res.render('admin/manage/group', {group: group});
+		res.render('admin/manage/group', {group: group, allowPrivateGroups: parseInt(meta.config.allowPrivateGroups, 10) === 1});
 	});
 };
 

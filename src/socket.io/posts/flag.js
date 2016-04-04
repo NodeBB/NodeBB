@@ -1,6 +1,7 @@
 'use strict';
 
 var async = require('async');
+var S = require('string');
 
 var user = require('../../user');
 var groups = require('../../groups');
@@ -82,8 +83,11 @@ module.exports = function(SocketPosts) {
 				}, next);
 			},
 			function (results, next) {
+				var title = S(post.topic.title).decodeHTMLEntities().s;
+				var titleEscaped = title.replace(/%/g, '&#37;').replace(/,/g, '&#44;');
+
 				notifications.create({
-					bodyShort: '[[notifications:user_flagged_post_in, ' + flaggingUser.username + ', ' + post.topic.title + ']]',
+					bodyShort: '[[notifications:user_flagged_post_in, ' + flaggingUser.username + ', ' + titleEscaped + ']]',
 					bodyLong: post.content,
 					pid: data.pid,
 					nid: 'post_flag:' + data.pid + ':uid:' + socket.uid,

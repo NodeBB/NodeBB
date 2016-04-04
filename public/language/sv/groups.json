@@ -41,6 +41,7 @@
     "details.hidden": "Dold",
     "details.hidden_help": "Om aktiverat kommer gruppen inte synas i grupplistan och användare måste bli inbjudna manuellt",
     "details.delete_group": "Ta bort grupp",
+    "details.private_system_help": "Private groups is disabled at system level, this option does not do anything",
     "event.updated": "Gruppdetaljerna har uppdaterats",
     "event.deleted": "Gruppen \"%1\" har tagits bort",
     "membership.accept-invitation": "Acceptera inbjudan",
@@ -48,5 +49,6 @@
     "membership.join-group": "Gå med i grupp",
     "membership.leave-group": "Lämna grupp",
     "membership.reject": "Neka",
-    "new-group.group_name": "Group Name:"
+    "new-group.group_name": "Group Name:",
+    "upload-group-cover": "Upload group cover"
 }

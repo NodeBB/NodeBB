@@ -41,6 +41,7 @@
     "details.hidden": "Skrito",
     "details.hidden_help": "Skupina je verjetno skrita pred uporabniki, zato se lahko vanjo pridružijo zgolj tisti s povabilom",
     "details.delete_group": "Izbriši skupino",
+    "details.private_system_help": "Private groups is disabled at system level, this option does not do anything",
     "event.updated": "Podatki o skupini so bili posodobljeni",
     "event.deleted": "Skupina %1 je bila izbrisana",
     "membership.accept-invitation": "Sprejmi povabilo",
@@ -48,5 +49,6 @@
     "membership.join-group": "Pridruži se skupini",
     "membership.leave-group": "Zapusti skupino",
     "membership.reject": "Zavrni",
-    "new-group.group_name": "Ime skupine:"
+    "new-group.group_name": "Ime skupine:",
+    "upload-group-cover": "Upload group cover"
 }

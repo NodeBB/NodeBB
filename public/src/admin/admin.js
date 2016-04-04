@@ -16,19 +16,19 @@
 			});
 		}
 
-		$(window).on('action:ajaxify.contentLoaded', function(ev, data) {
-			var url = data.url;
-
-			selectMenuItem(data.url);
-			setupRestartLinks();
-
-			componentHandler.upgradeDom();
-		});
-
 		$('[component="logout"]').on('click', app.logout);
 		app.alert = launchSnackbar;
 
 		configureSlidemenu();
+	});
+
+	$(window).on('action:ajaxify.contentLoaded', function(ev, data) {
+		var url = data.url;
+
+		selectMenuItem(data.url);
+		setupRestartLinks();
+
+		componentHandler.upgradeDom();
 	});
 
 	function setupKeybindings() {

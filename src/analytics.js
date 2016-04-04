@@ -2,6 +2,7 @@
 
 var cronJob = require('cron').CronJob;
 var async = require('async');
+var winston = require('winston');
 
 var db = require('./database');
 
@@ -84,8 +85,10 @@ var db = require('./database');
 
 		if (Object.keys(counters).length > 0) {
 			for(var key in counters) {
-				dbQueue.push(async.apply(db.sortedSetIncrBy, 'analytics:' + key, counters[key], today.getTime()));
-				delete counters[key];
+				if (counters.hasOwnProperty(key)) {					
+					dbQueue.push(async.apply(db.sortedSetIncrBy, 'analytics:' + key, counters[key], today.getTime()));
+					delete counters[key];
+				}
 			}
 		}
 

@@ -13,7 +13,7 @@ module.exports = function(middleware) {
 				req = this.req,
 				defaultFn = function(err, str){
 					if (err) {
-						return req.next(err);
+						return next(err);
 					}
 
 					self.send(str);
@@ -72,6 +72,7 @@ module.exports = function(middleware) {
 						var language = res.locals.config ? res.locals.config.userLang || 'en_GB' : 'en_GB';
 						language = req.query.lang || language;
 						translator.translate(str, language, function(translated) {
+							translated = translator.unescape(translated);
 							translated = translated + '<script id="ajaxify-data" type="application/json">' + ajaxifyData + '</script>';
 							fn(err, translated);
 						});

@@ -1,12 +1,13 @@
 
 'use strict';
 
-var async = require('async'),
+var async = require('async');
 
-	db = require('../database'),
-	meta = require('../meta'),
-	_ = require('underscore'),
-	plugins = require('../plugins');
+var db = require('../database');
+var meta = require('../meta');
+var _ = require('underscore');
+var plugins = require('../plugins');
+var utils = require('../../public/src/utils');
 
 
 module.exports = function(Topics) {
@@ -24,7 +25,9 @@ module.exports = function(Topics) {
 			},
 			function (data, next) {
 				tags = data.tags.slice(0, meta.config.maximumTagsPerTopic || 5);
-				tags = tags.map(Topics.cleanUpTag).filter(function(tag, index, array) {
+				tags = tags.map(function(tag) {
+					return utils.cleanUpTag(tag, meta.config.maximumTagLength);
+				}).filter(function(tag, index, array) {
 					return tag && tag.length >= (meta.config.minimumTagLength || 3) && array.indexOf(tag) === index;
 				});
 
@@ -43,20 +46,6 @@ module.exports = function(Topics) {
 				});
 			}
 		], callback);
-	};
-
-	Topics.cleanUpTag = function(tag) {
-		if (typeof tag !== 'string' || !tag.length ) {
-			return '';
-		}
-		tag = tag.trim().toLowerCase();
-		tag = tag.replace(/[,\/#!$%\^\*;:{}=_`<>'"~()?\|]/g, '');
-		tag = tag.substr(0, meta.config.maximumTagLength || 15).trim();
-		var matches = tag.match(/^[.-]*(.+?)[.-]*$/);
-		if (matches && matches.length > 1) {
-			tag = matches[1];
-		}
-		return tag;
 	};
 
 	Topics.updateTag = function(tag, data, callback) {

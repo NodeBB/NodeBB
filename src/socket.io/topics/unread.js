@@ -22,6 +22,7 @@ module.exports = function(SocketTopics) {
 			for (var i=0; i<tids.length; ++i) {
 				topics.markTopicNotificationsRead(tids[i], socket.uid);
 			}
+			callback();
 		});
 	};
 

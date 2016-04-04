@@ -27,6 +27,7 @@
     "password-too-long": "Password too long",
     "user-banned": "Vartotojas užblokuotas",
     "user-too-new": "Atsiprašome, jūs įpareigoti palaukti %1 sekunde(s) prieš rašant pirmą pranešimą",
+    "blacklisted-ip": "Sorry, your IP address has been banned from this community. If you feel this is in error, please contact an administrator.",
     "no-category": "Tokios kategorijos nėra",
     "no-topic": "Tokios temos nėra",
     "no-post": "Tokio įrašo nėra",
@@ -50,8 +51,8 @@
     "still-uploading": "Prašome palaukti kol bus baigti visi kėlimai į serverį",
     "file-too-big": "Didžiausias įkelimo dydis yra %1 kB - prašome kelti mažesni failą",
     "guest-upload-disabled": "Guest uploading has been disabled",
-    "already-favourited": "Jums jau patinka šis pranešimas",
-    "already-unfavourited": "Jums jau nebepatinka šis pranešimas",
+    "already-favourited": "You have already bookmarked this post",
+    "already-unfavourited": "You have already unbookmarked this post",
     "cant-ban-other-admins": "Jūs negalite užblokuoti kitų administratorių!",
     "cant-remove-last-admin": "Jūs esate vienintelis administratorius. Pridėkite kitą vartotoja kaip administratorių prieš pašalindamas save",
     "invalid-image-type": "Neteisingas vaizdo tipas. Leidžiami tipai :%1",
@@ -96,5 +97,7 @@
     "wrong-login-type-username": "Prisijungimui prašome naudoti vartotojo vardą",
     "invite-maximum-met": "You have invited the maximum amount of people (%1 out of %2).",
     "no-session-found": "No login session found!",
-    "not-in-room": "User not in room"
+    "not-in-room": "User not in room",
+    "no-users-in-room": "No users in this room",
+    "cant-kick-self": "You can't kick yourself from the group"
 }

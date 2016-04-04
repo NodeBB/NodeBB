@@ -13,10 +13,18 @@ var helpers = require('./helpers');
 var usersController = {};
 
 usersController.getOnlineUsers = function(req, res, next) {
-	usersController.getUsers('users:online', req.uid, req.query.page, function(err, userData) {
+	async.parallel({
+		users: function(next) {
+			usersController.getUsers('users:online', req.uid, req.query.page, next);
+		},
+		guests: function(next) {
+			require('../socket.io/admin/rooms').getTotalGuestCount(next);
+		}
+	}, function(err, results) {
 		if (err) {
 			return next(err);
 		}
+		var userData = results.users;
 		var hiddenCount = 0;
 		if (!userData.isAdminOrGlobalMod) {
 			userData.users = userData.users.filter(function(user) {
@@ -27,7 +35,7 @@ usersController.getOnlineUsers = function(req, res, next) {
 			});
 		}
 
-		userData.anonymousUserCount = require('../socket.io').getOnlineAnonCount() + hiddenCount;
+		userData.anonymousUserCount = results.guests + hiddenCount;
 
 		render(req, res, userData, next);
 	});
@@ -95,7 +103,7 @@ usersController.getUsers = function(set, uid, page, callback) {
 	}
 
 	page = parseInt(page, 10) || 1;
-	var resultsPerPage = parseInt(meta.config.userSearchResultsPerPage, 10) || 20;
+	var resultsPerPage = parseInt(meta.config.userSearchResultsPerPage, 10) || 50;
 	var start = Math.max(0, page - 1) * resultsPerPage;
 	var stop = start + resultsPerPage - 1;
 
@@ -137,7 +145,7 @@ usersController.getUsersAndCount = function(set, uid, start, stop, callback) {
 		count: function(next) {
 			if (set === 'users:online') {
 				var now = Date.now();
-				db.sortedSetCount('users:online', now - 300000, now, next);
+				db.sortedSetCount('users:online', now - 300000, '+inf', next);
 			} else if (set === 'users:banned') {
 				db.sortedSetCard('users:banned', next);
 			} else {

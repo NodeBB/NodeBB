@@ -6,6 +6,7 @@
     "chat.user_typing": "%1 pisze...",
     "chat.user_has_messaged_you": "%1 napisał do Ciebie",
     "chat.see_all": "Zobacz wszystkie rozmowy",
+    "chat.mark_all_read": "Mark all chats read",
     "chat.no-messages": "Wybierz odbiorcę, by wyświetlić historię rozmów.",
     "chat.no-users-in-room": "No users in this room",
     "chat.recent-chats": "Ostatnie rozmowy",

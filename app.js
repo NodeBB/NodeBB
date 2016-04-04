@@ -25,13 +25,11 @@ nconf.argv().env('__');
 
 var url = require('url'),
 	async = require('async'),
-	semver = require('semver'),
 	winston = require('winston'),
 	colors = require('colors'),
 	path = require('path'),
 	pkg = require('./package.json'),
-	file = require('./src/file'),
-	utils = require('./public/src/utils.js');
+	file = require('./src/file');
 
 global.env = process.env.NODE_ENV || 'production';
 
@@ -151,8 +149,7 @@ function start() {
 				meta.reload();
 			break;
 			case 'js-propagate':
-				meta.js.cache = message.cache;
-				meta.js.map = message.map;
+				meta.js.target = message.data;
 				emitter.emit('meta:js.compiled');
 				winston.verbose('[cluster] Client-side javascript and mapping propagated to worker %s', process.pid);
 			break;

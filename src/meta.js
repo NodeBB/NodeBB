@@ -26,6 +26,7 @@ var async = require('async'),
 	require('./meta/tags')(Meta);
 	require('./meta/dependencies')(Meta);
 	Meta.templates = require('./meta/templates');
+	Meta.blacklist = require('./meta/blacklist');
 
 	/* Assorted */
 	Meta.userOrGroupExists = function(slug, callback) {
@@ -60,21 +61,17 @@ var async = require('async'),
 			async.apply(plugins.clearRequireCache),
 			async.apply(plugins.reload),
 			async.apply(plugins.reloadRoutes),
+			async.apply(Meta.js.symlinkModules),
+			async.apply(Meta.css.minify),
+			async.apply(Meta.js.minify, 'nodebb.min.js'),
+			async.apply(Meta.js.minify, 'acp.min.js'),
+			async.apply(Meta.sounds.init),
+			async.apply(Meta.templates.compile),
+			async.apply(auth.reloadRoutes),
 			function(next) {
-				async.parallel([
-					async.apply(Meta.js.symlinkModules),
-					async.apply(Meta.js.minify, 'nodebb.min.js'),
-					async.apply(Meta.js.minify, 'acp.min.js'),
-					async.apply(Meta.css.minify),
-					async.apply(Meta.sounds.init),
-					async.apply(Meta.templates.compile),
-					async.apply(auth.reloadRoutes),
-					function(next) {
-						Meta.config['cache-buster'] = utils.generateUUID();
-						templates.flush();
-						next();
-					}
-				], next);
+				Meta.config['cache-buster'] = utils.generateUUID();
+				templates.flush();
+				next();
 			}
 		], function(err) {
 			if (!err) {

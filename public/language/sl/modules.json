@@ -6,6 +6,7 @@
     "chat.user_typing": "%1 piše sporočilo...",
     "chat.user_has_messaged_you": "%1 ti je napisal/a sporočilo.",
     "chat.see_all": "Poglej vse klepete",
+    "chat.mark_all_read": "Mark all chats read",
     "chat.no-messages": "Za pogled zgodovine klepeta izberi prejemnika",
     "chat.no-users-in-room": "No users in this room",
     "chat.recent-chats": "Zadnji klepeti",

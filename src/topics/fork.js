@@ -1,14 +1,14 @@
 
 'use strict';
 
-var async = require('async'),
-	winston = require('winston'),
-
-	db = require('../database'),
-	user = require('../user'),
-	posts = require('../posts'),
-	privileges = require('../privileges'),
-	plugins = require('../plugins');
+var async = require('async');
+var winston = require('winston');
+var db = require('../database');
+var user = require('../user');
+var posts = require('../posts');
+var privileges = require('../privileges');
+var plugins = require('../plugins');
+var meta = require('../meta');
 
 
 module.exports = function(Topics) {
@@ -18,8 +18,10 @@ module.exports = function(Topics) {
 			title = title.trim();
 		}
 
-		if (!title) {
-			return callback(new Error('[[error:invalid-title]]'));
+		if (title.length < parseInt(meta.config.minimumTitleLength, 10)) {
+			return callback(new Error('[[error:title-too-short, ' + meta.config.minimumTitleLength + ']]'));
+		} else if (title.length > parseInt(meta.config.maximumTitleLength, 10)) {
+			return callback(new Error('[[error:title-too-long, ' + meta.config.maximumTitleLength + ']]'));
 		}
 
 		if (!pids || !pids.length) {

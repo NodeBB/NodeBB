@@ -102,7 +102,7 @@
 </div>
 
 <div class="row">
-	<div class="col-sm-2 col-xs-12 settings-header">Miscellaneous</div>
+	<div class="col-sm-2 col-xs-12 settings-header">Outgoing Links</div>
 	<div class="col-sm-10 col-xs-12">
 		<form>
 			<div class="checkbox">
@@ -111,13 +111,6 @@
 					<span class="mdl-switch__label"><strong>Use Outgoing Links Warning Page</strong></span>
 				</label>
 			</div>
-			<div class="checkbox">
-				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
-					<input type="checkbox" class="mdl-switch__input" id="showSiteTitle" data-field="disableSocialButtons">
-					<span class="mdl-switch__label"><strong>Disable social buttons</strong></span>
-				</label>
-			</div>
-
 		</form>
 	</div>
 </div>

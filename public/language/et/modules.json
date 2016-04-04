@@ -6,6 +6,7 @@
     "chat.user_typing": "%1 kirjutab sõnumit...",
     "chat.user_has_messaged_you": "%1 saatis sulle sõnumi.",
     "chat.see_all": "Vaata kõiki vestluseid",
+    "chat.mark_all_read": "Mark all chats read",
     "chat.no-messages": "Vali sõnumisaaja, et vaadata sõnumite ajalugu.",
     "chat.no-users-in-room": "Ühtki kasutajat selles ruumis",
     "chat.recent-chats": "Hiljutised vestlused",

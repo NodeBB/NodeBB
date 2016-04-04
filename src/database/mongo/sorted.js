@@ -37,7 +37,7 @@ module.exports = function(db, module) {
 			bulk.find({_key: key, value: values[i]}).upsert().updateOne({$set: {score: parseInt(scores[i], 10)}});
 		}
 
-		bulk.execute(function(err, result) {
+		bulk.execute(function(err) {
 			callback(err);
 		});
 	}
@@ -55,7 +55,7 @@ module.exports = function(db, module) {
 			bulk.find({_key: keys[i], value: value}).upsert().updateOne({$set: {score: parseInt(score, 10)}});
 		}
 
-		bulk.execute(function(err, result) {
+		bulk.execute(function(err) {
 			callback(err);
 		});
 	};
@@ -85,7 +85,7 @@ module.exports = function(db, module) {
 		}
 		value = helpers.valueToString(value);
 
-		db.collection('objects').remove({_key: {$in: keys}, value: value}, function(err, res) {
+		db.collection('objects').remove({_key: {$in: keys}, value: value}, function(err) {
 			callback(err);
 		});
 	};
@@ -95,7 +95,17 @@ module.exports = function(db, module) {
 		if (!Array.isArray(keys) || !keys.length) {
 			return callback();
 		}
-		db.collection('objects').remove({_key: {$in: keys}, score: {$lte: max, $gte: min}}, function(err) {
+		var query = {_key: {$in: keys}};
+
+		if (min !== '-inf') {
+			query.score = {$gte: min};
+		}
+		if (max !== '+inf') {
+			query.score = query.score || {};
+			query.score.$lte = max;
+		}
+
+		db.collection('objects').remove(query, function(err) {
 			callback(err);
 		});
 	};
@@ -125,6 +135,11 @@ module.exports = function(db, module) {
 		if (withScores) {
 			fields.score = 1;
 		}
+
+		if (Array.isArray(key)) {
+			key = {$in: key};
+		}
+
 		db.collection('objects').find({_key: key}, {fields: fields})
 			.limit(stop - start + 1)
 			.skip(start)
@@ -168,12 +183,14 @@ module.exports = function(db, module) {
 			count = 0;
 		}
 
-		var scoreQuery = {};
+		var query = {_key: key};
+
 		if (min !== '-inf') {
-			scoreQuery.$gte = min;
+			query.score = {$gte: min};
 		}
 		if (max !== '+inf') {
-			scoreQuery.$lte = max;
+			query.score = query.score || {};
+			query.score.$lte = max;
 		}
 
 		var fields = {_id: 0, value: 1};
@@ -181,7 +198,7 @@ module.exports = function(db, module) {
 			fields.score = 1;
 		}
 
-		db.collection('objects').find({_key:key, score: scoreQuery}, {fields: fields})
+		db.collection('objects').find(query, {fields: fields})
 			.limit(count)
 			.skip(start)
 			.sort({score: sort})
@@ -459,6 +476,7 @@ module.exports = function(db, module) {
 		getSortedSetUnion(sets, -1, start, stop, callback);
 	};
 
+
 	function getSortedSetUnion(sets, sort, start, stop, callback) {
 		if (!Array.isArray(sets) || !sets.length) {
 			return callback();
@@ -506,6 +524,13 @@ module.exports = function(db, module) {
 		data.score = parseInt(increment, 10);
 
 		db.collection('objects').findAndModify({_key: key, value: value}, {}, {$inc: data}, {new: true, upsert: true}, function(err, result) {
+			// if there is duplicate key error retry the upsert
+			// https://github.com/NodeBB/NodeBB/issues/4467
+			// https://jira.mongodb.org/browse/SERVER-14322
+			// https://docs.mongodb.org/manual/reference/command/findAndModify/#upsert-and-unique-index
+			if (err && err.message.startsWith('E11000 duplicate key error')) {
+				return module.sortedSetIncrBy(key, increment, value, callback);
+			}
 			callback(err, result && result.value ? result.value.score : null);
 		});
 	};
@@ -532,5 +557,42 @@ module.exports = function(db, module) {
 				});
 				callback(err, data);
 		});
+	};
+
+	module.processSortedSet = function(setKey, process, batch, callback) {
+		var done = false;
+		var ids = [];
+		var cursor = db.collection('objects').find({_key: setKey})
+			.sort({score: 1})
+			.project({_id: 0, value: 1})
+			.batchSize(batch);
+
+		async.whilst(
+			function() {
+				return !done;
+			},
+			function(next) {
+				cursor.next(function(err, item) {
+					if (err) {
+						return next(err);
+					}
+					if (item === null) {
+						done = true;
+					} else {
+						ids.push(item.value);
+					}
+
+					if (ids.length < batch && (!done || ids.length === 0)) {
+						return next(null);
+					}
+
+					process(ids, function(err) {
+						ids = [];
+						return next(err);
+					});
+				});
+			},
+			callback
+		);
 	};
 };

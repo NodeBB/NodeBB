@@ -17,17 +17,20 @@ module.exports = function(grunt) {
 			args.push('--log-level=info');
 		}
 		
-		if (target === 'lessUpdated') {
-			fromFile = ['js','tpl'];
-			compiling = 'less';
+		if (target === 'lessUpdated_Client') {
+			fromFile = ['js', 'tpl', 'acpLess'];
+			compiling = 'clientLess';
+		} else if (target === 'lessUpdated_Admin') {
+			fromFile = ['js', 'tpl', 'clientLess'];
+			compiling = 'acpLess';
 		} else if (target === 'clientUpdated') {
-			fromFile = ['less','tpl'];
+			fromFile = ['clientLess', 'acpLess', 'tpl'];
 			compiling = 'js';
 		} else if (target === 'templatesUpdated') {
-			fromFile = ['js','less'];
+			fromFile = ['js', 'clientLess', 'acpLess'];
 			compiling = 'tpl';
 		} else if (target === 'serverUpdated') {
-			fromFile = ['less','js','tpl'];
+			fromFile = ['clientLess', 'acpLess', 'js', 'tpl'];
 		}
 
 		fromFile = fromFile.filter(function(ext) {
@@ -53,17 +56,36 @@ module.exports = function(grunt) {
 
 	grunt.initConfig({
 		watch: {
-			lessUpdated: {
-				files: ['public/**/*.less', 'node_modules/nodebb-*/*.less', 'node_modules/nodebb-*/*/*.less', 'node_modules/nodebb-*/*/*/*.less', 'node_modules/nodebb-*/*/*/*/*.less']
+			lessUpdated_Client: {
+				files: [
+					'public/*.less',
+					'node_modules/nodebb-*/*.less', 'node_modules/nodebb-*/**/*.less',
+					'!node_modules/nodebb-*/node_modules/**',
+					'!node_modules/nodebb-*/.git/**'
+				]
+			},
+			lessUpdated_Admin: {
+				files: ['public/**/*.less']
 			},
 			clientUpdated: {
-				files: ['public/src/**/*.js', '!public/src/modules/*.js', 'node_modules/nodebb-*/*.js', 'node_modules/nodebb-*/*/*.js', 'node_modules/nodebb-*/*/*/*.js', 'node_modules/nodebb-*/*/*/*/*.js', 'node_modules/templates.js/lib/templates.js']
+				files: [
+					'public/src/**/*.js',
+					'node_modules/nodebb-*/*.js', 'node_modules/nodebb-*/**/*.js',
+					'!node_modules/nodebb-*/node_modules/**',
+					'node_modules/templates.js/lib/templates.js',
+					'!node_modules/nodebb-*/.git/**'
+				]
 			},
 			serverUpdated: {
 				files: ['*.js', 'install/*.js', 'src/**/*.js']
 			},
 			templatesUpdated: {
-				files: ['src/views/**/*.tpl', 'node_modules/nodebb-*/*.tpl', 'node_modules/nodebb-*/*/*.tpl', 'node_modules/nodebb-*/*/*/*.tpl', 'node_modules/nodebb-*/*/*/*/*.tpl', 'node_modules/nodebb-*/*/*/*/*/*.tpl']
+				files: [
+					'src/views/**/*.tpl',
+					'node_modules/nodebb-*/*.tpl', 'node_modules/nodebb-*/**/*.tpl',
+					'!node_modules/nodebb-*/node_modules/**',
+					'!node_modules/nodebb-*/.git/**'
+				]
 			}
 		}
 	});
