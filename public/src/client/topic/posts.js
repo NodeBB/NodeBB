@@ -316,7 +316,7 @@ define('forum/topic/posts', [
 		posts.find('[component="post/content"] img:not(.emoji)').each(function() {
 			var $this = $(this);
 			if (!$this.parent().is('a')) {
-				$this.wrap('<a href="' + $this.attr('src') + '" target="_blank">');
+				$this.wrap($('<a target="_blank">').attr('href', $this.attr('data-src')));
 			}
 		});
 	};
