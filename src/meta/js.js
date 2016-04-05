@@ -90,7 +90,6 @@ module.exports = function(Meta) {
 
 	Meta.js.bridgeModules = function(app, callback) {
 		// Add routes for AMD-type modules to serve those files
-		console.log('bridging modules:', Meta.js.scripts.modules);
 		var numBridged = 0;
 
 		async.series([
