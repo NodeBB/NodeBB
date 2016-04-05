@@ -6,7 +6,6 @@ var winston = require('winston'),
 	async = require('async'),
 	nconf = require('nconf'),
 	fs = require('fs'),
-	rimraf = require('rimraf'),
 	file = require('../file'),
 	plugins = require('../plugins'),
 	emitter = require('../emitter'),
@@ -79,7 +78,7 @@ module.exports = function(Meta) {
 				'public/src/modules/string.js'
 			],
 
-			// modules listed below are symlinked to public/src/modules so they can be defined anonymously
+			// modules listed below are routed through express (/src/modules) so they can be defined anonymously
 			modules: [
 				'./node_modules/chart.js/Chart.js',
 				'./node_modules/mousetrap/mousetrap.js',
@@ -89,38 +88,30 @@ module.exports = function(Meta) {
 		}
 	};
 
-	Meta.js.symlinkModules = function(callback) {
-		// Symlink all defined modules to /public/src/modules
-		var modulesLoaded = 0,
-			targetPath;
+	Meta.js.bridgeModules = function(app, callback) {
+		// Add routes for AMD-type modules to serve those files
+		console.log('bridging modules:', Meta.js.scripts.modules);
+		var numBridged = 0;
 
 		async.series([
 			function(next) {
 				async.each(Meta.js.scripts.modules, function(localPath, next) {
-					targetPath = path.join(__dirname, '../../public/src/modules', path.basename(localPath));
-
-					async.waterfall([
-						async.apply(fs.access, localPath, fs.R_OK),
-						async.apply(rimraf, targetPath),
-						async.apply(fs.link, localPath, targetPath)
-					], function(err) {
-						if (err) {
-							winston.error('[meta/js] Could not symlink `' + localPath + '` to modules folder');
-						} else {
-							winston.verbose('[meta/js] Symlinked `' + localPath + '` to modules folder');
-							++modulesLoaded;
-						}
-
-						next(err);
+					app.get(path.join('/src/modules/', path.basename(localPath)), function(req, res) {
+						return res.sendFile(path.join(__dirname, '../../', localPath), {
+							maxAge: app.enabled('cache') ? 5184000000 : 0
+						});
 					});
+
+					++numBridged;
+					next();
 				}, next);
 			}
 		], function(err) {
 			if (err) {
-				winston.error('[meta/js] Encountered error while symlinking modules:' + err.message);
+				winston.error('[meta/js] Encountered error while bridging modules:' + err.message);
 			}
 
-			winston.verbose('[meta/js] ' + modulesLoaded + ' of ' + Meta.js.scripts.modules.length + ' modules symlinked');
+			winston.verbose('[meta/js] ' + numBridged + ' of ' + Meta.js.scripts.modules.length + ' modules bridged');
 			callback(err);
 		});
 	};
