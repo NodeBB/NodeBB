@@ -118,6 +118,8 @@ define('forum/topic/events', [
 			editedPostEl.find('img:not(.not-responsive)').addClass('img-responsive');
 			app.replaceSelfLinks(editedPostEl.find('a'));
 			posts.wrapImagesInLinks(editedPostEl.parent());
+			posts.unloadImages(editedPostEl.parent());
+			posts.loadImages();
 			editedPostEl.fadeIn(250);
 			$(window).trigger('action:posts.edited', data);
 		});

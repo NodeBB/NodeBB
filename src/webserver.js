@@ -85,7 +85,7 @@ function initializeNodeBB(callback) {
 			plugins.init(app, middleware, next);
 		},
 		function(next) {
-			async.parallel([
+			async.series([
 				async.apply(meta.templates.compile),
 				async.apply(!skipJS ? meta.js.minify : meta.js.getFromFile, 'nodebb.min.js'),
 				async.apply(!skipJS ? meta.js.minify : meta.js.getFromFile, 'acp.min.js'),

@@ -11,7 +11,7 @@ define('forum/topic/posts', [
 ], function(pagination, infinitescroll, postTools, navigator, components) {
 
 	var Posts = {
-		_threshold: 0
+		_imageLoaderTimeout: undefined
 	};
 
 	Posts.onNewPost = function(data) {
@@ -181,10 +181,13 @@ define('forum/topic/posts', [
 	}
 
 	Posts.loadMorePosts = function(direction) {
-		if (!components.get('topic').length || navigator.scrollActive) {
+		if (!components.get('topic').length || navigator.scrollActive || Posts._infiniteScrollTimeout) {
 			return;
 		}
 
+		Posts._infiniteScrollTimeout = setTimeout(function() {
+			delete Posts._infiniteScrollTimeout;
+		}, 1000);
 		var replies = components.get('post').not('[data-index=0]').not('.new');
 		var afterEl = direction > 0 ? replies.last() : replies.first();
 		var after = parseInt(afterEl.attr('data-index'), 10) || 0;
@@ -204,7 +207,6 @@ define('forum/topic/posts', [
 			after: after,
 			direction: direction
 		}, function (data, done) {
-
 			indicatorEl.fadeOut();
 
 			if (data && data.posts && data.posts.length) {
@@ -235,78 +237,79 @@ define('forum/topic/posts', [
 	};
 
 	Posts.unloadImages = function(posts) {
-		var images = posts.find('[component="post/content"] img:not(.not-responsive)'),
-			scrollTop = $(window).scrollTop(),
-			height = $(document).height();
+		var images = posts.find('[component="post/content"] img:not(.not-responsive)');
 
 		images.each(function() {
 			$(this).attr('data-src', $(this).attr('src'));
 			$(this).attr('data-state', 'unloaded');
-			$(this).attr('src', 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7');
+			$(this).attr('src', 'about:blank');
 		});
-
-		$(window).scrollTop(scrollTop + $(document).height() - height);
 	};
 
 	Posts.loadImages = function(threshold) {
-		/*
-			If threshold is defined, images loaded above this threshold will modify
-			the user's scroll position so they are not scrolled away from content
-			they were reading. Images loaded below this threshold will push down content.
+		if (Posts._imageLoaderTimeout) {
+			clearTimeout(Posts._imageLoaderTimeout);
+		}
 
-			If no threshold is defined, loaded images will push down content, as per
-			default
-		*/
-		Posts._threshold = threshold;
+		Posts._imageLoaderTimeout = setTimeout(function() {
+			/*
+				If threshold is defined, images loaded above this threshold will modify
+				the user's scroll position so they are not scrolled away from content
+				they were reading. Images loaded below this threshold will push down content.
 
-		var images = components.get('post/content').find('img[data-state="unloaded"]'),
-			visible = images.filter(function() {
-				return utils.isElementInViewport(this);
-			}),
-			scrollTop = $(window).scrollTop(),
-			adjusting = false,
-			adjustQueue = [],
-			adjustPosition = function() {
-				adjusting = true;
-				oldHeight = document.body.clientHeight;
+				If no threshold is defined, loaded images will push down content, as per
+				default
+			*/
 
-				// Display the image
-				$(this).attr('data-state', 'loaded');
-				newHeight = document.body.clientHeight;
+			var images = components.get('post/content').find('img[data-state="unloaded"]'),
+				visible = images.filter(function() {
+					return utils.isElementInViewport(this);
+				}),
+				scrollTop = $(window).scrollTop(),
+				adjusting = false,
+				adjustQueue = [],
+				adjustPosition = function() {
+					adjusting = true;
+					oldHeight = document.body.clientHeight;
 
-				var imageRect = this.getBoundingClientRect();
-				if (imageRect.top < Posts._threshold) {
-					scrollTop = scrollTop + (newHeight - oldHeight);
-					$(window).scrollTop(scrollTop);
+					// Display the image
+					$(this).attr('data-state', 'loaded');
+					newHeight = document.body.clientHeight;
+
+					var imageRect = this.getBoundingClientRect();
+					if (imageRect.top < threshold) {
+						scrollTop = scrollTop + (newHeight - oldHeight);
+						$(window).scrollTop(scrollTop);
+					}
+
+					if (adjustQueue.length) {
+						adjustQueue.pop()();
+					} else {
+						adjusting = false;
+					}
+				},
+				oldHeight, newHeight;
+
+			// For each image, reset the source and adjust scrollTop when loaded
+			visible.attr('data-state', 'loading');
+			visible.each(function(index, image) {
+				image = $(image);
+
+				image.on('load', function() {
+					if (!adjusting) {
+						adjustPosition.call(this);
+					} else {
+						adjustQueue.push(adjustPosition.bind(this));
+					}
+				});
+
+				image.attr('src', image.attr('data-src'));
+				if (image.parent().attr('href') === 'about:blank') {
+					image.parent().attr('href', image.attr('data-src'));
 				}
-
-				if (adjustQueue.length) {
-					adjustQueue.pop()();
-				} else {
-					adjusting = false;
-				}
-			},
-			oldHeight, newHeight;
-
-		// For each image, reset the source and adjust scrollTop when loaded
-		visible.attr('data-state', 'loading');
-		visible.each(function(index, image) {
-			image = $(image);
-
-			image.on('load', function() {
-				if (!adjusting) {
-					adjustPosition.call(this);
-				} else {
-					adjustQueue.push(adjustPosition.bind(this));
-				}
+				image.removeAttr('data-src');
 			});
-
-			image.attr('src', image.attr('data-src'));
-			if (image.parent().attr('href')) {
-				image.parent().attr('href', image.attr('data-src'));
-			}
-			image.removeAttr('data-src');
-		});
+		}, 250);
 	};
 
 	Posts.wrapImagesInLinks = function(posts) {
@@ -321,13 +324,10 @@ define('forum/topic/posts', [
 	Posts.showBottomPostBar = function() {
 		var mainPost = components.get('post', 'index', 0);
 		var posts = $('[component="post"]');
-		var height = $(document).height();
 		if (!!mainPost.length && posts.length > 1 && $('.post-bar').length < 2) {
 			$('.post-bar').clone().appendTo(mainPost);
-			$(window).scrollTop($(window).scrollTop() + $(document).height() - height);
 		} else if (mainPost.length && posts.length < 2) {
 			mainPost.find('.post-bar').remove();
-			$(window).scrollTop($(window).scrollTop() - $(document).height() - height);
 		}
 	};
 

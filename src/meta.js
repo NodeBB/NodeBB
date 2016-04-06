@@ -61,20 +61,16 @@ var async = require('async'),
 			async.apply(plugins.clearRequireCache),
 			async.apply(plugins.reload),
 			async.apply(plugins.reloadRoutes),
+			async.apply(Meta.css.minify),
+			async.apply(Meta.js.minify, 'nodebb.min.js'),
+			async.apply(Meta.js.minify, 'acp.min.js'),
+			async.apply(Meta.sounds.init),
+			async.apply(Meta.templates.compile),
+			async.apply(auth.reloadRoutes),
 			function(next) {
-				async.parallel([
-					async.apply(Meta.js.minify, 'nodebb.min.js'),
-					async.apply(Meta.js.minify, 'acp.min.js'),
-					async.apply(Meta.css.minify),
-					async.apply(Meta.sounds.init),
-					async.apply(Meta.templates.compile),
-					async.apply(auth.reloadRoutes),
-					function(next) {
-						Meta.config['cache-buster'] = utils.generateUUID();
-						templates.flush();
-						next();
-					}
-				], next);
+				Meta.config['cache-buster'] = utils.generateUUID();
+				templates.flush();
+				next();
 			}
 		], function(err) {
 			if (!err) {

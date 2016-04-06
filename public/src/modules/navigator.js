@@ -121,20 +121,24 @@ define('navigator', ['forum/pagination', 'components'], function(pagination, com
 			}
 		});
 
+		var atTop = scrollTop === 0 && parseInt(els.first().attr('data-index'), 10) === 0,
+			nearBottom = scrollTop + windowHeight > documentHeight - 100 && parseInt(els.last().attr('data-index'), 10) === count - 1;
 
-		// check if we are at the top
-		if (scrollTop === 0 && parseInt(els.first().attr('data-index'), 10) === 0) {
+		if (atTop) {
 			index = 1;
-		// check if we are near the bottom
-		} else if (scrollTop + windowHeight > documentHeight - 100 && parseInt(els.last().attr('data-index'), 10) === count - 1) {
+		} else if (nearBottom) {
 			index = count;
 		}
 
 		// If a threshold is undefined, try to determine one based on new index
 		if (threshold === undefined) {
-			var anchorEl = components.get('post/anchor', index - 1);
-			var anchorRect = anchorEl.get(0).getBoundingClientRect();
-			threshold = anchorRect.top;
+			if (atTop) {
+				threshold = 0;
+			} else {
+				var anchorEl = components.get('post/anchor', index - 1);
+				var anchorRect = anchorEl.get(0).getBoundingClientRect();
+				threshold = anchorRect.top;
+			}
 		}
 
 		if (typeof navigator.callback === 'function') {

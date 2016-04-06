@@ -109,6 +109,7 @@
 	"cant-remove-last-user": "You can't remove the last user",
 	"cant-delete-chat-message": "You are not allowed to delete this message",
 
+	"already-voting-for-this-post": "You have already voted for this post.",
 	"reputation-system-disabled": "Reputation system is disabled.",
 	"downvoting-disabled": "Downvoting is disabled",
 	"not-enough-reputation-to-downvote": "You do not have enough reputation to downvote this post",

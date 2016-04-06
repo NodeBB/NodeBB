@@ -1,6 +1,6 @@
 {
-    "uploading-file": "Uploading the file...",
-    "select-file-to-upload": "Select a file to upload!",
-    "upload-success": "File uploaded successfully!",
-    "maximum-file-size": "Maximum %1 kb"
+    "uploading-file": "Dosya yükleniyor...",
+    "select-file-to-upload": "Bir dosya seç!",
+    "upload-success": "Dosya yüklenmesi tamamlandı!",
+    "maximum-file-size": "Maksimum %1 kb"
 }

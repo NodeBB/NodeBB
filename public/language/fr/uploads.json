@@ -1,6 +1,6 @@
 {
-    "uploading-file": "Uploading the file...",
-    "select-file-to-upload": "Select a file to upload!",
-    "upload-success": "File uploaded successfully!",
-    "maximum-file-size": "Maximum %1 kb"
+    "uploading-file": "Envoi du fichier…",
+    "select-file-to-upload": "Sélectionnez un ficher à envoyer",
+    "upload-success": "Fichier envoyé",
+    "maximum-file-size": "%1 Ko maximum"
 }

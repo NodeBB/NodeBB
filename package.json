@@ -86,7 +86,7 @@
   },
   "devDependencies": {
     "grunt": "~0.4.5",
-    "grunt-contrib-watch": "^0.6.1",
+    "grunt-contrib-watch": "^1.0.0",
     "istanbul": "^0.4.2",
     "mocha": "~1.13.0"
   },
