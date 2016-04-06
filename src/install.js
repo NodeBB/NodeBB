@@ -441,7 +441,7 @@ function enableDefaultPlugins(next) {
 			'nodebb-rewards-essentials',
 			'nodebb-plugin-soundpack-default',
 			'nodebb-plugin-emoji-extended',
-			'nodebb-plugin-emoji-apple'
+			'nodebb-plugin-emoji-one'
 		],
 		customDefaults = nconf.get('defaultPlugins');
 
