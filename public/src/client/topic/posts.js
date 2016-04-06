@@ -304,7 +304,7 @@ define('forum/topic/posts', [
 				});
 
 				image.attr('src', image.attr('data-src'));
-				if (image.parent().attr('href')) {
+				if (image.parent().attr('href') === 'about:blank') {
 					image.parent().attr('href', image.attr('data-src'));
 				}
 				image.removeAttr('data-src');
