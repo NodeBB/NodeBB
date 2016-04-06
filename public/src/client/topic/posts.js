@@ -304,9 +304,6 @@ define('forum/topic/posts', [
 				});
 
 				image.attr('src', image.attr('data-src'));
-				if (image.parent().attr('href')) {
-					image.parent().attr('href', image.attr('data-src'));
-				}
 				image.removeAttr('data-src');
 			});
 		}, 250);
@@ -316,7 +313,7 @@ define('forum/topic/posts', [
 		posts.find('[component="post/content"] img:not(.emoji)').each(function() {
 			var $this = $(this);
 			if (!$this.parent().is('a')) {
-				$this.wrap('<a href="' + $this.attr('src') + '" target="_blank">');
+				$this.wrap($('<a target="_blank">').attr('href', $this.attr('data-src')));
 			}
 		});
 	};
