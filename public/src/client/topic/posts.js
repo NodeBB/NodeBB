@@ -263,7 +263,7 @@ define('forum/topic/posts', [
 
 			var images = components.get('post/content').find('img[data-state="unloaded"]'),
 				visible = images.filter(function() {
-					return utils.isElementInViewport(this);
+					return config.delayImageLoading ? utils.isElementInViewport(this) : true;
 				}),
 				scrollTop = $(window).scrollTop(),
 				adjusting = false,
