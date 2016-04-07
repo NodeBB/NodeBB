@@ -60,6 +60,7 @@ apiController.getConfig = function(req, res, next) {
 	config.csrf_token = req.csrfToken();
 	config.searchEnabled = plugins.hasListeners('filter:search.query');
 	config.bootswatchSkin = 'default';
+	config.bookmarkThreshold = parseInt(meta.config.bookmarkThreshold, 10) || 5;
 
 	async.waterfall([
 		function (next) {
