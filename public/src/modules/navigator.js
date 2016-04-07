@@ -131,7 +131,7 @@ define('navigator', ['forum/pagination', 'components'], function(pagination, com
 		}
 
 		// If a threshold is undefined, try to determine one based on new index
-		if (threshold === undefined) {
+		if (threshold === undefined && ajaxify.data.template.topic === true) {
 			if (atTop) {
 				threshold = 0;
 			} else {
