@@ -6,7 +6,7 @@ var categories = require('../../categories');
 var privileges = require('../../privileges');
 var analytics = require('../../analytics');
 var plugins = require('../../plugins');
-var translator = require('../../../public/src/modules/translator')
+var translator = require('../../../public/src/modules/translator');
 
 
 var categoriesController = {};
@@ -19,12 +19,17 @@ categoriesController.get = function(req, res, next) {
 		if (err) {
 			return next(err);
 		}
+		var category = data.category[0];
 
-		plugins.fireHook('filter:admin.category.get', { req: req, res: res, category: data.category[0], privileges: data.privileges }, function(err, data) {
+		if (!category) {
+			return next();
+		}
+
+		plugins.fireHook('filter:admin.category.get', { req: req, res: res, category: category, privileges: data.privileges }, function(err, data) {
 			if (err) {
 				return next(err);
 			}
-			data.category.name = translator.escape(data.category.name);
+			data.category.name = translator.escape(String(data.category.name));
 			res.render('admin/manage/category', {
 				category: data.category,
 				privileges: data.privileges
