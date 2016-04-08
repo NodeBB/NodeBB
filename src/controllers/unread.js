@@ -12,11 +12,17 @@ var plugins = require('../plugins');
 
 var unreadController = {};
 
+var validFilter = {'': true, 'new': true};
+
 unreadController.get = function(req, res, next) {
 	var stop = (parseInt(meta.config.topicsPerList, 10) || 20) - 1;
 	var results;
 	var cid = req.query.cid;
-	var seen = !req.query.unseen;
+	var filter = req.params.filter || '';
+
+	if (!validFilter[filter]) {
+		return next();
+	}
 
 	async.waterfall([
 		function(next) {
@@ -25,7 +31,7 @@ unreadController.get = function(req, res, next) {
 					user.getWatchedCategories(req.uid, next);
 				},
 				unreadTopics: function(next) {
-					topics.getUnreadTopics(cid, req.uid, 0, stop, seen, next);
+					topics.getUnreadTopics(cid, req.uid, 0, stop, filter, next);
 				}
 			}, next);
 		},
@@ -65,7 +71,13 @@ unreadController.get = function(req, res, next) {
 
 
 unreadController.unreadTotal = function(req, res, next) {
-	topics.getTotalUnread(req.uid, !req.query.unseen, function (err, data) {
+	var filter = req.params.filter || '';
+
+	if (!validFilter[filter]) {
+		return next();
+	}
+
+	topics.getTotalUnread(req.uid, filter, function (err, data) {
 		if (err) {
 			return next(err);
 		}

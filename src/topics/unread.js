@@ -14,21 +14,21 @@ var utils = require('../../public/src/utils');
 
 module.exports = function(Topics) {
 
-	Topics.getTotalUnread = function(uid, allowSeen, callback) {
+	Topics.getTotalUnread = function(uid, filter, callback) {
 		if (!callback) {
-			callback = allowSeen;
-			allowSeen = true;
+			callback = filter;
+			filter = '';
 		}
 
-		Topics.getUnreadTids(0, uid, 0, 99, allowSeen, function(err, tids) {
+		Topics.getUnreadTids(0, uid, 0, 99, filter, function(err, tids) {
 			callback(err, tids ? tids.length : 0);
 		});
 	};
 
-	Topics.getUnreadTopics = function(cid, uid, start, stop, allowSeen, callback) {
+	Topics.getUnreadTopics = function(cid, uid, start, stop, filter, callback) {
 		if (!callback) {
-			callback = allowSeen;
-			allowSeen = true;
+			callback = filter;
+			filter = '';
 		}
 
 
@@ -40,7 +40,7 @@ module.exports = function(Topics) {
 
 		async.waterfall([
 			function(next) {
-				Topics.getUnreadTids(cid, uid, start, stop, allowSeen, next);
+				Topics.getUnreadTids(cid, uid, start, stop, filter, next);
 			},
 			function(tids, next) {
 				if (!tids.length) {
@@ -64,10 +64,10 @@ module.exports = function(Topics) {
 		return Date.now() - (parseInt(meta.config.unreadCutoff, 10) || 2) * 86400000;
 	};
 
-	Topics.getUnreadTids = function(cid, uid, start, stop, allowSeen, callback) {
+	Topics.getUnreadTids = function(cid, uid, start, stop, filter, callback) {
 		if (!callback) {
-			callback = allowSeen;
-			allowSeen = true;
+			callback = filter;
+			filter = '';
 		}
 
 		uid = parseInt(uid, 10);
@@ -110,7 +110,12 @@ module.exports = function(Topics) {
 			});
 
 			var tids = results.recentTids.filter(function(recentTopic) {
-				return !userRead[recentTopic.value] || allowSeen && recentTopic.score > userRead[recentTopic.value];
+				switch (filter) {
+					default:
+						return !userRead[recentTopic.value] || recentTopic.score > userRead[recentTopic.value];
+					case 'new':
+						return !userRead[recentTopic.value];
+				}
 			}).map(function(topic) {
 				return topic.value;
 			}).filter(function(tid, index, array) {
