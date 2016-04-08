@@ -80,7 +80,7 @@ SocketHelpers.sendNotificationToPostOwner = function(pid, fromuid, notification)
 				pid: pid,
 				nid: 'post:' + pid + ':uid:' + fromuid,
 				from: fromuid,
-				mergeId: notification + '|' + postData.tid,
+				mergeId: notification + '|' + pid,
 				topicTitle: results.topicTitle
 			}, function(err, notification) {
 				if (!err && notification) {
