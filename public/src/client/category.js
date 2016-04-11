@@ -171,8 +171,7 @@ define('forum/category', [
 
 	function enableInfiniteLoadingOrPagination() {
 		if (!config.usePagination) {
-			if ($(document.body).height() < $(window).height() &&
-				  ajaxify.data.topic_count > config.topicsPerPage) {
+			if ($(document.body).height() < $(window).height() && ajaxify.data.topic_count > config.topicsPerPage) {
 				$('#load-more-btn').removeClass('hide').on('click', function() {
 					Category.loadMoreTopics(1);
 					$(this).addClass('hide').off();
