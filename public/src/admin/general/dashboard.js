@@ -1,7 +1,7 @@
 "use strict";
-/*global define, ajaxify, app, socket, utils, bootbox, Chart, RELATIVE_PATH*/
+/*global define, ajaxify, app, socket, utils, bootbox, RELATIVE_PATH*/
 
-define('admin/general/dashboard', ['semver'], function(semver) {
+define('admin/general/dashboard', ['semver', 'Chart'], function(semver, Chart) {
 	var	Admin = {},
 		intervals = {
 			rooms: false,

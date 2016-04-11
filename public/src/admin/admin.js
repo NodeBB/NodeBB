@@ -1,5 +1,5 @@
 "use strict";
-/*global config, translator, componentHandler, define, socket, app, ajaxify, utils, bootbox, Mousetrap, Hammer, Slideout, RELATIVE_PATH*/
+/*global config, translator, componentHandler, define, socket, app, ajaxify, utils, bootbox, Slideout, RELATIVE_PATH*/
 
 (function() {
 	$(document).ready(function() {
@@ -32,20 +32,22 @@
 	});
 
 	function setupKeybindings() {
-		Mousetrap.bind('ctrl+shift+a r', function() {
-			require(['admin/modules/instance'], function(instance) {
-				instance.reload();
+		require(['mousetrap'], function(mousetrap) {
+			mousetrap.bind('ctrl+shift+a r', function() {
+				require(['admin/modules/instance'], function(instance) {
+					instance.reload();
+				});
 			});
-		});
 
-		Mousetrap.bind('ctrl+shift+a R', function() {
-			socket.emit('admin.restart');
-		});
+			mousetrap.bind('ctrl+shift+a R', function() {
+				socket.emit('admin.restart');
+			});
 
-		Mousetrap.bind('/', function(e) {
-			$('#acp-search input').focus();
+			mousetrap.bind('/', function(e) {
+				$('#acp-search input').focus();
 
-			return false;
+				return false;
+			});
 		});
 	}
 

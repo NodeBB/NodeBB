@@ -1,12 +1,13 @@
 "use strict";
-/*global config, define, app, socket, ajaxify, bootbox, templates, Chart, utils */
+/*global config, define, app, socket, ajaxify, bootbox, templates */
 
 define('admin/manage/category', [
 	'uploader',
 	'iconSelect',
 	'admin/modules/colorpicker',
-	'autocomplete'
-], function(uploader, iconSelect, colorpicker, autocomplete) {
+	'autocomplete',
+	'Chart'
+], function(uploader, iconSelect, colorpicker, autocomplete, Chart) {
 	var	Category = {};
 
 	Category.init = function() {

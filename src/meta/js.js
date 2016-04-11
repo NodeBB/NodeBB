@@ -30,8 +30,6 @@ module.exports = function(Meta) {
 				'public/vendor/tinycon/tinycon.js',
 				'public/vendor/xregexp/xregexp.js',
 				'public/vendor/xregexp/unicode/unicode-base.js',
-				'public/vendor/buzz/buzz.min.js',
-				'public/vendor/mousetrap/mousetrap.js',
 				'public/vendor/autosize.js',
 				'./node_modules/templates.js/lib/templates.js',
 				'public/src/utils.js',
@@ -42,6 +40,8 @@ module.exports = function(Meta) {
 				'public/src/variables.js',
 				'public/src/widgets.js'
 			],
+
+			// files listed below are only available client-side, or are bundled in to reduce # of network requests on cold load
 			rjs: [
 				'public/src/client/footer.js',
 				'public/src/client/chats.js',
@@ -76,8 +76,43 @@ module.exports = function(Meta) {
 				'public/src/modules/helpers.js',
 				'public/src/modules/sounds.js',
 				'public/src/modules/string.js'
+			],
+
+			// modules listed below are routed through express (/src/modules) so they can be defined anonymously
+			modules: [
+				'./node_modules/chart.js/Chart.js',
+				'./node_modules/mousetrap/mousetrap.js',
+
+				'public/vendor/buzz/buzz.js'
 			]
 		}
+	};
+
+	Meta.js.bridgeModules = function(app, callback) {
+		// Add routes for AMD-type modules to serve those files
+		var numBridged = 0;
+
+		async.series([
+			function(next) {
+				async.each(Meta.js.scripts.modules, function(localPath, next) {
+					app.get(path.join('/src/modules/', path.basename(localPath)), function(req, res) {
+						return res.sendFile(path.join(__dirname, '../../', localPath), {
+							maxAge: app.enabled('cache') ? 5184000000 : 0
+						});
+					});
+
+					++numBridged;
+					next();
+				}, next);
+			}
+		], function(err) {
+			if (err) {
+				winston.error('[meta/js] Encountered error while bridging modules:' + err.message);
+			}
+
+			winston.verbose('[meta/js] ' + numBridged + ' of ' + Meta.js.scripts.modules.length + ' modules bridged');
+			callback(err);
+		});
 	};
 
 	Meta.js.minify = function(target, callback) {

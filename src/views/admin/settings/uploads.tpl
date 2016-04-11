@@ -91,16 +91,25 @@
 			<div class="form-group">
 				<label for="profileImageDimension">Profile Image Dimension</label>
 				<input id="profileImageDimension" type="text" class="form-control" data-field="profileImageDimension" placeholder="128" />
+				<p class="help-block">
+					(in pixels, default: 128 pixels)
+				</p>
 			</div>
 
 			<div class="form-group">
 				<label>Maximum Profile Image File Size</label>
 				<input type="text" class="form-control" placeholder="Maximum size of uploaded user images in kilobytes" data-field="maximumProfileImageSize" />
+				<p class="help-block">
+					(in kilobytes, default: 256 KiB)
+				</p>
 			</div>
 
 			<div class="form-group">
 				<label>Maximum Cover Image File Size</label>
 				<input type="text" class="form-control" placeholder="Maximum size of uploaded cover images in kilobytes" data-field="maximumCoverImageSize" />
+				<p class="help-block">
+					(in kilobytes, default: 2,048 KiB)
+				</p>
 			</div>
 		</form>
 	</div>

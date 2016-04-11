@@ -79,6 +79,7 @@ apiController.getConfig = function(req, res, next) {
 				config.topicPostSort = settings.topicPostSort || config.topicPostSort;
 				config.categoryTopicSort = settings.categoryTopicSort || config.categoryTopicSort;
 				config.topicSearchEnabled = settings.topicSearchEnabled || false;
+				config.delayImageLoading = settings.delayImageLoading !== undefined ? settings.delayImageLoading : true;
 				config.bootswatchSkin = settings.bootswatchSkin || config.bootswatchSkin;
 				next(null, config);
 			});
