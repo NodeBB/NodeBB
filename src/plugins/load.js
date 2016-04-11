@@ -7,8 +7,10 @@ var fs = require('fs'),
 	winston = require('winston'),
 	nconf = require('nconf'),
 	_ = require('underscore'),
-	file = require('../file'),
-	utils = require('../../public/src/utils');
+	file = require('../file');
+
+var utils = require('../../public/src/utils'),
+	meta = require('../meta');
 
 
 module.exports = function(Plugins) {
@@ -39,6 +41,9 @@ module.exports = function(Plugins) {
 				},
 				function(next) {
 					mapClientSideScripts(pluginData, next);
+				},
+				function(next) {
+					mapClientModules(pluginData, next);
 				},
 				function(next) {
 					loadLanguages(pluginData, next);
@@ -163,7 +168,21 @@ module.exports = function(Plugins) {
 		}
 
 		callback();
-	}
+	};
+
+	function mapClientModules(pluginData, callback) {
+		if (Array.isArray(pluginData.modules)) {
+			if (global.env === 'development') {
+				winston.verbose('[plugins] Found ' + pluginData.modules.length + ' AMD-style module(s) for plugin ' + pluginData.id);
+			}
+
+			meta.js.scripts.modules = meta.js.scripts.modules.concat(pluginData.modules.map(function(file) {
+				return path.join('./node_modules/', pluginData.id, file);
+			}));
+		}
+
+		callback();
+	};
 
 	function loadLanguages(pluginData, callback) {
 		if (typeof pluginData.languages !== 'string') {

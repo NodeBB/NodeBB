@@ -96,7 +96,7 @@ module.exports = function(Messaging) {
 						message: messageObj,
 						site_title: meta.config.title || 'NodeBB',
 						url: nconf.get('url'),
-						fromUserslug: utils.slugify(messageObj.fromUser.username)
+						roomId: messageObj.roomId
 					}, next);
 				}, callback);
 			});

@@ -84,6 +84,7 @@ function initializeNodeBB(callback) {
 		function(next) {
 			plugins.init(app, middleware, next);
 		},
+		async.apply(meta.js.bridgeModules, app),
 		function(next) {
 			async.series([
 				async.apply(meta.templates.compile),

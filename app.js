@@ -207,6 +207,10 @@ function start() {
 					winston.warn('One or more of NodeBB\'s dependent packages are out-of-date. Please run the following command to update them:');
 					winston.warn('    ./nodebb upgrade');
 					break;
+				case 'dependencies-missing':
+					winston.warn('One or more of NodeBB\'s dependent packages are missing. Please run the following command to update them:');
+					winston.warn('    ./nodebb upgrade');
+					break;
 				default:
 					if (err.stacktrace !== false) {
 						winston.error(err.stack);

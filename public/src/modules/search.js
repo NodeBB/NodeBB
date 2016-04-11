@@ -150,8 +150,8 @@ define('search', ['navigator', 'translator'], function(nav, translator) {
 			Search.topicDOM.active = true;
 
 			// Bind to esc
-			require(['mousetrap'], function(Mousetrap) {
-				Mousetrap.bind('esc', Search.topicDOM.end);
+			require(['mousetrap'], function(mousetrap) {
+				mousetrap.bind('esc', Search.topicDOM.end);
 			});
 		}
 	};
@@ -161,8 +161,8 @@ define('search', ['navigator', 'translator'], function(nav, translator) {
 		Search.topicDOM.active = false;
 
 		// Unbind esc
-		require(['mousetrap'], function(Mousetrap) {
-			Mousetrap.unbind('esc', Search.topicDOM.end);
+		require(['mousetrap'], function(mousetrap) {
+			mousetrap.unbind('esc', Search.topicDOM.end);
 		});
 	};
 

@@ -75,6 +75,7 @@ module.exports = function(User) {
 			settings.sendPostNotifications = parseInt(getSetting(settings, 'sendPostNotifications', 0), 10) === 1;
 			settings.restrictChat = parseInt(getSetting(settings, 'restrictChat', 0), 10) === 1;
 			settings.topicSearchEnabled = parseInt(getSetting(settings, 'topicSearchEnabled', 0), 10) === 1;
+			settings.delayImageLoading = parseInt(getSetting(settings, 'delayImageLoading', 1), 10) === 1;
 			settings.bootswatchSkin = settings.bootswatchSkin || 'default';
 			settings.scrollToMyPost = parseInt(getSetting(settings, 'scrollToMyPost', 1), 10) === 1;
 
@@ -120,6 +121,7 @@ module.exports = function(User) {
 			sendPostNotifications: data.sendPostNotifications,
 			restrictChat: data.restrictChat,
 			topicSearchEnabled: data.topicSearchEnabled,
+			delayImageLoading: data.delayImageLoading,
 			groupTitle: data.groupTitle,
 			homePageRoute: data.homePageCustom || data.homePageRoute,
 			scrollToMyPost: data.scrollToMyPost
