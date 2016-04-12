@@ -61,7 +61,7 @@
                     </a>
                 </div>
                 <div class="description">
-                    To connect to our forum, please <a href="https://forum.smithmicro.com/auth/smgraphics">use your Smith Micro Graphics account</a>.<br>If you don’t have one yet, you can <a href="https://pgportal.smithmicro.com/#!/signup">sign up here</a>.
+                    To connect to our forum, please <a href="https://forum.smithmicro.com/auth/smgraphics" target="_top">use your Smith Micro Graphics account</a>.<br>If you don’t have one yet, you can <a href="https://pgportal.smithmicro.com/#!/signup">sign up here</a>.
                 </div>
                 </li>
                 <!-- END authentication -->
