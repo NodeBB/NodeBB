@@ -2,14 +2,12 @@
 'use strict';
 
 var async = require('async');
-var winston = require('winston');
 
 var topics = require('../topics');
-var privileges = require('../privileges');
-var plugins = require('../plugins');
 var websockets = require('./index');
 var user = require('../user');
 var apiController = require('../controllers/api');
+var socketHelpers = require('./helpers');
 
 var SocketTopics = {};
 
@@ -43,33 +41,11 @@ SocketTopics.post = function(socket, data, callback) {
 		}
 
 		callback(null, result.topicData);
+
 		socket.emit('event:new_post', {posts: [result.postData]});
 		socket.emit('event:new_topic', result.topicData);
 
-		async.waterfall([
-			function(next) {
-				user.getUidsFromSet('users:online', 0, -1, next);
-			},
-			function(uids, next) {
-				privileges.categories.filterUids('read', result.topicData.cid, uids, next);
-			},
-			function(uids, next) {
-				plugins.fireHook('filter:sockets.sendNewPostToUids', {uidsTo: uids, uidFrom: data.uid, type: 'newTopic'}, next);
-			}
-		], function(err, data) {
-			if (err) {
-				return winston.error(err.stack);
-			}
-
-			var uids = data.uidsTo;
-
-			for(var i=0; i<uids.length; ++i) {
-				if (parseInt(uids[i], 10) !== socket.uid) {
-					websockets.in('uid_' + uids[i]).emit('event:new_post', {posts: [result.postData]});
-					websockets.in('uid_' + uids[i]).emit('event:new_topic', result.topicData);
-				}
-			}
-		});
+		socketHelpers.notifyNew(socket.uid, 'newTopic', {posts: [result.postData], topic: result.topicData});
 	});
 };
 

@@ -6,6 +6,7 @@
     "chat.user_typing": "%1 が入力中 ...",
     "chat.user_has_messaged_you": "%1さんからメッセージが届いています。",
     "chat.see_all": "すべてのチャットを見る",
+    "chat.mark_all_read": "Mark all chats read",
     "chat.no-messages": "チャットメッセージの履歴を表示するには、受信者を選択してください",
     "chat.no-users-in-room": "ルームには誰も居ません",
     "chat.recent-chats": "最近のチャット",

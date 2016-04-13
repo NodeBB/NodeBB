@@ -78,23 +78,19 @@ function initializeNodeBB(callback) {
 		skipJS = true;
 	}
 
-	if (fromFile.match('less')) {
-		winston.info('[minifier] Compiling LESS files skipped');
-		skipLess = true;
-	}
-
 	async.waterfall([
 		async.apply(cacheStaticFiles),
 		async.apply(meta.themes.setupPaths),
 		function(next) {
 			plugins.init(app, middleware, next);
 		},
+		async.apply(meta.js.bridgeModules, app),
 		function(next) {
-			async.parallel([
+			async.series([
 				async.apply(meta.templates.compile),
 				async.apply(!skipJS ? meta.js.minify : meta.js.getFromFile, 'nodebb.min.js'),
 				async.apply(!skipJS ? meta.js.minify : meta.js.getFromFile, 'acp.min.js'),
-				async.apply(!skipLess ? meta.css.minify : meta.css.getFromFile),
+				async.apply(meta.css.minify),
 				async.apply(meta.sounds.init),
 				async.apply(meta.blacklist.load)
 			], next);

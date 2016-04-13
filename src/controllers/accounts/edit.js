@@ -126,7 +126,9 @@ editController.uploadPicture = function (req, res, next) {
 		}
 	], function(err, image) {
 		fs.unlink(userPhoto.path, function(err) {
-			winston.error('unable to delete picture ' + userPhoto.path, err);
+			if (err) {
+				winston.warn('[user/picture] Unable to delete picture ' + userPhoto.path, err);
+			}
 		});
 		if (err) {
 			return next(err);

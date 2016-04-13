@@ -149,9 +149,7 @@ function start() {
 				meta.reload();
 			break;
 			case 'js-propagate':
-				meta.js.target[message.target] = meta.js.target[message.target] || {};
-				meta.js.target[message.target].cache = message.cache;
-				meta.js.target[message.target].map = message.map;
+				meta.js.target = message.data;
 				emitter.emit('meta:js.compiled');
 				winston.verbose('[cluster] Client-side javascript and mapping propagated to worker %s', process.pid);
 			break;
@@ -207,6 +205,10 @@ function start() {
 					break;
 				case 'dependencies-out-of-date':
 					winston.warn('One or more of NodeBB\'s dependent packages are out-of-date. Please run the following command to update them:');
+					winston.warn('    ./nodebb upgrade');
+					break;
+				case 'dependencies-missing':
+					winston.warn('One or more of NodeBB\'s dependent packages are missing. Please run the following command to update them:');
 					winston.warn('    ./nodebb upgrade');
 					break;
 				default:

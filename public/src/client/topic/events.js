@@ -118,13 +118,15 @@ define('forum/topic/events', [
 			editedPostEl.find('img:not(.not-responsive)').addClass('img-responsive');
 			app.replaceSelfLinks(editedPostEl.find('a'));
 			posts.wrapImagesInLinks(editedPostEl.parent());
+			posts.unloadImages(editedPostEl.parent());
+			posts.loadImages();
 			editedPostEl.fadeIn(250);
 			$(window).trigger('action:posts.edited', data);
 		});
 
 		var editData = {
 			editor: data.editor,
-			relativeEditTime: utils.toISOString(data.post.edited)
+			editedISO: utils.toISOString(data.post.edited)
 		};
 
 		templates.parse('partials/topic/post-editor', editData, function(html) {
@@ -181,7 +183,7 @@ define('forum/topic/events', [
 		var isDeleted = postEl.hasClass('deleted');
 		postTools.toggle(data.pid, isDeleted);
 
-		if (!app.user.isAdmin && parseInt(data.uid, 10) !== parseInt(app.user.uid, 10)) {
+		if (!app.user.isAdmin && !app.user.isGlobalMod && parseInt(data.uid, 10) !== parseInt(app.user.uid, 10)) {
 			postEl.find('[component="post/tools"]').toggleClass('hidden', isDeleted);
 			if (isDeleted) {
 				postEl.find('[component="post/content"]').translateHtml('[[topic:post_is_deleted]]');

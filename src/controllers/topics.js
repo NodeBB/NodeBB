@@ -55,7 +55,7 @@ topicsController.get = function(req, res, callback) {
 			}
 
 			if (!res.locals.isAPI && (!req.params.slug || results.topic.slug !== tid + '/' + req.params.slug) && (results.topic.slug && results.topic.slug !== tid + '/')) {
-				var url = '/topic/' + encodeURI(results.topic.slug);
+				var url = '/topic/' + results.topic.slug;
 				if (req.params.post_index){
 					url += '/'+req.params.post_index;
 				}
@@ -124,7 +124,7 @@ topicsController.get = function(req, res, callback) {
 				return callback();
 			}
 
-			topics.modifyPostsByPrivilege(topicData.posts, userPrivileges);
+			topics.modifyPostsByPrivilege(topicData, userPrivileges);
 
 			plugins.fireHook('filter:controllers.topic.get', {topicData: topicData, uid: req.uid}, next);
 		},

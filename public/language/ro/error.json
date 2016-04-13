@@ -27,6 +27,7 @@
     "password-too-long": "Parola prea lunga.",
     "user-banned": "Utilizator banat",
     "user-too-new": "Imi pare rau dar trebuie sa astepti %1 secunda(e) pentru a posta prima oara.",
+    "blacklisted-ip": "Sorry, your IP address has been banned from this community. If you feel this is in error, please contact an administrator.",
     "no-category": "Categoria nu exista.",
     "no-topic": "Topicul nu exista.",
     "no-post": "Post-ul nu exista.",
@@ -97,5 +98,6 @@
     "invite-maximum-met": "You have invited the maximum amount of people (%1 out of %2).",
     "no-session-found": "No login session found!",
     "not-in-room": "User not in room",
-    "no-users-in-room": "No users in this room"
+    "no-users-in-room": "No users in this room",
+    "cant-kick-self": "You can't kick yourself from the group"
 }

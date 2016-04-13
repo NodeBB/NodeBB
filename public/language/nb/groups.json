@@ -41,6 +41,7 @@
     "details.hidden": "Skjult",
     "details.hidden_help": "Hvis aktivert, vil ikke denne gruppen bli funnet i gruppelisten, og brukere må inviteres manuelt",
     "details.delete_group": "Slett gruppe",
+    "details.private_system_help": "Private groups is disabled at system level, this option does not do anything",
     "event.updated": "Gruppedetaljer har blitt oppdatert",
     "event.deleted": "Gruppen \"%1\" har blitt slettet",
     "membership.accept-invitation": "Aksepter invitasjon",

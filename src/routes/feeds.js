@@ -49,7 +49,7 @@ function generateForTopic(req, res, callback) {
 			return callback(err);
 		}
 
-		topics.modifyPostsByPrivilege(topicData.posts, userPrivileges);
+		topics.modifyPostsByPrivilege(topicData, userPrivileges);
 
 		var description = topicData.posts.length ? topicData.posts[0].content : '';
 		var image_url = topicData.posts.length ? topicData.posts[0].picture : '';
@@ -107,7 +107,7 @@ function generateForUserTopics(req, res, callback) {
 		}
 	], function(err, userData) {
 		if (err) {
-			return next(err);
+			return callback(err);
 		}
 
 		generateForTopics({
@@ -116,7 +116,7 @@ function generateForUserTopics(req, res, callback) {
 			description: 'A list of topics that are posted by ' + userData.username,
 			feed_url: '/user/' + userslug + '/topics.rss',
 			site_url: '/user/' + userslug + '/topics'
-		}, 'uid:' + userData.uid + ':topics', req, res, next);
+		}, 'uid:' + userData.uid + ':topics', req, res, callback);
 	});
 }
 

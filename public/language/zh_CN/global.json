@@ -50,8 +50,8 @@
     "topics": "主题",
     "posts": "帖子",
     "best": "最佳",
-    "upvoted": "Upvoted",
-    "downvoted": "Downvoted",
+    "upvoted": "顶",
+    "downvoted": "踩",
     "views": "浏览",
     "reputation": "威望",
     "read_more": "阅读更多",
@@ -65,7 +65,7 @@
     "posted_in_ago_by": "%3 于 %1 发布到 %2",
     "user_posted_ago": "%1 发布于 %2",
     "guest_posted_ago": "游客发布于 %1",
-    "last_edited_by": "last edited by %1",
+    "last_edited_by": "最后由 %1 编辑",
     "norecentposts": "暂无新帖",
     "norecenttopics": "暂无新主题",
     "recentposts": "新帖",
@@ -87,8 +87,8 @@
     "map": "地图",
     "sessions": "已登录的会话",
     "ip_address": "IP地址",
-    "enter_page_number": "Enter page number",
-    "upload_file": "Upload file",
-    "upload": "Upload",
-    "allowed-file-types": "Allowed file types are %1"
+    "enter_page_number": "输入页码",
+    "upload_file": "上传文件",
+    "upload": "上传",
+    "allowed-file-types": "允许的文件类型有 %1"
 }

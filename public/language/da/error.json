@@ -27,6 +27,7 @@
     "password-too-long": "Kodeord er for langt",
     "user-banned": "Bruger er bortvist",
     "user-too-new": "Beklager, du er nødt til at vente %1 sekund(er) før du opretter dit indlæg",
+    "blacklisted-ip": "Sorry, your IP address has been banned from this community. If you feel this is in error, please contact an administrator.",
     "no-category": "Kategorien eksisterer ikke",
     "no-topic": "Tråden eksisterer ikke",
     "no-post": "Indlægget eksisterer ikke",
@@ -97,5 +98,6 @@
     "invite-maximum-met": "Du har inviteret det maksimale antal personer (%1 ud af %2)",
     "no-session-found": "Ingen login session kan findes!",
     "not-in-room": "Bruger er ikke i rummet",
-    "no-users-in-room": "Ingen brugere i rummet"
+    "no-users-in-room": "Ingen brugere i rummet",
+    "cant-kick-self": "You can't kick yourself from the group"
 }

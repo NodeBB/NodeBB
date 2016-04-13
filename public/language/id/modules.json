@@ -6,6 +6,7 @@
     "chat.user_typing": "%1 sedang menulis ...",
     "chat.user_has_messaged_you": "%1 telah mengirimkan pesan untukmu.",
     "chat.see_all": "See all chats",
+    "chat.mark_all_read": "Mark all chats read",
     "chat.no-messages": "Mohon pilih satu penerima untuk melihat riwayat pesan percakapan",
     "chat.no-users-in-room": "No users in this room",
     "chat.recent-chats": "Percakapan terbaru",

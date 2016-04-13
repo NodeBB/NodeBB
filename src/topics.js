@@ -1,15 +1,16 @@
 "use strict";
 
-var async = require('async'),
-	_ = require('underscore'),
+var async = require('async');
+var _ = require('underscore');
 
-	db = require('./database'),
-	posts = require('./posts'),
-	utils = require('../public/src/utils'),
-	plugins = require('./plugins'),
-	user = require('./user'),
-	categories = require('./categories'),
-	privileges = require('./privileges');
+var db = require('./database');
+var posts = require('./posts');
+var utils = require('../public/src/utils');
+var plugins = require('./plugins');
+var user = require('./user');
+var categories = require('./categories');
+var privileges = require('./privileges');
+var social = require('./social');
 
 (function(Topics) {
 
@@ -125,10 +126,13 @@ var async = require('async'),
 						user.getUsersFields(uids, ['uid', 'username', 'fullname', 'userslug', 'reputation', 'postcount', 'picture', 'signature', 'banned', 'status'], next);
 					},
 					categories: function(next) {
-						categories.getCategoriesFields(cids, ['cid', 'name', 'slug', 'icon', 'bgColor', 'color', 'disabled'], next);
+						categories.getCategoriesFields(cids, ['cid', 'name', 'slug', 'icon', 'image', 'bgColor', 'color', 'disabled'], next);
 					},
 					hasRead: function(next) {
 						Topics.hasReadTopics(tids, uid, next);
+					},
+					bookmarks: function(next) {
+						Topics.getUserBookmarks(tids, uid, next);
 					},
 					teasers: function(next) {
 						Topics.getTeasers(topics, next);
@@ -154,6 +158,7 @@ var async = require('async'),
 						topics[i].locked = parseInt(topics[i].locked, 10) === 1;
 						topics[i].deleted = parseInt(topics[i].deleted, 10) === 1;
 						topics[i].unread = !results.hasRead[i];
+						topics[i].bookmark = results.bookmarks[i];
 						topics[i].unreplied = !topics[i].teaser;
 					}
 				}
@@ -179,7 +184,8 @@ var async = require('async'),
 					threadTools: async.apply(plugins.fireHook, 'filter:topic.thread_tools', {topic: topicData, uid: uid, tools: []}),
 					tags: async.apply(Topics.getTopicTagsObjects, topicData.tid),
 					isFollowing: async.apply(Topics.isFollowing, [topicData.tid], uid),
-					bookmark: async.apply(Topics.getUserBookmark, topicData.tid, uid)
+					bookmark: async.apply(Topics.getUserBookmark, topicData.tid, uid),
+					postSharing: async.apply(social.getActivePostSharing)
 				}, next);
 			},
 			function (results, next) {
@@ -189,6 +195,7 @@ var async = require('async'),
 				topicData.tags = results.tags;
 				topicData.isFollowing = results.isFollowing[0];
 				topicData.bookmark = results.bookmark;
+				topicData.postSharing = results.postSharing;
 
 				topicData.unreplied = parseInt(topicData.postcount, 10) === 1;
 				topicData.deleted = parseInt(topicData.deleted, 10) === 1;
@@ -287,6 +294,17 @@ var async = require('async'),
 
 	Topics.getUserBookmark = function (tid, uid, callback) {
 		db.sortedSetScore('tid:' + tid + ':bookmarks', uid, callback);
+	};
+
+	Topics.getUserBookmarks = function(tids, uid, callback) {
+		if (!parseInt(uid, 10)) {
+			return callback(null, tids.map(function() {
+				return null;
+			}));
+		}
+		db.sortedSetsScore(tids.map(function(tid) {
+			return 'tid:' + tid + ':bookmarks';
+		}), uid, callback);
 	};
 
 	Topics.setUserBookmark = function(tid, uid, index, callback) {

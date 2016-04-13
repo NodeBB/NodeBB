@@ -1,0 +1,6 @@
+{
+    "uploading-file": "正在上传文件...",
+    "select-file-to-upload": "请选择需要上传的文件！",
+    "upload-success": "文件上传成功！",
+    "maximum-file-size": "最大 %1 kb"
+}

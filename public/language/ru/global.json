@@ -49,7 +49,7 @@
     "users": "Пользователи",
     "topics": "Темы",
     "posts": "Сообщения",
-    "best": "Best",
+    "best": "Лучшие",
     "upvoted": "Upvoted",
     "downvoted": "Downvoted",
     "views": "Просмотры",
@@ -87,8 +87,8 @@
     "map": "Карта",
     "sessions": "Сессии входа",
     "ip_address": "IP адрес",
-    "enter_page_number": "Enter page number",
-    "upload_file": "Upload file",
-    "upload": "Upload",
-    "allowed-file-types": "Allowed file types are %1"
+    "enter_page_number": "Введите номер страницы",
+    "upload_file": "Загрузить файл",
+    "upload": "Загрузить",
+    "allowed-file-types": "Разрешенные форматы файлов %1"
 }

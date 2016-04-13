@@ -6,8 +6,7 @@
 		paths: {
 			'forum': '../client',
 			'admin': '../admin',
-			'vendor': '../../vendor',
-			'mousetrap': '../../bower/mousetrap/mousetrap'
+			'vendor': '../../vendor'
 		}
 	});
 </script>

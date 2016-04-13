@@ -155,7 +155,7 @@ SocketGroups.kick = isOwner(function(socket, data, callback) {
 	if (socket.uid === parseInt(data.uid, 10)) {
 		return callback(new Error('[[error:cant-kick-self]]'));
 	}
-	
+
 	groups.ownership.isOwner(data.uid, data.groupName, function(err, isOwner) {
 		if (err) {
 			return callback(err);
@@ -178,16 +178,16 @@ SocketGroups.create = function(socket, data, callback) {
 };
 
 SocketGroups.delete = function(socket, data, callback) {
-	if (data.groupName === 'administrators' || data.groupName === 'registered-users') {
+	if (data.groupName === 'administrators' ||
+		data.groupName === 'registered-users' ||
+		data.groupName === 'Global Moderators') {
 		return callback(new Error('[[error:not-allowed]]'));
 	}
 
-	var tasks = {
+	async.parallel({
 		isOwner: async.apply(groups.ownership.isOwner, socket.uid, data.groupName),
 		isAdmin: async.apply(user.isAdministrator, socket.uid)
-	};
-
-	async.parallel(tasks, function(err, checks) {
+	}, function(err, checks) {
 		if (err) {
 			return callback(err);
 		}

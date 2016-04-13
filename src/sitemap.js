@@ -1,16 +1,15 @@
 'use strict';
 
-var path = require('path'),
-	async = require('async'),
-	sm = require('sitemap'),
-	url = require('url'),
-	nconf = require('nconf'),
-	db = require('./database'),
-	categories = require('./categories'),
-	topics = require('./topics'),
-	privileges = require('./privileges'),
-	meta = require('./meta'),
-	utils = require('../public/src/utils');
+var async = require('async');
+var sm = require('sitemap');
+var nconf = require('nconf');
+
+var db = require('./database');
+var categories = require('./categories');
+var topics = require('./topics');
+var privileges = require('./privileges');
+var meta = require('./meta');
+var utils = require('../public/src/utils');
 
 var sitemap = {
 		maps: {
@@ -88,7 +87,7 @@ sitemap.getPages = function(callback) {
 			changefreq: 'daily',
 			priority: '0.4'
 		}];
-	
+
 	sitemap.maps.pages = sm.createSitemap({
 		hostname: nconf.get('url'),
 		cacheTime: 1000 * 60 * 60 * 24,	// Cached for 24 hours

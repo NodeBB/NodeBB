@@ -7,12 +7,6 @@ define('forum/groups/list', ['forum/infinitescroll'], function(infinitescroll) {
 	Groups.init = function() {
 		var groupsEl = $('#groups-list');
 
-		groupsEl.on('click', '.list-cover', function() {
-			var groupSlug = $(this).parents('[data-slug]').attr('data-slug');
-
-			ajaxify.go('groups/' + groupSlug);
-		});
-
 		infinitescroll.init(Groups.loadMoreGroups);
 
 		// Group creation

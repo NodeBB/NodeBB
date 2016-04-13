@@ -27,6 +27,7 @@
     "password-too-long": "Contrasinal moi longa",
     "user-banned": "Usuario expulsado",
     "user-too-new": "Desculpa, agarda %1 second(s) antes de facer a túa primeira publicación.",
+    "blacklisted-ip": "Sorry, your IP address has been banned from this community. If you feel this is in error, please contact an administrator.",
     "no-category": "A categoría non existe",
     "no-topic": "O tema non existe",
     "no-post": "A publicación non existe",
@@ -97,5 +98,6 @@
     "invite-maximum-met": "Convidaches á cantidade máxima de persoas  (%1 de %2).",
     "no-session-found": "Non se atopa ningún inicio de sesión!",
     "not-in-room": "O usuario non se encontra nesta sala",
-    "no-users-in-room": "No users in this room"
+    "no-users-in-room": "No users in this room",
+    "cant-kick-self": "You can't kick yourself from the group"
 }

@@ -27,6 +27,7 @@
     "password-too-long": "Mật khẩu quá dài",
     "user-banned": "Tài khoản bị ban",
     "user-too-new": "Rất tiếc, bạn phải chờ %1 giây để đăng bài viết đầu tiên.",
+    "blacklisted-ip": "Sorry, your IP address has been banned from this community. If you feel this is in error, please contact an administrator.",
     "no-category": "Danh mục không tồn tại",
     "no-topic": "Chủ đề không tồn tại",
     "no-post": "Bài viết không tồn tại",
@@ -97,5 +98,6 @@
     "invite-maximum-met": "Bạn đã sử dụng hết số lượng lời mời bạn có thể gửi (%1 đã gửi trên tổng số %2 được cho phép)",
     "no-session-found": "Không tìm thấy phiên đăng nhập!",
     "not-in-room": "Thành viên không có trong phòng",
-    "no-users-in-room": "No users in this room"
+    "no-users-in-room": "No users in this room",
+    "cant-kick-self": "You can't kick yourself from the group"
 }

@@ -124,11 +124,11 @@ module.exports = function(SocketPosts) {
 
 			/*
 			hooks:
-				filter.post.upvote
-				filter.post.downvote
-				filter.post.unvote
-				filter.post.favourite
-				filter.post.unfavourite
+				filter:post.upvote
+				filter:post.downvote
+				filter:post.unvote
+				filter:post.favourite
+				filter:post.unfavourite
 			 */
 			plugins.fireHook('filter:post.' + command, {data: data, uid: socket.uid}, function(err, filteredData) {
 				if (err) {

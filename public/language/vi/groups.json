@@ -41,6 +41,7 @@
     "details.hidden": "Đã ẩn",
     "details.hidden_help": "Nếu bật, nhóm này sẽ không được hiện thị trong danh sách nhóm, và thành viên phải được mời để tham gia",
     "details.delete_group": "Xoá nhóm",
+    "details.private_system_help": "Private groups is disabled at system level, this option does not do anything",
     "event.updated": "Thông tin nhóm đã được cập nhật",
     "event.deleted": "Nhóm \"%1\" đã bị xoá",
     "membership.accept-invitation": "Chấp nhận lời mời",

@@ -34,7 +34,6 @@ define('forum/topic/postTools', ['share', 'navigator', 'components', 'translator
 					return app.alertError(err);
 				}
 				data.posts.display_move_tools = data.posts.display_move_tools && index !== 0;
-				data.postSharing = data.postSharing.filter(function(share) { return share.activated === true; });
 
 				templates.parse('partials/topic/post-menu-list', data, function(html) {
 					translator.translate(html, function(html) {
@@ -65,27 +64,44 @@ define('forum/topic/postTools', ['share', 'navigator', 'components', 'translator
 	};
 
 	function addVoteHandler() {
-		components.get('topic').on('mouseenter', '[data-pid] [component="post/vote-count"]', function() {
-			loadDataAndCreateTooltip($(this).parent());
+		components.get('topic').on('mouseenter', '[data-pid] [component="post/vote-count"]', loadDataAndCreateTooltip);
+		components.get('topic').on('mouseout', '[data-pid] [component="post/vote-count"]', function() {
+			var el = $(this).parent();
+			el.on('shown.bs.tooltip', function() {
+				$('.tooltip').tooltip('destroy');
+				el.off('shown.bs.tooltip');
+			});
+
+			$('.tooltip').tooltip('destroy');
 		});
 	}
 
-	function loadDataAndCreateTooltip(el) {
+	function loadDataAndCreateTooltip(e) {
+		e.stopPropagation();
+
+		var $this = $(this);
+		var el = $this.parent();
 		var pid = el.parents('[data-pid]').attr('data-pid');
+
+		$('.tooltip').tooltip('destroy');
+		$this.off('mouseenter', loadDataAndCreateTooltip);
+
 		socket.emit('posts.getUpvoters', [pid], function(err, data) {
-			if (!err && data.length) {
+			if (err) {
+				return app.alertError(err.message);
+			}
+
+			if (data.length) {
 				createTooltip(el, data[0]);
 			}
+			$this.off('mouseenter').on('mouseenter', loadDataAndCreateTooltip);
 		});
+		return false;
 	}
 
 	function createTooltip(el, data) {
 		function doCreateTooltip(title) {
 			el.attr('title', title).tooltip('fixTitle').tooltip('show');
-			el.on('hidden.bs.tooltip', function() {
-				el.tooltip('destroy');
-				el.off('hidden.bs.tooltip');
-			});
 		}
 		var usernames = data.usernames;
 		if (!usernames.length) {
@@ -183,13 +199,23 @@ define('forum/topic/postTools', ['share', 'navigator', 'components', 'translator
 			if (!proceed) {
 				var selectionText = '';
 				var selection = window.getSelection ? window.getSelection() : document.selection.createRange();
-				var selectionNode = $(selection.baseNode || selection.anchorNode);
+				var content = button.parents('[component="post"]').find('[component="post/content"]').get(0);
 
-				if (selectionNode.parents('[component="post/content"]').length > 0) {
-					selectionText = selection.toString();
+				if (content && selection.containsNode(content, true)) {
+					var bounds = document.createRange();
+					bounds.selectNodeContents(content);
+					var range = selection.getRangeAt(0).cloneRange();
+					if (range.compareBoundaryPoints(Range.START_TO_START, bounds) < 0) {
+						range.setStart(bounds.startContainer, bounds.startOffset);
+					}
+					if (range.compareBoundaryPoints(Range.END_TO_END, bounds) > 0) {
+						range.setEnd(bounds.endContainer, bounds.endOffset);
+					}
+					bounds.detach();
+					selectionText = range.toString();
+					range.detach();
 				}
 
-				button = selectionText ? selectionNode : button;
 				var username = getUserName(button);
 				if (getData(button, 'data-uid') === '0' || !getData(button, 'data-userslug')) {
 					username = '';

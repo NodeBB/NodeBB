@@ -3,7 +3,6 @@
 		<ul class="nav nav-pills">
 			<li class="active"><a href="#category-settings" data-toggle="tab">Category Settings</a></li>
 			<li><a href="#privileges" data-toggle="tab">Privileges</a></li>
-			<li><a href="#analytics" data-toggle="tab">Analytics</a></li>
 		</ul>
 		<br />
 		<div class="tab-content">
@@ -78,7 +77,7 @@
 							</div>
 							<div class="btn-group btn-group-justified">
 								<div class="btn-group">
-									<button type="button" data-cid="{category.cid}" data-name="image" data-value="{category.image}" class="btn btn-default upload-button"><i class="fa fa-upload"></i> Upload Image</button>
+									<button type="button" data-cid="{category.cid}" class="btn btn-default upload-button"><i class="fa fa-upload"></i> Upload Image</button>
 								</div>
 								<!-- IF category.image -->
 								<div class="btn-group">
@@ -86,6 +85,14 @@
 								</div>
 								<!-- ENDIF category.image -->
 							</div><br />
+
+							<fieldset>
+								<div class="form-group text-center">
+									<label for="category-image">Category Image</label>
+									<br/>
+									<input id="category-image" type="text" class="form-control" placeholder="Category Image" data-name="image" value="{category.image}" />
+								</div>
+							</fieldset>
 
 							<fieldset>
 								<div class="form-group text-center">
@@ -98,7 +105,8 @@
 									<button type="button" class="btn btn-default btn-block <!-- IF category.parent.name -->hide<!-- ENDIF category.parent.name -->" data-action="setParent"><i class="fa fa-sitemap"></i> (None)</button>
 								</div>
 							</fieldset>
-
+							<hr/>
+							<button class="btn btn-info btn-block copy-settings"><i class="fa fa-files-o"></i> Copy Settings From</button>
 							<hr />
 							<button class="btn btn-danger btn-block purge"><i class="fa fa-eraser"></i> Purge Category</button>
 						</div>
@@ -118,37 +126,6 @@
 				<hr />
 				<div class="privilege-table-container">
 					<!-- IMPORT admin/partials/categories/privileges.tpl -->
-				</div>
-			</div>
-
-			<div class="tab-pane fade col-xs-12" id="analytics">
-				<div class="row">
-					<div class="col-sm-6 text-center">
-						<div><canvas id="pageviews:hourly" height="250"></canvas></div>
-						<p>
-							<small><strong>Figure 1</strong> &ndash; Hourly page views for this category</small>
-						</p>
-					</div>
-					<div class="col-sm-6 text-center">
-						<div><canvas id="pageviews:daily" height="250"></canvas></div>
-						<p>
-							<small><strong>Figure 2</strong> &ndash; Daily page views for this category</small>
-						</p>
-					</div>
-				</div>
-				<div class="row">
-					<div class="col-sm-6 text-center">
-						<div><canvas id="topics:daily" height="250"></canvas></div>
-						<p>
-							<small><strong>Figure 3</strong> &ndash; Daily topics created in this category</small>
-						</p>
-					</div>
-					<div class="col-sm-6 text-center">
-						<div><canvas id="posts:daily" height="250"></canvas></div>
-						<p>
-							<small><strong>Figure 4</strong> &ndash; Daily posts made in this category</small>
-						</p>
-					</div>
 				</div>
 			</div>
 		</div>
