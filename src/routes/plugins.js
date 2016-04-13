@@ -9,7 +9,7 @@ module.exports = function(app, middleware, controllers) {
 	// Static Assets
 	app.get('/plugins/:id/*', middleware.addExpiresHeaders, function(req, res, next) {
 
-		var	relPath = req._parsedUrl.pathname.replace('/plugins/', '');
+		var relPath = req._parsedUrl.pathname.replace('/plugins/', '');
 
 		var matches = _.map(plugins.staticDirs, function(realPath, mappedPath) {
 			if (relPath.match(mappedPath)) {
