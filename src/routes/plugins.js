@@ -1,6 +1,6 @@
 "use strict";
 
-var	_ = require('underscore');
+var _ = require('underscore');
 var path = require('path');
 
 var plugins = require('../plugins');
