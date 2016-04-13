@@ -69,7 +69,7 @@ SocketTopics.createTopicFromPosts = function(socket, data, callback) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
 
-	topics.createTopicFromPosts(socket.uid, data.title, data.pids, callback);
+	topics.createTopicFromPosts(socket.uid, data.title, data.pids, data.fromTid, callback);
 };
 
 SocketTopics.toggleFollow = function(socket, tid, callback) {
