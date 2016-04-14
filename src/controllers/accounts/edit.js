@@ -10,6 +10,7 @@ var user = require('../../user');
 var meta = require('../../meta');
 var plugins = require('../../plugins');
 var helpers = require('../helpers');
+var groups = require('../../groups');
 var accountHelpers = require('./helpers');
 
 var editController = {};
@@ -25,7 +26,13 @@ editController.get = function(req, res, callback) {
 		userData.maximumProfileImageSize = parseInt(meta.config.maximumProfileImageSize, 10);
 		userData.allowProfileImageUploads = parseInt(meta.config.allowProfileImageUploads) === 1;
 		userData.allowAccountDelete = parseInt(meta.config.allowAccountDelete, 10) === 1;
-		
+
+		userData.groups = userData.groups.filter(function(group) {
+			return group && group.userTitleEnabled && !groups.isPrivilegeGroup(group.name) && group.name !== 'registered-users';
+		});
+		userData.groups.forEach(function(group) {
+			group.selected = group.name === userData.groupTitle;
+		});
 
 		userData.title = '[[pages:account/edit, ' + userData.username + ']]';
 		userData.breadcrumbs = helpers.buildBreadcrumbs([{text: userData.username, url: '/user/' + userData.userslug}, {text: '[[user:edit]]'}]);
@@ -33,7 +40,7 @@ editController.get = function(req, res, callback) {
 
 		plugins.fireHook('filter:user.account.edit', userData, function(err, userData) {
 			if (err) {
-				return next(err);
+				return callback(err);
 			}
 
 			res.render('account/edit', userData);
@@ -121,7 +128,7 @@ editController.uploadPicture = function (req, res, next) {
 			if (!isAllowed) {
 				return helpers.notAllowed(req, res);
 			}
-			
+
 			user.uploadPicture(updateUid, userPhoto, next);
 		}
 	], function(err, image) {

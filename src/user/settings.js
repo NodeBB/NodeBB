@@ -1,10 +1,10 @@
 
 'use strict';
 
-var	async = require('async'),
-	meta = require('../meta'),
-	db = require('../database'),
-	plugins = require('../plugins');
+var	async = require('async');
+var meta = require('../meta');
+var db = require('../database');
+var plugins = require('../plugins');
 
 module.exports = function(User) {
 
@@ -161,18 +161,5 @@ module.exports = function(User) {
 
 	User.setSetting = function(uid, key, value, callback) {
 		db.setObjectField('user:' + uid + ':settings', key, value, callback);
-	};
-
-	User.setGroupTitle = function(groupName, uid, callback) {
-		if (groupName === 'registered-users') {
-			return callback();
-		}
-		db.getObjectField('user:' + uid + ':settings', 'groupTitle', function(err, currentTitle) {
-			if (err || (currentTitle || currentTitle === '')) {
-				return callback(err);
-			}
-
-			User.setSetting(uid, 'groupTitle', groupName, callback);
-		});
 	};
 };

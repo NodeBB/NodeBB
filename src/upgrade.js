@@ -10,7 +10,7 @@ var db = require('./database'),
 	schemaDate, thisSchemaDate,
 
 	// IMPORTANT: REMEMBER TO UPDATE VALUE OF latestSchema
-	latestSchema = Date.UTC(2016, 1, 25);
+	latestSchema = Date.UTC(2016, 3, 14);
 
 Upgrade.check = function(callback) {
 	db.get('schemaDate', function(err, value) {
@@ -436,6 +436,44 @@ Upgrade.upgrade = function(callback) {
 				});
 			} else {
 				winston.info('[2016/02/25] Social: Post Sharing skipped!');
+				next();
+			}
+		},
+		function(next) {
+			thisSchemaDate = Date.UTC(2016, 3, 14);
+
+			if (schemaDate < thisSchemaDate) {
+				updatesMade = true;
+				winston.info('[2016/04/14] Group title from settings to user profile');
+
+				var user = require('./user');
+				var batch = require('./batch');
+				var count = 0;
+				batch.processSortedSet('users:joindate', function(uids, next) {
+					winston.info('upgraded ' + count + ' users');
+					user.getMultipleUserSettings(uids, function(err, settings) {
+						if (err) {
+							return next(err);
+						}
+						count += uids.length;
+						settings = settings.filter(function(setting) {
+							return setting && setting.groupTitle;
+						});
+
+						async.each(settings, function(setting, next) {
+							db.setObjectField('user:' + setting.uid, 'groupTitle', setting.groupTitle, next);
+						}, next);
+					});
+				}, {}, function(err) {
+					if (err) {
+						return next(err);
+					}
+
+					winston.info('[2016/04/14] Group title from settings to user profile done');
+					Upgrade.update(thisSchemaDate, next);
+				});
+			} else {
+				winston.info('[2016/04/14] Group title from settings to user profile skipped!');
 				next();
 			}
 		}
