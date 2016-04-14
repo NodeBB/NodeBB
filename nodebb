@@ -118,12 +118,13 @@ var getRunningPid = function(callback) {
 				version: async.apply(getCurrentVersion)
 			}),
 			function(payload, next) {
-				if (!payload.plugins.length) {
+				var toCheck = Object.keys(payload.plugins);
+
+				if (!toCheck.length) {
 					process.stdout.write('OK'.green + '\n'.reset);
 					return next(null, []);	// no extraneous plugins installed
 				}
 
-				var toCheck = Object.keys(payload.plugins);
 				request({
 					method: 'GET',
 					url: 'https://packages.nodebb.org/api/v1/suggest?version=' + payload.version + '&package[]=' + toCheck.join('&package[]='),

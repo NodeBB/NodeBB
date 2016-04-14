@@ -108,6 +108,12 @@ Controllers.login = function(req, res, next) {
 	data.error = req.flash('error')[0];
 	data.title = '[[pages:login]]';
 
+	if (!data.allowLocalLogin && !data.allowRegistration && data.alternate_logins && data.authentication.length === 1) {
+		return helpers.redirect(res, {
+			external: data.authentication[0].url
+		});
+	}
+
 	res.render('login', data);
 };
 
