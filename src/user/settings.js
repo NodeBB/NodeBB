@@ -1,7 +1,7 @@
 
 'use strict';
 
-var	async = require('async');
+var async = require('async');
 var meta = require('../meta');
 var db = require('../database');
 var plugins = require('../plugins');
