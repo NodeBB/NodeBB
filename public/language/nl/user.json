@@ -92,6 +92,8 @@
     "open_links_in_new_tab": "Open uitgaande links naar een externe site in een nieuw tabblad",
     "enable_topic_searching": "Inschakelen mogelijkheid op onderwerp te kunnen zoeken",
     "topic_search_help": "Wanneer ingeschakeld zal de standaard zoekfunctie, met een aangepaste methode voor onderwerpen, overschreven worden",
+    "delay_image_loading": "Delay Image Loading",
+    "image_load_delay_help": "If enabled, images in topics will not load until they are scrolled into view",
     "scroll_to_my_post": "Toon het nieuwe bericht na het plaatsen van een antwoord",
     "follow_topics_you_reply_to": "Volg de onderwerpen waarop ik gereageerd heb",
     "follow_topics_you_create": "Volg de onderwerpen waarvan ik de oorspronkelijke auteur ben",

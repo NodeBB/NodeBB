@@ -92,6 +92,8 @@
     "open_links_in_new_tab": "外リンクを新しいタブに開きます",
     "enable_topic_searching": "インートピックの検索を有効にします",
     "topic_search_help": "有効にしたら、インートピックの検索はブラウザの既定機能を無視して、スクリーンに示したよりトピック内からの全部を検索します",
+    "delay_image_loading": "Delay Image Loading",
+    "image_load_delay_help": "If enabled, images in topics will not load until they are scrolled into view",
     "scroll_to_my_post": "After posting a reply, show the new post",
     "follow_topics_you_reply_to": "返信したトピックをフォローします",
     "follow_topics_you_create": "投稿したトピックをフォローします",

@@ -92,6 +92,8 @@
     "open_links_in_new_tab": "Ava väljaminevad lingid uues aknas",
     "enable_topic_searching": "Võimalda teemasisene otsing",
     "topic_search_help": "Kui see on sisse lükatud, siis teemasisene otsing võtab üle brauseri tavapärase otsingu ning võimaldab otsida ainult ekraanile mahtuva teema asemel terve teema ulatuses.",
+    "delay_image_loading": "Delay Image Loading",
+    "image_load_delay_help": "If enabled, images in topics will not load until they are scrolled into view",
     "scroll_to_my_post": "After posting a reply, show the new post",
     "follow_topics_you_reply_to": "Järgi teemasid, millele olete vastanud.",
     "follow_topics_you_create": "Järgi teemasi, mis on teie loodud.",

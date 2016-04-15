@@ -92,6 +92,8 @@
     "open_links_in_new_tab": "Atidaryti išeinančias nuorodas naujam skirtuke",
     "enable_topic_searching": "Įjungti Temų Ieškojimą ",
     "topic_search_help": "Jeigu įjungtas, temų ieškojimas, nepaisys naršyklės puslapio ieškojimo, ir pradės ieškoti tik toje temoje kuri bus rodoma ekrane",
+    "delay_image_loading": "Delay Image Loading",
+    "image_load_delay_help": "If enabled, images in topics will not load until they are scrolled into view",
     "scroll_to_my_post": "After posting a reply, show the new post",
     "follow_topics_you_reply_to": "Sekti tas temas kur atrašai tu",
     "follow_topics_you_create": "Sekti tas temas kurias sukuri tu",

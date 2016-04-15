@@ -92,6 +92,8 @@
     "open_links_in_new_tab": "Abrir los enlaces externos en una nueva pestaña",
     "enable_topic_searching": "Activar la búsqueda \"in-topic\"",
     "topic_search_help": "Si está activada, la búsqueda 'in-topic' sustituirá el comportamiento por defecto del navegador y le permitirá buscar en el tema al completo, en vez de hacer una búsqueda únicamente sobre el contenido mostrado en pantalla",
+    "delay_image_loading": "Delay Image Loading",
+    "image_load_delay_help": "If enabled, images in topics will not load until they are scrolled into view",
     "scroll_to_my_post": "After posting a reply, show the new post",
     "follow_topics_you_reply_to": "Seguir los temas en los que respondes",
     "follow_topics_you_create": "Seguir publicaciones que creas",

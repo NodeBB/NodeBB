@@ -92,6 +92,8 @@
     "open_links_in_new_tab": "Открывать внешние ссылки в новых вкладках",
     "enable_topic_searching": "Активировать поиск внутри тем",
     "topic_search_help": "Если опция включена, поиск в теме будет осуществляться за счёт собственного поиска, который позволит искать во всей теме, а не только в загруженных сообщениях",
+    "delay_image_loading": "Delay Image Loading",
+    "image_load_delay_help": "If enabled, images in topics will not load until they are scrolled into view",
     "scroll_to_my_post": "After posting a reply, show the new post",
     "follow_topics_you_reply_to": "Следить за темами в которых вы отвечаете",
     "follow_topics_you_create": "Следить за темами которые вы создаёте",
