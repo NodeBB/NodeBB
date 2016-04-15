@@ -248,7 +248,7 @@ Sockets.getOnlineAnonCount = function () {
 	return room ? room.length : 0;
 };
 
-Sockets.reqFromSocket = function(socket) {
+Sockets.reqFromSocket = function(socket, payload, event) {
 	var headers = socket.request.headers;
 	var host = headers.host;
 	var referer = headers.referer || '';
@@ -256,11 +256,14 @@ Sockets.reqFromSocket = function(socket) {
 	return {
 		ip: headers['x-forwarded-for'] || socket.ip,
 		host: host,
+		uid: socket.uid,
 		protocol: socket.request.connection.encrypted ? 'https' : 'http',
 		secure: !!socket.request.connection.encrypted,
 		url: referer,
+		body: {event: event || ((payload || {}).data || [])[0], payload: payload},
 		path: referer.substr(referer.indexOf(host) + host.length),
-		headers: headers
+		headers: headers,
+		_socket: socket
 	};
 };
 
