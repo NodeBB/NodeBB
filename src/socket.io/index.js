@@ -10,6 +10,7 @@ var winston = require('winston');
 var db = require('../database');
 var logger = require('../logger');
 var ratelimit = require('../middleware/ratelimit');
+var cls = require('../middleware/cls');
 
 var Sockets = {};
 var Namespaces = {};
@@ -29,6 +30,7 @@ Sockets.init = function(server) {
 	io.use(authorize);
 
 	io.on('connection', onConnection);
+	io.on('disconnect', onDisconnect);
 
 	io.listen(server, {
 		transports: nconf.get('socket.io:transports')
@@ -42,10 +44,14 @@ function onConnection(socket) {
 
 	logger.io_one(socket, socket.uid);
 
-	onConnect(socket);
+	cls.socket(socket, null, 'connection', function() {
+		onConnect(socket);
+	});
 
 	socket.on('*', function(payload) {
-		onMessage(socket, payload);
+		cls.socket(socket, payload, null, function() {
+			onMessage(socket, payload);
+		});
 	});
 }
 
@@ -56,6 +62,10 @@ function onConnect(socket) {
 	} else {
 		socket.join('online_guests');
 	}
+}
+
+function onDisconnect(socket) {
+	cls.socket(socket, null, 'disconnect', function() {});
 }
 
 
