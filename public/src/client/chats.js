@@ -373,7 +373,6 @@ define('forum/chats', ['components', 'string', 'sounds', 'forum/infinitescroll',
 					if (roomEl.length > 0) {
 						roomEl.addClass("unread");
 					} else {
-						console.log(data);
 						var recentEl = components.get('chat/recent');
 						templates.parse('partials/chat_recent_room', {
 							rooms: { "roomId": data.roomId, "lastUser": data.message.fromUser, "usernames": data.message.fromUser.username, "unread": true }
