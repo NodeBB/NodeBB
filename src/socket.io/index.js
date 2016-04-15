@@ -218,7 +218,7 @@ var cls = require('../middleware/cls');
 		return {
 			uid: socket.uid,
 			params: data[1],
-			method: event,
+			method: event || data[0],
 			body: payload,
 			ip: headers['x-forwarded-for'] || socket.ip,
 			host: host,
