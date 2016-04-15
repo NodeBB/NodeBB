@@ -217,7 +217,9 @@ var cls = require('../middleware/cls');
 
 		return {
 			uid: socket.uid,
-			body: {event: event || data[0], params: data[1], payload: payload},
+			params: data[1],
+			method: event,
+			body: payload,
 			ip: headers['x-forwarded-for'] || socket.ip,
 			host: host,
 			protocol: socket.request.connection.encrypted ? 'https' : 'http',
