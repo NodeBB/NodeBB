@@ -209,12 +209,15 @@ var cls = require('../middleware/cls');
 	};
 
 
-	Sockets.reqFromSocket = function (socket) {
+	Sockets.reqFromSocket = function (socket, payload, event) {
 		var headers = socket.request.headers;
 		var host = headers.host;
 		var referer = headers.referer || '';
+		var data = ((payload || {}).data || []);
 
 		return {
+			uid: socket.uid,
+			body: {event: event || data[0], params: data[1], payload: payload},
 			ip: headers['x-forwarded-for'] || socket.ip,
 			host: host,
 			protocol: socket.request.connection.encrypted ? 'https' : 'http',
