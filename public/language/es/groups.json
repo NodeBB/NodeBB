@@ -41,6 +41,7 @@
     "details.hidden": "Oculto",
     "details.hidden_help": "Si está habilitado, este grupo no aparecerá en los listados de grupos, y los usuarios tendrán que ser invitados manualmente",
     "details.delete_group": "Eliminar grupo",
+    "details.private_system_help": "Los grupos privados están desactivados a nivel de sistema, esta opción no cambiará nada.",
     "event.updated": "Los detalles del grupo han sido actualizados",
     "event.deleted": "El grupo \"%1\" ha sido eliminado",
     "membership.accept-invitation": "Aceptar Invitación",
@@ -48,5 +49,6 @@
     "membership.join-group": "Unirse al grupo",
     "membership.leave-group": "Dejar el grupo",
     "membership.reject": "Rechazar",
-    "new-group.group_name": "Nombre de Grupo:"
+    "new-group.group_name": "Nombre de Grupo:",
+    "upload-group-cover": "Cargar foto para el grupo"
 }

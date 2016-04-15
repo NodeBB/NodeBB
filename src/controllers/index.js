@@ -12,7 +12,6 @@ var helpers = require('./helpers');
 
 var Controllers = {
 	topics: require('./topics'),
-	posts: require('./posts'),
 	categories: require('./categories'),
 	category: require('./category'),
 	unread: require('./unread'),
@@ -25,7 +24,8 @@ var Controllers = {
 	accounts: require('./accounts'),
 	authentication: require('./authentication'),
 	api: require('./api'),
-	admin: require('./admin')
+	admin: require('./admin'),
+	globalMods: require('./globalmods')
 };
 
 
@@ -36,7 +36,7 @@ Controllers.home = function(req, res, next) {
 		if (err) {
 			return next(err);
 		}
-		if (settings.homePageRoute !== 'undefined' && settings.homePageRoute !== 'none') {
+		if (parseInt(meta.config.allowUserHomePage, 10) === 1 && settings.homePageRoute !== 'undefined' && settings.homePageRoute !== 'none') {
 			route = settings.homePageRoute || route;
 		}
 
@@ -107,6 +107,12 @@ Controllers.login = function(req, res, next) {
 	data.breadcrumbs = helpers.buildBreadcrumbs([{text: '[[global:login]]'}]);
 	data.error = req.flash('error')[0];
 	data.title = '[[pages:login]]';
+
+	if (!data.allowLocalLogin && !data.allowRegistration && data.alternate_logins && data.authentication.length === 1) {
+		return helpers.redirect(res, {
+			external: data.authentication[0].url
+		});
+	}
 
 	res.render('login', data);
 };

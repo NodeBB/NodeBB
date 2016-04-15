@@ -37,7 +37,7 @@ module.exports = function(privileges) {
 
 			var disabled = parseInt(results.disabled, 10) === 1;
 			var locked = parseInt(topic.locked, 10) === 1;
-			var	isAdminOrMod = results.isAdministrator || results.isModerator;
+			var isAdminOrMod = results.isAdministrator || results.isModerator;
 			var editable = isAdminOrMod;
 			var deletable = isAdminOrMod || results.isOwner;
 

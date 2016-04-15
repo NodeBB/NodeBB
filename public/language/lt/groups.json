@@ -41,6 +41,7 @@
     "details.hidden": "Paslėptas",
     "details.hidden_help": "Jeigu įjungta, ši grupė bus nerodo grupių sąraše, ir vartotojus reikės kviest rankiniu būdu",
     "details.delete_group": "Ištrinti grupe",
+    "details.private_system_help": "Private groups is disabled at system level, this option does not do anything",
     "event.updated": "Grupės informacija atnaujinta",
     "event.deleted": "Grupė \"%1\" pašalinta",
     "membership.accept-invitation": "Priimti Kvietimą",
@@ -48,5 +49,6 @@
     "membership.join-group": "Prisijungti Prie Grupės",
     "membership.leave-group": "Palikti Grupę",
     "membership.reject": "Atšaukti",
-    "new-group.group_name": "Group Name:"
+    "new-group.group_name": "Group Name:",
+    "upload-group-cover": "Upload group cover"
 }

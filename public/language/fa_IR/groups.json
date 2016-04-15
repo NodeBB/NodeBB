@@ -24,7 +24,7 @@
     "details.has_no_posts": "اعضای این گروه هیچ پستی ایجاد نکرده اند",
     "details.latest_posts": "آخرین پست ها",
     "details.private": "خصوصی",
-    "details.disableJoinRequests": "Disable join requests",
+    "details.disableJoinRequests": "غیر فعال کردن درخواستهای عضویت",
     "details.grant": "اعطاء/خلع مالکیت",
     "details.kick": "بیرون انداختن",
     "details.owner_options": "مدیر گروه",
@@ -41,6 +41,7 @@
     "details.hidden": "پنهان",
     "details.hidden_help": "اگر فعال باشد، این گروه در فهرست گروه‌ها پیدا نمی‌شود و کاربران باید دستی فراخوانده شوند",
     "details.delete_group": "حذف گروه",
+    "details.private_system_help": "Private groups is disabled at system level, this option does not do anything",
     "event.updated": "جزییات گروه با موفقیت به روز شد",
     "event.deleted": "گروه \"%1\" حدف شد",
     "membership.accept-invitation": "دعوت را قبول میکنم",
@@ -48,5 +49,6 @@
     "membership.join-group": "ورود به گروه",
     "membership.leave-group": "خروج از گروه",
     "membership.reject": "رد",
-    "new-group.group_name": "نام گروه"
+    "new-group.group_name": "نام گروه",
+    "upload-group-cover": "آپلود کاور گروه"
 }

@@ -79,9 +79,7 @@
 		"textClass": "visible-xs-inline",
 		"text": "\\[\\[global:header.search\\]\\]",
 		"properties": {
-			"installed": {
-				"search": true
-			}
+			"searchInstalled": true
 		}
 	}
 ]

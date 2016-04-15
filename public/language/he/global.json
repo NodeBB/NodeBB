@@ -65,7 +65,7 @@
     "posted_in_ago_by": "הפוסט הועלה ב %1 %2 על ידי %3",
     "user_posted_ago": "%1 העלה פוסט %2",
     "guest_posted_ago": "אורח העלה פוסט %1",
-    "last_edited_by": "last edited by %1",
+    "last_edited_by": "נערך לאחרונה על ידי %1",
     "norecentposts": "אין פוסטים מהזמן האחרון",
     "norecenttopics": "אין נושאים מהזמן החרון",
     "recentposts": "פוסטים אחרונים",
@@ -86,5 +86,9 @@
     "delete_all": "מחק הכל",
     "map": "מפה",
     "sessions": "סשני התחברות",
-    "ip_address": "כתובת IP"
+    "ip_address": "כתובת IP",
+    "enter_page_number": "הכנס מספר עמוד",
+    "upload_file": "העלה קובץ",
+    "upload": "העלה",
+    "allowed-file-types": "פורמטי הקבצים המורשים הם %1"
 }

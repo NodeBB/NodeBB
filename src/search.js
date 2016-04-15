@@ -85,7 +85,9 @@ function searchInContent(data, callback) {
 					topics.getMainPids(results.tids, next);
 				},
 				function(mainPids, next) {
-					results.pids = mainPids.concat(results.pids).filter(function(pid, index, array) {
+					results.pids = mainPids.concat(results.pids).map(function(pid) {
+						return pid && pid.toString();
+					}).filter(function(pid, index, array) {
 						return pid && array.indexOf(pid) === index;
 					});
 

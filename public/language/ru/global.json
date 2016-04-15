@@ -49,7 +49,7 @@
     "users": "Пользователи",
     "topics": "Темы",
     "posts": "Сообщения",
-    "best": "Best",
+    "best": "Лучшие",
     "upvoted": "Upvoted",
     "downvoted": "Downvoted",
     "views": "Просмотры",
@@ -86,5 +86,9 @@
     "delete_all": "Удалить все",
     "map": "Карта",
     "sessions": "Сессии входа",
-    "ip_address": "IP адрес"
+    "ip_address": "IP адрес",
+    "enter_page_number": "Введите номер страницы",
+    "upload_file": "Загрузить файл",
+    "upload": "Загрузить",
+    "allowed-file-types": "Разрешенные форматы файлов %1"
 }

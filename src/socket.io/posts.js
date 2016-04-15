@@ -1,18 +1,20 @@
 "use strict";
 
-var	async = require('async'),
+var	async = require('async');
 
-	posts = require('../posts'),
-	privileges = require('../privileges'),
-	meta = require('../meta'),
-	topics = require('../topics'),
-	user = require('../user'),
-	websockets = require('./index'),
-	socketTopics = require('./topics'),
-	socketHelpers = require('./helpers'),
-	utils = require('../../public/src/utils'),
+var posts = require('../posts');
+var privileges = require('../privileges');
+var meta = require('../meta');
+var topics = require('../topics');
+var user = require('../user');
+var websockets = require('./index');
+var socketTopics = require('./topics');
+var socketHelpers = require('./helpers');
+var utils = require('../../public/src/utils');
 
-	SocketPosts = {};
+var apiController = require('../controllers/api');
+
+var SocketPosts = {};
 
 
 require('./posts/edit')(SocketPosts);
@@ -49,7 +51,7 @@ SocketPosts.reply = function(socket, data, callback) {
 
 		user.updateOnlineUsers(socket.uid);
 
-		socketHelpers.notifyOnlineUsers(socket.uid, result);
+		socketHelpers.notifyNew(socket.uid, 'newPost', result);
 
 		if (data.lock) {
 			socketTopics.doTopicAction('lock', 'event:topic_locked', socket, {tids: [postData.topic.tid], cid: postData.topic.cid});
@@ -73,6 +75,20 @@ SocketPosts.getRawPost = function(socket, pid, callback) {
 				return next(new Error('[[error:no-post]]'));
 			}
 			next(null, postData.content);
+		}
+	], callback);
+};
+
+SocketPosts.getPost = function(socket, pid, callback) {
+	async.waterfall([
+		function(next) {
+			apiController.getObjectByType(socket.uid, 'post', pid, next);
+		},
+		function(postData, next) {
+			if (parseInt(postData.deleted, 10) === 1) {
+				return next(new Error('[[error:no-post]]'));
+			}
+			next(null, postData);
 		}
 	], callback);
 };
@@ -118,5 +134,7 @@ SocketPosts.getPidIndex = function(socket, data, callback) {
 	}
 	posts.getPidIndex(data.pid, data.tid, data.topicPostSort, callback);
 };
+
+
 
 module.exports = SocketPosts;

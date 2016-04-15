@@ -1,10 +1,10 @@
 
 'use strict';
 
-var	async = require('async'),
-	meta = require('../meta'),
-	db = require('../database'),
-	plugins = require('../plugins');
+var async = require('async');
+var meta = require('../meta');
+var db = require('../database');
+var plugins = require('../plugins');
 
 module.exports = function(User) {
 
@@ -75,7 +75,9 @@ module.exports = function(User) {
 			settings.sendPostNotifications = parseInt(getSetting(settings, 'sendPostNotifications', 0), 10) === 1;
 			settings.restrictChat = parseInt(getSetting(settings, 'restrictChat', 0), 10) === 1;
 			settings.topicSearchEnabled = parseInt(getSetting(settings, 'topicSearchEnabled', 0), 10) === 1;
+			settings.delayImageLoading = parseInt(getSetting(settings, 'delayImageLoading', 1), 10) === 1;
 			settings.bootswatchSkin = settings.bootswatchSkin || 'default';
+			settings.scrollToMyPost = parseInt(getSetting(settings, 'scrollToMyPost', 1), 10) === 1;
 
 			callback(null, settings);
 		});
@@ -119,8 +121,10 @@ module.exports = function(User) {
 			sendPostNotifications: data.sendPostNotifications,
 			restrictChat: data.restrictChat,
 			topicSearchEnabled: data.topicSearchEnabled,
+			delayImageLoading: data.delayImageLoading,
 			groupTitle: data.groupTitle,
-			homePageRoute: data.homePageCustom || data.homePageRoute
+			homePageRoute: data.homePageCustom || data.homePageRoute,
+			scrollToMyPost: data.scrollToMyPost
 		};
 
 		if (data.bootswatchSkin) {
@@ -157,18 +161,5 @@ module.exports = function(User) {
 
 	User.setSetting = function(uid, key, value, callback) {
 		db.setObjectField('user:' + uid + ':settings', key, value, callback);
-	};
-
-	User.setGroupTitle = function(groupName, uid, callback) {
-		if (groupName === 'registered-users') {
-			return callback();
-		}
-		db.getObjectField('user:' + uid + ':settings', 'groupTitle', function(err, currentTitle) {
-			if (err || (currentTitle || currentTitle === '')) {
-				return callback(err);
-			}
-
-			User.setSetting(uid, 'groupTitle', groupName, callback);
-		});
 	};
 };

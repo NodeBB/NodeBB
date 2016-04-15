@@ -1,23 +1,23 @@
 'use strict';
 
-var fs = require('fs'),
-	path = require('path'),
-	async = require('async'),
-	winston = require('winston'),
-	semver = require('semver'),
-	express = require('express'),
-	nconf = require('nconf'),
+var fs = require('fs');
+var path = require('path');
+var async = require('async');
+var winston = require('winston');
+var semver = require('semver');
+var express = require('express');
+var nconf = require('nconf');
 
-	db = require('./database'),
-	emitter = require('./emitter'),
-	meta = require('./meta'),
-	translator = require('../public/src/modules/translator'),
-	utils = require('../public/src/utils'),
-	hotswap = require('./hotswap'),
-	file = require('./file'),
+var db = require('./database');
+var emitter = require('./emitter');
+var translator = require('../public/src/modules/translator');
+var utils = require('../public/src/utils');
+var hotswap = require('./hotswap');
+var file = require('./file');
 
-	controllers = require('./controllers'),
-	app, middleware;
+var controllers = require('./controllers');
+var app;
+var middleware;
 
 (function(Plugins) {
 	require('./plugins/install')(Plugins);
@@ -115,7 +115,7 @@ var fs = require('fs'),
 					process.stdout.write('\n');
 					winston.warn('[plugins/load] The following plugins may not be compatible with your version of NodeBB. This may cause unintended behaviour or crashing. In the event of an unresponsive NodeBB caused by this plugin, run `./nodebb reset -p PLUGINNAME` to disable it.');
 					for(var x=0,numPlugins=Plugins.versionWarning.length;x<numPlugins;x++) {
-						process.stdout.write('  * '.yellow + Plugins.versionWarning[x].reset + '\n');
+						process.stdout.write('  * '.yellow + Plugins.versionWarning[x] + '\n');
 					}
 					process.stdout.write('\n');
 				}
@@ -183,13 +183,17 @@ var fs = require('fs'),
 					utils.walk(templatesPath, function(err, pluginTemplates) {
 						if (pluginTemplates) {
 							pluginTemplates.forEach(function(pluginTemplate) {
-								tplName = "/" + pluginTemplate.replace(templatesPath, '').substring(1);
+								if (pluginTemplate.endsWith('.tpl')) {
+									tplName = "/" + pluginTemplate.replace(templatesPath, '').substring(1);
 
-								if (templates.hasOwnProperty(tplName)) {
-									winston.verbose('[plugins] ' + tplName + ' replaced by ' + plugin.id);
+									if (templates.hasOwnProperty(tplName)) {
+										winston.verbose('[plugins] ' + tplName + ' replaced by ' + plugin.id);
+									}
+
+									templates[tplName] = pluginTemplate;
+								} else {
+									winston.warn('[plugins] Skipping ' + pluginTemplate + ' by plugin ' + plugin.id);
 								}
-
-								templates[tplName] = pluginTemplate;
 							});
 						} else {
 							winston.warn('[plugins/' + plugin.id + '] A templates directory was defined for this plugin, but was not found.');

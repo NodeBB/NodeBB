@@ -4,7 +4,6 @@ var winston = require('winston'),
 	fork = require('child_process').fork,
 	path = require('path'),
 	async = require('async'),
-	_ = require('underscore'),
 	nconf = require('nconf'),
 	fs = require('fs'),
 	file = require('../file'),
@@ -25,14 +24,12 @@ module.exports = function(Meta) {
 				'public/vendor/visibility/visibility.min.js',
 				'public/vendor/bootstrap/js/bootstrap.min.js',
 				'public/vendor/jquery/bootstrap-tagsinput/bootstrap-tagsinput.min.js',
-				'public/vendor/jquery/textcomplete/jquery.textcomplete.min.js',
+				'public/vendor/jquery/textcomplete/jquery.textcomplete.js',
 				'public/vendor/requirejs/require.js',
 				'public/vendor/bootbox/bootbox.min.js',
 				'public/vendor/tinycon/tinycon.js',
 				'public/vendor/xregexp/xregexp.js',
 				'public/vendor/xregexp/unicode/unicode-base.js',
-				'public/vendor/buzz/buzz.min.js',
-				'public/vendor/mousetrap/mousetrap.js',
 				'public/vendor/autosize.js',
 				'./node_modules/templates.js/lib/templates.js',
 				'public/src/utils.js',
@@ -43,6 +40,8 @@ module.exports = function(Meta) {
 				'public/src/variables.js',
 				'public/src/widgets.js'
 			],
+
+			// files listed below are only available client-side, or are bundled in to reduce # of network requests on cold load
 			rjs: [
 				'public/src/client/footer.js',
 				'public/src/client/chats.js',
@@ -77,8 +76,43 @@ module.exports = function(Meta) {
 				'public/src/modules/helpers.js',
 				'public/src/modules/sounds.js',
 				'public/src/modules/string.js'
+			],
+
+			// modules listed below are routed through express (/src/modules) so they can be defined anonymously
+			modules: [
+				'./node_modules/chart.js/Chart.js',
+				'./node_modules/mousetrap/mousetrap.js',
+
+				'public/vendor/buzz/buzz.js'
 			]
 		}
+	};
+
+	Meta.js.bridgeModules = function(app, callback) {
+		// Add routes for AMD-type modules to serve those files
+		var numBridged = 0;
+
+		async.series([
+			function(next) {
+				async.each(Meta.js.scripts.modules, function(localPath, next) {
+					app.get(path.join('/src/modules/', path.basename(localPath)), function(req, res) {
+						return res.sendFile(path.join(__dirname, '../../', localPath), {
+							maxAge: app.enabled('cache') ? 5184000000 : 0
+						});
+					});
+
+					++numBridged;
+					next();
+				}, next);
+			}
+		], function(err) {
+			if (err) {
+				winston.error('[meta/js] Encountered error while bridging modules:' + err.message);
+			}
+
+			winston.verbose('[meta/js] ' + numBridged + ' of ' + Meta.js.scripts.modules.length + ' modules bridged');
+			callback(err);
+		});
 	};
 
 	Meta.js.minify = function(target, callback) {
@@ -89,6 +123,8 @@ module.exports = function(Meta) {
 
 			return;
 		}
+
+		winston.verbose('[meta/js] Minifying ' + target);
 
 		var forkProcessParams = setupDebugging();
 		var minifier = Meta.js.minifierProc = fork('minifier.js', [], forkProcessParams);
@@ -111,19 +147,19 @@ module.exports = function(Meta) {
 				winston.verbose('[meta/js] ' + target + ' minification complete');
 				minifier.kill();
 
-				if (process.send) {
+				if (process.send && Meta.js.target['nodebb.min.js'] && Meta.js.target['acp.min.js']) {
 					process.send({
 						action: 'js-propagate',
-						cache: Meta.js.target[target].cache,
-						map: Meta.js.target[target].map
+						data: Meta.js.target
 					});
 				}
 
-				Meta.js.commitToFile(target);
+				Meta.js.commitToFile(target, function() {					
+					if (typeof callback === 'function') {
+						callback();
+					}
+				});
 
-				if (typeof callback === 'function') {
-					callback();
-				}
 				break;
 			case 'error':
 				winston.error('[meta/js] Could not compile ' + target + ': ' + message.message);
@@ -185,15 +221,15 @@ module.exports = function(Meta) {
 		}
 	};
 
-	Meta.js.commitToFile = function(target) {
+	Meta.js.commitToFile = function(target, callback) {
 		fs.writeFile(path.join(__dirname, '../../public/' + target), Meta.js.target[target].cache, function (err) {
 			if (err) {
 				winston.error('[meta/js] ' + err.message);
 				process.exit(0);
 			}
 
-			winston.verbose('[meta/js] ' + target + ' committed to disk.');
 			emitter.emit('meta:js.compiled');
+			callback();
 		});
 	};
 

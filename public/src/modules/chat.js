@@ -7,8 +7,8 @@ define('chat', ['components', 'taskbar', 'string', 'sounds', 'forum/chats', 'tra
 	var newMessage = false;
 
 	module.prepareDOM = function() {
-		var	chatsToggleEl = components.get('chat/dropdown'),
-			chatsListEl = components.get('chat/list');
+		var chatsToggleEl = components.get('chat/dropdown');
+		var chatsListEl = components.get('chat/list');
 
 		chatsToggleEl.on('click', function() {
 			if (chatsToggleEl.parent().hasClass('open')) {
@@ -16,6 +16,14 @@ define('chat', ['components', 'taskbar', 'string', 'sounds', 'forum/chats', 'tra
 			}
 
 			module.loadChatsDropdown(chatsListEl);
+		});
+
+		$('[component="chats/mark-all-read"]').on('click', function() {
+			socket.emit('modules.chats.markAllRead', function(err) {
+				if (err) {
+					return app.alertError(err);
+				}
+			});
 		});
 
 		socket.on('event:chats.receive', function(data) {
@@ -42,7 +50,8 @@ define('chat', ['components', 'taskbar', 'string', 'sounds', 'forum/chats', 'tra
 
 					taskbar.push('chat', modal.attr('UUID'), {
 						title: username,
-						touid: data.message.fromUser.uid
+						touid: data.message.fromUser.uid,
+						roomId: data.roomId
 					});
 				}
 			} else {
@@ -71,7 +80,7 @@ define('chat', ['components', 'taskbar', 'string', 'sounds', 'forum/chats', 'tra
 		});
 
 		socket.on('event:chats.roomRename', function(data) {
-			module.getModal(data.roomId).find('[component="chat/room/name"]').val(data.newName);
+			module.getModal(data.roomId).find('[component="chat/room/name"]').val($('<div/>').html(data.newName).text());
 		});
 
 		Chats.onChatEdit();

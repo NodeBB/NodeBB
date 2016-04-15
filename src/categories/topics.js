@@ -53,18 +53,10 @@ module.exports = function(Categories) {
 	};
 
 	Categories.getTopicIds = function(set, reverse, start, stop, callback) {
-		if (Array.isArray(set)) {
-			if (reverse) {
-				db.getSortedSetRevUnion(set, start, stop, callback);
-			} else {
-				db.getSortedSetUnion(set, start, stop, callback);
-			}
+		if (reverse) {
+			db.getSortedSetRevRange(set, start, stop, callback);
 		} else {
-			if (reverse) {
-				db.getSortedSetRevRange(set, start, stop, callback);
-			} else {
-				db.getSortedSetRange(set, start, stop, callback);
-			}
+			db.getSortedSetRange(set, start, stop, callback);
 		}
 	};
 

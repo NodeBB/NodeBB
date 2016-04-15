@@ -41,6 +41,7 @@
     "details.hidden": "Скривена",
     "details.hidden_help": "Уколико је укључено, група неће бити видљива на списку група, и корисницима се позивнице морају слати ручно.",
     "details.delete_group": "Избришите групу",
+    "details.private_system_help": "Private groups is disabled at system level, this option does not do anything",
     "event.updated": "Детаљи групе су ажурирани",
     "event.deleted": "Група „%1“ је обрисана",
     "membership.accept-invitation": "Прихватите позив",
@@ -48,5 +49,6 @@
     "membership.join-group": "Учланите се у групу",
     "membership.leave-group": "Напусти групу",
     "membership.reject": "Одбаци",
-    "new-group.group_name": "Име групе:"
+    "new-group.group_name": "Име групе:",
+    "upload-group-cover": "Upload group cover"
 }

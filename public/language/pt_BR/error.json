@@ -14,7 +14,7 @@
     "invalid-password": "Senha Inválida",
     "invalid-username-or-password": "Por favor especifique ambos nome de usuário e senha",
     "invalid-search-term": "Termo de pesquisa inválido",
-    "invalid-pagination-value": "Invalid pagination value, must be at least %1 and at most %2",
+    "invalid-pagination-value": "Valor de paginação inválido, precisa ser entre no mínimo %1 e no máximo %2",
     "username-taken": "Nome de usuário já existe",
     "email-taken": "Email já cadastrado",
     "email-not-confirmed": "O seu email ainda não foi confirmado, por favor clique aqui para confirmar seu email.",
@@ -27,6 +27,7 @@
     "password-too-long": "A senha é muito grande",
     "user-banned": "Usuário banido",
     "user-too-new": "Desculpe, é necessário que você aguarde %1 segundo(s) antes de fazer o seu primeiro post.",
+    "blacklisted-ip": "Desculpe, o seu endereço IP foi banido desta comunidade. Se você acha que isso é um engano, por favor contate um administrador.",
     "no-category": "A categoria não existe",
     "no-topic": "O tópico não existe",
     "no-post": "O post não existe",
@@ -50,7 +51,7 @@
     "still-uploading": "Aguarde a conclusão dos uploads.",
     "file-too-big": "O tamanho máximo permitido de arquivo é de %1 kB - por favor faça upload de um arquivo menor",
     "guest-upload-disabled": "O upload por visitantes foi desabilitado",
-    "already-favourited": "Você já adicionou este post aos favoritos",
+    "already-favourited": "Você já favoritou este post",
     "already-unfavourited": "Você já removeu este post dos favoritos",
     "cant-ban-other-admins": "Você não pode banir outros administradores!",
     "cant-remove-last-admin": "Você é o único administrador. Adicione outro usuário como administrador antes de remover a si mesmo como admin",
@@ -83,7 +84,7 @@
     "chat-message-too-long": "A mensagem de chat é muito longa",
     "cant-edit-chat-message": "Você não tem permissão para editar esta mensagem",
     "cant-remove-last-user": "Você não pode excluir o último usuário",
-    "cant-delete-chat-message": "You are not allowed to delete this message",
+    "cant-delete-chat-message": "Você não possui permissão para deletar esta mensagem",
     "reputation-system-disabled": "O sistema de reputação está desabilitado.",
     "downvoting-disabled": "Negativação está desabilitada",
     "not-enough-reputation-to-downvote": "Você não possui reputação suficiente para negativar este post",
@@ -96,5 +97,7 @@
     "wrong-login-type-username": "Por favor use o seu nome de usuário para fazer login",
     "invite-maximum-met": "Você já convidou o número máximo de pessoas (%1 de %2).",
     "no-session-found": "Nenhuma sessão de login encontrada!",
-    "not-in-room": "User not in room"
+    "not-in-room": "O usuário não está na sala",
+    "no-users-in-room": "Nenhum usuário nesta sala",
+    "cant-kick-self": "Você não pode kickar a si mesmo do grupo"
 }

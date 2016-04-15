@@ -1,14 +1,13 @@
 'use strict';
 
-var async = require('async'),
-	db = require('../database'),
-	utils = require('../../public/src/utils'),
-	validator = require('validator'),
-	plugins = require('../plugins'),
-	groups = require('../groups'),
-	meta = require('../meta'),
-	notifications = require('../notifications'),
-	translator = require('../../public/src/modules/translator');
+var async = require('async');
+var db = require('../database');
+var utils = require('../../public/src/utils');
+var validator = require('validator');
+var plugins = require('../plugins');
+var groups = require('../groups');
+var meta = require('../meta');
+
 
 module.exports = function(User) {
 
@@ -90,7 +89,11 @@ module.exports = function(User) {
 								db.sortedSetAdd('userslug:uid', userData.uid, userData.userslug, next);
 							},
 							function(next) {
-								db.sortedSetsAdd(['users:joindate', 'users:online', 'users:notvalidated'], timestamp, userData.uid, next);
+								var sets = ['users:joindate', 'users:online'];
+								if (parseInt(userData.uid) !== 1) {
+									sets.push('users:notvalidated');
+								}
+								db.sortedSetsAdd(sets, timestamp, userData.uid, next);
 							},
 							function(next) {
 								db.sortedSetsAdd(['users:postcount', 'users:reputation'], 0, userData.uid, next);
@@ -176,7 +179,7 @@ module.exports = function(User) {
 					next();
 				}
 			}
-		}, function(err, results) {
+		}, function(err) {
 			callback(err);
 		});
 	};

@@ -24,9 +24,10 @@
     "confirm-email-already-sent": "ایمیل فعال‌سازی قبلا فرستاده شده، لطفا %1 دقیقه صبر کنید تا ایمیل دیگری بفرستید.",
     "username-too-short": "نام کاربری خیلی کوتاه است.",
     "username-too-long": "نام کاربری بسیار طولانیست",
-    "password-too-long": "Password too long",
+    "password-too-long": "کلمه عبور بسیار طولانیست",
     "user-banned": "کاربر محروم شد.",
     "user-too-new": "با عرض پوزش، شما باید %1 ثانیه پیش از فرستادن پست نخست خود صبر کنید",
+    "blacklisted-ip": "Sorry, your IP address has been banned from this community. If you feel this is in error, please contact an administrator.",
     "no-category": "دسته بندی وجود ندارد",
     "no-topic": "موضوع وجود ندارد.",
     "no-post": "پست وجود ندارد",
@@ -50,8 +51,8 @@
     "still-uploading": "خواهشمندیم تا پایان بارگذاری‌ها شکیبا باشید.",
     "file-too-big": "حداکثر مجاز حجم فایل %1 کیلوبایت می باشد - لطفا فایلی با حجم کمتر بارگذاری کنید",
     "guest-upload-disabled": "Guest uploading has been disabled",
-    "already-favourited": "شما قبلا این پست را محبوب کرده اید",
-    "already-unfavourited": "شما قبلا این پست را نامحبوب کرده اید",
+    "already-favourited": "You have already bookmarked this post",
+    "already-unfavourited": "You have already unbookmarked this post",
     "cant-ban-other-admins": "شما نمی‌توانید دیگر مدیران را محروم کنید!",
     "cant-remove-last-admin": "شما تنها مدیر می باشید . شما باید قبل از عزل خود از مدیریت یک کاربر دیگر را مدیر کنید",
     "invalid-image-type": "نوع تصویر نامعتبر است. نوعهای قابل قبول اینها هستند: %1",
@@ -96,5 +97,7 @@
     "wrong-login-type-username": "لطفا از نام کاربری خود برای ورود استفاده کنید",
     "invite-maximum-met": "You have invited the maximum amount of people (%1 out of %2).",
     "no-session-found": "No login session found!",
-    "not-in-room": "User not in room"
+    "not-in-room": "User not in room",
+    "no-users-in-room": "هیچ کاربری در این گفتگو نیست",
+    "cant-kick-self": "You can't kick yourself from the group"
 }

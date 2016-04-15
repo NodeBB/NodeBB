@@ -45,17 +45,26 @@ uploadsController.upload = function(req, res, filesIterator, next) {
 
 uploadsController.uploadPost = function(req, res, next) {
 	uploadsController.upload(req, res, function(uploadedFile, next) {
-		if (uploadedFile.type.match(/image./)) {
-			file.isFileTypeAllowed(uploadedFile.path, function(err, tempPath) {
-				if (err) {
-					return next(err);
-				}
-
-				uploadImage(req.user ? req.user.uid : 0, uploadedFile, next);
-			});
-		} else {
-			uploadFile(req.user ? req.user.uid : 0, uploadedFile, next);
+		var isImage = uploadedFile.type.match(/image./);
+		if (isImage && plugins.hasListeners('filter:uploadImage')) {
+			return plugins.fireHook('filter:uploadImage', {image: uploadedFile, uid: req.uid}, next);
 		}
+
+		async.waterfall([
+			function(next) {
+				if (isImage) {
+					file.isFileTypeAllowed(uploadedFile.path, next);
+				} else {
+					next();
+				}
+			},
+			function (next) {
+				if (parseInt(meta.config.allowFileUploads, 10) !== 1) {
+					return next(new Error('[[error:uploads-are-disabled]]'));
+				}
+				uploadFile(req.uid, uploadedFile, next);
+			}
+		], next);
 	}, next);
 };
 
@@ -66,27 +75,32 @@ uploadsController.uploadThumb = function(req, res, next) {
 	}
 
 	uploadsController.upload(req, res, function(uploadedFile, next) {
-		file.isFileTypeAllowed(uploadedFile.path, function(err, tempPath) {
+		file.isFileTypeAllowed(uploadedFile.path, function(err) {
 			if (err) {
 				return next(err);
 			}
 
-			if (uploadedFile.type.match(/image./)) {
-				var size = parseInt(meta.config.topicThumbSize, 10) || 120;
-				image.resizeImage({
-					path: uploadedFile.path,
-					extension: path.extname(uploadedFile.name),
-					width: size,
-					height: size
-				}, function(err) {
-					if (err) {
-						return next(err);
-					}
-					uploadImage(req.user ? req.user.uid : 0, uploadedFile, next);
-				});
-			} else {
-				next(new Error('[[error:invalid-file]]'));
+			if (!uploadedFile.type.match(/image./)) {
+				return next(new Error('[[error:invalid-file]]'));
 			}
+
+			var size = parseInt(meta.config.topicThumbSize, 10) || 120;
+			image.resizeImage({
+				path: uploadedFile.path,
+				extension: path.extname(uploadedFile.name),
+				width: size,
+				height: size
+			}, function(err) {
+				if (err) {
+					return next(err);
+				}
+
+				if (plugins.hasListeners('filter:uploadImage')) {
+					return plugins.fireHook('filter:uploadImage', {image: uploadedFile, uid: req.uid}, next);
+				}
+
+				uploadFile(req.uid, uploadedFile, next);
+			});
 		});
 	}, next);
 };
@@ -100,28 +114,17 @@ uploadsController.uploadGroupCover = function(uid, uploadedFile, callback) {
 		return plugins.fireHook('filter:uploadFile', {file: uploadedFile, uid: uid}, callback);
 	}
 
-	saveFileToLocal(uploadedFile, callback);
+	file.isFileTypeAllowed(uploadedFile.path, function(err) {
+		if (err) {
+			return callback(err);
+		}
+		saveFileToLocal(uploadedFile, callback);
+	});
 };
-
-function uploadImage(uid, image, callback) {
-	if (plugins.hasListeners('filter:uploadImage')) {
-		return plugins.fireHook('filter:uploadImage', {image: image, uid: uid}, callback);
-	}
-
-	if (parseInt(meta.config.allowFileUploads, 10)) {
-		uploadFile(uid, image, callback);
-	} else {
-		callback(new Error('[[error:uploads-are-disabled]]'));
-	}
-}
 
 function uploadFile(uid, uploadedFile, callback) {
 	if (plugins.hasListeners('filter:uploadFile')) {
 		return plugins.fireHook('filter:uploadFile', {file: uploadedFile, uid: uid}, callback);
-	}
-
-	if (parseInt(meta.config.allowFileUploads, 10) !== 1) {
-		return callback(new Error('[[error:uploads-are-disabled]]'));
 	}
 
 	if (!uploadedFile) {

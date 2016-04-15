@@ -18,6 +18,11 @@ define('forum/account/edit/username', ['forum/account/header'], function(header)
 			if (!userData.username) {
 				return;
 			}
+
+			if (userData.username === userData.password) {
+				return app.alertError('[[user:username_same_as_password]]');
+			}
+
 			var btn = $(this);
 			btn.addClass('disabled').find('i').removeClass('hide');
 			socket.emit('user.changeUsernameEmail', userData, function(err, data) {

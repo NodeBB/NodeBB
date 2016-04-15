@@ -28,16 +28,17 @@ define('forum/topic/postTools', ['share', 'navigator', 'components', 'translator
 			var postEl = $this.parents('[data-pid]');
 			var pid = postEl.attr('data-pid');
 			var index = parseInt(postEl.attr('data-index'), 10);
+
 			socket.emit('posts.loadPostTools', {pid: pid, cid: ajaxify.data.cid}, function(err, data) {
 				if (err) {
 					return app.alertError(err);
 				}
 				data.posts.display_move_tools = data.posts.display_move_tools && index !== 0;
-				data.postSharing = data.postSharing.filter(function(share) { return share.activated === true; });
-				
+
 				templates.parse('partials/topic/post-menu-list', data, function(html) {
 					translator.translate(html, function(html) {
 						dropdownMenu.html(html);
+						$(window).trigger('action:post.tools.load');
 					});
 				});
 			});
@@ -63,27 +64,44 @@ define('forum/topic/postTools', ['share', 'navigator', 'components', 'translator
 	};
 
 	function addVoteHandler() {
-		components.get('topic').on('mouseenter', '[data-pid] [component="post/vote-count"]', function() {
-			loadDataAndCreateTooltip($(this).parent());
+		components.get('topic').on('mouseenter', '[data-pid] [component="post/vote-count"]', loadDataAndCreateTooltip);
+		components.get('topic').on('mouseout', '[data-pid] [component="post/vote-count"]', function() {
+			var el = $(this).parent();
+			el.on('shown.bs.tooltip', function() {
+				$('.tooltip').tooltip('destroy');
+				el.off('shown.bs.tooltip');
+			});
+
+			$('.tooltip').tooltip('destroy');
 		});
 	}
 
-	function loadDataAndCreateTooltip(el) {
+	function loadDataAndCreateTooltip(e) {
+		e.stopPropagation();
+
+		var $this = $(this);
+		var el = $this.parent();
 		var pid = el.parents('[data-pid]').attr('data-pid');
+
+		$('.tooltip').tooltip('destroy');
+		$this.off('mouseenter', loadDataAndCreateTooltip);
+
 		socket.emit('posts.getUpvoters', [pid], function(err, data) {
-			if (!err && data.length) {
+			if (err) {
+				return app.alertError(err.message);
+			}
+
+			if (data.length) {
 				createTooltip(el, data[0]);
 			}
+			$this.off('mouseenter').on('mouseenter', loadDataAndCreateTooltip);
 		});
+		return false;
 	}
 
 	function createTooltip(el, data) {
 		function doCreateTooltip(title) {
 			el.attr('title', title).tooltip('fixTitle').tooltip('show');
-			el.on('hidden.bs.tooltip', function() {
-				el.tooltip('destroy');
-				el.off('hidden.bs.tooltip');
-			});
 		}
 		var usernames = data.usernames;
 		if (!usernames.length) {
@@ -179,14 +197,26 @@ define('forum/topic/postTools', ['share', 'navigator', 'components', 'translator
 	function onReplyClicked(button, tid) {
 		showStaleWarning(function(proceed) {
 			if (!proceed) {
-				var selectionText = '',
-					selection = window.getSelection ? window.getSelection() : document.selection.createRange();
+				var selectionText = '';
+				var selection = window.getSelection ? window.getSelection() : document.selection.createRange();
+				var content = button.parents('[component="post"]').find('[component="post/content"]').get(0);
 
-				if ($(selection.baseNode).parents('[component="post/content"]').length > 0) {
-					selectionText = selection.toString();
+				if (content && selection.containsNode(content, true)) {
+					var bounds = document.createRange();
+					bounds.selectNodeContents(content);
+					var range = selection.getRangeAt(0).cloneRange();
+					if (range.compareBoundaryPoints(Range.START_TO_START, bounds) < 0) {
+						range.setStart(bounds.startContainer, bounds.startOffset);
+					}
+					if (range.compareBoundaryPoints(Range.END_TO_END, bounds) > 0) {
+						range.setEnd(bounds.endContainer, bounds.endOffset);
+					}
+					bounds.detach();
+					selectionText = range.toString();
+					range.detach();
 				}
 
-				var username = getUserName(selectionText ? $(selection.baseNode) : button);
+				var username = getUserName(button);
 				if (getData(button, 'data-uid') === '0' || !getData(button, 'data-userslug')) {
 					username = '';
 				}
@@ -306,11 +336,13 @@ define('forum/topic/postTools', ['share', 'navigator', 'components', 'translator
 	}
 
 	function getUserName(button) {
-		var username = '',
-			post = button.parents('[data-pid]');
+		var username = '';
+		var post = button.parents('[data-pid]');
+
 		if (button.attr('component') === 'topic/reply') {
 			return username;
 		}
+
 		if (post.length) {
 			username = post.attr('data-username').replace(/\s/g, '-');
 		}

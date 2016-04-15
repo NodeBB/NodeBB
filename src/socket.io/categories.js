@@ -6,7 +6,7 @@ var categories = require('../categories');
 var privileges = require('../privileges');
 var user = require('../user');
 var topics = require('../topics');
-
+var apiController = require('../controllers/api');
 
 var SocketCategories = {};
 
@@ -190,6 +190,10 @@ SocketCategories.ignore = function(socket, cid, callback) {
 
 SocketCategories.isModerator = function(socket, cid, callback) {
 	user.isModerator(socket.uid, cid, callback);
+};
+
+SocketCategories.getCategory = function(socket, cid, callback) {
+	apiController.getObjectByType(socket.uid, 'category', cid, callback);
 };
 
 module.exports = SocketCategories;

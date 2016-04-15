@@ -74,6 +74,12 @@
 			</div>
 			<div class="checkbox">
 				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
+					<input class="mdl-switch__input" type="checkbox" data-field="password:disableEdit">
+					<span class="mdl-switch__label"><strong>Disable password changes</strong></span>
+				</label>
+			</div>
+			<div class="checkbox">
+				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
 					<input class="mdl-switch__input" type="checkbox" data-field="allowAccountDelete" checked>
 					<span class="mdl-switch__label"><strong>Allow account deletion</strong></span>
 				</label>
@@ -178,40 +184,40 @@
 			<div class="checkbox">
 				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
 					<input class="mdl-switch__input" type="checkbox" data-field="showemail">
-					<span class="mdl-switch__label"><strong>[[user:show_email]]</strong></span>
+					<span class="mdl-switch__label"><strong>Show email</strong></span>
 				</label>
 			</div>
 
 			<div class="checkbox">
 				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
 					<input class="mdl-switch__input" type="checkbox" data-field="showfullname">
-					<span class="mdl-switch__label"><strong>[[user:show_fullname]]</strong></span>
+					<span class="mdl-switch__label"><strong>Show fullname</strong></span>
 				</label>
 			</div>
 
 			<div class="checkbox">
 				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
 					<input class="mdl-switch__input" type="checkbox" data-field="restrictChat">
-					<span class="mdl-switch__label"><strong>[[user:restrict_chats]]</strong></span>
+					<span class="mdl-switch__label"><strong>Only allow chat messages from users I follow</strong></span>
 				</label>
 			</div>
 
 			<div class="checkbox">
 				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
 					<input class="mdl-switch__input" type="checkbox" data-field="openOutgoingLinksInNewTab">
-					<span class="mdl-switch__label"><strong>[[user:open_links_in_new_tab]]</strong></span>
+					<span class="mdl-switch__label"><strong>Open outgoing links in new tab</strong></span>
 				</label>
 			</div>
 
 			<div class="checkbox">
 				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
 					<input class="mdl-switch__input" type="checkbox" data-field="topicSearchEnabled">
-					<span class="mdl-switch__label"><strong>[[user:enable_topic_searching]]</strong></span>
+					<span class="mdl-switch__label"><strong>Enable In-Topic Searching</strong></span>
 				</label>
 			</div>
 
 			<div class="form-group">
-				<label>[[user:digest_label]]</label>
+				<label>Subscribe to Digest</label>
 				<select class="form-control" data-field="dailyDigestFreq">
 					<option value="off">Off</option>
 					<option value="day">Daily</option>
@@ -223,35 +229,35 @@
 			<div class="checkbox">
 				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
 					<input class="mdl-switch__input" type="checkbox" data-field="sendChatNotifications">
-					<span class="mdl-switch__label"><strong>[[user:send_chat_notifications]]</strong></span>
+					<span class="mdl-switch__label"><strong>Send an email if a new chat message arrives and I am not online</strong></span>
 				</label>
 			</div>
 
 			<div class="checkbox">
 				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
 					<input class="mdl-switch__input" type="checkbox" data-field="sendPostNotifications">
-					<span class="mdl-switch__label"><strong>[[user:send_post_notifications]]</strong></span>
+					<span class="mdl-switch__label"><strong>Send an email when replies are made to topics I am subscribed to</strong></span>
 				</label>
 			</div>
 
 			<div class="checkbox">
 				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
 					<input class="mdl-switch__input" type="checkbox" data-field="followTopicsOnCreate">
-					<span class="mdl-switch__label"><strong>[[user:follow_topics_you_create]]</strong></span>
+					<span class="mdl-switch__label"><strong>Follow topics you create</strong></span>
 				</label>
 			</div>
 
 			<div class="checkbox">
 				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
 					<input class="mdl-switch__input" type="checkbox" data-field="followTopicsOnReply">
-					<span class="mdl-switch__label"><strong>[[user:follow_topics_you_reply_to]]</strong></span>
+					<span class="mdl-switch__label"><strong>Follow topics that you reply to</strong></span>
 				</label>
 			</div>
 
 			<div class="checkbox">
 				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
 					<input class="mdl-switch__input" type="checkbox" data-field="notificationSounds" />
-					<span class="mdl-switch__label">[[user:notification_sounds]]</span>
+					<span class="mdl-switch__label">Play a sound when you receive a notification</span>
 				</label>
 			</div>
 

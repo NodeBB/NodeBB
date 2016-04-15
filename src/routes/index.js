@@ -36,8 +36,9 @@ function mainRoutes(app, middleware, controllers) {
 	setupPageRoute(app, '/tos', middleware, [], controllers.termsOfUse);
 }
 
-function postRoutes(app, middleware, controllers) {
-	setupPageRoute(app, '/posts/flags', middleware, [], controllers.posts.flagged);
+function globalModRoutes(app, middleware, controllers) {
+	setupPageRoute(app, '/ip-blacklist', middleware, [], controllers.globalMods.ipBlacklist);
+	setupPageRoute(app, '/posts/flags', middleware, [], controllers.globalMods.flagged);
 }
 
 function topicRoutes(app, middleware, controllers) {
@@ -79,12 +80,24 @@ function groupRoutes(app, middleware, controllers) {
 	setupPageRoute(app, '/groups/:slug/members', middleware, middlewares, controllers.groups.members);
 }
 
-module.exports = function(app, middleware) {
-	var router = express.Router(),
-		pluginRouter = express.Router(),
-		authRouter = express.Router(),
+module.exports = function(app, middleware, hotswapIds) {
+	var routers = [
+			express.Router(),	// plugin router
+			express.Router(),	// main app router
+			express.Router()	// auth router
+		],
+		router = routers[1],
+		pluginRouter = routers[0],
+		authRouter = routers[2],
 		relativePath = nconf.get('relative_path'),
 		ensureLoggedIn = require('connect-ensure-login');
+
+	if (Array.isArray(hotswapIds) && hotswapIds.length) {
+		for(var idx,x=0;x<hotswapIds.length;x++) {
+			idx = routers.push(express.Router()) - 1;
+			routers[idx].hotswapId = hotswapIds[x];
+		}
+	}
 
 	pluginRouter.render = function() {
 		app.render.apply(app, arguments);
@@ -111,16 +124,16 @@ module.exports = function(app, middleware) {
 
 	mainRoutes(router, middleware, controllers);
 	topicRoutes(router, middleware, controllers);
-	postRoutes(router, middleware, controllers);
+	globalModRoutes(router, middleware, controllers);
 	tagRoutes(router, middleware, controllers);
 	categoryRoutes(router, middleware, controllers);
 	accountRoutes(router, middleware, controllers);
 	userRoutes(router, middleware, controllers);
 	groupRoutes(router, middleware, controllers);
 
-	app.use(relativePath, pluginRouter);
-	app.use(relativePath, router);
-	app.use(relativePath, authRouter);
+	for(var x=0;x<routers.length;x++) {
+		app.use(relativePath, routers[x]);
+	}
 
 	if (process.env.NODE_ENV === 'development') {
 		require('./debug')(app, middleware, controllers);
@@ -145,8 +158,8 @@ module.exports = function(app, middleware) {
 
 function handle404(app, middleware) {
 	var relativePath = nconf.get('relative_path');
-	var	isLanguage = new RegExp('^' + relativePath + '/language/[\\w]{2,}/.*.json'),
-		isClientScript = new RegExp('^' + relativePath + '\\/src\\/.+\\.js');
+	var isLanguage = new RegExp('^' + relativePath + '/language/.*/.*.json');
+	var isClientScript = new RegExp('^' + relativePath + '\\/src\\/.+\\.js');
 
 	app.use(function(req, res) {
 		if (plugins.hasListeners('action:meta.override404')) {
@@ -187,9 +200,12 @@ function handle404(app, middleware) {
 
 function handleErrors(app, middleware) {
 	app.use(function(err, req, res, next) {
-		if (err.code === 'EBADCSRFTOKEN') {
-			winston.error(req.path + '\n', err.message);
-			return res.sendStatus(403);
+		switch (err.code) {
+			case 'EBADCSRFTOKEN':
+				winston.error(req.path + '\n', err.message);
+				return res.sendStatus(403);
+			case 'blacklisted-ip':
+				return res.status(403).type('text/plain').send(err.message);
 		}
 
 		if (parseInt(err.status, 10) === 302 && err.path) {

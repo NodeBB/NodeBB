@@ -23,7 +23,7 @@
 					</div>
 				</div>
 
-				<button type="submit" class="btn btn-primary">[[global:search]]</button>
+				<button type="submit" class="btn btn-primary">Search</button>
 			</form>
 			<br />
 			<hr/>
@@ -57,7 +57,7 @@
 								</div>
 								<small>
 									<span class="pull-right">
-										Posted in <a href="{config.relative_path}/category/{posts.category.slug}" target="_blank"><i class="fa {posts.category.icon}"></i> {posts.category.name}</a>, <span class="timeago" title="{posts.relativeTime}"></span> &bull;
+										Posted in <a href="{config.relative_path}/category/{posts.category.slug}" target="_blank"><i class="fa {posts.category.icon}"></i> {posts.category.name}</a>, <span class="timeago" title="{posts.timestampISO}"></span> &bull;
 										<a href="{config.relative_path}/topic/{posts.topic.slug}/{posts.index}" target="_blank">Read More</a>
 									</span>
 								</small>

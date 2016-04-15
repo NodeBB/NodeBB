@@ -49,6 +49,7 @@ define('forum/categories', ['components', 'translator'], function(components, tr
 			html.fadeIn();
 
 			app.createUserTooltips();
+			html.find('.timeago').timeago();
 
 			if (category.find('[component="category/posts"]').length > parseInt(numRecentReplies, 10)) {
 				recentPosts.last().remove();
@@ -59,11 +60,11 @@ define('forum/categories', ['components', 'translator'], function(components, tr
 	}
 
 	function parseAndTranslate(posts, callback) {
-		templates.parse('categories', 'categories.posts', {categories: {posts: posts}}, function(html) {
+		templates.parse('categories', '(categories.)?posts', {categories: {posts: posts}}, function(html) {
 			translator.translate(html, function(translatedHTML) {
 				translatedHTML = $(translatedHTML);
 				translatedHTML.find('img:not(.not-responsive)').addClass('img-responsive');
-				translatedHTML.find('.timeago').timeago();
+
 				callback(translatedHTML);
 			});
 		});

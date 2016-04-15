@@ -1,18 +1,15 @@
 
 'use strict';
 
-var nconf = require('nconf'),
-	async = require('async'),
-	winston = require('winston'),
+var async = require('async');
 
-	topics = require('../topics'),
-	privileges = require('../privileges'),
-	plugins = require('../plugins'),
-	notifications = require('../notifications'),
-	websockets = require('./index'),
-	user = require('../user'),
+var topics = require('../topics');
+var websockets = require('./index');
+var user = require('../user');
+var apiController = require('../controllers/api');
+var socketHelpers = require('./helpers');
 
-	SocketTopics = {};
+var SocketTopics = {};
 
 require('./topics/unread')(SocketTopics);
 require('./topics/move')(SocketTopics);
@@ -44,33 +41,11 @@ SocketTopics.post = function(socket, data, callback) {
 		}
 
 		callback(null, result.topicData);
+
 		socket.emit('event:new_post', {posts: [result.postData]});
 		socket.emit('event:new_topic', result.topicData);
 
-		async.waterfall([
-			function(next) {
-				user.getUidsFromSet('users:online', 0, -1, next);
-			},
-			function(uids, next) {
-				privileges.categories.filterUids('read', result.topicData.cid, uids, next);
-			},
-			function(uids, next) {
-				plugins.fireHook('filter:sockets.sendNewPostToUids', {uidsTo: uids, uidFrom: data.uid, type: 'newTopic'}, next);
-			}
-		], function(err, data) {
-			if (err) {
-				return winston.error(err.stack);
-			}
-
-			var uids = data.uidsTo;
-
-			for(var i=0; i<uids.length; ++i) {
-				if (parseInt(uids[i], 10) !== socket.uid) {
-					websockets.in('uid_' + uids[i]).emit('event:new_post', {posts: [result.postData]});
-					websockets.in('uid_' + uids[i]).emit('event:new_topic', result.topicData);
-				}
-			}
-		});
+		socketHelpers.notifyNew(socket.uid, 'newTopic', {posts: [result.postData], topic: result.topicData});
 	});
 };
 
@@ -124,6 +99,20 @@ SocketTopics.isModerator = function(socket, tid, callback) {
 		}
 		user.isModerator(socket.uid, cid, callback);
 	});
+};
+
+SocketTopics.getTopic = function (socket, tid, callback) {
+	async.waterfall([
+		function (next) {
+			apiController.getObjectByType(socket.uid, 'topic', tid, next);
+		},
+		function (topicData, next) {
+			if (parseInt(topicData.deleted, 10) === 1) {
+				return next(new Error('[[error:no-topic]]'));
+			}
+			next(null, topicData);
+		}
+	], callback);
 };
 
 module.exports = SocketTopics;

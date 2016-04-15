@@ -3,6 +3,7 @@
 
 var cache = require('./cache');
 var plugins = require('../plugins');
+var translator = require('../../public/src/modules/translator');
 
 module.exports = function(Posts) {
 
@@ -23,6 +24,8 @@ module.exports = function(Posts) {
 			if (err) {
 				return callback(err);
 			}
+
+			data.postData.content = translator.escape(data.postData.content);
 
 			if (global.env === 'production' && data.postData.pid) {
 				cache.set(data.postData.pid, data.postData.content);

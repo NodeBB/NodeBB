@@ -1,11 +1,11 @@
 {
     "username-email": "Gebruikersnaam / Email",
     "username": "Gebruikersnaam",
-    "email": "Email",
+    "email": "E-mail",
     "remember_me": "Aangemeld blijven?",
     "forgot_password": "Wachtwoord vergeten?",
     "alternative_logins": "Andere manieren van aanmelden",
     "failed_login_attempt": "Aanmelden niet geslaagd. Probeer het nog eens.",
-    "login_successful": "Aanmelden geslaagd!",
+    "login_successful": "Je bent succesvol ingelogd!",
     "dont_have_account": "Geen gebruikersaccount?"
 }

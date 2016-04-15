@@ -339,7 +339,7 @@ function createGlobalModeratorsGroup(next) {
 		function (exists, next) {
 			if (exists) {
 				winston.info('Global Moderators group found, skipping creation!');
-				return next();
+				return next(null, null);
 			}
 			groups.create({
 				name: 'Global Moderators',
@@ -440,7 +440,8 @@ function enableDefaultPlugins(next) {
 			'nodebb-widget-essentials',
 			'nodebb-rewards-essentials',
 			'nodebb-plugin-soundpack-default',
-			'nodebb-plugin-emoji-extended'
+			'nodebb-plugin-emoji-extended',
+			'nodebb-plugin-emoji-one'
 		],
 		customDefaults = nconf.get('defaultPlugins');
 

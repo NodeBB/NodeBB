@@ -59,8 +59,8 @@ module.exports = function(Topics) {
 			return;
 		}
 		topic.titleRaw = topic.title;
-		topic.title = validator.escape(topic.title);
-		topic.relativeTime = utils.toISOString(topic.timestamp);
+		topic.title = validator.escape(String(topic.title));
+		topic.timestampISO = utils.toISOString(topic.timestamp);
 		topic.lastposttimeISO = utils.toISOString(topic.lastposttime);
 	}
 
@@ -76,6 +76,10 @@ module.exports = function(Topics) {
 
 	Topics.setTopicField = function(tid, field, value, callback) {
 		db.setObjectField('topic:' + tid, field, value, callback);
+	};
+
+	Topics.deleteTopicField = function(tid, field, callback) {
+		db.deleteObjectField('topic:' + tid, field, callback);
 	};
 
 };

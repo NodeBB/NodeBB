@@ -1,15 +1,15 @@
 'use strict';
 
-var nconf = require('nconf'),
-	async = require('async'),
-	S = require('string'),
+var nconf = require('nconf');
+var async = require('async');
+var S = require('string');
 
-	user = require('../../user'),
-	posts = require('../../posts'),
-	plugins = require('../../plugins'),
-	meta = require('../../meta'),
-	accountHelpers = require('./helpers'),
-	helpers = require('../helpers');
+var user = require('../../user');
+var posts = require('../../posts');
+var plugins = require('../../plugins');
+var meta = require('../../meta');
+var accountHelpers = require('./helpers');
+var helpers = require('../helpers');
 
 
 var profileController = {};

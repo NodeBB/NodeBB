@@ -90,6 +90,7 @@ groupsController.details = function(req, res, callback) {
 			}
 			results.title = '[[pages:group, ' + results.group.displayName + ']]';
 			results.breadcrumbs = helpers.buildBreadcrumbs([{text: '[[pages:groups]]', url: '/groups' }, {text: results.group.displayName}]);
+			results.allowPrivateGroups = parseInt(meta.config.allowPrivateGroups, 10) === 1;
 			plugins.fireHook('filter:group.build', {req: req, res: res, templateData: results}, next);
 		}
 	], function(err, results) {
@@ -112,7 +113,7 @@ groupsController.members = function(req, res, next) {
 			user.getUsersFromSet('group:' + groupName + ':members', req.uid, 0, 49, next);
 		},
 	], function(err, users) {
-		if (err) {
+		if (err || !groupName) {
 			return next(err);
 		}
 

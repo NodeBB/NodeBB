@@ -1,7 +1,5 @@
 "use strict";
 
-var winston = require('winston');
-
 module.exports = function(db, module) {
 	var helpers = module.helpers.mongo;
 
@@ -121,9 +119,8 @@ module.exports = function(db, module) {
 			}
 
 			var map = helpers.toMap(items);
-			var returnData = [],
-				index = 0,
-				item;
+			var returnData = [];
+			var item;
 
 			for (var i=0; i<keys.length; ++i) {
 				item = map[keys[i]] || {};
@@ -219,7 +216,7 @@ module.exports = function(db, module) {
 			data[field] = '';
 		});
 
-		db.collection('objects').update({_key: key}, {$unset : data}, function(err, res) {
+		db.collection('objects').update({_key: key}, {$unset : data}, function(err) {
 			callback(err);
 		});
 	};

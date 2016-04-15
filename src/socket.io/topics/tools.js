@@ -11,7 +11,7 @@ module.exports = function(SocketTopics) {
 
 	SocketTopics.loadTopicTools = function(socket, data, callback) {
 		if (!socket.uid) {
-			return;
+			return callback(new Error('[[error:no-privileges]]'));
 		}
 		if (!data) {
 			return callback(new Error('[[error:invalid-data]]'));
@@ -74,7 +74,7 @@ module.exports = function(SocketTopics) {
 	SocketTopics.doTopicAction = function(action, event, socket, data, callback) {
 		callback = callback || function() {};
 		if (!socket.uid) {
-			return;
+			return callback(new Error('[[error:no-privileges]]'));
 		}
 
 		if (!data || !Array.isArray(data.tids) || !data.cid) {

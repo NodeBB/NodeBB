@@ -213,17 +213,14 @@
 
 	function insertLanguage(text, key, value, variables) {
 		if (value) {
-			var variable;
-			for (var i = 1, ii = variables.length; i < ii; i++) {
+			variables.forEach(function(variable, index) {
+				if (index > 0) {
+					variable = S(variable).chompRight(']]').collapseWhitespace().decodeHTMLEntities().escapeHTML().s;
+					value = value.replace('%' + index, function() { return variable; });
+				}
+			});
 
-				// see https://github.com/NodeBB/NodeBB/issues/1951
-				variables[i] = variables[i].replace(/&#37;/g, '%').replace(/&#44;/g, ',');
-
-				variable = S(variables[i]).chompRight(']]').collapseWhitespace().escapeHTML().s;
-				value = value.replace('%' + i, variable);
-			}
-
-			text = text.replace(key, value);
+			text = text.replace(key, function() { return value; });
 		} else {
 			var string = key.split(':');
 			text = text.replace(key, string[string.length-1].replace(regexes.replace, ''));

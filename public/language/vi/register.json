@@ -1,12 +1,12 @@
 {
     "register": "Đăng ký",
-    "help.email": "Theo mặc định, Email của bạn sẽ ở dạng ẩn và public sẽ không thấy được",
+    "help.email": "Theo mặc định, Email của bạn sẽ được ẩn và public sẽ không thấy được",
     "help.username_restrictions": "Một tên truy cập duy nhất có từ %1 đến %2 ký tự. Những người khác có thể nhắc đến bạn bằng @<span id='yourUsername'>tên truy cập</span>.",
     "help.minimum_password_length": "Mật khẩu của bạn phải có ít nhất %1 ký tự",
     "email_address": "Địa chỉ Email",
     "email_address_placeholder": "Nhập địa chỉ Email",
-    "username": "Tên truy cập",
-    "username_placeholder": "Nhập tên truy cập",
+    "username": "Tên đăng nhập",
+    "username_placeholder": "Nhập tên đăng nhập",
     "password": "Mật khẩu",
     "password_placeholder": "Nhập mật khẩu",
     "confirm_password": "Xác nhận mật khẩu",
@@ -15,5 +15,5 @@
     "alternative_registration": "Đăng ký tài khoản khác",
     "terms_of_use": "Điều khoản sử dụng",
     "agree_to_terms_of_use": "Tôi đồng ý với các điều khoản sử dụng",
-    "registration-added-to-queue": "Your registration has been added to the approval queue. You will receive an email when it is accepted by an administrator."
+    "registration-added-to-queue": "Yêu cầu đăng ký của bạn đang chờ được chấp thuận. Bạn sẽ nhận được email khi tài khoản của bạn đã được chấp thuận bởi quản trị viên."
 }

@@ -152,28 +152,45 @@ define('admin/manage/categories', ['vendor/jquery/serializeObject/jquery.ba-seri
 	 * @param parentId {number} parent category identifier
 	 */
 	function renderList(categories, container, parentId){
-		templates.parse('admin/partials/categories/category-rows', {
-			cid: parentId,
-			categories: categories
-		}, function(html) {
-			container.append(html);
+		// Translate category names if needed
+		var count = 0;
+		categories.forEach(function(category, idx, parent) {
+			translator.translate(category.name, function(translated) {
+				if (category.name !== translated) {
+					category.name = translated;
+				}
+				++count;
 
-			// Handle and children categories in this level have
-			for(var x=0,numCategories=categories.length;x<numCategories;x++) {
-				renderList(categories[x].children, $('li[data-cid="' + categories[x].cid + '"]'), categories[x].cid);
-			}
-
-			// Make list sortable
-			sortables[parentId] = Sortable.create($('ul[data-cid="' + parentId + '"]')[0], {
-				group: 'cross-categories',
-				animation: 150,
-				handle: '.icon',
-				dataIdAttr: 'data-cid',
-				ghostClass: "placeholder",
-				onAdd: itemDidAdd,
-				onEnd: itemDragDidEnd
+				if (count === parent.length) {
+					continueRender();
+				}
 			});
 		});
+
+		function continueRender() {
+			templates.parse('admin/partials/categories/category-rows', {
+				cid: parentId,
+				categories: categories
+			}, function(html) {
+				container.append(html);
+
+				// Handle and children categories in this level have
+				for(var x=0,numCategories=categories.length;x<numCategories;x++) {
+					renderList(categories[x].children, $('li[data-cid="' + categories[x].cid + '"]'), categories[x].cid);
+				}
+
+				// Make list sortable
+				sortables[parentId] = Sortable.create($('ul[data-cid="' + parentId + '"]')[0], {
+					group: 'cross-categories',
+					animation: 150,
+					handle: '.icon',
+					dataIdAttr: 'data-cid',
+					ghostClass: "placeholder",
+					onAdd: itemDidAdd,
+					onEnd: itemDragDidEnd
+				});
+			});
+		}
 	}
 
 	return Categories;

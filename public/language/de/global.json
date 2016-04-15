@@ -65,7 +65,7 @@
     "posted_in_ago_by": "Verfasst in %1 %2 von %3",
     "user_posted_ago": "%1 schrieb %2",
     "guest_posted_ago": "Gast schrieb %1",
-    "last_edited_by": "last edited by %1",
+    "last_edited_by": "zuletzt editiert von %1",
     "norecentposts": "Keine aktuellen Beiträge",
     "norecenttopics": "Keine aktuellen Themen",
     "recentposts": "Aktuelle Beiträge",
@@ -86,5 +86,9 @@
     "delete_all": "Alles löschen",
     "map": "Karte",
     "sessions": "Login-Sitzungen",
-    "ip_address": "IP-Adresse"
+    "ip_address": "IP-Adresse",
+    "enter_page_number": "Seitennummer eingeben",
+    "upload_file": "Datei hochladen",
+    "upload": "Hochladen",
+    "allowed-file-types": "Erlaubte Dateitypen sind %1"
 }

@@ -27,6 +27,7 @@
     "password-too-long": "Password too long",
     "user-banned": "Kitiltott felhasználó",
     "user-too-new": "Sorry, you are required to wait %1 second(s) before making your first post",
+    "blacklisted-ip": "Sorry, your IP address has been banned from this community. If you feel this is in error, please contact an administrator.",
     "no-category": "Nem létező kategória",
     "no-topic": "Nem létező téma",
     "no-post": "Nem létező hozzászólás",
@@ -50,8 +51,8 @@
     "still-uploading": "Kérlek várj, amíg a feltöltés befejeződik.",
     "file-too-big": "Maximum allowed file size is %1 kB - please upload a smaller file",
     "guest-upload-disabled": "Guest uploading has been disabled",
-    "already-favourited": "Már bejelölted Kedvencnek ezt a hozzászólást",
-    "already-unfavourited": "Már kivetted a Kedvenceid közül ezt a hozzászólást",
+    "already-favourited": "You have already bookmarked this post",
+    "already-unfavourited": "You have already unbookmarked this post",
     "cant-ban-other-admins": "Nem tilthatsz ki másik adminisztrátort!",
     "cant-remove-last-admin": "You are the only administrator. Add another user as an administrator before removing yourself as admin",
     "invalid-image-type": "Érvénytelen a kép típusa. Engedett kiterjesztések: %1",
@@ -96,5 +97,7 @@
     "wrong-login-type-username": "Kérlek a felhasználónevedet használd a belépéshez",
     "invite-maximum-met": "You have invited the maximum amount of people (%1 out of %2).",
     "no-session-found": "No login session found!",
-    "not-in-room": "User not in room"
+    "not-in-room": "User not in room",
+    "no-users-in-room": "No users in this room",
+    "cant-kick-self": "You can't kick yourself from the group"
 }

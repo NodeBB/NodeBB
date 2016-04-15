@@ -173,14 +173,14 @@ describe('Topic\'s', function() {
 		});
 
 		it('should delete the topic', function(done) {
-			topics.delete(newTopic.tid, function(err) {
+			topics.delete(newTopic.tid, 1, function(err) {
 				assert.ifError(err);
 				done();
 			});
 		});
 
 		it('should purge the topic', function(done) {
-			topics.purge(newTopic.tid, function(err) {
+			topics.purge(newTopic.tid, 1, function(err) {
 				assert.ifError(err);
 				done();
 			});

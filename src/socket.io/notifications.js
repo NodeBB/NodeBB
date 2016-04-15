@@ -3,6 +3,7 @@
 var async = require('async');
 var user = require('../user');
 var notifications = require('../notifications');
+var utils = require('../../public/src/utils');
 
 var SocketNotifs = {};
 
@@ -15,11 +16,11 @@ SocketNotifs.get = function(socket, data, callback) {
 };
 
 SocketNotifs.loadMore = function(socket, data, callback) {
-	if (!data || !parseInt(data.after, 10)) {
+	if (!data || !utils.isNumber(data.after) || parseInt(data.after, 10) < 0) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
 	if (!socket.uid) {
-		return;
+		return callback(new Error('[[error:no-privileges]]'));
 	}
 	var start = parseInt(data.after, 10);
 	var stop = start + 20;
@@ -37,7 +38,7 @@ SocketNotifs.getCount = function(socket, data, callback) {
 
 SocketNotifs.deleteAll = function(socket, data, callback) {
 	if (!socket.uid) {
-		return;
+		return callback(new Error('[[error:no-privileges]]'));
 	}
 
 	user.notifications.deleteAll(socket.uid, callback);
@@ -57,7 +58,7 @@ SocketNotifs.markAllRead = function(socket, data, callback) {
 
 SocketNotifs.generatePath = function(socket, nid, callback) {
 	if (!socket.uid) {
-		return;
+		return callback(new Error('[[error:no-privileges]]'));;
 	}
 	async.waterfall([
 		function (next) {

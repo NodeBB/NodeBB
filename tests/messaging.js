@@ -27,39 +27,39 @@ describe('Messaging Library', function() {
 
 	describe('.canMessage()', function() {
 		it('should not error out', function(done) {
-			Messaging.canMessageUser(testUids[1], testUids[2], function(err, allowed) {
+			Messaging.canMessageUser(testUids[1], testUids[2], function(err) {
 				assert.ifError(err);
 				done();
 			});
 		});
 
 		it('should allow messages to be sent to an unrestricted user', function(done) {
-			Messaging.canMessageUser(testUids[1], testUids[2], function(err, allowed) {
-				assert.strictEqual(allowed, true, 'should be true, received ' + allowed);
+			Messaging.canMessageUser(testUids[1], testUids[2], function(err) {
+				assert.ifError(err);
 				done();
 			});
 		});
 
 		it('should NOT allow messages to be sent to a restricted user', function(done) {
 			User.setSetting(testUids[1], 'restrictChat', '1', function() {
-				Messaging.canMessageUser(testUids[2], testUids[1], function(err, allowed) {
-					assert.strictEqual(allowed, false, 'should be false, received ' + allowed);
+				Messaging.canMessageUser(testUids[2], testUids[1], function(err) {
+					assert.strictEqual(err.message, '[[error:chat-restricted]]');
 					done();
 				});
 			});
 		});
 
 		it('should always allow admins through', function(done) {
-			Messaging.canMessageUser(testUids[0], testUids[1], function(err, allowed) {
-				assert.strictEqual(allowed, true, 'should be true, received ' + allowed);
+			Messaging.canMessageUser(testUids[0], testUids[1], function(err) {
+				assert.ifError(err);
 				done();
 			});
 		});
 
 		it('should allow messages to be sent to a restricted user if restricted user follows sender', function(done) {
 			User.follow(testUids[1], testUids[2], function() {
-				Messaging.canMessageUser(testUids[2], testUids[1], function(err, allowed) {
-					assert.strictEqual(allowed, true, 'should be true, received ' + allowed);
+				Messaging.canMessageUser(testUids[2], testUids[1], function(err) {
+					assert.ifError(err);
 					done();
 				});
 			});

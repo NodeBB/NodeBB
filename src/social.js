@@ -6,7 +6,13 @@ var async = require('async');
 
 var social = {};
 
+social.postSharing = null;
+
 social.getPostSharing = function(callback) {
+	if (social.postSharing) {
+		return callback(null, social.postSharing);
+	}
+
 	var networks = [
 		{
 			id: "facebook",
@@ -39,20 +45,41 @@ social.getPostSharing = function(callback) {
 					networks[i].activated = (activated.indexOf(network.id) !== -1);
 				});
 
+				social.postSharing = networks;
 				next(null, networks);
 			});
 		}
 	], callback);
 };
 
-social.setActivePostSharingNetworks = function(networkIDs, callback) {
-	db.delete('social:posts.activated', function(err) {
-		if (!networkIDs.length) {
+social.getActivePostSharing = function(callback) {
+	social.getPostSharing(function(err, networks) {
+		if (err) {
 			return callback(err);
 		}
-
-		db.setAdd('social:posts.activated', networkIDs, callback);
+		networks = networks.filter(function(network) {
+			return network && network.activated;
+		});
+		callback(null, networks);
 	});
+};
+
+social.setActivePostSharingNetworks = function(networkIDs, callback) {
+	async.waterfall([
+		function (next) {
+			db.delete('social:posts.activated', next);
+		},
+		function (next) {
+			if (!networkIDs.length) {
+				return next();
+			}
+			db.setAdd('social:posts.activated', networkIDs, next);
+		},
+		function (next) {
+			social.postSharing = null;
+			next();
+		}
+	], callback);
 };
 
 module.exports = social;
