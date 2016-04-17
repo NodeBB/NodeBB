@@ -92,6 +92,8 @@
     "open_links_in_new_tab": "Åben udgående link i en ny tab",
     "enable_topic_searching": "Slå In-Topic søgning til",
     "topic_search_help": "Hvis slået til, så vil in-topic søgning overskrive browserens almindelige søge function og tillade dig at søge hele emnet, istedet for kun det der er vist på skærmen",
+    "delay_image_loading": "Delay Image Loading",
+    "image_load_delay_help": "If enabled, images in topics will not load until they are scrolled into view",
     "scroll_to_my_post": "After posting a reply, show the new post",
     "follow_topics_you_reply_to": "Følg emner du har skrevet indlæg i",
     "follow_topics_you_create": "Følg emner du opretter",

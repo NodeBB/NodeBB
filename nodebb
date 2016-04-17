@@ -196,7 +196,7 @@ var getRunningPid = function(callback) {
 				description: 'Proceed with upgrade (y|n)?'.reset,
 				type: 'string'
 			}, function(err, result) {
-				if (result.upgrade === 'y' || result.upgrade === 'yes') {
+				if (['y', 'Y', 'yes', 'YES'].indexOf(result.upgrade) !== -1) {
 					process.stdout.write('\nUpgrading packages...');
 					var args = ['npm', 'i'];
 					found.forEach(function(suggestObj) {

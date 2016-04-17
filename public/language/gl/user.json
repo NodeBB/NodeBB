@@ -92,6 +92,8 @@
     "open_links_in_new_tab": "Abrir ligazóns externos nunca nova pestaña",
     "enable_topic_searching": "Permitir buscar dentro dun tema",
     "topic_search_help": "Se se activa, o buscador do NodeBB superporase ao propio do navegador dentro de cada tema, permitindo buscar en todo o tema e non só naquilo que se presenta na pantalla.",
+    "delay_image_loading": "Delay Image Loading",
+    "image_load_delay_help": "If enabled, images in topics will not load until they are scrolled into view",
     "scroll_to_my_post": "After posting a reply, show the new post",
     "follow_topics_you_reply_to": "Segui-los temas nos que respostas",
     "follow_topics_you_create": "Segui-los temas que ti fas",
