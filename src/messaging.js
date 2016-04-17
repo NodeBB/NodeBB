@@ -277,7 +277,7 @@ var db = require('./database'),
 						});
 
 						next(undefined, messages);
-					} else {
+					} else if (messages.length === 1) {
 						// For single messages, we don't know the context, so look up the previous message and compare
 						var uids = [fromuid, touid].sort(function(a, b) { return a > b ? 1 : -1 });
 						var key = 'messages:uid:' + uids[0] + ':to:' + uids[1];
@@ -310,6 +310,8 @@ var db = require('./database'),
 
 							next(undefined, messages);
 						});
+					} else {
+						next(null, []);
 					}
 				}
 			], callback);
