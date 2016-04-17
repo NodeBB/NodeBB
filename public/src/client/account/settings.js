@@ -64,7 +64,7 @@ define('forum/account/settings', ['forum/account/header', 'components', 'csrf'],
 
 		$('#bootswatchSkin').on('change', function() {
 			var css = $('#bootswatchCSS'),
-				val = $(this).val() === 'default' ? config['theme:src'] : 'http://maxcdn.bootstrapcdn.com/bootswatch/latest/' + $(this).val() + '/bootstrap.min.css';
+				val = $(this).val() === 'default' ? config['theme:src'] : '//maxcdn.bootstrapcdn.com/bootswatch/latest/' + $(this).val() + '/bootstrap.min.css';
 
 			css.attr('href', val);
 		});
