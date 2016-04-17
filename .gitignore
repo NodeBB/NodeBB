@@ -15,6 +15,7 @@ provision.sh
 *.komodoproject
 .DS_Store
 feeds/recent.rss
+.svn
 
 logs/
 
