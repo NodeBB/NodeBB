@@ -93,7 +93,7 @@
     "enable_topic_searching": "Konu içi aramayı aktive et",
     "topic_search_help": "Aktive edilirse, konu içi arama tarayıcının normal arama davranışını değiştirerek tüm konuyu aramanızı sağlar",
     "delay_image_loading": "Gecikmeli Görsel Yükleme",
-    "image_load_delay_help": "If enabled, images in topics will not load until they are scrolled into view",
+    "image_load_delay_help": "Aktif hale getirmeniz halinde başlıktaki görseller, sayfa kaydırıldıkca yüklenecek",
     "scroll_to_my_post": "Cevap yazdıktan sonra yeni gönderiyi göster",
     "follow_topics_you_reply_to": "Cevap verdiğim konuları takip et",
     "follow_topics_you_create": "Kendi konularımı takip et",
