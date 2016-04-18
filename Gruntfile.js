@@ -13,7 +13,7 @@ module.exports = function(grunt) {
 	}
 
 	function update(action, filepath, target) {
-		var updateArgs = args,
+		var updateArgs = args.slice(),
 			fromFile = '',
 			compiling = '',
 			time = Date.now();
