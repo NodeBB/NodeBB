@@ -31,7 +31,6 @@ module.exports = function(Topics) {
 			filter = '';
 		}
 
-
 		var unreadTopics = {
 			showSelect: true,
 			nextStart : 0,
@@ -77,57 +76,71 @@ module.exports = function(Topics) {
 
 		var cutoff = Topics.unreadCutoff();
 
-		async.parallel({
-			ignoredCids: function(next) {
-				user.getIgnoredCategories(uid, next);
+		var ignoredCids;
+
+		async.waterfall([
+			function (next) {
+				async.parallel({
+					ignoredCids: function(next) {
+						if (filter === 'watched') {
+							return next(null, []);
+						}
+						user.getIgnoredCategories(uid, next);
+					},
+					recentTids: function(next) {
+						db.getSortedSetRevRangeByScoreWithScores('topics:recent', 0, -1, '+inf', cutoff, next);
+					},
+					userScores: function(next) {
+						db.getSortedSetRevRangeByScoreWithScores('uid:' + uid + ':tids_read', 0, -1, '+inf', cutoff, next);
+					},
+					tids_unread: function(next) {
+						db.getSortedSetRevRangeWithScores('uid:' + uid + ':tids_unread', 0, -1, next);
+					}
+				}, next);
 			},
-			recentTids: function(next) {
-				db.getSortedSetRevRangeByScoreWithScores('topics:recent', 0, -1, '+inf', cutoff, next);
-			},
-			userScores: function(next) {
-				db.getSortedSetRevRangeByScoreWithScores('uid:' + uid + ':tids_read', 0, -1, '+inf', cutoff, next);
-			},
-			tids_unread: function(next) {
-				db.getSortedSetRevRangeWithScores('uid:' + uid + ':tids_unread', 0, -1, next);
-			}
-		}, function(err, results) {
-			if (err) {
-				return callback(err);
-			}
-
-			if (results.recentTids && !results.recentTids.length && !results.tids_unread.length) {
-				return callback(null, []);
-			}
-
-			var userRead = {};
-			results.userScores.forEach(function(userItem) {
-				userRead[userItem.value] = userItem.score;
-			});
-
-			results.recentTids = results.recentTids.concat(results.tids_unread);
-			results.recentTids.sort(function(a, b) {
-				return b.score - a.score;
-			});
-
-			var tids = results.recentTids.filter(function(recentTopic) {
-				switch (filter) {
-					default:
-						return !userRead[recentTopic.value] || recentTopic.score > userRead[recentTopic.value];
-					case 'new':
-						return !userRead[recentTopic.value];
+			function (results, next) {
+				if (results.recentTids && !results.recentTids.length && !results.tids_unread.length) {
+					return callback(null, []);
 				}
-			}).map(function(topic) {
-				return topic.value;
-			}).filter(function(tid, index, array) {
-				return array.indexOf(tid) === index;
-			});
 
-			tids = tids.slice(0, 100);
+				ignoredCids = results.ignoredCids;
 
-			filterTopics(uid, tids, cid, results.ignoredCids, function(err, tids) {
-				if (err) {
-					return callback(err);
+				var userRead = {};
+				results.userScores.forEach(function(userItem) {
+					userRead[userItem.value] = userItem.score;
+				});
+
+				results.recentTids = results.recentTids.concat(results.tids_unread);
+				results.recentTids.sort(function(a, b) {
+					return b.score - a.score;
+				});
+
+				var tids = results.recentTids.filter(function(recentTopic) {
+					switch (filter) {
+						case 'new':
+							return !userRead[recentTopic.value];
+						default:
+							return !userRead[recentTopic.value] || recentTopic.score > userRead[recentTopic.value];
+					}
+				}).map(function(topic) {
+					return topic.value;
+				}).filter(function(tid, index, array) {
+					return array.indexOf(tid) === index;
+				});
+
+				if (filter === 'watched') {
+					filterWatchedTids(uid, tids, next);
+				} else {
+					next(null, tids);
 				}
+			},
+			function (tids, next) {
+
+				tids = tids.slice(0, 100);
+
+				filterTopics(uid, tids, cid, ignoredCids, next);
+			},
+			function (tids, next) {
 
 				if (stop === -1) {
 					tids = tids.slice(start);
@@ -135,10 +148,22 @@ module.exports = function(Topics) {
 					tids = tids.slice(start, stop + 1);
 				}
 
-				callback(null, tids);
-			});
-		});
+				next(null, tids);
+			}
+		], callback);
 	};
+
+	function filterWatchedTids(uid, tids, callback) {
+		db.sortedSetScores('uid:' + uid + ':followed_tids', tids, function(err, scores) {
+			if (err) {
+				return callback(err);
+			}
+			tids = tids.filter(function(tid, index) {
+				return tid && !!scores[index];
+			});
+			callback(null, tids);
+		});
+	}
 
 	function filterTopics(uid, tids, cid, ignoredCids, callback) {
 		if (!Array.isArray(ignoredCids) || !tids.length) {
