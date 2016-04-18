@@ -37,7 +37,7 @@
 		},
 		{
 			name: "mongo:database",
-			description: "Which database to use",
+			description: "MongoDB database name",
 			'default': nconf.get('mongo:database') || 0
 		}
 	];
