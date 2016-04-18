@@ -245,6 +245,7 @@ SocketUser.getUnreadCounts = function(socket, data, callback) {
 	}
 	async.parallel({
 		unreadTopicCount: async.apply(topics.getTotalUnread, socket.uid),
+		unreadNewTopicCount: async.apply(topics.getTotalUnread, socket.uid, 'new'),
 		unreadChatCount: async.apply(messaging.getUnreadCount, socket.uid),
 		unreadNotificationCount: async.apply(user.notifications.getUnreadCount, socket.uid)
 	}, callback);
