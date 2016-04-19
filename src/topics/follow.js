@@ -42,6 +42,42 @@ module.exports = function(Topics) {
 		], callback);
 	};
 
+	Topics.unignore = function( tid, uid, callback ){
+		callback = callback || function() {};
+		async.waterfall([
+			function (next) {
+				Topics.exists(tid, next);
+			},
+			function(exists, next) {
+				if (!exists) {
+					return next(new Error('[[error:no-topic]]'));
+				}
+				db.sortedSetRemove('uid:' + uid + ':ignored:tids', tid, next);
+			},
+			function(next) {
+				db.setRemove('tid:' + tid + ':ignorers', uid, next);
+			}
+		], callback);
+	};
+
+	Topics.ignore = function(tid, uid, callback) {
+		callback = callback || function() {};
+		async.waterfall([
+			function (next) {
+				Topics.exists(tid, next);
+			},
+			function (exists, next) {
+				if (!exists) {
+					return next(new Error('[[error:no-topic]]'));
+				}
+				Topics.unfollow(tid, uid, next);
+			},
+			function( next ){
+				user.ignoreTopic( uid, tid, next );
+			}
+		], callback);
+	};
+
 	Topics.follow = function(tid, uid, callback) {
 		callback = callback || function() {};
 		if (!parseInt(uid, 10)) {
@@ -59,6 +95,9 @@ module.exports = function(Topics) {
 			},
 			function(next) {
 				db.sortedSetAdd('uid:' + uid + ':followed_tids', Date.now(), tid, next);
+			},
+			function( next ){
+				Topics.unignore( tid, uid, next );
 			}
 		], callback);
 	};
@@ -77,6 +116,27 @@ module.exports = function(Topics) {
 			},
 			function(next) {
 				db.sortedSetRemove('uid:' + uid + ':followed_tids', tid, next);
+			}
+		], callback);
+	};
+
+	Topics.isIgnoring = function(tids, uid, callback) {
+		if (!Array.isArray(tids)) {
+			return callback();
+		}
+		if (!parseInt(uid, 10)) {
+			return callback(null, tids.map(function() { return false; }));
+		}
+		async.waterfall([
+			function(next){
+				user.getIgnoredTopics( uid, next );
+			},
+			function(ignoredTids, next ){
+				var ignored= tids.map(
+					function(tid){
+						return ignoredTids.indexOf(tid.toString()) != -1;
+					});
+				next( null, ignored );
 			}
 		], callback);
 	};

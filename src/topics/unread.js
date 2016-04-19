@@ -74,6 +74,9 @@ module.exports = function(Topics) {
 			},
 			tids_unread: function(next) {
 				db.getSortedSetRevRangeWithScores('uid:' + uid + ':tids_unread', 0, -1, next);
+			},
+			ignoredTids: function(next) {
+				user.getIgnoredTopics( uid, next );
 			}
 		}, function(err, results) {
 			if (err) {
@@ -104,7 +107,7 @@ module.exports = function(Topics) {
 
 			tids = tids.slice(0, 100);
 
-			filterTopics(uid, tids, cid, results.ignoredCids, function(err, tids) {
+			filterTopics(uid, tids, cid, results.ignoredCids, results.ignoredTids, function(err, tids) {
 				if (err) {
 					return callback(err);
 				}
@@ -120,8 +123,8 @@ module.exports = function(Topics) {
 		});
 	};
 
-	function filterTopics(uid, tids, cid, ignoredCids, callback) {
-		if (!Array.isArray(ignoredCids) || !tids.length) {
+	function filterTopics(uid, tids, cid, ignoredCids, ignoredTids, callback) {
+		if (!Array.isArray(ignoredCids) || !tids.length || !Array.isArray(ignoredTids) ) {
 			return callback(null, tids);
 		}
 
@@ -134,7 +137,11 @@ module.exports = function(Topics) {
 			},
 			function(topics, next) {
 				tids = topics.filter(function(topic) {
-					return topic && topic.cid && ignoredCids.indexOf(topic.cid.toString()) === -1 && (!cid || parseInt(cid, 10) === parseInt(topic.cid, 10));
+					return topic &&
+						topic.cid &&
+						ignoredCids.indexOf(topic.cid.toString()) === -1 &&
+						(!cid || parseInt(cid, 10) === parseInt(topic.cid, 10)) &&
+						ignoredTids.indexOf(topic.tid.toString()) === -1;
 				}).map(function(topic) {
 					return topic.tid;
 				});

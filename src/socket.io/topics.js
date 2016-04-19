@@ -72,8 +72,13 @@ SocketTopics.createTopicFromPosts = function(socket, data, callback) {
 	topics.createTopicFromPosts(socket.uid, data.title, data.pids, callback);
 };
 
-SocketTopics.toggleFollow = function(socket, tid, callback) {
-	followCommand(topics.toggleFollow, socket, tid, callback);
+SocketTopics.changeWatching = function(socket, data, callback) {
+	var how = data.how;
+	var tid = data.tid;
+	if (!socket.uid) {
+		return callback(new Error('[[error:not-logged-in]]'));
+	}
+	followCommand( topics[how], socket, tid, callback );
 };
 
 SocketTopics.follow = function(socket, tid, callback) {
