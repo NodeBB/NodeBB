@@ -15,33 +15,6 @@ var emailer = require('../emailer');
 
 module.exports = function(Topics) {
 
-	Topics.toggleFollow = function(tid, uid, callback) {
-		callback = callback || function() {};
-		var isFollowing;
-		async.waterfall([
-			function (next) {
-				Topics.exists(tid, next);
-			},
-			function (exists, next) {
-				if (!exists) {
-					return next(new Error('[[error:no-topic]]'));
-				}
-				Topics.isFollowing([tid], uid, next);
-			},
-			function (_isFollowing, next) {
-				isFollowing = _isFollowing[0];
-				if (isFollowing) {
-					Topics.unfollow(tid, uid, next);
-				} else {
-					Topics.follow(tid, uid, next);
-				}
-			},
-			function(next) {
-				next(null, !isFollowing);
-			}
-		], callback);
-	};
-
 	Topics.unignore = function( tid, uid, callback ){
 		callback = callback || function() {};
 		async.waterfall([
@@ -116,6 +89,9 @@ module.exports = function(Topics) {
 			},
 			function(next) {
 				db.sortedSetRemove('uid:' + uid + ':followed_tids', tid, next);
+			},
+			function( next ){
+				Topics.unignore( tid, uid, next );
 			}
 		], callback);
 	};

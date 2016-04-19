@@ -7,6 +7,7 @@ var db = require('./mocks/databasemock');
 var topics = require('../src/topics');
 var categories = require('../src/categories');
 var User = require('../src/user');
+var async = require('async');
 
 describe('Topic\'s', function() {
 	var topic,
@@ -187,6 +188,107 @@ describe('Topic\'s', function() {
 		});
 	});
 
+	describe('.ignore', function(){
+		var newTid;
+		var uid;
+		var newTopic;
+		before(function(done){
+			uid = topic.userId;
+			async.waterfall([
+				function(done){
+					topics.post({uid: topic.userId, title: 'Topic to be ignored', content: 'Just ignore me, please!', cid: topic.categoryId}, function(err, result) {
+						newTopic = result.topicData;
+						newTid = newTopic.tid;
+						done();
+					});
+				},
+				function(done){
+					topics.markUnread( newTid, uid, done );
+				}
+			],done);
+		});
+
+		it('should not appear in the unread list', function(done){
+			async.waterfall([
+				function(done){
+					topics.ignore( newTid, uid, done );
+				},
+				function(done){
+					topics.getUnreadTopics(0, uid, 0, -1, done );
+				},
+				function(results, done){
+					var topics = results.topics;
+					var tids = topics.map( function(topic){ return topic.tid; } );
+					assert.equal(tids.indexOf(newTid), -1, 'The topic appeared in the unread list.');
+					done();
+				}
+			], done);
+		});
+
+		it('should not appear as unread in the recent list', function(done){
+			async.waterfall([
+				function(done){
+					topics.ignore( newTid, uid, done );
+				},
+				function(done){
+					topics.getLatestTopics( uid, 0, -1, 1000, done );
+				},
+				function(results, done){
+					var topics = results.topics;
+					var topic;
+					var i;
+					for(i = 0; i < topics.length; ++i){
+						if( topics[i].tid == newTid ){
+							assert.equal(false, topics[i].unread, 'ignored topic was marked as unread in recent list');
+							return done();
+						}
+					}
+					assert.ok(topic, 'topic didn\'t appear in the recent list');
+					done();
+				}
+			], done);
+		});
+
+		it('should appear as unread again when marked as reading', function(done){
+			async.waterfall([
+				function(done){
+					topics.ignore( newTid, uid, done );
+				},
+				function(done){
+					topics.follow( newTid, uid, done );
+				},
+				function(done){
+					topics.getUnreadTopics(0, uid, 0, -1, done );
+				},
+				function(results, done){
+					var topics = results.topics;
+					var tids = topics.map( function(topic){ return topic.tid; } );
+					assert.notEqual(tids.indexOf(newTid), -1, 'The topic did not appear in the unread list.');
+					done();
+				}
+			], done);
+		});
+
+		it('should appear as unread again when marked as following', function(done){
+			async.waterfall([
+				function(done){
+					User.ignoreTopic( uid, newTid, done );
+				},
+				function(done){
+					topics.follow( newTid, uid, done );
+				},
+				function(done){
+					topics.getUnreadTopics(0, uid, 0, -1, done );=
+				},
+				function(results, done){
+					var topics = results.topics;
+					var tids = topics.map( function(topic){ return topic.tid; } );
+					assert.notEqual(tids.indexOf(newTid), -1, 'The topic did not appear in the unread list.');
+					done();
+				}
+			], done);
+		});
+	});
 
 	after(function() {
 		db.flushdb();
