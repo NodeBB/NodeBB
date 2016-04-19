@@ -85,6 +85,7 @@
     "cant-edit-chat-message": "You are not allowed to edit this message",
     "cant-remove-last-user": "You can't remove the last user",
     "cant-delete-chat-message": "You are not allowed to delete this message",
+    "already-voting-for-this-post": "You have already voted for this post.",
     "reputation-system-disabled": "সম্মাননা ব্যাবস্থা নিস্ক্রীয় রাখা হয়েছে",
     "downvoting-disabled": "ঋণাত্মক ভোট নিস্ক্রীয় রাখা হয়েছে।",
     "not-enough-reputation-to-downvote": "আপনার এই পোস্ট downvote করার জন্য পর্যাপ্ত সম্মাননা নেই",

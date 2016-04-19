@@ -85,6 +85,7 @@
     "cant-edit-chat-message": "You are not allowed to edit this message",
     "cant-remove-last-user": "You can't remove the last user",
     "cant-delete-chat-message": "You are not allowed to delete this message",
+    "already-voting-for-this-post": "You have already voted for this post.",
     "reputation-system-disabled": "Ryktesystemet er deaktivert.",
     "downvoting-disabled": "Nedstemming er deaktivert",
     "not-enough-reputation-to-downvote": "Du har ikke nok rykte til å nedstemme det innlegget",

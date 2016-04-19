@@ -24,6 +24,7 @@
     "digest.day": "day",
     "digest.week": "week",
     "digest.month": "month",
+    "digest.subject": "Digest for %1",
     "notif.chat.subject": "Ai primit un mesaj de la %1",
     "notif.chat.cta": "Apasă aici pentru a continua conversația",
     "notif.chat.unsub.info": "This chat notification was sent to you due to your subscription settings.",

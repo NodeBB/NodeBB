@@ -85,6 +85,7 @@
     "cant-edit-chat-message": "편집 할 수 있는 권한이 없습니다.",
     "cant-remove-last-user": "마지막 사용자를 삭제할 수 없습니다.",
     "cant-delete-chat-message": "메세지를 지울 권한이 없습니다.",
+    "already-voting-for-this-post": "You have already voted for this post.",
     "reputation-system-disabled": "인지도 기능이 비활성 상태입니다.",
     "downvoting-disabled": "비추천 기능이 비활성 상태입니다.",
     "not-enough-reputation-to-downvote": "인지도가 낮아 이 게시물에 반대할 수 없습니다.",

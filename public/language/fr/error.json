@@ -85,6 +85,7 @@
     "cant-edit-chat-message": "Vous n'avez pas l'autorisation de modifier ce message",
     "cant-remove-last-user": "Vous ne pouvez pas supprimer le dernier utilisateur",
     "cant-delete-chat-message": "Vous n'avez pas l'autorisation de supprimer ce message",
+    "already-voting-for-this-post": "You have already voted for this post.",
     "reputation-system-disabled": "Le système de réputation est désactivé",
     "downvoting-disabled": "Les votes négatifs ne sont pas autorisés",
     "not-enough-reputation-to-downvote": "Vous n'avez pas une réputation assez élevée pour noter négativement ce message",

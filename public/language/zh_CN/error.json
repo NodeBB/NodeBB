@@ -85,6 +85,7 @@
     "cant-edit-chat-message": "您不能编辑这条信息",
     "cant-remove-last-user": "您不能移除这个用户",
     "cant-delete-chat-message": "您不允许删除这条消息",
+    "already-voting-for-this-post": "您已为此帖回复投过票了。",
     "reputation-system-disabled": "威望系统已禁用。",
     "downvoting-disabled": "扣分功能已禁用",
     "not-enough-reputation-to-downvote": "您的威望不足以给此帖扣分",

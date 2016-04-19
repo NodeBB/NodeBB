@@ -24,6 +24,7 @@
     "digest.day": "dag",
     "digest.week": "uge",
     "digest.month": "måned",
+    "digest.subject": "Digest for %1",
     "notif.chat.subject": "Ny chat besked modtaget fra %1",
     "notif.chat.cta": "Klik her for at forsætte med samtalen",
     "notif.chat.unsub.info": "Denne chat notifikation blev sendt til dig pga. indstillingerne i dit abonnement.",

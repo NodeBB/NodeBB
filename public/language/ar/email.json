@@ -24,6 +24,7 @@
     "digest.day": "day",
     "digest.week": "week",
     "digest.month": "month",
+    "digest.subject": "Digest for %1",
     "notif.chat.subject": "هناك محادثة جديدة من %1",
     "notif.chat.cta": "انقر هنا لمتابعة المحادثة",
     "notif.chat.unsub.info": "تم إرسال هذا الإشعار بوجودة محادثة جديدة وفقا لخيارات تسجيلك.",

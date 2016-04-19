@@ -24,6 +24,7 @@
     "digest.day": "día",
     "digest.week": "semana",
     "digest.month": "mes",
+    "digest.subject": "Digest for %1",
     "notif.chat.subject": "Nova charla recibida de %1",
     "notif.chat.cta": "Pica aquí para continuar a conversación",
     "notif.chat.unsub.info": "Esta notificación de charla foiche enviada polas túas opcións de subscrición.",

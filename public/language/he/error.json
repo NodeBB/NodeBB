@@ -85,6 +85,7 @@
     "cant-edit-chat-message": "אתה לא רשאי לערוך הודעה זו",
     "cant-remove-last-user": "אינך יכול למחוק את המשתמש האחרון",
     "cant-delete-chat-message": "אתה לא רשאי למחוק הודעה זו",
+    "already-voting-for-this-post": "You have already voted for this post.",
     "reputation-system-disabled": "מערכת המוניטין לא פעילה.",
     "downvoting-disabled": "היכולת להצביע נגד לא פעילה",
     "not-enough-reputation-to-downvote": "אין לך מספיק מוניטין כדי להוריד את הדירוג של פוסט זה",
