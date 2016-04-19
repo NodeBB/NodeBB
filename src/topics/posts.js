@@ -22,7 +22,7 @@ module.exports = function(Topics) {
 				Topics.updateTimestamp(postData.tid, postData.timestamp, next);
 			},
 			function(next) {
-				Topics.addPostToTopic(postData.tid, postData.pid, postData.timestamp, 0, next);
+				Topics.addPostToTopic(postData.tid, postData, next);
 			}
 		], callback);
 	};
@@ -264,38 +264,51 @@ module.exports = function(Topics) {
 		);
 	};
 
-	Topics.addPostToTopic = function(tid, pid, timestamp, votes, callback) {
-		Topics.getTopicField(tid, 'mainPid', function(err, mainPid) {
-			if (err) {
-				return callback(err);
+	Topics.addPostToTopic = function(tid, postData, callback) {
+		async.waterfall([
+			function (next) {
+				Topics.getTopicField(tid, 'mainPid', next);
+			},
+			function (mainPid, next) {
+				if (!parseInt(mainPid, 10)) {
+					Topics.setTopicField(tid, 'mainPid', postData.pid, next);
+				} else {
+					async.parallel([
+						function(next) {
+							db.sortedSetAdd('tid:' + tid + ':posts', postData.timestamp, postData.pid, next);
+						},
+						function(next) {
+							db.sortedSetAdd('tid:' + tid + ':posts:votes', postData.votes, postData.pid, next);
+						}
+					], function(err) {
+						next(err);
+					});
+				}
+			},
+			function (next) {
+				db.sortedSetIncrBy('tid:' + tid + ':posters', 1, postData.uid, next);
+			},
+			function (count, next) {
+				Topics.updateTeaser(tid, next);
 			}
-			if (!parseInt(mainPid, 10)) {
-				Topics.setTopicField(tid, 'mainPid', pid, callback);
-			} else {
-				async.parallel([
-					function(next) {
-						db.sortedSetAdd('tid:' + tid + ':posts', timestamp, pid, next);
-					},
-					function(next) {
-						db.sortedSetAdd('tid:' + tid + ':posts:votes', votes, pid, next);
-					}
-				], function(err) {
-					if (err) {
-						return callback(err);
-					}
-					Topics.updateTeaser(tid, callback);
-				});
-			}
-		});
+		], callback);
 	};
 
-	Topics.removePostFromTopic = function(tid, pid, callback) {
-		db.sortedSetsRemove(['tid:' + tid + ':posts', 'tid:' + tid + ':posts:votes'], pid, function(err) {
-			if (err) {
-				return callback(err);
+	Topics.removePostFromTopic = function(tid, postData, callback) {
+		async.waterfall([
+			function (next) {
+				db.sortedSetsRemove([
+					'tid:' + tid + ':posts',
+					'tid:' + tid + ':posts:votes'
+				], postData.pid, next);
+			},
+			function (next) {
+				db.sortedSetIncrBy('tid:' + tid + ':posters', -1, postData.uid, next);
+			},
+			function (count, next) {
+				Topics.updateTeaser(tid, next);
 			}
-			Topics.updateTeaser(tid, callback);
-		});
+		], callback);
 	};
 
 	Topics.getPids = function(tid, callback) {

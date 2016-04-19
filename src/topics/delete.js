@@ -1,12 +1,12 @@
 'use strict';
 
-var async = require('async'),
-	db = require('../database'),
+var async = require('async');
+var db = require('../database');
 
-	user = require('../user'),
-	posts = require('../posts'),
-	plugins = require('../plugins'),
-	batch = require('../batch');
+var user = require('../user');
+var posts = require('../posts');
+var plugins = require('../plugins');
+var batch = require('../batch');
 
 
 module.exports = function(Topics) {
@@ -115,7 +115,8 @@ module.exports = function(Topics) {
 					'tid:' + tid + ':followers',
 					'tid:' + tid + ':posts',
 					'tid:' + tid + ':posts:votes',
-					'tid:' + tid + ':bookmarks'
+					'tid:' + tid + ':bookmarks',
+					'tid:' + tid + ':posters'
 				], next);
 			},
 			function(next) {

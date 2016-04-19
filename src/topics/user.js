@@ -2,10 +2,9 @@
 
 'use strict';
 
-var async = require('async'),
-	db = require('../database'),
-	posts = require('../posts');
-
+var async = require('async');
+var db = require('../database');
+var posts = require('../posts');
 
 module.exports = function(Topics) {
 
@@ -20,22 +19,6 @@ module.exports = function(Topics) {
 	};
 
 	Topics.getUids = function(tid, callback) {
-		async.waterfall([
-			function(next) {
-				Topics.getPids(tid, next);
-			},
-			function(pids, next) {
-				posts.getPostsFields(pids, ['uid'], next);
-			},
-			function(postData, next) {
-				var uids = postData.map(function(post) {
-					return post && post.uid;
-				}).filter(function(uid, index, array) {
-					return uid && array.indexOf(uid) === index;
-				});
-
-				next(null, uids);
-			}
-		], callback);
+		db.getSortedSetRevRangeByScore('tid:' + tid + ':posters', 0, -1, '+inf', 1, callback);
 	};
 };
