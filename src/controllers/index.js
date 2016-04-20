@@ -30,7 +30,7 @@ var Controllers = {
 
 
 Controllers.home = function(req, res, next) {
-	var route = meta.config.homePageRoute || meta.config.homePageCustom.replace(/^\/+/, '') || 'categories';
+	var route = meta.config.homePageRoute || (meta.config.homePageCustom || '').replace(/^\/+/, '') || 'categories';
 
 	user.getSettings(req.uid, function(err, settings) {
 		if (err) {
