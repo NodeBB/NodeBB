@@ -20,6 +20,7 @@ define('iconSelect', function() {
 			var picker = bootbox.dialog({
 					onEscape: true,
 					backdrop: true,
+					show: false,
 					message: html,
 					title: 'Select an Icon',
 					buttons: {
@@ -51,6 +52,16 @@ define('iconSelect', function() {
 					}
 				});
 
+			picker.on('show.bs.modal', function() {
+				var modalEl = $(this),
+					searchEl = modalEl.find('input');
+
+				if (selected) {
+					modalEl.find('.' + selected).addClass('selected');
+					searchEl.val(selected.replace('fa-', ''));
+				}
+			}).modal('show');
+
 			picker.on('shown.bs.modal', function() {
 				var modalEl = $(this),
 					searchEl = modalEl.find('input'),
@@ -71,11 +82,7 @@ define('iconSelect', function() {
 				}
 
 				// Focus on the input box
-				searchEl.focus();
-
-				if (selected) {
-					modalEl.find('.' + selected).addClass('selected');
-				}
+				searchEl.selectRange(0, searchEl.val().length);
 
 				modalEl.find('.icon-container').on('click', 'i', function() {
 					searchEl.val($(this).attr('class').replace('fa fa-', '').replace('selected', ''));
