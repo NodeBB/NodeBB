@@ -60,8 +60,12 @@ define('iconSelect', function() {
 				// Focus on the input box
 				searchEl.focus();
 
+				if (selected) {
+					modalEl.find('.icon-container .' + selected).addClass('selected');
+				}
+
 				modalEl.find('.icon-container').on('click', 'i', function() {
-					searchEl.val($(this).attr('class').replace('fa fa-', ''));
+					searchEl.val($(this).attr('class').replace('fa fa-', '').replace('selected', ''));
 					modalEl.find('.icon-container i').removeClass('selected');
 					$(this).addClass('selected');
 				});
