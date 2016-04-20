@@ -57,6 +57,19 @@ define('iconSelect', function() {
 					icons = modalEl.find('.fa-icons i'),
 					submitEl = modalEl.find('button.btn-primary');
 
+				function changeSelection(newSelection) {
+					$('.icon-container i.selected').removeClass('selected');
+					if (newSelection) {
+						newSelection.addClass('selected');
+					} else if (searchEl.val().length === 0) {
+						if (selected) {
+							$('.icon-container .' + selected).addClass('selected');
+						}
+					} else {
+						$('.icon-container i:visible').first().addClass('selected');
+					}
+				}
+
 				// Focus on the input box
 				searchEl.focus();
 
@@ -66,8 +79,7 @@ define('iconSelect', function() {
 
 				modalEl.find('.icon-container').on('click', 'i', function() {
 					searchEl.val($(this).attr('class').replace('fa fa-', '').replace('selected', ''));
-					modalEl.find('.icon-container i').removeClass('selected');
-					$(this).addClass('selected');
+					changeSelection($(this));
 				});
 
 				searchEl.on('keyup', function(e) {
@@ -79,9 +91,8 @@ define('iconSelect', function() {
 								$(el).hide();
 							}
 						});
+						changeSelection();
 					} else {
-						// Pick first match
-						$('.icon-container i:visible').first().addClass('selected');
 						submitEl.click();
 					}
 				});
