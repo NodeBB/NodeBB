@@ -81,7 +81,7 @@ uploadsController.uploadPost = function(req, res, next) {
 				}, function(err) {
 					// Return the resized version to the composer/postData
 					var parsedUrl = path.parse(fileObj.url);
-					delete parsedUrl.base;
+					parsedUrl.base = parsedUrl.name + '-resized' + parsedUrl.ext;
 					parsedUrl.name = parsedUrl.name + '-resized';
 					fileObj.url = path.format(parsedUrl);
 
