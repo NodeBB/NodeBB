@@ -489,7 +489,7 @@ Upgrade.upgrade = function(callback) {
 				var count = 0;
 				batch.processSortedSet('topics:tid', function(tids, next) {
 					winston.info('upgraded ' + count + ' topics');
-
+					count += tids.length;
 					async.each(tids, function(tid, next) {
 						db.delete('tid:' + tid + ':posters', function(err) {
 							if (err) {
