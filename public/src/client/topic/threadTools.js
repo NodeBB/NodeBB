@@ -211,23 +211,14 @@ define('forum/topic/threadTools', [
 
 	function setFollowState(state) {
 		var menu = components.get('topic/following/menu');
-		if( !menu.hasClass('hidden')){
-			menu.click();
-		}
 		menu.toggleClass('hidden', state != 'follow');
 		components.get('topic/watch/check').toggleClass('fa-check', state == 'follow');
 
 		menu = components.get('topic/normal/menu');
-		if( !menu.hasClass('hidden')){
-			menu.click();
-		}
 		menu.toggleClass('hidden', state != 'unfollow');
 		components.get('topic/unwatch/check').toggleClass('fa-check', state == 'unfollow');
 
 		menu = components.get('topic/ignoring/menu');
-		if( !menu.hasClass('hidden')){
-			menu.click();
-		}
 		menu.toggleClass('hidden', state != 'ignore' );
 		components.get('topic/ignore/check').toggleClass('fa-check', state == 'ignore');
 	}

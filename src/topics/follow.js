@@ -220,4 +220,27 @@ module.exports = function(Topics) {
 			}
 		], callback);
 	};
+
+	Topics.getIgnoringUsers = function(tid, callback){
+		db.getSetMembers( 'tid:' + tid + ':ignorers', callback );
+	};
+
+	Topics.filterIgnoringUids = function(tid, uids, callback){
+		async.waterfall([
+			function(next){
+				Topics.getIgnoringUsers(tid, next);
+			},
+			function(ignoringUsers, next){
+				var readingUids = uids.map( function(uid){
+							if( ignoringUsers.indexOf(uid) === -1 ){
+								return uid;
+							}
+							else{
+								return null;
+							}
+				});
+				next( null, readingUids.filter( function(uid){ return uid != null;}) );
+			}
+		], callback );
+	};
 };

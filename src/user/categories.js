@@ -11,6 +11,16 @@ module.exports = function(User) {
 		db.getSortedSetRange('uid:' + uid + ':ignored:cids', 0, -1, callback);
 	};
 
+	User.isIgnoredCategory = function(uid, cid, callback){
+		async.waterfall([
+			function(next){
+				User.getIgnoredCategories(uid, next);
+			},
+			function(ignoredCids, next){
+				next( null, ignoredCids.indexOf(cid.toString()) != -1 );
+			}], callback);
+	}
+
 	User.getWatchedCategories = function(uid, callback) {
 		async.parallel({
 			ignored: function(next) {
