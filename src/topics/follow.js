@@ -232,7 +232,7 @@ module.exports = function(Topics) {
 			},
 			function(ignoringUsers, next){
 				var readingUids = uids.map( function(uid){
-							if( ignoringUsers.indexOf(uid) === -1 ){
+							if( ignoringUsers.indexOf(uid.toString()) === -1 ){
 								return uid;
 							}
 							else{

@@ -11,7 +11,9 @@ var async = require('async'),
 	User = require('./user'),
 	groups = require('./groups'),
 	meta = require('./meta'),
-	plugins = require('./plugins');
+	plugins = require('./plugins'),
+	topics = require('./topics'),
+	categories = require('./categories');
 
 (function(Notifications) {
 
@@ -157,43 +159,75 @@ var async = require('async'),
 			return parseInt(uid, 10) && array.indexOf(uid) === index;
 		});
 
-		if (!uids.length) {
-			return callback();
-		}
-
-		var done = false;
-		var start = 0;
-		var batchSize = 50;
-
-		setTimeout(function() {
-			async.whilst(
-				function() {
-					return !done;
-				},
-				function(next) {
-					var currentUids = uids.slice(start, start + batchSize);
-					if (!currentUids.length) {
-						done = true;
-						return next();
+		async.waterfall([
+			function(next){
+				if( !notification.tid ){
+					return next(null, uids);
+				}
+				else{
+					return topics.filterIgnoringUids(notification.tid, uids, next );
+				}
+			},
+			function(uids, next){
+				if(!notification.cid){
+					if(!notification.tid){
+						return next(null, uids);
 					}
-					pushToUids(currentUids, notification, function(err) {
-						if (err) {
-							return next(err);
-						}
-						start = start + batchSize;
-
-						setTimeout(next, 1000);
-					});
-				},
-				function(err) {
-					if (err) {
-						winston.error(err.stack);
+					else{
+						async.waterfall([
+							function(next){
+								topics.getTopicField(notification.tid, 'cid', next);
+							},
+							function(cid, next){
+								categories.filterIgnoringUids(cid, uids, next );
+							}],
+							next);
 					}
 				}
-			);
-		}, 1000);
+				else{
+					return categories.filterIgnoringUids(notification.cid, uids, next );
+				}
+			}],
+		function(err, notifyUids){
+			uids = notifyUids;
+			if (!uids.length) {
+				return callback();
+			}
 
-		callback();
+			var done = false;
+			var start = 0;
+			var batchSize = 50;
+
+			setTimeout(function() {
+				async.whilst(
+					function() {
+						return !done;
+					},
+					function(next) {
+						var currentUids = uids.slice(start, start + batchSize);
+						if (!currentUids.length) {
+							done = true;
+							return next();
+						}
+						pushToUids(currentUids, notification, function(err) {
+							if (err) {
+								return next(err);
+							}
+							start = start + batchSize;
+
+							setTimeout(next, 1000);
+						});
+					},
+					function(err) {
+						if (err) {
+							winston.error(err.stack);
+						}
+					}
+				);
+			}, 1000);
+
+			callback();
+		});
 	};
 
 	function pushToUids(uids, notification, callback) {
