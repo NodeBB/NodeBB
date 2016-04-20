@@ -24,6 +24,7 @@
     "digest.day": "day",
     "digest.week": "week",
     "digest.month": "month",
+    "digest.subject": "Digest for %1",
     "notif.chat.subject": "Nuovo messaggio in chat da %1",
     "notif.chat.cta": "Clicca qui per continuare la conversazione",
     "notif.chat.unsub.info": "Questa notifica di chat ti è stata inviata perché l'hai scelta nelle impostazioni.",

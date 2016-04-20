@@ -85,6 +85,7 @@
     "cant-edit-chat-message": "Non tes permitido editar esta mensaxe.",
     "cant-remove-last-user": "Non podes quitar o último usuario",
     "cant-delete-chat-message": "Non tes permitido borrar esta mensaxe.",
+    "already-voting-for-this-post": "You have already voted for this post.",
     "reputation-system-disabled": "O sistema de reputación está deshabilitado",
     "downvoting-disabled": "Os votos negativos están deshabilitados",
     "not-enough-reputation-to-downvote": "Non tes reputación dabonda para esta acción",

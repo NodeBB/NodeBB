@@ -26,7 +26,7 @@
     "tools": "Orodja",
     "flag": "Prijavi",
     "locked": "Zaklenjeno",
-    "bookmark_instructions": "Click here to return to the last unread post in this thread.",
+    "bookmark_instructions": "Click here to return to the last read post in this thread.",
     "flag_title": "Prijavi to objavo v pregled administratorju",
     "flag_success": "Ta objava je bila prijavljena v pregled administratorju.",
     "deleted_message": "Ta tema je bila izbrisana. Le uporabniki s pravicami teme jo lahko vidijo.",

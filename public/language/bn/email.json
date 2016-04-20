@@ -24,6 +24,7 @@
     "digest.day": "day",
     "digest.week": "week",
     "digest.month": "month",
+    "digest.subject": "Digest for %1",
     "notif.chat.subject": "%1 এর থেকে নতুন মেসেজ এসেছে।",
     "notif.chat.cta": "কথপোকথন চালিয়ে যেতে এখানে ক্লিক করুন",
     "notif.chat.unsub.info": "আপনার সাবস্ক্রীপশন সেটিংসের কারনে আপনার এই নোটিফিকেশন পাঠানো হয়েছে",

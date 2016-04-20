@@ -95,7 +95,7 @@ module.exports = function(Meta) {
 		async.series([
 			function(next) {
 				async.each(Meta.js.scripts.modules, function(localPath, next) {
-					app.get(path.join('/src/modules/', path.basename(localPath)), function(req, res) {
+					app.get('/src/modules/' + path.basename(localPath), function(req, res) {
 						return res.sendFile(path.join(__dirname, '../../', localPath), {
 							maxAge: app.enabled('cache') ? 5184000000 : 0
 						});

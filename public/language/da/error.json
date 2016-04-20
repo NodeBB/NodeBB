@@ -85,6 +85,7 @@
     "cant-edit-chat-message": "Du har ikke tilladelse til at redigere denne besked",
     "cant-remove-last-user": "Du kan ikke fjerne den sidste bruger",
     "cant-delete-chat-message": "Du har ikke tilladelse til at slette denne besked",
+    "already-voting-for-this-post": "You have already voted for this post.",
     "reputation-system-disabled": "Vurderingssystem er slået fra.",
     "downvoting-disabled": "Nedvurdering er slået fra",
     "not-enough-reputation-to-downvote": "Du har ikke nok omdømme til at nedstemme dette indlæg",

@@ -230,7 +230,6 @@ define('forum/topic/posts', [
 		utils.addCommasToNumbers(posts.find('.formatted-number'));
 		utils.makeNumbersHumanReadable(posts.find('.human-readable-number'));
 		posts.find('.timeago').timeago();
-		Posts.wrapImagesInLinks(posts);
 
 		addBlockquoteEllipses(posts.find('[component="post/content"] > blockquote > blockquote'));
 		hidePostToolsForDeletedPosts(posts);
@@ -265,6 +264,9 @@ define('forum/topic/posts', [
 				visible = images.filter(function() {
 					return config.delayImageLoading ? utils.isElementInViewport(this) : true;
 				}),
+				posts = $.unique(visible.map(function() {
+					return $(this).parents('[component="post"]').get(0);
+				})),
 				scrollTop = $(window).scrollTop(),
 				adjusting = false,
 				adjustQueue = [],
@@ -286,6 +288,9 @@ define('forum/topic/posts', [
 						adjustQueue.pop()();
 					} else {
 						adjusting = false;
+
+						Posts.wrapImagesInLinks(posts);
+						posts.length = 0;
 					}
 				},
 				oldHeight, newHeight;
@@ -304,9 +309,6 @@ define('forum/topic/posts', [
 				});
 
 				image.attr('src', image.attr('data-src'));
-				if (image.parent().attr('href') === 'about:blank') {
-					image.parent().attr('href', image.attr('data-src'));
-				}
 				image.removeAttr('data-src');
 			});
 		}, 250);
@@ -314,9 +316,16 @@ define('forum/topic/posts', [
 
 	Posts.wrapImagesInLinks = function(posts) {
 		posts.find('[component="post/content"] img:not(.emoji)').each(function() {
-			var $this = $(this);
+			var $this = $(this),
+				src = $this.attr('src'),
+				suffixRegex = /-resized(\.[\w]+)$/;
+
+			if (utils.isRelativeUrl(src) && suffixRegex.test(src)) {
+				src = src.replace(suffixRegex, '$1');
+			}
+
 			if (!$this.parent().is('a')) {
-				$this.wrap('<a href="' + $this.attr('src') + '" target="_blank">');
+				$this.wrap('<a href="' + src + '" target="_blank">');
 			}
 		});
 	};

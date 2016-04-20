@@ -100,6 +100,10 @@
 				<label for="unreadCutoff">Unread cutoff days</label>
 				<input id="unreadCutoff" type="text" class="form-control" value="2" data-field="unreadCutoff">
 			</div>
+			<div class="form-group">
+ 				<label for="bookmarkthreshold">Minimum posts in topic before tracking last read</label>
+ 				<input id="bookmarkthreshold" type="text" class="form-control" value="5" data-field="bookmarkThreshold">
+ 			</div>
 		</form>
 	</div>
 </div>

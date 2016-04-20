@@ -85,6 +85,7 @@
     "cant-edit-chat-message": "Нямате право да редактирате това съобщение",
     "cant-remove-last-user": "Не можете да премахнете последния потребител",
     "cant-delete-chat-message": "Нямате право да изтриете това съобщение",
+    "already-voting-for-this-post": "Вече сте дали глас за тази публикация.",
     "reputation-system-disabled": "Системата за репутация е изключена.",
     "downvoting-disabled": "Отрицателното гласуване е изключено",
     "not-enough-reputation-to-downvote": "Нямате достатъчно репутация, за да гласувате отрицателно за тази публикация",

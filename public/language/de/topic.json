@@ -26,7 +26,7 @@
     "tools": "Werkzeuge",
     "flag": "Markieren",
     "locked": "Gesperrt",
-    "bookmark_instructions": "Klicke hier um zum letzten ungelesenen Beitrag in diesem Thema zu springen.",
+    "bookmark_instructions": "Klicke hier, um zum letzten gelesenen Beitrag des Themas zurückzukehren.",
     "flag_title": "Diesen Beitrag zur Moderation markieren",
     "flag_success": "Dieser Beitrag wurde erfolgreich für die Moderation markiert.",
     "deleted_message": "Dieses Thema wurde gelöscht. Nur Nutzer mit entsprechenden Rechten können es sehen.",

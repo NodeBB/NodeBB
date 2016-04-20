@@ -30,7 +30,7 @@ var Controllers = {
 
 
 Controllers.home = function(req, res, next) {
-	var route = meta.config.homePageRoute || meta.config.homePageCustom || 'categories';
+	var route = meta.config.homePageRoute || meta.config.homePageCustom.replace(/^\/+/, '') || 'categories';
 
 	user.getSettings(req.uid, function(err, settings) {
 		if (err) {
@@ -107,6 +107,12 @@ Controllers.login = function(req, res, next) {
 	data.breadcrumbs = helpers.buildBreadcrumbs([{text: '[[global:login]]'}]);
 	data.error = req.flash('error')[0];
 	data.title = '[[pages:login]]';
+
+	if (!data.allowLocalLogin && !data.allowRegistration && data.alternate_logins && data.authentication.length === 1) {
+		return helpers.redirect(res, {
+			external: data.authentication[0].url
+		});
+	}
 
 	res.render('login', data);
 };

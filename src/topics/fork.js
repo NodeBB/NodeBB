@@ -87,7 +87,7 @@ module.exports = function(Topics) {
 				if (!exists) {
 					return next(new Error('[[error:no-topic]]'));
 				}
-				posts.getPostFields(pid, ['tid', 'timestamp', 'votes'], next);
+				posts.getPostFields(pid, ['tid', 'uid', 'timestamp', 'votes'], next);
 			},
 			function(post, next) {
 				if (!post || !post.tid) {
@@ -101,7 +101,7 @@ module.exports = function(Topics) {
 				postData = post;
 				postData.pid = pid;
 
-				Topics.removePostFromTopic(postData.tid, pid, next);
+				Topics.removePostFromTopic(postData.tid, postData, next);
 			},
 			function(next) {
 				async.parallel([
@@ -118,7 +118,7 @@ module.exports = function(Topics) {
 						posts.setPostField(pid, 'tid', tid, next);
 					},
 					function(next) {
-						Topics.addPostToTopic(tid, pid, postData.timestamp, postData.votes, next);
+						Topics.addPostToTopic(tid, postData, next);
 					}
 				], next);
 			},

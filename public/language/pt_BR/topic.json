@@ -26,7 +26,7 @@
     "tools": "Ferramentas",
     "flag": "Sinalizar",
     "locked": "Trancado",
-    "bookmark_instructions": "Clique aqui para retornar ao último post não lido nesta thread.",
+    "bookmark_instructions": "Clique aqui para retornar ao último post lido neste tópico.",
     "flag_title": "Sinalizar este post para moderação",
     "flag_success": "Este post foi sinalizado para ser moderado.",
     "deleted_message": "Este tópico foi deletado. Apenas usuários com privilégios de moderação de tópico podem vê-lo.",

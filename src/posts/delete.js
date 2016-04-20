@@ -182,6 +182,9 @@ module.exports = function(Posts) {
 							db.sortedSetIncrBy('cid:' + topicData.cid + ':tids:posts', -1, postData.tid, next);
 						},
 						function(next) {
+							db.sortedSetIncrBy('tid:' + postData.tid + ':posters', -1, postData.uid, next);
+						},
+						function(next) {
 							user.incrementUserPostCountBy(postData.uid, -1, next);
 						}
 					], callback);
