@@ -58,15 +58,15 @@ define('iconSelect', function() {
 					submitEl = modalEl.find('button.btn-primary');
 
 				function changeSelection(newSelection) {
-					$('.icon-container i.selected').removeClass('selected');
+					modalEl.find('i.selected').removeClass('selected');
 					if (newSelection) {
 						newSelection.addClass('selected');
 					} else if (searchEl.val().length === 0) {
 						if (selected) {
-							$('.icon-container .' + selected).addClass('selected');
+							modalEl.find('.' + selected).addClass('selected');
 						}
 					} else {
-						$('.icon-container i:visible').first().addClass('selected');
+						modalEl.find('i:visible').first().addClass('selected');
 					}
 				}
 
@@ -74,7 +74,7 @@ define('iconSelect', function() {
 				searchEl.focus();
 
 				if (selected) {
-					modalEl.find('.icon-container .' + selected).addClass('selected');
+					modalEl.find('.' + selected).addClass('selected');
 				}
 
 				modalEl.find('.icon-container').on('click', 'i', function() {
