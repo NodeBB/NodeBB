@@ -42,9 +42,11 @@ define('iconSelect', function() {
 								var iconClass = $('.bootbox .selected').attr('class');
 								var categoryIconClass = $('<div/>').addClass(iconClass).removeClass('fa').removeClass('selected').attr('class');
 
-								el.attr('class', 'fa ' + (doubleSize ? 'fa-2x ' : '') + categoryIconClass);
-								el.val(categoryIconClass);
-								el.attr('value', categoryIconClass);
+								if (categoryIconClass) {
+									el.attr('class', 'fa ' + (doubleSize ? 'fa-2x ' : '') + categoryIconClass);
+									el.val(categoryIconClass);
+									el.attr('value', categoryIconClass);
+								}
 
 								onModified(el);
 							}
