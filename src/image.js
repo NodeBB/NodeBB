@@ -11,6 +11,7 @@ image.resizeImage = function(data, callback) {
 	if (plugins.hasListeners('filter:image.resize')) {
 		plugins.fireHook('filter:image.resize', {
 			path: data.path,
+			target: data.target,
 			extension: data.extension,
 			width: data.width,
 			height: data.height
@@ -26,28 +27,42 @@ image.resizeImage = function(data, callback) {
 			var w = image.bitmap.width,
 				h = image.bitmap.height,
 				origRatio = w/h,
-				desiredRatio = data.width/data.height,
+				desiredRatio = data.width && data.height ? data.width/data.height : origRatio,
 				x = 0,
 				y = 0,
 				crop;
 
-			if (desiredRatio > origRatio) {
-				desiredRatio = 1/desiredRatio;
-			}
-			if (origRatio >= 1) {
-				y = 0;	// height is the smaller dimension here
-				x = Math.floor((w/2) - (h * desiredRatio / 2));
-				crop = async.apply(image.crop.bind(image), x, y, h * desiredRatio, h);
+			if (origRatio !== desiredRatio) {
+				if (desiredRatio > origRatio) {
+					desiredRatio = 1/desiredRatio;
+				}
+				if (origRatio >= 1) {
+					y = 0;	// height is the smaller dimension here
+					x = Math.floor((w/2) - (h * desiredRatio / 2));
+					crop = async.apply(image.crop.bind(image), x, y, h * desiredRatio, h);
+				} else {
+					x = 0;	// width is the smaller dimension here
+					y = Math.floor(h/2 - (w * desiredRatio / 2));
+					crop = async.apply(image.crop.bind(image), x, y, w, w * desiredRatio);
+				}
 			} else {
-				x = 0;	// width is the smaller dimension here
-				y = Math.floor(h/2 - (w * desiredRatio / 2));
-				crop = async.apply(image.crop.bind(image), x, y, w, w * desiredRatio);
+				// Simple resize given either width, height, or both
+				crop = async.apply(setImmediate);
 			}
 
 			async.waterfall([
 				crop,
-				function(image, next) {
-					image.resize(data.width, data.height, next);
+				function(_image, next) {
+					if (typeof _image === 'function' && !next) {
+						next = _image;
+						_image = image;
+					}
+
+					if ((data.width && data.height) || (w > data.width) || (h > data.height)) {
+						_image.resize(data.width || Jimp.AUTO, data.height || Jimp.AUTO, next);
+					} else {
+						next(null, image);
+					}
 				},
 				function(image, next) {
 					image.write(data.target || data.path, next);

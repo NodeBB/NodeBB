@@ -14,7 +14,7 @@ var image = require('../image');
 
 var uploadsController = {};
 
-uploadsController.upload = function(req, res, filesIterator, next) {
+uploadsController.upload = function(req, res, filesIterator) {
 	var files = req.files.files;
 
 	if (!req.user && meta.config.allowGuestUploads !== '1') {
@@ -63,6 +63,30 @@ uploadsController.uploadPost = function(req, res, next) {
 					return next(new Error('[[error:uploads-are-disabled]]'));
 				}
 				uploadFile(req.uid, uploadedFile, next);
+			},
+			function(fileObj, next) {
+				if (!isImage || parseInt(meta.config.maximumImageWidth, 10) === 0) {
+					// Not an image, or resizing disabled. No need to resize.
+					return next(null, fileObj);
+				}
+
+				var fullPath = path.join(nconf.get('base_dir'), nconf.get('upload_path'), '..', fileObj.url),
+					parsedPath = path.parse(fullPath);
+
+				image.resizeImage({
+					path: fullPath,
+					target: path.join(parsedPath.dir, parsedPath.name + '-resized' + parsedPath.ext),
+					extension: parsedPath.ext,
+					width: parseInt(meta.config.maximumImageWidth, 10) || 760
+				}, function(err) {
+					// Return the resized version to the composer/postData
+					var parsedUrl = path.parse(fileObj.url);
+					delete parsedUrl.base;
+					parsedUrl.name = parsedUrl.name + '-resized';
+					fileObj.url = path.format(parsedUrl);
+
+					next(err, fileObj);
+				});
 			}
 		], next);
 	}, next);
