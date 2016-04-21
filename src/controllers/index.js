@@ -31,7 +31,6 @@ var Controllers = {
 
 Controllers.home = function(req, res, next) {
 	var route = meta.config.homePageRoute || (meta.config.homePageCustom || '').replace(/^\/+/, '') || 'categories';
-	console.log(route, meta.config);
 
 	user.getSettings(req.uid, function(err, settings) {
 		if (err) {
