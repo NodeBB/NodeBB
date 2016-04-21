@@ -57,11 +57,13 @@ module.exports = function(User) {
 						}, next);
 					},
 					function(next) {
-						if (convertToPNG) {
-							image.normalise(picture.path, extension, next);
-						} else {
-							next();
+						if (!convertToPNG) {
+							return next();
 						}
+						async.series([
+							async.apply(image.normalise, picture.path, extension),
+							async.apply(fs.rename, picture.path + '.png', picture.path)
+						], next);
 					},
 					function(next) {
 						User.getUserField(updateUid, 'uploadedpicture', next);
