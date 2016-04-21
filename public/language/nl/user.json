@@ -93,7 +93,7 @@
     "enable_topic_searching": "Inschakelen mogelijkheid op onderwerp te kunnen zoeken",
     "topic_search_help": "Wanneer ingeschakeld zal de standaard zoekfunctie, met een aangepaste methode voor onderwerpen, overschreven worden",
     "delay_image_loading": "Afbeeldingen Laden Uitstellen",
-    "image_load_delay_help": "Indien ingeschakeld zullen afbeeldingen in topics niet laden totdat ze in het scherm scrollen",
+    "image_load_delay_help": "Indien ingeschakeld zullen afbeeldingen in topics niet laden totdat ze het scherm inscrollen",
     "scroll_to_my_post": "Toon het nieuwe bericht na het plaatsen van een antwoord",
     "follow_topics_you_reply_to": "Volg de onderwerpen waarop ik gereageerd heb",
     "follow_topics_you_create": "Volg de onderwerpen waarvan ik de oorspronkelijke auteur ben",

@@ -6,5 +6,8 @@
     "selected": "已選擇",
     "all": "全部",
     "all_categories": "All categories",
-    "topics_marked_as_read.success": "標記主題成已讀!"
+    "topics_marked_as_read.success": "標記主題成已讀!",
+    "all-topics": "All Topics",
+    "new-topics": "New Topics",
+    "watched-topics": "Watched Topics"
 }

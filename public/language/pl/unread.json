@@ -6,5 +6,8 @@
     "selected": "Wybrane",
     "all": "Wszystkie",
     "all_categories": "Wszystkie kategorie",
-    "topics_marked_as_read.success": "Tematy zostały oznaczone jako przeczytane!"
+    "topics_marked_as_read.success": "Tematy zostały oznaczone jako przeczytane!",
+    "all-topics": "All Topics",
+    "new-topics": "New Topics",
+    "watched-topics": "Watched Topics"
 }
