@@ -34,5 +34,5 @@
     "teaserPost": "last",
     "allowPrivateGroups": 1,
     "unreadCutoff": 2,
-    "bookmarkthreshold": 5
+    "bookmarkThreshold": 5
 }
