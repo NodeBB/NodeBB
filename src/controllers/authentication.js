@@ -33,7 +33,7 @@ authenticationController.register = function(req, res, next) {
 
 	async.waterfall([
 		function(next) {
-			if (registrationType === 'invite-only') {
+			if (registrationType === 'invite-only' || registrationType === 'admin-invite-only') {
 				user.verifyInvitation(userData, next);
 			} else {
 				next();
@@ -59,7 +59,7 @@ authenticationController.register = function(req, res, next) {
 			plugins.fireHook('filter:register.check', {req: req, res: res, userData: userData}, next);
 		},
 		function(data, next) {
-			if (registrationType === 'normal' || registrationType === 'invite-only') {
+			if (registrationType === 'normal' || registrationType === 'invite-only' || registrationType === 'admin-invite-only') {
 				registerAndLoginUser(req, res, userData, next);
 			} else if (registrationType === 'admin-approval') {
 				addToApprovalQueue(req, userData, next);

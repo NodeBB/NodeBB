@@ -24,6 +24,7 @@
     "digest.day": "day",
     "digest.week": "week",
     "digest.month": "month",
+    "digest.subject": "Digest for %1",
     "notif.chat.subject": "Nauja pokalbio žinutė gauta iš %1",
     "notif.chat.cta": "Pokalbio pratęsimui spauskite čia",
     "notif.chat.unsub.info": "Šios žinutės perpėjimas buvo išsiųstas į tavo prenumeratos nustatymus",

@@ -24,6 +24,7 @@
     "digest.day": "umunsi",
     "digest.week": "icyumweru",
     "digest.month": "ukwezi",
+    "digest.subject": "Digest for %1",
     "notif.chat.subject": "Ubutumwa bwo mu gikari bwaturutse kuri %1",
     "notif.chat.cta": "Kanda hano kugirango ukomeze",
     "notif.chat.unsub.info": "Iri tangazo rijyanye n'ubutumwa bwo mu gikari waryohererejwe kubera ko wabihisemo mu byo uzajya umenyeshwa",

@@ -24,6 +24,7 @@
     "digest.day": "روز",
     "digest.week": "هفته",
     "digest.month": "ماه",
+    "digest.subject": "Digest for %1",
     "notif.chat.subject": "پیام چتی جدیدی از %1 دریافت شد",
     "notif.chat.cta": "برای ادامه‌ی چت اینجا کلیک کنید",
     "notif.chat.unsub.info": "این اطلاعیه ی چتیی که برای شما فرستاده شده به علت تنظیمات اشترک شماست.",

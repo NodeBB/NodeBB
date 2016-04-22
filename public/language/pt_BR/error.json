@@ -85,6 +85,7 @@
     "cant-edit-chat-message": "Você não tem permissão para editar esta mensagem",
     "cant-remove-last-user": "Você não pode excluir o último usuário",
     "cant-delete-chat-message": "Você não possui permissão para deletar esta mensagem",
+    "already-voting-for-this-post": "Você já votou neste post.",
     "reputation-system-disabled": "O sistema de reputação está desabilitado.",
     "downvoting-disabled": "Negativação está desabilitada",
     "not-enough-reputation-to-downvote": "Você não possui reputação suficiente para negativar este post",

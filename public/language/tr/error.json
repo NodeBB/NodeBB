@@ -85,6 +85,7 @@
     "cant-edit-chat-message": "Bu mesajı düzenlemek için izin verilmez",
     "cant-remove-last-user": "Son kullanıcıyı silemezsiniz",
     "cant-delete-chat-message": "Bu mesajı silmek için izin verilmez",
+    "already-voting-for-this-post": "You have already voted for this post.",
     "reputation-system-disabled": "Saygınlık sistemi kapatılmış.",
     "downvoting-disabled": "Aşagı oylama kapatılmış",
     "not-enough-reputation-to-downvote": "Bu iletiyi aşagı oylamak için yeterince saygınlığınız yok.",

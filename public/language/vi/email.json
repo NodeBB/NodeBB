@@ -24,6 +24,7 @@
     "digest.day": "ngày",
     "digest.week": "tuần",
     "digest.month": "tháng",
+    "digest.subject": "Digest for %1",
     "notif.chat.subject": "Bạn có tin nhắn mới từ %1",
     "notif.chat.cta": "Nhấn vào đây để tiếp tục cuộc hội thoại",
     "notif.chat.unsub.info": "Thông báo tin nhắn này được gửi tới dựa theo cài đặt theo dõi của bạn.",

@@ -85,6 +85,7 @@
     "cant-edit-chat-message": "Het is niet toegestaan om dit bericht aan te passen",
     "cant-remove-last-user": "Je kan de laatste gebruiker niet verwijderen",
     "cant-delete-chat-message": "Het is niet toegestaan om dit bericht te verwijderen",
+    "already-voting-for-this-post": "Je hebt al gestemd voor deze post.",
     "reputation-system-disabled": "Reputatie systeem is uitgeschakeld.",
     "downvoting-disabled": "Negatief stemmen is uitgeschakeld",
     "not-enough-reputation-to-downvote": "Je hebt onvoldoende reputatie om een negatieve stem uit te mogen brengen",

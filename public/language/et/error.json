@@ -85,6 +85,7 @@
     "cant-edit-chat-message": "Sul ei ole lubatud antud sõnumit muuta",
     "cant-remove-last-user": "Sa ei saa viimast kasutajat eemaldada",
     "cant-delete-chat-message": "Sul ei ole lubatud antud sõnumit kustutada",
+    "already-voting-for-this-post": "You have already voted for this post.",
     "reputation-system-disabled": "Reputatsiooni süsteem ei ole aktiveeritud",
     "downvoting-disabled": "Negatiivsete häälte andmine ei ole võimaldatud",
     "not-enough-reputation-to-downvote": "Sul ei ole piisavalt reputatsiooni, et anda negatiivset hinnangut sellele postitusele.",

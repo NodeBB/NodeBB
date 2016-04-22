@@ -24,6 +24,7 @@
     "digest.day": "päev",
     "digest.week": "nädal",
     "digest.month": "kuu",
+    "digest.subject": "Digest for %1",
     "notif.chat.subject": "Sulle on saabunud uus sõnum kasutajalt %1",
     "notif.chat.cta": "Vajuta siia, et jätkata vestlusega",
     "notif.chat.unsub.info": "See chat teavitus on saadetud teile tellimuse seadistuse tõttu.",

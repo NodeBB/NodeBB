@@ -26,7 +26,7 @@
     "tools": "Araçlar",
     "flag": "Bayrak",
     "locked": "Kilitli",
-    "bookmark_instructions": "Bu başlıkta okuduğun en son iletiye gitmek için buraya tıklayınız",
+    "bookmark_instructions": "Click here to return to the last read post in this thread.",
     "flag_title": "Bu iletiyi moderatöre haber et",
     "flag_success": "Bu ileti yöneticilere bildirildi.",
     "deleted_message": "Bu başlık silindi. Sadece başlık düzenleme yetkisi olan kullanıcılar görebilir.",

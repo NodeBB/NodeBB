@@ -24,6 +24,7 @@
     "digest.day": "day",
     "digest.week": "week",
     "digest.month": "month",
+    "digest.subject": "Digest for %1",
     "notif.chat.subject": "Nová zpráva z chatu od %1",
     "notif.chat.cta": "Chcete-li pokračovat v konverzaci, klikněte zde.",
     "notif.chat.unsub.info": "Toto oznámení z chatu vám bylo zasláno, protože jste si to nastavili ve vašich odběrech.",
