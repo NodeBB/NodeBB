@@ -244,6 +244,7 @@ define('forum/topic/posts', [
 			}).attr('data-state', 'unloaded').attr('src', 'about:blank');
 		} else {
 			images.attr('data-state', 'loaded');
+			Posts.wrapImagesInLinks(posts);
 		}
 	};
 
@@ -320,7 +321,7 @@ define('forum/topic/posts', [
 		posts.find('[component="post/content"] img:not(.emoji)').each(function() {
 			var $this = $(this),
 				src = $this.attr('src'),
-				suffixRegex = /-resized(\.[\w]+)$/;
+				suffixRegex = /-resized(\.[\w]+)?$/;
 
 			if (utils.isRelativeUrl(src) && suffixRegex.test(src)) {
 				src = src.replace(suffixRegex, '$1');
