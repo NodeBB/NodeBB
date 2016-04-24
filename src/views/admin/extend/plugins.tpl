@@ -24,6 +24,10 @@
 			</div>
 			<div class="tab-pane fade" id="upgrade">
 				<ul class="upgrade"></ul>
+				<div class="hidden" id="noupgradable">
+					<i class="fa fa-5x fa-check"></i>
+					<p><h4>All plugins up to date!</h4></p>
+				</div>
 			</div>
 		</div>
 	</div>

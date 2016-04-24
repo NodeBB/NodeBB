@@ -233,6 +233,9 @@ define('admin/extend/plugins', function() {
 				$('#upgrade ul').append($(this).clone(true));
 			}
 		});
+		if ($('#upgrade ul').children().length === 0) {
+			$('#noupgradable').removeClass('hidden');
+		}
 	}
 
 	return Plugins;
