@@ -308,12 +308,12 @@ Controllers.manifest = function(req, res) {
 };
 
 Controllers.outgoing = function(req, res, next) {
-	var url = req.query.url,
-		data = {
-			url: validator.escape(url),
-			title: meta.config.title,
-			breadcrumbs: helpers.buildBreadcrumbs([{text: '[[notifications:outgoing_link]]'}])
-		};
+	var url = req.query.url;
+	var data = {
+		url: validator.escape(String(url)),
+		title: meta.config.title,
+		breadcrumbs: helpers.buildBreadcrumbs([{text: '[[notifications:outgoing_link]]'}])
+	};
 
 	if (url) {
 		res.render('outgoing', data);
