@@ -71,12 +71,6 @@ $(document).ready(function() {
 				return onAjaxError(err, url, callback, quiet);
 			}
 
-			if (window.history && window.history.pushState) {
-				window.history[!quiet ? 'pushState' : 'replaceState']({
-					url: url
-				}, url, RELATIVE_PATH + '/' + url);
-			}
-
 			retry = true;
 			app.template = data.template.name;
 
@@ -111,6 +105,11 @@ $(document).ready(function() {
 		}
 
 		ajaxify.currentPage = url.split(/[?#]/)[0];
+		if (window.history && window.history.pushState) {
+			window.history[!quiet ? 'pushState' : 'replaceState']({
+				url: url
+			}, url, RELATIVE_PATH + '/' + url);
+		}
 		return url;
 	};
 

@@ -78,11 +78,12 @@ define('forum/account/settings', ['forum/account/header', 'components', 'csrf'],
 	};
 
 	function toggleCustomRoute() {
-		$('[data-property="homePageCustom"]').val('');
+
 		if ($('[data-property="homePageRoute"]').val() === 'custom') {
 			$('#homePageCustom').show();
-		}else{
+		} else {
 			$('#homePageCustom').hide();
+			$('[data-property="homePageCustom"]').val('');
 		}
 	}
 

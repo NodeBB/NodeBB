@@ -71,6 +71,13 @@ helpers.buildCategoryBreadcrumbs = function(cid, callback) {
 			return callback(err);
 		}
 
+		if (!meta.config.homePageRoute && meta.config.homePageCustom) {
+			breadcrumbs.unshift({
+				text: '[[global:header.categories]]',
+				url: nconf.get('relative_path') + '/categories'
+			});
+		}
+
 		breadcrumbs.unshift({
 			text: '[[global:home]]',
 			url: nconf.get('relative_path') + '/'

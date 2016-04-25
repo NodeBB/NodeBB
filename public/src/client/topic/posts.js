@@ -238,11 +238,13 @@ define('forum/topic/posts', [
 	Posts.unloadImages = function(posts) {
 		var images = posts.find('[component="post/content"] img:not(.not-responsive)');
 
-		images.each(function() {
-			$(this).attr('data-src', $(this).attr('src'));
-			$(this).attr('data-state', 'unloaded');
-			$(this).attr('src', 'about:blank');
-		});
+		if (config.delayImageLoading) {
+			images.each(function() {
+				$(this).attr('data-src', $(this).attr('src'));
+			}).attr('data-state', 'unloaded').attr('src', 'about:blank');
+		} else {
+			images.attr('data-state', 'loaded');
+		}
 	};
 
 	Posts.loadImages = function(threshold) {
@@ -262,7 +264,7 @@ define('forum/topic/posts', [
 
 			var images = components.get('post/content').find('img[data-state="unloaded"]'),
 				visible = images.filter(function() {
-					return config.delayImageLoading ? utils.isElementInViewport(this) : true;
+					return utils.isElementInViewport(this);
 				}),
 				posts = $.unique(visible.map(function() {
 					return $(this).parents('[component="post"]').get(0);

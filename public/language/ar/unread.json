@@ -6,5 +6,8 @@
     "selected": "المحددة",
     "all": "الكل",
     "all_categories": "كل الفئات",
-    "topics_marked_as_read.success": "تم تحديد المواضيع على أنها مقروءة!"
+    "topics_marked_as_read.success": "تم تحديد المواضيع على أنها مقروءة!",
+    "all-topics": "كل المواضيع",
+    "new-topics": "مواضيع جديدة",
+    "watched-topics": "المواضيع المتابعة"
 }
