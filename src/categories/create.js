@@ -97,11 +97,11 @@ module.exports = function(Categories) {
 				destination = results.destination;
 
 				var tasks = [];
-				if (parseInt(results.source.parentCid, 10)) {
+				if (utils.isNumber(results.source.parentCid)) {
 					tasks.push(async.apply(db.sortedSetAdd, 'cid:' + results.source.parentCid + ':children', results.source.order, toCid));
 				}
 
-				if (destination && parseInt(destination.parentCid, 10)) {
+				if (destination && utils.isNumber(destination.parentCid)) {
 					tasks.push(async.apply(db.sortedSetRemove, 'cid:' + destination.parentCid + ':children', toCid));
 				}
 
