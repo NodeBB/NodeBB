@@ -17,7 +17,6 @@ module.exports = function(User) {
 			if (err) {
 				return callback(err);
 			}
-
 			onSettingsLoaded(uid, settings ? settings : {}, callback);
 		});
 	};
@@ -78,6 +77,7 @@ module.exports = function(User) {
 			settings.delayImageLoading = parseInt(getSetting(settings, 'delayImageLoading', 1), 10) === 1;
 			settings.bootswatchSkin = settings.bootswatchSkin || 'default';
 			settings.scrollToMyPost = parseInt(getSetting(settings, 'scrollToMyPost', 1), 10) === 1;
+			settings.upvoteNotifications = getSetting(settings, 'upvoteNotifications', 'all');
 
 			callback(null, settings);
 		});
@@ -124,7 +124,8 @@ module.exports = function(User) {
 			delayImageLoading: data.delayImageLoading,
 			groupTitle: data.groupTitle,
 			homePageRoute: data.homePageCustom || data.homePageRoute,
-			scrollToMyPost: data.scrollToMyPost
+			scrollToMyPost: data.scrollToMyPost,
+			upvoteNotifications: data.upvoteNotifications
 		};
 
 		if (data.bootswatchSkin) {

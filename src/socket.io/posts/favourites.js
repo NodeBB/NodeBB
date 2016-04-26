@@ -141,7 +141,8 @@ module.exports = function(SocketPosts) {
 	}
 
 	function executeFavouriteCommand(socket, command, eventName, notification, data, callback) {
-		favourites[command](data.pid, socket.uid, function(err, result) {
+		var pid = data.pid;
+		favourites[command](pid, socket.uid, function(err, result) {
 			if (err) {
 				return callback(err);
 			}
@@ -151,8 +152,48 @@ module.exports = function(SocketPosts) {
 				websockets.in(data.room_id).emit('event:' + eventName, result);
 			}
 
+			var uid, upvoteNotifications;
 			if (result && notification) {
-				socketHelpers.sendNotificationToPostOwner(data.pid, socket.uid, notification);
+				if( notification == 'notifications:upvoted_your_post_in' ){
+					async.waterfall([
+						function(next){
+							posts.getPostField(pid, 'uid', next);
+						},
+						function(result, next){
+							uid = result;
+							user.getSettings(uid, next);
+						},
+						function(result, next){
+							upvoteNotifications = result.upvoteNotifications;
+							if (upvoteNotifications == 'none') {
+								return next(null, '');
+							}
+							else if (upvoteNotifications == 'all') {
+								socketHelpers.sendNotificationToPostOwner(pid, socket.uid, notification);
+								return next(null, '');
+							}
+							else{
+								return favourites.getUpvotedUidsByPids([pid], next);
+							}
+						},
+						function(uids, next){
+							if (uids && Array.isArray(uids)) {
+								uids = uids[0];
+								var votes = uids.length;
+								if (votes == 1) { // first or thresholds both get the first
+									socketHelpers.sendNotificationToPostOwner(pid, socket.uid, notification);
+								}
+								else if (upvoteNotifications == 'thresholds' && ([5,10,50].indexOf(votes) != -1 || votes % 50 == 0)) {
+									socketHelpers.sendNotificationToPostOwner(pid, socket.uid, notification, uids);
+								}
+							}
+							next();
+						}], callback);
+					return;
+				}
+				else{
+					socketHelpers.sendNotificationToPostOwner(pid, socket.uid, notification);
+				}
 			}
 			callback();
 		});

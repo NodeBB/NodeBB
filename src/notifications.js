@@ -199,7 +199,6 @@ var async = require('async'),
 	function pushToUids(uids, notification, callback) {
 		var unreadKeys = [];
 		var readKeys = [];
-
 		uids.forEach(function(uid) {
 			unreadKeys.push('uid:' + uid + ':notifications:unread');
 			readKeys.push('uid:' + uid + ':notifications:read');

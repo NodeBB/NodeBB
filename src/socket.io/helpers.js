@@ -49,13 +49,13 @@ SocketHelpers.notifyNew = function(uid, type, result) {
 	});
 };
 
-SocketHelpers.sendNotificationToPostOwner = function(pid, fromuid, notification) {
+SocketHelpers.sendNotificationToPostOwner = function(pid, fromuid, notification, uids) {
 	if (!pid || !fromuid || !notification) {
 		return;
 	}
 	posts.getPostFields(pid, ['tid', 'uid', 'content'], function(err, postData) {
 		if (err) {
-			return;
+		return;
 		}
 
 		if (!postData.uid || fromuid === parseInt(postData.uid, 10)) {
@@ -74,8 +74,15 @@ SocketHelpers.sendNotificationToPostOwner = function(pid, fromuid, notification)
 			var title = S(results.topicTitle).decodeHTMLEntities().s;
 			var titleEscaped = title.replace(/%/g, '&#37;').replace(/,/g, '&#44;');
 
+			var bodyShortValue;
+			if (notification == 'notifications:upvoted_your_post_in' && uids) {
+				bodyShortValue = '[[' + notification + '_multiple, ' + results.username + ', ' + (uids.length-1) + ', ' + titleEscaped + ']]';
+			}
+			else {
+				bodyShortValue = '[[' + notification + ', ' + results.username + ', ' + titleEscaped + ']]';
+			}
 			notifications.create({
-				bodyShort: '[[' + notification + ', ' + results.username + ', ' + titleEscaped + ']]',
+				bodyShort: bodyShortValue,
 				bodyLong: results.postObj.content,
 				pid: pid,
 				nid: 'post:' + pid + ':uid:' + fromuid,
