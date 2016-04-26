@@ -43,7 +43,8 @@ pluginsController.get = function(req, res, next) {
 				var routeMatchRX = /nodebb-(?:plugin|rewards|theme|widget)-(.*)/;
 				var routeToMatch = '/plugins/' + plugin.id.match(routeMatchRX)[1];
 
-				if (_.findWhere(payload.custom_header.plugins, {route: routeToMatch})) {
+				if (_.findWhere(payload.menuEntries.plugins, {route: routeToMatch}) ||
+						_.findWhere(payload.menuEntries.authentication, {route: routeToMatch})) {
 					plugin.settingsRoute = routeToMatch.substr(1);
 				}
 
