@@ -26,8 +26,8 @@ pluginsController.get = function(req, res, next) {
 				next(null, plugins);
 			});
 		},
-		custom_header: function(next) {
-			plugins.fireHook('filter:admin.header.build', {plugins: []}, next);
+		menuEntries: function(next) {
+			plugins.buildSettingsMenuEntries({plugins: [], authentication: []}, next);
 		}
 	}, function(err, payload) {
 		if (err) {
