@@ -80,7 +80,7 @@ middleware.renderHeader = function(req, res, data, next) {
 				});
 			},
 			custom_header: function(next) {
-				plugins.fireHook('filter:admin.header.build', custom_header, next);
+				plugins.buildSettingsMenuEntries(custom_header, next);
 			},
 			config: function(next) {
 				controllers.api.getConfig(req, res, next);
