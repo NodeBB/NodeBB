@@ -1,17 +1,17 @@
 'use strict';
 
-var async = require('async'),
-	winston = require('winston'),
-	cron = require('cron').CronJob,
-	nconf = require('nconf'),
-	S = require('string'),
-	_ = require('underscore'),
+var async = require('async');
+var winston = require('winston');
+var cron = require('cron').CronJob;
+var nconf = require('nconf');
+var S = require('string');
+var _ = require('underscore');
 
-	db = require('./database'),
-	User = require('./user'),
-	groups = require('./groups'),
-	meta = require('./meta'),
-	plugins = require('./plugins');
+var db = require('./database');
+var User = require('./user');
+var groups = require('./groups');
+var meta = require('./meta');
+var plugins = require('./plugins');
 
 (function(Notifications) {
 
@@ -197,44 +197,46 @@ var async = require('async'),
 	};
 
 	function pushToUids(uids, notification, callback) {
+		var oneWeekAgo = Date.now() - 604800000;
 		var unreadKeys = [];
 		var readKeys = [];
 
-		uids.forEach(function(uid) {
-			unreadKeys.push('uid:' + uid + ':notifications:unread');
-			readKeys.push('uid:' + uid + ':notifications:read');
-		});
+		async.waterfall([
+			function (next) {
+				plugins.fireHook('filter:notification.push', {notification: notification, uids: uids}, next);
+			},
+			function (data, next) {
+				uids = data.uids;
+				notification = data.notification;
 
-		var oneWeekAgo = Date.now() - 604800000;
-		async.series([
-			function(next) {
+				uids.forEach(function(uid) {
+					unreadKeys.push('uid:' + uid + ':notifications:unread');
+					readKeys.push('uid:' + uid + ':notifications:read');
+				});
+
 				db.sortedSetsAdd(unreadKeys, notification.datetime, notification.nid, next);
 			},
-			function(next) {
+			function (next) {
 				db.sortedSetsRemove(readKeys, notification.nid, next);
 			},
-			function(next) {
+			function (next) {
 				db.sortedSetsRemoveRangeByScore(unreadKeys, '-inf', oneWeekAgo, next);
 			},
-			function(next) {
+			function (next) {
 				db.sortedSetsRemoveRangeByScore(readKeys, '-inf', oneWeekAgo, next);
-			}
-		], function(err) {
-			if (err) {
-				return callback(err);
-			}
+			},
+			function (next) {
+				var websockets = require('./socket.io');
+				if (websockets.server) {
+					uids.forEach(function(uid) {
+						websockets.in('uid_' + uid).emit('event:new_notification', notification);
+					});
+				}
 
-			plugins.fireHook('action:notification.pushed', {notification: notification, uids: uids});
-
-			var websockets = require('./socket.io');
-			if (websockets.server) {
-				uids.forEach(function(uid) {
-					websockets.in('uid_' + uid).emit('event:new_notification', notification);
-				});
+				plugins.fireHook('action:notification.pushed', {notification: notification, uids: uids});
+				next();
 			}
-
-			callback();
-		});
+		], callback);
 	}
 
 	Notifications.pushGroup = function(notification, groupName, callback) {
