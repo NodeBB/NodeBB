@@ -2,16 +2,14 @@
 
 'use strict';
 
-var async = require('async'),
-	S = require('string'),
+var async = require('async');
+var S = require('string');
 
-	meta = require('../meta'),
-	db = require('../database'),
-	user = require('../user'),
-	posts = require('../posts'),
-	plugins = require('../plugins'),
-	utils = require('../../public/src/utils');
-
+var meta = require('../meta');
+var user = require('../user');
+var posts = require('../posts');
+var plugins = require('../plugins');
+var utils = require('../../public/src/utils');
 
 module.exports = function(Topics) {
 
@@ -74,7 +72,7 @@ module.exports = function(Topics) {
 						tidToPost[topic.tid].index = meta.config.teaserPost === 'first' ? 1 : counts[index];
 						if (tidToPost[topic.tid].content) {
 							var s = S(tidToPost[topic.tid].content);
-							tidToPost[topic.tid].content = s.stripTags.apply(s, utils.stripTags.concat(['img'])).s;
+							tidToPost[topic.tid].content = s.stripTags.apply(s, utils.stripTags).s;
 						}
 					}
 					return tidToPost[topic.tid];
