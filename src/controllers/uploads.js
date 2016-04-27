@@ -172,14 +172,14 @@ function uploadFile(uid, uploadedFile, callback) {
 }
 
 function saveFileToLocal(uploadedFile, callback) {
-	var extension = '';
-	if(!path.extname(uploadedFile.name)) {
+	var extension = path.extname(uploadedFile.name);
+	if(!extension) {
 		extension = '.' + mime.extension(uploadedFile.type);	
 	}
 	
-	var filename = (uploadedFile.name || 'upload') + extension;
+	var filename = uploadedFile.name || 'upload';
 
-	filename = Date.now() + '-' + validator.escape(filename).substr(0, 255);
+	filename = Date.now() + '-' + validator.escape(filename.replace(extension, '')).substr(0, 255) + extension;
 	file.saveFileToLocal(filename, 'files', uploadedFile.path, function(err, upload) {
 		if (err) {
 			return callback(err);
