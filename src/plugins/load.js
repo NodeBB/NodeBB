@@ -176,10 +176,19 @@ module.exports = function(Plugins) {
 				winston.verbose('[plugins] Found ' + pluginData.modules.length + ' AMD-style module(s) for plugin ' + pluginData.id);
 			}
 
-			meta.js.scripts.modules = meta.js.scripts.modules.concat(pluginData.modules.map(function(file) {
-				return path.join('./node_modules/', pluginData.id, file);
-			}));
-		}
+			var modules = {},
+				strip = pluginData.hasOwnProperty('modulesStrip') ? parseInt(pluginData.modulesStrip, 10) : 0;
+
+			pluginData.modules.forEach(function(file) {
+				if (strip) {
+					modules[file.replace(new RegExp('\.?(\/[^\/]+){' + strip + '}\/'), '')] = path.join('./node_modules/', pluginData.id, file);
+				} else {
+					modules[path.basename(file)] = path.join('./node_modules/', pluginData.id, file);
+				}
+			});
+
+			meta.js.scripts.modules = _.extend(meta.js.scripts.modules, modules);
+		} /* one could conceivably add an else..if here for plugins to pass modules in as an Object */
 
 		callback();
 	};

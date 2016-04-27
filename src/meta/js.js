@@ -79,31 +79,36 @@ module.exports = function(Meta) {
 			],
 
 			// modules listed below are routed through express (/src/modules) so they can be defined anonymously
-			modules: [
-				'./node_modules/chart.js/Chart.js',
-				'./node_modules/mousetrap/mousetrap.js',
+			modules: {
+				"Chart.js": './node_modules/chart.js/Chart.js',
+				"mousetrap.js": './node_modules/mousetrap/mousetrap.js',
 
-				'public/vendor/buzz/buzz.js'
-			]
+				"buzz.js": 'public/vendor/buzz/buzz.js'
+			}
 		}
 	};
 
 	Meta.js.bridgeModules = function(app, callback) {
 		// Add routes for AMD-type modules to serve those files
-		var numBridged = 0;
+		var numBridged = 0,
+			addRoute = function(relPath) {
+				app.get('/src/modules/' + relPath, function(req, res) {
+					return res.sendFile(path.join(__dirname, '../../', Meta.js.scripts.modules[relPath]), {
+						maxAge: app.enabled('cache') ? 5184000000 : 0
+					});
+				});
+			};
 
 		async.series([
 			function(next) {
-				async.each(Meta.js.scripts.modules, function(localPath, next) {
-					app.get('/src/modules/' + path.basename(localPath), function(req, res) {
-						return res.sendFile(path.join(__dirname, '../../', localPath), {
-							maxAge: app.enabled('cache') ? 5184000000 : 0
-						});
-					});
+				for(var relPath in Meta.js.scripts.modules) {
+					if (Meta.js.scripts.modules.hasOwnProperty(relPath)) {
+						addRoute(relPath);
+						++numBridged;
+					}
+				}
 
-					++numBridged;
-					next();
-				}, next);
+				next();
 			}
 		], function(err) {
 			if (err) {
