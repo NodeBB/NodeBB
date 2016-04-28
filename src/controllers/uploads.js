@@ -6,6 +6,7 @@ var async = require('async');
 var nconf = require('nconf');
 var validator = require('validator');
 var winston = require('winston');
+var mime = require('mime');
 
 var meta = require('../meta');
 var file = require('../file');
@@ -171,9 +172,14 @@ function uploadFile(uid, uploadedFile, callback) {
 }
 
 function saveFileToLocal(uploadedFile, callback) {
+	var extension = path.extname(uploadedFile.name);
+	if(!extension) {
+		extension = '.' + mime.extension(uploadedFile.type);	
+	}
+	
 	var filename = uploadedFile.name || 'upload';
 
-	filename = Date.now() + '-' + validator.escape(filename).substr(0, 255);
+	filename = Date.now() + '-' + validator.escape(filename.replace(extension, '')).substr(0, 255) + extension;
 	file.saveFileToLocal(filename, 'files', uploadedFile.path, function(err, upload) {
 		if (err) {
 			return callback(err);

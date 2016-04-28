@@ -171,14 +171,40 @@ module.exports = function(Plugins) {
 	};
 
 	function mapClientModules(pluginData, callback) {
+		if (!pluginData.hasOwnProperty('modules')) {
+			return callback();
+		}
+
+		var modules = {};
+
 		if (Array.isArray(pluginData.modules)) {
 			if (global.env === 'development') {
 				winston.verbose('[plugins] Found ' + pluginData.modules.length + ' AMD-style module(s) for plugin ' + pluginData.id);
 			}
 
-			meta.js.scripts.modules = meta.js.scripts.modules.concat(pluginData.modules.map(function(file) {
-				return path.join('./node_modules/', pluginData.id, file);
-			}));
+			var strip = pluginData.hasOwnProperty('modulesStrip') ? parseInt(pluginData.modulesStrip, 10) : 0;
+
+			pluginData.modules.forEach(function(file) {
+				if (strip) {
+					modules[file.replace(new RegExp('\.?(\/[^\/]+){' + strip + '}\/'), '')] = path.join('./node_modules/', pluginData.id, file);
+				} else {
+					modules[path.basename(file)] = path.join('./node_modules/', pluginData.id, file);
+				}
+			});
+
+			meta.js.scripts.modules = _.extend(meta.js.scripts.modules, modules);
+		} else {
+			var keys = Object.keys(pluginData.modules);
+
+			if (global.env === 'development') {
+				winston.verbose('[plugins] Found ' + keys.length + ' AMD-style module(s) for plugin ' + pluginData.id);
+			}
+
+			for (var name in pluginData.modules) {
+				modules[name] = path.join('./node_modules/', pluginData.id, pluginData.modules[name]);
+			}
+
+			meta.js.scripts.modules = _.extend(meta.js.scripts.modules, modules);
 		}
 
 		callback();

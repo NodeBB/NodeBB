@@ -96,8 +96,18 @@ settingsController.get = function(req, res, callback) {
 			{ "name": "Yeti", "value": "yeti" }
 		];
 
+		var isCustom = true;
 		userData.homePageRoutes.forEach(function(route) {
 			route.selected = route.route === userData.settings.homePageRoute;
+			if (route.selected) {
+				isCustom = false;
+			}
+		});
+
+		userData.homePageRoutes.push({
+		 	route: 'custom',
+		 	name: 'Custom',
+		 	selected: isCustom
 		});
 
 		userData.bootswatchSkinOptions.forEach(function(skin) {
@@ -142,40 +152,28 @@ function getHomePageRoutes(callback) {
 					name: 'Category: ' + category.name
 				};
 			});
-			next(null, categoryData);
+
+			categoryData = categoryData || [];
+
+			plugins.fireHook('filter:homepage.get', {routes: [
+				{
+					route: 'categories',
+					name: 'Categories'
+				},
+				{
+					route: 'recent',
+					name: 'Recent'
+				},
+				{
+					route: 'popular',
+					name: 'Popular'
+				}
+			].concat(categoryData)}, next);
+		},
+		function (data, next) {
+			next(null, data.routes);
 		}
-	], function(err, categoryData) {
-		if (err) {
-			return callback(err);
-		}
-		categoryData = categoryData || [];
-
-		plugins.fireHook('filter:homepage.get', {routes: [
-			{
-				route: 'categories',
-				name: 'Categories'
-			},
-			{
-				route: 'recent',
-				name: 'Recent'
-			},
-			{
-				route: 'popular',
-				name: 'Popular'
-			}
-		].concat(categoryData)}, function(err, data) {
-			if (err) {
-				return callback(err);
-			}
-
-			data.routes.push({
-				route: 'custom',
-				name: 'Custom'
-			});
-
-			callback(null, data.routes);
-		});
-	});
+	], callback);
 }
 
 

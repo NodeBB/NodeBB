@@ -231,44 +231,46 @@ var async = require('async'),
 	};
 
 	function pushToUids(uids, notification, callback) {
+		var oneWeekAgo = Date.now() - 604800000;
 		var unreadKeys = [];
 		var readKeys = [];
 
-		uids.forEach(function(uid) {
-			unreadKeys.push('uid:' + uid + ':notifications:unread');
-			readKeys.push('uid:' + uid + ':notifications:read');
-		});
+		async.waterfall([
+			function (next) {
+				plugins.fireHook('filter:notification.push', {notification: notification, uids: uids}, next);
+			},
+			function (data, next) {
+				uids = data.uids;
+				notification = data.notification;
 
-		var oneWeekAgo = Date.now() - 604800000;
-		async.series([
-			function(next) {
+				uids.forEach(function(uid) {
+					unreadKeys.push('uid:' + uid + ':notifications:unread');
+					readKeys.push('uid:' + uid + ':notifications:read');
+				});
+
 				db.sortedSetsAdd(unreadKeys, notification.datetime, notification.nid, next);
 			},
-			function(next) {
+			function (next) {
 				db.sortedSetsRemove(readKeys, notification.nid, next);
 			},
-			function(next) {
+			function (next) {
 				db.sortedSetsRemoveRangeByScore(unreadKeys, '-inf', oneWeekAgo, next);
 			},
-			function(next) {
+			function (next) {
 				db.sortedSetsRemoveRangeByScore(readKeys, '-inf', oneWeekAgo, next);
-			}
-		], function(err) {
-			if (err) {
-				return callback(err);
-			}
+			},
+			function (next) {
+				var websockets = require('./socket.io');
+				if (websockets.server) {
+					uids.forEach(function(uid) {
+						websockets.in('uid_' + uid).emit('event:new_notification', notification);
+					});
+				}
 
-			plugins.fireHook('action:notification.pushed', {notification: notification, uids: uids});
-
-			var websockets = require('./socket.io');
-			if (websockets.server) {
-				uids.forEach(function(uid) {
-					websockets.in('uid_' + uid).emit('event:new_notification', notification);
-				});
+				plugins.fireHook('action:notification.pushed', {notification: notification, uids: uids});
+				next();
 			}
-
-			callback();
-		});
+		], callback);
 	}
 
 	Notifications.pushGroup = function(notification, groupName, callback) {

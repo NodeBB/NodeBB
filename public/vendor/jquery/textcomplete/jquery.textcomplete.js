@@ -17,7 +17,7 @@
  * Repository: https://github.com/yuku-t/jquery-textcomplete
  * License:    MIT (https://github.com/yuku-t/jquery-textcomplete/blob/master/LICENSE)
  * Author:     Yuku Takahashi
- * Version:	   1.3.1
+ * Version:    1.3.4
  */
 
 if (typeof jQuery === 'undefined') {
@@ -796,8 +796,14 @@ if (typeof jQuery === 'undefined') {
       // (which makes our elements wrap onto the next line and corrupt the next item), if we're close to the right
       // edge, move left. We don't know how far to move left, so just keep nudging a bit.
       var tolerance = 30; // pixels. Make wider than vertical scrollbar because we might not be able to use that space.
-      while (this.$el.offset().left + this.$el.width() > $window.width() - tolerance) {
-        this.$el.offset({left: this.$el.offset().left - tolerance});
+      var lastOffset = this.$el.offset().left, offset;
+      var width = this.$el.width();
+      var maxLeft = $window.width() - tolerance;
+      while (lastOffset + width > maxLeft) {
+        this.$el.offset({left: lastOffset - tolerance});
+        offset = this.$el.offset().left;
+        if (offset >= lastOffset) { break; }
+        lastOffset = offset;
       }
     },
 
@@ -1056,9 +1062,28 @@ if (typeof jQuery === 'undefined') {
     _getCaretRelativePosition: function () {
       var p = $.fn.textcomplete.getCaretCoordinates(this.el, this.el.selectionStart);
       return {
-        top: p.top + parseInt(this.$el.css('line-height'), 10) - this.$el.scrollTop(),
+        top: p.top + this._calculateLineHeight() - this.$el.scrollTop(),
         left: p.left - this.$el.scrollLeft()
       };
+    },
+
+    _calculateLineHeight: function () {
+      var lineHeight = parseInt(this.$el.css('line-height'), 10);
+      if (isNaN(lineHeight)) {
+        // http://stackoverflow.com/a/4515470/1297336
+        var parentNode = this.el.parentNode;
+        var temp = document.createElement(this.el.nodeName);
+        var style = this.el.style;
+        temp.setAttribute(
+          'style',
+          'margin:0px;padding:0px;font-family:' + style.fontFamily + ';font-size:' + style.fontSize
+        );
+        temp.innerHTML = 'test';
+        parentNode.appendChild(temp);
+        lineHeight = temp.clientHeight;
+        parentNode.removeChild(temp);
+      }
+      return lineHeight;
     }
   });
 
@@ -1248,7 +1273,7 @@ if (typeof jQuery === 'undefined') {
 //
 // https://github.com/component/textarea-caret-position
 
-(function () {
+(function ($) {
 
 // The properties that we copy into a mirrored div.
 // Note that some browsers, such as Firefox,
@@ -1369,13 +1394,9 @@ function getCaretCoordinates(element, position, options) {
   return coordinates;
 }
 
-if (typeof module != 'undefined' && typeof module.exports != 'undefined') {
-  module.exports = getCaretCoordinates;
-} else if(isBrowser){
-  window.$.fn.textcomplete.getCaretCoordinates = getCaretCoordinates;
-}
+$.fn.textcomplete.getCaretCoordinates = getCaretCoordinates;
 
-}());
+}(jQuery));
 
 return jQuery;
 }));

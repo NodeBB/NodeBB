@@ -268,7 +268,27 @@ define('admin/manage/users', ['admin/modules/selectable'], function(selectable) 
 
 		handleUserCreate();
 
+		handleInvite();
+
 	};
+
+	function handleInvite() {
+		$('[component="user/invite"]').on('click', function() {
+			bootbox.prompt('Email: ', function(email) {
+				if (!email) {
+					return;
+				}
+
+				socket.emit('user.invite', email, function(err) {
+					if (err) {
+						return app.alertError(err.message);
+					}
+					app.alertSuccess('An invitation email has been sent to ' + email);
+				});
+			});
+		});
+	}
+
 
 	return Users;
 });

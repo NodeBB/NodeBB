@@ -26,6 +26,15 @@ module.exports = function(app, middleware, controllers) {
 			return next();
 		}
 
-		res.sendFile(matches[0]);
+		res.sendFile(matches[0], {}, function(err) {
+			if (err) {
+				if (err.code === 'ENOENT') {
+					// File doesn't exist, this isn't an error, to send to 404 handler
+					return next();
+				} else {
+					return next(err);
+				}
+			}
+		});
 	});
 };

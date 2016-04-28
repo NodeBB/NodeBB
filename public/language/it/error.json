@@ -24,7 +24,7 @@
     "confirm-email-already-sent": "Email di conferma già inviata, per favore attendere %1 minuti per richiederne un'altra.",
     "username-too-short": "Nome utente troppo corto",
     "username-too-long": "Nome utente troppo lungo",
-    "password-too-long": "Password too long",
+    "password-too-long": "Password troppo lunga",
     "user-banned": "Utente bannato",
     "user-too-new": "Devi attendere %1 secondi prima di creare il tuo primo post",
     "blacklisted-ip": "Sorry, your IP address has been banned from this community. If you feel this is in error, please contact an administrator.",
