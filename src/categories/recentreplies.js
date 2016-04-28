@@ -105,14 +105,7 @@ module.exports = function(Categories) {
 			function (next) {
 				topics.getTopicsFields(tids, ['tid', 'mainPid', 'slug', 'title', 'teaserPid', 'cid', 'postcount'], next);
 			},
-			function (_topicData, next) {
-				topicData = _topicData;
-				topicData.forEach(function(topic) {
-					topic.teaserPid = topic.teaserPid || topic.mainPid;
-				});
-
-				topics.getTeasers(topicData, next);
-			},
+			async.apply(topics.getTeasers, topicData),
 			function (teasers, next) {
 				teasers.forEach(function(teaser, index) {
 					if (teaser) {

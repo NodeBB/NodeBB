@@ -26,7 +26,24 @@ module.exports = function(Topics) {
 		topics.forEach(function(topic) {
 			counts.push(topic && (parseInt(topic.postcount, 10) || 0));
 			if (topic) {
-				teaserPids.push(meta.config.teaserPost === 'first' ? topic.mainPid : topic.teaserPid);
+				if (topic.teaserPid === 'null') {
+					delete topic.teaserPid;
+				}
+
+				switch(meta.config.teaserPost) {
+					case 'first':
+						teaserPids.push(topic.mainPid);
+						break;
+
+					case 'last-post':
+						teaserPids.push(topic.teaserPid || topic.mainPid);
+						break;
+
+					case 'last-reply':	// intentional fall-through
+					default:
+						teaserPids.push(topic.teaserPid);
+						break;
+				}
 			}
 		});
 
@@ -113,7 +130,11 @@ module.exports = function(Topics) {
 			}
 
 			pid = pid || null;
-			Topics.setTopicField(tid, 'teaserPid', pid, callback);
+			if (pid) {
+				Topics.setTopicField(tid, 'teaserPid', pid, callback);
+			} else {
+				Topics.deleteTopicField(tid, 'teaserPid', callback);
+			}
 		});
 	};
 };

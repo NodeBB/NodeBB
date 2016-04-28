@@ -31,7 +31,7 @@
     "profileImageDimension": 128,
     "requireEmailConfirmation": 0,
     "allowProfileImageUploads": 1,
-    "teaserPost": "last",
+    "teaserPost": "last-reply",
     "allowPrivateGroups": 1,
     "unreadCutoff": 2,
     "bookmarkThreshold": 5
