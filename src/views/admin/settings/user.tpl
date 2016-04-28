@@ -128,6 +128,13 @@
 					<option value="admin-invite-only">Admin Invite Only</option>
 					<option value="disabled">No registration</option>
 				</select>
+				<p class="help-block">
+					Normal - Users can register from the /register page.<br/>
+					Admin Approval - User registrations are placed in an <a href="{config.relative_path}/admin/manage/registration">approval queue</a> for administrators.<br/>
+					Invite Only - Users can invite others from the <a href="{config.relative_path}/users" target="_blank">users</a> page.<br/>
+					Admin Invite Only - Only administrators can invite others from <a href="{config.relative_path}/users" target="_blank">users</a> and <a href="{config.relative_path}/admin/manage/users">admin/manage/users</a> pages.<br/>
+					No registration - No user registration.<br/>
+				</p>
 			</div>
 			<div class="form-group">
 				<label>Maximum Invitations per User</label>

@@ -132,7 +132,7 @@ describe('Notification\'s', function() {
 				},
 				function(next) {
 					// notifications are on a 1000ms timer, so we need to wait for them to happen
-					setTimeout(next, 1100);
+					setTimeout(next, 1200);
 				},
 				function(next) {
 					db.getSortedSetsMembers(['uid:' + posterUid + ':notifications:unread'], next);

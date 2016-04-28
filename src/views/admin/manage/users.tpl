@@ -139,8 +139,15 @@
 		<div class="panel panel-default">
 			<div class="panel-heading">Users Control Panel</div>
 			<div class="panel-body">
-				<button id="createUser" class="btn btn-primary">New User</button>
-				<a target="_blank" href="{config.relative_path}/api/admin/users/csv" class="btn btn-primary">Download CSV</a>
+				<button id="createUser" class="btn btn-primary form-control">New User</button>
+				<a target="_blank" href="{config.relative_path}/api/admin/users/csv" class="btn btn-primary form-control">Download CSV</a>
+
+				<!-- IF inviteOnly -->
+				<!-- IF loggedIn -->
+				<button component="user/invite" class="btn btn-success form-control"><i class="fa fa-users"></i> Invite</button>
+				<!-- ENDIF loggedIn -->
+				<!-- ENDIF inviteOnly -->
+
 			</div>
 		</div>
 	</div>
