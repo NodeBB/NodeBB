@@ -246,29 +246,45 @@ module.exports = function(Plugins) {
 			try {
 				ensureLibraryLoaded(pluginData.id, libraryPath);
 
+				var logTag = '[plugins/' + pluginData.id + ']';
+
 				var headerBuildHooks = Plugins.loadedHooks['filter:admin.header.build'];
 				var redundantHook = _.findWhere(headerBuildHooks, {id: pluginData.id});
 				if (redundantHook) {
-					winston.warn('[plugins/' + pluginData.id + '] Deprecation warning: No need to use filter:admin.header.build when "settingsPage" is defined in plugin.json!');
+					winston.warn(logTag + ' Deprecation warning: No need to use filter:admin.header.build when "settingsPage" is defined in plugin.json!');
 					Plugins.loadedHooks['filter:admin.header.build'] = _.without(headerBuildHooks, redundantHook);
 				}
 
+				var renderMethod;
 				Plugins.settingsPages[pluginData.id] = {};
 				Plugins.settingsPages[pluginData.id].name = settingsPage.name;
 				Plugins.settingsPages[pluginData.id].route = '/plugins/' + pluginData.id.match(settingsRouteRX)[1];
-				Plugins.settingsPages[pluginData.id].renderMethod = Plugins.getMethodRef(pluginData.id, settingsPage.renderMethod);
+				renderMethod = Plugins.getMethodRef(pluginData.id, settingsPage.renderMethod) || settingsPage.renderMethod;
+				if (typeof renderMethod !== 'function') {
+					winston.error(logTag + ' Unable to find settings page\'s render method: ' + renderMethod);
+					delete Plugins.settingsPages[pluginData.id];
+					return callback();
+				} else {
+					Plugins.settingsPages[pluginData.id].renderMethod = renderMethod;
+				}
 				Plugins.settingsPages[pluginData.id].isAuthentication = settingsPage.isAuthentication;
 
 				Plugins.settingsPages[pluginData.id].middlewares = [];
 				if (Array.isArray(settingsPage.middlewares) && settingsPage.middlewares.length > 0) {
 					async.each(settingsPage.middlewares, function(middleware, next) {
-						Plugins.settingsPages[pluginData.id].middlewares.push(Plugins.getMethodRef(pluginData.id, middleware));
+						var middlewareRef = Plugins.getMethodRef(pluginData.id, middleware) || middleware;
+						if (typeof middlewareRef !== 'function') {
+							winston.warn(logTag + ' Unable to find middleware method: ' + middlewareRef);
+						} else {
+							Plugins.settingsPages[pluginData.id].middlewares.push(middlewareRef);
+						}
 						next();
 					}, callback);
 				}
 
 			} catch (err) {
 				logLibraryLoadErr(pluginData.id, err.stack);
+				callback(err);
 			}
 		} else {
 			callback();
