@@ -1,10 +1,10 @@
 services:
     - redis-server
 before_install:
-    - "sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv EA312927"
-    - "echo 'deb http://repo.mongodb.org/apt/ubuntu trusty/mongodb-org/3.2 multiverse' | sudo tee /etc/apt/sources.list.d/mongodb-org-3.2.list"
+    - "sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 7F0CEB10"
+    - "echo 'deb http://downloads-distro.mongodb.org/repo/ubuntu-upstart dist 10gen' | sudo tee /etc/apt/sources.list.d/mongodb.list"
     - "sudo apt-get update"
-    - "sudo apt-get install -y mongodb-org"
+    - "sudo apt-get install mongodb-org-server"
     - npm i --production
     - node app --setup="{\"url\":\"http://127.0.0.1:4567/\",\"secret\":\"abcdef\",\"database\":\"mongo\",\"mongo:host\":\"127.0.0.1\",\"mongo:port\":27017,\"mongo:username\":\"\",\"mongo:password\":\"\",\"mongo:database\":0,\"redis:host\":\"127.0.0.1\",\"redis:port\":6379,\"redis:password\":\"\",\"redis:database\":0,\"admin:username\":\"admin\",\"admin:email\":\"test@example.org\",\"admin:password\":\"abcdef\",\"admin:password:confirm\":\"abcdef\"}" --ci="{\"host\":\"127.0.0.1\",\"port\":27017,\"database\":0}"
 before_script:
@@ -19,7 +19,6 @@ addons:
     packages:
     - g++-4.8
 node_js:
-    - "4.4"
     - "4.2"
     - "4.1"
     - "4.0"
