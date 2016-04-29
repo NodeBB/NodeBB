@@ -85,10 +85,24 @@ module.exports = function(Posts) {
 					], pid, next);
 				});
 			},
+			function(next) {
+				async.series([
+					function(next) {
+						db.getSortedSetRange('pid:' + pid + ':flag:uids', 0, -1, function(err, uids) {
+							async.each(uids, function(uid, next) {
+								var nid = 'post_flag:' + pid + ':uid:' + uid;
+								async.parallel([
+									async.apply(db.delete, 'notifications:' + nid),
+									async.apply(db.sortedSetRemove, 'notifications', 'post_flag:' + pid + ':uid:' + uid)
+								], next);
+							}, next);
+						});
+					},
+					async.apply(db.delete, 'pid:' + pid + ':flag:uids')
+				], next);
+			},
 			async.apply(db.deleteObjectField, 'post:' + pid, 'flags'),
-			async.apply(db.delete, 'pid:' + pid + ':flag:uids'),
-			async.apply(db.delete, 'pid:' + pid + ':flag:uid:reason'),
-			async.apply(db.sortedSetRemove, 'notifications', 'post_flag:' + pid + ':uid:' + uid)
+			async.apply(db.delete, 'pid:' + pid + ':flag:uid:reason')
 		], function(err) {
 			callback(err);
 		});
