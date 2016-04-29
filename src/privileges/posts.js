@@ -112,7 +112,7 @@ module.exports = function(privileges) {
 
 
 				pids = postData.filter(function(post) {
-					return cids.indexOf(post.topic.cid) !== -1 &&
+					return post.topic && cids.indexOf(post.topic.cid) !== -1 &&
 						((parseInt(post.topic.deleted, 10) !== 1 && parseInt(post.deleted, 10) !== 1) || results.isAdmin || isModOf[post.cid]);
 				}).map(function(post) {
 					return post.pid;
