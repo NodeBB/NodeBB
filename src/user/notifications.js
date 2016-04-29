@@ -211,6 +211,7 @@ var async = require('async'),
 		// Collapse any notifications with identical mergeIds
 		async.waterfall([
 			async.apply(db.getSortedSetRevRange, 'uid:' + uid + ':notifications:unread', 0, 99),
+			async.apply(notifications.filterExists),
 			function(nids, next) {
 				var keys = nids.map(function(nid) {
 					return 'notifications:' + nid;

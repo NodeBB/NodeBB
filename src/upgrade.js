@@ -10,7 +10,7 @@ var db = require('./database'),
 	schemaDate, thisSchemaDate,
 
 	// IMPORTANT: REMEMBER TO UPDATE VALUE OF latestSchema
-	latestSchema = Date.UTC(2016, 3, 18);
+	latestSchema = Date.UTC(2016, 3, 29);
 
 Upgrade.check = function(callback) {
 	db.get('schemaDate', function(err, value) {
@@ -528,6 +528,52 @@ Upgrade.upgrade = function(callback) {
 				});
 			} else {
 				winston.info('[2016/04/19] Users post count per tid skipped!');
+				next();
+			}
+		},
+		function(next) {
+			thisSchemaDate = Date.UTC(2016, 3, 29);
+
+			if (schemaDate < thisSchemaDate) {
+				updatesMade = true;
+				winston.info('[2016/04/29] Dismiss flags from deleted topics');
+
+				var posts = require('./posts'),
+					topics = require('./topics');
+
+				var pids, tids;
+
+				async.waterfall([
+					async.apply(db.getSortedSetRange, 'posts:flagged', 0, -1),
+					function(_pids, next) {
+						pids = _pids;
+						posts.getPostsFields(pids, ['tid'], next);
+					},
+					function(_tids, next) {
+						tids = _tids.map(function(a) {
+							return a.tid;
+						});
+
+						topics.getTopicsFields(tids, ['deleted'], next);
+					},
+					function(state, next) {
+						var toDismiss = state.map(function(a, idx) {
+							return parseInt(a.deleted, 10) === 1 ? pids[idx] : null;
+						}).filter(Boolean);
+
+						winston.info('[2016/04/29] ' + toDismiss.length + ' dismissable flags found');
+						async.each(toDismiss, posts.dismissFlag, next);
+					}
+				], function(err) {
+					if (err) {
+						return next(err);
+					}
+
+					winston.info('[2016/04/29] Dismiss flags from deleted topics done');
+					Upgrade.update(thisSchemaDate, next);
+				});
+			} else {
+				winston.info('[2016/04/29] Dismiss flags from deleted topics skipped!');
 				next();
 			}
 		}

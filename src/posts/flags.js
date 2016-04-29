@@ -67,12 +67,16 @@ module.exports = function(Posts) {
 	}
 
 	Posts.dismissFlag = function(pid, callback) {
+		var uid;
+
 		async.parallel([
 			function(next) {
-				db.getObjectField('post:' + pid, 'uid', function(err, uid) {
+				db.getObjectField('post:' + pid, 'uid', function(err, _uid) {
 					if (err) {
 						return next(err);
 					}
+
+					uid = _uid;
 
 					db.sortedSetsRemove([
 						'posts:flagged',
@@ -81,15 +85,10 @@ module.exports = function(Posts) {
 					], pid, next);
 				});
 			},
-			function(next) {
-				db.deleteObjectField('post:' + pid, 'flags', next);
-			},
-			function(next) {
-				db.delete('pid:' + pid + ':flag:uids', next);
-			},
-			function(next) {
-				db.delete('pid:' + pid + ':flag:uid:reason', next);
-			}
+			async.apply(db.deleteObjectField, 'post:' + pid, 'flags'),
+			async.apply(db.delete, 'pid:' + pid + ':flag:uids'),
+			async.apply(db.delete, 'pid:' + pid + ':flag:uid:reason'),
+			async.apply(db.sortedSetRemove, 'notifications', 'post_flag:' + pid + ':uid:' + uid)
 		], function(err) {
 			callback(err);
 		});
