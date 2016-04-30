@@ -5,7 +5,6 @@ var user = require('../user');
 var meta = require('../meta');
 
 var pagination = require('../pagination');
-var plugins = require('../plugins');
 var db = require('../database');
 var helpers = require('./helpers');
 
@@ -165,26 +164,20 @@ usersController.getUsersAndCount = function(set, uid, start, stop, callback) {
 };
 
 function render(req, res, data, next) {
-	plugins.fireHook('filter:users.build', {req: req, res: res, templateData: data }, function(err, data) {
+	var registrationType = meta.config.registrationType;
+
+	data.maximumInvites = meta.config.maximumInvites;
+	data.inviteOnly = registrationType === 'invite-only' || registrationType === 'admin-invite-only';
+	data.adminInviteOnly = registrationType === 'admin-invite-only';
+	data['reputation:disabled'] = parseInt(meta.config['reputation:disabled'], 10) === 1;
+
+	user.getInvitesNumber(req.uid, function(err, num) {
 		if (err) {
 			return next(err);
 		}
 
-		var registrationType = meta.config.registrationType;
-
-		data.templateData.maximumInvites = meta.config.maximumInvites;
-		data.templateData.inviteOnly = registrationType === 'invite-only' || registrationType === 'admin-invite-only';
-		data.templateData.adminInviteOnly = registrationType === 'admin-invite-only';
-		data.templateData['reputation:disabled'] = parseInt(meta.config['reputation:disabled'], 10) === 1;
-
-		user.getInvitesNumber(req.uid, function(err, num) {
-			if (err) {
-				return next(err);
-			}
-
-			data.templateData.invites = num;
-			res.render('users', data.templateData);
-		});
+		data.invites = num;
+		res.render('users', data);
 	});
 }
 
