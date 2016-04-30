@@ -1,6 +1,7 @@
 'use strict';
 
 var async = require('async');
+var _ = require('underscore');
 var plugins = require('../../plugins');
 
 var pluginsController = {};
@@ -24,6 +25,9 @@ pluginsController.get = function(req, res, next) {
 
 				next(null, plugins);
 			});
+		},
+		menuEntries: function(next) {
+			plugins.buildSettingsMenuEntries({plugins: [], authentication: []}, next);
 		}
 	}, function(err, payload) {
 		if (err) {
@@ -33,10 +37,22 @@ pluginsController.get = function(req, res, next) {
 				return pkgData.name;
 			});
 
-		res.render('admin/extend/plugins' , {
-			installed: payload.compatible.filter(function(plugin) {
+		var installedPlugins = payload.compatible.filter(function(plugin) {
 				return plugin.installed;
-			}),
+			}).map(function(plugin) {
+				var routeMatchRX = /nodebb-(?:plugin|rewards|theme|widget)-(.*)/;
+				var routeToMatch = '/plugins/' + plugin.id.match(routeMatchRX)[1];
+
+				if (_.findWhere(payload.menuEntries.plugins, {route: routeToMatch}) ||
+						_.findWhere(payload.menuEntries.authentication, {route: routeToMatch})) {
+					plugin.settingsRoute = routeToMatch.substr(1);
+				}
+
+				return plugin;
+			});
+
+		res.render('admin/extend/plugins' , {
+			installed: installedPlugins,
 			download: payload.compatible.filter(function(plugin) {
 				return !plugin.installed;
 			}),

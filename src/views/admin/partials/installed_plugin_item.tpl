@@ -1,13 +1,16 @@
 					<!-- IF !installed.error -->
 					<li id="{installed.id}" data-plugin-id="{installed.id}" data-version="{installed.version}" class="clearfix">
-						<div class="pull-right">
+						<div class="pull-right controls">
 							<!-- IF installed.isTheme -->
 							<a href="{config.relative_path}/admin/appearance/themes" class="btn btn-info">Themes</a>
 							<!-- ELSE -->
-							<button data-action="toggleActive" class="btn <!-- IF installed.active --> btn-warning<!-- ELSE --> btn-success<!-- ENDIF installed.active -->"><i class="fa fa-power-off"></i> <!-- IF installed.active -->Deactivate<!-- ELSE -->Activate<!-- ENDIF installed.active --></button>
+							<button data-action="toggleActive" class="btn<!-- IF installed.active --> btn-warning<!-- ELSE --> btn-success<!-- ENDIF installed.active -->"><i class="fa fa-power-off"></i> <!-- IF installed.active -->Deactivate<!-- ELSE -->Activate<!-- ENDIF installed.active --></button>
 							<!-- ENDIF installed.isTheme -->
 
 							<button data-action="toggleInstall" data-installed="1" class="btn btn-danger"><i class="fa fa-trash-o"></i> Uninstall</button>
+							<!-- IF installed.settingsRoute -->
+							<a href="{config.relative_path}/admin/{installed.settingsRoute}" class="btn btn-primary"><i class="fa fa-wrench"></i> Settings</a>
+							<!-- ENDIF installed.settingsRoute -->
 						</div>
 
 						<h2><strong>{installed.name}</strong></h2>
@@ -20,7 +23,7 @@
 							<button data-action="upgrade" class="btn btn-success btn-xs"><i class="fa fa-download"></i> Upgrade</button>
 						<!-- ENDIF installed.outdated -->
 						<!-- IF installed.url -->
-						<p>For more information: <a target="_blank" href="{installed.url}">{installed.url}</a></p>
+						<p>For more information: <br/><a target="_blank" href="{installed.url}">{installed.url}</a></p>
 						<!-- ENDIF installed.url -->
 					</li>
 					<!-- ENDIF !installed.error -->
