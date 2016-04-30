@@ -1,8 +1,17 @@
 'use strict';
 
-/* globals define, config, app, ajaxify, utils, socket, templates, bootbox */
+/* globals define, app, ajaxify, utils, socket, templates, bootbox */
 
-define('forum/chats', ['components', 'string', 'sounds', 'forum/infinitescroll', 'translator', 'mousetrap'], function(components, S, sounds, infinitescroll, translator, mousetrap) {
+define('forum/chats', [
+	'components',
+	'string',
+	'sounds',
+	'forum/infinitescroll',
+	'translator',
+	'mousetrap',
+	'forum/chats/recent',
+	'forum/chats/search'
+], function(components, S, sounds, infinitescroll, translator, mousetrap, recentChats, search) {
 	var Chats = {
 		initialised: false
 	};
@@ -30,7 +39,7 @@ define('forum/chats', ['components', 'string', 'sounds', 'forum/infinitescroll',
 
 		Chats.initialised = true;
 
-		Chats.handleSearch();
+		search.init();
 
 		if (ajaxify.data.hasOwnProperty('roomId')) {
 			components.get('chat/input').focus();
@@ -79,13 +88,7 @@ define('forum/chats', ['components', 'string', 'sounds', 'forum/infinitescroll',
 				Chats.delete(messageId, ajaxify.data.roomId);
 			});
 
-		$('[component="chat/recent"]').on('scroll', function() {
-			var $this = $(this);
-			var bottom = ($this[0].scrollHeight - $this.height()) * 0.9;
-			if ($this.scrollTop() > bottom) {
-				loadMoreRecentChats();
-			}
-		});
+		recentChats.init();
 
 		Chats.addSinceHandler(ajaxify.data.roomId, $('.expanded-chat .chat-content'), $('.expanded-chat [data-since]'));
 		Chats.addRenameHandler(ajaxify.data.roomId, $('[component="chat/room/name"]'));
@@ -369,7 +372,7 @@ define('forum/chats', ['components', 'string', 'sounds', 'forum/infinitescroll',
 			} else {
 				if (ajaxify.currentPage.startsWith("chats")) {
 					var roomEl = $('[data-roomid=' + data.roomId + ']');
-					
+
 					if (roomEl.length > 0) {
 						roomEl.addClass("unread");
 					} else {
@@ -417,11 +420,11 @@ define('forum/chats', ['components', 'string', 'sounds', 'forum/infinitescroll',
 		var	messagesList = $('.expanded-chat .chat-content');
 
 		if (messagesList.length) {
-			var	margin = $('.expanded-chat ul').outerHeight(true) - $('.expanded-chat ul').height(),
-				inputHeight = $('.chat-input').outerHeight(true),
-				fromTop = messagesList.offset().top,
-				searchHeight = $('.chat-search').height(),
-				searchListHeight = $('[component="chat/search/list"]').outerHeight(true) - $('[component="chat/search/list"]').height();
+			var	margin = $('.expanded-chat ul').outerHeight(true) - $('.expanded-chat ul').height();
+			var inputHeight = $('.chat-input').outerHeight(true);
+			var fromTop = messagesList.offset().top;
+			var searchHeight = $('.chat-search').height();
+			var searchListHeight = $('[component="chat/search/list"]').outerHeight(true) - $('[component="chat/search/list"]').height();
 
 			messagesList.height($(window).height() - (fromTop + inputHeight + (margin * 4)));
 			components.get('chat/recent').height($('.expanded-chat').height() - (searchHeight + searchListHeight));
@@ -469,7 +472,6 @@ define('forum/chats', ['components', 'string', 'sounds', 'forum/infinitescroll',
 				if (err) {
 					return app.alertError(err.message);
 				}
-
 			});
 		}
 	};
@@ -499,105 +501,5 @@ define('forum/chats', ['components', 'string', 'sounds', 'forum/infinitescroll',
 		});
 	};
 
-	function loadMoreRecentChats() {
-		var recentChats = $('[component="chat/recent"]');
-		if (recentChats.attr('loading')) {
-			return;
-		}
-		recentChats.attr('loading', 1);
-		socket.emit('modules.chats.getRecentChats', {
-			after: recentChats.attr('data-nextstart')
-		}, function(err, data) {
-			if (err) {
-				return app.alertError(err.message);
-			}
-
-			if (data && data.rooms.length) {
-				onRecentChatsLoaded(data, function() {
-					recentChats.removeAttr('loading');
-					recentChats.attr('data-nextstart', data.nextStart);
-				});
-			} else {
-				recentChats.removeAttr('loading');
-			}
-		});
-	}
-
-	function onRecentChatsLoaded(data, callback) {
-		if (!data.rooms.length) {
-			return callback();
-		}
-
-		app.parseAndTranslate('chats', 'rooms', data, function(html) {
-			$('[component="chat/recent"]').append(html);
-			html.find('.timeago').timeago();
-			callback();
-		});
-	}
-
-	Chats.handleSearch = function() {
-		var timeoutId = 0;
-
-		components.get('chat/search').on('keyup', function() {
-			if (timeoutId) {
-				clearTimeout(timeoutId);
-				timeoutId = 0;
-			}
-
-			timeoutId = setTimeout(doSearch, 250);
-		});
-
-		function doSearch() {
-			var username = components.get('chat/search').val();
-			var chatsListEl = $('[component="chat/search/list"]');
-
-			if (!username) {
-				return chatsListEl.empty();
-			}
-
-			socket.emit('user.search', {
-				query: username,
-				searchBy: 'username'
-			}, function(err, data) {
-				if (err) {
-					return app.alertError(err.message);
-				}
-
-				chatsListEl.empty();
-
-				if (data.users.length === 0) {
-					return chatsListEl.translateHtml('<li><div><span>[[users:no-users-found]]</span></div></li>');
-				}
-
-				data.users.forEach(function(userObj) {
-					function createUserImage() {
-						return (userObj.picture ?
-							'<img src="' +	userObj.picture + '" title="' +	userObj.username +'" />' :
-							'<div class="user-icon" style="background-color: ' + userObj['icon:bgColor'] + '">' + userObj['icon:text'] + '</div>') +
-							'<i class="fa fa-circle status ' + userObj.status + '"></i> ' + userObj.username;
-					}
-
-					var chatEl = $('<li component="chat/search/user" />')
-							.attr('data-uid', userObj.uid)
-							.appendTo(chatsListEl);
-
-					chatEl.append(createUserImage());
-
-					chatEl.on('click', function() {
-						socket.emit('modules.chats.hasPrivateChat', userObj.uid, function(err, roomId) {
-							if (err) {
-								return app.alertError(err.message);
-							}
-							if (roomId) {
-								ajaxify.go('chats/' + roomId);
-							} else {
-								app.newChat(userObj.uid);
-							}
-						});
-					});
-		        });
-			});
-	    }
-	};
 	return Chats;
 });
