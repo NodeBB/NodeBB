@@ -420,7 +420,7 @@ define('forum/chats', [
 		var	messagesList = $('.expanded-chat .chat-content');
 
 		if (messagesList.length) {
-			var	margin = $('.expanded-chat ul').outerHeight(true) - $('.expanded-chat ul').height();
+			var margin = $('.expanded-chat ul').outerHeight(true) - $('.expanded-chat ul').height();
 			var inputHeight = $('.chat-input').outerHeight(true);
 			var fromTop = messagesList.offset().top;
 			var searchHeight = $('.chat-search').height();
