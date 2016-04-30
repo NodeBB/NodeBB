@@ -218,7 +218,7 @@ function handleErrors(app, middleware) {
 			res.json({path: validator.escape(req.path || ''), error: err.message});
 		} else {
 			middleware.buildHeader(req, res, function() {
-				res.render('500', {path: validator.escape(req.path || ''), error: validator.escape(err.message)});
+				res.render('500', {path: validator.escape(String(req.path || '')), error: validator.escape(err.message)});
 			});
 		}
 	});
