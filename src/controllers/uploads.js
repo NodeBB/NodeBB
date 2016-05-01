@@ -71,23 +71,31 @@ uploadsController.uploadPost = function(req, res, next) {
 					return next(null, fileObj);
 				}
 
-				var fullPath = path.join(nconf.get('base_dir'), nconf.get('upload_path'), '..', fileObj.url),
-					parsedPath = path.parse(fullPath);
+				var fullPath = path.join(nconf.get('base_dir'), nconf.get('upload_path'), '..', fileObj.url);
+				//var parsedPath = path.parse(fullPath);
+				var dirname = path.dirname(fullPath);
+				var extname = path.extname(fullPath);
+				var basename = path.basename(fullPath, extname);
 
 				image.resizeImage({
 					path: fullPath,
-					target: path.join(parsedPath.dir, parsedPath.name + '-resized' + parsedPath.ext),
-					extension: parsedPath.ext,
+					target: path.join(dirname, basename + '-resized' + extname),
+					extension: extname,
 					width: parseInt(meta.config.maximumImageWidth, 10) || 760
 				}, function(err) {
-					// Return the resized version to the composer/postData
-					var parsedUrl = path.parse(fileObj.url);
-					parsedUrl.base = parsedUrl.name + '-resized' + parsedUrl.ext;
-					parsedUrl.name = parsedUrl.name + '-resized';
-					fileObj.url = path.format(parsedUrl);
-
 					next(err, fileObj);
 				});
+			},
+			function (fileObj, next) {
+
+				// Return the resized version to the composer/postData
+				var dirname = path.dirname(fileObj.url);
+				var extname = path.extname(fileObj.url);
+				var basename = path.basename(fileObj.url, extname);
+
+				fileObj.url = path.join(dirname, basename + '-resized' + extname);
+
+				next(null, fileObj);
 			}
 		], next);
 	}, next);
@@ -174,9 +182,9 @@ function uploadFile(uid, uploadedFile, callback) {
 function saveFileToLocal(uploadedFile, callback) {
 	var extension = path.extname(uploadedFile.name);
 	if(!extension) {
-		extension = '.' + mime.extension(uploadedFile.type);	
+		extension = '.' + mime.extension(uploadedFile.type);
 	}
-	
+
 	var filename = uploadedFile.name || 'upload';
 
 	filename = Date.now() + '-' + validator.escape(filename.replace(extension, '')).substr(0, 255) + extension;
