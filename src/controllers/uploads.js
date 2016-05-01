@@ -71,35 +71,49 @@ uploadsController.uploadPost = function(req, res, next) {
 					return next(null, fileObj);
 				}
 
-				var fullPath = path.join(nconf.get('base_dir'), nconf.get('upload_path'), '..', fileObj.url);
-				//var parsedPath = path.parse(fullPath);
-				var dirname = path.dirname(fullPath);
-				var extname = path.extname(fullPath);
-				var basename = path.basename(fullPath, extname);
-
-				image.resizeImage({
-					path: fullPath,
-					target: path.join(dirname, basename + '-resized' + extname),
-					extension: extname,
-					width: parseInt(meta.config.maximumImageWidth, 10) || 760
-				}, function(err) {
-					next(err, fileObj);
-				});
-			},
-			function (fileObj, next) {
-
-				// Return the resized version to the composer/postData
-				var dirname = path.dirname(fileObj.url);
-				var extname = path.extname(fileObj.url);
-				var basename = path.basename(fileObj.url, extname);
-
-				fileObj.url = path.join(dirname, basename + '-resized' + extname);
-
-				next(null, fileObj);
+				resizeImage(fileObj, next);
 			}
 		], next);
 	}, next);
 };
+
+function resizeImage(fileObj, callback) {
+	var fullPath;
+	async.waterfall([
+		function(next) {
+			fullPath = path.join(nconf.get('base_dir'), nconf.get('upload_path'), '..', fileObj.url);
+
+			image.load(fullPath, next);
+		},
+		function (imageData, next) {
+			if (imageData.width < parseInt(meta.config.maximumImageWidth, 10) || 760) {
+				return callback(null, fileObj);
+			}
+
+			var dirname = path.dirname(fullPath);
+			var extname = path.extname(fullPath);
+			var basename = path.basename(fullPath, extname);
+
+			image.resizeImage({
+				path: fullPath,
+				target: path.join(dirname, basename + '-resized' + extname),
+				extension: extname,
+				width: parseInt(meta.config.maximumImageWidth, 10) || 760
+			}, next);
+		},
+		function (next) {
+
+			// Return the resized version to the composer/postData
+			var dirname = path.dirname(fileObj.url);
+			var extname = path.extname(fileObj.url);
+			var basename = path.basename(fileObj.url, extname);
+
+			fileObj.url = path.join(dirname, basename + '-resized' + extname);
+
+			next(null, fileObj);
+		}
+	], callback);
+}
 
 uploadsController.uploadThumb = function(req, res, next) {
 	if (parseInt(meta.config.allowTopicsThumbnail, 10) !== 1) {
