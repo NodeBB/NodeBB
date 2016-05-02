@@ -1,15 +1,15 @@
 
 'use strict';
 
-var nconf = require('nconf'),
-	topics = require('../topics'),
-	plugins = require('../plugins'),
-	meta = require('../meta'),
-	helpers = require('./helpers');
+var nconf = require('nconf');
+var topics = require('../topics');
+var meta = require('../meta');
+var helpers = require('./helpers');
 
 var popularController = {};
 
-var anonCache = {}, lastUpdateTime = 0;
+var anonCache = {};
+var lastUpdateTime = 0;
 
 var terms = {
 	daily: 'day',
@@ -48,7 +48,8 @@ popularController.get = function(req, res, next) {
 			topics: topics,
 			'feeds:disableRSS': parseInt(meta.config['feeds:disableRSS'], 10) === 1,
 			rssFeedUrl: nconf.get('relative_path') + '/popular/' + (req.params.term || 'daily') + '.rss',
-			title: '[[pages:popular-' + term + ']]'
+			title: '[[pages:popular-' + term + ']]',
+			term: term
 		};
 
 		if (req.path.startsWith('/api/popular') || req.path.startsWith('/popular')) {
@@ -66,12 +67,7 @@ popularController.get = function(req, res, next) {
 			lastUpdateTime = Date.now();
 		}
 
-		plugins.fireHook('filter:popular.build', {req: req, res: res, term: term, templateData: data}, function(err, data) {
-			if (err) {
-				return next(err);
-			}
-			res.render('popular', data.templateData);
-		});
+		res.render('popular', data);
 	});
 };
 

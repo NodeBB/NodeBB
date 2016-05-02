@@ -1,14 +1,11 @@
 "use strict";
 
-
 var async = require('async');
 var nconf = require('nconf');
 var validator = require('validator');
 
 var categories = require('../categories');
 var meta = require('../meta');
-var plugins = require('../plugins');
-
 var helpers = require('./helpers');
 
 var categoriesController = {};
@@ -51,34 +48,32 @@ categoriesController.list = function(req, res, next) {
 			categories.flattenCategories(allCategories, categoryData);
 
 			categories.getRecentTopicReplies(allCategories, req.uid, next);
-		},
-		function (next) {
-			var data = {
-				title: '[[pages:categories]]',
-				categories: categoryData
-			};
-
-			if (req.path.startsWith('/api/categories') || req.path.startsWith('/categories')) {
-				data.breadcrumbs = helpers.buildBreadcrumbs([{text: data.title}]);
-			}
-
-			data.categories.forEach(function(category) {
-				if (category && Array.isArray(category.posts) && category.posts.length) {
-					category.teaser = {
-						url: nconf.get('relative_path') + '/topic/' + category.posts[0].topic.slug + '/' + category.posts[0].index,
-						timestampISO: category.posts[0].timestampISO,
-						pid: category.posts[0].pid
-					};
-				}
-			});
-
-			plugins.fireHook('filter:categories.build', {req: req, res: res, templateData: data}, next);
 		}
-	], function(err, data) {
+	], function(err) {
 		if (err) {
 			return next(err);
 		}
-		res.render('categories', data.templateData);
+
+		var data = {
+			title: '[[pages:categories]]',
+			categories: categoryData
+		};
+
+		if (req.path.startsWith('/api/categories') || req.path.startsWith('/categories')) {
+			data.breadcrumbs = helpers.buildBreadcrumbs([{text: data.title}]);
+		}
+
+		data.categories.forEach(function(category) {
+			if (category && Array.isArray(category.posts) && category.posts.length) {
+				category.teaser = {
+					url: nconf.get('relative_path') + '/topic/' + category.posts[0].topic.slug + '/' + category.posts[0].index,
+					timestampISO: category.posts[0].timestampISO,
+					pid: category.posts[0].pid
+				};
+			}
+		});
+
+		res.render('categories', data);
 	});
 };
 

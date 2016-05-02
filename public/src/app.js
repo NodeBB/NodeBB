@@ -455,26 +455,9 @@ app.cacheBuster = null;
 	};
 
 	app.newTopic = function (cid) {
-		cid = cid || ajaxify.data.cid;
-		if (cid) {
-			$(window).trigger('action:composer.topic.new', {
-				cid: cid
-			});
-		} else {
-			socket.emit('categories.getCategoriesByPrivilege', 'topics:create', function(err, categories) {
-				if (err) {
-					return app.alertError(err.message);
-				}
-				categories = categories.filter(function(category) {
-					return !category.link && !parseInt(category.parentCid, 10);
-				});
-				if (categories.length) {
-					$(window).trigger('action:composer.topic.new', {
-						cid: categories[0].cid
-					});
-				}
-			});
-		}
+		$(window).trigger('action:composer.topic.new', {
+			cid: cid || ajaxify.data.cid || 0
+		});
 	};
 
 	app.loadJQueryUI = function(callback) {
@@ -546,5 +529,5 @@ app.cacheBuster = null;
 		linkEl.href = config.relative_path + '/js-enabled.css';
 
 		document.head.appendChild(linkEl);
-	}
+	};
 }());

@@ -1,17 +1,18 @@
 
 'use strict';
 
-var async = require('async'),
-	winston = require('winston'),
-	validator = require('validator'),
-	_ = require('underscore'),
+var async = require('async');
+var winston = require('winston');
+var validator = require('validator');
+var _ = require('underscore');
 
-	db = require('../database'),
-	posts = require('../posts'),
-	topics = require('../topics'),
-	privileges = require('../privileges');
+var db = require('../database');
+var posts = require('../posts');
+var topics = require('../topics');
+var privileges = require('../privileges');
 
 module.exports = function(Categories) {
+
 	Categories.getRecentReplies = function(cid, uid, count, callback) {
 		if (!parseInt(count, 10)) {
 			return callback(null, []);
@@ -105,13 +106,9 @@ module.exports = function(Categories) {
 			function (next) {
 				topics.getTopicsFields(tids, ['tid', 'mainPid', 'slug', 'title', 'teaserPid', 'cid', 'postcount'], next);
 			},
-			function (_topicData, next) {
+			function(_topicData, next) {
 				topicData = _topicData;
-				topicData.forEach(function(topic) {
-					topic.teaserPid = topic.teaserPid || topic.mainPid;
-				});
-
-				topics.getTeasers(topicData, next);
+				topics.getTeasers(_topicData, next);
 			},
 			function (teasers, next) {
 				teasers.forEach(function(teaser, index) {

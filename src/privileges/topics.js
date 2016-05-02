@@ -70,56 +70,44 @@ module.exports = function(privileges) {
 		if (!Array.isArray(tids) || !tids.length) {
 			return callback(null, []);
 		}
-
+		var cids;
+		var topicsData;
 		async.waterfall([
 			function(next) {
 				topics.getTopicsFields(tids, ['tid', 'cid', 'deleted'], next);
 			},
-			function(topicsData, next) {
-				var cids = topicsData.map(function(topic) {
+			function(_topicsData, next) {
+				topicsData = _topicsData;
+				cids = topicsData.map(function(topic) {
 					return topic.cid;
 				}).filter(function(cid, index, array) {
 					return cid && array.indexOf(cid) === index;
 				});
 
-				async.parallel({
-					categories: function(next) {
-						categories.getCategoriesFields(cids, ['disabled'], next);
-					},
-					allowedTo: function(next) {
-						helpers.isUserAllowedTo(privilege, uid, cids, next);
-					},
-					isModerators: function(next) {
-						user.isModerator(uid, cids, next);
-					},
-					isAdmin: function(next) {
-						user.isAdministrator(uid, next);
-					}
-				}, function(err, results) {
-					if (err) {
-						return next(err);
-					}
-					var isModOf = {};
-					cids = cids.filter(function(cid, index) {
-						isModOf[cid] = results.isModerators[index];
-						return !results.categories[index].disabled &&
-							(results.allowedTo[index] || results.isAdmin || results.isModerators[index]);
-					});
+				privileges.categories.getBase(privilege, cids, uid, next);
+			},
+			function(results, next) {
 
-					tids = topicsData.filter(function(topic) {
-						return cids.indexOf(topic.cid) !== -1 &&
-							(parseInt(topic.deleted, 10) !== 1 || results.isAdmin || isModOf[topic.cid]);
-					}).map(function(topic) {
-						return topic.tid;
-					});
+				var isModOf = {};
+				cids = cids.filter(function(cid, index) {
+					isModOf[cid] = results.isModerators[index];
+					return !results.categories[index].disabled &&
+						(results.allowedTo[index] || results.isAdmin || results.isModerators[index]);
+				});
 
-					plugins.fireHook('filter:privileges.topics.filter', {
-						privilege: privilege,
-						uid: uid,
-						tids: tids
-					}, function(err, data) {
-						next(err, data ? data.tids : null);
-					});
+				tids = topicsData.filter(function(topic) {
+					return cids.indexOf(topic.cid) !== -1 &&
+						(parseInt(topic.deleted, 10) !== 1 || results.isAdmin || isModOf[topic.cid]);
+				}).map(function(topic) {
+					return topic.tid;
+				});
+
+				plugins.fireHook('filter:privileges.topics.filter', {
+					privilege: privilege,
+					uid: uid,
+					tids: tids
+				}, function(err, data) {
+					next(err, data ? data.tids : null);
 				});
 			}
 		], callback);

@@ -2,7 +2,7 @@
     "home": "Hem",
     "search": "Sök",
     "buttons.close": "Stäng",
-    "403.title": "Tillgång Nekad",
+    "403.title": "Tillgång nekad",
     "403.message": "Du verkar ha ramlat in på en sida du ej har tillgång till.",
     "403.login": "Du kanske bör <a href='%1/login'>försöka logga in</a>?",
     "404.title": "Sidan saknas",
@@ -39,7 +39,7 @@
     "motd.welcome": "Välkommen till NodeBB, framtidens diskussions-plattform.",
     "previouspage": "Föregående sida",
     "nextpage": "Nästa sida",
-    "alert.success": "success",
+    "alert.success": "Success",
     "alert.error": "Fel",
     "alert.banned": "Bannad",
     "alert.banned.message": "Du har blivit bannlyst och kommer nu att loggas ut. ",
@@ -88,7 +88,7 @@
     "sessions": "Login Sessions",
     "ip_address": "IP Address",
     "enter_page_number": "Enter page number",
-    "upload_file": "Upload file",
-    "upload": "Upload",
+    "upload_file": "Ladda upp en fil",
+    "upload": "Ladda upp",
     "allowed-file-types": "Allowed file types are %1"
 }

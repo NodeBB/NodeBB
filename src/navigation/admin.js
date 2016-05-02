@@ -62,12 +62,7 @@ function getAvailable(callback) {
 		return item;
 	});
 
-	// DEPRECATION: backwards compatibility for filter:header.build, will be removed soon.
-	plugins.fireHook('filter:header.build', {navigation: []}, function(err, data) {
-		core = core.concat(data.navigation);
-
-		plugins.fireHook('filter:navigation.available', core, callback);
-	});
+	plugins.fireHook('filter:navigation.available', core, callback);
 }
 
 module.exports = admin;

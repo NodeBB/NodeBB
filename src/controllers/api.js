@@ -172,55 +172,43 @@ apiController.getObjectByType = function(uid, type, id, callback) {
 };
 
 apiController.getUserByUID = function(req, res, next) {
-	var uid = req.params.uid ? req.params.uid : 0;
-
-	apiController.getUserDataByUID(req.uid, uid, function(err, data) {
-		if (err) {
-			return next(err);
-		}
-		res.json(data);
-	});
+	byType('uid', req, res, next);
 };
 
 apiController.getUserByUsername = function(req, res, next) {
-	var username = req.params.username ? req.params.username : 0;
-
-	apiController.getUserDataByUsername(req.uid, username, function(err, data) {
-		if (err) {
-			return next(err);
-		}
-		res.json(data);
-	});
+	byType('username', req, res, next);
 };
 
 apiController.getUserByEmail = function(req, res, next) {
-	var email = req.params.email ? req.params.email : 0;
+	byType('email', req, res, next);
+};
 
-	apiController.getUserDataByEmail(req.uid, email, function(err, data) {
-		if (err) {
+function byType(type, req, res, next) {
+	apiController.getUserDataByField(req.uid, type, req.params[type], function(err, data) {
+		if (err || !data) {
 			return next(err);
 		}
 		res.json(data);
 	});
-};
+}
 
-apiController.getUserDataByUsername = function(callerUid, username, callback) {
+apiController.getUserDataByField = function(callerUid, field, fieldValue, callback) {
 	async.waterfall([
-		function(next) {
-			user.getUidByUsername(username, next);
+		function (next) {
+			if (field === 'uid') {
+				next(null, fieldValue);
+			} else if (field === 'username') {
+				user.getUidByUsername(fieldValue, next);
+			} else if (field === 'email') {
+				user.getUidByEmail(fieldValue, next);
+			} else {
+				next();
+			}
 		},
-		function(uid, next) {
-			apiController.getUserDataByUID(callerUid, uid, next);
-		}
-	], callback);
-};
-
-apiController.getUserDataByEmail = function(callerUid, email, callback) {
-	async.waterfall([
-		function(next) {
-			user.getUidByEmail(email, next);
-		},
-		function(uid, next) {
+		function (uid, next) {
+			if (!uid) {
+				return next();
+			}
 			apiController.getUserDataByUID(callerUid, uid, next);
 		}
 	], callback);

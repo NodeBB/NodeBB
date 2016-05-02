@@ -288,12 +288,7 @@ topicsController.get = function(req, res, callback) {
 			});
 		}
 
-		plugins.fireHook('filter:topic.build', {req: req, res: res, templateData: data}, function(err, data) {
-			if (err) {
-				return callback(err);
-			}
-			res.render('topic', data.templateData);
-		});
+		res.render('topic', data);
 	});
 };
 

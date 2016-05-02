@@ -2,16 +2,14 @@
 
 'use strict';
 
-var async = require('async'),
-	S = require('string'),
+var async = require('async');
+var S = require('string');
 
-	meta = require('../meta'),
-	db = require('../database'),
-	user = require('../user'),
-	posts = require('../posts'),
-	plugins = require('../plugins'),
-	utils = require('../../public/src/utils');
-
+var meta = require('../meta');
+var user = require('../user');
+var posts = require('../posts');
+var plugins = require('../plugins');
+var utils = require('../../public/src/utils');
 
 module.exports = function(Topics) {
 
@@ -28,7 +26,24 @@ module.exports = function(Topics) {
 		topics.forEach(function(topic) {
 			counts.push(topic && (parseInt(topic.postcount, 10) || 0));
 			if (topic) {
-				teaserPids.push(meta.config.teaserPost === 'first' ? topic.mainPid : topic.teaserPid);
+				if (topic.teaserPid === 'null') {
+					delete topic.teaserPid;
+				}
+
+				switch(meta.config.teaserPost) {
+					case 'first':
+						teaserPids.push(topic.mainPid);
+						break;
+
+					case 'last-post':
+						teaserPids.push(topic.teaserPid || topic.mainPid);
+						break;
+
+					case 'last-reply':	// intentional fall-through
+					default:
+						teaserPids.push(topic.teaserPid);
+						break;
+				}
 			}
 		});
 
@@ -74,7 +89,7 @@ module.exports = function(Topics) {
 						tidToPost[topic.tid].index = meta.config.teaserPost === 'first' ? 1 : counts[index];
 						if (tidToPost[topic.tid].content) {
 							var s = S(tidToPost[topic.tid].content);
-							tidToPost[topic.tid].content = s.stripTags.apply(s, utils.stripTags.concat(['img'])).s;
+							tidToPost[topic.tid].content = s.stripTags.apply(s, utils.stripTags).s;
 						}
 					}
 					return tidToPost[topic.tid];
@@ -115,7 +130,11 @@ module.exports = function(Topics) {
 			}
 
 			pid = pid || null;
-			Topics.setTopicField(tid, 'teaserPid', pid, callback);
+			if (pid) {
+				Topics.setTopicField(tid, 'teaserPid', pid, callback);
+			} else {
+				Topics.deleteTopicField(tid, 'teaserPid', callback);
+			}
 		});
 	};
 };

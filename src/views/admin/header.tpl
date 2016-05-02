@@ -60,6 +60,6 @@
 		<!-- END scripts -->
 	</head>
 
-	<body class="admin">
+	<body class="admin {bodyClass}">
 		<!-- IMPORT admin/partials/menu.tpl -->
 		<div class="container" id="content">

@@ -40,10 +40,10 @@
     "change_email": "Change Email",
     "edit": "Ändra",
     "edit-profile": "Edit Profile",
-    "default_picture": "Default Icon",
+    "default_picture": "Standard-ikon",
     "uploaded_picture": "Uppladdad bild",
     "upload_new_picture": "Ladda upp ny bild",
-    "upload_new_picture_from_url": "Ladda Upp Ny Bild Från Länk",
+    "upload_new_picture_from_url": "Ladda upp ny bild från länk",
     "current_password": "Nuvarande lösenord",
     "change_password": "Ändra lösenord",
     "change_password_error": "Ogiltigt lösenord.",
@@ -105,7 +105,7 @@
     "homepage_description": "Select a page to use as the forum homepage or 'None' to use the default homepage.",
     "custom_route": "Custom Homepage Route",
     "custom_route_help": "Enter a route name here, without any preceding slash (e.g. \"recent\", or \"popular\")",
-    "sso.title": "Single Sign-on Services",
+    "sso.title": "Single Sign-on-tjänster",
     "sso.associated": "Associated with",
     "sso.not-associated": "Click here to associate with"
 }

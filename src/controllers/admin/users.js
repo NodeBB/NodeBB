@@ -166,6 +166,12 @@ function render(req, res, data) {
 	data.search_display = 'hidden';
 	data.pagination = pagination.create(data.page, data.pageCount, req.query);
 	data.requireEmailConfirmation = parseInt(meta.config.requireEmailConfirmation, 10) === 1;
+
+	var registrationType = meta.config.registrationType;
+
+	data.inviteOnly = registrationType === 'invite-only' || registrationType === 'admin-invite-only';
+	data.adminInviteOnly = registrationType === 'admin-invite-only';
+
 	res.render('admin/manage/users', data);
 }
 
