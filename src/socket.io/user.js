@@ -339,15 +339,15 @@ SocketUser.invite = function(socket, email, callback) {
 };
 
 SocketUser.getUserByUID = function(socket, uid, callback) {
-	apiController.getUserDataByUID(socket.uid, uid, callback);
+	apiController.getUserDataByField(socket.uid, 'uid', uid, callback);
 };
 
 SocketUser.getUserByUsername = function(socket, username, callback) {
-	apiController.getUserDataByUsername(socket.uid, username, callback);
+	apiController.getUserDataByField(socket.uid, 'username', username, callback);
 };
 
 SocketUser.getUserByEmail = function(socket, email, callback) {
-	apiController.getUserDataByEmail(socket.uid, email, callback);
+	apiController.getUserDataByField(socket.uid, 'email', email, callback);
 };
 
 

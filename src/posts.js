@@ -1,14 +1,14 @@
 'use strict';
 
-var async = require('async'),
-	_ = require('underscore'),
+var async = require('async');
+var _ = require('underscore');
 
-	db = require('./database'),
-	utils = require('../public/src/utils'),
-	user = require('./user'),
-	topics = require('./topics'),
-	privileges = require('./privileges'),
-	plugins = require('./plugins');
+var db = require('./database');
+var utils = require('../public/src/utils');
+var user = require('./user');
+var topics = require('./topics');
+var privileges = require('./privileges');
+var plugins = require('./plugins');
 
 (function(Posts) {
 

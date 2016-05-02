@@ -41,7 +41,7 @@
     "details.hidden": "Ukryty",
     "details.hidden_help": "Jeśli aktywowane, ta grupa nie będzie widoczna w wykazie grup, a użytkownicy będą musieli być zapraszani manualnie.",
     "details.delete_group": "Usuń Grupę",
-    "details.private_system_help": "Private groups is disabled at system level, this option does not do anything",
+    "details.private_system_help": "Prywatne grupy zostały zablokowane w systemie, ta opcja nic nie zmienia.",
     "event.updated": "Dane grupy zostały zaktualizowane",
     "event.deleted": "Grupa \"%1\" została skasowana",
     "membership.accept-invitation": "Przyjmij Zaproszenie",
@@ -50,5 +50,5 @@
     "membership.leave-group": "Opuść Grupę",
     "membership.reject": "Odrzuć",
     "new-group.group_name": "Nazwa Grupy:",
-    "upload-group-cover": "Upload group cover"
+    "upload-group-cover": "Załaduj zdjęcie tła grupy"
 }

@@ -81,6 +81,21 @@ var plugins = require('./plugins');
 		});
 	};
 
+	Notifications.filterExists = function(nids, callback) {
+		// Removes nids that have been pruned
+		db.isSortedSetMembers('notifications', nids, function(err, exists) {
+			if (err) {
+				return callbacK(err);
+			}
+
+			nids = nids.filter(function(notifId, idx) {
+				return exists[idx];
+			});
+
+			callback(null, nids);
+		});
+	};
+
 	Notifications.findRelated = function(mergeIds, set, callback) {
 		// A related notification is one in a zset that has the same mergeId
 		var _nids;
