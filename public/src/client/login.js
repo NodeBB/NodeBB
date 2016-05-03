@@ -45,7 +45,12 @@ define('forum/login', ['csrf', 'translator'], function(csrf, translator) {
 			return false;
 		});
 
-		$('#content #username').focus();
+		if ($('#content #username').attr('readonly')) {
+			$('#content #password').focus();
+		} else {
+			$('#content #username').focus();
+		}
+
 
 		// Add "returnTo" data if present
 		if (app.previousUrl) {

@@ -208,6 +208,8 @@ authenticationController.onSuccessfulLogin = function(req, uid, callback) {
 	var uuid = utils.generateUUID();
 	req.session.meta = {};
 
+	delete req.session.forceLogin;
+
 	// Associate IP used during login with user account
 	user.logIP(uid, req.ip);
 	req.session.meta.ip = req.ip;
