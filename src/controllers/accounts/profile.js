@@ -54,7 +54,7 @@ profileController.get = function(req, res, callback) {
 				},
 				aboutme: function(next) {
 					if (userData.aboutme) {
-						plugins.fireHook('filter:parse.raw', userData.aboutme, next);
+						plugins.fireHook('filter:parse.aboutme', userData.aboutme, next);
 					} else {
 						next();
 					}
