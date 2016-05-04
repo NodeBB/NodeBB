@@ -310,8 +310,6 @@ authenticationController.logout = function(req, res, next) {
 
 			user.setUserField(uid, 'lastonline', Date.now() - 300000);
 
-			// action:user.loggedOut deprecated in > v0.9.3
-			plugins.fireHook('action:user.loggedOut', {req: req, res: res, uid: uid});
 			plugins.fireHook('static:user.loggedOut', {req: req, res: res, uid: uid}, function() {
 				res.status(200).send('');
 			});
