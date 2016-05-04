@@ -13,7 +13,7 @@ var meta = require('../meta');
 
 module.exports = function(Topics) {
 
-	Topics.createTopicFromPosts = function(uid, title, pids, callback) {
+	Topics.createTopicFromPosts = function(uid, title, pids, fromTid, callback) {
 		if (title) {
 			title = title.trim();
 		}
@@ -54,6 +54,9 @@ module.exports = function(Topics) {
 					return next(new Error('[[error:no-privileges]]'));
 				}
 				Topics.create({uid: results.postData.uid, title: title, cid: cid}, next);
+			},
+			function( results, next) {
+				Topics.updateTopicBookmarks(fromTid, pids, function(){ next( null, results );} );
 			},
 			function(_tid, next) {
 				function move(pid, next) {

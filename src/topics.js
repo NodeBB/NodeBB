@@ -328,4 +328,88 @@ var social = require('./social');
 		}
 	};
 
+	Topics.getTopicBookmarks = function( tid, callback ){
+		db.getSortedSetRangeWithScores(['tid:' + tid + ':bookmarks'], 0, -1, callback );
+	};
+
+	Topics.updateTopicBookmarks = function( tid, pids, callback ){
+		var maxIndex;
+		var Posts = posts;
+		async.waterfall([
+			function(next){
+				Topics.getPostCount( tid, next );
+			},
+			function(postcount, next){
+				maxIndex = postcount;
+				Topics.getTopicBookmarks( tid, next );
+			},
+			function(bookmarks, next){
+				var uids = bookmarks.map( function( bookmark ){return bookmark.value});
+				var forkedPosts = pids.map( function( pid ){ return { pid: pid, tid: tid }; } );
+				var uidBookmark = new Object();
+				var uidData = bookmarks.map(
+					function( bookmark ){
+						var u = new Object();
+						u.uid = bookmark.value;
+						u.bookmark = bookmark.score;
+						return u;
+					} );
+				async.map(
+					uidData,
+					function( data, mapCallback ){
+						Posts.getPostIndices(
+							forkedPosts,
+							data.uid,
+							function( err, indices ){
+								if( err ){
+									callback( err );
+								}
+								data.postIndices = indices;
+								mapCallback( null, data );
+							} )
+					},
+					function( err, results ){
+						if( err ){
+							return callback();
+						}
+						async.map(
+							results,
+							function( data, mapCallback ){
+								var uid = data.uid;
+								var bookmark = data.bookmark;
+								bookmark = bookmark < maxIndex ? bookmark : maxIndex;
+								var postIndices = data.postIndices;
+								var i;
+								for( i = 0; i < postIndices.length && postIndices[i] < data.bookmark; ++i ){
+									--bookmark;
+								}
+
+								if( bookmark != data.bookmark ){
+									mapCallback( null, { uid: uid, bookmark: bookmark } );
+								}
+								else{
+									mapCallback( null, null );
+								}
+							},
+							function( err, results ){
+								async.map( results,
+											function(ui, cb ){
+												if( ui && ui.bookmark){
+													Topics.setUserBookmark( tid, ui.uid, ui.bookmark, cb );
+												}
+												else{
+													return cb( null, null );
+												}
+											},
+											function( err, results ){
+												next();
+											}
+										 );
+							}
+						);
+					}
+				);
+			}],
+			function( err, result ){ callback();} );
+	};
 }(exports));
