@@ -55,7 +55,8 @@ module.exports = function(Messaging) {
 				message = {
 					content: content,
 					timestamp: timestamp,
-					fromuid: fromuid
+					fromuid: fromuid,
+					roomId: roomId
 				};
 
 				plugins.fireHook('filter:messaging.save', message, next);
