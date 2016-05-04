@@ -57,8 +57,8 @@ module.exports = function(Topics) {
 					return next(new Error('[[error:no-topic]]'));
 				}
 				db.setAdd('tid:' + tid + ':followers', uid, next);
-				plugins.fireHook('action:topic.follow', {uid : uid, tid : tid});
 			},
+			async.apply(plugins.fireHook, 'action:topic.follow', { uid: uid, tid: tid }),
 			function(next) {
 				db.sortedSetAdd('uid:' + uid + ':followed_tids', Date.now(), tid, next);
 			}
@@ -76,8 +76,8 @@ module.exports = function(Topics) {
 					return next(new Error('[[error:no-topic]]'));
 				}
 				db.setRemove('tid:' + tid + ':followers', uid, next);
-				plugins.fireHook('action:topic.unfollow', {uid : uid, tid : tid});
 			},
+			async.apply(plugins.fireHook, 'action:topic.unfollow', { uid: uid, tid: tid }),
 			function(next) {
 				db.sortedSetRemove('uid:' + uid + ':followed_tids', tid, next);
 			}
