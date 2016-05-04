@@ -12,6 +12,7 @@ var notifications = require('../notifications');
 var privileges = require('../privileges');
 var meta = require('../meta');
 var emailer = require('../emailer');
+var plugins = require('../plugins');
 
 module.exports = function(Topics) {
 
@@ -57,6 +58,7 @@ module.exports = function(Topics) {
 				}
 				db.setAdd('tid:' + tid + ':followers', uid, next);
 			},
+			async.apply(plugins.fireHook, 'action:topic.follow', { uid: uid, tid: tid }),
 			function(next) {
 				db.sortedSetAdd('uid:' + uid + ':followed_tids', Date.now(), tid, next);
 			}
@@ -75,6 +77,7 @@ module.exports = function(Topics) {
 				}
 				db.setRemove('tid:' + tid + ':followers', uid, next);
 			},
+			async.apply(plugins.fireHook, 'action:topic.unfollow', { uid: uid, tid: tid }),
 			function(next) {
 				db.sortedSetRemove('uid:' + uid + ':followed_tids', tid, next);
 			}

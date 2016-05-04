@@ -5,9 +5,7 @@ var winston = require('winston'),
 
 module.exports = function(Plugins) {
 	Plugins.deprecatedHooks = {
-		'filter:user.delete': 'static:user.delete',
-		'filter:user.custom_fields': null,
-		'action:user.loggedOut': 'static:user.loggedOut'
+		'filter:user.custom_fields': null	// remove in v1.1.0
 	};
 
 	/*

@@ -117,6 +117,7 @@ apiController.renderWidgets = function(req, res, next) {
 			template: areas.template,
 			url: areas.url,
 			locations: areas.locations,
+			isMobile: req.query.isMobile === 'true'
 		},
 		req,
 		res,

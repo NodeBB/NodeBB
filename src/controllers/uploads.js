@@ -185,6 +185,9 @@ function uploadFile(uid, uploadedFile, callback) {
 	if (meta.config.hasOwnProperty('allowedFileExtensions')) {
 		var allowed = file.allowedExtensions();
 		var extension = path.extname(uploadedFile.name);
+		if (!extension) {
+			extension = '.' + mime.extension(uploadedFile.type);
+		}
 		if (allowed.length > 0 && allowed.indexOf(extension) === -1) {
 			return callback(new Error('[[error:invalid-file-type, ' + allowed.join('&#44; ') + ']]'));
 		}
@@ -195,7 +198,7 @@ function uploadFile(uid, uploadedFile, callback) {
 
 function saveFileToLocal(uploadedFile, callback) {
 	var extension = path.extname(uploadedFile.name);
-	if(!extension) {
+	if (!extension) {
 		extension = '.' + mime.extension(uploadedFile.type);
 	}
 
