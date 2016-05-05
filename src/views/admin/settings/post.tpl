@@ -83,7 +83,8 @@
 			<div class="form-group">
 				<label>Teaser Post</label>
 				<select class="form-control" data-field="teaserPost">
-					<option value="last">Last</option>
+					<option value="last-post">Last &ndash; Show the latest post, including the original post, if no replies</option>
+					<option value="last-reply">Last &ndash; Show the latest reply, or a "No replies" placeholder if no replies</option>
 					<option value="first">First</option>
 				</select>
 			</div>

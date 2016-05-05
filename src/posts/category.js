@@ -1,8 +1,8 @@
 
 'use strict';
 
-var async = require('async'),
-	topics = require('../topics');
+var async = require('async');
+var topics = require('../topics');
 
 module.exports = function(Posts) {
 
@@ -13,7 +13,7 @@ module.exports = function(Posts) {
 			},
 			function(tid, next) {
 				topics.getTopicField(tid, 'cid', next);
-			}			
+			}
 		], callback);
 	};
 

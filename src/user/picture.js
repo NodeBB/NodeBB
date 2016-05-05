@@ -63,7 +63,9 @@ module.exports = function(User) {
 						async.series([
 							async.apply(image.normalise, picture.path, extension),
 							async.apply(fs.rename, picture.path + '.png', picture.path)
-						], next);
+						], function(err) {
+							next(err);
+						});
 					},
 					function(next) {
 						User.getUserField(updateUid, 'uploadedpicture', next);

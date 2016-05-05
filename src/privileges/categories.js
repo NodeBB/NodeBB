@@ -251,6 +251,21 @@ module.exports = function(privileges) {
 			return array.indexOf(cid) === index;
 		});
 
+		privileges.categories.getBase(privilege, cids, uid, function(err, results) {
+			if (err) {
+				return callback(err);
+			}
+
+			cids = cids.filter(function(cid, index) {
+				return !results.categories[index].disabled &&
+					(results.allowedTo[index] || results.isAdmin || results.isModerators[index]);
+			});
+
+			callback(null, cids.filter(Boolean));
+		});
+	};
+
+	privileges.categories.getBase = function(privilege, cids, uid, callback) {
 		async.parallel({
 			categories: function(next) {
 				categories.getCategoriesFields(cids, ['disabled'], next);
@@ -264,18 +279,7 @@ module.exports = function(privileges) {
 			isAdmin: function(next) {
 				user.isAdministrator(uid, next);
 			}
-		}, function(err, results) {
-			if (err) {
-				return callback(err);
-			}
-
-			cids = cids.filter(function(cid, index) {
-				return !results.categories[index].disabled &&
-					(results.allowedTo[index] || results.isAdmin || results.isModerators[index]);
-			});
-
-			callback(null, cids.filter(Boolean));
-		});
+		}, callback);
 	};
 
 	privileges.categories.filterUids = function(privilege, cid, uids, callback) {

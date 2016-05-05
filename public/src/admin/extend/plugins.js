@@ -16,11 +16,17 @@ define('admin/extend/plugins', function() {
 		$('#plugin-search').val('');
 
 		pluginsList.on('click', 'button[data-action="toggleActive"]', function() {
-			pluginID = $(this).parents('li').attr('data-plugin-id');
-			var btn = $(this);
+			var pluginEl = $(this).parents('li');
+			pluginID = pluginEl.attr('data-plugin-id');
+			var btn = $('#' + pluginID + ' [data-action="toggleActive"]');
 			socket.emit('admin.plugins.toggleActive', pluginID, function(err, status) {
 				btn.html('<i class="fa fa-power-off"></i> ' + (status.active ? 'Deactivate' : 'Activate'));
 				btn.toggleClass('btn-warning', status.active).toggleClass('btn-success', !status.active);
+
+				//clone it to active plugins tab
+				if (status.active && !$('#active #' + pluginID).length) {
+					$('#active ul').prepend(pluginEl.clone(true));
+				}
 
 				app.alert({
 					alert_id: 'plugin_toggled',
@@ -141,6 +147,7 @@ define('admin/extend/plugins', function() {
 		});
 
 		populateUpgradeablePlugins();
+		populateActivePlugins();
 	};
 
 	function confirmInstall(pluginID, callback) {
@@ -231,6 +238,14 @@ define('admin/extend/plugins', function() {
 		$('#installed ul li').each(function() {
 			if ($(this).children('[data-action="upgrade"]').length) {
 				$('#upgrade ul').append($(this).clone(true));
+			}
+		});
+	}
+
+	function populateActivePlugins() {
+		$('#installed ul li').each(function() {
+			if ($(this).hasClass('active')) {
+				$('#active ul').append($(this).clone(true));
 			}
 		});
 	}

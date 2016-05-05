@@ -15,7 +15,7 @@ image.resizeImage = function(data, callback) {
 			extension: data.extension,
 			width: data.width,
 			height: data.height
-		}, function(err, data) {
+		}, function(err) {
 			callback(err);
 		});
 	} else {
@@ -79,7 +79,7 @@ image.normalise = function(path, extension, callback) {
 		plugins.fireHook('filter:image.normalise', {
 			path: path,
 			extension: extension
-		}, function(err, data) {
+		}, function(err) {
 			callback(err);
 		});
 	} else {
@@ -92,6 +92,12 @@ image.normalise = function(path, extension, callback) {
 			});
 		});
 	}
+};
+
+image.load = function(path, callback) {
+	new Jimp(path, function(err, data) {
+		callback(err, data ? data.bitmap : null);
+	});
 };
 
 image.convertImageToBase64 = function(path, callback) {

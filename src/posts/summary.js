@@ -1,15 +1,15 @@
 
 'use strict';
 
-var async = require('async'),
-	validator = require('validator'),
-	S = require('string'),
+var async = require('async');
+var validator = require('validator');
+var S = require('string');
 
-	db = require('../database'),
-	user = require('../user'),
-	plugins = require('../plugins'),
-	categories = require('../categories'),
-	utils = require('../../public/src/utils');
+var db = require('../database');
+var user = require('../user');
+var plugins = require('../plugins');
+var categories = require('../categories');
+var utils = require('../../public/src/utils');
 
 
 module.exports = function(Posts) {
@@ -30,9 +30,7 @@ module.exports = function(Posts) {
 				return callback(err);
 			}
 
-			posts = posts.filter(function(p) {
-				return !!p && parseInt(p.deleted, 10) !== 1;
-			});
+			posts = posts.filter(Boolean);
 
 			var uids = [], topicKeys = [];
 			for(var i=0; i<posts.length; ++i) {
@@ -66,10 +64,11 @@ module.exports = function(Posts) {
 				for (var i=0; i<posts.length; ++i) {
 					posts[i].index = utils.isNumber(results.indices[i]) ? parseInt(results.indices[i], 10) + 1 : 1;
 					posts[i].isMainPost = posts[i].index - 1 === 0;
+					posts[i].deleted = parseInt(posts[i].deleted, 10) === 1;
 				}
 
 				posts = posts.filter(function(post) {
-					return results.topics[post.tid] && parseInt(results.topics[post.tid].deleted, 10) !== 1;
+					return results.topics[post.tid];
 				});
 
 				async.map(posts, function(post, next) {
