@@ -129,6 +129,13 @@ settingsController.get = function(req, res, callback) {
 		userData.title = '[[pages:account/settings]]';
 		userData.breadcrumbs = helpers.buildBreadcrumbs([{text: userData.username, url: '/user/' + userData.userslug}, {text: '[[user:settings]]'}]);
 
+		userData.upvoteNotificationOptions = [
+			{value: 'all',        name: '[[user:notification_upvotes_all]]',       selected: 'all' === userData.settings.upvoteNotifications},
+			{value: 'thresholds', name: '[[user:notification_upvotes_threshold]]', selected: 'thresholds' === userData.settings.upvoteNotifications},
+			{value: 'first',      name: '[[user:notification_upvotes_first]]',     selected: 'first' === userData.settings.upvoteNotifications},
+			{value: 'none',       name: '[[user:notification_upvotes_none]]',      selected: 'none' === userData.settings.upvoteNotifications}
+		];
+
 		res.render('account/settings', userData);
 	});
 };

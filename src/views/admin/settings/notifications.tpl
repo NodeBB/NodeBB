@@ -6,6 +6,13 @@
 		<form>
 			<strong>Welcome Notification</strong><br /> <textarea class="form-control" data-field="welcomeNotification"></textarea><br />
 			<strong>Welcome Notification Link</strong><br /> <input type="text" class="form-control" data-field="welcomeLink"><br />
+			<strong>Default Upvote Setting</label>
+			<select class="form-control" data-field="upvoteNotifications">
+				<option value="all">All</option>
+				<option value="thresholds">1st, 5th, 10th, 50th, 50xth</option>
+				<option value="first">First Only</option>
+				<option value="none">None</option>
+			</select><br />
 		</form>
 	</div>
 </div>
