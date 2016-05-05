@@ -84,7 +84,11 @@ define('notifications', ['sounds', 'translator', 'components'], function(sound, 
 				payload.message = notifData.bodyShort;
 				payload.type = 'info';
 				payload.clickfn = function() {
-					window.location.href = config.relative_path + '/' + notifData.path;
+					if (notifData.path.startsWith('http') && notifData.path.startsWith('https')) {
+						window.location.href = notifData.path;
+					} else {
+						window.location.href = window.location.protocol + '//' + window.location.host + config.relative_path + notifData.path;
+					}
 				};
 			} else {
 				payload.message = '[[notifications:you_have_unread_notifications]]';
