@@ -12,6 +12,7 @@ var helpers = require('./helpers');
 
 var Controllers = {
 	topics: require('./topics'),
+	posts: require('./posts'),
 	categories: require('./categories'),
 	category: require('./category'),
 	unread: require('./unread'),

@@ -165,6 +165,21 @@ middleware.checkAccountPermissions = function(req, res, next) {
 	});
 };
 
+middleware.redirectUidToUserslug = function(req, res, next) {
+	var uid = parseInt(req.params.userslug, 10);
+	if (!uid) {
+		return next();
+	}
+	user.getUserField(uid, 'userslug', function(err, userslug) {
+		if (err || !userslug) {
+			return next(err);
+		}
+
+		var path = req.path.replace(/^\/api/, '').replace(uid, function() { return userslug; });
+		controllers.helpers.redirect(res, path);
+	});
+};
+
 middleware.isAdmin = function(req, res, next) {
 	if (!req.uid) {
 		return controllers.helpers.notAllowed(req, res);

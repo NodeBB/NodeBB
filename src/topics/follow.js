@@ -141,6 +141,7 @@ module.exports = function(Topics) {
 					bodyShort: '[[notifications:user_posted_to, ' + postData.user.username + ', ' + titleEscaped + ']]',
 					bodyLong: postData.content,
 					pid: postData.pid,
+					path: '/post/' + postData.pid,
 					nid: 'new_post:tid:' + postData.topic.tid + ':pid:' + postData.pid + ':uid:' + exceptUid,
 					tid: postData.topic.tid,
 					from: exceptUid,

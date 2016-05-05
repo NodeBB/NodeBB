@@ -12,6 +12,7 @@ var User = require('./user');
 var groups = require('./groups');
 var meta = require('./meta');
 var plugins = require('./plugins');
+var utils = require('../public/src/utils');
 
 (function(Notifications) {
 
@@ -44,6 +45,8 @@ var plugins = require('./plugins');
 				if (!notification) {
 					return next(null, null);
 				}
+
+				notification.datetimeISO = utils.toISOString(notification.datetime);
 
 				if (notification.bodyLong) {
 					notification.bodyLong = S(notification.bodyLong).escapeHTML().s;
@@ -85,7 +88,7 @@ var plugins = require('./plugins');
 		// Removes nids that have been pruned
 		db.isSortedSetMembers('notifications', nids, function(err, exists) {
 			if (err) {
-				return callbacK(err);
+				return callback(err);
 			}
 
 			nids = nids.filter(function(notifId, idx) {

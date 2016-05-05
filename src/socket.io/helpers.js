@@ -78,6 +78,7 @@ SocketHelpers.sendNotificationToPostOwner = function(pid, fromuid, notification)
 				bodyShort: '[[' + notification + ', ' + results.username + ', ' + titleEscaped + ']]',
 				bodyLong: results.postObj.content,
 				pid: pid,
+				path: '/post/' + pid,
 				nid: 'post:' + pid + ':uid:' + fromuid,
 				from: fromuid,
 				mergeId: notification + '|' + pid,
@@ -110,7 +111,7 @@ SocketHelpers.sendNotificationToTopicOwner = function(tid, fromuid, notification
 
 		notifications.create({
 			bodyShort: '[[' + notification + ', ' + results.username + ', ' + titleEscaped + ']]',
-			path: nconf.get('relative_path') + '/topic/' + results.topicData.slug,
+			path: '/topic/' + results.topicData.slug,
 			nid: 'tid:' + tid + ':uid:' + fromuid,
 			from: fromuid
 		}, function(err, notification) {
