@@ -305,4 +305,23 @@ var privileges = require('./privileges');
 		return tree;
 	};
 
+	Categories.getIgnoringUsers = function(cid, callback){
+		db.getSetMembers( 'cid:' + cid + ':ignorers', callback );
+	};
+
+	Categories.filterIgnoringUids = function(cid, uids, callback){
+		async.reject(uids,
+			function(uid, next){
+				user.isIgnoredCategory(uid, cid, function(err, result){
+					if(err){
+						return callback(err);
+					}
+					next(result);
+				});
+			},
+			function(results){
+				callback(null, results);
+			});
+	};
+
 }(exports));

@@ -83,12 +83,14 @@ define('forum/topic/threadTools', [
 		deletePosts.init();
 		fork.init();
 
-		components.get('topic').on('click', '[component="topic/follow"], [component="topic/unfollow"]', follow);
-		components.get('topic/follow').off('click').on('click', follow);
-		components.get('topic/unfollow').off('click').on('click', follow);
+		components.get('topic/watch').on('click', null, 'follow', watch );
+		components.get('topic/unwatch').on('click', null, 'unfollow', watch );
+		components.get('topic/ignore').on('click', null, 'ignore',  watch);
 
-		function follow() {
-			socket.emit('topics.toggleFollow', tid, function(err, state) {
+		/* event.how: follow, unfollow, ignore */
+		function watch( event ){
+			var how = event.data;
+			socket.emit('topics.changeWatching', {tid: tid, how: how}, function(err) {
 				if (err) {
 					return app.alert({
 						type: 'danger',
@@ -99,11 +101,24 @@ define('forum/topic/threadTools', [
 					});
 				}
 
-				setFollowState(state);
+				var msg;
+				if( how == 'follow' ){
+					msg = '[[topic:following_topic.message]]';
+				}
+				else if( how == 'unfollow' ){
+					msg = '[[topic:not_following_topic.message]]'
+				}
+				else if( how == 'ignore' ){
+					msg = '[[topic:ignoring_topic.message]]';
+				}
+				else{
+					msg = '[[error:invalid_topic_following_state]]';
+				}
 
+				setFollowState( how );
 				app.alert({
 					alert_id: 'follow_thread',
-					message: state ? '[[topic:following_topic.message]]' : '[[topic:not_following_topic.message]]',
+					message: msg,
 					type: 'success',
 					timeout: 5000
 				});
@@ -195,8 +210,17 @@ define('forum/topic/threadTools', [
 	};
 
 	function setFollowState(state) {
-		components.get('topic/follow').toggleClass('hidden', state);
-		components.get('topic/unfollow').toggleClass('hidden', !state);
+		var menu = components.get('topic/following/menu');
+		menu.toggleClass('hidden', state != 'follow');
+		components.get('topic/watch/check').toggleClass('fa-check', state == 'follow');
+
+		menu = components.get('topic/normal/menu');
+		menu.toggleClass('hidden', state != 'unfollow');
+		components.get('topic/unwatch/check').toggleClass('fa-check', state == 'unfollow');
+
+		menu = components.get('topic/ignoring/menu');
+		menu.toggleClass('hidden', state != 'ignore' );
+		components.get('topic/ignore/check').toggleClass('fa-check', state == 'ignore');
 	}
 
 

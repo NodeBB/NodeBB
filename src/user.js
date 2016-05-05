@@ -254,5 +254,29 @@ var	async = require('async'),
 		});
 	};
 
+	User.getIgnoredTopics = function(uid, callback){
+		db.getSortedSetRange('uid:' + uid + ':ignored:tids', 0, -1, callback );
+	};
+
+	User.ignoreTopic = function(uid, tid, callback) {
+		if (!uid) {
+			return callback();
+		}
+
+		async.waterfall([
+			function (next) {
+				topics.exists(tid, next);
+			},
+			function (exists, next) {
+				if (!exists) {
+					return next(new Error('[[error:no-topic]]'));
+				}
+				db.sortedSetAdd('uid:' + uid + ':ignored:tids', Date.now(), tid, next);
+			},
+			function( next ){
+				db.setAdd('tid:' + tid + ':ignorers', uid, next);
+			}
+		], callback);
+	};
 
 }(exports));

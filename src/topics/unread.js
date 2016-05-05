@@ -76,7 +76,7 @@ module.exports = function(Topics) {
 
 		var cutoff = Topics.unreadCutoff();
 
-		var ignoredCids;
+		var ignoredCids, ignoredTids;
 
 		async.waterfall([
 			function (next) {
@@ -95,6 +95,9 @@ module.exports = function(Topics) {
 					},
 					tids_unread: function(next) {
 						db.getSortedSetRevRangeWithScores('uid:' + uid + ':tids_unread', 0, -1, next);
+					},
+					ignoredTids: function(next) {
+						user.getIgnoredTopics( uid, next );
 					}
 				}, next);
 			},
@@ -104,6 +107,7 @@ module.exports = function(Topics) {
 				}
 
 				ignoredCids = results.ignoredCids;
+				ignoredTids = results.ignoredTids;
 
 				var userRead = {};
 				results.userScores.forEach(function(userItem) {
@@ -138,7 +142,7 @@ module.exports = function(Topics) {
 
 				tids = tids.slice(0, 100);
 
-				filterTopics(uid, tids, cid, ignoredCids, next);
+				filterTopics(uid, tids, cid, ignoredCids, ignoredTids, next);
 			},
 			function (tids, next) {
 
@@ -165,8 +169,8 @@ module.exports = function(Topics) {
 		});
 	}
 
-	function filterTopics(uid, tids, cid, ignoredCids, callback) {
-		if (!Array.isArray(ignoredCids) || !tids.length) {
+	function filterTopics(uid, tids, cid, ignoredCids, ignoredTids, callback) {
+		if (!Array.isArray(ignoredCids) || !tids.length || !Array.isArray(ignoredTids) ) {
 			return callback(null, tids);
 		}
 
@@ -179,7 +183,11 @@ module.exports = function(Topics) {
 			},
 			function(topics, next) {
 				tids = topics.filter(function(topic) {
-					return topic && topic.cid && ignoredCids.indexOf(topic.cid.toString()) === -1 && (!cid || parseInt(cid, 10) === parseInt(topic.cid, 10));
+					return topic &&
+						topic.cid &&
+						ignoredCids.indexOf(topic.cid.toString()) === -1 &&
+						(!cid || parseInt(cid, 10) === parseInt(topic.cid, 10)) &&
+						ignoredTids.indexOf(topic.tid.toString()) === -1;
 				}).map(function(topic) {
 					return topic.tid;
 				});

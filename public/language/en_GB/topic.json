@@ -36,17 +36,22 @@
 	"flag_success": "This post has been flagged for moderation.",
 	"deleted_message": "This topic has been deleted. Only users with topic management privileges can see it.",
 
-	"following_topic.message": "You will now be receiving notifications when somebody posts to this topic.",
-	"not_following_topic.message": "You will no longer receive notifications from this topic.",
-
 	"login_to_subscribe": "Please register or log in in order to subscribe to this topic.",
 
 	"markAsUnreadForAll.success" : "Topic marked as unread for all.",
 	"mark_unread": "Mark unread",
 	"mark_unread.success": "Topic marked as unread.",
 
-	"watch": "Watch",
-	"unwatch": "Unwatch",
+	"watch": "Following",
+	"unwatch": "Reading",
+	"ignore": "Ignoring",
+	"watch_topic": "Following - Notify me on new posts",
+	"dont_watch_topic": "Reading - Show this thread in 'Unread'",
+	"ignore_topic": "Ignoring - Do not show this thread in 'Unread'",
+	"following_topic.message": "You will receive notifications whenever posts are made to this topic.",
+	"not_following_topic.message": "You will no longer receive notifications for new posts from this topic, but you will be notified when you are mentioned or your post is upvoted.",
+	"ignoring_topic.message": "You will no longer see this topic in the unread topics list.  You will be notified when you are mentioned or your post is up voted.",
+
 	"watch.title": "Be notified of new replies in this topic",
 	"unwatch.title": "Stop watching this topic",
 	"share_this_post": "Share this Post",
