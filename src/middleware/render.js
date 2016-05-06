@@ -98,7 +98,7 @@ module.exports = function(middleware) {
 	};
 
 	function buildBodyClass(req) {
-		var clean = req.path.replace(/^\/api/, '').replace(/^\//, '');
+		var clean = req.path.replace(/^\/api/, '').replace(/^\/|\/$/g, '');
 		var parts = clean.split('/').slice(0, 3);
 		parts.forEach(function(p, index) {
 			parts[index] = index ? parts[0] + '-' + p : 'page-' + (p || 'home');
