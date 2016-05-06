@@ -166,7 +166,7 @@ middleware.checkAccountPermissions = function(req, res, next) {
 };
 
 middleware.redirectUidToUserslug = function(req, res, next) {
-	var uid = parseInt(req.params.userslug, 10);
+	var uid = parseInt(req.params.uid, 10);
 	if (!uid) {
 		return next();
 	}
@@ -175,7 +175,9 @@ middleware.redirectUidToUserslug = function(req, res, next) {
 			return next(err);
 		}
 
-		var path = req.path.replace(/^\/api/, '').replace(uid, function() { return userslug; });
+		var path = req.path.replace(/^\/api/, '')
+				.replace('uid', 'user')
+				.replace(uid, function() { return userslug; });
 		controllers.helpers.redirect(res, path);
 	});
 };

@@ -4,8 +4,10 @@ var helpers = require('./helpers');
 var setupPageRoute = helpers.setupPageRoute;
 
 module.exports = function (app, middleware, controllers) {
-	var middlewares = [middleware.checkGlobalPrivacySettings, middleware.redirectUidToUserslug];
-	var accountMiddlewares = [middleware.checkGlobalPrivacySettings, middleware.checkAccountPermissions, middleware.redirectUidToUserslug];
+	var middlewares = [middleware.checkGlobalPrivacySettings];
+	var accountMiddlewares = [middleware.checkGlobalPrivacySettings, middleware.checkAccountPermissions];
+
+	setupPageRoute(app, '/uid/:uid/:section?', middleware, [], middleware.redirectUidToUserslug);
 
 	setupPageRoute(app, '/user/:userslug', middleware, middlewares, controllers.accounts.profile.get);
 	setupPageRoute(app, '/user/:userslug/following', middleware, middlewares, controllers.accounts.follow.getFollowing);
