@@ -6,6 +6,7 @@ var validator = require('validator');
 
 var categories = require('../categories');
 var meta = require('../meta');
+var plugins = require('../plugins');
 var helpers = require('./helpers');
 
 var categoriesController = {};
