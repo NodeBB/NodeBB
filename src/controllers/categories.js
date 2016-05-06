@@ -73,7 +73,9 @@ categoriesController.list = function(req, res, next) {
 			}
 		});
 
-		res.render('categories', data);
+		plugins.fireHook('filter:categories.get', data, function(err, data) {
+			res.render('categories', data);
+		});
 	});
 };
 
