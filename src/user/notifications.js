@@ -200,13 +200,20 @@ var privileges = require('../privileges');
 	};
 
 	UserNotifications.sendTopicNotificationToFollowers = function(uid, topicData, postData) {
-		db.getSortedSetRange('followers:' + uid, 0, -1, function(err, followers) {
-			if (err || !Array.isArray(followers) || !followers.length) {
-				return;
-			}
-
-			privileges.categories.filterUids('read', topicData.cid, followers, function(err, followers) {
-				if (err || !followers.length) {
+		var followers;
+		async.waterfall([
+			function (next) {
+				db.getSortedSetRange('followers:' + uid, 0, -1, next);
+			},
+			function (followers, next) {
+				if (!Array.isArray(followers) || !followers.length) {
+					return;
+				}
+				privileges.categories.filterUids('read', topicData.cid, followers, next);
+			},
+			function (_followers, next) {
+				followers = _followers;
+				if (!followers.length) {
 					return;
 				}
 
@@ -223,12 +230,16 @@ var privileges = require('../privileges');
 					nid: 'tid:' + postData.tid + ':uid:' + uid,
 					tid: postData.tid,
 					from: uid
-				}, function(err, notification) {
-					if (!err && notification) {
-						notifications.push(notification, followers);
-					}
-				});
-			});
+				}, next);
+			}
+		], function(err, notification) {
+			if (err) {
+				return winston.error(err);
+			}
+
+			if (notification) {
+				notifications.push(notification, followers);
+			}
 		});
 	};
 

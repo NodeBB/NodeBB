@@ -3,7 +3,6 @@
 var async = require('async');
 var winston = require('winston');
 var S = require('string');
-var nconf = require('nconf');
 
 var websockets = require('./index');
 var user = require('../user');
@@ -53,24 +52,24 @@ SocketHelpers.sendNotificationToPostOwner = function(pid, fromuid, notification)
 	if (!pid || !fromuid || !notification) {
 		return;
 	}
-	posts.getPostFields(pid, ['tid', 'uid', 'content'], function(err, postData) {
-		if (err) {
-			return;
-		}
-
-		if (!postData.uid || fromuid === parseInt(postData.uid, 10)) {
-			return;
-		}
-
-		async.parallel({
-			username: async.apply(user.getUserField, fromuid, 'username'),
-			topicTitle: async.apply(topics.getTopicField, postData.tid, 'title'),
-			postObj: async.apply(posts.parsePost, postData)
-		}, function(err, results) {
-			if (err) {
+	fromuid = parseInt(fromuid, 10);
+	var postData;
+	async.waterfall([
+		function (next) {
+			posts.getPostFields(pid, ['tid', 'uid', 'content'], next);
+		},
+		function (_postData, next) {
+			postData = _postData;
+			if (!postData.uid || fromuid === parseInt(postData.uid, 10)) {
 				return;
 			}
-
+			async.parallel({
+				username: async.apply(user.getUserField, fromuid, 'username'),
+				topicTitle: async.apply(topics.getTopicField, postData.tid, 'title'),
+				postObj: async.apply(posts.parsePost, postData)
+			}, next);
+		},
+		function (results, next) {
 			var title = S(results.topicTitle).decodeHTMLEntities().s;
 			var titleEscaped = title.replace(/%/g, '&#37;').replace(/,/g, '&#44;');
 
@@ -83,12 +82,15 @@ SocketHelpers.sendNotificationToPostOwner = function(pid, fromuid, notification)
 				from: fromuid,
 				mergeId: notification + '|' + pid,
 				topicTitle: results.topicTitle
-			}, function(err, notification) {
-				if (!err && notification) {
-					notifications.push(notification, [postData.uid]);
-				}
-			});
-		});
+			}, next);
+		}
+	], function(err, notification) {
+		if (err) {
+			return winston.error(err);
+		}
+		if (notification) {
+			notifications.push(notification, [postData.uid]);
+		}
 	});
 };
 
@@ -98,27 +100,38 @@ SocketHelpers.sendNotificationToTopicOwner = function(tid, fromuid, notification
 		return;
 	}
 
-	async.parallel({
-		username: async.apply(user.getUserField, fromuid, 'username'),
-		topicData: async.apply(topics.getTopicFields, tid, ['uid', 'slug', 'title']),
-	}, function(err, results) {
-		if (err || fromuid === parseInt(results.topicData.uid, 10)) {
-			return;
-		}
+	fromuid = parseInt(fromuid, 10);
 
-		var title = S(results.topicData.title).decodeHTMLEntities().s;
-		var titleEscaped = title.replace(/%/g, '&#37;').replace(/,/g, '&#44;');
-
-		notifications.create({
-			bodyShort: '[[' + notification + ', ' + results.username + ', ' + titleEscaped + ']]',
-			path: '/topic/' + results.topicData.slug,
-			nid: 'tid:' + tid + ':uid:' + fromuid,
-			from: fromuid
-		}, function(err, notification) {
-			if (!err && notification) {
-				notifications.push(notification, [results.topicData.uid]);
+	var ownerUid;
+	async.waterfall([
+		function (next) {
+			async.parallel({
+				username: async.apply(user.getUserField, fromuid, 'username'),
+				topicData: async.apply(topics.getTopicFields, tid, ['uid', 'slug', 'title']),
+			}, next);
+		},
+		function (results, next) {
+			if (fromuid === parseInt(results.topicData.uid, 10)) {
+				return;
 			}
-		});
+			ownerUid = results.topicData.uid;
+			var title = S(results.topicData.title).decodeHTMLEntities().s;
+			var titleEscaped = title.replace(/%/g, '&#37;').replace(/,/g, '&#44;');
+
+			notifications.create({
+				bodyShort: '[[' + notification + ', ' + results.username + ', ' + titleEscaped + ']]',
+				path: '/topic/' + results.topicData.slug,
+				nid: 'tid:' + tid + ':uid:' + fromuid,
+				from: fromuid
+			}, next);
+		}
+	], function(err, notification) {
+		if (err) {
+			return winston.error(err);
+		}
+		if (notification && parseInt(ownerUid, 10)) {
+			notifications.push(notification, [ownerUid]);
+		}
 	});
 };
 
