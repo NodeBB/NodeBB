@@ -1,16 +1,16 @@
 {
-    "category": "Category",
-    "subcategories": "Subcategories",
+    "category": "類別",
+    "subcategories": "子類別",
     "new_topic_button": "新主題",
-    "guest-login-post": "登錄後才能發表",
+    "guest-login-post": "登入後才能張貼",
     "no_topics": "<strong>這個類別還沒有任何主題。</strong><br />為何不來發點東西呢？",
     "browsing": "正在瀏覽",
     "no_replies": "還沒有回覆",
-    "no_new_posts": "No new posts.",
+    "no_new_posts": "沒有新的張貼",
     "share_this_category": "分享這類別",
     "watch": "觀看",
     "ignore": "忽略",
     "watch.message": "您正觀看著此類別的更新",
     "ignore.message": "您已忽略此類別的更新",
-    "watched-categories": "Watched categories"
+    "watched-categories": "看過的類別"
 }
