@@ -6,7 +6,6 @@ var validator = require('validator');
 
 var categories = require('../categories');
 var meta = require('../meta');
-var plugins = require('../plugins');
 var helpers = require('./helpers');
 
 var categoriesController = {};
@@ -74,9 +73,7 @@ categoriesController.list = function(req, res, next) {
 			}
 		});
 
-		plugins.fireHook('filter:categories.get', data, function(err, data) {
-			res.render('categories', data);
-		});
+		res.render('categories', data);
 	});
 };
 
