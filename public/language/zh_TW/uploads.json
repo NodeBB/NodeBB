@@ -1,6 +1,6 @@
 {
-    "uploading-file": "Uploading the file...",
-    "select-file-to-upload": "Select a file to upload!",
-    "upload-success": "File uploaded successfully!",
-    "maximum-file-size": "Maximum %1 kb"
+    "uploading-file": "檔案上傳中...",
+    "select-file-to-upload": "選擇要上傳的檔案!",
+    "upload-success": "檔案已成功上傳!",
+    "maximum-file-size": "最大大小 %1 kb"
 }
