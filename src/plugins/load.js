@@ -256,9 +256,10 @@ module.exports = function(Plugins) {
 				}
 
 				var renderMethod;
+				var shortId = pluginData.id.match(settingsRouteRX)[1];
 				Plugins.settingsPages[pluginData.id] = {};
-				Plugins.settingsPages[pluginData.id].name = settingsPage.name;
-				Plugins.settingsPages[pluginData.id].route = '/plugins/' + pluginData.id.match(settingsRouteRX)[1];
+				Plugins.settingsPages[pluginData.id].name = settingsPage.name || shortId;
+				Plugins.settingsPages[pluginData.id].route = '/plugins/' + shortId;
 				renderMethod = Plugins.getMethodRef(pluginData.id, settingsPage.renderMethod) || settingsPage.renderMethod;
 				if (typeof renderMethod !== 'function') {
 					winston.error(logTag + ' Unable to find settings page\'s render method: ' + renderMethod);
@@ -271,16 +272,16 @@ module.exports = function(Plugins) {
 
 				Plugins.settingsPages[pluginData.id].middlewares = [];
 				if (Array.isArray(settingsPage.middlewares) && settingsPage.middlewares.length > 0) {
-					async.each(settingsPage.middlewares, function(middleware, next) {
+					settingsPage.middlewares.forEach(function(middleware) {
 						var middlewareRef = Plugins.getMethodRef(pluginData.id, middleware) || middleware;
 						if (typeof middlewareRef !== 'function') {
 							winston.warn(logTag + ' Unable to find middleware method: ' + middlewareRef);
 						} else {
 							Plugins.settingsPages[pluginData.id].middlewares.push(middlewareRef);
 						}
-						next();
-					}, callback);
+					});
 				}
+				callback();
 
 			} catch (err) {
 				logLibraryLoadErr(pluginData.id, err.stack);
