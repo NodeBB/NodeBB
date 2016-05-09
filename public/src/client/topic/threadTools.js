@@ -162,7 +162,7 @@ define('forum/topic/threadTools', [
 
 		components.get('topic/lock').toggleClass('hidden', data.isLocked);
 		components.get('topic/unlock').toggleClass('hidden', !data.isLocked);
-		components.get('topic/reply').toggleClass('hidden', isLocked);
+		components.get('topic/reply/container').toggleClass('hidden', isLocked);
 		components.get('topic/reply/locked').toggleClass('hidden', !isLocked);
 
 		threadEl.find('[component="post/reply"], [component="post/quote"], [component="post/edit"], [component="post/delete"]').toggleClass('hidden', isLocked);
