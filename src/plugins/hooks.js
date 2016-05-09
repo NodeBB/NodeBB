@@ -63,7 +63,7 @@ module.exports = function(Plugins) {
 			if (Plugins.deprecatedHooksParams[_hook]) {
 				winston.warn('[plugins/' + id + '] Hook `' + _hook + '` parameters: `' + Plugins.deprecatedHooksParams[_hook] + '`, are being deprecated, '
 				+ 'all plugins should now use the `middleware/cls` module instead of hook\'s arguments to get a reference to the `req`, `res` and/or `socket` object(s) (from which you can get the current `uid` if you need to.) '
-				+ '- for more info, visit https://docs.nodebb.org/en/latest/plugins/create.html#getting-a-reference-to-each-request-from-within-any-plugin-hook');
+				+ '- for more info, visit https://docs.nodebb.org/en/latest/plugins/create.html#getting-a-reference-to-req-res-socket-and-uid-within-any-plugin-hook');
 				delete Plugins.deprecatedHooksParams[_hook];
 			}
 		}
