@@ -65,16 +65,12 @@ module.exports = function(Posts) {
 							return post ? post.tid : null;
 						});
 
-						topics.getTopicsFields(tids, ['slug', 'deleted'], next);
+						topics.getTopicsFields(tids, ['slug'], next);
 					}
 				}, next);
 			},
 			function (results, next) {
 				var paths = pids.map(function(pid, index) {
-					if (parseInt(results.topics[index].deleted, 10) === 1) {
-						return null;
-					}
-
 					var slug = results.topics[index] ? results.topics[index].slug : null;
 					var postIndex = utils.isNumber(results.indices[index]) ? parseInt(results.indices[index], 10) + 1 : null;
 
