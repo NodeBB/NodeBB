@@ -90,7 +90,7 @@ module.exports = function(SocketPosts) {
 					bodyShort: '[[notifications:user_flagged_post_in, ' + flaggingUser.username + ', ' + titleEscaped + ']]',
 					bodyLong: post.content,
 					pid: data.pid,
-					path: '/post/' + pid,
+					path: '/post/' + data.pid,
 					nid: 'post_flag:' + data.pid + ':uid:' + socket.uid,
 					from: socket.uid,
 					mergeId: 'notifications:user_flagged_post_in|' + data.pid,
