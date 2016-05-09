@@ -102,13 +102,18 @@ Controllers.login = function(req, res, next) {
 
 	var allowLoginWith = (meta.config.allowLoginWith || 'username-email');
 
+	var errorText;
+	if (req.query.error === 'csrf-invalid') {
+		errorText = '[[error:csrf-invalid]]';
+	}
+
 	data.alternate_logins = loginStrategies.length > 0;
 	data.authentication = loginStrategies;
 	data.allowLocalLogin = parseInt(meta.config.allowLocalLogin, 10) === 1 || parseInt(req.query.local, 10) === 1;
 	data.allowRegistration = registrationType === 'normal' || registrationType === 'admin-approval';
 	data.allowLoginWith = '[[login:' + allowLoginWith + ']]';
 	data.breadcrumbs = helpers.buildBreadcrumbs([{text: '[[global:login]]'}]);
-	data.error = req.flash('error')[0];
+	data.error = req.flash('error')[0] || errorText;
 	data.title = '[[pages:login]]';
 
 	if (!data.allowLocalLogin && !data.allowRegistration && data.alternate_logins && data.authentication.length === 1) {
@@ -135,6 +140,11 @@ Controllers.register = function(req, res, next) {
 
 	if (registrationType === 'disabled') {
 		return next();
+	}
+
+	var errorText;
+	if (req.query.error === 'csrf-invalid') {
+		errorText = '[[error:csrf-invalid]]';
 	}
 
 	async.waterfall([
@@ -166,7 +176,7 @@ Controllers.register = function(req, res, next) {
 		data.termsOfUse = termsOfUse.postData.content;
 		data.breadcrumbs = helpers.buildBreadcrumbs([{text: '[[register:register]]'}]);
 		data.regFormEntry = [];
-		data.error = req.flash('error')[0];
+		data.error = req.flash('error')[0] || errorText;
 		data.title = '[[pages:register]]';
 
 		res.render('register', data);
