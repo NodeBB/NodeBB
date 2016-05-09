@@ -7,6 +7,8 @@ var db = require('./mocks/databasemock');
 var topics = require('../src/topics');
 var categories = require('../src/categories');
 var User = require('../src/user');
+var groups = require('../src/groups');
+var async = require('async');
 
 describe('Topic\'s', function() {
 	var topic,
@@ -187,6 +189,100 @@ describe('Topic\'s', function() {
 		});
 	});
 
+
+	describe('.fork', function(){
+		var newTopic;
+		var replies = new Array();
+		var topicPids;
+		var originalBookmark = 5;
+		function postReply( next ){
+			topics.reply({uid: topic.userId, content: 'test post ' + replies.length, tid: newTopic.tid},
+				function(err, result) {
+					assert.equal(err, null, 'was created with error');
+					assert.ok(result);
+					replies.push( result );
+					next();
+				}
+			);
+		}
+
+		before( function(done) {
+			async.waterfall(
+				[
+				function(next){
+					groups.join('administrators', topic.userId, next);
+				},
+				function( next ){
+					topics.post({uid: topic.userId, title: topic.title, content: topic.content, cid: topic.categoryId}, function(err, result) {
+						assert.ifError( err );
+						newTopic = result.topicData;
+						next();
+					});
+				},
+				function( next ){ postReply( next );},
+				function( next ){ postReply( next );},
+				function( next ){ postReply( next );},
+				function( next ){ postReply( next );},
+				function( next ){ postReply( next );},
+				function( next ){ postReply( next );},
+				function( next ){ postReply( next );},
+				function( next ){ postReply( next );},
+				function( next ){ postReply( next );},
+				function( next ){ postReply( next );},
+				function( next ){ postReply( next );},
+				function( next ){ postReply( next );},
+				function( next ){
+					topicPids = replies.map( function( reply ){ return reply.pid; } );
+					topics.setUserBookmark( newTopic.tid, topic.userId, originalBookmark, next );
+				}],
+				done );
+		});
+
+		it('should have 12 replies', function(done) {
+			assert.equal( 12, replies.length );
+			done();
+		});
+
+		it('should not update the user\'s bookmark', function(done){
+			async.waterfall([
+				function(next){
+					topics.createTopicFromPosts(
+						topic.userId,
+						'Fork test, no bookmark update',
+						topicPids.slice( -2 ),
+						newTopic.tid,
+						next );
+				},
+				function( forkedTopicData, next){
+					topics.getUserBookmark( newTopic.tid, topic.userId, next );
+				},
+				function( bookmark, next ){
+					assert.equal( originalBookmark, bookmark );
+					next();
+				}
+			],done);
+		});
+
+		it('should update the user\'s bookmark ', function(done){
+			async.waterfall([
+				function(next){
+					topics.createTopicFromPosts(
+						topic.userId,
+						'Fork test, no bookmark update',
+						topicPids.slice( 1, 3 ),
+						newTopic.tid,
+						next );
+				},
+				function( forkedTopicData, next){
+					topics.getUserBookmark( newTopic.tid, topic.userId, next );
+				},
+				function( bookmark, next ){
+					assert.equal( originalBookmark - 2, bookmark );
+					next();
+				}
+			],done);
+		});
+	});
 
 	after(function() {
 		db.flushdb();

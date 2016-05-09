@@ -121,10 +121,6 @@ module.exports = function(User) {
 					},
 					function(next) {
 						groups.leaveAllGroups(uid, next);
-					},
-					function(next) {
-						// Deprecated as of v0.7.4, remove in v1.0.0
-						plugins.fireHook('filter:user.delete', uid, next);
 					}
 				], next);
 			},

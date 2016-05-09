@@ -63,6 +63,10 @@ $(document).ready(function() {
 
 		url = ajaxify.start(url, quiet);
 
+		if (!window.location.pathname.match(/\/(403|404)$/g)) {
+			app.previousUrl = window.location.href;
+		}
+
 		$('body').removeClass(ajaxify.data.bodyClass);
 		$('#footer, #content').removeClass('hide').addClass('ajaxifying');
 
@@ -85,9 +89,10 @@ $(document).ready(function() {
 
 	ajaxify.handleRedirects = function(url) {
 		url = ajaxify.removeRelativePath(url.replace(/\/$/, '')).toLowerCase();
-		var isAdminRoute = url.startsWith('admin') && window.location.pathname.indexOf(RELATIVE_PATH + '/admin') !== 0;
+		var isClientToAdmin = url.startsWith('admin') && window.location.pathname.indexOf(RELATIVE_PATH + '/admin') !== 0;
+		var isAdminToClient = !url.startsWith('admin') && window.location.pathname.indexOf(RELATIVE_PATH + '/admin') === 0;
 		var uploadsOrApi = url.startsWith('uploads') || url.startsWith('api');
-		if (isAdminRoute || uploadsOrApi) {
+		if (isClientToAdmin || isAdminToClient || uploadsOrApi) {
 			window.open(RELATIVE_PATH + '/' + url, '_top');
 			return true;
 		}
@@ -99,10 +104,6 @@ $(document).ready(function() {
 		url = ajaxify.removeRelativePath(url.replace(/^\/|\/$/g, ''));
 
 		$(window).trigger('action:ajaxify.start', {url: url});
-
-		if (!window.location.pathname.match(/\/(403|404)$/g)) {
-			app.previousUrl = window.location.href;
-		}
 
 		ajaxify.currentPage = url.split(/[?#]/)[0];
 		if (window.history && window.history.pushState) {
@@ -136,7 +137,8 @@ $(document).ready(function() {
 			} else if (status === 401) {
 				app.alertError('[[global:please_log_in]]');
 				app.previousUrl = url;
-				return ajaxify.go('login');
+				window.location.href = config.relative_path + '/login';
+				return;
 			} else if (status === 302 || status === 308) {
 				if (data.responseJSON.external) {
 					window.location.href = data.responseJSON.external;

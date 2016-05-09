@@ -103,7 +103,9 @@
 	helpers.generateChildrenCategories = function(category) {
 		var html = '';
 		var relative_path = (typeof config !== 'undefined' ? config.relative_path : require('nconf').get('relative_path'));
-		
+		if (!category || !category.children) {
+			return html;
+		}
 		category.children.forEach(function(child) {
 			if (!child) {
 				return;

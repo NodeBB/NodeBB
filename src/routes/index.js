@@ -1,23 +1,23 @@
 "use strict";
 
-var nconf = require('nconf'),
-	path = require('path'),
-	async = require('async'),
-	winston = require('winston'),
-	controllers = require('../controllers'),
-	plugins = require('../plugins'),
-	express = require('express'),
-	validator = require('validator'),
+var nconf = require('nconf');
+var path = require('path');
+var async = require('async');
+var winston = require('winston');
+var controllers = require('../controllers');
+var plugins = require('../plugins');
+var express = require('express');
+var validator = require('validator');
 
-	accountRoutes = require('./accounts'),
+var accountRoutes = require('./accounts');
 
-	metaRoutes = require('./meta'),
-	apiRoutes = require('./api'),
-	adminRoutes = require('./admin'),
-	feedRoutes = require('./feeds'),
-	pluginRoutes = require('./plugins'),
-	authRoutes = require('./authentication'),
-	helpers = require('./helpers');
+var metaRoutes = require('./meta');
+var apiRoutes = require('./api');
+var adminRoutes = require('./admin');
+var feedRoutes = require('./feeds');
+var pluginRoutes = require('./plugins');
+var authRoutes = require('./authentication');
+var helpers = require('./helpers');
 
 var setupPageRoute = helpers.setupPageRoute;
 
@@ -46,6 +46,10 @@ function topicRoutes(app, middleware, controllers) {
 	setupPageRoute(app, '/topic/:topic_id/:slug?', middleware, [], controllers.topics.get);
 }
 
+function postRoutes(app, middleware, controllers) {
+	setupPageRoute(app, '/post/:pid', middleware, [], controllers.posts.redirectToPost);
+}
+
 function tagRoutes(app, middleware, controllers) {
 	setupPageRoute(app, '/tags/:tag', middleware, [middleware.privateTagListing], controllers.tags.getTag);
 	setupPageRoute(app, '/tags', middleware, [middleware.privateTagListing], controllers.tags.getTags);
@@ -70,7 +74,6 @@ function userRoutes(app, middleware, controllers) {
 	setupPageRoute(app, '/users/sort-reputation', middleware, middlewares, controllers.users.getUsersSortedByReputation);
 	setupPageRoute(app, '/users/banned', middleware, middlewares, controllers.users.getBannedUsers);
 }
-
 
 function groupRoutes(app, middleware, controllers) {
 	var middlewares = [middleware.checkGlobalPrivacySettings, middleware.exposeGroupName];
@@ -124,6 +127,7 @@ module.exports = function(app, middleware, hotswapIds) {
 
 	mainRoutes(router, middleware, controllers);
 	topicRoutes(router, middleware, controllers);
+	postRoutes(router, middleware, controllers);
 	globalModRoutes(router, middleware, controllers);
 	tagRoutes(router, middleware, controllers);
 	categoryRoutes(router, middleware, controllers);

@@ -1,8 +1,9 @@
 "use strict";
 
-
-var async = require('async'),
-	plugins = require('../plugins');
+var fs = require('fs');
+var path = require('path');
+var async = require('async');
+var plugins = require('../plugins');
 
 var admin = {};
 
@@ -22,6 +23,9 @@ admin.get = function(callback) {
 		},
 		widgets: function(next) {
 			plugins.fireHook('filter:widgets.getWidgets', [], next);
+		},
+		adminTemplate: function(next) {
+			fs.readFile(path.resolve(__dirname, '../../public/templates/admin/partials/widget-settings.tpl'), 'utf8', next);
 		}
 	}, function(err, widgetData) {
 		if (err) {
@@ -34,17 +38,14 @@ admin.get = function(callback) {
 				area.data = areaData;
 				next(err);
 			});
-
 		}, function(err) {
 			if (err) {
 				return callback(err);
 			}
-			for (var w in widgetData.widgets) {
-				if (widgetData.widgets.hasOwnProperty(w)) {
-					// if this gets anymore complicated, it needs to be a template
-					widgetData.widgets[w].content += "<br /><label>Title:</label><input type=\"text\" class=\"form-control\" name=\"title\" placeholder=\"Title (only shown on some containers)\" /><br /><label>Container:</label><textarea rows=\"4\" class=\"form-control container-html\" name=\"container\" placeholder=\"Drag and drop a container or enter HTML here.\"></textarea><div class=\"checkbox\"><label><input name=\"hide-guests\" type=\"checkbox\"> Hide from anonymous users?</label></div><div class=\"checkbox\"><label><input name=\"hide-registered\" type=\"checkbox\"> Hide from registered users?</input></label></div>";
-				}
-			}
+
+			widgetData.widgets.forEach(function(w) {
+				w.content += widgetData.adminTemplate;
+			});
 
 			var templates = [],
 				list = {}, index = 0;

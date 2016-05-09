@@ -94,11 +94,19 @@ image.normalise = function(path, extension, callback) {
 	}
 };
 
-image.load = function(path, callback) {
-	new Jimp(path, function(err, data) {
-		callback(err, data ? data.bitmap : null);
-	});
-};
+image.size = function(path, callback) {
+	if (plugins.hasListeners('filter:image.size')) {
+		plugins.fireHook('filter:image.size', {
+			path: path,
+		}, function(err, image) {
+			callback(err, image);
+		});
+	} else {
+		new Jimp(path, function(err, data) {
+			callback(err, data ? data.bitmap : null);
+		});
+	}
+}
 
 image.convertImageToBase64 = function(path, callback) {
 	fs.readFile(path, function(err, data) {

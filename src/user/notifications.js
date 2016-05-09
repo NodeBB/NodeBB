@@ -1,19 +1,14 @@
 
 'use strict';
 
-var async = require('async'),
-	nconf = require('nconf'),
-	winston = require('winston'),
-	S = require('string'),
+var async = require('async');
+var winston = require('winston');
+var S = require('string');
 
-	user = require('../user'),
-	db = require('../database'),
-	meta = require('../meta'),
-	notifications = require('../notifications'),
-	posts = require('../posts'),
-	topics = require('../topics'),
-	privileges = require('../privileges'),
-	utils = require('../../public/src/utils');
+var db = require('../database');
+var meta = require('../meta');
+var notifications = require('../notifications');
+var privileges = require('../privileges');
 
 (function(UserNotifications) {
 
@@ -103,89 +98,13 @@ var async = require('async'),
 			if (err) {
 				return callback(err);
 			}
-
-			UserNotifications.generateNotificationPaths(notifications, uid, callback);
-		});
-	};
-
-	UserNotifications.generateNotificationPaths = function (notifications, uid, callback) {
-		var pids = notifications.map(function(notification) {
-			return notification ? notification.pid : null;
-		});
-
-		generatePostPaths(pids, uid, function(err, pidToPaths) {
-			if (err) {
-				return callback(err);
-			}
-
-			notifications = notifications.map(function(notification, index) {
-				if (!notification) {
-					return null;
-				}
-
-				notification.path = pidToPaths[notification.pid] || notification.path || null;
-
-				if (notification.nid.startsWith('follow')) {
-					notification.path = '/user/' + notification.user.userslug;
-				}
-
-				notification.datetimeISO = utils.toISOString(notification.datetime);
-				return notification;
-			}).filter(function(notification) {
-				// Remove notifications that do not resolve to a path
-				return notification && notification.path !== null;
+			notifications = notifications.filter(function(notification) {
+				return notification && notification.path;
 			});
-
 			callback(null, notifications);
 		});
 	};
 
-	function generatePostPaths(pids, uid, callback) {
-		pids = pids.filter(Boolean);
-		var postKeys = pids.map(function(pid) {
-			return 'post:' + pid;
-		});
-
-		db.getObjectsFields(postKeys, ['pid', 'tid'], function(err, postData) {
-			if (err) {
-				return callback(err);
-			}
-
-			var topicKeys = postData.map(function(post) {
-				return post ? 'topic:' + post.tid : null;
-			});
-
-			async.parallel({
-				indices: function(next) {
-					posts.getPostIndices(postData, uid, next);
-				},
-				topics: function(next) {
-					db.getObjectsFields(topicKeys, ['slug', 'deleted'], next);
-				}
-			}, function(err, results) {
-				if (err) {
-					return callback(err);
-				}
-
-				var pidToPaths = {};
-				pids.forEach(function(pid, index) {
-					if (parseInt(results.topics[index].deleted, 10) === 1) {
-						pidToPaths[pid] = null;
-						return;
-					}
-
-					var slug = results.topics[index] ? results.topics[index].slug : null;
-					var postIndex = utils.isNumber(results.indices[index]) ? parseInt(results.indices[index], 10) + 1 : null;
-
-					if (slug && postIndex) {
-						pidToPaths[pid] = '/topic/' + slug + '/' + postIndex;
-					}
-				});
-
-				callback(null, pidToPaths);
-			});
-		});
-	}
 
 	UserNotifications.getDailyUnread = function(uid, callback) {
 		var yesterday = Date.now() - (1000 * 60 * 60 * 24);	// Approximate, can be more or less depending on time changes, makes no difference really.
@@ -281,13 +200,20 @@ var async = require('async'),
 	};
 
 	UserNotifications.sendTopicNotificationToFollowers = function(uid, topicData, postData) {
-		db.getSortedSetRange('followers:' + uid, 0, -1, function(err, followers) {
-			if (err || !Array.isArray(followers) || !followers.length) {
-				return;
-			}
-
-			privileges.categories.filterUids('read', topicData.cid, followers, function(err, followers) {
-				if (err || !followers.length) {
+		var followers;
+		async.waterfall([
+			function (next) {
+				db.getSortedSetRange('followers:' + uid, 0, -1, next);
+			},
+			function (followers, next) {
+				if (!Array.isArray(followers) || !followers.length) {
+					return;
+				}
+				privileges.categories.filterUids('read', topicData.cid, followers, next);
+			},
+			function (_followers, next) {
+				followers = _followers;
+				if (!followers.length) {
 					return;
 				}
 
@@ -300,15 +226,20 @@ var async = require('async'),
 					bodyShort: '[[notifications:user_posted_topic, ' + postData.user.username + ', ' + title + ']]',
 					bodyLong: postData.content,
 					pid: postData.pid,
+					path: '/post/' + postData.pid,
 					nid: 'tid:' + postData.tid + ':uid:' + uid,
 					tid: postData.tid,
 					from: uid
-				}, function(err, notification) {
-					if (!err && notification) {
-						notifications.push(notification, followers);
-					}
-				});
-			});
+				}, next);
+			}
+		], function(err, notification) {
+			if (err) {
+				return winston.error(err);
+			}
+
+			if (notification) {
+				notifications.push(notification, followers);
+			}
 		});
 	};
 

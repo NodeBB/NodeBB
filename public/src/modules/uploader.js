@@ -23,7 +23,7 @@ define('uploader', ['csrf', 'translator'], function(csrf, translator) {
 			title: data.title || '[[global:upload_file]]',
 			description: data.description || '',
 			button: data.button || '[[global:upload]]',
-			accept: data.accept ? data.accept.replace(/,/g, '&#44;') : ''
+			accept: data.accept ? data.accept.replace(/,/g, '&#44; ') : ''
 		}, function(uploadModal) {
 			uploadModal = $(uploadModal);
 

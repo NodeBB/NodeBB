@@ -87,7 +87,9 @@ middleware.addHeaders = function (req, res, next) {
 	headers = _.pick(headers, Boolean);		// Remove falsy headers
 
 	for(var key in headers) {
-		res.setHeader(key, headers[key]);
+		if (headers.hasOwnProperty(key)) {
+			res.setHeader(key, headers[key]);
+		}
 	}
 
 	next();
@@ -103,6 +105,10 @@ middleware.pluginHooks = function(req, res, next) {
 };
 
 middleware.redirectToAccountIfLoggedIn = function(req, res, next) {
+	if (req.session.forceLogin) {
+		return next();
+	}
+
 	if (!req.user) {
 		return next();
 	}
@@ -159,14 +165,47 @@ middleware.checkAccountPermissions = function(req, res, next) {
 	});
 };
 
+middleware.redirectUidToUserslug = function(req, res, next) {
+	var uid = parseInt(req.params.uid, 10);
+	if (!uid) {
+		return next();
+	}
+	user.getUserField(uid, 'userslug', function(err, userslug) {
+		if (err || !userslug) {
+			return next(err);
+		}
+
+		var path = req.path.replace(/^\/api/, '')
+				.replace('uid', 'user')
+				.replace(uid, function() { return userslug; });
+		controllers.helpers.redirect(res, path);
+	});
+};
+
 middleware.isAdmin = function(req, res, next) {
 	if (!req.uid) {
 		return controllers.helpers.notAllowed(req, res);
 	}
 
 	user.isAdministrator(req.uid, function (err, isAdmin) {
-		if (err || isAdmin) {
+		if (err) {
 			return next(err);
+		}
+
+		if (isAdmin) {
+			var loginTime = req.session.meta ? req.session.meta.datetime : 0;
+			if (loginTime && parseInt(loginTime, 10) > Date.now() - 3600000) {
+				return next();
+			}
+
+			req.session.returnTo = nconf.get('relative_path') + req.path.replace(/^\/api/, '');
+			req.session.forceLogin = 1;
+			if (res.locals.isAPI) {
+				res.status(401).json({});
+			} else {
+				res.redirect('/login');
+			}
+			return;
 		}
 
 		if (res.locals.isAPI) {

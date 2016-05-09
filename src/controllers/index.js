@@ -12,6 +12,7 @@ var helpers = require('./helpers');
 
 var Controllers = {
 	topics: require('./topics'),
+	posts: require('./posts'),
 	categories: require('./categories'),
 	category: require('./category'),
 	unread: require('./unread'),
@@ -95,17 +96,24 @@ Controllers.reset = function(req, res, next) {
 };
 
 Controllers.login = function(req, res, next) {
-	var data = {},
-		loginStrategies = require('../routes/authentication').getLoginStrategies(),
-		registrationType = meta.config.registrationType || 'normal';
+	var data = {};
+	var loginStrategies = require('../routes/authentication').getLoginStrategies();
+	var registrationType = meta.config.registrationType || 'normal';
+
+	var allowLoginWith = (meta.config.allowLoginWith || 'username-email');
+
+	var errorText;
+	if (req.query.error === 'csrf-invalid') {
+		errorText = '[[error:csrf-invalid]]';
+	}
 
 	data.alternate_logins = loginStrategies.length > 0;
 	data.authentication = loginStrategies;
 	data.allowLocalLogin = parseInt(meta.config.allowLocalLogin, 10) === 1 || parseInt(req.query.local, 10) === 1;
 	data.allowRegistration = registrationType === 'normal' || registrationType === 'admin-approval';
-	data.allowLoginWith = '[[login:' + (meta.config.allowLoginWith || 'username-email') + ']]';
+	data.allowLoginWith = '[[login:' + allowLoginWith + ']]';
 	data.breadcrumbs = helpers.buildBreadcrumbs([{text: '[[global:login]]'}]);
-	data.error = req.flash('error')[0];
+	data.error = req.flash('error')[0] || errorText;
 	data.title = '[[pages:login]]';
 
 	if (!data.allowLocalLogin && !data.allowRegistration && data.alternate_logins && data.authentication.length === 1) {
@@ -113,8 +121,18 @@ Controllers.login = function(req, res, next) {
 			external: data.authentication[0].url
 		});
 	}
+	if (req.uid) {
+		user.getUserFields(req.uid, ['username', 'email'], function(err, user) {
+			if (err) {
+				return next(err);
+			}
+			data.username = allowLoginWith === 'email' ? user.email : user.username;
+			res.render('login', data);
+		});
+	} else {
+		res.render('login', data);
+	}
 
-	res.render('login', data);
 };
 
 Controllers.register = function(req, res, next) {
@@ -122,6 +140,11 @@ Controllers.register = function(req, res, next) {
 
 	if (registrationType === 'disabled') {
 		return next();
+	}
+
+	var errorText;
+	if (req.query.error === 'csrf-invalid') {
+		errorText = '[[error:csrf-invalid]]';
 	}
 
 	async.waterfall([
@@ -153,7 +176,7 @@ Controllers.register = function(req, res, next) {
 		data.termsOfUse = termsOfUse.postData.content;
 		data.breadcrumbs = helpers.buildBreadcrumbs([{text: '[[register:register]]'}]);
 		data.regFormEntry = [];
-		data.error = req.flash('error')[0];
+		data.error = req.flash('error')[0] || errorText;
 		data.title = '[[pages:register]]';
 
 		res.render('register', data);
