@@ -22,6 +22,7 @@
     "no-email-to-confirm": "이메일 인증이 필요합니다. 이곳을 클릭하여 이메일 입력하세요.",
     "email-confirm-failed": "이메일 인증이 실패하였습니다. 잠시 후에 다시 시도하세요.",
     "confirm-email-already-sent": "인증 메일이 이미 발송되었습니다. %1 분 이후에 재 발송이 가능합니다.",
+    "sendmail-not-found": "The sendmail executable could not be found, please ensure it is installed and executable by the user running NodeBB.",
     "username-too-short": "사용자 이름이 너무 짧습니다.",
     "username-too-long": "사용자 이름이 너무 깁니다.",
     "password-too-long": "패스워드가 너무 깁니다.",

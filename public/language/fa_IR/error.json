@@ -22,6 +22,7 @@
     "no-email-to-confirm": "ایمیل شما تایید نشده است ، لطفا برای وارد کردن ایمیل اینجا کلیک کنید",
     "email-confirm-failed": "سیستم موفق به تایید ایمیل شما نشد، لطفا بعدا دوباره سعی کنید",
     "confirm-email-already-sent": "ایمیل فعال‌سازی قبلا فرستاده شده، لطفا %1 دقیقه صبر کنید تا ایمیل دیگری بفرستید.",
+    "sendmail-not-found": "The sendmail executable could not be found, please ensure it is installed and executable by the user running NodeBB.",
     "username-too-short": "نام کاربری خیلی کوتاه است.",
     "username-too-long": "نام کاربری بسیار طولانیست",
     "password-too-long": "کلمه عبور بسیار طولانیست",

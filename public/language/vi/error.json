@@ -22,6 +22,7 @@
     "no-email-to-confirm": "Diễn đàn này yêu cầu xác nhận email, vui lòng nhấn vào đây để nhập email.",
     "email-confirm-failed": "Chúng tôi không thể xác nhận email của bạn, vui lòng thử lại sau.",
     "confirm-email-already-sent": "Email xác nhận đã được gửi, vui lòng chờ %1 phút để yêu cầu gửi lại.",
+    "sendmail-not-found": "The sendmail executable could not be found, please ensure it is installed and executable by the user running NodeBB.",
     "username-too-short": "Tên đăng nhập quá ngắn",
     "username-too-long": "Tên đăng nhập quá dài",
     "password-too-long": "Mật khẩu quá dài",

@@ -5,7 +5,7 @@
     "remember_me": "Eingeloggt bleiben?",
     "forgot_password": "Passwort vergessen?",
     "alternative_logins": "Alternative Logins",
-    "failed_login_attempt": " Anmeldeversuch fehlgeschlagen, versuche es erneut.",
+    "failed_login_attempt": "Login Unsuccessful",
     "login_successful": "Du hast dich erfolgreich eingeloggt!",
     "dont_have_account": "Du hast noch kein Konto?"
 }

@@ -22,6 +22,7 @@
     "no-email-to-confirm": "Detta forum kräver bekräftning av epostadresser, var god klicka här för att fylla i en epostadress",
     "email-confirm-failed": "Vi kunde ej bekräfta din epostadress, var god försök igen senare.",
     "confirm-email-already-sent": "Bekräftningsbrev redan skickat, var god vänta %1 minut(er) innan du skickar ett nytt.",
+    "sendmail-not-found": "The sendmail executable could not be found, please ensure it is installed and executable by the user running NodeBB.",
     "username-too-short": "Användarnamnet är för kort",
     "username-too-long": "Användarnamnet är för långt",
     "password-too-long": "Lösenordet är för långt",

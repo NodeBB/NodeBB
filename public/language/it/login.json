@@ -5,7 +5,7 @@
     "remember_me": "Ricordami?",
     "forgot_password": "Password dimenticata?",
     "alternative_logins": "Accessi Alternativi",
-    "failed_login_attempt": "Tentativo di accesso fallito, prova ancora.",
+    "failed_login_attempt": "Login Unsuccessful",
     "login_successful": "Sei entrato con successo!",
     "dont_have_account": "Non hai un account?"
 }

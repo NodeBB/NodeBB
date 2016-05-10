@@ -22,6 +22,7 @@
     "no-email-to-confirm": "Ca sa accesezi forumul trebuie sa iti confirmi email-ul, click aici ca sa intri in mail.",
     "email-confirm-failed": "Mail-ul tau nu a putut fi confirmat, te rog incearca mai tarziu.",
     "confirm-email-already-sent": "Email-ul de confirmare ti-a fost trimis, asteapta te rog %1 minut(e) ca sa trimiti inca unul.",
+    "sendmail-not-found": "The sendmail executable could not be found, please ensure it is installed and executable by the user running NodeBB.",
     "username-too-short": "Numele de utilizator este prea scurt",
     "username-too-long": "Numele de utilizator este prea lung",
     "password-too-long": "Parola prea lunga.",
