@@ -95,8 +95,6 @@ module.exports = function(Meta) {
 				var relativePath = nconf.get('relative_path');
 				
 				app.get(relativePath + '/src/modules/' + relPath, function(req, res) {
-					console.log('blah');
-					console.log('module Path: ' + path.join(__dirname, '../../', Meta.js.scripts.modules[relPath]));
 					return res.sendFile(path.join(__dirname, '../../', Meta.js.scripts.modules[relPath]), {
 						maxAge: app.enabled('cache') ? 5184000000 : 0
 					});
