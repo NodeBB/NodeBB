@@ -50,7 +50,7 @@ define('forum/login', ['csrf', 'translator'], function(csrf, translator) {
 		});
 
 		if ($('#content #username').attr('readonly')) {
-			$('#content #password').focus();
+			$('#content #password').val('').focus();
 		} else {
 			$('#content #username').focus();
 		}
