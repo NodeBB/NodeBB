@@ -30,7 +30,7 @@ module.exports = function(User) {
 
 	function deletePosts(callerUid, uid, callback) {
 		batch.processSortedSet('uid:' + uid + ':posts', function(ids, next) {
-			async.eachSeries(ids, function(pid, netx) {
+			async.eachSeries(ids, function(pid, next) {
 				posts.purge(pid, callerUid, next);
 			}, next);
 		}, {alwaysStartAt: 0}, callback);
