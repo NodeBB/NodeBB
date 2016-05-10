@@ -72,10 +72,6 @@
 				languageCode = 'en';
 				break;
 
-			case 'cs':
-				languageCode = 'cz';
-				break;
-
 			case 'fa_IR':
 				languageCode = 'fa';
 				break;
