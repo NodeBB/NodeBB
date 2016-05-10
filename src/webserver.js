@@ -45,7 +45,7 @@ server.on('error', function(err) {
 module.exports.listen = function() {
 	emailer.registerApp(app);
 
-	middleware = middleware(app);
+	app.locals.middleware = middleware = middleware(app);
 
 	helpers.register();
 

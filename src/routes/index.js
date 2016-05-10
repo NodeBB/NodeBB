@@ -149,9 +149,8 @@ module.exports = function(app, middleware, hotswapIds) {
 		maxAge: app.enabled('cache') ? 5184000000 : 0
 	}));
 
-	handle404(app, middleware);
-	handleErrors(app, middleware);
-
+	app.use(controllers.handle404);
+	app.use(controllers.handleErrors);
 
 	// Add plugin routes
 	async.series([
@@ -159,72 +158,3 @@ module.exports = function(app, middleware, hotswapIds) {
 		async.apply(authRoutes.reloadRoutes)
 	]);
 };
-
-function handle404(app, middleware) {
-	var relativePath = nconf.get('relative_path');
-	var isLanguage = new RegExp('^' + relativePath + '/language/.*/.*.json');
-	var isClientScript = new RegExp('^' + relativePath + '\\/src\\/.+\\.js');
-
-	app.use(function(req, res) {
-		if (plugins.hasListeners('action:meta.override404')) {
-			return plugins.fireHook('action:meta.override404', {
-				req: req,
-				res: res,
-				error: {}
-			});
-		}
-
-		if (isClientScript.test(req.url)) {
-			res.type('text/javascript').status(200).send('');
-		} else if (isLanguage.test(req.url)) {
-			res.status(200).json({});
-		} else if (req.path.startsWith(relativePath + '/uploads') || (req.get('accept') && req.get('accept').indexOf('text/html') === -1) || req.path === '/favicon.ico') {
-			res.sendStatus(404);
-		} else if (req.accepts('html')) {
-			if (process.env.NODE_ENV === 'development') {
-				winston.warn('Route requested but not found: ' + req.url);
-			}
-
-			res.status(404);
-
-			if (res.locals.isAPI) {
-				return res.json({path: validator.escape(req.path.replace(/^\/api/, '') || ''), title: '[[global:404.title]]'});
-			}
-
-			middleware.buildHeader(req, res, function() {
-				res.render('404', {path: validator.escape(req.path || ''), title: '[[global:404.title]]'});
-			});
-		} else {
-			res.status(404).type('txt').send('Not found');
-		}
-	});
-}
-
-function handleErrors(app, middleware) {
-	app.use(function(err, req, res, next) {
-		switch (err.code) {
-			case 'EBADCSRFTOKEN':
-				winston.error(req.path + '\n', err.message);
-				return res.sendStatus(403);
-			case 'blacklisted-ip':
-				return res.status(403).type('text/plain').send(err.message);
-		}
-
-		if (parseInt(err.status, 10) === 302 && err.path) {
-			return res.locals.isAPI ? res.status(302).json(err.path) : res.redirect(err.path);
-		}
-
-		winston.error(req.path + '\n', err.stack);
-
-		res.status(err.status || 500);
-
-		if (res.locals.isAPI) {
-			res.json({path: validator.escape(req.path || ''), error: err.message});
-		} else {
-			middleware.buildHeader(req, res, function() {
-				res.render('500', {path: validator.escape(String(req.path || '')), error: validator.escape(err.message)});
-			});
-		}
-	});
-}
-
