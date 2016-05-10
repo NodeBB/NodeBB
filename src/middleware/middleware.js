@@ -5,6 +5,7 @@ var app,
 		admin: {}
 	},
 	async = require('async'),
+	fs = require('fs'),
 	path = require('path'),
 	csrf = require('csurf'),
 	_ = require('underscore'),
@@ -300,6 +301,28 @@ middleware.applyBlacklist = function(req, res, next) {
 	meta.blacklist.test(req.ip, function(err) {
 		next(err);
 	});
+};
+
+middleware.processLanguages = function(req, res, next) {
+	var fallback = req.path.indexOf('-short') === -1 ? 'jquery.timeago.en.js' : 'jquery.timeago.en-short.js',
+		localPath = path.join(__dirname, '../../public/vendor/jquery/timeago/locales', req.path),
+		exists;
+
+	try {
+		exists = fs.accessSync(localPath, fs.F_OK | fs.R_OK);
+	} catch(e) {
+		exists = false;
+	}
+
+	if (exists) {
+		res.status(200).sendFile(localPath, {
+			maxAge: app.enabled('cache') ? 5184000000 : 0
+		});
+	} else {
+		res.status(200).sendFile(path.join(__dirname, '../../public/vendor/jquery/timeago/locales', fallback), {
+			maxAge: app.enabled('cache') ? 5184000000 : 0
+		});
+	}
 };
 
 module.exports = function(webserver) {
