@@ -125,6 +125,8 @@ settingsController.get = function(req, res, callback) {
 		userData.disableCustomUserSkins = parseInt(meta.config.disableCustomUserSkins, 10) === 1;
 
 		userData.allowUserHomePage = parseInt(meta.config.allowUserHomePage, 10) === 1;
+		
+		userData.inTopicSearchAvailable = plugins.hasListeners('filter:topic.search');
 
 		userData.title = '[[pages:account/settings]]';
 		userData.breadcrumbs = helpers.buildBreadcrumbs([{text: userData.username, url: '/user/' + userData.userslug}, {text: '[[user:settings]]'}]);
