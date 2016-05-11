@@ -78,6 +78,8 @@ unreadController.get = function(req, res, next) {
 			return filter && filter.selected;
 		})[0];
 
+		results.unreadTopics.querystring = req.query.cid ? ('?cid=' + req.query.cid) : '';
+
 		res.render('unread', results.unreadTopics);
 	});
 };

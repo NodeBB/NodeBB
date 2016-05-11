@@ -35,13 +35,49 @@ define('forum/recent', ['forum/infinitescroll', 'components'], function(infinite
 	};
 
 	function onNewTopic(data) {
+		if (ajaxify.data.selectedCategory && parseInt(ajaxify.data.selectedCategory.cid, 10) !== parseInt(data.cid, 10)) {
+			return;
+		}
+
+		if (ajaxify.data.selectedFilter && ajaxify.data.selectedFilter.url === 'unread/watched') {
+			return;
+		}
+
 		++newTopicCount;
 		Recent.updateAlertText();
 	}
 
 	function onNewPost(data) {
-		++newPostCount;
-		Recent.updateAlertText();
+		function showAlert() {
+			++newPostCount;
+			Recent.updateAlertText();
+		}
+
+		if (parseInt(data.topic.mainPid, 10) === parseInt(data.posts[0].pid, 10)) {
+			return;
+		}
+
+		if (ajaxify.data.selectedCategory && parseInt(ajaxify.data.selectedCategory.cid, 10) !== parseInt(data.topic.cid, 10)) {
+			return;
+		}
+
+		if (ajaxify.data.selectedFilter && ajaxify.data.selectedFilter.url === 'unread/new') {
+			return;
+		}
+
+		if (ajaxify.data.selectedFilter && ajaxify.data.selectedFilter.url === 'unread/watched') {
+			socket.emit('topics.isFollowed', data.topic.tid, function(err, isFollowed) {
+				if (err) {
+					app.alertError(err.message);
+				}
+				if (isFollowed) {
+					showAlert();
+				}
+			});
+			return;
+		}
+
+		showAlert();
 	}
 
 	Recent.removeListeners = function() {
