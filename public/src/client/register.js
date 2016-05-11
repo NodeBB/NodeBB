@@ -99,7 +99,7 @@ define('forum/register', ['csrf', 'translator'], function(csrf, translator) {
 					},
 					error: function(data) {
 						translator.translate(data.responseText, config.defaultLang, function(translated) {
-							if (data.status === 403 && data.statusText === 'Forbidden') {
+							if (data.status === 403 && data.responseText === 'Forbidden') {
 								window.location.href = config.relative_path + '/register?error=csrf-invalid';
 							} else {
 								errorEl.find('p').text(translated);

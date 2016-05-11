@@ -31,7 +31,7 @@ define('forum/login', ['csrf', 'translator'], function(csrf, translator) {
 						window.location.href = data + '?loggedin';
 					},
 					error: function(data, status) {
-						if (data.status === 403 && data.statusText === 'Forbidden') {
+						if (data.status === 403 && data.responseText === 'Forbidden') {
 							window.location.href = config.relative_path + '/login?error=csrf-invalid';
 						} else {
 							errorEl.find('p').translateText(data.responseText);
