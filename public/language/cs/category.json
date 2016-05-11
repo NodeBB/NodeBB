@@ -1,16 +1,16 @@
 {
-    "category": "Category",
-    "subcategories": "Subcategories",
+    "category": "Kategorie",
+    "subcategories": "Podkategorie",
     "new_topic_button": "Nové téma",
-    "guest-login-post": "Log in to post",
+    "guest-login-post": "Přihlásit se pro přidání",
     "no_topics": "<strong>V této kategorii zatím nejsou žádné příspěvky.</strong><br />Můžeš být první!",
     "browsing": "prohlíží",
     "no_replies": "Nikdo ještě neodpověděl",
-    "no_new_posts": "No new posts.",
+    "no_new_posts": "Žádné nové příspěvky",
     "share_this_category": "Share this category",
-    "watch": "Watch",
+    "watch": "Sledovat",
     "ignore": "Ignorovat",
-    "watch.message": "You are now watching updates from this category",
-    "ignore.message": "You are now ignoring updates from this category",
-    "watched-categories": "Watched categories"
+    "watch.message": "Nyní sledujete aktualizace ve skupině",
+    "ignore.message": "Nyní ignorujete aktualizace ve skupině ",
+    "watched-categories": "Sledované kategorie"
 }

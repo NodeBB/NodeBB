@@ -95,11 +95,11 @@
     "reload-failed": "NodeBB encountered a problem while reloading: \"%1\". NodeBB will continue to serve the existing client-side assets, although you should undo what you did just prior to reloading.",
     "registration-error": "Chyba při registraci",
     "parse-error": "Something went wrong while parsing server response",
-    "wrong-login-type-email": "Please use your email to login",
-    "wrong-login-type-username": "Please use your username to login",
-    "invite-maximum-met": "You have invited the maximum amount of people (%1 out of %2).",
+    "wrong-login-type-email": "Použijte prosím Váš e-mail pro přihlášení",
+    "wrong-login-type-username": "Použijte prosím Váše přihlašovací jméno pro přihlášení",
+    "invite-maximum-met": "Již jste pozval/a maximálně možný počet lidí (%1 z %2).",
     "no-session-found": "No login session found!",
     "not-in-room": "User not in room",
     "no-users-in-room": "No users in this room",
-    "cant-kick-self": "You can't kick yourself from the group"
+    "cant-kick-self": "Nemůžete vyhodit sami sebe ze kupiny"
 }
