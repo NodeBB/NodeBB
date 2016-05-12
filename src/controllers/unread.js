@@ -63,15 +63,18 @@ unreadController.get = function(req, res, next) {
 		results.unreadTopics.filters = [{
 			name: '[[unread:all-topics]]',
 			url: 'unread',
-			selected: filter === ''
+			selected: filter === '',
+			filter: ''
 		}, {
 			name: '[[unread:new-topics]]',
 			url: 'unread/new',
-			selected: filter === 'new'
+			selected: filter === 'new',
+			filter: 'new'
 		}, {
 			name: '[[unread:watched-topics]]',
 			url: 'unread/watched',
-			selected: filter === 'watched'
+			selected: filter === 'watched',
+			filter: 'watched'
 		}];
 
 		results.unreadTopics.selectedFilter = results.unreadTopics.filters.filter(function(filter) {
