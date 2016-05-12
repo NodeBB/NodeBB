@@ -133,13 +133,16 @@ app.cacheBuster = null;
 	app.enterRoom = function (room, callback) {
 		callback = callback || function() {};
 		if (socket && app.user.uid && app.currentRoom !== room) {
+			var previousRoom = app.currentRoom;
+			app.currentRoom = room;
 			socket.emit('meta.rooms.enter', {
 				enter: room
 			}, function(err) {
 				if (err) {
+					app.currentRoom = previousRoom;
 					return app.alertError(err.message);
 				}
-				app.currentRoom = room;
+
 				callback();
 			});
 		}
