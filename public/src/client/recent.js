@@ -23,7 +23,9 @@ define('forum/recent', ['forum/infinitescroll', 'components'], function(infinite
 			$(this).addClass('hide');
 		});
 
-		infinitescroll.init(Recent.loadMoreTopics);
+		if (!config.usePagination) {
+			infinitescroll.init(Recent.loadMoreTopics);
+		}
 	};
 
 	Recent.watchForNewPosts = function () {

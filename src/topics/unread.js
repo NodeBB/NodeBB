@@ -19,17 +19,13 @@ module.exports = function(Topics) {
 			callback = filter;
 			filter = '';
 		}
-
-		Topics.getUnreadTids(0, uid, 0, 99, filter, function(err, tids) {
-			callback(err, tids ? tids.length : 0);
+		Topics.getUnreadTids(0, uid, filter, function(err, tids) {
+			callback(err, Array.isArray(tids) ? tids.length : 0);
 		});
 	};
 
+
 	Topics.getUnreadTopics = function(cid, uid, start, stop, filter, callback) {
-		if (!callback) {
-			callback = filter;
-			filter = '';
-		}
 
 		var unreadTopics = {
 			showSelect: true,
@@ -39,12 +35,21 @@ module.exports = function(Topics) {
 
 		async.waterfall([
 			function(next) {
-				Topics.getUnreadTids(cid, uid, start, stop, filter, next);
+				Topics.getUnreadTids(cid, uid, filter, next);
 			},
 			function(tids, next) {
+				unreadTopics.topicCount = tids.length;
+
 				if (!tids.length) {
 					return next(null, []);
 				}
+
+				if (stop === -1) {
+					tids = tids.slice(start);
+				} else {
+					tids = tids.slice(start, stop + 1);
+				}
+
 				Topics.getTopicsByTids(tids, uid, next);
 			},
 			function(topicData, next) {
@@ -63,12 +68,7 @@ module.exports = function(Topics) {
 		return Date.now() - (parseInt(meta.config.unreadCutoff, 10) || 2) * 86400000;
 	};
 
-	Topics.getUnreadTids = function(cid, uid, start, stop, filter, callback) {
-		if (!callback) {
-			callback = filter;
-			filter = '';
-		}
-
+	Topics.getUnreadTids = function(cid, uid, filter, callback) {
 		uid = parseInt(uid, 10);
 		if (uid === 0) {
 			return callback(null, []);
@@ -136,19 +136,9 @@ module.exports = function(Topics) {
 			},
 			function (tids, next) {
 
-				tids = tids.slice(0, 100);
+				tids = tids.slice(0, 200);
 
 				filterTopics(uid, tids, cid, ignoredCids, next);
-			},
-			function (tids, next) {
-
-				if (stop === -1) {
-					tids = tids.slice(start);
-				} else {
-					tids = tids.slice(start, stop + 1);
-				}
-
-				next(null, tids);
 			}
 		], callback);
 	};

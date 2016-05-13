@@ -46,7 +46,7 @@ module.exports = function(SocketTopics) {
 	};
 
 	SocketTopics.markCategoryTopicsRead = function(socket, cid, callback) {
-		topics.getUnreadTids(cid, socket.uid, 0, -1, function(err, tids) {
+		topics.getUnreadTids(cid, socket.uid, function(err, tids) {
 			if (err) {
 				return callback(err);
 			}

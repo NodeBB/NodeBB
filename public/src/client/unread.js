@@ -78,7 +78,9 @@ define('forum/unread', ['forum/recent', 'topicSelect', 'forum/infinitescroll', '
 			loadMoreTopics();
 		});
 
-		infinitescroll.init(loadMoreTopics);
+		if (!config.usePagination) {
+			infinitescroll.init(loadMoreTopics);
+		}
 
 		function loadMoreTopics(direction) {
 			if(direction < 0 || !$('[component="category"]').length) {
