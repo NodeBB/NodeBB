@@ -23,7 +23,7 @@ module.exports = function(privileges) {
 					'topics:reply': async.apply(helpers.isUserAllowedTo, 'topics:reply', uid, [topic.cid]),
 					read: async.apply(helpers.isUserAllowedTo, 'read', uid, [topic.cid]),
 					isOwner: function(next) {
-						next(null, parseInt(uid, 10) === parseInt(topic.uid, 10));
+						next(null, !!parseInt(uid, 10) && parseInt(uid, 10) === parseInt(topic.uid, 10));
 					},
 					isAdministrator: async.apply(user.isAdministrator, uid),
 					isModerator: async.apply(user.isModerator, uid, topic.cid),
