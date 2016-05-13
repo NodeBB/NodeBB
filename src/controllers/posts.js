@@ -12,7 +12,7 @@ postsController.redirectToPost = function(req, res, callback) {
 	}
 
 	posts.generatePostPath(pid, req.uid, function(err, path) {
-		if (err) {
+		if (err || !path) {
 			return callback(err);
 		}
 
