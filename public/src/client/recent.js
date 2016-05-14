@@ -1,6 +1,6 @@
 'use strict';
 
-/* globals define, app, socket, utils */
+/* globals define, app, socket, utils, ajaxify, config */
 
 define('forum/recent', ['forum/infinitescroll', 'components'], function(infinitescroll, components) {
 	var	Recent = {};
@@ -55,11 +55,15 @@ define('forum/recent', ['forum/infinitescroll', 'components'], function(infinite
 			Recent.updateAlertText();
 		}
 
-		if (parseInt(data.topic.mainPid, 10) === parseInt(data.posts[0].pid, 10)) {
+		var post = data.posts[0];
+		if (!post || !post.topic) {
+			return;
+		}
+		if (parseInt(post.topic.mainPid, 10) === parseInt(post.pid, 10)) {
 			return;
 		}
 
-		if (ajaxify.data.selectedCategory && parseInt(ajaxify.data.selectedCategory.cid, 10) !== parseInt(data.topic.cid, 10)) {
+		if (ajaxify.data.selectedCategory && parseInt(ajaxify.data.selectedCategory.cid, 10) !== parseInt(post.topic.cid, 10)) {
 			return;
 		}
 
@@ -68,7 +72,7 @@ define('forum/recent', ['forum/infinitescroll', 'components'], function(infinite
 		}
 
 		if (ajaxify.data.selectedFilter && ajaxify.data.selectedFilter.url === 'unread/watched') {
-			socket.emit('topics.isFollowed', data.topic.tid, function(err, isFollowed) {
+			socket.emit('topics.isFollowed', post.tid, function(err, isFollowed) {
 				if (err) {
 					app.alertError(err.message);
 				}
