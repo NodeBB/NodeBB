@@ -194,19 +194,29 @@ middleware.isAdmin = function(req, res, next) {
 		}
 
 		if (isAdmin) {
-			var loginTime = req.session.meta ? req.session.meta.datetime : 0;
-			if (loginTime && parseInt(loginTime, 10) > Date.now() - 3600000) {
-				return next();
-			}
+			user.hasPassword(req.uid, function(err, hasPassword) {
+				if (err) {
+					return next(err);
+				}
 
-			req.session.returnTo = nconf.get('relative_path') + req.path.replace(/^\/api/, '');
-			req.session.forceLogin = 1;
-			if (res.locals.isAPI) {
-				res.status(401).json({});
-			} else {
-				res.redirect('/login');
-			}
-			return;
+				if (!hasPassword) {
+					return next();
+				}
+
+				var loginTime = req.session.meta ? req.session.meta.datetime : 0;
+				if (loginTime && parseInt(loginTime, 10) > Date.now() - 3600000) {
+					return next();
+				}
+
+				req.session.returnTo = nconf.get('relative_path') + req.path.replace(/^\/api/, '');
+				req.session.forceLogin = 1;
+				if (res.locals.isAPI) {
+					res.status(401).json({});
+				} else {
+					res.redirect('/login');
+				}
+				return;
+			});
 		}
 
 		if (res.locals.isAPI) {
