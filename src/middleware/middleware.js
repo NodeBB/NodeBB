@@ -215,8 +215,8 @@ middleware.isAdmin = function(req, res, next) {
 				} else {
 					res.redirect('/login');
 				}
-				return;
 			});
+			return;
 		}
 
 		if (res.locals.isAPI) {
