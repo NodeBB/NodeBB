@@ -170,8 +170,10 @@ topicsController.get = function(req, res, callback) {
 			var ogImageUrl = '';
 			if (topicData.thumb) {
 				ogImageUrl = topicData.thumb;
-			} else if (postAtIndex && postAtIndex.user && postAtIndex.user.picture){
+			} else if (postAtIndex && postAtIndex.user && postAtIndex.user.picture) {
 				ogImageUrl = postAtIndex.user.picture;
+			} else if (meta.config['og:image']) {
+				ogImageUrl = meta.config['og:image'];
 			} else if (meta.config['brand:logo']) {
 				ogImageUrl = meta.config['brand:logo'];
 			} else {

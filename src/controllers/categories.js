@@ -25,14 +25,14 @@ categoriesController.list = function(req, res, next) {
 		content: 'website'
 	}];
 
-	if (meta.config['brand:logo']) {
-		var brandLogo = meta.config['brand:logo'];
-		if (!brandLogo.startsWith('http')) {
-			brandLogo = nconf.get('url') + brandLogo;
+	var ogImage = meta.config['og:image'] || meta.config['brand:logo'] || '';
+	if (ogImage) {
+		if (!ogImage.startsWith('http')) {
+			ogImage = nconf.get('url') + ogImage;
 		}
 		res.locals.metaTags.push({
 			property: 'og:image',
-			content: brandLogo
+			content: ogImage
 		});
 	}
 

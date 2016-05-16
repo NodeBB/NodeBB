@@ -50,6 +50,7 @@
 				</span>
 			</div>
 		</div>
+
 		<div class="form-group">
 			<label for="brand:logo:url">URL</label>
 			<input id ="brand:logo:url" type="text" class="form-control" placeholder="The URL of the site logo" data-field="brand:logo:url" />
@@ -60,6 +61,17 @@
 		<div class="form-group">
 			<label for="brand:logo:alt">Alt Text</label>
 			<input id ="brand:logo:alt" type="text" class="form-control" placeholder="Alternative text for accessibility" data-field="brand:logo:alt" />
+		</div>
+
+		<div class="form-group">
+			<label for="og_image">og:image</label>
+			<div class="input-group">
+				<input id="og_image" type="text" class="form-control" placeholder="" data-field="og:image" data-action="upload" data-target="og_image" data-route="{config.relative_path}/api/admin/uploadOgImage" readonly />
+				<span class="input-group-btn">
+					<input data-action="upload" data-target="og_image" data-route="{config.relative_path}/api/admin/uploadOgImage" type="button" class="btn btn-default" value="Upload"></input>
+					<button data-action="removeOgImage" type="button" class="btn btn-default btn-danger"><i class="fa fa-times"></i></button>
+				</span>
+			</div>
 		</div>
 	</div>
 </div>
