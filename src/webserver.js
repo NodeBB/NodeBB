@@ -12,6 +12,7 @@ var path = require('path'),
 
 	emailer = require('./emailer'),
 	meta = require('./meta'),
+	languages = require('./languages'),
 	logger = require('./logger'),
 	plugins = require('./plugins'),
 	middleware = require('./middleware'),
@@ -92,6 +93,7 @@ function initializeNodeBB(callback) {
 				async.apply(!skipJS ? meta.js.minify : meta.js.getFromFile, 'acp.min.js'),
 				async.apply(meta.css.minify),
 				async.apply(meta.sounds.init),
+				async.apply(languages.init),
 				async.apply(meta.blacklist.load)
 			], next);
 		},

@@ -16,6 +16,7 @@ var app,
 	toobusy = require('toobusy-js'),
 
 	plugins = require('../plugins'),
+	languages = require('../languages'),
 	meta = require('../meta'),
 	user = require('../user'),
 	groups = require('../groups'),
@@ -314,6 +315,19 @@ middleware.applyBlacklist = function(req, res, next) {
 };
 
 middleware.processLanguages = function(req, res, next) {
+	var code = req.params.code;
+	var key = req.path.match(/[\w]+\.json/);
+
+	if (code && key) {
+		languages.get(code, key[0], function(err, language) {
+			res.status(200).json(language);
+		})
+	} else {
+		res.status(404).json('{}');
+	}
+};
+
+middleware.processTimeagoLocales = function(req, res, next) {
 	var fallback = req.path.indexOf('-short') === -1 ? 'jquery.timeago.en.js' : 'jquery.timeago.en-short.js',
 		localPath = path.join(__dirname, '../../public/vendor/jquery/timeago/locales', req.path),
 		exists;

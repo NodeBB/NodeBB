@@ -31,7 +31,7 @@ var middleware;
 	Plugins.lessFiles = [];
 	Plugins.clientScripts = [];
 	Plugins.acpScripts = [];
-	Plugins.customLanguages = [];
+	Plugins.customLanguages = {};
 	Plugins.customLanguageFallbacks = {};
 	Plugins.libraryPaths = [];
 	Plugins.versionWarning = [];
@@ -85,10 +85,10 @@ var middleware;
 		Plugins.acpScripts.length = 0;
 		Plugins.libraryPaths.length = 0;
 
-		Plugins.registerHook('core', {
-			hook: 'static:app.load',
-			method: addLanguages
-		});
+		// Plugins.registerHook('core', {
+		// 	hook: 'static:app.load',
+		// 	method: addLanguages
+		// });
 
 		async.waterfall([
 			function(next) {
@@ -415,27 +415,28 @@ var middleware;
 		], next);
 	};
 
-	function addLanguages(params, callback) {
-		Plugins.customLanguages.forEach(function(lang) {
-			params.router.get('/language' + lang.route, function(req, res, next) {
-				res.json(lang.file);
-			});
+	// function addLanguages(params, callback) {
+	// 	Plugins.customLanguages.forEach(function(lang) {
+	// 		console.log('route for', '/language/' + lang.route);
+	// 		params.router.get('/language' + lang.route, function(req, res, next) {
+	// 			res.json(lang.file);
+	// 		});
 
-			var components = lang.route.split('/'),
-				language = components[1],
-				filename = components[2].replace('.json', '');
+	// 		var components = lang.route.split('/'),
+	// 			language = components[1],
+	// 			filename = components[2].replace('.json', '');
 
-			translator.addTranslation(language, filename, lang.file);
-		});
+	// 		translator.addTranslation(language, filename, lang.file);
+	// 	});
 
-		for(var resource in Plugins.customLanguageFallbacks) {
-			params.router.get('/language/:lang/' + resource + '.json', function(req, res, next) {
-				winston.verbose('[translator] No resource file found for ' + req.params.lang + '/' + path.basename(req.path, '.json') + ', using provided fallback language file');
-				res.sendFile(Plugins.customLanguageFallbacks[path.basename(req.path, '.json')]);
-			});
-		}
+	// 	for(var resource in Plugins.customLanguageFallbacks) {
+	// 		params.router.get('/language/:lang/' + resource + '.json', function(req, res, next) {
+	// 			winston.verbose('[translator] No resource file found for ' + req.params.lang + '/' + path.basename(req.path, '.json') + ', using provided fallback language file');
+	// 			res.sendFile(Plugins.customLanguageFallbacks[path.basename(req.path, '.json')]);
+	// 		});
+	// 	}
 
-		callback(null);
-	}
+	// 	callback(null);
+	// }
 
 }(exports));

@@ -3,8 +3,48 @@
 var	fs = require('fs'),
 	path = require('path'),
 	async = require('async'),
+	LRU = require('lru-cache'),
+	_ = require('underscore');
 
-	Languages = {};
+var plugins = require('./plugins');
+
+var Languages = {};
+
+Languages.init = function(next) {
+	if (Languages.hasOwnProperty('_cache')) {
+		Languages._cache.reset();
+	} else {
+		Languages._cache = LRU(100);
+	}
+
+	next();
+};
+
+Languages.get = function(code, key, callback) {
+	var combined = [code, key].join('/');
+
+	if (Languages._cache.has(combined)) {
+		return callback(null, Languages._cache.get(combined));
+	}
+
+	var languageData;
+
+	fs.readFile(path.join(__dirname, '../public/language/', code, key), { encoding: 'utf-8' }, function(err, data) {
+		// If language file in core cannot be read, then no language file present
+		try {
+			languageData = JSON.parse(data) || {};
+		} catch (e) {
+			languageData = {};
+		}
+
+		if (plugins.customLanguages.hasOwnProperty(combined)) {
+			_.extendOwn(languageData, plugins.customLanguages[combined]);
+		}
+
+		Languages._cache.set(combined, languageData);
+		callback(null, languageData);
+	});
+};
 
 Languages.list = function(callback) {
 	var	languagesPath = path.join(__dirname, '../public/language'),
