@@ -238,6 +238,16 @@ module.exports = function(Plugins) {
 					_.extendOwn(Plugins.customLanguages[route], data);
 
 					if (pluginData.defaultLang && pathToLang.endsWith(pluginData.defaultLang + '/' + path.basename(pathToLang))) {
+						console.log(Plugins.languageCodes);
+						Plugins.languageCodes.map(function(code) {
+							if (pluginData.defaultLang !== code) {
+								return code + '/' + path.basename(pathToLang);
+							} else {
+								return null;
+							}
+						}).filter(Boolean).forEach(function(key) {
+							Plugins.customLanguages[key] = _.defaults(Plugins.customLanguages[key] || {}, data);
+						});
 						fallbackMap[path.basename(pathToLang, '.json')] = path.join(pathToFolder, pluginData.defaultLang, path.basename(pathToLang));
 					}
 

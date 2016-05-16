@@ -92,6 +92,16 @@ var middleware;
 
 		async.waterfall([
 			function(next) {
+				// Build language code list
+				fs.readdir(path.join(__dirname, '../public/language'), function(err, directories) {
+					Plugins.languageCodes = directories.filter(function(code) {
+						return code !== 'TODO';
+					});
+
+					next();
+				});
+			},
+			function(next) {
 				db.getSortedSetRange('plugins:active', 0, -1, next);
 			},
 			function(plugins, next) {
