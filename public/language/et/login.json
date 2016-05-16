@@ -5,7 +5,7 @@
     "remember_me": "Mäleta mind?",
     "forgot_password": "Unustasid parooli?",
     "alternative_logins": "Alternatiivsed sisse logimise võimalused",
-    "failed_login_attempt": "Sisse logimine ebaõnnestus, palun proovi uuesti.",
+    "failed_login_attempt": "Login Unsuccessful",
     "login_successful": "Edukalt sisse logitud!",
     "dont_have_account": "Pole veel kasutajat?"
 }

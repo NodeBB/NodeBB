@@ -9,13 +9,13 @@ var fs = require('fs'),
 	image = require('../../image'),
 	plugins = require('../../plugins');
 
+var allowedImageTypes = ['image/png', 'image/jpeg', 'image/pjpeg', 'image/jpg', 'image/gif', 'image/svg+xml'];
 
 var uploadsController = {};
 
 uploadsController.uploadCategoryPicture = function(req, res, next) {
 	var uploadedFile = req.files.files[0];
-	var allowedTypes = ['image/png', 'image/jpeg', 'image/jpg', 'image/gif', 'image/svg+xml'],
-		params = null;
+	var params = null;
 
 	try {
 		params = JSON.parse(req.body.params);
@@ -28,7 +28,7 @@ uploadsController.uploadCategoryPicture = function(req, res, next) {
 		return next(e);
 	}
 
-	if (validateUpload(req, res, next, uploadedFile, allowedTypes)) {
+	if (validateUpload(req, res, next, uploadedFile, allowedImageTypes)) {
 		var filename =  'category-' + params.cid + path.extname(uploadedFile.name);
 		uploadImage(filename, 'category', uploadedFile, req, res, next);
 	}
@@ -126,8 +126,8 @@ uploadsController.uploadDefaultAvatar = function(req, res, next) {
 
 function upload(name, req, res, next) {
 	var uploadedFile = req.files.files[0];
-	var allowedTypes = ['image/png', 'image/jpeg', 'image/pjpeg', 'image/jpg', 'image/gif'];
-	if (validateUpload(req, res, next, uploadedFile, allowedTypes)) {
+
+	if (validateUpload(req, res, next, uploadedFile, allowedImageTypes)) {
 		var filename = name + path.extname(uploadedFile.name);
 		uploadImage(filename, 'system', uploadedFile, req, res, next);
 	}

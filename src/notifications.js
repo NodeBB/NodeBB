@@ -1,19 +1,20 @@
 'use strict';
 
-var async = require('async'),
-	winston = require('winston'),
-	cron = require('cron').CronJob,
-	nconf = require('nconf'),
-	S = require('string'),
-	_ = require('underscore'),
+var async = require('async');
+var winston = require('winston');
+var cron = require('cron').CronJob;
+var nconf = require('nconf');
+var S = require('string');
+var _ = require('underscore');
 
-	db = require('./database'),
-	User = require('./user'),
-	groups = require('./groups'),
-	meta = require('./meta'),
-	plugins = require('./plugins'),
-	topics = require('./topics'),
-	categories = require('./categories');
+var db = require('./database');
+var User = require('./user');
+var groups = require('./groups');
+var meta = require('./meta');
+var plugins = require('./plugins');
+var utils = require('../public/src/utils');
+var topics = require('./topics');
+var categories = require('./categories');
 
 (function(Notifications) {
 
@@ -46,6 +47,8 @@ var async = require('async'),
 				if (!notification) {
 					return next(null, null);
 				}
+
+				notification.datetimeISO = utils.toISOString(notification.datetime);
 
 				if (notification.bodyLong) {
 					notification.bodyLong = S(notification.bodyLong).escapeHTML().s;
@@ -87,7 +90,7 @@ var async = require('async'),
 		// Removes nids that have been pruned
 		db.isSortedSetMembers('notifications', nids, function(err, exists) {
 			if (err) {
-				return callbacK(err);
+				return callback(err);
 			}
 
 			nids = nids.filter(function(notifId, idx) {

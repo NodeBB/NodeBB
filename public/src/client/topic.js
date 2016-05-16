@@ -71,7 +71,7 @@ define('forum/topic', [
 
 		handleTopicSearch();
 
-		$(window).trigger('action:topic.loaded');
+		$(window).trigger('action:topic.loaded', ajaxify.data);
 	};
 
 	function handleKeys() {

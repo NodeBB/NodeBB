@@ -5,7 +5,7 @@
     "remember_me": "Kom ihåg mig?",
     "forgot_password": "Glömt lösenord?",
     "alternative_logins": "Alternativa inloggningssätt",
-    "failed_login_attempt": "Inloggningen misslyckades, var god försök igen.",
+    "failed_login_attempt": "Login Unsuccessful",
     "login_successful": "Du är nu inloggad!",
     "dont_have_account": "Har du inget konto?"
 }

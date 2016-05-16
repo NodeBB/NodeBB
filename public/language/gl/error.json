@@ -22,6 +22,7 @@
     "no-email-to-confirm": "Este foro require confirmación de correo, por favor pica aquí para introducir un correo.",
     "email-confirm-failed": "Non podemos confirmar o teu correo, por favor téntao de novo máis tarde.",
     "confirm-email-already-sent": "O correo de confirmación foi enviado, agarda %1 minute(s) para enviar outro.",
+    "sendmail-not-found": "The sendmail executable could not be found, please ensure it is installed and executable by the user running NodeBB.",
     "username-too-short": "Nome de usuario demasiado curto",
     "username-too-long": "Nome de usuario demasiado longo.",
     "password-too-long": "Contrasinal moi longa",

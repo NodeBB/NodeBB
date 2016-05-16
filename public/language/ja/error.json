@@ -22,6 +22,7 @@
     "no-email-to-confirm": "このフォーラムを利用するにはメールアドレスの確認を行う必要があります。メールアドレスを確認するためにはここをクリックしてください。",
     "email-confirm-failed": "メールアドレスの確認が出来ませんでした。再度お試しください。",
     "confirm-email-already-sent": "確認のメールは既に送信されています。再度送信するには、%1分後に再度お試しください。",
+    "sendmail-not-found": "The sendmail executable could not be found, please ensure it is installed and executable by the user running NodeBB.",
     "username-too-short": "ユーザー名が短すぎます",
     "username-too-long": "ユーザー名が長すぎます",
     "password-too-long": "パスワードが長すぎます",

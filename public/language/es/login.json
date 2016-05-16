@@ -5,7 +5,7 @@
     "remember_me": "¿Recordarme?",
     "forgot_password": "¿Olvidaste tu contraseña?",
     "alternative_logins": "Métodos alternativos",
-    "failed_login_attempt": "Error al iniciar sesión, inténtalo otra vez.",
+    "failed_login_attempt": "Login Unsuccessful",
     "login_successful": "¡Identificado satisfactoriamente!",
     "dont_have_account": "¿Aún no tienes cuenta?"
 }

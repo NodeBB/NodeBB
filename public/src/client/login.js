@@ -31,9 +31,13 @@ define('forum/login', ['csrf', 'translator'], function(csrf, translator) {
 						window.location.href = data + '?loggedin';
 					},
 					error: function(data, status) {
-						errorEl.find('p').translateText(data.responseText);
-						errorEl.show();
-						submitEl.removeClass('disabled');
+						if (data.status === 403 && data.statusText === 'Forbidden') {
+							window.location.href = config.relative_path + '/login?error=csrf-invalid';
+						} else {
+							errorEl.find('p').translateText(data.responseText);
+							errorEl.show();
+							submitEl.removeClass('disabled');
+						}
 					}
 				});
 			}
@@ -46,7 +50,7 @@ define('forum/login', ['csrf', 'translator'], function(csrf, translator) {
 		});
 
 		if ($('#content #username').attr('readonly')) {
-			$('#content #password').focus();
+			$('#content #password').val('').focus();
 		} else {
 			$('#content #username').focus();
 		}

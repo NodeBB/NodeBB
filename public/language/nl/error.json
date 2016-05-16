@@ -22,6 +22,7 @@
     "no-email-to-confirm": "Dit berichtenforum vereist bevestiging per e-mail, klik hier om een e-mailadres te registreren",
     "email-confirm-failed": "Helaas kon het e-mailadres niet bevestigd worden, probeer het later nog eens.",
     "confirm-email-already-sent": "Bevestigingsmail is zojuist al verzonden, wacht alsjeblieft %1 minuut (minuten) voordat je opnieuw een bevestigingsmail aanvraagt.",
+    "sendmail-not-found": "The sendmail executable could not be found, please ensure it is installed and executable by the user running NodeBB.",
     "username-too-short": "Gebruikersnaam is te kort",
     "username-too-long": "Gebruikersnaam is te lang",
     "password-too-long": "Wachtwoord is te lang",

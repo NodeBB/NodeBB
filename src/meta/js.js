@@ -92,7 +92,9 @@ module.exports = function(Meta) {
 		// Add routes for AMD-type modules to serve those files
 		var numBridged = 0,
 			addRoute = function(relPath) {
-				app.get('/src/modules/' + relPath, function(req, res) {
+				var relativePath = nconf.get('relative_path');
+				
+				app.get(relativePath + '/src/modules/' + relPath, function(req, res) {
 					return res.sendFile(path.join(__dirname, '../../', Meta.js.scripts.modules[relPath]), {
 						maxAge: app.enabled('cache') ? 5184000000 : 0
 					});

@@ -24,6 +24,7 @@ module.exports =  function(app, middleware, controllers) {
 	router.get('/recent/posts/:term?', controllers.api.getRecentPosts);
 	router.get('/unread/:filter?/total', middleware.authenticate, controllers.unread.unreadTotal);
 	router.get('/topic/teaser/:topic_id', controllers.topics.teaser);
+	router.get('/topic/pagination/:topic_id', controllers.topics.pagination);
 
 	var multipart = require('connect-multiparty');
 	var multipartMiddleware = multipart();
