@@ -22,6 +22,7 @@
     "no-email-to-confirm": "هذا المنتدى يستلزم تفعيل بريدك الإلكتروني، انقر هنا من فضلك لإدخاله.",
     "email-confirm-failed": "لم نستطع تفعيل بريدك الإلكتروني، المرجو المحاولة لاحقًا.",
     "confirm-email-already-sent": "لقد تم ارسال بريد التأكيد، الرجاء اﻹنتظار 1% دقائق لإعادة اﻹرسال",
+    "sendmail-not-found": "The sendmail executable could not be found, please ensure it is installed and executable by the user running NodeBB.",
     "username-too-short": "اسم المستخدم قصير.",
     "username-too-long": "اسم المستخدم طويل",
     "password-too-long": "Password too long",

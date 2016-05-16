@@ -88,6 +88,12 @@ function followCommand(method, socket, tid, callback) {
 	method(tid, socket.uid, callback);
 }
 
+SocketTopics.isFollowed = function(socket, tid, callback) {
+	topics.isFollowing([tid], socket.uid, function(err, isFollowing) {
+		callback(err, Array.isArray(isFollowing) && isFollowing.length ? isFollowing[0] : false);
+	});
+};
+
 SocketTopics.search = function(socket, data, callback) {
 	topics.search(data.tid, data.term, callback);
 };

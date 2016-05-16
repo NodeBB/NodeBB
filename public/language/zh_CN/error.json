@@ -22,6 +22,7 @@
     "no-email-to-confirm": "本论坛需要电子邮箱确认，请点击这里输入电子邮箱地址",
     "email-confirm-failed": "我们无法确认您的电子邮箱，请重试",
     "confirm-email-already-sent": "确认邮件已发出，如需重新发送请等待 %1 分钟后再试。",
+    "sendmail-not-found": "The sendmail executable could not be found, please ensure it is installed and executable by the user running NodeBB.",
     "username-too-short": "用户名太短",
     "username-too-long": "用户名太长",
     "password-too-long": "密码太长",

@@ -198,7 +198,7 @@ function uploadFile(uid, uploadedFile, callback) {
 
 function saveFileToLocal(uploadedFile, callback) {
 	var extension = path.extname(uploadedFile.name);
-	if (!extension) {
+	if (!extension && uploadedFile.type) {
 		extension = '.' + mime.extension(uploadedFile.type);
 	}
 

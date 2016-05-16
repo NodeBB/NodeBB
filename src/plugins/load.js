@@ -219,28 +219,34 @@ module.exports = function(Plugins) {
 			fallbackMap = {};
 
 		utils.walk(pathToFolder, function(err, languages) {
-			var arr = [];
-
 			async.each(languages, function(pathToLang, next) {
 				fs.readFile(pathToLang, function(err, file) {
 					if (err) {
 						return next(err);
 					}
-					var json;
+					var data;
+					var route = pathToLang.replace(pathToFolder + '/', '');
 
 					try {
-						json = JSON.parse(file.toString());
+						data = JSON.parse(file.toString());
 					} catch (err) {
 						winston.error('[plugins] Unable to parse custom language file: ' + pathToLang + '\r\n' + err.stack);
 						return next(err);
 					}
 
-					arr.push({
-						file: json,
-						route: pathToLang.replace(pathToFolder, '')
-					});
+					Plugins.customLanguages[route] = Plugins.customLanguages[route] || {};
+					_.extendOwn(Plugins.customLanguages[route], data);
 
 					if (pluginData.defaultLang && pathToLang.endsWith(pluginData.defaultLang + '/' + path.basename(pathToLang))) {
+						Plugins.languageCodes.map(function(code) {
+							if (pluginData.defaultLang !== code) {
+								return code + '/' + path.basename(pathToLang);
+							} else {
+								return null;
+							}
+						}).filter(Boolean).forEach(function(key) {
+							Plugins.customLanguages[key] = _.defaults(Plugins.customLanguages[key] || {}, data);
+						});
 						fallbackMap[path.basename(pathToLang, '.json')] = path.join(pathToFolder, pluginData.defaultLang, path.basename(pathToLang));
 					}
 
@@ -251,7 +257,7 @@ module.exports = function(Plugins) {
 					return callback(err);
 				}
 
-				Plugins.customLanguages = Plugins.customLanguages.concat(arr);
+				// do I need this either?
 				_.extendOwn(Plugins.customLanguageFallbacks, fallbackMap);
 
 				callback();

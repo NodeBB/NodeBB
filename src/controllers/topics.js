@@ -170,8 +170,10 @@ topicsController.get = function(req, res, callback) {
 			var ogImageUrl = '';
 			if (topicData.thumb) {
 				ogImageUrl = topicData.thumb;
-			} else if (postAtIndex && postAtIndex.user && postAtIndex.user.picture){
+			} else if (postAtIndex && postAtIndex.user && postAtIndex.user.picture) {
 				ogImageUrl = postAtIndex.user.picture;
+			} else if (meta.config['og:image']) {
+				ogImageUrl = meta.config['og:image'];
 			} else if (meta.config['brand:logo']) {
 				ogImageUrl = meta.config['brand:logo'];
 			} else {
@@ -327,5 +329,37 @@ topicsController.teaser = function(req, res, next) {
 	});
 };
 
+topicsController.pagination = function(req, res, callback) {
+	var tid = req.params.topic_id;
+	var currentPage = parseInt(req.query.page, 10) || 1;
+
+	if (!utils.isNumber(tid)) {
+		return callback();
+	}
+
+	async.parallel({
+		privileges: async.apply(privileges.topics.get, tid, req.uid),
+		settings: async.apply(user.getSettings, req.uid),
+		topic: async.apply(topics.getTopicData, tid)
+	}, function (err, results) {
+		if (err || !results.topic) {
+			return callback(err);
+		}
+
+		if (!results.privileges.read || (parseInt(results.topic.deleted, 10) && !results.privileges.view_deleted)) {
+			return helpers.notAllowed(req, res);
+		}
+
+		var postCount = parseInt(results.topic.postcount, 10);
+		var pageCount = Math.max(1, Math.ceil((postCount - 1) / results.settings.postsPerPage));
+
+		var paginationData = pagination.create(currentPage, pageCount);
+		paginationData.rel.forEach(function(rel) {
+			rel.href = nconf.get('url') + '/topic/' + results.topic.slug + rel.href;
+		});
+
+		res.json(paginationData);
+	});
+};
 
 module.exports = topicsController;

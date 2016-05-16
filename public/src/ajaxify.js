@@ -140,7 +140,7 @@ $(document).ready(function() {
 				window.location.href = config.relative_path + '/login';
 				return;
 			} else if (status === 302 || status === 308) {
-				if (data.responseJSON.external) {
+				if (data.responseJSON && data.responseJSON.external) {
 					window.location.href = data.responseJSON.external;
 				} else if (typeof data.responseJSON === 'string') {
 					ajaxify.go(data.responseJSON.slice(1), callback, quiet);

@@ -22,6 +22,7 @@
     "no-email-to-confirm": "Ez a fórum e-mail megerősítést kíván, kérlek kattints ide egy cím beírásához",
     "email-confirm-failed": "Nem tudtuk ellenőrizni az e-mail címedet, kérlek próbálkozz később.",
     "confirm-email-already-sent": "Confirmation email already sent, please wait %1 minute(s) to send another one.",
+    "sendmail-not-found": "The sendmail executable could not be found, please ensure it is installed and executable by the user running NodeBB.",
     "username-too-short": "Túl rövid felhasználónév",
     "username-too-long": "Túl hosszú felhasználónév",
     "password-too-long": "Password too long",

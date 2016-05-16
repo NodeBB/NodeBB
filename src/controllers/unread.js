@@ -2,9 +2,10 @@
 'use strict';
 
 var async = require('async');
-var meta = require('../meta');
+
 var categories = require('../categories');
 var privileges = require('../privileges');
+var pagination = require('../pagination');
 var user = require('../user');
 var topics = require('../topics');
 var helpers = require('./helpers');
@@ -14,7 +15,7 @@ var unreadController = {};
 var validFilter = {'': true, 'new': true, 'watched': true};
 
 unreadController.get = function(req, res, next) {
-	var stop = (parseInt(meta.config.topicsPerList, 10) || 20) - 1;
+	var page = parseInt(req.query.page, 10) || 1;
 	var results;
 	var cid = req.query.cid;
 	var filter = req.params.filter || '';
@@ -22,65 +23,91 @@ unreadController.get = function(req, res, next) {
 	if (!validFilter[filter]) {
 		return next();
 	}
-
+	var settings;
 	async.waterfall([
 		function(next) {
 			async.parallel({
 				watchedCategories: function(next) {
-					user.getWatchedCategories(req.uid, next);
+					getWatchedCategories(req.uid, cid, next);
 				},
-				unreadTopics: function(next) {
-					topics.getUnreadTopics(cid, req.uid, 0, stop, filter, next);
+				settings: function(next) {
+					user.getSettings(req.uid, next);
 				}
 			}, next);
 		},
 		function(_results, next) {
 			results = _results;
-
-			privileges.categories.filterCids('read', results.watchedCategories, req.uid, next);
-		},
-		function(cids, next) {
-			categories.getCategoriesFields(cids, ['cid', 'name', 'slug', 'icon', 'link', 'color', 'bgColor'], next);
+			settings = results.settings;
+			var start = Math.max(0, (page - 1) * settings.topicsPerPage);
+			var stop = start + settings.topicsPerPage - 1;
+			topics.getUnreadTopics(cid, req.uid, start, stop, filter, next);
 		}
-	], function(err, categories) {
+	], function(err, data) {
 		if (err) {
 			return next(err);
 		}
 
-		categories = categories.filter(function(category) {
-			return category && !category.link;
-		});
-		categories.forEach(function(category) {
-			category.selected = parseInt(category.cid, 10) === parseInt(cid, 10);
-			if (category.selected) {
-				results.unreadTopics.selectedCategory = category;
-			}
-		});
-		results.unreadTopics.categories = categories;
+		data.categories = results.watchedCategories.categories;
+		data.selectedCategory = results.watchedCategories.selectedCategory;
 
-		results.unreadTopics.breadcrumbs = helpers.buildBreadcrumbs([{text: '[[unread:title]]'}]);
-		results.unreadTopics.title = '[[pages:unread]]';
-		results.unreadTopics.filters = [{
+		data.breadcrumbs = helpers.buildBreadcrumbs([{text: '[[unread:title]]'}]);
+		data.title = '[[pages:unread]]';
+		data.filters = [{
 			name: '[[unread:all-topics]]',
 			url: 'unread',
-			selected: filter === ''
+			selected: filter === '',
+			filter: ''
 		}, {
 			name: '[[unread:new-topics]]',
 			url: 'unread/new',
-			selected: filter === 'new'
+			selected: filter === 'new',
+			filter: 'new'
 		}, {
 			name: '[[unread:watched-topics]]',
 			url: 'unread/watched',
-			selected: filter === 'watched'
+			selected: filter === 'watched',
+			filter: 'watched'
 		}];
 
-		results.unreadTopics.selectedFilter = results.unreadTopics.filters.filter(function(filter) {
+		data.selectedFilter = data.filters.filter(function(filter) {
 			return filter && filter.selected;
 		})[0];
 
-		res.render('unread', results.unreadTopics);
+		data.querystring = req.query.cid ? ('?cid=' + req.query.cid) : '';
+
+		data.pageCount = Math.max(1, Math.ceil(data.topicCount / settings.topicsPerPage));
+		data.pagination = pagination.create(page, data.pageCount, req.query);
+
+		res.render('unread', data);
 	});
 };
+
+function getWatchedCategories(uid, selectedCid, callback) {
+	async.waterfall([
+		function (next) {
+			user.getWatchedCategories(uid, next);
+		},
+		function (cids, next) {
+			privileges.categories.filterCids('read', cids, uid, next);
+		},
+		function (cids, next) {
+			categories.getCategoriesFields(cids, ['cid', 'name', 'slug', 'icon', 'link', 'color', 'bgColor'], next);
+		},
+		function (categoryData, next) {
+			categoryData = categoryData.filter(function(category) {
+				return category && !category.link;
+			});
+			var selectedCategory;
+			categoryData.forEach(function(category) {
+				category.selected = parseInt(category.cid, 10) === parseInt(selectedCid, 10);
+				if (category.selected) {
+					selectedCategory = category;
+				}
+			});
+			next(null, {categories: categoryData, selectedCategory: selectedCategory});
+		}
+	], callback);
+}
 
 
 unreadController.unreadTotal = function(req, res, next) {

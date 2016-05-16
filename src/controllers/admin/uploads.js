@@ -1,13 +1,13 @@
 "use strict";
 
-var fs = require('fs'),
-	path = require('path'),
-	async = require('async'),
-	nconf = require('nconf'),
-	winston = require('winston'),
-	file = require('../../file'),
-	image = require('../../image'),
-	plugins = require('../../plugins');
+var fs = require('fs');
+var path = require('path');
+var async = require('async');
+var nconf = require('nconf');
+var winston = require('winston');
+var file = require('../../file');
+var image = require('../../image');
+var plugins = require('../../plugins');
 
 var allowedImageTypes = ['image/png', 'image/jpeg', 'image/pjpeg', 'image/jpg', 'image/gif', 'image/svg+xml'];
 
@@ -122,6 +122,10 @@ uploadsController.uploadSound = function(req, res, next) {
 
 uploadsController.uploadDefaultAvatar = function(req, res, next) {
 	upload('avatar-default', req, res, next);
+};
+
+uploadsController.uploadOgImage = function(req, res, next) {
+	upload('og:image', req, res, next);
 };
 
 function upload(name, req, res, next) {

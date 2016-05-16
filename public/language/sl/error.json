@@ -22,6 +22,7 @@
     "no-email-to-confirm": "Ta forum zahteva potrjen e-mail naslov. Prosim kliknite tu za vnos e-mail naslova.",
     "email-confirm-failed": "Nismo mogli potrditi vašega e-mail naslova. Prosimo poskusite ponovno.",
     "confirm-email-already-sent": "Potrditveni e-mail naslov je že poslan. Prosimo počakajte %1 minut(o) za ponovno pošiljanje.",
+    "sendmail-not-found": "The sendmail executable could not be found, please ensure it is installed and executable by the user running NodeBB.",
     "username-too-short": "Uporabniško ime je prekratko",
     "username-too-long": "Uporabniško ime je predolgo",
     "password-too-long": "Password too long",
