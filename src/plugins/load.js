@@ -238,7 +238,6 @@ module.exports = function(Plugins) {
 					_.extendOwn(Plugins.customLanguages[route], data);
 
 					if (pluginData.defaultLang && pathToLang.endsWith(pluginData.defaultLang + '/' + path.basename(pathToLang))) {
-						console.log(Plugins.languageCodes);
 						Plugins.languageCodes.map(function(code) {
 							if (pluginData.defaultLang !== code) {
 								return code + '/' + path.basename(pathToLang);
