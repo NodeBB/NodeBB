@@ -215,7 +215,7 @@ describe('Topic\'s', function() {
 					topics.ignore( newTid, uid, done );
 				},
 				function(done){
-					topics.getUnreadTopics(0, uid, 0, -1, done );
+					topics.getUnreadTopics(0, uid, 0, -1, '', done );
 				},
 				function(results, done){
 					var topics = results.topics;
@@ -259,7 +259,7 @@ describe('Topic\'s', function() {
 					topics.follow( newTid, uid, done );
 				},
 				function(done){
-					topics.getUnreadTopics(0, uid, 0, -1, done );
+					topics.getUnreadTopics(0, uid, 0, -1, '', done );
 				},
 				function(results, done){
 					var topics = results.topics;
@@ -279,7 +279,7 @@ describe('Topic\'s', function() {
 					topics.follow( newTid, uid, done );
 				},
 				function(done){
-					topics.getUnreadTopics(0, uid, 0, -1, done );
+					topics.getUnreadTopics(0, uid, 0, -1, '', done );
 				},
 				function(results, done){
 					var topics = results.topics;
