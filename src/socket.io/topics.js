@@ -72,8 +72,15 @@ SocketTopics.createTopicFromPosts = function(socket, data, callback) {
 	topics.createTopicFromPosts(socket.uid, data.title, data.pids, data.fromTid, callback);
 };
 
-SocketTopics.toggleFollow = function(socket, tid, callback) {
-	followCommand(topics.toggleFollow, socket, tid, callback);
+SocketTopics.changeWatching = function(socket, data, callback) {
+	if (!data.tid || !data.type) {
+		return callback(new Error('[[error:invalid-data]]'));
+	}
+	var commands = ['follow', 'unfollow', 'ignore'];
+	if (commands.indexOf(data.type) === -1) {
+		return callback(new Error('[[error:invalid-command]]'));
+	}
+	followCommand(topics[data.type], socket, data.tid, callback);
 };
 
 SocketTopics.follow = function(socket, tid, callback) {

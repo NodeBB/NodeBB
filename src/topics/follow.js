@@ -56,12 +56,12 @@ module.exports = function(Topics) {
 				if (!exists) {
 					return next(new Error('[[error:no-topic]]'));
 				}
-				db.setAdd('tid:' + tid + ':followers', uid, next);
+				follow(tid, uid, next);
 			},
-			async.apply(plugins.fireHook, 'action:topic.follow', { uid: uid, tid: tid }),
-			function(next) {
-				db.sortedSetAdd('uid:' + uid + ':followed_tids', Date.now(), tid, next);
-			}
+			function (next) {
+				unignore(tid, uid, next);
+			},
+			async.apply(plugins.fireHook, 'action:topic.follow', {uid: uid, tid: tid})
 		], callback);
 	};
 
@@ -75,14 +75,77 @@ module.exports = function(Topics) {
 				if (!exists) {
 					return next(new Error('[[error:no-topic]]'));
 				}
+				unfollow(tid, uid, next);
+			},
+			function (next) {
+				unignore(tid, uid, next);
+			},
+			async.apply(plugins.fireHook, 'action:topic.unfollow', {uid: uid, tid: tid}),
+		], callback);
+	};
+
+	Topics.ignore = function(tid, uid, callback) {
+		callback = callback || function() {};
+		async.waterfall([
+			function (next) {
+				Topics.exists(tid, next);
+			},
+			function (exists, next) {
+				if (!exists) {
+					return next(new Error('[[error:no-topic]]'));
+				}
+				ignore(tid, uid, next);
+			},
+			function (next) {
+				unfollow(tid, uid, next);
+			},
+			async.apply(plugins.fireHook, 'action:topic.ignore', {uid: uid, tid: tid})
+		], callback);
+	};
+
+	function follow(tid, uid, callback) {
+		async.waterfall([
+			function (next) {
+				db.setAdd('tid:' + tid + ':followers', uid, next);
+			},
+			function (next) {
+				db.sortedSetAdd('uid:' + uid + ':followed_tids', Date.now(), tid, next);
+			}
+		], callback);
+	}
+
+	function unfollow(tid, uid, callback) {
+		async.waterfall([
+			function (next) {
 				db.setRemove('tid:' + tid + ':followers', uid, next);
 			},
-			async.apply(plugins.fireHook, 'action:topic.unfollow', { uid: uid, tid: tid }),
-			function(next) {
+			function (next) {
 				db.sortedSetRemove('uid:' + uid + ':followed_tids', tid, next);
 			}
 		], callback);
-	};
+	}
+
+	function ignore(tid, uid, callback) {
+		async.waterfall([
+			function (next) {
+				db.setAdd('tid:' + tid + ':ignorers', uid, next);
+			},
+			function(next) {
+				db.sortedSetAdd('uid:' + uid + ':ignored_tids', Date.now(), tid, next);
+			}
+		], callback);
+	}
+
+	function unignore(tid, uid, callback) {
+		async.waterfall([
+			function (next) {
+				db.setRemove('tid:' + tid + ':ignorers', uid, next);
+			},
+			function(next) {
+				db.sortedSetRemove('uid:' + uid + ':ignored_tids', tid, next);
+			}
+		], callback);
+	}
 
 	Topics.isFollowing = function(tids, uid, callback) {
 		if (!Array.isArray(tids)) {
@@ -97,8 +160,44 @@ module.exports = function(Topics) {
 		db.isMemberOfSets(keys, uid, callback);
 	};
 
+	Topics.isIgnoring = function(tids, uid, callback) {
+		if (!Array.isArray(tids)) {
+			return callback();
+		}
+		if (!parseInt(uid, 10)) {
+			return callback(null, tids.map(function() { return false; }));
+		}
+		var keys = tids.map(function(tid) {
+			return 'tid:' + tid + ':ignorers';
+		});
+		db.isMemberOfSets(keys, uid, callback);
+	};
+
 	Topics.getFollowers = function(tid, callback) {
 		db.getSetMembers('tid:' + tid + ':followers', callback);
+	};
+
+	Topics.getIgnorers = function(tid, callback) {
+		db.getSetMembers('tid:' + tid + ':ignorers', callback);
+	};
+
+	Topics.filterIgnoringUids = function(tid, uids, callback){
+		async.waterfall([
+			function (next){
+				Topics.getIgnorers(tid, next);
+			},
+			function (ignorerUids, next){
+				if (!ignorerUids.length) {
+					return next(null, uids);
+				}
+
+				var readingUids = uids.filter(function(uid) {
+					return ignorerUids.indexOf(uid.toString()) === -1;
+				});
+
+				next(null, readingUids);
+			}
+		], callback);
 	};
 
 	Topics.notifyFollowers = function(postData, exceptUid, callback) {

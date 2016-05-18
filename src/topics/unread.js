@@ -87,6 +87,9 @@ module.exports = function(Topics) {
 						}
 						user.getIgnoredCategories(uid, next);
 					},
+					ignoredTids: function(next) {
+						user.getIgnoredTids(uid, 0, -1, next);
+					},
 					recentTids: function(next) {
 						db.getSortedSetRevRangeByScoreWithScores('topics:recent', 0, -1, '+inf', cutoff, next);
 					},
@@ -116,6 +119,9 @@ module.exports = function(Topics) {
 				});
 
 				var tids = results.recentTids.filter(function(recentTopic) {
+					if (results.ignoredTids.indexOf(recentTopic.value.toString()) !== -1) {
+						return false;
+					}
 					switch (filter) {
 						case 'new':
 							return !userRead[recentTopic.value];
