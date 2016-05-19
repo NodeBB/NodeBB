@@ -181,20 +181,15 @@ module.exports = function(Topics) {
 		db.getSetMembers('tid:' + tid + ':ignorers', callback);
 	};
 
-	Topics.filterIgnoringUids = function(tid, uids, callback){
+	Topics.filterIgnoringUids = function(tid, uids, callback) {
 		async.waterfall([
 			function (next){
-				Topics.getIgnorers(tid, next);
+				db.isSetMembers('tid:' + tid + ':ignorers', uids, next);
 			},
-			function (ignorerUids, next){
-				if (!ignorerUids.length) {
-					return next(null, uids);
-				}
-
-				var readingUids = uids.filter(function(uid) {
-					return ignorerUids.indexOf(uid.toString()) === -1;
+			function (isMembers, next){
+				var readingUids = uids.filter(function(uid, index) {
+					return uid && isMembers[index];
 				});
-
 				next(null, readingUids);
 			}
 		], callback);

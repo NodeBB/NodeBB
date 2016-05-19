@@ -312,17 +312,12 @@ var privileges = require('./privileges');
 	Categories.filterIgnoringUids = function(cid, uids, callback) {
 		async.waterfall([
 			function (next){
-				Categories.getIgnorers(cid, 0, -1, next);
+				db.sortedSetScores('cid:' + cid + ':ignorers', uids, next);
 			},
-			function (ignorerUids, next){
-				if (!ignorerUids.length) {
-					return next(null, uids);
-				}
-
-				var readingUids = uids.filter(function(uid) {
-					return ignorerUids.indexOf(uid.toString()) === -1;
+			function (scores, next) {
+				var readingUids = uids.filter(function(uid, index) {
+					return uid && !!scores[index];
 				});
-
 				next(null, readingUids);
 			}
 		], callback);
