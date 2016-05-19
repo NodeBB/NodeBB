@@ -4,11 +4,11 @@ var async = require('async');
 var winston = require('winston');
 var S = require('string');
 
+var db = require('../database');
 var websockets = require('./index');
 var user = require('../user');
 var posts = require('../posts');
 var topics = require('../topics');
-var categories = require('../categories');
 var privileges = require('../privileges');
 var notifications = require('../notifications');
 var plugins = require('../plugins');
@@ -29,10 +29,7 @@ SocketHelpers.notifyNew = function(uid, type, result) {
 			privileges.topics.filterUids('read', result.posts[0].topic.tid, uids, next);
 		},
 		function(uids, next) {
-			topics.filterIgnoringUids(result.posts[0].topic.tid, uids, next);
-		},
-		function(uids, next) {
-			categories.filterIgnoringUids(result.posts[0].topic.cid, uids, next);
+			filterTidCidIgnorers(uids, result.posts[0].topic.tid, result.posts[0].topic.cid, next);
 		},
 		function(uids, next) {
 			plugins.fireHook('filter:sockets.sendNewPostToUids', {uidsTo: uids, uidFrom: uid, type: type}, next);
@@ -54,6 +51,31 @@ SocketHelpers.notifyNew = function(uid, type, result) {
 		});
 	});
 };
+
+function filterTidCidIgnorers(uids, tid, cid, callback) {
+	async.waterfall([
+		function (next) {
+			async.parallel({
+				topicFollowed: function(next) {
+					db.isSetMembers('tid:' + tid + ':followers', uids, next);
+				},
+				topicIgnored: function(next) {
+					db.isSetMembers('tid:' + tid + ':ignorers', uids, next);
+				},
+				categoryIgnored: function(next) {
+					db.sortedSetScores('cid:' + cid + ':ignorers', uids, next);
+				}
+			}, next);
+		},
+		function (results, next) {
+			uids = uids.filter(function(uid, index) {
+				return results.topicFollowed[index] ||
+					(!results.topicFollowed[index] && !results.topicIgnored[index] && !results.categoryIgnored[index]);
+			});
+			next(null, uids);
+		}
+	], callback);
+}
 
 SocketHelpers.sendNotificationToPostOwner = function(pid, fromuid, notification) {
 	if (!pid || !fromuid || !notification) {

@@ -144,7 +144,7 @@ module.exports = function(Topics) {
 
 				tids = tids.slice(0, 200);
 
-				filterTopics(uid, tids, cid, ignoredCids, next);
+				filterTopics(uid, tids, cid, ignoredCids, filter, next);
 			}
 		], callback);
 	};
@@ -161,7 +161,7 @@ module.exports = function(Topics) {
 		});
 	}
 
-	function filterTopics(uid, tids, cid, ignoredCids, callback) {
+	function filterTopics(uid, tids, cid, ignoredCids, filter, callback) {
 		if (!Array.isArray(ignoredCids) || !tids.length) {
 			return callback(null, tids);
 		}
@@ -171,11 +171,24 @@ module.exports = function(Topics) {
 				privileges.topics.filterTids('read', tids, uid, next);
 			},
 			function(tids, next) {
-				Topics.getTopicsFields(tids, ['tid', 'cid'], next);
+				async.parallel({
+					topics: function(next) {
+						Topics.getTopicsFields(tids, ['tid', 'cid'], next);
+					},
+					isTopicsFollowed: function(next) {
+						if (filter === 'watched' || filter === 'new') {
+							return next(null, []);
+						}
+						db.sortedSetScores('uid:' + uid + ':followed_tids', tids, next);
+					}
+				}, next);
 			},
-			function(topics, next) {
-				tids = topics.filter(function(topic) {
-					return topic && topic.cid && ignoredCids.indexOf(topic.cid.toString()) === -1 && (!cid || parseInt(cid, 10) === parseInt(topic.cid, 10));
+			function(results, next) {
+				var topics = results.topics;
+				tids = topics.filter(function(topic, index) {
+					return topic && topic.cid &&
+						(!!results.isTopicsFollowed[index] || ignoredCids.indexOf(topic.cid.toString()) === -1) &&
+						(!cid || parseInt(cid, 10) === parseInt(topic.cid, 10));
 				}).map(function(topic) {
 					return topic.tid;
 				});

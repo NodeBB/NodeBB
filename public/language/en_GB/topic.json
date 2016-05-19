@@ -55,8 +55,8 @@
 	"reading": "Reading",
 	"ignoring": "Ignoring",
 	"following.description": "Notify me of new replies",
-	"reading.description": "Show topic in unread list",
-	"ignoring.description": "Do not show topic in unread list",
+	"reading.description": "Show topic in unread",
+	"ignoring.description": "Do not show topic in unread",
 
 	"thread_tools.title": "Topic Tools",
 	"thread_tools.markAsUnreadForAll": "Mark Unread",
