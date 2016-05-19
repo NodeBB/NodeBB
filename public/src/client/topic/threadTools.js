@@ -84,16 +84,16 @@ define('forum/topic/threadTools', [
 		fork.init();
 
 		$('.topic').on('click', '[component="topic/following"]', function() {
-			setFollow('follow');
+			changeWatching('follow');
 		});
-		$('.topic').on('click', '[component="topic/reading"]', function() {
-			setFollow('unfollow');
+		$('.topic').on('click', '[component="topic/not-following"]', function() {
+			changeWatching('unfollow');
 		});
 		$('.topic').on('click', '[component="topic/ignoring"]', function() {
-			setFollow('ignore');
+			changeWatching('ignore');
 		});
 
-		function setFollow(type) {
+		function changeWatching(type) {
 			socket.emit('topics.changeWatching', {tid: tid, type: type}, function(err) {
 				if (err) {
 					return app.alert({
@@ -212,9 +212,9 @@ define('forum/topic/threadTools', [
 		menu.toggleClass('hidden', state !== 'follow');
 		components.get('topic/following/check').toggleClass('fa-check', state === 'follow');
 
-		menu = components.get('topic/reading/menu');
+		menu = components.get('topic/not-following/menu');
 		menu.toggleClass('hidden', state !== 'unfollow');
-		components.get('topic/reading/check').toggleClass('fa-check', state === 'unfollow');
+		components.get('topic/not-following/check').toggleClass('fa-check', state === 'unfollow');
 
 		menu = components.get('topic/ignoring/menu');
 		menu.toggleClass('hidden', state !== 'ignore' );
