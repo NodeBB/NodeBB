@@ -57,28 +57,28 @@ describe('Topic\'s', function() {
 		});
 
 		it('should fail to create new topic with invalid user id', function(done) {
-			topics.post({uid: null, title: topic.title, content: topic.content, cid: topic.categoryId}, function(err, result) {
+			topics.post({uid: null, title: topic.title, content: topic.content, cid: topic.categoryId}, function(err) {
 				assert.equal(err.message, '[[error:no-privileges]]');
 				done();
 			});
 		});
 
 		it('should fail to create new topic with empty title', function(done) {
-			topics.post({uid: topic.userId, title: '', content: topic.content, cid: topic.categoryId}, function(err, result) {
+			topics.post({uid: topic.userId, title: '', content: topic.content, cid: topic.categoryId}, function(err) {
 				assert.ok(err);
 				done();
 			});
 		});
 
 		it('should fail to create new topic with empty content', function(done) {
-			topics.post({uid: topic.userId, title: topic.title, content: '', cid: topic.categoryId}, function(err, result) {
+			topics.post({uid: topic.userId, title: topic.title, content: '', cid: topic.categoryId}, function(err) {
 				assert.ok(err);
 				done();
 			});
 		});
 
 		it('should fail to create new topic with non-existant category id', function(done) {
-			topics.post({uid: topic.userId, title: topic.title, content: topic.content, cid: 99}, function(err, result) {
+			topics.post({uid: topic.userId, title: topic.title, content: topic.content, cid: 99}, function(err) {
 				assert.equal(err.message, '[[error:no-category]]', 'received no error');
 				done();
 			});
@@ -107,21 +107,21 @@ describe('Topic\'s', function() {
 		});
 
 		it('should fail to create new reply with invalid user id', function(done) {
-			topics.reply({uid: null, content: 'test post', tid: newTopic.tid}, function(err, result) {
+			topics.reply({uid: null, content: 'test post', tid: newTopic.tid}, function(err) {
 				assert.equal(err.message, '[[error:no-privileges]]');
 				done();
 			});
 		});
 
 		it('should fail to create new reply with empty content', function(done) {
-			topics.reply({uid: topic.userId, content: '', tid: newTopic.tid}, function(err, result) {
+			topics.reply({uid: topic.userId, content: '', tid: newTopic.tid}, function(err) {
 				assert.ok(err);
 				done();
 			});
 		});
 
 		it('should fail to create new reply with invalid topic id', function(done) {
-			topics.reply({uid: null, content: 'test post', tid: 99}, function(err, result) {
+			topics.reply({uid: null, content: 'test post', tid: 99}, function(err) {
 				assert.equal(err.message, '[[error:no-topic]]');
 				done();
 			});
@@ -189,10 +189,113 @@ describe('Topic\'s', function() {
 		});
 	});
 
+	describe('.ignore', function(){
+		var newTid;
+		var uid;
+		var newTopic;
+		before(function(done){
+			uid = topic.userId;
+			async.waterfall([
+				function(done){
+					topics.post({uid: topic.userId, title: 'Topic to be ignored', content: 'Just ignore me, please!', cid: topic.categoryId}, function(err, result) {
+						newTopic = result.topicData;
+						newTid = newTopic.tid;
+						done();
+					});
+				},
+				function(done){
+					topics.markUnread( newTid, uid, done );
+				}
+			],done);
+		});
+
+		it('should not appear in the unread list', function(done){
+			async.waterfall([
+				function(done){
+					topics.ignore( newTid, uid, done );
+				},
+				function(done){
+					topics.getUnreadTopics(0, uid, 0, -1, '', done );
+				},
+				function(results, done){
+					var topics = results.topics;
+					var tids = topics.map( function(topic){ return topic.tid; } );
+					assert.equal(tids.indexOf(newTid), -1, 'The topic appeared in the unread list.');
+					done();
+				}
+			], done);
+		});
+
+		it('should not appear as unread in the recent list', function(done){
+			async.waterfall([
+				function(done){
+					topics.ignore( newTid, uid, done );
+				},
+				function(done){
+					topics.getLatestTopics( uid, 0, -1, 'year', done );
+				},
+				function(results, done){
+					var topics = results.topics;
+					var topic;
+					var i;
+					for(i = 0; i < topics.length; ++i){
+						if( topics[i].tid == newTid ){
+							assert.equal(false, topics[i].unread, 'ignored topic was marked as unread in recent list');
+							return done();
+						}
+					}
+					assert.ok(topic, 'topic didn\'t appear in the recent list');
+					done();
+				}
+			], done);
+		});
+
+		it('should appear as unread again when marked as reading', function(done){
+			async.waterfall([
+				function(done){
+					topics.ignore( newTid, uid, done );
+				},
+				function(done){
+					topics.follow( newTid, uid, done );
+				},
+				function(done){
+					topics.getUnreadTopics(0, uid, 0, -1, '', done );
+				},
+				function(results, done){
+					var topics = results.topics;
+					var tids = topics.map( function(topic){ return topic.tid; } );
+					assert.notEqual(tids.indexOf(newTid), -1, 'The topic did not appear in the unread list.');
+					done();
+				}
+			], done);
+		});
+
+		it('should appear as unread again when marked as following', function(done){
+			async.waterfall([
+				function(done){
+					topics.ignore( newTid, uid, done );
+				},
+				function(done){
+					topics.follow( newTid, uid, done );
+				},
+				function(done){
+					topics.getUnreadTopics(0, uid, 0, -1, '', done );
+				},
+				function(results, done){
+					var topics = results.topics;
+					var tids = topics.map( function(topic){ return topic.tid; } );
+					assert.notEqual(tids.indexOf(newTid), -1, 'The topic did not appear in the unread list.');
+					done();
+				}
+			], done);
+		});
+	});
+
+
 
 	describe('.fork', function(){
 		var newTopic;
-		var replies = new Array();
+		var replies = [];
 		var topicPids;
 		var originalBookmark = 5;
 		function postReply( next ){

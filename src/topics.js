@@ -131,6 +131,9 @@ var social = require('./social');
 					hasRead: function(next) {
 						Topics.hasReadTopics(tids, uid, next);
 					},
+					isIgnored: function(next) {
+						Topics.isIgnoring(tids, uid, next);
+					},
 					bookmarks: function(next) {
 						Topics.getUserBookmarks(tids, uid, next);
 					},
@@ -157,7 +160,8 @@ var social = require('./social');
 						topics[i].pinned = parseInt(topics[i].pinned, 10) === 1;
 						topics[i].locked = parseInt(topics[i].locked, 10) === 1;
 						topics[i].deleted = parseInt(topics[i].deleted, 10) === 1;
-						topics[i].unread = !results.hasRead[i];
+						topics[i].ignored = results.isIgnored[i];
+						topics[i].unread = !results.hasRead[i] && !results.isIgnored[i];
 						topics[i].bookmark = results.bookmarks[i];
 						topics[i].unreplied = !topics[i].teaser;
 					}
@@ -184,6 +188,7 @@ var social = require('./social');
 					threadTools: async.apply(plugins.fireHook, 'filter:topic.thread_tools', {topic: topicData, uid: uid, tools: []}),
 					tags: async.apply(Topics.getTopicTagsObjects, topicData.tid),
 					isFollowing: async.apply(Topics.isFollowing, [topicData.tid], uid),
+					isIgnoring: async.apply(Topics.isIgnoring, [topicData.tid], uid),
 					bookmark: async.apply(Topics.getUserBookmark, topicData.tid, uid),
 					postSharing: async.apply(social.getActivePostSharing)
 				}, next);
@@ -194,6 +199,8 @@ var social = require('./social');
 				topicData.thread_tools = results.threadTools.tools;
 				topicData.tags = results.tags;
 				topicData.isFollowing = results.isFollowing[0];
+				topicData.isNotFollowing = !results.isFollowing[0] && !results.isIgnoring[0];
+				topicData.isIgnoring = results.isIgnoring[0];
 				topicData.bookmark = results.bookmark;
 				topicData.postSharing = results.postSharing;
 
