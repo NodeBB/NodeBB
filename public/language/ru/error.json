@@ -28,7 +28,7 @@
     "password-too-long": "Пароль слишком длинный",
     "user-banned": "Пользователь заблокирован",
     "user-too-new": "Вы можете написать свое первой сообщение через %1 сек.",
-    "blacklisted-ip": "Sorry, your IP address has been banned from this community. If you feel this is in error, please contact an administrator.",
+    "blacklisted-ip": "Извините, ваш IP адрес был забанен этим сообществом. Если вы считаете что это ошибка, пожалуйста, свяжитесь с администратором.",
     "no-category": "Категория не существует",
     "no-topic": "Тема не существует",
     "no-post": "Сообщение не существует",
@@ -86,7 +86,7 @@
     "cant-edit-chat-message": "У вас нет доступа для редактирования этого сообщения",
     "cant-remove-last-user": "Вы не можете убрать последнего пользователя",
     "cant-delete-chat-message": "У вас нет доступа на удаление этого сообщения",
-    "already-voting-for-this-post": "You have already voted for this post.",
+    "already-voting-for-this-post": "Вы уже голосовали за это сообщение.",
     "reputation-system-disabled": "Система репутации отключена.",
     "downvoting-disabled": "Понижение оценки отключено",
     "not-enough-reputation-to-downvote": "У Вас недостаточно репутации для понижения оценки сообщения",
@@ -101,5 +101,5 @@
     "no-session-found": "Сессия входа не найдена!",
     "not-in-room": "Пользователь не в комнате",
     "no-users-in-room": "В этой комнате нет пользователей",
-    "cant-kick-self": "You can't kick yourself from the group"
+    "cant-kick-self": "Вы не можете удалить себя сами из группы."
 }
