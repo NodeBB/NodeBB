@@ -264,6 +264,7 @@ topicsController.get = function(req, res, callback) {
 		data['downvote:disabled'] = parseInt(meta.config['downvote:disabled'], 10) === 1;
 		data['feeds:disableRSS'] = parseInt(meta.config['feeds:disableRSS'], 10) === 1;
 		data.bookmarkThreshold = parseInt(meta.config.bookmarkThreshold, 10) || 5;
+		data.postEditDuration = parseInt(meta.config.postEditDuration, 10);
 		data.scrollToMyPost = settings.scrollToMyPost;
 		data.rssFeedUrl = nconf.get('relative_path') + '/topic/' + data.tid + '.rss';
 		data.pagination = pagination.create(currentPage, pageCount);
