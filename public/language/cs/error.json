@@ -14,6 +14,7 @@
     "invalid-password": "Neplatné heslo",
     "invalid-username-or-password": "Stanovte, prosím, oboje, jak uživatelské jméno, tak heslo",
     "invalid-search-term": "Neplatný výraz pro vyhledávání",
+    "csrf-invalid": "We were unable to log you in, likely due to an expired session. Please try again",
     "invalid-pagination-value": "Invalid pagination value, must be at least %1 and at most %2",
     "username-taken": "Uživatelské jméno je již použito",
     "email-taken": "Email je již použit",

@@ -14,6 +14,7 @@
     "invalid-password": "Vigane parool",
     "invalid-username-or-password": "Palun täpsusta kasutajanime ja parooli",
     "invalid-search-term": "Vigane otsingusõna",
+    "csrf-invalid": "We were unable to log you in, likely due to an expired session. Please try again",
     "invalid-pagination-value": "Väär lehekülje numeratsioon, peab olema vähemalt %1 ja kõige rohkem %2",
     "username-taken": "Kasutajanimi on juba võetud",
     "email-taken": "Email on võetud",

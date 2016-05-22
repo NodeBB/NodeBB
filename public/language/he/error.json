@@ -14,6 +14,7 @@
     "invalid-password": "סיסמא שגויה",
     "invalid-username-or-password": "אנא הגדר שם משתמש וסיסמה",
     "invalid-search-term": "מילת חיפוש לא תקינה",
+    "csrf-invalid": "We were unable to log you in, likely due to an expired session. Please try again",
     "invalid-pagination-value": "ערך דף לא חוקי, חייב להיות לפחות %1 ולא מעל %2",
     "username-taken": "שם משתמש תפוס",
     "email-taken": "כתובת אימייל תפוסה",

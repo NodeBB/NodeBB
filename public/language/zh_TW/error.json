@@ -14,6 +14,7 @@
     "invalid-password": "無效的密碼",
     "invalid-username-or-password": "請指定用戶名和密碼",
     "invalid-search-term": "無效的搜索字詞",
+    "csrf-invalid": "We were unable to log you in, likely due to an expired session. Please try again",
     "invalid-pagination-value": "無效的分頁數值, 必需是至少 %1 與最多 %2",
     "username-taken": "該使用者名稱已被使用",
     "email-taken": "該信箱已被使用",

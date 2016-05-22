@@ -14,6 +14,7 @@
     "invalid-password": "Неисправна лозинка",
     "invalid-username-or-password": "Молимо наведите и корисничко име и лозинку",
     "invalid-search-term": "Неисправан упит за претрагу",
+    "csrf-invalid": "We were unable to log you in, likely due to an expired session. Please try again",
     "invalid-pagination-value": "Неважећа вредност при обележавању страна, мора бити најмање %1 и највише %2 ",
     "username-taken": "Корисничко име је заузето",
     "email-taken": "Адреса е-поште је заусета",

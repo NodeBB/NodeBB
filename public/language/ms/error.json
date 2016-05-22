@@ -14,6 +14,7 @@
     "invalid-password": "Kata laluan salah!",
     "invalid-username-or-password": "Sila tentukan kedua-dua nama pengguna dan kata laluan",
     "invalid-search-term": "Terma pencarian tak sah",
+    "csrf-invalid": "We were unable to log you in, likely due to an expired session. Please try again",
     "invalid-pagination-value": "Nombor halaman tidak sah, mesti tidak kurang dari %1 dan tidak lebih dari %2",
     "username-taken": "Nama pengguna telah digunakan",
     "email-taken": "Emel telah digunakan",

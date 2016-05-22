@@ -14,6 +14,7 @@
     "invalid-password": "Contrasinal Inválido",
     "invalid-username-or-password": "Especifica ámbolos dous por favor, nome de usuario e contrasinal",
     "invalid-search-term": "Termo de búsqueda inválido",
+    "csrf-invalid": "We were unable to log you in, likely due to an expired session. Please try again",
     "invalid-pagination-value": "Valor de paxinación incorreto, ten que estar entre %1 e %2",
     "username-taken": "Nome de usuario en uso",
     "email-taken": "Correo en uso",

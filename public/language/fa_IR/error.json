@@ -14,6 +14,7 @@
     "invalid-password": "کلمه عبور نامعتبر است.",
     "invalid-username-or-password": "لطفا هم نام کاربری و هم کلمه عبور را مشخص کنید",
     "invalid-search-term": "کلمه جستجو نامعتبر است",
+    "csrf-invalid": "We were unable to log you in, likely due to an expired session. Please try again",
     "invalid-pagination-value": "Invalid pagination value, must be at least %1 and at most %2",
     "username-taken": "این نام کاربری گرفته شده است.",
     "email-taken": "این ایمیل گرفته شده است.",

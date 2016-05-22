@@ -14,6 +14,7 @@
     "invalid-password": "올바르지 않은 비밀번호입니다.",
     "invalid-username-or-password": "사용자 이름과 패스워드를 모두 설정해주세요.",
     "invalid-search-term": "올바르지 않은 검색어입니다.",
+    "csrf-invalid": "We were unable to log you in, likely due to an expired session. Please try again",
     "invalid-pagination-value": "올바르지 않은 값입니다. 최소 1%에서 최대 2%까지 설정해야 합니다.",
     "username-taken": "이미 사용 중인 사용자 이름입니다.",
     "email-taken": "이미 사용 중인 이메일입니다.",

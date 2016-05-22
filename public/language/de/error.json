@@ -14,6 +14,7 @@
     "invalid-password": "Ungültiges Passwort",
     "invalid-username-or-password": "Bitte gebe einen Benutzernamen und ein Passwort an",
     "invalid-search-term": "Ungültige Suchanfrage",
+    "csrf-invalid": "We were unable to log you in, likely due to an expired session. Please try again",
     "invalid-pagination-value": "Ungültige Seitennummerierung, muss mindestens %1 und maximal %2 sein",
     "username-taken": "Der Benutzername ist bereits vergeben",
     "email-taken": "Die E-Mail-Adresse ist bereits vergeben",

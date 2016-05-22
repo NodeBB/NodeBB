@@ -14,6 +14,7 @@
     "invalid-password": "Неверный пароль",
     "invalid-username-or-password": "Пожалуйста, укажите и имя пользователя и пароль",
     "invalid-search-term": "Неверный поисковой запрос",
+    "csrf-invalid": "We were unable to log you in, likely due to an expired session. Please try again",
     "invalid-pagination-value": "Invalid pagination value, must be at least %1 and at most %2",
     "username-taken": "Имя пользователя занято",
     "email-taken": "Email занят",

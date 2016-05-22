@@ -14,6 +14,7 @@
     "invalid-password": "Mot de passe invalide",
     "invalid-username-or-password": "Veuillez entrer un nom d'utilisateur et un mot de passe",
     "invalid-search-term": "Données de recherche invalides",
+    "csrf-invalid": "We were unable to log you in, likely due to an expired session. Please try again",
     "invalid-pagination-value": "Valeur de pagination invalide. Celle-ci doit être comprise entre %1 et %2.",
     "username-taken": "Nom d’utilisateur déjà utilisé",
     "email-taken": "Email déjà utilisé",

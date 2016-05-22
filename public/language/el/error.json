@@ -14,6 +14,7 @@
     "invalid-password": "Άκυρος Κωδικός",
     "invalid-username-or-password": "Παρακαλώ γράψε το όνομα χρήστη και τον κωδικό",
     "invalid-search-term": "Άκυρος όρος αναζήτησης",
+    "csrf-invalid": "We were unable to log you in, likely due to an expired session. Please try again",
     "invalid-pagination-value": "Invalid pagination value, must be at least %1 and at most %2",
     "username-taken": "Το όνομα χρήστη είναι πιασμένο",
     "email-taken": "Το email είναι πιασμένο",
