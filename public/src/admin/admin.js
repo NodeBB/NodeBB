@@ -2,13 +2,20 @@
 /*global config, translator, componentHandler, define, socket, app, ajaxify, utils, bootbox, Slideout, RELATIVE_PATH*/
 
 (function() {
-	$(document).ready(function() {
-		setupKeybindings();
 
-		// on page reload show correct tab if url has #
+	$(window).on('action:ajaxify.end', function() {
+		showCorrectNavTab();
+	});
+
+	function showCorrectNavTab() {
+		// show correct tab if url has #
 		if (window.location.hash) {
 			$('.nav-pills a[href=' + window.location.hash + ']').tab('show');
 		}
+	}
+
+	$(document).ready(function() {
+		setupKeybindings();
 
 		if(!/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
 			require(['admin/modules/search'], function(search) {
