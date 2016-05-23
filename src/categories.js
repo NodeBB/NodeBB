@@ -305,4 +305,23 @@ var privileges = require('./privileges');
 		return tree;
 	};
 
+	Categories.getIgnorers = function(cid, start, stop, callback) {
+		db.getSortedSetRevRange('cid:' + cid + ':ignorers', start, stop, callback);
+	};
+
+	Categories.filterIgnoringUids = function(cid, uids, callback) {
+		async.waterfall([
+			function (next){
+				db.sortedSetScores('cid:' + cid + ':ignorers', uids, next);
+			},
+			function (scores, next) {
+				var readingUids = uids.filter(function(uid, index) {
+					return uid && !!scores[index];
+				});
+				next(null, readingUids);
+			}
+		], callback);
+	};
+
+
 }(exports));

@@ -14,6 +14,7 @@
     "invalid-password": "Mật khẩu không hợp lệ",
     "invalid-username-or-password": "Xin hãy nhập cả tên đăng nhập và mật khẩu",
     "invalid-search-term": "Từ khóa không hợp lệ",
+    "csrf-invalid": "We were unable to log you in, likely due to an expired session. Please try again",
     "invalid-pagination-value": "Giá trị trang không hợp lệ, tối thiểu phải là %1 và tối đa là %2",
     "username-taken": "Tên đăng nhập đã tồn tại",
     "email-taken": "Email đã được đăng kí",

@@ -14,6 +14,7 @@
     "invalid-password": "Contraseña no válida",
     "invalid-username-or-password": "Por favor especifica tanto un usuario como contraseña",
     "invalid-search-term": "Término de búsqueda inválido",
+    "csrf-invalid": "We were unable to log you in, likely due to an expired session. Please try again",
     "invalid-pagination-value": "Número de página inválido, debe estar entre %1 y %2",
     "username-taken": "Nombre de usuario ocupado",
     "email-taken": "Correo electrónico ocupado",

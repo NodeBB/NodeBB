@@ -8,7 +8,7 @@
     "404.title": "Sidan saknas",
     "404.message": "Du verkar ha ramlat in på en sida som inte finns. Återgå till <a href='%1/'>första sidan</a>.",
     "500.title": "Internt fel.",
-    "500.message": "Hoppsan! Något verkar ha gått snett!",
+    "500.message": "Hoppsan! Något verkar ha gått fel!",
     "register": "Registrera",
     "login": "Logga in",
     "please_log_in": "Var god logga in",

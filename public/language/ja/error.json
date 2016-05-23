@@ -14,6 +14,7 @@
     "invalid-password": "無効なパスワード",
     "invalid-username-or-password": "ユーザー名とパスワードの両方を指定してください",
     "invalid-search-term": "無効な検索ワード",
+    "csrf-invalid": "We were unable to log you in, likely due to an expired session. Please try again",
     "invalid-pagination-value": "Invalid pagination value, must be at least %1 and at most %2",
     "username-taken": "ユーザー名は既に使われています",
     "email-taken": "メールアドレスは既に使われています",

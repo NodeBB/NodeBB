@@ -108,6 +108,11 @@ module.exports = function(Categories) {
 			},
 			function(_topicData, next) {
 				topicData = _topicData;
+				topicData.forEach(function(topic) {
+					if (topic) {
+						topic.teaserPid = topic.teaserPid || topic.mainPid;
+					}
+				});
 				topics.getTeasers(_topicData, next);
 			},
 			function (teasers, next) {

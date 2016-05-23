@@ -14,6 +14,7 @@
     "invalid-password": "Klaidingas slaptažodis",
     "invalid-username-or-password": "Prašome nurodyti tiek vartotojo vardą, tiek ir slaptažodį",
     "invalid-search-term": "Neteisingas paieškos terminas",
+    "csrf-invalid": "We were unable to log you in, likely due to an expired session. Please try again",
     "invalid-pagination-value": "Invalid pagination value, must be at least %1 and at most %2",
     "username-taken": "Vartotojo vardas jau užimtas",
     "email-taken": "El. pašto adresas jau užimtas",

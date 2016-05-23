@@ -14,6 +14,7 @@
     "invalid-password": "Ijambobanga Ntiryemewe",
     "invalid-username-or-password": "Tanga izina ukoresha n'ijambobanga",
     "invalid-search-term": "Icyashatswe nticyemewe",
+    "csrf-invalid": "We were unable to log you in, likely due to an expired session. Please try again",
     "invalid-pagination-value": "Invalid pagination value, must be at least %1 and at most %2",
     "username-taken": "Izina ryarafashwe mbere",
     "email-taken": "Email yarafashwe mbere",

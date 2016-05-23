@@ -14,6 +14,7 @@
     "invalid-password": "Napačno geslo",
     "invalid-username-or-password": "Prosimo vpišite uporabniško ime in geslo",
     "invalid-search-term": "Napačna iskalna poizvedba",
+    "csrf-invalid": "We were unable to log you in, likely due to an expired session. Please try again",
     "invalid-pagination-value": "Invalid pagination value, must be at least %1 and at most %2",
     "username-taken": "Uporabniško ime je že zasedeno",
     "email-taken": "E-mail naslov je že zaseden",

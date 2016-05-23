@@ -1,12 +1,12 @@
 'use strict';
 
-var	async = require('async'),
+var	async = require('async');
 
-	plugins = require('./plugins'),
-	db = require('./database'),
-	topics = require('./topics'),
-	privileges = require('./privileges'),
-	utils = require('../public/src/utils');
+var plugins = require('./plugins');
+var db = require('./database');
+var topics = require('./topics');
+var privileges = require('./privileges');
+var utils = require('../public/src/utils');
 
 (function(User) {
 
@@ -19,6 +19,7 @@ var	async = require('async'),
 	require('./user/auth')(User);
 	require('./user/create')(User);
 	require('./user/posts')(User);
+	require('./user/topics')(User);
 	require('./user/categories')(User);
 	require('./user/follow')(User);
 	require('./user/profile')(User);

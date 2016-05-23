@@ -14,6 +14,7 @@
     "invalid-password": "كلمة السر غير مقبولة",
     "invalid-username-or-password": "المرجود تحديد اسم مستخدم و كلمة مرور",
     "invalid-search-term": "كلمة البحث غير صحيحة",
+    "csrf-invalid": "We were unable to log you in, likely due to an expired session. Please try again",
     "invalid-pagination-value": "Invalid pagination value, must be at least %1 and at most %2",
     "username-taken": "اسم المستخدم مأخوذ",
     "email-taken": "البريد الالكتروني مأخوذ",

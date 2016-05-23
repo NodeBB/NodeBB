@@ -14,6 +14,7 @@
     "invalid-password": "รหัสผ่านไม่ถูกต้อง",
     "invalid-username-or-password": "กรุณาระบุชื่อผู้ใช้และรหัสผ่าน",
     "invalid-search-term": "ข้อความค้นหาไม่ถูกต้อง",
+    "csrf-invalid": "We were unable to log you in, likely due to an expired session. Please try again",
     "invalid-pagination-value": "Invalid pagination value, must be at least %1 and at most %2",
     "username-taken": "ชื่อผู้ใช้นี้มีการใช้แล้ว",
     "email-taken": "อีเมลนี้มีการใช้แล้ว",

@@ -209,12 +209,12 @@ middleware.isAdmin = function(req, res, next) {
 					return next();
 				}
 
-				req.session.returnTo = nconf.get('relative_path') + req.path.replace(/^\/api/, '');
+				req.session.returnTo = req.path.replace(/^\/api/, '');
 				req.session.forceLogin = 1;
 				if (res.locals.isAPI) {
 					res.status(401).json({});
 				} else {
-					res.redirect('/login');
+					res.redirect(nconf.get('relative_path') + '/login');
 				}
 			});
 			return;

@@ -14,6 +14,7 @@
     "invalid-password": "ভুল পাসওয়ার্ড",
     "invalid-username-or-password": "অনুগ্রহ পূর্বক ইউজারনেম এবং পাসওয়ার্ড উভয়ই প্রদান করুন",
     "invalid-search-term": "অগ্রহনযোগ্য সার্চ টার্ম",
+    "csrf-invalid": "We were unable to log you in, likely due to an expired session. Please try again",
     "invalid-pagination-value": "Invalid pagination value, must be at least %1 and at most %2",
     "username-taken": "ইউজারনেম আগেই ব্যবহৃত",
     "email-taken": "ইমেইল আগেই ব্যবহৃত",

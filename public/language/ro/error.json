@@ -14,6 +14,7 @@
     "invalid-password": "Parolă Invalidă",
     "invalid-username-or-password": "Te rugăm să specifici atât un nume de utilizator cât si o parolă",
     "invalid-search-term": "Cuvânt de căutare invalid",
+    "csrf-invalid": "We were unable to log you in, likely due to an expired session. Please try again",
     "invalid-pagination-value": "Invalid pagination value, must be at least %1 and at most %2",
     "username-taken": "Numele de utilizator este deja folosit",
     "email-taken": "Adresa de email este deja folostă",

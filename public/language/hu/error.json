@@ -14,6 +14,7 @@
     "invalid-password": "Érvénytelen jelszó",
     "invalid-username-or-password": "Kérlek adj meg egy felhasználónevet és egy jelszót",
     "invalid-search-term": "Érvénytelen keresési feltétel",
+    "csrf-invalid": "We were unable to log you in, likely due to an expired session. Please try again",
     "invalid-pagination-value": "Invalid pagination value, must be at least %1 and at most %2",
     "username-taken": "Foglalt felhasználónév",
     "email-taken": "Foglalt e-mail",

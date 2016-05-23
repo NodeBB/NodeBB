@@ -112,4 +112,8 @@ Categories.copySettingsFrom = function(socket, data, callback) {
 	categories.copySettingsFrom(data.fromCid, data.toCid, callback);
 };
 
+Categories.copyPrivilegesFrom = function(socket, data, callback) {
+	categories.copyPrivilegesFrom(data.fromCid, data.toCid, callback);
+};
+
 module.exports = Categories;

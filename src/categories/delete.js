@@ -38,6 +38,7 @@ module.exports = function(Categories) {
 					'cid:' + cid + ':tids:posts',
 					'cid:' + cid + ':pids',
 					'cid:' + cid + ':read_by_uid',
+					'cid:' + cid + ':ignorers',
 					'cid:' + cid + ':children',
 					'category:' + cid
 				], next);

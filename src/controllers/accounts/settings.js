@@ -104,6 +104,10 @@ settingsController.get = function(req, res, callback) {
 			}
 		});
 
+		if (isCustom && userData.settings.homePageRoute === 'none') {
+			isCustom = false;
+		}
+
 		userData.homePageRoutes.push({
 		 	route: 'custom',
 		 	name: 'Custom',
@@ -125,7 +129,7 @@ settingsController.get = function(req, res, callback) {
 		userData.disableCustomUserSkins = parseInt(meta.config.disableCustomUserSkins, 10) === 1;
 
 		userData.allowUserHomePage = parseInt(meta.config.allowUserHomePage, 10) === 1;
-		
+
 		userData.inTopicSearchAvailable = plugins.hasListeners('filter:topic.search');
 
 		userData.title = '[[pages:account/settings]]';

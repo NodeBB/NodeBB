@@ -14,6 +14,7 @@
     "invalid-password": "Geçersiz Şifre",
     "invalid-username-or-password": "Lütfen kullanıcı ismi ve parola girin.",
     "invalid-search-term": "Geçersiz arama",
+    "csrf-invalid": "We were unable to log you in, likely due to an expired session. Please try again",
     "invalid-pagination-value": "Geçersiz sayfalama değeri, en az %1 ve en fazla %2 olabilir",
     "username-taken": "Kullanıcı İsmi Alınmış",
     "email-taken": "E-posta Alınmış",

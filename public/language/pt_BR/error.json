@@ -14,6 +14,7 @@
     "invalid-password": "Senha Inválida",
     "invalid-username-or-password": "Por favor especifique ambos nome de usuário e senha",
     "invalid-search-term": "Termo de pesquisa inválido",
+    "csrf-invalid": "Nós não fomos capazes de logá-lo, provavelmente devido à uma sessão expirada. Por favor tente novamente.",
     "invalid-pagination-value": "Valor de paginação inválido, precisa ser entre no mínimo %1 e no máximo %2",
     "username-taken": "Nome de usuário já existe",
     "email-taken": "Email já cadastrado",

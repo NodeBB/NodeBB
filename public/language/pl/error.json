@@ -14,6 +14,7 @@
     "invalid-password": "Błędne Hasło",
     "invalid-username-or-password": "Proszę podać nazwę użytkownika i hasło",
     "invalid-search-term": "Błędne wyszukiwane wyrażenie",
+    "csrf-invalid": "We were unable to log you in, likely due to an expired session. Please try again",
     "invalid-pagination-value": "Invalid pagination value, must be at least %1 and at most %2",
     "username-taken": "Login zajęty",
     "email-taken": "Email zajęty",
