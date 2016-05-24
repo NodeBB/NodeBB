@@ -29,7 +29,7 @@ var namespace = continuationLocalStorage.createNamespace(APP_NAMESPACE);
 	};
 
 	cls.setItem = cls.set;
-	cls.getItem = cls.set;
+	cls.getItem = cls.get;
 	cls.namespace = namespace;
 	cls.continuationLocalStorage = continuationLocalStorage;
 
