@@ -1,16 +1,16 @@
 {
-    "category": "Category",
-    "subcategories": "Subcategories",
+    "category": "Categorie",
+    "subcategories": "Subcategorii",
     "new_topic_button": "Subiect Nou",
-    "guest-login-post": "Log in to post",
+    "guest-login-post": "Conecteaza-te pentru a posta",
     "no_topics": "<strong>Nu există nici un subiect de discuție în această categorie.</strong><br />De ce nu încerci să postezi tu unul?",
     "browsing": "navighează",
     "no_replies": "Nu a răspuns nimeni",
-    "no_new_posts": "No new posts.",
+    "no_new_posts": "Nici o postare nouă",
     "share_this_category": "Distribuie această categorie",
-    "watch": "Watch",
+    "watch": "Urmărește",
     "ignore": "Ignoră",
-    "watch.message": "You are now watching updates from this category",
-    "ignore.message": "You are now ignoring updates from this category",
-    "watched-categories": "Watched categories"
+    "watch.message": "Urmăriți acum actualizări din această categorie",
+    "ignore.message": "Ignorați acum actualizări din această categorie",
+    "watched-categories": "Categorii urmărite"
 }

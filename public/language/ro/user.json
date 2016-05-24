@@ -12,7 +12,7 @@
     "delete_account": "Șterge Cont",
     "delete_account_confirm": "Ești sigur ca vrei să îți ștergi contul? <br /><strong>Această acțiune este ireversibilă și nu o să mai fie posibil să îți recuperezi datele</strong><br /><br />Introdu numele tău de utilizator pentru a confirma că dorești să ștergi acest cont.",
     "delete_this_account_confirm": "Are you sure you want to delete this account? <br /><strong>This action is irreversible and you will not be able to recover any data</strong><br /><br />",
-    "account-deleted": "Account deleted",
+    "account-deleted": "Cont șters",
     "fullname": "Nume Întreg",
     "website": "Pagină Web",
     "location": "Locație",
