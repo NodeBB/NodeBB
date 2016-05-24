@@ -171,12 +171,17 @@ function render(req, res, data, next) {
 	data.adminInviteOnly = registrationType === 'admin-invite-only';
 	data['reputation:disabled'] = parseInt(meta.config['reputation:disabled'], 10) === 1;
 
-	user.getInvitesNumber(req.uid, function(err, num) {
+	async.parallel({
+		numInvites: async.apply(user.getInvitesNumber, req.uid),
+		numUsers: async.apply(user.getUserCount)
+	}, function(err, meta) {
 		if (err) {
 			return next(err);
 		}
 
-		data.invites = num;
+		res.append('X-Total-Count', meta.numUsers);
+		data.invites = meta.numInvites;
+
 		res.render('users', data);
 	});
 }

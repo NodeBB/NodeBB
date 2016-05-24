@@ -33,6 +33,10 @@ var utils = require('../public/src/utils');
 	require('./user/invite')(User);
 	require('./user/password')(User);
 
+	User.getUserCount = function(callback) {
+		db.sortedSetCount('username:uid', '-inf', '+inf', callback);
+	};
+
 	User.updateLastOnlineTime = function(uid, callback) {
 		callback = callback || function() {};
 		User.getUserFields(uid, ['status', 'lastonline'], function(err, userData) {
