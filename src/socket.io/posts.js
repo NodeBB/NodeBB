@@ -52,10 +52,6 @@ SocketPosts.reply = function(socket, data, callback) {
 		user.updateOnlineUsers(socket.uid);
 
 		socketHelpers.notifyNew(socket.uid, 'newPost', result);
-
-		if (data.lock) {
-			socketTopics.doTopicAction('lock', 'event:topic_locked', socket, {tids: [postData.topic.tid], cid: postData.topic.cid});
-		}
 	});
 };
 
