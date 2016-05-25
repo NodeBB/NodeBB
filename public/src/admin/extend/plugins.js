@@ -31,12 +31,12 @@ define('admin/extend/plugins', function() {
 				app.alert({
 					alert_id: 'plugin_toggled',
 					title: 'Plugin ' + (status.active ? 'Enabled' : 'Disabled'),
-					message: status.active ? 'Please reload your NodeBB to fully activate this plugin' : 'Plugin successfully deactivated',
+					message: status.active ? 'Please restart your NodeBB to fully activate this plugin' : 'Plugin successfully deactivated',
 					type: status.active ? 'warning' : 'success',
 					timeout: 5000,
 					clickfn: function() {
 						require(['admin/modules/instance'], function(instance) {
-							instance.reload();
+							instance.restart();
 						});
 					}
 				});
