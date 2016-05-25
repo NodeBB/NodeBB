@@ -5,6 +5,23 @@ define('admin/advanced/errors', ['Chart'], function(Chart) {
 	var Errors = {};
 
 	Errors.init = function() {
+		Errors.setupCharts();
+
+		$('[data-action="clear"]').on('click', Errors.clear404);
+	};
+
+	Errors.clear404 = function() {
+		bootbox.confirm('Are you sure you wish to clear the 404 error logs?', function(ok) {
+			if (ok) {
+				socket.emit('admin.errors.clear', {}, function(err) {
+					ajaxify.refresh();
+					app.alertSuccess('"404 Not Found" errors cleared');
+				});
+			}
+		});
+	};
+
+	Errors.setupCharts = function() {
 		var notFoundCanvas = document.getElementById('not-found'),
 			tooBusyCanvas = document.getElementById('toobusy'),
 			dailyLabels = utils.getDaysArray();

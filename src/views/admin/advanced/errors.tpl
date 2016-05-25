@@ -52,7 +52,7 @@
 			<div class="panel-heading">Manage Error Log</div>
 			<div class="panel-body">
 				<div class="btn-group-vertical btn-block" role="group">
-					<button class="btn btn-info" data-action="export"><i class="fa fa-download"></i> Export Error Log (CSV)</button>
+					<a class="btn btn-info" target="_top" href="{config.relative_path}/admin/advanced/errors/export"><i class="fa fa-download"></i> Export Error Log (CSV)</a>
 					<button class="btn btn-danger" data-action="clear"><i class="fa fa-trash"></i> Clear Error Log</button>
 				</div>
 			</div>
