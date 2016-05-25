@@ -18,6 +18,22 @@
 				</div>
 			</div>
 		</div>
+	</div>
+	<div class="col-lg-3 acp-sidebar">
+		<div class="panel panel-default">
+			<div class="panel-heading">Manage Error Log</div>
+			<div class="panel-body">
+				<div class="btn-group-vertical btn-block" role="group">
+					<a class="btn btn-info" target="_top" href="{config.relative_path}/admin/advanced/errors/export"><i class="fa fa-download"></i> Export Error Log (CSV)</a>
+					<button class="btn btn-danger" data-action="clear"><i class="fa fa-trash"></i> Clear Error Log</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="row">
+	<div class="col-xs-12">
 		<div class="panel panel-default">
 			<div class="panel-heading"><i class="fa fa-exclamation-triangle"></i> 404 Not Found</div>
 			<div class="panel-body">
@@ -44,17 +60,6 @@
 						<!-- ENDIF !not-found.length -->
 					</tbody>
 				</table>
-			</div>
-		</div>
-	</div>
-	<div class="col-lg-3 acp-sidebar">
-		<div class="panel panel-default">
-			<div class="panel-heading">Manage Error Log</div>
-			<div class="panel-body">
-				<div class="btn-group-vertical btn-block" role="group">
-					<a class="btn btn-info" target="_top" href="{config.relative_path}/admin/advanced/errors/export"><i class="fa fa-download"></i> Export Error Log (CSV)</a>
-					<button class="btn btn-danger" data-action="clear"><i class="fa fa-trash"></i> Clear Error Log</button>
-				</div>
 			</div>
 		</div>
 	</div>
