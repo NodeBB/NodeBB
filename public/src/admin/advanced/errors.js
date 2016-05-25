@@ -26,7 +26,7 @@ define('admin/advanced/errors', ['Chart'], function(Chart) {
 			tooBusyCanvas = document.getElementById('toobusy'),
 			dailyLabels = utils.getDaysArray();
 
-		dailyLabels.length = 7;
+		dailyLabels = dailyLabels.slice(-7);
 
 		if (utils.isMobile()) {
 			Chart.defaults.global.showTooltips = false;
