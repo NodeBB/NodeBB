@@ -373,12 +373,14 @@ Controllers.handle404 = function(req, res) {
 	} else if (isLanguage.test(req.url)) {
 		res.status(200).json({});
 	} else if (req.path.startsWith(relativePath + '/uploads') || (req.get('accept') && req.get('accept').indexOf('text/html') === -1) || req.path === '/favicon.ico') {
+		meta.errors.log404(req.path || '');
 		res.sendStatus(404);
 	} else if (req.accepts('html')) {
 		if (process.env.NODE_ENV === 'development') {
 			winston.warn('Route requested but not found: ' + req.url);
 		}
 
+		meta.errors.log404(req.path.replace(/^\/api/, '') || '');
 		res.status(404);
 
 		if (res.locals.isAPI) {

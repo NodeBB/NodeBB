@@ -302,6 +302,7 @@ middleware.privateUploads = function(req, res, next) {
 
 middleware.busyCheck = function(req, res, next) {
 	if (global.env === 'production' && (!meta.config.hasOwnProperty('eventLoopCheckEnabled') || parseInt(meta.config.eventLoopCheckEnabled, 10) === 1) && toobusy()) {
+		analytics.increment('errors:503');
 		res.status(503).type('text/html').sendFile(path.join(__dirname, '../../public/503.html'));
 	} else {
 		next();
