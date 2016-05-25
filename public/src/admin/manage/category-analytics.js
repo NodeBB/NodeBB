@@ -80,7 +80,7 @@ define('admin/manage/category-analytics', [], function() {
 						data: ajaxify.data.analytics['posts:daily']
 					}
 				]
-			},
+			}
 		};
 
 		hourlyCanvas.width = $(hourlyCanvas).parent().width();
