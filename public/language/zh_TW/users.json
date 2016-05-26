@@ -5,7 +5,7 @@
     "search": "搜尋",
     "enter_username": "輸入想找的使用者帳號",
     "load_more": "載入更多",
-    "users-found-search-took": "發現 %1 用戶！搜尋只用 %2 秒。",
+    "users-found-search-took": "找到 %1 使用者! 搜尋用了 %2 秒。",
     "filter-by": "過濾依照",
     "online-only": "線上僅有",
     "invite": "邀請",
