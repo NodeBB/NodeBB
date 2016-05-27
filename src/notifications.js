@@ -268,6 +268,23 @@ var utils = require('../public/src/utils');
 		});
 	};
 
+	Notifications.rescind = function(nid, callback) {
+		callback = callback || function() {};
+
+		async.parallel([
+			async.apply(db.sortedSetRemove, 'notifications', nid),
+			async.apply(db.delete, 'notifications:' + nid)
+		], function(err) {
+			if (err) {
+				winston.error('Encountered error rescinding notification (' + nid + '): ' + err.message);
+			} else {
+				winston.verbose('[notifications/rescind] Rescinded notification "' + nid + '"');
+			}
+
+			callback(err, nid);
+		});
+	};
+
 	Notifications.markRead = function(nid, uid, callback) {
 		callback = callback || function() {};
 		if (!parseInt(uid, 10) || !nid) {

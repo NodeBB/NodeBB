@@ -152,7 +152,9 @@ module.exports = function(SocketPosts) {
 			}
 
 			if (result && notification) {
-				socketHelpers.sendNotificationToPostOwner(data.pid, socket.uid, notification);
+				socketHelpers.sendNotificationToPostOwner(data.pid, socket.uid, command, notification);
+			} else if (result && command === 'unvote') {
+				socketHelpers.rescindUpvoteNotification(data.pid, socket.uid);
 			}
 			callback();
 		});

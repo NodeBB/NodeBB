@@ -77,7 +77,7 @@ function filterTidCidIgnorers(uids, tid, cid, callback) {
 	], callback);
 }
 
-SocketHelpers.sendNotificationToPostOwner = function(pid, fromuid, notification) {
+SocketHelpers.sendNotificationToPostOwner = function(pid, fromuid, command, notification) {
 	if (!pid || !fromuid || !notification) {
 		return;
 	}
@@ -107,7 +107,7 @@ SocketHelpers.sendNotificationToPostOwner = function(pid, fromuid, notification)
 				bodyLong: results.postObj.content,
 				pid: pid,
 				path: '/post/' + pid,
-				nid: 'post:' + pid + ':uid:' + fromuid,
+				nid: command + ':post:' + pid + ':uid:' + fromuid,
 				from: fromuid,
 				mergeId: notification + '|' + pid,
 				topicTitle: results.topicTitle
@@ -124,7 +124,7 @@ SocketHelpers.sendNotificationToPostOwner = function(pid, fromuid, notification)
 };
 
 
-SocketHelpers.sendNotificationToTopicOwner = function(tid, fromuid, notification) {
+SocketHelpers.sendNotificationToTopicOwner = function(tid, fromuid, command, notification) {
 	if (!tid || !fromuid || !notification) {
 		return;
 	}
@@ -150,7 +150,7 @@ SocketHelpers.sendNotificationToTopicOwner = function(tid, fromuid, notification
 			notifications.create({
 				bodyShort: '[[' + notification + ', ' + results.username + ', ' + titleEscaped + ']]',
 				path: '/topic/' + results.topicData.slug,
-				nid: 'tid:' + tid + ':uid:' + fromuid,
+				nid: command + ':tid:' + tid + ':uid:' + fromuid,
 				from: fromuid
 			}, next);
 		}
@@ -162,6 +162,11 @@ SocketHelpers.sendNotificationToTopicOwner = function(tid, fromuid, notification
 			notifications.push(notification, [ownerUid]);
 		}
 	});
+};
+
+SocketHelpers.rescindUpvoteNotification = function(pid, fromuid) {
+	var nid = 'upvote:post:' + pid + ':uid:' + fromuid;
+	notifications.rescind(nid);
 };
 
 SocketHelpers.emitToTopicAndCategory = function(event, data) {
