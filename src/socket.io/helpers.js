@@ -167,6 +167,12 @@ SocketHelpers.sendNotificationToTopicOwner = function(tid, fromuid, command, not
 SocketHelpers.rescindUpvoteNotification = function(pid, fromuid) {
 	var nid = 'upvote:post:' + pid + ':uid:' + fromuid;
 	notifications.rescind(nid);
+
+	posts.getPostField(pid, 'uid', function(err, uid) {
+		user.notifications.getUnreadCount(uid, function(err, count) {
+			websockets.in('uid_' + uid).emit('event:notifications.updateCount', count);
+		});
+	});
 };
 
 SocketHelpers.emitToTopicAndCategory = function(event, data) {
