@@ -232,7 +232,7 @@ define('forum/topic/postTools', ['share', 'navigator', 'components', 'translator
 				var selection = window.getSelection ? window.getSelection() : document.selection.createRange();
 				var content = button.parents('[component="post"]').find('[component="post/content"]').get(0);
 
-				if (content && selection.containsNode(content, true)) {
+				if (selection && selection.containsNode && content && selection.containsNode(content, true)) {
 					var bounds = document.createRange();
 					bounds.selectNodeContents(content);
 					var range = selection.getRangeAt(0).cloneRange();
