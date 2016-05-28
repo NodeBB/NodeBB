@@ -48,7 +48,7 @@ module.exports = function(Categories) {
 			function(data, next) {
 				category = data.category;
 
-				var defaultPrivileges = ['find', 'read', 'topics:create', 'topics:reply'];
+				var defaultPrivileges = ['find', 'read', 'topics:read', 'topics:create', 'topics:reply'];
 
 				async.series([
 					async.apply(db.setObject, 'category:' + category.cid, category),
@@ -57,7 +57,7 @@ module.exports = function(Categories) {
 					async.apply(db.sortedSetAdd, 'cid:' + parentCid + ':children', category.order, category.cid),
 					async.apply(privileges.categories.give, defaultPrivileges, category.cid, 'administrators'),
 					async.apply(privileges.categories.give, defaultPrivileges, category.cid, 'registered-users'),
-					async.apply(privileges.categories.give, ['find', 'read'], category.cid, 'guests')
+					async.apply(privileges.categories.give, ['find', 'read', 'topics:read'], category.cid, 'guests')
 				], next);
 			},
 			function(results, next) {
@@ -130,7 +130,7 @@ module.exports = function(Categories) {
 
 	Categories.copyPrivilegesFrom = function(fromCid, toCid, callback) {
 		var privilegeList = [
-			'find', 'read', 'topics:create', 'topics:reply', 'purge', 'mods',
+			'find', 'read', 'topics:create', 'topics:read', 'topics:reply', 'purge', 'mods',
 			'groups:find', 'groups:read', 'groups:topics:create', 'groups:topics:reply', 'groups:purge', 'groups:moderate'
 		];
 
