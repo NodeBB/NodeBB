@@ -500,7 +500,7 @@ Upgrade.upgrade = function(callback) {
 
 			if (schemaDate < thisSchemaDate) {
 				updatesMade = true;
-				winston.info('[2016/05/28] Giving topics:read privs to any group that has topics:create selected');
+				winston.info('[2016/05/28] Giving topics:read privs to any group that was previously allowed to Find & Access Category');
 
 				var groupsAPI = require('./groups');
 				var privilegesAPI = require('./privileges');
@@ -514,7 +514,7 @@ Upgrade.upgrade = function(callback) {
 							async.waterfall([
 								function(next) {
 									async.each(groups, function(group, next) {
-										if (group.privileges['groups:topics:create']) {
+										if (group.privileges['groups:read']) {
 											return groupsAPI.join('cid:' + cid + ':privileges:groups:topics:read', group.name, function(err) {
 												if (!err) {
 													winston.info('cid:' + cid + ':privileges:groups:topics:read granted to gid: ' + group.name);
@@ -529,7 +529,7 @@ Upgrade.upgrade = function(callback) {
 								},
 								function(next) {
 									async.each(users, function(user, next) {
-										if (user.privileges['topics:create']) {
+										if (user.privileges['read']) {
 											return groupsAPI.join('cid:' + cid + ':privileges:topics:read', user.uid, function(err) {
 												if (!err) {
 													winston.info('cid:' + cid + ':privileges:topics:read granted to uid: ' + user.uid);
@@ -555,12 +555,12 @@ Upgrade.upgrade = function(callback) {
 							return next(err);			
 						}
 
-						winston.info('[2016/05/28] Giving topics:read privs to any group that has topics:create selected - done');
+						winston.info('[2016/05/28] Giving topics:read privs to any group that was previously allowed to Find & Access Category - done');
 						Upgrade.update(thisSchemaDate, next);
 					});
 				});
 			} else {
-				winston.info('[2016/05/28] Giving topics:read privs to any group that has topics:create selected - skipped!');
+				winston.info('[2016/05/28] Giving topics:read privs to any group that was previously allowed to Find & Access Category - skipped!');
 				next();
 			}
 		}
