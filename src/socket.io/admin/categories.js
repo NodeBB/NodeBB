@@ -96,7 +96,7 @@ function copyPrivilegesToChildrenRecursive(parentCid, category, callback) {
 }
 
 Categories.copySettingsFrom = function(socket, data, callback) {
-	categories.copySettingsFrom(data.fromCid, data.toCid, callback);
+	categories.copySettingsFrom(data.fromCid, data.toCid, true, callback);
 };
 
 Categories.copyPrivilegesFrom = function(socket, data, callback) {
