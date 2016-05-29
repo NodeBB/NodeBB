@@ -428,7 +428,6 @@ var utils = require('../public/src/utils');
 	Notifications.merge = function(notifications, callback) {
 		// When passed a set of notification objects, merge any that can be merged
 		var mergeIds = [
-				'notifications:favourited_your_post_in',
 				'notifications:upvoted_your_post_in',
 				'notifications:user_started_following_you',
 				'notifications:user_posted_to',
@@ -475,7 +474,7 @@ var utils = require('../public/src/utils');
 				}
 
 				switch(mergeId) {
-					case 'notifications:favourited_your_post_in':	// intentional fall-through
+					// intentional fall-through
 					case 'notifications:upvoted_your_post_in':
 					case 'notifications:user_started_following_you':
 					case 'notifications:user_posted_to':
