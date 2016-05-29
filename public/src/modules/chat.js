@@ -204,6 +204,7 @@ define('chat', [
 
 				app.loadJQueryUI(function() {
 					chatModal.find('.modal-content').resizable({
+						handles: 'n, e, s, w, se',
 						minHeight: 250,
 						minWidth: 400
 					});
