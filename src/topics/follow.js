@@ -233,6 +233,8 @@ module.exports = function(Topics) {
 								username: data.userData.username,
 								userslug: data.userData.userslug,
 								url: nconf.get('url') + '/topic/' + postData.topic.tid,
+								topicSlug: postData.topic.slug,
+								postCount: postData.topic.postcount,
 								base_url: nconf.get('url')
 							}, next);
 						} else {
