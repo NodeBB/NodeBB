@@ -79,7 +79,7 @@
     "signature-too-long": "La signature ne peut dépasser %1 caractère(s).",
     "about-me-too-long": "Votre texte \"à propos de moi\" ne peut dépasser %1 caractère(s).",
     "cant-chat-with-yourself": "Vous ne pouvez chatter avec vous même !",
-    "chat-restricted": "Cet utilisateur a restreint les ses messages de chat. Il doit d'abord vous suivre avant de pouvoir discuter avec lui.",
+    "chat-restricted": "Cet utilisateur a restreint les ses messages de chat. Il doit d'abord s'abonner à votre compte avant que vous puissiez discuter avec lui.",
     "chat-disabled": "Système de chat désactivé",
     "too-many-messages": "Vous avez envoyé trop de messages, veuillez patienter un instant.",
     "invalid-chat-message": "Message de Chat invalide",
