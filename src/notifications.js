@@ -268,6 +268,23 @@ var utils = require('../public/src/utils');
 		});
 	};
 
+	Notifications.rescind = function(nid, callback) {
+		callback = callback || function() {};
+
+		async.parallel([
+			async.apply(db.sortedSetRemove, 'notifications', nid),
+			async.apply(db.delete, 'notifications:' + nid)
+		], function(err) {
+			if (err) {
+				winston.error('Encountered error rescinding notification (' + nid + '): ' + err.message);
+			} else {
+				winston.verbose('[notifications/rescind] Rescinded notification "' + nid + '"');
+			}
+
+			callback(err, nid);
+		});
+	};
+
 	Notifications.markRead = function(nid, uid, callback) {
 		callback = callback || function() {};
 		if (!parseInt(uid, 10) || !nid) {
@@ -411,7 +428,6 @@ var utils = require('../public/src/utils');
 	Notifications.merge = function(notifications, callback) {
 		// When passed a set of notification objects, merge any that can be merged
 		var mergeIds = [
-				'notifications:favourited_your_post_in',
 				'notifications:upvoted_your_post_in',
 				'notifications:user_started_following_you',
 				'notifications:user_posted_to',
@@ -458,7 +474,7 @@ var utils = require('../public/src/utils');
 				}
 
 				switch(mergeId) {
-					case 'notifications:favourited_your_post_in':	// intentional fall-through
+					// intentional fall-through
 					case 'notifications:upvoted_your_post_in':
 					case 'notifications:user_started_following_you':
 					case 'notifications:user_posted_to':

@@ -50,12 +50,30 @@
 		color: @link-color;
 	}
 
+	// .floating-button can either be a container or the button itself
 	.floating-button {
-		background: @brand-primary !important;
 		position: fixed;
 		right: 30px;
 		bottom: 30px;
 		z-index: 1;
+		max-width: 56px;
+
+		button {
+			&.primary {
+				background: @brand-primary !important;
+			}
+
+			&.success {
+				background: @brand-success !important;
+			}
+
+			&:not(:last-child) {
+				margin-bottom: 2rem;
+			}
+		}
+	}
+	button.floating-button {
+		background: @brand-primary !important;
 	}
 
 	.user-img {

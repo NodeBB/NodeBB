@@ -28,7 +28,7 @@ module.exports = function(SocketPosts) {
 				topics.movePostToTopic(data.pid, data.tid, next);
 			},
 			function (next) {
-				socketHelpers.sendNotificationToPostOwner(data.pid, socket.uid, 'notifications:moved_your_post');
+				socketHelpers.sendNotificationToPostOwner(data.pid, socket.uid, 'move', 'notifications:moved_your_post');
 				next();
 			}
 		], callback);

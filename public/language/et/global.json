@@ -87,8 +87,8 @@
     "map": "Kaart",
     "sessions": "Logitud Sessioonid",
     "ip_address": "IP Aadress",
-    "enter_page_number": "Enter page number",
-    "upload_file": "Upload file",
-    "upload": "Upload",
-    "allowed-file-types": "Allowed file types are %1"
+    "enter_page_number": "Sisesta lehekülje number",
+    "upload_file": "Lae fail üles",
+    "upload": "Lae üles",
+    "allowed-file-types": "Lubatud faili formaadid on %1"
 }

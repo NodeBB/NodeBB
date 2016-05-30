@@ -5,8 +5,8 @@
 define('forum/recent', ['forum/infinitescroll', 'components'], function(infinitescroll, components) {
 	var	Recent = {};
 
-	var newTopicCount = 0,
-		newPostCount = 0;
+	var newTopicCount = 0;
+	var newPostCount = 0;
 
 	$(window).on('action:ajaxify.start', function(ev, data) {
 		if (ajaxify.currentPage !== data.url) {
@@ -26,6 +26,8 @@ define('forum/recent', ['forum/infinitescroll', 'components'], function(infinite
 		if (!config.usePagination) {
 			infinitescroll.init(Recent.loadMoreTopics);
 		}
+
+		$(window).trigger('action:topics.loaded', {topics: ajaxify.data.topics});
 	};
 
 	Recent.watchForNewPosts = function () {

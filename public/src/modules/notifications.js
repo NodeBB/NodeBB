@@ -102,9 +102,11 @@ define('notifications', ['sounds', 'translator', 'components'], function(sound, 
 				ajaxify.refresh();
 			}
 
-			if (!unreadNotifs[notifData.nid]) {
-				incrementNotifCount(1);
+			socket.emit('notifications.getCount', function(err, count) {
+				Notifications.updateNotifCount(count);
+			});
 
+			if (!unreadNotifs[notifData.nid]) {
 				sound.play('notification');
 				unreadNotifs[notifData.nid] = true;
 			}

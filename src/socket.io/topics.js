@@ -36,10 +36,6 @@ SocketTopics.post = function(socket, data, callback) {
 			return callback(err);
 		}
 
-		if (data.lock) {
-			SocketTopics.doTopicAction('lock', 'event:topic_locked', socket, {tids: [result.topicData.tid], cid: result.topicData.cid});
-		}
-
 		callback(null, result.topicData);
 
 		socket.emit('event:new_post', {posts: [result.postData]});

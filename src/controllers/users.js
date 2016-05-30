@@ -126,6 +126,7 @@ usersController.getUsers = function(set, uid, page, callback) {
 			loadmore_display: results.usersData.count > (stop - start + 1) ? 'block' : 'hide',
 			users: results.usersData.users,
 			pagination: pagination.create(page, pageCount),
+			userCount: results.usersData.count,
 			title: setToTitles[set] || '[[pages:users/latest]]',
 			breadcrumbs: helpers.buildBreadcrumbs(breadcrumbs),
 			setName: set,
@@ -171,12 +172,14 @@ function render(req, res, data, next) {
 	data.adminInviteOnly = registrationType === 'admin-invite-only';
 	data['reputation:disabled'] = parseInt(meta.config['reputation:disabled'], 10) === 1;
 
-	user.getInvitesNumber(req.uid, function(err, num) {
+	user.getInvitesNumber(req.uid, function(err, numInvites) {
 		if (err) {
 			return next(err);
 		}
 
-		data.invites = num;
+		res.append('X-Total-Count', data.userCount);
+		data.invites = numInvites;
+
 		res.render('users', data);
 	});
 }

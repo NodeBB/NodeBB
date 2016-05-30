@@ -62,7 +62,7 @@ module.exports = function(Categories) {
 			},
 			function(results, next) {
 				if (data.cloneFromCid && parseInt(data.cloneFromCid, 10)) {
-					return Categories.copySettingsFrom(data.cloneFromCid, category.cid, next);
+					return Categories.copySettingsFrom(data.cloneFromCid, category.cid, !data.parentCid, next);
 				}
 				next(null, category);
 			},
@@ -81,7 +81,7 @@ module.exports = function(Categories) {
 		return [backgrounds[index], text[index]];
 	};
 
-	Categories.copySettingsFrom = function(fromCid, toCid, callback) {
+	Categories.copySettingsFrom = function(fromCid, toCid, copyParent, callback) {
 		var destination;
 		async.waterfall([
 			function (next) {
@@ -97,11 +97,11 @@ module.exports = function(Categories) {
 				destination = results.destination;
 
 				var tasks = [];
-				if (utils.isNumber(results.source.parentCid)) {
+				if (copyParent && utils.isNumber(results.source.parentCid)) {
 					tasks.push(async.apply(db.sortedSetAdd, 'cid:' + results.source.parentCid + ':children', results.source.order, toCid));
 				}
 
-				if (destination && utils.isNumber(destination.parentCid)) {
+				if (copyParent && destination && utils.isNumber(destination.parentCid)) {
 					tasks.push(async.apply(db.sortedSetRemove, 'cid:' + destination.parentCid + ':children', toCid));
 				}
 
@@ -114,8 +114,11 @@ module.exports = function(Categories) {
 				destination.numRecentReplies = results.source.numRecentReplies;
 				destination.class = results.source.class;
 				destination.imageClass = results.source.imageClass;
-				destination.parentCid = results.source.parentCid || 0;
-
+				
+				if (copyParent) {
+					destination.parentCid = results.source.parentCid || 0;	
+				}
+				
 				tasks.push(async.apply(db.setObject, 'category:' + toCid, destination));
 
 				async.series(tasks, next);
