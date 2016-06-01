@@ -5,7 +5,7 @@
 	<!-- IF !users.length -->
 	<p class="panel-body">
 		There are no users in the registration queue. <br>
-		To enable this feature, go to <a href="{config.relative_path}/admin/settings/user">Settings -> User -> Authentication</a> and set
+		To enable this feature, go to <a href="{config.relative_path}/admin/settings/user">Settings &rarr; User &rarr; Authentication</a> and set
 		<strong>Registration Type</strong> to "Admin Approval".
 	</p>
 	<!-- ENDIF !users.length -->
@@ -13,8 +13,8 @@
 		<tr>
 			<th>Name</th>
 			<th>Email</th>
-			<th>IP</th>
-			<th>Time</th>
+			<th class="hidden-xs">IP</th>
+			<th class="hidden-xs">Time</th>
 			<th></th>
 		</tr>
 		<!-- BEGIN users -->
@@ -35,7 +35,7 @@
 				<!-- ENDIF users.emailSpam -->
 				{users.email}
 			</td>
-			<td>
+			<td class="hidden-xs">
 				<!-- IF users.ipSpam -->
 				<i class="fa fa-times-circle text-danger" title="Frequency: {users.spamData.ip.frequency} Appears: {users.spamData.ip.appears}"></i>
 				<!-- ELSE -->
@@ -43,7 +43,7 @@
 				<!-- ENDIF users.ipSpam -->
 				{users.ip}
 			</td>
-			<td>
+			<td class="hidden-xs">
 				<span class="timeago" title="{users.timestampISO}"></span>
 			</td>
 			<td>
