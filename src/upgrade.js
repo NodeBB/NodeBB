@@ -513,7 +513,7 @@ Upgrade.upgrade = function(callback) {
 
 							async.waterfall([
 								function(next) {
-									async.each(groups, function(group, next) {
+									async.eachSeries(groups, function(group, next) {
 										if (group.privileges['groups:read']) {
 											return groupsAPI.join('cid:' + cid + ':privileges:groups:topics:read', group.name, function(err) {
 												if (!err) {
@@ -528,7 +528,7 @@ Upgrade.upgrade = function(callback) {
 									}, next);
 								},
 								function(next) {
-									async.each(users, function(user, next) {
+									async.eachSeries(users, function(user, next) {
 										if (user.privileges['read']) {
 											return groupsAPI.join('cid:' + cid + ':privileges:topics:read', user.uid, function(err) {
 												if (!err) {
