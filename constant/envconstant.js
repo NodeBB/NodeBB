@@ -1,7 +1,8 @@
 /**
  * environment constant values
  */
-var cfenv = require('cfenv');
+var winston = require('winston'),
+	cfenv = require('cfenv');
 var env = env || {};
 
 var appEnv = {};
