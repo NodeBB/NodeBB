@@ -344,7 +344,7 @@ define('admin/manage/category', [
 			autocomplete.group(inputEl, function(ev, ui) {
 				socket.emit('admin.categories.setPrivilege', {
 					cid: ajaxify.data.category.cid,
-					privilege: ['groups:find', 'groups:read'],
+					privilege: ['groups:find', 'groups:read', 'groups:topics:read'],
 					set: true,
 					member: ui.item.group.name
 				}, function(err) {
