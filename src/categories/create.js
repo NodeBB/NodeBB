@@ -97,13 +97,14 @@ module.exports = function(Categories) {
 				destination = results.destination;
 
 				var tasks = [];
-				if (copyParent && utils.isNumber(results.source.parentCid)) {
-					tasks.push(async.apply(db.sortedSetAdd, 'cid:' + results.source.parentCid + ':children', results.source.order, toCid));
-				}
-
-				if (copyParent && destination && utils.isNumber(destination.parentCid)) {
+				
+				if (copyParent && utils.isNumber(destination.parentCid)) {
 					tasks.push(async.apply(db.sortedSetRemove, 'cid:' + destination.parentCid + ':children', toCid));
 				}
+
+				if (copyParent && utils.isNumber(results.source.parentCid)) {
+					tasks.push(async.apply(db.sortedSetAdd, 'cid:' + results.source.parentCid + ':children', results.source.order, toCid));
+				}				
 
 				destination.description = results.source.description;
 				destination.descriptionParsed = results.source.descriptionParsed;
