@@ -24,12 +24,12 @@
     "group": "%1 groupe",
     "chats": "Discussions",
     "chat": "Conversation avec %1",
-    "account/edit": "Edition de \"%1\"",
+    "account/edit": "Édition de \"%1\"",
     "account/edit/password": "Édition du mot de passe de \"%1\"",
     "account/edit/username": "Édition du nom d'utilisateur de \"%1\"",
     "account/edit/email": "Édition de l'e-mail de \"%1\"",
     "account/following": "Les personnes auxquelles %1 est abonné",
-    "account/followers": "Les personnes qui suivent %1",
+    "account/followers": "Les personnes abonnées à %1",
     "account/posts": "Messages postés par %1",
     "account/topics": "Sujets créés par %1",
     "account/groups": "Groupes auxquels appartient %1",
@@ -41,6 +41,6 @@
     "account/best": "Meilleurs messages postés par %1",
     "confirm": "Email vérifié",
     "maintenance.text": "%1 est en maintenance. Veuillez revenir un peu plus tard.",
-    "maintenance.messageIntro": "De plus, l'administrateur a laissé ce message:",
+    "maintenance.messageIntro": "De plus, l'administrateur a laissé ce message :",
     "throttled.text": "%1 est actuellement indisponible en raison d'une charge excessive. Merci de réessayer plus tard."
 }
