@@ -9,6 +9,7 @@ var winston = require('winston'),
 	async = require('async'),
 	uglify = require('uglify-js'),
 	nconf = require('nconf'),
+	ENV = require('../constant/envconstant'),
 	app = express(),
 	server;
 
@@ -31,7 +32,7 @@ var web = {},
 	];
 
 web.install = function(port) {
-	port = port || 4567;
+	port = port || ENV.PORT;
 	winston.info('Launching web installer on port', port);
 
 	app.use(express.static('public', {}));

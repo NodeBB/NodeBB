@@ -9,6 +9,7 @@ var	nconf = require('nconf'),
 	async = require('async'),
 	logrotate = require('logrotate-stream'),
 	file = require('./src/file'),
+	ENV = require('./constant/envconstant'),
 	pkg = require('./package.json');
 
 nconf.argv().env().file({
@@ -200,7 +201,7 @@ function getPorts() {
 		process.exit();
 	}
 	var urlObject = url.parse(_url);
-	var port = nconf.get('port') || nconf.get('PORT') || urlObject.port || 4567;
+	var port = nconf.get('port') || nconf.get('PORT') || urlObject.port || ENV.PORT;
 	if (!Array.isArray(port)) {
 		port = [port];
 	}

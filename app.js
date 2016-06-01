@@ -30,6 +30,7 @@ var url = require('url'),
 	colors = require('colors'),
 	path = require('path'),
 	pkg = require('./package.json'),
+	ENV = require('./constant/envconstant'),
 	file = require('./src/file');
 
 global.env = process.env.NODE_ENV || 'production';
@@ -121,7 +122,7 @@ function start() {
 	nconf.set('secure', urlObject.protocol === 'https');
 	nconf.set('use_port', !!urlObject.port);
 	nconf.set('relative_path', relativePath);
-	nconf.set('port', urlObject.port || nconf.get('port') || nconf.get('PORT') || 4567);
+	nconf.set('port', urlObject.port || nconf.get('port') || nconf.get('PORT') || ENV.PORT);
 	nconf.set('upload_url', '/uploads/');
 
 	if (nconf.get('isPrimary') === 'true') {

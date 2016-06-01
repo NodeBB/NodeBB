@@ -6,6 +6,7 @@ var async = require('async'),
 	prompt = require('prompt'),
 	winston = require('winston'),
 	nconf = require('nconf'),
+	ENV = require('../constant/envconstant'),
 	utils = require('../public/src/utils.js');
 
 
@@ -19,7 +20,7 @@ questions.main = [
 		'default':
 			nconf.get('url') ||
 			(nconf.get('base_url') ? (nconf.get('base_url') + (nconf.get('use_port') ? ':' + nconf.get('port') : '')) : null) ||	// backwards compatibility (remove for v0.7.0)
-			'http://localhost:4567',
+			'http://localhost:' + ENV.PORT,
 		pattern: /^http(?:s)?:\/\//,
 		message: 'Base URL must begin with \'http://\' or \'https://\'',
 	},
@@ -38,7 +39,7 @@ questions.main = [
 questions.optional = [
 	{
 		name: 'port',
-		default: nconf.get('port') || 4567
+		default: nconf.get('port') || ENV.PORT
 	}
 ];
 
