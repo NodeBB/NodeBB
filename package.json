@@ -35,6 +35,7 @@
     "express-session": "^1.8.2",
     "express-useragent": "0.2.4",
     "html-to-text": "2.0.0",
+    "iisnode-require": "^1.0.0",
     "ip": "1.1.2",
     "jimp": "0.2.21",
     "json-2-csv": "^2.0.22",

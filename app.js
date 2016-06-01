@@ -19,6 +19,7 @@
 
 "use strict";
 /*global require, global, process*/
+require('iisnode-require');
 
 var nconf = require('nconf');
 nconf.argv().env('__');
