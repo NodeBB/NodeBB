@@ -10,7 +10,7 @@ var db = require('./database'),
 	schemaDate, thisSchemaDate,
 
 	// IMPORTANT: REMEMBER TO UPDATE VALUE OF latestSchema
-	latestSchema = Date.UTC(2016, 3, 29);
+	latestSchema = Date.UTC(2016, 4, 28);
 
 Upgrade.check = function(callback) {
 	db.get('schemaDate', function(err, value) {
@@ -492,6 +492,75 @@ Upgrade.upgrade = function(callback) {
 				});
 			} else {
 				winston.info('[2016/04/29] Dismiss flags from deleted topics skipped!');
+				next();
+			}
+		},
+		function(next) {
+			thisSchemaDate = Date.UTC(2016, 4, 28);
+
+			if (schemaDate < thisSchemaDate) {
+				updatesMade = true;
+				winston.info('[2016/05/28] Giving topics:read privs to any group that was previously allowed to Find & Access Category');
+
+				var groupsAPI = require('./groups');
+				var privilegesAPI = require('./privileges');
+				
+				db.getSortedSetRange('categories:cid', 0, -1, function(err, cids) {
+					async.eachSeries(cids, function(cid, next) {
+						privilegesAPI.categories.list(cid, function(err, data) {
+							var groups = data.groups;
+							var users = data.users;
+
+							async.waterfall([
+								function(next) {
+									async.eachSeries(groups, function(group, next) {
+										if (group.privileges['groups:read']) {
+											return groupsAPI.join('cid:' + cid + ':privileges:groups:topics:read', group.name, function(err) {
+												if (!err) {
+													winston.info('cid:' + cid + ':privileges:groups:topics:read granted to gid: ' + group.name);
+												}
+
+												return next(err);
+											});
+										}
+										
+										next(null);
+									}, next);
+								},
+								function(next) {
+									async.eachSeries(users, function(user, next) {
+										if (user.privileges['read']) {
+											return groupsAPI.join('cid:' + cid + ':privileges:topics:read', user.uid, function(err) {
+												if (!err) {
+													winston.info('cid:' + cid + ':privileges:topics:read granted to uid: ' + user.uid);
+												}
+
+												return next(err);
+											});
+										}
+										
+										next(null);
+									}, next);
+								}
+							], function(err) {
+								if (!err) {
+									winston.info('-- cid ' + cid + ' upgraded');
+								}
+
+								next(err);
+							});
+						});
+					}, function(err) {
+						if (err) {
+							return next(err);			
+						}
+
+						winston.info('[2016/05/28] Giving topics:read privs to any group that was previously allowed to Find & Access Category - done');
+						Upgrade.update(thisSchemaDate, next);
+					});
+				});
+			} else {
+				winston.info('[2016/05/28] Giving topics:read privs to any group that was previously allowed to Find & Access Category - skipped!');
 				next();
 			}
 		}
