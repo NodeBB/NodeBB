@@ -17,4 +17,4 @@ env.IPADDRESS = process.env.OPENSHIFT_NODEJS_IP || appEnv.bind || '127.0.0.1';
 // port openshift - Cloud Foundry(IBM Bluemix, Amazon EC2 etc.) - 4567
 env.PORT = process.env.OPENSHIFT_NODEJS_PORT || appEnv.port || 4567;
 
-modules.exports = env;
+module.exports = env;
