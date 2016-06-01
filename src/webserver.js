@@ -150,7 +150,7 @@ function listen(callback) {
 
 	var isSocket = isNaN(port),
 		args = isSocket ? [port] : [port, nconf.get('bind_address')],
-		bind_address = ((nconf.get('bind_address') === "0.0.0.0" || !nconf.get('bind_address')) ? '0.0.0.0' : nconf.get('bind_address')) + ':' + port,
+		bind_address = process.env.OPENSHIFT_NODEJS_IP + ':' + port, // ((nconf.get('bind_address') === "0.0.0.0" || !nconf.get('bind_address')) ? '0.0.0.0' : nconf.get('bind_address')) + ':' + port,
 		oldUmask;
 
 	args.push(function(err) {
@@ -211,5 +211,3 @@ module.exports.testSocket = function(socketPath, callback) {
 		async.apply(fs.unlink, socketPath),	// The socket was stale, kick it out of the way
 	], callback);
 };
-
-
