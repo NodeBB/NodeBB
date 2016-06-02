@@ -181,7 +181,11 @@ function start() {
 			require('./src/meta').configs.init(next);
 		},
 		function(next) {
-			require('./src/meta').dependencies.check(next);
+			if (nconf.get('dep-check') === undefined || nconf.get('dep-check') !== false) {
+				require('./src/meta').dependencies.check(next);
+			} else {
+				setImmediate(next);
+			}
 		},
 		function(next) {
 			require('./src/upgrade').check(next);
