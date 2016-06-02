@@ -215,6 +215,10 @@ var cls = require('../middleware/cls');
 		var referer = headers.referer || '';
 		var data = ((payload || {}).data || []);
 
+		if (!host) {
+			host = url.parse(referer).host;
+		}
+
 		return {
 			uid: socket.uid,
 			params: data[1],
