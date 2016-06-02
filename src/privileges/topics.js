@@ -19,9 +19,28 @@ module.exports = function(privileges) {
 			async.apply(topics.getTopicFields, tid, ['cid', 'uid', 'locked']),
 			function(_topic, next) {
 				topic = _topic;
+				var isUserAllowedToReadTopicOrReadOwnTopic = function (callback) {
+					async.parallel([
+						function (readCallback) {
+							helpers.isUserAllowedTo('topics:read', uid, [topic.cid], readCallback);
+						},
+						function (ownCallback) {
+							if (topic.uid != uid) {
+								return ownCallback(null, [false]);
+							}
+							helpers.isUserAllowedTo('topicsOwn:read', uid, [topic.cid], ownCallback);
+						}
+					], function (err, results) {
+						if (err) {
+							callback(err);
+						} else {
+							callback(null, [results[0][0] || results[1][0]]);
+						}
+					});
+				};
 				async.parallel({
 					'topics:reply': async.apply(helpers.isUserAllowedTo, 'topics:reply', uid, [topic.cid]),
-					'topics:read': async.apply(helpers.isUserAllowedTo, 'topics:read', uid, [topic.cid]),
+					'topics:read': isUserAllowedToReadTopicOrReadOwnTopic,
 					read: async.apply(helpers.isUserAllowedTo, 'read', uid, [topic.cid]),
 					isOwner: function(next) {
 						next(null, !!parseInt(uid, 10) && parseInt(uid, 10) === parseInt(topic.uid, 10));
