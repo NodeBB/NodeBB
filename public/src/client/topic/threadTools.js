@@ -86,9 +86,36 @@ define('forum/topic/threadTools', [
 		components.get('topic').on('click', '[component="topic/follow"], [component="topic/unfollow"]', follow);
 		components.get('topic/follow').off('click').on('click', follow);
 		components.get('topic/unfollow').off('click').on('click', follow);
+		components.get('topic/resolve').off('click').on('click', resolve);
+		components.get('topic/unresolve').off('click').on('click', resolve);
 
 		function follow() {
 			socket.emit('topics.toggleFollow', tid, function(err, state) {
+				if (err) {
+					return app.alert({
+						type: 'danger',
+						alert_id: 'topic_follow',
+						title: '[[global:please_log_in]]',
+						message: '[[topic:login_to_subscribe]]',
+						timeout: 5000
+					});
+				}
+
+				setFollowState(state);
+
+				app.alert({
+					alert_id: 'follow_thread',
+					message: state ? '[[topic:following_topic.message]]' : '[[topic:not_following_topic.message]]',
+					type: 'success',
+					timeout: 5000
+				});
+			});
+
+			return false;
+		}
+
+		function resolve() {
+			socket.emit('topics.toggleResolve', tid, function(err, state) {
 				if (err) {
 					return app.alert({
 						type: 'danger',

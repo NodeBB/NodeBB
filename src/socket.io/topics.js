@@ -80,6 +80,10 @@ SocketTopics.follow = function(socket, tid, callback) {
 	followCommand(topics.follow, socket, tid, callback);
 };
 
+SocketTopics.toggleResolve = function(socket, tid, callback) {
+	followCommand(topics.toggleResolve, socket, tid, callback);
+};
+
 function followCommand(method, socket, tid, callback) {
 	if (!socket.uid) {
 		return callback(new Error('[[error:not-logged-in]]'));
