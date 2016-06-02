@@ -126,14 +126,14 @@ define('forum/topic/threadTools', [
 					});
 				}
 
-				setFollowState(state);
+				setResolvedState(state);
 
-				app.alert({
-					alert_id: 'follow_thread',
-					message: state ? '[[topic:following_topic.message]]' : '[[topic:not_following_topic.message]]',
-					type: 'success',
-					timeout: 5000
-				});
+				// app.alert({
+				// 	alert_id: 'follow_thread',
+				// 	message: state ? '[[topic:following_topic.message]]' : '[[topic:not_following_topic.message]]',
+				// 	type: 'success',
+				// 	timeout: 5000
+				// });
 			});
 
 			return false;
@@ -226,6 +226,10 @@ define('forum/topic/threadTools', [
 		components.get('topic/unfollow').toggleClass('hidden', !state);
 	}
 
+	function setResolvedState(state) {
+		components.get('topic/resolve').toggleClass('hidden', state);
+		components.get('topic/unresolve').toggleClass('hidden', !state);
+	}
 
 	return ThreadTools;
 });
