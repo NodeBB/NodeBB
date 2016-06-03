@@ -21,6 +21,7 @@ module.exports = function(privileges) {
 			{name: 'Find Category'},
 			{name: 'Access Category'},
 			{name: 'Access Topics'},
+			{name: 'Access Own Topics'},
 			{name: 'Create Topics'},
 			{name: 'Reply to Topics'},
 			{name: 'Purge'},
@@ -28,10 +29,10 @@ module.exports = function(privileges) {
 		];
 
 		var userPrivilegeList = [
-			'find', 'read', 'topics:read', 'topics:create', 'topics:reply', 'purge', 'mods'
+			'find', 'read', 'topics:read', 'topicsOwn:read', 'topics:create', 'topics:reply', 'purge', 'mods'
 		];
 		var groupPrivilegeList = [
-			'groups:find', 'groups:read', 'groups:topics:read', 'groups:topics:create', 'groups:topics:reply', 'groups:purge', 'groups:moderate'
+			'groups:find', 'groups:read', 'groups:topics:read', 'groups:topicsOwn:read', 'groups:topics:create', 'groups:topics:reply', 'groups:purge', 'groups:moderate'
 		];
 
 		async.parallel({
@@ -166,6 +167,9 @@ module.exports = function(privileges) {
 			'topics:read': function(next) {
 				helpers.isUserAllowedTo('topics:read', uid, [cid], next);
 			},
+			'topicsOwn:read': function(next) {
+				helpers.isUserAllowedTo('topicsOwn:read', uid, [cid], next);
+			},
 			read: function(next) {
 				helpers.isUserAllowedTo('read', uid, [cid], next);
 			},
@@ -187,6 +191,7 @@ module.exports = function(privileges) {
 				uid: uid,
 				'topics:create': results['topics:create'][0] || isAdminOrMod,
 				'topics:read': results['topics:read'][0] || isAdminOrMod,
+				'topicsOwn:read': results['topicsOwn:read'][0] || isAdminOrMod,
 				editable: isAdminOrMod,
 				view_deleted: isAdminOrMod,
 				read: results.read[0] || isAdminOrMod,

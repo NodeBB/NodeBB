@@ -27,6 +27,10 @@ module.exports = function(Topics) {
 		], callback);
 	};
 
+	Topics.ResolveTopic = function(tid, callback) {
+		db.setObjectField('topic:' + tid, "resolved", 1, callback);
+	}
+	
 	Topics.getTopicPosts = function(tid, set, start, stop, uid, reverse, callback) {
 		callback = callback || function() {};
 		async.parallel({

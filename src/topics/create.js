@@ -38,7 +38,8 @@ module.exports = function(Topics) {
 					'viewcount': 0,
 					'locked': 0,
 					'deleted': 0,
-					'pinned': 0
+					'pinned': 0,
+					'resolved': 0
 				};
 
 				if (data.thumb) {

@@ -25,6 +25,7 @@ var social = require('./social');
 	require('./topics/fork')(Topics);
 	require('./topics/posts')(Topics);
 	require('./topics/follow')(Topics);
+	require('./topics/resolve')(Topics);
 	require('./topics/tags')(Topics);
 	require('./topics/teaser')(Topics);
 	require('./topics/suggested')(Topics);

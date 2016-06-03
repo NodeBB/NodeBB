@@ -114,6 +114,11 @@ categoryController.get = function(req, res, callback) {
 
 			categories.modifyTopicsByPrivilege(categoryData.topics, userPrivileges);
 
+			categoryData.topics = categoryData.topics.filter(function (topic) {
+				return (userPrivileges['topics:read'] || userPrivileges.isAdminOrMod ||
+				(userPrivileges['topicsOwn:read'] && userPrivileges.uid == topic.uid));
+			});
+
 			if (categoryData.link) {
 				db.incrObjectField('category:' + categoryData.cid, 'timesClicked');
 				return res.redirect(categoryData.link);
