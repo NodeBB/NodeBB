@@ -1,10 +1,10 @@
 'use strict';
 
-var async = require('async'),
-	winston = require('winston'),
-	db = require('../database'),
-	meta = require('../meta'),
-	events = require('../events');
+var async = require('async');
+var winston = require('winston');
+var db = require('../database');
+var meta = require('../meta');
+var events = require('../events');
 
 module.exports = function(User) {
 	User.auth = {};

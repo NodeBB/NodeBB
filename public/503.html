@@ -2,6 +2,7 @@
 <head>
 	<title>Excessive Load Warning</title>
 	<link href='http://fonts.googleapis.com/css?family=Ubuntu:400,500,700' rel='stylesheet' type='text/css'>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<style type="text/css">
 	body {
 		background: #00A9EA;
@@ -30,6 +31,20 @@
 
 	p strong {
 		font-size: 28px;
+	}
+
+	@media (max-width: 640px) {
+		h1 {
+			font-size: 125px;
+		}
+
+		p {
+			font-size: 16px;
+		}
+
+		p strong {
+			font-size: 20px;
+		}
 	}
 
 	.center {
@@ -148,11 +163,13 @@
 		<div class="center">
 			<h1 id="click-me" class="animated bounce">503</h1>
 			<p>
-				<strong>This forum is temporarily unavailable due to excessive load.</strong> <br />
+				<strong>This forum is temporarily unavailable due to excessive load.</strong>
+			</p>
+			<p>
 				We shouldn't be down for long. Please check back shortly. Sorry for the inconvenience!
 			</p>
-			<p id="hide" class="hide">
-				<small>Alright. You can stop clicking... it's not going to make the site come back sooner!</small>
+			<p>
+				&nbsp;<small id="hide" class="hide">Alright. You can stop clicking... it's not going to make the site come back sooner!</small>
 			</p>
 		</div>
 	</div>

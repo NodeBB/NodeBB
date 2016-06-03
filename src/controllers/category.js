@@ -9,7 +9,6 @@ var privileges = require('../privileges');
 var user = require('../user');
 var categories = require('../categories');
 var meta = require('../meta');
-var plugins = require('../plugins');
 var pagination = require('../pagination');
 var helpers = require('./helpers');
 var utils = require('../../public/src/utils');
@@ -115,6 +114,11 @@ categoryController.get = function(req, res, callback) {
 
 			categories.modifyTopicsByPrivilege(categoryData.topics, userPrivileges);
 
+			categoryData.topics = categoryData.topics.filter(function (topic) {
+				return (userPrivileges['topics:read'] || userPrivileges.isAdminOrMod ||
+				(userPrivileges['topicsOwn:read'] && userPrivileges.uid == topic.uid));
+			});
+
 			if (categoryData.link) {
 				db.incrObjectField('category:' + categoryData.cid, 'timesClicked');
 				return res.redirect(categoryData.link);
@@ -143,65 +147,63 @@ categoryController.get = function(req, res, callback) {
 			categories.getRecentTopicReplies(allCategories, req.uid, function(err) {
 				next(err, categoryData);
 			});
-		},
-		function (categoryData, next) {
-			categoryData.privileges = userPrivileges;
-			categoryData.showSelect = categoryData.privileges.editable;
-
-			res.locals.metaTags = [
-				{
-					name: 'title',
-					content: categoryData.name
-				},
-				{
-					property: 'og:title',
-					content: categoryData.name
-				},
-				{
-					name: 'description',
-					content: categoryData.description
-				},
-				{
-					property: "og:type",
-					content: 'website'
-				}
-			];
-
-			if (categoryData.backgroundImage) {
-				res.locals.metaTags.push({
-					name: 'og:image',
-					content: categoryData.backgroundImage
-				});
-			}
-
-			res.locals.linkTags = [
-				{
-					rel: 'alternate',
-					type: 'application/rss+xml',
-					href: nconf.get('url') + '/category/' + cid + '.rss'
-				},
-				{
-					rel: 'up',
-					href: nconf.get('url')
-				}
-			];
-
-			categoryData['feeds:disableRSS'] = parseInt(meta.config['feeds:disableRSS'], 10) === 1;
-			categoryData.rssFeedUrl = nconf.get('relative_path') + '/category/' + categoryData.cid + '.rss';
-			categoryData.title = categoryData.name;
-			categoryData.pagination = pagination.create(currentPage, pageCount);
-			categoryData.pagination.rel.forEach(function(rel) {
-				rel.href = nconf.get('url') + '/category/' + categoryData.slug + rel.href;
-				res.locals.linkTags.push(rel);
-			});
-
-			plugins.fireHook('filter:category.build', {req: req, res: res, templateData: categoryData}, next);
 		}
-	], function (err, data) {
+	], function (err, categoryData) {
 		if (err) {
 			return callback(err);
 		}
-		res.render('category', data.templateData);
+
+		categoryData.privileges = userPrivileges;
+		categoryData.showSelect = categoryData.privileges.editable;
+
+		res.locals.metaTags = [
+			{
+				name: 'title',
+				content: categoryData.name
+			},
+			{
+				property: 'og:title',
+				content: categoryData.name
+			},
+			{
+				name: 'description',
+				content: categoryData.description
+			},
+			{
+				property: "og:type",
+				content: 'website'
+			}
+		];
+
+		if (categoryData.backgroundImage) {
+			res.locals.metaTags.push({
+				name: 'og:image',
+				content: categoryData.backgroundImage
+			});
+		}
+
+		res.locals.linkTags = [
+			{
+				rel: 'alternate',
+				type: 'application/rss+xml',
+				href: nconf.get('url') + '/category/' + cid + '.rss'
+			},
+			{
+				rel: 'up',
+				href: nconf.get('url')
+			}
+		];
+
+		categoryData['feeds:disableRSS'] = parseInt(meta.config['feeds:disableRSS'], 10) === 1;
+		categoryData.rssFeedUrl = nconf.get('relative_path') + '/category/' + categoryData.cid + '.rss';
+		categoryData.title = categoryData.name;
+		categoryData.pagination = pagination.create(currentPage, pageCount);
+		categoryData.pagination.rel.forEach(function(rel) {
+			rel.href = nconf.get('url') + '/category/' + categoryData.slug + rel.href;
+			res.locals.linkTags.push(rel);
+		});
+
+		res.render('category', categoryData);
 	});
 };
 

@@ -8,6 +8,7 @@ var async = require('async'),
 
 	user = require('./user'),
 	groups = require('./groups'),
+	languages = require('./languages'),
 	emitter = require('./emitter'),
 	pubsub = require('./pubsub'),
 	auth = require('./routes/authentication'),
@@ -23,6 +24,7 @@ var async = require('async'),
 	require('./meta/sounds')(Meta);
 	require('./meta/settings')(Meta);
 	require('./meta/logs')(Meta);
+	require('./meta/errors')(Meta);
 	require('./meta/tags')(Meta);
 	require('./meta/dependencies')(Meta);
 	Meta.templates = require('./meta/templates');
@@ -65,6 +67,7 @@ var async = require('async'),
 			async.apply(Meta.js.minify, 'nodebb.min.js'),
 			async.apply(Meta.js.minify, 'acp.min.js'),
 			async.apply(Meta.sounds.init),
+			async.apply(languages.init),
 			async.apply(Meta.templates.compile),
 			async.apply(auth.reloadRoutes),
 			function(next) {

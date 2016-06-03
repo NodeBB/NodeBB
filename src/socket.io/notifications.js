@@ -56,28 +56,4 @@ SocketNotifs.markAllRead = function(socket, data, callback) {
 	notifications.markAllRead(socket.uid, callback);
 };
 
-SocketNotifs.generatePath = function(socket, nid, callback) {
-	if (!socket.uid) {
-		return callback(new Error('[[error:no-privileges]]'));;
-	}
-	async.waterfall([
-		function (next) {
-			notifications.get(nid, next);
-		},
-		function (notification, next) {
-			if (!notification) {
-				return next(null, '');
-			}
-			user.notifications.generateNotificationPaths([notification], socket.uid, next);
-		},
-		function (notificationsData, next) {
-			if (notificationsData && notificationsData.length) {
-				next(null, notificationsData[0].path);
-			} else {
-				next();
-			}
-		}
-	], callback);
-};
-
 module.exports = SocketNotifs;

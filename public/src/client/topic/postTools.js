@@ -168,6 +168,37 @@ define('forum/topic/postTools', ['share', 'navigator', 'components', 'translator
 
 		postContainer.on('click', '[component="post/edit"]', function() {
 			var btn = $(this);
+
+			var timestamp = parseInt(getData(btn, 'data-timestamp'), 10);
+			var postEditDuration = parseInt(ajaxify.data.postEditDuration, 10);
+			if (!ajaxify.data.privileges.isAdminOrMod && postEditDuration && Date.now() - timestamp > postEditDuration * 1000) {
+				var numDays = Math.floor(postEditDuration / 86400);
+				var numHours = Math.floor((postEditDuration % 86400) / 3600);
+				var numMinutes = Math.floor(((postEditDuration % 86400) % 3600) / 60);
+				var numSeconds = ((postEditDuration % 86400) % 3600) % 60;
+				var msg = '[[error:post-edit-duration-expired, ' + postEditDuration + ']]';
+				if (numDays) {
+					if (numHours) {
+						msg = '[[error:post-edit-duration-expired-days-hours, ' + numDays + ', ' + numHours + ']]';
+					} else {
+						msg = '[[error:post-edit-duration-expired-days, ' + numDays + ']]';
+					}
+				} else if (numHours) {
+					if (numMinutes) {
+						msg = '[[error:post-edit-duration-expired-hours-minutes, ' + numHours + ', ' + numMinutes + ']]';
+					} else {
+						msg = '[[error:post-edit-duration-expired-hours, ' + numHours + ']]';
+					}
+				} else if (numMinutes) {
+					if (numSeconds) {
+						msg = '[[error:post-edit-duration-expired-minutes-seconds, ' + numMinutes + ', ' + numSeconds + ']]';
+					} else {
+						msg = '[[error:post-edit-duration-expired-minutes, ' + numMinutes + ']]';
+					}
+				}
+				return app.alertError(msg);
+			}
+
 			$(window).trigger('action:composer.post.edit', {
 				pid: getData(btn, 'data-pid')
 			});
@@ -201,7 +232,7 @@ define('forum/topic/postTools', ['share', 'navigator', 'components', 'translator
 				var selection = window.getSelection ? window.getSelection() : document.selection.createRange();
 				var content = button.parents('[component="post"]').find('[component="post/content"]').get(0);
 
-				if (content && selection.containsNode(content, true)) {
+				if (selection && selection.containsNode && content && selection.containsNode(content, true)) {
 					var bounds = document.createRange();
 					bounds.selectNodeContents(content);
 					var range = selection.getRangeAt(0).cloneRange();

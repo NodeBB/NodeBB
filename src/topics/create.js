@@ -275,7 +275,7 @@ module.exports = function(Topics) {
 						posts.getUserInfoForPosts([postData.uid], uid, next);
 					},
 					topicInfo: function(next) {
-						Topics.getTopicFields(tid, ['tid', 'title', 'slug', 'cid', 'postcount'], next);
+						Topics.getTopicFields(tid, ['tid', 'title', 'slug', 'cid', 'postcount', 'mainPid'], next);
 					},
 					parents: function(next) {
 						Topics.addParentPosts([postData], next);

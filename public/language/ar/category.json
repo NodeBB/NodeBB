@@ -5,12 +5,12 @@
     "guest-login-post": "يجب عليك تسجيل الدخول للرد",
     "no_topics": "<strong>لا توجد مواضيع في هذه الفئة</strong>لم لا تحاول إنشاء موضوع؟<br />",
     "browsing": "تصفح",
-    "no_replies": "لا توجد ردود.",
+    "no_replies": "لم يرد أحد",
     "no_new_posts": "لا يوجد مشاركات جديدة.",
     "share_this_category": "انشر هذه الفئة",
     "watch": "متابعة",
     "ignore": "تجاهل",
     "watch.message": "أنت اﻷن متابع لتحديثات هذه الفئة",
     "ignore.message": "أنت اﻷن تتجاهل تحديثات هذه الفئة",
-    "watched-categories": "Watched categories"
+    "watched-categories": "الفئات المراقبه"
 }

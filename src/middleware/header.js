@@ -77,17 +77,21 @@ module.exports = function(app, middleware) {
 				user.isGlobalModerator(req.uid, next);
 			},
 			user: function(next) {
+				var userData = {
+					uid: 0,
+					username: '[[global:guest]]',
+					userslug: '',
+					email: '',
+					picture: meta.config.defaultAvatar,
+					status: 'offline',
+					banned: false,
+					reputation: 0,
+					'email:confirmed': false
+				};
 				if (req.uid) {
-					user.getUserFields(req.uid, ['username', 'userslug', 'email', 'picture', 'status', 'email:confirmed', 'banned'], next);
+					user.getUserFields(req.uid, Object.keys(userData), next);
 				} else {
-					next(null, {
-						username: '[[global:guest]]',
-						userslug: '',
-						picture: meta.config.defaultAvatar,
-						status: 'offline',
-						banned: false,
-						uid: 0
-					});
+					next(null, userData);
 				}
 			},
 			navigation: async.apply(navigation.get),

@@ -32,26 +32,6 @@
 					<option value="email">Email Only</option>
 				</select>
 			</div>
-
-			<div class="form-group">
-				<label>Registration Type</label>
-				<select class="form-control" data-field="registrationType">
-					<option value="normal">Normal</option>
-					<option value="admin-approval">Admin Approval</option>
-					<option value="invite-only">Invite Only</option>
-					<option value="admin-invite-only">Admin Invite Only</option>
-					<option value="disabled">No registration</option>
-				</select>
-			</div>
-
-			<div class="form-group">
-				<label>Maximum Invitations per User</label>
-				<input type="number" class="form-control" data-field="maximumInvites" placeholder="0">
-				<p class="help-block">
-					0 for no restriction. Admins get infinite invitations<br>
-					Only applicable for "Invite Only"
-				</p>
-			</div>
 		</form>
 	</div>
 </div>
@@ -139,6 +119,31 @@
 	<div class="col-sm-2 col-xs-12 settings-header">User Registration</div>
 	<div class="col-sm-10 col-xs-12">
 		<form>
+			<div class="form-group">
+				<label>Registration Type</label>
+				<select class="form-control" data-field="registrationType">
+					<option value="normal">Normal</option>
+					<option value="admin-approval">Admin Approval</option>
+					<option value="invite-only">Invite Only</option>
+					<option value="admin-invite-only">Admin Invite Only</option>
+					<option value="disabled">No registration</option>
+				</select>
+				<p class="help-block">
+					Normal - Users can register from the /register page.<br/>
+					Admin Approval - User registrations are placed in an <a href="{config.relative_path}/admin/manage/registration">approval queue</a> for administrators.<br/>
+					Invite Only - Users can invite others from the <a href="{config.relative_path}/users" target="_blank">users</a> page.<br/>
+					Admin Invite Only - Only administrators can invite others from <a href="{config.relative_path}/users" target="_blank">users</a> and <a href="{config.relative_path}/admin/manage/users">admin/manage/users</a> pages.<br/>
+					No registration - No user registration.<br/>
+				</p>
+			</div>
+			<div class="form-group">
+				<label>Maximum Invitations per User</label>
+				<input type="number" class="form-control" data-field="maximumInvites" placeholder="0">
+				<p class="help-block">
+					0 for no restriction. Admins get infinite invitations<br>
+					Only applicable for "Invite Only"
+				</p>
+			</div>
 			<div class="form-group">
 				<label>Minimum Username Length</label>
 				<input type="text" class="form-control" value="2" data-field="minimumUsernameLength">

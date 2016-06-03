@@ -6,5 +6,8 @@
     "selected": "Selected",
     "all": "All",
     "all_categories": "All categories",
-    "topics_marked_as_read.success": "Topics marked as read!"
+    "topics_marked_as_read.success": "Topics marked as read!",
+    "all-topics": "All Topics",
+    "new-topics": "New Topics",
+    "watched-topics": "Watched Topics"
 }

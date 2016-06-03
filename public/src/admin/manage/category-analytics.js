@@ -1,7 +1,7 @@
 "use strict";
-/*global config, define, app, socket, ajaxify, bootbox, templates, Chart, utils */
+/*global config, define, app, socket, ajaxify, bootbox, templates, utils */
 
-define('admin/manage/category-analytics', [], function() {
+define('admin/manage/category-analytics', ['Chart'], function(Chart) {
 	var CategoryAnalytics = {};
 
 	CategoryAnalytics.init = function() {
@@ -80,7 +80,7 @@ define('admin/manage/category-analytics', [], function() {
 						data: ajaxify.data.analytics['posts:daily']
 					}
 				]
-			},
+			}
 		};
 
 		hourlyCanvas.width = $(hourlyCanvas).parent().width();

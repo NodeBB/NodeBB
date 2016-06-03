@@ -24,6 +24,7 @@
     "digest.day": "day",
     "digest.week": "week",
     "digest.month": "month",
+    "digest.subject": "Digest for %1",
     "notif.chat.subject": "Pesan yang baru diterima dari %1",
     "notif.chat.cta": "Klik di sini untuk melanjutkan percakapan",
     "notif.chat.unsub.info": "Sesuai pengaturan langganan anda, notifikasi obrolan ini dikirmkan kepada anda",

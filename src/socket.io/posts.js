@@ -52,10 +52,6 @@ SocketPosts.reply = function(socket, data, callback) {
 		user.updateOnlineUsers(socket.uid);
 
 		socketHelpers.notifyNew(socket.uid, 'newPost', result);
-
-		if (data.lock) {
-			socketTopics.doTopicAction('lock', 'event:topic_locked', socket, {tids: [postData.topic.tid], cid: postData.topic.cid});
-		}
 	});
 };
 
@@ -118,8 +114,8 @@ function loadMorePosts(set, uid, data, callback) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
 
-	var start = Math.max(0, parseInt(data.after, 10)),
-		stop = start + 9;
+	var start = Math.max(0, parseInt(data.after, 10));
+	var stop = start + 9;
 
 	posts.getPostSummariesFromSet(set, uid, start, stop, callback);
 }

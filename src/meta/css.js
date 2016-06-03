@@ -5,7 +5,6 @@ var winston = require('winston'),
 	fs = require('fs'),
 	path = require('path'),
 	less = require('less'),
-	crypto = require('crypto'),
 	async = require('async'),
 	autoprefixer = require('autoprefixer'),
 	postcss = require('postcss'),
@@ -43,8 +42,7 @@ module.exports = function(Meta) {
 					path.join(__dirname, '../../public/vendor/fontawesome/less'),
 					path.join(__dirname, '../../public/vendor/bootstrap/less')
 				],
-				source = '@import "font-awesome";',
-				acpSource = '@import "font-awesome";';
+				source = '@import "font-awesome";';
 
 			plugins.lessFiles = filterMissingFiles(plugins.lessFiles);
 			plugins.cssFiles = filterMissingFiles(plugins.cssFiles);
@@ -65,6 +63,8 @@ module.exports = function(Meta) {
 				if (err) {
 					return callback(err);
 				}
+
+				var acpSource = source;
 
 				source += '\n@import (inline) "..' + path.sep + '..' + path.sep + 'public/vendor/jquery/css/smoothness/jquery-ui-1.10.4.custom.min.css";';
 				source += '\n@import (inline) "..' + path.sep + '..' + path.sep + 'public/vendor/jquery/bootstrap-tagsinput/bootstrap-tagsinput.css";';

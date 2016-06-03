@@ -24,6 +24,7 @@
     "digest.day": "day",
     "digest.week": "week",
     "digest.month": "month",
+    "digest.subject": "Digest for %1",
     "notif.chat.subject": "New chat message received from %1",
     "notif.chat.cta": "กดตรงนี้เพื่อกลับไปยังบทสนทนา",
     "notif.chat.unsub.info": "This chat notification was sent to you due to your subscription settings.",

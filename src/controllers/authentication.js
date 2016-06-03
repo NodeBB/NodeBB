@@ -33,7 +33,7 @@ authenticationController.register = function(req, res, next) {
 
 	async.waterfall([
 		function(next) {
-			if (registrationType === 'invite-only') {
+			if (registrationType === 'invite-only' || registrationType === 'admin-invite-only') {
 				user.verifyInvitation(userData, next);
 			} else {
 				next();
@@ -59,7 +59,7 @@ authenticationController.register = function(req, res, next) {
 			plugins.fireHook('filter:register.check', {req: req, res: res, userData: userData}, next);
 		},
 		function(data, next) {
-			if (registrationType === 'normal' || registrationType === 'invite-only') {
+			if (registrationType === 'normal' || registrationType === 'invite-only' || registrationType === 'admin-invite-only') {
 				registerAndLoginUser(req, res, userData, next);
 			} else if (registrationType === 'admin-approval') {
 				addToApprovalQueue(req, userData, next);
@@ -208,6 +208,8 @@ authenticationController.onSuccessfulLogin = function(req, uid, callback) {
 	var uuid = utils.generateUUID();
 	req.session.meta = {};
 
+	delete req.session.forceLogin;
+
 	// Associate IP used during login with user account
 	user.logIP(uid, req.ip);
 	req.session.meta.ip = req.ip;
@@ -306,8 +308,8 @@ authenticationController.logout = function(req, res, next) {
 			}
 			req.logout();
 
-			// action:user.loggedOut deprecated in > v0.9.3
-			plugins.fireHook('action:user.loggedOut', {req: req, res: res, uid: uid});
+			user.setUserField(uid, 'lastonline', Date.now() - 300000);
+
 			plugins.fireHook('static:user.loggedOut', {req: req, res: res, uid: uid}, function() {
 				res.status(200).send('');
 			});

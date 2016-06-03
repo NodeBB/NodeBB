@@ -72,44 +72,35 @@ Categories.getPrivilegeSettings = function(socket, cid, callback) {
 };
 
 Categories.copyPrivilegesToChildren = function(socket, cid, callback) {
-	async.parallel({
-		category: function(next) {
-			categories.getCategories([cid], socket.uid, next);
-		},
-		privileges: function(next) {
-			privileges.categories.list(cid, next);
-		}
-	}, function(err, results) {
+	categories.getCategories([cid], socket.uid, function(err, categories) {		
 		if (err) {
 			return callback(err);
 		}
-		var category = results.category[0];
+		var category = categories[0];
 
 		async.eachSeries(category.children, function(child, next) {
-			copyPrivilegesToChildrenRecursive(child, results.privileges.groups, next);
+			copyPrivilegesToChildrenRecursive(cid, child, next);
 		}, callback);
 	});
 };
 
-function copyPrivilegesToChildrenRecursive(category, privilegeGroups, callback) {
-	async.eachSeries(privilegeGroups, function(privGroup, next) {
-		var privs = Object.keys(privGroup.privileges);
-		async.each(privs, function(privilege, next) {
-			var isSet = privGroup.privileges[privilege];
-			groups[isSet ? 'join' : 'leave']('cid:' + category.cid + ':privileges:' + privilege, privGroup.name, next);
-		}, next);
-	}, function(err) {
+function copyPrivilegesToChildrenRecursive(parentCid, category, callback) {
+	categories.copyPrivilegesFrom(parentCid, category.cid, function(err) {
 		if (err) {
 			return callback(err);
 		}
 		async.eachSeries(category.children, function(child, next) {
-			copyPrivilegesToChildrenRecursive(child, privilegeGroups, next);
+			copyPrivilegesToChildrenRecursive(parentCid, child, next);
 		}, callback);
 	});
 }
 
 Categories.copySettingsFrom = function(socket, data, callback) {
-	categories.copySettingsFrom(data.fromCid, data.toCid, callback);
+	categories.copySettingsFrom(data.fromCid, data.toCid, true, callback);
+};
+
+Categories.copyPrivilegesFrom = function(socket, data, callback) {
+	categories.copyPrivilegesFrom(data.fromCid, data.toCid, callback);
 };
 
 module.exports = Categories;

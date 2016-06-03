@@ -1,17 +1,18 @@
 'use strict';
 
-var async = require('async'),
-	winston = require('winston'),
-	cron = require('cron').CronJob,
-	nconf = require('nconf'),
-	S = require('string'),
-	_ = require('underscore'),
+var async = require('async');
+var winston = require('winston');
+var cron = require('cron').CronJob;
+var nconf = require('nconf');
+var S = require('string');
+var _ = require('underscore');
 
-	db = require('./database'),
-	User = require('./user'),
-	groups = require('./groups'),
-	meta = require('./meta'),
-	plugins = require('./plugins');
+var db = require('./database');
+var User = require('./user');
+var groups = require('./groups');
+var meta = require('./meta');
+var plugins = require('./plugins');
+var utils = require('../public/src/utils');
 
 (function(Notifications) {
 
@@ -44,6 +45,8 @@ var async = require('async'),
 				if (!notification) {
 					return next(null, null);
 				}
+
+				notification.datetimeISO = utils.toISOString(notification.datetime);
 
 				if (notification.bodyLong) {
 					notification.bodyLong = S(notification.bodyLong).escapeHTML().s;
@@ -78,6 +81,21 @@ var async = require('async'),
 				}
 
 			}, callback);
+		});
+	};
+
+	Notifications.filterExists = function(nids, callback) {
+		// Removes nids that have been pruned
+		db.isSortedSetMembers('notifications', nids, function(err, exists) {
+			if (err) {
+				return callback(err);
+			}
+
+			nids = nids.filter(function(notifId, idx) {
+				return exists[idx];
+			});
+
+			callback(null, nids);
 		});
 	};
 
@@ -197,44 +215,46 @@ var async = require('async'),
 	};
 
 	function pushToUids(uids, notification, callback) {
+		var oneWeekAgo = Date.now() - 604800000;
 		var unreadKeys = [];
 		var readKeys = [];
 
-		uids.forEach(function(uid) {
-			unreadKeys.push('uid:' + uid + ':notifications:unread');
-			readKeys.push('uid:' + uid + ':notifications:read');
-		});
+		async.waterfall([
+			function (next) {
+				plugins.fireHook('filter:notification.push', {notification: notification, uids: uids}, next);
+			},
+			function (data, next) {
+				uids = data.uids;
+				notification = data.notification;
 
-		var oneWeekAgo = Date.now() - 604800000;
-		async.series([
-			function(next) {
+				uids.forEach(function(uid) {
+					unreadKeys.push('uid:' + uid + ':notifications:unread');
+					readKeys.push('uid:' + uid + ':notifications:read');
+				});
+
 				db.sortedSetsAdd(unreadKeys, notification.datetime, notification.nid, next);
 			},
-			function(next) {
+			function (next) {
 				db.sortedSetsRemove(readKeys, notification.nid, next);
 			},
-			function(next) {
+			function (next) {
 				db.sortedSetsRemoveRangeByScore(unreadKeys, '-inf', oneWeekAgo, next);
 			},
-			function(next) {
+			function (next) {
 				db.sortedSetsRemoveRangeByScore(readKeys, '-inf', oneWeekAgo, next);
-			}
-		], function(err) {
-			if (err) {
-				return callback(err);
-			}
+			},
+			function (next) {
+				var websockets = require('./socket.io');
+				if (websockets.server) {
+					uids.forEach(function(uid) {
+						websockets.in('uid_' + uid).emit('event:new_notification', notification);
+					});
+				}
 
-			plugins.fireHook('action:notification.pushed', {notification: notification, uids: uids});
-
-			var websockets = require('./socket.io');
-			if (websockets.server) {
-				uids.forEach(function(uid) {
-					websockets.in('uid_' + uid).emit('event:new_notification', notification);
-				});
+				plugins.fireHook('action:notification.pushed', {notification: notification, uids: uids});
+				next();
 			}
-
-			callback();
-		});
+		], callback);
 	}
 
 	Notifications.pushGroup = function(notification, groupName, callback) {
@@ -245,6 +265,23 @@ var async = require('async'),
 			}
 
 			Notifications.push(notification, members, callback);
+		});
+	};
+
+	Notifications.rescind = function(nid, callback) {
+		callback = callback || function() {};
+
+		async.parallel([
+			async.apply(db.sortedSetRemove, 'notifications', nid),
+			async.apply(db.delete, 'notifications:' + nid)
+		], function(err) {
+			if (err) {
+				winston.error('Encountered error rescinding notification (' + nid + '): ' + err.message);
+			} else {
+				winston.verbose('[notifications/rescind] Rescinded notification "' + nid + '"');
+			}
+
+			callback(err, nid);
 		});
 	};
 
@@ -391,7 +428,6 @@ var async = require('async'),
 	Notifications.merge = function(notifications, callback) {
 		// When passed a set of notification objects, merge any that can be merged
 		var mergeIds = [
-				'notifications:favourited_your_post_in',
 				'notifications:upvoted_your_post_in',
 				'notifications:user_started_following_you',
 				'notifications:user_posted_to',
@@ -438,7 +474,7 @@ var async = require('async'),
 				}
 
 				switch(mergeId) {
-					case 'notifications:favourited_your_post_in':	// intentional fall-through
+					// intentional fall-through
 					case 'notifications:upvoted_your_post_in':
 					case 'notifications:user_started_following_you':
 					case 'notifications:user_posted_to':

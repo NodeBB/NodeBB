@@ -5,15 +5,16 @@ var async = require('async');
 var nconf = require('nconf');
 var validator = require('validator');
 
-var meta = require('../meta');
+var user = require('../user');
 var topics = require('../topics');
+var pagination = require('../pagination');
 var helpers =  require('./helpers');
 
 var tagsController = {};
 
 tagsController.getTag = function(req, res, next) {
 	var tag = validator.escape(req.params.tag);
-	var stop = (parseInt(meta.config.topicsPerList, 10) || 20) - 1;
+	var page = parseInt(req.query.page, 10) || 1;
 
 	var templateData = {
 		topics: [],
@@ -21,18 +22,33 @@ tagsController.getTag = function(req, res, next) {
 		breadcrumbs: helpers.buildBreadcrumbs([{text: '[[tags:tags]]', url: '/tags'}, {text: tag}]),
 		title: '[[pages:tag, ' + tag + ']]'
 	};
-
+	var settings;
+	var topicCount = 0;
 	async.waterfall([
 		function (next) {
-			topics.getTagTids(req.params.tag, 0, stop, next);
+			user.getSettings(req.uid, next);
 		},
-		function (tids, next) {
-			if (Array.isArray(tids) && !tids.length) {
+		function (_settings, next) {
+			settings = _settings;
+			var start = Math.max(0, (page - 1) * settings.topicsPerPage);
+			var stop = start + settings.topicsPerPage - 1;
+			templateData.nextStart = stop + 1;
+			async.parallel({
+				topicCount: function(next) {
+					topics.getTagTopicCount(tag, next);
+				},
+				tids: function(next) {
+					topics.getTagTids(req.params.tag, start, stop, next);
+				}
+			}, next);
+		},
+		function (results, next) {
+			if (Array.isArray(results.tids) && !results.tids.length) {
 				topics.deleteTag(req.params.tag);
 				return res.render('tag', templateData);
 			}
-
-			topics.getTopics(tids, req.uid, next);
+			topicCount = results.topicCount;
+			topics.getTopics(results.tids, req.uid, next);
 		}
 	], function(err, topics) {
 		if (err) {
@@ -54,7 +70,9 @@ tagsController.getTag = function(req, res, next) {
 			}
 		];
 		templateData.topics = topics;
-		templateData.nextStart = stop + 1;
+
+		var pageCount =	Math.max(1, Math.ceil(topicCount / settings.topicsPerPage));
+		templateData.pagination = pagination.create(page, pageCount);
 
 		res.render('tag', templateData);
 	});

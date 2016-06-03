@@ -87,8 +87,8 @@
     "map": "Mapa",
     "sessions": "Inicios de sesión",
     "ip_address": "Enderezo IP",
-    "enter_page_number": "Enter page number",
-    "upload_file": "Upload file",
-    "upload": "Upload",
-    "allowed-file-types": "Allowed file types are %1"
+    "enter_page_number": "Escribe o número da páxina",
+    "upload_file": "Subir arquivo ",
+    "upload": "Subir",
+    "allowed-file-types": "Os tipos de arquivos permitidos son: %1"
 }

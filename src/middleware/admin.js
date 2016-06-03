@@ -112,7 +112,8 @@ middleware.renderHeader = function(req, res, data, next) {
 				scripts: results.scripts,
 				'cache-buster': meta.config['cache-buster'] ? 'v=' + meta.config['cache-buster'] : '',
 				env: process.env.NODE_ENV ? true : false,
-				title: (acpPath || 'Dashboard') + ' | NodeBB Admin Control Panel'
+				title: (acpPath || 'Dashboard') + ' | NodeBB Admin Control Panel',
+				bodyClass: data.bodyClass
 			};
 
 			templateValues.template = {name: res.locals.template};

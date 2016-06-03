@@ -5,7 +5,7 @@
     "remember_me": "Muista minut?",
     "forgot_password": "Unohditko salasanasi?",
     "alternative_logins": "Vaihtoehtoiset kirjautumistavat",
-    "failed_login_attempt": "Kirjautumisyritys epäonnistui, ole hyvä ja yritä uudestaan.",
+    "failed_login_attempt": "Login Unsuccessful",
     "login_successful": "Olet onnistuneesti kirjautunut sisään!",
     "dont_have_account": "Ei käyttäjätunnusta?"
 }

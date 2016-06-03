@@ -5,9 +5,29 @@ var winston = require('winston'),
 
 module.exports = function(Plugins) {
 	Plugins.deprecatedHooks = {
-		'filter:user.delete': 'static:user.delete',
-		'filter:user.custom_fields': null,
-		'action:user.loggedOut': 'static:user.loggedOut'
+		'filter:user.custom_fields': null	// remove in v1.1.0
+	};
+
+	Plugins.deprecatedHooksParams = {
+		'action:homepage.get': '{req, res}',
+		'filter:register.check': '{req, res}',
+		'action:user.loggedOut': '{req, res}',
+		'static:user.loggedOut': '{req, res}',
+		'filter:categories.build': '{req, res}',
+		'filter:category.build': '{req, res}',
+		'filter:group.build': '{req, res}',
+		'filter:register.build': '{req, res}',
+		'filter:composer.build': '{req, res}',
+		'filter:popular.build': '{req, res}',
+		'filter:recent.build': '{req, res}',
+		'filter:topic.build': '{req, res}',
+		'filter:users.build': '{req, res}',
+		'filter:admin.category.get': '{req, res}',
+		'filter:middleware.renderHeader': '{req, res}',
+		'filter:widget.render': '{req, res}',
+		'filter:middleware.buildHeader': '{req, locals}',
+		'action:middleware.pageView': '{req}',
+		'action:meta.override404': '{req}'
 	};
 
 	/*
@@ -29,12 +49,25 @@ module.exports = function(Plugins) {
 		var method;
 
 		if (Object.keys(Plugins.deprecatedHooks).indexOf(data.hook) !== -1) {
-			winston.warn('[plugins/' + id + '] Hook `' + data.hook + '` is deprecated, ' + 
+			winston.warn('[plugins/' + id + '] Hook `' + data.hook + '` is deprecated, ' +
 				(Plugins.deprecatedHooks[data.hook] ?
 					'please use `' + Plugins.deprecatedHooks[data.hook] + '` instead.' :
 					'there is no alternative.'
 				)
 			);
+		} else {
+			// handle hook's startsWith, i.e. action:homepage.get
+			var parts = data.hook.split(':');
+			if (parts.length > 2) {
+				parts.pop();
+			}
+			var hook = parts.join(':');
+			if (Plugins.deprecatedHooksParams[hook]) {
+				winston.warn('[plugins/' + id + '] Hook `' + hook + '` parameters: `' + Plugins.deprecatedHooksParams[hook] + '`, are being deprecated, '
+				+ 'all plugins should now use the `middleware/cls` module instead of hook\'s arguments to get a reference to the `http-request` or the `socket-request` object(s) (from which you can get the current `uid` if you need to.) '
+				+ '- for more info, visit https://docs.nodebb.org/en/latest/plugins/create.html#getting-a-reference-to-each-request-from-within-any-plugin-hook\n');
+				delete Plugins.deprecatedHooksParams[hook];
+			}
 		}
 
 		if (data.hook && data.method) {

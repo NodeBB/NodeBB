@@ -18,8 +18,10 @@ module.exports = function(privileges) {
 		// Method used in admin/category controller to show all users/groups with privs in that given cid
 
 		var privilegeLabels = [
-			{name: 'Find category'},
-			{name: 'Access & Read'},
+			{name: 'Find Category'},
+			{name: 'Access Category'},
+			{name: 'Access Topics'},
+			{name: 'Access Own Topics'},
 			{name: 'Create Topics'},
 			{name: 'Reply to Topics'},
 			{name: 'Purge'},
@@ -27,10 +29,10 @@ module.exports = function(privileges) {
 		];
 
 		var userPrivilegeList = [
-			'find', 'read', 'topics:create', 'topics:reply', 'purge', 'mods'
+			'find', 'read', 'topics:read', 'topicsOwn:read', 'topics:create', 'topics:reply', 'purge', 'mods'
 		];
 		var groupPrivilegeList = [
-			'groups:find', 'groups:read', 'groups:topics:create', 'groups:topics:reply', 'groups:purge', 'groups:moderate'
+			'groups:find', 'groups:read', 'groups:topics:read', 'groups:topicsOwn:read', 'groups:topics:create', 'groups:topics:reply', 'groups:purge', 'groups:moderate'
 		];
 
 		async.parallel({
@@ -162,6 +164,12 @@ module.exports = function(privileges) {
 			'topics:create': function(next) {
 				helpers.isUserAllowedTo('topics:create', uid, [cid], next);
 			},
+			'topics:read': function(next) {
+				helpers.isUserAllowedTo('topics:read', uid, [cid], next);
+			},
+			'topicsOwn:read': function(next) {
+				helpers.isUserAllowedTo('topicsOwn:read', uid, [cid], next);
+			},
 			read: function(next) {
 				helpers.isUserAllowedTo('read', uid, [cid], next);
 			},
@@ -182,6 +190,8 @@ module.exports = function(privileges) {
 				cid: cid,
 				uid: uid,
 				'topics:create': results['topics:create'][0] || isAdminOrMod,
+				'topics:read': results['topics:read'][0] || isAdminOrMod,
+				'topicsOwn:read': results['topicsOwn:read'][0] || isAdminOrMod,
 				editable: isAdminOrMod,
 				view_deleted: isAdminOrMod,
 				read: results.read[0] || isAdminOrMod,
@@ -251,6 +261,21 @@ module.exports = function(privileges) {
 			return array.indexOf(cid) === index;
 		});
 
+		privileges.categories.getBase(privilege, cids, uid, function(err, results) {
+			if (err) {
+				return callback(err);
+			}
+
+			cids = cids.filter(function(cid, index) {
+				return !results.categories[index].disabled &&
+					(results.allowedTo[index] || results.isAdmin || results.isModerators[index]);
+			});
+
+			callback(null, cids.filter(Boolean));
+		});
+	};
+
+	privileges.categories.getBase = function(privilege, cids, uid, callback) {
 		async.parallel({
 			categories: function(next) {
 				categories.getCategoriesFields(cids, ['disabled'], next);
@@ -264,18 +289,7 @@ module.exports = function(privileges) {
 			isAdmin: function(next) {
 				user.isAdministrator(uid, next);
 			}
-		}, function(err, results) {
-			if (err) {
-				return callback(err);
-			}
-
-			cids = cids.filter(function(cid, index) {
-				return !results.categories[index].disabled &&
-					(results.allowedTo[index] || results.isAdmin || results.isModerators[index]);
-			});
-
-			callback(null, cids.filter(Boolean));
-		});
+		}, callback);
 	};
 
 	privileges.categories.filterUids = function(privilege, cid, uids, callback) {
@@ -352,6 +366,9 @@ module.exports = function(privileges) {
 			'topics:create': function(next) {
 				groups.isMember(uid, 'cid:' + cid + ':privileges:topics:create', next);
 			},
+			'topics:read': function(next) {
+				groups.isMember(uid, 'cid:' + cid + ':privileges:topics:read', next);
+			},
 			'topics:reply': function(next) {
 				groups.isMember(uid, 'cid:' + cid + ':privileges:topics:reply', next);
 			},
@@ -372,6 +389,9 @@ module.exports = function(privileges) {
 			},
 			'groups:topics:reply': function(next) {
 				groups.isMember(groupName, 'cid:' + cid + ':privileges:groups:topics:reply', next);
+			},
+			'groups:topics:read': function(next) {
+				groups.isMember(groupName, 'cid:' + cid + ':privileges:groups:topics:read', next);
 			}
 		}, callback);
 	};

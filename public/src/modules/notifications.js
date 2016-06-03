@@ -84,14 +84,11 @@ define('notifications', ['sounds', 'translator', 'components'], function(sound, 
 				payload.message = notifData.bodyShort;
 				payload.type = 'info';
 				payload.clickfn = function() {
-					socket.emit('notifications.generatePath', notifData.nid, function(err, path) {
-						if (err) {
-							return app.alertError(err.message);
-						}
-						if (path) {
-							ajaxify.go(path);
-						}
-					});
+					if (notifData.path.startsWith('http') && notifData.path.startsWith('https')) {
+						window.location.href = notifData.path;
+					} else {
+						window.location.href = window.location.protocol + '//' + window.location.host + config.relative_path + notifData.path;
+					}
 				};
 			} else {
 				payload.message = '[[notifications:you_have_unread_notifications]]';
@@ -104,13 +101,15 @@ define('notifications', ['sounds', 'translator', 'components'], function(sound, 
 			if (ajaxify.currentPage === 'notifications') {
 				ajaxify.refresh();
 			}
-			
-			if (!unreadNotifs[notifData.nid]) {
-				incrementNotifCount(1);
 
+			socket.emit('notifications.getCount', function(err, count) {
+				Notifications.updateNotifCount(count);
+			});
+
+			if (!unreadNotifs[notifData.nid]) {
 				sound.play('notification');
-				unreadNotifs[notifData.nid] = true;	
-			}			
+				unreadNotifs[notifData.nid] = true;
+			}
 		});
 
 		socket.on('event:notifications.updateCount', function(count) {

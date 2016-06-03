@@ -14,6 +14,7 @@
     "invalid-password": "Неверный пароль",
     "invalid-username-or-password": "Пожалуйста, укажите и имя пользователя и пароль",
     "invalid-search-term": "Неверный поисковой запрос",
+    "csrf-invalid": "We were unable to log you in, likely due to an expired session. Please try again",
     "invalid-pagination-value": "Invalid pagination value, must be at least %1 and at most %2",
     "username-taken": "Имя пользователя занято",
     "email-taken": "Email занят",
@@ -22,12 +23,13 @@
     "no-email-to-confirm": "Этот форум требует подтверждения по E-mail. Нажмите здесь для ввода E-mail.",
     "email-confirm-failed": "Мы не можем подтвердить Ваш E-mail, попробуйте позже.",
     "confirm-email-already-sent": "Сообщение для подтверждения уже выслано на E-mail. Повторная отправка возможна через %1 мин.",
+    "sendmail-not-found": "The sendmail executable could not be found, please ensure it is installed and executable by the user running NodeBB.",
     "username-too-short": "Слишком короткое имя пользователя",
     "username-too-long": "Имя пользователя слишком длинное",
     "password-too-long": "Пароль слишком длинный",
     "user-banned": "Пользователь заблокирован",
     "user-too-new": "Вы можете написать свое первой сообщение через %1 сек.",
-    "blacklisted-ip": "Sorry, your IP address has been banned from this community. If you feel this is in error, please contact an administrator.",
+    "blacklisted-ip": "Извините, ваш IP адрес был забанен этим сообществом. Если вы считаете что это ошибка, пожалуйста, свяжитесь с администратором.",
     "no-category": "Категория не существует",
     "no-topic": "Тема не существует",
     "no-post": "Сообщение не существует",
@@ -85,6 +87,7 @@
     "cant-edit-chat-message": "У вас нет доступа для редактирования этого сообщения",
     "cant-remove-last-user": "Вы не можете убрать последнего пользователя",
     "cant-delete-chat-message": "У вас нет доступа на удаление этого сообщения",
+    "already-voting-for-this-post": "Вы уже голосовали за это сообщение.",
     "reputation-system-disabled": "Система репутации отключена.",
     "downvoting-disabled": "Понижение оценки отключено",
     "not-enough-reputation-to-downvote": "У Вас недостаточно репутации для понижения оценки сообщения",
@@ -99,5 +102,5 @@
     "no-session-found": "Сессия входа не найдена!",
     "not-in-room": "Пользователь не в комнате",
     "no-users-in-room": "В этой комнате нет пользователей",
-    "cant-kick-self": "You can't kick yourself from the group"
+    "cant-kick-self": "Вы не можете удалить себя сами из группы."
 }

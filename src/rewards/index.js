@@ -90,7 +90,7 @@ function filterCompletedRewards(uid, rewards, callback) {
 				return true;
 			}
 
-			return (userRewards[reward.id] > reward.claimable) ? false : true;
+			return (userRewards[reward.id] >= reward.claimable) ? false : true;
 		});
 
 		callback(false, rewards);

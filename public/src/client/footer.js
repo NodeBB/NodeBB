@@ -13,6 +13,12 @@ define('forum/footer', ['notifications', 'chat', 'components', 'translator'], fu
 			.attr('data-content', count > 99 ? '99+' : count);
 	}
 
+	function updateUnreadNewTopicCount(count) {
+		$('#unread-new-count i')
+			.toggleClass('unread-count', count > 0)
+			.attr('data-content', count > 99 ? '99+' : count);
+	}
+
 	function updateUnreadChatCount(count) {
 		components.get('chat/icon')
 			.toggleClass('unread-count', count > 0)
@@ -61,6 +67,7 @@ define('forum/footer', ['notifications', 'chat', 'components', 'translator'], fu
 			}
 
 			updateUnreadTopicCount(data.unreadTopicCount);
+			updateUnreadNewTopicCount(data.unreadNewTopicCount);
 			updateUnreadChatCount(data.unreadChatCount);
 			Notifications.updateNotifCount(data.unreadNotificationCount);
 		});

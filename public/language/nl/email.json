@@ -24,6 +24,7 @@
     "digest.day": "dag",
     "digest.week": "week",
     "digest.month": "maand",
+    "digest.subject": "Samenvatting voor %1",
     "notif.chat.subject": "Nieuw chatbericht van %1",
     "notif.chat.cta": "Klik hier om het gesprek te hervatten",
     "notif.chat.unsub.info": "Deze notificatie is verzonden vanwege de gebruikersinstellingen voor abonnementen.",

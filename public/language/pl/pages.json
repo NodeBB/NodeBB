@@ -33,14 +33,14 @@
     "account/posts": "Posty napisane przez %1",
     "account/topics": "Tematy stworzone przez %1",
     "account/groups": "Grupy %1",
-    "account/favourites": "%1's Bookmarked Posts",
+    "account/favourites": "%1 - ulubione posty",
     "account/settings": "Ustawienia Użytkownika",
     "account/watched": "Tematy obserwowane przez %1",
     "account/upvoted": "Posts upvoted by %1",
     "account/downvoted": "Posts downvoted by %1",
-    "account/best": "Best posts made by %1",
-    "confirm": "Email Confirmed",
+    "account/best": "Najlepsze posty od %1",
+    "confirm": "E-mail potwierdzony",
     "maintenance.text": "Obecnie trwają prace konserwacyjne nad %1. Proszę wrócić później.",
     "maintenance.messageIntro": "Dodatkowo, administrator zostawił wiadomość:",
-    "throttled.text": "%1 is currently unavailable due to excessive load. Please come back another time."
+    "throttled.text": "%1 jest niedostępny z powodu obciążenia. Proszę wrócić później."
 }

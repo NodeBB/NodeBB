@@ -96,10 +96,10 @@ module.exports = function(SocketTopics) {
 			return callback(new Error('[[error:invalid-data]]'));
 		}
 
-		var start = parseInt(data.after, 10),
-			stop = start + 9;
+		var start = parseInt(data.after, 10);
+		var stop = start + 9;
 
-		topics.getUnreadTopics(data.cid, socket.uid, start, stop, callback);
+		topics.getUnreadTopics(data.cid, socket.uid, start, stop, data.filter, callback);
 	};
 
 	SocketTopics.loadMoreFromSet = function(socket, data, callback) {

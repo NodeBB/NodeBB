@@ -9,6 +9,8 @@
     "maximumPostLength": 32767,
     "minimumTagsPerTopic": 0,
     "maximumTagsPerTopic": 5,
+    "minimumTagLength": 3,
+    "maximumTagLength": 15,
     "allowGuestSearching": 0,
     "allowTopicsThumbnail": 0,
     "registrationType": "normal",
@@ -29,6 +31,9 @@
     "profileImageDimension": 128,
     "requireEmailConfirmation": 0,
     "allowProfileImageUploads": 1,
-    "teaserPost": "last",
-    "allowPrivateGroups": 1
+    "teaserPost": "last-reply",
+    "allowPrivateGroups": 1,
+    "unreadCutoff": 2,
+    "bookmarkThreshold": 5,
+    "topicsPerList": 20
 }
