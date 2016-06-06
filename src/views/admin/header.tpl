@@ -54,6 +54,7 @@
 		<script type="text/javascript" src="{relative_path}/vendor/jquery/js/jquery-ui-1.10.4.custom.js?{cache-buster}"></script>
 		<script type="text/javascript" src="{relative_path}/vendor/snackbar/snackbar.min.js?{cache-buster}"></script>
 		<script type="text/javascript" src="{relative_path}/vendor/slideout/slideout.min.js?{cache-buster}"></script>
+		<script type="text/javascript" src="{relative_path}/vendor/nprogress.min.js?{cache-buster}"></script>
 
 		<!-- BEGIN scripts -->
 		<script type="text/javascript" src="{scripts.src}"></script>

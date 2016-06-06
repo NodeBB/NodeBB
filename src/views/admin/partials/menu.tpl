@@ -256,4 +256,12 @@
 				</ul>
 			</li>
 		</ul>
+
+		<ul class="nav navbar-nav navbar-right hidden-xs reconnect-spinner">
+			<li>
+				<a href="#" id="reconnect" class="hide" title="Connection to {title} has been lost, attempting to reconnect...">
+					<i class="fa fa-check"></i>
+				</a>
+			</li>
+		</ul>
 	</nav>

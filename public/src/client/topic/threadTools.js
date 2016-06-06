@@ -120,6 +120,8 @@ define('forum/topic/threadTools', [
 					type: 'success',
 					timeout: 5000
 				});
+
+				$(window).trigger('action:topics.changeWatching', {tid: tid, type: type});
 			});
 
 			return false;

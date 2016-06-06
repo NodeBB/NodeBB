@@ -21,6 +21,7 @@ module.exports = function(privileges) {
 				topic = _topic;
 				async.parallel({
 					'topics:reply': async.apply(helpers.isUserAllowedTo, 'topics:reply', uid, [topic.cid]),
+					'topics:read': async.apply(helpers.isUserAllowedTo, 'topics:read', uid, [topic.cid]),
 					read: async.apply(helpers.isUserAllowedTo, 'read', uid, [topic.cid]),
 					isOwner: function(next) {
 						next(null, !!parseInt(uid, 10) && parseInt(uid, 10) === parseInt(topic.uid, 10));
@@ -44,6 +45,7 @@ module.exports = function(privileges) {
 			plugins.fireHook('filter:privileges.topics.get', {
 				'topics:reply': (results['topics:reply'][0] && !locked) || isAdminOrMod,
 				read: results.read[0] || isAdminOrMod,
+				'topics:read': results['topics:read'][0] || isAdminOrMod,
 				view_thread_tools: editable || deletable,
 				editable: editable,
 				deletable: deletable,
