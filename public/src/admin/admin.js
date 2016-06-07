@@ -1,5 +1,5 @@
 "use strict";
-/*global config, translator, componentHandler, define, socket, app, ajaxify, utils, bootbox, Slideout, RELATIVE_PATH*/
+/*global config, translator, componentHandler, define, socket, app, ajaxify, utils, bootbox, Slideout, NProgress, RELATIVE_PATH*/
 
 (function() {
 
@@ -27,6 +27,7 @@
 		app.alert = launchSnackbar;
 
 		configureSlidemenu();
+		setupNProgress();
 	});
 
 	$(window).on('action:ajaxify.contentLoaded', function(ev, data) {
@@ -37,6 +38,16 @@
 
 		componentHandler.upgradeDom();
 	});
+
+	function setupNProgress() {
+		$(window).on('action:ajaxify.start', function() {
+			NProgress.set(0.7);
+		});
+
+		$(window).on('action:ajaxify.end', function(ev, data) {
+			NProgress.done();
+		});
+	}
 
 	function setupKeybindings() {
 		require(['mousetrap'], function(mousetrap) {

@@ -56,19 +56,19 @@ sitemap.getPages = function(callback) {
 	var urls = [{
 			url: '',
 			changefreq: 'weekly',
-			priority: '0.6'
+			priority: 0.6
 		}, {
 			url: '/recent',
 			changefreq: 'daily',
-			priority: '0.4'
+			priority: 0.4
 		}, {
 			url: '/users',
 			changefreq: 'daily',
-			priority: '0.4'
+			priority: 0.4
 		}, {
 			url: '/groups',
 			changefreq: 'daily',
-			priority: '0.4'
+			priority: 0.4
 		}];
 
 	sitemap.maps.pages = sm.createSitemap({
@@ -99,7 +99,7 @@ sitemap.getCategories = function(callback) {
 				categoryUrls.push({
 					url: '/category/' + category.slug,
 					changefreq: 'weekly',
-					priority: '0.4'
+					priority: 0.4
 				});
 			}
 		});
@@ -153,7 +153,7 @@ sitemap.getTopicPage = function(page, callback) {
 					url: '/topic/' + topic.slug,
 					lastmodISO: utils.toISOString(topic.lastposttime),
 					changefreq: 'daily',
-					priority: '0.6'
+					priority: 0.6
 				});
 			}
 		});

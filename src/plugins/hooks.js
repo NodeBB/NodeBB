@@ -57,14 +57,16 @@ module.exports = function(Plugins) {
 			);
 		} else {
 			// handle hook's startsWith, i.e. action:homepage.get
-			var _parts = data.hook.split(':');
-			_parts.pop();
-			var _hook = _parts.join(':');
-			if (Plugins.deprecatedHooksParams[_hook]) {
-				winston.warn('[plugins/' + id + '] Hook `' + _hook + '` parameters: `' + Plugins.deprecatedHooksParams[_hook] + '`, are being deprecated, '
-				+ 'all plugins should now use the `middleware/cls` module instead of hook\'s arguments to get a reference to the `req`, `res` and/or `socket` object(s) (from which you can get the current `uid` if you need to.) '
-				+ '- for more info, visit https://docs.nodebb.org/en/latest/plugins/create.html#getting-a-reference-to-each-request-from-within-any-plugin-hook');
-				delete Plugins.deprecatedHooksParams[_hook];
+			var parts = data.hook.split(':');
+			if (parts.length > 2) {
+				parts.pop();
+			}
+			var hook = parts.join(':');
+			if (Plugins.deprecatedHooksParams[hook]) {
+				winston.warn('[plugins/' + id + '] Hook `' + hook + '` parameters: `' + Plugins.deprecatedHooksParams[hook] + '`, are being deprecated, '
+				+ 'all plugins should now use the `middleware/cls` module instead of hook\'s arguments to get a reference to the `http-request` or the `socket-request` object(s) (from which you can get the current `uid` if you need to.) '
+				+ '- for more info, visit https://docs.nodebb.org/en/latest/plugins/create.html#getting-a-reference-to-each-request-from-within-any-plugin-hook\n');
+				delete Plugins.deprecatedHooksParams[hook];
 			}
 		}
 
