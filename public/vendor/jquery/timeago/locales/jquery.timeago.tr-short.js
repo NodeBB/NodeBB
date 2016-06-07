@@ -1,4 +1,3 @@
-
 // Turkish shortened
 jQuery.timeago.settings.strings = {
   prefixAgo: null,
