@@ -57,10 +57,11 @@ define('forum/login', ['csrf', 'translator'], function(csrf, translator) {
 
 
 		// Add "returnTo" data if present
-		if (app.previousUrl) {
+		if (app.previousUrl && $('#returnTo').length === 0) {
 			var returnToEl = document.createElement('input');
 			returnToEl.type = 'hidden';
 			returnToEl.name = 'returnTo';
+			returnToEl.id = 'returnTo';
 			returnToEl.value = app.previousUrl;
 			$(returnToEl).appendTo(formEl);
 		}
