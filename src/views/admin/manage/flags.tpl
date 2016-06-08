@@ -83,8 +83,8 @@
 							</ul>
 						</blockquote>
 						<div class="btn-group">
-							<button class="btn btn-sm btn-success dismiss">Dismiss</button>
-							<button class="btn btn-sm btn-danger delete">Delete</button>
+							<button class="btn btn-sm btn-success dismiss">Dismiss this Flag</button>
+							<button class="btn btn-sm btn-danger delete">Delete the Post</button>
 						</div>
 					</div>
 				</div>
