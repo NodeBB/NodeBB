@@ -112,11 +112,9 @@ module.exports = function(Topics) {
 				if (!canCreate) {
 					return next(new Error('[[error:no-privileges]]'));
 				}
-
-				if (!guestHandleValid(data)) {
-					return next(new Error('[[error:guest-handle-invalid]]'));
-				}
-
+				guestHandleValid(data, next);
+			},
+			function (next) {
 				user.isReadyToPost(data.uid, data.cid, next);
 			},
 			function(next) {
@@ -212,11 +210,9 @@ module.exports = function(Topics) {
 				if (!results.canReply) {
 					return next(new Error('[[error:no-privileges]]'));
 				}
-
-				if (!guestHandleValid(data)) {
-					return next(new Error('[[error:guest-handle-invalid]]'));
-				}
-
+				guestHandleValid(data, next);
+			},
+			function(next) {
 				user.isReadyToPost(uid, cid, next);
 			},
 			function(next) {
@@ -316,12 +312,19 @@ module.exports = function(Topics) {
 		callback();
 	}
 
-	function guestHandleValid(data) {
-		if (parseInt(meta.config.allowGuestHandles, 10) === 1 && parseInt(data.uid, 10) === 0 &&
-			data.handle && data.handle.length > meta.config.maximumUsernameLength) {
-			return false;
+	function guestHandleValid(data, callback) {
+		if (parseInt(meta.config.allowGuestHandles, 10) === 1 && parseInt(data.uid, 10) === 0 && data.handle) {
+			if (data.handle.length > meta.config.maximumUsernameLength) {
+				return callback(new Error('[[error:guest-handle-invalid]]'));
+			}
+			user.existsBySlug(utils.slugify(data.handle), function(err, exists) {
+				if (err || exists) {
+					return callback(err || new Error('[[error:username-taken]]'));
+				}
+				callback();
+			});
 		}
-		return true;
+		callback();
 	}
 
 };
