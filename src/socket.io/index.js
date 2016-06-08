@@ -6,6 +6,7 @@ var async = require('async');
 var nconf = require('nconf');
 var cookieParser = require('cookie-parser')(nconf.get('secret'));
 var winston = require('winston');
+var url = require('url');
 
 var db = require('../database');
 var logger = require('../logger');
