@@ -35,12 +35,12 @@ module.exports = function(privileges) {
 				}, next);
 			},
 			users: function(next) {
-				var privs;
+				var userPrivileges;
 				async.waterfall([
 					async.apply(plugins.fireHook, 'filter:privileges.list', privileges.userPrivilegeList),
 					function(_privs, next) {
-						privs = _privs;
-						groups.getMembersOfGroups(privs.map(function(privilege) {
+						userPrivileges = _privs;
+						groups.getMembersOfGroups(userPrivileges.map(function(privilege) {
 							return 'cid:' + cid + ':privileges:' + privilege;
 						}), next);
 					},
@@ -61,8 +61,8 @@ module.exports = function(privileges) {
 
 							memberData.forEach(function(member) {
 								member.privileges = {};
-								for(var x=0,numPrivs=privileges.length;x<numPrivs;x++) {
-									member.privileges[privileges[x]] = memberSets[x].indexOf(parseInt(member.uid, 10)) !== -1;
+								for(var x=0,numPrivs=userPrivileges.length;x<numPrivs;x++) {
+									member.privileges[userPrivileges[x]] = memberSets[x].indexOf(parseInt(member.uid, 10)) !== -1;
 								}
 							});
 
@@ -72,12 +72,12 @@ module.exports = function(privileges) {
 				], next);
 			},
 			groups: function(next) {
-				var privs;
+				var groupPrivileges;
 				async.waterfall([
 					async.apply(plugins.fireHook, 'filter:privileges.groups.list', privileges.groupPrivilegeList),
 					function(_privs, next) {
-						privs = _privs;
-						groups.getMembersOfGroups(privs.map(function(privilege) {
+						groupPrivileges = _privs;
+						groups.getMembersOfGroups(groupPrivileges.map(function(privilege) {
 							return 'cid:' + cid + ':privileges:' + privilege;
 						}), next);
 					},
@@ -112,8 +112,8 @@ module.exports = function(privileges) {
 							var memberData = groupNames.map(function(member) {
 								memberPrivs = {};
 
-								for(var x=0,numPrivs=privileges.length;x<numPrivs;x++) {
-									memberPrivs[privileges[x]] = memberSets[x].indexOf(member) !== -1;
+								for(var x=0,numPrivs=groupPrivileges.length;x<numPrivs;x++) {
+									memberPrivs[groupPrivileges[x]] = memberSets[x].indexOf(member) !== -1;
 								}
 								return {
 									name: member,
