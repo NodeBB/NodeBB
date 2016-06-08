@@ -1,14 +1,14 @@
 
 'use strict';
 
-var async = require('async'),
-	_ = require('underscore'),
+var async = require('async');
+var _ = require('underscore');
 
-	user = require('../user'),
-	categories = require('../categories'),
-	groups = require('../groups'),
-	helpers = require('./helpers'),
-	plugins = require('../plugins');
+var user = require('../user');
+var categories = require('../categories');
+var groups = require('../groups');
+var helpers = require('./helpers');
+var plugins = require('../plugins');
 
 module.exports = function(privileges) {
 
@@ -27,13 +27,6 @@ module.exports = function(privileges) {
 			{name: 'Moderate'}
 		];
 
-		var userPrivilegeList = [
-			'find', 'read', 'topics:read', 'topics:create', 'topics:reply', 'purge', 'mods'
-		];
-		var groupPrivilegeList = [
-			'groups:find', 'groups:read', 'groups:topics:read', 'groups:topics:create', 'groups:topics:reply', 'groups:purge', 'groups:moderate'
-		];
-
 		async.parallel({
 			labels: function(next) {
 				async.parallel({
@@ -44,7 +37,7 @@ module.exports = function(privileges) {
 			users: function(next) {
 				var privileges;
 				async.waterfall([
-					async.apply(plugins.fireHook, 'filter:privileges.list', userPrivilegeList),
+					async.apply(plugins.fireHook, 'filter:privileges.list', privileges.userPrivilegeList),
 					function(privs, next) {
 						privileges = privs;
 						groups.getMembersOfGroups(privs.map(function(privilege) {
@@ -81,7 +74,7 @@ module.exports = function(privileges) {
 			groups: function(next) {
 				var privileges;
 				async.waterfall([
-					async.apply(plugins.fireHook, 'filter:privileges.groups.list', groupPrivilegeList),
+					async.apply(plugins.fireHook, 'filter:privileges.groups.list', privileges.groupPrivilegeList),
 					function(privs, next) {
 						privileges = privs;
 						groups.getMembersOfGroups(privs.map(function(privilege) {
