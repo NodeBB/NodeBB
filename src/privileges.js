@@ -5,7 +5,7 @@ var privileges = {};
 privileges.userPrivilegeList = ['find', 'read', 'topics:create', 'topics:read', 'topics:reply', 'purge', 'mods'];
 privileges.groupPrivilegeList = ['groups:find', 'groups:read', 'groups:topics:create', 'groups:topics:read', 'groups:topics:reply', 'groups:purge', 'groups:moderate'];
 
-privileges.privilegeList = privileges.userPrivileges.concat(privileges.groupPrivileges);
+privileges.privilegeList = privileges.userPrivilegeList.concat(privileges.groupPrivilegeList);
 
 require('./privileges/categories')(privileges);
 require('./privileges/topics')(privileges);
