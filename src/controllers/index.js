@@ -185,6 +185,27 @@ Controllers.register = function(req, res, next) {
 	});
 };
 
+Controllers.registerInterstitial = function(req, res, next) {
+	if (!req.session.hasOwnProperty('registration')) {
+		return res.redirect(nconf.get('relative_path') + '/register');
+	}
+
+	plugins.fireHook('filter:register.interstitial', {
+		userData: req.session.registration,
+		interstitials: []
+	}, function(err, data) {
+		var renders = data.interstitials.map(function(interstitial) {
+			return async.apply(req.app.render.bind(req.app), interstitial.template, interstitial.data)
+		});
+
+		async.parallel(renders, function(err, sections) {
+			res.render('registerComplete', {
+				sections: sections
+			});
+		});
+	});
+};
+
 Controllers.compose = function(req, res, next) {
 	plugins.fireHook('filter:composer.build', {
 		req: req,

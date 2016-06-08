@@ -15,5 +15,6 @@
 	"alternative_registration": "Alternative Registration",
 	"terms_of_use": "Terms of Use",
 	"agree_to_terms_of_use": "I agree to the Terms of Use",
-	"registration-added-to-queue": "Your registration has been added to the approval queue. You will receive an email when it is accepted by an administrator."
+	"registration-added-to-queue": "Your registration has been added to the approval queue. You will receive an email when it is accepted by an administrator.",
+	"interstitial.intro": "We require some additional information before we can create your account."
 }

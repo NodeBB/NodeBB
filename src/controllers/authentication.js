@@ -82,6 +82,23 @@ function registerAndLoginUser(req, res, userData, callback) {
 	var uid;
 	async.waterfall([
 		function(next) {
+			plugins.fireHook('filter:register.interstitial', {
+				userData: userData,
+				interstitials: []
+			}, function(err, data) {
+				// If interstitials are found, save registration attempt into session and abort
+				var deferRegistration = data.interstitials.length;
+				deferRegistration = true;
+
+				if (!deferRegistration) {
+					return next();
+				} else {
+					req.session.registration = userData;
+					return res.json({ referrer: nconf.get('relative_path') + '/register/complete' });
+				}
+			});
+		},
+		function(next) {
 			user.create(userData, next);
 		},
 		function(_uid, next) {
