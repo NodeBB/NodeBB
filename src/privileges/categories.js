@@ -35,11 +35,11 @@ module.exports = function(privileges) {
 				}, next);
 			},
 			users: function(next) {
-				var privileges;
+				var privs;
 				async.waterfall([
 					async.apply(plugins.fireHook, 'filter:privileges.list', privileges.userPrivilegeList),
-					function(privs, next) {
-						privileges = privs;
+					function(_privs, next) {
+						privs = _privs;
 						groups.getMembersOfGroups(privs.map(function(privilege) {
 							return 'cid:' + cid + ':privileges:' + privilege;
 						}), next);
@@ -72,11 +72,11 @@ module.exports = function(privileges) {
 				], next);
 			},
 			groups: function(next) {
-				var privileges;
+				var privs;
 				async.waterfall([
 					async.apply(plugins.fireHook, 'filter:privileges.groups.list', privileges.groupPrivilegeList),
-					function(privs, next) {
-						privileges = privs;
+					function(_privs, next) {
+						privs = _privs;
 						groups.getMembersOfGroups(privs.map(function(privilege) {
 							return 'cid:' + cid + ':privileges:' + privilege;
 						}), next);
