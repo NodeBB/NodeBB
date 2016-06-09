@@ -18,10 +18,10 @@ machine:
 
 dependencies:
   pre:
-    - "sudo apt-key -y adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 7F0CEB10"
+    - "sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 7F0CEB10"
     - "echo 'deb http://downloads-distro.mongodb.org/repo/ubuntu-upstart dist 10gen' | sudo tee /etc/apt/sources.list.d/mongodb.list"
-    - "sudo apt-key -y adv --keyserver hkp://keyserver.ubuntu.com:80 --recv BA9EF27F"
-    - "sudo add-apt-repository ppa:ubuntu-toolchain-r/test"
+    - "sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv BA9EF27F"
+    - "sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test"
     - sudo apt-get update
     - sudo apt-get install mongodb-org-server
     - "sudo apt-get install g++-4.8"
