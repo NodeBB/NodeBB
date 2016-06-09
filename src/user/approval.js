@@ -128,7 +128,7 @@ module.exports = function(User) {
 		async.parallel([
 			async.apply(db.sortedSetRemove, 'registration:queue', username),
 			async.apply(db.delete, 'registration:queue:name:' + username)
-		], function(err, results) {
+		], function(err) {
 			callback(err);
 		});
 	}
@@ -178,11 +178,11 @@ module.exports = function(User) {
 						if (err) {
 							return next(null, user);
 						}
-						if (response.statusCode === 200) {
+						if (response.statusCode === 200 && body) {
 							user.spamData = body;
-							user.usernameSpam = body.username.frequency > 0 || body.username.appears > 0;
-							user.emailSpam = body.email.frequency > 0 || body.email.appears > 0;
-							user.ipSpam = body.ip.frequency > 0 || body.ip.appears > 0;
+							user.usernameSpam = body.username ? (body.username.frequency > 0 || body.username.appears > 0) : true;
+							user.emailSpam = body.email ? (body.email.frequency > 0 || body.email.appears > 0) : true;
+							user.ipSpam = body.ip ? (body.ip.frequency > 0 || body.ip.appears > 0) : true;
 						}
 
 						next(null, user);

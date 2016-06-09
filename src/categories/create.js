@@ -97,14 +97,14 @@ module.exports = function(Categories) {
 				destination = results.destination;
 
 				var tasks = [];
-				
+
 				if (copyParent && utils.isNumber(destination.parentCid)) {
 					tasks.push(async.apply(db.sortedSetRemove, 'cid:' + destination.parentCid + ':children', toCid));
 				}
 
 				if (copyParent && utils.isNumber(results.source.parentCid)) {
 					tasks.push(async.apply(db.sortedSetAdd, 'cid:' + results.source.parentCid + ':children', results.source.order, toCid));
-				}				
+				}
 
 				destination.description = results.source.description;
 				destination.descriptionParsed = results.source.descriptionParsed;
@@ -115,11 +115,11 @@ module.exports = function(Categories) {
 				destination.numRecentReplies = results.source.numRecentReplies;
 				destination.class = results.source.class;
 				destination.imageClass = results.source.imageClass;
-				
+
 				if (copyParent) {
-					destination.parentCid = results.source.parentCid || 0;	
+					destination.parentCid = results.source.parentCid || 0;
 				}
-				
+
 				tasks.push(async.apply(db.setObject, 'category:' + toCid, destination));
 
 				async.series(tasks, next);
@@ -133,12 +133,7 @@ module.exports = function(Categories) {
 	};
 
 	Categories.copyPrivilegesFrom = function(fromCid, toCid, callback) {
-		var privilegeList = [
-			'find', 'read', 'topics:create', 'topics:read', 'topics:reply', 'purge', 'mods',
-			'groups:find', 'groups:read', 'groups:topics:create', 'groups:topics:reply', 'groups:purge', 'groups:moderate'
-		];
-
-		async.each(privilegeList, function(privilege, next) {
+		async.each(privileges.privilegeList, function(privilege, next) {
 			copyPrivilege(privilege, fromCid, toCid, next);
 		}, callback);
 	};

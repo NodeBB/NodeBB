@@ -174,8 +174,9 @@ define('forum/account/edit', ['forum/account/header', 'uploader', 'translator'],
 					} else {
 						socket.emit('user.deleteAccount', {}, function(err) {
 							if (err) {
-								app.alertError(err.message);
+								return app.alertError(err.message);
 							}
+							
 							window.location.href = config.relative_path + '/';
 						});
 					}

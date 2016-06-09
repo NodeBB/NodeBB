@@ -5,7 +5,7 @@
     "remember_me": "Запомнить меня",
     "forgot_password": "Забыли пароль?",
     "alternative_logins": "Войти через",
-    "failed_login_attempt": "Login Unsuccessful",
+    "failed_login_attempt": "Некорректный логин",
     "login_successful": "Вы успешно вошли!",
     "dont_have_account": "Нет акканута?"
 }
