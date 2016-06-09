@@ -85,7 +85,7 @@
 			servers.push(hosts[i] + ':' + ports[i]);
 		}
 
-		var connString = 'mongodb://' + usernamePassword + servers.join() + '/' + nconf.get('mongo:database') + '?ssl=true;
+		var connString = 'mongodb://' + usernamePassword + servers.join() + '/' + nconf.get('mongo:database') + '?ssl=true';
 
 		var connOptions = {
 			server: {
