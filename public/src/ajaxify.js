@@ -303,6 +303,10 @@ $(document).ready(function() {
 				}
 			}
 
+			if (internalLink && $(this).attr('href').endsWith('.rss')) {
+				return;
+			}
+
 			if (hrefEmpty(this.href) || this.protocol === 'javascript:' || $(this).attr('href') === '#') {
 				return e.preventDefault();
 			}
