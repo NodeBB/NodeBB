@@ -26,7 +26,7 @@ dependencies:
     - sudo apt-get install mongodb-org-server
     - "sudo apt-get install g++-4.8"
     - npm i --production
-    - database=mongo mongo__database=${APP_MONGO_DATABASE} mongo__username=${APP_MONGO_USERNAME} mongo__password=${APP_MONGO_PASSWORD} mongo__host=${APP_MONGO_HOST} mongo__port=${APP_MONGO_PORT} mongo__options=${APP_MONGO_OPTIONS} admin__username=${APP_ADMIN_USERNAME} admin__password=${APP_ADMIN_PASSWORD} node app --setup
+    - database=mongo mongo__database=${APP_MONGO_DATABASE} mongo__username=${APP_MONGO_USERNAME} mongo__password=${APP_MONGO_PASSWORD} mongo__host=${APP_MONGO_HOST} mongo__port=${APP_MONGO_PORT} admin__username=${APP_ADMIN_USERNAME} admin__password=${APP_ADMIN_PASSWORD} node app --setup
 
 deployment:
   hub:
