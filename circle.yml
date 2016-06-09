@@ -26,7 +26,7 @@ dependencies:
     - sudo apt-get install mongodb-org-server
     - "sudo apt-get install g++-4.8"
     - npm i --production
-    - node app --setup="{\"url\":\"${APP_URL}/\",\"secret\":\"${APP_SECRET}\",\"database\":\"${APP_MONGO_DATABASE}\",\"mongo:host\":\"${APP_MONGO_HOST}\",\"mongo:port\":${APP_MONGO_PORT},\"mongo:username\":\"${APP_MONGO_USERNAME}\",\"mongo:password\":\"${APP_MONGO_PASSWORD}\",\"mongo:database\":1,\"mongo:options\":\"${APP_MONGO_OPTIONS}\",\"redis:host\":\"127.0.0.1\",\"redis:port\":6379,\"redis:password\":\"\",\"redis:database\":0,\"admin:username\":\"${APP_ADMIN_USERNAME}\",\"admin:email\":\"${APP_ADMIN_EMAIL}\",\"admin:password\":\"${APP_ADMIN_PASSWORD}\",\"admin:password:confirm\":\"${APP_ADMIN_PASSWORD}\"}" --ci="{\"host\":\"127.0.0.1\",\"port\":27017,\"database\":0}"
+    - database=mongo mongo__database=${APP_MONGO_DATABASE} mongo__username=${APP_MONGO_USERNAME} mongo__password=${APP_MONGO_PASSWORD} mongo__host=${APP_MONGO_HOST} mongo__port=${APP_MONGO_PORT} mongo__options=${APP_MONGO_OPTIONS} admin__username=${APP_ADMIN_USERNAME} admin__password=${APP_ADMIN_PASSWORD} node app --setup
 
 deployment:
   hub:
