@@ -2,6 +2,7 @@
 'use strict';
 
 var async = require('async');
+var querystring = require('querystring');
 
 var categories = require('../categories');
 var privileges = require('../privileges');
@@ -47,6 +48,14 @@ unreadController.get = function(req, res, next) {
 			return next(err);
 		}
 
+		data.pageCount = Math.max(1, Math.ceil(data.topicCount / settings.topicsPerPage));
+		data.pagination = pagination.create(page, data.pageCount, req.query);
+
+		if (settings.usePagination && (page < 1 || page > data.pageCount)) {
+			req.query.page = Math.max(1, Math.min(data.pageCount, page));
+			return helpers.redirect(res, '/unread?' + querystring.stringify(req.query));
+		}
+
 		data.categories = results.watchedCategories.categories;
 		data.selectedCategory = results.watchedCategories.selectedCategory;
 
@@ -74,9 +83,6 @@ unreadController.get = function(req, res, next) {
 		})[0];
 
 		data.querystring = req.query.cid ? ('?cid=' + req.query.cid) : '';
-
-		data.pageCount = Math.max(1, Math.ceil(data.topicCount / settings.topicsPerPage));
-		data.pagination = pagination.create(page, data.pageCount, req.query);
 
 		res.render('unread', data);
 	});
