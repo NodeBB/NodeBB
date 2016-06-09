@@ -1,0 +1,38 @@
+general:
+  branches:
+    only:
+      - circle_ci
+      - production
+
+machine:
+  timezone:
+    Etc/UTC
+  services:
+    - docker
+  environment:
+    RAILS_ENV: test
+    RACK_ENV: test
+    NEW_RELIC_LOG: stdout
+    WEB_CONCURRENCY: 3
+    CXX: g++-4.8
+
+dependencies:
+  pre:
+    - "sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 7F0CEB10"
+    - "echo 'deb http://downloads-distro.mongodb.org/repo/ubuntu-upstart dist 10gen' | sudo tee /etc/apt/sources.list.d/mongodb.list"
+    - "sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv BA9EF27F"
+    - "sudo add-apt-repository ppa:ubuntu-toolchain-r/test"
+    - sudo apt-get update
+    - sudo apt-get install mongodb-org-server
+    - "sudo apt-get install g++-4.8"
+    - npm i --production
+    - node app --setup="{\"url\":\"$APP_URL/\",\"secret\":\"$APP_SECRET\",\"database\":\"$APP_MONGO_DATABASE\",\"mongo:host\":\"$APP_MONGO_HOST\",\"mongo:port\":$APP_MONGO_PORT,\"mongo:username\":\"$APP_MONGO_USERNAME\",\"mongo:password\":\"$APP_MONGO_PASSWORD\",\"mongo:database\":1,\"mongo:options\":\"$APP_MONGO_OPTIONS\",\"redis:host\":\"127.0.0.1\",\"redis:port\":6379,\"redis:password\":\"\",\"redis:database\":0,\"admin:username\":\"$APP_ADMIN_USERNAME\",\"admin:email\":\"$APP_ADMIN_EMAIL\",\"admin:password\":\"$APP_ADMIN_PASSWORD\",\"admin:password:confirm\":\"$APP_ADMIN_PASSWORD\"}" --ci="{\"host\":\"127.0.0.1\",\"port\":27017,\"database\":0}"
+
+deployment:
+  hub:
+    branch: circle_ci
+    commands:
+      - eval $(aws ecr get-login --region eu-west-1)
+      - docker build -t proversity-nodebb .
+      - docker tag proversity-nodebb:latest 353198996426.dkr.ecr.eu-west-1.amazonaws.com/proversity-nodebb:latest
+      - docker push 353198996426.dkr.ecr.eu-west-1.amazonaws.com/proversity-nodebb:latest
