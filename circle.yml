@@ -18,7 +18,7 @@ machine:
 
 dependencies:
   pre:
-    - apt-get install python-pip
+    - sudo apt-get install python-pip
     - pip install awsebcli
     - npm i --production
     - database=mongo mongo__database=${APP_MONGO_DATABASE} mongo__username=${APP_MONGO_USERNAME} mongo__password=${APP_MONGO_PASSWORD} mongo__host=${APP_MONGO_HOST} mongo__port=${APP_MONGO_PORT} admin__username=${APP_ADMIN_USERNAME} admin__password=${APP_ADMIN_PASSWORD} node app --setup
