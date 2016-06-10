@@ -22,8 +22,6 @@ dependencies:
     - sudo apt-get install python3-setuptools python3-dev
     - sudo easy_install3 pip
     - sudo -H pip install awsebcli
-    - npm i --production
-    - database=mongo mongo__database=${APP_MONGO_DATABASE} mongo__username=${APP_MONGO_USERNAME} mongo__password=${APP_MONGO_PASSWORD} mongo__host=${APP_MONGO_HOST} mongo__port=${APP_MONGO_PORT} admin__username=${APP_ADMIN_USERNAME} admin__password=${APP_ADMIN_PASSWORD} node app --setup
     - cd /home/ubuntu/NodeBB
     - mkdir .elasticbeanstalk
     - "echo \"branch-defaults:\" > .elasticbeanstalk/config.yml"
@@ -41,9 +39,5 @@ deployment:
   hub:
     branch: circle_ci
     commands:
-      - eval $(aws ecr get-login --region eu-west-1)
-      - docker build -t proversity-nodebb .
-      - docker tag proversity-nodebb:latest 353198996426.dkr.ecr.eu-west-1.amazonaws.com/proversity-nodebb:latest
-      - docker push 353198996426.dkr.ecr.eu-west-1.amazonaws.com/proversity-nodebb:latest
       - eb use ${EB_ENVIRONMENT}
       - eb deploy
