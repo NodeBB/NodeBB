@@ -18,6 +18,7 @@ machine:
 
 dependencies:
   pre:
+    - sudo apt-get update
     - sudo apt-get install python-pip
     - sudo -H pip install awsebcli
     - npm i --production
