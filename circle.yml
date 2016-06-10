@@ -26,16 +26,16 @@ dependencies:
     - database=mongo mongo__database=${APP_MONGO_DATABASE} mongo__username=${APP_MONGO_USERNAME} mongo__password=${APP_MONGO_PASSWORD} mongo__host=${APP_MONGO_HOST} mongo__port=${APP_MONGO_PORT} admin__username=${APP_ADMIN_USERNAME} admin__password=${APP_ADMIN_PASSWORD} node app --setup
     - cd NodeBB
     - mkdir .elasticbeanstalk
-    - echo "branch-defaults:" > .elasticbeanstalk/config.yml
-    - echo "  circle_ci:" >> .elasticbeanstalk/config.yml
-    - echo "    environment: ${EB_ENVIRONMENT}" >> .elasticbeanstalk/config.yml
-    - echo "global:" >> .elasticbeanstalk/config.yml
-    - echo "  application_name: ${EB_APPLICATION}" >> .elasticbeanstalk/config.yml
-    - echo "  default_ec2_keyname: null" >> .elasticbeanstalk/config.yml
-    - echo "  default_platform: 64bit Amazon Linux 2016.03 v2.1.0 running Docker 1.9.1" >> .elasticbeanstalk/config.yml
-    - echo "  default_region: eu-west-1" >> .elasticbeanstalk/config.yml
-    - echo "  profile: null" >> .elasticbeanstalk/config.yml
-    - echo "  sc: git" >> .elasticbeanstalk/config.yml
+    - echo \"branch-defaults:\" > .elasticbeanstalk/config.yml
+    - echo \"  circle_ci:\" >> .elasticbeanstalk/config.yml
+    - echo \"    environment: ${EB_ENVIRONMENT}\" >> .elasticbeanstalk/config.yml
+    - echo \"global:\" >> .elasticbeanstalk/config.yml
+    - echo \"  application_name: ${EB_APPLICATION}\" >> .elasticbeanstalk/config.yml
+    - echo \"  default_ec2_keyname: null\" >> .elasticbeanstalk/config.yml
+    - echo \"  default_platform: 64bit Amazon Linux 2016.03 v2.1.0 running Docker 1.9.1\" >> .elasticbeanstalk/config.yml
+    - echo \"  default_region: eu-west-1\" >> .elasticbeanstalk/config.yml
+    - echo \"  profile: null\" >> .elasticbeanstalk/config.yml
+    - echo \"  sc: git\" >> .elasticbeanstalk/config.yml
 
 deployment:
   hub:
