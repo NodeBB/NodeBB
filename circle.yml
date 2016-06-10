@@ -18,8 +18,6 @@ machine:
 
 dependencies:
   pre:
-    - sudo apt-get update
-    - sudo apt-get upgrade
     - apt-get install python-pip
     - pip install awsebcli
     - npm i --production
@@ -33,4 +31,5 @@ deployment:
       - docker build -t proversity-nodebb .
       - docker tag proversity-nodebb:latest 353198996426.dkr.ecr.eu-west-1.amazonaws.com/proversity-nodebb:latest
       - docker push 353198996426.dkr.ecr.eu-west-1.amazonaws.com/proversity-nodebb:latest
+      - eb use ${EB_ENVIRONMENT}
       - eb deploy
