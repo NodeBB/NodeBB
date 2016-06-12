@@ -23,7 +23,7 @@
     "no-email-to-confirm": "Bu forum e-posta doğrulaması gerektirir, lütfen buraya bir e-posta adresi girin",
     "email-confirm-failed": "E-posta adresinizi doğrulayamıyoruz. Lütfen daha sonra tekrar deneyin.",
     "confirm-email-already-sent": "E-mail onayı zaten gönderilmiş, yeni bir onay göndermek için lütfen 1 dakika bekleyin.",
-    "sendmail-not-found": "The sendmail executable could not be found, please ensure it is installed and executable by the user running NodeBB.",
+    "sendmail-not-found": "Sendmail yürütülemedi, lüften indirildiğinden ve NodeBB kullanıcısı tarafından uygulanabilir olduğundan emin olun.",
     "username-too-short": "Kullanıcı ismi çok kısa",
     "username-too-long": "Kullanıcı ismi çok uzun.",
     "password-too-long": "Parola çok uzun",
