@@ -3,7 +3,7 @@
 var privileges = {};
 
 privileges.userPrivilegeList = ['find', 'read', 'topics:create', 'topics:read', 'topics:reply', 'purge', 'mods'];
-privileges.groupPrivilegeList = ['groups:find', 'groups:read', 'groups:topics:create', 'groups:topics:read', 'groups:topics:reply', 'groups:purge', 'groups:moderate'];
+privileges.groupPrivilegeList = ['groups:find', 'groups:read', 'groups:topics:read', 'groups:topics:create', 'groups:topics:reply', 'groups:purge', 'groups:moderate'];
 
 privileges.privilegeList = privileges.userPrivilegeList.concat(privileges.groupPrivilegeList);
 
