@@ -46,8 +46,7 @@ var meta = require('./meta');
 					db.sortedSetAdd('users:reputation', newreputation, postData.uid);
 				}
 
-				adjustPostVotes(postData, uid, type, unvote, function(err, votes) {
-					postData.votes = votes;
+				adjustPostVotes(postData, uid, type, unvote, function(err) {
 					callback(err, {
 						user: {
 							reputation: newreputation
@@ -91,11 +90,10 @@ var meta = require('./meta');
 				if (err) {
 					return callback(err);
 				}
-				var voteCount = parseInt(results.upvotes, 10) - parseInt(results.downvotes, 10);
-
-				posts.updatePostVoteCount(postData, voteCount, function(err) {
-					callback(err, voteCount);
-				});
+				postData.upvotes = parseInt(results.upvotes, 10);
+				postData.downvotes = parseInt(results.downvotes, 10);
+				postData.votes = postData.upvotes - postData.downvotes;
+				posts.updatePostVoteCount(postData, callback);
 			});
 		});
 	}

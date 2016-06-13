@@ -1,23 +1,24 @@
 'use strict';
 
-var async = require('async'),
-	_ = require('underscore'),
+var async = require('async');
+var _ = require('underscore');
 
-	meta = require('../meta'),
-	db = require('../database'),
-	plugins = require('../plugins'),
-	user = require('../user'),
-	topics = require('../topics'),
-	categories = require('../categories');
+var meta = require('../meta');
+var db = require('../database');
+var plugins = require('../plugins');
+var user = require('../user');
+var topics = require('../topics');
+var categories = require('../categories');
 
 
 module.exports = function(Posts) {
+
 	Posts.create = function(data, callback) {
 		// This is an internal method, consider using Topics.reply instead
-		var uid = data.uid,
-			tid = data.tid,
-			content = data.content.toString(),
-			timestamp = data.timestamp || Date.now();
+		var uid = data.uid;
+		var tid = data.tid;
+		var content = data.content.toString();
+		var timestamp = data.timestamp || Date.now();
 
 		if (!uid && parseInt(uid, 10) !== 0) {
 			return callback(new Error('[[error:invalid-uid]]'));
@@ -38,7 +39,6 @@ module.exports = function(Posts) {
 					'content': content,
 					'timestamp': timestamp,
 					'reputation': 0,
-					'votes': 0,
 					'editor': '',
 					'edited': 0,
 					'deleted': 0
