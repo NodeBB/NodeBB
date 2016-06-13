@@ -17,7 +17,26 @@ ENV APP_ADMIN_PASSWORD $APP_ADMIN_PASSWORD
 
 # nodebb setup will ask you for connection information to a redis (default), mongodb then run the forum
 # nodebb upgrade is not included and might be desired
-CMD database=mongo mongo__database=${APP_MONGO_DATABASE} mongo__username=${APP_MONGO_USERNAME} mongo__password=${APP_MONGO_PASSWORD} mongo__host=${APP_MONGO_HOST} mongo__port=${APP_MONGO_PORT} admin__username=${APP_ADMIN_USERNAME} admin__password=${APP_ADMIN_PASSWORD} node app --setup && npm start
+CMD echo "{" > config.json
+CMD echo "    \"url\": \"http://localhost:4567\"," >> config.json
+CMD echo "    \"secret\": \"f9ee73b8-86e5-4af9-a028-2ec8f9e7c69c\"," >> config.json
+CMD echo "    \"database\": \"mongo\"," >> config.json
+CMD echo "    \"mongo\": {" >> config.json
+CMD echo "        \"host\": \"${APP_MONGO_HOST}\"," >> config.json
+CMD echo "        \"port\": \"${APP_MONGO_PORT}\"," >> config.json
+CMD echo "        \"username\": \"${APP_MONGO_USERNAME}\"," >> config.json
+CMD echo "        \"password\": \"${APP_MONGO_PASSWORD}\"," >> config.json
+CMD echo "        \"database\": \"${APP_MONGO_DATABASE}\"," >> config.json
+CMD echo "        \"options\": {" >> config.json
+CMD echo "            \"mongos\": {" >> config.json
+CMD echo "                \"ssl\": true," >> config.json
+CMD echo "                \"sslValidate\": false" >> config.json
+CMD echo "            }" >> config.json
+CMD echo "        }" >> config.json
+CMD echo "    }" >> config.json
+CMD echo "}" >> config.json
+
+CMD npm start
 
 # the default port for NodeBB is exposed outside the container
 EXPOSE 4567
