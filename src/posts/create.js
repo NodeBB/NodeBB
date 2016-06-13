@@ -41,7 +41,8 @@ module.exports = function(Posts) {
 					'reputation': 0,
 					'editor': '',
 					'edited': 0,
-					'deleted': 0
+					'deleted': 0,
+					'votes': 0
 				};
 
 				if (data.toPid) {
