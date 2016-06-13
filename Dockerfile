@@ -18,23 +18,23 @@ ENV APP_ADMIN_PASSWORD $APP_ADMIN_PASSWORD
 # nodebb setup will ask you for connection information to a redis (default), mongodb then run the forum
 # nodebb upgrade is not included and might be desired
 CMD echo "{" > config.json
-CMD echo "    \"url\": \"http://localhost:4567\"," >> config.json
-CMD echo "    \"secret\": \"f9ee73b8-86e5-4af9-a028-2ec8f9e7c69c\"," >> config.json
-CMD echo "    \"database\": \"mongo\"," >> config.json
-CMD echo "    \"mongo\": {" >> config.json
-CMD echo "        \"host\": \"${APP_MONGO_HOST}\"," >> config.json
-CMD echo "        \"port\": \"${APP_MONGO_PORT}\"," >> config.json
-CMD echo "        \"username\": \"${APP_MONGO_USERNAME}\"," >> config.json
-CMD echo "        \"password\": \"${APP_MONGO_PASSWORD}\"," >> config.json
-CMD echo "        \"database\": \"${APP_MONGO_DATABASE}\"," >> config.json
-CMD echo "        \"options\": {" >> config.json
-CMD echo "            \"mongos\": {" >> config.json
-CMD echo "                \"ssl\": true," >> config.json
-CMD echo "                \"sslValidate\": false" >> config.json
-CMD echo "            }" >> config.json
-CMD echo "        }" >> config.json
-CMD echo "    }" >> config.json
-CMD echo "}" >> config.json
+CMD echo "    \"url\": \"http://localhost:4567\"," >> /usr/src/app/config.json
+CMD echo "    \"secret\": \"f9ee73b8-86e5-4af9-a028-2ec8f9e7c69c\"," >> /usr/src/app/config.json
+CMD echo "    \"database\": \"mongo\"," >> /usr/src/app/config.json
+CMD echo "    \"mongo\": {" >> /usr/src/app/config.json
+CMD echo "        \"host\": \"${APP_MONGO_HOST}\"," >> /usr/src/app/config.json
+CMD echo "        \"port\": \"${APP_MONGO_PORT}\"," >> /usr/src/app/config.json
+CMD echo "        \"username\": \"${APP_MONGO_USERNAME}\"," >> /usr/src/app/config.json
+CMD echo "        \"password\": \"${APP_MONGO_PASSWORD}\"," >> /usr/src/app/config.json
+CMD echo "        \"database\": \"${APP_MONGO_DATABASE}\"," >> /usr/src/app/config.json
+CMD echo "        \"options\": {" >> /usr/src/app/config.json
+CMD echo "            \"mongos\": {" >> /usr/src/app/config.json
+CMD echo "                \"ssl\": true," >> /usr/src/app/config.json
+CMD echo "                \"sslValidate\": false" >> /usr/src/app/config.json
+CMD echo "            }" >> /usr/src/app/config.json
+CMD echo "        }" >> /usr/src/app/config.json
+CMD echo "    }" >> /usr/src/app/config.json
+CMD echo "}" >> /usr/src/app/config.json
 
 CMD npm start
 
