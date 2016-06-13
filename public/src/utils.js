@@ -177,7 +177,7 @@
 		},
 
 		fileMimeType: function (path) {
-			utils.extensionToMimeType(utils.fileExtension(path));
+			return utils.extensionToMimeType(utils.fileExtension(path));
 		},
 
 		extensionToMimeType: function(extension) {

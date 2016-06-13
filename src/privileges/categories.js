@@ -1,14 +1,14 @@
 
 'use strict';
 
-var async = require('async'),
-	_ = require('underscore'),
+var async = require('async');
+var _ = require('underscore');
 
-	user = require('../user'),
-	categories = require('../categories'),
-	groups = require('../groups'),
-	helpers = require('./helpers'),
-	plugins = require('../plugins');
+var user = require('../user');
+var categories = require('../categories');
+var groups = require('../groups');
+var helpers = require('./helpers');
+var plugins = require('../plugins');
 
 module.exports = function(privileges) {
 
@@ -27,13 +27,6 @@ module.exports = function(privileges) {
 			{name: 'Moderate'}
 		];
 
-		var userPrivilegeList = [
-			'find', 'read', 'topics:read', 'topics:create', 'topics:reply', 'purge', 'mods'
-		];
-		var groupPrivilegeList = [
-			'groups:find', 'groups:read', 'groups:topics:read', 'groups:topics:create', 'groups:topics:reply', 'groups:purge', 'groups:moderate'
-		];
-
 		async.parallel({
 			labels: function(next) {
 				async.parallel({
@@ -42,12 +35,12 @@ module.exports = function(privileges) {
 				}, next);
 			},
 			users: function(next) {
-				var privileges;
+				var userPrivileges;
 				async.waterfall([
-					async.apply(plugins.fireHook, 'filter:privileges.list', userPrivilegeList),
-					function(privs, next) {
-						privileges = privs;
-						groups.getMembersOfGroups(privs.map(function(privilege) {
+					async.apply(plugins.fireHook, 'filter:privileges.list', privileges.userPrivilegeList),
+					function(_privs, next) {
+						userPrivileges = _privs;
+						groups.getMembersOfGroups(userPrivileges.map(function(privilege) {
 							return 'cid:' + cid + ':privileges:' + privilege;
 						}), next);
 					},
@@ -68,8 +61,8 @@ module.exports = function(privileges) {
 
 							memberData.forEach(function(member) {
 								member.privileges = {};
-								for(var x=0,numPrivs=privileges.length;x<numPrivs;x++) {
-									member.privileges[privileges[x]] = memberSets[x].indexOf(parseInt(member.uid, 10)) !== -1;
+								for(var x=0,numPrivs=userPrivileges.length;x<numPrivs;x++) {
+									member.privileges[userPrivileges[x]] = memberSets[x].indexOf(parseInt(member.uid, 10)) !== -1;
 								}
 							});
 
@@ -79,12 +72,12 @@ module.exports = function(privileges) {
 				], next);
 			},
 			groups: function(next) {
-				var privileges;
+				var groupPrivileges;
 				async.waterfall([
-					async.apply(plugins.fireHook, 'filter:privileges.groups.list', groupPrivilegeList),
-					function(privs, next) {
-						privileges = privs;
-						groups.getMembersOfGroups(privs.map(function(privilege) {
+					async.apply(plugins.fireHook, 'filter:privileges.groups.list', privileges.groupPrivilegeList),
+					function(_privs, next) {
+						groupPrivileges = _privs;
+						groups.getMembersOfGroups(groupPrivileges.map(function(privilege) {
 							return 'cid:' + cid + ':privileges:' + privilege;
 						}), next);
 					},
@@ -119,8 +112,8 @@ module.exports = function(privileges) {
 							var memberData = groupNames.map(function(member) {
 								memberPrivs = {};
 
-								for(var x=0,numPrivs=privileges.length;x<numPrivs;x++) {
-									memberPrivs[privileges[x]] = memberSets[x].indexOf(member) !== -1;
+								for(var x=0,numPrivs=groupPrivileges.length;x<numPrivs;x++) {
+									memberPrivs[groupPrivileges[x]] = memberSets[x].indexOf(member) !== -1;
 								}
 								return {
 									name: member,

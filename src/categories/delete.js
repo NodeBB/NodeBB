@@ -1,10 +1,12 @@
 'use strict';
 
-var async = require('async'),
-	db = require('../database'),
-	batch = require('../batch'),
-	plugins = require('../plugins'),
-	topics = require('../topics');
+var async = require('async');
+var db = require('../database');
+var batch = require('../batch');
+var plugins = require('../plugins');
+var topics = require('../topics');
+var privileges = require('../privileges');
+var groups = require('../groups');
 
 module.exports = function(Categories) {
 
@@ -42,6 +44,11 @@ module.exports = function(Categories) {
 					'cid:' + cid + ':children',
 					'category:' + cid
 				], next);
+			},
+			function(next) {
+				async.each(privileges.privilegeList, function(privilege, next) {
+					groups.destroy('cid:' + cid + ':privileges:' + privilege, next);
+				}, next);
 			}
 		], callback);
 	}
@@ -78,7 +85,7 @@ module.exports = function(Categories) {
 					}
 				], next);
 			}
-		], function(err, results) {
+		], function(err) {
 			callback(err);
 		});
 	}

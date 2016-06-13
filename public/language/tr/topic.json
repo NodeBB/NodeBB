@@ -32,7 +32,7 @@
     "deleted_message": "Bu başlık silindi. Sadece başlık düzenleme yetkisi olan kullanıcılar görebilir.",
     "following_topic.message": "Artık bir kullanıcı bu başlığa ileti gönderdiğinde bildirim alacaksınız.",
     "not_following_topic.message": "Artık bu başlık için bildirim almayacaksınız.",
-    "ignoring_topic.message": "You will no longer see this topic in the unread topics list.  You will be notified when you are mentioned or your post is up voted.",
+    "ignoring_topic.message": "Bu başlığı okunmamış başlıklar alanında görmeyeceksin. Eğer bir iletide bahsedilirsen veya iletin oylanırsa bildiri alacaksın.",
     "login_to_subscribe": "Lütfen bu iletiyi başlığa üye olmak için giriş yapın.",
     "markAsUnreadForAll.success": "Başlık herkes için okunmadı olarak işaretlendi.",
     "mark_unread": "Okunmadı olarak işaretle",

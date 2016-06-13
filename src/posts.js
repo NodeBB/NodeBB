@@ -55,7 +55,9 @@ var plugins = require('./plugins');
 					if (!post) {
 						return next();
 					}
-
+					post.upvotes = parseInt(post.upvotes, 10) || 0;
+					post.downvotes = parseInt(post.downvotes, 10) || 0;
+					post.votes = post.upvotes - post.downvotes;
 					post.timestampISO = utils.toISOString(post.timestamp);
 					post.editedISO = parseInt(post.edited, 10) !== 0 ? utils.toISOString(post.edited) : '';
 					Posts.parsePost(post, next);
@@ -219,14 +221,14 @@ var plugins = require('./plugins');
 		});
 	};
 
-	Posts.updatePostVoteCount = function(postData, voteCount, callback) {
+	Posts.updatePostVoteCount = function(postData, callback) {
 		if (!postData || !postData.pid || !postData.tid) {
 			return callback();
 		}
 		async.parallel([
 			function (next) {
 				if (postData.uid) {
-					db.sortedSetAdd('uid:' + postData.uid + ':posts:votes', voteCount, postData.pid, next);
+					db.sortedSetAdd('uid:' + postData.uid + ':posts:votes', postData.votes, postData.pid, next);
 				} else {
 					next();
 				}
@@ -240,12 +242,12 @@ var plugins = require('./plugins');
 						if (parseInt(mainPid, 10) === parseInt(postData.pid, 10)) {
 							return next();
 						}
-						db.sortedSetAdd('tid:' + postData.tid + ':posts:votes', voteCount, postData.pid, next);
+						db.sortedSetAdd('tid:' + postData.tid + ':posts:votes', postData.votes, postData.pid, next);
 					}
 				], next);
 			},
 			function (next) {
-				Posts.setPostField(postData.pid, 'votes', voteCount, next);
+				Posts.setPostFields(postData.pid, {upvotes: postData.upvotes, downvotes: postData.downvotes}, next);
 			}
 		], function(err) {
 			callback(err);

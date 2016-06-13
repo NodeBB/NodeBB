@@ -61,11 +61,11 @@ $(document).ready(function() {
 			apiXHR.abort();
 		}
 
-		url = ajaxify.start(url, quiet);
-
 		if (!window.location.pathname.match(/\/(403|404)$/g)) {
 			app.previousUrl = window.location.href;
 		}
+
+		url = ajaxify.start(url, quiet);
 
 		$('body').removeClass(ajaxify.data.bodyClass);
 		$('#footer, #content').removeClass('hide').addClass('ajaxifying');
@@ -301,6 +301,10 @@ $(document).ready(function() {
 				} else {
 					return e.preventDefault();
 				}
+			}
+
+			if (internalLink && $(this).attr('href').endsWith('.rss')) {
+				return;
 			}
 
 			if (hrefEmpty(this.href) || this.protocol === 'javascript:' || $(this).attr('href') === '#') {

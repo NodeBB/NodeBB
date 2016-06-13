@@ -33,14 +33,14 @@
     "account/posts": "Сообщение от %1",
     "account/topics": "Тема создана %1",
     "account/groups": "%1 Групп",
-    "account/favourites": "%1's Bookmarked Posts",
+    "account/favourites": "%1 постов в закладках",
     "account/settings": "Настройки пользователя",
     "account/watched": "Тему смотрели %1",
-    "account/upvoted": "Posts upvoted by %1",
-    "account/downvoted": "Posts downvoted by %1",
+    "account/upvoted": "Рейтинг поста поднят %1",
+    "account/downvoted": "Рейтинг поста снижен %1",
     "account/best": "Лучшие сообщения написанные %1",
     "confirm": "Email подтвержден",
     "maintenance.text": "%1 в настоящее время на обслуживании. Пожалуйста, возвращайтесь позже.",
     "maintenance.messageIntro": "Администратор оставил сообщение:",
-    "throttled.text": "%1 is currently unavailable due to excessive load. Please come back another time."
+    "throttled.text": "%1 в настоящее время недоступен из-за высокой нагрузки. Пожалуйста, приходите в другой раз."
 }
