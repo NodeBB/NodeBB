@@ -90,6 +90,10 @@
 		var connOptions = {
 			server: {
 				poolSize: parseInt(nconf.get('mongo:poolSize'), 10) || 10
+			},
+			mongos: {
+				ssl: true,
+				sslValidate: false
 			}
 		};
 
