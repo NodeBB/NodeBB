@@ -29,8 +29,7 @@ CMD echo "        \"password\": \"${APP_MONGO_PASSWORD}\"," >> /usr/src/app/conf
 CMD echo "        \"database\": \"${APP_MONGO_DATABASE}\"," >> /usr/src/app/config.json
 CMD echo "        \"options\": {" >> /usr/src/app/config.json
 CMD echo "            \"mongos\": {" >> /usr/src/app/config.json
-CMD echo "                \"ssl\": true," >> /usr/src/app/config.json
-CMD echo "                \"sslValidate\": false" >> /usr/src/app/config.json
+CMD echo "                \"ssl\": false" >> /usr/src/app/config.json
 CMD echo "            }" >> /usr/src/app/config.json
 CMD echo "        }" >> /usr/src/app/config.json
 CMD echo "    }" >> /usr/src/app/config.json
