@@ -90,7 +90,7 @@ module.exports = function(Topics) {
 				if (!exists) {
 					return next(new Error('[[error:no-topic]]'));
 				}
-				posts.getPostFields(pid, ['tid', 'uid', 'timestamp', 'votes'], next);
+				posts.getPostFields(pid, ['tid', 'uid', 'timestamp', 'upvotes', 'downvotes'], next);
 			},
 			function(post, next) {
 				if (!post || !post.tid) {
