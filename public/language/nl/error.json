@@ -63,6 +63,7 @@
     "already-unfavourited": "Je hebt dit bericht al verwijderd uit je favorieten",
     "cant-ban-other-admins": "Het is niet toegestaan andere beheerders te verbannen!",
     "cant-remove-last-admin": "Je bent de enige beheerder. Stel eerst een andere gebruiker als beheerder in voordat je jezelf geen beheerder meer maakt.",
+    "cant-delete-admin": "Remove administrator privileges from this account before attempting to delete it.",
     "invalid-image-type": "Ongeldig bestandstype afbeelding. Deze afbeelding is van een bestandstype dat niet ondersteund wordt. Toegestane bestandstypes voor afbeeldingsbestanden zijn: %1",
     "invalid-image-extension": "Ongeldig bestandstype afbeelding",
     "invalid-file-type": "Dit bestandstype wordt niet ondersteund. Toegestane bestandstypen zijn: %1",

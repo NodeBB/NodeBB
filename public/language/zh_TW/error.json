@@ -63,6 +63,7 @@
     "already-unfavourited": "你已經將這篇張貼移除書籤",
     "cant-ban-other-admins": "你無法封鎖其他的管理員！",
     "cant-remove-last-admin": "你是唯一的管理員。在你移除自己為管理員前，需要新增另一個使用者為管理員。",
+    "cant-delete-admin": "Remove administrator privileges from this account before attempting to delete it.",
     "invalid-image-type": "無效的圖像類型。允許的類型：%1",
     "invalid-image-extension": "無效的圖像擴充元件",
     "invalid-file-type": "無效的檔案類型。允許的類型：%1",

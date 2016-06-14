@@ -63,6 +63,7 @@
     "already-unfavourited": "Você já removeu este post dos favoritos",
     "cant-ban-other-admins": "Você não pode banir outros administradores!",
     "cant-remove-last-admin": "Você é o único administrador. Adicione outro usuário como administrador antes de remover a si mesmo como admin",
+    "cant-delete-admin": "Remove administrator privileges from this account before attempting to delete it.",
     "invalid-image-type": "Tipo inválido de imagem. Os tipos permitidos são: %1",
     "invalid-image-extension": "Extensão de imagem inválida",
     "invalid-file-type": "Tipo de arquivo inválido. Os tipos permitidos são: %1",

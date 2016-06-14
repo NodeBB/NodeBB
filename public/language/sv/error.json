@@ -63,6 +63,7 @@
     "already-unfavourited": "Du har redan tagit bort bokmärket för det här inlägget",
     "cant-ban-other-admins": "Du kan inte bannlysa andra administratörer!",
     "cant-remove-last-admin": "Du är den enda administratören. Lägg till en annan användare som administratör innan du tar bort dig själv.",
+    "cant-delete-admin": "Remove administrator privileges from this account before attempting to delete it.",
     "invalid-image-type": "Ogiltig bildtyp. Tillåtna typer är: % 1",
     "invalid-image-extension": "Ogiltigt bildformat",
     "invalid-file-type": "Ogiltig filtyp. Tillåtna typer är: % 1",

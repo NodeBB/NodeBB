@@ -63,6 +63,7 @@
     "already-unfavourited": "Вы уже убрали из закладок этот пост",
     "cant-ban-other-admins": "Вы не можете забанить других администраторов!",
     "cant-remove-last-admin": "Вы единственный администратор. Назначьте другого пользователя администратором, прежде чем складывать с себя полномочия админа",
+    "cant-delete-admin": "Remove administrator privileges from this account before attempting to delete it.",
     "invalid-image-type": "Неверный формат изображения. Поддерживаемые форматы: %1",
     "invalid-image-extension": "Недопустимое расширение файла",
     "invalid-file-type": "Неверный формат файла. Поддерживаемые форматы: %1",

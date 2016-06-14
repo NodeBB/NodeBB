@@ -63,6 +63,7 @@
     "already-unfavourited": "You have already unbookmarked this post",
     "cant-ban-other-admins": "Nie możesz zbanować innych adminów!",
     "cant-remove-last-admin": "Jesteś jedynym administratorem. Dodaj innego użytkownika jako administratora przed usunięciem siebie z tej grupy",
+    "cant-delete-admin": "Remove administrator privileges from this account before attempting to delete it.",
     "invalid-image-type": "Błędny typ obrazka. Dozwolone typy to: %1",
     "invalid-image-extension": "Błędne rozszerzenie pliku",
     "invalid-file-type": "Błędny typ pliku. Dozwolone typy to: %1",

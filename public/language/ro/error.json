@@ -63,6 +63,7 @@
     "already-unfavourited": "You have already unbookmarked this post",
     "cant-ban-other-admins": "Nu poți bana alți administratori!",
     "cant-remove-last-admin": "You are the only administrator. Add another user as an administrator before removing yourself as admin",
+    "cant-delete-admin": "Remove administrator privileges from this account before attempting to delete it.",
     "invalid-image-type": "Invalid image type. Allowed types are: %1",
     "invalid-image-extension": "Invalid image extension",
     "invalid-file-type": "Invalid file type. Allowed types are: %1",

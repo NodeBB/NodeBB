@@ -63,6 +63,7 @@
     "already-unfavourited": "Ya habías desguardado este post.",
     "cant-ban-other-admins": "¡No puedes expulsar a otros administradores!",
     "cant-remove-last-admin": "Tu eres el unico administrador. Añade otro usuario como administrador antes de eliminarte a ti mismo.",
+    "cant-delete-admin": "Remove administrator privileges from this account before attempting to delete it.",
     "invalid-image-type": "Tipo de imagen inválido. Los tipos permitidos son: %1",
     "invalid-image-extension": "Extensión de imagen inválida",
     "invalid-file-type": "Tipo de fichero inválido. Los tipos permitidos son: %1",

@@ -63,6 +63,7 @@
     "already-unfavourited": "You have already unbookmarked this post",
     "cant-ban-other-admins": "Ne morete blokirati drugih administratorjev!",
     "cant-remove-last-admin": "Ste edini administrator. Dodajte novega administratorja preden boste odstranili sebe.",
+    "cant-delete-admin": "Remove administrator privileges from this account before attempting to delete it.",
     "invalid-image-type": "Nedovoljen format slike. Dovoljeni formati so: %1",
     "invalid-image-extension": "Nedovoljena končnica slike",
     "invalid-file-type": "Nedovoljen format datoteke. Dovoljeni formati so: %1",
