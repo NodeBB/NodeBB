@@ -7,7 +7,7 @@ branch-defaults:
     group_suffix: null
 container_commands:
   01_create_config.yml:
-    command: "./eb_deploy.sh"
+    command: "printenv > printenv.txt"
 global:
   application_name: proversity-nodebb
   default_ec2_keyname: proversity-eu-west-1
