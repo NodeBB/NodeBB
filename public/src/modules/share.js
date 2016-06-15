@@ -51,7 +51,6 @@ define('share', function() {
 	}
 
 	function getPostUrl(clickedElement) {
-		var parts = window.location.pathname.split('/');
 		var pid = parseInt(clickedElement.parents('[data-pid]').attr('data-pid'), 10);
 		return '/post' + (pid ? '/' + (pid) : '');
 	}
