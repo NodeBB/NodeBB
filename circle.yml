@@ -1,8 +1,7 @@
 general:
   branches:
     only:
-      - circle_ci
-      - production
+      - master
 
 machine:
   timezone:
@@ -25,7 +24,7 @@ dependencies:
     - cd /home/ubuntu/NodeBB
     - mkdir .elasticbeanstalk
     - "echo \"branch-defaults:\" > .elasticbeanstalk/config.yml"
-    - "echo \"  circle_ci:\" >> .elasticbeanstalk/config.yml"
+    - "echo \"  master:\" >> .elasticbeanstalk/config.yml"
     - "echo \"    environment: ${EB_ENVIRONMENT}\" >> .elasticbeanstalk/config.yml"
     - "echo \"global:\" >> .elasticbeanstalk/config.yml"
     - "echo \"  application_name: ${EB_APPLICATION}\" >> .elasticbeanstalk/config.yml"
@@ -37,7 +36,7 @@ dependencies:
 
 deployment:
   hub:
-    branch: circle_ci
+    branch: master
     commands:
       - eb use ${EB_ENVIRONMENT}
       - eb deploy
