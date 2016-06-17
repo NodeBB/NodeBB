@@ -85,14 +85,19 @@
 				str = XRegExp.replace(str, utils.invalidUnicodeChars, '-');
 			}
 
+			str = !preserveCase ? str.toLocaleLowerCase() : str;
+
 			//remove accents and other non a-zA-Z - from same url as above. but some stuff added (IE-fix, otherwise no problem)
-			var from = "ÀÁÄÅÂÆÈÉËÊÍÌÎÏÓÒÖØÚÙÜÛÑÇàáäåâæèéëêìíïîòóøöôùúüûñç·/_,:;";
-			var to   = "AAAAAAEEEEIIIIOOOOUUUUNCaaaaaaeeeeiiiiooooouuuunc------";
+			var from = 	'àáäåâæèéëêìíïîòóøöôùúüûñç·/_,:;';
+			var to = 	'aaaaaaeeeeiiiiooooouuuunc------';
+			if(preserveCase) {
+				from = from + "ÀÁÄÅÂÆÈÉËÊÍÌÎÏÓÒÖØÚÙÜÛÑÇ";
+				to = to 	+ "AAAAAAEEEEIIIIOOOOUUUUNC";
+			}
 
 			for (var i=0, l=from.length ; i<l ; i++)
 				str = str.replace(new RegExp(from.charAt(i), 'g'), to.charAt(i));
 
-			str = !preserveCase ? str.toLocaleLowerCase() : str;
 			str = str.replace(utils.collapseWhitespace, '-');
 			str = str.replace(utils.collapseDash, '-');
 			str = str.replace(utils.trimTrailingDash, '');
