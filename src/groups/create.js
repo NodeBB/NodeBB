@@ -1,10 +1,10 @@
 'use strict';
 
-var async = require('async'),
-	meta = require('../meta'),
-	plugins = require('../plugins'),
-	utils = require('../../public/src/utils'),
-	db = require('../database');
+var async = require('async');
+var meta = require('../meta');
+var plugins = require('../plugins');
+var utils = require('../../public/src/utils');
+var db = require('../database');
 
 module.exports = function(Groups) {
 
@@ -77,6 +77,10 @@ module.exports = function(Groups) {
 	function validateGroupName(name, callback) {
 		if (!name) {
 			return callback(new Error('[[error:group-name-too-short]]'));
+		}
+
+		if (name.length > (parseInt(meta.config.maximumGroupNameLength, 10) || 255)) {
+			return callback(new Error('[[error:group-name-too-long]]'));
 		}
 
 		if (name.indexOf('/') !== -1) {

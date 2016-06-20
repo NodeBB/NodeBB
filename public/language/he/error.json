@@ -63,6 +63,7 @@
     "already-unfavourited": "כבר הסרת את הסימון מפוסט זה",
     "cant-ban-other-admins": "אינך יכול לחסום מנהלים אחרים!",
     "cant-remove-last-admin": "אתה המנהל היחיד. הוסף משתמש אחר לניהול לפני שאתה מוריד את עצמך מניהול",
+    "cant-delete-admin": "Remove administrator privileges from this account before attempting to delete it.",
     "invalid-image-type": "פורמט תמונה לא תקין. הפורמטים המורשים הם: %1",
     "invalid-image-extension": "פורמט תמונה לא תקין",
     "invalid-file-type": "פורמט הקובץ לא תקין. הפורמטים המורשים הם: %1",

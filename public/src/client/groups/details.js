@@ -51,7 +51,7 @@ define('forum/groups/details', [
 		detailsPage.on('click', '[data-action]', function() {
 			var btnEl = $(this),
 				userRow = btnEl.parents('[data-uid]'),
-				ownerFlagEl = userRow.find('.member-name i'),
+				ownerFlagEl = userRow.find('.member-name > i'),
 				isOwner = !ownerFlagEl.hasClass('invisible') ? true : false,
 				uid = userRow.attr('data-uid'),
 				action = btnEl.attr('data-action');

@@ -87,8 +87,8 @@
     "map": "Bản đồ",
     "sessions": "Phiên đăng nhập",
     "ip_address": "Địa chỉ IP",
-    "enter_page_number": "Enter page number",
-    "upload_file": "Upload file",
-    "upload": "Upload",
-    "allowed-file-types": "Allowed file types are %1"
+    "enter_page_number": "Nhập vào số trang",
+    "upload_file": "Tải file lên",
+    "upload": "Tải lên",
+    "allowed-file-types": "Các định dạng file được cho phép là %1"
 }

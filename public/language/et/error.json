@@ -63,6 +63,7 @@
     "already-unfavourited": "Sa oled juba selle postituse järjehoidjatest ära võtnud.",
     "cant-ban-other-admins": "Sa ei saa bannida teisi administraatoreid!",
     "cant-remove-last-admin": "Te olete ainus administraator. Lisage keegi teine administraatoriks, enne kui eemaldate endalt administraatori.",
+    "cant-delete-admin": "Remove administrator privileges from this account before attempting to delete it.",
     "invalid-image-type": "Vigane pildi formaat. Lubatud formaadid on: %1",
     "invalid-image-extension": "Vigane pildi formaat",
     "invalid-file-type": "Vigane faili formaat. Lubatud formaadid on: %1",

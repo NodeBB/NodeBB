@@ -63,6 +63,7 @@
     "already-unfavourited": "You have already unbookmarked this post",
     "cant-ban-other-admins": "Du kan ikke utestenge andre administratorer!",
     "cant-remove-last-admin": "Du er den eneste administratoren. Legg til en annen bruker som administrator før du fjerner deg selv.",
+    "cant-delete-admin": "Remove administrator privileges from this account before attempting to delete it.",
     "invalid-image-type": "Ugyldig bildetype. Tilatte typer er: %1",
     "invalid-image-extension": "Ugyldig bildefiltype",
     "invalid-file-type": "Ugyldig filtype. Tillatte typer er: %1",

@@ -278,7 +278,10 @@ module.exports = function(Topics) {
 							db.sortedSetAdd('tid:' + tid + ':posts', postData.timestamp, postData.pid, next);
 						},
 						function(next) {
-							db.sortedSetAdd('tid:' + tid + ':posts:votes', postData.votes, postData.pid, next);
+							var upvotes = parseInt(postData.upvotes, 10) || 0;
+							var downvotes = parseInt(postData.downvotes, 10) || 0;
+							var votes = upvotes - downvotes;
+							db.sortedSetAdd('tid:' + tid + ':posts:votes', votes, postData.pid, next);
 						}
 					], function(err) {
 						next(err);

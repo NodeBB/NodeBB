@@ -38,9 +38,6 @@ SocketPosts.reply = function(socket, data, callback) {
 
 		var result = {
 			posts: [postData],
-			privileges: {
-				'topics:reply': true
-			},
 			'reputation:disabled': parseInt(meta.config['reputation:disabled'], 10) === 1,
 			'downvote:disabled': parseInt(meta.config['downvote:disabled'], 10) === 1,
 		};
