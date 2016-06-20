@@ -26,7 +26,8 @@ app.cacheBuster = null;
 	app.load = function() {
 		app.loadProgressiveStylesheet();
 
-		var url = ajaxify.start(window.location.pathname.slice(1) + window.location.search + window.location.hash, true);
+		var url = ajaxify.start(window.location.pathname.slice(1) + window.location.search + window.location.hash);
+		ajaxify.updateHistory(url, true);
 		ajaxify.end(url, app.template);
 
 		handleStatusChange();
