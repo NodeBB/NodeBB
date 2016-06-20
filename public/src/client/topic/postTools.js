@@ -228,24 +228,7 @@ define('forum/topic/postTools', ['share', 'navigator', 'components', 'translator
 	function onReplyClicked(button, tid) {
 		showStaleWarning(function(proceed) {
 			if (!proceed) {
-				var selectionText = '';
-				var selection = window.getSelection ? window.getSelection() : document.selection.createRange();
-				var content = button.parents('[component="post"]').find('[component="post/content"]').get(0);
-
-				if (selection && selection.containsNode && content && selection.containsNode(content, true)) {
-					var bounds = document.createRange();
-					bounds.selectNodeContents(content);
-					var range = selection.getRangeAt(0).cloneRange();
-					if (range.compareBoundaryPoints(Range.START_TO_START, bounds) < 0) {
-						range.setStart(bounds.startContainer, bounds.startOffset);
-					}
-					if (range.compareBoundaryPoints(Range.END_TO_END, bounds) > 0) {
-						range.setEnd(bounds.endContainer, bounds.endOffset);
-					}
-					bounds.detach();
-					selectionText = range.toString();
-					range.detach();
-				}
+				var selectedText = getSelectedText(button);
 
 				var username = getUserName(button);
 				if (getData(button, 'data-uid') === '0' || !getData(button, 'data-userslug')) {
@@ -254,7 +237,7 @@ define('forum/topic/postTools', ['share', 'navigator', 'components', 'translator
 
 				var toPid = button.is('[component="post/reply"]') ? getData(button, 'data-pid') : null;
 
-				if (selectionText.length) {
+				if (selectedText) {
 					$(window).trigger('action:composer.addQuote', {
 						tid: tid,
 						slug: ajaxify.data.slug,
@@ -262,7 +245,7 @@ define('forum/topic/postTools', ['share', 'navigator', 'components', 'translator
 						pid: toPid,
 						topicName: ajaxify.data.titleRaw,
 						username: username,
-						text: selectionText
+						text: selectedText
 					});
 				} else {
 					$(window).trigger('action:composer.post.new', {
@@ -278,27 +261,57 @@ define('forum/topic/postTools', ['share', 'navigator', 'components', 'translator
 
 	function onQuoteClicked(button, tid) {
 		showStaleWarning(function(proceed) {
-			if (!proceed) {
-				var username = getUserName(button),
-					pid = getData(button, 'data-pid');
 
+			function quote(text) {
+				$(window).trigger('action:composer.addQuote', {
+					tid: tid,
+					slug: ajaxify.data.slug,
+					index: getData(button, 'data-index'),
+					pid: pid,
+					username: username,
+					topicName: ajaxify.data.titleRaw,
+					text: text
+				});
+			}
+
+			if (!proceed) {
+				var username = getUserName(button);
+				var pid = getData(button, 'data-pid');
+				var selectedText = getSelectedText(button);
+				if (selectedText) {
+					return quote(selectedText);
+				}
 				socket.emit('posts.getRawPost', pid, function(err, post) {
-					if(err) {
+					if (err) {
 						return app.alertError(err.message);
 					}
 
-					$(window).trigger('action:composer.addQuote', {
-						tid: tid,
-						slug: ajaxify.data.slug,
-						index: getData(button, 'data-index'),
-						pid: pid,
-						username: username,
-						topicName: ajaxify.data.titleRaw,
-						text: post
-					});
+					quote(post);
 				});
 			}
 		});
+	}
+
+	function getSelectedText(button) {
+		var selectionText = '';
+		var selection = window.getSelection ? window.getSelection() : document.selection.createRange();
+		var content = button.parents('[component="post"]').find('[component="post/content"]').get(0);
+
+		if (selection && selection.containsNode && content && selection.containsNode(content, true)) {
+			var bounds = document.createRange();
+			bounds.selectNodeContents(content);
+			var range = selection.getRangeAt(0).cloneRange();
+			if (range.compareBoundaryPoints(Range.START_TO_START, bounds) < 0) {
+				range.setStart(bounds.startContainer, bounds.startOffset);
+			}
+			if (range.compareBoundaryPoints(Range.END_TO_END, bounds) > 0) {
+				range.setEnd(bounds.endContainer, bounds.endOffset);
+			}
+			bounds.detach();
+			selectionText = range.toString();
+			range.detach();
+		}
+		return selectionText;
 	}
 
 	function favouritePost(button, pid) {
