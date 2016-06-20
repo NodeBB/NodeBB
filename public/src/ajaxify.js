@@ -71,11 +71,14 @@ $(document).ready(function() {
 		$('#footer, #content').removeClass('hide').addClass('ajaxifying');
 
 		ajaxify.loadData(url, function(err, data) {
+
+			if (!err || (err && err.data && (parseInt(err.data.status, 10) !== 302 && parseInt(err.data.status, 10) !== 308))) {
+				ajaxify.updateHistory(url, quiet);
+			}
+
 			if (err) {
 				return onAjaxError(err, url, callback, quiet);
 			}
-
-			ajaxify.updateHistory(url, quiet);
 
 			retry = true;
 			app.template = data.template.name;
