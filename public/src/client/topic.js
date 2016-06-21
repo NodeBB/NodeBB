@@ -242,37 +242,40 @@ define('forum/topic', [
 	Topic.navigatorCallback = function(index, elementCount, threshold) {
 		var path = ajaxify.removeRelativePath(window.location.pathname.slice(1));
 		if (!path.startsWith('topic')) {
-			return 1;
+			return;
 		}
 
-		if (!navigator.scrollActive) {
-			var parts = ajaxify.removeRelativePath(window.location.pathname.slice(1)).split('/');
-			var topicId = parts[1],
-				slug = parts[2];
-			var newUrl = 'topic/' + topicId + '/' + (slug ? slug : '');
-			if (index > 1) {
-				newUrl += '/' + index;
+		if (navigator.scrollActive) {
+			return;
+		}
+
+		posts.loadImages(threshold);
+
+		var newUrl = 'topic/' + ajaxify.data.slug + (index > 1 ? ('/' + index) : '');
+
+		if (newUrl !== currentUrl) {
+
+			if (Topic.replaceURLTimeout) {
+				clearTimeout(Topic.replaceURLTimeout);
 			}
 
-			posts.loadImages(threshold);
+			Topic.replaceURLTimeout = setTimeout(function() {
 
-			if (newUrl !== currentUrl) {
-				if (Topic.replaceURLTimeout) {
-					clearTimeout(Topic.replaceURLTimeout);
+				if (index >= elementCount && app.user.uid) {
+					socket.emit('topics.markAsRead', [ajaxify.data.tid]);
 				}
-				Topic.replaceURLTimeout = setTimeout(function() {
-					updateUserBookmark(index);
 
-					Topic.replaceURLTimeout = 0;
-					if (history.replaceState) {
-						var search = (window.location.search ? window.location.search : '');
-						history.replaceState({
-							url: newUrl + search
-						}, null, window.location.protocol + '//' + window.location.host + RELATIVE_PATH + '/' + newUrl + search);
-					}
-					currentUrl = newUrl;
-				}, 500);
-			}
+				updateUserBookmark(index);
+
+				Topic.replaceURLTimeout = 0;
+				if (history.replaceState) {
+					var search = (window.location.search ? window.location.search : '');
+					history.replaceState({
+						url: newUrl + search
+					}, null, window.location.protocol + '//' + window.location.host + RELATIVE_PATH + '/' + newUrl + search);
+				}
+				currentUrl = newUrl;
+			}, 500);
 		}
 	};
 

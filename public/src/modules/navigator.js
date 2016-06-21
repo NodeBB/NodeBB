@@ -17,8 +17,15 @@ define('navigator', ['forum/pagination', 'components'], function(pagination, com
 		navigator.callback = callback;
 		toTop = toTop || function() {};
 		toBottom = toBottom || function() {};
+		var navigatorUpdateTimeoutId = 0;
 
-		$(window).off('scroll', navigator.update).on('scroll', navigator.update);
+		$(window).off('scroll', navigator.update).on('scroll', function() {
+			if (navigatorUpdateTimeoutId) {
+				clearTimeout(navigatorUpdateTimeoutId);
+				navigatorUpdateTimeoutId = 0;
+			}
+			navigatorUpdateTimeoutId = setTimeout(navigator.update, 100);
+		});
 
 		$('.pagination-block .dropdown-menu').off('click').on('click', function(e) {
 			e.stopPropagation();
