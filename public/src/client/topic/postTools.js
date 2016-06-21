@@ -226,41 +226,39 @@ define('forum/topic/postTools', ['share', 'navigator', 'components', 'translator
 	}
 
 	function onReplyClicked(button, tid) {
-		showStaleWarning(function(proceed) {
-			if (!proceed) {
-				var selectedText = getSelectedText(button);
+		showStaleWarning(function() {
+			var selectedText = getSelectedText(button);
 
-				var username = getUserName(button);
-				if (getData(button, 'data-uid') === '0' || !getData(button, 'data-userslug')) {
-					username = '';
-				}
+			var username = getUserName(button);
+			if (getData(button, 'data-uid') === '0' || !getData(button, 'data-userslug')) {
+				username = '';
+			}
 
-				var toPid = button.is('[component="post/reply"]') ? getData(button, 'data-pid') : null;
+			var toPid = button.is('[component="post/reply"]') ? getData(button, 'data-pid') : null;
 
-				if (selectedText) {
-					$(window).trigger('action:composer.addQuote', {
-						tid: tid,
-						slug: ajaxify.data.slug,
-						index: getData(button, 'data-index'),
-						pid: toPid,
-						topicName: ajaxify.data.titleRaw,
-						username: username,
-						text: selectedText
-					});
-				} else {
-					$(window).trigger('action:composer.post.new', {
-						tid: tid,
-						pid: toPid,
-						topicName: ajaxify.data.titleRaw,
-						text: username ? username + ' ' : ''
-					});
-				}
+			if (selectedText) {
+				$(window).trigger('action:composer.addQuote', {
+					tid: tid,
+					slug: ajaxify.data.slug,
+					index: getData(button, 'data-index'),
+					pid: toPid,
+					topicName: ajaxify.data.titleRaw,
+					username: username,
+					text: selectedText
+				});
+			} else {
+				$(window).trigger('action:composer.post.new', {
+					tid: tid,
+					pid: toPid,
+					topicName: ajaxify.data.titleRaw,
+					text: username ? username + ' ' : ''
+				});
 			}
 		});
 	}
 
 	function onQuoteClicked(button, tid) {
-		showStaleWarning(function(proceed) {
+		showStaleWarning(function() {
 
 			function quote(text) {
 				$(window).trigger('action:composer.addQuote', {
@@ -274,21 +272,19 @@ define('forum/topic/postTools', ['share', 'navigator', 'components', 'translator
 				});
 			}
 
-			if (!proceed) {
-				var username = getUserName(button);
-				var pid = getData(button, 'data-pid');
-				var selectedText = getSelectedText(button);
-				if (selectedText) {
-					return quote(selectedText);
-				}
-				socket.emit('posts.getRawPost', pid, function(err, post) {
-					if (err) {
-						return app.alertError(err.message);
-					}
-
-					quote(post);
-				});
+			var username = getUserName(button);
+			var pid = getData(button, 'data-pid');
+			var selectedText = getSelectedText(button);
+			if (selectedText) {
+				return quote(selectedText);
 			}
+			socket.emit('posts.getRawPost', pid, function(err, post) {
+				if (err) {
+					return app.alertError(err.message);
+				}
+
+				quote(post);
+			});
 		});
 	}
 
@@ -498,39 +494,39 @@ define('forum/topic/postTools', ['share', 'navigator', 'components', 'translator
 	}
 
 	function showStaleWarning(callback) {
-		if (ajaxify.data.lastposttime < (Date.now() - (1000 * 60 * 60 * 24 * ajaxify.data.topicStaleDays))) {
-			translator.translate('[[topic:stale.warning]]', function(translated) {
-				var warning = bootbox.dialog({
-						title: '[[topic:stale.title]]',
-						message: translated,
-						buttons: {
-							reply: {
-								label: '[[topic:stale.reply_anyway]]',
-								className: 'btn-link',
-								callback: function() {
-									callback(false);
-								}
-							},
-							create: {
-								label: '[[topic:stale.create]]',
-								className: 'btn-primary',
-								callback: function() {
-									translator.translate('[[topic:link_back, ' + ajaxify.data.title + ', ' + config.relative_path + '/topic/' + ajaxify.data.slug + ']]', function(body) {
-										$(window).trigger('action:composer.topic.new', {
-											cid: ajaxify.data.cid,
-											body: body
-										});
+		if (ajaxify.data.lastposttime >= (Date.now() - (1000 * 60 * 60 * 24 * ajaxify.data.topicStaleDays))) {
+			return callback();
+		}
+
+		translator.translate('[[topic:stale.warning]]', function(translated) {
+			var warning = bootbox.dialog({
+					title: '[[topic:stale.title]]',
+					message: translated,
+					buttons: {
+						reply: {
+							label: '[[topic:stale.reply_anyway]]',
+							className: 'btn-link',
+							callback: function() {
+								callback();
+							}
+						},
+						create: {
+							label: '[[topic:stale.create]]',
+							className: 'btn-primary',
+							callback: function() {
+								translator.translate('[[topic:link_back, ' + ajaxify.data.title + ', ' + config.relative_path + '/topic/' + ajaxify.data.slug + ']]', function(body) {
+									$(window).trigger('action:composer.topic.new', {
+										cid: ajaxify.data.cid,
+										body: body
 									});
-								}
+								});
 							}
 						}
-					});
+					}
+				});
 
-				warning.modal();
-			});
-		} else {
-			callback(false);
-		}
+			warning.modal();
+		});
 	}
 
 	return PostTools;
