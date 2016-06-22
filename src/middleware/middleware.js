@@ -350,6 +350,19 @@ middleware.processTimeagoLocales = function(req, res, next) {
 	}
 };
 
+middleware.registrationComplete = function(req, res, next) {
+	// If the user's session contains registration data, redirect the user to complete registration
+	if (!req.session.hasOwnProperty('registration')) {
+		return next();
+	} else {
+		if (!req.path.endsWith('/register/complete')) {
+			controllers.helpers.redirect(res, '/register/complete');
+		} else {
+			return next();
+		}
+	}
+};
+
 module.exports = function(webserver) {
 	app = webserver;
 	middleware.admin = require('./admin')(webserver);

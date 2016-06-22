@@ -28,7 +28,7 @@ function mainRoutes(app, middleware, controllers) {
 
 	setupPageRoute(app, '/login', middleware, loginRegisterMiddleware, controllers.login);
 	setupPageRoute(app, '/register', middleware, loginRegisterMiddleware, controllers.register);
-	setupPageRoute(app, '/register/complete', middleware, loginRegisterMiddleware, controllers.registerInterstitial);
+	setupPageRoute(app, '/register/complete', middleware, [], controllers.registerInterstitial);
 	setupPageRoute(app, '/compose', middleware, [], controllers.compose);
 	setupPageRoute(app, '/confirm/:code', middleware, [], controllers.confirmEmail);
 	setupPageRoute(app, '/outgoing', middleware, [], controllers.outgoing);
