@@ -129,8 +129,35 @@ function addToApprovalQueue(req, userData, callback) {
 }
 
 authenticationController.registerComplete = function(req, res, next) {
-	console.log(req.data);
-	res.sendStatus(200);
+	// For the interstitials that respond, execute the callback with the form body
+	plugins.fireHook('filter:register.interstitial', {
+		userData: req.session.registration,
+		interstitials: []
+	}, function(err, data) {
+		var callbacks = data.interstitials.reduce(function(memo, cur) {
+			if (cur.hasOwnProperty('callback') && typeof cur.callback === 'function') {
+				memo.push(async.apply(cur.callback, req.session.registration, req.body));
+			}
+
+			return memo;
+		}, []);
+
+		async.parallel(callbacks, function(err) {
+			if (err) {
+				req.flash('error', err.message);
+				return res.redirect(nconf.get('relative_path') + '/register/complete');
+			}
+
+			// Clear registration data in session
+			delete req.session.registration;
+
+			if (req.session.returnTo) {
+				res.redirect(req.session.returnTo);
+			} else {
+				res.redirect(nconf.get('relative_path') + '/');
+			}
+		});
+	});
 };
 
 authenticationController.login = function(req, res, next) {

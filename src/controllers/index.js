@@ -194,6 +194,10 @@ Controllers.registerInterstitial = function(req, res, next) {
 		userData: req.session.registration,
 		interstitials: []
 	}, function(err, data) {
+		if (!data.interstitials.length) {
+			return next();
+		}
+
 		var renders = data.interstitials.map(function(interstitial) {
 			return async.apply(req.app.render.bind(req.app), interstitial.template, interstitial.data)
 		});
