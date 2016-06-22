@@ -307,6 +307,7 @@ authenticationController.logout = function(req, res, next) {
 				return next(err);
 			}
 			req.logout();
+			req.session.destroy();
 
 			user.setUserField(uid, 'lastonline', Date.now() - 300000);
 
