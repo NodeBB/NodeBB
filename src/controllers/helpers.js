@@ -12,29 +12,35 @@ var meta = require('../meta');
 var helpers = {};
 
 helpers.notAllowed = function(req, res, error) {
-	if (req.uid) {
-		if (res.locals.isAPI) {
-			res.status(403).json({
-				path: req.path.replace(/^\/api/, ''),
-				loggedIn: !!req.uid, error: error,
-				title: '[[global:403.title]]'
-			});
+	plugins.fireHook('filter:helpers.notAllowed', {
+		req: req,
+		res: res,
+		error: error
+	}, function(err, data) {
+		if (req.uid) {
+			if (res.locals.isAPI) {
+				res.status(403).json({
+					path: req.path.replace(/^\/api/, ''),
+					loggedIn: !!req.uid, error: error,
+					title: '[[global:403.title]]'
+				});
+			} else {
+				res.status(403).render('403', {
+					path: req.path,
+					loggedIn: !!req.uid, error: error,
+					title: '[[global:403.title]]'
+				});
+			}
 		} else {
-			res.status(403).render('403', {
-				path: req.path,
-				loggedIn: !!req.uid, error: error,
-				title: '[[global:403.title]]'
-			});
+			if (res.locals.isAPI) {
+				req.session.returnTo = nconf.get('relative_path') + req.url.replace(/^\/api/, '');
+				res.status(401).json('not-authorized');
+			} else {
+				req.session.returnTo = nconf.get('relative_path') + req.url;
+				res.redirect(nconf.get('relative_path') + '/login');
+			}
 		}
-	} else {
-		if (res.locals.isAPI) {
-			req.session.returnTo = nconf.get('relative_path') + req.url.replace(/^\/api/, '');
-			res.status(401).json('not-authorized');
-		} else {
-			req.session.returnTo = nconf.get('relative_path') + req.url;
-			res.redirect(nconf.get('relative_path') + '/login');
-		}
-	}
+	});
 };
 
 helpers.redirect = function(res, url) {
