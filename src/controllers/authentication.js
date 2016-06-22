@@ -128,6 +128,11 @@ function addToApprovalQueue(req, userData, callback) {
 	], callback);
 }
 
+authenticationController.registerComplete = function(req, res, next) {
+	console.log(req.data);
+	res.sendStatus(200);
+};
+
 authenticationController.login = function(req, res, next) {
 	// Handle returnTo data
 	if (req.body.hasOwnProperty('returnTo') && !req.session.returnTo) {
