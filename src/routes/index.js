@@ -6,6 +6,7 @@ var async = require('async');
 var winston = require('winston');
 var controllers = require('../controllers');
 var plugins = require('../plugins');
+var user = require('../user');
 var express = require('express');
 var validator = require('validator');
 
@@ -156,6 +157,7 @@ module.exports = function(app, middleware, hotswapIds) {
 	// Add plugin routes
 	async.series([
 		async.apply(plugins.reloadRoutes),
-		async.apply(authRoutes.reloadRoutes)
+		async.apply(authRoutes.reloadRoutes),
+		async.apply(user.addInterstitials)
 	]);
 };

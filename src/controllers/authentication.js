@@ -88,11 +88,11 @@ function registerAndLoginUser(req, res, userData, callback) {
 			}, function(err, data) {
 				// If interstitials are found, save registration attempt into session and abort
 				var deferRegistration = data.interstitials.length;
-				deferRegistration = true;
 
 				if (!deferRegistration) {
 					return next();
 				} else {
+					userData.register = true;
 					req.session.registration = userData;
 					return res.json({ referrer: nconf.get('relative_path') + '/register/complete' });
 				}
@@ -142,13 +142,7 @@ authenticationController.registerComplete = function(req, res, next) {
 			return memo;
 		}, []);
 
-		async.parallel(callbacks, function(err) {
-			if (err) {
-				req.flash('error', err.message);
-				return res.redirect(nconf.get('relative_path') + '/register/complete');
-			}
-
-			// Clear registration data in session
+		var done = function() {
 			delete req.session.registration;
 
 			if (req.session.returnTo) {
@@ -156,7 +150,29 @@ authenticationController.registerComplete = function(req, res, next) {
 			} else {
 				res.redirect(nconf.get('relative_path') + '/');
 			}
+		}
+
+		async.parallel(callbacks, function(err) {
+			if (err) {
+				req.flash('error', err.message);
+				return res.redirect(nconf.get('relative_path') + '/register/complete');
+			}
+
+			if (req.session.registration.register === true) {
+				res.locals.processLogin = true;
+				registerAndLoginUser(req, res, req.session.registration, done);
+			} else {
+				// Clear registration data in session
+				done();
+			}
 		});
+	});
+};
+
+authenticationController.registerAbort = function(req, res, next) {
+	// End the session and redirect to home
+	req.session.destroy(function() {
+		res.redirect(nconf.get('relative_path') + '/');
 	});
 };
 

@@ -6,6 +6,7 @@ var plugins = require('./plugins');
 var db = require('./database');
 var topics = require('./topics');
 var privileges = require('./privileges');
+var meta = require('./meta');
 var utils = require('../public/src/utils');
 
 (function(User) {
@@ -253,6 +254,33 @@ var utils = require('../public/src/utils');
 			}
 			callback();
 		});
+	};
+
+	User.addInterstitials = function(callback) {
+		plugins.registerHook('core', {
+			hook: 'filter:register.interstitial',
+			method: function(data, callback) {
+				if (meta.config.termsOfUse && !data.userData.acceptTos) {
+					data.interstitials.push({
+						template: 'partials/acceptTos',
+						data: {
+							termsOfUse: meta.config.termsOfUse
+						},
+						callback: function(userData, formData, next) {
+							if (formData['agree-terms'] === 'on') {
+								userData.acceptTos = true;
+							}
+
+							next(userData.acceptTos ? null : new Error('[[register:terms_of_use_error]]'));
+						}
+					});
+				}
+
+				callback(null, data);
+			}
+		});
+
+		callback();
 	};
 
 
