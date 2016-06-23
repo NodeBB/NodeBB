@@ -199,7 +199,7 @@ Controllers.registerInterstitial = function(req, res, next) {
 		}
 
 		var renders = data.interstitials.map(function(interstitial) {
-			return async.apply(req.app.render.bind(req.app), interstitial.template, interstitial.data)
+			return async.apply(req.app.render.bind(req.app), interstitial.template, interstitial.data);
 		});
 		var errors = req.flash('error');
 
@@ -410,12 +410,14 @@ Controllers.handle404 = function(req, res) {
 		meta.errors.log404(req.path.replace(/^\/api/, '') || '');
 		res.status(404);
 
+		var path = String(req.path || '');
+
 		if (res.locals.isAPI) {
-			return res.json({path: validator.escape(req.path.replace(/^\/api/, '') || ''), title: '[[global:404.title]]'});
+			return res.json({path: validator.escape(path.replace(/^\/api/, '')), title: '[[global:404.title]]'});
 		}
 
 		req.app.locals.middleware.buildHeader(req, res, function() {
-			res.render('404', {path: validator.escape(req.path || ''), title: '[[global:404.title]]'});
+			res.render('404', {path: validator.escape(path), title: '[[global:404.title]]'});
 		});
 	} else {
 		res.status(404).type('txt').send('Not found');
@@ -439,11 +441,12 @@ Controllers.handleErrors = function(err, req, res, next) {
 
 	res.status(err.status || 500);
 
+	var path = String(req.path || '');
 	if (res.locals.isAPI) {
-		res.json({path: validator.escape(req.path || ''), error: err.message});
+		res.json({path: validator.escape(path), error: err.message});
 	} else {
 		req.app.locals.middleware.buildHeader(req, res, function() {
-			res.render('500', {path: validator.escape(String(req.path || '')), error: validator.escape(err.message)});
+			res.render('500', {path: validator.escape(path), error: validator.escape(String(err.message))});
 		});
 	}
 };
