@@ -11,8 +11,8 @@ jQuery.timeago.settings.strings = {
   hours: "約 %d 時間",
   day: "約 1 日",
   days: "約 %d 日",
-  month: "約 1 月",
-  months: "約 %d 月",
+  month: "約 1 ヶ月",
+  months: "約 %d ヶ月",
   year: "約 1 年",
   years: "約 %d 年",
   wordSeparator: ""
