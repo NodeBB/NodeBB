@@ -94,7 +94,11 @@ function registerAndLoginUser(req, res, userData, callback) {
 				} else {
 					userData.register = true;
 					req.session.registration = userData;
-					return res.json({ referrer: nconf.get('relative_path') + '/register/complete' });
+					if (res.locals.isAPI) {
+						return res.json({ referrer: nconf.get('relative_path') + '/register/complete' });
+					} else {
+						return res.redirect(nconf.get('relative_path') + '/register/complete');
+					}
 				}
 			});
 		},
