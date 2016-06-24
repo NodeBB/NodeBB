@@ -1,6 +1,7 @@
 'use strict';
 
-var winston = require('winston'),
+var cls = require('../middleware/cls'),
+  winston = require('winston'),
 	async = require('async');
 
 module.exports = function(Plugins) {
@@ -99,7 +100,7 @@ module.exports = function(Plugins) {
 	};
 
 	Plugins.fireHook = function(hook, params, callback) {
-		callback = typeof callback === 'function' ? callback : function() {};
+		callback = cls.bind(callback);
 
 		var hookList = Plugins.loadedHooks[hook];
 		var hookType = hook.split(':')[0];
@@ -133,7 +134,8 @@ module.exports = function(Plugins) {
 				return next(null, params);
 			}
 
-			hookObj.method(params, next);
+			var method = cls.bind(hookObj.method);
+			method(params, next);
 
 		}, function(err, values) {
 			if (err) {
@@ -157,7 +159,9 @@ module.exports = function(Plugins) {
 				return next();
 			}
 
-			hookObj.method(params);
+			var method = cls.bind(hookObj.method);
+			method(params);
+
 			next();
 		}, callback);
 	}
@@ -177,7 +181,8 @@ module.exports = function(Plugins) {
 				}, 5000);
 
 				try {
-					hookObj.method(params, function() {
+					var method = cls.bind(hookObj.method);
+					method(params, function() {
 						clearTimeout(timeoutId);
 						if (!timedOut) {
 							next.apply(null, arguments);

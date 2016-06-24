@@ -12,6 +12,7 @@ var db = require('../database');
 var logger = require('../logger');
 var ratelimit = require('../middleware/ratelimit');
 var cls = require('../middleware/cls');
+var utils = require('../../public/src/utils');
 
 (function(Sockets) {
 	var Namespaces = {};
@@ -65,8 +66,7 @@ var cls = require('../middleware/cls');
 	}
 
 	function onDisconnect(socket) {
-		cls.socket(socket, null, 'disconnect', function () {
-		});
+		cls.socket(socket, null, 'disconnect', function () {});
 	}
 
 
@@ -77,8 +77,7 @@ var cls = require('../middleware/cls');
 
 		var eventName = payload.data[0];
 		var params = payload.data[1];
-		var callback = typeof payload.data[payload.data.length - 1] === 'function' ? payload.data[payload.data.length - 1] : function () {
-		};
+		var callback = typeof payload.data[payload.data.length - 1] === 'function' ? payload.data[payload.data.length - 1] : function () {};
 
 		if (!eventName) {
 			return winston.warn('[socket.io] Empty method name');
@@ -100,6 +99,9 @@ var cls = require('../middleware/cls');
 			}
 			return;
 		}
+
+		callback = cls.bind(callback);
+		methodToCall = cls.bind(methodToCall);
 
 		socket.previousEvents = socket.previousEvents || [];
 		socket.previousEvents.push(eventName);
@@ -209,30 +211,7 @@ var cls = require('../middleware/cls');
 		return room ? room.length : 0;
 	};
 
-
-	Sockets.reqFromSocket = function (socket, payload, event) {
-		var headers = socket.request.headers;
-		var host = headers.host;
-		var referer = headers.referer || '';
-		var data = ((payload || {}).data || []);
-
-		if (!host) {
-			host = url.parse(referer).host;
-		}
-
-		return {
-			uid: socket.uid,
-			params: data[1],
-			method: event || data[0],
-			body: payload,
-			ip: headers['x-forwarded-for'] || socket.ip,
-			host: host,
-			protocol: socket.request.connection.encrypted ? 'https' : 'http',
-			secure: !!socket.request.connection.encrypted,
-			url: referer,
-			path: referer.substr(referer.indexOf(host) + host.length),
-			headers: headers
-		};
-	};
+	// backward compatible
+	Sockets.reqFromSocket = utils.reqFromSocket;
 
 })(exports);
