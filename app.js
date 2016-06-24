@@ -20,9 +20,12 @@
 "use strict";
 /*global require, global, process*/
 
+// require this first
+// https://github.com/othiym23/node-continuation-local-storage/issues/55#issuecomment-170209688
+var cls = require('./src/middleware/cls');
+
 var nconf = require('nconf');
 nconf.argv().env('__');
-require('continuation-local-storage');
 
 var url = require('url'),
 	async = require('async'),
@@ -176,6 +179,10 @@ function start() {
 
 	async.waterfall([
 		async.apply(db.init),
+		function (next) {
+			cls.bindDB(db);
+			next();
+		},
 		async.apply(db.checkCompatibility),
 		function(next) {
 			require('./src/meta').configs.init(next);

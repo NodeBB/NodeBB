@@ -1,5 +1,9 @@
 'use strict';
 
+// require this first
+// https://github.com/othiym23/node-continuation-local-storage/issues/55#issuecomment-170209688
+var cls = require('./src/middleware/cls');
+
 var	nconf = require('nconf'),
 	fs = require('fs'),
 	url = require('url'),
