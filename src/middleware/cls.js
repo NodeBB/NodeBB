@@ -58,10 +58,10 @@ var namespace = continuationLocalStorage.createNamespace(APP_NAMESPACE);
 			return function () {
 				var args = argsToArray(arguments);
 				var last = args.length - 1;
-	      var callback = args[last];
+				var callback = args[last];
 
-	      if (typeof callback === 'function') {
-	        args[last] = cls.bind(callback);
+				if (typeof callback === 'function') {
+					args[last] = cls.bind(callback);
 				}
 				return oldFunc.apply(context || this, args);
 			}
