@@ -199,7 +199,7 @@ Controllers.registerInterstitial = function(req, res, next) {
 		}
 
 		var renders = data.interstitials.map(function(interstitial) {
-			return async.apply(req.app.render.bind(req.app), interstitial.template, interstitial.data);
+			return async.apply(req.app.render.bind(req.app), interstitial.template, interstitial.data || {});
 		});
 		var errors = req.flash('error');
 
