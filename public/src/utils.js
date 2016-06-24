@@ -1,9 +1,10 @@
 (function(module) {
 	'use strict';
 
-	var utils, fs, XRegExp;
+	var utils, fs, url, XRegExp;
 
 	if ('undefined' === typeof window) {
+		url = require('url');
 		fs = require('fs');
 		XRegExp = require('xregexp');
 
@@ -364,9 +365,12 @@
 			return this.params()[key];
 		},
 
-		urlToLocation: function(url) {
+		urlToLocation: function(href) {
+			if (url) {
+				return url.parse(href);
+			}
 			var a = document.createElement('a');
-			a.href = url;
+			a.href = href;
 			return a;
 		},
 
@@ -423,6 +427,32 @@
 			}
 
 			return utils.props(obj[prop], newProps, value);
+		},
+
+		reqFromSocket: function (socket, payload, event) {
+			var headers = socket.request.headers;
+			var host = headers.host;
+			var referer = headers.referer || '';
+			var data = ((payload || {}).data || []);
+
+			if (!host) {
+				host = url.parse(referer).host;
+			}
+
+			return {
+				uid: socket.uid,
+				params: data[1],
+				method: event || data[0],
+				body: payload,
+				ip: headers['x-forwarded-for'] || socket.ip,
+				host: host,
+				protocol: socket.request.connection.encrypted ? 'https' : 'http',
+				secure: !!socket.request.connection.encrypted,
+				url: referer,
+				path: referer.substr(referer.indexOf(host) + host.length),
+				headers: headers,
+				reqFromSocket: true
+			};
 		}
 	};
 
