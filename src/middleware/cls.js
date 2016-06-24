@@ -76,9 +76,9 @@ var namespace = continuationLocalStorage.createNamespace(APP_NAMESPACE);
 	// faster than [].slice.call
 	// https://github.com/othiym23/cls-redis/blob/62a2d27a919f6ed124cba972bbeb9ad3d7bdf973/shim.js
 	function argsToArray(args) {
-  	var length = args.length, array = [], i;
-  	for (i = 0; i < length; i++) array[i] = args[i];
-  	return array;
+		var length = args.length, array = [], i;
+		for (i = 0; i < length; i++) array[i] = args[i];
+		return array;
 	}
 
 })(exports);
