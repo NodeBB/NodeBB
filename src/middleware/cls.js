@@ -40,9 +40,14 @@ var namespace = continuationLocalStorage.createNamespace(APP_NAMESPACE);
 	cls.bindDB = function (db) {
 		cls.bindObject(db);
 		cls.bindObject(db.helpers);
+		// cls.bindObject(db.sessionStore);
 	};
 
 	cls.bindObject = function (obj) {
+		if (!obj) {
+			console.log('binding falsy object..ignoring');
+			return;
+		}
 		for (var prop in obj) {
 			if (obj.hasOwnProperty(prop) && typeof obj[prop] === 'function') {
 				obj[prop] = cls.wrapCallback(obj[prop]);

@@ -62,7 +62,7 @@ module.exports = function(app) {
 	if (nconf.get('secure')) {
 		cookie.secure = true;
 	}
-	
+
 	if (relativePath !== '') {
 		cookie.path = relativePath;
 	}

@@ -7,6 +7,7 @@ var nconf = require('nconf');
 var validator = require('validator');
 var _ = require('underscore');
 
+var cls = require('../middleware/cls');
 var db = require('../database');
 var meta = require('../meta');
 var user = require('../user');
@@ -204,7 +205,7 @@ authenticationController.login = function(req, res, next) {
 };
 
 function continueLogin(req, res, next) {
-	passport.authenticate('local', function(err, userData, info) {
+	passport.authenticate('local', cls.bind(function(err, userData, info) {
 		if (err) {
 			return res.status(403).send(err.message);
 		}
@@ -251,7 +252,7 @@ function continueLogin(req, res, next) {
 				}
 			});
 		}
-	})(req, res, next);
+	}))(req, res, next);
 }
 
 authenticationController.doLogin = function(req, uid, callback) {
