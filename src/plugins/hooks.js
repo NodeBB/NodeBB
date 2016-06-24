@@ -1,6 +1,7 @@
 'use strict';
 
-var winston = require('winston'),
+var cls = require('../middleware/cls'),
+  winston = require('winston'),
 	async = require('async');
 
 module.exports = function(Plugins) {
