@@ -11,7 +11,7 @@
     "users/latest": "آخرین کاربران",
     "users/sort-posts": "کاربران با بیش‌ترین پست",
     "users/sort-reputation": "کاربران دارای بیشترین اعتبار",
-    "users/banned": "Banned Users",
+    "users/banned": "کاربران اخراج شده",
     "users/search": "جستجوی کاربر",
     "notifications": "آگاه‌سازی‌ها",
     "tags": "برچسب‌ها",
@@ -39,7 +39,7 @@
     "account/upvoted": "Posts upvoted by %1",
     "account/downvoted": "Posts downvoted by %1",
     "account/best": "Best posts made by %1",
-    "confirm": "Email Confirmed",
+    "confirm": "ایمیل تایید شد",
     "maintenance.text": "%1 در حال حاضر تحت تعمیر و نگهدارییست. لطفا زمان دیگری مراجعه کنید.",
     "maintenance.messageIntro": "علاوه بر این، مدیر این پیام را گذاشته است:",
     "throttled.text": "%1 به دلیل بارگذاری بیش از حد ، قابل دسترس نمی باشد. لطفا در زمان دیگری دوباره امتحان کنید"

@@ -5,8 +5,10 @@ var groups = require('../../groups'),
 	Groups = {};
 
 Groups.create = function(socket, data, callback) {
-	if(!data) {
+	if (!data) {
 		return callback(new Error('[[error:invalid-data]]'));
+	} else if (groups.isPrivilegeGroup(data.name)) {
+		return callback(new Error('[[error:invalid-group-name]]'));
 	}
 
 	groups.create({

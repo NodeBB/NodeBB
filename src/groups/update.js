@@ -168,7 +168,7 @@ module.exports = function(Groups) {
 				return callback(err);
 			}
 
-			if (parseInt(group.system, 10) === 1 || parseInt(group.hidden, 10) === 1) {
+			if (parseInt(group.system, 10) === 1) {
 				return callback();
 			}
 

@@ -45,6 +45,7 @@ define('forum/unread', ['forum/recent', 'topicSelect', 'forum/infinitescroll', '
 				app.alertSuccess('[[unread:topics_marked_as_read.success]]');
 
 				$('[component="category"]').empty();
+				$('[component="pagination"]').addClass('hidden');
 				$('#category-no-topics').removeClass('hidden');
 				$('.markread').addClass('hidden');
 			});

@@ -225,9 +225,6 @@ define('forum/topic/posts', [
 			if (data && data.posts && data.posts.length) {
 				createNewPosts(data, replies, direction, done);
 			} else {
-				if (app.user.uid) {
-					socket.emit('topics.markAsRead', [tid]);
-				}
 				navigator.update();
 				done();
 			}

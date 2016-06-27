@@ -28,7 +28,7 @@
         },
         month: "en mesec",
         months: function (value) {
-            return numpf(value, ["%d mescov", "%d mesec", "%d mesca", "%d mesce"]);
+            return numpf(value, ["%d mesecev", "%d mesec", "%d meseca", "%d mesece"]);
         },
         year: "eno leto",
         years: function (value) {

@@ -6,6 +6,7 @@ var async = require('async');
 var winston = require('winston');
 var controllers = require('../controllers');
 var plugins = require('../plugins');
+var user = require('../user');
 var express = require('express');
 var validator = require('validator');
 
@@ -28,6 +29,7 @@ function mainRoutes(app, middleware, controllers) {
 
 	setupPageRoute(app, '/login', middleware, loginRegisterMiddleware, controllers.login);
 	setupPageRoute(app, '/register', middleware, loginRegisterMiddleware, controllers.register);
+	setupPageRoute(app, '/register/complete', middleware, [], controllers.registerInterstitial);
 	setupPageRoute(app, '/compose', middleware, [], controllers.compose);
 	setupPageRoute(app, '/confirm/:code', middleware, [], controllers.confirmEmail);
 	setupPageRoute(app, '/outgoing', middleware, [], controllers.outgoing);
@@ -155,6 +157,7 @@ module.exports = function(app, middleware, hotswapIds) {
 	// Add plugin routes
 	async.series([
 		async.apply(plugins.reloadRoutes),
-		async.apply(authRoutes.reloadRoutes)
+		async.apply(authRoutes.reloadRoutes),
+		async.apply(user.addInterstitials)
 	]);
 };

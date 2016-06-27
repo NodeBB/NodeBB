@@ -13,8 +13,7 @@ define('forum/register', ['csrf', 'translator'], function(csrf, translator) {
 			username = $('#username'),
 			password = $('#password'),
 			password_confirm = $('#password-confirm'),
-			register = $('#register'),
-			agreeTerms = $('#agree-terms');
+			register = $('#register');
 
 		handleLanguageOverride();
 
@@ -111,18 +110,6 @@ define('forum/register', ['csrf', 'translator'], function(csrf, translator) {
 				});
 			});
 		});
-
-		if (agreeTerms.length) {
-			agreeTerms.on('click', function() {
-				if ($(this).prop('checked')) {
-					register.removeAttr('disabled');
-				} else {
-					register.attr('disabled', 'disabled');
-				}
-			});
-
-			register.attr('disabled', 'disabled');
-		}
 	};
 
 	function validateEmail(email, callback) {

@@ -82,6 +82,27 @@ function registerAndLoginUser(req, res, userData, callback) {
 	var uid;
 	async.waterfall([
 		function(next) {
+			plugins.fireHook('filter:register.interstitial', {
+				userData: userData,
+				interstitials: []
+			}, function(err, data) {
+				// If interstitials are found, save registration attempt into session and abort
+				var deferRegistration = data.interstitials.length;
+
+				if (!deferRegistration) {
+					return next();
+				} else {
+					userData.register = true;
+					req.session.registration = userData;
+					if (res.locals.isAPI) {
+						return res.json({ referrer: nconf.get('relative_path') + '/register/complete' });
+					} else {
+						return res.redirect(nconf.get('relative_path') + '/register/complete');
+					}
+				}
+			});
+		},
+		function(next) {
 			user.create(userData, next);
 		},
 		function(_uid, next) {
@@ -110,6 +131,54 @@ function addToApprovalQueue(req, userData, callback) {
 		}
 	], callback);
 }
+
+authenticationController.registerComplete = function(req, res, next) {
+	// For the interstitials that respond, execute the callback with the form body
+	plugins.fireHook('filter:register.interstitial', {
+		userData: req.session.registration,
+		interstitials: []
+	}, function(err, data) {
+		var callbacks = data.interstitials.reduce(function(memo, cur) {
+			if (cur.hasOwnProperty('callback') && typeof cur.callback === 'function') {
+				memo.push(async.apply(cur.callback, req.session.registration, req.body));
+			}
+
+			return memo;
+		}, []);
+
+		var done = function() {
+			delete req.session.registration;
+
+			if (req.session.returnTo) {
+				res.redirect(req.session.returnTo);
+			} else {
+				res.redirect(nconf.get('relative_path') + '/');
+			}
+		}
+
+		async.parallel(callbacks, function(err) {
+			if (err) {
+				req.flash('error', err.message);
+				return res.redirect(nconf.get('relative_path') + '/register/complete');
+			}
+
+			if (req.session.registration.register === true) {
+				res.locals.processLogin = true;
+				registerAndLoginUser(req, res, req.session.registration, done);
+			} else {
+				// Clear registration data in session
+				done();
+			}
+		});
+	});
+};
+
+authenticationController.registerAbort = function(req, res, next) {
+	// End the session and redirect to home
+	req.session.destroy(function() {
+		res.redirect(nconf.get('relative_path') + '/');
+	});
+};
 
 authenticationController.login = function(req, res, next) {
 	// Handle returnTo data
@@ -307,6 +376,7 @@ authenticationController.logout = function(req, res, next) {
 				return next(err);
 			}
 			req.logout();
+			req.session.destroy();
 
 			user.setUserField(uid, 'lastonline', Date.now() - 300000);
 

@@ -255,7 +255,7 @@ module.exports = function(Topics) {
 				async.parallel({
 					markRead: async.apply(db.sortedSetAdd, 'uid:' + uid + ':tids_read', scores, tids),
 					markUnread: async.apply(db.sortedSetRemove, 'uid:' + uid + ':tids_unread', tids),
-					topicData: async.apply(	Topics.getTopicsFields, tids, ['cid'])
+					topicData: async.apply(Topics.getTopicsFields, tids, ['cid'])
 				}, next);
 			},
 			function (results, next) {

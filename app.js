@@ -22,7 +22,6 @@
 
 var nconf = require('nconf');
 nconf.argv().env('__');
-require('continuation-local-storage');
 
 var url = require('url'),
 	async = require('async'),

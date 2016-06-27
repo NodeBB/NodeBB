@@ -185,6 +185,33 @@ Controllers.register = function(req, res, next) {
 	});
 };
 
+Controllers.registerInterstitial = function(req, res, next) {
+	if (!req.session.hasOwnProperty('registration')) {
+		return res.redirect(nconf.get('relative_path') + '/register');
+	}
+
+	plugins.fireHook('filter:register.interstitial', {
+		userData: req.session.registration,
+		interstitials: []
+	}, function(err, data) {
+		if (!data.interstitials.length) {
+			return next();
+		}
+
+		var renders = data.interstitials.map(function(interstitial) {
+			return async.apply(req.app.render.bind(req.app), interstitial.template, interstitial.data || {});
+		});
+		var errors = req.flash('error');
+
+		async.parallel(renders, function(err, sections) {
+			res.render('registerComplete', {
+				errors: errors,
+				sections: sections
+			});
+		});
+	});
+};
+
 Controllers.compose = function(req, res, next) {
 	plugins.fireHook('filter:composer.build', {
 		req: req,
@@ -383,12 +410,14 @@ Controllers.handle404 = function(req, res) {
 		meta.errors.log404(req.path.replace(/^\/api/, '') || '');
 		res.status(404);
 
+		var path = String(req.path || '');
+
 		if (res.locals.isAPI) {
-			return res.json({path: validator.escape(req.path.replace(/^\/api/, '') || ''), title: '[[global:404.title]]'});
+			return res.json({path: validator.escape(path.replace(/^\/api/, '')), title: '[[global:404.title]]'});
 		}
 
 		req.app.locals.middleware.buildHeader(req, res, function() {
-			res.render('404', {path: validator.escape(req.path || ''), title: '[[global:404.title]]'});
+			res.render('404', {path: validator.escape(path), title: '[[global:404.title]]'});
 		});
 	} else {
 		res.status(404).type('txt').send('Not found');
@@ -412,11 +441,12 @@ Controllers.handleErrors = function(err, req, res, next) {
 
 	res.status(err.status || 500);
 
+	var path = String(req.path || '');
 	if (res.locals.isAPI) {
-		res.json({path: validator.escape(req.path || ''), error: err.message});
+		res.json({path: validator.escape(path), error: err.message});
 	} else {
 		req.app.locals.middleware.buildHeader(req, res, function() {
-			res.render('500', {path: validator.escape(String(req.path || '')), error: validator.escape(err.message)});
+			res.render('500', {path: validator.escape(path), error: validator.escape(String(err.message))});
 		});
 	}
 };
