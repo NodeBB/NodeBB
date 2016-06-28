@@ -52,19 +52,35 @@ module.exports = function(User) {
 		], callback);
 	};
 
-	User.ban = function(uid, callback) {
-		async.waterfall([
-			function (next) {
-				User.setUserField(uid, 'banned', 1, next);
-			},
-			function (next) {
-				db.sortedSetAdd('users:banned', Date.now(), uid, next);
-			},
-			function (next) {
-				plugins.fireHook('action:user.banned', {uid: uid});
-				next();
+	User.ban = function(uid, until, callback) {
+		// "until" (optional) is unix timestamp in milliseconds
+		if (!callback && typeof until === 'function') {
+			callback = until;
+			until = 0;
+		}
+
+		until = parseInt(until, 10);
+		if (isNaN(until)) {
+			return callback(new Error('[[error:ban-expiry-missing]]'));
+		}
+
+		var tasks = [
+			async.apply(User.setUserField, uid, 'banned', 1),
+			async.apply(db.sortedSetAdd, 'users:banned', Date.now(), uid),
+		];
+
+		if (until > 0 && Date.now() < until) {
+			tasks.push(async.apply(db.sortedSetAdd, 'users:banned:expire', until, uid));
+		}
+
+		async.series(tasks, function (err) {
+			if (err) {
+				return callback(err);
 			}
-		], callback);
+
+			plugins.fireHook('action:user.banned', {uid: uid});
+			callback();
+		});
 	};
 
 	User.unban = function(uid, callback) {

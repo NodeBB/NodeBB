@@ -7,7 +7,12 @@ var events = require('../../events');
 
 module.exports = function(SocketUser) {
 
-	SocketUser.banUsers = function(socket, uids, callback) {
+	SocketUser.banUsers = function(socket, uids, until, callback) {
+		if (!callback && typeof until === 'function') {
+			callback = until;
+			until = 0;
+		}
+
 		toggleBan(socket.uid, uids, SocketUser.banUser, function(err) {
 			if (err) {
 				return callback(err);
@@ -45,7 +50,7 @@ module.exports = function(SocketUser) {
 		], callback);
 	}
 
-	SocketUser.banUser = function(uid, callback) {
+	SocketUser.banUser = function(uid, until, callback) {
 		async.waterfall([
 			function (next) {
 				user.isAdministrator(uid, next);
@@ -54,7 +59,7 @@ module.exports = function(SocketUser) {
 				if (isAdmin) {
 					return next(new Error('[[error:cant-ban-other-admins]]'));
 				}
-				user.ban(uid, next);
+				user.ban(uid, until, next);
 			},
 			function (next) {
 				websockets.in('uid_' + uid).emit('event:banned');
