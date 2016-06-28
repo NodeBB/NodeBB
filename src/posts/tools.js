@@ -34,10 +34,10 @@ module.exports = function(Posts) {
 					return next(new Error('[[error:post-already-restored]]'));
 				}
 
-				privileges.posts.canEdit(pid, uid, next);
+				privileges.posts.canDelete(pid, uid, next);
 			},
-			function (canEdit, next) {
-				if (!canEdit) {
+			function (canDelete, next) {
+				if (!canDelete) {
 					return next(new Error('[[error:no-privileges]]'));
 				}
 

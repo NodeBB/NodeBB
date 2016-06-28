@@ -171,42 +171,54 @@ define('forum/topic/postTools', ['share', 'navigator', 'components', 'translator
 
 			var timestamp = parseInt(getData(btn, 'data-timestamp'), 10);
 			var postEditDuration = parseInt(ajaxify.data.postEditDuration, 10);
-			if (!ajaxify.data.privileges.isAdminOrMod && postEditDuration && Date.now() - timestamp > postEditDuration * 1000) {
-				var numDays = Math.floor(postEditDuration / 86400);
-				var numHours = Math.floor((postEditDuration % 86400) / 3600);
-				var numMinutes = Math.floor(((postEditDuration % 86400) % 3600) / 60);
-				var numSeconds = ((postEditDuration % 86400) % 3600) % 60;
-				var msg = '[[error:post-edit-duration-expired, ' + postEditDuration + ']]';
-				if (numDays) {
-					if (numHours) {
-						msg = '[[error:post-edit-duration-expired-days-hours, ' + numDays + ', ' + numHours + ']]';
-					} else {
-						msg = '[[error:post-edit-duration-expired-days, ' + numDays + ']]';
-					}
-				} else if (numHours) {
-					if (numMinutes) {
-						msg = '[[error:post-edit-duration-expired-hours-minutes, ' + numHours + ', ' + numMinutes + ']]';
-					} else {
-						msg = '[[error:post-edit-duration-expired-hours, ' + numHours + ']]';
-					}
-				} else if (numMinutes) {
-					if (numSeconds) {
-						msg = '[[error:post-edit-duration-expired-minutes-seconds, ' + numMinutes + ', ' + numSeconds + ']]';
-					} else {
-						msg = '[[error:post-edit-duration-expired-minutes, ' + numMinutes + ']]';
-					}
-				}
-				return app.alertError(msg);
-			}
 
-			$(window).trigger('action:composer.post.edit', {
-				pid: getData(btn, 'data-pid')
-			});
+			if (checkDuration(postEditDuration, timestamp, 'post-edit-duration-expired')) {
+				$(window).trigger('action:composer.post.edit', {
+					pid: getData(btn, 'data-pid')
+				});
+			}
 		});
 
 		postContainer.on('click', '[component="post/delete"]', function() {
-			togglePostDelete($(this), tid);
+			var btn = $(this);
+			var timestamp = parseInt(getData(btn, 'data-timestamp'), 10);
+			var postDeleteDuration = parseInt(ajaxify.data.postDeleteDuration, 10);
+			if (checkDuration(postDeleteDuration, timestamp, 'post-delete-duration-expired')) {
+				togglePostDelete($(this), tid);
+			}
 		});
+
+		function checkDuration(duration, postTimestamp, languageKey) {
+			if (!ajaxify.data.privileges.isAdminOrMod && duration && Date.now() - postTimestamp > duration * 1000) {
+				var numDays = Math.floor(duration / 86400);
+				var numHours = Math.floor((duration % 86400) / 3600);
+				var numMinutes = Math.floor(((duration % 86400) % 3600) / 60);
+				var numSeconds = ((duration % 86400) % 3600) % 60;
+				var msg = '[[error:' + languageKey + ', ' + duration + ']]';
+				if (numDays) {
+					if (numHours) {
+						msg = '[[error:' + languageKey + '-days-hours, ' + numDays + ', ' + numHours + ']]';
+					} else {
+						msg = '[[error:' + languageKey + '-days, ' + numDays + ']]';
+					}
+				} else if (numHours) {
+					if (numMinutes) {
+						msg = '[[error:' + languageKey + '-hours-minutes, ' + numHours + ', ' + numMinutes + ']]';
+					} else {
+						msg = '[[error:' + languageKey + '-hours, ' + numHours + ']]';
+					}
+				} else if (numMinutes) {
+					if (numSeconds) {
+						msg = '[[error:' + languageKey + '-minutes-seconds, ' + numMinutes + ', ' + numSeconds + ']]';
+					} else {
+						msg = '[[error:' + languageKey + '-minutes, ' + numMinutes + ']]';
+					}
+				}
+				app.alertError(msg);
+				return false;
+			}
+			return true;
+		}
 
 		postContainer.on('click', '[component="post/restore"]', function() {
 			togglePostDelete($(this), tid);
@@ -394,9 +406,9 @@ define('forum/topic/postTools', ['share', 'navigator', 'components', 'translator
 	}
 
 	function togglePostDelete(button, tid) {
-		var pid = getData(button, 'data-pid'),
-			postEl = components.get('post', 'pid', pid),
-			action = !postEl.hasClass('deleted') ? 'delete' : 'restore';
+		var pid = getData(button, 'data-pid');
+		var postEl = components.get('post', 'pid', pid);
+		var action = !postEl.hasClass('deleted') ? 'delete' : 'restore';
 
 		postAction(action, pid, tid);
 	}
