@@ -256,6 +256,35 @@ var utils = require('../public/src/utils');
 		});
 	};
 
+	User.isBanned = function(uid, callback) {
+		async.waterfall([
+			async.apply(User.getUserField, uid, 'banned'),
+			function(banned, next) {
+				banned = parseInt(banned, 10) === 1;
+				if (!banned) {
+					return next(null, banned);
+				} else {
+					// If they are banned, see if the ban has expired
+					db.sortedSetScore('users:banned:expire', uid, function(err, score) {
+						var stillBanned = Date.now() < score;
+
+						if (!stillBanned) {
+							async.parallel([
+								async.apply(db.sortedSetRemove.bind(db), 'users:banned:expire', uid),
+								async.apply(db.sortedSetRemove.bind(db), 'users:banned', uid),
+								async.apply(User.setUserField, uid, 'banned', 0)
+							], function(err) {
+								next(err, false);
+							});
+						} else {
+							next(err, true);
+						}
+					});
+				}
+			}
+		], callback);
+	};
+
 	User.addInterstitials = function(callback) {
 		plugins.registerHook('core', {
 			hook: 'filter:register.interstitial',

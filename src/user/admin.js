@@ -71,6 +71,8 @@ module.exports = function(User) {
 
 		if (until > 0 && Date.now() < until) {
 			tasks.push(async.apply(db.sortedSetAdd, 'users:banned:expire', until, uid));
+		} else {
+			until = 0;
 		}
 
 		async.series(tasks, function (err) {
@@ -78,7 +80,10 @@ module.exports = function(User) {
 				return callback(err);
 			}
 
-			plugins.fireHook('action:user.banned', {uid: uid});
+			plugins.fireHook('action:user.banned', {
+				uid: uid,
+				until: until > 0 ? until : undefined
+			});
 			callback();
 		});
 	};

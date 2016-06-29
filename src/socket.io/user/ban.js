@@ -7,17 +7,20 @@ var events = require('../../events');
 
 module.exports = function(SocketUser) {
 
-	SocketUser.banUsers = function(socket, uids, until, callback) {
-		if (!callback && typeof until === 'function') {
-			callback = until;
-			until = 0;
+	SocketUser.banUsers = function(socket, data, callback) {
+		// Backwards compatibility
+		if (Array.isArray(data)) {
+			data = {
+				uids: data,
+				until: 0
+			}
 		}
 
-		toggleBan(socket.uid, uids, SocketUser.banUser, function(err) {
+		toggleBan(socket.uid, data.uids, banUser.bind(null, data.until || 0), function(err) {
 			if (err) {
 				return callback(err);
 			}
-			async.each(uids, function(uid, next) {
+			async.each(data.uids, function(uid, next) {
 				events.log({
 					type: 'user-ban',
 					uid: socket.uid,
@@ -50,7 +53,7 @@ module.exports = function(SocketUser) {
 		], callback);
 	}
 
-	SocketUser.banUser = function(uid, until, callback) {
+	function banUser(until, uid, callback) {
 		async.waterfall([
 			function (next) {
 				user.isAdministrator(uid, next);
