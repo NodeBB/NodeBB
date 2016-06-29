@@ -82,7 +82,7 @@ module.exports = function(Groups) {
 	};
 
 	function setGroupTitleIfNotSet(groupName, uid, callback) {
-		if (groupName === 'registered-users') {
+		if (groupName === 'registered-users' || Groups.isPrivilegeGroup(groupName)) {
 			return callback();
 		}
 
