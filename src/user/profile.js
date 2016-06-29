@@ -103,7 +103,7 @@ module.exports = function(User) {
 
 			function isGroupTitleValid(next) {
 				if (data.groupTitle === 'registered-users' || groups.isPrivilegeGroup(data.groupTitle)) {
-					next(new Error('[[error:invali-group-title]]'));
+					next(new Error('[[error:invalid-group-title]]'));
 				} else {
 					next();
 				}
