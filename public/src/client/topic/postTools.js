@@ -6,7 +6,11 @@ define('forum/topic/postTools', ['share', 'navigator', 'components', 'translator
 
 	var PostTools = {};
 
+	var staleReplyAnyway = false;
+
 	PostTools.init = function(tid) {
+		staleReplyAnyway = false;
+
 		renderMenu();
 
 		addPostHandlers(tid);
@@ -238,9 +242,9 @@ define('forum/topic/postTools', ['share', 'navigator', 'components', 'translator
 	}
 
 	function onReplyClicked(button, tid) {
-		showStaleWarning(function() {
-			var selectedText = getSelectedText(button);
+		var selectedText = getSelectedText(button);
 
+		showStaleWarning(function() {
 			var username = getUserName(button);
 			if (getData(button, 'data-uid') === '0' || !getData(button, 'data-userslug')) {
 				username = '';
@@ -270,6 +274,8 @@ define('forum/topic/postTools', ['share', 'navigator', 'components', 'translator
 	}
 
 	function onQuoteClicked(button, tid) {
+		var selectedText = getSelectedText(button);
+
 		showStaleWarning(function() {
 
 			function quote(text) {
@@ -286,7 +292,7 @@ define('forum/topic/postTools', ['share', 'navigator', 'components', 'translator
 
 			var username = getUserName(button);
 			var pid = getData(button, 'data-pid');
-			var selectedText = getSelectedText(button);
+
 			if (selectedText) {
 				return quote(selectedText);
 			}
@@ -506,7 +512,7 @@ define('forum/topic/postTools', ['share', 'navigator', 'components', 'translator
 	}
 
 	function showStaleWarning(callback) {
-		if (ajaxify.data.lastposttime >= (Date.now() - (1000 * 60 * 60 * 24 * ajaxify.data.topicStaleDays))) {
+		if (staleReplyAnyway || ajaxify.data.lastposttime >= (Date.now() - (1000 * 60 * 60 * 24 * ajaxify.data.topicStaleDays))) {
 			return callback();
 		}
 
@@ -519,6 +525,7 @@ define('forum/topic/postTools', ['share', 'navigator', 'components', 'translator
 							label: '[[topic:stale.reply_anyway]]',
 							className: 'btn-link',
 							callback: function() {
+								staleReplyAnyway = true;
 								callback();
 							}
 						},
