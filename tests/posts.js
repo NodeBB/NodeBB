@@ -14,7 +14,7 @@ describe('Posts', function(){
       };
 
       posts.parsePost(postData, function (err, data) {
-        assert.strictEqual(data.content, "Something fine, \\[\\[something:bad\\]\\].");
+        assert.strictEqual(data.content, "Something fine, [&#8203;[something:bad]&#8203;].");
         done();
       });
     });
