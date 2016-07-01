@@ -51,12 +51,20 @@
 		}
 	};
 
-	translator.escape = function(text) {
+	translator.sanitizeHTML = function(text) {
 		return typeof text === 'string' ? text.replace(/\[\[([\S]*?)\]\]/g, '[&#8203;[$1]&#8203;]') : text;
 	};
 
+	translator.unsanitizeHTML = function(text) {
+		return typeof text === 'string' ? text.replace(/\[\[([\S]*?)\]\]/g, '[&#8203;[$1]&#8203;]') : text;
+	};
+
+	translator.escape = function(text) {
+		return typeof text === 'string' ? text.replace(/\[\[([\S]*?)\]\]/g, '\\[\\[$1\\]\\]') : text;
+	};
+
 	translator.unescape = function(text) {
-		return typeof text === 'string' ? text.replace(/\[&#8203;\[([\S]*?)\]&#8203;\]/g, '[[$1]]') : text;
+		return typeof text === 'string' ? text.replace(/\\\[\\\[([\S]*?)\\\]\\\]/g, '[[$1]]') : text;
 	};
 
 	translator.getLanguage = function() {

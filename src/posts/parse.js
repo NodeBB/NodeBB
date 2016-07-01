@@ -25,7 +25,7 @@ module.exports = function(Posts) {
 			postData.content = postData.content.toString();
 		}
 
-		postData.content = translator.escape(postData.content);
+		postData.content = translator.sanitizeHTML(postData.content);
 
 		plugins.fireHook('filter:parse.post', {postData: postData}, function(err, data) {
 			if (err) {
