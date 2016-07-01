@@ -2,9 +2,9 @@
 
 'use strict';
 
-var async = require('async'),
-	db = require('../database'),
-	user = require('../user');
+var async = require('async');
+var db = require('../database');
+var user = require('../user');
 
 
 module.exports = function(Posts) {
@@ -67,16 +67,12 @@ module.exports = function(Posts) {
 	}
 
 	Posts.dismissFlag = function(pid, callback) {
-		var uid;
-
 		async.parallel([
 			function(next) {
-				db.getObjectField('post:' + pid, 'uid', function(err, _uid) {
+				db.getObjectField('post:' + pid, 'uid', function(err, uid) {
 					if (err) {
 						return next(err);
 					}
-
-					uid = _uid;
 
 					db.sortedSetsRemove([
 						'posts:flagged',
