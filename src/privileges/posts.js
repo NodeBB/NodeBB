@@ -150,6 +150,38 @@ module.exports = function(privileges) {
 		});
 	};
 
+	privileges.posts.canDelete = function(pid, uid, callback) {
+		var postData;
+		async.waterfall([
+			function(next) {
+				posts.getPostFields(pid, ['tid', 'timestamp'], next);
+			},
+			function(_postData, next) {
+				postData = _postData;
+				async.parallel({
+					isAdminOrMod: async.apply(isAdminOrMod, pid, uid),
+					isLocked: async.apply(topics.isLocked, postData.tid),
+					isOwner: async.apply(posts.isOwner, pid, uid)
+				}, next);
+			}
+		], function(err, results) {
+			if (err) {
+				return callback(err);
+			}
+			if (results.isAdminOrMod) {
+				return callback(null, true);
+			}
+			if (results.isLocked) {
+				return callback(new Error('[[error:topic-locked]]'));
+			}
+			var postDeleteDuration = parseInt(meta.config.postDeleteDuration, 10);
+			if (postDeleteDuration && (Date.now() - parseInt(postData.timestamp, 10) > postDeleteDuration * 1000)) {
+				return callback(new Error('[[error:post-delete-duration-expired, ' + meta.config.postDeleteDuration + ']]'));
+			}
+			callback(null, results.isOwner);
+		});
+	};
+
 	privileges.posts.canMove = function(pid, uid, callback) {
 		posts.isMain(pid, function(err, isMain) {
 			if (err || isMain) {

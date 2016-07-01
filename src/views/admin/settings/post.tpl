@@ -49,6 +49,10 @@
 				<input id="postEditDuration" type="text" class="form-control" value="0" data-field="postEditDuration">
 			</div>
 			<div class="form-group">
+				<label for="postDeleteDuration">Number of seconds users are allowed to delete posts after posting. (0 disabled)</label>
+				<input id="postDeleteDuration" type="text" class="form-control" value="0" data-field="postDeleteDuration">
+			</div>
+			<div class="form-group">
 				<label for="minimumTitleLength">Minimum Title Length</label>
 				<input id="minimumTitleLength" type="text" class="form-control" value="3" data-field="minimumTitleLength">
 			</div>
