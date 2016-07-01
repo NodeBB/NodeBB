@@ -129,47 +129,93 @@ apiController.renderWidgets = function(req, res, next) {
 	});
 };
 
-apiController.getObject = function(req, res, next) {
-	apiController.getObjectByType(req.uid, req.params.type, req.params.id, function(err, results) {
-		if (err) {
-			return next(err);
+apiController.getPostData = function(pid, uid, callback) {
+	async.parallel({
+		privileges: function(next) {
+			privileges.posts.get([pid], uid, next);
+		},
+		post: function(next) {
+			posts.getPostData(pid, next);
+		}
+	}, function(err, results) {
+		if (err || !results.post) {
+			return callback(err);
 		}
 
-		res.json(results);
+		var post = results.post;
+		var privileges = results.privileges[0];
+
+		if (!privileges.read || !privileges['topics:read']) {
+			return callback();
+		}
+
+		post.ip = privileges.isAdminOrMod ? post.ip : undefined;
+		var selfPost = uid && uid === parseInt(post.uid, 10);
+		if (post.deleted && !(privileges.isAdminOrMod || selfPost)) {
+			post.content = '[[topic:post_is_deleted]]';
+		}
+		callback(null, post);
 	});
 };
 
-apiController.getObjectByType = function(uid, type, id, callback) {
+apiController.getTopicData = function(tid, uid, callback) {
+	async.parallel({
+		privileges: function(next) {
+			privileges.topics.get(tid, uid, next);
+		},
+		topic: function(next) {
+			topics.getTopicData(tid, next);
+		}
+	}, function(err, results) {
+		if (err || !results.topic) {
+			return callback(err);
+		}
+
+		if (!results.privileges.read || !results.privileges['topics:read'] || (parseInt(results.topic.deleted, 10) && !results.privileges.view_deleted)) {
+			return callback();
+		}
+		callback(null, results.topic);
+	});
+};
+
+apiController.getCategoryData = function(cid, uid, callback) {
+	async.parallel({
+		privileges: function(next) {
+			privileges.categories.get(cid, uid, next);
+		},
+		category: function(next) {
+			categories.getCategoryData(cid, next);
+		}
+	}, function(err, results) {
+		if (err || !results.category) {
+			return callback(err);
+		}
+
+		if (!results.privileges.read) {
+			return callback();
+		}
+		callback(null, results.category);
+	});
+};
+
+
+apiController.getObject = function(req, res, next) {
 	var methods = {
-		post: {
-			canRead: privileges.posts.can,
-			data: posts.getPostData
-		},
-		topic: {
-			canRead: privileges.topics.can,
-			data: topics.getTopicData
-		},
-		category: {
-			canRead: privileges.categories.can,
-			data: categories.getCategoryData
-		}
+		post: apiController.getPostData,
+		topic: apiController.getTopicData,
+		category: apiController.getCategoryData
 	};
-
-	if (!methods[type]) {
-		return callback();
+	var method = methods[req.params.type];
+	if (!method) {
+		return next();
 	}
-
-	async.waterfall([
-		function (next) {
-			methods[type].canRead('read', id, uid, next);
-		},
-		function (canRead, next) {
-			if (!canRead) {
-				return next(new Error('[[error:no-privileges]]'));
-			}
-			methods[type].data(id, next);
+	method(req.params.id, req.uid, function(err, result) {
+		if (err || !result) {
+			return next(err);
 		}
-	], callback);
+
+		res.json(result);
+	});
 };
 
 apiController.getUserByUID = function(req, res, next) {

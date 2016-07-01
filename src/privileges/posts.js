@@ -19,17 +19,20 @@ module.exports = function(privileges) {
 			return callback(null, []);
 		}
 
-		async.parallel({
-			isAdmin: function(next){
-				user.isAdministrator(uid, next);
+		async.waterfall([
+			function(next) {
+				posts.getCidsByPids(pids, next);
 			},
-			isModerator: function(next) {
-				posts.isModerator(pids, uid, next);
-			},
-			isOwner: function(next) {
-				posts.isOwner(pids, uid, next);
+			function(cids, next) {
+				async.parallel({
+					isAdmin: async.apply(user.isAdministrator, uid),
+					isModerator: async.apply(posts.isModerator, pids, uid),
+					isOwner: async.apply(posts.isOwner, pids, uid),
+					'topics:read': async.apply(helpers.isUserAllowedTo, 'topics:read', uid, cids),
+					read: async.apply(helpers.isUserAllowedTo, 'read', uid, cids),
+				}, next);
 			}
-		}, function(err, results) {
+		], function(err, results) {
 			if (err) {
 				return callback(err);
 			}
@@ -37,11 +40,16 @@ module.exports = function(privileges) {
 			var privileges = [];
 
 			for (var i=0; i<pids.length; ++i) {
-				var editable = results.isAdmin || results.isModerator[i] || results.isOwner[i];
+				var isAdminOrMod = results.isAdmin || results.isModerator[i];
+				var editable = isAdminOrMod || results.isOwner[i];
+
 				privileges.push({
 					editable: editable,
 					view_deleted: editable,
-					move: results.isAdmin || results.isModerator[i]
+					move: isAdminOrMod,
+					isAdminOrMod: isAdminOrMod,
+					'topics:read': results['topics:read'][i] || isAdminOrMod,
+					read: results.read[i] || isAdminOrMod
 				});
 			}
 
