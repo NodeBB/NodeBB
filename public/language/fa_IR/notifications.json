@@ -12,7 +12,7 @@
     "you_have_unread_notifications": "شما اطلاعیه های نخوانده دارید.",
     "new_message_from": "پیام تازه از <strong>%1</strong>",
     "upvoted_your_post_in": "<strong>%1</strong> امتیاز مثبت به پست شما در <strong>%2</strong> داده",
-    "upvoted_your_post_in_dual": "<strong>%1</strong> and <strong>%2</strong> have upvoted your post in <strong>%3</strong>.",
+    "upvoted_your_post_in_dual": "<strong>%1</strong> و <strong>%2</strong> رای مثبت به پست شما در\n <strong>%3</strong>.",
     "upvoted_your_post_in_multiple": "<strong>%1</strong> and %2 others have upvoted your post in <strong>%3</strong>.",
     "moved_your_post": "<strong>%1</strong> پست شما را به <strong>%2</strong> انتقال داده است",
     "moved_your_topic": "<strong>%2</strong> <strong>%1</strong> را منتقل کرده است",
