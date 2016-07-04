@@ -8,6 +8,7 @@
 					<li><a href='{config.relative_path}/admin/manage/users/not-validated'>Not validated</a></li>
 					<li><a href='{config.relative_path}/admin/manage/users/no-posts'>No Posts</a></li>
 					<li><a href='{config.relative_path}/admin/manage/users/inactive'>Inactive</a></li>
+					<li><a href='{config.relative_path}/admin/manage/users/flagged'>Most Flags</a></li>
 					<li><a href='{config.relative_path}/admin/manage/users/banned'>Banned</a></li>
 					<li><a href='{config.relative_path}/admin/manage/users/search'>User Search</a></li>
 
@@ -84,7 +85,7 @@
 						posts {users.postcount}
 
 						<!-- IF users.flags -->
-						<div><small><span><i class="fa fa-flag"></i> {users.flags}</span></small></div>
+						<div><small><span><i class="fa fa-flag"></i> <a href="{config.relative_path}/admin/manage/flags?byUsername={users.username}">{users.flags}</a></span></small></div>
 						<!-- ENDIF users.flags -->
 					</div>
 					<!-- END users -->

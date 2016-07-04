@@ -89,7 +89,8 @@ var utils = require('../public/src/utils');
 	};
 
 	User.getUsers = function(uids, uid, callback) {
-		var fields = ['uid', 'username', 'userslug', 'picture', 'status', 'banned', 'joindate', 'postcount', 'reputation', 'email:confirmed', 'lastonline'];
+		var fields = ['uid', 'username', 'userslug', 'picture', 'status', 'flags',
+			'banned', 'joindate', 'postcount', 'reputation', 'email:confirmed', 'lastonline'];
 
 		async.waterfall([
 			function (next) {

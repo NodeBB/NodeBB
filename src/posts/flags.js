@@ -5,7 +5,7 @@
 var async = require('async');
 var db = require('../database');
 var user = require('../user');
-
+var analytics = require('../analytics');
 
 module.exports = function(Posts) {
 
@@ -13,52 +13,59 @@ module.exports = function(Posts) {
 		if (!parseInt(uid, 10) || !reason) {
 			return callback();
 		}
-		async.parallel({
-			hasFlagged: async.apply(hasFlagged, post.pid, uid),
-			exists: async.apply(Posts.exists, post.pid)
-		}, function(err, results) {
-			if (err || !results.exists) {
-				return callback(err || new Error('[[error:no-post]]'));
-			}
 
-			if (results.hasFlagged) {
-				return callback(new Error('[[error:already-flagged]]'));
-			}
-			var now = Date.now();
-
-			async.parallel([
-				function(next) {
-					db.sortedSetAdd('posts:flagged', now, post.pid, next);
-				},
-				function(next) {
-					db.sortedSetIncrBy('posts:flags:count', 1, post.pid, next);
-				},
-				function(next) {
-					db.incrObjectField('post:' + post.pid, 'flags', next);
-				},
-				function(next) {
-					db.sortedSetAdd('pid:' + post.pid + ':flag:uids', now, uid, next);
-				},
-				function(next) {
-					db.sortedSetAdd('pid:' + post.pid + ':flag:uid:reason', 0, uid + ':' + reason, next);
-				},
-				function(next) {
-					if (parseInt(post.uid, 10)) {
-						db.sortedSetAdd('uid:' + post.uid + ':flag:pids', now, post.pid, next);
-					} else {
-						next();
-					}
-				},
-				function(next) {
-					if (parseInt(post.uid, 10)) {
-						db.setAdd('uid:' + post.uid + ':flagged_by', uid, next);
-					} else {
-						next();
-					}
+		async.waterfall([
+			function(next) {
+				async.parallel({
+					hasFlagged: async.apply(hasFlagged, post.pid, uid),
+					exists: async.apply(Posts.exists, post.pid)
+				}, next);
+			},
+			function(results, next) {
+				if (!results.exists) {
+					return next(new Error('[[error:no-post]]'));
 				}
-			], function(err) {
-				callback(err);
-			});
+
+				if (results.hasFlagged) {
+					return next(new Error('[[error:already-flagged]]'));
+				}
+
+				var now = Date.now();
+				async.parallel([
+					function(next) {
+						db.sortedSetAdd('posts:flagged', now, post.pid, next);
+					},
+					function(next) {
+						db.sortedSetIncrBy('posts:flags:count', 1, post.pid, next);
+					},
+					function(next) {
+						db.incrObjectField('post:' + post.pid, 'flags', next);
+					},
+					function(next) {
+						db.sortedSetAdd('pid:' + post.pid + ':flag:uids', now, uid, next);
+					},
+					function(next) {
+						db.sortedSetAdd('pid:' + post.pid + ':flag:uid:reason', 0, uid + ':' + reason, next);
+					},
+					function(next) {
+						if (parseInt(post.uid, 10)) {
+							async.parallel([
+								async.apply(db.sortedSetIncrBy, 'users:flags', 1, post.uid),
+								async.apply(db.incrObjectField, 'user:' + post.uid, 'flags'),
+								async.apply(db.sortedSetAdd, 'uid:' + post.uid + ':flag:pids', now, post.pid)
+							], next);
+						} else {
+							next();
+						}
+					}
+				], next);
+			}
+		], function(err) {
+			if (err) {
+				return callback(err);
+			}
+			analytics.increment('flags');
+			callback();
 		});
 	};
 
@@ -67,41 +74,58 @@ module.exports = function(Posts) {
 	}
 
 	Posts.dismissFlag = function(pid, callback) {
-		async.parallel([
+		async.waterfall([
 			function(next) {
-				db.getObjectField('post:' + pid, 'uid', function(err, uid) {
-					if (err) {
-						return next(err);
-					}
-
-					db.sortedSetsRemove([
-						'posts:flagged',
-						'posts:flags:count',
-						'uid:' + uid + ':flag:pids'
-					], pid, next);
-				});
+				db.getObjectFields('post:' + pid, ['pid', 'uid', 'flags'], next);
 			},
-			function(next) {
-				async.series([
+			function(postData, next) {
+				if (!postData.pid) {
+					return callback();
+				}
+				async.parallel([
 					function(next) {
-						db.getSortedSetRange('pid:' + pid + ':flag:uids', 0, -1, function(err, uids) {
-							async.each(uids, function(uid, next) {
-								var nid = 'post_flag:' + pid + ':uid:' + uid;
+						if (parseInt(postData.uid, 10)) {
+							if (parseInt(postData.flags, 10) > 0) {
 								async.parallel([
-									async.apply(db.delete, 'notifications:' + nid),
-									async.apply(db.sortedSetRemove, 'notifications', 'post_flag:' + pid + ':uid:' + uid)
+									async.apply(db.sortedSetIncrBy, 'users:flags', -postData.flags, postData.uid),
+									async.apply(db.incrObjectFieldBy, 'user:' + postData.uid, 'flags', -postData.flags)
 								], next);
-							}, next);
-						});
+							} else {
+								next();
+							}
+						}
 					},
-					async.apply(db.delete, 'pid:' + pid + ':flag:uids')
+					function(next) {
+						db.sortedSetsRemove([
+							'posts:flagged',
+							'posts:flags:count',
+							'uid:' + postData.uid + ':flag:pids'
+						], pid, next);
+					},
+					function(next) {
+						async.series([
+							function(next) {
+								db.getSortedSetRange('pid:' + pid + ':flag:uids', 0, -1, function(err, uids) {
+									async.each(uids, function(uid, next) {
+										var nid = 'post_flag:' + pid + ':uid:' + uid;
+										async.parallel([
+											async.apply(db.delete, 'notifications:' + nid),
+											async.apply(db.sortedSetRemove, 'notifications', 'post_flag:' + pid + ':uid:' + uid)
+										], next);
+									}, next);
+								});
+							},
+							async.apply(db.delete, 'pid:' + pid + ':flag:uids')
+						], next);
+					},
+					async.apply(db.deleteObjectField, 'post:' + pid, 'flags'),
+					async.apply(db.delete, 'pid:' + pid + ':flag:uid:reason')
 				], next);
 			},
-			async.apply(db.deleteObjectField, 'post:' + pid, 'flags'),
-			async.apply(db.delete, 'pid:' + pid + ':flag:uid:reason')
-		], function(err) {
-			callback(err);
-		});
+			function(results, next) {
+				db.sortedSetsRemoveRangeByScore(['users:flags'], '-inf', 0, next);
+			}
+		], callback);
 	};
 
 	Posts.dismissAllFlags = function(callback) {
@@ -109,7 +133,16 @@ module.exports = function(Posts) {
 			if (err) {
 				return callback(err);
 			}
-			async.eachLimit(pids, 50, Posts.dismissFlag, callback);
+			async.eachSeries(pids, Posts.dismissFlag, callback);
+		});
+	};
+
+	Posts.dismissUserFlags = function(uid, callback) {
+		db.getSortedSetRange('uid:' + uid + ':flag:pids', 0, -1, function(err, pids) {
+			if (err) {
+				return callback(err);
+			}
+			async.eachSeries(pids, Posts.dismissFlag, callback);
 		});
 	};
 

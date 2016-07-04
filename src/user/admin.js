@@ -3,6 +3,7 @@
 
 var async = require('async');
 var db = require('../database');
+var posts = require('../posts');
 var plugins = require('../plugins');
 
 module.exports = function(User) {
@@ -89,7 +90,6 @@ module.exports = function(User) {
 	};
 
 	User.unban = function(uid, callback) {
-		db.delete('uid:' + uid + ':flagged_by');
 		async.waterfall([
 			function (next) {
 				User.setUserField(uid, 'banned', 0, next);
@@ -108,9 +108,9 @@ module.exports = function(User) {
 		if (!Array.isArray(uids) || !uids.length) {
 			return callback();
 		}
-		var keys = uids.map(function(uid) {
-			return 'uid:' + uid + ':flagged_by';
-		});
-		db.deleteAll(keys, callback);
+
+		async.eachSeries(uids, function(uid, next) {
+			posts.dismissUserFlags(uid, next);
+		}, callback);
 	};
 };
