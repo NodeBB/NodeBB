@@ -67,6 +67,7 @@ define('forum/users', ['translator'], function(translator) {
 				translated = $(translated);
 				$('#users-container').append(translated);
 				translated.find('span.timeago').timeago();
+				utils.addCommasToNumbers(translated.find('.formatted-number'));
 				$('#users-container .anon-user').appendTo($('#users-container'));
 			});
 		});
