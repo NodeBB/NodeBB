@@ -73,17 +73,7 @@ SocketPosts.getRawPost = function(socket, pid, callback) {
 };
 
 SocketPosts.getPost = function(socket, pid, callback) {
-	async.waterfall([
-		function(next) {
-			apiController.getObjectByType(socket.uid, 'post', pid, next);
-		},
-		function(postData, next) {
-			if (parseInt(postData.deleted, 10) === 1) {
-				return next(new Error('[[error:no-post]]'));
-			}
-			next(null, postData);
-		}
-	], callback);
+	apiController.getPostData(pid, socket.uid, callback);
 };
 
 SocketPosts.loadMoreFavourites = function(socket, data, callback) {

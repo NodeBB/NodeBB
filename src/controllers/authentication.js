@@ -334,10 +334,13 @@ authenticationController.localLogin = function(req, username, password, next) {
 		function (next) {
 			async.parallel({
 				userData: function(next) {
-					db.getObjectFields('user:' + uid, ['password', 'banned', 'passwordExpiry'], next);
+					db.getObjectFields('user:' + uid, ['password', 'passwordExpiry'], next);
 				},
 				isAdmin: function(next) {
 					user.isAdministrator(uid, next);
+				},
+				banned: function(next) {
+					user.isBanned(uid, next);
 				}
 			}, next);
 		},
@@ -349,13 +352,13 @@ authenticationController.localLogin = function(req, username, password, next) {
 			if (!result.isAdmin && parseInt(meta.config.allowLocalLogin, 10) === 0) {
 				return next(new Error('[[error:local-login-disabled]]'));
 			}
-
 			if (!userData || !userData.password) {
 				return next(new Error('[[error:invalid-user-data]]'));
 			}
-			if (userData.banned && parseInt(userData.banned, 10) === 1) {
+			if (result.banned) {
 				return next(new Error('[[error:user-banned]]'));
 			}
+
 			Password.compare(password, userData.password, next);
 		},
 		function (passwordMatch, next) {

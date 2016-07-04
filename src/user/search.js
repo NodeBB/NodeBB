@@ -1,10 +1,10 @@
 
 'use strict';
 
-var async = require('async'),
-	meta = require('../meta'),
-	plugins = require('../plugins'),
-	db = require('../database');
+var async = require('async');
+var meta = require('../meta');
+var plugins = require('../plugins');
+var db = require('../database');
 
 module.exports = function(User) {
 
@@ -84,7 +84,7 @@ module.exports = function(User) {
 	function filterAndSortUids(uids, data, callback) {
 		var sortBy = data.sortBy || 'joindate';
 
-		var fields = ['uid', 'status', 'lastonline', 'banned', sortBy];
+		var fields = ['uid', 'status', 'lastonline', 'banned', 'flags', sortBy];
 
 		User.getUsersFields(uids, fields, function(err, userData) {
 			if (err) {
@@ -96,10 +96,16 @@ module.exports = function(User) {
 					return user && user.status !== 'offline' && (Date.now() - parseInt(user.lastonline, 10) < 300000);
 				});
 			}
-			
-			if(data.bannedOnly) {
+
+			if (data.bannedOnly) {
 				userData = userData.filter(function(user) {
 					return user && user.banned;
+				});
+			}
+
+			if (data.flaggedOnly) {
+				userData = userData.filter(function(user) {
+					return user && parseInt(user.flags, 10) > 0;
 				});
 			}
 

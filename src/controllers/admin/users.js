@@ -28,6 +28,10 @@ usersController.noPosts = function(req, res, next) {
 	getUsersByScore('users:postcount', 'noposts', 0, 0, req, res, next);
 };
 
+usersController.flagged = function(req, res, next) {
+	getUsersByScore('users:flags', 'mostflags', 1, '+inf', req, res, next);
+};
+
 usersController.inactive = function(req, res, next) {
 	var timeRange = 1000 * 60 * 60 * 24 * 30 * (parseInt(req.query.months, 10) || 3);
 	var cutoff = Date.now() - timeRange;

@@ -5,7 +5,7 @@
     "search": "Vyhledávat",
     "enter_username": "Zadej uživatelské jméno k hledání",
     "load_more": "Načíst další",
-    "users-found-search-took": "%1 user(s) found! Search took %2 seconds.",
+    "users-found-search-took": "Nalezeno %1 uživatel(ů) za %2 vteřiny.",
     "filter-by": "Filtrovat dle",
     "online-only": "Pouze online",
     "invite": "Pozvat",

@@ -65,6 +65,7 @@ function addRoutes(router, middleware, controllers) {
 	router.get('/manage/users/not-validated', middlewares, controllers.admin.users.notValidated);
 	router.get('/manage/users/no-posts', middlewares, controllers.admin.users.noPosts);
 	router.get('/manage/users/inactive', middlewares, controllers.admin.users.inactive);
+	router.get('/manage/users/flagged', middlewares, controllers.admin.users.flagged);
 	router.get('/manage/users/banned', middlewares, controllers.admin.users.banned);
 	router.get('/manage/registration', middlewares, controllers.admin.users.registrationQueue);
 

@@ -31,7 +31,6 @@ module.exports = function(Posts) {
 			}
 
 			data.postData.content = translator.escape(data.postData.content);
-			data.postData.content = Posts.relativeToAbsolute(data.postData.content);
 
 			if (global.env === 'production' && data.postData.pid) {
 				cache.set(data.postData.pid, data.postData.content);
@@ -67,8 +66,8 @@ module.exports = function(Posts) {
 						content = content.slice(0, current.index + 6) + absolute + content.slice(current.index + 6 + current[1].length);
 					}
 				} catch(err) {
-					winston.verbose(err.messsage);					
-				}				
+					winston.verbose(err.messsage);
+				}
 			}
 		}
 

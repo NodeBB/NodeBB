@@ -92,7 +92,7 @@
     "invalid-chat-message": "پیام نامعتبر",
     "chat-message-too-long": "پیام طولانی تر از حد مجاز است",
     "cant-edit-chat-message": "شما اجازه ی ویرایش این پیام را ندارید",
-    "cant-remove-last-user": "You can't remove the last user",
+    "cant-remove-last-user": "شما نمی توانید آخرین کاربر را حذف کنید",
     "cant-delete-chat-message": "شما اجازه حذف این پیام را ندارید.",
     "already-voting-for-this-post": "شما قبلا به این پست رای داده اید.",
     "reputation-system-disabled": "سیستم اعتبار غیر فعال شده است",
@@ -106,7 +106,7 @@
     "wrong-login-type-email": "لطفا از ایمیل خود برای ورود استفاده کنید",
     "wrong-login-type-username": "لطفا از نام کاربری خود برای ورود استفاده کنید",
     "invite-maximum-met": "You have invited the maximum amount of people (%1 out of %2).",
-    "no-session-found": "No login session found!",
+    "no-session-found": "هیچ سشن ورودی یافت نشد!",
     "not-in-room": "هیچ کاربری در این گفتگو نیست",
     "no-users-in-room": "هیچ کاربری در این گفتگو نیست",
     "cant-kick-self": "شما نمی توانید خودتان را از گروه کیک کنید"

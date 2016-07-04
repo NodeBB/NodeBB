@@ -89,7 +89,8 @@ var utils = require('../public/src/utils');
 	};
 
 	User.getUsers = function(uids, uid, callback) {
-		var fields = ['uid', 'username', 'userslug', 'picture', 'status', 'banned', 'joindate', 'postcount', 'reputation', 'email:confirmed', 'lastonline'];
+		var fields = ['uid', 'username', 'userslug', 'picture', 'status', 'flags',
+			'banned', 'joindate', 'postcount', 'reputation', 'email:confirmed', 'lastonline'];
 
 		async.waterfall([
 			function (next) {
@@ -254,6 +255,35 @@ var utils = require('../public/src/utils');
 			}
 			callback();
 		});
+	};
+
+	User.isBanned = function(uid, callback) {
+		async.waterfall([
+			async.apply(User.getUserField, uid, 'banned'),
+			function(banned, next) {
+				banned = parseInt(banned, 10) === 1;
+				if (!banned) {
+					return next(null, banned);
+				} else {
+					// If they are banned, see if the ban has expired
+					db.sortedSetScore('users:banned:expire', uid, function(err, score) {
+						var stillBanned = Date.now() < score;
+
+						if (!stillBanned) {
+							async.parallel([
+								async.apply(db.sortedSetRemove.bind(db), 'users:banned:expire', uid),
+								async.apply(db.sortedSetRemove.bind(db), 'users:banned', uid),
+								async.apply(User.setUserField, uid, 'banned', 0)
+							], function(err) {
+								next(err, false);
+							});
+						} else {
+							next(err, true);
+						}
+					});
+				}
+			}
+		], callback);
 	};
 
 	User.addInterstitials = function(callback) {

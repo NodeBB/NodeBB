@@ -193,7 +193,7 @@ SocketCategories.isModerator = function(socket, cid, callback) {
 };
 
 SocketCategories.getCategory = function(socket, cid, callback) {
-	apiController.getObjectByType(socket.uid, 'category', cid, callback);
+	apiController.getCategoryData(cid, socket.uid, callback);
 };
 
 module.exports = SocketCategories;

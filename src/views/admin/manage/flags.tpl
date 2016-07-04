@@ -1,32 +1,48 @@
 <div class="flags">
-	<div class="col-lg-9">
+
+	<div class="col-lg-12">
+
+		<div class="text-center">
+			<div class="panel panel-default">
+				<div class="panel-body">
+					<div><canvas id="flags:daily" height="250"></canvas></div>
+					<p>
+
+					</p>
+				</div>
+				<div class="panel-footer"><small>Daily flags</small></div>
+			</div>
+		</div>
+
+		<form id="flag-search" method="GET" action="flags">
+			<div class="form-group">
+				<div>
+					<div>
+						<label>Flags by user</label>
+						<input type="text" class="form-control" id="byUsername" placeholder="Search flagged posts by username" name="byUsername" value="{byUsername}">
+					</div>
+				</div>
+			</div>
+
+			<div class="form-group">
+				<label>Sort By</label>
+				<div>
+					<div>
+						<select id="flag-sort-by" class="form-control" name="sortBy">
+							<option value="count">Most Flags</option>
+							<option value="time">Most Recent</option>
+						</select>
+					</div>
+				</div>
+			</div>
+
+			<button type="submit" class="btn btn-primary">Search</button>
+			<button class="btn btn-primary" id="dismissAll">Dismiss All</button>
+		</form>
+
+		<hr/>
+
 		<div data-next="{next}">
-			<form id="flag-search" method="GET" action="flags">
-				<div class="form-group">
-					<div class="row">
-						<div class="col-md-6">
-							<label>Flags by user</label>
-							<input type="text" class="form-control" id="byUsername" placeholder="Search flagged posts by username" name="byUsername" value="{byUsername}">
-						</div>
-					</div>
-				</div>
-
-				<div class="form-group">
-					<label>Sort By</label>
-					<div class="row">
-						<div class="col-md-6">
-							<select id="flag-sort-by" class="form-control" name="sortBy">
-								<option value="count">Most Flags</option>
-								<option value="time">Most Recent</option>
-							</select>
-						</div>
-					</div>
-				</div>
-
-				<button type="submit" class="btn btn-primary">Search</button>
-			</form>
-			<br />
-			<hr/>
 
 			<div class="post-container" data-next="{next}">
 				<!-- IF !posts.length -->
@@ -53,7 +69,6 @@
 								</a>
 								<div class="content">
 									<p>{posts.content}</p>
-									<p class="fade-out"></p>
 								</div>
 								<small>
 									<span class="pull-right">
@@ -89,17 +104,6 @@
 					</div>
 				</div>
 				<!-- END posts -->
-			</div>
-		</div>
-	</div>
-
-	<div class="col-lg-3 acp-sidebar">
-		<div class="panel panel-default">
-			<div class="panel-heading">Flags Control Panel</div>
-			<div class="panel-body">
-				<div>
-					<button class="btn btn-primary" id="dismissAll">Dismiss All</button>
-				</div>
 			</div>
 		</div>
 	</div>

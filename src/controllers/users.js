@@ -69,6 +69,20 @@ usersController.getBannedUsers = function(req, res, next) {
 	});
 };
 
+usersController.getFlaggedUsers = function(req, res, next) {
+	usersController.getUsers('users:flags', req.uid, req.query.page, function(err, userData) {
+		if (err) {
+			return next(err);
+		}
+
+		if (!userData.isAdminOrGlobalMod) {
+			return next();
+		}
+
+		render(req, res, userData, next);
+	});
+};
+
 usersController.renderUsersPage = function(set, req, res, next) {
 	usersController.getUsers(set, req.uid, req.query.page, function(err, userData) {
 		if (err) {
@@ -79,23 +93,16 @@ usersController.renderUsersPage = function(set, req, res, next) {
 };
 
 usersController.getUsers = function(set, uid, page, callback) {
-	var setToTitles = {
-		'users:postcount': '[[pages:users/sort-posts]]',
-		'users:reputation': '[[pages:users/sort-reputation]]',
-		'users:joindate': '[[pages:users/latest]]',
-		'users:online': '[[pages:users/online]]',
-		'users:banned': '[[pages:users/banned]]'
+	var setToData = {
+		'users:postcount': {title: '[[pages:users/sort-posts]]', crumb: '[[users:top_posters]]'},
+		'users:reputation': {title: '[[pages:users/sort-reputation]]', crumb: '[[users:most_reputation]]'},
+		'users:joindate': {title: '[[pages:users/latest]]', crumb: '[[global:users]]'},
+		'users:online': {title: '[[pages:users/online]]', crumb: '[[global:online]]'},
+		'users:banned': {title: '[[pages:users/banned]]', crumb: '[[user:banned]]'},
+		'users:flags': {title: '[[pages:users/most-flags]]', crumb: '[[users:most_flags]]'},
 	};
 
-	var setToCrumbs = {
-		'users:postcount': '[[users:top_posters]]',
-		'users:reputation': '[[users:most_reputation]]',
-		'users:joindate': '[[global:users]]',
-		'users:online': '[[global:online]]',
-		'users:banned': '[[user:banned]]'
-	};
-
-	var breadcrumbs = [{text: setToCrumbs[set]}];
+	var breadcrumbs = [{text: setToData[set].crumb}];
 
 	if (set !== 'users:joindate') {
 		breadcrumbs.unshift({text: '[[global:users]]', url: '/users'});
@@ -127,7 +134,7 @@ usersController.getUsers = function(set, uid, page, callback) {
 			users: results.usersData.users,
 			pagination: pagination.create(page, pageCount),
 			userCount: results.usersData.count,
-			title: setToTitles[set] || '[[pages:users/latest]]',
+			title: setToData[set].title || '[[pages:users/latest]]',
 			breadcrumbs: helpers.buildBreadcrumbs(breadcrumbs),
 			setName: set,
 			isAdminOrGlobalMod: results.isAdministrator || results.isGlobalMod
@@ -148,6 +155,8 @@ usersController.getUsersAndCount = function(set, uid, start, stop, callback) {
 				db.sortedSetCount('users:online', now - 300000, '+inf', next);
 			} else if (set === 'users:banned') {
 				db.sortedSetCard('users:banned', next);
+			} else if (set === 'users:flags') {
+				db.sortedSetCard('users:flags', next);
 			} else {
 				db.getObjectField('global', 'userCount', next);
 			}

@@ -63,7 +63,7 @@
     "already-unfavourited": "您已取消了此贴的书签",
     "cant-ban-other-admins": "您不能封禁其他管理员！",
     "cant-remove-last-admin": "您是唯一的管理员。在删除您的管理员权限前，请添加另一个管理员。",
-    "cant-delete-admin": "Remove administrator privileges from this account before attempting to delete it.",
+    "cant-delete-admin": "在删除之前请你先把管理员的权限从这个账号移除。",
     "invalid-image-type": "无效的图像类型。允许的类型有：%1",
     "invalid-image-extension": "无效的图像扩展",
     "invalid-file-type": "无效文件格式，允许的格式有：%1",
