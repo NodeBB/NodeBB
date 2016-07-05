@@ -51,7 +51,7 @@ if (nconf.get('config')) {
 	configFile = path.resolve(__dirname, nconf.get('config'));
 }
 
-var configExists = file.existsSync(configFile);
+var configExists = file.existsSync(configFile) || (nconf.get('url') && nconf.get('secret') && nconf.get('database'));
 
 loadConfig();
 
