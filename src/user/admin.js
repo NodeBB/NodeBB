@@ -95,7 +95,7 @@ module.exports = function(User) {
 				User.setUserField(uid, 'banned', 0, next);
 			},
 			function (next) {
-				db.sortedSetRemove('users:banned', uid, next);
+				db.sortedSetsRemove(['users:banned', 'users:banned:expire'], uid, next);
 			},
 			function (next) {
 				plugins.fireHook('action:user.unbanned', {uid: uid});
