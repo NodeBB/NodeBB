@@ -183,6 +183,7 @@ function start() {
 			if (nconf.get('dep-check') === undefined || nconf.get('dep-check') !== false) {
 				require('./src/meta').dependencies.check(next);
 			} else {
+				winston.warn('[init] Dependency checking skipped!');
 				setImmediate(next);
 			}
 		},
