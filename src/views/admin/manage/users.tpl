@@ -72,7 +72,7 @@
 								<!-- ENDIF !users.email:confirmed -->
 								<!-- ENDIF config.requireEmailConfirmation -->
 								<span class="administrator label label-primary <!-- IF !users.administrator -->hide<!-- ENDIF !users.administrator -->">Admin</span>
-								<span class="ban label label-danger <!-- IF !users.banned -->hide<!-- ENDIF !users.banned -->">Banned</span>
+								<span class="ban label label-danger <!-- IF !users.banned -->hide<!-- ENDIF !users.banned -->">Banned<!-- IF users.banned_until --> <i class="fa fa-clock-o" title="Banned until {../banned_until_readable}"></i><!-- ENDIF users.banned_until --></span>
 							</div>
 						</div>
 
