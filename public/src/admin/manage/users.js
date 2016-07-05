@@ -58,7 +58,7 @@ define('admin/manage/users', ['admin/modules/selectable'], function(selectable) 
 			});
 		});
 
-		$('.ban-user-temporary').on('click', function(e) {
+		$('.ban-user-temporary').on('click', function() {
 			var uids = getSelectedUids();
 			if (!uids.length) {
 				app.alertError('[[error:no-users-selected]]');
@@ -66,7 +66,7 @@ define('admin/manage/users', ['admin/modules/selectable'], function(selectable) 
 			}
 
 			templates.parse('admin/partials/temporary-ban', {}, function(html) {
-				var modal = bootbox.dialog({
+				bootbox.dialog({
 					className: 'ban-modal',
 					title: '[[user:ban_account]]',
 					message: html,
