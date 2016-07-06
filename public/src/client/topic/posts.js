@@ -345,10 +345,11 @@ define('forum/topic/posts', [
 
 	Posts.showBottomPostBar = function() {
 		var mainPost = components.get('post', 'index', 0);
+		var placeHolder = $('.post-bar-placeholder');
 		var posts = $('[component="post"]');
-		if (!!mainPost.length && posts.length > 1 && $('.post-bar').length < 2 && $('.post-bar-placeholder').length) {
-			$('.post-bar').clone().appendTo(mainPost);
-			$('.post-bar-placeholder').remove();
+		if (!!mainPost.length && posts.length > 1 && $('.post-bar').length < 2 && placeHolder.length) {
+			$('.post-bar').clone().insertAfter(placeHolder);
+			placeHolder.remove();
 		} else if (mainPost.length && posts.length < 2) {
 			mainPost.find('.post-bar').remove();
 		}
