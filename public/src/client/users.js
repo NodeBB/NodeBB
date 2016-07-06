@@ -67,6 +67,7 @@ define('forum/users', ['translator'], function(translator) {
 				translated = $(translated);
 				$('#users-container').append(translated);
 				translated.find('span.timeago').timeago();
+				utils.addCommasToNumbers(translated.find('.formatted-number'));
 				$('#users-container .anon-user').appendTo($('#users-container'));
 			});
 		});
@@ -101,14 +102,15 @@ define('forum/users', ['translator'], function(translator) {
 		if (!username) {
 			return loadPage(page);
 		}
-
+		var activeSection = getActiveSection();
 		socket.emit('user.search', {
 			query: username,
 			page: page,
 			searchBy: 'username',
 			sortBy: $('.search select').val() || getSortBy(),
-			onlineOnly: $('.search .online-only').is(':checked') || (getActiveSection() === 'online'),
-			bannedOnly: getActiveSection() === 'banned'
+			onlineOnly: $('.search .online-only').is(':checked') || (activeSection === 'online'),
+			bannedOnly:  activeSection === 'banned',
+			flaggedOnly: activeSection === 'flagged'
 		}, function(err, data) {
 			if (err) {
 				return app.alertError(err.message);
@@ -167,8 +169,8 @@ define('forum/users', ['translator'], function(translator) {
 	}
 
 	function getActiveSection() {
-		var url = window.location.href,
-			parts = url.split('/');
+		var url = window.location.href;
+		var parts = url.split('/');
 		return parts[parts.length - 1];
 	}
 

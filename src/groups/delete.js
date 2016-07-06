@@ -39,7 +39,9 @@ module.exports = function(Groups) {
 						}, next);
 					});
 				}
-			], callback);
+			], function(err) {
+				callback(err);
+			});
 		});
 	};
 };

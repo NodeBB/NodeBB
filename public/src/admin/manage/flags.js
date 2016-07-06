@@ -1,11 +1,12 @@
 "use strict";
-/*global define, socket, app, admin, utils, bootbox, RELATIVE_PATH*/
+/*global define, socket, app, utils, bootbox, ajaxify*/
 
 define('admin/manage/flags', [
 	'forum/infinitescroll',
 	'admin/modules/selectable',
-	'autocomplete'
-], function(infinitescroll, selectable, autocomplete) {
+	'autocomplete',
+	'Chart'
+], function(infinitescroll, selectable, autocomplete, Chart) {
 
 	var	Flags = {};
 
@@ -20,6 +21,7 @@ define('admin/manage/flags', [
 		handleDismissAll();
 		handleDelete();
 		handleInfiniteScroll();
+		handleGraphs();
 	};
 
 	function handleDismiss() {
@@ -99,6 +101,43 @@ define('admin/manage/flags', [
 				}
 			});
 		});
+	}
+
+	function handleGraphs() {
+		var dailyCanvas = document.getElementById('flags:daily');
+		var dailyLabels = utils.getDaysArray().map(function(text, idx) {
+			return idx % 3 ? '' : text;
+		});
+
+		if (utils.isMobile()) {
+			Chart.defaults.global.showTooltips = false;
+		}
+		var data = {
+			'flags:daily': {
+				labels: dailyLabels,
+				datasets: [
+					{
+						label: "",
+						fillColor: "rgba(151,187,205,0.2)",
+						strokeColor: "rgba(151,187,205,1)",
+						pointColor: "rgba(151,187,205,1)",
+						pointStrokeColor: "#fff",
+						pointHighlightFill: "#fff",
+						pointHighlightStroke: "rgba(151,187,205,1)",
+						data: ajaxify.data.analytics
+					}
+				]
+			}
+		};
+
+
+
+		dailyCanvas.width = $(dailyCanvas).parent().width();
+		new Chart(dailyCanvas.getContext('2d')).Line(data['flags:daily'], {
+			responsive: true,
+			animation: false
+		});
+
 	}
 
 	return Flags;

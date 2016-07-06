@@ -111,17 +111,7 @@ SocketTopics.isModerator = function(socket, tid, callback) {
 };
 
 SocketTopics.getTopic = function (socket, tid, callback) {
-	async.waterfall([
-		function (next) {
-			apiController.getObjectByType(socket.uid, 'topic', tid, next);
-		},
-		function (topicData, next) {
-			if (parseInt(topicData.deleted, 10) === 1) {
-				return next(new Error('[[error:no-topic]]'));
-			}
-			next(null, topicData);
-		}
-	], callback);
+	apiController.getTopicData(tid, socket.uid, callback);
 };
 
 module.exports = SocketTopics;

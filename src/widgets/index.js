@@ -136,13 +136,21 @@ widgets.reset = function(callback) {
 		{ name: 'Draft Zone', template: 'global', location: 'sidebar' }
 	];
 
-	plugins.fireHook('filter:widgets.getAreas', defaultAreas, function(err, areas) {
+	async.parallel({
+		areas: function(next) {
+			plugins.fireHook('filter:widgets.getAreas', defaultAreas, next);
+		},
+		drafts: function(next) {
+			widgets.getArea('global', 'drafts', next);
+		}
+	}, function(err, results) {
 		if (err) {
 			return callback(err);
 		}
-		var drafts = [];
 
-		async.each(areas, function(area, next) {
+		var drafts = results.drafts || [];
+
+		async.each(results.areas, function(area, next) {
 			widgets.getArea(area.template, area.location, function(err, areaData) {
 				if (err) {
 					return next(err);

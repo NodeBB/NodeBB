@@ -8,6 +8,7 @@ var winston = require('winston');
 
 var db = require('../database');
 var user = require('../user');
+var posts = require('../posts');
 var notifications = require('../notifications');
 var privileges = require('../privileges');
 var meta = require('../meta');
@@ -194,6 +195,8 @@ module.exports = function(Topics) {
 					titleEscaped = title.replace(/%/g, '&#37;').replace(/,/g, '&#44;');
 				}
 
+				postData.content = posts.relativeToAbsolute(postData.content);
+
 				notifications.create({
 					bodyShort: '[[notifications:user_posted_to, ' + postData.user.username + ', ' + titleEscaped + ']]',
 					bodyLong: postData.content,
@@ -223,6 +226,7 @@ module.exports = function(Topics) {
 						if (err) {
 							return next(err);
 						}
+
 						if (data.userSettings.sendPostNotifications) {
 							emailer.send('notif_post', toUid, {
 								pid: postData.pid,

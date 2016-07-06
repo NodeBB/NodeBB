@@ -3,6 +3,7 @@
 
 var async = require('async');
 var db = require('../database');
+var posts = require('../posts');
 var plugins = require('../plugins');
 
 module.exports = function(User) {
@@ -52,29 +53,49 @@ module.exports = function(User) {
 		], callback);
 	};
 
-	User.ban = function(uid, callback) {
-		async.waterfall([
-			function (next) {
-				User.setUserField(uid, 'banned', 1, next);
-			},
-			function (next) {
-				db.sortedSetAdd('users:banned', Date.now(), uid, next);
-			},
-			function (next) {
-				plugins.fireHook('action:user.banned', {uid: uid});
-				next();
+	User.ban = function(uid, until, callback) {
+		// "until" (optional) is unix timestamp in milliseconds
+		if (!callback && typeof until === 'function') {
+			callback = until;
+			until = 0;
+		}
+
+		until = parseInt(until, 10);
+		if (isNaN(until)) {
+			return callback(new Error('[[error:ban-expiry-missing]]'));
+		}
+
+		var tasks = [
+			async.apply(User.setUserField, uid, 'banned', 1),
+			async.apply(db.sortedSetAdd, 'users:banned', Date.now(), uid),
+		];
+
+		if (until > 0 && Date.now() < until) {
+			tasks.push(async.apply(db.sortedSetAdd, 'users:banned:expire', until, uid));
+		} else {
+			until = 0;
+		}
+
+		async.series(tasks, function (err) {
+			if (err) {
+				return callback(err);
 			}
-		], callback);
+
+			plugins.fireHook('action:user.banned', {
+				uid: uid,
+				until: until > 0 ? until : undefined
+			});
+			callback();
+		});
 	};
 
 	User.unban = function(uid, callback) {
-		db.delete('uid:' + uid + ':flagged_by');
 		async.waterfall([
 			function (next) {
 				User.setUserField(uid, 'banned', 0, next);
 			},
 			function (next) {
-				db.sortedSetRemove('users:banned', uid, next);
+				db.sortedSetsRemove(['users:banned', 'users:banned:expire'], uid, next);
 			},
 			function (next) {
 				plugins.fireHook('action:user.unbanned', {uid: uid});
@@ -87,9 +108,9 @@ module.exports = function(User) {
 		if (!Array.isArray(uids) || !uids.length) {
 			return callback();
 		}
-		var keys = uids.map(function(uid) {
-			return 'uid:' + uid + ':flagged_by';
-		});
-		db.deleteAll(keys, callback);
+
+		async.eachSeries(uids, function(uid, next) {
+			posts.dismissUserFlags(uid, next);
+		}, callback);
 	};
 };

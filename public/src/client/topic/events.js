@@ -96,12 +96,14 @@ define('forum/topic/events', [
 		if (!data || !data.post) {
 			return;
 		}
-		var editedPostEl = components.get('post/content', data.post.pid),
-			editorEl = $('[data-pid="' + data.post.pid + '"] [component="post/editor"]'),
-			topicTitle = components.get('topic/title'),
-			breadCrumb = components.get('breadcrumb/current');
+		var editedPostEl = components.get('post/content', data.post.pid);
+		var editorEl = $('[data-pid="' + data.post.pid + '"] [component="post/editor"]');
+		var topicTitle = components.get('topic/title');
+		var navbarTitle = components.get('navbar/title').find('span');
+		var breadCrumb = components.get('breadcrumb/current');
 
 		if (topicTitle.length && data.topic.title && topicTitle.html() !== data.topic.title) {
+			ajaxify.data.title = data.topic.title;
 			var newUrl = 'topic/' + data.topic.slug + (window.location.search ? window.location.search : '');
 			history.replaceState({url: newUrl}, null, window.location.protocol + '//' + window.location.host + config.relative_path + '/' + newUrl);
 
@@ -110,6 +112,9 @@ define('forum/topic/events', [
 			});
 			breadCrumb.fadeOut(250, function() {
 				breadCrumb.html(data.topic.title).fadeIn(250);
+			});
+			navbarTitle.fadeOut(250, function() {
+				navbarTitle.html(data.topic.title).fadeIn(250);
 			});
 		}
 
@@ -121,19 +126,19 @@ define('forum/topic/events', [
 			posts.unloadImages(editedPostEl.parent());
 			posts.loadImages();
 			editedPostEl.fadeIn(250);
-			$(window).trigger('action:posts.edited', data);
-		});
 
-		var editData = {
-			editor: data.editor,
-			editedISO: utils.toISOString(data.post.edited)
-		};
+			var editData = {
+				editor: data.editor,
+				editedISO: utils.toISOString(data.post.edited)
+			};
 
-		templates.parse('partials/topic/post-editor', editData, function(html) {
-			translator.translate(html, function(translated) {
-				html = $(translated);
-				editorEl.replaceWith(html);
-				html.find('.timeago').timeago();
+			templates.parse('partials/topic/post-editor', editData, function(html) {
+				translator.translate(html, function(translated) {
+					html = $(translated);
+					editorEl.replaceWith(html);
+					html.find('.timeago').timeago();
+					$(window).trigger('action:posts.edited', data);
+				});
 			});
 		});
 

@@ -11,7 +11,6 @@ var url = require('url');
 var db = require('../database');
 var logger = require('../logger');
 var ratelimit = require('../middleware/ratelimit');
-var cls = require('../middleware/cls');
 
 (function(Sockets) {
 	var Namespaces = {};
@@ -30,7 +29,6 @@ var cls = require('../middleware/cls');
 		io.use(authorize);
 
 		io.on('connection', onConnection);
-		io.on('disconnect', onDisconnect);
 
 		io.listen(server, {
 			transports: nconf.get('socket.io:transports')
@@ -44,14 +42,10 @@ var cls = require('../middleware/cls');
 
 		logger.io_one(socket, socket.uid);
 
-		cls.socket(socket, null, 'connection', function () {
-			onConnect(socket);
-		});
+		onConnect(socket);
 
 		socket.on('*', function (payload) {
-			cls.socket(socket, payload, null, function () {
-				onMessage(socket, payload);
-			});
+			onMessage(socket, payload);
 		});
 	}
 
@@ -63,12 +57,6 @@ var cls = require('../middleware/cls');
 			socket.join('online_guests');
 		}
 	}
-
-	function onDisconnect(socket) {
-		cls.socket(socket, null, 'disconnect', function () {
-		});
-	}
-
 
 	function onMessage(socket, payload) {
 		if (!payload.data.length) {

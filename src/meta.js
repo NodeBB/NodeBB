@@ -61,14 +61,14 @@ var async = require('async'),
 				plugins.fireHook('static:app.reload', {}, next);
 			},
 			async.apply(plugins.clearRequireCache),
-			async.apply(plugins.reload),
-			async.apply(plugins.reloadRoutes),
 			async.apply(Meta.css.minify),
 			async.apply(Meta.js.minify, 'nodebb.min.js'),
 			async.apply(Meta.js.minify, 'acp.min.js'),
 			async.apply(Meta.sounds.init),
 			async.apply(languages.init),
 			async.apply(Meta.templates.compile),
+			async.apply(plugins.reload),
+			async.apply(plugins.reloadRoutes),
 			async.apply(auth.reloadRoutes),
 			function(next) {
 				Meta.config['cache-buster'] = utils.generateUUID();

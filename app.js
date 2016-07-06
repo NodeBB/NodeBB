@@ -22,7 +22,6 @@
 
 var nconf = require('nconf');
 nconf.argv().env('__');
-require('continuation-local-storage');
 
 var url = require('url'),
 	async = require('async'),
@@ -52,7 +51,7 @@ if (nconf.get('config')) {
 	configFile = path.resolve(__dirname, nconf.get('config'));
 }
 
-var configExists = file.existsSync(configFile);
+var configExists = file.existsSync(configFile) || (nconf.get('url') && nconf.get('secret') && nconf.get('database'));
 
 loadConfig();
 
@@ -184,6 +183,7 @@ function start() {
 			if (nconf.get('dep-check') === undefined || nconf.get('dep-check') !== false) {
 				require('./src/meta').dependencies.check(next);
 			} else {
+				winston.warn('[init] Dependency checking skipped!');
 				setImmediate(next);
 			}
 		},
