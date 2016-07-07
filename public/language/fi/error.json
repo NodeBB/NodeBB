@@ -118,5 +118,6 @@
     "no-session-found": "No login session found!",
     "not-in-room": "Käyttäjä ei ole huoneessa",
     "no-users-in-room": "Ei käyttäjiä tässä huoneessa",
-    "cant-kick-self": "You can't kick yourself from the group"
+    "cant-kick-self": "You can't kick yourself from the group",
+    "no-users-selected": "No user(s) selected"
 }

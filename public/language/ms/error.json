@@ -118,5 +118,6 @@
     "no-session-found": "Tiada sesyen log masuk dijumpai",
     "not-in-room": "Pengguna tiada dalam bilik",
     "no-users-in-room": "Tiada pengguna dalam bilik ini",
-    "cant-kick-self": "You can't kick yourself from the group"
+    "cant-kick-self": "You can't kick yourself from the group",
+    "no-users-selected": "No user(s) selected"
 }

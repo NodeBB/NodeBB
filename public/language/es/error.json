@@ -118,5 +118,6 @@
     "no-session-found": "¡No se ha encontrado ningún inicio de sesión!",
     "not-in-room": "El usuario no está en la sala",
     "no-users-in-room": "No hay usuarios en esta sala",
-    "cant-kick-self": "No te puedes expulsar a ti mismo del grupo"
+    "cant-kick-self": "No te puedes expulsar a ti mismo del grupo",
+    "no-users-selected": "No user(s) selected"
 }

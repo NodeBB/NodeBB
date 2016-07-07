@@ -12,6 +12,7 @@
     "users/sort-posts": "가장 많은 게시물을 작성한 사용자",
     "users/sort-reputation": "가장 높은 인지도를 가진 사용자",
     "users/banned": "차단된 유저",
+    "users/most-flags": "Most flagged users",
     "users/search": "사용자 검색",
     "notifications": "알림",
     "tags": "태그",

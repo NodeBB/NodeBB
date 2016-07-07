@@ -118,5 +118,6 @@
     "no-session-found": "Pas de session de connexion trouvé!",
     "not-in-room": "L'utilisateur n'est pas dans cette salle",
     "no-users-in-room": "Aucun utilisateur dans cette salle",
-    "cant-kick-self": "Vous ne pouvez pas vous exclure vous-même du groupe"
+    "cant-kick-self": "Vous ne pouvez pas vous exclure vous-même du groupe",
+    "no-users-selected": "No user(s) selected"
 }

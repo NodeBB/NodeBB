@@ -12,6 +12,7 @@
     "users/sort-posts": "Пользователи по кол-ву сообщений",
     "users/sort-reputation": "Пользователи по кол-ву репутации",
     "users/banned": "Заблокированные пользователи",
+    "users/most-flags": "Most flagged users",
     "users/search": "Поиск пользователей",
     "notifications": "Уведомления",
     "tags": "Теги",

@@ -118,5 +118,6 @@
     "no-session-found": "Сессия входа не найдена!",
     "not-in-room": "Пользователь не в комнате",
     "no-users-in-room": "В этой комнате нет пользователей",
-    "cant-kick-self": "Вы не можете удалить себя сами из группы."
+    "cant-kick-self": "Вы не можете удалить себя сами из группы.",
+    "no-users-selected": "No user(s) selected"
 }

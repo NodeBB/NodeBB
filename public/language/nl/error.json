@@ -118,5 +118,6 @@
     "no-session-found": "Geen login sessie gevonden!",
     "not-in-room": "Gebruiker niet in de chat",
     "no-users-in-room": "Er zijn geen gebruikers in deze chat",
-    "cant-kick-self": "Je kunt jezelf niet uit een groep schoppen"
+    "cant-kick-self": "Je kunt jezelf niet uit een groep schoppen",
+    "no-users-selected": "No user(s) selected"
 }

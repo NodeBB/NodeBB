@@ -118,5 +118,6 @@
     "no-session-found": "هیچ سشن ورودی یافت نشد!",
     "not-in-room": "هیچ کاربری در این گفتگو نیست",
     "no-users-in-room": "هیچ کاربری در این گفتگو نیست",
-    "cant-kick-self": "شما نمی توانید خودتان را از گروه کیک کنید"
+    "cant-kick-self": "شما نمی توانید خودتان را از گروه کیک کنید",
+    "no-users-selected": "No user(s) selected"
 }

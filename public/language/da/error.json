@@ -118,5 +118,6 @@
     "no-session-found": "Ingen login session kan findes!",
     "not-in-room": "Bruger er ikke i rummet",
     "no-users-in-room": "Ingen brugere i rummet",
-    "cant-kick-self": "You can't kick yourself from the group"
+    "cant-kick-self": "You can't kick yourself from the group",
+    "no-users-selected": "No user(s) selected"
 }

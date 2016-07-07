@@ -118,5 +118,6 @@
     "no-session-found": "No login session found!",
     "not-in-room": "User not in room",
     "no-users-in-room": "No users in this room",
-    "cant-kick-self": "Nemůžete vyhodit sami sebe ze kupiny"
+    "cant-kick-self": "Nemůžete vyhodit sami sebe ze kupiny",
+    "no-users-selected": "No user(s) selected"
 }

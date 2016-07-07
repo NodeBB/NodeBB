@@ -118,5 +118,6 @@
     "no-session-found": "לא נמצאו סשני התחברות!",
     "not-in-room": "משתמש זה לא בצ'אט",
     "no-users-in-room": "אין משתמש בחדר הזה",
-    "cant-kick-self": "You can't kick yourself from the group"
+    "cant-kick-self": "You can't kick yourself from the group",
+    "no-users-selected": "No user(s) selected"
 }

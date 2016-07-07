@@ -118,5 +118,6 @@
     "no-session-found": "Ingen login-session hittades!",
     "not-in-room": "Användaren finns inte i rummet",
     "no-users-in-room": "Inga användare i det här rummet",
-    "cant-kick-self": "Du kan inte sparka ut dig själv från gruppen"
+    "cant-kick-self": "Du kan inte sparka ut dig själv från gruppen",
+    "no-users-selected": "No user(s) selected"
 }

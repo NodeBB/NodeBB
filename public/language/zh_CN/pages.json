@@ -12,6 +12,7 @@
     "users/sort-posts": "最多发帖的会员",
     "users/sort-reputation": "最多积分的会员",
     "users/banned": "被封禁的用户",
+    "users/most-flags": "被举报次数最多的用户",
     "users/search": "会员搜索",
     "notifications": "提醒",
     "tags": "话题",

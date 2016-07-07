@@ -118,5 +118,6 @@
     "no-session-found": "Nie znaleziono sesji logowania",
     "not-in-room": "Użytkownik nie jest w pokoju",
     "no-users-in-room": "Brak użytkowników w pokoju",
-    "cant-kick-self": "Nie możesz wyrzucić samego siebie z grupy"
+    "cant-kick-self": "Nie możesz wyrzucić samego siebie z grupy",
+    "no-users-selected": "No user(s) selected"
 }
