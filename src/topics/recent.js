@@ -66,8 +66,14 @@ module.exports = function(Topics) {
 		callback = callback || function() {};
 		if (plugins.hasListeners('filter:topics.updateRecent')) {
 			plugins.fireHook('filter:topics.updateRecent', {tid: tid, timestamp: timestamp}, function(err, data) {
-				if (data && data.tid && data.timestamp) db.sortedSetAdd('topics:recent', data.timestamp, data.tid);
-				callback(err);
+				if (err) {
+					return callback(err);
+				}
+				if (data && data.tid && data.timestamp) {
+					db.sortedSetAdd('topics:recent', data.timestamp, data.tid, callback);
+				} else {
+					callback();
+				}
 			});
 		} else {
 			db.sortedSetAdd('topics:recent', timestamp, tid, callback);
