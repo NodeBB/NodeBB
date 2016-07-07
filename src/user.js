@@ -33,6 +33,7 @@ var utils = require('../public/src/utils');
 	require('./user/approval')(User);
 	require('./user/invite')(User);
 	require('./user/password')(User);
+	require('./user/info')(User);
 
 	User.updateLastOnlineTime = function(uid, callback) {
 		callback = callback || function() {};

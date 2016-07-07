@@ -22,9 +22,7 @@ module.exports = function(User) {
 				return callback(err);
 			}
 
-			callback(null, ips.map(function(ip) {
-				return {ip:ip};
-			}));
+			callback(null, ips);
 		});
 	};
 
@@ -68,6 +66,7 @@ module.exports = function(User) {
 		var tasks = [
 			async.apply(User.setUserField, uid, 'banned', 1),
 			async.apply(db.sortedSetAdd, 'users:banned', Date.now(), uid),
+			async.apply(db.sortedSetAdd, 'uid:' + uid + ':bans', Date.now(), until)
 		];
 
 		if (until > 0 && Date.now() < until) {

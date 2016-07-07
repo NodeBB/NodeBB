@@ -5,7 +5,7 @@ var setupPageRoute = helpers.setupPageRoute;
 
 module.exports = function (app, middleware, controllers) {
 	var middlewares = [middleware.checkGlobalPrivacySettings];
-	var accountMiddlewares = [middleware.checkGlobalPrivacySettings, middleware.checkAccountPermissions];
+	var accountMiddlewares = [middleware.checkGlobalPrivacySettings, middleware.checkAccountPermissions, middleware.exposeUid];
 
 	setupPageRoute(app, '/uid/:uid/:section?', middleware, [], middleware.redirectUidToUserslug);
 
@@ -25,6 +25,7 @@ module.exports = function (app, middleware, controllers) {
 	setupPageRoute(app, '/user/:userslug/edit/username', middleware, accountMiddlewares, controllers.accounts.edit.username);
 	setupPageRoute(app, '/user/:userslug/edit/email', middleware, accountMiddlewares, controllers.accounts.edit.email);
 	setupPageRoute(app, '/user/:userslug/edit/password', middleware, accountMiddlewares, controllers.accounts.edit.password);
+	setupPageRoute(app, '/user/:userslug/info', middleware, accountMiddlewares, controllers.accounts.info.get);
 	setupPageRoute(app, '/user/:userslug/settings', middleware, accountMiddlewares, controllers.accounts.settings.get);
 
 	app.delete('/user/:userslug/session/:uuid', accountMiddlewares, controllers.accounts.session.revoke);
