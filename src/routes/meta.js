@@ -1,11 +1,13 @@
 "use strict";
 
-var meta = require('../meta'),
-	middleware = require('../middleware');
+var path = require('path');
+
+var meta = require('../meta');
 
 
-function sendMinifiedJS(req, res, next) {
-	var cache = meta.js.target['nodebb.min.js'] ? meta.js.target['nodebb.min.js'].cache : '';
+function sendMinifiedJS(req, res) {
+	var target = path.basename(req.path);
+	var cache = meta.js.target[target] ? meta.js.target[target].cache : '';
 	res.type('text/javascript').send(cache);
 }
 
@@ -19,11 +21,11 @@ function sendMinifiedJS(req, res, next) {
 // 	}
 // };
 
-function sendStylesheet(req, res, next) {
+function sendStylesheet(req, res) {
 	res.type('text/css').status(200).send(meta.css.cache);
 }
 
-function sendACPStylesheet(req, res, next) {
+function sendACPStylesheet(req, res) {
 	res.type('text/css').status(200).send(meta.css.acpCache);
 }
 
@@ -31,6 +33,7 @@ module.exports = function(app, middleware, controllers) {
 	app.get('/stylesheet.css', middleware.addExpiresHeaders, sendStylesheet);
 	app.get('/admin.css', middleware.addExpiresHeaders, sendACPStylesheet);
 	app.get('/nodebb.min.js', middleware.addExpiresHeaders, sendMinifiedJS);
+	app.get('/acp.min.js', middleware.addExpiresHeaders, sendMinifiedJS);
 	// app.get('/nodebb.min.js.map', middleware.addExpiresHeaders, sendJSSourceMap);
 	app.get('/sitemap.xml', controllers.sitemap.render);
 	app.get('/sitemap/pages.xml', controllers.sitemap.getPages);
