@@ -4,6 +4,7 @@
 
 var async = require('async');
 var db = require('../database');
+var plugins = require('../plugins');
 
 module.exports = function(Topics) {
 	var terms = {
@@ -63,6 +64,13 @@ module.exports = function(Topics) {
 
 	Topics.updateRecent = function(tid, timestamp, callback) {
 		callback = callback || function() {};
-		db.sortedSetAdd('topics:recent', timestamp, tid, callback);
+		if (plugins.hasListeners('filter:topics.updateRecent')) {
+			plugins.fireHook('filter:topics.updateRecent', {tid: tid, timestamp: timestamp}, function(err, data) {
+				if (data && data.tid && data.timestamp) db.sortedSetAdd('topics:recent', data.timestamp, data.tid);
+				callback(err);
+			});
+		} else {
+			db.sortedSetAdd('topics:recent', timestamp, tid, callback);
+		}
 	};
 };
