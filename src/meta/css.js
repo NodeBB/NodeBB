@@ -196,7 +196,7 @@ module.exports = function(Meta) {
 				Meta.css[destination] = result.css;
 
 				// Save the compiled CSS in public/ so things like nginx can serve it
-				if (nconf.get('isPrimary') === 'true') {
+				if (nconf.get('isPrimary') === 'true' && (nconf.get('local-assets') === undefined || nconf.get('local-assets') !== false)) {
 					return Meta.css.commitToFile(destination, function() {
 						if (typeof callback === 'function') {
 							callback(null, result.css);

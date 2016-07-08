@@ -154,6 +154,12 @@ module.exports = function(Meta) {
 				winston.verbose('[meta/js] ' + target + ' minification complete');
 				minifier.kill();
 
+				function done() {
+					if (typeof callback === 'function') {
+						callback();
+					}
+				}
+
 				if (process.send && Meta.js.target['nodebb.min.js'] && Meta.js.target['acp.min.js']) {
 					process.send({
 						action: 'js-propagate',
@@ -161,11 +167,12 @@ module.exports = function(Meta) {
 					});
 				}
 
-				Meta.js.commitToFile(target, function() {					
-					if (typeof callback === 'function') {
-						callback();
-					}
-				});
+				if (nconf.get('local-assets') === undefined || nconf.get('local-assets') !== false) {
+					return Meta.js.commitToFile(target, done);
+				} else {
+					emitter.emit('meta:js.compiled');
+					return done();
+				}
 
 				break;
 			case 'error':

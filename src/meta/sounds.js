@@ -83,7 +83,9 @@ module.exports = function(Meta) {
 				fs.readdir(path.join(__dirname, '../../public/uploads/sounds'), next);
 			},
 			function(uploaded, next) {
-				uploaded = uploaded.map(function(filename) {
+				uploaded = uploaded.filter(function(filename) {
+					return !filename.startsWith('.');
+				}).map(function(filename) {
 					return path.join(__dirname, '../../public/uploads/sounds', filename);
 				});
 
@@ -91,6 +93,21 @@ module.exports = function(Meta) {
 					if (err) {
 						winston.error('Could not initialise sound files:' + err.message);
 						return;
+					}
+
+					if (nconf.get('local-assets') === false) {
+						// Don't regenerate the public/sounds/ directory. Instead, create a mapping for the router to use
+						Meta.sounds._filePathHash = filePaths.reduce(function(hash, filePath) {
+							hash[path.basename(filePath)] = filePath;
+							return hash;
+						}, {});
+
+						winston.verbose('[sounds] Sounds OK');
+						if (typeof next === 'function') {
+							return next();
+						} else {
+							return;
+						}
 					}
 
 					// Clear the sounds directory
@@ -121,8 +138,8 @@ module.exports = function(Meta) {
 								winston.error('[sounds] Could not initialise sounds: ' + err.message);
 							}
 
-							if (typeof callback === 'function') {
-								callback();
+							if (typeof next === 'function') {
+								next();
 							}
 						});
 					});

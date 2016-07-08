@@ -1,6 +1,7 @@
 "use strict";
 
 var path = require('path');
+var nconf = require('nconf');
 
 var meta = require('../meta');
 
@@ -29,6 +30,16 @@ function sendACPStylesheet(req, res) {
 	res.type('text/css').status(200).send(meta.css.acpCache);
 }
 
+function sendSoundFile(req, res, next) {
+	var resolved = meta.sounds._filePathHash[path.basename(req.path)];
+
+	if (resolved) {
+		res.status(200).sendFile(resolved);
+	} else {
+		next();
+	}
+}
+
 module.exports = function(app, middleware, controllers) {
 	app.get('/stylesheet.css', middleware.addExpiresHeaders, sendStylesheet);
 	app.get('/admin.css', middleware.addExpiresHeaders, sendACPStylesheet);
@@ -42,4 +53,8 @@ module.exports = function(app, middleware, controllers) {
 	app.get('/robots.txt', controllers.robots);
 	app.get('/manifest.json', controllers.manifest);
 	app.get('/css/previews/:theme', controllers.admin.themes.get);
+
+	if (nconf.get('local-assets') === false) {
+		app.get('/sounds/*', middleware.addExpiresHeaders, sendSoundFile);
+	}
 };
