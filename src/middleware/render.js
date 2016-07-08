@@ -81,7 +81,7 @@ module.exports = function(middleware) {
 							}
 							str = template + str;
 							var language = res.locals.config ? res.locals.config.userLang || 'en_GB' : 'en_GB';
-							language = validator.escape(req.query.lang) || language;
+							language = req.query.lang ? validator.escape(req.query.lang) : language;
 							translator.translate(str, language, function(translated) {
 								translated = translator.unescape(translated);
 								translated = translated + '<script id="ajaxify-data" type="application/json">' + ajaxifyData + '</script>';

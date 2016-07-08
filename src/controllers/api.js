@@ -51,7 +51,7 @@ apiController.getConfig = function(req, res, next) {
 	config['theme:id'] = meta.config['theme:id'];
 	config['theme:src'] = meta.config['theme:src'];
 	config.defaultLang = meta.config.defaultLang || 'en_GB';
-	config.userLang = validator.escape(req.query.lang) || config.defaultLang;
+	config.userLang = req.query.lang ? validator.escape(req.query.lang) : config.defaultLang;
 	config.loggedIn = !!req.user;
 	config['cache-buster'] = meta.config['cache-buster'] || '';
 	config.requireEmailConfirmation = parseInt(meta.config.requireEmailConfirmation, 10) === 1;
@@ -74,7 +74,7 @@ apiController.getConfig = function(req, res, next) {
 				config.topicsPerPage = settings.topicsPerPage;
 				config.postsPerPage = settings.postsPerPage;
 				config.notificationSounds = settings.notificationSounds;
-				config.userLang = validator.escape(req.query.lang) || settings.userLang || config.defaultLang;
+				config.userLang = (req.query.lang ? validator.escape(req.query.lang) : null) || settings.userLang || config.defaultLang;
 				config.openOutgoingLinksInNewTab = settings.openOutgoingLinksInNewTab;
 				config.topicPostSort = settings.topicPostSort || config.topicPostSort;
 				config.categoryTopicSort = settings.categoryTopicSort || config.categoryTopicSort;
