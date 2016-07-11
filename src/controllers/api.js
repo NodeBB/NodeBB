@@ -12,6 +12,7 @@ var categories = require('../categories');
 var privileges = require('../privileges');
 var plugins = require('../plugins');
 var widgets = require('../widgets');
+var accountHelpers = require('../controllers/accounts/helpers');
 
 var apiController = {};
 
@@ -215,6 +216,22 @@ apiController.getObject = function(req, res, next) {
 		}
 
 		res.json(result);
+	});
+};
+
+apiController.getCurrentUser = function(req, res, next) {
+	async.waterfall([
+		function(next) {
+			user.getUserField(req.uid, 'userslug', next);
+		},
+		function(userslug, next) {
+			accountHelpers.getUserDataByUserSlug(userslug, req.uid, next);
+		}
+	], function(err, userData) {
+		if (err) {
+			return next(err);
+		}
+		res.json(userData);
 	});
 };
 
