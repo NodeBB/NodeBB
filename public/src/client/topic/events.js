@@ -126,19 +126,19 @@ define('forum/topic/events', [
 			posts.unloadImages(editedPostEl.parent());
 			posts.loadImages();
 			editedPostEl.fadeIn(250);
-			$(window).trigger('action:posts.edited', data);
-		});
 
-		var editData = {
-			editor: data.editor,
-			editedISO: utils.toISOString(data.post.edited)
-		};
+			var editData = {
+				editor: data.editor,
+				editedISO: utils.toISOString(data.post.edited)
+			};
 
-		templates.parse('partials/topic/post-editor', editData, function(html) {
-			translator.translate(html, function(translated) {
-				html = $(translated);
-				editorEl.replaceWith(html);
-				html.find('.timeago').timeago();
+			templates.parse('partials/topic/post-editor', editData, function(html) {
+				translator.translate(html, function(translated) {
+					html = $(translated);
+					editorEl.replaceWith(html);
+					html.find('.timeago').timeago();
+					$(window).trigger('action:posts.edited', data);
+				});
 			});
 		});
 

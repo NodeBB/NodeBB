@@ -30,7 +30,6 @@
 		languages[language].loading = languages[language].loading || {};
 
 		if (languages[language].loaded[filename]) {
-			var existing = languages[language].loaded[filename];
 			for (var t in translations) {
 				if (translations.hasOwnProperty(t)) {
 					languages[language].loaded[filename][t] = translations[t];
@@ -304,7 +303,7 @@
 					data = {};
 				}
 				callback(data);
-			}
+			};
 
 			if (err) {
 				if (err.code === 'ENOENT' && plugins.customLanguageFallbacks.hasOwnProperty(filename)) {
@@ -317,7 +316,7 @@
 						}
 
 						onData(data);
-					})
+					});
 				} else {
 					winston.error('[translator] Could not load `' + filename + '`: ' + err.message + '. Skipping...');
 					return callback({});
@@ -342,7 +341,7 @@
 				}
 				_translator.translate.apply(_translator, arguments);
 			}
-		}
+		};
 	}
 })(
 	typeof exports === 'object' ? exports :

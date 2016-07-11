@@ -12,6 +12,7 @@
     "users/sort-posts": "ほとんどの投稿を持つユーザー",
     "users/sort-reputation": "一番評価の高いユーザー",
     "users/banned": "Banned Users",
+    "users/most-flags": "Most flagged users",
     "users/search": "ユーザーを検索",
     "notifications": "通知",
     "tags": "Tags",

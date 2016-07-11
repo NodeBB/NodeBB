@@ -118,6 +118,7 @@ module.exports = function(Posts) {
 			var cids = topics.map(function(topic) {
 				if (topic) {
 					topic.title = validator.escape(topic.title);
+					topic.deleted = parseInt(topic.deleted, 10) === 1;
 				}
 				return topic && topic.cid;
 			}).filter(function(topic, index, array) {

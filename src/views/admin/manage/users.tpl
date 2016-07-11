@@ -23,12 +23,13 @@
 							<li><a href="#" class="send-validation-email"><i class="fa fa-fw fa-mail-forward"></i> Send Validation Email</a></li>
 							<li><a href="#" class="password-reset-email"><i class="fa fa-fw fa-key"></i> Send Password Reset Email</a></li>
 							<li class="divider"></li>
-							<li><a href="#" class="ban-user"><i class="fa fa-fw fa-gavel"></i> Ban User</a></li>
-							<li><a href="#" class="unban-user"><i class="fa fa-fw fa-comment-o"></i> Unban User</a></li>
+							<li><a href="#" class="ban-user"><i class="fa fa-fw fa-gavel"></i> Ban User(s)</a></li>
+							<li><a href="#" class="ban-user-temporary"><i class="fa fa-fw fa-clock-o"></i> Ban User(s) Temporarily</a></li>
+							<li><a href="#" class="unban-user"><i class="fa fa-fw fa-comment-o"></i> Unban User(s)</a></li>
 							<li><a href="#" class="reset-lockout"><i class="fa fa-fw fa-unlock"></i> Reset Lockout</a></li>
 							<li><a href="#" class="reset-flags"><i class="fa fa-fw fa-flag"></i> Reset Flags</a></li>
 							<li class="divider"></li>
-							<li><a href="#" class="delete-user"><i class="fa fa-fw fa-trash-o"></i> Delete User</a></li>
+							<li><a href="#" class="delete-user"><i class="fa fa-fw fa-trash-o"></i> Delete User(s)</a></li>
 						</ul>
 					</div>
 				</ul>
@@ -71,7 +72,7 @@
 								<!-- ENDIF !users.email:confirmed -->
 								<!-- ENDIF config.requireEmailConfirmation -->
 								<span class="administrator label label-primary <!-- IF !users.administrator -->hide<!-- ENDIF !users.administrator -->">Admin</span>
-								<span class="ban label label-danger <!-- IF !users.banned -->hide<!-- ENDIF !users.banned -->">Banned</span>
+								<span class="ban label label-danger <!-- IF !users.banned -->hide<!-- ENDIF !users.banned -->">Banned<!-- IF users.banned_until --> <i class="fa fa-clock-o" title="Banned until {../banned_until_readable}"></i><!-- ENDIF users.banned_until --></span>
 							</div>
 						</div>
 

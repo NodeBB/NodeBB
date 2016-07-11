@@ -161,11 +161,18 @@ module.exports = function(Meta) {
 					});
 				}
 
-				Meta.js.commitToFile(target, function() {					
+				if (nconf.get('local-assets') === undefined || nconf.get('local-assets') !== false) {
+					return Meta.js.commitToFile(target, function() {
+						if (typeof callback === 'function') {
+							callback();
+						}
+					});
+				} else {
+					emitter.emit('meta:js.compiled');
 					if (typeof callback === 'function') {
-						callback();
+						return callback();
 					}
-				});
+				}
 
 				break;
 			case 'error':

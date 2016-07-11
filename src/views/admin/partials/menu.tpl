@@ -107,11 +107,11 @@
 <main id="panel">
 	<nav class="header" id="header">
 		<div class="pull-left">
-			<button id="mobile-menu">
+			<div id="mobile-menu">
 				<div class="bar"></div>
 				<div class="bar"></div>
 				<div class="bar"></div>
-			</button>
+			</div>
 			<h1 id="main-page-title"></h1>
 		</div>
 

@@ -47,25 +47,59 @@ define('admin/manage/users', ['admin/modules/selectable'], function(selectable) 
 		$('.ban-user').on('click', function() {
 			var uids = getSelectedUids();
 			if (!uids.length) {
-				return false;
+				app.alertError('[[error:no-users-selected]]');
+				return false;	// specifically to keep the menu open
 			}
 
-			bootbox.confirm('Do you really want to ban?', function(confirm) {
+			bootbox.confirm('Do you really want to ban ' + (uids.length > 1 ? 'these users' : 'this user') + ' <strong>permanently</strong>?', function(confirm) {
 				if (confirm) {
-					socket.emit('user.banUsers', uids, done('User(s) banned!', '.ban', true));
+					socket.emit('user.banUsers', { uids: uids }, done('User(s) banned!', '.ban', true));
 				}
 			});
-			return false;
+		});
+
+		$('.ban-user-temporary').on('click', function() {
+			var uids = getSelectedUids();
+			if (!uids.length) {
+				app.alertError('[[error:no-users-selected]]');
+				return false;	// specifically to keep the menu open
+			}
+
+			templates.parse('admin/partials/temporary-ban', {}, function(html) {
+				bootbox.dialog({
+					className: 'ban-modal',
+					title: '[[user:ban_account]]',
+					message: html,
+					show: true,
+					buttons: {
+						close: {
+							label: '[[global:close]]',
+							className: 'btn-link'
+						},
+						submit: {
+							label: 'Ban ' + uids.length + (uids.length > 1 ? ' users' : ' user'),
+							callback: function() {
+								var formData = $('.ban-modal form').serializeArray().reduce(function(data, cur) {
+									data[cur.name] = cur.value;
+									return data;
+								}, {});
+								var until = Date.now() + formData.length * 1000*60*60 * (parseInt(formData.unit, 10) ? 24 : 1);
+								socket.emit('user.banUsers', { uids: uids, until: until }, done('User(s) banned!', '.ban', true));
+							}
+						}
+					}
+				});
+			});
 		});
 
 		$('.unban-user').on('click', function() {
 			var uids = getSelectedUids();
 			if (!uids.length) {
-				return;
+				app.alertError('[[error:no-users-selected]]');
+				return false;	// specifically to keep the menu open
 			}
 
 			socket.emit('user.unbanUsers', uids, done('User(s) unbanned!', '.ban', false));
-			return false;
 		});
 
 		$('.reset-lockout').on('click', function() {
@@ -75,7 +109,6 @@ define('admin/manage/users', ['admin/modules/selectable'], function(selectable) 
 			}
 
 			socket.emit('admin.user.resetLockouts', uids, done('Lockout(s) reset!'));
-			return false;
 		});
 
 		$('.reset-flags').on('click', function() {
@@ -85,7 +118,6 @@ define('admin/manage/users', ['admin/modules/selectable'], function(selectable) 
 			}
 
 			socket.emit('admin.user.resetFlags', uids, done('Flags(s) reset!'));
-			return false;
 		});
 
 		$('.admin-user').on('click', function() {
@@ -99,7 +131,6 @@ define('admin/manage/users', ['admin/modules/selectable'], function(selectable) 
 			} else {
 				socket.emit('admin.user.makeAdmins', uids, done('User(s) are now administrators.', '.administrator', true));
 			}
-			return false;
 		});
 
 		$('.remove-admin-user').on('click', function() {
@@ -117,7 +148,6 @@ define('admin/manage/users', ['admin/modules/selectable'], function(selectable) 
 					}
 				});
 			}
-			return false;
 		});
 
 		$('.validate-email').on('click', function() {
@@ -131,7 +161,6 @@ define('admin/manage/users', ['admin/modules/selectable'], function(selectable) 
 					socket.emit('admin.user.validateEmail', uids, done('Emails validated', '.notvalidated', false));
 				}
 			});
-			return false;
 		});
 
 		$('.send-validation-email').on('click', function() {
@@ -158,7 +187,6 @@ define('admin/manage/users', ['admin/modules/selectable'], function(selectable) 
 					socket.emit('admin.user.sendPasswordResetEmail', uids, done('Emails sent'));
 				}
 			});
-			return false;
 		});
 
 		$('.delete-user').on('click', function() {
@@ -180,7 +208,6 @@ define('admin/manage/users', ['admin/modules/selectable'], function(selectable) 
 					});
 				}
 			});
-			return false;
 		});
 
 		function handleUserCreate() {

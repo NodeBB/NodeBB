@@ -12,6 +12,7 @@
     "users/sort-posts": "最多張貼的使用者",
     "users/sort-reputation": "最多聲譽的使用者",
     "users/banned": "已封鎖用戶",
+    "users/most-flags": "Most flagged users",
     "users/search": "用戶搜尋",
     "notifications": "新訊息通知",
     "tags": "標籤",

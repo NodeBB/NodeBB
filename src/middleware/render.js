@@ -1,6 +1,7 @@
 'use strict';
 
 var nconf = require('nconf');
+var validator = require('validator');
 
 var plugins = require('../plugins');
 var translator = require('../../public/src/modules/translator');
@@ -38,6 +39,7 @@ module.exports = function(middleware) {
 				options.relative_path = nconf.get('relative_path');
 				options.template = {name: template};
 				options.template[template] = true;
+				options.url = (req.baseUrl + req.path).replace(/^\/api/, '');
 				options.bodyClass = buildBodyClass(req);
 
 				res.locals.template = template;
@@ -79,7 +81,7 @@ module.exports = function(middleware) {
 							}
 							str = template + str;
 							var language = res.locals.config ? res.locals.config.userLang || 'en_GB' : 'en_GB';
-							language = req.query.lang || language;
+							language = req.query.lang ? validator.escape(req.query.lang) : language;
 							translator.translate(str, language, function(translated) {
 								translated = translator.unescape(translated);
 								translated = translated + '<script id="ajaxify-data" type="application/json">' + ajaxifyData + '</script>';

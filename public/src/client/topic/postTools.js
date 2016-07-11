@@ -58,6 +58,8 @@ define('forum/topic/postTools', ['share', 'navigator', 'components', 'translator
 		postEl.find('[component="post/delete"]').toggleClass('hidden', isDeleted);
 		postEl.find('[component="post/restore"]').toggleClass('hidden', !isDeleted);
 		postEl.find('[component="post/purge"]').toggleClass('hidden', !isDeleted);
+
+		postEl.find('.dropdown-menu').html('');
 	};
 
 	PostTools.updatePostCount = function(postCount) {

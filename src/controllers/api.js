@@ -12,6 +12,8 @@ var categories = require('../categories');
 var privileges = require('../privileges');
 var plugins = require('../plugins');
 var widgets = require('../widgets');
+var helpers = require('../controllers/helpers');
+var accountHelpers = require('../controllers/accounts/helpers');
 
 var apiController = {};
 
@@ -51,7 +53,7 @@ apiController.getConfig = function(req, res, next) {
 	config['theme:id'] = meta.config['theme:id'];
 	config['theme:src'] = meta.config['theme:src'];
 	config.defaultLang = meta.config.defaultLang || 'en_GB';
-	config.userLang = req.query.lang || config.defaultLang;
+	config.userLang = req.query.lang ? validator.escape(req.query.lang) : config.defaultLang;
 	config.loggedIn = !!req.user;
 	config['cache-buster'] = meta.config['cache-buster'] || '';
 	config.requireEmailConfirmation = parseInt(meta.config.requireEmailConfirmation, 10) === 1;
@@ -74,7 +76,7 @@ apiController.getConfig = function(req, res, next) {
 				config.topicsPerPage = settings.topicsPerPage;
 				config.postsPerPage = settings.postsPerPage;
 				config.notificationSounds = settings.notificationSounds;
-				config.userLang = req.query.lang || settings.userLang || config.defaultLang;
+				config.userLang = (req.query.lang ? validator.escape(req.query.lang) : null) || settings.userLang || config.defaultLang;
 				config.openOutgoingLinksInNewTab = settings.openOutgoingLinksInNewTab;
 				config.topicPostSort = settings.topicPostSort || config.topicPostSort;
 				config.categoryTopicSort = settings.categoryTopicSort || config.categoryTopicSort;
@@ -215,6 +217,25 @@ apiController.getObject = function(req, res, next) {
 		}
 
 		res.json(result);
+	});
+};
+
+apiController.getCurrentUser = function(req, res, next) {
+	if (!req.uid) {
+		return helpers.notAllowed(req, res);
+	}
+	async.waterfall([
+		function(next) {
+			user.getUserField(req.uid, 'userslug', next);
+		},
+		function(userslug, next) {
+			accountHelpers.getUserDataByUserSlug(userslug, req.uid, next);
+		}
+	], function(err, userData) {
+		if (err) {
+			return next(err);
+		}
+		res.json(userData);
 	});
 };
 
