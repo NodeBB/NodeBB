@@ -3,8 +3,8 @@
 var nconf = require('nconf');
 var async = require('async');
 var validator = require('validator');
+var winston = require('winston');
 
-var translator = require('../../public/src/modules/translator');
 var categories = require('../categories');
 var plugins = require('../plugins');
 var meta = require('../meta');
@@ -17,6 +17,9 @@ helpers.notAllowed = function(req, res, error) {
 		res: res,
 		error: error
 	}, function(err, data) {
+		if (err) {
+			return winston.error(err);
+		}
 		if (req.uid) {
 			if (res.locals.isAPI) {
 				res.status(403).json({

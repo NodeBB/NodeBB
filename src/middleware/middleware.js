@@ -1,32 +1,32 @@
 "use strict";
 
-var app,
-	middleware = {
-		admin: {}
-	},
-	async = require('async'),
-	fs = require('fs'),
-	path = require('path'),
-	csrf = require('csurf'),
-	_ = require('underscore'),
+var app;
+var middleware = {
+	admin: {}
+};
+var async = require('async');
+var fs = require('fs');
+var path = require('path');
+var csrf = require('csurf');
+var _ = require('underscore');
 
-	validator = require('validator'),
-	nconf = require('nconf'),
-	ensureLoggedIn = require('connect-ensure-login'),
-	toobusy = require('toobusy-js'),
+var validator = require('validator');
+var nconf = require('nconf');
+var ensureLoggedIn = require('connect-ensure-login');
+var toobusy = require('toobusy-js');
 
-	plugins = require('../plugins'),
-	languages = require('../languages'),
-	meta = require('../meta'),
-	user = require('../user'),
-	groups = require('../groups'),
+var plugins = require('../plugins');
+var languages = require('../languages');
+var meta = require('../meta');
+var user = require('../user');
+var groups = require('../groups');
 
-	analytics = require('../analytics'),
+var analytics = require('../analytics');
 
-	controllers = {
-		api: require('./../controllers/api'),
-		helpers: require('../controllers/helpers')
-	};
+var controllers = {
+	api: require('./../controllers/api'),
+	helpers: require('../controllers/helpers')
+};
 
 toobusy.maxLag(parseInt(meta.config.eventLoopLagThreshold, 10) || 100);
 toobusy.interval(parseInt(meta.config.eventLoopInterval, 10) || 500);
@@ -322,7 +322,7 @@ middleware.processLanguages = function(req, res, next) {
 	if (code && key) {
 		languages.get(code, key[0], function(err, language) {
 			res.status(200).json(language);
-		})
+		});
 	} else {
 		res.status(404).json('{}');
 	}

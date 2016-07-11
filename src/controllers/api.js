@@ -12,6 +12,7 @@ var categories = require('../categories');
 var privileges = require('../privileges');
 var plugins = require('../plugins');
 var widgets = require('../widgets');
+var helpers = require('../controllers/helpers');
 var accountHelpers = require('../controllers/accounts/helpers');
 
 var apiController = {};
@@ -220,6 +221,9 @@ apiController.getObject = function(req, res, next) {
 };
 
 apiController.getCurrentUser = function(req, res, next) {
+	if (!req.uid) {
+		return helpers.notAllowed(req, res);
+	}
 	async.waterfall([
 		function(next) {
 			user.getUserField(req.uid, 'userslug', next);
