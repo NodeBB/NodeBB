@@ -15,6 +15,18 @@
 
 .define-if-not-set();
 
+#move_thread_modal .category-list {
+	height: 500px;
+	overflow-y: auto;
+	overflow-x: hidden;
+}
+
+.topic-watch-dropdown {
+	.help-text {
+		margin-left: 20px;
+	}
+}
+
 .category-list {
 	padding: 0;
 
@@ -90,5 +102,17 @@
 
 	&.avatar-rounded {
 		border-radius: 50%;
+	}
+}
+
+.ban-modal {
+	input[type="number"] {
+		width: 7rem;
+		text-align: center;
+		margin-left: 1rem;
+	}
+
+	.form-inline, .form-group {
+		width: 100%;
 	}
 }

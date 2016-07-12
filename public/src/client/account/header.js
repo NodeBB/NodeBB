@@ -103,18 +103,34 @@ define('forum/account/header', [
 	}
 
 	function banAccount() {
-		translator.translate('[[user:ban_account_confirm]]', function(translated) {
-			bootbox.confirm(translated, function(confirm) {
-				if (!confirm) {
-					return;
-				}
-				socket.emit('user.banUsers', [ajaxify.data.theirid], function(err) {
-					if (err) {
-						return app.alertError(err.message);
+		templates.parse('admin/partials/temporary-ban', {}, function(html) {
+			bootbox.dialog({
+				className: 'ban-modal',
+				title: '[[user:ban_account]]',
+				message: html,
+				show: true,
+				buttons: {
+					close: {
+						label: '[[global:close]]',
+						className: 'btn-link'
+					},
+					submit: {
+						label: '[[user:ban_account]]',
+						callback: function() {
+							var formData = $('.ban-modal form').serializeArray().reduce(function(data, cur) {
+								data[cur.name] = cur.value;
+								return data;
+							}, {});
+							var until = Date.now() + formData.length * 1000*60*60 * (parseInt(formData.unit, 10) ? 24 : 1);
+							socket.emit('user.banUsers', { uids: [ajaxify.data.theirid], until: until }, function(err) {
+								if (err) {
+									return app.alertError(err.message);
+								}
+								ajaxify.refresh();
+							});
+						}
 					}
-					components.get('account/ban').parent().addClass('hide');
-					components.get('account/unban').parent().removeClass('hide');
-				});
+				}
 			});
 		});
 	}
@@ -124,9 +140,7 @@ define('forum/account/header', [
 			if (err) {
 				return app.alertError(err.message);
 			}
-
-			components.get('account/ban').parent().removeClass('hide');
-			components.get('account/unban').parent().addClass('hide');
+			ajaxify.refresh();
 		});
 	}
 

@@ -95,6 +95,7 @@
 			<li><a href="{relative_path}/admin/advanced/database">Database</a></li>
 			<li><a href="{relative_path}/admin/advanced/events">Events</a></li>
 			<li><a href="{relative_path}/admin/advanced/logs">Logs</a></li>
+			<li><a href="{relative_path}/admin/advanced/errors">Errors</a></li>
 			<li><a href="{relative_path}/admin/advanced/post-cache">Post Cache</a></li>
 			<!-- IF env -->
 			<li><a href="{relative_path}/admin/development/logger">Logger</a></li>
@@ -106,11 +107,11 @@
 <main id="panel">
 	<nav class="header" id="header">
 		<div class="pull-left">
-			<button id="mobile-menu">
+			<div id="mobile-menu">
 				<div class="bar"></div>
 				<div class="bar"></div>
 				<div class="bar"></div>
-			</button>
+			</div>
 			<h1 id="main-page-title"></h1>
 		</div>
 
@@ -247,11 +248,20 @@
 					<li><a href="{relative_path}/admin/advanced/database">Database</a></li>
 					<li><a href="{relative_path}/admin/advanced/events">Events</a></li>
 					<li><a href="{relative_path}/admin/advanced/logs">Logs</a></li>
+					<li><a href="{relative_path}/admin/advanced/errors">Errors</a></li>
 					<li><a href="{relative_path}/admin/advanced/post-cache">Post Cache</a></li>
 					<!-- IF env -->
 					<li><a href="{relative_path}/admin/development/logger">Logger</a></li>
 					<!-- ENDIF env -->
 				</ul>
+			</li>
+		</ul>
+
+		<ul class="nav navbar-nav navbar-right hidden-xs reconnect-spinner">
+			<li>
+				<a href="#" id="reconnect" class="hide" title="Connection to {title} has been lost, attempting to reconnect...">
+					<i class="fa fa-check"></i>
+				</a>
 			</li>
 		</ul>
 	</nav>

@@ -26,7 +26,8 @@ app.cacheBuster = null;
 	app.load = function() {
 		app.loadProgressiveStylesheet();
 
-		var url = ajaxify.start(window.location.pathname.slice(1) + window.location.search + window.location.hash, true);
+		var url = ajaxify.start(window.location.pathname.slice(1) + window.location.search + window.location.hash);
+		ajaxify.updateHistory(url, true);
 		ajaxify.end(url, app.template);
 
 		handleStatusChange();
@@ -117,7 +118,7 @@ app.cacheBuster = null;
 			title: '[[global:alert.success]]',
 			message: message,
 			type: 'success',
-			timeout: timeout ? timeout : 2000
+			timeout: timeout ? timeout : 5000
 		});
 	};
 
@@ -126,20 +127,23 @@ app.cacheBuster = null;
 			title: '[[global:alert.error]]',
 			message: message,
 			type: 'danger',
-			timeout: timeout ? timeout : 5000
+			timeout: timeout ? timeout : 10000
 		});
 	};
 
 	app.enterRoom = function (room, callback) {
 		callback = callback || function() {};
 		if (socket && app.user.uid && app.currentRoom !== room) {
+			var previousRoom = app.currentRoom;
+			app.currentRoom = room;
 			socket.emit('meta.rooms.enter', {
 				enter: room
 			}, function(err) {
 				if (err) {
+					app.currentRoom = previousRoom;
 					return app.alertError(err.message);
 				}
-				app.currentRoom = room;
+
 				callback();
 			});
 		}
@@ -455,26 +459,9 @@ app.cacheBuster = null;
 	};
 
 	app.newTopic = function (cid) {
-		cid = cid || ajaxify.data.cid;
-		if (cid) {
-			$(window).trigger('action:composer.topic.new', {
-				cid: cid
-			});
-		} else {
-			socket.emit('categories.getCategoriesByPrivilege', 'topics:create', function(err, categories) {
-				if (err) {
-					return app.alertError(err.message);
-				}
-				categories = categories.filter(function(category) {
-					return !category.link && !parseInt(category.parentCid, 10);
-				});
-				if (categories.length) {
-					$(window).trigger('action:composer.topic.new', {
-						cid: categories[0].cid
-					});
-				}
-			});
-		}
+		$(window).trigger('action:composer.topic.new', {
+			cid: cid || ajaxify.data.cid || 0
+		});
 	};
 
 	app.loadJQueryUI = function(callback) {
@@ -546,5 +533,5 @@ app.cacheBuster = null;
 		linkEl.href = config.relative_path + '/js-enabled.css';
 
 		document.head.appendChild(linkEl);
-	}
+	};
 }());

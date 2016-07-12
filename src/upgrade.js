@@ -6,11 +6,11 @@ var db = require('./database'),
 
 	Upgrade = {},
 
-	minSchemaDate = Date.UTC(2015, 7, 18),		// This value gets updated every new MINOR version
+	minSchemaDate = Date.UTC(2015, 10, 6),		// This value gets updated every new MAJOR version
 	schemaDate, thisSchemaDate,
 
 	// IMPORTANT: REMEMBER TO UPDATE VALUE OF latestSchema
-	latestSchema = Date.UTC(2016, 1, 25);
+	latestSchema = Date.UTC(2016, 5, 13);
 
 Upgrade.check = function(callback) {
 	db.get('schemaDate', function(err, value) {
@@ -61,88 +61,6 @@ Upgrade.upgrade = function(callback) {
 					next(new Error('upgrade-not-possible'));
 				}
 			});
-		},
-		function(next) {
-			thisSchemaDate = Date.UTC(2015, 8, 30);
-			if (schemaDate < thisSchemaDate) {
-				updatesMade = true;
-				winston.info('[2015/09/30] Converting default Gravatar image to default User Avatar');
-
-				async.waterfall([
-					async.apply(db.isObjectField, 'config', 'customGravatarDefaultImage'),
-					function(keyExists, _next) {
-						if (keyExists) {
-							_next();
-						} else {
-							winston.info('[2015/09/30] Converting default Gravatar image to default User Avatar skipped');
-							Upgrade.update(thisSchemaDate, next);
-							next();
-						}
-					},
-					async.apply(db.getObjectField, 'config', 'customGravatarDefaultImage'),
-					async.apply(db.setObjectField, 'config', 'defaultAvatar'),
-					async.apply(db.deleteObjectField, 'config', 'customGravatarDefaultImage')
-				], function(err) {
-					if (err) {
-						return next(err);
-					}
-
-					winston.info('[2015/09/30] Converting default Gravatar image to default User Avatar done');
-					Upgrade.update(thisSchemaDate, next);
-				});
-			} else {
-				winston.info('[2015/09/30] Converting default Gravatar image to default User Avatar skipped');
-				next();
-			}
-		},
-		function(next) {
-			thisSchemaDate = Date.UTC(2015, 10, 6);
-			if (schemaDate < thisSchemaDate) {
-				updatesMade = true;
-				winston.info('[2015/11/06] Removing gravatar');
-
-				db.getSortedSetRange('users:joindate', 0, -1, function(err, uids) {
-					if (err) {
-						return next(err);
-					}
-
-					async.eachLimit(uids, 500, function(uid, next) {
-						db.getObjectFields('user:' + uid, ['picture', 'gravatarpicture'], function(err, userData) {
-							if (err) {
-								return next(err);
-							}
-
-							if (!userData.picture || !userData.gravatarpicture) {
-								return next();
-							}
-
-							if (userData.gravatarpicture === userData.picture) {
-								async.series([
-									function (next) {
-										db.setObjectField('user:' + uid, 'picture', '', next);
-									},
-									function (next) {
-										db.deleteObjectField('user:' + uid, 'gravatarpicture', next);
-									}
-								], next);
-							} else {
-								db.deleteObjectField('user:' + uid, 'gravatarpicture', next);
-							}
-						});
-					}, function(err) {
-						if (err) {
-							return next(err);
-						}
-
-						winston.info('[2015/11/06] Gravatar pictures removed!');
-						Upgrade.update(thisSchemaDate, next);
-					});
-				});
-
-			} else {
-				winston.info('[2015/11/06] Gravatar removal skipped');
-				next();
-			}
 		},
 		function(next) {
 			thisSchemaDate = Date.UTC(2015, 11, 15);
@@ -436,6 +354,267 @@ Upgrade.upgrade = function(callback) {
 				});
 			} else {
 				winston.info('[2016/02/25] Social: Post Sharing skipped!');
+				next();
+			}
+		},
+		function(next) {
+			thisSchemaDate = Date.UTC(2016, 3, 14);
+
+			if (schemaDate < thisSchemaDate) {
+				updatesMade = true;
+				winston.info('[2016/04/14] Group title from settings to user profile');
+
+				var user = require('./user');
+				var batch = require('./batch');
+				var count = 0;
+				batch.processSortedSet('users:joindate', function(uids, next) {
+					winston.info('upgraded ' + count + ' users');
+					user.getMultipleUserSettings(uids, function(err, settings) {
+						if (err) {
+							return next(err);
+						}
+						count += uids.length;
+						settings = settings.filter(function(setting) {
+							return setting && setting.groupTitle;
+						});
+
+						async.each(settings, function(setting, next) {
+							db.setObjectField('user:' + setting.uid, 'groupTitle', setting.groupTitle, next);
+						}, next);
+					});
+				}, {}, function(err) {
+					if (err) {
+						return next(err);
+					}
+
+					winston.info('[2016/04/14] Group title from settings to user profile done');
+					Upgrade.update(thisSchemaDate, next);
+				});
+			} else {
+				winston.info('[2016/04/14] Group title from settings to user profile skipped!');
+				next();
+			}
+		},
+		function(next) {
+			thisSchemaDate = Date.UTC(2016, 3, 18);
+
+			if (schemaDate < thisSchemaDate) {
+				updatesMade = true;
+				winston.info('[2016/04/19] Users post count per tid');
+
+				var batch = require('./batch');
+				var topics = require('./topics');
+				var count = 0;
+				batch.processSortedSet('topics:tid', function(tids, next) {
+					winston.info('upgraded ' + count + ' topics');
+					count += tids.length;
+					async.each(tids, function(tid, next) {
+						db.delete('tid:' + tid + ':posters', function(err) {
+							if (err) {
+								return next(err);
+							}
+							topics.getPids(tid, function(err, pids) {
+								if (err) {
+									return next(err);
+								}
+
+								if (!pids.length) {
+									return next();
+								}
+
+								async.eachSeries(pids, function(pid, next) {
+									db.getObjectField('post:' + pid, 'uid', function(err, uid) {
+										if (err) {
+											return next(err);
+										}
+										if (!parseInt(uid, 10)) {
+											return next();
+										}
+										db.sortedSetIncrBy('tid:' + tid + ':posters', 1, uid, next);
+									});
+								}, next);
+							});
+						});
+					}, next);
+				}, {}, function(err) {
+					if (err) {
+						return next(err);
+					}
+
+					winston.info('[2016/04/19] Users post count per tid done');
+					Upgrade.update(thisSchemaDate, next);
+				});
+			} else {
+				winston.info('[2016/04/19] Users post count per tid skipped!');
+				next();
+			}
+		},
+		function(next) {
+			thisSchemaDate = Date.UTC(2016, 3, 29);
+
+			if (schemaDate < thisSchemaDate) {
+				updatesMade = true;
+				winston.info('[2016/04/29] Dismiss flags from deleted topics');
+
+				var posts = require('./posts'),
+					topics = require('./topics');
+
+				var pids, tids;
+
+				async.waterfall([
+					async.apply(db.getSortedSetRange, 'posts:flagged', 0, -1),
+					function(_pids, next) {
+						pids = _pids;
+						posts.getPostsFields(pids, ['tid'], next);
+					},
+					function(_tids, next) {
+						tids = _tids.map(function(a) {
+							return a.tid;
+						});
+
+						topics.getTopicsFields(tids, ['deleted'], next);
+					},
+					function(state, next) {
+						var toDismiss = state.map(function(a, idx) {
+							return parseInt(a.deleted, 10) === 1 ? pids[idx] : null;
+						}).filter(Boolean);
+
+						winston.info('[2016/04/29] ' + toDismiss.length + ' dismissable flags found');
+						async.each(toDismiss, posts.dismissFlag, next);
+					}
+				], function(err) {
+					if (err) {
+						return next(err);
+					}
+
+					winston.info('[2016/04/29] Dismiss flags from deleted topics done');
+					Upgrade.update(thisSchemaDate, next);
+				});
+			} else {
+				winston.info('[2016/04/29] Dismiss flags from deleted topics skipped!');
+				next();
+			}
+		},
+		function(next) {
+			thisSchemaDate = Date.UTC(2016, 4, 28);
+
+			if (schemaDate < thisSchemaDate) {
+				updatesMade = true;
+				winston.info('[2016/05/28] Giving topics:read privs to any group that was previously allowed to Find & Access Category');
+
+				var groupsAPI = require('./groups');
+				var privilegesAPI = require('./privileges');
+
+				db.getSortedSetRange('categories:cid', 0, -1, function(err, cids) {
+					async.eachSeries(cids, function(cid, next) {
+						privilegesAPI.categories.list(cid, function(err, data) {
+							var groups = data.groups;
+							var users = data.users;
+
+							async.waterfall([
+								function(next) {
+									async.eachSeries(groups, function(group, next) {
+										if (group.privileges['groups:read']) {
+											return groupsAPI.join('cid:' + cid + ':privileges:groups:topics:read', group.name, function(err) {
+												if (!err) {
+													winston.info('cid:' + cid + ':privileges:groups:topics:read granted to gid: ' + group.name);
+												}
+
+												return next(err);
+											});
+										}
+
+										next(null);
+									}, next);
+								},
+								function(next) {
+									async.eachSeries(users, function(user, next) {
+										if (user.privileges.read) {
+											return groupsAPI.join('cid:' + cid + ':privileges:topics:read', user.uid, function(err) {
+												if (!err) {
+													winston.info('cid:' + cid + ':privileges:topics:read granted to uid: ' + user.uid);
+												}
+
+												return next(err);
+											});
+										}
+
+										next(null);
+									}, next);
+								}
+							], function(err) {
+								if (!err) {
+									winston.info('-- cid ' + cid + ' upgraded');
+								}
+
+								next(err);
+							});
+						});
+					}, function(err) {
+						if (err) {
+							return next(err);
+						}
+
+						winston.info('[2016/05/28] Giving topics:read privs to any group that was previously allowed to Find & Access Category - done');
+						Upgrade.update(thisSchemaDate, next);
+					});
+				});
+			} else {
+				winston.info('[2016/05/28] Giving topics:read privs to any group that was previously allowed to Find & Access Category - skipped!');
+				next();
+			}
+		},
+		function(next) {
+			thisSchemaDate = Date.UTC(2016, 5, 13);
+
+			if (schemaDate < thisSchemaDate) {
+				updatesMade = true;
+				winston.info('[2016/06/13] Store upvotes/downvotes separately');
+
+				var batch = require('./batch');
+				var posts = require('./posts');
+				var count = 0;
+				batch.processSortedSet('posts:pid', function(pids, next) {
+					winston.info('upgraded ' + count + ' posts');
+					count += pids.length;
+					async.each(pids, function(pid, next) {
+						async.parallel({
+							upvotes: function(next) {
+								db.setCount('pid:' + pid + ':upvote', next);
+							},
+							downvotes: function(next) {
+								db.setCount('pid:' + pid + ':downvote', next);
+							}
+						}, function(err, results) {
+							if (err) {
+								return next(err);
+							}
+							var data = {};
+
+							if (parseInt(results.upvotes, 10) > 0) {
+								data.upvotes = results.upvotes;
+							}
+							if (parseInt(results.downvotes, 10) > 0) {
+								data.downvotes = results.downvotes;
+							}
+
+							if (Object.keys(data).length) {
+								posts.setPostFields(pid, data, next);
+							} else {
+								next();
+							}
+						}, next);
+					}, next);
+				}, {}, function(err) {
+					if (err) {
+						return next(err);
+					}
+
+					winston.info('[2016/06/13] Store upvotes/downvotes separately done');
+					Upgrade.update(thisSchemaDate, next);
+				});
+			} else {
+				winston.info('[2016/06/13] Store upvotes/downvotes separately skipped!');
 				next();
 			}
 		}

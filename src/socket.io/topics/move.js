@@ -40,7 +40,7 @@ module.exports = function(SocketTopics) {
 
 				socketHelpers.emitToTopicAndCategory('event:topic_moved', topicData);
 
-				socketHelpers.sendNotificationToTopicOwner(tid, socket.uid, 'notifications:moved_your_topic');
+				socketHelpers.sendNotificationToTopicOwner(tid, socket.uid, 'move', 'notifications:moved_your_topic');
 
 				next();
 			});

@@ -36,10 +36,6 @@ SocketTopics.post = function(socket, data, callback) {
 			return callback(err);
 		}
 
-		if (data.lock) {
-			SocketTopics.doTopicAction('lock', 'event:topic_locked', socket, {tids: [result.topicData.tid], cid: result.topicData.cid});
-		}
-
 		callback(null, result.topicData);
 
 		socket.emit('event:new_post', {posts: [result.postData]});
@@ -69,11 +65,18 @@ SocketTopics.createTopicFromPosts = function(socket, data, callback) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
 
-	topics.createTopicFromPosts(socket.uid, data.title, data.pids, callback);
+	topics.createTopicFromPosts(socket.uid, data.title, data.pids, data.fromTid, callback);
 };
 
-SocketTopics.toggleFollow = function(socket, tid, callback) {
-	followCommand(topics.toggleFollow, socket, tid, callback);
+SocketTopics.changeWatching = function(socket, data, callback) {
+	if (!data.tid || !data.type) {
+		return callback(new Error('[[error:invalid-data]]'));
+	}
+	var commands = ['follow', 'unfollow', 'ignore'];
+	if (commands.indexOf(data.type) === -1) {
+		return callback(new Error('[[error:invalid-command]]'));
+	}
+	followCommand(topics[data.type], socket, data.tid, callback);
 };
 
 SocketTopics.follow = function(socket, tid, callback) {
@@ -87,6 +90,12 @@ function followCommand(method, socket, tid, callback) {
 
 	method(tid, socket.uid, callback);
 }
+
+SocketTopics.isFollowed = function(socket, tid, callback) {
+	topics.isFollowing([tid], socket.uid, function(err, isFollowing) {
+		callback(err, Array.isArray(isFollowing) && isFollowing.length ? isFollowing[0] : false);
+	});
+};
 
 SocketTopics.search = function(socket, data, callback) {
 	topics.search(data.tid, data.term, callback);
@@ -102,17 +111,7 @@ SocketTopics.isModerator = function(socket, tid, callback) {
 };
 
 SocketTopics.getTopic = function (socket, tid, callback) {
-	async.waterfall([
-		function (next) {
-			apiController.getObjectByType(socket.uid, 'topic', tid, next);
-		},
-		function (topicData, next) {
-			if (parseInt(topicData.deleted, 10) === 1) {
-				return next(new Error('[[error:no-topic]]'));
-			}
-			next(null, topicData);
-		}
-	], callback);
+	apiController.getTopicData(tid, socket.uid, callback);
 };
 
 module.exports = SocketTopics;

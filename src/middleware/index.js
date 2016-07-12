@@ -62,6 +62,10 @@ module.exports = function(app) {
 		cookie.secure = true;
 	}
 
+	if (relativePath !== '') {
+		cookie.path = relativePath;
+	}
+
 	app.use(session({
 		store: db.sessionStore,
 		secret: nconf.get('secret'),

@@ -1,12 +1,12 @@
 'use strict';
 
-/* globals define, app, socket, utils */
+/* globals define, app, socket, utils, ajaxify, config */
 
 define('forum/recent', ['forum/infinitescroll', 'components'], function(infinitescroll, components) {
 	var	Recent = {};
 
-	var newTopicCount = 0,
-		newPostCount = 0;
+	var newTopicCount = 0;
+	var newPostCount = 0;
 
 	$(window).on('action:ajaxify.start', function(ev, data) {
 		if (ajaxify.currentPage !== data.url) {
@@ -23,7 +23,11 @@ define('forum/recent', ['forum/infinitescroll', 'components'], function(infinite
 			$(this).addClass('hide');
 		});
 
-		infinitescroll.init(Recent.loadMoreTopics);
+		if (!config.usePagination) {
+			infinitescroll.init(Recent.loadMoreTopics);
+		}
+
+		$(window).trigger('action:topics.loaded', {topics: ajaxify.data.topics});
 	};
 
 	Recent.watchForNewPosts = function () {
@@ -35,13 +39,53 @@ define('forum/recent', ['forum/infinitescroll', 'components'], function(infinite
 	};
 
 	function onNewTopic(data) {
+		if (ajaxify.data.selectedCategory && parseInt(ajaxify.data.selectedCategory.cid, 10) !== parseInt(data.cid, 10)) {
+			return;
+		}
+
+		if (ajaxify.data.selectedFilter && ajaxify.data.selectedFilter.url === 'unread/watched') {
+			return;
+		}
+
 		++newTopicCount;
 		Recent.updateAlertText();
 	}
 
 	function onNewPost(data) {
-		++newPostCount;
-		Recent.updateAlertText();
+		function showAlert() {
+			++newPostCount;
+			Recent.updateAlertText();
+		}
+
+		var post = data.posts[0];
+		if (!post || !post.topic) {
+			return;
+		}
+		if (parseInt(post.topic.mainPid, 10) === parseInt(post.pid, 10)) {
+			return;
+		}
+
+		if (ajaxify.data.selectedCategory && parseInt(ajaxify.data.selectedCategory.cid, 10) !== parseInt(post.topic.cid, 10)) {
+			return;
+		}
+
+		if (ajaxify.data.selectedFilter && ajaxify.data.selectedFilter.url === 'unread/new') {
+			return;
+		}
+
+		if (ajaxify.data.selectedFilter && ajaxify.data.selectedFilter.url === 'unread/watched') {
+			socket.emit('topics.isFollowed', post.tid, function(err, isFollowed) {
+				if (err) {
+					app.alertError(err.message);
+				}
+				if (isFollowed) {
+					showAlert();
+				}
+			});
+			return;
+		}
+
+		showAlert();
 	}
 
 	Recent.removeListeners = function() {

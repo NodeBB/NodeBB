@@ -5,11 +5,8 @@ var winston = require('winston'),
 
 module.exports = function(Plugins) {
 	Plugins.deprecatedHooks = {
-		'filter:user.delete': 'static:user.delete',
-		'filter:user.custom_fields': null,
-		'action:user.loggedOut': 'static:user.loggedOut'
+		'filter:user.custom_fields': null	// remove in v1.1.0
 	};
-
 	/*
 		`data` is an object consisting of (* is required):
 			`data.hook`*, the name of the NodeBB hook
@@ -29,12 +26,19 @@ module.exports = function(Plugins) {
 		var method;
 
 		if (Object.keys(Plugins.deprecatedHooks).indexOf(data.hook) !== -1) {
-			winston.warn('[plugins/' + id + '] Hook `' + data.hook + '` is deprecated, ' + 
+			winston.warn('[plugins/' + id + '] Hook `' + data.hook + '` is deprecated, ' +
 				(Plugins.deprecatedHooks[data.hook] ?
 					'please use `' + Plugins.deprecatedHooks[data.hook] + '` instead.' :
 					'there is no alternative.'
 				)
 			);
+		} else {
+			// handle hook's startsWith, i.e. action:homepage.get
+			var parts = data.hook.split(':');
+			if (parts.length > 2) {
+				parts.pop();
+			}
+			var hook = parts.join(':');
 		}
 
 		if (data.hook && data.method) {

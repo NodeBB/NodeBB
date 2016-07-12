@@ -24,6 +24,7 @@
     "digest.day": "päivä",
     "digest.week": "viikko",
     "digest.month": "kuukausi",
+    "digest.subject": "Digest for %1",
     "notif.chat.subject": "Uusi chatviesti henkilöltä %1",
     "notif.chat.cta": "Click here to continue the conversation",
     "notif.chat.unsub.info": "This chat notification was sent to you due to your subscription settings.",

@@ -24,6 +24,7 @@
     "digest.day": "des letzten Tages",
     "digest.week": "der letzten Woche",
     "digest.month": "des letzen Monats",
+    "digest.subject": "Übersicht für %1",
     "notif.chat.subject": "Neue Chatnachricht von %1 erhalten",
     "notif.chat.cta": "Klicke hier, um die Unterhaltung fortzusetzen",
     "notif.chat.unsub.info": "Diese Chat-Benachrichtigung wurde dir aufgrund deiner Abonnement-Einstellungen gesendet.",

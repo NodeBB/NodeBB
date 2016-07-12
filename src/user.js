@@ -1,12 +1,13 @@
 'use strict';
 
-var	async = require('async'),
+var	async = require('async');
 
-	plugins = require('./plugins'),
-	db = require('./database'),
-	topics = require('./topics'),
-	privileges = require('./privileges'),
-	utils = require('../public/src/utils');
+var plugins = require('./plugins');
+var db = require('./database');
+var topics = require('./topics');
+var privileges = require('./privileges');
+var meta = require('./meta');
+var utils = require('../public/src/utils');
 
 (function(User) {
 
@@ -19,6 +20,7 @@ var	async = require('async'),
 	require('./user/auth')(User);
 	require('./user/create')(User);
 	require('./user/posts')(User);
+	require('./user/topics')(User);
 	require('./user/categories')(User);
 	require('./user/follow')(User);
 	require('./user/profile')(User);
@@ -31,6 +33,7 @@ var	async = require('async'),
 	require('./user/approval')(User);
 	require('./user/invite')(User);
 	require('./user/password')(User);
+	require('./user/info')(User);
 
 	User.updateLastOnlineTime = function(uid, callback) {
 		callback = callback || function() {};
@@ -87,7 +90,8 @@ var	async = require('async'),
 	};
 
 	User.getUsers = function(uids, uid, callback) {
-		var fields = ['uid', 'username', 'userslug', 'picture', 'status', 'banned', 'joindate', 'postcount', 'reputation', 'email:confirmed', 'lastonline'];
+		var fields = ['uid', 'username', 'userslug', 'picture', 'status', 'flags',
+			'banned', 'joindate', 'postcount', 'reputation', 'email:confirmed', 'lastonline'];
 
 		async.waterfall([
 			function (next) {
@@ -252,6 +256,62 @@ var	async = require('async'),
 			}
 			callback();
 		});
+	};
+
+	User.isBanned = function(uid, callback) {
+		async.waterfall([
+			async.apply(User.getUserField, uid, 'banned'),
+			function(banned, next) {
+				banned = parseInt(banned, 10) === 1;
+				if (!banned) {
+					return next(null, banned);
+				} else {
+					// If they are banned, see if the ban has expired
+					db.sortedSetScore('users:banned:expire', uid, function(err, score) {
+						var stillBanned = Date.now() < score;
+
+						if (!stillBanned) {
+							async.parallel([
+								async.apply(db.sortedSetRemove.bind(db), 'users:banned:expire', uid),
+								async.apply(db.sortedSetRemove.bind(db), 'users:banned', uid),
+								async.apply(User.setUserField, uid, 'banned', 0)
+							], function(err) {
+								next(err, false);
+							});
+						} else {
+							next(err, true);
+						}
+					});
+				}
+			}
+		], callback);
+	};
+
+	User.addInterstitials = function(callback) {
+		plugins.registerHook('core', {
+			hook: 'filter:register.interstitial',
+			method: function(data, callback) {
+				if (meta.config.termsOfUse && !data.userData.acceptTos) {
+					data.interstitials.push({
+						template: 'partials/acceptTos',
+						data: {
+							termsOfUse: meta.config.termsOfUse
+						},
+						callback: function(userData, formData, next) {
+							if (formData['agree-terms'] === 'on') {
+								userData.acceptTos = true;
+							}
+
+							next(userData.acceptTos ? null : new Error('[[register:terms_of_use_error]]'));
+						}
+					});
+				}
+
+				callback(null, data);
+			}
+		});
+
+		callback();
 	};
 
 

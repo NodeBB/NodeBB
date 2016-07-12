@@ -52,7 +52,8 @@
 			loginStrategies.forEach(function(strategy) {
 				if (strategy.url) {
 					router.get(strategy.url, passport.authenticate(strategy.name, {
-						scope: strategy.scope
+						scope: strategy.scope,
+						prompt: strategy.prompt || undefined
 					}));
 				}
 
@@ -63,6 +64,8 @@
 			});
 
 			router.post('/register', Auth.middleware.applyCSRF, Auth.middleware.applyBlacklist, controllers.authentication.register);
+			router.post('/register/complete', Auth.middleware.applyCSRF, Auth.middleware.applyBlacklist, controllers.authentication.registerComplete);
+			router.get('/register/abort', controllers.authentication.registerAbort);
 			router.post('/login', Auth.middleware.applyCSRF, Auth.middleware.applyBlacklist, controllers.authentication.login);
 			router.post('/logout', Auth.middleware.applyCSRF, controllers.authentication.logout);
 

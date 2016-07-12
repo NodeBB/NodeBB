@@ -1,14 +1,25 @@
 #!/usr/bin/env node
 
-var colors = require('colors'),
-	cproc = require('child_process'),
-	argv = require('minimist')(process.argv.slice(2)),
-	fs = require('fs'),
-	path = require('path'),
-	request = require('request'),
-	semver = require('semver'),
-	prompt = require('prompt'),
-	async = require('async');
+try {
+	var colors = require('colors'),
+		cproc = require('child_process'),
+		argv = require('minimist')(process.argv.slice(2)),
+		fs = require('fs'),
+		path = require('path'),
+		request = require('request'),
+		semver = require('semver'),
+		prompt = require('prompt'),
+		async = require('async');
+} catch (e) {
+	if (e.code === 'MODULE_NOT_FOUND') {
+		process.stdout.write('NodeBB could not be started because it\'s dependencies have not been installed.\n');
+		process.stdout.write('Please ensure that you have executed "npm install --production" prior to running NodeBB.\n\n');
+		process.stdout.write('For more information, please see: https://docs.nodebb.org/en/latest/installing/os.html\n\n');
+		process.stdout.write('Could not start: ' + e.code + '\n');
+
+		process.exit(1);
+	}
+}
 
 var getRunningPid = function(callback) {
 		fs.readFile(__dirname + '/pidfile', {
@@ -196,7 +207,7 @@ var getRunningPid = function(callback) {
 				description: 'Proceed with upgrade (y|n)?'.reset,
 				type: 'string'
 			}, function(err, result) {
-				if (result.upgrade === 'y' || result.upgrade === 'yes') {
+				if (['y', 'Y', 'yes', 'YES'].indexOf(result.upgrade) !== -1) {
 					process.stdout.write('\nUpgrading packages...');
 					var args = ['npm', 'i'];
 					found.forEach(function(suggestObj) {

@@ -51,7 +51,7 @@ if (nconf.get('config')) {
 	configFile = path.resolve(__dirname, nconf.get('config'));
 }
 
-var configExists = file.existsSync(configFile);
+var configExists = file.existsSync(configFile) || (nconf.get('url') && nconf.get('secret') && nconf.get('database'));
 
 loadConfig();
 
@@ -117,7 +117,7 @@ function start() {
 	var urlObject = url.parse(nconf.get('url'));
 	var relativePath = urlObject.pathname !== '/' ? urlObject.pathname : '';
 	nconf.set('base_url', urlObject.protocol + '//' + urlObject.host);
-	nconf.set('secure', urlObject.protocol === 'https');
+	nconf.set('secure', urlObject.protocol === 'https:');
 	nconf.set('use_port', !!urlObject.port);
 	nconf.set('relative_path', relativePath);
 	nconf.set('port', urlObject.port || nconf.get('port') || nconf.get('PORT') || 4567);
@@ -180,7 +180,12 @@ function start() {
 			require('./src/meta').configs.init(next);
 		},
 		function(next) {
-			require('./src/meta').dependencies.check(next);
+			if (nconf.get('dep-check') === undefined || nconf.get('dep-check') !== false) {
+				require('./src/meta').dependencies.check(next);
+			} else {
+				winston.warn('[init] Dependency checking skipped!');
+				setImmediate(next);
+			}
 		},
 		function(next) {
 			require('./src/upgrade').check(next);

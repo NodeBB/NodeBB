@@ -58,6 +58,7 @@
 								<div class="btn-toolbar">
 									<button type="button" class="btn btn-primary pull-right" data-ajaxify="false" data-action="search.group"> Add Group</button>
 									<button type="button" class="btn btn-info pull-right" data-ajaxify="false" data-action="copyToChildren"> Copy to Children</button>
+									<button type="button" class="btn btn-info pull-right" data-ajaxify="fakse" data-action="copyPrivilegesFrom"> Copy From Category</button>
 								</div>
 							</td>
 						</tr>

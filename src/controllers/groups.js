@@ -1,14 +1,15 @@
 "use strict";
 
-var async = require('async'),
-	nconf = require('nconf'),
-	validator = require('validator'),
-	meta = require('../meta'),
-	groups = require('../groups'),
-	user = require('../user'),
-	helpers = require('./helpers'),
-	plugins = require('../plugins'),
-	groupsController = {};
+var async = require('async');
+var nconf = require('nconf');
+var validator = require('validator');
+
+var meta = require('../meta');
+var groups = require('../groups');
+var user = require('../user');
+var helpers = require('./helpers');
+
+var groupsController = {};
 
 groupsController.list = function(req, res, next) {
 	var sort = req.query.sort || 'alpha';
@@ -81,24 +82,23 @@ groupsController.details = function(req, res, callback) {
 				posts: function(next) {
 					groups.getLatestMemberPosts(res.locals.groupName, 10, req.uid, next);
 				},
-				isAdmin: async.apply(user.isAdministrator, req.uid)
+				isAdminOrGlobalMod: async.apply(user.isAdminOrGlobalMod, req.uid)
 			}, next);
-		},
-		function (results, next) {
-			if (!results.group) {
-				return callback();
-			}
-			results.title = '[[pages:group, ' + results.group.displayName + ']]';
-			results.breadcrumbs = helpers.buildBreadcrumbs([{text: '[[pages:groups]]', url: '/groups' }, {text: results.group.displayName}]);
-			results.allowPrivateGroups = parseInt(meta.config.allowPrivateGroups, 10) === 1;
-			plugins.fireHook('filter:group.build', {req: req, res: res, templateData: results}, next);
 		}
 	], function(err, results) {
 		if (err) {
 			return callback(err);
 		}
 
-		res.render('groups/details', results.templateData);
+		if (!results.group) {
+			return callback();
+		}
+		results.group.isOwner = results.group.isOwner || results.isAdminOrGlobalMod;
+		results.title = '[[pages:group, ' + results.group.displayName + ']]';
+		results.breadcrumbs = helpers.buildBreadcrumbs([{text: '[[pages:groups]]', url: '/groups' }, {text: results.group.displayName}]);
+		results.allowPrivateGroups = parseInt(meta.config.allowPrivateGroups, 10) === 1;
+
+		res.render('groups/details', results);
 	});
 };
 

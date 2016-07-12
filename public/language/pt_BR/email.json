@@ -24,6 +24,7 @@
     "digest.day": "dia",
     "digest.week": "semana",
     "digest.month": "mês",
+    "digest.subject": "Resumo de %1",
     "notif.chat.subject": "Nova mensagem de chat recebida de %1",
     "notif.chat.cta": "Clique aqui para continuar a conversa",
     "notif.chat.unsub.info": "Esta notificação de chat foi enviada a você devido às suas configurações de assinatura.",

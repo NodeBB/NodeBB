@@ -1,17 +1,19 @@
 
 'use strict';
 
-var async = require('async'),
-	winston = require('winston'),
-	validator = require('validator'),
-	_ = require('underscore'),
+var async = require('async');
+var winston = require('winston');
+var validator = require('validator');
+var _ = require('underscore');
 
-	db = require('../database'),
-	posts = require('../posts'),
-	topics = require('../topics'),
-	privileges = require('../privileges');
+var db = require('../database');
+var posts = require('../posts');
+var topics = require('../topics');
+var categories = require('../categories');
+var privileges = require('../privileges');
 
 module.exports = function(Categories) {
+
 	Categories.getRecentReplies = function(cid, uid, count, callback) {
 		if (!parseInt(count, 10)) {
 			return callback(null, []);
@@ -105,18 +107,33 @@ module.exports = function(Categories) {
 			function (next) {
 				topics.getTopicsFields(tids, ['tid', 'mainPid', 'slug', 'title', 'teaserPid', 'cid', 'postcount'], next);
 			},
-			function (_topicData, next) {
+			function(_topicData, next) {
 				topicData = _topicData;
 				topicData.forEach(function(topic) {
-					topic.teaserPid = topic.teaserPid || topic.mainPid;
+					if (topic) {
+						topic.teaserPid = topic.teaserPid || topic.mainPid;
+					}
+				});
+				var cids = _topicData.map(function(topic) {
+					return topic && topic.cid;
+				}).filter(function(cid, index, array) {
+					return cid && array.indexOf(cid) === index;
 				});
 
-				topics.getTeasers(topicData, next);
+				async.parallel({
+					categoryData: async.apply(categories.getCategoriesFields, cids, ['cid', 'parentCid']),
+					teasers: async.apply(topics.getTeasers, _topicData),
+				}, next);
 			},
-			function (teasers, next) {
-				teasers.forEach(function(teaser, index) {
+			function (results, next) {
+				var parentCids = {};
+				results.categoryData.forEach(function(category) {
+					parentCids[category.cid] = category.parentCid;
+				});
+				results.teasers.forEach(function(teaser, index) {
 					if (teaser) {
 						teaser.cid = topicData[index].cid;
+						teaser.parentCid = parseInt(parentCids[teaser.cid]) || 0;
 						teaser.tid = teaser.uid = teaser.user.uid = undefined;
 						teaser.topic = {
 							slug: topicData[index].slug,
@@ -124,8 +141,8 @@ module.exports = function(Categories) {
 						};
 					}
 				});
-				teasers = teasers.filter(Boolean);
-				next(null, teasers);
+				results.teasers = results.teasers.filter(Boolean);
+				next(null, results.teasers);
 			}
 		], callback);
 	}
@@ -133,7 +150,8 @@ module.exports = function(Categories) {
 	function assignTopicsToCategories(categories, topics) {
 		categories.forEach(function(category) {
 			category.posts = topics.filter(function(topic) {
-				return topic.cid && parseInt(topic.cid, 10) === parseInt(category.cid, 10);
+				return topic.cid && (parseInt(topic.cid, 10) === parseInt(category.cid, 10) ||
+					parseInt(topic.parentCid, 10) === parseInt(category.cid, 10));
 			}).sort(function(a, b) {
 				return b.pid - a.pid;
 			}).slice(0, parseInt(category.numRecentReplies, 10));

@@ -1,14 +1,21 @@
 "use strict";
-/*global config, translator, componentHandler, define, socket, app, ajaxify, utils, bootbox, Slideout, RELATIVE_PATH*/
+/*global config, translator, componentHandler, define, socket, app, ajaxify, utils, bootbox, Slideout, NProgress, RELATIVE_PATH*/
 
 (function() {
-	$(document).ready(function() {
-		setupKeybindings();
 
-		// on page reload show correct tab if url has #
+	$(window).on('action:ajaxify.end', function() {
+		showCorrectNavTab();
+	});
+
+	function showCorrectNavTab() {
+		// show correct tab if url has #
 		if (window.location.hash) {
 			$('.nav-pills a[href=' + window.location.hash + ']').tab('show');
 		}
+	}
+
+	$(document).ready(function() {
+		setupKeybindings();
 
 		if(!/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
 			require(['admin/modules/search'], function(search) {
@@ -20,6 +27,7 @@
 		app.alert = launchSnackbar;
 
 		configureSlidemenu();
+		setupNProgress();
 	});
 
 	$(window).on('action:ajaxify.contentLoaded', function(ev, data) {
@@ -30,6 +38,16 @@
 
 		componentHandler.upgradeDom();
 	});
+
+	function setupNProgress() {
+		$(window).on('action:ajaxify.start', function() {
+			NProgress.set(0.7);
+		});
+
+		$(window).on('action:ajaxify.end', function(ev, data) {
+			NProgress.done();
+		});
+	}
 
 	function setupKeybindings() {
 		require(['mousetrap'], function(mousetrap) {

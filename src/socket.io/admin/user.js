@@ -185,25 +185,15 @@ User.search = function(socket, data, callback) {
 			return user && user.uid;
 		});
 
-		async.parallel({
-			users: function(next) {
-				user.getUsersFields(uids, ['email'], next);
-			},
-			flagCounts: function(next) {
-				var sets = uids.map(function(uid) {
-					return 'uid:' + uid + ':flagged_by';
-				});
-				db.setsCount(sets, next);
-			}
-		}, function(err, results) {
+		user.getUsersFields(uids, ['email', 'flags'], function(err, userInfo) {
 			if (err) {
 				return callback(err);
 			}
 
 			userData.forEach(function(user, index) {
-				if (user) {
-					user.email = (results.users[index] && results.users[index].email) || '';
-					user.flags = results.flagCounts[index] || 0;
+				if (user && userInfo[index]) {
+					user.email = userInfo[index].email || '';
+					user.flags = userInfo[index].flags || 0;
 				}
 			});
 

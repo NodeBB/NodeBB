@@ -24,6 +24,7 @@
     "digest.day": "day",
     "digest.week": "week",
     "digest.month": "month",
+    "digest.subject": "Digest for %1",
     "notif.chat.subject": "Máte novú správu od %1",
     "notif.chat.cta": "Kliknite sem pre pokračovanie v konverzácii",
     "notif.chat.unsub.info": "Toto upozornenie o správach ste prijali na základe Vašich nastavení účtu.",

@@ -133,13 +133,16 @@ helpers.getBaseUser = function(userslug, callerUID, callback) {
 
 			async.parallel({
 				user: function(next) {
-					user.getUserFields(uid, ['uid', 'username', 'userslug', 'picture', 'cover:url', 'cover:position', 'status', 'lastonline'], next);
+					user.getUserFields(uid, ['uid', 'username', 'userslug', 'picture', 'cover:url', 'cover:position', 'status', 'lastonline', 'groupTitle'], next);
 				},
 				isAdmin: function(next) {
 					user.isAdministrator(callerUID, next);
 				},
 				isGlobalModerator: function(next) {
 					user.isGlobalModerator(callerUID, next);
+				},
+				isFollowing: function(next) {
+					user.isFollowing(callerUID, uid, next);
 				},
 				profile_links: function(next) {
 					plugins.fireHook('filter:user.profileLinks', [], next);
@@ -155,6 +158,7 @@ helpers.getBaseUser = function(userslug, callerUID, callback) {
 			results.user.theirid = results.user.uid;
 			results.user.status = user.getStatus(results.user);
 			results.user.isSelf = parseInt(callerUID, 10) === parseInt(results.user.uid, 10);
+			results.user.isFollowing = results.isFollowing;
 			results.user.showHidden = results.user.isSelf || results.isAdmin || results.isGlobalModerator;
 			results.user.profile_links = filterLinks(results.profile_links, results.user.isSelf);
 

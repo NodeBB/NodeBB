@@ -61,20 +61,23 @@ $(document).ready(function() {
 			apiXHR.abort();
 		}
 
-		url = ajaxify.start(url, quiet);
+		if (!window.location.pathname.match(/\/(403|404)$/g)) {
+			app.previousUrl = window.location.href;
+		}
+
+		url = ajaxify.start(url);
 
 		$('body').removeClass(ajaxify.data.bodyClass);
 		$('#footer, #content').removeClass('hide').addClass('ajaxifying');
 
 		ajaxify.loadData(url, function(err, data) {
-			if (err) {
-				return onAjaxError(err, url, callback, quiet);
+
+			if (!err || (err && err.data && (parseInt(err.data.status, 10) !== 302 && parseInt(err.data.status, 10) !== 308))) {
+				ajaxify.updateHistory(url, quiet);
 			}
 
-			if (window.history && window.history.pushState) {
-				window.history[!quiet ? 'pushState' : 'replaceState']({
-					url: url
-				}, url, RELATIVE_PATH + '/' + url);
+			if (err) {
+				return onAjaxError(err, url, callback, quiet);
 			}
 
 			retry = true;
@@ -91,9 +94,10 @@ $(document).ready(function() {
 
 	ajaxify.handleRedirects = function(url) {
 		url = ajaxify.removeRelativePath(url.replace(/\/$/, '')).toLowerCase();
-		var isAdminRoute = url.startsWith('admin') && window.location.pathname.indexOf(RELATIVE_PATH + '/admin') !== 0;
+		var isClientToAdmin = url.startsWith('admin') && window.location.pathname.indexOf(RELATIVE_PATH + '/admin') !== 0;
+		var isAdminToClient = !url.startsWith('admin') && window.location.pathname.indexOf(RELATIVE_PATH + '/admin') === 0;
 		var uploadsOrApi = url.startsWith('uploads') || url.startsWith('api');
-		if (isAdminRoute || uploadsOrApi) {
+		if (isClientToAdmin || isAdminToClient || uploadsOrApi) {
 			window.open(RELATIVE_PATH + '/' + url, '_top');
 			return true;
 		}
@@ -101,17 +105,21 @@ $(document).ready(function() {
 	};
 
 
-	ajaxify.start = function(url, quiet) {
+	ajaxify.start = function(url) {
 		url = ajaxify.removeRelativePath(url.replace(/^\/|\/$/g, ''));
 
 		$(window).trigger('action:ajaxify.start', {url: url});
 
-		if (!window.location.pathname.match(/\/(403|404)$/g)) {
-			app.previousUrl = window.location.href;
-		}
-
-		ajaxify.currentPage = url.split(/[?#]/)[0];
 		return url;
+	};
+
+	ajaxify.updateHistory = function(url, quiet) {
+		ajaxify.currentPage = url.split(/[?#]/)[0];
+		if (window.history && window.history.pushState) {
+			window.history[!quiet ? 'pushState' : 'replaceState']({
+				url: url
+			}, url, RELATIVE_PATH + '/' + url);
+		}
 	};
 
 	function onAjaxError(err, url, callback, quiet) {
@@ -137,9 +145,10 @@ $(document).ready(function() {
 			} else if (status === 401) {
 				app.alertError('[[global:please_log_in]]');
 				app.previousUrl = url;
-				return ajaxify.go('login');
+				window.location.href = config.relative_path + '/login';
+				return;
 			} else if (status === 302 || status === 308) {
-				if (data.responseJSON.external) {
+				if (data.responseJSON && data.responseJSON.external) {
 					window.location.href = data.responseJSON.external;
 				} else if (typeof data.responseJSON === 'string') {
 					ajaxify.go(data.responseJSON.slice(1), callback, quiet);
@@ -300,6 +309,10 @@ $(document).ready(function() {
 				} else {
 					return e.preventDefault();
 				}
+			}
+
+			if (internalLink && $(this).attr('href').endsWith('.rss')) {
+				return;
 			}
 
 			if (hrefEmpty(this.href) || this.protocol === 'javascript:' || $(this).attr('href') === '#') {

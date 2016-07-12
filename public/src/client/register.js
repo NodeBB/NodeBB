@@ -13,8 +13,7 @@ define('forum/register', ['csrf', 'translator'], function(csrf, translator) {
 			username = $('#username'),
 			password = $('#password'),
 			password_confirm = $('#password-confirm'),
-			register = $('#register'),
-			agreeTerms = $('#agree-terms');
+			register = $('#register');
 
 		handleLanguageOverride();
 
@@ -99,26 +98,18 @@ define('forum/register', ['csrf', 'translator'], function(csrf, translator) {
 					},
 					error: function(data) {
 						translator.translate(data.responseText, config.defaultLang, function(translated) {
-							errorEl.find('p').text(translated);
-							errorEl.removeClass('hidden');
-							registerBtn.removeClass('disabled');
+							if (data.status === 403 && data.responseText === 'Forbidden') {
+								window.location.href = config.relative_path + '/register?error=csrf-invalid';
+							} else {
+								errorEl.find('p').text(translated);
+								errorEl.removeClass('hidden');
+								registerBtn.removeClass('disabled');
+							}
 						});
 					}
 				});
 			});
 		});
-
-		if (agreeTerms.length) {
-			agreeTerms.on('click', function() {
-				if ($(this).prop('checked')) {
-					register.removeAttr('disabled');
-				} else {
-					register.attr('disabled', 'disabled');
-				}
-			});
-
-			register.attr('disabled', 'disabled');
-		}
 	};
 
 	function validateEmail(email, callback) {

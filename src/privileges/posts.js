@@ -19,17 +19,20 @@ module.exports = function(privileges) {
 			return callback(null, []);
 		}
 
-		async.parallel({
-			isAdmin: function(next){
-				user.isAdministrator(uid, next);
+		async.waterfall([
+			function(next) {
+				posts.getCidsByPids(pids, next);
 			},
-			isModerator: function(next) {
-				posts.isModerator(pids, uid, next);
-			},
-			isOwner: function(next) {
-				posts.isOwner(pids, uid, next);
+			function(cids, next) {
+				async.parallel({
+					isAdmin: async.apply(user.isAdministrator, uid),
+					isModerator: async.apply(posts.isModerator, pids, uid),
+					isOwner: async.apply(posts.isOwner, pids, uid),
+					'topics:read': async.apply(helpers.isUserAllowedTo, 'topics:read', uid, cids),
+					read: async.apply(helpers.isUserAllowedTo, 'read', uid, cids),
+				}, next);
 			}
-		}, function(err, results) {
+		], function(err, results) {
 			if (err) {
 				return callback(err);
 			}
@@ -37,11 +40,16 @@ module.exports = function(privileges) {
 			var privileges = [];
 
 			for (var i=0; i<pids.length; ++i) {
-				var editable = results.isAdmin || results.isModerator[i] || results.isOwner[i];
+				var isAdminOrMod = results.isAdmin || results.isModerator[i];
+				var editable = isAdminOrMod || results.isOwner[i];
+
 				privileges.push({
 					editable: editable,
 					view_deleted: editable,
-					move: results.isAdmin || results.isModerator[i]
+					move: isAdminOrMod,
+					isAdminOrMod: isAdminOrMod,
+					'topics:read': results['topics:read'][i] || isAdminOrMod,
+					read: results.read[i] || isAdminOrMod
 				});
 			}
 
@@ -63,22 +71,57 @@ module.exports = function(privileges) {
 		if (!Array.isArray(pids) || !pids.length) {
 			return callback(null, []);
 		}
-		posts.getCidsByPids(pids, function(err, cids) {
-			if (err) {
-				return callback(err);
-			}
+		var cids;
+		var postData;
+		var tids;
+		var tidToTopic = {};
 
-			pids = pids.map(function(pid, index) {
-				return {pid: pid, cid: cids[index]};
-			});
+		async.waterfall([
+			function (next) {
+				posts.getPostsFields(pids, ['uid', 'tid', 'deleted'], next);
+			},
+			function (_posts, next) {
+				postData = _posts;
+				tids = _posts.map(function(post) {
+					return post && post.tid;
+				}).filter(function(tid, index, array) {
+					return tid && array.indexOf(tid) === index;
+				});
+				topics.getTopicsFields(tids, ['deleted', 'cid'], next);
+			},
+			function (topicData, next) {
 
-			privileges.categories.filterCids(privilege, cids, uid, function(err, cids) {
-				if (err) {
-					return callback(err);
-				}
+				topicData.forEach(function(topic, index) {
+					if (topic) {
+						tidToTopic[tids[index]] = topic;
+					}
+				});
 
-				pids = pids.filter(function(post) {
-					return cids.indexOf(post.cid) !== -1;
+				cids = postData.map(function(post, index) {
+					if (post) {
+						post.pid = pids[index];
+						post.topic = tidToTopic[post.tid];
+					}
+					return tidToTopic[post.tid] && tidToTopic[post.tid].cid;
+				}).filter(function(cid, index, array) {
+					return cid && array.indexOf(cid) === index;
+				});
+
+				privileges.categories.getBase(privilege, cids, uid, next);
+			},
+			function (results, next) {
+
+				var isModOf = {};
+				cids = cids.filter(function(cid, index) {
+					isModOf[cid] = results.isModerators[index];
+					return !results.categories[index].disabled &&
+						(results.allowedTo[index] || results.isAdmin || results.isModerators[index]);
+				});
+
+
+				pids = postData.filter(function(post) {
+					return post.topic && cids.indexOf(post.topic.cid) !== -1 &&
+						((parseInt(post.topic.deleted, 10) !== 1 && parseInt(post.deleted, 10) !== 1) || results.isAdmin || isModOf[post.cid]);
 				}).map(function(post) {
 					return post.pid;
 				});
@@ -87,11 +130,11 @@ module.exports = function(privileges) {
 					privilege: privilege,
 					uid: uid,
 					pids: pids
-				},  function(err, data) {
-					callback(err, data ? data.pids : null);
+				}, function(err, data) {
+					next(err, data ? data.pids : null);
 				});
-			});
-		});
+			}
+		], callback);
 	};
 
 	privileges.posts.canEdit = function(pid, uid, callback) {
@@ -112,6 +155,38 @@ module.exports = function(privileges) {
 				return callback(new Error('[[error:post-edit-duration-expired, ' + meta.config.postEditDuration + ']]'));
 			}
 			callback(null, results.isEditable.editable);
+		});
+	};
+
+	privileges.posts.canDelete = function(pid, uid, callback) {
+		var postData;
+		async.waterfall([
+			function(next) {
+				posts.getPostFields(pid, ['tid', 'timestamp'], next);
+			},
+			function(_postData, next) {
+				postData = _postData;
+				async.parallel({
+					isAdminOrMod: async.apply(isAdminOrMod, pid, uid),
+					isLocked: async.apply(topics.isLocked, postData.tid),
+					isOwner: async.apply(posts.isOwner, pid, uid)
+				}, next);
+			}
+		], function(err, results) {
+			if (err) {
+				return callback(err);
+			}
+			if (results.isAdminOrMod) {
+				return callback(null, true);
+			}
+			if (results.isLocked) {
+				return callback(new Error('[[error:topic-locked]]'));
+			}
+			var postDeleteDuration = parseInt(meta.config.postDeleteDuration, 10);
+			if (postDeleteDuration && (Date.now() - parseInt(postData.timestamp, 10) > postDeleteDuration * 1000)) {
+				return callback(new Error('[[error:post-delete-duration-expired, ' + meta.config.postDeleteDuration + ']]'));
+			}
+			callback(null, results.isOwner);
 		});
 	};
 

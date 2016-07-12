@@ -102,8 +102,12 @@ module.exports = function(User) {
 					},
 					function(next) {
 						var keys = [
-							'uid:' + uid + ':notifications:read', 'uid:' + uid + ':notifications:unread',
-							'uid:' + uid + ':favourites', 'uid:' + uid + ':followed_tids', 'user:' + uid + ':settings',
+							'uid:' + uid + ':notifications:read',
+							'uid:' + uid + ':notifications:unread',
+							'uid:' + uid + ':favourites',
+							'uid:' + uid + ':followed_tids',
+							'uid:' + uid + ':ignored_tids',
+							'user:' + uid + ':settings',
 							'uid:' + uid + ':topics', 'uid:' + uid + ':posts',
 							'uid:' + uid + ':chats', 'uid:' + uid + ':chats:unread',
 							'uid:' + uid + ':chat:rooms', 'uid:' + uid + ':chat:rooms:unread',
@@ -121,10 +125,6 @@ module.exports = function(User) {
 					},
 					function(next) {
 						groups.leaveAllGroups(uid, next);
-					},
-					function(next) {
-						// Deprecated as of v0.7.4, remove in v1.0.0
-						plugins.fireHook('filter:user.delete', uid, next);
 					}
 				], next);
 			},

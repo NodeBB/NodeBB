@@ -38,9 +38,6 @@ SocketPosts.reply = function(socket, data, callback) {
 
 		var result = {
 			posts: [postData],
-			privileges: {
-				'topics:reply': true
-			},
 			'reputation:disabled': parseInt(meta.config['reputation:disabled'], 10) === 1,
 			'downvote:disabled': parseInt(meta.config['downvote:disabled'], 10) === 1,
 		};
@@ -52,10 +49,6 @@ SocketPosts.reply = function(socket, data, callback) {
 		user.updateOnlineUsers(socket.uid);
 
 		socketHelpers.notifyNew(socket.uid, 'newPost', result);
-
-		if (data.lock) {
-			socketTopics.doTopicAction('lock', 'event:topic_locked', socket, {tids: [postData.topic.tid], cid: postData.topic.cid});
-		}
 	});
 };
 
@@ -80,17 +73,7 @@ SocketPosts.getRawPost = function(socket, pid, callback) {
 };
 
 SocketPosts.getPost = function(socket, pid, callback) {
-	async.waterfall([
-		function(next) {
-			apiController.getObjectByType(socket.uid, 'post', pid, next);
-		},
-		function(postData, next) {
-			if (parseInt(postData.deleted, 10) === 1) {
-				return next(new Error('[[error:no-post]]'));
-			}
-			next(null, postData);
-		}
-	], callback);
+	apiController.getPostData(pid, socket.uid, callback);
 };
 
 SocketPosts.loadMoreFavourites = function(socket, data, callback) {
@@ -118,8 +101,8 @@ function loadMorePosts(set, uid, data, callback) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
 
-	var start = Math.max(0, parseInt(data.after, 10)),
-		stop = start + 9;
+	var start = Math.max(0, parseInt(data.after, 10));
+	var stop = start + 9;
 
 	posts.getPostSummariesFromSet(set, uid, start, stop, callback);
 }

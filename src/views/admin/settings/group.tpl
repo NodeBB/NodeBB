@@ -28,6 +28,9 @@
 			<p class="help-block">
 				If enabled, users can create groups <em>(Default: disabled)</em>
 			</p>
+
+			<label>Maximum Group Name Length</label>
+			<input class="form-control" type="text" placeholder="255" data-field="maximumGroupNameLength" />
 		</form>
 	</div>
 </div>

@@ -41,7 +41,7 @@
     "details.hidden": "Niet getoond",
     "details.hidden_help": "Indien geactiveerd zal deze groep niet getoond worden in de groepslijst en zullen gebruikers handmatig uitgenodigd moeten worden.",
     "details.delete_group": "Groep verwijderen",
-    "details.private_system_help": "Private groups is disabled at system level, this option does not do anything",
+    "details.private_system_help": "Private groepen zijn op systeemniveau uitgeschakeld, deze optie doet niets.",
     "event.updated": "Groepsdetails zijn bijgewerkt",
     "event.deleted": "De groep \"%1\" is verwijderd",
     "membership.accept-invitation": "Uitnodiging accepteren",

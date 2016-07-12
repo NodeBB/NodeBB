@@ -28,6 +28,10 @@ usersController.noPosts = function(req, res, next) {
 	getUsersByScore('users:postcount', 'noposts', 0, 0, req, res, next);
 };
 
+usersController.flagged = function(req, res, next) {
+	getUsersByScore('users:flags', 'mostflags', 1, '+inf', req, res, next);
+};
+
 usersController.inactive = function(req, res, next) {
 	var timeRange = 1000 * 60 * 60 * 24 * 30 * (parseInt(req.query.months, 10) || 3);
 	var cutoff = Date.now() - timeRange;
@@ -166,6 +170,12 @@ function render(req, res, data) {
 	data.search_display = 'hidden';
 	data.pagination = pagination.create(data.page, data.pageCount, req.query);
 	data.requireEmailConfirmation = parseInt(meta.config.requireEmailConfirmation, 10) === 1;
+
+	var registrationType = meta.config.registrationType;
+
+	data.inviteOnly = registrationType === 'invite-only' || registrationType === 'admin-invite-only';
+	data.adminInviteOnly = registrationType === 'admin-invite-only';
+
 	res.render('admin/manage/users', data);
 }
 

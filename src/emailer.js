@@ -90,6 +90,7 @@ var fallbackTransport;
 			},
 			function (results, next) {
 				var data = {
+					_raw: params,
 					to: email,
 					from: meta.config['email:from'] || 'no-reply@' + getHostname(),
 					from_name: meta.config['email:from_name'] || 'NodeBB',
@@ -113,7 +114,11 @@ var fallbackTransport;
 				}
 			}
 		], function (err) {
-			callback(err);
+			if (err && err.code === 'ENOENT') {
+				callback(new Error('[[error:sendmail-not-found]]'));
+			} else {
+				callback(err);
+			}
 		});
 	};
 

@@ -30,7 +30,6 @@
 		languages[language].loading = languages[language].loading || {};
 
 		if (languages[language].loaded[filename]) {
-			var existing = languages[language].loaded[filename];
 			for (var t in translations) {
 				if (translations.hasOwnProperty(t)) {
 					languages[language].loaded[filename][t] = translations[t];
@@ -72,10 +71,6 @@
 				languageCode = 'en';
 				break;
 
-			case 'cs':
-				languageCode = 'cz';
-				break;
-
 			case 'fa_IR':
 				languageCode = 'fa';
 				break;
@@ -109,17 +104,6 @@
 			$.getScript(RELATIVE_PATH + '/vendor/jquery/timeago/locales/jquery.timeago.' + languageCode + '-short.js').success(function() {
 				// Switch back to long-form
 				translator.toggleTimeagoShorthand();
-			}).fail(function() {
-				$.getScript(RELATIVE_PATH + '/vendor/jquery/timeago/locales/jquery.timeago.en-short.js').success(function() {
-					// Switch back to long-form
-					translator.toggleTimeagoShorthand();
-				});
-			});
-		}).fail(function() {
-			$.getScript(RELATIVE_PATH + '/vendor/jquery/timeago/locales/jquery.timeago.en-short.js').success(function() {
-				// Switch back to long-form
-				translator.toggleTimeagoShorthand();
-				$.getScript(RELATIVE_PATH + '/vendor/jquery/timeago/locales/jquery.timeago.en.js');
 			});
 		});
 
@@ -319,7 +303,7 @@
 					data = {};
 				}
 				callback(data);
-			}
+			};
 
 			if (err) {
 				if (err.code === 'ENOENT' && plugins.customLanguageFallbacks.hasOwnProperty(filename)) {
@@ -332,7 +316,7 @@
 						}
 
 						onData(data);
-					})
+					});
 				} else {
 					winston.error('[translator] Could not load `' + filename + '`: ' + err.message + '. Skipping...');
 					return callback({});
@@ -357,7 +341,7 @@
 				}
 				_translator.translate.apply(_translator, arguments);
 			}
-		}
+		};
 	}
 })(
 	typeof exports === 'object' ? exports :

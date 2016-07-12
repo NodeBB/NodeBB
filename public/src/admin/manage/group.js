@@ -173,7 +173,15 @@ define('admin/manage/group', [
 				if (err) {
 					return app.alertError(err.message);
 				}
-				app.alertSuccess('Changes saved!');
+
+				var newName = $('#change-group-name').val();
+
+				// If the group name changed, change url
+				if (groupName === newName) {
+					app.alertSuccess('Changes saved!');
+				} else {
+					ajaxify.go('admin/manage/groups/' + encodeURIComponent(newName), undefined, true);
+				}
 			});
 			return false;
 		});

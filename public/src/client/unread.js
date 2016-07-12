@@ -20,6 +20,8 @@ define('forum/unread', ['forum/recent', 'topicSelect', 'forum/infinitescroll', '
 
 		recent.watchForNewPosts();
 
+		$(window).trigger('action:topics.loaded', {topics: ajaxify.data.topics});
+
 		$('#markSelectedRead').on('click', function() {
 			var tids = topicSelect.getSelectedTids();
 			if(!tids.length) {
@@ -43,6 +45,7 @@ define('forum/unread', ['forum/recent', 'topicSelect', 'forum/infinitescroll', '
 				app.alertSuccess('[[unread:topics_marked_as_read.success]]');
 
 				$('[component="category"]').empty();
+				$('[component="pagination"]').addClass('hidden');
 				$('#category-no-topics').removeClass('hidden');
 				$('.markread').addClass('hidden');
 			});
@@ -78,7 +81,9 @@ define('forum/unread', ['forum/recent', 'topicSelect', 'forum/infinitescroll', '
 			loadMoreTopics();
 		});
 
-		infinitescroll.init(loadMoreTopics);
+		if (!config.usePagination) {
+			infinitescroll.init(loadMoreTopics);
+		}
 
 		function loadMoreTopics(direction) {
 			if(direction < 0 || !$('[component="category"]').length) {
@@ -88,7 +93,8 @@ define('forum/unread', ['forum/recent', 'topicSelect', 'forum/infinitescroll', '
 			var cid = params.cid;
 			infinitescroll.loadMore('topics.loadMoreUnreadTopics', {
 				after: $('[component="category"]').attr('data-nextstart'),
-				cid: cid
+				cid: cid,
+				filter: ajaxify.data.selectedFilter.filter
 			}, function(data, done) {
 				if (data.topics && data.topics.length) {
 					recent.onTopicsLoaded('unread', data.topics, true, done);

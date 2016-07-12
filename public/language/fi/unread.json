@@ -6,5 +6,8 @@
     "selected": "Valitut",
     "all": "Kaikki",
     "all_categories": "All categories",
-    "topics_marked_as_read.success": "Aihe merkitty luetuksi!"
+    "topics_marked_as_read.success": "Aihe merkitty luetuksi!",
+    "all-topics": "All Topics",
+    "new-topics": "New Topics",
+    "watched-topics": "Watched Topics"
 }

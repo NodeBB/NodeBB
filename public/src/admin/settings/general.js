@@ -14,6 +14,9 @@ define('admin/settings/general', ['admin/settings'], function(Settings) {
 		$('button[data-action="removeTouchIcon"]').on('click', function() {
 			$('input[data-field="brand:touchIcon"]').val('');
 		});
+		$('button[data-action="removeOgImage"]').on('click', function() {
+			$('input[data-field="removeOgImage"]').val('');
+		});
 	};
 
 	return Module;

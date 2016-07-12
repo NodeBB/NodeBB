@@ -6,5 +6,8 @@
     "selected": "선택된 주제",
     "all": "전체",
     "all_categories": "모든 카테고리",
-    "topics_marked_as_read.success": "성공적으로 읽음으로 표시했습니다."
+    "topics_marked_as_read.success": "성공적으로 읽음으로 표시했습니다.",
+    "all-topics": "모든 주제",
+    "new-topics": "새 주제",
+    "watched-topics": "읽은 주제"
 }

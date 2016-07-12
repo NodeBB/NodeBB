@@ -50,6 +50,13 @@ file.base64ToLocal = function(imageData, uploadPath, callback) {
 };
 
 file.isFileTypeAllowed = function(path, callback) {
+	var plugins = require('./plugins');
+	if (plugins.hasListeners('filter:file.isFileTypeAllowed')) {
+		return plugins.fireHook('filter:file.isFileTypeAllowed', path, function(err) {
+			callback(err);
+		});
+	}
+
 	// Attempt to read the file, if it passes, file type is allowed
 	jimp.read(path, function(err) {
 		callback(err);

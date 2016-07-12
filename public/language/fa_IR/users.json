@@ -2,6 +2,7 @@
     "latest_users": "آخرین کاربران",
     "top_posters": "بهترین فرستنده‌ها",
     "most_reputation": "بیش‌ترین اعتبار",
+    "most_flags": "Most Flags",
     "search": "جستجو",
     "enter_username": "یک نام کاربری برای جستجو وارد کنید",
     "load_more": "بارگذاری بیش‌تر",
@@ -16,5 +17,5 @@
     "unread_topics": "موضوع های خوانده نشده",
     "categories": "دسته ها",
     "tags": "برچسب‌ها",
-    "no-users-found": "No users found!"
+    "no-users-found": "کاربری پیدا نشد!"
 }

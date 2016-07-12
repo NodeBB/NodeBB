@@ -13,7 +13,7 @@ var meta = require('../meta');
 
 module.exports = function(Topics) {
 
-	Topics.createTopicFromPosts = function(uid, title, pids, callback) {
+	Topics.createTopicFromPosts = function(uid, title, pids, fromTid, callback) {
 		if (title) {
 			title = title.trim();
 		}
@@ -55,6 +55,9 @@ module.exports = function(Topics) {
 				}
 				Topics.create({uid: results.postData.uid, title: title, cid: cid}, next);
 			},
+			function(results, next) {
+				Topics.updateTopicBookmarks(fromTid, pids, function(){ next( null, results );} );
+			},
 			function(_tid, next) {
 				function move(pid, next) {
 					privileges.posts.canEdit(pid, uid, function(err, canEdit) {
@@ -87,7 +90,7 @@ module.exports = function(Topics) {
 				if (!exists) {
 					return next(new Error('[[error:no-topic]]'));
 				}
-				posts.getPostFields(pid, ['tid', 'timestamp', 'votes'], next);
+				posts.getPostFields(pid, ['tid', 'uid', 'timestamp', 'upvotes', 'downvotes'], next);
 			},
 			function(post, next) {
 				if (!post || !post.tid) {
@@ -101,7 +104,7 @@ module.exports = function(Topics) {
 				postData = post;
 				postData.pid = pid;
 
-				Topics.removePostFromTopic(postData.tid, pid, next);
+				Topics.removePostFromTopic(postData.tid, postData, next);
 			},
 			function(next) {
 				async.parallel([
@@ -118,7 +121,7 @@ module.exports = function(Topics) {
 						posts.setPostField(pid, 'tid', tid, next);
 					},
 					function(next) {
-						Topics.addPostToTopic(tid, pid, postData.timestamp, postData.votes, next);
+						Topics.addPostToTopic(tid, postData, next);
 					}
 				], next);
 			},

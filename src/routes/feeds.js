@@ -38,7 +38,7 @@ function generateForTopic(req, res, callback) {
 			if (parseInt(results.topic.deleted, 10) && !results.privileges.view_deleted) {
 				return callback();
 			}
-			if (!results.privileges.read) {
+			if (!results.privileges.read || !results.privileges['topics:read']) {
 				return helpers.notAllowed(req, res);
 			}
 			userPrivileges = results.privileges;

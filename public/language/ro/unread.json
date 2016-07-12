@@ -5,6 +5,9 @@
     "mark_as_read": "Marchează ca citit",
     "selected": "Selectate",
     "all": "Toate",
-    "all_categories": "All categories",
-    "topics_marked_as_read.success": "Subiectele au fost marcate ca citite!"
+    "all_categories": "Toate categoriile",
+    "topics_marked_as_read.success": "Subiectele au fost marcate ca citite!",
+    "all-topics": "Toate subiectele",
+    "new-topics": "Subiecte noi",
+    "watched-topics": "Subiecte urmărite"
 }

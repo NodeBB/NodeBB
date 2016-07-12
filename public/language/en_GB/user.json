@@ -7,6 +7,7 @@
 
 	"email": "Email",
 	"confirm_email": "Confirm Email",
+	"account_info": "Account Info",
 	"ban_account": "Ban Account",
 	"ban_account_confirm": "Do you really want to ban this user?",
 	"unban_account": "Unban Account",
@@ -109,10 +110,10 @@
 
 	"scroll_to_my_post": "After posting a reply, show the new post",
 
-	"follow_topics_you_reply_to": "Follow topics that you reply to",
-	"follow_topics_you_create": "Follow topics you create",
+	"follow_topics_you_reply_to": "Watch topics that you reply to",
+	"follow_topics_you_create": "Watch topics you create",
 
-	"grouptitle": "Select the group title you would like to display",
+	"grouptitle": "Group Title",
 	"no-group-title": "No group title",
 
 	"select-skin": "Select a Skin",
@@ -125,5 +126,12 @@
 
 	"sso.title": "Single Sign-on Services",
 	"sso.associated": "Associated with",
-	"sso.not-associated": "Click here to associate with"
+	"sso.not-associated": "Click here to associate with",
+
+	"info.latest-flags": "Latest Flags",
+	"info.no-flags": "No Flagged Posts Found",
+	"info.ban-history": "Recent Ban History",
+	"info.no-ban-history": "This user has never been banned",
+	"info.banned-until": "Banned until %1",
+	"info.banned-permanently": "Banned permanently"
 }

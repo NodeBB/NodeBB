@@ -155,7 +155,7 @@ SocketUser.follow = function(socket, data, callback) {
 				bodyShort: '[[notifications:user_started_following_you, ' + userData.username + ']]',
 				nid: 'follow:' + data.uid + ':uid:' + socket.uid,
 				from: socket.uid,
-				path: '/user/' + userData.userslug,
+				path: '/uid/' + socket.uid,
 				mergeId: 'notifications:user_started_following_you'
 			}, next);
 		},
@@ -245,6 +245,7 @@ SocketUser.getUnreadCounts = function(socket, data, callback) {
 	}
 	async.parallel({
 		unreadTopicCount: async.apply(topics.getTotalUnread, socket.uid),
+		unreadNewTopicCount: async.apply(topics.getTotalUnread, socket.uid, 'new'),
 		unreadChatCount: async.apply(messaging.getUnreadCount, socket.uid),
 		unreadNotificationCount: async.apply(user.notifications.getUnreadCount, socket.uid)
 	}, callback);
@@ -338,15 +339,15 @@ SocketUser.invite = function(socket, email, callback) {
 };
 
 SocketUser.getUserByUID = function(socket, uid, callback) {
-	apiController.getUserDataByUID(socket.uid, uid, callback);
+	apiController.getUserDataByField(socket.uid, 'uid', uid, callback);
 };
 
 SocketUser.getUserByUsername = function(socket, username, callback) {
-	apiController.getUserDataByUsername(socket.uid, username, callback);
+	apiController.getUserDataByField(socket.uid, 'username', username, callback);
 };
 
 SocketUser.getUserByEmail = function(socket, email, callback) {
-	apiController.getUserDataByEmail(socket.uid, email, callback);
+	apiController.getUserDataByField(socket.uid, 'email', email, callback);
 };
 
 

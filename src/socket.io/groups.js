@@ -170,6 +170,8 @@ SocketGroups.create = function(socket, data, callback) {
 		return callback(new Error('[[error:no-privileges]]'));
 	} else if (parseInt(meta.config.allowGroupCreation, 10) !== 1) {
 		return callback(new Error('[[error:group-creation-disabled]]'));
+	} else if (groups.isPrivilegeGroup(data.name)) {
+		return callback(new Error('[[error:invalid-group-name]]'));
 	}
 
 

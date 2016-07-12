@@ -33,7 +33,7 @@ authenticationController.register = function(req, res, next) {
 
 	async.waterfall([
 		function(next) {
-			if (registrationType === 'invite-only') {
+			if (registrationType === 'invite-only' || registrationType === 'admin-invite-only') {
 				user.verifyInvitation(userData, next);
 			} else {
 				next();
@@ -59,7 +59,7 @@ authenticationController.register = function(req, res, next) {
 			plugins.fireHook('filter:register.check', {req: req, res: res, userData: userData}, next);
 		},
 		function(data, next) {
-			if (registrationType === 'normal' || registrationType === 'invite-only') {
+			if (registrationType === 'normal' || registrationType === 'invite-only' || registrationType === 'admin-invite-only') {
 				registerAndLoginUser(req, res, userData, next);
 			} else if (registrationType === 'admin-approval') {
 				addToApprovalQueue(req, userData, next);
@@ -81,6 +81,27 @@ authenticationController.register = function(req, res, next) {
 function registerAndLoginUser(req, res, userData, callback) {
 	var uid;
 	async.waterfall([
+		function(next) {
+			plugins.fireHook('filter:register.interstitial', {
+				userData: userData,
+				interstitials: []
+			}, function(err, data) {
+				// If interstitials are found, save registration attempt into session and abort
+				var deferRegistration = data.interstitials.length;
+
+				if (!deferRegistration) {
+					return next();
+				} else {
+					userData.register = true;
+					req.session.registration = userData;
+					if (res.locals.isAPI) {
+						return res.json({ referrer: nconf.get('relative_path') + '/register/complete' });
+					} else {
+						return res.redirect(nconf.get('relative_path') + '/register/complete');
+					}
+				}
+			});
+		},
 		function(next) {
 			user.create(userData, next);
 		},
@@ -110,6 +131,54 @@ function addToApprovalQueue(req, userData, callback) {
 		}
 	], callback);
 }
+
+authenticationController.registerComplete = function(req, res, next) {
+	// For the interstitials that respond, execute the callback with the form body
+	plugins.fireHook('filter:register.interstitial', {
+		userData: req.session.registration,
+		interstitials: []
+	}, function(err, data) {
+		var callbacks = data.interstitials.reduce(function(memo, cur) {
+			if (cur.hasOwnProperty('callback') && typeof cur.callback === 'function') {
+				memo.push(async.apply(cur.callback, req.session.registration, req.body));
+			}
+
+			return memo;
+		}, []);
+
+		var done = function() {
+			delete req.session.registration;
+
+			if (req.session.returnTo) {
+				res.redirect(req.session.returnTo);
+			} else {
+				res.redirect(nconf.get('relative_path') + '/');
+			}
+		}
+
+		async.parallel(callbacks, function(err) {
+			if (err) {
+				req.flash('error', err.message);
+				return res.redirect(nconf.get('relative_path') + '/register/complete');
+			}
+
+			if (req.session.registration.register === true) {
+				res.locals.processLogin = true;
+				registerAndLoginUser(req, res, req.session.registration, done);
+			} else {
+				// Clear registration data in session
+				done();
+			}
+		});
+	});
+};
+
+authenticationController.registerAbort = function(req, res, next) {
+	// End the session and redirect to home
+	req.session.destroy(function() {
+		res.redirect(nconf.get('relative_path') + '/');
+	});
+};
 
 authenticationController.login = function(req, res, next) {
 	// Handle returnTo data
@@ -208,6 +277,8 @@ authenticationController.onSuccessfulLogin = function(req, uid, callback) {
 	var uuid = utils.generateUUID();
 	req.session.meta = {};
 
+	delete req.session.forceLogin;
+
 	// Associate IP used during login with user account
 	user.logIP(uid, req.ip);
 	req.session.meta.ip = req.ip;
@@ -263,10 +334,13 @@ authenticationController.localLogin = function(req, username, password, next) {
 		function (next) {
 			async.parallel({
 				userData: function(next) {
-					db.getObjectFields('user:' + uid, ['password', 'banned', 'passwordExpiry'], next);
+					db.getObjectFields('user:' + uid, ['password', 'passwordExpiry'], next);
 				},
 				isAdmin: function(next) {
 					user.isAdministrator(uid, next);
+				},
+				banned: function(next) {
+					user.isBanned(uid, next);
 				}
 			}, next);
 		},
@@ -278,13 +352,13 @@ authenticationController.localLogin = function(req, username, password, next) {
 			if (!result.isAdmin && parseInt(meta.config.allowLocalLogin, 10) === 0) {
 				return next(new Error('[[error:local-login-disabled]]'));
 			}
-
 			if (!userData || !userData.password) {
 				return next(new Error('[[error:invalid-user-data]]'));
 			}
-			if (userData.banned && parseInt(userData.banned, 10) === 1) {
+			if (result.banned) {
 				return next(new Error('[[error:user-banned]]'));
 			}
+
 			Password.compare(password, userData.password, next);
 		},
 		function (passwordMatch, next) {
@@ -305,9 +379,10 @@ authenticationController.logout = function(req, res, next) {
 				return next(err);
 			}
 			req.logout();
+			req.session.destroy();
 
-			// action:user.loggedOut deprecated in > v0.9.3
-			plugins.fireHook('action:user.loggedOut', {req: req, res: res, uid: uid});
+			user.setUserField(uid, 'lastonline', Date.now() - 300000);
+
 			plugins.fireHook('static:user.loggedOut', {req: req, res: res, uid: uid}, function() {
 				res.status(200).send('');
 			});
