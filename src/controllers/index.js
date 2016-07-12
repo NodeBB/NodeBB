@@ -118,9 +118,13 @@ Controllers.login = function(req, res, next) {
 	data.title = '[[pages:login]]';
 
 	if (!data.allowLocalLogin && !data.allowRegistration && data.alternate_logins && data.authentication.length === 1) {
-		return helpers.redirect(res, {
-			external: data.authentication[0].url
-		});
+		if (res.locals.isAPI) {
+			return helpers.redirect(res, {
+				external: data.authentication[0].url
+			});
+		} else {
+			return res.redirect(data.authentication[0].url);
+		}
 	}
 	if (req.uid) {
 		user.getUserFields(req.uid, ['username', 'email'], function(err, user) {
