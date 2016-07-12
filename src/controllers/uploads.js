@@ -12,16 +12,12 @@ var meta = require('../meta');
 var file = require('../file');
 var plugins = require('../plugins');
 var image = require('../image');
+var privileges = require('../privileges');
 
 var uploadsController = {};
 
 uploadsController.upload = function(req, res, filesIterator) {
 	var files = req.files.files;
-
-	if (!req.user && meta.config.allowGuestUploads !== '1') {
-		deleteTempFiles(files);
-		return res.status(403).json('[[error:guest-upload-disabled]]');
-	}
 
 	if (!Array.isArray(files)) {
 		return res.status(500).json('invalid files');
@@ -47,35 +43,57 @@ uploadsController.upload = function(req, res, filesIterator) {
 uploadsController.uploadPost = function(req, res, next) {
 	uploadsController.upload(req, res, function(uploadedFile, next) {
 		var isImage = uploadedFile.type.match(/image./);
-		if (isImage && plugins.hasListeners('filter:uploadImage')) {
-			return plugins.fireHook('filter:uploadImage', {image: uploadedFile, uid: req.uid}, next);
+		if (isImage) {
+			uploadAsImage(req, uploadedFile, next);
+		} else {
+			uploadAsFile(req, uploadedFile, next);
 		}
-
-		async.waterfall([
-			function(next) {
-				if (isImage) {
-					file.isFileTypeAllowed(uploadedFile.path, next);
-				} else {
-					next();
-				}
-			},
-			function (next) {
-				if (parseInt(meta.config.allowFileUploads, 10) !== 1) {
-					return next(new Error('[[error:uploads-are-disabled]]'));
-				}
-				uploadFile(req.uid, uploadedFile, next);
-			},
-			function(fileObj, next) {
-				if (!isImage || parseInt(meta.config.maximumImageWidth, 10) === 0) {
-					// Not an image, or resizing disabled. No need to resize.
-					return next(null, fileObj);
-				}
-
-				resizeImage(fileObj, next);
-			}
-		], next);
 	}, next);
 };
+
+function uploadAsImage(req, uploadedFile, callback) {
+	async.waterfall([
+		function(next) {
+			privileges.categories.can('upload:post:image', req.body.cid, req.uid, next);
+		},
+		function(canUpload, next) {
+			if (!canUpload) {
+				return next(new Error('[[error:no-privileges]]'));
+			}
+			if (plugins.hasListeners('filter:uploadImage')) {
+				return plugins.fireHook('filter:uploadImage', {image: uploadedFile, uid: req.uid}, callback);
+			}
+			file.isFileTypeAllowed(uploadedFile.path, next);
+		},
+		function(next) {
+			uploadFile(req.uid, uploadedFile, next);
+		},
+		function(fileObj, next) {
+			if (parseInt(meta.config.maximumImageWidth, 10) === 0) {
+				return next(null, fileObj);
+			}
+
+			resizeImage(fileObj, next);
+		}
+	], callback);
+}
+
+function uploadAsFile(req, uploadedFile, callback) {
+	async.waterfall([
+		function(next) {
+			privileges.categories.can('upload:post:file', req.body.cid, req.uid, next);
+		},
+		function(canUpload, next) {
+			if (!canUpload) {
+				return next(new Error('[[error:no-privileges]]'));
+			}
+			if (parseInt(meta.config.allowFileUploads, 10) !== 1) {
+				return next(new Error('[[error:uploads-are-disabled]]'));
+			}
+			uploadFile(req.uid, uploadedFile, next);
+		}
+	], callback);
+}
 
 function resizeImage(fileObj, callback) {
 	var fullPath;
