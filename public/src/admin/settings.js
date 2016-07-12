@@ -4,14 +4,6 @@
 define('admin/settings', ['uploader', 'sounds'], function(uploader, sounds) {
 	var Settings = {};
 
-	Settings.init = function() {
-		if (!app.config) {
-			$(window).on('action:config.loaded', Settings.prepare);
-		} else {
-			Settings.prepare();
-		}
-	};
-
 	Settings.populateTOC = function() {
 		$('.settings-header').each(function() {
 			var header = $(this).text(),
@@ -168,11 +160,9 @@ define('admin/settings', ['uploader', 'sounds'], function(uploader, sounds) {
 				return callback(err);
 			}
 
-			if (app.config) {
-				for(var field in data) {
-					if (data.hasOwnProperty(field)) {
-						app.config[field] = data[field];
-					}
+			for(var field in data) {
+				if (data.hasOwnProperty(field)) {
+					app.config[field] = data[field];
 				}
 			}
 
