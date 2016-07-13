@@ -29,6 +29,7 @@
     "account/edit/password": "Wachtwoord van \"%1\" aanpassen",
     "account/edit/username": "Gebruikersnaam van \"%1\" aanpassen",
     "account/edit/email": "Email van \"%1\" aanpassen",
+    "account/info": "Account Info",
     "account/following": "Door %1 gevolgd",
     "account/followers": "Die %1 volgen",
     "account/posts": "Berichten geplaatst door %1",

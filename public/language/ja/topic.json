@@ -31,7 +31,7 @@
     "flag_success": "このポストをリポートしました。",
     "deleted_message": "このトピックが削除されました。トピック管理権を持っているユーザーにしか読めません。",
     "following_topic.message": "このスレッドが更新された際に通知を受け取ります。",
-    "not_following_topic.message": "このスレッドの更新通知を停止しました。",
+    "not_following_topic.message": "You will see this topic in the unread topics list, but you will not receive notifications when somebody posts to this topic.",
     "ignoring_topic.message": "You will no longer see this topic in the unread topics list.  You will be notified when you are mentioned or your post is up voted.",
     "login_to_subscribe": "このスレッドを購読するためにログインが必要です。",
     "markAsUnreadForAll.success": "すべてのスレッドを未読にしました。",

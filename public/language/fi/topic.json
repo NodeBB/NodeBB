@@ -31,7 +31,7 @@
     "flag_success": "Tämä viesti ilmiannettiin moderaattoreille.",
     "deleted_message": "Tämä aihe on poistettu. Vain käyttäjät, joilla on aiheen hallintaoikeudet, voivat nähdä sen.",
     "following_topic.message": "Saat nyt ilmoituksen, kun joku kirjoittaa tähän aiheeseen.",
-    "not_following_topic.message": "Et saa enää ilmoituksia tästä aiheesta.",
+    "not_following_topic.message": "You will see this topic in the unread topics list, but you will not receive notifications when somebody posts to this topic.",
     "ignoring_topic.message": "You will no longer see this topic in the unread topics list.  You will be notified when you are mentioned or your post is up voted.",
     "login_to_subscribe": "Ole hyvä ja rekisteröidy tai kirjaudu sisään tilataksesi tämän aiheen.",
     "markAsUnreadForAll.success": "Aihe merkitty lukemattomaksi kaikille.",

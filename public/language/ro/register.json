@@ -1,5 +1,6 @@
 {
     "register": "Înregistrare",
+    "cancel_registration": "Cancel Registration",
     "help.email": "Implicit, adresa ta de email va fi ascunsă.",
     "help.username_restrictions": "Un nume de utilizator între %1 și %2 caractere. Alți utilizatori te pot menționa cu @<span id='yourUsername'>utilizator</span>.",
     "help.minimum_password_length": "Lungimea parolei trebuie sa fie mai mare de %1 caractere.",
@@ -15,5 +16,8 @@
     "alternative_registration": "Înregistrare Alternativă",
     "terms_of_use": "Termeni de utilizare",
     "agree_to_terms_of_use": "Sunt de acord cu termenii de utilizare",
-    "registration-added-to-queue": "Your registration has been added to the approval queue. You will receive an email when it is accepted by an administrator."
+    "terms_of_use_error": "You must agree to the Terms of Use",
+    "registration-added-to-queue": "Your registration has been added to the approval queue. You will receive an email when it is accepted by an administrator.",
+    "interstitial.intro": "We require some additional information before we can create your account.",
+    "interstitial.errors-found": "We could not complete your registration:"
 }

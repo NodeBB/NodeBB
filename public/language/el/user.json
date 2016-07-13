@@ -6,6 +6,7 @@
     "postcount": "Post Count",
     "email": "Emai",
     "confirm_email": "Επιβεβαίωση Email",
+    "account_info": "Account Info",
     "ban_account": "Ban Account",
     "ban_account_confirm": "Do you really want to ban this user?",
     "unban_account": "Unban Account",
@@ -107,5 +108,11 @@
     "custom_route_help": "Enter a route name here, without any preceding slash (e.g. \"recent\", or \"popular\")",
     "sso.title": "Single Sign-on Services",
     "sso.associated": "Associated with",
-    "sso.not-associated": "Click here to associate with"
+    "sso.not-associated": "Click here to associate with",
+    "info.latest-flags": "Latest Flags",
+    "info.no-flags": "No Flagged Posts Found",
+    "info.ban-history": "Recent Ban History",
+    "info.no-ban-history": "This user has never been banned",
+    "info.banned-until": "Banned until %1",
+    "info.banned-permanently": "Banned permanently"
 }

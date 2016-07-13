@@ -30,7 +30,7 @@
     "user-banned": "کاربر محروم شد.",
     "user-too-new": "با عرض پوزش، شما باید %1 ثانیه پیش از فرستادن پست نخست خود صبر کنید",
     "blacklisted-ip": "Sorry, your IP address has been banned from this community. If you feel this is in error, please contact an administrator.",
-    "ban-expiry-missing": "Please provide an end date for this ban",
+    "ban-expiry-missing": "لطفا تاریخ پایان برای این مسدود کردن ارائه دهید",
     "no-category": "دسته بندی وجود ندارد",
     "no-topic": "موضوع وجود ندارد.",
     "no-post": "پست وجود ندارد",
@@ -76,7 +76,7 @@
     "invalid-image-extension": "پسوند عکس نامعتبر است",
     "invalid-file-type": "نوع پرونده نامعتبر است. نوعهای قابل قبول اینها هستند: %1",
     "group-name-too-short": "نام گروه خیلی کوتاه است.",
-    "group-name-too-long": "Group name too long",
+    "group-name-too-long": "نام گروه بسیار طولانی است.",
     "group-already-exists": "این گروه از پیش وجود دارد.",
     "group-name-change-not-allowed": "تغیر نام گروه نیاز به دسترسی دارد.",
     "group-already-member": "شما عضوی از این گروه می باشید",
@@ -119,5 +119,5 @@
     "not-in-room": "هیچ کاربری در این گفتگو نیست",
     "no-users-in-room": "هیچ کاربری در این گفتگو نیست",
     "cant-kick-self": "شما نمی توانید خودتان را از گروه کیک کنید",
-    "no-users-selected": "No user(s) selected"
+    "no-users-selected": "هیچ کاربر(های) انتخاب نشده"
 }

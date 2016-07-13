@@ -29,6 +29,7 @@
     "account/edit/password": "Mengemaskini kata laluan \"%1\"",
     "account/edit/username": "Mengemaskini nama pengguna \"%1\"",
     "account/edit/email": "Mengemaskini email \"%1\"",
+    "account/info": "Account Info",
     "account/following": "Mengikut %1 orang",
     "account/followers": "Diikuti oleh %1",
     "account/posts": "Kiriman oleh %1",

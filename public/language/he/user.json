@@ -6,6 +6,7 @@
     "postcount": "כמות פוסטים",
     "email": "כתובת אימייל",
     "confirm_email": "אשר מייל",
+    "account_info": "Account Info",
     "ban_account": "הרחק חשבון",
     "ban_account_confirm": "אתה בטוח שברצונך להרחיק את המשתמש הזה?",
     "unban_account": "בטל את הרחקת החשבון",
@@ -107,5 +108,11 @@
     "custom_route_help": "הכנס שם נתיב כאן, ללא לוכסן לפני (לדוגמא \"אחרונים\", או \"פופולארי\")",
     "sso.title": "שירות יחיד להתחברות",
     "sso.associated": "משוייך עם",
-    "sso.not-associated": "לחץ כאן כדי לשייך"
+    "sso.not-associated": "לחץ כאן כדי לשייך",
+    "info.latest-flags": "Latest Flags",
+    "info.no-flags": "No Flagged Posts Found",
+    "info.ban-history": "Recent Ban History",
+    "info.no-ban-history": "This user has never been banned",
+    "info.banned-until": "Banned until %1",
+    "info.banned-permanently": "Banned permanently"
 }

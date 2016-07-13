@@ -6,6 +6,7 @@
     "postcount": "Ingano y'ibyo Yashyizeho",
     "email": "Email",
     "confirm_email": "Emeza Email",
+    "account_info": "Account Info",
     "ban_account": "Irukana",
     "ban_account_confirm": "Wiringiye neza ko ushaka kwirukana uyu muntu?",
     "unban_account": "Garura iyi Konte",
@@ -107,5 +108,11 @@
     "custom_route_help": "Shyiramo izina ry'inzira, utiriwe ushyiraho akarongo (ni ukuvuga ni nko kwandika gusa \"ibiheruka\" cyangwa \"ibikunzwe\")",
     "sso.title": "Kwinjiramo ukoreshe serivisi za SSO",
     "sso.associated": "Bisanishijwe na",
-    "sso.not-associated": "Click here to associate with"
+    "sso.not-associated": "Click here to associate with",
+    "info.latest-flags": "Latest Flags",
+    "info.no-flags": "No Flagged Posts Found",
+    "info.ban-history": "Recent Ban History",
+    "info.no-ban-history": "This user has never been banned",
+    "info.banned-until": "Banned until %1",
+    "info.banned-permanently": "Banned permanently"
 }

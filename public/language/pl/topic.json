@@ -31,7 +31,7 @@
     "flag_success": "Ten post został oznaczony do moderacji.",
     "deleted_message": "Ten temat został skasowany. Tylko użytkownicy z uprawnieniami do zarządzania mogą go zobaczyć.",
     "following_topic.message": "Będziesz od teraz otrzymywał powiadomienia, gdy ktoś odpowie w tym temacie.",
-    "not_following_topic.message": "Nie będziesz już otrzymywał powiadomień z tego tematu.",
+    "not_following_topic.message": "You will see this topic in the unread topics list, but you will not receive notifications when somebody posts to this topic.",
     "ignoring_topic.message": "Nie zobaczysz już tego tematu na liście nieprzeczytanych. Otrzymasz powiadomienie, kiedy zostaniesz wspomniany lub ktoś odda głos na twój post.",
     "login_to_subscribe": "Zaloguj się, aby subskrybować ten temat.",
     "markAsUnreadForAll.success": "Temat oznaczony jako nieprzeczytany dla wszystkich.",

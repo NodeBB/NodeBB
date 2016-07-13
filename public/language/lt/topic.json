@@ -31,7 +31,7 @@
     "flag_success": "Šis pranešimas buvo pažymėtas moderatorių patikrinimui.",
     "deleted_message": "Ši tema buvo ištrinta. Tik Vartotojai su temos redagavimo privilegijomis gali matyti ja",
     "following_topic.message": "Dabar jūs gausite pranešimus kai kas nors atrašys šioje temoje.",
-    "not_following_topic.message": "Jūs daugiau negausite pranešimų iš šios temos.",
+    "not_following_topic.message": "You will see this topic in the unread topics list, but you will not receive notifications when somebody posts to this topic.",
     "ignoring_topic.message": "You will no longer see this topic in the unread topics list.  You will be notified when you are mentioned or your post is up voted.",
     "login_to_subscribe": "Norėdami prenumeruoti šią temą, prašome prisiregistruoti arba prisijungti.",
     "markAsUnreadForAll.success": "Tema visiems vartotojams pažymėta kaip neskaityta.",

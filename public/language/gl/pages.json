@@ -29,6 +29,7 @@
     "account/edit/password": "Editando contrasinal \"%1\"",
     "account/edit/username": "Editando nome de usuario \"%1\"",
     "account/edit/email": "Editando o correo \"%1\"",
+    "account/info": "Account Info",
     "account/following": "Xente %1 seguindo",
     "account/followers": "Xente a quen segues %1",
     "account/posts": "Publicación de %1",

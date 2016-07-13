@@ -31,7 +31,7 @@
     "flag_success": "Dit bericht is gerapporteerd aan de beheerder.",
     "deleted_message": "Dit onderwerp is verwijderd. Alleen gebruikers met beheerrechten op onderwerpniveau kunnen dit inzien.",
     "following_topic.message": "Vanaf nu worden meldingen ontvangen zodra iemand een reactie op dit onderwerp geeft.",
-    "not_following_topic.message": "Je ontvangt geen notificaties meer over dit onderwerp.",
+    "not_following_topic.message": "You will see this topic in the unread topics list, but you will not receive notifications when somebody posts to this topic.",
     "ignoring_topic.message": "You will no longer see this topic in the unread topics list.  You will be notified when you are mentioned or your post is up voted.",
     "login_to_subscribe": "Log in or registreer om dit onderwerp te volgen.",
     "markAsUnreadForAll.success": "Onderwerp is voor iedereen als ongelezen gemarkeerd.",

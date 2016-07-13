@@ -10,6 +10,10 @@
     "share_this_category": "Dela den här kategorin",
     "watch": "Bevaka",
     "ignore": "Ignorera",
+    "watching": "Watching",
+    "ignoring": "Ignoring",
+    "watching.description": "Show topics in unread",
+    "ignoring.description": "Do not show topics in unread",
     "watch.message": "Du bevakar nu uppdateringar ifrån denna kategori",
     "ignore.message": "Du ignorerar nu uppdateringar ifrån denna kategori",
     "watched-categories": "Bevakade kategorier"

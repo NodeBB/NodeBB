@@ -31,7 +31,7 @@
     "flag_success": "Tento príspevok bol označený na úpravu. ",
     "deleted_message": "This topic has been deleted. Only users with topic management privileges can see it.",
     "following_topic.message": "Budete teraz príjimať notifikácie, ked niekto prispeje do témy.",
-    "not_following_topic.message": "Nebudete už dostávať notifikácie z tejto Témy",
+    "not_following_topic.message": "You will see this topic in the unread topics list, but you will not receive notifications when somebody posts to this topic.",
     "ignoring_topic.message": "You will no longer see this topic in the unread topics list.  You will be notified when you are mentioned or your post is up voted.",
     "login_to_subscribe": "Prosím Zaregistrujte sa alebo sa Prihláste, aby ste mohli odoberať túto Tému",
     "markAsUnreadForAll.success": "Téma označená ako neprečítaná pre všetkých.",

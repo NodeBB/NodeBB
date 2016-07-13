@@ -1,5 +1,6 @@
 {
     "register": "Registracija",
+    "cancel_registration": "Cancel Registration",
     "help.email": "Tvoj e-poštni naslov bo skrit po privzetih nastavitvah.",
     "help.username_restrictions": "Unikatno uporabniško ime med %1 in %2 znakov. Drugi vas lahko omenijo v objavi z @<span id='yourUsername'>Uporabnik</span>.",
     "help.minimum_password_length": "Tvoje geslo mora vsebovati najmanj %1 znakov.",
@@ -15,5 +16,8 @@
     "alternative_registration": "Alternativna registracija",
     "terms_of_use": "Pogoji uporabe",
     "agree_to_terms_of_use": "Strinjam se s pogoji uporabe",
-    "registration-added-to-queue": "Registracija uporabniškega profila je v postopku. Ob potrditvi s strani administratorja boste prejeli sporočilo v vaš e-poštni predal."
+    "terms_of_use_error": "You must agree to the Terms of Use",
+    "registration-added-to-queue": "Registracija uporabniškega profila je v postopku. Ob potrditvi s strani administratorja boste prejeli sporočilo v vaš e-poštni predal.",
+    "interstitial.intro": "We require some additional information before we can create your account.",
+    "interstitial.errors-found": "We could not complete your registration:"
 }

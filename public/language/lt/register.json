@@ -1,5 +1,6 @@
 {
     "register": "Registruotis",
+    "cancel_registration": "Cancel Registration",
     "help.email": "Pagal nutylėjimą, jūsų el. paštas nebus viešai matomas.",
     "help.username_restrictions": "Unikalus vartotojo vardas %1-%2 simbolių ilgio. Kiti vartotojai galės jus minėti @<span id='yourUsername'>vartotojas</span>.",
     "help.minimum_password_length": "Jūsų slaptažodis turi būti mažiausiai %1 simbolių.",
@@ -15,5 +16,8 @@
     "alternative_registration": "Alternatyvūs registracijos būdai",
     "terms_of_use": "Naudojimo sąlygos",
     "agree_to_terms_of_use": "Aš sutinku su vartojimo sąlygomis",
-    "registration-added-to-queue": "Jūsų registracijos prašymas buvo pridėtas į laukiančiųjų sąrašą. Jūs gausite el.paštu laišką kada administratorius patvirtins jus"
+    "terms_of_use_error": "You must agree to the Terms of Use",
+    "registration-added-to-queue": "Jūsų registracijos prašymas buvo pridėtas į laukiančiųjų sąrašą. Jūs gausite el.paštu laišką kada administratorius patvirtins jus",
+    "interstitial.intro": "We require some additional information before we can create your account.",
+    "interstitial.errors-found": "We could not complete your registration:"
 }

@@ -6,6 +6,7 @@
     "postcount": "Сообщений",
     "email": "Email",
     "confirm_email": "Подтвердить Email",
+    "account_info": "Account Info",
     "ban_account": "Заблокировать учетную запись",
     "ban_account_confirm": "Вы действительно хотите заблокировать этого пользователя?",
     "unban_account": "Разблокировать учетную запись",
@@ -107,5 +108,11 @@
     "custom_route_help": "Введите название маршрута здесь, без слешей (например, \\\"recent\\\", или \\\"popular\\\")",
     "sso.title": "Сервис единого входа",
     "sso.associated": "Связан с",
-    "sso.not-associated": "Нажмите здесь, что бы связать себя с"
+    "sso.not-associated": "Нажмите здесь, что бы связать себя с",
+    "info.latest-flags": "Latest Flags",
+    "info.no-flags": "No Flagged Posts Found",
+    "info.ban-history": "Recent Ban History",
+    "info.no-ban-history": "This user has never been banned",
+    "info.banned-until": "Banned until %1",
+    "info.banned-permanently": "Banned permanently"
 }

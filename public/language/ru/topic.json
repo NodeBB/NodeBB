@@ -31,7 +31,7 @@
     "flag_success": "Это сообщение было помечено для модерации",
     "deleted_message": "Эта тема была удалена. Только пользователи с правами управления темами могут ее видеть.",
     "following_topic.message": "Теперь вы будете получать уведомления при обновлении этой темы.",
-    "not_following_topic.message": "Вы больше не будете получать уведомления из этой темы.",
+    "not_following_topic.message": "You will see this topic in the unread topics list, but you will not receive notifications when somebody posts to this topic.",
     "ignoring_topic.message": "Вы больше не будете видеть эту тему в списке непрочитанных тем. Вас уведомят, когда Вас упомянут или проголосуют за Ваш пост.",
     "login_to_subscribe": "Пожалуйста зарегистрируйтесь, или войдите под своим аккаунтом, чтобы подписаться на эту тему.",
     "markAsUnreadForAll.success": "Тема помечена как непрочитанная для всех.",

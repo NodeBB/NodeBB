@@ -31,7 +31,7 @@
     "flag_success": "Bimaze kumenyeshwa ubuyobozi ngo bikurikiranwe. ",
     "deleted_message": "Iki kiganiro cyamaze gukurwaho. Abantu babifitiye uburenganzira ni bo bonyine bashobora kukibona. ",
     "following_topic.message": "Ntabwo uzongera kubimenyeshwa nihagira umuntu ugira icyo yandika kuri iki kiganiro. ",
-    "not_following_topic.message": "Ntabwo uzongera kujya umenyeshwa ku bibera muri iki kiganiro. ",
+    "not_following_topic.message": "You will see this topic in the unread topics list, but you will not receive notifications when somebody posts to this topic.",
     "ignoring_topic.message": "You will no longer see this topic in the unread topics list.  You will be notified when you are mentioned or your post is up voted.",
     "login_to_subscribe": "Ba umunyamuryango cyangwa winjiremo niba ushaka kwiyandikisha kuri iki kiganiro. ",
     "markAsUnreadForAll.success": "Ikiganiro kigizwe nk'icyasomwe na bose",

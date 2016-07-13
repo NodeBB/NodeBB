@@ -31,7 +31,7 @@
     "flag_success": "Dieser Beitrag wurde erfolgreich für die Moderation markiert.",
     "deleted_message": "Dieses Thema wurde gelöscht. Nur Nutzer mit entsprechenden Rechten können es sehen.",
     "following_topic.message": "Du erhälst nun eine Benachrichtigung, wenn jemand einen Beitrag zu diesem Thema verfasst.",
-    "not_following_topic.message": "Du erhälst keine weiteren Benachrichtigungen zu diesem Thema mehr.",
+    "not_following_topic.message": "You will see this topic in the unread topics list, but you will not receive notifications when somebody posts to this topic.",
     "ignoring_topic.message": "Ungelesene Beiträge in diesem Thema werden nicht mehr angezeigt. Du erhältst eine Benachrichtigung wenn du in diesem Thema erwähnt wirst oder deine Beiträge positiv bewertet werden.",
     "login_to_subscribe": "Bitte registrieren oder einloggen um dieses Thema zu abonnieren",
     "markAsUnreadForAll.success": "Thema für Alle als ungelesen markiert.",

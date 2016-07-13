@@ -1,5 +1,6 @@
 {
     "register": "Registra·ti",
+    "cancel_registration": "Cancel Registration",
     "help.email": "S'email tua est cuada pro su pùblicu in manera predefinida.",
     "help.username_restrictions": "Unu nùmene de impitadore ùnicu intre %1 e %2 caràtere. Is àteros t'ant a pòdere mentovare cun @<span id='yourUsername'>nùmeneimpitadore</span>.",
     "help.minimum_password_length": "Sa password depet èssere a su mancu de %1 caràteres.",
@@ -15,5 +16,8 @@
     "alternative_registration": "Registratziones Alternativas",
     "terms_of_use": "Tèrmines de Impreu",
     "agree_to_terms_of_use": "So de acòrdiu cun is Tèrmines de Impreu",
-    "registration-added-to-queue": "Your registration has been added to the approval queue. You will receive an email when it is accepted by an administrator."
+    "terms_of_use_error": "You must agree to the Terms of Use",
+    "registration-added-to-queue": "Your registration has been added to the approval queue. You will receive an email when it is accepted by an administrator.",
+    "interstitial.intro": "We require some additional information before we can create your account.",
+    "interstitial.errors-found": "We could not complete your registration:"
 }

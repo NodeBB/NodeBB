@@ -31,7 +31,7 @@
     "flag_success": "Det här inlägget har flaggats för moderering.",
     "deleted_message": "Det här ämnet har raderats. Endast användare med ämneshanterings-privilegier kan se det.",
     "following_topic.message": "Du kommer nu få notiser när någon gör inlägg i detta ämne.",
-    "not_following_topic.message": "Du kommer inte längre få notiser från detta ämne.",
+    "not_following_topic.message": "You will see this topic in the unread topics list, but you will not receive notifications when somebody posts to this topic.",
     "ignoring_topic.message": "Du kommer inte längre se detta ämne i listan olästa ämnen. Du kommer att meddelas när du nämns eller ditt inlägg är upp röstat.",
     "login_to_subscribe": "Var god registrera eller logga in för att kunna prenumerera på detta ämne.",
     "markAsUnreadForAll.success": "Ämne markerat som oläst av alla.",

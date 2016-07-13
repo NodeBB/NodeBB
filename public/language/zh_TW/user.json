@@ -6,6 +6,7 @@
     "postcount": "文章數量",
     "email": "電子郵件",
     "confirm_email": "確認電子郵件",
+    "account_info": "Account Info",
     "ban_account": "禁用帳號",
     "ban_account_confirm": "你確定要禁用這個使用者?",
     "unban_account": "取消禁用帳號",
@@ -107,5 +108,11 @@
     "custom_route_help": "在這裡輸入路由名稱，不需要在前面的斜線(例如recent或popular)",
     "sso.title": "單一簽入SSO服務",
     "sso.associated": "關連於",
-    "sso.not-associated": "點擊這裡進行關連於"
+    "sso.not-associated": "點擊這裡進行關連於",
+    "info.latest-flags": "Latest Flags",
+    "info.no-flags": "No Flagged Posts Found",
+    "info.ban-history": "Recent Ban History",
+    "info.no-ban-history": "This user has never been banned",
+    "info.banned-until": "Banned until %1",
+    "info.banned-permanently": "Banned permanently"
 }
