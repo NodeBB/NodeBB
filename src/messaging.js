@@ -121,6 +121,7 @@ var async = require('async'),
 					message.self = self ? 1 : 0;
 					message.timestampISO = utils.toISOString(message.timestamp);
 					message.newSet = false;
+					message.roomId = String(message.roomId || roomId);
 					if (message.hasOwnProperty('edited')) {
 						message.editedISO = new Date(parseInt(message.edited, 10)).toISOString();
 					}
