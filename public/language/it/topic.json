@@ -31,7 +31,7 @@
     "flag_success": "Questo post è stato contrassegnato per la moderazione.",
     "deleted_message": "Questa discussione è stata cancellata. Solo gli utenti con diritti di gestione possono vederla.",
     "following_topic.message": "Da ora riceverai notifiche quando qualcuno posterà in questa discussione.",
-    "not_following_topic.message": "Non riceverai più notifiche da questa discussione.",
+    "not_following_topic.message": "You will see this topic in the unread topics list, but you will not receive notifications when somebody posts to this topic.",
     "ignoring_topic.message": "You will no longer see this topic in the unread topics list.  You will be notified when you are mentioned or your post is up voted.",
     "login_to_subscribe": "Si prega di accedere o registrarsi per potersi iscrivere a questa discussione.",
     "markAsUnreadForAll.success": "Discussione segnata come non letta per tutti.",

@@ -31,7 +31,7 @@
     "flag_success": "Kiriman ini telah ditandakan untuk diselia",
     "deleted_message": "Topik ini telah dipadam. Hanya pengguna dengan kuasa pengurusan boleh melihatnya.",
     "following_topic.message": "Anda akan menerima makluman apabila ada kiriman ke dalam topik ini",
-    "not_following_topic.message": "Anda tidak lagi akan menerima makluman daripada topik ini",
+    "not_following_topic.message": "You will see this topic in the unread topics list, but you will not receive notifications when somebody posts to this topic.",
     "ignoring_topic.message": "You will no longer see this topic in the unread topics list.  You will be notified when you are mentioned or your post is up voted.",
     "login_to_subscribe": "Sila daftar atau log masuk untuk melanggani topik ini",
     "markAsUnreadForAll.success": "Topik ditanda sebagai belum dibaca untuk semua",

@@ -29,6 +29,7 @@
     "account/edit/password": "Redigerer adgangskode  for \"%1\"",
     "account/edit/username": "Redigerer brugernavn for \"%1\"",
     "account/edit/email": "Redigerer email for \"%1\"",
+    "account/info": "Account Info",
     "account/following": "Personer som %1 følger",
     "account/followers": "Personer som følger %1",
     "account/posts": "Indlæg oprettet af %1",

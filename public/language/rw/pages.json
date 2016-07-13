@@ -29,6 +29,7 @@
     "account/edit/password": "Uguhindura ijambobanga rya \"%1\"",
     "account/edit/username": "Uguhindura izina rya \"%1\"",
     "account/edit/email": "Uguhindura email ya \"%1\"",
+    "account/info": "Account Info",
     "account/following": "Abantu %1 akurikira",
     "account/followers": "Abantu bakurikira %1",
     "account/posts": "Ibyashyizweho na %1",

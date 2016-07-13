@@ -31,7 +31,7 @@
     "flag_success": "This post has been flagged for moderation.",
     "deleted_message": "This topic has been deleted. Only users with topic management privileges can see it.",
     "following_topic.message": "You will now be receiving notifications when somebody posts to this topic.",
-    "not_following_topic.message": "You will no longer receive notifications from this topic.",
+    "not_following_topic.message": "You will see this topic in the unread topics list, but you will not receive notifications when somebody posts to this topic.",
     "ignoring_topic.message": "You will no longer see this topic in the unread topics list.  You will be notified when you are mentioned or your post is up voted.",
     "login_to_subscribe": "Please register or log in in order to subscribe to this topic.",
     "markAsUnreadForAll.success": "Topic marked as unread for all.",

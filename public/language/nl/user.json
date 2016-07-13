@@ -6,6 +6,7 @@
     "postcount": "Aantal geplaatste berichten",
     "email": "E-mail",
     "confirm_email": "Bevestig e-mail",
+    "account_info": "Account Info",
     "ban_account": "Verban gebruiker",
     "ban_account_confirm": "Weet u zeker dat u deze gebruiker wilt verbannen?",
     "unban_account": "Verbanning intrekken",
@@ -107,5 +108,11 @@
     "custom_route_help": "Voer een route naam hier, zonder enige voorafgaande schuine streep (zoals, \"recente\" of \"populaire\")",
     "sso.title": "Single Sign-on Services",
     "sso.associated": "Geassocieerd met",
-    "sso.not-associated": "Klik hier om geassocieerd te worden met"
+    "sso.not-associated": "Klik hier om geassocieerd te worden met",
+    "info.latest-flags": "Latest Flags",
+    "info.no-flags": "No Flagged Posts Found",
+    "info.ban-history": "Recent Ban History",
+    "info.no-ban-history": "This user has never been banned",
+    "info.banned-until": "Banned until %1",
+    "info.banned-permanently": "Banned permanently"
 }

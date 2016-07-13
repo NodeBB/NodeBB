@@ -6,6 +6,7 @@
     "postcount": "Reconto de mensaxes",
     "email": "Correo Electrónico",
     "confirm_email": "Confirma o teu correo electrónico",
+    "account_info": "Account Info",
     "ban_account": "Suspender conta",
     "ban_account_confirm": "Estás seguro de que desexas expulsar a este usuario?",
     "unban_account": "Readmitir conta",
@@ -107,5 +108,11 @@
     "custom_route_help": "Introduza o nome de ruta aquí, sen ningunha barra (por exemplo, \"recente\", ou \"popular\")",
     "sso.title": "Servizos de Inicio de Sesión Único",
     "sso.associated": "Asociado con",
-    "sso.not-associated": "Pica aquí para asociarte con"
+    "sso.not-associated": "Pica aquí para asociarte con",
+    "info.latest-flags": "Latest Flags",
+    "info.no-flags": "No Flagged Posts Found",
+    "info.ban-history": "Recent Ban History",
+    "info.no-ban-history": "This user has never been banned",
+    "info.banned-until": "Banned until %1",
+    "info.banned-permanently": "Banned permanently"
 }

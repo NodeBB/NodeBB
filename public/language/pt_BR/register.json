@@ -1,5 +1,6 @@
 {
     "register": "Cadastrar",
+    "cancel_registration": "Cancel Registration",
     "help.email": "Por padrão seu email ficará invisível para o publico.",
     "help.username_restrictions": "Um nome de usuário único entre %1 e %2 caracteres. Os outros poderão te mencionar digitando @<span id='yourUsername'>usuário</span>.",
     "help.minimum_password_length": "Sua senha tem que ter no mínimo %1 caracteres.",
@@ -15,5 +16,8 @@
     "alternative_registration": "Cadastro Alternativo",
     "terms_of_use": "Termos de Uso",
     "agree_to_terms_of_use": "Eu concordo com os Termos de Uso",
-    "registration-added-to-queue": "O seu cadastro foi adicionado à fila de aprovação. Você receberá um email quando ele for aceito por um administrador."
+    "terms_of_use_error": "You must agree to the Terms of Use",
+    "registration-added-to-queue": "O seu cadastro foi adicionado à fila de aprovação. Você receberá um email quando ele for aceito por um administrador.",
+    "interstitial.intro": "We require some additional information before we can create your account.",
+    "interstitial.errors-found": "We could not complete your registration:"
 }

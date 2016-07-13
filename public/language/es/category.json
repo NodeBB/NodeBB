@@ -10,6 +10,10 @@
     "share_this_category": "Compartir esta categoría",
     "watch": "Siguiendo",
     "ignore": "Ignorando",
+    "watching": "Watching",
+    "ignoring": "Ignoring",
+    "watching.description": "Show topics in unread",
+    "ignoring.description": "Do not show topics in unread",
     "watch.message": "Ahora estás viendo actualizaciones de esta categoría",
     "ignore.message": "Ahora estás ignorando las actualizaciones de esta categoría",
     "watched-categories": "Categorías seguidas"

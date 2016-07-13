@@ -29,6 +29,7 @@
     "account/edit/password": "Chỉnh sửa mật khẩu của \"%1\"",
     "account/edit/username": "Chỉnh sửa tên đăng nhập của \"%1\"",
     "account/edit/email": "Chỉnh sửa email của \"%1\"",
+    "account/info": "Account Info",
     "account/following": "Thành viên %1 đang theo dõi",
     "account/followers": "Thành viên đang theo dõi %1",
     "account/posts": "Bài viết được đăng bởi %1",

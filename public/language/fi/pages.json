@@ -29,6 +29,7 @@
     "account/edit/password": "Editing password of \"%1\"",
     "account/edit/username": "Editing username of \"%1\"",
     "account/edit/email": "Editing email of \"%1\"",
+    "account/info": "Account Info",
     "account/following": "Ihmiset, jota %1 seuraa",
     "account/followers": "Ihmiset, jotka seuraavat %1",
     "account/posts": "Posts made by %1",

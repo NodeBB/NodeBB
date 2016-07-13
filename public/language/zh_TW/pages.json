@@ -29,6 +29,7 @@
     "account/edit/password": "編輯 \"%1\" 的密碼",
     "account/edit/username": "編輯\"%1\"的帳號",
     "account/edit/email": "編輯\"%1\"的電子郵件",
+    "account/info": "Account Info",
     "account/following": "使用者 %1 跟隨",
     "account/followers": "跟隨 %1 的使用者",
     "account/posts": "由 %1 發表的張貼",

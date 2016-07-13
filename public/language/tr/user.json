@@ -6,6 +6,7 @@
     "postcount": "Yayın Sayısı",
     "email": "E-posta",
     "confirm_email": "E-posta onayla",
+    "account_info": "Account Info",
     "ban_account": "Hesabı Dondur",
     "ban_account_confirm": "Hesabı dondurmak istediğinizden emin misiniz!",
     "unban_account": "Hesabı Kullanıma Aç",
@@ -107,5 +108,11 @@
     "custom_route_help": "Herhangi bir eğik çizgi olmadan, burada bir yol adını girin (örneğin \"yeniler\" veya \"popüler\")",
     "sso.title": "Tek giriş servisleri",
     "sso.associated": "Birleştirilmiş",
-    "sso.not-associated": "Birleştirmek için buraya tıklayın"
+    "sso.not-associated": "Birleştirmek için buraya tıklayın",
+    "info.latest-flags": "Latest Flags",
+    "info.no-flags": "No Flagged Posts Found",
+    "info.ban-history": "Recent Ban History",
+    "info.no-ban-history": "This user has never been banned",
+    "info.banned-until": "Banned until %1",
+    "info.banned-permanently": "Banned permanently"
 }

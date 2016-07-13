@@ -29,6 +29,7 @@
     "account/edit/password": "ویرایش کلمه ی عبورِ \"%1\"",
     "account/edit/username": "ویرایش نام کاربریِ \"%1\"",
     "account/edit/email": "ویرایش ایمیلِ \"%1\"",
+    "account/info": "Account Info",
     "account/following": "کاربرانی که %1 دنبال می‌کند",
     "account/followers": "کاربرانی که %1 را دنبال می‌کنند",
     "account/posts": "پست‌های %1",

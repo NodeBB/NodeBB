@@ -1,5 +1,6 @@
 {
     "register": "نام‌نویسی",
+    "cancel_registration": "Cancel Registration",
     "help.email": "به طور پیش‌فرض، ایمیل‌ی شما از دید همگان پنهان می‌شود.",
     "help.username_restrictions": "یک نام کاربری یکتا بین %1 و %2 نویسه. دیگران می‌توانند با @<span id='yourUsername'>نام‌کاربری</span> به شما اشاره کنند.",
     "help.minimum_password_length": "کلمه عبور شما باید دست‌کم %1 کاراکتر داشته باشد.",
@@ -15,5 +16,8 @@
     "alternative_registration": "روش ثبت نام جایگزین",
     "terms_of_use": "شرایط استفاده",
     "agree_to_terms_of_use": "با شرایط استفاده موافقم",
-    "registration-added-to-queue": "ثبت نام شما به صف تایید اضافه شد. وقتی توسط یک مدیر تایید شد شما ایمیلی دریافت خواهید کرد."
+    "terms_of_use_error": "You must agree to the Terms of Use",
+    "registration-added-to-queue": "ثبت نام شما به صف تایید اضافه شد. وقتی توسط یک مدیر تایید شد شما ایمیلی دریافت خواهید کرد.",
+    "interstitial.intro": "We require some additional information before we can create your account.",
+    "interstitial.errors-found": "We could not complete your registration:"
 }

@@ -31,7 +31,7 @@
     "flag_success": "Ta objava je bila prijavljena v pregled administratorju.",
     "deleted_message": "Ta tema je bila izbrisana. Le uporabniki s pravicami teme jo lahko vidijo.",
     "following_topic.message": "Sedaj boste dobili obvestila, ko bo nekdo objavil v to temo.",
-    "not_following_topic.message": "Ne boste več prejemali obvestil s te teme.",
+    "not_following_topic.message": "You will see this topic in the unread topics list, but you will not receive notifications when somebody posts to this topic.",
     "ignoring_topic.message": "You will no longer see this topic in the unread topics list.  You will be notified when you are mentioned or your post is up voted.",
     "login_to_subscribe": "Prosimo prijavite ali registrirajte se za naročanje o tej temi.",
     "markAsUnreadForAll.success": "Tema označena kot neprebrana za vse.",

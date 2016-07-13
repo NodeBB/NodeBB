@@ -6,6 +6,7 @@
     "postcount": "Nombre de messages",
     "email": "Email",
     "confirm_email": "Confirmer l'adresse email",
+    "account_info": "Account Info",
     "ban_account": "Bannir",
     "ban_account_confirm": "Êtes-vous sûr de bien vouloir bannir cet utilisateur ?",
     "unban_account": "Restaurer le Compte",
@@ -107,5 +108,11 @@
     "custom_route_help": "Entrez le nom d'une route ici, sans slash au début (par exemple \"recent\" ou \"popular\")",
     "sso.title": "Services d'authentification unique",
     "sso.associated": "Associé avec",
-    "sso.not-associated": "Cliquez ici pour associer"
+    "sso.not-associated": "Cliquez ici pour associer",
+    "info.latest-flags": "Latest Flags",
+    "info.no-flags": "No Flagged Posts Found",
+    "info.ban-history": "Recent Ban History",
+    "info.no-ban-history": "This user has never been banned",
+    "info.banned-until": "Banned until %1",
+    "info.banned-permanently": "Banned permanently"
 }

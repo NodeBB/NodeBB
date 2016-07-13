@@ -1,5 +1,6 @@
 {
     "register": "注册",
+    "cancel_registration": "Cancel Registration",
     "help.email": "默认情况下，您的电子邮箱不会公开。",
     "help.username_restrictions": "全局唯一的用户名，长度 %1 到 %2 个字。其他人可以使用 @<span id='yourUsername'>用户名</span> 提及您。",
     "help.minimum_password_length": "您的密码长度必须不少于 %1 个字。",
@@ -15,5 +16,8 @@
     "alternative_registration": "其他方式注册",
     "terms_of_use": "使用条款",
     "agree_to_terms_of_use": "我同意使用条款",
-    "registration-added-to-queue": "您的注册正在等待批准。一旦通过，管理员会发送邮件通知您。"
+    "terms_of_use_error": "You must agree to the Terms of Use",
+    "registration-added-to-queue": "您的注册正在等待批准。一旦通过，管理员会发送邮件通知您。",
+    "interstitial.intro": "We require some additional information before we can create your account.",
+    "interstitial.errors-found": "We could not complete your registration:"
 }

@@ -6,6 +6,7 @@
     "postcount": "Брой публикации",
     "email": "Е-поща",
     "confirm_email": "Потвърдете е-пощата",
+    "account_info": "Account Info",
     "ban_account": "Блокиране на акаунта",
     "ban_account_confirm": "Наистина ли искате да блокирате този потребител?",
     "unban_account": "Отблокиране на акаунта",
@@ -107,5 +108,11 @@
     "custom_route_help": "Въведете името на пътя тук, без наклонена черта пред него (пример: „recent“ или „popular“)",
     "sso.title": "Услуги за еднократно вписване",
     "sso.associated": "Свързан с",
-    "sso.not-associated": "Натиснете тук, за да свържете с"
+    "sso.not-associated": "Натиснете тук, за да свържете с",
+    "info.latest-flags": "Latest Flags",
+    "info.no-flags": "No Flagged Posts Found",
+    "info.ban-history": "Recent Ban History",
+    "info.no-ban-history": "This user has never been banned",
+    "info.banned-until": "Banned until %1",
+    "info.banned-permanently": "Banned permanently"
 }

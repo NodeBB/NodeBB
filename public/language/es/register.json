@@ -1,5 +1,6 @@
 {
     "register": "Registrarse",
+    "cancel_registration": "Cancel Registration",
     "help.email": "Por defecto, tu cuenta de correo electrónico estará oculta al publico.",
     "help.username_restrictions": "El nombre de usuario debe tener entre %1 y %2 carácteres. Los miembros pueden responderte escribiendo @<span id='yourUsername'>usuario</span>.",
     "help.minimum_password_length": "Tu contraseña debe tener al menos %1 carácteres.",
@@ -15,5 +16,8 @@
     "alternative_registration": "Métodos de registro alternativos",
     "terms_of_use": "Términos y Condiciones de uso",
     "agree_to_terms_of_use": "Acepto los Términos y Condiciones de uso",
-    "registration-added-to-queue": "Tu registro se ha añadido a la cola de aprobación,. Recibirás un correo cuando este sea aceptado por un administrador. "
+    "terms_of_use_error": "You must agree to the Terms of Use",
+    "registration-added-to-queue": "Tu registro se ha añadido a la cola de aprobación,. Recibirás un correo cuando este sea aceptado por un administrador. ",
+    "interstitial.intro": "We require some additional information before we can create your account.",
+    "interstitial.errors-found": "We could not complete your registration:"
 }

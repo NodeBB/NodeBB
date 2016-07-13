@@ -10,6 +10,10 @@
     "share_this_category": "Jaga seda kategooriat",
     "watch": "Vaata",
     "ignore": "Ignoreeri",
+    "watching": "Watching",
+    "ignoring": "Ignoring",
+    "watching.description": "Show topics in unread",
+    "ignoring.description": "Do not show topics in unread",
     "watch.message": "Jälgid nüüdsest teateid sellest kategooriast",
     "ignore.message": "Ignoreerid nüüdsest teateid sellest kategooriast",
     "watched-categories": "Jälgitavad kategooriad"

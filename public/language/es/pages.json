@@ -29,6 +29,7 @@
     "account/edit/password": "Editar contraseña de \"%1\"",
     "account/edit/username": "Editar nombre de usuario de \"%1\"",
     "account/edit/email": "Editar email \"%1\"",
+    "account/info": "Account Info",
     "account/following": "Gente que sigue %1",
     "account/followers": "Seguidores de %1",
     "account/posts": "Publicados por %1",

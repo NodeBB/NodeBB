@@ -31,7 +31,7 @@
     "flag_success": "התקבל דיווח על פוסט זה.",
     "deleted_message": "נושא זה נמחק. רק משתמשים עם ההרשאות המתאימות יכולים לצפות בו.",
     "following_topic.message": "מעתה, תקבל הודעות כאשר מישהו יעלה פוסט לנושא זה.",
-    "not_following_topic.message": "לא תקבל הודעות נוספות בנושא זה.",
+    "not_following_topic.message": "You will see this topic in the unread topics list, but you will not receive notifications when somebody posts to this topic.",
     "ignoring_topic.message": "You will no longer see this topic in the unread topics list.  You will be notified when you are mentioned or your post is up voted.",
     "login_to_subscribe": "אנא הרשם או התחבר על-מנת לעקוב אחר נושא זה.",
     "markAsUnreadForAll.success": "נושא זה סומן כלא נקרא לכולם.",

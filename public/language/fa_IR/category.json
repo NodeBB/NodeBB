@@ -10,6 +10,10 @@
     "share_this_category": "به اشتراک‌گذاری این دسته بندی",
     "watch": "پیگیری",
     "ignore": "نادیده گرفتن",
+    "watching": "Watching",
+    "ignoring": "Ignoring",
+    "watching.description": "Show topics in unread",
+    "ignoring.description": "Do not show topics in unread",
     "watch.message": "در حال حاضر شما به روز رسانی های این دسته بندی را دنبال می کنید",
     "ignore.message": "در حال حاضر شما به روز رسانی های این دسته بندی را نادیده میگیرد",
     "watched-categories": "دسته بندی های پیگیری شده"

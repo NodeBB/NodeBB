@@ -31,7 +31,7 @@
     "flag_success": "Dette innlegget har blitt rapportert.",
     "deleted_message": "Dette emnet har blitt slettet. Bare brukere med emnehåndterings-privilegier kan se den.",
     "following_topic.message": "Du vil nå motta varsler når noen skriver i denne tråden.",
-    "not_following_topic.message": "Du vil ikke lenger motta varsler fra denne tråden.",
+    "not_following_topic.message": "You will see this topic in the unread topics list, but you will not receive notifications when somebody posts to this topic.",
     "ignoring_topic.message": "You will no longer see this topic in the unread topics list.  You will be notified when you are mentioned or your post is up voted.",
     "login_to_subscribe": "Vennligst registrer deg eller logg inn for å abonnere på denne tråden.",
     "markAsUnreadForAll.success": "Tråd markert som ulest for alle.",

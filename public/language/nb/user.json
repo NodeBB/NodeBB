@@ -6,6 +6,7 @@
     "postcount": "Antall innlegg",
     "email": "E-post",
     "confirm_email": "Bekfreft e-post",
+    "account_info": "Account Info",
     "ban_account": "Utesteng kont",
     "ban_account_confirm": "Vil du virkelig utestenge denne brukeren?",
     "unban_account": "Opphev utestenging",
@@ -107,5 +108,11 @@
     "custom_route_help": "Enter a route name here, without any preceding slash (e.g. \"recent\", or \"popular\")",
     "sso.title": "Single Sign-on Services",
     "sso.associated": "Assosiert med",
-    "sso.not-associated": "Klikk her for å assosiere med"
+    "sso.not-associated": "Klikk her for å assosiere med",
+    "info.latest-flags": "Latest Flags",
+    "info.no-flags": "No Flagged Posts Found",
+    "info.ban-history": "Recent Ban History",
+    "info.no-ban-history": "This user has never been banned",
+    "info.banned-until": "Banned until %1",
+    "info.banned-permanently": "Banned permanently"
 }

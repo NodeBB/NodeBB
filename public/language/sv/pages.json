@@ -29,6 +29,7 @@
     "account/edit/password": "Redigerar lösenord för \"%1\"",
     "account/edit/username": "Redigerar användarnamn för \"%1\"",
     "account/edit/email": "Redigerar e-postadress för \"%1\"",
+    "account/info": "Account Info",
     "account/following": "Användare som %1 följer",
     "account/followers": "Användare som följer %1",
     "account/posts": "Inlägg skapade av %1",

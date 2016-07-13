@@ -1,5 +1,6 @@
 {
     "register": "Registrer",
+    "cancel_registration": "Cancel Registration",
     "help.email": "Som standard, holdes din e-post skjult for offentligheten.",
     "help.username_restrictions": "Et unikt brukernavn mellom %1 og %2 tegn. Andre kan nevne deg med @<span id='yourUsername'>brukernavn</span>.",
     "help.minimum_password_length": "Ditt passord må være minst %1 tegn.",
@@ -15,5 +16,8 @@
     "alternative_registration": "Alternativ registrering",
     "terms_of_use": "Vilkårene for bruk",
     "agree_to_terms_of_use": "Jeg godtar vilkårene for bruk",
-    "registration-added-to-queue": "Din registrering har blitt lagt til i godkjenningskøen. Du vil motta en e-post når denne blir akseptert av en administrator."
+    "terms_of_use_error": "You must agree to the Terms of Use",
+    "registration-added-to-queue": "Din registrering har blitt lagt til i godkjenningskøen. Du vil motta en e-post når denne blir akseptert av en administrator.",
+    "interstitial.intro": "We require some additional information before we can create your account.",
+    "interstitial.errors-found": "We could not complete your registration:"
 }
