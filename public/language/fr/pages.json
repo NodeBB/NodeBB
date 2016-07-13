@@ -29,7 +29,7 @@
     "account/edit/password": "Édition du mot de passe de \"%1\"",
     "account/edit/username": "Édition du nom d'utilisateur de \"%1\"",
     "account/edit/email": "Édition de l'e-mail de \"%1\"",
-    "account/info": "Account Info",
+    "account/info": "Informations du compte",
     "account/following": "Les personnes auxquelles %1 est abonné",
     "account/followers": "Les personnes abonnées à %1",
     "account/posts": "Messages postés par %1",

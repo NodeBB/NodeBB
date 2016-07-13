@@ -1,6 +1,6 @@
 {
     "register": "Регистрация",
-    "cancel_registration": "Cancel Registration",
+    "cancel_registration": "Отказване на регистрацията",
     "help.email": "По подразбиране, Вашата е-поща ще бъде скрита за останалите.",
     "help.username_restrictions": "Уникално потребителско име с дължина между %1 и %2 символа. Другите ще могат да Ви споменават чрез @<span id='yourUsername'>потребител</span>.",
     "help.minimum_password_length": "Дължината на паролата Ви трябва да е поне %1 символа.",
@@ -16,8 +16,8 @@
     "alternative_registration": "Друг начин за регистриране",
     "terms_of_use": "Условия за ползване",
     "agree_to_terms_of_use": "Съгласен съм с условията за ползване",
-    "terms_of_use_error": "You must agree to the Terms of Use",
+    "terms_of_use_error": "Трябва да се съгласите с условията за ползване",
     "registration-added-to-queue": "Вашата регистрация беше добавена в опашката за одобрение. Ще получите е-писмо, когато тя бъде одобрена от администратор.",
-    "interstitial.intro": "We require some additional information before we can create your account.",
-    "interstitial.errors-found": "We could not complete your registration:"
+    "interstitial.intro": "Нуждаем се от малко допълнителна информация, преди да можем да създадем акаунта Ви.",
+    "interstitial.errors-found": "Не можем да завършим Вашата регистрация:"
 }

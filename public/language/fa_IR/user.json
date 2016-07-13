@@ -6,7 +6,7 @@
     "postcount": "تعداد پست ها",
     "email": "رایانامه",
     "confirm_email": "تأیید ایمیل",
-    "account_info": "Account Info",
+    "account_info": "اطلاعات شناسه کاربری",
     "ban_account": "مسدود کردن حساب کاربری",
     "ban_account_confirm": "از مسدود کردن این کاربر اطمینان دارید؟",
     "unban_account": "آزاد کردن حساب کاربری",
@@ -111,8 +111,8 @@
     "sso.not-associated": "Click here to associate with",
     "info.latest-flags": "Latest Flags",
     "info.no-flags": "No Flagged Posts Found",
-    "info.ban-history": "Recent Ban History",
-    "info.no-ban-history": "This user has never been banned",
-    "info.banned-until": "Banned until %1",
-    "info.banned-permanently": "Banned permanently"
+    "info.ban-history": "تاریخچه مسدودیت اخیر",
+    "info.no-ban-history": "این کاربر هرگز مسدود نشده است",
+    "info.banned-until": "مسدود شده تا %1",
+    "info.banned-permanently": "مسدود شده به طور دائم"
 }
