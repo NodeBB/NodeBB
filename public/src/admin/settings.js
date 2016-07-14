@@ -1,8 +1,13 @@
-"use strict";
-/*global define, app, socket, ajaxify, RELATIVE_PATH */
+'use strict';
+/*global define, app, socket, ajaxify */
 
-define('admin/settings', ['uploader', 'sounds'], function(uploader, sounds) {
+define('admin/settings', ['uploader'], function(uploader) {
 	var Settings = {};
+
+	Settings.init = function() {
+		console.warn('[deprecation] require(\'admin/settings\').init() has been deprecated, please call require(\'admin/settings\').prepare() directly instead.');
+		Settings.prepare();
+	};
 
 	Settings.populateTOC = function() {
 		$('.settings-header').each(function() {
@@ -55,7 +60,7 @@ define('admin/settings', ['uploader', 'sounds'], function(uploader, sounds) {
 			}
 		}
 
-		revertBtn.off('click').on('click', function(e) {
+		revertBtn.off('click').on('click', function() {
 			ajaxify.refresh();
 		});
 
