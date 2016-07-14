@@ -31,7 +31,7 @@
     "flag_success": "Este mensaje ha sido reportado para moderación.",
     "deleted_message": "Este tema ha sido borrado. Solo los usuarios que tengan privilegios de administración de temas pueden verlo.",
     "following_topic.message": "Ahora recibiras notificaciones cuando alguien publique en este tema.",
-    "not_following_topic.message": "You will see this topic in the unread topics list, but you will not receive notifications when somebody posts to this topic.",
+    "not_following_topic.message": "Podras ver este tema en la lista de no leidos, pero no recibirás notificaciones cuando alguien escriba en él.",
     "ignoring_topic.message": "Ya no verás este tema en no leídos. Serás notificado si te mencionan o te votan.",
     "login_to_subscribe": "Por favor, conéctate para subscribirte a este tema.",
     "markAsUnreadForAll.success": "Publicación marcada como no leída para todos.",
