@@ -2,7 +2,7 @@
 
 /*global define, socket, app, ajaxify, config*/
 
-define('forum/account/settings', ['forum/account/header', 'components', 'csrf'], function(header, components, csrf) {
+define('forum/account/settings', ['forum/account/header', 'components'], function(header, components) {
 	var	AccountSettings = {};
 
 	AccountSettings.init = function() {
@@ -99,7 +99,7 @@ define('forum/account/settings', ['forum/account/header', 'components', 'csrf'],
 					url: config.relative_path + '/user/' + ajaxify.data.userslug + '/session/' + uuid,
 					method: 'delete',
 					headers: {
-						'x-csrf-token': csrf.get()
+						'x-csrf-token': config.csrf_token
 					}
 				}).done(function() {
 					parentEl.remove();

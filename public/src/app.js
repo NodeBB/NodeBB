@@ -15,10 +15,6 @@ app.cacheBuster = null;
 
 	app.cacheBuster = config['cache-buster'];
 
-	require(['csrf'], function(csrf) {
-		csrf.set(config.csrf_token);
-	});
-
 	bootbox.setDefaults({
 		locale: config.userLang
 	});
@@ -88,16 +84,14 @@ app.cacheBuster = null;
 	};
 
 	app.logout = function() {
-		require(['csrf'], function(csrf) {
-			$.ajax(config.relative_path + '/logout', {
-				type: 'POST',
-				headers: {
-					'x-csrf-token': csrf.get()
-				},
-				success: function() {
-					window.location.href = config.relative_path + '/';
-				}
-			});
+		$.ajax(config.relative_path + '/logout', {
+			type: 'POST',
+			headers: {
+				'x-csrf-token': config.csrf_token
+			},
+			success: function() {
+				window.location.href = config.relative_path + '/';
+			}
 		});
 	};
 
