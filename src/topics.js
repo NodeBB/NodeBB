@@ -164,6 +164,8 @@ var social = require('./social');
 						topics[i].unread = !results.hasRead[i] && !results.isIgnored[i];
 						topics[i].bookmark = results.bookmarks[i];
 						topics[i].unreplied = !topics[i].teaser;
+
+						topics[i].icons = [];
 					}
 				}
 
