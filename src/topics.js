@@ -211,6 +211,8 @@ var social = require('./social');
 				topicData.locked = parseInt(topicData.locked, 10) === 1;
 				topicData.pinned = parseInt(topicData.pinned, 10) === 1;
 
+				topicData.icons = [];
+
 				Topics.getRelatedTopics(topicData, uid, next);
 			},
 			function (related, next) {
