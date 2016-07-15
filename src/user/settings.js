@@ -123,7 +123,7 @@ module.exports = function(User) {
 			topicSearchEnabled: data.topicSearchEnabled,
 			delayImageLoading: data.delayImageLoading,
 			groupTitle: data.groupTitle,
-			homePageRoute: (data.homePageCustom || data.homePageRoute || '').replace(/^\//, ''),
+			homePageRoute: (data.homePageCustom || (data.homePageRoute !== 'custom' ? data.homePageRoute : '') || '').replace(/^\//, ''),
 			scrollToMyPost: data.scrollToMyPost
 		};
 
