@@ -49,7 +49,7 @@
     "nconf": "~0.8.2",
     "nodebb-plugin-composer-default": "4.0.9",
     "nodebb-plugin-dbsearch": "1.0.2",
-    "nodebb-plugin-emoji-extended": "1.1.0",
+    "nodebb-plugin-emoji-extended": "1.1.1",
     "nodebb-plugin-emoji-one": "1.1.5",
     "nodebb-plugin-markdown": "6.0.0",
     "nodebb-plugin-mentions": "1.1.2",
