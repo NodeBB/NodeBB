@@ -50,6 +50,8 @@ Controllers.home = function(req, res, next) {
 
 		if (route === 'categories' || route === '/') {
 			Controllers.categories.list(req, res, next);
+		} else if (route === 'unread') {
+			Controllers.unread.get(req, res, next);
 		} else if (route === 'recent') {
 			Controllers.recent.get(req, res, next);
 		} else if (route === 'popular') {
