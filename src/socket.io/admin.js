@@ -257,7 +257,6 @@ SocketAdmin.logs.clear = function(socket, data, callback) {
 };
 
 SocketAdmin.errors.clear = function(socket, data, callback) {
-	console.log('clearing errors?');
 	meta.errors.clear(callback);
 };
 
