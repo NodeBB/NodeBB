@@ -16,7 +16,7 @@ sessionController.revoke = function(req, res, next) {
 
 	async.waterfall([
 		function (next) {
-			db.getSortedSetRange('uid:' + req.uid + ':sessions', 0, -1, next);
+			db.getSortedSetRange('uid:' + res.locals.uid + ':sessions', 0, -1, next);
 		},
 		function (sids, done) {
 			async.eachSeries(sids, function(sid, next) {
@@ -38,7 +38,7 @@ sessionController.revoke = function(req, res, next) {
 				return next(new Error('[[error:no-session-found]]'));
 			}
 
-			user.auth.revokeSession(_id, req.uid, next);
+			user.auth.revokeSession(_id, res.locals.uid, next);
 		}
 	], function(err) {
 		if (err) {
