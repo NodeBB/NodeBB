@@ -54,7 +54,7 @@ recentController.get = function(req, res, next) {
 		var data = {};
 		data.topics = topics;
 		data.nextStart = stop + 1;
-		data.dbSet = 'topics:recent';
+		data.set = 'topics:recent';
 		data['feeds:disableRSS'] = parseInt(meta.config['feeds:disableRSS'], 10) === 1;
 		data.rssFeedUrl = nconf.get('relative_path') + '/recent.rss';
 		data.title = '[[pages:recent]]';
