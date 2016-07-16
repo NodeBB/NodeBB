@@ -1,6 +1,6 @@
 {
     "register": "Rexistrarse",
-    "cancel_registration": "Cancel Registration",
+    "cancel_registration": "Cancelar rexistro",
     "help.email": "Por defecto, o teu correo electrónico está oculto ao público.",
     "help.username_restrictions": "O nome de usuario debe ter entre %1 e %2 caracteres. Os outros usuarios poden mencionarte escribindo @<span id='yourUsername'>usuario</span>.",
     "help.minimum_password_length": "O teu contrasinal debe ter polo menos %1 caracteres.",
@@ -16,8 +16,8 @@
     "alternative_registration": "Métodos de rexistro alternativos",
     "terms_of_use": "Termos e Condicións de Uso",
     "agree_to_terms_of_use": "Acepto os Termos e Condicións de Uso",
-    "terms_of_use_error": "You must agree to the Terms of Use",
+    "terms_of_use_error": "Debes acepta-los termos de uso",
     "registration-added-to-queue": "O teu rexistro foi engadido á cola de aprobación. Recibirás un correo electrónico cando sexa aceptado por un administrador.",
-    "interstitial.intro": "We require some additional information before we can create your account.",
-    "interstitial.errors-found": "We could not complete your registration:"
+    "interstitial.intro": "Requírese información adicional antes de crea-la túa conta",
+    "interstitial.errors-found": "Non puidemos completa-lo teu rexistro:"
 }
