@@ -97,7 +97,9 @@ topicsController.get = function(req, res, callback) {
 				req.params.post_index = 0;
 			}
 			if (!settings.usePagination) {
-				currentPage = 1;
+				if (req.params.post_index !== 0) {
+					currentPage = 1;
+				}
 				if (reverse) {
 					postIndex = Math.max(0, postCount - (req.params.post_index || postCount) - Math.ceil(settings.postsPerPage / 2));
 				} else {
