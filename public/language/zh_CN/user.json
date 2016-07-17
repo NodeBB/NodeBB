@@ -6,7 +6,7 @@
     "postcount": "发帖数",
     "email": "电子邮件",
     "confirm_email": "确认电子邮箱",
-    "account_info": "Account Info",
+    "account_info": "账户信息",
     "ban_account": "禁止账户",
     "ban_account_confirm": "您确定禁止这位用户吗？",
     "unban_account": "解禁账户",
@@ -109,10 +109,10 @@
     "sso.title": "单点登录服务",
     "sso.associated": "关联到",
     "sso.not-associated": "点击这里关联",
-    "info.latest-flags": "Latest Flags",
-    "info.no-flags": "No Flagged Posts Found",
-    "info.ban-history": "Recent Ban History",
-    "info.no-ban-history": "This user has never been banned",
-    "info.banned-until": "Banned until %1",
-    "info.banned-permanently": "Banned permanently"
+    "info.latest-flags": "最新举报",
+    "info.no-flags": "没有找到被举报的帖子",
+    "info.ban-history": "最近封禁历史",
+    "info.no-ban-history": "该用户从未被封禁",
+    "info.banned-until": "封禁到 %1",
+    "info.banned-permanently": "永久封禁"
 }

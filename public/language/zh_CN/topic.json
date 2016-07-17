@@ -31,7 +31,7 @@
     "flag_success": "已举报此回帖。",
     "deleted_message": "此主题已被删除。只有拥有主题管理权限的用户可以查看。",
     "following_topic.message": "当有人回复此主题时，您会收到通知。",
-    "not_following_topic.message": "You will see this topic in the unread topics list, but you will not receive notifications when somebody posts to this topic.",
+    "not_following_topic.message": "您将在未读主题列表中看到这个主题，但您不会在帖子被回复时收到通知。",
     "ignoring_topic.message": "您将不会在未读主题列表里看到这个主题，但在被提到以及帖子被顶时仍将收到通知。",
     "login_to_subscribe": "请注册或登录后，再订阅此主题。",
     "markAsUnreadForAll.success": "将全部主题标为未读。",

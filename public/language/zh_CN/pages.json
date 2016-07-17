@@ -29,7 +29,7 @@
     "account/edit/password": "正在编辑 \"%1\" 的密码",
     "account/edit/username": "正在编辑 \"%1\" 的用户名",
     "account/edit/email": "正在编辑 \"%1\" 的电子邮箱",
-    "account/info": "Account Info",
+    "account/info": "账户信息",
     "account/following": "%1 关注",
     "account/followers": "关注 %1 的人",
     "account/posts": "%1 发布的帖子",
