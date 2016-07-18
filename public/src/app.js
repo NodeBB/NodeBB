@@ -351,6 +351,7 @@ app.cacheBuster = null;
 			if (!utils.isTouchDevice()) {
 				$(this).tooltip({
 					placement: 'bottom',
+					trigger: 'hover',
 					title: $(this).attr('title')
 				});
 			}
@@ -359,6 +360,7 @@ app.cacheBuster = null;
 		if (!utils.isTouchDevice()) {
 			$('#search-form').parent().tooltip({
 				placement: 'bottom',
+				trigger: 'hover',
 				title: $('#search-button i').attr('title')
 			});
 		}
@@ -366,6 +368,7 @@ app.cacheBuster = null;
 		if (!utils.isTouchDevice()) {
 			$('#user_dropdown').tooltip({
 				placement: 'bottom',
+				trigger: 'hover',
 				title: $('#user_dropdown').attr('title')
 			});
 		}
