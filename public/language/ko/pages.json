@@ -29,6 +29,7 @@
     "account/edit/password": "\"%1\" 의 패스워드 변경",
     "account/edit/username": "\"%1\" 의 사용자명 변경",
     "account/edit/email": "\"%1\" 의 이메일 변경",
+    "account/info": "Account Info",
     "account/following": "%1 명이 팔로우",
     "account/followers": "%1 명을 팔로우",
     "account/posts": "%1 님이 작성한 게시물",

@@ -6,6 +6,7 @@
     "postcount": "Postitusi",
     "email": "Email",
     "confirm_email": "Kinnita email",
+    "account_info": "Account Info",
     "ban_account": "Bannige kasutaja",
     "ban_account_confirm": "Kas te tõesti soovite antud kasutajat bannida?",
     "unban_account": "Eemaldage kontolt ban",
@@ -107,5 +108,11 @@
     "custom_route_help": "Sisestage tee nimi siia, ilma eelnevate kaldkriipsudeta (nt. \"recent\", või \"popular\")",
     "sso.title": "Ühekordse sisselogimisega teenused",
     "sso.associated": "Seotud koos",
-    "sso.not-associated": "Kliki siia, et siduda koos"
+    "sso.not-associated": "Kliki siia, et siduda koos",
+    "info.latest-flags": "Latest Flags",
+    "info.no-flags": "No Flagged Posts Found",
+    "info.ban-history": "Recent Ban History",
+    "info.no-ban-history": "This user has never been banned",
+    "info.banned-until": "Banned until %1",
+    "info.banned-permanently": "Banned permanently"
 }

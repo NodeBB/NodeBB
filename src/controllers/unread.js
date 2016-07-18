@@ -59,7 +59,10 @@ unreadController.get = function(req, res, next) {
 		data.categories = results.watchedCategories.categories;
 		data.selectedCategory = results.watchedCategories.selectedCategory;
 
-		data.breadcrumbs = helpers.buildBreadcrumbs([{text: '[[unread:title]]'}]);
+		if (req.path.startsWith('/api/unread') || req.path.startsWith('/unread')) {
+			data.breadcrumbs = helpers.buildBreadcrumbs([{text: '[[unread:title]]'}]);
+		}
+
 		data.title = '[[pages:unread]]';
 		data.filters = [{
 			name: '[[unread:all-topics]]',

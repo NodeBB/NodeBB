@@ -31,7 +31,7 @@
     "flag_success": "See postitus on nüüd märgistatud modereerimiseks.",
     "deleted_message": "See teema on kustutatud. Ainult kasutajad kellel on piisavalt õigusi saavad seda näha.",
     "following_topic.message": "Sulle ei edastata enam teateid uutest postitustest kui keegi postitab siia teemasse.",
-    "not_following_topic.message": "Sulle ei edastata enam teateid uutest postitustest siin teemas.",
+    "not_following_topic.message": "You will see this topic in the unread topics list, but you will not receive notifications when somebody posts to this topic.",
     "ignoring_topic.message": "Sa ei näe seda teemat enam lugemata teemade nimekirjas. Sind teavitatakse, kui Sind mainitakse või Sinu postitust kiidetakse heaks.",
     "login_to_subscribe": "Palun registreeru kasutajaks või logi sisse, et tellida teateid selle postituse kohta.",
     "markAsUnreadForAll.success": "Teema märgitud mitte-loetuks kõikidele.",

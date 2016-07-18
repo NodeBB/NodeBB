@@ -31,7 +31,7 @@
     "flag_success": "Este post foi sinalizado para ser moderado.",
     "deleted_message": "Este tópico foi deletado. Apenas usuários com privilégios de moderação de tópico podem vê-lo.",
     "following_topic.message": "Agora você receberá notificações quando alguém responder este tópico.",
-    "not_following_topic.message": "Você não receberá mais notificações sobre este tópico.",
+    "not_following_topic.message": "You will see this topic in the unread topics list, but you will not receive notifications when somebody posts to this topic.",
     "ignoring_topic.message": "Você não verá mais este tópico na lista de tópicos não lidos. Você será notificado quando você for mencionado ou sua postagem for votada positivamente.",
     "login_to_subscribe": "Por favor se cadastre ou entre para assinar à este tópico.",
     "markAsUnreadForAll.success": "Tópico marcado como não lido para todos.",

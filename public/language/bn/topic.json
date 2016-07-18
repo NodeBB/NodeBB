@@ -31,7 +31,7 @@
     "flag_success": "এই পোস্টটি মডারেশনের জন্য ফ্ল্যাগ করা হয়েছে।",
     "deleted_message": "এই টপিকটি মুছে ফেলা হয়েছে। শুধুমাত্র টপিক ব্যবস্থাপনার ক্ষমতাপ্রাপ্ত সদস্যগণ এটি দেখতে পারবেন।",
     "following_topic.message": "এখন থেকে এই টপিকে অন্যকেউ পোস্ট করলে আপনি নোটিফিকেশন পাবেন।",
-    "not_following_topic.message": "এই টপিক থেকে আপনি আর নোটিফিকেশন পাবেন না।",
+    "not_following_topic.message": "You will see this topic in the unread topics list, but you will not receive notifications when somebody posts to this topic.",
     "ignoring_topic.message": "You will no longer see this topic in the unread topics list.  You will be notified when you are mentioned or your post is up voted.",
     "login_to_subscribe": "এই টপিকে সাবস্ক্রাইব করতে চাইলে অনুগ্রহ করে নিবন্ধণ করুন অথবা প্রবেশ করুন।",
     "markAsUnreadForAll.success": "টপিকটি সবার জন্য অপঠিত হিসাবে মার্ক করুন।",

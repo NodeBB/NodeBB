@@ -29,6 +29,8 @@
 	"tools": "Tools",
 	"flag": "Flag",
 	"locked": "Locked",
+	"pinned": "Pinned",
+	"moved": "Moved",
 
 	"bookmark_instructions" : "Click here to return to the last read post in this thread.",
 

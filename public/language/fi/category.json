@@ -10,6 +10,10 @@
     "share_this_category": "Jaa tämä kategoria",
     "watch": "Watch",
     "ignore": "Sivuuta",
+    "watching": "Watching",
+    "ignoring": "Ignoring",
+    "watching.description": "Show topics in unread",
+    "ignoring.description": "Do not show topics in unread",
     "watch.message": "You are now watching updates from this category",
     "ignore.message": "You are now ignoring updates from this category",
     "watched-categories": "Watched categories"

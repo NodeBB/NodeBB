@@ -6,6 +6,7 @@
     "postcount": "Reconto de mensaxes",
     "email": "Correo Electrónico",
     "confirm_email": "Confirma o teu correo electrónico",
+    "account_info": "Información da conta",
     "ban_account": "Suspender conta",
     "ban_account_confirm": "Estás seguro de que desexas expulsar a este usuario?",
     "unban_account": "Readmitir conta",
@@ -95,8 +96,8 @@
     "delay_image_loading": "Retrasar a carga de imaxes",
     "image_load_delay_help": "Se se habilita, as imaxes non cargarán hasta que sexan visibles na pantalla",
     "scroll_to_my_post": "Logo de enviar unha resposta, mostrar a nova mensaxe",
-    "follow_topics_you_reply_to": "Watch topics that you reply to",
-    "follow_topics_you_create": "Watch topics you create",
+    "follow_topics_you_reply_to": "Segui-los temas aos que respondes",
+    "follow_topics_you_create": "Segui-los temas que creaches ti",
     "grouptitle": "Título do Grupo",
     "no-group-title": "Sen titulo de grupo",
     "select-skin": "Seleccionar apariencia",
@@ -107,5 +108,11 @@
     "custom_route_help": "Introduza o nome de ruta aquí, sen ningunha barra (por exemplo, \"recente\", ou \"popular\")",
     "sso.title": "Servizos de Inicio de Sesión Único",
     "sso.associated": "Asociado con",
-    "sso.not-associated": "Pica aquí para asociarte con"
+    "sso.not-associated": "Pica aquí para asociarte con",
+    "info.latest-flags": "Últimos reportes",
+    "info.no-flags": "Non se atopou ninguna mensaxe reportada",
+    "info.ban-history": "Histórico recente de bans",
+    "info.no-ban-history": "Este usuario nunca foi baneado",
+    "info.banned-until": "Baneado hasta 1%",
+    "info.banned-permanently": "Baneado permanentemente"
 }

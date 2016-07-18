@@ -31,7 +31,7 @@
     "flag_success": "تم الإشعار بهذه المشاركة على أنها مخلة",
     "deleted_message": "هذه المشاركة محذوفة. فقط من لهم صلاحية الإشراف على ا لمشاركات يمكنهم معاينتها.",
     "following_topic.message": "ستستلم تنبيها عند كل مشاركة جديدة في هذا الموضوع.",
-    "not_following_topic.message": "لن تستلم أي تنبيه بخصوص عذا الموضوع بعد الآن.",
+    "not_following_topic.message": "You will see this topic in the unread topics list, but you will not receive notifications when somebody posts to this topic.",
     "ignoring_topic.message": "You will no longer see this topic in the unread topics list.  You will be notified when you are mentioned or your post is up voted.",
     "login_to_subscribe": "المرجو إنشاء حساب أو تسجيل الدخول حتى يمكنك متابعة هذا الموضوع.",
     "markAsUnreadForAll.success": "تم تحديد الموضوع على أنه غير مقروء.",

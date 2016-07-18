@@ -31,7 +31,7 @@
     "flag_success": "Dette indlæg er blevet meldt til moderation.",
     "deleted_message": "Denne tråd er blevet slettet. Kun brugere med emne behandlings privilegier kan se den.",
     "following_topic.message": "Du vil nu modtage notifikationer når nogle skriver et indlæg i dette emne.",
-    "not_following_topic.message": "Du vil ikke længere modtage notifikationer fra dette emne.",
+    "not_following_topic.message": "You will see this topic in the unread topics list, but you will not receive notifications when somebody posts to this topic.",
     "ignoring_topic.message": "You will no longer see this topic in the unread topics list.  You will be notified when you are mentioned or your post is up voted.",
     "login_to_subscribe": "Venligt registrer eller login for at abbonere på dette emne.",
     "markAsUnreadForAll.success": "Emnet er market ulæst for alle.",

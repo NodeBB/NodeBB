@@ -6,6 +6,7 @@
     "postcount": "投稿数",
     "email": "メール",
     "confirm_email": "メールアドレスを確認",
+    "account_info": "Account Info",
     "ban_account": "BANアカウント",
     "ban_account_confirm": "本当にこのユーザーをBANしますか？",
     "unban_account": "禁止アカウント解除します",
@@ -107,5 +108,11 @@
     "custom_route_help": "ここにルート名を入れます。手前にスラッシュを入れないこと（例：\"recent\"、\"popular\"など)",
     "sso.title": "シングルサインオンサービス",
     "sso.associated": "関連付けられています",
-    "sso.not-associated": "ここを押して、関連付けられています"
+    "sso.not-associated": "ここを押して、関連付けられています",
+    "info.latest-flags": "Latest Flags",
+    "info.no-flags": "No Flagged Posts Found",
+    "info.ban-history": "Recent Ban History",
+    "info.no-ban-history": "This user has never been banned",
+    "info.banned-until": "Banned until %1",
+    "info.banned-permanently": "Banned permanently"
 }

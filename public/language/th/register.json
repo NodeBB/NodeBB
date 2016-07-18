@@ -1,5 +1,6 @@
 {
     "register": "ลงทะเบียน",
+    "cancel_registration": "Cancel Registration",
     "help.email": "ผู้ใช้อื่น ๆ จะไม่สามารถมองเห็นอีเมลของคุณโดยดีฟอลต์",
     "help.username_restrictions": "ชื่อผู้ใช้ที่ไม่ซ้ำกับผู้อื่น  จะต้องมีความยาวระหว่าง% 1% และ %2 ตัวอักษร ผู้ใช้อื่นๆ สามารถพูดถึงคุณโดย @<span id='yourUsername'>ชื่อผู้ใช้</ span>",
     "help.minimum_password_length": "ความยาวรหัสผ่านของคุณต้องมีอย่างน้อย %1 ตัวอักษร",
@@ -15,5 +16,8 @@
     "alternative_registration": "เข้าสู่ระบบโดยทางอื่น",
     "terms_of_use": "เงื่อนไขการใช้งาน",
     "agree_to_terms_of_use": "ยอมรับข้อตกลงในการใช้งาน",
-    "registration-added-to-queue": "Your registration has been added to the approval queue. You will receive an email when it is accepted by an administrator."
+    "terms_of_use_error": "You must agree to the Terms of Use",
+    "registration-added-to-queue": "Your registration has been added to the approval queue. You will receive an email when it is accepted by an administrator.",
+    "interstitial.intro": "We require some additional information before we can create your account.",
+    "interstitial.errors-found": "We could not complete your registration:"
 }

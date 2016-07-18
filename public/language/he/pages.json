@@ -29,6 +29,7 @@
     "account/edit/password": "עורך את הסיסמה של \"%1\"",
     "account/edit/username": "עורך את שם המשתמש של \"%1\"",
     "account/edit/email": "עורך את כתובת המייל של \"%1\"",
+    "account/info": "Account Info",
     "account/following": "אנשים ש%1 עוקב אחריהם",
     "account/followers": "אנשים שעוקבים אחרי %1",
     "account/posts": "הודעות שפורסמו על ידי %1",

@@ -6,6 +6,7 @@
     "postcount": "게시물 작성 수",
     "email": "이메일",
     "confirm_email": "이메일 확인",
+    "account_info": "Account Info",
     "ban_account": "차단된 계정",
     "ban_account_confirm": "이 사용자를 차단하시겠습니까?",
     "unban_account": "차단 해제",
@@ -107,5 +108,11 @@
     "custom_route_help": "라우팅 이름을 앞쪽 '/' 없이 입력해주세요 (예: \"최근 목록\", \"인기 게시물\")",
     "sso.title": "통합 인증 서비스",
     "sso.associated": "연관짓기 - ",
-    "sso.not-associated": "이 곳을 클리하여 연관지으세요."
+    "sso.not-associated": "이 곳을 클리하여 연관지으세요.",
+    "info.latest-flags": "Latest Flags",
+    "info.no-flags": "No Flagged Posts Found",
+    "info.ban-history": "Recent Ban History",
+    "info.no-ban-history": "This user has never been banned",
+    "info.banned-until": "Banned until %1",
+    "info.banned-permanently": "Banned permanently"
 }

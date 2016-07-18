@@ -1,15 +1,12 @@
-"use strict";
-/*global define, app, socket, ajaxify, RELATIVE_PATH */
+'use strict';
+/*global define, app, socket, ajaxify */
 
-define('admin/settings', ['uploader', 'sounds'], function(uploader, sounds) {
+define('admin/settings', ['uploader'], function(uploader) {
 	var Settings = {};
 
 	Settings.init = function() {
-		if (!app.config) {
-			$(window).on('action:config.loaded', Settings.prepare);
-		} else {
-			Settings.prepare();
-		}
+		console.warn('[deprecation] require(\'admin/settings\').init() has been deprecated, please call require(\'admin/settings\').prepare() directly instead.');
+		Settings.prepare();
 	};
 
 	Settings.populateTOC = function() {
@@ -63,7 +60,7 @@ define('admin/settings', ['uploader', 'sounds'], function(uploader, sounds) {
 			}
 		}
 
-		revertBtn.off('click').on('click', function(e) {
+		revertBtn.off('click').on('click', function() {
 			ajaxify.refresh();
 		});
 
@@ -168,11 +165,9 @@ define('admin/settings', ['uploader', 'sounds'], function(uploader, sounds) {
 				return callback(err);
 			}
 
-			if (app.config) {
-				for(var field in data) {
-					if (data.hasOwnProperty(field)) {
-						app.config[field] = data[field];
-					}
+			for(var field in data) {
+				if (data.hasOwnProperty(field)) {
+					app.config[field] = data[field];
 				}
 			}
 

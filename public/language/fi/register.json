@@ -1,5 +1,6 @@
 {
     "register": "Rekisteröidy",
+    "cancel_registration": "Cancel Registration",
     "help.email": "Oletuksena sähköpostiosoitettasi ei näytetä muille.",
     "help.username_restrictions": "Yksilöllisen käyttäjätunnuksen pitää olla %1-%2 merkkiä pitkä. Toiset voivat mainita sinut @<span id='yourUsername'>username</span>.",
     "help.minimum_password_length": "Salasanasi pitää olla vähintään %1 merkin mittainen.",
@@ -15,5 +16,8 @@
     "alternative_registration": "Vaihtoehtoiset rekisteröitymistavat",
     "terms_of_use": "Käyttöehdot",
     "agree_to_terms_of_use": "Hyväksyn käyttöehdot",
-    "registration-added-to-queue": "Your registration has been added to the approval queue. You will receive an email when it is accepted by an administrator."
+    "terms_of_use_error": "You must agree to the Terms of Use",
+    "registration-added-to-queue": "Your registration has been added to the approval queue. You will receive an email when it is accepted by an administrator.",
+    "interstitial.intro": "We require some additional information before we can create your account.",
+    "interstitial.errors-found": "We could not complete your registration:"
 }

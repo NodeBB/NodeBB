@@ -6,6 +6,7 @@
     "postcount": "Beiträge",
     "email": "E-Mail",
     "confirm_email": "E-Mail bestätigen",
+    "account_info": "Account Info",
     "ban_account": "Konto sperren",
     "ban_account_confirm": "Bist du sicher, dass du diesen Benutzer sperren möchtest?",
     "unban_account": "Konto entsperren",
@@ -107,5 +108,11 @@
     "custom_route_help": "Gib hier einen Pfadnamen ohne vorangehenden Slash ein (z.B. \"recent\" oder \"popular\")",
     "sso.title": "Single Sign-on Dienste",
     "sso.associated": "Verbunden mit",
-    "sso.not-associated": "Verbinde dich mit"
+    "sso.not-associated": "Verbinde dich mit",
+    "info.latest-flags": "Latest Flags",
+    "info.no-flags": "No Flagged Posts Found",
+    "info.ban-history": "Recent Ban History",
+    "info.no-ban-history": "This user has never been banned",
+    "info.banned-until": "Banned until %1",
+    "info.banned-permanently": "Banned permanently"
 }

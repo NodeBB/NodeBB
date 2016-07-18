@@ -167,6 +167,10 @@ function getHomePageRoutes(callback) {
 					name: 'Categories'
 				},
 				{
+					route: 'unread',
+					name: 'Unread'
+				},
+				{
 					route: 'recent',
 					name: 'Recent'
 				},

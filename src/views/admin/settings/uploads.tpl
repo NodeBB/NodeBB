@@ -20,13 +20,6 @@
 				</label>
 			</div>
 
-			<div class="checkbox">
-				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
-					<input class="mdl-switch__input" type="checkbox" data-field="allowGuestUploads">
-					<span class="mdl-switch__label"><strong>Allow Guests to Upload Files</strong></span>
-				</label>
-			</div>
-			
 			<div class="form-group">
 				<label for="maximumImageWidth">Resize images down to specified width (in pixels)</label>
 				<input type="text" class="form-control" value="760" data-field="maximumImageWidth" placeholder="760">
@@ -52,7 +45,7 @@
 
 			<div class="form-group">
 				<label for="topicThumbSize">Topic Thumb Size</label>
-				<input type="text" class="form-control" value="120" data-field="topicThumbSize"> 
+				<input type="text" class="form-control" value="120" data-field="topicThumbSize">
 			</div>
 
 			<div class="form-group">

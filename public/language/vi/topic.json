@@ -31,7 +31,7 @@
     "flag_success": "Chủ đề này đã được flag để chỉnh sửa",
     "deleted_message": "Chủ đề này đã bị xóa. Chỉ ban quản trị mới xem được.",
     "following_topic.message": "Từ giờ bạn sẽ nhận được thông báo khi có ai đó gửi bài viết trong chủ đề này",
-    "not_following_topic.message": "Bạn sẽ không còn nhận được thông báo từ chủ đề này",
+    "not_following_topic.message": "You will see this topic in the unread topics list, but you will not receive notifications when somebody posts to this topic.",
     "ignoring_topic.message": "Bạn sẽ không còn xem được chủ đề này trong danh sách các chủ đề chưa đọc nữa. Bạn sẽ nhận được thông báo khi bạn được đề cập tới hoặc bài viết của bạn được bỏ phiếu.",
     "login_to_subscribe": "Xin hãy đăng ký hoặc đăng nhập để theo dõi topic này",
     "markAsUnreadForAll.success": "Chủ đề đã được đánh dấu là chưa đọc toàn bộ",

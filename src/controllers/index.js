@@ -50,6 +50,8 @@ Controllers.home = function(req, res, next) {
 
 		if (route === 'categories' || route === '/') {
 			Controllers.categories.list(req, res, next);
+		} else if (route === 'unread') {
+			Controllers.unread.get(req, res, next);
 		} else if (route === 'recent') {
 			Controllers.recent.get(req, res, next);
 		} else if (route === 'popular') {
@@ -118,9 +120,13 @@ Controllers.login = function(req, res, next) {
 	data.title = '[[pages:login]]';
 
 	if (!data.allowLocalLogin && !data.allowRegistration && data.alternate_logins && data.authentication.length === 1) {
-		return helpers.redirect(res, {
-			external: data.authentication[0].url
-		});
+		if (res.locals.isAPI) {
+			return helpers.redirect(res, {
+				external: data.authentication[0].url
+			});
+		} else {
+			return res.redirect(data.authentication[0].url);
+		}
 	}
 	if (req.uid) {
 		user.getUserFields(req.uid, ['username', 'email'], function(err, user) {

@@ -1,5 +1,6 @@
 {
     "register": "Mendaftar",
+    "cancel_registration": "Cancel Registration",
     "help.email": "E-mel akan disembunyikan daripada orang ramai.",
     "help.username_restrictions": "Cuba satu nama pengguna yang unik di antara %1 dan %2 aksara. Orang lain boleh menyebut anda dengan @<span id='yourUsername'>nama pengguna</ span>.",
     "help.minimum_password_length": "Panjang kata laluan anda hendaklah sekurang-kurangnya %1 aksara.",
@@ -15,5 +16,8 @@
     "alternative_registration": "Pendaftaran Alternatif",
     "terms_of_use": "Terma Penggunaan",
     "agree_to_terms_of_use": "Saya bersetuju dengan Terma Penggunaan",
-    "registration-added-to-queue": "Pendaftaran anda sedang dimasukkan ke barisan pengesahan. Anda akan menerima emel setelah diterima oleh pentadbir."
+    "terms_of_use_error": "You must agree to the Terms of Use",
+    "registration-added-to-queue": "Pendaftaran anda sedang dimasukkan ke barisan pengesahan. Anda akan menerima emel setelah diterima oleh pentadbir.",
+    "interstitial.intro": "We require some additional information before we can create your account.",
+    "interstitial.errors-found": "We could not complete your registration:"
 }
