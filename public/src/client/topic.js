@@ -260,7 +260,7 @@ define('forum/topic', [
 
 				Topic.replaceURLTimeout = 0;
 				if (history.replaceState) {
-					var search = (window.location.search ? window.location.search : '');
+					var search = (window.location.search && !/^\?page=\d+$/.test(window.location.search) ? window.location.search : '');
 					history.replaceState({
 						url: newUrl + search
 					}, null, window.location.protocol + '//' + window.location.host + RELATIVE_PATH + '/' + newUrl + search);
