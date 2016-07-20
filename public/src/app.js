@@ -56,8 +56,8 @@ app.cacheBuster = null;
 
 		socket.removeAllListeners('event:nodebb.ready');
 		socket.on('event:nodebb.ready', function(data) {
-			if (!app.cacheBusters || app.cacheBusters['cache-buster'] !== data['cache-buster']) {
-				app.cacheBusters = data;
+			if (!app.cacheBuster || app.cacheBuster !== data['cache-buster']) {
+				app.cacheBuster = data['cache-buster'];
 
 				app.alert({
 					alert_id: 'forum_updated',
