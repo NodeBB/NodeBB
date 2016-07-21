@@ -58,7 +58,8 @@ module.exports = function(Posts) {
 
 				plugins.fireHook('filter:post.save', postData, next);
 			},
-			function(postData, next) {
+			function(_postData, next) {
+				postData = _postData;
 				db.setObject('post:' + postData.pid, postData, next);
 			},
 			function(next) {
