@@ -19,7 +19,6 @@ var topicsController = {};
 
 topicsController.get = function(req, res, callback) {
 	var tid = req.params.topic_id;
-	var sort = req.query.sort;
 	var currentPage = parseInt(req.query.page, 10) || 1;
 	var pageCount = 1;
 	var userPrivileges;
@@ -76,16 +75,11 @@ topicsController.get = function(req, res, callback) {
 
 			var set = 'tid:' + tid + ':posts';
 			var reverse = false;
-
 			// `sort` qs has priority over user setting
+			var sort = req.query.sort || settings.topicPostSort;
 			if (sort === 'newest_to_oldest') {
 				reverse = true;
 			} else if (sort === 'most_votes') {
-				reverse = true;
-				set = 'tid:' + tid + ':posts:votes';
-			} else if (settings.topicPostSort === 'newest_to_oldest') {
-				reverse = true;
-			} else if (settings.topicPostSort === 'most_votes') {
 				reverse = true;
 				set = 'tid:' + tid + ':posts:votes';
 			}
@@ -270,7 +264,7 @@ topicsController.get = function(req, res, callback) {
 		data.postDeleteDuration = parseInt(meta.config.postDeleteDuration, 10) || 0;
 		data.scrollToMyPost = settings.scrollToMyPost;
 		data.rssFeedUrl = nconf.get('relative_path') + '/topic/' + data.tid + '.rss';
-		data.pagination = pagination.create(currentPage, pageCount);
+		data.pagination = pagination.create(currentPage, pageCount, req.query);
 		data.pagination.rel.forEach(function(rel) {
 			rel.href = nconf.get('url') + '/topic/' + data.slug + rel.href;
 			res.locals.linkTags.push(rel);
