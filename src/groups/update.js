@@ -17,54 +17,63 @@ module.exports = function(Groups) {
 				return callback(err || new Error('[[error:no-group]]'));
 			}
 
-			var payload = {
-				description: values.description || '',
-				icon: values.icon || '',
-				labelColor: values.labelColor || '#000000'
-			};
-
-			if (values.hasOwnProperty('userTitle')) {
-				payload.userTitle = values.userTitle || '';
-			}
-
-			if (values.hasOwnProperty('userTitleEnabled')) {
-				payload.userTitleEnabled = values.userTitleEnabled ? '1' : '0';
-			}
-
-			if (values.hasOwnProperty('hidden')) {
-				payload.hidden = values.hidden ? '1' : '0';
-			}
-
-			if (values.hasOwnProperty('private')) {
-				payload.private = values.private ? '1' : '0';
-			}
-
-			if (values.hasOwnProperty('disableJoinRequests')) {
-				payload.disableJoinRequests = values.disableJoinRequests ? '1' : '0';
-			}
-
-			async.series([
-				async.apply(checkNameChange, groupName, values.name),
-				async.apply(updatePrivacy, groupName, values.private),
-				function(next) {
-					if (values.hasOwnProperty('hidden')) {
-						updateVisibility(groupName, values.hidden, next);
-					} else {
-						next();
-					}
-				},
-				async.apply(db.setObject, 'group:' + groupName, payload),
-				async.apply(renameGroup, groupName, values.name)
-			], function(err) {
+			plugins.fireHook('filter:group.update', {
+				groupName: groupName,
+				values: values
+			}, function(err) {
 				if (err) {
 					return callback(err);
 				}
 
-				plugins.fireHook('action:group.update', {
-					name: groupName,
-					values: values
+				var payload = {
+					description: values.description || '',
+					icon: values.icon || '',
+					labelColor: values.labelColor || '#000000'
+				};
+	
+				if (values.hasOwnProperty('userTitle')) {
+					payload.userTitle = values.userTitle || '';
+				}
+	
+				if (values.hasOwnProperty('userTitleEnabled')) {
+					payload.userTitleEnabled = values.userTitleEnabled ? '1' : '0';
+				}
+	
+				if (values.hasOwnProperty('hidden')) {
+					payload.hidden = values.hidden ? '1' : '0';
+				}
+	
+				if (values.hasOwnProperty('private')) {
+					payload.private = values.private ? '1' : '0';
+				}
+	
+				if (values.hasOwnProperty('disableJoinRequests')) {
+					payload.disableJoinRequests = values.disableJoinRequests ? '1' : '0';
+				}
+	
+				async.series([
+					async.apply(checkNameChange, groupName, values.name),
+					async.apply(updatePrivacy, groupName, values.private),
+					function(next) {
+						if (values.hasOwnProperty('hidden')) {
+							updateVisibility(groupName, values.hidden, next);
+						} else {
+							next();
+						}
+					},
+					async.apply(db.setObject, 'group:' + groupName, payload),
+					async.apply(renameGroup, groupName, values.name)
+				], function(err) {
+					if (err) {
+						return callback(err);
+					}
+	
+					plugins.fireHook('action:group.update', {
+						name: groupName,
+						values: values
+					});
+					callback();
 				});
-				callback();
 			});
 		});
 	};
