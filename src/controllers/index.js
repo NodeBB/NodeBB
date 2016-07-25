@@ -108,6 +108,8 @@ Controllers.login = function(req, res, next) {
 	var errorText;
 	if (req.query.error === 'csrf-invalid') {
 		errorText = '[[error:csrf-invalid]]';
+	} else if (req.query.error) {
+		errorText = req.query.error;
 	}
 
 	data.alternate_logins = loginStrategies.length > 0;
