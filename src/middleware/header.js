@@ -57,7 +57,7 @@ module.exports = function(app, middleware) {
 			'brand:logo:url': meta.config['brand:logo:url'] || '',
 			'brand:logo:alt': meta.config['brand:logo:alt'] || '',
 			'brand:logo:display': meta.config['brand:logo']?'':'hide',
-			allowRegistration: registrationType === 'normal' || registrationType === 'admin-approval',
+			allowRegistration: registrationType === 'normal' || registrationType === 'admin-approval' || registrationType === 'admin-approval-ip',
 			searchEnabled: plugins.hasListeners('filter:search.query'),
 			config: res.locals.config,
 			relative_path: nconf.get('relative_path'),
