@@ -61,6 +61,7 @@ define('forum/category', [
 		handleIgnoreWatch(cid);
 
 		$(window).trigger('action:topics.loaded', {topics: ajaxify.data.topics});
+		$(window).trigger('action:category.loaded', {cid: ajaxify.data.cid});
 	};
 
 	function handleIgnoreWatch(cid) {

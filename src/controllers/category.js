@@ -75,18 +75,19 @@ categoryController.get = function(req, res, callback) {
 				topicIndex = 0;
 			}
 
-			var set = 'cid:' + cid + ':tids',
-				reverse = false;
-
-			if (settings.categoryTopicSort === 'newest_to_oldest') {
+			var set = 'cid:' + cid + ':tids';
+			var reverse = false;
+			// `sort` qs has priority over user setting
+			var sort = req.query.sort || settings.categoryTopicSort;
+			if (sort === 'newest_to_oldest') {
 				reverse = true;
-			} else if (settings.categoryTopicSort === 'most_posts') {
+			} else if (sort === 'most_posts') {
 				reverse = true;
 				set = 'cid:' + cid + ':tids:posts';
 			}
 
-			var start = (currentPage - 1) * settings.topicsPerPage + topicIndex,
-				stop = start + settings.topicsPerPage - 1;
+			var start = (currentPage - 1) * settings.topicsPerPage + topicIndex;
+			var stop = start + settings.topicsPerPage - 1;
 
 			next(null, {
 				cid: cid,
@@ -192,7 +193,7 @@ categoryController.get = function(req, res, callback) {
 		categoryData['feeds:disableRSS'] = parseInt(meta.config['feeds:disableRSS'], 10) === 1;
 		categoryData.rssFeedUrl = nconf.get('relative_path') + '/category/' + categoryData.cid + '.rss';
 		categoryData.title = categoryData.name;
-		categoryData.pagination = pagination.create(currentPage, pageCount);
+		categoryData.pagination = pagination.create(currentPage, pageCount, req.query);
 		categoryData.pagination.rel.forEach(function(rel) {
 			rel.href = nconf.get('url') + '/category/' + categoryData.slug + rel.href;
 			res.locals.linkTags.push(rel);

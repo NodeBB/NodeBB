@@ -113,7 +113,7 @@ define('forum/account/settings', ['forum/account/header', 'components'], functio
 				// This is done via DELETE because a user shouldn't be able to
 				// revoke his own session! This is what logout is for
 				$.ajax({
-					url: config.relative_path + '/user/' + ajaxify.data.userslug + '/session/' + uuid,
+					url: config.relative_path + '/api/user/' + ajaxify.data.userslug + '/session/' + uuid,
 					method: 'delete',
 					headers: {
 						'x-csrf-token': config.csrf_token
@@ -121,7 +121,15 @@ define('forum/account/settings', ['forum/account/header', 'components'], functio
 				}).done(function() {
 					parentEl.remove();
 				}).fail(function(err) {
-					app.alertError(err.responseText);
+					try {
+						var errorObj = JSON.parse(err.responseText);
+						if (errorObj.loggedIn === false) {
+							window.location.href = config.relative_path + '/login?error=' + errorObj.title;
+						}
+						app.alertError(errorObj.title);
+					} catch (e) {
+						app.alertError('[[error:invalid-data]]');
+					}
 				});
 			}
 		});

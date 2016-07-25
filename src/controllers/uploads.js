@@ -104,7 +104,7 @@ function resizeImage(fileObj, callback) {
 			image.size(fullPath, next);
 		},
 		function (imageData, next) {
-			if (imageData.width < parseInt(meta.config.maximumImageWidth, 10) || 760) {
+			if (imageData.width < (parseInt(meta.config.maximumImageWidth, 10) || 760)) {
 				return callback(null, fileObj);
 			}
 

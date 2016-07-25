@@ -116,7 +116,7 @@ module.exports = function(Meta) {
 				winston.error('[meta/js] Encountered error while bridging modules:' + err.message);
 			}
 
-			winston.verbose('[meta/js] ' + numBridged + ' of ' + Meta.js.scripts.modules.length + ' modules bridged');
+			winston.verbose('[meta/js] ' + numBridged + ' of ' + Object.keys(Meta.js.scripts.modules).length + ' modules bridged');
 			callback(err);
 		});
 	};

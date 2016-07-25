@@ -287,7 +287,7 @@ middleware.requireUser = function(req, res, next) {
 		return next();
 	}
 
-	res.render('403', {title: '[[global:403.title]]'});
+	res.status(403).render('403', {title: '[[global:403.title]]'});
 };
 
 middleware.privateUploads = function(req, res, next) {

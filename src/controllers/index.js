@@ -108,12 +108,14 @@ Controllers.login = function(req, res, next) {
 	var errorText;
 	if (req.query.error === 'csrf-invalid') {
 		errorText = '[[error:csrf-invalid]]';
+	} else if (req.query.error) {
+		errorText = req.query.error;
 	}
 
 	data.alternate_logins = loginStrategies.length > 0;
 	data.authentication = loginStrategies;
 	data.allowLocalLogin = parseInt(meta.config.allowLocalLogin, 10) === 1 || parseInt(req.query.local, 10) === 1;
-	data.allowRegistration = registrationType === 'normal' || registrationType === 'admin-approval';
+	data.allowRegistration = registrationType === 'normal' || registrationType === 'admin-approval' || registrationType === 'admin-approval-ip';
 	data.allowLoginWith = '[[login:' + allowLoginWith + ']]';
 	data.breadcrumbs = helpers.buildBreadcrumbs([{text: '[[global:login]]'}]);
 	data.error = req.flash('error')[0] || errorText;

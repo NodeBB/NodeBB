@@ -56,8 +56,8 @@ app.cacheBuster = null;
 
 		socket.removeAllListeners('event:nodebb.ready');
 		socket.on('event:nodebb.ready', function(data) {
-			if (!app.cacheBusters || app.cacheBusters['cache-buster'] !== data['cache-buster']) {
-				app.cacheBusters = data;
+			if (!app.cacheBuster || app.cacheBuster !== data['cache-buster']) {
+				app.cacheBuster = data['cache-buster'];
 
 				app.alert({
 					alert_id: 'forum_updated',
@@ -351,6 +351,7 @@ app.cacheBuster = null;
 			if (!utils.isTouchDevice()) {
 				$(this).tooltip({
 					placement: 'bottom',
+					trigger: 'hover',
 					title: $(this).attr('title')
 				});
 			}
@@ -359,6 +360,7 @@ app.cacheBuster = null;
 		if (!utils.isTouchDevice()) {
 			$('#search-form').parent().tooltip({
 				placement: 'bottom',
+				trigger: 'hover',
 				title: $('#search-button i').attr('title')
 			});
 		}
@@ -366,6 +368,7 @@ app.cacheBuster = null;
 		if (!utils.isTouchDevice()) {
 			$('#user_dropdown').tooltip({
 				placement: 'bottom',
+				trigger: 'hover',
 				title: $('#user_dropdown').attr('title')
 			});
 		}
