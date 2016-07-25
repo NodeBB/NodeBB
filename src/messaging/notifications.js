@@ -2,12 +2,12 @@
 
 var async = require('async');
 var nconf = require('nconf');
+var winston = require('winston');
 
 var user = require('../user');
 var emailer = require('../emailer');
 var notifications = require('../notifications');
 var meta = require('../meta');
-var utils = require('../../public/src/utils');
 var sockets = require('../socket.io');
 
 module.exports = function(Messaging) {
@@ -78,27 +78,46 @@ module.exports = function(Messaging) {
 				}
 			});
 
-			if (parseInt(meta.config.disableEmailSubscriptions, 10) === 1) {
-				return callback();
+			sendNotificationEmails(uids, messageObj);
+		});
+	}
+
+	function sendNotificationEmails(uids, messageObj) {
+		if (parseInt(meta.config.disableEmailSubscriptions, 10) === 1) {
+			return;
+		}
+
+		async.parallel({
+			userData: function(next) {
+				user.getUsersFields(uids, ['uid', 'username', 'userslug'], next);
+			},
+			settings: function(next) {
+				user.getMultipleUserSettings(uids, next);
+			}
+		}, function(err, results) {
+			if (err) {
+				return winston.error(err);
 			}
 
-			user.getMultipleUserSettings(uids, function(err, userSettings) {
+			results.userData = results.userData.filter(function(userData, index) {
+				return userData && results.userSettings[index] && results.userSettings[index].sendChatNotifications;
+			});
+
+			async.each(results.userData, function(userData, next) {
+				emailer.send('notif_chat', userData.uid, {
+					subject: '[[email:notif.chat.subject, ' + messageObj.fromUser.username + ']]',
+					summary: '[[notifications:new_message_from, ' + messageObj.fromUser.username + ']]',
+					message: messageObj,
+					site_title: meta.config.title || 'NodeBB',
+					url: nconf.get('url'),
+					roomId: messageObj.roomId,
+					username: userData.username,
+					userslug: userData.userslug
+				}, next);
+			}, function(err) {
 				if (err) {
-					return callback(err);
+					winston.error(err);
 				}
-				userSettings = userSettings.filter(function(settings) {
-					return settings && settings.sendChatNotifications;
-				});
-				async.each(userSettings, function(settings, next) {
-					emailer.send('notif_chat', settings.uid, {
-						subject: '[[email:notif.chat.subject, ' + messageObj.fromUser.username + ']]',
-						summary: '[[notifications:new_message_from, ' + messageObj.fromUser.username + ']]',
-						message: messageObj,
-						site_title: meta.config.title || 'NodeBB',
-						url: nconf.get('url'),
-						roomId: messageObj.roomId
-					}, next);
-				}, callback);
 			});
 		});
 	}
