@@ -1,41 +1,39 @@
 "use strict";
 
-var	async = require('async'),
-	winston = require('winston'),
+var async = require('async');
+var winston = require('winston');
+var nconf = require('nconf');
 
+var meta = require('../meta');
+var plugins = require('../plugins');
+var widgets = require('../widgets');
+var user = require('../user');
+var logger = require('../logger');
+var events = require('../events');
+var emailer = require('../emailer');
+var db = require('../database');
+var analytics = require('../analytics');
+var index = require('./index');
 
-	meta = require('../meta'),
-	plugins = require('../plugins'),
-	widgets = require('../widgets'),
-	user = require('../user'),
-
-	logger = require('../logger'),
-	events = require('../events'),
-	emailer = require('../emailer'),
-	db = require('../database'),
-	analytics = require('../analytics'),
-	index = require('./index'),
-
-
-	SocketAdmin = {
-		user: require('./admin/user'),
-		categories: require('./admin/categories'),
-		groups: require('./admin/groups'),
-		tags: require('./admin/tags'),
-		rewards: require('./admin/rewards'),
-		navigation: require('./admin/navigation'),
-		rooms: require('./admin/rooms'),
-		social: require('./admin/social'),
-		themes: {},
-		plugins: {},
-		widgets: {},
-		config: {},
-		settings: {},
-		email: {},
-		analytics: {},
-		logs: {},
-		errors: {}
-	};
+var SocketAdmin = {
+	user: require('./admin/user'),
+	categories: require('./admin/categories'),
+	groups: require('./admin/groups'),
+	tags: require('./admin/tags'),
+	rewards: require('./admin/rewards'),
+	navigation: require('./admin/navigation'),
+	rooms: require('./admin/rooms'),
+	social: require('./admin/social'),
+	themes: {},
+	plugins: {},
+	widgets: {},
+	config: {},
+	settings: {},
+	email: {},
+	analytics: {},
+	logs: {},
+	errors: {}
+};
 
 SocketAdmin.before = function(socket, method, data, next) {
 	if (!socket.uid) {
@@ -92,6 +90,9 @@ SocketAdmin.themes.set = function(socket, data, callback) {
 	}
 
 	var wrappedCallback = function(err) {
+		if (err) {
+			return callback(err);
+		}
 		meta.themes.set(data, callback);
 	};
 	if (data.type === 'bootswatch') {
@@ -205,7 +206,8 @@ SocketAdmin.email.test = function(socket, data, callback) {
 	var site_title = meta.config.title || 'NodeBB';
 	emailer.send(data.template, socket.uid, {
 		subject: '[' + site_title + '] Test Email',
-		site_title: site_title
+		site_title: site_title,
+		url: nconf.get('url')
 	}, callback);
 };
 
