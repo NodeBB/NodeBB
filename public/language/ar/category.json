@@ -10,11 +10,11 @@
     "share_this_category": "انشر هذه الفئة",
     "watch": "تابع",
     "ignore": "تجاهل",
-    "watching": "Watching",
-    "ignoring": "Ignoring",
-    "watching.description": "Show topics in unread",
-    "ignoring.description": "Do not show topics in unread",
-    "watch.message": "أنت اﻷن متابع لتحديثات هذه الفئة",
+    "watching": "متابع",
+    "ignoring": "متجاهل",
+    "watching.description": "أظهر المواضيع في غير مقروء",
+    "ignoring.description": "لا تظهر المواضيع في غير مقروء",
+    "watch.message": "أنت اﻷن تتابع تحديثات هذه الفئة",
     "ignore.message": "أنت اﻷن تتجاهل تحديثات هذه الفئة",
-    "watched-categories": "الفئات المراقبه"
+    "watched-categories": "الفئات المتابعة"
 }
