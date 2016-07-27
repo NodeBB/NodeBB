@@ -44,7 +44,7 @@ widgets.render = function(uid, area, req, res, callback) {
 					req: req,
 					res: res
 				}, function(err, html) {
-					if (err) {
+					if (err || html === null) {
 						return next(err);
 					}
 
