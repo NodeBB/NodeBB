@@ -23,6 +23,10 @@ module.exports = function(Plugins) {
 			}
 		}
 
+		if (!data.hook) {
+			return winston.warn('[plugins/' + id + '] registerHook called with invalid data.hook', data);
+		}
+
 		var method;
 
 		if (Object.keys(Plugins.deprecatedHooks).indexOf(data.hook) !== -1) {
