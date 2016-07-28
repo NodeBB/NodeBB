@@ -42,7 +42,7 @@ module.exports = function(User) {
 					return plugins.fireHook('filter:uploadImage', {image: picture, uid: updateUid}, next);
 				}
 
-				var filename = updateUid + '-profileimg' + (convertToPNG ? '.png' : extension);
+				var filename = updateUid + '-profileimg-' + Date.now() + (convertToPNG ? '.png' : extension);
 
 				async.waterfall([
 					function(next) {
@@ -68,21 +68,7 @@ module.exports = function(User) {
 						});
 					},
 					function(next) {
-						User.getUserField(updateUid, 'uploadedpicture', next);
-					},
-					function(oldpicture, next) {
-						if (!oldpicture) {
-							return file.saveFileToLocal(filename, 'profile', picture.path, next);
-						}
-						var oldpicturePath = path.join(nconf.get('base_dir'), nconf.get('upload_path'), 'profile', path.basename(oldpicture));
-
-						fs.unlink(oldpicturePath, function (err) {
-							if (err) {
-								winston.error(err);
-							}
-
-							file.saveFileToLocal(filename, 'profile', picture.path, next);
-						});
+						file.saveFileToLocal(filename, 'profile', picture.path, next);
 					},
 				], next);
 			},
@@ -181,7 +167,7 @@ module.exports = function(User) {
 					return plugins.fireHook('filter:uploadImage', {image: image, uid: data.uid}, next);
 				}
 
-				var filename = data.uid + '-profilecover';
+				var filename = data.uid + '-profilecover-' + Date.now();
 				async.waterfall([
 					function (next) {
 						file.isFileTypeAllowed(data.file.path, next);
