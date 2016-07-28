@@ -27,6 +27,12 @@ define('admin/settings', ['uploader'], function(uploader) {
 			revertBtn = $('#revert'),
 			x, key, inputType, field;
 
+		// Handle unsaved changes
+		$(fields).on('change', function() {
+			app.flags = app.flags || {};
+			app.flags._unsaved = true;
+		});
+
 		for (x = 0; x < numFields; x++) {
 			field = fields.eq(x);
 			key = field.attr('data-field');
@@ -77,6 +83,9 @@ define('admin/settings', ['uploader'], function(uploader) {
 						type: 'danger'
 					});
 				}
+
+				app.flags._unsaved = false;
+
 				app.alert({
 					alert_id: 'config_status',
 					timeout: 2500,

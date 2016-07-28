@@ -16,6 +16,8 @@ define('admin/appearance/customise', ['admin/settings'], function(Settings) {
 			customCSS.getSession().setMode("ace/mode/css");	
 
 			customCSS.on('change', function(e) {
+				app.flags = app.flags || {};
+				app.flags._unsaved = true;
 			    $('#customCSS-holder').val(customCSS.getValue());
 			}); 
 
@@ -23,6 +25,8 @@ define('admin/appearance/customise', ['admin/settings'], function(Settings) {
 			customHTML.getSession().setMode("ace/mode/html");
 
 			customHTML.on('change', function(e) {
+				app.flags = app.flags || {};
+				app.flags._unsaved = true;
 			    $('#customHTML-holder').val(customHTML.getValue());
 			}); 
 		});

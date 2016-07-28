@@ -1,11 +1,9 @@
 "use strict";
+/*global app, bootbox, templates, socket, config, RELATIVE_PATH*/
 
 var ajaxify = ajaxify || {};
 
 $(document).ready(function() {
-
-	/*global app, templates, socket, config, RELATIVE_PATH*/
-
 	var location = document.location || window.location;
 	var rootUrl = location.protocol + '//' + (location.hostname || location.host) + (location.port ? ':' + location.port : '');
 	var apiXHR = null;
@@ -295,6 +293,32 @@ $(document).ready(function() {
 
 		// Enhancing all anchors to ajaxify...
 		$(document.body).on('click', 'a', function (e) {
+			var _self = this;
+			var process = function() {
+				if (!e.ctrlKey && !e.shiftKey && !e.metaKey && e.which === 1) {
+					if (internalLink) {
+						var pathname = this.href.replace(rootUrl + RELATIVE_PATH + '/', '');
+
+						// Special handling for urls with hashes
+						if (window.location.pathname === this.pathname && this.hash.length) {
+							window.location.hash = this.hash;
+						} else {
+							if (ajaxify.go(pathname)) {
+								e.preventDefault();
+							}
+						}
+					} else if (window.location.pathname !== '/outgoing') {
+						if (config.openOutgoingLinksInNewTab) {
+							window.open(this.href, '_blank');
+							e.preventDefault();
+						} else if (config.useOutgoingLinksPage) {
+							ajaxify.go('outgoing?url=' + encodeURIComponent(this.href));
+							e.preventDefault();
+						}
+					}
+				}
+			};
+
 			if (this.target !== '' || (this.protocol !== 'http:' && this.protocol !== 'https:')) {
 				return;
 			}
@@ -311,6 +335,7 @@ $(document).ready(function() {
 				}
 			}
 
+			// Default behaviour for rss feeds
 			if (internalLink && $(this).attr('href').endsWith('.rss')) {
 				return;
 			}
@@ -319,28 +344,19 @@ $(document).ready(function() {
 				return e.preventDefault();
 			}
 
-			if (!e.ctrlKey && !e.shiftKey && !e.metaKey && e.which === 1) {
-				if (internalLink) {
-					var pathname = this.href.replace(rootUrl + RELATIVE_PATH + '/', '');
-
-					// Special handling for urls with hashes
-					if (window.location.pathname === this.pathname && this.hash.length) {
-						window.location.hash = this.hash;
-					} else {
-						if (ajaxify.go(pathname)) {
-							e.preventDefault();
+			if (app.flags && app.flags.hasOwnProperty('_unsaved') && app.flags._unsaved === true) {
+				translator.translate('[[global:unsaved-changes]]', function(text) {
+					bootbox.confirm(text, function(navigate) {
+						if (navigate) {
+							app.flags._unsaved = false;
+							process.call(_self);
 						}
-					}
-				} else if (window.location.pathname !== '/outgoing') {
-					if (config.openOutgoingLinksInNewTab) {
-						window.open(this.href, '_blank');
-						e.preventDefault();
-					} else if (config.useOutgoingLinksPage) {
-						ajaxify.go('outgoing?url=' + encodeURIComponent(this.href));
-						e.preventDefault();
-					}
-				}
+					});
+				});
+				return e.preventDefault();
 			}
+
+			process.call(_self);
 		});
 	}
 
