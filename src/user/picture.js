@@ -25,6 +25,7 @@ module.exports = function(User) {
 		var updateUid = uid;
 		var imageDimension = parseInt(meta.config.profileImageDimension, 10) || 128;
 		var convertToPNG = parseInt(meta.config['profile:convertProfileImageToPNG'], 10) === 1;
+		var keepAllVersions = parseInt(meta.config['profile:keepAllUserImages'], 10) === 1;
 		var uploadedImage;
 
 		async.waterfall([
@@ -42,7 +43,7 @@ module.exports = function(User) {
 					return plugins.fireHook('filter:uploadImage', {image: picture, uid: updateUid}, next);
 				}
 
-				var filename = updateUid + '-profileimg' + (convertToPNG ? '.png' : extension);
+				var filename = updateUid + '-profileimg' + (keepAllVersions ? '-' + Date.now() : '') + (convertToPNG ? '.png' : extension);
 
 				async.waterfall([
 					function(next) {
@@ -68,21 +69,7 @@ module.exports = function(User) {
 						});
 					},
 					function(next) {
-						User.getUserField(updateUid, 'uploadedpicture', next);
-					},
-					function(oldpicture, next) {
-						if (!oldpicture) {
-							return file.saveFileToLocal(filename, 'profile', picture.path, next);
-						}
-						var oldpicturePath = path.join(nconf.get('base_dir'), nconf.get('upload_path'), 'profile', path.basename(oldpicture));
-
-						fs.unlink(oldpicturePath, function (err) {
-							if (err) {
-								winston.error(err);
-							}
-
-							file.saveFileToLocal(filename, 'profile', picture.path, next);
-						});
+						file.saveFileToLocal(filename, 'profile', picture.path, next);
 					},
 				], next);
 			},
@@ -134,6 +121,7 @@ module.exports = function(User) {
 	};
 
 	User.updateCoverPicture = function(data, callback) {
+		var keepAllVersions = parseInt(meta.config['profile:keepAllUserImages'], 10) === 1;
 		var url, md5sum;
 
 		if (!data.imageData && data.position) {
@@ -181,7 +169,7 @@ module.exports = function(User) {
 					return plugins.fireHook('filter:uploadImage', {image: image, uid: data.uid}, next);
 				}
 
-				var filename = data.uid + '-profilecover';
+				var filename = data.uid + '-profilecover' + (keepAllVersions ? '-' + Date.now() : '');
 				async.waterfall([
 					function (next) {
 						file.isFileTypeAllowed(data.file.path, next);
