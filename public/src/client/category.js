@@ -197,6 +197,7 @@ define('forum/category', [
 			privileges: {editable: editable},
 			showSelect: editable,
 			topics: [topic]
+			template: {category: true}
 		}, function(html) {
 			translator.translate(html, function(translatedHTML) {
 				var topic = $(translatedHTML),
