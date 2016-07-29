@@ -28,8 +28,8 @@ var emailer = require('../emailer');
 
 	UserEmail.sendValidationEmail = function(uid, email, callback) {
 		callback = callback || function() {};
-		var confirm_code = utils.generateUUID(),
-			confirm_link = nconf.get('url') + '/confirm/' + confirm_code;
+		var confirm_code = utils.generateUUID();
+		var confirm_link = nconf.get('url') + '/confirm/' + confirm_code;
 
 		var emailInterval = meta.config.hasOwnProperty('emailConfirmInterval') ? parseInt(meta.config.emailConfirmInterval, 10) : 10;
 
@@ -97,6 +97,7 @@ var emailer = require('../emailer');
 				async.series([
 					async.apply(user.setUserField, confirmObj.uid, 'email:confirmed', 1),
 					async.apply(db.delete, 'confirm:' + code),
+					async.apply(db.delete, 'uid:' + confirmObj.uid + ':confirm:email:sent'),
 					function(next) {
 						db.sortedSetRemove('users:notvalidated', confirmObj.uid, next);
 					}

@@ -473,33 +473,35 @@ app.cacheBuster = null;
 		if (!config.requireEmailConfirmation || !app.user.uid) {
 			return;
 		}
+		var msg = {
+			alert_id: 'email_confirm',
+			type: 'warning',
+			timeout: 0
+		};
+
 		if (!app.user.email) {
-			app.alert({
-				alert_id: 'email_confirm',
-				message: '[[error:no-email-to-confirm]]',
-				type: 'warning',
-				timeout: 0,
-				clickfn: function() {
-					app.removeAlert('email_confirm');
-					ajaxify.go('user/' + app.user.userslug + '/edit');
-				}
-			});
-		} else if (!app.user['email:confirmed']) {
-			app.alert({
-				alert_id: 'email_confirm',
-				message: err ? err.message : '[[error:email-not-confirmed]]',
-				type: 'warning',
-				timeout: 0,
-				clickfn: function() {
-					app.removeAlert('email_confirm');
-					socket.emit('user.emailConfirm', {}, function(err) {
-						if (err) {
-							return app.alertError(err.message);
-						}
-						app.alertSuccess('[[notifications:email-confirm-sent]]');
-					});
-				}
-			});
+			msg.message = '[[error:no-email-to-confirm]]';
+			msg.clickfn = function() {
+				app.removeAlert('email_confirm');
+				ajaxify.go('user/' + app.user.userslug + '/edit');
+			};
+			app.alert(msg);
+		} else if (!app.user['email:confirmed'] && !app.user.isEmailConfirmSent) {
+			msg.message = err ? err.message : '[[error:email-not-confirmed]]';
+			msg.clickfn = function() {
+				app.removeAlert('email_confirm');
+				socket.emit('user.emailConfirm', {}, function(err) {
+					if (err) {
+						return app.alertError(err.message);
+					}
+					app.alertSuccess('[[notifications:email-confirm-sent]]');
+				});
+			};
+
+			app.alert(msg);
+		} else if (!app.user['email:confirmed'] && app.user.isEmailConfirmSent) {
+			msg.message = '[[error:email-not-confirmed-email-sent]]';
+			app.alert(msg);
 		}
 	};
 
