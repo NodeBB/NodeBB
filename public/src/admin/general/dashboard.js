@@ -2,18 +2,18 @@
 /*global define, ajaxify, app, socket, utils, bootbox, RELATIVE_PATH*/
 
 define('admin/general/dashboard', ['semver', 'Chart'], function(semver, Chart) {
-	var	Admin = {},
-		intervals = {
+	var	Admin = {};
+	var	intervals = {
 			rooms: false,
 			graphs: false
-		},
-		isMobile = false,
-		isPrerelease = /^v?\d+\.\d+\.\d+-.+$/,
-		graphData = {
+		};
+	var	isMobile = false;
+	var	isPrerelease = /^v?\d+\.\d+\.\d+-.+$/;
+	var	graphData = {
 			rooms: {},
 			traffic: {}
-		},
-		currentGraph = {
+		};
+	var	currentGraph = {
 			units: 'hours',
 			until: undefined
 		};
@@ -121,8 +121,8 @@ define('admin/general/dashboard', ['semver', 'Chart'], function(semver, Chart) {
 		topics: null
 	};
 
-	var topicColors = ["#bf616a","#5B90BF","#d08770","#ebcb8b","#a3be8c","#96b5b4","#8fa1b3","#b48ead","#ab7967","#46BFBD"],
-		usedTopicColors = [];
+	var topicColors = ["#bf616a","#5B90BF","#d08770","#ebcb8b","#a3be8c","#96b5b4","#8fa1b3","#b48ead","#ab7967","#46BFBD"];
+	var	usedTopicColors = [];
 
 	// from chartjs.org
 	function lighten(col, amt) {
@@ -174,88 +174,99 @@ define('admin/general/dashboard', ['semver', 'Chart'], function(semver, Chart) {
 				datasets: [
 					{
 						label: "Page Views",
-						fillColor: "rgba(220,220,220,0.2)",
-						strokeColor: "rgba(220,220,220,1)",
-						pointColor: "rgba(220,220,220,1)",
-						pointStrokeColor: "#fff",
-						pointHighlightFill: "#fff",
-						pointHighlightStroke: "rgba(220,220,220,1)",
+						backgroundColor: "rgba(220,220,220,0.2)",
+						borderColor: "rgba(220,220,220,1)",
+						pointBackgroundColor: "rgba(220,220,220,1)",
+						pointHoverBackgroundColor: "#fff",
+						pointBorderColor: "#fff",
+						pointHoverBorderColor: "rgba(220,220,220,1)",
 						data: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
 					},
 					{
 						label: "Unique Visitors",
-						fillColor: "rgba(151,187,205,0.2)",
-						strokeColor: "rgba(151,187,205,1)",
-						pointColor: "rgba(151,187,205,1)",
-						pointStrokeColor: "#fff",
-						pointHighlightFill: "#fff",
-						pointHighlightStroke: "rgba(151,187,205,1)",
+						backgroundColor: "rgba(151,187,205,0.2)",
+						borderColor: "rgba(151,187,205,1)",
+						pointBackgroundColor: "rgba(151,187,205,1)",
+						pointHoverBackgroundColor: "#fff",
+						pointBorderColor: "#fff",
+						pointHoverBorderColor: "rgba(151,187,205,1)",
 						data: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
 					}
 				]
 			};
 
 		trafficCanvas.width = $(trafficCanvas).parent().width();
-		graphs.traffic = new Chart(trafficCtx).Line(data, {
-			responsive: true
+		graphs.traffic = new Chart(trafficCtx, {
+			type: 'line',
+			data: data,
+			options: {
+				responsive: true,
+				legend: {
+					display: false
+				},
+				scales: {
+					yAxes: [{
+						ticks: {
+							beginAtZero: true
+						}
+					}]
+				}
+			}
+		});
+		
+		graphs.registered = new Chart(registeredCtx, {
+			type: 'doughnut',
+			data: {
+				labels: ["Registered Users", "Anonymous Users"],
+				datasets: [{
+					data: [1, 1],
+					backgroundColor: ["#F7464A", "#46BFBD"],
+					hoverBackgroundColor: ["#FF5A5E", "#5AD3D1"]
+				}]
+			},
+			options: {
+				responsive: true,
+				legend: {
+					display: false
+				}
+			}
 		});
 
-		graphs.registered = new Chart(registeredCtx).Doughnut([{
-				value: 1,
-				color:"#F7464A",
-				highlight: "#FF5A5E",
-				label: "Registered Users"
+		graphs.presence = new Chart(presenceCtx, {
+			type: 'doughnut',
+			data: {
+				labels: ["On categories list", "Reading posts", "Browsing topics", "Recent", "Unread"],
+				datasets: [{
+					data: [1, 1, 1, 1, 1],
+					backgroundColor: ["#F7464A", "#46BFBD", "#FDB45C", "#949FB1", "#9FB194"],
+					hoverBackgroundColor: ["#FF5A5E", "#5AD3D1", "#FFC870", "#A8B3C5", "#A8B3C5"]
+				}]
+ 			},
+ 			options: {
+				responsive: true,
+				legend: {
+					display: false
+				}
+ 			}
+		});
+ 			
+		graphs.topics = new Chart(topicsCtx, {
+			type: 'doughnut',
+			data: {
+				labels: [],
+				datasets: [{
+					data: [],
+					backgroundColor: [],
+					hoverBackgroundColor: []
+				}]
 			},
-			{
-				value: 1,
-				color: "#46BFBD",
-				highlight: "#5AD3D1",
-				label: "Anonymous Users"
-			}], {
-				responsive: true
-			});
-
-		graphs.presence = new Chart(presenceCtx).Doughnut([{
-				value: 1,
-				color:"#F7464A",
-				highlight: "#FF5A5E",
-				label: "On categories list"
-			},
-			{
-				value: 1,
-				color: "#46BFBD",
-				highlight: "#5AD3D1",
-				label: "Reading posts"
-			},
-			{
-				value: 1,
-				color: "#FDB45C",
-				highlight: "#FFC870",
-				label: "Browsing topics"
-			},
-			{
-				value: 1,
-				color: "#949FB1",
-				highlight: "#A8B3C5",
-				label: "Recent"
-			},
-			{
-				value: 1,
-				color: "#9FB194",
-				highlight: "#A8B3C5",
-				label: "Unread"
-			}
-			], {
-				responsive: true
-			});
-
-		graphs.topics = new Chart(topicsCtx).Doughnut([], {responsive: true});
-		topicsCanvas.onclick = function(evt){
-			var obj = graphs.topics.getSegmentsAtEvent(evt);
-			if (obj && obj[0]) {
-				window.open(RELATIVE_PATH + '/topic/' + obj[0].tid);
-			}
-		};
+			options: {
+				responsive: true,
+				legend: {
+					display: false
+				}
+ 			}
+		});
 
 		updateTrafficGraph();
 
@@ -302,15 +313,10 @@ define('admin/general/dashboard', ['semver', 'Chart'], function(semver, Chart) {
 
 			graphData.traffic = data;
 
-			// If new data set contains fewer points than currently shown, truncate
-			while(graphs.traffic.datasets[0].points.length > data.pageviews.length) {
-				graphs.traffic.removeData();
-			}
-
 			if (units === 'days') {
-				graphs.traffic.scale.xLabels = utils.getDaysArray(until);
+				graphs.traffic.data.xLabels = utils.getDaysArray(until);
 			} else {
-				graphs.traffic.scale.xLabels = utils.getHoursArray();
+				graphs.traffic.data.xLabels = utils.getHoursArray();
 
 				$('#pageViewsThisMonth').html(data.monthlyPageViews.thisMonth);
 				$('#pageViewsLastMonth').html(data.monthlyPageViews.lastMonth);
@@ -320,17 +326,9 @@ define('admin/general/dashboard', ['semver', 'Chart'], function(semver, Chart) {
 				utils.addCommasToNumbers($('#pageViewsPastDay'));
 			}
 
-			for (var i = 0, ii = data.pageviews.length; i < ii;  i++) {
-				if (graphs.traffic.datasets[0].points[i]) {
-					graphs.traffic.datasets[0].points[i].value = data.pageviews[i];
-					graphs.traffic.datasets[0].points[i].label = graphs.traffic.scale.xLabels[i];
-					graphs.traffic.datasets[1].points[i].value = data.uniqueVisitors[i];
-					graphs.traffic.datasets[1].points[i].label = graphs.traffic.scale.xLabels[i];
-				} else {
-					// No points to replace? Add data.
-					graphs.traffic.addData([data.pageviews[i], data.uniqueVisitors[i]], graphs.traffic.scale.xLabels[i]);
-				}
-			}
+			graphs.traffic.data.datasets[0].data = data.pageviews;
+			graphs.traffic.data.datasets[1].data = data.uniqueVisitors;
+			graphs.traffic.data.labels = graphs.traffic.data.xLabels;
 
 			graphs.traffic.update();
 			currentGraph.units = units;
@@ -339,22 +337,21 @@ define('admin/general/dashboard', ['semver', 'Chart'], function(semver, Chart) {
 	}
 
 	function updateRegisteredGraph(registered, anonymous) {
-		graphs.registered.segments[0].value = registered;
-		graphs.registered.segments[1].value = anonymous;
+		graphs.registered.data.datasets[0].data[0] = registered;
+		graphs.registered.data.datasets[0].data[1] = anonymous;
 		graphs.registered.update();
 	}
 
 	function updatePresenceGraph(users) {
-		graphs.presence.segments[0].value = users.categories;
-		graphs.presence.segments[1].value = users.topics;
-		graphs.presence.segments[2].value = users.category;
-		graphs.presence.segments[3].value = users.recent;
-		graphs.presence.segments[4].value = users.unread;
-
+		graphs.presence.data.datasets[0].data[0] = users.categories;
+		graphs.presence.data.datasets[0].data[1] = users.topics;
+		graphs.presence.data.datasets[0].data[2] = users.category;
+		graphs.presence.data.datasets[0].data[3] = users.recent;
+		graphs.presence.data.datasets[0].data[4] = users.unread;
 
 		graphs.presence.update();
 	}
-
+	
 	function updateTopicsGraph(topics) {
 		if (!Object.keys(topics).length) {
 			topics = {"0": {
@@ -363,88 +360,36 @@ define('admin/general/dashboard', ['semver', 'Chart'], function(semver, Chart) {
 			}};
 		}
 
-		var tids = Object.keys(topics),
-			segments = graphs.topics.segments;
-
-		function reassignExistingTopics() {
-			for (var i = segments.length - 1; i >= 0; i--) {
-				if (!segments[i]) {
-					continue;
-				}
-
-				var tid = segments[i].tid;
-
-				if ($.inArray(tid, tids) === -1) {
-					usedTopicColors.splice($.inArray(segments[i].fillColor, usedTopicColors), 1);
-					graphs.topics.removeData(i);
-				} else {
-					graphs.topics.segments[i].value = topics[tid].value;
-					delete topics[tid];
-				}
-			}
+		var tids = Object.keys(topics);
+		
+		graphs.topics.data.labels = [];
+		graphs.topics.data.datasets[0].data = [];
+		graphs.topics.data.datasets[0].backgroundColor = [];
+		graphs.topics.data.datasets[0].hoverBackgroundColor = [];
+		
+		for (var i = 0, ii = tids.length; i < ii; i++) {
+			graphs.topics.data.labels.push(topics[tids[i]].title);
+			graphs.topics.data.datasets[0].data.push(topics[tids[i]].value);
+			graphs.topics.data.datasets[0].backgroundColor.push(topicColors[i]);
+			graphs.topics.data.datasets[0].hoverBackgroundColor.push(lighten(topicColors[i], 10));
 		}
-
-		function assignNewTopics() {
-			while (segments.length < 10 && tids.length > 0) {
-				var tid = tids.pop(),
-					data = topics[tid],
-					color = null;
-
-				if (!data) {
-					continue;
-				}
-
-				if (tid === '0') {
-					color = '#4D5360';
-				} else {
-					do {
-						for (var i = 0, ii = topicColors.length; i < ii; i++) {
-							var chosenColor = topicColors[i];
-
-							if ($.inArray(chosenColor, usedTopicColors) === -1) {
-								color = chosenColor;
-								usedTopicColors.push(color);
-								break;
-							}
-						}
-					} while (color === null && usedTopicColors.length < topicColors.length);
-				}
-
-				if (color) {
-					graphs.topics.addData({
-						value: data.value,
-						color: color,
-						highlight: lighten(color, 10),
-						label: data.title
-					});
-
-					segments[segments.length - 1].tid = tid;
-				}
-			}
-		}
-
+ 		
 		function buildTopicsLegend() {
 			var legend = $('#topics-legend').html('');
 
-			segments.sort(function(a, b) {
-				return b.value - a.value;
-			});
-			for (var i = 0, ii = segments.length; i < ii; i++) {
-				var topic = segments[i],
-					label = topic.tid === '0' ? topic.label : '<a title="' + topic.label + '"href="' + RELATIVE_PATH + '/topic/' + topic.tid + '" target="_blank"> ' + topic.label + '</a>';
-
+			for (var i = 0, ii = tids.length; i < ii; i++) {
+				var topic = topics[tids[i]];
+				var	label = topic.value === '0' ? topic.title : '<a title="' + topic.title + '"href="' + RELATIVE_PATH + '/topic/' + tids[i] + '" target="_blank"> ' + topic.title + '</a>';
+			
 				legend.append(
 					'<li>' +
-						'<div style="background-color: ' + topic.highlightColor + '; border-color: ' + topic.strokeColor + '"></div>' +
-						'<span>' + label + '</span>' +
+					'<div style="background-color: ' + topicColors[i] + ';"></div>' +
+					'<span>' + label + '</span>' +
 					'</li>');
 			}
 		}
 
-		reassignExistingTopics();
-		assignNewTopics();
 		buildTopicsLegend();
-
 		graphs.topics.update();
 	}
 

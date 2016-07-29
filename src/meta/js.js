@@ -79,7 +79,7 @@ module.exports = function(Meta) {
 
 			// modules listed below are routed through express (/src/modules) so they can be defined anonymously
 			modules: {
-				"Chart.js": './node_modules/chart.js/Chart.js',
+				"Chart.js": './node_modules/chart.js/dist/Chart.min.js',
 				"mousetrap.js": './node_modules/mousetrap/mousetrap.js',
 
 				"buzz.js": 'public/vendor/buzz/buzz.js'

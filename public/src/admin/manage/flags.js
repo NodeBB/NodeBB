@@ -110,7 +110,7 @@ define('admin/manage/flags', [
 		});
 
 		if (utils.isMobile()) {
-			Chart.defaults.global.showTooltips = false;
+			Chart.defaults.global.tooltips.enabled = false;
 		}
 		var data = {
 			'flags:daily': {
@@ -118,26 +118,37 @@ define('admin/manage/flags', [
 				datasets: [
 					{
 						label: "",
-						fillColor: "rgba(151,187,205,0.2)",
-						strokeColor: "rgba(151,187,205,1)",
-						pointColor: "rgba(151,187,205,1)",
-						pointStrokeColor: "#fff",
-						pointHighlightFill: "#fff",
-						pointHighlightStroke: "rgba(151,187,205,1)",
+						backgroundColor: "rgba(151,187,205,0.2)",
+						borderColor: "rgba(151,187,205,1)",
+						pointBackgroundColor: "rgba(151,187,205,1)",
+						pointHoverBackgroundColor: "#fff",
+						pointBorderColor: "#fff",
+						pointHoverBorderColor: "rgba(151,187,205,1)",
 						data: ajaxify.data.analytics
 					}
 				]
 			}
 		};
 
-
-
 		dailyCanvas.width = $(dailyCanvas).parent().width();
-		new Chart(dailyCanvas.getContext('2d')).Line(data['flags:daily'], {
-			responsive: true,
-			animation: false
+		new Chart(dailyCanvas.getContext('2d'), {
+			type: 'line',
+			data: data['flags:daily'],
+			options: {
+				responsive: true,
+				animation: false,
+				legend: {
+					display: false
+				},
+				scales: {
+					yAxes: [{
+						ticks: {
+							beginAtZero: true
+						}
+					}]
+				}
+			}
 		});
-
 	}
 
 	return Flags;
