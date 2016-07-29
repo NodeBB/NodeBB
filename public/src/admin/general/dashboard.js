@@ -170,30 +170,30 @@ define('admin/general/dashboard', ['semver', 'Chart'], function(semver, Chart) {
 		}
 
 		var data = {
-				labels: trafficLabels,
-				datasets: [
-					{
-						label: "Page Views",
-						backgroundColor: "rgba(220,220,220,0.2)",
-						borderColor: "rgba(220,220,220,1)",
-						pointBackgroundColor: "rgba(220,220,220,1)",
-						pointHoverBackgroundColor: "#fff",
-						pointBorderColor: "#fff",
-						pointHoverBorderColor: "rgba(220,220,220,1)",
-						data: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
-					},
-					{
-						label: "Unique Visitors",
-						backgroundColor: "rgba(151,187,205,0.2)",
-						borderColor: "rgba(151,187,205,1)",
-						pointBackgroundColor: "rgba(151,187,205,1)",
-						pointHoverBackgroundColor: "#fff",
-						pointBorderColor: "#fff",
-						pointHoverBorderColor: "rgba(151,187,205,1)",
-						data: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
-					}
-				]
-			};
+			labels: trafficLabels,
+			datasets: [
+				{
+					label: "Page Views",
+					backgroundColor: "rgba(220,220,220,0.2)",
+					borderColor: "rgba(220,220,220,1)",
+					pointBackgroundColor: "rgba(220,220,220,1)",
+					pointHoverBackgroundColor: "#fff",
+					pointBorderColor: "#fff",
+					pointHoverBorderColor: "rgba(220,220,220,1)",
+					data: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
+				},
+				{
+					label: "Unique Visitors",
+					backgroundColor: "rgba(151,187,205,0.2)",
+					borderColor: "rgba(151,187,205,1)",
+					pointBackgroundColor: "rgba(151,187,205,1)",
+					pointHoverBackgroundColor: "#fff",
+					pointBorderColor: "#fff",
+					pointHoverBorderColor: "rgba(151,187,205,1)",
+					data: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
+				}
+			]
+		};
 
 		trafficCanvas.width = $(trafficCanvas).parent().width();
 		graphs.traffic = new Chart(trafficCtx, {
