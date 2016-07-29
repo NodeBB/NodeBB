@@ -29,7 +29,7 @@
     "account/edit/password": "\"%1\" parolayı düzenliyor",
     "account/edit/username": "\"%1\" kullanıcı adını düzenliyor",
     "account/edit/email": "\"%1\" email adresini düzenliyor",
-    "account/info": "Account Info",
+    "account/info": "Hesap Hakkında",
     "account/following": "%1 tarafından takip edilenler",
     "account/followers": "%1 takip edenler",
     "account/posts": "%1 tarafından gönderilen iletiler",
