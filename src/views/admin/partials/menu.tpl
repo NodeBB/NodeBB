@@ -118,15 +118,9 @@
 		<ul id="user_label" class="pull-right">
 			<li class="dropdown pull-right">
 				<a class="dropdown-toggle" data-toggle="dropdown" href="#" id="user_dropdown">
-					<i class="fa fa-ellipsis-v"></i>
+					<i class="fa fa-fw fa-ellipsis-v"></i>
 				</a>
 				<ul id="user-control-list" class="dropdown-menu" aria-labelledby="user_dropdown">
-					<li>
-						<a href="{relative_path}/" target="_top" title="View Forum">
-							View Forum
-						</a>
-					</li>
-					<li role="presentation" class="divider"></li>
 					<li>
 						<a href="#" class="reload" title="Reload Forum">
 							Reload Forum
@@ -143,6 +137,13 @@
 					</li>
 				</ul>
 			</li>
+
+			<li class="pull-right">
+				<a href="{config.relative_path}/">
+					<i class="fa fa-fw fa-home" title="View Forum"></i>
+				</a>
+			</li>
+
 			<form class="pull-right hidden-sm hidden-xs" role="search">
 				<div class="" id="acp-search" >
 					<div class="dropdown">
