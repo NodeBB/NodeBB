@@ -196,7 +196,7 @@ define('forum/category', [
 		templates.parse('category', 'topics', {
 			privileges: {editable: editable},
 			showSelect: editable,
-			topics: [topic]
+			topics: [topic],
 			template: {category: true}
 		}, function(html) {
 			translator.translate(html, function(translatedHTML) {
