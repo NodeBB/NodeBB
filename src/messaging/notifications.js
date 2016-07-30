@@ -91,7 +91,7 @@ module.exports = function(Messaging) {
 			userData: function(next) {
 				user.getUsersFields(uids, ['uid', 'username', 'userslug'], next);
 			},
-			settings: function(next) {
+			userSettings: function(next) {
 				user.getMultipleUserSettings(uids, next);
 			}
 		}, function(err, results) {
