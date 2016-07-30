@@ -119,5 +119,6 @@
     "not-in-room": "Kasutaja pole ruumis",
     "no-users-in-room": "Ühtegi kasutajat ei leidu siit ruumist",
     "cant-kick-self": "Sa ei saa ennast ära visata gruppist",
-    "no-users-selected": "No user(s) selected"
+    "no-users-selected": "No user(s) selected",
+    "invalid-home-page-route": "Invalid home page route"
 }
