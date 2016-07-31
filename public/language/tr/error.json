@@ -120,5 +120,5 @@
     "no-users-in-room": "Bu odada kullanıcı yok",
     "cant-kick-self": "Kendinizi gruptan atamazsınız.",
     "no-users-selected": "Seçili kullanıcı(s) bulunamadı",
-    "invalid-home-page-route": "Invalid home page route"
+    "invalid-home-page-route": "Geçersiz anasayfa yolu"
 }
