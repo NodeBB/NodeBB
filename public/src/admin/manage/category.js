@@ -18,6 +18,9 @@ define('admin/manage/category', [
 			if (cid) {
 				modified_categories[cid] = modified_categories[cid] || {};
 				modified_categories[cid][$(el).attr('data-name')] = $(el).val();
+
+				app.flags = app.flags || {};
+				app.flags._unsaved = true;
 			}
 		}
 
@@ -31,6 +34,7 @@ define('admin/manage/category', [
 					}
 
 					if (result && result.length) {
+						app.flags._unsaved = false;
 						app.alert({
 							title: 'Updated Categories',
 							message: 'Category IDs ' + result.join(', ') + ' was successfully updated.',

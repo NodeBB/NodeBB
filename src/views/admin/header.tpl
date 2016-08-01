@@ -15,7 +15,8 @@
 		var app = {
 			template: "{template.name}",
 			user: JSON.parse('{{userJSON}}'),
-			config: JSON.parse(decodeURIComponent("{{adminConfigJSON}}"))
+			config: JSON.parse(decodeURIComponent("{{adminConfigJSON}}")),
+			flags: {}
 		};
 	</script>
 

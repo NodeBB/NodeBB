@@ -206,6 +206,7 @@ middleware.isAdmin = function(req, res, next) {
 
 				var loginTime = req.session.meta ? req.session.meta.datetime : 0;
 				if (loginTime && parseInt(loginTime, 10) > Date.now() - 3600000) {
+					req.session.meta.datetime += 300000;
 					return next();
 				}
 

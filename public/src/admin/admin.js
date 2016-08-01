@@ -2,9 +2,23 @@
 /*global config, translator, componentHandler, define, socket, app, ajaxify, utils, bootbox, Slideout, NProgress, RELATIVE_PATH*/
 
 (function() {
+	var logoutTimer = 0;
+	function startLogoutTimer() {
+		if (logoutTimer) {
+			clearTimeout(logoutTimer);
+		}
+
+		logoutTimer = setTimeout(function() {
+			app.alert({
+				message: '[[login:logged-out-due-to-inactivity]]'
+			});
+			setTimeout(app.logout, 5000);
+		}, 3600000);
+	}
 
 	$(window).on('action:ajaxify.end', function() {
 		showCorrectNavTab();
+		startLogoutTimer();
 	});
 
 	function showCorrectNavTab() {

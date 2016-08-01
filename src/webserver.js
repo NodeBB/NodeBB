@@ -85,6 +85,7 @@ function initializeNodeBB(callback) {
 		function(next) {
 			plugins.init(app, middleware, next);
 		},
+		async.apply(plugins.fireHook, 'static:assets.prepare', {}),
 		async.apply(meta.js.bridgeModules, app),
 		function(next) {
 			async.series([

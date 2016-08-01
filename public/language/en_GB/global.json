@@ -116,5 +116,7 @@
 	"enter_page_number": "Enter page number",
 	"upload_file": "Upload file",
 	"upload": "Upload",
-	"allowed-file-types": "Allowed file types are %1"
+	"allowed-file-types": "Allowed file types are %1",
+
+	"unsaved-changes": "You have unsaved changes. Are you sure you wish to navigate away?"
 }

@@ -30,7 +30,6 @@ module.exports = function(Meta) {
 				'public/vendor/tinycon/tinycon.js',
 				'public/vendor/xregexp/xregexp.js',
 				'public/vendor/xregexp/unicode/unicode-base.js',
-				'public/vendor/autosize.js',
 				'./node_modules/templates.js/lib/templates.js',
 				'public/src/utils.js',
 				'public/src/sockets.js',
@@ -79,7 +78,7 @@ module.exports = function(Meta) {
 
 			// modules listed below are routed through express (/src/modules) so they can be defined anonymously
 			modules: {
-				"Chart.js": './node_modules/chart.js/Chart.js',
+				"Chart.js": './node_modules/chart.js/dist/Chart.min.js',
 				"mousetrap.js": './node_modules/mousetrap/mousetrap.js',
 
 				"buzz.js": 'public/vendor/buzz/buzz.js'

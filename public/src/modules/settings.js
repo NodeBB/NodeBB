@@ -473,6 +473,12 @@ define('settings', function () {
 				});
 				$(window).trigger('action:admin.settingsLoaded');
 
+				// Handle unsaved changes
+				$(formEl).on('change', 'input, select, textarea', function() {
+					app.flags = app.flags || {};
+					app.flags._unsaved = true;
+				});
+
 				callback(null, values);
 			});
 		},
@@ -498,6 +504,9 @@ define('settings', function () {
 					hash: hash,
 					values: values
 				}, function (err) {
+					// Remove unsaved flag to re-enable ajaxify
+					app.flags._unsaved = false;
+
 					if (typeof callback === 'function') {
 						callback();
 					} else {
