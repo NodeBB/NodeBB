@@ -120,5 +120,5 @@
     "no-users-in-room": "هیچ کاربری در این گفتگو نیست",
     "cant-kick-self": "شما نمی توانید خودتان را از گروه کیک کنید",
     "no-users-selected": "هیچ کاربر(های) انتخاب نشده",
-    "invalid-home-page-route": "Invalid home page route"
+    "invalid-home-page-route": "مسیر صفحه اصلی نامعتبر است"
 }

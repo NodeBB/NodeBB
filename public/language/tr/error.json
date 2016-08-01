@@ -71,7 +71,7 @@
     "already-unfavourited": "Bu iletiyi zaten yer imlerinizden çıkardınız",
     "cant-ban-other-admins": "Başka yöneticileri yasaklayamazsınız!",
     "cant-remove-last-admin": "Tek yönetici sizsiniz. Kendinizi adminlikten çıkarmadan önce başka bir kullanıcıyı admin olarak ekleyiniz",
-    "cant-delete-admin": "Remove administrator privileges from this account before attempting to delete it.",
+    "cant-delete-admin": "Öncelikle yönetici izinlerini kaldırman gerekiyor.",
     "invalid-image-type": "Geçersiz resim uzantısı. Izin verilen uzantılar: %1",
     "invalid-image-extension": "Geçersiz resim uzantısı",
     "invalid-file-type": "Geçersiz dosya türü. İzin verilenler şunlar : %1",
