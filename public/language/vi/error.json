@@ -119,5 +119,6 @@
     "not-in-room": "Thành viên không có trong phòng",
     "no-users-in-room": "Không có ai trong phòng này",
     "cant-kick-self": "Bạn không thể kick chính bạn ra khỏi nhóm",
-    "no-users-selected": "No user(s) selected"
+    "no-users-selected": "No user(s) selected",
+    "invalid-home-page-route": "Invalid home page route"
 }

@@ -119,5 +119,6 @@
     "not-in-room": "없는 사용자입니다.",
     "no-users-in-room": "사용자가 없습니다.",
     "cant-kick-self": "스스로 이 그룹을 탈퇴할 수 없습니다.",
-    "no-users-selected": "No user(s) selected"
+    "no-users-selected": "No user(s) selected",
+    "invalid-home-page-route": "Invalid home page route"
 }

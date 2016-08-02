@@ -119,5 +119,6 @@
     "not-in-room": "O usuario non se encontra nesta sala",
     "no-users-in-room": "Non hai usuarios nesta sala",
     "cant-kick-self": "Non te podes expulsar  a ti mesmo do grupo",
-    "no-users-selected": "No user(s) selected"
+    "no-users-selected": "No user(s) selected",
+    "invalid-home-page-route": "Invalid home page route"
 }

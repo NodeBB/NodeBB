@@ -18,6 +18,6 @@
     "agree_to_terms_of_use": "Kullanım Şartlarını kabul ediyorum",
     "terms_of_use_error": "Kullanım şartlarını kabul etmen gerekiyor",
     "registration-added-to-queue": "Kayıt olma isteğiniz kabul listesine eklenmiştir. Yönetici tarafından kabul edildiğinizde mail alacaksınız.",
-    "interstitial.intro": "We require some additional information before we can create your account.",
+    "interstitial.intro": "Hesabınızı yaratmadan önce bazı ekstra bilgiler gerekiyor.",
     "interstitial.errors-found": "Kaydınınız tamamlanmadı:"
 }

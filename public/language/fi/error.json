@@ -119,5 +119,6 @@
     "not-in-room": "Käyttäjä ei ole huoneessa",
     "no-users-in-room": "Ei käyttäjiä tässä huoneessa",
     "cant-kick-self": "You can't kick yourself from the group",
-    "no-users-selected": "No user(s) selected"
+    "no-users-selected": "No user(s) selected",
+    "invalid-home-page-route": "Invalid home page route"
 }
