@@ -1,8 +1,11 @@
 <ul class="nav nav-pills">
-	<li class="active"><a href="#installed" data-toggle="tab">Installed Plugins</a></li>
-	<li><a href="#active" data-toggle="tab">Active Plugins</a></li>
-	<li><a href="#download" data-toggle="tab">Download Plugins</a></li>
-	<li><a href="#upgrade" data-toggle="tab">Upgradable Plugins</a></li>
+	<li class="active"><a href="#installed" data-toggle="tab">Installed</a></li>
+	<li><a href="#active" data-toggle="tab">Active</a></li>
+	<li><a href="#upgrade" data-toggle="tab">
+		Out of Date
+		<span class="badge">{../upgradeCount}</span>
+	</a></li>
+	<li><a href="#download" data-toggle="tab">Find Plugins</a></li>
 </ul>
 <br />
 
@@ -19,15 +22,15 @@
 			<div class="tab-pane fade" id="active">
 				<ul class="active"></ul>
 			</div>
+			<div class="tab-pane fade" id="upgrade">
+				<ul class="upgrade"></ul>
+			</div>
 			<div class="tab-pane fade" id="download">
 				<ul class="download">
 					<!-- BEGIN download -->
 					<!-- IMPORT admin/partials/download_plugin_item.tpl -->
 					<!-- END download -->
 				</ul>
-			</div>
-			<div class="tab-pane fade" id="upgrade">
-				<ul class="upgrade"></ul>
 			</div>
 		</div>
 	</div>
