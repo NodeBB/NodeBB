@@ -37,6 +37,11 @@ define('forum/login', ['translator'], function(translator) {
 							errorEl.find('p').translateText(data.responseText);
 							errorEl.show();
 							submitEl.removeClass('disabled');
+
+							// Select the entire password if that field has focus
+							if ($('#password:focus').size()) {
+								$('#password').select();
+							}
 						}
 					}
 				});
