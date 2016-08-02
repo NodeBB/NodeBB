@@ -6,7 +6,7 @@
     "403.message": "Erişim izniniz olmayan bir sayfaya denk gelmiş gibisiniz.",
     "403.login": "Belki de tekrar <a href='%1/login'>giriş</a> yapmayı denersiniz?",
     "404.title": "Bulunamadı",
-    "404.message": "Erişim izniniz olmayan bir sayfaya denk gelmiş gibisiniz.<a href='%1/'>Anasayfa</a>ya geri dönün.",
+    "404.message": "Erişim izniniz olmayan bir sayfaya denk gelmiş gibisiniz. <a href='%1/'>Anasayfa</a>'ya geri dönün.",
     "500.title": "Dahili hata.",
     "500.message": "Ups! Bir şeyler ters gitti sanki!",
     "register": "Kayıt Ol",
