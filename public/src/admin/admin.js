@@ -9,10 +9,17 @@
 		}
 
 		logoutTimer = setTimeout(function() {
-			app.alert({
-				message: '[[login:logged-out-due-to-inactivity]]'
+			require(['translator'], function(translator) {
+				translator.translate('[[login:logged-out-due-to-inactivity]]', function(translated) {
+					bootbox.alert({
+						closeButton: false,
+						message: translated,
+						callback: function(){
+							window.location.reload();
+						}
+					});
+				});
 			});
-			setTimeout(app.logout, 5000);
 		}, 3600000);
 	}
 
