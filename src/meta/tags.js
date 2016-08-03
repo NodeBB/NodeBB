@@ -46,10 +46,13 @@ module.exports = function(Meta) {
 				var defaultLinks = [{
 					rel: "icon",
 					type: "image/x-icon",
-					href: nconf.get('relative_path') + '/favicon.ico?' + Meta.config['cache-buster']
+					href: nconf.get('relative_path') + '/favicon.ico' + (Meta.config['cache-buster'] ? '?' + Meta.config['cache-buster'] : '')
 				}, {
 					rel: "manifest",
 					href: nconf.get('relative_path') + '/manifest.json'
+				}, {
+					rel: "prefetch",
+					href: nconf.get('relative_path') + '/vendor/jquery/js/jquery-ui-1.10.4.custom.js' + (Meta.config['cache-buster'] ? '?v=' + Meta.config['cache-buster'] : '')
 				}];
 
 				// Touch icons for mobile-devices

@@ -2,7 +2,7 @@
 	require.config({
 		baseUrl: "{relative_path}/src/modules",
 		waitSeconds: 3,
-		urlArgs: "{config.cache-buster}",
+		urlArgs: "v={config.cache-buster}",
 		paths: {
 			'forum': '../client',
 			'admin': '../admin',
