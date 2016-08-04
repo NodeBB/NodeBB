@@ -62,7 +62,7 @@ module.exports = function(Plugins) {
 		}
 
 		if (pluginData.nbbpm && pluginData.nbbpm.compatibility && semver.validRange(pluginData.nbbpm.compatibility)) {
-			if (!semver.gtr(nconf.get('version'), pluginData.nbbpm.compatibility)) {
+			if (!semver.satisfies(nconf.get('version'), pluginData.nbbpm.compatibility)) {
 				display();
 			}
 		} else {
