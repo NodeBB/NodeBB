@@ -222,7 +222,7 @@ apiController.getObject = function(req, res, next) {
 
 apiController.getCurrentUser = function(req, res, next) {
 	if (!req.uid) {
-		return helpers.notAllowed(req, res);
+		return res.status(401).json('not-authorized');
 	}
 	async.waterfall([
 		function(next) {
