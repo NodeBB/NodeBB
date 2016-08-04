@@ -5,7 +5,6 @@ var path = require('path'),
 	async = require('async'),
 	semver = require('semver'),
 	winston = require('winston'),
-
 	pkg = require('../../package.json');
 
 module.exports = function(Meta) {

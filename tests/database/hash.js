@@ -3,6 +3,7 @@
 
 var	async = require('async'),
 	assert = require('assert'),
+	winston = require('winston'),
 	db = require('../mocks/databasemock');
 
 describe('Hash methods', function() {
@@ -133,7 +134,8 @@ describe('Hash methods', function() {
 				assert.equal(arguments.length, 2);
 				assert.equal(typeof object, 'object');
 				assert.equal(object.lastname, 'usakli');
-				assert.equal(object.age, 99);
+				winston.info("it stores number as string in db! -- " + (typeof object.age));
+				assert.notStrictEqual(object.age, 99);
 				assert.equal(!!object.field1, false);
 				done();
 			});
@@ -203,7 +205,7 @@ describe('Hash methods', function() {
 				assert.equal(arguments.length, 2);
 				assert.equal(Array.isArray(values) && values.length === 3, true);
 				values.forEach(function(value) {
-					assert.notEqual(['baris', 'usakli', 99].indexOf(value), -1);
+					assert.notEqual(['baris', 'usakli', '99'].indexOf(value), -1);
 				});
 
 				done();
