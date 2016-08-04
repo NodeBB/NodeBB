@@ -95,7 +95,7 @@ define('forum/category', [
 		});
 	};
 
-	Category.navigatorCallback = function(topIndex, bottomIndex, elementCount) {
+	Category.navigatorCallback = function(topIndex, bottomIndex) {
 		return bottomIndex;
 	};
 
@@ -177,6 +177,12 @@ define('forum/category', [
 
 	function enableInfiniteLoadingOrPagination() {
 		if (!config.usePagination) {
+			if ($(document.body).height() < $(window).height() && ajaxify.data.topic_count > config.topicsPerPage) {
+				$('#load-more-btn').removeClass('hide').on('click', function() {
+					Category.loadMoreTopics(1);
+					$(this).addClass('hide').off();
+				});
+			}
 			infinitescroll.init($('[component="category"]'), Category.loadMoreTopics);
 		} else {
 			navigator.disable();
