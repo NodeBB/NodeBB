@@ -7,7 +7,8 @@ var tagsController = {},
 	meta = require('../meta'),
 	user = require('../user'),
 	topics = require('../topics'),
-	helpers =  require('./helpers');
+	helpers =  require('./helpers'),
+	plugins = require('../plugins');
 
 tagsController.getTag = function(req, res, next) {
 	var tag = validator.escape(req.params.tag);
@@ -65,7 +66,13 @@ tagsController.getTag = function(req, res, next) {
 			breadcrumbs: helpers.buildBreadcrumbs([{text: '[[tags:tags]]', url: '/tags'}, {text: tag}]),
 			title: '[[pages:tag, ' + tag + ']]'
 		};
-		res.render('tag', data);
+
+		plugins.fireHook('filter:tags.topics.build', {req: req, res: res, templateData: data}, function(err, data) {
+			if (err) {
+				return next(err);
+			}
+			res.render('tag', data.templateData);
+		});
 	});
 };
 
