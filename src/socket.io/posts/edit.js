@@ -2,6 +2,7 @@
 
 var async = require('async');
 var winston = require('winston');
+var validator = require('validator');
 
 var posts = require('../../posts');
 var groups = require('../../groups');
