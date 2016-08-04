@@ -307,7 +307,7 @@ $(document).ready(function() {
 								e.preventDefault();
 							}
 						}
-					} else if (!this.target && window.location.pathname !== '/outgoing') {
+					} else if (window.location.pathname !== '/outgoing') {
 						if (config.openOutgoingLinksInNewTab) {
 							window.open(this.href, '_blank');
 							e.preventDefault();
