@@ -3,7 +3,7 @@
 	<li><a href="#active" data-toggle="tab">Active</a></li>
 	<li><a href="#upgrade" data-toggle="tab">
 		Out of Date
-		<span class="badge">{../upgradeCount}</span>
+		<span class="badge">{upgradeCount}</span>
 	</a></li>
 	<li><a href="#download" data-toggle="tab">Find Plugins</a></li>
 </ul>
