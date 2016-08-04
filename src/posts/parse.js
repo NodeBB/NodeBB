@@ -25,12 +25,14 @@ module.exports = function(Posts) {
 			postData.content = postData.content.toString();
 		}
 
+		postData.content = translator.sanitizeHTML(postData.content);
+
 		plugins.fireHook('filter:parse.post', {postData: postData}, function(err, data) {
 			if (err) {
 				return callback(err);
 			}
 
-			data.postData.content = translator.escape(data.postData.content);
+			data.postData.content = Posts.relativeToAbsolute(data.postData.content);
 
 			if (global.env === 'production' && data.postData.pid) {
 				cache.set(data.postData.pid, data.postData.content);
