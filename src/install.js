@@ -43,8 +43,8 @@ questions.optional = [
 ];
 
 function checkSetupFlag(next) {
-	var	envSetupKeys = ['database'],
-		setupVal;
+	var setupVal;
+
 	try {
 		if (nconf.get('setup')) {
 			setupVal = JSON.parse(nconf.get('setup'));
@@ -74,14 +74,10 @@ function checkSetupFlag(next) {
 
 			process.exit();
 		}
-	} else if (envSetupKeys.every(function(key) {
-		return nconf.stores.env.store.hasOwnProperty(key);
-	})) {
-		install.values = envSetupKeys.reduce(function(config, key) {
-			config[key] = nconf.stores.env.store[key];
-			return config;
-		}, {});
-
+	} else if (nconf.get('database')) {
+		install.values = {
+			database: nconf.get('database')
+		};
 		next();
 	} else {
 		next();

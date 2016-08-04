@@ -33,6 +33,7 @@
 			name: 'mongo:password',
 			description: 'Password of your MongoDB database',
 			hidden: true,
+			default: nconf.get('mongo:password') || '',
 			before: function(value) { value = value || nconf.get('mongo:password') || ''; return value; }
 		},
 		{
