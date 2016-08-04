@@ -165,16 +165,14 @@ $(document).ready(function() {
 				translatedTemplate = translator.unescape(translatedTemplate);
 				$('body').addClass(data.bodyClass);
 				$('#content').html(translatedTemplate);
-
-				ajaxify.end(url, tpl_url);
-
-				if (typeof callback === 'function') {
-					callback();
-				}
-
-				$('#content, #footer').removeClass('ajaxifying');
-
-				app.refreshTitle(data.title);
+				
+				app.refreshTitle(data.title, function() {
+					$('#content, #footer').removeClass('ajaxifying');
+					ajaxify.end(url, tpl_url);
+					if (typeof callback === 'function') {
+						callback();
+					}	
+				});
 			});
 		});
 	}
