@@ -7,5 +7,6 @@
     "alternative_logins": "其他登入方式",
     "failed_login_attempt": "登入失敗",
     "login_successful": "你已成功登入！",
-    "dont_have_account": "還沒有帳號？"
+    "dont_have_account": "還沒有帳號？",
+    "logged-out-due-to-inactivity": "You have been logged out due to inactivity"
 }

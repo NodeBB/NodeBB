@@ -26,6 +26,8 @@
     "tools": "Tööriistad",
     "flag": "Märgista",
     "locked": "Lukustatud",
+    "pinned": "Pinned",
+    "moved": "Moved",
     "bookmark_instructions": "Vajuta siia, et tagasi minna viimati loetud postituse juurde siin teemas.",
     "flag_title": "Märgista see postitus modereerimiseks",
     "flag_success": "See postitus on nüüd märgistatud modereerimiseks.",

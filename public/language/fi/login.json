@@ -7,5 +7,6 @@
     "alternative_logins": "Vaihtoehtoiset kirjautumistavat",
     "failed_login_attempt": "Login Unsuccessful",
     "login_successful": "Olet onnistuneesti kirjautunut sisään!",
-    "dont_have_account": "Ei käyttäjätunnusta?"
+    "dont_have_account": "Ei käyttäjätunnusta?",
+    "logged-out-due-to-inactivity": "You have been logged out due to inactivity"
 }

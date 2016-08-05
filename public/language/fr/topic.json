@@ -26,6 +26,8 @@
     "tools": "Outils",
     "flag": "Signaler",
     "locked": "Verrouillé",
+    "pinned": "Pinned",
+    "moved": "Moved",
     "bookmark_instructions": "Cliquez ici pour retourner au dernier message lu de ce fil.",
     "flag_title": "Signaler ce message à la modération",
     "flag_success": "Ce message a bien été signalé aux modérateurs.",

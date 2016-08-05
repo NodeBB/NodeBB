@@ -7,5 +7,6 @@
     "alternative_logins": "Alternatif Girişler",
     "failed_login_attempt": "Giriş Başarısız",
     "login_successful": "Başarıyla giriş yaptınız!",
-    "dont_have_account": "Hesabınız yok mu?"
+    "dont_have_account": "Hesabınız yok mu?",
+    "logged-out-due-to-inactivity": "You have been logged out due to inactivity"
 }

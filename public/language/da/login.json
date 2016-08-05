@@ -7,5 +7,6 @@
     "alternative_logins": "alternative logins",
     "failed_login_attempt": "Login Unsuccessful",
     "login_successful": "Du har successfuldt logged in!",
-    "dont_have_account": "Har du ikke en konto?"
+    "dont_have_account": "Har du ikke en konto?",
+    "logged-out-due-to-inactivity": "You have been logged out due to inactivity"
 }

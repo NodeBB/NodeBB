@@ -26,6 +26,8 @@
     "tools": "工具",
     "flag": "檢舉",
     "locked": "已鎖定",
+    "pinned": "Pinned",
+    "moved": "Moved",
     "bookmark_instructions": "點擊這裡返回到這個討論串的最後一篇張貼文",
     "flag_title": "檢舉這篇文章, 交給仲裁者來審閱.",
     "flag_success": "這文章已經被檢舉要求仲裁.",

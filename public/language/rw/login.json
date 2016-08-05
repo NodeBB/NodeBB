@@ -7,5 +7,6 @@
     "alternative_logins": "Ukundi Wakwinjiramo",
     "failed_login_attempt": "Login Unsuccessful",
     "login_successful": "Winjiyemo nta ngorane!",
-    "dont_have_account": "Nta konte ufite?"
+    "dont_have_account": "Nta konte ufite?",
+    "logged-out-due-to-inactivity": "You have been logged out due to inactivity"
 }

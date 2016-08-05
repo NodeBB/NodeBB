@@ -26,6 +26,8 @@
     "tools": "Ferramentas",
     "flag": "Sinalizar",
     "locked": "Trancado",
+    "pinned": "Afixado",
+    "moved": "Movido",
     "bookmark_instructions": "Clique aqui para retornar ao último post lido neste tópico.",
     "flag_title": "Sinalizar este post para moderação",
     "flag_success": "Este post foi sinalizado para ser moderado.",

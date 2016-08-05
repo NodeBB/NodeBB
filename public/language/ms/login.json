@@ -7,5 +7,6 @@
     "alternative_logins": "Log Masuk Alternatif",
     "failed_login_attempt": "Login Unsuccessful",
     "login_successful": "Anda berjaya log masuk!",
-    "dont_have_account": "Tiada akaun?"
+    "dont_have_account": "Tiada akaun?",
+    "logged-out-due-to-inactivity": "You have been logged out due to inactivity"
 }
