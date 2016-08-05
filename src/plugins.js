@@ -7,6 +7,7 @@ var winston = require('winston');
 var semver = require('semver');
 var express = require('express');
 var nconf = require('nconf');
+var _ = require('underscore');
 
 var db = require('./database');
 var emitter = require('./emitter');
@@ -35,6 +36,7 @@ var middleware;
 	Plugins.customLanguageFallbacks = {};
 	Plugins.libraryPaths = [];
 	Plugins.versionWarning = [];
+	Plugins.settingsPages = {};
 
 	Plugins.initialized = false;
 
@@ -84,6 +86,7 @@ var middleware;
 		Plugins.clientScripts.length = 0;
 		Plugins.acpScripts.length = 0;
 		Plugins.libraryPaths.length = 0;
+		Plugins.settingsPages = {};
 
 		// Plugins.registerHook('core', {
 		// 	hook: 'static:app.load',
@@ -150,6 +153,17 @@ var middleware;
 			app.render.apply(app, arguments);
 		};
 
+		Object.keys(Plugins.settingsPages).forEach(function(pluginId) {
+			router.get('/admin' + Plugins.settingsPages[pluginId].route,
+									middleware.admin.buildHeader, middleware.isAdmin, middleware.applyCSRF,
+									Plugins.settingsPages[pluginId].middlewares,
+									Plugins.settingsPages[pluginId].renderMethod);
+			router.get('/api/admin' + Plugins.settingsPages[pluginId].route,
+									middleware.isAdmin, middleware.applyCSRF,
+									Plugins.settingsPages[pluginId].middlewares,
+									Plugins.settingsPages[pluginId].renderMethod);
+		});
+
 		Plugins.fireHook('static:app.load', {app: app, router: router, middleware: middleware, controllers: controllers}, function(err) {
 			if (err) {
 				return winston.error('[plugins] Encountered error while executing post-router plugins hooks: ' + err.message);
@@ -159,6 +173,36 @@ var middleware;
 			winston.verbose('[plugins] All plugins reloaded and rerouted');
 			callback();
 		});
+	};
+
+	Plugins.buildSettingsMenuEntries = function(custom_header, callback) {
+		async.waterfall([
+			async.apply(Plugins.fireHook, 'filter:admin.header.build', custom_header),
+			function(custom_header, next) {
+				Object.keys(Plugins.settingsPages).forEach(function(pluginId) {
+					var settingsPage = Plugins.settingsPages[pluginId];
+					custom_header[settingsPage.isAuthentication ? 'authentication' : 'plugins'].push({
+						name: settingsPage.name,
+						route: settingsPage.route
+					});
+				});
+				next(null, custom_header);
+			}
+		], callback);
+	};
+
+	Plugins.getMethodRef = function(id, method) {
+		if (typeof method === 'string' && method.length > 0) {
+			method = method.split('.').reduce(function(memo, prop) {
+				if (memo && memo[prop]) {
+					return memo[prop];
+				} else {
+					// Couldn't find method by path, aborting
+					return null;
+				}
+			}, Plugins.libraries[id]);
+		}
+		return method;
 	};
 
 	Plugins.getTemplates = function(callback) {

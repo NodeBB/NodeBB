@@ -47,6 +47,9 @@ module.exports = function(Plugins) {
 				},
 				function(next) {
 					loadLanguages(pluginData, next);
+				},
+				function(next) {
+					registerSettingsPage(pluginData, pluginPath, next);
 				}
 			], function(err) {
 				if (err) {
@@ -84,9 +87,7 @@ module.exports = function(Plugins) {
 		var libraryPath = path.join(pluginPath, pluginData.library);
 
 		try {
-			if (!Plugins.libraries[pluginData.id]) {
-				Plugins.requireLibrary(pluginData.id, libraryPath);
-			}
+			ensureLibraryLoaded(pluginData.id, libraryPath);
 
 			if (Array.isArray(pluginData.hooks) && pluginData.hooks.length > 0) {
 				async.each(pluginData.hooks, function(hook, next) {
@@ -96,8 +97,7 @@ module.exports = function(Plugins) {
 				callback();
 			}
 		} catch(err) {
-			winston.error(err.stack);
-			winston.warn('[plugins] Unable to parse library for: ' + pluginData.id);
+			logLibraryLoadErr(pluginData.id, err.stack);
 			callback();
 		}
 	}
@@ -168,7 +168,7 @@ module.exports = function(Plugins) {
 		}
 
 		callback();
-	};
+	}
 
 	function mapClientModules(pluginData, callback) {
 		if (!pluginData.hasOwnProperty('modules')) {
@@ -208,7 +208,7 @@ module.exports = function(Plugins) {
 		}
 
 		callback();
-	};
+	}
 
 	function loadLanguages(pluginData, callback) {
 		if (typeof pluginData.languages !== 'string') {
@@ -263,6 +263,76 @@ module.exports = function(Plugins) {
 				callback();
 			});
 		});
+	}
+
+	function registerSettingsPage(pluginData, pluginPath, callback) {
+		if (!pluginData.library) {
+			return callback();
+		}
+
+		var settingsPage = pluginData.settingsPage;
+		var libraryPath = path.join(pluginPath, pluginData.library);
+		var settingsRouteRX = /nodebb-(?:plugin|rewards|theme|widget)-(.*)/;
+
+		if (settingsPage) {
+			try {
+				ensureLibraryLoaded(pluginData.id, libraryPath);
+
+				var logTag = '[plugins/' + pluginData.id + ']';
+
+				var headerBuildHooks = Plugins.loadedHooks['filter:admin.header.build'];
+				var redundantHook = _.findWhere(headerBuildHooks, {id: pluginData.id});
+				if (redundantHook) {
+					winston.warn(logTag + ' Deprecation warning: No need to use filter:admin.header.build when "settingsPage" is defined in plugin.json!');
+					Plugins.loadedHooks['filter:admin.header.build'] = _.without(headerBuildHooks, redundantHook);
+				}
+
+				var renderMethod;
+				var shortId = pluginData.id.match(settingsRouteRX)[1];
+				Plugins.settingsPages[pluginData.id] = {};
+				Plugins.settingsPages[pluginData.id].name = settingsPage.name || shortId;
+				Plugins.settingsPages[pluginData.id].route = '/plugins/' + shortId;
+				renderMethod = Plugins.getMethodRef(pluginData.id, settingsPage.renderMethod) || settingsPage.renderMethod;
+				if (typeof renderMethod !== 'function') {
+					winston.error(logTag + ' Unable to find settings page\'s render method: ' + renderMethod);
+					delete Plugins.settingsPages[pluginData.id];
+					return callback();
+				} else {
+					Plugins.settingsPages[pluginData.id].renderMethod = renderMethod;
+				}
+				Plugins.settingsPages[pluginData.id].isAuthentication = settingsPage.isAuthentication;
+
+				Plugins.settingsPages[pluginData.id].middlewares = [];
+				if (Array.isArray(settingsPage.middlewares) && settingsPage.middlewares.length > 0) {
+					settingsPage.middlewares.forEach(function(middleware) {
+						var middlewareRef = Plugins.getMethodRef(pluginData.id, middleware) || middleware;
+						if (typeof middlewareRef !== 'function') {
+							winston.warn(logTag + ' Unable to find middleware method: ' + middlewareRef);
+						} else {
+							Plugins.settingsPages[pluginData.id].middlewares.push(middlewareRef);
+						}
+					});
+				}
+				callback();
+
+			} catch (err) {
+				logLibraryLoadErr(pluginData.id, err.stack);
+				callback(err);
+			}
+		} else {
+			callback();
+		}
+	}
+
+	function ensureLibraryLoaded(id, libraryPath) {
+		if (!Plugins.libraries[id]) {
+				Plugins.requireLibrary(id, libraryPath);
+		}
+	}
+
+	function logLibraryLoadErr(id, stack) {
+		winston.error(stack);
+		winston.warn('[plugins] Unable to parse library for: ' + id);
 	}
 
 	Plugins.loadPluginInfo = function(pluginPath, callback) {

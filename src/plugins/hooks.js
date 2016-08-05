@@ -27,8 +27,6 @@ module.exports = function(Plugins) {
 			return callback();
 		}
 
-		var method;
-
 		if (Object.keys(Plugins.deprecatedHooks).indexOf(data.hook) !== -1) {
 			winston.warn('[plugins/' + id + '] Hook `' + data.hook + '` is deprecated, ' +
 				(Plugins.deprecatedHooks[data.hook] ?
@@ -51,21 +49,8 @@ module.exports = function(Plugins) {
 				data.priority = 10;
 			}
 
-			if (typeof data.method === 'string' && data.method.length > 0) {
-				method = data.method.split('.').reduce(function(memo, prop) {
-					if (memo && memo[prop]) {
-						return memo[prop];
-					} else {
-						// Couldn't find method by path, aborting
-						return null;
-					}
-				}, Plugins.libraries[data.id]);
-
-				// Write the actual method reference to the hookObj
-				data.method = method;
-
-				register();
-			} else if (typeof data.method === 'function') {
+			data.method = Plugins.getMethodRef(id, data.method) || data.method;
+			if (typeof data.method === 'function') {
 				register();
 			} else {
 				winston.warn('[plugins/' + id + '] Hook method mismatch: ' + data.hook + ' => ' + data.method);
