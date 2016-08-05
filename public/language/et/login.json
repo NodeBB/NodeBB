@@ -7,5 +7,6 @@
     "alternative_logins": "Alternatiivsed sisse logimise võimalused",
     "failed_login_attempt": "Sisselogimine ebaõnnestus",
     "login_successful": "Edukalt sisse logitud!",
-    "dont_have_account": "Pole veel kasutajat?"
+    "dont_have_account": "Pole veel kasutajat?",
+    "logged-out-due-to-inactivity": "You have been logged out due to inactivity"
 }

@@ -7,5 +7,6 @@
     "alternative_logins": "使用合作网站帐号登录",
     "failed_login_attempt": "登录失败",
     "login_successful": "您已经成功登录！",
-    "dont_have_account": "没有帐号？"
+    "dont_have_account": "没有帐号？",
+    "logged-out-due-to-inactivity": "You have been logged out due to inactivity"
 }

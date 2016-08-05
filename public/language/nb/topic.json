@@ -26,6 +26,8 @@
     "tools": "Verktøy",
     "flag": "Rapporter",
     "locked": "Låst",
+    "pinned": "Pinned",
+    "moved": "Moved",
     "bookmark_instructions": "Click here to return to the last read post in this thread.",
     "flag_title": "Rapporter dette innlegget for granskning",
     "flag_success": "Dette innlegget har blitt rapportert.",

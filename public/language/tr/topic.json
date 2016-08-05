@@ -26,6 +26,8 @@
     "tools": "Araçlar",
     "flag": "Bayrak",
     "locked": "Kilitli",
+    "pinned": "Pinned",
+    "moved": "Moved",
     "bookmark_instructions": "Bu başlıkta en son kaldığın yere dönmek için tıklayın.",
     "flag_title": "Bu iletiyi moderatöre haber et",
     "flag_success": "Bu ileti yöneticilere bildirildi.",

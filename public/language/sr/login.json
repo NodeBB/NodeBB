@@ -7,5 +7,6 @@
     "alternative_logins": "Алтернативно пријављивање",
     "failed_login_attempt": "Login Unsuccessful",
     "login_successful": "Успешно сте се пријавили!",
-    "dont_have_account": "Немате налог?"
+    "dont_have_account": "Немате налог?",
+    "logged-out-due-to-inactivity": "You have been logged out due to inactivity"
 }

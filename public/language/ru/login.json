@@ -7,5 +7,6 @@
     "alternative_logins": "Войти через",
     "failed_login_attempt": "Некорректный логин",
     "login_successful": "Вы успешно вошли!",
-    "dont_have_account": "Нет акканута?"
+    "dont_have_account": "Нет акканута?",
+    "logged-out-due-to-inactivity": "You have been logged out due to inactivity"
 }

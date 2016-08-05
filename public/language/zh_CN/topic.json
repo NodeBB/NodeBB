@@ -26,6 +26,8 @@
     "tools": "工具",
     "flag": "举报",
     "locked": "已锁定",
+    "pinned": "Pinned",
+    "moved": "Moved",
     "bookmark_instructions": "点击阅读本主题帖中的最新回复",
     "flag_title": "举报此帖",
     "flag_success": "已举报此回帖。",

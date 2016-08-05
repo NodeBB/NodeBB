@@ -26,6 +26,8 @@
     "tools": "Werkzeuge",
     "flag": "Markieren",
     "locked": "Gesperrt",
+    "pinned": "Pinned",
+    "moved": "Moved",
     "bookmark_instructions": "Klicke hier, um zum letzten gelesenen Beitrag des Themas zurückzukehren.",
     "flag_title": "Diesen Beitrag zur Moderation markieren",
     "flag_success": "Dieser Beitrag wurde erfolgreich für die Moderation markiert.",

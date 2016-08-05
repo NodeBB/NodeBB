@@ -26,6 +26,8 @@
     "tools": "Extra",
     "flag": "Markeren",
     "locked": "Gesloten",
+    "pinned": "Pinned",
+    "moved": "Moved",
     "bookmark_instructions": "Klik hier om terug te keren naar de laatst gelezen post in deze thread.",
     "flag_title": "Bericht aan beheerders melden",
     "flag_success": "Dit bericht is gerapporteerd aan de beheerder.",

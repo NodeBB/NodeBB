@@ -26,6 +26,8 @@
     "tools": "Ferramentas",
     "flag": "Reportar",
     "locked": "Pechado",
+    "pinned": "Pinned",
+    "moved": "Moved",
     "bookmark_instructions": "Pica aquí para volver á última mensaxe lida neste tema ",
     "flag_title": "Reportar esta mensaxe",
     "flag_success": "Esta mensaxe foi reportada para moderación.",

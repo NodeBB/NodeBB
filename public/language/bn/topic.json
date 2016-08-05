@@ -26,6 +26,8 @@
     "tools": "টুলস",
     "flag": "ফ্ল্যাগ",
     "locked": "বন্ধ",
+    "pinned": "Pinned",
+    "moved": "Moved",
     "bookmark_instructions": "Click here to return to the last read post in this thread.",
     "flag_title": "মডারেশনের জন্য এই পোস্টটি ফ্ল্যাগ করুন",
     "flag_success": "এই পোস্টটি মডারেশনের জন্য ফ্ল্যাগ করা হয়েছে।",
