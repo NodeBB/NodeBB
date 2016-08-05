@@ -7,5 +7,6 @@
     "alternative_logins": "התחבר באמצעות...",
     "failed_login_attempt": "Login Unsuccessful",
     "login_successful": "התחברת בהצלחה!",
-    "dont_have_account": "אין לך חשבון עדיין?"
+    "dont_have_account": "אין לך חשבון עדיין?",
+    "logged-out-due-to-inactivity": "You have been logged out due to inactivity"
 }

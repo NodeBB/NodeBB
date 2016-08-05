@@ -7,5 +7,6 @@
     "alternative_logins": "Други начини за влизане",
     "failed_login_attempt": "Влизането беше неуспешно",
     "login_successful": "Вие влязохте успешно!",
-    "dont_have_account": "Нямате акаунт?"
+    "dont_have_account": "Нямате акаунт?",
+    "logged-out-due-to-inactivity": "Излязохте автоматично поради бездействие"
 }

@@ -7,5 +7,6 @@
     "alternative_logins": "Accesos alternativos",
     "failed_login_attempt": "Error al iniciar sesión",
     "login_successful": "¡Identificado satisfactoriamente!",
-    "dont_have_account": "¿Aún no tienes cuenta?"
+    "dont_have_account": "¿Aún no tienes cuenta?",
+    "logged-out-due-to-inactivity": "You have been logged out due to inactivity"
 }

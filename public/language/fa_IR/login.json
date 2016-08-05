@@ -7,5 +7,6 @@
     "alternative_logins": "روش‌های درون آمدن جایگزین",
     "failed_login_attempt": "ورود ناموفق",
     "login_successful": "شما با موفقیت به درون آمده‌اید!",
-    "dont_have_account": "حساب کاربری ندارید؟"
+    "dont_have_account": "حساب کاربری ندارید؟",
+    "logged-out-due-to-inactivity": "You have been logged out due to inactivity"
 }

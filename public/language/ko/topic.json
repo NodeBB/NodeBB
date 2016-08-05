@@ -26,6 +26,8 @@
     "tools": "도구",
     "flag": "신고",
     "locked": "잠김",
+    "pinned": "Pinned",
+    "moved": "Moved",
     "bookmark_instructions": "이 스레드에서 읽은 마지막 게시글로 이동하시려면 여기를 클릭하세요.",
     "flag_title": "이 게시물을 신고",
     "flag_success": "이 게시물은 신고되었습니다.",

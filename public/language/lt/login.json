@@ -7,5 +7,6 @@
     "alternative_logins": "Alternatyvūs prisijungimo būdai",
     "failed_login_attempt": "Login Unsuccessful",
     "login_successful": "Jūs sėkmingai prisijungėte!",
-    "dont_have_account": "Neturite paskyros?"
+    "dont_have_account": "Neturite paskyros?",
+    "logged-out-due-to-inactivity": "You have been logged out due to inactivity"
 }

@@ -7,5 +7,6 @@
     "alternative_logins": "Ďalšie spôsoby prihlásenia",
     "failed_login_attempt": "Login Unsuccessful",
     "login_successful": "Prihlásenie prebehlo úspešne!",
-    "dont_have_account": "Nemáš účet?"
+    "dont_have_account": "Nemáš účet?",
+    "logged-out-due-to-inactivity": "You have been logged out due to inactivity"
 }

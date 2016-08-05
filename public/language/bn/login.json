@@ -7,5 +7,6 @@
     "alternative_logins": "বিকল্প প্রবেশ",
     "failed_login_attempt": "Login Unsuccessful",
     "login_successful": "আপনি সফলভাবে প্রবেশ করেছেন!",
-    "dont_have_account": "কোন একাউন্ট নেই?"
+    "dont_have_account": "কোন একাউন্ট নেই?",
+    "logged-out-due-to-inactivity": "You have been logged out due to inactivity"
 }

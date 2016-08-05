@@ -7,5 +7,6 @@
     "alternative_logins": "تسجيلات الدخول البديلة",
     "failed_login_attempt": "Login Unsuccessful",
     "login_successful": "قمت بتسجيل الدخول بنجاح!",
-    "dont_have_account": "لا تملك حساب؟"
+    "dont_have_account": "لا تملك حساب؟",
+    "logged-out-due-to-inactivity": "You have been logged out due to inactivity"
 }

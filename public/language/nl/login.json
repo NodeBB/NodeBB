@@ -7,5 +7,6 @@
     "alternative_logins": "Andere manieren van aanmelden",
     "failed_login_attempt": "Aanmelden mislukt",
     "login_successful": "Je bent succesvol ingelogd!",
-    "dont_have_account": "Geen gebruikersaccount?"
+    "dont_have_account": "Geen gebruikersaccount?",
+    "logged-out-due-to-inactivity": "You have been logged out due to inactivity"
 }

@@ -7,5 +7,6 @@
     "alternative_logins": "Accessi Alternativi",
     "failed_login_attempt": "Login Unsuccessful",
     "login_successful": "Sei entrato con successo!",
-    "dont_have_account": "Non hai un account?"
+    "dont_have_account": "Non hai un account?",
+    "logged-out-due-to-inactivity": "You have been logged out due to inactivity"
 }

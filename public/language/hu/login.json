@@ -7,5 +7,6 @@
     "alternative_logins": "Alternatív belépés",
     "failed_login_attempt": "Login Unsuccessful",
     "login_successful": "Sikeres belépés",
-    "dont_have_account": "Nincs még fiók?"
+    "dont_have_account": "Nincs még fiók?",
+    "logged-out-due-to-inactivity": "You have been logged out due to inactivity"
 }
