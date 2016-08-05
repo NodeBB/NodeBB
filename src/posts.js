@@ -228,7 +228,11 @@ var plugins = require('./plugins');
 		async.parallel([
 			function (next) {
 				if (postData.uid) {
-					db.sortedSetAdd('uid:' + postData.uid + ':posts:votes', postData.votes, postData.pid, next);
+					if (postData.votes > 0) {
+						db.sortedSetAdd('uid:' + postData.uid + ':posts:votes', postData.votes, postData.pid, next);
+					} else {
+						db.sortedSetRemove('uid:' + postData.uid + ':posts:votes', postData.pid, next);
+					}
 				} else {
 					next();
 				}

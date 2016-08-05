@@ -10,7 +10,7 @@ var db = require('./database'),
 	schemaDate, thisSchemaDate,
 
 	// IMPORTANT: REMEMBER TO UPDATE VALUE OF latestSchema
-	latestSchema = Date.UTC(2016, 6, 12);
+	latestSchema = Date.UTC(2016, 7, 5);
 
 Upgrade.check = function(callback) {
 	db.get('schemaDate', function(err, value) {
@@ -655,6 +655,31 @@ Upgrade.upgrade = function(callback) {
 				});
 			} else {
 				winston.info('[2016/07/12] Upload privileges skipped!');
+				next();
+			}
+		},
+		function(next) {
+			thisSchemaDate = Date.UTC(2016, 7, 5);
+
+			if (schemaDate < thisSchemaDate) {
+				updatesMade = true;
+				winston.info('[2016/08/05] Removing best posts with negative scores');
+				var batch = require('./batch');
+				batch.processSortedSet('users:joindate', function(ids, next) {
+					async.each(ids, function(id, next) {
+						console.log('processing uid ' + id);
+						db.sortedSetsRemoveRangeByScore(['uid:' + id + ':posts:votes'], '-inf', 0, next);
+					}, next);
+				}, {}, function(err) {
+					if (err) {
+						return next(err);
+					}
+					winston.info('[2016/08/05] Removing best posts with negative scores done!');
+					Upgrade.update(thisSchemaDate, next);
+				});
+
+			} else {
+				winston.info('[2016/08/05] Removing best posts with negative scores skipped!');
 				next();
 			}
 		}
