@@ -8,5 +8,5 @@
     "failed_login_attempt": "ورود ناموفق",
     "login_successful": "شما با موفقیت به درون آمده‌اید!",
     "dont_have_account": "حساب کاربری ندارید؟",
-    "logged-out-due-to-inactivity": "You have been logged out due to inactivity"
+    "logged-out-due-to-inactivity": "You have been logged out of the Admin Control Panel due to inactivity"
 }

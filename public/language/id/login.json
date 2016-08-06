@@ -8,5 +8,5 @@
     "failed_login_attempt": "Login Unsuccessful",
     "login_successful": "Kamu telah berhasil login!",
     "dont_have_account": "Belum memiliki akun?",
-    "logged-out-due-to-inactivity": "You have been logged out due to inactivity"
+    "logged-out-due-to-inactivity": "You have been logged out of the Admin Control Panel due to inactivity"
 }
