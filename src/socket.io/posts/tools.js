@@ -28,6 +28,12 @@ module.exports = function(SocketPosts) {
 			isAdminOrMod: function(next) {
 				privileges.categories.isAdminOrMod(data.cid, socket.uid, next);
 			},
+			canEdit: function(next) {
+				privileges.posts.canEdit(data.pid, socket.uid, next);
+			},
+			canDelete: function(next) {
+				privileges.posts.canDelete(data.pid, socket.uid, next);
+			},
 			favourited: function(next) {
 				favourites.getFavouritesByPostIDs([data.pid], socket.uid, next);
 			},
@@ -45,7 +51,9 @@ module.exports = function(SocketPosts) {
 			results.posts.deleted = parseInt(results.posts.deleted, 10) === 1;
 			results.posts.favourited = results.favourited[0];
 			results.posts.selfPost = socket.uid && socket.uid === parseInt(results.posts.uid, 10);
-			results.posts.display_moderator_tools = results.isAdminOrMod || results.posts.selfPost;
+			results.posts.display_edit_tools = results.canEdit;
+			results.posts.display_delete_tools = results.canDelete;
+			results.posts.display_moderator_tools = results.posts.display_edit_tools || results.posts.display_delete_tools;
 			results.posts.display_move_tools = results.isAdminOrMod;
 			callback(null, results);
 		});

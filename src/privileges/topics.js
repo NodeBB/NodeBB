@@ -22,6 +22,9 @@ module.exports = function(privileges) {
 				async.parallel({
 					'topics:reply': async.apply(helpers.isUserAllowedTo, 'topics:reply', uid, [topic.cid]),
 					'topics:read': async.apply(helpers.isUserAllowedTo, 'topics:read', uid, [topic.cid]),
+					'topics:delete': async.apply(helpers.isUserAllowedTo, 'topics:delete', uid, [topic.cid]),
+					edit: async.apply(helpers.isUserAllowedTo, 'edit', uid, [topic.cid]),
+					'delete': async.apply(helpers.isUserAllowedTo, 'delete', uid, [topic.cid]),
 					read: async.apply(helpers.isUserAllowedTo, 'read', uid, [topic.cid]),
 					isOwner: function(next) {
 						next(null, !!parseInt(uid, 10) && parseInt(uid, 10) === parseInt(topic.uid, 10));
@@ -40,7 +43,7 @@ module.exports = function(privileges) {
 			var locked = parseInt(topic.locked, 10) === 1;
 			var isAdminOrMod = results.isAdministrator || results.isModerator;
 			var editable = isAdminOrMod;
-			var deletable = isAdminOrMod || results.isOwner;
+			var deletable = isAdminOrMod || (results.isOwner && results['topics:delete'][0]);
 
 			plugins.fireHook('filter:privileges.topics.get', {
 				'topics:reply': (results['topics:reply'][0] && !locked) || isAdminOrMod,
@@ -53,7 +56,9 @@ module.exports = function(privileges) {
 				isAdminOrMod: isAdminOrMod,
 				disabled: disabled,
 				tid: tid,
-				uid: uid
+				uid: uid,
+				editOwnPosts: results.edit[0],
+				deleteOwnPosts: results['delete'][0]
 			}, callback);
 		});
 	};
@@ -174,6 +179,29 @@ module.exports = function(privileges) {
 				next(null, results.isAdminOrMod || (results.purge && results.owner));
 			}
 		], callback);
+	};
+
+	privileges.topics.canDelete = function(tid, uid, callback) {
+		topics.getTopicField(tid, 'cid', function(err, cid) {
+			if (err) {
+				return callback(err);
+			}
+			helpers.some([
+				async.apply(user.isModerator, uid, cid),
+				async.apply(user.isAdministrator, uid),
+				function(next) {
+					async.parallel({
+						owner: async.apply(topics.isOwner, tid, uid),
+						'topics:delete': async.apply(helpers.isUserAllowedTo, 'topics:delete', uid, [cid])
+					}, function(err, result) {
+						if (err) {
+							return next(err);
+						}
+						next(null, result.owner && result['topics:delete'][0]);
+					});
+				}
+			], callback);
+		});
 	};
 
 	privileges.topics.canEdit = function(tid, uid, callback) {

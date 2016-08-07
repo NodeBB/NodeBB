@@ -10,7 +10,7 @@ var db = require('./database'),
 	schemaDate, thisSchemaDate,
 
 	// IMPORTANT: REMEMBER TO UPDATE VALUE OF latestSchema
-	latestSchema = Date.UTC(2016, 7, 5);
+	latestSchema = Date.UTC(2016, 8, 6);
 
 Upgrade.check = function(callback) {
 	db.get('schemaDate', function(err, value) {
@@ -680,6 +680,111 @@ Upgrade.upgrade = function(callback) {
 
 			} else {
 				winston.info('[2016/08/05] Removing best posts with negative scores skipped!');
+				next();
+			}
+		},
+		function(next) {
+			thisSchemaDate = Date.UTC(2016, 8, 6);
+
+			if (schemaDate < thisSchemaDate) {
+				updatesMade = true;
+				winston.info('[2016/08/06] Granting edit/delete/delete topic on existing categories');
+
+				var groupsAPI = require('./groups');
+				var privilegesAPI = require('./privileges');
+
+				db.getSortedSetRange('categories:cid', 0, -1, function(err, cids) {
+					async.eachSeries(cids, function(cid, next) {
+						privilegesAPI.categories.list(cid, function(err, data) {
+							var groups = data.groups;
+							var users = data.users;
+
+							async.waterfall([
+								function(next) {
+									async.eachSeries(groups, function(group, next) {
+										if (group.privileges['groups:topics:reply']) {
+											return async.parallel([
+												async.apply(groupsAPI.join, 'cid:' + cid + ':privileges:groups:edit', group.name),
+												async.apply(groupsAPI.join, 'cid:' + cid + ':privileges:groups:delete', group.name)
+											], function(err) {
+												if (!err) {
+													winston.info('cid:' + cid + ':privileges:groups:edit, cid:' + cid + ':privileges:groups:delete granted to gid: ' + group.name);
+												}
+
+												return next(err);
+											});
+										}
+
+										next(null);
+									}, next);
+								},
+								function(next) {
+									async.eachSeries(groups, function(group, next) {
+										if (group.privileges['groups:topics:create']) {
+											return groupsAPI.join('cid:' + cid + ':privileges:groups:topics:delete', group.name, function(err) {
+												if (!err) {
+													winston.info('cid:' + cid + ':privileges:groups:topics:delete granted to gid: ' + group.name);
+												}
+
+												return next(err);
+											});
+										}
+
+										next(null);
+									}, next);
+								},
+								function(next) {
+									async.eachSeries(users, function(user, next) {
+										if (user.privileges['topics:reply']) {
+											return async.parallel([
+												async.apply(groupsAPI.join, 'cid:' + cid + ':privileges:edit', user.uid),
+												async.apply(groupsAPI.join, 'cid:' + cid + ':privileges:delete', user.uid)
+											], function(err) {
+												if (!err) {
+													winston.info('cid:' + cid + ':privileges:edit, cid:' + cid + ':privileges:delete granted to uid: ' + user.uid);
+												}
+
+												return next(err);
+											});
+										}
+
+										next(null);
+									}, next);
+								},
+								function(next) {
+									async.eachSeries(users, function(user, next) {
+										if (user.privileges['topics:create']) {
+											return groupsAPI.join('cid:' + cid + ':privileges:topics:delete', user.uid, function(err) {
+												if (!err) {
+													winston.info('cid:' + cid + ':privileges:topics:delete granted to uid: ' + user.uid);
+												}
+
+												return next(err);
+											});
+										}
+
+										next(null);
+									}, next);
+								}
+							], function(err) {
+								if (!err) {
+									winston.info('-- cid ' + cid + ' upgraded');
+								}
+
+								next(err);
+							});
+						});
+					}, function(err) {
+						if (err) {
+							return next(err);
+						}
+
+						winston.info('[2016/08/06] Granting edit/delete/delete topic on existing categories - done');
+						Upgrade.update(thisSchemaDate, next);
+					});
+				});
+			} else {
+				winston.info('[2016/08/06] Granting edit/delete/delete topic on existing categories - skipped!');
 				next();
 			}
 		}

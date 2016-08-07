@@ -48,7 +48,7 @@ module.exports = function(Categories) {
 			function(data, next) {
 				category = data.category;
 
-				var defaultPrivileges = ['find', 'read', 'topics:read', 'topics:create', 'topics:reply', 'upload:post:image'];
+				var defaultPrivileges = ['find', 'read', 'topics:read', 'topics:create', 'topics:reply', 'edit', 'delete', 'upload:post:image'];
 
 				async.series([
 					async.apply(db.setObject, 'category:' + category.cid, category),

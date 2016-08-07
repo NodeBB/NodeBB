@@ -10,6 +10,9 @@
 			<li role="presentation"><a href="#" data-priv="groups:topics:read" class="<!-- IF groups.privileges.groups:topics:read -->active<!-- ENDIF groups.privileges.groups:topics:read -->">Access Topics</a></li>
 			<li role="presentation"><a href="#" data-priv="groups:topics:create" class="<!-- IF groups.privileges.groups:topics:create -->active<!-- ENDIF groups.privileges.groups:topics:create -->">Create Topics</a></li>
 			<li role="presentation"><a href="#" data-priv="groups:topics:reply" class="<!-- IF groups.privileges.groups:topics:reply -->active<!-- ENDIF groups.privileges.groups:topics:reply -->">Reply to Topics</a></li>
+			<li role="presentation"><a href="#" data-priv="groups:edit" class="<!-- IF groups.privileges.groups:edit -->active<!-- ENDIF groups.privileges.groups:edit -->">Edit Posts</a></li>
+			<li role="presentation"><a href="#" data-priv="groups:delete" class="<!-- IF groups.privileges.groups:delete -->active<!-- ENDIF groups.privileges.groups:delete -->">Delete Posts</a></li>
+			<li role="presentation"><a href="#" data-priv="groups:topics:delete" class="<!-- IF groups.privileges.groups:topics:delete -->active<!-- ENDIF groups.privileges.groups:topics:delete -->">Delete Topics</a></li>
 		</ul>
 	</div>
 	{groups.displayName}

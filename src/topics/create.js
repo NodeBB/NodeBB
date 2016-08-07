@@ -292,6 +292,8 @@ module.exports = function(Topics) {
 
 				postData.favourited = false;
 				postData.votes = 0;
+				postData.display_edit_tools = true;
+				postData.display_delete_tools = true;
 				postData.display_moderator_tools = true;
 				postData.display_move_tools = true;
 				postData.selfPost = false;
