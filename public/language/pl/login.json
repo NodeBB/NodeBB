@@ -8,5 +8,5 @@
     "failed_login_attempt": "Nie udało się zalogować. Spróbuj ponownie.",
     "login_successful": "Zostałeś pomyślnie zalogowany.",
     "dont_have_account": "Nie masz konta?",
-    "logged-out-due-to-inactivity": "You have been logged out due to inactivity"
+    "logged-out-due-to-inactivity": "You have been logged out of the Admin Control Panel due to inactivity"
 }

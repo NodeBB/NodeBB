@@ -8,5 +8,5 @@
     "failed_login_attempt": "Đăng nhập không thành công",
     "login_successful": "Bạn đã đăng nhập thành công!",
     "dont_have_account": "Chưa có tài khoản?",
-    "logged-out-due-to-inactivity": "You have been logged out due to inactivity"
+    "logged-out-due-to-inactivity": "You have been logged out of the Admin Control Panel due to inactivity"
 }
