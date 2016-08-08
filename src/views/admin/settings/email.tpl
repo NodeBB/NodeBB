@@ -67,12 +67,14 @@
 <div class="row">
 	<div class="col-sm-2 col-xs-12 settings-header">Email Testing</div>
 	<div class="col-sm-10 col-xs-12">
-		<label>Select Email Template</label><br />
-		<select id="test-email" class="form-control">
-			<!-- BEGIN sendable -->
-			<option value="{sendable.path}">{sendable.path}</option>
-			<!-- END sendable -->
-		</select><br />
+		<div class="form-group">
+			<label>Select Email Template</label>
+			<select id="test-email" class="form-control">
+				<!-- BEGIN sendable -->
+				<option value="{sendable.path}">{sendable.path}</option>
+				<!-- END sendable -->
+			</select>
+		</div>
 		<button class="btn btn-primary" type="button" data-action="email.test">Send Test Email</button>
 		<p class="help-block">
 			The test email will be sent to the currently logged in user's email address.
