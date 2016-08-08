@@ -10,6 +10,10 @@
     "share_this_category": "このカテゴリを共有する",
     "watch": "ウォッチする",
     "ignore": "無視する",
+    "watching": "Watching",
+    "ignoring": "Ignoring",
+    "watching.description": "Show topics in unread",
+    "ignoring.description": "Do not show topics in unread",
     "watch.message": "このカテゴリの更新をウォッチする",
     "ignore.message": "このカテゴリの更新を無視する",
     "watched-categories": "ウォッチ中のカテゴリ"

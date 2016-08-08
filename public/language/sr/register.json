@@ -1,5 +1,6 @@
 {
     "register": "Регистрација",
+    "cancel_registration": "Cancel Registration",
     "help.email": "Ваша е-пошта ће подразумевано бити скривена од јавности.",
     "help.username_restrictions": "Јединствено корисничко име између %1 и %2 знакова. Остали вас могу спомињати путем @<span id=„ВашеКорисничкоИме“>username</span>.",
     "help.minimum_password_length": "Ваша лозинке мора имати најмање %1 знакова.",
@@ -15,5 +16,8 @@
     "alternative_registration": "Алтернативно регистровање",
     "terms_of_use": "Услови коришћења",
     "agree_to_terms_of_use": "Слажем се са условима коришћења",
-    "registration-added-to-queue": "Ваша регистрација је додата у ред одобравања. Добићете меијл када администратор прихвати вашу регистрацију."
+    "terms_of_use_error": "You must agree to the Terms of Use",
+    "registration-added-to-queue": "Ваша регистрација је додата у ред одобравања. Добићете меијл када администратор прихвати вашу регистрацију.",
+    "interstitial.intro": "We require some additional information before we can create your account.",
+    "interstitial.errors-found": "We could not complete your registration:"
 }

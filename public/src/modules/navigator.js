@@ -143,8 +143,10 @@ define('navigator', ['forum/pagination', 'components'], function(pagination, com
 				threshold = 0;
 			} else {
 				var anchorEl = components.get('post/anchor', index - 1);
-				var anchorRect = anchorEl.get(0).getBoundingClientRect();
-				threshold = anchorRect.top;
+				if (anchorEl.length) {
+					var anchorRect = anchorEl.get(0).getBoundingClientRect();
+					threshold = anchorRect.top;
+				}
 			}
 		}
 

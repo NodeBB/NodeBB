@@ -1,5 +1,6 @@
 {
     "register": "Regisztráció",
+    "cancel_registration": "Cancel Registration",
     "help.email": "Az e-mail cím nem lesz közzétéve.",
     "help.username_restrictions": "Egyedi felhasználói név %1 és %2 karakterek között. A többiek megemlíthetnek az alábbi módon @<span id='yourUsername'>nicknév</span>.",
     "help.minimum_password_length": "A jelszónak legalább %1 karakter hosszúnak kell lennie.",
@@ -15,5 +16,8 @@
     "alternative_registration": "Alternatív Regisztráció",
     "terms_of_use": "Használtai feltételek",
     "agree_to_terms_of_use": "Egyetértek a Használtai Feltételekkel",
-    "registration-added-to-queue": "Your registration has been added to the approval queue. You will receive an email when it is accepted by an administrator."
+    "terms_of_use_error": "You must agree to the Terms of Use",
+    "registration-added-to-queue": "Your registration has been added to the approval queue. You will receive an email when it is accepted by an administrator.",
+    "interstitial.intro": "We require some additional information before we can create your account.",
+    "interstitial.errors-found": "We could not complete your registration:"
 }

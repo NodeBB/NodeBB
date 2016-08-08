@@ -63,6 +63,16 @@ authenticationController.register = function(req, res, next) {
 				registerAndLoginUser(req, res, userData, next);
 			} else if (registrationType === 'admin-approval') {
 				addToApprovalQueue(req, userData, next);
+			} else if (registrationType === 'admin-approval-ip') {
+				db.sortedSetCard('ip:' + req.ip + ':uid', function(err, count) {
+					if (err) {
+						next(err);
+					} else if (count) {
+						addToApprovalQueue(req, userData, next);
+					} else {
+						registerAndLoginUser(req, res, userData, next);
+					}
+				});
 			}
 		}
 	], function(err, data) {
@@ -94,11 +104,7 @@ function registerAndLoginUser(req, res, userData, callback) {
 				} else {
 					userData.register = true;
 					req.session.registration = userData;
-					if (res.locals.isAPI) {
-						return res.json({ referrer: nconf.get('relative_path') + '/register/complete' });
-					} else {
-						return res.redirect(nconf.get('relative_path') + '/register/complete');
-					}
+					return res.json({ referrer: nconf.get('relative_path') + '/register/complete' });
 				}
 			});
 		},

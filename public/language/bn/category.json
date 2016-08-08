@@ -10,6 +10,10 @@
     "share_this_category": "এই বিভাগটি অন্যের সাথে ভাগাভাগি করুন",
     "watch": "নজর রাখুন",
     "ignore": "উপেক্ষা করুন",
+    "watching": "Watching",
+    "ignoring": "Ignoring",
+    "watching.description": "Show topics in unread",
+    "ignoring.description": "Do not show topics in unread",
     "watch.message": "আপনি এই বিভাগটিতে নজর রাখছেন",
     "ignore.message": "আপনি এই বিভাগটির উপেক্ষা করছেন ",
     "watched-categories": "প্রেক্ষিত বিভাগসমূহ"

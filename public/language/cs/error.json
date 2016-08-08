@@ -119,5 +119,6 @@
     "not-in-room": "User not in room",
     "no-users-in-room": "No users in this room",
     "cant-kick-self": "Nemůžete vyhodit sami sebe ze kupiny",
-    "no-users-selected": "No user(s) selected"
+    "no-users-selected": "No user(s) selected",
+    "invalid-home-page-route": "Invalid home page route"
 }

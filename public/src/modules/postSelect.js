@@ -27,10 +27,10 @@ define('postSelect', ['components'], function(components) {
 			var index = PostSelect.pids.indexOf(newPid);
 			if(index === -1) {
 				PostSelect.pids.push(newPid);
-				post.css('opacity', '0.5');
+				post.toggleClass('bg-success', true);
 			} else {
 				PostSelect.pids.splice(index, 1);
-				post.css('opacity', '1.0');
+				post.toggleClass('bg-success', false);
 			}
 
 			if (PostSelect.pids.length) {

@@ -124,6 +124,7 @@
 				<select class="form-control" data-field="registrationType">
 					<option value="normal">Normal</option>
 					<option value="admin-approval">Admin Approval</option>
+					<option value="admin-approval-ip">Admin Approval for IPs</option>
 					<option value="invite-only">Invite Only</option>
 					<option value="admin-invite-only">Admin Invite Only</option>
 					<option value="disabled">No registration</option>
@@ -131,6 +132,7 @@
 				<p class="help-block">
 					Normal - Users can register from the /register page.<br/>
 					Admin Approval - User registrations are placed in an <a href="{config.relative_path}/admin/manage/registration">approval queue</a> for administrators.<br/>
+					Admin Approval for IPs - Normal for new users, Admin Approval for IP addresses that already have an account.<br/>
 					Invite Only - Users can invite others from the <a href="{config.relative_path}/users" target="_blank">users</a> page.<br/>
 					Admin Invite Only - Only administrators can invite others from <a href="{config.relative_path}/users" target="_blank">users</a> and <a href="{config.relative_path}/admin/manage/users">admin/manage/users</a> pages.<br/>
 					No registration - No user registration.<br/>

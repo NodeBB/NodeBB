@@ -1,8 +1,11 @@
 'use strict';
 
 var async = require('async');
+var winston = require('winston');
+var validator = require('validator');
 
 var posts = require('../../posts');
+var topics = require('../../topics');
 var events = require('../../events');
 var websockets = require('../index');
 var socketTopics = require('../topics');
@@ -106,11 +109,17 @@ module.exports = function(SocketPosts) {
 
 				websockets.in('topic_' + data.tid).emit('event:post_purged', data.pid);
 
-				events.log({
-					type: 'post-purge',
-					uid: socket.uid,
-					pid: data.pid,
-					ip: socket.ip
+				topics.getTopicField(data.tid, 'title', function(err, title) {
+					if (err) {
+						return winston.error(err);
+					}
+					events.log({
+						type: 'post-purge',
+						uid: socket.uid,
+						pid: data.pid,
+						ip: socket.ip,
+						title: validator.escape(String(title))
+					});
 				});
 
 				callback();

@@ -3,6 +3,7 @@
 var async = require('async');
 var nconf = require('nconf');
 
+var db = require('../database');
 var user = require('../user');
 var meta = require('../meta');
 var plugins = require('../plugins');
@@ -57,7 +58,7 @@ module.exports = function(app, middleware) {
 			'brand:logo:url': meta.config['brand:logo:url'] || '',
 			'brand:logo:alt': meta.config['brand:logo:alt'] || '',
 			'brand:logo:display': meta.config['brand:logo']?'':'hide',
-			allowRegistration: registrationType === 'normal' || registrationType === 'admin-approval',
+			allowRegistration: registrationType === 'normal' || registrationType === 'admin-approval' || registrationType === 'admin-approval-ip',
 			searchEnabled: plugins.hasListeners('filter:search.query'),
 			config: res.locals.config,
 			relative_path: nconf.get('relative_path'),
@@ -94,6 +95,12 @@ module.exports = function(app, middleware) {
 					next(null, userData);
 				}
 			},
+			isEmailConfirmSent: function(next) {
+				if (!meta.config.requireEmailConfirmation || !req.uid) {
+					return next(null, false);
+				}
+				db.get('uid:' + req.uid + ':confirm:email:sent', next);
+			},
 			navigation: async.apply(navigation.get),
 			tags: async.apply(meta.tags.parse, res.locals.metaTags, res.locals.linkTags)
 		}, function(err, results) {
@@ -110,6 +117,7 @@ module.exports = function(app, middleware) {
 			results.user.isGlobalMod = results.isGlobalMod;
 			results.user.uid = parseInt(results.user.uid, 10);
 			results.user['email:confirmed'] = parseInt(results.user['email:confirmed'], 10) === 1;
+			results.user.isEmailConfirmSent = !!results.isEmailConfirmSent;
 
 			if (parseInt(meta.config.disableCustomUserSkins, 10) !== 1 && res.locals.config.bootswatchSkin !== 'default') {
 				templateValues.bootswatchCSS = '//maxcdn.bootstrapcdn.com/bootswatch/latest/' + res.locals.config.bootswatchSkin + '/bootstrap.min.css';

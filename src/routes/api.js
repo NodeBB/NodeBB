@@ -1,8 +1,8 @@
 "use strict";
 
-var express = require('express'),
+var express = require('express');
 
-	uploadsController = require('../controllers/uploads');
+var uploadsController = require('../controllers/uploads');
 
 module.exports =  function(app, middleware, controllers) {
 

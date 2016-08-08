@@ -53,7 +53,7 @@ var async = require('async'),
 			roomId = params.roomId,
 			since = params.since,
 			isNew = params.isNew,
-			count = params.count || parseInt(meta.config.chatMessageInboxSize, 10) || 250,
+			count = params.count || 250,
 			markRead = params.markRead || true;
 
 		var min = params.count ? 0 : Date.now() - (terms[since] || terms.day);
@@ -121,6 +121,7 @@ var async = require('async'),
 					message.self = self ? 1 : 0;
 					message.timestampISO = utils.toISOString(message.timestamp);
 					message.newSet = false;
+					message.roomId = String(message.roomId || roomId);
 					if (message.hasOwnProperty('edited')) {
 						message.editedISO = new Date(parseInt(message.edited, 10)).toISOString();
 					}

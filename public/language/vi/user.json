@@ -6,6 +6,7 @@
     "postcount": "Số bài viết",
     "email": "Email",
     "confirm_email": "Xác nhận email",
+    "account_info": "Account Info",
     "ban_account": "Cấm thành viên",
     "ban_account_confirm": "Bạn có chắc bạn muốn cấm thành viên này?",
     "unban_account": "Bỏ cấm thành viên",
@@ -107,5 +108,11 @@
     "custom_route_help": "Nhập đường dẫn ở đây, mà không có dấu gạch chéo ở trước (chẳng hạn \"recent\" hoặc \"popular)",
     "sso.title": "Đăng nhập một lần",
     "sso.associated": "Đã liên kết với",
-    "sso.not-associated": "Nhấn vào đây để liên kết với"
+    "sso.not-associated": "Nhấn vào đây để liên kết với",
+    "info.latest-flags": "Latest Flags",
+    "info.no-flags": "No Flagged Posts Found",
+    "info.ban-history": "Recent Ban History",
+    "info.no-ban-history": "This user has never been banned",
+    "info.banned-until": "Banned until %1",
+    "info.banned-permanently": "Banned permanently"
 }

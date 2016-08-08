@@ -10,7 +10,7 @@ var db = require('./database'),
 	schemaDate, thisSchemaDate,
 
 	// IMPORTANT: REMEMBER TO UPDATE VALUE OF latestSchema
-	latestSchema = Date.UTC(2016, 5, 13);
+	latestSchema = Date.UTC(2016, 7, 5);
 
 Upgrade.check = function(callback) {
 	db.get('schemaDate', function(err, value) {
@@ -615,6 +615,71 @@ Upgrade.upgrade = function(callback) {
 				});
 			} else {
 				winston.info('[2016/06/13] Store upvotes/downvotes separately skipped!');
+				next();
+			}
+		},
+		function(next) {
+			thisSchemaDate = Date.UTC(2016, 6, 12);
+
+			if (schemaDate < thisSchemaDate) {
+				updatesMade = true;
+				winston.info('[2016/07/12] Giving upload privileges');
+				var privilegesAPI = require('./privileges');
+				var meta = require('./meta');
+
+				db.getSortedSetRange('categories:cid', 0, -1, function(err, cids) {
+					async.eachSeries(cids, function(cid, next) {
+						privilegesAPI.categories.list(cid, function(err, data) {
+							if (err) {
+								return next(err);
+							}
+							async.eachSeries(data.groups, function(group, next) {
+								if (group.name === 'guests' && parseInt(meta.config.allowGuestUploads, 10) !== 1) {
+									return next();
+								}
+								if (group.privileges['groups:read']) {
+									privilegesAPI.categories.give(['upload:post:image'], cid, group.name, next);
+								} else {
+									next();
+								}
+							}, next);
+						});
+					}, function(err) {
+						if (err) {
+							return next(err);
+						}
+
+						winston.info('[2016/07/12] Upload privileges done');
+						Upgrade.update(thisSchemaDate, next);
+					});
+				});
+			} else {
+				winston.info('[2016/07/12] Upload privileges skipped!');
+				next();
+			}
+		},
+		function(next) {
+			thisSchemaDate = Date.UTC(2016, 7, 5);
+
+			if (schemaDate < thisSchemaDate) {
+				updatesMade = true;
+				winston.info('[2016/08/05] Removing best posts with negative scores');
+				var batch = require('./batch');
+				batch.processSortedSet('users:joindate', function(ids, next) {
+					async.each(ids, function(id, next) {
+						console.log('processing uid ' + id);
+						db.sortedSetsRemoveRangeByScore(['uid:' + id + ':posts:votes'], '-inf', 0, next);
+					}, next);
+				}, {}, function(err) {
+					if (err) {
+						return next(err);
+					}
+					winston.info('[2016/08/05] Removing best posts with negative scores done!');
+					Upgrade.update(thisSchemaDate, next);
+				});
+
+			} else {
+				winston.info('[2016/08/05] Removing best posts with negative scores skipped!');
 				next();
 			}
 		}

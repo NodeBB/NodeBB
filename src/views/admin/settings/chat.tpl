@@ -12,9 +12,6 @@
 				</label>
 			</div>
 		</div>
-		<div class="form-group">
-			<strong>Chat Message Inbox Size</strong><br /> <input type="text" class="form-control" value="250" data-field="chatMessageInboxSize">
-		</div>
 
 		<div class="form-group">
 			<label>Maximum length of chat messages</label>

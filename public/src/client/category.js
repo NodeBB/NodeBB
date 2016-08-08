@@ -61,6 +61,7 @@ define('forum/category', [
 		handleIgnoreWatch(cid);
 
 		$(window).trigger('action:topics.loaded', {topics: ajaxify.data.topics});
+		$(window).trigger('action:category.loaded', {cid: ajaxify.data.cid});
 	};
 
 	function handleIgnoreWatch(cid) {
@@ -195,7 +196,8 @@ define('forum/category', [
 		templates.parse('category', 'topics', {
 			privileges: {editable: editable},
 			showSelect: editable,
-			topics: [topic]
+			topics: [topic],
+			template: {category: true}
 		}, function(html) {
 			translator.translate(html, function(translatedHTML) {
 				var topic = $(translatedHTML),

@@ -3,7 +3,7 @@
 /* globals define, app, utils, socket, config, ajaxify, bootbox */
 
 
-define('forum/register', ['csrf', 'translator'], function(csrf, translator) {
+define('forum/register', ['translator'], function(translator) {
 	var Register = {},
 		validationError = false,
 		successIcon = '<i class="fa fa-check"></i>';
@@ -78,7 +78,7 @@ define('forum/register', ['csrf', 'translator'], function(csrf, translator) {
 
 				registerBtn.parents('form').ajaxSubmit({
 					headers: {
-						'x-csrf-token': csrf.get()
+						'x-csrf-token': config.csrf_token
 					},
 					success: function(data) {
 						registerBtn.removeClass('disabled');

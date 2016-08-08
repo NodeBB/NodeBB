@@ -153,11 +153,7 @@ module.exports = function(Groups) {
 				path: '/groups/' + utils.slugify(groupName)
 			}),
 			function (notification, next) {
-				if (!notification) {
-					return next();
-				}
-
-				notifications.push(notification, [uid]);
+				notifications.push(notification, [uid], next);
 			}
 		], callback);
 	};

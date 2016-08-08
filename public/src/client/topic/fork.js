@@ -16,16 +16,12 @@ define('forum/topic/fork', ['components', 'postSelect'], function(components, po
 		parseModal(function(html) {
 			forkModal = $(html);
 
-			forkModal.on('hidden.bs.modal', function() {
-				forkModal.remove();
-			});
-
 			forkCommit = forkModal.find('#fork_thread_commit');
 
-			showForkModal();
+			$(document.body).append(forkModal);
 
 			forkModal.find('.close,#fork_thread_cancel').on('click', closeForkModal);
-			forkModal.find('#fork-title').on('change', checkForkButtonEnable);
+			forkModal.find('#fork-title').on('keyup', checkForkButtonEnable);
 
 			postSelect.init(function() {
 				checkForkButtonEnable();
@@ -41,14 +37,6 @@ define('forum/topic/fork', ['components', 'postSelect'], function(components, po
 		templates.parse('partials/fork_thread_modal', {}, function(html) {
 			translator.translate(html, callback);
 		});
-	}
-
-	function showForkModal() {
-		forkModal.modal({backdrop: false, show: true})
-			.css('position', 'fixed')
-			.css('left', Math.max(0, (($(window).width() - forkModal.outerWidth()) / 2) + $(window).scrollLeft()) + 'px')
-			.css('top', '0px')
-			.css('z-index', '2000');
 	}
 
 	function createTopicFromPosts() {
@@ -88,14 +76,14 @@ define('forum/topic/fork', ['components', 'postSelect'], function(components, po
 
 	function showPostsSelected() {
 		if (postSelect.pids.length) {
-			forkModal.find('#fork-pids').text(postSelect.pids.join(', '));
+			forkModal.find('#fork-pids').translateHtml('[[topic:fork_pid_count, ' + postSelect.pids.length + ']]');
 		} else {
 			forkModal.find('#fork-pids').translateHtml('[[topic:fork_no_pids]]');
 		}
 	}
 
 	function checkForkButtonEnable() {
-		if (forkModal.find('#fork-title').length && postSelect.pids.length) {
+		if (forkModal.find('#fork-title').val().length && postSelect.pids.length) {
 			forkCommit.removeAttr('disabled');
 		} else {
 			forkCommit.attr('disabled', true);
@@ -104,10 +92,10 @@ define('forum/topic/fork', ['components', 'postSelect'], function(components, po
 
 	function closeForkModal() {
 		postSelect.pids.forEach(function(pid) {
-			components.get('post', 'pid', pid).css('opacity', 1);
+			components.get('post', 'pid', pid).toggleClass('bg-success', false);
 		});
 
-		forkModal.modal('hide');
+		forkModal.remove();
 
 		components.get('topic').off('click', '[data-pid]');
 		postSelect.enableClicksOnPosts();

@@ -30,7 +30,6 @@ module.exports = function(Meta) {
 				'public/vendor/tinycon/tinycon.js',
 				'public/vendor/xregexp/xregexp.js',
 				'public/vendor/xregexp/unicode/unicode-base.js',
-				'public/vendor/autosize.js',
 				'./node_modules/templates.js/lib/templates.js',
 				'public/src/utils.js',
 				'public/src/sockets.js',
@@ -61,7 +60,6 @@ module.exports = function(Meta) {
 				'public/src/client/category.js',
 				'public/src/client/categoryTools.js',
 
-				'public/src/modules/csrf.js',
 				'public/src/modules/translator.js',
 				'public/src/modules/notifications.js',
 				'public/src/modules/chat.js',
@@ -80,7 +78,7 @@ module.exports = function(Meta) {
 
 			// modules listed below are routed through express (/src/modules) so they can be defined anonymously
 			modules: {
-				"Chart.js": './node_modules/chart.js/Chart.js',
+				"Chart.js": './node_modules/chart.js/dist/Chart.min.js',
 				"mousetrap.js": './node_modules/mousetrap/mousetrap.js',
 
 				"buzz.js": 'public/vendor/buzz/buzz.js'
@@ -93,7 +91,7 @@ module.exports = function(Meta) {
 		var numBridged = 0,
 			addRoute = function(relPath) {
 				var relativePath = nconf.get('relative_path');
-				
+
 				app.get(relativePath + '/src/modules/' + relPath, function(req, res) {
 					return res.sendFile(path.join(__dirname, '../../', Meta.js.scripts.modules[relPath]), {
 						maxAge: app.enabled('cache') ? 5184000000 : 0
@@ -117,7 +115,7 @@ module.exports = function(Meta) {
 				winston.error('[meta/js] Encountered error while bridging modules:' + err.message);
 			}
 
-			winston.verbose('[meta/js] ' + numBridged + ' of ' + Meta.js.scripts.modules.length + ' modules bridged');
+			winston.verbose('[meta/js] ' + numBridged + ' of ' + Object.keys(Meta.js.scripts.modules).length + ' modules bridged');
 			callback(err);
 		});
 	};

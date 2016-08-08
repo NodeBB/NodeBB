@@ -1,7 +1,7 @@
 "use strict";
 /* global define, app, config, RELATIVE_PATH */
 
-define('forum/login', ['csrf', 'translator'], function(csrf, translator) {
+define('forum/login', ['translator'], function(translator) {
 	var	Login = {};
 
 	Login.init = function() {
@@ -25,7 +25,7 @@ define('forum/login', ['csrf', 'translator'], function(csrf, translator) {
 				submitEl.addClass('disabled');
 				formEl.ajaxSubmit({
 					headers: {
-						'x-csrf-token': csrf.get()
+						'x-csrf-token': config.csrf_token
 					},
 					success: function(data, status) {
 						window.location.href = data + '?loggedin';
@@ -37,6 +37,11 @@ define('forum/login', ['csrf', 'translator'], function(csrf, translator) {
 							errorEl.find('p').translateText(data.responseText);
 							errorEl.show();
 							submitEl.removeClass('disabled');
+
+							// Select the entire password if that field has focus
+							if ($('#password:focus').size()) {
+								$('#password').select();
+							}
 						}
 					}
 				});

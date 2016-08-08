@@ -164,6 +164,8 @@ var social = require('./social');
 						topics[i].unread = !results.hasRead[i] && !results.isIgnored[i];
 						topics[i].bookmark = results.bookmarks[i];
 						topics[i].unreplied = !topics[i].teaser;
+
+						topics[i].icons = [];
 					}
 				}
 
@@ -208,6 +210,8 @@ var social = require('./social');
 				topicData.deleted = parseInt(topicData.deleted, 10) === 1;
 				topicData.locked = parseInt(topicData.locked, 10) === 1;
 				topicData.pinned = parseInt(topicData.pinned, 10) === 1;
+
+				topicData.icons = [];
 
 				Topics.getRelatedTopics(topicData, uid, next);
 			},

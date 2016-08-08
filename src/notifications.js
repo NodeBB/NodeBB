@@ -163,7 +163,7 @@ var utils = require('../public/src/utils');
 	Notifications.push = function(notification, uids, callback) {
 		callback = callback || function() {};
 
-		if (!notification.nid) {
+		if (!notification || !notification.nid) {
 			return callback();
 		}
 

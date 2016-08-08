@@ -29,7 +29,8 @@ var	pidFilePath = __dirname + '/pidfile',
 		css: {
 			cache: undefined,
 			acpCache: undefined
-		}
+		},
+		templatesCompiled: false
 	};
 
 Loader.init = function(callback) {
@@ -86,21 +87,10 @@ Loader.addWorkerEvents = function(worker) {
 		if (message && typeof message === 'object' && message.action) {
 			switch (message.action) {
 				case 'ready':
-					if (Loader.js.target['nodebb.min.js'] && Loader.js.target['nodebb.min.js'].cache && !worker.isPrimary) {
+					if (Loader.js.target['nodebb.min.js'] && Loader.js.target['acp.min.js'] && !worker.isPrimary) {
 						worker.send({
 							action: 'js-propagate',
-							cache: Loader.js.target['nodebb.min.js'].cache,
-							map: Loader.js.target['nodebb.min.js'].map,
-							target: 'nodebb.min.js'
-						});
-					}
-
-					if (Loader.js.target['acp.min.js'] && Loader.js.target['acp.min.js'].cache && !worker.isPrimary) {
-						worker.send({
-							action: 'js-propagate',
-							cache: Loader.js.target['acp.min.js'].cache,
-							map: Loader.js.target['acp.min.js'].map,
-							target: 'acp.min.js'
+							data: Loader.js.target
 						});
 					}
 
@@ -109,6 +99,12 @@ Loader.addWorkerEvents = function(worker) {
 							action: 'css-propagate',
 							cache: Loader.css.cache,
 							acpCache: Loader.css.acpCache
+						});
+					}
+
+					if (Loader.templatesCompiled && !worker.isPrimary) {
+						worker.send({
+							action: 'templates:compiled'
 						});
 					}
 
@@ -141,6 +137,8 @@ Loader.addWorkerEvents = function(worker) {
 					}, worker.pid);
 				break;
 				case 'templates:compiled':
+					Loader.templatesCompiled = true;
+
 					Loader.notifyWorkers({
 						action: 'templates:compiled',
 					}, worker.pid);

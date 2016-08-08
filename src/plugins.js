@@ -425,28 +425,4 @@ var middleware;
 		], next);
 	};
 
-	// function addLanguages(params, callback) {
-	// 	Plugins.customLanguages.forEach(function(lang) {
-	// 		console.log('route for', '/language/' + lang.route);
-	// 		params.router.get('/language' + lang.route, function(req, res, next) {
-	// 			res.json(lang.file);
-	// 		});
-
-	// 		var components = lang.route.split('/'),
-	// 			language = components[1],
-	// 			filename = components[2].replace('.json', '');
-
-	// 		translator.addTranslation(language, filename, lang.file);
-	// 	});
-
-	// 	for(var resource in Plugins.customLanguageFallbacks) {
-	// 		params.router.get('/language/:lang/' + resource + '.json', function(req, res, next) {
-	// 			winston.verbose('[translator] No resource file found for ' + req.params.lang + '/' + path.basename(req.path, '.json') + ', using provided fallback language file');
-	// 			res.sendFile(Plugins.customLanguageFallbacks[path.basename(req.path, '.json')]);
-	// 		});
-	// 	}
-
-	// 	callback(null);
-	// }
-
 }(exports));

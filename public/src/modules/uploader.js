@@ -2,7 +2,7 @@
 
 /* globals define, templates */
 
-define('uploader', ['csrf', 'translator'], function(csrf, translator) {
+define('uploader', ['translator'], function(translator) {
 
 	var module = {};
 
@@ -76,7 +76,7 @@ define('uploader', ['csrf', 'translator'], function(csrf, translator) {
 
 		uploadModal.find('#uploadForm').ajaxSubmit({
 			headers: {
-				'x-csrf-token': csrf.get()
+				'x-csrf-token': config.csrf_token
 			},
 			error: function(xhr) {
 				xhr = maybeParse(xhr);

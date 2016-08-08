@@ -29,6 +29,7 @@
     "account/edit/password": "Редактирование пароля \"%1\"",
     "account/edit/username": "Редактирование имени пользователя \"%1\"",
     "account/edit/email": "Редактирование email \"%1\"",
+    "account/info": "Account Info",
     "account/following": "Наблюдают %1",
     "account/followers": "Кто наблюдает %1",
     "account/posts": "Сообщение от %1",

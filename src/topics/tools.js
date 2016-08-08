@@ -242,7 +242,10 @@ module.exports = function(Topics) {
 					categories.incrementCategoryFieldBy(cid, 'topic_count', 1, next);
 				},
 				function (next) {
-					Topics.setTopicField(tid, 'cid', cid, next);
+					Topics.setTopicFields(tid, {
+						cid: cid,
+						oldCid: oldCid
+					}, next);
 				}
 			], function(err) {
 				if (err) {

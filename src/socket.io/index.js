@@ -1,6 +1,6 @@
 "use strict";
 
-var	SocketIO = require('socket.io');
+var SocketIO = require('socket.io');
 var socketioWildcard = require('socketio-wildcard')();
 var async = require('async');
 var nconf = require('nconf');

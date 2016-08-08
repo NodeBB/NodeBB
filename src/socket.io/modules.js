@@ -5,6 +5,7 @@ var validator = require('validator');
 
 var meta = require('../meta');
 var notifications = require('../notifications');
+var plugins = require('../plugins');
 var Messaging = require('../messaging');
 var utils = require('../../public/src/utils');
 var server = require('./');
@@ -86,6 +87,15 @@ SocketModules.chats.send = function(socket, data, callback) {
 	}
 
 	async.waterfall([
+		function (next) {
+			plugins.fireHook('filter:messaging.send', {
+				data: data,
+				uid: socket.uid
+			}, function(err, results) {
+				data = results.data;
+				next(err);
+			});
+		},
 		function (next) {
 			Messaging.canMessageRoom(socket.uid, data.roomId, next);
 		},

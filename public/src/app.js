@@ -15,10 +15,6 @@ app.cacheBuster = null;
 
 	app.cacheBuster = config['cache-buster'];
 
-	require(['csrf'], function(csrf) {
-		csrf.set(config.csrf_token);
-	});
-
 	bootbox.setDefaults({
 		locale: config.userLang
 	});
@@ -60,8 +56,8 @@ app.cacheBuster = null;
 
 		socket.removeAllListeners('event:nodebb.ready');
 		socket.on('event:nodebb.ready', function(data) {
-			if (!app.cacheBusters || app.cacheBusters['cache-buster'] !== data['cache-buster']) {
-				app.cacheBusters = data;
+			if (!app.cacheBuster || app.cacheBuster !== data['cache-buster']) {
+				app.cacheBuster = data['cache-buster'];
 
 				app.alert({
 					alert_id: 'forum_updated',
@@ -88,16 +84,14 @@ app.cacheBuster = null;
 	};
 
 	app.logout = function() {
-		require(['csrf'], function(csrf) {
-			$.ajax(config.relative_path + '/logout', {
-				type: 'POST',
-				headers: {
-					'x-csrf-token': csrf.get()
-				},
-				success: function() {
-					window.location.href = config.relative_path + '/';
-				}
-			});
+		$.ajax(config.relative_path + '/logout', {
+			type: 'POST',
+			headers: {
+				'x-csrf-token': config.csrf_token
+			},
+			success: function() {
+				window.location.href = config.relative_path + '/';
+			}
 		});
 	};
 
@@ -357,6 +351,7 @@ app.cacheBuster = null;
 			if (!utils.isTouchDevice()) {
 				$(this).tooltip({
 					placement: 'bottom',
+					trigger: 'hover',
 					title: $(this).attr('title')
 				});
 			}
@@ -365,6 +360,7 @@ app.cacheBuster = null;
 		if (!utils.isTouchDevice()) {
 			$('#search-form').parent().tooltip({
 				placement: 'bottom',
+				trigger: 'hover',
 				title: $('#search-button i').attr('title')
 			});
 		}
@@ -372,6 +368,7 @@ app.cacheBuster = null;
 		if (!utils.isTouchDevice()) {
 			$('#user_dropdown').tooltip({
 				placement: 'bottom',
+				trigger: 'hover',
 				title: $('#user_dropdown').attr('title')
 			});
 		}
@@ -469,40 +466,46 @@ app.cacheBuster = null;
 			return callback();
 		}
 
-		$.getScript(config.relative_path + '/vendor/jquery/js/jquery-ui-1.10.4.custom.js', callback);
+		var scriptEl = document.createElement('script');
+		scriptEl.type = 'text/javascript';
+		scriptEl.src = config.relative_path + '/vendor/jquery/js/jquery-ui-1.10.4.custom.js' + (app.cacheBuster ? '?v=' + app.cacheBuster : '');
+		scriptEl.onload = callback;
+		document.head.appendChild(scriptEl);
 	};
 
 	app.showEmailConfirmWarning = function(err) {
 		if (!config.requireEmailConfirmation || !app.user.uid) {
 			return;
 		}
+		var msg = {
+			alert_id: 'email_confirm',
+			type: 'warning',
+			timeout: 0
+		};
+
 		if (!app.user.email) {
-			app.alert({
-				alert_id: 'email_confirm',
-				message: '[[error:no-email-to-confirm]]',
-				type: 'warning',
-				timeout: 0,
-				clickfn: function() {
-					app.removeAlert('email_confirm');
-					ajaxify.go('user/' + app.user.userslug + '/edit');
-				}
-			});
-		} else if (!app.user['email:confirmed']) {
-			app.alert({
-				alert_id: 'email_confirm',
-				message: err ? err.message : '[[error:email-not-confirmed]]',
-				type: 'warning',
-				timeout: 0,
-				clickfn: function() {
-					app.removeAlert('email_confirm');
-					socket.emit('user.emailConfirm', {}, function(err) {
-						if (err) {
-							return app.alertError(err.message);
-						}
-						app.alertSuccess('[[notifications:email-confirm-sent]]');
-					});
-				}
-			});
+			msg.message = '[[error:no-email-to-confirm]]';
+			msg.clickfn = function() {
+				app.removeAlert('email_confirm');
+				ajaxify.go('user/' + app.user.userslug + '/edit');
+			};
+			app.alert(msg);
+		} else if (!app.user['email:confirmed'] && !app.user.isEmailConfirmSent) {
+			msg.message = err ? err.message : '[[error:email-not-confirmed]]';
+			msg.clickfn = function() {
+				app.removeAlert('email_confirm');
+				socket.emit('user.emailConfirm', {}, function(err) {
+					if (err) {
+						return app.alertError(err.message);
+					}
+					app.alertSuccess('[[notifications:email-confirm-sent]]');
+				});
+			};
+
+			app.alert(msg);
+		} else if (!app.user['email:confirmed'] && app.user.isEmailConfirmSent) {
+			msg.message = '[[error:email-not-confirmed-email-sent]]';
+			app.alert(msg);
 		}
 	};
 

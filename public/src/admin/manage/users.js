@@ -83,7 +83,7 @@ define('admin/manage/users', ['admin/modules/selectable'], function(selectable) 
 									data[cur.name] = cur.value;
 									return data;
 								}, {});
-								var until = Date.now() + formData.length * 1000*60*60 * (parseInt(formData.unit, 10) ? 24 : 1);
+								var until = formData.length ? (Date.now() + formData.length * 1000*60*60 * (parseInt(formData.unit, 10) ? 24 : 1)) : 0;
 								socket.emit('user.banUsers', { uids: uids, until: until }, done('User(s) banned!', '.ban', true));
 							}
 						}

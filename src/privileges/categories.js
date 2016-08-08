@@ -23,6 +23,8 @@ module.exports = function(privileges) {
 			{name: 'Access Topics'},
 			{name: 'Create Topics'},
 			{name: 'Reply to Topics'},
+			{name: 'Upload Images'},
+			{name: 'Upload Files'},
 			{name: 'Purge'},
 			{name: 'Moderate'}
 		];

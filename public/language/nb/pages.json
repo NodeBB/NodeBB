@@ -29,6 +29,7 @@
     "account/edit/password": "Editing password of \"%1\"",
     "account/edit/username": "Editing username of \"%1\"",
     "account/edit/email": "Editing email of \"%1\"",
+    "account/info": "Account Info",
     "account/following": "Personer %1 følger",
     "account/followers": "Personer som følger %1",
     "account/posts": "Innlegg opprettet av %1",

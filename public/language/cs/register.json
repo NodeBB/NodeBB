@@ -1,5 +1,6 @@
 {
     "register": "Registrace",
+    "cancel_registration": "Cancel Registration",
     "help.email": "Váš email nebude bez vašeho svolení zveřejněn.",
     "help.username_restrictions": "Jedinečné uživatelské jméno dlouhé %1 až %2 znaků. Ostatní uživatelé Vás mohou zmínit jako @<span id='yourUsername'>uživatelské-jméno</span>.",
     "help.minimum_password_length": "Délka vašeho hesla musí být alespoň %1 znaků.",
@@ -15,5 +16,8 @@
     "alternative_registration": "Jiný způsob registrace",
     "terms_of_use": "Podmínky",
     "agree_to_terms_of_use": "Souhlasím s Podmínkami",
-    "registration-added-to-queue": "Vaše registrace byla přidána do fronty. Obdržíte e-mail až ji správce schválí."
+    "terms_of_use_error": "You must agree to the Terms of Use",
+    "registration-added-to-queue": "Vaše registrace byla přidána do fronty. Obdržíte e-mail až ji správce schválí.",
+    "interstitial.intro": "We require some additional information before we can create your account.",
+    "interstitial.errors-found": "We could not complete your registration:"
 }

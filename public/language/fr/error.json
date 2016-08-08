@@ -119,5 +119,6 @@
     "not-in-room": "L'utilisateur n'est pas dans cette salle",
     "no-users-in-room": "Aucun utilisateur dans cette salle",
     "cant-kick-self": "Vous ne pouvez pas vous exclure vous-même du groupe",
-    "no-users-selected": "Aucun utilisateur sélectionné"
+    "no-users-selected": "Aucun utilisateur sélectionné",
+    "invalid-home-page-route": "Route de page d'accueil invalide"
 }

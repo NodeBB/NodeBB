@@ -1,5 +1,6 @@
 {
     "register": "Registreeri",
+    "cancel_registration": "Cancel Registration",
     "help.email": "Algsättena peidetakse sinu e-mail avalikuse eest.",
     "help.username_restrictions": "Unikaalne kasutajanimi, mis on  %1 - %2 tähemärki pikk. Teised saavad sind postitustes mainida kasutades @<span id='yourUsername'>kasutajanime</span>.",
     "help.minimum_password_length": "Sinu parooli pikkus peab olema vähemalt %1 tähemärki pikk.",
@@ -15,5 +16,8 @@
     "alternative_registration": "Alternatiivne registreerimismeetod",
     "terms_of_use": "Foorumi reeglid",
     "agree_to_terms_of_use": "Nõustun foorumi reeglitega",
-    "registration-added-to-queue": "Teie registreerimine vaadatakse üle. Te saate e-kirja kui administraator on aktsepteerinud registreermimise."
+    "terms_of_use_error": "You must agree to the Terms of Use",
+    "registration-added-to-queue": "Teie registreerimine vaadatakse üle. Te saate e-kirja kui administraator on aktsepteerinud registreermimise.",
+    "interstitial.intro": "We require some additional information before we can create your account.",
+    "interstitial.errors-found": "We could not complete your registration:"
 }
