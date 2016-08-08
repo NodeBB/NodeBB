@@ -37,6 +37,12 @@ pluginsController.get = function(req, res, next) {
 			installed: payload.compatible.filter(function(plugin) {
 				return plugin.installed;
 			}),
+			upgradeCount: payload.compatible.reduce(function(count, current) {
+				if (current.installed && current.outdated) {
+					++count;
+				}
+				return count;
+			}, 0),
 			download: payload.compatible.filter(function(plugin) {
 				return !plugin.installed;
 			}),

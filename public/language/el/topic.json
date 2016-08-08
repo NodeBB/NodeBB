@@ -26,6 +26,8 @@
     "tools": "Εργαλεία",
     "flag": "Σημαία",
     "locked": "Κλειδωμένο",
+    "pinned": "Pinned",
+    "moved": "Moved",
     "bookmark_instructions": "Click here to return to the last read post in this thread.",
     "flag_title": "Επισήμανση αυτής της δημοσίευσης για συντονισμό",
     "flag_success": "Αυτή η δημοσίευση έχει επισημανθεί για συντονισμό.",

@@ -26,6 +26,8 @@
     "tools": "Perkakas",
     "flag": "Tanda",
     "locked": "Kunci",
+    "pinned": "Pinned",
+    "moved": "Moved",
     "bookmark_instructions": "Click here to return to the last read post in this thread.",
     "flag_title": "Tanda kiriman ini untuk diselia",
     "flag_success": "Kiriman ini telah ditandakan untuk diselia",

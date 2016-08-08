@@ -26,6 +26,8 @@
     "tools": "Công cụ",
     "flag": "Gắn cờ",
     "locked": "Khóa",
+    "pinned": "Pinned",
+    "moved": "Moved",
     "bookmark_instructions": "Bấm vào đây để quay về đọc bài viết mới nhất trong chủ đề này.",
     "flag_title": "Flag bài viết này để chỉnh sửa",
     "flag_success": "Chủ đề này đã được flag để chỉnh sửa",

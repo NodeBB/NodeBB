@@ -26,6 +26,8 @@
     "tools": "Nástroje",
     "flag": "Označiť",
     "locked": "Locked",
+    "pinned": "Pinned",
+    "moved": "Moved",
     "bookmark_instructions": "Click here to return to the last read post in this thread.",
     "flag_title": "Označiť príspevok pre moderáciu",
     "flag_success": "Tento príspevok bol označený na úpravu. ",

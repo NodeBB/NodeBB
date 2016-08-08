@@ -120,5 +120,5 @@
     "no-users-in-room": "Nenhum usuário nesta sala",
     "cant-kick-self": "Você não pode kickar a si mesmo do grupo",
     "no-users-selected": "Nenhuma escolha de usuário(s) foi feita",
-    "invalid-home-page-route": "Invalid home page route"
+    "invalid-home-page-route": "Rota de página inicial inválida"
 }

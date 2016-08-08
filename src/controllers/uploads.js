@@ -96,24 +96,21 @@ function uploadAsFile(req, uploadedFile, callback) {
 }
 
 function resizeImage(fileObj, callback) {
-	var fullPath;
 	async.waterfall([
 		function(next) {
-			fullPath = path.join(nconf.get('base_dir'), nconf.get('upload_path'), '..', fileObj.url);
-
-			image.size(fullPath, next);
+			image.size(fileObj.path, next);
 		},
 		function (imageData, next) {
 			if (imageData.width < (parseInt(meta.config.maximumImageWidth, 10) || 760)) {
 				return callback(null, fileObj);
 			}
 
-			var dirname = path.dirname(fullPath);
-			var extname = path.extname(fullPath);
-			var basename = path.basename(fullPath, extname);
+			var dirname = path.dirname(fileObj.path);
+			var extname = path.extname(fileObj.path);
+			var basename = path.basename(fileObj.path, extname);
 
 			image.resizeImage({
-				path: fullPath,
+				path: fileObj.path,
 				target: path.join(dirname, basename + '-resized' + extname),
 				extension: extname,
 				width: parseInt(meta.config.maximumImageWidth, 10) || 760
@@ -223,6 +220,7 @@ function saveFileToLocal(uploadedFile, callback) {
 	var filename = uploadedFile.name || 'upload';
 
 	filename = Date.now() + '-' + validator.escape(filename.replace(extension, '')).substr(0, 255) + extension;
+
 	file.saveFileToLocal(filename, 'files', uploadedFile.path, function(err, upload) {
 		if (err) {
 			return callback(err);
@@ -230,6 +228,7 @@ function saveFileToLocal(uploadedFile, callback) {
 
 		callback(null, {
 			url: nconf.get('relative_path') + upload.url,
+			path: upload.path,
 			name: uploadedFile.name
 		});
 	});
