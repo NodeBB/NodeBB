@@ -1,12 +1,12 @@
 "use strict";
 
-var fs = require('fs'),
-	nconf = require('nconf'),
-	path = require('path'),
-	winston = require('winston'),
-	jimp = require('jimp'),
+var fs = require('fs');
+var nconf = require('nconf');
+var path = require('path');
+var winston = require('winston');
+var jimp = require('jimp');
 
-	utils = require('../public/src/utils');
+var utils = require('../public/src/utils');
 
 var file = {};
 
@@ -29,7 +29,8 @@ file.saveFileToLocal = function(filename, folder, tempPath, callback) {
 
 	is.on('end', function () {
 		callback(null, {
-			url: nconf.get('upload_url') + folder + '/' + filename
+			url: path.join(nconf.get('upload_url'), folder, filename),
+			path: uploadPath
 		});
 	});
 

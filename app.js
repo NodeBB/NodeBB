@@ -121,7 +121,7 @@ function start() {
 	nconf.set('use_port', !!urlObject.port);
 	nconf.set('relative_path', relativePath);
 	nconf.set('port', urlObject.port || nconf.get('port') || nconf.get('PORT') || 4567);
-	nconf.set('upload_url', '/uploads/');
+	nconf.set('upload_url', nconf.get('upload_path').replace(/^\/public/, ''));
 
 	if (nconf.get('isPrimary') === 'true') {
 		winston.info('Time: %s', (new Date()).toString());
