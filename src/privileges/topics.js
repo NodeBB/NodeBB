@@ -23,8 +23,8 @@ module.exports = function(privileges) {
 					'topics:reply': async.apply(helpers.isUserAllowedTo, 'topics:reply', uid, [topic.cid]),
 					'topics:read': async.apply(helpers.isUserAllowedTo, 'topics:read', uid, [topic.cid]),
 					'topics:delete': async.apply(helpers.isUserAllowedTo, 'topics:delete', uid, [topic.cid]),
-					edit: async.apply(helpers.isUserAllowedTo, 'edit', uid, [topic.cid]),
-					'delete': async.apply(helpers.isUserAllowedTo, 'delete', uid, [topic.cid]),
+					'posts:edit': async.apply(helpers.isUserAllowedTo, 'posts:edit', uid, [topic.cid]),
+					'posts:delete': async.apply(helpers.isUserAllowedTo, 'posts:delete', uid, [topic.cid]),
 					read: async.apply(helpers.isUserAllowedTo, 'read', uid, [topic.cid]),
 					isOwner: function(next) {
 						next(null, !!parseInt(uid, 10) && parseInt(uid, 10) === parseInt(topic.uid, 10));
@@ -57,8 +57,8 @@ module.exports = function(privileges) {
 				disabled: disabled,
 				tid: tid,
 				uid: uid,
-				editOwnPosts: results.edit[0],
-				deleteOwnPosts: results['delete'][0]
+				editOwnPosts: results['posts:edit'][0],
+				deleteOwnPosts: results['posts:delete'][0]
 			}, callback);
 		});
 	};

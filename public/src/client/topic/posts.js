@@ -28,7 +28,7 @@ define('forum/topic/posts', [
 		data.posts.forEach(function(post) {
 			post.selfPost = !!app.user.uid && parseInt(post.uid, 10) === parseInt(app.user.uid, 10);
 			post.display_edit_tools = (ajaxify.data.privileges.editOwnPosts && post.selfPost) || ajaxify.data.privileges.isAdminOrMod;
-			post.display_delete_tools = (ajaxify.data.privileges.editOwnPosts && post.selfPost) || ajaxify.data.privileges.isAdminOrMod;
+			post.display_delete_tools = (ajaxify.data.privileges.deleteOwnPosts && post.selfPost) || ajaxify.data.privileges.isAdminOrMod;
 			post.display_moderator_tools = post.display_edit_tools || post.display_delete_tools;
 			post.display_move_tools = ajaxify.data.privileges.isAdminOrMod;
 			post.display_post_menu = ajaxify.data.privileges.isAdminOrMod || post.selfPost || ((app.user.uid || ajaxify.data.postSharing.length) && !post.deleted);

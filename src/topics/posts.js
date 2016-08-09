@@ -141,8 +141,8 @@ module.exports = function(Topics) {
 		var loggedIn = !!parseInt(topicPrivileges.uid, 10);
 		topicData.posts.forEach(function(post) {
 			if (post) {
-				post.display_edit_tools = topicPrivileges.isAdminOrMod || (post.selfPost && topicPrivileges['edit']);
-				post.display_delete_tools = topicPrivileges.isAdminOrMod || (post.selfPost && topicPrivileges['delete']);
+				post.display_edit_tools = topicPrivileges.isAdminOrMod || (post.selfPost && topicPrivileges['posts:edit']);
+				post.display_delete_tools = topicPrivileges.isAdminOrMod || (post.selfPost && topicPrivileges['posts:delete']);
 				post.display_moderator_tools = post.display_edit_tools || post.display_delete_tools;
 				post.display_move_tools = topicPrivileges.isAdminOrMod && post.index !== 0;
 				post.display_post_menu = topicPrivileges.isAdminOrMod || post.selfPost || ((loggedIn || topicData.postSharing.length) && !post.deleted);

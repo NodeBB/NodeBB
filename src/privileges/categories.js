@@ -365,11 +365,11 @@ module.exports = function(privileges) {
 			'topics:reply': function(next) {
 				groups.isMember(uid, 'cid:' + cid + ':privileges:topics:reply', next);
 			},
-			'edit': function(next) {
-				groups.isMember(uid, 'cid:' + cid + ':privileges:edit', next);
+			'posts:edit': function(next) {
+				groups.isMember(uid, 'cid:' + cid + ':privileges:posts:edit', next);
 			},
-			'delete': function(next) {
-				groups.isMember(uid, 'cid:' + cid + ':privileges:delete', next);
+			'posts:delete': function(next) {
+				groups.isMember(uid, 'cid:' + cid + ':privileges:posts:delete', next);
 			},
 			'topics:delete': function(next) {
 				groups.isMember(uid, 'cid:' + cid + ':privileges:topics:delete', next);
@@ -392,11 +392,11 @@ module.exports = function(privileges) {
 			'groups:topics:reply': function(next) {
 				groups.isMember(groupName, 'cid:' + cid + ':privileges:groups:topics:reply', next);
 			},
-			'groups:edit': function(next) {
-				groups.isMember(groupName, 'cid:' + cid + ':privileges:groups:edit', next);
+			'groups:posts:edit': function(next) {
+				groups.isMember(groupName, 'cid:' + cid + ':privileges:groups:posts:edit', next);
 			},
-			'groups:delete': function(next) {
-				groups.isMember(groupName, 'cid:' + cid + ':privileges:groups:delete', next);
+			'groups:posts:delete': function(next) {
+				groups.isMember(groupName, 'cid:' + cid + ':privileges:groups:posts:delete', next);
 			},
 			'groups:topics:delete': function(next) {
 				groups.isMember(groupName, 'cid:' + cid + ':privileges:groups:topics:delete', next);

@@ -30,7 +30,7 @@ module.exports = function(privileges) {
 					isOwner: async.apply(posts.isOwner, pids, uid),
 					'topics:read': async.apply(helpers.isUserAllowedTo, 'topics:read', uid, cids),
 					read: async.apply(helpers.isUserAllowedTo, 'read', uid, cids),
-					edit: async.apply(helpers.isUserAllowedTo, 'edit', uid, cids),
+					'posts:edit': async.apply(helpers.isUserAllowedTo, 'posts:edit', uid, cids),
 				}, next);
 			}
 		], function(err, results) {
@@ -42,7 +42,7 @@ module.exports = function(privileges) {
 
 			for (var i=0; i<pids.length; ++i) {
 				var isAdminOrMod = results.isAdmin || results.isModerator[i];
-				var editable = isAdminOrMod || (results.isOwner[i] && results.edit[i]);
+				var editable = isAdminOrMod || (results.isOwner[i] && results['posts:edit'][i]);
 
 				privileges.push({
 					editable: editable,
@@ -171,7 +171,7 @@ module.exports = function(privileges) {
 					isAdminOrMod: async.apply(isAdminOrMod, pid, uid),
 					isLocked: async.apply(topics.isLocked, postData.tid),
 					isOwner: async.apply(posts.isOwner, pid, uid),
-					'delete': async.apply(privileges.posts.can, 'delete', pid, uid)
+					'posts:delete': async.apply(privileges.posts.can, 'posts:delete', pid, uid)
 				}, next);
 			}
 		], function(err, results) {
@@ -184,7 +184,7 @@ module.exports = function(privileges) {
 			if (results.isLocked) {
 				return callback(new Error('[[error:topic-locked]]'));
 			}
-			if (!results['delete']) {
+			if (!results['posts:delete']) {
 				return callback(null, false);
 			}
 			var postDeleteDuration = parseInt(meta.config.postDeleteDuration, 10);
@@ -241,7 +241,7 @@ module.exports = function(privileges) {
 
 				async.parallel({
 					owner: async.apply(posts.isOwner, pid, uid),
-					edit: async.apply(privileges.posts.can, 'edit', pid, uid)
+					edit: async.apply(privileges.posts.can, 'posts:edit', pid, uid)
 				}, next);
 			},
 			function(result, next) {
