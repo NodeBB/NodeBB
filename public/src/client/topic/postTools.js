@@ -35,7 +35,7 @@ define('forum/topic/postTools', ['share', 'navigator', 'components', 'translator
 
 			socket.emit('posts.loadPostTools', {pid: pid, cid: ajaxify.data.cid}, function(err, data) {
 				if (err) {
-					return app.alertError(err);
+					return app.alertError(err.message);
 				}
 				data.posts.display_move_tools = data.posts.display_move_tools && index !== 0;
 
@@ -384,11 +384,11 @@ define('forum/topic/postTools', ['share', 'navigator', 'components', 'translator
 						className: 'vote-modal',
 						show: true
 					});
-	
+
 					dialog.on('click', function() {
 						dialog.modal('hide');
 					});
-				    
+
 				});
 			});
 		});
