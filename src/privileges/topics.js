@@ -3,6 +3,7 @@
 
 var async = require('async');
 
+var meta = require('../meta');
 var topics = require('../topics');
 var user = require('../user');
 var helpers = require('./helpers');
@@ -182,25 +183,40 @@ module.exports = function(privileges) {
 	};
 
 	privileges.topics.canDelete = function(tid, uid, callback) {
-		topics.getTopicField(tid, 'cid', function(err, cid) {
+		var topicData;
+		async.waterfall([
+			function(next) {
+				topics.getTopicFields(tid, ['cid', 'postcount'], next);
+			},
+			function(_topicData, next) {
+				topicData = _topicData;
+				async.parallel({
+					isModerator: async.apply(user.isModerator, uid, topicData.cid),
+					isAdministrator: async.apply(user.isAdministrator, uid),
+					isOwner: async.apply(topics.isOwner, tid, uid),
+					'topics:delete': async.apply(helpers.isUserAllowedTo, 'topics:delete', uid, [topicData.cid])
+				}, next);
+			}
+		], function(err, results) {
 			if (err) {
 				return callback(err);
 			}
-			helpers.some([
-				async.apply(user.isModerator, uid, cid),
-				async.apply(user.isAdministrator, uid),
-				function(next) {
-					async.parallel({
-						owner: async.apply(topics.isOwner, tid, uid),
-						'topics:delete': async.apply(helpers.isUserAllowedTo, 'topics:delete', uid, [cid])
-					}, function(err, result) {
-						if (err) {
-							return next(err);
-						}
-						next(null, result.owner && result['topics:delete'][0]);
-					});
-				}
-			], callback);
+
+			if (results.isModerator || results.isAdministrator) {
+				return callback(null, true);
+			}
+
+			var preventTopicDeleteAfterReplies = parseInt(meta.config.preventTopicDeleteAfterReplies, 10) || 0;
+			if (preventTopicDeleteAfterReplies && (topicData.postcount - 1) >= preventTopicDeleteAfterReplies) {
+				var langKey = preventTopicDeleteAfterReplies > 1 ? 'cant-delete-topic-has-replies' : 'cant-delete-topic-has-reply';
+				return callback(new Error('[[error:' + langKey + ', ' + meta.config.preventTopicDeleteAfterReplies + ']]'));
+			}
+
+			if (!results['topics:delete'][0]) {
+				return callback(null, false);
+			}
+
+			callback(null, results.isOwner);
 		});
 	};
 
