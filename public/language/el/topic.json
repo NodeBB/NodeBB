@@ -86,6 +86,7 @@
     "topic_will_be_moved_to": "Το θέμα θα μετακινηθεί στην κατηγορία",
     "fork_topic_instruction": "Κάνε κλικ στις δημοσιεύσεις που θέλεις να διαχωρίσεις",
     "fork_no_pids": "Δεν έχουν επιλεχθεί δημοσιεύσεις!",
+    "fork_pid_count": "%1 post(s) selected",
     "fork_success": "Successfully forked topic! Click here to go to the forked topic.",
     "delete_posts_instruction": "Click the posts you want to delete/purge",
     "composer.title_placeholder": "Εισαγωγή του τίτλου του θέματος εδώ...",

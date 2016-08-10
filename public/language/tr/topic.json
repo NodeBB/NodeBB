@@ -86,6 +86,7 @@
     "topic_will_be_moved_to": "Bu konu kategorisine taşınacak",
     "fork_topic_instruction": "Ayırmak istediğiniz iletileri tıklayın",
     "fork_no_pids": "Hiç bir ileti seçilmedi!",
+    "fork_pid_count": "%1 ileti(ler) seçildi",
     "fork_success": "Başlık başarıyla ayrıldı!",
     "delete_posts_instruction": "Silmek/temizlemek istediğiniz iletilere tıklayın.",
     "composer.title_placeholder": "Başlık ismini buraya girin...",

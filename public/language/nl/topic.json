@@ -86,6 +86,7 @@
     "topic_will_be_moved_to": "Dit onderwerp zal naar de categorie verplaatst worden",
     "fork_topic_instruction": "Klik op de berichten die afgesplitst moeten worden",
     "fork_no_pids": "Geen berichten geselecteerd!",
+    "fork_pid_count": "%1 post(s) selected",
     "fork_success": "Onderwerp is succesvol afgesplitst. Klik hier om het nieuwe onderwerp te zien.",
     "delete_posts_instruction": "Klik op de berichten die verwijderd moeten worden",
     "composer.title_placeholder": "Voer hier de titel van het onderwerp in...",

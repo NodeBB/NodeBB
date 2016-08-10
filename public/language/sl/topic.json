@@ -86,6 +86,7 @@
     "topic_will_be_moved_to": "Ta tema bo premaknjena v to kategorijo",
     "fork_topic_instruction": "Klikni na objavo, ki o želiš odcepiti",
     "fork_no_pids": "Ni izbranih objav!",
+    "fork_pid_count": "%1 post(s) selected",
     "fork_success": "Uspešno ste razcepili temo! Klikni tu za ogled te teme.",
     "delete_posts_instruction": "Click the posts you want to delete/purge",
     "composer.title_placeholder": "Vpiši naslov teme...",

@@ -86,6 +86,7 @@
     "topic_will_be_moved_to": "Chủ đề này sẽ được chuyển tới phần mục",
     "fork_topic_instruction": "Chọn vào bài gửi mà bạn muốn fork",
     "fork_no_pids": "Chưa chọn bài gửi nào!",
+    "fork_pid_count": "%1 post(s) selected",
     "fork_success": "Tạo bản sao thành công! Nhấn vào đây để chuyển tới chủ đề vừa tạo.",
     "delete_posts_instruction": "Chọn những bài viết bạn muốn xoá",
     "composer.title_placeholder": "Nhập tiêu đề cho chủ đề của bạn tại đây...",

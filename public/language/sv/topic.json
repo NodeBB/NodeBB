@@ -86,6 +86,7 @@
     "topic_will_be_moved_to": "Detta ämne kommer att flyttas till kategorin",
     "fork_topic_instruction": "Klicka på de inlägg du vill grena",
     "fork_no_pids": "Inga inlägg valda!",
+    "fork_pid_count": "%1 post(s) selected",
     "fork_success": "Ämnet har blivit förgrenat. Klicka här för att gå till det förgrenade ämnet.",
     "delete_posts_instruction": "Klicka på inläggen du vill radera/rensa bort",
     "composer.title_placeholder": "Skriv in ämnets titel här...",

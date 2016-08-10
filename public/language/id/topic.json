@@ -86,6 +86,7 @@
     "topic_will_be_moved_to": "Topik ini akan dipindahkan ke kategori",
     "fork_topic_instruction": "Klik posting yang kamu ingin cabangkan",
     "fork_no_pids": "Tidak ada posting yang dipilih!",
+    "fork_pid_count": "%1 post(s) selected",
     "fork_success": "Topik berhasil dicabangkan! Klik disini untuk menuju topik yang telah dicabangkan.",
     "delete_posts_instruction": "Click the posts you want to delete/purge",
     "composer.title_placeholder": "Masukkan judul topik di sini...",

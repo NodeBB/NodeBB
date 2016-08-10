@@ -86,6 +86,7 @@
     "topic_will_be_moved_to": "Toto téma bude přesunuto do kategorie",
     "fork_topic_instruction": "Vyber příspěvky, které chceš oddělit",
     "fork_no_pids": "Žádné příspěvky nebyly vybrány!",
+    "fork_pid_count": "%1 post(s) selected",
     "fork_success": "Successfully forked topic! Click here to go to the forked topic.",
     "delete_posts_instruction": "Click the posts you want to delete/purge",
     "composer.title_placeholder": "Zadejte název tématu...",

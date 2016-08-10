@@ -86,6 +86,7 @@
     "topic_will_be_moved_to": "Ši tema bus perkelta į kategoriją",
     "fork_topic_instruction": "Pažymėkite ant įrašų, kuriuos norite perkelti į naują temą",
     "fork_no_pids": "Nepasirinktas joks įrašas!",
+    "fork_pid_count": "%1 post(s) selected",
     "fork_success": "Sėkmingai išsišakota iš temos! Spausk čia kad nueitu į išsišakota temą",
     "delete_posts_instruction": "Click the posts you want to delete/purge",
     "composer.title_placeholder": "Įrašykite temos pavadinimą...",

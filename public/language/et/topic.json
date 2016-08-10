@@ -86,6 +86,7 @@
     "topic_will_be_moved_to": "See teema liigutatakse antud kategooriasse",
     "fork_topic_instruction": "Vajuta postitustele, mida soovid forkida",
     "fork_no_pids": "Sa ei ole postitusi valinud!",
+    "fork_pid_count": "%1 post(s) selected",
     "fork_success": "Edukalt ''forkisid'' teema! Vajuta siia, et vaadata loodud teemat.",
     "delete_posts_instruction": "Klikka postitustel, mida tahad kustutada/puhastada",
     "composer.title_placeholder": "Sisesta teema pealkiri siia...",

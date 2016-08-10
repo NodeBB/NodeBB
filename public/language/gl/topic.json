@@ -86,6 +86,7 @@
     "topic_will_be_moved_to": "Este tema será movido á categoría",
     "fork_topic_instruction": "Fai clic nas publicacións que queiras dividir",
     "fork_no_pids": "Non seleccionaches ninguna publicación!",
+    "fork_pid_count": "%1 post(s) selected",
     "fork_success": "Creouse un novo tema a partir do orixinal! Fai clic aquí para ir ó novo tema.",
     "delete_posts_instruction": "Fai clic nas mensaxes que queres eliminar/limpar",
     "composer.title_placeholder": "Introduce o título do teu tema",

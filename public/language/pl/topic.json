@@ -86,6 +86,7 @@
     "topic_will_be_moved_to": "Ten temat zostanie przeniesiony do kategorii",
     "fork_topic_instruction": "Zaznacz posty, które chcesz sklonować",
     "fork_no_pids": "Nie zaznaczyłeś żadnych postów!",
+    "fork_pid_count": "%1 post(s) selected",
     "fork_success": "Udało się skopiować temat. Kliknij tutaj, aby do niego przejść.",
     "delete_posts_instruction": "Kliknij na posty, które chcesz usunąć",
     "composer.title_placeholder": "Wpisz tutaj tytuł tematu...",

@@ -86,6 +86,7 @@
     "topic_will_be_moved_to": "กระทู้นี้จะถูกย้ายไปที่หมวดหมู่",
     "fork_topic_instruction": "คลิกที่โพสที่คุณต้องการที่จะแยก",
     "fork_no_pids": "ไม่มีโพสต์ที่เลือก!",
+    "fork_pid_count": "%1 post(s) selected",
     "fork_success": "Successfully forked topic! Click here to go to the forked topic.",
     "delete_posts_instruction": "Click the posts you want to delete/purge",
     "composer.title_placeholder": "ป้อนชื่อกระทู้ของคุณที่นี่ ...",

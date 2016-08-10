@@ -86,6 +86,7 @@
     "topic_will_be_moved_to": "נושא זה יועבר לקטגוריה",
     "fork_topic_instruction": "לחץ על הפוסטים שברצונך לשכפל",
     "fork_no_pids": "לא בחרת אף פוסט!",
+    "fork_pid_count": "%1 post(s) selected",
     "fork_success": "הפוסט שוכפל בהצלחה! לחץ כאן על מנת לעבור לפוסט המשוכפל.",
     "delete_posts_instruction": "לחץ על הפוסטים שברצונך למחוק",
     "composer.title_placeholder": "הכנס את כותרת הנושא כאן...",
