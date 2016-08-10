@@ -2,7 +2,7 @@
   "name": "nodebb",
   "license": "GPL-3.0",
   "description": "NodeBB Forum",
-  "version": "1.1.0",
+  "version": "1.1.2",
   "homepage": "http://www.nodebb.org",
   "repository": {
     "type": "git",
@@ -57,7 +57,7 @@
     "nodebb-plugin-spam-be-gone": "0.4.9",
     "nodebb-rewards-essentials": "0.0.9",
     "nodebb-theme-lavender": "3.0.13",
-    "nodebb-theme-persona": "4.1.19",
+    "nodebb-theme-persona": "4.1.20",
     "nodebb-theme-vanilla": "5.1.9",
     "nodebb-widget-essentials": "2.0.10",
     "nodemailer": "2.0.0",
