@@ -58,8 +58,8 @@ module.exports = function(privileges) {
 				disabled: disabled,
 				tid: tid,
 				uid: uid,
-				editOwnPosts: results['posts:edit'][0],
-				deleteOwnPosts: results['posts:delete'][0]
+				'posts:edit': (results['posts:edit'][0] && !locked) || isAdminOrMod,
+				'posts:delete': (results['posts:delete'][0] && !locked) || isAdminOrMod
 			}, callback);
 		});
 	};

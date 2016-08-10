@@ -47,12 +47,13 @@ module.exports = function(SocketPosts) {
 			if (err) {
 				return callback(err);
 			}
+
 			results.posts.tools = results.tools.tools;
 			results.posts.deleted = parseInt(results.posts.deleted, 10) === 1;
 			results.posts.favourited = results.favourited[0];
 			results.posts.selfPost = socket.uid && socket.uid === parseInt(results.posts.uid, 10);
-			results.posts.display_edit_tools = results.canEdit;
-			results.posts.display_delete_tools = results.canDelete;
+			results.posts.display_edit_tools = results.canEdit.flag;
+			results.posts.display_delete_tools = results.canDelete.flag;
 			results.posts.display_moderator_tools = results.posts.display_edit_tools || results.posts.display_delete_tools;
 			results.posts.display_move_tools = results.isAdminOrMod;
 			callback(null, results);

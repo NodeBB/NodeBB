@@ -191,25 +191,24 @@ module.exports = function(Topics) {
 			function(_cid, next) {
 				cid = _cid;
 				async.parallel({
-					exists: async.apply(Topics.exists, tid),
-					locked: async.apply(Topics.isLocked, tid),
+					topicData: async.apply(Topics.getTopicData, tid),
 					canReply: async.apply(privileges.topics.can, 'topics:reply', tid, uid),
-					isAdmin: async.apply(user.isAdministrator, uid),
-					isModerator: async.apply(user.isModerator, uid, cid)
+					isAdminOrMod: async.apply(privileges.categories.isAdminOrMod, cid, uid),
 				}, next);
 			},
 			function(results, next) {
-				if (!results.exists) {
+				if (!results.topicData) {
 					return next(new Error('[[error:no-topic]]'));
 				}
 
-				if (results.locked && !results.isAdmin && !results.isModerator) {
+				if (parseInt(results.topicData.locked, 10) === 1 && !results.isAdminOrMod) {
 					return next(new Error('[[error:topic-locked]]'));
 				}
 
 				if (!results.canReply) {
 					return next(new Error('[[error:no-privileges]]'));
 				}
+
 				guestHandleValid(data, next);
 			},
 			function(next) {

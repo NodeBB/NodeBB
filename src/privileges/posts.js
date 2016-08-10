@@ -147,15 +147,10 @@ module.exports = function(privileges) {
 				return callback(err);
 			}
 			if (results.isAdminOrMod) {
-				return callback(null, true);
+				return callback(null, {flag: true});
 			}
-			if (results.isEditable.isLocked) {
-				return callback(new Error('[[error:topic-locked]]'));
-			}
-			if (results.isEditable.isEditExpired) {
-				return callback(new Error('[[error:post-edit-duration-expired, ' + meta.config.postEditDuration + ']]'));
-			}
-			callback(null, results.isEditable.editable);
+
+			callback(null, results.isEditable);
 		});
 	};
 
@@ -178,20 +173,25 @@ module.exports = function(privileges) {
 			if (err) {
 				return callback(err);
 			}
+
 			if (results.isAdminOrMod) {
-				return callback(null, true);
+				return callback(null, {flag: true});
 			}
+
 			if (results.isLocked) {
-				return callback(new Error('[[error:topic-locked]]'));
+				return callback(null, {flag: false, message: '[[error:topic-locked]]'});
 			}
+
 			if (!results['posts:delete']) {
-				return callback(null, false);
+				return callback(null, {flag: false, message: '[[error:no-privileges]]'});
 			}
+
 			var postDeleteDuration = parseInt(meta.config.postDeleteDuration, 10);
 			if (postDeleteDuration && (Date.now() - parseInt(postData.timestamp, 10) > postDeleteDuration * 1000)) {
-				return callback(new Error('[[error:post-delete-duration-expired, ' + meta.config.postDeleteDuration + ']]'));
+				return callback(null, {flag: false, message: '[[error:post-delete-duration-expired, ' + meta.config.postDeleteDuration + ']]'});
 			}
-			callback(null, results.isOwner);
+
+			callback(null, {flag: results.isOwner, message: '[[error:no-privileges]]'});
 		});
 	};
 
@@ -223,20 +223,22 @@ module.exports = function(privileges) {
 	};
 
 	function isPostEditable(pid, uid, callback) {
+		var tid;
 		async.waterfall([
 			function(next) {
 				posts.getPostFields(pid, ['tid', 'timestamp'], next);
 			},
 			function(postData, next) {
+				tid = postData.tid;
 				var postEditDuration = parseInt(meta.config.postEditDuration, 10);
 				if (postEditDuration && Date.now() - parseInt(postData.timestamp, 10) > postEditDuration * 1000) {
-					return callback(null, {isEditExpired: true});
+					return callback(null, {flag: false, message: '[[error:post-edit-duration-expired, ' + meta.config.postEditDuration + ']]'});
 				}
 				topics.isLocked(postData.tid, next);
 			},
 			function(isLocked, next) {
 				if (isLocked) {
-					return callback(null, {isLocked: true});
+					return callback(null, {flag: false, message: '[[error:topic-locked]]'});
 				}
 
 				async.parallel({
@@ -245,7 +247,7 @@ module.exports = function(privileges) {
 				}, next);
 			},
 			function(result, next) {
-				next(null, {editable: result.owner && result.edit});
+				next(null, {flag: result.owner && result.edit, message: '[[error:no-privileges]]'});
 			}
 		], callback);
 	}
