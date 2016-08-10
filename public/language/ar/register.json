@@ -1,6 +1,6 @@
 {
     "register": "تسجيل",
-    "cancel_registration": "Cancel Registration",
+    "cancel_registration": "إلغاء التسجيل",
     "help.email": "افتراضيا، سيتم إخفاء بريدك الإلكتروني من العامة.",
     "help.username_restrictions": "اسم مستخدم فريدة من نوعها بين1% و2% حرفا. يمكن للآخرين ذكرك @ <'span id='your-username> اسم المستخدم </span>.",
     "help.minimum_password_length": "كلمة المرور يجب أن تكون على الأقل بها 1% أحرف",
