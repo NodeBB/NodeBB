@@ -67,7 +67,8 @@ $(document).ready(function() {
 		url = ajaxify.start(url);
 
 		// If any listeners alter url and set it to an empty string, abort the ajaxification
-		if (url === '') {
+		if (url === null) {
+			$(window).trigger('action:ajaxify.end', {url: url, tpl_url: ajaxify.data.template.name, title: ajaxify.data.title});
 			return false;
 		}
 
