@@ -66,6 +66,11 @@ $(document).ready(function() {
 
 		url = ajaxify.start(url);
 
+		// If any listeners alter url and set it to an empty string, abort the ajaxification
+		if (url === '') {
+			return false;
+		}
+
 		previousBodyClass = ajaxify.data.bodyClass;
 		$('#footer, #content').removeClass('hide').addClass('ajaxifying');
 
@@ -107,9 +112,13 @@ $(document).ready(function() {
 	ajaxify.start = function(url) {
 		url = ajaxify.removeRelativePath(url.replace(/^\/|\/$/g, ''));
 
-		$(window).trigger('action:ajaxify.start', {url: url});
+		var payload = {
+			url: url
+		}
 
-		return url;
+		$(window).trigger('action:ajaxify.start', payload);
+
+		return payload.url;
 	};
 
 	ajaxify.updateHistory = function(url, quiet) {
