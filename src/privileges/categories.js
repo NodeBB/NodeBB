@@ -23,6 +23,9 @@ module.exports = function(privileges) {
 			{name: 'Access Topics'},
 			{name: 'Create Topics'},
 			{name: 'Reply to Topics'},
+			{name: 'Edit Posts'},
+			{name: 'Delete Posts'},
+			{name: 'Delete Topics'},
 			{name: 'Upload Images'},
 			{name: 'Upload Files'},
 			{name: 'Purge'},
@@ -362,6 +365,15 @@ module.exports = function(privileges) {
 			'topics:reply': function(next) {
 				groups.isMember(uid, 'cid:' + cid + ':privileges:topics:reply', next);
 			},
+			'posts:edit': function(next) {
+				groups.isMember(uid, 'cid:' + cid + ':privileges:posts:edit', next);
+			},
+			'posts:delete': function(next) {
+				groups.isMember(uid, 'cid:' + cid + ':privileges:posts:delete', next);
+			},
+			'topics:delete': function(next) {
+				groups.isMember(uid, 'cid:' + cid + ':privileges:topics:delete', next);
+			},
 			mods: function(next) {
 				user.isModerator(uid, cid, next);
 			}
@@ -379,6 +391,15 @@ module.exports = function(privileges) {
 			},
 			'groups:topics:reply': function(next) {
 				groups.isMember(groupName, 'cid:' + cid + ':privileges:groups:topics:reply', next);
+			},
+			'groups:posts:edit': function(next) {
+				groups.isMember(groupName, 'cid:' + cid + ':privileges:groups:posts:edit', next);
+			},
+			'groups:posts:delete': function(next) {
+				groups.isMember(groupName, 'cid:' + cid + ':privileges:groups:posts:delete', next);
+			},
+			'groups:topics:delete': function(next) {
+				groups.isMember(groupName, 'cid:' + cid + ':privileges:groups:topics:delete', next);
 			},
 			'groups:topics:read': function(next) {
 				groups.isMember(groupName, 'cid:' + cid + ':privileges:groups:topics:read', next);

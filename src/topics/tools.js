@@ -1,11 +1,12 @@
 'use strict';
 
-var async = require('async'),
+var async = require('async');
 
-	db = require('../database'),
-	categories = require('../categories'),
-	plugins = require('../plugins'),
-	privileges = require('../privileges');
+var db = require('../database');
+var categories = require('../categories');
+var meta = require('../meta');
+var plugins = require('../plugins');
+var privileges = require('../privileges');
 
 
 module.exports = function(Topics) {
@@ -32,10 +33,10 @@ module.exports = function(Topics) {
 				if (!exists) {
 					return next(new Error('[[error:no-topic]]'));
 				}
-				privileges.topics.isOwnerOrAdminOrMod(tid, uid, next);
+				privileges.topics.canDelete(tid, uid, next);
 			},
-			function (isOwnerOrAdminOrMod, next) {
-				if (!isOwnerOrAdminOrMod) {
+			function (canDelete, next) {
+				if (!canDelete) {
 					return next(new Error('[[error:no-privileges]]'));
 				}
 				Topics.getTopicFields(tid, ['tid', 'cid', 'uid', 'deleted', 'title', 'mainPid'], next);
