@@ -16,7 +16,9 @@ module.exports = function(SocketUser) {
 			}
 		}
 
-		toggleBan(socket.uid, data.uids, banUser.bind(null, data.until || 0), function(err) {
+		toggleBan(socket.uid, data.uids, function(uid, next) {
+			banUser(data.until || 0, uid, next);
+		}, function(err) {
 			if (err) {
 				return callback(err);
 			}
