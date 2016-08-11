@@ -81,7 +81,7 @@ module.exports = function(Groups) {
 			return callback(new Error('[[error:group-name-too-short]]'));
 		}
 
-		if (!Groups.isPrivilegeGroup(data.name) && name.length > (parseInt(meta.config.maximumGroupNameLength, 10) || 255)) {
+		if (!Groups.isPrivilegeGroup(name) && name.length > (parseInt(meta.config.maximumGroupNameLength, 10) || 255)) {
 			return callback(new Error('[[error:group-name-too-long]]'));
 		}
 
