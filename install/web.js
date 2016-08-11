@@ -1,16 +1,16 @@
 "use strict";
 
-var winston = require('winston'),
-	express = require('express'),
-	bodyParser = require('body-parser'),
-	fs = require('fs'),
-	path = require('path'),
-	less = require('less'),
-	async = require('async'),
-	uglify = require('uglify-js'),
-	nconf = require('nconf'),
-	app = express(),
-	server;
+var winston = require('winston');
+var express = require('express');
+var bodyParser = require('body-parser');
+var fs = require('fs');
+var path = require('path');
+var less = require('less');
+var async = require('async');
+var uglify = require('uglify-js');
+var nconf = require('nconf');
+var app = express();
+var server;
 
 winston.add(winston.transports.File, {
 	filename: 'logs/webinstall.log',
@@ -22,13 +22,13 @@ winston.add(winston.transports.File, {
 	level: 'verbose'
 });
 
-var web = {},
-	scripts = [
-		'public/vendor/xregexp/xregexp.js',
-		'public/vendor/xregexp/unicode/unicode-base.js',
-		'public/src/utils.js',
-		'public/src/installer/install.js'
-	];
+var web = {};
+var scripts = [
+	'public/vendor/xregexp/xregexp.js',
+	'public/vendor/xregexp/unicode/unicode-base.js',
+	'public/src/utils.js',
+	'public/src/installer/install.js'
+];
 
 web.install = function(port) {
 	port = port || 4567;
@@ -62,22 +62,23 @@ function setupRoutes() {
 }
 
 function welcome(req, res) {
-	var dbs = ['redis', 'mongo'],
-		databases = [];
-
-	dbs.forEach(function(el) {
-		databases.push({
+	var dbs = ['redis', 'mongo'];
+	var databases = dbs.map(function(el) {
+		return {
 			name: el,
 			questions: require('../src/database/' + el).questions
-		});
+		};
 	});
+
+	var defaults = require('./data/defaults');
 
 	res.render('install/index', {
 		databases: databases,
 		skipDatabaseSetup: !!nconf.get('database'),
 		error: res.locals.error ? true : false,
 		success: res.locals.success ? true : false,
-		values: req.body
+		values: req.body,
+		minimumPasswordLength: defaults.minimumPasswordLength
 	});
 }
 
@@ -104,7 +105,6 @@ function install(req, res) {
 }
 
 function launch(req, res) {
-	var pidFilePath = __dirname + '../pidfile';
 	res.json({});
 	server.close();
 
@@ -146,10 +146,10 @@ function compileJS(callback) {
 		return callback(false);
 	}
 
-	var scriptPath = path.join(__dirname, '..'),
-		result = uglify.minify(scripts.map(function(script) {
-			return path.join(scriptPath, script);
-		}));
+	var scriptPath = path.join(__dirname, '..');
+	var result = uglify.minify(scripts.map(function(script) {
+		return path.join(scriptPath, script);
+	}));
 
 
 	fs.writeFile(path.join(__dirname, '../public/nodebb.min.js'), result.code, callback);

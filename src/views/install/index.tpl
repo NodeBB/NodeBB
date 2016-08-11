@@ -72,9 +72,9 @@
 				<div class="row input-row">
 					<div class="col-sm-7 col-xs-12 input-field">
 						<label for="admin:password">Password</label>
-						<input type="password" class="form-control" name="admin:password" value="<!-- IF admin:password -->{admin:password}<!-- ENDIF admin:password -->" placeholder="Password" />
+						<input type="password" class="form-control" name="admin:password" value="<!-- IF admin:password -->{admin:password}<!-- ENDIF admin:password -->" placeholder="Password" data-minimum-length="{minimumPasswordLength}" />
 					</div>
-					<div class="col-sm-5 help-text" data-help="Use a combination of numbers, symbols, and different cases. You can change the strictness of password creation in the Admin Control Panel."></div>
+					<div class="col-sm-5 help-text" data-help="Use a combination of numbers, symbols, and different cases. You can change the strictness of password creation in the Admin Control Panel. Minimum {minimumPasswordLength} characters."></div>
 				</div>
 				<div class="row input-row">
 					<div class="col-sm-7 col-xs-12 input-field">
@@ -119,7 +119,7 @@
 	<div class="container <!-- IF !success -->hide<!-- ENDIF !success -->">
 		<p>
 			<h1>Congratulations! Your NodeBB has been set-up.</h1>
-			
+
 			<button id="launch" class="btn btn-lg btn-success">Launch NodeBB <i class="fa fa-spinner fa-spin hide"></i></button>
 		</p>
 	</div>
@@ -136,7 +136,7 @@
 				</div>
 			<!-- END questions -->
 		</div>
-		<!-- END databases -->			
+		<!-- END databases -->
 	</div>
 
 	<script src="//code.jquery.com/jquery-1.11.2.min.js"></script>
