@@ -5,6 +5,7 @@ var	async = require('async'),
 	groups = require('../groups'),
 	meta = require('../meta'),
 	user = require('../user'),
+	utils = require('../../public/src/utils'),
 	groupsController = require('../controllers/groups'),
 
 	SocketGroups = {};
@@ -232,7 +233,7 @@ SocketGroups.searchMembers = function(socket, data, callback) {
 };
 
 SocketGroups.loadMoreMembers = function(socket, data, callback) {
-	if (!data.groupName || !parseInt(data.after, 10)) {
+	if (!data.groupName || !utils.isNumber(data.after) || parseInt(data.after, 10) < 0) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
 	data.after = parseInt(data.after, 10);

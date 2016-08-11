@@ -20,6 +20,7 @@
     "email-taken": "Email già esistente",
     "email-not-confirmed": "La tua Email deve essere ancora confermata, per favore clicca qui per confermare la tua Email.",
     "email-not-confirmed-chat": "Non potrai chattare finchè non avrai confermato la tua email, per favore clicca qui per farlo ora.",
+    "email-not-confirmed-email-sent": "Your email has not been confirmed yet, please check your inbox for the confirmation email.",
     "no-email-to-confirm": "Questo forum richiede la conferma dell'indirizzo email, per favore clicca qui per inserirne uno",
     "email-confirm-failed": "Non possiamo confermare la tua email, per favore prova ancora più tardi.",
     "confirm-email-already-sent": "Email di conferma già inviata, per favore attendere %1 minuti per richiederne un'altra.",

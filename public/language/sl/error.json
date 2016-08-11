@@ -20,6 +20,7 @@
     "email-taken": "E-mail naslov je že zaseden",
     "email-not-confirmed": "Vaš e-mail naslov še ni bil potrjen. Prosimo kliknite tu za potrditev vašega e-mail naslova.",
     "email-not-confirmed-chat": "Ne morete klepetati dokler ne potrdite vašega e-mail naslova. Prosimo kliknite tu za potrditev vašega e-mail naslova.",
+    "email-not-confirmed-email-sent": "Your email has not been confirmed yet, please check your inbox for the confirmation email.",
     "no-email-to-confirm": "Ta forum zahteva potrjen e-mail naslov. Prosim kliknite tu za vnos e-mail naslova.",
     "email-confirm-failed": "Nismo mogli potrditi vašega e-mail naslova. Prosimo poskusite ponovno.",
     "confirm-email-already-sent": "Potrditveni e-mail naslov je že poslan. Prosimo počakajte %1 minut(o) za ponovno pošiljanje.",

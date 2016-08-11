@@ -20,6 +20,7 @@
     "email-taken": "該信箱已被使用",
     "email-not-confirmed": "你的電子郵件尚未確認，請點擊此處確認你的電子郵件。",
     "email-not-confirmed-chat": "你需要先確認電子郵件後才能進行聊天，請點擊這裡來確認你的電子郵件。",
+    "email-not-confirmed-email-sent": "Your email has not been confirmed yet, please check your inbox for the confirmation email.",
     "no-email-to-confirm": "討論區要求電子郵件確認，請點擊這裡輸入一個電子郵件。",
     "email-confirm-failed": "我們無法確認你的Email，請之後再重試。",
     "confirm-email-already-sent": "確認電子郵件已經寄送，請等待 %1 分鐘才能再寄送另一封。",

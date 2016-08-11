@@ -20,6 +20,7 @@
     "email-taken": "Email yarafashwe mbere",
     "email-not-confirmed": "Email yawe ntabwo iremezwa. Kanda hano kugirango wemeze email yawe.",
     "email-not-confirmed-chat": "Ntabwo uremererwa kuganirira mu gikari kuko email yawe itari yemezwa. Kanda hano kugirango wemeze email yawe. ",
+    "email-not-confirmed-email-sent": "Your email has not been confirmed yet, please check your inbox for the confirmation email.",
     "no-email-to-confirm": "Uru rubuga rusaba ko wemeza ko utunze email. Kanda hano kugirango utange email yawe",
     "email-confirm-failed": "Ntabwo email yawe yabashije kwemezwa. Ongera ugerageze mu bundi buryo. ",
     "confirm-email-already-sent": "Email yo kwemeza yamaze koherezwa. Tegereza iminota (umunota) %1 mbere yo kohereza indi. ",

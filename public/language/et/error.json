@@ -20,6 +20,7 @@
     "email-taken": "Email on võetud",
     "email-not-confirmed": "Su emaili aadress ei ole kinnitatud, vajuta siia et kinnitada.",
     "email-not-confirmed-chat": "Sõnumeid ei ole võimalik enne saata kui sinu email on kinnitatud. Kinnitamiseks vajuta siia.",
+    "email-not-confirmed-email-sent": "Your email has not been confirmed yet, please check your inbox for the confirmation email.",
     "no-email-to-confirm": "See foorum nõuab emaili kinnitust, palun vajuta siia, et sisestada email",
     "email-confirm-failed": "Meil ei õnnestunud sinu emaili kinnitada, proovi hiljem uuesti.",
     "confirm-email-already-sent": "Kinnituskiri on juba saadetud, palun oota %1 minut(it) uue kirja saatmiseks.",

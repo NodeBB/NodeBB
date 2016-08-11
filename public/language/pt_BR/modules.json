@@ -37,6 +37,7 @@
     "composer.formatting.picture": "Imagem",
     "composer.upload-picture": "Fazer upload de Imagem",
     "composer.upload-file": "Fazer upload de Arquivo",
+    "composer.zen_mode": "Zen Mode",
     "bootbox.ok": "OK",
     "bootbox.cancel": "Cancelar",
     "bootbox.confirm": "Confirmar",

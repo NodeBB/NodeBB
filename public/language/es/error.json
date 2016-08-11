@@ -20,6 +20,7 @@
     "email-taken": "Correo electrónico ocupado",
     "email-not-confirmed": "Su cuenta de correo electrónico no ha sido confirmada aún, por favor haga click aquí para confirmarla.",
     "email-not-confirmed-chat": "No puedes usar el chat hasta que confirmes tu dirección de correo electrónico, por favor haz click aquí para confirmar tu correo.",
+    "email-not-confirmed-email-sent": "Tu correo electrónico está sin confirmar, por favor busca el correo de confirmación en tu bandeja de entrada.",
     "no-email-to-confirm": "Este foro requiere confirmación de su email, por favor pulse aquí para introducir un email",
     "email-confirm-failed": "No se ha podido confirmar su email, por favor inténtelo de nuevo más tarde.",
     "confirm-email-already-sent": "El email de confirmación ya ha sido enviado, por favor espera %1 minuto(s) para enviar otro.",

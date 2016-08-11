@@ -20,6 +20,7 @@
     "email-taken": "Foglalt e-mail",
     "email-not-confirmed": "Az e-mail címed még nem lett ellenőrizve, kérlek kattints ide az e-mail címed ellenőrzéséhez!",
     "email-not-confirmed-chat": "You are unable to chat until your email is confirmed, please click here to confirm your email.",
+    "email-not-confirmed-email-sent": "Your email has not been confirmed yet, please check your inbox for the confirmation email.",
     "no-email-to-confirm": "Ez a fórum e-mail megerősítést kíván, kérlek kattints ide egy cím beírásához",
     "email-confirm-failed": "Nem tudtuk ellenőrizni az e-mail címedet, kérlek próbálkozz később.",
     "confirm-email-already-sent": "Confirmation email already sent, please wait %1 minute(s) to send another one.",
