@@ -13,7 +13,7 @@ module.exports = function(SocketUser) {
 			data = {
 				uids: data,
 				until: 0
-			}
+			};
 		}
 
 		toggleBan(socket.uid, data.uids, function(uid, next) {
@@ -71,7 +71,6 @@ module.exports = function(SocketUser) {
 				next();
 			}
 		], callback);
-	};
-
+	}
 };
 
