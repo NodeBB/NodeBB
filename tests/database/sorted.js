@@ -54,7 +54,7 @@ describe('Sorted Set methods', function() {
 			db.getSortedSetRange('sortedSetTest1', 0, 0, function(err, value) {
 				assert.equal(err, null);
 				assert.equal(arguments.length, 2);
-				assert.deepStrictEqual(value, ['value1']);
+				assert.deepEqual(value, ['value1']);
 				done();
 			});
 		});
@@ -63,7 +63,7 @@ describe('Sorted Set methods', function() {
 			db.getSortedSetRange('sortedSetTest1', 0, -1, function(err, values) {
 				assert.equal(err, null);
 				assert.equal(arguments.length, 2);
-				assert.deepStrictEqual(values, ['value1', 'value2', 'value3']);
+				assert.deepEqual(values, ['value1', 'value2', 'value3']);
 				done();
 			});
 		});
@@ -74,7 +74,7 @@ describe('Sorted Set methods', function() {
 			db.getSortedSetRevRange('sortedSetTest1', 0, 0, function(err, value) {
 				assert.equal(err, null);
 				assert.equal(arguments.length, 2);
-				assert.deepStrictEqual(value, ['value3']);
+				assert.deepEqual(value, ['value3']);
 				done();
 			});
 		});
@@ -83,7 +83,7 @@ describe('Sorted Set methods', function() {
 			db.getSortedSetRevRange('sortedSetTest1', 0, -1, function(err, values) {
 				assert.equal(err, null);
 				assert.equal(arguments.length, 2);
-				assert.deepStrictEqual(values, ['value3', 'value2', 'value1']);
+				assert.deepEqual(values, ['value3', 'value2', 'value1']);
 				done();
 			});
 		});
@@ -94,7 +94,7 @@ describe('Sorted Set methods', function() {
 			db.getSortedSetRangeWithScores('sortedSetTest1', 0, -1, function(err, values) {
 				assert.equal(err, null);
 				assert.equal(arguments.length, 2);
-				assert.deepStrictEqual(values, [{value: 'value1', score: 1}, {value: 'value2', score: 2}, {value: 'value3', score: 3}]);
+				assert.deepEqual(values, [{value: 'value1', score: 1}, {value: 'value2', score: 2}, {value: 'value3', score: 3}]);
 				done();
 			});
 		});
@@ -105,7 +105,7 @@ describe('Sorted Set methods', function() {
 			db.getSortedSetRevRangeWithScores('sortedSetTest1', 0, -1, function(err, values) {
 				assert.equal(err, null);
 				assert.equal(arguments.length, 2);
-				assert.deepStrictEqual(values, [{value: 'value3', score: 3}, {value: 'value2', score: 2}, {value: 'value1', score: 1}]);
+				assert.deepEqual(values, [{value: 'value3', score: 3}, {value: 'value2', score: 2}, {value: 'value1', score: 1}]);
 				done();
 			});
 		});
@@ -116,7 +116,7 @@ describe('Sorted Set methods', function() {
 			db.getSortedSetRangeByScore('sortedSetTest1', 0, -1, '-inf', 2, function(err, values) {
 				assert.equal(err, null);
 				assert.equal(arguments.length, 2);
-				assert.deepStrictEqual(values, ['value1', 'value2']);
+				assert.deepEqual(values, ['value1', 'value2']);
 				done();
 			});
 		});
@@ -127,7 +127,7 @@ describe('Sorted Set methods', function() {
 			db.getSortedSetRevRangeByScore('sortedSetTest1', 0, -1, '+inf', 2, function(err, values) {
 				assert.equal(err, null);
 				assert.equal(arguments.length, 2);
-				assert.deepStrictEqual(values, ['value3', 'value2']);
+				assert.deepEqual(values, ['value3', 'value2']);
 				done();
 			});
 		});
@@ -138,7 +138,7 @@ describe('Sorted Set methods', function() {
 			db.getSortedSetRangeByScoreWithScores('sortedSetTest1', 0, -1, '-inf', 2, function(err, values) {
 				assert.equal(err, null);
 				assert.equal(arguments.length, 2);
-				assert.deepStrictEqual(values, [{value: 'value1', score: 1}, {value: 'value2', score: 2}]);
+				assert.deepEqual(values, [{value: 'value1', score: 1}, {value: 'value2', score: 2}]);
 				done();
 			});
 		});
@@ -149,7 +149,7 @@ describe('Sorted Set methods', function() {
 			db.getSortedSetRevRangeByScoreWithScores('sortedSetTest1', 0, -1, '+inf', 2, function(err, values) {
 				assert.equal(err, null);
 				assert.equal(arguments.length, 2);
-				assert.deepStrictEqual(values, [{value: 'value3', score: 3}, {value: 'value2', score: 2}]);
+				assert.deepEqual(values, [{value: 'value3', score: 3}, {value: 'value2', score: 2}]);
 				done();
 			});
 		});
