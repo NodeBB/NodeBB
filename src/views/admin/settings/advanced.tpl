@@ -88,7 +88,7 @@
 				<input class="form-control" id="eventLoopLagThreshold" type="number" data-field="eventLoopLagThreshold" placeholder="Default: 70" step="10" min="10" value="70" />
 				<p class="help-block">
 					Lowering this value decreases wait times for page loads, but will also show the
-					"excessive load" message to more users. (Reload required)
+					"excessive load" message to more users. (Restart required)
 				</p>
 			</div>
 			<div class="form-group">
@@ -96,7 +96,7 @@
 				<input class="form-control" id="eventLoopInterval" type="number" data-field="eventLoopInterval" placeholder="Default: 500" value="500" step="50" />
 				<p class="help-block">
 					Lowering this value causes NodeBB to become more sensitive to spikes in load, but
-					may also cause the check to become too sensitive. (Reload required)
+					may also cause the check to become too sensitive. (Restart required)
 				</p>
 			</div>
 		</form>

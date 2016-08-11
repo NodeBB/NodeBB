@@ -41,49 +41,13 @@ var async = require('async'),
 		});
 	};
 
+	/**
+	 * Reload deprecated as of v1.1.2+, remove in v2.x
+	 */
 	Meta.reload = function(callback) {
-		pubsub.publish('meta:reload', {hostname: os.hostname()});
-		reload(callback);
+		restart();
+		callback();
 	};
-
-	pubsub.on('meta:reload', function(data) {
-		if (data.hostname !== os.hostname()) {
-			reload();
-		}
-	});
-
-	function reload(callback) {
-		callback = callback || function() {};
-
-		var	plugins = require('./plugins');
-		async.series([
-			function (next) {
-				plugins.fireHook('static:app.reload', {}, next);
-			},
-			async.apply(plugins.clearRequireCache),
-			async.apply(Meta.css.minify),
-			async.apply(Meta.js.minify, 'nodebb.min.js'),
-			async.apply(Meta.js.minify, 'acp.min.js'),
-			async.apply(Meta.sounds.init),
-			async.apply(languages.init),
-			async.apply(Meta.templates.compile),
-			async.apply(plugins.reload),
-			async.apply(plugins.reloadRoutes),
-			async.apply(auth.reloadRoutes),
-			function(next) {
-				Meta.config['cache-buster'] = utils.generateUUID();
-				templates.flush();
-				next();
-			}
-		], function(err) {
-			if (!err) {
-				emitter.emit('nodebb:ready');
-			}
-			Meta.reloadRequired = false;
-
-			callback(err);
-		});
-	}
 
 	Meta.restart = function() {
 		pubsub.publish('meta:restart', {hostname: os.hostname()});
