@@ -55,18 +55,7 @@ module.exports = function(User) {
 				return callback(err);
 			}
 
-			if (fields.indexOf('banned') !== -1) {
-				// Also retrieve ban expiry for these users
-				db.sortedSetScores('users:banned:expire', uids, function(err, scores) {
-					users.forEach(function(userObj, idx) {
-						userObj.banned_until = scores[idx] || 0;
-						userObj.banned_until_readable = scores[idx] ? new Date(scores[idx]).toString() : 'Not Banned';
-					});
-					modifyUserData(users, fieldsToRemove, callback);
-				});
-			} else {
-				modifyUserData(users, fieldsToRemove, callback);
-			}
+			modifyUserData(users, fieldsToRemove, callback);
 		});
 	};
 
