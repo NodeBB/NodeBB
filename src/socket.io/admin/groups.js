@@ -1,8 +1,9 @@
 "use strict";
 
 var async = require('async');
-var groups = require('../../groups'),
-	Groups = {};
+var groups = require('../../groups');
+
+var Groups = {};
 
 Groups.create = function(socket, data, callback) {
 	if (!data) {
