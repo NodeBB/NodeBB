@@ -192,7 +192,8 @@ var social = require('./social');
 					isFollowing: async.apply(Topics.isFollowing, [topicData.tid], uid),
 					isIgnoring: async.apply(Topics.isIgnoring, [topicData.tid], uid),
 					bookmark: async.apply(Topics.getUserBookmark, topicData.tid, uid),
-					postSharing: async.apply(social.getActivePostSharing)
+					postSharing: async.apply(social.getActivePostSharing),
+					related: async.apply(Topics.getRelatedTopics, topicData, uid)
 				}, next);
 			},
 			function (results, next) {
@@ -205,6 +206,7 @@ var social = require('./social');
 				topicData.isIgnoring = results.isIgnoring[0];
 				topicData.bookmark = results.bookmark;
 				topicData.postSharing = results.postSharing;
+				topicData.related = results.related || [];
 
 				topicData.unreplied = parseInt(topicData.postcount, 10) === 1;
 				topicData.deleted = parseInt(topicData.deleted, 10) === 1;
@@ -213,10 +215,6 @@ var social = require('./social');
 
 				topicData.icons = [];
 
-				Topics.getRelatedTopics(topicData, uid, next);
-			},
-			function (related, next) {
-				topicData.related = related || [];
 				plugins.fireHook('filter:topic.get', {topic: topicData, uid: uid}, next);
 			},
 			function (data, next) {
