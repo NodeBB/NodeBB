@@ -89,7 +89,7 @@ describe('Categories', function() {
 		});
 	});
 
-	after(function() {
-		db.flushdb();
+	after(function(done) {
+		db.flushdb(done);
 	});
 });
