@@ -86,7 +86,7 @@
     "topic_will_be_moved_to": "Este tópico será movido para a categoria",
     "fork_topic_instruction": "Clique nos posts que você quer ramificar",
     "fork_no_pids": "Nenhum post selecionado!",
-    "fork_pid_count": "%1 post(s) selected",
+    "fork_pid_count": "%1 post(s) selecionado(s)",
     "fork_success": "Tópico ramificado com sucesso! Clique aqui para ir ao tópico ramificado.",
     "delete_posts_instruction": "Clique nos posts que você deseja deletar/limpar",
     "composer.title_placeholder": "Digite aqui o título para o seu tópico...",

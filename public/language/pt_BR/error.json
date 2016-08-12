@@ -20,7 +20,7 @@
     "email-taken": "Email já cadastrado",
     "email-not-confirmed": "O seu email ainda não foi confirmado, por favor clique aqui para confirmar seu email.",
     "email-not-confirmed-chat": "Você não está habilitado a conversar até que seu email seja confirmado, por favor clique aqui para confirmar seu email.",
-    "email-not-confirmed-email-sent": "Your email has not been confirmed yet, please check your inbox for the confirmation email.",
+    "email-not-confirmed-email-sent": "O seu email ainda não foi confirmado, por favor confira a sua caixa de entrada pelo email de confirmação.",
     "no-email-to-confirm": "Este fórum exige confirmação de email, por gentileza clique aqui para digitar um email",
     "email-confirm-failed": "Nós não pudemos confirmar seu email, por gentileza tente novamente mais tarde.",
     "confirm-email-already-sent": "O email de confirmação já foi enviado, por favor aguarde %1 minuto(s) para enviar outro.",
