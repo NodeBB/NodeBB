@@ -162,6 +162,14 @@ describe('Groups', function() {
 				Groups.get('foo', {}, done);
 			});
 		});
+
+		it('should fail to create group with duplicate group name', function(done) {
+			Groups.create({name: 'foo'}, function(err) {
+				assert(err);
+				assert.equal(err.message, '[[error:group-already-exists]]');
+				done();
+			});
+		});
 	});
 
 	describe('.hide()', function() {
