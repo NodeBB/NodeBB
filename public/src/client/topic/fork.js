@@ -1,6 +1,6 @@
 'use strict';
 
-/* globals define, app, ajaxify, socket, templates, translator */
+/* globals define, app, ajaxify, socket */
 
 define('forum/topic/fork', ['components', 'postSelect'], function(components, postSelect) {
 
@@ -10,11 +10,17 @@ define('forum/topic/fork', ['components', 'postSelect'], function(components, po
 
 	Fork.init = function() {
 		$('.topic').on('click', '[component="topic/fork"]', onForkThreadClicked);
+		$(window).on('action:ajaxify.start', onAjaxifyStart);
 	};
 
+	function onAjaxifyStart() {
+		closeForkModal();
+		$(window).off('action:ajaxify.start', onAjaxifyStart);
+	}
+
 	function onForkThreadClicked() {
-		parseModal(function(html) {
-			forkModal = $(html);
+		app.parseAndTranslate('partials/fork_thread_modal', {}, function(html) {
+			forkModal = html;
 
 			forkCommit = forkModal.find('#fork_thread_commit');
 
@@ -30,12 +36,6 @@ define('forum/topic/fork', ['components', 'postSelect'], function(components, po
 			showPostsSelected();
 
 			forkCommit.on('click', createTopicFromPosts);
-		});
-	}
-
-	function parseModal(callback) {
-		templates.parse('partials/fork_thread_modal', {}, function(html) {
-			translator.translate(html, callback);
 		});
 	}
 
