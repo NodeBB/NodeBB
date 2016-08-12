@@ -132,7 +132,7 @@ describe('Topic\'s', function() {
 		var	newTopic;
 		var newPost;
 
-		beforeEach(function(done) {
+		before(function(done) {
 			topics.post({uid: topic.userId, title: topic.title, content: topic.content, cid: topic.categoryId}, function(err, result) {
 				newTopic = result.topicData;
 				newPost = result.postData;
@@ -143,6 +143,28 @@ describe('Topic\'s', function() {
 		describe('.getTopicData', function() {
 			it('should not receive errors', function(done) {
 				topics.getTopicData(newTopic.tid, done);
+			});
+		});
+
+		describe('.getTopicWithPosts', function() {
+			it('should get a topic with posts and other data', function(done) {
+				topics.getTopicData(newTopic.tid, function(err, topicData) {
+					if (err) {
+						return done(err);
+					}
+					topics.getTopicWithPosts(topicData, 'tid:' + newTopic.tid + ':posts', topic.userId, 0, -1, false, function(err, data) {
+						if (err) {
+							return done(err);
+						}
+						assert(data);
+						assert.equal(data.category.cid, topic.categoryId);
+						assert.equal(data.unreplied, true);
+						assert.equal(data.deleted, false);
+						assert.equal(data.locked, false);
+						assert.equal(data.pinned, false);
+						done();
+					});
+				});
 			});
 		});
 	});
