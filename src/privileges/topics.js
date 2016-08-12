@@ -17,7 +17,7 @@ module.exports = function(privileges) {
 	privileges.topics.get = function(tid, uid, callback) {
 		var topic;
 		async.waterfall([
-			async.apply(topics.getTopicFields, tid, ['cid', 'uid', 'locked']),
+			async.apply(topics.getTopicFields, tid, ['cid', 'uid', 'locked', 'deleted']),
 			function(_topic, next) {
 				topic = _topic;
 				async.parallel({
@@ -42,14 +42,19 @@ module.exports = function(privileges) {
 
 			var disabled = parseInt(results.disabled, 10) === 1;
 			var locked = parseInt(topic.locked, 10) === 1;
+			var deleted = parseInt(topic.deleted, 10) === 1;
+
 			var isAdminOrMod = results.isAdministrator || results.isModerator;
 			var editable = isAdminOrMod;
 			var deletable = isAdminOrMod || (results.isOwner && results['topics:delete'][0]);
 
 			plugins.fireHook('filter:privileges.topics.get', {
-				'topics:reply': (results['topics:reply'][0] && !locked) || isAdminOrMod,
-				read: results.read[0] || isAdminOrMod,
+				'topics:reply': (results['topics:reply'][0] && !locked && !deleted) || isAdminOrMod,
 				'topics:read': results['topics:read'][0] || isAdminOrMod,
+				'topics:delete': (results.isOwner && results['topics:delete'][0]) || isAdminOrMod,
+				'posts:edit': (results['posts:edit'][0] && !locked) || isAdminOrMod,
+				'posts:delete': (results['posts:delete'][0] && !locked) || isAdminOrMod,
+				read: results.read[0] || isAdminOrMod,
 				view_thread_tools: editable || deletable,
 				editable: editable,
 				deletable: deletable,
@@ -57,9 +62,7 @@ module.exports = function(privileges) {
 				isAdminOrMod: isAdminOrMod,
 				disabled: disabled,
 				tid: tid,
-				uid: uid,
-				'posts:edit': (results['posts:edit'][0] && !locked) || isAdminOrMod,
-				'posts:delete': (results['posts:delete'][0] && !locked) || isAdminOrMod
+				uid: uid
 			}, callback);
 		});
 	};

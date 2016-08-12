@@ -145,7 +145,7 @@ module.exports = function(Topics) {
 				post.display_delete_tools = topicPrivileges.isAdminOrMod || (post.selfPost && topicPrivileges['posts:delete']);
 				post.display_moderator_tools = post.display_edit_tools || post.display_delete_tools;
 				post.display_move_tools = topicPrivileges.isAdminOrMod && post.index !== 0;
-				post.display_post_menu = topicPrivileges.isAdminOrMod || post.selfPost || ((loggedIn || topicData.postSharing.length) && !post.deleted);
+				post.display_post_menu = topicPrivileges.isAdminOrMod || (post.selfPost && !topicData.locked) || ((loggedIn || topicData.postSharing.length) && !post.deleted);
 				post.ip = topicPrivileges.isAdminOrMod ? post.ip : undefined;
 
 				if (post.deleted && !(topicPrivileges.isAdminOrMod || post.selfPost)) {

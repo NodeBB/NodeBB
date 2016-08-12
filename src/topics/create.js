@@ -205,6 +205,10 @@ module.exports = function(Topics) {
 					return next(new Error('[[error:topic-locked]]'));
 				}
 
+				if (parseInt(results.topicData.deleted, 10) === 1 && !results.isAdminOrMod) {
+					return next(new Error('[[error:topic-deleted]]'));
+				}
+
 				if (!results.canReply) {
 					return next(new Error('[[error:no-privileges]]'));
 				}
