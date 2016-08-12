@@ -14,7 +14,7 @@
     "test": "./node_modules/.bin/istanbul cover ./node_modules/.bin/_mocha -- ./tests -t 10000"
   },
   "dependencies": {
-    "async": "~1.5.0",
+    "async": "~2.0.1",
     "autoprefixer": "^6.2.3",
     "bcryptjs": "~2.3.0",
     "body-parser": "^1.9.0",
