@@ -20,7 +20,7 @@
     "email-taken": "این ایمیل گرفته شده است.",
     "email-not-confirmed": "ایمیل شما تاکنون تایید نشده است، برای تایید ایمیل خود را اینجا را کلیک کنید.",
     "email-not-confirmed-chat": "شما تا قبل از تایید ایمیل قادر به چت نیستید، لطفا برای تایید ایمیل خود اینجا کلیک کنید",
-    "email-not-confirmed-email-sent": "Your email has not been confirmed yet, please check your inbox for the confirmation email.",
+    "email-not-confirmed-email-sent": "ایمیل شما هنوز تایید نشده است، لطفا صندوق پیام های خود را برای تایید ایمیل بررسی کنید.",
     "no-email-to-confirm": "ایمیل شما تایید نشده است ، لطفا برای وارد کردن ایمیل اینجا کلیک کنید",
     "email-confirm-failed": "سیستم موفق به تایید ایمیل شما نشد، لطفا بعدا دوباره سعی کنید",
     "confirm-email-already-sent": "ایمیل فعال‌سازی قبلا فرستاده شده، لطفا %1 دقیقه صبر کنید تا ایمیل دیگری بفرستید.",

@@ -86,7 +86,7 @@
     "topic_will_be_moved_to": "این موضوع جابه‌جا خواهد شد به دستهٔ",
     "fork_topic_instruction": "پست‌هایی را که می‌خواهید به موضوع تازه ببرید، انتخاب کنید",
     "fork_no_pids": "هیچ پستی انتخاب نشده!",
-    "fork_pid_count": "%1 post(s) selected",
+    "fork_pid_count": "%1 پست (ها) انتخاب شده اند",
     "fork_success": "موضوع با موفقیت منشعب شد! برای رفتن به موضوع انشعابی اینجا را کلیک کنید.",
     "delete_posts_instruction": "با کلیک بر روی پست شما می خواهید به حذف/پاکسازی",
     "composer.title_placeholder": "عنوان موضوعتان را اینجا بنویسید...",

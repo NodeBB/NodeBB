@@ -217,12 +217,12 @@ SocketGroups.search = function(socket, data, callback) {
 };
 
 SocketGroups.loadMore = function(socket, data, callback) {
-	if (!data.sort || !data.after) {
+	if (!data.sort  || !utils.isNumber(data.after) || parseInt(data.after, 10) < 0) {
 		return callback();
 	}
 
 	var groupsPerPage = 9;
-	var start = parseInt(data.after);
+	var start = parseInt(data.after, 10);
 	var stop = start + groupsPerPage - 1;
 	groupsController.getGroupsFromSet(socket.uid, data.sort, start, stop, callback);
 };
