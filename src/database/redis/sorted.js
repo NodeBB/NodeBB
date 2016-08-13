@@ -110,7 +110,7 @@ module.exports = function(redisClient, module) {
 			}
 			var objects = [];
 			for(var i=0; i<data.length; i+=2) {
-				objects.push({value: data[i], score: data[i + 1]});
+				objects.push({value: data[i], score: parseInt(data[i + 1], 10)});
 			}
 			callback(null, objects);
 		});
@@ -139,7 +139,7 @@ module.exports = function(redisClient, module) {
 			}
 			var objects = [];
 			for(var i=0; i<data.length; i+=2) {
-				objects.push({value: data[i], score: data[i+1]});
+				objects.push({value: data[i], score: parseInt(data[i+1], 10)});
 			}
 			callback(null, objects);
 		});
@@ -263,7 +263,7 @@ module.exports = function(redisClient, module) {
 			results = results[1] || [];
 			var objects = [];
 			for(var i=0; i<results.length; i+=2) {
-				objects.push({value: results[i], score: results[i + 1]});
+				objects.push({value: results[i], score: parseInt(results[i + 1], 10)});
 			}
 			callback(null, objects);
 		});
