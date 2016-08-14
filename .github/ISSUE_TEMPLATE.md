@@ -1,6 +1,7 @@
 Please include the following information when submitting a bug report/issue:
 
 * NodeBB version and git hash (to find your git hash, execute `git rev-parse HEAD` from the main NodeBB directory)
+* Database (mongo or redis) and it's version.
 * Exact steps to cause this issue
     1. First I did this...
     2. Then, I clicked on this item...
