@@ -4,9 +4,9 @@
 
 define('forum/topic/fork', ['components', 'postSelect'], function(components, postSelect) {
 
-	var Fork = {},
-		forkModal,
-		forkCommit;
+	var Fork = {};
+	var forkModal;
+	var forkCommit;
 
 	Fork.init = function() {
 		$('.topic').on('click', '[component="topic/fork"]', onForkThreadClicked);
@@ -95,7 +95,10 @@ define('forum/topic/fork', ['components', 'postSelect'], function(components, po
 			components.get('post', 'pid', pid).toggleClass('bg-success', false);
 		});
 
-		forkModal.remove();
+		if (forkModal) {
+			forkModal.remove();
+			forkModal = null;
+		}
 
 		components.get('topic').off('click', '[data-pid]');
 		postSelect.enableClicksOnPosts();
