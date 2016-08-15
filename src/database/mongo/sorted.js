@@ -625,9 +625,7 @@ module.exports = function(db, module) {
 			limit = 0;
 		}
 
-		var pipeline = [];
-
-		pipeline.push({ $match: { _key: {$in: sets}} });
+		var pipeline = [{ $match: { _key: {$in: sets}} }];
 
 		weights.forEach(function(weight, index) {
 			if (weight !== 1) {
