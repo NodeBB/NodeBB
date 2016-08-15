@@ -29,7 +29,7 @@ module.exports = function(redisClient, module) {
 			args.push(scores[i], values[i]);
 		}
 
-		redisClient.zadd(args, function(err, res) {
+		redisClient.zadd(args, function(err) {
 			callback(err);
 		});
 	}
@@ -42,7 +42,7 @@ module.exports = function(redisClient, module) {
 			multi.zadd(keys[i], score, value);
 		}
 
-		multi.exec(function(err, res) {
+		multi.exec(function(err) {
 			callback(err);
 		});
 	};
@@ -53,13 +53,13 @@ module.exports = function(redisClient, module) {
 			value = [value];
 		}
 
-		helpers.multiKeyValues(redisClient, 'zrem', key, value, function(err, result) {
+		helpers.multiKeyValues(redisClient, 'zrem', key, value, function(err) {
 			callback(err);
 		});
 	};
 
 	module.sortedSetsRemove = function(keys, value, callback) {
-		helpers.multiKeysValue(redisClient, 'zrem', keys, value, function(err, result) {
+		helpers.multiKeysValue(redisClient, 'zrem', keys, value, function(err) {
 			callback(err);
 		});
 	};
@@ -70,7 +70,7 @@ module.exports = function(redisClient, module) {
 		for(var i=0; i<keys.length; ++i) {
 			multi.zremrangebyscore(keys[i], min, max);
 		}
-		multi.exec(function(err, result) {
+		multi.exec(function(err) {
 			callback(err);
 		});
 	};
@@ -282,4 +282,57 @@ module.exports = function(redisClient, module) {
 		}
 		redisClient.zrangebylex([key, min, max, 'LIMIT', start, count], callback);
 	};
+
+	module.getSortedSetIntersect = function(params, callback) {
+		params.method = 'zrange';
+		getSortedSetRevIntersect(params, callback);
+	};
+
+	module.getSortedSetRevIntersect = function(params, callback) {
+		params.method = 'zrevrange';
+		getSortedSetRevIntersect(params, callback);
+	};
+
+	function getSortedSetRevIntersect (params, callback) {
+		var sets = params.sets;
+		var start = params.hasOwnProperty('start') ? params.start : 0;
+		var stop = params.hasOwnProperty('stop') ? params.stop : -1;
+		var weights = params.weights || [];
+
+		var tempSetName = 'temp_' + Date.now();
+
+		var interParams = [tempSetName, sets.length].concat(sets);
+		if (weights.length) {
+			interParams = interParams.concat(['WEIGHTS'].concat(weights));
+		}
+
+		if (params.aggregate) {
+			interParams = interParams.concat(['AGGREGATE', params.aggregate]);
+		}
+
+		var rangeParams = [tempSetName, start, stop];
+		if (params.withScores) {
+			rangeParams.push('WITHSCORES');
+		}
+
+		var	multi = redisClient.multi();
+		multi.zinterstore(interParams);
+		multi[params.method](rangeParams);
+		multi.del(tempSetName);
+		multi.exec(function(err, results) {
+			if (err) {
+				return callback(err);
+			}
+
+			if (!params.withScores) {
+				return callback(null, results ? results[1] : null);
+			}
+			results = results[1] || [];
+			var objects = [];
+			for(var i=0; i<results.length; i+=2) {
+				objects.push({value: results[i], score: parseFloat(results[i + 1])});
+			}
+			callback(null, objects);
+		});
+	}
 };
