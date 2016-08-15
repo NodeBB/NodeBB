@@ -30,8 +30,10 @@ Additional functionality is enabled through the use of third-party plugins.
 [![](http://i.imgur.com/LmHtPhob.png)](http://i.imgur.com/LmHtPho.png)
 [![](http://i.imgur.com/paiJPJkb.jpg)](http://i.imgur.com/paiJPJk.jpg)
 
-[![](http://i.imgur.com/8OLssij.png)](http://i.imgur.com/8OLssij.png)
-[![](http://i.imgur.com/JKOc0LZ.png)](http://i.imgur.com/JKOc0LZ.png)
+[![](http://i.imgur.com/HwNEXGu.png)](http://i.imgur.com/HwNEXGu.png)
+[![](http://i.imgur.com/II1byYs.png)](http://i.imgur.com/II1byYs.png)
+
+
 
 ## How can I follow along/contribute?
 
