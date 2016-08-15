@@ -26,7 +26,7 @@ module.exports = function(User) {
 			var userData = {
 				'username': data.username,
 				'userslug': data.userslug,
-				'email': data.email,
+				'email': data.email || '',
 				'joindate': timestamp,
 				'lastonline': timestamp,
 				'picture': '',
