@@ -86,6 +86,7 @@
     "topic_will_be_moved_to": "此主题将被移动到版块",
     "fork_topic_instruction": "点击将分割的帖子",
     "fork_no_pids": "未选中帖子！",
+    "fork_pid_count": "%1 post(s) selected",
     "fork_success": "成功分割主题! 点这里跳转到分割后的主题。",
     "delete_posts_instruction": "点击想要删除/永久删除的帖子",
     "composer.title_placeholder": "在此输入您主题的标题...",

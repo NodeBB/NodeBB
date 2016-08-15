@@ -20,6 +20,7 @@
     "email-taken": "Email занят",
     "email-not-confirmed": "Ваш email не подтвержден, нажмите для подтверждения.",
     "email-not-confirmed-chat": "Вы не можете оставлять сообщения, пока Ваш email не подтверждён. Нажмите на это сообщение чтобы получить письмо повторно.",
+    "email-not-confirmed-email-sent": "Your email has not been confirmed yet, please check your inbox for the confirmation email.",
     "no-email-to-confirm": "Этот форум требует подтверждения по E-mail. Нажмите здесь для ввода E-mail.",
     "email-confirm-failed": "Мы не можем подтвердить Ваш E-mail, попробуйте позже.",
     "confirm-email-already-sent": "Сообщение для подтверждения уже выслано на E-mail. Повторная отправка возможна через %1 мин.",

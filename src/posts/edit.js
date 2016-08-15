@@ -28,8 +28,8 @@ module.exports = function(Posts) {
 				privileges.posts.canEdit(data.pid, data.uid, next);
 			},
 			function (canEdit, next) {
-				if (!canEdit) {
-					return next(new Error('[[error:no-privileges]]'));
+				if (!canEdit.flag) {
+					return next(new Error(canEdit.message));
 				}
 				Posts.getPostData(data.pid, next);
 			},

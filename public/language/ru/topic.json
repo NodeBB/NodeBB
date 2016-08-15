@@ -86,6 +86,7 @@
     "topic_will_be_moved_to": "Эта тема будет перенесена в категорию",
     "fork_topic_instruction": "Отметьте сообщения для ответвления",
     "fork_no_pids": "Сообщения не отмечены!",
+    "fork_pid_count": "%1 post(s) selected",
     "fork_success": "Готово! Нажмите для перехода в отделённую тему.",
     "delete_posts_instruction": "Отметьте сообщения, которые Вы хотите удалить/очистить",
     "composer.title_placeholder": "Введите название темы...",

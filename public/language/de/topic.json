@@ -86,6 +86,7 @@
     "topic_will_be_moved_to": "Dieses Thema wird verschoben nach",
     "fork_topic_instruction": "Klicke auf die Beiträge, die aufgespaltet werden sollen",
     "fork_no_pids": "Keine Beiträge ausgewählt!",
+    "fork_pid_count": "%1 post(s) selected",
     "fork_success": "Thema erfolgreich aufgespalten! Klicke hier, um zum aufgespalteten Thema zu gelangen.",
     "delete_posts_instruction": "Wähle die zu löschenden Beiträge aus",
     "composer.title_placeholder": "Hier den Titel des Themas eingeben...",

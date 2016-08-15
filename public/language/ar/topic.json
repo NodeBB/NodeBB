@@ -86,6 +86,7 @@
     "topic_will_be_moved_to": "هذا الموضوع سوف ينقل إلى فئة",
     "fork_topic_instruction": "إضغط على المشاركات التي تريد تفريعها",
     "fork_no_pids": "لم تختر أي مشاركة",
+    "fork_pid_count": "%1 post(s) selected",
     "fork_success": "تم إنشاء فرع للموضوع بنجاح! إضغط هنا لمعاينة الفرع.",
     "delete_posts_instruction": "Click the posts you want to delete/purge",
     "composer.title_placeholder": "أدخل عنوان موضوعك هنا...",

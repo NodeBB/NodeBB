@@ -50,10 +50,12 @@ define('forum/footer', ['notifications', 'chat', 'components', 'translator'], fu
 		}
 
 		$(window).on('action:ajaxify.end', function(ev, data) {
-			var tid = data.url.match(/^topic\/(\d+)/);
+			if (data.url) {
+				var tid = data.url.match(/^topic\/(\d+)/);
 
-			if (tid && tid[1]) {
-				delete unreadTopics[tid[1]];
+				if (tid && tid[1]) {
+					delete unreadTopics[tid[1]];
+				}
 			}
 		});
 

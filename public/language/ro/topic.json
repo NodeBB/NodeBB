@@ -86,6 +86,7 @@
     "topic_will_be_moved_to": "Acest subiect va fi mutat în categoria",
     "fork_topic_instruction": "Apasă pe mesajele care vrei sa le bifurci",
     "fork_no_pids": "Nu a fost selectat nici un mesaj!",
+    "fork_pid_count": "%1 post(s) selected",
     "fork_success": "Successfully forked topic! Click here to go to the forked topic.",
     "delete_posts_instruction": "Click the posts you want to delete/purge",
     "composer.title_placeholder": "Introdu numele subiectului aici ...",

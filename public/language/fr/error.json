@@ -20,6 +20,7 @@
     "email-taken": "Email déjà utilisé",
     "email-not-confirmed": "Votre adresse email n'est pas confirmée, cliquez ici pour la valider.",
     "email-not-confirmed-chat": "Il ne vous est pas possible d'utiliser le chat tant que votre adresse email n'a pas été vérifiée. Veuillez cliquer ici pour confirmer votre adresse email.",
+    "email-not-confirmed-email-sent": "Votre adresse email n'a pas encore été confirmée. Merci de vérifier l'email de confirmation dans votre boîte de reception.",
     "no-email-to-confirm": "Ce forum requiert une vérification de votre adresse email. Veuillez cliquer ici pour entrer une adresse.",
     "email-confirm-failed": "Votre adresse email n'a pas pu être vérifiée. Veuillez ré-essayer plus tard.",
     "confirm-email-already-sent": "L'email de confirmation a déjà été envoyé. Veuillez attendre %1 minute(s) avant de redemander un nouvel envoi.",

@@ -39,7 +39,7 @@
     "account/settings": "Uporabniške nastavitve",
     "account/watched": "Teme, ki jih spremlja uporabnik %1",
     "account/upvoted": "Posts upvoted by %1",
-    "account/downvoted": "Posts downvoted by %1",
+    "account/downvoted": "Negativno glasovane objave od %1",
     "account/best": "Best posts made by %1",
     "confirm": "Email Confirmed",
     "maintenance.text": "%1 je trenutno v prenovi. Prosimo pridite nazaj kasneje.",

@@ -152,7 +152,7 @@ define('forum/account/header', [
 					return;
 				}
 
-				socket.emit('admin.user.deleteUsers', [ajaxify.data.theirid], function(err) {
+				socket.emit('admin.user.deleteUsersAndContent', [ajaxify.data.theirid], function(err) {
 					if (err) {
 						return app.alertError(err.message);
 					}

@@ -8,7 +8,6 @@ var winston = require('winston');
 var meta = require('../meta');
 var user = require('../user');
 var plugins = require('../plugins');
-var sitemap = require('../sitemap');
 var helpers = require('./helpers');
 
 var Controllers = {
@@ -27,7 +26,8 @@ var Controllers = {
 	authentication: require('./authentication'),
 	api: require('./api'),
 	admin: require('./admin'),
-	globalMods: require('./globalmods')
+	globalMods: require('./globalmods'),
+	sitemap: require('./sitemap')
 };
 
 
@@ -248,65 +248,6 @@ Controllers.confirmEmail = function(req, res) {
 			error: err ? err.message : '',
 			title: '[[pages:confirm]]',
 		});
-	});
-};
-
-Controllers.sitemap = {};
-Controllers.sitemap.render = function(req, res, next) {
-	sitemap.render(function(err, tplData) {
-		if (err) {
-			return next(err);
-		}
-
-		Controllers.render('sitemap', tplData, function(err, xml) {
-			res.header('Content-Type', 'application/xml');
-			res.send(xml);
-		});
-	});
-};
-
-Controllers.sitemap.getPages = function(req, res, next) {
-	if (parseInt(meta.config['feeds:disableSitemap'], 10) === 1) {
-		return next();
-	}
-
-	sitemap.getPages(function(err, xml) {
-		if (err) {
-			return next(err);
-		}
-		res.header('Content-Type', 'application/xml');
-		res.send(xml);
-	});
-};
-
-Controllers.sitemap.getCategories = function(req, res, next) {
-	if (parseInt(meta.config['feeds:disableSitemap'], 10) === 1) {
-		return next();
-	}
-
-	sitemap.getCategories(function(err, xml) {
-		if (err) {
-			return next(err);
-		}
-		res.header('Content-Type', 'application/xml');
-		res.send(xml);
-	});
-};
-
-Controllers.sitemap.getTopicPage = function(req, res, next) {
-	if (parseInt(meta.config['feeds:disableSitemap'], 10) === 1) {
-		return next();
-	}
-
-	sitemap.getTopicPage(parseInt(req.params[0], 10), function(err, xml) {
-		if (err) {
-			return next(err);
-		} else if (!xml) {
-			return next();
-		}
-
-		res.header('Content-Type', 'application/xml');
-		res.send(xml);
 	});
 };
 

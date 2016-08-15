@@ -86,6 +86,7 @@
     "topic_will_be_moved_to": "Denne tråd vil blive flyttet til katagorien",
     "fork_topic_instruction": "Klik på indlæg du ønsker at fraskille",
     "fork_no_pids": "Ingen indlæg valgt",
+    "fork_pid_count": "%1 post(s) selected",
     "fork_success": "Tråden blev fraskilt! Klik her for at gå til den fraskilte tråd.",
     "delete_posts_instruction": "Klik på de indlæg du vil slette/rense",
     "composer.title_placeholder": "Angiv din trådtittel her ...",

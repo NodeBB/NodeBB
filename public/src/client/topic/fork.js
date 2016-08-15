@@ -1,20 +1,26 @@
 'use strict';
 
-/* globals define, app, ajaxify, socket, templates, translator */
+/* globals define, app, ajaxify, socket */
 
 define('forum/topic/fork', ['components', 'postSelect'], function(components, postSelect) {
 
-	var Fork = {},
-		forkModal,
-		forkCommit;
+	var Fork = {};
+	var forkModal;
+	var forkCommit;
 
 	Fork.init = function() {
 		$('.topic').on('click', '[component="topic/fork"]', onForkThreadClicked);
+		$(window).on('action:ajaxify.start', onAjaxifyStart);
 	};
 
+	function onAjaxifyStart() {
+		closeForkModal();
+		$(window).off('action:ajaxify.start', onAjaxifyStart);
+	}
+
 	function onForkThreadClicked() {
-		parseModal(function(html) {
-			forkModal = $(html);
+		app.parseAndTranslate('partials/fork_thread_modal', {}, function(html) {
+			forkModal = html;
 
 			forkCommit = forkModal.find('#fork_thread_commit');
 
@@ -30,12 +36,6 @@ define('forum/topic/fork', ['components', 'postSelect'], function(components, po
 			showPostsSelected();
 
 			forkCommit.on('click', createTopicFromPosts);
-		});
-	}
-
-	function parseModal(callback) {
-		templates.parse('partials/fork_thread_modal', {}, function(html) {
-			translator.translate(html, callback);
 		});
 	}
 
@@ -95,7 +95,10 @@ define('forum/topic/fork', ['components', 'postSelect'], function(components, po
 			components.get('post', 'pid', pid).toggleClass('bg-success', false);
 		});
 
-		forkModal.remove();
+		if (forkModal) {
+			forkModal.remove();
+			forkModal = null;
+		}
 
 		components.get('topic').off('click', '[data-pid]');
 		postSelect.enableClicksOnPosts();

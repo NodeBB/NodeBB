@@ -49,21 +49,10 @@ SocketAdmin.before = function(socket, method, data, next) {
 	});
 };
 
-SocketAdmin.reload = function(socket, data, callback) {
-	events.log({
-		type: 'reload',
-		uid: socket.uid,
-		ip: socket.ip
-	});
-	if (process.send) {
-		process.send({
-			action: 'reload'
-		});
-		callback();
-	} else {
-		meta.reload(callback);
-	}
-};
+/**
+ * Reload deprecated as of v1.1.2+, remove in v2.x
+ */
+SocketAdmin.reload = SocketAdmin.restart;
 
 SocketAdmin.restart = function(socket, data, callback) {
 	events.log({

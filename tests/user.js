@@ -282,7 +282,7 @@ describe('User', function() {
 		});
 	});
 
-	after(function() {
-		db.flushdb();
+	after(function(done) {
+		db.flushdb(done);
 	});
 });

@@ -86,6 +86,7 @@
     "topic_will_be_moved_to": "Topik ini akan dipindahkan kepada kategori",
     "fork_topic_instruction": "Klik kiriman yang anda hendak salin",
     "fork_no_pids": "Tiada kiriman yang dipilih",
+    "fork_pid_count": "%1 post(s) selected",
     "fork_success": "Berjaya menyalin topik. Klik sini untuk ke topik yang disalin.",
     "delete_posts_instruction": "Click the posts you want to delete/purge",
     "composer.title_placeholder": "Masukkan tajuk topik disini",

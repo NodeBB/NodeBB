@@ -86,6 +86,7 @@
     "topic_will_be_moved_to": "Questa discussione verrà spostata nella categoria",
     "fork_topic_instruction": "Clicca sui post che vuoi dividere",
     "fork_no_pids": "Nessun post selezionato!",
+    "fork_pid_count": "%1 post(s) selected",
     "fork_success": "Topic Diviso con successo ! Clicca qui per andare al Topic Diviso.",
     "delete_posts_instruction": "Clicca sui post che vuoi cancellare/eliminare",
     "composer.title_placeholder": "Inserisci qui il titolo della discussione...",

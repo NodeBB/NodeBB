@@ -30,6 +30,7 @@
 							<li><a href="#" class="reset-flags"><i class="fa fa-fw fa-flag"></i> Reset Flags</a></li>
 							<li class="divider"></li>
 							<li><a href="#" class="delete-user"><i class="fa fa-fw fa-trash-o"></i> Delete User(s)</a></li>
+							<li><a href="#" class="delete-user-and-content"><i class="fa fa-fw fa-trash-o"></i> Delete User(s) and Content</a></li>
 						</ul>
 					</div>
 				</ul>

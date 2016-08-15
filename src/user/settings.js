@@ -122,7 +122,6 @@ module.exports = function(User) {
 			restrictChat: data.restrictChat,
 			topicSearchEnabled: data.topicSearchEnabled,
 			delayImageLoading: data.delayImageLoading,
-			groupTitle: data.groupTitle,
 			homePageRoute : ((data.homePageRoute === 'custom' ? data.homePageCustom : data.homePageRoute) || '').replace(/^\//, ''),
 			scrollToMyPost: data.scrollToMyPost
 		};

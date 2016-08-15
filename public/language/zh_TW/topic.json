@@ -86,6 +86,7 @@
     "topic_will_be_moved_to": "這個主題將會被移動到類別",
     "fork_topic_instruction": "點擊要作為主題的文章",
     "fork_no_pids": "尚未選擇文章！",
+    "fork_pid_count": "%1 post(s) selected",
     "fork_success": "成功分叉成新的主題！點擊這裡進入新的主題。",
     "delete_posts_instruction": "點擊你想要刪除/清除的張貼",
     "composer.title_placeholder": "輸入標題...",

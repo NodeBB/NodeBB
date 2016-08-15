@@ -20,6 +20,7 @@
     "email-taken": "이미 사용 중인 이메일입니다.",
     "email-not-confirmed": "아직 이메일이 인증되지 않았습니다. 여기를 누르면 인증 메일을 발송할 수 있습니다.",
     "email-not-confirmed-chat": "아직 이메일이 인증되지 않았습니다. 대화기능은 인증 후에 사용이 가능합니다.",
+    "email-not-confirmed-email-sent": "Your email has not been confirmed yet, please check your inbox for the confirmation email.",
     "no-email-to-confirm": "이메일 인증이 필요합니다. 이곳을 클릭하여 이메일 입력하세요.",
     "email-confirm-failed": "이메일 인증이 실패하였습니다. 잠시 후에 다시 시도하세요.",
     "confirm-email-already-sent": "인증 메일이 이미 발송되었습니다. %1 분 이후에 재 발송이 가능합니다.",

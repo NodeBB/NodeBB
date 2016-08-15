@@ -30,6 +30,7 @@ module.exports = function(privileges) {
 					isOwner: async.apply(posts.isOwner, pids, uid),
 					'topics:read': async.apply(helpers.isUserAllowedTo, 'topics:read', uid, cids),
 					read: async.apply(helpers.isUserAllowedTo, 'read', uid, cids),
+					'posts:edit': async.apply(helpers.isUserAllowedTo, 'posts:edit', uid, cids),
 				}, next);
 			}
 		], function(err, results) {
@@ -41,7 +42,7 @@ module.exports = function(privileges) {
 
 			for (var i=0; i<pids.length; ++i) {
 				var isAdminOrMod = results.isAdmin || results.isModerator[i];
-				var editable = isAdminOrMod || results.isOwner[i];
+				var editable = isAdminOrMod || (results.isOwner[i] && results['posts:edit'][i]);
 
 				privileges.push({
 					editable: editable,
@@ -146,15 +147,10 @@ module.exports = function(privileges) {
 				return callback(err);
 			}
 			if (results.isAdminOrMod) {
-				return callback(null, true);
+				return callback(null, {flag: true});
 			}
-			if (results.isEditable.isLocked) {
-				return callback(new Error('[[error:topic-locked]]'));
-			}
-			if (results.isEditable.isEditExpired) {
-				return callback(new Error('[[error:post-edit-duration-expired, ' + meta.config.postEditDuration + ']]'));
-			}
-			callback(null, results.isEditable.editable);
+
+			callback(null, results.isEditable);
 		});
 	};
 
@@ -169,24 +165,33 @@ module.exports = function(privileges) {
 				async.parallel({
 					isAdminOrMod: async.apply(isAdminOrMod, pid, uid),
 					isLocked: async.apply(topics.isLocked, postData.tid),
-					isOwner: async.apply(posts.isOwner, pid, uid)
+					isOwner: async.apply(posts.isOwner, pid, uid),
+					'posts:delete': async.apply(privileges.posts.can, 'posts:delete', pid, uid)
 				}, next);
 			}
 		], function(err, results) {
 			if (err) {
 				return callback(err);
 			}
+
 			if (results.isAdminOrMod) {
-				return callback(null, true);
+				return callback(null, {flag: true});
 			}
+
 			if (results.isLocked) {
-				return callback(new Error('[[error:topic-locked]]'));
+				return callback(null, {flag: false, message: '[[error:topic-locked]]'});
 			}
+
+			if (!results['posts:delete']) {
+				return callback(null, {flag: false, message: '[[error:no-privileges]]'});
+			}
+
 			var postDeleteDuration = parseInt(meta.config.postDeleteDuration, 10);
 			if (postDeleteDuration && (Date.now() - parseInt(postData.timestamp, 10) > postDeleteDuration * 1000)) {
-				return callback(new Error('[[error:post-delete-duration-expired, ' + meta.config.postDeleteDuration + ']]'));
+				return callback(null, {flag: false, message: '[[error:post-delete-duration-expired, ' + meta.config.postDeleteDuration + ']]'});
 			}
-			callback(null, results.isOwner);
+
+			callback(null, {flag: results.isOwner, message: '[[error:no-privileges]]'});
 		});
 	};
 
@@ -218,26 +223,31 @@ module.exports = function(privileges) {
 	};
 
 	function isPostEditable(pid, uid, callback) {
+		var tid;
 		async.waterfall([
 			function(next) {
 				posts.getPostFields(pid, ['tid', 'timestamp'], next);
 			},
 			function(postData, next) {
+				tid = postData.tid;
 				var postEditDuration = parseInt(meta.config.postEditDuration, 10);
 				if (postEditDuration && Date.now() - parseInt(postData.timestamp, 10) > postEditDuration * 1000) {
-					return callback(null, {isEditExpired: true});
+					return callback(null, {flag: false, message: '[[error:post-edit-duration-expired, ' + meta.config.postEditDuration + ']]'});
 				}
 				topics.isLocked(postData.tid, next);
 			},
 			function(isLocked, next) {
 				if (isLocked) {
-					return callback(null, {isLocked: true});
+					return callback(null, {flag: false, message: '[[error:topic-locked]]'});
 				}
 
-				posts.isOwner(pid, uid, next);
+				async.parallel({
+					owner: async.apply(posts.isOwner, pid, uid),
+					edit: async.apply(privileges.posts.can, 'posts:edit', pid, uid)
+				}, next);
 			},
-			function(isOwner, next) {
-				next(null, {editable: isOwner});
+			function(result, next) {
+				next(null, {flag: result.owner && result.edit, message: '[[error:no-privileges]]'});
 			}
 		], callback);
 	}

@@ -195,9 +195,29 @@ define('admin/manage/users', ['admin/modules/selectable'], function(selectable) 
 				return;
 			}
 
-			bootbox.confirm('<b>Warning!</b><br/>Do you really want to delete user(s)?<br/> This action is not reversable, all user data and content will be erased!', function(confirm) {
+			bootbox.confirm('<b>Warning!</b><br/>Do you really want to delete user(s)?<br/> This action is not reversable, only the user account will be deleted, their posts and topics will not be deleled!', function(confirm) {
 				if (confirm) {
 					socket.emit('admin.user.deleteUsers', uids, function(err) {
+						if (err) {
+							return app.alertError(err.message);
+						}
+
+						app.alertSuccess('User(s) Deleted!');
+						removeSelected();
+						unselectAll();
+					});
+				}
+			});
+		});
+
+		$('.delete-user-and-content').on('click', function() {
+			var uids = getSelectedUids();
+			if (!uids.length) {
+				return;
+			}
+			bootbox.confirm('<b>Warning!</b><br/>Do you really want to delete user(s) and their content?<br/> This action is not reversable, all user data and content will be erased!', function(confirm) {
+				if (confirm) {
+					socket.emit('admin.user.deleteUsersAndContent', uids, function(err) {
 						if (err) {
 							return app.alertError(err.message);
 						}

@@ -37,6 +37,7 @@
     "composer.formatting.picture": "Picture",
     "composer.upload-picture": "Upload Image",
     "composer.upload-file": "Upload File",
+    "composer.zen_mode": "Zen Mode",
     "bootbox.ok": "확인",
     "bootbox.cancel": "취소",
     "bootbox.confirm": "확인",

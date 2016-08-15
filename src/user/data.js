@@ -55,16 +55,6 @@ module.exports = function(User) {
 				return callback(err);
 			}
 
-			if (fields.indexOf('banned') !== -1) {
-				// Also retrieve ban expiry for these users
-				db.sortedSetScores('users:banned:expire', uids, function(err, scores) {
-					users = users.map(function(userObj, idx) {
-						userObj.banned_until = scores[idx] || 0;
-						userObj.banned_until_readable = scores[idx] ? new Date(scores[idx]).toString() : 'Not Banned';
-					});
-				});
-			}
-
 			modifyUserData(users, fieldsToRemove, callback);
 		});
 	};
@@ -104,7 +94,9 @@ module.exports = function(User) {
 				return;
 			}
 
-			user.username = validator.escape(user.username ? user.username.toString() : '');
+			if (user.hasOwnProperty('username')) {
+				user.username = validator.escape(user.username ? user.username.toString() : '');
+			}
 
 			if (user.password) {
 				user.password = undefined;

@@ -32,9 +32,6 @@ settingsController.get = function(req, res, callback) {
 				settings: function(next) {
 					user.getSettings(userData.uid, next);
 				},
-				userGroups: function(next) {
-					groups.getUserGroupsFromSet('groups:createtime', [userData.uid], next);
-				},
 				languages: function(next) {
 					languages.list(next);
 				},
@@ -49,9 +46,6 @@ settingsController.get = function(req, res, callback) {
 		},
 		function(results, next) {
 			userData.settings = results.settings;
-			userData.userGroups = results.userGroups[0].filter(function(group) {
-				return group && group.userTitleEnabled && !groups.isPrivilegeGroup(group.name) && group.name !== 'registered-users';
-			});
 			userData.languages = results.languages;
 			userData.homePageRoutes = results.homePageRoutes;
 			userData.ips = results.ips;
@@ -116,10 +110,6 @@ settingsController.get = function(req, res, callback) {
 
 		userData.bootswatchSkinOptions.forEach(function(skin) {
 			skin.selected = skin.value === userData.settings.bootswatchSkin;
-		});
-
-		userData.userGroups.forEach(function(group) {
-			group.selected = group.name === userData.settings.groupTitle;
 		});
 
 		userData.languages.forEach(function(language) {

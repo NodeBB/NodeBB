@@ -91,7 +91,7 @@ var utils = require('../public/src/utils');
 
 	User.getUsers = function(uids, uid, callback) {
 		var fields = ['uid', 'username', 'userslug', 'picture', 'status', 'flags',
-			'banned', 'joindate', 'postcount', 'reputation', 'email:confirmed', 'lastonline'];
+			'banned', 'banned:expire', 'joindate', 'postcount', 'reputation', 'email:confirmed', 'lastonline'];
 
 		async.waterfall([
 			function (next) {
@@ -118,6 +118,8 @@ var utils = require('../public/src/utils');
 						user.joindateISO = utils.toISOString(user.joindate);
 						user.administrator = results.isAdmin[index];
 						user.banned = parseInt(user.banned, 10) === 1;
+						user.banned_until = parseInt(user['banned:expire'], 10) || 0;
+						user.banned_until_readable = user.banned_until ? new Date(user.banned_until).toString() : 'Not Banned';
 						user['email:confirmed'] = parseInt(user['email:confirmed'], 10) === 1;
 						user.lastonlineISO = utils.toISOString(user.lastonline) || user.joindateISO;
 					}
@@ -256,35 +258,6 @@ var utils = require('../public/src/utils');
 			}
 			callback();
 		});
-	};
-
-	User.isBanned = function(uid, callback) {
-		async.waterfall([
-			async.apply(User.getUserField, uid, 'banned'),
-			function(banned, next) {
-				banned = parseInt(banned, 10) === 1;
-				if (!banned) {
-					return next(null, banned);
-				} else {
-					// If they are banned, see if the ban has expired
-					db.sortedSetScore('users:banned:expire', uid, function(err, score) {
-						var stillBanned = !score || Date.now() < score;
-
-						if (!stillBanned) {
-							async.parallel([
-								async.apply(db.sortedSetRemove.bind(db), 'users:banned:expire', uid),
-								async.apply(db.sortedSetRemove.bind(db), 'users:banned', uid),
-								async.apply(User.setUserField, uid, 'banned', 0)
-							], function(err) {
-								next(err, false);
-							});
-						} else {
-							next(err, true);
-						}
-					});
-				}
-			}
-		], callback);
 	};
 
 	User.addInterstitials = function(callback) {

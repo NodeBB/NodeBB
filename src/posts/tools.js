@@ -37,8 +37,8 @@ module.exports = function(Posts) {
 				privileges.posts.canDelete(pid, uid, next);
 			},
 			function (canDelete, next) {
-				if (!canDelete) {
-					return next(new Error('[[error:no-privileges]]'));
+				if (!canDelete.flag) {
+					return next(new Error(canDelete.message));
 				}
 
 				if (isDelete) {

@@ -165,8 +165,7 @@ define('admin/general/dashboard', ['semver', 'Chart'], function(semver, Chart) {
 			trafficLabels = utils.getHoursArray();
 
 		if (isMobile) {
-			Chart.defaults.global.showTooltips = false;
-			Chart.defaults.global.animation = false;
+			Chart.defaults.global.tooltips.enabled = false;
 		}
 
 		var data = {

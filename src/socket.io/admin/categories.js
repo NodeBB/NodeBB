@@ -54,7 +54,7 @@ Categories.update = function(socket, data, callback) {
 };
 
 Categories.setPrivilege = function(socket, data, callback) {
-	if(!data) {
+	if (!data) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
 
@@ -72,7 +72,7 @@ Categories.getPrivilegeSettings = function(socket, cid, callback) {
 };
 
 Categories.copyPrivilegesToChildren = function(socket, cid, callback) {
-	categories.getCategories([cid], socket.uid, function(err, categories) {		
+	categories.getCategories([cid], socket.uid, function(err, categories) {
 		if (err) {
 			return callback(err);
 		}

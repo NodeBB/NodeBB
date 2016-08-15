@@ -86,6 +86,7 @@
     "topic_will_be_moved_to": "Iki kiganiro kirimurirwa mu cyiciro",
     "fork_topic_instruction": "Kanda ku byashizweho ushaka kugabanyaho",
     "fork_no_pids": "Nta kintu wahisemo!",
+    "fork_pid_count": "%1 post(s) selected",
     "fork_success": "Umaze kugabanyaho ku kiganiro! Kanda hano ugezwe ku kiganiro cyavutse. ",
     "delete_posts_instruction": "Kanda ku bintu ushaka guhisha/gusiba",
     "composer.title_placeholder": "Shyira umutwe w'ikiganiro cyawe aha...",

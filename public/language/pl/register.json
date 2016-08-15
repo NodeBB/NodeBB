@@ -1,6 +1,6 @@
 {
     "register": "Rejestracja",
-    "cancel_registration": "Cancel Registration",
+    "cancel_registration": "Anuluj rejestrację",
     "help.email": "Domyślnie twój adres e-mail będzie ukryty.",
     "help.username_restrictions": "Unikalna nazwa użytkownika z min. %1 i maks. %2 znaków. Inni użytkownicy mogą ciebie zawołać pisząc @<span id='yourUsername'>nazwa użytkownika</span>.",
     "help.minimum_password_length": "Hasło musi mieć co najmniej %1 znaków.",
@@ -16,8 +16,8 @@
     "alternative_registration": "Alternatywna rejestracja",
     "terms_of_use": "Warunki korzystania z serwisu",
     "agree_to_terms_of_use": "Zgadzam się na powyższe warunki",
-    "terms_of_use_error": "You must agree to the Terms of Use",
+    "terms_of_use_error": "Musisz zaakceptować Terms of Use",
     "registration-added-to-queue": "Twoja rejestracja została dodana do kolejki oczekujących na akceptację. Otrzymasz email, kiedy zostanie zatwierdzona przez administratora.",
-    "interstitial.intro": "We require some additional information before we can create your account.",
-    "interstitial.errors-found": "We could not complete your registration:"
+    "interstitial.intro": "Potrzebujemy dodatkowych informacji zanim przejdziemy dalej do utworzenia Twojego konta.",
+    "interstitial.errors-found": "Nie mogliśmy ukończyć procesu rejestracji:"
 }

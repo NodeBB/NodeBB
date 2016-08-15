@@ -54,7 +54,7 @@ describe('Sorted Set methods', function() {
 			db.getSortedSetRange('sortedSetTest1', 0, 0, function(err, value) {
 				assert.equal(err, null);
 				assert.equal(arguments.length, 2);
-				assert.equal(value, 'value1');
+				assert.deepEqual(value, ['value1']);
 				done();
 			});
 		});
@@ -74,7 +74,7 @@ describe('Sorted Set methods', function() {
 			db.getSortedSetRevRange('sortedSetTest1', 0, 0, function(err, value) {
 				assert.equal(err, null);
 				assert.equal(arguments.length, 2);
-				assert.equal(value, 'value3');
+				assert.deepEqual(value, ['value3']);
 				done();
 			});
 		});
@@ -532,8 +532,113 @@ describe('Sorted Set methods', function() {
 		});
 	});
 
+	describe('getSortedSetIntersect', function() {
+		before(function(done) {
+			async.parallel([
+				function(next) {
+					db.sortedSetAdd('interSet1', [1,2,3], ['value1', 'value2', 'value3'], next);
+				},
+				function(next) {
+					db.sortedSetAdd('interSet2', [4,5,6], ['value2', 'value3', 'value5'], next);
+				}
+			], done);
+		});
 
-	after(function() {
-		db.flushdb();
+		it('should return the intersection of two sets', function(done) {
+			db.getSortedSetIntersect({
+				sets: ['interSet1', 'interSet2'],
+				start: 0,
+				stop: -1
+			}, function(err, data) {
+				assert.ifError(err);
+				assert.deepEqual(['value2', 'value3'], data);
+				done();
+			});
+		});
+
+		it('should return the intersection of two sets with scores', function(done) {
+			db.getSortedSetIntersect({
+				sets: ['interSet1', 'interSet2'],
+				start: 0,
+				stop: -1,
+				withScores: true
+			}, function(err, data) {
+				assert.ifError(err);
+				assert.deepEqual([{value: 'value2', score: 6}, {value: 'value3', score: 8}], data);
+				done();
+			});
+		});
+
+		it('should return the intersection of two sets with scores aggregate MIN', function(done) {
+			db.getSortedSetIntersect({
+				sets: ['interSet1', 'interSet2'],
+				start: 0,
+				stop: -1,
+				withScores: true,
+				aggregate: 'MIN'
+			}, function(err, data) {
+				assert.ifError(err);
+				assert.deepEqual([{value: 'value2', score: 2}, {value: 'value3', score: 3}], data);
+				done();
+			});
+		});
+
+		it('should return the intersection of two sets with scores aggregate MAX', function(done) {
+			db.getSortedSetIntersect({
+				sets: ['interSet1', 'interSet2'],
+				start: 0,
+				stop: -1,
+				withScores: true,
+				aggregate: 'MAX'
+			}, function(err, data) {
+				assert.ifError(err);
+				assert.deepEqual([{value: 'value2', score: 4}, {value: 'value3', score: 5}], data);
+				done();
+			});
+		});
+
+		it('should return the intersection with scores modified by weights', function(done) {
+			db.getSortedSetIntersect({
+				sets: ['interSet1', 'interSet2'],
+				start: 0,
+				stop: -1,
+				withScores: true,
+				weights: [1, 0.5]
+			}, function(err, data) {
+				assert.ifError(err);
+				assert.deepEqual([{value: 'value2', score: 4}, {value: 'value3', score: 5.5}], data);
+				done();
+			});
+		});
+
+		it('should return empty array if sets do not exist', function(done) {
+			db.getSortedSetIntersect({
+				sets: ['interSet10', 'interSet12'],
+				start: 0,
+				stop: -1
+			}, function(err, data) {
+				assert.ifError(err);
+				assert.equal(data.length, 0);
+				done();
+			});
+		});
+
+		it('should return empty array if one set does not exist', function(done) {
+			db.getSortedSetIntersect({
+				sets: ['interSet1', 'interSet12'],
+				start: 0,
+				stop: -1
+			}, function(err, data) {
+				assert.ifError(err);
+				assert.equal(data.length, 0);
+				done();
+			});
+		});
+
+	});
+
+
+	after(function(done) {
+		db.flushdb(done);
 	});
 });

@@ -86,6 +86,7 @@
     "topic_will_be_moved_to": "Custa arresonada at a èssere mòvida in sa creze",
     "fork_topic_instruction": "Sèbera is arresonos chi boles partzire",
     "fork_no_pids": "Perunu arresonu seberadu!",
+    "fork_pid_count": "%1 post(s) selected",
     "fork_success": "Successfully forked topic! Click here to go to the forked topic.",
     "delete_posts_instruction": "Click the posts you want to delete/purge",
     "composer.title_placeholder": "Pone su tìtulu de s'arresonada inoghe...",

@@ -20,6 +20,7 @@
     "email-taken": "E-post opptatt",
     "email-not-confirmed": "E-posten din har ikke blitt bekreftet enda, vennligst klikk for å bekrefte din e-post.",
     "email-not-confirmed-chat": "Du kan ikke chatte før e-posten din er bekreftet, vennligst klikk her for å bekrefte e-postadressen.",
+    "email-not-confirmed-email-sent": "Your email has not been confirmed yet, please check your inbox for the confirmation email.",
     "no-email-to-confirm": "Dette forumet krever e-postbekreftelse, vennligst klikk her for å skrive inn en e-post",
     "email-confirm-failed": "Vi kunne ikke bekrefte e-posten din, vennligst prøv igjen senere.",
     "confirm-email-already-sent": "E-post for bekreftelse er allerede sendt, vennligst vent %1 minutt(er) for å sende en til.",

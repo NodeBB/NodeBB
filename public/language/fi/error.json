@@ -20,6 +20,7 @@
     "email-taken": "Sähköpostiosoite varattu",
     "email-not-confirmed": "Sähköpostiasi ei ole vielä vahvistettu, ole hyvä ja napsauta tätä vahvistaaksesi sen.",
     "email-not-confirmed-chat": "Et voi keskustella ennen kuin sähköpostiosoitteesi on vahvistettu, ole hyvä ja paina tästä vahvistaaksesi sen.",
+    "email-not-confirmed-email-sent": "Your email has not been confirmed yet, please check your inbox for the confirmation email.",
     "no-email-to-confirm": "This forum requires email confirmation, please click here to enter an email",
     "email-confirm-failed": "We could not confirm your email, please try again later.",
     "confirm-email-already-sent": "Confirmation email already sent, please wait %1 minute(s) to send another one.",

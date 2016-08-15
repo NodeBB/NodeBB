@@ -20,6 +20,7 @@
     "email-taken": "Adresa de email este deja folostă",
     "email-not-confirmed": "Adresa ta de email nu a fost inca confirmata, click aici ca sa o confirmi.",
     "email-not-confirmed-chat": "Nu vei putea trimite mesaje daca email-ul tau nu e confirmat, click aici sa il confirmi.",
+    "email-not-confirmed-email-sent": "Your email has not been confirmed yet, please check your inbox for the confirmation email.",
     "no-email-to-confirm": "Ca sa accesezi forumul trebuie sa iti confirmi email-ul, click aici ca sa intri in mail.",
     "email-confirm-failed": "Mail-ul tau nu a putut fi confirmat, te rog incearca mai tarziu.",
     "confirm-email-already-sent": "Email-ul de confirmare ti-a fost trimis, asteapta te rog %1 minut(e) ca sa trimiti inca unul.",

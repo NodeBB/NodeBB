@@ -38,7 +38,7 @@ describe('Categories', function() {
 				set: 'cid:' + categoryObj.cid + ':tids',
 				reverse: true,
 				start: 0,
-				end: -1,
+				stop: -1,
 				uid: 0
 			}, function(err, categoryData) {
 				assert(categoryData);
@@ -89,7 +89,7 @@ describe('Categories', function() {
 		});
 	});
 
-	after(function() {
-		db.flushdb();
+	after(function(done) {
+		db.flushdb(done);
 	});
 });

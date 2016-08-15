@@ -71,6 +71,7 @@ module.exports = function(User) {
 
 		if (until > 0 && Date.now() < until) {
 			tasks.push(async.apply(db.sortedSetAdd, 'users:banned:expire', until, uid));
+			tasks.push(async.apply(User.setUserField, uid, 'banned:expire', until));
 		} else {
 			until = 0;
 		}
@@ -91,7 +92,7 @@ module.exports = function(User) {
 	User.unban = function(uid, callback) {
 		async.waterfall([
 			function (next) {
-				User.setUserField(uid, 'banned', 0, next);
+				User.setUserFields(uid, {banned: 0, 'banned:expire': 0}, next);
 			},
 			function (next) {
 				db.sortedSetsRemove(['users:banned', 'users:banned:expire'], uid, next);
@@ -99,6 +100,32 @@ module.exports = function(User) {
 			function (next) {
 				plugins.fireHook('action:user.unbanned', {uid: uid});
 				next();
+			}
+		], callback);
+	};
+
+	User.isBanned = function(uid, callback) {
+		async.waterfall([
+			async.apply(User.getUserFields, uid, ['banned', 'banned:expire']),
+			function(userData, next) {
+				var banned = parseInt(userData.banned, 10) === 1;
+				if (!banned) {
+					return next(null, banned);
+				}
+
+				// If they are banned, see if the ban has expired
+				var stillBanned = !userData['banned:expire'] || Date.now() < userData['banned:expire'];
+
+				if (stillBanned) {
+					return next(null, true);
+				}
+				async.parallel([
+					async.apply(db.sortedSetRemove.bind(db), 'users:banned:expire', uid),
+					async.apply(db.sortedSetRemove.bind(db), 'users:banned', uid),
+					async.apply(User.setUserFields, uid, {banned:0, 'banned:expire': 0})
+				], function(err) {
+					next(err, false);
+				});
 			}
 		], callback);
 	};

@@ -31,7 +31,7 @@ define('forum/topic', [
 			$(window).off('keydown', onKeyDown);
 		}
 
-		if (!data.url.startsWith('topic/')) {
+		if (data.url && !data.url.startsWith('topic/')) {
 			require(['search'], function(search) {
 				if (search.topicDOM.active) {
 					search.topicDOM.end();

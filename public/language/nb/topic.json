@@ -86,6 +86,7 @@
     "topic_will_be_moved_to": "Dette emnet vil bli flyttet til kategorien",
     "fork_topic_instruction": "Trykk på innleggene du vil forgrene",
     "fork_no_pids": "Ingen innlegg valgt!",
+    "fork_pid_count": "%1 post(s) selected",
     "fork_success": "Dette emnet ble forgrenet! Klikk for å gå til forgrenet emne.",
     "delete_posts_instruction": "Click the posts you want to delete/purge",
     "composer.title_placeholder": "Skriv din tråd-tittel her",

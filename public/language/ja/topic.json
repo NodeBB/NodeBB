@@ -86,6 +86,7 @@
     "topic_will_be_moved_to": "スレッドはこちらのカテゴリへ移動",
     "fork_topic_instruction": "フォークしたいポストをクリックして",
     "fork_no_pids": "ポストが選択されていません！",
+    "fork_pid_count": "%1 post(s) selected",
     "fork_success": "トピックをフォークするのに成功しました。ここを押して、このフォークしたトピックに行きます。",
     "delete_posts_instruction": "削除または粛清するには、当てはまる投稿を押してください",
     "composer.title_placeholder": "スレッドのタイトルを入力して...",
