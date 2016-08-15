@@ -249,7 +249,7 @@ module.exports = function(redisClient, module) {
 			params.push('WITHSCORES');
 		}
 
-		var	multi = redisClient.multi();
+		var multi = redisClient.multi();
 		multi.zunionstore([tempSetName, sets.length].concat(sets));
 		multi[method](params);
 		multi.del(tempSetName);
@@ -315,7 +315,7 @@ module.exports = function(redisClient, module) {
 			rangeParams.push('WITHSCORES');
 		}
 
-		var	multi = redisClient.multi();
+		var multi = redisClient.multi();
 		multi.zinterstore(interParams);
 		multi[params.method](rangeParams);
 		multi.del(tempSetName);
