@@ -188,19 +188,27 @@ var social = require('./social');
 					posts: async.apply(getMainPostAndReplies, topicData, set, uid, start, stop, reverse),
 					category: async.apply(Topics.getCategoryData, topicData.tid),
 					threadTools: async.apply(plugins.fireHook, 'filter:topic.thread_tools', {topic: topicData, uid: uid, tools: []}),
-					tags: async.apply(Topics.getTopicTagsObjects, topicData.tid),
 					isFollowing: async.apply(Topics.isFollowing, [topicData.tid], uid),
 					isIgnoring: async.apply(Topics.isIgnoring, [topicData.tid], uid),
 					bookmark: async.apply(Topics.getUserBookmark, topicData.tid, uid),
 					postSharing: async.apply(social.getActivePostSharing),
-					related: async.apply(Topics.getRelatedTopics, topicData, uid)
+					related: function(next) {
+						async.waterfall([
+							function(next) {
+								Topics.getTopicTagsObjects(topicData.tid, next);
+							},
+							function(tags, next) {
+								topicData.tags = tags;
+								Topics.getRelatedTopics(topicData, uid, next);
+							}
+						], next);
+					}
 				}, next);
 			},
 			function (results, next) {
 				topicData.posts = results.posts;
 				topicData.category = results.category;
 				topicData.thread_tools = results.threadTools.tools;
-				topicData.tags = results.tags;
 				topicData.isFollowing = results.isFollowing[0];
 				topicData.isNotFollowing = !results.isFollowing[0] && !results.isIgnoring[0];
 				topicData.isIgnoring = results.isIgnoring[0];
