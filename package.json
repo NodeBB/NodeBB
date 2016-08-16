@@ -12,6 +12,7 @@
   "scripts": {
     "start": "node loader.js",
     "lint": "eslint --cache .",
+    "pretest": "npm run lint",
     "test": "./node_modules/.bin/istanbul cover ./node_modules/.bin/_mocha -- ./tests -t 10000"
   },
   "dependencies": {
