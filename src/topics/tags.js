@@ -48,6 +48,29 @@ module.exports = function(Topics) {
 		], callback);
 	};
 
+	Topics.createEmptyTag = function(tag, callback) {
+		if (!tag) {
+			return callback(new Error('[[error:invalid-tag]]'));
+		}
+
+		tag = utils.cleanUpTag(tag, meta.config.maximumTagLength);
+		if (tag.length < (meta.config.minimumTagLength || 3)) {
+			return callback(new Error('[[error:tag-too-short]]'));
+		}
+
+		async.waterfall([
+			function(next) {
+				db.isSortedSetMember('tags:topic:count', tag, next);
+			},
+			function(isMember, next) {
+				if (isMember) {
+					return callback(new Error('[[error:tag-exists]]'));
+				}
+				db.sortedSetAdd('tags:topic:count', 0, tag, next);
+			}
+		], callback);
+	};
+
 	Topics.updateTag = function(tag, data, callback) {
 		db.setObject('tag:' + tag, data, callback);
 	};
@@ -233,7 +256,7 @@ module.exports = function(Topics) {
 						updateTagCount(tag, next);
 					}, next);
 				}
-			], function(err, results) {
+			], function(err) {
 				callback(err);
 			});
 		});
@@ -317,7 +340,7 @@ module.exports = function(Topics) {
 		}
 
 		var maximumTopics = parseInt(meta.config.maximumRelatedTopics, 10) || 0;
-		if (maximumTopics === 0 || !topicData.tags.length) {
+		if (maximumTopics === 0 || !topicData.tags || !topicData.tags.length) {
 			return callback(null, []);
 		}
 

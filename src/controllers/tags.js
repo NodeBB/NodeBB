@@ -44,7 +44,6 @@ tagsController.getTag = function(req, res, next) {
 		},
 		function (results, next) {
 			if (Array.isArray(results.tids) && !results.tids.length) {
-				topics.deleteTag(req.params.tag);
 				return res.render('tag', templateData);
 			}
 			topicCount = results.topicCount;
