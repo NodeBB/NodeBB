@@ -25,6 +25,8 @@ describe('Categories', function() {
 				blockclass: 'category-blue',
 				order: '5'
 			}, function(err, category) {
+				assert.equal(err, null);
+
 				categoryObj = category;
 				done.apply(this, arguments);
 			});
@@ -41,6 +43,8 @@ describe('Categories', function() {
 				stop: -1,
 				uid: 0
 			}, function(err, categoryData) {
+				assert.equal(err, null);
+
 				assert(categoryData);
 				assert.equal(categoryObj.name, categoryData.name);
 				assert.equal(categoryObj.description, categoryData.description);
@@ -60,6 +64,8 @@ describe('Categories', function() {
 				stop: 10,
 				uid: 0
 			}, function(err, result) {
+				assert.equal(err, null);
+
 				assert(Array.isArray(result.topics));
 				assert(result.topics.every(function(topic) {
 					return topic instanceof Object;
@@ -79,6 +85,7 @@ describe('Categories', function() {
 				uid: 0,
 				targetUid: 1
 			}, function(err, result) {
+				assert.equal(err, null);
 				assert(Array.isArray(result.topics));
 				assert(result.topics.every(function(topic) {
 					return topic instanceof Object && topic.uid === '1';

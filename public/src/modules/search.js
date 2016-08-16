@@ -142,6 +142,10 @@ define('search', ['navigator', 'translator'], function(nav, translator) {
 				topicPostSort: config.topicPostSort
 			};
 			socket.emit('posts.getPidIndex', data, function(err, postIndex) {
+				if (err) {
+					return app.alertError(err.message);
+				}
+
 				nav.scrollToPost(postIndex, true);
 			});
 		} else {

@@ -56,6 +56,10 @@ module.exports = function(Meta) {
 					});
 
 				}, function (err, themes) {
+					if (err) {
+						return callback(err);
+					}
+
 					themes = themes.filter(function (theme) {
 						return (theme !== undefined);
 					});

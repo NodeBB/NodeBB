@@ -29,7 +29,7 @@ define('admin/settings/email', ['admin/settings'], function(settings) {
 		emailEditor.setTheme("ace/theme/twilight");
 		emailEditor.getSession().setMode("ace/mode/html");
 
-		emailEditor.on('change', function(e) {
+		emailEditor.on('change', function(event) {
 		    $('#email-editor-holder').val(emailEditor.getValue());
 		});
 

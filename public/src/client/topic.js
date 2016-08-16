@@ -127,6 +127,9 @@ define('forum/topic', [
 
 	Topic.toBottom = function() {
 		socket.emit('topics.postcount', ajaxify.data.tid, function(err, postCount) {
+			if (err) {
+				return app.alertError(err.message);
+			}
 			if (config.topicPostSort !== 'oldest_to_newest') {
 				postCount = 2;
 			}

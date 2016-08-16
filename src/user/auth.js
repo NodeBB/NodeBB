@@ -101,7 +101,7 @@ module.exports = function(User) {
 				async.each(expiredSids, function(sid, next) {
 					User.auth.revokeSession(sid, uid, next);
 				}, function(err) {
-					next(null, sessions);
+					next(err, sessions);
 				});
 			}
 		], function (err, sessions) {

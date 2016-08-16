@@ -257,6 +257,9 @@ function createAdmin(callback) {
 			type: 'string'
 		}],
 		success = function(err, results) {
+			if (err) {
+				return callback(err);
+			}
 			if (!results) {
 				return callback(new Error('aborted'));
 			}

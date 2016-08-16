@@ -82,7 +82,7 @@
 				socket.emit('admin.restart');
 			});
 
-			mousetrap.bind('/', function(e) {
+			mousetrap.bind('/', function(event) {
 				$('#acp-search input').focus();
 
 				return false;

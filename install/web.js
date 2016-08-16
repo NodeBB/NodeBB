@@ -130,6 +130,10 @@ function compileLess(callback) {
 	}
 
 	fs.readFile(path.join(__dirname, '../public/less/install.less'), function(err, style) {
+		if (err) {
+			return winston.error('Unable to read LESS install file: ', err);
+		}
+
 		less.render(style.toString(), function(err, css) {
 			if(err) {
 				return winston.error('Unable to compile LESS: ', err);

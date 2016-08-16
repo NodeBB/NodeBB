@@ -202,6 +202,10 @@ Controllers.registerInterstitial = function(req, res, next) {
 		userData: req.session.registration,
 		interstitials: []
 	}, function(err, data) {
+		if (err) {
+			return next(err);
+		}
+
 		if (!data.interstitials.length) {
 			return next();
 		}
@@ -212,6 +216,10 @@ Controllers.registerInterstitial = function(req, res, next) {
 		var errors = req.flash('error');
 
 		async.parallel(renders, function(err, sections) {
+			if (err) {
+				return next(err);
+			}
+
 			res.render('registerComplete', {
 				errors: errors,
 				sections: sections

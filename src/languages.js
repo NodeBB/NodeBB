@@ -30,6 +30,10 @@ Languages.get = function(code, key, callback) {
 	var languageData;
 
 	fs.readFile(path.join(__dirname, '../public/language/', code, key), { encoding: 'utf-8' }, function(err, data) {
+		if (err && err.code !== 'ENOENT') {
+			return callback(err);
+		}
+
 		// If language file in core cannot be read, then no language file present
 		try {
 			languageData = JSON.parse(data) || {};

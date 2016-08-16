@@ -75,6 +75,10 @@
 
 	before(function(done) {
 		db.init(function(err) {
+			if (err) {
+				return done(err);
+			}
+
 			//Clean up
 			db.flushdb(function(err) {
 				if(err) {

@@ -40,7 +40,7 @@ app.cacheBuster = null;
 			components.get('user/logout').on('click', app.logout);
 		});
 
-		Visibility.change(function(e, state){
+		Visibility.change(function(event, state){
 			if (state === 'visible') {
 				app.isFocused = true;
 				app.alternatingTitle('');

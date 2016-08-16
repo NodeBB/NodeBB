@@ -60,6 +60,10 @@ var utils = require('../../public/src/utils');
 
 	Digest.getSubscribers = function(interval, callback) {
 		db.getSortedSetRange('digest:' + interval + ':uids', 0, -1, function(err, subscribers) {
+			if (err) {
+				return callback(err);
+			}
+
 			plugins.fireHook('filter:digest.subscribers', {
 				interval: interval,
 				subscribers: subscribers
