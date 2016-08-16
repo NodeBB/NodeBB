@@ -11,6 +11,7 @@
   "main": "app.js",
   "scripts": {
     "start": "node loader.js",
+    "lint": "eslint --cache .",
     "test": "./node_modules/.bin/istanbul cover ./node_modules/.bin/_mocha -- ./tests -t 10000"
   },
   "dependencies": {

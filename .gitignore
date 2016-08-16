@@ -16,6 +16,7 @@ provision.sh
 *.komodoproject
 .DS_Store
 feeds/recent.rss
+.eslintcache
 
 logs/
 
