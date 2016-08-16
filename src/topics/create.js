@@ -230,7 +230,15 @@ module.exports = function(Topics) {
 				check(content, meta.config.minimumPostLength, meta.config.maximumPostLength, 'content-too-short', 'content-too-long', next);
 			},
 			function(next) {
-				posts.create({uid: uid, tid: tid, handle: data.handle, content: content, toPid: data.toPid, timestamp: data.timestamp, ip: data.req ? data.req.ip : null}, next);
+				posts.create({
+					uid: uid,
+					tid: tid,
+					handle: data.handle,
+					content: content,
+					toPid: data.toPid,
+					timestamp: data.timestamp,
+					ip: data.req ? data.req.ip : null
+				}, next);
 			},
 			function(_postData, next) {
 				postData = _postData;
