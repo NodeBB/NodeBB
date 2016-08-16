@@ -336,6 +336,7 @@ module.exports = function(Topics) {
 				}
 				callback();
 			});
+			return;
 		}
 		callback();
 	}
