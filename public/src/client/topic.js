@@ -198,7 +198,8 @@ define('forum/topic', [
 			var toPost = $('[component="post"][data-pid="' + toPid + '"]');
 			if (toPost.length) {
 				e.preventDefault();
-				return navigator.scrollToPost(toPost.attr('data-index'), true);
+				navigator.scrollToPost(toPost.attr('data-index'), true);
+				return false;
 			}
 		});
 	}
