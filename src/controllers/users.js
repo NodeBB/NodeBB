@@ -102,6 +102,10 @@ usersController.getUsers = function(set, uid, page, callback) {
 		'users:flags': {title: '[[pages:users/most-flags]]', crumb: '[[users:most_flags]]'},
 	};
 
+	if (!setToData[set]) {
+		setToData[set] = {title: '', crumb: ''};
+	}
+
 	var breadcrumbs = [{text: setToData[set].crumb}];
 
 	if (set !== 'users:joindate') {
