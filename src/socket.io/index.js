@@ -56,6 +56,8 @@ var ratelimit = require('../middleware/ratelimit');
 		} else {
 			socket.join('online_guests');
 		}
+
+		io.sockets.sockets[socket.id].emit('checkSession', socket.uid);
 	}
 
 	function onMessage(socket, payload) {

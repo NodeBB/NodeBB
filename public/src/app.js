@@ -117,11 +117,37 @@ app.cacheBuster = null;
 	};
 
 	app.alertError = function (message, timeout) {
+		if (message === '[[error:invalid-session]]') {
+			return app.handleInvalidSession();
+		}
+
 		app.alert({
 			title: '[[global:alert.error]]',
 			message: message,
 			type: 'danger',
 			timeout: timeout ? timeout : 10000
+		});
+	};
+
+	app.handleInvalidSession = function() {
+		if (app.flags && app.flags._sessionRefresh) {
+			return;
+		}
+
+		app.flags = app.flags || {};
+		app.flags._sessionRefresh = true;
+
+		require(['translator'], function(translator) {
+			translator.translate('[[error:invalid-session-text]]', function(translated) {
+				bootbox.alert({
+					title: '[[error:invalid-session]]',
+					message: translated,
+					closeButton: false,
+					callback: function() {
+						window.location.reload();
+					}
+				});
+			});
 		});
 	};
 
