@@ -188,12 +188,24 @@ describe('Topic\'s', function() {
 
 	describe('.purge/.delete', function() {
 		var newTopic;
-
+		var followerUid;
 		before(function(done) {
-			topics.post({uid: topic.userId, title: topic.title, content: topic.content, cid: topic.categoryId}, function(err, result) {
-				newTopic = result.topicData;
-				done();
-			});
+			async.waterfall([
+				function(next) {
+					topics.post({uid: topic.userId, title: topic.title, content: topic.content, cid: topic.categoryId}, function(err, result) {
+						assert.ifError(err);
+						newTopic = result.topicData;
+						next();
+					});
+				},
+				function(next) {
+					User.create({username: 'topicFollower', password: '123456'}, next);
+				},
+				function(_uid, next) {
+					followerUid = _uid;
+					topics.follow(newTopic.tid, _uid, next);
+				}
+			], done);
 		});
 
 		it('should delete the topic', function(done) {
@@ -206,7 +218,11 @@ describe('Topic\'s', function() {
 		it('should purge the topic', function(done) {
 			topics.purge(newTopic.tid, 1, function(err) {
 				assert.ifError(err);
-				done();
+				db.isSortedSetMember('uid:' + followerUid + ':followed_tids', newTopic.tid, function(err, isMember) {
+					assert.ifError(err);
+					assert.strictEqual(false, isMember);
+					done();
+				});
 			});
 		});
 	});
