@@ -1,6 +1,6 @@
 'use strict';
 
-/* globals app, define, utils, socket*/
+/* globals app, define, utils*/
 
 define('forum/search', ['search', 'autocomplete'], function(searchModule, autocomplete) {
 	var	Search = {};
@@ -67,7 +67,7 @@ define('forum/search', ['search', 'autocomplete'], function(searchModule, autoco
 
 	function fillOutForm() {
 		var params = utils.params();
-		var searchData = getSearchPreferences();
+		var searchData = searchModule.getSearchPreferences();
 		params = utils.merge(searchData, params);
 
 		if (params) {
@@ -154,14 +154,6 @@ define('forum/search', ['search', 'autocomplete'], function(searchModule, autoco
 			app.alertSuccess('[[search:search-preferences-cleared]]');
 			return false;
 		});
-	}
-
-	function getSearchPreferences() {
-		try {
-			return JSON.parse(localStorage.getItem('search-preferences'));
-		} catch(e) {
-			return {};
-		}
 	}
 
 	function enableAutoComplete() {

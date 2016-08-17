@@ -73,6 +73,14 @@ define('search', ['navigator', 'translator'], function(nav, translator) {
 		return decodeURIComponent($.param(query));
 	}
 
+	Search.getSearchPreferences = function() {
+		try {
+			return JSON.parse(localStorage.getItem('search-preferences'));
+		} catch(e) {
+			return {};
+		}
+	};
+
 	Search.queryTopic = function(tid, term, callback) {
 		socket.emit('topics.search', {
 			tid: tid,

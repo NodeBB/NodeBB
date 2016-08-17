@@ -435,7 +435,9 @@ app.cacheBuster = null;
 		$('#search-form').on('submit', function () {
 			var input = $(this).find('input');
 			require(['search'], function(search) {
-				search.query({term: input.val()}, function() {
+				var data = search.getSearchPreferences();
+				data.term = input.val();
+				search.query(data, function() {
 					input.val('');
 				});
 			});
