@@ -30,7 +30,7 @@ infoController.get = function(req, res, next) {
 			}, data.fields);
 
 			userData.title = '[[pages:account/info]]';
-			userData.breadcrumbs = helpers.buildBreadcrumbs([{text: userData.username, url: '/user/' + userData.userslug}, {text: '[[user:settings]]'}]);
+			userData.breadcrumbs = helpers.buildBreadcrumbs([{text: userData.username, url: '/user/' + userData.userslug}, {text: '[[user:account_info]]'}]);
 
 			res.render('account/info', userData);
 		});
