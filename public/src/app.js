@@ -287,7 +287,8 @@ app.cacheBuster = null;
 		});
 	};
 
-	app.newChat = function (touid) {
+	app.newChat = function (touid, callback) {
+		callback = callback || function() {};
 		if (!app.user.uid) {
 			return app.alertError('[[error:not-logged-in]]');
 		}
@@ -296,11 +297,14 @@ app.cacheBuster = null;
 			if (err) {
 				return app.alertError(err.message);
 			}
+
 			if (!ajaxify.currentPage.startsWith('chats')) {
 				app.openChat(roomId);
 			} else {
 				ajaxify.go('chats/' + roomId);
 			}
+
+			callback(false, roomId);
 		});
 	};
 
