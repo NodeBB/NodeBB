@@ -6,6 +6,10 @@ var soundsController = {};
 
 soundsController.get = function(req, res, next) {
 	meta.sounds.getFiles(function(err, sounds) {
+		if (err) {
+			return next(err);
+		}
+
 		sounds = Object.keys(sounds).map(function(name) {
 			return {
 				name: name

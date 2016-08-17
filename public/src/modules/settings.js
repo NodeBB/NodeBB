@@ -508,13 +508,21 @@ define('settings', function () {
 					app.flags._unsaved = false;
 
 					if (typeof callback === 'function') {
-						callback();
+						callback(err);
 					} else {
-						app.alert({
-							title: 'Settings Saved',
-							type: 'success',
-							timeout: 2500
-						});
+						if (err) {
+							app.alert({
+								title: 'Error while saving settings',
+								type: 'error',
+								timeout: 2500
+							});
+						} else {
+							app.alert({
+								title: 'Settings Saved',
+								type: 'success',
+								timeout: 2500
+							});
+						}
 					}
 				});
 			}

@@ -46,6 +46,10 @@ rewards.save = function(data, callback) {
 	}
 
 	async.each(data, save, function(err) {
+		if (err) {
+			return callback(err);
+		}
+
 		saveConditions(data, callback);
 	});
 };
@@ -125,6 +129,10 @@ function getActiveRewards(callback) {
 	}
 
 	db.getSetMembers('rewards:list', function(err, rewards) {
+		if (err) {
+			return callback(err);
+		}
+
 		async.eachSeries(rewards, load, function(err) {
 			callback(err, activeRewards);
 		});

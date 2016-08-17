@@ -170,6 +170,10 @@ module.exports = function(Meta) {
 		winston.verbose('[meta/css] Reading stylesheet ' + filePath.split('/').pop() + ' from file');
 
 		fs.readFile(filePath, function(err, file) {
+			if (err) {
+				return callback(err);
+			}
+
 			Meta.css[filename] = file;
 			callback();
 		});

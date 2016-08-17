@@ -101,6 +101,10 @@ module.exports = function(Posts) {
 						next(null, post);
 					});
 				}, function(err, posts) {
+					if (err) {
+						return callback(err);
+					}
+
 					plugins.fireHook('filter:post.getPostSummaryByPids', {posts: posts, uid: uid}, function(err, postData) {
 						callback(err, postData.posts);
 					});

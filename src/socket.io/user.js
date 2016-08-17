@@ -122,6 +122,10 @@ SocketUser.reset.commit = function(socket, data, callback) {
 		var parsedDate = now.getFullYear() + '/' + (now.getMonth()+1) + '/' + now.getDate();
 
 		user.getUserField(uid, 'username', function(err, username) {
+			if (err) {
+				return callback(err);
+			}
+
 			emailer.send('reset_notify', uid, {
 				username: username,
 				date: parsedDate,

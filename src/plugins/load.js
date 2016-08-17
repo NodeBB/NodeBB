@@ -221,6 +221,10 @@ module.exports = function(Plugins) {
 			fallbackMap = {};
 
 		utils.walk(pathToFolder, function(err, languages) {
+			if (err) {
+				return callback(err);
+			}
+
 			async.each(languages, function(pathToLang, next) {
 				fs.readFile(pathToLang, function(err, file) {
 					if (err) {

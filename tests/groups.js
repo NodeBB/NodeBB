@@ -270,6 +270,7 @@ describe('Groups', function() {
 				if (err) return done(err);
 
 				Groups.isMember(1, 'Test', function(err, isMember) {
+					assert.equal(err, null);
 					assert.strictEqual(true, isMember);
 
 					done();
@@ -284,6 +285,7 @@ describe('Groups', function() {
 				if (err) return done(err);
 
 				Groups.isMember(1, 'Test', function(err, isMember) {
+					assert.equal(err, null);
 					assert.strictEqual(false, isMember);
 
 					done();

@@ -2,6 +2,7 @@
 
 var express = require('express'),
 	nconf = require('nconf'),
+	winston = require('winston'),
 	user = require('./../user'),
 	categories = require('./../categories'),
 	topics = require('./../topics'),
@@ -16,6 +17,10 @@ module.exports = function(app, middleware, controllers) {
 		}
 
 		user.getUserData(req.params.uid, function (err, data) {
+			if (err) {
+				winston.error(err);
+			}
+
 			if (data) {
 				res.send(data);
 			} else {
@@ -28,6 +33,10 @@ module.exports = function(app, middleware, controllers) {
 
 	router.get('/cid/:cid', function (req, res) {
 		categories.getCategoryData(req.params.cid, function (err, data) {
+			if (err) {
+				winston.error(err);
+			}
+
 			if (data) {
 				res.send(data);
 			} else {
@@ -38,6 +47,10 @@ module.exports = function(app, middleware, controllers) {
 
 	router.get('/tid/:tid', function (req, res) {
 		topics.getTopicData(req.params.tid, function (err, data) {
+			if (err) {
+				winston.error(err);
+			}
+
 			if (data) {
 				res.send(data);
 			} else {
@@ -48,6 +61,10 @@ module.exports = function(app, middleware, controllers) {
 
 	router.get('/pid/:pid', function (req, res) {
 		posts.getPostData(req.params.pid, function (err, data) {
+			if (err) {
+				winston.error(err);
+			}
+
 			if (data) {
 				res.send(data);
 			} else {

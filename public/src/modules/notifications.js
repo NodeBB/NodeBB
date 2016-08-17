@@ -103,6 +103,10 @@ define('notifications', ['sounds', 'translator', 'components'], function(sound, 
 			}
 
 			socket.emit('notifications.getCount', function(err, count) {
+				if (err) {
+					return app.alertError(err.message);
+				}
+
 				Notifications.updateNotifCount(count);
 			});
 

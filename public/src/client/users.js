@@ -47,6 +47,10 @@ define('forum/users', ['translator'], function(translator) {
 			set: set,
 			after: after
 		}, function(err, data) {
+			if (err) {
+				return app.alertError(err.message);
+			}
+
 			if (data && data.users.length) {
 				onUsersLoaded(data);
 				$('#load-more-users-btn').removeClass('disabled');

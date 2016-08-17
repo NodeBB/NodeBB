@@ -96,6 +96,10 @@ function registerAndLoginUser(req, res, userData, callback) {
 				userData: userData,
 				interstitials: []
 			}, function(err, data) {
+				if (err) {
+					return next(err);
+				}
+
 				// If interstitials are found, save registration attempt into session and abort
 				var deferRegistration = data.interstitials.length;
 
@@ -144,6 +148,10 @@ authenticationController.registerComplete = function(req, res, next) {
 		userData: req.session.registration,
 		interstitials: []
 	}, function(err, data) {
+		if (err) {
+			return next(err);
+		}
+
 		var callbacks = data.interstitials.reduce(function(memo, cur) {
 			if (cur.hasOwnProperty('callback') && typeof cur.callback === 'function') {
 				memo.push(async.apply(cur.callback, req.session.registration, req.body));
@@ -243,6 +251,10 @@ function continueLogin(req, res, next) {
 			winston.verbose('[auth] Triggering password reset for uid ' + userData.uid + ' due to password policy');
 			req.session.passwordExpired = true;
 			user.reset.generate(userData.uid, function(err, code) {
+				if (err) {
+					return res.status(403).send(err.message);
+				}
+
 				res.status(200).send(nconf.get('relative_path') + '/reset/' + code);
 			});
 		} else {

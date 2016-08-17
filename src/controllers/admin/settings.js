@@ -25,13 +25,21 @@ function renderEmail(req, res, next) {
 
 	var emailsPath = path.join(__dirname, '../../../public/templates/emails');
 	utils.walk(emailsPath, function(err, emails) {
+		if (err) {
+			return next(err);
+		}
+
 		async.map(emails, function(email, next) {
 			var path = email.replace(emailsPath, '').substr(1).replace('.tpl', '');
 
 			fs.readFile(email, function(err, original) {
+				if (err) {
+					return next(err);
+				}
+
 				var text = meta.config['email:custom:' + path] ? meta.config['email:custom:' + path] : original.toString();
 
-				next(err, {
+				next(null, {
 					path: path,
 					fullpath: email,
 					text: text,
@@ -39,6 +47,10 @@ function renderEmail(req, res, next) {
 				});
 			});
 		}, function(err, emails) {
+			if (err) {
+				return next(err);
+			}
+
 			res.render('admin/settings/email', {
 				emails: emails,
 				sendable: emails.filter(function(email) {

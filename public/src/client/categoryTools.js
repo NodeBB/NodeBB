@@ -87,6 +87,10 @@ define('forum/categoryTools', ['forum/topic/move', 'topicSelect', 'components', 
 
 		components.get('topic/move-all').on('click', function() {
 			move.init(null, cid, function(err) {
+				if (err) {
+					return app.alertError(err.message);
+				}
+
 				ajaxify.refresh();
 			});
 		});

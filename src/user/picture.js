@@ -200,6 +200,10 @@ module.exports = function(User) {
 		], function(err) {
 			if (err) {
 				return fs.unlink(data.file.path, function(unlinkErr) {
+					if (unlinkErr) {
+						winston.error(unlinkErr);
+					}
+
 					callback(err);	// send back the original error
 				});
 			}

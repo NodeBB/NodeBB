@@ -306,6 +306,9 @@ define('admin/general/dashboard', ['semver', 'Chart'], function(semver, Chart) {
 			units: units || 'hours',
 			until: until
 		}, function (err, data) {
+			if (err) {
+				return app.alertError(err.message);
+			}
 			if (JSON.stringify(graphData.traffic) === JSON.stringify(data)) {
 				return;
 			}

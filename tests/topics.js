@@ -23,6 +23,10 @@ describe('Topic\'s', function() {
 			};
 
 		User.create({username: userData.username, password: userData.password, email: userData.email}, function(err, uid) {
+			if (err) {
+				return done(err);
+			}
+
 			categories.create({
 				name: 'Test Category',
 				description: 'Test category created by testing script',
@@ -30,6 +34,10 @@ describe('Topic\'s', function() {
 				blockclass: 'category-blue',
 				order: '5'
 			}, function(err, category) {
+				if (err) {
+					return done(err);
+				}
+
 				categoryObj = category;
 
 				topic = {
@@ -91,6 +99,10 @@ describe('Topic\'s', function() {
 
 		before(function(done) {
 			topics.post({uid: topic.userId, title: topic.title, content: topic.content, cid: topic.categoryId}, function(err, result) {
+				if (err) {
+					return done(err);
+				}
+
 				newTopic = result.topicData;
 				newPost = result.postData;
 				done();
@@ -134,6 +146,10 @@ describe('Topic\'s', function() {
 
 		before(function(done) {
 			topics.post({uid: topic.userId, title: topic.title, content: topic.content, cid: topic.categoryId}, function(err, result) {
+				if (err) {
+					return done(err);
+				}
+
 				newTopic = result.topicData;
 				newPost = result.postData;
 				done();
@@ -236,6 +252,10 @@ describe('Topic\'s', function() {
 			async.waterfall([
 				function(done){
 					topics.post({uid: topic.userId, title: 'Topic to be ignored', content: 'Just ignore me, please!', cid: topic.categoryId}, function(err, result) {
+						if (err) {
+							return done(err);
+						}
+
 						newTopic = result.topicData;
 						newTid = newTopic.tid;
 						done();

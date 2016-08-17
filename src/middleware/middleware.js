@@ -326,6 +326,10 @@ middleware.processLanguages = function(req, res, next) {
 
 	if (code && key) {
 		languages.get(code, key[0], function(err, language) {
+			if (err) {
+				return next(err);
+			}
+
 			res.status(200).json(language);
 		});
 	} else {

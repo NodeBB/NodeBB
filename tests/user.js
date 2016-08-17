@@ -28,6 +28,10 @@ describe('User', function() {
 			description: 'A test',
 			order: 1
 		}, function(err, categoryObj) {
+			if (err) {
+				return done(err);
+			}
+
 			testCid = categoryObj.cid;
 			done();
 		});
@@ -67,6 +71,7 @@ describe('User', function() {
 	describe('.isModerator()', function() {
 		it('should return false', function(done) {
 			User.isModerator(testUid, testCid, function(err, isModerator) {
+				assert.equal(err, null);
 				assert.equal(isModerator, false);
 				done();
 			});
@@ -74,6 +79,7 @@ describe('User', function() {
 
 		it('should return two false results', function(done) {
 			User.isModerator([testUid, testUid], testCid, function(err, isModerator) {
+				assert.equal(err, null);
 				assert.equal(isModerator[0], false);
 				assert.equal(isModerator[1], false);
 				done();
@@ -82,6 +88,7 @@ describe('User', function() {
 
 		it('should return two false results', function(done) {
 			User.isModerator(testUid, [testCid, testCid], function(err, isModerator) {
+				assert.equal(err, null);
 				assert.equal(isModerator[0], false);
 				assert.equal(isModerator[1], false);
 				done();

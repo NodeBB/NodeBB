@@ -94,6 +94,10 @@ var middleware;
 			function(next) {
 				// Build language code list
 				fs.readdir(path.join(__dirname, '../public/language'), function(err, directories) {
+					if (err) {
+						return next(err);
+					}
+
 					Plugins.languageCodes = directories.filter(function(code) {
 						return code !== 'TODO';
 					});
@@ -206,7 +210,11 @@ var middleware;
 								}
 							});
 						} else {
-							winston.warn('[plugins/' + plugin.id + '] A templates directory was defined for this plugin, but was not found.');
+							if (err) {
+								winston.error(err);
+							} else {
+								winston.warn('[plugins/' + plugin.id + '] A templates directory was defined for this plugin, but was not found.');
+							}
 						}
 
 						next(false);
@@ -392,7 +400,7 @@ var middleware;
 						next();
 					});
 				}, function(err) {
-					next(null, plugins);
+					next(err, plugins);
 				});
 			}
 		], callback);

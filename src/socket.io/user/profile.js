@@ -29,6 +29,10 @@ module.exports = function(SocketUser) {
 		}
 
 		user.isAdministrator(socket.uid, function(err, isAdmin) {
+			if (err) {
+				return callback(err);
+			}
+
 			if (!isAdmin && data.uid !== socket.uid) {
 				return callback(new Error('[[error:no-privileges]]'));
 			}

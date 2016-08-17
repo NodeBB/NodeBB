@@ -125,6 +125,7 @@ describe('List methods', function() {
 				assert.equal(arguments.length, 1);
 
 				db.getListRange('testList5', 0, -1, function(err, list) {
+					assert.equal(err, null);
 					assert.equal(Array.isArray(list), true);
 					assert.equal(list.length, 2);
 					assert.equal(list.indexOf('1'), -1);
@@ -148,6 +149,7 @@ describe('List methods', function() {
 					assert.equal(err, null);
 					assert.equal(arguments.length, 1);
 					db.getListRange('testList6', 0, -1, function(err, list) {
+						assert.equal(err, null);
 						assert.equal(list.length, 3);
 						assert.deepEqual(list, ['1', '2', '3']);
 						done();
