@@ -55,6 +55,8 @@
     "post-delete-duration-expired-hours-minutes": "Bạn chỉ được phép xóa bài viết sau khi đăng %1 giờ(s) 2 phút(s)",
     "post-delete-duration-expired-days": "Bạn chỉ được phép xóa các bài viết sau khi đăng %1 ngày(s)",
     "post-delete-duration-expired-days-hours": "Bạn chỉ được phép xóa các bài viết sau khi đăng %1 ngày(s) %2 giờ(s)",
+    "cant-delete-topic-has-reply": "You can't delete your topic after it has a reply",
+    "cant-delete-topic-has-replies": "You can't delete your topic after it has %1 replies",
     "content-too-short": "Vui lòng nhập một bài viết dài hơn. Bài viết phải có tối thiểu %1 ký tự.",
     "content-too-long": "Vui lòng nhập một bài viết ngắn hơn. Bài viết chỉ có thể có tối đa %1 ký tự.",
     "title-too-short": "Vui lòng nhập tiêu đề dài hơn. Tiêu đề phải có tối thiểu %1 ký tự.",

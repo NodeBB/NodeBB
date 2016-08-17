@@ -55,6 +55,8 @@
     "post-delete-duration-expired-hours-minutes": "Możesz kasować posty przez %1 godzin(-y) i %2 minut(-y) po napisaniu",
     "post-delete-duration-expired-days": "Możesz kasować posty przez %1 dni po napisaniu",
     "post-delete-duration-expired-days-hours": "Możesz kasować posty przez %1 dni i %2 godzin(-y) po napisaniu",
+    "cant-delete-topic-has-reply": "You can't delete your topic after it has a reply",
+    "cant-delete-topic-has-replies": "You can't delete your topic after it has %1 replies",
     "content-too-short": "Prosimy wpisać dłuższy post. Posty powinny zawierać co najmniej %1 znaków.",
     "content-too-long": "Prosimy wpisać krótszy post. Posty nie mogą zawierać więcej niż %1 znaków.",
     "title-too-short": "Prosimy podać dłuższy tytuł. Tytuły powinny zawierać co najmniej %1 znaków.",

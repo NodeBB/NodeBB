@@ -55,6 +55,8 @@
     "post-delete-duration-expired-hours-minutes": "Gönderildikten %1 saat(s) %2 dakika(s) sonra iletini silmene izin verilir.",
     "post-delete-duration-expired-days": "Gönderildikten %1 gün(s) sonra iletini silmene izin verilir.",
     "post-delete-duration-expired-days-hours": "Gönderildikten  %1 gün(s) %2 saat(s) sonra iletini silmene izin verilir.",
+    "cant-delete-topic-has-reply": "You can't delete your topic after it has a reply",
+    "cant-delete-topic-has-replies": "You can't delete your topic after it has %1 replies",
     "content-too-short": "Lütfen daha uzun bir ileti girin. En az %1 karakter.",
     "content-too-long": "Lütfen daha kısa bir ileti girin. İletiler %1 karakterden uzun olamaz.",
     "title-too-short": "Lütfen daha uzun bir başlık girin. Başlıklar en az %1 karakter içermelidir.",

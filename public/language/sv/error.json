@@ -55,6 +55,8 @@
     "post-delete-duration-expired-hours-minutes": "Du kan endast radera inlägg inom %1 timmar(er) %2 minut(er) efter att ha skickat det",
     "post-delete-duration-expired-days": "Du kan endast radera inlägg inom %1 dag(ar) efter att ha skickat det",
     "post-delete-duration-expired-days-hours": "Du kan endast radera inlägg inom %1 dag(ar) %2 timm(ar) efter att ha skickat det",
+    "cant-delete-topic-has-reply": "You can't delete your topic after it has a reply",
+    "cant-delete-topic-has-replies": "You can't delete your topic after it has %1 replies",
     "content-too-short": "Skriv ett längre inlägg. Inlägg måste innehålla minst %1 tecken.",
     "content-too-long": "Skriv ett kortare inlägg. Inlägg kan inte innehålla mer än %1 tecken.",
     "title-too-short": "Skriv en längre rubrik. Rubriker måste innehålla minst %1 tecken.",
