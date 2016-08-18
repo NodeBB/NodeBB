@@ -153,6 +153,7 @@ module.exports = function(app, middleware, hotswapIds) {
 	}));
 	app.use('/vendor/jquery/timeago/locales', middleware.processTimeagoLocales);
 	app.use(controllers.handle404);
+	app.use(controllers.handleURIErrors);
 	app.use(controllers.handleErrors);
 
 	// Add plugin routes
