@@ -37,19 +37,13 @@ settingsController.get = function(req, res, callback) {
 				},
 				homePageRoutes: function(next) {
 					getHomePageRoutes(next);
-				},
-				ips: function (next) {
-					user.getIPs(userData.uid, 4, next);
-				},
-				sessions: async.apply(user.auth.getSessions, userData.uid, req.sessionID)
+				}
 			}, next);
 		},
 		function(results, next) {
 			userData.settings = results.settings;
 			userData.languages = results.languages;
 			userData.homePageRoutes = results.homePageRoutes;
-			userData.ips = results.ips;
-			userData.sessions = results.sessions;
 			plugins.fireHook('filter:user.customSettings', {settings: results.settings, customSettings: [], uid: req.uid}, next);
 		},
 		function(data, next) {
