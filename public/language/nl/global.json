@@ -92,5 +92,6 @@
     "enter_page_number": "Voer paginanummer in",
     "upload_file": "Upload bestand",
     "upload": "Upload",
-    "allowed-file-types": "Toegestane bestandstypen zijn %1"
+    "allowed-file-types": "Toegestane bestandstypen zijn %1",
+    "unsaved-changes": "You have unsaved changes. Are you sure you wish to navigate away?"
 }

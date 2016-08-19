@@ -92,5 +92,6 @@
     "enter_page_number": "Digite o número da página",
     "upload_file": "Fazer upload de arquivo",
     "upload": "Upload",
-    "allowed-file-types": "Os tipos de arquivo permitidos são %1"
+    "allowed-file-types": "Os tipos de arquivo permitidos são %1",
+    "unsaved-changes": "You have unsaved changes. Are you sure you wish to navigate away?"
 }

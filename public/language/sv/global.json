@@ -92,5 +92,6 @@
     "enter_page_number": "Skriv in sidnummer",
     "upload_file": "Ladda upp en fil",
     "upload": "Ladda upp",
-    "allowed-file-types": "Tillåtna filtyper är %1"
+    "allowed-file-types": "Tillåtna filtyper är %1",
+    "unsaved-changes": "You have unsaved changes. Are you sure you wish to navigate away?"
 }
