@@ -5,6 +5,7 @@ var async = require('async');
 var db = require('../database');
 var posts = require('../posts');
 var plugins = require('../plugins');
+var winston = require('winston');
 
 module.exports = function(User) {
 
@@ -27,6 +28,7 @@ module.exports = function(User) {
 	};
 
 	User.getUsersCSV = function(callback) {
+		winston.info('[user/getUsersCSV] Compiling User CSV data');
 		var csvContent = '';
 
 		async.waterfall([
