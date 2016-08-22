@@ -34,7 +34,20 @@ module.exports = function(SocketUser) {
 	};
 
 	SocketUser.unbanUsers = function(socket, uids, callback) {
-		toggleBan(socket.uid, uids, user.unban, callback);
+		toggleBan(socket.uid, uids, user.unban, function(err) {
+			if (err) {
+				return callback(err);
+			}
+
+			async.each(uids, function(uid, next) {
+				events.log({
+					type: 'user-unban',
+					uid: socket.uid,
+					targetUid: uid,
+					ip: socket.ip
+				}, next);
+			}, callback);
+		});
 	};
 
 	function toggleBan(uid, uids, method, callback) {

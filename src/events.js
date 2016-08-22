@@ -47,16 +47,19 @@ var async = require('async'),
 				db.getObjects(keys, next);
 			},
 			function(eventsData, next) {
-				eventsData.forEach(function(event) {
-					var e = utils.merge(event);
-					e.eid = e.uid = e.type = e.ip = undefined;
-					event.jsonString = JSON.stringify(e, null, 4);
-					event.timestampISO = new Date(parseInt(event.timestamp, 10)).toUTCString();
-				});
 				addUserData(eventsData, 'uid', 'user', next);
 			},
 			function(eventsData, next) {
 				addUserData(eventsData, 'targetUid', 'targetUser', next);
+			},
+			function(eventsData, next) {
+				eventsData.forEach(function(event) {
+					var e = utils.merge(event);
+					e.eid = e.uid = e.type = e.ip = e.user = undefined;
+					event.jsonString = JSON.stringify(e, null, 4);
+					event.timestampISO = new Date(parseInt(event.timestamp, 10)).toUTCString();
+				});
+				next(null, eventsData);
 			}
 		], callback);
 	};
