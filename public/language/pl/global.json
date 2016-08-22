@@ -92,5 +92,6 @@
     "enter_page_number": "Wpisz numer strony",
     "upload_file": "Załaduj plik",
     "upload": "Załaduj",
-    "allowed-file-types": "Dozwolone typy plików %1"
+    "allowed-file-types": "Dozwolone typy plików %1",
+    "unsaved-changes": "You have unsaved changes. Are you sure you wish to navigate away?"
 }

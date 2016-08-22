@@ -92,5 +92,6 @@
     "enter_page_number": "輸入頁碼",
     "upload_file": "上傳檔案",
     "upload": "上傳",
-    "allowed-file-types": "允許的檔案類型是 %1"
+    "allowed-file-types": "允許的檔案類型是 %1",
+    "unsaved-changes": "You have unsaved changes. Are you sure you wish to navigate away?"
 }

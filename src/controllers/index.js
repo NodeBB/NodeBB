@@ -339,6 +339,10 @@ Controllers.termsOfUse = function(req, res, next) {
 	res.render('tos', {termsOfUse: meta.config.termsOfUse});
 };
 
+Controllers.ping = function(req, res) {
+	res.status(200).send(req.path === '/sping' ? 'healthy' : '200');
+};
+
 Controllers.handle404 = function(req, res) {
 	var relativePath = nconf.get('relative_path');
 	var isLanguage = new RegExp('^' + relativePath + '/language/.*/.*.json');

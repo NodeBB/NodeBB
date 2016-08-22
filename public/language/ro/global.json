@@ -92,5 +92,6 @@
     "enter_page_number": "Introdu numărul paginei",
     "upload_file": "Încărcați fișierul",
     "upload": "Încărcați",
-    "allowed-file-types": "Tipuri de fișiere permise sunt %1"
+    "allowed-file-types": "Tipuri de fișiere permise sunt %1",
+    "unsaved-changes": "You have unsaved changes. Are you sure you wish to navigate away?"
 }

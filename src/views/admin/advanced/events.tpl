@@ -23,6 +23,7 @@
 					<pre>{events.jsonString}</pre>
 				</div>
 				<!-- END events -->
+				<!-- IMPORT partials/paginator.tpl -->
 				</div>
 			</div>
 		</div>

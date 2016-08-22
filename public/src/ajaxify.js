@@ -334,9 +334,7 @@ $(document).ready(function() {
 				return;
 			}
 
-			var internalLink = this.host === '' ||	// Relative paths are always internal links
-				(this.host === window.location.host && this.protocol === window.location.protocol &&	// Otherwise need to check if protocol and host match
-				(RELATIVE_PATH.length > 0 ? this.pathname.indexOf(RELATIVE_PATH) === 0 : true));	// Subfolder installs need this additional check
+			var internalLink = utils.isInternalURI(this, window.location, RELATIVE_PATH);
 
 			if ($(this).attr('data-ajaxify') === 'false') {
 				if (!internalLink) {

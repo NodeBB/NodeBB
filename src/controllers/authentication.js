@@ -6,6 +6,7 @@ var passport = require('passport');
 var nconf = require('nconf');
 var validator = require('validator');
 var _ = require('underscore');
+var url = require('url');
 
 var db = require('../database');
 var meta = require('../meta');
@@ -168,7 +169,7 @@ authenticationController.registerComplete = function(req, res, next) {
 			} else {
 				res.redirect(nconf.get('relative_path') + '/');
 			}
-		}
+		};
 
 		async.parallel(callbacks, function(err) {
 			if (err) {
@@ -187,7 +188,7 @@ authenticationController.registerComplete = function(req, res, next) {
 	});
 };
 
-authenticationController.registerAbort = function(req, res, next) {
+authenticationController.registerAbort = function(req, res) {
 	// End the session and redirect to home
 	req.session.destroy(function() {
 		res.redirect(nconf.get('relative_path') + '/');
@@ -197,7 +198,11 @@ authenticationController.registerAbort = function(req, res, next) {
 authenticationController.login = function(req, res, next) {
 	// Handle returnTo data
 	if (req.body.hasOwnProperty('returnTo') && !req.session.returnTo) {
-		req.session.returnTo = req.body.returnTo;
+		// As req.body is data obtained via userland, it is untrusted, restrict to internal links only
+		var parsed = url.parse(req.body.returnTo);
+		var isInternal = utils.isInternalURI(url.parse(req.body.returnTo), nconf.get('url_parsed'), nconf.get('relative_path'));
+
+		req.session.returnTo = isInternal ? req.body.returnTo : nconf.get('url');
 	}
 
 	if (plugins.hasListeners('action:auth.overrideLogin')) {

@@ -251,20 +251,6 @@ SocketAdmin.errors.clear = function(socket, data, callback) {
 	meta.errors.clear(callback);
 };
 
-SocketAdmin.getMoreEvents = function(socket, next, callback) {
-	var start = parseInt(next, 10);
-	if (start < 0) {
-		return callback(null, {data: [], next: next});
-	}
-	var stop = start + 10;
-	events.getEvents(start, stop, function(err, events) {
-		if (err) {
-			return callback(err);
-		}
-		callback(null, {events: events, next: stop + 1});
-	});
-};
-
 SocketAdmin.deleteAllEvents = function(socket, data, callback) {
 	events.deleteAll(callback);
 };
