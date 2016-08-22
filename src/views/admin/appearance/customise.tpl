@@ -1,7 +1,7 @@
 <div id="customise" class="customise">
 	<ul class="nav nav-pills">
-		<li class="active"><a href="#custom-css" data-toggle="tab">Custom CSS</a></li>
-		<li><a href="#custom-header" data-toggle="tab">Custom Header</a></li>
+		<li class="nav-item"><a class="nav-link active" href="#custom-css" data-toggle="tab">Custom CSS</a></li>
+		<li class="nav-item"><a class="nav-link" href="#custom-header" data-toggle="tab">Custom Header</a></li>
 	</ul>
 	<br />
 	<div class="tab-content">

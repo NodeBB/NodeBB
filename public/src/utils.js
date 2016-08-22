@@ -268,15 +268,16 @@
 
 		findBootstrapEnvironment: function() {
 			//http://stackoverflow.com/questions/14441456/how-to-detect-which-device-view-youre-on-using-twitter-bootstrap-api
-			var envs = ['xs', 'sm', 'md', 'lg'],
-				$el = $('<div>');
+			var envs = ['xs', 'sm', 'md', 'lg', 'xl'];
+			var env = "";
+			var	$el = $('<div>');
 
 			$el.appendTo($('body'));
 
 			for (var i = envs.length - 1; i >= 0; i--) {
-				var env = envs[i];
+				env = envs[i];
 
-				$el.addClass('hidden-'+env);
+				$el.addClass('hidden-'+ env + "-up");
 				if ($el.is(':hidden')) {
 					$el.remove();
 					return env;
@@ -286,7 +287,7 @@
 
 		isMobile: function() {
 			var env = utils.findBootstrapEnvironment();
-			return ['xs', 'sm'].some(function(targetEnv) {
+			return ['xs', 'sm', 'md'].some(function(targetEnv) {
 				return targetEnv === env;
 			});
 		},

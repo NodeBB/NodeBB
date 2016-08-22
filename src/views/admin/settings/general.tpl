@@ -45,8 +45,8 @@
 			<div class="input-group">
 				<input id="logoUrl" type="text" class="form-control" placeholder="Path to a logo to display on forum header" data-field="brand:logo" data-action="upload" data-target="logoUrl" data-route="{config.relative_path}/api/admin/uploadlogo" readonly />
 				<span class="input-group-btn">
-					<input data-action="upload" data-target="logoUrl" data-route="{config.relative_path}/api/admin/uploadlogo" type="button" class="btn btn-default" value="Upload"></input>
-					<button data-action="removeLogo" type="button" class="btn btn-default btn-danger"><i class="fa fa-times"></i></button>
+					<input data-action="upload" data-target="logoUrl" data-route="{config.relative_path}/api/admin/uploadlogo" type="button" class="btn btn-secondary" value="Upload"></input>
+					<button data-action="removeLogo" type="button" class="btn btn-secondary btn-danger"><i class="fa fa-times"></i></button>
 				</span>
 			</div>
 		</div>
@@ -68,8 +68,8 @@
 			<div class="input-group">
 				<input id="og_image" type="text" class="form-control" placeholder="" data-field="og:image" data-action="upload" data-target="og_image" data-route="{config.relative_path}/api/admin/uploadOgImage" readonly />
 				<span class="input-group-btn">
-					<input data-action="upload" data-target="og_image" data-route="{config.relative_path}/api/admin/uploadOgImage" type="button" class="btn btn-default" value="Upload"></input>
-					<button data-action="removeOgImage" type="button" class="btn btn-default btn-danger"><i class="fa fa-times"></i></button>
+					<input data-action="upload" data-target="og_image" data-route="{config.relative_path}/api/admin/uploadOgImage" type="button" class="btn btn-secondary" value="Upload"></input>
+					<button data-action="removeOgImage" type="button" class="btn btn-secondary btn-danger"><i class="fa fa-times"></i></button>
 				</span>
 			</div>
 		</div>
@@ -85,8 +85,8 @@
 			<div class="input-group">
 				<input id="faviconUrl" type="text" class="form-control" placeholder="favicon.ico" data-field="brand:favicon" data-action="upload" data-target="faviconUrl" data-route="{config.relative_path}/api/admin/uploadfavicon" readonly />
 				<span class="input-group-btn">
-					<input data-action="upload" data-target="faviconUrl" data-route="{config.relative_path}/api/admin/uploadfavicon" data-help="0" type="button" class="btn btn-default" value="Upload"></input>
-					<button data-action="removeFavicon" type="button" class="btn btn-default btn-danger"><i class="fa fa-times"></i></button>
+					<input data-action="upload" data-target="faviconUrl" data-route="{config.relative_path}/api/admin/uploadfavicon" data-help="0" type="button" class="btn btn-secondary" value="Upload"></input>
+					<button data-action="removeFavicon" type="button" class="btn btn-secondary btn-danger"><i class="fa fa-times"></i></button>
 				</span>
 			</div>
 		</div>
@@ -102,8 +102,8 @@
 			<div class="input-group">
 				<input id="touchIconUrl" type="text" class="form-control" data-field="brand:touchIcon" data-action="upload" data-target="touchIconUrl" data-route="{config.relative_path}/api/admin/uploadTouchIcon" readonly />
 				<span class="input-group-btn">
-					<input data-action="upload" data-target="touchIconUrl" data-route="{config.relative_path}/api/admin/uploadTouchIcon" type="button" class="btn btn-default" value="Upload"></input>
-					<button data-action="removeTouchIcon" type="button" class="btn btn-default btn-danger"><i class="fa fa-times"></i></button>
+					<input data-action="upload" data-target="touchIconUrl" data-route="{config.relative_path}/api/admin/uploadTouchIcon" type="button" class="btn btn-secondary" value="Upload"></input>
+					<button data-action="removeTouchIcon" type="button" class="btn btn-secondary btn-danger"><i class="fa fa-times"></i></button>
 				</span>
 			</div>
 			<p class="help-block">

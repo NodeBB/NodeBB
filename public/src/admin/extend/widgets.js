@@ -7,8 +7,8 @@ define('admin/extend/widgets', function() {
 	Widgets.init = function() {		
 		$('#widgets .nav-pills a').on('click', function(ev) {
 			var $this = $(this);
-			$('#widgets .nav-pills li').removeClass('active');
-			$this.parent().addClass('active');
+			$('#widgets .nav-pills li a').removeClass('active');
+			$this.addClass('active');
 
 			$('#widgets .tab-pane').removeClass('active');
 			$('#widgets .tab-pane[data-template="' + $this.attr('data-template') + '"]').addClass('active');

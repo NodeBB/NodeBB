@@ -236,7 +236,7 @@ define('forum/topic/posts', [
 	Posts.processPage = function(posts) {
 		Posts.unloadImages(posts);
 		Posts.showBottomPostBar();
-		posts.find('[component="post/content"] img:not(.not-responsive)').addClass('img-responsive');
+		posts.find('[component="post/content"] img:not(.not-responsive)').addClass('img-fluid');
 		app.createUserTooltips(posts);
 		app.replaceSelfLinks(posts.find('a'));
 		utils.addCommasToNumbers(posts.find('.formatted-number'));

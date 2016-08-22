@@ -1,8 +1,8 @@
 <div class="events">
 	<div class="col-lg-9">
-		<div class="panel panel-default">
-			<div class="panel-heading"><i class="fa fa-calendar-o"></i> Events</div>
-			<div class="panel-body" data-next="{next}">
+		<div class="card">
+			<div class="card-header"><i class="fa fa-calendar-o"></i> Events</div>
+			<div class="card-block" data-next="{next}">
 				<!-- IF !events.length -->
 				<div class="alert alert-info">There are no events</div>
 				<!-- ENDIF !events.length -->
@@ -18,7 +18,7 @@
 						<!-- ENDIF events.user.picture -->
 					</a>
 					<a href="{config.relative_path}/user/{events.user.userslug}" target="_blank">{events.user.username}</a> (uid {events.uid}) (IP {events.ip})
-					<span class="pull-right">{events.timestampISO}</span>
+					<span class="pull-xs-right">{events.timestampISO}</span>
 					<br /><br />
 					<pre>{events.jsonString}</pre>
 				</div>
@@ -28,9 +28,9 @@
 		</div>
 	</div>
 	<div class="col-lg-3 acp-sidebar">
-		<div class="panel panel-default">
-			<div class="panel-heading">Events Control Panel</div>
-			<div class="panel-body">
+		<div class="card">
+			<div class="card-header">Events Control Panel</div>
+			<div class="card-block">
 				<button class="btn btn-warning" data-action="clear"><i class="fa fa-eraser"></i> Delete Events</button>
 			</div>
 		</div>

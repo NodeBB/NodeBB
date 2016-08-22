@@ -79,11 +79,11 @@
 				</fieldset>
 
 				<fieldset>
-					<div class="panel panel-default">
-						<div class="panel-heading">
-							<h3 class="panel-title"><i class="fa fa-users"></i> Member List</h3>
+					<div class="card">
+						<div class="card-header">
+							<i class="fa fa-users"></i> Member List
 						</div>
-						<div class="panel-body">
+						<div class="card-block">
 							<!-- IMPORT partials/groups/memberlist.tpl -->
 						</div>
 					</div>
@@ -94,15 +94,15 @@
 		</div>
 
 		<div class="col-md-3 options acp-sidebar">
-			<div class="panel panel-default">
-				<div class="panel-heading">Groups Control Panel</div>
-				<div class="panel-body">
+			<div class="card">
+				<div class="card-header">Groups Control Panel</div>
+				<div class="card-block">
 					<div class="btn-group btn-group-justified">
 						<div class="btn-group">
 							<button class="btn btn-primary save">Save</button>
 						</div>
 						<div class="btn-group">
-							<button class="btn btn-default revert">Revert</button>
+							<button class="btn btn-secondary revert">Revert</button>
 						</div>
 					</div>
 				</div>

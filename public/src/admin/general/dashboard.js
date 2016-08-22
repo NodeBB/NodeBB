@@ -90,19 +90,19 @@ define('admin/general/dashboard', ['semver', 'Chart'], function(semver, Chart) {
 
 		graphData.rooms = data;
 
-		var html = '<div class="text-center pull-left">' +
+		var html = '<div class="text-xs-center pull-left">' +
 						'<div>'+ data.onlineRegisteredCount +'</div>' +
 						'<div>Users</div>' +
 					'</div>' +
-					'<div class="text-center pull-left">' +
+					'<div class="text-xs-center pull-left">' +
 						'<div>'+ data.onlineGuestCount +'</div>' +
 						'<div>Guests</div>' +
 					'</div>' +
-					'<div class="text-center pull-left">' +
+					'<div class="text-xs-center pull-left">' +
 						'<div>'+ (data.onlineRegisteredCount + data.onlineGuestCount) +'</div>' +
 						'<div>Total</div>' +
 					'</div>' +
-					'<div class="text-center pull-left">' +
+					'<div class="text-xs-center pull-left">' +
 						'<div>'+ data.socketCount +'</div>' +
 						'<div>Connections</div>' +
 					'</div>';

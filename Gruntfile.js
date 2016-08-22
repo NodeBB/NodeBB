@@ -59,14 +59,14 @@ module.exports = function(grunt) {
 		watch: {
 			lessUpdated_Client: {
 				files: [
-					'public/*.less',
-					'node_modules/nodebb-*/*.less', 'node_modules/nodebb-*/**/*.less',
+					'public/*.scss',
+					'node_modules/nodebb-*/*.scss', 'node_modules/nodebb-*/**/*.scss',
 					'!node_modules/nodebb-*/node_modules/**',
 					'!node_modules/nodebb-*/.git/**'
 				]
 			},
 			lessUpdated_Admin: {
-				files: ['public/**/*.less']
+				files: ['public/**/*.scss']
 			},
 			clientUpdated: {
 				files: [

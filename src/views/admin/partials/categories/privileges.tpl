@@ -21,13 +21,13 @@
 						<!-- END privileges.users -->
 						<tr>
 							<td colspan="{privileges.columnCount}">
-								<button type="button" class="btn btn-primary pull-right" data-ajaxify="false" data-action="search.user"> Add User</button>
+								<button type="button" class="btn btn-primary pull-xs-right" data-ajaxify="false" data-action="search.user"> Add User</button>
 							</td>
 						</tr>
 						<!-- ELSE -->
 						<tr>
 							<td colspan="{privileges.columnCount}">
-								<button type="button" class="btn btn-primary pull-right" data-ajaxify="false" data-action="search.user"> Add User</button>
+								<button type="button" class="btn btn-primary pull-xs-right" data-ajaxify="false" data-action="search.user"> Add User</button>
 								No user-specific privileges in this category.
 							</td>
 						</tr>
@@ -56,9 +56,9 @@
 						<tr>
 							<td colspan="{privileges.columnCount}">
 								<div class="btn-toolbar">
-									<button type="button" class="btn btn-primary pull-right" data-ajaxify="false" data-action="search.group"> Add Group</button>
-									<button type="button" class="btn btn-info pull-right" data-ajaxify="false" data-action="copyToChildren"> Copy to Children</button>
-									<button type="button" class="btn btn-info pull-right" data-ajaxify="fakse" data-action="copyPrivilegesFrom"> Copy From Category</button>
+									<button type="button" class="btn btn-primary pull-xs-right" data-ajaxify="false" data-action="search.group"> Add Group</button>
+									<button type="button" class="btn btn-info pull-xs-right" data-ajaxify="false" data-action="copyToChildren"> Copy to Children</button>
+									<button type="button" class="btn btn-info pull-xs-right" data-ajaxify="fakse" data-action="copyPrivilegesFrom"> Copy From Category</button>
 								</div>
 							</td>
 						</tr>

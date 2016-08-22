@@ -3,7 +3,7 @@
 		<div class="clearfix">
 			<ul id="active-navigation" class="nav navbar-nav">
 				<!-- BEGIN navigation -->
-				<li data-index="{navigation.index}" class="{navigation.class} <!-- IF navigation.selected --> active <!-- ENDIF navigation.selected -->">
+				<li data-index="{navigation.index}" class="nav-item {navigation.class} <!-- IF navigation.selected --> active <!-- ENDIF navigation.selected -->">
 					<a href="#" title="{navigation.route}" id="{navigation.id}">
 						<i class="fa fa-fw <!-- IF navigation.iconClass -->{navigation.iconClass}<!-- ENDIF navigation.iconClass -->"></i>
 					</a>
@@ -16,8 +16,8 @@
 
 		<ul id="enabled">
 			<!-- BEGIN enabled -->
-			<li data-index="{enabled.index}" class="well <!-- IF !enabled.selected -->hidden<!-- ENDIF !enabled.selected -->">
-				<form>
+			<li data-index="{enabled.index}" class="card <!-- IF !enabled.selected -->hidden<!-- ENDIF !enabled.selected -->">
+				<form class="card-block">
 					<div class="row">
 						<div class="col-sm-6">
 
@@ -107,12 +107,12 @@
 	</div>
 
 	<div class="col-lg-3">
-		<div class="panel panel-default">
-			<div class="panel-heading">Available Menu Items</div>
-			<div class="panel-body">
+		<div class="card">
+			<div class="card-header">Available Menu Items</div>
+			<div class="card-block">
 				<ul id="available">
 					<li data-id="custom" class="clearfix">
-						<div data-id="custom" class="drag-item alert alert-success pull-left">
+						<div data-id="custom" class="drag-item alert alert-success pull-xs-left">
 							<i class="fa fa-fw fa-plus-circle"></i>
 						</div>
 						<p>
@@ -121,7 +121,7 @@
 					</li>
 					<!-- BEGIN available -->
 					<li data-id="@index" class="clearfix">
-						<div data-id="@index" class="drag-item alert <!-- IF available.core -->alert-warning<!-- ELSE -->alert-info<!-- ENDIF available.core --> pull-left">
+						<div data-id="@index" class="drag-item alert <!-- IF available.core -->alert-warning<!-- ELSE -->alert-info<!-- ENDIF available.core --> pull-xs-left">
 							<i class="fa fa-fw <!-- IF available.iconClass -->{available.iconClass}<!-- ELSE -->fa-navicon<!-- ENDIF available.iconClass -->"></i>
 						</div>
 						<p>

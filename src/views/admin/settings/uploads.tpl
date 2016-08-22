@@ -87,7 +87,7 @@
 				<div class="input-group">
 					<input id="defaultAvatar" type="text" class="form-control" placeholder="A custom image to use instead of user icons" data-field="defaultAvatar" />
 					<span class="input-group-btn">
-						<input data-action="upload" data-target="defaultAvatar" data-route="{config.relative_path}/api/admin/uploadDefaultAvatar" type="button" class="btn btn-default" value="Upload"></input>
+						<input data-action="upload" data-target="defaultAvatar" data-route="{config.relative_path}/api/admin/uploadDefaultAvatar" type="button" class="btn btn-secondary" value="Upload"></input>
 					</span>
 				</div>
 			</div>

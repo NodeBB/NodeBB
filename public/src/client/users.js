@@ -10,7 +10,7 @@ define('forum/users', ['translator'], function(translator) {
 	Users.init = function() {
 		app.enterRoom('user_list');
 
-		$('.nav-pills li').removeClass('active').find('a[href="' + window.location.pathname + '"]').parent().addClass('active');
+		$('.nav-pills li').removeClass('active').find('a[href="' + window.location.pathname + '"]').addClass('active');
 
 		handleSearch();
 

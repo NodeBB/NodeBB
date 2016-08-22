@@ -1,0 +1,14 @@
+.group {
+	[component="groups/members"] {
+		padding: 0;
+		tbody {
+			max-height: 500px;
+			display: block;
+			overflow-y: auto;
+			padding-bottom: 100px;
+			.member-name {
+				width: 100%;
+			}
+		}
+	}
+}
