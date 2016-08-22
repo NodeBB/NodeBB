@@ -5,6 +5,7 @@ var user = require('../../user');
 var meta = require('../../meta');
 var db = require('../../database');
 var pagination = require('../../pagination');
+var events = require('../../events');
 
 
 var usersController = {};
@@ -180,6 +181,12 @@ function render(req, res, data) {
 }
 
 usersController.getCSV = function(req, res, next) {
+	events.log({
+		type: 'getUsersCSV',
+		uid: req.user.uid,
+		ip: req.ip
+	});
+
 	user.getUsersCSV(function(err, data) {
 		if (err) {
 			return next(err);

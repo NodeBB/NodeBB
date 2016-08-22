@@ -46,6 +46,10 @@ Upgrade.upgrade = function(callback) {
 		function(next) {
 			// Prepare for upgrade & check to make sure the upgrade is possible
 			db.get('schemaDate', function(err, value) {
+				if (err) {
+					return next(err);
+				}
+
 				if(!value) {
 					db.set('schemaDate', latestSchema, function() {
 						next();
@@ -506,8 +510,16 @@ Upgrade.upgrade = function(callback) {
 				var privilegesAPI = require('./privileges');
 
 				db.getSortedSetRange('categories:cid', 0, -1, function(err, cids) {
+					if (err) {
+						return next(err);
+					}
+
 					async.eachSeries(cids, function(cid, next) {
 						privilegesAPI.categories.list(cid, function(err, data) {
+							if (err) {
+								return next(err);
+							}
+
 							var groups = data.groups;
 							var users = data.users;
 
@@ -628,6 +640,10 @@ Upgrade.upgrade = function(callback) {
 				var meta = require('./meta');
 
 				db.getSortedSetRange('categories:cid', 0, -1, function(err, cids) {
+					if (err) {
+						return next(err);
+					}
+
 					async.eachSeries(cids, function(cid, next) {
 						privilegesAPI.categories.list(cid, function(err, data) {
 							if (err) {
@@ -694,8 +710,16 @@ Upgrade.upgrade = function(callback) {
 				var privilegesAPI = require('./privileges');
 
 				db.getSortedSetRange('categories:cid', 0, -1, function(err, cids) {
+					if (err) {
+						return next(err);
+					}
+
 					async.eachSeries(cids, function(cid, next) {
 						privilegesAPI.categories.list(cid, function(err, data) {
+							if (err) {
+								return next(err);
+							}
+
 							var groups = data.groups;
 							var users = data.users;
 

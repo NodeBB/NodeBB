@@ -55,6 +55,8 @@
     "post-delete-duration-expired-hours-minutes": "Je kunt berichten pas %1 uur %2 minuten na het plaatsen verwijderen.",
     "post-delete-duration-expired-days": "Je kunt berichten pas %1 dagen na het plaatsen verwijderen.",
     "post-delete-duration-expired-days-hours": "Je kunt berichten pas %1 dag(en) %2 uur na het plaatsen verwijderen.",
+    "cant-delete-topic-has-reply": "You can't delete your topic after it has a reply",
+    "cant-delete-topic-has-replies": "You can't delete your topic after it has %1 replies",
     "content-too-short": "Geef wat meer inhoud aan een bericht! Berichten dienen uit minimaal %1 teken(s) te bestaan.",
     "content-too-long": "Kort het bericht wat in, het aantal gebruikte tekens overschrijdt het ingestelde limiet want berichten mogen niet meer dan %1 teken(s) bevatten.",
     "title-too-short": "Geef een titel op die uit meer tekens bestaat. Titels dienen ten minste uit %1 teken(s) te bestaan.",

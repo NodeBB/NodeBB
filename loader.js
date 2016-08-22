@@ -207,7 +207,8 @@ function getPorts() {
 
 Loader.restart = function() {
 	killWorkers();
-
+	nconf.remove('file');
+	nconf.use('file', { file: path.join(__dirname, '/config.json') });
 	Loader.start();
 };
 

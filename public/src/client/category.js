@@ -91,6 +91,10 @@ define('forum/category', [
 
 	Category.toBottom = function() {
 		socket.emit('categories.getTopicCount', ajaxify.data.cid, function(err, count) {
+			if (err) {
+				return app.alertError(err.message);
+			}
+
 			navigator.scrollBottom(count - 1);
 		});
 	};

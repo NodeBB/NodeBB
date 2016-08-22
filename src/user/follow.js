@@ -85,6 +85,10 @@ module.exports = function(User) {
 				start: start,
 				stop: stop
 			}, function(err, data) {
+				if (err) {
+					return callback(err);
+				}
+
 				User.getUsers(data.uids, uid, callback);
 			});
 		});

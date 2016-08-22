@@ -267,6 +267,10 @@ module.exports = function(Meta) {
 				}
 
 				async.map(paths, fs.readFile, function(err, files) {
+					if (err) {
+						return callback(err);
+					}
+
 					Meta.js.target[target] = {
 						cache: files[0],
 						map: files[1] || ''

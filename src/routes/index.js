@@ -36,6 +36,9 @@ function mainRoutes(app, middleware, controllers) {
 	setupPageRoute(app, '/search/:term?', middleware, [], controllers.search.search);
 	setupPageRoute(app, '/reset/:code?', middleware, [], controllers.reset);
 	setupPageRoute(app, '/tos', middleware, [], controllers.termsOfUse);
+
+	app.get('/ping', controllers.ping);
+	app.get('/sping', controllers.ping);
 }
 
 function globalModRoutes(app, middleware, controllers) {
@@ -153,6 +156,7 @@ module.exports = function(app, middleware, hotswapIds) {
 	}));
 	app.use('/vendor/jquery/timeago/locales', middleware.processTimeagoLocales);
 	app.use(controllers.handle404);
+	app.use(controllers.handleURIErrors);
 	app.use(controllers.handleErrors);
 
 	// Add plugin routes

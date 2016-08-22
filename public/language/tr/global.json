@@ -92,5 +92,6 @@
     "enter_page_number": "Sayfa numarasını girin",
     "upload_file": "Dosya yükle",
     "upload": "Yükle",
-    "allowed-file-types": "İzin verilen dosya tipleri %1"
+    "allowed-file-types": "İzin verilen dosya tipleri %1",
+    "unsaved-changes": "Kaydedilmemiş değişiklikler var. Çıkmak istediğinize emin misiniz?"
 }

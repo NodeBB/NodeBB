@@ -82,7 +82,12 @@ function resetTheme(themeId) {
 				type: 'local',
 				id: themeId
 			}, function(err) {
-				winston.info('[reset] Theme reset to ' + themeId);
+				if (err) {
+					winston.warn('[reset] Failed to reset theme to ' + themeId);
+				} else {
+					winston.info('[reset] Theme reset to ' + themeId);
+				}
+
 				process.exit();
 			});		
 		}

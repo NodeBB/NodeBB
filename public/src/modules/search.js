@@ -73,6 +73,14 @@ define('search', ['navigator', 'translator'], function(nav, translator) {
 		return decodeURIComponent($.param(query));
 	}
 
+	Search.getSearchPreferences = function() {
+		try {
+			return JSON.parse(localStorage.getItem('search-preferences'));
+		} catch(e) {
+			return {};
+		}
+	};
+
 	Search.queryTopic = function(tid, term, callback) {
 		socket.emit('topics.search', {
 			tid: tid,
@@ -134,6 +142,10 @@ define('search', ['navigator', 'translator'], function(nav, translator) {
 				topicPostSort: config.topicPostSort
 			};
 			socket.emit('posts.getPidIndex', data, function(err, postIndex) {
+				if (err) {
+					return app.alertError(err.message);
+				}
+
 				nav.scrollToPost(postIndex, true);
 			});
 		} else {

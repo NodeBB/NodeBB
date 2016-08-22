@@ -336,6 +336,18 @@ describe('Sorted Set methods', function() {
 	});
 
 	describe('sortedSetScores()', function() {
+		before(function(done) {
+			db.sortedSetAdd('zeroScore', 0, 'value1', done);
+		});
+
+		it('should return 0 if score is 0', function(done) {
+			db.sortedSetScores('zeroScore', ['value1'], function(err, scores) {
+				assert.ifError(err);
+				assert.equal(0, scores[0]);
+				done();
+			});
+		});
+
 		it('should return the scores of value in sorted sets', function(done) {
 			db.sortedSetScores('sortedSetTest1', ['value2', 'value1', 'doesnotexist'], function(err, scores) {
 				assert.equal(err, null);

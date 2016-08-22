@@ -1,6 +1,7 @@
 "use strict";
 
 var async = require('async');
+var utils = require('../../../public/src/utils');
 
 module.exports = function(db, module) {
 	var helpers = module.helpers.mongo;
@@ -381,12 +382,12 @@ module.exports = function(db, module) {
 				map[item.value] = item.score;
 			});
 
-			var	returnData = new Array(values.length),
-				score;
+			var returnData = new Array(values.length);
+			var score;
 
 			for(var i=0; i<values.length; ++i) {
 				score = map[values[i]];
-				returnData[i] = score ? score : null;
+				returnData[i] = utils.isNumber(score) ? score : null;
 			}
 
 			callback(null, returnData);

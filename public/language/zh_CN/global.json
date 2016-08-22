@@ -92,5 +92,6 @@
     "enter_page_number": "输入页码",
     "upload_file": "上传文件",
     "upload": "上传",
-    "allowed-file-types": "允许的文件类型有 %1"
+    "allowed-file-types": "允许的文件类型有 %1",
+    "unsaved-changes": "You have unsaved changes. Are you sure you wish to navigate away?"
 }

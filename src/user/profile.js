@@ -49,6 +49,10 @@ module.exports = function(User) {
 				}
 
 				User.getUserField(uid, 'email', function(err, email) {
+					if (err) {
+						return next(err);
+					}
+
 					if(email === data.email) {
 						return next();
 					}

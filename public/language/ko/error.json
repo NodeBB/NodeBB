@@ -55,6 +55,8 @@
     "post-delete-duration-expired-hours-minutes": "You are only allowed to delete posts for %1 hour(s) %2 minute(s) after posting",
     "post-delete-duration-expired-days": "You are only allowed to delete posts for %1 day(s) after posting",
     "post-delete-duration-expired-days-hours": "You are only allowed to delete posts for %1 day(s) %2 hour(s) after posting",
+    "cant-delete-topic-has-reply": "You can't delete your topic after it has a reply",
+    "cant-delete-topic-has-replies": "You can't delete your topic after it has %1 replies",
     "content-too-short": "게시물의 내용이 너무 짧습니다. 내용은 최소 %1자 이상이어야 합니다.",
     "content-too-long": "게시물의 내용이 너무 깁니다. 내용은 최대 %1자 이내로 작성할 수 있습니다.",
     "title-too-short": "제목이 너무 짧습니다. 제목은 최소 %1자 이상이어야 합니다.",

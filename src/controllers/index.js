@@ -202,6 +202,10 @@ Controllers.registerInterstitial = function(req, res, next) {
 		userData: req.session.registration,
 		interstitials: []
 	}, function(err, data) {
+		if (err) {
+			return next(err);
+		}
+
 		if (!data.interstitials.length) {
 			return next();
 		}
@@ -212,6 +216,10 @@ Controllers.registerInterstitial = function(req, res, next) {
 		var errors = req.flash('error');
 
 		async.parallel(renders, function(err, sections) {
+			if (err) {
+				return next(err);
+			}
+
 			res.render('registerComplete', {
 				errors: errors,
 				sections: sections
@@ -331,6 +339,10 @@ Controllers.termsOfUse = function(req, res, next) {
 	res.render('tos', {termsOfUse: meta.config.termsOfUse});
 };
 
+Controllers.ping = function(req, res) {
+	res.status(200).send(req.path === '/sping' ? 'healthy' : '200');
+};
+
 Controllers.handle404 = function(req, res) {
 	var relativePath = nconf.get('relative_path');
 	var isLanguage = new RegExp('^' + relativePath + '/language/.*/.*.json');
@@ -373,6 +385,35 @@ Controllers.handle404 = function(req, res) {
 	}
 };
 
+Controllers.handleURIErrors = function(err, req, res, next) {
+	// Handle cases where malformed URIs are passed in
+	if (err instanceof URIError) {
+		var tidMatch = req.path.match(/^\/topic\/(\d+)\//);
+		var cidMatch = req.path.match(/^\/category\/(\d+)\//);
+
+		if (tidMatch) {
+			res.redirect(nconf.get('relative_path') + tidMatch[0]);
+		} else if (cidMatch) {
+			res.redirect(nconf.get('relative_path') + cidMatch[0]);
+		} else {
+			winston.warn('[controller] Bad request: ' + req.path);
+			if (res.locals.isAPI) {
+				res.status(400).json({
+					error: '[[global:400.title]]'
+				});
+			} else {
+				req.app.locals.middleware.buildHeader(req, res, function() {
+					res.render('400', { error: validator.escape(String(err.message)) });
+				});
+			}
+		}
+
+		return;
+	} else {
+		next();
+	}
+};
+
 Controllers.handleErrors = function(err, req, res, next) {
 	switch (err.code) {
 		case 'EBADCSRFTOKEN':
@@ -395,7 +436,7 @@ Controllers.handleErrors = function(err, req, res, next) {
 		res.json({path: validator.escape(path), error: err.message});
 	} else {
 		req.app.locals.middleware.buildHeader(req, res, function() {
-			res.render('500', {path: validator.escape(path), error: validator.escape(String(err.message))});
+			res.render('500', { path: validator.escape(path), error: validator.escape(String(err.message)) });
 		});
 	}
 };

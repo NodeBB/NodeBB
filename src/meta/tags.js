@@ -89,6 +89,10 @@ module.exports = function(Meta) {
 				plugins.fireHook('filter:meta.getLinkTags', defaultLinks, next);
 			}
 		}, function(err, results) {
+			if (err) {
+				return callback(err);
+			}
+
 			meta = results.tags.concat(meta || []).map(function(tag) {
 				if (!tag || typeof tag.content !== 'string') {
 					winston.warn('Invalid meta tag. ', tag);

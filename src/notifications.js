@@ -495,6 +495,8 @@ var utils = require('../public/src/utils');
 						} else if (numUsers > 2) {
 							notifications[modifyIndex].bodyShort = '[[' + mergeId + '_multiple, ' + usernames[0] + ', ' + (numUsers - 1) + titleEscaped + ']]';
 						}
+
+						notifications[modifyIndex].path = set[set.length-1].path;
 						break;
 
 					case 'new_register':

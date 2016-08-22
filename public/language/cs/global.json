@@ -92,5 +92,6 @@
     "enter_page_number": "Zadejte číslo stránky",
     "upload_file": "Nahrár soubor",
     "upload": "Nahrát",
-    "allowed-file-types": "Povolené typy souborů jsou %1"
+    "allowed-file-types": "Povolené typy souborů jsou %1",
+    "unsaved-changes": "You have unsaved changes. Are you sure you wish to navigate away?"
 }

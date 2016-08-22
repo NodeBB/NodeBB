@@ -23,6 +23,10 @@ describe('Topic\'s', function() {
 			};
 
 		User.create({username: userData.username, password: userData.password, email: userData.email}, function(err, uid) {
+			if (err) {
+				return done(err);
+			}
+
 			categories.create({
 				name: 'Test Category',
 				description: 'Test category created by testing script',
@@ -30,6 +34,10 @@ describe('Topic\'s', function() {
 				blockclass: 'category-blue',
 				order: '5'
 			}, function(err, category) {
+				if (err) {
+					return done(err);
+				}
+
 				categoryObj = category;
 
 				topic = {
@@ -91,6 +99,10 @@ describe('Topic\'s', function() {
 
 		before(function(done) {
 			topics.post({uid: topic.userId, title: topic.title, content: topic.content, cid: topic.categoryId}, function(err, result) {
+				if (err) {
+					return done(err);
+				}
+
 				newTopic = result.topicData;
 				newPost = result.postData;
 				done();
@@ -134,6 +146,10 @@ describe('Topic\'s', function() {
 
 		before(function(done) {
 			topics.post({uid: topic.userId, title: topic.title, content: topic.content, cid: topic.categoryId}, function(err, result) {
+				if (err) {
+					return done(err);
+				}
+
 				newTopic = result.topicData;
 				newPost = result.postData;
 				done();
@@ -188,12 +204,24 @@ describe('Topic\'s', function() {
 
 	describe('.purge/.delete', function() {
 		var newTopic;
-
+		var followerUid;
 		before(function(done) {
-			topics.post({uid: topic.userId, title: topic.title, content: topic.content, cid: topic.categoryId}, function(err, result) {
-				newTopic = result.topicData;
-				done();
-			});
+			async.waterfall([
+				function(next) {
+					topics.post({uid: topic.userId, title: topic.title, content: topic.content, cid: topic.categoryId}, function(err, result) {
+						assert.ifError(err);
+						newTopic = result.topicData;
+						next();
+					});
+				},
+				function(next) {
+					User.create({username: 'topicFollower', password: '123456'}, next);
+				},
+				function(_uid, next) {
+					followerUid = _uid;
+					topics.follow(newTopic.tid, _uid, next);
+				}
+			], done);
 		});
 
 		it('should delete the topic', function(done) {
@@ -206,7 +234,11 @@ describe('Topic\'s', function() {
 		it('should purge the topic', function(done) {
 			topics.purge(newTopic.tid, 1, function(err) {
 				assert.ifError(err);
-				done();
+				db.isSortedSetMember('uid:' + followerUid + ':followed_tids', newTopic.tid, function(err, isMember) {
+					assert.ifError(err);
+					assert.strictEqual(false, isMember);
+					done();
+				});
 			});
 		});
 	});
@@ -220,6 +252,10 @@ describe('Topic\'s', function() {
 			async.waterfall([
 				function(done){
 					topics.post({uid: topic.userId, title: 'Topic to be ignored', content: 'Just ignore me, please!', cid: topic.categoryId}, function(err, result) {
+						if (err) {
+							return done(err);
+						}
+
 						newTopic = result.topicData;
 						newTid = newTopic.tid;
 						done();

@@ -20,6 +20,10 @@ module.exports = function(Meta) {
 
 	Meta.errors.get = function(escape, callback) {
 		db.getSortedSetRevRangeByScoreWithScores('errors:404', 0, -1, '+inf', '-inf', function(err, data) {
+			if (err) {
+				return callback(err);
+			}
+
 			data = data.map(function(nfObject) {
 				nfObject.value = escape ? validator.escape(nfObject.value) : nfObject.value;
 				return nfObject;

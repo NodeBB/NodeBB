@@ -40,7 +40,7 @@ app.cacheBuster = null;
 			components.get('user/logout').on('click', app.logout);
 		});
 
-		Visibility.change(function(e, state){
+		Visibility.change(function(event, state){
 			if (state === 'visible') {
 				app.isFocused = true;
 				app.alternatingTitle('');
@@ -117,11 +117,37 @@ app.cacheBuster = null;
 	};
 
 	app.alertError = function (message, timeout) {
+		if (message === '[[error:invalid-session]]') {
+			return app.handleInvalidSession();
+		}
+
 		app.alert({
 			title: '[[global:alert.error]]',
 			message: message,
 			type: 'danger',
 			timeout: timeout ? timeout : 10000
+		});
+	};
+
+	app.handleInvalidSession = function() {
+		if (app.flags && app.flags._sessionRefresh) {
+			return;
+		}
+
+		app.flags = app.flags || {};
+		app.flags._sessionRefresh = true;
+
+		require(['translator'], function(translator) {
+			translator.translate('[[error:invalid-session-text]]', function(translated) {
+				bootbox.alert({
+					title: '[[error:invalid-session]]',
+					message: translated,
+					closeButton: false,
+					callback: function() {
+						window.location.reload();
+					}
+				});
+			});
 		});
 	};
 
@@ -261,7 +287,8 @@ app.cacheBuster = null;
 		});
 	};
 
-	app.newChat = function (touid) {
+	app.newChat = function (touid, callback) {
+		callback = callback || function() {};
 		if (!app.user.uid) {
 			return app.alertError('[[error:not-logged-in]]');
 		}
@@ -270,11 +297,14 @@ app.cacheBuster = null;
 			if (err) {
 				return app.alertError(err.message);
 			}
+
 			if (!ajaxify.currentPage.startsWith('chats')) {
 				app.openChat(roomId);
 			} else {
 				ajaxify.go('chats/' + roomId);
 			}
+
+			callback(false, roomId);
 		});
 	};
 
@@ -409,7 +439,9 @@ app.cacheBuster = null;
 		$('#search-form').on('submit', function () {
 			var input = $(this).find('input');
 			require(['search'], function(search) {
-				search.query({term: input.val()}, function() {
+				var data = search.getSearchPreferences();
+				data.term = input.val();
+				search.query(data, function() {
 					input.val('');
 				});
 			});

@@ -49,6 +49,10 @@ homePageController.get = function(req, res, next) {
 				name: 'Popular'
 			}
 		].concat(categoryData)}, function(err, data) {
+			if (err) {
+				return next(err);
+			}
+
 			data.routes.push({
 				route: '',
 				name: 'Custom'

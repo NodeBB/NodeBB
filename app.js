@@ -285,6 +285,11 @@ function upgrade() {
 
 function activate() {
 	require('./src/database').init(function(err) {
+		if (err) {
+			winston.error(err.stack);
+			process.exit(1);
+		}
+
 		var plugin = nconf.get('_')[1] ? nconf.get('_')[1] : nconf.get('activate'),
 			db = require('./src/database');
 
@@ -296,9 +301,19 @@ function activate() {
 
 function listPlugins() {
 	require('./src/database').init(function(err) {
+		if (err) {
+			winston.error(err.stack);
+			process.exit(1);
+		}
+
 		var db = require('./src/database');
 
 		db.getSortedSetRange('plugins:active', 0, -1, function(err, plugins) {
+			if (err) {
+				winston.error(err.stack);
+				process.exit(1);
+			}
+
 			winston.info('Active plugins: \n\t - ' + plugins.join('\n\t - '));
 			process.exit();
 		});

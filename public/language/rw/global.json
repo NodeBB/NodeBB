@@ -92,5 +92,6 @@
     "enter_page_number": "Shyiramo nimero ya paji",
     "upload_file": "Pakira ifayilo",
     "upload": "Pakira",
-    "allowed-file-types": "Ubwoko bw'amafayilo bwemewe ni %1"
+    "allowed-file-types": "Ubwoko bw'amafayilo bwemewe ni %1",
+    "unsaved-changes": "You have unsaved changes. Are you sure you wish to navigate away?"
 }

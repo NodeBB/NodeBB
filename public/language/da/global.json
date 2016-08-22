@@ -92,5 +92,6 @@
     "enter_page_number": "Indsæt sideantal",
     "upload_file": "Upload fil",
     "upload": "Upload",
-    "allowed-file-types": "Tilladte filtyper er %1"
+    "allowed-file-types": "Tilladte filtyper er %1",
+    "unsaved-changes": "You have unsaved changes. Are you sure you wish to navigate away?"
 }

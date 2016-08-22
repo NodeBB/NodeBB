@@ -95,6 +95,10 @@ define('admin/manage/groups', [
 					sort: 'date'
 				}
 			}, function(err, groups) {
+				if (err) {
+					return app.alertError(err.message);
+				}
+
 				templates.parse('admin/manage/groups', 'groups', {
 					groups: groups
 				}, function(html) {

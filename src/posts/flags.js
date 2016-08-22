@@ -106,6 +106,10 @@ module.exports = function(Posts) {
 						async.series([
 							function(next) {
 								db.getSortedSetRange('pid:' + pid + ':flag:uids', 0, -1, function(err, uids) {
+									if (err) {
+										return next(err);
+									}
+
 									async.each(uids, function(uid, next) {
 										var nid = 'post_flag:' + pid + ':uid:' + uid;
 										async.parallel([

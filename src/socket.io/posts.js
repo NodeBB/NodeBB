@@ -30,6 +30,7 @@ SocketPosts.reply = function(socket, data, callback) {
 
 	data.uid = socket.uid;
 	data.req = websockets.reqFromSocket(socket);
+	data.timestamp = Date.now();
 
 	topics.reply(data, function(err, postData) {
 		if (err) {

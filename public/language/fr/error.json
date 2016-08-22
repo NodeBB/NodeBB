@@ -55,6 +55,8 @@
     "post-delete-duration-expired-hours-minutes": "Vous ne pouvez supprimer un message que pendant %1 heure(s) et %2 minute(s) après l'avoir posté.",
     "post-delete-duration-expired-days": "Vous ne pouvez supprimer un message que pendant %1 jour(s) après l'avoir posté.",
     "post-delete-duration-expired-days-hours": "Vous ne pouvez supprimer un message que pendant %1 jour(s) et %2 heure(s) après l'avoir posté.",
+    "cant-delete-topic-has-reply": "Vous ne pouvez pas supprimer votre sujet s'il a au moins une réponse.",
+    "cant-delete-topic-has-replies": "Vous ne pouvez pas supprimer votre sujet s'il a au moins %1 réponses.",
     "content-too-short": "Veuillez entrer un message plus long. %1 caractère(s) minimum.",
     "content-too-long": "Veuillez poster un message plus cours. Les messages ne peuvent être plus long que %1 caractère(s).",
     "title-too-short": "Veuillez entrer un titre plus long. %1 caractère(s) minimum.",

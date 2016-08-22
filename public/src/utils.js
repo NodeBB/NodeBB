@@ -45,8 +45,16 @@
 				list.forEach(function(file) {
 					file = dir + '/' + file;
 					fs.stat(file, function(err, stat) {
+						if (err) {
+							return done(err);
+						}
+
 						if (stat && stat.isDirectory()) {
 							utils.walk(file, function(err, res) {
+								if (err) {
+									return done(err);
+								}
+
 								results = results.concat(res);
 								if (!--pending) {
 									done(null, results);

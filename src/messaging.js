@@ -128,7 +128,10 @@ var async = require('async'),
 				});
 
 				async.map(messages, function(message, next) {
-					Messaging.parse(message.content, message.fromuid, uid, roomId, isNew, function(result) {
+					Messaging.parse(message.content, message.fromuid, uid, roomId, isNew, function(err, result) {
+						if (err) {
+							return next(err);
+						}
 						message.content = result;
 						message.cleanedContent = S(result).stripTags().decodeHTMLEntities().s;
 						next(null, message);
@@ -195,7 +198,7 @@ var async = require('async'),
 	Messaging.parse = function (message, fromuid, uid, roomId, isNew, callback) {
 		plugins.fireHook('filter:parse.raw', message, function(err, parsed) {
 			if (err) {
-				return callback(message);
+				return callback(err);
 			}
 
 			var messageData = {
@@ -209,7 +212,7 @@ var async = require('async'),
 			};
 
 			plugins.fireHook('filter:messaging.parse', messageData, function(err, messageData) {
-				callback(messageData.parsedMessage);
+				callback(err, messageData ? messageData.parsedMessage : '');
 			});
 		});
 	};

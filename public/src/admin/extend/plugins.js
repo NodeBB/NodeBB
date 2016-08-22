@@ -20,6 +20,9 @@ define('admin/extend/plugins', function() {
 			pluginID = pluginEl.attr('data-plugin-id');
 			var btn = $('#' + pluginID + ' [data-action="toggleActive"]');
 			socket.emit('admin.plugins.toggleActive', pluginID, function(err, status) {
+				if (err) {
+					return app.alertError(err);
+				}
 				btn.html('<i class="fa fa-power-off"></i> ' + (status.active ? 'Deactivate' : 'Activate'));
 				btn.toggleClass('btn-warning', status.active).toggleClass('btn-success', !status.active);
 

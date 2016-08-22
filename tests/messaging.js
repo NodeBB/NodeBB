@@ -17,6 +17,10 @@ describe('Messaging Library', function() {
 			async.apply(User.create, { username: 'baz', password: 'quux' }),	// restricted user
 			async.apply(User.create, { username: 'herp', password: 'derp' })	// regular user
 		], function(err, uids) {
+			if (err) {
+				return done(err);
+			}
+
 			testUids = uids;
 			async.parallel([
 				async.apply(Groups.join, 'administrators', uids[0]),

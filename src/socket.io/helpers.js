@@ -172,7 +172,15 @@ SocketHelpers.rescindUpvoteNotification = function(pid, fromuid) {
 	notifications.rescind(nid);
 
 	posts.getPostField(pid, 'uid', function(err, uid) {
+		if (err) {
+			return winston.error(err);
+		}
+
 		user.notifications.getUnreadCount(uid, function(err, count) {
+			if (err) {
+				return winston.error(err);
+			}
+
 			websockets.in('uid_' + uid).emit('event:notifications.updateCount', count);
 		});
 	});

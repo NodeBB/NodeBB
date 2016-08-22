@@ -55,6 +55,8 @@
     "post-delete-duration-expired-hours-minutes": "No puedes borrar mensajes hasta pasado %1 hora(s) y %2 minuto(s) después de haberlo escrito",
     "post-delete-duration-expired-days": "No puedes borrar mensajes hasta pasado %1 día(s) después de haberlo escrito",
     "post-delete-duration-expired-days-hours": "No puedes borrar mensajes hasta pasado %1 día(s) y %2 hora(s) después de haberlo escrito",
+    "cant-delete-topic-has-reply": "No puedes borrar tu tema después de que tenga respuestas",
+    "cant-delete-topic-has-replies": "No puedes borrar tu tema despues de que tenga ℅1 respuestas",
     "content-too-short": "Por favor introduzca una publicación más larga. Las publicaciones deben contener al menos %1 caractere(s).",
     "content-too-long": "Por favor introduzca un mensaje más corto. Los mensajes no pueden exceder los %1 caractere(s).",
     "title-too-short": "Por favor introduzca un título más largo. Los títulos deben contener al menos %1 caractere(s).",

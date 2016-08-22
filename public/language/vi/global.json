@@ -92,5 +92,6 @@
     "enter_page_number": "Nhập vào số trang",
     "upload_file": "Tải file lên",
     "upload": "Tải lên",
-    "allowed-file-types": "Các định dạng file được cho phép là %1"
+    "allowed-file-types": "Các định dạng file được cho phép là %1",
+    "unsaved-changes": "You have unsaved changes. Are you sure you wish to navigate away?"
 }

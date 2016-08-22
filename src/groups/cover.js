@@ -7,6 +7,7 @@ var fs = require('fs');
 var crypto = require('crypto');
 var Jimp = require('jimp');
 var mime = require('mime');
+var winston = require('winston');
 
 var db = require('../database');
 var file = require('../file');
@@ -70,6 +71,10 @@ module.exports = function(Groups) {
 		], function (err) {
 			if (err) {
 				return fs.unlink(tempPath, function(unlinkErr) {
+					if (unlinkErr) {
+						winston.error(unlinkErr);
+					}
+
 					callback(err);	// send back original error
 				});
 			}

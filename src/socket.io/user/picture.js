@@ -38,6 +38,10 @@ module.exports = function(SocketUser) {
 							type: type,
 							picture: undefined
 						}, function(err, returnData) {
+							if (err) {
+								return next(err);
+							}
+
 							next(null, returnData.picture || '');
 						});
 						break;

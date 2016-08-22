@@ -230,7 +230,7 @@ define('forum/groups/details', [
 		if (ajaxify.data.group.isOwner) {
 			var searchInput = $('[component="groups/members/invite"]');
 			require(['autocomplete'], function(autocomplete) {
-				autocomplete.user(searchInput, function(e, selected) {
+				autocomplete.user(searchInput, function(event, selected) {
 					socket.emit('groups.issueInvite', {
 						toUid: selected.item.user.uid,
 						groupName: ajaxify.data.group.name
