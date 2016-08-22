@@ -1,0 +1,121 @@
+	$gray-base:              #000;
+	$gray-darker:            lighten($gray-base, 13.5%); // #222
+	$gray-dark:              lighten($gray-base, 20%);   // #333
+	$gray:                   lighten($gray-base, 33.5%); // #555
+	$gray-light:             lighten($gray-base, 46.7%); // #777
+	$gray-lighter:           lighten($gray-base, 93.5%); // #eee
+
+	$brand-primary:         darken(#428bca, 6.5%); // #337ab7
+	$brand-success:         #5cb85c;
+	$brand-info:            #5bc0de;
+	$brand-warning:         #f0ad4e;
+	$brand-danger:          #d9534f;
+
+
+#move_thread_modal .category-list {
+	height: 500px;
+	overflow-y: auto;
+	overflow-x: hidden;
+}
+
+.topic-watch-dropdown {
+	.help-text {
+		margin-left: 20px;
+	}
+}
+
+.category-list {
+	padding: 0;
+
+	li {
+		@include inline-block;
+		@include pointer;
+		padding: 0.5em;
+		margin: 0.25em;
+		@include border-radius(3px);
+
+		&.disabled {
+			background-color: #888!important;
+			@include opacity(0.5);
+		}
+	}
+}
+
+.user-list {
+	padding-left: 2rem;
+	padding-top: 1rem;
+
+	li {
+		@include pointer;
+		display: inline-block;
+		list-style-type: none;
+		padding: 0.5rem 1rem;
+
+		&:hover {
+			background: #eee;
+		}
+
+		.avatar  {
+			float: left;
+			margin-right: 1rem;
+		}
+
+		span {
+			vertical-align: middle;
+			display: inline-block;
+		}
+	}
+}
+
+@mixin user-icon {
+	display: inline-block;
+	text-align: center;
+	color: $gray-lighter;
+	font-weight: normal;
+
+	&:before {
+		content: '';
+		display: inline-block;
+		height: 100%;
+		vertical-align: middle;
+	}
+}
+
+.avatar {
+	/* Contains the user icon class as a mixin, so there's no need to include that in the template */
+	@include user-icon;
+
+	&.avatar-sm {
+		width: 24px;
+		height: 24px;
+		@include user-icon-style(24px, 1.5rem);
+	}
+
+	&.avatar-md {
+		width: 32px;
+		height: 32px;
+		@include user-icon-style(32px, 1.5rem);
+	}
+
+	&.avatar-lg {
+		width: 128px;
+		height: 128px;
+		@include user-icon-style(128px, 6rem);
+	}
+
+	&.avatar-rounded {
+		border-radius: 50%;
+	}
+}
+
+.ban-modal {
+	input[type="number"] {
+		width: 7rem;
+		text-align: center;
+		margin-left: 1rem;
+	}
+
+	.form-inline, .form-group {
+		width: 100%;
+	}
+}

@@ -1,0 +1,35 @@
+.settings {
+	.row {
+		margin-bottom: 30px;
+	}
+
+	.section-content {
+		border-left: 3px solid $brand-primary;
+
+		ul {
+			list-style-type: none;
+			font-size: 16px;
+			padding-left: 20px;
+		}
+	}
+
+	[data-action="upload"][type="text"] {
+		width: 95%;
+	}
+}
+
+select.form-control, input.form-control {
+	border-top: none;
+    border-left: none;
+    border-right: none;
+    border-radius: 0;
+    padding-left: 0;
+}
+
+.widget-area {
+	min-height: 20px;
+    padding: 19px;
+    margin-bottom: 20px;
+    background-color: #f9f9f9;
+    border: 1px solid transparent;
+}

@@ -1,11 +1,11 @@
 <ul class="nav nav-pills">
-	<li class="active"><a href="#installed" data-toggle="tab">Installed</a></li>
-	<li><a href="#active" data-toggle="tab">Active</a></li>
-	<li><a href="#upgrade" data-toggle="tab">
+	<li class="nav-item"><a class="nav-link active" href="#installed" data-toggle="tab">Installed</a></li>
+	<li class="nav-item"><a class="nav-link" href="#active" data-toggle="tab">Active</a></li>
+	<li class="nav-item"><a class="nav-link" href="#upgrade" data-toggle="tab">
 		Out of Date
 		<span class="badge">{upgradeCount}</span>
 	</a></li>
-	<li><a href="#download" data-toggle="tab">Find Plugins</a></li>
+	<li class="nav-item"><a class="nav-link" href="#download" data-toggle="tab">Find Plugins</a></li>
 </ul>
 <br />
 
@@ -36,23 +36,23 @@
 	</div>
 
 	<div class="col-lg-3 acp-sidebar">
-		<div class="panel panel-default">
-			<div class="panel-heading">Plugin Search</div>
-			<div class="panel-body">
+		<div class="card">
+			<div class="card-header">Plugin Search</div>
+			<div class="card-block">
 				<input autofocus class="form-control" type="text" id="plugin-search" placeholder="Search for plugin..."/><br/>
 			</div>
 		</div>
 
-		<div class="panel panel-default">
-			<div class="panel-heading">Re-order Plugins</div>
-			<div class="panel-body">
-				<button class="btn btn-default btn-block" id="plugin-order"><i class="fa fa-exchange"></i> Order Active Plugins</button>
+		<div class="card">
+			<div class="card-header">Re-order Plugins</div>
+			<div class="card-block">
+				<button class="btn btn-secondary btn-block" id="plugin-order"><i class="fa fa-exchange"></i> Order Active Plugins</button>
 			</div>
 		</div>
 
-		<div class="panel panel-default">
-			<div class="panel-heading">Interested in writing plugins for NodeBB?</div>
-			<div class="panel-body">
+		<div class="card">
+			<div class="card-header">Interested in writing plugins for NodeBB?</div>
+			<div class="card-block">
 				<p>
 					Full documentation regarding plugin authoring can be found in the <a target="_blank" href="https://docs.nodebb.org/en/latest/plugins/create.html">NodeBB Docs Portal</a>.
 				</p>
@@ -78,7 +78,7 @@
 					<ul class="plugin-list"></ul>
 				</div>
 				<div class="modal-footer">
-					<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
 					<button type="button" class="btn btn-primary" id="save-plugin-order">Save</button>
 				</div>
 			</div>

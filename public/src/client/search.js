@@ -135,7 +135,7 @@ define('forum/search', ['search', 'autocomplete'], function(searchModule, autoco
 			}
 		});
 
-		$('.search-result-text').find('img:not(.not-responsive)').addClass('img-responsive');
+		$('.search-result-text').find('img:not(.not-responsive)').addClass('img-fluid');
 	}
 
 	function handleSavePreferences() {

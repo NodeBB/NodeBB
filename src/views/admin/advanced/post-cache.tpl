@@ -1,9 +1,9 @@
 
 <div class="post-cache">
 	<div class="col-lg-9">
-		<div class="panel panel-default">
-			<div class="panel-heading"><i class="fa fa-calendar-o"></i> Post Cache</div>
-			<div class="panel-body" data-next="{next}">
+		<div class="card">
+			<div class="card-header"><i class="fa fa-calendar-o"></i> Post Cache</div>
+			<div class="card-block" data-next="{next}">
 
 				<label>Posts in Cache</label><br/>
 				<span>{cache.itemCount}</span><br/>

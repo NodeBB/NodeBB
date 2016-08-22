@@ -11,7 +11,7 @@ define('forum/popular', ['components'], function(components) {
 		components.get('popular/tab')
 			.removeClass('active')
 			.find('a[href="' + window.location.pathname + '"]')
-			.parent().addClass('active');
+			.addClass('active');
 	};
 
 	return Popular;

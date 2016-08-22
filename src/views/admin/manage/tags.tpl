@@ -1,8 +1,8 @@
 <div class="tags row">
 
 	<div class="col-lg-9">
-		<div class="panel panel-default tag-management">
-			<div class="panel-body">
+		<div class="card tag-management">
+			<div class="card-block">
 				<!-- IF !tags.length -->
 				Your forum does not have any topics with tags yet.
 				<!-- ENDIF !tags.length -->
@@ -31,9 +31,9 @@
 	</div>
 
 	<div class="col-lg-3 acp-sidebar">
-		<div class="panel panel-default">
-			<div class="panel-heading">Create & Modify Tags</div>
-			<div class="panel-body">
+		<div class="card">
+			<div class="card-header">Create & Modify Tags</div>
+			<div class="card-block">
 				<p>Select tags via clicking and/or dragging, use shift to select multiple.</p>
 				<button class="btn btn-primary btn-block" id="create">Create Tag</button>
 				<button class="btn btn-primary btn-block" id="modify">Modify Tags</button>
@@ -41,8 +41,8 @@
 			</div>
 		</div>
 
-		<div class="panel panel-default">
-			<div class="panel-body">
+		<div class="card">
+			<div class="card-block">
 				<input class="form-control" type="text" id="tag-search" placeholder="Search for tags..."/><br/>
 				Click <a href="/admin/settings/tags">here</a> to visit the tag settings page.
 			</div>

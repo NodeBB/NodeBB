@@ -1,8 +1,8 @@
 <div class="logger">
 	<div class="col-lg-9">
-		<div class="panel panel-default">
-			<div class="panel-heading">Logger Settings</div>
-			<div class="panel-body">
+		<div class="card">
+			<div class="card-header">Logger Settings</div>
+			<div class="card-block">
 				<p>
 					By enabling the check boxes, you will receive logs to your terminal. If you specify a path, logs will then be saved to a file instead. HTTP logging is useful for collecting statistics about who, when, and what people access on your forum. In addition to logging HTTP requests, we can also log socket.io events. Socket.io logging, in combination with redis-cli monitor, can be very helpful for learning NodeBB's internals.
 				</p>
@@ -35,9 +35,9 @@
 	</div>
 
 	<div class="col-lg-3 acp-sidebar">
-		<div class="panel panel-default">
-			<div class="panel-heading">Logger Control Panel</div>
-			<div class="panel-body">
+		<div class="card">
+			<div class="card-header">Logger Control Panel</div>
+			<div class="card-block">
 				<button class="btn btn-primary" id="save">Update Logger Settings</button>
 			</div>
 		</div>

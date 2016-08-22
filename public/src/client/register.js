@@ -2,7 +2,6 @@
 
 /* globals define, app, utils, socket, config, ajaxify, bootbox */
 
-
 define('forum/register', ['translator'], function(translator) {
 	var Register = {},
 		validationError = false,
@@ -67,7 +66,7 @@ define('forum/register', ['translator'], function(translator) {
 		register.on('click', function(e) {
 			var registerBtn = $(this);
 			var errorEl = $('#register-error-notify');
-			errorEl.addClass('hidden');
+			errorEl.addClass('hidden-xs-up');
 			e.preventDefault();
 			validateForm(function() {
 				if (validationError) {
@@ -102,7 +101,7 @@ define('forum/register', ['translator'], function(translator) {
 								window.location.href = config.relative_path + '/register?error=csrf-invalid';
 							} else {
 								errorEl.find('p').text(translated);
-								errorEl.removeClass('hidden');
+								errorEl.removeClass('hidden-xs-up');
 								registerBtn.removeClass('disabled');
 							}
 						});

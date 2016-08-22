@@ -1,8 +1,8 @@
 <div class="row dashboard">
 	<div class="col-lg-9">
-		<div class="panel panel-default">
-			<div class="panel-heading">Forum Traffic</div>
-			<div class="panel-body">
+		<div class="card">
+			<div class="card-header">Forum Traffic</div>
+			<div class="card-block">
 				<div class="graph-container">
 					<ul class="graph-legend">
 						<li><div class="page-views"></div><span>Page Views</span></li>
@@ -11,15 +11,15 @@
 					<canvas id="analytics-traffic" width="100%" height="400"></canvas>
 				</div>
 				<hr/>
-				<div class="text-center pull-left monthly-pageviews">
+				<div class="text-xs-center pull-xs-left monthly-pageviews">
 					<div><strong id="pageViewsLastMonth"></strong></div>
 					<div><a href="#" data-action="updateGraph" data-units="days" data-until="last-month">Page views Last Month</a></div>
 				</div>
-				<div class="text-center pull-left monthly-pageviews">
+				<div class="text-xs-center pull-xs-left monthly-pageviews">
 					<div><strong id="pageViewsThisMonth"></strong></div>
 					<div><a href="#" data-action="updateGraph" data-units="days">Page views This Month</a></div>
 				</div>
-				<div class="text-center pull-left monthly-pageviews">
+				<div class="text-xs-center pull-xs-left monthly-pageviews">
 					<div><strong id="pageViewsPastDay"></strong></div>
 					<div><a href="#" data-action="updateGraph" data-units="hours">Page views in last 24 hours</a></div>
 				</div>
@@ -29,23 +29,23 @@
 		<div class="row">
 			<!-- BEGIN stats -->
 			<div class="col-lg-6">
-				<div class="panel panel-default">
-					<div class="panel-heading">{stats.name}</div>
-					<div class="panel-body">
+				<div class="card">
+					<div class="card-header">{stats.name}</div>
+					<div class="card-block">
 						<div id="unique-visitors">
-							<div class="text-center pull-left">
+							<div class="text-xs-center pull-xs-left">
 								<span class="formatted-number">{stats.day}</span>
 								<div>Day</div>
 							</div>
-							<div class="text-center pull-left">
+							<div class="text-xs-center pull-xs-left">
 								<span class="formatted-number">{stats.week}</span>
 								<div>Week</div>
 							</div>
-							<div class="text-center pull-left">
+							<div class="text-xs-center pull-xs-left">
 								<span class="formatted-number">{stats.month}</span>
 								<div>Month</div>
 							</div>
-							<div class="text-center pull-left">
+							<div class="text-xs-center pull-xs-left">
 								<span class="formatted-number">{stats.alltime}</span>
 								<div>All Time</div>
 							</div>
@@ -56,9 +56,9 @@
 			<!-- END stats -->
 
 			<div class="col-lg-6">
-				<div class="panel panel-default">
-					<div class="panel-heading">Updates</div>
-					<div class="panel-body">
+				<div class="card">
+					<div class="card-header">Updates</div>
+					<div class="card-block">
 						<div class="alert alert-info version-check">
 							<p>You are running <strong>NodeBB v<span id="version">{version}</span></strong>.</p>
 						</div>
@@ -70,9 +70,9 @@
 			</div>
 
 			<div class="col-lg-6">
-				<div class="panel panel-default">
-					<div class="panel-heading">Notices</div>
-					<div class="panel-body">
+				<div class="card">
+					<div class="card-header">Notices</div>
+					<div class="card-block">
 					<!-- BEGIN notices -->
 						<div>
 							<!-- IF notices.done -->
@@ -91,9 +91,9 @@
 	</div>
 
 	<div class="col-lg-3">
-		<div class="panel panel-default">
-			<div class="panel-heading">System Control</div>
-			<div class="panel-body text-center">
+		<div class="card">
+			<div class="card-header">System Control</div>
+			<div class="card-block text-xs-center">
 				<p>
 					<button class="btn btn-danger btn-block restart" data-placement="bottom" data-toggle="tooltip" title="Restarting NodeBB will drop all existing connections for a few seconds">Restart</button>
 				</p>
@@ -106,9 +106,9 @@
 			</div>
 		</div>
 
-		<div class="panel panel-default">
-			<div class="panel-heading">Anonymous vs Registered Users</div>
-			<div class="panel-body">
+		<div class="card">
+			<div class="card-header">Anonymous vs Registered Users</div>
+			<div class="card-block">
 				<div class="graph-container pie-chart legend-up">
 					<ul class="graph-legend">
 						<li><div class="anonymous"></div><span>Anonymous</span></li>
@@ -119,9 +119,9 @@
 			</div>
 		</div>
 
-		<div class="panel panel-default">
-			<div class="panel-heading">User Presence</div>
-			<div class="panel-body">
+		<div class="card">
+			<div class="card-header">User Presence</div>
+			<div class="card-block">
 				<div class="graph-container pie-chart legend-up">
 					<ul class="graph-legend">
 						<li><div class="on-categories"></div><span>On categories list</span></li>
@@ -135,9 +135,9 @@
 			</div>
 		</div>
 
-		<div class="panel panel-default">
-			<div class="panel-heading">High Presence Topics</div>
-			<div class="panel-body">
+		<div class="card">
+			<div class="card-header">High Presence Topics</div>
+			<div class="card-block">
 				<div class="graph-container pie-chart legend-down">
 					<canvas id="analytics-topics"></canvas>
 					<ul class="graph-legend" id="topics-legend"></ul>
@@ -145,11 +145,9 @@
 			</div>
 		</div>
 
-
-
-		<div class="panel panel-default">
-			<div class="panel-heading">Active Users</div>
-			<div class="panel-body">
+		<div class="card">
+			<div class="card-header">Active Users</div>
+			<div class="card-block">
 				<div id="active-users"></div>
 			</div>
 		</div>

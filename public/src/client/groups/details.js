@@ -46,7 +46,7 @@ define('forum/groups/details', [
 
 		handleMemberInvitations();
 
-		components.get('groups/activity').find('.content img:not(.not-responsive)').addClass('img-responsive');
+		components.get('groups/activity').find('.content img:not(.not-responsive)').addClass('img-fluid');
 
 		detailsPage.on('click', '[data-action]', function() {
 			var btnEl = $(this),

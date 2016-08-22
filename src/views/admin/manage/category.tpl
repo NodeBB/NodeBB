@@ -1,8 +1,8 @@
 <div class="row">
 	<form role="form" class="category" data-cid="{category.cid}">
 		<ul class="nav nav-pills">
-			<li class="active"><a href="#category-settings" data-toggle="tab">Category Settings</a></li>
-			<li><a href="#privileges" data-toggle="tab">Privileges</a></li>
+			<li class="nav-item"><a class="nav-link active" href="#category-settings" data-toggle="tab">Category Settings</a></li>
+			<li class="nav-item"><a class="nav-link" href="#privileges" data-toggle="tab">Privileges</a></li>
 		</ul>
 		<br />
 		<div class="tab-content">
@@ -63,8 +63,8 @@
 				</div>
 
 				<div class="col-md-3 options acp-sidebar">
-					<div class="panel panel-default">
-						<div class="panel-body">
+					<div class="card">
+						<div class="card-block">
 							<div class="category-preview" style="
 								<!-- IF category.backgroundImage -->background-image: url({category.backgroundImage});<!-- ENDIF category.backgroundImage -->
 								<!-- IF category.bgColor -->background-color: {category.bgColor};<!-- ENDIF category.bgColor -->
@@ -77,7 +77,7 @@
 							</div>
 							<div class="btn-group btn-group-justified">
 								<div class="btn-group">
-									<button type="button" data-cid="{category.cid}" class="btn btn-default upload-button"><i class="fa fa-upload"></i> Upload Image</button>
+									<button type="button" data-cid="{category.cid}" class="btn btn-secondary upload-button"><i class="fa fa-upload"></i> Upload Image</button>
 								</div>
 								<!-- IF category.image -->
 								<div class="btn-group">
@@ -99,10 +99,10 @@
 									<label for="cid-{category.cid}-parentCid">Parent Category</label>
 									<br/>
 									<div class="btn-group <!-- IF !category.parent.name -->hide<!-- ENDIF !category.parent.name -->">
-										<button type="button" class="btn btn-default" data-action="changeParent" data-parentCid="{category.parent.cid}"><i class="fa {category.parent.icon}"></i> {category.parent.name}</button>
+										<button type="button" class="btn btn-secondary" data-action="changeParent" data-parentCid="{category.parent.cid}"><i class="fa {category.parent.icon}"></i> {category.parent.name}</button>
 										<button type="button" class="btn btn-warning" data-action="removeParent" data-parentCid="{category.parent.cid}"><i class="fa fa-times"></i></button>
 									</div>
-									<button type="button" class="btn btn-default btn-block <!-- IF category.parent.name -->hide<!-- ENDIF category.parent.name -->" data-action="setParent"><i class="fa fa-sitemap"></i> (None)</button>
+									<button type="button" class="btn btn-secondary btn-block <!-- IF category.parent.name -->hide<!-- ENDIF category.parent.name -->" data-action="setParent"><i class="fa fa-sitemap"></i> (None)</button>
 								</div>
 							</fieldset>
 							<hr/>

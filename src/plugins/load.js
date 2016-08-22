@@ -40,6 +40,9 @@ module.exports = function(Plugins) {
 					mapFiles(pluginData, 'less', 'lessFiles', next);
 				},
 				function(next) {
+					mapFiles(pluginData, 'sass', 'sassFiles', next);
+				},
+				function(next) {
 					mapClientSideScripts(pluginData, next);
 				},
 				function(next) {

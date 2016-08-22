@@ -14,16 +14,16 @@
 				<textarea id="blacklist-rules">{rules}</textarea>
 			</div>
 			<div class="col-sm-6">
-				<div class="panel panel-default">
-					<div class="panel-heading">Active Rules</div>
-					<div class="panel-body">
+				<div class="card">
+					<div class="card-header">Active Rules</div>
+					<div class="card-block">
 						<button type="button" class="btn btn-warning" data-action="test"><i class="fa fa-bomb"></i> Validate Blacklist</button>
 						<button type="button" class="btn btn-primary" data-action="apply"><i class="fa fa-save"></i> Apply Blacklist</button>
 					</div>
 				</div>
-				<div class="panel panel-default">
-					<div class="panel-heading">Syntax Hints</div>
-					<div class="panel-body">
+				<div class="card">
+					<div class="card-header">Syntax Hints</div>
+					<div class="card-block">
 						<p>
 							Define a single IP addresses per line. You can add IP blocks as long as they follow the CIDR format (e.g.
 							<code>192.168.100.0/22</code>).

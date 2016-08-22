@@ -65,7 +65,7 @@ define('forum/chats/messages', ['components', 'sounds', 'translator'], function(
 
 		newMessage.appendTo(chatContentEl);
 		newMessage.find('.timeago').timeago();
-		newMessage.find('img:not(.not-responsive)').addClass('img-responsive');
+		newMessage.find('img:not(.not-responsive)').addClass('img-fluid');
 		messages.scrollToBottom(chatContentEl);
 	}
 
