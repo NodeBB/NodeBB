@@ -1,6 +1,6 @@
 'use strict';
 
-var	async = require('async');
+var async = require('async');
 var db = require('../database');
 var categories = require('../categories');
 var privileges = require('../privileges');
@@ -171,22 +171,51 @@ SocketCategories.getMoveCategories = function(socket, data, callback) {
 };
 
 SocketCategories.watch = function(socket, cid, callback) {
-	user.watchCategory(socket.uid, cid, function(err) {
-		if (err) {
-			return callback(err);
-		}
-		topics.pushUnreadCount(socket.uid, callback);
-	});
+	ignoreOrWatch(user.watchCategory, socket, cid, callback);
 };
 
 SocketCategories.ignore = function(socket, cid, callback) {
-	user.ignoreCategory(socket.uid, cid, function(err) {
-		if (err) {
-			return callback(err);
-		}
-		topics.pushUnreadCount(socket.uid, callback);
-	});
+	ignoreOrWatch(user.ignoreCategory, socket, cid, callback);
 };
+
+function ignoreOrWatch(fn, socket, cid, callback) {
+	async.waterfall([
+		function(next) {
+			db.getSortedSetRange('categories:cid', 0, -1, next);
+		},
+		function(cids, next) {
+			categories.getCategoriesFields(cids, ['cid', 'parentCid'], next);
+		},
+		function(categoryData, next) {
+			categoryData.forEach(function(c) {
+				c.cid = parseInt(c.cid, 10);
+				c.parentCid = parseInt(c.parentCid, 10);
+			});
+
+			var cids = [parseInt(cid, 10)];
+
+			// filter to subcategories of cid
+
+			var any = true;
+			while (any) {
+				any = false;
+				categoryData.forEach(function(c) {
+					if (cids.indexOf(c.cid) === -1 && cids.indexOf(c.parentCid) !== -1) {
+						cids.push(c.cid);
+						any = true;
+					}
+				});
+			}
+
+			async.each(cids, function(cid, next) {
+				fn(socket.uid, cid, next);
+			}, next);
+		},
+		function(next) {
+			topics.pushUnreadCount(socket.uid, next);
+		}
+	], callback);
+}
 
 SocketCategories.isModerator = function(socket, cid, callback) {
 	user.isModerator(socket.uid, cid, callback);
