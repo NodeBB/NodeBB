@@ -298,10 +298,10 @@ function filterByTimerange(posts, timeRange, timeFilter) {
 }
 
 function sortPosts(posts, data) {
-	if (!posts.length) {
+	if (!posts.length || !data.sortBy) {
 		return;
 	}
-	data.sortBy = data.sortBy || 'timestamp';
+
 	data.sortDirection = data.sortDirection || 'desc';
 	var direction = data.sortDirection === 'desc' ? 1 : -1;
 
