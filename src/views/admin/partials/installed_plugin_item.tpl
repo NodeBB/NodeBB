@@ -17,7 +17,7 @@
 						<!-- ENDIF installed.description -->
 						<!-- IF installed.outdated --><i class="fa fa-exclamation-triangle text-danger"></i> <!-- ENDIF installed.outdated --><small>Installed <strong class="currentVersion">{installed.version}</strong> | Latest <strong class="latestVersion">{installed.latest}</strong></small>
 						<!-- IF installed.outdated -->
-							<button data-action="upgrade" class="btn btn-success btn-xs"><i class="fa fa-download"></i> Upgrade</button>
+							<button data-action="upgrade" class="btn btn-success btn-sm"><i class="fa fa-download"></i> Upgrade</button>
 						<!-- ENDIF installed.outdated -->
 						<!-- IF installed.url -->
 						<p>For more information: <a target="_blank" href="{installed.url}">{installed.url}</a></p>

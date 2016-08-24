@@ -74,11 +74,11 @@ define('forum/topic/postTools', ['share', 'navigator', 'components', 'translator
 		components.get('topic').on('mouseout', '[data-pid] [component="post/vote-count"]', function() {
 			var el = $(this).parent();
 			el.on('shown.bs.tooltip', function() {
-				$('.tooltip').tooltip('destroy');
+				$('.tooltip').tooltip('dispose');
 				el.off('shown.bs.tooltip');
 			});
 
-			$('.tooltip').tooltip('destroy');
+			$('.tooltip').tooltip('dispose');
 		});
 	}
 
@@ -89,7 +89,7 @@ define('forum/topic/postTools', ['share', 'navigator', 'components', 'translator
 		var el = $this.parent();
 		var pid = el.parents('[data-pid]').attr('data-pid');
 
-		$('.tooltip').tooltip('destroy');
+		$('.tooltip').tooltip('dispose');
 		$this.off('mouseenter', loadDataAndCreateTooltip);
 
 		socket.emit('posts.getUpvoters', [pid], function(err, data) {

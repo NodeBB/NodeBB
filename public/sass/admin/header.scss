@@ -5,7 +5,7 @@
 	width: 100%;
 	height: 200px;
 	margin-bottom: 50px;
-	font-size: 14px;
+	font-size: 15px;
 
 	#main-page-title {
 		position: absolute;
@@ -82,7 +82,7 @@
 		list-style-type: none;
 		padding: 0px;
 		position: absolute;
-		bottom: -15px;
+		bottom: -13px;
 		left: 50px;
 
 		> li {
@@ -110,9 +110,15 @@
 		top: 14px;
 	}
 	
-	.dropdown-item.active {
+	.dropdown-item {
+		&.active {
+			a {
+				color: #fff;
+			}
+		}
+		
 		a {
-			color: #fff;
+			color: $gray;
 		}
 	}
 }

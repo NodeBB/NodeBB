@@ -50,7 +50,7 @@ app.isConnected = false;
 			var reconnectEl = $('#reconnect');
 			var reconnectAlert = $('#reconnect-alert');
 
-			reconnectEl.tooltip('destroy');
+			reconnectEl.tooltip('dispose');
 			reconnectEl.html('<i class="fa fa-check"></i>');
 			reconnectAlert.fadeOut(500);
 			reconnecting = false;
