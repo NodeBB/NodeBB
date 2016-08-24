@@ -99,6 +99,7 @@ define('forum/users', ['translator'], function(translator) {
 	}
 
 	function renderSearchResults(data) {
+
 		templates.parse('partials/paginator', {pagination: data.pagination}, function(html) {
 			$('.pagination-container').replaceWith(html);
 		});
