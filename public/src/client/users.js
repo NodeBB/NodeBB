@@ -146,7 +146,7 @@ define('forum/users', ['translator'], function(translator) {
 	}
 
 	function renderSearchResults(data) {
-		$('#load-more-users-btn').addClass('hide');
+		$('#load-more-users-btn').addClass('hidden-xs-up');
 		templates.parse('partials/paginator', {pagination: data.pagination}, function(html) {
 			$('.pagination-container').replaceWith(html);
 		});

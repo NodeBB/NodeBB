@@ -159,10 +159,10 @@ define('forum/groups/details', [
 
 			if (this.checked) {
 				customOpts.removeAttr('disabled');
-				previewEl.removeClass('hide');
+				previewEl.removeClass('hidden-xs-up');
 			} else {
 				customOpts.attr('disabled', 'disabled');
-				previewEl.addClass('hide');
+				previewEl.addClass('hidden-xs-up');
 			}
 		});
 	};

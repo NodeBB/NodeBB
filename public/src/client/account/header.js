@@ -49,7 +49,7 @@ define('forum/account/header', [
 
 	function hidePrivateLinks() {
 		if (!app.user.uid || app.user.uid !== parseInt(ajaxify.data.theirid, 10)) {
-			$('.account-sub-links .plugin-link.private').addClass('hide');
+			$('.account-sub-links .plugin-link.private').addClass('hidden-xs-up');
 		}
 	}
 
@@ -95,8 +95,8 @@ define('forum/account/header', [
 				return app.alertError(err.message);
 			}
 
-			components.get('account/follow').toggleClass('hide', type === 'follow');
-			components.get('account/unfollow').toggleClass('hide', type === 'unfollow');
+			components.get('account/follow').toggleClass('hidden-xs-up', type === 'follow');
+			components.get('account/unfollow').toggleClass('hidden-xs-up', type === 'unfollow');
 			app.alertSuccess('[[global:alert.' + type + ', ' + ajaxify.data.username + ']]');
 		});
 		return false;

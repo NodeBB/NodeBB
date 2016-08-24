@@ -36,18 +36,10 @@
 {
 	-moz-opacity: $opacity;
 	opacity: $opacity;
-	//-ms-filter: ~`"progid:DXImageTransform.Microsoft.Alpha(opacity=(" + "${opacity}" * 100 + "))"`;
-	//filter: ~`"alpha(opacity = (" + "${opacity}" * 100 + "))"`;
+	//-ms-filter: #{"progid:DXImageTransform.Microsoft.Alpha(opacity=(" + "${opacity}" * 100 + "))"};
+	//filter: #{"alpha(opacity = (" + "${opacity}" * 100 + "))"};
 }
 
-@mixin border-radius($radius: 5px)
-{
-	-webkit-border-radius: $radius;
-	-moz-border-radius: $radius;
-	-ms-border-radius: $radius;
-	-o-border-radius: $radius;
-	border-radius: $radius;
-}
 
 @mixin text-ellipsis {
 	overflow: hidden;
@@ -84,10 +76,4 @@
 	font-size: $font-size;
 	text-align: center;
 	color: #fff;
-}
-
-@mixin box-shadow($shadow)
-{
-	-webkit-box-shadow: $shadow;
-	box-shadow: $shadow;
 }

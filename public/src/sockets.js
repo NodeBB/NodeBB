@@ -60,7 +60,7 @@ app.isConnected = false;
 			$(window).trigger('action:reconnected');
 
 			setTimeout(function() {
-				reconnectEl.removeClass('active').addClass('hide');
+				reconnectEl.removeClass('active').addClass('hidden-xs-up');
 			}, 3000);
 		}
 	}
@@ -107,7 +107,7 @@ app.isConnected = false;
 			reconnectEl.html('<i class="fa fa-spinner fa-spin"></i>');
 		}
 
-		reconnectEl.addClass('active').removeClass("hide").tooltip({
+		reconnectEl.addClass('active').removeClass("hidden-xs-up").tooltip({
 			placement: 'bottom'
 		});
 	}
