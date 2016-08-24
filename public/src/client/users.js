@@ -45,16 +45,14 @@ define('forum/users', ['translator'], function(translator) {
 		});
 	}
 
-	function doSearch(page) {
+	function doSearch() {
 		$('[component="user/search/icon"]').removeClass('fa-search').addClass('fa-spinner fa-spin');
 		var username = $('#search-user').val();
-		page = page || 1;
-
 		var activeSection = getActiveSection();
 
 		var query = {
 			section: activeSection,
-			page: page
+			page: 1
 		};
 
 		if (!username) {
