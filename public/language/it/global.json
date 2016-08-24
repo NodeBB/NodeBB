@@ -51,7 +51,7 @@
     "posts": "Post",
     "best": "Migliore",
     "upvoters": "Upvoters",
-    "upvoted": "Upvoted",
+    "upvoted": "Apprezzati",
     "downvoters": "Downvoters",
     "downvoted": "Downvoted",
     "views": "Visualizzazioni",
@@ -92,6 +92,6 @@
     "enter_page_number": "Inserisci il numero della pagina",
     "upload_file": "Carica file",
     "upload": "Carica",
-    "allowed-file-types": "Allowed file types are %1",
+    "allowed-file-types": "Le estensioni permesse  dei file sono %1",
     "unsaved-changes": "Hai delle modifiche non salvate. Sei sicuro che vuoi lasciare la pagina?"
 }
