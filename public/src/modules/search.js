@@ -75,7 +75,7 @@ define('search', ['navigator', 'translator'], function(nav, translator) {
 
 	Search.getSearchPreferences = function() {
 		try {
-			return JSON.parse(localStorage.getItem('search-preferences'));
+			return JSON.parse(localStorage.getItem('search-preferences') || '{}');
 		} catch(e) {
 			return {};
 		}
