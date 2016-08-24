@@ -22,15 +22,10 @@ define('forum/search', ['search', 'autocomplete'], function(searchModule, autoco
 
 		$('#advanced-search').off('submit').on('submit', function(e) {
 			e.preventDefault();
-
-			var input = $('#search-input');
-
-			var searchData = getSearchData();
-			searchData.term = input.val();
-
-			searchModule.query(searchData, function() {
-				input.val('');
+			searchModule.query(getSearchData(), function() {
+				$('#search-input').val('');
 			});
+			return false;
 		});
 
 		handleSavePreferences();
@@ -43,7 +38,7 @@ define('forum/search', ['search', 'autocomplete'], function(searchModule, autoco
 		var searchData = {
 			in: $('#search-in').val()
 		};
-
+		searchData.term = $('#search-input').val();
 		if (searchData.in === 'posts' || searchData.in === 'titlesposts' || searchData.in === 'titles') {
 			searchData.by = form.find('#posted-by-user').val();
 			searchData.categories = form.find('#posted-in-categories').val();
@@ -71,6 +66,10 @@ define('forum/search', ['search', 'autocomplete'], function(searchModule, autoco
 		params = utils.merge(searchData, params);
 
 		if (params) {
+			if (params.term) {
+				$('#search-input').val(params.term);
+			}
+
 			if (params.in) {
 				$('#search-in').val(params.in);
 				updateFormItemVisiblity(params.in);

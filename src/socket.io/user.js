@@ -265,51 +265,6 @@ SocketUser.getUnreadCounts = function(socket, data, callback) {
 	}, callback);
 };
 
-SocketUser.loadMore = function(socket, data, callback) {
-	if (!data || !data.set || parseInt(data.after, 10) < 0) {
-		return callback(new Error('[[error:invalid-data]]'));
-	}
-
-	if (!socket.uid && !!parseInt(meta.config.privateUserInfo, 10)) {
-		return callback(new Error('[[error:no-privileges]]'));
-	}
-
-	var start = parseInt(data.after, 10);
-	var stop = start + 19;
-
-	async.parallel({
-		isAdmin: function(next) {
-			user.isAdministrator(socket.uid, next);
-		},
-		isGlobalMod: function(next) {
-			user.isGlobalModerator(socket.uid, next);
-		},
-		users: function(next) {
-			user.getUsersFromSet(data.set, socket.uid, start, stop, next);
-		}
-	}, function(err, results) {
-		if (err) {
-			return callback(err);
-		}
-
-		if (data.set === 'users:banned' && !results.isAdmin && !results.isGlobalMod) {
-			return callback(new Error('[[error:no-privileges]]'));
-		}
-
-		if (!results.isAdmin && data.set === 'users:online') {
-			results.users = results.users.filter(function(user) {
-				return user.status !== 'offline';
-			});
-		}
-		var result = {
-			users: results.users,
-			nextStart: stop + 1,
-		};
-		result['route_' + data.set] = true;
-		callback(null, result);
-	});
-};
-
 SocketUser.invite = function(socket, email, callback) {
 	if (!email || !socket.uid) {
 		return callback(new Error('[[error:invalid-data]]'));

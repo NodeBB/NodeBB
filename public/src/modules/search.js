@@ -4,8 +4,8 @@
 define('search', ['navigator', 'translator'], function(nav, translator) {
 
 	var Search = {
-			current: {}
-		};
+		current: {}
+	};
 
 	Search.query = function(data, callback) {
 		var term = data.term;
@@ -22,11 +22,11 @@ define('search', ['navigator', 'translator'], function(nav, translator) {
 				return app.alertError('[[error:invalid-search-term]]');
 			}
 
-			ajaxify.go('search/' + term + '?' + createQueryString(data));
+			ajaxify.go('search?' + createQueryString(data));
 			callback();
 		} else {
-			var cleanedTerm = term.replace(topicSearch[0], ''),
-				tid = topicSearch[1];
+			var cleanedTerm = term.replace(topicSearch[0], '');
+			var tid = topicSearch[1];
 
 			if (cleanedTerm.length > 0) {
 				Search.queryTopic(tid, cleanedTerm, callback);
@@ -38,8 +38,9 @@ define('search', ['navigator', 'translator'], function(nav, translator) {
 		var searchIn = data['in'] || 'titlesposts';
 		var postedBy = data.by || '';
 		var query = {
-				'in': searchIn
-			};
+			term: data.term,
+			'in': searchIn
+		};
 
 		if (postedBy && (searchIn === 'posts' || searchIn === 'titles' || searchIn === 'titlesposts')) {
 			query.by = postedBy;

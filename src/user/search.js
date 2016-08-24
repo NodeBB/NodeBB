@@ -84,7 +84,16 @@ module.exports = function(User) {
 	function filterAndSortUids(uids, data, callback) {
 		var sortBy = data.sortBy || 'joindate';
 
-		var fields = ['uid', 'status', 'lastonline', 'banned', 'flags', sortBy];
+		var fields = ['uid', sortBy];
+		if (data.onlineOnly) {
+			fields = fields.concat(['status', 'lastonline']);
+		}
+		if (data.bannedOnly) {
+			fields.push('banned');
+		}
+		if (data.flaggedOnly) {
+			fields.push('flags');
+		}
 
 		User.getUsersFields(uids, fields, function(err, userData) {
 			if (err) {
