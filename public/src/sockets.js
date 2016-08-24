@@ -49,7 +49,7 @@ app.isConnected = false;
 		if (reconnecting) {
 			var reconnectEl = $('#reconnect');
 
-			reconnectEl.tooltip('destroy');
+			reconnectEl.tooltip('dispose');
 			reconnectEl.html('<i class="fa fa-check"></i>');
 			reconnecting = false;
 
