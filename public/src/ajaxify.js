@@ -216,11 +216,7 @@ $(document).ready(function() {
 		return url;
 	};
 
-	ajaxify.refresh = function(e, callback) {
-		if (e && e instanceof jQuery.Event) {
-			e.preventDefault();
-		}
-
+	ajaxify.refresh = function(callback) {
 		ajaxify.go(ajaxify.currentPage + window.location.search + window.location.hash, callback, true);
 	};
 

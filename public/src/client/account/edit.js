@@ -2,12 +2,10 @@
 
 /* globals define, ajaxify, socket, app, config, templates, bootbox */
 
-define('forum/account/edit', ['forum/account/header', 'uploader', 'translator'], function(header, uploader, translator) {
-	var AccountEdit = {},
-		uploadedPicture = '';
+define('forum/account/edit', ['forum/account/header', 'uploader', 'translator', 'components'], function(header, uploader, translator, components) {
+	var AccountEdit = {};
 
 	AccountEdit.init = function() {
-		uploadedPicture = ajaxify.data.uploadedpicture;
 
 		header.init();
 
@@ -59,17 +57,15 @@ define('forum/account/edit', ['forum/account/header', 'uploader', 'translator'],
 	}
 
 	function updateHeader(picture) {
-		require(['components'], function(components) {
-			if (parseInt(ajaxify.data.theirid, 10) !== parseInt(ajaxify.data.yourid, 10)) {
-				return;
-			}
+		if (parseInt(ajaxify.data.theirid, 10) !== parseInt(ajaxify.data.yourid, 10)) {
+			return;
+		}
 
-			components.get('header/userpicture')[picture ? 'show' : 'hide']();
-			components.get('header/usericon')[!picture ? 'show' : 'hide']();
-			if (picture) {
-				components.get('header/userpicture').attr('src', picture);
-			}
-		});
+		components.get('header/userpicture')[picture ? 'show' : 'hide']();
+		components.get('header/usericon')[!picture ? 'show' : 'hide']();
+		if (picture) {
+			components.get('header/userpicture').attr('src', picture);
+		}
 	}
 
 	function handleImageChange() {
@@ -137,8 +133,8 @@ define('forum/account/edit', ['forum/account/header', 'uploader', 'translator'],
 						}
 
 						function saveSelection() {
-							var type = modal.find('.list-group-item.active').attr('data-type'),
-								src = modal.find('.list-group-item.active img').attr('src');
+							var type = modal.find('.list-group-item.active').attr('data-type');
+
 							changeUserPicture(type, function(err) {
 								if (err) {
 									return app.alertError(err.message);
@@ -176,7 +172,7 @@ define('forum/account/edit', ['forum/account/header', 'uploader', 'translator'],
 							if (err) {
 								return app.alertError(err.message);
 							}
-							
+
 							window.location.href = config.relative_path + '/';
 						});
 					}
@@ -192,15 +188,17 @@ define('forum/account/edit', ['forum/account/header', 'uploader', 'translator'],
 
 	function handleImageUpload(modal) {
 		function onUploadComplete(urlOnServer) {
-			urlOnServer = urlOnServer + '?' + new Date().getTime();
+			urlOnServer = urlOnServer + '?' + Date.now();
 
 			updateHeader(urlOnServer);
 
 			if (ajaxify.data.picture.length) {
 				$('#user-current-picture, img.avatar').attr('src', urlOnServer);
-				uploadedPicture = urlOnServer;
+				ajaxify.data.uploadedpicture = urlOnServer;
 			} else {
-				ajaxify.refresh();
+				ajaxify.refresh(function() {
+					$('#user-current-picture, img.avatar').attr('src', urlOnServer);
+				});
 			}
 		}
 
