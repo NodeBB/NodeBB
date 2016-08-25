@@ -39,8 +39,7 @@ module.exports = function(Meta) {
 				paths = [
 					baseThemePath,
 					path.join(__dirname, '../../node_modules'),
-					path.join(__dirname, '../../public/vendor/fontawesome/less'),
-					path.join(__dirname, '../../public/vendor/bootstrap/less')
+					path.join(__dirname, '../../public/vendor/fontawesome/less')
 				],
 				source = '@import "font-awesome";';
 

@@ -231,41 +231,62 @@ define('admin/manage/users', ['admin/modules/selectable'], function(selectable) 
 		});
 
 		function handleUserCreate() {
-			var errorEl = $('#create-modal-error');
 			$('#createUser').on('click', function() {
-				$('#create-modal').modal('show');
-				$('#create-modal form')[0].reset();
-				errorEl.addClass('hide');
+				templates.parse('admin/partials/create_user_modal', {}, function(html) {
+					translator.translate(html, function(html) {
+						bootbox.dialog({
+							message: html,
+							title: 'Create User',
+							onEscape: true,
+							buttons: {
+								cancel: {
+									label: 'Cancel',
+									className: 'btn-link'
+								},
+								create: {
+									label: 'Create',
+									className: 'btn-primary',
+									callback: function(e) {
+										createUser.call(this);
+										return false;
+									}
+								}
+							}
+						});
+					});
+				});
 			});
+		}
 
-			$('#create-modal-go').on('click', function() {
-				var username = $('#create-user-name').val(),
-					email = $('#create-user-email').val(),
-					password = $('#create-user-password').val(),
-					passwordAgain = $('#create-user-password-again').val();
+		function createUser() {
+			var modal = this;
+			var username = document.getElementById('create-user-name').value;
+			var email = document.getElementById('create-user-email').value;
+			var password = document.getElementById('create-user-password').value;
+			var passwordAgain = document.getElementById('create-user-password-again').value;
 
+			var errorEl = $('#create-modal-error');
 
-				if (password !== passwordAgain) {
-					return errorEl.html('<strong>Error</strong><p>Passwords must match!</p>').removeClass('hide');
+			if (password !== passwordAgain) {
+				return errorEl.html('<strong>Error</strong><p>Passwords must match!</p>').removeClass('hide');
+			}
+
+			var user = {
+				username: username,
+				email: email,
+				password: password
+			};
+
+			socket.emit('admin.user.createUser', user, function(err) {
+				if(err) {
+					return errorEl.translateHtml('<strong>Error</strong><p>' + err.message + '</p>').removeClass('hide');
 				}
 
-				var user = {
-					username: username,
-					email: email,
-					password: password
-				};
-
-				socket.emit('admin.user.createUser', user, function(err) {
-					if(err) {
-						return errorEl.translateHtml('<strong>Error</strong><p>' + err.message + '</p>').removeClass('hide');
-					}
-					$('#create-modal').modal('hide');
-					$('#create-modal').on('hidden.bs.modal', function() {
-						ajaxify.refresh();
-					});
-					app.alertSuccess('User created!');
+				modal.modal('hide');
+				modal.on('hidden.bs.modal', function() {
+					ajaxify.refresh();
 				});
-
+				app.alertSuccess('User created!');
 			});
 		}
 

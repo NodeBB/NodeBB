@@ -94,46 +94,6 @@
 				</ul>
 
 				<!-- IMPORT partials/paginator.tpl -->
-
-				<div class="modal fade" id="create-modal">
-					<div class="modal-dialog">
-						<div class="modal-content">
-							<div class="modal-header">
-								<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-								<h4 class="modal-title">Create User</h4>
-							</div>
-							<div class="modal-body">
-								<div class="alert alert-danger hide" id="create-modal-error"></div>
-								<form>
-									<div class="form-group">
-										<label for="group-name">User Name</label>
-										<input type="text" class="form-control" id="create-user-name" placeholder="User Name" />
-									</div>
-									<div class="form-group">
-										<label for="group-name">Email</label>
-										<input type="text" class="form-control" id="create-user-email" placeholder="Email of this user" />
-									</div>
-
-									<div class="form-group">
-										<label for="group-name">Password</label>
-										<input type="password" class="form-control" id="create-user-password" placeholder="Password" />
-									</div>
-
-									<div class="form-group">
-										<label for="group-name">Password Confirm</label>
-										<input type="password" class="form-control" id="create-user-password-again" placeholder="Password" />
-									</div>
-
-								</form>
-							</div>
-							<div class="modal-footer">
-								<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-								<button type="button" class="btn btn-primary" id="create-modal-go">Create</button>
-							</div>
-						</div>
-					</div>
-				</div>
-
 			</div>
 		</div>
 	</div>
