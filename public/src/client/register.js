@@ -5,7 +5,7 @@
 define('forum/register', ['translator'], function(translator) {
 	var Register = {},
 		validationError = false,
-		successIcon = '<i class="fa fa-check"></i>';
+		successIcon = '';
 
 	Register.init = function() {
 		var email = $('#email'),
@@ -113,7 +113,7 @@ define('forum/register', ['translator'], function(translator) {
 
 	function validateEmail(email, callback) {
 		callback = callback || function() {};
-		var email_notify = $('#email-notify');
+		var email_notify = $('#email-feedback');
 
 		if (!utils.isEmailValid(email)) {
 			showError(email_notify, '[[error:invalid-email]]');
@@ -141,7 +141,7 @@ define('forum/register', ['translator'], function(translator) {
 	function validateUsername(username, callback) {
 		callback = callback || function() {};
 
-		var username_notify = $('#username-notify');
+		var username_notify = $('#username-feedback');
 
 		if (username.length < ajaxify.data.minimumUsernameLength) {
 			showError(username_notify, '[[error:username-too-short]]');
@@ -169,7 +169,7 @@ define('forum/register', ['translator'], function(translator) {
 	}
 
 	function validatePassword(password, password_confirm) {
-		var password_notify = $('#password-notify'),
+		var password_notify = $('#password-feedback'),
 			password_confirm_notify = $('#password-confirm-notify');
 
 		if (password.length < ajaxify.data.minimumPasswordLength) {
@@ -192,8 +192,8 @@ define('forum/register', ['translator'], function(translator) {
 	}
 
 	function validatePasswordConfirm(password, password_confirm) {
-		var password_notify = $('#password-notify'),
-			password_confirm_notify = $('#password-confirm-notify');
+		var password_notify = $('#password-feedback'),
+			password_confirm_notify = $('#password-confirm-feedback');
 
 		if (!password || password_notify.hasClass('alert-error')) {
 			return;
@@ -209,10 +209,14 @@ define('forum/register', ['translator'], function(translator) {
 	function showError(element, msg) {
 		translator.translate(msg, function(msg) {
 			element.html(msg);
-			element.parent()
-				.removeClass('alert-success')
-				.addClass('alert-danger');
-			element.show();
+			element.parent().parent()
+				.removeClass('has-success')
+				.addClass('has-danger');
+			
+			element.parent().find('input')
+				.removeClass('form-control-success')
+				.addClass('form-control-danger');
+			//element.show();
 		});
 		validationError = true;
 	}
@@ -220,10 +224,14 @@ define('forum/register', ['translator'], function(translator) {
 	function showSuccess(element, msg) {
 		translator.translate(msg, function(msg) {
 			element.html(msg);
-			element.parent()
-				.removeClass('alert-danger')
-				.addClass('alert-success');
-			element.show();
+			element.parent().parent()
+				.removeClass('has-danger')
+				.addClass('has-success');
+				
+			element.parent().find('input')
+				.removeClass('form-control-danger')
+				.addClass('form-control-success');
+			//element.show();
 		});
 	}
 

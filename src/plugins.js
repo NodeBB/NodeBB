@@ -28,7 +28,6 @@ var middleware;
 	Plugins.loadedHooks = {};
 	Plugins.staticDirs = {};
 	Plugins.cssFiles = [];
-	Plugins.lessFiles = [];
 	Plugins.sassFiles = [];
 	Plugins.clientScripts = [];
 	Plugins.acpScripts = [];

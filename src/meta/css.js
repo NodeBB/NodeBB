@@ -25,7 +25,7 @@ module.exports = function(Meta) {
 	Meta.css.minify = function(callback) {
 		callback = callback || function() {};
 		if (nconf.get('isPrimary') !== 'true') {
-			winston.verbose('[meta/css] Cluster worker ' + process.pid + ' skipping LESS/CSS compilation');
+			winston.verbose('[meta/css] Cluster worker ' + process.pid + ' skipping SASS/CSS compilation');
 			return callback();
 		}
 
@@ -40,8 +40,7 @@ module.exports = function(Meta) {
 				paths = [
 					baseThemePath,
 					path.join(__dirname, '../../node_modules'),
-					path.join(__dirname, '../../public/vendor/fontawesome/scss'),
-					//path.join(__dirname, '../../public/vendor/bootstrap/less')
+					path.join(__dirname, '../../public/vendor/fontawesome/scss')
 				];
 				
 			var	source = '@import "font-awesome";';
@@ -51,7 +50,7 @@ module.exports = function(Meta) {
 			
 			source += '\n@import "..' + path.sep + '..' + path.sep + 'public/sass/generics.scss";';
 
-			plugins.lessFiles = filterMissingFiles(plugins.lessFiles);
+			plugins.sassFiles = filterMissingFiles(plugins.sassFiles);
 			plugins.cssFiles = filterMissingFiles(plugins.cssFiles);
 
 			async.waterfall([
@@ -91,7 +90,7 @@ module.exports = function(Meta) {
 				
 				async.series([
 					function(next) {
-						if (fromFile.match('clientLess')) {
+						if (fromFile.match('clientSass')) {
 							winston.info('[minifier] Compiling front-end SASS files skipped');
 							return Meta.css.getFromFile(path.join(__dirname, '../../public/stylesheet.css'), 'cache', next);
 						}
@@ -99,7 +98,7 @@ module.exports = function(Meta) {
 						minify(source, paths, 'cache', next);
 					},
 					function(next) {
-						if (fromFile.match('acpLess')) {
+						if (fromFile.match('acpSass')) {
 							winston.info('[minifier] Compiling ACP SASS files skipped');
 							return Meta.css.getFromFile(path.join(__dirname, '../../public/admin.css'), 'acpCache', next);
 						}
@@ -115,8 +114,8 @@ module.exports = function(Meta) {
 					if (process.send) {
 						process.send({
 							action: 'css-propagate',
-							cache: fromFile.match('clientLess') ? Meta.css.cache : minified[0],
-							acpCache: fromFile.match('acpLess') ? Meta.css.acpCache : minified[1]
+							cache: fromFile.match('clientSass') ? Meta.css.cache : minified[0],
+							acpCache: fromFile.match('acpSass') ? Meta.css.acpCache : minified[1]
 						});
 					}
 
