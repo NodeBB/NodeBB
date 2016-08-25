@@ -335,6 +335,10 @@ define('forum/topic/posts', [
 				src = $this.attr('src'),
 				suffixRegex = /-resized(\.[\w]+)?$/;
 
+			if (src === 'about:blank') {
+				return;
+			}
+
 			if (utils.isRelativeUrl(src) && suffixRegex.test(src)) {
 				src = src.replace(suffixRegex, '$1');
 			}
