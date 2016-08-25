@@ -1,20 +1,20 @@
 'use strict';
 
-var async = require('async'),
-	path = require('path'),
-	fs = require('fs'),
-	os = require('os'),
-	nconf = require('nconf'),
-	crypto = require('crypto'),
-	winston = require('winston'),
-	request = require('request'),
-	mime = require('mime'),
+var async = require('async');
+var path = require('path');
+var fs = require('fs');
+var os = require('os');
+var nconf = require('nconf');
+var crypto = require('crypto');
+var winston = require('winston');
+var request = require('request');
+var mime = require('mime');
 
-	plugins = require('../plugins'),
-	file = require('../file'),
-	image = require('../image'),
-	meta = require('../meta'),
-	db = require('../database');
+var plugins = require('../plugins');
+var file = require('../file');
+var image = require('../image');
+var meta = require('../meta');
+var db = require('../database');
 
 module.exports = function(User) {
 
@@ -28,16 +28,19 @@ module.exports = function(User) {
 		var keepAllVersions = parseInt(meta.config['profile:keepAllUserImages'], 10) === 1;
 		var uploadedImage;
 
+		if (parseInt(meta.config.allowProfileImageUploads) !== 1) {
+			return callback(new Error('[[error:profile-image-uploads-disabled]]'));
+		}
+
+		if (picture.size > uploadSize * 1024) {
+			return callback(new Error('[[error:file-too-big, ' + uploadSize + ']]'));
+		}
+
+		if (!extension) {
+			return callback(new Error('[[error:invalid-image-extension]]'));
+		}
+
 		async.waterfall([
-			function(next) {
-				next(parseInt(meta.config.allowProfileImageUploads) !== 1 ? new Error('[[error:profile-image-uploads-disabled]]') : null);
-			},
-			function(next) {
-				next(picture.size > uploadSize * 1024 ? new Error('[[error:file-too-big, ' + uploadSize + ']]') : null);
-			},
-			function(next) {
-				next(!extension ? new Error('[[error:invalid-image-extension]]') : null);
-			},
 			function(next) {
 				if (plugins.hasListeners('filter:uploadImage')) {
 					return plugins.fireHook('filter:uploadImage', {image: picture, uid: updateUid}, next);
