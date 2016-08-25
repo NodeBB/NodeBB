@@ -2,6 +2,7 @@
 
 var async = require('async');
 var nconf = require('nconf');
+var validator = require('validator');
 
 var db = require('../database');
 var user = require('../user');
@@ -27,7 +28,10 @@ module.exports = function(app, middleware) {
 					controllers.api.getConfig(req, res, next);
 				},
 				footer: function(next) {
-					app.render('footer', {loggedIn: (req.user ? parseInt(req.user.uid, 10) !== 0 : false)}, next);
+					app.render('footer', {
+						loggedIn: !!req.uid,
+						title: validator.escape(meta.config.title || meta.config.browserTitle || 'NodeBB')
+					}, next);
 				},
 				plugins: function(next) {
 					plugins.fireHook('filter:middleware.buildHeader', {req: req, locals: res.locals}, next);
