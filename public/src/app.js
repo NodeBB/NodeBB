@@ -189,12 +189,12 @@ app.cacheBuster = null;
 		}
 	}
 
-	app.createUserTooltips = function(els) {
+	app.createUserTooltips = function(els, placement) {
 		els = els || $('body');
 		els.find('.avatar,img[title].teaser-pic,img[title].user-img,div.user-icon,span.user-icon').each(function() {
 			if (!utils.isTouchDevice()) {
 				$(this).tooltip({
-					placement: 'top',
+					placement: placement || $(this).attr('title-placement') || 'top',
 					title: $(this).attr('title')
 				});
 			}

@@ -242,6 +242,9 @@ var async = require('async'),
 			}
 
 			async.parallel({
+				roomData: function(next) {
+					Messaging.getRoomsData(roomIds, next);
+				},
 				unread: function(next) {
 					db.isSortedSetMembers('uid:' + uid + ':chat:rooms:unread', roomIds, next);
 				},
@@ -254,7 +257,7 @@ var async = require('async'),
 							uids = uids.filter(function(value) {
 								return value && parseInt(value, 10) !== parseInt(uid, 10);
 							});
-							user.getUsersFields(uids, ['uid', 'username', 'picture', 'status', 'lastonline'] , next);
+							user.getUsersFields(uids, ['uid', 'username', 'userslug', 'picture', 'status', 'lastonline'] , next);
 						});
 					}, next);
 				},
@@ -267,29 +270,28 @@ var async = require('async'),
 				if (err) {
 					return callback(err);
 				}
-				var rooms = results.users.map(function(users, index) {
-					var data = {
-						users: users,
-						unread: results.unread[index],
-						roomId: roomIds[index],
-						teaser: results.teasers[index]
-					};
-					data.users.forEach(function(userData) {
+
+				results.roomData.forEach(function(room, index) {
+					room.users = results.users[index];
+					room.unread = results.unread[index];
+					room.teaser = results.teasers[index];
+
+					room.users.forEach(function(userData) {
 						if (userData && parseInt(userData.uid, 10)) {
 							userData.status = user.getStatus(userData);
 						}
 					});
-					data.users = data.users.filter(function(user) {
+					room.users = room.users.filter(function(user) {
 						return user && parseInt(user.uid, 10);
 					});
-					data.lastUser = data.users[0];
-					data.usernames = data.users.map(function(user) {
+					room.lastUser = room.users[0];
+
+					room.usernames = room.users.map(function(user) {
 						return user.username;
 					}).join(', ');
-					return data;
 				});
 
-				callback(null, {rooms: rooms, nextStart: stop + 1});
+				callback(null, {rooms: results.roomData, nextStart: stop + 1});
 			});
 		});
 	};
