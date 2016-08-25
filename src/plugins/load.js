@@ -37,9 +37,6 @@ module.exports = function(Plugins) {
 					mapFiles(pluginData, 'css', 'cssFiles', next);
 				},
 				function(next) {
-					mapFiles(pluginData, 'less', 'lessFiles', next);
-				},
-				function(next) {
 					mapFiles(pluginData, 'sass', 'sassFiles', next);
 				},
 				function(next) {
