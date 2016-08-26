@@ -65,7 +65,7 @@ module.exports = function(Meta) {
 
 				var acpSource = source;
 
-				source += '\n@import (inline) "..' + path.sep + '..' + path.sep + 'public/vendor/jquery/css/smoothness/jquery-ui-1.10.4.custom.min.css";';
+				source += '\n@import (inline) "..' + path.sep + '..' + path.sep + 'public/vendor/jquery/css/smoothness/jquery-ui.css";';
 				source += '\n@import (inline) "..' + path.sep + '..' + path.sep + 'public/vendor/jquery/bootstrap-tagsinput/bootstrap-tagsinput.css";';
 				source += '\n@import (inline) "..' + path.sep + 'public/vendor/colorpicker/colorpicker.css";';
 				source += '\n@import "..' + path.sep + '..' + path.sep + 'public/less/flags.less";';
@@ -76,8 +76,9 @@ module.exports = function(Meta) {
 				source = '@import "./theme";\n' + source;
 
 				acpSource += '\n@import "..' + path.sep + 'public/less/admin/admin";\n';
-				acpSource += '\n@import "..' + path.sep + 'public/less/generics.less";';
-				acpSource += '\n@import (inline) "..' + path.sep + 'public/vendor/colorpicker/colorpicker.css";';
+				acpSource += '\n@import "..' + path.sep + 'public/less/generics.less";\n';
+				acpSource += '\n@import (inline) "..' + path.sep + 'public/vendor/colorpicker/colorpicker.css";\n';
+				acpSource += '\n@import (inline) "..' + path.sep + 'public/vendor/jquery/css/smoothness/jquery-ui.css";';
 
 
 				var fromFile = nconf.get('from-file') || '';
