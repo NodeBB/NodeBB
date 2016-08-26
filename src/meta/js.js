@@ -26,6 +26,7 @@ module.exports = function(Meta) {
 				'public/vendor/jquery/bootstrap-tagsinput/bootstrap-tagsinput.min.js',
 				'public/vendor/jquery/textcomplete/jquery.textcomplete.js',
 				'public/vendor/requirejs/require.js',
+				'public/src/require-config.js',
 				'public/vendor/bootbox/bootbox.min.js',
 				'public/vendor/tinycon/tinycon.js',
 				'public/vendor/xregexp/xregexp.js',

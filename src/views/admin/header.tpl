@@ -16,7 +16,8 @@
 			template: "{template.name}",
 			user: JSON.parse('{{userJSON}}'),
 			config: JSON.parse(decodeURIComponent("{{adminConfigJSON}}")),
-			flags: {}
+			flags: {},
+			inAdmin: true
 		};
 	</script>
 
@@ -30,20 +31,6 @@
 		<script src="https://storage.googleapis.com/code.getmdl.io/1.0.3/material.min.js"></script>
 		<script type="text/javascript" src="{relative_path}/vendor/jquery/sortable/Sortable.js?{cache-buster}"></script>
 		<script type="text/javascript" src="{relative_path}/acp.min.js?{cache-buster}"></script>
-		<script>
-			require.config({
-				baseUrl: "{relative_path}/src/modules",
-				waitSeconds: 3,
-				urlArgs: "{cache-buster}",
-				paths: {
-					'forum': '../client',
-					'admin': '../admin',
-					'vendor': '../../vendor'
-				}
-			});
-
-			app.inAdmin = true;
-		</script>
 		<script type="text/javascript" src="{relative_path}/vendor/colorpicker/colorpicker.js?{cache-buster}"></script>
 		<script type="text/javascript" src="{relative_path}/src/admin/admin.js?{cache-buster}"></script>
 		<script type="text/javascript" src="{relative_path}/vendor/ace/ace.js?{cache-buster}"></script>
