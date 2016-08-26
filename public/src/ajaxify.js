@@ -198,8 +198,6 @@ $(document).ready(function() {
 		}
 		var count = 2;
 
-		ajaxify.variables.parse();
-
 		ajaxify.loadScript(tpl_url, done);
 
 		ajaxify.widgets.render(tpl_url, url, done);
@@ -207,6 +205,14 @@ $(document).ready(function() {
 		$(window).trigger('action:ajaxify.contentLoaded', {url: url, tpl: tpl_url});
 
 		app.processPage();
+	};
+
+	ajaxify.parseData = function() {
+		var dataEl = $('#ajaxify-data');
+		if (dataEl.length) {
+			ajaxify.data = JSON.parse(dataEl.text());
+			dataEl.remove();
+		}
 	};
 
 	ajaxify.removeRelativePath = function(url) {

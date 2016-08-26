@@ -37,7 +37,6 @@ module.exports = function(Meta) {
 				'public/src/app.js',
 				'public/src/ajaxify.js',
 				'public/src/overrides.js',
-				'public/src/variables.js',
 				'public/src/widgets.js'
 			],
 

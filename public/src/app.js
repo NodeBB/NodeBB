@@ -24,6 +24,7 @@ app.cacheBuster = null;
 
 		var url = ajaxify.start(window.location.pathname.slice(1) + window.location.search + window.location.hash);
 		ajaxify.updateHistory(url, true);
+		ajaxify.parseData();
 		ajaxify.end(url, app.template);
 
 		handleStatusChange();
