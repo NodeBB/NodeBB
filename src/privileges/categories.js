@@ -5,7 +5,6 @@ var async = require('async');
 var _ = require('underscore');
 
 var user = require('../user');
-var categories = require('../categories');
 var groups = require('../groups');
 var helpers = require('./helpers');
 var plugins = require('../plugins');
@@ -220,6 +219,7 @@ module.exports = function(privileges) {
 		if (!cid) {
 			return callback(null, false);
 		}
+		var categories = require('../categories');
 		categories.getCategoryField(cid, 'disabled', function(err, disabled) {
 			if (err) {
 				return callback(err);
@@ -269,6 +269,7 @@ module.exports = function(privileges) {
 	};
 
 	privileges.categories.getBase = function(privilege, cids, uid, callback) {
+		var categories = require('../categories');
 		async.parallel({
 			categories: function(next) {
 				categories.getCategoriesFields(cids, ['disabled'], next);
