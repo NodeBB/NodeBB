@@ -64,13 +64,8 @@
     "nodebb-plugin-question-and-answer": "git+https://pichalite@github.com/pichalite/nodebb-plugin-question-and-answer.git#less2sass",
     "nodebb-rewards-essentials": "0.0.9",
     "nodebb-theme-lavender": "3.0.13",
-<<<<<<< 594948809a1b680a0e91aec6b95389c889d1f720
-    "nodebb-theme-persona": "4.1.33",
-    "nodebb-theme-vanilla": "5.1.18",
-=======
     "nodebb-theme-persona": "git+https://pichalite@github.com/pichalite/nodebb-theme-persona.git#less2sass",
-    "nodebb-theme-vanilla": "5.1.11",
->>>>>>> less2sass
+    "nodebb-theme-vanilla": "5.1.18",
     "nodebb-widget-essentials": "2.0.10",
     "nodemailer": "2.0.0",
     "nodemailer-sendmail-transport": "1.0.0",
