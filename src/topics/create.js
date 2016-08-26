@@ -152,26 +152,27 @@ module.exports = function(Topics) {
 					}
 				}, next);
 			},
-			function(data, next) {
-				if (!Array.isArray(data.topicData) || !data.topicData.length) {
+			function(_data, next) {
+				if (!Array.isArray(_data.topicData) || !_data.topicData.length) {
 					return next(new Error('[[error:no-topic]]'));
 				}
 
-				data.topicData = data.topicData[0];
-				data.topicData.unreplied = 1;
-				data.topicData.mainPost = data.postData;
-				data.postData.index = 0;
+				_data.topicData = _data.topicData[0];
+				_data.topicData.unreplied = 1;
+				_data.topicData.mainPost = _data.postData;
+				_data.postData.extraFields = data.extraFields;
+				_data.postData.index = 0;
 
-				analytics.increment(['topics', 'topics:byCid:' + data.topicData.cid]);
-				plugins.fireHook('action:topic.post', data.topicData);
+				analytics.increment(['topics', 'topics:byCid:' + _data.topicData.cid]);
+				plugins.fireHook('action:topic.post', _data.topicData);
 
 				if (parseInt(uid, 10)) {
-					user.notifications.sendTopicNotificationToFollowers(uid, data.topicData, data.postData);
+					user.notifications.sendTopicNotificationToFollowers(uid, _data.topicData, _data.postData);
 				}
 
 				next(null, {
-					topicData: data.topicData,
-					postData: data.postData
+					topicData: _data.topicData,
+					postData: _data.postData
 				});
 			}
 		], callback);
@@ -255,6 +256,8 @@ module.exports = function(Topics) {
 				if (parseInt(uid, 10)) {
 					user.setUserField(uid, 'lastonline', Date.now());
 				}
+
+				postData.extraFields = data.extraFields;
 
 				Topics.notifyFollowers(postData, uid);
 				analytics.increment(['posts', 'posts:byCid:' + cid]);

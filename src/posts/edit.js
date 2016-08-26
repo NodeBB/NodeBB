@@ -39,6 +39,7 @@ module.exports = function(Posts) {
 				}
 				postData = _postData;
 				postData.content = data.content;
+				postData.extraFields = data.extraFields;
 				postData.edited = now;
 				postData.editor = data.uid;
 				plugins.fireHook('filter:post.edit', {req: data.req, post: postData, uid: data.uid}, next);
@@ -79,6 +80,7 @@ module.exports = function(Posts) {
 			},
 			function (postData, next) {
 				results.post = postData;
+				results.extraFields = data.extraFields;
 				next(null, results);
 			}
 		], callback);
