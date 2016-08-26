@@ -10,7 +10,7 @@ var db = require('../database');
 var posts = require('../posts');
 var topics = require('../topics');
 var categories = require('../categories');
-var privileges = require('../privileges');
+
 
 module.exports = function(Categories) {
 
@@ -18,7 +18,7 @@ module.exports = function(Categories) {
 		if (!parseInt(count, 10)) {
 			return callback(null, []);
 		}
-
+		var privileges = require('../privileges');
 		async.waterfall([
 			function(next) {
 				db.getSortedSetRevRange('cid:' + cid + ':pids', 0, count - 1, next);
@@ -36,7 +36,7 @@ module.exports = function(Categories) {
 		if (!Array.isArray(categoryData) || !categoryData.length) {
 			return callback();
 		}
-
+		var privileges = require('../privileges');
 		async.waterfall([
 			function(next) {
 				async.map(categoryData, getRecentTopicTids, next);

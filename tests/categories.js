@@ -54,6 +54,25 @@ describe('Categories', function() {
 		});
 	});
 
+	describe('Categories.getRecentTopicReplies', function() {
+		it('should not throw', function(done) {
+			Categories.getCategoryById({
+				cid: categoryObj.cid,
+				set: 'cid:' + categoryObj.cid + ':tids',
+				reverse: true,
+				start: 0,
+				stop: -1,
+				uid: 0
+			}, function(err, categoryData) {
+				assert.ifError(err);
+				Categories.getRecentTopicReplies(categoryData, 0, function(err) {
+					assert.ifError(err);
+					done();
+				});
+			});
+		});
+	});
+
 	describe('.getCategoryTopics', function() {
 		it('should return a list of topics', function(done) {
 			Categories.getCategoryTopics({
