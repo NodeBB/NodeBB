@@ -6,29 +6,29 @@ define('admin/manage/users', ['admin/modules/selectable'], function(selectable) 
 	var Users = {};
 
 	Users.init = function() {
-		selectable.enable('#users-container', '.user-selectable');
+		selectable.enable('#users-container', '.users-box');
 
 		function getSelectedUids() {
 			var uids = [];
-			$('#users-container .users-box .selected').each(function() {
-				uids.push($(this).parents('[data-uid]').attr('data-uid'));
+			$('#users-container .users-box.ui-selected').each(function() {
+				uids.push(this.getAttribute('data-uid'));
 			});
 
 			return uids;
 		}
 
 		function update(className, state) {
-			$('#users-container .users-box .selected').siblings('.labels').find(className).each(function() {
+			$('#users-container .users-box.ui-selected .labels').find(className).each(function() {
 				$(this).toggleClass('hide', !state);
 			});
 		}
 
 		function unselectAll() {
-			$('#users-container .users-box .selected').removeClass('selected');
+			$('#users-container .users-box.ui-selected').removeClass('ui-selected');
 		}
 
 		function removeSelected() {
-			$('#users-container .users-box .selected').parents('.users-box').remove();
+			$('#users-container .users-box.ui-selected').remove();
 		}
 
 		function done(successMessage, className, flag) {
@@ -328,7 +328,7 @@ define('admin/manage/users', ['admin/modules/selectable'], function(selectable) 
 								.removeClass('label-danger');
 						}
 
-						selectable.enable('#users-container', '.user-selectable');
+						selectable.enable('#users-container', '.users-box');
 					});
 				});
 			}, 250);

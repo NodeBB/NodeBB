@@ -80,7 +80,7 @@ define('admin/manage/tags', [
 
 	function handleModify() {
 		$('#modify').on('click', function() {
-			var tagsToModify = $('.tag-row.selected');
+			var tagsToModify = $('.tag-row.ui-selected');
 			if (!tagsToModify.length) {
 				return;
 			}
@@ -120,7 +120,7 @@ define('admin/manage/tags', [
 
 	function handleDeleteSelected() {
 		$('#deleteSelected').on('click', function() {
-			var tagsToDelete = $('.tag-row.selected');
+			var tagsToDelete = $('.tag-row.ui-selected');
 			if (!tagsToDelete.length) {
 				return;
 			}

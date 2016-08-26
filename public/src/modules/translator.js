@@ -96,12 +96,12 @@
 				break;
 		}
 
-		$.getScript(RELATIVE_PATH + '/vendor/jquery/timeago/locales/jquery.timeago.' + languageCode + '.js').success(function() {
+		$.getScript(RELATIVE_PATH + '/vendor/jquery/timeago/locales/jquery.timeago.' + languageCode + '.js').done(function() {
 			$('.timeago').timeago();
 			translator.timeagoShort = $.extend({}, jQuery.timeago.settings.strings);
 
 			// Retrieve the shorthand timeago values as well
-			$.getScript(RELATIVE_PATH + '/vendor/jquery/timeago/locales/jquery.timeago.' + languageCode + '-short.js').success(function() {
+			$.getScript(RELATIVE_PATH + '/vendor/jquery/timeago/locales/jquery.timeago.' + languageCode + '-short.js').done(function() {
 				// Switch back to long-form
 				translator.toggleTimeagoShorthand();
 			});

@@ -36,6 +36,7 @@
     "html-to-text": "2.0.0",
     "ip": "1.1.2",
     "jimp": "0.2.21",
+    "jquery": "^3.1.0",
     "json-2-csv": "^2.0.22",
     "less": "^2.0.0",
     "logrotate-stream": "^0.2.3",
