@@ -8,5 +8,5 @@
     "failed_login_attempt": "登录失败",
     "login_successful": "您已经成功登录！",
     "dont_have_account": "没有帐号？",
-    "logged-out-due-to-inactivity": "You have been logged out of the Admin Control Panel due to inactivity"
+    "logged-out-due-to-inactivity": "由于长时间不活动，您已从控制面板注销"
 }
