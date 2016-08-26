@@ -6,6 +6,7 @@ var batch = require('../batch');
 var plugins = require('../plugins');
 var topics = require('../topics');
 var groups = require('../groups');
+var privileges = require('../privileges');
 
 module.exports = function(Categories) {
 
@@ -45,7 +46,6 @@ module.exports = function(Categories) {
 				], next);
 			},
 			function(next) {
-				var privileges = require('../privileges');
 				async.each(privileges.privilegeList, function(privilege, next) {
 					groups.destroy('cid:' + cid + ':privileges:' + privilege, next);
 				}, next);

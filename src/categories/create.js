@@ -5,6 +5,7 @@ var async = require('async');
 var db = require('../database');
 var groups = require('../groups');
 var plugins = require('../plugins');
+var privileges = require('../privileges');
 var utils = require('../../public/src/utils');
 
 module.exports = function(Categories) {
@@ -49,7 +50,7 @@ module.exports = function(Categories) {
 				category = data.category;
 
 				var defaultPrivileges = ['find', 'read', 'topics:read', 'topics:create', 'topics:reply', 'posts:edit', 'posts:delete', 'topics:delete', 'upload:post:image'];
-				var privileges = require('../privileges');
+
 				async.series([
 					async.apply(db.setObject, 'category:' + category.cid, category),
 					function (next) {
@@ -138,7 +139,6 @@ module.exports = function(Categories) {
 	};
 
 	Categories.copyPrivilegesFrom = function(fromCid, toCid, callback) {
-		var privileges = require('../privileges');
 		async.each(privileges.privilegeList, function(privilege, next) {
 			copyPrivilege(privilege, fromCid, toCid, next);
 		}, callback);

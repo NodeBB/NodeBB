@@ -7,7 +7,7 @@ var db = require('./database');
 var user = require('./user');
 var Groups = require('./groups');
 var plugins = require('./plugins');
-
+var privileges = require('./privileges');
 
 (function(Categories) {
 
@@ -102,7 +102,6 @@ var plugins = require('./plugins');
 	};
 
 	Categories.getCategoriesByPrivilege = function(set, uid, privilege, callback) {
-		var privileges = require('./privileges');
 		async.waterfall([
 			function(next) {
 				db.getSortedSetRange(set, 0, -1, next);
@@ -239,7 +238,6 @@ var plugins = require('./plugins');
 	};
 
 	function getChildrenRecursive(category, uid, callback) {
-		var privileges = require('./privileges');
 		async.waterfall([
 			function (next) {
 				db.getSortedSetRange('cid:' + category.cid + ':children', 0, -1, next);

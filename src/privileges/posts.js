@@ -3,12 +3,7 @@
 
 var async = require('async');
 
-var meta = require('../meta');
-var posts = require('../posts');
-var topics = require('../topics');
-var user = require('../user');
 var helpers = require('./helpers');
-var plugins = require('../plugins');
 
 module.exports = function(privileges) {
 
@@ -18,7 +13,8 @@ module.exports = function(privileges) {
 		if (!Array.isArray(pids) || !pids.length) {
 			return callback(null, []);
 		}
-
+		var posts = require('../posts');
+		var user = require('../user');
 		async.waterfall([
 			function(next) {
 				posts.getCidsByPids(pids, next);
@@ -59,6 +55,7 @@ module.exports = function(privileges) {
 	};
 
 	privileges.posts.can = function(privilege, pid, uid, callback) {
+		var posts = require('../posts');
 		posts.getCidByPid(pid, function(err, cid) {
 			if (err) {
 				return callback(err);
@@ -69,6 +66,8 @@ module.exports = function(privileges) {
 	};
 
 	privileges.posts.filter = function(privilege, pids, uid, callback) {
+		var posts = require('../posts');
+		var topics = require('../topics');
 		if (!Array.isArray(pids) || !pids.length) {
 			return callback(null, []);
 		}
@@ -127,6 +126,7 @@ module.exports = function(privileges) {
 					return post.pid;
 				});
 
+				var plugins = require('../plugins');
 				plugins.fireHook('filter:privileges.posts.filter', {
 					privilege: privilege,
 					uid: uid,
@@ -155,7 +155,12 @@ module.exports = function(privileges) {
 	};
 
 	privileges.posts.canDelete = function(pid, uid, callback) {
+		var posts = require('../posts');
+		var topics = require('../topics');
+		var meta = require('../meta');
+
 		var postData;
+
 		async.waterfall([
 			function(next) {
 				posts.getPostFields(pid, ['tid', 'timestamp'], next);
@@ -196,6 +201,7 @@ module.exports = function(privileges) {
 	};
 
 	privileges.posts.canMove = function(pid, uid, callback) {
+		var posts = require('../posts');
 		posts.isMain(pid, function(err, isMain) {
 			if (err || isMain) {
 				return callback(err || new Error('[[error:cant-move-mainpost]]'));
@@ -205,6 +211,7 @@ module.exports = function(privileges) {
 	};
 
 	privileges.posts.canPurge = function(pid, uid, callback) {
+		var posts = require('../posts');
 		async.waterfall([
 			function (next) {
 				posts.getCidByPid(pid, next);
@@ -223,6 +230,10 @@ module.exports = function(privileges) {
 	};
 
 	function isPostEditable(pid, uid, callback) {
+		var posts = require('../posts');
+		var topics = require('../topics');
+		var meta = require('../meta');
+
 		var tid;
 		async.waterfall([
 			function(next) {
@@ -253,6 +264,8 @@ module.exports = function(privileges) {
 	}
 
 	function isAdminOrMod(pid, uid, callback) {
+		var posts = require('../posts');
+		var user = require('../user');
 		helpers.some([
 			function(next) {
 				posts.getCidByPid(pid, function(err, cid) {

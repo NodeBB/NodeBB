@@ -4,10 +4,7 @@
 var async = require('async');
 var _ = require('underscore');
 
-var user = require('../user');
-var groups = require('../groups');
 var helpers = require('./helpers');
-var plugins = require('../plugins');
 
 module.exports = function(privileges) {
 
@@ -15,6 +12,9 @@ module.exports = function(privileges) {
 
 	privileges.categories.list = function(cid, callback) {
 		// Method used in admin/category controller to show all users/groups with privs in that given cid
+		var plugins = require('../plugins');
+		var groups = require('../groups');
+		var user = require('../user');
 
 		var privilegeLabels = [
 			{name: 'Find Category'},
@@ -156,6 +156,7 @@ module.exports = function(privileges) {
 	};
 
 	privileges.categories.get = function(cid, uid, callback) {
+		var user = require('../user');
 		async.parallel({
 			'topics:create': function(next) {
 				helpers.isUserAllowedTo('topics:create', uid, [cid], next);
@@ -178,7 +179,7 @@ module.exports = function(privileges) {
 			}
 
 			var isAdminOrMod = results.isAdministrator || results.isModerator;
-
+			var plugins = require('../plugins');
 			plugins.fireHook('filter:privileges.categories.get', {
 				cid: cid,
 				uid: uid,
@@ -196,6 +197,7 @@ module.exports = function(privileges) {
 		if (!parseInt(uid, 10)) {
 			return callback(null, false);
 		}
+		var user = require('../user');
 		helpers.some([
 			function (next) {
 				user.isModerator(uid, cid, next);
@@ -220,6 +222,7 @@ module.exports = function(privileges) {
 			return callback(null, false);
 		}
 		var categories = require('../categories');
+		var user = require('../user');
 		categories.getCategoryField(cid, 'disabled', function(err, disabled) {
 			if (err) {
 				return callback(err);
@@ -270,6 +273,7 @@ module.exports = function(privileges) {
 
 	privileges.categories.getBase = function(privilege, cids, uid, callback) {
 		var categories = require('../categories');
+		var user = require('../user');
 		async.parallel({
 			categories: function(next) {
 				categories.getCategoriesFields(cids, ['disabled'], next);
@@ -294,7 +298,7 @@ module.exports = function(privileges) {
 		uids = uids.filter(function(uid, index, array) {
 			return array.indexOf(uid) === index;
 		});
-
+		var user = require('../user');
 		async.parallel({
 			allowedTo: function(next) {
 				helpers.isUsersAllowedTo(privilege, uids, cid, next);
@@ -318,10 +322,12 @@ module.exports = function(privileges) {
 	};
 
 	privileges.categories.give = function(privileges, cid, groupName, callback) {
+		var groups = require('../groups');
 		giveOrRescind(groups.join, privileges, cid, groupName, callback);
 	};
 
 	privileges.categories.rescind = function(privileges, cid, groupName, callback) {
+		var groups = require('../groups');
 		giveOrRescind(groups.leave, privileges, cid, groupName, callback);
 	};
 
@@ -332,6 +338,7 @@ module.exports = function(privileges) {
 	}
 
 	privileges.categories.canMoveAllTopics = function(currentCid, targetCid, uid, callback) {
+		var user = require('../user');
 		async.parallel({
 			isAdministrator: function(next) {
 				user.isAdministrator(uid, next);
@@ -352,6 +359,8 @@ module.exports = function(privileges) {
 	};
 
 	privileges.categories.userPrivileges = function(cid, uid, callback) {
+		var user = require('../user');
+		var groups = require('../groups');
 		async.parallel({
 			find: async.apply(groups.isMember, uid, 'cid:' + cid + ':privileges:find'),
 			read: function(next) {
@@ -382,6 +391,7 @@ module.exports = function(privileges) {
 	};
 
 	privileges.categories.groupPrivileges = function(cid, groupName, callback) {
+		var groups = require('../groups');
 		async.parallel({
 			'groups:find': async.apply(groups.isMember, groupName, 'cid:' + cid + ':privileges:groups:find'),
 			'groups:read': function(next) {
