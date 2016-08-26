@@ -53,7 +53,7 @@ middleware.pageView = function(req, res, next) {
 	analytics.pageView({
 		ip: req.ip,
 		path: req.path,
-		uid: req.hasOwnProperty('user') && req.user.hasOwnProperty('uid') ? parseInt(req.user.uid, 10) : 0
+		uid: req.uid
 	});
 
 	plugins.fireHook('action:middleware.pageView', {req: req});
