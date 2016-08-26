@@ -15,6 +15,7 @@ var bodyParser = require('body-parser');
 var cookieParser = require('cookie-parser');
 var session = require('express-session');
 var useragent = require('express-useragent');
+var favicon = require('serve-favicon');
 
 var db = require('./database');
 var file = require('./file');
@@ -145,7 +146,7 @@ function setupFavicon(app) {
 }
 
 function initializeNodeBB(callback) {
-	var skipJS, skipLess, fromFile = nconf.get('from-file') || '';
+	var skipJS, fromFile = nconf.get('from-file') || '';
 
 	if (fromFile.match('js')) {
 		winston.info('[minifier] Minifying client-side JS skipped');
@@ -195,7 +196,7 @@ function cacheStaticFiles(callback) {
 	callback();
 }
 
-function listen(callback) {
+function listen() {
 	var port = parseInt(nconf.get('port'), 10);
 
 	if (Array.isArray(port)) {
