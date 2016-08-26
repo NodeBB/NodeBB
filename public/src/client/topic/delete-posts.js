@@ -1,8 +1,8 @@
 'use strict';
 
-/* globals define, app, ajaxify, socket, templates, translator */
+/* globals define, app, ajaxify, socket, templates */
 
-define('forum/topic/delete-posts', ['components', 'postSelect'], function(components, postSelect) {
+define('forum/topic/delete-posts', ['components', 'postSelect', 'translator'], function(components, postSelect, translator) {
 
 	var DeletePosts = {},
 		modal,
