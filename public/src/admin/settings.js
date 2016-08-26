@@ -93,6 +93,8 @@ define('admin/settings', ['uploader'], function(uploader) {
 					message: 'Your changes to the NodeBB configuration have been saved.',
 					type: 'success'
 				});
+
+				$(window).trigger('action:admin.settingsSaved');
 			});
 		});
 
