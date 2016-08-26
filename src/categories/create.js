@@ -3,7 +3,6 @@
 var async = require('async');
 
 var db = require('../database');
-
 var groups = require('../groups');
 var plugins = require('../plugins');
 var utils = require('../../public/src/utils');

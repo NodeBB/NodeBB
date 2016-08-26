@@ -24,7 +24,6 @@ var meta = require('./meta');
 var languages = require('./languages');
 var logger = require('./logger');
 var plugins = require('./plugins');
-var middleware = require('./middleware');
 var routes = require('./routes');
 var auth = require('./routes/authentication');
 var emitter = require('./emitter');
@@ -83,6 +82,8 @@ module.exports.listen = function() {
 };
 
 function setupExpressApp(app) {
+	var middleware = require('./middleware');
+
 	var relativePath = nconf.get('relative_path');
 
 	app.engine('tpl', templates.__express);
@@ -146,7 +147,9 @@ function setupFavicon(app) {
 }
 
 function initializeNodeBB(callback) {
-	var skipJS, fromFile = nconf.get('from-file') || '';
+	var skipJS;
+	var fromFile = nconf.get('from-file') || '';
+	var middleware = require('./middleware');
 
 	if (fromFile.match('js')) {
 		winston.info('[minifier] Minifying client-side JS skipped');
