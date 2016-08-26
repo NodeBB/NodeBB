@@ -12,7 +12,6 @@ var meta = require('../meta');
 var file = require('../file');
 var plugins = require('../plugins');
 var image = require('../image');
-var privileges = require('../privileges');
 
 var uploadsController = {};
 
@@ -52,6 +51,8 @@ uploadsController.uploadPost = function(req, res, next) {
 };
 
 function uploadAsImage(req, uploadedFile, callback) {
+	var privileges = require('../privileges');
+	
 	async.waterfall([
 		function(next) {
 			privileges.categories.can('upload:post:image', req.body.cid, req.uid, next);
@@ -79,6 +80,8 @@ function uploadAsImage(req, uploadedFile, callback) {
 }
 
 function uploadAsFile(req, uploadedFile, callback) {
+	var privileges = require('../privileges');
+	
 	async.waterfall([
 		function(next) {
 			privileges.categories.can('upload:post:file', req.body.cid, req.uid, next);
@@ -244,7 +247,5 @@ function deleteTempFiles(files) {
 		});
 	});
 }
-
-
 
 module.exports = uploadsController;
