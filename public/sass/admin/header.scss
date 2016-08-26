@@ -82,7 +82,7 @@
 		list-style-type: none;
 		padding: 0px;
 		position: absolute;
-		bottom: -13px;
+		bottom: -15px;
 		left: 50px;
 
 		> li {
@@ -111,6 +111,8 @@
 	}
 	
 	.dropdown-item {
+		font-size: .85rem;
+		
 		&.active {
 			a {
 				color: #fff;

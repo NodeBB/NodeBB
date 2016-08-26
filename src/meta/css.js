@@ -45,10 +45,7 @@ module.exports = function(Meta) {
 				
 			var	source = '@import "font-awesome";';
 			source += '\n@import "..' + path.sep + '..' + path.sep + 'public/sass/mixins.scss";';
-			
-			source = source + '@import "./theme";\n';
-			
-			source += '\n@import "..' + path.sep + '..' + path.sep + 'public/sass/generics.scss";';
+
 
 			plugins.sassFiles = filterMissingFiles(plugins.sassFiles);
 			plugins.cssFiles = filterMissingFiles(plugins.cssFiles);
@@ -75,11 +72,12 @@ module.exports = function(Meta) {
 				source += '\n@import "..' + path.sep + '..' + path.sep + 'public/vendor/jquery/css/smoothness/jquery-ui-1.10.4.custom.min";';
 				source += '\n@import "..' + path.sep + '..' + path.sep + 'public/vendor/jquery/bootstrap-tagsinput/bootstrap-tagsinput";';
 				source += '\n@import "..' + path.sep + '..' + path.sep + 'public/vendor/colorpicker/colorpicker";';
-				
 				source += '\n@import "..' + path.sep + '..' + path.sep + 'public/sass/flags.scss";';
 				source += '\n@import "..' + path.sep + '..' + path.sep + 'public/sass/blacklist.scss";';
 				
+				source += '\n@import "..' + path.sep + '..' + path.sep + 'public/sass/generics.scss";';
 				source += '\n@import "..' + path.sep + '..' + path.sep + 'public/sass/global.scss";';
+				source = source + '@import "./theme";\n';
 				
 				acpSource += '\n@import "..' + path.sep + '..' + path.sep + 'public/sass/admin/admin";';
 				acpSource += '\n@import "..' + path.sep + '..' + path.sep + 'public/sass/generics.scss";';
