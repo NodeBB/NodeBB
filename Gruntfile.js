@@ -18,20 +18,20 @@ module.exports = function(grunt) {
 			compiling = '',
 			time = Date.now();
 		
-		if (target === 'lessUpdated_Client') {
-			fromFile = ['js', 'tpl', 'acpLess'];
-			compiling = 'clientLess';
-		} else if (target === 'lessUpdated_Admin') {
-			fromFile = ['js', 'tpl', 'clientLess'];
-			compiling = 'acpLess';
+		if (target === 'sassUpdated_Client') {
+			fromFile = ['js', 'tpl', 'acpSass'];
+			compiling = 'clientSass';
+		} else if (target === 'sassUpdated_Admin') {
+			fromFile = ['js', 'tpl', 'clientSass'];
+			compiling = 'acpSass';
 		} else if (target === 'clientUpdated') {
-			fromFile = ['clientLess', 'acpLess', 'tpl'];
+			fromFile = ['clientSass', 'acpSass', 'tpl'];
 			compiling = 'js';
 		} else if (target === 'templatesUpdated') {
-			fromFile = ['js', 'clientLess', 'acpLess'];
+			fromFile = ['js', 'clientSass', 'acpSass'];
 			compiling = 'tpl';
 		} else if (target === 'serverUpdated') {
-			fromFile = ['clientLess', 'acpLess', 'js', 'tpl'];
+			fromFile = ['clientSass', 'acpSass', 'js', 'tpl'];
 		}
 
 		fromFile = fromFile.filter(function(ext) {
@@ -57,16 +57,16 @@ module.exports = function(grunt) {
 
 	grunt.initConfig({
 		watch: {
-			lessUpdated_Client: {
+			sassUpdated_Client: {
 				files: [
-					'public/*.less',
-					'node_modules/nodebb-*/*.less', 'node_modules/nodebb-*/**/*.less',
+					'public/*.scss',
+					'node_modules/nodebb-*/*.scss', 'node_modules/nodebb-*/**/*.scss',
 					'!node_modules/nodebb-*/node_modules/**',
 					'!node_modules/nodebb-*/.git/**'
 				]
 			},
-			lessUpdated_Admin: {
-				files: ['public/**/*.less']
+			sassUpdated_Admin: {
+				files: ['public/**/*.scss']
 			},
 			clientUpdated: {
 				files: [

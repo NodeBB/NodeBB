@@ -50,7 +50,7 @@ app.isConnected = false;
 			var reconnectEl = $('#reconnect');
 			var reconnectAlert = $('#reconnect-alert');
 
-			reconnectEl.tooltip('destroy');
+			reconnectEl.tooltip('dispose');
 			reconnectEl.html('<i class="fa fa-check"></i>');
 			reconnectAlert.fadeOut(500);
 			reconnecting = false;
@@ -62,7 +62,7 @@ app.isConnected = false;
 			$(window).trigger('action:reconnected');
 
 			setTimeout(function() {
-				reconnectEl.removeClass('active').addClass('hide');
+				reconnectEl.removeClass('active').addClass('hidden-xs-up');
 			}, 3000);
 		}
 	}
@@ -111,7 +111,7 @@ app.isConnected = false;
 			reconnectAlert.fadeIn(500).removeClass('hide');
 		}
 
-		reconnectEl.addClass('active').removeClass('hide').tooltip({
+		reconnectEl.addClass('active').removeClass("hidden-xs-up").tooltip({
 			placement: 'bottom'
 		});
 	}

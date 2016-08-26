@@ -3,14 +3,14 @@
 	<div class="col-lg-12">
 
 		<div class="text-center">
-			<div class="panel panel-default">
-				<div class="panel-body">
+			<div class="card">
+				<div class="card-block">
 					<div><canvas id="flags:daily" height="250"></canvas></div>
 					<p>
 
 					</p>
 				</div>
-				<div class="panel-footer"><small>Daily flags</small></div>
+				<div class="card-footer"><small>Daily flags</small></div>
 			</div>
 		</div>
 
@@ -54,8 +54,8 @@
 				<!-- BEGIN posts -->
 				<div class="row" data-pid="{posts.pid}" data-tid="{posts.topic.tid}">
 					<div class="col-sm-8">
-						<div class="panel panel-default">
-							<div class="panel-body flag-post-body">
+						<div class="card">
+							<div class="card-block flag-post-body">
 								<a href="{config.relative_path}/user/{../user.userslug}">
 									<!-- IF ../user.picture -->
 									<img title="{posts.user.username}" src="{../user.picture}">
@@ -71,7 +71,7 @@
 									<p>{posts.content}</p>
 								</div>
 								<small>
-									<span class="pull-right">
+									<span class="pull-xs-right">
 										Posted in <a href="{config.relative_path}/category/{posts.category.slug}" target="_blank"><i class="fa {posts.category.icon}"></i> {posts.category.name}</a>, <span class="timeago" title="{posts.timestampISO}"></span> &bull;
 										<a href="{config.relative_path}/topic/{posts.topic.slug}/{posts.index}" target="_blank">Read More</a>
 									</span>

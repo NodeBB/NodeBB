@@ -18,7 +18,7 @@ define('forum/users', ['translator'], function(translator) {
 		app.enterRoom('user_list');
 
 		var section = utils.params().section ? ('?section=' + utils.params().section) : '';
-		$('.nav-pills li').removeClass('active').find('a[href="' + window.location.pathname + section + '"]').parent().addClass('active');
+		$('.nav-pills li').removeClass('active').find('a[href="' + window.location.pathname + section + '"]').addClass('active');
 
 		handleSearch();
 
@@ -99,6 +99,7 @@ define('forum/users', ['translator'], function(translator) {
 	}
 
 	function renderSearchResults(data) {
+
 		templates.parse('partials/paginator', {pagination: data.pagination}, function(html) {
 			$('.pagination-container').replaceWith(html);
 		});

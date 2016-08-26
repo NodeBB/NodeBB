@@ -46,7 +46,7 @@ define('forum/groups/details', [
 
 		handleMemberInvitations();
 
-		components.get('groups/activity').find('.content img:not(.not-responsive)').addClass('img-responsive');
+		components.get('groups/activity').find('.content img:not(.not-responsive)').addClass('img-fluid');
 
 		detailsPage.on('click', '[data-action]', function() {
 			var btnEl = $(this),
@@ -159,10 +159,10 @@ define('forum/groups/details', [
 
 			if (this.checked) {
 				customOpts.removeAttr('disabled');
-				previewEl.removeClass('hide');
+				previewEl.removeClass('hidden-xs-up');
 			} else {
 				customOpts.attr('disabled', 'disabled');
-				previewEl.addClass('hide');
+				previewEl.addClass('hidden-xs-up');
 			}
 		});
 	};

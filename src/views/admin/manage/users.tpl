@@ -1,43 +1,43 @@
 <div class="manage-users">
 	<div class="col-lg-9">
-		<div class="panel panel-default">
-			<div class="panel-heading"><i class="fa fa-user"></i> Users</div>
-			<div class="panel-body">
+		<div class="card">
+			<div class="card-header"><i class="fa fa-user"></i> Users</div>
+			<div class="card-block">
 				<ul class="nav nav-pills">
-					<li><a href='{config.relative_path}/admin/manage/users/latest'>Latest Users</a></li>
-					<li><a href='{config.relative_path}/admin/manage/users/not-validated'>Not validated</a></li>
-					<li><a href='{config.relative_path}/admin/manage/users/no-posts'>No Posts</a></li>
-					<li><a href='{config.relative_path}/admin/manage/users/inactive'>Inactive</a></li>
-					<li><a href='{config.relative_path}/admin/manage/users/flagged'>Most Flags</a></li>
-					<li><a href='{config.relative_path}/admin/manage/users/banned'>Banned</a></li>
-					<li><a href='{config.relative_path}/admin/manage/users/search'>User Search</a></li>
+					<li class="nav-item"><a class="nav-link" href='{config.relative_path}/admin/manage/users/latest'>Latest Users</a></li>
+					<li class="nav-item"><a class="nav-link" href='{config.relative_path}/admin/manage/users/not-validated'>Not validated</a></li>
+					<li class="nav-item"><a class="nav-link" href='{config.relative_path}/admin/manage/users/no-posts'>No Posts</a></li>
+					<li class="nav-item"><a class="nav-link" href='{config.relative_path}/admin/manage/users/inactive'>Inactive</a></li>
+					<li class="nav-item"><a class="nav-link" href='{config.relative_path}/admin/manage/users/flagged'>Most Flags</a></li>
+					<li class="nav-item"><a class="nav-link" href='{config.relative_path}/admin/manage/users/banned'>Banned</a></li>
+					<li class="nav-item"><a class="nav-link" href='{config.relative_path}/admin/manage/users/search'>User Search</a></li>
 
 
-					<div class="btn-group pull-right">
-						<button class="btn btn-default dropdown-toggle" data-toggle="dropdown" type="button">Edit <span class="caret"></span></button>
+					<div class="btn-group pull-xs-right">
+						<button class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" type="button">Edit <span class="caret"></span></button>
 						<ul class="dropdown-menu">
-							<li><a href="#" class="admin-user"><i class="fa fa-fw fa-shield"></i> Make Admin</a></li>
-							<li><a href="#" class="remove-admin-user"><i class="fa fa-fw fa-ban"></i> Remove Admin</a></li>
-							<li class="divider"></li>
-							<li><a href="#" class="validate-email"><i class="fa fa-fw fa-check"></i> Validate Email</a></li>
-							<li><a href="#" class="send-validation-email"><i class="fa fa-fw fa-mail-forward"></i> Send Validation Email</a></li>
-							<li><a href="#" class="password-reset-email"><i class="fa fa-fw fa-key"></i> Send Password Reset Email</a></li>
-							<li class="divider"></li>
-							<li><a href="#" class="ban-user"><i class="fa fa-fw fa-gavel"></i> Ban User(s)</a></li>
-							<li><a href="#" class="ban-user-temporary"><i class="fa fa-fw fa-clock-o"></i> Ban User(s) Temporarily</a></li>
-							<li><a href="#" class="unban-user"><i class="fa fa-fw fa-comment-o"></i> Unban User(s)</a></li>
-							<li><a href="#" class="reset-lockout"><i class="fa fa-fw fa-unlock"></i> Reset Lockout</a></li>
-							<li><a href="#" class="reset-flags"><i class="fa fa-fw fa-flag"></i> Reset Flags</a></li>
-							<li class="divider"></li>
-							<li><a href="#" class="delete-user"><i class="fa fa-fw fa-trash-o"></i> Delete User(s)</a></li>
-							<li><a href="#" class="delete-user-and-content"><i class="fa fa-fw fa-trash-o"></i> Delete User(s) and Content</a></li>
+							<li class="dropdown-item"><a href="#" class="admin-user"><i class="fa fa-fw fa-shield"></i> Make Admin</a></li>
+							<li class="dropdown-item"><a href="#" class="remove-admin-user"><i class="fa fa-fw fa-ban"></i> Remove Admin</a></li>
+							<div class="dropdown-divider"></div>
+							<li class="dropdown-item"><a href="#" class="validate-email"><i class="fa fa-fw fa-check"></i> Validate Email</a></li>
+							<li class="dropdown-item"><a href="#" class="send-validation-email"><i class="fa fa-fw fa-mail-forward"></i> Send Validation Email</a></li>
+							<li class="dropdown-item"><a href="#" class="password-reset-email"><i class="fa fa-fw fa-key"></i> Send Password Reset Email</a></li>
+							<div class="dropdown-divider"></div>
+							<li class="dropdown-item"><a href="#" class="ban-user"><i class="fa fa-fw fa-gavel"></i> Ban User(s)</a></li>
+							<li class="dropdown-item"><a href="#" class="ban-user-temporary"><i class="fa fa-fw fa-clock-o"></i> Ban User(s) Temporarily</a></li>
+							<li class="dropdown-item"><a href="#" class="unban-user"><i class="fa fa-fw fa-comment-o"></i> Unban User(s)</a></li>
+							<li class="dropdown-item"><a href="#" class="reset-lockout"><i class="fa fa-fw fa-unlock"></i> Reset Lockout</a></li>
+							<li class="dropdown-item"><a href="#" class="reset-flags"><i class="fa fa-fw fa-flag"></i> Reset Flags</a></li>
+							<div class="dropdown-divider"></div>
+							<li class="dropdown-item"><a href="#" class="delete-user"><i class="fa fa-fw fa-trash-o"></i> Delete User(s)</a></li>
+							<li class="dropdown-item"><a href="#" class="delete-user-and-content"><i class="fa fa-fw fa-trash-o"></i> Delete User(s) and Content</a></li>
 						</ul>
 					</div>
 				</ul>
 
 				<br />
 
-				<div class="search {search_display} well">
+				<div class="search {search_display} card">
 					<label>By User Name</label>
 					<input class="form-control" id="search-user-name" data-search-type="username" type="text" placeholder="Enter a username to search"/><br />
 
@@ -51,9 +51,9 @@
 					<span id="user-notfound-notify" class="label label-danger hide">User not found!</span><br/>
 				</div>
 				<!-- IF inactive -->
-				<a href="{config.relative_path}/admin/manage/users/inactive?months=3" class="btn btn-default">3 months</a>
-				<a href="{config.relative_path}/admin/manage/users/inactive?months=6" class="btn btn-default">6 months</a>
-				<a href="{config.relative_path}/admin/manage/users/inactive?months=12" class="btn btn-default">12 months</a>
+				<a href="{config.relative_path}/admin/manage/users/inactive?months=3" class="btn btn-secondary">3 months</a>
+				<a href="{config.relative_path}/admin/manage/users/inactive?months=6" class="btn btn-secondary">6 months</a>
+				<a href="{config.relative_path}/admin/manage/users/inactive?months=12" class="btn btn-secondary">12 months</a>
 				<!-- ENDIF inactive -->
 
 
@@ -94,14 +94,15 @@
 				</ul>
 
 				<!-- IMPORT partials/paginator.tpl -->
+
 			</div>
 		</div>
 	</div>
 
 	<div class="col-lg-3 acp-sidebar">
-		<div class="panel panel-default">
-			<div class="panel-heading">Users Control Panel</div>
-			<div class="panel-body">
+		<div class="card">
+			<div class="card-header">Users Control Panel</div>
+			<div class="card-block">
 				<button id="createUser" class="btn btn-primary form-control">New User</button>
 				<a target="_blank" href="{config.relative_path}/api/admin/users/csv" class="btn btn-primary form-control">Download CSV</a>
 

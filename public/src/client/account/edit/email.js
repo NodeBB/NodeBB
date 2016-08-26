@@ -24,10 +24,10 @@ define('forum/account/edit/email', ['forum/account/header'], function(header) {
 			}
 
 			var btn = $(this);
-			btn.addClass('disabled').find('i').removeClass('hide');
+			btn.addClass('disabled').find('i').removeClass('hidden-xs-up');
 
 			socket.emit('user.changeUsernameEmail', userData, function(err) {
-				btn.removeClass('disabled').find('i').addClass('hide');
+				btn.removeClass('disabled').find('i').addClass('hidden-xs-up');
 				if (err) {
 					return app.alertError(err.message);
 				}

@@ -1,9 +1,9 @@
-<div class="registration panel panel-primary">
-	<div class="panel-heading">
+<div class="registration card">
+	<div class="card-header bg-primary">
 		Queue
 	</div>
 	<!-- IF !users.length -->
-	<p class="panel-body">
+	<p class="card-block">
 		There are no users in the registration queue. <br>
 		To enable this feature, go to <a href="{config.relative_path}/admin/settings/user">Settings &rarr; User &rarr; Authentication</a> and set
 		<strong>Registration Type</strong> to "Admin Approval".
@@ -13,8 +13,8 @@
 		<tr>
 			<th>Name</th>
 			<th>Email</th>
-			<th class="hidden-xs">IP</th>
-			<th class="hidden-xs">Time</th>
+			<th class="hidden-sm-down">IP</th>
+			<th class="hidden-sm-down">Time</th>
 			<th></th>
 		</tr>
 		<!-- BEGIN users -->
@@ -35,7 +35,7 @@
 				<!-- ENDIF users.emailSpam -->
 				{users.email}
 			</td>
-			<td class="hidden-xs">
+			<td class="hidden-sm-down">
 				<!-- IF users.ipSpam -->
 				<i class="fa fa-times-circle text-danger" title="Frequency: {users.spamData.ip.frequency} Appears: {users.spamData.ip.appears}"></i>
 				<!-- ELSE -->
@@ -52,11 +52,11 @@
 				<a href="/uid/{users.ipMatch.uid}">{users.ipMatch.username}</a>
 				<!-- END users.ipMatch -->
 			</td>
-			<td class="hidden-xs">
+			<td class="hidden-sm-down">
 				<span class="timeago" title="{users.timestampISO}"></span>
 			</td>
 			<td>
-				<div class="btn-group pull-right">
+				<div class="btn-group pull-xs-right">
 					<button class="btn btn-success btn-xs" data-action="accept"><i class="fa fa-check"></i></button>
 					<button class="btn btn-danger btn-xs" data-action="delete"><i class="fa fa-times"></i></button>
 				</div>
@@ -68,11 +68,11 @@
 	<!-- IMPORT partials/paginator.tpl -->
 </div>
 
-<div class="invitations panel panel-success">
-	<div class="panel-heading">
+<div class="invitations card">
+	<div class="card-header bg-success">
 		Invitations
 	</div>
-	<p class="panel-body">
+	<p class="card-block">
 		Below is a complete list of invitations sent. Use ctrl-f to search through the list by email or username.
 		<br><br>
 		The username will be displayed to the right of the emails for users who have redeemed their invitations.
@@ -90,7 +90,7 @@
 			<td class ="invited-by"><!-- IF @first -->{invites.username}<!-- ENDIF @first --></td>
 			<td>{invites.invitations.email}</td>
 			<td>{invites.invitations.username}
-				<div class="btn-group pull-right">
+				<div class="btn-group pull-xs-right">
 					<button class="btn btn-danger btn-xs" data-action="delete"><i class="fa fa-times"></i></button>
 				</div>
 			</td>

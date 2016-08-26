@@ -15,7 +15,7 @@ define('forum/unread', ['forum/recent', 'topicSelect', 'forum/infinitescroll', '
 		app.enterRoom('unread_topics');
 
 		$('#new-topics-alert').on('click', function() {
-			$(this).addClass('hide');
+			$(this).addClass('hidden-xs-up');
 		});
 
 		recent.watchForNewPosts();
@@ -45,9 +45,9 @@ define('forum/unread', ['forum/recent', 'topicSelect', 'forum/infinitescroll', '
 				app.alertSuccess('[[unread:topics_marked_as_read.success]]');
 
 				$('[component="category"]').empty();
-				$('[component="pagination"]').addClass('hidden');
-				$('#category-no-topics').removeClass('hidden');
-				$('.markread').addClass('hidden');
+				$('[component="pagination"]').addClass('hidden-xs-up');
+				$('#category-no-topics').removeClass('hidden-xs-up');
+				$('.markread').addClass('hidden-xs-up');
 			});
 		});
 
@@ -113,8 +113,8 @@ define('forum/unread', ['forum/recent', 'topicSelect', 'forum/infinitescroll', '
 		app.alertSuccess('[[unread:topics_marked_as_read.success]]');
 
 		if (!$('[component="category"]').children().length) {
-			$('#category-no-topics').removeClass('hidden');
-			$('.markread').addClass('hidden');
+			$('#category-no-topics').removeClass('hidden-xs-up');
+			$('.markread').addClass('hidden-xs-up');
 		}
 	}
 

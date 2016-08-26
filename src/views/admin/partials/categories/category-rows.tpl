@@ -14,13 +14,13 @@
                 </div>
             </div>
             <div class="col-md-3">
-                <div class="clearfix pull-right text-right">
+                <div class="clearfix pull-xs-right text-right">
                     <div class="btn-group">
                         <button data-cid="{categories.cid}" data-action="toggle" data-disabled="{categories.disabled}" class="btn <!-- IF categories.disabled -->btn-primary<!-- ELSE -->btn-danger<!-- ENDIF categories.disabled -->">
                             <!-- IF categories.disabled -->Enable<!-- ELSE -->Disable<!-- ENDIF categories.disabled -->
                         </button>
-                        <a href="./categories/{categories.cid}/analytics" class="btn btn-default"><i class="fa fa-line-chart"></i></a>
-                        <a href="./categories/{categories.cid}" class="btn btn-default">Edit</a>
+                        <a href="./categories/{categories.cid}/analytics" class="btn btn-secondary"><i class="fa fa-line-chart"></i></a>
+                        <a href="./categories/{categories.cid}" class="btn btn-secondary">Edit</a>
                     </div>
                 </div>
             </div>

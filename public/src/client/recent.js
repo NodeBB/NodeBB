@@ -20,7 +20,7 @@ define('forum/recent', ['forum/infinitescroll', 'components'], function(infinite
 		Recent.watchForNewPosts();
 
 		$('#new-topics-alert').on('click', function() {
-			$(this).addClass('hide');
+			$(this).addClass('hidden-xs-up');
 		});
 
 		if (!config.usePagination) {
@@ -122,8 +122,8 @@ define('forum/recent', ['forum/infinitescroll', 'components'], function(infinite
 
 		text += ' [[recent:click-here-to-reload]]';
 
-		$('#new-topics-alert').translateText(text).removeClass('hide').fadeIn('slow');
-		$('#category-no-topics').addClass('hide');
+		$('#new-topics-alert').translateText(text).removeClass('hidden-xs-up').fadeIn('slow');
+		$('#category-no-topics').addClass('hidden-xs-up');
 	};
 
 	Recent.loadMoreTopics = function(direction) {

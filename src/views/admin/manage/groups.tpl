@@ -1,7 +1,7 @@
 <div class="groups">
 	<div class="col-lg-9">
-		<div class="panel panel-default">
-			<div class="panel-body">
+		<div class="card">
+			<div class="card-block">
 				<table class="table table-striped groups-list">
 					<tr>
 						<th>Group Name</th>
@@ -16,8 +16,8 @@
 							<!-- ENDIF groups.system -->
 						</td>
 						<td>
-							<div class="btn-group pull-right">
-								<a href="{config.relative_path}/admin/manage/groups/{groups.nameEncoded}" class="btn btn-default btn-xs"><i class="fa fa-edit"></i> Edit</a>
+							<div class="btn-group pull-xs-right">
+								<a href="{config.relative_path}/admin/manage/groups/{groups.nameEncoded}" class="btn btn-secondary btn-xs"><i class="fa fa-edit"></i> Edit</a>
 								<!-- IF !groups.system -->
 								<button class="btn btn-danger btn-xs" data-action="delete"><i class="fa fa-times"></i></button>
 								<!-- ENDIF !groups.system -->
@@ -33,8 +33,8 @@
 	</div>
 
 	<div class="col-lg-3 acp-sidebar">
-		<div class="panel panel-default">
-			<div class="panel-body">
+		<div class="card">
+			<div class="card-block">
 				<div>
 					<input id="group-search" type="text" class="form-control" placeholder="Search" />
 				</div>
@@ -63,7 +63,7 @@
 					</form>
 				</div>
 				<div class="modal-footer">
-					<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
 					<button type="button" class="btn btn-primary" id="create-modal-go">Create</button>
 				</div>
 			</div>

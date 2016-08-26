@@ -1,10 +1,10 @@
 <div class="info">
-	<div class="panel panel-default">
-		<div class="panel-heading">
+	<div class="card">
+		<div class="card-header">
 			<h3 class="panel-title">Info - You are on <strong>{host}:{port}</strong></h3>
 		</div>
 
-		<div class="panel-body">
+		<div class="card-block">
 			<table class="table table-striped">
 				<thead>
 					<tr>
@@ -35,12 +35,12 @@
 		</div>
 	</div>
 
-	<div class="panel panel-default">
-		<div class="panel-heading">
+	<div class="card">
+		<div class="card-header">
 			<h3 class="panel-title">Info</h3>
 		</div>
 
-		<div class="panel-body">
+		<div class="card-block">
 			<div class="highlight">
 				<pre>{infoJSON}</pre>
 			</div>

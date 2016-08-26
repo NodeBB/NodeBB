@@ -74,10 +74,10 @@ define('forum/category', [
 					return app.alertError(err.message);
 				}
 
-				$('[component="category/watching/menu"]').toggleClass('hidden', command !== 'watch');
+				$('[component="category/watching/menu"]').toggleClass('hidden-xs-up', command !== 'watch');
 				$('[component="category/watching/check"]').toggleClass('fa-check', command === 'watch');
 
-				$('[component="category/ignoring/menu"]').toggleClass('hidden', command !== 'ignore');
+				$('[component="category/ignoring/menu"]').toggleClass('hidden-xs-up', command !== 'ignore');
 				$('[component="category/ignoring/check"]').toggleClass('fa-check', command === 'ignore');
 
 				app.alertSuccess('[[category:' + command + '.message]]');
