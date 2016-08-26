@@ -109,7 +109,9 @@ define('admin/settings', ['uploader'], function(uploader) {
 			callback();
 		}
 
-		$(window).trigger('action:admin.settingsLoaded');
+		setTimeout(function() {
+			$(window).trigger('action:admin.settingsLoaded');
+		}, 0);
 	};
 
 	function handleUploads() {
