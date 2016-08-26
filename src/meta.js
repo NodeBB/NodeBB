@@ -1,18 +1,14 @@
 "use strict";
 
-var async = require('async'),
-	winston = require('winston'),
-	templates = require('templates.js'),
-	os = require('os'),
-	nconf = require('nconf'),
+var async = require('async');
+var winston = require('winston');
 
-	user = require('./user'),
-	groups = require('./groups'),
-	languages = require('./languages'),
-	emitter = require('./emitter'),
-	pubsub = require('./pubsub'),
-	auth = require('./routes/authentication'),
-	utils = require('../public/src/utils');
+var os = require('os');
+var nconf = require('nconf');
+var user = require('./user');
+var groups = require('./groups');
+var pubsub = require('./pubsub');
+var utils = require('../public/src/utils');
 
 (function (Meta) {
 	Meta.reloadRequired = false;
