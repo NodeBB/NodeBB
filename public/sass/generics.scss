@@ -18,7 +18,7 @@
 		cursor: pointer;
 		padding: 0.5em;
 		margin: 0.25em;
-		@include border-radius(3px);
+		border-radius: 3px;
 
 		&.disabled {
 			background-color: #888!important;
