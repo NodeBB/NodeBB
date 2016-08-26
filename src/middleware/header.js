@@ -16,7 +16,7 @@ var controllers = {
 	helpers: require('../controllers/helpers')
 };
 
-module.exports = function(app, middleware) {
+module.exports = function(middleware) {
 
 	middleware.buildHeader = function(req, res, next) {
 		res.locals.renderHeader = true;
@@ -28,7 +28,7 @@ module.exports = function(app, middleware) {
 					controllers.api.getConfig(req, res, next);
 				},
 				footer: function(next) {
-					app.render('footer', {
+					req.app.render('footer', {
 						loggedIn: !!req.uid,
 						title: validator.escape(meta.config.title || meta.config.browserTitle || 'NodeBB')
 					}, next);
@@ -160,7 +160,7 @@ module.exports = function(app, middleware) {
 					return callback(err);
 				}
 
-				app.render('header', data.templateValues, callback);
+				req.app.render('header', data.templateValues, callback);
 			});
 		});
 	};

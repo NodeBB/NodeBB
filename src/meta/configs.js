@@ -1,11 +1,12 @@
 
 'use strict';
 
-var winston = require('winston'),
-	db = require('../database'),
-	pubsub = require('../pubsub'),
-	nconf = require('nconf'),
-	utils = require('../../public/src/utils');
+var winston = require('winston');
+var nconf = require('nconf');
+
+var db = require('../database');
+var pubsub = require('../pubsub');
+var utils = require('../../public/src/utils');
 
 module.exports = function(Meta) {
 

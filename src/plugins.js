@@ -10,12 +10,10 @@ var nconf = require('nconf');
 
 var db = require('./database');
 var emitter = require('./emitter');
-var translator = require('../public/src/modules/translator');
 var utils = require('../public/src/utils');
 var hotswap = require('./hotswap');
 var file = require('./file');
 
-var controllers = require('./controllers');
 var app;
 var middleware;
 
@@ -149,11 +147,13 @@ var middleware;
 	Plugins.reloadRoutes = function(callback) {
 		callback = callback || function() {};
 		var router = express.Router();
+
 		router.hotswapId = 'plugins';
 		router.render = function() {
 			app.render.apply(app, arguments);
 		};
 
+		var controllers = require('./controllers');
 		Plugins.fireHook('static:app.load', {app: app, router: router, middleware: middleware, controllers: controllers}, function(err) {
 			if (err) {
 				return winston.error('[plugins] Encountered error while executing post-router plugins hooks: ' + err.message);

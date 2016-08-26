@@ -376,8 +376,8 @@ Controllers.handle404 = function(req, res) {
 		if (res.locals.isAPI) {
 			return res.json({path: validator.escape(path.replace(/^\/api/, '')), title: '[[global:404.title]]'});
 		}
-
-		req.app.locals.middleware.buildHeader(req, res, function() {
+		var middleware = require('../middleware');
+		middleware.buildHeader(req, res, function() {
 			res.render('404', {path: validator.escape(path), title: '[[global:404.title]]'});
 		});
 	} else {
@@ -402,7 +402,8 @@ Controllers.handleURIErrors = function(err, req, res, next) {
 					error: '[[global:400.title]]'
 				});
 			} else {
-				req.app.locals.middleware.buildHeader(req, res, function() {
+				var middleware = require('../middleware');
+				middleware.buildHeader(req, res, function() {
 					res.render('400', { error: validator.escape(String(err.message)) });
 				});
 			}
@@ -435,7 +436,8 @@ Controllers.handleErrors = function(err, req, res, next) {
 	if (res.locals.isAPI) {
 		res.json({path: validator.escape(path), error: err.message});
 	} else {
-		req.app.locals.middleware.buildHeader(req, res, function() {
+		var middleware = require('../middleware');
+		middleware.buildHeader(req, res, function() {
 			res.render('500', { path: validator.escape(path), error: validator.escape(String(err.message)) });
 		});
 	}
