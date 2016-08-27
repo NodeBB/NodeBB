@@ -105,27 +105,11 @@ function setupExpressApp(app) {
 	app.use(cookieParser());
 	app.use(useragent.express());
 
-	var cookie = {
-		maxAge: 1000 * 60 * 60 * 24 * (parseInt(meta.config.loginDays, 10) || 14)
-	};
-
-	if (meta.config.cookieDomain) {
-		cookie.domain = meta.config.cookieDomain;
-	}
-
-	if (nconf.get('secure')) {
-		cookie.secure = true;
-	}
-
-	if (relativePath !== '') {
-		cookie.path = relativePath;
-	}
-
 	app.use(session({
 		store: db.sessionStore,
 		secret: nconf.get('secret'),
 		key: 'express.sid',
-		cookie: cookie,
+		cookie: setupCookie(),
 		resave: true,
 		saveUninitialized: true
 	}));
@@ -146,6 +130,37 @@ function setupFavicon(app) {
 	}
 }
 
+
+function setupCookie() {
+	var cookie = {
+		maxAge: 1000 * 60 * 60 * 24 * (parseInt(meta.config.loginDays, 10) || 14)
+	};
+
+	if (meta.config.cookieDomain) {
+		cookie.domain = meta.config.cookieDomain;
+	}
+
+	if (nconf.get('secure')) {
+		cookie.secure = true;
+	}
+
+	var relativePath = nconf.get('relative_path');
+	if (relativePath !== '') {
+		cookie.path = relativePath;
+	}
+
+	return cookie;
+}
+
+function cacheStaticFiles() {
+	if (global.env === 'development') {
+		return;
+	}
+
+	app.enable('cache');
+	app.enable('minification');
+}
+
 function initializeNodeBB(callback) {
 	var skipJS;
 	var fromFile = nconf.get('from-file') || '';
@@ -157,7 +172,6 @@ function initializeNodeBB(callback) {
 	}
 
 	async.waterfall([
-		async.apply(cacheStaticFiles),
 		async.apply(meta.themes.setupPaths),
 		function(next) {
 			plugins.init(app, middleware, next);
@@ -187,16 +201,6 @@ function initializeNodeBB(callback) {
 			next();
 		}
 	], callback);
-}
-
-function cacheStaticFiles(callback) {
-	if (global.env === 'development') {
-		return callback();
-	}
-
-	app.enable('cache');
-	app.enable('minification');
-	callback();
 }
 
 function listen() {
