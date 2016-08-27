@@ -31,16 +31,9 @@ module.exports = function(SocketPosts) {
 			return callback(new Error('[[error:content-too-long, ' + meta.config.maximumPostLength + ']]'));
 		}
 
-		posts.edit({
-			uid: socket.uid,
-			handle: data.handle,
-			pid: data.pid,
-			title: data.title,
-			content: data.content,
-			topic_thumb: data.topic_thumb,
-			tags: data.tags,
-			req: websockets.reqFromSocket(socket)
-		}, function(err, result) {
+		data.uid = socket.uid;
+		data.req = websockets.reqFromSocket(socket);
+		posts.edit(data, function(err, result) {
 			if (err) {
 				return callback(err);
 			}

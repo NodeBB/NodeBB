@@ -22,16 +22,11 @@ SocketTopics.post = function(socket, data, callback) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
 
-	topics.post({
-		uid: socket.uid,
-		handle: data.handle,
-		title: data.title,
-		content: data.content,
-		cid: data.category_id,
-		thumb: data.topic_thumb,
-		tags: data.tags,
-		req: websockets.reqFromSocket(socket)
-	}, function(err, result) {
+	data.uid = socket.uid;
+	data.req = websockets.reqFromSocket(socket);
+	data.timestamp = Date.now();
+
+	topics.post(data, function(err, result) {
 		if (err) {
 			return callback(err);
 		}

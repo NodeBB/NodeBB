@@ -1,16 +1,17 @@
 'use strict';
 
-var async = require('async'),
-	validator = require('validator'),
-	_ = require('underscore'),
-	db = require('../database'),
-	topics = require('../topics'),
-	user = require('../user'),
-	privileges = require('../privileges'),
-	plugins = require('../plugins'),
-	cache = require('./cache'),
-	pubsub = require('../pubsub'),
-	utils = require('../../public/src/utils');
+var async = require('async');
+var validator = require('validator');
+var _ = require('underscore');
+
+var db = require('../database');
+var topics = require('../topics');
+var user = require('../user');
+var privileges = require('../privileges');
+var plugins = require('../plugins');
+var cache = require('./cache');
+var pubsub = require('../pubsub');
+var utils = require('../../public/src/utils');
 
 module.exports = function(Posts) {
 
@@ -19,7 +20,6 @@ module.exports = function(Posts) {
 	});
 
 	Posts.edit = function(data, callback) {
-		var now = Date.now();
 		var postData;
 		var results;
 
@@ -37,23 +37,19 @@ module.exports = function(Posts) {
 				if (!_postData) {
 					return next(new Error('[[error:no-post]]'));
 				}
+
 				postData = _postData;
 				postData.content = data.content;
-				postData.edited = now;
+				postData.edited = Date.now();
 				postData.editor = data.uid;
-				plugins.fireHook('filter:post.edit', {req: data.req, post: postData, uid: data.uid}, next);
+				if (data.handle) {
+					postData.handle = data.handle;
+				}
+				plugins.fireHook('filter:post.edit', {req: data.req, post: postData, data: data, uid: data.uid}, next);
 			},
 			function (result, next) {
 				postData = result.post;
-				var updateData = {
-					edited: postData.edited,
-					editor: postData.editor,
-					content: postData.content
-				};
-				if (data.handle) {
-					updateData.handle = data.handle;
-				}
-				Posts.setPostFields(data.pid, updateData, next);
+				Posts.setPostFields(data.pid, postData, next);
 			},
 			function (next) {
 				async.parallel({
@@ -121,12 +117,14 @@ module.exports = function(Posts) {
 				topicData.slug = tid + '/' + (utils.slugify(title) || 'topic');
 			}
 
-			topicData.thumb = data.topic_thumb || '';
+			topicData.thumb = data.thumb || '';
 
 			data.tags = data.tags || [];
 
 			async.waterfall([
-				async.apply(plugins.fireHook, 'filter:topic.edit', {req: data.req, topic: topicData}),
+				function(next) {
+					plugins.fireHook('filter:topic.edit', {req: data.req, topic: topicData, data: data}, next);
+				},
 				function(results, next) {
 					db.setObject('topic:' + tid, results.topic, next);
 				},

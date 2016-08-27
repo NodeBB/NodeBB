@@ -45,7 +45,7 @@ module.exports = function(Topics) {
 					topicData.thumb = data.thumb;
 				}
 
-				plugins.fireHook('filter:topic.create', {topic: topicData}, next);
+				plugins.fireHook('filter:topic.create', {topic: topicData, data: data}, next);
 			},
 			function(data, next) {
 				topicData = data.topic;
@@ -122,10 +122,13 @@ module.exports = function(Topics) {
 			},
 			function(filteredData, next) {
 				data = filteredData;
-				Topics.create({uid: data.uid, title: data.title, cid: data.cid, thumb: data.thumb, tags: data.tags, timestamp: data.timestamp}, next);
+				Topics.create(data, next);
 			},
 			function(tid, next) {
-				posts.create({uid: data.uid, tid: tid, handle: data.handle, content: data.content, timestamp: data.timestamp, ip: data.req ? data.req.ip : null}, next);
+				var postData = data;
+				postData.tid = tid;
+				postData.ip = data.req ? data.req.ip : null;
+				posts.create(postData, next);
 			},
 			function(postData, next) {
 				onNewPost(postData, data, next);
