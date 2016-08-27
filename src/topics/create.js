@@ -301,7 +301,7 @@ module.exports = function(Topics) {
 
 				// Username override for guests, if enabled
 				if (parseInt(meta.config.allowGuestHandles, 10) === 1 && parseInt(postData.uid, 10) === 0 && data.handle) {
-					postData.user.username = validator.escape(data.handle);
+					postData.user.username = validator.escape(String(data.handle));
 				}
 
 				postData.favourited = false;
@@ -312,7 +312,7 @@ module.exports = function(Topics) {
 				postData.display_move_tools = true;
 				postData.selfPost = false;
 				postData.timestampISO = utils.toISOString(postData.timestamp);
-				postData.topic.title = validator.escape(postData.topic.title);
+				postData.topic.title = validator.escape(String(postData.topic.title));
 
 				next(null, postData);
 			}

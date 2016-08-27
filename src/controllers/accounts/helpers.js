@@ -98,17 +98,17 @@ helpers.getUserDataByUserSlug = function(userslug, callerUID, callback) {
 			userData.sso = results.sso.associations;
 			userData.status = user.getStatus(userData);
 			userData.banned = parseInt(userData.banned, 10) === 1;
-			userData.website = validator.escape(userData.website || '');
+			userData.website = validator.escape(String(userData.website || ''));
 			userData.websiteLink = !userData.website.startsWith('http') ? 'http://' + userData.website : userData.website;
 			userData.websiteName = userData.website.replace(validator.escape('http://'), '').replace(validator.escape('https://'), '');
 			userData.followingCount = parseInt(userData.followingCount, 10) || 0;
 			userData.followerCount = parseInt(userData.followerCount, 10) || 0;
 
-			userData.email = validator.escape(userData.email || '');
-			userData.fullname = validator.escape(userData.fullname || '');
-			userData.location = validator.escape(userData.location || '');
-			userData.signature = validator.escape(userData.signature || '');
-			userData.aboutme = validator.escape(userData.aboutme || '');
+			userData.email = validator.escape(String(userData.email || ''));
+			userData.fullname = validator.escape(String(userData.fullname || ''));
+			userData.location = validator.escape(String(userData.location || ''));
+			userData.signature = validator.escape(String(userData.signature || ''));
+			userData.aboutme = validator.escape(String(userData.aboutme || ''));
 
 			userData['cover:url'] = userData['cover:url'] || require('../../coverPhoto').getDefaultProfileCover(userData.uid);
 			userData['cover:position'] = userData['cover:position'] || '50% 50%';

@@ -30,7 +30,7 @@ module.exports = function(middleware) {
 				footer: function(next) {
 					req.app.render('footer', {
 						loggedIn: !!req.uid,
-						title: validator.escape(meta.config.title || meta.config.browserTitle || 'NodeBB')
+						title: validator.escape(String(meta.config.title || meta.config.browserTitle || 'NodeBB'))
 					}, next);
 				},
 				plugins: function(next) {

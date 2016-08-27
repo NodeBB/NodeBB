@@ -119,7 +119,7 @@ groupsController.members = function(req, res, next) {
 
 		var breadcrumbs = helpers.buildBreadcrumbs([
 			{text: '[[pages:groups]]', url: '/groups' },
-			{text: validator.escape(groupName), url: '/groups/' + req.params.slug},
+			{text: validator.escape(String(groupName)), url: '/groups/' + req.params.slug},
 			{text: '[[groups:details.members]]'}
 		]);
 

@@ -67,7 +67,7 @@ helpers.buildCategoryBreadcrumbs = function(cid, callback) {
 
 			if (!parseInt(data.disabled, 10)) {
 				breadcrumbs.unshift({
-					text: validator.escape(data.name),
+					text: validator.escape(String(data.name)),
 					url: nconf.get('relative_path') + '/category/' + data.slug
 				});
 			}
@@ -119,7 +119,7 @@ helpers.buildBreadcrumbs = function(crumbs) {
 helpers.buildTitle = function(pageTitle) {
 	var titleLayout = meta.config.titleLayout || '{pageTitle} | {browserTitle}';
 
-	var browserTitle = validator.escape(meta.config.browserTitle || meta.config.title || 'NodeBB');
+	var browserTitle = validator.escape(String(meta.config.browserTitle || meta.config.title || 'NodeBB'));
 	pageTitle = pageTitle || '';
 	var title = titleLayout.replace('{pageTitle}', function() {
 		return pageTitle;

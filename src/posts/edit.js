@@ -141,7 +141,7 @@ module.exports = function(Posts) {
 						tid: tid,
 						cid: results.topic.cid,
 						uid: postData.uid,
-						title: validator.escape(title),
+						title: validator.escape(String(title)),
 						oldTitle: results.topic.title,
 						slug: topicData.slug,
 						isMainPost: true,

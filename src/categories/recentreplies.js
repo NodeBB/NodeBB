@@ -137,7 +137,7 @@ module.exports = function(Categories) {
 						teaser.tid = teaser.uid = teaser.user.uid = undefined;
 						teaser.topic = {
 							slug: topicData[index].slug,
-							title: validator.escape(topicData[index].title)
+							title: validator.escape(String(topicData[index].title))
 						};
 					}
 				});

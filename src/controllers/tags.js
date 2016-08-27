@@ -13,7 +13,7 @@ var helpers =  require('./helpers');
 var tagsController = {};
 
 tagsController.getTag = function(req, res, next) {
-	var tag = validator.escape(req.params.tag);
+	var tag = validator.escape(String(req.params.tag));
 	var page = parseInt(req.query.page, 10) || 1;
 
 	var templateData = {

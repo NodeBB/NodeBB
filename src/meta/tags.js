@@ -97,7 +97,7 @@ module.exports = function(Meta) {
 				}
 
 				if (!tag.noEscape) {
-					tag.content = validator.escape(tag.content);
+					tag.content = validator.escape(String(tag.content));
 				}
 
 				return tag;
@@ -125,7 +125,7 @@ module.exports = function(Meta) {
 		if (!hasDescription) {
 			meta.push({
 				name: 'description',
-				content: validator.escape(Meta.config.description || '')
+				content: validator.escape(String(Meta.config.description || ''))
 			});
 		}
 	}

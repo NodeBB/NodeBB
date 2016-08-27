@@ -128,7 +128,7 @@ module.exports = function(Topics) {
 
 					// Username override for guests, if enabled
 					if (parseInt(meta.config.allowGuestHandles, 10) === 1 && parseInt(postObj.uid, 10) === 0 && postObj.handle) {
-						postObj.user.username = validator.escape(postObj.handle);
+						postObj.user.username = validator.escape(String(postObj.handle));
 					}
 				}
 			});
