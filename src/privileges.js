@@ -1,6 +1,6 @@
 "use strict";
 
-var privileges = {};
+var privileges = module.exports;
 
 privileges.userPrivilegeList = [
 	'find',
@@ -38,5 +38,3 @@ require('./privileges/categories')(privileges);
 require('./privileges/topics')(privileges);
 require('./privileges/posts')(privileges);
 require('./privileges/users')(privileges);
-
-module.exports = privileges;

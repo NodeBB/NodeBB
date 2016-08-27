@@ -2,6 +2,7 @@
 'use strict';
 
 var async = require('async');
+var groups = require('../groups');
 
 var helpers = {};
 
@@ -26,7 +27,6 @@ helpers.isUserAllowedTo = function(privilege, uid, cids, callback) {
 		groupKeys.push('cid:' + cids[i] + ':privileges:groups:' + privilege);
 	}
 
-	var groups = require('../groups');
 	async.parallel({
 		hasUserPrivilege: function(next) {
 			groups.isMemberOfGroups(uid, userKeys, next);
@@ -49,7 +49,6 @@ helpers.isUserAllowedTo = function(privilege, uid, cids, callback) {
 };
 
 helpers.isUsersAllowedTo = function(privilege, uids, cid, callback) {
-	var groups = require('../groups');
 	async.parallel({
 		hasUserPrivilege: function(next) {
 			groups.isMembers(uids, 'cid:' + cid + ':privileges:' + privilege, next);
@@ -76,7 +75,7 @@ function isGuestAllowedTo(privilege, cids, callback) {
 	for (var i=0; i<cids.length; ++i) {
 		groupKeys.push('cid:' + cids[i] + ':privileges:groups:' + privilege);
 	}
-	var groups = require('../groups');
+
 	groups.isMemberOfGroups('guests', groupKeys, callback);
 }
 

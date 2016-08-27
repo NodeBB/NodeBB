@@ -3,12 +3,14 @@
 
 var async = require('async');
 
+var groups = require('../groups');
+var plugins = require('../plugins');
+
 module.exports = function(privileges) {
 
 	privileges.users = {};
 
 	privileges.users.isAdministrator = function(uid, callback) {
-		var groups = require('../groups');
 		if (Array.isArray(uid)) {
 			groups.isMembers(uid, 'administrators', callback);
 		} else {
@@ -17,7 +19,6 @@ module.exports = function(privileges) {
 	};
 
 	privileges.users.isGlobalModerator = function(uid, callback) {
-		var groups = require('../groups');
 		if (Array.isArray(uid)) {
 			groups.isMembers(uid, 'Global Moderators', callback);
 		} else {
@@ -62,7 +63,7 @@ module.exports = function(privileges) {
 			var groupListNames = uniqueCids.map(function(cid) {
 				return 'cid:' + cid + ':privileges:groups:moderate';
 			});
-			var groups = require('../groups');
+
 			async.parallel({
 				user: async.apply(groups.isMemberOfGroups, uid, groupNames),
 				group: async.apply(groups.isMemberOfGroupsList, uid, groupListNames)
@@ -90,7 +91,6 @@ module.exports = function(privileges) {
 	}
 
 	function isModeratorsOfCategory(cid, uids, callback) {
-		var groups = require('../groups');
 		async.parallel([
 			async.apply(privileges.users.isGlobalModerator, uids),
 			async.apply(groups.isMembers, uids, 'cid:' + cid + ':privileges:mods'),
@@ -109,7 +109,6 @@ module.exports = function(privileges) {
 	}
 
 	function isModeratorOfCategory(cid, uid, callback) {
-		var groups = require('../groups');
 		async.parallel([
 			async.apply(privileges.users.isGlobalModerator, uid),
 			async.apply(groups.isMember, uid, 'cid:' + cid + ':privileges:mods'),
@@ -125,7 +124,6 @@ module.exports = function(privileges) {
 	}
 
 	function filterIsModerator(cid, uid, isModerator, callback) {
-		var plugins = require('../plugins');
 		plugins.fireHook('filter:user.isModerator', {uid: uid, cid: cid, isModerator: isModerator}, function(err, data) {
 			if (err) {
 				return callback(err);

@@ -3,17 +3,18 @@
 
 var async = require('async');
 
+var meta = require('../meta');
+var topics = require('../topics');
+var user = require('../user');
 var helpers = require('./helpers');
+var categories = require('../categories');
+var plugins = require('../plugins');
 
 module.exports = function(privileges) {
 
 	privileges.topics = {};
 
 	privileges.topics.get = function(tid, uid, callback) {
-		var topics = require('../topics');
-		var user = require('../user');
-		var categories = require('../categories');
-		var plugins = require('../plugins');
 		var topic;
 		async.waterfall([
 			async.apply(topics.getTopicFields, tid, ['cid', 'uid', 'locked', 'deleted']),
@@ -67,7 +68,6 @@ module.exports = function(privileges) {
 	};
 
 	privileges.topics.can = function(privilege, tid, uid, callback) {
-		var topics = require('../topics');
 		topics.getTopicField(tid, 'cid', function(err, cid) {
 			if (err) {
 				return callback(err);
@@ -83,7 +83,6 @@ module.exports = function(privileges) {
 		}
 		var cids;
 		var topicsData;
-		var topics = require('../topics');
 		async.waterfall([
 			function(next) {
 				topics.getTopicsFields(tids, ['tid', 'cid', 'deleted'], next);
@@ -114,7 +113,6 @@ module.exports = function(privileges) {
 					return topic.tid;
 				});
 
-				var plugins = require('../plugins');
 				plugins.fireHook('filter:privileges.topics.filter', {
 					privilege: privilege,
 					uid: uid,
@@ -135,9 +133,6 @@ module.exports = function(privileges) {
 			return array.indexOf(uid) === index;
 		});
 
-		var topics = require('../topics');
-		var categories = require('../categories');
-		var user = require('../user');
 		async.waterfall([
 			function(next) {
 				topics.getTopicFields(tid, ['tid', 'cid', 'deleted'], next);
@@ -173,7 +168,6 @@ module.exports = function(privileges) {
 	};
 
 	privileges.topics.canPurge = function(tid, uid, callback) {
-		var topics = require('../topics');
 		async.waterfall([
 			function (next) {
 				topics.getTopicField(tid, 'cid', next);
@@ -192,9 +186,6 @@ module.exports = function(privileges) {
 	};
 
 	privileges.topics.canDelete = function(tid, uid, callback) {
-		var topics = require('../topics');
-		var user = require('../user');
-		var meta = require('../meta');
 		var topicData;
 		async.waterfall([
 			function(next) {
@@ -239,7 +230,6 @@ module.exports = function(privileges) {
 	};
 
 	privileges.topics.isOwnerOrAdminOrMod = function(tid, uid, callback) {
-		var topics = require('../topics');
 		helpers.some([
 			function(next) {
 				topics.isOwner(tid, uid, next);
@@ -252,8 +242,6 @@ module.exports = function(privileges) {
 
 
 	privileges.topics.isAdminOrMod = function(tid, uid, callback) {
-		var topics = require('../topics');
-		var user = require('../user');
 		helpers.some([
 			function(next) {
 				topics.getTopicField(tid, 'cid', function(err, cid) {
