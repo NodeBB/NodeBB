@@ -6,7 +6,7 @@
 define('forum/register', ['translator'], function(translator) {
 	var Register = {},
 		validationError = false,
-		successIcon = '<i class="fa fa-check"></i>';
+		successIcon = '';
 
 	Register.init = function() {
 		var email = $('#email'),
@@ -211,8 +211,8 @@ define('forum/register', ['translator'], function(translator) {
 		translator.translate(msg, function(msg) {
 			element.html(msg);
 			element.parent()
-				.removeClass('alert-success')
-				.addClass('alert-danger');
+				.removeClass('register-success')
+				.addClass('register-danger');
 			element.show();
 		});
 		validationError = true;
@@ -222,8 +222,8 @@ define('forum/register', ['translator'], function(translator) {
 		translator.translate(msg, function(msg) {
 			element.html(msg);
 			element.parent()
-				.removeClass('alert-danger')
-				.addClass('alert-success');
+				.removeClass('register-danger')
+				.addClass('register-success');
 			element.show();
 		});
 	}
