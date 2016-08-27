@@ -7,10 +7,10 @@
     "403.login": "Äkki peaksid <a href='%1/login'>sisse logima</a>?",
     "404.title": "Ei leitud",
     "404.message": "Tundub, et lehte mida otsid, ei eksisteeri. Mine tagasi <a href='%1/'>avalehele</a>.",
-    "500.title": "Internal Error.",
+    "500.title": "Süsteemne error.",
     "500.message": "Oih! Midagi läks valesti!",
-    "400.title": "Bad Request.",
-    "400.message": "It looks like this link is malformed, please double-check and try again. Otherwise, return to the <a href='%1/'>home page</a>.",
+    "400.title": "Vigane päring.",
+    "400.message": "Tundub, et see link on vigane, palun kontrolli see üle ja proovi uuesti. Võid ka minna tagasi <a href='%1/'>avalehele</a>.",
     "register": "Registreeri",
     "login": "Logi sisse",
     "please_log_in": "Palun logi sisse",
@@ -52,9 +52,9 @@
     "topics": "Teemat",
     "posts": "Postitust",
     "best": "Parim",
-    "upvoters": "Upvoters",
+    "upvoters": "Poolt hääletajad",
     "upvoted": "Kiideti heaks",
-    "downvoters": "Downvoters",
+    "downvoters": "Vastu hääletajad",
     "downvoted": "Hääletas vastu",
     "views": "Vaatamist",
     "reputation": "Reputatsioon",
@@ -95,5 +95,5 @@
     "upload_file": "Lae fail üles",
     "upload": "Lae üles",
     "allowed-file-types": "Lubatud faili formaadid on %1",
-    "unsaved-changes": "You have unsaved changes. Are you sure you wish to navigate away?"
+    "unsaved-changes": "Sul on salvestamata muudatusi. Oled kindel, et soovid lahkuda?"
 }
