@@ -1,12 +1,19 @@
 "use strict";
 
-/* global socket, define, templates, bootbox, app, ajaxify  */
+/* global config, socket, define, templates, bootbox, app, ajaxify  */
 
-define('admin/manage/users', ['admin/modules/selectable'], function(selectable) {
+define('admin/manage/users', ['admin/modules/selectable', 'translator'], function(selectable, translator) {
 	var Users = {};
 
 	Users.init = function() {
 		selectable.enable('#users-container', '.users-box');
+
+		var navPills = $('.nav-pills li');
+		var pathname = window.location.pathname;
+		if (!navPills.find('a[href="' + pathname + '"]').length) {
+			pathname = config.relative_path + '/admin/manage/users/latest';
+		}
+		navPills.removeClass('active').find('a[href="' + pathname + '"]').parent().addClass('active');
 
 		function getSelectedUids() {
 			var uids = [];
@@ -246,7 +253,7 @@ define('admin/manage/users', ['admin/modules/selectable'], function(selectable) 
 								create: {
 									label: 'Create',
 									className: 'btn-primary',
-									callback: function(e) {
+									callback: function() {
 										createUser.call(this);
 										return false;
 									}
@@ -292,7 +299,7 @@ define('admin/manage/users', ['admin/modules/selectable'], function(selectable) 
 
 		var timeoutId = 0;
 
-		$('.nav-pills li').removeClass('active').find('a[href="' + window.location.pathname + '"]').parent().addClass('active');
+
 
 		$('#search-user-name, #search-user-email, #search-user-ip').on('keyup', function() {
 			if (timeoutId !== 0) {
