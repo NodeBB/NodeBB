@@ -10,7 +10,7 @@
     "500.title": "Errore interno.",
     "500.message": "Oops! Qualcosa non funziona come si deve!",
     "400.title": "Bad Request.",
-    "400.message": "It looks like this link is malformed, please double-check and try again. Otherwise, return to the <a href='%1/'>home page</a>.",
+    "400.message": "Sembra che questo link sia stato mal formulato, per favore ricontrolla e riprova. Altrimenti ritorna alla <a href='%1/'>home page</a>.",
     "register": "Registrazione",
     "login": "Login",
     "please_log_in": "Per favore Accedi",
