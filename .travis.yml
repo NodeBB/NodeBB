@@ -19,11 +19,10 @@ addons:
     packages:
     - g++-4.8
 node_js:
-    - "4.2"
-    - "4.1"
-    - "4.0"
-    - "0.11"
-    - "0.10"
+    - "iojs"
+    - "6"
+    - "5"
+    - "4"
 branches:
     only:
         - master
