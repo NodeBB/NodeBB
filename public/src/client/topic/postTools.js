@@ -59,7 +59,7 @@ define('forum/topic/postTools', ['share', 'navigator', 'components', 'translator
 		postEl.find('[component="post/restore"]').toggleClass('hidden', !isDeleted);
 		postEl.find('[component="post/purge"]').toggleClass('hidden', !isDeleted);
 
-		postEl.find('.dropdown-menu').html('');
+		postEl.find('[component="post/tools"] .dropdown-menu').html('');
 	};
 
 	PostTools.updatePostCount = function(postCount) {
