@@ -1,23 +1,26 @@
 'use strict';
-/* globals define, app, config, ajaxify, socket, bootbox, translator */
+/* globals define, app, config, ajaxify, socket, bootbox, templates */
 
 define('forum/account/header', [
 	'coverPhoto',
 	'uploader',
-	'components'
-], function(coverPhoto, uploader, components) {
-	var	AccountHeader = {},
-		yourid,
-		theirid;
+	'components',
+	'translator'
+], function(coverPhoto, uploader, components, translator) {
+	var	AccountHeader = {};
+	var	yourid;
+	var	theirid;
+	var isAdminOrSelfOrGlobalMod;
 
 	AccountHeader.init = function() {
 		yourid = ajaxify.data.yourid;
 		theirid = ajaxify.data.theirid;
+		isAdminOrSelfOrGlobalMod = ajaxify.data.isAdmin || ajaxify.data.isSelf || ajaxify.data.isGlobalModerator;
 
 		hidePrivateLinks();
 		selectActivePill();
 
-		if (parseInt(yourid, 10) === parseInt(theirid, 10)) {
+		if (isAdminOrSelfOrGlobalMod) {
 			setupCoverPhoto();
 		}
 
