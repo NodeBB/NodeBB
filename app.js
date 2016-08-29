@@ -1,7 +1,7 @@
 /*
 	NodeBB - A better forum platform for the modern web
 	https://github.com/NodeBB/NodeBB/
-	Copyright (C) 2013-2014  NodeBB Inc.
+	Copyright (C) 2013-2016  NodeBB Inc.
 
 	This program is free software: you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
@@ -57,7 +57,7 @@ loadConfig();
 
 if (!process.send) {
 	// If run using `node app`, log GNU copyright info along with server info
-	winston.info('NodeBB v' + nconf.get('version') + ' Copyright (C) 2013-2014 NodeBB Inc.');
+	winston.info('NodeBB v' + nconf.get('version') + ' Copyright (C) 2013-' + (new Date()).getFullYear() + ' NodeBB Inc.');
 	winston.info('This program comes with ABSOLUTELY NO WARRANTY.');
 	winston.info('This is free software, and you are welcome to redistribute it under certain conditions.');
 	winston.info('');
