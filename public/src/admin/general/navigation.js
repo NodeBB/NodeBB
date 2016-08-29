@@ -13,17 +13,22 @@ define('admin/general/navigation', ['translator', 'iconSelect'], function(transl
 		});
 
 		translator.translate(translator.unescape($('#available').html()), function(html) {
-			$('#available').html(html)
-				.find('li .drag-item').draggable({
-					connectToSortable: '#active-navigation',
-					helper: 'clone',
-					distance: 10,
-					stop: drop
-				});
+			app.loadJQueryUI(function() {
+				$('#available').html(html)
+					.find('li .drag-item').draggable({
+						connectToSortable: '#active-navigation',
+						helper: 'clone',
+						distance: 10,
+						stop: drop
+					});
+			});
 		});
+		
+		app.loadJQueryUI(function() {
 
-		$('#active-navigation').sortable().droppable({
-			accept: $('#available li .drag-item')
+			$('#active-navigation').sortable().droppable({
+				accept: $('#available li .drag-item')
+			});
 		});
 
 		$('#enabled').on('click', '.iconPicker', function() {
