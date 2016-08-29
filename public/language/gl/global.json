@@ -95,5 +95,6 @@
     "upload_file": "Subir arquivo ",
     "upload": "Subir",
     "allowed-file-types": "Os tipos de arquivos permitidos son: %1",
-    "unsaved-changes": "Non gardaches tódolos cambios. Queres continuar e saír da páxina?"
+    "unsaved-changes": "Non gardaches tódolos cambios. Queres continuar e saír da páxina?",
+    "reconnecting-message": "Looks like your connection to %1 was lost, please wait while we try to reconnect."
 }

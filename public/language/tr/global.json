@@ -9,7 +9,7 @@
     "404.message": "Erişim izniniz olmayan bir sayfaya denk gelmiş gibisiniz. <a href='%1/'>Anasayfa</a>'ya geri dönün.",
     "500.title": "Internal Error.",
     "500.message": "Ups! Bir şeyler ters gitti sanki!",
-    "400.title": "Bad Request.",
+    "400.title": "Geçersiz istek.",
     "400.message": "It looks like this link is malformed, please double-check and try again. Otherwise, return to the <a href='%1/'>home page</a>.",
     "register": "Kayıt Ol",
     "login": "Giriş",
@@ -95,5 +95,6 @@
     "upload_file": "Dosya yükle",
     "upload": "Yükle",
     "allowed-file-types": "İzin verilen dosya tipleri %1",
-    "unsaved-changes": "Kaydedilmemiş değişiklikler var. Çıkmak istediğinize emin misiniz?"
+    "unsaved-changes": "Kaydedilmemiş değişiklikler var. Çıkmak istediğinize emin misiniz?",
+    "reconnecting-message": "Looks like your connection to %1 was lost, please wait while we try to reconnect."
 }
