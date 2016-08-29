@@ -12,7 +12,6 @@ var categories = require('../categories');
 var privileges = require('../privileges');
 var plugins = require('../plugins');
 var widgets = require('../widgets');
-var helpers = require('../controllers/helpers');
 var accountHelpers = require('../controllers/accounts/helpers');
 
 var apiController = {};
@@ -68,25 +67,19 @@ apiController.getConfig = function(req, res, next) {
 			if (!req.user) {
 				return next(null, config);
 			}
-			user.getSettings(req.uid, function(err, settings) {
-				if (err) {
-					return next(err);
-				}
-				config.usePagination = settings.usePagination;
-				config.topicsPerPage = settings.topicsPerPage;
-				config.postsPerPage = settings.postsPerPage;
-				config.notificationSounds = settings.notificationSounds;
-				config.userLang = (req.query.lang ? validator.escape(String(req.query.lang)) : null) || settings.userLang || config.defaultLang;
-				config.openOutgoingLinksInNewTab = settings.openOutgoingLinksInNewTab;
-				config.topicPostSort = settings.topicPostSort || config.topicPostSort;
-				config.categoryTopicSort = settings.categoryTopicSort || config.categoryTopicSort;
-				config.topicSearchEnabled = settings.topicSearchEnabled || false;
-				config.delayImageLoading = settings.delayImageLoading !== undefined ? settings.delayImageLoading : true;
-				config.bootswatchSkin = settings.bootswatchSkin || config.bootswatchSkin;
-				next(null, config);
-			});
+			user.getSettings(req.uid, next);
 		},
-		function (config, next) {
+		function (settings, next) {
+			config.usePagination = settings.usePagination;
+			config.topicsPerPage = settings.topicsPerPage;
+			config.postsPerPage = settings.postsPerPage;
+			config.userLang = (req.query.lang ? validator.escape(String(req.query.lang)) : null) || settings.userLang || config.defaultLang;
+			config.openOutgoingLinksInNewTab = settings.openOutgoingLinksInNewTab;
+			config.topicPostSort = settings.topicPostSort || config.topicPostSort;
+			config.categoryTopicSort = settings.categoryTopicSort || config.categoryTopicSort;
+			config.topicSearchEnabled = settings.topicSearchEnabled || false;
+			config.delayImageLoading = settings.delayImageLoading !== undefined ? settings.delayImageLoading : true;
+			config.bootswatchSkin = settings.bootswatchSkin || config.bootswatchSkin;
 			plugins.fireHook('filter:config.get', config, next);
 		}
 	], function(err, config) {

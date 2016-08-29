@@ -1,15 +1,16 @@
 'use strict';
 
-var path = require('path'),
-	fs = require('fs'),
-	nconf = require('nconf'),
-	winston = require('winston'),
-	rimraf = require('rimraf'),
-	mkdirp = require('mkdirp'),
-	async = require('async'),
+var path = require('path');
+var fs = require('fs');
+var nconf = require('nconf');
+var winston = require('winston');
+var rimraf = require('rimraf');
+var mkdirp = require('mkdirp');
+var async = require('async');
 
-	plugins = require('../plugins'),
-	db = require('../database');
+var user = require('../user');
+var plugins = require('../plugins');
+var db = require('../database');
 
 module.exports = function(Meta) {
 
@@ -58,20 +59,31 @@ module.exports = function(Meta) {
 		});
 	};
 
-	Meta.sounds.getMapping = function(callback) {
-		db.getObject('settings:sounds', function(err, sounds) {
-			if (err || !sounds) {
-				// Send default sounds
-				var	defaults = {
-						'notification': 'notification.mp3',
-						'chat-incoming': 'waterdrop-high.mp3',
-						'chat-outgoing': undefined
-					};
-
-				return callback(null, defaults);
+	Meta.sounds.getMapping = function(uid, callback) {
+		async.parallel({
+			defaultMapping: function(next) {
+				db.getObject('settings:sounds', next);
+			},
+			userSettings: function(next) {
+				user.getSettings(uid, next);
 			}
+		}, function(err, results) {
+			if (err) {
+				return callback(err);
+			}
+			var userSettings = results.userSettings;
+			var defaultMapping = results.defaultMapping || {};
+			var soundMapping = {};
+			soundMapping.notification = (userSettings.notificationSound || userSettings.notificationSound === '') ?
+				userSettings.notificationSound : defaultMapping.notification || 'notification.mp3';
 
-			callback(null, sounds);
+			soundMapping['chat-incoming'] = (userSettings.incomingChatSound || userSettings.incomingChatSound === '') ?
+				userSettings.incomingChatSound : defaultMapping['chat-incoming'] || 'waterdrop-high.mp3';
+
+			soundMapping['chat-outgoing'] = (userSettings.outgoingChatSound || userSettings.outgoingChatSound === '') ?
+				userSettings.outgoingChatSound : defaultMapping['chat-outgoing'] || undefined;
+
+			callback(null, soundMapping);
 		});
 	};
 
