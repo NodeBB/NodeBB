@@ -57,6 +57,7 @@ define('forum/topic/posts', [
 	function onNewPostPagination(data) {
 		function scrollToPost() {
 			scrollToPostIfSelf(data.posts[0]);
+			Posts.loadImages();
 		}
 
 		var posts = data.posts;
@@ -92,12 +93,13 @@ define('forum/topic/posts', [
 				html.addClass('new');
 			}
 			scrollToPostIfSelf(data.posts[0]);
+			Posts.loadImages();
 		});
 	}
 
 	function scrollToPostIfSelf(post) {
 		if (!ajaxify.data.scrollToMyPost) {
-		    return;
+			return;
 		}
 		var isSelfPost = parseInt(post.uid, 10) === parseInt(app.user.uid, 10);
 		if (isSelfPost) {
