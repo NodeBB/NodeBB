@@ -1,7 +1,7 @@
 "use strict";
 /* global define, app, ajaxify, socket, templates */
 
-define('admin/general/navigation', ['translator', 'iconSelect'], function(translator, iconSelect) {
+define('admin/general/navigation', ['translator', 'iconSelect', 'jqueryui'], function(translator, iconSelect, jqueryui) {
 	var navigation = {},
 		available;
 
@@ -13,22 +13,17 @@ define('admin/general/navigation', ['translator', 'iconSelect'], function(transl
 		});
 
 		translator.translate(translator.unescape($('#available').html()), function(html) {
-			app.loadJQueryUI(function() {
-				$('#available').html(html)
-					.find('li .drag-item').draggable({
-						connectToSortable: '#active-navigation',
-						helper: 'clone',
-						distance: 10,
-						stop: drop
-					});
-			});
+			$('#available').html(html)
+				.find('li .drag-item').draggable({
+					connectToSortable: '#active-navigation',
+					helper: 'clone',
+					distance: 10,
+					stop: drop
+				});
 		});
 		
-		app.loadJQueryUI(function() {
-
-			$('#active-navigation').sortable().droppable({
-				accept: $('#available li .drag-item')
-			});
+		$('#active-navigation').sortable().droppable({
+			accept: $('#available li .drag-item')
 		});
 
 		$('#enabled').on('click', '.iconPicker', function() {
