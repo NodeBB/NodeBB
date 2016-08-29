@@ -261,13 +261,6 @@
 				</label>
 			</div>
 
-			<div class="checkbox">
-				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
-					<input class="mdl-switch__input" type="checkbox" data-field="notificationSounds" />
-					<span class="mdl-switch__label">Play a sound when you receive a notification</span>
-				</label>
-			</div>
-
 		</form>
 	</div>
 </div>

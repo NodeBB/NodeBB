@@ -14,7 +14,7 @@ module.exports = function(User) {
 		data.username = data.username.trim();
 		data.userslug = utils.slugify(data.username);
 		if (data.email !== undefined) {
-			data.email = validator.escape(data.email.trim());
+			data.email = validator.escape(String(data.email).trim());
 		}
 
 		User.isDataValid(data, function(err) {

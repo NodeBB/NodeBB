@@ -3,9 +3,9 @@
 var async = require('async');
 
 var db = require('../database');
-var privileges = require('../privileges');
 var groups = require('../groups');
 var plugins = require('../plugins');
+var privileges = require('../privileges');
 var utils = require('../../public/src/utils');
 
 module.exports = function(Categories) {

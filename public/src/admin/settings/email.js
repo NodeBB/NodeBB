@@ -8,6 +8,11 @@ define('admin/settings/email', ['admin/settings'], function(settings) {
 	module.init = function() {
 		configureEmailTester();
 		configureEmailEditor();
+
+		$(window).on('action:admin.settingsLoaded action:admin.settingsSaved', handleDigestHourChange);
+		$(window).on('action:admin.settingsSaved', function() {
+			socket.emit('admin.user.restartJobs');
+		});
 	};
 
 	function configureEmailTester() {
@@ -54,6 +59,31 @@ define('admin/settings/email', ['admin/settings'], function(settings) {
 					.val(email.text)
 					.attr('data-field', 'email:custom:' + email.path);
 			}
+		});
+	}
+
+	function handleDigestHourChange() {
+		var hour = parseInt($('#digestHour').val(), 10);
+
+		if (isNaN(hour)) {
+			hour = 17;
+		} else if (hour > 23 || hour < 0) {
+			hour = 0;
+		}
+
+		socket.emit('meta.getServerTime', {}, function(err, now) {
+			now = new Date(now);
+
+			$('#serverTime').text(now.toString());
+
+			now.setHours(parseInt(hour, 10), 0, 0, 0);
+
+			// If adjusted time is in the past, move to next day
+			if (now.getTime() < Date.now()) {
+				now.setDate(now.getDate() + 1);
+			}
+
+			$('#nextDigestTime').text(now.toString());
 		});
 	}
 

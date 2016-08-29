@@ -280,7 +280,7 @@ SocketModules.chats.renameRoom = function(socket, data, callback) {
 			Messaging.getUidsInRoom(data.roomId, 0, -1, next);
 		},
 		function (uids, next) {
-			var eventData = {roomId: data.roomId, newName: validator.escape(data.newName)};
+			var eventData = {roomId: data.roomId, newName: validator.escape(String(data.newName))};
 			uids.forEach(function(uid) {
 				server.in('uid_' + uid).emit('event:chats.roomRename', eventData);
 			});
@@ -313,12 +313,12 @@ SocketModules.sounds.getSounds = function(socket, data, callback) {
 };
 
 SocketModules.sounds.getMapping = function(socket, data, callback) {
-	meta.sounds.getMapping(callback);
+	meta.sounds.getMapping(socket.uid, callback);
 };
 
 SocketModules.sounds.getData = function(socket, data, callback) {
 	async.parallel({
-		mapping: async.apply(meta.sounds.getMapping),
+		mapping: async.apply(meta.sounds.getMapping, socket.uid),
 		files: async.apply(meta.sounds.getFiles)
 	}, callback);
 };

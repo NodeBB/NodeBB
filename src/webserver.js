@@ -1,25 +1,35 @@
 
 'use strict';
 
-var path = require('path'),
-	fs = require('fs'),
-	nconf = require('nconf'),
-	express = require('express'),
-	app = express(),
-	server,
-	winston = require('winston'),
-	async = require('async'),
+var fs = require('fs');
+var path = require('path');
+var nconf = require('nconf');
+var express = require('express');
+var app = express();
+var server;
+var winston = require('winston');
+var async = require('async');
+var flash = require('connect-flash');
+var compression = require('compression');
+var bodyParser = require('body-parser');
+var cookieParser = require('cookie-parser');
+var session = require('express-session');
+var useragent = require('express-useragent');
+var favicon = require('serve-favicon');
 
-	emailer = require('./emailer'),
-	meta = require('./meta'),
-	languages = require('./languages'),
-	logger = require('./logger'),
-	plugins = require('./plugins'),
-	middleware = require('./middleware'),
-	routes = require('./routes'),
-	emitter = require('./emitter'),
+var db = require('./database');
+var file = require('./file');
+var emailer = require('./emailer');
+var meta = require('./meta');
+var languages = require('./languages');
+var logger = require('./logger');
+var plugins = require('./plugins');
+var routes = require('./routes');
+var auth = require('./routes/authentication');
+var emitter = require('./emitter');
+var templates = require('templates.js');
 
-	helpers = require('../public/src/modules/helpers');
+var helpers = require('../public/src/modules/helpers');
 
 if (nconf.get('ssl')) {
 	server = require('https').createServer({
@@ -46,7 +56,7 @@ server.on('error', function(err) {
 module.exports.listen = function() {
 	emailer.registerApp(app);
 
-	app.locals.middleware = middleware = middleware(app);
+	setupExpressApp(app);
 
 	helpers.register();
 
@@ -71,8 +81,90 @@ module.exports.listen = function() {
 	});
 };
 
+function setupExpressApp(app) {
+	var middleware = require('./middleware');
+
+	var relativePath = nconf.get('relative_path');
+
+	app.engine('tpl', templates.__express);
+	app.set('view engine', 'tpl');
+	app.set('views', nconf.get('views_dir'));
+	app.set('json spaces', process.env.NODE_ENV === 'development' ? 4 : 0);
+	app.use(flash());
+
+	app.enable('view cache');
+
+	app.use(compression());
+
+	setupFavicon(app);
+
+	app.use(relativePath + '/apple-touch-icon', middleware.routeTouchIcon);
+
+	app.use(bodyParser.urlencoded({extended: true}));
+	app.use(bodyParser.json());
+	app.use(cookieParser());
+	app.use(useragent.express());
+
+	app.use(session({
+		store: db.sessionStore,
+		secret: nconf.get('secret'),
+		key: 'express.sid',
+		cookie: setupCookie(),
+		resave: true,
+		saveUninitialized: true
+	}));
+
+	app.use(middleware.addHeaders);
+	app.use(middleware.processRender);
+	auth.initialize(app, middleware);
+
+	var toobusy = require('toobusy-js');
+	toobusy.maxLag(parseInt(meta.config.eventLoopLagThreshold, 10) || 100);
+	toobusy.interval(parseInt(meta.config.eventLoopInterval, 10) || 500);
+}
+
+function setupFavicon(app) {
+	var faviconPath = path.join(__dirname, '../../', 'public', meta.config['brand:favicon'] ? meta.config['brand:favicon'] : 'favicon.ico');
+	if (file.existsSync(faviconPath)) {
+		app.use(nconf.get('relative_path'), favicon(faviconPath));
+	}
+}
+
+
+function setupCookie() {
+	var cookie = {
+		maxAge: 1000 * 60 * 60 * 24 * (parseInt(meta.config.loginDays, 10) || 14)
+	};
+
+	if (meta.config.cookieDomain) {
+		cookie.domain = meta.config.cookieDomain;
+	}
+
+	if (nconf.get('secure')) {
+		cookie.secure = true;
+	}
+
+	var relativePath = nconf.get('relative_path');
+	if (relativePath !== '') {
+		cookie.path = relativePath;
+	}
+
+	return cookie;
+}
+
+function cacheStaticFiles() {
+	if (global.env === 'development') {
+		return;
+	}
+
+	app.enable('cache');
+	app.enable('minification');
+}
+
 function initializeNodeBB(callback) {
-	var skipJS, skipLess, fromFile = nconf.get('from-file') || '';
+	var skipJS;
+	var fromFile = nconf.get('from-file') || '';
+	var middleware = require('./middleware');
 
 	if (fromFile.match('js')) {
 		winston.info('[minifier] Minifying client-side JS skipped');
@@ -80,7 +172,6 @@ function initializeNodeBB(callback) {
 	}
 
 	async.waterfall([
-		async.apply(cacheStaticFiles),
 		async.apply(meta.themes.setupPaths),
 		function(next) {
 			plugins.init(app, middleware, next);
@@ -112,17 +203,7 @@ function initializeNodeBB(callback) {
 	], callback);
 }
 
-function cacheStaticFiles(callback) {
-	if (global.env === 'development') {
-		return callback();
-	}
-
-	app.enable('cache');
-	app.enable('minification');
-	callback();
-}
-
-function listen(callback) {
+function listen() {
 	var port = parseInt(nconf.get('port'), 10);
 
 	if (Array.isArray(port)) {

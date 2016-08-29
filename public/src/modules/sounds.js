@@ -9,13 +9,17 @@ define('sounds', ['buzz'], function(buzz) {
 	var files;
 
 	socket.on('event:sounds.reloadMapping', function() {
+		Sounds.reloadMapping();
+	});
+
+	Sounds.reloadMapping = function() {
 		socket.emit('modules.sounds.getMapping', function(err, mapping) {
 			if (err) {
-				return app.alertError('[sounds] Could not load sound mapping!');
+				return app.alertError(err.message);
 			}
 			eventSoundMapping = mapping;
 		});
-	});
+	}
 
 	function loadData(callback) {
 		socket.emit('modules.sounds.getData', function(err, data) {
@@ -53,10 +57,6 @@ define('sounds', ['buzz'], function(buzz) {
 	Sounds.play = function(name) {
 		function play() {
 			Sounds.playFile(eventSoundMapping[name]);
-		}
-
-		if (!config.notificationSounds) {
-			return;
 		}
 
 		if (!eventSoundMapping) {

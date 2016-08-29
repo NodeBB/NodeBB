@@ -1,8 +1,8 @@
 'use strict';
 
-/* globals define, socket, ajaxify, templates, app */
+/* globals define, socket, app */
 
-define('forum/infinitescroll', ['translator'], function(translator) {
+define('forum/infinitescroll', function() {
 
 	var scroll = {};
 	var callback;

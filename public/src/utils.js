@@ -431,6 +431,14 @@
 			}
 
 			return utils.props(obj[prop], newProps, value);
+		},
+
+		isInternalURI: function(targetLocation, referenceLocation, relative_path) {
+			return targetLocation.host === '' ||	// Relative paths are always internal links
+				(
+					targetLocation.host === referenceLocation.host && targetLocation.protocol === referenceLocation.protocol &&	// Otherwise need to check if protocol and host match
+					(relative_path.length > 0 ? targetLocation.pathname.indexOf(relative_path) === 0 : true)	// Subfolder installs need this additional check
+				);
 		}
 	};
 

@@ -11,10 +11,61 @@ var helpers = require('./helpers');
 
 var usersController = {};
 
+
+usersController.index = function(req, res, next) {
+	var section = req.query.section || 'joindate';
+	var sectionToController = {
+		joindate: usersController.getUsersSortedByJoinDate,
+		online: usersController.getOnlineUsers,
+		'sort-posts': usersController.getUsersSortedByPosts,
+		'sort-reputation': usersController.getUsersSortedByReputation,
+		banned: usersController.getBannedUsers,
+		flagged: usersController.getFlaggedUsers
+	};
+
+	if (req.query.term) {
+		usersController.search(req, res, next);
+	} else if (sectionToController[section]) {
+		sectionToController[section](req, res, next);
+	} else {
+		usersController.getUsersSortedByJoinDate(req, res, next);
+	}
+};
+
+usersController.search = function(req, res, next) {
+	async.parallel({
+		search: function(next) {
+			user.search({
+				query: req.query.term,
+				searchBy: req.query.searchBy || 'username',
+				page: req.query.page || 1,
+				sortBy: req.query.sortBy,
+				onlineOnly: req.query.onlineOnly === 'true',
+				bannedOnly: req.query.bannedOnly === 'true',
+				flaggedOnly: req.query.flaggedOnly === 'true'
+			}, next);
+		},
+		isAdminOrGlobalMod: function(next) {
+			user.isAdminOrGlobalMod(req.uid, next);
+		}
+	}, function(err, results) {
+		if (err) {
+			return next(err);
+		}
+
+		var section = req.query.section || 'joindate';
+
+		results.search.isAdminOrGlobalMod = results.isAdminOrGlobalMod;
+		results.search.pagination = pagination.create(req.query.page, results.search.pageCount, req.query);
+		results.search['section_' + section] = true;
+		render(req, res, results.search, next);
+	});
+};
+
 usersController.getOnlineUsers = function(req, res, next) {
 	async.parallel({
 		users: function(next) {
-			usersController.getUsers('users:online', req.uid, req.query.page, next);
+			usersController.getUsers('users:online', req.uid, req.query, next);
 		},
 		guests: function(next) {
 			require('../socket.io/admin/rooms').getTotalGuestCount(next);
@@ -56,7 +107,7 @@ usersController.getUsersSortedByJoinDate = function(req, res, next) {
 };
 
 usersController.getBannedUsers = function(req, res, next) {
-	usersController.getUsers('users:banned', req.uid, req.query.page, function(err, userData) {
+	usersController.getUsers('users:banned', req.uid, req.query, function(err, userData) {
 		if (err) {
 			return next(err);
 		}
@@ -70,7 +121,7 @@ usersController.getBannedUsers = function(req, res, next) {
 };
 
 usersController.getFlaggedUsers = function(req, res, next) {
-	usersController.getUsers('users:flags', req.uid, req.query.page, function(err, userData) {
+	usersController.getUsers('users:flags', req.uid, req.query, function(err, userData) {
 		if (err) {
 			return next(err);
 		}
@@ -84,15 +135,16 @@ usersController.getFlaggedUsers = function(req, res, next) {
 };
 
 usersController.renderUsersPage = function(set, req, res, next) {
-	usersController.getUsers(set, req.uid, req.query.page, function(err, userData) {
+	usersController.getUsers(set, req.uid, req.query, function(err, userData) {
 		if (err) {
 			return next(err);
 		}
+
 		render(req, res, userData, next);
 	});
 };
 
-usersController.getUsers = function(set, uid, page, callback) {
+usersController.getUsers = function(set, uid, query, callback) {
 	var setToData = {
 		'users:postcount': {title: '[[pages:users/sort-posts]]', crumb: '[[users:top_posters]]'},
 		'users:reputation': {title: '[[pages:users/sort-reputation]]', crumb: '[[users:most_reputation]]'},
@@ -112,17 +164,14 @@ usersController.getUsers = function(set, uid, page, callback) {
 		breadcrumbs.unshift({text: '[[global:users]]', url: '/users'});
 	}
 
-	page = parseInt(page, 10) || 1;
+	var page = parseInt(query.page, 10) || 1;
 	var resultsPerPage = parseInt(meta.config.userSearchResultsPerPage, 10) || 50;
 	var start = Math.max(0, page - 1) * resultsPerPage;
 	var stop = start + resultsPerPage - 1;
 
 	async.parallel({
-		isAdministrator: function(next) {
-			user.isAdministrator(uid, next);
-		},
-		isGlobalMod: function(next) {
-			user.isGlobalModerator(uid, next);
+		isAdminOrGlobalMod: function(next) {
+			user.isAdminOrGlobalMod(uid, next);
 		},
 		usersData: function(next) {
 			usersController.getUsersAndCount(set, uid, start, stop, next);
@@ -134,16 +183,14 @@ usersController.getUsers = function(set, uid, page, callback) {
 
 		var pageCount = Math.ceil(results.usersData.count / resultsPerPage);
 		var userData = {
-			loadmore_display: results.usersData.count > (stop - start + 1) ? 'block' : 'hide',
 			users: results.usersData.users,
-			pagination: pagination.create(page, pageCount),
+			pagination: pagination.create(page, pageCount, query),
 			userCount: results.usersData.count,
 			title: setToData[set].title || '[[pages:users/latest]]',
 			breadcrumbs: helpers.buildBreadcrumbs(breadcrumbs),
-			setName: set,
-			isAdminOrGlobalMod: results.isAdministrator || results.isGlobalMod
+			isAdminOrGlobalMod: results.isAdminOrGlobalMod
 		};
-		userData['route_' + set] = true;
+		userData['section_' + (query.section || 'joindate')] = true;
 		callback(null, userData);
 	});
 };

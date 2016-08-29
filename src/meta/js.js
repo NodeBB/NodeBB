@@ -17,15 +17,16 @@ module.exports = function(Meta) {
 		target: {},
 		scripts: {
 			base: [
-				'public/vendor/jquery/js/jquery.js',
+				'./node_modules/jquery/dist/jquery.js',
 				'./node_modules/socket.io-client/socket.io.js',
 				'public/vendor/jquery/timeago/jquery.timeago.js',
 				'public/vendor/jquery/js/jquery.form.min.js',
 				'public/vendor/visibility/visibility.min.js',
-				'public/vendor/bootstrap/js/bootstrap.min.js',
+				'public/vendor/bootstrap/js/bootstrap.js',
 				'public/vendor/jquery/bootstrap-tagsinput/bootstrap-tagsinput.min.js',
 				'public/vendor/jquery/textcomplete/jquery.textcomplete.js',
 				'public/vendor/requirejs/require.js',
+				'public/src/require-config.js',
 				'public/vendor/bootbox/bootbox.min.js',
 				'public/vendor/tinycon/tinycon.js',
 				'public/vendor/xregexp/xregexp.js',
@@ -36,7 +37,6 @@ module.exports = function(Meta) {
 				'public/src/app.js',
 				'public/src/ajaxify.js',
 				'public/src/overrides.js',
-				'public/src/variables.js',
 				'public/src/widgets.js'
 			],
 

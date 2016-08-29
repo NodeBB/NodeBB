@@ -226,5 +226,8 @@ User.rejectRegistration = function(socket, data, callback) {
 	user.rejectRegistration(data.username, callback);
 };
 
+User.restartJobs = function(socket, data, callback) {
+	user.startJobs(callback);
+};
 
 module.exports = User;

@@ -3,10 +3,9 @@
 
 define('admin/manage/flags', [
 	'forum/infinitescroll',
-	'admin/modules/selectable',
 	'autocomplete',
 	'Chart'
-], function(infinitescroll, selectable, autocomplete, Chart) {
+], function(infinitescroll, autocomplete, Chart) {
 
 	var	Flags = {};
 

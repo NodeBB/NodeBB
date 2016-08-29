@@ -9,8 +9,8 @@ var _ = require('underscore');
 var db = require('../database');
 var posts = require('../posts');
 var topics = require('../topics');
-var categories = require('../categories');
 var privileges = require('../privileges');
+
 
 module.exports = function(Categories) {
 
@@ -121,7 +121,7 @@ module.exports = function(Categories) {
 				});
 
 				async.parallel({
-					categoryData: async.apply(categories.getCategoriesFields, cids, ['cid', 'parentCid']),
+					categoryData: async.apply(Categories.getCategoriesFields, cids, ['cid', 'parentCid']),
 					teasers: async.apply(topics.getTeasers, _topicData),
 				}, next);
 			},
@@ -137,7 +137,7 @@ module.exports = function(Categories) {
 						teaser.tid = teaser.uid = teaser.user.uid = undefined;
 						teaser.topic = {
 							slug: topicData[index].slug,
-							title: validator.escape(topicData[index].title)
+							title: validator.escape(String(topicData[index].title))
 						};
 					}
 				});

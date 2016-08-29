@@ -52,8 +52,8 @@ module.exports = function(Posts) {
 				userData.banned = parseInt(userData.banned, 10) === 1;
 				userData.picture = userData.picture || '';
 				userData.status = user.getStatus(userData);
-				userData.signature = validator.escape(userData.signature || '');
-				userData.fullname = validator.escape(userData.fullname || '');
+				userData.signature = validator.escape(String(userData.signature || ''));
+				userData.fullname = validator.escape(String(userData.fullname || ''));
 			});
 
 			async.map(userData, function(userData, next) {

@@ -12,7 +12,6 @@ var categories = require('../categories');
 var privileges = require('../privileges');
 var plugins = require('../plugins');
 var widgets = require('../widgets');
-var helpers = require('../controllers/helpers');
 var accountHelpers = require('../controllers/accounts/helpers');
 
 var apiController = {};
@@ -22,8 +21,8 @@ apiController.getConfig = function(req, res, next) {
 	config.environment = process.env.NODE_ENV;
 	config.relative_path = nconf.get('relative_path');
 	config.version = nconf.get('version');
-	config.siteTitle = validator.escape(meta.config.title || meta.config.browserTitle || 'NodeBB');
-	config.browserTitle = validator.escape(meta.config.browserTitle || meta.config.title || 'NodeBB');
+	config.siteTitle = validator.escape(String(meta.config.title || meta.config.browserTitle || 'NodeBB'));
+	config.browserTitle = validator.escape(String(meta.config.browserTitle || meta.config.title || 'NodeBB'));
 	config.titleLayout = (meta.config.titleLayout || '{pageTitle} | {browserTitle}').replace(/{/g, '&#123;').replace(/}/g, '&#125;');
 	config.showSiteTitle = parseInt(meta.config.showSiteTitle, 10) === 1;
 	config.minimumTitleLength = meta.config.minimumTitleLength;
@@ -53,7 +52,7 @@ apiController.getConfig = function(req, res, next) {
 	config['theme:id'] = meta.config['theme:id'];
 	config['theme:src'] = meta.config['theme:src'];
 	config.defaultLang = meta.config.defaultLang || 'en_GB';
-	config.userLang = req.query.lang ? validator.escape(req.query.lang) : config.defaultLang;
+	config.userLang = req.query.lang ? validator.escape(String(req.query.lang)) : config.defaultLang;
 	config.loggedIn = !!req.user;
 	config['cache-buster'] = meta.config['cache-buster'] || '';
 	config.requireEmailConfirmation = parseInt(meta.config.requireEmailConfirmation, 10) === 1;
@@ -68,25 +67,19 @@ apiController.getConfig = function(req, res, next) {
 			if (!req.user) {
 				return next(null, config);
 			}
-			user.getSettings(req.uid, function(err, settings) {
-				if (err) {
-					return next(err);
-				}
-				config.usePagination = settings.usePagination;
-				config.topicsPerPage = settings.topicsPerPage;
-				config.postsPerPage = settings.postsPerPage;
-				config.notificationSounds = settings.notificationSounds;
-				config.userLang = (req.query.lang ? validator.escape(req.query.lang) : null) || settings.userLang || config.defaultLang;
-				config.openOutgoingLinksInNewTab = settings.openOutgoingLinksInNewTab;
-				config.topicPostSort = settings.topicPostSort || config.topicPostSort;
-				config.categoryTopicSort = settings.categoryTopicSort || config.categoryTopicSort;
-				config.topicSearchEnabled = settings.topicSearchEnabled || false;
-				config.delayImageLoading = settings.delayImageLoading !== undefined ? settings.delayImageLoading : true;
-				config.bootswatchSkin = settings.bootswatchSkin || config.bootswatchSkin;
-				next(null, config);
-			});
+			user.getSettings(req.uid, next);
 		},
-		function (config, next) {
+		function (settings, next) {
+			config.usePagination = settings.usePagination;
+			config.topicsPerPage = settings.topicsPerPage;
+			config.postsPerPage = settings.postsPerPage;
+			config.userLang = (req.query.lang ? validator.escape(String(req.query.lang)) : null) || settings.userLang || config.defaultLang;
+			config.openOutgoingLinksInNewTab = settings.openOutgoingLinksInNewTab;
+			config.topicPostSort = settings.topicPostSort || config.topicPostSort;
+			config.categoryTopicSort = settings.categoryTopicSort || config.categoryTopicSort;
+			config.topicSearchEnabled = settings.topicSearchEnabled || false;
+			config.delayImageLoading = settings.delayImageLoading !== undefined ? settings.delayImageLoading : true;
+			config.bootswatchSkin = settings.bootswatchSkin || config.bootswatchSkin;
 			plugins.fireHook('filter:config.get', config, next);
 		}
 	], function(err, config) {

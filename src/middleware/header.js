@@ -2,6 +2,7 @@
 
 var async = require('async');
 var nconf = require('nconf');
+var validator = require('validator');
 
 var db = require('../database');
 var user = require('../user');
@@ -15,7 +16,7 @@ var controllers = {
 	helpers: require('../controllers/helpers')
 };
 
-module.exports = function(app, middleware) {
+module.exports = function(middleware) {
 
 	middleware.buildHeader = function(req, res, next) {
 		res.locals.renderHeader = true;
@@ -27,7 +28,10 @@ module.exports = function(app, middleware) {
 					controllers.api.getConfig(req, res, next);
 				},
 				footer: function(next) {
-					app.render('footer', {loggedIn: (req.user ? parseInt(req.user.uid, 10) !== 0 : false)}, next);
+					req.app.render('footer', {
+						loggedIn: !!req.uid,
+						title: validator.escape(String(meta.config.title || meta.config.browserTitle || 'NodeBB'))
+					}, next);
 				},
 				plugins: function(next) {
 					plugins.fireHook('filter:middleware.buildHeader', {req: req, locals: res.locals}, next);
@@ -156,7 +160,7 @@ module.exports = function(app, middleware) {
 					return callback(err);
 				}
 
-				app.render('header', data.templateValues, callback);
+				req.app.render('header', data.templateValues, callback);
 			});
 		});
 	};

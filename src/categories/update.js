@@ -1,11 +1,11 @@
 
 'use strict';
 
-var async = require('async'),
-	db = require('../database'),
-	utils = require('../../public/src/utils'),
-	translator = require('../../public/src/modules/translator'),
-	plugins = require('../plugins');
+var async = require('async');
+var db = require('../database');
+var utils = require('../../public/src/utils');
+var translator = require('../../public/src/modules/translator');
+var plugins = require('../plugins');
 
 module.exports = function(Categories) {
 

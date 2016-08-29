@@ -198,8 +198,6 @@ $(document).ready(function() {
 		}
 		var count = 2;
 
-		ajaxify.variables.parse();
-
 		ajaxify.loadScript(tpl_url, done);
 
 		ajaxify.widgets.render(tpl_url, url, done);
@@ -209,6 +207,14 @@ $(document).ready(function() {
 		app.processPage();
 	};
 
+	ajaxify.parseData = function() {
+		var dataEl = $('#ajaxify-data');
+		if (dataEl.length) {
+			ajaxify.data = JSON.parse(dataEl.text());
+			dataEl.remove();
+		}
+	};
+
 	ajaxify.removeRelativePath = function(url) {
 		if (url.startsWith(RELATIVE_PATH.slice(1))) {
 			url = url.slice(RELATIVE_PATH.length);
@@ -216,11 +222,7 @@ $(document).ready(function() {
 		return url;
 	};
 
-	ajaxify.refresh = function(e, callback) {
-		if (e && e instanceof jQuery.Event) {
-			e.preventDefault();
-		}
-
+	ajaxify.refresh = function(callback) {
 		ajaxify.go(ajaxify.currentPage + window.location.search + window.location.hash, callback, true);
 	};
 
@@ -334,9 +336,7 @@ $(document).ready(function() {
 				return;
 			}
 
-			var internalLink = this.host === '' ||	// Relative paths are always internal links
-				(this.host === window.location.host && this.protocol === window.location.protocol &&	// Otherwise need to check if protocol and host match
-				(RELATIVE_PATH.length > 0 ? this.pathname.indexOf(RELATIVE_PATH) === 0 : true));	// Subfolder installs need this additional check
+			var internalLink = utils.isInternalURI(this, window.location, RELATIVE_PATH);
 
 			if ($(this).attr('data-ajaxify') === 'false') {
 				if (!internalLink) {
@@ -381,7 +381,8 @@ $(document).ready(function() {
 	app.load();
 
 	$('[data-template]').each(function() {
-		templates.cache[$(this).attr('data-template')] = $(this).html();
+		templates.cache[$(this).attr('data-template')] = $('<div/>').html($(this).html()).text();
+		$(this).parent().remove();
 	});
 
 });

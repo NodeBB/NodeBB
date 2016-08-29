@@ -15,9 +15,27 @@ module.exports = function(Messaging) {
 			}
 			data.roomName = data.roomName || '[[modules:chat.roomname, ' + roomId + ']]';
 			if (data.roomName) {
-				data.roomName = validator.escape(data.roomName);
+				data.roomName = validator.escape(String(data.roomName));
 			}
 			callback(null, data);
+		});
+	};
+
+	Messaging.getRoomsData = function(roomIds, callback) {
+		var keys = roomIds.map(function(roomId) {
+			return 'chat:room:' + roomId;
+		});
+		db.getObjects(keys, function(err, roomData) {
+			if (err) {
+				return callback(err);
+			}
+			roomData.forEach(function(data) {
+				if (data) {
+					data.roomName = data.roomName || '[[modules:chat.roomname, ' + data.roomId + ']]';
+					data.roomName = validator.escape(String(data.roomName));
+				}
+			});
+			callback(null, roomData);
 		});
 	};
 

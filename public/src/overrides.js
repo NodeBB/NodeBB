@@ -68,6 +68,15 @@ if ('undefined' !== typeof window) {
 				return translate(this, 'val', str);
 			};
 
+			$.fn.translateAttr = function(attr, str) {
+				return this.each(function() {
+					var el = $(this);
+					translator.translate(str, function(translated) {
+						el.attr(attr, translated);
+					});
+				});
+			};
+
 			function translate(elements, type, str) {
 				return elements.each(function() {
 					var el = $(this);
@@ -107,7 +116,7 @@ if ('undefined' !== typeof window) {
 			var dialog = bootbox.dialog,
 				prompt = bootbox.prompt,
 				confirm = bootbox.confirm;
-				
+
 			function translate(modal) {
 				var header = modal.find('.modal-header'),
 					footer = modal.find('.modal-footer');

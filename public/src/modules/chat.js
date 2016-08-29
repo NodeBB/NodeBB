@@ -113,13 +113,12 @@ define('chat', [
 			    return room.teaser;
 			});
 
-			chatsListEl.empty();
-
 			templates.parse('partials/chat_dropdown', {
 				rooms: rooms
 			}, function(html) {
 				translator.translate(html, function(translated) {
-					chatsListEl.html(translated);
+					chatsListEl.empty().html(translated);
+					app.createUserTooltips(chatsListEl, 'right');
 				});
 			});
 		});

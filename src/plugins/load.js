@@ -276,7 +276,8 @@ module.exports = function(Plugins) {
 		  * With npm@3, dependencies can become flattened, and appear at the root level.
 		  * This method resolves these differences if it can.
 		  */
-		var atRootLevel = fullPath.match(/node_modules/g).length === 1;
+		var matches = fullPath.match(/node_modules/g);
+		var atRootLevel = !matches || matches.length === 1;
 
 		try {
 			fs.statSync(fullPath);

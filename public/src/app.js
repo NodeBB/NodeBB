@@ -24,6 +24,7 @@ app.cacheBuster = null;
 
 		var url = ajaxify.start(window.location.pathname.slice(1) + window.location.search + window.location.hash);
 		ajaxify.updateHistory(url, true);
+		ajaxify.parseData();
 		ajaxify.end(url, app.template);
 
 		handleStatusChange();
@@ -189,12 +190,12 @@ app.cacheBuster = null;
 		}
 	}
 
-	app.createUserTooltips = function(els) {
+	app.createUserTooltips = function(els, placement) {
 		els = els || $('body');
 		els.find('.avatar,img[title].teaser-pic,img[title].user-img,div.user-icon,span.user-icon').each(function() {
 			if (!utils.isTouchDevice()) {
 				$(this).tooltip({
-					placement: 'top',
+					placement: placement || $(this).attr('title-placement') || 'top',
 					title: $(this).attr('title')
 				});
 			}
@@ -500,7 +501,7 @@ app.cacheBuster = null;
 
 		var scriptEl = document.createElement('script');
 		scriptEl.type = 'text/javascript';
-		scriptEl.src = config.relative_path + '/vendor/jquery/js/jquery-ui-1.10.4.custom.js' + (app.cacheBuster ? '?v=' + app.cacheBuster : '');
+		scriptEl.src = config.relative_path + '/vendor/jquery/js/jquery-ui.js' + (app.cacheBuster ? '?v=' + app.cacheBuster : '');
 		scriptEl.onload = callback;
 		document.head.appendChild(scriptEl);
 	};

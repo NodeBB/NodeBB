@@ -119,6 +119,12 @@ profileController.get = function(req, res, callback) {
 				);
 			}
 
+			userData.groups.forEach(function(group) {
+				if (group && group.name === userData.groupTitle) {
+					userData.selectedGroup = group;
+				}
+			});
+
 			plugins.fireHook('filter:user.account', {userData: userData, uid: req.uid}, next);
 		}
 	], function(err, results) {

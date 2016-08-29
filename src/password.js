@@ -12,9 +12,11 @@
 	};
 
 	function forkChild(message, callback) {
-		var child = fork('./bcrypt', {
-				silent: true
-			});
+		var forkProcessParams = {};
+		if(global.v8debug || parseInt(process.execArgv.indexOf('--debug'), 10) !== -1) {
+			forkProcessParams = {execArgv: ['--debug=' + (5859), '--nolazy']};
+		}
+		var child = fork('./bcrypt', [], forkProcessParams);
 
 		child.on('message', function(msg) {
 			if (msg.err) {

@@ -33,7 +33,7 @@ function mainRoutes(app, middleware, controllers) {
 	setupPageRoute(app, '/compose', middleware, [], controllers.compose);
 	setupPageRoute(app, '/confirm/:code', middleware, [], controllers.confirmEmail);
 	setupPageRoute(app, '/outgoing', middleware, [], controllers.outgoing);
-	setupPageRoute(app, '/search/:term?', middleware, [], controllers.search.search);
+	setupPageRoute(app, '/search', middleware, [], controllers.search.search);
 	setupPageRoute(app, '/reset/:code?', middleware, [], controllers.reset);
 	setupPageRoute(app, '/tos', middleware, [], controllers.termsOfUse);
 
@@ -73,12 +73,7 @@ function categoryRoutes(app, middleware, controllers) {
 function userRoutes(app, middleware, controllers) {
 	var middlewares = [middleware.checkGlobalPrivacySettings];
 
-	setupPageRoute(app, '/users', middleware, middlewares, controllers.users.getUsersSortedByJoinDate);
-	setupPageRoute(app, '/users/online', middleware, middlewares, controllers.users.getOnlineUsers);
-	setupPageRoute(app, '/users/sort-posts', middleware, middlewares, controllers.users.getUsersSortedByPosts);
-	setupPageRoute(app, '/users/sort-reputation', middleware, middlewares, controllers.users.getUsersSortedByReputation);
-	setupPageRoute(app, '/users/banned', middleware, middlewares, controllers.users.getBannedUsers);
-	setupPageRoute(app, '/users/flagged', middleware, middlewares, controllers.users.getFlaggedUsers);
+	setupPageRoute(app, '/users', middleware, middlewares, controllers.users.index);
 }
 
 function groupRoutes(app, middleware, controllers) {
@@ -91,15 +86,15 @@ function groupRoutes(app, middleware, controllers) {
 
 module.exports = function(app, middleware, hotswapIds) {
 	var routers = [
-			express.Router(),	// plugin router
-			express.Router(),	// main app router
-			express.Router()	// auth router
-		],
-		router = routers[1],
-		pluginRouter = routers[0],
-		authRouter = routers[2],
-		relativePath = nconf.get('relative_path'),
-		ensureLoggedIn = require('connect-ensure-login');
+		express.Router(),	// plugin router
+		express.Router(),	// main app router
+		express.Router()	// auth router
+	];
+	var router = routers[1];
+	var pluginRouter = routers[0];
+	var authRouter = routers[2];
+	var relativePath = nconf.get('relative_path');
+	var ensureLoggedIn = require('connect-ensure-login');
 
 	if (Array.isArray(hotswapIds) && hotswapIds.length) {
 		for(var idx,x=0;x<hotswapIds.length;x++) {

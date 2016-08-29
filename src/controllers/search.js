@@ -28,7 +28,7 @@ searchController.search = function(req, res, next) {
 	}
 
 	var data = {
-		query: req.params.term,
+		query: req.query.term,
 		searchIn: req.query.in || 'posts',
 		postedBy: req.query.by,
 		categories: req.query.categories,
@@ -59,7 +59,7 @@ searchController.search = function(req, res, next) {
 		searchData.showAsTopics = req.query.showAs === 'topics';
 		searchData.title = '[[global:header.search]]';
 		searchData.breadcrumbs = helpers.buildBreadcrumbs([{text: '[[global:search]]'}]);
-		searchData.expandSearch = !req.params.term;
+		searchData.expandSearch = !req.query.term;
 
 		res.render('search', searchData);
 	});

@@ -1,34 +1,41 @@
 "use strict";
 
-/* global socket, define, templates, bootbox, app, ajaxify  */
+/* global config, socket, define, templates, bootbox, app, ajaxify  */
 
-define('admin/manage/users', ['admin/modules/selectable'], function(selectable) {
+define('admin/manage/users', ['admin/modules/selectable', 'translator'], function(selectable, translator) {
 	var Users = {};
 
 	Users.init = function() {
-		selectable.enable('#users-container', '.user-selectable');
+		selectable.enable('#users-container', '.users-box');
+
+		var navPills = $('.nav-pills li');
+		var pathname = window.location.pathname;
+		if (!navPills.find('a[href="' + pathname + '"]').length) {
+			pathname = config.relative_path + '/admin/manage/users/latest';
+		}
+		navPills.removeClass('active').find('a[href="' + pathname + '"]').parent().addClass('active');
 
 		function getSelectedUids() {
 			var uids = [];
-			$('#users-container .users-box .selected').each(function() {
-				uids.push($(this).parents('[data-uid]').attr('data-uid'));
+			$('#users-container .users-box.ui-selected').each(function() {
+				uids.push(this.getAttribute('data-uid'));
 			});
 
 			return uids;
 		}
 
 		function update(className, state) {
-			$('#users-container .users-box .selected').siblings('.labels').find(className).each(function() {
+			$('#users-container .users-box.ui-selected .labels').find(className).each(function() {
 				$(this).toggleClass('hide', !state);
 			});
 		}
 
 		function unselectAll() {
-			$('#users-container .users-box .selected').removeClass('selected');
+			$('#users-container .users-box.ui-selected').removeClass('ui-selected');
 		}
 
 		function removeSelected() {
-			$('#users-container .users-box .selected').parents('.users-box').remove();
+			$('#users-container .users-box.ui-selected').remove();
 		}
 
 		function done(successMessage, className, flag) {
@@ -231,47 +238,68 @@ define('admin/manage/users', ['admin/modules/selectable'], function(selectable) 
 		});
 
 		function handleUserCreate() {
-			var errorEl = $('#create-modal-error');
 			$('#createUser').on('click', function() {
-				$('#create-modal').modal('show');
-				$('#create-modal form')[0].reset();
-				errorEl.addClass('hide');
+				templates.parse('admin/partials/create_user_modal', {}, function(html) {
+					translator.translate(html, function(html) {
+						bootbox.dialog({
+							message: html,
+							title: 'Create User',
+							onEscape: true,
+							buttons: {
+								cancel: {
+									label: 'Cancel',
+									className: 'btn-link'
+								},
+								create: {
+									label: 'Create',
+									className: 'btn-primary',
+									callback: function() {
+										createUser.call(this);
+										return false;
+									}
+								}
+							}
+						});
+					});
+				});
 			});
+		}
 
-			$('#create-modal-go').on('click', function() {
-				var username = $('#create-user-name').val(),
-					email = $('#create-user-email').val(),
-					password = $('#create-user-password').val(),
-					passwordAgain = $('#create-user-password-again').val();
+		function createUser() {
+			var modal = this;
+			var username = document.getElementById('create-user-name').value;
+			var email = document.getElementById('create-user-email').value;
+			var password = document.getElementById('create-user-password').value;
+			var passwordAgain = document.getElementById('create-user-password-again').value;
 
+			var errorEl = $('#create-modal-error');
 
-				if (password !== passwordAgain) {
-					return errorEl.html('<strong>Error</strong><p>Passwords must match!</p>').removeClass('hide');
+			if (password !== passwordAgain) {
+				return errorEl.html('<strong>Error</strong><p>Passwords must match!</p>').removeClass('hide');
+			}
+
+			var user = {
+				username: username,
+				email: email,
+				password: password
+			};
+
+			socket.emit('admin.user.createUser', user, function(err) {
+				if(err) {
+					return errorEl.translateHtml('<strong>Error</strong><p>' + err.message + '</p>').removeClass('hide');
 				}
 
-				var user = {
-					username: username,
-					email: email,
-					password: password
-				};
-
-				socket.emit('admin.user.createUser', user, function(err) {
-					if(err) {
-						return errorEl.translateHtml('<strong>Error</strong><p>' + err.message + '</p>').removeClass('hide');
-					}
-					$('#create-modal').modal('hide');
-					$('#create-modal').on('hidden.bs.modal', function() {
-						ajaxify.refresh();
-					});
-					app.alertSuccess('User created!');
+				modal.modal('hide');
+				modal.on('hidden.bs.modal', function() {
+					ajaxify.refresh();
 				});
-
+				app.alertSuccess('User created!');
 			});
 		}
 
 		var timeoutId = 0;
 
-		$('.nav-pills li').removeClass('active').find('a[href="' + window.location.pathname + '"]').parent().addClass('active');
+
 
 		$('#search-user-name, #search-user-email, #search-user-ip').on('keyup', function() {
 			if (timeoutId !== 0) {
@@ -307,7 +335,7 @@ define('admin/manage/users', ['admin/modules/selectable'], function(selectable) 
 								.removeClass('label-danger');
 						}
 
-						selectable.enable('#users-container', '.user-selectable');
+						selectable.enable('#users-container', '.users-box');
 					});
 				});
 			}, 250);
