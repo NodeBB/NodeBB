@@ -19,7 +19,6 @@ addons:
     packages:
     - g++-4.8
 node_js:
-    - "iojs"
     - "6"
     - "5"
     - "4"
