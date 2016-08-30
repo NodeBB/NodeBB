@@ -54,6 +54,7 @@ if (nconf.get('config')) {
 var configExists = file.existsSync(configFile) || (nconf.get('url') && nconf.get('secret') && nconf.get('database'));
 
 loadConfig();
+versionCheck();
 
 if (!process.send) {
 	// If run using `node app`, log GNU copyright info along with server info
@@ -348,5 +349,18 @@ function restart() {
 	} else {
 		winston.error('[app] Could not restart server. Shutting down.');
 		shutdown(1);
+	}
+}
+
+function versionCheck() {
+	var version = process.version.slice(1);
+	var range = pkg.engines.node;
+	var semver = require('semver');
+	var compatible = semver.satisfies(version, range);
+
+	if (!compatible) {
+		winston.error('Your version of Node.js is too outdated for NodeBB. Please update your version of Node.js.');
+		winston.error('Requires ' + range.green + ', '.reset + version.yellow + ' provided\n'.reset);
+		process.exit(1);
 	}
 }
