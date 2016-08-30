@@ -359,8 +359,7 @@ function versionCheck() {
 	var compatible = semver.satisfies(version, range);
 
 	if (!compatible) {
-		winston.error('Your version of Node.js is too outdated for NodeBB. Please update your version of Node.js.');
-		winston.error('Requires ' + range.green + ', '.reset + version.yellow + ' provided\n'.reset);
-		process.exit(1);
+		winston.warn('Your version of Node.js is too outdated for NodeBB. Please update your version of Node.js.');
+		winston.warn('Recommended ' + range.green + ', '.reset + version.yellow + ' provided\n'.reset);
 	}
 }
