@@ -133,10 +133,10 @@ var ratelimit = require('../middleware/ratelimit');
 
 	function validateSession(socket, callback) {
 		var req = socket.request;
-		if (!req.signedCookies || !req.signedCookies['express.sid']) {
+		if (!req.signedCookies || !req.signedCookies[nconf.get('sessionKey')]) {
 			return callback(new Error('[[error:invalid-session]]'));
 		}
-		db.sessionStore.get(req.signedCookies['express.sid'], function (err, sessionData) {
+		db.sessionStore.get(req.signedCookies[nconf.get('sessionKey')], function (err, sessionData) {
 			if (err || !sessionData) {
 				return callback(err || new Error('[[error:invalid-session]]'));
 			}
@@ -157,7 +157,7 @@ var ratelimit = require('../middleware/ratelimit');
 				cookieParser(request, {}, next);
 			},
 			function (next) {
-				db.sessionStore.get(request.signedCookies['express.sid'], function (err, sessionData) {
+				db.sessionStore.get(request.signedCookies[nconf.get('sessionKey')], function (err, sessionData) {
 					if (err) {
 						return next(err);
 					}

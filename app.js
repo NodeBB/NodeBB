@@ -117,6 +117,9 @@ function start() {
 	if (!nconf.get('upload_path')) {
 		nconf.set('upload_path', '/public/uploads');
 	}
+	if (!nconf.get('sessionKey')) {
+		nconf.set('sessionKey', 'express.sid');
+	}
 	// Parse out the relative_url and other goodies from the configured URL
 	var urlObject = url.parse(nconf.get('url'));
 	var relativePath = urlObject.pathname !== '/' ? urlObject.pathname : '';
