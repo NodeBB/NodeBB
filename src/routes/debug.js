@@ -1,12 +1,12 @@
 "use strict";
 
-var express = require('express'),
-	nconf = require('nconf'),
-	winston = require('winston'),
-	user = require('./../user'),
-	categories = require('./../categories'),
-	topics = require('./../topics'),
-	posts = require('./../posts');
+var express = require('express');
+var nconf = require('nconf');
+var winston = require('winston');
+var user = require('./../user');
+var categories = require('./../categories');
+var topics = require('./../topics');
+var posts = require('./../posts');
 
 module.exports = function(app, middleware, controllers) {
 	var router = express.Router();

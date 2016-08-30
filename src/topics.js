@@ -14,7 +14,6 @@ var social = require('./social');
 
 (function(Topics) {
 
-
 	require('./topics/data')(Topics);
 	require('./topics/create')(Topics);
 	require('./topics/delete')(Topics);
@@ -29,6 +28,7 @@ var social = require('./social');
 	require('./topics/teaser')(Topics);
 	require('./topics/suggested')(Topics);
 	require('./topics/tools')(Topics);
+	require('./topics/thumb')(Topics);
 
 	Topics.exists = function(tid, callback) {
 		db.isSortedSetMember('topics:tid', tid, callback);
