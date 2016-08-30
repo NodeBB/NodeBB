@@ -1,7 +1,7 @@
 "use strict";
 /* global define, app, socket */
 
-define('admin/extend/widgets', function() {
+define('admin/extend/widgets', ['jqueryui'], function(jqueryui) {
 	var Widgets = {};
 
 	Widgets.init = function() {		
