@@ -227,12 +227,10 @@ define('navigator', ['forum/pagination', 'components'], function(pagination, com
 	};
 
 	navigator.scrollToPostIndex = function(postIndex, highlight, duration) {
-		var scrollTo = components.get('post/anchor', postIndex),
-			postEl = components.get('post', 'index', postIndex),
-			postHeight = postEl.height(),
-			viewportHeight = $(window).height(),
-			navbarHeight = components.get('navbar').height();
-
+		var scrollTo = components.get('post', 'index', postIndex);
+		var postHeight = scrollTo.height();
+		var viewportHeight = $(window).height();
+		var navbarHeight = components.get('navbar').height();
 
 		if (!scrollTo.length) {
 			navigator.scrollActive = false;
@@ -275,9 +273,9 @@ define('navigator', ['forum/pagination', 'components'], function(pagination, com
 
 		function highlightPost() {
 			if (highlight) {
-				scrollTo.parents('[component="post"]').addClass('highlight');
+				scrollTo.addClass('highlight');
 				setTimeout(function() {
-					scrollTo.parents('[component="post"]').removeClass('highlight');
+					scrollTo.removeClass('highlight');
 				}, 10000);
 			}
 		}
