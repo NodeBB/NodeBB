@@ -96,5 +96,5 @@
     "upload": "بارگذاری",
     "allowed-file-types": "فایل قابل قبول اینها هستند %1",
     "unsaved-changes": "تغییرات شما ذخیره نشده. شما مطمئن هستید که میخواهید از اینجا دور شوید؟",
-    "reconnecting-message": "Looks like your connection to %1 was lost, please wait while we try to reconnect."
+    "reconnecting-message": "اتصال شما به %1  به نظر می‌رسد از دست رفته. لطفا صبر کنید ما سعی می‌کنیم که دوباره شما را متصل کنیم."
 }
