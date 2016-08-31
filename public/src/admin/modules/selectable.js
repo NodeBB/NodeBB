@@ -2,14 +2,12 @@
 
 /*globals define*/
 
-define('admin/modules/selectable', function() {
+define('admin/modules/selectable', ['jqueryui'], function(jqueryui) {
 	var selectable = {};
 
 	selectable.enable = function(containerEl, targets) {
-		app.loadJQueryUI(function() {
-			$(containerEl).selectable({
-				filter: targets
-			});
+		$(containerEl).selectable({
+			filter: targets
 		});
 	};
 
