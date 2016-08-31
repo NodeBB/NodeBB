@@ -212,7 +212,7 @@ define('navigator', ['forum/pagination', 'components'], function(pagination, com
 		if (config.usePagination) {
 			var index = postIndex;
 			if (config.topicPostSort === 'most_votes' || config.topicPostSort === 'newest_to_oldest') {
-				index = ajaxify.data.postcount - 1 - index;
+				index = ajaxify.data.postcount - index;
 			}
 			var page = Math.max(1, Math.ceil(index / config.postsPerPage));
 
