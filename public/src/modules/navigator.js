@@ -9,6 +9,8 @@ define('navigator', ['forum/pagination', 'components'], function(pagination, com
 	var navigator = {};
 	var index = 1;
 	var count = 0;
+	var navigatorUpdateTimeoutId = 0;
+
 	navigator.scrollActive = false;
 
 	navigator.init = function(selector, count, toTop, toBottom, callback, calculateIndex) {
@@ -17,15 +19,8 @@ define('navigator', ['forum/pagination', 'components'], function(pagination, com
 		navigator.callback = callback;
 		toTop = toTop || function() {};
 		toBottom = toBottom || function() {};
-		var navigatorUpdateTimeoutId = 0;
 
-		$(window).off('scroll', navigator.update).on('scroll', function() {
-			if (navigatorUpdateTimeoutId) {
-				clearTimeout(navigatorUpdateTimeoutId);
-				navigatorUpdateTimeoutId = 0;
-			}
-			navigatorUpdateTimeoutId = setTimeout(navigator.update, 100);
-		});
+		$(window).off('scroll', navigator.delayedUpdate).on('scroll', navigator.delayedUpdate);
 
 		$('.pagination-block .dropdown-menu').off('click').on('click', function(e) {
 			e.stopPropagation();
@@ -98,6 +93,14 @@ define('navigator', ['forum/pagination', 'components'], function(pagination, com
 		$('.pagination-block').toggleClass('ready', flag);
 	}
 
+	navigator.delayedUpdate = function() {
+		if (navigatorUpdateTimeoutId) {
+			clearTimeout(navigatorUpdateTimeoutId);
+			navigatorUpdateTimeoutId = 0;
+		}
+		navigatorUpdateTimeoutId = setTimeout(navigator.update, 100);
+	};
+
 	navigator.update = function(threshold) {
 		/*
 			The "threshold" is defined as the distance from the top of the page to
@@ -136,7 +139,7 @@ define('navigator', ['forum/pagination', 'components'], function(pagination, com
 		} else if (nearBottom) {
 			index = count;
 		}
-
+console.log('wtf', index ,count)
 		// If a threshold is undefined, try to determine one based on new index
 		if (threshold === undefined && ajaxify.data.template.topic === true) {
 			if (atTop) {
