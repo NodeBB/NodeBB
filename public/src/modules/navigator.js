@@ -210,7 +210,11 @@ define('navigator', ['forum/pagination', 'components'], function(pagination, com
 		}
 
 		if (config.usePagination) {
-			var page = Math.max(1, Math.ceil(postIndex / config.postsPerPage));
+			var index = postIndex;
+			if (config.topicPostSort === 'most_votes' || config.topicPostSort === 'newest_to_oldest') {
+				index = ajaxify.data.postcount - 1 - index;
+			}
+			var page = Math.max(1, Math.ceil(index / config.postsPerPage));
 
 			if (parseInt(page, 10) !== ajaxify.data.pagination.currentPage) {
 				pagination.loadPage(page, function() {
