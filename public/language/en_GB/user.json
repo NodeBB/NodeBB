@@ -137,5 +137,7 @@
 	"info.ban-history": "Recent Ban History",
 	"info.no-ban-history": "This user has never been banned",
 	"info.banned-until": "Banned until %1",
-	"info.banned-permanently": "Banned permanently"
+	"info.banned-permanently": "Banned permanently",
+	"info.banned-reason-label": "Reason",
+	"info.banned-no-reason": "No reason given."
 }

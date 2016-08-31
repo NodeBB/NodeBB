@@ -13,7 +13,8 @@ module.exports = function(User) {
 			function(next) {
 				async.parallel({
 					flags: async.apply(db.getSortedSetRevRangeWithScores, 'uid:' + uid + ':flag:pids', 0, 19),
-					bans: async.apply(db.getSortedSetRevRangeWithScores, 'uid:' + uid + ':bans', 0,19)
+					bans: async.apply(db.getSortedSetRevRangeWithScores, 'uid:' + uid + ':bans', 0, 19),
+					reasons: async.apply(db.getSortedSetRevRangeWithScores, 'banned:' + uid + ':reasons', 0, 19)
 				}, next);
 			},
 			function(data, next) {
@@ -64,15 +65,22 @@ module.exports = function(User) {
 	}
 
 	function formatBanData(data) {
+		var reasons = data.reasons.reduce(function(memo, cur) {
+				memo[cur.score] = cur.value;
+				return memo;
+			}, {});
+
 		data.bans = data.bans.map(function(banObj) {
 			banObj.until = parseInt(banObj.value, 10);
 			banObj.untilReadable = new Date(banObj.until).toString();
 			banObj.timestamp = parseInt(banObj.score, 10);
 			banObj.timestampReadable = new Date(banObj.score).toString();
 			banObj.timestampISO = new Date(banObj.score).toISOString();
+			banObj.reason = reasons[banObj.score] || '[[user:info.banned-no-reason]]';
 
 			delete banObj.value;
 			delete banObj.score;
+			delete data.reasons;
 
 			return banObj;
 		});

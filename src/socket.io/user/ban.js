@@ -12,12 +12,13 @@ module.exports = function(SocketUser) {
 		if (Array.isArray(data)) {
 			data = {
 				uids: data,
-				until: 0
+				until: 0,
+				reason: ''
 			};
 		}
 
 		toggleBan(socket.uid, data.uids, function(uid, next) {
-			banUser(data.until || 0, uid, next);
+			banUser(uid, data.until || 0, data.reason || '', next);
 		}, function(err) {
 			if (err) {
 				return callback(err);
@@ -68,7 +69,7 @@ module.exports = function(SocketUser) {
 		], callback);
 	}
 
-	function banUser(until, uid, callback) {
+	function banUser(uid, until, reason, callback) {
 		async.waterfall([
 			function (next) {
 				user.isAdministrator(uid, next);
@@ -77,7 +78,7 @@ module.exports = function(SocketUser) {
 				if (isAdmin) {
 					return next(new Error('[[error:cant-ban-other-admins]]'));
 				}
-				user.ban(uid, until, next);
+				user.ban(uid, until, reason, next);
 			},
 			function (next) {
 				websockets.in('uid_' + uid).emit('event:banned');
