@@ -277,7 +277,8 @@ define('forum/category', [
 			cid: ajaxify.data.cid,
 			after: after,
 			direction: direction,
-			author: utils.params().author
+			author: utils.params().author,
+			categoryTopicSort: config.categoryTopicSort
 		}, function (data, done) {
 			if (data.topics && data.topics.length) {
 				Category.onTopicsLoaded(data, direction, done);

@@ -80,12 +80,12 @@ SocketCategories.loadMore = function(socket, data, callback) {
 		}
 
 		var infScrollTopicsPerPage = 20;
-		var set = 'cid:' + data.cid + ':tids',
-			reverse = false;
+		var set = 'cid:' + data.cid + ':tids';
+		var reverse = false;
 
-		if (results.settings.categoryTopicSort === 'newest_to_oldest') {
+		if (data.categoryTopicSort === 'newest_to_oldest') {
 			reverse = true;
-		} else if (results.settings.categoryTopicSort === 'most_posts') {
+		} else if (data.categoryTopicSort === 'most_posts') {
 			reverse = true;
 			set = 'cid:' + data.cid + ':tids:posts';
 		}
