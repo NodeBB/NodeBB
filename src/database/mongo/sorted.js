@@ -141,8 +141,13 @@ module.exports = function(db, module) {
 			key = {$in: key};
 		}
 
+		var limit = stop - start + 1;
+		if (limit <= 0) {
+			limit = 0;
+		}
+
 		db.collection('objects').find({_key: key}, {fields: fields})
-			.limit(stop - start + 1)
+			.limit(limit)
 			.skip(start)
 			.sort({score: sort})
 			.toArray(function(err, data) {
