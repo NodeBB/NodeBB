@@ -131,8 +131,8 @@ define('navigator', ['forum/pagination', 'components'], function(pagination, com
 			}
 		});
 
-		var atTop = scrollTop === 0 && parseInt(els.first().attr('data-index'), 10) === 0,
-			nearBottom = scrollTop + windowHeight > documentHeight - 100 && parseInt(els.last().attr('data-index'), 10) === count - 1;
+		var atTop = scrollTop === 0 && parseInt(els.first().attr('data-index'), 10) === 0;
+		var nearBottom = scrollTop + windowHeight > documentHeight - 100 && parseInt(els.last().attr('data-index'), 10) === count - 1;
 
 		if (atTop) {
 			index = 1;
