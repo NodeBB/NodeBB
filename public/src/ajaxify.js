@@ -380,7 +380,7 @@ $(document).ready(function() {
 
 	app.load();
 
-	$('[data-template]').each(function() {
+	$('[type="text/tpl"][data-template]').each(function() {
 		templates.cache[$(this).attr('data-template')] = $('<div/>').html($(this).html()).text();
 		$(this).parent().remove();
 	});
