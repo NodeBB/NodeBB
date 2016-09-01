@@ -2,12 +2,44 @@
 
 var async = require('async');
 var _ = require('underscore');
+var validator = require('validator');
 
 var db = require('../database');
 var posts = require('../posts');
 var topics = require('../topics');
 
 module.exports = function(User) {
+	User.getLatestBanInfo = function(uid, callback) {
+		// Simply retrieves the last record of the user's ban, even if they've been unbanned since then.
+		var timestamp, expiry, reason;
+
+		async.waterfall([
+			async.apply(db.getSortedSetRevRangeWithScores, 'uid:' + uid + ':bans', 0, 0),
+			function(record, next) {
+				timestamp = record[0].score;
+				expiry = record[0].value;
+
+				db.getSortedSetRangeByScore('banned:' + uid + ':reasons', 0, -1, timestamp, timestamp, next);
+			},
+			function(_reason, next) {
+				reason = _reason && _reason.length ? _reason[0] : '';
+				next();
+			}
+		], function(err) {
+			if (err) {
+				return callback(err);
+			}
+
+			callback(null, {
+				uid: uid,
+				timestamp: timestamp,
+				expiry: parseInt(expiry, 10),
+				expiry_readable: new Date(parseInt(expiry, 10)).toString().replace(/:/g, '%3A'),
+				reason: validator.escape(String(reason))
+			});
+		})
+	};
+
 	User.getModerationHistory = function(uid, callback) {
 		async.waterfall([
 			function(next) {
@@ -76,7 +108,7 @@ module.exports = function(User) {
 			banObj.timestamp = parseInt(banObj.score, 10);
 			banObj.timestampReadable = new Date(banObj.score).toString();
 			banObj.timestampISO = new Date(banObj.score).toISOString();
-			banObj.reason = reasons[banObj.score] || '[[user:info.banned-no-reason]]';
+			banObj.reason = validator.escape(String(reasons[banObj.score])) || '[[user:info.banned-no-reason]]';
 
 			delete banObj.value;
 			delete banObj.score;
