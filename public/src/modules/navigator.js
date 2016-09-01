@@ -139,7 +139,7 @@ define('navigator', ['forum/pagination', 'components'], function(pagination, com
 		} else if (nearBottom) {
 			index = count;
 		}
-console.log('wtf', index ,count)
+
 		// If a threshold is undefined, try to determine one based on new index
 		if (threshold === undefined && ajaxify.data.template.topic === true) {
 			if (atTop) {
