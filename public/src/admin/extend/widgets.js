@@ -4,7 +4,7 @@
 define('admin/extend/widgets', ['jqueryui'], function(jqueryui) {
 	var Widgets = {};
 
-	Widgets.init = function() {		
+	Widgets.init = function() {
 		$('#widgets .nav-pills a').on('click', function(ev) {
 			var $this = $(this);
 			$('#widgets .nav-pills li').removeClass('active');
@@ -21,7 +21,7 @@ define('admin/extend/widgets', ['jqueryui'], function(jqueryui) {
 			$('.available-widgets [data-widget]').addClass('hide');
 			$('.available-widgets [data-widget="' + $(this).val() + '"]').removeClass('hide');
 		});
-		
+
 		$('#widget-selector').trigger('change');
 
 		loadWidgetData();
@@ -32,7 +32,7 @@ define('admin/extend/widgets', ['jqueryui'], function(jqueryui) {
 
 		$('#widgets .available-widgets .widget-panel').draggable({
 			helper: function(e) {
-				return $(e.target).parents('.widget-panel').clone().addClass('block').width($(e.target.parentNode).width());
+				return $(e.target).parents('.widget-panel').clone();
 			},
 			distance: 10,
 			connectToSortable: ".widget-area"
@@ -156,7 +156,7 @@ define('admin/extend/widgets', ['jqueryui'], function(jqueryui) {
 
 	function appendToggle(el) {
 		if (!el.hasClass('block')) {
-			el.addClass('block')
+			el.addClass('block').css('width', '').css('height', '')
 				.droppable({
 					accept: '[data-container-html]',
 					drop: function(event, ui) {
