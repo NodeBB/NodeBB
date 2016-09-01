@@ -96,5 +96,5 @@
     "upload": "Carica",
     "allowed-file-types": "Le estensioni permesse  dei file sono %1",
     "unsaved-changes": "Hai delle modifiche non salvate. Sei sicuro che vuoi lasciare la pagina?",
-    "reconnecting-message": "Looks like your connection to %1 was lost, please wait while we try to reconnect."
+    "reconnecting-message": "Sembra che la tua connessione a %1 sia stata persa, per favore attenti mentre proviamo a riconnetterti."
 }
