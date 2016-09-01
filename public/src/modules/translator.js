@@ -283,9 +283,12 @@
 		var fs = require('fs'),
 			path = require('path'),
 			winston = require('winston'),
+			_ = require('underscore'),
 			file = require('../../../src/file'),
 			plugins = require('../../../src/plugins'),
 			meta = require('../../../src/meta');
+
+		var hash = language + '/' + filename + '.json';
 
 		language = language || meta.config.defaultLang || 'en_GB';
 
@@ -294,33 +297,25 @@
 			language = 'en_GB';
 		}
 
-		fs.readFile(path.join(__dirname, '../../language', language, filename + '.json'), function(err, data) {
+		fs.readFile(path.join(__dirname, '../../language', hash), function(err, data) {
 			var onData = function(data) {
 				try {
 					data = JSON.parse(data.toString());
+
+					if (plugins.customLanguages.hasOwnProperty(hash)) {
+						_.extendOwn(data, plugins.customLanguages[hash]);
+					}
 				} catch (e) {
 					winston.error('Could not parse `' + filename + '.json`, syntax error? Skipping...');
 					data = {};
 				}
+
 				callback(data);
 			};
 
 			if (err) {
-				if (err.code === 'ENOENT' && plugins.customLanguageFallbacks.hasOwnProperty(filename)) {
-					// Resource non-existant but fallback exists
-					return fs.readFile(plugins.customLanguageFallbacks[filename], {
-						encoding: 'utf-8'
-					}, function(err, data) {
-						if (err) {
-							return winston.error('[translator] Could not load fallback language file for resource ' + filename);
-						}
-
-						onData(data);
-					});
-				} else {
-					winston.error('[translator] Could not load `' + filename + '`: ' + err.message + '. Skipping...');
-					return callback({});
-				}
+				winston.error('[translator] Could not load `' + filename + '`: ' + err.message + '. Skipping...');
+				return callback({});
 			}
 
 			onData(data);
