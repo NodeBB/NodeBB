@@ -1,7 +1,7 @@
 <ul class="nav nav-pills">
 	<li class="active"><a href="#installed" data-toggle="tab">Installed</a></li>
 	<li><a href="#active" data-toggle="tab">Active</a></li>
-	<li><a href="#deactive" data-toggle="tab">Deactive</a></li>
+	<li><a href="#deactive" data-toggle="tab">Inactive</a></li>
 	<li><a href="#upgrade" data-toggle="tab">
 		Out of Date
 		<span class="badge">{upgradeCount}</span>
