@@ -314,7 +314,7 @@
 			};
 
 			if (err && err.code === 'ENOENT') {
-				data = {};
+				data = '{}';
 			} else if (err) {
 				winston.error('[translator] Error while loading language file: ' + err.message);
 				return callback({});
