@@ -313,8 +313,10 @@
 				callback(data);
 			};
 
-			if (err) {
-				winston.error('[translator] Could not load `' + filename + '`: ' + err.message + '. Skipping...');
+			if (err && err.code === 'ENOENT') {
+				data = {};
+			} else if (err) {
+				winston.error('[translator] Error while loading language file: ' + err.message);
 				return callback({});
 			}
 
