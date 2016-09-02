@@ -123,5 +123,7 @@
     "no-users-in-room": "Không có ai trong phòng này",
     "cant-kick-self": "Bạn không thể kick chính bạn ra khỏi nhóm",
     "no-users-selected": "Chưa có người dùng(s) nào",
-    "invalid-home-page-route": "Đường dẫn trang chủ không hợp lệ"
+    "invalid-home-page-route": "Đường dẫn trang chủ không hợp lệ",
+    "invalid-session": "Session Mismatch",
+    "invalid-session-text": "It looks like your login session is no longer active, or no longer matches with the server. Please refresh this page."
 }

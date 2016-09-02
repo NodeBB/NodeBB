@@ -123,5 +123,7 @@
     "no-users-in-room": "Inga användare i det här rummet",
     "cant-kick-self": "Du kan inte sparka ut dig själv från gruppen",
     "no-users-selected": "No user(s) selected",
-    "invalid-home-page-route": "Invalid home page route"
+    "invalid-home-page-route": "Invalid home page route",
+    "invalid-session": "Session Mismatch",
+    "invalid-session-text": "It looks like your login session is no longer active, or no longer matches with the server. Please refresh this page."
 }
