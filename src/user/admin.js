@@ -53,12 +53,19 @@ module.exports = function(User) {
 		], callback);
 	};
 
-	User.ban = function(uid, until, callback) {
+	User.ban = function(uid, until, reason, callback) {
 		// "until" (optional) is unix timestamp in milliseconds
+		// "reason" (optional) is a string
 		if (!callback && typeof until === 'function') {
 			callback = until;
 			until = 0;
+			reason = '';
+		} else if (!callback && typeof reason === 'function') {
+			callback = reason;
+			reason = '';
 		}
+
+		var now = Date.now();
 
 		until = parseInt(until, 10);
 		if (isNaN(until)) {
@@ -67,15 +74,19 @@ module.exports = function(User) {
 
 		var tasks = [
 			async.apply(User.setUserField, uid, 'banned', 1),
-			async.apply(db.sortedSetAdd, 'users:banned', Date.now(), uid),
-			async.apply(db.sortedSetAdd, 'uid:' + uid + ':bans', Date.now(), until)
+			async.apply(db.sortedSetAdd, 'users:banned', now, uid),
+			async.apply(db.sortedSetAdd, 'uid:' + uid + ':bans', now, until)
 		];
 
-		if (until > 0 && Date.now() < until) {
+		if (until > 0 && now < until) {
 			tasks.push(async.apply(db.sortedSetAdd, 'users:banned:expire', until, uid));
 			tasks.push(async.apply(User.setUserField, uid, 'banned:expire', until));
 		} else {
 			until = 0;
+		}
+
+		if (reason) {
+			tasks.push(async.apply(db.sortedSetAdd, 'banned:' + uid + ':reasons', now, reason));
 		}
 
 		async.series(tasks, function (err) {

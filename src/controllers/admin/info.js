@@ -62,9 +62,8 @@ function getNodeInfo(callback) {
 	};
 
 	async.parallel({
-		pubsub: function(next) {
-			pubsub.publish('sync:stats:start');
-			next();
+		stats: function(next) {
+			rooms.getLocalStats(next);
 		},
 		gitInfo: function(next) {
 			getGitInfo(next);
@@ -74,7 +73,7 @@ function getNodeInfo(callback) {
 			return callback(err);
 		}
 		data.git = results.gitInfo;
-		data.stats = rooms.stats[data.os.hostname + ':' + data.process.port];
+		data.stats = results.stats;
 		callback(null, data);
 	});
 }

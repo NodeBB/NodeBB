@@ -108,7 +108,7 @@ function setupExpressApp(app) {
 	app.use(session({
 		store: db.sessionStore,
 		secret: nconf.get('secret'),
-		key: 'express.sid',
+		key: nconf.get('sessionKey'),
 		cookie: setupCookie(),
 		resave: true,
 		saveUninitialized: true

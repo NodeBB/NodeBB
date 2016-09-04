@@ -95,5 +95,6 @@
     "upload_file": "Lae fail üles",
     "upload": "Lae üles",
     "allowed-file-types": "Lubatud faili formaadid on %1",
-    "unsaved-changes": "Sul on salvestamata muudatusi. Oled kindel, et soovid lahkuda?"
+    "unsaved-changes": "Sul on salvestamata muudatusi. Oled kindel, et soovid lahkuda?",
+    "reconnecting-message": "Looks like your connection to %1 was lost, please wait while we try to reconnect."
 }

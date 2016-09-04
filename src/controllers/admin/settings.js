@@ -19,9 +19,9 @@ settingsController.get = function(req, res, next) {
 
 
 function renderEmail(req, res, next) {
-	var fs = require('fs'),
-		path = require('path'),
-		utils = require('../../../public/src/utils');
+	var fs = require('fs');
+	var path = require('path');
+	var utils = require('../../../public/src/utils');
 
 	var emailsPath = path.join(__dirname, '../../../public/templates/emails');
 	utils.walk(emailsPath, function(err, emails) {

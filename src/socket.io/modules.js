@@ -313,12 +313,12 @@ SocketModules.sounds.getSounds = function(socket, data, callback) {
 };
 
 SocketModules.sounds.getMapping = function(socket, data, callback) {
-	meta.sounds.getMapping(callback);
+	meta.sounds.getMapping(socket.uid, callback);
 };
 
 SocketModules.sounds.getData = function(socket, data, callback) {
 	async.parallel({
-		mapping: async.apply(meta.sounds.getMapping),
+		mapping: async.apply(meta.sounds.getMapping, socket.uid),
 		files: async.apply(meta.sounds.getFiles)
 	}, callback);
 };

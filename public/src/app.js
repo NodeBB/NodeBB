@@ -33,7 +33,7 @@ app.cacheBuster = null;
 			app.handleSearch();
 		}
 
-		$('#content').on('click', '#new_topic', function(){
+		$('body').on('click', '#new_topic', function(){
 			app.newTopic();
 		});
 

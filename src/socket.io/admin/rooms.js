@@ -17,7 +17,7 @@ var SocketRooms = {
 
 
 pubsub.on('sync:stats:start', function() {
-	getLocalStats(function(err, stats) {
+	SocketRooms.getLocalStats(function(err, stats) {
 		if (err) {
 			return winston.error(err);
 		}
@@ -50,7 +50,7 @@ SocketRooms.getTotalGuestCount = function(callback) {
 		pubsub.removeAllListeners('sync:stats:guests:end');
 		callback(null, count);
 	}, 100);
-}
+};
 
 
 SocketRooms.getAll = function(socket, data, callback) {
@@ -129,7 +129,7 @@ SocketRooms.getOnlineUserCount = function(io) {
 	return count;
 };
 
-function getLocalStats(callback) {
+SocketRooms.getLocalStats = function(callback) {
 	var io = require('../index').server;
 
 	if (!io) {
@@ -172,7 +172,7 @@ function getLocalStats(callback) {
 
 	socketData.topics = topTenTopics;
 	callback(null, socketData);
-}
+};
 
 
 module.exports = SocketRooms;

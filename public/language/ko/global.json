@@ -95,5 +95,6 @@
     "upload_file": "파일 업로드",
     "upload": "업로드",
     "allowed-file-types": "사용가능한 파일 유형: %1",
-    "unsaved-changes": "You have unsaved changes. Are you sure you wish to navigate away?"
+    "unsaved-changes": "You have unsaved changes. Are you sure you wish to navigate away?",
+    "reconnecting-message": "Looks like your connection to %1 was lost, please wait while we try to reconnect."
 }

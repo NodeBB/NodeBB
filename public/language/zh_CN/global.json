@@ -95,5 +95,6 @@
     "upload_file": "上传文件",
     "upload": "上传",
     "allowed-file-types": "允许的文件类型有 %1",
-    "unsaved-changes": "您有未保存的更改，您确定您要离开么？"
+    "unsaved-changes": "您有未保存的更改，您确定您要离开么？",
+    "reconnecting-message": "Looks like your connection to %1 was lost, please wait while we try to reconnect."
 }

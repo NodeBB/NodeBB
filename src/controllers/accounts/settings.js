@@ -3,7 +3,6 @@
 var async = require('async');
 
 var user = require('../../user');
-var groups = require('../../groups');
 var languages = require('../../languages');
 var meta = require('../../meta');
 var plugins = require('../../plugins');
@@ -37,6 +36,9 @@ settingsController.get = function(req, res, callback) {
 				},
 				homePageRoutes: function(next) {
 					getHomePageRoutes(next);
+				},
+				sounds: function(next) {
+					meta.sounds.getFiles(next);
 				}
 			}, next);
 		},
@@ -44,6 +46,14 @@ settingsController.get = function(req, res, callback) {
 			userData.settings = results.settings;
 			userData.languages = results.languages;
 			userData.homePageRoutes = results.homePageRoutes;
+
+			var soundSettings = ['notificationSound', 'incomingChatSound', 'outgoingChatSound'];
+			soundSettings.forEach(function(setting) {
+				userData[setting] = Object.keys(results.sounds).map(function(name) {
+					return {name: name, selected: name === userData.settings[setting]};
+				});
+			});
+
 			plugins.fireHook('filter:user.customSettings', {settings: results.settings, customSettings: [], uid: req.uid}, next);
 		},
 		function(data, next) {

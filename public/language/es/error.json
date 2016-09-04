@@ -123,5 +123,7 @@
     "no-users-in-room": "No hay usuarios en esta sala",
     "cant-kick-self": "No te puedes expulsar a ti mismo del grupo",
     "no-users-selected": "Ningun usuario(s) seleccionado",
-    "invalid-home-page-route": "Ruta de página de inicio invalida"
+    "invalid-home-page-route": "Ruta de página de inicio invalida",
+    "invalid-session": "Session Mismatch",
+    "invalid-session-text": "It looks like your login session is no longer active, or no longer matches with the server. Please refresh this page."
 }

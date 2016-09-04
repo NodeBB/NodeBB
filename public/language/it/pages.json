@@ -39,7 +39,7 @@
     "account/settings": "Impostazioni Utente",
     "account/watched": "Discussioni osservate da %1",
     "account/upvoted": "Post apprezzati da %1",
-    "account/downvoted": "Posts downvoted by %1",
+    "account/downvoted": "Post votati negativamente da %1",
     "account/best": "I migliori post di %1",
     "confirm": "Email Confermata",
     "maintenance.text": "%1 è attualmente in manutenzione. Per favore ritorna più tardi.",
