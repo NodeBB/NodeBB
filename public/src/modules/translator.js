@@ -1,350 +1,341 @@
-;(function(translator) {
-	"use strict";
-	/* globals RELATIVE_PATH, config, define */
+'use strict';
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-	var S = null;
-	var stringDefer = null;
+/* global define, jQuery, config, RELATIVE_PATH, utils, window */
 
-	// export the class if we are in a Node-like system.
-	if (typeof module === 'object' && module.exports === translator) {
-		exports = module.exports = translator;
-		S = require('string');
-	} else {
-		stringDefer = $.Deferred();
-		require(['string'], function(stringLib) {
-			S = stringLib;
-			stringDefer.resolve(S);
-		});
-	}
+var assign = Object.assign || jQuery.extend;
 
-	var	languages = {},
-		regexes = {
-			match: /\[\[\w+:[\w\.]+((?!\[\[).)*?\]\]/g,	// see tests/translator.js for an explanation re: this monster
-			split: /[,][\s]*/,
-			replace: /\]+$/
-		};
+(function (factory) {
+  function loadClient(lang, filename) {
+    var language = lang || config.userLang || config.defaultLang || 'en_GB';
+    return Promise.resolve(jQuery.getJSON(config.relative_path + '/language/' + language + '/' + (filename + '.json?v=' + config['cache-buster'])));
+  };
+  if (typeof define === 'function' && define.amd) {
+    // AMD. Register as a named module
+    define('translator', ['string'], function (string) {
+      return factory(string, loadClient);
+    });
+  } else if (typeof module !== 'undefined' && module.exports) {
+    // Node
+    (function () {
+      var fs = require('fs');
+      var path = require('path');
+      var winston = require('winston');
+      var plugins = require('../../../src/plugins');
+      var meta = require('../../../src/meta');
 
-	translator.addTranslation = function(language, filename, translations) {
-		languages[language] = languages[language] || {};
-		languages[language].loaded = languages[language].loaded || {};
-		languages[language].loading = languages[language].loading || {};
+      function exists(filePath) {
+        return new Promise(function (resolve, reject) {
+          fs.stat(filePath, function (err, stats) {
+            if (err) {
+              if (err.code === 'ENOENT') {
+                return resolve(false);
+              }
+              return reject(err);
+            }
+            return resolve(stats.isFile());
+          });
+        });
+      };
 
-		if (languages[language].loaded[filename]) {
-			for (var t in translations) {
-				if (translations.hasOwnProperty(t)) {
-					languages[language].loaded[filename][t] = translations[t];
-				}
-			}
-		} else {
-			languages[language].loaded[filename] = translations;
-		}
-	};
+      function readFile(filePath) {
+        return new Promise(function (resolve, reject) {
+          fs.readFile(filePath, {
+            encoding: 'utf-8'
+          }, function (err, data) {
+            if (err) {
+              reject(err);
+            } else {
+              resolve(data);
+            }
+          });
+        });
+      };
 
-	translator.getTranslations = function(language, filename, callback) {
-		if (languages[language] && languages[language].loaded[filename]) {
-			callback(languages[language].loaded[filename]);
-		} else {
-			translator.load(language, filename, function() {
-				callback(languages[language].loaded[filename]);
-			});
-		}
-	};
+      function loadServer(lang, filename) {
+        var language = lang;
 
-	translator.escape = function(text) {
-		return typeof text === 'string' ? text.replace(/\[\[([\S]*?)\]\]/g, '\\[\\[$1\\]\\]') : text;
-	};
+        var filePath = path.join(__dirname, '../../language', language, filename + '.json');
+        return exists(filePath).then(function (fileExists) {
+          if (!fileExists) {
+            if (plugins.customLanguageFallbacks[filename]) {
+              return readFile(plugins.customLanguageFallbacks[filename]).catch(function () {
+                winston.error('[translator] Could not load fallback language file for "' + filename + '"');
+              });
+            }
+            winston.warn('[translator] Language "' + language + '" ' + 'not found. Defaulting to "en_GB"');
+            language = 'en_GB';
+          }
+          return readFile(filePath);
+        }).then(function (data) {
+          try {
+            var parsed = JSON.parse(data.toString());
+            return parsed;
+          } catch (e) {
+            winston.error('Could not parse "' + filename + '.json", syntax error? Skipping...');
+            return {};
+          }
+        }).catch(function (err) {
+          winston.error('[translator] Could not load "' + filename + '": ' + err.message + '. Skipping...');
+          return {};
+        });
+      };
 
-	translator.unescape = function(text) {
-		return typeof text === 'string' ? text.replace(/\\\[\\\[([\S]*?)\\\]\\\]/g, '[[$1]]') : text;
-	};
+      module.exports = factory(require('string'), loadServer);
+    })();
+  } else {
+    window.translator = factory(window.string, loadClient);
+  }
+})(function (string, load) {
+  var Translator = function () {
+    function Translator(lang) {
+      _classCallCheck(this, Translator);
 
-	translator.getLanguage = function() {
-		return config.defaultLang;
-	};
+      this.lang = lang;
+      this.translations = {};
+      this.load = load;
+    }
 
-	translator.prepareDOM = function() {
-		// Load the appropriate timeago locale file, and correct NodeBB language codes to timeago codes, if necessary
-		var	languageCode;
-		switch(config.userLang) {
-			case 'en_GB':
-			case 'en_US':
-				languageCode = 'en';
-				break;
+    Translator.prototype.translate = function translate(str) {
+      var cursor = 0;
+      var lastBreak = 0;
+      var len = str.length;
+      var toTranslate = [];
 
-			case 'fa_IR':
-				languageCode = 'fa';
-				break;
+      var split = function split(text) {
+        var len = text.length;
+        var arr = [];
+        var i = 0;
+        var brk = 0;
+        var level = 0;
 
-			case 'pt_BR':
-				languageCode = 'pt-br';
-				break;
+        while (i + 2 <= len) {
+          if (text.slice(i, i + 2) === '[[') {
+            level += 1;
+            i += 1;
+          } else if (text.slice(i, i + 2) === ']]') {
+            level -= 1;
+            i += 1;
+          } else if (level === 0 && text[i] === ',') {
+            arr.push(text.slice(brk, i).trim());
+            i += 1;
+            brk = i;
+          }
+          i += 1;
+        }
+        arr.push(text.slice(brk, i + 1).trim());
+        return arr;
+      };
 
-			case 'nb':
-				languageCode = 'no';
-				break;
+      while (cursor + 2 <= len) {
+        if (str.slice(cursor, cursor + 2) === '[[') {
+          toTranslate.push(str.slice(lastBreak, cursor));
+          cursor += 2;
+          lastBreak = cursor;
 
-			case 'zh_TW':
-				languageCode = 'zh-TW';
-				break;
+          var level = 0;
 
-			case 'zh_CN':
-				languageCode = 'zh-CN';
-				break;
+          while (cursor + 2 <= len) {
+            if (str.slice(cursor, cursor + 2) === '[[') {
+              level += 1;
+              cursor += 1;
+            } else if (str.slice(cursor, cursor + 2) === ']]') {
+              if (level === 0) {
+                var result = split(str.slice(lastBreak, cursor));
+                var key = result[0];
+                var args = result.slice(1);
 
-			default:
-				languageCode = config.userLang;
-				break;
-		}
+                toTranslate.push(this.translateKey(key, args));
+                cursor += 2;
+                lastBreak = cursor;
+                break;
+              }
+              level -= 1;
+              cursor += 1;
+            }
+            cursor += 1;
+          }
+        }
+        cursor += 1;
+      }
+      toTranslate.push(str.slice(lastBreak, cursor + 2));
 
-		$.getScript(RELATIVE_PATH + '/vendor/jquery/timeago/locales/jquery.timeago.' + languageCode + '.js').done(function() {
-			$('.timeago').timeago();
-			translator.timeagoShort = $.extend({}, jQuery.timeago.settings.strings);
+      return Promise.all(toTranslate).then(function (translated) {
+        return translated.join('');
+      });
+    };
 
-			// Retrieve the shorthand timeago values as well
-			$.getScript(RELATIVE_PATH + '/vendor/jquery/timeago/locales/jquery.timeago.' + languageCode + '-short.js').done(function() {
-				// Switch back to long-form
-				translator.toggleTimeagoShorthand();
-			});
-		});
+    Translator.prototype.translateKey = function translateKey(name, args) {
+      var _this = this;
 
-		// Add directional code if necessary
-		translator.translate('[[language:dir]]', function(value) {
-			if (value) {
-				$('html').css('direction', value).attr('data-dir', value);
-			}
-		});
-	};
+      var result = name.split(':', 2);
+      var namespace = result[0];
+      var key = result[1];
 
-	translator.toggleTimeagoShorthand = function() {
-		var tmp = $.extend({}, jQuery.timeago.settings.strings);
-		jQuery.timeago.settings.strings = $.extend({}, translator.timeagoShort);
-		translator.timeagoShort = $.extend({}, tmp);
-	};
 
-	translator.translate = function (text, language, callback) {
-		if (typeof language === 'function') {
-			callback = language;
-			if ('undefined' !== typeof window && config) {
-				language = utils.params().lang || config.userLang || 'en_GB';
-			} else {
-				var meta = require('../../../src/meta');
-				language = meta.config.defaultLang || 'en_GB';
-			}
-		}
+      return Promise.all([this.getTranslation(namespace, key)].concat(args.map(function (arg) {
+        return string(arg).collapseWhitespace().decodeHTMLEntities().escapeHTML().s;
+      }).map(function (arg) {
+        return _this.translate(arg);
+      }))).then(function (result) {
+        var translation = result[0];
+        var translatedArgs = result.slice(1);
 
-		if (!text) {
-			return callback(text);
-		}
+        if (!translation) {
+          return key;
+        }
+        var out = translation;
+        translatedArgs.forEach(function (arg, i) {
+          out = out.replace(new RegExp('%' + (i + 1), 'g'), arg);
+        });
+        return out;
+      });
+    };
 
-		var keys = text.match(regexes.match);
+    Translator.prototype.getTranslation = function getTranslation(namespace, key) {
+      var translation;
+      if (this.translations[namespace]) {
+        translation = this.translations[namespace];
+      } else {
+        translation = this.load(this.lang, namespace);
+        this.translations[namespace] = translation;
+      }
 
-		if (!keys) {
-			return callback(text);
-		}
+      if (key) {
+        return translation.then(function (x) {
+          return x[key];
+        });
+      }
+      return translation;
+    };
 
-		translateKeys(keys, text, language, function(translated) {
-			keys = translated.match(regexes.match);
-			if (!keys) {
-				callback(translated);
-			} else {
-				translateKeys(keys, translated, language, callback);
-			}
-		});
-	};
+    return Translator;
+  }();
 
-	function translateKeys(keys, text, language, callback) {
+  var cache = {};
+  var adaptor = {
+    Translator: Translator,
 
-		var count = keys.length;
-		if (!count) {
-			return callback(text);
-		}
+    translate: function translate(text, language, callback) {
+      // console.warn('[translator] `translator.translate(text, [lang, ]callback)` is deprecated. ' + 
+      //   'Use the `translator.Translator` class instead.');
 
-		if (S === null) { // browser environment and S not yet initialized
-			// we need to wait for async require call
-			stringDefer.then(function () { translateKeys(keys, text, language, callback); });
-			return;
-		}
+      var cb = callback;
+      var lang = language;
+      if (typeof language === 'function') {
+        cb = language;
+        lang = adaptor.getLanguage();
+      }
 
-		var data = {text: text};
-		keys.forEach(function(key) {
-			translateKey(key, data, language, function(translated) {
-				--count;
-				if (count <= 0) {
-					callback(translated.text);
-				}
-			});
-		});
-	}
+      cache[lang] = cache[lang] || new Translator(lang);
+      var translator = cache[lang];
+      translator.translate(text).then(function (output) {
+        return cb(output);
+      }).catch(function (err) {
+        console.error('Translation failed: ' + err.message);
+      });
+    },
+    compile: function compile() {
+      var args = Array.prototype.slice.call(arguments, 0);
 
-	function translateKey(key, data, language, callback) {
-		key = '' + key;
-		var variables = key.split(regexes.split);
+      return '[[' + args.join(', ') + ']]';
+    },
+    toggleTimeagoShorthand: function toggleTimeagoShorthand() {
+      var tmp = assign({}, jQuery.timeago.settings.strings);
+      jQuery.timeago.settings.strings = assign({}, adaptor.timeagoShort);
+      adaptor.timeagoShort = assign({}, tmp);
+    },
+    escape: function escape(text) {
+      return typeof text === 'string' ? text.replace(/\[\[([\S]*?)\]\]/g, '\\[\\[$1\\]\\]') : text;
+    },
+    unescape: function unescape(text) {
+      return typeof text === 'string' ? text.replace(/\\\[\\\[([\S]*?)\\\]\\\]/g, '[[$1]]') : text;
+    },
+    addTranslation: function addTranslation(language, filename, translations) {
+      cache[language] = cache[language] || new Translator(language);
 
-		var parsedKey = key.replace('[[', '').replace(']]', '').split(':');
-		parsedKey = [parsedKey[0]].concat(parsedKey.slice(1).join(':'));
-		if (!(parsedKey[0] && parsedKey[1])) {
-			return callback(data);
-		}
+      cache[language].translations[filename].then(function (x) {
+        assign(x, translations);
+      });
+    },
+    getTranslations: function getTranslations(language, filename, callback) {
+      callback = callback || function () {};
+      cache[language] = cache[language] || new Translator(language);
 
-		var languageFile = parsedKey[0];
-		parsedKey = ('' + parsedKey[1]).split(',')[0];
+      cache[language].getTranslation(filename).then(function (translation) {
+        callback(translation);
+      });
+    },
+    load: function load(language, filename, callback) {
+      adaptor.getTranslations(language, filename, callback);
+    },
+    getLanguage: function getLanguage() {
+      var lang;
 
-		translator.load(language, languageFile, function(languageData) {
-			data.text = insertLanguage(data.text, key, languageData[parsedKey], variables);
-			callback(data);
-		});
-	}
+      if (typeof window !== 'undefined' && config && utils) {
+        lang = utils.params().lang || config.userLang || config.defaultLang || 'en_GB';
+      } else {
+        var meta = require('../../../src/meta');
 
-	function insertLanguage(text, key, value, variables) {
-		if (value) {
-			variables.forEach(function(variable, index) {
-				if (index > 0) {
-					variable = S(variable).chompRight(']]').collapseWhitespace().decodeHTMLEntities().escapeHTML().s;
-					value = value.replace('%' + index, function() { return variable; });
-				}
-			});
+        lang = meta.config.defaultLang || 'en_GB';
+      }
 
-			text = text.replace(key, function() { return value; });
-		} else {
-			var string = key.split(':');
-			text = text.replace(key, string[string.length-1].replace(regexes.replace, ''));
-		}
+      return lang;
+    },
+    prepareDOM: function prepareDOM() {
+      // Load the appropriate timeago locale file,
+      // and correct NodeBB language codes to timeago codes, if necessary
+      var languageCode = void 0;
+      switch (config.userLang) {
+        case 'en_GB':
+        case 'en_US':
+          languageCode = 'en';
+          break;
 
-		return text;
-	}
+        case 'fa_IR':
+          languageCode = 'fa';
+          break;
 
-	translator.compile = function() {
-		var args = Array.prototype.slice.call(arguments, 0);
+        case 'pt_BR':
+          languageCode = 'pt-br';
+          break;
 
-		return '[[' + args.join(', ') + ']]';
-	};
+        case 'nb':
+          languageCode = 'no';
+          break;
 
-	translator.load = function (language, filename, callback) {
-		if (isLanguageFileLoaded(language, filename)) {
-			if (callback) {
-				callback(languages[language].loaded[filename]);
-			}
-		} else if (isLanguageFileLoading(language, filename)) {
-			if (callback) {
-				addLanguageFileCallback(language, filename, callback);
-			}
-		} else {
+        case 'zh_TW':
+          languageCode = 'zh-TW';
+          break;
 
-			languages[language] = languages[language] || {loading: {}, loaded: {}, callbacks: []};
+        case 'zh_CN':
+          languageCode = 'zh-CN';
+          break;
 
-			languages[language].loading[filename] = true;
+        default:
+          languageCode = config.userLang;
+          break;
+      }
 
-			load(language, filename, function(translations) {
+      jQuery.getScript(RELATIVE_PATH + '/vendor/jquery/timeago/locales/jquery.timeago.' + languageCode + '.js').done(function () {
+        jQuery('.timeago').timeago();
+        adaptor.timeagoShort = assign({}, jQuery.timeago.settings.strings);
 
-				languages[language].loaded[filename] = translations;
+        // Retrieve the shorthand timeago values as well
+        jQuery.getScript(RELATIVE_PATH + '/vendor/jquery/timeago/locales/jquery.timeago.' + languageCode + '-short.js').done(function () {
+          // Switch back to long-form
+          adaptor.toggleTimeagoShorthand();
+        });
+      });
 
-				if (callback) {
-					callback(translations);
-				}
+      // Add directional code if necessary
+      adaptor.translate('[[language:dir]]', function (value) {
+        if (value) {
+          jQuery('html').css('direction', value).attr('data-dir', value);
+        }
+      });
+    }
+  };
 
-				while (languages[language].callbacks && languages[language].callbacks[filename] && languages[language].callbacks[filename].length) {
-					languages[language].callbacks[filename].pop()(translations);
-				}
-
-				languages[language].loading[filename] = false;
-			});
-		}
-	};
-
-	function isLanguageFileLoaded(language, filename) {
-		var languageObj = languages[language];
-		return languageObj && languageObj.loaded && languageObj.loaded[filename] && !languageObj.loading[filename];
-	}
-
-	function isLanguageFileLoading(language, filename) {
-		return languages[language] && languages[language].loading && languages[language].loading[filename];
-	}
-
-	function addLanguageFileCallback(language, filename, callback) {
-		languages[language].callbacks = languages[language].callbacks || {};
-
-		languages[language].callbacks[filename] = languages[language].callbacks[filename] || [];
-		languages[language].callbacks[filename].push(callback);
-	}
-
-	function load(language, filename, callback) {
-		if ('undefined' !== typeof window) {
-			loadClient(language, filename, callback);
-		} else {
-			loadServer(language, filename, callback);
-		}
-	}
-
-	function loadClient(language, filename, callback) {
-		$.getJSON(config.relative_path + '/language/' + language + '/' + filename + '.json?v=' + config['cache-buster'], callback);
-	}
-
-	function loadServer(language, filename, callback) {
-		var fs = require('fs'),
-			path = require('path'),
-			winston = require('winston'),
-			file = require('../../../src/file'),
-			plugins = require('../../../src/plugins'),
-			meta = require('../../../src/meta');
-
-		language = language || meta.config.defaultLang || 'en_GB';
-
-		if (!file.existsSync(path.join(__dirname, '../../language', language))) {
-			winston.warn('[translator] Language \'' + meta.config.defaultLang + '\' not found. Defaulting to \'en_GB\'');
-			language = 'en_GB';
-		}
-
-		fs.readFile(path.join(__dirname, '../../language', language, filename + '.json'), function(err, data) {
-			var onData = function(data) {
-				try {
-					data = JSON.parse(data.toString());
-				} catch (e) {
-					winston.error('Could not parse `' + filename + '.json`, syntax error? Skipping...');
-					data = {};
-				}
-				callback(data);
-			};
-
-			if (err) {
-				if (err.code === 'ENOENT' && plugins.customLanguageFallbacks.hasOwnProperty(filename)) {
-					// Resource non-existant but fallback exists
-					return fs.readFile(plugins.customLanguageFallbacks[filename], {
-						encoding: 'utf-8'
-					}, function(err, data) {
-						if (err) {
-							return winston.error('[translator] Could not load fallback language file for resource ' + filename);
-						}
-
-						onData(data);
-					});
-				} else {
-					winston.error('[translator] Could not load `' + filename + '`: ' + err.message + '. Skipping...');
-					return callback({});
-				}
-			}
-
-			onData(data);
-		});
-	}
-
-	// Use the define() function if we're in AMD land
-	if (typeof define === 'function' && define.amd) {
-		define('translator', translator);
-
-		var _translator = translator;
-
-		// Expose a global `translator` object for backwards compatibility
-		window.translator = {
-			translate: function() {
-				if (typeof console !== 'undefined' && console.warn) {
-					console.warn('[translator] Global invocation of the translator is now deprecated, please `require` the module instead.');
-				}
-				_translator.translate.apply(_translator, arguments);
-			}
-		};
-	}
-})(
-	typeof exports === 'object' ? exports :
-	typeof define === 'function' && define.amd ? {} :
-	translator = {}
-);
+  return adaptor;
+});
