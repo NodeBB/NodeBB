@@ -1,8 +1,8 @@
-/* global define, jQuery, config, RELATIVE_PATH, utils, window */
+/* global define, jQuery, config, RELATIVE_PATH, utils, window, Promise, winston */
 
 (function (factory) {
 	'use strict';
-	function loadClient(language, filename) {;
+	function loadClient(language, filename) {
 		return Promise.resolve(jQuery.getJSON(config.relative_path + '/language/' + language + '/' + (filename + '.json?v=' + config['cache-buster'])));
 	}
 	if (typeof define === 'function' && define.amd) {
@@ -17,7 +17,6 @@
 			var path = require('path');
 			var winston = require('winston');
 			var plugins = require('../../../src/plugins');
-			var meta = require('../../../src/meta');
 
 			function exists(filePath) {
 				return new Promise(function (resolve, reject) {
@@ -31,7 +30,7 @@
 						return resolve(stats.isFile());
 					});
 				});
-			};
+			}
 
 			function readFile(filePath) {
 				return new Promise(function (resolve, reject) {
@@ -45,7 +44,7 @@
 						}
 					});
 				});
-			};
+			}
 
 			function loadServer(language, filename) {
 				var filePath = path.join(__dirname, '../../language', language, filename + '.json');
@@ -72,7 +71,7 @@
 					winston.error('[translator] Could not load "' + filename + '": ' + err.message + '. Skipping...');
 					return {};
 				});
-			};
+			}
 
 			module.exports = factory(require('string'), loadServer);
 		})();
@@ -85,6 +84,10 @@
 	function classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 	var Translator = function () {
+		/**
+		 * Construct a new Translator object
+		 * @param {string} language - Language code for this translator instance
+		 */
 		function Translator(language) {
 			classCallCheck(this, Translator);
 
@@ -97,6 +100,11 @@
 			this.load = load;
 		}
 
+		/**
+		 * Parse the translation instructions into the language of the Translator instance
+		 * @param {string} str - Source string
+		 * @returns {Promise<string>}
+		 */
 		Translator.prototype.translate = function translate(str) {
 			var cursor = 0;
 			var lastBreak = 0;
@@ -166,6 +174,12 @@
 			});
 		};
 
+		/**
+		 * Translates a specific key and array of arguments
+		 * @param {string} name - Translation key (ex. 'global:home')
+		 * @param {string[]} args - Arguments for `%1`, `%2`, etc
+		 * @returns {Promise<string>}
+		 */
 		Translator.prototype.translateKey = function translateKey(name, args) {
 			var self = this;
 
@@ -195,6 +209,12 @@
 			});
 		};
 
+		/**
+		 * Load translation file (or use a cached version), and optionally return the translation of a certain key
+		 * @param {string} namespace - The file name of the translation namespace
+		 * @param {string} [key] - The key of the specific translation to getJSON
+		 * @returns {Promise<Object|string>}
+		 */
 		Translator.prototype.getTranslation = function getTranslation(namespace, key) {
 			var translation;
 			if (!namespace) {
@@ -234,7 +254,7 @@
 
 		/**
 		 * Create and cache a new Translator instance, or return a cached one
-		 * @param [language] {string} - ('en_GB') Language string
+		 * @param {string} [language] - ('en_GB') Language string
 		 * @returns {Translator}
 		 */
 		Translator.create = function create(language) {
@@ -253,8 +273,14 @@
 	}();
 
 	var adaptor = {
+		/**
+		 * The Translator class
+		 */
 		Translator: Translator,
 
+		/**
+		 * Legacy translator function for backwards compatibility
+		 */
 		translate: function translate(text, language, callback) {
 			// console.warn('[translator] `translator.translate(text, [lang, ]callback)` is deprecated. ' + 
 			//   'Use the `translator.Translator` class instead.');
@@ -272,37 +298,68 @@
 				console.error('Translation failed: ' + err.message);
 			});
 		},
+
+		/**
+		 * Construct a translator pattern
+		 * @param {string} name - Translation name
+		 * @param {string[]} args - Optional arguments for the pattern
+		 */
 		compile: function compile() {
 			var args = Array.prototype.slice.call(arguments, 0);
 
 			return '[[' + args.join(', ') + ']]';
 		},
+
+		/**
+		 * Escape translation patterns from text
+		 */
+		escape: function escape(text) {
+			return typeof text === 'string' ? text.replace(/\[\[([\S]*?)\]\]/g, '\\[\\[$1\\]\\]') : text;
+		},
+
+		/**
+		 * Unescape translation patterns from text
+		 */
+		unescape: function unescape(text) {
+			return typeof text === 'string' ? text.replace(/\\\[\\\[([\S]*?)\\\]\\\]/g, '[[$1]]') : text;
+		},
+
+		/**
+		 * Add translations to the cache
+		 */
+		addTranslation: function addTranslation(language, filename, translation) {
+			Translator.create(language).getTranslation(filename).then(function (translations) {
+				assign(translations, translation);
+			});
+		},
+
+		/**
+		 * Get the translations object
+		 */
+		getTranslations: function getTranslations(language, filename, callback) {
+			callback = callback || function () {};
+			Translator.create(language).getTranslation(filename).then(function (translation) {
+				callback(translation);
+			});
+		},
+
+		/**
+		 * Alias of getTranslations
+		 */
+		load: function load(language, filename, callback) {
+			adaptor.getTranslations(language, filename, callback);
+		},
+
+		/**
+		 * Get the language of the current environment, falling back to defaults
+		 */
+		getLanguage: Translator.getLanguage,
+
 		toggleTimeagoShorthand: function toggleTimeagoShorthand() {
 			var tmp = assign({}, jQuery.timeago.settings.strings);
 			jQuery.timeago.settings.strings = assign({}, adaptor.timeagoShort);
 			adaptor.timeagoShort = assign({}, tmp);
 		},
-		escape: function escape(text) {
-			return typeof text === 'string' ? text.replace(/\[\[([\S]*?)\]\]/g, '\\[\\[$1\\]\\]') : text;
-		},
-		unescape: function unescape(text) {
-			return typeof text === 'string' ? text.replace(/\\\[\\\[([\S]*?)\\\]\\\]/g, '[[$1]]') : text;
-		},
-		addTranslation: function addTranslation(language, filename, translations) {
-			Translator.create(lang).translations[filename].then(function (x) {
-				assign(x, translations);
-			});
-		},
-		getTranslations: function getTranslations(language, filename, callback) {
-			callback = callback || function () {};
-			Translator.create(lang).getTranslation(filename).then(function (translation) {
-				callback(translation);
-			});
-		},
-		load: function load(language, filename, callback) {
-			adaptor.getTranslations(language, filename, callback);
-		},
-		getLanguage: Translator.getLanguage,
 		prepareDOM: function prepareDOM() {
 			// Load the appropriate timeago locale file,
 			// and correct NodeBB language codes to timeago codes, if necessary
