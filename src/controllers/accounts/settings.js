@@ -39,6 +39,9 @@ settingsController.get = function(req, res, callback) {
 				},
 				sounds: function(next) {
 					meta.sounds.getFiles(next);
+				},
+				soundsMapping: function(next) {
+					meta.sounds.getMapping(userData.uid, next);
 				}
 			}, next);
 		},
@@ -47,10 +50,15 @@ settingsController.get = function(req, res, callback) {
 			userData.languages = results.languages;
 			userData.homePageRoutes = results.homePageRoutes;
 
-			var soundSettings = ['notificationSound', 'incomingChatSound', 'outgoingChatSound'];
-			soundSettings.forEach(function(setting) {
+			var soundSettings = {
+				'notificationSound': 'notification',
+				'incomingChatSound': 'chat-incoming',
+				'outgoingChatSound': 'chat-outgoing'
+			};
+
+			Object.keys(soundSettings).forEach(function(setting) {
 				userData[setting] = Object.keys(results.sounds).map(function(name) {
-					return {name: name, selected: name === userData.settings[setting]};
+					return {name: name, selected: name === results.soundsMapping[soundSettings[setting]]};
 				});
 			});
 
