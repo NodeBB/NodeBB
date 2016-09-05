@@ -253,7 +253,6 @@ module.exports = function(Plugins) {
 						}).filter(Boolean).forEach(function(key) {
 							Plugins.customLanguages[key] = _.defaults(Plugins.customLanguages[key] || {}, data);
 						});
-						fallbackMap[path.basename(pathToLang, '.json')] = path.join(pathToFolder, pluginData.defaultLang, path.basename(pathToLang));
 					}
 
 					next();
@@ -262,9 +261,6 @@ module.exports = function(Plugins) {
 				if (err) {
 					return callback(err);
 				}
-
-				// do I need this either?
-				_.extendOwn(Plugins.customLanguageFallbacks, fallbackMap);
 
 				callback();
 			});

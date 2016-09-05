@@ -1,11 +1,11 @@
 'use strict';
 
-var fs = require('fs'),
-	Jimp = require('jimp'),
-	async = require('async'),
-	plugins = require('./plugins');
+var fs = require('fs');
+var Jimp = require('jimp');
+var async = require('async');
+var plugins = require('./plugins');
 
-var image = {};
+var image = module.exports;
 
 image.resizeImage = function(data, callback) {
 	if (plugins.hasListeners('filter:image.resize')) {
@@ -106,12 +106,10 @@ image.size = function(path, callback) {
 			callback(err, data ? data.bitmap : null);
 		});
 	}
-}
+};
 
 image.convertImageToBase64 = function(path, callback) {
 	fs.readFile(path, function(err, data) {
 		callback(err, data ? data.toString('base64') : null);
 	});
 };
-
-module.exports = image;

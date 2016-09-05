@@ -123,5 +123,7 @@
     "no-users-in-room": "Aucun utilisateur dans cette salle",
     "cant-kick-self": "Vous ne pouvez pas vous exclure vous-même du groupe",
     "no-users-selected": "Aucun utilisateur sélectionné",
-    "invalid-home-page-route": "Route de page d'accueil invalide"
+    "invalid-home-page-route": "Route de page d'accueil invalide",
+    "invalid-session": "Session Interrompue",
+    "invalid-session-text": "Il semble que votre session ne soit plus active, ou que le serveur ne la reconnaisse plus. Merci de rafraichir cette page."
 }

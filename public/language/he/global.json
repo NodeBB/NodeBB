@@ -7,9 +7,9 @@
     "403.login": "נסה <a href='1%/login'>להתחבר</a>.",
     "404.title": "לא נמצא",
     "404.message": "נראה שהגעת לעמוד שלא קיים. חזור <a href=\"%1/\">לעמוד הבית</a>",
-    "500.title": "Internal Error.",
+    "500.title": "שגיאה פנימית.",
     "500.message": "אופס! נראה שמשהו השתבש!",
-    "400.title": "Bad Request.",
+    "400.title": "בקשה שגויה",
     "400.message": "It looks like this link is malformed, please double-check and try again. Otherwise, return to the <a href='%1/'>home page</a>.",
     "register": "הרשמה",
     "login": "התחברות",
@@ -95,6 +95,6 @@
     "upload_file": "העלה קובץ",
     "upload": "העלה",
     "allowed-file-types": "פורמטי הקבצים המורשים הם %1",
-    "unsaved-changes": "You have unsaved changes. Are you sure you wish to navigate away?",
-    "reconnecting-message": "Looks like your connection to %1 was lost, please wait while we try to reconnect."
+    "unsaved-changes": "יש לך שינויים שאינם נשמרו. האם הנך בטוח שברצונך להמשיך?",
+    "reconnecting-message": "נראה שההתחברות שלך אל %1 אבדה, אנא המתן בזמן שהמערכת מנסה לחבר אותך מחדש"
 }

@@ -75,13 +75,13 @@ module.exports = function(Meta) {
 			var defaultMapping = results.defaultMapping || {};
 			var soundMapping = {};
 			soundMapping.notification = (userSettings.notificationSound || userSettings.notificationSound === '') ?
-				userSettings.notificationSound : defaultMapping.notification || 'notification.mp3';
+				userSettings.notificationSound : defaultMapping.notification || '';
 
 			soundMapping['chat-incoming'] = (userSettings.incomingChatSound || userSettings.incomingChatSound === '') ?
-				userSettings.incomingChatSound : defaultMapping['chat-incoming'] || 'waterdrop-high.mp3';
+				userSettings.incomingChatSound : defaultMapping['chat-incoming'] || '';
 
 			soundMapping['chat-outgoing'] = (userSettings.outgoingChatSound || userSettings.outgoingChatSound === '') ?
-				userSettings.outgoingChatSound : defaultMapping['chat-outgoing'] || undefined;
+				userSettings.outgoingChatSound : defaultMapping['chat-outgoing'] || '';
 
 			callback(null, soundMapping);
 		});

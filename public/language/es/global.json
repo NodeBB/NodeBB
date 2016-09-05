@@ -96,5 +96,5 @@
     "upload": "Subir",
     "allowed-file-types": "Los tipos de archivos permitidos son: %1",
     "unsaved-changes": "Tienes cambios sin guardar. Seguro que quieres salir?",
-    "reconnecting-message": "Looks like your connection to %1 was lost, please wait while we try to reconnect."
+    "reconnecting-message": "Has perdido la conexión. Reconectando a %1."
 }

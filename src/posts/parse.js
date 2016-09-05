@@ -15,8 +15,8 @@ module.exports = function(Posts) {
 	Posts.parsePost = function(postData, callback) {
 		postData.content = postData.content || '';
 
-		if (postData.pid && cache.has(postData.pid)) {
-			postData.content = cache.get(postData.pid);
+		if (postData.pid && cache.has(String(postData.pid))) {
+			postData.content = cache.get(String(postData.pid));
 			return callback(null, postData);
 		}
 
@@ -33,7 +33,7 @@ module.exports = function(Posts) {
 			data.postData.content = translator.escape(data.postData.content);
 
 			if (global.env === 'production' && data.postData.pid) {
-				cache.set(data.postData.pid, data.postData.content);
+				cache.set(String(data.postData.pid), data.postData.content);
 			}
 
 			callback(null, data.postData);

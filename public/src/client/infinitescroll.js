@@ -13,10 +13,10 @@ define('forum/infinitescroll', function() {
 	scroll.init = function(el, cb) {
 		if (typeof el === 'function') {
 			callback = el;
-			container = $(document);
+			container = $('body');
 		} else {
 			callback = cb;
-			container = el || $(document);
+			container = el || $('body');
 		}
 
 		$(window).off('scroll', onScroll).on('scroll', onScroll);

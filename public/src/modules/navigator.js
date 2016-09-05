@@ -9,6 +9,8 @@ define('navigator', ['forum/pagination', 'components'], function(pagination, com
 	var navigator = {};
 	var index = 1;
 	var count = 0;
+	var navigatorUpdateTimeoutId = 0;
+
 	navigator.scrollActive = false;
 
 	navigator.init = function(selector, count, toTop, toBottom, callback, calculateIndex) {
@@ -17,15 +19,8 @@ define('navigator', ['forum/pagination', 'components'], function(pagination, com
 		navigator.callback = callback;
 		toTop = toTop || function() {};
 		toBottom = toBottom || function() {};
-		var navigatorUpdateTimeoutId = 0;
 
-		$(window).off('scroll', navigator.update).on('scroll', function() {
-			if (navigatorUpdateTimeoutId) {
-				clearTimeout(navigatorUpdateTimeoutId);
-				navigatorUpdateTimeoutId = 0;
-			}
-			navigatorUpdateTimeoutId = setTimeout(navigator.update, 100);
-		});
+		$(window).off('scroll', navigator.delayedUpdate).on('scroll', navigator.delayedUpdate);
 
 		$('.pagination-block .dropdown-menu').off('click').on('click', function(e) {
 			e.stopPropagation();
@@ -98,6 +93,14 @@ define('navigator', ['forum/pagination', 'components'], function(pagination, com
 		$('.pagination-block').toggleClass('ready', flag);
 	}
 
+	navigator.delayedUpdate = function() {
+		if (navigatorUpdateTimeoutId) {
+			clearTimeout(navigatorUpdateTimeoutId);
+			navigatorUpdateTimeoutId = 0;
+		}
+		navigatorUpdateTimeoutId = setTimeout(navigator.update, 100);
+	};
+
 	navigator.update = function(threshold) {
 		/*
 			The "threshold" is defined as the distance from the top of the page to
@@ -128,8 +131,8 @@ define('navigator', ['forum/pagination', 'components'], function(pagination, com
 			}
 		});
 
-		var atTop = scrollTop === 0 && parseInt(els.first().attr('data-index'), 10) === 0,
-			nearBottom = scrollTop + windowHeight > documentHeight - 100 && parseInt(els.last().attr('data-index'), 10) === count - 1;
+		var atTop = scrollTop === 0 && parseInt(els.first().attr('data-index'), 10) === 0;
+		var nearBottom = scrollTop + windowHeight > documentHeight - 100 && parseInt(els.last().attr('data-index'), 10) === count - 1;
 
 		if (atTop) {
 			index = 1;
@@ -210,7 +213,11 @@ define('navigator', ['forum/pagination', 'components'], function(pagination, com
 		}
 
 		if (config.usePagination) {
-			var page = Math.max(1, Math.ceil(postIndex / config.postsPerPage));
+			var index = postIndex;
+			if (config.topicPostSort === 'most_votes' || config.topicPostSort === 'newest_to_oldest') {
+				index = ajaxify.data.postcount - index;
+			}
+			var page = Math.max(1, Math.ceil(index / config.postsPerPage));
 
 			if (parseInt(page, 10) !== ajaxify.data.pagination.currentPage) {
 				pagination.loadPage(page, function() {
@@ -227,12 +234,10 @@ define('navigator', ['forum/pagination', 'components'], function(pagination, com
 	};
 
 	navigator.scrollToPostIndex = function(postIndex, highlight, duration) {
-		var scrollTo = components.get('post/anchor', postIndex),
-			postEl = components.get('post', 'index', postIndex),
-			postHeight = postEl.height(),
-			viewportHeight = $(window).height(),
-			navbarHeight = components.get('navbar').height();
-
+		var scrollTo = components.get('post', 'index', postIndex);
+		var postHeight = scrollTo.height();
+		var viewportHeight = $(window).height();
+		var navbarHeight = components.get('navbar').height();
 
 		if (!scrollTo.length) {
 			navigator.scrollActive = false;
@@ -275,9 +280,9 @@ define('navigator', ['forum/pagination', 'components'], function(pagination, com
 
 		function highlightPost() {
 			if (highlight) {
-				scrollTo.parents('[component="post"]').addClass('highlight');
+				scrollTo.addClass('highlight');
 				setTimeout(function() {
-					scrollTo.parents('[component="post"]').removeClass('highlight');
+					scrollTo.removeClass('highlight');
 				}, 10000);
 			}
 		}

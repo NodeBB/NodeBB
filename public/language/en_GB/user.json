@@ -102,6 +102,7 @@
 	"incoming-message-sound": "Incoming message sound",
 	"outgoing-message-sound": "Outgoing message sound",
 	"notification-sound": "Notification sound",
+	"no-sound": "No sound",
 
 	"browsing": "Browsing Settings",
 	"open_links_in_new_tab": "Open outgoing links in new tab",
@@ -137,5 +138,7 @@
 	"info.ban-history": "Recent Ban History",
 	"info.no-ban-history": "This user has never been banned",
 	"info.banned-until": "Banned until %1",
-	"info.banned-permanently": "Banned permanently"
+	"info.banned-permanently": "Banned permanently",
+	"info.banned-reason-label": "Reason",
+	"info.banned-no-reason": "No reason given."
 }

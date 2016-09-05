@@ -304,6 +304,8 @@ $(document).ready(function() {
 			return href === undefined || href === '' || href === 'javascript:;';
 		}
 
+		var contentEl = document.getElementById('content');
+
 		// Enhancing all anchors to ajaxify...
 		$(document.body).on('click', 'a', function (e) {
 			var _self = this;
@@ -321,7 +323,7 @@ $(document).ready(function() {
 							}
 						}
 					} else if (window.location.pathname !== '/outgoing') {
-						if (config.openOutgoingLinksInNewTab) {
+						if (config.openOutgoingLinksInNewTab && $.contains(contentEl, this)) {
 							window.open(this.href, '_blank');
 							e.preventDefault();
 						} else if (config.useOutgoingLinksPage) {
@@ -380,7 +382,7 @@ $(document).ready(function() {
 
 	app.load();
 
-	$('[data-template]').each(function() {
+	$('[type="text/tpl"][data-template]').each(function() {
 		templates.cache[$(this).attr('data-template')] = $('<div/>').html($(this).html()).text();
 		$(this).parent().remove();
 	});

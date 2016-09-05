@@ -126,7 +126,7 @@ define('forum/account/header', [
 							}, {});
 							var until = formData.length ? (Date.now() + formData.length * 1000*60*60 * (parseInt(formData.unit, 10) ? 24 : 1)) : 0;
 
-							socket.emit('user.banUsers', { uids: [ajaxify.data.theirid], until: until }, function(err) {
+							socket.emit('user.banUsers', { uids: [ajaxify.data.theirid], until: until, reason: formData.reason || '' }, function(err) {
 								if (err) {
 									return app.alertError(err.message);
 								}

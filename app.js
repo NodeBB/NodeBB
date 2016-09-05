@@ -1,7 +1,7 @@
 /*
 	NodeBB - A better forum platform for the modern web
 	https://github.com/NodeBB/NodeBB/
-	Copyright (C) 2013-2014  NodeBB Inc.
+	Copyright (C) 2013-2016  NodeBB Inc.
 
 	This program is free software: you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
@@ -54,10 +54,11 @@ if (nconf.get('config')) {
 var configExists = file.existsSync(configFile) || (nconf.get('url') && nconf.get('secret') && nconf.get('database'));
 
 loadConfig();
+versionCheck();
 
 if (!process.send) {
 	// If run using `node app`, log GNU copyright info along with server info
-	winston.info('NodeBB v' + nconf.get('version') + ' Copyright (C) 2013-2014 NodeBB Inc.');
+	winston.info('NodeBB v' + nconf.get('version') + ' Copyright (C) 2013-' + (new Date()).getFullYear() + ' NodeBB Inc.');
 	winston.info('This program comes with ABSOLUTELY NO WARRANTY.');
 	winston.info('This is free software, and you are welcome to redistribute it under certain conditions.');
 	winston.info('');
@@ -116,6 +117,9 @@ function start() {
 	// nconf defaults, if not set in config
 	if (!nconf.get('upload_path')) {
 		nconf.set('upload_path', '/public/uploads');
+	}
+	if (!nconf.get('sessionKey')) {
+		nconf.set('sessionKey', 'express.sid');
 	}
 	// Parse out the relative_url and other goodies from the configured URL
 	var urlObject = url.parse(nconf.get('url'));
@@ -345,5 +349,17 @@ function restart() {
 	} else {
 		winston.error('[app] Could not restart server. Shutting down.');
 		shutdown(1);
+	}
+}
+
+function versionCheck() {
+	var version = process.version.slice(1);
+	var range = pkg.engines.node;
+	var semver = require('semver');
+	var compatible = semver.satisfies(version, range);
+
+	if (!compatible) {
+		winston.warn('Your version of Node.js is too outdated for NodeBB. Please update your version of Node.js.');
+		winston.warn('Recommended ' + range.green + ', '.reset + version.yellow + ' provided\n'.reset);
 	}
 }

@@ -123,5 +123,7 @@
     "no-users-in-room": "Nessun utente in questa stanza",
     "cant-kick-self": "Non puoi espellerti dal gruppo",
     "no-users-selected": "Nessun utente selezionato",
-    "invalid-home-page-route": "Percorso della pagina iniziale non valido"
+    "invalid-home-page-route": "Percorso della pagina iniziale non valido",
+    "invalid-session": "Discrepanza della sessione",
+    "invalid-session-text": "Sembra che la tua sessione non sia più attiva, oppure non corrisponde con il server. Per favore ricarica la pagina."
 }

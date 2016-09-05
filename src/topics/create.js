@@ -22,6 +22,9 @@ module.exports = function(Topics) {
 
 		async.waterfall([
 			function(next) {
+				Topics.resizeAndUploadThumb(data, next);
+			},
+			function(next) {
 				db.incrObjectField('global', 'nextTid', next);
 			},
 			function(tid, next) {

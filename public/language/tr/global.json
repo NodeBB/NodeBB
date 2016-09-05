@@ -7,7 +7,7 @@
     "403.login": "Belki de tekrar <a href='%1/login'>giriş</a> yapmayı denersiniz?",
     "404.title": "Bulunamadı",
     "404.message": "Erişim izniniz olmayan bir sayfaya denk gelmiş gibisiniz. <a href='%1/'>Anasayfa</a>'ya geri dönün.",
-    "500.title": "Internal Error.",
+    "500.title": "Dahili hata.",
     "500.message": "Ups! Bir şeyler ters gitti sanki!",
     "400.title": "Geçersiz istek.",
     "400.message": "It looks like this link is malformed, please double-check and try again. Otherwise, return to the <a href='%1/'>home page</a>.",

@@ -222,7 +222,8 @@ define('forum/topic/posts', [
 		infinitescroll.loadMore('topics.loadMore', {
 			tid: tid,
 			after: after,
-			direction: direction
+			direction: direction,
+			topicPostSort: config.topicPostSort
 		}, function (data, done) {
 			indicatorEl.fadeOut();
 

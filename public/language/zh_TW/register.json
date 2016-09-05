@@ -1,6 +1,6 @@
 {
     "register": "註冊",
-    "cancel_registration": "Cancel Registration",
+    "cancel_registration": "取消註冊",
     "help.email": "默認情況下，你的郵箱不會公開。",
     "help.username_restrictions": "獨立的帳號由 %1 到 %2 個字元組成。其他人可以通過 @<span id='yourUsername'>帳號</span> 提及你。",
     "help.minimum_password_length": "密碼必須至少包含 %1 個字元。",
@@ -16,8 +16,8 @@
     "alternative_registration": "其他註冊方式",
     "terms_of_use": "使用條款",
     "agree_to_terms_of_use": "同意遵守使用條款",
-    "terms_of_use_error": "You must agree to the Terms of Use",
+    "terms_of_use_error": "你需要同意使用條款",
     "registration-added-to-queue": "你的註冊已經被加入到審核序列中。你將會在管理者批準後收到一封電子郵件。",
-    "interstitial.intro": "We require some additional information before we can create your account.",
-    "interstitial.errors-found": "We could not complete your registration:"
+    "interstitial.intro": "我們要求一些額外的資訊，在我們建立你的帳戶之前。",
+    "interstitial.errors-found": "我們無法完成你的註冊"
 }

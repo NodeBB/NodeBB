@@ -249,6 +249,8 @@ define('admin/extend/plugins', function() {
 		$('#installed ul li').each(function() {
 			if ($(this).hasClass('active')) {
 				$('#active ul').append($(this).clone(true));
+			} else {
+				$('#deactive ul').append($(this).clone(true));
 			}
 		});
 	}

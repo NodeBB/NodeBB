@@ -379,7 +379,16 @@ authenticationController.localLogin = function(req, username, password, next) {
 				return next(new Error('[[error:invalid-user-data]]'));
 			}
 			if (result.banned) {
-				return next(new Error('[[error:user-banned]]'));
+				// Retrieve ban reason and show error
+				return user.getLatestBanInfo(uid, function(err, banInfo) {
+					if (err) {
+						next(err);
+					} else if (banInfo.reason) {
+						next(new Error('[[error:user-banned-reason, ' + banInfo.reason + ']]'));
+					} else {
+						next(new Error('[[error:user-banned]]'));
+					}
+				});
 			}
 
 			Password.compare(password, userData.password, next);

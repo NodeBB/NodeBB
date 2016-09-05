@@ -60,7 +60,7 @@ define('admin/manage/users', ['admin/modules/selectable', 'translator'], functio
 
 			bootbox.confirm('Do you really want to ban ' + (uids.length > 1 ? 'these users' : 'this user') + ' <strong>permanently</strong>?', function(confirm) {
 				if (confirm) {
-					socket.emit('user.banUsers', { uids: uids }, done('User(s) banned!', '.ban', true));
+					socket.emit('user.banUsers', { uids: uids, reason: '' }, done('User(s) banned!', '.ban', true));
 				}
 			});
 		});
@@ -91,7 +91,7 @@ define('admin/manage/users', ['admin/modules/selectable', 'translator'], functio
 									return data;
 								}, {});
 								var until = formData.length ? (Date.now() + formData.length * 1000*60*60 * (parseInt(formData.unit, 10) ? 24 : 1)) : 0;
-								socket.emit('user.banUsers', { uids: uids, until: until }, done('User(s) banned!', '.ban', true));
+								socket.emit('user.banUsers', { uids: uids, until: until, reason: formData.reason }, done('User(s) banned!', '.ban', true));
 							}
 						}
 					}

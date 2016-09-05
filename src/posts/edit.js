@@ -68,8 +68,8 @@ module.exports = function(Posts) {
 
 				plugins.fireHook('action:post.edit', _.clone(postData));
 
-				cache.del(postData.pid);
-				pubsub.publish('post:edit', postData.pid);
+				cache.del(String(postData.pid));
+				pubsub.publish('post:edit', String(postData.pid));
 
 				Posts.parsePost(postData, next);
 			},

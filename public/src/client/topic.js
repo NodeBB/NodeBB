@@ -63,7 +63,7 @@ define('forum/topic', [
 
 		handleKeys();
 
-		navigator.init('[component="post/anchor"]', ajaxify.data.postcount, Topic.toTop, Topic.toBottom, Topic.navigatorCallback, Topic.calculateIndex);
+		navigator.init('[component="post"]', ajaxify.data.postcount, Topic.toTop, Topic.toBottom, Topic.navigatorCallback, Topic.calculateIndex);
 
 		handleBookmark(tid);
 

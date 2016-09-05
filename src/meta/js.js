@@ -80,7 +80,7 @@ module.exports = function(Meta) {
 			modules: {
 				"Chart.js": './node_modules/chart.js/dist/Chart.min.js',
 				"mousetrap.js": './node_modules/mousetrap/mousetrap.js',
-
+				"jqueryui.js": 'public/vendor/jquery/js/jquery-ui.js',
 				"buzz.js": 'public/vendor/buzz/buzz.js'
 			}
 		}
