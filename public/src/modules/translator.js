@@ -1,13 +1,8 @@
-'use strict';
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
 /* global define, jQuery, config, RELATIVE_PATH, utils, window */
 
-var assign = Object.assign || jQuery.extend;
-
 (function (factory) {
-  function loadClient(lang, filename) {
-    var language = lang || config.userLang || config.defaultLang || 'en_GB';
+  'use strict';
+  function loadClient(language, filename) {;
     return Promise.resolve(jQuery.getJSON(config.relative_path + '/language/' + language + '/' + (filename + '.json?v=' + config['cache-buster'])));
   };
   if (typeof define === 'function' && define.amd) {
@@ -15,7 +10,7 @@ var assign = Object.assign || jQuery.extend;
     define('translator', ['string'], function (string) {
       return factory(string, loadClient);
     });
-  } else if (typeof module !== 'undefined' && module.exports) {
+  } else if (typeof module === 'object' && module.exports) {
     // Node
     (function () {
       var fs = require('fs');
@@ -52,9 +47,7 @@ var assign = Object.assign || jQuery.extend;
         });
       };
 
-      function loadServer(lang, filename) {
-        var language = lang;
-
+      function loadServer(language, filename) {
         var filePath = path.join(__dirname, '../../language', language, filename + '.json');
         return exists(filePath).then(function (fileExists) {
           if (!fileExists) {
@@ -87,11 +80,19 @@ var assign = Object.assign || jQuery.extend;
     window.translator = factory(window.string, loadClient);
   }
 })(function (string, load) {
-  var Translator = function () {
-    function Translator(lang) {
-      _classCallCheck(this, Translator);
+  'use strict';
+  var assign = Object.assign || jQuery.extend;
+  function classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-      this.lang = lang;
+  var Translator = function () {
+    function Translator(language) {
+      classCallCheck(this, Translator);
+
+      if (!language) {
+        throw new TypeError('Parameter `language` must be a language string. Received ' + language + (language === '' ? '(empty string)' : ''));
+      }
+
+      this.lang = language;
       this.translations = {};
       this.load = load;
     }
@@ -166,25 +167,27 @@ var assign = Object.assign || jQuery.extend;
     };
 
     Translator.prototype.translateKey = function translateKey(name, args) {
-      var _this = this;
+      var self = this;
 
       var result = name.split(':', 2);
       var namespace = result[0];
       var key = result[1];
 
-
-      return Promise.all([this.getTranslation(namespace, key)].concat(args.map(function (arg) {
+      var translation = this.getTranslation(namespace, key);
+      var argsToTranslate = args.map(function (arg) {
         return string(arg).collapseWhitespace().decodeHTMLEntities().escapeHTML().s;
       }).map(function (arg) {
-        return _this.translate(arg);
-      }))).then(function (result) {
-        var translation = result[0];
+        return self.translate(arg);
+      });
+
+      return Promise.all([translation].concat(argsToTranslate)).then(function (result) {
+        var translated = result[0];
         var translatedArgs = result.slice(1);
 
-        if (!translation) {
+        if (!translated) {
           return key;
         }
-        var out = translation;
+        var out = translated;
         translatedArgs.forEach(function (arg, i) {
           out = out.replace(new RegExp('%' + (i + 1), 'g'), arg);
         });
@@ -194,7 +197,10 @@ var assign = Object.assign || jQuery.extend;
 
     Translator.prototype.getTranslation = function getTranslation(namespace, key) {
       var translation;
-      if (this.translations[namespace]) {
+      if (!namespace) {
+        winston.warn('[translator] Parameter `namespace` is ' + namespace + (namespace === '' ? '(empty string)' : ''));
+        translation = Promise.resolve({});
+      } else if (this.translations[namespace]) {
         translation = this.translations[namespace];
       } else {
         translation = this.load(this.lang, namespace);
@@ -224,6 +230,8 @@ var assign = Object.assign || jQuery.extend;
       var lang = language;
       if (typeof language === 'function') {
         cb = language;
+        lang = adaptor.getLanguage();
+      } else if (!lang) {
         lang = adaptor.getLanguage();
       }
 
@@ -272,11 +280,10 @@ var assign = Object.assign || jQuery.extend;
     getLanguage: function getLanguage() {
       var lang;
 
-      if (typeof window !== 'undefined' && config && utils) {
+      if (typeof window === 'object' && window.config && window.utils) {
         lang = utils.params().lang || config.userLang || config.defaultLang || 'en_GB';
       } else {
         var meta = require('../../../src/meta');
-
         lang = meta.config.defaultLang || 'en_GB';
       }
 
