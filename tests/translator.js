@@ -5,7 +5,7 @@ var assert = require('assert');
 var translator = require('../public/src/modules/translator.js');
 
 
-describe('Translator', function(){
+describe('translator adaptor', function(){
 	describe('.translate()', function(){
 		it('should handle basic translations', function(done) {
 			translator.translate('[[global:home]]', function(translated) {

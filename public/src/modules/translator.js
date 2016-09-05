@@ -4,7 +4,7 @@
 	'use strict';
 	function loadClient(language, filename) {;
 		return Promise.resolve(jQuery.getJSON(config.relative_path + '/language/' + language + '/' + (filename + '.json?v=' + config['cache-buster'])));
-	};
+	}
 	if (typeof define === 'function' && define.amd) {
 		// AMD. Register as a named module
 		define('translator', ['string'], function (string) {
@@ -103,7 +103,7 @@
 			var len = str.length;
 			var toTranslate = [];
 
-			var split = function split(text) {
+			function split(text) {
 				var len = text.length;
 				var arr = [];
 				var i = 0;
@@ -126,7 +126,7 @@
 				}
 				arr.push(text.slice(brk, i + 1).trim());
 				return arr;
-			};
+			}
 
 			while (cursor + 2 <= len) {
 				if (str.slice(cursor, cursor + 2) === '[[') {
@@ -215,10 +215,43 @@
 			return translation;
 		};
 
+		/**
+		 * Get the language of the current environment, falling back to defaults
+		 * @returns {string}
+		 */
+		Translator.getLanguage = function getLanguage() {
+			var lang;
+
+			if (typeof window === 'object' && window.config && window.utils) {
+				lang = utils.params().lang || config.userLang || config.defaultLang || 'en_GB';
+			} else {
+				var meta = require('../../../src/meta');
+				lang = meta.config.defaultLang || 'en_GB';
+			}
+
+			return lang;
+		};
+
+		/**
+		 * Create and cache a new Translator instance, or return a cached one
+		 * @param [language] {string} - ('en_GB') Language string
+		 * @returns {Translator}
+		 */
+		Translator.create = function create(language) {
+			if (!language) {
+				language = Translator.getLanguage();
+			}
+
+			Translator.cache[language] = Translator.cache[language] || new Translator(language);
+
+			return Translator.cache[language];
+		};
+		
+		Translator.cache = {};
+
 		return Translator;
 	}();
 
-	var cache = {};
 	var adaptor = {
 		Translator: Translator,
 
@@ -230,14 +263,10 @@
 			var lang = language;
 			if (typeof language === 'function') {
 				cb = language;
-				lang = adaptor.getLanguage();
-			} else if (!lang) {
-				lang = adaptor.getLanguage();
+				lang = null;
 			}
 
-			cache[lang] = cache[lang] || new Translator(lang);
-			var translator = cache[lang];
-			translator.translate(text).then(function (output) {
+			Translator.create(lang).translate(text).then(function (output) {
 				return cb(output);
 			}).catch(function (err) {
 				console.error('Translation failed: ' + err.message);
@@ -260,35 +289,20 @@
 			return typeof text === 'string' ? text.replace(/\\\[\\\[([\S]*?)\\\]\\\]/g, '[[$1]]') : text;
 		},
 		addTranslation: function addTranslation(language, filename, translations) {
-			cache[language] = cache[language] || new Translator(language);
-
-			cache[language].translations[filename].then(function (x) {
+			Translator.create(lang).translations[filename].then(function (x) {
 				assign(x, translations);
 			});
 		},
 		getTranslations: function getTranslations(language, filename, callback) {
 			callback = callback || function () {};
-			cache[language] = cache[language] || new Translator(language);
-
-			cache[language].getTranslation(filename).then(function (translation) {
+			Translator.create(lang).getTranslation(filename).then(function (translation) {
 				callback(translation);
 			});
 		},
 		load: function load(language, filename, callback) {
 			adaptor.getTranslations(language, filename, callback);
 		},
-		getLanguage: function getLanguage() {
-			var lang;
-
-			if (typeof window === 'object' && window.config && window.utils) {
-				lang = utils.params().lang || config.userLang || config.defaultLang || 'en_GB';
-			} else {
-				var meta = require('../../../src/meta');
-				lang = meta.config.defaultLang || 'en_GB';
-			}
-
-			return lang;
-		},
+		getLanguage: Translator.getLanguage,
 		prepareDOM: function prepareDOM() {
 			// Load the appropriate timeago locale file,
 			// and correct NodeBB language codes to timeago codes, if necessary
