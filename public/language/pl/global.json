@@ -7,10 +7,10 @@
     "403.login": "Może powinieneś się <a href='%1/login'>zalogować</a>?",
     "404.title": "Nie znaleziono",
     "404.message": "Wygląda na to, że trafiłeś na stronę, która nie istnieje. Wróć do <a href='%1/'>strony głównej</a>.",
-    "500.title": "Internal Error.",
+    "500.title": "Wewnętrzny błąd.",
     "500.message": "Ups! Coś poszło nie tak.",
-    "400.title": "Bad Request.",
-    "400.message": "It looks like this link is malformed, please double-check and try again. Otherwise, return to the <a href='%1/'>home page</a>.",
+    "400.title": "Złe zapytanie.",
+    "400.message": "Wygląda na to, że ten link jest niepoprawny, proszę go sprawdzić i spróbować ponownie. W przeciwnym wypadku wróć do <a href='%1/'>strona domowa</a>.",
     "register": "Zarejestruj się",
     "login": "Zaloguj się",
     "please_log_in": "Proszę się zalogować",
@@ -95,6 +95,6 @@
     "upload_file": "Załaduj plik",
     "upload": "Załaduj",
     "allowed-file-types": "Dozwolone typy plików %1",
-    "unsaved-changes": "You have unsaved changes. Are you sure you wish to navigate away?",
-    "reconnecting-message": "Looks like your connection to %1 was lost, please wait while we try to reconnect."
+    "unsaved-changes": "Posiadasz niezapisane zmiany. Jesteś pewien, że chcesz opuścić stronę?",
+    "reconnecting-message": "Wygląda na to, że Twoje połączenie z %1 zostało przerwane. Proszę czekać gdy staramy się je odnowić."
 }
