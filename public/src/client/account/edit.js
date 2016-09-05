@@ -2,7 +2,9 @@
 
 /* globals define, ajaxify, socket, app, config, templates, bootbox */
 
-define('forum/account/edit', ['forum/account/header', 'uploader', 'translator', 'components'], function(header, uploader, translator, components) {
+define('forum/account/edit', ['forum/account/header', 'uploader', 'translator', 'components'], function(header, uploader, trans, components) {
+	var translator = trans.Translator.create();
+
 	var AccountEdit = {};
 
 	AccountEdit.init = function() {
@@ -86,7 +88,7 @@ define('forum/account/edit', ['forum/account/header', 'uploader', 'translator', 
 					uploaded: uploaded,
 					allowProfileImageUploads: ajaxify.data.allowProfileImageUploads
 				}, function(html) {
-					translator.translate(html, function(html) {
+					translator.translate(html).then(function(html) {
 						var modal = bootbox.dialog({
 							className: 'picture-switcher',
 							title: '[[user:change_picture]]',
@@ -158,7 +160,7 @@ define('forum/account/edit', ['forum/account/header', 'uploader', 'translator', 
 
 	function handleAccountDelete() {
 		$('#deleteAccountBtn').on('click', function() {
-			translator.translate('[[user:delete_account_confirm]]', function(translated) {
+			translator.translate('[[user:delete_account_confirm]]').then(function(translated) {
 				var modal = bootbox.confirm(translated + '<p><input type="text" class="form-control" id="confirm-username" /></p>', function(confirm) {
 					if (!confirm) {
 						return;
@@ -229,7 +231,7 @@ define('forum/account/edit', ['forum/account/header', 'uploader', 'translator', 
 		modal.find('[data-action="upload-url"]').on('click', function() {
 			modal.modal('hide');
 			templates.parse('partials/modals/upload_picture_from_url_modal', {}, function(html) {
-				translator.translate(html, function(html) {
+				translator.translate(html).then(function(html) {
 					var uploadModal = $(html);
 					uploadModal.modal('show');
 

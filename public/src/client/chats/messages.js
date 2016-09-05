@@ -2,7 +2,8 @@
 
 /* globals define, socket, app, ajaxify, templates, bootbox */
 
-define('forum/chats/messages', ['components', 'sounds', 'translator'], function(components, sounds, translator) {
+define('forum/chats/messages', ['components', 'sounds', 'translator'], function(components, sounds, trans) {
+	var translator = trans.Translator.create();
 
 	var messages = {};
 
@@ -74,7 +75,7 @@ define('forum/chats/messages', ['components', 'sounds', 'translator'], function(
 		templates.parse('partials/chat_message' + (Array.isArray(data) ? 's' : ''), {
 			messages: data
 		}, function(html) {
-			translator.translate(html, callback);
+			translator.translate(html).then(callback);
 		});
 	};
 
@@ -119,7 +120,7 @@ define('forum/chats/messages', ['components', 'sounds', 'translator'], function(
 	};
 
 	messages.delete = function(messageId, roomId) {
-		translator.translate('[[modules:chat.delete_message_confirm]]', function(translated) {
+		translator.translate('[[modules:chat.delete_message_confirm]]').then(function(translated) {
 			bootbox.confirm(translated, function(ok) {
 				if (!ok) {
 					return;

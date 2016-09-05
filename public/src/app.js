@@ -130,28 +130,6 @@ app.cacheBuster = null;
 		});
 	};
 
-	app.handleInvalidSession = function() {
-		if (app.flags && app.flags._sessionRefresh) {
-			return;
-		}
-
-		app.flags = app.flags || {};
-		app.flags._sessionRefresh = true;
-
-		require(['translator'], function(translator) {
-			translator.translate('[[error:invalid-session-text]]', function(translated) {
-				bootbox.alert({
-					title: '[[error:invalid-session]]',
-					message: translated,
-					closeButton: false,
-					callback: function() {
-						window.location.reload();
-					}
-				});
-			});
-		});
-	};
-
 	app.enterRoom = function (room, callback) {
 		callback = callback || function() {};
 		if (socket && app.user.uid && app.currentRoom !== room) {
@@ -309,63 +287,6 @@ app.cacheBuster = null;
 		});
 	};
 
-	var	titleObj = {
-			active: false,
-			interval: undefined,
-			titles: []
-		};
-
-	app.alternatingTitle = function (title) {
-		if (typeof title !== 'string') {
-			return;
-		}
-
-		if (title.length > 0 && !app.isFocused) {
-			if (!titleObj.titles[0]) {
-				titleObj.titles[0] = window.document.title;
-			}
-
-			require(['translator'], function(translator) {
-				translator.translate(title, function(translated) {
-					titleObj.titles[1] = translated;
-					if (titleObj.interval) {
-						clearInterval(titleObj.interval);
-					}
-
-					titleObj.interval = setInterval(function() {
-						var title = titleObj.titles[titleObj.titles.indexOf(window.document.title) ^ 1];
-						if (title) {
-							window.document.title = $('<div/>').html(title).text();
-						}
-					}, 2000);
-				});
-			});
-		} else {
-			if (titleObj.interval) {
-				clearInterval(titleObj.interval);
-			}
-			if (titleObj.titles[0]) {
-				window.document.title = $('<div/>').html(titleObj.titles[0]).text();
-			}
-		}
-	};
-
-	app.refreshTitle = function(title) {
-		if (!title) {
-			return;
-		}
-		require(['translator'], function(translator) {
-			title = config.titleLayout.replace(/&#123;/g, '{').replace(/&#125;/g, '}')
-				.replace('{pageTitle}', function() { return title; })
-				.replace('{browserTitle}', function() { return config.browserTitle; });
-
-			translator.translate(title, function(translated) {
-				titleObj.titles[0] = translated;
-				app.alternatingTitle('');
-			});
-		});
-	};
-
 	app.toggleNavbar = function(state) {
 		var navbarEl = $('.navbar');
 		if (navbarEl) {
@@ -473,21 +394,6 @@ app.cacheBuster = null;
 		});
 	}
 
-	app.updateUserStatus = function(el, status) {
-		if (!el.length) {
-			return;
-		}
-
-		require(['translator'], function(translator) {
-			translator.translate('[[global:' + status + ']]', function(translated) {
-				el.removeClass('online offline dnd away')
-					.addClass(status)
-					.attr('title', translated)
-					.attr('data-original-title', translated);
-			});
-		});
-	};
-
 	app.newTopic = function (cid) {
 		$(window).trigger('action:composer.topic.new', {
 			cid: cid || ajaxify.data.cid || 0
@@ -542,10 +448,20 @@ app.cacheBuster = null;
 		}
 	};
 
-	app.parseAndTranslate = function(template, blockName, data, callback) {
-		require(['translator'], function(translator) {
+	app.loadProgressiveStylesheet = function() {
+		var linkEl = document.createElement('link');
+		linkEl.rel = 'stylesheet';
+		linkEl.href = config.relative_path + '/js-enabled.css';
+
+		document.head.appendChild(linkEl);
+	};
+
+	require(['translator'], function(trans) {
+		var translator = trans.Translator.create();
+
+		app.parseAndTranslate = function(template, blockName, data, callback) {
 			function translate(html, callback) {
-				translator.translate(html, function(translatedHTML) {
+				translator.translate(html).then(function(translatedHTML) {
 					translatedHTML = translator.unescape(translatedHTML);
 					callback($(translatedHTML));
 				});
@@ -562,14 +478,93 @@ app.cacheBuster = null;
 					translate(html, callback);
 				});
 			}
-		});
-	};
+		};
 
-	app.loadProgressiveStylesheet = function() {
-		var linkEl = document.createElement('link');
-		linkEl.rel = 'stylesheet';
-		linkEl.href = config.relative_path + '/js-enabled.css';
+		app.handleInvalidSession = function() {
+			if (app.flags && app.flags._sessionRefresh) {
+				return;
+			}
 
-		document.head.appendChild(linkEl);
-	};
+			app.flags = app.flags || {};
+			app.flags._sessionRefresh = true;
+
+			translator.translate('[[error:invalid-session-text]]').then(function(translated) {
+				bootbox.alert({
+					title: '[[error:invalid-session]]',
+					message: translated,
+					closeButton: false,
+					callback: function() {
+						window.location.reload();
+					}
+				});
+			});
+		};
+
+		var	titleObj = {
+			active: false,
+			interval: undefined,
+			titles: []
+		};
+
+		app.alternatingTitle = function (title) {
+			if (typeof title !== 'string') {
+				return;
+			}
+
+			if (title.length > 0 && !app.isFocused) {
+				if (!titleObj.titles[0]) {
+					titleObj.titles[0] = window.document.title;
+				}
+
+				
+				translator.translate(title).then(function(translated) {
+					titleObj.titles[1] = translated;
+					if (titleObj.interval) {
+						clearInterval(titleObj.interval);
+					}
+
+					titleObj.interval = setInterval(function() {
+						var title = titleObj.titles[titleObj.titles.indexOf(window.document.title) ^ 1];
+						if (title) {
+							window.document.title = $('<div/>').html(title).text();
+						}
+					}, 2000);
+				});
+			} else {
+				if (titleObj.interval) {
+					clearInterval(titleObj.interval);
+				}
+				if (titleObj.titles[0]) {
+					window.document.title = $('<div/>').html(titleObj.titles[0]).text();
+				}
+			}
+		};
+
+		app.refreshTitle = function(title) {
+			if (!title) {
+				return;
+			}
+			title = config.titleLayout.replace(/&#123;/g, '{').replace(/&#125;/g, '}')
+				.replace('{pageTitle}', function() { return title; })
+				.replace('{browserTitle}', function() { return config.browserTitle; });
+
+			translator.translate(title).then(function(translated) {
+				titleObj.titles[0] = translated;
+				app.alternatingTitle('');
+			});
+		};
+
+		app.updateUserStatus = function(el, status) {
+			if (!el.length) {
+				return;
+			}
+
+			translator.translate('[[global:' + status + ']]').then(function(translated) {
+				el.removeClass('online offline dnd away')
+					.addClass(status)
+					.attr('title', translated)
+					.attr('data-original-title', translated);
+			});
+		};
+	});
 }());

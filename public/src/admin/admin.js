@@ -1,7 +1,9 @@
 "use strict";
-/*global config, translator, componentHandler, define, socket, app, ajaxify, utils, bootbox, Slideout, NProgress, RELATIVE_PATH*/
+/*global config, componentHandler, socket, app, bootbox, Slideout, NProgress*/
 
-(function() {
+require(['translator'], function (trans) {
+	var translator = trans.Translator.create();
+
 	var logoutTimer = 0;
 	function startLogoutTimer() {
 		if (logoutTimer) {
@@ -9,15 +11,13 @@
 		}
 
 		logoutTimer = setTimeout(function() {
-			require(['translator'], function(translator) {
-				translator.translate('[[login:logged-out-due-to-inactivity]]', function(translated) {
-					bootbox.alert({
-						closeButton: false,
-						message: translated,
-						callback: function(){
-							window.location.reload();
-						}
-					});
+			translator.translate('[[login:logged-out-due-to-inactivity]]').then(function(translated) {
+				bootbox.alert({
+					closeButton: false,
+					message: translated,
+					callback: function(){
+						window.location.reload();
+					}
 				});
 			});
 		}, 3600000);
@@ -52,8 +52,6 @@
 	});
 
 	$(window).on('action:ajaxify.contentLoaded', function(ev, data) {
-		var url = data.url;
-
 		selectMenuItem(data.url);
 		setupRestartLinks();
 
@@ -65,7 +63,7 @@
 			NProgress.set(0.7);
 		});
 
-		$(window).on('action:ajaxify.end', function(ev, data) {
+		$(window).on('action:ajaxify.end', function() {
 			NProgress.done();
 		});
 	}
@@ -82,7 +80,7 @@
 				socket.emit('admin.restart');
 			});
 
-			mousetrap.bind('/', function(event) {
+			mousetrap.bind('/', function() {
 				$('#acp-search input').focus();
 
 				return false;
@@ -145,19 +143,16 @@
 
 	function launchSnackbar(params) {
 		var message = (params.title ? "<strong>" + params.title + "</strong>" : '') + (params.message ? params.message : '');
-
-		require(['translator'], function(translator) {
-			translator.translate(message, function(html) {
-				var bar = $.snackbar({
-					content: html,
-					timeout: 3000,
-					htmlAllowed: true
-				});
-
-				if (params.clickfn) {
-					bar.on('click', params.clickfn);
-				}
+		translator.translate(message).then(function(html) {
+			var bar = $.snackbar({
+				content: html,
+				timeout: 3000,
+				htmlAllowed: true
 			});
+
+			if (params.clickfn) {
+				bar.on('click', params.clickfn);
+			}
 		});
 	}
 
@@ -199,4 +194,4 @@
 			});
 		});
 	}
-}());
+});
