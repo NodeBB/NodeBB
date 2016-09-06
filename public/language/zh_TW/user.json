@@ -118,5 +118,7 @@
     "info.ban-history": "最近禁用歷史",
     "info.no-ban-history": "這個使用者永遠不會被禁用",
     "info.banned-until": "禁用至  %1",
-    "info.banned-permanently": "永久禁用"
+    "info.banned-permanently": "永久禁用",
+    "info.banned-reason-label": "Reason",
+    "info.banned-no-reason": "No reason given."
 }

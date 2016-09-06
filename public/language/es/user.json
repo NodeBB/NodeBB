@@ -89,10 +89,10 @@
     "topics_per_page": "Temas por página",
     "posts_per_page": "Post por página",
     "notification_sounds": "Reproducir un sonido al recibir una notificación",
-    "notifications_and_sounds": "Notifications & Sounds",
-    "incoming-message-sound": "Incoming message sound",
-    "outgoing-message-sound": "Outgoing message sound",
-    "notification-sound": "Notification sound",
+    "notifications_and_sounds": "Notificaciones y Sonidos",
+    "incoming-message-sound": "Sonido del mensaje entrante",
+    "outgoing-message-sound": "Sonido del mensaje saliente",
+    "notification-sound": "Sonido de notificación",
     "browsing": "Preferencias de navegación.",
     "open_links_in_new_tab": "Abrir los enlaces externos en una nueva pestaña",
     "enable_topic_searching": "Activar la búsqueda \"dentro del tema\"",
@@ -118,5 +118,7 @@
     "info.ban-history": "Histórico reciente de bans",
     "info.no-ban-history": "Este usuario nunca ha sido baneado",
     "info.banned-until": "Baneado hasta %1",
-    "info.banned-permanently": "Baneado permanentemente"
+    "info.banned-permanently": "Baneado permanentemente",
+    "info.banned-reason-label": "Motivo",
+    "info.banned-no-reason": "Motivo no especificado"
 }

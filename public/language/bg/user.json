@@ -118,5 +118,7 @@
     "info.ban-history": "Скорошна история на блокиранията",
     "info.no-ban-history": "Този потребител никога не е бил блокиран",
     "info.banned-until": "Блокиран до %1",
-    "info.banned-permanently": "Блокиран за постоянно"
+    "info.banned-permanently": "Блокиран за постоянно",
+    "info.banned-reason-label": "Reason",
+    "info.banned-no-reason": "No reason given."
 }

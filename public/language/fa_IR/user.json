@@ -118,5 +118,7 @@
     "info.ban-history": "تاریخچه مسدودیت اخیر",
     "info.no-ban-history": "این کاربر هرگز مسدود نشده است",
     "info.banned-until": "مسدود شده تا %1",
-    "info.banned-permanently": "مسدود شده به طور دائم"
+    "info.banned-permanently": "مسدود شده به طور دائم",
+    "info.banned-reason-label": "دلیل",
+    "info.banned-no-reason": "هیچ دلیلی ارایه نشد."
 }

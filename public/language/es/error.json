@@ -124,6 +124,6 @@
     "cant-kick-self": "No te puedes expulsar a ti mismo del grupo",
     "no-users-selected": "Ningun usuario(s) seleccionado",
     "invalid-home-page-route": "Ruta de página de inicio invalida",
-    "invalid-session": "Session Mismatch",
-    "invalid-session-text": "It looks like your login session is no longer active, or no longer matches with the server. Please refresh this page."
+    "invalid-session": "No concuerdan los datos de sesión",
+    "invalid-session-text": "Parece que su sesión ha expirado o no concuerda con el servidor. Por favor vuelva a cargar la página."
 }
