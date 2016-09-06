@@ -318,9 +318,9 @@ Controllers.manifest = function(req, res) {
 };
 
 Controllers.outgoing = function(req, res) {
-	var url = req.query.url;
+	var url = req.query.url || '';
 	var data = {
-		url: validator.escape(String(url)),
+		outgoing: validator.escape(String(url)),
 		title: meta.config.title,
 		breadcrumbs: helpers.buildBreadcrumbs([{text: '[[notifications:outgoing_link]]'}])
 	};

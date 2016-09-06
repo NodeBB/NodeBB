@@ -55,8 +55,8 @@
     "post-delete-duration-expired-hours-minutes": "Możesz kasować posty przez %1 godzin(-y) i %2 minut(-y) po napisaniu",
     "post-delete-duration-expired-days": "Możesz kasować posty przez %1 dni po napisaniu",
     "post-delete-duration-expired-days-hours": "Możesz kasować posty przez %1 dni i %2 godzin(-y) po napisaniu",
-    "cant-delete-topic-has-reply": "You can't delete your topic after it has a reply",
-    "cant-delete-topic-has-replies": "You can't delete your topic after it has %1 replies",
+    "cant-delete-topic-has-reply": "Nie możesz usunąć tematu zawierającego odpowiedź",
+    "cant-delete-topic-has-replies": "Nie możesz usunąć tematu zawierającego %1 odpowiedzi",
     "content-too-short": "Prosimy wpisać dłuższy post. Posty powinny zawierać co najmniej %1 znaków.",
     "content-too-long": "Prosimy wpisać krótszy post. Posty nie mogą zawierać więcej niż %1 znaków.",
     "title-too-short": "Prosimy podać dłuższy tytuł. Tytuły powinny zawierać co najmniej %1 znaków.",
@@ -123,7 +123,7 @@
     "no-users-in-room": "Brak użytkowników w pokoju",
     "cant-kick-self": "Nie możesz wyrzucić samego siebie z grupy",
     "no-users-selected": "Nie wybrano żadnych użytkowników",
-    "invalid-home-page-route": "Invalid home page route",
-    "invalid-session": "Session Mismatch",
-    "invalid-session-text": "It looks like your login session is no longer active, or no longer matches with the server. Please refresh this page."
+    "invalid-home-page-route": "Niepoprawny odnośnik strony domowej",
+    "invalid-session": "Niewłaściwa sesja",
+    "invalid-session-text": "Wygląda na to, że twoja sesja jest nieaktywna, lub nie zgadza się z serwerem. Proszę odświeżyć tę stronę."
 }

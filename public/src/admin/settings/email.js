@@ -79,6 +79,10 @@ define('admin/settings/email', ['admin/settings'], function(settings) {
 		}
 
 		socket.emit('meta.getServerTime', {}, function(err, now) {
+			if (err) {
+				return app.alertError(err.message);
+			}
+
 			now = new Date(now);
 
 			$('#serverTime').text(now.toString());
