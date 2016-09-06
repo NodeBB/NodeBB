@@ -182,7 +182,7 @@ function setupDefaultConfigs(next) {
 	var meta = require('./meta'),
 		defaults = require(path.join(__dirname, '../', 'install/data/defaults.json'));
 
-	async.each(Object.keys(defaults), function (key, next) {
+	async.eachSeries(Object.keys(defaults), function (key, next) {
 		meta.configs.setOnEmpty(key, defaults[key], next);
 	}, function (err) {
 		if (err) {
