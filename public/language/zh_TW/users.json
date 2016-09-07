@@ -1,5 +1,5 @@
 {
-    "latest_users": "最近用戶",
+    "latest_users": "最近使用者",
     "top_posters": "發文數最多",
     "most_reputation": "聲望最高",
     "most_flags": "最多標註",
@@ -11,11 +11,11 @@
     "online-only": "線上僅有",
     "invite": "邀請",
     "invitation-email-sent": "所有邀請Email已經被寄送到 %1",
-    "user_list": "用戶列表",
+    "user_list": "使用者列表",
     "recent_topics": "最新的主題",
     "popular_topics": "受歡迎的主題",
     "unread_topics": "未讀的主題",
     "categories": "類別",
     "tags": "標籤",
-    "no-users-found": "沒有找到用戶！"
+    "no-users-found": "沒有找到使用者！"
 }

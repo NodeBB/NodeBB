@@ -1,6 +1,6 @@
 {
-    "uploading-file": "Uploading the file...",
-    "select-file-to-upload": "Select a file to upload!",
-    "upload-success": "File uploaded successfully!",
-    "maximum-file-size": "Maximum %1 kb"
+    "uploading-file": "įkeliama...",
+    "select-file-to-upload": "Pasirinkite failą, kurį norite įkelti.",
+    "upload-success": "Failas įkeltas sėkmingai!",
+    "maximum-file-size": "Daugiausiai %1 kb"
 }
