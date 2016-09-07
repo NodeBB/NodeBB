@@ -179,12 +179,10 @@ function completeConfigSetup(err, config, next) {
 
 function setupDefaultConfigs(next) {
 	process.stdout.write('Populating database with default configs, if not already set...\n');
-	var meta = require('./meta'),
-		defaults = require(path.join(__dirname, '../', 'install/data/defaults.json'));
+	var meta = require('./meta');
+	var defaults = require(path.join(__dirname, '../', 'install/data/defaults.json'));
 
-	async.eachSeries(Object.keys(defaults), function (key, next) {
-		meta.configs.setOnEmpty(key, defaults[key], next);
-	}, function (err) {
+	meta.configs.setOnEmpty(key, defaults, function (err) {
 		if (err) {
 			return next(err);
 		}

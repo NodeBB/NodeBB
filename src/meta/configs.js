@@ -118,14 +118,19 @@ module.exports = function(Meta) {
 		}
 	});
 
-	Meta.configs.setOnEmpty = function (field, value, callback) {
-		Meta.configs.get(field, function (err, curValue) {
+	Meta.configs.setOnEmpty = function (values, callback) {
+		db.getObject('config', function(err, data) {
 			if (err) {
 				return callback(err);
 			}
-
-			if (!curValue) {
-				Meta.configs.set(field, value, callback);
+			var empty = {};
+			Object.keys(values).forEach(function(key) {
+				if (!data.hasOwnProperty(key)) {
+					empty[key] = values[key];
+				}
+			});
+			if (Object.keys(empty).length) {
+				db.setObject('config', empty, callback);
 			} else {
 				callback();
 			}

@@ -38,14 +38,20 @@ module.exports = function(Meta) {
 		db.setObjectField('settings:' + hash, field, value, callback);
 	};
 
-	Meta.settings.setOnEmpty = function (hash, field, value, callback) {
-		Meta.settings.getOne(hash, field, function (err, curValue) {
+	Meta.settings.setOnEmpty = function (hash, values, callback) {
+		db.getObject('settings:' + hash, function(err, settings) {
 			if (err) {
 				return callback(err);
 			}
+			var empty = {};
+			Object.keys(values).forEach(function(key) {
+				if (!settings.hasOwnProperty(key)) {
+					empty[key] = values[key];
+				}
+			});
 
-			if (!curValue) {
-				Meta.settings.setOne(hash, field, value, callback);
+			if (Object.keys(empty).length) {
+				db.setObject('settings:' + hash, empty, callback);
 			} else {
 				callback();
 			}
