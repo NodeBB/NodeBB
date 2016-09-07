@@ -123,6 +123,7 @@ module.exports = function(Meta) {
 			if (err) {
 				return callback(err);
 			}
+			data = data || {};
 			var empty = {};
 			Object.keys(values).forEach(function(key) {
 				if (!data.hasOwnProperty(key)) {

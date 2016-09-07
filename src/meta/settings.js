@@ -43,6 +43,7 @@ module.exports = function(Meta) {
 			if (err) {
 				return callback(err);
 			}
+			settings = settings || {};
 			var empty = {};
 			Object.keys(values).forEach(function(key) {
 				if (!settings.hasOwnProperty(key)) {
