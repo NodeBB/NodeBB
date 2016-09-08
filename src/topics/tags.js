@@ -294,10 +294,13 @@ module.exports = function(Topics) {
 			for(var i=0; i<tags.length; ++i) {
 				if (tags[i].toLowerCase().startsWith(data.query)) {
 					matches.push(tags[i]);
+					if (matches.length > 19) {
+						break;
+					}
 				}
 			}
 
-			matches = matches.slice(0, 20).sort(function(a, b) {
+			matches = matches.sort(function(a, b) {
 				return a > b;
 			});
 
