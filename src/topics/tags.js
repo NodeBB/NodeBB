@@ -263,13 +263,29 @@ module.exports = function(Topics) {
 	};
 
 	Topics.searchTags = function(data, callback) {
+		function done(matches) {
+			plugins.fireHook('filter:tags.search', {data: data, matches: matches}, function(err, data) {
+				callback(err, data ? data.matches : []);
+			});
+		}
+
+
 		if (!data || !data.query) {
 			return callback(null, []);
 		}
 
+		if (plugins.hasListeners('filter:topics.searchTags')) {
+			return plugins.fireHook('filter:topics.searchTags', {data: data}, function(err, data) {
+				if (err) {
+					return callback(err);
+				}
+				done(data.matches);
+			});
+		}
+
 		db.getSortedSetRevRange('tags:topic:count', 0, -1, function(err, tags) {
 			if (err) {
-				return callback(null, []);
+				return callback(err);
 			}
 
 			data.query = data.query.toLowerCase();
@@ -285,9 +301,7 @@ module.exports = function(Topics) {
 				return a > b;
 			});
 
-			plugins.fireHook('filter:tags.search', {data: data, matches: matches}, function(err, data) {
-				callback(err, data ? data.matches : []);
-			});
+			done(matches);
 		});
 	};
 
