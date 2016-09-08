@@ -20,7 +20,11 @@ interface Translator {
      * @param namespace - The file name of the translation namespace
      * @param key - The key of the specific translation to getJSON
      */
-    getTranslation(namespace: string, key?:string): Promise<Object|string>;
+    getTranslation(namespace: string, key? :string): Promise<Object|string>;
+
+    modules: {
+        [namespace: string]: TranslatorModule;
+    };
 }
 
 interface TranslatorFactory {
@@ -41,7 +45,28 @@ interface TranslatorFactory {
      */
     create(language?: string): Translator;
 
-    cache: { [key: string]: Translator; };
+    /**
+     * Register a custom module to handle translations
+     * @param namespace - Namespace to handle translations for
+     * @param factory - Function to return the translation function for this namespace
+     */
+    registerModule(namespace: string, factory: ModuleFactory);
+
+    moduleFactories: { 
+        [namespace: string]: ModuleFactory;
+    };
+
+    cache: {
+        [language: string]: Translator;
+    };
+}
+
+interface TranslatorModule {
+    (key: string, args: string[]): string;
+}
+
+interface ModuleFactory {
+    (language: string): TranslatorModule;
 }
 
 interface Callback {
@@ -80,7 +105,7 @@ interface TranslatorAdaptor {
     /**
      * Add translations to the cache
      */
-    addTranslation(language: string, filename: string, translation: { [key: string]: string });
+    addTranslation(language: string, filename: string, translation: { [key: string]: string; });
 
     /**
      * Get the translations object

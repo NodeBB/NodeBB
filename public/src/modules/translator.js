@@ -95,6 +95,17 @@
 				throw new TypeError('Parameter `language` must be a language string. Received ' + language + (language === '' ? '(empty string)' : ''));
 			}
 
+			this.modules = Object.keys(Translator.moduleFactories).map(function (namespace) {
+				var factory = Translator.moduleFactories[namespace];
+				return [namespace, factory(this.lang)];
+			}).reduce(function (prev, elem) {
+				var namespace = elem[0];
+				var module = elem[1];
+				prev[namespace] = module;
+
+				return prev;
+			}, {});
+
 			this.lang = language;
 			this.translations = {};
 			this.load = load;
@@ -187,6 +198,10 @@
 			var namespace = result[0];
 			var key = result[1];
 
+			if (self.modules[namespace]) {
+				return Promise.resolve(self.modules[namespace](key, args));
+			}
+
 			var translation = this.getTranslation(namespace, key);
 			var argsToTranslate = args.map(function (arg) {
 				return string(arg).collapseWhitespace().decodeHTMLEntities().escapeHTML().s;
@@ -265,6 +280,15 @@
 			Translator.cache[language] = Translator.cache[language] || new Translator(language);
 
 			return Translator.cache[language];
+		};
+
+		/**
+		 * Register a custom module to handle translations
+		 * @param {string} namespace - Namespace to handle translation for
+		 * @param {Function} factory - Function to return the translation function for this namespace
+		 */
+		Translator.registerModule = function registerModule(namespace, factory) {
+			Translator.moduleFactories[namespace] = factory;
 		};
 		
 		Translator.cache = {};
@@ -363,7 +387,7 @@
 		prepareDOM: function prepareDOM() {
 			// Load the appropriate timeago locale file,
 			// and correct NodeBB language codes to timeago codes, if necessary
-			var languageCode = void 0;
+			var languageCode;
 			switch (config.userLang) {
 				case 'en_GB':
 				case 'en_US':
