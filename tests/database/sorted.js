@@ -438,7 +438,7 @@ describe('Sorted Set methods', function() {
 
 	describe('getSortedSetUnion()', function() {
 		it('should return an array of values from both sorted sets sorted by scores lowest to highest', function(done) {
-			db.getSortedSetUnion(['sortedSetTest2', 'sortedSetTest3'], 0, -1, function(err, values) {
+			db.getSortedSetUnion({sets: ['sortedSetTest2', 'sortedSetTest3'], start: 0, stop: -1}, function(err, values) {
 				assert.equal(err, null);
 				assert.equal(arguments.length, 2);
 				assert.deepEqual(values, ['value1', 'value2', 'value4']);
@@ -449,7 +449,7 @@ describe('Sorted Set methods', function() {
 
 	describe('getSortedSetRevUnion()', function() {
 		it('should return an array of values from both sorted sets sorted by scores highest to lowest', function(done) {
-			db.getSortedSetRevUnion(['sortedSetTest2', 'sortedSetTest3'], 0, -1, function(err, values) {
+			db.getSortedSetRevUnion({sets: ['sortedSetTest2', 'sortedSetTest3'], start: 0, stop: -1}, function(err, values) {
 				assert.equal(err, null);
 				assert.equal(arguments.length, 2);
 				assert.deepEqual(values, ['value4', 'value2', 'value1']);

@@ -474,48 +474,64 @@ module.exports = function(db, module) {
 		});
 	};
 
-	module.getSortedSetUnion = function(sets, start, stop, callback) {
-		getSortedSetUnion(sets, 1, start, stop, callback);
+	module.getSortedSetUnion = function(params, callback) {
+		params.sort = 1;
+		getSortedSetUnion(params, callback);
 	};
 
-	module.getSortedSetRevUnion = function(sets, start, stop, callback) {
-		getSortedSetUnion(sets, -1, start, stop, callback);
+	module.getSortedSetRevUnion = function(params, callback) {
+		params.sort = -1;
+		getSortedSetUnion(params, callback);
 	};
 
 
-	function getSortedSetUnion(sets, sort, start, stop, callback) {
-		if (!Array.isArray(sets) || !sets.length) {
+	function getSortedSetUnion(params, callback) {
+		if (!Array.isArray(params.sets) || !params.sets.length) {
 			return callback();
 		}
-		var limit = stop - start + 1;
+		var limit = params.stop - params.start + 1;
 		if (limit <= 0) {
 			limit = 0;
 		}
 
+		var aggregate = {};
+		if (params.aggregate) {
+			aggregate['$' + params.aggregate.toLowerCase()] = '$score';
+		} else {
+			aggregate.$sum = '$score';
+		}
+
 		var pipeline = [
-			{ $match: { _key: {$in: sets}} },
-			{ $group: { _id: {value: '$value'}, totalScore: {$sum : "$score"}} },
-			{ $sort: { totalScore: sort} }
+			{ $match: { _key: {$in: params.sets}} },
+			{ $group: { _id: {value: '$value'}, totalScore: aggregate} },
+			{ $sort: { totalScore: params.sort} }
 		];
 
-		if (start) {
-			pipeline.push({ $skip: start });
+		if (params.start) {
+			pipeline.push({ $skip: params.start });
 		}
 
 		if (limit > 0) {
 			pipeline.push({ $limit: limit });
 		}
 
-		pipeline.push({	$project: { _id: 0, value: '$_id.value' }});
+		var project = { _id: 0, value: '$_id.value' };
+		if (params.withScores) {
+			project.score = '$totalScore';
+		}
+		pipeline.push({	$project: project });
 
 		db.collection('objects').aggregate(pipeline, function(err, data) {
 			if (err || !data) {
 				return callback(err);
 			}
 
-			data = data.map(function(item) {
-				return item.value;
-			});
+			if (!params.withScores) {
+				data = data.map(function(item) {
+					return item.value;
+				});
+			}
+
 			callback(null, data);
 		});
 	}
