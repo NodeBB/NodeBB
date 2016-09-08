@@ -488,9 +488,10 @@ app.cacheBuster = null;
 		});
 	};
 
-	app.newTopic = function (cid) {
+	app.newTopic = function (cid, tags) {
 		$(window).trigger('action:composer.topic.new', {
-			cid: cid || ajaxify.data.cid || 0
+			cid: cid || ajaxify.data.cid || 0,
+			tags: tags || (ajaxify.data.tag ? [ajaxify.data.tag] : [])
 		});
 	};
 
