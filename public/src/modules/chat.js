@@ -9,8 +9,7 @@ define('chat', [
 	'forum/chats',
 	'forum/chats/messages',
 	'translator'
-], function(components, taskbar, S, sounds, Chats, ChatsMessages, trans) {
-	var translator = trans.Translator.create();
+], function(components, taskbar, S, sounds, Chats, ChatsMessages, translator) {
 
 	var module = {};
 	var newMessage = false;
@@ -117,7 +116,7 @@ define('chat', [
 			templates.parse('partials/chat_dropdown', {
 				rooms: rooms
 			}, function(html) {
-				translator.translate(html).then(function(translated) {
+				translator.translate(html, function(translated) {
 					chatsListEl.empty().html(translated);
 					app.createUserTooltips(chatsListEl, 'right');
 				});
@@ -163,7 +162,7 @@ define('chat', [
 
 	module.createModal = function(data, callback) {
 		templates.parse('chat', data, function(chatTpl) {
-			translator.translate(chatTpl).then(function (chatTpl) {
+			translator.translate(chatTpl, function (chatTpl) {
 
 				var chatModal = $(chatTpl),
 					uuid = utils.generateUUID(),
@@ -338,7 +337,7 @@ define('chat', [
 		});
 	};
 
-	module.disableMobileBehaviour = function() {
+	module.disableMobileBehaviour = function(modalEl) {
 		app.toggleNavbar(true);
 	};
 
@@ -346,6 +345,7 @@ define('chat', [
 		var totalHeight = modalEl.find('.modal-content').outerHeight() - modalEl.find('.modal-header').outerHeight();
 		var padding = parseInt(modalEl.find('.modal-body').css('padding-top'), 10) + parseInt(modalEl.find('.modal-body').css('padding-bottom'), 10);
 		var contentMargin = parseInt(modalEl.find('.chat-content').css('margin-top'), 10) + parseInt(modalEl.find('.chat-content').css('margin-bottom'), 10);
+		var sinceHeight = modalEl.find('.since-bar').outerHeight(true);
 		var inputGroupHeight = modalEl.find('.input-group').outerHeight();
 
 		return totalHeight - padding - contentMargin - inputGroupHeight;

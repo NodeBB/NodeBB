@@ -3,9 +3,7 @@
 /* globals define, app, utils, socket, config, ajaxify, bootbox */
 
 
-define('forum/register', ['translator'], function(trans) {
-	var translator = trans.Translator.create();
-
+define('forum/register', ['translator'], function(translator) {
 	var Register = {},
 		validationError = false,
 		successIcon = '';
@@ -90,14 +88,16 @@ define('forum/register', ['translator'], function(trans) {
 						if (data.referrer) {
 							window.location.href = data.referrer;
 						} else if (data.message) {
-							translator.translate(data.message).then(function(msg) {
-								bootbox.alert(msg);
-								ajaxify.go('/');
+							require(['translator'], function(translator) {
+								translator.translate(data.message, function(msg) {
+									bootbox.alert(msg);
+									ajaxify.go('/');
+								});
 							});
 						}
 					},
 					error: function(data) {
-						translator.translate(data.responseText).then(function(translated) {
+						translator.translate(data.responseText, config.defaultLang, function(translated) {
 							if (data.status === 403 && data.responseText === 'Forbidden') {
 								window.location.href = config.relative_path + '/register?error=csrf-invalid';
 							} else {
@@ -208,7 +208,7 @@ define('forum/register', ['translator'], function(trans) {
 	}
 
 	function showError(element, msg) {
-		translator.translate(msg).then(function(msg) {
+		translator.translate(msg, function(msg) {
 			element.html(msg);
 			element.parent()
 				.removeClass('register-success')
@@ -219,7 +219,7 @@ define('forum/register', ['translator'], function(trans) {
 	}
 
 	function showSuccess(element, msg) {
-		translator.translate(msg).then(function(msg) {
+		translator.translate(msg, function(msg) {
 			element.html(msg);
 			element.parent()
 				.removeClass('register-danger')

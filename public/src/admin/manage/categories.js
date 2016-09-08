@@ -1,7 +1,7 @@
 "use strict";
 /*global define, socket, app, bootbox, templates, ajaxify, Sortable */
 
-define('admin/manage/categories', ['translator', 'vendor/jquery/serializeObject/jquery.ba-serializeobject.min'], function(translator) {
+define('admin/manage/categories', ['vendor/jquery/serializeObject/jquery.ba-serializeobject.min'], function() {
 	var	Categories = {}, newCategoryId = -1, sortables;
 
 	Categories.init = function() {
@@ -121,10 +121,10 @@ define('admin/manage/categories', ['translator', 'vendor/jquery/serializeObject/
 	}
 
 	function itemDragDidEnd(e) {
-		var isCategoryUpdate = parseInt(newCategoryId, 10) !== -1;
+		var isCategoryUpdate = (newCategoryId != -1);
 
 		//Update needed?
-		if((typeof e.newIndex !== 'undefined' && parseInt(e.oldIndex, 10) !== parseInt(e.newIndex), 10) || isCategoryUpdate){
+		if((e.newIndex != undefined && e.oldIndex != e.newIndex) || isCategoryUpdate){
 			var parentCategory = isCategoryUpdate ? sortables[newCategoryId] : sortables[e.from.dataset.cid],
 				modified = {}, i = 0, list = parentCategory.toArray(), len = list.length;
 

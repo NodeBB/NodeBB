@@ -99,7 +99,7 @@ define('forum/category', [
 		});
 	};
 
-	Category.navigatorCallback = function(topIndex, bottomIndex) {
+	Category.navigatorCallback = function(topIndex, bottomIndex, elementCount) {
 		return bottomIndex;
 	};
 

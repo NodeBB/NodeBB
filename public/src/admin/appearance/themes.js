@@ -1,7 +1,7 @@
 "use strict";
 /* global define, app, socket, bootbox, templates, config */
 
-define('admin/appearance/themes', ['translator'], function(translator) {
+define('admin/appearance/themes', function() {
 	var Themes = {};
 	
 	Themes.init = function() {

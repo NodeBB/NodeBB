@@ -2,8 +2,7 @@
 
 /* globals define, app, ajaxify, bootbox, socket, templates, utils, config */
 
-define('forum/topic/postTools', ['share', 'navigator', 'components', 'translator'], function(share, navigator, components, trans) {
-	var translator = trans.Translator.create();
+define('forum/topic/postTools', ['share', 'navigator', 'components', 'translator'], function(share, navigator, components, translator) {
 
 	var PostTools = {};
 
@@ -41,7 +40,7 @@ define('forum/topic/postTools', ['share', 'navigator', 'components', 'translator
 				data.posts.display_move_tools = data.posts.display_move_tools && index !== 0;
 
 				templates.parse('partials/topic/post-menu-list', data, function(html) {
-					translator.translate(html).then(function(html) {
+					translator.translate(html, function(html) {
 						dropdownMenu.html(html);
 						$(window).trigger('action:post.tools.load');
 					});
@@ -116,7 +115,7 @@ define('forum/topic/postTools', ['share', 'navigator', 'components', 'translator
 		}
 		if (usernames.length + data.otherCount > 6) {
 			usernames = usernames.join(', ').replace(/,/g, '|');
-			translator.translate('[[topic:users_and_others, ' + usernames + ', ' + data.otherCount + ']]').then(function(translated) {
+			translator.translate('[[topic:users_and_others, ' + usernames + ', ' + data.otherCount + ']]', function(translated) {
 				translated = translated.replace(/\|/g, ',');
 				doCreateTooltip(translated);
 			});
@@ -142,7 +141,7 @@ define('forum/topic/postTools', ['share', 'navigator', 'components', 'translator
 		});
 
 		$('.topic').on('click', '[component="topic/reply-as-topic"]', function() {
-			translator.translate('[[topic:link_back, ' + ajaxify.data.titleRaw + ', ' + config.relative_path + '/topic/' + ajaxify.data.slug + ']]').then(function(body) {
+			translator.translate('[[topic:link_back, ' + ajaxify.data.titleRaw + ', ' + config.relative_path + '/topic/' + ajaxify.data.slug + ']]', function(body) {
 				$(window).trigger('action:composer.topic.new', {
 					cid: ajaxify.data.cid,
 					body: body
@@ -378,7 +377,7 @@ define('forum/topic/postTools', ['share', 'navigator', 'components', 'translator
 			}
 
 			templates.parse('partials/modals/votes_modal', data, function(html) {
-				translator.translate(html).then(function(translated) {
+				translator.translate(html, function(translated) {
 					var dialog = bootbox.dialog({
 						title: 'Voters',
 						message: translated,
@@ -430,7 +429,7 @@ define('forum/topic/postTools', ['share', 'navigator', 'components', 'translator
 	}
 
 	function postAction(action, pid, tid) {
-		translator.translate('[[topic:post_' + action + '_confirm]]').then(function(msg) {
+		translator.translate('[[topic:post_' + action + '_confirm]]', function(msg) {
 			bootbox.confirm(msg, function(confirm) {
 				if (!confirm) {
 					return;
@@ -481,7 +480,7 @@ define('forum/topic/postTools', ['share', 'navigator', 'components', 'translator
 
 	function parseMoveModal(callback) {
 		templates.parse('partials/move_post_modal', {}, function(html) {
-			translator.translate(html).then(callback);
+			translator.translate(html, callback);
 		});
 	}
 
@@ -522,7 +521,7 @@ define('forum/topic/postTools', ['share', 'navigator', 'components', 'translator
 			return callback();
 		}
 
-		translator.translate('[[topic:stale.warning]]').then(function(translated) {
+		translator.translate('[[topic:stale.warning]]', function(translated) {
 			var warning = bootbox.dialog({
 					title: '[[topic:stale.title]]',
 					message: translated,
@@ -539,7 +538,7 @@ define('forum/topic/postTools', ['share', 'navigator', 'components', 'translator
 							label: '[[topic:stale.create]]',
 							className: 'btn-primary',
 							callback: function() {
-								translator.translate('[[topic:link_back, ' + ajaxify.data.title + ', ' + config.relative_path + '/topic/' + ajaxify.data.slug + ']]').then(function(body) {
+								translator.translate('[[topic:link_back, ' + ajaxify.data.title + ', ' + config.relative_path + '/topic/' + ajaxify.data.slug + ']]', function(body) {
 									$(window).trigger('action:composer.topic.new', {
 										cid: ajaxify.data.cid,
 										body: body

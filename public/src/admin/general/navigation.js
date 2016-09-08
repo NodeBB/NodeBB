@@ -1,7 +1,7 @@
 "use strict";
-/* global define, app, ajaxify, socket, templates, componentHandler */
+/* global define, app, ajaxify, socket, templates */
 
-define('admin/general/navigation', ['translator', 'iconSelect', 'jqueryui'], function(translator, iconSelect) {
+define('admin/general/navigation', ['translator', 'iconSelect', 'jqueryui'], function(translator, iconSelect, jqueryui) {
 	var navigation = {},
 		available;
 
@@ -77,7 +77,7 @@ define('admin/general/navigation', ['translator', 'iconSelect', 'jqueryui'], fun
 		templates.parse('admin/general/navigation', 'enabled', {enabled: [data]}, function(li) {
 			li = $(translator.unescape(li));
 			$('#enabled').append(li);
-			componentHandler.upgradeDom();
+			componentHandler.upgradeDom()
 		});
 	}
 

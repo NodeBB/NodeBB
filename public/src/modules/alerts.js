@@ -1,8 +1,7 @@
 'use strict';
 /* globals define, templates */
 
-define('alerts', ['translator', 'components'], function(trans, components) {
-	var translator = trans.Translator.create();
+define('alerts', ['translator', 'components'], function(translator, components) {
 	var module = {};
 
 	module.alert = function (params) {
@@ -21,7 +20,7 @@ define('alerts', ['translator', 'components'], function(trans, components) {
 
 	function createNew(params) {
 		templates.parse('alert', params, function(alertTpl) {
-			translator.translate(alertTpl).then(function(translatedHTML) {
+			translator.translate(alertTpl, function(translatedHTML) {
 				var alert = $('#' + params.alert_id);
 				if (alert.length) {
 					return updateAlert(alert, params);
@@ -72,7 +71,7 @@ define('alerts', ['translator', 'components'], function(trans, components) {
 		}
 
 		alert.children().fadeOut(100);
-		translator.translate(alert.html()).then(function(translatedHTML) {
+		translator.translate(alert.html(), function(translatedHTML) {
 			alert.children().fadeIn(100);
 			alert.html(translatedHTML);
 		});
