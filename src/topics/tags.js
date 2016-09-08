@@ -283,16 +283,42 @@ module.exports = function(Topics) {
 			});
 		}
 
+		findMatches(data.query, function(err, matches) {
+			if (err) {
+				return callback(err);
+			}
+			done(matches);
+		});
+	};
+
+	Topics.autocompleteTags = function(data, callback) {
+		if (!data || !data.query) {
+			return callback(null, []);
+		}
+
+		if (plugins.hasListeners('filter:topics.autocompleteTags')) {
+			return plugins.fireHook('filter:topics.autocompleteTags', {data: data}, function(err, data) {
+				if (err) {
+					return callback(err);
+				}
+				callback(null, data.matches);
+			});
+		}
+
+		findMatches(data.query, callback);
+	};
+
+	function findMatches(query, callback) {
 		db.getSortedSetRevRange('tags:topic:count', 0, -1, function(err, tags) {
 			if (err) {
 				return callback(err);
 			}
 
-			data.query = data.query.toLowerCase();
+			query = query.toLowerCase();
 
 			var matches = [];
 			for(var i=0; i<tags.length; ++i) {
-				if (tags[i].toLowerCase().startsWith(data.query)) {
+				if (tags[i].toLowerCase().startsWith(query)) {
 					matches.push(tags[i]);
 					if (matches.length > 19) {
 						break;
@@ -303,10 +329,9 @@ module.exports = function(Topics) {
 			matches = matches.sort(function(a, b) {
 				return a > b;
 			});
-
-			done(matches);
+			callback(null, matches);
 		});
-	};
+	}
 
 	Topics.searchAndLoadTags = function(data, callback) {
 		var searchResult = {
