@@ -406,31 +406,4 @@ var middleware;
 		], callback);
 	};
 
-	Plugins.clearRequireCache = function(next) {
-		var cached = Object.keys(require.cache);
-		async.waterfall([
-			async.apply(async.map, Plugins.libraryPaths, fs.realpath),
-			function(paths, next) {
-				paths = paths.map(function(pluginLib) {
-					var parent = path.dirname(pluginLib);
-					return cached.filter(function(libPath) {
-						return libPath.indexOf(parent) !== -1;
-					});
-				}).reduce(function(prev, cur) {
-					return prev.concat(cur);
-				});
-
-				Plugins.fireHook('filter:plugins.clearRequireCache', {paths: paths}, next);
-			},
-			function(data, next) {
-				for (var x=0,numPaths=data.paths.length;x<numPaths;x++) {
-					delete require.cache[data.paths[x]];
-				}
-				winston.verbose('[plugins] Plugin libraries removed from Node.js cache');
-
-				next();
-			}
-		], next);
-	};
-
 }(exports));
