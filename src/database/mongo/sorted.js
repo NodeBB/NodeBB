@@ -489,7 +489,6 @@ module.exports = function(db, module) {
 		pipeline.push({	$project: project });
 
 		db.collection('objects').aggregate(pipeline, function(err, data) {
-			console.log(data);
 			callback(err, Array.isArray(data) && data.length ? data[0].count : 0);
 		});
 	};
