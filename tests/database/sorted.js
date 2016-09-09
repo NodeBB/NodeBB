@@ -436,6 +436,16 @@ describe('Sorted Set methods', function() {
 		});
 	});
 
+	describe('sortedSetUnionCard', function() {
+		it('should return the number of elements in the union', function(done) {
+			db.sortedSetUnionCard(['sortedSetTest2', 'sortedSetTest3'], function(err, count) {
+				assert.ifError(err);
+				assert.equal(count, 3);
+				done();
+			});
+		});
+	});
+
 	describe('getSortedSetUnion()', function() {
 		it('should return an array of values from both sorted sets sorted by scores lowest to highest', function(done) {
 			db.getSortedSetUnion({sets: ['sortedSetTest2', 'sortedSetTest3'], start: 0, stop: -1}, function(err, values) {

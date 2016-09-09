@@ -232,6 +232,23 @@ module.exports = function(redisClient, module) {
 		multi.exec(callback);
 	};
 
+
+	module.sortedSetUnionCard = function(keys, callback) {
+		var tempSetName = 'temp_' + Date.now();
+
+		var multi = redisClient.multi();
+		multi.zunionstore([tempSetName, keys.length].concat(keys));
+		multi.zcard(tempSetName);
+		multi.del(tempSetName);
+		multi.exec(function(err, results) {
+			if (err) {
+				return callback(err);
+			}
+
+			callback(null, Array.isArray(results) && results.length ? results[1] : 0);
+		});
+	};
+
 	module.getSortedSetUnion = function(params, callback) {
 		params.method = 'zrange';
 		sortedSetUnion(params, callback);

@@ -474,6 +474,26 @@ module.exports = function(db, module) {
 		});
 	};
 
+	module.sortedSetUnionCard = function(keys, callback) {
+		if (!Array.isArray(keys) || !keys.length) {
+			return callback(null, 0);
+		}
+
+		var pipeline = [
+			{ $match: { _key: {$in: keys} } },
+			{ $group: { _id: {value: '$value' } } },
+			{ $group: { _id: null,  count: { $sum: 1 } } }
+		];
+
+		var project = { _id: 0, count: '$count' };
+		pipeline.push({	$project: project });
+
+		db.collection('objects').aggregate(pipeline, function(err, data) {
+			console.log(data);
+			callback(err, Array.isArray(data) && data.length ? data[0].count : 0);
+		});
+	};
+
 	module.getSortedSetUnion = function(params, callback) {
 		params.sort = 1;
 		getSortedSetUnion(params, callback);
@@ -483,7 +503,6 @@ module.exports = function(db, module) {
 		params.sort = -1;
 		getSortedSetUnion(params, callback);
 	};
-
 
 	function getSortedSetUnion(params, callback) {
 		if (!Array.isArray(params.sets) || !params.sets.length) {
@@ -629,7 +648,7 @@ module.exports = function(db, module) {
 		getSortedSetRevIntersect(params, callback);
 	};
 
-	function getSortedSetRevIntersect (params, callback) {
+	function getSortedSetRevIntersect(params, callback) {
 		var sets = params.sets;
 		var start = params.hasOwnProperty('start') ? params.start : 0;
 		var stop = params.hasOwnProperty('stop') ? params.stop : -1;
