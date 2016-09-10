@@ -119,6 +119,6 @@
     "info.no-ban-history": "Ten użytkownik nigdy nie był zbanowany",
     "info.banned-until": "Zbanowany do %1",
     "info.banned-permanently": "Zbanowany permanentnie",
-    "info.banned-reason-label": "Reason",
-    "info.banned-no-reason": "No reason given."
+    "info.banned-reason-label": "Powód",
+    "info.banned-no-reason": "Nie podano powodu."
 }
