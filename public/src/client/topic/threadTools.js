@@ -8,8 +8,7 @@ define('forum/topic/threadTools', [
 	'forum/topic/delete-posts',
 	'components',
 	'translator'
-], function(fork, move, deletePosts, components, trans) {
-	var translator = trans.Translator.create();
+], function(fork, move, deletePosts, components, translator) {
 
 	var ThreadTools = {};
 
@@ -143,7 +142,7 @@ define('forum/topic/threadTools', [
 				}
 
 				templates.parse('partials/topic/topic-menu-list', data, function(html) {
-					translator.translate(html).then(function(html) {
+					translator.translate(html, function(html) {
 						dropdownMenu.html(html);
 						$(window).trigger('action:topic.tools.load');
 					});
@@ -153,7 +152,7 @@ define('forum/topic/threadTools', [
 	}
 
 	function topicCommand(command, tid) {
-		translator.translate('[[topic:thread_tools.' + command + '_confirm]]').then(function(msg) {
+		translator.translate('[[topic:thread_tools.' + command + '_confirm]]', function(msg) {
 			bootbox.confirm(msg, function(confirm) {
 				if (!confirm) {
 					return;

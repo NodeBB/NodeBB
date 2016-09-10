@@ -13,6 +13,7 @@
 	} else if (typeof module === 'object' && module.exports) {
 		// Node
 		(function () {
+			require('promise-polyfill');
 			var fs = require('fs');
 			var path = require('path');
 			var winston = require('winston');

@@ -1,9 +1,10 @@
 "use strict";
-/*global define, templates, socket, ajaxify, app, bootbox, utils, config */
+/*global define, templates, socket, ajaxify, app, admin, bootbox, utils, config */
 
 define('admin/manage/groups', [
-	'translator'
-], function(translator) {
+	'translator',
+	'components'
+], function(translator, components) {
 	var	Groups = {};
 
 	var intervalId = 0;
@@ -31,9 +32,10 @@ define('admin/manage/groups', [
 
 		createModalGo.on('click', function() {
 			var submitObj = {
-				name: createGroupName.val(),
-				description: $('#create-group-desc').val()
-			};
+					name: createGroupName.val(),
+					description: $('#create-group-desc').val()
+				},
+				errorText;
 
 			socket.emit('admin.groups.create', submitObj, function(err) {
 				if (err) {
@@ -66,7 +68,7 @@ define('admin/manage/groups', [
 					if (confirm) {
 						socket.emit('groups.delete', {
 							groupName: groupName
-						}, function(err) {
+						}, function(err, data) {
 							if(err) {
 								return app.alertError(err.message);
 							}
