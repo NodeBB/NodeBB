@@ -20,7 +20,7 @@ interface Translator {
      * @param namespace - The file name of the translation namespace
      * @param key - The key of the specific translation to getJSON
      */
-    getTranslation(namespace: string, key?:string): Promise<Object|string>;
+    getTranslation(namespace: string, key?: string): Promise<Object|string>;
 }
 
 interface TranslatorFactory {
