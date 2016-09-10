@@ -5,7 +5,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 	<link rel="stylesheet" type="text/css" href="{relative_path}/admin.css?{cache-buster}" />
-	<link rel="stylesheet" type="text/css" href="{relative_path}/vendor/mdl/mdl.min.css?{cache-buster}" />
+	<link rel="stylesheet" type="text/css" href="{relative_path}/vendor/mdl/material.min.css?{cache-buster}" />
 	<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 
 	<script>
@@ -27,7 +27,7 @@
 		<script>__lt_ie_9__ = 1;</script>
 	<![endif]-->
 
-		<script src="https://storage.googleapis.com/code.getmdl.io/1.0.3/material.min.js"></script>
+		<script type="text/javascript" src="{relative_path}/vendor/mdl/material.min.js?{cache-buster}"></script>
 		<script type="text/javascript" src="{relative_path}/vendor/jquery/sortable/Sortable.js?{cache-buster}"></script>
 		<script type="text/javascript" src="{relative_path}/acp.min.js?{cache-buster}"></script>
 		<script type="text/javascript" src="{relative_path}/vendor/colorpicker/colorpicker.js?{cache-buster}"></script>
