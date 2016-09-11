@@ -53,13 +53,9 @@ SocketModules.chats.newRoom = function(socket, data, callback) {
 	if (!data) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
-	var now = Date.now();
-	// Websocket rate limiting
-	socket.lastChatMessageTime = socket.lastChatMessageTime || 0;
-	if (now - socket.lastChatMessageTime < 200) {
+
+	if (rateLimitExceeded(socket)) {
 		return callback(new Error('[[error:too-many-messages]]'));
-	} else {
-		socket.lastChatMessageTime = now;
 	}
 
 	Messaging.canMessageUser(socket.uid, data.touid, function(err) {
@@ -76,14 +72,8 @@ SocketModules.chats.send = function(socket, data, callback) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
 
-	var now = Date.now();
-
-	// Websocket rate limiting
-	socket.lastChatMessageTime = socket.lastChatMessageTime || 0;
-	if (now - socket.lastChatMessageTime < 200) {
+	if (rateLimitExceeded(socket)) {
 		return callback(new Error('[[error:too-many-messages]]'));
-	} else {
-		socket.lastChatMessageTime = now;
 	}
 
 	async.waterfall([
@@ -100,7 +90,7 @@ SocketModules.chats.send = function(socket, data, callback) {
 			Messaging.canMessageRoom(socket.uid, data.roomId, next);
 		},
 		function (next) {
-			Messaging.sendMessage(socket.uid, data.roomId, data.message, now, next);
+			Messaging.sendMessage(socket.uid, data.roomId, data.message, Date.now(), next);
 		},
 		function (message, next) {
 			Messaging.notifyUsersInRoom(socket.uid, data.roomId, message);
@@ -109,6 +99,18 @@ SocketModules.chats.send = function(socket, data, callback) {
 		}
 	], callback);
 };
+
+function rateLimitExceeded(socket) {
+	var now = Date.now();
+	socket.lastChatMessageTime = socket.lastChatMessageTime || 0;
+	var delay = meta.config.hasOwnProperty('chatMessageDelay') ? parseInt(meta.config.chatMessageDelay, 10) : 200;
+	if (now - socket.lastChatMessageTime < delay) {
+		return true;
+	} else {
+		socket.lastChatMessageTime = now;
+	}
+	return false;
+}
 
 SocketModules.chats.loadRoom = function(socket, data, callback) {
 	if (!data || !data.roomId) {
