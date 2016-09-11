@@ -98,8 +98,9 @@
 
 			this.lang = language;
 			this.translations = {};
-			this.load = load;
 		}
+
+		Translator.prototype.load = load;
 
 		/**
 		 * Parse the translation instructions into the language of the Translator instance
@@ -195,7 +196,10 @@
 				return self.translate(arg);
 			});
 
-			return Promise.all([translation].concat(argsToTranslate)).then(function (result) {
+			// so we can await all promises at once
+			argsToTranslate.unshift(translation);
+
+			return Promise.all(argsToTranslate).then(function (result) {
 				var translated = result[0];
 				var translatedArgs = result.slice(1);
 
@@ -339,9 +343,7 @@
 		 */
 		getTranslations: function getTranslations(language, filename, callback) {
 			callback = callback || function () {};
-			Translator.create(language).getTranslation(filename).then(function (translation) {
-				callback(translation);
-			});
+			Translator.create(language).getTranslation(filename).then(callback);
 		},
 
 		/**
