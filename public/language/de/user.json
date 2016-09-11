@@ -6,7 +6,7 @@
     "postcount": "Beiträge",
     "email": "E-Mail",
     "confirm_email": "E-Mail bestätigen",
-    "account_info": "Account Info",
+    "account_info": "Kontoinformationen",
     "ban_account": "Konto sperren",
     "ban_account_confirm": "Bist du sicher, dass du diesen Benutzer sperren möchtest?",
     "unban_account": "Konto entsperren",
@@ -89,7 +89,7 @@
     "topics_per_page": "Themen pro Seite",
     "posts_per_page": "Beiträge pro Seite",
     "notification_sounds": "Ton abspielen, wenn du eine Benachrichtigung erhältst",
-    "notifications_and_sounds": "Notifications & Sounds",
+    "notifications_and_sounds": "Benachrichtigungen & Klänge",
     "incoming-message-sound": "Incoming message sound",
     "outgoing-message-sound": "Outgoing message sound",
     "notification-sound": "Notification sound",
@@ -119,6 +119,6 @@
     "info.no-ban-history": "This user has never been banned",
     "info.banned-until": "Banned until %1",
     "info.banned-permanently": "Banned permanently",
-    "info.banned-reason-label": "Reason",
-    "info.banned-no-reason": "No reason given."
+    "info.banned-reason-label": "Grund",
+    "info.banned-no-reason": "Kein Grund angegeben."
 }
