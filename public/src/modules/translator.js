@@ -102,17 +102,24 @@
 
 		Translator.prototype.load = load;
 
-		/**
+				/**
 		 * Parse the translation instructions into the language of the Translator instance
 		 * @param {string} str - Source string
 		 * @returns {Promise<string>}
 		 */
 		Translator.prototype.translate = function translate(str) {
+			// current cursor position
 			var cursor = 0;
+			// last break of the input string
 			var lastBreak = 0;
+			// length of the input string
 			var len = str.length;
+			// array to hold the promises for the translations
+			// and the strings of untranslated text in between
 			var toTranslate = [];
 
+			// split a translator string into an array of tokens
+			// but don't split by commas inside other translator strings
 			function split(text) {
 				var len = text.length;
 				var arr = [];
@@ -138,39 +145,72 @@
 				return arr;
 			}
 
+			// the loooop, we'll go to where the cursor
+			// is equal to the length of the string since
+			// slice doesn't include the ending index
 			while (cursor + 2 <= len) {
+				// if the current position in the string looks 
+				// like the beginning of a translation string
 				if (str.slice(cursor, cursor + 2) === '[[') {
+					// split the string from the last break
+					// to the character before the cursor
+					// add that to the result array
 					toTranslate.push(str.slice(lastBreak, cursor));
+					// set the cursor position past the beginning 
+					// brackets of the translation string
 					cursor += 2;
+					// set the last break to our current 
+					// spot since we just broke the string
 					lastBreak = cursor;
 
+					// the current level of nesting of the translation strings
 					var level = 0;
+					var sliced;
 
 					while (cursor + 2 <= len) {
-						if (str.slice(cursor, cursor + 2) === '[[') {
+						sliced = str.slice(cursor, cursor + 2);
+						// if we're at the beginning of another translation string,
+						// we're nested, so add to our level
+						if (sliced === '[[') {
 							level += 1;
-							cursor += 1;
-						} else if (str.slice(cursor, cursor + 2) === ']]') {
+							cursor += 2;
+						// if we're at the end of a translation string
+						} else if (sliced === ']]') {
+							// if we're at the base level, then this is the end
 							if (level === 0) {
+								// so grab the name and args
 								var result = split(str.slice(lastBreak, cursor));
-								var key = result[0];
+								var name = result[0];
 								var args = result.slice(1);
 
-								toTranslate.push(this.translateKey(key, args));
+								// add the translation promise to the array
+								toTranslate.push(this.translateKey(name, args));
+								// skip past the ending brackets
 								cursor += 2;
+								// set this as our last break
 								lastBreak = cursor;
+								// and we're no longer in a translation string,
+								// so continue with the main loop
 								break;
 							}
+							// otherwise we lower the level
 							level -= 1;
+							// and skip past the ending brackets
+							cursor += 2;
+						} else {
+							// otherwise just move to the next character
 							cursor += 1;
 						}
-						cursor += 1;
 					}
 				}
+				// move to the next character
 				cursor += 1;
 			}
+
+			// add the remaining text after the last translation string
 			toTranslate.push(str.slice(lastBreak, cursor + 2));
 
+			// and return a promise for the concatenated translated string
 			return Promise.all(toTranslate).then(function (translated) {
 				return translated.join('');
 			});
