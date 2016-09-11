@@ -129,27 +129,42 @@ describe('new Translator(language)', function(){
 	});
 });
 
+describe('Translator modules', function(){
+	it('should work', function(done){
+		Translator.registerModule('test_translator', function(){
+			return function(key, args){
+				if (key === 'one') {
+					return (1 + parseInt(args[0], 10) + parseInt(args[1], 10)).toString();
+				}
+				return '2';
+			};
+		});
+		var t = new Translator('en_GB');
+		t.translate('[[test_translator:one, 2, 3]]').then(function(translation){
+			assert.strictEqual(translation, '6');
+			done();
+		});
+	});
+});
+
 describe('Translator.create()', function(){
-	describe('.translate()', function(){
-		it('should return an instance of Translator', function(done) {
-            var translator = Translator.create('en_GB');
+	it('should return an instance of Translator', function(done) {
+		var translator = Translator.create('en_GB');
 
-			assert(translator instanceof Translator);
-			done();
-		});
-		it('should return the same object for the same language', function(done) {
-            var one = Translator.create('de');
-			var two = Translator.create('de');
+		assert(translator instanceof Translator);
+		done();
+	});
+	it('should return the same object for the same language', function(done) {
+		var one = Translator.create('de');
+		var two = Translator.create('de');
 
-			assert.strictEqual(one, two);
-			done();
-		});
-		it('should default to defaultLang', function(done) {
-            var translator = Translator.create();
+		assert.strictEqual(one, two);
+		done();
+	});
+	it('should default to defaultLang', function(done) {
+		var translator = Translator.create();
 
-			assert.strictEqual(translator.lang, 'en_GB');
-			done();
-		});
-
+		assert.strictEqual(translator.lang, 'en_GB');
+		done();
 	});
 });
