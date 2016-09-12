@@ -5,6 +5,9 @@ var assert = require('assert');
 var translator = require('../public/src/modules/translator.js');
 
 var plugins = require('../src/plugins');
+var languages = require('../src/languages');
+
+languages.init(function(){});
 
 describe('translator adaptor', function(){
 	describe('.translate()', function(){
