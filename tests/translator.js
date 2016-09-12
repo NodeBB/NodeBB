@@ -5,8 +5,11 @@ var assert = require('assert');
 var translator = require('../public/src/modules/translator.js');
 
 var plugins = require('../src/plugins');
+var languages = require('../src/languages');
 
-describe('Translator', function(){
+languages.init(function(){});
+
+describe('translator adaptor', function(){
 	describe('.translate()', function(){
 		it('should handle basic translations', function(done) {
 			translator.translate('[[global:home]]', function(translated) {

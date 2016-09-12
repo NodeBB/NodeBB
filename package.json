@@ -13,7 +13,8 @@
     "start": "node loader.js",
     "lint": "eslint --cache .",
     "pretest": "npm run lint",
-    "test": "./node_modules/.bin/istanbul cover ./node_modules/.bin/_mocha -- ./tests -t 10000"
+    "test": "./node_modules/.bin/istanbul cover ./node_modules/.bin/_mocha -- ./tests -t 10000",
+    "test-windows": "./node_modules/.bin/_mocha.cmd ./tests -t 10000"
   },
   "dependencies": {
     "async": "~1.5.0",
@@ -69,6 +70,7 @@
     "passport": "^0.3.0",
     "passport-local": "1.0.0",
     "postcss": "^5.0.13",
+    "promise-polyfill": "^6.0.2",
     "prompt": "^1.0.0",
     "redis": "~2.6.2",
     "request": "^2.44.0",
