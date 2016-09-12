@@ -118,5 +118,7 @@
     "info.ban-history": "Historique de bannissement récent",
     "info.no-ban-history": "Cet utilisateur n'a jamais été banni",
     "info.banned-until": "Banni jusqu'au %1",
-    "info.banned-permanently": "Banni de façon permanente"
+    "info.banned-permanently": "Banni de façon permanente",
+    "info.banned-reason-label": "Raison",
+    "info.banned-no-reason": "Aucune raison donnée"
 }

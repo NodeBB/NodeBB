@@ -118,5 +118,7 @@
     "info.ban-history": "Recente verban-geschiedenis",
     "info.no-ban-history": "Deze gebruiker is nooit eerder verbannen",
     "info.banned-until": "Verbannen tot %1",
-    "info.banned-permanently": "Voor altijd verbannen"
+    "info.banned-permanently": "Voor altijd verbannen",
+    "info.banned-reason-label": "Reason",
+    "info.banned-no-reason": "No reason given."
 }

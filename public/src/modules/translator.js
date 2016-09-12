@@ -14,63 +14,17 @@
 		// Node
 		(function () {
 			require('promise-polyfill');
-			var fs = require('fs');
-			var path = require('path');
-			var winston = require('winston');
-			var plugins = require('../../../src/plugins');
+			var languages = require('../../../src/languages');
 
-			function exists(filePath) {
+			function loadServer(language, filename) {
 				return new Promise(function (resolve, reject) {
-					fs.stat(filePath, function (err, stats) {
-						if (err) {
-							if (err.code === 'ENOENT') {
-								return resolve(false);
-							}
-							return reject(err);
-						}
-						return resolve(stats.isFile());
-					});
-				});
-			}
-
-			function readFile(filePath) {
-				return new Promise(function (resolve, reject) {
-					fs.readFile(filePath, {
-						encoding: 'utf-8'
-					}, function (err, data) {
+					languages.get(language, filename + '.json', function (err, data) {
 						if (err) {
 							reject(err);
 						} else {
 							resolve(data);
 						}
 					});
-				});
-			}
-
-			function loadServer(language, filename) {
-				var filePath = path.join(__dirname, '../../language', language, filename + '.json');
-				return exists(filePath).then(function (fileExists) {
-					if (!fileExists) {
-						if (plugins.customLanguageFallbacks[filename]) {
-							return readFile(plugins.customLanguageFallbacks[filename]).catch(function () {
-								winston.error('[translator] Could not load fallback language file for "' + filename + '"');
-							});
-						}
-						winston.warn('[translator] Language "' + language + '" ' + 'not found. Defaulting to "en_GB"');
-						language = 'en_GB';
-					}
-					return readFile(filePath);
-				}).then(function (data) {
-					try {
-						var parsed = JSON.parse(data.toString());
-						return parsed;
-					} catch (e) {
-						winston.error('Could not parse "' + filename + '.json", syntax error? Skipping...');
-						return {};
-					}
-				}).catch(function (err) {
-					winston.error('[translator] Could not load "' + filename + '": ' + err.message + '. Skipping...');
-					return {};
 				});
 			}
 

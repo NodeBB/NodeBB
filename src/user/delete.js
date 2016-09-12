@@ -94,7 +94,10 @@ module.exports = function(User) {
 							'users:reputation',
 							'users:banned',
 							'users:online',
-							'users:notvalidated'
+							'users:notvalidated',
+							'digest:day:uids',
+							'digest:week:uids',
+							'digest:month:uids'
 						], uid, next);
 					},
 					function(next) {
