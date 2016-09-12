@@ -4,6 +4,7 @@
 var assert = require('assert');
 var translator = require('../public/src/modules/translator.js');
 
+var plugins = require('../src/plugins');
 
 describe('Translator', function(){
 	describe('.translate()', function(){
@@ -95,5 +96,18 @@ describe('Translator', function(){
 			});
 		});
 
+		it('should properly handle translations added by plugins', function(done) {
+			plugins.customLanguages = {
+				'en_GB/myplugin.json': {
+					'foo': 'bar',
+					'bar': 'baz, and %1'
+				}
+			};
+
+			translator.translate('[[myplugin:foo]], [[myplugin:bar, quux]]', function(translated) {
+				assert.strictEqual(translated, 'bar, baz, and quux');
+				done();
+			});
+		});
 	});
 });
