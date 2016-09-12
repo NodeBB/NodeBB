@@ -4,6 +4,10 @@ var topics = require('../../topics');
 var utils = require('../../../public/src/utils');
 
 module.exports = function(SocketTopics) {
+	SocketTopics.autocompleteTags = function(socket, data, callback) {
+		topics.autocompleteTags(data, callback);
+	};
+
 	SocketTopics.searchTags = function(socket, data, callback) {
 		topics.searchTags(data, callback);
 	};

@@ -118,5 +118,7 @@
     "info.ban-history": "最近封禁历史",
     "info.no-ban-history": "该用户从未被封禁",
     "info.banned-until": "封禁到 %1",
-    "info.banned-permanently": "永久封禁"
+    "info.banned-permanently": "永久封禁",
+    "info.banned-reason-label": "Reason",
+    "info.banned-no-reason": "No reason given."
 }

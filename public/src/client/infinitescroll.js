@@ -52,7 +52,11 @@ define('forum/infinitescroll', function() {
 			return;
 		}
 		loadingMore = true;
-		socket.emit(method, data, function(err, data) {
+
+		var hookData = {method: method, data: data};
+		$(window).trigger('action:infinitescroll.loadmore', hookData);
+
+		socket.emit(hookData.method, hookData.data, function(err, data) {
 			if (err) {
 				loadingMore = false;
 				return app.alertError(err.message);

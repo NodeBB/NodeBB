@@ -118,5 +118,7 @@
     "info.ban-history": "Hiljutiste keeldude ajalugu",
     "info.no-ban-history": "Seda kasutajat pole kunagi keelustatud",
     "info.banned-until": "Keelustatud kuni %1",
-    "info.banned-permanently": "Igavesti keelustatud"
+    "info.banned-permanently": "Igavesti keelustatud",
+    "info.banned-reason-label": "Reason",
+    "info.banned-no-reason": "No reason given."
 }

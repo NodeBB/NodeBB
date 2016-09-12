@@ -118,5 +118,7 @@
     "info.ban-history": "Yasaklama Olayları",
     "info.no-ban-history": "Bu kullanıcı hiç yasaklanmadı",
     "info.banned-until": "Yasaklama süresi %1",
-    "info.banned-permanently": "Kalıcı yasakla"
+    "info.banned-permanently": "Kalıcı yasakla",
+    "info.banned-reason-label": "Gerekçe",
+    "info.banned-no-reason": "Gerekçe belirtilmedi."
 }

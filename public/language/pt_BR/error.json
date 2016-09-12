@@ -55,8 +55,8 @@
     "post-delete-duration-expired-hours-minutes": "Você só pode deletar posts por %1 hora(s) e %2 minutos(s) depois de postar",
     "post-delete-duration-expired-days": "Você só pode deletar posts por %1 dia(s) depois de postar",
     "post-delete-duration-expired-days-hours": "Você só pode deletar posts por %1 dia(s) e %2 hora(s) depois de postar",
-    "cant-delete-topic-has-reply": "You can't delete your topic after it has a reply",
-    "cant-delete-topic-has-replies": "You can't delete your topic after it has %1 replies",
+    "cant-delete-topic-has-reply": "Você não pode excluir o seu tópico após ele ter uma resposta",
+    "cant-delete-topic-has-replies": "Você não pode excluir o seu tópico após ele ter %1 respostas",
     "content-too-short": "Por favor digite um post maior. Posts precisam conter ao menos %1 caractere(s).",
     "content-too-long": "Por favor digite um post mais curto. Posts não podem ser maiores que %1 caractere(s)",
     "title-too-short": "Por favor digite um título maior. Títulos devem conter no mínimo %1 caractere(s)",
@@ -124,6 +124,6 @@
     "cant-kick-self": "Você não pode kickar a si mesmo do grupo",
     "no-users-selected": "Nenhuma escolha de usuário(s) foi feita",
     "invalid-home-page-route": "Rota de página inicial inválida",
-    "invalid-session": "Session Mismatch",
-    "invalid-session-text": "It looks like your login session is no longer active, or no longer matches with the server. Please refresh this page."
+    "invalid-session": "Erro de Sessão",
+    "invalid-session-text": "Parece que sua sessão de login não está mais ativa, ou não combina mais com a do servidor. Por gentileza, recarregue esta página."
 }
