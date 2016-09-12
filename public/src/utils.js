@@ -267,21 +267,24 @@
 		},
 
 		findBootstrapEnvironment: function() {
-			//http://stackoverflow.com/questions/14441456/how-to-detect-which-device-view-youre-on-using-twitter-bootstrap-api
-			var envs = ['xs', 'sm', 'md', 'lg'],
-				$el = $('<div>');
+			var hash = {
+				xs: 768,
+				sm: 992,
+				md: 1200
+			};
 
-			$el.appendTo($('body'));
+			var width = window.innerWidth;
 
-			for (var i = envs.length - 1; i >= 0; i--) {
-				var env = envs[i];
-
-				$el.addClass('hidden-'+env);
-				if ($el.is(':hidden')) {
-					$el.remove();
-					return env;
-				}
+			if (width < hash.xs) {
+				return 'xs';
 			}
+			if (width < hash.sm) {
+				return 'sm';
+			}
+			if (width < hash.md) {
+				return 'md';
+			}
+			return 'lg';
 		},
 
 		isMobile: function() {
