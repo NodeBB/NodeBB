@@ -15,6 +15,9 @@
 			<th>Email</th>
 			<th class="hidden-xs">IP</th>
 			<th class="hidden-xs">Time</th>
+			<!-- BEGIN customHeaders -->
+			<th class="hidden-xs">{customHeaders.label}</th>
+			<!-- END customHeaders -->
 			<th></th>
 		</tr>
 		<!-- BEGIN users -->
@@ -55,6 +58,11 @@
 			<td class="hidden-xs">
 				<span class="timeago" title="{users.timestampISO}"></span>
 			</td>
+
+			<!-- BEGIN users.customRows -->
+			<td class="hidden-xs">{users.customRows.value}</td>
+			<!-- END users.customRows -->
+
 			<td>
 				<div class="btn-group pull-right">
 					<button class="btn btn-success btn-xs" data-action="accept"><i class="fa fa-check"></i></button>

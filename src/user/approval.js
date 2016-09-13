@@ -11,7 +11,7 @@ var notifications = require('../notifications');
 var groups = require('../groups');
 var translator = require('../../public/src/modules/translator');
 var utils = require('../../public/src/utils');
-
+var plugins = require('../plugins');
 
 module.exports = function(User) {
 
@@ -31,8 +31,10 @@ module.exports = function(User) {
 					ip: userData.ip,
 					hashedPassword: hashedPassword
 				};
-
-				db.setObject('registration:queue:name:' + userData.username, data, next);
+				plugins.fireHook('filter:user.addToApprovalQueue', {data: data, userData: userData}, next);
+			},
+			function(results, next) {
+				db.setObject('registration:queue:name:' + userData.username, results.data, next);
 			},
 			function(next) {
 				db.sortedSetAdd('registration:queue', Date.now(), userData.username, next);
@@ -206,6 +208,12 @@ module.exports = function(User) {
 						next(err, user);
 					});
 				}, next);
+			},
+			function(users, next) {
+				plugins.fireHook('filter:user.getRegistrationQueue', {users: users}, next);
+			},
+			function(results, next) {
+				next(null, results.users);
 			}
 		], callback);
 	};
