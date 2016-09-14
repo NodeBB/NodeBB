@@ -45,6 +45,9 @@ helpers.getUserDataByUserSlug = function(userslug, callerUID, callback) {
 				profile_links: function(next) {
 					plugins.fireHook('filter:user.profileLinks', [], next);
 				},
+				profile_menu: function(next) {
+					plugins.fireHook('filter:user.profileMenu', {uid: uid, callerUID: callerUID, links: []}, next);
+				},
 				groups: function(next) {
 					groups.getUserGroups([uid], next);
 				},
@@ -99,7 +102,8 @@ helpers.getUserDataByUserSlug = function(userslug, callerUID, callback) {
 			userData['reputation:disabled'] = parseInt(meta.config['reputation:disabled'], 10) === 1;
 			userData['downvote:disabled'] = parseInt(meta.config['downvote:disabled'], 10) === 1;
 			userData['email:confirmed'] = !!parseInt(userData['email:confirmed'], 10);
-			userData.profile_links = filterLinks(results.profile_links, isSelf);
+			userData.profile_links = filterLinks(results.profile_links.concat(results.profile_menu.links), isSelf);
+
 			userData.sso = results.sso.associations;
 			userData.status = user.getStatus(userData);
 			userData.banned = parseInt(userData.banned, 10) === 1;

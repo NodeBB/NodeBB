@@ -6,7 +6,8 @@ var winston = require('winston'),
 module.exports = function(Plugins) {
 	Plugins.deprecatedHooks = {
 		'filter:user.custom_fields': null,	// remove in v1.1.0
-		'filter:post.save': 'filter:post.create'
+		'filter:post.save': 'filter:post.create',
+		'filter:user.profileLinks': 'filter:user.profileMenu'
 	};
 	/*
 		`data` is an object consisting of (* is required):
