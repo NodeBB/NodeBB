@@ -1,6 +1,6 @@
 'use strict';
 
-/* globals define, app, socket, templates, translator */
+/* globals define, app, socket, templates */
 
 define('forum/topic/flag', [], function() {
 
@@ -34,7 +34,9 @@ define('forum/topic/flag', [], function() {
 
 	function parseModal(callback) {
 		templates.parse('partials/modals/flag_post_modal', {}, function(html) {
-			translator.translate(html, callback);
+			require(['translator'], function(translator) {
+				translator.translate(html, callback);
+			});
 		});
 	}
 

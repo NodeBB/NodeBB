@@ -1,6 +1,6 @@
 'use strict';
 
-/* globals define, app, socket, templates, translator */
+/* globals define, app, socket, templates */
 
 define('forum/topic/move', function() {
 
@@ -46,14 +46,16 @@ define('forum/topic/move', function() {
 
 	function parseModal(categories, callback) {
 		templates.parse('partials/move_thread_modal', {categories: []}, function(html) {
-			translator.translate(html, function(html) {
-				modal = $(html);
-				categories.forEach(function(category) {
-					if (!category.link) {
-						buildRecursive(modal.find('.category-list'), category, '');
-					}
+			require(['translator'], function(translator) {
+				translator.translate(html, function(html) {
+					modal = $(html);
+					categories.forEach(function(category) {
+						if (!category.link) {
+							buildRecursive(modal.find('.category-list'), category, '');
+						}
+					});
+					callback();
 				});
-				callback();
 			});
 		});
 	}
