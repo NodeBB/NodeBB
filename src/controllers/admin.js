@@ -16,7 +16,7 @@ var adminController = {
 	logs: require('./admin/logs'),
 	errors: require('./admin/errors'),
 	database: require('./admin/database'),
-	postCache: require('./admin/postCache'),
+	cache: require('./admin/cache'),
 	plugins: require('./admin/plugins'),
 	languages: require('./admin/languages'),
 	settings: require('./admin/settings'),

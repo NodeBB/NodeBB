@@ -8,9 +8,20 @@ var user = require('../user');
 var utils = require('../../public/src/utils');
 var plugins = require('../plugins');
 var notifications = require('../notifications');
-var db = require('./../database');
+var db = require('../database');
+
+var pubsub = require('../pubsub');
+var LRU = require('lru-cache');
+
+var cache = LRU({
+	max: 200,
+	maxAge: 1000 * 60 * 60
+});
+
 
 module.exports = function(Groups) {
+
+	Groups.cache = cache;
 
 	Groups.join = function(groupName, uid, callback) {
 		callback = callback || function() {};
@@ -69,6 +80,7 @@ module.exports = function(Groups) {
 				async.parallel(tasks, next);
 			},
 			function(results, next) {
+				clearCache(uid);
 				setGroupTitleIfNotSet(groupName, uid, next);
 			},
 			function(next) {
@@ -222,6 +234,7 @@ module.exports = function(Groups) {
 				], next);
 			},
 			function(results, next) {
+				clearCache(uid);
 				Groups.getGroupFields(groupName, ['hidden', 'memberCount'], next);
 			},
 			function(groupData, next) {
@@ -296,26 +309,130 @@ module.exports = function(Groups) {
 		}), callback);
 	};
 
+	Groups.resetCache = function() {
+		pubsub.publish('group:cache:reset');
+		cache.reset();
+	};
+
+	pubsub.on('group:cache:reset', function() {
+		cache.reset();
+	});
+
+	function clearCache(uid) {
+		pubsub.publish('group:cache:del', {uid: uid});
+		cache.del(uid);
+	}
+
+	pubsub.on('group:cache:del', function(data) {
+		cache.del(data.uid);
+	});
+
 	Groups.isMember = function(uid, groupName, callback) {
 		if (!uid || parseInt(uid, 10) <= 0) {
 			return callback(null, false);
 		}
-		db.isSortedSetMember('group:' + groupName + ':members', uid, callback);
+
+		var cachedData = cache.get(uid);
+
+		if (cachedData && cachedData.hasOwnProperty(groupName)) {
+			return process.nextTick(callback, null, cachedData[groupName]);
+		}
+
+		db.isSortedSetMember('group:' + groupName + ':members', uid, function(err, isMember) {
+			if (err) {
+				return callback(err);
+			}
+
+			cachedData = cachedData || {};
+			cachedData[groupName] = isMember;
+			cache.set(uid, cachedData);
+			callback(null, isMember);
+		});
 	};
 
 	Groups.isMembers = function(uids, groupName, callback) {
-		db.isSortedSetMembers('group:' + groupName + ':members', uids, callback);
+		if (!groupName || !uids.length) {
+			return callback(null, uids.map(function() {return false;}));
+		}
+
+		var cachedUids = {};
+		var nonCachedUids = [];
+		uids.forEach(function(uid) {
+			cachedUids[uid] = cache.get(uid);
+			if (!cachedUids[uid] || !cachedUids[uid].hasOwnProperty(groupName)) {
+				nonCachedUids.push(uid);
+			}
+		});
+
+		if (!nonCachedUids.length) {
+			var result = uids.map(function(uid) {
+				return cachedUids[uid] && cachedUids[uid][groupName];
+			});
+			return process.nextTick(callback, null, result);
+		}
+
+		db.isSortedSetMembers('group:' + groupName + ':members', nonCachedUids, function(err, isMembers) {
+			if (err) {
+				return callback(err);
+			}
+
+			nonCachedUids.forEach(function(uid, index) {
+				cachedUids[uid] = cachedUids[uid] || {};
+				cachedUids[uid][groupName] = isMembers[index];
+				cache.set(uid, cachedUids[uid]);
+			});
+
+			var result = uids.map(function(uid) {
+				return cachedUids[uid][groupName];
+			});
+
+			callback(null, result);
+		});
 	};
 
 	Groups.isMemberOfGroups = function(uid, groups, callback) {
-		if (!uid || parseInt(uid, 10) <= 0) {
+		if (!uid || parseInt(uid, 10) <= 0 || !groups.length) {
 			return callback(null, groups.map(function() {return false;}));
 		}
-		groups = groups.map(function(groupName) {
+
+		var cachedData = cache.get(uid);
+		var nonCachedGroups = [];
+		if (cachedData) {
+			groups.forEach(function(groupName) {
+				if (!cachedData.hasOwnProperty(groupName)) {
+					nonCachedGroups.push(groupName);
+				}
+			});
+		} else {
+			nonCachedGroups = groups;
+		}
+
+		// are they all cached?
+		if (cachedData && !nonCachedGroups.length) {
+			var result = groups.map(function(groupName) {
+				return cachedData[groupName];
+			});
+			return process.nextTick(callback, null, result);
+		}
+
+		var nonCachedGroupsMemberSets = nonCachedGroups.map(function(groupName) {
 			return 'group:' + groupName + ':members';
 		});
 
-		db.isMemberOfSortedSets(groups, uid, callback);
+		db.isMemberOfSortedSets(nonCachedGroupsMemberSets, uid, function(err, isMembers) {
+			if (err) {
+				return callback(err);
+			}
+			cachedData = cachedData || {};
+			nonCachedGroups.forEach(function(groupName, index) {
+				cachedData[groupName] = isMembers[index];
+			});
+			cache.set(uid, cachedData);
+			var result = groups.map(function(groupName) {
+				return cachedData[groupName];
+			});
+			callback(null, result);
+		});
 	};
 
 	Groups.getMemberCount = function(groupName, callback) {

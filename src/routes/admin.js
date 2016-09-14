@@ -85,7 +85,7 @@ function addRoutes(router, middleware, controllers) {
 	router.get('/advanced/logs', middlewares, controllers.admin.logs.get);
 	router.get('/advanced/errors', middlewares, controllers.admin.errors.get);
 	router.get('/advanced/errors/export', middlewares, controllers.admin.errors.export);
-	router.get('/advanced/post-cache', middlewares, controllers.admin.postCache.get);
+	router.get('/advanced/cache', middlewares, controllers.admin.cache.get);
 
 	router.get('/development/logger', middlewares, controllers.admin.logger.get);
 	router.get('/development/info', middlewares, controllers.admin.info.get);

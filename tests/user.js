@@ -23,6 +23,9 @@ describe('User', function() {
 		testCid;
 
 	before(function(done) {
+		var groups = require('../src/groups');
+		groups.resetCache();
+
 		Categories.create({
 			name: 'Test Category',
 			description: 'A test',
@@ -37,7 +40,7 @@ describe('User', function() {
 		});
 	});
 
-	beforeEach(function(){
+	beforeEach(function() {
 		userData = {
 			username: 'John Smith',
 			fullname: 'John Smith McNamara',
