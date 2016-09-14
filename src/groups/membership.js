@@ -14,10 +14,9 @@ var pubsub = require('../pubsub');
 var LRU = require('lru-cache');
 
 var cache = LRU({
-	max: 200,
+	max: 40000,
 	maxAge: 1000 * 60 * 60
 });
-
 
 module.exports = function(Groups) {
 
@@ -80,7 +79,7 @@ module.exports = function(Groups) {
 				async.parallel(tasks, next);
 			},
 			function(results, next) {
-				clearCache(uid);
+				clearCache(uid, groupName);
 				setGroupTitleIfNotSet(groupName, uid, next);
 			},
 			function(next) {
@@ -234,7 +233,7 @@ module.exports = function(Groups) {
 				], next);
 			},
 			function(results, next) {
-				clearCache(uid);
+				clearCache(uid, groupName);
 				Groups.getGroupFields(groupName, ['hidden', 'memberCount'], next);
 			},
 			function(groupData, next) {
@@ -318,13 +317,13 @@ module.exports = function(Groups) {
 		cache.reset();
 	});
 
-	function clearCache(uid) {
-		pubsub.publish('group:cache:del', {uid: uid});
-		cache.del(uid);
+	function clearCache(uid, groupName) {
+		pubsub.publish('group:cache:del', {uid: uid, groupName: groupName});
+		cache.del(uid + ':' + groupName);
 	}
 
 	pubsub.on('group:cache:del', function(data) {
-		cache.del(data.uid);
+		cache.del(data.uid + ':' + data.groupName);
 	});
 
 	Groups.isMember = function(uid, groupName, callback) {
@@ -332,10 +331,9 @@ module.exports = function(Groups) {
 			return callback(null, false);
 		}
 
-		var cachedData = cache.get(uid);
-
-		if (cachedData && cachedData.hasOwnProperty(groupName)) {
-			return process.nextTick(callback, null, cachedData[groupName]);
+		var cacheKey = uid + ':' + groupName;
+		if (cache.has(cacheKey)) {
+			return process.nextTick(callback, null, cache.get(cacheKey));
 		}
 
 		db.isSortedSetMember('group:' + groupName + ':members', uid, function(err, isMember) {
@@ -343,9 +341,7 @@ module.exports = function(Groups) {
 				return callback(err);
 			}
 
-			cachedData = cachedData || {};
-			cachedData[groupName] = isMember;
-			cache.set(uid, cachedData);
+			cache.set(cacheKey, isMember);
 			callback(null, isMember);
 		});
 	};
@@ -355,18 +351,16 @@ module.exports = function(Groups) {
 			return callback(null, uids.map(function() {return false;}));
 		}
 
-		var cachedUids = {};
 		var nonCachedUids = [];
 		uids.forEach(function(uid) {
-			cachedUids[uid] = cache.get(uid);
-			if (!cachedUids[uid] || !cachedUids[uid].hasOwnProperty(groupName)) {
+			if (!cache.has(uid + ':' + groupName)) {
 				nonCachedUids.push(uid);
 			}
 		});
 
 		if (!nonCachedUids.length) {
 			var result = uids.map(function(uid) {
-				return cachedUids[uid] && cachedUids[uid][groupName];
+				return cache.get(uid + ':' + groupName);
 			});
 			return process.nextTick(callback, null, result);
 		}
@@ -377,13 +371,11 @@ module.exports = function(Groups) {
 			}
 
 			nonCachedUids.forEach(function(uid, index) {
-				cachedUids[uid] = cachedUids[uid] || {};
-				cachedUids[uid][groupName] = isMembers[index];
-				cache.set(uid, cachedUids[uid]);
+				cache.set(uid + ':' + groupName, isMembers[index]);
 			});
 
 			var result = uids.map(function(uid) {
-				return cachedUids[uid][groupName];
+				return cache.get(uid + ':' + groupName);
 			});
 
 			callback(null, result);
@@ -395,22 +387,18 @@ module.exports = function(Groups) {
 			return callback(null, groups.map(function() {return false;}));
 		}
 
-		var cachedData = cache.get(uid);
 		var nonCachedGroups = [];
-		if (cachedData) {
-			groups.forEach(function(groupName) {
-				if (!cachedData.hasOwnProperty(groupName)) {
-					nonCachedGroups.push(groupName);
-				}
-			});
-		} else {
-			nonCachedGroups = groups;
-		}
+
+		groups.forEach(function(groupName) {
+			if (!cache.has(uid + ':' + groupName)) {
+				nonCachedGroups.push(groupName);
+			}
+		});
 
 		// are they all cached?
-		if (cachedData && !nonCachedGroups.length) {
+		if (!nonCachedGroups.length) {
 			var result = groups.map(function(groupName) {
-				return cachedData[groupName];
+				return cache.get(uid + ':' + groupName);
 			});
 			return process.nextTick(callback, null, result);
 		}
@@ -423,13 +411,13 @@ module.exports = function(Groups) {
 			if (err) {
 				return callback(err);
 			}
-			cachedData = cachedData || {};
+
 			nonCachedGroups.forEach(function(groupName, index) {
-				cachedData[groupName] = isMembers[index];
+				cache.set(uid + ':' + groupName, isMembers[index]);
 			});
-			cache.set(uid, cachedData);
+
 			var result = groups.map(function(groupName) {
-				return cachedData[groupName];
+				return cache.get(uid + ':' + groupName);
 			});
 			callback(null, result);
 		});

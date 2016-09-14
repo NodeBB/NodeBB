@@ -26,7 +26,7 @@
 			<div class="panel-heading"><i class="fa fa-calendar-o"></i> Group Cache</div>
 			<div class="panel-body">
 
-				<label>Users in Cache</label><br/>
+				<label>Items in Cache</label><br/>
 				<span>{groupCache.itemCount}</span><br/>
 
 				<label>Length / Max</label><br/>
