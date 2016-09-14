@@ -19,11 +19,6 @@
 						{postCache.percentFull}% Full
 					</div>
 				</div>
-
-				<!-- IF postCache.dump -->
-				<pre>{postCache.dump}</pre>
-				<!-- ENDIF postCache.dump -->
-
 			</div>
 		</div>
 
