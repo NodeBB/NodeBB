@@ -20,6 +20,10 @@
 					</div>
 				</div>
 
+				<!-- IF postCache.dump -->
+				<pre>{postCache.dump}</pre>
+				<!-- ENDIF postCache.dump -->
+
 			</div>
 		</div>
 
@@ -38,6 +42,10 @@
 						{groupCache.percentFull}% Full
 					</div>
 				</div>
+
+				<!-- IF groupCache.dump -->
+				<pre>{groupCache.dump}</pre>
+				<!-- ENDIF groupCache.dump -->
 
 			</div>
 		</div>
