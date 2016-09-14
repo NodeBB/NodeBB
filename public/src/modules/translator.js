@@ -1,4 +1,4 @@
-/* global define, jQuery, config, RELATIVE_PATH, utils, window, Promise, winston */
+/* global define, jQuery, config, RELATIVE_PATH, utils, window, Promise */
 
 (function (factory) {
 	'use strict';
@@ -103,17 +103,17 @@
 			// is equal to the length of the string since
 			// slice doesn't include the ending index
 			while (cursor + 2 <= len) {
-				// if the current position in the string looks 
+				// if the current position in the string looks
 				// like the beginning of a translation string
 				if (str.slice(cursor, cursor + 2) === '[[') {
 					// split the string from the last break
 					// to the character before the cursor
 					// add that to the result array
 					toTranslate.push(str.slice(lastBreak, cursor));
-					// set the cursor position past the beginning 
+					// set the cursor position past the beginning
 					// brackets of the translation string
 					cursor += 2;
-					// set the last break to our current 
+					// set the last break to our current
 					// spot since we just broke the string
 					lastBreak = cursor;
 
@@ -217,7 +217,7 @@
 		Translator.prototype.getTranslation = function getTranslation(namespace, key) {
 			var translation;
 			if (!namespace) {
-				winston.warn('[translator] Parameter `namespace` is ' + namespace + (namespace === '' ? '(empty string)' : ''));
+				console.warn('[translator] Parameter `namespace` is ' + namespace + (namespace === '' ? '(empty string)' : ''));
 				translation = Promise.resolve({});
 			} else if (this.translations[namespace]) {
 				translation = this.translations[namespace];
@@ -265,7 +265,7 @@
 
 			return Translator.cache[language];
 		};
-		
+
 		Translator.cache = {};
 
 		return Translator;
@@ -281,7 +281,7 @@
 		 * Legacy translator function for backwards compatibility
 		 */
 		translate: function translate(text, language, callback) {
-			// console.warn('[translator] `translator.translate(text, [lang, ]callback)` is deprecated. ' + 
+			// console.warn('[translator] `translator.translate(text, [lang, ]callback)` is deprecated. ' +
 			//   'Use the `translator.Translator` class instead.');
 
 			var cb = callback;
