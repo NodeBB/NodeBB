@@ -51,7 +51,8 @@ groupsController.details = function(req, res, callback) {
 		function(next) {
 			groups.getGroupNameByGroupSlug(req.params.slug, next);
 		},
-		function(groupName, next) {
+		function(_groupName, next) {
+			groupName = _groupName;
 			if (!groupName) {
 				return callback();
 			}
