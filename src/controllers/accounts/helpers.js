@@ -3,6 +3,7 @@
 
 var async = require('async');
 var validator = require('validator');
+var winston = require('winston');
 
 var user = require('../../user');
 var groups = require('../../groups');
@@ -34,6 +35,9 @@ helpers.getUserDataByUserSlug = function(userslug, callerUID, callback) {
 				},
 				isGlobalModerator: function(next) {
 					user.isGlobalModerator(callerUID, next);
+				},
+				isFollowing: function(next) {
+					user.isFollowing(callerUID, uid, next);
 				},
 				ips: function(next) {
 					user.getIPs(uid, 4, next);
@@ -88,6 +92,7 @@ helpers.getUserDataByUserSlug = function(userslug, callerUID, callback) {
 			userData.canBan = isAdmin || isGlobalModerator;
 			userData.canChangePassword = isAdmin || (isSelf && parseInt(meta.config['password:disableEdit'], 10) !== 1);
 			userData.isSelf = isSelf;
+			userData.isFollowing = results.isFollowing;
 			userData.showHidden = isSelf || isAdmin || isGlobalModerator;
 			userData.groups = Array.isArray(results.groups) && results.groups.length ? results.groups[0] : [];
 			userData.disableSignatures = meta.config.disableSignatures !== undefined && parseInt(meta.config.disableSignatures, 10) === 1;
@@ -122,66 +127,8 @@ helpers.getUserDataByUserSlug = function(userslug, callerUID, callback) {
 
 
 helpers.getBaseUser = function(userslug, callerUID, callback) {
-	async.waterfall([
-		function (next) {
-			user.getUidByUserslug(userslug, next);
-		},
-		function (uid, next) {
-			if (!uid) {
-				return callback(null, null);
-			}
-
-			async.parallel({
-				user: function(next) {
-					user.getUserFields(uid, [
-						'uid',
-						'username',
-						'userslug',
-						'picture',
-						'cover:url',
-						'cover:position',
-						'status',
-						'lastonline',
-						'groupTitle',
-						'followingCount',
-						'followerCount'
-					], next);
-				},
-				isAdmin: function(next) {
-					user.isAdministrator(callerUID, next);
-				},
-				isGlobalModerator: function(next) {
-					user.isGlobalModerator(callerUID, next);
-				},
-				isFollowing: function(next) {
-					user.isFollowing(callerUID, uid, next);
-				},
-				profile_links: function(next) {
-					plugins.fireHook('filter:user.profileLinks', [], next);
-				}
-			}, next);
-		},
-		function (results, next) {
-			if (!results.user) {
-				return callback();
-			}
-
-			results.user.yourid = callerUID;
-			results.user.theirid = results.user.uid;
-			results.user.status = user.getStatus(results.user);
-			results.user.isSelf = parseInt(callerUID, 10) === parseInt(results.user.uid, 10);
-			results.user.isFollowing = results.isFollowing;
-			results.user.showHidden = results.user.isSelf || results.isAdmin || results.isGlobalModerator;
-			results.user.profile_links = filterLinks(results.profile_links, results.user.isSelf);
-
-			results.user['reputation:disabled'] = parseInt(meta.config['reputation:disabled'], 10) === 1;
-			results.user['downvote:disabled'] = parseInt(meta.config['downvote:disabled'], 10) === 1;
-			results.user['cover:url'] = results.user['cover:url'] || require('../../coverPhoto').getDefaultProfileCover(results.user.uid);
-			results.user['cover:position'] = results.user['cover:position'] || '50% 50%';
-
-			next(null, results.user);
-		}
-	], callback);
+	winston.warn('helpers.getBaseUser deprecated please use helpers.getUserDataByUserSlug');
+	helpers.getUserDataByUserSlug(userslug, callerUID, callback);
 };
 
 function filterLinks(links, self) {

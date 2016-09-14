@@ -77,7 +77,7 @@ function userRoutes(app, middleware, controllers) {
 }
 
 function groupRoutes(app, middleware, controllers) {
-	var middlewares = [middleware.checkGlobalPrivacySettings, middleware.exposeGroupName];
+	var middlewares = [middleware.checkGlobalPrivacySettings];
 
 	setupPageRoute(app, '/groups', middleware, middlewares, controllers.groups.list);
 	setupPageRoute(app, '/groups/:slug', middleware, middlewares, controllers.groups.details);

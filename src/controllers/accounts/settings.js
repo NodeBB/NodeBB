@@ -20,7 +20,7 @@ settingsController.get = function(req, res, callback) {
 	var userData;
 	async.waterfall([
 		function(next) {
-			accountHelpers.getBaseUser(req.params.userslug, req.uid, next);
+			accountHelpers.getUserDataByUserSlug(req.params.userslug, req.uid, next);
 		},
 		function(_userData, next) {
 			userData = _userData;

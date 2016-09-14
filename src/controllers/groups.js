@@ -46,23 +46,30 @@ groupsController.getGroupsFromSet = function(uid, sort, start, stop, callback) {
 };
 
 groupsController.details = function(req, res, callback) {
+	var groupName;
 	async.waterfall([
-		async.apply(groups.exists, res.locals.groupName),
-		function (exists, next) {
-			if (!exists) {
+		function(next) {
+			groups.getGroupNameByGroupSlug(req.params.slug, next);
+		},
+		function(groupName, next) {
+			if (!groupName) {
 				return callback();
 			}
-
-			groups.isHidden(res.locals.groupName, next);
+			async.parallel({
+				exists: async.apply(groups.exists, groupName),
+				hidden: async.apply(groups.isHidden, groupName)
+			}, next);
 		},
-		function (hidden, next) {
-			if (!hidden) {
+		function (results, next) {
+			if (!results.exists) {
+				return callback();
+			}
+			if (!results.hidden) {
 				return next();
 			}
-
 			async.parallel({
-				isMember: async.apply(groups.isMember, req.uid, res.locals.groupName),
-				isInvited: async.apply(groups.isInvited, req.uid, res.locals.groupName)
+				isMember: async.apply(groups.isMember, req.uid, groupName),
+				isInvited: async.apply(groups.isInvited, req.uid, groupName)
 			}, function(err, checks) {
 				if (err || checks.isMember || checks.isInvited) {
 					return next(err);
@@ -73,14 +80,14 @@ groupsController.details = function(req, res, callback) {
 		function (next) {
 			async.parallel({
 				group: function(next) {
-					groups.get(res.locals.groupName, {
+					groups.get(groupName, {
 						uid: req.uid,
 						truncateUserList: true,
 						userListCount: 20
 					}, next);
 				},
 				posts: function(next) {
-					groups.getLatestMemberPosts(res.locals.groupName, 10, req.uid, next);
+					groups.getLatestMemberPosts(groupName, 10, req.uid, next);
 				},
 				isAdmin:function(next) {
 					user.isAdministrator(req.uid, next);

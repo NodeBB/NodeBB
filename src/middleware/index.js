@@ -112,28 +112,6 @@ middleware.privateTagListing = function(req, res, next) {
 	}
 };
 
-middleware.exposeGroupName = function(req, res, next) {
-	expose('groupName', groups.getGroupNameByGroupSlug, 'slug', req, res, next);
-};
-
-middleware.exposeUid = function(req, res, next) {
-	expose('uid', user.getUidByUserslug, 'userslug', req, res, next);
-};
-
-function expose(exposedField, method, field, req, res, next) {
-	if (!req.params.hasOwnProperty(field)) {
-		return next();
-	}
-	method(req.params[field], function(err, id) {
-		if (err) {
-			return next(err);
-		}
-
-		res.locals[exposedField] = id;
-		next();
-	});
-}
-
 middleware.privateUploads = function(req, res, next) {
 	if (req.user || parseInt(meta.config.privateUploads, 10) !== 1) {
 		return next();
