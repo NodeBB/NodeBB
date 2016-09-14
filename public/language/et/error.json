@@ -29,6 +29,7 @@
     "username-too-long": "Kasutajanimi on liiga pikk",
     "password-too-long": "Parool liiga pikk",
     "user-banned": "Kasutaja bannitud",
+    "user-banned-reason": "User banned (Reason: %1)",
     "user-too-new": "Vabandust, te peate ootama %1 sekund(it) enne esimese postituse loomist.",
     "blacklisted-ip": "Vabandust! Sinu IP-aadress on siin kogukonnas keelatud. Kui arvad, et see on eksitus, palun leia kontakti administraatoriga.",
     "ban-expiry-missing": "Palun sisesta keelu lõpukuupäev",

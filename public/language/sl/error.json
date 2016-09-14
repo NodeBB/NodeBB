@@ -29,6 +29,7 @@
     "username-too-long": "Uporabniško ime je predolgo",
     "password-too-long": "Geslo je predolgo",
     "user-banned": "Uporabnik je izločen",
+    "user-banned-reason": "User banned (Reason: %1)",
     "user-too-new": "Oprostite, počakajte %1 sekund pred vašo prvo objavo",
     "blacklisted-ip": "Sorry, your IP address has been banned from this community. If you feel this is in error, please contact an administrator.",
     "ban-expiry-missing": "Please provide an end date for this ban",

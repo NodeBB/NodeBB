@@ -29,6 +29,7 @@
     "username-too-long": "사용자 이름이 너무 깁니다.",
     "password-too-long": "패스워드가 너무 깁니다.",
     "user-banned": "차단된 사용자입니다.",
+    "user-banned-reason": "User banned (Reason: %1)",
     "user-too-new": "죄송합니다, 첫 번째 게시물은 %1 초 후에 작성할 수 있습니다.",
     "blacklisted-ip": "죄송하지만, 당신의 IP는 이 커뮤니티로부터 차단되었습니다. 만약 에러라는 생각이 드신다면 관리자에게 연락해주세요.",
     "ban-expiry-missing": "Please provide an end date for this ban",

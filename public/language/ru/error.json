@@ -29,6 +29,7 @@
     "username-too-long": "Имя пользователя слишком длинное",
     "password-too-long": "Пароль слишком длинный",
     "user-banned": "Пользователь заблокирован",
+    "user-banned-reason": "User banned (Reason: %1)",
     "user-too-new": "Вы можете написать свое первой сообщение через %1 сек.",
     "blacklisted-ip": "Извините, ваш IP адрес был забанен этим сообществом. Если вы считаете что это ошибка, пожалуйста, свяжитесь с администратором.",
     "ban-expiry-missing": "Please provide an end date for this ban",

@@ -29,6 +29,7 @@
     "username-too-long": "Zbyt długa nazwa użytkownika",
     "password-too-long": "Hasło jest za długie",
     "user-banned": "Użytkownik zbanowany",
+    "user-banned-reason": "User banned (Reason: %1)",
     "user-too-new": "Przepraszamy, musisz odczekać %1 sekund(y) przed utworzeniem pierwszego posta",
     "blacklisted-ip": "Twój adres IP został zablokowany na tej społeczności. Jeśli uważasz to za błąd, zgłoś to administratorowi",
     "ban-expiry-missing": "Wprowadź datę końca blokady",

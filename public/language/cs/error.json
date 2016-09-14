@@ -29,6 +29,7 @@
     "username-too-long": "Uživatelské jméno je příliš dlouhé",
     "password-too-long": "Heslo je příliš dlouhé",
     "user-banned": "Uživatel byl zakázán",
+    "user-banned-reason": "User banned (Reason: %1)",
     "user-too-new": "Sorry, you are required to wait %1 second(s) before making your first post",
     "blacklisted-ip": "Sorry, your IP address has been banned from this community. If you feel this is in error, please contact an administrator.",
     "ban-expiry-missing": "Please provide an end date for this ban",

@@ -29,6 +29,7 @@
     "username-too-long": "ユーザー名が長すぎます",
     "password-too-long": "パスワードが長すぎます",
     "user-banned": "ユーザーは停止されています",
+    "user-banned-reason": "User banned (Reason: %1)",
     "user-too-new": "申し訳ありません。登録後に投稿を行うには%1秒お待ち下さい。",
     "blacklisted-ip": "Sorry, your IP address has been banned from this community. If you feel this is in error, please contact an administrator.",
     "ban-expiry-missing": "Please provide an end date for this ban",
