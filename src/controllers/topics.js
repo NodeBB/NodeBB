@@ -58,6 +58,9 @@ topicsController.get = function(req, res, callback) {
 				if (req.params.post_index){
 					url += '/'+req.params.post_index;
 				}
+				if (currentPage > 1) {
+					url += '?page=' + currentPage;
+				}
 				return helpers.redirect(res, url);
 			}
 
