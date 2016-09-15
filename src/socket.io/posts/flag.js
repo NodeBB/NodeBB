@@ -98,7 +98,7 @@ module.exports = function(SocketPosts) {
 						return next(err);
 					}
 
-					plugins.fireHook('action:post.flag', {post: post, flaggingUser: flaggingUser});
+					plugins.fireHook('action:post.flag', {post: post, reason: data.reason, flaggingUser: flaggingUser});
 					notifications.push(notification, results.admins.concat(results.moderators).concat(results.globalMods), next);
 				});
 			}
