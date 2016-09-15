@@ -292,7 +292,7 @@ var privileges = require('./privileges');
 
 		for (i; i < len; ++i) {
 			category = categories[i];
-			if (!category.hasOwnProperty('parentCid')) {
+			if (!category.hasOwnProperty('parentCid') || category.parentCid === null) {
 				category.parentCid = 0;
 			}
 
