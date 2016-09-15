@@ -47,6 +47,9 @@
 	"flag_manage_state_rejected": "Rejected",
 	"flag_manage_notes": "Shared Notes",
 	"flag_manage_update": "Update Flag Status",
+	"flag_manage_history_assignee": "Assigned to %1",
+	"flag_manage_history_state": "Updated state to %1",
+	"flag_manage_history_notes": "Updates flag notes",
 
 	"deleted_message": "This topic has been deleted. Only users with topic management privileges can see it.",
 

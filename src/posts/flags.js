@@ -195,24 +195,13 @@ module.exports = function(Posts) {
 
 						if (post) {
 							post.flagReasons = reasons[index];
-
-							// Expand flag history
-							try {
-								history = JSON.parse(post['flag:history'] || '[]');
-								history.map(function(event) {
-									event.timestampISO = new Date(event.timestamp).toISOString();
-									return event;
-								});
-								post['flag:history'] = history;
-							} catch (e) {
-								winston.warn('[posts/getFlags] Unable to deserialise post flag history, likely malformed data');
-							}
 						}
 					});
 
 					next(null, results.posts);
 				});
-			}
+			},
+			async.apply(Posts.expandFlagHistory)
 		], callback);
 	}
 
@@ -305,4 +294,39 @@ module.exports = function(Posts) {
 			Posts.setPostFields(pid, changeset, callback);
 		});
 	};
+
+	Posts.expandFlagHistory = function(posts, callback) {
+		// Expand flag history
+		async.map(posts, function(post, next) {
+			try {
+				var history = JSON.parse(post['flag:history'] || '[]');
+			} catch (e) {
+				winston.warn('[posts/getFlags] Unable to deserialise post flag history, likely malformed data');
+				callback(e);
+			}
+
+			async.map(history, function(event, next) {
+				event.timestampISO = new Date(event.timestamp).toISOString();
+
+				if (event.type === 'assignee') {
+					user.getUserField(parseInt(event.value, 10), 'username', function(err, username) {
+						if (err) {
+							return next(err);
+						}
+
+						event.label = username || 'Unknown user';
+						next(null, event);
+					});
+				} else if (event.type === 'state') {
+					event.label = '[[topic:flag_manage_state_' + event.value + ']]';
+					setImmediate(next.bind(null, null, event));
+				} else {
+					setImmediate(next.bind(null, null, event));
+				}
+			}, function(err, history) {
+				post['flag:history'] = history;
+				next(null, post);
+			});
+		}, callback);
+	}
 };

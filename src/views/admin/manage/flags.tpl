@@ -151,7 +151,7 @@
 										<!-- BEGIN posts.flagData.history -->
 										<li class="list-group-item">
 											<div class="pull-right"><small><span class="timeago" title="{../timestampISO}"></span></small></div>
-											Updated <span class="label label-info">{../type}</span> to {../value}
+											[[topic:flag_manage_history_{../type}, {../label}]]
 										</li>
 										<!-- END posts.flagData.history -->
 									</ul>
