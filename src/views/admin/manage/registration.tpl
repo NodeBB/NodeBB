@@ -50,7 +50,7 @@
 				<!-- IF users.ipMatch.picture -->
 				<img src="{users.ipMatch.picture}" class="user-img"/>
 				<!-- ELSE -->
-				<div class="user-img" style="background-color: {users.ipMatch.icon:bgColor};">{users.ipMatch.icon:text}</div>
+				<div class="user-img avatar avatar-sm" style="background-color: {users.ipMatch.icon:bgColor};">{users.ipMatch.icon:text}</div>
 				<!-- ENDIF users.ipMatch.picture -->
 				<a href="/uid/{users.ipMatch.uid}">{users.ipMatch.username}</a>
 				<!-- END users.ipMatch -->
