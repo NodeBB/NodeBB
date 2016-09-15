@@ -17,26 +17,22 @@ flagsController.get = function(req, res, next) {
 	var start = (page - 1) * itemsPerPage;
 	var stop = start + itemsPerPage - 1;
 
-	async.waterfall([
-		function (next) {
-			async.parallel({
-				flagData: function(next) {
-					if (byUsername) {
-						posts.getUserFlags(byUsername, sortBy, req.uid, start, stop, next);
-					} else {
-						var set = sortBy === 'count' ? 'posts:flags:count' : 'posts:flagged';
-						posts.getFlags(set, req.uid, start, stop, next);
-					}
-				},
-				analytics: function(next) {
-					analytics.getDailyStatsForSet('analytics:flags', Date.now(), 30, next);
-				},
-				assignees: function(next) {
-					user.getAdminsandGlobalMods(next);
-				}
-			}, next);
+	async.parallel({
+		flagData: function(next) {
+			if (byUsername) {
+				posts.getUserFlags(byUsername, sortBy, req.uid, start, stop, next);
+			} else {
+				var set = sortBy === 'count' ? 'posts:flags:count' : 'posts:flagged';
+				posts.getFlags(set, req.uid, start, stop, next);
+			}
+		},
+		analytics: function(next) {
+			analytics.getDailyStatsForSet('analytics:flags', Date.now(), 30, next);
+		},
+		assignees: function(next) {
+			user.getAdminsandGlobalMods(next);
 		}
-	], function (err, results) {
+	}, function (err, results) {
 		if (err) {
 			return next(err);
 		}
