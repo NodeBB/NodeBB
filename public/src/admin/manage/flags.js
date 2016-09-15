@@ -2,11 +2,10 @@
 /*global define, socket, app, utils, bootbox, ajaxify*/
 
 define('admin/manage/flags', [
-	'forum/infinitescroll',
 	'autocomplete',
 	'Chart',
 	'components'
-], function(infinitescroll, autocomplete, Chart, components) {
+], function(autocomplete, Chart, components) {
 
 	var	Flags = {};
 
@@ -20,7 +19,6 @@ define('admin/manage/flags', [
 		handleDismiss();
 		handleDismissAll();
 		handleDelete();
-		handleInfiniteScroll();
 		handleGraphs();
 
 		updateFlagDetails(ajaxify.data.posts);
@@ -76,38 +74,6 @@ define('admin/manage/flags', [
 			if (!$('.flags [data-pid]').length) {
 				$('.post-container').text('No flagged posts!');
 			}
-		});
-	}
-
-	function handleInfiniteScroll() {
-		infinitescroll.init(function(direction) {
-			if (direction < 0 && !$('.flags').length) {
-				return;
-			}
-			var params = utils.params();
-			var sortBy = params.sortBy || 'count';
-			var byUsername = params.byUsername || '';
-
-			infinitescroll.loadMore('posts.getMoreFlags', {
-				byUsername: byUsername,
-				sortBy: sortBy,
-				after: $('[data-next]').attr('data-next')
-			}, function(data, done) {
-				if (data.posts && data.posts.length) {
-					app.parseAndTranslate('admin/manage/flags', 'posts', {
-						posts: data.posts,
-						assignees: ajaxify.data.assignees
-					}, function(html) {
-						$('[data-next]').attr('data-next', data.next);
-						$('.post-container').append(html);
-						html.find('img:not(.not-responsive)').addClass('img-responsive');
-						updateFlagDetails(data.posts);
-						done();
-					});
-				} else {
-					done();
-				}
-			});
 		});
 	}
 

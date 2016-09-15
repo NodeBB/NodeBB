@@ -269,8 +269,10 @@ var utils = require('../public/src/utils');
 			if (err) {
 				return callback(err);
 			}
-
-			User.getUsersData(results.admins.concat(results.mods), callback);
+			var uids = results.admins.concat(results.mods).filter(function(uid, index, array) {
+				return uid && array.indexOf(uid) === index;
+			});
+			User.getUsersData(uids, callback);
 		});
 	};
 

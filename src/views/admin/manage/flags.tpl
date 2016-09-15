@@ -167,6 +167,7 @@
 					</div>
 				</div>
 				<!-- END posts -->
+				<!-- IMPORT partials/paginator.tpl -->
 			</div>
 		</div>
 	</div>

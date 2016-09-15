@@ -154,12 +154,48 @@ module.exports = function(Posts) {
 	};
 
 	Posts.getFlags = function(set, uid, start, stop, callback) {
-		async.waterfall([
-			function (next) {
-				db.getSortedSetRevRange(set, start, stop, next);
+		async.parallel({
+			count: function(next) {
+				db.sortedSetCard(set, next);
 			},
-			function (pids, next) {
-				getFlaggedPostsWithReasons(pids, uid, next);
+			posts: function(next) {
+				async.waterfall([
+					function (next) {
+						db.getSortedSetRevRange(set, start, stop, next);
+					},
+					function (pids, next) {
+						getFlaggedPostsWithReasons(pids, uid, next);
+					}
+				], next);
+			}
+		}, callback);
+	};
+
+	Posts.getUserFlags = function(byUsername, sortBy, callerUID, start, stop, callback) {
+		var count = 0;
+		async.waterfall([
+			function(next) {
+				user.getUidByUsername(byUsername, next);
+			},
+			function(uid, next) {
+				if (!uid) {
+					return next(null, []);
+				}
+
+				db.getSortedSetRevRange('uid:' + uid + ':flag:pids', 0, -1, next);
+			},
+			function(pids, next) {
+				count = pids.length;
+				getFlaggedPostsWithReasons(pids, callerUID, next);
+			},
+			function(posts, next) {
+				if (sortBy === 'count') {
+					posts.sort(function(a, b) {
+						return b.flags - a.flags;
+					});
+				}
+
+				next(null, {posts: posts.slice(start, stop === -1 ? undefined : stop + 1), count: count});
 			}
 		], callback);
 	};
@@ -241,32 +277,6 @@ module.exports = function(Posts) {
 			}
 		], callback);
 	}
-
-	Posts.getUserFlags = function(byUsername, sortBy, callerUID, start, stop, callback) {
-		async.waterfall([
-			function(next) {
-				user.getUidByUsername(byUsername, next);
-			},
-			function(uid, next) {
-				if (!uid) {
-					return next(null, []);
-				}
-				db.getSortedSetRevRange('uid:' + uid + ':flag:pids', 0, -1, next);
-			},
-			function(pids, next) {
-				getFlaggedPostsWithReasons(pids, callerUID, next);
-			},
-			function(posts, next) {
-				if (sortBy === 'count') {
-					posts.sort(function(a, b) {
-						return b.flags - a.flags;
-					});
-				}
-
-				next(null, posts.slice(start, stop));
-			}
-		], callback);
-	};
 
 	Posts.updateFlagData = function(uid, pid, flagObj, callback) {
 		// Retrieve existing flag data to compare for history-saving purposes
