@@ -27,7 +27,7 @@
     "watched": "已订阅",
     "followers": "粉丝",
     "following": "关注",
-    "aboutme": "About me",
+    "aboutme": "关于我",
     "signature": "签名档",
     "birthday": "生日",
     "chat": "聊天",
@@ -89,10 +89,10 @@
     "topics_per_page": "每页主题数",
     "posts_per_page": "每页帖子数",
     "notification_sounds": "收到通知时播放提示音",
-    "notifications_and_sounds": "Notifications & Sounds",
-    "incoming-message-sound": "Incoming message sound",
-    "outgoing-message-sound": "Outgoing message sound",
-    "notification-sound": "Notification sound",
+    "notifications_and_sounds": "通知 & 提示音",
+    "incoming-message-sound": "消息到达提示音",
+    "outgoing-message-sound": "消息送出提示音",
+    "notification-sound": "通知提示音",
     "browsing": "浏览设置",
     "open_links_in_new_tab": "在新标签打开外部链接",
     "enable_topic_searching": "启用主题内搜索",
@@ -119,6 +119,6 @@
     "info.no-ban-history": "该用户从未被封禁",
     "info.banned-until": "封禁到 %1",
     "info.banned-permanently": "永久封禁",
-    "info.banned-reason-label": "Reason",
-    "info.banned-no-reason": "No reason given."
+    "info.banned-reason-label": "原因",
+    "info.banned-no-reason": "没有原因"
 }
