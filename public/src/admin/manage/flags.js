@@ -190,7 +190,11 @@ define('admin/manage/flags', [
 			pid: pid,
 			data: formData
 		}, function(err) {
-			console.log(arguments);
+			if (err) {
+				return app.alertError(err.message);
+			} else {
+				app.alertSuccess('[[topic:flag_manage_saved]]');
+			}
 		});
 	}
 

@@ -50,6 +50,7 @@
 	"flag_manage_history_assignee": "Assigned to %1",
 	"flag_manage_history_state": "Updated state to %1",
 	"flag_manage_history_notes": "Updated flag notes",
+	"flag_manage_saved": "Flag Details Updated",
 
 	"deleted_message": "This topic has been deleted. Only users with topic management privileges can see it.",
 

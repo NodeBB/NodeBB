@@ -273,6 +273,10 @@ module.exports = function(Posts) {
 		var prop;
 
 		Posts.getPostData(pid, function(err, postData) {
+			if (err) {
+				return callback(err);
+			}
+
 			// Track new additions
 			for(prop in flagObj) {
 				if (flagObj.hasOwnProperty(prop) && !postData.hasOwnProperty('flag:' + prop)) {
@@ -378,6 +382,10 @@ module.exports = function(Posts) {
 					next(err, event);
 				})
 			}, function(err, history) {
+				if (err) {
+					return next(err);
+				}
+
 				post['flag:history'] = history;
 				next(null, post);
 			});
