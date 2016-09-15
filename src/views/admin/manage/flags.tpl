@@ -144,9 +144,18 @@
 								</div>
 								<div class="col-sm-6">
 									<h5>[[topic:flag_manage_history]]</h5>
-									<!-- IF !../flagHistory.length -->
+									<!-- IF !posts.flagData.history.length -->
 									<div class="alert alert-info">[[topic:flag_manage_no_history]]</div>
-									<!-- ENDIF !../flagHistory.length -->
+									<!-- ELSE -->
+									<ul class="list-group">
+										<!-- BEGIN posts.flagData.history -->
+										<li class="list-group-item">
+											<div class="pull-right"><small><span class="timeago" title="{../timestampISO}"></span></small></div>
+											Updated <span class="label label-info">{../type}</span> to {../value}
+										</li>
+										<!-- END posts.flagData.history -->
+									</ul>
+									<!-- ENDIF !posts.flagData.history.length -->
 								</div>
 							</div>
 						</div>

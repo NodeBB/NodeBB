@@ -22,6 +22,8 @@ define('admin/manage/flags', [
 		handleDelete();
 		handleInfiniteScroll();
 		handleGraphs();
+
+		updateFlagDetails(ajaxify.data.posts);
 		handleFormActions();
 	};
 
@@ -147,6 +149,29 @@ define('admin/manage/flags', [
 							beginAtZero: true
 						}
 					}]
+				}
+			}
+		});
+	}
+
+	function updateFlagDetails(source) {
+		// As the flag details are returned in the API, update the form controls to show the correct data
+
+		// Create reference hash for use in this method
+		source = source.reduce(function(memo, cur) {
+			memo[cur.pid] = cur.flagData;
+			return memo;
+		}, {});
+
+		components.get('posts/flag').each(function(idx, el) {
+			var pid = el.getAttribute('data-pid');
+			var el = $(el);
+
+			if (source[pid]) {
+				for(var prop in source[pid]) {
+					if (source[pid].hasOwnProperty(prop)) {
+						el.find('[name="' + prop + '"]').val(source[pid][prop]);
+					}
 				}
 			}
 		});

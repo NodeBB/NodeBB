@@ -3,6 +3,7 @@
 'use strict';
 
 var async = require('async');
+var winston = require('winston');
 var db = require('../database');
 var user = require('../user');
 var analytics = require('../analytics');
@@ -171,7 +172,7 @@ module.exports = function(Posts) {
 						}, next);
 					},
 					posts: function(next) {
-						Posts.getPostSummaryByPids(pids, uid, {stripTags: false, extraFields: ['flags']}, next);
+						Posts.getPostSummaryByPids(pids, uid, {stripTags: false, extraFields: ['flags', 'flag:assignee', 'flag:state', 'flag:notes', 'flag:history']}, next);
 					}
 				}, next);
 			},
@@ -190,8 +191,22 @@ module.exports = function(Posts) {
 					}
 
 					results.posts.forEach(function(post, index) {
+						var history;
+
 						if (post) {
 							post.flagReasons = reasons[index];
+
+							// Expand flag history
+							try {
+								history = JSON.parse(post['flag:history'] || '[]');
+								history.map(function(event) {
+									event.timestampISO = new Date(event.timestamp).toISOString();
+									return event;
+								});
+								post['flag:history'] = history;
+							} catch (e) {
+								winston.warn('[posts/getFlags] Unable to deserialise post flag history, likely malformed data');
+							}
 						}
 					});
 
@@ -253,6 +268,36 @@ module.exports = function(Posts) {
 					postData[prop] !== flagObj[prop.slice(5)]
 				) {
 					changes.push(prop.slice(5));
+				}
+			}
+
+			// Append changes to history string
+			if (changes.length) {
+				try {
+					var history = JSON.parse(postData['flag:history'] || '[]');
+
+					changes.forEach(function(property) {
+						switch(property) {
+							case 'assignee':	// intentional fall-through
+							case 'state':
+								history.unshift({
+									type: property,
+									value: flagObj[property],
+									timestamp: Date.now()
+								});
+								break;
+
+							case 'notes':
+								history.unshift({
+									type: property,
+									timestamp: Date.now()
+								});
+						}
+					});
+
+					changeset['flag:history'] = JSON.stringify(history);
+				} catch (e) {
+					winston.warn('[posts/updateFlagData] Unable to deserialise post flag history, likely malformed data');
 				}
 			}
 

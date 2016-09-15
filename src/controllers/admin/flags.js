@@ -35,6 +35,20 @@ flagsController.get = function(req, res, next) {
 			return next(err);
 		}
 
+		// Parse out flag data into its own object inside each post hash
+		results.posts = results.posts.map(function(postObj) {
+			for(var prop in postObj) {
+				postObj.flagData = postObj.flagData || {};
+
+				if (postObj.hasOwnProperty(prop) && prop.startsWith('flag:')) {
+					postObj.flagData[prop.slice(5)] = postObj[prop];
+					delete postObj[prop];
+				}
+			}
+
+			return postObj;
+		});
+
 		// Minimise data set for assignees so tjs does less work
 		results.assignees = results.assignees.map(function(userObj) {
 			var keep = ['uid', 'username'];
