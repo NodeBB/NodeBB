@@ -122,9 +122,9 @@
     "no-session-found": "未登录!",
     "not-in-room": "用户已不在聊天室中",
     "no-users-in-room": "这个聊天室中没有用户",
-    "cant-kick-self": "你不能把自己踢出群组",
+    "cant-kick-self": "您不能把自己踢出群组",
     "no-users-selected": "尚未选择用户",
     "invalid-home-page-route": "无效的首页路径",
-    "invalid-session": "Session Mismatch",
-    "invalid-session-text": "It looks like your login session is no longer active, or no longer matches with the server. Please refresh this page."
+    "invalid-session": "Session 无法匹配",
+    "invalid-session-text": "您的登入状态已经失效，或者是与服务器信息不匹配。请刷新此页面。"
 }
