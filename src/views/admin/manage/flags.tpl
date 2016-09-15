@@ -44,7 +44,7 @@
 
 		<div data-next="{next}">
 
-			<div class="panel-group post-container" id="accordion" role="tablist" aria-multiselectable="true" data-next="{next}">
+			<div component="posts/flags" class="panel-group post-container" id="accordion" role="tablist" aria-multiselectable="true" data-next="{next}">
 				<!-- IF !posts.length -->
 				<div class="alert alert-success">
 					No flagged posts!
@@ -52,7 +52,7 @@
 				<!-- ENDIF !posts.length -->
 
 				<!-- BEGIN posts -->
-				<div class="panel panel-default">
+				<div class="panel panel-default" component="posts/flag" data-pid="{../pid}">
 					<div class="panel-heading" role="tab">
 						<h4 class="panel-title">
 							<a role="button" data-toggle="collapse" data-parent="#accordion" href="#flag-pid-{posts.pid}" aria-expanded="true" aria-controls="flag-pid-{posts.pid}">
@@ -118,14 +118,17 @@
 								<div class="col-sm-6">
 									<form role="form">
 										<div class="form-group">
-											<label for="{../pid}-assignee">[[topic:flag_manage_assignee]]</label>
-											<select class="form-control" id="{../pid}-assignee" name="assignee">
-												<option value="2">julian</option>
+											<label for="{posts.pid}-assignee">[[topic:flag_manage_assignee]]</label>
+											<select class="form-control" id="{posts.pid}-assignee" name="assignee">
+												<option value="">No Assignee</option>
+												<!-- BEGIN assignees -->
+												<option value="{../uid}">{../username}</option>
+												<!-- END assignees -->
 											</select>
 										</div>
 										<div class="form-group">
-											<label for="{../pid}-state">[[topic:flag_manage_state]]</label>
-											<select class="form-control" id="{../pid}-state" name="state">
+											<label for="{posts.pid}-state">[[topic:flag_manage_state]]</label>
+											<select class="form-control" id="{posts.pid}-state" name="state">
 												<option value="open">[[topic:flag_manage_state_open]]</option>
 												<option value="wip">[[topic:flag_manage_state_wip]]</option>
 												<option value="resolved">[[topic:flag_manage_state_resolved]]</option>
@@ -133,10 +136,10 @@
 											</select>
 										</div>
 										<div class="form-group">
-											<label for="{../pid}-notes">[[topic:flag_manage_notes]]</label>
-											<textarea class="form-control" id="{../pid}-notes" name="notes"></textarea>
+											<label for="{posts.pid}-notes">[[topic:flag_manage_notes]]</label>
+											<textarea class="form-control" id="{posts.pid}-notes" name="notes"></textarea>
 										</div>
-										<button class="btn btn-sm btn-primary btn-block">[[topic:flag_manage_update]]</button>
+										<button type="button" component="posts/flag/update" class="btn btn-sm btn-primary btn-block">[[topic:flag_manage_update]]</button>
 									</form>
 								</div>
 								<div class="col-sm-6">

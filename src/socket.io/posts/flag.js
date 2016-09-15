@@ -163,7 +163,35 @@ module.exports = function(SocketPosts) {
 			},
 			function (posts, next) {
 				next(null, {posts: posts, next: stop + 1});
-			},
+			}
 		], callback);
 	};
+
+	SocketPosts.updateFlag = function(socket, data, callback) {
+		if (!data || !(data.pid && data.data)) {
+			return callback('[[error:invalid-data]]');
+		}
+
+		var payload = {};
+
+		async.waterfall([
+			function (next) {
+				user.isAdminOrGlobalMod(socket.uid, next);
+			},
+			function (isAdminOrGlobalModerator, next) {
+				if (!isAdminOrGlobalModerator) {
+					return next(new Error('[[no-privileges]]'));
+				}
+
+				// Translate form data into object
+				payload = data.data.reduce(function(memo, cur) {
+					memo[cur.name] = cur.value;
+					return memo;
+				}, payload);
+
+				next(null, data.pid, payload);
+			},
+			async.apply(posts.updateFlagData)
+		], callback);
+	}
 };

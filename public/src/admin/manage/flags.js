@@ -4,8 +4,9 @@
 define('admin/manage/flags', [
 	'forum/infinitescroll',
 	'autocomplete',
-	'Chart'
-], function(infinitescroll, autocomplete, Chart) {
+	'Chart',
+	'components'
+], function(infinitescroll, autocomplete, Chart, components) {
 
 	var	Flags = {};
 
@@ -21,6 +22,7 @@ define('admin/manage/flags', [
 		handleDelete();
 		handleInfiniteScroll();
 		handleGraphs();
+		handleFormActions();
 	};
 
 	function handleDismiss() {
@@ -147,6 +149,20 @@ define('admin/manage/flags', [
 					}]
 				}
 			}
+		});
+	}
+
+	function handleFormActions() {
+		components.get('posts/flag').find('[component="posts/flag/update"]').on('click', function() {
+			var pid = $(this).parents('[component="posts/flag"]').attr('data-pid');
+			var formData = $($(this).parents('form').get(0)).serializeArray();
+
+			socket.emit('posts.updateFlag', {
+				pid: pid,
+				data: formData
+			}, function(err) {
+				console.log(arguments);
+			});
 		});
 	}
 

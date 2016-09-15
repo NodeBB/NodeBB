@@ -226,4 +226,38 @@ module.exports = function(Posts) {
 			}
 		], callback);
 	};
+
+	Posts.updateFlagData = function(pid, flagObj, callback) {
+		// Retrieve existing flag data to compare for history-saving purposes
+		var changes = [];
+		var changeset = {};
+		var prop;
+		Posts.getPostData(pid, function(err, postData) {
+			// Track new additions
+			for(prop in flagObj) {
+				if (flagObj.hasOwnProperty(prop) && !postData.hasOwnProperty('flag:' + prop)) {
+					changes.push(prop);
+				}
+
+				// Generate changeset for object modification
+				if (flagObj.hasOwnProperty(prop)) {
+					changeset['flag:' + prop] = flagObj[prop];
+				}
+			}
+
+			// Track changed items
+			for(prop in postData) {
+				if (
+					postData.hasOwnProperty(prop) && prop.startsWith('flag:') &&
+					flagObj.hasOwnProperty(prop.slice(5)) &&
+					postData[prop] !== flagObj[prop.slice(5)]
+				) {
+					changes.push(prop.slice(5));
+				}
+			}
+
+			// Save flag data into post hash
+			Posts.setPostFields(pid, changeset, callback);
+		});
+	};
 };
