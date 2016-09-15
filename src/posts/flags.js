@@ -94,6 +94,8 @@ module.exports = function(Posts) {
 							} else {
 								next();
 							}
+						} else {
+							next();
 						}
 					},
 					function(next) {
