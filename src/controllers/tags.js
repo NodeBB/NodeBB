@@ -82,9 +82,7 @@ tagsController.getTags = function(req, res, next) {
 		if (err) {
 			return next(err);
 		}
-		tags = tags.filter(function(tag) {
-			return tag && tag.score > 0;
-		});
+		tags = tags.filter(Boolean);
 		var data = {
 			tags: tags,
 			nextStart: 100,

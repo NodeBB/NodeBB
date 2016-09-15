@@ -64,7 +64,7 @@ module.exports = function(Topics) {
 			},
 			function(isMember, next) {
 				if (isMember) {
-					return callback(new Error('[[error:tag-exists]]'));
+					return next();
 				}
 				db.sortedSetAdd('tags:topic:count', 0, tag, next);
 			}
