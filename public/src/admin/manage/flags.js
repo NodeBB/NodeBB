@@ -24,7 +24,8 @@ define('admin/manage/flags', [
 		handleGraphs();
 
 		updateFlagDetails(ajaxify.data.posts);
-		handleFormActions();
+
+		components.get('posts/flags').on('click', '[component="posts/flag/update"]', updateFlag);
 	};
 
 	function handleDismiss() {
@@ -93,10 +94,14 @@ define('admin/manage/flags', [
 				after: $('[data-next]').attr('data-next')
 			}, function(data, done) {
 				if (data.posts && data.posts.length) {
-					app.parseAndTranslate('admin/manage/flags', 'posts', {posts: data.posts}, function(html) {
+					app.parseAndTranslate('admin/manage/flags', 'posts', {
+						posts: data.posts,
+						assignees: ajaxify.data.assignees
+					}, function(html) {
 						$('[data-next]').attr('data-next', data.next);
 						$('.post-container').append(html);
 						html.find('img:not(.not-responsive)').addClass('img-responsive');
+						updateFlagDetails(data.posts);
 						done();
 					});
 				} else {
@@ -177,17 +182,15 @@ define('admin/manage/flags', [
 		});
 	}
 
-	function handleFormActions() {
-		components.get('posts/flag').find('[component="posts/flag/update"]').on('click', function() {
-			var pid = $(this).parents('[component="posts/flag"]').attr('data-pid');
-			var formData = $($(this).parents('form').get(0)).serializeArray();
+	function updateFlag() {
+		var pid = $(this).parents('[component="posts/flag"]').attr('data-pid');
+		var formData = $($(this).parents('form').get(0)).serializeArray();
 
-			socket.emit('posts.updateFlag', {
-				pid: pid,
-				data: formData
-			}, function(err) {
-				console.log(arguments);
-			});
+		socket.emit('posts.updateFlag', {
+			pid: pid,
+			data: formData
+		}, function(err) {
+			console.log(arguments);
 		});
 	}
 

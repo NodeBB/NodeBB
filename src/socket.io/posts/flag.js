@@ -189,7 +189,7 @@ module.exports = function(SocketPosts) {
 					return memo;
 				}, payload);
 
-				next(null, data.pid, payload);
+				next(null, socket.uid, data.pid, payload);
 			},
 			async.apply(posts.updateFlagData)
 		], callback);

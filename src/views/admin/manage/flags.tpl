@@ -56,13 +56,13 @@
 					<div class="panel-heading" role="tab">
 						<h4 class="panel-title">
 							<a role="button" data-toggle="collapse" data-parent="#accordion" href="#flag-pid-{posts.pid}" aria-expanded="true" aria-controls="flag-pid-{posts.pid}">
-								<span class="label <!-- IF ../flag.labelClassName -->{../flag.labelClassName}<!-- ELSE -->label-info<!-- ENDIF ../flag.labelClassName -->">[[topic:flag_manage_state_<!-- IF ../flag.state -->{../flag.state}<!-- ELSE -->open<!-- ENDIF ../flag.state -->]]</span>
+								<span class="label <!-- IF ../flagData.labelClass -->label-{../flagData.labelClass}<!-- ELSE -->label-info<!-- ENDIF ../flagData.labelClass -->">[[topic:flag_manage_state_<!-- IF ../flagData.state -->{../flagData.state}<!-- ELSE -->open<!-- ENDIF ../flagData.state -->]]</span>
 								&nbsp;[[topic:flag_manage_title, {posts.category.name}]]
 								<small><span class="timeago" title="{posts.timestampISO}"></span></small>
 							</a>
 						</h4>
 					</div>
-					<div id="flag-pid-{posts.pid}" class="panel-collapse collapse<!-- IF @first --> in<!-- ENDIF @first -->" role="tabpanel">
+					<div id="flag-pid-{posts.pid}" class="panel-collapse collapse" role="tabpanel">
 						<div class="panel-body">
 							<div class="row" data-pid="{posts.pid}" data-tid="{posts.topic.tid}">
 								<div class="col-sm-8">
@@ -102,7 +102,7 @@
 													<div class="user-icon" style="background-color: {../user.icon:bgColor};">{../user.icon:text}</div>
 													<!-- ENDIF ../user.picture -->
 													{../user.username}
-												</a>: "{../reason}"
+												</a>: "{posts.flagReasons.reason}"
 											</li>
 											<!-- END posts.flagReasons -->
 										</ul>
@@ -122,7 +122,7 @@
 											<select class="form-control" id="{posts.pid}-assignee" name="assignee">
 												<option value="">No Assignee</option>
 												<!-- BEGIN assignees -->
-												<option value="{../uid}">{../username}</option>
+												<option value="{assignees.uid}">{assignees.username}</option>
 												<!-- END assignees -->
 											</select>
 										</div>
@@ -147,11 +147,16 @@
 									<!-- IF !posts.flagData.history.length -->
 									<div class="alert alert-info">[[topic:flag_manage_no_history]]</div>
 									<!-- ELSE -->
-									<ul class="list-group">
+									<ul class="list-group" component="posts/flag/history">
 										<!-- BEGIN posts.flagData.history -->
 										<li class="list-group-item">
-											<div class="pull-right"><small><span class="timeago" title="{../timestampISO}"></span></small></div>
-											[[topic:flag_manage_history_{../type}, {../label}]]
+											<div class="pull-right"><small><span class="timeago" title="{posts.flagData.history.timestampISO}"></span></small></div>
+											<!-- IF ../user.picture -->
+											<img class="avatar avatar-sm avatar-rounded" src="{../user.picture}" title="{../user.username}" />
+											<!-- ELSE -->
+											<div class="avatar avatar-sm avatar-rounded" style="background-color: {../user.icon:bgColor};" title="{../user.username}">{../user.icon:text}</div>
+											<!-- ENDIF ../user.picture -->
+											[[topic:flag_manage_history_{posts.flagData.history.type}, {posts.flagData.history.label}]]
 										</li>
 										<!-- END posts.flagData.history -->
 									</ul>

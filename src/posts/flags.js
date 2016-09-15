@@ -201,7 +201,42 @@ module.exports = function(Posts) {
 					next(null, results.posts);
 				});
 			},
-			async.apply(Posts.expandFlagHistory)
+			async.apply(Posts.expandFlagHistory),
+			function(posts, next) {
+				// Parse out flag data into its own object inside each post hash
+				posts = posts.map(function(postObj) {
+					for(var prop in postObj) {
+						postObj.flagData = postObj.flagData || {};
+
+						if (postObj.hasOwnProperty(prop) && prop.startsWith('flag:')) {
+							postObj.flagData[prop.slice(5)] = postObj[prop];
+
+							if (prop === 'flag:state') {
+								switch(postObj[prop]) {
+									case 'open':
+										postObj.flagData.labelClass = 'info';
+										break;
+									case 'wip':
+										postObj.flagData.labelClass = 'warning';
+										break;
+									case 'resolved':
+										postObj.flagData.labelClass = 'success';
+										break;
+									case 'rejected':
+										postObj.flagData.labelClass = 'danger';
+										break;
+								}
+							}
+
+							delete postObj[prop];
+						}
+					}
+
+					return postObj;
+				});
+
+				setImmediate(next.bind(null, null, posts));
+			}
 		], callback);
 	}
 
@@ -231,11 +266,12 @@ module.exports = function(Posts) {
 		], callback);
 	};
 
-	Posts.updateFlagData = function(pid, flagObj, callback) {
+	Posts.updateFlagData = function(uid, pid, flagObj, callback) {
 		// Retrieve existing flag data to compare for history-saving purposes
 		var changes = [];
 		var changeset = {};
 		var prop;
+
 		Posts.getPostData(pid, function(err, postData) {
 			// Track new additions
 			for(prop in flagObj) {
@@ -270,6 +306,7 @@ module.exports = function(Posts) {
 							case 'assignee':	// intentional fall-through
 							case 'state':
 								history.unshift({
+									uid: uid,
 									type: property,
 									value: flagObj[property],
 									timestamp: Date.now()
@@ -278,6 +315,7 @@ module.exports = function(Posts) {
 
 							case 'notes':
 								history.unshift({
+									uid: uid,
 									type: property,
 									timestamp: Date.now()
 								});
@@ -308,21 +346,37 @@ module.exports = function(Posts) {
 			async.map(history, function(event, next) {
 				event.timestampISO = new Date(event.timestamp).toISOString();
 
-				if (event.type === 'assignee') {
-					user.getUserField(parseInt(event.value, 10), 'username', function(err, username) {
-						if (err) {
-							return next(err);
-						}
+				async.parallel([
+					function(next) {
+						user.getUserFields(event.uid, ['username', 'picture'], function(err, userData) {
+							if (err) {
+								return next(err);
+							}
 
-						event.label = username || 'Unknown user';
-						next(null, event);
-					});
-				} else if (event.type === 'state') {
-					event.label = '[[topic:flag_manage_state_' + event.value + ']]';
-					setImmediate(next.bind(null, null, event));
-				} else {
-					setImmediate(next.bind(null, null, event));
-				}
+							event.user = userData;
+							next();
+						});
+					},
+					function(next) {
+						if (event.type === 'assignee') {
+							user.getUserField(parseInt(event.value, 10), 'username', function(err, username) {
+								if (err) {
+									return next(err);
+								}
+
+								event.label = username || 'Unknown user';
+								next(null);
+							});
+						} else if (event.type === 'state') {
+							event.label = '[[topic:flag_manage_state_' + event.value + ']]';
+							setImmediate(next);
+						} else {
+							setImmediate(next);
+						}
+					}
+				], function(err) {
+					next(err, event);
+				})
 			}, function(err, history) {
 				post['flag:history'] = history;
 				next(null, post);
