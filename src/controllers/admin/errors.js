@@ -1,10 +1,10 @@
 'use strict';
 
-var async = require('async'),
-	json2csv = require('json-2-csv').json2csv;
+var async = require('async');
+var json2csv = require('json-2-csv').json2csv;
 
-var meta = require('../../meta'),
-	analytics = require('../../analytics');
+var meta = require('../../meta');
+var analytics = require('../../analytics');
 
 var errorsController = {};
 
