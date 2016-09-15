@@ -39,16 +39,10 @@ flagsController.get = function(req, res, next) {
 
 		// Minimise data set for assignees so tjs does less work
 		results.assignees = results.assignees.map(function(userObj) {
-			var keep = ['uid', 'username'];
-			for(var prop in userObj) {
-				if (userObj.hasOwnProperty(prop)) {
-					if (keep.indexOf(prop) === -1) {
-						delete userObj[prop];
-					}
-				}
-			}
-
-			return userObj;
+			return {
+				uid: userObj.uid,
+				username: userObj.username
+			};
 		});
 
 		var pageCount = Math.max(1, Math.ceil(results.flagData.count / itemsPerPage));
