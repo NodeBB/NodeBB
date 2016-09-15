@@ -55,7 +55,9 @@ define('forum/topic', [
 
 		sort.handleSort('topicPostSort', 'user.setTopicSort', 'topic/' + ajaxify.data.slug);
 
-		enableInfiniteLoadingOrPagination();
+		if (!config.usePagination) {
+			infinitescroll.init($('[component="topic"]'), posts.loadMorePosts);
+		}
 
 		addBlockQuoteHandler();
 
@@ -207,14 +209,6 @@ define('forum/topic', [
 		});
 	}
 
-	function enableInfiniteLoadingOrPagination() {
-		if (!config.usePagination) {
-			infinitescroll.init($('[component="topic"]'), posts.loadMorePosts);
-		} else {
-			navigator.disable();
-		}
-	}
-
 	function updateTopicTitle() {
 		var span = components.get('navbar/title').find('span');
 		if ($(window).scrollTop() > 50 && span.hasClass('hidden')) {
@@ -264,7 +258,11 @@ define('forum/topic', [
 
 				Topic.replaceURLTimeout = 0;
 				if (history.replaceState) {
-					var search = (window.location.search && !/^\?page=\d+$/.test(window.location.search) ? window.location.search : '');
+					var search = window.location.search || '';
+					if (!config.usePagination) {
+						search = (search && !/^\?page=\d+$/.test(search) ? search : '');
+					}
+
 					history.replaceState({
 						url: newUrl + search
 					}, null, window.location.protocol + '//' + window.location.host + RELATIVE_PATH + '/' + newUrl + search);
