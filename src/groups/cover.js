@@ -124,7 +124,7 @@ module.exports = function(Groups) {
 	}
 
 	Groups.removeCover = function(data, callback) {
-		db.deleteObjectField('group:' + data.groupName, 'cover:url', callback);
+		db.deleteObjectFields('group:' + data.groupName, ['cover:url', 'cover:thumb:url'], callback);
 	};
 
 };
