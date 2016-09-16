@@ -46,6 +46,7 @@ define('admin/manage/flags', [
 
 				ajaxify.refresh();
 			});
+			return false;
 		});
 	}
 
