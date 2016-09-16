@@ -282,10 +282,10 @@ define('forum/topic/posts', [
 			*/
 
 			var images = components.get('post/content').find('img[data-state="unloaded"]'),
-				visible = images.filter(function() {
-					return utils.isElementInViewport(this);
+				toLoad = images.filter(function() {
+					return utils.isElementBelowTopOfViewport(this);
 				}),
-				posts = $.unique(visible.map(function() {
+				posts = $.unique(toLoad.map(function() {
 					return $(this).parents('[component="post"]').get(0);
 				})),
 				scrollTop = $(window).scrollTop(),
@@ -317,8 +317,8 @@ define('forum/topic/posts', [
 				oldHeight, newHeight;
 
 			// For each image, reset the source and adjust scrollTop when loaded
-			visible.attr('data-state', 'loading');
-			visible.each(function(index, image) {
+			toLoad.attr('data-state', 'loading');
+			toLoad.each(function(index, image) {
 				image = $(image);
 
 				image.on('load', function() {
