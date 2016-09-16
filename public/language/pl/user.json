@@ -93,6 +93,7 @@
     "incoming-message-sound": "Dźwięk przychodzącej wiadomości",
     "outgoing-message-sound": "Dźwięk wychodzącej wiadomości",
     "notification-sound": "Dźwięk powiadomienia",
+    "no-sound": "No sound",
     "browsing": "Ustawienia szukania",
     "open_links_in_new_tab": "Otwieraj linki wychodzące w nowej karcie",
     "enable_topic_searching": "Odblokuj szukanie w temacie",

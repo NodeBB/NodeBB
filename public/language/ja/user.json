@@ -93,6 +93,7 @@
     "incoming-message-sound": "Incoming message sound",
     "outgoing-message-sound": "Outgoing message sound",
     "notification-sound": "Notification sound",
+    "no-sound": "No sound",
     "browsing": "ブラウジングの設定",
     "open_links_in_new_tab": "外リンクを新しいタブに開きます",
     "enable_topic_searching": "インートピックの検索を有効にします",

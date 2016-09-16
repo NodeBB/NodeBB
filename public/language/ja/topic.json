@@ -51,7 +51,7 @@
     "not-watching.description": "Do not notify me of new replies.<br/>Show topic in unread if category is not ignored.",
     "ignoring.description": "Do not notify me of new replies.<br/>Do not show topic in unread.",
     "thread_tools.title": "トピックのツール",
-    "thread_tools.markAsUnreadForAll": "未読にする",
+    "thread_tools.markAsUnreadForAll": "Mark unread for all",
     "thread_tools.pin": "スレッドを最上部に固定",
     "thread_tools.unpin": "スレッドの固定を解除",
     "thread_tools.lock": "スレッドをロック",

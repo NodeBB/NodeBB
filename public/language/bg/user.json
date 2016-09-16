@@ -93,6 +93,7 @@
     "incoming-message-sound": "Звук за входящо съобщение",
     "outgoing-message-sound": "Звук за изходящо съобщение",
     "notification-sound": "Звук за известие",
+    "no-sound": "Без звук",
     "browsing": "Настройки за страниците",
     "open_links_in_new_tab": "Отваряне на външните връзки в нов подпрозорец",
     "enable_topic_searching": "Включване на търсенето в темите",

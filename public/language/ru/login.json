@@ -8,5 +8,5 @@
     "failed_login_attempt": "Некорректный логин",
     "login_successful": "Вы успешно вошли!",
     "dont_have_account": "Нет акканута?",
-    "logged-out-due-to-inactivity": "You have been logged out of the Admin Control Panel due to inactivity"
+    "logged-out-due-to-inactivity": "Вы вышли из панели управления администратора из-за бездействия"
 }

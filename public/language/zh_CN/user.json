@@ -93,6 +93,7 @@
     "incoming-message-sound": "消息到达提示音",
     "outgoing-message-sound": "消息送出提示音",
     "notification-sound": "通知提示音",
+    "no-sound": "No sound",
     "browsing": "浏览设置",
     "open_links_in_new_tab": "在新标签打开外部链接",
     "enable_topic_searching": "启用主题内搜索",

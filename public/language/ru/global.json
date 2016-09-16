@@ -7,10 +7,10 @@
     "403.login": "Возможно Вам следует <a href='%1/login'>войти под своим аккаунтом</a>?",
     "404.title": "Страница не найдена",
     "404.message": "Вы пытаетесь перейти на страницу, которой не существует. Вам стоит вернутся на <a href='%1/'>главную страницу</a>.",
-    "500.title": "Internal Error.",
+    "500.title": "Внутренняя ошибка.",
     "500.message": "Упс! Похоже, что-то пошло не так!",
-    "400.title": "Bad Request.",
-    "400.message": "It looks like this link is malformed, please double-check and try again. Otherwise, return to the <a href='%1/'>home page</a>.",
+    "400.title": "Неверный Запрос.",
+    "400.message": "Похоже, эта ссылка имеет неправильный формат, пожалуйста, проверьте и повторите попытку. Либо вернитесь на <а href='%1/'>главную страницу</a>.",
     "register": "Зарегистрироваться",
     "login": "Войти",
     "please_log_in": "Пожалуйста, войдите под своим аккаунтом",
@@ -95,6 +95,6 @@
     "upload_file": "Загрузить файл",
     "upload": "Загрузить",
     "allowed-file-types": "Разрешенные форматы файлов %1",
-    "unsaved-changes": "You have unsaved changes. Are you sure you wish to navigate away?",
-    "reconnecting-message": "Looks like your connection to %1 was lost, please wait while we try to reconnect."
+    "unsaved-changes": "У вас есть несохраненные изменения. Вы уверены, что хотите уйти?",
+    "reconnecting-message": "Похоже, подключение к %1 было разорвано, подождите, пока мы пытаемся восстановить соединение."
 }
