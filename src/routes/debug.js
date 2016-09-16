@@ -3,10 +3,11 @@
 var express = require('express');
 var nconf = require('nconf');
 var winston = require('winston');
-var user = require('./../user');
-var categories = require('./../categories');
-var topics = require('./../topics');
-var posts = require('./../posts');
+var user = require('../user');
+var categories = require('../categories');
+var topics = require('../topics');
+var posts = require('../posts');
+var db = require('../database');
 
 module.exports = function(app, middleware, controllers) {
 	var router = express.Router();

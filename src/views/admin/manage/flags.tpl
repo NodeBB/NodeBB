@@ -25,12 +25,26 @@
 			</div>
 
 			<div class="form-group">
+				<div>
+					<div>
+						<label>Category</label>
+						<select class="form-control" id="category-selector" name="cid">
+							<option value="">[[unread:all_categories]]</option>
+							<!-- BEGIN categories -->
+							<option value="{categories.cid}" <!-- IF categories.selected -->selected<!-- ENDIF categories.selected -->>{categories.text}</option>
+							<!-- END categories -->
+						</select>
+					</div>
+				</div>
+			</div>
+
+			<div class="form-group">
 				<label>Sort By</label>
 				<div>
 					<div>
 						<select id="flag-sort-by" class="form-control" name="sortBy">
-							<option value="count">Most Flags</option>
-							<option value="time">Most Recent</option>
+							<option value="count" <!-- IF sortByCount -->selected<!-- ENDIF sortByCount -->>Most Flags</option>
+							<option value="time" <!-- IF sortByTime -->selected<!-- ENDIF sortByTime -->>Most Recent</option>
 						</select>
 					</div>
 				</div>

@@ -305,6 +305,39 @@ var privileges = require('./privileges');
 		return tree;
 	};
 
+	Categories.buildForSelect = function(uid, callback) {
+		function recursive(category, categoriesData, level) {
+			if (category.link) {
+				return;
+			}
+
+			var bullet = level ? '&bull; ' : '';
+			category.value = category.cid;
+			category.text = level + bullet + category.name
+			categoriesData.push(category);
+
+			category.children.forEach(function(child) {
+				recursive(child, categoriesData, '&nbsp;&nbsp;&nbsp;&nbsp;' + level);
+			});
+		}
+		Categories.getCategoriesByPrivilege('cid:0:children', uid, 'read', function(err, categories) {
+			if (err) {
+				return callback(err);
+			}
+
+			var categoriesData = [];
+
+			categories = categories.filter(function(category) {
+				return category && !category.link && !parseInt(category.parentCid, 10);
+			});
+
+			categories.forEach(function(category) {
+				recursive(category, categoriesData, '');
+			});
+			callback(null, categoriesData);
+		});
+	};
+
 	Categories.getIgnorers = function(cid, start, stop, callback) {
 		db.getSortedSetRevRange('cid:' + cid + ':ignorers', start, stop, callback);
 	};

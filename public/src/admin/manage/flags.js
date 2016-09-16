@@ -12,8 +12,6 @@ define('admin/manage/flags', [
 	Flags.init = function() {
 		$('.post-container .content img:not(.not-responsive)').addClass('img-responsive');
 
-		var params = utils.params();
-		$('#flag-sort-by').val(params.sortBy);
 		autocomplete.user($('#byUsername'));
 
 		handleDismiss();

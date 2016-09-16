@@ -154,14 +154,23 @@ module.exports = function(Posts) {
 	};
 
 	Posts.getFlags = function(set, uid, start, stop, callback) {
+		set = set.length > 1 ? set : set[0];
 		async.parallel({
 			count: function(next) {
-				db.sortedSetCard(set, next);
+				if (Array.isArray(set)) {
+					db.sortedSetIntersectCard(set, next);
+				} else {
+					db.sortedSetCard(set, next);
+				}
 			},
 			posts: function(next) {
 				async.waterfall([
 					function (next) {
-						db.getSortedSetRevRange(set, start, stop, next);
+						if (Array.isArray(set)) {
+							db.getSortedSetRevIntersect({sets: set, start: start, stop: stop, aggregate: 'MAX'}, next);
+						} else {
+							db.getSortedSetRevRange(set, start, stop, next);
+						}
 					},
 					function (pids, next) {
 						getFlaggedPostsWithReasons(pids, uid, next);
@@ -169,35 +178,6 @@ module.exports = function(Posts) {
 				], next);
 			}
 		}, callback);
-	};
-
-	Posts.getUserFlags = function(byUsername, sortBy, callerUID, start, stop, callback) {
-		var count = 0;
-		async.waterfall([
-			function(next) {
-				user.getUidByUsername(byUsername, next);
-			},
-			function(uid, next) {
-				if (!uid) {
-					return next(null, []);
-				}
-
-				db.getSortedSetRevRange('uid:' + uid + ':flag:pids', 0, -1, next);
-			},
-			function(pids, next) {
-				count = pids.length;
-				getFlaggedPostsWithReasons(pids, callerUID, next);
-			},
-			function(posts, next) {
-				if (sortBy === 'count') {
-					posts.sort(function(a, b) {
-						return b.flags - a.flags;
-					});
-				}
-
-				next(null, {posts: posts.slice(start, stop === -1 ? undefined : stop + 1), count: count});
-			}
-		], callback);
 	};
 
 	function getFlaggedPostsWithReasons(pids, uid, callback) {
@@ -229,8 +209,6 @@ module.exports = function(Posts) {
 					}
 
 					results.posts.forEach(function(post, index) {
-						var history;
-
 						if (post) {
 							post.flagReasons = reasons[index];
 						}
@@ -352,11 +330,12 @@ module.exports = function(Posts) {
 	Posts.expandFlagHistory = function(posts, callback) {
 		// Expand flag history
 		async.map(posts, function(post, next) {
+			var history;
 			try {
-				var history = JSON.parse(post['flag:history'] || '[]');
+				history = JSON.parse(post['flag:history'] || '[]');
 			} catch (e) {
 				winston.warn('[posts/getFlags] Unable to deserialise post flag history, likely malformed data');
-				callback(e);
+				return callback(e);
 			}
 
 			async.map(history, function(event, next) {
@@ -392,7 +371,7 @@ module.exports = function(Posts) {
 					}
 				], function(err) {
 					next(err, event);
-				})
+				});
 			}, function(err, history) {
 				if (err) {
 					return next(err);
@@ -402,5 +381,5 @@ module.exports = function(Posts) {
 				next(null, post);
 			});
 		}, callback);
-	}
+	};
 };
