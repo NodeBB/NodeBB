@@ -73,9 +73,6 @@ function getFlagData(req, callback) {
 	var stop = start + itemsPerPage - 1;
 
 	var sets = [sortBy === 'count' ? 'posts:flags:count' : 'posts:flagged'];
-	if (cid) {
-		sets.push('cid:' + cid + ':pids');
-	}
 
 	async.waterfall([
 		function(next) {
@@ -90,7 +87,7 @@ function getFlagData(req, callback) {
 				sets.push('uid:' + uid + ':flag:pids');
 			}
 
-			posts.getFlags(sets, req.uid, start, stop, next);
+			posts.getFlags(sets, cid, req.uid, start, stop, next);
 		}
 	], callback);
 }

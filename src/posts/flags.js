@@ -153,31 +153,31 @@ module.exports = function(Posts) {
 		});
 	};
 
-	Posts.getFlags = function(set, uid, start, stop, callback) {
-		set = set.length > 1 ? set : set[0];
-		async.parallel({
-			count: function(next) {
+	Posts.getFlags = function(set, cid, uid, start, stop, callback) {
+		async.waterfall([
+			function (next) {
 				if (Array.isArray(set)) {
-					db.sortedSetIntersectCard(set, next);
+					db.getSortedSetRevIntersect({sets: set, start: start, stop: -1, aggregate: 'MAX'}, next);
 				} else {
-					db.sortedSetCard(set, next);
+					db.getSortedSetRevRange(set, start, -1, next);
 				}
 			},
-			posts: function(next) {
-				async.waterfall([
-					function (next) {
-						if (Array.isArray(set)) {
-							db.getSortedSetRevIntersect({sets: set, start: start, stop: stop, aggregate: 'MAX'}, next);
-						} else {
-							db.getSortedSetRevRange(set, start, stop, next);
-						}
-					},
-					function (pids, next) {
-						getFlaggedPostsWithReasons(pids, uid, next);
-					}
-				], next);
+			function (pids, next) {
+				if (cid) {
+					Posts.filterPidsByCid(pids, cid, next);
+				} else {
+					process.nextTick(next, null, pids);
+				}
+			},
+			function (pids, next) {
+				getFlaggedPostsWithReasons(pids, uid, next);
+			},
+			function (posts, next) {
+				var count = posts.length;
+				var end = stop - start + 1;
+				next(null, {posts: posts.slice(0, stop === -1 ? undefined : end), count: count});
 			}
-		}, callback);
+		], callback);
 	};
 
 	function getFlaggedPostsWithReasons(pids, uid, callback) {
