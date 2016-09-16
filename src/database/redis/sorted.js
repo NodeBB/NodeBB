@@ -93,7 +93,7 @@ module.exports = function(redisClient, module) {
 
 	function sortedSetRange(method, key, start, stop, withScores, callback) {
 		if (Array.isArray(key)) {
-			return sortedSetUnion(method, key, start, stop, withScores, callback);
+			return sortedSetUnion({method: method, sets: key, start: start, stop: stop, withScores: withScores}, callback);
 		}
 
 		var params = [key, start, stop];
@@ -265,7 +265,7 @@ module.exports = function(redisClient, module) {
 
 		var rangeParams = [tempSetName, params.start, params.stop];
 		if (params.withScores) {
-			params.push('WITHSCORES');
+			rangeParams.push('WITHSCORES');
 		}
 
 		var multi = redisClient.multi();
@@ -302,6 +302,27 @@ module.exports = function(redisClient, module) {
 		redisClient.zrangebylex([key, min, max, 'LIMIT', start, count], callback);
 	};
 
+	module.sortedSetIntersectCard = function(keys, callback) {
+		if (!Array.isArray(keys) || !keys.length) {
+			return callback(null, 0);
+		}
+		var tempSetName = 'temp_' + Date.now();
+
+		var interParams = [tempSetName, keys.length].concat(keys);
+
+		var multi = redisClient.multi();
+		multi.zinterstore(interParams);
+		multi.zcard(tempSetName);
+		multi.del(tempSetName);
+		multi.exec(function(err, results) {
+			if (err) {
+				return callback(err);
+			}
+
+			callback(null, results[1] || 0);
+		});
+	};
+
 	module.getSortedSetIntersect = function(params, callback) {
 		params.method = 'zrange';
 		getSortedSetRevIntersect(params, callback);
@@ -312,7 +333,7 @@ module.exports = function(redisClient, module) {
 		getSortedSetRevIntersect(params, callback);
 	};
 
-	function getSortedSetRevIntersect (params, callback) {
+	function getSortedSetRevIntersect(params, callback) {
 		var sets = params.sets;
 		var start = params.hasOwnProperty('start') ? params.start : 0;
 		var stop = params.hasOwnProperty('stop') ? params.stop : -1;

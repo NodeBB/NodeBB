@@ -659,6 +659,41 @@ describe('Sorted Set methods', function() {
 
 	});
 
+	describe('sortedSetIntersectCard', function() {
+		before(function(done) {
+			async.parallel([
+				function(next) {
+					db.sortedSetAdd('interCard1', [0, 0, 0], ['value1', 'value2', 'value3'], next);
+				},
+				function(next) {
+					db.sortedSetAdd('interCard2', [0, 0, 0], ['value2', 'value3', 'value4'], next);
+				},
+				function(next) {
+					db.sortedSetAdd('interCard3', [0, 0, 0], ['value3', 'value4', 'value5'], next);
+				},
+				function(next) {
+					db.sortedSetAdd('interCard4', [0, 0, 0], ['value4', 'value5', 'value6'], next);
+				}
+			], done);
+		});
+
+		it('should return # of elements in intersection', function(done) {
+			db.sortedSetIntersectCard(['interCard1', 'interCard2', 'interCard3'], function(err, count) {
+				assert.ifError(err);
+				assert.strictEqual(count, 1);
+				done();
+			});
+		});
+
+		it('should return 0 if intersection is empty', function(done) {
+			db.sortedSetIntersectCard(['interCard1', 'interCard4'], function(err, count) {
+				assert.ifError(err);
+				assert.strictEqual(count, 0);
+				done();
+			});
+		});
+	});
+
 
 	after(function(done) {
 		db.flushdb(done);

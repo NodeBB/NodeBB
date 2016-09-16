@@ -637,6 +637,24 @@ module.exports = function(db, module) {
 	};
 
 
+	module.sortedSetIntersectCard = function(keys, callback) {
+		if (!Array.isArray(keys) || !keys.length) {
+			return callback(null, 0);
+		}
+
+		var pipeline = [
+			{ $match: { _key: {$in: keys}} },
+			{ $group: { _id: {value: '$value'}, count: {$sum: 1}} },
+			{ $match: { count: keys.length} },
+			{ $group: { _id: null,  count: { $sum: 1 } } },
+			{ $project: { _id: 0, count: '$count' } }
+		];
+
+		db.collection('objects').aggregate(pipeline, function(err, data) {
+			callback(err, Array.isArray(data) && data.length ? data[0].count : 0);
+		});
+	};
+
 	module.getSortedSetIntersect = function(params, callback) {
 		params.sort = 1;
 		getSortedSetRevIntersect(params, callback);
