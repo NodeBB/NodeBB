@@ -21,7 +21,9 @@ infoController.get = function(req, res, callback) {
 			}
 			async.parallel({
 				history: async.apply(user.getModerationHistory, userData.uid),
-				sessions: async.apply(user.auth.getSessions, userData.uid, req.sessionID)
+				sessions: async.apply(user.auth.getSessions, userData.uid, req.sessionID),
+				usernames: async.apply(user.getUsernameHistory, userData.uid),
+				emails: async.apply(user.getEmailHistory, userData.uid)
 			}, next);
 		}
 	], function(err, data) {
@@ -31,6 +33,8 @@ infoController.get = function(req, res, callback) {
 
 		userData.history = data.history;
 		userData.sessions = data.sessions;
+		userData.usernames = data.usernames;
+		userData.emails = data.emails;
 		userData.title = '[[pages:account/info]]';
 		userData.breadcrumbs = helpers.buildBreadcrumbs([{text: userData.username, url: '/user/' + userData.userslug}, {text: '[[user:account_info]]'}]);
 
