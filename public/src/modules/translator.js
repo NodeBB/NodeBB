@@ -291,6 +291,10 @@
 				lang = null;
 			}
 
+			if (!(typeof text === 'string' || text instanceof String) || text === '') {
+				return cb('');
+			}
+
 			Translator.create(lang).translate(text).then(function (output) {
 				return cb(output);
 			}).catch(function (err) {
