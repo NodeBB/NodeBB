@@ -146,7 +146,7 @@ define('forum/topic', [
 
 		if (postIndex && window.location.search.indexOf('page=') === -1) {
 			if (components.get('post/anchor', postIndex).length) {
-				return navigator.scrollToPostIndex(postIndex, true);
+				return navigator.scrollToPostIndex(postIndex, true, 0);
 			}
 		} else if (bookmark && (!config.usePagination || (config.usePagination && ajaxify.data.pagination.currentPage === 1)) && ajaxify.data.postcount > ajaxify.data.bookmarkThreshold) {
 			navigator.update(0);
