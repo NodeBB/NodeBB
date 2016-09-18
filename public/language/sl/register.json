@@ -2,7 +2,7 @@
     "register": "Registracija",
     "cancel_registration": "Preklic registracije",
     "help.email": "Privzeto bo vaš e-poštni naslov skrit pred javnostjo.",
-    "help.username_restrictions": "Enolično uporabniško ime med %1 in %2 znaki. Drugi vas lahko omenijo v objavi z @<span id='yourUsername'>Uporabnik</span>.",
+    "help.username_restrictions": "Enolično uporabniško ime med %1 in %2 znaki. Drugi vas lahko omenijo v objavi z @<span id='yourUsername'>uporabnik</span>.",
     "help.minimum_password_length": "Vaše geslo mora vsebovati najmanj %1 znakov.",
     "email_address": "E-poštni naslov",
     "email_address_placeholder": "Vnesi e-mail naslov",
