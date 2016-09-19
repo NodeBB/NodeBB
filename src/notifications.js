@@ -63,9 +63,7 @@ var utils = require('../public/src/utils');
 						if (notification.user.username === '[[global:guest]]') {
 							notification.bodyShort = notification.bodyShort.replace(/([\s\S]*?),[\s\S]*?,([\s\S]*?)/, '$1, [[global:guest]], $2');
 						}
-					}
-
-					if (notification.image === 'brand:logo' || !notification.image) {
+					} else if (notification.image === 'brand:logo' || !notification.image) {
 						notification.image = meta.config['brand:logo'] || nconf.get('relative_path') + '/logo.png';
 					}
 				});
