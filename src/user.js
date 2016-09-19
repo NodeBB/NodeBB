@@ -134,7 +134,7 @@ var utils = require('../public/src/utils');
 	};
 
 	User.getStatus = function(userData) {
-		var isOnline = Date.now() - parseInt(userData.lastonline, 10) < 300000;
+		var isOnline = (Date.now() - parseInt(userData.lastonline, 10)) < 300000;
 		return isOnline ? (userData.status || 'online') : 'offline';
 	};
 
