@@ -646,8 +646,7 @@ module.exports = function(db, module) {
 			{ $match: { _key: {$in: keys}} },
 			{ $group: { _id: {value: '$value'}, count: {$sum: 1}} },
 			{ $match: { count: keys.length} },
-			{ $group: { _id: null,  count: { $sum: 1 } } },
-			{ $project: { _id: 0, count: '$count' } }
+			{ $group: { _id: null,  count: { $sum: 1 } } }
 		];
 
 		db.collection('objects').aggregate(pipeline, function(err, data) {
