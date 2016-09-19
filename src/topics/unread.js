@@ -279,9 +279,7 @@ module.exports = function(Topics) {
 				db.getSortedSetRevRangeByScore('topics:recent', 0, -1, '+inf', Topics.unreadCutoff(), next);
 			},
 			function (tids, next) {
-				for (var i=0; i<tids.length; ++i) {
-					Topics.markTopicNotificationsRead(tids[i], uid);
-				}
+				Topics.markTopicNotificationsRead(tids, uid);
 				Topics.markAsRead(tids, uid, next);
 			},
 			function (markedRead, next) {
@@ -290,17 +288,23 @@ module.exports = function(Topics) {
 		], callback);
 	};
 
-	Topics.markTopicNotificationsRead = function(tid, uid) {
-		if (!tid) {
+	Topics.markTopicNotificationsRead = function(tids, uid) {
+		if (!Array.isArray(tids) || !tids.length) {
 			return;
 		}
-		user.notifications.getUnreadByField(uid, 'tid', tid, function(err, nids) {
-			if (err) {
-				return winston.error(err.stack);
+
+		async.waterfall([
+			function(next) {
+				user.notifications.getUnreadByField(uid, 'tid', tids, next);
+			},
+			function(nids, next) {
+				notifications.markReadMultiple(nids, uid, next);
 			}
-			notifications.markReadMultiple(nids, uid, function() {
-				user.notifications.pushCount(uid);
-			});
+		], function(err) {
+			if (err) {
+				return winston.error(err);
+			}
+			user.notifications.pushCount(uid);
 		});
 	};
 

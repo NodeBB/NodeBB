@@ -220,7 +220,7 @@ define('forum/topic/events', [
 	function onNewNotification(data) {
 		var tid = ajaxify.data.tid;
 		if (data && data.tid && parseInt(data.tid, 10) === parseInt(tid, 10)) {
-			socket.emit('topics.markTopicNotificationsRead', tid);
+			socket.emit('topics.markTopicNotificationsRead', [tid]);
 		}
 	}
 

@@ -19,18 +19,17 @@ module.exports = function(SocketTopics) {
 
 			topics.pushUnreadCount(socket.uid);
 
-			for (var i=0; i<tids.length; ++i) {
-				topics.markTopicNotificationsRead(tids[i], socket.uid);
-			}
+			topics.markTopicNotificationsRead(tids, socket.uid);
+
 			callback();
 		});
 	};
 
-	SocketTopics.markTopicNotificationsRead = function(socket, tid, callback) {
-		if (!tid || !socket.uid) {
+	SocketTopics.markTopicNotificationsRead = function(socket, tids, callback) {
+		if (!Array.isArray(tids) || !socket.uid) {
 			return callback(new Error('[[error:invalid-data]]'));
 		}
-		topics.markTopicNotificationsRead(tid, socket.uid);
+		topics.markTopicNotificationsRead(tids, socket.uid);
 	};
 
 	SocketTopics.markAllRead = function(socket, data, callback) {
