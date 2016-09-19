@@ -35,13 +35,17 @@ var privileges = require('./privileges');
 					return next(new Error('[[error:invalid-cid]]'));
 				}
 				category = categories[0];
-				if (parseInt(data.uid, 10)) {
-					Categories.markAsRead([data.cid], data.uid);
-				}
 
 				async.parallel({
 					topics: function(next) {
 						Categories.getCategoryTopics(data, next);
+					},
+					topicCount: function(next) {
+						if (Array.isArray(data.set)) {
+							db.sortedSetIntersectCard(data.set, next);
+						} else {
+							next(null, category.topic_count);
+						}
 					},
 					isIgnored: function(next) {
 						Categories.isIgnored([data.cid], data.uid, next);
@@ -52,6 +56,7 @@ var privileges = require('./privileges');
 				category.topics = results.topics.topics;
 				category.nextStart = results.topics.nextStart;
 				category.isIgnored = results.isIgnored[0];
+				category.topic_count = results.topicCount;
 
 				plugins.fireHook('filter:category.get', {category: category, uid: data.uid}, next);
 			},
