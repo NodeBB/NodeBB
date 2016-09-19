@@ -51,7 +51,7 @@
     "not-watching.description": "Do not notify me of new replies.<br/>Show topic in unread if category is not ignored.",
     "ignoring.description": "Do not notify me of new replies.<br/>Do not show topic in unread.",
     "thread_tools.title": "เครื่องมือช่วยจัดการ Topic",
-    "thread_tools.markAsUnreadForAll": "ทำหมายว่ายังไม่ได้อ่าน",
+    "thread_tools.markAsUnreadForAll": "Mark unread for all",
     "thread_tools.pin": "ปักหมุดกระทู้",
     "thread_tools.unpin": "เลิกปักหมุดกระทู้",
     "thread_tools.lock": "ล็อคกระทู้",

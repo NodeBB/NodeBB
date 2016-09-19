@@ -1,5 +1,5 @@
 "use strict";
-/*global config, translator, componentHandler, define, socket, app, ajaxify, utils, bootbox, Slideout, NProgress, RELATIVE_PATH*/
+/*global config, componentHandler, define, socket, app, ajaxify, utils, bootbox, Slideout, NProgress, RELATIVE_PATH*/
 
 (function() {
 	var logoutTimer = 0;

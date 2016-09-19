@@ -6,7 +6,7 @@ var meta = require('../../meta');
 var db = require('../../database');
 var pagination = require('../../pagination');
 var events = require('../../events');
-
+var plugins = require('../../plugins');
 
 var usersController = {};
 
@@ -87,12 +87,16 @@ usersController.registrationQueue = function(req, res, next) {
 	var start = (page - 1) * 20;
 	var stop = start + itemsPerPage - 1;
 	var invitations;
+
 	async.parallel({
 		registrationQueueCount: function(next) {
 			db.sortedSetCard('registration:queue', next);
 		},
 		users: function(next) {
 			user.getRegistrationQueue(start, stop, next);
+		},
+		customHeaders: function(next) {
+			plugins.fireHook('filter:admin.registrationQueue.customHeaders', {headers: []}, next);
 		},
 		invites: function(next) {
 			async.waterfall([
@@ -132,6 +136,7 @@ usersController.registrationQueue = function(req, res, next) {
 		}
 		var pageCount = Math.max(1, Math.ceil(data.registrationQueueCount / itemsPerPage));
 		data.pagination = pagination.create(page, pageCount);
+		data.customHeaders = data.customHeaders.headers;
 		res.render('admin/manage/registration', data);
 	});
 };

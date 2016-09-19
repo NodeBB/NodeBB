@@ -273,11 +273,13 @@ define('forum/category', [
 		}
 
 		$(window).trigger('action:categories.loading');
+		var params = utils.params();
 		infinitescroll.loadMore('categories.loadMore', {
 			cid: ajaxify.data.cid,
 			after: after,
 			direction: direction,
-			author: utils.params().author,
+			author: params.author,
+			tag: params.tag,
 			categoryTopicSort: config.categoryTopicSort
 		}, function (data, done) {
 			if (data.topics && data.topics.length) {

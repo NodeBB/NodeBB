@@ -93,6 +93,7 @@
     "incoming-message-sound": "收到訊息音效",
     "outgoing-message-sound": "發出訊息音效",
     "notification-sound": "通知音效",
+    "no-sound": "No sound",
     "browsing": "瀏覽設定",
     "open_links_in_new_tab": "在新的資料標籤裡打開外部的連結",
     "enable_topic_searching": "啟用在主題中的搜尋",

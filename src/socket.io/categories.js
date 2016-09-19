@@ -105,6 +105,10 @@ SocketCategories.loadMore = function(socket, data, callback) {
 			set = 'cid:' + data.cid + ':uid:' + results.targetUid + ':tids';
 		}
 
+		if (data.tag) {
+			set = [set, 'tag:' + data.tag + ':topics'];
+		}
+
 		categories.getCategoryTopics({
 			cid: data.cid,
 			set: set,

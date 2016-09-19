@@ -29,6 +29,7 @@
     "username-too-long": "Nama pengunna terlalu panjang",
     "password-too-long": "Kata laluan terlalu panjang",
     "user-banned": "Pengguna diharamkan",
+    "user-banned-reason": "User banned (Reason: %1)",
     "user-too-new": "Maaf, anda dikehendaki menunggu %1 saat() sebelum membuat kiriman pertama anda",
     "blacklisted-ip": "Sorry, your IP address has been banned from this community. If you feel this is in error, please contact an administrator.",
     "ban-expiry-missing": "Please provide an end date for this ban",

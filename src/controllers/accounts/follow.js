@@ -27,7 +27,7 @@ function getFollow(tpl, name, req, res, callback) {
 
 	async.waterfall([
 		function(next) {
-			accountHelpers.getBaseUser(req.params.userslug, req.uid, next);
+			accountHelpers.getUserDataByUserSlug(req.params.userslug, req.uid, next);
 		},
 		function(data, next) {
 			userData = data;

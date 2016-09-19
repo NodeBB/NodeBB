@@ -1,6 +1,6 @@
 {
     "register": "Регистрация",
-    "cancel_registration": "Cancel Registration",
+    "cancel_registration": "Отменить Регистрацию",
     "help.email": "По умолчанию, ваш email будет скрыт.",
     "help.username_restrictions": "Уникальное Имя между %1 и %2 символов. Другие пользователи смогут упоминать вас по @<span id='yourUsername'>Имени</span>.",
     "help.minimum_password_length": "Длина вашего пароля должна быть минимум %1 символов.",
@@ -16,8 +16,8 @@
     "alternative_registration": "Альтернативная регистрация",
     "terms_of_use": "Условия использования",
     "agree_to_terms_of_use": "Я согласен с условиями",
-    "terms_of_use_error": "You must agree to the Terms of Use",
+    "terms_of_use_error": "Вы должны согласиться с условиями использования",
     "registration-added-to-queue": "Ваша регистрация была добавлена в очередь на утверждение. Вы получите уведомление по электронной почте, когда она будет одобрена администратором.",
-    "interstitial.intro": "We require some additional information before we can create your account.",
-    "interstitial.errors-found": "We could not complete your registration:"
+    "interstitial.intro": "Нам потребуется дополнительная информация, прежде чем мы сможем создать вашу учетную запись.",
+    "interstitial.errors-found": "Мы не смогли завершить регистрацию:"
 }

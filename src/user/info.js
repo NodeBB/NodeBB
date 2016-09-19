@@ -61,6 +61,30 @@ module.exports = function(User) {
 		});
 	};
 
+	User.getEmailHistory = function(uid, callback) {
+		db.getSortedSetRevRangeWithScores('user:' + uid + ':emails', 0, -1, function(err, data) {
+			callback(err, data.map(function(set) {
+				set.timestamp = set.score;
+				set.timestampISO = new Date(set.score).toISOString();
+				set.value = set.value.split(':')[0];
+				delete set.score;
+				return set;
+			}));
+		});
+	};
+
+	User.getUsernameHistory = function(uid, callback) {
+		db.getSortedSetRevRangeWithScores('user:' + uid + ':usernames', 0, -1, function(err, data) {
+			callback(err, data.map(function(set) {
+				set.timestamp = set.score;
+				set.timestampISO = new Date(set.score).toISOString();
+				set.value = set.value.split(':')[0];
+				delete set.score;
+				return set;
+			}));
+		});
+	};
+
 	function getFlagMetadata(data, callback) {
 		var pids = data.flags.map(function(flagObj) {
 			return parseInt(flagObj.value, 10);

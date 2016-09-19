@@ -93,6 +93,7 @@
     "incoming-message-sound": "Incoming message sound",
     "outgoing-message-sound": "Outgoing message sound",
     "notification-sound": "Notification sound",
+    "no-sound": "No sound",
     "browsing": "Inställning för bläddring",
     "open_links_in_new_tab": "Öppna utgående länkar i ny flik",
     "enable_topic_searching": "Aktivera sökning inom ämne",

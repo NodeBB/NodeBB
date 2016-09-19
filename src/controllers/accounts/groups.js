@@ -1,11 +1,11 @@
 'use strict';
 
 
-var async = require('async'),
+var async = require('async');
 
-	groups = require('../../groups'),
-	helpers = require('../helpers'),
-	accountHelpers = require('./helpers');
+var groups = require('../../groups');
+var helpers = require('../helpers');
+var accountHelpers = require('./helpers');
 
 var groupsController = {};
 
@@ -15,7 +15,7 @@ groupsController.get = function(req, res, callback) {
 	var groupsData;
 	async.waterfall([
 		function (next) {
-			accountHelpers.getBaseUser(req.params.userslug, req.uid, next);
+			accountHelpers.getUserDataByUserSlug(req.params.userslug, req.uid, next);
 		},
 		function (_userData, next) {
 			userData = _userData;

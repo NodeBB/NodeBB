@@ -14,7 +14,7 @@ module.exports = function(Meta) {
 			tags: function(next) {
 				var defaultTags = [{
 					name: 'viewport',
-					content: 'width=device-width, initial-scale=1.0, user-scalable=no'
+					content: 'width=device-width, initial-scale=1.0'
 				}, {
 					name: 'content-type',
 					content: 'text/html; charset=UTF-8',

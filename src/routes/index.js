@@ -3,15 +3,12 @@
 var nconf = require('nconf');
 var path = require('path');
 var async = require('async');
-var winston = require('winston');
 var controllers = require('../controllers');
 var plugins = require('../plugins');
 var user = require('../user');
 var express = require('express');
-var validator = require('validator');
 
 var accountRoutes = require('./accounts');
-
 var metaRoutes = require('./meta');
 var apiRoutes = require('./api');
 var adminRoutes = require('./admin');
@@ -77,7 +74,7 @@ function userRoutes(app, middleware, controllers) {
 }
 
 function groupRoutes(app, middleware, controllers) {
-	var middlewares = [middleware.checkGlobalPrivacySettings, middleware.exposeGroupName];
+	var middlewares = [middleware.checkGlobalPrivacySettings];
 
 	setupPageRoute(app, '/groups', middleware, middlewares, controllers.groups.list);
 	setupPageRoute(app, '/groups/:slug', middleware, middlewares, controllers.groups.details);

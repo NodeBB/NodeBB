@@ -2,6 +2,7 @@
 'use strict';
 
 var async = require('async');
+var _ = require('underscore');
 
 var meta = require('../meta');
 var topics = require('../topics');
@@ -16,20 +17,13 @@ module.exports = function(privileges) {
 
 	privileges.topics.get = function(tid, uid, callback) {
 		var topic;
+		var privs = ['topics:reply', 'topics:read', 'topics:delete', 'posts:edit', 'posts:delete', 'read'];
 		async.waterfall([
 			async.apply(topics.getTopicFields, tid, ['cid', 'uid', 'locked', 'deleted']),
 			function(_topic, next) {
 				topic = _topic;
 				async.parallel({
-					'topics:reply': async.apply(helpers.isUserAllowedTo, 'topics:reply', uid, [topic.cid]),
-					'topics:read': async.apply(helpers.isUserAllowedTo, 'topics:read', uid, [topic.cid]),
-					'topics:delete': async.apply(helpers.isUserAllowedTo, 'topics:delete', uid, [topic.cid]),
-					'posts:edit': async.apply(helpers.isUserAllowedTo, 'posts:edit', uid, [topic.cid]),
-					'posts:delete': async.apply(helpers.isUserAllowedTo, 'posts:delete', uid, [topic.cid]),
-					read: async.apply(helpers.isUserAllowedTo, 'read', uid, [topic.cid]),
-					isOwner: function(next) {
-						next(null, !!parseInt(uid, 10) && parseInt(uid, 10) === parseInt(topic.uid, 10));
-					},
+					privileges: async.apply(helpers.isUserAllowedTo, privs, uid, topic.cid),
 					isAdministrator: async.apply(user.isAdministrator, uid),
 					isModerator: async.apply(user.isModerator, uid, topic.cid),
 					disabled: async.apply(categories.getCategoryField, topic.cid, 'disabled')
@@ -40,25 +34,26 @@ module.exports = function(privileges) {
 				return callback(err);
 			}
 
+			var privData = _.object(privs, results.privileges);
 			var disabled = parseInt(results.disabled, 10) === 1;
 			var locked = parseInt(topic.locked, 10) === 1;
 			var deleted = parseInt(topic.deleted, 10) === 1;
-
+			var isOwner = !!parseInt(uid, 10) && parseInt(uid, 10) === parseInt(topic.uid, 10);
 			var isAdminOrMod = results.isAdministrator || results.isModerator;
 			var editable = isAdminOrMod;
-			var deletable = isAdminOrMod || (results.isOwner && results['topics:delete'][0]);
+			var deletable = isAdminOrMod || (isOwner && privData['topics:delete']);
 
 			plugins.fireHook('filter:privileges.topics.get', {
-				'topics:reply': (results['topics:reply'][0] && !locked && !deleted) || isAdminOrMod,
-				'topics:read': results['topics:read'][0] || isAdminOrMod,
-				'topics:delete': (results.isOwner && results['topics:delete'][0]) || isAdminOrMod,
-				'posts:edit': (results['posts:edit'][0] && !locked) || isAdminOrMod,
-				'posts:delete': (results['posts:delete'][0] && !locked) || isAdminOrMod,
-				read: results.read[0] || isAdminOrMod,
+				'topics:reply': (privData['topics:reply'] && !locked && !deleted) || isAdminOrMod,
+				'topics:read': privData['topics:read'] || isAdminOrMod,
+				'topics:delete': (isOwner && privData['topics:delete']) || isAdminOrMod,
+				'posts:edit': (privData['posts:edit'] && !locked) || isAdminOrMod,
+				'posts:delete': (privData['posts:delete'] && !locked) || isAdminOrMod,
+				read: privData.read || isAdminOrMod,
 				view_thread_tools: editable || deletable,
 				editable: editable,
 				deletable: deletable,
-				view_deleted: isAdminOrMod || results.isOwner,
+				view_deleted: isAdminOrMod || isOwner,
 				isAdminOrMod: isAdminOrMod,
 				disabled: disabled,
 				tid: tid,

@@ -31,9 +31,7 @@ module.exports = function(SocketTopics) {
 			if (err) {
 				return callback(err);
 			}
-			tags = tags.filter(function(tag) {
-				return tag && tag.score > 0;
-			});
+			tags = tags.filter(Boolean);
 			callback(null, {tags: tags, nextStart: stop + 1});
 		});
 	};

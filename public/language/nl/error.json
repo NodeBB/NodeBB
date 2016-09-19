@@ -29,6 +29,7 @@
     "username-too-long": "Gebruikersnaam is te lang",
     "password-too-long": "Wachtwoord is te lang",
     "user-banned": "Gebruiker verbannen",
+    "user-banned-reason": "User banned (Reason: %1)",
     "user-too-new": "Helaas, het is een vereiste om %1 seconde(n) te wachten voordat het eerste bericht geplaatst kan worden.",
     "blacklisted-ip": "Sorry, uw IP-adres is verbannen uit deze community. Als u meent dat dit onterecht is, neem dan contact op met een beheerder.",
     "ban-expiry-missing": "Geef een einddatum op voor deze ban.",

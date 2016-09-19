@@ -93,6 +93,7 @@
     "incoming-message-sound": "Incoming message sound",
     "outgoing-message-sound": "Outgoing message sound",
     "notification-sound": "Notification sound",
+    "no-sound": "No sound",
     "browsing": "خيارات التصفح",
     "open_links_in_new_tab": "فتح الروابط الخارجية في نافدة جديدة",
     "enable_topic_searching": "تفعيل خاصية البحث داخل المواضيع",

@@ -260,6 +260,7 @@ var middleware;
 		}, function(err, res, body) {
 			if (err) {
 				winston.error('Error parsing plugins : ' + err.message);
+				return callback(err);
 			}
 
 			Plugins.normalise(body, callback);

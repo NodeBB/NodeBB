@@ -13,7 +13,7 @@ eventsController.get = function(req, res, next) {
 
 	var page = parseInt(req.query.page, 10) || 1;
 	var itemsPerPage = 20;
-	var start = (page - 1) * 20;
+	var start = (page - 1) * itemsPerPage;
 	var stop = start + itemsPerPage - 1;
 
 	async.parallel({

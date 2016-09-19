@@ -45,14 +45,20 @@ searchController.search = function(req, res, next) {
 	};
 
 	async.parallel({
-		categories: async.apply(buildCategories, req.uid),
+		categories: async.apply(categories.buildForSelect, req.uid),
 		search: async.apply(search.search, data)
 	}, function(err, results) {
 		if (err) {
 			return next(err);
 		}
+
+		var categoriesData = [
+			{value: 'all', text: '[[unread:all_categories]]'},
+			{value: 'watched', text: '[[category:watched-categories]]'}
+		].concat(results.categories);
+
 		var searchData = results.search;
-		searchData.categories = results.categories;
+		searchData.categories = categoriesData;
 		searchData.categoriesCount = results.categories.length;
 		searchData.pagination = pagination.create(page, searchData.pageCount, req.query);
 		searchData.showAsPosts = !req.query.showAs || req.query.showAs === 'posts';
@@ -64,45 +70,5 @@ searchController.search = function(req, res, next) {
 		res.render('search', searchData);
 	});
 };
-
-function buildCategories(uid, callback) {
-	categories.getCategoriesByPrivilege('cid:0:children', uid, 'read', function(err, categories) {
-		if (err) {
-			return callback(err);
-		}
-
-		var categoriesData = [
-			{value: 'all', text: '[[unread:all_categories]]'},
-			{value: 'watched', text: '[[category:watched-categories]]'}
-		];
-
-		categories = categories.filter(function(category) {
-			return category && !category.link && !parseInt(category.parentCid, 10);
-		});
-
-		categories.forEach(function(category) {
-			recursive(category, categoriesData, '');
-		});
-		callback(null, categoriesData);
-	});
-}
-
-
-function recursive(category, categoriesData, level) {
-	if (category.link) {
-		return;
-	}
-
-	var bullet = level ? '&bull; ' : '';
-
-	categoriesData.push({
-		value: category.cid,
-		text: level + bullet + category.name
-	});
-
-	category.children.forEach(function(child) {
-		recursive(child, categoriesData, '&nbsp;&nbsp;&nbsp;&nbsp;' + level);
-	});
-}
 
 module.exports = searchController;

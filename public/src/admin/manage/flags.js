@@ -2,25 +2,26 @@
 /*global define, socket, app, utils, bootbox, ajaxify*/
 
 define('admin/manage/flags', [
-	'forum/infinitescroll',
 	'autocomplete',
-	'Chart'
-], function(infinitescroll, autocomplete, Chart) {
+	'Chart',
+	'components'
+], function(autocomplete, Chart, components) {
 
 	var	Flags = {};
 
 	Flags.init = function() {
 		$('.post-container .content img:not(.not-responsive)').addClass('img-responsive');
 
-		var params = utils.params();
-		$('#flag-sort-by').val(params.sortBy);
 		autocomplete.user($('#byUsername'));
 
 		handleDismiss();
 		handleDismissAll();
 		handleDelete();
-		handleInfiniteScroll();
 		handleGraphs();
+
+		updateFlagDetails(ajaxify.data.posts);
+
+		components.get('posts/flags').on('click', '[component="posts/flag/update"]', updateFlag);
 	};
 
 	function handleDismiss() {
@@ -43,6 +44,7 @@ define('admin/manage/flags', [
 
 				ajaxify.refresh();
 			});
+			return false;
 		});
 	}
 
@@ -71,34 +73,6 @@ define('admin/manage/flags', [
 			if (!$('.flags [data-pid]').length) {
 				$('.post-container').text('No flagged posts!');
 			}
-		});
-	}
-
-	function handleInfiniteScroll() {
-		infinitescroll.init(function(direction) {
-			if (direction < 0 && !$('.flags').length) {
-				return;
-			}
-			var params = utils.params();
-			var sortBy = params.sortBy || 'count';
-			var byUsername = params.byUsername || '';
-
-			infinitescroll.loadMore('posts.getMoreFlags', {
-				byUsername: byUsername,
-				sortBy: sortBy,
-				after: $('[data-next]').attr('data-next')
-			}, function(data, done) {
-				if (data.posts && data.posts.length) {
-					app.parseAndTranslate('admin/manage/flags', 'posts', {posts: data.posts}, function(html) {
-						$('[data-next]').attr('data-next', data.next);
-						$('.post-container').append(html);
-						html.find('img:not(.not-responsive)').addClass('img-responsive');
-						done();
-					});
-				} else {
-					done();
-				}
-			});
 		});
 	}
 
@@ -146,6 +120,45 @@ define('admin/manage/flags', [
 						}
 					}]
 				}
+			}
+		});
+	}
+
+	function updateFlagDetails(source) {
+		// As the flag details are returned in the API, update the form controls to show the correct data
+
+		// Create reference hash for use in this method
+		source = source.reduce(function(memo, cur) {
+			memo[cur.pid] = cur.flagData;
+			return memo;
+		}, {});
+
+		components.get('posts/flag').each(function(idx, el) {
+			var pid = el.getAttribute('data-pid');
+			var el = $(el);
+
+			if (source[pid]) {
+				for(var prop in source[pid]) {
+					if (source[pid].hasOwnProperty(prop)) {
+						el.find('[name="' + prop + '"]').val(source[pid][prop]);
+					}
+				}
+			}
+		});
+	}
+
+	function updateFlag() {
+		var pid = $(this).parents('[component="posts/flag"]').attr('data-pid');
+		var formData = $($(this).parents('form').get(0)).serializeArray();
+
+		socket.emit('posts.updateFlag', {
+			pid: pid,
+			data: formData
+		}, function(err) {
+			if (err) {
+				return app.alertError(err.message);
+			} else {
+				app.alertSuccess('[[topic:flag_manage_saved]]');
 			}
 		});
 	}

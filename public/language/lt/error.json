@@ -29,6 +29,7 @@
     "username-too-long": "Vartotojo vardas per ilgas",
     "password-too-long": "Password too long",
     "user-banned": "Vartotojas užblokuotas",
+    "user-banned-reason": "User banned (Reason: %1)",
     "user-too-new": "Atsiprašome, jūs įpareigoti palaukti %1 sekunde(s) prieš rašant pirmą pranešimą",
     "blacklisted-ip": "Sorry, your IP address has been banned from this community. If you feel this is in error, please contact an administrator.",
     "ban-expiry-missing": "Please provide an end date for this ban",

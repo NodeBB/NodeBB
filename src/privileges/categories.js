@@ -157,15 +157,10 @@ module.exports = function(privileges) {
 	};
 
 	privileges.categories.get = function(cid, uid, callback) {
+		var privs = ['topics:create', 'topics:read', 'read'];
 		async.parallel({
-			'topics:create': function(next) {
-				helpers.isUserAllowedTo('topics:create', uid, [cid], next);
-			},
-			'topics:read': function(next) {
-				helpers.isUserAllowedTo('topics:read', uid, [cid], next);
-			},
-			read: function(next) {
-				helpers.isUserAllowedTo('read', uid, [cid], next);
+			privileges: function(next) {
+				helpers.isUserAllowedTo(privs, uid, cid, next);
 			},
 			isAdministrator: function(next) {
 				user.isAdministrator(uid, next);
@@ -177,17 +172,17 @@ module.exports = function(privileges) {
 			if (err) {
 				return callback(err);
 			}
-
+			var privData = _.object(privs, results.privileges);
 			var isAdminOrMod = results.isAdministrator || results.isModerator;
 
 			plugins.fireHook('filter:privileges.categories.get', {
+				'topics:create': privData['topics:create'] || isAdminOrMod,
+				'topics:read': privData['topics:read'] || isAdminOrMod,
+				read: privData.read || isAdminOrMod,
 				cid: cid,
 				uid: uid,
-				'topics:create': results['topics:create'][0] || isAdminOrMod,
-				'topics:read': results['topics:read'][0] || isAdminOrMod,
 				editable: isAdminOrMod,
 				view_deleted: isAdminOrMod,
-				read: results.read[0] || isAdminOrMod,
 				isAdminOrMod: isAdminOrMod
 			}, callback);
 		});

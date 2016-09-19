@@ -2,6 +2,7 @@
 
 var	async = require('async');
 
+var groups = require('./groups');
 var plugins = require('./plugins');
 var db = require('./database');
 var topics = require('./topics');
@@ -133,7 +134,7 @@ var utils = require('../public/src/utils');
 	};
 
 	User.getStatus = function(userData) {
-		var isOnline = Date.now() - parseInt(userData.lastonline, 10) < 300000;
+		var isOnline = (Date.now() - parseInt(userData.lastonline, 10)) < 300000;
 		return isOnline ? (userData.status || 'online') : 'offline';
 	};
 
@@ -257,6 +258,21 @@ var utils = require('../public/src/utils');
 				return callback(err || new Error('[[error:no-privileges]]'));
 			}
 			callback();
+		});
+	};
+
+	User.getAdminsandGlobalMods = function(callback) {
+		async.parallel({
+			admins: async.apply(groups.getMembers, 'administrators', 0, -1),
+			mods: async.apply(groups.getMembers, 'Global Moderators', 0, -1)
+		}, function(err, results) {
+			if (err) {
+				return callback(err);
+			}
+			var uids = results.admins.concat(results.mods).filter(function(uid, index, array) {
+				return uid && array.indexOf(uid) === index;
+			});
+			User.getUsersData(uids, callback);
 		});
 	};
 
