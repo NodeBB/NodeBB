@@ -37,50 +37,41 @@ var utils = require('../public/src/utils');
 				return callback(err);
 			}
 
-			if (!Array.isArray(notifications) || !notifications.length) {
+			notifications = notifications.filter(Boolean);
+			if (!notifications.length) {
 				return callback(null, []);
 			}
 
-			async.map(notifications, function(notification, next) {
-				if (!notification) {
-					return next(null, null);
+			var userKeys = notifications.map(function(notification) {
+				return notification.from;
+			});
+
+			User.getUsersFields(userKeys, ['username', 'userslug', 'picture'], function(err, usersData) {
+				if (err) {
+					return callback(err);
 				}
+				notifications.forEach(function(notification, index) {
+					notification.datetimeISO = utils.toISOString(notification.datetime);
 
-				notification.datetimeISO = utils.toISOString(notification.datetime);
-
-				if (notification.bodyLong) {
-					notification.bodyLong = S(notification.bodyLong).escapeHTML().s;
-				}
-
-				if (notification.from && !notification.image) {
-					User.getUserFields(notification.from, ['username', 'userslug', 'picture'], function(err, userData) {
-						if (err) {
-							return next(err);
-						}
-						notification.image = userData.picture || null;
-						notification.user = userData;
-
-						if (userData.username === '[[global:guest]]') {
-							notification.bodyShort = notification.bodyShort.replace(/([\s\S]*?),[\s\S]*?,([\s\S]*?)/, '$1, [[global:guest]], $2');
-						}
-
-						next(null, notification);
-					});
-					return;
-				} else if (notification.image) {
-					switch(notification.image) {
-						case 'brand:logo':
-							notification.image = meta.config['brand:logo'] || nconf.get('relative_path') + '/logo.png';
-						break;
+					if (notification.bodyLong) {
+						notification.bodyLong = S(notification.bodyLong).escapeHTML().s;
 					}
 
-					return next(null, notification);
-				} else {
-					notification.image = meta.config['brand:logo'] || nconf.get('relative_path') + '/logo.png';
-					return next(null, notification);
-				}
+					notification.user = usersData[index];
+					if (notification.user) {
+						notification.image = notification.user.picture || null;
+						if (notification.user.username === '[[global:guest]]') {
+							notification.bodyShort = notification.bodyShort.replace(/([\s\S]*?),[\s\S]*?,([\s\S]*?)/, '$1, [[global:guest]], $2');
+						}
+					}
 
-			}, callback);
+					if (notification.image === 'brand:logo' || !notification.image) {
+						notification.image = meta.config['brand:logo'] || nconf.get('relative_path') + '/logo.png';
+					}
+				});
+
+				callback(null, notifications);
+			});
 		});
 	};
 
