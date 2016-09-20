@@ -136,7 +136,7 @@ module.exports = function(User) {
 				db.setObject('user:' + uid + ':settings', settings, next);
 			},
 			function(next) {
-				updateDigestSetting(uid, data.dailyDigestFreq, next);
+				User.updateDigestSetting(uid, data.dailyDigestFreq, next);
 			},
 			function(next) {
 				User.getSettings(uid, next);
@@ -144,7 +144,7 @@ module.exports = function(User) {
 		], callback);
 	};
 
-	function updateDigestSetting(uid, dailyDigestFreq, callback) {
+	User.updateDigestSetting = function(uid, dailyDigestFreq, callback) {
 		async.waterfall([
 			function(next) {
 				db.sortedSetsRemove(['digest:day:uids', 'digest:week:uids', 'digest:month:uids'], uid, next);
@@ -157,7 +157,7 @@ module.exports = function(User) {
 				}
 			}
 		], callback);
-	}
+	};
 
 	User.setSetting = function(uid, key, value, callback) {
 		db.setObjectField('user:' + uid + ':settings', key, value, callback);

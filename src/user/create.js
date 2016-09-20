@@ -131,6 +131,9 @@ module.exports = function(User) {
 										async.apply(User.reset.updateExpiry, userData.uid)
 									], next);
 								});
+							},
+							function(next) {
+								User.updateDigestSetting(userData.uid, meta.config.dailyDigestSetting, next);
 							}
 						], next);
 					},
