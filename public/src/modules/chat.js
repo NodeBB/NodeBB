@@ -104,7 +104,7 @@ define('chat', [
 	};
 
 	module.loadChatsDropdown = function(chatsListEl) {
-		socket.emit('modules.chats.getRecentChats', {after: 0}, function(err, data) {
+		socket.emit('modules.chats.getRecentChats', {uid: app.user.uid, after: 0}, function(err, data) {
 			if (err) {
 				return app.alertError(err.message);
 			}
@@ -260,6 +260,8 @@ define('chat', [
 				Chats.createAutoComplete(chatModal.find('[component="chat/input"]'));
 
 				Chats.loadChatSince(chatModal.attr('roomId'), chatModal.find('.chat-content'), 'recent');
+
+				Chats.addScrollHandler(chatModal.attr('roomId'), app.user.uid, chatModal.find('.chat-content'));
 
 				checkStatus(chatModal);
 

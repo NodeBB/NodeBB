@@ -316,6 +316,28 @@ SocketModules.chats.hasPrivateChat = function(socket, uid, callback) {
 	Messaging.hasPrivateChat(socket.uid, uid, callback);
 };
 
+SocketModules.chats.getMessages = function(socket, data, callback) {
+	if (!socket.uid || !data.uid || !data.roomId) {
+		return callback(new Error('[[error:invalid-data]]'));
+	}
+	var params = {
+		uid: data.uid,
+		roomId: data.roomId,
+		start: parseInt(data.start, 10) + 1,
+		count: 50,
+		markRead: false
+	};
+	if (socket.uid === parseInt(data.uid, 10)) {
+		return Messaging.getMessages(params, callback);
+	}
+	user.isAdminOrGlobalMod(socket.uid, function(err, isAdminOrGlobalMod) {
+		if (err || !isAdminOrGlobalMod) {
+			return callback(err || new Error('[[error:no-privileges]]'));
+		}
+		Messaging.getMessages(params, callback);
+	});
+};
+
 /* Sounds */
 SocketModules.sounds.getSounds = function(socket, data, callback) {
 	// Read sounds from local directory
