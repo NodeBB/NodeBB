@@ -31,7 +31,7 @@ define('chat', [
 			if (!ajaxify.currentPage.match(/^chats\//)) {
 				app.openChat(roomId);
 			} else {
-				ajaxify.go('chats/' + roomId);
+				ajaxify.go('user/' + app.user.userslug + '/chats/' + roomId);
 			}
 		});
 
@@ -214,7 +214,7 @@ define('chat', [
 						components.get('chat/input').val(text);
 					});
 
-					ajaxify.go('chats/' + chatModal.attr('roomId'));
+					ajaxify.go('user/' + app.user.userslug + '/chats/' + chatModal.attr('roomId'));
 					module.close(chatModal);
 				}
 

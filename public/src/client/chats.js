@@ -265,7 +265,7 @@ define('forum/chats', [
 	};
 
 	Chats.switchChat = function(roomid) {
-		ajaxify.go('chats/' + roomid);
+		ajaxify.go('user/' + ajaxify.data.userslug + '/chats/' + roomid);
 	};
 
 	Chats.loadChatSince = function(roomId, chatContentEl, since) {

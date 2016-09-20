@@ -31,5 +31,5 @@ module.exports = function (app, middleware, controllers) {
 	app.delete('/api/user/:userslug/session/:uuid', [middleware.requireUser], controllers.accounts.session.revoke);
 
 	setupPageRoute(app, '/notifications', middleware, [middleware.authenticate], controllers.accounts.notifications.get);
-	setupPageRoute(app, '/chats/:roomid?', middleware, [middleware.authenticate], controllers.accounts.chats.get);
+	setupPageRoute(app, '/user/:userslug/chats/:roomid?', middleware, accountMiddlewares, controllers.accounts.chats.get);
 };
