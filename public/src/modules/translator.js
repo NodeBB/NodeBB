@@ -298,7 +298,7 @@
 			Translator.create(lang).translate(text).then(function (output) {
 				return cb(output);
 			}).catch(function (err) {
-				console.error('Translation failed: ' + err.message);
+				console.error('Translation failed: ' + err.stack);
 			});
 		},
 
