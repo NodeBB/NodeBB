@@ -16,6 +16,7 @@ chatsController.get = function(req, res, callback) {
 	}
 	var uid;
 	var recentChats;
+
 	async.waterfall([
 		function(next) {
 			user.getUidByUserslug(req.params.userslug, next);
@@ -32,6 +33,7 @@ chatsController.get = function(req, res, callback) {
 			if (!req.params.roomid) {
 				return res.render('chats', {
 					rooms: recentChats.rooms,
+					uid: uid,
 					userslug: req.params.userslug,
 					nextStart: recentChats.nextStart,
 					allowed: true,
@@ -69,6 +71,7 @@ chatsController.get = function(req, res, callback) {
 		});
 
 		room.rooms = recentChats.rooms;
+		room.uid = uid;
 		room.userslug = req.params.userslug;
 		room.nextStart = recentChats.nextStart;
 		room.title = room.roomName;
