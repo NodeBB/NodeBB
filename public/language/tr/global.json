@@ -96,5 +96,6 @@
     "upload": "Yükle",
     "allowed-file-types": "İzin verilen dosya tipleri %1",
     "unsaved-changes": "Kaydedilmemiş değişiklikler var. Çıkmak istediğinize emin misiniz?",
-    "reconnecting-message": "Looks like your connection to %1 was lost, please wait while we try to reconnect."
+    "reconnecting-message": "Looks like your connection to %1 was lost, please wait while we try to reconnect.",
+    "play": "Play"
 }

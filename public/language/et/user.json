@@ -121,5 +121,7 @@
     "info.banned-until": "Keelustatud kuni %1",
     "info.banned-permanently": "Igavesti keelustatud",
     "info.banned-reason-label": "Reason",
-    "info.banned-no-reason": "No reason given."
+    "info.banned-no-reason": "No reason given.",
+    "info.username-history": "Username History",
+    "info.email-history": "Email History"
 }

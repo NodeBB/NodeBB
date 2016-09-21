@@ -121,5 +121,7 @@
     "info.banned-until": "禁用至  %1",
     "info.banned-permanently": "永久禁用",
     "info.banned-reason-label": "理由",
-    "info.banned-no-reason": "沒有給理由"
+    "info.banned-no-reason": "沒有給理由",
+    "info.username-history": "Username History",
+    "info.email-history": "Email History"
 }

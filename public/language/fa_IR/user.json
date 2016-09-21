@@ -121,5 +121,7 @@
     "info.banned-until": "مسدود شده تا %1",
     "info.banned-permanently": "مسدود شده به طور دائم",
     "info.banned-reason-label": "دلیل",
-    "info.banned-no-reason": "هیچ دلیلی ارایه نشد."
+    "info.banned-no-reason": "هیچ دلیلی ارایه نشد.",
+    "info.username-history": "تاریخچه نام کاربری",
+    "info.email-history": "تاریخچه رایانامه"
 }

@@ -96,5 +96,6 @@
     "upload": "上傳",
     "allowed-file-types": "允許的檔案類型是 %1",
     "unsaved-changes": "你還沒有儲存更動。你確定想要離開這個頁面？",
-    "reconnecting-message": "看起來你的連線到 %1 已經遺失，請稍等一下我們嘗試重新連線。"
+    "reconnecting-message": "看起來你的連線到 %1 已經遺失，請稍等一下我們嘗試重新連線。",
+    "play": "Play"
 }

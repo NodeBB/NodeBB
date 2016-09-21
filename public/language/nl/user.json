@@ -121,5 +121,7 @@
     "info.banned-until": "Verbannen tot %1",
     "info.banned-permanently": "Voor altijd verbannen",
     "info.banned-reason-label": "Reason",
-    "info.banned-no-reason": "No reason given."
+    "info.banned-no-reason": "No reason given.",
+    "info.username-history": "Username History",
+    "info.email-history": "Email History"
 }

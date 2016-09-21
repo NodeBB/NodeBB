@@ -121,5 +121,7 @@
     "info.banned-until": "Yasaklama süresi %1",
     "info.banned-permanently": "Kalıcı yasakla",
     "info.banned-reason-label": "Gerekçe",
-    "info.banned-no-reason": "Gerekçe belirtilmedi."
+    "info.banned-no-reason": "Gerekçe belirtilmedi.",
+    "info.username-history": "Username History",
+    "info.email-history": "Email History"
 }

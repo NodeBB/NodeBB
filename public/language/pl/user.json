@@ -121,5 +121,7 @@
     "info.banned-until": "Zbanowany do %1",
     "info.banned-permanently": "Zbanowany permanentnie",
     "info.banned-reason-label": "Powód",
-    "info.banned-no-reason": "Nie podano powodu."
+    "info.banned-no-reason": "Nie podano powodu.",
+    "info.username-history": "Username History",
+    "info.email-history": "Email History"
 }
