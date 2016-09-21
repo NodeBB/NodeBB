@@ -205,6 +205,8 @@ function initializeNodeBB(callback) {
 
 function listen() {
 	var port = parseInt(nconf.get('port'), 10);
+	var isSocket = isNaN(port);
+	var socketPath = isSocket ? nconf.get('port') : '';
 
 	if (Array.isArray(port)) {
 		if (!port.length) {
@@ -230,10 +232,10 @@ function listen() {
 		winston.info('Using ports 80 and 443 is not recommend; use a proxy instead. See README.md');
 	}
 
-	var isSocket = isNaN(port),
-		args = isSocket ? [port] : [port, nconf.get('bind_address')],
-		bind_address = ((nconf.get('bind_address') === "0.0.0.0" || !nconf.get('bind_address')) ? '0.0.0.0' : nconf.get('bind_address')) + ':' + port,
-		oldUmask;
+
+	var args = isSocket ? [socketPath] : [port, nconf.get('bind_address')];
+	var bind_address = ((nconf.get('bind_address') === "0.0.0.0" || !nconf.get('bind_address')) ? '0.0.0.0' : nconf.get('bind_address')) + ':' + port;
+	var oldUmask;
 
 	args.push(function(err) {
 		if (err) {
@@ -241,7 +243,7 @@ function listen() {
 			process.exit();
 		}
 
-		winston.info('NodeBB is now listening on: ' + (isSocket ? port : bind_address));
+		winston.info('NodeBB is now listening on: ' + (isSocket ? socketPath : bind_address));
 		if (oldUmask) {
 			process.umask(oldUmask);
 		}
@@ -250,11 +252,11 @@ function listen() {
 	// Alter umask if necessary
 	if (isSocket) {
 		oldUmask = process.umask('0000');
-		module.exports.testSocket(port, function(err) {
+		module.exports.testSocket(socketPath, function(err) {
 			if (!err) {
 				server.listen.apply(server, args);
 			} else {
-				winston.error('[startup] NodeBB was unable to secure domain socket access (' + port + ')');
+				winston.error('[startup] NodeBB was unable to secure domain socket access (' + socketPath + ')');
 				winston.error('[startup] ' + err.message);
 				process.exit();
 			}
