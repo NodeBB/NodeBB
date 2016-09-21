@@ -94,6 +94,11 @@ function setupExpressApp(app) {
 
 	app.enable('view cache');
 
+	if (global.env !== 'development') {
+		app.enable('cache');
+		app.enable('minification');
+	}
+
 	app.use(compression());
 
 	setupFavicon(app);
@@ -130,7 +135,6 @@ function setupFavicon(app) {
 	}
 }
 
-
 function setupCookie() {
 	var cookie = {
 		maxAge: 1000 * 60 * 60 * 24 * (parseInt(meta.config.loginDays, 10) || 14)
@@ -150,15 +154,6 @@ function setupCookie() {
 	}
 
 	return cookie;
-}
-
-function cacheStaticFiles() {
-	if (global.env === 'development') {
-		return;
-	}
-
-	app.enable('cache');
-	app.enable('minification');
 }
 
 function initializeNodeBB(callback) {
