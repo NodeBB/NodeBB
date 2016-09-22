@@ -89,6 +89,9 @@ module.exports = function(Categories) {
 					db.sortedSetAdd('cid:' + cid + ':tids', postData.timestamp, postData.tid, next);
 				}
 			},
+			function(next){
+				Categories.updateRecentTid(cid, postData.tid, next);
+			},
 			function(next) {
 				db.sortedSetIncrBy('cid:' + cid + ':tids:posts', 1, postData.tid, next);
 			}

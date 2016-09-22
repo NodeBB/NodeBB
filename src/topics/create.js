@@ -64,6 +64,9 @@ module.exports = function(Topics) {
 						], timestamp, topicData.tid, next);
 					},
 					function(next) {
+						categories.updateRecentTid(topicData.cid, topicData.tid, next);
+					},
+					function(next) {
 						user.addTopicIdToUser(topicData.uid, topicData.tid, timestamp, next);
 					},
 					function(next) {
