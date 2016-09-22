@@ -122,6 +122,6 @@
     "info.banned-permanently": "Banni de façon permanente",
     "info.banned-reason-label": "Raison",
     "info.banned-no-reason": "Aucune raison donnée",
-    "info.username-history": "Username History",
-    "info.email-history": "Email History"
+    "info.username-history": "Historique des noms d'utilisateur",
+    "info.email-history": "Historique des adresses email"
 }
