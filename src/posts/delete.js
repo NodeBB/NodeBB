@@ -137,6 +137,17 @@ module.exports = function (Posts) {
 					function (next) {
 						deletePostFromUsersVotes(pid, next);
 					},
+					function(next) {
+						Posts.getPostField(pid, 'toPid', function (err, toPid) {
+							if (err) {
+								return next(err);
+							}
+							if (!parseInt(toPid, 10)) {
+								return next(null);
+							}
+							db.sortedSetRemove('pid:' + toPid + ':replies', pid, next);
+						});
+					},
 					function (next) {
 						db.sortedSetsRemove(['posts:pid', 'posts:flagged'], pid, next);
 					},

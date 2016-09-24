@@ -83,6 +83,12 @@ module.exports = function (Posts) {
 						db.sortedSetAdd('posts:pid', timestamp, postData.pid, next);
 					},
 					function (next) {
+						if (!postData.toPid) {
+							return next(null);
+						}
+						db.sortedSetAdd('pid:' + postData.toPid + ':replies', timestamp, postData.pid, next);
+					},
+					function (next) {
 						db.incrObjectField('global', 'postCount', next);
 					}
 				], function (err) {
