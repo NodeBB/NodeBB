@@ -65,6 +65,9 @@ module.exports = function (Topics) {
 			voteData: function (next) {
 				posts.getVoteStatusByPostIDs(pids, uid, next);
 			},
+			replies: function (next) {
+				posts.countReplies(pids, next);
+			},
 			userData: function (next) {
 				var uids = [];
 
@@ -123,6 +126,7 @@ module.exports = function (Topics) {
 					postObj.upvoted = results.voteData.upvotes[i];
 					postObj.downvoted = results.voteData.downvotes[i];
 					postObj.votes = postObj.votes || 0;
+					postObj.replies = results.replies[i] || 0;
 					postObj.selfPost = !!parseInt(uid, 10) && parseInt(uid, 10) === parseInt(postObj.uid, 10);
 
 					// Username override for guests, if enabled
