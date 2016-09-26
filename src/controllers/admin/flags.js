@@ -1,6 +1,7 @@
 "use strict";
 
 var async = require('async');
+var validator = require('validator');
 var posts = require('../../posts');
 var analytics = require('../../analytics');
 
@@ -36,7 +37,7 @@ flagsController.get = function(req, res, next) {
 			posts: results.posts,
 			analytics: results.analytics,
 			next: stop + 1,
-			byUsername: byUsername,
+			byUsername: validator.escape(String(byUsername)),
 			title: '[[pages:flagged-posts]]'
 		};
 		res.render('admin/manage/flags', data);
