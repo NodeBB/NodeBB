@@ -49,11 +49,6 @@ SocketAdmin.before = function(socket, method, data, next) {
 	});
 };
 
-/**
- * Reload deprecated as of v1.1.2+, remove in v2.x
- */
-SocketAdmin.reload = SocketAdmin.restart;
-
 SocketAdmin.restart = function(socket, data, callback) {
 	events.log({
 		type: 'restart',
@@ -63,6 +58,11 @@ SocketAdmin.restart = function(socket, data, callback) {
 	meta.restart();
 	callback();
 };
+
+/**
+ * Reload deprecated as of v1.1.2+, remove in v2.x
+ */
+SocketAdmin.reload = SocketAdmin.restart;
 
 SocketAdmin.fireEvent = function(socket, data, callback) {
 	index.server.emit(data.name, data.payload || {});
