@@ -183,6 +183,10 @@
 			var namespace = result[0];
 			var key = result[1];
 
+			if (namespace && !key) {
+				return Promise.resolve('[[' + namespace + ']]');
+			}
+
 			var translation = this.getTranslation(namespace, key);
 			var argsToTranslate = args.map(function (arg) {
 				return string(arg).collapseWhitespace().decodeHTMLEntities().escapeHTML().s;
