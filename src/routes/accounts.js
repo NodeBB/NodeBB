@@ -32,4 +32,5 @@ module.exports = function (app, middleware, controllers) {
 
 	setupPageRoute(app, '/notifications', middleware, [middleware.authenticate], controllers.accounts.notifications.get);
 	setupPageRoute(app, '/user/:userslug/chats/:roomid?', middleware, accountMiddlewares, controllers.accounts.chats.get);
+	setupPageRoute(app, '/chats/:roomid?', middleware, [], controllers.accounts.chats.redirectToChat);
 };

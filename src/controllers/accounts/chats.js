@@ -7,7 +7,6 @@ var meta = require('../../meta');
 var user = require('../../user');
 var helpers = require('../helpers');
 
-
 var chatsController = {};
 
 chatsController.get = function(req, res, callback) {
@@ -90,6 +89,23 @@ chatsController.get = function(req, res, callback) {
 		room.showUserInput = !room.maximumUsersInChatRoom || room.maximumUsersInChatRoom > 2;
 
 		res.render('chats', room);
+	});
+};
+
+chatsController.redirectToChat = function(req, res, next) {
+	var roomid = parseInt(req.params.roomid, 10);
+	if (!req.uid) {
+		return next();
+	}
+	user.getUserField(req.uid, 'userslug', function(err, userslug) {
+		if (err || !userslug) {
+			return next(err);
+		}
+
+		if (!roomid) {
+			return helpers.redirect(res, '/user/' + userslug + '/chats');
+		}
+		helpers.redirect(res, '/user/' + userslug + '/chats/' + roomid);
 	});
 };
 
