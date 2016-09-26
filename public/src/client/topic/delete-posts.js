@@ -83,7 +83,10 @@ define('forum/topic/delete-posts', ['components', 'postSelect'], function(compon
 			components.get('post', 'pid', pid).toggleClass('bg-success', false);
 		});
 
-		modal.remove();
+		if (modal) {
+			modal.remove();
+			modal = null;
+		}
 
 		components.get('topic').off('click', '[data-pid]');
 		postSelect.enableClicksOnPosts();
