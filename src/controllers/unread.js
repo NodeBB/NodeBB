@@ -19,7 +19,7 @@ var validFilter = {'': true, 'new': true, 'watched': true};
 unreadController.get = function(req, res, next) {
 	var page = parseInt(req.query.page, 10) || 1;
 	var results;
-	var cid = validator.escape(String(req.query.cid));
+	var cid = req.query.cid;
 	var filter = req.params.filter || '';
 
 	if (!validFilter[filter]) {
@@ -86,7 +86,7 @@ unreadController.get = function(req, res, next) {
 			return filter && filter.selected;
 		})[0];
 
-		data.querystring = cid ? ('?cid=' + cid) : '';
+		data.querystring = cid ? ('?cid=' + validator.escape(String(cid))) : '';
 
 		res.render('unread', data);
 	});
