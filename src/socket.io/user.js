@@ -319,5 +319,26 @@ SocketUser.getUserByEmail = function(socket, email, callback) {
 	apiController.getUserDataByField(socket.uid, 'email', email, callback);
 };
 
+SocketUser.setModerationNote = function(socket, data, callback) {
+	if (!socket.uid || !data || !data.uid) {
+		return callback(new Error('[[error:invalid-data]]'));
+	}
+
+	async.waterfall([
+		function(next) {
+			user.isAdminOrGlobalMod(socket.uid, next);
+		},
+		function(isAdminOrGlobalMod, next) {
+			if (!isAdminOrGlobalMod) {
+				return next(new Error('[[error:no-privileges]]'));
+			}
+			if (data.note) {
+				user.setUserField(data.uid, 'moderationNote', data.note, next);
+			} else {
+				db.deleteObjectField('user:' + data.uid, 'moderationNote', next);
+			}
+		}
+	], callback);
+};
 
 module.exports = SocketUser;

@@ -121,5 +121,7 @@
     "info.banned-until": "Заблокирован до %1",
     "info.banned-permanently": "Заблокирован навсегда",
     "info.banned-reason-label": "Причина",
-    "info.banned-no-reason": "Без объяснения причин."
+    "info.banned-no-reason": "Без объяснения причин.",
+    "info.username-history": "Username History",
+    "info.email-history": "Email History"
 }

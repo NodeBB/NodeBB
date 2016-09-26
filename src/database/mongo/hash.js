@@ -231,9 +231,11 @@ module.exports = function(db, module) {
 
 	module.incrObjectFieldBy = function(key, field, value, callback) {
 		callback = callback || helpers.noop;
-		if (!key) {
+		value = parseInt(value, 10);
+		if (!key || isNaN(value)) {
 			return callback();
 		}
+
 		var data = {};
 		field = helpers.fieldToString(field);
 		data[field] = value;

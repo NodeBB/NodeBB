@@ -295,10 +295,18 @@ SocketModules.chats.getRecentChats = function(socket, data, callback) {
 	if (!data || !utils.isNumber(data.after)) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
-	var start = parseInt(data.after, 10),
-		stop = start + 9;
+	var start = parseInt(data.after, 10);
+	var stop = start + 9;
+	if (socket.uid === parseInt(data.uid, 10)) {
+		return Messaging.getRecentChats(socket.uid, start, stop, callback);
+	}
 
-	Messaging.getRecentChats(socket.uid, start, stop, callback);
+	user.isAdminOrGlobalMod(socket.uid, function(err, isAdminOrGlobalMod) {
+		if (err || !isAdminOrGlobalMod) {
+			return callback(err || new Error('[[error:no-privileges]]'));
+		}
+		Messaging.getRecentChats(data.uid, start, stop, callback);
+	});
 };
 
 SocketModules.chats.hasPrivateChat = function(socket, uid, callback) {
@@ -306,6 +314,28 @@ SocketModules.chats.hasPrivateChat = function(socket, uid, callback) {
 		return callback(null, new Error('[[error:invalid-data]]'));
 	}
 	Messaging.hasPrivateChat(socket.uid, uid, callback);
+};
+
+SocketModules.chats.getMessages = function(socket, data, callback) {
+	if (!socket.uid || !data.uid || !data.roomId) {
+		return callback(new Error('[[error:invalid-data]]'));
+	}
+	var params = {
+		uid: data.uid,
+		roomId: data.roomId,
+		start: parseInt(data.start, 10) + 1,
+		count: 50,
+		markRead: false
+	};
+	if (socket.uid === parseInt(data.uid, 10)) {
+		return Messaging.getMessages(params, callback);
+	}
+	user.isAdminOrGlobalMod(socket.uid, function(err, isAdminOrGlobalMod) {
+		if (err || !isAdminOrGlobalMod) {
+			return callback(err || new Error('[[error:no-privileges]]'));
+		}
+		Messaging.getMessages(params, callback);
+	});
 };
 
 /* Sounds */

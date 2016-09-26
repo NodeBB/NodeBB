@@ -93,7 +93,7 @@
     "incoming-message-sound": "Som de recebimento de mensagem",
     "outgoing-message-sound": "Som de envio de mensagem",
     "notification-sound": "Som de notificação",
-    "no-sound": "No sound",
+    "no-sound": "Sem som",
     "browsing": "Configurações de Navegação",
     "open_links_in_new_tab": "Abrir links externos em nova aba",
     "enable_topic_searching": "Habilitar Pesquisa dentro de Tópico",
@@ -121,5 +121,7 @@
     "info.banned-until": "Banido até %1",
     "info.banned-permanently": "Banido permanentemente",
     "info.banned-reason-label": "Motivo",
-    "info.banned-no-reason": "Sem motivo escolhido."
+    "info.banned-no-reason": "Sem motivo escolhido.",
+    "info.username-history": "Histórico do Nome de Usuário",
+    "info.email-history": "Histórico do Email"
 }

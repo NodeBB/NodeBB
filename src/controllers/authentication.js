@@ -322,6 +322,9 @@ authenticationController.onSuccessfulLogin = function(req, uid, callback) {
 		},
 		function (next) {
 			db.setObjectField('uid:' + uid + 'sessionUUID:sessionId', uuid, req.sessionID, next);
+		},
+		function (next) {
+			user.updateLastOnlineTime(uid, next);
 		}
 	], function(err) {
 		if (err) {

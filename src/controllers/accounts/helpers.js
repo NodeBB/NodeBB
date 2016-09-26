@@ -92,6 +92,7 @@ helpers.getUserDataByUserSlug = function(userslug, callerUID, callback) {
 			userData.theirid = userData.uid;
 			userData.isAdmin = isAdmin;
 			userData.isGlobalModerator = isGlobalModerator;
+			userData.isAdminOrGlobalModerator = isAdmin || isGlobalModerator;
 			userData.canBan = isAdmin || isGlobalModerator;
 			userData.canChangePassword = isAdmin || (isSelf && parseInt(meta.config['password:disableEdit'], 10) !== 1);
 			userData.isSelf = isSelf;
@@ -118,6 +119,7 @@ helpers.getUserDataByUserSlug = function(userslug, callerUID, callback) {
 			userData.location = validator.escape(String(userData.location || ''));
 			userData.signature = validator.escape(String(userData.signature || ''));
 			userData.aboutme = validator.escape(String(userData.aboutme || ''));
+			userData.birthday = validator.escape(String(userData.birthday || ''));
 
 			userData['cover:url'] = userData['cover:url'] || require('../../coverPhoto').getDefaultProfileCover(userData.uid);
 			userData['cover:position'] = userData['cover:position'] || '50% 50%';

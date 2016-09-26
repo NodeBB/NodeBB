@@ -1,5 +1,5 @@
 "use strict";
-/* globals define, socket, ajaxify, app, bootbox, utils, RELATIVE_PATH */
+/* globals define, socket, ajaxify, app, bootbox, utils, config */
 
 define('forum/groups/details', [
 	'forum/groups/memberlist',
@@ -227,23 +227,41 @@ define('forum/groups/details', [
 	};
 
 	function handleMemberInvitations() {
-		if (ajaxify.data.group.isOwner) {
-			var searchInput = $('[component="groups/members/invite"]');
-			require(['autocomplete'], function(autocomplete) {
-				autocomplete.user(searchInput, function(event, selected) {
-					socket.emit('groups.issueInvite', {
-						toUid: selected.item.user.uid,
-						groupName: ajaxify.data.group.name
-					}, function(err) {
-						if (!err) {
-							ajaxify.refresh();
-						} else {
-							app.alertError(err.message);
-						}
-					});
+		if (!ajaxify.data.group.isOwner) {
+			return;
+		}
+
+		var searchInput = $('[component="groups/members/invite"]');
+		require(['autocomplete'], function(autocomplete) {
+			autocomplete.user(searchInput, function(event, selected) {
+				socket.emit('groups.issueInvite', {
+					toUid: selected.item.user.uid,
+					groupName: ajaxify.data.group.name
+				}, function(err) {
+					if (err) {
+						return app.alertError(err.message);
+					}
+					ajaxify.refresh();
 				});
 			});
-		}
+		});
+
+		$('[component="groups/members/bulk-invite-button"]').on('click', function() {
+			var usernames = $('[component="groups/members/bulk-invite"]').val();
+			if (!usernames) {
+				return false;
+			}
+			socket.emit('groups.issueMassInvite', {
+				usernames: usernames,
+				groupName: ajaxify.data.group.name
+			}, function(err) {
+				if (err) {
+					return app.alertError(err.message);
+				}
+				ajaxify.refresh();
+			});
+			return false;
+		});
 	}
 
 	function removeCover() {

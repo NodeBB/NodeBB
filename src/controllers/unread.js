@@ -3,6 +3,7 @@
 
 var async = require('async');
 var querystring = require('querystring');
+var validator = require('validator');
 
 var categories = require('../categories');
 var privileges = require('../privileges');
@@ -85,7 +86,7 @@ unreadController.get = function(req, res, next) {
 			return filter && filter.selected;
 		})[0];
 
-		data.querystring = req.query.cid ? ('?cid=' + req.query.cid) : '';
+		data.querystring = cid ? ('?cid=' + validator.escape(String(cid))) : '';
 
 		res.render('unread', data);
 	});

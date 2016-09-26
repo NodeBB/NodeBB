@@ -183,6 +183,10 @@
 			var namespace = result[0];
 			var key = result[1];
 
+			if (namespace && !key) {
+				return Promise.resolve('[[' + namespace + ']]');
+			}
+
 			var translation = this.getTranslation(namespace, key);
 			var argsToTranslate = args.map(function (arg) {
 				return string(arg).collapseWhitespace().decodeHTMLEntities().escapeHTML().s;
@@ -298,7 +302,7 @@
 			Translator.create(lang).translate(text).then(function (output) {
 				return cb(output);
 			}).catch(function (err) {
-				console.error('Translation failed: ' + err.message);
+				console.error('Translation failed: ' + err.stack);
 			});
 		},
 

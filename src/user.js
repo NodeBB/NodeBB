@@ -38,7 +38,7 @@ var utils = require('../public/src/utils');
 
 	User.updateLastOnlineTime = function(uid, callback) {
 		callback = callback || function() {};
-		User.getUserFields(uid, ['status', 'lastonline'], function(err, userData) {
+		db.getObjectFields('user:' + uid, ['status', 'lastonline'], function(err, userData) {
 			var now = Date.now();
 			if (err || userData.status === 'offline' || now - parseInt(userData.lastonline, 10) < 300000) {
 				return callback(err);

@@ -96,5 +96,6 @@
     "upload": "上传",
     "allowed-file-types": "允许的文件类型有 %1",
     "unsaved-changes": "您有未保存的更改，您确定您要离开么？",
-    "reconnecting-message": "与 %1 的连接断开，我们正在尝试重连，请耐心等待"
+    "reconnecting-message": "与 %1 的连接断开，我们正在尝试重连，请耐心等待",
+    "play": "Play"
 }

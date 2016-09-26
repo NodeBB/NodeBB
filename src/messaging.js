@@ -49,21 +49,22 @@ var async = require('async'),
 	};
 
 	Messaging.getMessages = function(params, callback) {
-		var uid = params.uid,
-			roomId = params.roomId,
-			since = params.since,
-			isNew = params.isNew,
-			count = params.count || 250,
-			markRead = params.markRead || true;
+		var uid = params.uid;
+		var roomId = params.roomId;
+		var since = params.since;
+		var isNew = params.isNew;
+		var start = params.hasOwnProperty('start') ? params.start : 0;
+		var count = params.count || 250;
+		var markRead = params.markRead || true;
 
 		var min = params.count ? 0 : Date.now() - (terms[since] || terms.day);
 
 		if (since === 'recent') {
-			count = 49;
+			count = 50;
 			min = 0;
 		}
 
-		db.getSortedSetRevRangeByScore('uid:' + uid + ':chat:room:' + roomId + ':mids', 0, count, '+inf', min, function(err, mids) {
+		db.getSortedSetRevRangeByScore('uid:' + uid + ':chat:room:' + roomId + ':mids', start, count, '+inf', min, function(err, mids) {
 			if (err) {
 				return callback(err);
 			}
@@ -71,10 +72,24 @@ var async = require('async'),
 			if (!Array.isArray(mids) || !mids.length) {
 				return callback(null, []);
 			}
+			var indices = {};
+			mids.forEach(function(mid, index) {
+				indices[mid] = start + index;
+			});
 
 			mids.reverse();
 
-			Messaging.getMessagesData(mids, uid, roomId, isNew, callback);
+			Messaging.getMessagesData(mids, uid, roomId, isNew, function(err, messageData) {
+				if (err) {
+					return callback(err);
+				}
+
+				for(var i=0; i<messageData.length; i++) {
+				 	messageData[i].index = indices[messageData[i].messageId.toString()];
+				}
+
+				callback(null, messageData);
+			});
 		});
 
 		if (markRead) {

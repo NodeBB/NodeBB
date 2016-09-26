@@ -10,7 +10,7 @@ var db = require('./database'),
 	schemaDate, thisSchemaDate,
 
 	// IMPORTANT: REMEMBER TO UPDATE VALUE OF latestSchema
-	latestSchema = Date.UTC(2016, 8, 7);
+	latestSchema = Date.UTC(2016, 8, 22);
 
 Upgrade.check = function(callback) {
 	db.get('schemaDate', function(err, value) {
@@ -809,6 +809,45 @@ Upgrade.upgrade = function(callback) {
 				});
 			} else {
 				winston.info('[2016/08/07] Granting edit/delete/delete topic on existing categories - skipped!');
+				next();
+			}
+		},
+		function(next) {
+			thisSchemaDate = Date.UTC(2016, 8, 22);
+
+			if (schemaDate < thisSchemaDate) {
+				updatesMade = true;
+				winston.info('[2016/09/22] Setting category recent tids');
+
+
+				db.getSortedSetRange('categories:cid', 0, -1, function(err, cids) {
+					if (err) {
+						return next(err);
+					}
+
+					async.eachSeries(cids, function(cid, next) {
+						db.getSortedSetRevRange('cid:' + cid + ':pids', 0, 0, function(err, pid) {
+							if (err || !pid) {
+								return next(err);
+							}
+							db.getObjectFields('post:' + pid, ['tid', 'timestamp'], function(err, postData) {
+								if (err || !postData || !postData.tid) {
+									return next(err);
+								}
+								db.sortedSetAdd('cid:' + cid + ':recent_tids', postData.timestamp, postData.tid, next);
+							});
+						});
+					}, function(err) {
+						if (err) {
+							return next(err);
+						}
+
+						winston.info('[2016/09/22] Setting category recent tids - done');
+						Upgrade.update(thisSchemaDate, next);
+					});
+				});
+			} else {
+				winston.info('[2016/09/22] Setting category recent tids - skipped!');
 				next();
 			}
 		}

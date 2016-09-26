@@ -1,6 +1,8 @@
 "use strict";
 
 var async = require('async');
+var validator = require('validator');
+
 var posts = require('../../posts');
 var user = require('../../user');
 var categories = require('../../categories');
@@ -54,7 +56,7 @@ flagsController.get = function(req, res, next) {
 			assignees: results.assignees,
 			analytics: results.analytics,
 			categories: results.categories,
-			byUsername: byUsername,
+			byUsername: validator(String(byUsername)),
 			sortByCount: sortBy === 'count',
 			sortByTime: sortBy === 'time',
 			pagination: pagination.create(page, pageCount, req.query),

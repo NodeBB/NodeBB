@@ -51,7 +51,7 @@
     "users": "Uporabniki",
     "topics": "Teme",
     "posts": "Objave",
-    "best": "Najbolše",
+    "best": "Najboljše",
     "upvoters": "Glasovalcev za",
     "upvoted": "Glasov za",
     "downvoters": "Glasovalcev proti",
@@ -96,5 +96,6 @@
     "upload": "Prenos",
     "allowed-file-types": "Dovoljene vrste datotek so %1",
     "unsaved-changes": "Imate neshranjene spremembe. A res želite stran?",
-    "reconnecting-message": "Kot kaže je bila povezava do %1 prekinjena. Počakajte, ponovno poskušamo vzpostaviti povezavo."
+    "reconnecting-message": "Kot kaže je bila povezava do %1 prekinjena. Počakajte, ponovno poskušamo vzpostaviti povezavo.",
+    "play": "Play"
 }

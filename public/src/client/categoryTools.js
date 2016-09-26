@@ -68,7 +68,9 @@ define('forum/categoryTools', ['forum/topic/move', 'topicSelect', 'components', 
 						return app.alertError(err.message);
 					}
 					app.alertSuccess('[[topic:markAsUnreadForAll.success]]');
-
+					tids.forEach(function(tid) {
+						$('[component="category/topic"][data-tid="' + tid + '"]').addClass('unread');
+					});
 					onCommandComplete();
 				});
 			}

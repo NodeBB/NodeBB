@@ -29,7 +29,7 @@
     "username-too-long": "Nome de usuário muito longo",
     "password-too-long": "A senha é muito grande",
     "user-banned": "Usuário banido",
-    "user-banned-reason": "User banned (Reason: %1)",
+    "user-banned-reason": "Usuário banido (Motivo: %1)",
     "user-too-new": "Desculpe, é necessário que você aguarde %1 segundo(s) antes de fazer o seu primeiro post.",
     "blacklisted-ip": "Desculpe, o seu endereço IP foi banido desta comunidade. Se você acha que isso é um engano, por favor contate um administrador.",
     "ban-expiry-missing": "Por favor forneça uma data para o fim deste banimento",

@@ -1,5 +1,5 @@
 "use strict";
-/*global config, componentHandler, define, socket, app, ajaxify, utils, bootbox, Slideout, NProgress, RELATIVE_PATH*/
+/*global config, componentHandler, socket, app, bootbox, Slideout, NProgress*/
 
 (function() {
 	var logoutTimer = 0;
@@ -31,7 +31,7 @@
 	function showCorrectNavTab() {
 		// show correct tab if url has #
 		if (window.location.hash) {
-			$('.nav-pills a[href=' + window.location.hash + ']').tab('show');
+			$('.nav-pills a[href="' + window.location.hash + '"]').tab('show');
 		}
 	}
 
@@ -52,8 +52,6 @@
 	});
 
 	$(window).on('action:ajaxify.contentLoaded', function(ev, data) {
-		var url = data.url;
-
 		selectMenuItem(data.url);
 		setupRestartLinks();
 
@@ -65,7 +63,7 @@
 			NProgress.set(0.7);
 		});
 
-		$(window).on('action:ajaxify.end', function(ev, data) {
+		$(window).on('action:ajaxify.end', function() {
 			NProgress.done();
 		});
 	}
@@ -82,7 +80,7 @@
 				socket.emit('admin.restart');
 			});
 
-			mousetrap.bind('/', function(event) {
+			mousetrap.bind('/', function() {
 				$('#acp-search input').focus();
 
 				return false;

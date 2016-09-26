@@ -121,5 +121,7 @@
     "info.banned-until": "Užblokuotas iki %1",
     "info.banned-permanently": "Užblokuotas visam laikui",
     "info.banned-reason-label": "Priežastis",
-    "info.banned-no-reason": "Be priežasties"
+    "info.banned-no-reason": "Be priežasties",
+    "info.username-history": "Username History",
+    "info.email-history": "Email History"
 }
