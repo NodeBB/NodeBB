@@ -3,6 +3,7 @@
 
 var async = require('async');
 var querystring = require('querystring');
+var validator = require('validator');
 
 var categories = require('../categories');
 var privileges = require('../privileges');
@@ -18,7 +19,7 @@ var validFilter = {'': true, 'new': true, 'watched': true};
 unreadController.get = function(req, res, next) {
 	var page = parseInt(req.query.page, 10) || 1;
 	var results;
-	var cid = req.query.cid;
+	var cid = validator.escape(String(req.query.cid));
 	var filter = req.params.filter || '';
 
 	if (!validFilter[filter]) {
@@ -85,7 +86,7 @@ unreadController.get = function(req, res, next) {
 			return filter && filter.selected;
 		})[0];
 
-		data.querystring = req.query.cid ? ('?cid=' + req.query.cid) : '';
+		data.querystring = cid ? ('?cid=' + cid) : '';
 
 		res.render('unread', data);
 	});
