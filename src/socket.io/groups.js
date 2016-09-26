@@ -135,6 +135,28 @@ SocketGroups.issueInvite = isOwner(function(socket, data, callback) {
 	groups.invite(data.groupName, data.toUid, callback);
 });
 
+SocketGroups.issueMassInvite = isOwner(function(socket, data, callback) {
+	if (!data || !data.usernames || !data.groupName) {
+		return callback(new Error('[[error:invalid-data]]'));
+	}
+	var usernames = data.usernames.split(',');
+	usernames = usernames.map(function(username) {
+		return username && username.trim();
+	});
+	user.getUidsByUsernames(usernames, function(err, uids) {
+		if (err) {
+			return callback(err);
+		}
+		uids = uids.filter(function(uid) {
+			return !!uid && parseInt(uid, 10);
+		});
+
+		async.eachSeries(uids, function(uid, next) {
+			groups.invite(data.groupName, uid, callback);
+		}, callback);
+	});
+});
+
 SocketGroups.rescindInvite = isOwner(function(socket, data, callback) {
 	groups.rejectMembership(data.groupName, data.toUid, callback);
 });
