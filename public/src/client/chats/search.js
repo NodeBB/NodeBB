@@ -75,7 +75,7 @@ define('forum/chats/search', ['components'], function(components) {
 					return app.alertError(err.message);
 				}
 				if (roomId) {
-					ajaxify.go('chats/' + roomId);
+					Chats.switchChat(roomId);
 				} else {
 					app.newChat(userObj.uid);
 				}
