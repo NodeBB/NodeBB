@@ -290,7 +290,7 @@ define('forum/chats', [
 				return app.alertError(err.message);
 			}
 			if (parseInt(roomId, 10) === ajaxify.data.roomId) {
-				ajaxify.go('chats');
+				ajaxify.go('user/' + ajaxify.data.userslug + '/chats');
 			} else {
 				el.remove();
 			}
