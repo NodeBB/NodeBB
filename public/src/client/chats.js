@@ -62,7 +62,7 @@ define('forum/chats', [
 			var roomId = ajaxify.data.roomId;
 
 			if (app.previousUrl && app.previousUrl.match(/chats/)) {
-				ajaxify.go('chats', function() {
+				ajaxify.go('user/' + ajaxify.data.userslug + '/chats', function() {
 					app.openChat(roomId);
 				}, true);
 			} else {
