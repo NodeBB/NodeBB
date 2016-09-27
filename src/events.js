@@ -128,7 +128,7 @@ var utils = require('../public/src/utils');
 		callback = callback || function() {};
 
 		batch.processSortedSet('events:time', function(eids, next) {
-			events.deleteEvents(eids, callback);
+			events.deleteEvents(eids, next);
 		}, {alwaysStartAt: 0}, callback);
 	};
 
