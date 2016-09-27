@@ -142,7 +142,7 @@ module.exports = function(app, middleware, hotswapIds) {
 	}
 
 	app.use(middleware.privateUploads);
-	app.use('/language/:code', middleware.processLanguages);
+	app.use(relativePath + '/language/:code', middleware.processLanguages);
 	app.use(relativePath, express.static(path.join(__dirname, '../../', 'public'), {
 		maxAge: app.enabled('cache') ? 5184000000 : 0
 	}));
