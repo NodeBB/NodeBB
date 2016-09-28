@@ -140,7 +140,7 @@ define('forum/account/edit', ['forum/account/header', 'uploader', 'translator', 
 									return app.alertError(err.message);
 								}
 
-								updateHeader(type === 'default' ? '' : src);
+								updateHeader(type === 'default' ? '' : modal.find('.list-group-item.active img').attr('src'));
 								ajaxify.refresh();
 							});
 						}
