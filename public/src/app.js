@@ -85,13 +85,19 @@ app.cacheBuster = null;
 	};
 
 	app.logout = function() {
+		$(window).trigger('action:app.logout');
 		$.ajax(config.relative_path + '/logout', {
 			type: 'POST',
 			headers: {
 				'x-csrf-token': config.csrf_token
 			},
 			success: function() {
-				window.location.href = config.relative_path + '/';
+				var payload = {
+					next: config.relative_path + '/'
+				};
+
+				$(window).trigger('action:app.loggedOut', payload);
+				window.location.href = payload.next;
 			}
 		});
 	};
