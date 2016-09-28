@@ -298,12 +298,7 @@ define('forum/chats', [
 	};
 
 	Chats.switchChat = function(roomid) {
-		var env = utils.findBootstrapEnvironment();
-		if (env === 'xs' || env === 'sm') {
-			app.openChat(roomid);
-		} else {
-			ajaxify.go('user/' + ajaxify.data.userslug + '/chats/' + roomid);
-		}
+		ajaxify.go('user/' + ajaxify.data.userslug + '/chats/' + roomid);
 	};
 
 	Chats.loadChatSince = function(roomId, chatContentEl, since) {
