@@ -26,8 +26,11 @@ define('chat', [
 			module.loadChatsDropdown(chatsListEl);
 		});
 
-		chatsListEl.on('click', '[data-roomid]', function() {
-			var roomId = this.getAttribute('data-roomid');
+		chatsListEl.on('click', '[data-roomid]', function(ev) {
+			if ($(ev.target).parents('.user-link').length) {
+				return;
+			}
+			var roomId = $(this).attr('data-roomid');
 			if (!ajaxify.currentPage.match(/^chats\//)) {
 				app.openChat(roomId);
 			} else {
@@ -339,7 +342,7 @@ define('chat', [
 		});
 	};
 
-	module.disableMobileBehaviour = function(modalEl) {
+	module.disableMobileBehaviour = function() {
 		app.toggleNavbar(true);
 	};
 
@@ -347,7 +350,6 @@ define('chat', [
 		var totalHeight = modalEl.find('.modal-content').outerHeight() - modalEl.find('.modal-header').outerHeight();
 		var padding = parseInt(modalEl.find('.modal-body').css('padding-top'), 10) + parseInt(modalEl.find('.modal-body').css('padding-bottom'), 10);
 		var contentMargin = parseInt(modalEl.find('.chat-content').css('margin-top'), 10) + parseInt(modalEl.find('.chat-content').css('margin-bottom'), 10);
-		var sinceHeight = modalEl.find('.since-bar').outerHeight(true);
 		var inputGroupHeight = modalEl.find('.input-group').outerHeight();
 
 		return totalHeight - padding - contentMargin - inputGroupHeight;
