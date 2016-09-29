@@ -177,9 +177,8 @@ var ratelimit = require('../middleware/ratelimit');
 		if (nconf.get('redis')) {
 			var redisAdapter = require('socket.io-redis');
 			var redis = require('../database/redis');
-			var pub = redis.connect({return_buffers: true});
+			var pub = redis.connect();
 			var sub = redis.connect({return_buffers: true});
-
 			io.adapter(redisAdapter({pubClient: pub, subClient: sub}));
 		} else if (nconf.get('isCluster') === 'true') {
 			winston.warn('[socket.io] Clustering detected, you are advised to configure Redis as a websocket store.');

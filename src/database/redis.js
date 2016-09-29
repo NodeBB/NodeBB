@@ -65,13 +65,16 @@
 	};
 
 	module.connect = function(options) {
-		var redis_socket_or_host = nconf.get('redis:host'),
-			cxn, dbIdx;
-
-		options = options || {};
+		var redis_socket_or_host = nconf.get('redis:host');
+		var cxn;
 
 		if (!redis) {
 			redis = require('redis');
+		}
+
+		options = options || {};
+		if (nconf.get('redis:password')) {
+			options.auth_pass = nconf.get('redis:password');
 		}
 
 		if (redis_socket_or_host && redis_socket_or_host.indexOf('/') >= 0) {
@@ -91,7 +94,7 @@
 			cxn.auth(nconf.get('redis:password'));
 		}
 
-		dbIdx = parseInt(nconf.get('redis:database'), 10);
+		var dbIdx = parseInt(nconf.get('redis:database'), 10);
 		if (dbIdx) {
 			cxn.select(dbIdx, function(error) {
 				if(error) {
