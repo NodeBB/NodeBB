@@ -152,7 +152,7 @@ SocketGroups.issueMassInvite = isOwner(function(socket, data, callback) {
 		});
 
 		async.eachSeries(uids, function(uid, next) {
-			groups.invite(data.groupName, uid, callback);
+			groups.invite(data.groupName, uid, next);
 		}, callback);
 	});
 });
