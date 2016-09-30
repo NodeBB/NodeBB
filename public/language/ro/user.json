@@ -89,6 +89,11 @@
     "topics_per_page": "Subiecte pe pagină",
     "posts_per_page": "Mesaje pe pagină",
     "notification_sounds": "Play a sound when you receive a notification",
+    "notifications_and_sounds": "Notifications & Sounds",
+    "incoming-message-sound": "Incoming message sound",
+    "outgoing-message-sound": "Outgoing message sound",
+    "notification-sound": "Notification sound",
+    "no-sound": "No sound",
     "browsing": "Setări navigare",
     "open_links_in_new_tab": "Open outgoing links in new tab",
     "enable_topic_searching": "Enable In-Topic Searching",
@@ -114,5 +119,9 @@
     "info.ban-history": "Recent Ban History",
     "info.no-ban-history": "This user has never been banned",
     "info.banned-until": "Banned until %1",
-    "info.banned-permanently": "Banned permanently"
+    "info.banned-permanently": "Banned permanently",
+    "info.banned-reason-label": "Reason",
+    "info.banned-no-reason": "No reason given.",
+    "info.username-history": "Username History",
+    "info.email-history": "Email History"
 }

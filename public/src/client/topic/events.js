@@ -188,7 +188,7 @@ define('forum/topic/events', [
 		var isDeleted = postEl.hasClass('deleted');
 		postTools.toggle(data.pid, isDeleted);
 
-		if (!app.user.isAdmin && !app.user.isGlobalMod && parseInt(data.uid, 10) !== parseInt(app.user.uid, 10)) {
+		if (!ajaxify.data.privileges.isAdminOrMod && parseInt(data.uid, 10) !== parseInt(app.user.uid, 10)) {
 			postEl.find('[component="post/tools"]').toggleClass('hidden', isDeleted);
 			if (isDeleted) {
 				postEl.find('[component="post/content"]').translateHtml('[[topic:post_is_deleted]]');
@@ -220,7 +220,7 @@ define('forum/topic/events', [
 	function onNewNotification(data) {
 		var tid = ajaxify.data.tid;
 		if (data && data.tid && parseInt(data.tid, 10) === parseInt(tid, 10)) {
-			socket.emit('topics.markTopicNotificationsRead', tid);
+			socket.emit('topics.markTopicNotificationsRead', [tid]);
 		}
 	}
 

@@ -49,6 +49,10 @@ module.exports = function(User) {
 				}
 
 				User.getUserField(uid, 'email', function(err, email) {
+					if (err) {
+						return next(err);
+					}
+
 					if(email === data.email) {
 						return next();
 					}
@@ -174,6 +178,7 @@ module.exports = function(User) {
 					function(next) {
 						db.sortedSetAdd('email:uid', uid, newEmail.toLowerCase(), next);
 					},
+					async.apply(db.sortedSetAdd, 'user:' + uid + ':emails', Date.now(), newEmail + ':' + Date.now()),
 					function(next) {
 						db.sortedSetAdd('email:sorted',  0, newEmail.toLowerCase() + ':' + uid, next);
 					},
@@ -215,7 +220,8 @@ module.exports = function(User) {
 				function(next) {
 					async.series([
 						async.apply(db.sortedSetRemove, 'username:sorted', userData.username.toLowerCase() + ':' + uid),
-						async.apply(db.sortedSetAdd, 'username:sorted', 0, newUsername.toLowerCase() + ':' + uid)
+						async.apply(db.sortedSetAdd, 'username:sorted', 0, newUsername.toLowerCase() + ':' + uid),
+						async.apply(db.sortedSetAdd, 'user:' + uid + ':usernames', Date.now(), newUsername + ':' + Date.now())
 					], next);
 				},
 			], callback);

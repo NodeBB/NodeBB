@@ -1,23 +1,26 @@
 'use strict';
-/* globals define, app, config, ajaxify, socket, bootbox, translator */
+/* globals define, app, config, ajaxify, socket, bootbox, templates */
 
 define('forum/account/header', [
 	'coverPhoto',
 	'uploader',
-	'components'
-], function(coverPhoto, uploader, components) {
-	var	AccountHeader = {},
-		yourid,
-		theirid;
+	'components',
+	'translator'
+], function(coverPhoto, uploader, components, translator) {
+	var	AccountHeader = {};
+	var	yourid;
+	var	theirid;
+	var isAdminOrSelfOrGlobalMod;
 
 	AccountHeader.init = function() {
 		yourid = ajaxify.data.yourid;
 		theirid = ajaxify.data.theirid;
+		isAdminOrSelfOrGlobalMod = ajaxify.data.isAdmin || ajaxify.data.isSelf || ajaxify.data.isGlobalModerator;
 
 		hidePrivateLinks();
 		selectActivePill();
 
-		if (parseInt(yourid, 10) === parseInt(theirid, 10)) {
+		if (isAdminOrSelfOrGlobalMod) {
 			setupCoverPhoto();
 		}
 
@@ -123,7 +126,7 @@ define('forum/account/header', [
 							}, {});
 							var until = formData.length ? (Date.now() + formData.length * 1000*60*60 * (parseInt(formData.unit, 10) ? 24 : 1)) : 0;
 
-							socket.emit('user.banUsers', { uids: [ajaxify.data.theirid], until: until }, function(err) {
+							socket.emit('user.banUsers', { uids: [ajaxify.data.theirid], until: until, reason: formData.reason || '' }, function(err) {
 								if (err) {
 									return app.alertError(err.message);
 								}
@@ -152,7 +155,7 @@ define('forum/account/header', [
 					return;
 				}
 
-				socket.emit('admin.user.deleteUsers', [ajaxify.data.theirid], function(err) {
+				socket.emit('admin.user.deleteUsersAndContent', [ajaxify.data.theirid], function(err) {
 					if (err) {
 						return app.alertError(err.message);
 					}

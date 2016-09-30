@@ -62,7 +62,7 @@ define('forum/chats', [
 			var roomId = ajaxify.data.roomId;
 
 			if (app.previousUrl && app.previousUrl.match(/chats/)) {
-				ajaxify.go('chats', function() {
+				ajaxify.go('user/' + ajaxify.data.userslug + '/chats', function() {
 					app.openChat(roomId);
 				}, true);
 			} else {
@@ -81,6 +81,39 @@ define('forum/chats', [
 
 		Chats.addSinceHandler(ajaxify.data.roomId, $('.expanded-chat .chat-content'), $('.expanded-chat [data-since]'));
 		Chats.addRenameHandler(ajaxify.data.roomId, $('[component="chat/room/name"]'));
+		Chats.addScrollHandler(ajaxify.data.roomId, ajaxify.data.uid, $('.chat-content'));
+	};
+
+	Chats.addScrollHandler = function(roomId, uid, el) {
+		var loading = false;
+		el.off('scroll').on('scroll', function() {
+			if (loading) {
+				return;
+			}
+
+			var top = (el[0].scrollHeight - el.height()) * 0.1;
+			if (el.scrollTop() >= top) {
+				return;
+			}
+			loading = true;
+
+			socket.emit('modules.chats.getMessages', {roomId: roomId, uid: uid, start: $('.chat-content').children('[data-index]').first().attr('data-index')}, function(err, data) {
+				if (err) {
+					return app.alertError(err.message);
+				}
+
+				messages.parseMessage(data, function(html) {
+					var currentScrollTop = el.scrollTop();
+					var previousHeight = el[0].scrollHeight;
+					html = $(html);
+					el.prepend(html);
+					html.find('.timeago').timeago();
+					html.find('img:not(.not-responsive)').addClass('img-responsive');
+					el.scrollTop((el[0].scrollHeight - previousHeight) + currentScrollTop);
+					loading = false;
+				});
+			});
+		});
 	};
 
 	Chats.addEditDeleteHandler = function(element, roomId) {
@@ -257,7 +290,7 @@ define('forum/chats', [
 				return app.alertError(err.message);
 			}
 			if (parseInt(roomId, 10) === ajaxify.data.roomId) {
-				ajaxify.go('chats');
+				ajaxify.go('user/' + ajaxify.data.userslug + '/chats');
 			} else {
 				el.remove();
 			}
@@ -265,7 +298,7 @@ define('forum/chats', [
 	};
 
 	Chats.switchChat = function(roomid) {
-		ajaxify.go('chats/' + roomid);
+		ajaxify.go('user/' + ajaxify.data.userslug + '/chats/' + roomid);
 	};
 
 	Chats.loadChatSince = function(roomId, chatContentEl, since) {

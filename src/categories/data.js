@@ -42,7 +42,7 @@ module.exports = function(Categories) {
 			return;
 		}
 
-		category.name = validator.escape(category.name || '');
+		category.name = validator.escape(String(category.name || ''));
 		category.disabled = category.hasOwnProperty('disabled') ? parseInt(category.disabled, 10) === 1 : undefined;
 		category.icon = category.icon || 'hidden';
 		if (category.hasOwnProperty('post_count')) {
@@ -58,7 +58,7 @@ module.exports = function(Categories) {
 		}
 
 		if (category.description) {
-			category.description = validator.escape(category.description);
+			category.description = validator.escape(String(category.description));
 			category.descriptionParsed = category.descriptionParsed || category.description;
 		}
 	}

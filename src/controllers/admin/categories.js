@@ -48,6 +48,10 @@ categoriesController.getAnalytics = function(req, res, next) {
 		name: async.apply(categories.getCategoryField, req.params.category_id, 'name'),
 		analytics: async.apply(analytics.getCategoryAnalytics, req.params.category_id)
 	}, function(err, data) {
+		if (err) {
+			return next(err);
+		}
+
 		res.render('admin/manage/category-analytics', data);
 	});
 };

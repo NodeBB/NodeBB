@@ -86,7 +86,7 @@ module.exports = function(Posts) {
 						if (options.stripTags) {
 							post.content = stripTags(post.content);
 						}
-						post.content = post.content ? validator.escape(post.content) : post.content;
+						post.content = post.content ? validator.escape(String(post.content)) : post.content;
 						return next(null, post);
 					}
 
@@ -101,6 +101,10 @@ module.exports = function(Posts) {
 						next(null, post);
 					});
 				}, function(err, posts) {
+					if (err) {
+						return callback(err);
+					}
+
 					plugins.fireHook('filter:post.getPostSummaryByPids', {posts: posts, uid: uid}, function(err, postData) {
 						callback(err, postData.posts);
 					});
@@ -117,7 +121,7 @@ module.exports = function(Posts) {
 
 			var cids = topics.map(function(topic) {
 				if (topic) {
-					topic.title = validator.escape(topic.title);
+					topic.title = validator.escape(String(topic.title));
 					topic.deleted = parseInt(topic.deleted, 10) === 1;
 				}
 				return topic && topic.cid;

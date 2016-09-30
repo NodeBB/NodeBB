@@ -3,7 +3,6 @@
 var async = require('async');
 
 var user = require('../../user');
-var groups = require('../../groups');
 var languages = require('../../languages');
 var meta = require('../../meta');
 var plugins = require('../../plugins');
@@ -21,7 +20,7 @@ settingsController.get = function(req, res, callback) {
 	var userData;
 	async.waterfall([
 		function(next) {
-			accountHelpers.getBaseUser(req.params.userslug, req.uid, next);
+			accountHelpers.getUserDataByUserSlug(req.params.userslug, req.uid, next);
 		},
 		function(_userData, next) {
 			userData = _userData;
@@ -32,30 +31,37 @@ settingsController.get = function(req, res, callback) {
 				settings: function(next) {
 					user.getSettings(userData.uid, next);
 				},
-				userGroups: function(next) {
-					groups.getUserGroupsFromSet('groups:createtime', [userData.uid], next);
-				},
 				languages: function(next) {
 					languages.list(next);
 				},
 				homePageRoutes: function(next) {
 					getHomePageRoutes(next);
 				},
-				ips: function (next) {
-					user.getIPs(userData.uid, 4, next);
+				sounds: function(next) {
+					meta.sounds.getFiles(next);
 				},
-				sessions: async.apply(user.auth.getSessions, userData.uid, req.sessionID)
+				soundsMapping: function(next) {
+					meta.sounds.getMapping(userData.uid, next);
+				}
 			}, next);
 		},
 		function(results, next) {
 			userData.settings = results.settings;
-			userData.userGroups = results.userGroups[0].filter(function(group) {
-				return group && group.userTitleEnabled && !groups.isPrivilegeGroup(group.name) && group.name !== 'registered-users';
-			});
 			userData.languages = results.languages;
 			userData.homePageRoutes = results.homePageRoutes;
-			userData.ips = results.ips;
-			userData.sessions = results.sessions;
+
+			var soundSettings = {
+				'notificationSound': 'notification',
+				'incomingChatSound': 'chat-incoming',
+				'outgoingChatSound': 'chat-outgoing'
+			};
+
+			Object.keys(soundSettings).forEach(function(setting) {
+				userData[setting] = Object.keys(results.sounds).map(function(name) {
+					return {name: name, selected: name === results.soundsMapping[soundSettings[setting]]};
+				});
+			});
+
 			plugins.fireHook('filter:user.customSettings', {settings: results.settings, customSettings: [], uid: req.uid}, next);
 		},
 		function(data, next) {
@@ -116,10 +122,6 @@ settingsController.get = function(req, res, callback) {
 
 		userData.bootswatchSkinOptions.forEach(function(skin) {
 			skin.selected = skin.value === userData.settings.bootswatchSkin;
-		});
-
-		userData.userGroups.forEach(function(group) {
-			group.selected = group.name === userData.settings.groupTitle;
 		});
 
 		userData.languages.forEach(function(language) {

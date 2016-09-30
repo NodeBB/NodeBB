@@ -221,6 +221,10 @@ module.exports = function(Plugins) {
 			fallbackMap = {};
 
 		utils.walk(pathToFolder, function(err, languages) {
+			if (err) {
+				return callback(err);
+			}
+
 			async.each(languages, function(pathToLang, next) {
 				fs.readFile(pathToLang, function(err, file) {
 					if (err) {
@@ -249,7 +253,6 @@ module.exports = function(Plugins) {
 						}).filter(Boolean).forEach(function(key) {
 							Plugins.customLanguages[key] = _.defaults(Plugins.customLanguages[key] || {}, data);
 						});
-						fallbackMap[path.basename(pathToLang, '.json')] = path.join(pathToFolder, pluginData.defaultLang, path.basename(pathToLang));
 					}
 
 					next();
@@ -258,9 +261,6 @@ module.exports = function(Plugins) {
 				if (err) {
 					return callback(err);
 				}
-
-				// do I need this either?
-				_.extendOwn(Plugins.customLanguageFallbacks, fallbackMap);
 
 				callback();
 			});
@@ -272,7 +272,8 @@ module.exports = function(Plugins) {
 		  * With npm@3, dependencies can become flattened, and appear at the root level.
 		  * This method resolves these differences if it can.
 		  */
-		var atRootLevel = fullPath.match(/node_modules/g).length === 1;
+		var matches = fullPath.match(/node_modules/g);
+		var atRootLevel = !matches || matches.length === 1;
 
 		try {
 			fs.statSync(fullPath);

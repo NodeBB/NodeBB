@@ -29,6 +29,10 @@ define('admin/manage/ip-blacklist', [], function() {
 			socket.emit('blacklist.validate', {
 				rules: blacklist.val()
 			}, function(err, data) {
+				if (err) {
+					return app.alertError(err.message);
+				}
+
 				templates.parse('admin/partials/blacklist-validate', data, function(html) {
 					bootbox.alert(html);
 				});

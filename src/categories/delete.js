@@ -5,8 +5,8 @@ var db = require('../database');
 var batch = require('../batch');
 var plugins = require('../plugins');
 var topics = require('../topics');
-var privileges = require('../privileges');
 var groups = require('../groups');
+var privileges = require('../privileges');
 
 module.exports = function(Categories) {
 

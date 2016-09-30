@@ -1,13 +1,13 @@
 
 'use strict';
 
-var async = require('async'),
-
-	db =  require('./database'),
-	batch = require('./batch'),
-	user = require('./user'),
-	utils = require('../public/src/utils');
-
+var async = require('async');
+var validator = require('validator');
+	
+var db =  require('./database');
+var batch = require('./batch');
+var user = require('./user');
+var utils = require('../public/src/utils');
 
 (function(events) {
 	events.log = function(data, callback) {
@@ -47,16 +47,24 @@ var async = require('async'),
 				db.getObjects(keys, next);
 			},
 			function(eventsData, next) {
-				eventsData.forEach(function(event) {
-					var e = utils.merge(event);
-					e.eid = e.uid = e.type = e.ip = undefined;
-					event.jsonString = JSON.stringify(e, null, 4);
-					event.timestampISO = new Date(parseInt(event.timestamp, 10)).toUTCString();
-				});
 				addUserData(eventsData, 'uid', 'user', next);
 			},
 			function(eventsData, next) {
 				addUserData(eventsData, 'targetUid', 'targetUser', next);
+			},
+			function(eventsData, next) {
+				eventsData.forEach(function(event) {
+					Object.keys(event).forEach(function(key) {
+						if (typeof event[key] === 'string') {
+							event[key] = validator.escape(String(event[key] || ''));	
+						}						
+					});
+					var e = utils.merge(event);
+					e.eid = e.uid = e.type = e.ip = e.user = undefined;
+					event.jsonString = JSON.stringify(e, null, 4);
+					event.timestampISO = new Date(parseInt(event.timestamp, 10)).toUTCString();
+				});
+				next(null, eventsData);
 			}
 		], callback);
 	};
@@ -120,7 +128,7 @@ var async = require('async'),
 		callback = callback || function() {};
 
 		batch.processSortedSet('events:time', function(eids, next) {
-			events.deleteEvents(eids, callback);
+			events.deleteEvents(eids, next);
 		}, {alwaysStartAt: 0}, callback);
 	};
 

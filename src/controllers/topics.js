@@ -283,7 +283,7 @@ topicsController.get = function(req, res, callback) {
 				}
 				if (markedRead) {
 					topics.pushUnreadCount(req.uid);
-					topics.markTopicNotificationsRead(tid, req.uid);
+					topics.markTopicNotificationsRead([tid], req.uid);
 				}
 			});
 		}

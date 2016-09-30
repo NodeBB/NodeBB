@@ -25,6 +25,8 @@ describe('Categories', function() {
 				blockclass: 'category-blue',
 				order: '5'
 			}, function(err, category) {
+				assert.equal(err, null);
+
 				categoryObj = category;
 				done.apply(this, arguments);
 			});
@@ -38,14 +40,35 @@ describe('Categories', function() {
 				set: 'cid:' + categoryObj.cid + ':tids',
 				reverse: true,
 				start: 0,
-				end: -1,
+				stop: -1,
 				uid: 0
 			}, function(err, categoryData) {
+				assert.equal(err, null);
+
 				assert(categoryData);
 				assert.equal(categoryObj.name, categoryData.name);
 				assert.equal(categoryObj.description, categoryData.description);
 
 				done();
+			});
+		});
+	});
+
+	describe('Categories.getRecentTopicReplies', function() {
+		it('should not throw', function(done) {
+			Categories.getCategoryById({
+				cid: categoryObj.cid,
+				set: 'cid:' + categoryObj.cid + ':tids',
+				reverse: true,
+				start: 0,
+				stop: -1,
+				uid: 0
+			}, function(err, categoryData) {
+				assert.ifError(err);
+				Categories.getRecentTopicReplies(categoryData, 0, function(err) {
+					assert.ifError(err);
+					done();
+				});
 			});
 		});
 	});
@@ -60,6 +83,8 @@ describe('Categories', function() {
 				stop: 10,
 				uid: 0
 			}, function(err, result) {
+				assert.equal(err, null);
+
 				assert(Array.isArray(result.topics));
 				assert(result.topics.every(function(topic) {
 					return topic instanceof Object;
@@ -79,6 +104,7 @@ describe('Categories', function() {
 				uid: 0,
 				targetUid: 1
 			}, function(err, result) {
+				assert.equal(err, null);
 				assert(Array.isArray(result.topics));
 				assert(result.topics.every(function(topic) {
 					return topic instanceof Object && topic.uid === '1';
@@ -89,7 +115,7 @@ describe('Categories', function() {
 		});
 	});
 
-	after(function() {
-		db.flushdb();
+	after(function(done) {
+		db.flushdb(done);
 	});
 });

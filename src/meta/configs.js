@@ -1,11 +1,12 @@
 
 'use strict';
 
-var winston = require('winston'),
-	db = require('../database'),
-	pubsub = require('../pubsub'),
-	nconf = require('nconf'),
-	utils = require('../../public/src/utils');
+var winston = require('winston');
+var nconf = require('nconf');
+
+var db = require('../database');
+var pubsub = require('../pubsub');
+var utils = require('../../public/src/utils');
 
 module.exports = function(Meta) {
 
@@ -117,14 +118,20 @@ module.exports = function(Meta) {
 		}
 	});
 
-	Meta.configs.setOnEmpty = function (field, value, callback) {
-		Meta.configs.get(field, function (err, curValue) {
+	Meta.configs.setOnEmpty = function (values, callback) {
+		db.getObject('config', function(err, data) {
 			if (err) {
 				return callback(err);
 			}
-
-			if (!curValue) {
-				Meta.configs.set(field, value, callback);
+			data = data || {};
+			var empty = {};
+			Object.keys(values).forEach(function(key) {
+				if (!data.hasOwnProperty(key)) {
+					empty[key] = values[key];
+				}
+			});
+			if (Object.keys(empty).length) {
+				db.setObject('config', empty, callback);
 			} else {
 				callback();
 			}

@@ -61,8 +61,8 @@ module.exports = function(Topics) {
 			function(_tid, next) {
 				function move(pid, next) {
 					privileges.posts.canEdit(pid, uid, function(err, canEdit) {
-						if(err || !canEdit) {
-							return next(err);
+						if (err || !canEdit.flag) {
+							return next(err || new Error(canEdit.message));
 						}
 
 						Topics.movePostToTopic(pid, tid, next);

@@ -5,6 +5,12 @@ module.exports = function(redisClient, module) {
 
 	module.setAdd = function(key, value, callback) {
 		callback = callback || function() {};
+		if (!Array.isArray(value)) {
+			value = [value];
+		}
+		if (!value.length) {
+			return callback();
+		}
 		redisClient.sadd(key, value, function(err, res) {
 			callback(err);
 		});

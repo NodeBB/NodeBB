@@ -1,8 +1,8 @@
 
 "use strict";
 
-var async = require('async'),
-	db = require('../database');
+var async = require('async');
+var db = require('../database');
 
 module.exports = function(Categories) {
 

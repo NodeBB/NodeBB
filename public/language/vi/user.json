@@ -89,6 +89,11 @@
     "topics_per_page": "Số chủ đề trong một trang",
     "posts_per_page": "Số bài viết trong một trang",
     "notification_sounds": "Phát âm thanh khi bạn nhận được thông báo mới",
+    "notifications_and_sounds": "Notifications & Sounds",
+    "incoming-message-sound": "Incoming message sound",
+    "outgoing-message-sound": "Outgoing message sound",
+    "notification-sound": "Notification sound",
+    "no-sound": "No sound",
     "browsing": "Đang xem cài đặt",
     "open_links_in_new_tab": "Mở link trong tab mới.",
     "enable_topic_searching": "Bật In-topic Searching",
@@ -114,5 +119,9 @@
     "info.ban-history": "Recent Ban History",
     "info.no-ban-history": "This user has never been banned",
     "info.banned-until": "Banned until %1",
-    "info.banned-permanently": "Banned permanently"
+    "info.banned-permanently": "Banned permanently",
+    "info.banned-reason-label": "Reason",
+    "info.banned-no-reason": "No reason given.",
+    "info.username-history": "Username History",
+    "info.email-history": "Email History"
 }

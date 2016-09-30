@@ -26,6 +26,18 @@ define('chat', [
 			module.loadChatsDropdown(chatsListEl);
 		});
 
+		chatsListEl.on('click', '[data-roomid]', function(ev) {
+			if ($(ev.target).parents('.user-link').length) {
+				return;
+			}
+			var roomId = $(this).attr('data-roomid');
+			if (!ajaxify.currentPage.match(/^chats\//)) {
+				app.openChat(roomId);
+			} else {
+				ajaxify.go('user/' + app.user.userslug + '/chats/' + roomId);
+			}
+		});
+
 		$('[component="chats/mark-all-read"]').on('click', function() {
 			socket.emit('modules.chats.markAllRead', function(err) {
 				if (err) {
@@ -95,7 +107,7 @@ define('chat', [
 	};
 
 	module.loadChatsDropdown = function(chatsListEl) {
-		socket.emit('modules.chats.getRecentChats', {after: 0}, function(err, data) {
+		socket.emit('modules.chats.getRecentChats', {uid: app.user.uid, after: 0}, function(err, data) {
 			if (err) {
 				return app.alertError(err.message);
 			}
@@ -104,46 +116,12 @@ define('chat', [
 			    return room.teaser;
 			});
 
-			chatsListEl.empty();
-
-			if (!rooms.length) {
-				translator.translate('[[modules:chat.no_active]]', function(str) {
-					$('<li />')
-						.addClass('no_active')
-						.html('<a href="#">' + str + '</a>')
-						.appendTo(chatsListEl);
-				});
-				return;
-			}
-
-			rooms.forEach(function(roomObj) {
-				function createUserImage(userObj) {
-					return '<a data-ajaxify="false">' +
-						(userObj.picture ?
-							'<img src="' +	userObj.picture + '" title="' +	userObj.username +'" />' :
-							'<div class="user-icon" style="background-color: ' + userObj['icon:bgColor'] + '">' + userObj['icon:text'] + '</div>') +
-						'<i class="fa fa-circle status ' + userObj.status + '"></i> ' +
-						roomObj.usernames + '</a>';
-				}
-
-				var dropdownEl = $('<li class="' + (roomObj.unread ? 'unread' : '') + '"/>')
-					.attr('data-roomId', roomObj.roomId)
-					.appendTo(chatsListEl);
-
-				if (roomObj.lastUser) {
-					dropdownEl.append(createUserImage(roomObj.lastUser));
-				} else {
-					translator.translate('[[modules:chat.no-users-in-room]]', function(str) {
-						dropdownEl.append(str);
-					});
-				}
-
-				dropdownEl.click(function() {
-					if (!ajaxify.currentPage.match(/^chats\//)) {
-						app.openChat(roomObj.roomId);
-					} else {
-						ajaxify.go('chats/' + roomObj.roomId);
-					}
+			templates.parse('partials/chat_dropdown', {
+				rooms: rooms
+			}, function(html) {
+				translator.translate(html, function(translated) {
+					chatsListEl.empty().html(translated);
+					app.createUserTooltips(chatsListEl, 'right');
 				});
 			});
 		});
@@ -239,7 +217,7 @@ define('chat', [
 						components.get('chat/input').val(text);
 					});
 
-					ajaxify.go('chats/' + chatModal.attr('roomId'));
+					ajaxify.go('user/' + app.user.userslug + '/chats/' + chatModal.attr('roomId'));
 					module.close(chatModal);
 				}
 
@@ -285,6 +263,8 @@ define('chat', [
 				Chats.createAutoComplete(chatModal.find('[component="chat/input"]'));
 
 				Chats.loadChatSince(chatModal.attr('roomId'), chatModal.find('.chat-content'), 'recent');
+
+				Chats.addScrollHandler(chatModal.attr('roomId'), app.user.uid, chatModal.find('.chat-content'));
 
 				checkStatus(chatModal);
 
@@ -362,7 +342,7 @@ define('chat', [
 		});
 	};
 
-	module.disableMobileBehaviour = function(modalEl) {
+	module.disableMobileBehaviour = function() {
 		app.toggleNavbar(true);
 	};
 
@@ -370,7 +350,6 @@ define('chat', [
 		var totalHeight = modalEl.find('.modal-content').outerHeight() - modalEl.find('.modal-header').outerHeight();
 		var padding = parseInt(modalEl.find('.modal-body').css('padding-top'), 10) + parseInt(modalEl.find('.modal-body').css('padding-bottom'), 10);
 		var contentMargin = parseInt(modalEl.find('.chat-content').css('margin-top'), 10) + parseInt(modalEl.find('.chat-content').css('margin-bottom'), 10);
-		var sinceHeight = modalEl.find('.since-bar').outerHeight(true);
 		var inputGroupHeight = modalEl.find('.input-group').outerHeight();
 
 		return totalHeight - padding - contentMargin - inputGroupHeight;

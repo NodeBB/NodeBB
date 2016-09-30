@@ -45,8 +45,16 @@
 				list.forEach(function(file) {
 					file = dir + '/' + file;
 					fs.stat(file, function(err, stat) {
+						if (err) {
+							return done(err);
+						}
+
 						if (stat && stat.isDirectory()) {
 							utils.walk(file, function(err, res) {
+								if (err) {
+									return done(err);
+								}
+
 								results = results.concat(res);
 								if (!--pending) {
 									done(null, results);
@@ -423,6 +431,14 @@
 			}
 
 			return utils.props(obj[prop], newProps, value);
+		},
+
+		isInternalURI: function(targetLocation, referenceLocation, relative_path) {
+			return targetLocation.host === '' ||	// Relative paths are always internal links
+				(
+					targetLocation.host === referenceLocation.host && targetLocation.protocol === referenceLocation.protocol &&	// Otherwise need to check if protocol and host match
+					(relative_path.length > 0 ? targetLocation.pathname.indexOf(relative_path) === 0 : true)	// Subfolder installs need this additional check
+				);
 		}
 	};
 

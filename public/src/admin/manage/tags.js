@@ -1,5 +1,5 @@
 "use strict";
-/*global define, socket, app, utils, bootbox*/
+/*global define, socket, app, utils, bootbox, ajaxify*/
 
 define('admin/manage/tags', [
 	'forum/infinitescroll',
@@ -12,10 +12,46 @@ define('admin/manage/tags', [
 	Tags.init = function() {
 		selectable.enable('.tag-management', '.tag-row');
 
+		handleCreate();
 		handleSearch();
 		handleModify();
 		handleDeleteSelected();
 	};
+
+	function handleCreate() {
+		var createModal = $('#create-modal');
+		var createTagName = $('#create-tag-name');
+		var createModalGo = $('#create-modal-go');
+
+		createModal.on('keypress', function(e) {
+			if (e.keyCode === 13) {
+				createModalGo.click();
+			}
+		});
+
+		$('#create').on('click', function() {
+			createModal.modal('show');
+			setTimeout(function() {
+				createTagName.focus();
+			}, 250);
+		});
+
+		createModalGo.on('click', function() {
+			socket.emit('admin.tags.create', {
+				tag: createTagName.val()
+			}, function(err) {
+				if (err) {
+					return app.alertError(err.message);
+				}
+
+				createTagName.val('');
+				createModal.on('hidden.bs.modal', function() {
+					ajaxify.refresh();
+				});
+				createModal.modal('hide');
+			});
+		});
+	}
 
 	function handleSearch() {
 		$('#tag-search').on('input propertychange', function() {
@@ -44,7 +80,7 @@ define('admin/manage/tags', [
 
 	function handleModify() {
 		$('#modify').on('click', function() {
-			var tagsToModify = $('.tag-row.selected');
+			var tagsToModify = $('.tag-row.ui-selected');
 			if (!tagsToModify.length) {
 				return;
 			}
@@ -84,7 +120,7 @@ define('admin/manage/tags', [
 
 	function handleDeleteSelected() {
 		$('#deleteSelected').on('click', function() {
-			var tagsToDelete = $('.tag-row.selected');
+			var tagsToDelete = $('.tag-row.ui-selected');
 			if (!tagsToDelete.length) {
 				return;
 			}

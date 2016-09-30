@@ -1,0 +1,6 @@
+{
+	"rules": {
+		"handle-callback-err": [ "error", "^(e$|(e|(.*(_e|E)))rr)" ]
+	}
+}
+

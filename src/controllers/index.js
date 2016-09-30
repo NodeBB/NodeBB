@@ -8,7 +8,6 @@ var winston = require('winston');
 var meta = require('../meta');
 var user = require('../user');
 var plugins = require('../plugins');
-var sitemap = require('../sitemap');
 var helpers = require('./helpers');
 
 var Controllers = {
@@ -27,7 +26,8 @@ var Controllers = {
 	authentication: require('./authentication'),
 	api: require('./api'),
 	admin: require('./admin'),
-	globalMods: require('./globalmods')
+	globalMods: require('./globalmods'),
+	sitemap: require('./sitemap')
 };
 
 
@@ -202,6 +202,10 @@ Controllers.registerInterstitial = function(req, res, next) {
 		userData: req.session.registration,
 		interstitials: []
 	}, function(err, data) {
+		if (err) {
+			return next(err);
+		}
+
 		if (!data.interstitials.length) {
 			return next();
 		}
@@ -212,7 +216,12 @@ Controllers.registerInterstitial = function(req, res, next) {
 		var errors = req.flash('error');
 
 		async.parallel(renders, function(err, sections) {
+			if (err) {
+				return next(err);
+			}
+
 			res.render('registerComplete', {
+				title: '[[pages:registration-complete]]',
 				errors: errors,
 				sections: sections
 			});
@@ -248,65 +257,6 @@ Controllers.confirmEmail = function(req, res) {
 			error: err ? err.message : '',
 			title: '[[pages:confirm]]',
 		});
-	});
-};
-
-Controllers.sitemap = {};
-Controllers.sitemap.render = function(req, res, next) {
-	sitemap.render(function(err, tplData) {
-		if (err) {
-			return next(err);
-		}
-
-		Controllers.render('sitemap', tplData, function(err, xml) {
-			res.header('Content-Type', 'application/xml');
-			res.send(xml);
-		});
-	});
-};
-
-Controllers.sitemap.getPages = function(req, res, next) {
-	if (parseInt(meta.config['feeds:disableSitemap'], 10) === 1) {
-		return next();
-	}
-
-	sitemap.getPages(function(err, xml) {
-		if (err) {
-			return next(err);
-		}
-		res.header('Content-Type', 'application/xml');
-		res.send(xml);
-	});
-};
-
-Controllers.sitemap.getCategories = function(req, res, next) {
-	if (parseInt(meta.config['feeds:disableSitemap'], 10) === 1) {
-		return next();
-	}
-
-	sitemap.getCategories(function(err, xml) {
-		if (err) {
-			return next(err);
-		}
-		res.header('Content-Type', 'application/xml');
-		res.send(xml);
-	});
-};
-
-Controllers.sitemap.getTopicPage = function(req, res, next) {
-	if (parseInt(meta.config['feeds:disableSitemap'], 10) === 1) {
-		return next();
-	}
-
-	sitemap.getTopicPage(parseInt(req.params[0], 10), function(err, xml) {
-		if (err) {
-			return next(err);
-		} else if (!xml) {
-			return next();
-		}
-
-		res.header('Content-Type', 'application/xml');
-		res.send(xml);
 	});
 };
 
@@ -369,9 +319,9 @@ Controllers.manifest = function(req, res) {
 };
 
 Controllers.outgoing = function(req, res) {
-	var url = req.query.url;
+	var url = req.query.url || '';
 	var data = {
-		url: validator.escape(String(url)),
+		outgoing: validator.escape(String(url)),
 		title: meta.config.title,
 		breadcrumbs: helpers.buildBreadcrumbs([{text: '[[notifications:outgoing_link]]'}])
 	};
@@ -388,6 +338,10 @@ Controllers.termsOfUse = function(req, res, next) {
 		return next();
 	}
 	res.render('tos', {termsOfUse: meta.config.termsOfUse});
+};
+
+Controllers.ping = function(req, res) {
+	res.status(200).send(req.path === '/sping' ? 'healthy' : '200');
 };
 
 Controllers.handle404 = function(req, res) {
@@ -423,12 +377,42 @@ Controllers.handle404 = function(req, res) {
 		if (res.locals.isAPI) {
 			return res.json({path: validator.escape(path.replace(/^\/api/, '')), title: '[[global:404.title]]'});
 		}
-
-		req.app.locals.middleware.buildHeader(req, res, function() {
+		var middleware = require('../middleware');
+		middleware.buildHeader(req, res, function() {
 			res.render('404', {path: validator.escape(path), title: '[[global:404.title]]'});
 		});
 	} else {
 		res.status(404).type('txt').send('Not found');
+	}
+};
+
+Controllers.handleURIErrors = function(err, req, res, next) {
+	// Handle cases where malformed URIs are passed in
+	if (err instanceof URIError) {
+		var tidMatch = req.path.match(/^\/topic\/(\d+)\//);
+		var cidMatch = req.path.match(/^\/category\/(\d+)\//);
+
+		if (tidMatch) {
+			res.redirect(nconf.get('relative_path') + tidMatch[0]);
+		} else if (cidMatch) {
+			res.redirect(nconf.get('relative_path') + cidMatch[0]);
+		} else {
+			winston.warn('[controller] Bad request: ' + req.path);
+			if (res.locals.isAPI) {
+				res.status(400).json({
+					error: '[[global:400.title]]'
+				});
+			} else {
+				var middleware = require('../middleware');
+				middleware.buildHeader(req, res, function() {
+					res.render('400', { error: validator.escape(String(err.message)) });
+				});
+			}
+		}
+
+		return;
+	} else {
+		next(err);
 	}
 };
 
@@ -453,8 +437,9 @@ Controllers.handleErrors = function(err, req, res, next) {
 	if (res.locals.isAPI) {
 		res.json({path: validator.escape(path), error: err.message});
 	} else {
-		req.app.locals.middleware.buildHeader(req, res, function() {
-			res.render('500', {path: validator.escape(path), error: validator.escape(String(err.message))});
+		var middleware = require('../middleware');
+		middleware.buildHeader(req, res, function() {
+			res.render('500', { path: validator.escape(path), error: validator.escape(String(err.message)) });
 		});
 	}
 };

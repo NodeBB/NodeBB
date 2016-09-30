@@ -9,6 +9,8 @@
     "404.message": "你所查找的頁面並不存在。返回<a href='%1/'>首頁</a>。",
     "500.title": "內部錯誤",
     "500.message": "糟糕! 看來是不知道哪裡出錯了!",
+    "400.title": "錯誤要求",
+    "400.message": "看起來這個連結是有問題的，請點擊兩次然後重新嘗試。要不然，回到<a href='%1/'>首頁</a>。",
     "register": "註冊",
     "login": "登入",
     "please_log_in": "請先登入",
@@ -50,9 +52,9 @@
     "topics": "主題",
     "posts": "張貼",
     "best": "最棒",
-    "upvoters": "Upvoters",
+    "upvoters": "正向投票",
     "upvoted": "正向投票",
-    "downvoters": "Downvoters",
+    "downvoters": "負向投票",
     "downvoted": "負向投票",
     "views": "瀏覽",
     "reputation": "聲望",
@@ -92,5 +94,8 @@
     "enter_page_number": "輸入頁碼",
     "upload_file": "上傳檔案",
     "upload": "上傳",
-    "allowed-file-types": "允許的檔案類型是 %1"
+    "allowed-file-types": "允許的檔案類型是 %1",
+    "unsaved-changes": "你還沒有儲存更動。你確定想要離開這個頁面？",
+    "reconnecting-message": "看起來你的連線到 %1 已經遺失，請稍等一下我們嘗試重新連線。",
+    "play": "Play"
 }

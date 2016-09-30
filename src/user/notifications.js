@@ -154,7 +154,7 @@ var privileges = require('../privileges');
 		});
 	};
 
-	UserNotifications.getUnreadByField = function(uid, field, value, callback) {
+	UserNotifications.getUnreadByField = function(uid, field, values, callback) {
 		db.getSortedSetRevRange('uid:' + uid + ':notifications:unread', 0, 99, function(err, nids) {
 			if (err) {
 				return callback(err);
@@ -173,9 +173,9 @@ var privileges = require('../privileges');
 					return callback(err);
 				}
 
-				value = value ? value.toString() : '';
+				values = values.map(function() { return values.toString(); });
 				nids = notifications.filter(function(notification) {
-					return notification && notification[field] && notification[field].toString() === value;
+					return notification && notification[field] && values.indexOf(notification[field].toString()) !== -1;
 				}).map(function(notification) {
 					return notification.nid;
 				});

@@ -35,6 +35,8 @@ pagination.create = function(currentPage, pageCount, queryObj) {
 
 	queryObj = queryObj || {};
 
+	delete queryObj._;
+
 	var pages = pagesToShow.map(function(page) {
 		queryObj.page = page;
 		return {page: page, active: page === currentPage, qs: qs.stringify(queryObj)};

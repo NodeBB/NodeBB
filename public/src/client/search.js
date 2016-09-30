@@ -1,6 +1,6 @@
 'use strict';
 
-/* globals app, define, utils, socket*/
+/* globals app, define, utils*/
 
 define('forum/search', ['search', 'autocomplete'], function(searchModule, autocomplete) {
 	var	Search = {};
@@ -22,15 +22,10 @@ define('forum/search', ['search', 'autocomplete'], function(searchModule, autoco
 
 		$('#advanced-search').off('submit').on('submit', function(e) {
 			e.preventDefault();
-
-			var input = $('#search-input');
-
-			var searchData = getSearchData();
-			searchData.term = input.val();
-
-			searchModule.query(searchData, function() {
-				input.val('');
+			searchModule.query(getSearchData(), function() {
+				$('#search-input').val('');
 			});
+			return false;
 		});
 
 		handleSavePreferences();
@@ -43,7 +38,7 @@ define('forum/search', ['search', 'autocomplete'], function(searchModule, autoco
 		var searchData = {
 			in: $('#search-in').val()
 		};
-
+		searchData.term = $('#search-input').val();
 		if (searchData.in === 'posts' || searchData.in === 'titlesposts' || searchData.in === 'titles') {
 			searchData.by = form.find('#posted-by-user').val();
 			searchData.categories = form.find('#posted-in-categories').val();
@@ -67,46 +62,50 @@ define('forum/search', ['search', 'autocomplete'], function(searchModule, autoco
 
 	function fillOutForm() {
 		var params = utils.params();
-		var searchData = getSearchPreferences();
-		params = utils.merge(searchData, params);
+		var searchData = searchModule.getSearchPreferences();
+		var formData = utils.merge(searchData, params);
 
-		if (params) {
-			if (params.in) {
-				$('#search-in').val(params.in);
-				updateFormItemVisiblity(params.in);
+		if (formData) {
+			if (params.term) {
+				$('#search-input').val(params.term);
 			}
 
-			if (params.by) {
-				$('#posted-by-user').val(params.by);
+			if (formData.in) {
+				$('#search-in').val(formData.in);
+				updateFormItemVisiblity(formData.in);
+			}
+
+			if (formData.by) {
+				$('#posted-by-user').val(formData.by);
 			}
 
 
-			if (params.categories) {
-				$('#posted-in-categories').val(params.categories);
+			if (formData.categories) {
+				$('#posted-in-categories').val(formData.categories);
 			}
 
-			if (params.searchChildren) {
+			if (formData.searchChildren) {
 				$('#search-children').prop('checked', true);
 			}
 
-			if (params.replies) {
-				$('#reply-count').val(params.replies);
-				$('#reply-count-filter').val(params.repliesFilter);
+			if (formData.replies) {
+				$('#reply-count').val(formData.replies);
+				$('#reply-count-filter').val(formData.repliesFilter);
 			}
 
-			if (params.timeRange) {
-				$('#post-time-range').val(params.timeRange);
-				$('#post-time-filter').val(params.timeFilter);
+			if (formData.timeRange) {
+				$('#post-time-range').val(formData.timeRange);
+				$('#post-time-filter').val(formData.timeFilter);
 			}
 
-			if (params.sortBy) {
-				$('#post-sort-by').val(params.sortBy);
-				$('#post-sort-direction').val(params.sortDirection);
+			if (formData.sortBy) {
+				$('#post-sort-by').val(formData.sortBy);
+				$('#post-sort-direction').val(formData.sortDirection);
 			}
 
-			if (params.showAs) {
-				var isTopic = params.showAs === 'topics';
-				var isPost = params.showAs === 'posts';
+			if (formData.showAs) {
+				var isTopic = formData.showAs === 'topics';
+				var isPost = formData.showAs === 'posts';
 				$('#show-as-topics').prop('checked', isTopic).parent().toggleClass('active', isTopic);
 				$('#show-as-posts').prop('checked', isPost).parent().toggleClass('active', isPost);
 			}
@@ -154,14 +153,6 @@ define('forum/search', ['search', 'autocomplete'], function(searchModule, autoco
 			app.alertSuccess('[[search:search-preferences-cleared]]');
 			return false;
 		});
-	}
-
-	function getSearchPreferences() {
-		try {
-			return JSON.parse(localStorage.getItem('search-preferences'));
-		} catch(e) {
-			return {};
-		}
 	}
 
 	function enableAutoComplete() {

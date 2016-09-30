@@ -44,7 +44,7 @@ $('document').ready(function() {
 		if ($('form .admin .error').length) {
 			ev.preventDefault();
 			$('html, body').animate({'scrollTop': '0px'}, 400);
-			
+
 			return false;
 		} else {
 			$('#submit .fa-spin').removeClass('hide');
@@ -69,6 +69,9 @@ $('document').ready(function() {
 			if (!utils.isPasswordValid(field)) {
 				parent.addClass('error');
 				help.html('Invalid Password.');
+			} else if (field.length < $('[name="admin:password"]').attr('data-minimum-length')) {
+				parent.addClass('error');
+				help.html('Password is too short.');
 			} else {
 				parent.removeClass('error');
 			}

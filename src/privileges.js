@@ -1,6 +1,6 @@
 "use strict";
 
-var privileges = {};
+var privileges = module.exports;
 
 privileges.userPrivilegeList = [
 	'find',
@@ -8,6 +8,9 @@ privileges.userPrivilegeList = [
 	'topics:read',
 	'topics:create',
 	'topics:reply',
+	'posts:edit',
+	'posts:delete',
+	'topics:delete',
 	'upload:post:image',
 	'upload:post:file',
 	'purge',
@@ -20,6 +23,9 @@ privileges.groupPrivilegeList = [
 	'groups:topics:read',
 	'groups:topics:create',
 	'groups:topics:reply',
+	'groups:posts:edit',
+	'groups:posts:delete',
+	'groups:topics:delete',
 	'groups:upload:post:image',
 	'groups:upload:post:file',
 	'groups:purge',
@@ -32,5 +38,3 @@ require('./privileges/categories')(privileges);
 require('./privileges/topics')(privileges);
 require('./privileges/posts')(privileges);
 require('./privileges/users')(privileges);
-
-module.exports = privileges;

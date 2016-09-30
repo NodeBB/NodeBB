@@ -2,6 +2,7 @@
 
 var	async = require('async');
 
+var groups = require('./groups');
 var plugins = require('./plugins');
 var db = require('./database');
 var topics = require('./topics');
@@ -37,7 +38,7 @@ var utils = require('../public/src/utils');
 
 	User.updateLastOnlineTime = function(uid, callback) {
 		callback = callback || function() {};
-		User.getUserFields(uid, ['status', 'lastonline'], function(err, userData) {
+		db.getObjectFields('user:' + uid, ['status', 'lastonline'], function(err, userData) {
 			var now = Date.now();
 			if (err || userData.status === 'offline' || now - parseInt(userData.lastonline, 10) < 300000) {
 				return callback(err);
@@ -91,7 +92,7 @@ var utils = require('../public/src/utils');
 
 	User.getUsers = function(uids, uid, callback) {
 		var fields = ['uid', 'username', 'userslug', 'picture', 'status', 'flags',
-			'banned', 'joindate', 'postcount', 'reputation', 'email:confirmed', 'lastonline'];
+			'banned', 'banned:expire', 'joindate', 'postcount', 'reputation', 'email:confirmed', 'lastonline'];
 
 		async.waterfall([
 			function (next) {
@@ -118,6 +119,8 @@ var utils = require('../public/src/utils');
 						user.joindateISO = utils.toISOString(user.joindate);
 						user.administrator = results.isAdmin[index];
 						user.banned = parseInt(user.banned, 10) === 1;
+						user.banned_until = parseInt(user['banned:expire'], 10) || 0;
+						user.banned_until_readable = user.banned_until ? new Date(user.banned_until).toString() : 'Not Banned';
 						user['email:confirmed'] = parseInt(user['email:confirmed'], 10) === 1;
 						user.lastonlineISO = utils.toISOString(user.lastonline) || user.joindateISO;
 					}
@@ -131,7 +134,7 @@ var utils = require('../public/src/utils');
 	};
 
 	User.getStatus = function(userData) {
-		var isOnline = Date.now() - parseInt(userData.lastonline, 10) < 300000;
+		var isOnline = (Date.now() - parseInt(userData.lastonline, 10)) < 300000;
 		return isOnline ? (userData.status || 'online') : 'offline';
 	};
 
@@ -258,33 +261,19 @@ var utils = require('../public/src/utils');
 		});
 	};
 
-	User.isBanned = function(uid, callback) {
-		async.waterfall([
-			async.apply(User.getUserField, uid, 'banned'),
-			function(banned, next) {
-				banned = parseInt(banned, 10) === 1;
-				if (!banned) {
-					return next(null, banned);
-				} else {
-					// If they are banned, see if the ban has expired
-					db.sortedSetScore('users:banned:expire', uid, function(err, score) {
-						var stillBanned = !score || Date.now() < score;
-
-						if (!stillBanned) {
-							async.parallel([
-								async.apply(db.sortedSetRemove.bind(db), 'users:banned:expire', uid),
-								async.apply(db.sortedSetRemove.bind(db), 'users:banned', uid),
-								async.apply(User.setUserField, uid, 'banned', 0)
-							], function(err) {
-								next(err, false);
-							});
-						} else {
-							next(err, true);
-						}
-					});
-				}
+	User.getAdminsandGlobalMods = function(callback) {
+		async.parallel({
+			admins: async.apply(groups.getMembers, 'administrators', 0, -1),
+			mods: async.apply(groups.getMembers, 'Global Moderators', 0, -1)
+		}, function(err, results) {
+			if (err) {
+				return callback(err);
 			}
-		], callback);
+			var uids = results.admins.concat(results.mods).filter(function(uid, index, array) {
+				return uid && array.indexOf(uid) === index;
+			});
+			User.getUsersData(uids, callback);
+		});
 	};
 
 	User.addInterstitials = function(callback) {

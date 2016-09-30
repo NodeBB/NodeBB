@@ -37,6 +37,7 @@
     "composer.formatting.picture": "Изображение",
     "composer.upload-picture": "Загрузить изображение",
     "composer.upload-file": "Загрузить файл",
+    "composer.zen_mode": "Zen Mode",
     "bootbox.ok": "ОК",
     "bootbox.cancel": "Отмена",
     "bootbox.confirm": "Подтвердить",

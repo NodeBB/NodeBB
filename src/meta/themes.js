@@ -56,6 +56,10 @@ module.exports = function(Meta) {
 					});
 
 				}, function (err, themes) {
+					if (err) {
+						return callback(err);
+					}
+
 					themes = themes.filter(function (theme) {
 						return (theme !== undefined);
 					});
@@ -161,6 +165,4 @@ module.exports = function(Meta) {
 		nconf.set('theme_templates_path', themePath);
 		nconf.set('theme_config', path.join(nconf.get('themes_path'), themeObj.id, 'theme.json'));
 	};
-
-
 };

@@ -89,6 +89,11 @@
     "topics_per_page": "Ibiganiro kuri Buri Paji",
     "posts_per_page": "Ibyashyizweho kuri Buri Paji",
     "notification_sounds": "Hajye humvikana ijwi rikumenyesha ko haje itangazo rishya",
+    "notifications_and_sounds": "Notifications & Sounds",
+    "incoming-message-sound": "Incoming message sound",
+    "outgoing-message-sound": "Outgoing message sound",
+    "notification-sound": "Notification sound",
+    "no-sound": "No sound",
     "browsing": "Gutunganya Uburyo Usoma",
     "open_links_in_new_tab": "Fungurira imirongo ijya hanze mu idirishya rishya",
     "enable_topic_searching": "Emerera Ugushakira mu Kiganiro",
@@ -114,5 +119,9 @@
     "info.ban-history": "Recent Ban History",
     "info.no-ban-history": "This user has never been banned",
     "info.banned-until": "Banned until %1",
-    "info.banned-permanently": "Banned permanently"
+    "info.banned-permanently": "Banned permanently",
+    "info.banned-reason-label": "Reason",
+    "info.banned-no-reason": "No reason given.",
+    "info.username-history": "Username History",
+    "info.email-history": "Email History"
 }

@@ -53,16 +53,16 @@ module.exports = function(Categories) {
 	};
 
 	Categories.getTopicIds = function(set, reverse, start, stop, callback) {
-		if (reverse) {
-			db.getSortedSetRevRange(set, start, stop, callback);
+		if (Array.isArray(set)) {
+			db[reverse ? 'getSortedSetRevIntersect' : 'getSortedSetIntersect']({sets: set, start: start, stop: stop}, callback);
 		} else {
-			db.getSortedSetRange(set, start, stop, callback);
+			db[reverse ? 'getSortedSetRevRange' : 'getSortedSetRange'](set, start, stop, callback);
 		}
 	};
 
 	Categories.getTopicIndex = function(tid, callback) {
 		topics.getTopicField(tid, 'cid', function(err, cid) {
-			if(err) {
+			if (err) {
 				return callback(err);
 			}
 
@@ -88,6 +88,9 @@ module.exports = function(Categories) {
 				} else {
 					db.sortedSetAdd('cid:' + cid + ':tids', postData.timestamp, postData.tid, next);
 				}
+			},
+			function(next){
+				Categories.updateRecentTid(cid, postData.tid, next);
 			},
 			function(next) {
 				db.sortedSetIncrBy('cid:' + cid + ':tids:posts', 1, postData.tid, next);

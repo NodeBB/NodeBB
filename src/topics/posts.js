@@ -128,7 +128,7 @@ module.exports = function(Topics) {
 
 					// Username override for guests, if enabled
 					if (parseInt(meta.config.allowGuestHandles, 10) === 1 && parseInt(postObj.uid, 10) === 0 && postObj.handle) {
-						postObj.user.username = validator.escape(postObj.handle);
+						postObj.user.username = validator.escape(String(postObj.handle));
 					}
 				}
 			});
@@ -141,9 +141,11 @@ module.exports = function(Topics) {
 		var loggedIn = !!parseInt(topicPrivileges.uid, 10);
 		topicData.posts.forEach(function(post) {
 			if (post) {
-				post.display_moderator_tools = topicPrivileges.isAdminOrMod || post.selfPost;
+				post.display_edit_tools = topicPrivileges.isAdminOrMod || (post.selfPost && topicPrivileges['posts:edit']);
+				post.display_delete_tools = topicPrivileges.isAdminOrMod || (post.selfPost && topicPrivileges['posts:delete']);
+				post.display_moderator_tools = post.display_edit_tools || post.display_delete_tools;
 				post.display_move_tools = topicPrivileges.isAdminOrMod && post.index !== 0;
-				post.display_post_menu = topicPrivileges.isAdminOrMod || post.selfPost || ((loggedIn || topicData.postSharing.length) && !post.deleted);
+				post.display_post_menu = topicPrivileges.isAdminOrMod || (post.selfPost && !topicData.locked) || ((loggedIn || topicData.postSharing.length) && !post.deleted);
 				post.ip = topicPrivileges.isAdminOrMod ? post.ip : undefined;
 
 				if (post.deleted && !(topicPrivileges.isAdminOrMod || post.selfPost)) {

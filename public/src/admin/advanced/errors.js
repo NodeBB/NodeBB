@@ -14,6 +14,10 @@ define('admin/advanced/errors', ['Chart'], function(Chart) {
 		bootbox.confirm('Are you sure you wish to clear the 404 error logs?', function(ok) {
 			if (ok) {
 				socket.emit('admin.errors.clear', {}, function(err) {
+					if (err) {
+						return app.alertError(err.message);
+					}
+
 					ajaxify.refresh();
 					app.alertSuccess('"404 Not Found" errors cleared');
 				});

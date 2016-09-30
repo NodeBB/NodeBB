@@ -22,14 +22,13 @@ file.saveFileToLocal = function(filename, folder, tempPath, callback) {
 
 	var uploadPath = path.join(nconf.get('base_dir'), nconf.get('upload_path'), folder, filename);
 
-	winston.verbose('Saving file '+ filename +' to : ' + uploadPath);
+	winston.verbose('Saving file '+ filename + ' to : ' + uploadPath);
 
 	var is = fs.createReadStream(tempPath);
 	var os = fs.createWriteStream(uploadPath);
-
 	is.on('end', function () {
 		callback(null, {
-			url: path.join(nconf.get('upload_url'), folder, filename),
+			url: nconf.get('upload_url') + '/' + folder + '/' + filename,
 			path: uploadPath
 		});
 	});

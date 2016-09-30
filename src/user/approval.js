@@ -11,7 +11,7 @@ var notifications = require('../notifications');
 var groups = require('../groups');
 var translator = require('../../public/src/modules/translator');
 var utils = require('../../public/src/utils');
-
+var plugins = require('../plugins');
 
 module.exports = function(User) {
 
@@ -31,8 +31,10 @@ module.exports = function(User) {
 					ip: userData.ip,
 					hashedPassword: hashedPassword
 				};
-
-				db.setObject('registration:queue:name:' + userData.username, data, next);
+				plugins.fireHook('filter:user.addToApprovalQueue', {data: data, userData: userData}, next);
+			},
+			function(results, next) {
+				db.setObject('registration:queue:name:' + userData.username, results.data, next);
 			},
 			function(next) {
 				db.sortedSetAdd('registration:queue', Date.now(), userData.username, next);
@@ -166,28 +168,52 @@ module.exports = function(User) {
 					// temporary: see http://www.stopforumspam.com/forum/viewtopic.php?id=6392
 					user.ip = user.ip.replace('::ffff:', '');
 
-					request({
-						method: 'get',
-						url: 'http://api.stopforumspam.org/api' +
-								'?ip=' + encodeURIComponent(user.ip) +
-								'&email=' + encodeURIComponent(user.email) +
-								'&username=' + encodeURIComponent(user.username) +
-								'&f=json',
-						json: true
-					}, function (err, response, body) {
-						if (err) {
-							return next(null, user);
-						}
-						if (response.statusCode === 200 && body) {
-							user.spamData = body;
-							user.usernameSpam = body.username ? (body.username.frequency > 0 || body.username.appears > 0) : true;
-							user.emailSpam = body.email ? (body.email.frequency > 0 || body.email.appears > 0) : true;
-							user.ipSpam = body.ip ? (body.ip.frequency > 0 || body.ip.appears > 0) : true;
-						}
+					async.parallel([
+						function(next) {
+							User.getUidsFromSet('ip:' + user.ip + ':uid', 0, -1, function(err, uids) {
+								if (err) {
+									return next(err);
+								}
 
-						next(null, user);
+								User.getUsersFields(uids, ['uid', 'username', 'picture'], function(err, ipMatch) {
+									user.ipMatch = ipMatch;
+									next(err);
+								});
+							});
+						},
+						function(next) {
+							request({
+								method: 'get',
+								url: 'http://api.stopforumspam.org/api' +
+									'?ip=' + encodeURIComponent(user.ip) +
+									'&email=' + encodeURIComponent(user.email) +
+									'&username=' + encodeURIComponent(user.username) +
+									'&f=json',
+								json: true
+							}, function (err, response, body) {
+								if (err) {
+									return next();
+								}
+								if (response.statusCode === 200 && body) {
+									user.spamData = body;
+									user.usernameSpam = body.username ? (body.username.frequency > 0 || body.username.appears > 0) : true;
+									user.emailSpam = body.email ? (body.email.frequency > 0 || body.email.appears > 0) : true;
+									user.ipSpam = body.ip ? (body.ip.frequency > 0 || body.ip.appears > 0) : true;
+								}
+
+								next();
+							});
+						}
+					], function(err) {
+						next(err, user);
 					});
 				}, next);
+			},
+			function(users, next) {
+				plugins.fireHook('filter:user.getRegistrationQueue', {users: users}, next);
+			},
+			function(results, next) {
+				next(null, results.users);
 			}
 		], callback);
 	};

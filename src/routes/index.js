@@ -3,15 +3,12 @@
 var nconf = require('nconf');
 var path = require('path');
 var async = require('async');
-var winston = require('winston');
 var controllers = require('../controllers');
 var plugins = require('../plugins');
 var user = require('../user');
 var express = require('express');
-var validator = require('validator');
 
 var accountRoutes = require('./accounts');
-
 var metaRoutes = require('./meta');
 var apiRoutes = require('./api');
 var adminRoutes = require('./admin');
@@ -33,9 +30,12 @@ function mainRoutes(app, middleware, controllers) {
 	setupPageRoute(app, '/compose', middleware, [], controllers.compose);
 	setupPageRoute(app, '/confirm/:code', middleware, [], controllers.confirmEmail);
 	setupPageRoute(app, '/outgoing', middleware, [], controllers.outgoing);
-	setupPageRoute(app, '/search/:term?', middleware, [], controllers.search.search);
+	setupPageRoute(app, '/search', middleware, [], controllers.search.search);
 	setupPageRoute(app, '/reset/:code?', middleware, [], controllers.reset);
 	setupPageRoute(app, '/tos', middleware, [], controllers.termsOfUse);
+
+	app.get('/ping', controllers.ping);
+	app.get('/sping', controllers.ping);
 }
 
 function globalModRoutes(app, middleware, controllers) {
@@ -70,16 +70,11 @@ function categoryRoutes(app, middleware, controllers) {
 function userRoutes(app, middleware, controllers) {
 	var middlewares = [middleware.checkGlobalPrivacySettings];
 
-	setupPageRoute(app, '/users', middleware, middlewares, controllers.users.getUsersSortedByJoinDate);
-	setupPageRoute(app, '/users/online', middleware, middlewares, controllers.users.getOnlineUsers);
-	setupPageRoute(app, '/users/sort-posts', middleware, middlewares, controllers.users.getUsersSortedByPosts);
-	setupPageRoute(app, '/users/sort-reputation', middleware, middlewares, controllers.users.getUsersSortedByReputation);
-	setupPageRoute(app, '/users/banned', middleware, middlewares, controllers.users.getBannedUsers);
-	setupPageRoute(app, '/users/flagged', middleware, middlewares, controllers.users.getFlaggedUsers);
+	setupPageRoute(app, '/users', middleware, middlewares, controllers.users.index);
 }
 
 function groupRoutes(app, middleware, controllers) {
-	var middlewares = [middleware.checkGlobalPrivacySettings, middleware.exposeGroupName];
+	var middlewares = [middleware.checkGlobalPrivacySettings];
 
 	setupPageRoute(app, '/groups', middleware, middlewares, controllers.groups.list);
 	setupPageRoute(app, '/groups/:slug', middleware, middlewares, controllers.groups.details);
@@ -88,15 +83,15 @@ function groupRoutes(app, middleware, controllers) {
 
 module.exports = function(app, middleware, hotswapIds) {
 	var routers = [
-			express.Router(),	// plugin router
-			express.Router(),	// main app router
-			express.Router()	// auth router
-		],
-		router = routers[1],
-		pluginRouter = routers[0],
-		authRouter = routers[2],
-		relativePath = nconf.get('relative_path'),
-		ensureLoggedIn = require('connect-ensure-login');
+		express.Router(),	// plugin router
+		express.Router(),	// main app router
+		express.Router()	// auth router
+	];
+	var router = routers[1];
+	var pluginRouter = routers[0];
+	var authRouter = routers[2];
+	var relativePath = nconf.get('relative_path');
+	var ensureLoggedIn = require('connect-ensure-login');
 
 	if (Array.isArray(hotswapIds) && hotswapIds.length) {
 		for(var idx,x=0;x<hotswapIds.length;x++) {
@@ -147,12 +142,13 @@ module.exports = function(app, middleware, hotswapIds) {
 	}
 
 	app.use(middleware.privateUploads);
-	app.use('/language/:code', middleware.processLanguages);
+	app.use(relativePath + '/language/:code', middleware.processLanguages);
 	app.use(relativePath, express.static(path.join(__dirname, '../../', 'public'), {
 		maxAge: app.enabled('cache') ? 5184000000 : 0
 	}));
 	app.use('/vendor/jquery/timeago/locales', middleware.processTimeagoLocales);
 	app.use(controllers.handle404);
+	app.use(controllers.handleURIErrors);
 	app.use(controllers.handleErrors);
 
 	// Add plugin routes

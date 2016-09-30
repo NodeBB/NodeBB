@@ -11,11 +11,11 @@
     "online-only": "Samo dosegljivi",
     "invite": "Povabi",
     "invitation-email-sent": "Povabilo je bilo poslano na e-mail naslov %1",
-    "user_list": "Lista uporabnikov",
+    "user_list": "Sezam uporabnikov",
     "recent_topics": "Zadnje teme",
     "popular_topics": "Popularne teme",
     "unread_topics": "Neprebrane teme",
     "categories": "Kategorije",
     "tags": "Oznake",
-    "no-users-found": "No users found!"
+    "no-users-found": "Ni mogoče najti uporabnikov"
 }

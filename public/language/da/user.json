@@ -89,6 +89,11 @@
     "topics_per_page": "Emner per side",
     "posts_per_page": "Indlæg per side",
     "notification_sounds": "Afspil en lyd når du modtager en notifikation",
+    "notifications_and_sounds": "Notifications & Sounds",
+    "incoming-message-sound": "Incoming message sound",
+    "outgoing-message-sound": "Outgoing message sound",
+    "notification-sound": "Notification sound",
+    "no-sound": "No sound",
     "browsing": "Gennemsenings indstillinger",
     "open_links_in_new_tab": "Åben udgående link i en ny tab",
     "enable_topic_searching": "Slå In-Topic søgning til",
@@ -114,5 +119,9 @@
     "info.ban-history": "Recent Ban History",
     "info.no-ban-history": "This user has never been banned",
     "info.banned-until": "Banned until %1",
-    "info.banned-permanently": "Banned permanently"
+    "info.banned-permanently": "Banned permanently",
+    "info.banned-reason-label": "Reason",
+    "info.banned-no-reason": "No reason given.",
+    "info.username-history": "Username History",
+    "info.email-history": "Email History"
 }

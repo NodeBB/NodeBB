@@ -13,7 +13,7 @@ var helpers =  require('./helpers');
 var tagsController = {};
 
 tagsController.getTag = function(req, res, next) {
-	var tag = validator.escape(req.params.tag);
+	var tag = validator.escape(String(req.params.tag));
 	var page = parseInt(req.query.page, 10) || 1;
 
 	var templateData = {
@@ -44,7 +44,6 @@ tagsController.getTag = function(req, res, next) {
 		},
 		function (results, next) {
 			if (Array.isArray(results.tids) && !results.tids.length) {
-				topics.deleteTag(req.params.tag);
 				return res.render('tag', templateData);
 			}
 			topicCount = results.topicCount;
@@ -83,9 +82,7 @@ tagsController.getTags = function(req, res, next) {
 		if (err) {
 			return next(err);
 		}
-		tags = tags.filter(function(tag) {
-			return tag && tag.score > 0;
-		});
+		tags = tags.filter(Boolean);
 		var data = {
 			tags: tags,
 			nextStart: 100,

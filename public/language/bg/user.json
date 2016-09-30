@@ -89,6 +89,11 @@
     "topics_per_page": "Теми на страница",
     "posts_per_page": "Публикации на страница",
     "notification_sounds": "Изпълняване на звук, когато получите известие",
+    "notifications_and_sounds": "Известия и звуци",
+    "incoming-message-sound": "Звук за входящо съобщение",
+    "outgoing-message-sound": "Звук за изходящо съобщение",
+    "notification-sound": "Звук за известие",
+    "no-sound": "Без звук",
     "browsing": "Настройки за страниците",
     "open_links_in_new_tab": "Отваряне на външните връзки в нов подпрозорец",
     "enable_topic_searching": "Включване на търсенето в темите",
@@ -114,5 +119,9 @@
     "info.ban-history": "Скорошна история на блокиранията",
     "info.no-ban-history": "Този потребител никога не е бил блокиран",
     "info.banned-until": "Блокиран до %1",
-    "info.banned-permanently": "Блокиран за постоянно"
+    "info.banned-permanently": "Блокиран за постоянно",
+    "info.banned-reason-label": "Причина",
+    "info.banned-no-reason": "Няма посочена причина.",
+    "info.username-history": "История на потребителските имена",
+    "info.email-history": "Историята на е-пощите"
 }

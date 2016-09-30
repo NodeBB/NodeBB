@@ -162,6 +162,14 @@ describe('Groups', function() {
 				Groups.get('foo', {}, done);
 			});
 		});
+
+		it('should fail to create group with duplicate group name', function(done) {
+			Groups.create({name: 'foo'}, function(err) {
+				assert(err);
+				assert.equal(err.message, '[[error:group-already-exists]]');
+				done();
+			});
+		});
 	});
 
 	describe('.hide()', function() {
@@ -262,6 +270,7 @@ describe('Groups', function() {
 				if (err) return done(err);
 
 				Groups.isMember(1, 'Test', function(err, isMember) {
+					assert.equal(err, null);
 					assert.strictEqual(true, isMember);
 
 					done();
@@ -276,6 +285,7 @@ describe('Groups', function() {
 				if (err) return done(err);
 
 				Groups.isMember(1, 'Test', function(err, isMember) {
+					assert.equal(err, null);
 					assert.strictEqual(false, isMember);
 
 					done();
@@ -334,7 +344,7 @@ describe('Groups', function() {
 		});
 	});
 
-	after(function() {
-		db.flushdb();
+	after(function(done) {
+		db.flushdb(done);
 	});
 });

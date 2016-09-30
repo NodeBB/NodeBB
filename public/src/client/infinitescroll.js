@@ -1,8 +1,8 @@
 'use strict';
 
-/* globals define, socket, ajaxify, templates, app */
+/* globals define, socket, app */
 
-define('forum/infinitescroll', ['translator'], function(translator) {
+define('forum/infinitescroll', function() {
 
 	var scroll = {};
 	var callback;
@@ -13,10 +13,10 @@ define('forum/infinitescroll', ['translator'], function(translator) {
 	scroll.init = function(el, cb) {
 		if (typeof el === 'function') {
 			callback = el;
-			container = $(document);
+			container = $('body');
 		} else {
 			callback = cb;
-			container = el || $(document);
+			container = el || $('body');
 		}
 
 		$(window).off('scroll', onScroll).on('scroll', onScroll);
@@ -52,7 +52,11 @@ define('forum/infinitescroll', ['translator'], function(translator) {
 			return;
 		}
 		loadingMore = true;
-		socket.emit(method, data, function(err, data) {
+
+		var hookData = {method: method, data: data};
+		$(window).trigger('action:infinitescroll.loadmore', hookData);
+
+		socket.emit(hookData.method, hookData.data, function(err, data) {
 			if (err) {
 				loadingMore = false;
 				return app.alertError(err.message);

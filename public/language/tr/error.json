@@ -20,6 +20,7 @@
     "email-taken": "E-posta Alınmış",
     "email-not-confirmed": "E-postanız onaylanmamış, onaylamak için lütfen buraya tıklayın.",
     "email-not-confirmed-chat": "E-postanız onaylanana kadar sohbet edemezsiniz, onaylamak için lütfen buraya tıklayın.",
+    "email-not-confirmed-email-sent": "E-postanız onaylanmamış, onaylamak için lütfen gelen kutunuzu kontrol edin.",
     "no-email-to-confirm": "Bu forum e-posta doğrulaması gerektirir, lütfen buraya bir e-posta adresi girin",
     "email-confirm-failed": "E-posta adresinizi doğrulayamıyoruz. Lütfen daha sonra tekrar deneyin.",
     "confirm-email-already-sent": "E-mail onayı zaten gönderilmiş, yeni bir onay göndermek için lütfen 1 dakika bekleyin.",
@@ -28,6 +29,7 @@
     "username-too-long": "Kullanıcı ismi çok uzun.",
     "password-too-long": "Parola çok uzun",
     "user-banned": "Kullanıcı Yasaklı",
+    "user-banned-reason": "Kullanıcı yasaklandı (Sebep: %1)",
     "user-too-new": "Özür dileriz, ilk iletinizi yapmadan önce %1 saniye beklemeniz gerekiyor",
     "blacklisted-ip": "Üzgünüz, IP adresiniz, bu toplulukta yasaklandı. Bunun bir hata olduğunu düşünüyorsanız, bir yönetici ile irtibata geçiniz.",
     "ban-expiry-missing": "Bu yasak için bir bitiş tarihi girin",
@@ -54,6 +56,8 @@
     "post-delete-duration-expired-hours-minutes": "Gönderildikten %1 saat(s) %2 dakika(s) sonra iletini silmene izin verilir.",
     "post-delete-duration-expired-days": "Gönderildikten %1 gün(s) sonra iletini silmene izin verilir.",
     "post-delete-duration-expired-days-hours": "Gönderildikten  %1 gün(s) %2 saat(s) sonra iletini silmene izin verilir.",
+    "cant-delete-topic-has-reply": "Bir ileti varken başlığı silemezsiniz",
+    "cant-delete-topic-has-replies": "Başlığına %1 ileti girildikten sonra silemezsin",
     "content-too-short": "Lütfen daha uzun bir ileti girin. En az %1 karakter.",
     "content-too-long": "Lütfen daha kısa bir ileti girin. İletiler %1 karakterden uzun olamaz.",
     "title-too-short": "Lütfen daha uzun bir başlık girin. Başlıklar en az %1 karakter içermelidir.",
@@ -120,5 +124,7 @@
     "no-users-in-room": "Bu odada kullanıcı yok",
     "cant-kick-self": "Kendinizi gruptan atamazsınız.",
     "no-users-selected": "Seçili kullanıcı(s) bulunamadı",
-    "invalid-home-page-route": "Geçersiz anasayfa yolu"
+    "invalid-home-page-route": "Geçersiz anasayfa yolu",
+    "invalid-session": "Oturum Uyuşmazlığı",
+    "invalid-session-text": "It looks like your login session is no longer active, or no longer matches with the server. Please refresh this page."
 }

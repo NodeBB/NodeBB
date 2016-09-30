@@ -22,6 +22,9 @@ module.exports = function(Topics) {
 
 		async.waterfall([
 			function(next) {
+				Topics.resizeAndUploadThumb(data, next);
+			},
+			function(next) {
 				db.incrObjectField('global', 'nextTid', next);
 			},
 			function(tid, next) {
@@ -45,7 +48,7 @@ module.exports = function(Topics) {
 					topicData.thumb = data.thumb;
 				}
 
-				plugins.fireHook('filter:topic.create', {topic: topicData}, next);
+				plugins.fireHook('filter:topic.create', {topic: topicData, data: data}, next);
 			},
 			function(data, next) {
 				topicData = data.topic;
@@ -59,6 +62,9 @@ module.exports = function(Topics) {
 							'cid:' + topicData.cid + ':tids',
 							'cid:' + topicData.cid + ':uid:' + topicData.uid + ':tids'
 						], timestamp, topicData.tid, next);
+					},
+					function(next) {
+						categories.updateRecentTid(topicData.cid, topicData.tid, next);
 					},
 					function(next) {
 						user.addTopicIdToUser(topicData.uid, topicData.tid, timestamp, next);
@@ -122,10 +128,13 @@ module.exports = function(Topics) {
 			},
 			function(filteredData, next) {
 				data = filteredData;
-				Topics.create({uid: data.uid, title: data.title, cid: data.cid, thumb: data.thumb, tags: data.tags, timestamp: data.timestamp}, next);
+				Topics.create(data, next);
 			},
 			function(tid, next) {
-				posts.create({uid: data.uid, tid: tid, handle: data.handle, content: data.content, timestamp: data.timestamp, ip: data.req ? data.req.ip : null}, next);
+				var postData = data;
+				postData.tid = tid;
+				postData.ip = data.req ? data.req.ip : null;
+				posts.create(postData, next);
 			},
 			function(postData, next) {
 				onNewPost(postData, data, next);
@@ -191,25 +200,28 @@ module.exports = function(Topics) {
 			function(_cid, next) {
 				cid = _cid;
 				async.parallel({
-					exists: async.apply(Topics.exists, tid),
-					locked: async.apply(Topics.isLocked, tid),
+					topicData: async.apply(Topics.getTopicData, tid),
 					canReply: async.apply(privileges.topics.can, 'topics:reply', tid, uid),
-					isAdmin: async.apply(user.isAdministrator, uid),
-					isModerator: async.apply(user.isModerator, uid, cid)
+					isAdminOrMod: async.apply(privileges.categories.isAdminOrMod, cid, uid),
 				}, next);
 			},
 			function(results, next) {
-				if (!results.exists) {
+				if (!results.topicData) {
 					return next(new Error('[[error:no-topic]]'));
 				}
 
-				if (results.locked && !results.isAdmin && !results.isModerator) {
+				if (parseInt(results.topicData.locked, 10) === 1 && !results.isAdminOrMod) {
 					return next(new Error('[[error:topic-locked]]'));
+				}
+
+				if (parseInt(results.topicData.deleted, 10) === 1 && !results.isAdminOrMod) {
+					return next(new Error('[[error:topic-deleted]]'));
 				}
 
 				if (!results.canReply) {
 					return next(new Error('[[error:no-privileges]]'));
 				}
+
 				guestHandleValid(data, next);
 			},
 			function(next) {
@@ -227,7 +239,15 @@ module.exports = function(Topics) {
 				check(content, meta.config.minimumPostLength, meta.config.maximumPostLength, 'content-too-short', 'content-too-long', next);
 			},
 			function(next) {
-				posts.create({uid: uid, tid: tid, handle: data.handle, content: content, toPid: data.toPid, timestamp: data.timestamp, ip: data.req ? data.req.ip : null}, next);
+				posts.create({
+					uid: uid,
+					tid: tid,
+					handle: data.handle,
+					content: content,
+					toPid: data.toPid,
+					timestamp: data.timestamp,
+					ip: data.req ? data.req.ip : null
+				}, next);
 			},
 			function(_postData, next) {
 				postData = _postData;
@@ -287,16 +307,18 @@ module.exports = function(Topics) {
 
 				// Username override for guests, if enabled
 				if (parseInt(meta.config.allowGuestHandles, 10) === 1 && parseInt(postData.uid, 10) === 0 && data.handle) {
-					postData.user.username = validator.escape(data.handle);
+					postData.user.username = validator.escape(String(data.handle));
 				}
 
 				postData.favourited = false;
 				postData.votes = 0;
+				postData.display_edit_tools = true;
+				postData.display_delete_tools = true;
 				postData.display_moderator_tools = true;
 				postData.display_move_tools = true;
 				postData.selfPost = false;
 				postData.timestampISO = utils.toISOString(postData.timestamp);
-				postData.topic.title = validator.escape(postData.topic.title);
+				postData.topic.title = validator.escape(String(postData.topic.title));
 
 				next(null, postData);
 			}

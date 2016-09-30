@@ -89,6 +89,11 @@
     "topics_per_page": "Sayfa başına Konular",
     "posts_per_page": "Sayfa başına İletiler",
     "notification_sounds": "Uyarı alındığında ses çal",
+    "notifications_and_sounds": "Bildiriler & Sesler",
+    "incoming-message-sound": "Gelen mesaj sesi",
+    "outgoing-message-sound": "Giden ileti sesi",
+    "notification-sound": "Bildiri sesi",
+    "no-sound": "Ses yok",
     "browsing": "Tarayıcı Ayaları",
     "open_links_in_new_tab": "Dışarı giden bağlantıları yeni sekmede aç",
     "enable_topic_searching": "Konu içi aramayı aktive et",
@@ -114,5 +119,9 @@
     "info.ban-history": "Yasaklama Olayları",
     "info.no-ban-history": "Bu kullanıcı hiç yasaklanmadı",
     "info.banned-until": "Yasaklama süresi %1",
-    "info.banned-permanently": "Kalıcı yasakla"
+    "info.banned-permanently": "Kalıcı yasakla",
+    "info.banned-reason-label": "Gerekçe",
+    "info.banned-no-reason": "Gerekçe belirtilmedi.",
+    "info.username-history": "Kullanıcı Adı Geçmişi",
+    "info.email-history": "Email Geçmişi"
 }

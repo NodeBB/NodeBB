@@ -53,13 +53,9 @@ SocketModules.chats.newRoom = function(socket, data, callback) {
 	if (!data) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
-	var now = Date.now();
-	// Websocket rate limiting
-	socket.lastChatMessageTime = socket.lastChatMessageTime || 0;
-	if (now - socket.lastChatMessageTime < 200) {
+
+	if (rateLimitExceeded(socket)) {
 		return callback(new Error('[[error:too-many-messages]]'));
-	} else {
-		socket.lastChatMessageTime = now;
 	}
 
 	Messaging.canMessageUser(socket.uid, data.touid, function(err) {
@@ -76,14 +72,8 @@ SocketModules.chats.send = function(socket, data, callback) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
 
-	var now = Date.now();
-
-	// Websocket rate limiting
-	socket.lastChatMessageTime = socket.lastChatMessageTime || 0;
-	if (now - socket.lastChatMessageTime < 200) {
+	if (rateLimitExceeded(socket)) {
 		return callback(new Error('[[error:too-many-messages]]'));
-	} else {
-		socket.lastChatMessageTime = now;
 	}
 
 	async.waterfall([
@@ -100,7 +90,7 @@ SocketModules.chats.send = function(socket, data, callback) {
 			Messaging.canMessageRoom(socket.uid, data.roomId, next);
 		},
 		function (next) {
-			Messaging.sendMessage(socket.uid, data.roomId, data.message, now, next);
+			Messaging.sendMessage(socket.uid, data.roomId, data.message, Date.now(), next);
 		},
 		function (message, next) {
 			Messaging.notifyUsersInRoom(socket.uid, data.roomId, message);
@@ -109,6 +99,18 @@ SocketModules.chats.send = function(socket, data, callback) {
 		}
 	], callback);
 };
+
+function rateLimitExceeded(socket) {
+	var now = Date.now();
+	socket.lastChatMessageTime = socket.lastChatMessageTime || 0;
+	var delay = meta.config.hasOwnProperty('chatMessageDelay') ? parseInt(meta.config.chatMessageDelay, 10) : 200;
+	if (now - socket.lastChatMessageTime < delay) {
+		return true;
+	} else {
+		socket.lastChatMessageTime = now;
+	}
+	return false;
+}
 
 SocketModules.chats.loadRoom = function(socket, data, callback) {
 	if (!data || !data.roomId) {
@@ -131,6 +133,7 @@ SocketModules.chats.loadRoom = function(socket, data, callback) {
 		},
 		function (results, next) {
 			results.roomData.users = results.users;
+			results.roomData.groupChat = results.roomData.hasOwnProperty('groupChat') ? results.roomData.groupChat : results.users.length > 2;
 			results.roomData.isOwner = parseInt(results.roomData.owner, 10) === socket.uid;
 			results.roomData.maximumUsersInChatRoom = parseInt(meta.config.maximumUsersInChatRoom, 10) || 0;
 			results.roomData.showUserInput = !results.roomData.maximumUsersInChatRoom || results.roomData.maximumUsersInChatRoom > 2;
@@ -280,7 +283,7 @@ SocketModules.chats.renameRoom = function(socket, data, callback) {
 			Messaging.getUidsInRoom(data.roomId, 0, -1, next);
 		},
 		function (uids, next) {
-			var eventData = {roomId: data.roomId, newName: validator.escape(data.newName)};
+			var eventData = {roomId: data.roomId, newName: validator.escape(String(data.newName))};
 			uids.forEach(function(uid) {
 				server.in('uid_' + uid).emit('event:chats.roomRename', eventData);
 			});
@@ -293,10 +296,18 @@ SocketModules.chats.getRecentChats = function(socket, data, callback) {
 	if (!data || !utils.isNumber(data.after)) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
-	var start = parseInt(data.after, 10),
-		stop = start + 9;
+	var start = parseInt(data.after, 10);
+	var stop = start + 9;
+	if (socket.uid === parseInt(data.uid, 10)) {
+		return Messaging.getRecentChats(socket.uid, start, stop, callback);
+	}
 
-	Messaging.getRecentChats(socket.uid, start, stop, callback);
+	user.isAdminOrGlobalMod(socket.uid, function(err, isAdminOrGlobalMod) {
+		if (err || !isAdminOrGlobalMod) {
+			return callback(err || new Error('[[error:no-privileges]]'));
+		}
+		Messaging.getRecentChats(data.uid, start, stop, callback);
+	});
 };
 
 SocketModules.chats.hasPrivateChat = function(socket, uid, callback) {
@@ -306,6 +317,28 @@ SocketModules.chats.hasPrivateChat = function(socket, uid, callback) {
 	Messaging.hasPrivateChat(socket.uid, uid, callback);
 };
 
+SocketModules.chats.getMessages = function(socket, data, callback) {
+	if (!socket.uid || !data.uid || !data.roomId) {
+		return callback(new Error('[[error:invalid-data]]'));
+	}
+	var params = {
+		uid: data.uid,
+		roomId: data.roomId,
+		start: parseInt(data.start, 10) + 1,
+		count: 50,
+		markRead: false
+	};
+	if (socket.uid === parseInt(data.uid, 10)) {
+		return Messaging.getMessages(params, callback);
+	}
+	user.isAdminOrGlobalMod(socket.uid, function(err, isAdminOrGlobalMod) {
+		if (err || !isAdminOrGlobalMod) {
+			return callback(err || new Error('[[error:no-privileges]]'));
+		}
+		Messaging.getMessages(params, callback);
+	});
+};
+
 /* Sounds */
 SocketModules.sounds.getSounds = function(socket, data, callback) {
 	// Read sounds from local directory
@@ -313,12 +346,12 @@ SocketModules.sounds.getSounds = function(socket, data, callback) {
 };
 
 SocketModules.sounds.getMapping = function(socket, data, callback) {
-	meta.sounds.getMapping(callback);
+	meta.sounds.getMapping(socket.uid, callback);
 };
 
 SocketModules.sounds.getData = function(socket, data, callback) {
 	async.parallel({
-		mapping: async.apply(meta.sounds.getMapping),
+		mapping: async.apply(meta.sounds.getMapping, socket.uid),
 		files: async.apply(meta.sounds.getFiles)
 	}, callback);
 };

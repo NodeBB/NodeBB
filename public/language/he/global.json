@@ -9,6 +9,8 @@
     "404.message": "נראה שהגעת לעמוד שלא קיים. חזור <a href=\"%1/\">לעמוד הבית</a>",
     "500.title": "שגיאה פנימית.",
     "500.message": "אופס! נראה שמשהו השתבש!",
+    "400.title": "בקשה שגויה",
+    "400.message": "It looks like this link is malformed, please double-check and try again. Otherwise, return to the <a href='%1/'>home page</a>.",
     "register": "הרשמה",
     "login": "התחברות",
     "please_log_in": "אנא התחבר",
@@ -92,5 +94,8 @@
     "enter_page_number": "הכנס מספר עמוד",
     "upload_file": "העלה קובץ",
     "upload": "העלה",
-    "allowed-file-types": "פורמטי הקבצים המורשים הם %1"
+    "allowed-file-types": "פורמטי הקבצים המורשים הם %1",
+    "unsaved-changes": "יש לך שינויים שאינם נשמרו. האם הנך בטוח שברצונך להמשיך?",
+    "reconnecting-message": "נראה שההתחברות שלך אל %1 אבדה, אנא המתן בזמן שהמערכת מנסה לחבר אותך מחדש",
+    "play": "Play"
 }

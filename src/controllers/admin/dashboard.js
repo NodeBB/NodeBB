@@ -19,8 +19,8 @@ dashboardController.get = function(req, res, next) {
 			var notices = [
 				{
 					done: !meta.reloadRequired,
-					doneText: 'Reload not required',
-					notDoneText:'Reload required'
+					doneText: 'Restart not required',
+					notDoneText:'Restart required'
 				},
 				{
 					done: plugins.hasListeners('filter:search.query'),

@@ -28,6 +28,12 @@ app.isConnected = false;
 		setTimeout(socket.connect.bind(socket), parseInt(config.reconnectionDelay, 10) * 10);
 	});
 
+	socket.on('checkSession', function(uid) {
+		if (parseInt(uid, 10) !== parseInt(app.user.uid, 10)) {
+			app.handleInvalidSession();
+		}
+	});
+
 	socket.on('event:banned', onEventBanned);
 
 	socket.on('event:alert', app.alert);
@@ -42,9 +48,11 @@ app.isConnected = false;
 
 		if (reconnecting) {
 			var reconnectEl = $('#reconnect');
+			var reconnectAlert = $('#reconnect-alert');
 
 			reconnectEl.tooltip('destroy');
 			reconnectEl.html('<i class="fa fa-check"></i>');
+			reconnectAlert.fadeOut(500);
 			reconnecting = false;
 
 			reJoinCurrentRoom();
@@ -96,12 +104,14 @@ app.isConnected = false;
 	function onReconnecting() {
 		reconnecting = true;
 		var reconnectEl = $('#reconnect');
+		var reconnectAlert = $('#reconnect-alert');
 
 		if (!reconnectEl.hasClass('active')) {
 			reconnectEl.html('<i class="fa fa-spinner fa-spin"></i>');
+			reconnectAlert.fadeIn(500).removeClass('hide');
 		}
 
-		reconnectEl.addClass('active').removeClass("hide").tooltip({
+		reconnectEl.addClass('active').removeClass('hide').tooltip({
 			placement: 'bottom'
 		});
 	}

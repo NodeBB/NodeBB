@@ -30,6 +30,7 @@
 							<li><a href="#" class="reset-flags"><i class="fa fa-fw fa-flag"></i> Reset Flags</a></li>
 							<li class="divider"></li>
 							<li><a href="#" class="delete-user"><i class="fa fa-fw fa-trash-o"></i> Delete User(s)</a></li>
+							<li><a href="#" class="delete-user-and-content"><i class="fa fa-fw fa-trash-o"></i> Delete User(s) and Content</a></li>
 						</ul>
 					</div>
 				</ul>
@@ -61,9 +62,9 @@
 					<div class="users-box" data-uid="{users.uid}" data-username="{users.username}">
 						<div class="user-image">
 							<!-- IF users.picture -->
-							<img src="{users.picture}" class="img-thumbnail user-selectable"/>
+							<img src="{users.picture}" class="img-thumbnail"/>
 							<!-- ELSE -->
-							<div class="user-icon user-selectable" style="background-color: {users.icon:bgColor};">{users.icon:text}</div>
+							<div class="user-icon" style="background-color: {users.icon:bgColor};">{users.icon:text}</div>
 							<!-- ENDIF users.picture -->
 							<div class="labels">
 								<!-- IF config.requireEmailConfirmation -->
@@ -78,7 +79,7 @@
 
 						<a href="{config.relative_path}/user/{users.userslug}" target="_blank">{users.username} ({users.uid})</a><br/>
 						<!-- IF users.email -->
-						<small><span title="{users.email}">{users.email}</span></small>
+						<small><span title="{users.email}">{users.email}</span></small><br/>
 						<!-- ENDIF users.email -->
 
 						joined <span class="timeago" title="{users.joindateISO}"></span><br/>
@@ -93,46 +94,6 @@
 				</ul>
 
 				<!-- IMPORT partials/paginator.tpl -->
-
-				<div class="modal fade" id="create-modal">
-					<div class="modal-dialog">
-						<div class="modal-content">
-							<div class="modal-header">
-								<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-								<h4 class="modal-title">Create User</h4>
-							</div>
-							<div class="modal-body">
-								<div class="alert alert-danger hide" id="create-modal-error"></div>
-								<form>
-									<div class="form-group">
-										<label for="group-name">User Name</label>
-										<input type="text" class="form-control" id="create-user-name" placeholder="User Name" />
-									</div>
-									<div class="form-group">
-										<label for="group-name">Email</label>
-										<input type="text" class="form-control" id="create-user-email" placeholder="Email of this user" />
-									</div>
-
-									<div class="form-group">
-										<label for="group-name">Password</label>
-										<input type="password" class="form-control" id="create-user-password" placeholder="Password" />
-									</div>
-
-									<div class="form-group">
-										<label for="group-name">Password Confirm</label>
-										<input type="password" class="form-control" id="create-user-password-again" placeholder="Password" />
-									</div>
-
-								</form>
-							</div>
-							<div class="modal-footer">
-								<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-								<button type="button" class="btn btn-primary" id="create-modal-go">Create</button>
-							</div>
-						</div>
-					</div>
-				</div>
-
 			</div>
 		</div>
 	</div>

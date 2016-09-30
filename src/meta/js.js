@@ -17,15 +17,16 @@ module.exports = function(Meta) {
 		target: {},
 		scripts: {
 			base: [
-				'public/vendor/jquery/js/jquery.js',
+				'./node_modules/jquery/dist/jquery.js',
 				'./node_modules/socket.io-client/socket.io.js',
 				'public/vendor/jquery/timeago/jquery.timeago.js',
 				'public/vendor/jquery/js/jquery.form.min.js',
 				'public/vendor/visibility/visibility.min.js',
-				'public/vendor/bootstrap/js/bootstrap.min.js',
+				'public/vendor/bootstrap/js/bootstrap.js',
 				'public/vendor/jquery/bootstrap-tagsinput/bootstrap-tagsinput.min.js',
 				'public/vendor/jquery/textcomplete/jquery.textcomplete.js',
 				'public/vendor/requirejs/require.js',
+				'public/src/require-config.js',
 				'public/vendor/bootbox/bootbox.min.js',
 				'public/vendor/tinycon/tinycon.js',
 				'public/vendor/xregexp/xregexp.js',
@@ -36,8 +37,8 @@ module.exports = function(Meta) {
 				'public/src/app.js',
 				'public/src/ajaxify.js',
 				'public/src/overrides.js',
-				'public/src/variables.js',
-				'public/src/widgets.js'
+				'public/src/widgets.js',
+				"./node_modules/promise-polyfill/promise.js"
 			],
 
 			// files listed below are only available client-side, or are bundled in to reduce # of network requests on cold load
@@ -79,8 +80,8 @@ module.exports = function(Meta) {
 			// modules listed below are routed through express (/src/modules) so they can be defined anonymously
 			modules: {
 				"Chart.js": './node_modules/chart.js/dist/Chart.min.js',
-				"mousetrap.js": './node_modules/mousetrap/mousetrap.js',
-
+				"mousetrap.js": './node_modules/mousetrap/mousetrap.min.js',
+				"jqueryui.js": 'public/vendor/jquery/js/jquery-ui.js',
 				"buzz.js": 'public/vendor/buzz/buzz.js'
 			}
 		}
@@ -267,6 +268,10 @@ module.exports = function(Meta) {
 				}
 
 				async.map(paths, fs.readFile, function(err, files) {
+					if (err) {
+						return callback(err);
+					}
+
 					Meta.js.target[target] = {
 						cache: files[0],
 						map: files[1] || ''

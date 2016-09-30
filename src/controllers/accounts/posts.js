@@ -1,15 +1,15 @@
 'use strict';
 
 
-var async = require('async'),
+var async = require('async');
 
-	db = require('../../database'),
-	user = require('../../user'),
-	posts = require('../../posts'),
-	topics = require('../../topics'),
-	pagination = require('../../pagination'),
-	helpers = require('../helpers'),
-	accountHelpers = require('./helpers');
+var db = require('../../database');
+var user = require('../../user');
+var posts = require('../../posts');
+var topics = require('../../topics');
+var pagination = require('../../pagination');
+var helpers = require('../helpers');
+var accountHelpers = require('./helpers');
 
 var postsController = {};
 
@@ -103,7 +103,7 @@ function getFromUserSet(data, req, res, next) {
 			user.getSettings(req.uid, next);
 		},
 		userData: function(next) {
-			accountHelpers.getBaseUser(req.params.userslug, req.uid, next);
+			accountHelpers.getUserDataByUserSlug(req.params.userslug, req.uid, next);
 		}
 	}, function(err, results) {
 		if (err || !results.userData) {

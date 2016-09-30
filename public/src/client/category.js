@@ -91,6 +91,10 @@ define('forum/category', [
 
 	Category.toBottom = function() {
 		socket.emit('categories.getTopicCount', ajaxify.data.cid, function(err, count) {
+			if (err) {
+				return app.alertError(err.message);
+			}
+
 			navigator.scrollBottom(count - 1);
 		});
 	};
@@ -269,11 +273,14 @@ define('forum/category', [
 		}
 
 		$(window).trigger('action:categories.loading');
+		var params = utils.params();
 		infinitescroll.loadMore('categories.loadMore', {
 			cid: ajaxify.data.cid,
 			after: after,
 			direction: direction,
-			author: utils.params().author
+			author: params.author,
+			tag: params.tag,
+			categoryTopicSort: config.categoryTopicSort
 		}, function (data, done) {
 			if (data.topics && data.topics.length) {
 				Category.onTopicsLoaded(data, direction, done);

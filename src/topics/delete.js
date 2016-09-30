@@ -32,7 +32,7 @@ module.exports = function(Topics) {
 						db.sortedSetRemove('cid:' + topicData.cid + ':pids', pids, next);
 					});
 				}
-			], function(err, results) {
+			], function(err) {
 				callback(err);
 			});
 		});
@@ -79,7 +79,7 @@ module.exports = function(Topics) {
 						});
 					});
 				}
-			], function(err, results) {
+			], function(err) {
 				callback(err);
 			});
 		});
@@ -109,28 +109,35 @@ module.exports = function(Topics) {
 	};
 
 	Topics.purge = function(tid, uid, callback) {
-		async.parallel([
+		async.waterfall([
 			function(next) {
-				db.deleteAll([
-					'tid:' + tid + ':followers',
-					'tid:' + tid + ':ignorers',
-					'tid:' + tid + ':posts',
-					'tid:' + tid + ':posts:votes',
-					'tid:' + tid + ':bookmarks',
-					'tid:' + tid + ':posters'
+				deleteFromFollowersIgnorers(tid, next);
+			},
+			function(next) {
+				async.parallel([
+					function(next) {
+						db.deleteAll([
+							'tid:' + tid + ':followers',
+							'tid:' + tid + ':ignorers',
+							'tid:' + tid + ':posts',
+							'tid:' + tid + ':posts:votes',
+							'tid:' + tid + ':bookmarks',
+							'tid:' + tid + ':posters'
+						], next);
+					},
+					function(next) {
+						db.sortedSetsRemove(['topics:tid', 'topics:recent', 'topics:posts', 'topics:views'], tid, next);
+					},
+					function(next) {
+						deleteTopicFromCategoryAndUser(tid, next);
+					},
+					function(next) {
+						Topics.deleteTopicTags(tid, next);
+					},
+					function(next) {
+						reduceCounters(tid, next);
+					}
 				], next);
-			},
-			function(next) {
-				db.sortedSetsRemove(['topics:tid', 'topics:recent', 'topics:posts', 'topics:views'], tid, next);
-			},
-			function(next) {
-				deleteTopicFromCategoryAndUser(tid, next);
-			},
-			function(next) {
-				Topics.deleteTopicTags(tid, next);
-			},
-			function(next) {
-				reduceCounters(tid, next);
 			}
 		], function(err) {
 			if (err) {
@@ -140,6 +147,26 @@ module.exports = function(Topics) {
 			db.delete('topic:' + tid, callback);
 		});
 	};
+
+	function deleteFromFollowersIgnorers(tid, callback) {
+		async.waterfall([
+			function(next) {
+				async.parallel({
+					followers: async.apply(db.getSetMembers, 'tid:' + tid + ':followers'),
+					ignorers: async.apply(db.getSetMembers, 'tid:' + tid + ':ignorers')
+				}, next);
+			},
+			function(results, next) {
+				var followerKeys = results.followers.map(function(uid) {
+					return 'uid:' + uid + ':followed_tids';
+				});
+				var ignorerKeys = results.ignorers.map(function(uid) {
+					return 'uid:' + uid + 'ignored_tids';
+				});
+				db.sortedSetsRemove(followerKeys.concat(ignorerKeys), tid, next);
+			}
+		], callback);
+	}
 
 	function deleteTopicFromCategoryAndUser(tid, callback) {
 		Topics.getTopicFields(tid, ['cid', 'uid'], function(err, topicData) {

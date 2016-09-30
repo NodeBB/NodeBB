@@ -20,6 +20,7 @@
     "email-taken": "E-mailadres is al in gebruik",
     "email-not-confirmed": "Het e-mailadres van dit account is nog niet bevestigd, klik hier om je e-mailadres te bevestigen.",
     "email-not-confirmed-chat": "Het gebruik van chatfunctionaliteit is pas toegestaan na validatie van het e-mailadres.",
+    "email-not-confirmed-email-sent": "Your email has not been confirmed yet, please check your inbox for the confirmation email.",
     "no-email-to-confirm": "Dit berichtenforum vereist bevestiging per e-mail, klik hier om een e-mailadres te registreren",
     "email-confirm-failed": "Helaas kon het e-mailadres niet bevestigd worden, probeer het later nog eens.",
     "confirm-email-already-sent": "Bevestigingsmail is zojuist al verzonden, wacht alsjeblieft %1 minuut (minuten) voordat je opnieuw een bevestigingsmail aanvraagt.",
@@ -28,6 +29,7 @@
     "username-too-long": "Gebruikersnaam is te lang",
     "password-too-long": "Wachtwoord is te lang",
     "user-banned": "Gebruiker verbannen",
+    "user-banned-reason": "User banned (Reason: %1)",
     "user-too-new": "Helaas, het is een vereiste om %1 seconde(n) te wachten voordat het eerste bericht geplaatst kan worden.",
     "blacklisted-ip": "Sorry, uw IP-adres is verbannen uit deze community. Als u meent dat dit onterecht is, neem dan contact op met een beheerder.",
     "ban-expiry-missing": "Geef een einddatum op voor deze ban.",
@@ -54,6 +56,8 @@
     "post-delete-duration-expired-hours-minutes": "Je kunt berichten pas %1 uur %2 minuten na het plaatsen verwijderen.",
     "post-delete-duration-expired-days": "Je kunt berichten pas %1 dagen na het plaatsen verwijderen.",
     "post-delete-duration-expired-days-hours": "Je kunt berichten pas %1 dag(en) %2 uur na het plaatsen verwijderen.",
+    "cant-delete-topic-has-reply": "You can't delete your topic after it has a reply",
+    "cant-delete-topic-has-replies": "You can't delete your topic after it has %1 replies",
     "content-too-short": "Geef wat meer inhoud aan een bericht! Berichten dienen uit minimaal %1 teken(s) te bestaan.",
     "content-too-long": "Kort het bericht wat in, het aantal gebruikte tekens overschrijdt het ingestelde limiet want berichten mogen niet meer dan %1 teken(s) bevatten.",
     "title-too-short": "Geef een titel op die uit meer tekens bestaat. Titels dienen ten minste uit %1 teken(s) te bestaan.",
@@ -120,5 +124,7 @@
     "no-users-in-room": "Er zijn geen gebruikers in deze chat",
     "cant-kick-self": "Je kunt jezelf niet uit een groep schoppen",
     "no-users-selected": "Geen gebruiker(s) geselecteerd",
-    "invalid-home-page-route": "Onbekende homepage route"
+    "invalid-home-page-route": "Onbekende homepage route",
+    "invalid-session": "Session Mismatch",
+    "invalid-session-text": "It looks like your login session is no longer active, or no longer matches with the server. Please refresh this page."
 }

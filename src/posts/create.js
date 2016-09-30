@@ -52,13 +52,17 @@ module.exports = function(Posts) {
 					postData.ip = data.ip;
 				}
 
-				if (parseInt(uid, 10) === 0 && data.handle) {
+				if (data.handle && !parseInt(uid, 10)) {
 					postData.handle = data.handle;
 				}
 
 				plugins.fireHook('filter:post.save', postData, next);
 			},
 			function(postData, next) {
+				plugins.fireHook('filter:post.create', {post: postData, data: data}, next);
+			},
+			function(data, next) {
+				postData = data.post;
 				db.setObject('post:' + postData.pid, postData, next);
 			},
 			function(next) {

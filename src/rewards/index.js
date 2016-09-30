@@ -111,14 +111,22 @@ function getRewardsByRewardData(rewards, callback) {
 
 function checkCondition(reward, method, callback) {
 	method(function(err, value) {
+		if (err) {
+			return callback(err);
+		}
+
 		plugins.fireHook('filter:rewards.checkConditional:' + reward.conditional, {left: value, right: reward.value}, function(err, bool) {
-			callback(bool);
+			callback(err || bool);
 		});
 	});
 }
 
 function giveRewards(uid, rewards, callback) {
 	getRewardsByRewardData(rewards, function(err, rewardData) {
+		if (err) {
+			return callback(err);
+		}
+
 		async.each(rewards, function(reward, next) {
 			plugins.fireHook('action:rewards.award:' + reward.rid, {uid: uid, reward: rewardData[rewards.indexOf(reward)]});
 			db.sortedSetIncrBy('uid:' + uid + ':rewards', 1, reward.id, next);

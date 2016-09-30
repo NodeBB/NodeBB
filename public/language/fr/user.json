@@ -89,6 +89,11 @@
     "topics_per_page": "Sujets par page",
     "posts_per_page": "Messages par page",
     "notification_sounds": "Émettre un son lors de la réception de notifications",
+    "notifications_and_sounds": "Notifications & Sons",
+    "incoming-message-sound": "Son pour les messages entrants",
+    "outgoing-message-sound": "Son pour les messages sortants",
+    "notification-sound": "Son de notification",
+    "no-sound": "Pas de son",
     "browsing": "Paramètres de navigation",
     "open_links_in_new_tab": "Ouvrir les liens externes dans un nouvel onglet",
     "enable_topic_searching": "Activer la recherche dans les sujets",
@@ -114,5 +119,9 @@
     "info.ban-history": "Historique de bannissement récent",
     "info.no-ban-history": "Cet utilisateur n'a jamais été banni",
     "info.banned-until": "Banni jusqu'au %1",
-    "info.banned-permanently": "Banni de façon permanente"
+    "info.banned-permanently": "Banni de façon permanente",
+    "info.banned-reason-label": "Raison",
+    "info.banned-no-reason": "Aucune raison donnée",
+    "info.username-history": "Historique des noms d'utilisateur",
+    "info.email-history": "Historique des adresses email"
 }

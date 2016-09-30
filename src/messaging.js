@@ -49,21 +49,22 @@ var async = require('async'),
 	};
 
 	Messaging.getMessages = function(params, callback) {
-		var uid = params.uid,
-			roomId = params.roomId,
-			since = params.since,
-			isNew = params.isNew,
-			count = params.count || 250,
-			markRead = params.markRead || true;
+		var uid = params.uid;
+		var roomId = params.roomId;
+		var since = params.since;
+		var isNew = params.isNew;
+		var start = params.hasOwnProperty('start') ? params.start : 0;
+		var count = params.count || 250;
+		var markRead = params.markRead || true;
 
 		var min = params.count ? 0 : Date.now() - (terms[since] || terms.day);
 
 		if (since === 'recent') {
-			count = 49;
+			count = 50;
 			min = 0;
 		}
 
-		db.getSortedSetRevRangeByScore('uid:' + uid + ':chat:room:' + roomId + ':mids', 0, count, '+inf', min, function(err, mids) {
+		db.getSortedSetRevRangeByScore('uid:' + uid + ':chat:room:' + roomId + ':mids', start, count, '+inf', min, function(err, mids) {
 			if (err) {
 				return callback(err);
 			}
@@ -71,10 +72,24 @@ var async = require('async'),
 			if (!Array.isArray(mids) || !mids.length) {
 				return callback(null, []);
 			}
+			var indices = {};
+			mids.forEach(function(mid, index) {
+				indices[mid] = start + index;
+			});
 
 			mids.reverse();
 
-			Messaging.getMessagesData(mids, uid, roomId, isNew, callback);
+			Messaging.getMessagesData(mids, uid, roomId, isNew, function(err, messageData) {
+				if (err) {
+					return callback(err);
+				}
+
+				for(var i=0; i<messageData.length; i++) {
+				 	messageData[i].index = indices[messageData[i].messageId.toString()];
+				}
+
+				callback(null, messageData);
+			});
 		});
 
 		if (markRead) {
@@ -128,7 +143,10 @@ var async = require('async'),
 				});
 
 				async.map(messages, function(message, next) {
-					Messaging.parse(message.content, message.fromuid, uid, roomId, isNew, function(result) {
+					Messaging.parse(message.content, message.fromuid, uid, roomId, isNew, function(err, result) {
+						if (err) {
+							return next(err);
+						}
 						message.content = result;
 						message.cleanedContent = S(result).stripTags().decodeHTMLEntities().s;
 						next(null, message);
@@ -195,7 +213,7 @@ var async = require('async'),
 	Messaging.parse = function (message, fromuid, uid, roomId, isNew, callback) {
 		plugins.fireHook('filter:parse.raw', message, function(err, parsed) {
 			if (err) {
-				return callback(message);
+				return callback(err);
 			}
 
 			var messageData = {
@@ -209,7 +227,7 @@ var async = require('async'),
 			};
 
 			plugins.fireHook('filter:messaging.parse', messageData, function(err, messageData) {
-				callback(messageData.parsedMessage);
+				callback(err, messageData ? messageData.parsedMessage : '');
 			});
 		});
 	};
@@ -239,19 +257,22 @@ var async = require('async'),
 			}
 
 			async.parallel({
+				roomData: function(next) {
+					Messaging.getRoomsData(roomIds, next);
+				},
 				unread: function(next) {
 					db.isSortedSetMembers('uid:' + uid + ':chat:rooms:unread', roomIds, next);
 				},
 				users: function(next) {
 					async.map(roomIds, function(roomId, next) {
-						db.getSortedSetRevRange('chat:room:' + roomId + ':uids', 0, 3, function(err, uids) {
+						db.getSortedSetRevRange('chat:room:' + roomId + ':uids', 0, 9, function(err, uids) {
 							if (err) {
 								return next(err);
 							}
 							uids = uids.filter(function(value) {
 								return value && parseInt(value, 10) !== parseInt(uid, 10);
 							});
-							user.getUsersFields(uids, ['uid', 'username', 'picture', 'status', 'lastonline'] , next);
+							user.getUsersFields(uids, ['uid', 'username', 'userslug', 'picture', 'status', 'lastonline'] , next);
 						});
 					}, next);
 				},
@@ -264,34 +285,35 @@ var async = require('async'),
 				if (err) {
 					return callback(err);
 				}
-				var rooms = results.users.map(function(users, index) {
-					var data = {
-						users: users,
-						unread: results.unread[index],
-						roomId: roomIds[index],
-						teaser: results.teasers[index]
-					};
-					data.users.forEach(function(userData) {
+
+				results.roomData.forEach(function(room, index) {
+					room.users = results.users[index];
+					room.groupChat = room.hasOwnProperty('groupChat') ? room.groupChat : room.users.length > 2;
+					room.unread = results.unread[index];
+					room.teaser = results.teasers[index];
+
+					room.users.forEach(function(userData) {
 						if (userData && parseInt(userData.uid, 10)) {
 							userData.status = user.getStatus(userData);
 						}
 					});
-					data.users = data.users.filter(function(user) {
+					room.users = room.users.filter(function(user) {
 						return user && parseInt(user.uid, 10);
 					});
-					data.lastUser = data.users[0];
-					data.usernames = data.users.map(function(user) {
+					room.lastUser = room.users[0];
+
+					room.usernames = room.users.map(function(user) {
 						return user.username;
 					}).join(', ');
-					return data;
 				});
 
-				callback(null, {rooms: rooms, nextStart: stop + 1});
+				callback(null, {rooms: results.roomData, nextStart: stop + 1});
 			});
 		});
 	};
 
 	Messaging.getTeaser = function (uid, roomId, callback) {
+		var teaser;
 		async.waterfall([
 			function (next) {
 				db.getSortedSetRevRange('uid:' + uid + ':chat:room:' + roomId + ':mids', 0, 0, next);
@@ -300,14 +322,22 @@ var async = require('async'),
 				if (!mids || !mids.length) {
 					return next(null, null);
 				}
-				Messaging.getMessageFields(mids[0], ['content', 'timestamp'], next);
+				Messaging.getMessageFields(mids[0], ['fromuid', 'content', 'timestamp'], next);
 			},
-			function (teaser, next) {
-				if (teaser && teaser.content) {
+			function (_teaser, next) {
+				teaser = _teaser;
+				if (!teaser) {
+					return callback();
+				}
+				if (teaser.content) {
 					teaser.content = S(teaser.content).stripTags().decodeHTMLEntities().s;
-					teaser.timestampISO = utils.toISOString(teaser.timestamp);
-			 	}
+				}
 
+				teaser.timestampISO = utils.toISOString(teaser.timestamp);
+				user.getUserFields(teaser.fromuid, ['uid', 'username', 'userslug', 'picture', 'status', 'lastonline'] , next);
+			},
+			function(user, next) {
+				teaser.user = user;
 				next(null, teaser);
 			}
 		], callback);

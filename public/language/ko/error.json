@@ -20,6 +20,7 @@
     "email-taken": "이미 사용 중인 이메일입니다.",
     "email-not-confirmed": "아직 이메일이 인증되지 않았습니다. 여기를 누르면 인증 메일을 발송할 수 있습니다.",
     "email-not-confirmed-chat": "아직 이메일이 인증되지 않았습니다. 대화기능은 인증 후에 사용이 가능합니다.",
+    "email-not-confirmed-email-sent": "Your email has not been confirmed yet, please check your inbox for the confirmation email.",
     "no-email-to-confirm": "이메일 인증이 필요합니다. 이곳을 클릭하여 이메일 입력하세요.",
     "email-confirm-failed": "이메일 인증이 실패하였습니다. 잠시 후에 다시 시도하세요.",
     "confirm-email-already-sent": "인증 메일이 이미 발송되었습니다. %1 분 이후에 재 발송이 가능합니다.",
@@ -28,6 +29,7 @@
     "username-too-long": "사용자 이름이 너무 깁니다.",
     "password-too-long": "패스워드가 너무 깁니다.",
     "user-banned": "차단된 사용자입니다.",
+    "user-banned-reason": "User banned (Reason: %1)",
     "user-too-new": "죄송합니다, 첫 번째 게시물은 %1 초 후에 작성할 수 있습니다.",
     "blacklisted-ip": "죄송하지만, 당신의 IP는 이 커뮤니티로부터 차단되었습니다. 만약 에러라는 생각이 드신다면 관리자에게 연락해주세요.",
     "ban-expiry-missing": "Please provide an end date for this ban",
@@ -54,6 +56,8 @@
     "post-delete-duration-expired-hours-minutes": "You are only allowed to delete posts for %1 hour(s) %2 minute(s) after posting",
     "post-delete-duration-expired-days": "You are only allowed to delete posts for %1 day(s) after posting",
     "post-delete-duration-expired-days-hours": "You are only allowed to delete posts for %1 day(s) %2 hour(s) after posting",
+    "cant-delete-topic-has-reply": "You can't delete your topic after it has a reply",
+    "cant-delete-topic-has-replies": "You can't delete your topic after it has %1 replies",
     "content-too-short": "게시물의 내용이 너무 짧습니다. 내용은 최소 %1자 이상이어야 합니다.",
     "content-too-long": "게시물의 내용이 너무 깁니다. 내용은 최대 %1자 이내로 작성할 수 있습니다.",
     "title-too-short": "제목이 너무 짧습니다. 제목은 최소 %1자 이상이어야 합니다.",
@@ -120,5 +124,7 @@
     "no-users-in-room": "사용자가 없습니다.",
     "cant-kick-self": "스스로 이 그룹을 탈퇴할 수 없습니다.",
     "no-users-selected": "No user(s) selected",
-    "invalid-home-page-route": "Invalid home page route"
+    "invalid-home-page-route": "Invalid home page route",
+    "invalid-session": "Session Mismatch",
+    "invalid-session-text": "It looks like your login session is no longer active, or no longer matches with the server. Please refresh this page."
 }

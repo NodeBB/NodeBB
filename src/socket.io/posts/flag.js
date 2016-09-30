@@ -98,7 +98,7 @@ module.exports = function(SocketPosts) {
 						return next(err);
 					}
 
-					plugins.fireHook('action:post.flag', {post: post, flaggingUser: flaggingUser});
+					plugins.fireHook('action:post.flag', {post: post, reason: data.reason, flaggingUser: flaggingUser});
 					notifications.push(notification, results.admins.concat(results.moderators).concat(results.globalMods), next);
 				});
 			}
@@ -136,14 +136,12 @@ module.exports = function(SocketPosts) {
 		], callback);
 	};
 
-	SocketPosts.getMoreFlags = function(socket, data, callback) {
-		if (!data || !parseInt(data.after, 10)) {
+	SocketPosts.updateFlag = function(socket, data, callback) {
+		if (!data || !(data.pid && data.data)) {
 			return callback('[[error:invalid-data]]');
 		}
-		var sortBy = data.sortBy || 'count';
-		var byUsername = data.byUsername ||  '';
-		var start = parseInt(data.after, 10);
-		var stop = start + 19;
+
+		var payload = {};
 
 		async.waterfall([
 			function (next) {
@@ -154,16 +152,15 @@ module.exports = function(SocketPosts) {
 					return next(new Error('[[no-privileges]]'));
 				}
 
-				if (byUsername) {
-					posts.getUserFlags(byUsername, sortBy, socket.uid, start, stop, next);
-				} else {
-					var set = sortBy === 'count' ? 'posts:flags:count' : 'posts:flagged';
-					posts.getFlags(set, socket.uid, start, stop, next);
-				}
+				// Translate form data into object
+				payload = data.data.reduce(function(memo, cur) {
+					memo[cur.name] = cur.value;
+					return memo;
+				}, payload);
+
+				next(null, socket.uid, data.pid, payload);
 			},
-			function (posts, next) {
-				next(null, {posts: posts, next: stop + 1});
-			},
+			async.apply(posts.updateFlagData)
 		], callback);
-	};
+	}
 };

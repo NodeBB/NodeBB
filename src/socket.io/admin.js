@@ -49,22 +49,6 @@ SocketAdmin.before = function(socket, method, data, next) {
 	});
 };
 
-SocketAdmin.reload = function(socket, data, callback) {
-	events.log({
-		type: 'reload',
-		uid: socket.uid,
-		ip: socket.ip
-	});
-	if (process.send) {
-		process.send({
-			action: 'reload'
-		});
-		callback();
-	} else {
-		meta.reload(callback);
-	}
-};
-
 SocketAdmin.restart = function(socket, data, callback) {
 	events.log({
 		type: 'restart',
@@ -74,6 +58,11 @@ SocketAdmin.restart = function(socket, data, callback) {
 	meta.restart();
 	callback();
 };
+
+/**
+ * Reload deprecated as of v1.1.2+, remove in v2.x
+ */
+SocketAdmin.reload = SocketAdmin.restart;
 
 SocketAdmin.fireEvent = function(socket, data, callback) {
 	index.server.emit(data.name, data.payload || {});
@@ -260,20 +249,6 @@ SocketAdmin.logs.clear = function(socket, data, callback) {
 
 SocketAdmin.errors.clear = function(socket, data, callback) {
 	meta.errors.clear(callback);
-};
-
-SocketAdmin.getMoreEvents = function(socket, next, callback) {
-	var start = parseInt(next, 10);
-	if (start < 0) {
-		return callback(null, {data: [], next: next});
-	}
-	var stop = start + 10;
-	events.getEvents(start, stop, function(err, events) {
-		if (err) {
-			return callback(err);
-		}
-		callback(null, {events: events, next: stop + 1});
-	});
 };
 
 SocketAdmin.deleteAllEvents = function(socket, data, callback) {

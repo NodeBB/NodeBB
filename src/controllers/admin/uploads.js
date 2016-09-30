@@ -61,6 +61,10 @@ uploadsController.uploadTouchIcon = function(req, res, next) {
 
 	if (validateUpload(req, res, next, uploadedFile, allowedTypes)) {
 		file.saveFileToLocal('touchicon-orig.png', 'system', uploadedFile.path, function(err, imageObj) {
+			if (err) {
+				return next(err);
+			}
+
 			// Resize the image into squares for use as touch icons at various DPIs
 			async.each(sizes, function(size, next) {
 				async.series([

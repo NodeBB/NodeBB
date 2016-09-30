@@ -34,7 +34,7 @@ search.search = function(data, callback) {
 			}
 		},
 		function (result, next) {
-			result.search_query = validator.escape(data.query || '');
+			result.search_query = validator.escape(String(data.query || ''));
 			result.time = (process.elapsedTimeSince(start) / 1000).toFixed(2);
 			next(null, result);
 		}
@@ -298,10 +298,10 @@ function filterByTimerange(posts, timeRange, timeFilter) {
 }
 
 function sortPosts(posts, data) {
-	if (!posts.length) {
+	if (!posts.length || !data.sortBy) {
 		return;
 	}
-	data.sortBy = data.sortBy || 'timestamp';
+
 	data.sortDirection = data.sortDirection || 'desc';
 	var direction = data.sortDirection === 'desc' ? 1 : -1;
 

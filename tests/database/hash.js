@@ -202,10 +202,7 @@ describe('Hash methods', function() {
 				assert.equal(err, null);
 				assert.equal(arguments.length, 2);
 				assert.equal(Array.isArray(values) && values.length === 3, true);
-				values.forEach(function(value) {
-					assert.notEqual(['baris', 'usakli', 99].indexOf(value), -1);
-				});
-
+				assert.deepEqual(['baris', 'usakli', 99].sort(), values.sort());
 				done();
 			});
 		});
@@ -350,7 +347,7 @@ describe('Hash methods', function() {
 
 		it('should set an objects field to 5 if object does not exist', function(done) {
 			db.incrObjectFieldBy('testObject16', 'field1', 5, function(err, newValue) {
-				assert.equal(err, null);
+				assert.ifError(err);
 				assert.equal(arguments.length, 2);
 				assert.equal(newValue, 5);
 				done();
@@ -359,9 +356,17 @@ describe('Hash methods', function() {
 
 		it('should increment an object fields by passed in value and return it', function(done) {
 			db.incrObjectFieldBy('testObject15', 'age', 11, function(err, newValue) {
-				assert.equal(err, null);
+				assert.ifError(err);
 				assert.equal(arguments.length, 2);
 				assert.equal(newValue, 111);
+				done();
+			});
+		});
+
+		it('should increment an object fields by passed in value and return it', function(done) {
+			db.incrObjectFieldBy('testObject15', 'age', '11', function(err, newValue) {
+				assert.ifError(err);
+				assert.equal(newValue, 122);
 				done();
 			});
 		});
@@ -369,7 +374,7 @@ describe('Hash methods', function() {
 
 
 
-	after(function() {
-		db.flushdb();
+	after(function(done) {
+		db.flushdb(done);
 	});
 });

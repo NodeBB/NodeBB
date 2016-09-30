@@ -1,7 +1,8 @@
 "use strict";
 
-
 var async = require('async');
+var validator = require('validator');
+
 var db = require('../../database');
 var groups = require('../../groups');
 var user = require('../../user');
@@ -142,7 +143,19 @@ User.sendPasswordResetEmail = function(socket, uids, callback) {
 };
 
 User.deleteUsers = function(socket, uids, callback) {
-	if(!Array.isArray(uids)) {
+	deleteUsers(socket, uids, function(uid, next) {
+		user.deleteAccount(uid, next);
+	}, callback);
+};
+
+User.deleteUsersAndContent = function(socket, uids, callback) {
+	deleteUsers(socket, uids, function(uid, next) {
+		user.delete(socket.uid, uid, next);
+	}, callback);
+};
+
+function deleteUsers(socket, uids, method, callback) {
+	if (!Array.isArray(uids)) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
 
@@ -156,7 +169,7 @@ User.deleteUsers = function(socket, uids, callback) {
 					return next(new Error('[[error:cant-delete-other-admins]]'));
 				}
 
-				user.delete(socket.uid, uid, next);
+				method(uid, next);
 			},
 			function (next) {
 				events.log({
@@ -169,7 +182,7 @@ User.deleteUsers = function(socket, uids, callback) {
 			}
 		], next);
 	}, callback);
-};
+}
 
 User.search = function(socket, data, callback) {
 	user.search({query: data.query, searchBy: data.searchBy, uid: socket.uid}, function(err, searchData) {
@@ -192,7 +205,7 @@ User.search = function(socket, data, callback) {
 
 			userData.forEach(function(user, index) {
 				if (user && userInfo[index]) {
-					user.email = userInfo[index].email || '';
+					user.email = validator.escape(String(userInfo[index].email || ''));
 					user.flags = userInfo[index].flags || 0;
 				}
 			});
@@ -214,5 +227,8 @@ User.rejectRegistration = function(socket, data, callback) {
 	user.rejectRegistration(data.username, callback);
 };
 
+User.restartJobs = function(socket, data, callback) {
+	user.startJobs(callback);
+};
 
 module.exports = User;

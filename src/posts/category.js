@@ -2,6 +2,8 @@
 'use strict';
 
 var async = require('async');
+
+var db = require('../database');
 var topics = require('../topics');
 
 module.exports = function(Posts) {
@@ -47,6 +49,21 @@ module.exports = function(Posts) {
 
 				callback(null, cids);
 			});
+		});
+	};
+
+	Posts.filterPidsByCid = function(pids, cid, callback) {
+		if (!cid) {
+			return callback(null, pids);
+		}
+		db.isSortedSetMembers('cid:' + cid + ':pids', pids, function(err, isMembers) {
+			if (err) {
+				return callback(err);
+			}
+			pids = pids.filter(function(pid, index) {
+				return pid && isMembers[index];
+			});
+			callback(null, pids);
 		});
 	};
 };

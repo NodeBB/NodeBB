@@ -15,6 +15,9 @@
 			<th>Email</th>
 			<th class="hidden-xs">IP</th>
 			<th class="hidden-xs">Time</th>
+			<!-- BEGIN customHeaders -->
+			<th class="hidden-xs">{customHeaders.label}</th>
+			<!-- END customHeaders -->
 			<th></th>
 		</tr>
 		<!-- BEGIN users -->
@@ -42,10 +45,24 @@
 				<i class="fa fa-check text-success"></i>
 				<!-- ENDIF users.ipSpam -->
 				{users.ip}
+				<!-- BEGIN users.ipMatch -->
+				<br>
+				<!-- IF users.ipMatch.picture -->
+				<img src="{users.ipMatch.picture}" class="user-img"/>
+				<!-- ELSE -->
+				<div class="user-img avatar avatar-sm" style="background-color: {users.ipMatch.icon:bgColor};">{users.ipMatch.icon:text}</div>
+				<!-- ENDIF users.ipMatch.picture -->
+				<a href="/uid/{users.ipMatch.uid}">{users.ipMatch.username}</a>
+				<!-- END users.ipMatch -->
 			</td>
 			<td class="hidden-xs">
 				<span class="timeago" title="{users.timestampISO}"></span>
 			</td>
+
+			<!-- BEGIN users.customRows -->
+			<td class="hidden-xs">{users.customRows.value}</td>
+			<!-- END users.customRows -->
+
 			<td>
 				<div class="btn-group pull-right">
 					<button class="btn btn-success btn-xs" data-action="accept"><i class="fa fa-check"></i></button>

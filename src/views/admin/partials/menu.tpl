@@ -16,7 +16,7 @@
 		<ul class="menu-section-list">
 			<li><a href="{relative_path}/admin/manage/categories">Categories</a></li>
 			<li><a href="{relative_path}/admin/manage/tags">Tags</a></li>
-			<li><a href="{relative_path}/admin/manage/users/latest">Users</a></li>
+			<li><a href="{relative_path}/admin/manage/users">Users</a></li>
 			<li><a href="{relative_path}/admin/manage/registration">Registration Queue</a></li>
 			<li><a href="{relative_path}/admin/manage/groups">Groups</a></li>
 			<li><a href="{relative_path}/admin/manage/flags">Flags</a></li>
@@ -96,7 +96,7 @@
 			<li><a href="{relative_path}/admin/advanced/events">Events</a></li>
 			<li><a href="{relative_path}/admin/advanced/logs">Logs</a></li>
 			<li><a href="{relative_path}/admin/advanced/errors">Errors</a></li>
-			<li><a href="{relative_path}/admin/advanced/post-cache">Post Cache</a></li>
+			<li><a href="{relative_path}/admin/advanced/cache">Cache</a></li>
 			<!-- IF env -->
 			<li><a href="{relative_path}/admin/development/logger">Logger</a></li>
 			<!-- ENDIF env -->
@@ -121,11 +121,6 @@
 					<i class="fa fa-fw fa-ellipsis-v"></i>
 				</a>
 				<ul id="user-control-list" class="dropdown-menu" aria-labelledby="user_dropdown">
-					<li>
-						<a href="#" class="reload" title="Reload Forum">
-							Reload Forum
-						</a>
-					</li>
 					<li>
 						<a href="#" class="restart" title="Restart Forum">
 							Restart Forum
@@ -172,7 +167,7 @@
 				<ul class="dropdown-menu" role="menu">
 					<li><a href="{relative_path}/admin/manage/categories">Categories</a></li>
 					<li><a href="{relative_path}/admin/manage/tags">Tags</a></li>
-					<li><a href="{relative_path}/admin/manage/users/latest">Users</a></li>
+					<li><a href="{relative_path}/admin/manage/users">Users</a></li>
 					<li><a href="{relative_path}/admin/manage/registration">Registration Queue</a></li>
 					<li><a href="{relative_path}/admin/manage/groups">Groups</a></li>
 					<li><a href="{relative_path}/admin/manage/flags">Flags</a></li>
@@ -250,7 +245,7 @@
 					<li><a href="{relative_path}/admin/advanced/events">Events</a></li>
 					<li><a href="{relative_path}/admin/advanced/logs">Logs</a></li>
 					<li><a href="{relative_path}/admin/advanced/errors">Errors</a></li>
-					<li><a href="{relative_path}/admin/advanced/post-cache">Post Cache</a></li>
+					<li><a href="{relative_path}/admin/advanced/cache">Cache</a></li>
 					<!-- IF env -->
 					<li><a href="{relative_path}/admin/development/logger">Logger</a></li>
 					<!-- ENDIF env -->

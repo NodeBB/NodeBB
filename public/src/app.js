@@ -24,6 +24,7 @@ app.cacheBuster = null;
 
 		var url = ajaxify.start(window.location.pathname.slice(1) + window.location.search + window.location.hash);
 		ajaxify.updateHistory(url, true);
+		ajaxify.parseData();
 		ajaxify.end(url, app.template);
 
 		handleStatusChange();
@@ -32,7 +33,7 @@ app.cacheBuster = null;
 			app.handleSearch();
 		}
 
-		$('#content').on('click', '#new_topic', function(){
+		$('body').on('click', '#new_topic', function(){
 			app.newTopic();
 		});
 
@@ -40,7 +41,7 @@ app.cacheBuster = null;
 			components.get('user/logout').on('click', app.logout);
 		});
 
-		Visibility.change(function(e, state){
+		Visibility.change(function(event, state){
 			if (state === 'visible') {
 				app.isFocused = true;
 				app.alternatingTitle('');
@@ -84,13 +85,19 @@ app.cacheBuster = null;
 	};
 
 	app.logout = function() {
+		$(window).trigger('action:app.logout');
 		$.ajax(config.relative_path + '/logout', {
 			type: 'POST',
 			headers: {
 				'x-csrf-token': config.csrf_token
 			},
 			success: function() {
-				window.location.href = config.relative_path + '/';
+				var payload = {
+					next: config.relative_path + '/'
+				};
+
+				$(window).trigger('action:app.loggedOut', payload);
+				window.location.href = payload.next;
 			}
 		});
 	};
@@ -117,11 +124,37 @@ app.cacheBuster = null;
 	};
 
 	app.alertError = function (message, timeout) {
+		if (message === '[[error:invalid-session]]') {
+			return app.handleInvalidSession();
+		}
+
 		app.alert({
 			title: '[[global:alert.error]]',
 			message: message,
 			type: 'danger',
 			timeout: timeout ? timeout : 10000
+		});
+	};
+
+	app.handleInvalidSession = function() {
+		if (app.flags && app.flags._sessionRefresh) {
+			return;
+		}
+
+		app.flags = app.flags || {};
+		app.flags._sessionRefresh = true;
+
+		require(['translator'], function(translator) {
+			translator.translate('[[error:invalid-session-text]]', function(translated) {
+				bootbox.alert({
+					title: '[[error:invalid-session]]',
+					message: translated,
+					closeButton: false,
+					callback: function() {
+						window.location.reload();
+					}
+				});
+			});
 		});
 	};
 
@@ -163,12 +196,12 @@ app.cacheBuster = null;
 		}
 	}
 
-	app.createUserTooltips = function(els) {
+	app.createUserTooltips = function(els, placement) {
 		els = els || $('body');
 		els.find('.avatar,img[title].teaser-pic,img[title].user-img,div.user-icon,span.user-icon').each(function() {
 			if (!utils.isTouchDevice()) {
 				$(this).tooltip({
-					placement: 'top',
+					placement: placement || $(this).attr('title-placement') || 'top',
 					title: $(this).attr('title')
 				});
 			}
@@ -261,7 +294,8 @@ app.cacheBuster = null;
 		});
 	};
 
-	app.newChat = function (touid) {
+	app.newChat = function (touid, callback) {
+		callback = callback || function() {};
 		if (!app.user.uid) {
 			return app.alertError('[[error:not-logged-in]]');
 		}
@@ -270,11 +304,14 @@ app.cacheBuster = null;
 			if (err) {
 				return app.alertError(err.message);
 			}
+
 			if (!ajaxify.currentPage.startsWith('chats')) {
 				app.openChat(roomId);
 			} else {
 				ajaxify.go('chats/' + roomId);
 			}
+
+			callback(false, roomId);
 		});
 	};
 
@@ -409,7 +446,9 @@ app.cacheBuster = null;
 		$('#search-form').on('submit', function () {
 			var input = $(this).find('input');
 			require(['search'], function(search) {
-				search.query({term: input.val()}, function() {
+				var data = search.getSearchPreferences();
+				data.term = input.val();
+				search.query(data, function() {
 					input.val('');
 				});
 			});
@@ -455,9 +494,10 @@ app.cacheBuster = null;
 		});
 	};
 
-	app.newTopic = function (cid) {
+	app.newTopic = function (cid, tags) {
 		$(window).trigger('action:composer.topic.new', {
-			cid: cid || ajaxify.data.cid || 0
+			cid: cid || ajaxify.data.cid || 0,
+			tags: tags || (ajaxify.data.tag ? [ajaxify.data.tag] : [])
 		});
 	};
 
@@ -468,7 +508,7 @@ app.cacheBuster = null;
 
 		var scriptEl = document.createElement('script');
 		scriptEl.type = 'text/javascript';
-		scriptEl.src = config.relative_path + '/vendor/jquery/js/jquery-ui-1.10.4.custom.js' + (app.cacheBuster ? '?v=' + app.cacheBuster : '');
+		scriptEl.src = config.relative_path + '/vendor/jquery/js/jquery-ui.js' + (app.cacheBuster ? '?v=' + app.cacheBuster : '');
 		scriptEl.onload = callback;
 		document.head.appendChild(scriptEl);
 	};
@@ -511,20 +551,22 @@ app.cacheBuster = null;
 
 	app.parseAndTranslate = function(template, blockName, data, callback) {
 		require(['translator'], function(translator) {
+			function translate(html, callback) {
+				translator.translate(html, function(translatedHTML) {
+					translatedHTML = translator.unescape(translatedHTML);
+					callback($(translatedHTML));
+				});
+			}
+
 			if (typeof blockName === 'string') {
 				templates.parse(template, blockName, data, function(html) {
-					translator.translate(html, function(translatedHTML) {
-						translatedHTML = translator.unescape(translatedHTML);
-						callback($(translatedHTML));
-					});
+					translate(html, callback);
 				});
 			} else {
-				callback = data, data = blockName;
+				callback = data;
+				data = blockName;
 				templates.parse(template, data, function(html) {
-					translator.translate(html, function(translatedHTML) {
-						translatedHTML = translator.unescape(translatedHTML);
-						callback($(translatedHTML));
-					});
+					translate(html, callback);
 				});
 			}
 		});
