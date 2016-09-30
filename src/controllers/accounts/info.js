@@ -22,8 +22,8 @@ infoController.get = function(req, res, callback) {
 			async.parallel({
 				history: async.apply(user.getModerationHistory, userData.uid),
 				sessions: async.apply(user.auth.getSessions, userData.uid, req.sessionID),
-				usernames: async.apply(user.getUsernameHistory, userData.uid),
-				emails: async.apply(user.getEmailHistory, userData.uid)
+				usernames: async.apply(user.getHistory, 'user:' + userData.uid + ':usernames'),
+				emails: async.apply(user.getHistory, 'user:' + userData.uid + ':emails')
 			}, next);
 		}
 	], function(err, data) {
