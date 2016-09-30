@@ -312,6 +312,7 @@ var async = require('async'),
 	};
 
 	Messaging.getTeaser = function (uid, roomId, callback) {
+		var teaser;
 		async.waterfall([
 			function (next) {
 				db.getSortedSetRevRange('uid:' + uid + ':chat:room:' + roomId + ':mids', 0, 0, next);
@@ -320,14 +321,22 @@ var async = require('async'),
 				if (!mids || !mids.length) {
 					return next(null, null);
 				}
-				Messaging.getMessageFields(mids[0], ['content', 'timestamp'], next);
+				Messaging.getMessageFields(mids[0], ['fromuid', 'content', 'timestamp'], next);
 			},
-			function (teaser, next) {
-				if (teaser && teaser.content) {
-					teaser.content = S(teaser.content).stripTags().decodeHTMLEntities().s;
-					teaser.timestampISO = utils.toISOString(teaser.timestamp);
-			 	}
-
+			function (_teaser, next) {
+				teaser = _teaser;
+				if (!teaser) {
+					return callback();
+				}
+				if (teaser.content) {
+					teaser.content = S(teaser.content).stripTags().decodeHTMLEntities().s;	
+				}
+				
+				teaser.timestampISO = utils.toISOString(teaser.timestamp);
+				user.getUserFields(teaser.fromuid, ['uid', 'username', 'userslug', 'picture', 'status', 'lastonline'] , next);
+			},
+			function(user, next) {
+				teaser.user = user;
 				next(null, teaser);
 			}
 		], callback);
