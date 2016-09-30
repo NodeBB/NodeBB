@@ -265,7 +265,7 @@ var async = require('async'),
 				},
 				users: function(next) {
 					async.map(roomIds, function(roomId, next) {
-						db.getSortedSetRevRange('chat:room:' + roomId + ':uids', 0, 3, function(err, uids) {
+						db.getSortedSetRevRange('chat:room:' + roomId + ':uids', 0, 9, function(err, uids) {
 							if (err) {
 								return next(err);
 							}

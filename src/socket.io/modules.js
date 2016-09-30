@@ -133,6 +133,7 @@ SocketModules.chats.loadRoom = function(socket, data, callback) {
 		},
 		function (results, next) {
 			results.roomData.users = results.users;
+			results.roomData.groupChat = results.roomData.hasOwnProperty('groupChat') ? results.roomData.groupChat : results.users.length > 2;
 			results.roomData.isOwner = parseInt(results.roomData.owner, 10) === socket.uid;
 			results.roomData.maximumUsersInChatRoom = parseInt(meta.config.maximumUsersInChatRoom, 10) || 0;
 			results.roomData.showUserInput = !results.roomData.maximumUsersInChatRoom || results.roomData.maximumUsersInChatRoom > 2;

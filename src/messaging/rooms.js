@@ -13,10 +13,7 @@ module.exports = function(Messaging) {
 			if (err || !data) {
 				return callback(err || new Error('[[error:no-chat-room]]'));
 			}
-			data.roomName = data.roomName || '[[modules:chat.roomname, ' + roomId + ']]';
-			if (data.roomName) {
-				data.roomName = validator.escape(String(data.roomName));
-			}
+			modifyRoomData([data]);
 			callback(null, data);
 		});
 	};
@@ -29,15 +26,22 @@ module.exports = function(Messaging) {
 			if (err) {
 				return callback(err);
 			}
-			roomData.forEach(function(data) {
-				if (data) {
-					data.roomName = data.roomName || '[[modules:chat.roomname, ' + data.roomId + ']]';
-					data.roomName = validator.escape(String(data.roomName));
-				}
-			});
+			modifyRoomData(roomData);
 			callback(null, roomData);
 		});
 	};
+
+	function modifyRoomData(rooms) {
+		rooms.forEach(function(data) {
+			if (data) {
+				data.roomName = data.roomName || '[[modules:chat.roomname, ' + data.roomId + ']]';
+				data.roomName = validator.escape(String(data.roomName));
+				if (data.hasOwnProperty('groupChat')) {
+					data.groupChat = parseInt(data.groupChat, 10) === 1;
+				}
+			}
+		});
+	}
 
 	Messaging.newRoom = function(uid, toUids, callback) {
 		var roomId;
@@ -105,6 +109,18 @@ module.exports = function(Messaging) {
 					return now;
 				});
 				db.sortedSetAdd('chat:room:' + roomId + ':uids', timestamps, uids, next);
+			},
+			function(next) {
+				async.parallel({
+					userCount: async.apply(db.sortedSetCard, 'chat:room:' + roomId + ':uids'),
+					roomData: async.apply(db.getObject, 'chat:room:' + roomId)
+				}, next);
+			},
+			function(results, next) {
+				if (!results.roomData.hasOwnProperty('groupChat') && results.userCount > 2) {
+					return db.setObjectField('chat:room:' + roomId, 'groupChat', 1, next);
+				}
+				next();
 			}
 		], callback);
 	};

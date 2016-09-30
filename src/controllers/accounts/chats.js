@@ -74,6 +74,7 @@ chatsController.get = function(req, res, callback) {
 			return user && parseInt(user.uid, 10) && parseInt(user.uid, 10) !== req.uid;
 		});
 
+		room.groupChat = room.hasOwnProperty('groupChat') ? room.groupChat : room.users.length > 2;
 		room.rooms = recentChats.rooms;
 		room.uid = uid;
 		room.userslug = req.params.userslug;
