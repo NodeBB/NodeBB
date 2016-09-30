@@ -288,6 +288,7 @@ var async = require('async'),
 
 				results.roomData.forEach(function(room, index) {
 					room.users = results.users[index];
+					room.groupChat = room.hasOwnProperty('groupChat') ? room.groupChat : room.users.length > 2;
 					room.unread = results.unread[index];
 					room.teaser = results.teasers[index];
 
@@ -329,9 +330,9 @@ var async = require('async'),
 					return callback();
 				}
 				if (teaser.content) {
-					teaser.content = S(teaser.content).stripTags().decodeHTMLEntities().s;	
+					teaser.content = S(teaser.content).stripTags().decodeHTMLEntities().s;
 				}
-				
+
 				teaser.timestampISO = utils.toISOString(teaser.timestamp);
 				user.getUserFields(teaser.fromuid, ['uid', 'username', 'userslug', 'picture', 'status', 'lastonline'] , next);
 			},
