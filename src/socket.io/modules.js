@@ -12,25 +12,12 @@ var server = require('./');
 var user = require('../user');
 
 var SocketModules = {
-		chats: {},
-		sounds: {},
-		settings: {}
-	};
+	chats: {},
+	sounds: {},
+	settings: {}
+};
 
 /* Chat */
-
-SocketModules.chats.get = function(socket, data, callback) {
-	if(!data || !data.roomId) {
-		return callback(new Error('[[error:invalid-data]]'));
-	}
-
-	Messaging.getMessages({
-		uid: socket.uid,
-		roomId: data.roomId,
-		since: data.since,
-		isNew: false
-	}, callback);
-};
 
 SocketModules.chats.getRaw = function(socket, data, callback) {
 	if (!data || !data.hasOwnProperty('mid')) {
@@ -119,10 +106,13 @@ SocketModules.chats.loadRoom = function(socket, data, callback) {
 
 	async.waterfall([
 		function (next) {
-			Messaging.isUserInRoom(socket.uid, data.roomId, next);
+			async.parallel({
+				inRoom: async.apply(Messaging.isUserInRoom, socket.uid, data.roomId),
+				isAdminOrGlobalMod: async.apply(user.isAdminOrGlobalMod, socket.uid)
+			}, next);
 		},
-		function (inRoom, next) {
-			if (!inRoom) {
+		function (results, next) {
+			if (!results.isAdminOrGlobalMod && !results.inRoom) {
 				return next(new Error('[[error:not-allowed]]'));
 			}
 
@@ -321,13 +311,23 @@ SocketModules.chats.getMessages = function(socket, data, callback) {
 	if (!socket.uid || !data.uid || !data.roomId) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
+
 	var params = {
 		uid: data.uid,
 		roomId: data.roomId,
-		start: parseInt(data.start, 10) + 1,
+		start: parseInt(data.start, 10) || 0,
 		count: 50,
 		markRead: false
 	};
+
+	if (data.hasOwnProperty('since')) {
+		params.since = data.since;
+	}
+
+	if (data.hasOwnProperty('markRead')) {
+		params.markRead = data.markRead;
+	}
+
 	if (socket.uid === parseInt(data.uid, 10)) {
 		return Messaging.getMessages(params, callback);
 	}

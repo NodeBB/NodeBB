@@ -63,11 +63,11 @@ define('forum/chats', [
 
 			if (app.previousUrl && app.previousUrl.match(/chats/)) {
 				ajaxify.go('user/' + ajaxify.data.userslug + '/chats', function() {
-					app.openChat(roomId);
+					app.openChat(roomId, ajaxify.data.uid);
 				}, true);
 			} else {
 				window.history.go(-1);
-				app.openChat(roomId);
+				app.openChat(roomId, ajaxify.data.uid);
 			}
 
 			$(window).one('action:chat.loaded', function() {
@@ -79,7 +79,7 @@ define('forum/chats', [
 
 		recentChats.init();
 
-		Chats.addSinceHandler(ajaxify.data.roomId, $('.expanded-chat .chat-content'), $('.expanded-chat [data-since]'));
+		Chats.addSinceHandler(ajaxify.data.roomId, ajaxify.data.uid, $('.expanded-chat .chat-content'), $('.expanded-chat [data-since]'));
 		Chats.addRenameHandler(ajaxify.data.roomId, $('[component="chat/room/name"]'));
 		Chats.addScrollHandler(ajaxify.data.roomId, ajaxify.data.uid, $('.chat-content'));
 	};
@@ -96,8 +96,8 @@ define('forum/chats', [
 				return;
 			}
 			loading = true;
-
-			socket.emit('modules.chats.getMessages', {roomId: roomId, uid: uid, start: $('.chat-content').children('[data-index]').first().attr('data-index')}, function(err, data) {
+			var start =  parseInt($('.chat-content').children('[data-index]').first().attr('data-index'), 10) + 1;
+			socket.emit('modules.chats.getMessages', {roomId: roomId, uid: uid, start: start}, function(err, data) {
 				if (err) {
 					return app.alertError(err.message);
 				}
@@ -156,12 +156,12 @@ define('forum/chats', [
 		});
 	};
 
-	Chats.addSinceHandler = function(roomId, chatContentEl, sinceEl) {
+	Chats.addSinceHandler = function(roomId, uid, chatContentEl, sinceEl) {
 		sinceEl.on('click', function() {
 			var since = $(this).attr('data-since');
 			sinceEl.removeClass('selected');
 			$(this).addClass('selected');
-			Chats.loadChatSince(roomId, chatContentEl, since);
+			Chats.loadChatSince(roomId, uid, chatContentEl, since);
 			return false;
 		});
 	};
@@ -301,11 +301,11 @@ define('forum/chats', [
 		ajaxify.go('user/' + ajaxify.data.userslug + '/chats/' + roomid);
 	};
 
-	Chats.loadChatSince = function(roomId, chatContentEl, since) {
+	Chats.loadChatSince = function(roomId, uid, chatContentEl, since) {
 		if (!roomId) {
 			return;
 		}
-		socket.emit('modules.chats.get', {roomId: roomId, since: since}, function(err, messageData) {
+		socket.emit('modules.chats.getMessages', {roomId: roomId, uid: uid, since: since, markRead: true}, function(err, messageData) {
 			if (err) {
 				return app.alertError(err.message);
 			}

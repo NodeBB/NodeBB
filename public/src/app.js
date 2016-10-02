@@ -266,7 +266,7 @@ app.cacheBuster = null;
 		}
 	};
 
-	app.openChat = function (roomId) {
+	app.openChat = function (roomId, uid) {
 		if (!app.user.uid) {
 			return app.alertError('[[error:not-logged-in]]');
 		}
@@ -288,6 +288,7 @@ app.cacheBuster = null;
 					roomData.users = roomData.users.filter(function(user) {
 						return user && parseInt(user.uid, 10) !== parseInt(app.user.uid, 10);
 					});
+					roomData.uid = uid || app.user.uid;
 					chat.createModal(roomData, loadAndCenter);
 				});
 			}

@@ -83,6 +83,7 @@ define('chat', [
 						return user && parseInt(user.uid, 10) !== parseInt(app.user.uid, 10);
 					});
 					roomData.silent = true;
+					roomData.uid = app.user.uid;
 					module.createModal(roomData, function(modal) {
 						module.toggleNew(modal.attr('UUID'), !isSelf, true);
 						if (!isSelf) {
@@ -254,7 +255,7 @@ define('chat', [
 					messagesEl.css('height', module.calculateChatListHeight(chatModal));
 				});
 
-				Chats.addSinceHandler(chatModal.attr('roomId'), chatModal.find('.chat-content'), chatModal.find('[data-since]'));
+				Chats.addSinceHandler(chatModal.attr('roomId'), data.uid, chatModal.find('.chat-content'), chatModal.find('[data-since]'));
 				Chats.addRenameHandler(chatModal.attr('roomId'), chatModal.find('[component="chat/room/name"]'));
 
 				Chats.addSendHandlers(chatModal.attr('roomId'), chatModal.find('#chat-message-input'), chatModal.find('#chat-message-send-btn'));
@@ -262,9 +263,9 @@ define('chat', [
 				Chats.createTagsInput(chatModal.find('.users-tag-input'), data);
 				Chats.createAutoComplete(chatModal.find('[component="chat/input"]'));
 
-				Chats.loadChatSince(chatModal.attr('roomId'), chatModal.find('.chat-content'), 'recent');
+				Chats.loadChatSince(chatModal.attr('roomId'), data.uid, chatModal.find('.chat-content'), 'recent');
 
-				Chats.addScrollHandler(chatModal.attr('roomId'), app.user.uid, chatModal.find('.chat-content'));
+				Chats.addScrollHandler(chatModal.attr('roomId'), data.uid, chatModal.find('.chat-content'));
 
 				checkStatus(chatModal);
 
