@@ -17,6 +17,7 @@
  * Repository: https://github.com/yuku-t/jquery-textcomplete
  * License:    MIT (https://github.com/yuku-t/jquery-textcomplete/blob/master/LICENSE)
  * Author:     Yuku Takahashi
+ * Version:    1.7.3
  */
 
 if (typeof jQuery === 'undefined') {
