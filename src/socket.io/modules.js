@@ -115,11 +115,18 @@ SocketModules.chats.loadRoom = function(socket, data, callback) {
 
 			async.parallel({
 				roomData: async.apply(Messaging.getRoomData, data.roomId),
-				users: async.apply(Messaging.getUsersInRoom, data.roomId, 0, -1)
+				users: async.apply(Messaging.getUsersInRoom, data.roomId, 0, -1),
+				messages: async.apply(Messaging.getMessages, {
+					callerUid: socket.uid,
+					uid: data.uid || socket.uid,
+					roomId: data.roomId,
+					isNew: false
+				}),
 			}, next);
 		},
 		function (results, next) {
 			results.roomData.users = results.users;
+			results.roomData.messages = results.messages;
 			results.roomData.groupChat = results.roomData.hasOwnProperty('groupChat') ? results.roomData.groupChat : results.users.length > 2;
 			results.roomData.isOwner = parseInt(results.roomData.owner, 10) === socket.uid;
 			results.roomData.maximumUsersInChatRoom = parseInt(meta.config.maximumUsersInChatRoom, 10) || 0;
@@ -311,10 +318,6 @@ SocketModules.chats.getMessages = function(socket, data, callback) {
 		count: 50,
 		markRead: false
 	};
-
-	if (data.hasOwnProperty('since')) {
-		params.since = data.since;
-	}
 
 	if (data.hasOwnProperty('markRead')) {
 		params.markRead = data.markRead;

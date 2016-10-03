@@ -22,13 +22,6 @@ var userNotifications = require('./user/notifications');
 	require('./messaging/unread')(Messaging);
 	require('./messaging/notifications')(Messaging);
 
-	var terms = {
-		day: 86400000,
-		week: 604800000,
-		month: 2592000000,
-		threemonths: 7776000000
-	};
-
 	Messaging.getMessageField = function(mid, field, callback) {
 		Messaging.getMessageFields(mid, [field], function(err, fields) {
 			callback(err, fields ? fields[field] : null);
@@ -50,18 +43,11 @@ var userNotifications = require('./user/notifications');
 	Messaging.getMessages = function(params, callback) {
 		var uid = params.uid;
 		var roomId = params.roomId;
-		var since = params.since;
 		var isNew = params.isNew || false;
 		var start = params.hasOwnProperty('start') ? params.start : 0;
-		var count = params.count || 250;
+		var stop = parseInt(start, 10) + ((params.count || 50) - 1);
 		var markRead = params.markRead || true;
 
-		var min = params.count ? 0 : Date.now() - (terms[since] || terms.day);
-
-		if (since === 'recent') {
-			count = 50;
-			min = 0;
-		}
 		var indices = {};
 		async.waterfall([
 			function(next) {
@@ -71,7 +57,7 @@ var userNotifications = require('./user/notifications');
 				if (!canGet) {
 					return callback(null, null);
 				}
-				db.getSortedSetRevRangeByScore('uid:' + uid + ':chat:room:' + roomId + ':mids', start, count, '+inf', min, next);
+				db.getSortedSetRevRange('uid:' + uid + ':chat:room:' + roomId + ':mids', start, stop, next);
 			},
 			function(mids, next) {
 				if (!Array.isArray(mids) || !mids.length) {

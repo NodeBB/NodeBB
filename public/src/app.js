@@ -281,7 +281,7 @@ app.cacheBuster = null;
 			if (chat.modalExists(roomId)) {
 				loadAndCenter(chat.getModal(roomId));
 			} else {
-				socket.emit('modules.chats.loadRoom', {roomId: roomId}, function(err, roomData) {
+				socket.emit('modules.chats.loadRoom', {roomId: roomId, uid: uid || app.user.uid}, function(err, roomData) {
 					if (err) {
 						return app.alertError(err.message);
 					}

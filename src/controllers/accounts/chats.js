@@ -60,7 +60,6 @@ chatsController.get = function(req, res, callback) {
 					callerUid: req.uid,
 					uid: uid,
 					roomId: req.params.roomid,
-					since: 'recent',
 					isNew: false
 				}),
 				room: async.apply(messaging.getRoomData, req.params.roomid)

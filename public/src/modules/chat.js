@@ -154,131 +154,117 @@ define('chat', [
 		return $('#chat-modal-' + roomId).length !== 0;
 	};
 
-	function checkStatus(chatModal) {
-		socket.emit('user.checkStatus', chatModal.attr('touid'), function(err, status) {
-			if (err) {
-				return app.alertError(err.message);
+	module.createModal = function(data, callback) {
+		app.parseAndTranslate('chat', data, function(chatModal) {
+
+			var uuid = utils.generateUUID();
+			var dragged = false;
+
+			chatModal.attr('id', 'chat-modal-' + data.roomId);
+			chatModal.attr('roomId', data.roomId);
+			chatModal.attr('intervalId', 0);
+			chatModal.attr('UUID', uuid);
+			chatModal.css('position', 'fixed');
+			chatModal.css('zIndex', 100);
+			chatModal.appendTo($('body'));
+			chatModal.find('.timeago').timeago();
+			module.center(chatModal);
+
+			app.loadJQueryUI(function() {
+				chatModal.find('.modal-content').resizable({
+					handles: 'n, e, s, w, se',
+					minHeight: 250,
+					minWidth: 400
+				});
+
+				chatModal.find('.modal-content').on('resize', function(event, ui) {
+					if (ui.originalSize.height === ui.size.height) {
+						return;
+					}
+
+					chatModal.find('.chat-content').css('height', module.calculateChatListHeight(chatModal));
+				});
+
+				chatModal.draggable({
+					start:function() {
+						module.bringModalToTop(chatModal);
+					},
+					stop:function() {
+						chatModal.find('#chat-message-input').focus();
+					},
+					distance: 10,
+					handle: '.modal-header'
+				});
+			});
+
+			chatModal.find('#chat-close-btn').on('click', function() {
+				module.close(chatModal);
+			});
+
+			function gotoChats() {
+				var text = components.get('chat/input').val();
+				$(window).one('action:ajaxify.end', function() {
+					components.get('chat/input').val(text);
+				});
+
+				ajaxify.go('user/' + app.user.userslug + '/chats/' + chatModal.attr('roomId'));
+				module.close(chatModal);
 			}
 
-			app.updateUserStatus(chatModal.find('[component="user/status"]'), status);
-		});
-	}
+			chatModal.find('.modal-header').on('dblclick', gotoChats);
+			chatModal.find('button[data-action="maximize"]').on('click', gotoChats);
 
-	module.createModal = function(data, callback) {
-		templates.parse('chat', data, function(chatTpl) {
-			translator.translate(chatTpl, function (chatTpl) {
+			chatModal.on('click', function() {
+				module.bringModalToTop(chatModal);
 
-				var chatModal = $(chatTpl),
-					uuid = utils.generateUUID(),
+				if (dragged) {
 					dragged = false;
-
-				chatModal.attr('id', 'chat-modal-' + data.roomId);
-				chatModal.attr('roomId', data.roomId);
-				chatModal.attr('intervalId', 0);
-				chatModal.attr('UUID', uuid);
-				chatModal.css('position', 'fixed');
-				chatModal.css('zIndex', 100);
-				chatModal.appendTo($('body'));
-				module.center(chatModal);
-
-				app.loadJQueryUI(function() {
-					chatModal.find('.modal-content').resizable({
-						handles: 'n, e, s, w, se',
-						minHeight: 250,
-						minWidth: 400
-					});
-
-					chatModal.find('.modal-content').on('resize', function(event, ui) {
-						if (ui.originalSize.height === ui.size.height) {
-							return;
-						}
-
-						chatModal.find('.chat-content').css('height', module.calculateChatListHeight(chatModal));
-					});
-
-					chatModal.draggable({
-						start:function() {
-							module.bringModalToTop(chatModal);
-						},
-						stop:function() {
-							chatModal.find('#chat-message-input').focus();
-						},
-						distance: 10,
-						handle: '.modal-header'
-					});
-				});
-
-				chatModal.find('#chat-close-btn').on('click', function() {
-					module.close(chatModal);
-				});
-
-				function gotoChats() {
-					var text = components.get('chat/input').val();
-					$(window).one('action:ajaxify.end', function() {
-						components.get('chat/input').val(text);
-					});
-
-					ajaxify.go('user/' + app.user.userslug + '/chats/' + chatModal.attr('roomId'));
-					module.close(chatModal);
-				}
-
-				chatModal.find('.modal-header').on('dblclick', gotoChats);
-				chatModal.find('button[data-action="maximize"]').on('click', gotoChats);
-
-				chatModal.on('click', function() {
-					module.bringModalToTop(chatModal);
-
-					if (dragged) {
-						dragged = false;
-					}
-				});
-
-				chatModal.on('mousemove', function(e) {
-					if (e.which === 1) {
-						dragged = true;
-					}
-				});
-
-				chatModal.on('mousemove keypress click', function() {
-					if (newMessage) {
-						socket.emit('modules.chats.markRead', data.roomId);
-						newMessage = false;
-					}
-				});
-
-				Chats.addEditDeleteHandler(chatModal.find('[component="chat/messages"]'), data.roomId);
-
-				chatModal.find('[component="chat/controlsToggle"]').on('click', function() {
-					var messagesEl = chatModal.find('[component="chat/messages"]');
-
-					chatModal.find('[component="chat/controls"]').toggle();
-					messagesEl.css('height', module.calculateChatListHeight(chatModal));
-				});
-
-				Chats.addRenameHandler(chatModal.attr('roomId'), chatModal.find('[component="chat/room/name"]'));
-
-				Chats.addSendHandlers(chatModal.attr('roomId'), chatModal.find('#chat-message-input'), chatModal.find('#chat-message-send-btn'));
-
-				Chats.createTagsInput(chatModal.find('.users-tag-input'), data);
-				Chats.createAutoComplete(chatModal.find('[component="chat/input"]'));
-
-				Chats.addScrollHandler(chatModal.attr('roomId'), data.uid, chatModal.find('.chat-content'));
-
-				checkStatus(chatModal);
-
-				taskbar.push('chat', chatModal.attr('UUID'), {
-					title: data.users.length ? data.users[0].username : '',
-					roomId: data.roomId,
-					icon: 'fa-comment',
-					state: ''
-				});
-
-				$(window).trigger('action:chat.loaded', chatModal);
-
-				if (typeof callback === 'function') {
-					callback(chatModal);
 				}
 			});
+
+			chatModal.on('mousemove', function(e) {
+				if (e.which === 1) {
+					dragged = true;
+				}
+			});
+
+			chatModal.on('mousemove keypress click', function() {
+				if (newMessage) {
+					socket.emit('modules.chats.markRead', data.roomId);
+					newMessage = false;
+				}
+			});
+
+			Chats.addEditDeleteHandler(chatModal.find('[component="chat/messages"]'), data.roomId);
+
+			chatModal.find('[component="chat/controlsToggle"]').on('click', function() {
+				var messagesEl = chatModal.find('[component="chat/messages"]');
+
+				chatModal.find('[component="chat/controls"]').toggle();
+				messagesEl.css('height', module.calculateChatListHeight(chatModal));
+			});
+
+			Chats.addRenameHandler(chatModal.attr('roomId'), chatModal.find('[component="chat/room/name"]'));
+
+			Chats.addSendHandlers(chatModal.attr('roomId'), chatModal.find('#chat-message-input'), chatModal.find('#chat-message-send-btn'));
+
+			Chats.createTagsInput(chatModal.find('.users-tag-input'), data);
+			Chats.createAutoComplete(chatModal.find('[component="chat/input"]'));
+
+			Chats.addScrollHandler(chatModal.attr('roomId'), data.uid, chatModal.find('.chat-content'));
+
+			taskbar.push('chat', chatModal.attr('UUID'), {
+				title: data.users.length ? data.users[0].username : '',
+				roomId: data.roomId,
+				icon: 'fa-comment',
+				state: ''
+			});
+
+			$(window).trigger('action:chat.loaded', chatModal);
+
+			if (typeof callback === 'function') {
+				callback(chatModal);
+			}
 		});
 	};
 
