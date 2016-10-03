@@ -189,9 +189,9 @@ module.exports = function(Groups) {
 				if (!checks.exists) {
 					return next(new Error('[[error:no-group]]'));
 				} else if (checks.isMember) {
-					return next(new Error('[[error:group-already-member]]'));
+					return callback();
 				} else if (type === 'invite' && checks.isInvited) {
-					return next(new Error('[[error:group-already-invited]]'));
+					return callback();
 				} else if (type === 'request' && checks.isPending) {
 					return next(new Error('[[error:group-already-requested]]'));
 				}
