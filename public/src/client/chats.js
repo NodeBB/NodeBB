@@ -79,7 +79,6 @@ define('forum/chats', [
 
 		recentChats.init();
 
-		Chats.addSinceHandler(ajaxify.data.roomId, ajaxify.data.uid, $('.expanded-chat .chat-content'), $('.expanded-chat [data-since]'));
 		Chats.addRenameHandler(ajaxify.data.roomId, $('[component="chat/room/name"]'));
 		Chats.addScrollHandler(ajaxify.data.roomId, ajaxify.data.uid, $('.chat-content'));
 	};
@@ -155,16 +154,6 @@ define('forum/chats', [
 
 				messages.prepEdit(inputEl, lastMid, ajaxify.data.roomId);
 			}
-		});
-	};
-
-	Chats.addSinceHandler = function(roomId, uid, chatContentEl, sinceEl) {
-		sinceEl.on('click', function() {
-			var since = $(this).attr('data-since');
-			sinceEl.removeClass('selected');
-			$(this).addClass('selected');
-			Chats.loadChatSince(roomId, uid, chatContentEl, since);
-			return false;
 		});
 	};
 
@@ -301,23 +290,6 @@ define('forum/chats', [
 
 	Chats.switchChat = function(roomid) {
 		ajaxify.go('user/' + ajaxify.data.userslug + '/chats/' + roomid);
-	};
-
-	Chats.loadChatSince = function(roomId, uid, chatContentEl, since) {
-		if (!roomId) {
-			return;
-		}
-		socket.emit('modules.chats.getMessages', {roomId: roomId, uid: uid, since: since, markRead: true}, function(err, messageData) {
-			if (err) {
-				return app.alertError(err.message);
-			}
-			if (!messageData) {
-				return;
-			}
-			chatContentEl.find('[component="chat/message"]').remove();
-
-			messages.appendChatMessage(chatContentEl, messageData);
-		});
 	};
 
 	Chats.addGlobalEventListeners = function() {
