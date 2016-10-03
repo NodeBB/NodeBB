@@ -345,7 +345,7 @@ var social = require('./social');
 		}
 	};
 
-	Topics.getTopicBookmarks = function( tid, callback ){
+	Topics.getTopicBookmarks = function(tid, callback) {
 		db.getSortedSetRangeWithScores(['tid:' + tid + ':bookmarks'], 0, -1, callback);
 	};
 
@@ -372,49 +372,26 @@ var social = require('./social');
 					};
 				});
 
-				async.map(uidData, function(data, mapCallback) {
-					posts.getPostIndices(forkedPosts, data.uid, function(err, indices) {
+				async.eachLimit(uidData, 50, function(data, next) {
+					posts.getPostIndices(forkedPosts, data.uid, function(err, postIndices) {
 						if (err) {
-							return callback(err);
+							return next(err);
 						}
-						data.postIndices = indices;
-						mapCallback(null, data);
-					});
-				}, function(err, results) {
-					if (err) {
-						return callback(err);
-					}
-					async.map(results, function(data, mapCallback) {
-						var uid = data.uid;
+
 						var bookmark = data.bookmark;
 						bookmark = bookmark < maxIndex ? bookmark : maxIndex;
-						var postIndices = data.postIndices;
 
-						for (var i = 0; i < postIndices.length && postIndices[i] < data.bookmark; ++i ){
+						for (var i = 0; i < postIndices.length && postIndices[i] < data.bookmark; ++i) {
 							--bookmark;
 						}
 
 						if (parseInt(bookmark, 10) !== parseInt(data.bookmark, 10)) {
-							mapCallback( null, { uid: uid, bookmark: bookmark } );
+							Topics.setUserBookmark(tid, data.uid, bookmark, next);
 						} else {
-							mapCallback( null, null );
+							next();
 						}
-					}, function(err, results) {
-						if (err) {
-							return callback(err);
-						}
-
-						async.map(results, function(ui, cb) {
-							if( ui && ui.bookmark) {
-								Topics.setUserBookmark(tid, ui.uid, ui.bookmark, cb);
-							} else {
-								return cb(null, null);
-							}
-						}, function(err) {
-							next(err);
-						});
 					});
-				});
+				}, next);
 			}
 		], function(err){
 			callback(err);
