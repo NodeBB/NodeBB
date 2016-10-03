@@ -101,7 +101,9 @@ define('forum/chats', [
 				if (err) {
 					return app.alertError(err.message);
 				}
-
+				if (!data) {
+					return;
+				}
 				messages.parseMessage(data, function(html) {
 					var currentScrollTop = el.scrollTop();
 					var previousHeight = el[0].scrollHeight;
@@ -309,7 +311,9 @@ define('forum/chats', [
 			if (err) {
 				return app.alertError(err.message);
 			}
-
+			if (!messageData) {
+				return;
+			}
 			chatContentEl.find('[component="chat/message"]').remove();
 
 			messages.appendChatMessage(chatContentEl, messageData);

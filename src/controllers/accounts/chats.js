@@ -30,10 +30,13 @@ chatsController.get = function(req, res, callback) {
 			if (!uid) {
 				return callback();
 			}
-			messaging.getRecentChats(uid, 0, 19, next);
+			messaging.getRecentChats(req.uid, uid, 0, 19, next);
 		},
 		function(_recentChats, next) {
 			recentChats = _recentChats;
+			if (!recentChats) {
+				return callback();
+			}
 			if (!req.params.roomid) {
 				return res.render('chats', {
 					rooms: recentChats.rooms,
@@ -48,12 +51,13 @@ chatsController.get = function(req, res, callback) {
 			messaging.isUserInRoom(req.uid, req.params.roomid, next);
 		},
 		function(inRoom, next) {
-			if (!inRoom && parseInt(req.uid, 10) === parseInt(uid, 10)) {
+			if (!inRoom) {
 				return callback();
 			}
 			async.parallel({
 				users: async.apply(messaging.getUsersInRoom, req.params.roomid, 0, -1),
 				messages: async.apply(messaging.getMessages, {
+					callerUid: req.uid,
 					uid: uid,
 					roomId: req.params.roomid,
 					since: 'recent',
