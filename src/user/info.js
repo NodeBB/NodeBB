@@ -61,24 +61,15 @@ module.exports = function(User) {
 		});
 	};
 
-	User.getEmailHistory = function(uid, callback) {
-		db.getSortedSetRevRangeWithScores('user:' + uid + ':emails', 0, -1, function(err, data) {
-			callback(err, data.map(function(set) {
+	User.getHistory = function(set, callback) {
+		db.getSortedSetRevRangeWithScores(set, 0, -1, function(err, data) {
+			if (err) {
+				return callback(err);
+			}
+			callback(null, data.map(function(set) {
 				set.timestamp = set.score;
 				set.timestampISO = new Date(set.score).toISOString();
-				set.value = set.value.split(':')[0];
-				delete set.score;
-				return set;
-			}));
-		});
-	};
-
-	User.getUsernameHistory = function(uid, callback) {
-		db.getSortedSetRevRangeWithScores('user:' + uid + ':usernames', 0, -1, function(err, data) {
-			callback(err, data.map(function(set) {
-				set.timestamp = set.score;
-				set.timestampISO = new Date(set.score).toISOString();
-				set.value = set.value.split(':')[0];
+				set.value = validator.escape(String(set.value.split(':')[0]));
 				delete set.score;
 				return set;
 			}));

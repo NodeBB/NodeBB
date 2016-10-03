@@ -221,6 +221,7 @@ Controllers.registerInterstitial = function(req, res, next) {
 			}
 
 			res.render('registerComplete', {
+				title: '[[pages:registration-complete]]',
 				errors: errors,
 				sections: sections
 			});

@@ -319,7 +319,7 @@ define('admin/manage/users', ['admin/modules/selectable', 'translator'], functio
 					}
 
 					templates.parse('admin/manage/users', 'users', data, function(html) {
-						$('#users-container').html(html);
+						$('#users-container').html(html).find('.timeago').timeago();
 
 						$('.fa-spinner').addClass('hidden');
 

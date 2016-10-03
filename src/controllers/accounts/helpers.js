@@ -87,6 +87,10 @@ helpers.getUserDataByUserSlug = function(userslug, callerUID, callback) {
 				userData.ips = results.ips;
 			}
 
+			if (!isAdmin && !isGlobalModerator) {
+				userData.moderationNote = undefined;
+			}
+
 			userData.uid = userData.uid;
 			userData.yourid = callerUID;
 			userData.theirid = userData.uid;
@@ -120,6 +124,7 @@ helpers.getUserDataByUserSlug = function(userslug, callerUID, callback) {
 			userData.signature = validator.escape(String(userData.signature || ''));
 			userData.aboutme = validator.escape(String(userData.aboutme || ''));
 			userData.birthday = validator.escape(String(userData.birthday || ''));
+			userData.moderationNote = validator.escape(String(userData.moderationNote || ''));
 
 			userData['cover:url'] = userData['cover:url'] || require('../../coverPhoto').getDefaultProfileCover(userData.uid);
 			userData['cover:position'] = userData['cover:position'] || '50% 50%';

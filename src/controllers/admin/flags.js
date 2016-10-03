@@ -56,7 +56,7 @@ flagsController.get = function(req, res, next) {
 			assignees: results.assignees,
 			analytics: results.analytics,
 			categories: results.categories,
-			byUsername: validator(String(byUsername)),
+			byUsername: validator.escape(String(byUsername)),
 			sortByCount: sortBy === 'count',
 			sortByTime: sortBy === 'time',
 			pagination: pagination.create(page, pageCount, req.query),

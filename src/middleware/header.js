@@ -120,7 +120,7 @@ module.exports = function(middleware) {
 			results.user.isAdmin = results.isAdmin;
 			results.user.isGlobalMod = results.isGlobalMod;
 			results.user.uid = parseInt(results.user.uid, 10);
-			results.user.email = String(results.user.email).replace(/\\/g, '\\\\');
+			results.user.email = String(results.user.email).replace(/\\/g, '\\\\').replace(/"/g, '\\"');
 			results.user['email:confirmed'] = parseInt(results.user['email:confirmed'], 10) === 1;
 			results.user.isEmailConfirmSent = !!results.isEmailConfirmSent;
 

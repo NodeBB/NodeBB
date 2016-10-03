@@ -79,7 +79,7 @@
 
 						<a href="{config.relative_path}/user/{users.userslug}" target="_blank">{users.username} ({users.uid})</a><br/>
 						<!-- IF users.email -->
-						<small><span title="{users.email}">{users.email}</span></small>
+						<small><span title="{users.email}">{users.email}</span></small><br/>
 						<!-- ENDIF users.email -->
 
 						joined <span class="timeago" title="{users.joindateISO}"></span><br/>

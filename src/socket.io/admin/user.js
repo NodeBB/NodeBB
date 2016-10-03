@@ -1,7 +1,8 @@
 "use strict";
 
-
 var async = require('async');
+var validator = require('validator');
+
 var db = require('../../database');
 var groups = require('../../groups');
 var user = require('../../user');
@@ -204,7 +205,7 @@ User.search = function(socket, data, callback) {
 
 			userData.forEach(function(user, index) {
 				if (user && userInfo[index]) {
-					user.email = userInfo[index].email || '';
+					user.email = validator.escape(String(userInfo[index].email || ''));
 					user.flags = userInfo[index].flags || 0;
 				}
 			});

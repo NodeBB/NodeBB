@@ -85,13 +85,19 @@ app.cacheBuster = null;
 	};
 
 	app.logout = function() {
+		$(window).trigger('action:app.logout');
 		$.ajax(config.relative_path + '/logout', {
 			type: 'POST',
 			headers: {
 				'x-csrf-token': config.csrf_token
 			},
 			success: function() {
-				window.location.href = config.relative_path + '/';
+				var payload = {
+					next: config.relative_path + '/'
+				};
+
+				$(window).trigger('action:app.loggedOut', payload);
+				window.location.href = payload.next;
 			}
 		});
 	};
@@ -260,7 +266,7 @@ app.cacheBuster = null;
 		}
 	};
 
-	app.openChat = function (roomId) {
+	app.openChat = function (roomId, uid) {
 		if (!app.user.uid) {
 			return app.alertError('[[error:not-logged-in]]');
 		}
@@ -275,13 +281,14 @@ app.cacheBuster = null;
 			if (chat.modalExists(roomId)) {
 				loadAndCenter(chat.getModal(roomId));
 			} else {
-				socket.emit('modules.chats.loadRoom', {roomId: roomId}, function(err, roomData) {
+				socket.emit('modules.chats.loadRoom', {roomId: roomId, uid: uid || app.user.uid}, function(err, roomData) {
 					if (err) {
 						return app.alertError(err.message);
 					}
 					roomData.users = roomData.users.filter(function(user) {
 						return user && parseInt(user.uid, 10) !== parseInt(app.user.uid, 10);
 					});
+					roomData.uid = uid || app.user.uid;
 					chat.createModal(roomData, loadAndCenter);
 				});
 			}
