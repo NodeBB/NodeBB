@@ -60,8 +60,6 @@
 	</div>
 </div>
 
-<!-- IMPORT admin/settings/header.tpl -->
-
 <div class="row">
 	<div class="col-sm-2 col-xs-12 settings-header">
 		Profile Avatars
