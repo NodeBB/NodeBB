@@ -1,19 +1,19 @@
 'use strict';
 
-var winston = require('winston'),
-	nconf = require('nconf'),
-	fs = require('fs'),
-	path = require('path'),
-	less = require('less'),
-	async = require('async'),
-	autoprefixer = require('autoprefixer'),
-	postcss = require('postcss'),
+var winston = require('winston');
+var nconf = require('nconf');
+var fs = require('fs');
+var path = require('path');
+var less = require('less');
+var async = require('async');
+var autoprefixer = require('autoprefixer');
+var postcss = require('postcss');
 
-	plugins = require('../plugins'),
-	emitter = require('../emitter'),
-	db = require('../database'),
-	file = require('../file'),
-	utils = require('../../public/src/utils');
+var plugins = require('../plugins');
+var emitter = require('../emitter');
+var db = require('../database');
+var file = require('../file');
+var utils = require('../../public/src/utils');
 
 module.exports = function(Meta) {
 

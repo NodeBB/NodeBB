@@ -1,11 +1,9 @@
 'use strict';
 
-var async = require('async'),
-	winston = require('winston'),
-	validator = require('validator');
+var validator = require('validator');
 
-var db = require('../database'),
-	analytics = require('../analytics');
+var db = require('../database');
+var analytics = require('../analytics');
 
 module.exports = function(Meta) {
 
@@ -19,7 +17,7 @@ module.exports = function(Meta) {
 	};
 
 	Meta.errors.get = function(escape, callback) {
-		db.getSortedSetRevRangeByScoreWithScores('errors:404', 0, -1, '+inf', '-inf', function(err, data) {
+		db.getSortedSetRevRangeWithScores('errors:404', 0, -1, function(err, data) {
 			if (err) {
 				return callback(err);
 			}

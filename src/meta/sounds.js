@@ -8,7 +8,6 @@ var rimraf = require('rimraf');
 var mkdirp = require('mkdirp');
 var async = require('async');
 
-var user = require('../user');
 var plugins = require('../plugins');
 var db = require('../database');
 
@@ -60,6 +59,7 @@ module.exports = function(Meta) {
 	};
 
 	Meta.sounds.getMapping = function(uid, callback) {
+		var user = require('../user');
 		async.parallel({
 			defaultMapping: function(next) {
 				db.getObject('settings:sounds', next);

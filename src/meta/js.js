@@ -1,15 +1,15 @@
 'use strict';
 
-var winston = require('winston'),
-	fork = require('child_process').fork,
-	path = require('path'),
-	async = require('async'),
-	nconf = require('nconf'),
-	fs = require('fs'),
-	file = require('../file'),
-	plugins = require('../plugins'),
-	emitter = require('../emitter'),
-	utils = require('../../public/src/utils');
+var winston = require('winston');
+var fork = require('child_process').fork;
+var path = require('path');
+var async = require('async');
+var nconf = require('nconf');
+var fs = require('fs');
+var file = require('../file');
+var plugins = require('../plugins');
+var emitter = require('../emitter');
+var utils = require('../../public/src/utils');
 
 module.exports = function(Meta) {
 
