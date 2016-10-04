@@ -302,7 +302,6 @@ define('chat', [
 	module.load = function(uuid) {
 		var chatModal = $('div[UUID="' + uuid + '"]');
 		chatModal.removeClass('hide');
-		checkStatus(chatModal);
 		taskbar.updateActive(uuid);
 		ChatsMessages.scrollToBottom(chatModal.find('.chat-content'));
 		module.bringModalToTop(chatModal);
