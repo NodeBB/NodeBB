@@ -1,5 +1,6 @@
 'use strict';
 
+var async = require('async');
 var nconf = require('nconf');
 var validator = require('validator');
 
@@ -18,7 +19,6 @@ module.exports = function(middleware) {
 				if (err) {
 					return next(err);
 				}
-
 				self.send(str);
 			};
 
@@ -27,77 +27,85 @@ module.exports = function(middleware) {
 				fn = options;
 				options = {};
 			}
+			if ('function' !== typeof fn) {
+				fn = defaultFn;
+			}
 
-			plugins.fireHook('filter:' + template + '.build', {req: req, res: res, templateData: options}, function(err, data) {
-				if (err) {
-					return next(err);
+			var ajaxifyData;
+			async.waterfall([
+				function(next) {
+					plugins.fireHook('filter:' + template + '.build', {req: req, res: res, templateData: options}, next);
+				},
+				function(data, next) {
+					options = data.templateData;
+
+					options.loggedIn = !!req.uid;
+					options.relative_path = nconf.get('relative_path');
+					options.template = {name: template};
+					options.template[template] = true;
+					options.url = (req.baseUrl + req.path).replace(/^\/api/, '');
+					options.bodyClass = buildBodyClass(req);
+
+					res.locals.template = template;
+					options._locals = undefined;
+
+					if (res.locals.isAPI) {
+						if (req.route && req.route.path === '/api/') {
+							options.title = '[[pages:home]]';
+						}
+
+						return res.json(options);
+					}
+
+					ajaxifyData = JSON.stringify(options).replace(/<\//g, '<\\/');
+
+					async.parallel({
+						header: function(next) {
+							renderHeaderFooter('renderHeader', req, res, options, next);
+						},
+						content: function(next) {
+							render.call(self, template, options, next);
+						},
+						footer: function(next) {
+							renderHeaderFooter('renderFooter', req, res, options, next);
+						}
+					}, next);
+				},
+				function(results, next) {
+					var str = results.header +
+						(res.locals.postHeader || '') +
+						results.content +
+						(res.locals.preFooter || '') +
+						results.footer;
+
+					translate(str, req, res, next);
+				},
+				function(translated, next) {
+					next(null, translated + '<script id="ajaxify-data" type="application/json">' + ajaxifyData + '</script>');
 				}
-
-				options = data.templateData;
-
-				options.loggedIn = !!req.uid;
-				options.relative_path = nconf.get('relative_path');
-				options.template = {name: template};
-				options.template[template] = true;
-				options.url = (req.baseUrl + req.path).replace(/^\/api/, '');
-				options.bodyClass = buildBodyClass(req);
-
-				res.locals.template = template;
-				options._locals = undefined;
-
-				if (res.locals.isAPI) {
-					if (req.route && req.route.path === '/api/') {
-						options.title = '[[pages:home]]';
-					}
-
-					return res.json(options);
-				}
-
-				if ('function' !== typeof fn) {
-					fn = defaultFn;
-				}
-
-				var ajaxifyData = JSON.stringify(options);
-				ajaxifyData = ajaxifyData.replace(/<\//g, '<\\/');
-
-				render.call(self, template, options, function(err, str) {
-					if (err) {
-						return fn(err);
-					}
-
-					str = (res.locals.postHeader ? res.locals.postHeader : '') + str + (res.locals.preFooter ? res.locals.preFooter : '');
-
-					if (res.locals.footer) {
-						str = str + res.locals.footer;
-					} else if (res.locals.adminFooter) {
-						str = str + res.locals.adminFooter;
-					}
-
-					if (res.locals.renderHeader || res.locals.renderAdminHeader) {
-						var method = res.locals.renderHeader ? middleware.renderHeader : middleware.admin.renderHeader;
-						method(req, res, options, function(err, template) {
-							if (err) {
-								return fn(err);
-							}
-							str = template + str;
-							var language = res.locals.config ? res.locals.config.userLang || 'en_GB' : 'en_GB';
-							language = req.query.lang ? validator.escape(String(req.query.lang)) : language;
-							translator.translate(str, language, function(translated) {
-								translated = translator.unescape(translated);
-								translated = translated + '<script id="ajaxify-data" type="application/json">' + ajaxifyData + '</script>';
-								fn(err, translated);
-							});
-						});
-					} else {
-						str = str + '<script id="ajaxify-data" type="application/json">' + ajaxifyData + '</script>';
-						fn(err, str);
-					}
-				});
-			});
+			], fn);
 		};
 
 		next();
 	};
+
+	function renderHeaderFooter(method, req, res, options, next) {
+		if (res.locals.renderHeader) {
+			middleware[method](req, res, options, next);
+		} else if (res.locals.renderAdminHeader) {
+			middleware.admin[method](req, res, options, next);
+		} else {
+			next(null, '');
+		}
+	}
+
+	function translate(str, req, res, next) {
+		var language = res.locals.config ? res.locals.config.userLang || 'en_GB' : 'en_GB';
+		language = req.query.lang ? validator.escape(String(req.query.lang)) : language;
+		translator.translate(str, language, function(translated) {
+			next(null, translator.unescape(translated));
+		});
+	}
 
 	function buildBodyClass(req) {
 		var clean = req.path.replace(/^\/api/, '').replace(/^\/|\/$/g, '');
