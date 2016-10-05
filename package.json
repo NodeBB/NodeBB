@@ -13,8 +13,7 @@
     "start": "node loader.js",
     "lint": "eslint --cache .",
     "pretest": "npm run lint",
-    "test": "./node_modules/.bin/istanbul cover ./node_modules/.bin/_mocha -- ./tests -t 10000",
-    "test-windows": "./node_modules/.bin/_mocha.cmd ./tests -t 10000"
+    "test": "istanbul cover _mocha test"
   },
   "dependencies": {
     "async": "~1.5.0",
@@ -98,7 +97,7 @@
     "grunt": "~0.4.5",
     "grunt-contrib-watch": "^1.0.0",
     "istanbul": "^0.4.2",
-    "mocha": "~1.13.0"
+    "mocha": "~3.1.0"
   },
   "bugs": {
     "url": "https://github.com/NodeBB/NodeBB/issues"
