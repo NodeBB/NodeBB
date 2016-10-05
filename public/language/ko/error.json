@@ -62,6 +62,7 @@
     "content-too-long": "게시물의 내용이 너무 깁니다. 내용은 최대 %1자 이내로 작성할 수 있습니다.",
     "title-too-short": "제목이 너무 짧습니다. 제목은 최소 %1자 이상이어야 합니다.",
     "title-too-long": "제목이 너무 깁니다. 제목은 최대 %1자 이내로 작성할 수 있습니다.",
+    "category-not-selected": "Category not selected.",
     "too-many-posts": "새 게시물 작성은 %1초마다 가능합니다 - 조금 천천히 작성해주세요.",
     "too-many-posts-newbie": "신규 사용자는 %2 만큼의 인지도를 얻기 전까지 %1초마다 게시물을 작성할 수 있습니다.  조금 천천히 작성해주세요.",
     "tag-too-short": "꼬리표가 너무 짧습니다. 꼬리표는 최소 %1자 이상이어야 합니다.",

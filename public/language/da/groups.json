@@ -50,5 +50,7 @@
     "membership.leave-group": "Forlad Gruppe",
     "membership.reject": "Afvis",
     "new-group.group_name": "Gruppe Navn:",
-    "upload-group-cover": "Upload Gruppe coverbillede"
+    "upload-group-cover": "Upload Gruppe coverbillede",
+    "bulk-invite-instructions": "Enter a list of comma separated usernames to invite to this group",
+    "bulk-invite": "Bulk Invite"
 }

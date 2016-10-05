@@ -50,5 +50,7 @@
     "membership.leave-group": "Quitter le groupe",
     "membership.reject": "Refuser",
     "new-group.group_name": "Nom du groupe :",
-    "upload-group-cover": "Envoyer une image de groupe"
+    "upload-group-cover": "Envoyer une image de groupe",
+    "bulk-invite-instructions": "Entrez une liste de nom d'utilisateurs séparés par des virgules pour les inviter à rejoindre ce groupe.",
+    "bulk-invite": "Invitation multiple"
 }

@@ -50,5 +50,7 @@
     "membership.leave-group": "Покинуть",
     "membership.reject": "Отклонить",
     "new-group.group_name": "Название группы:",
-    "upload-group-cover": "Загрузить обложку группы"
+    "upload-group-cover": "Загрузить обложку группы",
+    "bulk-invite-instructions": "Enter a list of comma separated usernames to invite to this group",
+    "bulk-invite": "Bulk Invite"
 }

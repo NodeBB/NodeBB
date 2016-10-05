@@ -38,6 +38,7 @@
     "composer.upload-picture": "Nahrát obrázek",
     "composer.upload-file": "Nahrát soubor",
     "composer.zen_mode": "Zen Mode",
+    "composer.select_category": "Select a category",
     "bootbox.ok": "OK",
     "bootbox.cancel": "Zrušit",
     "bootbox.confirm": "Potvrdit",

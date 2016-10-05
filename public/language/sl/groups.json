@@ -50,5 +50,7 @@
     "membership.leave-group": "Zapusti skupino",
     "membership.reject": "Zavrni",
     "new-group.group_name": "Ime skupine:",
-    "upload-group-cover": "Upload group cover"
+    "upload-group-cover": "Upload group cover",
+    "bulk-invite-instructions": "Enter a list of comma separated usernames to invite to this group",
+    "bulk-invite": "Bulk Invite"
 }

@@ -123,5 +123,7 @@
     "info.banned-reason-label": "Причина",
     "info.banned-no-reason": "Няма посочена причина.",
     "info.username-history": "История на потребителските имена",
-    "info.email-history": "Историята на е-пощите"
+    "info.email-history": "Историята на е-пощите",
+    "info.moderation-note": "Moderation Note",
+    "info.moderation-note.success": "Moderation note saved"
 }

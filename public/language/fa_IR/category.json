@@ -14,7 +14,7 @@
     "ignoring": "در حال نادیده گرفتن",
     "watching.description": "نمایش موضوعات خوانده نشده",
     "ignoring.description": "هنوز موضوعات خوانده نشده را نشان نده",
-    "watch.message": "در حال حاضر شما بروز رسانی های این دسته بندی را دنبال می کنید",
-    "ignore.message": "در حال حاضر شما بروز رسانی های این دسته بندی را نادیده میگیرد",
+    "watch.message": "You are now watching updates from this category and all subcategories",
+    "ignore.message": "You are now ignoring updates from this category and all subcategories",
     "watched-categories": "دسته بندی های پیگیری شده"
 }

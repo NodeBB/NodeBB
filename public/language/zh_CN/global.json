@@ -19,6 +19,7 @@
     "welcome_back": "欢迎回来",
     "you_have_successfully_logged_in": "您已成功登录",
     "save_changes": "保存更改",
+    "save": "Save",
     "close": "关闭",
     "pagination": "分页",
     "pagination.out_of": "%1 / %2",

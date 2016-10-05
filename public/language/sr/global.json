@@ -19,6 +19,7 @@
     "welcome_back": "Добродошли поново",
     "you_have_successfully_logged_in": "Успешно сте се пријавили",
     "save_changes": "Сними измене",
+    "save": "Save",
     "close": "Затвори",
     "pagination": "Обележавање страна",
     "pagination.out_of": "%1 од %2",

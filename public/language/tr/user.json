@@ -123,5 +123,7 @@
     "info.banned-reason-label": "Gerekçe",
     "info.banned-no-reason": "Gerekçe belirtilmedi.",
     "info.username-history": "Kullanıcı Adı Geçmişi",
-    "info.email-history": "Email Geçmişi"
+    "info.email-history": "Email Geçmişi",
+    "info.moderation-note": "Moderation Note",
+    "info.moderation-note.success": "Moderation note saved"
 }

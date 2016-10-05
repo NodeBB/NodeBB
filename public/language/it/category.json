@@ -14,7 +14,7 @@
     "ignoring": "Ignorato",
     "watching.description": "Mostra discussione in non letti",
     "ignoring.description": "Non mostrare discussione in non letti",
-    "watch.message": "Non stai seguendo gli aggiornamenti di questa categoria",
-    "ignore.message": "Da ora saranno ignorati gli aggiornamenti di questa categoria",
+    "watch.message": "You are now watching updates from this category and all subcategories",
+    "ignore.message": "You are now ignoring updates from this category and all subcategories",
     "watched-categories": "Categorie osservate"
 }

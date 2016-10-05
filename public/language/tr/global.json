@@ -19,6 +19,7 @@
     "welcome_back": "Tekrar Hoşgeldiniz",
     "you_have_successfully_logged_in": "Başarıyla giriş yaptınız!",
     "save_changes": "Değişiklikleri kaydet",
+    "save": "Save",
     "close": "Kapat",
     "pagination": "Sayfalara numara koyma",
     "pagination.out_of": "%1 - %2",

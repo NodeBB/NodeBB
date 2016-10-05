@@ -62,6 +62,7 @@
     "content-too-long": "Prosimo napišite krajšo objavo. Objave ne smejo vsebovati več kot %1 znak(ov).",
     "title-too-short": "Prosimo vnesite daljši naslov. Naslovi morajo vsebovati vsaj %1 znak(ov).",
     "title-too-long": "Prosimo napišite krajši naslov. Naslovi ne smejo vsebovati več kot %1 znak(ov).",
+    "category-not-selected": "Category not selected.",
     "too-many-posts": "Objavljate lahko na vsake %1 sekund - prosimo počakajte pred novo objavo.",
     "too-many-posts-newbie": "Kot nov uporabnik lahko objavljate le vsakih %1 sekund(o/i/e), dokler ne dosežete vsaj %2 ugled(a/e/ov) - prosimo počakajte pred novo objavo.",
     "tag-too-short": "Prosimo vnesite daljšo oznako. Oznake morajo vsebovati vsaj %1 znak(ov).",
