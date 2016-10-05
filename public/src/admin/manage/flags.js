@@ -22,6 +22,11 @@ define('admin/manage/flags', [
 		updateFlagDetails(ajaxify.data.posts);
 
 		components.get('posts/flags').on('click', '[component="posts/flag/update"]', updateFlag);
+
+		// Open flag as indicated in location bar
+		if (window.location.hash.startsWith('#flag-pid-')) {
+			$(window.location.hash).collapse('toggle');
+		}
 	};
 
 	function handleDismiss() {
