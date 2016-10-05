@@ -269,13 +269,8 @@ module.exports = function(Posts) {
 
 			// Track new additions
 			for(prop in flagObj) {
-				if (flagObj.hasOwnProperty(prop) && !postData.hasOwnProperty('flag:' + prop)) {
+				if (flagObj.hasOwnProperty(prop) && !postData.hasOwnProperty('flag:' + prop) && flagObj[prop].length) {
 					changes.push(prop);
-				}
-
-				// Generate changeset for object modification
-				if (flagObj.hasOwnProperty(prop)) {
-					changeset['flag:' + prop] = flagObj[prop];
 				}
 			}
 
@@ -289,6 +284,11 @@ module.exports = function(Posts) {
 					changes.push(prop.slice(5));
 				}
 			}
+
+			changeset = changes.reduce(function(memo, prop) {
+				memo['flag:' + prop] = flagObj[prop];
+				return memo;
+			}, {});
 
 			// Append changes to history string
 			if (changes.length) {
@@ -323,7 +323,11 @@ module.exports = function(Posts) {
 			}
 
 			// Save flag data into post hash
-			Posts.setPostFields(pid, changeset, callback);
+			if (changes.length) {
+				Posts.setPostFields(pid, changeset, callback);
+			} else {
+				setImmediate(callback);
+			}
 		});
 	};
 

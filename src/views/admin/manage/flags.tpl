@@ -134,7 +134,6 @@
 										<div class="form-group">
 											<label for="{posts.pid}-assignee">[[topic:flag_manage_assignee]]</label>
 											<select class="form-control" id="{posts.pid}-assignee" name="assignee">
-												<option value="">No Assignee</option>
 												<!-- BEGIN assignees -->
 												<option value="{assignees.uid}">{assignees.username}</option>
 												<!-- END assignees -->
