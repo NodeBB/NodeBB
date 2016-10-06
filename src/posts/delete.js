@@ -35,9 +35,6 @@ module.exports = function(Posts) {
 						db.sortedSetRemove('cid:' + topicData.cid + ':pids', pid, next);
 					},
 					function(next) {
-						Posts.dismissFlag(pid, next);
-					},
-					function(next) {
 						topics.updateTeaser(postData.tid, next);
 					}
 				], next);

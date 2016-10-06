@@ -133,7 +133,8 @@ module.exports = function(Posts) {
 						], next);
 					},
 					async.apply(db.deleteObjectField, 'post:' + pid, 'flags'),
-					async.apply(db.delete, 'pid:' + pid + ':flag:uid:reason')
+					async.apply(db.delete, 'pid:' + pid + ':flag:uid:reason'),
+					async.apply(db.deleteObjectFields, 'post:' + pid, ['flag:state', 'flag:assignee', 'flag:notes', 'flag:history'])
 				], next);
 			},
 			function(results, next) {
