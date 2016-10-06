@@ -62,6 +62,7 @@
     "content-too-long": "請輸入一個短一點的張貼內容。張貼內容長度不能超過 %1 字元。",
     "title-too-short": "請輸入一個長一點的標題。標題長度不能少於 %1 字元。",
     "title-too-long": "請輸入一個短一點的標題。標題長度不能超過 %1 字元。",
+    "category-not-selected": "Category not selected.",
     "too-many-posts": "在張貼 %1 秒後，你才能再張貼文章 - 請在重新張貼前等待這個時間。",
     "too-many-posts-newbie": "新使用者需要直到獲得 %2 聲譽後，才能在每 %1 秒後進行張貼一篇文章 - 請在重新張貼前等待這個時間。",
     "tag-too-short": "請輸入一個長一點的標籤。標籤長度不能少於 %1 字元。",

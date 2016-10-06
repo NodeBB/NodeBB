@@ -13,8 +13,7 @@
     "start": "node loader.js",
     "lint": "eslint --cache .",
     "pretest": "npm run lint",
-    "test": "./node_modules/.bin/istanbul cover ./node_modules/.bin/_mocha -- ./tests -t 10000",
-    "test-windows": "./node_modules/.bin/_mocha.cmd ./tests -t 10000"
+    "test": "istanbul cover _mocha test"
   },
   "dependencies": {
     "async": "~1.5.0",
@@ -61,8 +60,8 @@
     "nodebb-plugin-spam-be-gone": "0.4.10",
     "nodebb-rewards-essentials": "0.0.9",
     "nodebb-theme-lavender": "3.0.14",
-    "nodebb-theme-persona": "4.1.54",
-    "nodebb-theme-vanilla": "5.1.35",
+    "nodebb-theme-persona": "4.1.56",
+    "nodebb-theme-vanilla": "5.1.37",
     "nodebb-widget-essentials": "2.0.11",
     "nodemailer": "2.0.0",
     "nodemailer-sendmail-transport": "1.0.0",
@@ -98,7 +97,7 @@
     "grunt": "~0.4.5",
     "grunt-contrib-watch": "^1.0.0",
     "istanbul": "^0.4.2",
-    "mocha": "~1.13.0"
+    "mocha": "~3.1.0"
   },
   "bugs": {
     "url": "https://github.com/NodeBB/NodeBB/issues"

@@ -19,6 +19,7 @@
     "welcome_back": "ยินดีต้อนรับ",
     "you_have_successfully_logged_in": "คุณได้เข้าสู่ระบบแล้ว",
     "save_changes": "บันทึกการเปลี่ยนแปลง",
+    "save": "Save",
     "close": "ปิด",
     "pagination": "ให้เลขหน้า",
     "pagination.out_of": "%1 จาก %2",

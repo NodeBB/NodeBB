@@ -14,7 +14,7 @@
     "ignoring": "Ignoring",
     "watching.description": "Show topics in unread",
     "ignoring.description": "Do not show topics in unread",
-    "watch.message": "Bạn đang theo dõi các cập nhật của danh mục này",
-    "ignore.message": "Bạn đã tắt cập nhật từ chuyên mục này",
+    "watch.message": "You are now watching updates from this category and all subcategories",
+    "ignore.message": "You are now ignoring updates from this category and all subcategories",
     "watched-categories": "Chuyên mục đang theo dõi"
 }

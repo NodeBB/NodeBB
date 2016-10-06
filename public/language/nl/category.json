@@ -14,7 +14,7 @@
     "ignoring": "Negerend",
     "watching.description": "Toon ongelezen onderwerpen",
     "ignoring.description": "Toon geen onderwerpen onder ongelezen onderwerpen",
-    "watch.message": "Van deze categorie worden nu meldingen ontvangen",
-    "ignore.message": "Er worden geen meldingen van deze categorie ontvangen",
+    "watch.message": "You are now watching updates from this category and all subcategories",
+    "ignore.message": "You are now ignoring updates from this category and all subcategories",
     "watched-categories": "Categorieën die bekeken zijn."
 }

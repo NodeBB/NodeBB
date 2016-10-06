@@ -50,5 +50,7 @@
     "membership.leave-group": "خروج از گروه",
     "membership.reject": "رد",
     "new-group.group_name": "نام گروه:",
-    "upload-group-cover": "آپلود کاور گروه"
+    "upload-group-cover": "آپلود کاور گروه",
+    "bulk-invite-instructions": "Enter a list of comma separated usernames to invite to this group",
+    "bulk-invite": "Bulk Invite"
 }

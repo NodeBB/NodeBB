@@ -38,6 +38,7 @@
     "composer.upload-picture": "Upload Image",
     "composer.upload-file": "Upload File",
     "composer.zen_mode": "Zen Mode",
+    "composer.select_category": "Select a category",
     "bootbox.ok": "Sawa",
     "bootbox.cancel": "Isubire",
     "bootbox.confirm": "Emeza",

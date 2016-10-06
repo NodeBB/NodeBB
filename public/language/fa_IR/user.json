@@ -123,5 +123,7 @@
     "info.banned-reason-label": "دلیل",
     "info.banned-no-reason": "هیچ دلیلی ارایه نشد.",
     "info.username-history": "تاریخچه نام کاربری",
-    "info.email-history": "تاریخچه رایانامه"
+    "info.email-history": "تاریخچه رایانامه",
+    "info.moderation-note": "Moderation Note",
+    "info.moderation-note.success": "Moderation note saved"
 }

@@ -1,8 +1,8 @@
 'use strict';
 
-var path = require('path'),
-	fs = require('fs'),
-	winston = require('winston');
+var path = require('path');
+var fs = require('fs');
+var winston = require('winston');
 
 module.exports = function(Meta) {
 

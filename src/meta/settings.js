@@ -1,7 +1,7 @@
 'use strict';
 
-var db = require('../database'),
-	plugins = require('../plugins');
+var db = require('../database');
+var plugins = require('../plugins');
 
 module.exports = function(Meta) {
 

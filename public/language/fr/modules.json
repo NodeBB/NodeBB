@@ -38,6 +38,7 @@
     "composer.upload-picture": "Envoyer une image",
     "composer.upload-file": "Envoyer un fichier",
     "composer.zen_mode": "Mode Zen",
+    "composer.select_category": "Sélectionnez une catégorie",
     "bootbox.ok": "OK",
     "bootbox.cancel": "Annuler",
     "bootbox.confirm": "Confirmer",

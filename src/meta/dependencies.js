@@ -1,20 +1,21 @@
 'use strict';
 
-var path = require('path'),
-	fs = require('fs'),
-	async = require('async'),
-	semver = require('semver'),
-	winston = require('winston'),
+var path = require('path');
+var fs = require('fs');
+var async = require('async');
+var semver = require('semver');
+var winston = require('winston');
 
-	pkg = require('../../package.json');
+var pkg = require('../../package.json');
 
 module.exports = function(Meta) {
 	Meta.dependencies = {};
 
 	Meta.dependencies.check = function(callback) {
-		var modules = Object.keys(pkg.dependencies),
-			depsOutdated = false,
-			depsMissing = false;
+		var modules = Object.keys(pkg.dependencies);
+		var depsOutdated = false;
+		var depsMissing = false;
+		
 		winston.verbose('Checking dependencies for outdated modules');
 
 		async.every(modules, function(module, next) {

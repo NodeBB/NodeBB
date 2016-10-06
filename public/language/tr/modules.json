@@ -38,6 +38,7 @@
     "composer.upload-picture": "Görsel Yükle",
     "composer.upload-file": "Dosya Yükle",
     "composer.zen_mode": "Zen Modu",
+    "composer.select_category": "Select a category",
     "bootbox.ok": "Tamam",
     "bootbox.cancel": "İptal",
     "bootbox.confirm": "Onayla",

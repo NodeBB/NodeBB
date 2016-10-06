@@ -14,7 +14,7 @@
     "ignoring": "Ignorando",
     "watching.description": "Amosa-los temas en \"non lidos\"",
     "ignoring.description": "Non amosa-los temas en \"non lidos\"",
-    "watch.message": "Agora segues as novidades desta categoría.",
-    "ignore.message": "Agora ignoras as novidades nesta categoría.",
+    "watch.message": "You are now watching updates from this category and all subcategories",
+    "ignore.message": "You are now ignoring updates from this category and all subcategories",
     "watched-categories": "Categorías vixiadas"
 }

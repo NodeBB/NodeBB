@@ -1,18 +1,17 @@
 'use strict';
 
 
-var async = require('async'),
-	winston = require('winston'),
-	S = require('string'),
+var async = require('async');
+var winston = require('winston');
+var S = require('string');
 
-
-	db = require('./database'),
-	user = require('./user'),
-	plugins = require('./plugins'),
-	meta = require('./meta'),
-	utils = require('../public/src/utils'),
-	notifications = require('./notifications'),
-	userNotifications = require('./user/notifications');
+var db = require('./database');
+var user = require('./user');
+var plugins = require('./plugins');
+var meta = require('./meta');
+var utils = require('../public/src/utils');
+var notifications = require('./notifications');
+var userNotifications = require('./user/notifications');
 
 (function(Messaging) {
 
@@ -22,13 +21,6 @@ var async = require('async'),
 	require('./messaging/rooms')(Messaging);
 	require('./messaging/unread')(Messaging);
 	require('./messaging/notifications')(Messaging);
-
-	var terms = {
-		day: 86400000,
-		week: 604800000,
-		month: 2592000000,
-		threemonths: 7776000000
-	};
 
 	Messaging.getMessageField = function(mid, field, callback) {
 		Messaging.getMessageFields(mid, [field], function(err, fields) {
@@ -51,46 +43,42 @@ var async = require('async'),
 	Messaging.getMessages = function(params, callback) {
 		var uid = params.uid;
 		var roomId = params.roomId;
-		var since = params.since;
-		var isNew = params.isNew;
+		var isNew = params.isNew || false;
 		var start = params.hasOwnProperty('start') ? params.start : 0;
-		var count = params.count || 250;
+		var stop = parseInt(start, 10) + ((params.count || 50) - 1);
 		var markRead = params.markRead || true;
 
-		var min = params.count ? 0 : Date.now() - (terms[since] || terms.day);
-
-		if (since === 'recent') {
-			count = 50;
-			min = 0;
-		}
-
-		db.getSortedSetRevRangeByScore('uid:' + uid + ':chat:room:' + roomId + ':mids', start, count, '+inf', min, function(err, mids) {
-			if (err) {
-				return callback(err);
-			}
-
-			if (!Array.isArray(mids) || !mids.length) {
-				return callback(null, []);
-			}
-			var indices = {};
-			mids.forEach(function(mid, index) {
-				indices[mid] = start + index;
-			});
-
-			mids.reverse();
-
-			Messaging.getMessagesData(mids, uid, roomId, isNew, function(err, messageData) {
-				if (err) {
-					return callback(err);
+		var indices = {};
+		async.waterfall([
+			function(next) {
+				canGetMessages(params.callerUid, params.uid, next);
+			},
+			function(canGet, next) {
+				if (!canGet) {
+					return callback(null, null);
+				}
+				db.getSortedSetRevRange('uid:' + uid + ':chat:room:' + roomId + ':mids', start, stop, next);
+			},
+			function(mids, next) {
+				if (!Array.isArray(mids) || !mids.length) {
+					return callback(null, []);
 				}
 
-				for(var i=0; i<messageData.length; i++) {
-				 	messageData[i].index = indices[messageData[i].messageId.toString()];
-				}
+				mids.forEach(function(mid, index) {
+					indices[mid] = start + index;
+				});
 
-				callback(null, messageData);
-			});
-		});
+				mids.reverse();
+
+				Messaging.getMessagesData(mids, uid, roomId, isNew, next);
+			},
+			function(messageData, next) {
+				messageData.forEach(function(messageData) {
+					messageData.index = indices[messageData.messageId.toString()];
+				});
+				next(null, messageData);
+			}
+		], callback);
 
 		if (markRead) {
 			notifications.markRead('chat_' + roomId + '_' + uid, uid, function(err) {
@@ -102,6 +90,16 @@ var async = require('async'),
 			});
 		}
 	};
+
+	function canGetMessages(callerUid, uid, callback) {
+		plugins.fireHook('filter:messaging.canGetMessages', {
+			callerUid: callerUid,
+			uid: uid,
+			canGet: parseInt(callerUid, 10) === parseInt(uid, 10)
+		}, function(err, data) {
+			callback(err, data ? data.canGet : false);
+		});
+	}
 
 	Messaging.getMessagesData = function(mids, uid, roomId, isNew, callback) {
 
@@ -250,42 +248,46 @@ var async = require('async'),
 	};
 
 
-	Messaging.getRecentChats = function(uid, start, stop, callback) {
-		db.getSortedSetRevRange('uid:' + uid + ':chat:rooms', start, stop, function(err, roomIds) {
-			if (err) {
-				return callback(err);
-			}
-
-			async.parallel({
-				roomData: function(next) {
-					Messaging.getRoomsData(roomIds, next);
-				},
-				unread: function(next) {
-					db.isSortedSetMembers('uid:' + uid + ':chat:rooms:unread', roomIds, next);
-				},
-				users: function(next) {
-					async.map(roomIds, function(roomId, next) {
-						db.getSortedSetRevRange('chat:room:' + roomId + ':uids', 0, 9, function(err, uids) {
-							if (err) {
-								return next(err);
-							}
-							uids = uids.filter(function(value) {
-								return value && parseInt(value, 10) !== parseInt(uid, 10);
+	Messaging.getRecentChats = function(callerUid, uid, start, stop, callback) {
+		async.waterfall([
+			function(next) {
+				canGetRecentChats(callerUid, uid, next);
+			},
+			function(canGet, next) {
+				if (!canGet) {
+					return callback(null, null);
+				}
+				db.getSortedSetRevRange('uid:' + uid + ':chat:rooms', start, stop, next);
+			},
+			function(roomIds, next) {
+				async.parallel({
+					roomData: function(next) {
+						Messaging.getRoomsData(roomIds, next);
+					},
+					unread: function(next) {
+						db.isSortedSetMembers('uid:' + uid + ':chat:rooms:unread', roomIds, next);
+					},
+					users: function(next) {
+						async.map(roomIds, function(roomId, next) {
+							db.getSortedSetRevRange('chat:room:' + roomId + ':uids', 0, 9, function(err, uids) {
+								if (err) {
+									return next(err);
+								}
+								uids = uids.filter(function(value) {
+									return value && parseInt(value, 10) !== parseInt(uid, 10);
+								});
+								user.getUsersFields(uids, ['uid', 'username', 'userslug', 'picture', 'status', 'lastonline'] , next);
 							});
-							user.getUsersFields(uids, ['uid', 'username', 'userslug', 'picture', 'status', 'lastonline'] , next);
-						});
-					}, next);
-				},
-				teasers: function(next) {
-					async.map(roomIds, function(roomId, next) {
-						Messaging.getTeaser(uid, roomId, next);
-					}, next);
-				}
-			}, function(err, results) {
-				if (err) {
-					return callback(err);
-				}
-
+						}, next);
+					},
+					teasers: function(next) {
+						async.map(roomIds, function(roomId, next) {
+							Messaging.getTeaser(uid, roomId, next);
+						}, next);
+					}
+				}, next);
+			},
+			function(results, next) {
 				results.roomData.forEach(function(room, index) {
 					room.users = results.users[index];
 					room.groupChat = room.hasOwnProperty('groupChat') ? room.groupChat : room.users.length > 2;
@@ -307,10 +309,20 @@ var async = require('async'),
 					}).join(', ');
 				});
 
-				callback(null, {rooms: results.roomData, nextStart: stop + 1});
-			});
-		});
+				next(null, {rooms: results.roomData, nextStart: stop + 1});
+			}
+		], callback);
 	};
+
+	function canGetRecentChats(callerUid, uid, callback) {
+		plugins.fireHook('filter:messaging.canGetRecentChats', {
+			callerUid: callerUid,
+			uid: uid,
+			canGet: parseInt(callerUid, 10) === parseInt(uid, 10)
+		}, function(err, data) {
+			callback(err, data ? data.canGet : false);
+		});
+	}
 
 	Messaging.getTeaser = function (uid, roomId, callback) {
 		var teaser;

@@ -5,6 +5,7 @@ var validator = require('validator');
 
 var db = require('../database');
 var user = require('../user');
+var plugins = require('../plugins');
 
 module.exports = function(Messaging) {
 
@@ -74,7 +75,17 @@ module.exports = function(Messaging) {
 	};
 
 	Messaging.isUserInRoom = function(uid, roomId, callback) {
-		db.isSortedSetMember('chat:room:' + roomId + ':uids', uid, callback);
+		async.waterfall([
+			function(next) {
+				db.isSortedSetMember('chat:room:' + roomId + ':uids', uid, next);
+			},
+			function(inRoom, next) {
+				plugins.fireHook('filter:messaging.isUserInRoom', {uid: uid, roomId: roomId, inRoom: inRoom}, next);
+			},
+			function(data, next) {
+				next(null, data.inRoom);
+			}
+		], callback);
 	};
 
 	Messaging.roomExists = function(roomId, callback) {

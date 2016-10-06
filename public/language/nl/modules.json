@@ -38,6 +38,7 @@
     "composer.upload-picture": "Upload afbeelding",
     "composer.upload-file": "Upload bestand",
     "composer.zen_mode": "Zen Mode",
+    "composer.select_category": "Select a category",
     "bootbox.ok": "OK",
     "bootbox.cancel": "Annuleren",
     "bootbox.confirm": "Bevestig",

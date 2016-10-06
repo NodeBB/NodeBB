@@ -14,7 +14,7 @@
     "ignoring": "Пренебрегвате",
     "watching.description": "Темите ще се показват в непрочетените",
     "ignoring.description": "Темите няма да се показват в непрочетените",
-    "watch.message": "Вече следите обновленията в тази категория",
-    "ignore.message": "Вече не следите обновленията в тази категория",
+    "watch.message": "You are now watching updates from this category and all subcategories",
+    "ignore.message": "You are now ignoring updates from this category and all subcategories",
     "watched-categories": "Наблюдавани категории"
 }

@@ -50,5 +50,7 @@
     "membership.leave-group": "Напускане на групата",
     "membership.reject": "Отхвърляне",
     "new-group.group_name": "Име на групата:",
-    "upload-group-cover": "Качване на снимка за показване на групата"
+    "upload-group-cover": "Качване на снимка за показване на групата",
+    "bulk-invite-instructions": "Enter a list of comma separated usernames to invite to this group",
+    "bulk-invite": "Bulk Invite"
 }

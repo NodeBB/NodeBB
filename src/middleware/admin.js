@@ -32,20 +32,12 @@ module.exports = function(middleware) {
 	middleware.admin.buildHeader = function(req, res, next) {
 		res.locals.renderAdminHeader = true;
 
-		async.parallel({
-			config: function(next) {
-				controllers.api.getConfig(req, res, next);
-			},
-			footer: function(next) {
-				req.app.render('admin/footer', {}, next);
-			}
-		}, function(err, results) {
+		controllers.api.getConfig(req, res, function(err, config) {
 			if (err) {
 				return next(err);
 			}
 
-			res.locals.config = results.config;
-			res.locals.adminFooter = results.footer;
+			res.locals.config = config;
 			next();
 		});
 	};
@@ -121,5 +113,10 @@ module.exports = function(middleware) {
 				req.app.render('admin/header', templateValues, next);
 			});
 		});
+	};
+
+
+	middleware.admin.renderFooter = function(req, res, data, next) {
+		req.app.render('admin/footer', data, next);
 	};
 };

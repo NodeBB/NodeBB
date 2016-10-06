@@ -1,10 +1,10 @@
 'use strict';
 
-var nconf = require('nconf'),
-	validator = require('validator'),
-	async = require('async'),
-	winston = require('winston'),
-	plugins = require('../plugins');
+var nconf = require('nconf');
+var validator = require('validator');
+var async = require('async');
+var winston = require('winston');
+var plugins = require('../plugins');
 
 module.exports = function(Meta) {
 	Meta.tags = {};

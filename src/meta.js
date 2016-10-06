@@ -2,11 +2,9 @@
 
 var async = require('async');
 var winston = require('winston');
-
 var os = require('os');
 var nconf = require('nconf');
-var user = require('./user');
-var groups = require('./groups');
+
 var pubsub = require('./pubsub');
 var utils = require('../public/src/utils');
 
@@ -28,6 +26,8 @@ var utils = require('../public/src/utils');
 
 	/* Assorted */
 	Meta.userOrGroupExists = function(slug, callback) {
+		var user = require('./user');
+		var groups = require('./groups');
 		slug = utils.slugify(slug);
 		async.parallel([
 			async.apply(user.existsBySlug, slug),
