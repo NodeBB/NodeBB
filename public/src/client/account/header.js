@@ -7,14 +7,10 @@ define('forum/account/header', [
 	'components',
 	'translator'
 ], function(coverPhoto, uploader, components, translator) {
-	var	AccountHeader = {};
-	var	yourid;
-	var	theirid;
+	var AccountHeader = {};
 	var isAdminOrSelfOrGlobalMod;
 
 	AccountHeader.init = function() {
-		yourid = ajaxify.data.yourid;
-		theirid = ajaxify.data.theirid;
 		isAdminOrSelfOrGlobalMod = ajaxify.data.isAdmin || ajaxify.data.isSelf || ajaxify.data.isGlobalModerator;
 
 		hidePrivateLinks();
@@ -33,14 +29,14 @@ define('forum/account/header', [
 		});
 
 		components.get('account/chat').on('click', function() {
-			socket.emit('modules.chats.hasPrivateChat', theirid, function(err, roomId) {
+			socket.emit('modules.chats.hasPrivateChat', ajaxify.data.uid, function(err, roomId) {
 				if (err) {
 					return app.alertError(err.message);
 				}
 				if (roomId) {
 					app.openChat(roomId);
 				} else {
-					app.newChat(theirid);
+					app.newChat(ajaxify.data.uid);
 				}
 			});
 		});
@@ -71,7 +67,7 @@ define('forum/account/header', [
 		coverPhoto.init(components.get('account/cover'),
 			function(imageData, position, callback) {
 				socket.emit('user.updateCover', {
-					uid: yourid,
+					uid: ajaxify.data.uid,
 					imageData: imageData,
 					position: position
 				}, callback);
@@ -80,7 +76,7 @@ define('forum/account/header', [
 				uploader.show({
 					title: '[[user:upload_cover_picture]]',
 					route: config.relative_path + '/api/user/' + ajaxify.data.userslug + '/uploadcover',
-					params: {uid: yourid },
+					params: {uid: ajaxify.data.uid },
 					accept: '.png,.jpg,.bmp'
 				}, function(imageUrlOnServer) {
 					components.get('account/cover').css('background-image', 'url(' + imageUrlOnServer + '?v=' + Date.now() + ')');
@@ -92,7 +88,7 @@ define('forum/account/header', [
 
 	function toggleFollow(type) {
 		socket.emit('user.' + type, {
-			uid: theirid
+			uid: ajaxify.data.uid
 		}, function(err) {
 			if (err) {
 				return app.alertError(err.message);
