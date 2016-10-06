@@ -60,6 +60,13 @@ module.exports = function(Posts) {
 						}
 					}
 				], next);
+			},
+			function(data, next) {
+				if (data[1] === 1) {	// Only update state on new flag
+					Posts.updateFlagData(uid, post.pid, {
+						state: 'open'
+					}, next);
+				}
 			}
 		], function(err) {
 			if (err) {
