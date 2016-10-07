@@ -8,7 +8,6 @@ var db = require('./database');
 var topics = require('./topics');
 var privileges = require('./privileges');
 var meta = require('./meta');
-var utils = require('../public/src/utils');
 
 (function(User) {
 
@@ -90,10 +89,7 @@ var utils = require('../public/src/utils');
 		], callback);
 	};
 
-	User.getUsers = function(uids, uid, callback) {
-		var fields = ['uid', 'username', 'userslug', 'picture', 'status', 'flags',
-			'banned', 'banned:expire', 'joindate', 'postcount', 'reputation', 'email:confirmed', 'lastonline'];
-
+	User.getUsersWithFields = function(uids, fields, uid, callback) {
 		async.waterfall([
 			function (next) {
 				plugins.fireHook('filter:users.addFields', {fields: fields}, next);
@@ -116,13 +112,11 @@ var utils = require('../public/src/utils');
 				results.userData.forEach(function(user, index) {
 					if (user) {
 						user.status = User.getStatus(user);
-						user.joindateISO = utils.toISOString(user.joindate);
 						user.administrator = results.isAdmin[index];
 						user.banned = parseInt(user.banned, 10) === 1;
 						user.banned_until = parseInt(user['banned:expire'], 10) || 0;
 						user.banned_until_readable = user.banned_until ? new Date(user.banned_until).toString() : 'Not Banned';
 						user['email:confirmed'] = parseInt(user['email:confirmed'], 10) === 1;
-						user.lastonlineISO = utils.toISOString(user.lastonline) || user.joindateISO;
 					}
 				});
 				plugins.fireHook('filter:userlist.get', {users: results.userData, uid: uid}, next);
@@ -131,6 +125,13 @@ var utils = require('../public/src/utils');
 				next(null, data.users);
 			}
 		], callback);
+	};
+
+	User.getUsers = function(uids, uid, callback) {
+		var fields = ['uid', 'username', 'userslug', 'picture', 'status', 'flags',
+			'banned', 'banned:expire', 'joindate', 'postcount', 'reputation', 'email:confirmed', 'lastonline'];
+
+		User.getUsersWithFields(uids, fields, uid, callback);
 	};
 
 	User.getStatus = function(userData) {

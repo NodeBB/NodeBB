@@ -6,6 +6,7 @@ var winston = require('winston');
 
 var db = require('../database');
 var plugins = require('../plugins');
+var utils = require('../../public/src/utils');
 
 module.exports = function(User) {
 
@@ -135,6 +136,14 @@ module.exports = function(User) {
 				user['icon:bgColor'] = iconBackgrounds[Array.prototype.reduce.call(user.username, function(cur, next) {
 					return cur + next.charCodeAt();
 				}, 0) % iconBackgrounds.length];
+			}
+
+			if (user.hasOwnProperty('joindate')) {
+				user.joindateISO = utils.toISOString(user.joindate);
+			}
+
+			if (user.hasOwnProperty('lastonline')) {
+				user.lastonlineISO = utils.toISOString(user.lastonline) || user.joindateISO;
 			}
 		});
 

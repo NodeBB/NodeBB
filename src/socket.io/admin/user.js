@@ -198,7 +198,7 @@ User.search = function(socket, data, callback) {
 			return user && user.uid;
 		});
 
-		user.getUsersFields(uids, ['email', 'flags'], function(err, userInfo) {
+		user.getUsersFields(uids, ['email', 'flags', 'lastonline', 'joindate'], function(err, userInfo) {
 			if (err) {
 				return callback(err);
 			}
@@ -207,6 +207,8 @@ User.search = function(socket, data, callback) {
 				if (user && userInfo[index]) {
 					user.email = validator.escape(String(userInfo[index].email || ''));
 					user.flags = userInfo[index].flags || 0;
+					user.lastonlineISO = userInfo[index].lastonlineISO;
+					user.joindateISO = userInfo[index].joindateISO;
 				}
 			});
 
