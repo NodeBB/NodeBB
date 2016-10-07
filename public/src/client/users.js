@@ -91,7 +91,7 @@ define('forum/users', ['translator'], function(translator) {
 
 	function loadPage(query) {
 		var qs = decodeURIComponent($.param(query));
-		$.get('/api/users?' + qs, renderSearchResults).fail(function(xhrErr) {
+		$.get(config.relative_path + '/api/users?' + qs, renderSearchResults).fail(function(xhrErr) {
 			if (xhrErr && xhrErr.responseJSON && xhrErr.responseJSON.error) {
 				app.alertError(xhrErr.responseJSON.error);
 			}
