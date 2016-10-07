@@ -129,7 +129,7 @@ function setupExpressApp(app) {
 }
 
 function setupFavicon(app) {
-	var faviconPath = path.join(__dirname, '../../', 'public', meta.config['brand:favicon'] ? meta.config['brand:favicon'] : 'favicon.ico');
+	var faviconPath = path.join(nconf.get('base_dir'), 'public', meta.config['brand:favicon'] ? meta.config['brand:favicon'] : 'favicon.ico');
 	if (file.existsSync(faviconPath)) {
 		app.use(nconf.get('relative_path'), favicon(faviconPath));
 	}
