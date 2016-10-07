@@ -111,8 +111,14 @@
 					db: db
 				});
 			} else {
+				// Initial Redis database
+				var rdb = require('./redis');
+				// Create a new redis connection and store it in module (skeleton)
+				rdb.client = rdb.connect();
+
+				//
 				module.sessionStore = new sessionStore({
-					client: require('./redis').connect(),
+					client: rdb.client,
 					ttl: 60 * 60 * 24 * 14
 				});
 			}
