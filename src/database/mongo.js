@@ -116,7 +116,6 @@
 				// Create a new redis connection and store it in module (skeleton)
 				rdb.client = rdb.connect();
 
-				//
 				module.sessionStore = new sessionStore({
 					client: rdb.client,
 					ttl: 60 * 60 * 24 * 14
