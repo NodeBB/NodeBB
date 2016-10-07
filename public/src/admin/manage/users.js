@@ -1,369 +1,365 @@
-"use strict";
+'use strict';
 
 /* global config, socket, define, templates, bootbox, app, ajaxify  */
 
 define('admin/manage/users', ['admin/modules/selectable', 'translator'], function(selectable, translator) {
-	var Users = {};
+  var Users = {};
 
-	Users.init = function() {
-		selectable.enable('#users-container', '.users-box');
+  Users.init = function() {
+    selectable.enable('#users-container', '.users-box');
 
-		var navPills = $('.nav-pills li');
-		var pathname = window.location.pathname;
-		if (!navPills.find('a[href="' + pathname + '"]').length) {
-			pathname = config.relative_path + '/admin/manage/users/latest';
-		}
-		navPills.removeClass('active').find('a[href="' + pathname + '"]').parent().addClass('active');
+    var navPills = $('.nav-pills li');
+    var pathname = window.location.pathname;
+    if (!navPills.find('a[href="' + pathname + '"]').length) {
+      pathname = config.relative_path + '/admin/manage/users/latest';
+    }
+    navPills.removeClass('active').find('a[href="' + pathname + '"]').parent().addClass('active');
 
-		function getSelectedUids() {
-			var uids = [];
-			$('#users-container .users-box.ui-selected').each(function() {
-				uids.push(this.getAttribute('data-uid'));
-			});
+    function getSelectedUids() {
+      var uids = [];
+      $('#users-container .users-box.ui-selected').each(function() {
+        uids.push(this.getAttribute('data-uid'));
+      });
 
-			return uids;
-		}
+      return uids;
+    }
 
-		function update(className, state) {
-			$('#users-container .users-box.ui-selected .labels').find(className).each(function() {
-				$(this).toggleClass('hide', !state);
-			});
-		}
+    function update(className, state) {
+      $('#users-container .users-box.ui-selected .labels').find(className).each(function() {
+        $(this).toggleClass('hide', !state);
+      });
+    }
 
-		function unselectAll() {
-			$('#users-container .users-box.ui-selected').removeClass('ui-selected');
-		}
+    function unselectAll() {
+      $('#users-container .users-box.ui-selected').removeClass('ui-selected');
+    }
 
-		function removeSelected() {
-			$('#users-container .users-box.ui-selected').remove();
-		}
+    function removeSelected() {
+      $('#users-container .users-box.ui-selected').remove();
+    }
 
-		function done(successMessage, className, flag) {
-			return function(err) {
-				if (err) {
-					return app.alertError(err.message);
-				}
-				app.alertSuccess(successMessage);
-				if (className) {
-					update(className, flag);
-				}
-				unselectAll();
-			};
-		}
+    function done(successMessage, className, flag) {
+      return function(err) {
+        if (err) {
+          return app.alertError(err.message);
+        }
+        app.alertSuccess(successMessage);
+        if (className) {
+          update(className, flag);
+        }
+        unselectAll();
+      };
+    }
 
-		$('.ban-user').on('click', function() {
-			var uids = getSelectedUids();
-			if (!uids.length) {
-				app.alertError('[[error:no-users-selected]]');
-				return false;	// specifically to keep the menu open
-			}
+    $('.ban-user').on('click', function() {
+      var uids = getSelectedUids();
+      if (!uids.length) {
+        app.alertError('[[error:no-users-selected]]');
+        return false;	// specifically to keep the menu open
+      }
 
-			bootbox.confirm('Do you really want to ban ' + (uids.length > 1 ? 'these users' : 'this user') + ' <strong>permanently</strong>?', function(confirm) {
-				if (confirm) {
-					socket.emit('user.banUsers', { uids: uids, reason: '' }, done('User(s) banned!', '.ban', true));
-				}
-			});
-		});
+      bootbox.confirm('Do you really want to ban ' + (uids.length > 1 ? 'these users' : 'this user') + ' <strong>permanently</strong>?', function(confirm) {
+        if (confirm) {
+          socket.emit('user.banUsers', {uids: uids, reason: ''}, done('User(s) banned!', '.ban', true));
+        }
+      });
+    });
 
-		$('.ban-user-temporary').on('click', function() {
-			var uids = getSelectedUids();
-			if (!uids.length) {
-				app.alertError('[[error:no-users-selected]]');
-				return false;	// specifically to keep the menu open
-			}
+    $('.ban-user-temporary').on('click', function() {
+      var uids = getSelectedUids();
+      if (!uids.length) {
+        app.alertError('[[error:no-users-selected]]');
+        return false;	// specifically to keep the menu open
+      }
 
-			templates.parse('admin/partials/temporary-ban', {}, function(html) {
-				bootbox.dialog({
-					className: 'ban-modal',
-					title: '[[user:ban_account]]',
-					message: html,
-					show: true,
-					buttons: {
-						close: {
-							label: '[[global:close]]',
-							className: 'btn-link'
-						},
-						submit: {
-							label: 'Ban ' + uids.length + (uids.length > 1 ? ' users' : ' user'),
-							callback: function() {
-								var formData = $('.ban-modal form').serializeArray().reduce(function(data, cur) {
-									data[cur.name] = cur.value;
-									return data;
-								}, {});
-								var until = formData.length ? (Date.now() + formData.length * 1000*60*60 * (parseInt(formData.unit, 10) ? 24 : 1)) : 0;
-								socket.emit('user.banUsers', { uids: uids, until: until, reason: formData.reason }, done('User(s) banned!', '.ban', true));
-							}
-						}
-					}
-				});
-			});
-		});
+      templates.parse('admin/partials/temporary-ban', {}, function(html) {
+        bootbox.dialog({
+          className: 'ban-modal',
+          title: '[[user:ban_account]]',
+          message: html,
+          show: true,
+          buttons: {
+            close: {
+              label: '[[global:close]]',
+              className: 'btn-link'
+            },
+            submit: {
+              label: 'Ban ' + uids.length + (uids.length > 1 ? ' users' : ' user'),
+              callback: function() {
+                var formData = $('.ban-modal form').serializeArray().reduce(function(data, cur) {
+                  data[cur.name] = cur.value;
+                  return data;
+                }, {});
+                var until = formData.length ? Date.now() + formData.length * 1000 * 60 * 60 * (parseInt(formData.unit, 10) ? 24 : 1) : 0;
+                socket.emit('user.banUsers', {uids: uids, until: until, reason: formData.reason}, done('User(s) banned!', '.ban', true));
+              }
+            }
+          }
+        });
+      });
+    });
 
-		$('.unban-user').on('click', function() {
-			var uids = getSelectedUids();
-			if (!uids.length) {
-				app.alertError('[[error:no-users-selected]]');
-				return false;	// specifically to keep the menu open
-			}
+    $('.unban-user').on('click', function() {
+      var uids = getSelectedUids();
+      if (!uids.length) {
+        app.alertError('[[error:no-users-selected]]');
+        return false;	// specifically to keep the menu open
+      }
 
-			socket.emit('user.unbanUsers', uids, done('User(s) unbanned!', '.ban', false));
-		});
+      socket.emit('user.unbanUsers', uids, done('User(s) unbanned!', '.ban', false));
+    });
 
-		$('.reset-lockout').on('click', function() {
-			var uids = getSelectedUids();
-			if (!uids.length) {
-				return;
-			}
+    $('.reset-lockout').on('click', function() {
+      var uids = getSelectedUids();
+      if (!uids.length) {
+        return;
+      }
 
-			socket.emit('admin.user.resetLockouts', uids, done('Lockout(s) reset!'));
-		});
+      socket.emit('admin.user.resetLockouts', uids, done('Lockout(s) reset!'));
+    });
 
-		$('.reset-flags').on('click', function() {
-			var uids = getSelectedUids();
-			if (!uids.length) {
-				return;
-			}
+    $('.reset-flags').on('click', function() {
+      var uids = getSelectedUids();
+      if (!uids.length) {
+        return;
+      }
 
-			socket.emit('admin.user.resetFlags', uids, done('Flags(s) reset!'));
-		});
+      socket.emit('admin.user.resetFlags', uids, done('Flags(s) reset!'));
+    });
 
-		$('.admin-user').on('click', function() {
-			var uids = getSelectedUids();
-			if (!uids.length) {
-				return;
-			}
+    $('.admin-user').on('click', function() {
+      var uids = getSelectedUids();
+      if (!uids.length) {
+        return;
+      }
 
-			if (uids.indexOf(app.user.uid.toString()) !== -1) {
-				app.alertError('You can\'t remove yourself as Administrator!');
-			} else {
-				socket.emit('admin.user.makeAdmins', uids, done('User(s) are now administrators.', '.administrator', true));
-			}
-		});
+      if (uids.indexOf(app.user.uid.toString()) !== -1) {
+        app.alertError('You can\'t remove yourself as Administrator!');
+      } else {
+        socket.emit('admin.user.makeAdmins', uids, done('User(s) are now administrators.', '.administrator', true));
+      }
+    });
 
-		$('.remove-admin-user').on('click', function() {
-			var uids = getSelectedUids();
-			if (!uids.length) {
-				return;
-			}
+    $('.remove-admin-user').on('click', function() {
+      var uids = getSelectedUids();
+      if (!uids.length) {
+        return;
+      }
 
-			if (uids.indexOf(app.user.uid.toString()) !== -1) {
-				app.alertError('You can\'t remove yourself as Administrator!');
-			} else {
-				bootbox.confirm('Do you really want to remove admins?', function(confirm) {
-					if (confirm) {
-						socket.emit('admin.user.removeAdmins', uids, done('User(s) are no longer administrators.', '.administrator', false));
-					}
-				});
-			}
-		});
+      if (uids.indexOf(app.user.uid.toString()) !== -1) {
+        app.alertError('You can\'t remove yourself as Administrator!');
+      } else {
+        bootbox.confirm('Do you really want to remove admins?', function(confirm) {
+          if (confirm) {
+            socket.emit('admin.user.removeAdmins', uids, done('User(s) are no longer administrators.', '.administrator', false));
+          }
+        });
+      }
+    });
 
-		$('.validate-email').on('click', function() {
-			var uids = getSelectedUids();
-			if (!uids.length) {
-				return;
-			}
+    $('.validate-email').on('click', function() {
+      var uids = getSelectedUids();
+      if (!uids.length) {
+        return;
+      }
 
-			bootbox.confirm('Do you want to validate email(s) of these user(s)?', function(confirm) {
-				if (confirm) {
-					socket.emit('admin.user.validateEmail', uids, done('Emails validated', '.notvalidated', false));
-				}
-			});
-		});
+      bootbox.confirm('Do you want to validate email(s) of these user(s)?', function(confirm) {
+        if (confirm) {
+          socket.emit('admin.user.validateEmail', uids, done('Emails validated', '.notvalidated', false));
+        }
+      });
+    });
 
-		$('.send-validation-email').on('click', function() {
-			var uids = getSelectedUids();
-			if (!uids.length) {
-				return;
-			}
-			socket.emit('admin.user.sendValidationEmail', uids, function(err) {
-				if (err) {
-					return app.alertError(err.message);
-				}
-				app.alertSuccess('[[notifications:email-confirm-sent]]');
-			});
-		});
+    $('.send-validation-email').on('click', function() {
+      var uids = getSelectedUids();
+      if (!uids.length) {
+        return;
+      }
+      socket.emit('admin.user.sendValidationEmail', uids, function(err) {
+        if (err) {
+          return app.alertError(err.message);
+        }
+        app.alertSuccess('[[notifications:email-confirm-sent]]');
+      });
+    });
 
-		$('.password-reset-email').on('click', function() {
-			var uids = getSelectedUids();
-			if (!uids.length) {
-				return;
-			}
+    $('.password-reset-email').on('click', function() {
+      var uids = getSelectedUids();
+      if (!uids.length) {
+        return;
+      }
 
-			bootbox.confirm('Do you want to send password reset email(s) to these user(s)?', function(confirm) {
-				if (confirm) {
-					socket.emit('admin.user.sendPasswordResetEmail', uids, done('Emails sent'));
-				}
-			});
-		});
+      bootbox.confirm('Do you want to send password reset email(s) to these user(s)?', function(confirm) {
+        if (confirm) {
+          socket.emit('admin.user.sendPasswordResetEmail', uids, done('Emails sent'));
+        }
+      });
+    });
 
-		$('.delete-user').on('click', function() {
-			var uids = getSelectedUids();
-			if (!uids.length) {
-				return;
-			}
+    $('.delete-user').on('click', function() {
+      var uids = getSelectedUids();
+      if (!uids.length) {
+        return;
+      }
 
-			bootbox.confirm('<b>Warning!</b><br/>Do you really want to delete user(s)?<br/> This action is not reversable, only the user account will be deleted, their posts and topics will not be deleled!', function(confirm) {
-				if (confirm) {
-					socket.emit('admin.user.deleteUsers', uids, function(err) {
-						if (err) {
-							return app.alertError(err.message);
-						}
+      bootbox.confirm('<b>Warning!</b><br/>Do you really want to delete user(s)?<br/> This action is not reversable, only the user account will be deleted, their posts and topics will not be deleled!', function(confirm) {
+        if (confirm) {
+          socket.emit('admin.user.deleteUsers', uids, function(err) {
+            if (err) {
+              return app.alertError(err.message);
+            }
 
-						app.alertSuccess('User(s) Deleted!');
-						removeSelected();
-						unselectAll();
-					});
-				}
-			});
-		});
+            app.alertSuccess('User(s) Deleted!');
+            removeSelected();
+            unselectAll();
+          });
+        }
+      });
+    });
 
-		$('.delete-user-and-content').on('click', function() {
-			var uids = getSelectedUids();
-			if (!uids.length) {
-				return;
-			}
-			bootbox.confirm('<b>Warning!</b><br/>Do you really want to delete user(s) and their content?<br/> This action is not reversable, all user data and content will be erased!', function(confirm) {
-				if (confirm) {
-					socket.emit('admin.user.deleteUsersAndContent', uids, function(err) {
-						if (err) {
-							return app.alertError(err.message);
-						}
+    $('.delete-user-and-content').on('click', function() {
+      var uids = getSelectedUids();
+      if (!uids.length) {
+        return;
+      }
+      bootbox.confirm('<b>Warning!</b><br/>Do you really want to delete user(s) and their content?<br/> This action is not reversable, all user data and content will be erased!', function(confirm) {
+        if (confirm) {
+          socket.emit('admin.user.deleteUsersAndContent', uids, function(err) {
+            if (err) {
+              return app.alertError(err.message);
+            }
 
-						app.alertSuccess('User(s) Deleted!');
-						removeSelected();
-						unselectAll();
-					});
-				}
-			});
-		});
+            app.alertSuccess('User(s) Deleted!');
+            removeSelected();
+            unselectAll();
+          });
+        }
+      });
+    });
 
-		function handleUserCreate() {
-			$('#createUser').on('click', function() {
-				templates.parse('admin/partials/create_user_modal', {}, function(html) {
-					translator.translate(html, function(html) {
-						bootbox.dialog({
-							message: html,
-							title: 'Create User',
-							onEscape: true,
-							buttons: {
-								cancel: {
-									label: 'Cancel',
-									className: 'btn-link'
-								},
-								create: {
-									label: 'Create',
-									className: 'btn-primary',
-									callback: function() {
-										createUser.call(this);
-										return false;
-									}
-								}
-							}
-						});
-					});
-				});
-			});
-		}
+    function handleUserCreate() {
+      $('#createUser').on('click', function() {
+        templates.parse('admin/partials/create_user_modal', {}, function(html) {
+          translator.translate(html, function(html) {
+            bootbox.dialog({
+              message: html,
+              title: 'Create User',
+              onEscape: true,
+              buttons: {
+                cancel: {
+                  label: 'Cancel',
+                  className: 'btn-link'
+                },
+                create: {
+                  label: 'Create',
+                  className: 'btn-primary',
+                  callback: function() {
+                    createUser.call(this);
+                    return false;
+                  }
+                }
+              }
+            });
+          });
+        });
+      });
+    }
 
-		function createUser() {
-			var modal = this;
-			var username = document.getElementById('create-user-name').value;
-			var email = document.getElementById('create-user-email').value;
-			var password = document.getElementById('create-user-password').value;
-			var passwordAgain = document.getElementById('create-user-password-again').value;
+    function createUser() {
+      var modal = this;
+      var username = document.getElementById('create-user-name').value;
+      var email = document.getElementById('create-user-email').value;
+      var password = document.getElementById('create-user-password').value;
+      var passwordAgain = document.getElementById('create-user-password-again').value;
 
-			var errorEl = $('#create-modal-error');
+      var errorEl = $('#create-modal-error');
 
-			if (password !== passwordAgain) {
-				return errorEl.html('<strong>Error</strong><p>Passwords must match!</p>').removeClass('hide');
-			}
+      if (password !== passwordAgain) {
+        return errorEl.html('<strong>Error</strong><p>Passwords must match!</p>').removeClass('hide');
+      }
 
-			var user = {
-				username: username,
-				email: email,
-				password: password
-			};
+      var user = {
+        username: username,
+        email: email,
+        password: password
+      };
 
-			socket.emit('admin.user.createUser', user, function(err) {
-				if(err) {
-					return errorEl.translateHtml('<strong>Error</strong><p>' + err.message + '</p>').removeClass('hide');
-				}
+      socket.emit('admin.user.createUser', user, function(err) {
+        if (err) {
+          return errorEl.translateHtml('<strong>Error</strong><p>' + err.message + '</p>').removeClass('hide');
+        }
 
-				modal.modal('hide');
-				modal.on('hidden.bs.modal', function() {
-					ajaxify.refresh();
-				});
-				app.alertSuccess('User created!');
-			});
-		}
+        modal.modal('hide');
+        modal.on('hidden.bs.modal', function() {
+          ajaxify.refresh();
+        });
+        app.alertSuccess('User created!');
+      });
+    }
 
-		var timeoutId = 0;
+    var timeoutId = 0;
 
+    $('#search-user-name, #search-user-email, #search-user-ip').on('keyup', function() {
+      if (timeoutId !== 0) {
+        clearTimeout(timeoutId);
+        timeoutId = 0;
+      }
 
+      var $this = $(this);
+      var type = $this.attr('data-search-type');
 
-		$('#search-user-name, #search-user-email, #search-user-ip').on('keyup', function() {
-			if (timeoutId !== 0) {
-				clearTimeout(timeoutId);
-				timeoutId = 0;
-			}
+      timeoutId = setTimeout(function() {
+        $('.fa-spinner').removeClass('hidden');
 
-			var $this = $(this);
-			var type =  $this.attr('data-search-type');
+        socket.emit('admin.user.search', {searchBy: type, query: $this.val()}, function(err, data) {
+          if (err) {
+            return app.alertError(err.message);
+          }
 
-			timeoutId = setTimeout(function() {
-				$('.fa-spinner').removeClass('hidden');
+          templates.parse('admin/manage/users', 'users', data, function(html) {
+            $('#users-container').html(html).find('.timeago').timeago();
 
-				socket.emit('admin.user.search', {searchBy: type, query: $this.val()}, function(err, data) {
-					if (err) {
-						return app.alertError(err.message);
-					}
+            $('.fa-spinner').addClass('hidden');
 
-					templates.parse('admin/manage/users', 'users', data, function(html) {
-						$('#users-container').html(html).find('.timeago').timeago();
-
-						$('.fa-spinner').addClass('hidden');
-
-						if (data && data.users.length === 0) {
-							$('#user-notfound-notify').html('User not found!')
+            if (data && data.users.length === 0) {
+              $('#user-notfound-notify').html('User not found!')
 								.show()
 								.addClass('label-danger')
 								.removeClass('label-success');
-						} else {
-							$('#user-notfound-notify').html(data.users.length + ' user' + (data.users.length > 1 ? 's' : '') + ' found! Search took ' + data.timing + ' ms.')
+            } else {
+              $('#user-notfound-notify').html(data.users.length + ' user' + (data.users.length > 1 ? 's' : '') + ' found! Search took ' + data.timing + ' ms.')
 								.show()
 								.addClass('label-success')
 								.removeClass('label-danger');
-						}
+            }
 
-						selectable.enable('#users-container', '.users-box');
-					});
-				});
-			}, 250);
-		});
+            selectable.enable('#users-container', '.users-box');
+          });
+        });
+      }, 250);
+    });
 
-		handleUserCreate();
+    handleUserCreate();
 
-		handleInvite();
+    handleInvite();
+  };
 
-	};
+  function handleInvite() {
+    $('[component="user/invite"]').on('click', function() {
+      bootbox.prompt('Email: ', function(email) {
+        if (!email) {
+          return;
+        }
 
-	function handleInvite() {
-		$('[component="user/invite"]').on('click', function() {
-			bootbox.prompt('Email: ', function(email) {
-				if (!email) {
-					return;
-				}
+        socket.emit('user.invite', email, function(err) {
+          if (err) {
+            return app.alertError(err.message);
+          }
+          app.alertSuccess('An invitation email has been sent to ' + email);
+        });
+      });
+    });
+  }
 
-				socket.emit('user.invite', email, function(err) {
-					if (err) {
-						return app.alertError(err.message);
-					}
-					app.alertSuccess('An invitation email has been sent to ' + email);
-				});
-			});
-		});
-	}
-
-
-	return Users;
+  return Users;
 });

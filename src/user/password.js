@@ -7,41 +7,39 @@ var db = require('../database');
 var Password = require('../password');
 
 module.exports = function(User) {
+  User.hashPassword = function(password, callback) {
+    if (!password) {
+      return callback(null, password);
+    }
 
-	User.hashPassword = function(password, callback) {
-		if (!password) {
-			return callback(null, password);
-		}
+    Password.hash(nconf.get('bcrypt_rounds') || 12, password, callback);
+  };
 
-		Password.hash(nconf.get('bcrypt_rounds') || 12, password, callback);
-	};
+  User.isPasswordCorrect = function(uid, password, callback) {
+    password = password || '';
+    async.waterfall([
+      function(next) {
+        db.getObjectField('user:' + uid, 'password', next);
+      },
+      function(hashedPassword, next) {
+        if (!hashedPassword) {
+          return callback(null, true);
+        }
 
-	User.isPasswordCorrect = function(uid, password, callback) {
-		password = password || '';
-		async.waterfall([
-			function (next) {
-				db.getObjectField('user:' + uid, 'password', next);
-			},
-			function (hashedPassword, next) {
-				if (!hashedPassword) {
-					return callback(null, true);
-				}
+        User.isPasswordValid(password, function(err) {
+          if (err) {
+            return next(err);
+          }
 
-				User.isPasswordValid(password, function(err) {
-					if (err) {
-						return next(err);
-					}
+          Password.compare(password, hashedPassword, next);
+        });
+      }
+    ], callback);
+  };
 
-					Password.compare(password, hashedPassword, next);
-				});
-			}
-		], callback);
-	};
-
-	User.hasPassword = function(uid, callback) {
-		db.getObjectField('user:' + uid, 'password', function(err, hashedPassword) {
-			callback(err, !!hashedPassword);
-		});
-	};
-
+  User.hasPassword = function(uid, callback) {
+    db.getObjectField('user:' + uid, 'password', function(err, hashedPassword) {
+      callback(err, Boolean(hashedPassword));
+    });
+  };
 };

@@ -1,8 +1,7 @@
-define('settings/array', function () {
-
-	var Settings = null,
-		SettingsArray,
-		helper = null;
+define('settings/array', function() {
+  var Settings = null,
+    SettingsArray,
+    helper = null;
 
 	/**
 	 Creates a new button that removes itself and the given elements on click.
@@ -10,24 +9,24 @@ define('settings/array', function () {
 	 @param elements The elements to remove on click.
 	 @returns JQuery The created remove-button.
 	 */
-	function createRemoveButton(elements) {
-		var rm = $(helper.createElement('button', {
-			"class": 'btn btn-xs btn-primary remove',
-			title: 'Remove Item'
-		}, '-'));
-		rm.click(function (event) {
-			event.preventDefault();
-			elements.remove();
-			rm.remove();
-			elements.each(function (i, element) {
-				element = $(element);
-				if (element.is('[data-key]')) {
-					helper.destructElement(element);
-				}
-			});
-		});
-		return rm;
-	}
+  function createRemoveButton(elements) {
+    var rm = $(helper.createElement('button', {
+      class: 'btn btn-xs btn-primary remove',
+      title: 'Remove Item'
+    }, '-'));
+    rm.click(function(event) {
+      event.preventDefault();
+      elements.remove();
+      rm.remove();
+      elements.each(function(i, element) {
+        element = $(element);
+        if (element.is('[data-key]')) {
+          helper.destructElement(element);
+        }
+      });
+    });
+    return rm;
+  }
 
 	/**
 	 Creates a new child-element of given field with given data and calls given callback with elements to add.
@@ -39,30 +38,30 @@ define('settings/array', function () {
 	 @param separator The separator to use.
 	 @param insertCb The callback to insert the elements.
 	 */
-	function addArrayChildElement(field, key, attributes, value, separator, insertCb) {
-		attributes = helper.deepClone(attributes);
-		var type = attributes['data-type'] || attributes.type || 'text',
-			element = $(helper.createElementOfType(type, attributes.tagName, attributes));
-		element.attr('data-parent', '_' + key);
-		delete attributes['data-type'];
-		delete attributes['tagName'];
-		for (var name in attributes) {
-			var val = attributes[name];
-			if (name.search('data-') === 0) {
-				element.data(name.substring(5), val);
-			} else if (name.search('prop-') === 0) {
-				element.prop(name.substring(5), val);
-			} else {
-				element.attr(name, val);
-			}
-		}
-		helper.fillField(element, value);
-		if ($("[data-parent=\"_" + key + "\"]", field).length) {
-			insertCb(separator);
-		}
-		insertCb(element);
-		insertCb(createRemoveButton(element.add(separator)));
-	}
+  function addArrayChildElement(field, key, attributes, value, separator, insertCb) {
+    attributes = helper.deepClone(attributes);
+    var type = attributes['data-type'] || attributes.type || 'text',
+      element = $(helper.createElementOfType(type, attributes.tagName, attributes));
+    element.attr('data-parent', '_' + key);
+    delete attributes['data-type'];
+    delete attributes.tagName;
+    for (var name in attributes) {
+      var val = attributes[name];
+      if (name.search('data-') === 0) {
+        element.data(name.substring(5), val);
+      } else if (name.search('prop-') === 0) {
+        element.prop(name.substring(5), val);
+      } else {
+        element.attr(name, val);
+      }
+    }
+    helper.fillField(element, value);
+    if ($('[data-parent="_' + key + '"]', field).length) {
+      insertCb(separator);
+    }
+    insertCb(element);
+    insertCb(createRemoveButton(element.add(separator)));
+  }
 
 	/**
 	 Adds a new button that adds a new child-element to given element on click.
@@ -71,77 +70,75 @@ define('settings/array', function () {
 	 @param attributes The attributes to forward to {@link addArrayChildElement}.
 	 @param separator The separator to forward to {@link addArrayChildElement}.
 	 */
-	function addAddButton(element, key, attributes, separator) {
-		var addSpace = $(document.createTextNode(' ')),
-			newValue = element.data('new') || '',
-			add = $(helper.createElement('button', {
-				"class": 'btn btn-sm btn-primary add',
-				title: 'Expand Array'
-			}, '+'));
-		add.click(function (event) {
-			event.preventDefault();
-			addArrayChildElement(element, key, attributes, newValue, separator.clone(), function (el) {
-				addSpace.before(el);
-			});
-		});
-		element.append(addSpace);
-		element.append(add);
-	}
+  function addAddButton(element, key, attributes, separator) {
+    var addSpace = $(document.createTextNode(' ')),
+      newValue = element.data('new') || '',
+      add = $(helper.createElement('button', {
+        class: 'btn btn-sm btn-primary add',
+        title: 'Expand Array'
+      }, '+'));
+    add.click(function(event) {
+      event.preventDefault();
+      addArrayChildElement(element, key, attributes, newValue, separator.clone(), function(el) {
+        addSpace.before(el);
+      });
+    });
+    element.append(addSpace);
+    element.append(add);
+  }
 
+  SettingsArray = {
+    types: ['array', 'div'],
+    use: function() {
+      helper = (Settings = this).helper;
+    },
+    create: function(ignored, tagName) {
+      return helper.createElement(tagName || 'div');
+    },
+    set: function(element, value) {
+      var attributes = element.data('attributes'),
+        key = element.data('key') || element.data('parent'),
+        separator = element.data('split') || ', ';
+      separator = (function() {
+        try {
+          return $(separator);
+        } catch (_error) {
+          return $(document.createTextNode(separator));
+        }
+      })();
+      if (typeof attributes !== 'object') {
+        attributes = {};
+      }
+      element.empty();
+      if (!(value instanceof Array)) {
+        value = [];
+      }
+      for (var i = 0; i < value.length; i++) {
+        addArrayChildElement(element, key, attributes, value[i], separator.clone(), function(el) {
+          element.append(el);
+        });
+      }
+      addAddButton(element, key, attributes, separator);
+    },
+    get: function(element, trim, empty) {
+      var key = element.data('key') || element.data('parent'),
+        children = $('[data-parent="_' + key + '"]', element),
+        values = [];
+      children.each(function(i, child) {
+        child = $(child);
+        var val = helper.readValue(child),
+          empty = helper.isTrue(child.data('empty'));
+        if (empty || val !== void 0 && (val == null || val.length !== 0)) {
+          return values.push(val);
+        }
+      });
+      if (empty || values.length) {
+        return values;
+      } else {
+        return void 0;
+      }
+    }
+  };
 
-	SettingsArray = {
-		types: ['array', 'div'],
-		use: function () {
-			helper = (Settings = this).helper;
-		},
-		create: function (ignored, tagName) {
-			return helper.createElement(tagName || 'div');
-		},
-		set: function (element, value) {
-			var attributes = element.data('attributes'),
-				key = element.data('key') || element.data('parent'),
-				separator = element.data('split') || ', ';
-			separator = (function () {
-				try {
-					return $(separator);
-				} catch (_error) {
-					return $(document.createTextNode(separator));
-				}
-			})();
-			if (typeof attributes !== 'object') {
-				attributes = {};
-			}
-			element.empty();
-			if (!(value instanceof Array)) {
-				value = [];
-			}
-			for (var i = 0; i < value.length; i++) {
-				addArrayChildElement(element, key, attributes, value[i], separator.clone(), function (el) {
-					element.append(el);
-				});
-			}
-			addAddButton(element, key, attributes, separator);
-		},
-		get: function (element, trim, empty) {
-			var key = element.data('key') || element.data('parent'),
-				children = $("[data-parent=\"_" + key + "\"]", element),
-				values = [];
-			children.each(function (i, child) {
-				child = $(child);
-				var val = helper.readValue(child),
-					empty = helper.isTrue(child.data('empty'));
-				if (empty || val !== void 0 && (val == null || val.length !== 0)) {
-					return values.push(val);
-				}
-			});
-			if (empty || values.length) {
-				return values;
-			} else {
-				return void 0;
-			}
-		}
-	};
-
-	return SettingsArray;
-
+  return SettingsArray;
 });

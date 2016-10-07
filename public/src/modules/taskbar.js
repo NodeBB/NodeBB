@@ -1,140 +1,140 @@
-"use strict";
-/*global define, app, templates*/
+'use strict';
+/* global define, app, templates*/
 
 define('taskbar', function() {
-	var taskbar = {};
+  var taskbar = {};
 
-	taskbar.init = function() {
-		var self = this;
+  taskbar.init = function() {
+    var self = this;
 
-		templates.parse('modules/taskbar', {}, function(html) {
-			self.taskbar = $(html);
-			self.tasklist = self.taskbar.find('ul');
-			$(document.body).append(self.taskbar);
+    templates.parse('modules/taskbar', {}, function(html) {
+      self.taskbar = $(html);
+      self.tasklist = self.taskbar.find('ul');
+      $(document.body).append(self.taskbar);
 
-			self.taskbar.on('click', 'li', function() {
-				var	$btn = $(this),
-					module = $btn.attr('data-module'),
-					uuid = $btn.attr('data-uuid');
+      self.taskbar.on('click', 'li', function() {
+        var	$btn = $(this),
+          module = $btn.attr('data-module'),
+          uuid = $btn.attr('data-uuid');
 
-				require([module], function(module) {
-					if (!$btn.hasClass('active')) {
-						minimizeAll();
-						module.load(uuid);
-						taskbar.toggleNew(uuid, false);
-						app.alternatingTitle('');
+        require([module], function(module) {
+          if (!$btn.hasClass('active')) {
+            minimizeAll();
+            module.load(uuid);
+            taskbar.toggleNew(uuid, false);
+            app.alternatingTitle('');
 
-						taskbar.tasklist.removeClass('active');
-						$btn.addClass('active');
-					} else {
-						module.minimize(uuid);
-					}
-				});
+            taskbar.tasklist.removeClass('active');
+            $btn.addClass('active');
+          } else {
+            module.minimize(uuid);
+          }
+        });
 
-				return false;
-			});
-		});
-	};
+        return false;
+      });
+    });
+  };
 
-	taskbar.discard = function(module, uuid) {
-		var btnEl = taskbar.tasklist.find('[data-module="' + module + '"][data-uuid="' + uuid + '"]');
-		btnEl.remove();
-		
-		update();
-	};
+  taskbar.discard = function(module, uuid) {
+    var btnEl = taskbar.tasklist.find('[data-module="' + module + '"][data-uuid="' + uuid + '"]');
+    btnEl.remove();
 
-	taskbar.push = function(module, uuid, options) {
-		var element = taskbar.tasklist.find('li[data-uuid="' + uuid + '"]');
+    update();
+  };
 
-		var data = {
-			module: module,
-			uuid: uuid,
-			options: options,
-			element: element
-		};
+  taskbar.push = function(module, uuid, options) {
+    var element = taskbar.tasklist.find('li[data-uuid="' + uuid + '"]');
 
-		$(window).trigger('filter:taskbar.push', data);
+    var data = {
+      module: module,
+      uuid: uuid,
+      options: options,
+      element: element
+    };
 
-		if (!element.length && data.module) {
-			createTaskbar(data);
-		}
-	};
+    $(window).trigger('filter:taskbar.push', data);
 
-	taskbar.get = function(module) {
-		var items = $('[data-module="' + module + '"]').map(function(idx, el) {
-			return $(el).data();
-		});
+    if (!element.length && data.module) {
+      createTaskbar(data);
+    }
+  };
 
-		return items;
-	};
+  taskbar.get = function(module) {
+    var items = $('[data-module="' + module + '"]').map(function(idx, el) {
+      return $(el).data();
+    });
 
-	taskbar.minimize = function(module, uuid) {
-		var btnEl = taskbar.tasklist.find('[data-module="' + module + '"][data-uuid="' + uuid + '"]');
-		btnEl.removeClass('active');
-	};
+    return items;
+  };
 
-	taskbar.toggleNew = function(uuid, state, silent) {
-		var btnEl = taskbar.tasklist.find('[data-uuid="' + uuid + '"]');
-		btnEl.toggleClass('new', state);
+  taskbar.minimize = function(module, uuid) {
+    var btnEl = taskbar.tasklist.find('[data-module="' + module + '"][data-uuid="' + uuid + '"]');
+    btnEl.removeClass('active');
+  };
 
-		if (!silent) {
-			$(window).trigger('action:taskbar.toggleNew', uuid);
-		}
-	};
+  taskbar.toggleNew = function(uuid, state, silent) {
+    var btnEl = taskbar.tasklist.find('[data-uuid="' + uuid + '"]');
+    btnEl.toggleClass('new', state);
 
-	taskbar.updateActive = function(uuid) {
-		var	tasks = taskbar.tasklist.find('li');
-		tasks.removeClass('active');
-		tasks.filter('[data-uuid="' + uuid + '"]').addClass('active');
-	};
+    if (!silent) {
+      $(window).trigger('action:taskbar.toggleNew', uuid);
+    }
+  };
 
-	taskbar.isActive = function(uuid) {
-		var taskBtn = taskbar.tasklist.find('li[data-uuid="' + uuid + '"]');
-		return taskBtn.hasClass('active');
-	};
+  taskbar.updateActive = function(uuid) {
+    var	tasks = taskbar.tasklist.find('li');
+    tasks.removeClass('active');
+    tasks.filter('[data-uuid="' + uuid + '"]').addClass('active');
+  };
 
-	function update() {
-		var	tasks = taskbar.tasklist.find('li');
+  taskbar.isActive = function(uuid) {
+    var taskBtn = taskbar.tasklist.find('li[data-uuid="' + uuid + '"]');
+    return taskBtn.hasClass('active');
+  };
 
-		if (tasks.length > 0) {
-			taskbar.taskbar.attr('data-active', '1');
-		} else {
-			taskbar.taskbar.removeAttr('data-active');
-		}
-	}
+  function update() {
+    var	tasks = taskbar.tasklist.find('li');
 
-	function minimizeAll() {
-		taskbar.tasklist.find('.active').removeClass('active');
-	}
+    if (tasks.length > 0) {
+      taskbar.taskbar.attr('data-active', '1');
+    } else {
+      taskbar.taskbar.removeAttr('data-active');
+    }
+  }
 
-	function createTaskbar(data) {
-		var title = $('<div></div>').text(data.options.title || 'NodeBB Task').html();
+  function minimizeAll() {
+    taskbar.tasklist.find('.active').removeClass('active');
+  }
 
-		var	taskbarEl = $('<li />')
+  function createTaskbar(data) {
+    var title = $('<div></div>').text(data.options.title || 'NodeBB Task').html();
+
+    var	taskbarEl = $('<li />')
 			.addClass(data.options.className)
 			.html('<a href="#">' +
 				(data.options.icon ? '<i class="fa ' + data.options.icon + '"></i> ' : '') +
-				(data.options.image ? '<img src="' + data.options.image + '"/> ': '') +
+				(data.options.image ? '<img src="' + data.options.image + '"/> ' : '') +
 				'<span>' + title + '</span>' +
 				'</a>')
 			.attr({
-				'data-module': data.module,
-				'data-uuid': data.uuid
-			})
+  'data-module': data.module,
+  'data-uuid': data.uuid
+})
 			.addClass(data.options.state !== undefined ? data.options.state : 'active');
 
-		if (!data.options.state || data.options.state === 'active') {
-			minimizeAll();
-		}
+    if (!data.options.state || data.options.state === 'active') {
+      minimizeAll();
+    }
 
-		taskbar.tasklist.append(taskbarEl);
-		update();
+    taskbar.tasklist.append(taskbarEl);
+    update();
 
-		data.element = taskbarEl;
+    data.element = taskbarEl;
 
-		taskbarEl.data(data);
-		$(window).trigger('action:taskbar.pushed', data);
-	}
+    taskbarEl.data(data);
+    $(window).trigger('action:taskbar.pushed', data);
+  }
 
-	return taskbar;
+  return taskbar;
 });

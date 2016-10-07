@@ -3,11 +3,11 @@
 /* globals define */
 
 define('forum/account/followers', ['forum/account/header'], function(header) {
-	var	Followers = {};
+  var	Followers = {};
 
-	Followers.init = function() {
-		header.init();
-	};
+  Followers.init = function() {
+    header.init();
+  };
 
-	return Followers;
+  return Followers;
 });

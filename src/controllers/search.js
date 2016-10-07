@@ -10,65 +10,64 @@ var categories = require('../categories');
 var pagination = require('../pagination');
 var helpers = require('./helpers');
 
-
 var searchController = {};
 
 searchController.search = function(req, res, next) {
-	if (!plugins.hasListeners('filter:search.query')) {
-		return next();
-	}
+  if (!plugins.hasListeners('filter:search.query')) {
+    return next();
+  }
 
-	if (!req.user && parseInt(meta.config.allowGuestSearching, 10) !== 1) {
-		return helpers.notAllowed(req, res);
-	}
+  if (!req.user && parseInt(meta.config.allowGuestSearching, 10) !== 1) {
+    return helpers.notAllowed(req, res);
+  }
 
-	var page = Math.max(1, parseInt(req.query.page, 10)) || 1;
-	if (req.query.categories && !Array.isArray(req.query.categories)) {
-		req.query.categories = [req.query.categories];
-	}
+  var page = Math.max(1, parseInt(req.query.page, 10)) || 1;
+  if (req.query.categories && !Array.isArray(req.query.categories)) {
+    req.query.categories = [req.query.categories];
+  }
 
-	var data = {
-		query: req.query.term,
-		searchIn: req.query.in || 'posts',
-		postedBy: req.query.by,
-		categories: req.query.categories,
-		searchChildren: req.query.searchChildren,
-		replies: req.query.replies,
-		repliesFilter: req.query.repliesFilter,
-		timeRange: req.query.timeRange,
-		timeFilter: req.query.timeFilter,
-		sortBy: req.query.sortBy,
-		sortDirection: req.query.sortDirection,
-		page: page,
-		uid: req.uid,
-		qs: req.query
-	};
+  var data = {
+    query: req.query.term,
+    searchIn: req.query.in || 'posts',
+    postedBy: req.query.by,
+    categories: req.query.categories,
+    searchChildren: req.query.searchChildren,
+    replies: req.query.replies,
+    repliesFilter: req.query.repliesFilter,
+    timeRange: req.query.timeRange,
+    timeFilter: req.query.timeFilter,
+    sortBy: req.query.sortBy,
+    sortDirection: req.query.sortDirection,
+    page: page,
+    uid: req.uid,
+    qs: req.query
+  };
 
-	async.parallel({
-		categories: async.apply(categories.buildForSelect, req.uid),
-		search: async.apply(search.search, data)
-	}, function(err, results) {
-		if (err) {
-			return next(err);
-		}
+  async.parallel({
+    categories: async.apply(categories.buildForSelect, req.uid),
+    search: async.apply(search.search, data)
+  }, function(err, results) {
+    if (err) {
+      return next(err);
+    }
 
-		var categoriesData = [
+    var categoriesData = [
 			{value: 'all', text: '[[unread:all_categories]]'},
 			{value: 'watched', text: '[[category:watched-categories]]'}
-		].concat(results.categories);
+    ].concat(results.categories);
 
-		var searchData = results.search;
-		searchData.categories = categoriesData;
-		searchData.categoriesCount = results.categories.length;
-		searchData.pagination = pagination.create(page, searchData.pageCount, req.query);
-		searchData.showAsPosts = !req.query.showAs || req.query.showAs === 'posts';
-		searchData.showAsTopics = req.query.showAs === 'topics';
-		searchData.title = '[[global:header.search]]';
-		searchData.breadcrumbs = helpers.buildBreadcrumbs([{text: '[[global:search]]'}]);
-		searchData.expandSearch = !req.query.term;
+    var searchData = results.search;
+    searchData.categories = categoriesData;
+    searchData.categoriesCount = results.categories.length;
+    searchData.pagination = pagination.create(page, searchData.pageCount, req.query);
+    searchData.showAsPosts = !req.query.showAs || req.query.showAs === 'posts';
+    searchData.showAsTopics = req.query.showAs === 'topics';
+    searchData.title = '[[global:header.search]]';
+    searchData.breadcrumbs = helpers.buildBreadcrumbs([{text: '[[global:search]]'}]);
+    searchData.expandSearch = !req.query.term;
 
-		res.render('search', searchData);
-	});
+    res.render('search', searchData);
+  });
 };
 
 module.exports = searchController;

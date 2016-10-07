@@ -3,15 +3,15 @@
 /* globals define */
 
 define('forum/account/downvoted', ['forum/account/header', 'forum/account/posts'], function(header, posts) {
-	var Downvoted = {};
+  var Downvoted = {};
 
-	Downvoted.init = function() {
-		header.init();
+  Downvoted.init = function() {
+    header.init();
 
-		$('[component="post/content"] img:not(.not-responsive)').addClass('img-responsive');
+    $('[component="post/content"] img:not(.not-responsive)').addClass('img-responsive');
 
-		posts.handleInfiniteScroll('posts.loadMoreDownVotedPosts', 'account/downvoted');
-	};
+    posts.handleInfiniteScroll('posts.loadMoreDownVotedPosts', 'account/downvoted');
+  };
 
-	return Downvoted;
+  return Downvoted;
 });
