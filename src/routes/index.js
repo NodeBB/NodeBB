@@ -103,9 +103,6 @@ module.exports = function(app, middleware, hotswapIds) {
 	pluginRouter.render = function() {
 		app.render.apply(app, arguments);
 	};
-	controllers.render = function() {
-		app.render.apply(app, arguments);
-	};
 
 	// Set-up for hotswapping (when NodeBB reloads)
 	pluginRouter.hotswapId = 'plugins';
