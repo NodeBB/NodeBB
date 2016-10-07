@@ -62,7 +62,7 @@
     "content-too-long": "Por favor digite um post mais curto. Posts não podem ser maiores que %1 caractere(s)",
     "title-too-short": "Por favor digite um título maior. Títulos devem conter no mínimo %1 caractere(s)",
     "title-too-long": "Por favor digite um título menor. Títulos não podem ser maiores que %1 caractere(s).",
-    "category-not-selected": "Category not selected.",
+    "category-not-selected": "Categoria não escolhida.",
     "too-many-posts": "Você pode postar uma vez a cada %1 segundo(s) - por favor aguarde antes de postar novamente",
     "too-many-posts-newbie": "Como novo usuário, você pode postar uma vez a cada %1 segundo(s) até que você tenha recebido reputação de %2 - por favor aguarde antes de postar novamente",
     "tag-too-short": "Por favor digite uma tag maior. Tags devem conter pelo menos %1 caractere(s)",
