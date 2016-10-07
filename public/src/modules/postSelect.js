@@ -3,57 +3,53 @@
 /* globals define*/
 
 define('postSelect', ['components'], function(components) {
-	var PostSelect = {};
+  var PostSelect = {};
 
-	PostSelect.pids = [];
+  PostSelect.pids = [];
 
-	PostSelect.init = function(onSelect) {
-		PostSelect.pids.length = 0;
-		components.get('topic').on('click', '[data-pid]', function() {
-			togglePostSelection($(this), onSelect);
-		});
-		disableClicksOnPosts();
-	};
+  PostSelect.init = function(onSelect) {
+    PostSelect.pids.length = 0;
+    components.get('topic').on('click', '[data-pid]', function() {
+      togglePostSelection($(this), onSelect);
+    });
+    disableClicksOnPosts();
+  };
 
+  function togglePostSelection(post, callback) {
+    var newPid = post.attr('data-pid');
 
-	function togglePostSelection(post, callback) {
-		var newPid = post.attr('data-pid');
+    if (parseInt(post.attr('data-index'), 10) === 0) {
+      return;
+    }
 
-		if (parseInt(post.attr('data-index'), 10) === 0) {
-			return;
-		}
+    if (newPid) {
+      var index = PostSelect.pids.indexOf(newPid);
+      if (index === -1) {
+        PostSelect.pids.push(newPid);
+        post.toggleClass('bg-success', true);
+      } else {
+        PostSelect.pids.splice(index, 1);
+        post.toggleClass('bg-success', false);
+      }
 
-		if (newPid) {
-			var index = PostSelect.pids.indexOf(newPid);
-			if(index === -1) {
-				PostSelect.pids.push(newPid);
-				post.toggleClass('bg-success', true);
-			} else {
-				PostSelect.pids.splice(index, 1);
-				post.toggleClass('bg-success', false);
-			}
+      if (PostSelect.pids.length) {
+        PostSelect.pids.sort(function(a, b) { return a - b; });
+      }
+      callback();
+    }
+  }
 
-			if (PostSelect.pids.length) {
-				PostSelect.pids.sort(function(a,b) { return a - b; });
-			}
-			callback();
-		}
-	}
+  function disableClicks() {
+    return false;
+  }
 
+  function disableClicksOnPosts() {
+    components.get('post').on('click', 'button,a', disableClicks);
+  }
 
-	function disableClicks() {
-		return false;
-	}
+  PostSelect.enableClicksOnPosts = function() {
+    components.get('post').off('click', 'button,a', disableClicks);
+  };
 
-	function disableClicksOnPosts() {
-		components.get('post').on('click', 'button,a', disableClicks);
-	}
-
-	PostSelect.enableClicksOnPosts = function() {
-		components.get('post').off('click', 'button,a', disableClicks);
-	};
-
-
-
-	return PostSelect;
+  return PostSelect;
 });

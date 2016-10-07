@@ -3,17 +3,17 @@
 /* globals define */
 
 define('forum/compose', [], function() {
-	var Compose = {};
+  var Compose = {};
 
-	Compose.init = function() {
-		var container = $('.composer');
+  Compose.init = function() {
+    var container = $('.composer');
 
-		if (container.length) {
-			$(window).trigger('action:composer.enhance', {
-				container: container
-			});
-		}
-	}
+    if (container.length) {
+      $(window).trigger('action:composer.enhance', {
+        container: container
+      });
+    }
+  };
 
-	return Compose;
+  return Compose;
 });

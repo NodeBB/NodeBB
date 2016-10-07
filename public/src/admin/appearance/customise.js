@@ -1,37 +1,37 @@
-"use strict";
+'use strict';
 /* global ace, define, app, socket */
 
 define('admin/appearance/customise', ['admin/settings'], function(Settings) {
-	var Customise = {};
-	
-	Customise.init = function() {		
-		Settings.prepare(function() {
-			$('#customCSS').text($('#customCSS-holder').val());
-			$('#customHTML').text($('#customHTML-holder').val());
-			
-			var customCSS = ace.edit("customCSS"),
-				customHTML = ace.edit("customHTML");
+  var Customise = {};
 
-			customCSS.setTheme("ace/theme/twilight");
-			customCSS.getSession().setMode("ace/mode/css");	
+  Customise.init = function() {
+    Settings.prepare(function() {
+      $('#customCSS').text($('#customCSS-holder').val());
+      $('#customHTML').text($('#customHTML-holder').val());
 
-			customCSS.on('change', function(event) {
-				app.flags = app.flags || {};
-				app.flags._unsaved = true;
-			    $('#customCSS-holder').val(customCSS.getValue());
-			}); 
+      var customCSS = ace.edit('customCSS'),
+        customHTML = ace.edit('customHTML');
 
-			customHTML.setTheme("ace/theme/twilight");
-			customHTML.getSession().setMode("ace/mode/html");
+      customCSS.setTheme('ace/theme/twilight');
+      customCSS.getSession().setMode('ace/mode/css');
 
-			customHTML.on('change', function(event) {
-				app.flags = app.flags || {};
-				app.flags._unsaved = true;
-			    $('#customHTML-holder').val(customHTML.getValue());
-			}); 
-		});
-	};
+      customCSS.on('change', function(event) {
+        app.flags = app.flags || {};
+        app.flags._unsaved = true;
+        $('#customCSS-holder').val(customCSS.getValue());
+      });
 
-	return Customise;
+      customHTML.setTheme('ace/theme/twilight');
+      customHTML.getSession().setMode('ace/mode/html');
+
+      customHTML.on('change', function(event) {
+        app.flags = app.flags || {};
+        app.flags._unsaved = true;
+        $('#customHTML-holder').val(customHTML.getValue());
+      });
+    });
+  };
+
+  return Customise;
 });
-	
+

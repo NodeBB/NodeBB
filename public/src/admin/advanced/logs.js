@@ -1,42 +1,42 @@
-"use strict";
+'use strict';
 /* global define, socket, app */
 
 define('admin/advanced/logs', function() {
-	var	Logs = {};
+  var	Logs = {};
 
-	Logs.init = function() {
-		var logsEl = $('.logs pre');
-		logsEl.scrollTop(logsEl.prop('scrollHeight'));
+  Logs.init = function() {
+    var logsEl = $('.logs pre');
+    logsEl.scrollTop(logsEl.prop('scrollHeight'));
 		// Affix menu
-		$('.affix').affix();
+    $('.affix').affix();
 
-		$('.logs').find('button[data-action]').on('click', function(event) {
-			var btnEl = $(this),
-				action = btnEl.attr('data-action');
+    $('.logs').find('button[data-action]').on('click', function(event) {
+      var btnEl = $(this),
+        action = btnEl.attr('data-action');
 
-			switch(action) {
-				case 'reload':
-					socket.emit('admin.logs.get', function(err, logs) {
-						if (!err) {
-							logsEl.text(logs);
-							logsEl.scrollTop(logsEl.prop('scrollHeight'));
-						} else {
-							app.alertError(err.message);
-						}
-					});
-					break;
+      switch (action) {
+        case 'reload':
+          socket.emit('admin.logs.get', function(err, logs) {
+            if (!err) {
+              logsEl.text(logs);
+              logsEl.scrollTop(logsEl.prop('scrollHeight'));
+            } else {
+              app.alertError(err.message);
+            }
+          });
+          break;
 
-				case 'clear':
-					socket.emit('admin.logs.clear', function(err) {
-						if (!err) {
-							app.alertSuccess('Logs Cleared!');
-							btnEl.prev().click();
-						}
-					});
-					break;
-			}
-		});
-	};
+        case 'clear':
+          socket.emit('admin.logs.clear', function(err) {
+            if (!err) {
+              app.alertSuccess('Logs Cleared!');
+              btnEl.prev().click();
+            }
+          });
+          break;
+      }
+    });
+  };
 
-	return Logs;
+  return Logs;
 });

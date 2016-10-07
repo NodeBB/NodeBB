@@ -14,144 +14,141 @@ var pubsub = require('../pubsub');
 var utils = require('../../public/src/utils');
 
 module.exports = function(Posts) {
+  pubsub.on('post:edit', function(pid) {
+    cache.del(pid);
+  });
 
-	pubsub.on('post:edit', function(pid) {
-		cache.del(pid);
-	});
+  Posts.edit = function(data, callback) {
+    var postData;
+    var results;
 
-	Posts.edit = function(data, callback) {
-		var postData;
-		var results;
+    async.waterfall([
+      function(next) {
+        privileges.posts.canEdit(data.pid, data.uid, next);
+      },
+      function(canEdit, next) {
+        if (!canEdit.flag) {
+          return next(new Error(canEdit.message));
+        }
+        Posts.getPostData(data.pid, next);
+      },
+      function(_postData, next) {
+        if (!_postData) {
+          return next(new Error('[[error:no-post]]'));
+        }
 
-		async.waterfall([
-			function (next) {
-				privileges.posts.canEdit(data.pid, data.uid, next);
-			},
-			function (canEdit, next) {
-				if (!canEdit.flag) {
-					return next(new Error(canEdit.message));
-				}
-				Posts.getPostData(data.pid, next);
-			},
-			function (_postData, next) {
-				if (!_postData) {
-					return next(new Error('[[error:no-post]]'));
-				}
+        postData = _postData;
+        postData.content = data.content;
+        postData.edited = Date.now();
+        postData.editor = data.uid;
+        if (data.handle) {
+          postData.handle = data.handle;
+        }
+        plugins.fireHook('filter:post.edit', {req: data.req, post: postData, data: data, uid: data.uid}, next);
+      },
+      function(result, next) {
+        postData = result.post;
+        Posts.setPostFields(data.pid, postData, next);
+      },
+      function(next) {
+        async.parallel({
+          editor: function(next) {
+            user.getUserFields(data.uid, ['username', 'userslug'], next);
+          },
+          topic: function(next) {
+            editMainPost(data, postData, next);
+          }
+        }, next);
+      },
+      function(_results, next) {
+        results = _results;
 
-				postData = _postData;
-				postData.content = data.content;
-				postData.edited = Date.now();
-				postData.editor = data.uid;
-				if (data.handle) {
-					postData.handle = data.handle;
-				}
-				plugins.fireHook('filter:post.edit', {req: data.req, post: postData, data: data, uid: data.uid}, next);
-			},
-			function (result, next) {
-				postData = result.post;
-				Posts.setPostFields(data.pid, postData, next);
-			},
-			function (next) {
-				async.parallel({
-					editor: function(next) {
-						user.getUserFields(data.uid, ['username', 'userslug'], next);
-					},
-					topic: function(next) {
-						editMainPost(data, postData, next);
-					}
-				}, next);
-			},
-			function (_results, next) {
-				results = _results;
+        postData.cid = results.topic.cid;
 
-				postData.cid = results.topic.cid;
+        plugins.fireHook('action:post.edit', _.clone(postData));
 
-				plugins.fireHook('action:post.edit', _.clone(postData));
+        cache.del(String(postData.pid));
+        pubsub.publish('post:edit', String(postData.pid));
 
-				cache.del(String(postData.pid));
-				pubsub.publish('post:edit', String(postData.pid));
+        Posts.parsePost(postData, next);
+      },
+      function(postData, next) {
+        results.post = postData;
+        next(null, results);
+      }
+    ], callback);
+  };
 
-				Posts.parsePost(postData, next);
-			},
-			function (postData, next) {
-				results.post = postData;
-				next(null, results);
-			}
-		], callback);
-	};
+  function editMainPost(data, postData, callback) {
+    var tid = postData.tid;
+    var title = data.title ? data.title.trim() : '';
 
-	function editMainPost(data, postData, callback) {
-		var tid = postData.tid;
-		var title = data.title ? data.title.trim() : '';
+    async.parallel({
+      topic: function(next) {
+        topics.getTopicFields(tid, ['cid', 'title'], next);
+      },
+      isMain: function(next) {
+        Posts.isMain(data.pid, next);
+      }
+    }, function(err, results) {
+      if (err) {
+        return callback(err);
+      }
 
-		async.parallel({
-			topic: function(next) {
-				topics.getTopicFields(tid, ['cid', 'title'], next);
-			},
-			isMain: function(next) {
-				Posts.isMain(data.pid, next);
-			}
-		}, function(err, results) {
-			if (err) {
-				return callback(err);
-			}
+      if (!results.isMain) {
+        return callback(null, {
+          tid: tid,
+          cid: results.topic.cid,
+          isMainPost: false,
+          renamed: false
+        });
+      }
 
-			if (!results.isMain) {
-				return callback(null, {
-					tid: tid,
-					cid: results.topic.cid,
-					isMainPost: false,
-					renamed: false
-				});
-			}
+      var topicData = {
+        tid: tid,
+        cid: results.topic.cid,
+        uid: postData.uid,
+        mainPid: data.pid
+      };
 
-			var topicData = {
-				tid: tid,
-				cid: results.topic.cid,
-				uid: postData.uid,
-				mainPid: data.pid
-			};
+      if (title) {
+        topicData.title = title;
+        topicData.slug = tid + '/' + (utils.slugify(title) || 'topic');
+      }
 
-			if (title) {
-				topicData.title = title;
-				topicData.slug = tid + '/' + (utils.slugify(title) || 'topic');
-			}
+      topicData.thumb = data.thumb || '';
 
-			topicData.thumb = data.thumb || '';
+      data.tags = data.tags || [];
 
-			data.tags = data.tags || [];
-
-			async.waterfall([
-				function(next) {
-					plugins.fireHook('filter:topic.edit', {req: data.req, topic: topicData, data: data}, next);
-				},
-				function(results, next) {
-					db.setObject('topic:' + tid, results.topic, next);
-				},
-				function(next) {
-					topics.updateTags(tid, data.tags, next);
-				},
-				function(next) {
-					topics.getTopicTagsObjects(tid, next);
-				},
-				function(tags, next) {
-					topicData.tags = data.tags;
-					plugins.fireHook('action:topic.edit', topicData);
-					next(null, {
-						tid: tid,
-						cid: results.topic.cid,
-						uid: postData.uid,
-						title: validator.escape(String(title)),
-						oldTitle: results.topic.title,
-						slug: topicData.slug,
-						isMainPost: true,
-						renamed: title !== results.topic.title,
-						tags: tags
-					});
-				}
-			], callback);
-		});
-	}
-
-
+      async.waterfall([
+        function(next) {
+          plugins.fireHook('filter:topic.edit', {req: data.req, topic: topicData, data: data}, next);
+        },
+        function(results, next) {
+          db.setObject('topic:' + tid, results.topic, next);
+        },
+        function(next) {
+          topics.updateTags(tid, data.tags, next);
+        },
+        function(next) {
+          topics.getTopicTagsObjects(tid, next);
+        },
+        function(tags, next) {
+          topicData.tags = data.tags;
+          plugins.fireHook('action:topic.edit', topicData);
+          next(null, {
+            tid: tid,
+            cid: results.topic.cid,
+            uid: postData.uid,
+            title: validator.escape(String(title)),
+            oldTitle: results.topic.title,
+            slug: topicData.slug,
+            isMainPost: true,
+            renamed: title !== results.topic.title,
+            tags: tags
+          });
+        }
+      ], callback);
+    });
+  }
 };

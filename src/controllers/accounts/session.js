@@ -8,52 +8,52 @@ var user = require('../../user');
 var sessionController = {};
 
 sessionController.revoke = function(req, res, next) {
-	if (!req.params.hasOwnProperty('uuid')) {
-		return next();
-	}
+  if (!req.params.hasOwnProperty('uuid')) {
+    return next();
+  }
 
-	var _id;
-	var uid;
-	async.waterfall([
-		function (next) {
-			user.getUidByUserslug(req.params.userslug, next);
-		},
-		function (_uid, next) {
-			uid = _uid;
-			if (!uid) {
-				return next(new Error('[[error:no-session-found]]'));
-			}
-			db.getSortedSetRange('uid:' + uid + ':sessions', 0, -1, next);
-		},
-		function (sids, done) {
-			async.eachSeries(sids, function(sid, next) {
-				db.sessionStore.get(sid, function(err, sessionObj) {
-					if (err) {
-						return next(err);
-					}
-					if (sessionObj && sessionObj.meta && sessionObj.meta.uuid === req.params.uuid) {
-						_id = sid;
-						done();
-					} else {
-						next();
-					}
-				});
-			}, next);
-		},
-		function (next) {
-			if (!_id) {
-				return next(new Error('[[error:no-session-found]]'));
-			}
+  var _id;
+  var uid;
+  async.waterfall([
+    function(next) {
+      user.getUidByUserslug(req.params.userslug, next);
+    },
+    function(_uid, next) {
+      uid = _uid;
+      if (!uid) {
+        return next(new Error('[[error:no-session-found]]'));
+      }
+      db.getSortedSetRange('uid:' + uid + ':sessions', 0, -1, next);
+    },
+    function(sids, done) {
+      async.eachSeries(sids, function(sid, next) {
+        db.sessionStore.get(sid, function(err, sessionObj) {
+          if (err) {
+            return next(err);
+          }
+          if (sessionObj && sessionObj.meta && sessionObj.meta.uuid === req.params.uuid) {
+            _id = sid;
+            done();
+          } else {
+            next();
+          }
+        });
+      }, next);
+    },
+    function(next) {
+      if (!_id) {
+        return next(new Error('[[error:no-session-found]]'));
+      }
 
-			user.auth.revokeSession(_id, uid, next);
-		}
-	], function(err) {
-		if (err) {
-			return res.status(500).send(err.message);
-		} else {
-			return res.sendStatus(200);
-		}
-	});
+      user.auth.revokeSession(_id, uid, next);
+    }
+  ], function(err) {
+    if (err) {
+      return res.status(500).send(err.message);
+    } else {
+      return res.sendStatus(200);
+    }
+  });
 };
 
 module.exports = sessionController;

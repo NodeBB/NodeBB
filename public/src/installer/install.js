@@ -1,127 +1,125 @@
-"use strict";
-/*global utils*/
+'use strict';
+/* global utils*/
 
 $('document').ready(function() {
-	setupInputs();
-	$('[name="username"]').focus();
+  setupInputs();
+  $('[name="username"]').focus();
 
-	activate('database', $('[name="database"]'));
+  activate('database', $('[name="database"]'));
 
-	if ($('#database-error').length) {
-		$('[name="database"]').parents('.input-row').addClass('error');
-		$('html, body').animate({
-			scrollTop: ($('#database-error').offset().top + 100) + 'px'
-		}, 400);
-	}
+  if ($('#database-error').length) {
+    $('[name="database"]').parents('.input-row').addClass('error');
+    $('html, body').animate({
+      scrollTop: $('#database-error').offset().top + 100 + 'px'
+    }, 400);
+  }
 
-	$('#launch').on('click', launchForum);
+  $('#launch').on('click', launchForum);
 
+  function setupInputs() {
+    $('form').on('focus', '.form-control', function() {
+      var parent = $(this).parents('.input-row');
 
+      $('.input-row.active').removeClass('active');
+      parent.addClass('active').removeClass('error');
 
-	function setupInputs() {
-		$('form').on('focus', '.form-control', function() {
-			var parent = $(this).parents('.input-row');
+      var help = parent.find('.help-text');
+      help.html(help.attr('data-help'));
+    });
 
-			$('.input-row.active').removeClass('active');
-			parent.addClass('active').removeClass('error');
+    $('form').on('blur change', '[name]', function() {
+      activate($(this).attr('name'), $(this));
+    });
 
-			var help = parent.find('.help-text');
-			help.html(help.attr('data-help'));
-		});
+    $('form').submit(validateAll);
+  }
 
-		$('form').on('blur change', '[name]', function() {
-			activate($(this).attr('name'), $(this));
-		});
+  function validateAll(ev) {
+    $('form .admin [name]').each(function() {
+      activate($(this).attr('name'), $(this));
+    });
 
-		$('form').submit(validateAll);
-	}
+    if ($('form .admin .error').length) {
+      ev.preventDefault();
+      $('html, body').animate({scrollTop: '0px'}, 400);
 
-	function validateAll(ev) {
-		$('form .admin [name]').each(function() {
-			activate($(this).attr('name'), $(this));
-		});
+      return false;
+    } else {
+      $('#submit .fa-spin').removeClass('hide');
+    }
+  }
 
-		if ($('form .admin .error').length) {
-			ev.preventDefault();
-			$('html, body').animate({'scrollTop': '0px'}, 400);
+  function activate(type, el) {
+    var field = el.val(),
+      parent = el.parents('.input-row'),
+      help = parent.children('.help-text');
 
-			return false;
-		} else {
-			$('#submit .fa-spin').removeClass('hide');
-		}
-	}
+    function validateUsername(field) {
+      if (!utils.isUserNameValid(field) || !utils.slugify(field)) {
+        parent.addClass('error');
+        help.html('Invalid Username.');
+      } else {
+        parent.removeClass('error');
+      }
+    }
 
-	function activate(type, el) {
-		var field = el.val(),
-			parent = el.parents('.input-row'),
-			help = parent.children('.help-text');
+    function validatePassword(field) {
+      if (!utils.isPasswordValid(field)) {
+        parent.addClass('error');
+        help.html('Invalid Password.');
+      } else if (field.length < $('[name="admin:password"]').attr('data-minimum-length')) {
+        parent.addClass('error');
+        help.html('Password is too short.');
+      } else {
+        parent.removeClass('error');
+      }
+    }
 
-		function validateUsername(field) {
-			if (!utils.isUserNameValid(field) || !utils.slugify(field)) {
-				parent.addClass('error');
-				help.html('Invalid Username.');
-			} else {
-				parent.removeClass('error');
-			}
-		}
+    function validateConfirmPassword(field) {
+      if ($('[name="admin:password"]').val() !== $('[name="admin:passwordConfirm"]').val()) {
+        parent.addClass('error');
+        help.html('Passwords do not match.');
+      } else {
+        parent.removeClass('error');
+      }
+    }
 
-		function validatePassword(field) {
-			if (!utils.isPasswordValid(field)) {
-				parent.addClass('error');
-				help.html('Invalid Password.');
-			} else if (field.length < $('[name="admin:password"]').attr('data-minimum-length')) {
-				parent.addClass('error');
-				help.html('Password is too short.');
-			} else {
-				parent.removeClass('error');
-			}
-		}
+    function validateEmail(field) {
+      if (!utils.isEmailValid(field)) {
+        parent.addClass('error');
+        help.html('Invalid Email Address.');
+      } else {
+        parent.removeClass('error');
+      }
+    }
 
-		function validateConfirmPassword(field) {
-			if ($('[name="admin:password"]').val() !== $('[name="admin:passwordConfirm"]').val()) {
-				parent.addClass('error');
-				help.html('Passwords do not match.');
-			} else {
-				parent.removeClass('error');
-			}
-		}
+    function switchDatabase(field) {
+      $('#database-config').html($('[data-database="' + field + '"]').html());
+    }
 
-		function validateEmail(field) {
-			if (!utils.isEmailValid(field)) {
-				parent.addClass('error');
-				help.html('Invalid Email Address.');
-			} else {
-				parent.removeClass('error');
-			}
-		}
+    switch (type) {
+      case 'admin:username':
+        return validateUsername(field);
+      case 'admin:password':
+        return validatePassword(field);
+      case 'admin:passwordConfirm':
+        return validateConfirmPassword(field);
+      case 'admin:email':
+        return validateEmail(field);
+      case 'database':
+        return switchDatabase(field);
+    }
+  }
 
-		function switchDatabase(field) {
-			$('#database-config').html($('[data-database="' + field + '"]').html());
-		}
+  function launchForum() {
+    $('#launch .fa-spin').removeClass('hide');
 
-		switch (type) {
-			case 'admin:username':
-				return validateUsername(field);
-			case 'admin:password':
-				return validatePassword(field);
-			case 'admin:passwordConfirm':
-				return validateConfirmPassword(field);
-			case 'admin:email':
-				return validateEmail(field);
-			case 'database':
-				return switchDatabase(field);
-		}
-	}
-
-	function launchForum() {
-		$('#launch .fa-spin').removeClass('hide');
-
-		$.post('/launch', function() {
-			setInterval(function() {
-				$.get('/admin').done(function(data) {
-					window.location = 'admin';
-				});
-			}, 750);
-		});
-	}
+    $.post('/launch', function() {
+      setInterval(function() {
+        $.get('/admin').done(function(data) {
+          window.location = 'admin';
+        });
+      }, 750);
+    });
+  }
 });

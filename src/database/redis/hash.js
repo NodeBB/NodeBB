@@ -1,114 +1,113 @@
-"use strict";
+'use strict';
 
 module.exports = function(redisClient, module) {
+  var helpers = module.helpers.redis;
 
-	var helpers = module.helpers.redis;
+  module.setObject = function(key, data, callback) {
+    callback = callback || function() {};
+    redisClient.hmset(key, data, function(err) {
+      callback(err);
+    });
+  };
 
-	module.setObject = function(key, data, callback) {
-		callback = callback || function() {};
-		redisClient.hmset(key, data, function(err) {
-			callback(err);
-		});
-	};
+  module.setObjectField = function(key, field, value, callback) {
+    callback = callback || function() {};
+    redisClient.hset(key, field, value, function(err) {
+      callback(err);
+    });
+  };
 
-	module.setObjectField = function(key, field, value, callback) {
-		callback = callback || function() {};
-		redisClient.hset(key, field, value, function(err) {
-			callback(err);
-		});
-	};
+  module.getObject = function(key, callback) {
+    redisClient.hgetall(key, callback);
+  };
 
-	module.getObject = function(key, callback) {
-		redisClient.hgetall(key, callback);
-	};
+  module.getObjects = function(keys, callback) {
+    helpers.multiKeys(redisClient, 'hgetall', keys, callback);
+  };
 
-	module.getObjects = function(keys, callback) {
-		helpers.multiKeys(redisClient, 'hgetall', keys, callback);
-	};
+  module.getObjectField = function(key, field, callback) {
+    module.getObjectFields(key, [field], function(err, data) {
+      callback(err, data ? data[field] : null);
+    });
+  };
 
-	module.getObjectField = function(key, field, callback) {
-		module.getObjectFields(key, [field], function(err, data) {
-			callback(err, data ? data[field] : null);
-		});
-	};
+  module.getObjectFields = function(key, fields, callback) {
+    module.getObjectsFields([key], fields, function(err, results) {
+      callback(err, results ? results[0] : null);
+    });
+  };
 
-	module.getObjectFields = function(key, fields, callback) {
-		module.getObjectsFields([key], fields, function(err, results) {
-			callback(err, results ? results[0] : null);
-		});
-	};
+  module.getObjectsFields = function(keys, fields, callback) {
+    if (!Array.isArray(fields) || !fields.length) {
+      return callback(null, keys.map(function() { return {}; }));
+    }
+    var	multi = redisClient.multi();
 
-	module.getObjectsFields = function(keys, fields, callback) {
-		if (!Array.isArray(fields) || !fields.length) {
-			return callback(null, keys.map(function() { return {}; }));
-		}
-		var	multi = redisClient.multi();
+    for (var x = 0; x < keys.length; ++x) {
+      multi.hmget.apply(multi, [keys[x]].concat(fields));
+    }
 
-		for(var x=0; x<keys.length; ++x) {
-			multi.hmget.apply(multi, [keys[x]].concat(fields));
-		}
+    function makeObject(array) {
+      var obj = {};
 
-		function makeObject(array) {
-			var obj = {};
+      for (var i = 0, ii = fields.length; i < ii; ++i) {
+        obj[fields[i]] = array[i];
+      }
+      return obj;
+    }
 
-			for (var i = 0, ii = fields.length; i < ii; ++i) {
-				obj[fields[i]] = array[i];
-			}
-			return obj;
-		}
+    multi.exec(function(err, results) {
+      if (err) {
+        return callback(err);
+      }
 
-		multi.exec(function(err, results) {
-			if (err) {
-				return callback(err);
-			}
+      results = results.map(makeObject);
+      callback(null, results);
+    });
+  };
 
-			results = results.map(makeObject);
-			callback(null, results);
-		});
-	};
+  module.getObjectKeys = function(key, callback) {
+    redisClient.hkeys(key, callback);
+  };
 
-	module.getObjectKeys = function(key, callback) {
-		redisClient.hkeys(key, callback);
-	};
+  module.getObjectValues = function(key, callback) {
+    redisClient.hvals(key, callback);
+  };
 
-	module.getObjectValues = function(key, callback) {
-		redisClient.hvals(key, callback);
-	};
+  module.isObjectField = function(key, field, callback) {
+    redisClient.hexists(key, field, function(err, exists) {
+      callback(err, exists === 1);
+    });
+  };
 
-	module.isObjectField = function(key, field, callback) {
-		redisClient.hexists(key, field, function(err, exists) {
-			callback(err, exists === 1);
-		});
-	};
+  module.isObjectFields = function(key, fields, callback) {
+    helpers.multiKeyValues(redisClient, 'hexists', key, fields, function(err, results) {
+      callback(err, Array.isArray(results) ? helpers.resultsToBool(results) : null);
+    });
+  };
 
-	module.isObjectFields = function(key, fields, callback) {
-		helpers.multiKeyValues(redisClient, 'hexists', key, fields, function(err, results) {
-			callback(err, Array.isArray(results) ? helpers.resultsToBool(results) : null);
-		});
-	};
+  module.deleteObjectField = function(key, field, callback) {
+    callback = callback || function() {};
+    redisClient.hdel(key, field, function(err, res) {
+      callback(err);
+    });
+  };
 
-	module.deleteObjectField = function(key, field, callback) {
-		callback = callback || function() {};
-		redisClient.hdel(key, field, function(err, res) {
-			callback(err);
-		});
-	};
+  module.deleteObjectFields = function(key, fields, callback) {
+    helpers.multiKeyValues(redisClient, 'hdel', key, fields, function(err, results) {
+      callback(err);
+    });
+  };
 
-	module.deleteObjectFields = function(key, fields, callback) {
-		helpers.multiKeyValues(redisClient, 'hdel', key, fields, function(err, results) {
-			callback(err);
-		});
-	};
+  module.incrObjectField = function(key, field, callback) {
+    redisClient.hincrby(key, field, 1, callback);
+  };
 
-	module.incrObjectField = function(key, field, callback) {
-		redisClient.hincrby(key, field, 1, callback);
-	};
+  module.decrObjectField = function(key, field, callback) {
+    redisClient.hincrby(key, field, -1, callback);
+  };
 
-	module.decrObjectField = function(key, field, callback) {
-		redisClient.hincrby(key, field, -1, callback);
-	};
-
-	module.incrObjectFieldBy = function(key, field, value, callback) {
-		redisClient.hincrby(key, field, value, callback);
-	};
+  module.incrObjectFieldBy = function(key, field, value, callback) {
+    redisClient.hincrby(key, field, value, callback);
+  };
 };

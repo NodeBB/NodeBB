@@ -1,142 +1,141 @@
-"use strict";
+'use strict';
 
 var rewards = {},
-	async = require('async'),
-	plugins = require('../plugins'),
-	db = require('../database');
-
+  async = require('async'),
+  plugins = require('../plugins'),
+  db = require('../database');
 
 rewards.save = function(data, callback) {
-	function save(data, next) {
-		function commit(err, id) {
-			if (err) {
-				return callback(err);
-			}
+  function save(data, next) {
+    function commit(err, id) {
+      if (err) {
+        return callback(err);
+      }
 
-			data.id = id;
-			
-			async.series([
-				function(next) {
-					rewards.delete(data, next);
-				},
-				function(next) {
-					db.setAdd('rewards:list', data.id, next);
-				},
-				function(next) {
-					db.setObject('rewards:id:' + data.id, data, next);
-				},
-				function(next) {
-					db.setObject('rewards:id:' + data.id + ':rewards', rewardsData, next);
-				}
-			], next);
-		}
+      data.id = id;
 
-		if (!Object.keys(data.rewards).length) {
-			return next();
-		}
+      async.series([
+        function(next) {
+          rewards.delete(data, next);
+        },
+        function(next) {
+          db.setAdd('rewards:list', data.id, next);
+        },
+        function(next) {
+          db.setObject('rewards:id:' + data.id, data, next);
+        },
+        function(next) {
+          db.setObject('rewards:id:' + data.id + ':rewards', rewardsData, next);
+        }
+      ], next);
+    }
 
-		var rewardsData = data.rewards;
-		delete data.rewards;
+    if (!Object.keys(data.rewards).length) {
+      return next();
+    }
 
-		if (!parseInt(data.id, 10)) {
-			db.incrObjectField('global', 'rewards:id', commit);
-		} else {
-			commit(false, data.id);
-		}
-	}
+    var rewardsData = data.rewards;
+    delete data.rewards;
 
-	async.each(data, save, function(err) {
-		if (err) {
-			return callback(err);
-		}
+    if (!parseInt(data.id, 10)) {
+      db.incrObjectField('global', 'rewards:id', commit);
+    } else {
+      commit(false, data.id);
+    }
+  }
 
-		saveConditions(data, callback);
-	});
+  async.each(data, save, function(err) {
+    if (err) {
+      return callback(err);
+    }
+
+    saveConditions(data, callback);
+  });
 };
 
 rewards.delete = function(data, callback) {
-	async.parallel([
-		function(next) {
-			db.setRemove('rewards:list', data.id, next);
-		},
-		function(next) {
-			db.delete('rewards:id:' + data.id, next);
-		},
-		function(next) {
-			db.delete('rewards:id:' + data.id + ':rewards', next);
-		}
-	], callback);
+  async.parallel([
+    function(next) {
+      db.setRemove('rewards:list', data.id, next);
+    },
+    function(next) {
+      db.delete('rewards:id:' + data.id, next);
+    },
+    function(next) {
+      db.delete('rewards:id:' + data.id + ':rewards', next);
+    }
+  ], callback);
 };
 
 rewards.get = function(callback) {
-	async.parallel({
-		active: getActiveRewards,
-		conditions: function(next) {
-			plugins.fireHook('filter:rewards.conditions', [], next);
-		},
-		conditionals: function(next) {
-			plugins.fireHook('filter:rewards.conditionals', [], next);
-		},
-		rewards: function(next) {
-			plugins.fireHook('filter:rewards.rewards', [], next);
-		}
-	}, callback);
+  async.parallel({
+    active: getActiveRewards,
+    conditions: function(next) {
+      plugins.fireHook('filter:rewards.conditions', [], next);
+    },
+    conditionals: function(next) {
+      plugins.fireHook('filter:rewards.conditionals', [], next);
+    },
+    rewards: function(next) {
+      plugins.fireHook('filter:rewards.rewards', [], next);
+    }
+  }, callback);
 };
 
 function saveConditions(data, callback) {
-	db.delete('conditions:active', function(err) {
-		if (err) {
-			return callback(err);
-		}
+  db.delete('conditions:active', function(err) {
+    if (err) {
+      return callback(err);
+    }
 
-		var conditions = [],
-			rewardsPerCondition = {};
+    var conditions = [],
+      rewardsPerCondition = {};
 
-		data.forEach(function(reward) {
-			conditions.push(reward.condition);
-			rewardsPerCondition[reward.condition] = rewardsPerCondition[reward.condition] || [];
-			rewardsPerCondition[reward.condition].push(reward.id);
-		});
+    data.forEach(function(reward) {
+      conditions.push(reward.condition);
+      rewardsPerCondition[reward.condition] = rewardsPerCondition[reward.condition] || [];
+      rewardsPerCondition[reward.condition].push(reward.id);
+    });
 
-		db.setAdd('conditions:active', conditions, callback);
+    db.setAdd('conditions:active', conditions, callback);
 
-		async.each(Object.keys(rewardsPerCondition), function(condition, next) {
-			db.setAdd('condition:' + condition + ':rewards', rewardsPerCondition[condition], next);
-		}, callback);
-	});
+    async.each(Object.keys(rewardsPerCondition), function(condition, next) {
+      db.setAdd('condition:' + condition + ':rewards', rewardsPerCondition[condition], next);
+    }, callback);
+  });
 }
 
 function getActiveRewards(callback) {
-	var activeRewards = [];
+  var activeRewards = [];
 
-	function load(id, next) {
-		async.parallel({
-			main: function(next) {
-				db.getObject('rewards:id:' + id, next);
-			},
-			rewards: function(next) {
-				db.getObject('rewards:id:' + id + ':rewards', next);
-			}
-		}, function(err, data) {
-			if (data.main) {
-				data.main.disabled = data.main.disabled === 'true';
-				data.main.rewards = data.rewards;
-				activeRewards.push(data.main);
-			}
+  function load(id, next) {
+    async.parallel({
+      main: function(next) {
+        db.getObject('rewards:id:' + id, next);
+      },
+      rewards: function(next) {
+        db.getObject('rewards:id:' + id + ':rewards', next);
+      }
+    }, function(err, data) {
+      if (data.main) {
+        data.main.disabled = data.main.disabled === 'true';
+        data.main.rewards = data.rewards;
+        activeRewards.push(data.main);
+      }
 
-			next(err);
-		});
-	}
+      next(err);
+    });
+  }
 
-	db.getSetMembers('rewards:list', function(err, rewards) {
-		if (err) {
-			return callback(err);
-		}
+  db.getSetMembers('rewards:list', function(err, rewards) {
+    if (err) {
+      return callback(err);
+    }
 
-		async.eachSeries(rewards, load, function(err) {
-			callback(err, activeRewards);
-		});
-	});
+    async.eachSeries(rewards, load, function(err) {
+      callback(err, activeRewards);
+    });
+  });
 }
 
 module.exports = rewards;

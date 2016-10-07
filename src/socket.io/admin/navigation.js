@@ -1,10 +1,10 @@
-"use strict";
+'use strict';
 
 var navigationAdmin = require('../../navigation/admin'),
-	SocketNavigation = {};
+  SocketNavigation = {};
 
 SocketNavigation.save = function(socket, data, callback) {
-	navigationAdmin.save(data, callback);
+  navigationAdmin.save(data, callback);
 };
 
 module.exports = SocketNavigation;
