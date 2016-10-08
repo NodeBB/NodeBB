@@ -38,8 +38,6 @@ module.exports = function(Posts) {
 					'tid': tid,
 					'content': content,
 					'timestamp': timestamp,
-					'editor': '',
-					'edited': 0,
 					'deleted': 0
 				};
 
