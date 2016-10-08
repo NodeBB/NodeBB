@@ -52,7 +52,7 @@ define('forum/topic/postTools', ['share', 'navigator', 'components', 'translator
 	PostTools.toggle = function(pid, isDeleted) {
 		var postEl = components.get('post', 'pid', pid);
 
-		postEl.find('[component="post/quote"], [component="post/favourite"], [component="post/reply"], [component="post/flag"], [component="user/chat"]')
+		postEl.find('[component="post/quote"], [component="post/bookmark"], [component="post/reply"], [component="post/flag"], [component="user/chat"]')
 			.toggleClass('hidden', isDeleted);
 
 		postEl.find('[component="post/delete"]').toggleClass('hidden', isDeleted);
@@ -149,8 +149,8 @@ define('forum/topic/postTools', ['share', 'navigator', 'components', 'translator
 			});
 		});
 
-		postContainer.on('click', '[component="post/favourite"]', function() {
-			favouritePost($(this), getData($(this), 'data-pid'));
+		postContainer.on('click', '[component="post/bookmark"]', function() {
+			bookmarkPost($(this), getData($(this), 'data-pid'));
 		});
 
 		postContainer.on('click', '[component="post/upvote"]', function() {
@@ -330,8 +330,8 @@ define('forum/topic/postTools', ['share', 'navigator', 'components', 'translator
 		return selectionText;
 	}
 
-	function favouritePost(button, pid) {
-		var method = button.attr('data-favourited') === 'false' ? 'posts.favourite' : 'posts.unfavourite';
+	function bookmarkPost(button, pid) {
+		var method = button.attr('data-bookmarked') === 'false' ? 'posts.bookmark' : 'posts.unbookmark';
 
 		socket.emit(method, {
 			pid: pid,

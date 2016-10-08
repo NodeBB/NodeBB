@@ -12,7 +12,6 @@ var socketTopics = require('../topics');
 var privileges = require('../../privileges');
 var plugins = require('../../plugins');
 var social = require('../../social');
-var favourites = require('../../favourites');
 
 module.exports = function(SocketPosts) {
 
@@ -23,7 +22,7 @@ module.exports = function(SocketPosts) {
 
 		async.parallel({
 			posts: function(next) {
-				posts.getPostFields(data.pid, ['deleted', 'reputation', 'uid'], next);
+				posts.getPostFields(data.pid, ['deleted', 'bookmarks', 'uid'], next);
 			},
 			isAdminOrMod: function(next) {
 				privileges.categories.isAdminOrMod(data.cid, socket.uid, next);
@@ -34,8 +33,8 @@ module.exports = function(SocketPosts) {
 			canDelete: function(next) {
 				privileges.posts.canDelete(data.pid, socket.uid, next);
 			},
-			favourited: function(next) {
-				favourites.getFavouritesByPostIDs([data.pid], socket.uid, next);
+			bookmarked: function(next) {
+				posts.hasBookmarked(data.pid, socket.uid, next);
 			},
 			tools: function(next) {
 				plugins.fireHook('filter:post.tools', {pid: data.pid, uid: socket.uid, tools: []}, next);
@@ -50,7 +49,7 @@ module.exports = function(SocketPosts) {
 
 			results.posts.tools = results.tools.tools;
 			results.posts.deleted = parseInt(results.posts.deleted, 10) === 1;
-			results.posts.favourited = results.favourited[0];
+			results.posts.bookmarked = results.bookmarked;
 			results.posts.selfPost = socket.uid && socket.uid === parseInt(results.posts.uid, 10);
 			results.posts.display_edit_tools = results.canEdit.flag;
 			results.posts.display_delete_tools = results.canDelete.flag;

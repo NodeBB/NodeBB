@@ -28,8 +28,8 @@ define('components', function() {
 		'post/vote-count': function(pid) {
 			return components.core.post('pid', pid).find('[component="post/vote-count"]');
 		},
-		'post/favourite-count': function(pid) {
-			return components.core.post('pid', pid).find('[component="post/favourite-count"]');
+		'post/bookmark-count': function(pid) {
+			return components.core.post('pid', pid).find('[component="post/bookmark-count"]');
 		},
 
 		'user/postcount': function(uid) {

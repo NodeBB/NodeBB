@@ -310,8 +310,8 @@ module.exports = function(Topics) {
 					postData.user.username = validator.escape(String(data.handle));
 				}
 
-				postData.favourited = false;
 				postData.votes = 0;
+				postData.bookmarked = false;
 				postData.display_edit_tools = true;
 				postData.display_delete_tools = true;
 				postData.display_moderator_tools = true;

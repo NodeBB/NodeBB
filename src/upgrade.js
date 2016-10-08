@@ -10,7 +10,7 @@ var db = require('./database'),
 	schemaDate, thisSchemaDate,
 
 	// IMPORTANT: REMEMBER TO UPDATE VALUE OF latestSchema
-	latestSchema = Date.UTC(2016, 8, 22);
+	latestSchema = Date.UTC(2016, 9, 8);
 
 Upgrade.check = function(callback) {
 	db.get('schemaDate', function(err, value) {
@@ -848,6 +848,63 @@ Upgrade.upgrade = function(callback) {
 				});
 			} else {
 				winston.info('[2016/09/22] Setting category recent tids - skipped!');
+				next();
+			}
+		},
+		function(next) {
+			function upgradePosts(next) {
+				var batch = require('./batch');
+
+				batch.processSortedSet('posts:pid', function(ids, next) {
+					async.each(ids, function(id, next) {
+						console.log('processing pid ' + id);
+						async.waterfall([
+							function(next) {
+								db.rename('pid:' + id + ':users_favourited', 'pid:' + id + ':users_bookmarked', next);
+							},
+							function(next) {
+								db.getObjectField('post:' + id, 'reputation', next);
+							},
+							function(reputation, next) {
+								if (parseInt(reputation, 10)) {
+									db.setObjectField('post:' + id, 'bookmarks', reputation, next);
+								} else {
+									next();
+								}
+							},
+							function(next) {
+								db.deleteObjectField('post:' + id, 'reputation', next);
+							}
+						], next);
+					}, next);
+				}, {}, next);
+			}
+
+			function upgradeUsers(next) {
+				var batch = require('./batch');
+
+				batch.processSortedSet('users:joindate', function(ids, next) {
+					async.each(ids, function(id, next) {
+						console.log('processing uid ' + id);
+						db.rename('uid:' + id + ':favourites', 'uid:' + id + ':bookmarks', next);
+					}, next);
+				}, {}, next);
+			}
+
+			thisSchemaDate = Date.UTC(2016, 9, 8);
+
+			if (schemaDate < thisSchemaDate || 1) {
+				updatesMade = true;
+				winston.info('[2016/10/8] favourite -> bookmark refactor');
+				async.series([upgradePosts, upgradeUsers], function(err) {
+					if (err) {
+						return next(err);
+					}
+					winston.info('[2016/08/05] favourite- bookmark refactor done!');
+					Upgrade.update(thisSchemaDate, next);
+				});
+			} else {
+				winston.info('[2016/10/8] favourite -> bookmark refactor - skipped!');
 				next();
 			}
 		}

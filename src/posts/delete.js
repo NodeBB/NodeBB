@@ -132,7 +132,7 @@ module.exports = function(Posts) {
 						deletePostFromCategoryRecentPosts(pid, next);
 					},
 					function (next) {
-						deletePostFromUsersFavourites(pid, next);
+						deletePostFromUsersBookmarks(pid, next);
 					},
 					function (next) {
 						deletePostFromUsersVotes(pid, next);
@@ -219,14 +219,14 @@ module.exports = function(Posts) {
 		});
 	}
 
-	function deletePostFromUsersFavourites(pid, callback) {
-		db.getSetMembers('pid:' + pid + ':users_favourited', function(err, uids) {
+	function deletePostFromUsersBookmarks(pid, callback) {
+		db.getSetMembers('pid:' + pid + ':users_bookmarked', function(err, uids) {
 			if (err) {
 				return callback(err);
 			}
 
 			var sets = uids.map(function(uid) {
-				return 'uid:' + uid + ':favourites';
+				return 'uid:' + uid + ':bookmarks';
 			});
 
 			db.sortedSetsRemove(sets, pid, function(err) {
@@ -234,7 +234,7 @@ module.exports = function(Posts) {
 					return callback(err);
 				}
 
-				db.delete('pid:' + pid + ':users_favourited', callback);
+				db.delete('pid:' + pid + ':users_bookmarked', callback);
 			});
 		});
 	}

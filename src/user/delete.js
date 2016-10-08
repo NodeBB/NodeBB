@@ -1,13 +1,13 @@
 'use strict';
 
-var async = require('async'),
-	db = require('../database'),
-	posts = require('../posts'),
-	topics = require('../topics'),
-	favourites = require('../favourites'),
-	groups = require('../groups'),
-	plugins = require('../plugins'),
-	batch = require('../batch');
+var async = require('async');
+
+var db = require('../database');
+var posts = require('../posts');
+var topics = require('../topics');
+var groups = require('../groups');
+var plugins = require('../plugins');
+var batch = require('../batch');
 
 module.exports = function(User) {
 
@@ -107,7 +107,7 @@ module.exports = function(User) {
 						var keys = [
 							'uid:' + uid + ':notifications:read',
 							'uid:' + uid + ':notifications:unread',
-							'uid:' + uid + ':favourites',
+							'uid:' + uid + ':bookmarks',
 							'uid:' + uid + ':followed_tids',
 							'uid:' + uid + ':ignored_tids',
 							'user:' + uid + ':settings',
@@ -151,7 +151,7 @@ module.exports = function(User) {
 				});
 
 				async.eachSeries(pids, function(pid, next) {
-					favourites.unvote(pid, uid, next);
+					posts.unvote(pid, uid, next);
 				}, next);
 			}
 		], function(err) {

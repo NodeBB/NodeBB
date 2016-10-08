@@ -13,14 +13,14 @@ var accountHelpers = require('./helpers');
 
 var postsController = {};
 
-postsController.getFavourites = function(req, res, next) {
+postsController.getBookmarks = function(req, res, next) {
 	var data = {
-		template: 'account/favourites',
-		set: 'favourites',
+		template: 'account/bookmarks',
+		set: 'bookmarks',
 		type: 'posts',
-		noItemsFoundKey: '[[topic:favourites.has_no_favourites]]',
+		noItemsFoundKey: '[[topic:bookmarks.has_no_bookmarks]]',
 		method: posts.getPostSummariesFromSet,
-		crumb: '[[user:favourites]]'
+		crumb: '[[user:bookmarks]]'
 	};
 	getFromUserSet(data, req, res, next);
 };
