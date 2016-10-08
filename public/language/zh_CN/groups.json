@@ -51,6 +51,6 @@
     "membership.reject": "拒绝",
     "new-group.group_name": "组名: ",
     "upload-group-cover": "上传组封面",
-    "bulk-invite-instructions": "Enter a list of comma separated usernames to invite to this group",
-    "bulk-invite": "Bulk Invite"
+    "bulk-invite-instructions": "输入您要邀请加入此小组的用户名，多个用户以逗号分隔",
+    "bulk-invite": "批量邀请"
 }
