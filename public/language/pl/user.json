@@ -123,5 +123,7 @@
     "info.banned-reason-label": "Powód",
     "info.banned-no-reason": "Nie podano powodu.",
     "info.username-history": "Historia nazwy użytkownika",
-    "info.email-history": "Historia adresu e-mail"
+    "info.email-history": "Historia adresu e-mail",
+    "info.moderation-note": "Moderation Note",
+    "info.moderation-note.success": "Moderation note saved"
 }

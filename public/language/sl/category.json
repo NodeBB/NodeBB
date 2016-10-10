@@ -14,7 +14,7 @@
     "ignoring": "Prezrto",
     "watching.description": "Pokaži teme v Neprebrano",
     "ignoring.description": "Ne pokaži tem v Neprebrano",
-    "watch.message": "Sedaj spremljaš posodobitve kategorije",
-    "ignore.message": "Ne spremljaš posodobitev v kategoriji",
+    "watch.message": "You are now watching updates from this category and all subcategories",
+    "ignore.message": "You are now ignoring updates from this category and all subcategories",
     "watched-categories": "Spremljane kategorije"
 }

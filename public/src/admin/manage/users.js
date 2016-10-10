@@ -2,12 +2,10 @@
 
 /* global config, socket, define, templates, bootbox, app, ajaxify  */
 
-define('admin/manage/users', ['admin/modules/selectable', 'translator'], function(selectable, translator) {
+define('admin/manage/users', ['translator'], function(translator) {
 	var Users = {};
 
 	Users.init = function() {
-		selectable.enable('#users-container', '.users-box');
-
 		var navPills = $('.nav-pills li');
 		var pathname = window.location.pathname;
 		if (!navPills.find('a[href="' + pathname + '"]').length) {
@@ -17,25 +15,29 @@ define('admin/manage/users', ['admin/modules/selectable', 'translator'], functio
 
 		function getSelectedUids() {
 			var uids = [];
-			$('#users-container .users-box.ui-selected').each(function() {
-				uids.push(this.getAttribute('data-uid'));
+
+			$('.users-table [component="user/select/single"]').each(function() {
+				if ($(this).is(':checked')) {
+					uids.push($(this).attr('data-uid'));
+				}
 			});
 
 			return uids;
 		}
 
 		function update(className, state) {
-			$('#users-container .users-box.ui-selected .labels').find(className).each(function() {
-				$(this).toggleClass('hide', !state);
+			$('.users-table [component="user/select/single"]:checked').parents('.user-row').find(className).each(function() {
+				$(this).toggleClass('hidden', !state);
 			});
 		}
 
 		function unselectAll() {
-			$('#users-container .users-box.ui-selected').removeClass('ui-selected');
+			$('.users-table [component="user/select/single"]').prop('checked', false);
+			$('.users-table [component="user/select/all"]').prop('checked', false);
 		}
 
 		function removeSelected() {
-			$('#users-container .users-box.ui-selected').remove();
+			$('.users-table [component="user/select/single"]:checked').parents('.user-row').remove();
 		}
 
 		function done(successMessage, className, flag) {
@@ -50,6 +52,14 @@ define('admin/manage/users', ['admin/modules/selectable', 'translator'], functio
 				unselectAll();
 			};
 		}
+
+		$('[component="user/select/all"]').on('click', function() {
+			if ($(this).is(':checked')) {
+				$('.users-table [component="user/select/single"]').prop('checked', true);
+			} else {
+				$('.users-table [component="user/select/single"]').prop('checked', false);
+			}
+		});
 
 		$('.ban-user').on('click', function() {
 			var uids = getSelectedUids();
@@ -164,9 +174,18 @@ define('admin/manage/users', ['admin/modules/selectable', 'translator'], functio
 			}
 
 			bootbox.confirm('Do you want to validate email(s) of these user(s)?', function(confirm) {
-				if (confirm) {
-					socket.emit('admin.user.validateEmail', uids, done('Emails validated', '.notvalidated', false));
+				if (!confirm) {
+					return;
 				}
+				socket.emit('admin.user.validateEmail', uids, function(err) {
+					if (err) {
+						return app.alertError(err.message);
+					}
+					app.alertSuccess('Emails validated');
+					update('.notvalidated', false);
+					update('.validated', true);
+					unselectAll();
+				});
 			});
 		});
 
@@ -299,8 +318,6 @@ define('admin/manage/users', ['admin/modules/selectable', 'translator'], functio
 
 		var timeoutId = 0;
 
-
-
 		$('#search-user-name, #search-user-email, #search-user-ip').on('keyup', function() {
 			if (timeoutId !== 0) {
 				clearTimeout(timeoutId);
@@ -319,23 +336,25 @@ define('admin/manage/users', ['admin/modules/selectable', 'translator'], functio
 					}
 
 					templates.parse('admin/manage/users', 'users', data, function(html) {
-						$('#users-container').html(html).find('.timeago').timeago();
-
+						html = $(html);
+						$('.users-table tr').not(':first').remove();
+						$('.users-table tr').first().after(html);
+						html.find('.timeago').timeago();
 						$('.fa-spinner').addClass('hidden');
 
 						if (data && data.users.length === 0) {
 							$('#user-notfound-notify').html('User not found!')
-								.show()
+								.removeClass('hide')
 								.addClass('label-danger')
 								.removeClass('label-success');
 						} else {
 							$('#user-notfound-notify').html(data.users.length + ' user' + (data.users.length > 1 ? 's' : '') + ' found! Search took ' + data.timing + ' ms.')
-								.show()
+								.removeClass('hide')
 								.addClass('label-success')
 								.removeClass('label-danger');
 						}
 
-						selectable.enable('#users-container', '.users-box');
+
 					});
 				});
 			}, 250);

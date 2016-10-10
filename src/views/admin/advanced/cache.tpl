@@ -19,6 +19,10 @@
 						{postCache.percentFull}% Full
 					</div>
 				</div>
+				<div class="form-group">
+					<label for="postCacheSize">Post Cache Size</label>
+					<input id="postCacheSize" type="text" class="form-control" value="" data-field="postCacheSize">
+				</div>
 			</div>
 		</div>
 
@@ -45,5 +49,18 @@
 			</div>
 		</div>
 	</div>
-
+	<div class="col-lg-3 acp-sidebar">
+		<div class="panel panel-default">
+			<div class="panel-heading">Control Panel</div>
+			<div class="panel-body">
+				<button class="btn btn-primary" id="save">Update Cache Settings</button>
+			</div>
+		</div>
+	</div>
 </div>
+
+<script>
+	require(['admin/settings'], function(Settings) {
+		Settings.prepare();
+	});
+</script>

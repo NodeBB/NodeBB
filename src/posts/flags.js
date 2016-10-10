@@ -60,6 +60,13 @@ module.exports = function(Posts) {
 						}
 					}
 				], next);
+			},
+			function(data, next) {
+				if (data[1] === 1) {	// Only update state on new flag
+					Posts.updateFlagData(uid, post.pid, {
+						state: 'open'
+					}, next);
+				}
 			}
 		], function(err) {
 			if (err) {
@@ -126,7 +133,8 @@ module.exports = function(Posts) {
 						], next);
 					},
 					async.apply(db.deleteObjectField, 'post:' + pid, 'flags'),
-					async.apply(db.delete, 'pid:' + pid + ':flag:uid:reason')
+					async.apply(db.delete, 'pid:' + pid + ':flag:uid:reason'),
+					async.apply(db.deleteObjectFields, 'post:' + pid, ['flag:state', 'flag:assignee', 'flag:notes', 'flag:history'])
 				], next);
 			},
 			function(results, next) {
@@ -269,13 +277,8 @@ module.exports = function(Posts) {
 
 			// Track new additions
 			for(prop in flagObj) {
-				if (flagObj.hasOwnProperty(prop) && !postData.hasOwnProperty('flag:' + prop)) {
+				if (flagObj.hasOwnProperty(prop) && !postData.hasOwnProperty('flag:' + prop) && flagObj[prop].length) {
 					changes.push(prop);
-				}
-
-				// Generate changeset for object modification
-				if (flagObj.hasOwnProperty(prop)) {
-					changeset['flag:' + prop] = flagObj[prop];
 				}
 			}
 
@@ -289,6 +292,11 @@ module.exports = function(Posts) {
 					changes.push(prop.slice(5));
 				}
 			}
+
+			changeset = changes.reduce(function(memo, prop) {
+				memo['flag:' + prop] = flagObj[prop];
+				return memo;
+			}, {});
 
 			// Append changes to history string
 			if (changes.length) {
@@ -323,7 +331,11 @@ module.exports = function(Posts) {
 			}
 
 			// Save flag data into post hash
-			Posts.setPostFields(pid, changeset, callback);
+			if (changes.length) {
+				Posts.setPostFields(pid, changeset, callback);
+			} else {
+				setImmediate(callback);
+			}
 		});
 	};
 

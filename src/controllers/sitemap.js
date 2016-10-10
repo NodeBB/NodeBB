@@ -9,8 +9,8 @@ sitemapController.render = function(req, res, next) {
 		if (err) {
 			return next(err);
 		}
-		var Controllers = require('./index');
-		Controllers.render('sitemap', tplData, function(err, xml) {
+
+		req.app.render('sitemap', tplData, function(err, xml) {
 			if (err) {
 				return next(err);
 			}

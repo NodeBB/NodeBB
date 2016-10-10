@@ -17,7 +17,7 @@ module.exports = function (app, middleware, controllers) {
 	setupPageRoute(app, '/user/:userslug/best', middleware, middlewares, controllers.accounts.posts.getBestPosts);
 	setupPageRoute(app, '/user/:userslug/groups', middleware, middlewares, controllers.accounts.groups.get);
 
-	setupPageRoute(app, '/user/:userslug/favourites', middleware, accountMiddlewares, controllers.accounts.posts.getFavourites);
+	setupPageRoute(app, '/user/:userslug/bookmarks', middleware, accountMiddlewares, controllers.accounts.posts.getBookmarks);
 	setupPageRoute(app, '/user/:userslug/watched', middleware, accountMiddlewares, controllers.accounts.posts.getWatchedTopics);
 	setupPageRoute(app, '/user/:userslug/upvoted', middleware, accountMiddlewares, controllers.accounts.posts.getUpVotedPosts);
 	setupPageRoute(app, '/user/:userslug/downvoted', middleware, accountMiddlewares, controllers.accounts.posts.getDownVotedPosts);

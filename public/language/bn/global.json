@@ -19,6 +19,7 @@
     "welcome_back": "আপনাকে স্বাগতম",
     "you_have_successfully_logged_in": "আপনি সফলভাবে প্রবেশ করেছেন",
     "save_changes": "পরিবর্তনগুলি সঞ্চয় করুন",
+    "save": "Save",
     "close": "বন্ধ",
     "pagination": "পাতা নং",
     "pagination.out_of": "%2 এর মাঝে %1",

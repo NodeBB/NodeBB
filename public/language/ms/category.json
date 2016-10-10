@@ -14,7 +14,7 @@
     "ignoring": "Ignoring",
     "watching.description": "Show topics in unread",
     "ignoring.description": "Do not show topics in unread",
-    "watch.message": "Anda sedang melihat kemaskini dari kategori ini",
-    "ignore.message": "Anda sedang mengabaikan kemaskini dari kategori ini",
+    "watch.message": "You are now watching updates from this category and all subcategories",
+    "ignore.message": "You are now ignoring updates from this category and all subcategories",
     "watched-categories": "Kategori Dilihat"
 }

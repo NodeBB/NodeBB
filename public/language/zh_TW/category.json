@@ -14,7 +14,7 @@
     "ignoring": "忽略",
     "watching.description": "顯示未讀的主題",
     "ignoring.description": "不要顯示未讀的主題",
-    "watch.message": "你正關注此類別的更新",
-    "ignore.message": "你已忽略此類別的更新",
+    "watch.message": "You are now watching updates from this category and all subcategories",
+    "ignore.message": "You are now ignoring updates from this category and all subcategories",
     "watched-categories": "關注的類別"
 }

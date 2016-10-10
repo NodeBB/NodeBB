@@ -19,6 +19,7 @@
     "welcome_back": "歡迎回來！",
     "you_have_successfully_logged_in": "你已成功登入！",
     "save_changes": "儲存變更",
+    "save": "Save",
     "close": "關閉",
     "pagination": "分頁",
     "pagination.out_of": "%1 於 %2",

@@ -62,6 +62,7 @@
     "content-too-long": "يرجى ادخال موضوع أقصر. على المواضيع أن لا تتخطى %1 حرف.",
     "title-too-short": "يرجى إدخال عنوان أطول. على العناوين أن تحتوي على %1 حرف على الأقل.",
     "title-too-long": "يرجى ادخال عنوان أقصر. على العناوين أن لا تتخطى %1 حرف.",
+    "category-not-selected": "Category not selected.",
     "too-many-posts": "يسمح لك بالنشر مرة كل %1 ثانية - يرجى الإنتظار قبل النشر مجدداً",
     "too-many-posts-newbie": "As a new user, you can only post once every %1 second(s) until you have earned %2 reputation - please wait before posting again",
     "tag-too-short": "Please enter a longer tag. Tags should contain at least %1 character(s)",

@@ -62,6 +62,7 @@
     "content-too-long": "Palun tehke lühem postitus. Postituse pikkus peab olema vähem kui %1 tähemärk(i).",
     "title-too-short": "Palun sisesta pikem pealkiri. Pealkirjad ei saa olla lühemad kui %1 tähemärk(i).",
     "title-too-long": "Palun sisesta lühem pealkiri. Pealkirjad ei saa olla pikemad kui %1 tähemärk(i).",
+    "category-not-selected": "Category not selected.",
     "too-many-posts": "Te saate postitada %1 sekundi tagant - palun oodake enne uue postituse tegemist.",
     "too-many-posts-newbie": "Uue kasutajana saadte postitada vaid iga %1 sekundi tagant, seniks kuni olete teeninud vähemalt %2 reputatsiooni - palun oodake enne uue postituse tegemist.",
     "tag-too-short": "Palun sisestage pikem märksõna. Märksõna pikkus peab olema vähemalt %1 tähemärk(i).",

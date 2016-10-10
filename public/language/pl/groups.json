@@ -50,5 +50,7 @@
     "membership.leave-group": "Opuść Grupę",
     "membership.reject": "Odrzuć",
     "new-group.group_name": "Nazwa Grupy:",
-    "upload-group-cover": "Załaduj zdjęcie tła grupy"
+    "upload-group-cover": "Załaduj zdjęcie tła grupy",
+    "bulk-invite-instructions": "Enter a list of comma separated usernames to invite to this group",
+    "bulk-invite": "Bulk Invite"
 }

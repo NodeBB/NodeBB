@@ -14,7 +14,7 @@
     "ignoring": "Ignorowanie",
     "watching.description": "Pokaż tematy jako nieprzeczytane",
     "ignoring.description": "Nie pokazuj tematów jako nieprzeczytane",
-    "watch.message": "Obserwujesz teraz uaktualnienia z tej kategorii",
-    "ignore.message": "Ignorujesz teraz uaktualnienia z tej kategorii",
+    "watch.message": "You are now watching updates from this category and all subcategories",
+    "ignore.message": "You are now ignoring updates from this category and all subcategories",
     "watched-categories": "Obserwowane kategorie"
 }

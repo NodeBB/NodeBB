@@ -1,19 +1,19 @@
 "use strict";
 
-var mkdirp = require('mkdirp'),
-	rimraf = require('rimraf'),
-	winston = require('winston'),
-	async = require('async'),
-	path = require('path'),
-	fs = require('fs'),
-	nconf = require('nconf'),
+var mkdirp = require('mkdirp');
+var rimraf = require('rimraf');
+var winston = require('winston');
+var async = require('async');
+var path = require('path');
+var fs = require('fs');
+var nconf = require('nconf');
 
-	emitter = require('../emitter'),
-	plugins = require('../plugins'),
-	utils = require('../../public/src/utils'),
+var emitter = require('../emitter');
+var plugins = require('../plugins');
+var utils = require('../../public/src/utils');
 
-	Templates = {},
-	searchIndex = {};
+var Templates = {};
+var searchIndex = {};
 
 Templates.compile = function(callback) {
 	callback = callback || function() {};

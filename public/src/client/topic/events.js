@@ -16,7 +16,7 @@ define('forum/topic/events', [
 	var events = {
 		'event:user_status_change': onUserStatusChange,
 		'event:voted': updatePostVotesAndUserReputation,
-		'event:favourited': updateFavouriteCount,
+		'event:bookmarked': updateBookmarkCount,
 
 		'event:topic_deleted': threadTools.setDeleteState,
 		'event:topic_restored': threadTools.setDeleteState,
@@ -36,8 +36,8 @@ define('forum/topic/events', [
 		'event:post_deleted': togglePostDeleteState,
 		'event:post_restored': togglePostDeleteState,
 
-		'posts.favourite': togglePostFavourite,
-		'posts.unfavourite': togglePostFavourite,
+		'posts.bookmark': togglePostBookmark,
+		'posts.unbookmark': togglePostBookmark,
 
 		'posts.upvote': togglePostVote,
 		'posts.downvote': togglePostVote,
@@ -69,15 +69,15 @@ define('forum/topic/events', [
 	}
 
 	function updatePostVotesAndUserReputation(data) {
-		var votes = components.get('post/vote-count', data.post.pid),
-			reputationElements = $('.reputation[data-uid="' + data.post.uid + '"]');
+		var votes = components.get('post/vote-count', data.post.pid);
+		var reputationElements = $('.reputation[data-uid="' + data.post.uid + '"]');
 
 		votes.html(data.post.votes).attr('data-votes', data.post.votes);
 		reputationElements.html(data.user.reputation).attr('data-reputation', data.user.reputation);
 	}
 
-	function updateFavouriteCount(data) {
-		$('[data-pid="' + data.post.pid + '"] .favouriteCount').html(data.post.reputation).attr('data-favourites', data.post.reputation);
+	function updateBookmarkCount(data) {
+		$('[data-pid="' + data.post.pid + '"] .bookmarkCount').html(data.post.bookmarks).attr('data-bookmarks', data.post.bookmarks);
 	}
 
 	function onTopicPurged() {
@@ -198,17 +198,17 @@ define('forum/topic/events', [
 		}
 	}
 
-	function togglePostFavourite(data) {
-		var favBtn = $('[data-pid="' + data.post.pid + '"] [component="post/favourite"]');
+	function togglePostBookmark(data) {
+		var el = $('[data-pid="' + data.post.pid + '"] [component="post/bookmark"]');
 
-		if (!favBtn.length) {
+		if (!el.length) {
 			return;
 		}
 
-		favBtn.attr('data-favourited', data.isFavourited);
+		el.attr('data-bookmarked', data.isBookmarked);
 
-		favBtn.find('[component="post/favourite/on"]').toggleClass('hidden', !data.isFavourited);
-		favBtn.find('[component="post/favourite/off"]').toggleClass('hidden', data.isFavourited);
+		el.find('[component="post/bookmark/on"]').toggleClass('hidden', !data.isBookmarked);
+		el.find('[component="post/bookmark/off"]').toggleClass('hidden', data.isBookmarked);
 	}
 
 	function togglePostVote(data) {

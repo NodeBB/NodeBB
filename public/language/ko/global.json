@@ -19,6 +19,7 @@
     "welcome_back": "환영합니다.",
     "you_have_successfully_logged_in": "성공적으로 로그인했습니다.",
     "save_changes": "저장",
+    "save": "Save",
     "close": "닫기",
     "pagination": "페이지",
     "pagination.out_of": "%2개 중 %1개",

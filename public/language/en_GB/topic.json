@@ -104,9 +104,9 @@
 	"confirm_move": "Move",
 	"confirm_fork": "Fork",
 
-	"favourite": "Bookmark",
-	"favourites": "Bookmarks",
-	"favourites.has_no_favourites": "You haven't bookmarked any posts yet.",
+	"bookmark": "Bookmark",
+	"bookmarks": "Bookmarks",
+	"bookmarks.has_no_bookmarks": "You haven't bookmarked any posts yet.",
 
 	"loading_more_posts": "Loading More Posts",
 	"move_topic": "Move Topic",

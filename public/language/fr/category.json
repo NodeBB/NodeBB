@@ -14,7 +14,7 @@
     "ignoring": "Ignoré",
     "watching.description": "Affiche les sujets dans la section Non lus",
     "ignoring.description": "N'affiche pas les sujets dans la section Non lus",
-    "watch.message": "Vous êtes désormais abonné aux mises à jour de cette catégorie.",
-    "ignore.message": "Vous ne surveillez plus les mises jour de cette catégorie.",
+    "watch.message": "Vous êtes désormais abonné aux mises à jour de cette catégorie et de ses sous-catégories.",
+    "ignore.message": "Vous n'êtes plus abonné aux mises à jour de cette catégorie et de ses sous-catégories.",
     "watched-categories": "Abonnements"
 }

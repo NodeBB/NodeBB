@@ -50,5 +50,7 @@
     "membership.leave-group": "עזוב קבוצה",
     "membership.reject": "דחה",
     "new-group.group_name": "שם קבוצה",
-    "upload-group-cover": "העלה תמונת נושא לקבוצה"
+    "upload-group-cover": "העלה תמונת נושא לקבוצה",
+    "bulk-invite-instructions": "Enter a list of comma separated usernames to invite to this group",
+    "bulk-invite": "Bulk Invite"
 }

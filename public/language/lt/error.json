@@ -62,6 +62,7 @@
     "content-too-long": "Prašome parašyti trumpesnį pranešimą. Pranešimas negali sudaryti daugiau %1 simboli(us)",
     "title-too-short": "Prašome įvesti ilgesni pavadinimą. Pavadinimas turi sudaryti mažiausiai %1 simboli(us)",
     "title-too-long": "Prašome įvesti trumpersnį pavadinimą. Pavadinimas negali sudaryti daugiau %1 simboli(us)",
+    "category-not-selected": "Category not selected.",
     "too-many-posts": "Jus galite rašyti kas %1 sekunde(s) - prašome palaukti prieš rašant dar kartą",
     "too-many-posts-newbie": "Kadangi esate naujas narys, jūs galite tik rašyti kas %1 sekunde(s) kol jūs pasieksite %2 reputacija - prašome palaukti prieš rašant dar kartą",
     "tag-too-short": "Prašome įvesti ilgesnę žymą. Žyma turi sudaryti mažiausiai %1 simboli(us)",

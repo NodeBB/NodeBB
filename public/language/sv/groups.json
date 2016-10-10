@@ -50,5 +50,7 @@
     "membership.leave-group": "Lämna grupp",
     "membership.reject": "Neka",
     "new-group.group_name": "Gruppnamn:",
-    "upload-group-cover": "Ladda upp omslagsbild för grupp"
+    "upload-group-cover": "Ladda upp omslagsbild för grupp",
+    "bulk-invite-instructions": "Enter a list of comma separated usernames to invite to this group",
+    "bulk-invite": "Bulk Invite"
 }

@@ -2,14 +2,12 @@
 
 var async = require('async');
 var nconf = require('nconf');
-var validator = require('validator');
 
 var db = require('../database');
 var user = require('../user');
 var meta = require('../meta');
 var plugins = require('../plugins');
 var navigation = require('../navigation');
-var translator = require('../../public/src/modules/translator');
 
 var controllers = {
 	api: require('../controllers/api'),
@@ -21,34 +19,25 @@ module.exports = function(middleware) {
 	middleware.buildHeader = function(req, res, next) {
 		res.locals.renderHeader = true;
 		res.locals.isAPI = false;
-
-		middleware.applyCSRF(req, res, function() {
-			async.parallel({
-				config: function(next) {
-					controllers.api.getConfig(req, res, next);
-				},
-				footer: function(next) {
-					req.app.render('footer', {
-						loggedIn: !!req.uid,
-						title: validator.escape(String(meta.config.title || meta.config.browserTitle || 'NodeBB'))
-					}, next);
-				},
-				plugins: function(next) {
-					plugins.fireHook('filter:middleware.buildHeader', {req: req, locals: res.locals}, next);
-				}
-			}, function(err, results) {
-				if (err) {
-					return next(err);
-				}
-
+		async.waterfall([
+			function(next) {
+				middleware.applyCSRF(req, res, next);
+			},
+			function(next) {
+				async.parallel({
+					config: function(next) {
+						controllers.api.getConfig(req, res, next);
+					},
+					plugins: function(next) {
+						plugins.fireHook('filter:middleware.buildHeader', {req: req, locals: res.locals}, next);
+					}
+				}, next);
+			},
+			function(results, next) {
 				res.locals.config = results.config;
-
-				translator.translate(results.footer, results.config.defaultLang, function(parsedTemplate) {
-					res.locals.footer = parsedTemplate;
-					next();
-				});
-			});
-		});
+				next();
+			}
+		], next);
 	};
 
 	middleware.renderHeader = function(req, res, data, callback) {
@@ -166,6 +155,14 @@ module.exports = function(middleware) {
 		});
 	};
 
+	middleware.renderFooter = function(req, res, data, callback) {
+		plugins.fireHook('filter:middleware.renderFooter', {templateValues: data, req: req, res: res}, function(err, data) {
+			if (err) {
+				return callback(err);
+			}
+			req.app.render('footer', data.templateValues, callback);
+		});
+	};
 
 	function modifyTitle(obj) {
 		var title = controllers.helpers.buildTitle('[[pages:home]]');

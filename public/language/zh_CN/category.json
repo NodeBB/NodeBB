@@ -14,7 +14,7 @@
     "ignoring": "已忽略",
     "watching.description": "显示未读帖子",
     "ignoring.description": "不显示未读帖子",
-    "watch.message": "您现在已经关注了此版块",
-    "ignore.message": "您现在已经取消了此版块的关注",
+    "watch.message": "您关注了此版块的动态。",
+    "ignore.message": "您未关注此版块的动态。",
     "watched-categories": "已关注的版块"
 }

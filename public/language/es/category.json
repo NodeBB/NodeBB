@@ -14,7 +14,7 @@
     "ignoring": "Ignorando",
     "watching.description": "Mostrar temas en no leidos",
     "ignoring.description": "No mostrar temas en no leidos",
-    "watch.message": "Ahora estás viendo actualizaciones de esta categoría",
-    "ignore.message": "Ahora estás ignorando las actualizaciones de esta categoría",
+    "watch.message": "Ahora puede ver la actualizaciones de esta categoría y todas las subcategorías",
+    "ignore.message": "Dejar de ver las actualizaciones de esta categoría y todas las subcategorías",
     "watched-categories": "Categorías seguidas"
 }

@@ -50,5 +50,7 @@
     "membership.leave-group": "離開群組",
     "membership.reject": "拒絕",
     "new-group.group_name": "群組名稱:",
-    "upload-group-cover": "上傳群組封面圖"
+    "upload-group-cover": "上傳群組封面圖",
+    "bulk-invite-instructions": "Enter a list of comma separated usernames to invite to this group",
+    "bulk-invite": "Bulk Invite"
 }

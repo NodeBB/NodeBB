@@ -14,7 +14,7 @@
     "ignoring": "متجاهل",
     "watching.description": "أظهر المواضيع في غير مقروء",
     "ignoring.description": "لا تظهر المواضيع في غير مقروء",
-    "watch.message": "أنت اﻷن تتابع تحديثات هذه الفئة",
-    "ignore.message": "أنت اﻷن تتجاهل تحديثات هذه الفئة",
+    "watch.message": "You are now watching updates from this category and all subcategories",
+    "ignore.message": "You are now ignoring updates from this category and all subcategories",
     "watched-categories": "الفئات المتابعة"
 }

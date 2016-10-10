@@ -12,8 +12,7 @@ databaseController.get = function(req, res, next) {
 		redis: function(next) {
 			if (nconf.get('redis')) {
 				var rdb = require('../../database/redis');
-				var cxn = rdb.connect();
-				rdb.info(cxn, next);
+				rdb.info(rdb.client, next);
 			} else {
 				next();
 			}

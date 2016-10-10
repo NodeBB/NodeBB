@@ -62,6 +62,7 @@
     "content-too-long": "Kort het bericht wat in, het aantal gebruikte tekens overschrijdt het ingestelde limiet want berichten mogen niet meer dan %1 teken(s) bevatten.",
     "title-too-short": "Geef een titel op die uit meer tekens bestaat. Titels dienen ten minste uit %1 teken(s) te bestaan.",
     "title-too-long": "Geef een kortere titel op. Titels mogen uit niet meer dan %1 teken(s) bestaan.",
+    "category-not-selected": "Category not selected.",
     "too-many-posts": "Het is slechts toegestaan iedere %1 seconde(n) een bericht te plaatsen - wacht even voordat opnieuw een bericht verzonden wordt",
     "too-many-posts-newbie": "Nieuwe gebruikersaccounts zoals deze zijn begrensd en mogen slechts iedere %1 seconde(n) berichten plaatsen, tot het moment dat %2 reputatie verdiend is - wacht daarom even met opnieuw een bericht te plaatsten",
     "tag-too-short": "Geef een tag op die uit meer tekens bestaat. Tags dienen uit minimaal %1 teken(s) te bestaan.",

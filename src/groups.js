@@ -255,7 +255,7 @@ var utils = require('../public/src/utils');
 				return callback(new Error('[[error:no-group]]'));
 			}
 
-			Groups.get.call(Groups, groupName, options, callback);
+			Groups.get(groupName, options, callback);
 		});
 	};
 
@@ -287,23 +287,21 @@ var utils = require('../public/src/utils');
 
 	Groups.isPrivate = function(groupName, callback) {
 		db.getObjectField('group:' + groupName, 'private', function(err, isPrivate) {
-			isPrivate = isPrivate || isPrivate === null;
-
-			if (typeof isPrivate === 'string') {
-				isPrivate = (isPrivate === '0' ? false : true);
-			}
-
-			callback(err, isPrivate);	// Private, if not set at all
-		});
-	};
-
-	Groups.isHidden = function(groupName, callback) {
-		Groups.getGroupFields(groupName, ['hidden'], function(err, values) {
 			if (err) {
 				return callback(err);
 			}
 
-			callback(null, parseInt(values.hidden, 10) === 1);
+			callback(null, (parseInt(isPrivate, 10) === 0) ? false : true);
+		});
+	};
+
+	Groups.isHidden = function(groupName, callback) {
+		db.getObjectField(groupName, 'hidden', function(err, isHidden) {
+			if (err) {
+				return callback(err);
+			}
+
+			callback(null, parseInt(isHidden, 10) === 1);
 		});
 	};
 

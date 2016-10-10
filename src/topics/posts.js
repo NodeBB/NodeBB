@@ -7,7 +7,6 @@ var validator = require('validator');
 
 var db = require('../database');
 var user = require('../user');
-var favourites = require('../favourites');
 var posts = require('../posts');
 var meta = require('../meta');
 
@@ -60,11 +59,11 @@ module.exports = function(Topics) {
 		}
 
 		async.parallel({
-			favourites: function(next) {
-				favourites.getFavouritesByPostIDs(pids, uid, next);
+			bookmarks: function(next) {
+				posts.hasBookmarked(pids, uid, next);
 			},
 			voteData: function(next) {
-				favourites.getVoteStatusByPostIDs(pids, uid, next);
+				posts.getVoteStatusByPostIDs(pids, uid, next);
 			},
 			userData: function(next) {
 				var uids = [];
@@ -120,7 +119,7 @@ module.exports = function(Topics) {
 					postObj.deleted = parseInt(postObj.deleted, 10) === 1;
 					postObj.user = parseInt(postObj.uid, 10) ? results.userData[postObj.uid] : _.clone(results.userData[postObj.uid]);
 					postObj.editor = postObj.editor ? results.editors[postObj.editor] : null;
-					postObj.favourited = results.favourites[i];
+					postObj.bookmarked = results.bookmarks[i];
 					postObj.upvoted = results.voteData.upvotes[i];
 					postObj.downvoted = results.voteData.downvotes[i];
 					postObj.votes = postObj.votes || 0;

@@ -8,7 +8,6 @@ var meta = require('../meta');
 var topics = require('../topics');
 var user = require('../user');
 var websockets = require('./index');
-var socketTopics = require('./topics');
 var socketHelpers = require('./helpers');
 var utils = require('../../public/src/utils');
 
@@ -16,10 +15,10 @@ var apiController = require('../controllers/api');
 
 var SocketPosts = {};
 
-
 require('./posts/edit')(SocketPosts);
 require('./posts/move')(SocketPosts);
-require('./posts/favourites')(SocketPosts);
+require('./posts/votes')(SocketPosts);
+require('./posts/bookmarks')(SocketPosts);
 require('./posts/tools')(SocketPosts);
 require('./posts/flag')(SocketPosts);
 
@@ -77,8 +76,8 @@ SocketPosts.getPost = function(socket, pid, callback) {
 	apiController.getPostData(pid, socket.uid, callback);
 };
 
-SocketPosts.loadMoreFavourites = function(socket, data, callback) {
-	loadMorePosts('uid:' + data.uid + ':favourites', socket.uid, data, callback);
+SocketPosts.loadMoreBookmarks = function(socket, data, callback) {
+	loadMorePosts('uid:' + data.uid + ':bookmarks', socket.uid, data, callback);
 };
 
 SocketPosts.loadMoreUserPosts = function(socket, data, callback) {

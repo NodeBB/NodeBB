@@ -62,6 +62,7 @@
     "content-too-long": "Prosimy wpisać krótszy post. Posty nie mogą zawierać więcej niż %1 znaków.",
     "title-too-short": "Prosimy podać dłuższy tytuł. Tytuły powinny zawierać co najmniej %1 znaków.",
     "title-too-long": "Prosimy podać krótszy tytuł. Tytuły nie mogą być dłuższe niż %1 znaków.",
+    "category-not-selected": "Category not selected.",
     "too-many-posts": "Możesz wysyłać posty raz na %1 sekund - prosimy poczekać przed ponownym dodaniem posta",
     "too-many-posts-newbie": "Jako nowy użytkownik możesz wysyłać posty raz na %1 sekund, dopóki nie zdobędziesz %2 reputacji - prosimy poczekać przed ponownym dodaniem posta",
     "tag-too-short": "Prosimy wprowadzić dłuższy tag. Tagi muszą posiadać przynajmniej %1 znak(ów)",
