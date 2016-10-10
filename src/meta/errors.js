@@ -23,7 +23,7 @@ module.exports = function(Meta) {
 			}
 
 			data = data.map(function(nfObject) {
-				nfObject.value = escape ? validator.escape(nfObject.value) : nfObject.value;
+				nfObject.value = escape ? validator.escape(String(nfObject.value || '')) : nfObject.value;
 				return nfObject;
 			});
 
