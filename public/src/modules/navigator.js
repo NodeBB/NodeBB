@@ -181,7 +181,7 @@ define('navigator', ['forum/pagination', 'components'], function(pagination, com
 	};
 
 	navigator.scrollTop = function(index) {
-		if ($('li[data-index="' + index + '"]').length) {
+		if ($(navigator.selector + '[data-index="' + index + '"]').length) {
 			navigator.scrollToPost(index, true);
 		} else {
 			ajaxify.go(generateUrl());
@@ -192,7 +192,7 @@ define('navigator', ['forum/pagination', 'components'], function(pagination, com
 		if (parseInt(index, 10) < 0) {
 			return;
 		}
-		if ($('li[data-index="' + index + '"]').length) {
+		if ($(navigator.selector + '[data-index="' + index + '"]').length) {
 			navigator.scrollToPost(index, true);
 		} else {
 			index = parseInt(index, 10) + 1;
