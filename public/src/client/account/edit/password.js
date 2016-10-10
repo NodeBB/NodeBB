@@ -98,21 +98,19 @@ define('forum/account/edit/password', ['forum/account/header', 'translator'], fu
 
 	function showError(element, msg) {
 		translator.translate(msg, function(msg) {
-			element.find('.error').html(msg).removeClass('hide').siblings().addClass('hide');
+			element.html(msg);
 
 			element.parent()
-				.removeClass('alert-success')
-				.addClass('alert-danger');
-			element.show();
+				.removeClass('show-success')
+				.addClass('show-danger');
 		});
 	}
 
 	function showSuccess(element) {
-		element.find('.success').removeClass('hide').siblings().addClass('hide');
+		element.html('');
 		element.parent()
-			.removeClass('alert-danger')
-			.addClass('alert-success');
-		element.show();
+			.removeClass('show-danger')
+			.addClass('show-success');
 	}
 
 	return AccountEditPassword;
