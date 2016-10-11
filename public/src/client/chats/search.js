@@ -75,7 +75,9 @@ define('forum/chats/search', ['components'], function(components) {
 					return app.alertError(err.message);
 				}
 				if (roomId) {
-					Chats.switchChat(roomId);
+					require(['forum/chats'], function(chats) {
+						chats.switchChat(roomId);
+					});
 				} else {
 					app.newChat(userObj.uid);
 				}
