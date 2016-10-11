@@ -1,7 +1,7 @@
 'use strict';
 /*global require, before, after*/
 
-var	assert = require('assert');
+var assert = require('assert');
 var async = require('async');
 
 var db = require('./mocks/databasemock');

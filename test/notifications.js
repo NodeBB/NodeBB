@@ -2,7 +2,7 @@
 /*global require, after, before*/
 
 
-var	assert = require('assert');
+var assert = require('assert');
 
 var db = require('./mocks/databasemock');
 var user = require('../src/user');

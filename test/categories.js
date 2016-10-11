@@ -11,7 +11,7 @@ var Topics = require('../src/topics');
 var User = require('../src/user');
 
 describe('Categories', function() {
-	var	categoryObj;
+	var categoryObj;
 	var posterUid;
 
 	before(function(done) {
