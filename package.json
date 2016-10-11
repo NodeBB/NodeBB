@@ -94,6 +94,10 @@
   },
   "devDependencies": {
     "eslint": "^3.4.0",
+    "eslint-config-airbnb": "^12.0.0",
+    "eslint-plugin-import": "^1.16.0",
+    "eslint-plugin-jsx-a11y": "^2.2.3",
+    "eslint-plugin-react": "^6.4.1",
     "grunt": "~0.4.5",
     "grunt-contrib-watch": "^1.0.0",
     "istanbul": "^0.4.2",
