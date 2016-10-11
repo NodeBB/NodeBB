@@ -11,6 +11,7 @@ var db = require('./database');
 var User = require('./user');
 var groups = require('./groups');
 var meta = require('./meta');
+var batch = require('./batch');
 var plugins = require('./plugins');
 var utils = require('../public/src/utils');
 
@@ -168,36 +169,14 @@ var utils = require('../public/src/utils');
 			return callback();
 		}
 
-		var done = false;
-		var start = 0;
-		var batchSize = 50;
-
 		setTimeout(function() {
-			async.whilst(
-				function() {
-					return !done;
-				},
-				function(next) {
-					var currentUids = uids.slice(start, start + batchSize);
-					if (!currentUids.length) {
-						done = true;
-						return next();
-					}
-					pushToUids(currentUids, notification, function(err) {
-						if (err) {
-							return next(err);
-						}
-						start = start + batchSize;
-
-						setTimeout(next, 1000);
-					});
-				},
-				function(err) {
-					if (err) {
-						winston.error(err.stack);
-					}
+			batch.processArray(uids, function(uids, next) {
+				pushToUids(uids, notification, next);
+			}, {interval: 1000}, function(err) {
+				if (err) {
+					winston.error(err.stack);
 				}
-			);
+			});
 		}, 1000);
 
 		callback();

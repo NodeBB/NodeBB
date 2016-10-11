@@ -10,6 +10,7 @@ var db = require('../database');
 var posts = require('../posts');
 var topics = require('../topics');
 var privileges = require('../privileges');
+var batch = require('../batch');
 
 
 module.exports = function(Categories) {
@@ -182,7 +183,8 @@ module.exports = function(Categories) {
 		});
 	}
 
-	Categories.moveRecentReplies = function(tid, oldCid, cid) {
+	Categories.moveRecentReplies = function(tid, oldCid, cid, callback) {
+		callback = callback || function() {};
 		updatePostCount(tid, oldCid, cid);
 		topics.getPids(tid, function(err, pids) {
 			if (err) {
@@ -193,47 +195,31 @@ module.exports = function(Categories) {
 				return;
 			}
 
-			var start = 0,
-				done = false,
-				batch = 50;
+			batch.processArray(pids, function(pids, next) {
+				async.waterfall([
+					function(next) {
+						posts.getPostsFields(pids, ['timestamp'], next);
+					},
+					function(postData, next) {
+						var timestamps = postData.map(function(post) {
+							return post && post.timestamp;
+						});
 
-			async.whilst(function() {
-				return !done;
-			}, function(next) {
-				var movePids = pids.slice(start, start + batch);
-				if (!movePids.length) {
-					done = true;
-					return next();
-				}
-
-				posts.getPostsFields(movePids, ['timestamp'], function(err, postData) {
-					if (err) {
-						return next(err);
+						async.parallel([
+							function(next) {
+								db.sortedSetRemove('cid:' + oldCid + ':pids', pids, next);
+							},
+							function(next) {
+								db.sortedSetAdd('cid:' + cid + ':pids', timestamps, pids, next);
+							}
+						], next);
 					}
-
-					var timestamps = postData.map(function(post) {
-						return post && post.timestamp;
-					});
-
-					async.parallel([
-						function(next) {
-							db.sortedSetRemove('cid:' + oldCid + ':pids', movePids, next);
-						},
-						function(next) {
-							db.sortedSetAdd('cid:' + cid + ':pids', timestamps, movePids, next);
-						}
-					], function(err) {
-						if (err) {
-							return next(err);
-						}
-						start += batch;
-						next();
-					});
-				});
+				], next);
 			}, function(err) {
 				if (err) {
 					winston.error(err.stack);
 				}
+				callback(err);
 			});
 		});
 	};

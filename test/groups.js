@@ -1,15 +1,16 @@
 'use strict';
 /*global require, before, after*/
 
-var	assert = require('assert'),
-	async = require('async'),
+var	assert = require('assert');
+var async = require('async');
 
-	db = require('./mocks/databasemock'),
-	Groups = require('../src/groups'),
-	User = require('../src/user');
+var db = require('./mocks/databasemock');
+var Groups = require('../src/groups');
+var User = require('../src/user');
 
 describe('Groups', function() {
 	before(function(done) {
+		Groups.resetCache();
 		async.parallel([
 			function(next) {
 				// Create a group to play around with
@@ -35,8 +36,7 @@ describe('Groups', function() {
 	describe('.list()', function() {
 		it('should list the groups present', function(done) {
 			Groups.getGroupsFromSet('groups:createtime', 0, 0, -1, function(err, groups) {
-				if (err) return done(err);
-
+				assert.ifError(err);
 				assert.equal(groups.length, 3);
 				done();
 			});

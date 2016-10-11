@@ -1,19 +1,30 @@
 'use strict';
-/*global require, process, after*/
+/*global require, after, before*/
 
-var winston = require('winston');
 
-process.on('uncaughtException', function (err) {
-	winston.error('Encountered error while running test suite: ' + err.message);
-});
+var async = require('async');
+var assert = require('assert');
 
-var	assert = require('assert'),
-	db = require('./mocks/databasemock');
-
+var db = require('./mocks/databasemock');
 var Categories = require('../src/categories');
+var Topics = require('../src/topics');
+var User = require('../src/user');
 
 describe('Categories', function() {
 	var	categoryObj;
+	var posterUid;
+
+	before(function(done) {
+		User.create({username: 'poster'}, function(err, _posterUid) {
+			if (err) {
+				return done(err);
+			}
+
+			posterUid = _posterUid;
+
+			done();
+		});
+	});
 
 	describe('.create', function() {
 		it('should create a new category', function(done) {
@@ -111,6 +122,53 @@ describe('Categories', function() {
 				}));
 
 				done();
+			});
+		});
+	});
+
+	describe('Categories.moveRecentReplies', function() {
+		var moveCid;
+		var moveTid;
+		before(function(done) {
+			async.parallel({
+				category: function(next) {
+					Categories.create({
+						name: 'Test Category 2',
+						description: 'Test category created by testing script'
+					}, next);
+				},
+				topic: function(next) {
+					Topics.post({
+						uid: posterUid,
+						cid: categoryObj.cid,
+						title: 'Test Topic Title',
+						content: 'The content of test topic'
+					}, next);
+				}
+			}, function(err, results) {
+				if (err) {
+					return done(err);
+				}
+				moveCid = results.category.cid;
+				moveTid = results.topic.topicData.tid;
+				Topics.reply({uid: posterUid, content: 'test post', tid: moveTid}, function(err) {
+					done(err);
+				});
+			});
+		});
+
+		it('should move posts from one category to another', function(done) {
+			Categories.moveRecentReplies(moveTid, categoryObj.cid, moveCid, function(err) {
+				assert.ifError(err);
+				db.getSortedSetRange('cid:' + categoryObj.cid + ':pids', 0, -1, function(err, pids) {
+					assert.ifError(err);
+					assert.equal(pids.length, 0);
+					db.getSortedSetRange('cid:' + moveCid + ':pids', 0, -1, function(err, pids) {
+						assert.ifError(err);
+						assert.equal(pids.length, 2);
+						done();
+					});
+				});
 			});
 		});
 	});

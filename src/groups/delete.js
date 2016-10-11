@@ -16,6 +16,7 @@ module.exports = function(Groups) {
 				return callback();
 			}
 			var groupObj = groupsData[0];
+
 			plugins.fireHook('action:group.destroy', groupObj);
 
 			async.parallel([
@@ -40,7 +41,11 @@ module.exports = function(Groups) {
 					});
 				}
 			], function(err) {
-				callback(err);
+				if (err) {
+					return callback(err);
+				}
+				Groups.resetCache();
+				callback();
 			});
 		});
 	};
