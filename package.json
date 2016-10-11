@@ -93,7 +93,7 @@
     "xregexp": "~3.1.0"
   },
   "devDependencies": {
-    "eslint": "^3.4.0",
+    "eslint": "^3.7.1",
     "eslint-config-airbnb": "^12.0.0",
     "eslint-plugin-import": "^1.16.0",
     "eslint-plugin-jsx-a11y": "^2.2.3",
