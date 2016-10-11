@@ -72,7 +72,6 @@
 						<th><input component="user/select/all" type="checkbox"/></th>
 						<th>uid</th>
 						<th>username</th>
-						<th>admin</th>
 						<th>email</th>
 						<th class="text-right">postcount</th>
 						<th class="text-right">reputation</th>
@@ -85,11 +84,10 @@
 					<tr class="user-row">
 						<th><input component="user/select/single" data-uid="{users.uid}" type="checkbox"/></th>
 						<td class="text-right">{users.uid}</td>
-						<td><a href="{config.relative_path}/user/{users.userslug}">{users.username}</a></td>
-						<td class="text-center"><i class="administrator fa fa-shield text-success<!-- IF !users.administrator --> hidden<!-- ENDIF !users.administrator -->"></td>
+						<td><i class="administrator fa fa-shield text-success<!-- IF !users.administrator --> hidden<!-- ENDIF !users.administrator -->"></i><a href="{config.relative_path}/user/{users.userslug}"> {users.username}</a></td>
+
 						<td>
 						<!-- IF config.requireEmailConfirmation -->
-
 						<i class="validated fa fa-check text-success<!-- IF !users.email:confirmed --> hidden<!-- ENDIF !users.email:confirmed -->" title="validated"></i>
 						<i class="notvalidated fa fa-times text-danger<!-- IF users.email:confirmed --> hidden<!-- ENDIF users.email:confirmed -->" title="not validated"></i>
 						<!-- ENDIF config.requireEmailConfirmation --> {users.email}</td>
