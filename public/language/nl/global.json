@@ -7,10 +7,10 @@
     "403.login": "Je kan proberen <a href='%1/login'>in te loggen</a>?",
     "404.title": "Niet gevonden",
     "404.message": "Deze pagina bestaat niet. Klik hier om naar de <a href='%1/'>hoofdpagina</a> van deze website te navigeren.",
-    "500.title": "Internal Error.",
+    "500.title": "Interne fout",
     "500.message": "Oeps! Ziet er naar uit dat iets fout ging!",
-    "400.title": "Bad Request.",
-    "400.message": "It looks like this link is malformed, please double-check and try again. Otherwise, return to the <a href='%1/'>home page</a>.",
+    "400.title": "Foutief verzoek",
+    "400.message": "Het lijkt erop dat de link onjuist is. Kijk het nog eens na en probeer het opnieuw. Of ga terug naar de <a href='%1/'>startpagina</a>.",
     "register": "Registeren",
     "login": "Login",
     "please_log_in": "Aanmelden",
@@ -96,7 +96,7 @@
     "upload_file": "Upload bestand",
     "upload": "Upload",
     "allowed-file-types": "Toegestane bestandstypen zijn %1",
-    "unsaved-changes": "You have unsaved changes. Are you sure you wish to navigate away?",
-    "reconnecting-message": "Looks like your connection to %1 was lost, please wait while we try to reconnect.",
+    "unsaved-changes": "Je hebt niet opgeslagen wijzigingen aangebracht. Weet je zeker dat je de pagina wilt verlaten?",
+    "reconnecting-message": "Het lijkt erop dat je verbinding naar %1 verloren is gegaan, wacht even terwijl we de verbinding proberen te herstellen.",
     "play": "Afspelen"
 }

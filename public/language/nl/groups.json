@@ -51,6 +51,6 @@
     "membership.reject": "Afwijzen",
     "new-group.group_name": "Groepsnaam:",
     "upload-group-cover": "Upload groepscover",
-    "bulk-invite-instructions": "Enter a list of comma separated usernames to invite to this group",
+    "bulk-invite-instructions": "Vul een lijst is met gebruikersnamen gescheiden met komma's om deze uit te nodigen voor deze groep",
     "bulk-invite": "Massa uitnodiging"
 }
