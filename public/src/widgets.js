@@ -1,5 +1,5 @@
 "use strict";
-/*global ajaxify, templates, config, RELATIVE_PATH*/
+/*global ajaxify, templates, config, utils*/
 
 (function(ajaxify) {
 	ajaxify.widgets = {};
@@ -15,6 +15,7 @@
 	};
 
 	ajaxify.widgets.render = function(template, url, callback) {
+		callback = callback || function() {};
 		if (template.match(/^admin/)) {
 			return callback();
 		}
@@ -35,9 +36,7 @@
 		}
 
 		function renderWidgets(locations) {
-			var areaDatas = [];
-
-			$.get(RELATIVE_PATH + '/api/widgets/render' + (config['cache-buster'] ? '?v=' + config['cache-buster'] : ''), {
+			$.get(config.relative_path + '/api/widgets/render' + (config['cache-buster'] ? '?v=' + config['cache-buster'] : ''), {
 				locations: locations,
 				template: template + '.tpl',
 				url: url,
@@ -91,9 +90,7 @@
 				});
 				$(window).trigger('action:widgets.loaded', {});
 
-				if (typeof callback === 'function') {
-					callback();
-				}
+				callback(renderedAreas);
 			});
 		}
 
