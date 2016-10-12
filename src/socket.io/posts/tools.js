@@ -60,11 +60,61 @@ module.exports = function(SocketPosts) {
 	};
 
 	SocketPosts.delete = function(socket, data, callback) {
-		doPostAction('delete', 'event:post_deleted', socket, data, callback);
+		if (!data || !data.pid) {
+			return callback(new Error('[[error:invalid-data]]'));
+		}
+		var postData;
+		async.waterfall([
+			function(next) {
+				posts.tools.delete(socket.uid, data.pid, next);
+			},
+			function(_postData, next) {
+				postData = _postData;
+				isMainAndLastPost(data.pid, next);
+			},
+			function(results, next) {
+				if (results.isMain && results.isLast) {
+					deleteTopicOf(data.pid, socket, next);
+				} else {
+					next();
+				}
+			},
+			function(next) {
+				websockets.in('topic_' + data.tid).emit('event:post_deleted', postData);
+
+				events.log({
+					type: 'post-delete',
+					uid: socket.uid,
+					pid: data.pid,
+					ip: socket.ip
+				});
+
+				next();
+			}
+		], callback);
 	};
 
 	SocketPosts.restore = function(socket, data, callback) {
-		doPostAction('restore', 'event:post_restored', socket, data, callback);
+		if (!data || !data.pid) {
+			return callback(new Error('[[error:invalid-data]]'));
+		}
+
+		posts.tools.restore(socket.uid, data.pid, function(err, postData) {
+			if (err) {
+				return callback(err);
+			}
+
+			websockets.in('topic_' + data.tid).emit('event:post_restored', postData);
+
+			events.log({
+				type: 'post-restore',
+				uid: socket.uid,
+				pid: data.pid,
+				ip: socket.ip
+			});
+
+			callback();
+		});
 	};
 
 	SocketPosts.deletePosts = function(socket, data, callback) {
@@ -84,29 +134,6 @@ module.exports = function(SocketPosts) {
 			SocketPosts.purge(socket, {pid: pid, tid: data.tid}, next);
 		}, callback);
 	};
-
-	function doPostAction(command, eventName, socket, data, callback) {
-		if (!data) {
-			return callback(new Error('[[error:invalid-data]]'));
-		}
-
-		posts.tools[command](socket.uid, data.pid, function(err, postData) {
-			if (err) {
-				return callback(err);
-			}
-
-			websockets.in('topic_' + data.tid).emit(eventName, postData);
-
-			events.log({
-				type: 'post-' + command,
-				uid: socket.uid,
-				pid: data.pid,
-				ip: socket.ip
-			});
-
-			callback();
-		});
-	}
 
 	SocketPosts.purge = function(socket, data, callback) {
 		function purgePost() {
@@ -151,14 +178,18 @@ module.exports = function(SocketPosts) {
 				return callback(new Error('[[error:cant-purge-main-post]]'));
 			}
 
-			posts.getTopicFields(data.pid, ['tid', 'cid'], function(err, topic) {
-				if (err) {
-					return callback(err);
-				}
-				socketTopics.doTopicAction('delete', 'event:topic_deleted', socket, {tids: [topic.tid], cid: topic.cid}, callback);
-			});
+			deleteTopicOf(data.pid, socket, callback);
 		});
 	};
+
+	function deleteTopicOf(pid, socket, callback) {
+		posts.getTopicFields(pid, ['tid', 'cid'], function(err, topic) {
+			if (err) {
+				return callback(err);
+			}
+			socketTopics.doTopicAction('delete', 'event:topic_deleted', socket, {tids: [topic.tid], cid: topic.cid}, callback);
+		});
+	}
 
 	function isMainAndLastPost(pid, callback) {
 		async.parallel({
