@@ -23,95 +23,98 @@ module.exports = function(Posts) {
 		options.parse = options.hasOwnProperty('parse') ? options.parse : true;
 		options.extraFields = options.hasOwnProperty('extraFields') ? options.extraFields : [];
 
-		var fields = ['pid', 'tid', 'content', 'uid', 'timestamp', 'deleted'].concat(options.extraFields);
+		var fields = ['pid', 'tid', 'content', 'uid', 'timestamp', 'deleted', 'upvotes', 'downvotes'].concat(options.extraFields);
 
-		Posts.getPostsFields(pids, fields, function(err, posts) {
-			if (err) {
-				return callback(err);
-			}
+		var posts;
+		async.waterfall([
+			function(next) {
+				Posts.getPostsFields(pids, fields, next);
+			},
+			function(_posts, next) {
+				posts = _posts.filter(Boolean);
 
-			posts = posts.filter(Boolean);
+				var uids = [];
+				var topicKeys = [];
 
-			var uids = [], topicKeys = [];
-			for(var i=0; i<posts.length; ++i) {
-				if (uids.indexOf(posts[i].uid) === -1) {
-					uids.push(posts[i].uid);
-				}
-				if (topicKeys.indexOf('topic:' + posts[i].tid) === -1) {
-					topicKeys.push('topic:' + posts[i].tid);
-				}
-			}
-
-			async.parallel({
-				users: function(next) {
-					user.getUsersFields(uids, ['uid', 'username', 'userslug', 'picture'], next);
-				},
-				topicsAndCategories: function(next) {
-					getTopicAndCategories(topicKeys, next);
-				},
-				indices: function(next) {
-					Posts.getPostIndices(posts, uid, next);
-				}
-			}, function(err, results) {
-				if (err) {
-					return callback(err);
-				}
-
+				posts.forEach(function(post, i) {
+					if (uids.indexOf(posts[i].uid) === -1) {
+						uids.push(posts[i].uid);
+					}
+					if (topicKeys.indexOf('topic:' + posts[i].tid) === -1) {
+						topicKeys.push('topic:' + posts[i].tid);
+					}
+				});
+				async.parallel({
+					users: function(next) {
+						user.getUsersFields(uids, ['uid', 'username', 'userslug', 'picture'], next);
+					},
+					topicsAndCategories: function(next) {
+						getTopicAndCategories(topicKeys, next);
+					},
+					indices: function(next) {
+						Posts.getPostIndices(posts, uid, next);
+					}
+				}, next);
+			},
+			function(results, next) {
 				results.users = toObject('uid', results.users);
 				results.topics = toObject('tid', results.topicsAndCategories.topics);
 				results.categories = toObject('cid', results.topicsAndCategories.categories);
 
-				for (var i=0; i<posts.length; ++i) {
-					posts[i].index = utils.isNumber(results.indices[i]) ? parseInt(results.indices[i], 10) + 1 : 1;
-					posts[i].isMainPost = posts[i].index - 1 === 0;
-					posts[i].deleted = parseInt(posts[i].deleted, 10) === 1;
-				}
+				posts.forEach(function(post, i) {
+					post.index = utils.isNumber(results.indices[i]) ? parseInt(results.indices[i], 10) + 1 : 1;
+					post.isMainPost = post.index - 1 === 0;
+					post.deleted = parseInt(posts[i].deleted, 10) === 1;
+					post.upvotes = parseInt(post.upvotes, 10) || 0;
+					post.downvotes = parseInt(post.downvotes, 10) || 0;
+					post.votes = post.upvotes - post.downvotes;
+					// If the post author isn't represented in the retrieved users' data, then it means they were deleted, assume guest.
+					if (!results.users.hasOwnProperty(post.uid)) {
+						post.uid = 0;
+					}
+					post.user = results.users[post.uid];
+					post.topic = results.topics[post.tid];
+					post.category = results.categories[post.topic.cid];
+					post.timestampISO = utils.toISOString(post.timestamp);
+				});
 
 				posts = posts.filter(function(post) {
 					return results.topics[post.tid];
 				});
 
-				async.map(posts, function(post, next) {
-					// If the post author isn't represented in the retrieved users' data, then it means they were deleted, assume guest.
-					if (!results.users.hasOwnProperty(post.uid)) {
-						post.uid = 0;
-					}
-
-					post.user = results.users[post.uid];
-					post.topic = results.topics[post.tid];
-					post.category = results.categories[post.topic.cid];
-					post.timestampISO = utils.toISOString(post.timestamp);
-
-					if (!post.content || !options.parse) {
-						if (options.stripTags) {
-							post.content = stripTags(post.content);
-						}
-						post.content = post.content ? validator.escape(String(post.content)) : post.content;
-						return next(null, post);
-					}
-
-					Posts.parsePost(post, function(err, post) {
-						if (err) {
-							return next(err);
-						}
-						if (options.stripTags) {
-							post.content = stripTags(post.content);
-						}
-
-						next(null, post);
-					});
-				}, function(err, posts) {
-					if (err) {
-						return callback(err);
-					}
-
-					plugins.fireHook('filter:post.getPostSummaryByPids', {posts: posts, uid: uid}, function(err, postData) {
-						callback(err, postData.posts);
-					});
-				});
-			});
-		});
+				parsePosts(posts, options, next);
+			},
+			function(posts, next) {
+				plugins.fireHook('filter:post.getPostSummaryByPids', {posts: posts, uid: uid}, next);
+			},
+			function(data, next) {
+				next(null, data.posts);
+			}
+		], callback);
 	};
+
+	function parsePosts(posts, options, callback) {
+		async.map(posts, function(post, next) {
+			if (!post.content || !options.parse) {
+				if (options.stripTags) {
+					post.content = stripTags(post.content);
+				}
+				post.content = post.content ? validator.escape(String(post.content)) : post.content;
+				return next(null, post);
+			}
+
+			Posts.parsePost(post, function(err, post) {
+				if (err) {
+					return next(err);
+				}
+				if (options.stripTags) {
+					post.content = stripTags(post.content);
+				}
+
+				next(null, post);
+			});
+		}, callback);
+	}
 
 	function getTopicAndCategories(topicKeys, callback) {
 		db.getObjectsFields(topicKeys, ['uid', 'tid', 'title', 'cid', 'slug', 'deleted', 'postcount'], function(err, topics) {
