@@ -133,7 +133,7 @@ module.exports = function(User) {
 								});
 							},
 							function(next) {
-								User.updateDigestSetting(userData.uid, meta.config.dailyDigestSetting, next);
+								User.updateDigestSetting(userData.uid, meta.config.dailyDigestFreq, next);
 							}
 						], next);
 					},
