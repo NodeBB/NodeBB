@@ -13,7 +13,8 @@
     "start": "node loader.js",
     "lint": "eslint --cache .",
     "pretest": "npm run lint",
-    "test": "istanbul cover _mocha test"
+    "test": "istanbul cover _mocha test",
+    "test-windows": "_mocha test"
   },
   "dependencies": {
     "async": "~1.5.0",
