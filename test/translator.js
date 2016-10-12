@@ -112,5 +112,12 @@ describe('translator adaptor', function(){
 				done();
 			});
 		});
+
+		it('should not translate [[derp] some text', function(done) {
+			translator.translate('[[derp] some text', function(translated) {
+				assert.strictEqual('[[derp] some text', translated);
+				done();
+			});
+		});
 	});
 });

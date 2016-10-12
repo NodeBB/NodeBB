@@ -108,7 +108,7 @@ describe('new Translator(language)', function(){
 		});
 
 		it('should properly escape % and ,', function(done) {
-            var translator = new Translator('en_GB');
+			var translator = new Translator('en_GB');
 
 			var title = 'Test 1, 2, 3 % salmon';
 			title = title.replace(/%/g, '&#37;').replace(/,/g, '&#44;');
@@ -126,6 +126,13 @@ describe('new Translator(language)', function(){
 			done();
 		});
 
+		it('should not translate [[derp] some text', function(done) {
+			var translator = new Translator('en_GB');
+			translator.translate('[[derp] some text').then(function(translated) {
+				assert.strictEqual('[[derp] some text', translated);
+				done();
+			});
+		});
 	});
 });
 
