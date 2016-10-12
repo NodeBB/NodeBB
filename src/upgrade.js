@@ -893,7 +893,7 @@ Upgrade.upgrade = function(callback) {
 
 			thisSchemaDate = Date.UTC(2016, 9, 8);
 
-			if (schemaDate < thisSchemaDate || 1) {
+			if (schemaDate < thisSchemaDate) {
 				updatesMade = true;
 				winston.info('[2016/10/8] favourite -> bookmark refactor');
 				async.series([upgradePosts, upgradeUsers], function(err) {
