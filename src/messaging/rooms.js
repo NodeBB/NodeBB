@@ -35,7 +35,7 @@ module.exports = function(Messaging) {
 	function modifyRoomData(rooms) {
 		rooms.forEach(function(data) {
 			if (data) {
-				data.roomName = data.roomName || '[[modules:chat.roomname, ' + data.roomId + ']]';
+				data.roomName = data.roomName || '';
 				data.roomName = validator.escape(String(data.roomName));
 				if (data.hasOwnProperty('groupChat')) {
 					data.groupChat = parseInt(data.groupChat, 10) === 1;
