@@ -64,7 +64,7 @@ module.exports = function(Posts) {
 				posts.forEach(function(post, i) {
 					post.index = utils.isNumber(results.indices[i]) ? parseInt(results.indices[i], 10) + 1 : 1;
 					post.isMainPost = post.index - 1 === 0;
-					post.deleted = parseInt(posts[i].deleted, 10) === 1;
+					post.deleted = parseInt(post.deleted, 10) === 1;
 					post.upvotes = parseInt(post.upvotes, 10) || 0;
 					post.downvotes = parseInt(post.downvotes, 10) || 0;
 					post.votes = post.upvotes - post.downvotes;
