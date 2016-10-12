@@ -240,7 +240,7 @@ module.exports = function(Groups) {
 				if (!groupData) {
 					return callback();
 				}
-				if (parseInt(groupData.hidden, 10) === 1 && parseInt(groupData.memberCount, 10) === 0) {
+				if (Groups.isPrivilegeGroup(groupName) && parseInt(groupData.memberCount, 10) === 0) {
 					Groups.destroy(groupName, next);
 				} else {
 					if (parseInt(groupData.hidden, 10) !== 1) {
