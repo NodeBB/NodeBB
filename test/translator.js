@@ -2,122 +2,179 @@
 /*global require*/
 
 var assert = require('assert');
-var translator = require('../public/src/modules/translator.js');
+var shim = require('../public/src/modules/translator.js');
+var Translator = shim.Translator;
 
-var plugins = require('../src/plugins');
-var languages = require('../src/languages');
+require('../src/languages').init(function () {});
 
-languages.init(function(){});
+describe('translator shim', function(){
+	describe('.translate()', function(){
+		it('should translate correctly', function(done) {
+			shim.translate('[[global:pagination.out_of, (foobar), [[global:home]]]]', function(translated) {
+				assert.strictEqual(translated, '(foobar) out of Home');
+				done();
+			});
+		});
+	});
+});
 
-describe('translator adaptor', function(){
+describe('new Translator(language)', function(){
 	describe('.translate()', function(){
 		it('should handle basic translations', function(done) {
-			translator.translate('[[global:home]]', function(translated) {
+            var translator = new Translator('en_GB');
+
+			translator.translate('[[global:home]]').then(function(translated) {
 				assert.strictEqual(translated, 'Home');
 				done();
 			});
 		});
 
 		it('should handle language keys in regular text', function(done) {
-			translator.translate('Let\'s go [[global:home]]', function(translated) {
+            var translator = new Translator('en_GB');
+
+			translator.translate('Let\'s go [[global:home]]').then(function(translated) {
 				assert.strictEqual(translated, 'Let\'s go Home');
 				done();
 			});
 		});
 
 		it('should accept a language parameter and adjust accordingly', function(done) {
-			translator.translate('[[global:home]]', 'de', function(translated) {
+            var translator = new Translator('de');
+
+			translator.translate('[[global:home]]').then(function(translated) {
 				assert.strictEqual(translated, 'Übersicht');
 				done();
 			});
 		});
 
 		it('should handle language keys in regular text with another language specified', function(done) {
-			translator.translate('[[global:home]] test', 'de', function(translated) {
+            var translator = new Translator('de');
+
+			translator.translate('[[global:home]] test').then(function(translated) {
 				assert.strictEqual(translated, 'Übersicht test');
 				done();
 			});
 		});
 
 		it('should handle language keys with parameters', function(done) {
-			translator.translate('[[global:pagination.out_of, 1, 5]]', function(translated) {
+            var translator = new Translator('en_GB');
+
+			translator.translate('[[global:pagination.out_of, 1, 5]]').then(function(translated) {
 				assert.strictEqual(translated, '1 out of 5');
 				done();
 			});
 		});
 
 		it('should handle language keys inside language keys', function(done) {
-			translator.translate('[[notifications:outgoing_link_message, [[global:guest]]]]', function(translated) {
+            var translator = new Translator('en_GB');
+
+			translator.translate('[[notifications:outgoing_link_message, [[global:guest]]]]').then(function(translated) {
 				assert.strictEqual(translated, 'You are now leaving Guest');
 				done();
 			});
 		});
 
 		it('should handle language keys inside language keys with multiple parameters', function(done) {
-			translator.translate('[[notifications:user_posted_to, [[global:guest]], My Topic]]', function(translated) {
+            var translator = new Translator('en_GB');
+
+			translator.translate('[[notifications:user_posted_to, [[global:guest]], My Topic]]').then(function(translated) {
 				assert.strictEqual(translated, '<strong>Guest</strong> has posted a reply to: <strong>My Topic</strong>');
 				done();
 			});
 		});
 
 		it('should handle language keys inside language keys with all parameters as language keys', function(done) {
-			translator.translate('[[notifications:user_posted_to, [[global:guest]], [[global:guest]]]]', function(translated) {
+            var translator = new Translator('en_GB');
+
+			translator.translate('[[notifications:user_posted_to, [[global:guest]], [[global:guest]]]]').then(function(translated) {
 				assert.strictEqual(translated, '<strong>Guest</strong> has posted a reply to: <strong>Guest</strong>');
 				done();
 			});
 		});
 
 		it('should properly handle parameters that contain square brackets', function(done) {
-			translator.translate('[[global:pagination.out_of, [guest], [[global:home]]]]', function(translated) {
+            var translator = new Translator('en_GB');
+
+			translator.translate('[[global:pagination.out_of, [guest], [[global:home]]]]').then(function(translated) {
 				assert.strictEqual(translated, '[guest] out of Home');
 				done();
 			});
 		});
 
 		it('should properly handle parameters that contain parentheses', function(done) {
-			translator.translate('[[global:pagination.out_of, (foobar), [[global:home]]]]', function(translated) {
+            var translator = new Translator('en_GB');
+
+			translator.translate('[[global:pagination.out_of, (foobar), [[global:home]]]]').then(function(translated) {
 				assert.strictEqual(translated, '(foobar) out of Home');
 				done();
 			});
 		});
 
 		it('should not translate language key parameters with HTML in them', function(done) {
+            var translator = new Translator('en_GB');
+
 			var key = '[[global:403.login, <strong>test</strong>]]';
-			translator.translate(key, function(translated) {
+			translator.translate(key).then(function(translated) {
 				assert.strictEqual(translated, 'Perhaps you should <a href=\'&lt;strong&gt;test&lt;/strong&gt;/login\'>try logging in</a>?');
 				done();
 			});
 		});
 
 		it('should properly escape % and ,', function(done) {
+			var translator = new Translator('en_GB');
+
 			var title = 'Test 1, 2, 3 % salmon';
 			title = title.replace(/%/g, '&#37;').replace(/,/g, '&#44;');
 			var key = "[[topic:composer.replying_to, " + title + "]]";
-			translator.translate(key, function(translated) {
+			translator.translate(key).then(function(translated) {
 				assert.strictEqual(translated, 'Replying to Test 1, 2, 3 % salmon');
 				done();
 			});
 		});
 
-		it('should properly handle translations added by plugins', function(done) {
-			plugins.customLanguages = {
-				'en_GB/myplugin.json': {
-					'foo': 'bar',
-					'bar': 'baz, and %1'
-				}
-			};
-
-			translator.translate('[[myplugin:foo]], [[myplugin:bar, quux]]', function(translated) {
-				assert.strictEqual(translated, 'bar, baz, and quux');
-				done();
-			});
+		it('should throw if not passed a language', function(done) {
+			assert.throws(function () {
+				new Translator();
+			}, /language string/);
+			done();
 		});
 
 		it('should not translate [[derp] some text', function(done) {
-			translator.translate('[[derp] some text', function(translated) {
+			var translator = new Translator('en_GB');
+			translator.translate('[[derp] some text').then(function(translated) {
 				assert.strictEqual('[[derp] some text', translated);
 				done();
 			});
 		});
+
+		it('should not translate [[derp:xyz] some text', function(done) {
+			var translator = new Translator('en_GB');
+			translator.translate('[[derp:xyz] some text').then(function(translated) {
+				assert.strictEqual('[[derp:xyz] some text', translated);
+				done();
+			});
+		});
+	});
+});
+
+describe('Translator.create()', function(){
+	it('should return an instance of Translator', function(done) {
+		var translator = Translator.create('en_GB');
+
+		assert(translator instanceof Translator);
+		done();
+	});
+	it('should return the same object for the same language', function(done) {
+		var one = Translator.create('de');
+		var two = Translator.create('de');
+
+		assert.strictEqual(one, two);
+		done();
+	});
+	it('should default to defaultLang', function(done) {
+		var translator = Translator.create();
+
+		assert.strictEqual(translator.lang, 'en_GB');
+		done();
 	});
 });

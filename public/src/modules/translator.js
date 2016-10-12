@@ -120,12 +120,44 @@
 					// the current level of nesting of the translation strings
 					var level = 0;
 					var sliced;
+					var textBeforeColonFound = false;
+					var colonFound = false;
+					var textAfterColonFound = false;
+					var commaAfterNameFound = false;
 
 					while (cursor + 2 <= len) {
 						sliced = str.slice(cursor, cursor + 2);
+						// found some text after the double bracket, 
+						// so this is probably a translation string
+						if (!textBeforeColonFound && sliced[0].match(/[a-zA-Z0-9\-_]/)) {
+							textBeforeColonFound = true;
+							cursor += 1;
+						// found a colon, so this is probably a translation string
+						} else if (textBeforeColonFound && !colonFound && sliced[0] === ':') {
+							colonFound = true;
+							cursor += 1;
+						// found some text after the colon,
+						// so this is probably a translation string
+						} else if (colonFound && !textAfterColonFound && sliced[0].match(/[a-zA-Z0-9\-_]/)) {
+							textAfterColonFound = true;
+							cursor += 1;
+						} else if (textAfterColonFound && !commaAfterNameFound && sliced[0] === ',') {
+							commaAfterNameFound = true;
+							cursor += 1;
+						// a space or comma was found before the name
+						// this isn't a translation string, so back out
+						} else if (!(textBeforeColonFound && colonFound && textAfterColonFound && commaAfterNameFound) && 
+								sliced[0].match(/[^a-zA-Z0-9\-_.\]]/)) {
+							cursor += 1;
+							lastBreak -= 2;
+							if (level > 0) {
+								level -= 1;
+							} else {
+								break;
+							}
 						// if we're at the beginning of another translation string,
 						// we're nested, so add to our level
-						if (sliced === '[[') {
+						} else if (sliced === '[[') {
 							level += 1;
 							cursor += 2;
 						// if we're at the end of a translation string
