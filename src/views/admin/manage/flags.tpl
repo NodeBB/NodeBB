@@ -98,7 +98,7 @@
 										<small>
 											<span class="pull-right">
 												Posted in <a href="{config.relative_path}/category/{posts.category.slug}" target="_blank"><i class="fa {posts.category.icon}"></i> {posts.category.name}</a>, <span class="timeago" title="{posts.timestampISO}"></span> &bull;
-												<a href="{config.relative_path}/topic/{posts.topic.slug}/{posts.index}" target="_blank">Read More</a>
+												<a href="{config.relative_path}/post/{posts.pid}" target="_blank">Read More</a>
 											</span>
 										</small>
 									</div>

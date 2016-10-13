@@ -50,9 +50,6 @@ module.exports = function(Posts) {
 					},
 					topicsAndCategories: function(next) {
 						getTopicAndCategories(topicKeys, next);
-					},
-					indices: function(next) {
-						Posts.getPostIndices(posts, uid, next);
 					}
 				}, next);
 			},
@@ -61,13 +58,7 @@ module.exports = function(Posts) {
 				results.topics = toObject('tid', results.topicsAndCategories.topics);
 				results.categories = toObject('cid', results.topicsAndCategories.categories);
 
-				posts.forEach(function(post, i) {
-					post.index = utils.isNumber(results.indices[i]) ? parseInt(results.indices[i], 10) + 1 : 1;
-					post.isMainPost = post.index - 1 === 0;
-					post.deleted = parseInt(post.deleted, 10) === 1;
-					post.upvotes = parseInt(post.upvotes, 10) || 0;
-					post.downvotes = parseInt(post.downvotes, 10) || 0;
-					post.votes = post.upvotes - post.downvotes;
+				posts.forEach(function(post) {
 					// If the post author isn't represented in the retrieved users' data, then it means they were deleted, assume guest.
 					if (!results.users.hasOwnProperty(post.uid)) {
 						post.uid = 0;
@@ -75,6 +66,11 @@ module.exports = function(Posts) {
 					post.user = results.users[post.uid];
 					post.topic = results.topics[post.tid];
 					post.category = results.categories[post.topic.cid];
+					post.isMainPost = parseInt(post.pid, 10) === parseInt(post.topic.mainPid, 10);
+					post.deleted = parseInt(post.deleted, 10) === 1;
+					post.upvotes = parseInt(post.upvotes, 10) || 0;
+					post.downvotes = parseInt(post.downvotes, 10) || 0;
+					post.votes = post.upvotes - post.downvotes;
 					post.timestampISO = utils.toISOString(post.timestamp);
 				});
 
@@ -117,7 +113,7 @@ module.exports = function(Posts) {
 	}
 
 	function getTopicAndCategories(topicKeys, callback) {
-		db.getObjectsFields(topicKeys, ['uid', 'tid', 'title', 'cid', 'slug', 'deleted', 'postcount'], function(err, topics) {
+		db.getObjectsFields(topicKeys, ['uid', 'tid', 'title', 'cid', 'slug', 'deleted', 'postcount', 'mainPid'], function(err, topics) {
 			if (err) {
 				return callback(err);
 			}

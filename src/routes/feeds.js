@@ -77,7 +77,7 @@ function generateForTopic(req, res, callback) {
 				feed.item({
 					title: 'Reply to ' + topicData.title + ' on ' + dateStamp,
 					description: postData.content,
-					url: nconf.get('url') + '/topic/' + topicData.slug + (postData.index ? '/' + (postData.index + 1) : ''),
+					url: nconf.get('url') + '/post/' + postData.pid,
 					author: postData.user ? postData.user.username : '',
 					date: dateStamp
 				});
@@ -350,7 +350,7 @@ function generateForPostsFeed(feedOptions, posts) {
 		feed.item({
 			title: postData.topic ? postData.topic.title : '',
 			description: postData.content,
-			url: nconf.get('url') + '/topic/' + (postData.topic ? postData.topic.slug : '#') + '/'+postData.index,
+			url: nconf.get('url') + '/post/' + postData.pid,
 			author: postData.user ? postData.user.username : '',
 			date: new Date(parseInt(postData.timestamp, 10)).toUTCString()
 		});
