@@ -1,6 +1,7 @@
 'use strict';
 
 var	async = require('async');
+var _ = require('underscore');
 
 var groups = require('./groups');
 var plugins = require('./plugins');
@@ -233,6 +234,19 @@ var meta = require('./meta');
 		privileges.users.isModerator(uid, cid, callback);
 	};
 
+	User.isModeratorOfAnyCategory = function(uid, callback) {
+		// Checks all active categories and determines whether passed-in uid is a mod of any of them
+		db.getSortedSetRange('categories:cid', 0, -1, function(err, cids) {
+			async.filter(cids, function(cid, next) {
+				User.isModerator(uid, cid, function(err, isMod) {
+					next(!!isMod);
+				});
+			}, function(result) {
+				callback(err, result);
+			});
+		});
+	};
+
 	User.isAdministrator = function(uid, callback) {
 		privileges.users.isAdministrator(uid, callback);
 	};
@@ -275,6 +289,39 @@ var meta = require('./meta');
 			});
 			User.getUsersData(uids, callback);
 		});
+	};
+
+	User.getAdminsandGlobalModsandModerators = function(callback) {
+		async.parallel([
+			async.apply(groups.getMembers, 'administrators', 0, -1),
+			async.apply(groups.getMembers, 'Global Moderators', 0, -1),
+			async.apply(User.getModeratorUids)
+		], function(err, results) {
+			if (err) {
+				return callback(err);
+			}
+
+			User.getUsersData(_.union.apply(_, results), callback);
+		});
+	};
+
+	User.getModeratorUids = function(callback) {
+		async.waterfall([
+			async.apply(db.getSortedSetRange, 'categories:cid', 0, -1),
+			function(cids, next) {
+				var groupNames = cids.map(function(cid) {
+					return 'cid:' + cid + ':privileges:mods';
+				});
+
+				groups.getMembersOfGroups(groupNames, function(err, memberSets) {
+					if (err) {
+						return next(err);
+					}
+
+					next(null, _.union.apply(_, memberSets));
+				});
+			}
+		], callback);
 	};
 
 	User.addInterstitials = function(callback) {

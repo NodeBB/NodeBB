@@ -2,6 +2,7 @@
 'use strict';
 
 var async = require('async');
+var _ = require('underscore');
 
 var db = require('../database');
 var topics = require('../topics');
@@ -56,14 +57,29 @@ module.exports = function(Posts) {
 		if (!cid) {
 			return callback(null, pids);
 		}
-		db.isSortedSetMembers('cid:' + cid + ':pids', pids, function(err, isMembers) {
-			if (err) {
-				return callback(err);
-			}
-			pids = pids.filter(function(pid, index) {
-				return pid && isMembers[index];
+
+		if (!Array.isArray(cid) || cid.length === 1) {
+			// Single cid
+			db.isSortedSetMembers('cid:' + parseInt(cid, 10) + ':pids', pids, function(err, isMembers) {
+				if (err) {
+					return callback(err);
+				}
+				pids = pids.filter(function(pid, index) {
+					return pid && isMembers[index];
+				});
+				callback(null, pids);
 			});
-			callback(null, pids);
-		});
+		} else {
+			// Multiple cids
+			async.map(cid, function(cid, next) {
+				Posts.filterPidsByCid(pids, cid, next);
+			}, function(err, pidsArr) {
+				if (err) {
+					return callback(err);
+				}
+
+				callback(null, _.union.apply(_, pidsArr));
+			});
+		}
 	};
 };

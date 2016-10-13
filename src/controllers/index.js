@@ -27,6 +27,7 @@ var Controllers = {
 	api: require('./api'),
 	admin: require('./admin'),
 	globalMods: require('./globalmods'),
+	mods: require('./mods'),
 	sitemap: require('./sitemap')
 };
 

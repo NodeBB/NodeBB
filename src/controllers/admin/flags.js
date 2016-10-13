@@ -24,14 +24,12 @@ flagsController.get = function(req, res, next) {
 			categories.buildForSelect(req.uid, next);
 		},
 		flagData: function(next) {
-			getFlagData(req, next);
+			getFlagData(req, res, next);
 		},
 		analytics: function(next) {
 			analytics.getDailyStatsForSet('analytics:flags', Date.now(), 30, next);
 		},
-		assignees: function(next) {
-			user.getAdminsandGlobalMods(next);
-		}
+		assignees: async.apply(user.getAdminsandGlobalModsandModerators)
 	}, function (err, results) {
 		if (err) {
 			return next(err);
@@ -44,6 +42,13 @@ flagsController.get = function(req, res, next) {
 				username: userObj.username
 			};
 		});
+
+		// If res.locals.cids is populated, then slim down the categories list
+		if (res.locals.cids) {
+			results.categories = results.categories.filter(function(category) {
+				return res.locals.cids.indexOf(String(category.cid)) !== -1;
+			});
+		}
 
 		var pageCount = Math.max(1, Math.ceil(results.flagData.count / itemsPerPage));
 
@@ -66,10 +71,10 @@ flagsController.get = function(req, res, next) {
 	});
 };
 
-function getFlagData(req, callback) {
+function getFlagData(req, res, callback) {
 	var sortBy = req.query.sortBy || 'count';
 	var byUsername = req.query.byUsername || '';
-	var cid = req.query.cid || 0;
+	var cid = req.query.cid || res.locals.cids || 0;
 	var page = parseInt(req.query.page, 10) || 1;
 	var start = (page - 1) * itemsPerPage;
 	var stop = start + itemsPerPage - 1;

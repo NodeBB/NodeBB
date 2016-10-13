@@ -145,10 +145,15 @@ module.exports = function(SocketPosts) {
 
 		async.waterfall([
 			function (next) {
-				user.isAdminOrGlobalMod(socket.uid, next);
+				async.parallel([
+					async.apply(user.isAdminOrGlobalMod, socket.uid),
+					async.apply(user.isModeratorOfAnyCategory, socket.uid)
+				], function(err, results) {
+					next(err, results[0] || results[1]);
+				});
 			},
-			function (isAdminOrGlobalModerator, next) {
-				if (!isAdminOrGlobalModerator) {
+			function (allowed, next) {
+				if (!allowed) {
 					return next(new Error('[[no-privileges]]'));
 				}
 

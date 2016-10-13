@@ -38,9 +38,12 @@ function mainRoutes(app, middleware, controllers) {
 	app.get('/sping', controllers.ping);
 }
 
+function modRoutes(app, middleware, controllers) {
+	setupPageRoute(app, '/posts/flags', middleware, [], controllers.mods.flagged);
+}
+
 function globalModRoutes(app, middleware, controllers) {
 	setupPageRoute(app, '/ip-blacklist', middleware, [], controllers.globalMods.ipBlacklist);
-	setupPageRoute(app, '/posts/flags', middleware, [], controllers.globalMods.flagged);
 }
 
 function topicRoutes(app, middleware, controllers) {
@@ -123,6 +126,7 @@ module.exports = function(app, middleware, hotswapIds) {
 	mainRoutes(router, middleware, controllers);
 	topicRoutes(router, middleware, controllers);
 	postRoutes(router, middleware, controllers);
+	modRoutes(router, middleware, controllers);
 	globalModRoutes(router, middleware, controllers);
 	tagRoutes(router, middleware, controllers);
 	categoryRoutes(router, middleware, controllers);
