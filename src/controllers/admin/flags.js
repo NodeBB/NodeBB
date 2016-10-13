@@ -45,7 +45,7 @@ flagsController.get = function (req, res, next) {
 
 		// If res.locals.cids is populated, then slim down the categories list
 		if (res.locals.cids) {
-			results.categories = results.categories.filter(function(category) {
+			results.categories = results.categories.filter(function (category) {
 				return res.locals.cids.indexOf(String(category.cid)) !== -1;
 			});
 		}

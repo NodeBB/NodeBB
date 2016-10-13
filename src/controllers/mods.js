@@ -7,11 +7,11 @@ var adminFlagsController = require('./admin/flags');
 
 var modsController = {};
 
-modsController.flagged = function(req, res, next) {
+modsController.flagged = function (req, res, next) {
 	async.parallel([
 		async.apply(user.isAdminOrGlobalMod, req.uid),
 		async.apply(user.isModeratorOfAnyCategory, req.uid)
-	], function(err, results) {
+	], function (err, results) {
 		if (err || !(results[0] || results[1])) {
 			return next(err);
 		}

@@ -148,7 +148,7 @@ module.exports = function (SocketPosts) {
 				async.parallel([
 					async.apply(user.isAdminOrGlobalMod, socket.uid),
 					async.apply(user.isModeratorOfAnyCategory, socket.uid)
-				], function(err, results) {
+				], function (err, results) {
 					next(err, results[0] || results[1]);
 				});
 			},

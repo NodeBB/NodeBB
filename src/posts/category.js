@@ -71,9 +71,9 @@ module.exports = function (Posts) {
 			});
 		} else {
 			// Multiple cids
-			async.map(cid, function(cid, next) {
+			async.map(cid, function (cid, next) {
 				Posts.filterPidsByCid(pids, cid, next);
-			}, function(err, pidsArr) {
+			}, function (err, pidsArr) {
 				if (err) {
 					return callback(err);
 				}

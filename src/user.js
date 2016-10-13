@@ -234,14 +234,18 @@ var meta = require('./meta');
 		privileges.users.isModerator(uid, cid, callback);
 	};
 
-	User.isModeratorOfAnyCategory = function(uid, callback) {
+	User.isModeratorOfAnyCategory = function (uid, callback) {
 		// Checks all active categories and determines whether passed-in uid is a mod of any of them
-		db.getSortedSetRange('categories:cid', 0, -1, function(err, cids) {
-			async.filter(cids, function(cid, next) {
-				User.isModerator(uid, cid, function(err, isMod) {
+		db.getSortedSetRange('categories:cid', 0, -1, function (err, cids) {
+			async.filter(cids, function (cid, next) {
+				User.isModerator(uid, cid, function (err, isMod) {
+					if (err) {
+						// do nothing because async doesn't support errors in filter yet
+					}
+
 					next(!!isMod);
 				});
-			}, function(result) {
+			}, function (result) {
 				callback(err, result);
 			});
 		});
@@ -291,12 +295,12 @@ var meta = require('./meta');
 		});
 	};
 
-	User.getAdminsandGlobalModsandModerators = function(callback) {
+	User.getAdminsandGlobalModsandModerators = function (callback) {
 		async.parallel([
 			async.apply(groups.getMembers, 'administrators', 0, -1),
 			async.apply(groups.getMembers, 'Global Moderators', 0, -1),
 			async.apply(User.getModeratorUids)
-		], function(err, results) {
+		], function (err, results) {
 			if (err) {
 				return callback(err);
 			}
@@ -305,15 +309,15 @@ var meta = require('./meta');
 		});
 	};
 
-	User.getModeratorUids = function(callback) {
+	User.getModeratorUids = function (callback) {
 		async.waterfall([
 			async.apply(db.getSortedSetRange, 'categories:cid', 0, -1),
-			function(cids, next) {
-				var groupNames = cids.map(function(cid) {
+			function (cids, next) {
+				var groupNames = cids.map(function (cid) {
 					return 'cid:' + cid + ':privileges:mods';
 				});
 
-				groups.getMembersOfGroups(groupNames, function(err, memberSets) {
+				groups.getMembersOfGroups(groupNames, function (err, memberSets) {
 					if (err) {
 						return next(err);
 					}
