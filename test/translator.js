@@ -154,6 +154,14 @@ describe('new Translator(language)', function(){
 				done();
 			});
 		});
+
+		it('should translate [[pages:users/latest]] properly', function(done) {
+			var translator = new Translator('en_GB');
+			translator.translate('[[pages:users/latest]]').then(function(translated) {
+				assert.strictEqual('[[pages:users/latest]]', 'Latest Users');
+				done();
+			});
+		});
 	});
 });
 
