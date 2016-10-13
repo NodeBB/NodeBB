@@ -14,7 +14,7 @@ var pagination = require('../pagination');
 
 var recentController = {};
 
-recentController.get = function(req, res, next) {
+recentController.get = function (req, res, next) {
 	var page = parseInt(req.query.page, 10) || 1;
 	var pageCount = 1;
 	var stop = 0;
@@ -24,7 +24,7 @@ recentController.get = function(req, res, next) {
 	async.waterfall([
 		function (next) {
 			async.parallel({
-				settings: function(next) {
+				settings: function (next) {
 					user.getSettings(req.uid, next);
 				},
 				tids: function (next) {
@@ -46,7 +46,7 @@ recentController.get = function(req, res, next) {
 
 			topics.getTopicsByTids(tids, req.uid, next);
 		}
-	], function(err, topics) {
+	], function (err, topics) {
 		if (err) {
 			return next(err);
 		}

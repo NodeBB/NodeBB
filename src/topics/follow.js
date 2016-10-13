@@ -15,10 +15,10 @@ var meta = require('../meta');
 var emailer = require('../emailer');
 var plugins = require('../plugins');
 
-module.exports = function(Topics) {
+module.exports = function (Topics) {
 
-	Topics.toggleFollow = function(tid, uid, callback) {
-		callback = callback || function() {};
+	Topics.toggleFollow = function (tid, uid, callback) {
+		callback = callback || function () {};
 		var isFollowing;
 		async.waterfall([
 			function (next) {
@@ -38,26 +38,26 @@ module.exports = function(Topics) {
 					Topics.follow(tid, uid, next);
 				}
 			},
-			function(next) {
+			function (next) {
 				next(null, !isFollowing);
 			}
 		], callback);
 	};
 
-	Topics.follow = function(tid, uid, callback) {
+	Topics.follow = function (tid, uid, callback) {
 		setWatching(follow, unignore, 'action:topic.follow', tid, uid, callback);
 	};
 
-	Topics.unfollow = function(tid, uid, callback) {
+	Topics.unfollow = function (tid, uid, callback) {
 		setWatching(unfollow, unignore, 'action:topic.unfollow', tid, uid, callback);
 	};
 
-	Topics.ignore = function(tid, uid, callback) {
+	Topics.ignore = function (tid, uid, callback) {
 		setWatching(ignore, unfollow, 'action:topic.ignore', tid, uid, callback);
 	};
 
 	function setWatching(method1, method2, hook, tid, uid, callback) {
-		callback = callback || function() {};
+		callback = callback || function () {};
 		if (!parseInt(uid, 10)) {
 			return callback();
 		}
@@ -99,7 +99,7 @@ module.exports = function(Topics) {
 			function (next) {
 				db.setAdd(set1, uid, next);
 			},
-			function(next) {
+			function (next) {
 				db.sortedSetAdd(set2, Date.now(), tid, next);
 			}
 		], callback);
@@ -110,17 +110,17 @@ module.exports = function(Topics) {
 			function (next) {
 				db.setRemove(set1, uid, next);
 			},
-			function(next) {
+			function (next) {
 				db.sortedSetRemove(set2, tid, next);
 			}
 		], callback);
 	}
 
-	Topics.isFollowing = function(tids, uid, callback) {
+	Topics.isFollowing = function (tids, uid, callback) {
 		isIgnoringOrFollowing('followers', tids, uid, callback);
 	};
 
-	Topics.isIgnoring = function(tids, uid, callback) {
+	Topics.isIgnoring = function (tids, uid, callback) {
 		isIgnoringOrFollowing('ignorers', tids, uid, callback);
 	};
 
@@ -129,29 +129,29 @@ module.exports = function(Topics) {
 			return callback();
 		}
 		if (!parseInt(uid, 10)) {
-			return callback(null, tids.map(function() { return false; }));
+			return callback(null, tids.map(function () { return false; }));
 		}
-		var keys = tids.map(function(tid) {
+		var keys = tids.map(function (tid) {
 			return 'tid:' + tid + ':' + set;
 		});
 		db.isMemberOfSets(keys, uid, callback);
 	}
 
-	Topics.getFollowers = function(tid, callback) {
+	Topics.getFollowers = function (tid, callback) {
 		db.getSetMembers('tid:' + tid + ':followers', callback);
 	};
 
-	Topics.getIgnorers = function(tid, callback) {
+	Topics.getIgnorers = function (tid, callback) {
 		db.getSetMembers('tid:' + tid + ':ignorers', callback);
 	};
 
-	Topics.filterIgnoringUids = function(tid, uids, callback) {
+	Topics.filterIgnoringUids = function (tid, uids, callback) {
 		async.waterfall([
 			function (next){
 				db.isSetMembers('tid:' + tid + ':ignorers', uids, next);
 			},
 			function (isMembers, next){
-				var readingUids = uids.filter(function(uid, index) {
+				var readingUids = uids.filter(function (uid, index) {
 					return uid && isMembers[index];
 				});
 				next(null, readingUids);
@@ -159,8 +159,8 @@ module.exports = function(Topics) {
 		], callback);
 	};
 
-	Topics.notifyFollowers = function(postData, exceptUid, callback) {
-		callback = callback || function() {};
+	Topics.notifyFollowers = function (postData, exceptUid, callback) {
+		callback = callback || function () {};
 		var followers;
 		var title;
 		var titleEscaped;
@@ -218,11 +218,11 @@ module.exports = function(Topics) {
 					return next();
 				}
 
-				async.eachLimit(followers, 3, function(toUid, next) {
+				async.eachLimit(followers, 3, function (toUid, next) {
 					async.parallel({
 						userData: async.apply(user.getUserFields, toUid, ['username', 'userslug']),
 						userSettings: async.apply(user.getSettings, toUid)
-					}, function(err, data) {
+					}, function (err, data) {
 						if (err) {
 							return next(err);
 						}

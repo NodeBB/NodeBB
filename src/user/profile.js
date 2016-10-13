@@ -10,12 +10,12 @@ var db = require('../database');
 var groups = require('../groups');
 var plugins = require('../plugins');
 
-module.exports = function(User) {
+module.exports = function (User) {
 
-	User.updateProfile = function(uid, data, callback) {
+	User.updateProfile = function (uid, data, callback) {
 		var fields = ['username', 'email', 'fullname', 'website', 'location', 'groupTitle', 'birthday', 'signature', 'aboutme', 'picture', 'uploadedpicture'];
 
-		plugins.fireHook('filter:user.updateProfile', {uid: uid, data: data, fields: fields}, function(err, data) {
+		plugins.fireHook('filter:user.updateProfile', {uid: uid, data: data, fields: fields}, function (err, data) {
 			if (err) {
 				return callback(err);
 			}
@@ -48,7 +48,7 @@ module.exports = function(User) {
 					return next(new Error('[[error:invalid-email]]'));
 				}
 
-				User.getUserField(uid, 'email', function(err, email) {
+				User.getUserField(uid, 'email', function (err, email) {
 					if (err) {
 						return next(err);
 					}
@@ -57,7 +57,7 @@ module.exports = function(User) {
 						return next();
 					}
 
-					User.email.available(data.email, function(err, available) {
+					User.email.available(data.email, function (err, available) {
 						if (err) {
 							return next(err);
 						}
@@ -72,7 +72,7 @@ module.exports = function(User) {
 					return next();
 				}
 				data.username = data.username.trim();
-				User.getUserFields(uid, ['username', 'userslug'], function(err, userData) {
+				User.getUserFields(uid, ['username', 'userslug'], function (err, userData) {
 					if (err) {
 						return next(err);
 					}
@@ -95,7 +95,7 @@ module.exports = function(User) {
 						return next();
 					}
 
-					User.existsBySlug(userslug, function(err, exists) {
+					User.existsBySlug(userslug, function (err, exists) {
 						if (err) {
 							return next(err);
 						}
@@ -119,12 +119,12 @@ module.exports = function(User) {
 				isEmailAvailable, 
 				isUsernameAvailable,
 				isGroupTitleValid
-			], function(err) {
+			], function (err) {
 				if (err) {
 					return callback(err);
 				}
 
-				async.each(fields, updateField, function(err) {
+				async.each(fields, updateField, function (err) {
 					if (err) {
 						return callback(err);
 					}
@@ -156,7 +156,7 @@ module.exports = function(User) {
 	};
 
 	function updateEmail(uid, newEmail, callback) {
-		User.getUserFields(uid, ['email', 'picture', 'uploadedpicture'], function(err, userData) {
+		User.getUserFields(uid, ['email', 'picture', 'uploadedpicture'], function (err, userData) {
 			if (err) {
 				return callback(err);
 			}
@@ -169,23 +169,23 @@ module.exports = function(User) {
 			async.series([
 				async.apply(db.sortedSetRemove, 'email:uid', userData.email.toLowerCase()),
 				async.apply(db.sortedSetRemove, 'email:sorted', userData.email.toLowerCase() + ':' + uid)
-			], function(err) {
+			], function (err) {
 				if (err) {
 					return callback(err);
 				}
 
 				async.parallel([
-					function(next) {
+					function (next) {
 						db.sortedSetAdd('email:uid', uid, newEmail.toLowerCase(), next);
 					},
 					async.apply(db.sortedSetAdd, 'user:' + uid + ':emails', Date.now(), newEmail + ':' + Date.now()),
-					function(next) {
+					function (next) {
 						db.sortedSetAdd('email:sorted',  0, newEmail.toLowerCase() + ':' + uid, next);
 					},
-					function(next) {
+					function (next) {
 						User.setUserField(uid, 'email', newEmail, next);
 					},
-					function(next) {
+					function (next) {
 						if (parseInt(meta.config.requireEmailConfirmation, 10) === 1 && newEmail) {
 							User.email.sendValidationEmail(uid, newEmail);
 						}
@@ -204,20 +204,20 @@ module.exports = function(User) {
 			return callback();
 		}
 
-		User.getUserFields(uid, ['username', 'userslug'], function(err, userData) {
+		User.getUserFields(uid, ['username', 'userslug'], function (err, userData) {
 			if (err) {
 				return callback(err);
 			}
 
 			async.parallel([
-				function(next) {
+				function (next) {
 					updateUidMapping('username', uid, newUsername, userData.username, next);
 				},
-				function(next) {
+				function (next) {
 					var newUserslug = utils.slugify(newUsername);
 					updateUidMapping('userslug', uid, newUserslug, userData.userslug, next);
 				},
-				function(next) {
+				function (next) {
 					async.series([
 						async.apply(db.sortedSetRemove, 'username:sorted', userData.username.toLowerCase() + ':' + uid),
 						async.apply(db.sortedSetAdd, 'username:sorted', 0, newUsername.toLowerCase() + ':' + uid),
@@ -234,13 +234,13 @@ module.exports = function(User) {
 		}
 
 		async.series([
-			function(next) {
+			function (next) {
 				db.sortedSetRemove(field + ':uid', oldValue, next);
 			},
-			function(next) {
+			function (next) {
 				User.setUserField(uid, field, value, next);
 			},
-			function(next) {
+			function (next) {
 				if (value) {
 					db.sortedSetAdd(field + ':uid', uid, value, next);
 				} else {
@@ -252,16 +252,16 @@ module.exports = function(User) {
 
 	function updateFullname(uid, newFullname, callback) {
 		async.waterfall([
-			function(next) {
+			function (next) {
 				User.getUserField(uid, 'fullname', next);
 			},
-			function(fullname, next) {
+			function (fullname, next) {
 				updateUidMapping('fullname', uid, newFullname, fullname, next);
 			}
 		], callback);
 	}
 
-	User.changePassword = function(uid, data, callback) {
+	User.changePassword = function (uid, data, callback) {
 		if (!uid || !data || !data.uid) {
 			return callback(new Error('[[error:invalid-uid]]'));
 		}
@@ -288,7 +288,7 @@ module.exports = function(User) {
 				async.parallel([
 					async.apply(User.setUserField, data.uid, 'password', hashedPassword),
 					async.apply(User.reset.updateExpiry, data.uid)
-				], function(err) {
+				], function (err) {
 					next(err);
 				});
 			}

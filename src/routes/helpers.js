@@ -2,7 +2,7 @@
 
 var helpers = {};
 
-helpers.setupPageRoute = function(router, name, middleware, middlewares, controller) {
+helpers.setupPageRoute = function (router, name, middleware, middlewares, controller) {
 	middlewares = middlewares.concat([middleware.registrationComplete, middleware.pageView, middleware.pluginHooks]);
 
 	router.get(name, middleware.busyCheck, middleware.buildHeader, middlewares, controller);

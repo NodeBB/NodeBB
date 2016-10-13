@@ -16,8 +16,8 @@ var SocketRooms = {
 };
 
 
-pubsub.on('sync:stats:start', function() {
-	SocketRooms.getLocalStats(function(err, stats) {
+pubsub.on('sync:stats:start', function () {
+	SocketRooms.getLocalStats(function (err, stats) {
 		if (err) {
 			return winston.error(err);
 		}
@@ -25,11 +25,11 @@ pubsub.on('sync:stats:start', function() {
 	});
 });
 
-pubsub.on('sync:stats:end', function(data) {
+pubsub.on('sync:stats:end', function (data) {
 	stats[data.id] = data.stats;
 });
 
-pubsub.on('sync:stats:guests', function() {
+pubsub.on('sync:stats:guests', function () {
 	var io = require('../index').server;
 
 	var roomClients = io.sockets.adapter.rooms;
@@ -37,23 +37,23 @@ pubsub.on('sync:stats:guests', function() {
 	pubsub.publish('sync:stats:guests:end', guestCount);
 });
 
-SocketRooms.getTotalGuestCount = function(callback) {
+SocketRooms.getTotalGuestCount = function (callback) {
 	var count = 0;
 
-	pubsub.on('sync:stats:guests:end', function(guestCount) {
+	pubsub.on('sync:stats:guests:end', function (guestCount) {
 		count += guestCount;
 	});
 
 	pubsub.publish('sync:stats:guests');
 
-	setTimeout(function() {
+	setTimeout(function () {
 		pubsub.removeAllListeners('sync:stats:guests:end');
 		callback(null, count);
 	}, 100);
 };
 
 
-SocketRooms.getAll = function(socket, data, callback) {
+SocketRooms.getAll = function (socket, data, callback) {
 	pubsub.publish('sync:stats:start');
 
 	totals.onlineGuestCount = 0;
@@ -79,7 +79,7 @@ SocketRooms.getAll = function(socket, data, callback) {
 			totals.users.topics += stats[instance].users.topics;
 			totals.users.category += stats[instance].users.category;
 
-			stats[instance].topics.forEach(function(topic) {
+			stats[instance].topics.forEach(function (topic) {
 				totals.topics[topic.tid] = totals.topics[topic.tid] || {count: 0, tid: topic.tid};
 				totals.topics[topic.tid].count += topic.count;
 			});
@@ -87,24 +87,24 @@ SocketRooms.getAll = function(socket, data, callback) {
 	}
 
 	var topTenTopics = [];
-	Object.keys(totals.topics).forEach(function(tid) {
+	Object.keys(totals.topics).forEach(function (tid) {
 		topTenTopics.push({tid: tid, count: totals.topics[tid].count});
 	});
 
-	topTenTopics = topTenTopics.sort(function(a, b) {
+	topTenTopics = topTenTopics.sort(function (a, b) {
 		return b.count - a.count;
 	}).slice(0, 10);
 
-	var topTenTids = topTenTopics.map(function(topic) {
+	var topTenTids = topTenTopics.map(function (topic) {
 		return topic.tid;
 	});
 
-	topics.getTopicsFields(topTenTids, ['title'], function(err, titles) {
+	topics.getTopicsFields(topTenTids, ['title'], function (err, titles) {
 		if (err) {
 			return callback(err);
 		}
 		totals.topics = {};
-		topTenTopics.forEach(function(topic, index) {
+		topTenTopics.forEach(function (topic, index) {
 			totals.topics[topic.tid] = {
 				value: topic.count || 0,
 				title: validator.escape(String(titles[index].title))
@@ -115,7 +115,7 @@ SocketRooms.getAll = function(socket, data, callback) {
 	});
 };
 
-SocketRooms.getOnlineUserCount = function(io) {
+SocketRooms.getOnlineUserCount = function (io) {
 	if (!io) {
 		return 0;
 	}
@@ -129,7 +129,7 @@ SocketRooms.getOnlineUserCount = function(io) {
 	return count;
 };
 
-SocketRooms.getLocalStats = function(callback) {
+SocketRooms.getLocalStats = function (callback) {
 	var io = require('../index').server;
 
 	if (!io) {
@@ -166,7 +166,7 @@ SocketRooms.getLocalStats = function(callback) {
 		}
 	}
 
-	topTenTopics = topTenTopics.sort(function(a, b) {
+	topTenTopics = topTenTopics.sort(function (a, b) {
 		return b.count - a.count;
 	}).slice(0, 10);
 

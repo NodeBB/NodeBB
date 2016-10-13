@@ -14,7 +14,7 @@ var helpers = require('../helpers');
 
 var profileController = {};
 
-profileController.get = function(req, res, callback) {
+profileController.get = function (req, res, callback) {
 	var lowercaseSlug = req.params.userslug.toLowerCase();
 
 	if (req.params.userslug !== lowercaseSlug) {
@@ -43,16 +43,16 @@ profileController.get = function(req, res, callback) {
 			}
 
 			async.parallel({
-				isFollowing: function(next) {
+				isFollowing: function (next) {
 					user.isFollowing(req.uid, userData.theirid, next);
 				},
-				posts: function(next) {
+				posts: function (next) {
 					posts.getPostSummariesFromSet('uid:' + userData.theirid + ':posts', req.uid, 0, 9, next);
 				},
-				signature: function(next) {
+				signature: function (next) {
 					posts.parseSignature(userData, req.uid, next);
 				},
-				aboutme: function(next) {
+				aboutme: function (next) {
 					if (userData.aboutme) {
 						plugins.fireHook('filter:parse.aboutme', userData.aboutme, next);
 					} else {
@@ -118,13 +118,13 @@ profileController.get = function(req, res, callback) {
 					}
 				);
 			}
-			userData.selectedGroup = userData.groups.find(function(group) {
+			userData.selectedGroup = userData.groups.find(function (group) {
 				return group && group.name === userData.groupTitle;
 			});
 
 			plugins.fireHook('filter:user.account', {userData: userData, uid: req.uid}, next);
 		}
-	], function(err, results) {
+	], function (err, results) {
 		if (err) {
 			return callback(err);
 		}

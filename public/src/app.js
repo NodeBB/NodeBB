@@ -19,7 +19,7 @@ app.cacheBuster = null;
 		locale: config.userLang
 	});
 
-	app.load = function() {
+	app.load = function () {
 		app.loadProgressiveStylesheet();
 
 		var url = ajaxify.start(window.location.pathname.slice(1) + window.location.search + window.location.hash);
@@ -33,15 +33,15 @@ app.cacheBuster = null;
 			app.handleSearch();
 		}
 
-		$('body').on('click', '#new_topic', function(){
+		$('body').on('click', '#new_topic', function (){
 			app.newTopic();
 		});
 
-		require(['components'], function(components) {
+		require(['components'], function (components) {
 			components.get('user/logout').on('click', app.logout);
 		});
 
-		Visibility.change(function(event, state){
+		Visibility.change(function (event, state){
 			if (state === 'visible') {
 				app.isFocused = true;
 				app.alternatingTitle('');
@@ -56,7 +56,7 @@ app.cacheBuster = null;
 		app.showEmailConfirmWarning();
 
 		socket.removeAllListeners('event:nodebb.ready');
-		socket.on('event:nodebb.ready', function(data) {
+		socket.on('event:nodebb.ready', function (data) {
 			if (!app.cacheBuster || app.cacheBuster !== data['cache-buster']) {
 				app.cacheBuster = data['cache-buster'];
 
@@ -64,7 +64,7 @@ app.cacheBuster = null;
 					alert_id: 'forum_updated',
 					title: '[[global:updated.title]]',
 					message: '[[global:updated.message]]',
-					clickfn: function() {
+					clickfn: function () {
 						window.location.reload();
 					},
 					type: 'warning'
@@ -72,7 +72,7 @@ app.cacheBuster = null;
 			}
 		});
 
-		require(['taskbar', 'helpers', 'forum/pagination'], function(taskbar, helpers, pagination) {
+		require(['taskbar', 'helpers', 'forum/pagination'], function (taskbar, helpers, pagination) {
 			taskbar.init();
 
 			// templates.js helpers
@@ -84,14 +84,14 @@ app.cacheBuster = null;
 		});
 	};
 
-	app.logout = function() {
+	app.logout = function () {
 		$(window).trigger('action:app.logout');
 		$.ajax(config.relative_path + '/logout', {
 			type: 'POST',
 			headers: {
 				'x-csrf-token': config.csrf_token
 			},
-			success: function() {
+			success: function () {
 				var payload = {
 					next: config.relative_path + '/'
 				};
@@ -103,13 +103,13 @@ app.cacheBuster = null;
 	};
 
 	app.alert = function (params) {
-		require(['alerts'], function(alerts) {
+		require(['alerts'], function (alerts) {
 			alerts.alert(params);
 		});
 	};
 
-	app.removeAlert = function(id) {
-		require(['alerts'], function(alerts) {
+	app.removeAlert = function (id) {
+		require(['alerts'], function (alerts) {
 			alerts.remove(id);
 		});
 	};
@@ -136,7 +136,7 @@ app.cacheBuster = null;
 		});
 	};
 
-	app.handleInvalidSession = function() {
+	app.handleInvalidSession = function () {
 		if (app.flags && app.flags._sessionRefresh) {
 			return;
 		}
@@ -144,13 +144,13 @@ app.cacheBuster = null;
 		app.flags = app.flags || {};
 		app.flags._sessionRefresh = true;
 
-		require(['translator'], function(translator) {
-			translator.translate('[[error:invalid-session-text]]', function(translated) {
+		require(['translator'], function (translator) {
+			translator.translate('[[error:invalid-session-text]]', function (translated) {
 				bootbox.alert({
 					title: '[[error:invalid-session]]',
 					message: translated,
 					closeButton: false,
-					callback: function() {
+					callback: function () {
 						window.location.reload();
 					}
 				});
@@ -159,13 +159,13 @@ app.cacheBuster = null;
 	};
 
 	app.enterRoom = function (room, callback) {
-		callback = callback || function() {};
+		callback = callback || function () {};
 		if (socket && app.user.uid && app.currentRoom !== room) {
 			var previousRoom = app.currentRoom;
 			app.currentRoom = room;
 			socket.emit('meta.rooms.enter', {
 				enter: room
-			}, function(err) {
+			}, function (err) {
 				if (err) {
 					app.currentRoom = previousRoom;
 					return app.alertError(err.message);
@@ -176,11 +176,11 @@ app.cacheBuster = null;
 		}
 	};
 
-	app.leaveCurrentRoom = function() {
+	app.leaveCurrentRoom = function () {
 		if (!socket) {
 			return;
 		}
-		socket.emit('meta.rooms.leaveCurrent', function(err) {
+		socket.emit('meta.rooms.leaveCurrent', function (err) {
 			if (err) {
 				return app.alertError(err.message);
 			}
@@ -196,9 +196,9 @@ app.cacheBuster = null;
 		}
 	}
 
-	app.createUserTooltips = function(els, placement) {
+	app.createUserTooltips = function (els, placement) {
 		els = els || $('body');
-		els.find('.avatar,img[title].teaser-pic,img[title].user-img,div.user-icon,span.user-icon').each(function() {
+		els.find('.avatar,img[title].teaser-pic,img[title].user-img,div.user-icon,span.user-icon').each(function () {
 			if (!utils.isTouchDevice()) {
 				$(this).tooltip({
 					placement: placement || $(this).attr('title-placement') || 'top',
@@ -208,7 +208,7 @@ app.cacheBuster = null;
 		});
 	};
 
-	app.createStatusTooltips = function() {
+	app.createStatusTooltips = function () {
 		if (!utils.isTouchDevice()) {
 			$('body').tooltip({
 				selector:'.fa-circle.status',
@@ -217,9 +217,9 @@ app.cacheBuster = null;
 		}
 	};
 
-	app.replaceSelfLinks = function(selector) {
+	app.replaceSelfLinks = function (selector) {
 		selector = selector || $('a');
-		selector.each(function() {
+		selector.each(function () {
 			var href = $(this).attr('href');
 			if (href && app.user.userslug && href.indexOf('user/_self_') !== -1) {
 				$(this).attr('href', href.replace(/user\/_self_/g, 'user/' + app.user.userslug));
@@ -281,11 +281,11 @@ app.cacheBuster = null;
 			if (chat.modalExists(roomId)) {
 				loadAndCenter(chat.getModal(roomId));
 			} else {
-				socket.emit('modules.chats.loadRoom', {roomId: roomId, uid: uid || app.user.uid}, function(err, roomData) {
+				socket.emit('modules.chats.loadRoom', {roomId: roomId, uid: uid || app.user.uid}, function (err, roomData) {
 					if (err) {
 						return app.alertError(err.message);
 					}
-					roomData.users = roomData.users.filter(function(user) {
+					roomData.users = roomData.users.filter(function (user) {
 						return user && parseInt(user.uid, 10) !== parseInt(app.user.uid, 10);
 					});
 					roomData.uid = uid || app.user.uid;
@@ -296,12 +296,12 @@ app.cacheBuster = null;
 	};
 
 	app.newChat = function (touid, callback) {
-		callback = callback || function() {};
+		callback = callback || function () {};
 		if (!app.user.uid) {
 			return app.alertError('[[error:not-logged-in]]');
 		}
 
-		socket.emit('modules.chats.newRoom', {touid: touid}, function(err, roomId) {
+		socket.emit('modules.chats.newRoom', {touid: touid}, function (err, roomId) {
 			if (err) {
 				return app.alertError(err.message);
 			}
@@ -332,14 +332,14 @@ app.cacheBuster = null;
 				titleObj.titles[0] = window.document.title;
 			}
 
-			require(['translator'], function(translator) {
-				translator.translate(title, function(translated) {
+			require(['translator'], function (translator) {
+				translator.translate(title, function (translated) {
 					titleObj.titles[1] = translated;
 					if (titleObj.interval) {
 						clearInterval(titleObj.interval);
 					}
 
-					titleObj.interval = setInterval(function() {
+					titleObj.interval = setInterval(function () {
 						var title = titleObj.titles[titleObj.titles.indexOf(window.document.title) ^ 1];
 						if (title) {
 							window.document.title = $('<div/>').html(title).text();
@@ -357,23 +357,23 @@ app.cacheBuster = null;
 		}
 	};
 
-	app.refreshTitle = function(title) {
+	app.refreshTitle = function (title) {
 		if (!title) {
 			return;
 		}
-		require(['translator'], function(translator) {
+		require(['translator'], function (translator) {
 			title = config.titleLayout.replace(/&#123;/g, '{').replace(/&#125;/g, '}')
-				.replace('{pageTitle}', function() { return title; })
-				.replace('{browserTitle}', function() { return config.browserTitle; });
+				.replace('{pageTitle}', function () { return title; })
+				.replace('{browserTitle}', function () { return config.browserTitle; });
 
-			translator.translate(title, function(translated) {
+			translator.translate(title, function (translated) {
 				titleObj.titles[0] = translated;
 				app.alternatingTitle('');
 			});
 		});
 	};
 
-	app.toggleNavbar = function(state) {
+	app.toggleNavbar = function (state) {
 		var navbarEl = $('.navbar');
 		if (navbarEl) {
 			navbarEl.toggleClass('hidden', !!!state);
@@ -385,7 +385,7 @@ app.cacheBuster = null;
 		if (env === 'xs' || env === 'sm') {
 			return;
 		}
-		$('#header-menu li a[title]').each(function() {
+		$('#header-menu li a[title]').each(function () {
 			if (!utils.isTouchDevice()) {
 				$(this).tooltip({
 					placement: 'bottom',
@@ -417,7 +417,7 @@ app.cacheBuster = null;
 			searchFields = $("#search-fields"),
 			searchInput = $('#search-fields input');
 
-		$('#search-form .advanced-search-link').on('mousedown', function() {
+		$('#search-form .advanced-search-link').on('mousedown', function () {
 			ajaxify.go('/search');
 		});
 
@@ -429,7 +429,7 @@ app.cacheBuster = null;
 			searchButton.removeClass('hidden');
 		}
 
-		searchButton.on('click', function(e) {
+		searchButton.on('click', function (e) {
 			if (!config.loggedIn && !config.allowGuestSearching) {
 				app.alert({
 					message:'[[error:search-requires-login]]',
@@ -446,10 +446,10 @@ app.cacheBuster = null;
 
 		$('#search-form').on('submit', function () {
 			var input = $(this).find('input');
-			require(['search'], function(search) {
+			require(['search'], function (search) {
 				var data = search.getSearchPreferences();
 				data.term = input.val();
-				search.query(data, function() {
+				search.query(data, function () {
 					input.val('');
 				});
 			});
@@ -457,16 +457,16 @@ app.cacheBuster = null;
 		});
 	};
 
-	app.prepareSearch = function() {
+	app.prepareSearch = function () {
 		$("#search-fields").removeClass('hidden');
 		$("#search-button").addClass('hidden');
 		$('#search-fields input').focus();
 	};
 
 	function handleStatusChange() {
-		$('[component="header/usercontrol"] [data-status]').off('click').on('click', function(e) {
+		$('[component="header/usercontrol"] [data-status]').off('click').on('click', function (e) {
 			var status = $(this).attr('data-status');
-			socket.emit('user.setStatus', status, function(err) {
+			socket.emit('user.setStatus', status, function (err) {
 				if(err) {
 					return app.alertError(err.message);
 				}
@@ -480,13 +480,13 @@ app.cacheBuster = null;
 		});
 	}
 
-	app.updateUserStatus = function(el, status) {
+	app.updateUserStatus = function (el, status) {
 		if (!el.length) {
 			return;
 		}
 
-		require(['translator'], function(translator) {
-			translator.translate('[[global:' + status + ']]', function(translated) {
+		require(['translator'], function (translator) {
+			translator.translate('[[global:' + status + ']]', function (translated) {
 				el.removeClass('online offline dnd away')
 					.addClass(status)
 					.attr('title', translated)
@@ -502,7 +502,7 @@ app.cacheBuster = null;
 		});
 	};
 
-	app.loadJQueryUI = function(callback) {
+	app.loadJQueryUI = function (callback) {
 		if (typeof $().autocomplete === 'function') {
 			return callback();
 		}
@@ -514,7 +514,7 @@ app.cacheBuster = null;
 		document.head.appendChild(scriptEl);
 	};
 
-	app.showEmailConfirmWarning = function(err) {
+	app.showEmailConfirmWarning = function (err) {
 		if (!config.requireEmailConfirmation || !app.user.uid) {
 			return;
 		}
@@ -526,16 +526,16 @@ app.cacheBuster = null;
 
 		if (!app.user.email) {
 			msg.message = '[[error:no-email-to-confirm]]';
-			msg.clickfn = function() {
+			msg.clickfn = function () {
 				app.removeAlert('email_confirm');
 				ajaxify.go('user/' + app.user.userslug + '/edit');
 			};
 			app.alert(msg);
 		} else if (!app.user['email:confirmed'] && !app.user.isEmailConfirmSent) {
 			msg.message = err ? err.message : '[[error:email-not-confirmed]]';
-			msg.clickfn = function() {
+			msg.clickfn = function () {
 				app.removeAlert('email_confirm');
-				socket.emit('user.emailConfirm', {}, function(err) {
+				socket.emit('user.emailConfirm', {}, function (err) {
 					if (err) {
 						return app.alertError(err.message);
 					}
@@ -550,30 +550,30 @@ app.cacheBuster = null;
 		}
 	};
 
-	app.parseAndTranslate = function(template, blockName, data, callback) {
-		require(['translator'], function(translator) {
+	app.parseAndTranslate = function (template, blockName, data, callback) {
+		require(['translator'], function (translator) {
 			function translate(html, callback) {
-				translator.translate(html, function(translatedHTML) {
+				translator.translate(html, function (translatedHTML) {
 					translatedHTML = translator.unescape(translatedHTML);
 					callback($(translatedHTML));
 				});
 			}
 
 			if (typeof blockName === 'string') {
-				templates.parse(template, blockName, data, function(html) {
+				templates.parse(template, blockName, data, function (html) {
 					translate(html, callback);
 				});
 			} else {
 				callback = data;
 				data = blockName;
-				templates.parse(template, data, function(html) {
+				templates.parse(template, data, function (html) {
 					translate(html, callback);
 				});
 			}
 		});
 	};
 
-	app.loadProgressiveStylesheet = function() {
+	app.loadProgressiveStylesheet = function () {
 		var linkEl = document.createElement('link');
 		linkEl.rel = 'stylesheet';
 		linkEl.href = config.relative_path + '/js-enabled.css';

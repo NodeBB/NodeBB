@@ -17,7 +17,7 @@ var utils = require('../../public/src/utils');
 
 var topicsController = {};
 
-topicsController.get = function(req, res, callback) {
+topicsController.get = function (req, res, callback) {
 	var tid = req.params.topic_id;
 	var currentPage = parseInt(req.query.page, 10) || 1;
 	var pageCount = 1;
@@ -31,13 +31,13 @@ topicsController.get = function(req, res, callback) {
 	async.waterfall([
 		function (next) {
 			async.parallel({
-				privileges: function(next) {
+				privileges: function (next) {
 					privileges.topics.get(tid, req.uid, next);
 				},
-				settings: function(next) {
+				settings: function (next) {
 					user.getSettings(req.uid, next);
 				},
-				topic: function(next) {
+				topic: function (next) {
 					topics.getTopicData(tid, next);
 				}
 			}, next);
@@ -139,7 +139,7 @@ topicsController.get = function(req, res, callback) {
 				}
 			];
 
-			helpers.buildCategoryBreadcrumbs(data.topicData.category.parentCid, function(err, crumbs) {
+			helpers.buildCategoryBreadcrumbs(data.topicData.category.parentCid, function (err, crumbs) {
 				if (err) {
 					return next(err);
 				}
@@ -268,7 +268,7 @@ topicsController.get = function(req, res, callback) {
 		data.scrollToMyPost = settings.scrollToMyPost;
 		data.rssFeedUrl = nconf.get('relative_path') + '/topic/' + data.tid + '.rss';
 		data.pagination = pagination.create(currentPage, pageCount, req.query);
-		data.pagination.rel.forEach(function(rel) {
+		data.pagination.rel.forEach(function (rel) {
 			rel.href = nconf.get('url') + '/topic/' + data.slug + rel.href;
 			res.locals.linkTags.push(rel);
 		});
@@ -280,7 +280,7 @@ topicsController.get = function(req, res, callback) {
 		}
 
 		if (req.uid) {
-			topics.markAsRead([tid], req.uid, function(err, markedRead) {
+			topics.markAsRead([tid], req.uid, function (err, markedRead) {
 				if (err) {
 					return callback(err);
 				}
@@ -295,7 +295,7 @@ topicsController.get = function(req, res, callback) {
 	});
 };
 
-topicsController.teaser = function(req, res, next) {
+topicsController.teaser = function (req, res, next) {
 	var tid = req.params.topic_id;
 
 	if (!utils.isNumber(tid)) {
@@ -303,22 +303,22 @@ topicsController.teaser = function(req, res, next) {
 	}
 
 	async.waterfall([
-		function(next) {
+		function (next) {
 			privileges.topics.can('read', tid, req.uid, next);
 		},
-		function(canRead, next) {
+		function (canRead, next) {
 			if (!canRead) {
 				return res.status(403).json('[[error:no-privileges]]');
 			}
 			topics.getLatestUndeletedPid(tid, next);
 		},
-		function(pid, next) {
+		function (pid, next) {
 			if (!pid) {
 				return res.status(404).json('not-found');
 			}
 			posts.getPostSummaryByPids([pid], req.uid, {stripTags: false}, next);
 		}
-	], function(err, posts) {
+	], function (err, posts) {
 		if (err) {
 			return next(err);
 		}
@@ -330,7 +330,7 @@ topicsController.teaser = function(req, res, next) {
 	});
 };
 
-topicsController.pagination = function(req, res, callback) {
+topicsController.pagination = function (req, res, callback) {
 	var tid = req.params.topic_id;
 	var currentPage = parseInt(req.query.page, 10) || 1;
 
@@ -355,7 +355,7 @@ topicsController.pagination = function(req, res, callback) {
 		var pageCount = Math.max(1, Math.ceil((postCount - 1) / results.settings.postsPerPage));
 
 		var paginationData = pagination.create(currentPage, pageCount);
-		paginationData.rel.forEach(function(rel) {
+		paginationData.rel.forEach(function (rel) {
 			rel.href = nconf.get('url') + '/topic/' + results.topic.slug + rel.href;
 		});
 

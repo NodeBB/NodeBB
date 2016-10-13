@@ -8,53 +8,53 @@ define('forum/topic/threadTools', [
 	'forum/topic/delete-posts',
 	'components',
 	'translator'
-], function(fork, move, deletePosts, components, translator) {
+], function (fork, move, deletePosts, components, translator) {
 
 	var ThreadTools = {};
 
-	ThreadTools.init = function(tid) {
+	ThreadTools.init = function (tid) {
 
 		renderMenu();
 
 		var topicContainer = $('.topic');
 
-		topicContainer.on('click', '[component="topic/delete"]', function() {
+		topicContainer.on('click', '[component="topic/delete"]', function () {
 			topicCommand('delete', tid);
 			return false;
 		});
 
-		topicContainer.on('click', '[component="topic/restore"]', function() {
+		topicContainer.on('click', '[component="topic/restore"]', function () {
 			topicCommand('restore', tid);
 			return false;
 		});
 
-		topicContainer.on('click', '[component="topic/purge"]', function() {
+		topicContainer.on('click', '[component="topic/purge"]', function () {
 			topicCommand('purge', tid);
 			return false;
 		});
 
-		topicContainer.on('click', '[component="topic/lock"]', function() {
+		topicContainer.on('click', '[component="topic/lock"]', function () {
 			socket.emit('topics.lock', {tids: [tid], cid: ajaxify.data.cid});
 			return false;
 		});
 
-		topicContainer.on('click', '[component="topic/unlock"]', function() {
+		topicContainer.on('click', '[component="topic/unlock"]', function () {
 			socket.emit('topics.unlock', {tids: [tid], cid: ajaxify.data.cid});
 			return false;
 		});
 
-		topicContainer.on('click', '[component="topic/pin"]', function() {
+		topicContainer.on('click', '[component="topic/pin"]', function () {
 			socket.emit('topics.pin', {tids: [tid], cid: ajaxify.data.cid});
 			return false;
 		});
 
-		topicContainer.on('click', '[component="topic/unpin"]', function() {
+		topicContainer.on('click', '[component="topic/unpin"]', function () {
 			socket.emit('topics.unpin', {tids: [tid], cid: ajaxify.data.cid});
 			return false;
 		});
 
-		topicContainer.on('click', '[component="topic/mark-unread"]', function() {
-			socket.emit('topics.markUnread', tid, function(err) {
+		topicContainer.on('click', '[component="topic/mark-unread"]', function () {
+			socket.emit('topics.markUnread', tid, function (err) {
 				if (err) {
 					return app.alertError(err);
 				}
@@ -63,9 +63,9 @@ define('forum/topic/threadTools', [
 			return false;
 		});
 
-		topicContainer.on('click', '[component="topic/mark-unread-for-all"]', function() {
+		topicContainer.on('click', '[component="topic/mark-unread-for-all"]', function () {
 			var btn = $(this);
-			socket.emit('topics.markAsUnreadForAll', [tid], function(err) {
+			socket.emit('topics.markAsUnreadForAll', [tid], function (err) {
 				if (err) {
 					return app.alertError(err.message);
 				}
@@ -75,7 +75,7 @@ define('forum/topic/threadTools', [
 			return false;
 		});
 
-		topicContainer.on('click', '[component="topic/move"]', function() {
+		topicContainer.on('click', '[component="topic/move"]', function () {
 			move.init([tid], ajaxify.data.cid);
 			return false;
 		});
@@ -83,18 +83,18 @@ define('forum/topic/threadTools', [
 		deletePosts.init();
 		fork.init();
 
-		$('.topic').on('click', '[component="topic/following"]', function() {
+		$('.topic').on('click', '[component="topic/following"]', function () {
 			changeWatching('follow');
 		});
-		$('.topic').on('click', '[component="topic/not-following"]', function() {
+		$('.topic').on('click', '[component="topic/not-following"]', function () {
 			changeWatching('unfollow');
 		});
-		$('.topic').on('click', '[component="topic/ignoring"]', function() {
+		$('.topic').on('click', '[component="topic/ignoring"]', function () {
 			changeWatching('ignore');
 		});
 
 		function changeWatching(type) {
-			socket.emit('topics.changeWatching', {tid: tid, type: type}, function(err) {
+			socket.emit('topics.changeWatching', {tid: tid, type: type}, function (err) {
 				if (err) {
 					return app.alert({
 						type: 'danger',
@@ -136,13 +136,13 @@ define('forum/topic/threadTools', [
 				return;
 			}
 
-			socket.emit('topics.loadTopicTools', {tid: ajaxify.data.tid, cid: ajaxify.data.cid}, function(err, data) {
+			socket.emit('topics.loadTopicTools', {tid: ajaxify.data.tid, cid: ajaxify.data.cid}, function (err, data) {
 				if (err) {
 					return app.alertError(err);
 				}
 
-				templates.parse('partials/topic/topic-menu-list', data, function(html) {
-					translator.translate(html, function(html) {
+				templates.parse('partials/topic/topic-menu-list', data, function (html) {
+					translator.translate(html, function (html) {
 						dropdownMenu.html(html);
 						$(window).trigger('action:topic.tools.load');
 					});
@@ -152,13 +152,13 @@ define('forum/topic/threadTools', [
 	}
 
 	function topicCommand(command, tid) {
-		translator.translate('[[topic:thread_tools.' + command + '_confirm]]', function(msg) {
-			bootbox.confirm(msg, function(confirm) {
+		translator.translate('[[topic:thread_tools.' + command + '_confirm]]', function (msg) {
+			bootbox.confirm(msg, function (confirm) {
 				if (!confirm) {
 					return;
 				}
 
-				socket.emit('topics.' + command, {tids: [tid], cid: ajaxify.data.cid}, function(err) {
+				socket.emit('topics.' + command, {tids: [tid], cid: ajaxify.data.cid}, function (err) {
 					if (err) {
 						app.alertError(err.message);
 					}
@@ -167,7 +167,7 @@ define('forum/topic/threadTools', [
 		});
 	}
 
-	ThreadTools.setLockedState = function(data) {
+	ThreadTools.setLockedState = function (data) {
 		var threadEl = components.get('topic');
 		if (parseInt(data.tid, 10) !== parseInt(threadEl.attr('data-tid'), 10)) {
 			return;
@@ -193,7 +193,7 @@ define('forum/topic/threadTools', [
 		ajaxify.data.locked = data.isLocked;
 	};
 
-	ThreadTools.setDeleteState = function(data) {
+	ThreadTools.setDeleteState = function (data) {
 		var threadEl = components.get('topic');
 		if (parseInt(data.tid, 10) !== parseInt(threadEl.attr('data-tid'), 10)) {
 			return;
@@ -215,7 +215,7 @@ define('forum/topic/threadTools', [
 	};
 
 
-	ThreadTools.setPinnedState = function(data) {
+	ThreadTools.setPinnedState = function (data) {
 		var threadEl = components.get('topic');
 		if (parseInt(data.tid, 10) !== parseInt(threadEl.attr('data-tid'), 10)) {
 			return;

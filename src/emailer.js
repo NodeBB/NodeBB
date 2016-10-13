@@ -23,8 +23,8 @@ var transports = {
 var app;
 var fallbackTransport;
 
-(function(Emailer) {
-	Emailer.registerApp = function(expressApp) {
+(function (Emailer) {
+	Emailer.registerApp = function (expressApp) {
 		app = expressApp;
 
 		// Enable Gmail transport if enabled in ACP
@@ -45,21 +45,21 @@ var fallbackTransport;
 		return Emailer;
 	};
 
-	Emailer.send = function(template, uid, params, callback) {
-		callback = callback || function() {};
+	Emailer.send = function (template, uid, params, callback) {
+		callback = callback || function () {};
 		if (!app) {
 			winston.warn('[emailer] App not ready!');
 			return callback();
 		}
 
 		async.waterfall([
-			function(next) {
+			function (next) {
 				async.parallel({
 					email: async.apply(User.getUserField, uid, 'email'),
 					settings: async.apply(User.getSettings, uid)
 				}, next);
 			},
-			function(results, next) {
+			function (results, next) {
 				if (!results.email) {
 					winston.warn('uid : ' + uid + ' has no email, not sending.');
 					return next();
@@ -70,19 +70,19 @@ var fallbackTransport;
 		], callback);
 	};
 
-	Emailer.sendToEmail = function(template, email, language, params, callback) {
-		callback = callback || function() {};
+	Emailer.sendToEmail = function (template, email, language, params, callback) {
+		callback = callback || function () {};
 
 		var lang = language || meta.config.defaultLang || 'en_GB';
 
 		async.waterfall([
 			function (next) {
 				async.parallel({
-					html: function(next) {
+					html: function (next) {
 						renderAndTranslate('emails/' + template, params, lang, next);
 					},
-					subject: function(next) {
-						translator.translate(params.subject, lang, function(translated) {
+					subject: function (next) {
+						translator.translate(params.subject, lang, function (translated) {
 							next(null, translated);
 						});
 					}
@@ -122,7 +122,7 @@ var fallbackTransport;
 		});
 	};
 
-	Emailer.sendViaFallback = function(data, callback) {
+	Emailer.sendViaFallback = function (data, callback) {
 		// Some minor alterations to the data to conform to nodemailer standard
 		data.text = data.plaintext;
 		delete data.plaintext;
@@ -145,8 +145,8 @@ var fallbackTransport;
 	}
 
 	function renderAndTranslate(tpl, params, lang, callback) {
-		render(tpl, params, function(err, html) {
-			translator.translate(html, lang, function(translated) {
+		render(tpl, params, function (err, html) {
+			translator.translate(html, lang, function (translated) {
 				callback(err, translated);
 			});
 		});

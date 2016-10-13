@@ -10,20 +10,20 @@ var user = require('../user');
 var helpers = require('./helpers');
 var plugins = require('../plugins');
 
-module.exports = function(privileges) {
+module.exports = function (privileges) {
 
 	privileges.posts = {};
 
-	privileges.posts.get = function(pids, uid, callback) {
+	privileges.posts.get = function (pids, uid, callback) {
 		if (!Array.isArray(pids) || !pids.length) {
 			return callback(null, []);
 		}
 
 		async.waterfall([
-			function(next) {
+			function (next) {
 				posts.getCidsByPids(pids, next);
 			},
-			function(cids, next) {
+			function (cids, next) {
 				async.parallel({
 					isAdmin: async.apply(user.isAdministrator, uid),
 					isModerator: async.apply(posts.isModerator, pids, uid),
@@ -33,7 +33,7 @@ module.exports = function(privileges) {
 					'posts:edit': async.apply(helpers.isUserAllowedTo, 'posts:edit', uid, cids),
 				}, next);
 			}
-		], function(err, results) {
+		], function (err, results) {
 			if (err) {
 				return callback(err);
 			}
@@ -58,8 +58,8 @@ module.exports = function(privileges) {
 		});
 	};
 
-	privileges.posts.can = function(privilege, pid, uid, callback) {
-		posts.getCidByPid(pid, function(err, cid) {
+	privileges.posts.can = function (privilege, pid, uid, callback) {
+		posts.getCidByPid(pid, function (err, cid) {
 			if (err) {
 				return callback(err);
 			}
@@ -68,7 +68,7 @@ module.exports = function(privileges) {
 		});
 	};
 
-	privileges.posts.filter = function(privilege, pids, uid, callback) {
+	privileges.posts.filter = function (privilege, pids, uid, callback) {
 		if (!Array.isArray(pids) || !pids.length) {
 			return callback(null, []);
 		}
@@ -83,28 +83,28 @@ module.exports = function(privileges) {
 			},
 			function (_posts, next) {
 				postData = _posts;
-				tids = _posts.map(function(post) {
+				tids = _posts.map(function (post) {
 					return post && post.tid;
-				}).filter(function(tid, index, array) {
+				}).filter(function (tid, index, array) {
 					return tid && array.indexOf(tid) === index;
 				});
 				topics.getTopicsFields(tids, ['deleted', 'cid'], next);
 			},
 			function (topicData, next) {
 
-				topicData.forEach(function(topic, index) {
+				topicData.forEach(function (topic, index) {
 					if (topic) {
 						tidToTopic[tids[index]] = topic;
 					}
 				});
 
-				cids = postData.map(function(post, index) {
+				cids = postData.map(function (post, index) {
 					if (post) {
 						post.pid = pids[index];
 						post.topic = tidToTopic[post.tid];
 					}
 					return tidToTopic[post.tid] && tidToTopic[post.tid].cid;
-				}).filter(function(cid, index, array) {
+				}).filter(function (cid, index, array) {
 					return cid && array.indexOf(cid) === index;
 				});
 
@@ -113,17 +113,17 @@ module.exports = function(privileges) {
 			function (results, next) {
 
 				var isModOf = {};
-				cids = cids.filter(function(cid, index) {
+				cids = cids.filter(function (cid, index) {
 					isModOf[cid] = results.isModerators[index];
 					return !results.categories[index].disabled &&
 						(results.allowedTo[index] || results.isAdmin || results.isModerators[index]);
 				});
 
 
-				pids = postData.filter(function(post) {
+				pids = postData.filter(function (post) {
 					return post.topic && cids.indexOf(post.topic.cid) !== -1 &&
 						((parseInt(post.topic.deleted, 10) !== 1 && parseInt(post.deleted, 10) !== 1) || results.isAdmin || isModOf[post.cid]);
-				}).map(function(post) {
+				}).map(function (post) {
 					return post.pid;
 				});
 
@@ -131,18 +131,18 @@ module.exports = function(privileges) {
 					privilege: privilege,
 					uid: uid,
 					pids: pids
-				}, function(err, data) {
+				}, function (err, data) {
 					next(err, data ? data.pids : null);
 				});
 			}
 		], callback);
 	};
 
-	privileges.posts.canEdit = function(pid, uid, callback) {
+	privileges.posts.canEdit = function (pid, uid, callback) {
 		async.parallel({
 			isEditable: async.apply(isPostEditable, pid, uid),
 			isAdminOrMod: async.apply(isAdminOrMod, pid, uid)
-		}, function(err, results) {
+		}, function (err, results) {
 			if (err) {
 				return callback(err);
 			}
@@ -154,13 +154,13 @@ module.exports = function(privileges) {
 		});
 	};
 
-	privileges.posts.canDelete = function(pid, uid, callback) {
+	privileges.posts.canDelete = function (pid, uid, callback) {
 		var postData;
 		async.waterfall([
-			function(next) {
+			function (next) {
 				posts.getPostFields(pid, ['tid', 'timestamp'], next);
 			},
-			function(_postData, next) {
+			function (_postData, next) {
 				postData = _postData;
 				async.parallel({
 					isAdminOrMod: async.apply(isAdminOrMod, pid, uid),
@@ -169,7 +169,7 @@ module.exports = function(privileges) {
 					'posts:delete': async.apply(privileges.posts.can, 'posts:delete', pid, uid)
 				}, next);
 			}
-		], function(err, results) {
+		], function (err, results) {
 			if (err) {
 				return callback(err);
 			}
@@ -195,8 +195,8 @@ module.exports = function(privileges) {
 		});
 	};
 
-	privileges.posts.canMove = function(pid, uid, callback) {
-		posts.isMain(pid, function(err, isMain) {
+	privileges.posts.canMove = function (pid, uid, callback) {
+		posts.isMain(pid, function (err, isMain) {
 			if (err || isMain) {
 				return callback(err || new Error('[[error:cant-move-mainpost]]'));
 			}
@@ -204,7 +204,7 @@ module.exports = function(privileges) {
 		});
 	};
 
-	privileges.posts.canPurge = function(pid, uid, callback) {
+	privileges.posts.canPurge = function (pid, uid, callback) {
 		async.waterfall([
 			function (next) {
 				posts.getCidByPid(pid, next);
@@ -225,10 +225,10 @@ module.exports = function(privileges) {
 	function isPostEditable(pid, uid, callback) {
 		var tid;
 		async.waterfall([
-			function(next) {
+			function (next) {
 				posts.getPostFields(pid, ['tid', 'timestamp'], next);
 			},
-			function(postData, next) {
+			function (postData, next) {
 				tid = postData.tid;
 				var postEditDuration = parseInt(meta.config.postEditDuration, 10);
 				if (postEditDuration && Date.now() - parseInt(postData.timestamp, 10) > postEditDuration * 1000) {
@@ -236,7 +236,7 @@ module.exports = function(privileges) {
 				}
 				topics.isLocked(postData.tid, next);
 			},
-			function(isLocked, next) {
+			function (isLocked, next) {
 				if (isLocked) {
 					return callback(null, {flag: false, message: '[[error:topic-locked]]'});
 				}
@@ -246,7 +246,7 @@ module.exports = function(privileges) {
 					edit: async.apply(privileges.posts.can, 'posts:edit', pid, uid)
 				}, next);
 			},
-			function(result, next) {
+			function (result, next) {
 				next(null, {flag: result.owner && result.edit, message: '[[error:no-privileges]]'});
 			}
 		], callback);
@@ -254,8 +254,8 @@ module.exports = function(privileges) {
 
 	function isAdminOrMod(pid, uid, callback) {
 		helpers.some([
-			function(next) {
-				posts.getCidByPid(pid, function(err, cid) {
+			function (next) {
+				posts.getCidByPid(pid, function (err, cid) {
 					if (err || !cid) {
 						return next(err, false);
 					}
@@ -263,7 +263,7 @@ module.exports = function(privileges) {
 					user.isModerator(uid, cid, next);
 				});
 			},
-			function(next) {
+			function (next) {
 				user.isAdministrator(uid, next);
 			}
 		], callback);

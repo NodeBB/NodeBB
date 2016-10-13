@@ -13,13 +13,13 @@ var cache = require('./cache');
 var pubsub = require('../pubsub');
 var utils = require('../../public/src/utils');
 
-module.exports = function(Posts) {
+module.exports = function (Posts) {
 
-	pubsub.on('post:edit', function(pid) {
+	pubsub.on('post:edit', function (pid) {
 		cache.del(pid);
 	});
 
-	Posts.edit = function(data, callback) {
+	Posts.edit = function (data, callback) {
 		var postData;
 		var results;
 
@@ -53,10 +53,10 @@ module.exports = function(Posts) {
 			},
 			function (next) {
 				async.parallel({
-					editor: function(next) {
+					editor: function (next) {
 						user.getUserFields(data.uid, ['username', 'userslug'], next);
 					},
-					topic: function(next) {
+					topic: function (next) {
 						editMainPost(data, postData, next);
 					}
 				}, next);
@@ -85,13 +85,13 @@ module.exports = function(Posts) {
 		var title = data.title ? data.title.trim() : '';
 
 		async.parallel({
-			topic: function(next) {
+			topic: function (next) {
 				topics.getTopicFields(tid, ['cid', 'title'], next);
 			},
-			isMain: function(next) {
+			isMain: function (next) {
 				Posts.isMain(data.pid, next);
 			}
-		}, function(err, results) {
+		}, function (err, results) {
 			if (err) {
 				return callback(err);
 			}
@@ -122,19 +122,19 @@ module.exports = function(Posts) {
 			data.tags = data.tags || [];
 
 			async.waterfall([
-				function(next) {
+				function (next) {
 					plugins.fireHook('filter:topic.edit', {req: data.req, topic: topicData, data: data}, next);
 				},
-				function(results, next) {
+				function (results, next) {
 					db.setObject('topic:' + tid, results.topic, next);
 				},
-				function(next) {
+				function (next) {
 					topics.updateTags(tid, data.tags, next);
 				},
-				function(next) {
+				function (next) {
 					topics.getTopicTagsObjects(tid, next);
 				},
-				function(tags, next) {
+				function (tags, next) {
 					topicData.tags = data.tags;
 					plugins.fireHook('action:topic.edit', topicData);
 					next(null, {

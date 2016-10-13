@@ -7,9 +7,9 @@ var plugins = require('../plugins');
 
 var admin = {};
 
-admin.get = function(callback) {
+admin.get = function (callback) {
 	async.parallel({
-		areas: function(next) {
+		areas: function (next) {
 			var defaultAreas = [
 				{ name: 'Global Sidebar', template: 'global', location: 'sidebar' },
 				{ name: 'Global Header', template: 'global', location: 'header' },
@@ -21,36 +21,36 @@ admin.get = function(callback) {
 
 			plugins.fireHook('filter:widgets.getAreas', defaultAreas, next);
 		},
-		widgets: function(next) {
+		widgets: function (next) {
 			plugins.fireHook('filter:widgets.getWidgets', [], next);
 		},
-		adminTemplate: function(next) {
+		adminTemplate: function (next) {
 			fs.readFile(path.resolve(__dirname, '../../public/templates/admin/partials/widget-settings.tpl'), 'utf8', next);
 		}
-	}, function(err, widgetData) {
+	}, function (err, widgetData) {
 		if (err) {
 			return callback(err);
 		}
 		widgetData.areas.push({ name: 'Draft Zone', template: 'global', location: 'drafts' });
 
-		async.each(widgetData.areas, function(area, next) {
-			require('./index').getArea(area.template, area.location, function(err, areaData) {
+		async.each(widgetData.areas, function (area, next) {
+			require('./index').getArea(area.template, area.location, function (err, areaData) {
 				area.data = areaData;
 				next(err);
 			});
-		}, function(err) {
+		}, function (err) {
 			if (err) {
 				return callback(err);
 			}
 
-			widgetData.widgets.forEach(function(w) {
+			widgetData.widgets.forEach(function (w) {
 				w.content += widgetData.adminTemplate;
 			});
 
 			var templates = [],
 				list = {}, index = 0;
 
-			widgetData.areas.forEach(function(area) {
+			widgetData.areas.forEach(function (area) {
 				if (typeof list[area.template] === 'undefined') {
 					list[area.template] = index;
 					templates.push({

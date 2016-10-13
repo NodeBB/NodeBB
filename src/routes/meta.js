@@ -40,7 +40,7 @@ function sendSoundFile(req, res, next) {
 	}
 }
 
-module.exports = function(app, middleware, controllers) {
+module.exports = function (app, middleware, controllers) {
 	app.get('/stylesheet.css', middleware.addExpiresHeaders, sendStylesheet);
 	app.get('/admin.css', middleware.addExpiresHeaders, sendACPStylesheet);
 	app.get('/nodebb.min.js', middleware.addExpiresHeaders, sendMinifiedJS);

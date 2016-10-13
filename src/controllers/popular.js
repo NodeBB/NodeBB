@@ -17,7 +17,7 @@ var terms = {
 	monthly: 'month'
 };
 
-popularController.get = function(req, res, next) {
+popularController.get = function (req, res, next) {
 
 	var term = terms[req.params.term];
 
@@ -39,7 +39,7 @@ popularController.get = function(req, res, next) {
 		}
 	}
 
-	topics.getPopular(term, req.uid, meta.config.topicsPerList, function(err, topics) {
+	topics.getPopular(term, req.uid, meta.config.topicsPerList, function (err, topics) {
 		if (err) {
 			return next(err);
 		}

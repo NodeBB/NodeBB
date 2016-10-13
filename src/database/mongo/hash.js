@@ -1,20 +1,20 @@
 "use strict";
 
-module.exports = function(db, module) {
+module.exports = function (db, module) {
 	var helpers = module.helpers.mongo;
 
-	module.setObject = function(key, data, callback) {
+	module.setObject = function (key, data, callback) {
 		callback = callback || helpers.noop;
 		if (!key) {
 			return callback();
 		}
 
-		db.collection('objects').update({_key: key}, {$set: data}, {upsert: true, w: 1}, function(err) {
+		db.collection('objects').update({_key: key}, {$set: data}, {upsert: true, w: 1}, function (err) {
 			callback(err);
 		});
 	};
 
-	module.setObjectField = function(key, field, value, callback) {
+	module.setObjectField = function (key, field, value, callback) {
 		callback = callback || helpers.noop;
 		if (!field) {
 			return callback();
@@ -25,18 +25,18 @@ module.exports = function(db, module) {
 		module.setObject(key, data, callback);
 	};
 
-	module.getObject = function(key, callback) {
+	module.getObject = function (key, callback) {
 		if (!key) {
 			return callback();
 		}
 		db.collection('objects').findOne({_key: key}, {_id: 0, _key: 0}, callback);
 	};
 
-	module.getObjects = function(keys, callback) {
+	module.getObjects = function (keys, callback) {
 		if (!Array.isArray(keys) || !keys.length) {
 			return callback(null, []);
 		}
-		db.collection('objects').find({_key: {$in: keys}}, {_id: 0}).toArray(function(err, data) {
+		db.collection('objects').find({_key: {$in: keys}}, {_id: 0}).toArray(function (err, data) {
 			if (err) {
 				return callback(err);
 			}
@@ -52,7 +52,7 @@ module.exports = function(db, module) {
 		});
 	};
 
-	module.getObjectField = function(key, field, callback) {
+	module.getObjectField = function (key, field, callback) {
 		if (!key) {
 			return callback();
 		}
@@ -61,7 +61,7 @@ module.exports = function(db, module) {
 			_id: 0
 		};
 		_fields[field] = 1;
-		db.collection('objects').findOne({_key: key}, {fields: _fields}, function(err, item) {
+		db.collection('objects').findOne({_key: key}, {fields: _fields}, function (err, item) {
 			if (err || !item) {
 				return callback(err, null);
 			}
@@ -70,7 +70,7 @@ module.exports = function(db, module) {
 		});
 	};
 
-	module.getObjectFields = function(key, fields, callback) {
+	module.getObjectFields = function (key, fields, callback) {
 		if (!key) {
 			return callback();
 		}
@@ -82,7 +82,7 @@ module.exports = function(db, module) {
 			fields[i] = helpers.fieldToString(fields[i]);
 			_fields[fields[i]] = 1;
 		}
-		db.collection('objects').findOne({_key: key}, {fields: _fields}, function(err, item) {
+		db.collection('objects').findOne({_key: key}, {fields: _fields}, function (err, item) {
 			if (err) {
 				return callback(err);
 			}
@@ -95,7 +95,7 @@ module.exports = function(db, module) {
 		});
 	};
 
-	module.getObjectsFields = function(keys, fields, callback) {
+	module.getObjectsFields = function (keys, fields, callback) {
 		if (!Array.isArray(keys) || !keys.length) {
 			return callback(null, []);
 		}
@@ -109,7 +109,7 @@ module.exports = function(db, module) {
 			_fields[fields[i]] = 1;
 		}
 
-		db.collection('objects').find({_key: {$in: keys}}, {fields: _fields}).toArray(function(err, items) {
+		db.collection('objects').find({_key: {$in: keys}}, {fields: _fields}).toArray(function (err, items) {
 			if (err) {
 				return callback(err);
 			}
@@ -137,14 +137,14 @@ module.exports = function(db, module) {
 		});
 	};
 
-	module.getObjectKeys = function(key, callback) {
-		module.getObject(key, function(err, data) {
+	module.getObjectKeys = function (key, callback) {
+		module.getObject(key, function (err, data) {
 			callback(err, data ? Object.keys(data) : []);
 		});
 	};
 
-	module.getObjectValues = function(key, callback) {
-		module.getObject(key, function(err, data) {
+	module.getObjectValues = function (key, callback) {
+		module.getObject(key, function (err, data) {
 			if(err) {
 				return callback(err);
 			}
@@ -159,36 +159,36 @@ module.exports = function(db, module) {
 		});
 	};
 
-	module.isObjectField = function(key, field, callback) {
+	module.isObjectField = function (key, field, callback) {
 		if (!key) {
 			return callback();
 		}
 		var data = {};
 		field = helpers.fieldToString(field);
 		data[field] = '';
-		db.collection('objects').findOne({_key: key}, {fields: data}, function(err, item) {
+		db.collection('objects').findOne({_key: key}, {fields: data}, function (err, item) {
 			callback(err, !!item && item[field] !== undefined && item[field] !== null);
 		});
 	};
 
-	module.isObjectFields = function(key, fields, callback) {
+	module.isObjectFields = function (key, fields, callback) {
 		if (!key) {
 			return callback();
 		}
 
 		var data = {};
-		fields.forEach(function(field) {
+		fields.forEach(function (field) {
 			field = helpers.fieldToString(field);
 			data[field] = '';
 		});
 
-		db.collection('objects').findOne({_key: key}, {fields: data}, function(err, item) {
+		db.collection('objects').findOne({_key: key}, {fields: data}, function (err, item) {
 			if (err) {
 				return callback(err);
 			}
 			var results = [];
 
-			fields.forEach(function(field, index) {
+			fields.forEach(function (field, index) {
 				results[index] = !!item && item[field] !== undefined && item[field] !== null;
 			});
 
@@ -196,11 +196,11 @@ module.exports = function(db, module) {
 		});
 	};
 
-	module.deleteObjectField = function(key, field, callback) {
+	module.deleteObjectField = function (key, field, callback) {
 		module.deleteObjectFields(key, [field], callback);
 	};
 
-	module.deleteObjectFields = function(key, fields, callback) {
+	module.deleteObjectFields = function (key, fields, callback) {
 		callback = callback || helpers.noop;
 		if (!key || !Array.isArray(fields) || !fields.length) {
 			return callback();
@@ -211,25 +211,25 @@ module.exports = function(db, module) {
 		}
 
 		var data = {};
-		fields.forEach(function(field) {
+		fields.forEach(function (field) {
 			field = helpers.fieldToString(field);
 			data[field] = '';
 		});
 
-		db.collection('objects').update({_key: key}, {$unset : data}, function(err) {
+		db.collection('objects').update({_key: key}, {$unset : data}, function (err) {
 			callback(err);
 		});
 	};
 
-	module.incrObjectField = function(key, field, callback) {
+	module.incrObjectField = function (key, field, callback) {
 		module.incrObjectFieldBy(key, field, 1, callback);
 	};
 
-	module.decrObjectField = function(key, field, callback) {
+	module.decrObjectField = function (key, field, callback) {
 		module.incrObjectFieldBy(key, field, -1, callback);
 	};
 
-	module.incrObjectFieldBy = function(key, field, value, callback) {
+	module.incrObjectFieldBy = function (key, field, value, callback) {
 		callback = callback || helpers.noop;
 		value = parseInt(value, 10);
 		if (!key || isNaN(value)) {
@@ -240,7 +240,7 @@ module.exports = function(db, module) {
 		field = helpers.fieldToString(field);
 		data[field] = value;
 
-		db.collection('objects').findAndModify({_key: key}, {}, {$inc: data}, {new: true, upsert: true}, function(err, result) {
+		db.collection('objects').findAndModify({_key: key}, {}, {$inc: data}, {new: true, upsert: true}, function (err, result) {
 			callback(err, result && result.value ? result.value[field] : null);
 		});
 	};

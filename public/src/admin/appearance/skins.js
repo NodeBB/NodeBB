@@ -1,17 +1,17 @@
 "use strict";
 /* global define, app, socket, templates */
 
-define('admin/appearance/skins', function() {
+define('admin/appearance/skins', function () {
 	var Skins = {};
 	
-	Skins.init = function() {
+	Skins.init = function () {
 		// Populate skins from Bootswatch API
 		$.ajax({
 			method: 'get',
 			url: 'https://bootswatch.com/api/3.json'
 		}).done(Skins.render);
 
-		$('#skins').on('click', function(e){
+		$('#skins').on('click', function (e){
 			var target = $(e.target);
 
 			if (!target.attr('data-action')) {
@@ -31,7 +31,7 @@ define('admin/appearance/skins', function() {
 					type: themeType,
 					id: themeId,
 					src: cssSrc
-				}, function(err) {
+				}, function (err) {
 					if (err) {
 						return app.alertError(err.message);
 					}
@@ -49,11 +49,11 @@ define('admin/appearance/skins', function() {
 		});
 	};
 
-	Skins.render = function(bootswatch) {
+	Skins.render = function (bootswatch) {
 		var themeContainer = $('#bootstrap_themes');
 
 		templates.parse('admin/partials/theme_list', {
-			themes: bootswatch.themes.map(function(theme) {
+			themes: bootswatch.themes.map(function (theme) {
 				return {
 					type: 'bootswatch',
 					id: theme.name,
@@ -66,13 +66,13 @@ define('admin/appearance/skins', function() {
 				};
 			}),
 			showRevert: true
-		}, function(html) {
+		}, function (html) {
 			themeContainer.html(html);
 
 			if (config['theme:src']) {
 				var skin = config['theme:src']
 					.match(/latest\/(\S+)\/bootstrap.min.css/)[1]
-					.replace(/(^|\s)([a-z])/g , function(m,p1,p2){return p1 + p2.toUpperCase();});
+					.replace(/(^|\s)([a-z])/g , function (m,p1,p2){return p1 + p2.toUpperCase();});
 
 				highlightSelectedTheme(skin);
 			}
@@ -82,7 +82,7 @@ define('admin/appearance/skins', function() {
 	function highlightSelectedTheme(themeId) {
 		$('[data-theme]')
 			.removeClass('selected')
-			.find('[data-action="use"]').each(function() {
+			.find('[data-action="use"]').each(function () {
 				if ($(this).parents('[data-theme]').attr('data-theme')) {
 					$(this)
 						.html('Select Skin')

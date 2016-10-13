@@ -42,7 +42,7 @@ if (nconf.get('ssl')) {
 
 module.exports.server = server;
 
-server.on('error', function(err) {
+server.on('error', function (err) {
 	winston.error(err);
 	if (err.code === 'EADDRINUSE') {
 		winston.error('NodeBB address in use, exiting...');
@@ -53,7 +53,7 @@ server.on('error', function(err) {
 });
 
 
-module.exports.listen = function() {
+module.exports.listen = function () {
 	emailer.registerApp(app);
 
 	setupExpressApp(app);
@@ -62,13 +62,13 @@ module.exports.listen = function() {
 
 	logger.init(app);
 
-	emitter.all(['templates:compiled', 'meta:js.compiled', 'meta:css.compiled'], function() {
+	emitter.all(['templates:compiled', 'meta:js.compiled', 'meta:css.compiled'], function () {
 		winston.info('NodeBB Ready');
 		emitter.emit('nodebb:ready');
 		listen();
 	});
 
-	initializeNodeBB(function(err) {
+	initializeNodeBB(function (err) {
 		if (err) {
 			winston.error(err);
 			process.exit();
@@ -168,12 +168,12 @@ function initializeNodeBB(callback) {
 
 	async.waterfall([
 		async.apply(meta.themes.setupPaths),
-		function(next) {
+		function (next) {
 			plugins.init(app, middleware, next);
 		},
 		async.apply(plugins.fireHook, 'static:assets.prepare', {}),
 		async.apply(meta.js.bridgeModules, app),
-		function(next) {
+		function (next) {
 			async.series([
 				async.apply(meta.templates.compile),
 				async.apply(!skipJS ? meta.js.minify : meta.js.getFromFile, 'nodebb.min.js'),
@@ -184,14 +184,14 @@ function initializeNodeBB(callback) {
 				async.apply(meta.blacklist.load)
 			], next);
 		},
-		function(results, next) {
+		function (results, next) {
 			plugins.fireHook('static:app.preload', {
 				app: app,
 				middleware: middleware
 			}, next);
 		},
 		async.apply(plugins.fireHook, 'filter:hotswap.prepare', []),
-		function(hotswapIds, next) {
+		function (hotswapIds, next) {
 			routes(app, middleware, hotswapIds);
 			next();
 		}
@@ -232,7 +232,7 @@ function listen() {
 	var bind_address = ((nconf.get('bind_address') === "0.0.0.0" || !nconf.get('bind_address')) ? '0.0.0.0' : nconf.get('bind_address')) + ':' + port;
 	var oldUmask;
 
-	args.push(function(err) {
+	args.push(function (err) {
 		if (err) {
 			winston.info('[startup] NodeBB was unable to listen on: ' + bind_address);
 			process.exit();
@@ -247,7 +247,7 @@ function listen() {
 	// Alter umask if necessary
 	if (isSocket) {
 		oldUmask = process.umask('0000');
-		module.exports.testSocket(socketPath, function(err) {
+		module.exports.testSocket(socketPath, function (err) {
 			if (!err) {
 				server.listen.apply(server, args);
 			} else {
@@ -261,15 +261,15 @@ function listen() {
 	}
 }
 
-module.exports.testSocket = function(socketPath, callback) {
+module.exports.testSocket = function (socketPath, callback) {
 	if (typeof socketPath !== 'string') {
 		return callback(new Error('invalid socket path : ' + socketPath));
 	}
 	var net = require('net');
 	var file = require('./file');
 	async.series([
-		function(next) {
-			file.exists(socketPath, function(exists) {
+		function (next) {
+			file.exists(socketPath, function (exists) {
 				if (exists) {
 					next();
 				} else {
@@ -277,12 +277,12 @@ module.exports.testSocket = function(socketPath, callback) {
 				}
 			});
 		},
-		function(next) {
+		function (next) {
 			var testSocket = new net.Socket();
-			testSocket.on('error', function(err) {
+			testSocket.on('error', function (err) {
 				next(err.code !== 'ECONNREFUSED' ? err : null);
 			});
-			testSocket.connect({ path: socketPath }, function() {
+			testSocket.connect({ path: socketPath }, function () {
 				// Something's listening here, abort
 				callback(new Error('port-in-use'));
 			});

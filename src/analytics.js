@@ -6,7 +6,7 @@ var winston = require('winston');
 
 var db = require('./database');
 
-(function(Analytics) {
+(function (Analytics) {
 	var counters = {};
 
 	var pageViews = 0;
@@ -15,24 +15,24 @@ var db = require('./database');
 
 	var isCategory = /^(?:\/api)?\/category\/(\d+)/;
 
-	new cronJob('*/10 * * * *', function() {
+	new cronJob('*/10 * * * *', function () {
 		Analytics.writeData();
 	}, null, true);
 
-	Analytics.increment = function(keys) {
+	Analytics.increment = function (keys) {
 		keys = Array.isArray(keys) ? keys : [keys];
 
-		keys.forEach(function(key) {
+		keys.forEach(function (key) {
 			counters[key] = counters[key] || 0;
 			++counters[key];
 		});
 	};
 
-	Analytics.pageView = function(payload) {
+	Analytics.pageView = function (payload) {
 		++pageViews;
 
 		if (payload.ip) {
-			db.sortedSetScore('ip:recent', payload.ip, function(err, score) {
+			db.sortedSetScore('ip:recent', payload.ip, function (err, score) {
 				if (err) {
 					return;
 				}
@@ -58,7 +58,7 @@ var db = require('./database');
 		}
 	};
 
-	Analytics.writeData = function() {
+	Analytics.writeData = function () {
 		var today = new Date();
 		var month = new Date();
 		var dbQueue = [];
@@ -92,14 +92,14 @@ var db = require('./database');
 			}
 		}
 
-		async.parallel(dbQueue, function(err) {
+		async.parallel(dbQueue, function (err) {
 			if (err) {
 				winston.error('[analytics] Encountered error while writing analytics to data store: ' + err.message);
 			}
 		});
 	};
 
-	Analytics.getHourlyStatsForSet = function(set, hour, numHours, callback) {
+	Analytics.getHourlyStatsForSet = function (set, hour, numHours, callback) {
 		var terms = {},
 			hoursArr = [];
 
@@ -111,19 +111,19 @@ var db = require('./database');
 			hour.setHours(hour.getHours() - 1, 0, 0, 0);
 		}
 
-		db.sortedSetScores(set, hoursArr, function(err, counts) {
+		db.sortedSetScores(set, hoursArr, function (err, counts) {
 			if (err) {
 				return callback(err);
 			}
 
-			hoursArr.forEach(function(term, index) {
+			hoursArr.forEach(function (term, index) {
 				terms[term] = parseInt(counts[index], 10) || 0;
 			});
 
 			var termsArr = [];
 
 			hoursArr.reverse();
-			hoursArr.forEach(function(hour) {
+			hoursArr.forEach(function (hour) {
 				termsArr.push(terms[hour]);
 			});
 
@@ -131,36 +131,36 @@ var db = require('./database');
 		});
 	};
 
-	Analytics.getDailyStatsForSet = function(set, day, numDays, callback) {
+	Analytics.getDailyStatsForSet = function (set, day, numDays, callback) {
 		var daysArr = [];
 
 		day = new Date(day);
 		day.setDate(day.getDate() + 1);	// set the date to tomorrow, because getHourlyStatsForSet steps *backwards* 24 hours to sum up the values
 		day.setHours(0, 0, 0, 0);
 
-		async.whilst(function() {
+		async.whilst(function () {
 			return numDays--;
-		}, function(next) {
-			Analytics.getHourlyStatsForSet(set, day.getTime() - (1000 * 60 * 60 * 24 * numDays), 24, function(err, day) {
+		}, function (next) {
+			Analytics.getHourlyStatsForSet(set, day.getTime() - (1000 * 60 * 60 * 24 * numDays), 24, function (err, day) {
 				if (err) {
 					return next(err);
 				}
 
-				daysArr.push(day.reduce(function(cur, next) {
+				daysArr.push(day.reduce(function (cur, next) {
 					return cur + next;
 				}));
 				next();
 			});
-		}, function(err) {
+		}, function (err) {
 			callback(err, daysArr);
 		});
 	};
 
-	Analytics.getUnwrittenPageviews = function() {
+	Analytics.getUnwrittenPageviews = function () {
 		return pageViews;
 	};
 
-	Analytics.getMonthlyPageViews = function(callback) {
+	Analytics.getMonthlyPageViews = function (callback) {
 		var thisMonth = new Date();
 		var lastMonth = new Date();
 		thisMonth.setMonth(thisMonth.getMonth(), 1);
@@ -170,7 +170,7 @@ var db = require('./database');
 
 		var values = [thisMonth.getTime(), lastMonth.getTime()];
 
-		db.sortedSetScores('analytics:pageviews:month', values, function(err, scores) {
+		db.sortedSetScores('analytics:pageviews:month', values, function (err, scores) {
 			if (err) {
 				return callback(err);
 			}
@@ -178,7 +178,7 @@ var db = require('./database');
 		});
 	};
 
-	Analytics.getCategoryAnalytics = function(cid, callback) {
+	Analytics.getCategoryAnalytics = function (cid, callback) {
 		async.parallel({
 			'pageviews:hourly': async.apply(Analytics.getHourlyStatsForSet, 'analytics:pageviews:byCid:' + cid, Date.now(), 24),
 			'pageviews:daily': async.apply(Analytics.getDailyStatsForSet, 'analytics:pageviews:byCid:' + cid, Date.now(), 30),
@@ -187,7 +187,7 @@ var db = require('./database');
 		}, callback);
 	};
 
-	Analytics.getErrorAnalytics = function(callback) {
+	Analytics.getErrorAnalytics = function (callback) {
 		async.parallel({
 			'not-found': async.apply(Analytics.getDailyStatsForSet, 'analytics:errors:404', Date.now(), 7),
 			'toobusy': async.apply(Analytics.getDailyStatsForSet, 'analytics:errors:503', Date.now(), 7)

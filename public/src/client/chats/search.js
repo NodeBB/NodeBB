@@ -2,14 +2,14 @@
 
 /* globals define, socket, app */
 
-define('forum/chats/search', ['components'], function(components) {
+define('forum/chats/search', ['components'], function (components) {
 
 	var search = {};
 
-	search.init = function() {
+	search.init = function () {
 		var timeoutId = 0;
 
-		components.get('chat/search').on('keyup', function() {
+		components.get('chat/search').on('keyup', function () {
 			if (timeoutId) {
 				clearTimeout(timeoutId);
 				timeoutId = 0;
@@ -30,7 +30,7 @@ define('forum/chats/search', ['components'], function(components) {
 		socket.emit('user.search', {
 			query: username,
 			searchBy: 'username'
-		}, function(err, data) {
+		}, function (err, data) {
 			if (err) {
 				return app.alertError(err.message);
 			}
@@ -46,7 +46,7 @@ define('forum/chats/search', ['components'], function(components) {
 			return chatsListEl.translateHtml('<li><div><span>[[users:no-users-found]]</span></div></li>');
 		}
 
-		data.users.forEach(function(userObj) {
+		data.users.forEach(function (userObj) {
 			var chatEl = displayUser(chatsListEl, userObj);
 			onUserClick(chatEl, userObj);
 		});
@@ -69,13 +69,13 @@ define('forum/chats/search', ['components'], function(components) {
 	}
 
 	function onUserClick(chatEl, userObj) {
-		chatEl.on('click', function() {
-			socket.emit('modules.chats.hasPrivateChat', userObj.uid, function(err, roomId) {
+		chatEl.on('click', function () {
+			socket.emit('modules.chats.hasPrivateChat', userObj.uid, function (err, roomId) {
 				if (err) {
 					return app.alertError(err.message);
 				}
 				if (roomId) {
-					require(['forum/chats'], function(chats) {
+					require(['forum/chats'], function (chats) {
 						chats.switchChat(roomId);
 					});
 				} else {

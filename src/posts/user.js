@@ -8,30 +8,30 @@ var groups = require('../groups');
 var meta = require('../meta');
 var plugins = require('../plugins');
 
-module.exports = function(Posts) {
+module.exports = function (Posts) {
 
-	Posts.getUserInfoForPosts = function(uids, uid, callback) {
+	Posts.getUserInfoForPosts = function (uids, uid, callback) {
 		var groupsMap = {};
 		var userData;
 		async.waterfall([
-			function(next) {
+			function (next) {
 				user.getUsersFields(uids, ['uid', 'username', 'fullname', 'userslug', 'reputation', 'postcount', 'picture', 'signature', 'banned', 'status', 'lastonline', 'groupTitle'], next);
 			},
-			function(_userData, next) {
+			function (_userData, next) {
 				userData = _userData;
-				var groupTitles = userData.map(function(userData) {
+				var groupTitles = userData.map(function (userData) {
 					return userData && userData.groupTitle;
-				}).filter(function(groupTitle, index, array) {
+				}).filter(function (groupTitle, index, array) {
 					return groupTitle && array.indexOf(groupTitle) === index;
 				});
 				groups.getGroupsData(groupTitles, next);
 			}
-		], function(err, groupsData) {
+		], function (err, groupsData) {
 			if (err) {
 				return callback(err);
 			}
 
-			groupsData.forEach(function(group) {
+			groupsData.forEach(function (group) {
 				if (group && group.userTitleEnabled) {
 					groupsMap[group.name] = {
 						name: group.name,
@@ -43,7 +43,7 @@ module.exports = function(Posts) {
 				}
 			});
 
-			userData.forEach(function(userData) {
+			userData.forEach(function (userData) {
 				userData.uid = userData.uid || 0;
 				userData.username = userData.username || '[[global:guest]]';
 				userData.userslug = userData.userslug || '';
@@ -56,7 +56,7 @@ module.exports = function(Posts) {
 				userData.fullname = validator.escape(String(userData.fullname || ''));
 			});
 
-			async.map(userData, function(userData, next) {
+			async.map(userData, function (userData, next) {
 				async.parallel({
 					isMemberOfGroup: function (next) {
 						if (!userData.groupTitle || !groupsMap[userData.groupTitle]) {
@@ -64,17 +64,17 @@ module.exports = function(Posts) {
 						}
 						groups.isMember(userData.uid, userData.groupTitle, next);
 					},
-					signature: function(next) {
+					signature: function (next) {
 						if (!userData.signature || parseInt(meta.config.disableSignatures, 10) === 1) {
 							userData.signature = '';
 							return next();
 						}
 						Posts.parseSignature(userData, uid, next);
 					},
-					customProfileInfo: function(next) {
+					customProfileInfo: function (next) {
 						plugins.fireHook('filter:posts.custom_profile_info', {profile: [], uid: userData.uid}, next);
 					}
-				}, function(err, results) {
+				}, function (err, results) {
 					if (err) {
 						return next(err);
 					}
@@ -92,17 +92,17 @@ module.exports = function(Posts) {
 		});
 	};
 
-	Posts.isOwner = function(pid, uid, callback) {
+	Posts.isOwner = function (pid, uid, callback) {
 		uid = parseInt(uid, 10);
 		if (Array.isArray(pid)) {
 			if (!uid) {
-				return callback(null, pid.map(function() {return false;}));
+				return callback(null, pid.map(function () {return false;}));
 			}
-			Posts.getPostsFields(pid, ['uid'], function(err, posts) {
+			Posts.getPostsFields(pid, ['uid'], function (err, posts) {
 				if (err) {
 					return callback(err);
 				}
-				posts = posts.map(function(post) {
+				posts = posts.map(function (post) {
 					return post && parseInt(post.uid, 10) === uid;
 				});
 				callback(null, posts);
@@ -111,17 +111,17 @@ module.exports = function(Posts) {
 			if (!uid) {
 				return callback(null, false);
 			}
-			Posts.getPostField(pid, 'uid', function(err, author) {
+			Posts.getPostField(pid, 'uid', function (err, author) {
 				callback(err, parseInt(author, 10) === uid);
 			});
 		}
 	};
 
-	Posts.isModerator = function(pids, uid, callback) {
+	Posts.isModerator = function (pids, uid, callback) {
 		if (!parseInt(uid, 10)) {
-			return callback(null, pids.map(function() {return false;}));
+			return callback(null, pids.map(function () {return false;}));
 		}
-		Posts.getCidsByPids(pids, function(err, cids) {
+		Posts.getCidsByPids(pids, function (err, cids) {
 			if (err) {
 				return callback(err);
 			}

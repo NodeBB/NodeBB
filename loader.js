@@ -33,9 +33,9 @@ var	pidFilePath = __dirname + '/pidfile',
 		templatesCompiled: false
 	};
 
-Loader.init = function(callback) {
+Loader.init = function (callback) {
 	if (silent) {
-		console.log = function() {
+		console.log = function () {
 			var args = Array.prototype.slice.call(arguments);
 			output.write(args.join(' ') + '\n');
 		};
@@ -47,7 +47,7 @@ Loader.init = function(callback) {
 	callback();
 };
 
-Loader.displayStartupMessages = function(callback) {
+Loader.displayStartupMessages = function (callback) {
 	console.log('');
 	console.log('NodeBB v' + pkg.version + ' Copyright (C) 2013-2014 NodeBB Inc.');
 	console.log('This program comes with ABSOLUTELY NO WARRANTY.');
@@ -57,16 +57,16 @@ Loader.displayStartupMessages = function(callback) {
 	callback();
 };
 
-Loader.addWorkerEvents = function(worker) {
+Loader.addWorkerEvents = function (worker) {
 
-	worker.on('exit', function(code, signal) {
+	worker.on('exit', function (code, signal) {
 		if (code !== 0) {
 			if (Loader.timesStarted < numProcs * 3) {
 				Loader.timesStarted++;
 				if (Loader.crashTimer) {
 					clearTimeout(Loader.crashTimer);
 				}
-				Loader.crashTimer = setTimeout(function() {
+				Loader.crashTimer = setTimeout(function () {
 					Loader.timesStarted = 0;
 				}, 10000);
 			} else {
@@ -83,7 +83,7 @@ Loader.addWorkerEvents = function(worker) {
 		}
 	});
 
-	worker.on('message', function(message) {
+	worker.on('message', function (message) {
 		if (message && typeof message === 'object' && message.action) {
 			switch (message.action) {
 				case 'ready':
@@ -148,7 +148,7 @@ Loader.addWorkerEvents = function(worker) {
 	});
 };
 
-Loader.start = function(callback) {
+Loader.start = function (callback) {
 	numProcs = getPorts().length;
 	console.log('Clustering enabled: Spinning up ' + numProcs + ' process(es).\n');
 
@@ -205,22 +205,22 @@ function getPorts() {
 	return port;
 }
 
-Loader.restart = function() {
+Loader.restart = function () {
 	killWorkers();
 	nconf.remove('file');
 	nconf.use('file', { file: path.join(__dirname, '/config.json') });
 	Loader.start();
 };
 
-Loader.reload = function() {
-	workers.forEach(function(worker) {
+Loader.reload = function () {
+	workers.forEach(function (worker) {
 		worker.send({
 			action: 'reload'
 		});
 	});
 };
 
-Loader.stop = function() {
+Loader.stop = function () {
 	killWorkers();
 
 	// Clean up the pidfile
@@ -228,15 +228,15 @@ Loader.stop = function() {
 };
 
 function killWorkers() {
-	workers.forEach(function(worker) {
+	workers.forEach(function (worker) {
 		worker.suicide = true;
 		worker.kill();
 	});
 }
 
-Loader.notifyWorkers = function(msg, worker_pid) {
+Loader.notifyWorkers = function (msg, worker_pid) {
 	worker_pid = parseInt(worker_pid, 10);
-	workers.forEach(function(worker) {
+	workers.forEach(function (worker) {
 		if (parseInt(worker.pid, 10) !== worker_pid) {
 			try {
 				worker.send(msg);
@@ -247,7 +247,7 @@ Loader.notifyWorkers = function(msg, worker_pid) {
 	});
 };
 
-fs.open(path.join(__dirname, 'config.json'), 'r', function(err) {
+fs.open(path.join(__dirname, 'config.json'), 'r', function (err) {
 	if (!err) {
 		if (nconf.get('daemon') !== 'false' && nconf.get('daemon') !== false) {
 			if (file.existsSync(pidFilePath)) {
@@ -272,7 +272,7 @@ fs.open(path.join(__dirname, 'config.json'), 'r', function(err) {
 			Loader.init,
 			Loader.displayStartupMessages,
 			Loader.start
-		], function(err) {
+		], function (err) {
 			if (err) {
 				console.log('[loader] Error during startup: ' + err.message);
 			}

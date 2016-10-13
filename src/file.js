@@ -10,12 +10,12 @@ var utils = require('../public/src/utils');
 
 var file = {};
 
-file.saveFileToLocal = function(filename, folder, tempPath, callback) {
+file.saveFileToLocal = function (filename, folder, tempPath, callback) {
 	/*
 	* remarkable doesn't allow spaces in hyperlinks, once that's fixed, remove this.
 	*/
 	filename = filename.split('.');
-	filename.forEach(function(name, idx) {
+	filename.forEach(function (name, idx) {
 		filename[idx] = utils.slugify(name);
 	});
 	filename = filename.join('.');
@@ -38,39 +38,39 @@ file.saveFileToLocal = function(filename, folder, tempPath, callback) {
 	is.pipe(os);
 };
 
-file.base64ToLocal = function(imageData, uploadPath, callback) {
+file.base64ToLocal = function (imageData, uploadPath, callback) {
 	var buffer = new Buffer(imageData.slice(imageData.indexOf('base64') + 7), 'base64');
 	uploadPath = path.join(nconf.get('base_dir'), nconf.get('upload_path'), uploadPath);
 
 	fs.writeFile(uploadPath, buffer, {
 		encoding: 'base64'
-	}, function(err) {
+	}, function (err) {
 		callback(err, uploadPath);
 	});
 };
 
-file.isFileTypeAllowed = function(path, callback) {
+file.isFileTypeAllowed = function (path, callback) {
 	var plugins = require('./plugins');
 	if (plugins.hasListeners('filter:file.isFileTypeAllowed')) {
-		return plugins.fireHook('filter:file.isFileTypeAllowed', path, function(err) {
+		return plugins.fireHook('filter:file.isFileTypeAllowed', path, function (err) {
 			callback(err);
 		});
 	}
 
 	// Attempt to read the file, if it passes, file type is allowed
-	jimp.read(path, function(err) {
+	jimp.read(path, function (err) {
 		callback(err);
 	});
 };
 
-file.allowedExtensions = function() {
+file.allowedExtensions = function () {
 	var meta = require('./meta');
 	var allowedExtensions = (meta.config.allowedFileExtensions || '').trim();
 	if (!allowedExtensions) {
 		return [];
 	}
 	allowedExtensions = allowedExtensions.split(',');
-	allowedExtensions = allowedExtensions.filter(Boolean).map(function(extension) {
+	allowedExtensions = allowedExtensions.filter(Boolean).map(function (extension) {
 		extension = extension.trim();
 		if (!extension.startsWith('.')) {
 			extension = '.' + extension;
@@ -85,13 +85,13 @@ file.allowedExtensions = function() {
 	return allowedExtensions;
 };
 
-file.exists = function(path, callback) {
-	fs.stat(path, function(err, stat) {
+file.exists = function (path, callback) {
+	fs.stat(path, function (err, stat) {
 		callback(!err && stat);
 	});
 };
 
-file.existsSync = function(path) {
+file.existsSync = function (path) {
 	var exists = false;
 	try {
 		exists = fs.statSync(path);

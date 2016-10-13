@@ -6,8 +6,8 @@ var adminBlacklistController = require('./admin/blacklist');
 
 var globalModsController = {};
 
-globalModsController.flagged = function(req, res, next) {
-	user.isAdminOrGlobalMod(req.uid, function(err, isAdminOrGlobalMod) {
+globalModsController.flagged = function (req, res, next) {
+	user.isAdminOrGlobalMod(req.uid, function (err, isAdminOrGlobalMod) {
 		if (err || !isAdminOrGlobalMod) {
 			return next(err);
 		}
@@ -16,8 +16,8 @@ globalModsController.flagged = function(req, res, next) {
 	});
 };
 
-globalModsController.ipBlacklist = function(req, res, next) {
-	user.isAdminOrGlobalMod(req.uid, function(err, isAdminOrGlobalMod) {
+globalModsController.ipBlacklist = function (req, res, next) {
+	user.isAdminOrGlobalMod(req.uid, function (err, isAdminOrGlobalMod) {
 		if (err || !isAdminOrGlobalMod) {
 			return next(err);
 		}

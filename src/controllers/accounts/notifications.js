@@ -6,8 +6,8 @@ var user = require('../../user'),
 
 var notificationsController = {};
 
-notificationsController.get = function(req, res, next) {
-	user.notifications.getAll(req.uid, 0, 39, function(err, notifications) {
+notificationsController.get = function (req, res, next) {
+	user.notifications.getAll(req.uid, 0, 39, function (err, notifications) {
 		if (err) {
 			return next(err);
 		}

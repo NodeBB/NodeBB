@@ -12,7 +12,7 @@ var db = require('../database');
 var logger = require('../logger');
 var ratelimit = require('../middleware/ratelimit');
 
-(function(Sockets) {
+(function (Sockets) {
 	var Namespaces = {};
 	var io;
 

@@ -5,7 +5,7 @@ var meta = require('../meta');
 var _ = require('underscore');
 
 
-module.exports = function(middleware) {
+module.exports = function (middleware) {
 
 	middleware.addHeaders = function (req, res, next) {
 		var defaults = {
@@ -33,7 +33,7 @@ module.exports = function(middleware) {
 		next();
 	};
 
-	middleware.addExpiresHeaders = function(req, res, next) {
+	middleware.addExpiresHeaders = function (req, res, next) {
 		if (req.app.enabled('cache')) {
 			res.setHeader("Cache-Control", "public, max-age=5184000");
 			res.setHeader("Expires", new Date(Date.now() + 5184000000).toUTCString());

@@ -12,7 +12,7 @@ var helpers = require('./helpers');
 var usersController = {};
 
 
-usersController.index = function(req, res, next) {
+usersController.index = function (req, res, next) {
 	var section = req.query.section || 'joindate';
 	var sectionToController = {
 		joindate: usersController.getUsersSortedByJoinDate,
@@ -32,9 +32,9 @@ usersController.index = function(req, res, next) {
 	}
 };
 
-usersController.search = function(req, res, next) {
+usersController.search = function (req, res, next) {
 	async.parallel({
-		search: function(next) {
+		search: function (next) {
 			user.search({
 				query: req.query.term,
 				searchBy: req.query.searchBy || 'username',
@@ -45,10 +45,10 @@ usersController.search = function(req, res, next) {
 				flaggedOnly: req.query.flaggedOnly === 'true'
 			}, next);
 		},
-		isAdminOrGlobalMod: function(next) {
+		isAdminOrGlobalMod: function (next) {
 			user.isAdminOrGlobalMod(req.uid, next);
 		}
-	}, function(err, results) {
+	}, function (err, results) {
 		if (err) {
 			return next(err);
 		}
@@ -62,22 +62,22 @@ usersController.search = function(req, res, next) {
 	});
 };
 
-usersController.getOnlineUsers = function(req, res, next) {
+usersController.getOnlineUsers = function (req, res, next) {
 	async.parallel({
-		users: function(next) {
+		users: function (next) {
 			usersController.getUsers('users:online', req.uid, req.query, next);
 		},
-		guests: function(next) {
+		guests: function (next) {
 			require('../socket.io/admin/rooms').getTotalGuestCount(next);
 		}
-	}, function(err, results) {
+	}, function (err, results) {
 		if (err) {
 			return next(err);
 		}
 		var userData = results.users;
 		var hiddenCount = 0;
 		if (!userData.isAdminOrGlobalMod) {
-			userData.users = userData.users.filter(function(user) {
+			userData.users = userData.users.filter(function (user) {
 				if (user && user.status === 'offline') {
 					hiddenCount ++;
 				}
@@ -91,23 +91,23 @@ usersController.getOnlineUsers = function(req, res, next) {
 	});
 };
 
-usersController.getUsersSortedByPosts = function(req, res, next) {
+usersController.getUsersSortedByPosts = function (req, res, next) {
 	usersController.renderUsersPage('users:postcount', req, res, next);
 };
 
-usersController.getUsersSortedByReputation = function(req, res, next) {
+usersController.getUsersSortedByReputation = function (req, res, next) {
 	if (parseInt(meta.config['reputation:disabled'], 10) === 1) {
 		return next();
 	}
 	usersController.renderUsersPage('users:reputation', req, res, next);
 };
 
-usersController.getUsersSortedByJoinDate = function(req, res, next) {
+usersController.getUsersSortedByJoinDate = function (req, res, next) {
 	usersController.renderUsersPage('users:joindate', req, res, next);
 };
 
-usersController.getBannedUsers = function(req, res, next) {
-	usersController.getUsers('users:banned', req.uid, req.query, function(err, userData) {
+usersController.getBannedUsers = function (req, res, next) {
+	usersController.getUsers('users:banned', req.uid, req.query, function (err, userData) {
 		if (err) {
 			return next(err);
 		}
@@ -120,8 +120,8 @@ usersController.getBannedUsers = function(req, res, next) {
 	});
 };
 
-usersController.getFlaggedUsers = function(req, res, next) {
-	usersController.getUsers('users:flags', req.uid, req.query, function(err, userData) {
+usersController.getFlaggedUsers = function (req, res, next) {
+	usersController.getUsers('users:flags', req.uid, req.query, function (err, userData) {
 		if (err) {
 			return next(err);
 		}
@@ -134,8 +134,8 @@ usersController.getFlaggedUsers = function(req, res, next) {
 	});
 };
 
-usersController.renderUsersPage = function(set, req, res, next) {
-	usersController.getUsers(set, req.uid, req.query, function(err, userData) {
+usersController.renderUsersPage = function (set, req, res, next) {
+	usersController.getUsers(set, req.uid, req.query, function (err, userData) {
 		if (err) {
 			return next(err);
 		}
@@ -144,7 +144,7 @@ usersController.renderUsersPage = function(set, req, res, next) {
 	});
 };
 
-usersController.getUsers = function(set, uid, query, callback) {
+usersController.getUsers = function (set, uid, query, callback) {
 	var setToData = {
 		'users:postcount': {title: '[[pages:users/sort-posts]]', crumb: '[[users:top_posters]]'},
 		'users:reputation': {title: '[[pages:users/sort-reputation]]', crumb: '[[users:most_reputation]]'},
@@ -170,13 +170,13 @@ usersController.getUsers = function(set, uid, query, callback) {
 	var stop = start + resultsPerPage - 1;
 
 	async.parallel({
-		isAdminOrGlobalMod: function(next) {
+		isAdminOrGlobalMod: function (next) {
 			user.isAdminOrGlobalMod(uid, next);
 		},
-		usersData: function(next) {
+		usersData: function (next) {
 			usersController.getUsersAndCount(set, uid, start, stop, next);
 		}
-	}, function(err, results) {
+	}, function (err, results) {
 		if (err) {
 			return callback(err);
 		}
@@ -195,12 +195,12 @@ usersController.getUsers = function(set, uid, query, callback) {
 	});
 };
 
-usersController.getUsersAndCount = function(set, uid, start, stop, callback) {
+usersController.getUsersAndCount = function (set, uid, start, stop, callback) {
 	async.parallel({
-		users: function(next) {
+		users: function (next) {
 			user.getUsersFromSet(set, uid, start, stop, next);
 		},
-		count: function(next) {
+		count: function (next) {
 			if (set === 'users:online') {
 				var now = Date.now();
 				db.sortedSetCount('users:online', now - 300000, '+inf', next);
@@ -212,11 +212,11 @@ usersController.getUsersAndCount = function(set, uid, start, stop, callback) {
 				db.getObjectField('global', 'userCount', next);
 			}
 		}
-	}, function(err, results) {
+	}, function (err, results) {
 		if (err) {
 			return callback(err);
 		}
-		results.users = results.users.filter(function(user) {
+		results.users = results.users.filter(function (user) {
 			return user && parseInt(user.uid, 10);
 		});
 
@@ -232,7 +232,7 @@ function render(req, res, data, next) {
 	data.adminInviteOnly = registrationType === 'admin-invite-only';
 	data['reputation:disabled'] = parseInt(meta.config['reputation:disabled'], 10) === 1;
 
-	user.getInvitesNumber(req.uid, function(err, numInvites) {
+	user.getInvitesNumber(req.uid, function (err, numInvites) {
 		if (err) {
 			return next(err);
 		}

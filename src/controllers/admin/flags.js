@@ -13,23 +13,23 @@ var flagsController = {};
 
 var itemsPerPage = 20;
 
-flagsController.get = function(req, res, next) {
+flagsController.get = function (req, res, next) {
 	var byUsername = req.query.byUsername || '';
 	var cid = req.query.cid || 0;
 	var sortBy = req.query.sortBy || 'count';
 	var page = parseInt(req.query.page, 10) || 1;
 
 	async.parallel({
-		categories: function(next) {
+		categories: function (next) {
 			categories.buildForSelect(req.uid, next);
 		},
-		flagData: function(next) {
+		flagData: function (next) {
 			getFlagData(req, next);
 		},
-		analytics: function(next) {
+		analytics: function (next) {
 			analytics.getDailyStatsForSet('analytics:flags', Date.now(), 30, next);
 		},
-		assignees: function(next) {
+		assignees: function (next) {
 			user.getAdminsandGlobalMods(next);
 		}
 	}, function (err, results) {
@@ -38,7 +38,7 @@ flagsController.get = function(req, res, next) {
 		}
 
 		// Minimise data set for assignees so tjs does less work
-		results.assignees = results.assignees.map(function(userObj) {
+		results.assignees = results.assignees.map(function (userObj) {
 			return {
 				uid: userObj.uid,
 				username: userObj.username
@@ -47,7 +47,7 @@ flagsController.get = function(req, res, next) {
 
 		var pageCount = Math.max(1, Math.ceil(results.flagData.count / itemsPerPage));
 
-		results.categories.forEach(function(category) {
+		results.categories.forEach(function (category) {
 			category.selected = parseInt(category.cid, 10) === parseInt(cid, 10);
 		});
 
@@ -77,14 +77,14 @@ function getFlagData(req, callback) {
 	var sets = [sortBy === 'count' ? 'posts:flags:count' : 'posts:flagged'];
 
 	async.waterfall([
-		function(next) {
+		function (next) {
 			if (byUsername) {
 				user.getUidByUsername(byUsername, next);
 			} else {
 				process.nextTick(next, null, 0);
 			}
 		},
-		function(uid, next) {
+		function (uid, next) {
 			if (uid) {
 				sets.push('uid:' + uid + ':flag:pids');
 			}

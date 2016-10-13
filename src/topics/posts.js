@@ -10,32 +10,32 @@ var user = require('../user');
 var posts = require('../posts');
 var meta = require('../meta');
 
-module.exports = function(Topics) {
+module.exports = function (Topics) {
 
-	Topics.onNewPostMade = function(postData, callback) {
+	Topics.onNewPostMade = function (postData, callback) {
 		async.series([
-			function(next) {
+			function (next) {
 				Topics.increasePostCount(postData.tid, next);
 			},
-			function(next) {
+			function (next) {
 				Topics.updateTimestamp(postData.tid, postData.timestamp, next);
 			},
-			function(next) {
+			function (next) {
 				Topics.addPostToTopic(postData.tid, postData, next);
 			}
 		], callback);
 	};
 
-	Topics.getTopicPosts = function(tid, set, start, stop, uid, reverse, callback) {
-		callback = callback || function() {};
+	Topics.getTopicPosts = function (tid, set, start, stop, uid, reverse, callback) {
+		callback = callback || function () {};
 		async.parallel({
-			posts: function(next) {
+			posts: function (next) {
 				posts.getPostsFromSet(set, start, stop, uid, reverse, next);
 			},
-			postCount: function(next) {
+			postCount: function (next) {
 				Topics.getTopicField(tid, 'postcount', next);
 			}
-		}, function(err, results) {
+		}, function (err, results) {
 			if (err) {
 				return callback(err);
 			}
@@ -46,11 +46,11 @@ module.exports = function(Topics) {
 		});
 	};
 
-	Topics.addPostData = function(postData, uid, callback) {
+	Topics.addPostData = function (postData, uid, callback) {
 		if (!Array.isArray(postData) || !postData.length) {
 			return callback(null, []);
 		}
-		var pids = postData.map(function(post) {
+		var pids = postData.map(function (post) {
 			return post && post.pid;
 		});
 
@@ -59,13 +59,13 @@ module.exports = function(Topics) {
 		}
 
 		async.parallel({
-			bookmarks: function(next) {
+			bookmarks: function (next) {
 				posts.hasBookmarked(pids, uid, next);
 			},
-			voteData: function(next) {
+			voteData: function (next) {
 				posts.getVoteStatusByPostIDs(pids, uid, next);
 			},
-			userData: function(next) {
+			userData: function (next) {
 				var uids = [];
 
 				for(var i = 0; i < postData.length; ++i) {
@@ -74,20 +74,20 @@ module.exports = function(Topics) {
 					}
 				}
 
-				posts.getUserInfoForPosts(uids, uid, function(err, users) {
+				posts.getUserInfoForPosts(uids, uid, function (err, users) {
 					if (err) {
 						return next(err);
 					}
 
 					var userData = {};
-					users.forEach(function(user, index) {
+					users.forEach(function (user, index) {
 						userData[uids[index]] = user;
 					});
 
 					next(null, userData);
 				});
 			},
-			editors: function(next) {
+			editors: function (next) {
 				var editors = [];
 				for(var i = 0; i < postData.length; ++i) {
 					if (postData[i] && postData[i].editor && editors.indexOf(postData[i].editor) === -1) {
@@ -95,26 +95,26 @@ module.exports = function(Topics) {
 					}
 				}
 
-				user.getUsersFields(editors, ['uid', 'username', 'userslug'], function(err, editors) {
+				user.getUsersFields(editors, ['uid', 'username', 'userslug'], function (err, editors) {
 					if (err) {
 						return next(err);
 					}
 					var editorData = {};
-					editors.forEach(function(editor) {
+					editors.forEach(function (editor) {
 						editorData[editor.uid] = editor;
 					});
 					next(null, editorData);
 				});
 			},
-			parents: function(next) {
+			parents: function (next) {
 				Topics.addParentPosts(postData, next);
 			}
-		}, function(err, results) {
+		}, function (err, results) {
 			if (err) {
 				return callback(err);
 			}
 
-			postData.forEach(function(postObj, i) {
+			postData.forEach(function (postObj, i) {
 				if (postObj) {
 					postObj.deleted = parseInt(postObj.deleted, 10) === 1;
 					postObj.user = parseInt(postObj.uid, 10) ? results.userData[postObj.uid] : _.clone(results.userData[postObj.uid]);
@@ -136,9 +136,9 @@ module.exports = function(Topics) {
 		});
 	};
 
-	Topics.modifyPostsByPrivilege = function(topicData, topicPrivileges) {
+	Topics.modifyPostsByPrivilege = function (topicData, topicPrivileges) {
 		var loggedIn = !!parseInt(topicPrivileges.uid, 10);
-		topicData.posts.forEach(function(post) {
+		topicData.posts.forEach(function (post) {
 			if (post) {
 				post.display_edit_tools = topicPrivileges.isAdminOrMod || (post.selfPost && topicPrivileges['posts:edit']);
 				post.display_delete_tools = topicPrivileges.isAdminOrMod || (post.selfPost && topicPrivileges['posts:delete']);
@@ -157,8 +157,8 @@ module.exports = function(Topics) {
 		});
 	};
 
-	Topics.addParentPosts = function(postData, callback) {
-		var parentPids = postData.map(function(postObj) {
+	Topics.addParentPosts = function (postData, callback) {
+		var parentPids = postData.map(function (postObj) {
 			return postObj && postObj.hasOwnProperty('toPid') ? parseInt(postObj.toPid, 10) : null;
 		}).filter(Boolean);
 
@@ -169,9 +169,9 @@ module.exports = function(Topics) {
 		var parentPosts;
 		async.waterfall([
 			async.apply(posts.getPostsFields, parentPids, ['uid']),
-			function(_parentPosts, next) {
+			function (_parentPosts, next) {
 				parentPosts = _parentPosts;
-				var parentUids = parentPosts.map(function(postObj) { return parseInt(postObj.uid, 10); }).filter(function(uid, idx, users) {
+				var parentUids = parentPosts.map(function (postObj) { return parseInt(postObj.uid, 10); }).filter(function (uid, idx, users) {
 					return users.indexOf(uid) === idx;
 				});
 
@@ -179,15 +179,15 @@ module.exports = function(Topics) {
 			},
 			function (userData, next) {
 				var usersMap = {};
-				userData.forEach(function(user) {
+				userData.forEach(function (user) {
 					usersMap[user.uid] = user.username;
 				});
 				var parents = {};
-				parentPosts.forEach(function(post, i) {
+				parentPosts.forEach(function (post, i) {
 					parents[parentPids[i]] = {username: usersMap[post.uid]};
 				});
 
-				postData.forEach(function(post) {
+				postData.forEach(function (post) {
 					post.parent = parents[post.toPid];
 				});
 				next();
@@ -195,8 +195,8 @@ module.exports = function(Topics) {
 		], callback);
 	};
 
-	Topics.calculatePostIndices = function(posts, start, stop, postCount, reverse) {
-		posts.forEach(function(post, index) {
+	Topics.calculatePostIndices = function (posts, start, stop, postCount, reverse) {
+		posts.forEach(function (post, index) {
 			if (reverse) {
 				post.index = postCount - (start + index + 1);
 			} else {
@@ -205,34 +205,34 @@ module.exports = function(Topics) {
 		});
 	};
 
-	Topics.getLatestUndeletedPid = function(tid, callback) {
+	Topics.getLatestUndeletedPid = function (tid, callback) {
 		async.waterfall([
-			function(next) {
+			function (next) {
 				Topics.getLatestUndeletedReply(tid, next);
 			},
-			function(pid, next) {
+			function (pid, next) {
 				if (parseInt(pid, 10)) {
 					return callback(null, pid.toString());
 				}
 				Topics.getTopicField(tid, 'mainPid', next);
 			},
-			function(mainPid, next) {
+			function (mainPid, next) {
 				posts.getPostFields(mainPid, ['pid', 'deleted'], next);
 			},
-			function(mainPost, next) {
+			function (mainPost, next) {
 				next(null, parseInt(mainPost.pid, 10) && parseInt(mainPost.deleted, 10) !== 1 ? mainPost.pid.toString() : null);
 			}
 		], callback);
 	};
 
-	Topics.getLatestUndeletedReply = function(tid, callback) {
+	Topics.getLatestUndeletedReply = function (tid, callback) {
 		var isDeleted = false;
 		var done = false;
 		var latestPid = null;
 		var index = 0;
 		async.doWhilst(
-			function(next) {
-				db.getSortedSetRevRange('tid:' + tid + ':posts', index, index, function(err, pids) {
+			function (next) {
+				db.getSortedSetRevRange('tid:' + tid + ':posts', index, index, function (err, pids) {
 					if (err) {
 						return next(err);
 					}
@@ -242,7 +242,7 @@ module.exports = function(Topics) {
 						return next();
 					}
 
-					posts.getPostField(pids[0], 'deleted', function(err, deleted) {
+					posts.getPostField(pids[0], 'deleted', function (err, deleted) {
 						if (err) {
 							return next(err);
 						}
@@ -256,16 +256,16 @@ module.exports = function(Topics) {
 					});
 				});
 			},
-			function() {
+			function () {
 				return isDeleted && !done;
 			},
-			function(err) {
+			function (err) {
 				callback(err, latestPid);
 			}
 		);
 	};
 
-	Topics.addPostToTopic = function(tid, postData, callback) {
+	Topics.addPostToTopic = function (tid, postData, callback) {
 		async.waterfall([
 			function (next) {
 				Topics.getTopicField(tid, 'mainPid', next);
@@ -275,16 +275,16 @@ module.exports = function(Topics) {
 					Topics.setTopicField(tid, 'mainPid', postData.pid, next);
 				} else {
 					async.parallel([
-						function(next) {
+						function (next) {
 							db.sortedSetAdd('tid:' + tid + ':posts', postData.timestamp, postData.pid, next);
 						},
-						function(next) {
+						function (next) {
 							var upvotes = parseInt(postData.upvotes, 10) || 0;
 							var downvotes = parseInt(postData.downvotes, 10) || 0;
 							var votes = upvotes - downvotes;
 							db.sortedSetAdd('tid:' + tid + ':posts:votes', votes, postData.pid, next);
 						}
-					], function(err) {
+					], function (err) {
 						next(err);
 					});
 				}
@@ -298,7 +298,7 @@ module.exports = function(Topics) {
 		], callback);
 	};
 
-	Topics.removePostFromTopic = function(tid, postData, callback) {
+	Topics.removePostFromTopic = function (tid, postData, callback) {
 		async.waterfall([
 			function (next) {
 				db.sortedSetsRemove([
@@ -315,15 +315,15 @@ module.exports = function(Topics) {
 		], callback);
 	};
 
-	Topics.getPids = function(tid, callback) {
+	Topics.getPids = function (tid, callback) {
 		async.parallel({
-			mainPid: function(next) {
+			mainPid: function (next) {
 				Topics.getTopicField(tid, 'mainPid', next);
 			},
-			pids: function(next) {
+			pids: function (next) {
 				db.getSortedSetRange('tid:' + tid + ':posts', 0, -1, next);
 			}
-		}, function(err, results) {
+		}, function (err, results) {
 			if (err) {
 				return callback(err);
 			}
@@ -334,21 +334,21 @@ module.exports = function(Topics) {
 		});
 	};
 
-	Topics.increasePostCount = function(tid, callback) {
+	Topics.increasePostCount = function (tid, callback) {
 		incrementFieldAndUpdateSortedSet(tid, 'postcount', 1, 'topics:posts', callback);
 	};
 
-	Topics.decreasePostCount = function(tid, callback) {
+	Topics.decreasePostCount = function (tid, callback) {
 		incrementFieldAndUpdateSortedSet(tid, 'postcount', -1, 'topics:posts', callback);
 	};
 
-	Topics.increaseViewCount = function(tid, callback) {
+	Topics.increaseViewCount = function (tid, callback) {
 		incrementFieldAndUpdateSortedSet(tid, 'viewcount', 1, 'topics:views', callback);
 	};
 
 	function incrementFieldAndUpdateSortedSet(tid, field, by, set, callback) {
-		callback = callback || function() {};
-		db.incrObjectFieldBy('topic:' + tid, field, by, function(err, value) {
+		callback = callback || function () {};
+		db.incrObjectFieldBy('topic:' + tid, field, by, function (err, value) {
 			if (err) {
 				return callback(err);
 			}
@@ -356,12 +356,12 @@ module.exports = function(Topics) {
 		});
 	}
 
-	Topics.getTitleByPid = function(pid, callback) {
+	Topics.getTitleByPid = function (pid, callback) {
 		Topics.getTopicFieldByPid('title', pid, callback);
 	};
 
-	Topics.getTopicFieldByPid = function(field, pid, callback) {
-		posts.getPostField(pid, 'tid', function(err, tid) {
+	Topics.getTopicFieldByPid = function (field, pid, callback) {
+		posts.getPostField(pid, 'tid', function (err, tid) {
 			if (err) {
 				return callback(err);
 			}
@@ -369,8 +369,8 @@ module.exports = function(Topics) {
 		});
 	};
 
-	Topics.getTopicDataByPid = function(pid, callback) {
-		posts.getPostField(pid, 'tid', function(err, tid) {
+	Topics.getTopicDataByPid = function (pid, callback) {
+		posts.getPostField(pid, 'tid', function (err, tid) {
 			if (err) {
 				return callback(err);
 			}
@@ -378,7 +378,7 @@ module.exports = function(Topics) {
 		});
 	};
 
-	Topics.getPostCount = function(tid, callback) {
+	Topics.getPostCount = function (tid, callback) {
 		db.getObjectField('topic:' + tid, 'postcount', callback);
 	};
 

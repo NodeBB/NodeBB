@@ -2,19 +2,19 @@
 
 /* globals define*/
 
-define('topicSelect', ['components'], function(components) {
+define('topicSelect', ['components'], function (components) {
 	var TopicSelect = {};
 	var lastSelected;
 
 	var topicsContainer;
 
-	TopicSelect.init = function(onSelect) {
+	TopicSelect.init = function (onSelect) {
 		topicsContainer = $('[component="category"]');
-		topicsContainer.on('selectstart', function() {
+		topicsContainer.on('selectstart', function () {
 			return false;
 		});
 
-		topicsContainer.on('click', '[component="topic/select"]', function(ev) {
+		topicsContainer.on('click', '[component="topic/select"]', function (ev) {
 			var select = $(this);
 
 			if (ev.shiftKey) {
@@ -38,15 +38,15 @@ define('topicSelect', ['components'], function(components) {
 		select.parents('[component="category/topic"]').toggleClass('selected', isSelected);
 	}
 
-	TopicSelect.getSelectedTids = function() {
+	TopicSelect.getSelectedTids = function () {
 		var tids = [];
-		topicsContainer.find('[component="category/topic"].selected').each(function() {
+		topicsContainer.find('[component="category/topic"].selected').each(function () {
 			tids.push($(this).attr('data-tid'));
 		});
 		return tids;
 	};
 
-	TopicSelect.unselectAll = function() {
+	TopicSelect.unselectAll = function () {
 		topicsContainer.find('[component="category/topic"].selected').removeClass('selected');
 		topicsContainer.find('[component="topic/select"]').toggleClass('fa-check-square-o', false).toggleClass('fa-square-o', true);
 	};

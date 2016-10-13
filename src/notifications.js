@@ -15,25 +15,25 @@ var batch = require('./batch');
 var plugins = require('./plugins');
 var utils = require('../public/src/utils');
 
-(function(Notifications) {
+(function (Notifications) {
 
-	Notifications.init = function() {
+	Notifications.init = function () {
 		winston.verbose('[notifications.init] Registering jobs.');
 		new cron('*/30 * * * *', Notifications.prune, null, true);
 	};
 
-	Notifications.get = function(nid, callback) {
-		Notifications.getMultiple([nid], function(err, notifications) {
+	Notifications.get = function (nid, callback) {
+		Notifications.getMultiple([nid], function (err, notifications) {
 			callback(err, Array.isArray(notifications) && notifications.length ? notifications[0] : null);
 		});
 	};
 
-	Notifications.getMultiple = function(nids, callback) {
-		var keys = nids.map(function(nid) {
+	Notifications.getMultiple = function (nids, callback) {
+		var keys = nids.map(function (nid) {
 			return 'notifications:' + nid;
 		});
 
-		db.getObjects(keys, function(err, notifications) {
+		db.getObjects(keys, function (err, notifications) {
 			if (err) {
 				return callback(err);
 			}
@@ -43,15 +43,15 @@ var utils = require('../public/src/utils');
 				return callback(null, []);
 			}
 
-			var userKeys = notifications.map(function(notification) {
+			var userKeys = notifications.map(function (notification) {
 				return notification.from;
 			});
 
-			User.getUsersFields(userKeys, ['username', 'userslug', 'picture'], function(err, usersData) {
+			User.getUsersFields(userKeys, ['username', 'userslug', 'picture'], function (err, usersData) {
 				if (err) {
 					return callback(err);
 				}
-				notifications.forEach(function(notification, index) {
+				notifications.forEach(function (notification, index) {
 					notification.datetimeISO = utils.toISOString(notification.datetime);
 
 					if (notification.bodyLong) {
@@ -74,14 +74,14 @@ var utils = require('../public/src/utils');
 		});
 	};
 
-	Notifications.filterExists = function(nids, callback) {
+	Notifications.filterExists = function (nids, callback) {
 		// Removes nids that have been pruned
-		db.isSortedSetMembers('notifications', nids, function(err, exists) {
+		db.isSortedSetMembers('notifications', nids, function (err, exists) {
 			if (err) {
 				return callback(err);
 			}
 
-			nids = nids.filter(function(notifId, idx) {
+			nids = nids.filter(function (notifId, idx) {
 				return exists[idx];
 			});
 
@@ -89,42 +89,42 @@ var utils = require('../public/src/utils');
 		});
 	};
 
-	Notifications.findRelated = function(mergeIds, set, callback) {
+	Notifications.findRelated = function (mergeIds, set, callback) {
 		// A related notification is one in a zset that has the same mergeId
 		var _nids;
 
 		async.waterfall([
 			async.apply(db.getSortedSetRevRange, set, 0, -1),
-			function(nids, next) {
+			function (nids, next) {
 				_nids = nids;
 
-				var keys = nids.map(function(nid) {
+				var keys = nids.map(function (nid) {
 					return 'notifications:' + nid;
 				});
 
 				db.getObjectsFields(keys, ['mergeId'], next);
 			},
-		], function(err, sets) {
+		], function (err, sets) {
 			if (err) {
 				return callback(err);
 			}
 
-			sets = sets.map(function(set) {
+			sets = sets.map(function (set) {
 				return set.mergeId;
 			});
 
-			callback(null, _nids.filter(function(nid, idx) {
+			callback(null, _nids.filter(function (nid, idx) {
 				return mergeIds.indexOf(sets[idx]) !== -1;
 			}));
 		});
 	};
 
-	Notifications.create = function(data, callback) {
+	Notifications.create = function (data, callback) {
 		if (!data.nid) {
 			return callback(new Error('no-notification-id'));
 		}
 		data.importance = data.importance || 5;
-		db.getObject('notifications:' + data.nid, function(err, oldNotification) {
+		db.getObject('notifications:' + data.nid, function (err, oldNotification) {
 			if (err) {
 				return callback(err);
 			}
@@ -138,20 +138,20 @@ var utils = require('../public/src/utils');
 			var now = Date.now();
 			data.datetime = now;
 			async.parallel([
-				function(next) {
+				function (next) {
 					db.sortedSetAdd('notifications', now, data.nid, next);
 				},
-				function(next) {
+				function (next) {
 					db.setObject('notifications:' + data.nid, data, next);
 				}
-			], function(err) {
+			], function (err) {
 				callback(err, data);
 			});
 		});
 	};
 
-	Notifications.push = function(notification, uids, callback) {
-		callback = callback || function() {};
+	Notifications.push = function (notification, uids, callback) {
+		callback = callback || function () {};
 
 		if (!notification || !notification.nid) {
 			return callback();
@@ -161,7 +161,7 @@ var utils = require('../public/src/utils');
 			uids = [uids];
 		}
 
-		uids = uids.filter(function(uid, index, array) {
+		uids = uids.filter(function (uid, index, array) {
 			return parseInt(uid, 10) && array.indexOf(uid) === index;
 		});
 
@@ -169,10 +169,10 @@ var utils = require('../public/src/utils');
 			return callback();
 		}
 
-		setTimeout(function() {
-			batch.processArray(uids, function(uids, next) {
+		setTimeout(function () {
+			batch.processArray(uids, function (uids, next) {
 				pushToUids(uids, notification, next);
-			}, {interval: 1000}, function(err) {
+			}, {interval: 1000}, function (err) {
 				if (err) {
 					winston.error(err.stack);
 				}
@@ -195,7 +195,7 @@ var utils = require('../public/src/utils');
 				uids = data.uids;
 				notification = data.notification;
 
-				uids.forEach(function(uid) {
+				uids.forEach(function (uid) {
 					unreadKeys.push('uid:' + uid + ':notifications:unread');
 					readKeys.push('uid:' + uid + ':notifications:read');
 				});
@@ -214,7 +214,7 @@ var utils = require('../public/src/utils');
 			function (next) {
 				var websockets = require('./socket.io');
 				if (websockets.server) {
-					uids.forEach(function(uid) {
+					uids.forEach(function (uid) {
 						websockets.in('uid_' + uid).emit('event:new_notification', notification);
 					});
 				}
@@ -225,9 +225,9 @@ var utils = require('../public/src/utils');
 		], callback);
 	}
 
-	Notifications.pushGroup = function(notification, groupName, callback) {
-		callback = callback || function() {};
-		groups.getMembers(groupName, 0, -1, function(err, members) {
+	Notifications.pushGroup = function (notification, groupName, callback) {
+		callback = callback || function () {};
+		groups.getMembers(groupName, 0, -1, function (err, members) {
 			if (err || !Array.isArray(members) || !members.length) {
 				return callback(err);
 			}
@@ -236,13 +236,13 @@ var utils = require('../public/src/utils');
 		});
 	};
 
-	Notifications.rescind = function(nid, callback) {
-		callback = callback || function() {};
+	Notifications.rescind = function (nid, callback) {
+		callback = callback || function () {};
 
 		async.parallel([
 			async.apply(db.sortedSetRemove, 'notifications', nid),
 			async.apply(db.delete, 'notifications:' + nid)
-		], function(err) {
+		], function (err) {
 			if (err) {
 				winston.error('Encountered error rescinding notification (' + nid + '): ' + err.message);
 			} else {
@@ -253,21 +253,21 @@ var utils = require('../public/src/utils');
 		});
 	};
 
-	Notifications.markRead = function(nid, uid, callback) {
-		callback = callback || function() {};
+	Notifications.markRead = function (nid, uid, callback) {
+		callback = callback || function () {};
 		if (!parseInt(uid, 10) || !nid) {
 			return callback();
 		}
 		Notifications.markReadMultiple([nid], uid, callback);
 	};
 
-	Notifications.markUnread = function(nid, uid, callback) {
-		callback = callback || function() {};
+	Notifications.markUnread = function (nid, uid, callback) {
+		callback = callback || function () {};
 		if (!parseInt(uid, 10) || !nid) {
 			return callback();
 		}
 
-		db.getObject('notifications:' + nid, function(err, notification) {
+		db.getObject('notifications:' + nid, function (err, notification) {
 			if (err || !notification) {
 				return callback(err || new Error('[[error:no-notification]]'));
 			}
@@ -280,24 +280,24 @@ var utils = require('../public/src/utils');
 		});
 	};
 
-	Notifications.markReadMultiple = function(nids, uid, callback) {
-		callback = callback || function() {};
+	Notifications.markReadMultiple = function (nids, uid, callback) {
+		callback = callback || function () {};
 		nids = nids.filter(Boolean);
 		if (!Array.isArray(nids) || !nids.length) {
 			return callback();
 		}
 
-		var notificationKeys = nids.map(function(nid) {
+		var notificationKeys = nids.map(function (nid) {
 			return 'notifications:' + nid;
 		});
 
 		async.waterfall([
 			async.apply(db.getObjectsFields, notificationKeys, ['mergeId']),
-			function(mergeIds, next) {
+			function (mergeIds, next) {
 				// Isolate mergeIds and find related notifications
-				mergeIds = mergeIds.map(function(set) {
+				mergeIds = mergeIds.map(function (set) {
 					return set.mergeId;
-				}).reduce(function(memo, mergeId, idx, arr) {
+				}).reduce(function (memo, mergeId, idx, arr) {
 					if (mergeId && idx === arr.indexOf(mergeId)) {
 						memo.push(mergeId);
 					}
@@ -306,45 +306,45 @@ var utils = require('../public/src/utils');
 
 				Notifications.findRelated(mergeIds, 'uid:' + uid + ':notifications:unread', next);
 			},
-			function(relatedNids, next) {
-				notificationKeys = _.union(nids, relatedNids).map(function(nid) {
+			function (relatedNids, next) {
+				notificationKeys = _.union(nids, relatedNids).map(function (nid) {
 					return 'notifications:' + nid;
 				});
 
 				db.getObjectsFields(notificationKeys, ['nid', 'datetime'], next);
 			}
-		], function(err, notificationData) {
+		], function (err, notificationData) {
 			if (err) {
 				return callback(err);
 			}
 
 			// Filter out notifications that didn't exist
-			notificationData = notificationData.filter(function(notification) {
+			notificationData = notificationData.filter(function (notification) {
 				return notification && notification.nid;
 			});
 
 			// Extract nid
-			nids = notificationData.map(function(notification) {
+			nids = notificationData.map(function (notification) {
 				return notification.nid;
 			});
 
-			var datetimes = notificationData.map(function(notification) {
+			var datetimes = notificationData.map(function (notification) {
 				return (notification && notification.datetime) || Date.now();
 			});
 
 			async.parallel([
-				function(next) {
+				function (next) {
 					db.sortedSetRemove('uid:' + uid + ':notifications:unread', nids, next);
 				},
-				function(next) {
+				function (next) {
 					db.sortedSetAdd('uid:' + uid + ':notifications:read', datetimes, nids, next);
 				}
 			], callback);
 		});
 	};
 
-	Notifications.markAllRead = function(uid, callback) {
-		db.getSortedSetRevRange('uid:' + uid + ':notifications:unread', 0, 99, function(err, nids) {
+	Notifications.markAllRead = function (uid, callback) {
+		db.getSortedSetRevRange('uid:' + uid + ':notifications:unread', 0, 99, function (err, nids) {
 			if (err) {
 				return callback(err);
 			}
@@ -357,13 +357,13 @@ var utils = require('../public/src/utils');
 		});
 	};
 
-	Notifications.prune = function() {
+	Notifications.prune = function () {
 		var	week = 604800000,
 			numPruned = 0;
 
 		var	cutoffTime = Date.now() - week;
 
-		db.getSortedSetRangeByScore('notifications', 0, 500, '-inf', cutoffTime, function(err, nids) {
+		db.getSortedSetRangeByScore('notifications', 0, 500, '-inf', cutoffTime, function (err, nids) {
 			if (err) {
 				return winston.error(err.message);
 			}
@@ -372,20 +372,20 @@ var utils = require('../public/src/utils');
 				return;
 			}
 
-			var	keys = nids.map(function(nid) {
+			var	keys = nids.map(function (nid) {
 				return 'notifications:' + nid;
 			});
 
 			numPruned = nids.length;
 
 			async.parallel([
-				function(next) {
+				function (next) {
 					db.sortedSetRemove('notifications', nids, next);
 				},
-				function(next) {
+				function (next) {
 					db.deleteAll(keys, next);
 				}
-			], function(err) {
+			], function (err) {
 				if (err) {
 					return winston.error('Encountered error pruning notifications: ' + err.message);
 				}
@@ -393,7 +393,7 @@ var utils = require('../public/src/utils');
 		});
 	};
 
-	Notifications.merge = function(notifications, callback) {
+	Notifications.merge = function (notifications, callback) {
 		// When passed a set of notification objects, merge any that can be merged
 		var mergeIds = [
 				'notifications:upvoted_your_post_in',
@@ -404,8 +404,8 @@ var utils = require('../public/src/utils');
 			],
 			isolated, differentiators, differentiator, modifyIndex, set;
 
-		notifications = mergeIds.reduce(function(notifications, mergeId) {
-			isolated = notifications.filter(function(notifObj) {
+		notifications = mergeIds.reduce(function (notifications, mergeId) {
+			isolated = notifications.filter(function (notifObj) {
 				if (!notifObj || !notifObj.hasOwnProperty('mergeId')) {
 					return false;
 				}
@@ -418,7 +418,7 @@ var utils = require('../public/src/utils');
 			}
 
 			// Each isolated mergeId may have multiple differentiators, so process each separately
-			differentiators = isolated.reduce(function(cur, next) {
+			differentiators = isolated.reduce(function (cur, next) {
 				differentiator = next.mergeId.split('|')[1] || 0;
 				if (cur.indexOf(differentiator) === -1) {
 					cur.push(differentiator);
@@ -427,11 +427,11 @@ var utils = require('../public/src/utils');
 				return cur;
 			}, []);
 
-			differentiators.forEach(function(differentiator) {
+			differentiators.forEach(function (differentiator) {
 				if (differentiator === 0 && differentiators.length === 1) {
 					set = isolated;
 				} else {
-					set = isolated.filter(function(notifObj) {
+					set = isolated.filter(function (notifObj) {
 						return notifObj.mergeId === (mergeId + '|' + differentiator);
 					});
 				}
@@ -447,9 +447,9 @@ var utils = require('../public/src/utils');
 					case 'notifications:user_started_following_you':
 					case 'notifications:user_posted_to':
 					case 'notifications:user_flagged_post_in':
-						var usernames = set.map(function(notifObj) {
+						var usernames = set.map(function (notifObj) {
 							return notifObj && notifObj.user && notifObj.user.username;
-						}).filter(function(username, idx, array) {
+						}).filter(function (username, idx, array) {
 							return array.indexOf(username) === idx;
 						});
 						var numUsers = usernames.length;
@@ -473,7 +473,7 @@ var utils = require('../public/src/utils');
 				}
 
 				// Filter out duplicates
-				notifications = notifications.filter(function(notifObj, idx) {
+				notifications = notifications.filter(function (notifObj, idx) {
 					if (!notifObj || !notifObj.mergeId) {
 						return true;
 					}
@@ -487,7 +487,7 @@ var utils = require('../public/src/utils');
 
 		plugins.fireHook('filter:notifications.merge', {
 			notifications: notifications
-		}, function(err, data) {
+		}, function (err, data) {
 			callback(err, data.notifications);
 		});
 	};

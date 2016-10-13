@@ -56,7 +56,6 @@
         "indent": "off",
         "func-names": "off",
         "prefer-arrow-callback": "off",
-        "space-before-function-paren": "off",
         "object-curly-spacing": "off",
         "no-var": "off",
         "no-shadow": "off",

@@ -3,7 +3,7 @@
  * ATTENTION: testing db is flushed before every use!
  */
 
-(function(module) {
+(function (module) {
 	'use strict';
 	/*global require, before*/
 
@@ -73,14 +73,14 @@
 	var db = require('../../src/database'),
 		meta = require('../../src/meta');
 
-	before(function(done) {
-		db.init(function(err) {
+	before(function (done) {
+		db.init(function (err) {
 			if (err) {
 				return done(err);
 			}
 
 			//Clean up
-			db.flushdb(function(err) {
+			db.flushdb(function (err) {
 				if(err) {
 					winston.error(err);
 					throw new Error(err);

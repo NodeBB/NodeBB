@@ -81,7 +81,7 @@ function groupRoutes(app, middleware, controllers) {
 	setupPageRoute(app, '/groups/:slug/members', middleware, middlewares, controllers.groups.members);
 }
 
-module.exports = function(app, middleware, hotswapIds) {
+module.exports = function (app, middleware, hotswapIds) {
 	var routers = [
 		express.Router(),	// plugin router
 		express.Router(),	// main app router
@@ -100,7 +100,7 @@ module.exports = function(app, middleware, hotswapIds) {
 		}
 	}
 
-	pluginRouter.render = function() {
+	pluginRouter.render = function () {
 		app.render.apply(app, arguments);
 	};
 

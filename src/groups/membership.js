@@ -18,28 +18,28 @@ var cache = LRU({
 	maxAge: 1000 * 60 * 60
 });
 
-module.exports = function(Groups) {
+module.exports = function (Groups) {
 
 	Groups.cache = cache;
 
-	Groups.join = function(groupName, uid, callback) {
-		callback = callback || function() {};
+	Groups.join = function (groupName, uid, callback) {
+		callback = callback || function () {};
 
 		if (!groupName) {
 			return callback(new Error('[[error:invalid-data]]'));
 		}
 
 		async.waterfall([
-			function(next) {
+			function (next) {
 				Groups.isMember(uid, groupName, next);
 			},
-			function(isMember, next) {
+			function (isMember, next) {
 				if (isMember) {
 					return callback();
 				}
 				Groups.exists(groupName, next);
 			},
-			function(exists, next) {
+			function (exists, next) {
 				if (exists) {
 					return next();
 				}
@@ -47,7 +47,7 @@ module.exports = function(Groups) {
 					name: groupName,
 					description: '',
 					hidden: 1
-				}, function(err) {
+				}, function (err) {
 					if (err && err.message !== '[[error:group-already-exists]]') {
 						winston.error('[groups.join] Could not create new hidden group: ' + err.message);
 						return callback(err);
@@ -55,17 +55,17 @@ module.exports = function(Groups) {
 					next();
 				});
 			},
-			function(next) {
+			function (next) {
 				async.parallel({
-					isAdmin: function(next) {
+					isAdmin: function (next) {
 						user.isAdministrator(uid, next);
 					},
-					isHidden: function(next) {
+					isHidden: function (next) {
 						Groups.isHidden(groupName, next);
 					}
 				}, next);
 			},
-			function(results, next) {
+			function (results, next) {
 				var tasks = [
 					async.apply(db.sortedSetAdd, 'group:' + groupName + ':members', Date.now(), uid),
 					async.apply(db.incrObjectField, 'group:' + groupName, 'memberCount')
@@ -78,11 +78,11 @@ module.exports = function(Groups) {
 				}
 				async.parallel(tasks, next);
 			},
-			function(results, next) {
+			function (results, next) {
 				clearCache(uid, groupName);
 				setGroupTitleIfNotSet(groupName, uid, next);
 			},
-			function(next) {
+			function (next) {
 				plugins.fireHook('action:group.join', {
 					groupName: groupName,
 					uid: uid
@@ -97,7 +97,7 @@ module.exports = function(Groups) {
 			return callback();
 		}
 
-		db.getObjectField('user:' + uid, 'groupTitle', function(err, currentTitle) {
+		db.getObjectField('user:' + uid, 'groupTitle', function (err, currentTitle) {
 			if (err || (currentTitle || currentTitle === '')) {
 				return callback(err);
 			}
@@ -106,7 +106,7 @@ module.exports = function(Groups) {
 		});
 	}
 
-	Groups.requestMembership = function(groupName, uid, callback) {
+	Groups.requestMembership = function (groupName, uid, callback) {
 		async.waterfall([
 			async.apply(inviteOrRequestMembership, groupName, uid, 'request'),
 			function (next) {
@@ -114,7 +114,7 @@ module.exports = function(Groups) {
 			},
 			function (username, next) {
 				async.parallel({
-					notification: function(next) {
+					notification: function (next) {
 						notifications.create({
 							bodyShort: '[[groups:request.notification_title, ' + username + ']]',
 							bodyLong: '[[groups:request.notification_text, ' + username + ', ' + groupName + ']]',
@@ -123,7 +123,7 @@ module.exports = function(Groups) {
 							from: uid
 						}, next);
 					},
-					owners: function(next) {
+					owners: function (next) {
 						Groups.getOwners(groupName, next);
 					}
 				}, next);
@@ -137,7 +137,7 @@ module.exports = function(Groups) {
 		], callback);
 	};
 
-	Groups.acceptMembership = function(groupName, uid, callback) {
+	Groups.acceptMembership = function (groupName, uid, callback) {
 		// Note: For simplicity, this method intentially doesn't check the caller uid for ownership!
 		async.waterfall([
 			async.apply(db.setRemove, 'group:' + groupName + ':pending', uid),
@@ -146,7 +146,7 @@ module.exports = function(Groups) {
 		], callback);
 	};
 
-	Groups.rejectMembership = function(groupName, uid, callback) {
+	Groups.rejectMembership = function (groupName, uid, callback) {
 		// Note: For simplicity, this method intentially doesn't check the caller uid for ownership!
 		async.parallel([
 			async.apply(db.setRemove, 'group:' + groupName + ':pending', uid),
@@ -154,7 +154,7 @@ module.exports = function(Groups) {
 		], callback);
 	};
 
-	Groups.invite = function(groupName, uid, callback) {
+	Groups.invite = function (groupName, uid, callback) {
 		async.waterfall([
 			async.apply(inviteOrRequestMembership, groupName, uid, 'invite'),
 			async.apply(notifications.create, {
@@ -177,7 +177,7 @@ module.exports = function(Groups) {
 		var set = type === 'invite' ? 'group:' + groupName + ':invited' : 'group:' + groupName + ':pending';
 
 		async.waterfall([
-			function(next) {
+			function (next) {
 				async.parallel({
 					exists: async.apply(Groups.exists, groupName),
 					isMember: async.apply(Groups.isMember, uid, groupName),
@@ -185,7 +185,7 @@ module.exports = function(Groups) {
 					isInvited: async.apply(Groups.isInvited, uid, groupName)
 				}, next);
 			},
-			function(checks, next) {
+			function (checks, next) {
 				if (!checks.exists) {
 					return next(new Error('[[error:no-group]]'));
 				} else if (checks.isMember) {
@@ -198,7 +198,7 @@ module.exports = function(Groups) {
 
 				db.setAdd(set, uid, next);
 			},
-			function(next) {
+			function (next) {
 				plugins.fireHook(hookName, {
 					groupName: groupName,
 					uid: uid
@@ -208,21 +208,21 @@ module.exports = function(Groups) {
 		], callback);
 	}
 
-	Groups.leave = function(groupName, uid, callback) {
-		callback = callback || function() {};
+	Groups.leave = function (groupName, uid, callback) {
+		callback = callback || function () {};
 
 		async.waterfall([
-			function(next) {
+			function (next) {
 				Groups.isMember(uid, groupName, next);
 			},
-			function(isMember, next) {
+			function (isMember, next) {
 				if (!isMember) {
 					return callback();
 				}
 
 				Groups.exists(groupName, next);
 			},
-			function(exists, next) {
+			function (exists, next) {
 				if (!exists) {
 					return callback();
 				}
@@ -232,11 +232,11 @@ module.exports = function(Groups) {
 					async.apply(db.decrObjectField, 'group:' + groupName, 'memberCount')
 				], next);
 			},
-			function(results, next) {
+			function (results, next) {
 				clearCache(uid, groupName);
 				Groups.getGroupFields(groupName, ['hidden', 'memberCount'], next);
 			},
-			function(groupData, next) {
+			function (groupData, next) {
 				if (!groupData) {
 					return callback();
 				}
@@ -250,7 +250,7 @@ module.exports = function(Groups) {
 					}
 				}
 			},
-			function(next) {
+			function (next) {
 				plugins.fireHook('action:group.leave', {
 					groupName: groupName,
 					uid: uid
@@ -260,16 +260,16 @@ module.exports = function(Groups) {
 		], callback);
 	};
 
-	Groups.leaveAllGroups = function(uid, callback) {
+	Groups.leaveAllGroups = function (uid, callback) {
 		async.waterfall([
-			function(next) {
+			function (next) {
 				db.getSortedSetRange('groups:createtime', 0, -1, next);
 			},
-			function(groups, next) {
-				async.each(groups, function(groupName, next) {
+			function (groups, next) {
+				async.each(groups, function (groupName, next) {
 					async.parallel([
-						function(next) {
-							Groups.isMember(uid, groupName, function(err, isMember) {
+						function (next) {
+							Groups.isMember(uid, groupName, function (err, isMember) {
 								if (!err && isMember) {
 									Groups.leave(groupName, uid, next);
 								} else {
@@ -277,7 +277,7 @@ module.exports = function(Groups) {
 								}
 							});
 						},
-						function(next) {
+						function (next) {
 							Groups.rejectMembership(groupName, uid, next);
 						}
 					], next);
@@ -286,13 +286,13 @@ module.exports = function(Groups) {
 		], callback);
 	};
 
-	Groups.getMembers = function(groupName, start, stop, callback) {
+	Groups.getMembers = function (groupName, start, stop, callback) {
 		db.getSortedSetRevRange('group:' + groupName + ':members', start, stop, callback);
 	};
 
-	Groups.getMemberUsers = function(groupNames, start, stop, callback) {
-		async.map(groupNames, function(groupName, next) {
-			Groups.getMembers(groupName, start, stop, function(err, uids) {
+	Groups.getMemberUsers = function (groupNames, start, stop, callback) {
+		async.map(groupNames, function (groupName, next) {
+			Groups.getMembers(groupName, start, stop, function (err, uids) {
 				if (err) {
 					return next(err);
 				}
@@ -302,18 +302,18 @@ module.exports = function(Groups) {
 		}, callback);
 	};
 
-	Groups.getMembersOfGroups = function(groupNames, callback) {
-		db.getSortedSetsMembers(groupNames.map(function(name) {
+	Groups.getMembersOfGroups = function (groupNames, callback) {
+		db.getSortedSetsMembers(groupNames.map(function (name) {
 			return 'group:' + name + ':members';
 		}), callback);
 	};
 
-	Groups.resetCache = function() {
+	Groups.resetCache = function () {
 		pubsub.publish('group:cache:reset');
 		cache.reset();
 	};
 
-	pubsub.on('group:cache:reset', function() {
+	pubsub.on('group:cache:reset', function () {
 		cache.reset();
 	});
 
@@ -322,11 +322,11 @@ module.exports = function(Groups) {
 		cache.del(uid + ':' + groupName);
 	}
 
-	pubsub.on('group:cache:del', function(data) {
+	pubsub.on('group:cache:del', function (data) {
 		cache.del(data.uid + ':' + data.groupName);
 	});
 
-	Groups.isMember = function(uid, groupName, callback) {
+	Groups.isMember = function (uid, groupName, callback) {
 		if (!uid || parseInt(uid, 10) <= 0) {
 			return callback(null, false);
 		}
@@ -336,7 +336,7 @@ module.exports = function(Groups) {
 			return process.nextTick(callback, null, cache.get(cacheKey));
 		}
 
-		db.isSortedSetMember('group:' + groupName + ':members', uid, function(err, isMember) {
+		db.isSortedSetMember('group:' + groupName + ':members', uid, function (err, isMember) {
 			if (err) {
 				return callback(err);
 			}
@@ -346,35 +346,35 @@ module.exports = function(Groups) {
 		});
 	};
 
-	Groups.isMembers = function(uids, groupName, callback) {
+	Groups.isMembers = function (uids, groupName, callback) {
 		if (!groupName || !uids.length) {
-			return callback(null, uids.map(function() {return false;}));
+			return callback(null, uids.map(function () {return false;}));
 		}
 
 		var nonCachedUids = [];
-		uids.forEach(function(uid) {
+		uids.forEach(function (uid) {
 			if (!cache.has(uid + ':' + groupName)) {
 				nonCachedUids.push(uid);
 			}
 		});
 
 		if (!nonCachedUids.length) {
-			var result = uids.map(function(uid) {
+			var result = uids.map(function (uid) {
 				return cache.get(uid + ':' + groupName);
 			});
 			return process.nextTick(callback, null, result);
 		}
 
-		db.isSortedSetMembers('group:' + groupName + ':members', nonCachedUids, function(err, isMembers) {
+		db.isSortedSetMembers('group:' + groupName + ':members', nonCachedUids, function (err, isMembers) {
 			if (err) {
 				return callback(err);
 			}
 
-			nonCachedUids.forEach(function(uid, index) {
+			nonCachedUids.forEach(function (uid, index) {
 				cache.set(uid + ':' + groupName, isMembers[index]);
 			});
 
-			var result = uids.map(function(uid) {
+			var result = uids.map(function (uid) {
 				return cache.get(uid + ':' + groupName);
 			});
 
@@ -382,14 +382,14 @@ module.exports = function(Groups) {
 		});
 	};
 
-	Groups.isMemberOfGroups = function(uid, groups, callback) {
+	Groups.isMemberOfGroups = function (uid, groups, callback) {
 		if (!uid || parseInt(uid, 10) <= 0 || !groups.length) {
-			return callback(null, groups.map(function() {return false;}));
+			return callback(null, groups.map(function () {return false;}));
 		}
 
 		var nonCachedGroups = [];
 
-		groups.forEach(function(groupName) {
+		groups.forEach(function (groupName) {
 			if (!cache.has(uid + ':' + groupName)) {
 				nonCachedGroups.push(groupName);
 			}
@@ -397,34 +397,34 @@ module.exports = function(Groups) {
 
 		// are they all cached?
 		if (!nonCachedGroups.length) {
-			var result = groups.map(function(groupName) {
+			var result = groups.map(function (groupName) {
 				return cache.get(uid + ':' + groupName);
 			});
 			return process.nextTick(callback, null, result);
 		}
 
-		var nonCachedGroupsMemberSets = nonCachedGroups.map(function(groupName) {
+		var nonCachedGroupsMemberSets = nonCachedGroups.map(function (groupName) {
 			return 'group:' + groupName + ':members';
 		});
 
-		db.isMemberOfSortedSets(nonCachedGroupsMemberSets, uid, function(err, isMembers) {
+		db.isMemberOfSortedSets(nonCachedGroupsMemberSets, uid, function (err, isMembers) {
 			if (err) {
 				return callback(err);
 			}
 
-			nonCachedGroups.forEach(function(groupName, index) {
+			nonCachedGroups.forEach(function (groupName, index) {
 				cache.set(uid + ':' + groupName, isMembers[index]);
 			});
 
-			var result = groups.map(function(groupName) {
+			var result = groups.map(function (groupName) {
 				return cache.get(uid + ':' + groupName);
 			});
 			callback(null, result);
 		});
 	};
 
-	Groups.getMemberCount = function(groupName, callback) {
-		db.getObjectField('group:' + groupName, 'memberCount', function(err, count) {
+	Groups.getMemberCount = function (groupName, callback) {
+		db.getObjectField('group:' + groupName, 'memberCount', function (err, count) {
 			if (err) {
 				return callback(err);
 			}
@@ -432,8 +432,8 @@ module.exports = function(Groups) {
 		});
 	};
 
-	Groups.isMemberOfGroupList = function(uid, groupListKey, callback) {
-		db.getSortedSetRange('group:' + groupListKey + ':members', 0, -1, function(err, groupNames) {
+	Groups.isMemberOfGroupList = function (uid, groupListKey, callback) {
+		db.getSortedSetRange('group:' + groupListKey + ':members', 0, -1, function (err, groupNames) {
 			if (err) {
 				return callback(err);
 			}
@@ -442,7 +442,7 @@ module.exports = function(Groups) {
 				return callback(null, false);
 			}
 
-			Groups.isMemberOfGroups(uid, groupNames, function(err, isMembers) {
+			Groups.isMemberOfGroups(uid, groupNames, function (err, isMembers) {
 				if (err) {
 					return callback(err);
 				}
@@ -452,12 +452,12 @@ module.exports = function(Groups) {
 		});
 	};
 
-	Groups.isMemberOfGroupsList = function(uid, groupListKeys, callback) {
-		var sets = groupListKeys.map(function(groupName) {
+	Groups.isMemberOfGroupsList = function (uid, groupListKeys, callback) {
+		var sets = groupListKeys.map(function (groupName) {
 			return 'group:' + groupName + ':members';
 		});
 
-		db.getSortedSetsMembers(sets, function(err, members) {
+		db.getSortedSetsMembers(sets, function (err, members) {
 			if (err) {
 				return callback(err);
 			}
@@ -465,18 +465,18 @@ module.exports = function(Groups) {
 			var uniqueGroups = _.unique(_.flatten(members));
 			uniqueGroups = Groups.internals.removeEphemeralGroups(uniqueGroups);
 
-			Groups.isMemberOfGroups(uid, uniqueGroups, function(err, isMembers) {
+			Groups.isMemberOfGroups(uid, uniqueGroups, function (err, isMembers) {
 				if (err) {
 					return callback(err);
 				}
 
 				var map = {};
 
-				uniqueGroups.forEach(function(groupName, index) {
+				uniqueGroups.forEach(function (groupName, index) {
 					map[groupName] = isMembers[index];
 				});
 
-				var result = members.map(function(groupNames) {
+				var result = members.map(function (groupNames) {
 					for (var i = 0; i < groupNames.length; ++i) {
 						if (map[groupNames[i]]) {
 							return true;
@@ -490,14 +490,14 @@ module.exports = function(Groups) {
 		});
 	};
 
-	Groups.isMembersOfGroupList = function(uids, groupListKey, callback) {
-		db.getSortedSetRange('group:' + groupListKey + ':members', 0, -1, function(err, groupNames) {
+	Groups.isMembersOfGroupList = function (uids, groupListKey, callback) {
+		db.getSortedSetRange('group:' + groupListKey + ':members', 0, -1, function (err, groupNames) {
 			if (err) {
 				return callback(err);
 			}
 
 			var results = [];
-			uids.forEach(function() {
+			uids.forEach(function () {
 				results.push(false);
 			});
 
@@ -506,46 +506,46 @@ module.exports = function(Groups) {
 				return callback(null, results);
 			}
 
-			async.each(groupNames, function(groupName, next) {
-				Groups.isMembers(uids, groupName, function(err, isMembers) {
+			async.each(groupNames, function (groupName, next) {
+				Groups.isMembers(uids, groupName, function (err, isMembers) {
 					if (err) {
 						return next(err);
 					}
-					results.forEach(function(isMember, index) {
+					results.forEach(function (isMember, index) {
 						if (!isMember && isMembers[index]) {
 							results[index] = true;
 						}
 					});
 					next();
 				});
-			}, function(err) {
+			}, function (err) {
 				callback(err, results);
 			});
 		});
 	};
 
-	Groups.isInvited = function(uid, groupName, callback) {
+	Groups.isInvited = function (uid, groupName, callback) {
 		if (!uid) {
 			return callback(null, false);
 		}
 		db.isSetMember('group:' + groupName + ':invited', uid, callback);
 	};
 
-	Groups.isPending = function(uid, groupName, callback) {
+	Groups.isPending = function (uid, groupName, callback) {
 		if (!uid) {
 			return callback(null, false);
 		}
 		db.isSetMember('group:' + groupName + ':pending', uid, callback);
 	};
 
-	Groups.getPending = function(groupName, callback) {
+	Groups.getPending = function (groupName, callback) {
 		if (!groupName) {
 			return callback(null, []);
 		}
 		db.getSetMembers('group:' + groupName + ':pending', callback);
 	};
 
-	Groups.kick = function(uid, groupName, isOwner, callback) {
+	Groups.kick = function (uid, groupName, isOwner, callback) {
 		if (isOwner) {
 			// If the owners set only contains one member, error out!
 			async.waterfall([

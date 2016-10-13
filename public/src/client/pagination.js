@@ -1,20 +1,20 @@
 'use strict';
 /*global define, utils, ajaxify, bootbox*/
 
-define('forum/pagination', function() {
+define('forum/pagination', function () {
 	var pagination = {};
 
-	pagination.init = function() {
-		$('body').on('click', '[component="pagination/select-page"]', function() {
-			bootbox.prompt('[[global:enter_page_number]]', function(pageNum) {
+	pagination.init = function () {
+		$('body').on('click', '[component="pagination/select-page"]', function () {
+			bootbox.prompt('[[global:enter_page_number]]', function (pageNum) {
 				pagination.loadPage(pageNum);
 			});
 			return false;
 		});
 	};
 
-	pagination.loadPage = function(page, callback) {
-		callback = callback || function() {};
+	pagination.loadPage = function (page, callback) {
+		callback = callback || function () {};
 		page = parseInt(page, 10);
 		if (!utils.isNumber(page) || page < 1 || page > ajaxify.data.pagination.pageCount) {
 			return;

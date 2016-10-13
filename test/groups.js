@@ -8,34 +8,34 @@ var db = require('./mocks/databasemock');
 var Groups = require('../src/groups');
 var User = require('../src/user');
 
-describe('Groups', function() {
-	before(function(done) {
+describe('Groups', function () {
+	before(function (done) {
 		Groups.resetCache();
 		async.parallel([
-			function(next) {
+			function (next) {
 				// Create a group to play around with
 				Groups.create({
 					name: 'Test',
 					description: 'Foobar!'
 				}, next);
 			},
-			function(next) {
+			function (next) {
 				// Create a new user
 				User.create({
 					username: 'testuser',
 					email: 'b@c.com'
 				}, next);
 			},
-			function(next) {
+			function (next) {
 				// Also create a hidden group
 				Groups.join('Hidden', 'Test', next);
 			}
 		], done);
 	});
 
-	describe('.list()', function() {
-		it('should list the groups present', function(done) {
-			Groups.getGroupsFromSet('groups:createtime', 0, 0, -1, function(err, groups) {
+	describe('.list()', function () {
+		it('should list the groups present', function (done) {
+			Groups.getGroupsFromSet('groups:createtime', 0, 0, -1, function (err, groups) {
 				assert.ifError(err);
 				assert.equal(groups.length, 3);
 				done();
@@ -43,13 +43,13 @@ describe('Groups', function() {
 		});
 	});
 
-	describe('.get()', function() {
-		before(function(done) {
+	describe('.get()', function () {
+		before(function (done) {
 			Groups.join('Test', 1, done);
 		});
 
-		it('with no options, should show group information', function(done) {
-			Groups.get('Test', {}, function(err, groupObj) {
+		it('with no options, should show group information', function (done) {
+			Groups.get('Test', {}, function (err, groupObj) {
 				if (err) return done(err);
 
 				assert.equal(typeof groupObj, 'object');
@@ -64,9 +64,9 @@ describe('Groups', function() {
 		});
 	});
 
-	describe('.search()', function() {
-		it('should return the "Test" group when searched for', function(done) {
-			Groups.search('test', {}, function(err, groups) {
+	describe('.search()', function () {
+		it('should return the "Test" group when searched for', function (done) {
+			Groups.search('test', {}, function (err, groups) {
 				if (err) return done(err);
 				assert.equal(1, groups.length);
 				assert.strictEqual('Test', groups[0].name);
@@ -75,9 +75,9 @@ describe('Groups', function() {
 		});
 	});
 
-	describe('.isMember()', function() {
-		it('should return boolean true when a user is in a group', function(done) {
-			Groups.isMember(1, 'Test', function(err, isMember) {
+	describe('.isMember()', function () {
+		it('should return boolean true when a user is in a group', function (done) {
+			Groups.isMember(1, 'Test', function (err, isMember) {
 				if (err) return done(err);
 
 				assert.strictEqual(isMember, true);
@@ -86,8 +86,8 @@ describe('Groups', function() {
 			});
 		});
 
-		it('should return boolean false when a user is not in a group', function(done) {
-			Groups.isMember(2, 'Test', function(err, isMember) {
+		it('should return boolean false when a user is not in a group', function (done) {
+			Groups.isMember(2, 'Test', function (err, isMember) {
 				if (err) return done(err);
 
 				assert.strictEqual(isMember, false);
@@ -97,9 +97,9 @@ describe('Groups', function() {
 		});
 	});
 
-	describe('.isMemberOfGroupList', function() {
-		it('should report that a user is part of a groupList, if they are', function(done) {
-			Groups.isMemberOfGroupList(1, 'Hidden', function(err, isMember) {
+	describe('.isMemberOfGroupList', function () {
+		it('should report that a user is part of a groupList, if they are', function (done) {
+			Groups.isMemberOfGroupList(1, 'Hidden', function (err, isMember) {
 				if (err) return done(err);
 
 				assert.strictEqual(isMember, true);
@@ -108,8 +108,8 @@ describe('Groups', function() {
 			});
 		});
 
-		it('should report that a user is not part of a groupList, if they are not', function(done) {
-			Groups.isMemberOfGroupList(2, 'Hidden', function(err, isMember) {
+		it('should report that a user is not part of a groupList, if they are not', function (done) {
+			Groups.isMemberOfGroupList(2, 'Hidden', function (err, isMember) {
 				if (err) return done(err);
 
 				assert.strictEqual(isMember, false);
@@ -119,9 +119,9 @@ describe('Groups', function() {
 		});
 	});
 
-	describe('.exists()', function() {
-		it('should verify that the test group exists', function(done) {
-			Groups.exists('Test', function(err, exists) {
+	describe('.exists()', function () {
+		it('should verify that the test group exists', function (done) {
+			Groups.exists('Test', function (err, exists) {
 				if (err) return done(err);
 
 				assert.strictEqual(exists, true);
@@ -130,8 +130,8 @@ describe('Groups', function() {
 			});
 		});
 
-		it('should verify that a fake group does not exist', function(done) {
-			Groups.exists('Derp', function(err, exists) {
+		it('should verify that a fake group does not exist', function (done) {
+			Groups.exists('Derp', function (err, exists) {
 				if (err) return done(err);
 
 				assert.strictEqual(exists, false);
@@ -140,8 +140,8 @@ describe('Groups', function() {
 			});
 		});
 
-		it('should check if group exists using an array', function(done) {
-			Groups.exists(['Test', 'Derp'], function(err, groupsExists) {
+		it('should check if group exists using an array', function (done) {
+			Groups.exists(['Test', 'Derp'], function (err, groupsExists) {
 				if (err) return done(err);
 
 				assert.strictEqual(groupsExists[0], true);
@@ -151,20 +151,20 @@ describe('Groups', function() {
 		});
 	});
 
-	describe('.create()', function() {
-		it('should create another group', function(done) {
+	describe('.create()', function () {
+		it('should create another group', function (done) {
 			Groups.create({
 				name: 'foo',
 				description: 'bar'
-			}, function(err) {
+			}, function (err) {
 				if (err) return done(err);
 
 				Groups.get('foo', {}, done);
 			});
 		});
 
-		it('should fail to create group with duplicate group name', function(done) {
-			Groups.create({name: 'foo'}, function(err) {
+		it('should fail to create group with duplicate group name', function (done) {
+			Groups.create({name: 'foo'}, function (err) {
 				assert(err);
 				assert.equal(err.message, '[[error:group-already-exists]]');
 				done();
@@ -172,12 +172,12 @@ describe('Groups', function() {
 		});
 	});
 
-	describe('.hide()', function() {
-		it('should mark the group as hidden', function(done) {
-			Groups.hide('foo', function(err) {
+	describe('.hide()', function () {
+		it('should mark the group as hidden', function (done) {
+			Groups.hide('foo', function (err) {
 				if (err) return done(err);
 
-				Groups.get('foo', {}, function(err, groupObj) {
+				Groups.get('foo', {}, function (err, groupObj) {
 					if (err) return done(err);
 
 					assert.strictEqual(true, groupObj.hidden);
@@ -188,8 +188,8 @@ describe('Groups', function() {
 		});
 	});
 
-	describe('.update()', function() {
-		before(function(done) {
+	describe('.update()', function () {
+		before(function (done) {
 			Groups.create({
 				name: 'updateTestGroup',
 				description: 'bar',
@@ -198,13 +198,13 @@ describe('Groups', function() {
 			}, done);
 		});
 
-		it('should change an aspect of a group', function(done) {
+		it('should change an aspect of a group', function (done) {
 			Groups.update('updateTestGroup', {
 				description: 'baz'
-			}, function(err) {
+			}, function (err) {
 				if (err) return done(err);
 
-				Groups.get('updateTestGroup', {}, function(err, groupObj) {
+				Groups.get('updateTestGroup', {}, function (err, groupObj) {
 					if (err) return done(err);
 
 					assert.strictEqual('baz', groupObj.description);
@@ -214,13 +214,13 @@ describe('Groups', function() {
 			});
 		});
 
-		it('should rename a group if the name was updated', function(done) {
+		it('should rename a group if the name was updated', function (done) {
 			Groups.update('updateTestGroup', {
 				name: 'updateTestGroup?'
-			}, function(err) {
+			}, function (err) {
 				if (err) return done(err);
 
-				Groups.get('updateTestGroup?', {}, function(err, groupObj) {
+				Groups.get('updateTestGroup?', {}, function (err, groupObj) {
 					if (err) return done(err);
 
 					assert.strictEqual('updateTestGroup?', groupObj.name);
@@ -232,16 +232,16 @@ describe('Groups', function() {
 		});
 	});
 
-	describe('.destroy()', function() {
-		before(function(done) {
+	describe('.destroy()', function () {
+		before(function (done) {
 			Groups.join('foobar?', 1, done);
 		});
 
-		it('should destroy a group', function(done) {
-			Groups.destroy('foobar?', function(err) {
+		it('should destroy a group', function (done) {
+			Groups.destroy('foobar?', function (err) {
 				if (err) return done(err);
 
-				Groups.get('foobar?', {}, function(err) {
+				Groups.get('foobar?', {}, function (err) {
 					assert(err, 'Group still exists!');
 
 					done();
@@ -249,8 +249,8 @@ describe('Groups', function() {
 			});
 		});
 
-		it('should also remove the members set', function(done) {
-			db.exists('group:foo:members', function(err, exists) {
+		it('should also remove the members set', function (done) {
+			db.exists('group:foo:members', function (err, exists) {
 				if (err) return done(err);
 
 				assert.strictEqual(false, exists);
@@ -260,16 +260,16 @@ describe('Groups', function() {
 		});
 	});
 
-	describe('.join()', function() {
-		before(function(done) {
+	describe('.join()', function () {
+		before(function (done) {
 			Groups.leave('Test', 1, done);
 		});
 
-		it('should add a user to a group', function(done) {
-			Groups.join('Test', 1, function(err) {
+		it('should add a user to a group', function (done) {
+			Groups.join('Test', 1, function (err) {
 				if (err) return done(err);
 
-				Groups.isMember(1, 'Test', function(err, isMember) {
+				Groups.isMember(1, 'Test', function (err, isMember) {
 					assert.equal(err, null);
 					assert.strictEqual(true, isMember);
 
@@ -279,12 +279,12 @@ describe('Groups', function() {
 		});
 	});
 
-	describe('.leave()', function() {
-		it('should remove a user from a group', function(done) {
-			Groups.leave('Test', 1, function(err) {
+	describe('.leave()', function () {
+		it('should remove a user from a group', function (done) {
+			Groups.leave('Test', 1, function (err) {
 				if (err) return done(err);
 
-				Groups.isMember(1, 'Test', function(err, isMember) {
+				Groups.isMember(1, 'Test', function (err, isMember) {
 					assert.equal(err, null);
 					assert.strictEqual(false, isMember);
 
@@ -294,20 +294,20 @@ describe('Groups', function() {
 		});
 	});
 
-	describe('.leaveAllGroups()', function() {
-		it('should remove a user from all groups', function(done) {
-			Groups.leaveAllGroups(1, function(err) {
+	describe('.leaveAllGroups()', function () {
+		it('should remove a user from all groups', function (done) {
+			Groups.leaveAllGroups(1, function (err) {
 				if (err) return done(err);
 
 				var	groups = ['Test', 'Hidden'];
-				async.every(groups, function(group, next) {
-					Groups.isMember(1, group, function(err, isMember) {
+				async.every(groups, function (group, next) {
+					Groups.isMember(1, group, function (err, isMember) {
 						if (err) done(err);
 						else {
 							next(!isMember);
 						}
 					});
-				}, function(result) {
+				}, function (result) {
 					assert(result);
 
 					done();
@@ -316,12 +316,12 @@ describe('Groups', function() {
 		});
 	});
 
-	describe('.show()', function() {
-		it('should make a group visible', function(done) {
-			Groups.show('Test', function(err) {
+	describe('.show()', function () {
+		it('should make a group visible', function (done) {
+			Groups.show('Test', function (err) {
 				assert.ifError(err);
 				assert.equal(arguments.length, 1);
-				db.isSortedSetMember('groups:visible:createtime', 'Test', function(err, isMember) {
+				db.isSortedSetMember('groups:visible:createtime', 'Test', function (err, isMember) {
 					assert.ifError(err);
 					assert.strictEqual(isMember, true);
 					done();
@@ -330,12 +330,12 @@ describe('Groups', function() {
 		});
 	});
 
-	describe('.hide()', function() {
-		it('should make a group hidden', function(done) {
-			Groups.hide('Test', function(err) {
+	describe('.hide()', function () {
+		it('should make a group hidden', function (done) {
+			Groups.hide('Test', function (err) {
 				assert.ifError(err);
 				assert.equal(arguments.length, 1);
-				db.isSortedSetMember('groups:visible:createtime', 'Test', function(err, isMember) {
+				db.isSortedSetMember('groups:visible:createtime', 'Test', function (err, isMember) {
 					assert.ifError(err);
 					assert.strictEqual(isMember, false);
 					done();
@@ -344,7 +344,7 @@ describe('Groups', function() {
 		});
 	});
 
-	after(function(done) {
+	after(function (done) {
 		db.flushdb(done);
 	});
 });

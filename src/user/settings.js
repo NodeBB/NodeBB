@@ -6,14 +6,14 @@ var meta = require('../meta');
 var db = require('../database');
 var plugins = require('../plugins');
 
-module.exports = function(User) {
+module.exports = function (User) {
 
-	User.getSettings = function(uid, callback) {
+	User.getSettings = function (uid, callback) {
 		if (!parseInt(uid, 10)) {
 			return onSettingsLoaded(0, {}, callback);
 		}
 
-		db.getObject('user:' + uid + ':settings', function(err, settings) {
+		db.getObject('user:' + uid + ':settings', function (err, settings) {
 			if (err) {
 				return callback(err);
 			}
@@ -22,16 +22,16 @@ module.exports = function(User) {
 		});
 	};
 
-	User.getMultipleUserSettings = function(uids, callback) {
+	User.getMultipleUserSettings = function (uids, callback) {
 		if (!Array.isArray(uids) || !uids.length) {
 			return callback(null, []);
 		}
 
-		var keys = uids.map(function(uid) {
+		var keys = uids.map(function (uid) {
 			return 'user:' + uid + ':settings';
 		});
 
-		db.getObjects(keys, function(err, settings) {
+		db.getObjects(keys, function (err, settings) {
 			if (err) {
 				return callback(err);
 			}
@@ -41,14 +41,14 @@ module.exports = function(User) {
 				settings[i].uid = uids[i];
 			}
 
-			async.map(settings, function(setting, next) {
+			async.map(settings, function (setting, next) {
 				onSettingsLoaded(setting.uid, setting, next);
 			}, callback);
 		});
 	};
 
 	function onSettingsLoaded(uid, settings, callback) {
-		plugins.fireHook('filter:user.getSettings', {uid: uid, settings: settings}, function(err, data) {
+		plugins.fireHook('filter:user.getSettings', {uid: uid, settings: settings}, function (err, data) {
 			if (err) {
 				return callback(err);
 			}
@@ -91,7 +91,7 @@ module.exports = function(User) {
 		return defaultValue;
 	}
 
-	User.saveSettings = function(uid, data, callback) {
+	User.saveSettings = function (uid, data, callback) {
 		if (!data.postsPerPage || parseInt(data.postsPerPage, 10) <= 1 || parseInt(data.postsPerPage, 10) > meta.config.postsPerPage) {
 			return callback(new Error('[[error:invalid-pagination-value, 2, ' + meta.config.postsPerPage + ']]'));
 		}
@@ -132,24 +132,24 @@ module.exports = function(User) {
 		}
 
 		async.waterfall([
-			function(next) {
+			function (next) {
 				db.setObject('user:' + uid + ':settings', settings, next);
 			},
-			function(next) {
+			function (next) {
 				User.updateDigestSetting(uid, data.dailyDigestFreq, next);
 			},
-			function(next) {
+			function (next) {
 				User.getSettings(uid, next);
 			}
 		], callback);
 	};
 
-	User.updateDigestSetting = function(uid, dailyDigestFreq, callback) {
+	User.updateDigestSetting = function (uid, dailyDigestFreq, callback) {
 		async.waterfall([
-			function(next) {
+			function (next) {
 				db.sortedSetsRemove(['digest:day:uids', 'digest:week:uids', 'digest:month:uids'], uid, next);
 			},
-			function(next) {
+			function (next) {
 				if (['day', 'week', 'month'].indexOf(dailyDigestFreq) !== -1) {
 					db.sortedSetAdd('digest:' + dailyDigestFreq + ':uids', Date.now(), uid, next);
 				} else {
@@ -159,7 +159,7 @@ module.exports = function(User) {
 		], callback);
 	};
 
-	User.setSetting = function(uid, key, value, callback) {
+	User.setSetting = function (uid, key, value, callback) {
 		db.setObjectField('user:' + uid + ':settings', key, value, callback);
 	};
 };

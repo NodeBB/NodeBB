@@ -15,33 +15,33 @@ var plugins = require('../plugins');
 
 var SocketHelpers = {};
 
-SocketHelpers.notifyOnlineUsers = function(uid, result) {
+SocketHelpers.notifyOnlineUsers = function (uid, result) {
 	winston.warn('[deprecated] SocketHelpers.notifyOnlineUsers, consider using socketHelpers.notifyNew(uid, \'newPost\', result);');
 	SocketHelpers.notifyNew(uid, 'newPost', result);
 };
 
-SocketHelpers.notifyNew = function(uid, type, result) {
+SocketHelpers.notifyNew = function (uid, type, result) {
 	async.waterfall([
-		function(next) {
+		function (next) {
 			user.getUidsFromSet('users:online', 0, -1, next);
 		},
-		function(uids, next) {
+		function (uids, next) {
 			privileges.topics.filterUids('read', result.posts[0].topic.tid, uids, next);
 		},
-		function(uids, next) {
+		function (uids, next) {
 			filterTidCidIgnorers(uids, result.posts[0].topic.tid, result.posts[0].topic.cid, next);
 		},
-		function(uids, next) {
+		function (uids, next) {
 			plugins.fireHook('filter:sockets.sendNewPostToUids', {uidsTo: uids, uidFrom: uid, type: type}, next);
 		}
-	], function(err, data) {
+	], function (err, data) {
 		if (err) {
 			return winston.error(err.stack);
 		}
 
 		result.posts[0].ip = undefined;
 
-		data.uidsTo.forEach(function(toUid) {
+		data.uidsTo.forEach(function (toUid) {
 			if (parseInt(toUid, 10) !== uid) {
 				websockets.in('uid_' + toUid).emit('event:new_post', result);
 				if (result.topic && type === 'newTopic') {
@@ -56,19 +56,19 @@ function filterTidCidIgnorers(uids, tid, cid, callback) {
 	async.waterfall([
 		function (next) {
 			async.parallel({
-				topicFollowed: function(next) {
+				topicFollowed: function (next) {
 					db.isSetMembers('tid:' + tid + ':followers', uids, next);
 				},
-				topicIgnored: function(next) {
+				topicIgnored: function (next) {
 					db.isSetMembers('tid:' + tid + ':ignorers', uids, next);
 				},
-				categoryIgnored: function(next) {
+				categoryIgnored: function (next) {
 					db.sortedSetScores('cid:' + cid + ':ignorers', uids, next);
 				}
 			}, next);
 		},
 		function (results, next) {
-			uids = uids.filter(function(uid, index) {
+			uids = uids.filter(function (uid, index) {
 				return results.topicFollowed[index] ||
 					(!results.topicFollowed[index] && !results.topicIgnored[index] && !results.categoryIgnored[index]);
 			});
@@ -77,7 +77,7 @@ function filterTidCidIgnorers(uids, tid, cid, callback) {
 	], callback);
 }
 
-SocketHelpers.sendNotificationToPostOwner = function(pid, fromuid, command, notification) {
+SocketHelpers.sendNotificationToPostOwner = function (pid, fromuid, command, notification) {
 	if (!pid || !fromuid || !notification) {
 		return;
 	}
@@ -116,7 +116,7 @@ SocketHelpers.sendNotificationToPostOwner = function(pid, fromuid, command, noti
 				topicTitle: results.topicTitle
 			}, next);
 		}
-	], function(err, notification) {
+	], function (err, notification) {
 		if (err) {
 			return winston.error(err);
 		}
@@ -127,7 +127,7 @@ SocketHelpers.sendNotificationToPostOwner = function(pid, fromuid, command, noti
 };
 
 
-SocketHelpers.sendNotificationToTopicOwner = function(tid, fromuid, command, notification) {
+SocketHelpers.sendNotificationToTopicOwner = function (tid, fromuid, command, notification) {
 	if (!tid || !fromuid || !notification) {
 		return;
 	}
@@ -157,7 +157,7 @@ SocketHelpers.sendNotificationToTopicOwner = function(tid, fromuid, command, not
 				from: fromuid
 			}, next);
 		}
-	], function(err, notification) {
+	], function (err, notification) {
 		if (err) {
 			return winston.error(err);
 		}
@@ -167,16 +167,16 @@ SocketHelpers.sendNotificationToTopicOwner = function(tid, fromuid, command, not
 	});
 };
 
-SocketHelpers.rescindUpvoteNotification = function(pid, fromuid) {
+SocketHelpers.rescindUpvoteNotification = function (pid, fromuid) {
 	var nid = 'upvote:post:' + pid + ':uid:' + fromuid;
 	notifications.rescind(nid);
 
-	posts.getPostField(pid, 'uid', function(err, uid) {
+	posts.getPostField(pid, 'uid', function (err, uid) {
 		if (err) {
 			return winston.error(err);
 		}
 
-		user.notifications.getUnreadCount(uid, function(err, count) {
+		user.notifications.getUnreadCount(uid, function (err, count) {
 			if (err) {
 				return winston.error(err);
 			}
@@ -186,7 +186,7 @@ SocketHelpers.rescindUpvoteNotification = function(pid, fromuid) {
 	});
 };
 
-SocketHelpers.emitToTopicAndCategory = function(event, data) {
+SocketHelpers.emitToTopicAndCategory = function (event, data) {
 	websockets.in('topic_' + data.tid).emit(event, data);
 	websockets.in('category_' + data.cid).emit(event, data);
 };

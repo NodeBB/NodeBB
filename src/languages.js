@@ -10,7 +10,7 @@ var plugins = require('./plugins');
 
 var Languages = {};
 
-Languages.init = function(next) {
+Languages.init = function (next) {
 	if (Languages.hasOwnProperty('_cache')) {
 		Languages._cache.reset();
 	} else {
@@ -20,7 +20,7 @@ Languages.init = function(next) {
 	next();
 };
 
-Languages.get = function(code, key, callback) {
+Languages.get = function (code, key, callback) {
 	var combined = [code, key].join('/');
 
 	if (Languages._cache.has(combined)) {
@@ -29,7 +29,7 @@ Languages.get = function(code, key, callback) {
 
 	var languageData;
 
-	fs.readFile(path.join(__dirname, '../public/language/', code, key), { encoding: 'utf-8' }, function(err, data) {
+	fs.readFile(path.join(__dirname, '../public/language/', code, key), { encoding: 'utf-8' }, function (err, data) {
 		if (err && err.code !== 'ENOENT') {
 			return callback(err);
 		}
@@ -50,17 +50,17 @@ Languages.get = function(code, key, callback) {
 	});
 };
 
-Languages.list = function(callback) {
+Languages.list = function (callback) {
 	var	languagesPath = path.join(__dirname, '../public/language'),
 		languages = [];
 
-	fs.readdir(languagesPath, function(err, files) {
+	fs.readdir(languagesPath, function (err, files) {
 		if (err) {
 			return callback(err);
 		}
 
-		async.each(files, function(folder, next) {
-			fs.stat(path.join(languagesPath, folder), function(err, stat) {
+		async.each(files, function (folder, next) {
+			fs.stat(path.join(languagesPath, folder), function (err, stat) {
 				if (err) {
 					return next(err);
 				}
@@ -71,7 +71,7 @@ Languages.list = function(callback) {
 
 				var configPath = path.join(languagesPath, folder, 'language.json');
 
-				fs.readFile(configPath, function(err, stream) {
+				fs.readFile(configPath, function (err, stream) {
 					if (err) {
 						next();
 					}
@@ -79,12 +79,12 @@ Languages.list = function(callback) {
 					next();
 				});
 			});
-		}, function(err) {
+		}, function (err) {
 			if (err) {
 				return callback(err);
 			}
 			// Sort alphabetically
-			languages = languages.sort(function(a, b) {
+			languages = languages.sort(function (a, b) {
 				return a.code > b.code ? 1 : -1;
 			});
 

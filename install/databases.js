@@ -9,7 +9,7 @@ var questions = {
 	mongo: require('../src/database/mongo').questions
 };
 
-module.exports = function(config, callback) {
+module.exports = function (config, callback) {
 	async.waterfall([
 		function (next) {
 			process.stdout.write('\n');

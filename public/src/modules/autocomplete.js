@@ -3,25 +3,25 @@
 
 /* globals define, socket, app */
 
-define('autocomplete', function() {
+define('autocomplete', function () {
 	var module = {};
 
 	module.user = function (input, onselect) {
-		app.loadJQueryUI(function() {
+		app.loadJQueryUI(function () {
 			input.autocomplete({
 				delay: 200,
-				open: function() {
+				open: function () {
 					$(this).autocomplete('widget').css('z-index', 20000);
 				},
 				select: onselect,
-				source: function(request, response) {
-					socket.emit('user.search', {query: request.term}, function(err, result) {
+				source: function (request, response) {
+					socket.emit('user.search', {query: request.term}, function (err, result) {
 						if (err) {
 							return app.alertError(err.message);
 						}
 
 						if (result && result.users) {
-							var names = result.users.map(function(user) {
+							var names = result.users.map(function (user) {
 								var username = $('<div/>').html(user.username).text()
 								return user && {
 									label: username,
@@ -42,21 +42,21 @@ define('autocomplete', function() {
 		});
 	};
 
-	module.group = function(input, onselect) {
-		app.loadJQueryUI(function() {
+	module.group = function (input, onselect) {
+		app.loadJQueryUI(function () {
 			input.autocomplete({
 				delay: 200,
 				select: onselect,
-				source: function(request, response) {
+				source: function (request, response) {
 					socket.emit('groups.search', {
 						query: request.term
-					}, function(err, results) {
+					}, function (err, results) {
 						if (err) {
 							return app.alertError(err.message);
 						}
 
 						if (results && results.length) {
-							var names = results.map(function(group) {
+							var names = results.map(function (group) {
 								return group && {
 									label: group.name,
 									value: group.name,

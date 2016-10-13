@@ -91,7 +91,7 @@ function addRoutes(router, middleware, controllers) {
 	router.get('/development/info', middlewares, controllers.admin.info.get);
 }
 
-module.exports = function(app, middleware, controllers) {
+module.exports = function (app, middleware, controllers) {
 	app.use('/admin/', adminRouter(middleware, controllers));
 	app.use('/api/admin/', apiRouter(middleware, controllers));
 };

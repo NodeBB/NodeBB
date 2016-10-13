@@ -5,9 +5,9 @@ var privileges = require('../../privileges');
 var topics = require('../../topics');
 var socketHelpers = require('../helpers');
 
-module.exports = function(SocketPosts) {
+module.exports = function (SocketPosts) {
 
-	SocketPosts.movePost = function(socket, data, callback) {
+	SocketPosts.movePost = function (socket, data, callback) {
 		if (!socket.uid) {
 			return callback(new Error('[[error:not-logged-in]]'));
 		}

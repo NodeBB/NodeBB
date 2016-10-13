@@ -17,7 +17,7 @@ var file = require('./file');
 var app;
 var middleware;
 
-(function(Plugins) {
+(function (Plugins) {
 	require('./plugins/install')(Plugins);
 	require('./plugins/load')(Plugins);
 	require('./plugins/hooks')(Plugins);
@@ -36,13 +36,13 @@ var middleware;
 
 	Plugins.initialized = false;
 
-	Plugins.requireLibrary = function(pluginID, libraryPath) {
+	Plugins.requireLibrary = function (pluginID, libraryPath) {
 		Plugins.libraries[pluginID] = require(libraryPath);
 		Plugins.libraryPaths.push(libraryPath);
 	};
 
-	Plugins.init = function(nbbApp, nbbMiddleware, callback) {
-		callback = callback || function() {};
+	Plugins.init = function (nbbApp, nbbMiddleware, callback) {
+		callback = callback || function () {};
 		if (Plugins.initialized) {
 			return callback();
 		}
@@ -55,7 +55,7 @@ var middleware;
 			winston.verbose('[plugins] Initializing plugins system');
 		}
 
-		Plugins.reload(function(err) {
+		Plugins.reload(function (err) {
 			if (err) {
 				winston.error('[plugins] NodeBB encountered a problem while loading plugins', err.message);
 				return callback(err);
@@ -71,7 +71,7 @@ var middleware;
 		});
 	};
 
-	Plugins.reload = function(callback) {
+	Plugins.reload = function (callback) {
 		// Resetting all local plugin data
 		Plugins.libraries = {};
 		Plugins.loadedHooks = {};
@@ -89,39 +89,39 @@ var middleware;
 		// });
 
 		async.waterfall([
-			function(next) {
+			function (next) {
 				// Build language code list
-				fs.readdir(path.join(__dirname, '../public/language'), function(err, directories) {
+				fs.readdir(path.join(__dirname, '../public/language'), function (err, directories) {
 					if (err) {
 						return next(err);
 					}
 
-					Plugins.languageCodes = directories.filter(function(code) {
+					Plugins.languageCodes = directories.filter(function (code) {
 						return code !== 'TODO';
 					});
 
 					next();
 				});
 			},
-			function(next) {
+			function (next) {
 				db.getSortedSetRange('plugins:active', 0, -1, next);
 			},
-			function(plugins, next) {
+			function (plugins, next) {
 				if (!Array.isArray(plugins)) {
 					return next();
 				}
 
-				plugins = plugins.filter(function(plugin){
+				plugins = plugins.filter(function (plugin){
 					return plugin && typeof plugin === 'string';
-				}).map(function(plugin){
+				}).map(function (plugin){
 					return path.join(__dirname, '../node_modules/', plugin);
 				});
 
-				async.filter(plugins, file.exists, function(plugins) {
+				async.filter(plugins, file.exists, function (plugins) {
 					async.eachSeries(plugins, Plugins.loadPlugin, next);
 				});
 			},
-			function(next) {
+			function (next) {
 				// If some plugins are incompatible, throw the warning here
 				if (Plugins.versionWarning.length && nconf.get('isPrimary') === 'true') {
 					process.stdout.write('\n');
@@ -132,9 +132,9 @@ var middleware;
 					process.stdout.write('\n');
 				}
 
-				Object.keys(Plugins.loadedHooks).forEach(function(hook) {
+				Object.keys(Plugins.loadedHooks).forEach(function (hook) {
 					var hooks = Plugins.loadedHooks[hook];
-					hooks = hooks.sort(function(a, b) {
+					hooks = hooks.sort(function (a, b) {
 						return a.priority - b.priority;
 					});
 				});
@@ -144,17 +144,17 @@ var middleware;
 		], callback);
 	};
 
-	Plugins.reloadRoutes = function(callback) {
-		callback = callback || function() {};
+	Plugins.reloadRoutes = function (callback) {
+		callback = callback || function () {};
 		var router = express.Router();
 
 		router.hotswapId = 'plugins';
-		router.render = function() {
+		router.render = function () {
 			app.render.apply(app, arguments);
 		};
 
 		var controllers = require('./controllers');
-		Plugins.fireHook('static:app.load', {app: app, router: router, middleware: middleware, controllers: controllers}, function(err) {
+		Plugins.fireHook('static:app.load', {app: app, router: router, middleware: middleware, controllers: controllers}, function (err) {
 			if (err) {
 				return winston.error('[plugins] Encountered error while executing post-router plugins hooks: ' + err.message);
 			}
@@ -165,38 +165,38 @@ var middleware;
 		});
 	};
 
-	Plugins.getTemplates = function(callback) {
+	Plugins.getTemplates = function (callback) {
 		var templates = {},
 			tplName;
 
 		async.waterfall([
 			async.apply(db.getSortedSetRange, 'plugins:active', 0, -1),
-			function(plugins, next) {
+			function (plugins, next) {
 				var pluginBasePath = path.join(__dirname, '../node_modules');
-				var paths = plugins.map(function(plugin) {
+				var paths = plugins.map(function (plugin) {
 					return path.join(pluginBasePath, plugin);
 				});
 
 				// Filter out plugins with invalid paths
-				async.filter(paths, file.exists, function(paths) {
+				async.filter(paths, file.exists, function (paths) {
 					next(null, paths);
 				});
 			},
-			function(paths, next) {
+			function (paths, next) {
 				async.map(paths, Plugins.loadPluginInfo, next);
 			}
-		], function(err, plugins) {
+		], function (err, plugins) {
 			if (err) {
 				return callback(err);
 			}
 
-			async.eachSeries(plugins, function(plugin, next) {
+			async.eachSeries(plugins, function (plugin, next) {
 				if (plugin.templates || plugin.id.startsWith('nodebb-theme-')) {
 					winston.verbose('[plugins] Loading templates (' + plugin.id + ')');
 					var templatesPath = path.join(__dirname, '../node_modules', plugin.id, plugin.templates || 'templates');
-					utils.walk(templatesPath, function(err, pluginTemplates) {
+					utils.walk(templatesPath, function (err, pluginTemplates) {
 						if (pluginTemplates) {
-							pluginTemplates.forEach(function(pluginTemplate) {
+							pluginTemplates.forEach(function (pluginTemplate) {
 								if (pluginTemplate.endsWith('.tpl')) {
 									tplName = "/" + pluginTemplate.replace(templatesPath, '').substring(1);
 
@@ -222,24 +222,24 @@ var middleware;
 				} else {
 					next(false);
 				}
-			}, function(err) {
+			}, function (err) {
 				callback(err, templates);
 			});
 		});
 	};
 
-	Plugins.get = function(id, callback) {
+	Plugins.get = function (id, callback) {
 		var url = (nconf.get('registry') || 'https://packages.nodebb.org') + '/api/v1/plugins/' + id;
 
 		require('request')(url, {
 			json: true
-		}, function(err, res, body) {
+		}, function (err, res, body) {
 			if (res.statusCode === 404 || !body.payload) {
 				return callback(err, {});
 			}
 
-			Plugins.normalise([body.payload], function(err, normalised) {
-				normalised = normalised.filter(function(plugin) {
+			Plugins.normalise([body.payload], function (err, normalised) {
+				normalised = normalised.filter(function (plugin) {
 					return plugin.id === id;
 				});
 				return callback(err, !err ? normalised[0] : undefined);
@@ -247,7 +247,7 @@ var middleware;
 		});
 	};
 
-	Plugins.list = function(matching, callback) {
+	Plugins.list = function (matching, callback) {
 		if (arguments.length === 1 && typeof matching === 'function') {
 			callback = matching;
 			matching = true;
@@ -257,7 +257,7 @@ var middleware;
 
 		require('request')(url, {
 			json: true
-		}, function(err, res, body) {
+		}, function (err, res, body) {
 			if (err) {
 				winston.error('Error parsing plugins : ' + err.message);
 				return callback(err);
@@ -267,7 +267,7 @@ var middleware;
 		});
 	};
 
-	Plugins.normalise = function(apiReturn, callback) {
+	Plugins.normalise = function (apiReturn, callback) {
 		var pluginMap = {};
 		var dependencies = require.main.require('./package.json').dependencies;
 		apiReturn = apiReturn || [];
@@ -280,16 +280,16 @@ var middleware;
 			pluginMap[apiReturn[i].name] = apiReturn[i];
 		}
 
-		Plugins.showInstalled(function(err, installedPlugins) {
+		Plugins.showInstalled(function (err, installedPlugins) {
 			if (err) {
 				return callback(err);
 			}
 
-			installedPlugins = installedPlugins.filter(function(plugin) {
+			installedPlugins = installedPlugins.filter(function (plugin) {
 				return plugin && !plugin.system;
 			});
 
-			async.each(installedPlugins, function(plugin, next) {
+			async.each(installedPlugins, function (plugin, next) {
 				// If it errored out because a package.json or plugin.json couldn't be read, no need to do this stuff
 				if (plugin.error) {
 					pluginMap[plugin.id] = pluginMap[plugin.id] || {};
@@ -317,7 +317,7 @@ var middleware;
 				}
 				pluginMap[plugin.id].outdated = semver.gt(pluginMap[plugin.id].latest, pluginMap[plugin.id].version);
 				next();
-			}, function(err) {
+			}, function (err) {
 				if (err) {
 					return callback(err);
 				}
@@ -330,7 +330,7 @@ var middleware;
 					}
 				}
 
-				pluginArray.sort(function(a, b) {
+				pluginArray.sort(function (a, b) {
 					if (a.name > b.name ) {
 						return 1;
 					} else if (a.name < b.name ){
@@ -345,41 +345,41 @@ var middleware;
 		});
 	};
 
-	Plugins.showInstalled = function(callback) {
+	Plugins.showInstalled = function (callback) {
 		var npmPluginPath = path.join(__dirname, '../node_modules');
 
 		async.waterfall([
 			async.apply(fs.readdir, npmPluginPath),
 
-			function(dirs, next) {
-				dirs = dirs.filter(function(dir){
+			function (dirs, next) {
+				dirs = dirs.filter(function (dir){
 					return dir.startsWith('nodebb-plugin-') ||
 						dir.startsWith('nodebb-widget-') ||
 						dir.startsWith('nodebb-rewards-') ||
 						dir.startsWith('nodebb-theme-');
-				}).map(function(dir){
+				}).map(function (dir){
 					return path.join(npmPluginPath, dir);
 				});
 
-				async.filter(dirs, function(dir, callback){
-					fs.stat(dir, function(err, stats){
+				async.filter(dirs, function (dir, callback){
+					fs.stat(dir, function (err, stats){
 						callback(!err && stats.isDirectory());
 					});
-				}, function(plugins){
+				}, function (plugins){
 					next(null, plugins);
 				});
 			},
 
-			function(files, next) {
+			function (files, next) {
 				var plugins = [];
 
-				async.each(files, function(file, next) {
+				async.each(files, function (file, next) {
 					async.waterfall([
-						function(next) {
+						function (next) {
 							Plugins.loadPluginInfo(file, next);
 						},
-						function(pluginData, next) {
-							Plugins.isActive(pluginData.name, function(err, active) {
+						function (pluginData, next) {
+							Plugins.isActive(pluginData.name, function (err, active) {
 								if (err) {
 									return next(new Error('no-active-state'));
 								}
@@ -392,7 +392,7 @@ var middleware;
 								next(null, pluginData);
 							});
 						}
-					], function(err, pluginData) {
+					], function (err, pluginData) {
 						if (err) {
 							return next(); // Silently fail
 						}
@@ -400,7 +400,7 @@ var middleware;
 						plugins.push(pluginData);
 						next();
 					});
-				}, function(err) {
+				}, function (err) {
 					next(err, plugins);
 				});
 			}

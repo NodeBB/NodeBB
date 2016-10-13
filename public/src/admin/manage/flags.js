@@ -5,11 +5,11 @@ define('admin/manage/flags', [
 	'autocomplete',
 	'Chart',
 	'components'
-], function(autocomplete, Chart, components) {
+], function (autocomplete, Chart, components) {
 
 	var	Flags = {};
 
-	Flags.init = function() {
+	Flags.init = function () {
 		$('.post-container .content img:not(.not-responsive)').addClass('img-responsive');
 
 		autocomplete.user($('#byUsername'));
@@ -30,19 +30,19 @@ define('admin/manage/flags', [
 	};
 
 	function handleDismiss() {
-		$('.flags').on('click', '.dismiss', function() {
+		$('.flags').on('click', '.dismiss', function () {
 			var btn = $(this);
 			var pid = btn.parents('[data-pid]').attr('data-pid');
 
-			socket.emit('posts.dismissFlag', pid, function(err) {
+			socket.emit('posts.dismissFlag', pid, function (err) {
 				done(err, btn);
 			});
  		});
 	}
 
 	function handleDismissAll() {
-		$('#dismissAll').on('click', function() {
-			socket.emit('posts.dismissAllFlags', function(err) {
+		$('#dismissAll').on('click', function () {
+			socket.emit('posts.dismissAllFlags', function (err) {
 				if (err) {
 					return app.alertError(err.message);
 				}
@@ -54,15 +54,15 @@ define('admin/manage/flags', [
 	}
 
 	function handleDelete() {
-		$('.flags').on('click', '.delete', function() {
+		$('.flags').on('click', '.delete', function () {
 			var btn = $(this);
-			bootbox.confirm('Do you really want to delete this post?', function(confirm) {
+			bootbox.confirm('Do you really want to delete this post?', function (confirm) {
 				if (!confirm) {
 					return;
 				}
 				var pid = btn.parents('[data-pid]').attr('data-pid');
 				var tid = btn.parents('[data-pid]').attr('data-tid');
-				socket.emit('posts.delete', {pid: pid, tid: tid}, function(err) {
+				socket.emit('posts.delete', {pid: pid, tid: tid}, function (err) {
 					done(err, btn);
 				});
 			});
@@ -73,7 +73,7 @@ define('admin/manage/flags', [
 		if (err) {
 			return app.alertError(err.messaage);
 		}
-		btn.parents('[data-pid]').fadeOut(function() {
+		btn.parents('[data-pid]').fadeOut(function () {
 			$(this).remove();
 			if (!$('.flags [data-pid]').length) {
 				$('.post-container').text('No flagged posts!');
@@ -83,7 +83,7 @@ define('admin/manage/flags', [
 
 	function handleGraphs() {
 		var dailyCanvas = document.getElementById('flags:daily');
-		var dailyLabels = utils.getDaysArray().map(function(text, idx) {
+		var dailyLabels = utils.getDaysArray().map(function (text, idx) {
 			return idx % 3 ? '' : text;
 		});
 
@@ -133,12 +133,12 @@ define('admin/manage/flags', [
 		// As the flag details are returned in the API, update the form controls to show the correct data
 
 		// Create reference hash for use in this method
-		source = source.reduce(function(memo, cur) {
+		source = source.reduce(function (memo, cur) {
 			memo[cur.pid] = cur.flagData;
 			return memo;
 		}, {});
 
-		components.get('posts/flag').each(function(idx, el) {
+		components.get('posts/flag').each(function (idx, el) {
 			var pid = el.getAttribute('data-pid');
 			var el = $(el);
 
@@ -159,7 +159,7 @@ define('admin/manage/flags', [
 		socket.emit('posts.updateFlag', {
 			pid: pid,
 			data: formData
-		}, function(err) {
+		}, function (err) {
 			if (err) {
 				return app.alertError(err.message);
 			} else {

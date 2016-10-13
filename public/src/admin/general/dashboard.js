@@ -1,7 +1,7 @@
 "use strict";
 /*global define, ajaxify, app, socket, utils, bootbox, RELATIVE_PATH*/
 
-define('admin/general/dashboard', ['semver', 'Chart'], function(semver, Chart) {
+define('admin/general/dashboard', ['semver', 'Chart'], function (semver, Chart) {
 	var	Admin = {};
 	var	intervals = {
 			rooms: false,
@@ -24,7 +24,7 @@ define('admin/general/dashboard', ['semver', 'Chart'], function(semver, Chart) {
 		realtimeInterval: 1500
 	};
 	
-	$(window).on('action:ajaxify.start', function(ev, data) {
+	$(window).on('action:ajaxify.start', function (ev, data) {
 		clearInterval(intervals.rooms);
 		clearInterval(intervals.graphs);
 
@@ -35,19 +35,19 @@ define('admin/general/dashboard', ['semver', 'Chart'], function(semver, Chart) {
 		usedTopicColors.length = 0;
 	});
 
-	Admin.init = function() {
+	Admin.init = function () {
 		app.enterRoom('admin');
 		socket.emit('admin.rooms.getAll', Admin.updateRoomUsage);
 
 		isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 
-		$.get('https://api.github.com/repos/NodeBB/NodeBB/tags', function(releases) {
+		$.get('https://api.github.com/repos/NodeBB/NodeBB/tags', function (releases) {
 			// Re-sort the releases, as they do not follow Semver (wrt pre-releases)
-			releases = releases.sort(function(a, b) {
+			releases = releases.sort(function (a, b) {
 				a = a.name.replace(/^v/, '');
 				b = b.name.replace(/^v/, '');
 				return semver.lt(a, b) ? 1 : -1;
-			}).filter(function(version) {
+			}).filter(function (version) {
 				return !isPrerelease.test(version.name);	// filter out automated prerelease versions
 			});
 
@@ -79,7 +79,7 @@ define('admin/general/dashboard', ['semver', 'Chart'], function(semver, Chart) {
 		initiateDashboard();
 	};
 
-	Admin.updateRoomUsage = function(err, data) {
+	Admin.updateRoomUsage = function (err, data) {
 		if (err) {
 			return app.alertError(err.message);
 		}
@@ -272,7 +272,7 @@ define('admin/general/dashboard', ['semver', 'Chart'], function(semver, Chart) {
 		$(window).on('resize', adjustPieCharts);
 		adjustPieCharts();
 
-		$('[data-action="updateGraph"]').on('click', function() {
+		$('[data-action="updateGraph"]').on('click', function () {
 			var until = undefined;
 			switch($(this).attr('data-until')) {
 				case 'last-month':
@@ -285,7 +285,7 @@ define('admin/general/dashboard', ['semver', 'Chart'], function(semver, Chart) {
 	}
 
 	function adjustPieCharts() {
-		$('.pie-chart.legend-up').each(function() {
+		$('.pie-chart.legend-up').each(function () {
 			var $this = $(this);
 
 			if ($this.width() < 320) {
@@ -396,7 +396,7 @@ define('admin/general/dashboard', ['semver', 'Chart'], function(semver, Chart) {
 	}
 
 	function setupRealtimeButton() {
-		$('#toggle-realtime .fa').on('click', function() {
+		$('#toggle-realtime .fa').on('click', function () {
 			var $this = $(this);
 			if ($this.hasClass('fa-toggle-on')) {
 				$this.removeClass('fa-toggle-on').addClass('fa-toggle-off');
@@ -414,13 +414,13 @@ define('admin/general/dashboard', ['semver', 'Chart'], function(semver, Chart) {
 		clearInterval(intervals.rooms);
 		clearInterval(intervals.graphs);
 
-		intervals.rooms = setInterval(function() {
+		intervals.rooms = setInterval(function () {
 			if (app.isFocused && app.isConnected) {
 				socket.emit('admin.rooms.getAll', Admin.updateRoomUsage);
 			}
 		}, realtime ? DEFAULTS.realtimeInterval : DEFAULTS.roomInterval);
 
-		intervals.graphs = setInterval(function() {
+		intervals.graphs = setInterval(function () {
 			updateTrafficGraph(currentGraph.units, currentGraph.until);
 		}, realtime ? DEFAULTS.realtimeInterval : DEFAULTS.graphInterval);
 	}

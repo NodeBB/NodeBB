@@ -12,9 +12,9 @@ var categories = require('../categories');
 var utils = require('../../public/src/utils');
 
 
-module.exports = function(Posts) {
+module.exports = function (Posts) {
 
-	Posts.getPostSummaryByPids = function(pids, uid, options, callback) {
+	Posts.getPostSummaryByPids = function (pids, uid, options, callback) {
 		if (!Array.isArray(pids) || !pids.length) {
 			return callback(null, []);
 		}
@@ -27,16 +27,16 @@ module.exports = function(Posts) {
 
 		var posts;
 		async.waterfall([
-			function(next) {
+			function (next) {
 				Posts.getPostsFields(pids, fields, next);
 			},
-			function(_posts, next) {
+			function (_posts, next) {
 				posts = _posts.filter(Boolean);
 
 				var uids = [];
 				var topicKeys = [];
 
-				posts.forEach(function(post, i) {
+				posts.forEach(function (post, i) {
 					if (uids.indexOf(posts[i].uid) === -1) {
 						uids.push(posts[i].uid);
 					}
@@ -45,23 +45,23 @@ module.exports = function(Posts) {
 					}
 				});
 				async.parallel({
-					users: function(next) {
+					users: function (next) {
 						user.getUsersFields(uids, ['uid', 'username', 'userslug', 'picture'], next);
 					},
-					topicsAndCategories: function(next) {
+					topicsAndCategories: function (next) {
 						getTopicAndCategories(topicKeys, next);
 					},
-					indices: function(next) {
+					indices: function (next) {
 						Posts.getPostIndices(posts, uid, next);
 					}
 				}, next);
 			},
-			function(results, next) {
+			function (results, next) {
 				results.users = toObject('uid', results.users);
 				results.topics = toObject('tid', results.topicsAndCategories.topics);
 				results.categories = toObject('cid', results.topicsAndCategories.categories);
 
-				posts.forEach(function(post, i) {
+				posts.forEach(function (post, i) {
 					post.index = utils.isNumber(results.indices[i]) ? parseInt(results.indices[i], 10) + 1 : 1;
 					post.isMainPost = post.index - 1 === 0;
 					post.deleted = parseInt(post.deleted, 10) === 1;
@@ -78,23 +78,23 @@ module.exports = function(Posts) {
 					post.timestampISO = utils.toISOString(post.timestamp);
 				});
 
-				posts = posts.filter(function(post) {
+				posts = posts.filter(function (post) {
 					return results.topics[post.tid];
 				});
 
 				parsePosts(posts, options, next);
 			},
-			function(posts, next) {
+			function (posts, next) {
 				plugins.fireHook('filter:post.getPostSummaryByPids', {posts: posts, uid: uid}, next);
 			},
-			function(data, next) {
+			function (data, next) {
 				next(null, data.posts);
 			}
 		], callback);
 	};
 
 	function parsePosts(posts, options, callback) {
-		async.map(posts, function(post, next) {
+		async.map(posts, function (post, next) {
 			if (!post.content || !options.parse) {
 				if (options.stripTags) {
 					post.content = stripTags(post.content);
@@ -103,7 +103,7 @@ module.exports = function(Posts) {
 				return next(null, post);
 			}
 
-			Posts.parsePost(post, function(err, post) {
+			Posts.parsePost(post, function (err, post) {
 				if (err) {
 					return next(err);
 				}
@@ -117,22 +117,22 @@ module.exports = function(Posts) {
 	}
 
 	function getTopicAndCategories(topicKeys, callback) {
-		db.getObjectsFields(topicKeys, ['uid', 'tid', 'title', 'cid', 'slug', 'deleted', 'postcount'], function(err, topics) {
+		db.getObjectsFields(topicKeys, ['uid', 'tid', 'title', 'cid', 'slug', 'deleted', 'postcount'], function (err, topics) {
 			if (err) {
 				return callback(err);
 			}
 
-			var cids = topics.map(function(topic) {
+			var cids = topics.map(function (topic) {
 				if (topic) {
 					topic.title = validator.escape(String(topic.title));
 					topic.deleted = parseInt(topic.deleted, 10) === 1;
 				}
 				return topic && topic.cid;
-			}).filter(function(topic, index, array) {
+			}).filter(function (topic, index, array) {
 				return topic && array.indexOf(topic) === index;
 			});
 
-			categories.getCategoriesFields(cids, ['cid', 'name', 'icon', 'slug', 'parentCid', 'bgColor', 'color'], function(err, categories) {
+			categories.getCategoriesFields(cids, ['cid', 'name', 'icon', 'slug', 'parentCid', 'bgColor', 'color'], function (err, categories) {
 				callback(err, {topics: topics, categories: categories});
 			});
 		});

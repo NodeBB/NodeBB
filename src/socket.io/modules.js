@@ -19,7 +19,7 @@ var SocketModules = {
 
 /* Chat */
 
-SocketModules.chats.getRaw = function(socket, data, callback) {
+SocketModules.chats.getRaw = function (socket, data, callback) {
 	if (!data || !data.hasOwnProperty('mid')) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
@@ -36,7 +36,7 @@ SocketModules.chats.getRaw = function(socket, data, callback) {
 	], callback);
 };
 
-SocketModules.chats.newRoom = function(socket, data, callback) {
+SocketModules.chats.newRoom = function (socket, data, callback) {
 	if (!data) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
@@ -45,7 +45,7 @@ SocketModules.chats.newRoom = function(socket, data, callback) {
 		return callback(new Error('[[error:too-many-messages]]'));
 	}
 
-	Messaging.canMessageUser(socket.uid, data.touid, function(err) {
+	Messaging.canMessageUser(socket.uid, data.touid, function (err) {
 		if (err) {
 			return callback(err);
 		}
@@ -54,7 +54,7 @@ SocketModules.chats.newRoom = function(socket, data, callback) {
 	});
 };
 
-SocketModules.chats.send = function(socket, data, callback) {
+SocketModules.chats.send = function (socket, data, callback) {
 	if (!data || !data.roomId || !socket.uid) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
@@ -68,7 +68,7 @@ SocketModules.chats.send = function(socket, data, callback) {
 			plugins.fireHook('filter:messaging.send', {
 				data: data,
 				uid: socket.uid
-			}, function(err, results) {
+			}, function (err, results) {
 				data = results.data;
 				next(err);
 			});
@@ -99,7 +99,7 @@ function rateLimitExceeded(socket) {
 	return false;
 }
 
-SocketModules.chats.loadRoom = function(socket, data, callback) {
+SocketModules.chats.loadRoom = function (socket, data, callback) {
 	if (!data || !data.roomId) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
@@ -136,7 +136,7 @@ SocketModules.chats.loadRoom = function(socket, data, callback) {
 	], callback);
 };
 
-SocketModules.chats.addUserToRoom = function(socket, data, callback) {
+SocketModules.chats.addUserToRoom = function (socket, data, callback) {
 	if (!data || !data.roomId || !data.username) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
@@ -166,7 +166,7 @@ SocketModules.chats.addUserToRoom = function(socket, data, callback) {
 	], callback);
 };
 
-SocketModules.chats.removeUserFromRoom = function(socket, data, callback) {
+SocketModules.chats.removeUserFromRoom = function (socket, data, callback) {
 	if (!data || !data.roomId) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
@@ -184,7 +184,7 @@ SocketModules.chats.removeUserFromRoom = function(socket, data, callback) {
 	], callback);
 };
 
-SocketModules.chats.leave = function(socket, roomid, callback) {
+SocketModules.chats.leave = function (socket, roomid, callback) {
 	if (!socket.uid || !roomid) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
@@ -193,12 +193,12 @@ SocketModules.chats.leave = function(socket, roomid, callback) {
 };
 
 
-SocketModules.chats.edit = function(socket, data, callback) {
+SocketModules.chats.edit = function (socket, data, callback) {
 	if (!data || !data.roomId) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
 
-	Messaging.canEdit(data.mid, socket.uid, function(err, allowed) {
+	Messaging.canEdit(data.mid, socket.uid, function (err, allowed) {
 		if (err || !allowed) {
 			return callback(err || new Error('[[error:cant-edit-chat-message]]'));
 		}
@@ -207,12 +207,12 @@ SocketModules.chats.edit = function(socket, data, callback) {
 	});
 };
 
-SocketModules.chats.delete = function(socket, data, callback) {
+SocketModules.chats.delete = function (socket, data, callback) {
 	if (!data || !data.roomId || !data.messageId) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
 
-	Messaging.canEdit(data.messageId, socket.uid, function(err, allowed) {
+	Messaging.canEdit(data.messageId, socket.uid, function (err, allowed) {
 		if (err || !allowed) {
 			return callback(err || new Error('[[error:cant-delete-chat-message]]'));
 		}
@@ -221,18 +221,18 @@ SocketModules.chats.delete = function(socket, data, callback) {
 	});
 };
 
-SocketModules.chats.canMessage = function(socket, roomId, callback) {
+SocketModules.chats.canMessage = function (socket, roomId, callback) {
 	Messaging.canMessageRoom(socket.uid, roomId, callback);
 };
 
-SocketModules.chats.markRead = function(socket, roomId, callback) {
+SocketModules.chats.markRead = function (socket, roomId, callback) {
 	if (!socket.uid) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
 	async.parallel({
 		usersInRoom: async.apply(Messaging.getUidsInRoom, roomId, 0, -1),
 		markRead: async.apply(Messaging.markRead, socket.uid, roomId)
-	}, function(err, results) {
+	}, function (err, results) {
 		if (err) {
 			return callback(err);
 		}
@@ -240,13 +240,13 @@ SocketModules.chats.markRead = function(socket, roomId, callback) {
 		Messaging.pushUnreadCount(socket.uid);
 
 		// Mark notification read
-		var nids = results.usersInRoom.filter(function(uid) {
+		var nids = results.usersInRoom.filter(function (uid) {
 			return parseInt(uid, 10) !== socket.uid;
-		}).map(function(uid) {
+		}).map(function (uid) {
 			return 'chat_' + uid + '_' + roomId;
 		});
 
-		notifications.markReadMultiple(nids, socket.uid, function() {
+		notifications.markReadMultiple(nids, socket.uid, function () {
 			user.notifications.pushCount(socket.uid);
 		});
 
@@ -255,7 +255,7 @@ SocketModules.chats.markRead = function(socket, roomId, callback) {
 	});
 };
 
-SocketModules.chats.markAllRead = function(socket, data, callback) {
+SocketModules.chats.markAllRead = function (socket, data, callback) {
 	async.waterfall([
 		function (next) {
 			Messaging.markAllRead(socket.uid, next);
@@ -267,7 +267,7 @@ SocketModules.chats.markAllRead = function(socket, data, callback) {
 	], callback);
 };
 
-SocketModules.chats.renameRoom = function(socket, data, callback) {
+SocketModules.chats.renameRoom = function (socket, data, callback) {
 	if (!data) {
 		return callback(new Error('[[error:invalid-name]]'));
 	}
@@ -281,7 +281,7 @@ SocketModules.chats.renameRoom = function(socket, data, callback) {
 		},
 		function (uids, next) {
 			var eventData = {roomId: data.roomId, newName: validator.escape(String(data.newName))};
-			uids.forEach(function(uid) {
+			uids.forEach(function (uid) {
 				server.in('uid_' + uid).emit('event:chats.roomRename', eventData);
 			});
 			next();
@@ -289,7 +289,7 @@ SocketModules.chats.renameRoom = function(socket, data, callback) {
 	], callback);
 };
 
-SocketModules.chats.getRecentChats = function(socket, data, callback) {
+SocketModules.chats.getRecentChats = function (socket, data, callback) {
 	if (!data || !utils.isNumber(data.after) || !utils.isNumber(data.uid)) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
@@ -298,14 +298,14 @@ SocketModules.chats.getRecentChats = function(socket, data, callback) {
 	Messaging.getRecentChats(socket.uid, data.uid, start, stop, callback);
 };
 
-SocketModules.chats.hasPrivateChat = function(socket, uid, callback) {
+SocketModules.chats.hasPrivateChat = function (socket, uid, callback) {
 	if (!socket.uid || !uid) {
 		return callback(null, new Error('[[error:invalid-data]]'));
 	}
 	Messaging.hasPrivateChat(socket.uid, uid, callback);
 };
 
-SocketModules.chats.getMessages = function(socket, data, callback) {
+SocketModules.chats.getMessages = function (socket, data, callback) {
 	if (!socket.uid || !data.uid || !data.roomId) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
@@ -327,16 +327,16 @@ SocketModules.chats.getMessages = function(socket, data, callback) {
 };
 
 /* Sounds */
-SocketModules.sounds.getSounds = function(socket, data, callback) {
+SocketModules.sounds.getSounds = function (socket, data, callback) {
 	// Read sounds from local directory
 	meta.sounds.getFiles(callback);
 };
 
-SocketModules.sounds.getMapping = function(socket, data, callback) {
+SocketModules.sounds.getMapping = function (socket, data, callback) {
 	meta.sounds.getMapping(socket.uid, callback);
 };
 
-SocketModules.sounds.getData = function(socket, data, callback) {
+SocketModules.sounds.getData = function (socket, data, callback) {
 	async.parallel({
 		mapping: async.apply(meta.sounds.getMapping, socket.uid),
 		files: async.apply(meta.sounds.getFiles)

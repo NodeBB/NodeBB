@@ -11,16 +11,16 @@ var helpers = require('./helpers');
 var categories = require('../categories');
 var plugins = require('../plugins');
 
-module.exports = function(privileges) {
+module.exports = function (privileges) {
 
 	privileges.topics = {};
 
-	privileges.topics.get = function(tid, uid, callback) {
+	privileges.topics.get = function (tid, uid, callback) {
 		var topic;
 		var privs = ['topics:reply', 'topics:read', 'topics:delete', 'posts:edit', 'posts:delete', 'read'];
 		async.waterfall([
 			async.apply(topics.getTopicFields, tid, ['cid', 'uid', 'locked', 'deleted']),
-			function(_topic, next) {
+			function (_topic, next) {
 				topic = _topic;
 				async.parallel({
 					privileges: async.apply(helpers.isUserAllowedTo, privs, uid, topic.cid),
@@ -29,7 +29,7 @@ module.exports = function(privileges) {
 					disabled: async.apply(categories.getCategoryField, topic.cid, 'disabled')
 				}, next);
 			}
-		], function(err, results) {
+		], function (err, results) {
 			if (err) {
 				return callback(err);
 			}
@@ -62,8 +62,8 @@ module.exports = function(privileges) {
 		});
 	};
 
-	privileges.topics.can = function(privilege, tid, uid, callback) {
-		topics.getTopicField(tid, 'cid', function(err, cid) {
+	privileges.topics.can = function (privilege, tid, uid, callback) {
+		topics.getTopicField(tid, 'cid', function (err, cid) {
 			if (err) {
 				return callback(err);
 			}
@@ -72,39 +72,39 @@ module.exports = function(privileges) {
 		});
 	};
 
-	privileges.topics.filterTids = function(privilege, tids, uid, callback) {
+	privileges.topics.filterTids = function (privilege, tids, uid, callback) {
 		if (!Array.isArray(tids) || !tids.length) {
 			return callback(null, []);
 		}
 		var cids;
 		var topicsData;
 		async.waterfall([
-			function(next) {
+			function (next) {
 				topics.getTopicsFields(tids, ['tid', 'cid', 'deleted'], next);
 			},
-			function(_topicsData, next) {
+			function (_topicsData, next) {
 				topicsData = _topicsData;
-				cids = topicsData.map(function(topic) {
+				cids = topicsData.map(function (topic) {
 					return topic.cid;
-				}).filter(function(cid, index, array) {
+				}).filter(function (cid, index, array) {
 					return cid && array.indexOf(cid) === index;
 				});
 
 				privileges.categories.getBase(privilege, cids, uid, next);
 			},
-			function(results, next) {
+			function (results, next) {
 
 				var isModOf = {};
-				cids = cids.filter(function(cid, index) {
+				cids = cids.filter(function (cid, index) {
 					isModOf[cid] = results.isModerators[index];
 					return !results.categories[index].disabled &&
 						(results.allowedTo[index] || results.isAdmin || results.isModerators[index]);
 				});
 
-				tids = topicsData.filter(function(topic) {
+				tids = topicsData.filter(function (topic) {
 					return cids.indexOf(topic.cid) !== -1 &&
 						(parseInt(topic.deleted, 10) !== 1 || results.isAdmin || isModOf[topic.cid]);
-				}).map(function(topic) {
+				}).map(function (topic) {
 					return topic.tid;
 				});
 
@@ -112,46 +112,46 @@ module.exports = function(privileges) {
 					privilege: privilege,
 					uid: uid,
 					tids: tids
-				}, function(err, data) {
+				}, function (err, data) {
 					next(err, data ? data.tids : null);
 				});
 			}
 		], callback);
 	};
 
-	privileges.topics.filterUids = function(privilege, tid, uids, callback) {
+	privileges.topics.filterUids = function (privilege, tid, uids, callback) {
 		if (!Array.isArray(uids) || !uids.length) {
 			return callback(null, []);
 		}
 
-		uids = uids.filter(function(uid, index, array) {
+		uids = uids.filter(function (uid, index, array) {
 			return array.indexOf(uid) === index;
 		});
 
 		async.waterfall([
-			function(next) {
+			function (next) {
 				topics.getTopicFields(tid, ['tid', 'cid', 'deleted'], next);
 			},
-			function(topicData, next) {
+			function (topicData, next) {
 				async.parallel({
-					disabled: function(next) {
+					disabled: function (next) {
 						categories.getCategoryField(topicData.cid, 'disabled', next);
 					},
-					allowedTo: function(next) {
+					allowedTo: function (next) {
 						helpers.isUsersAllowedTo(privilege, uids, topicData.cid, next);
 					},
-					isModerators: function(next) {
+					isModerators: function (next) {
 						user.isModerator(uids, topicData.cid, next);
 					},
-					isAdmins: function(next) {
+					isAdmins: function (next) {
 						user.isAdministrator(uids, next);
 					}
-				}, function(err, results) {
+				}, function (err, results) {
 					if (err) {
 						return next(err);
 					}
 
-					uids = uids.filter(function(uid, index) {
+					uids = uids.filter(function (uid, index) {
 						return parseInt(results.disabled, 10) !== 1 &&
 							((results.allowedTo[index] && parseInt(topicData.deleted, 10) !== 1) || results.isAdmins[index] || results.isModerators[index]);
 					});
@@ -162,7 +162,7 @@ module.exports = function(privileges) {
 		], callback);
 	};
 
-	privileges.topics.canPurge = function(tid, uid, callback) {
+	privileges.topics.canPurge = function (tid, uid, callback) {
 		async.waterfall([
 			function (next) {
 				topics.getTopicField(tid, 'cid', next);
@@ -180,13 +180,13 @@ module.exports = function(privileges) {
 		], callback);
 	};
 
-	privileges.topics.canDelete = function(tid, uid, callback) {
+	privileges.topics.canDelete = function (tid, uid, callback) {
 		var topicData;
 		async.waterfall([
-			function(next) {
+			function (next) {
 				topics.getTopicFields(tid, ['cid', 'postcount'], next);
 			},
-			function(_topicData, next) {
+			function (_topicData, next) {
 				topicData = _topicData;
 				async.parallel({
 					isModerator: async.apply(user.isModerator, uid, topicData.cid),
@@ -195,7 +195,7 @@ module.exports = function(privileges) {
 					'topics:delete': async.apply(helpers.isUserAllowedTo, 'topics:delete', uid, [topicData.cid])
 				}, next);
 			}
-		], function(err, results) {
+		], function (err, results) {
 			if (err) {
 				return callback(err);
 			}
@@ -220,33 +220,33 @@ module.exports = function(privileges) {
 		});
 	};
 
-	privileges.topics.canEdit = function(tid, uid, callback) {
+	privileges.topics.canEdit = function (tid, uid, callback) {
 		privileges.topics.isOwnerOrAdminOrMod(tid, uid, callback);
 	};
 
-	privileges.topics.isOwnerOrAdminOrMod = function(tid, uid, callback) {
+	privileges.topics.isOwnerOrAdminOrMod = function (tid, uid, callback) {
 		helpers.some([
-			function(next) {
+			function (next) {
 				topics.isOwner(tid, uid, next);
 			},
-			function(next) {
+			function (next) {
 				privileges.topics.isAdminOrMod(tid, uid, next);
 			}
 		], callback);
 	};
 
 
-	privileges.topics.isAdminOrMod = function(tid, uid, callback) {
+	privileges.topics.isAdminOrMod = function (tid, uid, callback) {
 		helpers.some([
-			function(next) {
-				topics.getTopicField(tid, 'cid', function(err, cid) {
+			function (next) {
+				topics.getTopicField(tid, 'cid', function (err, cid) {
 					if (err) {
 						return next(err);
 					}
 					user.isModerator(uid, cid, next);
 				});
 			},
-			function(next) {
+			function (next) {
 				user.isAdministrator(uid, next);
 			}
 		], callback);

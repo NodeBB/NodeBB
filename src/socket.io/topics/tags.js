@@ -3,23 +3,23 @@
 var topics = require('../../topics');
 var utils = require('../../../public/src/utils');
 
-module.exports = function(SocketTopics) {
-	SocketTopics.autocompleteTags = function(socket, data, callback) {
+module.exports = function (SocketTopics) {
+	SocketTopics.autocompleteTags = function (socket, data, callback) {
 		topics.autocompleteTags(data, callback);
 	};
 
-	SocketTopics.searchTags = function(socket, data, callback) {
+	SocketTopics.searchTags = function (socket, data, callback) {
 		topics.searchTags(data, callback);
 	};
 
-	SocketTopics.searchAndLoadTags = function(socket, data, callback) {
+	SocketTopics.searchAndLoadTags = function (socket, data, callback) {
 		if (!data) {
 			return callback(new Error('[[error:invalid-data]]'));
 		}
 		topics.searchAndLoadTags(data, callback);
 	};
 
-	SocketTopics.loadMoreTags = function(socket, data, callback) {
+	SocketTopics.loadMoreTags = function (socket, data, callback) {
 		if (!data || !utils.isNumber(data.after)) {
 			return callback(new Error('[[error:invalid-data]]'));
 		}
@@ -27,7 +27,7 @@ module.exports = function(SocketTopics) {
 		var start = parseInt(data.after, 10);
 		var stop = start + 99;
 
-		topics.getTags(start, stop, function(err, tags) {
+		topics.getTags(start, stop, function (err, tags) {
 			if (err) {
 				return callback(err);
 			}

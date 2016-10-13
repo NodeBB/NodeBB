@@ -4,7 +4,7 @@ var qs = require('querystring');
 
 var pagination = {};
 
-pagination.create = function(currentPage, pageCount, queryObj) {
+pagination.create = function (currentPage, pageCount, queryObj) {
 	if (pageCount <= 1) {
 		return {
 			prev: {page: 1, active: currentPage > 1},
@@ -27,9 +27,9 @@ pagination.create = function(currentPage, pageCount, queryObj) {
 		pagesToShow.push(startPage + i);
 	}
 
-	pagesToShow = pagesToShow.filter(function(page, index, array) {
+	pagesToShow = pagesToShow.filter(function (page, index, array) {
 		return page > 0 && page <= pageCount && array.indexOf(page) === index;
-	}).sort(function(a, b) {
+	}).sort(function (a, b) {
 		return a - b;
 	});
 
@@ -37,7 +37,7 @@ pagination.create = function(currentPage, pageCount, queryObj) {
 
 	delete queryObj._;
 
-	var pages = pagesToShow.map(function(page) {
+	var pages = pagesToShow.map(function (page) {
 		queryObj.page = page;
 		return {page: page, active: page === currentPage, qs: qs.stringify(queryObj)};
 	});

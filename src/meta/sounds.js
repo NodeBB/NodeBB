@@ -11,11 +11,11 @@ var async = require('async');
 var plugins = require('../plugins');
 var db = require('../database');
 
-module.exports = function(Meta) {
+module.exports = function (Meta) {
 
 	Meta.sounds = {};
 
-	Meta.sounds.init = function(callback) {
+	Meta.sounds.init = function (callback) {
 		if (nconf.get('isPrimary') === 'true') {
 			setupSounds(callback);
 		} else {
@@ -25,21 +25,21 @@ module.exports = function(Meta) {
 		}
 	};
 
-	Meta.sounds.getFiles = function(callback) {
+	Meta.sounds.getFiles = function (callback) {
 		async.waterfall([
-			function(next) {
+			function (next) {
 				fs.readdir(path.join(__dirname, '../../public/sounds'), next);
 			},
-			function(sounds, next) {
-				fs.readdir(path.join(__dirname, '../../public/uploads/sounds'), function(err, uploaded) {
+			function (sounds, next) {
+				fs.readdir(path.join(__dirname, '../../public/uploads/sounds'), function (err, uploaded) {
 					next(err, sounds.concat(uploaded));
 				});
 			}
-		], function(err, files) {
+		], function (err, files) {
 			var	localList = {};
 
 			// Filter out hidden files
-			files = files.filter(function(filename) {
+			files = files.filter(function (filename) {
 				return !filename.startsWith('.');
 			});
 
@@ -50,7 +50,7 @@ module.exports = function(Meta) {
 			}
 
 			// Return proper paths
-			files.forEach(function(filename) {
+			files.forEach(function (filename) {
 				localList[filename] = nconf.get('relative_path') + '/sounds/' + filename;
 			});
 
@@ -58,16 +58,16 @@ module.exports = function(Meta) {
 		});
 	};
 
-	Meta.sounds.getMapping = function(uid, callback) {
+	Meta.sounds.getMapping = function (uid, callback) {
 		var user = require('../user');
 		async.parallel({
-			defaultMapping: function(next) {
+			defaultMapping: function (next) {
 				db.getObject('settings:sounds', next);
 			},
-			userSettings: function(next) {
+			userSettings: function (next) {
 				user.getSettings(uid, next);
 			}
-		}, function(err, results) {
+		}, function (err, results) {
 			if (err) {
 				return callback(err);
 			}
@@ -91,17 +91,17 @@ module.exports = function(Meta) {
 		var	soundsPath = path.join(__dirname, '../../public/sounds');
 
 		async.waterfall([
-			function(next) {
+			function (next) {
 				fs.readdir(path.join(__dirname, '../../public/uploads/sounds'), next);
 			},
-			function(uploaded, next) {
-				uploaded = uploaded.filter(function(filename) {
+			function (uploaded, next) {
+				uploaded = uploaded.filter(function (filename) {
 					return !filename.startsWith('.');
-				}).map(function(filename) {
+				}).map(function (filename) {
 					return path.join(__dirname, '../../public/uploads/sounds', filename);
 				});
 
-				plugins.fireHook('filter:sounds.get', uploaded, function(err, filePaths) {
+				plugins.fireHook('filter:sounds.get', uploaded, function (err, filePaths) {
 					if (err) {
 						winston.error('Could not initialise sound files:' + err.message);
 						return;
@@ -109,7 +109,7 @@ module.exports = function(Meta) {
 
 					if (nconf.get('local-assets') === false) {
 						// Don't regenerate the public/sounds/ directory. Instead, create a mapping for the router to use
-						Meta.sounds._filePathHash = filePaths.reduce(function(hash, filePath) {
+						Meta.sounds._filePathHash = filePaths.reduce(function (hash, filePath) {
 							hash[path.basename(filePath)] = filePath;
 							return hash;
 						}, {});
@@ -124,26 +124,26 @@ module.exports = function(Meta) {
 
 					// Clear the sounds directory
 					async.series([
-						function(next) {
+						function (next) {
 							rimraf(soundsPath, next);
 						},
-						function(next) {
+						function (next) {
 							mkdirp(soundsPath, next);
 						}
-					], function(err) {
+					], function (err) {
 						if (err) {
 							winston.error('Could not initialise sound files:' + err.message);
 							return;
 						}
 
 						// Link paths
-						async.each(filePaths, function(filePath, next) {
+						async.each(filePaths, function (filePath, next) {
 							if (process.platform === 'win32') {
 								fs.link(filePath, path.join(soundsPath, path.basename(filePath)), next);
 							} else {
 								fs.symlink(filePath, path.join(soundsPath, path.basename(filePath)), 'file', next);
 							}
-						}, function(err) {
+						}, function (err) {
 							if (!err) {
 								winston.verbose('[sounds] Sounds OK');
 							} else {

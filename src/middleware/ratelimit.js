@@ -8,7 +8,7 @@ var ratelimit = {};
 var allowedCalls = 100;
 var timeframe = 10000;
 
-ratelimit.isFlooding = function(socket) {
+ratelimit.isFlooding = function (socket) {
 	socket.callsPerSecond = socket.callsPerSecond || 0;
 	socket.elapsedTime = socket.elapsedTime || 0;
 	socket.lastCallTime = socket.lastCallTime || Date.now();

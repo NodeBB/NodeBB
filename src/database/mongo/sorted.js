@@ -3,10 +3,10 @@
 var async = require('async');
 var utils = require('../../../public/src/utils');
 
-module.exports = function(db, module) {
+module.exports = function (db, module) {
 	var helpers = module.helpers.mongo;
 
-	module.sortedSetAdd = function(key, score, value, callback) {
+	module.sortedSetAdd = function (key, score, value, callback) {
 		callback = callback || helpers.noop;
 		if (!key) {
 			return callback();
@@ -17,7 +17,7 @@ module.exports = function(db, module) {
 
 		value = helpers.valueToString(value);
 
-		db.collection('objects').update({_key: key, value: value}, {$set: {score: parseInt(score, 10)}}, {upsert:true, w: 1}, function(err) {
+		db.collection('objects').update({_key: key, value: value}, {$set: {score: parseInt(score, 10)}}, {upsert:true, w: 1}, function (err) {
 			if (err && err.message.startsWith('E11000 duplicate key error')) {
 				return module.sortedSetAdd(key, score, value, callback);
 			}
@@ -41,12 +41,12 @@ module.exports = function(db, module) {
 			bulk.find({_key: key, value: values[i]}).upsert().updateOne({$set: {score: parseInt(scores[i], 10)}});
 		}
 
-		bulk.execute(function(err) {
+		bulk.execute(function (err) {
 			callback(err);
 		});
 	}
 
-	module.sortedSetsAdd = function(keys, score, value, callback) {
+	module.sortedSetsAdd = function (keys, score, value, callback) {
 		callback = callback || helpers.noop;
 		if (!Array.isArray(keys) || !keys.length) {
 			return callback();
@@ -59,12 +59,12 @@ module.exports = function(db, module) {
 			bulk.find({_key: keys[i], value: value}).upsert().updateOne({$set: {score: parseInt(score, 10)}});
 		}
 
-		bulk.execute(function(err) {
+		bulk.execute(function (err) {
 			callback(err);
 		});
 	};
 
-	module.sortedSetRemove = function(key, value, callback) {
+	module.sortedSetRemove = function (key, value, callback) {
 		function done(err) {
 			callback(err);
 		}
@@ -82,19 +82,19 @@ module.exports = function(db, module) {
 		}
 	};
 
-	module.sortedSetsRemove = function(keys, value, callback) {
+	module.sortedSetsRemove = function (keys, value, callback) {
 		callback = callback || helpers.noop;
 		if (!Array.isArray(keys) || !keys.length) {
 			return callback();
 		}
 		value = helpers.valueToString(value);
 
-		db.collection('objects').remove({_key: {$in: keys}, value: value}, function(err) {
+		db.collection('objects').remove({_key: {$in: keys}, value: value}, function (err) {
 			callback(err);
 		});
 	};
 
-	module.sortedSetsRemoveRangeByScore = function(keys, min, max, callback) {
+	module.sortedSetsRemoveRangeByScore = function (keys, min, max, callback) {
 		callback = callback || helpers.noop;
 		if (!Array.isArray(keys) || !keys.length) {
 			return callback();
@@ -109,24 +109,24 @@ module.exports = function(db, module) {
 			query.score.$lte = max;
 		}
 
-		db.collection('objects').remove(query, function(err) {
+		db.collection('objects').remove(query, function (err) {
 			callback(err);
 		});
 	};
 
-	module.getSortedSetRange = function(key, start, stop, callback) {
+	module.getSortedSetRange = function (key, start, stop, callback) {
 		getSortedSetRange(key, start, stop, 1, false, callback);
 	};
 
-	module.getSortedSetRevRange = function(key, start, stop, callback) {
+	module.getSortedSetRevRange = function (key, start, stop, callback) {
 		getSortedSetRange(key, start, stop, -1, false, callback);
 	};
 
-	module.getSortedSetRangeWithScores = function(key, start, stop, callback) {
+	module.getSortedSetRangeWithScores = function (key, start, stop, callback) {
 		getSortedSetRange(key, start, stop, 1, true, callback);
 	};
 
-	module.getSortedSetRevRangeWithScores = function(key, start, stop, callback) {
+	module.getSortedSetRevRangeWithScores = function (key, start, stop, callback) {
 		getSortedSetRange(key, start, stop, -1, true, callback);
 	};
 
@@ -153,13 +153,13 @@ module.exports = function(db, module) {
 			.limit(limit)
 			.skip(start)
 			.sort({score: sort})
-			.toArray(function(err, data) {
+			.toArray(function (err, data) {
 				if (err || !data) {
 					return callback(err);
 				}
 
 				if (!withScores) {
-					data = data.map(function(item) {
+					data = data.map(function (item) {
 						return item.value;
 					});
 				}
@@ -168,19 +168,19 @@ module.exports = function(db, module) {
 			});
 	}
 
-	module.getSortedSetRangeByScore = function(key, start, count, min, max, callback) {
+	module.getSortedSetRangeByScore = function (key, start, count, min, max, callback) {
 		getSortedSetRangeByScore(key, start, count, min, max, 1, false, callback);
 	};
 
-	module.getSortedSetRevRangeByScore = function(key, start, count, max, min, callback) {
+	module.getSortedSetRevRangeByScore = function (key, start, count, max, min, callback) {
 		getSortedSetRangeByScore(key, start, count, min, max, -1, false, callback);
 	};
 
-	module.getSortedSetRangeByScoreWithScores = function(key, start, count, min, max, callback) {
+	module.getSortedSetRangeByScoreWithScores = function (key, start, count, min, max, callback) {
 		getSortedSetRangeByScore(key, start, count, min, max, 1, true, callback);
 	};
 
-	module.getSortedSetRevRangeByScoreWithScores = function(key, start, count, max, min, callback) {
+	module.getSortedSetRevRangeByScoreWithScores = function (key, start, count, max, min, callback) {
 		getSortedSetRangeByScore(key, start, count, min, max, -1, true, callback);
 	};
 
@@ -211,13 +211,13 @@ module.exports = function(db, module) {
 			.limit(count)
 			.skip(start)
 			.sort({score: sort})
-			.toArray(function(err, data) {
+			.toArray(function (err, data) {
 				if(err) {
 					return callback(err);
 				}
 
 				if (!withScores) {
-					data = data.map(function(item) {
+					data = data.map(function (item) {
 						return item.value;
 					});
 				}
@@ -226,7 +226,7 @@ module.exports = function(db, module) {
 			});
 	}
 
-	module.sortedSetCount = function(key, min, max, callback) {
+	module.sortedSetCount = function (key, min, max, callback) {
 		if (!key) {
 			return callback();
 		}
@@ -240,22 +240,22 @@ module.exports = function(db, module) {
 			query.score.$lte = max;
 		}
 
-		db.collection('objects').count(query, function(err, count) {
+		db.collection('objects').count(query, function (err, count) {
 			callback(err, count ? count : 0);
 		});
 	};
 
-	module.sortedSetCard = function(key, callback) {
+	module.sortedSetCard = function (key, callback) {
 		if (!key) {
 			return callback(null, 0);
 		}
-		db.collection('objects').count({_key: key}, function(err, count) {
+		db.collection('objects').count({_key: key}, function (err, count) {
 			count = parseInt(count, 10);
 			callback(err, count ? count : 0);
 		});
 	};
 
-	module.sortedSetsCard = function(keys, callback) {
+	module.sortedSetsCard = function (keys, callback) {
 		if (!Array.isArray(keys) || !keys.length) {
 			return callback();
 		}
@@ -264,7 +264,7 @@ module.exports = function(db, module) {
 			{ $group: { _id: {_key: '$_key'}, count: { $sum: 1 } } },
 			{ $project: { _id: 1, count: '$count' } }
 		];
-		db.collection('objects').aggregate(pipeline, function(err, results) {
+		db.collection('objects').aggregate(pipeline, function (err, results) {
 			if (err) {
 				return callback(err);
 			}
@@ -274,24 +274,24 @@ module.exports = function(db, module) {
 			}
 
 			var map = {};
-			results.forEach(function(item) {
+			results.forEach(function (item) {
 				if (item && item._id._key) {
 					map[item._id._key] = item.count;
 				}
 			});
 
-			results = keys.map(function(key) {
+			results = keys.map(function (key) {
 				return map[key] || 0;
 			});
 			callback(null, results);
 		});
 	};
 
-	module.sortedSetRank = function(key, value, callback) {
+	module.sortedSetRank = function (key, value, callback) {
 		getSortedSetRank(module.getSortedSetRange, key, value, callback);
 	};
 
-	module.sortedSetRevRank = function(key, value, callback) {
+	module.sortedSetRevRank = function (key, value, callback) {
 		getSortedSetRank(module.getSortedSetRevRange, key, value, callback);
 	};
 
@@ -300,7 +300,7 @@ module.exports = function(db, module) {
 			return callback();
 		}
 		value = helpers.valueToString(value);
-		method(key, 0, -1, function(err, result) {
+		method(key, 0, -1, function (err, result) {
 			if(err) {
 				return callback(err);
 			}
@@ -310,7 +310,7 @@ module.exports = function(db, module) {
 		});
 	}
 
-	module.sortedSetsRanks = function(keys, values, callback) {
+	module.sortedSetsRanks = function (keys, values, callback) {
 		if (!Array.isArray(keys) || !keys.length) {
 			return callback(null, []);
 		}
@@ -319,18 +319,18 @@ module.exports = function(db, module) {
 			data[i] = {key: keys[i], value: values[i]};
 		}
 
-		async.map(data, function(item, next) {
+		async.map(data, function (item, next) {
 			getSortedSetRank(module.getSortedSetRange, item.key, item.value, next);
 		}, callback);
 	};
 
-	module.sortedSetRanks = function(key, values, callback) {
-		module.getSortedSetRange(key, 0, -1, function(err, sortedSet) {
+	module.sortedSetRanks = function (key, values, callback) {
+		module.getSortedSetRange(key, 0, -1, function (err, sortedSet) {
 			if (err) {
 				return callback(err);
 			}
 
-			var result = values.map(function(value) {
+			var result = values.map(function (value) {
 				if (!value) {
 					return null;
 				}
@@ -342,22 +342,22 @@ module.exports = function(db, module) {
 		});
 	};
 
-	module.sortedSetScore = function(key, value, callback) {
+	module.sortedSetScore = function (key, value, callback) {
 		if (!key) {
 			return callback();
 		}
 		value = helpers.valueToString(value);
-		db.collection('objects').findOne({_key: key, value: value}, {fields:{_id: 0, score: 1}}, function(err, result) {
+		db.collection('objects').findOne({_key: key, value: value}, {fields:{_id: 0, score: 1}}, function (err, result) {
 			callback(err, result ? result.score : null);
 		});
 	};
 
-	module.sortedSetsScore = function(keys, value, callback) {
+	module.sortedSetsScore = function (keys, value, callback) {
 		if (!Array.isArray(keys) || !keys.length) {
 			return callback();
 		}
 		value = helpers.valueToString(value);
-		db.collection('objects').find({_key:{$in:keys}, value: value}, {_id:0, _key:1, score: 1}).toArray(function(err, result) {
+		db.collection('objects').find({_key:{$in:keys}, value: value}, {_id:0, _key:1, score: 1}).toArray(function (err, result) {
 			if (err) {
 				return callback(err);
 			}
@@ -375,18 +375,18 @@ module.exports = function(db, module) {
 		});
 	};
 
-	module.sortedSetScores = function(key, values, callback) {
+	module.sortedSetScores = function (key, values, callback) {
 		if (!key) {
 			return callback();
 		}
 		values = values.map(helpers.valueToString);
-		db.collection('objects').find({_key: key, value: {$in: values}}, {_id: 0, value: 1, score: 1}).toArray(function(err, result) {
+		db.collection('objects').find({_key: key, value: {$in: values}}, {_id: 0, value: 1, score: 1}).toArray(function (err, result) {
 			if (err) {
 				return callback(err);
 			}
 
 			var map = {};
-			result.forEach(function(item) {
+			result.forEach(function (item) {
 				map[item.value] = item.score;
 			});
 
@@ -402,69 +402,69 @@ module.exports = function(db, module) {
 		});
 	};
 
-	module.isSortedSetMember = function(key, value, callback) {
+	module.isSortedSetMember = function (key, value, callback) {
 		if (!key) {
 			return callback();
 		}
 		value = helpers.valueToString(value);
-		db.collection('objects').findOne({_key: key, value: value}, {_id: 0, value: 1}, function(err, result) {
+		db.collection('objects').findOne({_key: key, value: value}, {_id: 0, value: 1}, function (err, result) {
 			callback(err, !!result);
 		});
 	};
 
-	module.isSortedSetMembers = function(key, values, callback) {
+	module.isSortedSetMembers = function (key, values, callback) {
 		if (!key) {
 			return callback();
 		}
 		values = values.map(helpers.valueToString);
-		db.collection('objects').find({_key: key, value: {$in: values}}, {fields: {_id: 0, value: 1}}).toArray(function(err, results) {
+		db.collection('objects').find({_key: key, value: {$in: values}}, {fields: {_id: 0, value: 1}}).toArray(function (err, results) {
 			if (err) {
 				return callback(err);
 			}
 
-			results = results.map(function(item) {
+			results = results.map(function (item) {
 				return item.value;
 			});
 
-			values = values.map(function(value) {
+			values = values.map(function (value) {
 				return results.indexOf(value) !== -1;
 			});
 			callback(null, values);
 		});
 	};
 
-	module.isMemberOfSortedSets = function(keys, value, callback) {
+	module.isMemberOfSortedSets = function (keys, value, callback) {
 		if (!Array.isArray(keys)) {
 			return callback();
 		}
 		value = helpers.valueToString(value);
-		db.collection('objects').find({_key: {$in: keys}, value: value}, {fields: {_id: 0, _key: 1, value: 1}}).toArray(function(err, results) {
+		db.collection('objects').find({_key: {$in: keys}, value: value}, {fields: {_id: 0, _key: 1, value: 1}}).toArray(function (err, results) {
 			if (err) {
 				return callback(err);
 			}
 
-			results = results.map(function(item) {
+			results = results.map(function (item) {
 				return item._key;
 			});
 
-			results = keys.map(function(key) {
+			results = keys.map(function (key) {
 				return results.indexOf(key) !== -1;
 			});
 			callback(null, results);
 		});
 	};
 
-	module.getSortedSetsMembers = function(keys, callback) {
+	module.getSortedSetsMembers = function (keys, callback) {
 		if (!Array.isArray(keys) || !keys.length) {
 			return callback(null, []);
 		}
-		db.collection('objects').find({_key: {$in: keys}}, {_id: 0, _key: 1, value: 1}).toArray(function(err, data) {
+		db.collection('objects').find({_key: {$in: keys}}, {_id: 0, _key: 1, value: 1}).toArray(function (err, data) {
 			if (err) {
 				return callback(err);
 			}
 
 			var sets = {};
-			data.forEach(function(set) {
+			data.forEach(function (set) {
 			 	sets[set._key] = sets[set._key] || [];
 			 	sets[set._key].push(set.value);
 			});
@@ -477,7 +477,7 @@ module.exports = function(db, module) {
 		});
 	};
 
-	module.sortedSetUnionCard = function(keys, callback) {
+	module.sortedSetUnionCard = function (keys, callback) {
 		if (!Array.isArray(keys) || !keys.length) {
 			return callback(null, 0);
 		}
@@ -491,17 +491,17 @@ module.exports = function(db, module) {
 		var project = { _id: 0, count: '$count' };
 		pipeline.push({	$project: project });
 
-		db.collection('objects').aggregate(pipeline, function(err, data) {
+		db.collection('objects').aggregate(pipeline, function (err, data) {
 			callback(err, Array.isArray(data) && data.length ? data[0].count : 0);
 		});
 	};
 
-	module.getSortedSetUnion = function(params, callback) {
+	module.getSortedSetUnion = function (params, callback) {
 		params.sort = 1;
 		getSortedSetUnion(params, callback);
 	};
 
-	module.getSortedSetRevUnion = function(params, callback) {
+	module.getSortedSetRevUnion = function (params, callback) {
 		params.sort = -1;
 		getSortedSetUnion(params, callback);
 	};
@@ -542,13 +542,13 @@ module.exports = function(db, module) {
 		}
 		pipeline.push({	$project: project });
 
-		db.collection('objects').aggregate(pipeline, function(err, data) {
+		db.collection('objects').aggregate(pipeline, function (err, data) {
 			if (err || !data) {
 				return callback(err);
 			}
 
 			if (!params.withScores) {
-				data = data.map(function(item) {
+				data = data.map(function (item) {
 					return item.value;
 				});
 			}
@@ -557,7 +557,7 @@ module.exports = function(db, module) {
 		});
 	}
 
-	module.sortedSetIncrBy = function(key, increment, value, callback) {
+	module.sortedSetIncrBy = function (key, increment, value, callback) {
 		callback = callback || helpers.noop;
 		if (!key) {
 			return callback();
@@ -566,7 +566,7 @@ module.exports = function(db, module) {
 		value = helpers.valueToString(value);
 		data.score = parseInt(increment, 10);
 
-		db.collection('objects').findAndModify({_key: key, value: value}, {}, {$inc: data}, {new: true, upsert: true}, function(err, result) {
+		db.collection('objects').findAndModify({_key: key, value: value}, {}, {$inc: data}, {new: true, upsert: true}, function (err, result) {
 			// if there is duplicate key error retry the upsert
 			// https://github.com/NodeBB/NodeBB/issues/4467
 			// https://jira.mongodb.org/browse/SERVER-14322
@@ -578,7 +578,7 @@ module.exports = function(db, module) {
 		});
 	};
 
-	module.getSortedSetRangeByLex = function(key, min, max, start, count, callback) {
+	module.getSortedSetRangeByLex = function (key, min, max, start, count, callback) {
 		var query = {_key: key};
 		if (min !== '-') {
 			query.value = {$gte: min};
@@ -591,18 +591,18 @@ module.exports = function(db, module) {
 			.sort({value: 1})
 			.skip(start)
 			.limit(count === -1 ? 0 : count)
-			.toArray(function(err, data) {
+			.toArray(function (err, data) {
 				if (err) {
 					return callback(err);
 				}
-				data = data.map(function(item) {
+				data = data.map(function (item) {
 					return item && item.value;
 				});
 				callback(err, data);
 		});
 	};
 
-	module.processSortedSet = function(setKey, process, batch, callback) {
+	module.processSortedSet = function (setKey, process, batch, callback) {
 		var done = false;
 		var ids = [];
 		var cursor = db.collection('objects').find({_key: setKey})
@@ -611,11 +611,11 @@ module.exports = function(db, module) {
 			.batchSize(batch);
 
 		async.whilst(
-			function() {
+			function () {
 				return !done;
 			},
-			function(next) {
-				cursor.next(function(err, item) {
+			function (next) {
+				cursor.next(function (err, item) {
 					if (err) {
 						return next(err);
 					}
@@ -629,7 +629,7 @@ module.exports = function(db, module) {
 						return next(null);
 					}
 
-					process(ids, function(err) {
+					process(ids, function (err) {
 						ids = [];
 						return next(err);
 					});
@@ -640,7 +640,7 @@ module.exports = function(db, module) {
 	};
 
 
-	module.sortedSetIntersectCard = function(keys, callback) {
+	module.sortedSetIntersectCard = function (keys, callback) {
 		if (!Array.isArray(keys) || !keys.length) {
 			return callback(null, 0);
 		}
@@ -652,17 +652,17 @@ module.exports = function(db, module) {
 			{ $group: { _id: null,  count: { $sum: 1 } } }
 		];
 
-		db.collection('objects').aggregate(pipeline, function(err, data) {
+		db.collection('objects').aggregate(pipeline, function (err, data) {
 			callback(err, Array.isArray(data) && data.length ? data[0].count : 0);
 		});
 	};
 
-	module.getSortedSetIntersect = function(params, callback) {
+	module.getSortedSetIntersect = function (params, callback) {
 		params.sort = 1;
 		getSortedSetRevIntersect(params, callback);
 	};
 
-	module.getSortedSetRevIntersect = function(params, callback) {
+	module.getSortedSetRevIntersect = function (params, callback) {
 		params.sort = -1;
 		getSortedSetRevIntersect(params, callback);
 	};
@@ -687,7 +687,7 @@ module.exports = function(db, module) {
 
 		var pipeline = [{ $match: { _key: {$in: sets}} }];
 
-		weights.forEach(function(weight, index) {
+		weights.forEach(function (weight, index) {
 			if (weight !== 1) {
 				pipeline.push({
 					$project: {
@@ -718,13 +718,13 @@ module.exports = function(db, module) {
 		}
 		pipeline.push({ $project: project });
 
-		db.collection('objects').aggregate(pipeline, function(err, data) {
+		db.collection('objects').aggregate(pipeline, function (err, data) {
 			if (err || !data) {
 				return callback(err);
 			}
 
 			if (!params.withScores) {
-				data = data.map(function(item) {
+				data = data.map(function (item) {
 					return item.value;
 				});
 			}

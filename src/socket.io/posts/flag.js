@@ -12,9 +12,9 @@ var notifications = require('../../notifications');
 var plugins = require('../../plugins');
 var meta = require('../../meta');
 
-module.exports = function(SocketPosts) {
+module.exports = function (SocketPosts) {
 
-	SocketPosts.flag = function(socket, data, callback) {
+	SocketPosts.flag = function (socket, data, callback) {
 		if (!socket.uid) {
 			return callback(new Error('[[error:not-logged-in]]'));
 		}
@@ -42,10 +42,10 @@ module.exports = function(SocketPosts) {
 				post.topic = topicData;
 
 				async.parallel({
-					isAdminOrMod: function(next) {
+					isAdminOrMod: function (next) {
 						privileges.categories.isAdminOrMod(post.topic.cid, socket.uid, next);
 					},
-					userData: function(next) {
+					userData: function (next) {
 						user.getUserFields(socket.uid, ['username', 'reputation', 'banned'], next);
 					}
 				}, next);
@@ -66,16 +66,16 @@ module.exports = function(SocketPosts) {
 			},
 			function (next) {
 				async.parallel({
-					post: function(next) {
+					post: function (next) {
 						posts.parsePost(post, next);
 					},
-					admins: function(next) {
+					admins: function (next) {
 						groups.getMembers('administrators', 0, -1, next);
 					},
 					globalMods: function (next) {
 						groups.getMembers('Global Moderators', 0, -1, next);
 					},
-					moderators: function(next) {
+					moderators: function (next) {
 						groups.getMembers('cid:' + post.topic.cid + ':privileges:mods', 0, -1, next);
 					}
 				}, next);
@@ -93,7 +93,7 @@ module.exports = function(SocketPosts) {
 					from: socket.uid,
 					mergeId: 'notifications:user_flagged_post_in|' + data.pid,
 					topicTitle: post.topic.title
-				}, function(err, notification) {
+				}, function (err, notification) {
 					if (err || !notification) {
 						return next(err);
 					}
@@ -105,7 +105,7 @@ module.exports = function(SocketPosts) {
 		], callback);
 	};
 
-	SocketPosts.dismissFlag = function(socket, pid, callback) {
+	SocketPosts.dismissFlag = function (socket, pid, callback) {
 		if (!pid || !socket.uid) {
 			return callback('[[error:invalid-data]]');
 		}
@@ -122,7 +122,7 @@ module.exports = function(SocketPosts) {
 		], callback);
 	};
 
-	SocketPosts.dismissAllFlags = function(socket, data, callback) {
+	SocketPosts.dismissAllFlags = function (socket, data, callback) {
 		async.waterfall([
 			function (next) {
 				user.isAdminOrGlobalMod(socket.uid, next);
@@ -136,7 +136,7 @@ module.exports = function(SocketPosts) {
 		], callback);
 	};
 
-	SocketPosts.updateFlag = function(socket, data, callback) {
+	SocketPosts.updateFlag = function (socket, data, callback) {
 		if (!data || !(data.pid && data.data)) {
 			return callback('[[error:invalid-data]]');
 		}
@@ -153,7 +153,7 @@ module.exports = function(SocketPosts) {
 				}
 
 				// Translate form data into object
-				payload = data.data.reduce(function(memo, cur) {
+				payload = data.data.reduce(function (memo, cur) {
 					memo[cur.name] = cur.value;
 					return memo;
 				}, payload);
