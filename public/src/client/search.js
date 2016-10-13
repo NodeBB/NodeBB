@@ -2,10 +2,10 @@
 
 /* globals app, define, utils*/
 
-define('forum/search', ['search', 'autocomplete'], function(searchModule, autocomplete) {
+define('forum/search', ['search', 'autocomplete'], function (searchModule, autocomplete) {
 	var	Search = {};
 
-	Search.init = function() {
+	Search.init = function () {
 		var searchQuery = $('#results').attr('data-search-query');
 
 		$('#search-input').val(searchQuery);
@@ -14,15 +14,15 @@ define('forum/search', ['search', 'autocomplete'], function(searchModule, autoco
 
 		fillOutForm();
 
-		searchIn.on('change', function() {
+		searchIn.on('change', function () {
 			updateFormItemVisiblity(searchIn.val());
 		});
 
 		highlightMatches(searchQuery);
 
-		$('#advanced-search').off('submit').on('submit', function(e) {
+		$('#advanced-search').off('submit').on('submit', function (e) {
 			e.preventDefault();
-			searchModule.query(getSearchData(), function() {
+			searchModule.query(getSearchData(), function () {
 				$('#search-input').val('');
 			});
 			return false;
@@ -120,10 +120,10 @@ define('forum/search', ['search', 'autocomplete'], function(searchModule, autoco
 		var regexStr = searchQuery.replace(/^"/, '').replace(/"$/, '').trim().split(' ').join('|');
 		var regex = new RegExp('(' + regexStr + ')', 'gi');
 
-		$('.search-result-text p, .search-result-text h4').each(function() {
+		$('.search-result-text p, .search-result-text h4').each(function () {
 			var result = $(this), nested = [];
 
-			result.find('*').each(function() {
+			result.find('*').each(function () {
 				$(this).after('<!-- ' + nested.length + ' -->');
 				nested.push($('<div />').append($(this)));
 			});
@@ -139,13 +139,13 @@ define('forum/search', ['search', 'autocomplete'], function(searchModule, autoco
 	}
 
 	function handleSavePreferences() {
-		$('#save-preferences').on('click', function() {
+		$('#save-preferences').on('click', function () {
 			localStorage.setItem('search-preferences', JSON.stringify(getSearchData()));
 			app.alertSuccess('[[search:search-preferences-saved]]');
 			return false;
 		});
 
-		$('#clear-preferences').on('click', function() {
+		$('#clear-preferences').on('click', function () {
 			localStorage.removeItem('search-preferences');
 			var query = $('#search-input').val();
 			$('#advanced-search')[0].reset();

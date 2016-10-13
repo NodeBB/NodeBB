@@ -2,19 +2,19 @@
 
 /*global define, socket, app, ajaxify, config*/
 
-define('forum/account/settings', ['forum/account/header', 'components', 'sounds'], function(header, components, sounds) {
+define('forum/account/settings', ['forum/account/header', 'components', 'sounds'], function (header, components, sounds) {
 	var	AccountSettings = {};
 
-	AccountSettings.init = function() {
+	AccountSettings.init = function () {
 		header.init();
 
-		$('#submitBtn').on('click', function() {
+		$('#submitBtn').on('click', function () {
 			var settings = loadSettings();
 
 			if (settings.homePageRoute === 'custom' && settings.homePageCustom) {
-				$.get(config.relative_path + '/' + settings.homePageCustom, function() {
+				$.get(config.relative_path + '/' + settings.homePageCustom, function () {
 					saveSettings(settings);
-				}).fail(function() {
+				}).fail(function () {
 					app.alertError('[[error:invalid-home-page-route]]');
 				});
 			} else {
@@ -24,7 +24,7 @@ define('forum/account/settings', ['forum/account/header', 'components', 'sounds'
 			return false;
 		});
 
-		$('#bootswatchSkin').on('change', function() {
+		$('#bootswatchSkin').on('change', function () {
 			var css = $('#bootswatchCSS');
 			var val = $(this).val() === 'default' ? config['theme:src'] : '//maxcdn.bootstrapcdn.com/bootswatch/latest/' + $(this).val() + '/bootstrap.min.css';
 
@@ -33,7 +33,7 @@ define('forum/account/settings', ['forum/account/header', 'components', 'sounds'
 
 		$('[data-property="homePageRoute"]').on('change', toggleCustomRoute);
 
-		$('.account').find('button[data-action="play"]').on('click', function(e) {
+		$('.account').find('button[data-action="play"]').on('click', function (e) {
 			e.preventDefault();
 
 			var	fileName = $(this).parent().parent().find('select').val();
@@ -49,7 +49,7 @@ define('forum/account/settings', ['forum/account/header', 'components', 'sounds'
 	function loadSettings() {
 		var settings = {};
 
-		$('.account').find('input, textarea, select').each(function(id, input) {
+		$('.account').find('input, textarea, select').each(function (id, input) {
 			input = $(input);
 			var setting = input.attr('data-property');
 			if (input.is('select')) {
@@ -72,7 +72,7 @@ define('forum/account/settings', ['forum/account/header', 'components', 'sounds'
 	}
 
 	function saveSettings(settings) {
-		socket.emit('user.saveSettings', {uid: ajaxify.data.theirid, settings: settings}, function(err, newSettings) {
+		socket.emit('user.saveSettings', {uid: ajaxify.data.theirid, settings: settings}, function (err, newSettings) {
 			if (err) {
 				return app.alertError(err.message);
 			}
@@ -98,7 +98,7 @@ define('forum/account/settings', ['forum/account/header', 'components', 'sounds'
 					message: '[[user:settings-require-reload]]',
 					type: 'warning',
 					timeout: 5000,
-					clickfn: function() {
+					clickfn: function () {
 						ajaxify.refresh();
 					}
 				});
@@ -116,7 +116,7 @@ define('forum/account/settings', ['forum/account/header', 'components', 'sounds'
 	}
 
 	function prepareSessionRevoking() {
-		components.get('user/sessions').on('click', '[data-action]', function() {
+		components.get('user/sessions').on('click', '[data-action]', function () {
 			var parentEl = $(this).parents('[data-uuid]');
 			var uuid = parentEl.attr('data-uuid');
 
@@ -129,9 +129,9 @@ define('forum/account/settings', ['forum/account/header', 'components', 'sounds'
 					headers: {
 						'x-csrf-token': config.csrf_token
 					}
-				}).done(function() {
+				}).done(function () {
 					parentEl.remove();
-				}).fail(function(err) {
+				}).fail(function (err) {
 					try {
 						var errorObj = JSON.parse(err.responseText);
 						if (errorObj.loggedIn === false) {

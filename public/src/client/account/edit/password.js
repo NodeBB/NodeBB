@@ -2,10 +2,10 @@
 
 /* globals define, ajaxify, socket, app, utils */
 
-define('forum/account/edit/password', ['forum/account/header', 'translator'], function(header, translator) {
+define('forum/account/edit/password', ['forum/account/header', 'translator'], function (header, translator) {
 	var AccountEditPassword = {};
 
-	AccountEditPassword.init = function() {
+	AccountEditPassword.init = function () {
 		header.init();
 
 		handlePasswordChange();
@@ -56,7 +56,7 @@ define('forum/account/edit/password', ['forum/account/header', 'translator'], fu
 		password.on('blur', onPasswordChanged);
 		password_confirm.on('blur', onPasswordConfirmChanged);
 
-		$('#changePasswordBtn').on('click', function() {
+		$('#changePasswordBtn').on('click', function () {
 			onPasswordChanged();
 			onPasswordConfirmChanged();
 
@@ -67,7 +67,7 @@ define('forum/account/edit/password', ['forum/account/header', 'translator'], fu
 					'currentPassword': currentPassword.val(),
 					'newPassword': password.val(),
 					'uid': ajaxify.data.theirid
-				}, function(err) {
+				}, function (err) {
 					btn.removeClass('disabled').find('i').addClass('hide');
 					currentPassword.val('');
 					password.val('');
@@ -97,7 +97,7 @@ define('forum/account/edit/password', ['forum/account/header', 'translator'], fu
 	}
 
 	function showError(element, msg) {
-		translator.translate(msg, function(msg) {
+		translator.translate(msg, function (msg) {
 			element.html(msg);
 
 			element.parent()

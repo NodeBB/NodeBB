@@ -1,15 +1,15 @@
 "use strict";
 /* global define, app, config, RELATIVE_PATH */
 
-define('forum/login', ['translator'], function(translator) {
+define('forum/login', ['translator'], function (translator) {
 	var	Login = {};
 
-	Login.init = function() {
+	Login.init = function () {
 		var errorEl = $('#login-error-notify'),
 			submitEl = $('#login'),
 			formEl = $('#login-form');
 
-		submitEl.on('click', function(e) {
+		submitEl.on('click', function (e) {
 			e.preventDefault();
 
 			if (!$('#username').val() || !$('#password').val()) {
@@ -27,10 +27,10 @@ define('forum/login', ['translator'], function(translator) {
 					headers: {
 						'x-csrf-token': config.csrf_token
 					},
-					success: function(data, status) {
+					success: function (data, status) {
 						window.location.href = data + '?loggedin';
 					},
-					error: function(data, status) {
+					error: function (data, status) {
 						if (data.status === 403 && data.responseText === 'Forbidden') {
 							window.location.href = config.relative_path + '/login?error=csrf-invalid';
 						} else {
@@ -48,7 +48,7 @@ define('forum/login', ['translator'], function(translator) {
 			}
 		});
 
-		$('#login-error-notify button').on('click', function(e) {
+		$('#login-error-notify button').on('click', function (e) {
 			e.preventDefault();
 			errorEl.hide();
 			return false;

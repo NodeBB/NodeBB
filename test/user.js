@@ -17,12 +17,12 @@ var User = require('../src/user'),
 	Meta = require('../src/meta'),
 	Password = require('../src/password');
 
-describe('User', function() {
+describe('User', function () {
 	var	userData,
 		testUid,
 		testCid;
 
-	before(function(done) {
+	before(function (done) {
 		var groups = require('../src/groups');
 		groups.resetCache();
 
@@ -30,7 +30,7 @@ describe('User', function() {
 			name: 'Test Category',
 			description: 'A test',
 			order: 1
-		}, function(err, categoryObj) {
+		}, function (err, categoryObj) {
 			if (err) {
 				return done(err);
 			}
@@ -40,7 +40,7 @@ describe('User', function() {
 		});
 	});
 
-	beforeEach(function() {
+	beforeEach(function () {
 		userData = {
 			username: 'John Smith',
 			fullname: 'John Smith McNamara',
@@ -51,9 +51,9 @@ describe('User', function() {
 	});
 
 
-	describe('.create(), when created', function() {
-		it('should be created properly', function(done) {
-			User.create({username: userData.username, password: userData.password, email: userData.email}, function(error,userId){
+	describe('.create(), when created', function () {
+		it('should be created properly', function (done) {
+			User.create({username: userData.username, password: userData.password, email: userData.email}, function (error,userId){
 				assert.equal(error, null, 'was created with error');
 				assert.ok(userId);
 
@@ -62,8 +62,8 @@ describe('User', function() {
 			});
 		});
 
-		it('should have a valid email, if using an email', function(done) {
-			User.create({username: userData.username, password: userData.password, email: 'fakeMail'},function(err) {
+		it('should have a valid email, if using an email', function (done) {
+			User.create({username: userData.username, password: userData.password, email: 'fakeMail'},function (err) {
 				assert(err);
 				assert.equal(err.message, '[[error:invalid-email]]');
 				done();
@@ -71,17 +71,17 @@ describe('User', function() {
 		});
 	});
 
-	describe('.isModerator()', function() {
-		it('should return false', function(done) {
-			User.isModerator(testUid, testCid, function(err, isModerator) {
+	describe('.isModerator()', function () {
+		it('should return false', function (done) {
+			User.isModerator(testUid, testCid, function (err, isModerator) {
 				assert.equal(err, null);
 				assert.equal(isModerator, false);
 				done();
 			});
 		});
 
-		it('should return two false results', function(done) {
-			User.isModerator([testUid, testUid], testCid, function(err, isModerator) {
+		it('should return two false results', function (done) {
+			User.isModerator([testUid, testUid], testCid, function (err, isModerator) {
 				assert.equal(err, null);
 				assert.equal(isModerator[0], false);
 				assert.equal(isModerator[1], false);
@@ -89,8 +89,8 @@ describe('User', function() {
 			});
 		});
 
-		it('should return two false results', function(done) {
-			User.isModerator(testUid, [testCid, testCid], function(err, isModerator) {
+		it('should return two false results', function (done) {
+			User.isModerator(testUid, [testCid, testCid], function (err, isModerator) {
 				assert.equal(err, null);
 				assert.equal(isModerator[0], false);
 				assert.equal(isModerator[1], false);
@@ -99,8 +99,8 @@ describe('User', function() {
 		});
 	});
 
-	describe('.isReadyToPost()', function() {
-		it('should error when a user makes two posts in quick succession', function(done) {
+	describe('.isReadyToPost()', function () {
+		it('should error when a user makes two posts in quick succession', function (done) {
 			Meta.config = Meta.config || {};
 			Meta.config.postDelay = '10';
 
@@ -117,54 +117,54 @@ describe('User', function() {
 					content: 'lorem ipsum',
 					cid: testCid
 				})
-			], function(err) {
+			], function (err) {
 				assert(err);
 				done();
 			});
 		});
 
-		it('should allow a post if the last post time is > 10 seconds', function(done) {
-			User.setUserField(testUid, 'lastposttime', +new Date()-(11*1000), function() {
+		it('should allow a post if the last post time is > 10 seconds', function (done) {
+			User.setUserField(testUid, 'lastposttime', +new Date() - (11 * 1000), function () {
 				Topics.post({
 					uid: testUid,
 					title: 'Topic 3',
 					content: 'lorem ipsum',
 					cid: testCid
-				}, function(err) {
+				}, function (err) {
 					assert.ifError(err);
 					done();
 				});
 			});
 		});
 
-		it('should error when a new user posts if the last post time is 10 < 30 seconds', function(done) {
+		it('should error when a new user posts if the last post time is 10 < 30 seconds', function (done) {
 			Meta.config.newbiePostDelay = 30;
 			Meta.config.newbiePostDelayThreshold = 3;
 
-			User.setUserField(testUid, 'lastposttime', +new Date()-(20*1000), function() {
+			User.setUserField(testUid, 'lastposttime', +new Date() - (20 * 1000), function () {
 				Topics.post({
 					uid: testUid,
 					title: 'Topic 4',
 					content: 'lorem ipsum',
 					cid: testCid
-				}, function(err) {
+				}, function (err) {
 					assert(err);
 					done();
 				});
 			});
 		});
 
-		it('should not error if a non-newbie user posts if the last post time is 10 < 30 seconds', function(done) {
+		it('should not error if a non-newbie user posts if the last post time is 10 < 30 seconds', function (done) {
 			User.setUserFields(testUid, {
-				lastposttime:  +new Date()-(20*1000),
+				lastposttime:  +new Date() - (20 * 1000),
 				reputation: 10
-			}, function() {
+			}, function () {
 				Topics.post({
 					uid: testUid,
 					title: 'Topic 5',
 					content: 'lorem ipsum',
 					cid: testCid
-				}, function(err) {
+				}, function (err) {
 					assert.ifError(err);
 					done();
 				});
@@ -172,9 +172,9 @@ describe('User', function() {
 		});
 	});
 
-	describe('.search()', function() {
-		it('should return an object containing an array of matching users', function(done) {
-			User.search({query: 'john'}, function(err, searchData) {
+	describe('.search()', function () {
+		it('should return an object containing an array of matching users', function (done) {
+			User.search({query: 'john'}, function (err, searchData) {
 				assert.ifError(err);
 				assert.equal(Array.isArray(searchData.users) && searchData.users.length > 0, true);
 				assert.equal(searchData.users[0].username, 'John Smith');
@@ -183,20 +183,20 @@ describe('User', function() {
 		});
 	});
 
-	describe('.delete()', function() {
+	describe('.delete()', function () {
 		var uid;
-		before(function(done) {
-			User.create({username: 'usertodelete', password: '123456', email: 'delete@me.com'}, function(err, newUid) {
+		before(function (done) {
+			User.create({username: 'usertodelete', password: '123456', email: 'delete@me.com'}, function (err, newUid) {
 				assert.ifError(err);
 				uid = newUid;
 				done();
 			});
 		});
 
-		it('should delete a user account', function(done) {
-			User.delete(1, uid, function(err) {
+		it('should delete a user account', function (done) {
+			User.delete(1, uid, function (err) {
 				assert.ifError(err);
-				User.existsBySlug('usertodelete', function(err, exists) {
+				User.existsBySlug('usertodelete', function (err, exists) {
 					assert.ifError(err);
 					assert.equal(exists, false);
 					done();
@@ -205,19 +205,19 @@ describe('User', function() {
 		});
 	});
 
-	describe('passwordReset', function() {
+	describe('passwordReset', function () {
 		var uid,
 			code;
-		before(function(done) {
-			User.create({username: 'resetuser', password: '123456', email: 'reset@me.com'}, function(err, newUid) {
+		before(function (done) {
+			User.create({username: 'resetuser', password: '123456', email: 'reset@me.com'}, function (err, newUid) {
 				assert.ifError(err);
 				uid = newUid;
 				done();
 			});
 		});
 
-		it('.generate() should generate a new reset code', function(done) {
-			User.reset.generate(uid, function(err, _code) {
+		it('.generate() should generate a new reset code', function (done) {
+			User.reset.generate(uid, function (err, _code) {
 				assert.ifError(err);
 				assert(_code);
 
@@ -226,36 +226,36 @@ describe('User', function() {
 			});
 		});
 
-		it('.validate() should ensure that this new code is valid', function(done) {
-			User.reset.validate(code, function(err, valid) {
+		it('.validate() should ensure that this new code is valid', function (done) {
+			User.reset.validate(code, function (err, valid) {
 				assert.ifError(err);
 				assert.strictEqual(valid, true);
 				done();
 			});
 		});
 
-		it('.validate() should correctly identify an invalid code', function(done) {
-			User.reset.validate(code + 'abcdef', function(err, valid) {
+		it('.validate() should correctly identify an invalid code', function (done) {
+			User.reset.validate(code + 'abcdef', function (err, valid) {
 				assert.ifError(err);
 				assert.strictEqual(valid, false);
 				done();
 			});
 		});
 
-		it('.send() should create a new reset code and reset password', function(done) {
-			User.reset.send('reset@me.com', function(err, code) {
+		it('.send() should create a new reset code and reset password', function (done) {
+			User.reset.send('reset@me.com', function (err, code) {
 				assert.ifError(err);
 				done();
 			});
 		});
 
-		it('.commit() should update the user\'s password', function(done) {
-			User.reset.commit(code, 'newpassword', function(err) {
+		it('.commit() should update the user\'s password', function (done) {
+			User.reset.commit(code, 'newpassword', function (err) {
 				assert.ifError(err);
 
-				db.getObjectField('user:' + uid, 'password', function(err, newPassword) {
+				db.getObjectField('user:' + uid, 'password', function (err, newPassword) {
 					assert.ifError(err);
-					Password.compare('newpassword', newPassword, function(err, match) {
+					Password.compare('newpassword', newPassword, function (err, match) {
 						assert.ifError(err);
 						assert(match);
 						done();
@@ -265,26 +265,26 @@ describe('User', function() {
 		});
 	});
 
-	describe('hash methods', function() {
+	describe('hash methods', function () {
 
-		it('should return uid from email', function(done) {
-			User.getUidByEmail('john@example.com', function(err, uid) {
+		it('should return uid from email', function (done) {
+			User.getUidByEmail('john@example.com', function (err, uid) {
 				assert.ifError(err);
 				assert.equal(parseInt(uid, 10), parseInt(testUid, 10));
 				done();
 			});
 		});
 
-		it('should return uid from username', function(done) {
-			User.getUidByUsername('John Smith', function(err, uid) {
+		it('should return uid from username', function (done) {
+			User.getUidByUsername('John Smith', function (err, uid) {
 				assert.ifError(err);
 				assert.equal(parseInt(uid, 10), parseInt(testUid, 10));
 				done();
 			});
 		});
 
-		it('should return uid from userslug', function(done) {
-			User.getUidByUserslug('john-smith', function(err, uid) {
+		it('should return uid from userslug', function (done) {
+			User.getUidByUserslug('john-smith', function (err, uid) {
 				assert.ifError(err);
 				assert.equal(parseInt(uid, 10), parseInt(testUid, 10));
 				done();
@@ -292,7 +292,7 @@ describe('User', function() {
 		});
 	});
 
-	after(function(done) {
+	after(function (done) {
 		db.flushdb(done);
 	});
 });

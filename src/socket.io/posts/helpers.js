@@ -9,7 +9,7 @@ var socketHelpers = require('../helpers');
 
 var helpers = module.exports;
 
-helpers.postCommand = function(socket, command, eventName, notification, data, callback) {
+helpers.postCommand = function (socket, command, eventName, notification, data, callback) {
 	if (!socket.uid) {
 		return callback(new Error('[[error:not-logged-in]]'));
 	}
@@ -17,13 +17,13 @@ helpers.postCommand = function(socket, command, eventName, notification, data, c
 		return callback(new Error('[[error:invalid-data]]'));
 	}
 	async.parallel({
-		exists: function(next) {
+		exists: function (next) {
 			posts.exists(data.pid, next);
 		},
-		deleted: function(next) {
+		deleted: function (next) {
 			posts.getPostField(data.pid, 'deleted', next);
 		}
-	}, function(err, results) {
+	}, function (err, results) {
 		if (err || !results.exists) {
 			return callback(err || new Error('[[error:invalid-pid]]'));
 		}
@@ -40,7 +40,7 @@ helpers.postCommand = function(socket, command, eventName, notification, data, c
 			filter:post.bookmark
 			filter:post.unbookmark
 		 */
-		plugins.fireHook('filter:post.' + command, {data: data, uid: socket.uid}, function(err, filteredData) {
+		plugins.fireHook('filter:post.' + command, {data: data, uid: socket.uid}, function (err, filteredData) {
 			if (err) {
 				return callback(err);
 			}
@@ -51,7 +51,7 @@ helpers.postCommand = function(socket, command, eventName, notification, data, c
 };
 
 function executeCommand(socket, command, eventName, notification, data, callback) {
-	posts[command](data.pid, socket.uid, function(err, result) {
+	posts[command](data.pid, socket.uid, function (err, result) {
 		if (err) {
 			return callback(err);
 		}

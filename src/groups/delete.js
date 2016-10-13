@@ -5,10 +5,10 @@ var plugins = require('../plugins');
 var utils = require('../../public/src/utils');
 var db = require('./../database');
 
-module.exports = function(Groups) {
+module.exports = function (Groups) {
 
-	Groups.destroy = function(groupName, callback) {
-		Groups.getGroupsData([groupName], function(err, groupsData) {
+	Groups.destroy = function (groupName, callback) {
+		Groups.getGroupsData([groupName], function (err, groupsData) {
 			if (err) {
 				return callback(err);
 			}
@@ -30,17 +30,17 @@ module.exports = function(Groups) {
 				async.apply(db.delete, 'group:' + groupName + ':invited'),
 				async.apply(db.delete, 'group:' + groupName + ':owners'),
 				async.apply(db.deleteObjectField, 'groupslug:groupname', utils.slugify(groupName)),
-				function(next) {
-					db.getSortedSetRange('groups:createtime', 0, -1, function(err, groups) {
+				function (next) {
+					db.getSortedSetRange('groups:createtime', 0, -1, function (err, groups) {
 						if (err) {
 							return next(err);
 						}
-						async.each(groups, function(group, next) {
+						async.each(groups, function (group, next) {
 							db.sortedSetRemove('group:' + group + ':members', groupName, next);
 						}, next);
 					});
 				}
-			], function(err) {
+			], function (err) {
 				if (err) {
 					return callback(err);
 				}

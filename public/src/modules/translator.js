@@ -29,16 +29,16 @@
 			}
 
 			module.exports = factory(require('string'), loadServer);
-		})();
+		}());
 	} else {
 		window.translator = factory(window.string, loadClient);
 	}
-})(function (string, load) {
+}(function (string, load) {
 	'use strict';
 	var assign = Object.assign || jQuery.extend;
 	function classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-	var Translator = function () {
+	var Translator = (function () {
 		/**
 		 * Construct a new Translator object
 		 * @param {string} language - Language code for this translator instance
@@ -305,7 +305,7 @@
 		Translator.cache = {};
 
 		return Translator;
-	}();
+	}());
 
 	var adaptor = {
 		/**
@@ -453,4 +453,4 @@
 	};
 
 	return adaptor;
-});
+}));

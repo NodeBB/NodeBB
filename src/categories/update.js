@@ -7,33 +7,33 @@ var utils = require('../../public/src/utils');
 var translator = require('../../public/src/modules/translator');
 var plugins = require('../plugins');
 
-module.exports = function(Categories) {
+module.exports = function (Categories) {
 
-	Categories.update = function(modified, callback) {
+	Categories.update = function (modified, callback) {
 
 		var cids = Object.keys(modified);
 
-		async.each(cids, function(cid, next) {
+		async.each(cids, function (cid, next) {
 			updateCategory(cid, modified[cid], next);
-		}, function(err) {
+		}, function (err) {
 			callback(err, cids);
 		});
 	};
 
 	function updateCategory(cid, modifiedFields, callback) {
-		Categories.exists(cid, function(err, exists) {
+		Categories.exists(cid, function (err, exists) {
 			if (err || !exists) {
 				return callback(err);
 			}
 
 
 			if (modifiedFields.hasOwnProperty('name')) {
-				translator.translate(modifiedFields.name, function(translated) {
+				translator.translate(modifiedFields.name, function (translated) {
 					modifiedFields.slug = cid + '/' + utils.slugify(translated);
 				});
 			}
 
-			plugins.fireHook('filter:category.update', {category: modifiedFields}, function(err, categoryData) {
+			plugins.fireHook('filter:category.update', {category: modifiedFields}, function (err, categoryData) {
 				if (err) {
 					return callback(err);
 				}
@@ -46,9 +46,9 @@ module.exports = function(Categories) {
 					fields.splice(0, 0, fields.splice(parentCidIndex, 1)[0]);
 				}
 
-				async.eachSeries(fields, function(key, next) {
+				async.eachSeries(fields, function (key, next) {
 					updateCategoryField(cid, key, category[key], next);
-				}, function(err) {
+				}, function (err) {
 					if (err) {
 						return callback(err);
 					}
@@ -64,7 +64,7 @@ module.exports = function(Categories) {
 			return updateParent(cid, value, callback);
 		}
 
-		db.setObjectField('category:' + cid, key, value, function(err) {
+		db.setObjectField('category:' + cid, key, value, function (err) {
 			if (err) {
 				return callback(err);
 			}
@@ -83,7 +83,7 @@ module.exports = function(Categories) {
 		if (parseInt(cid, 10) === parseInt(newParent, 10)) {
 			return callback(new Error('[[error:cant-set-self-as-parent]]'));
 		}
-		Categories.getCategoryField(cid, 'parentCid', function(err, oldParent) {
+		Categories.getCategoryField(cid, 'parentCid', function (err, oldParent) {
 			if (err) {
 				return callback(err);
 			}
@@ -100,14 +100,14 @@ module.exports = function(Categories) {
 				function (next) {
 					db.setObjectField('category:' + cid, 'parentCid', newParent, next);
 				}
-			], function(err) {
+			], function (err) {
 				callback(err);
 			});
 		});
 	}
 
 	function updateOrder(cid, order, callback) {
-		Categories.getCategoryField(cid, 'parentCid', function(err, parentCid) {
+		Categories.getCategoryField(cid, 'parentCid', function (err, parentCid) {
 			if (err) {
 				return callback(err);
 			}
@@ -124,8 +124,8 @@ module.exports = function(Categories) {
 		});
 	}
 
-	Categories.parseDescription = function(cid, description, callback) {
-		plugins.fireHook('filter:parse.raw', description, function(err, parsedDescription) {
+	Categories.parseDescription = function (cid, description, callback) {
+		plugins.fireHook('filter:parse.raw', description, function (err, parsedDescription) {
 			if (err) {
 				return callback(err);
 			}

@@ -32,10 +32,10 @@ var Controllers = {
 };
 
 
-Controllers.home = function(req, res, next) {
+Controllers.home = function (req, res, next) {
 	var route = meta.config.homePageRoute || (meta.config.homePageCustom || '').replace(/^\/+/, '') || 'categories';
 
-	user.getSettings(req.uid, function(err, settings) {
+	user.getSettings(req.uid, function (err, settings) {
 		if (err) {
 			return next(err);
 		}
@@ -72,9 +72,9 @@ Controllers.home = function(req, res, next) {
 	});
 };
 
-Controllers.reset = function(req, res, next) {
+Controllers.reset = function (req, res, next) {
 	if (req.params.code) {
-		user.reset.validate(req.params.code, function(err, valid) {
+		user.reset.validate(req.params.code, function (err, valid) {
 			if (err) {
 				return next(err);
 			}
@@ -99,7 +99,7 @@ Controllers.reset = function(req, res, next) {
 
 };
 
-Controllers.login = function(req, res, next) {
+Controllers.login = function (req, res, next) {
 	var data = {};
 	var loginStrategies = require('../routes/authentication').getLoginStrategies();
 	var registrationType = meta.config.registrationType || 'normal';
@@ -132,7 +132,7 @@ Controllers.login = function(req, res, next) {
 		}
 	}
 	if (req.uid) {
-		user.getUserFields(req.uid, ['username', 'email'], function(err, user) {
+		user.getUserFields(req.uid, ['username', 'email'], function (err, user) {
 			if (err) {
 				return next(err);
 			}
@@ -146,7 +146,7 @@ Controllers.login = function(req, res, next) {
 
 };
 
-Controllers.register = function(req, res, next) {
+Controllers.register = function (req, res, next) {
 	var registrationType = meta.config.registrationType || 'normal';
 
 	if (registrationType === 'disabled') {
@@ -159,17 +159,17 @@ Controllers.register = function(req, res, next) {
 	}
 
 	async.waterfall([
-		function(next) {
+		function (next) {
 			if (registrationType === 'invite-only' || registrationType === 'admin-invite-only') {
 				user.verifyInvitation(req.query, next);
 			} else {
 				next();
 			}
 		},
-		function(next) {
+		function (next) {
 			plugins.fireHook('filter:parse.post', {postData: {content: meta.config.termsOfUse || ''}}, next);
 		}
-	], function(err, termsOfUse) {
+	], function (err, termsOfUse) {
 		if (err) {
 			return next(err);
 		}
@@ -194,7 +194,7 @@ Controllers.register = function(req, res, next) {
 	});
 };
 
-Controllers.registerInterstitial = function(req, res, next) {
+Controllers.registerInterstitial = function (req, res, next) {
 	if (!req.session.hasOwnProperty('registration')) {
 		return res.redirect(nconf.get('relative_path') + '/register');
 	}
@@ -202,7 +202,7 @@ Controllers.registerInterstitial = function(req, res, next) {
 	plugins.fireHook('filter:register.interstitial', {
 		userData: req.session.registration,
 		interstitials: []
-	}, function(err, data) {
+	}, function (err, data) {
 		if (err) {
 			return next(err);
 		}
@@ -211,12 +211,12 @@ Controllers.registerInterstitial = function(req, res, next) {
 			return next();
 		}
 
-		var renders = data.interstitials.map(function(interstitial) {
+		var renders = data.interstitials.map(function (interstitial) {
 			return async.apply(req.app.render.bind(req.app), interstitial.template, interstitial.data || {});
 		});
 		var errors = req.flash('error');
 
-		async.parallel(renders, function(err, sections) {
+		async.parallel(renders, function (err, sections) {
 			if (err) {
 				return next(err);
 			}
@@ -230,13 +230,13 @@ Controllers.registerInterstitial = function(req, res, next) {
 	});
 };
 
-Controllers.compose = function(req, res, next) {
+Controllers.compose = function (req, res, next) {
 	plugins.fireHook('filter:composer.build', {
 		req: req,
 		res: res,
 		next: next,
 		templateData: {}
-	}, function(err, data) {
+	}, function (err, data) {
 		if (err) {
 			return next(err);
 		}
@@ -252,7 +252,7 @@ Controllers.compose = function(req, res, next) {
 	});
 };
 
-Controllers.confirmEmail = function(req, res) {
+Controllers.confirmEmail = function (req, res) {
 	user.email.confirm(req.params.code, function (err) {
 		res.render('confirm', {
 			error: err ? err.message : '',
@@ -273,7 +273,7 @@ Controllers.robots = function (req, res) {
 	}
 };
 
-Controllers.manifest = function(req, res) {
+Controllers.manifest = function (req, res) {
 	var manifest = {
 			name: meta.config.title || 'NodeBB',
 			start_url: nconf.get('relative_path') + '/',
@@ -319,7 +319,7 @@ Controllers.manifest = function(req, res) {
 	res.status(200).json(manifest);
 };
 
-Controllers.outgoing = function(req, res) {
+Controllers.outgoing = function (req, res) {
 	var url = req.query.url || '';
 	var data = {
 		outgoing: validator.escape(String(url)),
@@ -334,18 +334,18 @@ Controllers.outgoing = function(req, res) {
 	}
 };
 
-Controllers.termsOfUse = function(req, res, next) {
+Controllers.termsOfUse = function (req, res, next) {
 	if (!meta.config.termsOfUse) {
 		return next();
 	}
 	res.render('tos', {termsOfUse: meta.config.termsOfUse});
 };
 
-Controllers.ping = function(req, res) {
+Controllers.ping = function (req, res) {
 	res.status(200).send(req.path === '/sping' ? 'healthy' : '200');
 };
 
-Controllers.handle404 = function(req, res) {
+Controllers.handle404 = function (req, res) {
 	var relativePath = nconf.get('relative_path');
 	var isLanguage = new RegExp('^' + relativePath + '/language/.*/.*.json');
 	var isClientScript = new RegExp('^' + relativePath + '\\/src\\/.+\\.js');
@@ -379,7 +379,7 @@ Controllers.handle404 = function(req, res) {
 			return res.json({path: validator.escape(path.replace(/^\/api/, '')), title: '[[global:404.title]]'});
 		}
 		var middleware = require('../middleware');
-		middleware.buildHeader(req, res, function() {
+		middleware.buildHeader(req, res, function () {
 			res.render('404', {path: validator.escape(path), title: '[[global:404.title]]'});
 		});
 	} else {
@@ -387,7 +387,7 @@ Controllers.handle404 = function(req, res) {
 	}
 };
 
-Controllers.handleURIErrors = function(err, req, res, next) {
+Controllers.handleURIErrors = function (err, req, res, next) {
 	// Handle cases where malformed URIs are passed in
 	if (err instanceof URIError) {
 		var tidMatch = req.path.match(/^\/topic\/(\d+)\//);
@@ -405,7 +405,7 @@ Controllers.handleURIErrors = function(err, req, res, next) {
 				});
 			} else {
 				var middleware = require('../middleware');
-				middleware.buildHeader(req, res, function() {
+				middleware.buildHeader(req, res, function () {
 					res.render('400', { error: validator.escape(String(err.message)) });
 				});
 			}
@@ -417,7 +417,7 @@ Controllers.handleURIErrors = function(err, req, res, next) {
 	}
 };
 
-Controllers.handleErrors = function(err, req, res, next) {
+Controllers.handleErrors = function (err, req, res, next) {
 	switch (err.code) {
 		case 'EBADCSRFTOKEN':
 			winston.error(req.path + '\n', err.message);
@@ -439,7 +439,7 @@ Controllers.handleErrors = function(err, req, res, next) {
 		res.json({path: validator.escape(path), error: err.message});
 	} else {
 		var middleware = require('../middleware');
-		middleware.buildHeader(req, res, function() {
+		middleware.buildHeader(req, res, function () {
 			res.render('500', { path: validator.escape(path), error: validator.escape(String(err.message)) });
 		});
 	}

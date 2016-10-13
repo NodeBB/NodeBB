@@ -12,18 +12,18 @@ var Minifier = {
 /* Javascript */
 Minifier.js.minify = function (scripts, minify, callback) {
 
-	scripts = scripts.filter(function(file) {
+	scripts = scripts.filter(function (file) {
 		return file && file.endsWith('.js');
 	});
 
-	async.filter(scripts, function(script, next) {
-		file.exists(script, function(exists) {
+	async.filter(scripts, function (script, next) {
+		file.exists(script, function (exists) {
 			if (!exists) {
 				console.warn('[minifier] file not found, ' + script);
 			}
 			next(exists);
 		});
-	}, function(scripts) {
+	}, function (scripts) {
 		if (minify) {
 			minifyScripts(scripts, callback);
 		} else {
@@ -32,10 +32,10 @@ Minifier.js.minify = function (scripts, minify, callback) {
 	});
 };
 
-process.on('message', function(payload) {
+process.on('message', function (payload) {
 	switch(payload.action) {
 	case 'js':
-		Minifier.js.minify(payload.scripts, payload.minify, function(minified/*, sourceMap*/) {
+		Minifier.js.minify(payload.scripts, payload.minify, function (minified/*, sourceMap*/) {
 			process.send({
 				type: 'end',
 				// sourceMap: sourceMap,
@@ -65,7 +65,7 @@ function minifyScripts(scripts, callback) {
 }
 
 function concatenateScripts(scripts, callback) {
-	async.map(scripts, fs.readFile, function(err, scripts) {
+	async.map(scripts, fs.readFile, function (err, scripts) {
 		if (err) {
 			process.send({
 				type: 'error',

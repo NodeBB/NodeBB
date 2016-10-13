@@ -7,9 +7,9 @@ var databaseController = {};
 
 
 
-databaseController.get = function(req, res, next) {
+databaseController.get = function (req, res, next) {
 	async.parallel({
-		redis: function(next) {
+		redis: function (next) {
 			if (nconf.get('redis')) {
 				var rdb = require('../../database/redis');
 				rdb.info(rdb.client, next);
@@ -17,7 +17,7 @@ databaseController.get = function(req, res, next) {
 				next();
 			}
 		},
-		mongo: function(next) {
+		mongo: function (next) {
 			if (nconf.get('mongo')) {
 				var mdb = require('../../database/mongo');
 				mdb.info(mdb.client, next);
@@ -25,7 +25,7 @@ databaseController.get = function(req, res, next) {
 				next();
 			}
 		}
-	}, function(err, results) {
+	}, function (err, results) {
 		if (err) {
 			return next(err);
 		}

@@ -5,24 +5,24 @@ var db = require('../database');
 var meta = require('../meta');
 var privileges = require('../privileges');
 
-module.exports = function(User) {
+module.exports = function (User) {
 
-	User.isReadyToPost = function(uid, cid, callback) {
+	User.isReadyToPost = function (uid, cid, callback) {
 		if (parseInt(uid, 10) === 0) {
 			return callback();
 		}
 
 		async.parallel({
-			userData: function(next) {
+			userData: function (next) {
 				User.getUserFields(uid, ['banned', 'lastposttime', 'joindate', 'email', 'email:confirmed', 'reputation'], next);
 			},
-			exists: function(next) {
+			exists: function (next) {
 				db.exists('user:' + uid, next);
 			},
-			isAdminOrMod: function(next) {
+			isAdminOrMod: function (next) {
 				privileges.categories.isAdminOrMod(cid, uid, next);
 			}
-		}, function(err, results) {
+		}, function (err, results) {
 			if (err) {
 				return callback(err);
 			}
@@ -62,30 +62,30 @@ module.exports = function(User) {
 		});
 	};
 
-	User.onNewPostMade = function(postData, callback) {
+	User.onNewPostMade = function (postData, callback) {
 		async.series([
-			function(next) {
+			function (next) {
 				User.addPostIdToUser(postData.uid, postData.pid, postData.timestamp, next);
 			},
-			function(next) {
+			function (next) {
 				User.incrementUserPostCountBy(postData.uid, 1, next);
 			},
-			function(next) {
+			function (next) {
 				User.setUserField(postData.uid, 'lastposttime', postData.timestamp, next);
 			},
-			function(next) {
+			function (next) {
 				User.updateLastOnlineTime(postData.uid, next);
 			}
 		], callback);
 	};
 
-	User.addPostIdToUser = function(uid, pid, timestamp, callback) {
+	User.addPostIdToUser = function (uid, pid, timestamp, callback) {
 		db.sortedSetAdd('uid:' + uid + ':posts', timestamp, pid, callback);
 	};
 
-	User.incrementUserPostCountBy = function(uid, value, callback) {
-		callback = callback || function() {};
-		User.incrementUserFieldBy(uid, 'postcount', value, function(err, newpostcount) {
+	User.incrementUserPostCountBy = function (uid, value, callback) {
+		callback = callback || function () {};
+		User.incrementUserFieldBy(uid, 'postcount', value, function (err, newpostcount) {
 			if (err) {
 				return callback(err);
 			}
@@ -96,8 +96,8 @@ module.exports = function(User) {
 		});
 	};
 
-	User.getPostIds = function(uid, start, stop, callback) {
-		db.getSortedSetRevRange('uid:' + uid + ':posts', start, stop, function(err, pids) {
+	User.getPostIds = function (uid, start, stop, callback) {
+		db.getSortedSetRevRange('uid:' + uid + ':posts', start, stop, function (err, pids) {
 			callback(err, Array.isArray(pids) ? pids : []);
 		});
 	};

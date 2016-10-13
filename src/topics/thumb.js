@@ -15,9 +15,9 @@ var image = require('../image');
 var file = require('../file');
 var plugins = require('../plugins');
 
-module.exports = function(Topics) {
+module.exports = function (Topics) {
 
-	Topics.resizeAndUploadThumb = function(data, callback) {
+	Topics.resizeAndUploadThumb = function (data, callback) {
 		if (!data.thumb || !validator.isURL(data.thumb)) {
 			return callback();
 		}
@@ -26,10 +26,10 @@ module.exports = function(Topics) {
 		var filename;
 
 		async.waterfall([
-			function(next) {
+			function (next) {
 				request.head(data.thumb, next);
 			},
-			function(res, body, next) {
+			function (res, body, next) {
 
 				var type = res.headers['content-type'];
 				if (!type.match(/image./)) {
@@ -45,10 +45,10 @@ module.exports = function(Topics) {
 
 				request(data.thumb).pipe(fs.createWriteStream(pathToUpload)).on('close', next);
 			},
-			function(next) {
+			function (next) {
 				file.isFileTypeAllowed(pathToUpload, next);
 			},
-			function(next) {
+			function (next) {
 				var size = parseInt(meta.config.topicThumbSize, 10) || 120;
 				image.resizeImage({
 					path: pathToUpload,
@@ -57,7 +57,7 @@ module.exports = function(Topics) {
 					height: size
 				}, next);
 			},
-			function(next) {
+			function (next) {
 				if (!plugins.hasListeners('filter:uploadImage')) {
 					data.thumb = path.join(nconf.get('upload_url'), 'files', filename);
 					return callback();
@@ -65,12 +65,12 @@ module.exports = function(Topics) {
 
 				plugins.fireHook('filter:uploadImage', {image: {path: pathToUpload, name: ''}, uid: data.uid}, next);
 			},
-			function(uploadedFile, next) {
+			function (uploadedFile, next) {
 				deleteFile(pathToUpload);
 				data.thumb = uploadedFile.url;
 				next();
 			}
-		], function(err) {
+		], function (err) {
 			if (err) {
 				deleteFile(pathToUpload);
 			}
@@ -80,7 +80,7 @@ module.exports = function(Topics) {
 
 	function deleteFile(path) {
 		if (path) {
-			fs.unlink(path, function(err) {
+			fs.unlink(path, function (err) {
 				if (err) {
 					winston.error(err);
 				}

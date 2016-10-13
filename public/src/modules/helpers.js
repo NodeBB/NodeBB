@@ -1,4 +1,4 @@
-;(function(exports) {
+;(function (exports) {
 	"use strict";
 	/* globals define, utils, config */
 
@@ -9,7 +9,7 @@
 
 	var helpers = {};
 
-	helpers.displayMenuItem = function(data, index) {
+	helpers.displayMenuItem = function (data, index) {
 		var item = data.navigation[index];
 		if (!item) {
 			return false;
@@ -36,7 +36,7 @@
 		return true;
 	};
 
-	helpers.buildMetaTag = function(tag) {
+	helpers.buildMetaTag = function (tag) {
 		var name = tag.name ? 'name="' + tag.name + '" ' : '',
 			property = tag.property ? 'property="' + tag.property + '" ' : '',
 			content = tag.content ? 'content="' + tag.content.replace(/\n/g, ' ') + '" ' : '';
@@ -44,7 +44,7 @@
 		return '<meta ' + name + property + content + '/>\n\t';
 	};
 
-	helpers.buildLinkTag = function(tag) {
+	helpers.buildLinkTag = function (tag) {
 		var link = tag.link ? 'link="' + tag.link + '" ' : '',
 			rel = tag.rel ? 'rel="' + tag.rel + '" ' : '',
 			type = tag.type ? 'type="' + tag.type + '" ' : '',
@@ -54,12 +54,12 @@
 		return '<link ' + link + rel + type + sizes + href + '/>\n\t';
 	};
 
-	helpers.stringify = function(obj) {
+	helpers.stringify = function (obj) {
 		// Turns the incoming object into a JSON string
 		return JSON.stringify(obj).replace(/&/gm,"&amp;").replace(/</gm,"&lt;").replace(/>/gm,"&gt;").replace(/"/g, '&quot;');
 	};
 
-	helpers.escape = function(str) {
+	helpers.escape = function (str) {
 		if (typeof utils !== 'undefined') {
 			return utils.escapeHTML(str);
 		} else {
@@ -67,7 +67,7 @@
 		}
 	};
 
-	helpers.stripTags = function(str) {
+	helpers.stripTags = function (str) {
 		if (typeof S !== 'undefined') {
 			return S(str).stripTags().s;
 		} else {
@@ -76,7 +76,7 @@
 		}
 	};
 
-	helpers.generateCategoryBackground = function(category) {
+	helpers.generateCategoryBackground = function (category) {
 		if (!category) {
 			return '';
 		}
@@ -100,13 +100,13 @@
 		return style.join('; ') + ';';
 	};
 
-	helpers.generateChildrenCategories = function(category) {
+	helpers.generateChildrenCategories = function (category) {
 		var html = '';
 		var relative_path = (typeof config !== 'undefined' ? config.relative_path : require('nconf').get('relative_path'));
 		if (!category || !category.children) {
 			return html;
 		}
-		category.children.forEach(function(child) {
+		category.children.forEach(function (child) {
 			if (!child) {
 				return;
 			}
@@ -121,7 +121,7 @@
 		return html;
 	};
 
-	helpers.generateTopicClass = function(topic) {
+	helpers.generateTopicClass = function (topic) {
 		var style = [];
 
 		if (topic.locked) {
@@ -143,16 +143,16 @@
 		return style.join(' ');
 	};
 
-	helpers.getBookmarkFromIndex = function(topic) {
+	helpers.getBookmarkFromIndex = function (topic) {
 		return (topic.index || 0) + 1;
 	};
 
-	helpers.displayUserSearch = function(data, allowGuestUserSearching) {
+	helpers.displayUserSearch = function (data, allowGuestUserSearching) {
 		return data.loggedIn || allowGuestUserSearching === 'true';
 	};
 
 	// Groups helpers
-	helpers.membershipBtn = function(groupObj) {
+	helpers.membershipBtn = function (groupObj) {
 		if (groupObj.name === 'administrators') {
 			return '';
 		}
@@ -172,7 +172,7 @@
 		}
 	};
 
-	helpers.spawnPrivilegeStates = function(member, privileges) {
+	helpers.spawnPrivilegeStates = function (member, privileges) {
 		var states = [];
 		for(var priv in privileges) {
 			if (privileges.hasOwnProperty(priv)) {
@@ -182,16 +182,16 @@
 				});
 			}
 		}
-		return states.map(function(priv) {
+		return states.map(function (priv) {
 			return '<td class="text-center" data-privilege="' + priv.name + '"><input type="checkbox"' + (priv.state ? ' checked' : '') + (member === 'guests' && priv.name === 'groups:moderate' ? ' disabled="disabled"' : '') + ' /></td>';
 		}).join('');
 	};
 
-	helpers.localeToHTML = function(locale) {
+	helpers.localeToHTML = function (locale) {
 		return locale.replace('_', '-');
 	};
 
-	helpers.renderTopicImage = function(topicObj) {
+	helpers.renderTopicImage = function (topicObj) {
 		if (topicObj.thumb) {
 			return '<img src="' + topicObj.thumb + '" class="img-circle user-img" title="' + topicObj.user.username + '" />';
 		} else {
@@ -199,7 +199,7 @@
 		}
 	};
 
-	helpers.renderDigestAvatar = function(block) {
+	helpers.renderDigestAvatar = function (block) {
 		if (block.teaser) {
 			if (block.teaser.user.picture) {
 				return '<img style="vertical-align: middle; width: 16px; height: 16px; padding-right: 1em;" src="' + block.teaser.user.picture + '" title="' + block.teaser.user.username + '" />';
@@ -215,7 +215,7 @@
 		}
 	};
 
-	helpers.userAgentIcons = function(data) {
+	helpers.userAgentIcons = function (data) {
 		var icons = '';
 
 		switch(data.platform) {
@@ -267,7 +267,7 @@
 		return icons;
 	};
 
-	exports.register = function() {
+	exports.register = function () {
 		var templates;
 
 		if (typeof module === 'object') {
@@ -276,7 +276,7 @@
 			templates = window.templates;
 		}
 
-		Object.keys(helpers).forEach(function(helperName) {
+		Object.keys(helpers).forEach(function (helperName) {
 			templates.registerHelper(helperName, helpers[helperName]);
 		});
 	};
@@ -286,8 +286,8 @@
 	  define('helpers', exports);
 	}
 
-})(
+}(
 	typeof exports === 'object' ? exports :
 	typeof define === 'function' && define.amd ? {} :
 	helpers = {}
-);
+));

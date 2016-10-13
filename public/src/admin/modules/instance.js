@@ -2,10 +2,10 @@
 
 /*globals define, app, socket*/
 
-define('admin/modules/instance', function() {
+define('admin/modules/instance', function () {
 	var instance = {};
 
-	instance.reload = function(callback) {
+	instance.reload = function (callback) {
 		app.alert({
 			alert_id: 'instance_reload',
 			type: 'info',
@@ -14,7 +14,7 @@ define('admin/modules/instance', function() {
 			timeout: 5000
 		});
 
-		socket.emit('admin.reload', function(err) {
+		socket.emit('admin.reload', function (err) {
 			if (!err) {
 				app.alert({
 					alert_id: 'instance_reload',
@@ -38,7 +38,7 @@ define('admin/modules/instance', function() {
 		});
 	};
 
-	instance.restart = function(callback) {
+	instance.restart = function (callback) {
 		app.alert({
 			alert_id: 'instance_restart',
 			type: 'info',
@@ -47,7 +47,7 @@ define('admin/modules/instance', function() {
 			timeout: 5000
 		});
 
-		$(window).one('action:reconnected', function() {
+		$(window).one('action:reconnected', function () {
 			app.alert({
 				alert_id: 'instance_restart',
 				type: 'success',

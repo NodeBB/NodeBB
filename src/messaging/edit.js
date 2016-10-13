@@ -8,12 +8,12 @@ var user = require('../user');
 var sockets = require('../socket.io');
 
 
-module.exports = function(Messaging) {
+module.exports = function (Messaging) {
 
-	Messaging.editMessage = function(uid, mid, roomId, content, callback) {
+	Messaging.editMessage = function (uid, mid, roomId, content, callback) {
 		var uids;
 		async.waterfall([
-			function(next) {
+			function (next) {
 				Messaging.getMessageField(mid, 'content', next);
 			},
 			function (raw, next) {
@@ -34,7 +34,7 @@ module.exports = function(Messaging) {
 				Messaging.getMessagesData([mid], uid, roomId, true, next);
 			},
 			function (messages, next) {
-				uids.forEach(function(uid) {
+				uids.forEach(function (uid) {
 					sockets.in('uid_' + uid).emit('event:chats.edit', {
 						messages: messages
 					});
@@ -44,7 +44,7 @@ module.exports = function(Messaging) {
 		], callback);
 	};
 
-	Messaging.canEdit = function(messageId, uid, callback) {
+	Messaging.canEdit = function (messageId, uid, callback) {
 		if (parseInt(meta.config.disableChat) === 1) {
 			return callback(null, false);
 		}
@@ -64,14 +64,14 @@ module.exports = function(Messaging) {
 
 				Messaging.getMessageField(messageId, 'fromuid', next);
 			},
-			function(fromUid, next) {
+			function (fromUid, next) {
 				if (parseInt(fromUid, 10) === parseInt(uid, 10)) {
 					return callback(null, true);
 				}
 
 				user.isAdministrator(uid, next);
 			},
-			function(isAdmin, next) {
+			function (isAdmin, next) {
 				next(null, isAdmin);
 			}
 		], callback);

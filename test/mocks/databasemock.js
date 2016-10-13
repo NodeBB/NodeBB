@@ -3,7 +3,7 @@
  * ATTENTION: testing db is flushed before every use!
  */
 
-(function(module) {
+(function (module) {
 	'use strict';
 	/*global require, before*/
 
@@ -29,22 +29,22 @@
 	if(!testDbConfig){
 		errorText = 'test_database is not defined';
 		winston.info(
-			'\n===========================================================\n'+
-			'Please, add parameters for test database in config.json\n'+
-			'For example (redis):\n'+
+			'\n===========================================================\n' +
+			'Please, add parameters for test database in config.json\n' +
+			'For example (redis):\n' +
 				'"test_database": {' + '\n' +
 				'    "host": "127.0.0.1",' + '\n' +
 				'    "port": "6379",' + '\n' +
 				'    "password": "",' + '\n' +
 				'    "database": "1"' + '\n' +
-			'}\n'+
+			'}\n' +
 			' or (mongo):\n' +
 				'"test_database": {' + '\n' +
 				'    "host": "127.0.0.1",' + '\n' +
 				'    "port": "27017",' + '\n' +
 				'    "password": "",' + '\n' +
 				'    "database": "1"' + '\n' +
-			'}\n'+
+			'}\n' +
 			' or (mongo) in a replicaset' + '\n' +
 			'"test_database": {' + '\n' +
 		    '    "host": "127.0.0.1,127.0.0.1,127.0.0.1",' + '\n' +
@@ -52,7 +52,7 @@
 		    '    "username": "",' + '\n' +
 		    '    "password": "",' + '\n' +
 		    '    "database": "nodebb_test"' + '\n' +
-		    '}\n'+
+		    '}\n' +
 			'==========================================================='
 		);
 		winston.error(errorText);
@@ -73,14 +73,14 @@
 	var db = require('../../src/database'),
 		meta = require('../../src/meta');
 
-	before(function(done) {
-		db.init(function(err) {
+	before(function (done) {
+		db.init(function (err) {
 			if (err) {
 				return done(err);
 			}
 
 			//Clean up
-			db.flushdb(function(err) {
+			db.flushdb(function (err) {
 				if(err) {
 					winston.error(err);
 					throw new Error(err);

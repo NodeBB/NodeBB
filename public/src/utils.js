@@ -1,4 +1,4 @@
-(function(module) {
+(function (module) {
 	'use strict';
 
 	var utils, fs, XRegExp;
@@ -7,11 +7,11 @@
 		fs = require('fs');
 		XRegExp = require('xregexp');
 
-		process.profile = function(operation, start) {
+		process.profile = function (operation, start) {
 			console.log('%s took %d milliseconds', operation, process.elapsedTimeSince(start));
 		};
 
-		process.elapsedTimeSince = function(start) {
+		process.elapsedTimeSince = function (start) {
 			var diff = process.hrtime(start);
 			return diff[0] * 1e3 + diff[1] / 1e6;
 		};
@@ -22,8 +22,8 @@
 
 
 	module.exports = utils = {
-		generateUUID: function() {
-			return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+		generateUUID: function () {
+			return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
 				var r = Math.random() * 16 | 0,
 					v = c === 'x' ? r : (r & 0x3 | 0x8);
 				return v.toString(16);
@@ -31,10 +31,10 @@
 		},
 
 		//Adapted from http://stackoverflow.com/questions/5827612/node-js-fs-readdir-recursive-directory-search
-		walk: function(dir, done) {
+		walk: function (dir, done) {
 			var results = [];
 
-			fs.readdir(dir, function(err, list) {
+			fs.readdir(dir, function (err, list) {
 				if (err) {
 					return done(err);
 				}
@@ -42,15 +42,15 @@
 				if (!pending) {
 					return done(null, results);
 				}
-				list.forEach(function(file) {
+				list.forEach(function (file) {
 					file = dir + '/' + file;
-					fs.stat(file, function(err, stat) {
+					fs.stat(file, function (err, stat) {
 						if (err) {
 							return done(err);
 						}
 
 						if (stat && stat.isDirectory()) {
-							utils.walk(file, function(err, res) {
+							utils.walk(file, function (err, res) {
 								if (err) {
 									return done(err);
 								}
@@ -82,7 +82,7 @@
 		languageKeyRegex: /\[\[[\w]+:.+\]\]/,
 
 		//http://dense13.com/blog/2009/05/03/converting-string-to-slug-javascript/
-		slugify: function(str, preserveCase) {
+		slugify: function (str, preserveCase) {
 			if (!str) {
 				return '';
 			}
@@ -100,7 +100,7 @@
 			return str;
 		},
 
-		cleanUpTag: function(tag, maxLength) {
+		cleanUpTag: function (tag, maxLength) {
 			if (typeof tag !== 'string' || !tag.length ) {
 				return '';
 			}
@@ -117,32 +117,32 @@
 			return tag;
 		},
 
-		removePunctuation: function(str) {
+		removePunctuation: function (str) {
 			return str.replace(/[\.,-\/#!$%\^&\*;:{}=\-_`<>'"~()?]/g, '');
 		},
 
-		isEmailValid: function(email) {
+		isEmailValid: function (email) {
 			return typeof email === 'string' && email.length && email.indexOf('@') !== -1;
 		},
 
-		isUserNameValid: function(name) {
+		isUserNameValid: function (name) {
 			return (name && name !== '' && (/^['"\s\-.*0-9\u00BF-\u1FFF\u2C00-\uD7FF\w]+$/.test(name)));
 		},
 
-		isPasswordValid: function(password) {
+		isPasswordValid: function (password) {
 			return typeof password === 'string' && password.length;
 		},
 
-		isNumber: function(n) {
+		isNumber: function (n) {
 			return !isNaN(parseFloat(n)) && isFinite(n);
 		},
 
-		hasLanguageKey: function(input) {
+		hasLanguageKey: function (input) {
 			return utils.languageKeyRegex.test(input);
 		},
 
 		// shallow objects merge
-		merge: function() {
+		merge: function () {
 			var result = {}, obj, keys;
 			for (var i = 0; i < arguments.length; i++) {
 				obj = arguments[i] || {};
@@ -188,22 +188,22 @@
 			return utils.extensionToMimeType(utils.fileExtension(path));
 		},
 
-		extensionToMimeType: function(extension) {
+		extensionToMimeType: function (extension) {
 			return utils.extensionMimeTypeMap[extension] || '*';
 		},
 
-		isRelativeUrl: function(url) {
+		isRelativeUrl: function (url) {
 			var firstChar = url.slice(0, 1);
 			return (firstChar === '.' || firstChar === '/');
 		},
 
-		makeNumbersHumanReadable: function(elements) {
-			elements.each(function() {
+		makeNumbersHumanReadable: function (elements) {
+			elements.each(function () {
 				$(this).html(utils.makeNumberHumanReadable($(this).attr('title')));
 			});
 		},
 
-		makeNumberHumanReadable: function(num) {
+		makeNumberHumanReadable: function (num) {
 			var n = parseInt(num, 10);
 			if(!n) {
 				return num;
@@ -228,7 +228,7 @@
 			return text.replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,");
 		},
 
-		toISOString: function(timestamp) {
+		toISOString: function (timestamp) {
 			if (!timestamp || !Date.prototype.toISOString) {
 				return '';
 			}
@@ -248,25 +248,25 @@
 			'source', 'span', 'strike', 'style', 'sub', 'summary', 'sup', 'table', 'tbody', 'td', 'textarea', 'tfoot',
 			'th', 'thead', 'time', 'title', 'tr', 'track', 'tt', 'u', 'ul', 'var', 'video', 'wbr'],
 
-		escapeRegexChars: function(text) {
+		escapeRegexChars: function (text) {
 			return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
 		},
 
-		escapeHTML: function(raw) {
+		escapeHTML: function (raw) {
 			return raw.replace(/&/gm,"&amp;").replace(/</gm,"&lt;").replace(/>/gm,"&gt;");
 		},
 
-		isAndroidBrowser: function() {
+		isAndroidBrowser: function () {
 			// http://stackoverflow.com/questions/9286355/how-to-detect-only-the-native-android-browser
 			var nua = navigator.userAgent;
 			return ((nua.indexOf('Mozilla/5.0') > -1 && nua.indexOf('Android ') > -1 && nua.indexOf('AppleWebKit') > -1) && !(nua.indexOf('Chrome') > -1));
 		},
 
-		isTouchDevice: function() {
+		isTouchDevice: function () {
 			return 'ontouchstart' in document.documentElement;
 		},
 
-		findBootstrapEnvironment: function() {
+		findBootstrapEnvironment: function () {
 			//http://stackoverflow.com/questions/14441456/how-to-detect-which-device-view-youre-on-using-twitter-bootstrap-api
 			var envs = ['xs', 'sm', 'md', 'lg'],
 				$el = $('<div>');
@@ -276,7 +276,7 @@
 			for (var i = envs.length - 1; i >= 0; i--) {
 				var env = envs[i];
 
-				$el.addClass('hidden-'+env);
+				$el.addClass('hidden-' + env);
 				if ($el.is(':hidden')) {
 					$el.remove();
 					return env;
@@ -284,14 +284,14 @@
 			}
 		},
 
-		isMobile: function() {
+		isMobile: function () {
 			var env = utils.findBootstrapEnvironment();
-			return ['xs', 'sm'].some(function(targetEnv) {
+			return ['xs', 'sm'].some(function (targetEnv) {
 				return targetEnv === env;
 			});
 		},
 
-		getHoursArray: function() {
+		getHoursArray: function () {
 			var currentHour = new Date().getHours(),
 				labels = [];
 
@@ -303,14 +303,14 @@
 			return labels.reverse();
 		},
 
-		getDaysArray: function(from) {
+		getDaysArray: function (from) {
 			var currentDay = new Date(from || Date.now()).getTime(),
 				months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
 				labels = [],
 				tmpDate;
 
-			for(var x=29;x>=0;x--) {
-				tmpDate = new Date(currentDay - (1000*60*60*24*x));
+			for(var x = 29;x >= 0;x--) {
+				tmpDate = new Date(currentDay - (1000 * 60 * 60 * 24 * x));
 				labels.push(months[tmpDate.getMonth()] + ' ' + tmpDate.getDate());
 			}
 
@@ -318,7 +318,7 @@
 		},
 
 		/* Retrieved from http://stackoverflow.com/a/7557433 @ 27 Mar 2016 */
-		isElementInViewport: function(el) {
+		isElementInViewport: function (el) {
 			//special bonus for those using jQuery
 			if (typeof jQuery === "function" && el instanceof jQuery) {
 				el = el[0];
@@ -335,7 +335,7 @@
 		},
 
 		// get all the url params in a single key/value hash
-		params: function(options) {
+		params: function (options) {
 			var a, hash = {}, params;
 
 			options = options || {};
@@ -346,7 +346,7 @@
 			}
 			params = (a ? a.search : window.location.search).substring(1).split("&");
 
-			params.forEach(function(param) {
+			params.forEach(function (param) {
 				var val = param.split('='),
 					key = decodeURI(val[0]),
 					value = options.skipToType[key] ? decodeURI(val[1]) : utils.toType(decodeURI(val[1]));
@@ -368,11 +368,11 @@
 			return hash;
 		},
 
-		param: function(key) {
+		param: function (key) {
 			return this.params()[key];
 		},
 
-		urlToLocation: function(url) {
+		urlToLocation: function (url) {
 			var a = document.createElement('a');
 			a.href = url;
 			return a;
@@ -380,7 +380,7 @@
 
 		// return boolean if string 'true' or string 'false', or if a parsable string which is a number
 		// also supports JSON object and/or arrays parsing
-		toType: function(str) {
+		toType: function (str) {
 			var type = typeof str;
 			if (type !== 'string') {
 				return str;
@@ -409,7 +409,7 @@
 		// get example: utils.props(A, 'a.b.c') // returns {d: 10}
 		// get example: utils.props(A, 'a.b.c.foo.bar') // returns undefined without throwing a TypeError
 		// credits to github.com/gkindel
-		props: function(obj, props, value) {
+		props: function (obj, props, value) {
 			if(obj === undefined) {
 				obj = window;
 			}
@@ -433,7 +433,7 @@
 			return utils.props(obj[prop], newProps, value);
 		},
 
-		isInternalURI: function(targetLocation, referenceLocation, relative_path) {
+		isInternalURI: function (targetLocation, referenceLocation, relative_path) {
 			return targetLocation.host === '' ||	// Relative paths are always internal links
 				(
 					targetLocation.host === referenceLocation.host && targetLocation.protocol === referenceLocation.protocol &&	// Otherwise need to check if protocol and host match
@@ -455,13 +455,13 @@
 	}
 
 	if (typeof String.prototype.endsWith != 'function') {
-		String.prototype.endsWith = function(suffix) {
+		String.prototype.endsWith = function (suffix) {
 			if (this.length < suffix.length) {
 				return false;
 			}
 			var len = this.length;
 			var suffixLen = suffix.length;
-			for (var i=1; (i <= suffixLen && this[len - i] === suffix[suffixLen - i]); ++i) {
+			for (var i = 1; (i <= suffixLen && this[len - i] === suffix[suffixLen - i]); ++i) {
 				continue;
 			}
 			return i > suffixLen;
@@ -469,7 +469,7 @@
 	}
 
 	if (typeof String.prototype.rtrim != 'function') {
-		String.prototype.rtrim = function() {
+		String.prototype.rtrim = function () {
 			return this.replace(/\s+$/g, '');
 		};
 	}
@@ -478,8 +478,8 @@
 		window.utils = module.exports;
 	}
 
-})('undefined' === typeof module ? {
+}('undefined' === typeof module ? {
 	module: {
 		exports: {}
 	}
-} : module);
+} : module));

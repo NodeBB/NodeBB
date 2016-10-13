@@ -1,7 +1,7 @@
 "use strict";
 /*global utils*/
 
-$('document').ready(function() {
+$('document').ready(function () {
 	setupInputs();
 	$('[name="username"]').focus();
 
@@ -19,7 +19,7 @@ $('document').ready(function() {
 
 
 	function setupInputs() {
-		$('form').on('focus', '.form-control', function() {
+		$('form').on('focus', '.form-control', function () {
 			var parent = $(this).parents('.input-row');
 
 			$('.input-row.active').removeClass('active');
@@ -29,7 +29,7 @@ $('document').ready(function() {
 			help.html(help.attr('data-help'));
 		});
 
-		$('form').on('blur change', '[name]', function() {
+		$('form').on('blur change', '[name]', function () {
 			activate($(this).attr('name'), $(this));
 		});
 
@@ -37,7 +37,7 @@ $('document').ready(function() {
 	}
 
 	function validateAll(ev) {
-		$('form .admin [name]').each(function() {
+		$('form .admin [name]').each(function () {
 			activate($(this).attr('name'), $(this));
 		});
 
@@ -116,9 +116,9 @@ $('document').ready(function() {
 	function launchForum() {
 		$('#launch .fa-spin').removeClass('hide');
 
-		$.post('/launch', function() {
-			setInterval(function() {
-				$.get('/admin').done(function(data) {
+		$.post('/launch', function () {
+			setInterval(function () {
+				$.get('/admin').done(function (data) {
 					window.location = 'admin';
 				});
 			}, 750);

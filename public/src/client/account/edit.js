@@ -2,16 +2,16 @@
 
 /* globals define, ajaxify, socket, app, config, templates, bootbox */
 
-define('forum/account/edit', ['forum/account/header', 'uploader', 'translator', 'components'], function(header, uploader, translator, components) {
+define('forum/account/edit', ['forum/account/header', 'uploader', 'translator', 'components'], function (header, uploader, translator, components) {
 	var AccountEdit = {};
 
-	AccountEdit.init = function() {
+	AccountEdit.init = function () {
 
 		header.init();
 
 		$('#submitBtn').on('click', updateProfile);
 
-		app.loadJQueryUI(function() {
+		app.loadJQueryUI(function () {
 			$('#inputBirthday').datepicker({
 				changeMonth: true,
 				changeYear: true,
@@ -39,7 +39,7 @@ define('forum/account/edit', ['forum/account/header', 'uploader', 'translator', 
 			aboutme: $('#inputAboutMe').val()
 		};
 
-		socket.emit('user.updateProfile', userData, function(err, data) {
+		socket.emit('user.updateProfile', userData, function (err, data) {
 			if (err) {
 				return app.alertError(err.message);
 			}
@@ -70,14 +70,14 @@ define('forum/account/edit', ['forum/account/header', 'uploader', 'translator', 
 
 	function handleImageChange() {
 
-		$('#changePictureBtn').on('click', function() {
-			socket.emit('user.getProfilePictures', {uid: ajaxify.data.uid}, function(err, pictures) {
+		$('#changePictureBtn').on('click', function () {
+			socket.emit('user.getProfilePictures', {uid: ajaxify.data.uid}, function (err, pictures) {
 				if (err) {
 					return app.alertError(err.message);
 				}
 
 				// boolean to signify whether an uploaded picture is present in the pictures list
-				var uploaded = pictures.reduce(function(memo, cur) {
+				var uploaded = pictures.reduce(function (memo, cur) {
 					return memo || cur.type === 'uploaded';
 				}, false);
 
@@ -85,8 +85,8 @@ define('forum/account/edit', ['forum/account/header', 'uploader', 'translator', 
 					pictures: pictures,
 					uploaded: uploaded,
 					allowProfileImageUploads: ajaxify.data.allowProfileImageUploads
-				}, function(html) {
-					translator.translate(html, function(html) {
+				}, function (html) {
+					translator.translate(html, function (html) {
 						var modal = bootbox.dialog({
 							className: 'picture-switcher',
 							title: '[[user:change_picture]]',
@@ -124,7 +124,7 @@ define('forum/account/edit', ['forum/account/header', 'uploader', 'translator', 
 							if (!ajaxify.data.picture) {
 								modal.find('.list-group-item .user-icon').parents('.list-group-item').addClass('active');
 							} else {
-								modal.find('.list-group-item img').each(function() {
+								modal.find('.list-group-item img').each(function () {
 									if (this.getAttribute('src') === ajaxify.data.picture) {
 										$(this).parents('.list-group-item').addClass('active');
 									}
@@ -135,7 +135,7 @@ define('forum/account/edit', ['forum/account/header', 'uploader', 'translator', 
 						function saveSelection() {
 							var type = modal.find('.list-group-item.active').attr('data-type');
 
-							changeUserPicture(type, function(err) {
+							changeUserPicture(type, function (err) {
 								if (err) {
 									return app.alertError(err.message);
 								}
@@ -157,9 +157,9 @@ define('forum/account/edit', ['forum/account/header', 'uploader', 'translator', 
 	}
 
 	function handleAccountDelete() {
-		$('#deleteAccountBtn').on('click', function() {
-			translator.translate('[[user:delete_account_confirm]]', function(translated) {
-				var modal = bootbox.confirm(translated + '<p><input type="text" class="form-control" id="confirm-username" /></p>', function(confirm) {
+		$('#deleteAccountBtn').on('click', function () {
+			translator.translate('[[user:delete_account_confirm]]', function (translated) {
+				var modal = bootbox.confirm(translated + '<p><input type="text" class="form-control" id="confirm-username" /></p>', function (confirm) {
 					if (!confirm) {
 						return;
 					}
@@ -168,7 +168,7 @@ define('forum/account/edit', ['forum/account/header', 'uploader', 'translator', 
 						app.alertError('[[error:invalid-username]]');
 						return false;
 					} else {
-						socket.emit('user.deleteAccount', {}, function(err) {
+						socket.emit('user.deleteAccount', {}, function (err) {
 							if (err) {
 								return app.alertError(err.message);
 							}
@@ -178,7 +178,7 @@ define('forum/account/edit', ['forum/account/header', 'uploader', 'translator', 
 					}
 				});
 
-				modal.on('shown.bs.modal', function() {
+				modal.on('shown.bs.modal', function () {
 					modal.find('input').focus();
 				});
 			});
@@ -196,7 +196,7 @@ define('forum/account/edit', ['forum/account/header', 'uploader', 'translator', 
 				$('#user-current-picture, img.avatar').attr('src', urlOnServer);
 				ajaxify.data.uploadedpicture = urlOnServer;
 			} else {
-				ajaxify.refresh(function() {
+				ajaxify.refresh(function () {
 					$('#user-current-picture, img.avatar').attr('src', urlOnServer);
 				});
 			}
@@ -209,7 +209,7 @@ define('forum/account/edit', ['forum/account/header', 'uploader', 'translator', 
 			}
 		}
 
-		modal.find('[data-action="upload"]').on('click', function() {
+		modal.find('[data-action="upload"]').on('click', function () {
 			modal.modal('hide');
 
 			uploader.show({
@@ -219,26 +219,26 @@ define('forum/account/edit', ['forum/account/header', 'uploader', 'translator', 
 				title: '[[user:upload_picture]]',
 				description: '[[user:upload_a_picture]]',
 				accept: '.png,.jpg,.bmp'
-			}, function(imageUrlOnServer) {
+			}, function (imageUrlOnServer) {
 				onUploadComplete(imageUrlOnServer);
 			});
 
 			return false;
 		});
 
-		modal.find('[data-action="upload-url"]').on('click', function() {
+		modal.find('[data-action="upload-url"]').on('click', function () {
 			modal.modal('hide');
-			templates.parse('partials/modals/upload_picture_from_url_modal', {}, function(html) {
-				translator.translate(html, function(html) {
+			templates.parse('partials/modals/upload_picture_from_url_modal', {}, function (html) {
+				translator.translate(html, function (html) {
 					var uploadModal = $(html);
 					uploadModal.modal('show');
 
-					uploadModal.find('.upload-btn').on('click', function() {
+					uploadModal.find('.upload-btn').on('click', function () {
 						var url = uploadModal.find('#uploadFromUrl').val();
 						if (!url) {
 							return;
 						}
-						socket.emit('user.uploadProfileImageFromUrl', {url: url, uid: ajaxify.data.theirid}, function(err, imageUrlOnServer) {
+						socket.emit('user.uploadProfileImageFromUrl', {url: url, uid: ajaxify.data.theirid}, function (err, imageUrlOnServer) {
 							if (err) {
 								return app.alertError(err.message);
 							}
@@ -255,8 +255,8 @@ define('forum/account/edit', ['forum/account/header', 'uploader', 'translator', 
 			return false;
 		});
 
-		modal.find('[data-action="remove-uploaded"]').on('click', function() {
-			socket.emit('user.removeUploadedPicture', {uid: ajaxify.data.theirid}, function(err) {
+		modal.find('[data-action="remove-uploaded"]').on('click', function () {
+			socket.emit('user.removeUploadedPicture', {uid: ajaxify.data.theirid}, function (err) {
 				modal.modal('hide');
 				if (err) {
 					return app.alertError(err.message);
@@ -267,9 +267,9 @@ define('forum/account/edit', ['forum/account/header', 'uploader', 'translator', 
 	}
 
 	function handleEmailConfirm() {
-		$('#confirm-email').on('click', function() {
+		$('#confirm-email').on('click', function () {
 			var btn = $(this).attr('disabled', true);
-			socket.emit('user.emailConfirm', {}, function(err) {
+			socket.emit('user.emailConfirm', {}, function (err) {
 				btn.removeAttr('disabled');
 				if (err) {
 					return app.alertError(err.message);
@@ -294,7 +294,7 @@ define('forum/account/edit', ['forum/account/header', 'uploader', 'translator', 
 		var el = $('#inputSignature');
 		$('#signatureCharCountLeft').html(getCharsLeft(el, ajaxify.data.maximumSignatureLength));
 
-		el.on('keyup change', function() {
+		el.on('keyup change', function () {
 			$('#signatureCharCountLeft').html(getCharsLeft(el, ajaxify.data.maximumSignatureLength));
 		});
 	}
@@ -303,7 +303,7 @@ define('forum/account/edit', ['forum/account/header', 'uploader', 'translator', 
 		var el = $('#inputAboutMe');
 		$('#aboutMeCharCountLeft').html(getCharsLeft(el, ajaxify.data.maximumAboutMeLength));
 
-		el.on('keyup change', function() {
+		el.on('keyup change', function () {
 			$('#aboutMeCharCountLeft').html(getCharsLeft(el, ajaxify.data.maximumAboutMeLength));
 		});
 	}

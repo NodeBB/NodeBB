@@ -5,22 +5,22 @@ var	async = require('async'),
 	assert = require('assert'),
 	db = require('../mocks/databasemock');
 
-describe('Key methods', function() {
+describe('Key methods', function () {
 
-	beforeEach(function(done) {
+	beforeEach(function (done) {
 		db.set('testKey', 'testValue', done);
 	});
 
-	it('should set a key without error', function(done) {
-		db.set('testKey', 'testValue', function(err) {
+	it('should set a key without error', function (done) {
+		db.set('testKey', 'testValue', function (err) {
 			assert.equal(err, null);
 			assert.equal(arguments.length, 1);
 			done();
 		});
 	});
 
-	it('should get a key without error', function(done) {
-		db.get('testKey', function(err, value) {
+	it('should get a key without error', function (done) {
+		db.get('testKey', function (err, value) {
 			assert.equal(err, null);
 			assert.equal(arguments.length, 2);
 			assert.strictEqual(value, 'testValue');
@@ -28,8 +28,8 @@ describe('Key methods', function() {
 		});
 	});
 
-	it('should return true if key exist', function(done) {
-		db.exists('testKey', function(err, exists) {
+	it('should return true if key exist', function (done) {
+		db.exists('testKey', function (err, exists) {
 			assert.equal(err, null);
 			assert.equal(arguments.length, 2);
 			assert.strictEqual(exists, true);
@@ -37,8 +37,8 @@ describe('Key methods', function() {
 		});
 	});
 
-	it('should return false if key does not exist', function(done) {
-		db.exists('doesnotexist', function(err, exists) {
+	it('should return false if key does not exist', function (done) {
+		db.exists('doesnotexist', function (err, exists) {
 			assert.equal(err, null);
 			assert.equal(arguments.length, 2);
 			assert.strictEqual(exists, false);
@@ -46,12 +46,12 @@ describe('Key methods', function() {
 		});
 	});
 
-	it('should delete a key without error', function(done) {
-		db.delete('testKey', function(err) {
+	it('should delete a key without error', function (done) {
+		db.delete('testKey', function (err) {
 			assert.equal(err, null);
 			assert.equal(arguments.length, 1);
 
-			db.get('testKey', function(err, value) {
+			db.get('testKey', function (err, value) {
 				assert.equal(err, null);
 				assert.equal(false, !!value);
 				done();
@@ -59,11 +59,11 @@ describe('Key methods', function() {
 		});
 	});
 
-	it('should return false if key was deleted', function(done) {
-		db.delete('testKey', function(err) {
+	it('should return false if key was deleted', function (done) {
+		db.delete('testKey', function (err) {
 			assert.equal(err, null);
 			assert.equal(arguments.length, 1);
-			db.exists('testKey', function(err, exists) {
+			db.exists('testKey', function (err, exists) {
 				assert.equal(err, null);
 				assert.strictEqual(exists, false);
 				done();
@@ -71,29 +71,29 @@ describe('Key methods', function() {
 		});
 	});
 
-	it('should delete all keys passed in', function(done) {
+	it('should delete all keys passed in', function (done) {
 		async.parallel([
-			function(next) {
+			function (next) {
 				db.set('key1', 'value1', next);
 			},
-			function(next) {
+			function (next) {
 				db.set('key2', 'value2', next);
 			}
-		], function(err) {
+		], function (err) {
 			if (err) {
 				return done(err);
 			}
-			db.deleteAll(['key1', 'key2'], function(err) {
+			db.deleteAll(['key1', 'key2'], function (err) {
 				assert.equal(err, null);
 				assert.equal(arguments.length, 1);
 				async.parallel({
-					key1exists: function(next) {
+					key1exists: function (next) {
 						db.exists('key1', next);
 					},
-					key2exists: function(next) {
+					key2exists: function (next) {
 						db.exists('key2', next);
 					}
-				}, function(err, results) {
+				}, function (err, results) {
 					assert.equal(err, null);
 					assert.equal(results.key1exists, false);
 					assert.equal(results.key2exists, false);
@@ -103,17 +103,17 @@ describe('Key methods', function() {
 		});
 	});
 
-	describe('increment', function() {
-		it('should initialize key to 1', function(done) {
-			db.increment('keyToIncrement', function(err, value) {
+	describe('increment', function () {
+		it('should initialize key to 1', function (done) {
+			db.increment('keyToIncrement', function (err, value) {
 				assert.equal(err, null);
 				assert.strictEqual(parseInt(value, 10), 1);
 				done();
 			});
 		});
 
-		it('should increment key to 2', function(done) {
-			db.increment('keyToIncrement', function(err, value) {
+		it('should increment key to 2', function (done) {
+			db.increment('keyToIncrement', function (err, value) {
 				assert.equal(err, null);
 				assert.strictEqual(parseInt(value, 10), 2);
 				done();
@@ -121,17 +121,17 @@ describe('Key methods', function() {
 		});
 	});
 
-	describe('rename', function() {
-		it('should rename key to new name', function(done) {
-			db.set('keyOldName', 'renamedKeyValue', function(err) {
+	describe('rename', function () {
+		it('should rename key to new name', function (done) {
+			db.set('keyOldName', 'renamedKeyValue', function (err) {
 				if (err) {
 					return done(err);
 				}
-				db.rename('keyOldName', 'keyNewName', function(err) {
+				db.rename('keyOldName', 'keyNewName', function (err) {
 					assert.equal(err, null);
 					assert.equal(arguments.length, 1);
 
-					db.get('keyNewName', function(err, value) {
+					db.get('keyNewName', function (err, value) {
 						assert.equal(err, null);
 						assert.equal(value, 'renamedKeyValue');
 						done();
@@ -142,7 +142,7 @@ describe('Key methods', function() {
 	});
 
 
-	after(function(done) {
+	after(function (done) {
 		db.flushdb(done);
 	});
 });

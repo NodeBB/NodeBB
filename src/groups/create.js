@@ -6,9 +6,9 @@ var plugins = require('../plugins');
 var utils = require('../../public/src/utils');
 var db = require('../database');
 
-module.exports = function(Groups) {
+module.exports = function (Groups) {
 
-	Groups.create = function(data, callback) {
+	Groups.create = function (data, callback) {
 		var system = data.system === true || parseInt(data.system, 10) === 1 ||
 			data.name === 'administrators' || data.name === 'registered-users' || data.name === 'Global Moderators' ||
 			Groups.isPrivilegeGroup(data.name);

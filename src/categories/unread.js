@@ -4,23 +4,23 @@
 var async = require('async');
 var db = require('../database');
 
-module.exports = function(Categories) {
+module.exports = function (Categories) {
 
-	Categories.markAsRead = function(cids, uid, callback) {
-		callback = callback || function() {};
+	Categories.markAsRead = function (cids, uid, callback) {
+		callback = callback || function () {};
 		if (!Array.isArray(cids) || !cids.length) {
 			return callback();
 		}
-		var keys = cids.map(function(cid) {
+		var keys = cids.map(function (cid) {
 			return 'cid:' + cid + ':read_by_uid';
 		});
 
-		db.isMemberOfSets(keys, uid, function(err, hasRead) {
+		db.isMemberOfSets(keys, uid, function (err, hasRead) {
 			if (err) {
 				return callback(err);
 			}
 
-			keys = keys.filter(function(key, index) {
+			keys = keys.filter(function (key, index) {
 				return !hasRead[index];
 			});
 
@@ -32,12 +32,12 @@ module.exports = function(Categories) {
 		});
 	};
 
-	Categories.markAsUnreadForAll = function(cid, callback) {
-		callback = callback || function() {};
+	Categories.markAsUnreadForAll = function (cid, callback) {
+		callback = callback || function () {};
 		db.delete('cid:' + cid + ':read_by_uid', callback);
 	};
 
-	Categories.hasReadCategories = function(cids, uid, callback) {
+	Categories.hasReadCategories = function (cids, uid, callback) {
 		var sets = [];
 
 		for (var i = 0, ii = cids.length; i < ii; i++) {
@@ -47,7 +47,7 @@ module.exports = function(Categories) {
 		db.isMemberOfSets(sets, uid, callback);
 	};
 
-	Categories.hasReadCategory = function(cid, uid, callback) {
+	Categories.hasReadCategory = function (cid, uid, callback) {
 		db.isSetMember('cid:' + cid + ':read_by_uid', uid, callback);
 	};
 

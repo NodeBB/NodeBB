@@ -8,9 +8,9 @@ var posts = require('../../posts');
 var privileges = require('../../privileges');
 var helpers = require('./helpers');
 
-module.exports = function(SocketPosts) {
+module.exports = function (SocketPosts) {
 
-	SocketPosts.getVoters = function(socket, data, callback) {
+	SocketPosts.getVoters = function (socket, data, callback) {
 		if (!data || !data.pid || !data.cid) {
 			return callback(new Error('[[error:invalid-data]]'));
 		}
@@ -25,26 +25,26 @@ module.exports = function(SocketPosts) {
 				}
 
 				async.parallel({
-					upvoteUids: function(next) {
+					upvoteUids: function (next) {
 						db.getSetMembers('pid:' + data.pid + ':upvote', next);
 					},
-					downvoteUids: function(next) {
+					downvoteUids: function (next) {
 						db.getSetMembers('pid:' + data.pid + ':downvote', next);
 					}
 				}, next);
 			},
 			function (results, next) {
 				async.parallel({
-					upvoters: function(next) {
+					upvoters: function (next) {
 						user.getUsersFields(results.upvoteUids, ['username', 'userslug', 'picture'], next);
 					},
-					upvoteCount: function(next) {
+					upvoteCount: function (next) {
 						next(null, results.upvoteUids.length);
 					},
-					downvoters: function(next) {
+					downvoters: function (next) {
 						user.getUsersFields(results.downvoteUids, ['username', 'userslug', 'picture'], next);
 					},
-					downvoteCount: function(next) {
+					downvoteCount: function (next) {
 						next(null, results.downvoteUids.length);
 					}
 				}, next);
@@ -52,23 +52,23 @@ module.exports = function(SocketPosts) {
 		], callback);
 	};
 
-	SocketPosts.getUpvoters = function(socket, pids, callback) {
+	SocketPosts.getUpvoters = function (socket, pids, callback) {
 		if (!Array.isArray(pids)) {
 			return callback(new Error('[[error:invalid-data]]'));
 		}
 
-		posts.getUpvotedUidsByPids(pids, function(err, data) {
+		posts.getUpvotedUidsByPids(pids, function (err, data) {
 			if (err || !Array.isArray(data) || !data.length) {
 				return callback(err, []);
 			}
 
-			async.map(data, function(uids, next)  {
+			async.map(data, function (uids, next)  {
 				var otherCount = 0;
 				if (uids.length > 6) {
 					otherCount = uids.length - 5;
 					uids = uids.slice(0, 5);
 				}
-				user.getUsernamesByUids(uids, function(err, usernames) {
+				user.getUsernamesByUids(uids, function (err, usernames) {
 					next(err, {
 						otherCount: otherCount,
 						usernames: usernames
@@ -78,15 +78,15 @@ module.exports = function(SocketPosts) {
 		});
 	};
 
-	SocketPosts.upvote = function(socket, data, callback) {
+	SocketPosts.upvote = function (socket, data, callback) {
 		helpers.postCommand(socket, 'upvote', 'voted', 'notifications:upvoted_your_post_in', data, callback);
 	};
 
-	SocketPosts.downvote = function(socket, data, callback) {
+	SocketPosts.downvote = function (socket, data, callback) {
 		helpers.postCommand(socket, 'downvote', 'voted', '', data, callback);
 	};
 
-	SocketPosts.unvote = function(socket, data, callback) {
+	SocketPosts.unvote = function (socket, data, callback) {
 		helpers.postCommand(socket, 'unvote', 'voted', '', data, callback);
 	};
 };

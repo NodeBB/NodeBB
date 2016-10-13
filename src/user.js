@@ -10,7 +10,7 @@ var topics = require('./topics');
 var privileges = require('./privileges');
 var meta = require('./meta');
 
-(function(User) {
+(function (User) {
 
 	User.email = require('./user/email');
 	User.notifications = require('./user/notifications');
@@ -36,9 +36,9 @@ var meta = require('./meta');
 	require('./user/password')(User);
 	require('./user/info')(User);
 
-	User.updateLastOnlineTime = function(uid, callback) {
-		callback = callback || function() {};
-		db.getObjectFields('user:' + uid, ['status', 'lastonline'], function(err, userData) {
+	User.updateLastOnlineTime = function (uid, callback) {
+		callback = callback || function () {};
+		db.getObjectFields('user:' + uid, ['status', 'lastonline'], function (err, userData) {
 			var now = Date.now();
 			if (err || userData.status === 'offline' || now - parseInt(userData.lastonline, 10) < 300000) {
 				return callback(err);
@@ -47,21 +47,21 @@ var meta = require('./meta');
 		});
 	};
 
-	User.updateOnlineUsers = function(uid, callback) {
-		callback = callback || function() {};
+	User.updateOnlineUsers = function (uid, callback) {
+		callback = callback || function () {};
 
 		var now = Date.now();
 		async.waterfall([
-			function(next) {
+			function (next) {
 				db.sortedSetScore('users:online', uid, next);
 			},
-			function(userOnlineTime, next) {
+			function (userOnlineTime, next) {
 				if (now - parseInt(userOnlineTime, 10) < 300000) {
 					return callback();
 				}
 				db.sortedSetAdd('users:online', now, uid, next);
 			},
-			function(next) {
+			function (next) {
 				topics.pushUnreadCount(uid);
 				plugins.fireHook('action:user.online', {uid: uid, timestamp: now});
 				next();
@@ -69,7 +69,7 @@ var meta = require('./meta');
 		], callback);
 	};
 
-	User.getUidsFromSet = function(set, start, stop, callback) {
+	User.getUidsFromSet = function (set, start, stop, callback) {
 		if (set === 'users:online') {
 			var count = parseInt(stop, 10) === -1 ? stop : stop - start + 1;
 			var now = Date.now();
@@ -79,38 +79,38 @@ var meta = require('./meta');
 		}
 	};
 
-	User.getUsersFromSet = function(set, uid, start, stop, callback) {
+	User.getUsersFromSet = function (set, uid, start, stop, callback) {
 		async.waterfall([
-			function(next) {
+			function (next) {
 				User.getUidsFromSet(set, start, stop, next);
 			},
-			function(uids, next) {
+			function (uids, next) {
 				User.getUsers(uids, uid, next);
 			}
 		], callback);
 	};
 
-	User.getUsersWithFields = function(uids, fields, uid, callback) {
+	User.getUsersWithFields = function (uids, fields, uid, callback) {
 		async.waterfall([
 			function (next) {
 				plugins.fireHook('filter:users.addFields', {fields: fields}, next);
 			},
 			function (data, next) {
-				data.fields = data.fields.filter(function(field, index, array) {
+				data.fields = data.fields.filter(function (field, index, array) {
 					return array.indexOf(field) === index;
 				});
 
 				async.parallel({
-					userData: function(next) {
+					userData: function (next) {
 						User.getUsersFields(uids, data.fields, next);
 					},
-					isAdmin: function(next) {
+					isAdmin: function (next) {
 						User.isAdministrator(uids, next);
 					}
 				}, next);
 			},
 			function (results, next) {
-				results.userData.forEach(function(user, index) {
+				results.userData.forEach(function (user, index) {
 					if (user) {
 						user.status = User.getStatus(user);
 						user.administrator = results.isAdmin[index];
@@ -128,32 +128,32 @@ var meta = require('./meta');
 		], callback);
 	};
 
-	User.getUsers = function(uids, uid, callback) {
+	User.getUsers = function (uids, uid, callback) {
 		var fields = ['uid', 'username', 'userslug', 'picture', 'status', 'flags',
 			'banned', 'banned:expire', 'joindate', 'postcount', 'reputation', 'email:confirmed', 'lastonline'];
 
 		User.getUsersWithFields(uids, fields, uid, callback);
 	};
 
-	User.getStatus = function(userData) {
+	User.getStatus = function (userData) {
 		var isOnline = (Date.now() - parseInt(userData.lastonline, 10)) < 300000;
 		return isOnline ? (userData.status || 'online') : 'offline';
 	};
 
-	User.isOnline = function(uid, callback) {
+	User.isOnline = function (uid, callback) {
 		if (Array.isArray(uid)) {
-			db.sortedSetScores('users:online', uid, function(err, lastonline) {
+			db.sortedSetScores('users:online', uid, function (err, lastonline) {
 				if (err) {
 					return callback(err);
 				}
 				var now = Date.now();
-				var isOnline = uid.map(function(uid, index) {
+				var isOnline = uid.map(function (uid, index) {
 					return now - lastonline[index] < 300000;
 				});
 				callback(null, isOnline);
 			});
 		} else {
-			db.sortedSetScore('users:online', uid, function(err, lastonline) {
+			db.sortedSetScore('users:online', uid, function (err, lastonline) {
 				if (err) {
 					return callback(err);
 				}
@@ -164,41 +164,41 @@ var meta = require('./meta');
 
 	};
 
-	User.exists = function(uid, callback) {
+	User.exists = function (uid, callback) {
 		db.isSortedSetMember('users:joindate', uid, callback);
 	};
 
-	User.existsBySlug = function(userslug, callback) {
-		User.getUidByUserslug(userslug, function(err, exists) {
+	User.existsBySlug = function (userslug, callback) {
+		User.getUidByUserslug(userslug, function (err, exists) {
 			callback(err, !! exists);
 		});
 	};
 
-	User.getUidByUsername = function(username, callback) {
+	User.getUidByUsername = function (username, callback) {
 		if (!username) {
 			return callback(null, 0);
 		}
 		db.sortedSetScore('username:uid', username, callback);
 	};
 
-	User.getUidsByUsernames = function(usernames, callback) {
+	User.getUidsByUsernames = function (usernames, callback) {
 		db.sortedSetScores('username:uid', usernames, callback);
 	};
 
-	User.getUidByUserslug = function(userslug, callback) {
+	User.getUidByUserslug = function (userslug, callback) {
 		if (!userslug) {
 			return callback(null, 0);
 		}
 		db.sortedSetScore('userslug:uid', userslug, callback);
 	};
 
-	User.getUsernamesByUids = function(uids, callback) {
-		User.getUsersFields(uids, ['username'], function(err, users) {
+	User.getUsernamesByUids = function (uids, callback) {
+		User.getUsersFields(uids, ['username'], function (err, users) {
 			if (err) {
 				return callback(err);
 			}
 
-			users = users.map(function(user) {
+			users = users.map(function (user) {
 				return user.username;
 			});
 
@@ -206,23 +206,23 @@ var meta = require('./meta');
 		});
 	};
 
-	User.getUsernameByUserslug = function(slug, callback) {
+	User.getUsernameByUserslug = function (slug, callback) {
 		async.waterfall([
-			function(next) {
+			function (next) {
 				User.getUidByUserslug(slug, next);
 			},
-			function(uid, next) {
+			function (uid, next) {
 				User.getUserField(uid, 'username', next);
 			}
 		], callback);
 	};
 
-	User.getUidByEmail = function(email, callback) {
+	User.getUidByEmail = function (email, callback) {
 		db.sortedSetScore('email:uid', email.toLowerCase(), callback);
 	};
 
-	User.getUsernameByEmail = function(email, callback) {
-		db.sortedSetScore('email:uid', email.toLowerCase(), function(err, uid) {
+	User.getUsernameByEmail = function (email, callback) {
+		db.sortedSetScore('email:uid', email.toLowerCase(), function (err, uid) {
 			if (err) {
 				return callback(err);
 			}
@@ -230,7 +230,7 @@ var meta = require('./meta');
 		});
 	};
 
-	User.isModerator = function(uid, cid, callback) {
+	User.isModerator = function (uid, cid, callback) {
 		privileges.users.isModerator(uid, cid, callback);
 	};
 
@@ -247,28 +247,28 @@ var meta = require('./meta');
 		});
 	};
 
-	User.isAdministrator = function(uid, callback) {
+	User.isAdministrator = function (uid, callback) {
 		privileges.users.isAdministrator(uid, callback);
 	};
 
-	User.isGlobalModerator = function(uid, callback) {
+	User.isGlobalModerator = function (uid, callback) {
 		privileges.users.isGlobalModerator(uid, callback);
 	};
 
-	User.isAdminOrGlobalMod = function(uid, callback) {
+	User.isAdminOrGlobalMod = function (uid, callback) {
 		async.parallel({
 			isAdmin: async.apply(User.isAdministrator, uid),
 			isGlobalMod: async.apply(User.isGlobalModerator, uid)
-		}, function(err, results) {
+		}, function (err, results) {
 			callback(err, results ? (results.isAdmin || results.isGlobalMod) : false);
 		});
 	};
 
-	User.isAdminOrSelf = function(callerUid, uid, callback) {
+	User.isAdminOrSelf = function (callerUid, uid, callback) {
 		if (parseInt(callerUid, 10) === parseInt(uid, 10)) {
 			return callback();
 		}
-		User.isAdministrator(callerUid, function(err, isAdmin) {
+		User.isAdministrator(callerUid, function (err, isAdmin) {
 			if (err || !isAdmin) {
 				return callback(err || new Error('[[error:no-privileges]]'));
 			}
@@ -276,15 +276,15 @@ var meta = require('./meta');
 		});
 	};
 
-	User.getAdminsandGlobalMods = function(callback) {
+	User.getAdminsandGlobalMods = function (callback) {
 		async.parallel({
 			admins: async.apply(groups.getMembers, 'administrators', 0, -1),
 			mods: async.apply(groups.getMembers, 'Global Moderators', 0, -1)
-		}, function(err, results) {
+		}, function (err, results) {
 			if (err) {
 				return callback(err);
 			}
-			var uids = results.admins.concat(results.mods).filter(function(uid, index, array) {
+			var uids = results.admins.concat(results.mods).filter(function (uid, index, array) {
 				return uid && array.indexOf(uid) === index;
 			});
 			User.getUsersData(uids, callback);
@@ -324,17 +324,17 @@ var meta = require('./meta');
 		], callback);
 	};
 
-	User.addInterstitials = function(callback) {
+	User.addInterstitials = function (callback) {
 		plugins.registerHook('core', {
 			hook: 'filter:register.interstitial',
-			method: function(data, callback) {
+			method: function (data, callback) {
 				if (meta.config.termsOfUse && !data.userData.acceptTos) {
 					data.interstitials.push({
 						template: 'partials/acceptTos',
 						data: {
 							termsOfUse: meta.config.termsOfUse
 						},
-						callback: function(userData, formData, next) {
+						callback: function (userData, formData, next) {
 							if (formData['agree-terms'] === 'on') {
 								userData.acceptTos = true;
 							}

@@ -5,11 +5,11 @@ var	async = require('async'),
 	assert = require('assert'),
 	db = require('../mocks/databasemock');
 
-describe('List methods', function() {
+describe('List methods', function () {
 
-	describe('listAppend()', function() {
-		it('should append to a list', function(done) {
-			db.listAppend('testList1', 5, function(err) {
+	describe('listAppend()', function () {
+		it('should append to a list', function (done) {
+			db.listAppend('testList1', 5, function (err) {
 				assert.equal(err, null);
 				assert.equal(arguments.length, 1);
 				done();
@@ -17,47 +17,47 @@ describe('List methods', function() {
 		});
 	});
 
-	describe('listPrepend()', function() {
-		it('should prepend to a list', function(done) {
-			db.listPrepend('testList2', 3, function(err) {
+	describe('listPrepend()', function () {
+		it('should prepend to a list', function (done) {
+			db.listPrepend('testList2', 3, function (err) {
 				assert.equal(err, null);
 				assert.equal(arguments.length, 1);
 				done();
 			});
 		});
 
-		it('should prepend 2 more elements to a list', function(done) {
+		it('should prepend 2 more elements to a list', function (done) {
 			async.series([
-				function(next) {
+				function (next) {
 					db.listPrepend('testList2', 2, next);
 				},
-				function(next) {
+				function (next) {
 					db.listPrepend('testList2', 1, next);
 				}
-			], function(err) {
+			], function (err) {
 				assert.equal(err, null);
 				done();
 			});
 		});
 	});
 
-	describe('getListRange()', function() {
-		before(function(done) {
+	describe('getListRange()', function () {
+		before(function (done) {
 			async.series([
-				function(next) {
+				function (next) {
 					db.listAppend('testList3', 7, next);
 				},
-				function(next) {
+				function (next) {
 					db.listPrepend('testList3', 3, next);
 				},
-				function(next) {
+				function (next) {
 					db.listAppend('testList4', 5, next);
 				}
 			], done);
 		});
 
-		it('should return an empty list', function(done) {
-			db.getListRange('doesnotexist', 0, -1, function(err, list) {
+		it('should return an empty list', function (done) {
+			db.getListRange('doesnotexist', 0, -1, function (err, list) {
 				assert.equal(err, null);
 				assert.equal(arguments.length, 2);
 				assert.equal(Array.isArray(list), true);
@@ -66,8 +66,8 @@ describe('List methods', function() {
 			});
 		});
 
-		it('should return a list with one element', function(done) {
-			db.getListRange('testList4', 0, 0, function(err, list) {
+		it('should return a list with one element', function (done) {
+			db.getListRange('testList4', 0, 0, function (err, list) {
 				assert.equal(err, null);
 				assert.equal(Array.isArray(list), true);
 				assert.equal(list[0], 5);
@@ -75,8 +75,8 @@ describe('List methods', function() {
 			});
 		});
 
-		it('should return a list with 2 elements 3, 7', function(done) {
-			db.getListRange('testList3', 0, -1, function(err, list) {
+		it('should return a list with 2 elements 3, 7', function (done) {
+			db.getListRange('testList3', 0, -1, function (err, list) {
 				assert.equal(err, null);
 				assert.equal(Array.isArray(list), true);
 				assert.equal(list.length, 2);
@@ -86,20 +86,20 @@ describe('List methods', function() {
 		});
 	});
 
-	describe('listRemoveLast()', function() {
-		before(function(done) {
+	describe('listRemoveLast()', function () {
+		before(function (done) {
 			async.series([
-				function(next) {
+				function (next) {
 					db.listAppend('testList4', 12, next);
 				},
-				function(next) {
+				function (next) {
 					db.listPrepend('testList4', 9, next);
 				}
 			], done);
 		});
 
-		it('should remove the last element of list and return it', function(done) {
-			db.listRemoveLast('testList4', function(err, lastElement) {
+		it('should remove the last element of list and return it', function (done) {
+			db.listRemoveLast('testList4', function (err, lastElement) {
 				assert.equal(err, null);
 				assert.equal(arguments.length, 2);
 				assert.equal(lastElement, '12');
@@ -108,8 +108,8 @@ describe('List methods', function() {
 		});
 	});
 
-	describe('listRemoveAll()', function() {
-		before(function(done) {
+	describe('listRemoveAll()', function () {
+		before(function (done) {
 			async.series([
 				async.apply(db.listAppend, 'testList5', 1),
 				async.apply(db.listAppend, 'testList5', 1),
@@ -119,12 +119,12 @@ describe('List methods', function() {
 			], done);
 		});
 
-		it('should remove all the matching elements of list', function(done) {
-			db.listRemoveAll('testList5', '1', function(err) {
+		it('should remove all the matching elements of list', function (done) {
+			db.listRemoveAll('testList5', '1', function (err) {
 				assert.equal(err, null);
 				assert.equal(arguments.length, 1);
 
-				db.getListRange('testList5', 0, -1, function(err, list) {
+				db.getListRange('testList5', 0, -1, function (err, list) {
 					assert.equal(err, null);
 					assert.equal(Array.isArray(list), true);
 					assert.equal(list.length, 2);
@@ -135,20 +135,20 @@ describe('List methods', function() {
 		});
 	});
 
-	describe('listTrim()', function() {
-		it('should trim list to a certain range', function(done) {
+	describe('listTrim()', function () {
+		it('should trim list to a certain range', function (done) {
 			var list = ['1', '2', '3', '4', '5'];
-			async.eachSeries(list, function(value, next) {
+			async.eachSeries(list, function (value, next) {
 				db.listAppend('testList6', value, next);
-			}, function(err) {
+			}, function (err) {
 				if (err) {
 					return done(err);
 				}
 
-				db.listTrim('testList6', 0, 2, function(err) {
+				db.listTrim('testList6', 0, 2, function (err) {
 					assert.equal(err, null);
 					assert.equal(arguments.length, 1);
-					db.getListRange('testList6', 0, -1, function(err, list) {
+					db.getListRange('testList6', 0, -1, function (err, list) {
 						assert.equal(err, null);
 						assert.equal(list.length, 3);
 						assert.deepEqual(list, ['1', '2', '3']);
@@ -160,7 +160,7 @@ describe('List methods', function() {
 	});
 
 
-	after(function(done) {
+	after(function (done) {
 		db.flushdb(done);
 	});
 });

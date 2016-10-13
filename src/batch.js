@@ -6,17 +6,17 @@ var async = require('async'),
 	db = require('./database'),
 	utils = require('../public/src/utils');
 
-(function(Batch) {
+(function (Batch) {
 
 	var DEFAULT_BATCH_SIZE = 100;
 
-	Batch.processSortedSet = function(setKey, process, options, callback) {
+	Batch.processSortedSet = function (setKey, process, options, callback) {
 		if (typeof options === 'function') {
 			callback = options;
 			options = {};
 		}
 
-		callback = typeof callback === 'function' ? callback : function() {};
+		callback = typeof callback === 'function' ? callback : function () {};
 		options = options || {};
 
 		if (typeof process !== 'function') {
@@ -29,7 +29,7 @@ var async = require('async'),
 		}
 
 		// custom done condition
-		options.doneIf = typeof options.doneIf === 'function' ? options.doneIf : function(){};
+		options.doneIf = typeof options.doneIf === 'function' ? options.doneIf : function (){};
 
 		var batch = options.batch || DEFAULT_BATCH_SIZE;
 		var start = 0;
@@ -37,11 +37,11 @@ var async = require('async'),
 		var done = false;
 
 		async.whilst(
-			function() {
+			function () {
 				return !done;
 			},
-			function(next) {
-				db.getSortedSetRange(setKey, start, stop, function(err, ids) {
+			function (next) {
+				db.getSortedSetRange(setKey, start, stop, function (err, ids) {
 					if (err) {
 						return next(err);
 					}
@@ -49,7 +49,7 @@ var async = require('async'),
 						done = true;
 						return next();
 					}
-					process(ids, function(err) {
+					process(ids, function (err) {
 						if (err) {
 							return next(err);
 						}
@@ -63,13 +63,13 @@ var async = require('async'),
 		);
 	};
 
-	Batch.processArray = function(array, process, options, callback) {
+	Batch.processArray = function (array, process, options, callback) {
 		if (typeof options === 'function') {
 			callback = options;
 			options = {};
 		}
 
-		callback = typeof callback === 'function' ? callback : function() {};
+		callback = typeof callback === 'function' ? callback : function () {};
 		options = options || {};
 
 		if (!Array.isArray(array) || !array.length) {
@@ -84,16 +84,16 @@ var async = require('async'),
 		var done = false;
 
 		async.whilst(
-			function() {
+			function () {
 				return !done;
 			},
-			function(next) {
+			function (next) {
 				var currentBatch = array.slice(start, start + batch);
 				if (!currentBatch.length) {
 					done = true;
 					return next();
 				}
-				process(currentBatch, function(err) {
+				process(currentBatch, function (err) {
 					if (err) {
 						return next(err);
 					}
@@ -105,7 +105,7 @@ var async = require('async'),
 					}
 				});
 			},
-			function(err) {
+			function (err) {
 				callback(err);
 			}
 		);

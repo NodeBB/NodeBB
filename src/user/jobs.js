@@ -7,8 +7,8 @@ var meta = require('../meta');
 
 var jobs = {};
 
-module.exports = function(User) {
-	User.startJobs = function(callback) {
+module.exports = function (User) {
+	User.startJobs = function (callback) {
 		winston.verbose('[user/jobs] (Re-)starting user jobs...');
 		var terminated = 0;
 		var started = 0;
@@ -32,21 +32,21 @@ module.exports = function(User) {
 		}
 		winston.verbose('[user/jobs] ' + terminated + ' jobs terminated');
 
-		jobs['digest.daily'] = new cronJob('0 0 ' + digestHour + ' * * *', function() {
+		jobs['digest.daily'] = new cronJob('0 0 ' + digestHour + ' * * *', function () {
 			winston.verbose('[user/jobs] Digest job (daily) started.');
 			User.digest.execute('day');
 		}, null, true);
 		winston.verbose('[user/jobs] Starting job (digest.daily)');
 		++started;
 
-		jobs['digest.weekly'] = new cronJob('0 0 ' + digestHour + ' * * 0', function() {
+		jobs['digest.weekly'] = new cronJob('0 0 ' + digestHour + ' * * 0', function () {
 			winston.verbose('[user/jobs] Digest job (weekly) started.');
 			User.digest.execute('week');
 		}, null, true);
 		winston.verbose('[user/jobs] Starting job (digest.weekly)');
 		++started;
 
-		jobs['digest.monthly'] = new cronJob('0 0 ' + digestHour + ' 1 * *', function() {
+		jobs['digest.monthly'] = new cronJob('0 0 ' + digestHour + ' 1 * *', function () {
 			winston.verbose('[user/jobs] Digest job (monthly) started.');
 			User.digest.execute('month');
 		}, null, true);

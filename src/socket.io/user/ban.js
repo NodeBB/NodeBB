@@ -5,9 +5,9 @@ var user = require('../../user');
 var websockets = require('../index');
 var events = require('../../events');
 
-module.exports = function(SocketUser) {
+module.exports = function (SocketUser) {
 
-	SocketUser.banUsers = function(socket, data, callback) {
+	SocketUser.banUsers = function (socket, data, callback) {
 		// Backwards compatibility
 		if (Array.isArray(data)) {
 			data = {
@@ -17,13 +17,13 @@ module.exports = function(SocketUser) {
 			};
 		}
 
-		toggleBan(socket.uid, data.uids, function(uid, next) {
+		toggleBan(socket.uid, data.uids, function (uid, next) {
 			banUser(uid, data.until || 0, data.reason || '', next);
-		}, function(err) {
+		}, function (err) {
 			if (err) {
 				return callback(err);
 			}
-			async.each(data.uids, function(uid, next) {
+			async.each(data.uids, function (uid, next) {
 				events.log({
 					type: 'user-ban',
 					uid: socket.uid,
@@ -34,13 +34,13 @@ module.exports = function(SocketUser) {
 		});
 	};
 
-	SocketUser.unbanUsers = function(socket, uids, callback) {
-		toggleBan(socket.uid, uids, user.unban, function(err) {
+	SocketUser.unbanUsers = function (socket, uids, callback) {
+		toggleBan(socket.uid, uids, user.unban, function (err) {
 			if (err) {
 				return callback(err);
 			}
 
-			async.each(uids, function(uid, next) {
+			async.each(uids, function (uid, next) {
 				events.log({
 					type: 'user-unban',
 					uid: socket.uid,

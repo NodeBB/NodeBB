@@ -1,7 +1,7 @@
 'use strict';
 /* globals define, templates */
 
-define('alerts', ['translator', 'components'], function(translator, components) {
+define('alerts', ['translator', 'components'], function (translator, components) {
 	var module = {};
 
 	module.alert = function (params) {
@@ -19,8 +19,8 @@ define('alerts', ['translator', 'components'], function(translator, components) 
 	};
 
 	function createNew(params) {
-		templates.parse('alert', params, function(alertTpl) {
-			translator.translate(alertTpl, function(translatedHTML) {
+		templates.parse('alert', params, function (alertTpl) {
+			translator.translate(alertTpl, function (translatedHTML) {
 				var alert = $('#' + params.alert_id);
 				if (alert.length) {
 					return updateAlert(alert, params);
@@ -31,7 +31,7 @@ define('alerts', ['translator', 'components'], function(translator, components) 
 				components.get('toaster/tray').prepend(alert);
 
 				if(typeof params.closefn === 'function') {
-					alert.find('button').on('click', function() {
+					alert.find('button').on('click', function () {
 						params.closefn();
 						fadeOut(alert);
 						return false;
@@ -56,7 +56,7 @@ define('alerts', ['translator', 'components'], function(translator, components) 
 		});
 	}
 
-	module.remove = function(id) {
+	module.remove = function (id) {
 		$('#alert_button_' + id).remove();
 	};
 
@@ -71,7 +71,7 @@ define('alerts', ['translator', 'components'], function(translator, components) 
 		}
 
 		alert.children().fadeOut(100);
-		translator.translate(alert.html(), function(translatedHTML) {
+		translator.translate(alert.html(), function (translatedHTML) {
 			alert.children().fadeIn(100);
 			alert.html(translatedHTML);
 		});

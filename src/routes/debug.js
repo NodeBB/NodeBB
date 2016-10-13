@@ -9,7 +9,7 @@ var topics = require('../topics');
 var posts = require('../posts');
 var db = require('../database');
 
-module.exports = function(app, middleware, controllers) {
+module.exports = function (app, middleware, controllers) {
 	var router = express.Router();
 
 	router.get('/uid/:uid', function (req, res) {
@@ -74,7 +74,7 @@ module.exports = function(app, middleware, controllers) {
 		});
 	});
 
-	router.get('/test', function(req, res) {
+	router.get('/test', function (req, res) {
 		res.redirect(404);
 	});
 

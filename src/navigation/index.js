@@ -6,19 +6,19 @@ var translator = require('../../public/src/modules/translator');
 
 var navigation = {};
 
-navigation.get = function(callback) {
+navigation.get = function (callback) {
 	if (admin.cache) {
 		return callback(null, admin.cache);
 	}
 
-	admin.get(function(err, data) {
+	admin.get(function (err, data) {
 		if (err) {
 			return callback(err);
 		}
 
-		data = data.filter(function(item) {
+		data = data.filter(function (item) {
 			return item && item.enabled;
-		}).map(function(item) {
+		}).map(function (item) {
 			if (!item.route.startsWith('http')) {
 				item.route = nconf.get('relative_path') + item.route;
 			}

@@ -5,9 +5,9 @@ var file = require('../../file');
 
 var themesController = {};
 
-themesController.get = function(req, res, next) {
+themesController.get = function (req, res, next) {
 	var themeDir = path.join(__dirname, '../../../node_modules/' + req.params.theme);
-	file.exists(themeDir, function(exists) {
+	file.exists(themeDir, function (exists) {
 		if (!exists) {
 			return next();
 		}

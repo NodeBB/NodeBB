@@ -2,11 +2,11 @@
 
 /* globals define, bootbox, templates */
 
-define('iconSelect', function() {
+define('iconSelect', function () {
 	var iconSelect = {};
 
-	iconSelect.init = function(el, onModified) {
-		onModified = onModified || function() {};
+	iconSelect.init = function (el, onModified) {
+		onModified = onModified || function () {};
 		var doubleSize = el.hasClass('fa-2x'),
 			selected = el.attr('class').replace('fa-2x', '').replace('fa', '').replace(/\s+/g, '');
 
@@ -16,7 +16,7 @@ define('iconSelect', function() {
 			$('#icons .fa-icons .fa.' + selected).addClass('selected');
 		}
 
-		templates.parse('partials/fontawesome', {}, function(html) {
+		templates.parse('partials/fontawesome', {}, function (html) {
 			html = $(html);
 			html.find('.fa-icons').prepend($('<i class="fa fa-nbb-none"></i>'));
 
@@ -30,7 +30,7 @@ define('iconSelect', function() {
 						noIcon: {
 							label: 'No Icon',
 							className: 'btn-default',
-							callback: function() {
+							callback: function () {
 								el.attr('class', 'fa ' + (doubleSize ? 'fa-2x ' : ''));
 								el.val('');
 								el.attr('value', '');
@@ -41,7 +41,7 @@ define('iconSelect', function() {
 						success: {
 							label: 'Select',
 							className: 'btn-primary',
-							callback: function(confirm) {
+							callback: function (confirm) {
 								var iconClass = $('.bootbox .selected').attr('class');
 								var categoryIconClass = $('<div/>').addClass(iconClass).removeClass('fa').removeClass('selected').attr('class');
 
@@ -57,7 +57,7 @@ define('iconSelect', function() {
 					}
 				});
 
-			picker.on('show.bs.modal', function() {
+			picker.on('show.bs.modal', function () {
 				var modalEl = $(this),
 					searchEl = modalEl.find('input');
 
@@ -67,7 +67,7 @@ define('iconSelect', function() {
 				}
 			}).modal('show');
 
-			picker.on('shown.bs.modal', function() {
+			picker.on('shown.bs.modal', function () {
 				var modalEl = $(this),
 					searchEl = modalEl.find('input'),
 					icons = modalEl.find('.fa-icons i'),
@@ -89,16 +89,16 @@ define('iconSelect', function() {
 				// Focus on the input box
 				searchEl.selectRange(0, searchEl.val().length);
 
-				modalEl.find('.icon-container').on('click', 'i', function() {
+				modalEl.find('.icon-container').on('click', 'i', function () {
 					searchEl.val($(this).attr('class').replace('fa fa-', '').replace('selected', ''));
 					changeSelection($(this));
 				});
 
-				searchEl.on('keyup', function(e) {
+				searchEl.on('keyup', function (e) {
 					if (e.keyCode !== 13) {
 						// Filter
 						icons.show();
-						icons.each(function(idx, el) {
+						icons.each(function (idx, el) {
 							if (!el.className.match(new RegExp('^fa fa-.*' + searchEl.val() + '.*$'))) {
 								$(el).hide();
 							}

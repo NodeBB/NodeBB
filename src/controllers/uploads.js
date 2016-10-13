@@ -16,7 +16,7 @@ var privileges = require('../privileges');
 
 var uploadsController = {};
 
-uploadsController.upload = function(req, res, filesIterator) {
+uploadsController.upload = function (req, res, filesIterator) {
 	var files = req.files.files;
 
 	if (!Array.isArray(files)) {
@@ -27,7 +27,7 @@ uploadsController.upload = function(req, res, filesIterator) {
 		files = files[0];
 	}
 
-	async.map(files, filesIterator, function(err, images) {
+	async.map(files, filesIterator, function (err, images) {
 		deleteTempFiles(files);
 
 		if (err) {
@@ -40,8 +40,8 @@ uploadsController.upload = function(req, res, filesIterator) {
 	});
 };
 
-uploadsController.uploadPost = function(req, res, next) {
-	uploadsController.upload(req, res, function(uploadedFile, next) {
+uploadsController.uploadPost = function (req, res, next) {
+	uploadsController.upload(req, res, function (uploadedFile, next) {
 		var isImage = uploadedFile.type.match(/image./);
 		if (isImage) {
 			uploadAsImage(req, uploadedFile, next);
@@ -53,10 +53,10 @@ uploadsController.uploadPost = function(req, res, next) {
 
 function uploadAsImage(req, uploadedFile, callback) {
 	async.waterfall([
-		function(next) {
+		function (next) {
 			privileges.categories.can('upload:post:image', req.body.cid, req.uid, next);
 		},
-		function(canUpload, next) {
+		function (canUpload, next) {
 			if (!canUpload) {
 				return next(new Error('[[error:no-privileges]]'));
 			}
@@ -65,10 +65,10 @@ function uploadAsImage(req, uploadedFile, callback) {
 			}
 			file.isFileTypeAllowed(uploadedFile.path, next);
 		},
-		function(next) {
+		function (next) {
 			uploadFile(req.uid, uploadedFile, next);
 		},
-		function(fileObj, next) {
+		function (fileObj, next) {
 			if (parseInt(meta.config.maximumImageWidth, 10) === 0) {
 				return next(null, fileObj);
 			}
@@ -80,10 +80,10 @@ function uploadAsImage(req, uploadedFile, callback) {
 
 function uploadAsFile(req, uploadedFile, callback) {
 	async.waterfall([
-		function(next) {
+		function (next) {
 			privileges.categories.can('upload:post:file', req.body.cid, req.uid, next);
 		},
-		function(canUpload, next) {
+		function (canUpload, next) {
 			if (!canUpload) {
 				return next(new Error('[[error:no-privileges]]'));
 			}
@@ -97,7 +97,7 @@ function uploadAsFile(req, uploadedFile, callback) {
 
 function resizeImage(fileObj, callback) {
 	async.waterfall([
-		function(next) {
+		function (next) {
 			image.size(fileObj.path, next);
 		},
 		function (imageData, next) {
@@ -130,14 +130,14 @@ function resizeImage(fileObj, callback) {
 	], callback);
 }
 
-uploadsController.uploadThumb = function(req, res, next) {
+uploadsController.uploadThumb = function (req, res, next) {
 	if (parseInt(meta.config.allowTopicsThumbnail, 10) !== 1) {
 		deleteTempFiles(req.files.files);
 		return next(new Error('[[error:topic-thumbnails-are-disabled]]'));
 	}
 
-	uploadsController.upload(req, res, function(uploadedFile, next) {
-		file.isFileTypeAllowed(uploadedFile.path, function(err) {
+	uploadsController.upload(req, res, function (uploadedFile, next) {
+		file.isFileTypeAllowed(uploadedFile.path, function (err) {
 			if (err) {
 				return next(err);
 			}
@@ -152,7 +152,7 @@ uploadsController.uploadThumb = function(req, res, next) {
 				extension: path.extname(uploadedFile.name),
 				width: size,
 				height: size
-			}, function(err) {
+			}, function (err) {
 				if (err) {
 					return next(err);
 				}
@@ -167,7 +167,7 @@ uploadsController.uploadThumb = function(req, res, next) {
 	}, next);
 };
 
-uploadsController.uploadGroupCover = function(uid, uploadedFile, callback) {
+uploadsController.uploadGroupCover = function (uid, uploadedFile, callback) {
 	if (plugins.hasListeners('filter:uploadImage')) {
 		return plugins.fireHook('filter:uploadImage', {image: uploadedFile, uid: uid}, callback);
 	}
@@ -176,7 +176,7 @@ uploadsController.uploadGroupCover = function(uid, uploadedFile, callback) {
 		return plugins.fireHook('filter:uploadFile', {file: uploadedFile, uid: uid}, callback);
 	}
 
-	file.isFileTypeAllowed(uploadedFile.path, function(err) {
+	file.isFileTypeAllowed(uploadedFile.path, function (err) {
 		if (err) {
 			return callback(err);
 		}
@@ -221,7 +221,7 @@ function saveFileToLocal(uploadedFile, callback) {
 
 	filename = Date.now() + '-' + validator.escape(filename.replace(extension, '')).substr(0, 255) + extension;
 
-	file.saveFileToLocal(filename, 'files', uploadedFile.path, function(err, upload) {
+	file.saveFileToLocal(filename, 'files', uploadedFile.path, function (err, upload) {
 		if (err) {
 			return callback(err);
 		}
@@ -235,8 +235,8 @@ function saveFileToLocal(uploadedFile, callback) {
 }
 
 function deleteTempFiles(files) {
-	async.each(files, function(file, next) {
-		fs.unlink(file.path, function(err) {
+	async.each(files, function (file, next) {
+		fs.unlink(file.path, function (err) {
 			if (err) {
 				winston.error(err);
 			}

@@ -13,36 +13,36 @@ var privileges = require('../../privileges');
 var plugins = require('../../plugins');
 var social = require('../../social');
 
-module.exports = function(SocketPosts) {
+module.exports = function (SocketPosts) {
 
-	SocketPosts.loadPostTools = function(socket, data, callback) {
+	SocketPosts.loadPostTools = function (socket, data, callback) {
 		if (!data) {
 			return callback(new Error('[[error:invalid-data]]'));
 		}
 
 		async.parallel({
-			posts: function(next) {
+			posts: function (next) {
 				posts.getPostFields(data.pid, ['deleted', 'bookmarks', 'uid'], next);
 			},
-			isAdminOrMod: function(next) {
+			isAdminOrMod: function (next) {
 				privileges.categories.isAdminOrMod(data.cid, socket.uid, next);
 			},
-			canEdit: function(next) {
+			canEdit: function (next) {
 				privileges.posts.canEdit(data.pid, socket.uid, next);
 			},
-			canDelete: function(next) {
+			canDelete: function (next) {
 				privileges.posts.canDelete(data.pid, socket.uid, next);
 			},
-			bookmarked: function(next) {
+			bookmarked: function (next) {
 				posts.hasBookmarked(data.pid, socket.uid, next);
 			},
-			tools: function(next) {
+			tools: function (next) {
 				plugins.fireHook('filter:post.tools', {pid: data.pid, uid: socket.uid, tools: []}, next);
 			},
-			postSharing: function(next) {
+			postSharing: function (next) {
 				social.getActivePostSharing(next);
 			}
-		}, function(err, results) {
+		}, function (err, results) {
 			if (err) {
 				return callback(err);
 			}
@@ -59,27 +59,27 @@ module.exports = function(SocketPosts) {
 		});
 	};
 
-	SocketPosts.delete = function(socket, data, callback) {
+	SocketPosts.delete = function (socket, data, callback) {
 		if (!data || !data.pid) {
 			return callback(new Error('[[error:invalid-data]]'));
 		}
 		var postData;
 		async.waterfall([
-			function(next) {
+			function (next) {
 				posts.tools.delete(socket.uid, data.pid, next);
 			},
-			function(_postData, next) {
+			function (_postData, next) {
 				postData = _postData;
 				isMainAndLastPost(data.pid, next);
 			},
-			function(results, next) {
+			function (results, next) {
 				if (results.isMain && results.isLast) {
 					deleteTopicOf(data.pid, socket, next);
 				} else {
 					next();
 				}
 			},
-			function(next) {
+			function (next) {
 				websockets.in('topic_' + data.tid).emit('event:post_deleted', postData);
 
 				events.log({
@@ -94,12 +94,12 @@ module.exports = function(SocketPosts) {
 		], callback);
 	};
 
-	SocketPosts.restore = function(socket, data, callback) {
+	SocketPosts.restore = function (socket, data, callback) {
 		if (!data || !data.pid) {
 			return callback(new Error('[[error:invalid-data]]'));
 		}
 
-		posts.tools.restore(socket.uid, data.pid, function(err, postData) {
+		posts.tools.restore(socket.uid, data.pid, function (err, postData) {
 			if (err) {
 				return callback(err);
 			}
@@ -117,34 +117,34 @@ module.exports = function(SocketPosts) {
 		});
 	};
 
-	SocketPosts.deletePosts = function(socket, data, callback) {
+	SocketPosts.deletePosts = function (socket, data, callback) {
 		if (!data || !Array.isArray(data.pids)) {
 			return callback(new Error('[[error:invalid-data]]'));
 		}
-		async.each(data.pids, function(pid, next) {
+		async.each(data.pids, function (pid, next) {
 			SocketPosts.delete(socket, {pid: pid, tid: data.tid}, next);
 		}, callback);
 	};
 
-	SocketPosts.purgePosts = function(socket, data, callback) {
+	SocketPosts.purgePosts = function (socket, data, callback) {
 		if (!data || !Array.isArray(data.pids)) {
 			return callback(new Error('[[error:invalid-data]]'));
 		}
-		async.each(data.pids, function(pid, next) {
+		async.each(data.pids, function (pid, next) {
 			SocketPosts.purge(socket, {pid: pid, tid: data.tid}, next);
 		}, callback);
 	};
 
-	SocketPosts.purge = function(socket, data, callback) {
+	SocketPosts.purge = function (socket, data, callback) {
 		function purgePost() {
-			posts.tools.purge(socket.uid, data.pid, function(err) {
+			posts.tools.purge(socket.uid, data.pid, function (err) {
 				if (err) {
 					return callback(err);
 				}
 
 				websockets.in('topic_' + data.tid).emit('event:post_purged', data.pid);
 
-				topics.getTopicField(data.tid, 'title', function(err, title) {
+				topics.getTopicField(data.tid, 'title', function (err, title) {
 					if (err) {
 						return winston.error(err);
 					}
@@ -165,7 +165,7 @@ module.exports = function(SocketPosts) {
 			return callback(new Error('[[error:invalid-data]]'));
 		}
 
-		isMainAndLastPost(data.pid, function(err, results) {
+		isMainAndLastPost(data.pid, function (err, results) {
 			if (err) {
 				return callback(err);
 			}
@@ -183,7 +183,7 @@ module.exports = function(SocketPosts) {
 	};
 
 	function deleteTopicOf(pid, socket, callback) {
-		posts.getTopicFields(pid, ['tid', 'cid'], function(err, topic) {
+		posts.getTopicFields(pid, ['tid', 'cid'], function (err, topic) {
 			if (err) {
 				return callback(err);
 			}
@@ -193,11 +193,11 @@ module.exports = function(SocketPosts) {
 
 	function isMainAndLastPost(pid, callback) {
 		async.parallel({
-			isMain: function(next) {
+			isMain: function (next) {
 				posts.isMain(pid, next);
 			},
-			isLast: function(next) {
-				posts.getTopicFields(pid, ['postcount'], function(err, topic) {
+			isLast: function (next) {
+				posts.getTopicFields(pid, ['postcount'], function (err, topic) {
 					next(err, topic ? parseInt(topic.postcount, 10) === 1 : false);
 				});
 			}

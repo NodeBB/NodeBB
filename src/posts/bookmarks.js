@@ -5,13 +5,13 @@ var async = require('async');
 var db = require('../database');
 var plugins = require('../plugins');
 
-module.exports = function(Posts) {
+module.exports = function (Posts) {
 
 	Posts.bookmark = function (pid, uid, callback) {
 		toggleBookmark('bookmark', pid, uid, callback);
 	};
 
-	Posts.unbookmark = function(pid, uid, callback) {
+	Posts.unbookmark = function (pid, uid, callback) {
 		toggleBookmark('unbookmark', pid, uid, callback);
 	};
 
@@ -22,16 +22,16 @@ module.exports = function(Posts) {
 		var isBookmarking = type === 'bookmark';
 
 		async.parallel({
-			owner: function(next) {
+			owner: function (next) {
 				Posts.getPostField(pid, 'uid', next);
 			},
-			postData: function(next) {
+			postData: function (next) {
 				Posts.getPostFields(pid, ['pid', 'uid'], next);
 			},
-			hasBookmarked: function(next) {
+			hasBookmarked: function (next) {
 				Posts.hasBookmarked(pid, uid, next);
 			}
-		}, function(err, results) {
+		}, function (err, results) {
 			if (err) {
 				return callback(err);
 			}
@@ -45,24 +45,24 @@ module.exports = function(Posts) {
 			}
 
 			async.waterfall([
-				function(next) {
+				function (next) {
 					if (isBookmarking) {
 						db.sortedSetAdd('uid:' + uid + ':bookmarks', Date.now(), pid, next);
 					} else {
 						db.sortedSetRemove('uid:' + uid + ':bookmarks', pid, next);
 					}
 				},
-				function(next) {
+				function (next) {
 					db[isBookmarking ? 'setAdd' : 'setRemove']('pid:' + pid + ':users_bookmarked', uid, next);
 				},
-				function(next) {
+				function (next) {
 					db.setCount('pid:' + pid + ':users_bookmarked', next);
 				},
-				function(count, next) {
+				function (count, next) {
 					results.postData.bookmarks = count;
 					Posts.setPostField(pid, 'bookmarks', count, next);
 				}
-			], function(err) {
+			], function (err) {
 				if (err) {
 					return callback(err);
 				}
@@ -84,10 +84,10 @@ module.exports = function(Posts) {
 		});
 	}
 
-	Posts.hasBookmarked = function(pid, uid, callback) {
+	Posts.hasBookmarked = function (pid, uid, callback) {
 		if (!parseInt(uid, 10)) {
 			if (Array.isArray(pid)) {
-				callback(null, pid.map(function() { return false; }));
+				callback(null, pid.map(function () { return false; }));
 			} else {
 				callback(null, false);
 			}
@@ -95,7 +95,7 @@ module.exports = function(Posts) {
 		}
 
 		if (Array.isArray(pid)) {
-			var sets = pid.map(function(pid) {
+			var sets = pid.map(function (pid) {
 				return 'pid:' + pid + ':users_bookmarked';
 			});
 
