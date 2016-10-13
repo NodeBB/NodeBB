@@ -70,6 +70,9 @@ module.exports = function(middleware) {
 			isGlobalMod: function(next) {
 				user.isGlobalModerator(req.uid, next);
 			},
+			isModerator: function(next) {
+				user.isModeratorOfAnyCategory(req.uid, next);
+			},
 			user: function(next) {
 				var userData = {
 					uid: 0,
@@ -108,6 +111,7 @@ module.exports = function(middleware) {
 
 			results.user.isAdmin = results.isAdmin;
 			results.user.isGlobalMod = results.isGlobalMod;
+			results.user.isMod = !!results.isModerator;
 			results.user.uid = parseInt(results.user.uid, 10);
 			results.user.email = String(results.user.email).replace(/\\/g, '\\\\').replace(/"/g, '\\"');
 			results.user['email:confirmed'] = parseInt(results.user['email:confirmed'], 10) === 1;
@@ -123,6 +127,7 @@ module.exports = function(middleware) {
 			templateValues.linkTags = results.tags.link;
 			templateValues.isAdmin = results.user.isAdmin;
 			templateValues.isGlobalMod = results.user.isGlobalMod;
+			templateValues.showModMenu = results.user.isAdmin || results.user.isGlobalMod || results.user.isMod;
 			templateValues.user = results.user;
 			templateValues.userJSON = JSON.stringify(results.user);
 			templateValues.useCustomCSS = parseInt(meta.config.useCustomCSS, 10) === 1 && meta.config.customCSS;
