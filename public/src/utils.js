@@ -317,8 +317,8 @@
 			return labels;
 		},
 
-		/* Retrieved from http://stackoverflow.com/a/7557433 @ 27 Mar 2016 */
-		isElementInViewport: function(el) {
+		/* Based on code retrieved from http://stackoverflow.com/a/7557433 @ 27 Mar 2016 */
+		isElementBelowTopOfViewport: function(el) {
 			//special bonus for those using jQuery
 			if (typeof jQuery === "function" && el instanceof jQuery) {
 				el = el[0];
@@ -326,12 +326,7 @@
 
 			var rect = el.getBoundingClientRect();
 
-			return (
-				rect.top >= 0 &&
-				rect.left >= 0 &&
-				rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) && /*or $(window).height() */
-				rect.right <= (window.innerWidth || document.documentElement.clientWidth) /*or $(window).width() */
-			);
+			return rect.bottom >= 0;
 		},
 
 		// get all the url params in a single key/value hash
