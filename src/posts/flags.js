@@ -228,7 +228,7 @@ module.exports = function (Posts) {
 			async.apply(Posts.expandFlagHistory),
 			function (posts, next) {
 				// Parse out flag data into its own object inside each post hash
-				posts = posts.map(function (postObj) {
+				async.map(posts, function (postObj, next) {
 					for(var prop in postObj) {
 						postObj.flagData = postObj.flagData || {};
 
@@ -256,10 +256,19 @@ module.exports = function (Posts) {
 						}
 					}
 
-					return postObj;
-				});
+					if (postObj.flagData.assignee) {
+						user.getUserFields(parseInt(postObj.flagData.assignee, 10), ['username', 'picture'], function (err, userData) {
+							if (err) {
+								return next(err);
+							}
 
-				setImmediate(next.bind(null, null, posts));
+							postObj.flagData.assigneeUser = userData;
+							next(null, postObj);
+						});
+					} else {
+						setImmediate(next.bind(null, null, postObj));
+					}
+				}, next);
 			}
 		], callback);
 	}

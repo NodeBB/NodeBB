@@ -70,6 +70,15 @@
 					<div class="panel-heading" role="tab">
 						<h4 class="panel-title">
 							<a role="button" data-toggle="collapse" data-parent="#accordion" href="#flag-pid-{posts.pid}" aria-expanded="true" aria-controls="flag-pid-{posts.pid}">
+								<!-- IF ../flagData.assignee -->
+								<div class="pull-right">
+									<!-- IF ../flagData.assigneeUser.picture -->
+									<img class="avatar avatar-xs" title="{../flagData.assigneeUser.username}" src="{../flagData.assigneeUser.picture}">
+									<!-- ELSE -->
+									<div class="avatar avatar-xs" title="{../flagData.assigneeUser.username}" style="background-color: {../flagData.assigneeUser.icon:bgColor};">{../flagData.assigneeUser.icon:text}</div>
+									<!-- ENDIF ../flagData.assigneeUser.picture -->
+								</div>
+								<!-- ENDIF ../flagData.assignee -->
 								<span class="label <!-- IF ../flagData.labelClass -->label-{../flagData.labelClass}<!-- ELSE -->label-info<!-- ENDIF ../flagData.labelClass -->">[[topic:flag_manage_state_<!-- IF ../flagData.state -->{../flagData.state}<!-- ELSE -->open<!-- ENDIF ../flagData.state -->]]</span>
 								&nbsp;[[topic:flag_manage_title, {posts.category.name}]]
 								<small><span class="timeago" title="{posts.timestampISO}"></span></small>
@@ -85,7 +94,7 @@
 											<!-- IF ../user.picture -->
 											<img title="{posts.user.username}" src="{../user.picture}">
 											<!-- ELSE -->
-											<div class="user-icon" style="background-color: {../user.icon:bgColor};">{../user.icon:text}</div>
+											<div title="{posts.user.username}" class="user-icon" style="background-color: {../user.icon:bgColor};">{../user.icon:text}</div>
 											<!-- ENDIF ../user.picture -->
 										</a>
 
