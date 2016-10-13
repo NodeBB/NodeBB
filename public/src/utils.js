@@ -478,8 +478,8 @@
 		window.utils = module.exports;
 	}
 
-})('undefined' === typeof module ? {
+}('undefined' === typeof module ? {
 	module: {
 		exports: {}
 	}
-} : module);
+} : module));

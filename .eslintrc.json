@@ -18,7 +18,6 @@
         "eqeqeq": "off",
         "camelcase": "off",
         "no-negated-condition": "off",
-        "wrap-iife": "off",
         "one-var-declaration-per-line": "off",
         "new-cap": "off",
         "no-lonely-if": "off",
