@@ -21,7 +21,7 @@ User.makeAdmins = function(socket, uids, callback) {
 			return callback(err);
 		}
 
-		for(var i=0; i<userData.length; i++) {
+		for(var i = 0; i < userData.length; i++) {
 			if (userData[i] && parseInt(userData[i].banned, 10) === 1) {
 				return callback(new Error('[[error:cant-make-banned-users-admin]]'));
 			}

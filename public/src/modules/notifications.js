@@ -132,7 +132,7 @@ define('notifications', ['sounds', 'translator', 'components'], function(sound, 
 			});
 
 			translator.toggleTimeagoShorthand();
-			for(var i=0; i<notifs.length; ++i) {
+			for(var i = 0; i < notifs.length; ++i) {
 				notifs[i].timeago = $.timeago(new Date(parseInt(notifs[i].datetime, 10)));
 			}
 			translator.toggleTimeagoShorthand();

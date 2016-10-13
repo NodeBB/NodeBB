@@ -26,23 +26,23 @@ image.resizeImage = function(data, callback) {
 
 			var w = image.bitmap.width,
 				h = image.bitmap.height,
-				origRatio = w/h,
-				desiredRatio = data.width && data.height ? data.width/data.height : origRatio,
+				origRatio = w / h,
+				desiredRatio = data.width && data.height ? data.width / data.height : origRatio,
 				x = 0,
 				y = 0,
 				crop;
 
 			if (origRatio !== desiredRatio) {
 				if (desiredRatio > origRatio) {
-					desiredRatio = 1/desiredRatio;
+					desiredRatio = 1 / desiredRatio;
 				}
 				if (origRatio >= 1) {
 					y = 0;	// height is the smaller dimension here
-					x = Math.floor((w/2) - (h * desiredRatio / 2));
+					x = Math.floor((w / 2) - (h * desiredRatio / 2));
 					crop = async.apply(image.crop.bind(image), x, y, h * desiredRatio, h);
 				} else {
 					x = 0;	// width is the smaller dimension here
-					y = Math.floor(h/2 - (w * desiredRatio / 2));
+					y = Math.floor(h / 2 - (w * desiredRatio / 2));
 					crop = async.apply(image.crop.bind(image), x, y, w, w * desiredRatio);
 				}
 			} else {

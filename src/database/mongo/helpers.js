@@ -4,7 +4,7 @@ var helpers = {};
 
 helpers.toMap = function(data) {
 	var map = {};
-	for (var i = 0; i<data.length; ++i) {
+	for (var i = 0; i < data.length; ++i) {
 		map[data[i]._key] = data[i];
 		data[i]._key = undefined;
 	}

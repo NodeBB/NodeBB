@@ -43,7 +43,7 @@ module.exports = function(middleware) {
 		};
 
 		var isAllowed = function(url) {
-			for(var x=0,numAllowed=allowedRoutes.length,route;x<numAllowed;x++) {
+			for(var x = 0,numAllowed = allowedRoutes.length,route;x < numAllowed;x++) {
 				route = new RegExp(allowedRoutes[x]);
 				if (route.test(url)) {
 					return true;

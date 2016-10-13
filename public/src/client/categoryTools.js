@@ -175,7 +175,7 @@ define('forum/categoryTools', ['forum/topic/move', 'topicSelect', 'components', 
 	}
 
 	function isAny(method, tids) {
-		for(var i=0; i<tids.length; ++i) {
+		for(var i = 0; i < tids.length; ++i) {
 			if(method(tids[i])) {
 				return true;
 			}
@@ -184,7 +184,7 @@ define('forum/categoryTools', ['forum/topic/move', 'topicSelect', 'components', 
 	}
 
 	function areAll(method, tids) {
-		for(var i=0; i<tids.length; ++i) {
+		for(var i = 0; i < tids.length; ++i) {
 			if(!method(tids[i])) {
 				return false;
 			}

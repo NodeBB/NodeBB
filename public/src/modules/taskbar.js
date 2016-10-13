@@ -114,7 +114,7 @@ define('taskbar', function() {
 			.addClass(data.options.className)
 			.html('<a href="#">' +
 				(data.options.icon ? '<i class="fa ' + data.options.icon + '"></i> ' : '') +
-				(data.options.image ? '<img src="' + data.options.image + '"/> ': '') +
+				(data.options.image ? '<img src="' + data.options.image + '"/> ' : '') +
 				'<span>' + title + '</span>' +
 				'</a>')
 			.attr({

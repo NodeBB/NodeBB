@@ -44,7 +44,7 @@ var plugins = require('./plugins');
 
 		var keys = [];
 
-		for (var x=0, numPids=pids.length; x<numPids; ++x) {
+		for (var x = 0, numPids = pids.length; x < numPids; ++x) {
 			keys.push('post:' + pids[x]);
 		}
 
@@ -214,7 +214,7 @@ var plugins = require('./plugins');
 					return callback(err);
 				}
 
-				for (var i=0; i<indices.length; ++i) {
+				for (var i = 0; i < indices.length; ++i) {
 					indices[i] = utils.isNumber(indices[i]) ? parseInt(indices[i], 10) + 1 : 0;
 				}
 

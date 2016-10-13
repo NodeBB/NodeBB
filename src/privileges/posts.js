@@ -40,7 +40,7 @@ module.exports = function(privileges) {
 
 			var privileges = [];
 
-			for (var i=0; i<pids.length; ++i) {
+			for (var i = 0; i < pids.length; ++i) {
 				var isAdminOrMod = results.isAdmin || results.isModerator[i];
 				var editable = isAdminOrMod || (results.isOwner[i] && results['posts:edit'][i]);
 

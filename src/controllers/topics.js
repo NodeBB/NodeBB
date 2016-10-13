@@ -56,7 +56,7 @@ topicsController.get = function(req, res, callback) {
 			if (!res.locals.isAPI && (!req.params.slug || results.topic.slug !== tid + '/' + req.params.slug) && (results.topic.slug && results.topic.slug !== tid + '/')) {
 				var url = '/topic/' + results.topic.slug;
 				if (req.params.post_index){
-					url += '/'+req.params.post_index;
+					url += '/' + req.params.post_index;
 				}
 				if (currentPage > 1) {
 					url += '?page=' + currentPage;
@@ -149,7 +149,7 @@ topicsController.get = function(req, res, callback) {
 		},
 		function (topicData, next) {
 			function findPost(index) {
-				for(var i=0; i<topicData.posts.length; ++i) {
+				for(var i = 0; i < topicData.posts.length; ++i) {
 					if (parseInt(topicData.posts[i].index, 10) === parseInt(index, 10)) {
 						return topicData.posts[i];
 					}

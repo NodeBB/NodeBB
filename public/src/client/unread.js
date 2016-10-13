@@ -119,7 +119,7 @@ define('forum/unread', ['forum/recent', 'topicSelect', 'forum/infinitescroll', '
 	}
 
 	function removeTids(tids) {
-		for(var i=0; i<tids.length; ++i) {
+		for(var i = 0; i < tids.length; ++i) {
 			components.get('category/topic', 'tid', tids[i]).remove();
 		}
 	}

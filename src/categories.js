@@ -161,7 +161,7 @@ var privileges = require('./privileges');
 			var categories = results.categories;
 			var hasRead = results.hasRead;
 			uid = parseInt(uid, 10);
-			for(var i=0; i<results.categories.length; ++i) {
+			for(var i = 0; i < results.categories.length; ++i) {
 				if (categories[i]) {
 					categories[i]['unread-class'] = (parseInt(categories[i].topic_count, 10) === 0 || (hasRead[i] && uid !== 0)) ? '' : 'unread';
 					categories[i].children = results.children[i];

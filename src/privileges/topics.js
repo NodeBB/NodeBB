@@ -207,7 +207,7 @@ module.exports = function(privileges) {
 			var preventTopicDeleteAfterReplies = parseInt(meta.config.preventTopicDeleteAfterReplies, 10) || 0;
 			if (preventTopicDeleteAfterReplies && (topicData.postcount - 1) >= preventTopicDeleteAfterReplies) {
 				var langKey = preventTopicDeleteAfterReplies > 1 ?
-					'[[error:cant-delete-topic-has-replies, ' + meta.config.preventTopicDeleteAfterReplies + ']]':
+					'[[error:cant-delete-topic-has-replies, ' + meta.config.preventTopicDeleteAfterReplies + ']]' :
 					'[[error:cant-delete-topic-has-reply]]';
 				return callback(new Error(langKey));
 			}

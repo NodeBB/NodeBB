@@ -124,7 +124,7 @@ describe('User', function() {
 		});
 
 		it('should allow a post if the last post time is > 10 seconds', function(done) {
-			User.setUserField(testUid, 'lastposttime', +new Date()-(11*1000), function() {
+			User.setUserField(testUid, 'lastposttime', +new Date() - (11 * 1000), function() {
 				Topics.post({
 					uid: testUid,
 					title: 'Topic 3',
@@ -141,7 +141,7 @@ describe('User', function() {
 			Meta.config.newbiePostDelay = 30;
 			Meta.config.newbiePostDelayThreshold = 3;
 
-			User.setUserField(testUid, 'lastposttime', +new Date()-(20*1000), function() {
+			User.setUserField(testUid, 'lastposttime', +new Date() - (20 * 1000), function() {
 				Topics.post({
 					uid: testUid,
 					title: 'Topic 4',
@@ -156,7 +156,7 @@ describe('User', function() {
 
 		it('should not error if a non-newbie user posts if the last post time is 10 < 30 seconds', function(done) {
 			User.setUserFields(testUid, {
-				lastposttime:  +new Date()-(20*1000),
+				lastposttime:  +new Date() - (20 * 1000),
 				reputation: 10
 			}, function() {
 				Topics.post({

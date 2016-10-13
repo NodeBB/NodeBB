@@ -95,7 +95,7 @@ define('search', ['navigator', 'translator'], function(nav, translator) {
 				// Sort pids numerically & store
 				Search.current = {
 					results: pids.sort(function(a, b) {
-						return a-b;
+						return a - b;
 					}),
 					tid: tid,
 					term: term
@@ -121,11 +121,11 @@ define('search', ['navigator', 'translator'], function(nav, translator) {
 	};
 
 	Search.topicDOM.prev = function() {
-		Search.topicDOM.update((Search.current.index === 0) ? Search.current.results.length-1 : Search.current.index-1);
+		Search.topicDOM.update((Search.current.index === 0) ? Search.current.results.length - 1 : Search.current.index - 1);
 	};
 
 	Search.topicDOM.next = function() {
-		Search.topicDOM.update((Search.current.index === Search.current.results.length-1) ? 0 : Search.current.index+1);
+		Search.topicDOM.update((Search.current.index === Search.current.results.length - 1) ? 0 : Search.current.index + 1);
 	};
 
 	Search.topicDOM.update = function(index) {
@@ -135,7 +135,7 @@ define('search', ['navigator', 'translator'], function(nav, translator) {
 		Search.topicDOM.start();
 
 		if (Search.current.results.length > 0) {
-			topicSearchEl.find('.count').html((index+1) + ' / ' + Search.current.results.length);
+			topicSearchEl.find('.count').html((index + 1) + ' / ' + Search.current.results.length);
 			topicSearchEl.find('.prev, .next').removeAttr('disabled');
 			var data = {
 				pid: Search.current.results[index],

@@ -103,7 +103,7 @@ define('admin/extend/rewards', function() {
 						});
 					break;
 				case 'text':
-						html += '<input type="text" name="' + input.name +'" />';
+						html += '<input type="text" name="' + input.name + '" />';
 					break;
 			}
 			html += '</label><br />';

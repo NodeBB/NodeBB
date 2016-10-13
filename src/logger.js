@@ -148,7 +148,7 @@ var opts = {
 		 * The format is: io: <uid> <event> <args>
 		 */
 		try {
-			return 'io: '+_uid+' '+_type+' '+util.inspect(Array.prototype.slice.call(_args))+'\n';
+			return 'io: ' + _uid + ' ' + _type + ' ' + util.inspect(Array.prototype.slice.call(_args)) + '\n';
 		} catch(err) {
 			winston.info("Logger.prepare_io_string: Failed", err);
 			return "error";

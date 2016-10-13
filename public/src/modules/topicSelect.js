@@ -71,7 +71,7 @@ define('topicSelect', ['components'], function(components) {
 			end = tmp;
 		}
 
-		for(var i=start; i<=end; ++i) {
+		for(var i = start; i <= end; ++i) {
 			var topic = $('[component="category/topic"]').eq(i);
 			toggleSelect(topic.find('[component="topic/select"]'), isSelected);
 		}

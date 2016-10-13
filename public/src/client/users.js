@@ -122,7 +122,7 @@ define('forum/users', ['translator'], function(translator) {
 	}
 
 	function updateUser(data) {
-		app.updateUserStatus($('#users-container [data-uid="' + data.uid +'"] [component="user/status"]'), data.status);
+		app.updateUserStatus($('#users-container [data-uid="' + data.uid + '"] [component="user/status"]'), data.status);
 	}
 
 	function getActiveSection() {

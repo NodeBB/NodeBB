@@ -47,7 +47,7 @@ define('forum/topic/posts', [
 	};
 
 	function updatePostCounts(posts) {
-		for (var i=0; i<posts.length; ++i) {
+		for (var i = 0; i < posts.length; ++i) {
 			var cmp = components.get('user/postcount', posts[i].uid);
 			cmp.html(parseInt(cmp.attr('data-postcount'), 10) + 1);
 			utils.addCommasToNumbers(cmp);

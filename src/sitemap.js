@@ -37,7 +37,7 @@ sitemap.render = function(callback) {
 			numPages = Math.ceil(tids.length / numTopics);
 		}
 
-		for(var x=1;x<=numPages;x++) {
+		for(var x = 1;x <= numPages;x++) {
 			returnData.topics.push(x);
 		}
 
@@ -124,10 +124,10 @@ sitemap.getTopicPage = function(page, callback) {
 	var max = min + numTopics;
 
 	if (
-		sitemap.maps.topics[page-1] &&
-		Date.now() < parseInt(sitemap.maps.topics[page-1].cacheSetTimestamp, 10) + parseInt(sitemap.maps.topics[page-1].cacheResetPeriod, 10)
+		sitemap.maps.topics[page - 1] &&
+		Date.now() < parseInt(sitemap.maps.topics[page - 1].cacheSetTimestamp, 10) + parseInt(sitemap.maps.topics[page - 1].cacheResetPeriod, 10)
 	) {
-		return sitemap.maps.topics[page-1].toXML(callback);
+		return sitemap.maps.topics[page - 1].toXML(callback);
 	}
 
 	var topicUrls = [];
@@ -158,13 +158,13 @@ sitemap.getTopicPage = function(page, callback) {
 			}
 		});
 
-		sitemap.maps.topics[page-1] = sm.createSitemap({
+		sitemap.maps.topics[page - 1] = sm.createSitemap({
 			hostname: nconf.get('url'),
 			cacheTime: 1000 * 60 * 60,	// Cached for 1 hour
 			urls: topicUrls
 		});
 
-		sitemap.maps.topics[page-1].toXML(callback);
+		sitemap.maps.topics[page - 1].toXML(callback);
 	});
 };
 

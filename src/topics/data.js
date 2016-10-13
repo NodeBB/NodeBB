@@ -40,7 +40,7 @@ module.exports = function(Topics) {
 	Topics.getTopicsData = function(tids, callback) {
 		var keys = [];
 
-		for (var i=0; i<tids.length; ++i) {
+		for (var i = 0; i < tids.length; ++i) {
 			keys.push('topic:' + tids[i]);
 		}
 

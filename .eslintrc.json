@@ -76,7 +76,6 @@
         "no-multi-spaces": "off",
         "quotes": "off",
         "keyword-spacing": "off",
-        "space-infix-ops": "off",
         "no-plusplus": "off",
         "no-mixed-operators": "off",
         "semi": "off",

@@ -350,7 +350,7 @@ function generateForPostsFeed(feedOptions, posts) {
 		feed.item({
 			title: postData.topic ? postData.topic.title : '',
 			description: postData.content,
-			url: nconf.get('url') + '/topic/' + (postData.topic ? postData.topic.slug : '#') + '/'+postData.index,
+			url: nconf.get('url') + '/topic/' + (postData.topic ? postData.topic.slug : '#') + '/' + postData.index,
 			author: postData.user ? postData.user.username : '',
 			date: new Date(parseInt(postData.timestamp, 10)).toUTCString()
 		});

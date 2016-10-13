@@ -108,7 +108,7 @@ define('forum/recent', ['forum/infinitescroll', 'components'], function(infinite
 			} else if (newPostCount === 1) {
 				text = '[[recent:there-is-a-new-topic-and-a-new-post]]';
 			} else if (newPostCount > 1) {
-				text = '[[recent:there-is-a-new-topic-and-new-posts, ' + newPostCount +']]';
+				text = '[[recent:there-is-a-new-topic-and-new-posts, ' + newPostCount + ']]';
 			}
 		} else if (newTopicCount > 1) {
 			if (newPostCount === 0) {
@@ -116,7 +116,7 @@ define('forum/recent', ['forum/infinitescroll', 'components'], function(infinite
 			} else if (newPostCount === 1) {
 				text = '[[recent:there-are-new-topics-and-a-new-post, ' + newTopicCount + ']]';
 			} else if (newPostCount > 1) {
-				text = '[[recent:there-are-new-topics-and-new-posts, ' + newTopicCount + ', ' + newPostCount +']]';
+				text = '[[recent:there-are-new-topics-and-new-posts, ' + newTopicCount + ', ' + newPostCount + ']]';
 			}
 		}
 

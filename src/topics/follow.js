@@ -83,7 +83,7 @@ module.exports = function(Topics) {
 	}
 
 	function unfollow(tid, uid, callback) {
-		removeFromSets('tid:'+ tid + ':followers', 'uid:' + uid + ':followed_tids', tid, uid, callback);
+		removeFromSets('tid:' + tid + ':followers', 'uid:' + uid + ':followed_tids', tid, uid, callback);
 	}
 
 	function ignore(tid, uid, callback) {
@@ -91,7 +91,7 @@ module.exports = function(Topics) {
 	}
 
 	function unignore(tid, uid, callback) {
-		removeFromSets('tid:'+ tid + ':ignorers', 'uid:' + uid + ':ignored_tids', tid, uid, callback);
+		removeFromSets('tid:' + tid + ':ignorers', 'uid:' + uid + ':ignored_tids', tid, uid, callback);
 	}
 
 	function addToSets(set1, set2, tid, uid, callback) {

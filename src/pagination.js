@@ -23,7 +23,7 @@ pagination.create = function(currentPage, pageCount, queryObj) {
 	var next = Math.min(pageCount, currentPage + 1);
 
 	var startPage = currentPage - 2;
-	for(var i=0; i<5; ++i) {
+	for(var i = 0; i < 5; ++i) {
 		pagesToShow.push(startPage + i);
 	}
 
@@ -42,7 +42,7 @@ pagination.create = function(currentPage, pageCount, queryObj) {
 		return {page: page, active: page === currentPage, qs: qs.stringify(queryObj)};
 	});
 
-	for (i=pages.length - 1; i>0; --i) {
+	for (i = pages.length - 1; i > 0; --i) {
 		if (pages[i - 1].page !== pages[i].page - 1) {
 			pages.splice(i, 0, {separator: true});
 		}

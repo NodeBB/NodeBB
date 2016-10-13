@@ -42,12 +42,12 @@
 				url: url,
 				isMobile: utils.isMobile()
 			}, function(renderedAreas) {
-				for (var x=0; x<renderedAreas.length; ++x) {
+				for (var x = 0; x < renderedAreas.length; ++x) {
 					var renderedWidgets = renderedAreas[x].widgets,
 						location = renderedAreas[x].location,
 						html = '';
 
-					for (var i=0; i<renderedWidgets.length; ++i) {
+					for (var i = 0; i < renderedWidgets.length; ++i) {
 						html += templates.parse(renderedWidgets[i].html, {});
 					}
 

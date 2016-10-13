@@ -135,19 +135,19 @@ var db = require('./database');
 		var daysArr = [];
 
 		day = new Date(day);
-		day.setDate(day.getDate()+1);	// set the date to tomorrow, because getHourlyStatsForSet steps *backwards* 24 hours to sum up the values
+		day.setDate(day.getDate() + 1);	// set the date to tomorrow, because getHourlyStatsForSet steps *backwards* 24 hours to sum up the values
 		day.setHours(0, 0, 0, 0);
 
 		async.whilst(function() {
 			return numDays--;
 		}, function(next) {
-			Analytics.getHourlyStatsForSet(set, day.getTime()-(1000*60*60*24*numDays), 24, function(err, day) {
+			Analytics.getHourlyStatsForSet(set, day.getTime() - (1000 * 60 * 60 * 24 * numDays), 24, function(err, day) {
 				if (err) {
 					return next(err);
 				}
 
 				daysArr.push(day.reduce(function(cur, next) {
-					return cur+next;
+					return cur + next;
 				}));
 				next();
 			});

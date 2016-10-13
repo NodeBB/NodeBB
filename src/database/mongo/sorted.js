@@ -37,7 +37,7 @@ module.exports = function(db, module) {
 
 		var bulk = db.collection('objects').initializeUnorderedBulkOp();
 
-		for(var i=0; i<scores.length; ++i) {
+		for(var i = 0; i < scores.length; ++i) {
 			bulk.find({_key: key, value: values[i]}).upsert().updateOne({$set: {score: parseInt(scores[i], 10)}});
 		}
 
@@ -55,7 +55,7 @@ module.exports = function(db, module) {
 
 		var bulk = db.collection('objects').initializeUnorderedBulkOp();
 
-		for(var i=0; i<keys.length; ++i) {
+		for(var i = 0; i < keys.length; ++i) {
 			bulk.find({_key: keys[i], value: value}).upsert().updateOne({$set: {score: parseInt(score, 10)}});
 		}
 
@@ -315,7 +315,7 @@ module.exports = function(db, module) {
 			return callback(null, []);
 		}
 		var data = new Array(values.length);
-		for (var i=0; i<values.length; ++i) {
+		for (var i = 0; i < values.length; ++i) {
 			data[i] = {key: keys[i], value: values[i]};
 		}
 
@@ -366,7 +366,7 @@ module.exports = function(db, module) {
 				returnData = [],
 				item;
 
-			for(var i=0; i<keys.length; ++i) {
+			for(var i = 0; i < keys.length; ++i) {
 				item = map[keys[i]];
 				returnData.push(item ? item.score : null);
 			}
@@ -393,7 +393,7 @@ module.exports = function(db, module) {
 			var returnData = new Array(values.length);
 			var score;
 
-			for(var i=0; i<values.length; ++i) {
+			for(var i = 0; i < values.length; ++i) {
 				score = map[values[i]];
 				returnData[i] = utils.isNumber(score) ? score : null;
 			}
@@ -470,7 +470,7 @@ module.exports = function(db, module) {
 			});
 
 			var returnData = new Array(keys.length);
-			for(var i=0; i<keys.length; ++i) {
+			for(var i = 0; i < keys.length; ++i) {
 			 	returnData[i] = sets[keys[i]] || [];
 			}
 			callback(null, returnData);

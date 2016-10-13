@@ -61,7 +61,7 @@ Loader.addWorkerEvents = function(worker) {
 
 	worker.on('exit', function(code, signal) {
 		if (code !== 0) {
-			if (Loader.timesStarted < numProcs*3) {
+			if (Loader.timesStarted < numProcs * 3) {
 				Loader.timesStarted++;
 				if (Loader.crashTimer) {
 					clearTimeout(Loader.crashTimer);
@@ -70,12 +70,12 @@ Loader.addWorkerEvents = function(worker) {
 					Loader.timesStarted = 0;
 				}, 10000);
 			} else {
-				console.log(numProcs*3 + ' restarts in 10 seconds, most likely an error on startup. Halting.');
+				console.log(numProcs * 3 + ' restarts in 10 seconds, most likely an error on startup. Halting.');
 				process.exit();
 			}
 		}
 
-		console.log('[cluster] Child Process (' + worker.pid + ') has exited (code: ' + code + ', signal: ' + signal +')');
+		console.log('[cluster] Child Process (' + worker.pid + ') has exited (code: ' + code + ', signal: ' + signal + ')');
 		if (!(worker.suicide || code === 0)) {
 			console.log('[cluster] Spinning up another process...');
 
@@ -152,7 +152,7 @@ Loader.start = function(callback) {
 	numProcs = getPorts().length;
 	console.log('Clustering enabled: Spinning up ' + numProcs + ' process(es).\n');
 
-	for (var x=0; x<numProcs; ++x) {
+	for (var x = 0; x < numProcs; ++x) {
 		forkWorker(x, x === 0);
 	}
 

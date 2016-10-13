@@ -156,10 +156,10 @@ var userNotifications = require('./user/notifications');
 					// Add a spacer in between messages with time gaps between them
 					messages = messages.map(function(message, index) {
 						// Compare timestamps with the previous message, and check if a spacer needs to be added
-						if (index > 0 && parseInt(message.timestamp, 10) > parseInt(messages[index-1].timestamp, 10) + (1000*60*5)) {
+						if (index > 0 && parseInt(message.timestamp, 10) > parseInt(messages[index - 1].timestamp, 10) + (1000 * 60 * 5)) {
 							// If it's been 5 minutes, this is a new set of messages
 							message.newSet = true;
-						} else if (index > 0 && message.fromuid !== messages[index-1].fromuid) {
+						} else if (index > 0 && message.fromuid !== messages[index - 1].fromuid) {
 							// If the previous message was from the other person, this is also a new set
 							message.newSet = true;
 						}
@@ -176,7 +176,7 @@ var userNotifications = require('./user/notifications');
 						function(index, next) {
 							// Continue only if this isn't the first message in sorted set
 							if (index > 0) {
-								db.getSortedSetRange(key, index-1, index-1, next);
+								db.getSortedSetRange(key, index - 1, index - 1, next);
 							} else {
 								messages[0].newSet = true;
 								return next(undefined, messages);
@@ -191,7 +191,7 @@ var userNotifications = require('./user/notifications');
 						}
 
 						if (
-							(parseInt(messages[0].timestamp, 10) > parseInt(fields.timestamp, 10) + (1000*60*5)) ||
+							(parseInt(messages[0].timestamp, 10) > parseInt(fields.timestamp, 10) + (1000 * 60 * 5)) ||
 							(parseInt(messages[0].fromuid, 10) !== parseInt(fields.fromuid, 10))
 						) {
 							// If it's been 5 minutes, this is a new set of messages

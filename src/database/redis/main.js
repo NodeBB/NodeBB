@@ -26,7 +26,7 @@ module.exports = function(redisClient, module) {
 	module.deleteAll = function(keys, callback) {
 		callback = callback || function() {};
 		var multi = redisClient.multi();
-		for(var i=0; i<keys.length; ++i) {
+		for(var i = 0; i < keys.length; ++i) {
 			multi.del(keys[i]);
 		}
 		multi.exec(function(err, res) {

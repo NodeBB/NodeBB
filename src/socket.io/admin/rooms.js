@@ -144,7 +144,7 @@ SocketRooms.getLocalStats = function(callback) {
 		users: {
 			categories: roomClients.categories ? roomClients.categories.length : 0,
 			recent: roomClients.recent_topics ? roomClients.recent_topics.length : 0,
-			unread: roomClients.unread_topics ? roomClients.unread_topics.length: 0,
+			unread: roomClients.unread_topics ? roomClients.unread_topics.length : 0,
 			topics: 0,
 			category: 0
 		},

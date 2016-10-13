@@ -327,9 +327,9 @@ module.exports = function(Topics) {
 
 	function check(item, min, max, minError, maxError, callback) {
 		if (!item || item.length < parseInt(min, 10)) {
-			return callback(new Error('[[error:'+ minError + ', ' + min + ']]'));
+			return callback(new Error('[[error:' + minError + ', ' + min + ']]'));
 		} else if (item.length > parseInt(max, 10)) {
-			return callback(new Error('[[error:'+ maxError + ', ' + max + ']]'));
+			return callback(new Error('[[error:' + maxError + ', ' + max + ']]'));
 		}
 		callback();
 	}

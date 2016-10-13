@@ -477,7 +477,7 @@ module.exports = function(Groups) {
 				});
 
 				var result = members.map(function(groupNames) {
-					for (var i=0; i<groupNames.length; ++i) {
+					for (var i = 0; i < groupNames.length; ++i) {
 						if (map[groupNames[i]]) {
 							return true;
 						}

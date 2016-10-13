@@ -158,7 +158,7 @@ define('forum/topic/events', [
 			return true;
 		}
 
-		for (var i=0; i<tags.length; ++i) {
+		for (var i = 0; i < tags.length; ++i) {
 			if (!$('.tags .tag-item[data-tag="' + tags[i].value + '"]').length) {
 				return true;
 			}

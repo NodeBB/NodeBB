@@ -276,7 +276,7 @@
 			for (var i = envs.length - 1; i >= 0; i--) {
 				var env = envs[i];
 
-				$el.addClass('hidden-'+env);
+				$el.addClass('hidden-' + env);
 				if ($el.is(':hidden')) {
 					$el.remove();
 					return env;
@@ -309,8 +309,8 @@
 				labels = [],
 				tmpDate;
 
-			for(var x=29;x>=0;x--) {
-				tmpDate = new Date(currentDay - (1000*60*60*24*x));
+			for(var x = 29;x >= 0;x--) {
+				tmpDate = new Date(currentDay - (1000 * 60 * 60 * 24 * x));
 				labels.push(months[tmpDate.getMonth()] + ' ' + tmpDate.getDate());
 			}
 
@@ -461,7 +461,7 @@
 			}
 			var len = this.length;
 			var suffixLen = suffix.length;
-			for (var i=1; (i <= suffixLen && this[len - i] === suffix[suffixLen - i]); ++i) {
+			for (var i = 1; (i <= suffixLen && this[len - i] === suffix[suffixLen - i]); ++i) {
 				continue;
 			}
 			return i > suffixLen;

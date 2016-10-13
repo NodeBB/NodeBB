@@ -91,19 +91,19 @@ define('admin/general/dashboard', ['semver', 'Chart'], function(semver, Chart) {
 		graphData.rooms = data;
 
 		var html = '<div class="text-center pull-left">' +
-						'<div>'+ data.onlineRegisteredCount +'</div>' +
+						'<div>' + data.onlineRegisteredCount + '</div>' +
 						'<div>Users</div>' +
 					'</div>' +
 					'<div class="text-center pull-left">' +
-						'<div>'+ data.onlineGuestCount +'</div>' +
+						'<div>' + data.onlineGuestCount + '</div>' +
 						'<div>Guests</div>' +
 					'</div>' +
 					'<div class="text-center pull-left">' +
-						'<div>'+ (data.onlineRegisteredCount + data.onlineGuestCount) +'</div>' +
+						'<div>' + (data.onlineRegisteredCount + data.onlineGuestCount) + '</div>' +
 						'<div>Total</div>' +
 					'</div>' +
 					'<div class="text-center pull-left">' +
-						'<div>'+ data.socketCount +'</div>' +
+						'<div>' + data.socketCount + '</div>' +
 						'<div>Connections</div>' +
 					'</div>';
 
@@ -150,7 +150,7 @@ define('admin/general/dashboard', ['semver', 'Chart'], function(semver, Chart) {
 		if (g > 255) g = 255;
 		else if (g < 0) g = 0;
 
-		return (usePound?"#":"") + (g | (b << 8) | (r << 16)).toString(16);
+		return (usePound ? "#" : "") + (g | (b << 8) | (r << 16)).toString(16);
 	}
 
 	function setupGraphs() {
@@ -277,7 +277,7 @@ define('admin/general/dashboard', ['semver', 'Chart'], function(semver, Chart) {
 			switch($(this).attr('data-until')) {
 				case 'last-month':
 					var lastMonth = new Date();
-					lastMonth.setDate(lastMonth.getDate()-30);
+					lastMonth.setDate(lastMonth.getDate() - 30);
 					until = lastMonth.getTime();
 			}
 			updateTrafficGraph($(this).attr('data-units'), until);

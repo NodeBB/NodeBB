@@ -36,7 +36,7 @@ module.exports = function(User) {
 				return callback(err);
 			}
 
-			for (var i=0; i<settings.length; ++i) {
+			for (var i = 0; i < settings.length; ++i) {
 				settings[i] = settings[i] || {};
 				settings[i].uid = uids[i];
 			}

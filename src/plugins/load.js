@@ -318,7 +318,7 @@ module.exports = function(Plugins) {
 				callback(null, pluginData);
 			} catch(err) {
 				var pluginDir = pluginPath.split(path.sep);
-				pluginDir = pluginDir[pluginDir.length -1];
+				pluginDir = pluginDir[pluginDir.length - 1];
 
 				winston.error('[plugins/' + pluginDir + '] Error in plugin.json or package.json! ' + err.message);
 

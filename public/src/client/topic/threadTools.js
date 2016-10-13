@@ -186,7 +186,7 @@ define('forum/topic/threadTools', [
 		threadEl.find('[component="post"]:not(.deleted) [component="post/reply"], [component="post"]:not(.deleted) [component="post/quote"]').toggleClass('hidden', hideReply);
 		threadEl.find('[component="post/edit"], [component="post/delete"]').toggleClass('hidden', isLocked);
 
-		threadEl.find('[component="post"][data-uid="'+app.user.uid+'"].deleted [component="post/tools"]').toggleClass('hidden', isLocked);
+		threadEl.find('[component="post"][data-uid="' + app.user.uid + '"].deleted [component="post/tools"]').toggleClass('hidden', isLocked);
 
 		$('[component="post/header"] i.fa-lock').toggleClass('hidden', !data.isLocked);
 		$('[component="post/tools"] .dropdown-menu').html('');

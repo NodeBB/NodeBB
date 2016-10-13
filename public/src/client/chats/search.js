@@ -55,7 +55,7 @@ define('forum/chats/search', ['components'], function(components) {
 	function displayUser(chatsListEl, userObj) {
 		function createUserImage() {
 			return (userObj.picture ?
-				'<img src="' +	userObj.picture + '" title="' +	userObj.username +'" />' :
+				'<img src="' +	userObj.picture + '" title="' +	userObj.username + '" />' :
 				'<div class="user-icon" style="background-color: ' + userObj['icon:bgColor'] + '">' + userObj['icon:text'] + '</div>') +
 				'<i class="fa fa-circle status ' + userObj.status + '"></i> ' + userObj.username;
 		}

@@ -149,7 +149,7 @@ var social = require('./social');
 				var users = _.object(uids, results.users);
 				var categories = _.object(cids, results.categories);
 
-				for (var i=0; i<topics.length; ++i) {
+				for (var i = 0; i < topics.length; ++i) {
 					if (topics[i]) {
 						topics[i].category = categories[topics[i].cid];
 						topics[i].user = users[topics[i].uid];

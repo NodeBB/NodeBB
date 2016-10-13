@@ -96,14 +96,14 @@ var utils = require('../../public/src/utils');
 						return next();
 					}
 
-					for(var i=0; i<notifications.length; ++i) {
+					for(var i = 0; i < notifications.length; ++i) {
 						if (notifications[i].image && notifications[i].image.indexOf('http') !== 0) {
 							notifications[i].image = nconf.get('url') + notifications[i].image;
 						}
 					}
 
 					emailer.send('digest', userObj.uid, {
-						subject: '[' + meta.config.title + '] [[email:digest.subject, ' + (now.getFullYear()+ '/' + (now.getMonth()+1) + '/' + now.getDate()) + ']]',
+						subject: '[' + meta.config.title + '] [[email:digest.subject, ' + (now.getFullYear() + '/' + (now.getMonth() + 1) + '/' + now.getDate()) + ']]',
 						username: userObj.username,
 						userslug: userObj.userslug,
 						url: nconf.get('url'),
