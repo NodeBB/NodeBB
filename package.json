@@ -14,6 +14,7 @@
     "lint": "eslint --cache .",
     "pretest": "npm run lint",
     "test": "istanbul cover _mocha test",
+    "coveralls": "istanbul cover _mocha --report lcovonly -- -R spec && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage",
     "test-windows": "_mocha test"
   },
   "dependencies": {
@@ -94,6 +95,7 @@
     "xregexp": "~3.1.0"
   },
   "devDependencies": {
+    "coveralls": "^2.11.14",
     "eslint": "^3.7.1",
     "eslint-config-airbnb": "^12.0.0",
     "eslint-plugin-import": "^1.16.0",
@@ -102,7 +104,8 @@
     "grunt": "~0.4.5",
     "grunt-contrib-watch": "^1.0.0",
     "istanbul": "^0.4.2",
-    "mocha": "~3.1.0"
+    "mocha": "~3.1.0",
+    "mocha-lcov-reporter": "^1.2.0"
   },
   "bugs": {
     "url": "https://github.com/NodeBB/NodeBB/issues"
