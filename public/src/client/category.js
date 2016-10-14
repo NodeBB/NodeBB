@@ -11,10 +11,10 @@ define('forum/category', [
 	'translator',
 	'topicSelect',
 	'forum/pagination'
-], function(infinitescroll, share, navigator, categoryTools, sort, components, translator, topicSelect, pagination) {
+], function (infinitescroll, share, navigator, categoryTools, sort, components, translator, topicSelect, pagination) {
 	var Category = {};
 
-	$(window).on('action:ajaxify.start', function(ev, data) {
+	$(window).on('action:ajaxify.start', function (ev, data) {
 		if (ajaxify.currentPage !== data.url) {
 			navigator.disable();
 
@@ -27,7 +27,7 @@ define('forum/category', [
 		categoryTools.removeListeners();
 	}
 
-	Category.init = function() {
+	Category.init = function () {
 		var	cid = ajaxify.data.cid;
 
 		app.enterRoom('category_' + cid);
@@ -47,9 +47,9 @@ define('forum/category', [
 
 		enableInfiniteLoadingOrPagination();
 
-		$('[component="category"]').on('click', '[component="topic/header"]', function() {
+		$('[component="category"]').on('click', '[component="topic/header"]', function () {
 			var clickedIndex = $(this).parents('[data-index]').attr('data-index');
-			$('[component="category/topic"]').each(function(index, el) {
+			$('[component="category/topic"]').each(function (index, el) {
 				if ($(el).offset().top - $(window).scrollTop() > 0) {
 					localStorage.setItem('category:' + cid + ':bookmark', $(el).attr('data-index'));
 					localStorage.setItem('category:' + cid + ':bookmark:clicked', clickedIndex);
@@ -59,41 +59,51 @@ define('forum/category', [
 		});
 
 		handleIgnoreWatch(cid);
+
+		$(window).trigger('action:topics.loaded', {topics: ajaxify.data.topics});
+		$(window).trigger('action:category.loaded', {cid: ajaxify.data.cid});
 	};
 
 	function handleIgnoreWatch(cid) {
-		$('.watch, .ignore').on('click', function() {
+		$('[component="category/watching"], [component="category/ignoring"]').on('click', function () {
 			var $this = $(this);
-			var command = $this.hasClass('watch') ? 'watch' : 'ignore';
+			var command = $this.attr('component') === 'category/watching' ? 'watch' : 'ignore';
 
-			socket.emit('categories.' + command, cid, function(err) {
+			socket.emit('categories.' + command, cid, function (err) {
 				if (err) {
 					return app.alertError(err.message);
 				}
 
-				$('.watch').toggleClass('hidden', command === 'watch');
-				$('.ignore').toggleClass('hidden', command === 'ignore');
+				$('[component="category/watching/menu"]').toggleClass('hidden', command !== 'watch');
+				$('[component="category/watching/check"]').toggleClass('fa-check', command === 'watch');
+
+				$('[component="category/ignoring/menu"]').toggleClass('hidden', command !== 'ignore');
+				$('[component="category/ignoring/check"]').toggleClass('fa-check', command === 'ignore');
 
 				app.alertSuccess('[[category:' + command + '.message]]');
 			});
 		});
 	}
 
-	Category.toTop = function() {
+	Category.toTop = function () {
 		navigator.scrollTop(0);
 	};
 
-	Category.toBottom = function() {
-		socket.emit('categories.getTopicCount', ajaxify.data.cid, function(err, count) {
+	Category.toBottom = function () {
+		socket.emit('categories.getTopicCount', ajaxify.data.cid, function (err, count) {
+			if (err) {
+				return app.alertError(err.message);
+			}
+
 			navigator.scrollBottom(count - 1);
 		});
 	};
 
-	Category.navigatorCallback = function(topIndex, bottomIndex, elementCount) {
+	Category.navigatorCallback = function (topIndex, bottomIndex, elementCount) {
 		return bottomIndex;
 	};
 
-	$(window).on('action:popstate', function(ev, data) {
+	$(window).on('action:popstate', function (ev, data) {
 		if (data.url.startsWith('category/')) {
 			var cid = data.url.match(/^category\/(\d+)/);
 			if (cid && cid[1]) {
@@ -115,7 +125,7 @@ define('forum/category', [
 			if (config.usePagination) {
 				var page = Math.ceil((parseInt(bookmarkIndex, 10) + 1) / config.topicsPerPage);
 				if (parseInt(page, 10) !== ajaxify.data.pagination.currentPage) {
-					pagination.loadPage(page, function() {
+					pagination.loadPage(page, function () {
 						Category.scrollToTopic(bookmarkIndex, clickedIndex, 400);
 					});
 				} else {
@@ -129,25 +139,25 @@ define('forum/category', [
 
 				$('[component="category"]').empty();
 
-				loadTopicsAfter(Math.max(0, bookmarkIndex - 1), 1, function() {
+				loadTopicsAfter(Math.max(0, bookmarkIndex - 1), 1, function () {
 					Category.scrollToTopic(bookmarkIndex, clickedIndex, 0);
 				});
 			}
 		}
 	});
 
-	Category.highlightTopic = function(topicIndex) {
+	Category.highlightTopic = function (topicIndex) {
 		var highlight = components.get('category/topic', 'index', topicIndex);
 
 		if (highlight.length && !highlight.hasClass('highlight')) {
 			highlight.addClass('highlight');
-			setTimeout(function() {
+			setTimeout(function () {
 				highlight.removeClass('highlight');
 			}, 5000);
 		}
 	};
 
-	Category.scrollToTopic = function(bookmarkIndex, clickedIndex, duration, offset) {
+	Category.scrollToTopic = function (bookmarkIndex, clickedIndex, duration, offset) {
 		if (!bookmarkIndex) {
 			return;
 		}
@@ -162,7 +172,7 @@ define('forum/category', [
 		if (scrollTo.length && cid) {
 			$('html, body').animate({
 				scrollTop: (scrollTo.offset().top - offset) + 'px'
-			}, duration !== undefined ? duration : 400, function() {
+			}, duration !== undefined ? duration : 400, function () {
 				Category.highlightTopic(clickedIndex);
 				navigator.update();
 			});
@@ -177,7 +187,7 @@ define('forum/category', [
 		}
 	}
 
-	Category.onNewTopic = function(topic) {
+	Category.onNewTopic = function (topic) {
 		var	cid = ajaxify.data.cid;
 		if (!topic || parseInt(topic.cid, 10) !== parseInt(cid, 10)) {
 			return;
@@ -190,9 +200,10 @@ define('forum/category', [
 		templates.parse('category', 'topics', {
 			privileges: {editable: editable},
 			showSelect: editable,
-			topics: [topic]
-		}, function(html) {
-			translator.translate(html, function(translatedHTML) {
+			topics: [topic],
+			template: {category: true}
+		}, function (html) {
+			translator.translate(html, function (translatedHTML) {
 				var topic = $(translatedHTML),
 					container = $('[component="category"]'),
 					topics = $('[component="category/topic"]'),
@@ -235,7 +246,7 @@ define('forum/category', [
 	};
 
 	function updateTopicCount() {
-		socket.emit('categories.getTopicCount', ajaxify.data.cid, function(err, topicCount) {
+		socket.emit('categories.getTopicCount', ajaxify.data.cid, function (err, topicCount) {
 			if(err) {
 				return app.alertError(err.message);
 			}
@@ -243,7 +254,7 @@ define('forum/category', [
 		});
 	}
 
-	Category.loadMoreTopics = function(direction) {
+	Category.loadMoreTopics = function (direction) {
 		if (!$('[component="category"]').length || !$('[component="category"]').children().length) {
 			return;
 		}
@@ -256,17 +267,20 @@ define('forum/category', [
 	};
 
 	function loadTopicsAfter(after, direction, callback) {
-		callback = callback || function() {};
+		callback = callback || function () {};
 		if (!utils.isNumber(after) || (after === 0 && components.get('category/topic', 'index', 0).length)) {
 			return callback();
 		}
 
 		$(window).trigger('action:categories.loading');
+		var params = utils.params();
 		infinitescroll.loadMore('categories.loadMore', {
 			cid: ajaxify.data.cid,
 			after: after,
 			direction: direction,
-			author: utils.params().author
+			author: params.author,
+			tag: params.tag,
+			categoryTopicSort: config.categoryTopicSort
 		}, function (data, done) {
 			if (data.topics && data.topics.length) {
 				Category.onTopicsLoaded(data, direction, done);
@@ -280,13 +294,13 @@ define('forum/category', [
 	}
 
 
-	Category.onTopicsLoaded = function(data, direction, callback) {
+	Category.onTopicsLoaded = function (data, direction, callback) {
 		if (!data || !data.topics.length) {
 			return callback();
 		}
 
 		function removeAlreadyAddedTopics(topics) {
-			return topics.filter(function(topic) {
+			return topics.filter(function (topic) {
 				return components.get('category/topic', 'tid', topic.tid).length === 0;
 			});
 		}
@@ -307,7 +321,7 @@ define('forum/category', [
 			before = topics.first();
 		}
 
-		app.parseAndTranslate('category', 'topics', data, function(html) {
+		app.parseAndTranslate('category', 'topics', data, function (html) {
 			$('[component="category"]').removeClass('hidden');
 			$('.category-sidebar').removeClass('hidden');
 

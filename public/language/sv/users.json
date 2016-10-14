@@ -2,6 +2,7 @@
     "latest_users": "Senaste användarna",
     "top_posters": "Flest inlägg",
     "most_reputation": "Bäst rykte",
+    "most_flags": "Most Flags",
     "search": "Sök",
     "enter_username": "Ange ett användarnamn för att söka",
     "load_more": "Ladda fler",
@@ -15,6 +16,6 @@
     "popular_topics": "Populära ämnen",
     "unread_topics": "Olästa ämnen",
     "categories": "Kategorier",
-    "tags": "Märkord",
-    "no-users-found": "No users found!"
+    "tags": "Taggar",
+    "no-users-found": "Inga användare hittades!"
 }

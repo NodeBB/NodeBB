@@ -3,11 +3,11 @@
 var eventEmitter = new (require('events')).EventEmitter();
 
 
-eventEmitter.all = function(events, callback) {
+eventEmitter.all = function (events, callback) {
 	var eventList = events.slice(0);
 
 	events.forEach(function onEvent(event) {
-		eventEmitter.on(event, function() {
+		eventEmitter.on(event, function () {
 			var index = eventList.indexOf(event);
 			if (index === -1) {
 				return;
@@ -20,9 +20,9 @@ eventEmitter.all = function(events, callback) {
 	});
 };
 
-eventEmitter.any = function(events, callback) {
+eventEmitter.any = function (events, callback) {
 	events.forEach(function onEvent(event) {
-		eventEmitter.on(event, function() {
+		eventEmitter.on(event, function () {
 			if (events !== null) {
 				callback();
 			}

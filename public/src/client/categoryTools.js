@@ -4,31 +4,31 @@
 /* globals define, app, socket, bootbox, ajaxify */
 
 
-define('forum/categoryTools', ['forum/topic/move', 'topicSelect', 'components', 'translator'], function(move, topicSelect, components, translator) {
+define('forum/categoryTools', ['forum/topic/move', 'topicSelect', 'components', 'translator'], function (move, topicSelect, components, translator) {
 
 	var CategoryTools = {};
 
-	CategoryTools.init = function(cid) {
+	CategoryTools.init = function (cid) {
 		CategoryTools.cid = cid;
 
 		topicSelect.init(updateDropdownOptions);
 
-		components.get('topic/delete').on('click', function() {
+		components.get('topic/delete').on('click', function () {
 			categoryCommand('delete', topicSelect.getSelectedTids());
 			return false;
 		});
 
-		components.get('topic/restore').on('click', function() {
+		components.get('topic/restore').on('click', function () {
 			categoryCommand('restore', topicSelect.getSelectedTids());
 			return false;
 		});
 
-		components.get('topic/purge').on('click', function() {
+		components.get('topic/purge').on('click', function () {
 			categoryCommand('purge', topicSelect.getSelectedTids());
 			return false;
 		});
 
-		components.get('topic/lock').on('click', function() {
+		components.get('topic/lock').on('click', function () {
 			var tids = topicSelect.getSelectedTids();
 			if (tids.length) {
 				socket.emit('topics.lock', {tids: tids, cid: CategoryTools.cid}, onCommandComplete);
@@ -36,7 +36,7 @@ define('forum/categoryTools', ['forum/topic/move', 'topicSelect', 'components', 
 			return false;
 		});
 
-		components.get('topic/unlock').on('click', function() {
+		components.get('topic/unlock').on('click', function () {
 			var tids = topicSelect.getSelectedTids();
 			if (tids.length) {
 				socket.emit('topics.unlock', {tids: tids, cid: CategoryTools.cid}, onCommandComplete);
@@ -44,7 +44,7 @@ define('forum/categoryTools', ['forum/topic/move', 'topicSelect', 'components', 
 			return false;
 		});
 
-		components.get('topic/pin').on('click', function() {
+		components.get('topic/pin').on('click', function () {
 			var tids = topicSelect.getSelectedTids();
 			if (tids.length) {
 				socket.emit('topics.pin', {tids: tids, cid: CategoryTools.cid}, onCommandComplete);
@@ -52,7 +52,7 @@ define('forum/categoryTools', ['forum/topic/move', 'topicSelect', 'components', 
 			return false;
 		});
 
-		components.get('topic/unpin').on('click', function() {
+		components.get('topic/unpin').on('click', function () {
 			var tids = topicSelect.getSelectedTids();
 			if (tids.length) {
 				socket.emit('topics.unpin', {tids: tids, cid: CategoryTools.cid}, onCommandComplete);
@@ -60,15 +60,17 @@ define('forum/categoryTools', ['forum/topic/move', 'topicSelect', 'components', 
 			return false;
 		});
 
-		components.get('topic/mark-unread-for-all').on('click', function() {
+		components.get('topic/mark-unread-for-all').on('click', function () {
 			var tids = topicSelect.getSelectedTids();
 			if (tids.length) {
-				socket.emit('topics.markAsUnreadForAll', tids, function(err) {
+				socket.emit('topics.markAsUnreadForAll', tids, function (err) {
 					if (err) {
 						return app.alertError(err.message);
 					}
 					app.alertSuccess('[[topic:markAsUnreadForAll.success]]');
-
+					tids.forEach(function (tid) {
+						$('[component="category/topic"][data-tid="' + tid + '"]').addClass('unread');
+					});
 					onCommandComplete();
 				});
 			}
@@ -76,7 +78,7 @@ define('forum/categoryTools', ['forum/topic/move', 'topicSelect', 'components', 
 			return false;
 		});
 
-		components.get('topic/move').on('click', function() {
+		components.get('topic/move').on('click', function () {
 			var tids = topicSelect.getSelectedTids();
 
 			if (tids.length) {
@@ -85,8 +87,12 @@ define('forum/categoryTools', ['forum/topic/move', 'topicSelect', 'components', 
 			return false;
 		});
 
-		components.get('topic/move-all').on('click', function() {
-			move.init(null, cid, function(err) {
+		components.get('topic/move-all').on('click', function () {
+			move.init(null, cid, function (err) {
+				if (err) {
+					return app.alertError(err.message);
+				}
+
 				ajaxify.refresh();
 			});
 		});
@@ -107,8 +113,8 @@ define('forum/categoryTools', ['forum/topic/move', 'topicSelect', 'components', 
 			return;
 		}
 
-		translator.translate('[[topic:thread_tools.' + command + '_confirm]]', function(msg) {
-			bootbox.confirm(msg, function(confirm) {
+		translator.translate('[[topic:thread_tools.' + command + '_confirm]]', function (msg) {
+			bootbox.confirm(msg, function (confirm) {
 				if (!confirm) {
 					return;
 				}
@@ -118,7 +124,7 @@ define('forum/categoryTools', ['forum/topic/move', 'topicSelect', 'components', 
 		});
 	}
 
-	CategoryTools.removeListeners = function() {
+	CategoryTools.removeListeners = function () {
 		socket.removeListener('event:topic_deleted', setDeleteState);
 		socket.removeListener('event:topic_restored', setDeleteState);
 		socket.removeListener('event:topic_purged', onTopicPurged);
@@ -169,7 +175,7 @@ define('forum/categoryTools', ['forum/topic/move', 'topicSelect', 'components', 
 	}
 
 	function isAny(method, tids) {
-		for(var i=0; i<tids.length; ++i) {
+		for(var i = 0; i < tids.length; ++i) {
 			if(method(tids[i])) {
 				return true;
 			}
@@ -178,7 +184,7 @@ define('forum/categoryTools', ['forum/topic/move', 'topicSelect', 'components', 
 	}
 
 	function areAll(method, tids) {
-		for(var i=0; i<tids.length; ++i) {
+		for(var i = 0; i < tids.length; ++i) {
 			if(!method(tids[i])) {
 				return false;
 			}

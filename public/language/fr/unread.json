@@ -6,5 +6,8 @@
     "selected": "Sélectionnés",
     "all": "Tous",
     "all_categories": "Toutes Catégories",
-    "topics_marked_as_read.success": "Sujets marqués comme lus !"
+    "topics_marked_as_read.success": "Sujets marqués comme lus !",
+    "all-topics": "Tous les sujets",
+    "new-topics": "Nouveau sujet",
+    "watched-topics": "Abonnements"
 }

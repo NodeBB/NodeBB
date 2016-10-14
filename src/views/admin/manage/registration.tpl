@@ -5,7 +5,7 @@
 	<!-- IF !users.length -->
 	<p class="panel-body">
 		There are no users in the registration queue. <br>
-		To enable this feature, go to <a href="{config.relative_path}/admin/settings/user">Settings -> User -> Authentication</a> and set
+		To enable this feature, go to <a href="{config.relative_path}/admin/settings/user">Settings &rarr; User &rarr; Authentication</a> and set
 		<strong>Registration Type</strong> to "Admin Approval".
 	</p>
 	<!-- ENDIF !users.length -->
@@ -13,8 +13,11 @@
 		<tr>
 			<th>Name</th>
 			<th>Email</th>
-			<th>IP</th>
-			<th>Time</th>
+			<th class="hidden-xs">IP</th>
+			<th class="hidden-xs">Time</th>
+			<!-- BEGIN customHeaders -->
+			<th class="hidden-xs">{customHeaders.label}</th>
+			<!-- END customHeaders -->
 			<th></th>
 		</tr>
 		<!-- BEGIN users -->
@@ -35,17 +38,31 @@
 				<!-- ENDIF users.emailSpam -->
 				{users.email}
 			</td>
-			<td>
+			<td class="hidden-xs">
 				<!-- IF users.ipSpam -->
 				<i class="fa fa-times-circle text-danger" title="Frequency: {users.spamData.ip.frequency} Appears: {users.spamData.ip.appears}"></i>
 				<!-- ELSE -->
 				<i class="fa fa-check text-success"></i>
 				<!-- ENDIF users.ipSpam -->
 				{users.ip}
+				<!-- BEGIN users.ipMatch -->
+				<br>
+				<!-- IF users.ipMatch.picture -->
+				<img src="{users.ipMatch.picture}" class="user-img"/>
+				<!-- ELSE -->
+				<div class="user-img avatar avatar-sm" style="background-color: {users.ipMatch.icon:bgColor};">{users.ipMatch.icon:text}</div>
+				<!-- ENDIF users.ipMatch.picture -->
+				<a href="/uid/{users.ipMatch.uid}">{users.ipMatch.username}</a>
+				<!-- END users.ipMatch -->
 			</td>
-			<td>
+			<td class="hidden-xs">
 				<span class="timeago" title="{users.timestampISO}"></span>
 			</td>
+
+			<!-- BEGIN users.customRows -->
+			<td class="hidden-xs">{users.customRows.value}</td>
+			<!-- END users.customRows -->
+
 			<td>
 				<div class="btn-group pull-right">
 					<button class="btn btn-success btn-xs" data-action="accept"><i class="fa fa-check"></i></button>

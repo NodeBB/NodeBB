@@ -1,23 +1,23 @@
 "use strict";
-/*global config, define, app, socket, ajaxify, bootbox, templates, Chart, utils */
+/*global define, ajaxify, utils */
 
-define('admin/manage/category-analytics', [], function() {
+define('admin/manage/category-analytics', ['Chart'], function (Chart) {
 	var CategoryAnalytics = {};
 
-	CategoryAnalytics.init = function() {
-		var hourlyCanvas = document.getElementById('pageviews:hourly'),
-			dailyCanvas = document.getElementById('pageviews:daily'),
-			topicsCanvas = document.getElementById('topics:daily'),
-			postsCanvas = document.getElementById('posts:daily'),
-			hourlyLabels = utils.getHoursArray().map(function(text, idx) {
+	CategoryAnalytics.init = function () {
+		var hourlyCanvas = document.getElementById('pageviews:hourly');
+		var	dailyCanvas = document.getElementById('pageviews:daily');
+		var	topicsCanvas = document.getElementById('topics:daily');
+		var	postsCanvas = document.getElementById('posts:daily');
+		var	hourlyLabels = utils.getHoursArray().map(function (text, idx) {
 				return idx % 3 ? '' : text;
-			}),
-			dailyLabels = utils.getDaysArray().map(function(text, idx) {
+			});
+		var	dailyLabels = utils.getDaysArray().map(function (text, idx) {
 				return idx % 3 ? '' : text;
 			});
 
 		if (utils.isMobile()) {
-			Chart.defaults.global.showTooltips = false;
+			Chart.defaults.global.tooltips.enabled = false;
 		}
 
 		var data = {
@@ -26,12 +26,12 @@ define('admin/manage/category-analytics', [], function() {
 				datasets: [
 					{
 						label: "",
-						fillColor: "rgba(186,139,175,0.2)",
-						strokeColor: "rgba(186,139,175,1)",
-						pointColor: "rgba(186,139,175,1)",
-						pointStrokeColor: "#fff",
-						pointHighlightFill: "#fff",
-						pointHighlightStroke: "rgba(186,139,175,1)",
+						backgroundColor: "rgba(186,139,175,0.2)",
+						borderColor: "rgba(186,139,175,1)",
+						pointBackgroundColor: "rgba(186,139,175,1)",
+						pointHoverBackgroundColor: "#fff",
+						pointBorderColor: "#fff",
+						pointHoverBorderColor: "rgba(186,139,175,1)",
 						data: ajaxify.data.analytics['pageviews:hourly']
 					}
 				]
@@ -41,12 +41,12 @@ define('admin/manage/category-analytics', [], function() {
 				datasets: [
 					{
 						label: "",
-						fillColor: "rgba(151,187,205,0.2)",
-						strokeColor: "rgba(151,187,205,1)",
-						pointColor: "rgba(151,187,205,1)",
-						pointStrokeColor: "#fff",
-						pointHighlightFill: "#fff",
-						pointHighlightStroke: "rgba(151,187,205,1)",
+						backgroundColor: "rgba(151,187,205,0.2)",
+						borderColor: "rgba(151,187,205,1)",
+						pointBackgroundColor: "rgba(151,187,205,1)",
+						pointHoverBackgroundColor: "#fff",
+						pointBorderColor: "#fff",
+						pointHoverBorderColor: "rgba(151,187,205,1)",
 						data: ajaxify.data.analytics['pageviews:daily']
 					}
 				]
@@ -56,12 +56,12 @@ define('admin/manage/category-analytics', [], function() {
 				datasets: [
 					{
 						label: "",
-						fillColor: "rgba(171,70,66,0.2)",
-						strokeColor: "rgba(171,70,66,1)",
-						pointColor: "rgba(171,70,66,1)",
-						pointStrokeColor: "#fff",
-						pointHighlightFill: "#fff",
-						pointHighlightStroke: "rgba(171,70,66,1)",
+						backgroundColor: "rgba(171,70,66,0.2)",
+						borderColor: "rgba(171,70,66,1)",
+						pointBackgroundColor: "rgba(171,70,66,1)",
+						pointHoverBackgroundColor: "#fff",
+						pointBorderColor: "#fff",
+						pointHoverBorderColor: "rgba(171,70,66,1)",
 						data: ajaxify.data.analytics['topics:daily']
 					}
 				]
@@ -71,37 +71,97 @@ define('admin/manage/category-analytics', [], function() {
 				datasets: [
 					{
 						label: "",
-						fillColor: "rgba(161,181,108,0.2)",
-						strokeColor: "rgba(161,181,108,1)",
-						pointColor: "rgba(161,181,108,1)",
-						pointStrokeColor: "#fff",
-						pointHighlightFill: "#fff",
-						pointHighlightStroke: "rgba(161,181,108,1)",
+						backgroundColor: "rgba(161,181,108,0.2)",
+						borderColor: "rgba(161,181,108,1)",
+						pointBackgroundColor: "rgba(161,181,108,1)",
+						pointHoverBackgroundColor: "#fff",
+						pointBorderColor: "#fff",
+						pointHoverBorderColor: "rgba(161,181,108,1)",
 						data: ajaxify.data.analytics['posts:daily']
 					}
 				]
-			},
+			}
 		};
 
 		hourlyCanvas.width = $(hourlyCanvas).parent().width();
 		dailyCanvas.width = $(dailyCanvas).parent().width();
 		topicsCanvas.width = $(topicsCanvas).parent().width();
 		postsCanvas.width = $(postsCanvas).parent().width();
-		new Chart(hourlyCanvas.getContext('2d')).Line(data['pageviews:hourly'], {
-			responsive: true,
-			animation: false
+		
+		new Chart(hourlyCanvas.getContext('2d'), {
+			type: 'line',
+			data: data['pageviews:hourly'],
+			options: {
+				responsive: true,
+				animation: false,
+				legend: {
+					display: false
+				},
+				scales: {
+					yAxes: [{
+						ticks: {
+							beginAtZero: true
+						}
+					}]
+				}
+			}
 		});
-		new Chart(dailyCanvas.getContext('2d')).Line(data['pageviews:daily'], {
-			responsive: true,
-			animation: false
+		
+		new Chart(dailyCanvas.getContext('2d'), {
+			type: 'line',
+			data: data['pageviews:daily'],
+			options: {
+				responsive: true,
+				animation: false,
+				legend: {
+					display: false
+				},
+				scales: {
+					yAxes: [{
+						ticks: {
+							beginAtZero: true
+						}
+					}]
+				}
+			}
 		});
-		new Chart(topicsCanvas.getContext('2d')).Line(data['topics:daily'], {
-			responsive: true,
-			animation: false
+		
+		new Chart(topicsCanvas.getContext('2d'), {
+			type: 'line',
+			data: data['topics:daily'],
+			options: {
+				responsive: true,
+				animation: false,
+				legend: {
+					display: false
+				},
+				scales: {
+					yAxes: [{
+						ticks: {
+							beginAtZero: true
+						}
+					}]
+				}
+			}
 		});
-		new Chart(postsCanvas.getContext('2d')).Line(data['posts:daily'], {
-			responsive: true,
-			animation: false
+		
+		new Chart(postsCanvas.getContext('2d'), {
+			type: 'line',
+			data: data['posts:daily'],
+			options: {
+				responsive: true,
+				animation: false,
+				legend: {
+					display: false
+				},
+				scales: {
+					yAxes: [{
+						ticks: {
+							beginAtZero: true
+						}
+					}]
+				}
+			}
 		});
 	};
 

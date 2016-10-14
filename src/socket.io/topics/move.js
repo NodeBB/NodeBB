@@ -6,41 +6,41 @@ var categories = require('../../categories');
 var privileges = require('../../privileges');
 var socketHelpers = require('../helpers');
 
-module.exports = function(SocketTopics) {
+module.exports = function (SocketTopics) {
 
-	SocketTopics.move = function(socket, data, callback) {
+	SocketTopics.move = function (socket, data, callback) {
 		if (!data || !Array.isArray(data.tids) || !data.cid) {
 			return callback(new Error('[[error:invalid-data]]'));
 		}
 
-		async.eachLimit(data.tids, 10, function(tid, next) {
+		async.eachLimit(data.tids, 10, function (tid, next) {
 			var topicData;
 			async.waterfall([
-				function(next) {
+				function (next) {
 					privileges.topics.isAdminOrMod(tid, socket.uid, next);
 				},
-				function(canMove, next) {
+				function (canMove, next) {
 					if (!canMove) {
 						return next(new Error('[[error:no-privileges]]'));
 					}
 					next();
 				},
-				function(next) {
+				function (next) {
 					topics.getTopicFields(tid, ['cid', 'slug'], next);
 				},
-				function(_topicData, next) {
+				function (_topicData, next) {
 					topicData = _topicData;
 					topicData.tid = tid;
 					topics.tools.move(tid, data.cid, socket.uid, next);
 				}
-			], function(err) {
+			], function (err) {
 				if (err) {
 					return next(err);
 				}
 
 				socketHelpers.emitToTopicAndCategory('event:topic_moved', topicData);
 
-				socketHelpers.sendNotificationToTopicOwner(tid, socket.uid, 'notifications:moved_your_topic');
+				socketHelpers.sendNotificationToTopicOwner(tid, socket.uid, 'move', 'notifications:moved_your_topic');
 
 				next();
 			});
@@ -48,7 +48,7 @@ module.exports = function(SocketTopics) {
 	};
 
 
-	SocketTopics.moveAll = function(socket, data, callback) {
+	SocketTopics.moveAll = function (socket, data, callback) {
 		if (!data || !data.cid || !data.currentCid) {
 			return callback(new Error('[[error:invalid-data]]'));
 		}
@@ -65,7 +65,7 @@ module.exports = function(SocketTopics) {
 				categories.getTopicIds('cid:' + data.currentCid + ':tids', true, 0, -1, next);
 			},
 			function (tids, next) {
-				async.eachLimit(tids, 50, function(tid, next) {
+				async.eachLimit(tids, 50, function (tid, next) {
 					topics.tools.move(tid, data.cid, socket.uid, next);
 				}, next);
 			}

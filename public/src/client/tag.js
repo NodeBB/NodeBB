@@ -2,21 +2,23 @@
 
 /* globals define, app, ajaxify, socket */
 
-define('forum/tag', ['forum/recent', 'forum/infinitescroll'], function(recent, infinitescroll) {
+define('forum/tag', ['forum/recent', 'forum/infinitescroll'], function (recent, infinitescroll) {
 	var Tag = {};
 
-	Tag.init = function() {
+	Tag.init = function () {
 		app.enterRoom('tags');
 
 		if ($('body').height() <= $(window).height() && $('[component="category"]').children().length >= 20) {
 			$('#load-more-btn').show();
 		}
 
-		$('#load-more-btn').on('click', function() {
+		$('#load-more-btn').on('click', function () {
 			loadMoreTopics();
 		});
 
-		infinitescroll.init(loadMoreTopics);
+		if (!config.usePagination) {
+			infinitescroll.init(loadMoreTopics);
+		}
 
 		function loadMoreTopics(direction) {
 			if(direction < 0 || !$('[component="category"]').length) {
@@ -26,7 +28,7 @@ define('forum/tag', ['forum/recent', 'forum/infinitescroll'], function(recent, i
 			infinitescroll.loadMore('topics.loadMoreFromSet', {
 				set: 'tag:' + ajaxify.data.tag + ':topics',
 				after: $('[component="category"]').attr('data-nextstart')
-			}, function(data, done) {
+			}, function (data, done) {
 				if (data.topics && data.topics.length) {
 					recent.onTopicsLoaded('tag', data.topics, false, done);
 				} else {

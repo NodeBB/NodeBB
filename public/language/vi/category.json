@@ -10,7 +10,11 @@
     "share_this_category": "Chia sẻ chuyên mục này",
     "watch": "Theo dõi",
     "ignore": "Bỏ qua",
-    "watch.message": "Bạn đang theo dõi các cập nhật của danh mục này",
-    "ignore.message": "Bạn đã tắt cập nhật từ chuyên mục này",
-    "watched-categories": "Chuyên mục đang theo dõi"
+    "watching": "Đang theo dõi",
+    "ignoring": "Bỏ qua",
+    "watching.description": "Hiện các chủ đề chưa đọc",
+    "ignoring.description": "Không hiện những chủ đề chưa đọc",
+    "watch.message": "Bạn đang theo dõi các cập nhật ở chuyên mục này và các chuyên mục con",
+    "ignore.message": "Bạn đang bỏ qua các cập nhật ở chuyên mục này và các chuyên mục con",
+    "watched-categories": "Các chuyên mục đã xem"
 }

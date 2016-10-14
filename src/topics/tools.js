@@ -1,24 +1,25 @@
 'use strict';
 
-var async = require('async'),
+var async = require('async');
 
-	db = require('../database'),
-	categories = require('../categories'),
-	plugins = require('../plugins'),
-	privileges = require('../privileges');
+var db = require('../database');
+var categories = require('../categories');
+var meta = require('../meta');
+var plugins = require('../plugins');
+var privileges = require('../privileges');
 
 
-module.exports = function(Topics) {
+module.exports = function (Topics) {
 
 	var topicTools = {};
 	Topics.tools = topicTools;
 
 
-	topicTools.delete = function(tid, uid, callback) {
+	topicTools.delete = function (tid, uid, callback) {
 		toggleDelete(tid, uid, true, callback);
 	};
 
-	topicTools.restore = function(tid, uid, callback) {
+	topicTools.restore = function (tid, uid, callback) {
 		toggleDelete(tid, uid, false, callback);
 	};
 
@@ -32,10 +33,10 @@ module.exports = function(Topics) {
 				if (!exists) {
 					return next(new Error('[[error:no-topic]]'));
 				}
-				privileges.topics.isOwnerOrAdminOrMod(tid, uid, next);
+				privileges.topics.canDelete(tid, uid, next);
 			},
-			function (isOwnerOrAdminOrMod, next) {
-				if (!isOwnerOrAdminOrMod) {
+			function (canDelete, next) {
+				if (!canDelete) {
 					return next(new Error('[[error:no-privileges]]'));
 				}
 				Topics.getTopicFields(tid, ['tid', 'cid', 'uid', 'deleted', 'title', 'mainPid'], next);
@@ -72,13 +73,13 @@ module.exports = function(Topics) {
 		], callback);
 	}
 
-	topicTools.purge = function(tid, uid, callback) {
+	topicTools.purge = function (tid, uid, callback) {
 		var cid;
 		async.waterfall([
-			function(next) {
+			function (next) {
 				Topics.exists(tid, next);
 			},
-			function(exists, next) {
+			function (exists, next) {
 				if (!exists) {
 					return callback();
 				}
@@ -102,16 +103,16 @@ module.exports = function(Topics) {
 		], callback);
 	};
 
-	topicTools.lock = function(tid, uid, callback) {
+	topicTools.lock = function (tid, uid, callback) {
 		toggleLock(tid, uid, true, callback);
 	};
 
-	topicTools.unlock = function(tid, uid, callback) {
+	topicTools.unlock = function (tid, uid, callback) {
 		toggleLock(tid, uid, false, callback);
 	};
 
 	function toggleLock(tid, uid, lock, callback) {
-		callback = callback || function() {};
+		callback = callback || function () {};
 
 		var cid;
 
@@ -148,11 +149,11 @@ module.exports = function(Topics) {
 		], callback);
 	}
 
-	topicTools.pin = function(tid, uid, callback) {
+	topicTools.pin = function (tid, uid, callback) {
 		togglePin(tid, uid, true, callback);
 	};
 
-	topicTools.unpin = function(tid, uid, callback) {
+	topicTools.unpin = function (tid, uid, callback) {
 		togglePin(tid, uid, false, callback);
 	};
 
@@ -172,7 +173,7 @@ module.exports = function(Topics) {
 				topicData = _topicData;
 				privileges.categories.isAdminOrMod(_topicData.cid, uid, next);
 			},
-			function(isAdminOrMod, next) {
+			function (isAdminOrMod, next) {
 				if (!isAdminOrMod) {
 					return next(new Error('[[error:no-privileges]]'));
 				}
@@ -181,7 +182,7 @@ module.exports = function(Topics) {
 					async.apply(db.sortedSetAdd, 'cid:' + topicData.cid + ':tids', pin ? Math.pow(2, 53) : topicData.lastposttime, tid)
 				], next);
 			},
-			function(results, next) {
+			function (results, next) {
 				var data = {
 					tid: tid,
 					isPinned: pin,
@@ -196,7 +197,7 @@ module.exports = function(Topics) {
 		], callback);
 	}
 
-	topicTools.move = function(tid, cid, uid, callback) {
+	topicTools.move = function (tid, cid, uid, callback) {
 		var topic;
 		async.waterfall([
 			function (next) {
@@ -218,16 +219,16 @@ module.exports = function(Topics) {
 			function (next) {
 				var timestamp = parseInt(topic.pinned, 10) ? Math.pow(2, 53) : topic.lastposttime;
 				async.parallel([
-					function(next) {
+					function (next) {
 						db.sortedSetAdd('cid:' + cid + ':tids', timestamp, tid, next);
 					},
-					function(next) {
+					function (next) {
 						topic.postcount = topic.postcount || 0;
 						db.sortedSetAdd('cid:' + cid + ':tids:posts', topic.postcount, tid, next);
 					}
 				], next);
 			}
-		], function(err) {
+		], function (err) {
 			if (err) {
 				return callback(err);
 			}
@@ -242,9 +243,12 @@ module.exports = function(Topics) {
 					categories.incrementCategoryFieldBy(cid, 'topic_count', 1, next);
 				},
 				function (next) {
-					Topics.setTopicField(tid, 'cid', cid, next);
+					Topics.setTopicFields(tid, {
+						cid: cid,
+						oldCid: oldCid
+					}, next);
 				}
-			], function(err) {
+			], function (err) {
 				if (err) {
 					return callback(err);
 				}

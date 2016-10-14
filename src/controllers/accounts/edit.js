@@ -10,12 +10,13 @@ var user = require('../../user');
 var meta = require('../../meta');
 var plugins = require('../../plugins');
 var helpers = require('../helpers');
+var groups = require('../../groups');
 var accountHelpers = require('./helpers');
 
 var editController = {};
 
-editController.get = function(req, res, callback) {
-	accountHelpers.getUserDataByUserSlug(req.params.userslug, req.uid, function(err, userData) {
+editController.get = function (req, res, callback) {
+	accountHelpers.getUserDataByUserSlug(req.params.userslug, req.uid, function (err, userData) {
 		if (err || !userData) {
 			return callback(err);
 		}
@@ -25,15 +26,21 @@ editController.get = function(req, res, callback) {
 		userData.maximumProfileImageSize = parseInt(meta.config.maximumProfileImageSize, 10);
 		userData.allowProfileImageUploads = parseInt(meta.config.allowProfileImageUploads) === 1;
 		userData.allowAccountDelete = parseInt(meta.config.allowAccountDelete, 10) === 1;
-		
+
+		userData.groups = userData.groups.filter(function (group) {
+			return group && group.userTitleEnabled && !groups.isPrivilegeGroup(group.name) && group.name !== 'registered-users';
+		});
+		userData.groups.forEach(function (group) {
+			group.selected = group.name === userData.groupTitle;
+		});
 
 		userData.title = '[[pages:account/edit, ' + userData.username + ']]';
 		userData.breadcrumbs = helpers.buildBreadcrumbs([{text: userData.username, url: '/user/' + userData.userslug}, {text: '[[user:edit]]'}]);
 		userData.editButtons = [];
 
-		plugins.fireHook('filter:user.account.edit', userData, function(err, userData) {
+		plugins.fireHook('filter:user.account.edit', userData, function (err, userData) {
 			if (err) {
-				return next(err);
+				return callback(err);
 			}
 
 			res.render('account/edit', userData);
@@ -41,20 +48,20 @@ editController.get = function(req, res, callback) {
 	});
 };
 
-editController.password = function(req, res, next) {
+editController.password = function (req, res, next) {
 	renderRoute('password', req, res, next);
 };
 
-editController.username = function(req, res, next) {
+editController.username = function (req, res, next) {
 	renderRoute('username', req, res, next);
 };
 
-editController.email = function(req, res, next) {
+editController.email = function (req, res, next) {
 	renderRoute('email', req, res, next);
 };
 
 function renderRoute(name, req, res, next) {
-	getUserData(req, next, function(err, userData) {
+	getUserData(req, next, function (err, userData) {
 		if (err) {
 			return next(err);
 		}
@@ -80,17 +87,17 @@ function renderRoute(name, req, res, next) {
 function getUserData(req, next, callback) {
 	var userData;
 	async.waterfall([
-		function(next) {
+		function (next) {
 			accountHelpers.getUserDataByUserSlug(req.params.userslug, req.uid, next);
 		},
-		function(data, next) {
+		function (data, next) {
 			userData = data;
 			if (!userData) {
 				return next();
 			}
 			db.getObjectField('user:' + userData.uid, 'password', next);
 		}
-	], function(err, password) {
+	], function (err, password) {
 		if (err) {
 			return callback(err);
 		}
@@ -106,10 +113,10 @@ editController.uploadPicture = function (req, res, next) {
 	var updateUid;
 
 	async.waterfall([
-		function(next) {
+		function (next) {
 			user.getUidByUserslug(req.params.userslug, next);
 		},
-		function(uid, next) {
+		function (uid, next) {
 			updateUid = uid;
 			if (parseInt(req.uid, 10) === parseInt(uid, 10)) {
 				return next(null, true);
@@ -117,16 +124,18 @@ editController.uploadPicture = function (req, res, next) {
 
 			user.isAdminOrGlobalMod(req.uid, next);
 		},
-		function(isAllowed, next) {
+		function (isAllowed, next) {
 			if (!isAllowed) {
 				return helpers.notAllowed(req, res);
 			}
-			
+
 			user.uploadPicture(updateUid, userPhoto, next);
 		}
-	], function(err, image) {
-		fs.unlink(userPhoto.path, function(err) {
-			winston.error('unable to delete picture ' + userPhoto.path, err);
+	], function (err, image) {
+		fs.unlink(userPhoto.path, function (err) {
+			if (err) {
+				winston.warn('[user/picture] Unable to delete picture ' + userPhoto.path, err);
+			}
 		});
 		if (err) {
 			return next(err);
@@ -136,13 +145,13 @@ editController.uploadPicture = function (req, res, next) {
 	});
 };
 
-editController.uploadCoverPicture = function(req, res, next) {
+editController.uploadCoverPicture = function (req, res, next) {
 	var params = JSON.parse(req.body.params);
 
 	user.updateCoverPicture({
 		file: req.files.files[0],
 		uid: params.uid
-	}, function(err, image) {
+	}, function (err, image) {
 		if (err) {
 			return next(err);
 		}

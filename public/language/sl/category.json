@@ -1,16 +1,20 @@
 {
     "category": "Kategorija",
-    "subcategories": "Podkategorija",
+    "subcategories": "Podkategorije",
     "new_topic_button": "Nova tema",
-    "guest-login-post": "Za objavljanje moraš biti prijavljen",
-    "no_topics": "<strong>V tej kategoriji ni tem.</strong><br />Boš odprl novo temo?",
+    "guest-login-post": "Prijava",
+    "no_topics": "<strong>V tej kategoriji ni tem.</strong>",
     "browsing": "brskanje",
     "no_replies": "Nihče ni odgovoril",
     "no_new_posts": "Ni novih objav.",
     "share_this_category": "Deli to kategorijo",
     "watch": "Spremljaj",
-    "ignore": "Ne spremljaj",
-    "watch.message": "Trenutno spremljaš nove objave v tej kategoriji",
-    "ignore.message": "Ne spremljaš novih objav v tej kategoriji",
-    "watched-categories": "Watched categories"
+    "ignore": "Prezri",
+    "watching": "Spremljano",
+    "ignoring": "Prezrto",
+    "watching.description": "Pokaži teme v Neprebrano",
+    "ignoring.description": "Ne pokaži tem v Neprebrano",
+    "watch.message": "You are now watching updates from this category and all subcategories",
+    "ignore.message": "You are now ignoring updates from this category and all subcategories",
+    "watched-categories": "Spremljane kategorije"
 }

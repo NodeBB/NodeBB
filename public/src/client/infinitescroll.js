@@ -1,8 +1,8 @@
 'use strict';
 
-/* globals define, socket, ajaxify, templates, app */
+/* globals define, socket, app */
 
-define('forum/infinitescroll', ['translator'], function(translator) {
+define('forum/infinitescroll', function () {
 
 	var scroll = {};
 	var callback;
@@ -10,13 +10,13 @@ define('forum/infinitescroll', ['translator'], function(translator) {
 	var loadingMore	= false;
 	var container;
 
-	scroll.init = function(el, cb) {
+	scroll.init = function (el, cb) {
 		if (typeof el === 'function') {
 			callback = el;
-			container = $(document);
+			container = $('body');
 		} else {
 			callback = cb;
-			container = el || $(document);
+			container = el || $('body');
 		}
 
 		$(window).off('scroll', onScroll).on('scroll', onScroll);
@@ -47,23 +47,27 @@ define('forum/infinitescroll', ['translator'], function(translator) {
 		previousScrollTop = currentScrollTop;
 	}
 
-	scroll.loadMore = function(method, data, callback) {
+	scroll.loadMore = function (method, data, callback) {
 		if (loadingMore) {
 			return;
 		}
 		loadingMore = true;
-		socket.emit(method, data, function(err, data) {
+
+		var hookData = {method: method, data: data};
+		$(window).trigger('action:infinitescroll.loadmore', hookData);
+
+		socket.emit(hookData.method, hookData.data, function (err, data) {
 			if (err) {
 				loadingMore = false;
 				return app.alertError(err.message);
 			}
-			callback(data, function() {
+			callback(data, function () {
 				loadingMore = false;
 			});
 		});
 	};
 
-	scroll.removeExtra = function(els, direction, count) {
+	scroll.removeExtra = function (els, direction, count) {
 		if (els.length <= count) {
 			return;
 		}

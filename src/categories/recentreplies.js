@@ -1,56 +1,95 @@
 
 'use strict';
 
-var async = require('async'),
-	winston = require('winston'),
-	validator = require('validator'),
-	_ = require('underscore'),
+var async = require('async');
+var winston = require('winston');
+var validator = require('validator');
+var _ = require('underscore');
 
-	db = require('../database'),
-	posts = require('../posts'),
-	topics = require('../topics'),
-	privileges = require('../privileges');
+var db = require('../database');
+var posts = require('../posts');
+var topics = require('../topics');
+var privileges = require('../privileges');
+var batch = require('../batch');
 
-module.exports = function(Categories) {
-	Categories.getRecentReplies = function(cid, uid, count, callback) {
+
+module.exports = function (Categories) {
+
+	Categories.getRecentReplies = function (cid, uid, count, callback) {
 		if (!parseInt(count, 10)) {
 			return callback(null, []);
 		}
 
 		async.waterfall([
-			function(next) {
+			function (next) {
 				db.getSortedSetRevRange('cid:' + cid + ':pids', 0, count - 1, next);
 			},
-			function(pids, next) {
+			function (pids, next) {
 				privileges.posts.filter('read', pids, uid, next);
 			},
-			function(pids, next) {
+			function (pids, next) {
 				posts.getPostSummaryByPids(pids, uid, {stripTags: true}, next);
 			}
 		], callback);
 	};
 
-	Categories.getRecentTopicReplies = function(categoryData, uid, callback) {
+	Categories.updateRecentTid = function (cid, tid, callback) {
+		async.parallel({
+			count: function (next) {
+				db.sortedSetCard('cid:' + cid + ':recent_tids', next);
+			},
+			numRecentReplies: function (next) {
+				db.getObjectField('category:' + cid, 'numRecentReplies', next);
+			}
+		}, function (err, results) {
+			if (err) {
+				return callback(err);
+			}
+
+			if (results.count < results.numRecentReplies) {
+				return db.sortedSetAdd('cid:' + cid + ':recent_tids', Date.now(), tid, callback);
+			}
+			async.waterfall([
+				function (next) {
+					db.getSortedSetRangeWithScores('cid:' + cid + ':recent_tids', 0, results.count - results.numRecentReplies, next);
+				},
+				function (data, next) {
+					if (!data.length) {
+						return next();
+					}
+					db.sortedSetsRemoveRangeByScore(['cid:' + cid + ':recent_tids'], '-inf', data[data.length - 1].score, next);
+				},
+				function (next) {
+					db.sortedSetAdd('cid:' + cid + ':recent_tids', Date.now(), tid, next);
+				}
+			], callback);
+		});
+	};
+
+	Categories.getRecentTopicReplies = function (categoryData, uid, callback) {
 		if (!Array.isArray(categoryData) || !categoryData.length) {
 			return callback();
 		}
 
 		async.waterfall([
-			function(next) {
-				async.map(categoryData, getRecentTopicTids, next);
+			function (next) {
+				var keys = categoryData.map(function (category) {
+					return 'cid:' + category.cid + ':recent_tids';
+				});
+				db.getSortedSetsMembers(keys, next);
 			},
-			function(results, next) {
+			function (results, next) {
 				var tids = _.flatten(results);
 
-				tids = tids.filter(function(tid, index, array) {
+				tids = tids.filter(function (tid, index, array) {
 					return !!tid && array.indexOf(tid) === index;
 				});
 				privileges.topics.filterTids('read', tids, uid, next);
 			},
-			function(tids, next) {
+			function (tids, next) {
 				getTopics(tids, next);
 			},
-			function(topics, next) {
+			function (topics, next) {
 				assignTopicsToCategories(categoryData, topics);
 
 				bubbleUpChildrenPosts(categoryData);
@@ -60,45 +99,6 @@ module.exports = function(Categories) {
 		], callback);
 	};
 
-	function getRecentTopicTids(category, callback) {
-		var count = parseInt(category.numRecentReplies, 10);
-		if (!count) {
-			return callback(null, []);
-		}
-
-		if (count === 1) {
-			async.waterfall([
-				function (next) {
-					db.getSortedSetRevRange('cid:' + category.cid + ':pids', 0, 0, next);
-				},
-				function (pid, next) {
-					posts.getPostField(pid, 'tid', next);
-				},
-				function (tid, next) {
-					next(null, [tid]);
-				}
-			], callback);
-			return;
-		}
-
-		async.parallel({
-			pinnedTids: function(next) {
-				db.getSortedSetRevRangeByScore('cid:' + category.cid + ':tids', 0, -1, '+inf', Date.now(), next);
-			},
-			tids: function(next) {
-				db.getSortedSetRevRangeByScore('cid:' + category.cid + ':tids', 0, Math.max(1, count), Date.now(), '-inf', next);
-			}
-		}, function(err, results) {
-			if (err) {
-				return callback(err);
-			}
-
-			results.tids = results.tids.concat(results.pinnedTids);
-
-			callback(null, results.tids);
-		});
-	}
-
 	function getTopics(tids, callback) {
 		var topicData;
 		async.waterfall([
@@ -107,48 +107,64 @@ module.exports = function(Categories) {
 			},
 			function (_topicData, next) {
 				topicData = _topicData;
-				topicData.forEach(function(topic) {
-					topic.teaserPid = topic.teaserPid || topic.mainPid;
+				topicData.forEach(function (topic) {
+					if (topic) {
+						topic.teaserPid = topic.teaserPid || topic.mainPid;
+					}
+				});
+				var cids = _topicData.map(function (topic) {
+					return topic && topic.cid;
+				}).filter(function (cid, index, array) {
+					return cid && array.indexOf(cid) === index;
 				});
 
-				topics.getTeasers(topicData, next);
+				async.parallel({
+					categoryData: async.apply(Categories.getCategoriesFields, cids, ['cid', 'parentCid']),
+					teasers: async.apply(topics.getTeasers, _topicData),
+				}, next);
 			},
-			function (teasers, next) {
-				teasers.forEach(function(teaser, index) {
+			function (results, next) {
+				var parentCids = {};
+				results.categoryData.forEach(function (category) {
+					parentCids[category.cid] = category.parentCid;
+				});
+				results.teasers.forEach(function (teaser, index) {
 					if (teaser) {
 						teaser.cid = topicData[index].cid;
+						teaser.parentCid = parseInt(parentCids[teaser.cid]) || 0;
 						teaser.tid = teaser.uid = teaser.user.uid = undefined;
 						teaser.topic = {
 							slug: topicData[index].slug,
-							title: validator.escape(topicData[index].title)
+							title: validator.escape(String(topicData[index].title))
 						};
 					}
 				});
-				teasers = teasers.filter(Boolean);
-				next(null, teasers);
+				results.teasers = results.teasers.filter(Boolean);
+				next(null, results.teasers);
 			}
 		], callback);
 	}
 
 	function assignTopicsToCategories(categories, topics) {
-		categories.forEach(function(category) {
-			category.posts = topics.filter(function(topic) {
-				return topic.cid && parseInt(topic.cid, 10) === parseInt(category.cid, 10);
-			}).sort(function(a, b) {
+		categories.forEach(function (category) {
+			category.posts = topics.filter(function (topic) {
+				return topic.cid && (parseInt(topic.cid, 10) === parseInt(category.cid, 10) ||
+					parseInt(topic.parentCid, 10) === parseInt(category.cid, 10));
+			}).sort(function (a, b) {
 				return b.pid - a.pid;
 			}).slice(0, parseInt(category.numRecentReplies, 10));
 		});
 	}
 
 	function bubbleUpChildrenPosts(categoryData) {
-		categoryData.forEach(function(category) {
+		categoryData.forEach(function (category) {
 			if (category.posts.length) {
 				return;
 			}
 			var posts = [];
 			getPostsRecursive(category, posts);
 
-			posts.sort(function(a, b) {
+			posts.sort(function (a, b) {
 				return b.pid - a.pid;
 			});
 			if (posts.length) {
@@ -158,18 +174,19 @@ module.exports = function(Categories) {
 	}
 
 	function getPostsRecursive(category, posts) {
-		category.posts.forEach(function(p) {
+		category.posts.forEach(function (p) {
 			posts.push(p);
 		});
 
-		category.children.forEach(function(child) {
+		category.children.forEach(function (child) {
 			getPostsRecursive(child, posts);
 		});
 	}
 
-	Categories.moveRecentReplies = function(tid, oldCid, cid) {
+	Categories.moveRecentReplies = function (tid, oldCid, cid, callback) {
+		callback = callback || function () {};
 		updatePostCount(tid, oldCid, cid);
-		topics.getPids(tid, function(err, pids) {
+		topics.getPids(tid, function (err, pids) {
 			if (err) {
 				return winston.error(err.message);
 			}
@@ -178,53 +195,37 @@ module.exports = function(Categories) {
 				return;
 			}
 
-			var start = 0,
-				done = false,
-				batch = 50;
+			batch.processArray(pids, function (pids, next) {
+				async.waterfall([
+					function (next) {
+						posts.getPostsFields(pids, ['timestamp'], next);
+					},
+					function (postData, next) {
+						var timestamps = postData.map(function (post) {
+							return post && post.timestamp;
+						});
 
-			async.whilst(function() {
-				return !done;
-			}, function(next) {
-				var movePids = pids.slice(start, start + batch);
-				if (!movePids.length) {
-					done = true;
-					return next();
-				}
-
-				posts.getPostsFields(movePids, ['timestamp'], function(err, postData) {
-					if (err) {
-						return next(err);
+						async.parallel([
+							function (next) {
+								db.sortedSetRemove('cid:' + oldCid + ':pids', pids, next);
+							},
+							function (next) {
+								db.sortedSetAdd('cid:' + cid + ':pids', timestamps, pids, next);
+							}
+						], next);
 					}
-
-					var timestamps = postData.map(function(post) {
-						return post && post.timestamp;
-					});
-
-					async.parallel([
-						function(next) {
-							db.sortedSetRemove('cid:' + oldCid + ':pids', movePids, next);
-						},
-						function(next) {
-							db.sortedSetAdd('cid:' + cid + ':pids', timestamps, movePids, next);
-						}
-					], function(err) {
-						if (err) {
-							return next(err);
-						}
-						start += batch;
-						next();
-					});
-				});
-			}, function(err) {
+				], next);
+			}, function (err) {
 				if (err) {
 					winston.error(err.stack);
 				}
+				callback(err);
 			});
 		});
 	};
 
 	function updatePostCount(tid, oldCid, newCid) {
-		topics.getTopicField(tid, 'postcount', function(err, postCount) {
+		topics.getTopicField(tid, 'postcount', function (err, postCount) {
 			if (err) {
 				return winston.error(err.message);
 			}
@@ -232,13 +233,13 @@ module.exports = function(Categories) {
 				return;
 			}
 			async.parallel([
-				function(next) {
+				function (next) {
 					db.incrObjectFieldBy('category:' + oldCid, 'post_count', -postCount, next);
 				},
-				function(next) {
+				function (next) {
 					db.incrObjectFieldBy('category:' + newCid, 'post_count', postCount, next);
 				}
-			], function(err) {
+			], function (err) {
 				if (err) {
 					winston.error(err.message);
 				}

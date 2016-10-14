@@ -15,6 +15,7 @@ function apiRoutes(router, middleware, controllers) {
 	router.post('/uploadfavicon', middlewares, controllers.admin.uploads.uploadFavicon);
 	router.post('/uploadTouchIcon', middlewares, controllers.admin.uploads.uploadTouchIcon);
 	router.post('/uploadlogo', middlewares, controllers.admin.uploads.uploadLogo);
+	router.post('/uploadOgImage', middlewares, controllers.admin.uploads.uploadOgImage);
 	router.post('/upload/sound', middlewares, controllers.admin.uploads.uploadSound);
 	router.post('/uploadDefaultAvatar', middlewares, controllers.admin.uploads.uploadDefaultAvatar);
 }
@@ -64,6 +65,7 @@ function addRoutes(router, middleware, controllers) {
 	router.get('/manage/users/not-validated', middlewares, controllers.admin.users.notValidated);
 	router.get('/manage/users/no-posts', middlewares, controllers.admin.users.noPosts);
 	router.get('/manage/users/inactive', middlewares, controllers.admin.users.inactive);
+	router.get('/manage/users/flagged', middlewares, controllers.admin.users.flagged);
 	router.get('/manage/users/banned', middlewares, controllers.admin.users.banned);
 	router.get('/manage/registration', middlewares, controllers.admin.users.registrationQueue);
 
@@ -81,13 +83,15 @@ function addRoutes(router, middleware, controllers) {
 	router.get('/advanced/database', middlewares, controllers.admin.database.get);
 	router.get('/advanced/events', middlewares, controllers.admin.events.get);
 	router.get('/advanced/logs', middlewares, controllers.admin.logs.get);
-	router.get('/advanced/post-cache', middlewares, controllers.admin.postCache.get);
+	router.get('/advanced/errors', middlewares, controllers.admin.errors.get);
+	router.get('/advanced/errors/export', middlewares, controllers.admin.errors.export);
+	router.get('/advanced/cache', middlewares, controllers.admin.cache.get);
 
 	router.get('/development/logger', middlewares, controllers.admin.logger.get);
 	router.get('/development/info', middlewares, controllers.admin.info.get);
 }
 
-module.exports = function(app, middleware, controllers) {
+module.exports = function (app, middleware, controllers) {
 	app.use('/admin/', adminRouter(middleware, controllers));
 	app.use('/api/admin/', apiRouter(middleware, controllers));
 };

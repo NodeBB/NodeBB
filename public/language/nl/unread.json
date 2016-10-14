@@ -6,5 +6,8 @@
     "selected": "Geselecteerd",
     "all": "Alles",
     "all_categories": "Alle categorieën",
-    "topics_marked_as_read.success": "Onderwerp gemarkeerd als gelezen!"
+    "topics_marked_as_read.success": "Onderwerp gemarkeerd als gelezen!",
+    "all-topics": "Alle onderwerpen",
+    "new-topics": "Nieuwe onderwerpen",
+    "watched-topics": "Bekeken onderwerpen"
 }

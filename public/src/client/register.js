@@ -3,24 +3,23 @@
 /* globals define, app, utils, socket, config, ajaxify, bootbox */
 
 
-define('forum/register', ['csrf', 'translator'], function(csrf, translator) {
+define('forum/register', ['translator'], function (translator) {
 	var Register = {},
 		validationError = false,
-		successIcon = '<i class="fa fa-check"></i>';
+		successIcon = '';
 
-	Register.init = function() {
+	Register.init = function () {
 		var email = $('#email'),
 			username = $('#username'),
 			password = $('#password'),
 			password_confirm = $('#password-confirm'),
-			register = $('#register'),
-			agreeTerms = $('#agree-terms');
+			register = $('#register');
 
 		handleLanguageOverride();
 
 		$('#referrer').val(app.previousUrl);
 
-		email.on('blur', function() {
+		email.on('blur', function () {
 			if (email.val().length) {
 				validateEmail(email.val());
 			}
@@ -33,23 +32,23 @@ define('forum/register', ['csrf', 'translator'], function(csrf, translator) {
 		}
 
 		// Update the "others can mention you via" text
-		username.on('keyup', function() {
+		username.on('keyup', function () {
 			$('#yourUsername').text(this.value.length > 0 ? utils.slugify(this.value) : 'username');
 		});
 
-		username.on('blur', function() {
+		username.on('blur', function () {
 			if (username.val().length) {
 				validateUsername(username.val());
 			}
 		});
 
-		password.on('blur', function() {
+		password.on('blur', function () {
 			if (password.val().length) {
 				validatePassword(password.val(), password_confirm.val());
 			}
 		});
 
-		password_confirm.on('blur', function() {
+		password_confirm.on('blur', function () {
 			if (password_confirm.val().length) {
 				validatePasswordConfirm(password.val(), password_confirm.val());
 			}
@@ -60,17 +59,17 @@ define('forum/register', ['csrf', 'translator'], function(csrf, translator) {
 			validatePassword(password.val(), password_confirm.val());
 			validatePasswordConfirm(password.val(), password_confirm.val());
 
-			validateEmail(email.val(), function() {
+			validateEmail(email.val(), function () {
 				validateUsername(username.val(), callback);
 			});
 		}
 
-		register.on('click', function(e) {
+		register.on('click', function (e) {
 			var registerBtn = $(this);
 			var errorEl = $('#register-error-notify');
 			errorEl.addClass('hidden');
 			e.preventDefault();
-			validateForm(function() {
+			validateForm(function () {
 				if (validationError) {
 					return;
 				}
@@ -79,9 +78,9 @@ define('forum/register', ['csrf', 'translator'], function(csrf, translator) {
 
 				registerBtn.parents('form').ajaxSubmit({
 					headers: {
-						'x-csrf-token': csrf.get()
+						'x-csrf-token': config.csrf_token
 					},
-					success: function(data) {
+					success: function (data) {
 						registerBtn.removeClass('disabled');
 						if (!data) {
 							return;
@@ -89,40 +88,32 @@ define('forum/register', ['csrf', 'translator'], function(csrf, translator) {
 						if (data.referrer) {
 							window.location.href = data.referrer;
 						} else if (data.message) {
-							require(['translator'], function(translator) {
-								translator.translate(data.message, function(msg) {
+							require(['translator'], function (translator) {
+								translator.translate(data.message, function (msg) {
 									bootbox.alert(msg);
 									ajaxify.go('/');
 								});
 							});
 						}
 					},
-					error: function(data) {
-						translator.translate(data.responseText, config.defaultLang, function(translated) {
-							errorEl.find('p').text(translated);
-							errorEl.removeClass('hidden');
-							registerBtn.removeClass('disabled');
+					error: function (data) {
+						translator.translate(data.responseText, config.defaultLang, function (translated) {
+							if (data.status === 403 && data.responseText === 'Forbidden') {
+								window.location.href = config.relative_path + '/register?error=csrf-invalid';
+							} else {
+								errorEl.find('p').text(translated);
+								errorEl.removeClass('hidden');
+								registerBtn.removeClass('disabled');
+							}
 						});
 					}
 				});
 			});
 		});
-
-		if (agreeTerms.length) {
-			agreeTerms.on('click', function() {
-				if ($(this).prop('checked')) {
-					register.removeAttr('disabled');
-				} else {
-					register.attr('disabled', 'disabled');
-				}
-			});
-
-			register.attr('disabled', 'disabled');
-		}
 	};
 
 	function validateEmail(email, callback) {
-		callback = callback || function() {};
+		callback = callback || function () {};
 		var email_notify = $('#email-notify');
 
 		if (!utils.isEmailValid(email)) {
@@ -132,7 +123,7 @@ define('forum/register', ['csrf', 'translator'], function(csrf, translator) {
 
 		socket.emit('user.emailExists', {
 			email: email
-		}, function(err, exists) {
+		}, function (err, exists) {
 			if (err) {
 				app.alertError(err.message);
 				return callback();
@@ -149,7 +140,7 @@ define('forum/register', ['csrf', 'translator'], function(csrf, translator) {
 	}
 
 	function validateUsername(username, callback) {
-		callback = callback || function() {};
+		callback = callback || function () {};
 
 		var username_notify = $('#username-notify');
 
@@ -162,7 +153,7 @@ define('forum/register', ['csrf', 'translator'], function(csrf, translator) {
 		} else {
 			socket.emit('user.exists', {
 				username: username
-			}, function(err, exists) {
+			}, function (err, exists) {
 				if (err) {
 					return app.alertError(err.message);
 				}
@@ -217,22 +208,22 @@ define('forum/register', ['csrf', 'translator'], function(csrf, translator) {
 	}
 
 	function showError(element, msg) {
-		translator.translate(msg, function(msg) {
+		translator.translate(msg, function (msg) {
 			element.html(msg);
 			element.parent()
-				.removeClass('alert-success')
-				.addClass('alert-danger');
+				.removeClass('register-success')
+				.addClass('register-danger');
 			element.show();
 		});
 		validationError = true;
 	}
 
 	function showSuccess(element, msg) {
-		translator.translate(msg, function(msg) {
+		translator.translate(msg, function (msg) {
 			element.html(msg);
 			element.parent()
-				.removeClass('alert-danger')
-				.addClass('alert-success');
+				.removeClass('register-danger')
+				.addClass('register-success');
 			element.show();
 		});
 	}

@@ -5,7 +5,8 @@
     "remember_me": "זכור אותי?",
     "forgot_password": "שכחת סיסמתך?",
     "alternative_logins": "התחבר באמצעות...",
-    "failed_login_attempt": "נסיון התחברות נכשל, נסה שוב.",
+    "failed_login_attempt": "Login Unsuccessful",
     "login_successful": "התחברת בהצלחה!",
-    "dont_have_account": "אין לך חשבון עדיין?"
+    "dont_have_account": "אין לך חשבון עדיין?",
+    "logged-out-due-to-inactivity": "You have been logged out of the Admin Control Panel due to inactivity"
 }

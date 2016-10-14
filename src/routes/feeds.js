@@ -23,10 +23,10 @@ function generateForTopic(req, res, callback) {
 	async.waterfall([
 		function (next) {
 			async.parallel({
-				privileges: function(next) {
+				privileges: function (next) {
 					privileges.topics.get(tid, req.uid, next);
 				},
-				topic: function(next) {
+				topic: function (next) {
 					topics.getTopicData(tid, next);
 				}
 			}, next);
@@ -38,13 +38,13 @@ function generateForTopic(req, res, callback) {
 			if (parseInt(results.topic.deleted, 10) && !results.privileges.view_deleted) {
 				return callback();
 			}
-			if (!results.privileges.read) {
+			if (!results.privileges.read || !results.privileges['topics:read']) {
 				return helpers.notAllowed(req, res);
 			}
 			userPrivileges = results.privileges;
 			topics.getTopicWithPosts(results.topic, 'tid:' + tid + ':posts', req.uid, 0, 25, false, next);
 		}
-	], function(err, topicData) {
+	], function (err, topicData) {
 		if (err) {
 			return callback(err);
 		}
@@ -70,14 +70,14 @@ function generateForTopic(req, res, callback) {
 			feed.pubDate = new Date(parseInt(topicData.posts[0].timestamp, 10)).toUTCString();
 		}
 
-		topicData.posts.forEach(function(postData) {
+		topicData.posts.forEach(function (postData) {
 			if (!postData.deleted) {
 				dateStamp = new Date(parseInt(parseInt(postData.edited, 10) === 0 ? postData.timestamp : postData.edited, 10)).toUTCString();
 
 				feed.item({
 					title: 'Reply to ' + topicData.title + ' on ' + dateStamp,
 					description: postData.content,
-					url: nconf.get('url') + '/topic/' + topicData.slug + (postData.index ? '/' + (postData.index + 1) : ''),
+					url: nconf.get('url') + '/post/' + postData.pid,
 					author: postData.user ? postData.user.username : '',
 					date: dateStamp
 				});
@@ -105,9 +105,9 @@ function generateForUserTopics(req, res, callback) {
 			}
 			user.getUserFields(uid, ['uid', 'username'], next);
 		}
-	], function(err, userData) {
+	], function (err, userData) {
 		if (err) {
-			return next(err);
+			return callback(err);
 		}
 
 		generateForTopics({
@@ -116,7 +116,7 @@ function generateForUserTopics(req, res, callback) {
 			description: 'A list of topics that are posted by ' + userData.username,
 			feed_url: '/user/' + userslug + '/topics.rss',
 			site_url: '/user/' + userslug + '/topics'
-		}, 'uid:' + userData.uid + ':topics', req, res, next);
+		}, 'uid:' + userData.uid + ':topics', req, res, callback);
 	});
 }
 
@@ -129,10 +129,10 @@ function generateForCategory(req, res, next) {
 	async.waterfall([
 		function (next) {
 			async.parallel({
-				privileges: function(next) {
+				privileges: function (next) {
 					privileges.categories.get(cid, req.uid, next);
 				},
-				category: function(next) {
+				category: function (next) {
 					categories.getCategoryById({
 						cid: cid,
 						set: 'cid:' + cid + ':tids',
@@ -156,7 +156,7 @@ function generateForCategory(req, res, next) {
 				site_url: '/category/' + results.category.cid,
 			}, results.category.topics, next);
 		}
-	], function(err, feed) {
+	], function (err, feed) {
 		if (err) {
 			return next(err);
 		}
@@ -189,7 +189,7 @@ function generateForPopular(req, res, next) {
 	};
 	var term = terms[req.params.term] || 'day';
 
-	topics.getPopular(term, req.uid, 19, function(err, topics) {
+	topics.getPopular(term, req.uid, 19, function (err, topics) {
 		if (err) {
 			return next(err);
 		}
@@ -200,7 +200,7 @@ function generateForPopular(req, res, next) {
 			description: 'A list of topics that are sorted by post count',
 			feed_url: '/popular/' + (req.params.term || 'daily') + '.rss',
 			site_url: '/popular/' + (req.params.term || 'daily')
-		}, topics, function(err, feed) {
+		}, topics, function (err, feed) {
 			if (err) {
 				return next(err);
 			}
@@ -215,7 +215,7 @@ function generateForTopics(options, set, req, res, next) {
 			return next(err);
 		}
 
-		generateTopicsFeed(options, data.topics, function(err, feed) {
+		generateTopicsFeed(options, data.topics, function (err, feed) {
 			if (err) {
 				return next(err);
 			}
@@ -238,7 +238,7 @@ function generateTopicsFeed(feedOptions, feedTopics, callback) {
 		feed.pubDate = new Date(parseInt(feedTopics[0].lastposttime, 10)).toUTCString();
 	}
 
-	async.map(feedTopics, function(topicData, next) {
+	async.map(feedTopics, function (topicData, next) {
 		var feedItem = {
 			title: topicData.title,
 			url: nconf.get('url') + '/topic/' + topicData.slug,
@@ -251,7 +251,7 @@ function generateTopicsFeed(feedOptions, feedTopics, callback) {
 			return next(null, feedItem);
 		}
 
-		topics.getMainPost(topicData.tid, feedOptions.uid, function(err, mainPost) {
+		topics.getMainPost(topicData.tid, feedOptions.uid, function (err, mainPost) {
 			if (err) {
 				return next(err);
 			}
@@ -262,11 +262,11 @@ function generateTopicsFeed(feedOptions, feedTopics, callback) {
 			feedItem.author = mainPost.user.username;
 			next(null, feedItem);
 		});
-	}, function(err, feedItems) {
+	}, function (err, feedItems) {
 		if (err) {
 			return callback(err);
 		}
-		feedItems.forEach(function(feedItem) {
+		feedItems.forEach(function (feedItem) {
 			if (feedItem) {
 				feed.item(feedItem);
 			}
@@ -280,7 +280,7 @@ function generateForRecentPosts(req, res, next) {
 		return next();
 	}
 
-	posts.getRecentPosts(req.uid, 0, 19, 'month', function(err, posts) {
+	posts.getRecentPosts(req.uid, 0, 19, 'month', function (err, posts) {
 		if (err) {
 			return next(err);
 		}
@@ -303,16 +303,16 @@ function generateForCategoryRecentPosts(req, res, next) {
 	var cid = req.params.category_id;
 
 	async.parallel({
-		privileges: function(next) {
+		privileges: function (next) {
 			privileges.categories.get(cid, req.uid, next);
 		},
-		category: function(next) {
+		category: function (next) {
 			categories.getCategoryData(cid, next);
 		},
-		posts: function(next) {
+		posts: function (next) {
 			categories.getRecentReplies(cid, req.uid, 20, next);
 		}
-	}, function(err, results) {
+	}, function (err, results) {
 		if (err) {
 			return next(err);
 		}
@@ -346,11 +346,11 @@ function generateForPostsFeed(feedOptions, posts) {
 		feed.pubDate = new Date(parseInt(posts[0].timestamp, 10)).toUTCString();
 	}
 
-	posts.forEach(function(postData) {
+	posts.forEach(function (postData) {
 		feed.item({
 			title: postData.topic ? postData.topic.title : '',
 			description: postData.content,
-			url: nconf.get('url') + '/topic/' + (postData.topic ? postData.topic.slug : '#') + '/'+postData.index,
+			url: nconf.get('url') + '/post/' + postData.pid,
 			author: postData.user ? postData.user.username : '',
 			date: new Date(parseInt(postData.timestamp, 10)).toUTCString()
 		});
@@ -364,7 +364,7 @@ function sendFeed(feed, res) {
 	res.type('xml').set('Content-Length', Buffer.byteLength(xml)).send(xml);
 }
 
-module.exports = function(app, middleware, controllers){
+module.exports = function (app, middleware, controllers){
 	app.get('/topic/:topic_id.rss', generateForTopic);
 	app.get('/category/:category_id.rss', generateForCategory);
 	app.get('/recent.rss', generateForRecent);

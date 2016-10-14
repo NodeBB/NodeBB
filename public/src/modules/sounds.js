@@ -1,28 +1,28 @@
 "use strict";
 /* global app, define, socket, config */
 
-define('sounds', ['buzz'], function(buzz) {
+define('sounds', ['buzz'], function (buzz) {
 	var	Sounds = {};
 
 	var loadedSounds = {};
 	var eventSoundMapping;
 	var files;
 
-	socket.on('event:sounds.reloadMapping', loadMapping);
+	socket.on('event:sounds.reloadMapping', function () {
+		Sounds.reloadMapping();
+	});
 
-	function loadMapping(callback) {
-		callback = callback || function() {};
-		socket.emit('modules.sounds.getMapping', function(err, mapping) {
+	Sounds.reloadMapping = function () {
+		socket.emit('modules.sounds.getMapping', function (err, mapping) {
 			if (err) {
-				return app.alertError('[sounds] Could not load sound mapping!');
+				return app.alertError(err.message);
 			}
 			eventSoundMapping = mapping;
-			callback();
 		});
 	}
 
 	function loadData(callback) {
-		socket.emit('modules.sounds.getData', function(err, data) {
+		socket.emit('modules.sounds.getData', function (err, data) {
 			if (err) {
 				return app.alertError('[sounds] Could not load sound mapping!');
 			}
@@ -54,13 +54,9 @@ define('sounds', ['buzz'], function(buzz) {
 		createSound();
 	}
 
-	Sounds.play = function(name) {
+	Sounds.play = function (name) {
 		function play() {
 			Sounds.playFile(eventSoundMapping[name]);
-		}
-
-		if (!config.notificationSounds) {
-			return;
 		}
 
 		if (!eventSoundMapping) {
@@ -70,7 +66,7 @@ define('sounds', ['buzz'], function(buzz) {
 		play();
 	};
 
-	Sounds.playFile = function(fileName) {
+	Sounds.playFile = function (fileName) {
 		if (!fileName) {
 			return;
 		}

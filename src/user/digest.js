@@ -12,8 +12,8 @@ var plugins = require('../plugins');
 var emailer = require('../emailer');
 var utils = require('../../public/src/utils');
 
-(function(Digest) {
-	Digest.execute = function(interval) {
+(function (Digest) {
+	Digest.execute = function (interval) {
 		var digestsDisabled = meta.config.disableEmailSubscriptions !== undefined && parseInt(meta.config.disableEmailSubscriptions, 10) === 1;
 		if (digestsDisabled) {
 			return winston.verbose('[user/jobs] Did not send digests (' + interval + ') because subscription system is disabled.');
@@ -27,13 +27,13 @@ var utils = require('../../public/src/utils');
 		async.parallel({
 			topics: async.apply(topics.getLatestTopics, 0, 0, 9, interval),
 			subscribers: async.apply(Digest.getSubscribers, interval)
-		}, function(err, data) {
+		}, function (err, data) {
 			if (err) {
 				return winston.error('[user/jobs] Could not send digests (' + interval + '): ' + err.message);
 			}
 
 			// Fix relative paths in topic data
-			data.topics.topics = data.topics.topics.map(function(topicObj) {
+			data.topics.topics = data.topics.topics.map(function (topicObj) {
 				var user = topicObj.hasOwnProperty('teaser') && topicObj.teaser !== undefined ? topicObj.teaser.user : topicObj.user;
 				if (user && user.picture && utils.isRelativeUrl(user.picture)) {
 					user.picture = nconf.get('base_url') + user.picture;
@@ -45,7 +45,7 @@ var utils = require('../../public/src/utils');
 			data.interval = interval;
 
 			if (data.subscribers.length) {
-				Digest.send(data, function(err) {
+				Digest.send(data, function (err) {
 					if (err) {
 						winston.error('[user/jobs] Could not send digests (' + interval + '): ' + err.message);
 					} else {
@@ -58,28 +58,32 @@ var utils = require('../../public/src/utils');
 		});
 	};
 
-	Digest.getSubscribers = function(interval, callback) {
-		db.getSortedSetRange('digest:' + interval + ':uids', 0, -1, function(err, subscribers) {
+	Digest.getSubscribers = function (interval, callback) {
+		db.getSortedSetRange('digest:' + interval + ':uids', 0, -1, function (err, subscribers) {
+			if (err) {
+				return callback(err);
+			}
+
 			plugins.fireHook('filter:digest.subscribers', {
 				interval: interval,
 				subscribers: subscribers
-			}, function(err, returnData) {
+			}, function (err, returnData) {
 				callback(err, returnData.subscribers);
 			});
 		});
 	};
 
-	Digest.send = function(data, callback) {
+	Digest.send = function (data, callback) {
 		var	now = new Date();
 
-		user.getUsersFields(data.subscribers, ['uid', 'username', 'userslug', 'lastonline'], function(err, users) {
+		user.getUsersFields(data.subscribers, ['uid', 'username', 'userslug', 'lastonline'], function (err, users) {
 			if (err) {
 				winston.error('[user/jobs] Could not send digests (' + data.interval + '): ' + err.message);
 				return callback(err);
 			}
 
-			async.eachLimit(users, 100, function(userObj, next) {
-				user.notifications.getDailyUnread(userObj.uid, function(err, notifications) {
+			async.eachLimit(users, 100, function (userObj, next) {
+				user.notifications.getDailyUnread(userObj.uid, function (err, notifications) {
 					if (err) {
 						winston.error('[user/jobs] Could not send digests (' + data.interval + '): ' + err.message);
 						return next(err);
@@ -92,14 +96,14 @@ var utils = require('../../public/src/utils');
 						return next();
 					}
 
-					for(var i=0; i<notifications.length; ++i) {
+					for(var i = 0; i < notifications.length; ++i) {
 						if (notifications[i].image && notifications[i].image.indexOf('http') !== 0) {
 							notifications[i].image = nconf.get('url') + notifications[i].image;
 						}
 					}
 
 					emailer.send('digest', userObj.uid, {
-						subject: '[' + meta.config.title + '] [[email:digest.subject, ' + (now.getFullYear()+ '/' + (now.getMonth()+1) + '/' + now.getDate()) + ']]',
+						subject: '[' + meta.config.title + '] [[email:digest.subject, ' + (now.getFullYear() + '/' + (now.getMonth() + 1) + '/' + now.getDate()) + ']]',
 						username: userObj.username,
 						userslug: userObj.userslug,
 						url: nconf.get('url'),

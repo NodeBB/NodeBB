@@ -1,11 +1,11 @@
 "use strict";
 /*global define, socket, app, bootbox, templates, ajaxify, Sortable */
 
-define('admin/manage/categories', ['vendor/jquery/serializeObject/jquery.ba-serializeobject.min'], function() {
+define('admin/manage/categories', ['vendor/jquery/serializeObject/jquery.ba-serializeobject.min', 'translator'], function (serialize, translator) {
 	var	Categories = {}, newCategoryId = -1, sortables;
 
-	Categories.init = function() {
-		socket.emit('admin.categories.getAll', function(error, payload){
+	Categories.init = function () {
+		socket.emit('admin.categories.getAll', function (error, payload){
 			if(error){
 				return app.alertError(error.message);
 			}
@@ -16,13 +16,13 @@ define('admin/manage/categories', ['vendor/jquery/serializeObject/jquery.ba-seri
 		$('button[data-action="create"]').on('click', Categories.throwCreateModal);
 
 		// Enable/Disable toggle events
-		$('.categories').on('click', 'button[data-action="toggle"]', function() {
+		$('.categories').on('click', 'button[data-action="toggle"]', function () {
 			var $this = $(this),
 				cid = $this.attr('data-cid'),
 				parentEl = $this.parents('li[data-cid="' + cid + '"]'),
 				disabled = parentEl.hasClass('disabled');
 
-			var children = parentEl.find('li[data-cid]').map(function() {
+			var children = parentEl.find('li[data-cid]').map(function () {
 				return $(this).attr('data-cid');
 			}).get();
 
@@ -31,15 +31,15 @@ define('admin/manage/categories', ['vendor/jquery/serializeObject/jquery.ba-seri
 		});
 	};
 
-	Categories.throwCreateModal = function() {
-		socket.emit('admin.categories.getNames', {}, function(err, categories) {
+	Categories.throwCreateModal = function () {
+		socket.emit('admin.categories.getNames', {}, function (err, categories) {
 			if (err) {
 				return app.alertError(err.message);
 			}
 
 			templates.parse('admin/partials/categories/create', {
 				categories: categories
-			}, function(html) {
+			}, function (html) {
 				function submit() {
 					var formData = modal.find('form').serializeObject();
 					formData.description = '';
@@ -67,8 +67,8 @@ define('admin/manage/categories', ['vendor/jquery/serializeObject/jquery.ba-seri
 		});
 	};
 
-	Categories.create = function(payload) {
-		socket.emit('admin.categories.create', payload, function(err, data) {
+	Categories.create = function (payload) {
+		socket.emit('admin.categories.create', payload, function (err, data) {
 			if (err) {
 				return app.alertError(err.message);
 			}
@@ -85,7 +85,7 @@ define('admin/manage/categories', ['vendor/jquery/serializeObject/jquery.ba-seri
 		});
 	};
 
-	Categories.render = function(categories){
+	Categories.render = function (categories){
 		var container = $('.categories');
 
 		if (!categories || !categories.length) {
@@ -99,16 +99,16 @@ define('admin/manage/categories', ['vendor/jquery/serializeObject/jquery.ba-seri
 		}
 	};
 
-	Categories.toggle = function(cids, disabled) {
+	Categories.toggle = function (cids, disabled) {
 		var payload = {};
 
-		cids.forEach(function(cid) {
+		cids.forEach(function (cid) {
 			payload[cid] = {
 				disabled: disabled ? 1 : 0
 			};
 		});
 
-		socket.emit('admin.categories.update', payload, function(err) {
+		socket.emit('admin.categories.update', payload, function (err) {
 			if (err) {
 				return app.alertError(err.message);
 			}
@@ -154,8 +154,8 @@ define('admin/manage/categories', ['vendor/jquery/serializeObject/jquery.ba-seri
 	function renderList(categories, container, parentId){
 		// Translate category names if needed
 		var count = 0;
-		categories.forEach(function(category, idx, parent) {
-			translator.translate(category.name, function(translated) {
+		categories.forEach(function (category, idx, parent) {
+			translator.translate(category.name, function (translated) {
 				if (category.name !== translated) {
 					category.name = translated;
 				}
@@ -167,15 +167,19 @@ define('admin/manage/categories', ['vendor/jquery/serializeObject/jquery.ba-seri
 			});
 		});
 
+		if (!categories.length) {
+			continueRender();
+		}
+
 		function continueRender() {
 			templates.parse('admin/partials/categories/category-rows', {
 				cid: parentId,
 				categories: categories
-			}, function(html) {
+			}, function (html) {
 				container.append(html);
 
 				// Handle and children categories in this level have
-				for(var x=0,numCategories=categories.length;x<numCategories;x++) {
+				for(var x = 0,numCategories = categories.length;x < numCategories;x++) {
 					renderList(categories[x].children, $('li[data-cid="' + categories[x].cid + '"]'), categories[x].cid);
 				}
 

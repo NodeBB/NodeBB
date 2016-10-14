@@ -24,6 +24,7 @@
     "digest.day": "gün",
     "digest.week": "hafta",
     "digest.month": "ay",
+    "digest.subject": "%1 için özet",
     "notif.chat.subject": "Okunmamış bazı iletileriniz var",
     "notif.chat.cta": "Sohbete devam etmek için buraya tıklayın",
     "notif.chat.unsub.info": "Bu bildirim şectiğiniz ayarlar yüzünden gönderildi.",

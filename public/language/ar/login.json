@@ -5,7 +5,8 @@
     "remember_me": "تذكرني؟",
     "forgot_password": "نسيت كلمة المرور؟",
     "alternative_logins": "تسجيلات الدخول البديلة",
-    "failed_login_attempt": "فشلت محاولة تسجيل الدخول، يرجى المحاولة مرة أخرى.",
+    "failed_login_attempt": "Login Unsuccessful",
     "login_successful": "قمت بتسجيل الدخول بنجاح!",
-    "dont_have_account": "لا تملك حساب؟"
+    "dont_have_account": "لا تملك حساب؟",
+    "logged-out-due-to-inactivity": "You have been logged out of the Admin Control Panel due to inactivity"
 }

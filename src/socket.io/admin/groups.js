@@ -1,12 +1,15 @@
 "use strict";
 
 var async = require('async');
-var groups = require('../../groups'),
-	Groups = {};
+var groups = require('../../groups');
 
-Groups.create = function(socket, data, callback) {
-	if(!data) {
+var Groups = {};
+
+Groups.create = function (socket, data, callback) {
+	if (!data) {
 		return callback(new Error('[[error:invalid-data]]'));
+	} else if (groups.isPrivilegeGroup(data.name)) {
+		return callback(new Error('[[error:invalid-group-name]]'));
 	}
 
 	groups.create({
@@ -16,7 +19,7 @@ Groups.create = function(socket, data, callback) {
 	}, callback);
 };
 
-Groups.join = function(socket, data, callback) {
+Groups.join = function (socket, data, callback) {
 	if (!data) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
@@ -34,7 +37,7 @@ Groups.join = function(socket, data, callback) {
 	], callback);
 };
 
-Groups.leave = function(socket, data, callback) {
+Groups.leave = function (socket, data, callback) {
 	if (!data) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
@@ -56,7 +59,7 @@ Groups.leave = function(socket, data, callback) {
 	], callback);
 };
 
-Groups.update = function(socket, data, callback) {
+Groups.update = function (socket, data, callback) {
 	if (!data) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}

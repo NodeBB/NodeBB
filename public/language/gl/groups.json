@@ -41,7 +41,7 @@
     "details.hidden": "Oculto",
     "details.hidden_help": "Se está habilitado, este grupo non se poderá atopar na listaxe de grupos e os usuarios deberán ser convidados manualmente.",
     "details.delete_group": "Eliminar Grupo",
-    "details.private_system_help": "Private groups is disabled at system level, this option does not do anything",
+    "details.private_system_help": "Os grupos privados están desactivados ao nivel do sistema, esta opción non trocará nada.",
     "event.updated": "Os detalles do grupo foron actualizados",
     "event.deleted": "O grupo \"%1\" foi borrado.",
     "membership.accept-invitation": "Aceptar ",
@@ -50,5 +50,7 @@
     "membership.leave-group": "Marchar do grupo",
     "membership.reject": "Rexeitar",
     "new-group.group_name": "Nome do grupo:",
-    "upload-group-cover": "Upload group cover"
+    "upload-group-cover": "Cargar foto para o grupo",
+    "bulk-invite-instructions": "Enter a list of comma separated usernames to invite to this group",
+    "bulk-invite": "Bulk Invite"
 }

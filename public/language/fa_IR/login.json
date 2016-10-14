@@ -5,7 +5,8 @@
     "remember_me": "مرا به یاد بسپار؟",
     "forgot_password": "گذرواژه را فراموش کرده‌اید؟",
     "alternative_logins": "روش‌های درون آمدن جایگزین",
-    "failed_login_attempt": "شکست در درون آمدن، لطفا دوباره تلاش کنید.",
+    "failed_login_attempt": "ورود ناموفق",
     "login_successful": "شما با موفقیت به درون آمده‌اید!",
-    "dont_have_account": "حساب کاربری ندارید؟"
+    "dont_have_account": "حساب کاربری ندارید؟",
+    "logged-out-due-to-inactivity": "شما به علت عدم فعالیت از کنترل پنل مدیر کل خارج شده اید "
 }

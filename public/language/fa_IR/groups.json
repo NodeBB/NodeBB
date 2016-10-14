@@ -8,7 +8,7 @@
     "pending.reject": "رد",
     "pending.accept_all": "پذیرش همه",
     "pending.reject_all": "رد همه",
-    "pending.none": "در حال حاضر هیچ عضوی در انتظار نیست",
+    "pending.none": "در حال حاضر هیچ عضوی در انتظار تایید نیست",
     "invited.none": "در حال حاضر هیچ کسی دعوت نشده است",
     "invited.uninvite": "لغو دعوت",
     "invited.search": "جستجو به دنبال کاربرانی به جهت دعوت به این گروه",
@@ -18,7 +18,7 @@
     "cover-save": "ذخیره",
     "cover-saving": "در حال ذخیره کردن",
     "details.title": "جزئیات گروه",
-    "details.members": "لیست اعضا",
+    "details.members": "فهرست اعضا",
     "details.pending": "اعضای در انتظار",
     "details.invited": "اعضای دعوت شده",
     "details.has_no_posts": "اعضای این گروه هیچ پستی ایجاد نکرده اند",
@@ -41,7 +41,7 @@
     "details.hidden": "پنهان",
     "details.hidden_help": "اگر فعال باشد، این گروه در فهرست گروه‌ها پیدا نمی‌شود و کاربران باید دستی فراخوانده شوند",
     "details.delete_group": "حذف گروه",
-    "details.private_system_help": "Private groups is disabled at system level, this option does not do anything",
+    "details.private_system_help": "گروه های خصوصی در این سطح سیستم غیر فعال هستند، این گزینه هیچ کاری انجام نمی دهد",
     "event.updated": "جزییات گروه با موفقیت به روز شد",
     "event.deleted": "گروه \"%1\" حدف شد",
     "membership.accept-invitation": "دعوت را قبول میکنم",
@@ -49,6 +49,8 @@
     "membership.join-group": "ورود به گروه",
     "membership.leave-group": "خروج از گروه",
     "membership.reject": "رد",
-    "new-group.group_name": "نام گروه",
-    "upload-group-cover": "آپلود کاور گروه"
+    "new-group.group_name": "نام گروه:",
+    "upload-group-cover": "آپلود کاور گروه",
+    "bulk-invite-instructions": "برای دعوت به این گروه فهرستی از نام‌کاربری که با کاما جدا کنید را وارد کنید",
+    "bulk-invite": "میزان دعوت"
 }

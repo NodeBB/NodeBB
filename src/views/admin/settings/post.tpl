@@ -49,6 +49,14 @@
 				<input id="postEditDuration" type="text" class="form-control" value="0" data-field="postEditDuration">
 			</div>
 			<div class="form-group">
+				<label for="postDeleteDuration">Number of seconds users are allowed to delete posts after posting. (0 disabled)</label>
+				<input id="postDeleteDuration" type="text" class="form-control" value="0" data-field="postDeleteDuration">
+			</div>
+			<div class="form-group">
+				<label for="preventTopicDeleteAfterReplies">Number of replies after users are disallowed to delete their own topics. (0 disabled)</label>
+				<input id="preventTopicDeleteAfterReplies" type="text" class="form-control" value="0" data-field="preventTopicDeleteAfterReplies">
+			</div>
+			<div class="form-group">
 				<label for="minimumTitleLength">Minimum Title Length</label>
 				<input id="minimumTitleLength" type="text" class="form-control" value="3" data-field="minimumTitleLength">
 			</div>
@@ -83,7 +91,8 @@
 			<div class="form-group">
 				<label>Teaser Post</label>
 				<select class="form-control" data-field="teaserPost">
-					<option value="last">Last</option>
+					<option value="last-post">Last &ndash; Show the latest post, including the original post, if no replies</option>
+					<option value="last-reply">Last &ndash; Show the latest reply, or a "No replies" placeholder if no replies</option>
 					<option value="first">First</option>
 				</select>
 			</div>
@@ -100,6 +109,10 @@
 				<label for="unreadCutoff">Unread cutoff days</label>
 				<input id="unreadCutoff" type="text" class="form-control" value="2" data-field="unreadCutoff">
 			</div>
+			<div class="form-group">
+ 				<label for="bookmarkthreshold">Minimum posts in topic before tracking last read</label>
+ 				<input id="bookmarkthreshold" type="text" class="form-control" value="5" data-field="bookmarkThreshold">
+ 			</div>
 		</form>
 	</div>
 </div>

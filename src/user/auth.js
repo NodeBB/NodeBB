@@ -1,16 +1,16 @@
 'use strict';
 
-var async = require('async'),
-	winston = require('winston'),
-	db = require('../database'),
-	meta = require('../meta'),
-	events = require('../events');
+var async = require('async');
+var winston = require('winston');
+var db = require('../database');
+var meta = require('../meta');
+var events = require('../events');
 
-module.exports = function(User) {
+module.exports = function (User) {
 	User.auth = {};
 
-	User.auth.logAttempt = function(uid, ip, callback) {
-		db.exists('lockout:' + uid, function(err, exists) {
+	User.auth.logAttempt = function (uid, ip, callback) {
+		db.exists('lockout:' + uid, function (err, exists) {
 			if (err) {
 				return callback(err);
 			}
@@ -19,14 +19,14 @@ module.exports = function(User) {
 				return callback(new Error('[[error:account-locked]]'));
 			}
 
-			db.increment('loginAttempts:' + uid, function(err, attempts) {
+			db.increment('loginAttempts:' + uid, function (err, attempts) {
 				if (err) {
 					return callback(err);
 				}
 
 				if ((meta.config.loginAttempts || 5) < attempts) {
 					// Lock out the account
-					db.set('lockout:' + uid, '', function(err) {
+					db.set('lockout:' + uid, '', function (err) {
 						if (err) {
 							return callback(err);
 						}
@@ -49,18 +49,18 @@ module.exports = function(User) {
 		});
 	};
 
-	User.auth.clearLoginAttempts = function(uid) {
+	User.auth.clearLoginAttempts = function (uid) {
 		db.delete('loginAttempts:' + uid);
 	};
 
-	User.auth.resetLockout = function(uid, callback) {
+	User.auth.resetLockout = function (uid, callback) {
 		async.parallel([
 			async.apply(db.delete, 'loginAttempts:' + uid),
 			async.apply(db.delete, 'lockout:' + uid)
 		], callback);
 	};
 
-	User.auth.getSessions = function(uid, curSessionId, callback) {
+	User.auth.getSessions = function (uid, curSessionId, callback) {
 		var _sids;
 
 		// curSessionId is optional
@@ -76,7 +76,7 @@ module.exports = function(User) {
 				async.map(sids, db.sessionStore.get.bind(db.sessionStore), next);
 			},
 			function (sessions, next) {
-				sessions.forEach(function(sessionObj, idx) {
+				sessions.forEach(function (sessionObj, idx) {
 					if (sessionObj && sessionObj.meta) {
 						sessionObj.meta.current = curSessionId === _sids[idx];
 					}
@@ -86,7 +86,7 @@ module.exports = function(User) {
 				var expiredSids = [],
 					expired;
 
-				sessions = sessions.filter(function(sessionObj, idx) {
+				sessions = sessions.filter(function (sessionObj, idx) {
 					expired = !sessionObj || !sessionObj.hasOwnProperty('passport') ||
 						!sessionObj.passport.hasOwnProperty('user')	||
 						parseInt(sessionObj.passport.user, 10) !== parseInt(uid, 10);
@@ -98,29 +98,29 @@ module.exports = function(User) {
 					return !expired;
 				});
 
-				async.each(expiredSids, function(sid, next) {
+				async.each(expiredSids, function (sid, next) {
 					User.auth.revokeSession(sid, uid, next);
-				}, function(err) {
-					next(null, sessions);
+				}, function (err) {
+					next(err, sessions);
 				});
 			}
 		], function (err, sessions) {
-			callback(err, sessions ? sessions.map(function(sessObj) {
+			callback(err, sessions ? sessions.map(function (sessObj) {
 				sessObj.meta.datetimeISO = new Date(sessObj.meta.datetime).toISOString();
 				return sessObj.meta;
 			}) : undefined);
 		});
 	};
 
-	User.auth.addSession = function(uid, sessionId, callback) {
-		callback = callback || function() {};
+	User.auth.addSession = function (uid, sessionId, callback) {
+		callback = callback || function () {};
 		db.sortedSetAdd('uid:' + uid + ':sessions', Date.now(), sessionId, callback);
 	};
 
-	User.auth.revokeSession = function(sessionId, uid, callback) {
+	User.auth.revokeSession = function (sessionId, uid, callback) {
 		winston.verbose('[user.auth] Revoking session ' + sessionId + ' for user ' + uid);
 
-		db.sessionStore.get(sessionId, function(err, sessionObj) {
+		db.sessionStore.get(sessionId, function (err, sessionObj) {
 			if (err) {
 				return callback(err);
 			}
@@ -138,11 +138,11 @@ module.exports = function(User) {
 		});
 	};
 
-	User.auth.revokeAllSessions = function(uid, callback) {
+	User.auth.revokeAllSessions = function (uid, callback) {
 		async.waterfall([
 			async.apply(db.getSortedSetRange, 'uid:' + uid + ':sessions', 0, -1),
 			function (sids, next) {
-				async.each(sids, function(sid, next) {
+				async.each(sids, function (sid, next) {
 					User.auth.revokeSession(sid, uid, next);
 				}, next);
 			}

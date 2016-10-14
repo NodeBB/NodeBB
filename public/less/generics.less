@@ -15,6 +15,18 @@
 
 .define-if-not-set();
 
+#move_thread_modal .category-list {
+	height: 500px;
+	overflow-y: auto;
+	overflow-x: hidden;
+}
+
+.topic-watch-dropdown {
+	.help-text {
+		margin-left: 20px;
+	}
+}
+
 .category-list {
 	padding: 0;
 
@@ -76,10 +88,22 @@
 	/* Contains the user icon class as a mixin, so there's no need to include that in the template */
 	.user-icon;
 
+	&.avatar-xs {
+		width: 16px;
+		height: 16px;
+		.user-icon-style(16px, 1rem);
+	}
+
 	&.avatar-sm {
 		width: 24px;
 		height: 24px;
 		.user-icon-style(24px, 1.5rem);
+	}
+
+	&.avatar-md {
+		width: 32px;
+		height: 32px;
+		.user-icon-style(32px, 1.5rem);
 	}
 
 	&.avatar-lg {
@@ -91,4 +115,18 @@
 	&.avatar-rounded {
 		border-radius: 50%;
 	}
+}
+
+.ban-modal {
+	.form-inline, .form-group {
+		width: 100%;
+	}
+
+	.units {
+		line-height: 5rem;
+	}
+}
+
+.admin .ban-modal .units {
+	line-height: 1.846;
 }

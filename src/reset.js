@@ -8,8 +8,8 @@ var db = require('./database');
 var Reset = {};
 
 
-Reset.reset = function() {
-	db.init(function(err) {
+Reset.reset = function () {
+	db.init(function (err) {
 		if (err) {
 			winston.error(err.message);
 			process.exit();
@@ -32,7 +32,7 @@ Reset.reset = function() {
 		} else if (nconf.get('s')) {
 			resetSettings();
 		} else if (nconf.get('a')) {
-			require('async').series([resetWidgets, resetThemes, resetPlugins, resetSettings], function(err) {
+			require('async').series([resetWidgets, resetThemes, resetPlugins, resetSettings], function (err) {
 				if (!err) {
 					winston.info('[reset] Reset complete.');
 				} else {
@@ -59,7 +59,7 @@ Reset.reset = function() {
 
 function resetSettings(callback) {
 	var meta = require('./meta');
-	meta.configs.set('allowLocalLogin', 1, function(err) {
+	meta.configs.set('allowLocalLogin', 1, function (err) {
 		winston.info('[reset] Settings reset to default');
 		if (typeof callback === 'function') {
 			callback(err);
@@ -73,7 +73,7 @@ function resetTheme(themeId) {
 	var meta = require('./meta');
 	var fs = require('fs');
 	
-	fs.access('node_modules/' + themeId + '/package.json', function(err, fd) {
+	fs.access('node_modules/' + themeId + '/package.json', function (err, fd) {
 		if (err) {
 			winston.warn('[reset] Theme `%s` is not installed on this forum', themeId);
 			process.exit();
@@ -81,8 +81,13 @@ function resetTheme(themeId) {
 			meta.themes.set({
 				type: 'local',
 				id: themeId
-			}, function(err) {
-				winston.info('[reset] Theme reset to ' + themeId);
+			}, function (err) {
+				if (err) {
+					winston.warn('[reset] Failed to reset theme to ' + themeId);
+				} else {
+					winston.info('[reset] Theme reset to ' + themeId);
+				}
+
 				process.exit();
 			});		
 		}
@@ -95,7 +100,7 @@ function resetThemes(callback) {
 	meta.themes.set({
 		type: 'local',
 		id: 'nodebb-theme-persona'
-	}, function(err) {
+	}, function (err) {
 		winston.info('[reset] Theme reset to Persona');
 		if (typeof callback === 'function') {
 			callback(err);
@@ -110,7 +115,7 @@ function resetPlugin(pluginId) {
 
 	async.waterfall([
 		async.apply(db.isSortedSetMember, 'plugins:active', pluginId),
-		function(isMember, next) {
+		function (isMember, next) {
 			active = isMember;
 
 			if (isMember) {
@@ -119,7 +124,7 @@ function resetPlugin(pluginId) {
 				next();
 			}
 		}
-	], function(err) {
+	], function (err) {
 		if (err) {
 			winston.error('[reset] Could not disable plugin: %s encountered error %s', pluginId, err.message);
 		} else {
@@ -136,7 +141,7 @@ function resetPlugin(pluginId) {
 }
 
 function resetPlugins(callback) {
-	db.delete('plugins:active', function(err) {
+	db.delete('plugins:active', function (err) {
 		winston.info('[reset] All Plugins De-activated');
 		if (typeof callback === 'function') {
 			callback(err);
@@ -147,7 +152,7 @@ function resetPlugins(callback) {
 }
 
 function resetWidgets(callback) {
-	require('./widgets').reset(function(err) {
+	require('./widgets').reset(function (err) {
 		winston.info('[reset] All Widgets moved to Draft Zone');
 		if (typeof callback === 'function') {
 			callback(err);

@@ -1,24 +1,27 @@
 'use strict';
 
-var path = require('path'),
-	fs = require('fs'),
-	async = require('async'),
-	semver = require('semver'),
-	winston = require('winston'),
+var path = require('path');
+var fs = require('fs');
+var async = require('async');
+var semver = require('semver');
+var winston = require('winston');
 
-	pkg = require('../../package.json');
+var pkg = require('../../package.json');
 
-module.exports = function(Meta) {
+module.exports = function (Meta) {
 	Meta.dependencies = {};
 
-	Meta.dependencies.check = function(callback) {
+	Meta.dependencies.check = function (callback) {
 		var modules = Object.keys(pkg.dependencies);
+		var depsOutdated = false;
+		var depsMissing = false;
+		
 		winston.verbose('Checking dependencies for outdated modules');
 
-		async.every(modules, function(module, next) {
+		async.every(modules, function (module, next) {
 			fs.readFile(path.join(__dirname, '../../node_modules/', module, 'package.json'), {
 				encoding: 'utf-8'
-			}, function(err, pkgData) {
+			}, function (err, pkgData) {
 				// If a bundled plugin/theme is not present, skip the dep check (#3384)
 				if (err && err.code === 'ENOENT' && (module === 'nodebb-rewards-essentials' || module.startsWith('nodebb-plugin') || module.startsWith('nodebb-theme'))) {
 					winston.warn('[meta/dependencies] Bundled plugin ' + module + ' not found, skipping dependency check.');
@@ -33,15 +36,23 @@ module.exports = function(Meta) {
 						next(true);
 					} else {
 						process.stdout.write('[' + 'outdated'.yellow + '] ' + module.bold + ' installed v' + pkgData.version + ', package.json requires ' + pkg.dependencies[module] + '\n');
-						next(false);
+						depsOutdated = true;
+						next(true);
 					}
 				} catch(e) {
-					winston.error('[meta/dependencies] Could not read: ' + module);
-					process.exit();
+					process.stdout.write('[' + 'missing'.red + '] ' + module.bold + ' is a required dependency but could not be found\n');
+					depsMissing = true;
+					next(true);
 				}
 			});
-		}, function(ok) {
-			callback(!ok && global.env !== 'development' ? new Error('dependencies-out-of-date') : null);
+		}, function (ok) {
+			if (depsMissing) {
+				callback(new Error('dependencies-missing'));
+			} else if (depsOutdated) {
+				callback(global.env !== 'development' ? new Error('dependencies-out-of-date') : null);
+			} else {
+				callback(null);
+			}
 		});
 	};
 };

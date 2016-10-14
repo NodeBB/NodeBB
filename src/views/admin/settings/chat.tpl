@@ -12,9 +12,6 @@
 				</label>
 			</div>
 		</div>
-		<div class="form-group">
-			<strong>Chat Message Inbox Size</strong><br /> <input type="text" class="form-control" value="250" data-field="chatMessageInboxSize">
-		</div>
 
 		<div class="form-group">
 			<label>Maximum length of chat messages</label>
@@ -24,6 +21,12 @@
 		<div class="form-group">
 			<label>Maximum number of users in chat rooms</label>
 			<input type="text" class="form-control" value="0" data-field="maximumUsersInChatRoom">
+		</div>
+
+
+		<div class="form-group">
+			<label>Time between chat messages in milliseconds</label>
+			<input type="text" class="form-control" value="200" data-field="chatMessageDelay">
 		</div>
 	</div>
 </div>

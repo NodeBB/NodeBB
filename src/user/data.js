@@ -6,25 +6,26 @@ var winston = require('winston');
 
 var db = require('../database');
 var plugins = require('../plugins');
+var utils = require('../../public/src/utils');
 
-module.exports = function(User) {
+module.exports = function (User) {
 
 	var iconBackgrounds = ['#f44336', '#e91e63', '#9c27b0', '#673ab7', '#3f51b5', '#2196f3',
 		'#009688', '#1b5e20', '#33691e', '#827717', '#e65100', '#ff5722', '#795548', '#607d8b'];
 
-	User.getUserField = function(uid, field, callback) {
-		User.getUserFields(uid, [field], function(err, user) {
+	User.getUserField = function (uid, field, callback) {
+		User.getUserFields(uid, [field], function (err, user) {
 			callback(err, user ? user[field] : null);
 		});
 	};
 
-	User.getUserFields = function(uid, fields, callback) {
-		User.getUsersFields([uid], fields, function(err, users) {
+	User.getUserFields = function (uid, fields, callback) {
+		User.getUsersFields([uid], fields, function (err, users) {
 			callback(err, users ? users[0] : null);
 		});
 	};
 
-	User.getUsersFields = function(uids, fields, callback) {
+	User.getUsersFields = function (uids, fields, callback) {
 		var fieldsToRemove = [];
 		function addField(field) {
 			if (fields.indexOf(field) === -1) {
@@ -37,7 +38,7 @@ module.exports = function(User) {
 			return callback(null, []);
 		}
 
-		var keys = uids.map(function(uid) {
+		var keys = uids.map(function (uid) {
 			return 'user:' + uid;
 		});
 
@@ -50,7 +51,11 @@ module.exports = function(User) {
 			addField('uploadedpicture');
 		}
 
-		db.getObjectsFields(keys, fields, function(err, users) {
+		if (fields.indexOf('status') !== -1) {
+			addField('lastonline');
+		}
+
+		db.getObjectsFields(keys, fields, function (err, users) {
 			if (err) {
 				return callback(err);
 			}
@@ -59,27 +64,27 @@ module.exports = function(User) {
 		});
 	};
 
-	User.getMultipleUserFields = function(uids, fields, callback) {
+	User.getMultipleUserFields = function (uids, fields, callback) {
 		winston.warn('[deprecated] User.getMultipleUserFields is deprecated please use User.getUsersFields');
 		User.getUsersFields(uids, fields, callback);
 	};
 
-	User.getUserData = function(uid, callback) {
-		User.getUsersData([uid], function(err, users) {
+	User.getUserData = function (uid, callback) {
+		User.getUsersData([uid], function (err, users) {
 			callback(err, users ? users[0] : null);
 		});
 	};
 
-	User.getUsersData = function(uids, callback) {
+	User.getUsersData = function (uids, callback) {
 		if (!Array.isArray(uids) || !uids.length) {
 			return callback(null, []);
 		}
 
-		var keys = uids.map(function(uid) {
+		var keys = uids.map(function (uid) {
 			return 'user:' + uid;
 		});
 
-		db.getObjects(keys, function(err, users) {
+		db.getObjects(keys, function (err, users) {
 			if (err) {
 				return callback(err);
 			}
@@ -89,12 +94,14 @@ module.exports = function(User) {
 	};
 
 	function modifyUserData(users, fieldsToRemove, callback) {
-		users.forEach(function(user) {
+		users.forEach(function (user) {
 			if (!user) {
 				return;
 			}
 
-			user.username = validator.escape(user.username ? user.username.toString() : '');
+			if (user.hasOwnProperty('username')) {
+				user.username = validator.escape(user.username ? user.username.toString() : '');
+			}
 
 			if (user.password) {
 				user.password = undefined;
@@ -115,25 +122,37 @@ module.exports = function(User) {
 				user.uploadedpicture = user.uploadedpicture.startsWith('http') ? user.uploadedpicture : nconf.get('relative_path') + user.uploadedpicture;
 			}
 
-			for(var i=0; i<fieldsToRemove.length; ++i) {
+			if (user.hasOwnProperty('status') && parseInt(user.lastonline, 10)) {
+				user.status = User.getStatus(user);
+			}
+
+			for(var i = 0; i < fieldsToRemove.length; ++i) {
 				user[fieldsToRemove[i]] = undefined;
 			}
 
 			// User Icons
 			if (user.hasOwnProperty('picture') && user.username && parseInt(user.uid, 10)) {
 				user['icon:text'] = (user.username[0] || '').toUpperCase();
-				user['icon:bgColor'] = iconBackgrounds[Array.prototype.reduce.call(user.username, function(cur, next) {
+				user['icon:bgColor'] = iconBackgrounds[Array.prototype.reduce.call(user.username, function (cur, next) {
 					return cur + next.charCodeAt();
 				}, 0) % iconBackgrounds.length];
+			}
+
+			if (user.hasOwnProperty('joindate')) {
+				user.joindateISO = utils.toISOString(user.joindate);
+			}
+
+			if (user.hasOwnProperty('lastonline')) {
+				user.lastonlineISO = utils.toISOString(user.lastonline) || user.joindateISO;
 			}
 		});
 
 		plugins.fireHook('filter:users.get', users, callback);
 	}
 
-	User.setUserField = function(uid, field, value, callback) {
-		callback = callback || function() {};
-		db.setObjectField('user:' + uid, field, value, function(err) {
+	User.setUserField = function (uid, field, value, callback) {
+		callback = callback || function () {};
+		db.setObjectField('user:' + uid, field, value, function (err) {
 			if (err) {
 				return callback(err);
 			}
@@ -142,9 +161,9 @@ module.exports = function(User) {
 		});
 	};
 
-	User.setUserFields = function(uid, data, callback) {
-		callback = callback || function() {};
-		db.setObject('user:' + uid, data, function(err) {
+	User.setUserFields = function (uid, data, callback) {
+		callback = callback || function () {};
+		db.setObject('user:' + uid, data, function (err) {
 			if (err) {
 				return callback(err);
 			}
@@ -157,9 +176,9 @@ module.exports = function(User) {
 		});
 	};
 
-	User.incrementUserFieldBy = function(uid, field, value, callback) {
-		callback = callback || function() {};
-		db.incrObjectFieldBy('user:' + uid, field, value, function(err, value) {
+	User.incrementUserFieldBy = function (uid, field, value, callback) {
+		callback = callback || function () {};
+		db.incrObjectFieldBy('user:' + uid, field, value, function (err, value) {
 			if (err) {
 				return callback(err);
 			}
@@ -169,9 +188,9 @@ module.exports = function(User) {
 		});
 	};
 
-	User.decrementUserFieldBy = function(uid, field, value, callback) {
-		callback = callback || function() {};
-		db.incrObjectFieldBy('user:' + uid, field, -value, function(err, value) {
+	User.decrementUserFieldBy = function (uid, field, value, callback) {
+		callback = callback || function () {};
+		db.incrObjectFieldBy('user:' + uid, field, -value, function (err, value) {
 			if (err) {
 				return callback(err);
 			}

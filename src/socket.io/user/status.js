@@ -3,13 +3,13 @@
 var user = require('../../user');
 var websockets = require('../index');
 
-module.exports = function(SocketUser) {
-	SocketUser.checkStatus = function(socket, uid, callback) {
+module.exports = function (SocketUser) {
+	SocketUser.checkStatus = function (socket, uid, callback) {
 		if (!socket.uid) {
-			return callback('[[error:invalid-uid]]');
+			return callback(new Error('[[error:invalid-uid]]'));
 		}
 
-		user.getUserFields(uid, ['lastonline', 'status'], function(err, userData) {
+		user.getUserFields(uid, ['lastonline', 'status'], function (err, userData) {
 			if (err) {
 				return callback(err);
 			}
@@ -18,7 +18,7 @@ module.exports = function(SocketUser) {
 		});
 	};
 
-	SocketUser.setStatus = function(socket, status, callback) {
+	SocketUser.setStatus = function (socket, status, callback) {
 		if (!socket.uid) {
 			return callback(new Error('[[error:invalid-uid]]'));
 		}
@@ -27,7 +27,12 @@ module.exports = function(SocketUser) {
 		if (allowedStatus.indexOf(status) === -1) {
 			return callback(new Error('[[error:invalid-user-status]]'));
 		}
-		user.setUserField(socket.uid, 'status', status, function(err) {
+
+		var data = {status: status};
+		if (status !== 'offline') {
+			data.lastonline = Date.now();
+		}
+		user.setUserFields(socket.uid, data, function (err) {
 			if (err) {
 				return callback(err);
 			}

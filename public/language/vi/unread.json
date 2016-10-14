@@ -6,5 +6,8 @@
     "selected": "Đã chọn",
     "all": "Tất cả",
     "all_categories": "Tất cả chuyên mục",
-    "topics_marked_as_read.success": "Chủ đề được đánh dấu đã đọc"
+    "topics_marked_as_read.success": "Chủ đề được đánh dấu đã đọc",
+    "all-topics": "Toàn bộ chủ đề",
+    "new-topics": "Các chủ đề mới",
+    "watched-topics": "Các chủ đề đã xem"
 }

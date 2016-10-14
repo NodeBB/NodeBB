@@ -1,28 +1,28 @@
 'use strict';
 
-/* globals define, app, socket, templates, translator */
+/* globals define, app, socket, templates */
 
-define('forum/topic/flag', [], function() {
+define('forum/topic/flag', [], function () {
 
 	var Flag = {},
 		flagModal,
 		flagCommit;
 
-	Flag.showFlagModal = function(pid) {
-		parseModal(function(html) {
+	Flag.showFlagModal = function (pid) {
+		parseModal(function (html) {
 			flagModal = $(html);
 
-			flagModal.on('hidden.bs.modal', function() {
+			flagModal.on('hidden.bs.modal', function () {
 				flagModal.remove();
 			});
 
 			flagCommit = flagModal.find('#flag-post-commit');
 
-			flagModal.on('click', '.flag-reason', function() {
+			flagModal.on('click', '.flag-reason', function () {
 				flagPost(pid, $(this).text());
 			});
 
-			flagCommit.on('click', function() {
+			flagCommit.on('click', function () {
 				flagPost(pid, flagModal.find('#flag-reason-custom').val());
 			});
 
@@ -33,8 +33,10 @@ define('forum/topic/flag', [], function() {
 	};
 
 	function parseModal(callback) {
-		templates.parse('partials/modals/flag_post_modal', {}, function(html) {
-			translator.translate(html, callback);
+		templates.parse('partials/modals/flag_post_modal', {}, function (html) {
+			require(['translator'], function (translator) {
+				translator.translate(html, callback);
+			});
 		});
 	}
 
@@ -42,7 +44,7 @@ define('forum/topic/flag', [], function() {
 		if (!pid || !reason) {
 			return;
 		}
-		socket.emit('posts.flag', {pid: pid, reason: reason}, function(err) {
+		socket.emit('posts.flag', {pid: pid, reason: reason}, function (err) {
 			if (err) {
 				return app.alertError(err.message);
 			}

@@ -10,7 +10,11 @@
     "share_this_category": "Udostępnij tę kategorię",
     "watch": "Obserwuj",
     "ignore": "Ignoruj",
-    "watch.message": "Obserwujesz teraz aktualizacje tej kategorii",
-    "ignore.message": "Ignorujesz teraz aktualizacje tej kategorii",
+    "watching": "Obserwowanie",
+    "ignoring": "Ignorowanie",
+    "watching.description": "Pokaż tematy jako nieprzeczytane",
+    "ignoring.description": "Nie pokazuj tematów jako nieprzeczytane",
+    "watch.message": "Włączyłeś powiadomienia dla tej kategorii oraz subkategorii.",
+    "ignore.message": "Wyłączyłeś powiadomienia dla tej kategorii oraz subkategorii.",
     "watched-categories": "Obserwowane kategorie"
 }

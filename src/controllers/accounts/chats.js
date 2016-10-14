@@ -4,74 +4,115 @@ var async = require('async');
 
 var messaging = require('../../messaging');
 var meta = require('../../meta');
+var user = require('../../user');
 var helpers = require('../helpers');
-
 
 var chatsController = {};
 
-chatsController.get = function(req, res, callback) {
+chatsController.get = function (req, res, callback) {
 	if (parseInt(meta.config.disableChat, 10) === 1) {
 		return callback();
 	}
+	var uid;
+	var username;
+	var recentChats;
 
-	messaging.getRecentChats(req.uid, 0, 19, function(err, recentChats) {
+	async.waterfall([
+		function (next) {
+			async.parallel({
+				uid: async.apply(user.getUidByUserslug, req.params.userslug),
+				username: async.apply(user.getUsernameByUserslug, req.params.userslug)
+			}, next);
+		},
+		function (results, next) {
+			uid = results.uid;
+			username = results.username;
+			if (!uid) {
+				return callback();
+			}
+			messaging.getRecentChats(req.uid, uid, 0, 19, next);
+		},
+		function (_recentChats, next) {
+			recentChats = _recentChats;
+			if (!recentChats) {
+				return callback();
+			}
+			if (!req.params.roomid) {
+				return res.render('chats', {
+					rooms: recentChats.rooms,
+					uid: uid,
+					userslug: req.params.userslug,
+					nextStart: recentChats.nextStart,
+					allowed: true,
+					title: '[[pages:chats]]',
+					breadcrumbs: helpers.buildBreadcrumbs([{text: username, url: '/user/' + req.params.userslug}, {text: '[[pages:chats]]'}])
+				});
+			}
+			messaging.isUserInRoom(req.uid, req.params.roomid, next);
+		},
+		function (inRoom, next) {
+			if (!inRoom) {
+				return callback();
+			}
+			async.parallel({
+				users: async.apply(messaging.getUsersInRoom, req.params.roomid, 0, -1),
+				messages: async.apply(messaging.getMessages, {
+					callerUid: req.uid,
+					uid: uid,
+					roomId: req.params.roomid,
+					isNew: false
+				}),
+				room: async.apply(messaging.getRoomData, req.params.roomid)
+			}, next);
+		}
+	], function (err, data) {
 		if (err) {
 			return callback(err);
 		}
+		var room = data.room;
+		room.messages = data.messages;
 
-		if (!req.params.roomid) {
-			return res.render('chats', {
-				rooms: recentChats.rooms,
-				nextStart: recentChats.nextStart,
-				allowed: true,
-				title: '[[pages:chats]]',
-				breadcrumbs: helpers.buildBreadcrumbs([{text: '[[pages:chats]]'}])
-			});
-		}
-
-		async.waterfall([
-			function (next) {
-				messaging.isUserInRoom(req.uid, req.params.roomid, next);
-			},
-			function (inRoom, next) {
-				if (!inRoom) {
-					return callback();
-				}
-
-				async.parallel({
-					users: async.apply(messaging.getUsersInRoom, req.params.roomid, 0, -1),
-					messages: async.apply(messaging.getMessages, {
-						uid: req.uid,
-						roomId: req.params.roomid,
-						since: 'recent',
-						isNew: false
-					}),
-					room: async.apply(messaging.getRoomData, req.params.roomid)
-				}, next);
-			}
-		], function(err, data) {
-			if (err) {
-				return callback(err);
-			}
-			var room = data.room;
-			room.messages = data.messages;
-
-			room.isOwner = parseInt(room.owner, 10) === parseInt(req.uid, 10);
-			room.users = data.users.filter(function(user) {
-				return user && parseInt(user.uid, 10) && parseInt(user.uid, 10) !== req.uid;
-			});
-
-			room.rooms = recentChats.rooms;
-			room.nextStart = recentChats.nextStart;
-			room.title = room.roomName;
-			room.breadcrumbs = helpers.buildBreadcrumbs([{text: '[[pages:chats]]', url: '/chats'}, {text: room.roomName}]);
-			room.maximumUsersInChatRoom = parseInt(meta.config.maximumUsersInChatRoom, 10) || 0;
-			room.maximumChatMessageLength = parseInt(meta.config.maximumChatMessageLength, 10) || 1000;
-			room.showUserInput = !room.maximumUsersInChatRoom || room.maximumUsersInChatRoom > 2;
-
-			res.render('chats', room);
+		room.isOwner = parseInt(room.owner, 10) === parseInt(req.uid, 10);
+		room.users = data.users.filter(function (user) {
+			return user && parseInt(user.uid, 10) && parseInt(user.uid, 10) !== req.uid;
 		});
+
+		room.groupChat = room.hasOwnProperty('groupChat') ? room.groupChat : room.users.length > 2;
+		room.rooms = recentChats.rooms;
+		room.uid = uid;
+		room.userslug = req.params.userslug;
+		room.nextStart = recentChats.nextStart;
+		room.title = room.roomName;
+		room.breadcrumbs = helpers.buildBreadcrumbs([
+			{text: username, url: '/user/' + req.params.userslug},
+			{text: '[[pages:chats]]', url: '/user/' + req.params.userslug + '/chats'},
+			{text: room.roomName}
+		]);
+		room.maximumUsersInChatRoom = parseInt(meta.config.maximumUsersInChatRoom, 10) || 0;
+		room.maximumChatMessageLength = parseInt(meta.config.maximumChatMessageLength, 10) || 1000;
+		room.showUserInput = !room.maximumUsersInChatRoom || room.maximumUsersInChatRoom > 2;
+
+		res.render('chats', room);
 	});
 };
+
+chatsController.redirectToChat = function (req, res, next) {
+	var roomid = parseInt(req.params.roomid, 10);
+	if (!req.uid) {
+		return next();
+	}
+	user.getUserField(req.uid, 'userslug', function (err, userslug) {
+		if (err || !userslug) {
+			return next(err);
+		}
+
+		if (!roomid) {
+			return helpers.redirect(res, '/user/' + userslug + '/chats');
+		}
+		helpers.redirect(res, '/user/' + userslug + '/chats/' + roomid);
+	});
+};
+
+
 
 module.exports = chatsController;

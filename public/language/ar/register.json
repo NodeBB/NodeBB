@@ -1,5 +1,6 @@
 {
     "register": "تسجيل",
+    "cancel_registration": "إلغاء التسجيل",
     "help.email": "افتراضيا، سيتم إخفاء بريدك الإلكتروني من العامة.",
     "help.username_restrictions": "اسم مستخدم فريدة من نوعها بين1% و2% حرفا. يمكن للآخرين ذكرك @ <'span id='your-username> اسم المستخدم </span>.",
     "help.minimum_password_length": "كلمة المرور يجب أن تكون على الأقل بها 1% أحرف",
@@ -15,5 +16,8 @@
     "alternative_registration": "طريقة تسجيل بديلة",
     "terms_of_use": "شروط الاستخدام",
     "agree_to_terms_of_use": "أوافق على شروط الاستخدام",
-    "registration-added-to-queue": "Your registration has been added to the approval queue. You will receive an email when it is accepted by an administrator."
+    "terms_of_use_error": "You must agree to the Terms of Use",
+    "registration-added-to-queue": "Your registration has been added to the approval queue. You will receive an email when it is accepted by an administrator.",
+    "interstitial.intro": "We require some additional information before we can create your account.",
+    "interstitial.errors-found": "We could not complete your registration:"
 }

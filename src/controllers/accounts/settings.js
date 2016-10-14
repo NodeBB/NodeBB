@@ -3,7 +3,6 @@
 var async = require('async');
 
 var user = require('../../user');
-var groups = require('../../groups');
 var languages = require('../../languages');
 var meta = require('../../meta');
 var plugins = require('../../plugins');
@@ -17,53 +16,60 @@ var accountHelpers = require('./helpers');
 var settingsController = {};
 
 
-settingsController.get = function(req, res, callback) {
+settingsController.get = function (req, res, callback) {
 	var userData;
 	async.waterfall([
-		function(next) {
-			accountHelpers.getBaseUser(req.params.userslug, req.uid, next);
+		function (next) {
+			accountHelpers.getUserDataByUserSlug(req.params.userslug, req.uid, next);
 		},
-		function(_userData, next) {
+		function (_userData, next) {
 			userData = _userData;
 			if (!userData) {
 				return callback();
 			}
 			async.parallel({
-				settings: function(next) {
+				settings: function (next) {
 					user.getSettings(userData.uid, next);
 				},
-				userGroups: function(next) {
-					groups.getUserGroupsFromSet('groups:createtime', [userData.uid], next);
-				},
-				languages: function(next) {
+				languages: function (next) {
 					languages.list(next);
 				},
-				homePageRoutes: function(next) {
+				homePageRoutes: function (next) {
 					getHomePageRoutes(next);
 				},
-				ips: function (next) {
-					user.getIPs(userData.uid, 4, next);
+				sounds: function (next) {
+					meta.sounds.getFiles(next);
 				},
-				sessions: async.apply(user.auth.getSessions, userData.uid, req.sessionID)
+				soundsMapping: function (next) {
+					meta.sounds.getMapping(userData.uid, next);
+				}
 			}, next);
 		},
-		function(results, next) {
+		function (results, next) {
 			userData.settings = results.settings;
-			userData.userGroups = results.userGroups[0].filter(function(group) {
-				return group && group.userTitleEnabled && !groups.isPrivilegeGroup(group.name) && group.name !== 'registered-users';
-			});
 			userData.languages = results.languages;
 			userData.homePageRoutes = results.homePageRoutes;
-			userData.ips = results.ips;
-			userData.sessions = results.sessions;
+
+			var soundSettings = {
+				'notificationSound': 'notification',
+				'incomingChatSound': 'chat-incoming',
+				'outgoingChatSound': 'chat-outgoing'
+			};
+
+			Object.keys(soundSettings).forEach(function (setting) {
+				userData[setting] = Object.keys(results.sounds).map(function (name) {
+					return {name: name, selected: name === results.soundsMapping[soundSettings[setting]]};
+				});
+			});
+
 			plugins.fireHook('filter:user.customSettings', {settings: results.settings, customSettings: [], uid: req.uid}, next);
 		},
-		function(data, next) {
+		function (data, next) {
 			userData.customSettings = data.customSettings;
 			userData.disableEmailSubscriptions = parseInt(meta.config.disableEmailSubscriptions, 10) === 1;
 			next();
 		}
-	], function(err) {
+	], function (err) {
 		if (err) {
 			return callback(err);
 		}
@@ -96,25 +102,37 @@ settingsController.get = function(req, res, callback) {
 			{ "name": "Yeti", "value": "yeti" }
 		];
 
-		userData.homePageRoutes.forEach(function(route) {
+		var isCustom = true;
+		userData.homePageRoutes.forEach(function (route) {
 			route.selected = route.route === userData.settings.homePageRoute;
+			if (route.selected) {
+				isCustom = false;
+			}
 		});
 
-		userData.bootswatchSkinOptions.forEach(function(skin) {
+		if (isCustom && userData.settings.homePageRoute === 'none') {
+			isCustom = false;
+		}
+
+		userData.homePageRoutes.push({
+		 	route: 'custom',
+		 	name: 'Custom',
+		 	selected: isCustom
+		});
+
+		userData.bootswatchSkinOptions.forEach(function (skin) {
 			skin.selected = skin.value === userData.settings.bootswatchSkin;
 		});
 
-		userData.userGroups.forEach(function(group) {
-			group.selected = group.name === userData.settings.groupTitle;
-		});
-
-		userData.languages.forEach(function(language) {
+		userData.languages.forEach(function (language) {
 			language.selected = language.code === userData.settings.userLang;
 		});
 
 		userData.disableCustomUserSkins = parseInt(meta.config.disableCustomUserSkins, 10) === 1;
 
 		userData.allowUserHomePage = parseInt(meta.config.allowUserHomePage, 10) === 1;
+
+		userData.inTopicSearchAvailable = plugins.hasListeners('filter:topic.search');
 
 		userData.title = '[[pages:account/settings]]';
 		userData.breadcrumbs = helpers.buildBreadcrumbs([{text: userData.username, url: '/user/' + userData.userslug}, {text: '[[user:settings]]'}]);
@@ -136,46 +154,38 @@ function getHomePageRoutes(callback) {
 			categories.getCategoriesFields(cids, ['name', 'slug'], next);
 		},
 		function (categoryData, next) {
-			categoryData = categoryData.map(function(category) {
+			categoryData = categoryData.map(function (category) {
 				return {
 					route: 'category/' + category.slug,
 					name: 'Category: ' + category.name
 				};
 			});
-			next(null, categoryData);
+
+			categoryData = categoryData || [];
+
+			plugins.fireHook('filter:homepage.get', {routes: [
+				{
+					route: 'categories',
+					name: 'Categories'
+				},
+				{
+					route: 'unread',
+					name: 'Unread'
+				},
+				{
+					route: 'recent',
+					name: 'Recent'
+				},
+				{
+					route: 'popular',
+					name: 'Popular'
+				}
+			].concat(categoryData)}, next);
+		},
+		function (data, next) {
+			next(null, data.routes);
 		}
-	], function(err, categoryData) {
-		if (err) {
-			return callback(err);
-		}
-		categoryData = categoryData || [];
-
-		plugins.fireHook('filter:homepage.get', {routes: [
-			{
-				route: 'categories',
-				name: 'Categories'
-			},
-			{
-				route: 'recent',
-				name: 'Recent'
-			},
-			{
-				route: 'popular',
-				name: 'Popular'
-			}
-		].concat(categoryData)}, function(err, data) {
-			if (err) {
-				return callback(err);
-			}
-
-			data.routes.push({
-				route: 'custom',
-				name: 'Custom'
-			});
-
-			callback(null, data.routes);
-		});
-	});
+	], callback);
 }
 
 

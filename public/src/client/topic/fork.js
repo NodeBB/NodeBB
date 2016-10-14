@@ -1,33 +1,35 @@
 'use strict';
 
-/* globals define, app, ajaxify, socket, templates, translator */
+/* globals define, app, ajaxify, socket */
 
-define('forum/topic/fork', ['components', 'postSelect'], function(components, postSelect) {
+define('forum/topic/fork', ['components', 'postSelect'], function (components, postSelect) {
 
-	var Fork = {},
-		forkModal,
-		forkCommit;
+	var Fork = {};
+	var forkModal;
+	var forkCommit;
 
-	Fork.init = function() {
+	Fork.init = function () {
 		$('.topic').on('click', '[component="topic/fork"]', onForkThreadClicked);
+		$(window).on('action:ajaxify.start', onAjaxifyStart);
 	};
 
-	function onForkThreadClicked() {
-		parseModal(function(html) {
-			forkModal = $(html);
+	function onAjaxifyStart() {
+		closeForkModal();
+		$(window).off('action:ajaxify.start', onAjaxifyStart);
+	}
 
-			forkModal.on('hidden.bs.modal', function() {
-				forkModal.remove();
-			});
+	function onForkThreadClicked() {
+		app.parseAndTranslate('partials/fork_thread_modal', {}, function (html) {
+			forkModal = html;
 
 			forkCommit = forkModal.find('#fork_thread_commit');
 
-			showForkModal();
+			$(document.body).append(forkModal);
 
 			forkModal.find('.close,#fork_thread_cancel').on('click', closeForkModal);
-			forkModal.find('#fork-title').on('change', checkForkButtonEnable);
+			forkModal.find('#fork-title').on('keyup', checkForkButtonEnable);
 
-			postSelect.init(function() {
+			postSelect.init(function () {
 				checkForkButtonEnable();
 				showPostsSelected();
 			});
@@ -37,28 +39,15 @@ define('forum/topic/fork', ['components', 'postSelect'], function(components, po
 		});
 	}
 
-	function parseModal(callback) {
-		templates.parse('partials/fork_thread_modal', {}, function(html) {
-			translator.translate(html, callback);
-		});
-	}
-
-	function showForkModal() {
-		forkModal.modal({backdrop: false, show: true})
-			.css('position', 'fixed')
-			.css('left', Math.max(0, (($(window).width() - forkModal.outerWidth()) / 2) + $(window).scrollLeft()) + 'px')
-			.css('top', '0px')
-			.css('z-index', '2000');
-	}
-
 	function createTopicFromPosts() {
 		forkCommit.attr('disabled', true);
 		socket.emit('topics.createTopicFromPosts', {
 			title: forkModal.find('#fork-title').val(),
-			pids: postSelect.pids
-		}, function(err, newTopic) {
+			pids: postSelect.pids,
+			fromTid: ajaxify.data.tid
+		}, function (err, newTopic) {
 			function fadeOutAndRemove(pid) {
-				components.get('post', 'pid', pid).fadeOut(500, function() {
+				components.get('post', 'pid', pid).fadeOut(500, function () {
 					$(this).remove();
 				});
 			}
@@ -72,12 +61,12 @@ define('forum/topic/fork', ['components', 'postSelect'], function(components, po
 				title: '[[global:alert.success]]',
 				message: '[[topic:fork_success]]',
 				type: 'success',
-				clickfn: function() {
+				clickfn: function () {
 					ajaxify.go('topic/' + newTopic.slug);
 				}
 			});
 
-			postSelect.pids.forEach(function(pid) {
+			postSelect.pids.forEach(function (pid) {
 				fadeOutAndRemove(pid);
 			});
 
@@ -87,14 +76,14 @@ define('forum/topic/fork', ['components', 'postSelect'], function(components, po
 
 	function showPostsSelected() {
 		if (postSelect.pids.length) {
-			forkModal.find('#fork-pids').text(postSelect.pids.join(', '));
+			forkModal.find('#fork-pids').translateHtml('[[topic:fork_pid_count, ' + postSelect.pids.length + ']]');
 		} else {
 			forkModal.find('#fork-pids').translateHtml('[[topic:fork_no_pids]]');
 		}
 	}
 
 	function checkForkButtonEnable() {
-		if (forkModal.find('#fork-title').length && postSelect.pids.length) {
+		if (forkModal.find('#fork-title').val().length && postSelect.pids.length) {
 			forkCommit.removeAttr('disabled');
 		} else {
 			forkCommit.attr('disabled', true);
@@ -102,11 +91,14 @@ define('forum/topic/fork', ['components', 'postSelect'], function(components, po
 	}
 
 	function closeForkModal() {
-		postSelect.pids.forEach(function(pid) {
-			components.get('post', 'pid', pid).css('opacity', 1);
+		postSelect.pids.forEach(function (pid) {
+			components.get('post', 'pid', pid).toggleClass('bg-success', false);
 		});
 
-		forkModal.modal('hide');
+		if (forkModal) {
+			forkModal.remove();
+			forkModal = null;
+		}
 
 		components.get('topic').off('click', '[data-pid]');
 		postSelect.enableClicksOnPosts();

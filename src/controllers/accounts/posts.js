@@ -1,31 +1,31 @@
 'use strict';
 
 
-var async = require('async'),
+var async = require('async');
 
-	db = require('../../database'),
-	user = require('../../user'),
-	posts = require('../../posts'),
-	topics = require('../../topics'),
-	pagination = require('../../pagination'),
-	helpers = require('../helpers'),
-	accountHelpers = require('./helpers');
+var db = require('../../database');
+var user = require('../../user');
+var posts = require('../../posts');
+var topics = require('../../topics');
+var pagination = require('../../pagination');
+var helpers = require('../helpers');
+var accountHelpers = require('./helpers');
 
 var postsController = {};
 
-postsController.getFavourites = function(req, res, next) {
+postsController.getBookmarks = function (req, res, next) {
 	var data = {
-		template: 'account/favourites',
-		set: 'favourites',
+		template: 'account/bookmarks',
+		set: 'bookmarks',
 		type: 'posts',
-		noItemsFoundKey: '[[topic:favourites.has_no_favourites]]',
+		noItemsFoundKey: '[[topic:bookmarks.has_no_bookmarks]]',
 		method: posts.getPostSummariesFromSet,
-		crumb: '[[user:favourites]]'
+		crumb: '[[user:bookmarks]]'
 	};
 	getFromUserSet(data, req, res, next);
 };
 
-postsController.getPosts = function(req, res, next) {
+postsController.getPosts = function (req, res, next) {
 	var data = {
 		template: 'account/posts',
 		set: 'posts',
@@ -37,7 +37,7 @@ postsController.getPosts = function(req, res, next) {
 	getFromUserSet(data, req, res, next);
 };
 
-postsController.getUpVotedPosts = function(req, res, next) {
+postsController.getUpVotedPosts = function (req, res, next) {
 	var data = {
 		template: 'account/upvoted',
 		set: 'upvote',
@@ -49,7 +49,7 @@ postsController.getUpVotedPosts = function(req, res, next) {
 	getFromUserSet(data, req, res, next);
 };
 
-postsController.getDownVotedPosts = function(req, res, next) {
+postsController.getDownVotedPosts = function (req, res, next) {
 	var data = {
 		template: 'account/downvoted',
 		set: 'downvote',
@@ -61,7 +61,7 @@ postsController.getDownVotedPosts = function(req, res, next) {
 	getFromUserSet(data, req, res, next);
 };
 
-postsController.getBestPosts = function(req, res, next) {
+postsController.getBestPosts = function (req, res, next) {
 	var data = {
 		template: 'account/best',
 		set: 'posts:votes',
@@ -73,7 +73,7 @@ postsController.getBestPosts = function(req, res, next) {
 	getFromUserSet(data, req, res, next);
 };
 
-postsController.getWatchedTopics = function(req, res, next) {
+postsController.getWatchedTopics = function (req, res, next) {
 	var data = {
 		template: 'account/watched',
 		set: 'followed_tids',
@@ -85,7 +85,7 @@ postsController.getWatchedTopics = function(req, res, next) {
 	getFromUserSet(data, req, res, next);
 };
 
-postsController.getTopics = function(req, res, next) {
+postsController.getTopics = function (req, res, next) {
 	var data = {
 		template: 'account/topics',
 		set: 'topics',
@@ -99,13 +99,13 @@ postsController.getTopics = function(req, res, next) {
 
 function getFromUserSet(data, req, res, next) {
 	async.parallel({
-		settings: function(next) {
+		settings: function (next) {
 			user.getSettings(req.uid, next);
 		},
-		userData: function(next) {
-			accountHelpers.getBaseUser(req.params.userslug, req.uid, next);
+		userData: function (next) {
+			accountHelpers.getUserDataByUserSlug(req.params.userslug, req.uid, next);
 		}
-	}, function(err, results) {
+	}, function (err, results) {
 		if (err || !results.userData) {
 			return next(err);
 		}
@@ -118,19 +118,19 @@ function getFromUserSet(data, req, res, next) {
 		var itemsPerPage = (data.template === 'account/topics' || data.template === 'account/watched') ? results.settings.topicsPerPage : results.settings.postsPerPage;
 
 		async.parallel({
-			itemCount: function(next) {
+			itemCount: function (next) {
 				if (results.settings.usePagination) {
 					db.sortedSetCard(setName, next);
 				} else {
 					next(null, 0);
 				}
 			},
-			data: function(next) {
+			data: function (next) {
 				var start = (page - 1) * itemsPerPage;
 				var stop = start + itemsPerPage - 1;
 				data.method(setName, req.uid, start, stop, next);
 			}
-		}, function(err, results) {
+		}, function (err, results) {
 			if (err) {
 				return next(err);
 			}

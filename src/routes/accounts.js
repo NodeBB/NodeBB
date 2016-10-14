@@ -7,6 +7,8 @@ module.exports = function (app, middleware, controllers) {
 	var middlewares = [middleware.checkGlobalPrivacySettings];
 	var accountMiddlewares = [middleware.checkGlobalPrivacySettings, middleware.checkAccountPermissions];
 
+	setupPageRoute(app, '/uid/:uid/:section?', middleware, [], middleware.redirectUidToUserslug);
+
 	setupPageRoute(app, '/user/:userslug', middleware, middlewares, controllers.accounts.profile.get);
 	setupPageRoute(app, '/user/:userslug/following', middleware, middlewares, controllers.accounts.follow.getFollowing);
 	setupPageRoute(app, '/user/:userslug/followers', middleware, middlewares, controllers.accounts.follow.getFollowers);
@@ -15,7 +17,7 @@ module.exports = function (app, middleware, controllers) {
 	setupPageRoute(app, '/user/:userslug/best', middleware, middlewares, controllers.accounts.posts.getBestPosts);
 	setupPageRoute(app, '/user/:userslug/groups', middleware, middlewares, controllers.accounts.groups.get);
 
-	setupPageRoute(app, '/user/:userslug/favourites', middleware, accountMiddlewares, controllers.accounts.posts.getFavourites);
+	setupPageRoute(app, '/user/:userslug/bookmarks', middleware, accountMiddlewares, controllers.accounts.posts.getBookmarks);
 	setupPageRoute(app, '/user/:userslug/watched', middleware, accountMiddlewares, controllers.accounts.posts.getWatchedTopics);
 	setupPageRoute(app, '/user/:userslug/upvoted', middleware, accountMiddlewares, controllers.accounts.posts.getUpVotedPosts);
 	setupPageRoute(app, '/user/:userslug/downvoted', middleware, accountMiddlewares, controllers.accounts.posts.getDownVotedPosts);
@@ -23,10 +25,12 @@ module.exports = function (app, middleware, controllers) {
 	setupPageRoute(app, '/user/:userslug/edit/username', middleware, accountMiddlewares, controllers.accounts.edit.username);
 	setupPageRoute(app, '/user/:userslug/edit/email', middleware, accountMiddlewares, controllers.accounts.edit.email);
 	setupPageRoute(app, '/user/:userslug/edit/password', middleware, accountMiddlewares, controllers.accounts.edit.password);
+	setupPageRoute(app, '/user/:userslug/info', middleware, accountMiddlewares, controllers.accounts.info.get);
 	setupPageRoute(app, '/user/:userslug/settings', middleware, accountMiddlewares, controllers.accounts.settings.get);
 
-	app.delete('/user/:userslug/session/:uuid', accountMiddlewares, controllers.accounts.session.revoke);
+	app.delete('/api/user/:userslug/session/:uuid', [middleware.requireUser], controllers.accounts.session.revoke);
 
 	setupPageRoute(app, '/notifications', middleware, [middleware.authenticate], controllers.accounts.notifications.get);
-	setupPageRoute(app, '/chats/:roomid?', middleware, [middleware.authenticate], controllers.accounts.chats.get);
+	setupPageRoute(app, '/user/:userslug/chats/:roomid?', middleware, middlewares, controllers.accounts.chats.get);
+	setupPageRoute(app, '/chats/:roomid?', middleware, [], controllers.accounts.chats.redirectToChat);
 };

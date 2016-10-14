@@ -29,12 +29,13 @@ var	pidFilePath = __dirname + '/pidfile',
 		css: {
 			cache: undefined,
 			acpCache: undefined
-		}
+		},
+		templatesCompiled: false
 	};
 
-Loader.init = function(callback) {
+Loader.init = function (callback) {
 	if (silent) {
-		console.log = function() {
+		console.log = function () {
 			var args = Array.prototype.slice.call(arguments);
 			output.write(args.join(' ') + '\n');
 		};
@@ -46,7 +47,7 @@ Loader.init = function(callback) {
 	callback();
 };
 
-Loader.displayStartupMessages = function(callback) {
+Loader.displayStartupMessages = function (callback) {
 	console.log('');
 	console.log('NodeBB v' + pkg.version + ' Copyright (C) 2013-2014 NodeBB Inc.');
 	console.log('This program comes with ABSOLUTELY NO WARRANTY.');
@@ -56,25 +57,25 @@ Loader.displayStartupMessages = function(callback) {
 	callback();
 };
 
-Loader.addWorkerEvents = function(worker) {
+Loader.addWorkerEvents = function (worker) {
 
-	worker.on('exit', function(code, signal) {
+	worker.on('exit', function (code, signal) {
 		if (code !== 0) {
-			if (Loader.timesStarted < numProcs*3) {
+			if (Loader.timesStarted < numProcs * 3) {
 				Loader.timesStarted++;
 				if (Loader.crashTimer) {
 					clearTimeout(Loader.crashTimer);
 				}
-				Loader.crashTimer = setTimeout(function() {
+				Loader.crashTimer = setTimeout(function () {
 					Loader.timesStarted = 0;
 				}, 10000);
 			} else {
-				console.log(numProcs*3 + ' restarts in 10 seconds, most likely an error on startup. Halting.');
+				console.log(numProcs * 3 + ' restarts in 10 seconds, most likely an error on startup. Halting.');
 				process.exit();
 			}
 		}
 
-		console.log('[cluster] Child Process (' + worker.pid + ') has exited (code: ' + code + ', signal: ' + signal +')');
+		console.log('[cluster] Child Process (' + worker.pid + ') has exited (code: ' + code + ', signal: ' + signal + ')');
 		if (!(worker.suicide || code === 0)) {
 			console.log('[cluster] Spinning up another process...');
 
@@ -82,25 +83,14 @@ Loader.addWorkerEvents = function(worker) {
 		}
 	});
 
-	worker.on('message', function(message) {
+	worker.on('message', function (message) {
 		if (message && typeof message === 'object' && message.action) {
 			switch (message.action) {
 				case 'ready':
-					if (Loader.js.target['nodebb.min.js'] && Loader.js.target['nodebb.min.js'].cache && !worker.isPrimary) {
+					if (Loader.js.target['nodebb.min.js'] && Loader.js.target['acp.min.js'] && !worker.isPrimary) {
 						worker.send({
 							action: 'js-propagate',
-							cache: Loader.js.target['nodebb.min.js'].cache,
-							map: Loader.js.target['nodebb.min.js'].map,
-							target: 'nodebb.min.js'
-						});
-					}
-
-					if (Loader.js.target['acp.min.js'] && Loader.js.target['acp.min.js'].cache && !worker.isPrimary) {
-						worker.send({
-							action: 'js-propagate',
-							cache: Loader.js.target['acp.min.js'].cache,
-							map: Loader.js.target['acp.min.js'].map,
-							target: 'acp.min.js'
+							data: Loader.js.target
 						});
 					}
 
@@ -109,6 +99,12 @@ Loader.addWorkerEvents = function(worker) {
 							action: 'css-propagate',
 							cache: Loader.css.cache,
 							acpCache: Loader.css.acpCache
+						});
+					}
+
+					if (Loader.templatesCompiled && !worker.isPrimary) {
+						worker.send({
+							action: 'templates:compiled'
 						});
 					}
 
@@ -141,6 +137,8 @@ Loader.addWorkerEvents = function(worker) {
 					}, worker.pid);
 				break;
 				case 'templates:compiled':
+					Loader.templatesCompiled = true;
+
 					Loader.notifyWorkers({
 						action: 'templates:compiled',
 					}, worker.pid);
@@ -150,11 +148,11 @@ Loader.addWorkerEvents = function(worker) {
 	});
 };
 
-Loader.start = function(callback) {
+Loader.start = function (callback) {
 	numProcs = getPorts().length;
 	console.log('Clustering enabled: Spinning up ' + numProcs + ' process(es).\n');
 
-	for (var x=0; x<numProcs; ++x) {
+	for (var x = 0; x < numProcs; ++x) {
 		forkWorker(x, x === 0);
 	}
 
@@ -171,7 +169,7 @@ function forkWorker(index, isPrimary) {
 	}
 
 	process.env.isPrimary = isPrimary;
-	process.env.isCluster = true;
+	process.env.isCluster = ports.length > 1 ? true : false;
 	process.env.port = ports[index];
 
 	var worker = fork('app.js', [], {
@@ -207,21 +205,22 @@ function getPorts() {
 	return port;
 }
 
-Loader.restart = function() {
+Loader.restart = function () {
 	killWorkers();
-
+	nconf.remove('file');
+	nconf.use('file', { file: path.join(__dirname, '/config.json') });
 	Loader.start();
 };
 
-Loader.reload = function() {
-	workers.forEach(function(worker) {
+Loader.reload = function () {
+	workers.forEach(function (worker) {
 		worker.send({
 			action: 'reload'
 		});
 	});
 };
 
-Loader.stop = function() {
+Loader.stop = function () {
 	killWorkers();
 
 	// Clean up the pidfile
@@ -229,15 +228,15 @@ Loader.stop = function() {
 };
 
 function killWorkers() {
-	workers.forEach(function(worker) {
+	workers.forEach(function (worker) {
 		worker.suicide = true;
 		worker.kill();
 	});
 }
 
-Loader.notifyWorkers = function(msg, worker_pid) {
+Loader.notifyWorkers = function (msg, worker_pid) {
 	worker_pid = parseInt(worker_pid, 10);
-	workers.forEach(function(worker) {
+	workers.forEach(function (worker) {
 		if (parseInt(worker.pid, 10) !== worker_pid) {
 			try {
 				worker.send(msg);
@@ -248,7 +247,7 @@ Loader.notifyWorkers = function(msg, worker_pid) {
 	});
 };
 
-fs.open(path.join(__dirname, 'config.json'), 'r', function(err) {
+fs.open(path.join(__dirname, 'config.json'), 'r', function (err) {
 	if (!err) {
 		if (nconf.get('daemon') !== 'false' && nconf.get('daemon') !== false) {
 			if (file.existsSync(pidFilePath)) {
@@ -273,7 +272,7 @@ fs.open(path.join(__dirname, 'config.json'), 'r', function(err) {
 			Loader.init,
 			Loader.displayStartupMessages,
 			Loader.start
-		], function(err) {
+		], function (err) {
 			if (err) {
 				console.log('[loader] Error during startup: ' + err.message);
 			}

@@ -8,15 +8,17 @@ var winston = require('winston');
 
 var db = require('../database');
 var user = require('../user');
+var posts = require('../posts');
 var notifications = require('../notifications');
 var privileges = require('../privileges');
 var meta = require('../meta');
 var emailer = require('../emailer');
+var plugins = require('../plugins');
 
-module.exports = function(Topics) {
+module.exports = function (Topics) {
 
-	Topics.toggleFollow = function(tid, uid, callback) {
-		callback = callback || function() {};
+	Topics.toggleFollow = function (tid, uid, callback) {
+		callback = callback || function () {};
 		var isFollowing;
 		async.waterfall([
 			function (next) {
@@ -36,14 +38,26 @@ module.exports = function(Topics) {
 					Topics.follow(tid, uid, next);
 				}
 			},
-			function(next) {
+			function (next) {
 				next(null, !isFollowing);
 			}
 		], callback);
 	};
 
-	Topics.follow = function(tid, uid, callback) {
-		callback = callback || function() {};
+	Topics.follow = function (tid, uid, callback) {
+		setWatching(follow, unignore, 'action:topic.follow', tid, uid, callback);
+	};
+
+	Topics.unfollow = function (tid, uid, callback) {
+		setWatching(unfollow, unignore, 'action:topic.unfollow', tid, uid, callback);
+	};
+
+	Topics.ignore = function (tid, uid, callback) {
+		setWatching(ignore, unfollow, 'action:topic.ignore', tid, uid, callback);
+	};
+
+	function setWatching(method1, method2, hook, tid, uid, callback) {
+		callback = callback || function () {};
 		if (!parseInt(uid, 10)) {
 			return callback();
 		}
@@ -55,51 +69,98 @@ module.exports = function(Topics) {
 				if (!exists) {
 					return next(new Error('[[error:no-topic]]'));
 				}
-				db.setAdd('tid:' + tid + ':followers', uid, next);
+				method1(tid, uid, next);
 			},
-			function(next) {
-				db.sortedSetAdd('uid:' + uid + ':followed_tids', Date.now(), tid, next);
-			}
+			function (next) {
+				method2(tid, uid, next);
+			},
+			async.apply(plugins.fireHook, hook, {uid: uid, tid: tid})
 		], callback);
-	};
+	}
 
-	Topics.unfollow = function(tid, uid, callback) {
-		callback = callback || function() {};
+	function follow(tid, uid, callback) {
+		addToSets('tid:' + tid + ':followers', 'uid:' + uid + ':followed_tids', tid, uid, callback);
+	}
+
+	function unfollow(tid, uid, callback) {
+		removeFromSets('tid:' + tid + ':followers', 'uid:' + uid + ':followed_tids', tid, uid, callback);
+	}
+
+	function ignore(tid, uid, callback) {
+		addToSets('tid:' + tid + ':ignorers', 'uid:' + uid + ':ignored_tids', tid, uid, callback);
+	}
+
+	function unignore(tid, uid, callback) {
+		removeFromSets('tid:' + tid + ':ignorers', 'uid:' + uid + ':ignored_tids', tid, uid, callback);
+	}
+
+	function addToSets(set1, set2, tid, uid, callback) {
 		async.waterfall([
 			function (next) {
-				Topics.exists(tid, next);
+				db.setAdd(set1, uid, next);
 			},
-			function (exists, next) {
-				if (!exists) {
-					return next(new Error('[[error:no-topic]]'));
-				}
-				db.setRemove('tid:' + tid + ':followers', uid, next);
-			},
-			function(next) {
-				db.sortedSetRemove('uid:' + uid + ':followed_tids', tid, next);
+			function (next) {
+				db.sortedSetAdd(set2, Date.now(), tid, next);
 			}
 		], callback);
+	}
+
+	function removeFromSets(set1, set2, tid, uid, callback) {
+		async.waterfall([
+			function (next) {
+				db.setRemove(set1, uid, next);
+			},
+			function (next) {
+				db.sortedSetRemove(set2, tid, next);
+			}
+		], callback);
+	}
+
+	Topics.isFollowing = function (tids, uid, callback) {
+		isIgnoringOrFollowing('followers', tids, uid, callback);
 	};
 
-	Topics.isFollowing = function(tids, uid, callback) {
+	Topics.isIgnoring = function (tids, uid, callback) {
+		isIgnoringOrFollowing('ignorers', tids, uid, callback);
+	};
+
+	function isIgnoringOrFollowing(set, tids, uid, callback) {
 		if (!Array.isArray(tids)) {
 			return callback();
 		}
 		if (!parseInt(uid, 10)) {
-			return callback(null, tids.map(function() { return false; }));
+			return callback(null, tids.map(function () { return false; }));
 		}
-		var keys = tids.map(function(tid) {
-			return 'tid:' + tid + ':followers';
+		var keys = tids.map(function (tid) {
+			return 'tid:' + tid + ':' + set;
 		});
 		db.isMemberOfSets(keys, uid, callback);
-	};
+	}
 
-	Topics.getFollowers = function(tid, callback) {
+	Topics.getFollowers = function (tid, callback) {
 		db.getSetMembers('tid:' + tid + ':followers', callback);
 	};
 
-	Topics.notifyFollowers = function(postData, exceptUid, callback) {
-		callback = callback || function() {};
+	Topics.getIgnorers = function (tid, callback) {
+		db.getSetMembers('tid:' + tid + ':ignorers', callback);
+	};
+
+	Topics.filterIgnoringUids = function (tid, uids, callback) {
+		async.waterfall([
+			function (next){
+				db.isSetMembers('tid:' + tid + ':ignorers', uids, next);
+			},
+			function (isMembers, next){
+				var readingUids = uids.filter(function (uid, index) {
+					return uid && isMembers[index];
+				});
+				next(null, readingUids);
+			}
+		], callback);
+	};
+
+	Topics.notifyFollowers = function (postData, exceptUid, callback) {
+		callback = callback || function () {};
 		var followers;
 		var title;
 		var titleEscaped;
@@ -134,10 +195,13 @@ module.exports = function(Topics) {
 					titleEscaped = title.replace(/%/g, '&#37;').replace(/,/g, '&#44;');
 				}
 
+				postData.content = posts.relativeToAbsolute(postData.content);
+
 				notifications.create({
 					bodyShort: '[[notifications:user_posted_to, ' + postData.user.username + ', ' + titleEscaped + ']]',
 					bodyLong: postData.content,
 					pid: postData.pid,
+					path: '/post/' + postData.pid,
 					nid: 'new_post:tid:' + postData.topic.tid + ':pid:' + postData.pid + ':uid:' + exceptUid,
 					tid: postData.topic.tid,
 					from: exceptUid,
@@ -154,24 +218,27 @@ module.exports = function(Topics) {
 					return next();
 				}
 
-				async.eachLimit(followers, 3, function(toUid, next) {
+				async.eachLimit(followers, 3, function (toUid, next) {
 					async.parallel({
 						userData: async.apply(user.getUserFields, toUid, ['username', 'userslug']),
 						userSettings: async.apply(user.getSettings, toUid)
-					}, function(err, data) {
+					}, function (err, data) {
 						if (err) {
 							return next(err);
 						}
+
 						if (data.userSettings.sendPostNotifications) {
 							emailer.send('notif_post', toUid, {
 								pid: postData.pid,
 								subject: '[' + (meta.config.title || 'NodeBB') + '] ' + title,
 								intro: '[[notifications:user_posted_to, ' + postData.user.username + ', ' + titleEscaped + ']]',
-								postBody: postData.content.replace(/"\/\//g, '"http://'),
+								postBody: postData.content.replace(/"\/\//g, '"https://'),
 								site_title: meta.config.title || 'NodeBB',
 								username: data.userData.username,
 								userslug: data.userData.userslug,
 								url: nconf.get('url') + '/topic/' + postData.topic.tid,
+								topicSlug: postData.topic.slug,
+								postCount: postData.topic.postcount,
 								base_url: nconf.get('url')
 							}, next);
 						} else {

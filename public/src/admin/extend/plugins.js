@@ -1,9 +1,9 @@
 "use strict";
 /* global define, app, socket, bootbox */
 
-define('admin/extend/plugins', function() {
+define('admin/extend/plugins', function () {
 	var Plugins = {};
-	Plugins.init = function() {
+	Plugins.init = function () {
 		var pluginsList = $('.plugins'),
 			numPlugins = pluginsList[0].querySelectorAll('li').length,
 			pluginID;
@@ -15,29 +15,38 @@ define('admin/extend/plugins', function() {
 
 		$('#plugin-search').val('');
 
-		pluginsList.on('click', 'button[data-action="toggleActive"]', function() {
-			pluginID = $(this).parents('li').attr('data-plugin-id');
-			var btn = $(this);
-			socket.emit('admin.plugins.toggleActive', pluginID, function(err, status) {
+		pluginsList.on('click', 'button[data-action="toggleActive"]', function () {
+			var pluginEl = $(this).parents('li');
+			pluginID = pluginEl.attr('data-plugin-id');
+			var btn = $('#' + pluginID + ' [data-action="toggleActive"]');
+			socket.emit('admin.plugins.toggleActive', pluginID, function (err, status) {
+				if (err) {
+					return app.alertError(err);
+				}
 				btn.html('<i class="fa fa-power-off"></i> ' + (status.active ? 'Deactivate' : 'Activate'));
 				btn.toggleClass('btn-warning', status.active).toggleClass('btn-success', !status.active);
+
+				//clone it to active plugins tab
+				if (status.active && !$('#active #' + pluginID).length) {
+					$('#active ul').prepend(pluginEl.clone(true));
+				}
 
 				app.alert({
 					alert_id: 'plugin_toggled',
 					title: 'Plugin ' + (status.active ? 'Enabled' : 'Disabled'),
-					message: status.active ? 'Please reload your NodeBB to fully activate this plugin' : 'Plugin successfully deactivated',
+					message: status.active ? 'Please restart your NodeBB to fully activate this plugin' : 'Plugin successfully deactivated',
 					type: status.active ? 'warning' : 'success',
 					timeout: 5000,
-					clickfn: function() {
-						require(['admin/modules/instance'], function(instance) {
-							instance.reload();
+					clickfn: function () {
+						require(['admin/modules/instance'], function (instance) {
+							instance.restart();
 						});
 					}
 				});
 			});
 		});
 
-		pluginsList.on('click', 'button[data-action="toggleInstall"]', function() {
+		pluginsList.on('click', 'button[data-action="toggleInstall"]', function () {
 			var btn = $(this);
 			btn.attr('disabled', true);
 			pluginID = $(this).parents('li').attr('data-plugin-id');
@@ -46,9 +55,9 @@ define('admin/extend/plugins', function() {
 				return Plugins.toggleInstall(pluginID, $(this).parents('li').attr('data-version'));
 			}
 
-			Plugins.suggest(pluginID, function(err, payload) {
+			Plugins.suggest(pluginID, function (err, payload) {
 				if (err) {
-					bootbox.confirm('<p>NodeBB could not reach the package manager, proceed with installation of latest version?</p><div class="alert alert-danger"><strong>Server returned (' + err.status + ')</strong>: ' + err.responseText + '</div>', function(confirm) {
+					bootbox.confirm('<p>NodeBB could not reach the package manager, proceed with installation of latest version?</p><div class="alert alert-danger"><strong>Server returned (' + err.status + ')</strong>: ' + err.responseText + '</div>', function (confirm) {
 						if (confirm) {
 							Plugins.toggleInstall(pluginID, 'latest');
 						} else {
@@ -58,11 +67,11 @@ define('admin/extend/plugins', function() {
 					return;
 				}
 
-				require(['semver'], function(semver) {
+				require(['semver'], function (semver) {
 					if (payload.version !== 'latest') {
 						Plugins.toggleInstall(pluginID, payload.version);
 					} else if (payload.version === 'latest') {
-						confirmInstall(pluginID, function(confirm) {
+						confirmInstall(pluginID, function (confirm) {
 							if (confirm) {
 								Plugins.toggleInstall(pluginID, 'latest');
 							} else {
@@ -76,21 +85,21 @@ define('admin/extend/plugins', function() {
 			});
 		});
 
-		pluginsList.on('click', 'button[data-action="upgrade"]', function() {
+		pluginsList.on('click', 'button[data-action="upgrade"]', function () {
 			var btn = $(this);
 			var parent = btn.parents('li');
 			pluginID = parent.attr('data-plugin-id');
 
-			Plugins.suggest(pluginID, function(err, payload) {
+			Plugins.suggest(pluginID, function (err, payload) {
 				if (err) {
 					return bootbox.alert('<p>NodeBB could not reach the package manager, an upgrade is not suggested at this time.</p>');
 				}
 
-				require(['semver'], function(semver) {
+				require(['semver'], function (semver) {
 					if (payload.version !== 'latest' && semver.gt(payload.version, parent.find('.currentVersion').text())) {
 						upgrade(pluginID, btn, payload.version);
 					} else if (payload.version === 'latest') {
-						confirmInstall(pluginID, function() {
+						confirmInstall(pluginID, function () {
 							upgrade(pluginID, btn, payload.version);
 						});
 					} else {
@@ -100,22 +109,22 @@ define('admin/extend/plugins', function() {
 			});
 		});
 
-		$('#plugin-search').on('input propertychange', function() {
+		$('#plugin-search').on('input propertychange', function () {
 			var term = $(this).val();
-			$('.plugins li').each(function() {
+			$('.plugins li').each(function () {
 				var pluginId = $(this).attr('data-plugin-id');
 				$(this).toggleClass('hide', pluginId && pluginId.indexOf(term) === -1);
 			});
 		});
 
-		$('#plugin-order').on('click', function() {
+		$('#plugin-order').on('click', function () {
 			$('#order-active-plugins-modal').modal('show');
-			socket.emit('admin.plugins.getActive', function(err, activePlugins) {
+			socket.emit('admin.plugins.getActive', function (err, activePlugins) {
 				if (err) {
 					return app.alertError(err);
 				}
 				var html = '';
-				activePlugins.forEach(function(plugin) {
+				activePlugins.forEach(function (plugin) {
 					html += '<li class="">' + plugin + '</li>';
 				});
 				if (!activePlugins.length) {
@@ -125,14 +134,14 @@ define('admin/extend/plugins', function() {
 			});
 		});
 
-		$('#save-plugin-order').on('click', function() {
+		$('#save-plugin-order').on('click', function () {
 			var plugins = $('#order-active-plugins-modal .plugin-list').children();
 			var data = [];
-			plugins.each(function(index, el) {
+			plugins.each(function (index, el) {
 				data.push({name: $(el).text(), order: index});
 			});
 
-			socket.emit('admin.plugins.orderActivePlugins', data, function(err) {
+			socket.emit('admin.plugins.orderActivePlugins', data, function (err) {
 				if (err) {
 					return app.alertError(err.message);
 				}
@@ -141,6 +150,7 @@ define('admin/extend/plugins', function() {
 		});
 
 		populateUpgradeablePlugins();
+		populateActivePlugins();
 	};
 
 	function confirmInstall(pluginID, callback) {
@@ -148,7 +158,7 @@ define('admin/extend/plugins', function() {
 			'<div class="alert alert-warning"><p><strong>No Compatibility Infomation Found</strong></p><p>This plugin did not specify a specific version for installation given your NodeBB version. Full compatibility cannot be guaranteed, and may cause your NodeBB to no longer start properly.</p></div>' +
 			'<p>In the event that NodeBB cannot boot properly:</p>' +
 			'<pre><code>$ ./nodebb reset plugin="' + pluginID + '"</code></pre>' +
-			'<p>Continue installation of latest version of this plugin?</p>', function(confirm) {
+			'<p>Continue installation of latest version of this plugin?</p>', function (confirm) {
 				callback(confirm);
 		});
 	}
@@ -158,7 +168,7 @@ define('admin/extend/plugins', function() {
 		socket.emit('admin.plugins.upgrade', {
 			id: pluginID,
 			version: version
-		}, function(err, isActive) {
+		}, function (err, isActive) {
 			if (err) {
 				return app.alertError(err.message);
 			}
@@ -173,8 +183,8 @@ define('admin/extend/plugins', function() {
 					message: 'Please reload your NodeBB to fully upgrade this plugin',
 					type: 'warning',
 					timeout: 5000,
-					clickfn: function() {
-						require(['admin/modules/instance'], function(instance) {
+					clickfn: function () {
+						require(['admin/modules/instance'], function (instance) {
 							instance.reload();
 						});
 					}
@@ -183,7 +193,7 @@ define('admin/extend/plugins', function() {
 		});
 	}
 
-	Plugins.toggleInstall = function(pluginID, version, callback) {
+	Plugins.toggleInstall = function (pluginID, version, callback) {
 		var btn = $('li[data-plugin-id="' + pluginID + '"] button[data-action="toggleInstall"]');
 		var activateBtn = btn.siblings('[data-action="toggleActive"]');
 		btn.find('i').attr('class', 'fa fa-refresh fa-spin');
@@ -191,7 +201,7 @@ define('admin/extend/plugins', function() {
 		socket.emit('admin.plugins.toggleInstall', {
 			id: pluginID,
 			version: version
-		}, function(err, pluginData) {
+		}, function (err, pluginData) {
 			if (err) {
 				btn.removeAttr('disabled');
 				return app.alertError(err.message);
@@ -213,7 +223,7 @@ define('admin/extend/plugins', function() {
 		});
 	};
 
-	Plugins.suggest = function(pluginId, callback) {
+	Plugins.suggest = function (pluginId, callback) {
 		var nbbVersion = app.config.version.match(/^\d\.\d\.\d/);
 		$.ajax((app.config.registry || 'https://packages.nodebb.org') + '/api/v1/suggest', {
 			type: 'GET',
@@ -222,15 +232,25 @@ define('admin/extend/plugins', function() {
 				version: nbbVersion[0]
 			},
 			dataType: 'json'
-		}).done(function(payload) {
+		}).done(function (payload) {
 			callback(undefined, payload);
 		}).fail(callback);
 	};
 
 	function populateUpgradeablePlugins() {
-		$('#installed ul li').each(function() {
+		$('#installed ul li').each(function () {
 			if ($(this).children('[data-action="upgrade"]').length) {
 				$('#upgrade ul').append($(this).clone(true));
+			}
+		});
+	}
+
+	function populateActivePlugins() {
+		$('#installed ul li').each(function () {
+			if ($(this).hasClass('active')) {
+				$('#active ul').append($(this).clone(true));
+			} else {
+				$('#deactive ul').append($(this).clone(true));
 			}
 		});
 	}

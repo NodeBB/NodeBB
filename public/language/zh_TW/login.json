@@ -1,11 +1,12 @@
 {
-    "username-email": "用戶名稱 / 電子郵件",
-    "username": "用戶名稱",
+    "username-email": "帳號 / 電子郵件",
+    "username": "帳號",
     "email": "電子郵件",
     "remember_me": "記住我？",
     "forgot_password": "忘記密碼？",
-    "alternative_logins": "其他登錄方式",
-    "failed_login_attempt": "登錄失敗，請再嘗試。",
-    "login_successful": "你已成功登錄！",
-    "dont_have_account": "還沒有賬號？"
+    "alternative_logins": "其他登入方式",
+    "failed_login_attempt": "登入失敗",
+    "login_successful": "你已成功登入！",
+    "dont_have_account": "還沒有帳號？",
+    "logged-out-due-to-inactivity": "你已登出管理控制台，因為一段時間沒有任何動作。"
 }

@@ -2,16 +2,16 @@
 
 var helpers = {};
 
-helpers.toMap = function(data) {
+helpers.toMap = function (data) {
 	var map = {};
-	for (var i = 0; i<data.length; ++i) {
+	for (var i = 0; i < data.length; ++i) {
 		map[data[i]._key] = data[i];
 		data[i]._key = undefined;
 	}
 	return map;
 };
 
-helpers.fieldToString = function(field) {
+helpers.fieldToString = function (field) {
 	if(field === null || field === undefined) {
 		return field;
 	}
@@ -24,7 +24,7 @@ helpers.fieldToString = function(field) {
 	return field;
 };
 
-helpers.valueToString = function(value) {
+helpers.valueToString = function (value) {
 	if(value === null || value === undefined) {
 		return value;
 	}
@@ -32,6 +32,6 @@ helpers.valueToString = function(value) {
 	return value.toString();
 };
 
-helpers.noop = function() {};
+helpers.noop = function () {};
 
 module.exports = helpers;

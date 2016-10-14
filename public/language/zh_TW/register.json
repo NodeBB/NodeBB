@@ -1,12 +1,13 @@
 {
     "register": "註冊",
-    "help.email": "默認情況下，你的郵箱不會公開。",
-    "help.username_restrictions": "用戶名由%1到%2個字符組成。其他人可以通過 @<span id='yourUsername'>用戶名</span> 點名你。",
-    "help.minimum_password_length": "密碼必須至少包含%1個字符。",
+    "cancel_registration": "取消註冊",
+    "help.email": "在預設情況下，你的電子郵件地址不會被公開。",
+    "help.username_restrictions": "獨立的帳號由 %1 到 %2 個字元組成。其他人可以通過 @<span id='yourUsername'>帳號</span> 提及你。",
+    "help.minimum_password_length": "密碼必須至少包含 %1 個字元。",
     "email_address": "Email",
-    "email_address_placeholder": "輸入郵箱地址",
-    "username": "用戶名",
-    "username_placeholder": "輸入用戶名",
+    "email_address_placeholder": "輸入電子郵件地址",
+    "username": "帳號",
+    "username_placeholder": "輸入帳號",
     "password": "密碼",
     "password_placeholder": "輸入密碼",
     "confirm_password": "確認密碼",
@@ -15,5 +16,8 @@
     "alternative_registration": "其他註冊方式",
     "terms_of_use": "使用條款",
     "agree_to_terms_of_use": "同意遵守使用條款",
-    "registration-added-to-queue": "Your registration has been added to the approval queue. You will receive an email when it is accepted by an administrator."
+    "terms_of_use_error": "你需要同意使用條款",
+    "registration-added-to-queue": "你的註冊已經被加入到審核序列中。你將會在管理者批準後收到一封電子郵件。",
+    "interstitial.intro": "我們要求一些額外的資訊，在我們建立你的帳戶之前。",
+    "interstitial.errors-found": "我們無法完成你的註冊"
 }

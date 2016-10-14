@@ -41,7 +41,7 @@
     "details.hidden": "Đã ẩn",
     "details.hidden_help": "Nếu bật, nhóm này sẽ không được hiện thị trong danh sách nhóm, và thành viên phải được mời để tham gia",
     "details.delete_group": "Xoá nhóm",
-    "details.private_system_help": "Private groups is disabled at system level, this option does not do anything",
+    "details.private_system_help": "Các nhóm kín được vô hiệu hóa bởi hệ thống, tùy chọn này không thực hiện bất cứ điều gì cả",
     "event.updated": "Thông tin nhóm đã được cập nhật",
     "event.deleted": "Nhóm \"%1\" đã bị xoá",
     "membership.accept-invitation": "Chấp nhận lời mời",
@@ -50,5 +50,7 @@
     "membership.leave-group": "Rời khỏi nhóm",
     "membership.reject": "Từ chối",
     "new-group.group_name": "Tên nhóm",
-    "upload-group-cover": "Upload group cover"
+    "upload-group-cover": "Tải ảnh bìa lên cho nhóm",
+    "bulk-invite-instructions": "Enter a list of comma separated usernames to invite to this group",
+    "bulk-invite": "Bulk Invite"
 }

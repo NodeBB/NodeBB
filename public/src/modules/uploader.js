@@ -2,11 +2,11 @@
 
 /* globals define, templates */
 
-define('uploader', ['csrf', 'translator'], function(csrf, translator) {
+define('uploader', ['translator'], function (translator) {
 
 	var module = {};
 
-	module.open = function(route, params, fileSize, callback) {
+	module.open = function (route, params, fileSize, callback) {
 		console.warn('[uploader] uploader.open() is deprecated, please use uploader.show() instead, and pass parameters as a singe option with callback, e.g. uploader.show({}, callback);');
 		module.show({
 			route: route,
@@ -15,7 +15,7 @@ define('uploader', ['csrf', 'translator'], function(csrf, translator) {
 		}, callback);
 	};
 
-	module.show = function(data, callback) {
+	module.show = function (data, callback) {
 		var fileSize = data.hasOwnProperty('fileSize') && data.fileSize !== undefined ? parseInt(data.fileSize, 10) : false;
 		parseModal({
 			showHelp: data.hasOwnProperty('showHelp') && data.showHelp !== undefined ? data.showHelp : true,
@@ -23,12 +23,12 @@ define('uploader', ['csrf', 'translator'], function(csrf, translator) {
 			title: data.title || '[[global:upload_file]]',
 			description: data.description || '',
 			button: data.button || '[[global:upload]]',
-			accept: data.accept ? data.accept.replace(/,/g, '&#44;') : ''
-		}, function(uploadModal) {
+			accept: data.accept ? data.accept.replace(/,/g, '&#44; ') : ''
+		}, function (uploadModal) {
 			uploadModal = $(uploadModal);
 
 			uploadModal.modal('show');
-		 	uploadModal.on('hidden.bs.modal', function() {
+		 	uploadModal.on('hidden.bs.modal', function () {
 				uploadModal.remove();
 			});
 
@@ -36,24 +36,28 @@ define('uploader', ['csrf', 'translator'], function(csrf, translator) {
 			uploadForm.attr('action', data.route);
 			uploadForm.find('#params').val(JSON.stringify(data.params));
 
-			uploadModal.find('#fileUploadSubmitBtn').on('click', function() {
+			uploadModal.find('#fileUploadSubmitBtn').on('click', function () {
+				$(this).addClass('disabled');
 				uploadForm.submit();
 			});
 
-			uploadForm.submit(function() {
+			uploadForm.submit(function () {
 				onSubmit(uploadModal, fileSize, callback);
 				return false;
 			});
 		});
 	};
 
-	module.hideAlerts = function(modal) {
+	module.hideAlerts = function (modal) {
 		$(modal).find('#alert-status, #alert-success, #alert-error, #upload-progress-box').addClass('hide');
 	};
 
 	function onSubmit(uploadModal, fileSize, callback) {
 		function showAlert(type, message) {
 			module.hideAlerts(uploadModal);
+			if (type === 'error') {
+				uploadModal.find('#fileUploadSubmitBtn').removeClass('disabled');
+			}
 			uploadModal.find('#alert-' + type).translateText(message).removeClass('hide');
 		}
 
@@ -72,16 +76,16 @@ define('uploader', ['csrf', 'translator'], function(csrf, translator) {
 
 		uploadModal.find('#uploadForm').ajaxSubmit({
 			headers: {
-				'x-csrf-token': csrf.get()
+				'x-csrf-token': config.csrf_token
 			},
-			error: function(xhr) {
+			error: function (xhr) {
 				xhr = maybeParse(xhr);
 				showAlert('error', xhr.responseJSON ? (xhr.responseJSON.error || xhr.statusText) : 'error uploading, code : ' + xhr.status);
 			},
-			uploadProgress: function(event, position, total, percent) {
+			uploadProgress: function (event, position, total, percent) {
 				uploadModal.find('#upload-progress-bar').css('width', percent + '%');
 			},
-			success: function(response) {
+			success: function (response) {
 				response = maybeParse(response);
 
 				if (response.error) {
@@ -91,7 +95,7 @@ define('uploader', ['csrf', 'translator'], function(csrf, translator) {
 				callback(response[0].url);
 
 				showAlert('success', '[[uploads:upload-success]]');
-				setTimeout(function() {
+				setTimeout(function () {
 					module.hideAlerts(uploadModal);
 					uploadModal.modal('hide');
 				}, 750);
@@ -100,7 +104,7 @@ define('uploader', ['csrf', 'translator'], function(csrf, translator) {
 	}
 
 	function parseModal(tplVals, callback) {
-		templates.parse('partials/modals/upload_file_modal', tplVals, function(html) {
+		templates.parse('partials/modals/upload_file_modal', tplVals, function (html) {
 			translator.translate(html, callback);
 		});
 	}

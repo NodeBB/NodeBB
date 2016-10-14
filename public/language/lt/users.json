@@ -2,6 +2,7 @@
     "latest_users": "Paskutiniai vartotojai",
     "top_posters": "Geriausi autoriai",
     "most_reputation": "Didžiausia reputacija",
+    "most_flags": "Most Flags",
     "search": "Ieškoti",
     "enter_username": "Įrašykite vartotojo vardą paieškai",
     "load_more": "Įkelti daugiau",
@@ -16,5 +17,5 @@
     "unread_topics": "Neperskaitytos temos",
     "categories": "Kategorijos",
     "tags": "Žymos",
-    "no-users-found": "No users found!"
+    "no-users-found": "Nerasta vartotojų."
 }

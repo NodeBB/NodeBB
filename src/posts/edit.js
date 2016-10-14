@@ -1,25 +1,25 @@
 'use strict';
 
-var async = require('async'),
-	validator = require('validator'),
-	_ = require('underscore'),
-	db = require('../database'),
-	topics = require('../topics'),
-	user = require('../user'),
-	privileges = require('../privileges'),
-	plugins = require('../plugins'),
-	cache = require('./cache'),
-	pubsub = require('../pubsub'),
-	utils = require('../../public/src/utils');
+var async = require('async');
+var validator = require('validator');
+var _ = require('underscore');
 
-module.exports = function(Posts) {
+var db = require('../database');
+var topics = require('../topics');
+var user = require('../user');
+var privileges = require('../privileges');
+var plugins = require('../plugins');
+var cache = require('./cache');
+var pubsub = require('../pubsub');
+var utils = require('../../public/src/utils');
 
-	pubsub.on('post:edit', function(pid) {
+module.exports = function (Posts) {
+
+	pubsub.on('post:edit', function (pid) {
 		cache.del(pid);
 	});
 
-	Posts.edit = function(data, callback) {
-		var now = Date.now();
+	Posts.edit = function (data, callback) {
 		var postData;
 		var results;
 
@@ -28,8 +28,8 @@ module.exports = function(Posts) {
 				privileges.posts.canEdit(data.pid, data.uid, next);
 			},
 			function (canEdit, next) {
-				if (!canEdit) {
-					return next(new Error('[[error:no-privileges]]'));
+				if (!canEdit.flag) {
+					return next(new Error(canEdit.message));
 				}
 				Posts.getPostData(data.pid, next);
 			},
@@ -37,30 +37,26 @@ module.exports = function(Posts) {
 				if (!_postData) {
 					return next(new Error('[[error:no-post]]'));
 				}
+
 				postData = _postData;
 				postData.content = data.content;
-				postData.edited = now;
+				postData.edited = Date.now();
 				postData.editor = data.uid;
-				plugins.fireHook('filter:post.edit', {req: data.req, post: postData, uid: data.uid}, next);
+				if (data.handle) {
+					postData.handle = data.handle;
+				}
+				plugins.fireHook('filter:post.edit', {req: data.req, post: postData, data: data, uid: data.uid}, next);
 			},
 			function (result, next) {
 				postData = result.post;
-				var updateData = {
-					edited: postData.edited,
-					editor: postData.editor,
-					content: postData.content
-				};
-				if (data.handle) {
-					updateData.handle = data.handle;
-				}
-				Posts.setPostFields(data.pid, updateData, next);
+				Posts.setPostFields(data.pid, postData, next);
 			},
 			function (next) {
 				async.parallel({
-					editor: function(next) {
+					editor: function (next) {
 						user.getUserFields(data.uid, ['username', 'userslug'], next);
 					},
-					topic: function(next) {
+					topic: function (next) {
 						editMainPost(data, postData, next);
 					}
 				}, next);
@@ -72,8 +68,8 @@ module.exports = function(Posts) {
 
 				plugins.fireHook('action:post.edit', _.clone(postData));
 
-				cache.del(postData.pid);
-				pubsub.publish('post:edit', postData.pid);
+				cache.del(String(postData.pid));
+				pubsub.publish('post:edit', String(postData.pid));
 
 				Posts.parsePost(postData, next);
 			},
@@ -89,13 +85,13 @@ module.exports = function(Posts) {
 		var title = data.title ? data.title.trim() : '';
 
 		async.parallel({
-			topic: function(next) {
+			topic: function (next) {
 				topics.getTopicFields(tid, ['cid', 'title'], next);
 			},
-			isMain: function(next) {
+			isMain: function (next) {
 				Posts.isMain(data.pid, next);
 			}
-		}, function(err, results) {
+		}, function (err, results) {
 			if (err) {
 				return callback(err);
 			}
@@ -121,29 +117,31 @@ module.exports = function(Posts) {
 				topicData.slug = tid + '/' + (utils.slugify(title) || 'topic');
 			}
 
-			topicData.thumb = data.topic_thumb || '';
+			topicData.thumb = data.thumb || '';
 
 			data.tags = data.tags || [];
 
 			async.waterfall([
-				async.apply(plugins.fireHook, 'filter:topic.edit', {req: data.req, topic: topicData}),
-				function(results, next) {
+				function (next) {
+					plugins.fireHook('filter:topic.edit', {req: data.req, topic: topicData, data: data}, next);
+				},
+				function (results, next) {
 					db.setObject('topic:' + tid, results.topic, next);
 				},
-				function(next) {
+				function (next) {
 					topics.updateTags(tid, data.tags, next);
 				},
-				function(next) {
+				function (next) {
 					topics.getTopicTagsObjects(tid, next);
 				},
-				function(tags, next) {
+				function (tags, next) {
 					topicData.tags = data.tags;
 					plugins.fireHook('action:topic.edit', topicData);
 					next(null, {
 						tid: tid,
 						cid: results.topic.cid,
 						uid: postData.uid,
-						title: validator.escape(title),
+						title: validator.escape(String(title)),
 						oldTitle: results.topic.title,
 						slug: topicData.slug,
 						isMainPost: true,

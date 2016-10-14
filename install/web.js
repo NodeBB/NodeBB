@@ -1,36 +1,36 @@
 "use strict";
 
-var winston = require('winston'),
-	express = require('express'),
-	bodyParser = require('body-parser'),
-	fs = require('fs'),
-	path = require('path'),
-	less = require('less'),
-	async = require('async'),
-	uglify = require('uglify-js'),
-	nconf = require('nconf'),
-	app = express(),
-	server;
+var winston = require('winston');
+var express = require('express');
+var bodyParser = require('body-parser');
+var fs = require('fs');
+var path = require('path');
+var less = require('less');
+var async = require('async');
+var uglify = require('uglify-js');
+var nconf = require('nconf');
+var app = express();
+var server;
 
 winston.add(winston.transports.File, {
 	filename: 'logs/webinstall.log',
 	colorize: true,
-	timestamp: function() {
+	timestamp: function () {
 		var date = new Date();
 		return date.getDate() + '/' + (date.getMonth() + 1) + ' ' + date.toTimeString().substr(0,5) + ' [' + global.process.pid + ']';
 	},
 	level: 'verbose'
 });
 
-var web = {},
-	scripts = [
-		'public/vendor/xregexp/xregexp.js',
-		'public/vendor/xregexp/unicode/unicode-base.js',
-		'public/src/utils.js',
-		'public/src/installer/install.js'
-	];
+var web = {};
+var scripts = [
+	'public/vendor/xregexp/xregexp.js',
+	'public/vendor/xregexp/unicode/unicode-base.js',
+	'public/src/utils.js',
+	'public/src/installer/install.js'
+];
 
-web.install = function(port) {
+web.install = function (port) {
 	port = port || 4567;
 	winston.info('Launching web installer on port', port);
 
@@ -42,7 +42,7 @@ web.install = function(port) {
 		extended: true
 	}));
 
-	async.parallel([compileLess, compileJS], function() {
+	async.parallel([compileLess, compileJS], function () {
 		setupRoutes();
 		launchExpress(port);
 	});
@@ -50,7 +50,7 @@ web.install = function(port) {
 
 
 function launchExpress(port) {
-	server = app.listen(port, function() {
+	server = app.listen(port, function () {
 		winston.info('Web installer listening on http://%s:%s', '0.0.0.0', port);
 	});
 }
@@ -62,22 +62,23 @@ function setupRoutes() {
 }
 
 function welcome(req, res) {
-	var dbs = ['redis', 'mongo'],
-		databases = [];
-
-	dbs.forEach(function(el) {
-		databases.push({
+	var dbs = ['redis', 'mongo'];
+	var databases = dbs.map(function (el) {
+		return {
 			name: el,
 			questions: require('../src/database/' + el).questions
-		});
+		};
 	});
+
+	var defaults = require('./data/defaults');
 
 	res.render('install/index', {
 		databases: databases,
 		skipDatabaseSetup: !!nconf.get('database'),
 		error: res.locals.error ? true : false,
 		success: res.locals.success ? true : false,
-		values: req.body
+		values: req.body,
+		minimumPasswordLength: defaults.minimumPasswordLength
 	});
 }
 
@@ -92,7 +93,7 @@ function install(req, res) {
 		env: process.env
 	});
 
-	child.on('close', function(data) {
+	child.on('close', function (data) {
 		if (data === 0) {
 			res.locals.success = true;
 		} else {
@@ -104,7 +105,6 @@ function install(req, res) {
 }
 
 function launch(req, res) {
-	var pidFilePath = __dirname + '../pidfile';
 	res.json({});
 	server.close();
 
@@ -129,8 +129,12 @@ function compileLess(callback) {
 		return callback(false);
 	}
 
-	fs.readFile(path.join(__dirname, '../public/less/install.less'), function(err, style) {
-		less.render(style.toString(), function(err, css) {
+	fs.readFile(path.join(__dirname, '../public/less/install.less'), function (err, style) {
+		if (err) {
+			return winston.error('Unable to read LESS install file: ', err);
+		}
+
+		less.render(style.toString(), function (err, css) {
 			if(err) {
 				return winston.error('Unable to compile LESS: ', err);
 			}
@@ -146,10 +150,10 @@ function compileJS(callback) {
 		return callback(false);
 	}
 
-	var scriptPath = path.join(__dirname, '..'),
-		result = uglify.minify(scripts.map(function(script) {
-			return path.join(scriptPath, script);
-		}));
+	var scriptPath = path.join(__dirname, '..');
+	var result = uglify.minify(scripts.map(function (script) {
+		return path.join(scriptPath, script);
+	}));
 
 
 	fs.writeFile(path.join(__dirname, '../public/nodebb.min.js'), result.code, callback);

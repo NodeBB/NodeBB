@@ -4,8 +4,9 @@
     "email": "Correo Electrónico",
     "remember_me": "¿Recordarme?",
     "forgot_password": "¿Olvidaste tu contraseña?",
-    "alternative_logins": "Métodos alternativos",
-    "failed_login_attempt": "Error al iniciar sesión, inténtalo otra vez.",
+    "alternative_logins": "Accesos alternativos",
+    "failed_login_attempt": "Error al iniciar sesión",
     "login_successful": "¡Identificado satisfactoriamente!",
-    "dont_have_account": "¿Aún no tienes cuenta?"
+    "dont_have_account": "¿Aún no tienes cuenta?",
+    "logged-out-due-to-inactivity": "Debido a la inactividad has sido deslogueado del Panel de Control de Administradores"
 }

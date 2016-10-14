@@ -6,5 +6,8 @@
     "selected": "Izbrano",
     "all": "Vse",
     "all_categories": "Vse kategorije",
-    "topics_marked_as_read.success": "Teme označene kot prebrane!"
+    "topics_marked_as_read.success": "Teme označene kot prebrane!",
+    "all-topics": "Vse teme",
+    "new-topics": "Nove teme",
+    "watched-topics": "Spremljane teme"
 }

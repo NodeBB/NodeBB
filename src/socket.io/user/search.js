@@ -4,9 +4,9 @@ var user = require('../../user');
 var meta = require('../../meta');
 var pagination = require('../../pagination');
 
-module.exports = function(SocketUser) {
+module.exports = function (SocketUser) {
 
-	SocketUser.search = function(socket, data, callback) {
+	SocketUser.search = function (socket, data, callback) {
 		if (!data) {
 			return callback(new Error('[[error:invalid-data]]'));
 		}
@@ -20,8 +20,9 @@ module.exports = function(SocketUser) {
 			sortBy: data.sortBy,
 			onlineOnly: data.onlineOnly,
 			bannedOnly: data.bannedOnly,
+			flaggedOnly: data.flaggedOnly,
 			uid: socket.uid
-		}, function(err, result) {
+		}, function (err, result) {
 			if (err) {
 				return callback(err);
 			}

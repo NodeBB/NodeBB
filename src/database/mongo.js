@@ -1,7 +1,7 @@
 
 'use strict';
 
-(function(module) {
+(function (module) {
 
 	var winston = require('winston'),
 		async = require('async'),
@@ -33,20 +33,21 @@
 			name: 'mongo:password',
 			description: 'Password of your MongoDB database',
 			hidden: true,
-			before: function(value) { value = value || nconf.get('mongo:password') || ''; return value; }
+			default: nconf.get('mongo:password') || '',
+			before: function (value) { value = value || nconf.get('mongo:password') || ''; return value; }
 		},
 		{
 			name: "mongo:database",
-			description: "Which database to use",
-			'default': nconf.get('mongo:database') || 0
+			description: "MongoDB database name",
+			'default': nconf.get('mongo:database') || 'nodebb'
 		}
 	];
 
 	module.helpers = module.helpers || {};
 	module.helpers.mongo = require('./mongo/helpers');
 
-	module.init = function(callback) {
-		callback = callback || function() {};
+	module.init = function (callback) {
+		callback = callback || function () {};
 		try {
 			var sessionStore;
 			mongoClient = require('mongodb').MongoClient;
@@ -74,7 +75,7 @@
 			nconf.set('mongo:port', 27017);
 		}
 		if (!nconf.get('mongo:database')) {
-			nconf.set('mongo:database', '0');
+			nconf.set('mongo:database', 'nodebb');
 		}
 
 		var hosts = nconf.get('mongo:host').split(',');
@@ -95,7 +96,7 @@
 
 		connOptions = _.deepExtend((nconf.get('mongo:options') || {}), connOptions);
 
-		mongoClient.connect(connString, connOptions, function(err, _db) {
+		mongoClient.connect(connString, connOptions, function (err, _db) {
 			if (err) {
 				winston.error("NodeBB could not connect to your Mongo database. Mongo returned the following error: " + err.message);
 				return callback(err);
@@ -110,8 +111,13 @@
 					db: db
 				});
 			} else {
+				// Initial Redis database
+				var rdb = require('./redis');
+				// Create a new redis connection and store it in module (skeleton)
+				rdb.client = rdb.connect();
+
 				module.sessionStore = new sessionStore({
-					client: require('./redis').connect(),
+					client: rdb.client,
 					ttl: 60 * 60 * 24 * 14
 				});
 			}
@@ -141,7 +147,7 @@
 					async.apply(createIndex, 'objects', {_key: 1, score: -1}, {background: true}),
 					async.apply(createIndex, 'objects', {_key: 1, value: -1}, {background: true, unique: true, sparse: true}),
 					async.apply(createIndex, 'objects', {expireAt: 1}, {expireAfterSeconds: 0, background: true})
-				], function(err) {
+				], function (err) {
 					if (err) {
 						winston.error('Error creating index ' + err.message);
 					}
@@ -155,7 +161,7 @@
 		});
 	};
 
-	module.checkCompatibility = function(callback) {
+	module.checkCompatibility = function (callback) {
 		var mongoPkg = require.main.require('./node_modules/mongodb/package.json'),
 			err = semver.lt(mongoPkg.version, '2.0.0') ? new Error('The `mongodb` package is out-of-date, please run `./nodebb setup` again.') : null;
 
@@ -165,32 +171,32 @@
 		callback(err);
 	};
 
-	module.info = function(db, callback) {
+	module.info = function (db, callback) {
 		async.parallel({
-			serverStatus: function(next) {
+			serverStatus: function (next) {
 				db.command({'serverStatus': 1}, next);
 			},
-			stats: function(next) {
+			stats: function (next) {
 				db.command({'dbStats': 1}, next);
 			},
-			listCollections: function(next) {
-				db.listCollections().toArray(function(err, items) {
+			listCollections: function (next) {
+				db.listCollections().toArray(function (err, items) {
 					if (err) {
 						return next(err);
 					}
-					async.map(items, function(collection, next) {
+					async.map(items, function (collection, next) {
 						db.collection(collection.name).stats(next);
 					}, next);
 				});
 			}
-		}, function(err, results) {
+		}, function (err, results) {
 			if (err) {
 				return callback(err);
 			}
 			var stats = results.stats;
 			var scale = 1024 * 1024;
 
-			results.listCollections = results.listCollections.map(function(collectionInfo) {
+			results.listCollections = results.listCollections.map(function (collectionInfo) {
 				return {
 					name: collectionInfo.ns,
 					count: collectionInfo.count,
@@ -222,7 +228,7 @@
 		});
 	};
 
-	module.close = function() {
+	module.close = function () {
 		db.close();
 	};
 

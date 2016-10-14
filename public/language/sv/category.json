@@ -6,11 +6,15 @@
     "no_topics": "<strong>Det finns inga ämnen i denna kategori.</strong><br />Varför skapar inte du ett ämne?",
     "browsing": "läser",
     "no_replies": "Ingen har svarat",
-    "no_new_posts": "Inga nya inlägg",
+    "no_new_posts": "Inga nya inlägg.",
     "share_this_category": "Dela den här kategorin",
     "watch": "Bevaka",
     "ignore": "Ignorera",
-    "watch.message": "Du bevakar nu uppdateringar ifrån denna kategori",
-    "ignore.message": "Du ignorerar nu uppdateringar ifrån denna kategori",
+    "watching": "Watching",
+    "ignoring": "Ignoring",
+    "watching.description": "Show topics in unread",
+    "ignoring.description": "Do not show topics in unread",
+    "watch.message": "You are now watching updates from this category and all subcategories",
+    "ignore.message": "You are now ignoring updates from this category and all subcategories",
     "watched-categories": "Bevakade kategorier"
 }

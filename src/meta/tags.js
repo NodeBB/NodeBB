@@ -1,20 +1,20 @@
 'use strict';
 
-var nconf = require('nconf'),
-	validator = require('validator'),
-	async = require('async'),
-	winston = require('winston'),
-	plugins = require('../plugins');
+var nconf = require('nconf');
+var validator = require('validator');
+var async = require('async');
+var winston = require('winston');
+var plugins = require('../plugins');
 
-module.exports = function(Meta) {
+module.exports = function (Meta) {
 	Meta.tags = {};
 
-	Meta.tags.parse = function(meta, link, callback) {
+	Meta.tags.parse = function (meta, link, callback) {
 		async.parallel({
-			tags: function(next) {
+			tags: function (next) {
 				var defaultTags = [{
 					name: 'viewport',
-					content: 'width=device-width, initial-scale=1.0, user-scalable=no'
+					content: 'width=device-width, initial-scale=1.0'
 				}, {
 					name: 'content-type',
 					content: 'text/html; charset=UTF-8',
@@ -42,11 +42,11 @@ module.exports = function(Meta) {
 				}];
 				plugins.fireHook('filter:meta.getMetaTags', defaultTags, next);
 			},
-			links: function(next) {
+			links: function (next) {
 				var defaultLinks = [{
 					rel: "icon",
 					type: "image/x-icon",
-					href: nconf.get('relative_path') + '/favicon.ico?' + Meta.config['cache-buster']
+					href: nconf.get('relative_path') + '/favicon.ico' + (Meta.config['cache-buster'] ? '?' + Meta.config['cache-buster'] : '')
 				}, {
 					rel: "manifest",
 					href: nconf.get('relative_path') + '/manifest.json'
@@ -85,15 +85,19 @@ module.exports = function(Meta) {
 				}
 				plugins.fireHook('filter:meta.getLinkTags', defaultLinks, next);
 			}
-		}, function(err, results) {
-			meta = results.tags.concat(meta || []).map(function(tag) {
+		}, function (err, results) {
+			if (err) {
+				return callback(err);
+			}
+
+			meta = results.tags.concat(meta || []).map(function (tag) {
 				if (!tag || typeof tag.content !== 'string') {
 					winston.warn('Invalid meta tag. ', tag);
 					return tag;
 				}
 
 				if (!tag.noEscape) {
-					tag.content = validator.escape(tag.content);
+					tag.content = validator.escape(String(tag.content));
 				}
 
 				return tag;
@@ -112,7 +116,7 @@ module.exports = function(Meta) {
 
 	function addDescription(meta) {
 		var hasDescription = false;
-		meta.forEach(function(tag) {
+		meta.forEach(function (tag) {
 			if (tag.name === 'description') {
 				hasDescription = true;
 			}
@@ -121,7 +125,7 @@ module.exports = function(Meta) {
 		if (!hasDescription) {
 			meta.push({
 				name: 'description',
-				content: validator.escape(Meta.config.description || '')
+				content: validator.escape(String(Meta.config.description || ''))
 			});
 		}
 	}

@@ -1,11 +1,11 @@
 "use strict";
 /* global define, app, socket, bootbox, templates, config */
 
-define('admin/appearance/themes', function() {
+define('admin/appearance/themes', function () {
 	var Themes = {};
 	
-	Themes.init = function() {
-		$('#installed_themes').on('click', function(e){
+	Themes.init = function () {
+		$('#installed_themes').on('click', function (e){
 			var target = $(e.target),
 				action = target.attr('data-action');
 
@@ -19,7 +19,7 @@ define('admin/appearance/themes', function() {
 					type: themeType,
 					id: themeId,
 					src: cssSrc
-				}, function(err) {
+				}, function (err) {
 					if (err) {
 						return app.alertError(err.message);
 					}
@@ -31,7 +31,7 @@ define('admin/appearance/themes', function() {
 						title: 'Theme Changed',
 						message: 'Please restart your NodeBB to fully activate this theme',
 						timeout: 5000,
-						clickfn: function() {
+						clickfn: function () {
 							socket.emit('admin.restart');
 						}
 					});
@@ -39,13 +39,13 @@ define('admin/appearance/themes', function() {
 			}
 		});
 
-		$('#revert_theme').on('click', function() {
-			bootbox.confirm('Are you sure you wish to restore the default NodeBB theme?', function(confirm) {
+		$('#revert_theme').on('click', function () {
+			bootbox.confirm('Are you sure you wish to restore the default NodeBB theme?', function (confirm) {
 				if (confirm) {
 					socket.emit('admin.themes.set', {
 						type: 'local',
 						id: 'nodebb-theme-persona'
-					}, function(err) {
+					}, function (err) {
 						if (err) {
 							return app.alertError(err.message);
 						}
@@ -62,7 +62,7 @@ define('admin/appearance/themes', function() {
 			});
 		});
 
-		socket.emit('admin.themes.getInstalled', function(err, themes) {
+		socket.emit('admin.themes.getInstalled', function (err, themes) {
 			if(err) {
 				return app.alertError(err.message);
 			}
@@ -75,10 +75,12 @@ define('admin/appearance/themes', function() {
 			} else {
 				templates.parse('admin/partials/theme_list', {
 					themes: themes
-				}, function(html) {
-					translator.translate(html, function(html) {
-						instListEl.html(html);
-						highlightSelectedTheme(config['theme:id']);
+				}, function (html) {
+					require(['translator'], function (translator) {
+						translator.translate(html, function (html) {
+							instListEl.html(html);
+							highlightSelectedTheme(config['theme:id']);
+						});
 					});
 				});
 			}

@@ -8,7 +8,7 @@ var nconf = require('nconf'),
 
 var channelName;
 
-var PubSub = function() {
+var PubSub = function () {
 	var self = this;
 	if (nconf.get('redis')) {
 		var redis = require('./database/redis');
@@ -18,7 +18,7 @@ var PubSub = function() {
 		channelName = 'db:' + nconf.get('redis:database') + 'pubsub_channel';
 		subClient.subscribe(channelName);
 
-		subClient.on('message', function(channel, message) {
+		subClient.on('message', function (channel, message) {
 			if (channel !== channelName) {
 				return;
 			}
@@ -35,7 +35,7 @@ var PubSub = function() {
 
 util.inherits(PubSub, EventEmitter);
 
-PubSub.prototype.publish = function(event, data) {
+PubSub.prototype.publish = function (event, data) {
 	if (this.pubClient) {
 		this.pubClient.publish(channelName, JSON.stringify({event: event, data: data}));
 	} else {

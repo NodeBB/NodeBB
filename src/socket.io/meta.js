@@ -11,14 +11,14 @@ var meta = require('../meta'),
 		rooms: {}
 	};
 
-SocketMeta.reconnected = function(socket, data, callback) {
+SocketMeta.reconnected = function (socket, data, callback) {
 	if (socket.uid) {
 		topics.pushUnreadCount(socket.uid);
 		user.notifications.pushCount(socket.uid);
 	}
 };
 
-emitter.on('nodebb:ready', function() {
+emitter.on('nodebb:ready', function () {
 	websockets.server.emit('event:nodebb.ready', {
 		'cache-buster': meta.config['cache-buster']
 	});
@@ -27,7 +27,7 @@ emitter.on('nodebb:ready', function() {
 
 /* Rooms */
 
-SocketMeta.rooms.enter = function(socket, data, callback) {
+SocketMeta.rooms.enter = function (socket, data, callback) {
 	if (!socket.uid) {
 		return callback();
 	}
@@ -53,7 +53,7 @@ SocketMeta.rooms.enter = function(socket, data, callback) {
 	callback();
 };
 
-SocketMeta.rooms.leaveCurrent = function(socket, data, callback) {
+SocketMeta.rooms.leaveCurrent = function (socket, data, callback) {
 	if (!socket.uid || !socket.currentRoom) {
 		return callback();
 	}
@@ -68,6 +68,9 @@ function leaveCurrentRoom(socket) {
 	}
 }
 
-
+SocketMeta.getServerTime = function (socket, data, callback) {
+	// Returns server time in milliseconds
+	callback(null, Date.now());
+};
 
 module.exports = SocketMeta;

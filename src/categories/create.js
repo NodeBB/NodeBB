@@ -3,22 +3,22 @@
 var async = require('async');
 
 var db = require('../database');
-var privileges = require('../privileges');
 var groups = require('../groups');
 var plugins = require('../plugins');
+var privileges = require('../privileges');
 var utils = require('../../public/src/utils');
 
-module.exports = function(Categories) {
+module.exports = function (Categories) {
 
-	Categories.create = function(data, callback) {
+	Categories.create = function (data, callback) {
 		var category;
 		var parentCid = data.parentCid ? data.parentCid : 0;
 
 		async.waterfall([
-			function(next) {
+			function (next) {
 				db.incrObjectField('global', 'nextCid', next);
 			},
-			function(cid, next) {
+			function (cid, next) {
 				data.name = data.name || 'Category ' + cid;
 				var slug = cid + '/' + utils.slugify(data.name);
 				var order = data.order || cid;	// If no order provided, place it at the end
@@ -28,6 +28,7 @@ module.exports = function(Categories) {
 					cid: cid,
 					name: data.name,
 					description: data.description ? data.description : '',
+					descriptionParsed: data.descriptionParsed ? data.descriptionParsed : '',
 					icon: data.icon ? data.icon : '',
 					bgColor: data.bgColor || colours[0],
 					color: data.color || colours[1],
@@ -45,35 +46,40 @@ module.exports = function(Categories) {
 
 				plugins.fireHook('filter:category.create', {category: category, data: data}, next);
 			},
-			function(data, next) {
+			function (data, next) {
 				category = data.category;
 
-				var defaultPrivileges = ['find', 'read', 'topics:create', 'topics:reply'];
+				var defaultPrivileges = ['find', 'read', 'topics:read', 'topics:create', 'topics:reply', 'posts:edit', 'posts:delete', 'topics:delete', 'upload:post:image'];
 
 				async.series([
 					async.apply(db.setObject, 'category:' + category.cid, category),
-					async.apply(Categories.parseDescription, category.cid, category.description),
+					function (next) {
+						if (category.descriptionParsed) {
+							return next();
+						}
+						Categories.parseDescription(category.cid, category.description, next);
+					},
 					async.apply(db.sortedSetAdd, 'categories:cid', category.order, category.cid),
 					async.apply(db.sortedSetAdd, 'cid:' + parentCid + ':children', category.order, category.cid),
 					async.apply(privileges.categories.give, defaultPrivileges, category.cid, 'administrators'),
 					async.apply(privileges.categories.give, defaultPrivileges, category.cid, 'registered-users'),
-					async.apply(privileges.categories.give, ['find', 'read'], category.cid, 'guests')
+					async.apply(privileges.categories.give, ['find', 'read', 'topics:read'], category.cid, 'guests')
 				], next);
 			},
-			function(results, next) {
+			function (results, next) {
 				if (data.cloneFromCid && parseInt(data.cloneFromCid, 10)) {
-					return Categories.copySettingsFrom(data.cloneFromCid, category.cid, next);
+					return Categories.copySettingsFrom(data.cloneFromCid, category.cid, !data.parentCid, next);
 				}
 				next(null, category);
 			},
-			function(category, next) {
+			function (category, next) {
 				plugins.fireHook('action:category.create', category);
 				next(null, category);
 			}
 		], callback);
 	};
 
-	Categories.assignColours = function() {
+	Categories.assignColours = function () {
 		var backgrounds = ['#AB4642', '#DC9656', '#F7CA88', '#A1B56C', '#86C1B9', '#7CAFC2', '#BA8BAF', '#A16946'];
 		var text = ['#fff', '#fff', '#333', '#fff', '#333', '#fff', '#fff', '#fff'];
 		var index = Math.floor(Math.random() * backgrounds.length);
@@ -81,7 +87,7 @@ module.exports = function(Categories) {
 		return [backgrounds[index], text[index]];
 	};
 
-	Categories.copySettingsFrom = function(fromCid, toCid, callback) {
+	Categories.copySettingsFrom = function (fromCid, toCid, copyParent, callback) {
 		var destination;
 		async.waterfall([
 			function (next) {
@@ -97,12 +103,13 @@ module.exports = function(Categories) {
 				destination = results.destination;
 
 				var tasks = [];
-				if (parseInt(results.source.parentCid, 10)) {
-					tasks.push(async.apply(db.sortedSetAdd, 'cid:' + results.source.parentCid + ':children', results.source.order, toCid));
+
+				if (copyParent && utils.isNumber(destination.parentCid)) {
+					tasks.push(async.apply(db.sortedSetRemove, 'cid:' + destination.parentCid + ':children', toCid));
 				}
 
-				if (destination && parseInt(destination.parentCid, 10)) {
-					tasks.push(async.apply(db.sortedSetRemove, 'cid:' + destination.parentCid + ':children', toCid));
+				if (copyParent && utils.isNumber(results.source.parentCid)) {
+					tasks.push(async.apply(db.sortedSetAdd, 'cid:' + results.source.parentCid + ':children', results.source.order, toCid));
 				}
 
 				destination.description = results.source.description;
@@ -114,7 +121,10 @@ module.exports = function(Categories) {
 				destination.numRecentReplies = results.source.numRecentReplies;
 				destination.class = results.source.class;
 				destination.imageClass = results.source.imageClass;
-				destination.parentCid = results.source.parentCid || 0;
+
+				if (copyParent) {
+					destination.parentCid = results.source.parentCid || 0;
+				}
 
 				tasks.push(async.apply(db.setObject, 'category:' + toCid, destination));
 
@@ -123,18 +133,13 @@ module.exports = function(Categories) {
 			function (results, next) {
 				Categories.copyPrivilegesFrom(fromCid, toCid, next);
 			}
-		], function(err) {
+		], function (err) {
 			callback(err, destination);
 		});
 	};
 
-	Categories.copyPrivilegesFrom = function(fromCid, toCid, callback) {
-		var privilegeList = [
-			'find', 'read', 'topics:create', 'topics:reply', 'purge', 'mods',
-			'groups:find', 'groups:read', 'groups:topics:create', 'groups:topics:reply', 'groups:purge', 'groups:moderate'
-		];
-
-		async.each(privilegeList, function(privilege, next) {
+	Categories.copyPrivilegesFrom = function (fromCid, toCid, callback) {
+		async.each(privileges.privilegeList, function (privilege, next) {
 			copyPrivilege(privilege, fromCid, toCid, next);
 		}, callback);
 	};
@@ -145,7 +150,7 @@ module.exports = function(Categories) {
 				db.getSortedSetRange('group:cid:' + toCid + ':privileges:' + privilege + ':members', 0, -1, next);
 			},
 			function (currentMembers, next) {
-				async.eachSeries(currentMembers, function(member, next) {
+				async.eachSeries(currentMembers, function (member, next) {
 					groups.leave('cid:' + toCid + ':privileges:' + privilege, member, next);
 				}, next);
 			},
@@ -157,7 +162,7 @@ module.exports = function(Categories) {
 					return callback();
 				}
 
-				async.eachSeries(members, function(member, next) {
+				async.eachSeries(members, function (member, next) {
 					groups.join('cid:' + toCid + ':privileges:' + privilege, member, next);
 				}, next);
 			}

@@ -5,7 +5,8 @@
     "remember_me": "Ingatkan Saya",
     "forgot_password": "Lupa Kata Laluan?",
     "alternative_logins": "Log Masuk Alternatif",
-    "failed_login_attempt": "Log masuk gagal, sila cuba lagi.",
+    "failed_login_attempt": "Login Unsuccessful",
     "login_successful": "Anda berjaya log masuk!",
-    "dont_have_account": "Tiada akaun?"
+    "dont_have_account": "Tiada akaun?",
+    "logged-out-due-to-inactivity": "You have been logged out of the Admin Control Panel due to inactivity"
 }

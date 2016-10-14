@@ -107,7 +107,7 @@ define('settings/array', function () {
 				} catch (_error) {
 					return $(document.createTextNode(separator));
 				}
-			})();
+			}());
 			if (typeof attributes !== 'object') {
 				attributes = {};
 			}

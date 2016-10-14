@@ -6,9 +6,9 @@ var db = require('../database');
 var topics = require('../topics');
 var plugins = require('../plugins');
 
-module.exports = function(Categories) {
+module.exports = function (Categories) {
 
-	Categories.getCategoryTopics = function(data, callback) {
+	Categories.getCategoryTopics = function (data, callback) {
 		async.waterfall([
 			function (next) {
 				plugins.fireHook('filter:category.topics.prepare', data, next);
@@ -24,7 +24,7 @@ module.exports = function(Categories) {
 					return next(null, {topics: [], uid: data.uid});
 				}
 
-				for (var i=0; i<topics.length; ++i) {
+				for (var i = 0; i < topics.length; ++i) {
 					topics[i].index = data.start + i;
 				}
 
@@ -36,12 +36,12 @@ module.exports = function(Categories) {
 		], callback);
 	};
 
-	Categories.modifyTopicsByPrivilege = function(topics, privileges) {
+	Categories.modifyTopicsByPrivilege = function (topics, privileges) {
 		if (!Array.isArray(topics) || !topics.length || privileges.isAdminOrMod) {
 			return;
 		}
 
-		topics.forEach(function(topic) {
+		topics.forEach(function (topic) {
 			if (topic.deleted && !topic.isOwner) {
 				topic.title = '[[topic:topic_is_deleted]]';
 				topic.slug = topic.tid;
@@ -52,17 +52,17 @@ module.exports = function(Categories) {
 		});
 	};
 
-	Categories.getTopicIds = function(set, reverse, start, stop, callback) {
-		if (reverse) {
-			db.getSortedSetRevRange(set, start, stop, callback);
+	Categories.getTopicIds = function (set, reverse, start, stop, callback) {
+		if (Array.isArray(set)) {
+			db[reverse ? 'getSortedSetRevIntersect' : 'getSortedSetIntersect']({sets: set, start: start, stop: stop}, callback);
 		} else {
-			db.getSortedSetRange(set, start, stop, callback);
+			db[reverse ? 'getSortedSetRevRange' : 'getSortedSetRange'](set, start, stop, callback);
 		}
 	};
 
-	Categories.getTopicIndex = function(tid, callback) {
-		topics.getTopicField(tid, 'cid', function(err, cid) {
-			if(err) {
+	Categories.getTopicIndex = function (tid, callback) {
+		topics.getTopicField(tid, 'cid', function (err, cid) {
+			if (err) {
 				return callback(err);
 			}
 
@@ -70,26 +70,29 @@ module.exports = function(Categories) {
 		});
 	};
 
-	Categories.onNewPostMade = function(cid, pinned, postData, callback) {
+	Categories.onNewPostMade = function (cid, pinned, postData, callback) {
 		if (!cid || !postData) {
 			return callback();
 		}
 
 		async.parallel([
-			function(next) {
+			function (next) {
 				db.sortedSetAdd('cid:' + cid + ':pids', postData.timestamp, postData.pid, next);
 			},
-			function(next) {
+			function (next) {
 				db.incrObjectField('category:' + cid, 'post_count', next);
 			},
-			function(next) {
+			function (next) {
 				if (parseInt(pinned, 10) === 1) {
 					next();
 				} else {
 					db.sortedSetAdd('cid:' + cid + ':tids', postData.timestamp, postData.tid, next);
 				}
 			},
-			function(next) {
+			function (next){
+				Categories.updateRecentTid(cid, postData.tid, next);
+			},
+			function (next) {
 				db.sortedSetIncrBy('cid:' + cid + ':tids:posts', 1, postData.tid, next);
 			}
 		], callback);

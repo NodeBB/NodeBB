@@ -1,13 +1,14 @@
 
 'use strict';
 
-var winston = require('winston'),
-	db = require('../database'),
-	pubsub = require('../pubsub'),
-	nconf = require('nconf'),
-	utils = require('../../public/src/utils');
+var winston = require('winston');
+var nconf = require('nconf');
 
-module.exports = function(Meta) {
+var db = require('../database');
+var pubsub = require('../pubsub');
+var utils = require('../../public/src/utils');
+
+module.exports = function (Meta) {
 
 	Meta.config = {};
 	Meta.configs = {};
@@ -46,12 +47,12 @@ module.exports = function(Meta) {
 	};
 
 	Meta.configs.set = function (field, value, callback) {
-		callback = callback || function() {};
+		callback = callback || function () {};
 		if (!field) {
 			return callback(new Error('invalid config field'));
 		}
 
-		db.setObjectField('config', field, value, function(err) {
+		db.setObjectField('config', field, value, function (err) {
 			if (err) {
 				return callback(err);
 			}
@@ -63,12 +64,12 @@ module.exports = function(Meta) {
 		});
 	};
 
-	Meta.configs.setMultiple = function(data, callback) {
-		processConfig(data, function(err) {
+	Meta.configs.setMultiple = function (data, callback) {
+		processConfig(data, function (err) {
 			if (err) {
 				return callback(err);
 			}
-			db.setObject('config', data, function(err) {
+			db.setObject('config', data, function (err) {
 				if (err) {
 					return callback(err);
 				}
@@ -91,7 +92,7 @@ module.exports = function(Meta) {
 		var less = require('less');
 		less.render(data.customCSS, {
 			compress: true
-		}, function(err, lessObject) {
+		}, function (err, lessObject) {
 			if (err) {
 				winston.error('[less] Could not convert custom LESS to CSS! Please check your syntax.');
 				return callback(null, '');
@@ -117,14 +118,20 @@ module.exports = function(Meta) {
 		}
 	});
 
-	Meta.configs.setOnEmpty = function (field, value, callback) {
-		Meta.configs.get(field, function (err, curValue) {
+	Meta.configs.setOnEmpty = function (values, callback) {
+		db.getObject('config', function (err, data) {
 			if (err) {
 				return callback(err);
 			}
-
-			if (!curValue) {
-				Meta.configs.set(field, value, callback);
+			data = data || {};
+			var empty = {};
+			Object.keys(values).forEach(function (key) {
+				if (!data.hasOwnProperty(key)) {
+					empty[key] = values[key];
+				}
+			});
+			if (Object.keys(empty).length) {
+				db.setObject('config', empty, callback);
 			} else {
 				callback();
 			}

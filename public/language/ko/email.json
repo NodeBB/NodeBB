@@ -24,6 +24,7 @@
     "digest.day": "일",
     "digest.week": "주",
     "digest.month": "월",
+    "digest.subject": "%1님을 위한 다이제스트",
     "notif.chat.subject": "%1님이 대화 메시지를 보냈습니다.",
     "notif.chat.cta": "대화를 계속하려면 여기를 클릭하세요.",
     "notif.chat.unsub.info": "이 대화 알림은 사용자의 구독 설정에 따라 전송되었습니다.",

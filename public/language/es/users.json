@@ -2,6 +2,7 @@
     "latest_users": "Últimos usuarios",
     "top_posters": "Top por mensajes",
     "most_reputation": "Más reputados",
+    "most_flags": "Más Reportados",
     "search": "Buscar",
     "enter_username": "Ingresa el nombre de usuario que quieres buscar",
     "load_more": "Cargar más",
@@ -16,5 +17,5 @@
     "unread_topics": "Temas no leídos",
     "categories": "Categorías ",
     "tags": "Etiquetas",
-    "no-users-found": "No users found!"
+    "no-users-found": "¡No se encontraron usuarios!"
 }

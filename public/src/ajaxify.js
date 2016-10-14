@@ -1,21 +1,20 @@
 "use strict";
+/*global app, bootbox, templates, socket, config, RELATIVE_PATH*/
 
 var ajaxify = ajaxify || {};
 
-$(document).ready(function() {
-
-	/*global app, templates, socket, config, RELATIVE_PATH*/
-
+$(document).ready(function () {
 	var location = document.location || window.location;
 	var rootUrl = location.protocol + '//' + (location.hostname || location.host) + (location.port ? ':' + location.port : '');
 	var apiXHR = null;
 
 	var translator;
 	var retry = true;
+	var previousBodyClass = '';
 
 	// Dumb hack to fool ajaxify into thinking translator is still a global
 	// When ajaxify is migrated to a require.js module, then this can be merged into the "define" call
-	require(['translator'], function(_translator) {
+	require(['translator'], function (_translator) {
 		translator = _translator;
 	});
 
@@ -28,7 +27,7 @@ $(document).ready(function() {
 					url: ev.state.returnPath
 				}, ev.state.returnPath, config.relative_path + '/' + ev.state.returnPath);
 			} else if (ev.state.url !== undefined) {
-				ajaxify.go(ev.state.url, function() {
+				ajaxify.go(ev.state.url, function () {
 					$(window).trigger('action:popstate', {url: ev.state.url});
 				}, true);
 			}
@@ -42,7 +41,7 @@ $(document).ready(function() {
 			if (ajaxify.reconnectAction) {
 				$(window).off('action:reconnected', ajaxify.reconnectAction);
 			}
-			ajaxify.reconnectAction = function(e) {
+			ajaxify.reconnectAction = function (e) {
 				ajaxify.go(url, callback, quiet);
 				$(window).off(e);
 			};
@@ -61,19 +60,35 @@ $(document).ready(function() {
 			apiXHR.abort();
 		}
 
-		url = ajaxify.start(url, quiet);
+		if (!window.location.pathname.match(/\/(403|404)$/g)) {
+			app.previousUrl = window.location.href;
+		}
 
-		$('body').removeClass(ajaxify.data.bodyClass);
+		url = ajaxify.start(url);
+
+		// If any listeners alter url and set it to an empty string, abort the ajaxification
+		if (url === null) {
+			$(window).trigger('action:ajaxify.end', {url: url, tpl_url: ajaxify.data.template.name, title: ajaxify.data.title});
+			return false;
+		}
+
+		previousBodyClass = ajaxify.data.bodyClass;
 		$('#footer, #content').removeClass('hide').addClass('ajaxifying');
 
-		ajaxify.loadData(url, function(err, data) {
+		ajaxify.loadData(url, function (err, data) {
+
+			if (!err || (err && err.data && (parseInt(err.data.status, 10) !== 302 && parseInt(err.data.status, 10) !== 308))) {
+				ajaxify.updateHistory(url, quiet);
+			}
+
 			if (err) {
 				return onAjaxError(err, url, callback, quiet);
 			}
+
 			retry = true;
 			app.template = data.template.name;
 
-			require(['translator'], function(translator) {
+			require(['translator'], function (translator) {
 				translator.load(config.defaultLang, data.template.name);
 				renderTemplate(url, data.template.name, data, callback);
 			});
@@ -82,11 +97,12 @@ $(document).ready(function() {
 		return true;
 	};
 
-	ajaxify.handleRedirects = function(url) {
+	ajaxify.handleRedirects = function (url) {
 		url = ajaxify.removeRelativePath(url.replace(/\/$/, '')).toLowerCase();
-		var isAdminRoute = url.startsWith('admin') && window.location.pathname.indexOf(RELATIVE_PATH + '/admin') !== 0;
+		var isClientToAdmin = url.startsWith('admin') && window.location.pathname.indexOf(RELATIVE_PATH + '/admin') !== 0;
+		var isAdminToClient = !url.startsWith('admin') && window.location.pathname.indexOf(RELATIVE_PATH + '/admin') === 0;
 		var uploadsOrApi = url.startsWith('uploads') || url.startsWith('api');
-		if (isAdminRoute || uploadsOrApi) {
+		if (isClientToAdmin || isAdminToClient || uploadsOrApi) {
 			window.open(RELATIVE_PATH + '/' + url, '_top');
 			return true;
 		}
@@ -94,23 +110,25 @@ $(document).ready(function() {
 	};
 
 
-	ajaxify.start = function(url, quiet) {
+	ajaxify.start = function (url) {
 		url = ajaxify.removeRelativePath(url.replace(/^\/|\/$/g, ''));
 
-		$(window).trigger('action:ajaxify.start', {url: url});
-
-		if (!window.location.pathname.match(/\/(403|404)$/g)) {
-			app.previousUrl = window.location.href;
+		var payload = {
+			url: url
 		}
 
-		ajaxify.currentPage = url.split(/[?#]/)[0];
+		$(window).trigger('action:ajaxify.start', payload);
 
+		return payload.url;
+	};
+
+	ajaxify.updateHistory = function (url, quiet) {
+		ajaxify.currentPage = url.split(/[?#]/)[0];
 		if (window.history && window.history.pushState) {
 			window.history[!quiet ? 'pushState' : 'replaceState']({
 				url: url
 			}, url, RELATIVE_PATH + '/' + url);
 		}
-		return url;
 	};
 
 	function onAjaxError(err, url, callback, quiet) {
@@ -136,9 +154,10 @@ $(document).ready(function() {
 			} else if (status === 401) {
 				app.alertError('[[global:please_log_in]]');
 				app.previousUrl = url;
-				return ajaxify.go('login');
+				window.location.href = config.relative_path + '/login';
+				return;
 			} else if (status === 302 || status === 308) {
-				if (data.responseJSON.external) {
+				if (data.responseJSON && data.responseJSON.external) {
 					window.location.href = data.responseJSON.external;
 				} else if (typeof data.responseJSON === 'string') {
 					ajaxify.go(data.responseJSON.slice(1), callback, quiet);
@@ -152,10 +171,10 @@ $(document).ready(function() {
 	function renderTemplate(url, tpl_url, data, callback) {
 		$(window).trigger('action:ajaxify.loadingTemplates', {});
 
-		templates.parse(tpl_url, data, function(template) {
-			translator.translate(template, function(translatedTemplate) {
+		templates.parse(tpl_url, data, function (template) {
+			translator.translate(template, function (translatedTemplate) {
 				translatedTemplate = translator.unescape(translatedTemplate);
-				$('body').addClass(data.bodyClass);
+				$('body').removeClass(previousBodyClass).addClass(data.bodyClass);
 				$('#content').html(translatedTemplate);
 
 				ajaxify.end(url, tpl_url);
@@ -171,15 +190,13 @@ $(document).ready(function() {
 		});
 	}
 
-	ajaxify.end = function(url, tpl_url) {
+	ajaxify.end = function (url, tpl_url) {
 		function done() {
 			if (--count === 0) {
 				$(window).trigger('action:ajaxify.end', {url: url, tpl_url: tpl_url, title: ajaxify.data.title});
 			}
 		}
 		var count = 2;
-
-		ajaxify.variables.parse();
 
 		ajaxify.loadScript(tpl_url, done);
 
@@ -190,22 +207,26 @@ $(document).ready(function() {
 		app.processPage();
 	};
 
-	ajaxify.removeRelativePath = function(url) {
+	ajaxify.parseData = function () {
+		var dataEl = $('#ajaxify-data');
+		if (dataEl.length) {
+			ajaxify.data = JSON.parse(dataEl.text());
+			dataEl.remove();
+		}
+	};
+
+	ajaxify.removeRelativePath = function (url) {
 		if (url.startsWith(RELATIVE_PATH.slice(1))) {
 			url = url.slice(RELATIVE_PATH.length);
 		}
 		return url;
 	};
 
-	ajaxify.refresh = function(e, callback) {
-		if (e && e instanceof jQuery.Event) {
-			e.preventDefault();
-		}
-
+	ajaxify.refresh = function (callback) {
 		ajaxify.go(ajaxify.currentPage + window.location.search + window.location.hash, callback, true);
 	};
 
-	ajaxify.loadScript = function(tpl_url, callback) {
+	ajaxify.loadScript = function (tpl_url, callback) {
 		var location = !app.inAdmin ? 'forum/' : '';
 
 		if (tpl_url.startsWith('admin')) {
@@ -218,7 +239,7 @@ $(document).ready(function() {
 
 		$(window).trigger('action:script.load', data);
 
-		require(data.scripts, function(script) {
+		require(data.scripts, function (script) {
 			if (script && script.init) {
 				script.init();
 			}
@@ -229,7 +250,7 @@ $(document).ready(function() {
 		});
 	};
 
-	ajaxify.loadData = function(url, callback) {
+	ajaxify.loadData = function (url, callback) {
 		url = ajaxify.removeRelativePath(url);
 
 		$(window).trigger('action:ajaxify.loadingData', {url: url});
@@ -237,7 +258,7 @@ $(document).ready(function() {
 		apiXHR = $.ajax({
 			url: RELATIVE_PATH + '/api/' + url,
 			cache: false,
-			success: function(data) {
+			success: function (data) {
 				if (!data) {
 					return;
 				}
@@ -249,7 +270,7 @@ $(document).ready(function() {
 
 				callback(null, data);
 			},
-			error: function(data, textStatus) {
+			error: function (data, textStatus) {
 				if (data.status === 0 && textStatus === 'error') {
 					data.status = 500;
 				}
@@ -261,17 +282,17 @@ $(document).ready(function() {
 		});
 	};
 
-	ajaxify.loadTemplate = function(template, callback) {
+	ajaxify.loadTemplate = function (template, callback) {
 		if (templates.cache[template]) {
 			callback(templates.cache[template]);
 		} else {
 			$.ajax({
 				url: RELATIVE_PATH + '/templates/' + template + '.tpl' + (config['cache-buster'] ? '?v=' + config['cache-buster'] : ''),
 				type: 'GET',
-				success: function(data) {
+				success: function (data) {
 					callback(data.toString());
 				},
-				error: function(error) {
+				error: function (error) {
 					throw new Error("Unable to load template: " + template + " (" + error.statusText + ")");
 				}
 			});
@@ -283,15 +304,41 @@ $(document).ready(function() {
 			return href === undefined || href === '' || href === 'javascript:;';
 		}
 
+		var contentEl = document.getElementById('content');
+
 		// Enhancing all anchors to ajaxify...
 		$(document.body).on('click', 'a', function (e) {
+			var _self = this;
+			var process = function () {
+				if (!e.ctrlKey && !e.shiftKey && !e.metaKey && e.which === 1) {
+					if (internalLink) {
+						var pathname = this.href.replace(rootUrl + RELATIVE_PATH + '/', '');
+
+						// Special handling for urls with hashes
+						if (window.location.pathname === this.pathname && this.hash.length) {
+							window.location.hash = this.hash;
+						} else {
+							if (ajaxify.go(pathname)) {
+								e.preventDefault();
+							}
+						}
+					} else if (window.location.pathname !== '/outgoing') {
+						if (config.openOutgoingLinksInNewTab && $.contains(contentEl, this)) {
+							window.open(this.href, '_blank');
+							e.preventDefault();
+						} else if (config.useOutgoingLinksPage) {
+							ajaxify.go('outgoing?url=' + encodeURIComponent(this.href));
+							e.preventDefault();
+						}
+					}
+				}
+			};
+
 			if (this.target !== '' || (this.protocol !== 'http:' && this.protocol !== 'https:')) {
 				return;
 			}
 
-			var internalLink = this.host === '' ||	// Relative paths are always internal links
-				(this.host === window.location.host && this.protocol === window.location.protocol &&	// Otherwise need to check if protocol and host match
-				(RELATIVE_PATH.length > 0 ? this.pathname.indexOf(RELATIVE_PATH) === 0 : true));	// Subfolder installs need this additional check
+			var internalLink = utils.isInternalURI(this, window.location, RELATIVE_PATH);
 
 			if ($(this).attr('data-ajaxify') === 'false') {
 				if (!internalLink) {
@@ -301,32 +348,28 @@ $(document).ready(function() {
 				}
 			}
 
+			// Default behaviour for rss feeds
+			if (internalLink && $(this).attr('href').endsWith('.rss')) {
+				return;
+			}
+
 			if (hrefEmpty(this.href) || this.protocol === 'javascript:' || $(this).attr('href') === '#') {
 				return e.preventDefault();
 			}
 
-			if (!e.ctrlKey && !e.shiftKey && !e.metaKey && e.which === 1) {
-				if (internalLink) {
-					var pathname = this.href.replace(rootUrl + RELATIVE_PATH + '/', '');
-
-					// Special handling for urls with hashes
-					if (window.location.pathname === this.pathname && this.hash.length) {
-						window.location.hash = this.hash;
-					} else {
-						if (ajaxify.go(pathname)) {
-							e.preventDefault();
+			if (app.flags && app.flags.hasOwnProperty('_unsaved') && app.flags._unsaved === true) {
+				translator.translate('[[global:unsaved-changes]]', function (text) {
+					bootbox.confirm(text, function (navigate) {
+						if (navigate) {
+							app.flags._unsaved = false;
+							process.call(_self);
 						}
-					}
-				} else if (window.location.pathname !== '/outgoing') {
-					if (config.openOutgoingLinksInNewTab) {
-						window.open(this.href, '_blank');
-						e.preventDefault();
-					} else if (config.useOutgoingLinksPage) {
-						ajaxify.go('outgoing?url=' + encodeURIComponent(this.href));
-						e.preventDefault();
-					}
-				}
+					});
+				});
+				return e.preventDefault();
 			}
+
+			process.call(_self);
 		});
 	}
 
@@ -339,8 +382,9 @@ $(document).ready(function() {
 
 	app.load();
 
-	$('[data-template]').each(function() {
-		templates.cache[$(this).attr('data-template')] = $(this).html();
+	$('[type="text/tpl"][data-template]').each(function () {
+		templates.cache[$(this).attr('data-template')] = $('<div/>').html($(this).html()).text();
+		$(this).parent().remove();
 	});
 
 });

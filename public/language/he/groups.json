@@ -41,7 +41,7 @@
     "details.hidden": "מוסתר",
     "details.hidden_help": "אם מאופשר, הקבוצה לא תופיע ברשימת הקבוצות, ומשתמשים יצטרכו להיות מוזמנים ידנית",
     "details.delete_group": "מחק קבוצה",
-    "details.private_system_help": "Private groups is disabled at system level, this option does not do anything",
+    "details.private_system_help": "קבוצות פרטיות מבוטלות על ידי המערכת. אופציה זו אינה עושה דבר.",
     "event.updated": "פרטי הקבוצה עודכנו",
     "event.deleted": "קבוצת \"%1\" נמחקה",
     "membership.accept-invitation": "קבל הזמנה",
@@ -50,5 +50,7 @@
     "membership.leave-group": "עזוב קבוצה",
     "membership.reject": "דחה",
     "new-group.group_name": "שם קבוצה",
-    "upload-group-cover": "העלה תמונת נושא לקבוצה"
+    "upload-group-cover": "העלה תמונת נושא לקבוצה",
+    "bulk-invite-instructions": "Enter a list of comma separated usernames to invite to this group",
+    "bulk-invite": "Bulk Invite"
 }

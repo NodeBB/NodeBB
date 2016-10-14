@@ -1,6 +1,6 @@
 {
-    "uploading-file": "Uploading the file...",
-    "select-file-to-upload": "Select a file to upload!",
-    "upload-success": "File uploaded successfully!",
-    "maximum-file-size": "Maximum %1 kb"
+    "uploading-file": "Laen faili üles...",
+    "select-file-to-upload": "Vali fail mida üles laadida!",
+    "upload-success": "Fail üles laetud edukalt!",
+    "maximum-file-size": "Maksimaalselt %1 kb"
 }

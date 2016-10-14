@@ -1,7 +1,7 @@
 /*
 	NodeBB - A better forum platform for the modern web
 	https://github.com/NodeBB/NodeBB/
-	Copyright (C) 2013-2014  NodeBB Inc.
+	Copyright (C) 2013-2016  NodeBB Inc.
 
 	This program is free software: you can redistribute it and/or modify
 	it under the terms of the GNU General Public License as published by
@@ -36,7 +36,7 @@ global.env = process.env.NODE_ENV || 'production';
 winston.remove(winston.transports.Console);
 winston.add(winston.transports.Console, {
 	colorize: true,
-	timestamp: function() {
+	timestamp: function () {
 		var date = new Date();
 		return date.getDate() + '/' + (date.getMonth() + 1) + ' ' + date.toTimeString().substr(0,5) + ' [' + global.process.pid + ']';
 	},
@@ -51,13 +51,14 @@ if (nconf.get('config')) {
 	configFile = path.resolve(__dirname, nconf.get('config'));
 }
 
-var configExists = file.existsSync(configFile);
+var configExists = file.existsSync(configFile) || (nconf.get('url') && nconf.get('secret') && nconf.get('database'));
 
 loadConfig();
+versionCheck();
 
 if (!process.send) {
 	// If run using `node app`, log GNU copyright info along with server info
-	winston.info('NodeBB v' + nconf.get('version') + ' Copyright (C) 2013-2014 NodeBB Inc.');
+	winston.info('NodeBB v' + nconf.get('version') + ' Copyright (C) 2013-' + (new Date()).getFullYear() + ' NodeBB Inc.');
 	winston.info('This program comes with ABSOLUTELY NO WARRANTY.');
 	winston.info('This is free software, and you are welcome to redistribute it under certain conditions.');
 	winston.info('');
@@ -103,6 +104,10 @@ function loadConfig() {
 	nconf.set('themes_path', path.resolve(__dirname, nconf.get('themes_path')));
 	nconf.set('core_templates_path', path.join(__dirname, 'src/views'));
 	nconf.set('base_templates_path', path.join(nconf.get('themes_path'), 'nodebb-theme-persona/templates'));
+
+	if (nconf.get('url')) {
+		nconf.set('url_parsed', url.parse(nconf.get('url')));
+	}
 }
 
 
@@ -113,15 +118,18 @@ function start() {
 	if (!nconf.get('upload_path')) {
 		nconf.set('upload_path', '/public/uploads');
 	}
+	if (!nconf.get('sessionKey')) {
+		nconf.set('sessionKey', 'express.sid');
+	}
 	// Parse out the relative_url and other goodies from the configured URL
 	var urlObject = url.parse(nconf.get('url'));
 	var relativePath = urlObject.pathname !== '/' ? urlObject.pathname : '';
 	nconf.set('base_url', urlObject.protocol + '//' + urlObject.host);
-	nconf.set('secure', urlObject.protocol === 'https');
+	nconf.set('secure', urlObject.protocol === 'https:');
 	nconf.set('use_port', !!urlObject.port);
 	nconf.set('relative_path', relativePath);
-	nconf.set('port', urlObject.port || nconf.get('port') || nconf.get('PORT') || 4567);
-	nconf.set('upload_url', '/uploads/');
+	nconf.set('port', urlObject.port || nconf.get('port') || nconf.get('PORT') || (nconf.get('PORT_ENV_VAR') ? nconf.get(nconf.get('PORT_ENV_VAR')) : false) || 4567);
+	nconf.set('upload_url', nconf.get('upload_path').replace(/^\/public/, ''));
 
 	if (nconf.get('isPrimary') === 'true') {
 		winston.info('Time: %s', (new Date()).toString());
@@ -138,7 +146,7 @@ function start() {
 	process.on('SIGTERM', shutdown);
 	process.on('SIGINT', shutdown);
 	process.on('SIGHUP', restart);
-	process.on('message', function(message) {
+	process.on('message', function (message) {
 		if (typeof message !== 'object') {
 			return;
 		}
@@ -165,7 +173,7 @@ function start() {
 		}
 	});
 
-	process.on('uncaughtException', function(err) {
+	process.on('uncaughtException', function (err) {
 		winston.error(err.stack);
 		console.log(err.stack);
 
@@ -176,16 +184,21 @@ function start() {
 	async.waterfall([
 		async.apply(db.init),
 		async.apply(db.checkCompatibility),
-		function(next) {
+		function (next) {
 			require('./src/meta').configs.init(next);
 		},
-		function(next) {
-			require('./src/meta').dependencies.check(next);
+		function (next) {
+			if (nconf.get('dep-check') === undefined || nconf.get('dep-check') !== false) {
+				require('./src/meta').dependencies.check(next);
+			} else {
+				winston.warn('[init] Dependency checking skipped!');
+				setImmediate(next);
+			}
 		},
-		function(next) {
+		function (next) {
 			require('./src/upgrade').check(next);
 		},
-		function(next) {
+		function (next) {
 			var webserver = require('./src/webserver');
 			require('./src/socket.io').init(webserver.server);
 
@@ -196,7 +209,7 @@ function start() {
 
 			webserver.listen();
 		}
-	], function(err) {
+	], function (err) {
 		if (err) {
 			switch(err.message) {
 				case 'schema-out-of-date':
@@ -205,6 +218,10 @@ function start() {
 					break;
 				case 'dependencies-out-of-date':
 					winston.warn('One or more of NodeBB\'s dependent packages are out-of-date. Please run the following command to update them:');
+					winston.warn('    ./nodebb upgrade');
+					break;
+				case 'dependencies-missing':
+					winston.warn('One or more of NodeBB\'s dependent packages are missing. Please run the following command to update them:');
 					winston.warn('    ./nodebb upgrade');
 					break;
 				default:
@@ -234,7 +251,7 @@ function setup() {
 	install.setup(function (err, data) {
 		var separator = '     ';
 		if (process.stdout.columns > 10) {
-			for(var x=0,cols=process.stdout.columns-10;x<cols;x++) {
+			for(var x = 0,cols = process.stdout.columns - 10;x < cols;x++) {
 				separator += '=';
 			}
 		}
@@ -263,7 +280,7 @@ function setup() {
 }
 
 function upgrade() {
-	require('./src/database').init(function(err) {
+	require('./src/database').init(function (err) {
 		if (err) {
 			winston.error(err.stack);
 			process.exit();
@@ -275,7 +292,12 @@ function upgrade() {
 }
 
 function activate() {
-	require('./src/database').init(function(err) {
+	require('./src/database').init(function (err) {
+		if (err) {
+			winston.error(err.stack);
+			process.exit(1);
+		}
+
 		var plugin = nconf.get('_')[1] ? nconf.get('_')[1] : nconf.get('activate'),
 			db = require('./src/database');
 
@@ -286,10 +308,20 @@ function activate() {
 }
 
 function listPlugins() {
-	require('./src/database').init(function(err) {
+	require('./src/database').init(function (err) {
+		if (err) {
+			winston.error(err.stack);
+			process.exit(1);
+		}
+
 		var db = require('./src/database');
 
-		db.getSortedSetRange('plugins:active', 0, -1, function(err, plugins) {
+		db.getSortedSetRange('plugins:active', 0, -1, function (err, plugins) {
+			if (err) {
+				winston.error(err.stack);
+				process.exit(1);
+			}
+
 			winston.info('Active plugins: \n\t - ' + plugins.join('\n\t - '));
 			process.exit();
 		});
@@ -317,5 +349,17 @@ function restart() {
 	} else {
 		winston.error('[app] Could not restart server. Shutting down.');
 		shutdown(1);
+	}
+}
+
+function versionCheck() {
+	var version = process.version.slice(1);
+	var range = pkg.engines.node;
+	var semver = require('semver');
+	var compatible = semver.satisfies(version, range);
+
+	if (!compatible) {
+		winston.warn('Your version of Node.js is too outdated for NodeBB. Please update your version of Node.js.');
+		winston.warn('Recommended ' + range.green + ', '.reset + version.yellow + ' provided\n'.reset);
 	}
 }

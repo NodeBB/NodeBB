@@ -6,5 +6,8 @@
     "selected": "Valitud",
     "all": "Kõik",
     "all_categories": "Kõik kategooriad",
-    "topics_marked_as_read.success": "Teemad märgitud loetuks!"
+    "topics_marked_as_read.success": "Teemad märgitud loetuks!",
+    "all-topics": "Kõik teemad",
+    "new-topics": "Uued teemad",
+    "watched-topics": "Vaadatud teemad"
 }

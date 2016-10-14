@@ -1,7 +1,8 @@
 "use strict";
 
-
 var async = require('async');
+var validator = require('validator');
+
 var db = require('../../database');
 var groups = require('../../groups');
 var user = require('../../user');
@@ -10,35 +11,35 @@ var meta = require('../../meta');
 
 var User = {};
 
-User.makeAdmins = function(socket, uids, callback) {
+User.makeAdmins = function (socket, uids, callback) {
 	if(!Array.isArray(uids)) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
 
-	user.getUsersFields(uids, ['banned'], function(err, userData) {
+	user.getUsersFields(uids, ['banned'], function (err, userData) {
 		if (err) {
 			return callback(err);
 		}
 
-		for(var i=0; i<userData.length; i++) {
+		for(var i = 0; i < userData.length; i++) {
 			if (userData[i] && parseInt(userData[i].banned, 10) === 1) {
 				return callback(new Error('[[error:cant-make-banned-users-admin]]'));
 			}
 		}
 
-		async.each(uids, function(uid, next) {
+		async.each(uids, function (uid, next) {
 			groups.join('administrators', uid, next);
 		}, callback);
 	});
 };
 
-User.removeAdmins = function(socket, uids, callback) {
+User.removeAdmins = function (socket, uids, callback) {
 	if(!Array.isArray(uids)) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
 
-	async.eachSeries(uids, function(uid, next) {
-		groups.getMemberCount('administrators', function(err, count) {
+	async.eachSeries(uids, function (uid, next) {
+		groups.getMemberCount('administrators', function (err, count) {
 			if (err) {
 				return next(err);
 			}
@@ -52,7 +53,7 @@ User.removeAdmins = function(socket, uids, callback) {
 	}, callback);
 };
 
-User.createUser = function(socket, userData, callback) {
+User.createUser = function (socket, userData, callback) {
 	if (!userData) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
@@ -60,7 +61,7 @@ User.createUser = function(socket, userData, callback) {
 };
 
 
-User.resetLockouts = function(socket, uids, callback) {
+User.resetLockouts = function (socket, uids, callback) {
 	if (!Array.isArray(uids)) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
@@ -68,7 +69,7 @@ User.resetLockouts = function(socket, uids, callback) {
 	async.each(uids, user.auth.resetLockout, callback);
 };
 
-User.resetFlags = function(socket, uids, callback) {
+User.resetFlags = function (socket, uids, callback) {
 	if (!Array.isArray(uids)) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
@@ -76,18 +77,18 @@ User.resetFlags = function(socket, uids, callback) {
 	user.resetFlags(uids, callback);
 };
 
-User.validateEmail = function(socket, uids, callback) {
+User.validateEmail = function (socket, uids, callback) {
 	if (!Array.isArray(uids)) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
 
-	uids = uids.filter(function(uid) {
+	uids = uids.filter(function (uid) {
 		return parseInt(uid, 10);
 	});
 
-	async.each(uids, function(uid, next) {
+	async.each(uids, function (uid, next) {
 		user.setUserField(uid, 'email:confirmed', 1, next);
-	}, function(err) {
+	}, function (err) {
 		if (err) {
 			return callback(err);
 		}
@@ -95,7 +96,7 @@ User.validateEmail = function(socket, uids, callback) {
 	});
 };
 
-User.sendValidationEmail = function(socket, uids, callback) {
+User.sendValidationEmail = function (socket, uids, callback) {
 	if (!Array.isArray(uids)) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
@@ -104,12 +105,12 @@ User.sendValidationEmail = function(socket, uids, callback) {
 		return callback(new Error('[[error:email-confirmations-are-disabled]]'));
 	}
 
-	user.getUsersFields(uids, ['uid', 'email'], function(err, usersData) {
+	user.getUsersFields(uids, ['uid', 'email'], function (err, usersData) {
 		if (err) {
 			return callback(err);
 		}
 
-		async.eachLimit(usersData, 50, function(userData, next) {
+		async.eachLimit(usersData, 50, function (userData, next) {
 			if (userData.email && userData.uid) {
 				user.email.sendValidationEmail(userData.uid, userData.email, next);
 			} else {
@@ -119,17 +120,17 @@ User.sendValidationEmail = function(socket, uids, callback) {
 	});
 };
 
-User.sendPasswordResetEmail = function(socket, uids, callback) {
+User.sendPasswordResetEmail = function (socket, uids, callback) {
 	if (!Array.isArray(uids)) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
 
-	uids = uids.filter(function(uid) {
+	uids = uids.filter(function (uid) {
 		return parseInt(uid, 10);
 	});
 
-	async.each(uids, function(uid, next) {
-		user.getUserFields(uid, ['email', 'username'], function(err, userData) {
+	async.each(uids, function (uid, next) {
+		user.getUserFields(uid, ['email', 'username'], function (err, userData) {
 			if (err) {
 				return next(err);
 			}
@@ -141,12 +142,24 @@ User.sendPasswordResetEmail = function(socket, uids, callback) {
 	}, callback);
 };
 
-User.deleteUsers = function(socket, uids, callback) {
-	if(!Array.isArray(uids)) {
+User.deleteUsers = function (socket, uids, callback) {
+	deleteUsers(socket, uids, function (uid, next) {
+		user.deleteAccount(uid, next);
+	}, callback);
+};
+
+User.deleteUsersAndContent = function (socket, uids, callback) {
+	deleteUsers(socket, uids, function (uid, next) {
+		user.delete(socket.uid, uid, next);
+	}, callback);
+};
+
+function deleteUsers(socket, uids, method, callback) {
+	if (!Array.isArray(uids)) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
 
-	async.each(uids, function(uid, next) {
+	async.each(uids, function (uid, next) {
 		async.waterfall([
 			function (next) {
 				user.isAdministrator(uid, next);
@@ -156,7 +169,7 @@ User.deleteUsers = function(socket, uids, callback) {
 					return next(new Error('[[error:cant-delete-other-admins]]'));
 				}
 
-				user.delete(socket.uid, uid, next);
+				method(uid, next);
 			},
 			function (next) {
 				events.log({
@@ -169,10 +182,10 @@ User.deleteUsers = function(socket, uids, callback) {
 			}
 		], next);
 	}, callback);
-};
+}
 
-User.search = function(socket, data, callback) {
-	user.search({query: data.query, searchBy: data.searchBy, uid: socket.uid}, function(err, searchData) {
+User.search = function (socket, data, callback) {
+	user.search({query: data.query, searchBy: data.searchBy, uid: socket.uid}, function (err, searchData) {
 		if (err) {
 			return callback(err);
 		}
@@ -181,29 +194,21 @@ User.search = function(socket, data, callback) {
 		}
 
 		var userData = searchData.users;
-		var uids = userData.map(function(user) {
+		var uids = userData.map(function (user) {
 			return user && user.uid;
 		});
 
-		async.parallel({
-			users: function(next) {
-				user.getUsersFields(uids, ['email'], next);
-			},
-			flagCounts: function(next) {
-				var sets = uids.map(function(uid) {
-					return 'uid:' + uid + ':flagged_by';
-				});
-				db.setsCount(sets, next);
-			}
-		}, function(err, results) {
+		user.getUsersFields(uids, ['email', 'flags', 'lastonline', 'joindate'], function (err, userInfo) {
 			if (err) {
 				return callback(err);
 			}
 
-			userData.forEach(function(user, index) {
-				if (user) {
-					user.email = (results.users[index] && results.users[index].email) || '';
-					user.flags = results.flagCounts[index] || 0;
+			userData.forEach(function (user, index) {
+				if (user && userInfo[index]) {
+					user.email = validator.escape(String(userInfo[index].email || ''));
+					user.flags = userInfo[index].flags || 0;
+					user.lastonlineISO = userInfo[index].lastonlineISO;
+					user.joindateISO = userInfo[index].joindateISO;
 				}
 			});
 
@@ -212,17 +217,20 @@ User.search = function(socket, data, callback) {
 	});
 };
 
-User.deleteInvitation = function(socket, data, callback) {
+User.deleteInvitation = function (socket, data, callback) {
 	user.deleteInvitation(data.invitedBy, data.email, callback);
 };
 
-User.acceptRegistration = function(socket, data, callback) {
+User.acceptRegistration = function (socket, data, callback) {
 	user.acceptRegistration(data.username, callback);
 };
 
-User.rejectRegistration = function(socket, data, callback) {
+User.rejectRegistration = function (socket, data, callback) {
 	user.rejectRegistration(data.username, callback);
 };
 
+User.restartJobs = function (socket, data, callback) {
+	user.startJobs(callback);
+};
 
 module.exports = User;

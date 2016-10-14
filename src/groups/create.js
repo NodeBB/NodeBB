@@ -1,15 +1,17 @@
 'use strict';
 
-var async = require('async'),
-	meta = require('../meta'),
-	plugins = require('../plugins'),
-	utils = require('../../public/src/utils'),
-	db = require('../database');
+var async = require('async');
+var meta = require('../meta');
+var plugins = require('../plugins');
+var utils = require('../../public/src/utils');
+var db = require('../database');
 
-module.exports = function(Groups) {
+module.exports = function (Groups) {
 
-	Groups.create = function(data, callback) {
-		var system = data.system === true || parseInt(data.system, 10) === 1 || data.name === 'administrators' || data.name === 'registered-users' || data.name === 'Global Moderators' || Groups.isPrivilegeGroup(data.name);
+	Groups.create = function (data, callback) {
+		var system = data.system === true || parseInt(data.system, 10) === 1 ||
+			data.name === 'administrators' || data.name === 'registered-users' || data.name === 'Global Moderators' ||
+			Groups.isPrivilegeGroup(data.name);
 		var groupData;
 		var timestamp = data.timestamp || Date.now();
 
@@ -77,6 +79,10 @@ module.exports = function(Groups) {
 	function validateGroupName(name, callback) {
 		if (!name) {
 			return callback(new Error('[[error:group-name-too-short]]'));
+		}
+
+		if (!Groups.isPrivilegeGroup(name) && name.length > (parseInt(meta.config.maximumGroupNameLength, 10) || 255)) {
+			return callback(new Error('[[error:group-name-too-long]]'));
 		}
 
 		if (name.indexOf('/') !== -1) {

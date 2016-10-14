@@ -2,16 +2,16 @@
 
 /* globals define, socket, app, templates, ajaxify*/
 
-define('forum/categories', ['components', 'translator'], function(components, translator) {
+define('forum/categories', ['components', 'translator'], function (components, translator) {
 	var	categories = {};
 
-	$(window).on('action:ajaxify.start', function(ev, data) {
+	$(window).on('action:ajaxify.start', function (ev, data) {
 		if (ajaxify.currentPage !== data.url) {
 			socket.removeListener('event:new_post', categories.onNewPost);
 		}
 	});
 
-	categories.init = function() {
+	categories.init = function () {
 		app.enterRoom('categories');
 
 		socket.removeListener('event:new_post', categories.onNewPost);
@@ -22,7 +22,7 @@ define('forum/categories', ['components', 'translator'], function(components, tr
 		});
 	};
 
-	categories.onNewPost = function(data) {
+	categories.onNewPost = function (data) {
 		if (data && data.posts && data.posts.length && data.posts[0].topic) {
 			renderNewPost(data.posts[0].topic.cid, data.posts[0]);
 		}
@@ -38,7 +38,7 @@ define('forum/categories', ['components', 'translator'], function(components, tr
 		var recentPosts = category.find('[component="category/posts"]');
 		var insertBefore = recentPosts.first();
 
-		parseAndTranslate([post], function(html) {
+		parseAndTranslate([post], function (html) {
 			html.hide();
 			if(recentPosts.length === 0) {
 				html.appendTo(category);
@@ -60,8 +60,8 @@ define('forum/categories', ['components', 'translator'], function(components, tr
 	}
 
 	function parseAndTranslate(posts, callback) {
-		templates.parse('categories', '(categories.)?posts', {categories: {posts: posts}}, function(html) {
-			translator.translate(html, function(translatedHTML) {
+		templates.parse('categories', '(categories.)?posts', {categories: {posts: posts}}, function (html) {
+			translator.translate(html, function (translatedHTML) {
 				translatedHTML = $(translatedHTML);
 				translatedHTML.find('img:not(.not-responsive)').addClass('img-responsive');
 

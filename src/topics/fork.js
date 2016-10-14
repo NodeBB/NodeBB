@@ -11,9 +11,9 @@ var plugins = require('../plugins');
 var meta = require('../meta');
 
 
-module.exports = function(Topics) {
+module.exports = function (Topics) {
 
-	Topics.createTopicFromPosts = function(uid, title, pids, callback) {
+	Topics.createTopicFromPosts = function (uid, title, pids, fromTid, callback) {
 		if (title) {
 			title = title.trim();
 		}
@@ -28,38 +28,41 @@ module.exports = function(Topics) {
 			return callback(new Error('[[error:invalid-pid]]'));
 		}
 
-		pids.sort(function(a, b) {
+		pids.sort(function (a, b) {
 			return a - b;
 		});
 		var mainPid = pids[0];
 		var cid;
 		var tid;
 		async.waterfall([
-			function(next) {
+			function (next) {
 				posts.getCidByPid(mainPid, next);
 			},
-			function(_cid, next) {
+			function (_cid, next) {
 				cid = _cid;
 				async.parallel({
-					postData: function(next) {
+					postData: function (next) {
 						posts.getPostData(mainPid, next);
 					},
-					isAdminOrMod: function(next) {
+					isAdminOrMod: function (next) {
 						privileges.categories.isAdminOrMod(cid, uid, next);
 					}
 				}, next);
 			},
-			function(results, next) {
+			function (results, next) {
 				if (!results.isAdminOrMod) {
 					return next(new Error('[[error:no-privileges]]'));
 				}
 				Topics.create({uid: results.postData.uid, title: title, cid: cid}, next);
 			},
-			function(_tid, next) {
+			function (results, next) {
+				Topics.updateTopicBookmarks(fromTid, pids, function (){ next( null, results );} );
+			},
+			function (_tid, next) {
 				function move(pid, next) {
-					privileges.posts.canEdit(pid, uid, function(err, canEdit) {
-						if(err || !canEdit) {
-							return next(err);
+					privileges.posts.canEdit(pid, uid, function (err, canEdit) {
+						if (err || !canEdit.flag) {
+							return next(err || new Error(canEdit.message));
 						}
 
 						Topics.movePostToTopic(pid, tid, next);
@@ -68,28 +71,28 @@ module.exports = function(Topics) {
 				tid = _tid;
 				async.eachSeries(pids, move, next);
 			},
-			function(next) {
+			function (next) {
 				Topics.updateTimestamp(tid, Date.now(), next);
 			},
-			function(next) {
+			function (next) {
 				Topics.getTopicData(tid, next);
 			}
 		], callback);
 	};
 
-	Topics.movePostToTopic = function(pid, tid, callback) {
+	Topics.movePostToTopic = function (pid, tid, callback) {
 		var postData;
 		async.waterfall([
-			function(next) {
+			function (next) {
 				Topics.exists(tid, next);
 			},
-			function(exists, next) {
+			function (exists, next) {
 				if (!exists) {
 					return next(new Error('[[error:no-topic]]'));
 				}
-				posts.getPostFields(pid, ['tid', 'timestamp', 'votes'], next);
+				posts.getPostFields(pid, ['tid', 'uid', 'timestamp', 'upvotes', 'downvotes'], next);
 			},
-			function(post, next) {
+			function (post, next) {
 				if (!post || !post.tid) {
 					return next(new Error('[[error:no-post]]'));
 				}
@@ -101,34 +104,34 @@ module.exports = function(Topics) {
 				postData = post;
 				postData.pid = pid;
 
-				Topics.removePostFromTopic(postData.tid, pid, next);
+				Topics.removePostFromTopic(postData.tid, postData, next);
 			},
-			function(next) {
+			function (next) {
 				async.parallel([
-					function(next) {
+					function (next) {
 						updateCategoryPostCount(postData.tid, tid, next);
 					},
-					function(next) {
+					function (next) {
 						Topics.decreasePostCount(postData.tid, next);
 					},
-					function(next) {
+					function (next) {
 						Topics.increasePostCount(tid, next);
 					},
-					function(next) {
+					function (next) {
 						posts.setPostField(pid, 'tid', tid, next);
 					},
-					function(next) {
-						Topics.addPostToTopic(tid, pid, postData.timestamp, postData.votes, next);
+					function (next) {
+						Topics.addPostToTopic(tid, postData, next);
 					}
 				], next);
 			},
-			function(results, next) {
+			function (results, next) {
 				async.parallel([
 					async.apply(updateRecentTopic, tid),
 					async.apply(updateRecentTopic, postData.tid)
 				], next);
 			}
-		], function(err) {
+		], function (err) {
 			if (err) {
 				return callback(err);
 			}
@@ -138,7 +141,7 @@ module.exports = function(Topics) {
 	};
 
 	function updateCategoryPostCount(oldTid, tid, callback) {
-		Topics.getTopicsFields([oldTid, tid], ['cid'], function(err, topicData) {
+		Topics.getTopicsFields([oldTid, tid], ['cid'], function (err, topicData) {
 			if (err) {
 				return callback(err);
 			}
@@ -157,16 +160,16 @@ module.exports = function(Topics) {
 
 	function updateRecentTopic(tid, callback) {
 		async.waterfall([
-			function(next) {
+			function (next) {
 				Topics.getLatestUndeletedPid(tid, next);
 			},
-			function(pid, next) {
+			function (pid, next) {
 				if (!pid) {
 					return callback();
 				}
 				posts.getPostField(pid, 'timestamp', next);
 			},
-			function(timestamp, next) {
+			function (timestamp, next) {
 				Topics.updateTimestamp(tid, timestamp, next);
 			}
 		], callback);

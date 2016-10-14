@@ -7,8 +7,10 @@
 	"403.login": "Perhaps you should <a href='%1/login'>try logging in</a>?",
 	"404.title": "Not Found",
 	"404.message": "You seem to have stumbled upon a page that does not exist. Return to the <a href='%1/'>home page</a>.",
-	"500.title": "Internal error.",
+	"500.title": "Internal Error.",
 	"500.message": "Oops! Looks like something went wrong!",
+	"400.title": "Bad Request.",
+	"400.message": "It looks like this link is malformed, please double-check and try again. Otherwise, return to the <a href='%1/'>home page</a>.",
 
 	"register": "Register",
 	"login": "Login",
@@ -21,6 +23,7 @@
 	"you_have_successfully_logged_in": "You have successfully logged in",
 
 	"save_changes": "Save Changes",
+	"save": "Save",
 	"close": "Close",
 
 	"pagination": "Pagination",
@@ -63,7 +66,9 @@
 	"topics": "Topics",
 	"posts": "Posts",
 	"best": "Best",
+	"upvoters": "Upvoters",
 	"upvoted": "Upvoted",
+	"downvoters": "Downvoters",
 	"downvoted": "Downvoted",
 	"views": "Views",
 	"reputation": "Reputation",
@@ -88,6 +93,8 @@
 	"norecenttopics": "No Recent Topics",
 	"recentposts": "Recent Posts",
 	"recentips": "Recently Logged In IPs",
+
+	"moderator_tools": "Moderator Tools",
 
 	"online": "Online",
 	"away": "Away",
@@ -114,5 +121,9 @@
 	"enter_page_number": "Enter page number",
 	"upload_file": "Upload file",
 	"upload": "Upload",
-	"allowed-file-types": "Allowed file types are %1"
+	"allowed-file-types": "Allowed file types are %1",
+
+	"unsaved-changes": "You have unsaved changes. Are you sure you wish to navigate away?",
+	"reconnecting-message": "Looks like your connection to %1 was lost, please wait while we try to reconnect.",
+	"play": "Play"
 }
