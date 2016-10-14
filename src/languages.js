@@ -23,7 +23,7 @@ Languages.init = function (next) {
 Languages.get = function (code, key, callback) {
 	var combined = [code, key].join('/');
 
-	if (Languages._cache.has(combined)) {
+	if (Languages._cache && Languages._cache.has(combined)) {
 		return callback(null, Languages._cache.get(combined));
 	}
 
@@ -45,7 +45,10 @@ Languages.get = function (code, key, callback) {
 			_.extendOwn(languageData, plugins.customLanguages[combined]);
 		}
 
-		Languages._cache.set(combined, languageData);
+		if (Languages._cache) {
+			Languages._cache.set(combined, languageData);
+		}
+
 		callback(null, languageData);
 	});
 };
