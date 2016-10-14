@@ -80,7 +80,6 @@
         "keyword-spacing": "off",
         "no-plusplus": "off",
         "no-mixed-operators": "off",
-        "semi": "off",
         "comma-spacing": "off",
         "global-require": "off",
         "no-trailing-spaces": "off",

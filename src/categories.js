@@ -318,7 +318,7 @@ var privileges = require('./privileges');
 
 			var bullet = level ? '&bull; ' : '';
 			category.value = category.cid;
-			category.text = level + bullet + category.name
+			category.text = level + bullet + category.name;
 			categoriesData.push(category);
 
 			category.children.forEach(function (child) {

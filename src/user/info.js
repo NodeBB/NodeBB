@@ -37,7 +37,7 @@ module.exports = function (User) {
 				expiry_readable: new Date(parseInt(expiry, 10)).toString().replace(/:/g, '%3A'),
 				reason: validator.escape(String(reason))
 			});
-		})
+		});
 	};
 
 	User.getModerationHistory = function (uid, callback) {

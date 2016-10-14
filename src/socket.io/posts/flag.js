@@ -167,5 +167,5 @@ module.exports = function (SocketPosts) {
 			},
 			async.apply(posts.updateFlagData)
 		], callback);
-	}
+	};
 };

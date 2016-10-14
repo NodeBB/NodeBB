@@ -122,7 +122,7 @@ $(document).ready(function () {
 
 		var payload = {
 			url: url
-		}
+		};
 
 		$(window).trigger('action:ajaxify.start', payload);
 

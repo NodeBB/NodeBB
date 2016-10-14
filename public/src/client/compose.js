@@ -13,7 +13,7 @@ define('forum/compose', [], function () {
 				container: container
 			});
 		}
-	}
+	};
 
 	return Compose;
 });

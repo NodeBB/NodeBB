@@ -2,7 +2,7 @@
 /*global define*/
 
 define('admin/general/languages', ['admin/settings'], function (Settings) {
-	var Languages = {}
+	var Languages = {};
 
 	Languages.init = function () {
 		Settings.prepare();
