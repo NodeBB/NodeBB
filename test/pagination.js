@@ -16,11 +16,12 @@ describe('Pagination', function () {
 		done();
 	});
 
-	it('should create pagination for 5 pages', function (done) {
-		var data = pagination.create(2, 5);
-		assert.equal(data.pages.length, 5);
+	it('should create pagination for 10 pages', function (done) {
+		var data = pagination.create(2, 10);
+		// [1, (2), 3, 4, separator, 9, 10]
+		assert.equal(data.pages.length, 7);
 		assert.equal(data.rel.length, 2);
-		assert.equal(data.pageCount, 5);
+		assert.equal(data.pageCount, 10);
 		assert.equal(data.prev.page, 1);
 		assert.equal(data.next.page, 3);
 		done();
