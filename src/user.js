@@ -235,19 +235,8 @@ var meta = require('./meta');
 	};
 
 	User.isModeratorOfAnyCategory = function (uid, callback) {
-		// Checks all active categories and determines whether passed-in uid is a mod of any of them
-		db.getSortedSetRange('categories:cid', 0, -1, function (err, cids) {
-			async.filter(cids, function (cid, next) {
-				User.isModerator(uid, cid, function (err, isMod) {
-					if (err) {
-						// do nothing because async doesn't support errors in filter yet
-					}
-
-					next(!!isMod);
-				});
-			}, function (result) {
-				callback(err, result);
-			});
+		User.getModeratedCids(uid, function (err, cids) {
+			callback(err, Array.isArray(cids) ? !!cids.length : false);
 		});
 	};
 
@@ -324,6 +313,25 @@ var meta = require('./meta');
 
 					next(null, _.union.apply(_, memberSets));
 				});
+			}
+		], callback);
+	};
+
+	User.getModeratedCids = function (uid, callback) {
+		var cids;
+		async.waterfall([
+			function (next) {
+				db.getSortedSetRange('categories:cid', 0, -1, next);
+			},
+			function (_cids, next) {
+				cids = _cids;
+				User.isModerator(uid, cids, next);
+			},
+			function (isMods, next) {
+				cids = cids.filter(function (cid, index) {
+					return cid && isMods[index];
+				});
+				next(null, cids);
 			}
 		], callback);
 	};

@@ -8,17 +8,17 @@ var adminFlagsController = require('./admin/flags');
 var modsController = {};
 
 modsController.flagged = function (req, res, next) {
-	async.parallel([
-		async.apply(user.isAdminOrGlobalMod, req.uid),
-		async.apply(user.isModeratorOfAnyCategory, req.uid)
-	], function (err, results) {
-		if (err || !(results[0] || results[1])) {
+	async.parallel({
+		isAdminOrGlobalMod: async.apply(user.isAdminOrGlobalMod, req.uid),
+		moderatedCids: async.apply(user.getModeratedCids, req.uid)
+	}, function (err, results) {
+		if (err || !(results.isAdminOrGlobalMod || !!results.moderatedCids.length)) {
 			return next(err);
 		}
 
-		if (!results[0] && results[1]) {
-			res.locals.cids = results[1];
-		} 
+		if (!results.isAdminOrGlobalMod && results.moderatedCids.length) {
+			res.locals.cids = results.moderatedCids;
+		}
 
 		adminFlagsController.get(req, res, next);
 	});
