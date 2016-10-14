@@ -273,7 +273,7 @@ define('admin/general/dashboard', ['semver', 'Chart'], function (semver, Chart) 
 		adjustPieCharts();
 
 		$('[data-action="updateGraph"]').on('click', function () {
-			var until = undefined;
+			var until;
 			switch($(this).attr('data-until')) {
 				case 'last-month':
 					var lastMonth = new Date();

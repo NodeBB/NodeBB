@@ -67,7 +67,7 @@ describe('Plugins', function () {
 		plugins.registerHook('test-plugin', {hook: 'static:test.hook', method: actionMethod});
 		plugins.fireHook('static:test.hook', {bar: 'test'}, function (err) {
 			assert.ifError(err);
-			done()
+			done();
 		});
 	});
 

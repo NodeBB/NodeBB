@@ -48,7 +48,6 @@
         "no-extend-native": "off",
         "no-shadow-restricted-names": "off",
         "no-extra-boolean-cast": "off",
-        "no-undef-init": "off",
         "no-script-url": "off",
         "no-path-concat": "off",
         "no-unused-expressions": "off",
