@@ -62,6 +62,11 @@
 		 * @returns {Promise<string>}
 		 */
 		Translator.prototype.translate = function translate(str) {
+			// regex for valid text in namespace / key
+			var validText = 'a-zA-Z0-9\\-_.\\/';
+			var validTextRegex = new RegExp('[' + validText + ']');
+			var invalidTextRegex = new RegExp('[^' + validText + '\\]]');
+
 			// current cursor position
 			var cursor = 0;
 			// last break of the input string
@@ -120,6 +125,7 @@
 					// the current level of nesting of the translation strings
 					var level = 0;
 					var sliced;
+					// validating the current string is actually a translation
 					var textBeforeColonFound = false;
 					var colonFound = false;
 					var textAfterColonFound = false;
@@ -129,7 +135,7 @@
 						sliced = str.slice(cursor, cursor + 2);
 						// found some text after the double bracket, 
 						// so this is probably a translation string
-						if (!textBeforeColonFound && sliced[0].match(/[a-zA-Z0-9\-_]/)) {
+						if (!textBeforeColonFound && validTextRegex.test(sliced[0])) {
 							textBeforeColonFound = true;
 							cursor += 1;
 						// found a colon, so this is probably a translation string
@@ -138,7 +144,7 @@
 							cursor += 1;
 						// found some text after the colon,
 						// so this is probably a translation string
-						} else if (colonFound && !textAfterColonFound && sliced[0].match(/[a-zA-Z0-9\-_]/)) {
+						} else if (colonFound && !textAfterColonFound && validTextRegex.test(sliced[0])) {
 							textAfterColonFound = true;
 							cursor += 1;
 						} else if (textAfterColonFound && !commaAfterNameFound && sliced[0] === ',') {
@@ -147,7 +153,7 @@
 						// a space or comma was found before the name
 						// this isn't a translation string, so back out
 						} else if (!(textBeforeColonFound && colonFound && textAfterColonFound && commaAfterNameFound) && 
-								sliced[0].match(/[^a-zA-Z0-9\-_.\]]/)) {
+								invalidTextRegex.test(sliced[0])) {
 							cursor += 1;
 							lastBreak -= 2;
 							if (level > 0) {
@@ -255,11 +261,8 @@
 			if (!namespace) {
 				console.warn('[translator] Parameter `namespace` is ' + namespace + (namespace === '' ? '(empty string)' : ''));
 				translation = Promise.resolve({});
-			} else if (this.translations[namespace]) {
-				translation = this.translations[namespace];
 			} else {
-				translation = this.load(this.lang, namespace);
-				this.translations[namespace] = translation;
+				translation = this.translations[namespace] = this.translations[namespace] || this.load(this.lang, namespace);
 			}
 
 			if (key) {
