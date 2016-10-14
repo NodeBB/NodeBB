@@ -96,7 +96,6 @@
         "no-console": "off",
         "space-unary-ops": "off",
         "import/no-dynamic-require": "off",
-        "semi-spacing": "off",
         "no-bitwise": "off",
         "no-empty": "off",
         "array-bracket-spacin": "off",

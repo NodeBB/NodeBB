@@ -251,7 +251,7 @@ function setup() {
 	install.setup(function (err, data) {
 		var separator = '     ';
 		if (process.stdout.columns > 10) {
-			for(var x = 0,cols = process.stdout.columns - 10;x < cols;x++) {
+			for(var x = 0,cols = process.stdout.columns - 10; x < cols; x++) {
 				separator += '=';
 			}
 		}

@@ -37,7 +37,7 @@ sitemap.render = function (callback) {
 			numPages = Math.ceil(tids.length / numTopics);
 		}
 
-		for(var x = 1;x <= numPages;x++) {
+		for(var x = 1; x <= numPages; x++) {
 			returnData.topics.push(x);
 		}
 

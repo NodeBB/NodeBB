@@ -309,7 +309,7 @@
 				labels = [],
 				tmpDate;
 
-			for(var x = 29;x >= 0;x--) {
+			for(var x = 29; x >= 0; x--) {
 				tmpDate = new Date(currentDay - (1000 * 60 * 60 * 24 * x));
 				labels.push(months[tmpDate.getMonth()] + ' ' + tmpDate.getDate());
 			}
