@@ -313,7 +313,7 @@ var userNotifications = require('./user/notifications');
 	};
 
 	Messaging.generateUsernames = function (users, excludeUid) {
-		users = users.filter(function(user) {
+		users = users.filter(function (user) {
 			return user && parseInt(user.uid, 10) !== excludeUid;
 		});
 		return users.map(function (user) {
