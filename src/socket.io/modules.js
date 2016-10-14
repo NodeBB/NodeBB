@@ -126,6 +126,7 @@ SocketModules.chats.loadRoom = function (socket, data, callback) {
 		},
 		function (results, next) {
 			results.roomData.users = results.users;
+			results.roomData.usernames = Messaging.generateUsernames(results.users, socket.uid);
 			results.roomData.messages = results.messages;
 			results.roomData.groupChat = results.roomData.hasOwnProperty('groupChat') ? results.roomData.groupChat : results.users.length > 2;
 			results.roomData.isOwner = parseInt(results.roomData.owner, 10) === socket.uid;

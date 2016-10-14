@@ -183,7 +183,7 @@ module.exports = function (Messaging) {
 				Messaging.getUidsInRoom(roomId, start, stop, next);
 			},
 			function (uids, next) {
-				user.getUsersFields(uids, ['username', 'uid', 'picture', 'status'], next);
+				user.getUsersFields(uids, ['uid', 'username', 'picture', 'status'], next);
 			}
 		], callback);
 	};

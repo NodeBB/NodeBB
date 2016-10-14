@@ -304,14 +304,21 @@ var userNotifications = require('./user/notifications');
 					});
 					room.lastUser = room.users[0];
 
-					room.usernames = room.users.map(function (user) {
-						return user.username;
-					}).join(', ');
+					room.usernames = Messaging.generateUsernames(room.users, uid);
 				});
 
 				next(null, {rooms: results.roomData, nextStart: stop + 1});
 			}
 		], callback);
+	};
+
+	Messaging.generateUsernames = function (users, excludeUid) {
+		users = users.filter(function(user) {
+			return user && parseInt(user.uid, 10) !== excludeUid;
+		});
+		return users.map(function (user) {
+			return user.username;
+		}).join(', ');
 	};
 
 	function canGetRecentChats(callerUid, uid, callback) {
