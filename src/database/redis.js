@@ -59,7 +59,7 @@
 		require('./redis/sorted')(redisClient, module);
 		require('./redis/list')(redisClient, module);
 
-		if(typeof callback === 'function') {
+		if (typeof callback === 'function') {
 			callback();
 		}
 	};

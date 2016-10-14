@@ -3,13 +3,13 @@
 
 (function (module) {
 
-	var winston = require('winston'),
-		async = require('async'),
-		nconf = require('nconf'),
-		session = require('express-session'),
-		_ = require('underscore'),
-		semver = require('semver'),
-		db, mongoClient;
+	var winston = require('winston');
+	var async = require('async');
+	var nconf = require('nconf');
+	var session = require('express-session');
+	var _ = require('underscore');
+	var semver = require('semver');
+	var db;
 
 	_.mixin(require('underscore.deep'));
 
@@ -48,15 +48,9 @@
 
 	module.init = function (callback) {
 		callback = callback || function () {};
+		var mongoClient;
 		try {
-			var sessionStore;
 			mongoClient = require('mongodb').MongoClient;
-
-			if (!nconf.get('redis')) {
-				sessionStore = require('connect-mongo/es5')(session);
-			} else {
-				sessionStore = require('connect-redis')(session);
-			}
 		} catch (err) {
 			winston.error('Unable to initialize MongoDB! Is MongoDB installed? Error :' + err.message);
 			return callback(err);
@@ -106,22 +100,6 @@
 
 			module.client = db;
 
-			if (!nconf.get('redis')) {
-				module.sessionStore = new sessionStore({
-					db: db
-				});
-			} else {
-				// Initial Redis database
-				var rdb = require('./redis');
-				// Create a new redis connection and store it in module (skeleton)
-				rdb.client = rdb.connect();
-
-				module.sessionStore = new sessionStore({
-					client: rdb.client,
-					ttl: 60 * 60 * 24 * 14
-				});
-			}
-
 			require('./mongo/main')(db, module);
 			require('./mongo/hash')(db, module);
 			require('./mongo/sets')(db, module);
@@ -131,14 +109,34 @@
 			if (nconf.get('mongo:password') && nconf.get('mongo:username')) {
 				db.authenticate(nconf.get('mongo:username'), nconf.get('mongo:password'), function (err) {
 					if (err) {
-						winston.error(err.stack);
-						process.exit();
+						return callback(err);
 					}
+					createSessionStore();
 					createIndices();
 				});
 			} else {
 				winston.warn('You have no mongo password setup!');
+				createSessionStore();
 				createIndices();
+			}
+
+			function createSessionStore() {
+				var sessionStore;
+				if (nconf.get('redis')) {
+					sessionStore = require('connect-redis')(session);
+					var rdb = require('./redis');
+					rdb.client = rdb.connect();
+
+					module.sessionStore = new sessionStore({
+						client: rdb.client,
+						ttl: 60 * 60 * 24 * 14
+					});
+				} else if (nconf.get('mongo')) {
+					sessionStore = require('connect-mongo')(session);
+					module.sessionStore = new sessionStore({
+						db: db
+					});
+				}
 			}
 
 			function createIndices() {
@@ -151,6 +149,7 @@
 					if (err) {
 						winston.error('Error creating index ' + err.message);
 					}
+					winston.info('[database] Checking database indices done!');
 					callback(err);
 				});
 			}
