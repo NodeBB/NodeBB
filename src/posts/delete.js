@@ -137,7 +137,7 @@ module.exports = function (Posts) {
 					function (next) {
 						deletePostFromUsersVotes(pid, next);
 					},
-					function(next) {
+					function (next) {
 						Posts.getPostField(pid, 'toPid', function (err, toPid) {
 							if (err) {
 								return next(err);
@@ -145,7 +145,10 @@ module.exports = function (Posts) {
 							if (!parseInt(toPid, 10)) {
 								return next(null);
 							}
-							db.sortedSetRemove('pid:' + toPid + ':replies', pid, next);
+							async.parallel([
+								async.apply(db.sortedSetRemove, 'pid:' + toPid + ':replies', pid),
+								async.apply(db.decrObjectField, 'post:' + toPid, 'replies')
+							], next);
 						});
 					},
 					function (next) {

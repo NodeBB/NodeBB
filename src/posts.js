@@ -260,21 +260,11 @@ var plugins = require('./plugins');
 		});
 	};
 
-	Posts.countReplies = function(pid, callback) {
-		if (Array.isArray(pid)) {
-			db.sortedSetsCard(pid.map(function (id) {
-				return 'pid:' + id + ':replies';
-			}), callback);
-		} else {
-			db.sortedSetCard('pid:' + pid + ':replies', callback);
-		}
-	};
-
-	Posts.getReplyPids = function(pid, callback) {
+	Posts.getReplyPids = function (pid, callback) {
 		db.getSortedSetRange('pid:' + pid + ':replies', 0, -1, callback);
 	};
 
-	Posts.getReplyPosts = function(pid, uid, callback) {
+	Posts.getReplyPosts = function (pid, uid, callback) {
 		async.waterfall([
 			function (next) {
 				Posts.getReplyPids(pid, next);
