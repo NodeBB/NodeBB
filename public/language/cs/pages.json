@@ -36,7 +36,7 @@
     "account/posts": "Příspěvky od %1",
     "account/topics": "Příspěvky vytvořeny uživatelem %1",
     "account/groups": "%1's skupiny",
-    "account/favourites": "%1's Bookmarked Posts",
+    "account/bookmarks": "%1's Bookmarked Posts",
     "account/settings": "Uživatelské nastavení",
     "account/watched": "Topics watched by %1",
     "account/upvoted": "Posts upvoted by %1",

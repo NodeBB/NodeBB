@@ -36,7 +36,7 @@
     "account/posts": "پست‌های %1",
     "account/topics": "موضوع های %1",
     "account/groups": "گروه‌های %1",
-    "account/favourites": "%1 پست های به علاقمندی اضافه شدن",
+    "account/bookmarks": "%1 پست نشانک گذاری شده است",
     "account/settings": "تنظیمات کاربر",
     "account/watched": "موضوع های دیده شده توسط \"%1\"",
     "account/upvoted": "رای مثبت داده شده به پست ها توسط  %1",

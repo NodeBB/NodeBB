@@ -36,7 +36,7 @@
     "account/posts": "由 %1 發表的張貼",
     "account/topics": "由 %1 建立的主題",
     "account/groups": "%1 的群組",
-    "account/favourites": "%1 所加入書籤的張貼",
+    "account/bookmarks": "%1's Bookmarked Posts",
     "account/settings": "使用者設定",
     "account/watched": "%1 所觀看的主題",
     "account/upvoted": "%1 所正向投票的張貼",

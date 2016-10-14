@@ -36,7 +36,7 @@
     "account/posts": "Indlæg oprettet af %1",
     "account/topics": "Tråde lavet af %1",
     "account/groups": "%1s grupper",
-    "account/favourites": "%1's Bogmærkede Indlæg",
+    "account/bookmarks": "%1's Bookmarked Posts",
     "account/settings": "Bruger instillinger",
     "account/watched": "Tråde fulgt af %1",
     "account/upvoted": "Indlæg syntes godt om af %1",

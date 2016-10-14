@@ -36,7 +36,7 @@
     "account/posts": "Objave uporabnika %1",
     "account/topics": "Ustvarjene teme od uporabnika %1",
     "account/groups": "Skupine  od %1",
-    "account/favourites": "%1 objav z zaznamkom",
+    "account/bookmarks": "%1's Bookmarked Posts",
     "account/settings": "Uporabniške nastavitve",
     "account/watched": "Teme, ki jih spremlja %1",
     "account/upvoted": "%1 objav z glasovi za",

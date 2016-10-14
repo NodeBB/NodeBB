@@ -36,7 +36,7 @@
     "account/posts": "Innlegg opprettet av %1",
     "account/topics": "Emner opprettet av %1",
     "account/groups": "%1 sine grupper",
-    "account/favourites": "%1's Bookmarked Posts",
+    "account/bookmarks": "%1's Bookmarked Posts",
     "account/settings": "Brukerinnstillinger",
     "account/watched": "Innlegg overvåket av %1",
     "account/upvoted": "Posts upvoted by %1",

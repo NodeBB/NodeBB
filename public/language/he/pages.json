@@ -36,7 +36,7 @@
     "account/posts": "הודעות שפורסמו על ידי %1",
     "account/topics": "נושאים שנוצרו על ידי %1",
     "account/groups": "הקבוצות של %1",
-    "account/favourites": "הפוסטים שסומנו על ידי %1",
+    "account/bookmarks": "%1's Bookmarked Posts",
     "account/settings": "הגדרות משתמש",
     "account/watched": "נושאים שנצפו על ידי %1",
     "account/upvoted": "פוסטים שהוצבעו לטובה על ידי %1",

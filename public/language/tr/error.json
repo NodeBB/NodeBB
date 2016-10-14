@@ -62,7 +62,7 @@
     "content-too-long": "Lütfen daha kısa bir ileti girin. İletiler %1 karakterden uzun olamaz.",
     "title-too-short": "Lütfen daha uzun bir başlık girin. Başlıklar en az %1 karakter içermelidir.",
     "title-too-long": "Lütfen daha kısa bir başlık girin. Başlıklar %1 karakterden uzun olamaz.",
-    "category-not-selected": "Category not selected.",
+    "category-not-selected": "Kategori seçilmedi",
     "too-many-posts": "%1 saniye içinde yalnızca bir ileti gönderebilirsiniz - tekrar ileti göndermeden önce lütfen bekleyin.",
     "too-many-posts-newbie": "Yeni bir kullanıcı olarak, %2 saygınlık kazanana kadar %1 saniye içinde bir ileti gönderebilirsiniz - tekrar ileti göndermeden önce lütfen bekleyin.",
     "tag-too-short": "Lütfen daha uzun bir etiket girin. Etiketler en az %1 karakter içermelidir.",
@@ -127,5 +127,5 @@
     "no-users-selected": "Seçili kullanıcı(s) bulunamadı",
     "invalid-home-page-route": "Geçersiz anasayfa yolu",
     "invalid-session": "Oturum Uyuşmazlığı",
-    "invalid-session-text": "It looks like your login session is no longer active, or no longer matches with the server. Please refresh this page."
+    "invalid-session-text": "Senin giriş oturumun pek aktif gözükmüyor, ya da sunucu ile eşleşmiyor. Lütfen sayfayı yenileyiniz."
 }

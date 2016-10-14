@@ -36,7 +36,7 @@
     "account/posts": "Posts feitos por %1",
     "account/topics": "Tópicos criados por %1",
     "account/groups": "Grupos de %1",
-    "account/favourites": "Posts Favoritados por %1",
+    "account/bookmarks": "%1's Bookmarked Posts",
     "account/settings": "Configurações de Usuário",
     "account/watched": "Tópicos assistidos por %1",
     "account/upvoted": "Posts votados positivamente por %1",

@@ -36,7 +36,7 @@
     "account/posts": "Сообщение от %1",
     "account/topics": "Тема создана %1",
     "account/groups": "%1 Групп",
-    "account/favourites": "%1 постов в закладках",
+    "account/bookmarks": "%1 постов в закладках",
     "account/settings": "Настройки пользователя",
     "account/watched": "Тему смотрели %1",
     "account/upvoted": "Рейтинг поста поднят %1",

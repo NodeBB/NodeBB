@@ -36,7 +36,7 @@
     "account/posts": "Messages postés par %1",
     "account/topics": "Sujets créés par %1",
     "account/groups": "Groupes auxquels appartient %1",
-    "account/favourites": "Marques-pages de %1",
+    "account/bookmarks": "%1's Bookmarked Posts",
     "account/settings": "Paramètres d'utilisateur",
     "account/watched": "Sujets auxquels %1 est abonné",
     "account/upvoted": "Messages pour lesquels %1 a voté",

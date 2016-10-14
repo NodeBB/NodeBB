@@ -124,6 +124,6 @@
     "info.banned-no-reason": "Gerekçe belirtilmedi.",
     "info.username-history": "Kullanıcı Adı Geçmişi",
     "info.email-history": "Email Geçmişi",
-    "info.moderation-note": "Moderation Note",
-    "info.moderation-note.success": "Moderation note saved"
+    "info.moderation-note": "Moderasyon Notu",
+    "info.moderation-note.success": "Moderasyon notu kaydedildi"
 }

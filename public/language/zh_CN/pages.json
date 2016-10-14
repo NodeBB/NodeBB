@@ -36,7 +36,7 @@
     "account/posts": "%1 发布的帖子",
     "account/topics": "%1 创建的主题",
     "account/groups": "%1 的小组",
-    "account/favourites": "%1 收藏的帖子",
+    "account/bookmarks": "%1's Bookmarked Posts",
     "account/settings": "用户设置",
     "account/watched": "主题已被 %1 关注",
     "account/upvoted": "帖子被 %1 顶过",
