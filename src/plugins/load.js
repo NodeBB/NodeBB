@@ -1,16 +1,16 @@
 'use strict';
 
-var fs = require('fs'),
-	path = require('path'),
-	semver = require('semver'),
-	async = require('async'),
-	winston = require('winston'),
-	nconf = require('nconf'),
-	_ = require('underscore'),
-	file = require('../file');
+var fs = require('fs');
+var path = require('path');
+var semver = require('semver');
+var async = require('async');
+var winston = require('winston');
+var nconf = require('nconf');
+var _ = require('underscore');
+var file = require('../file');
 
-var utils = require('../../public/src/utils'),
-	meta = require('../meta');
+var utils = require('../../public/src/utils');
+var meta = require('../meta');
 
 
 module.exports = function (Plugins) {
@@ -217,8 +217,7 @@ module.exports = function (Plugins) {
 			return callback();
 		}
 
-		var pathToFolder = path.join(__dirname, '../../node_modules/', pluginData.id, pluginData.languages),
-			fallbackMap = {};
+		var pathToFolder = path.join(__dirname, '../../node_modules/', pluginData.id, pluginData.languages);
 
 		utils.walk(pathToFolder, function (err, languages) {
 			if (err) {

@@ -33,6 +33,7 @@ var middleware;
 	Plugins.customLanguageFallbacks = {};
 	Plugins.libraryPaths = [];
 	Plugins.versionWarning = [];
+	Plugins.languageCodes = [];
 
 	Plugins.initialized = false;
 
@@ -82,11 +83,6 @@ var middleware;
 		Plugins.clientScripts.length = 0;
 		Plugins.acpScripts.length = 0;
 		Plugins.libraryPaths.length = 0;
-
-		// Plugins.registerHook('core', {
-		// 	hook: 'static:app.load',
-		// 	method: addLanguages
-		// });
 
 		async.waterfall([
 			function (next) {
