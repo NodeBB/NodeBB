@@ -292,6 +292,42 @@ describe('User', function () {
 		});
 	});
 
+	describe('updateProfile', function () {
+		var uid;
+		before(function (done) {
+			User.create({username: 'updateprofile', email: 'update@me.com'}, function (err, newUid) {
+				assert.ifError(err);
+				uid = newUid;
+				done();
+			});
+		});
+
+		it('should update a user\'s profile', function (done) {
+			var data = {
+				username: 'updatedUserName',
+				email: 'updatedEmail@me.com',
+				fullname: 'updatedFullname',
+				website: 'http://nodebb.org',
+				location: 'izmir',
+				groupTitle: 'testGroup',
+				birthday: '01/01/1980',
+				signature: 'nodebb is good'
+			};
+
+			User.updateProfile(uid, data, function (err, result) {
+				assert.ifError(err);
+				assert(result);
+				db.getObject('user:' + uid, function (err, userData) {
+					assert.ifError(err);
+					Object.keys(data).forEach(function (key) {
+						assert.equal(data[key], userData[key]);
+					});
+					done();
+				});
+			});
+		});
+	});
+
 	after(function (done) {
 		db.flushdb(done);
 	});
