@@ -140,6 +140,7 @@ SocketModules.chats.addUserToRoom = function (socket, data, callback) {
 	if (!data || !data.roomId || !data.username) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
+	var uid;
 	async.waterfall([
 		function (next) {
 			Messaging.getUserCountInRoom(data.roomId, next);
@@ -154,13 +155,25 @@ SocketModules.chats.addUserToRoom = function (socket, data, callback) {
 		function (next) {
 			user.getUidByUsername(data.username, next);
 		},
-		function (uid, next) {
+		function (_uid, next) {
+			uid = _uid;
 			if (!uid) {
 				return next(new Error('[[error:no-user]]'));
 			}
 			if (socket.uid === parseInt(uid, 10)) {
 				return next(new Error('[[error:cant-add-self-to-chat-room]]'));
 			}
+			async.parallel({
+				settings: async.apply(user.getSettings, uid),
+				isAdmin: async.apply(user.isAdministrator, socket.uid),
+				isFollowing: async.apply(user.isFollowing, uid, socket.uid)
+			}, next);
+		},
+		function (results, next) {
+			if (results.settings.restrictChat && !results.isAdmin && !results.isFollowing) {
+				return next(new Error('[[error:chat-restricted]]'));
+			}
+
 			Messaging.addUsersToRoom(socket.uid, [uid], data.roomId, next);
 		}
 	], callback);
