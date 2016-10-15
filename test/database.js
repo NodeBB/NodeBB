@@ -1,14 +1,22 @@
 'use strict';
 /*global require*/
 
-var	assert = require('assert'),
-	db = require('./mocks/databasemock');
+var	assert = require('assert');
+var db = require('./mocks/databasemock');
 
 
 describe('Test database', function () {
-	it('should work', function (){
+	it('should work', function () {
 		assert.doesNotThrow(function (){
-			var db = require('./mocks/databasemock');
+			require('./mocks/databasemock');
+		});
+	});
+
+	it('should return info about database', function (done) {
+		db.info(db.client, function (err, info) {
+			assert.ifError(err);
+			assert(info);
+			done();
 		});
 	});
 
