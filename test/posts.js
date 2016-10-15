@@ -14,6 +14,8 @@ describe('Post\'s', function () {
 	var voterUid;
 	var voteeUid;
 	var postData;
+	var topicData;
+	var cid;
 
 	before(function (done) {
 		async.parallel({
@@ -36,6 +38,7 @@ describe('Post\'s', function () {
 
 			voterUid = results.voterUid;
 			voteeUid = results.voteeUid;
+			cid = results.category.cid;
 
 			topics.post({
 				uid: results.voteeUid,
@@ -47,6 +50,7 @@ describe('Post\'s', function () {
 					return done(err);
 				}
 				postData = data.postData;
+				topicData = data.topicData;
 				done();
 			});
 		});
@@ -123,6 +127,58 @@ describe('Post\'s', function () {
 				posts.hasBookmarked([postData.pid], voterUid, function (err, hasBookmarked) {
 					assert.ifError(err);
 					assert.equal(hasBookmarked[0], false);
+					done();
+				});
+			});
+		});
+	});
+
+	describe('delete/restore/purge', function () {
+		var pid;
+		before(function (done) {
+			topics.reply({
+				uid: voterUid,
+				tid: topicData.tid,
+				timestamp: Date.now(),
+				content: 'A post to delete/restore and purge'
+			}, function (err, data) {
+				assert.ifError(err);
+				pid = data.pid;
+				done();
+			});
+		});
+
+		it('should delete a post', function (done) {
+			posts.delete(pid, voterUid, function (err, postData) {
+				assert.ifError(err);
+				assert(postData);
+				posts.getPostField(pid, 'deleted', function (err, isDeleted) {
+					assert.ifError(err);
+					assert.equal(parseInt(isDeleted, 10), 1);
+					done();
+				});
+			});
+		});
+
+		it('should restore a post', function (done) {
+			posts.restore(pid, voterUid, function (err, postData) {
+				assert.ifError(err);
+				assert(postData);
+				posts.getPostField(pid, 'deleted', function (err, isDeleted) {
+					assert.ifError(err);
+					assert.equal(parseInt(isDeleted, 10), 0);
+					done();
+				});
+			});
+		});
+
+		it('should purge a post', function (done) {
+			posts.purge(pid, voterUid, function (err) {
+				assert.ifError(err);
+				assert.equal(arguments.length, 1);
+				posts.exists('post:' + pid, function (err, exists) {
+					assert.ifError(err);
+					assert.equal(exists, false);
 					done();
 				});
 			});
