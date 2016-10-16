@@ -10,6 +10,7 @@
 	var async = require('async');
 	var path  = require('path');
 	var nconf = require('nconf');
+	var url = require('url');
 	var winston = require('winston');
 	var errorText;
 
@@ -79,6 +80,7 @@
 	var meta = require('../../src/meta');
 
 	before(function (done) {
+		this.timeout(30000);
 		async.waterfall([
 			function (next) {
 				db.init(next);
@@ -91,7 +93,23 @@
 				meta.configs.init(next);
 			},
 			function (next) {
-				nconf.set('url', nconf.get('base_url') + (nconf.get('use_port') ? ':' + nconf.get('port') : '') + nconf.get('relative_path'));
+				// nconf defaults, if not set in config
+				if (!nconf.get('upload_path')) {
+					nconf.set('upload_path', '/public/uploads');
+				}
+				if (!nconf.get('sessionKey')) {
+					nconf.set('sessionKey', 'express.sid');
+				}
+				// Parse out the relative_url and other goodies from the configured URL
+				var urlObject = url.parse(nconf.get('url'));
+				var relativePath = urlObject.pathname !== '/' ? urlObject.pathname : '';
+				nconf.set('base_url', urlObject.protocol + '//' + urlObject.host);
+				nconf.set('secure', urlObject.protocol === 'https:');
+				nconf.set('use_port', !!urlObject.port);
+				nconf.set('relative_path', relativePath);
+				nconf.set('port', urlObject.port || nconf.get('port') || nconf.get('PORT') || (nconf.get('PORT_ENV_VAR') ? nconf.get(nconf.get('PORT_ENV_VAR')) : false) || 4567);
+				nconf.set('upload_url', nconf.get('upload_path').replace(/^\/public/, ''));
+
 				nconf.set('core_templates_path', path.join(__dirname, '../../src/views'));
 				nconf.set('base_templates_path', path.join(nconf.get('themes_path'), 'nodebb-theme-vanilla/templates'));
 				nconf.set('theme_templates_path', meta.config['theme:templates'] ? path.join(nconf.get('themes_path'), meta.config['theme:id'], meta.config['theme:templates']) : nconf.get('base_templates_path'));
@@ -103,8 +121,7 @@
 				require('../../src/notifications').init();
 				require('../../src/user').startJobs();
 
-				webserver.listen();
-				next();
+				webserver.listen(next);
 			}
 		], done);
 	});

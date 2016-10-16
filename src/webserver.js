@@ -52,8 +52,8 @@ server.on('error', function (err) {
 	}
 });
 
-
-module.exports.listen = function () {
+module.exports.listen = function (callback) {
+	callback = callback || function () {};
 	emailer.registerApp(app);
 
 	setupExpressApp(app);
@@ -65,7 +65,7 @@ module.exports.listen = function () {
 	emitter.all(['templates:compiled', 'meta:js.compiled', 'meta:css.compiled'], function () {
 		winston.info('NodeBB Ready');
 		emitter.emit('nodebb:ready');
-		listen();
+		listen(callback);
 	});
 
 	initializeNodeBB(function (err) {
@@ -80,6 +80,50 @@ module.exports.listen = function () {
 		}
 	});
 };
+
+function initializeNodeBB(callback) {
+	winston.info('initializing NodeBB ...');
+
+	var skipJS;
+	var fromFile = nconf.get('from-file') || '';
+	var middleware = require('./middleware');
+
+	if (fromFile.match('js')) {
+		winston.info('[minifier] Minifying client-side JS skipped');
+		skipJS = true;
+	}
+
+	async.waterfall([
+		async.apply(meta.themes.setupPaths),
+		function (next) {
+			plugins.init(app, middleware, next);
+		},
+		async.apply(plugins.fireHook, 'static:assets.prepare', {}),
+		async.apply(meta.js.bridgeModules, app),
+		function (next) {
+			async.series([
+				async.apply(meta.templates.compile),
+				async.apply(!skipJS ? meta.js.minify : meta.js.getFromFile, 'nodebb.min.js'),
+				async.apply(!skipJS ? meta.js.minify : meta.js.getFromFile, 'acp.min.js'),
+				async.apply(meta.css.minify),
+				async.apply(meta.sounds.init),
+				async.apply(languages.init),
+				async.apply(meta.blacklist.load)
+			], next);
+		},
+		function (results, next) {
+			plugins.fireHook('static:app.preload', {
+				app: app,
+				middleware: middleware
+			}, next);
+		},
+		async.apply(plugins.fireHook, 'filter:hotswap.prepare', []),
+		function (hotswapIds, next) {
+			routes(app, middleware, hotswapIds);
+			next();
+		}
+	], callback);
+}
 
 function setupExpressApp(app) {
 	var middleware = require('./middleware');
@@ -156,49 +200,8 @@ function setupCookie() {
 	return cookie;
 }
 
-function initializeNodeBB(callback) {
-	var skipJS;
-	var fromFile = nconf.get('from-file') || '';
-	var middleware = require('./middleware');
-
-	if (fromFile.match('js')) {
-		winston.info('[minifier] Minifying client-side JS skipped');
-		skipJS = true;
-	}
-
-	async.waterfall([
-		async.apply(meta.themes.setupPaths),
-		function (next) {
-			plugins.init(app, middleware, next);
-		},
-		async.apply(plugins.fireHook, 'static:assets.prepare', {}),
-		async.apply(meta.js.bridgeModules, app),
-		function (next) {
-			async.series([
-				async.apply(meta.templates.compile),
-				async.apply(!skipJS ? meta.js.minify : meta.js.getFromFile, 'nodebb.min.js'),
-				async.apply(!skipJS ? meta.js.minify : meta.js.getFromFile, 'acp.min.js'),
-				async.apply(meta.css.minify),
-				async.apply(meta.sounds.init),
-				async.apply(languages.init),
-				async.apply(meta.blacklist.load)
-			], next);
-		},
-		function (results, next) {
-			plugins.fireHook('static:app.preload', {
-				app: app,
-				middleware: middleware
-			}, next);
-		},
-		async.apply(plugins.fireHook, 'filter:hotswap.prepare', []),
-		function (hotswapIds, next) {
-			routes(app, middleware, hotswapIds);
-			next();
-		}
-	], callback);
-}
-
-function listen() {
+function listen(callback) {
+	callback = callback || function () {};
 	var port = parseInt(nconf.get('port'), 10);
 	var isSocket = isNaN(port);
 	var socketPath = isSocket ? nconf.get('port') : '';
@@ -242,6 +245,7 @@ function listen() {
 		if (oldUmask) {
 			process.umask(oldUmask);
 		}
+		callback();
 	});
 
 	// Alter umask if necessary

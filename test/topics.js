@@ -1,26 +1,28 @@
 'use strict';
 /*global require, before, beforeEach, after*/
 
+var async = require('async');
 var	assert = require('assert');
 var validator = require('validator');
+var nconf = require('nconf');
+
 var db = require('./mocks/databasemock');
 var topics = require('../src/topics');
 var categories = require('../src/categories');
 var User = require('../src/user');
 var groups = require('../src/groups');
-var async = require('async');
 
 describe('Topic\'s', function () {
-	var topic,
-		categoryObj;
+	var topic;
+	var categoryObj;
 
 	before(function (done) {
 		var userData = {
-				username: 'John Smith',
-				password: 'swordfish',
-				email: 'john@example.com',
-				callback: undefined
-			};
+			username: 'John Smith',
+			password: 'swordfish',
+			email: 'john@example.com',
+			callback: undefined
+		};
 
 		User.create({username: userData.username, password: userData.password, email: userData.email}, function (err, uid) {
 			if (err) {
@@ -202,7 +204,7 @@ describe('Topic\'s', function () {
 		});
 	});
 
-	describe('.purge/.delete', function () {
+	describe('delete/restore/purge', function () {
 		var newTopic;
 		var followerUid;
 		before(function (done) {
@@ -226,6 +228,13 @@ describe('Topic\'s', function () {
 
 		it('should delete the topic', function (done) {
 			topics.delete(newTopic.tid, 1, function (err) {
+				assert.ifError(err);
+				done();
+			});
+		});
+
+		it('should restore the topic', function (done) {
+			topics.restore(newTopic.tid, 1, function (err) {
 				assert.ifError(err);
 				done();
 			});
@@ -442,6 +451,26 @@ describe('Topic\'s', function () {
 					next();
 				}
 			],done);
+		});
+	});
+
+	it('should load topic', function (done) {
+		topics.post({
+			uid: topic.userId,
+			title: 'topic for controller test',
+			content: 'topic content',
+			cid: topic.categoryId,
+			thumb: 'http://i.imgur.com/64iBdBD.jpg'
+		}, function (err, result) {
+			assert.ifError(err);
+			assert.ok(result);
+			var request = require('request');
+			request(nconf.get('url') + '/topic/' + result.topicData.slug, function (err, response, body) {
+				assert.ifError(err);
+				assert.equal(response.statusCode, 200);
+				assert(body);
+				done();
+			});
 		});
 	});
 
