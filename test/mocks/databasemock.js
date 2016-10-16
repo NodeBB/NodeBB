@@ -5,12 +5,13 @@
 
 (function (module) {
 	'use strict';
-	/*global require, before*/
+	/*global require, before, __dirname*/
 
-	var path  = require('path'),
-		nconf = require('nconf'),
-		winston = require('winston'),
-		errorText;
+	var async = require('async');
+	var path  = require('path');
+	var nconf = require('nconf');
+	var winston = require('winston');
+	var errorText;
 
 
 	nconf.file({ file: path.join(__dirname, '../../config.json') });
@@ -22,11 +23,11 @@
 		relative_path: ''
 	});
 
-	var dbType = nconf.get('database'),
-		testDbConfig = nconf.get('test_database'),
-		productionDbConfig = nconf.get(dbType);
+	var dbType = nconf.get('database');
+	var testDbConfig = nconf.get('test_database');
+	var productionDbConfig = nconf.get(dbType);
 
-	if(!testDbConfig){
+	if (!testDbConfig){
 		errorText = 'test_database is not defined';
 		winston.info(
 			'\n===========================================================\n' +
@@ -59,10 +60,9 @@
 		throw new Error(errorText);
 	}
 
-	if(	testDbConfig.database === productionDbConfig.database &&
+	if (testDbConfig.database === productionDbConfig.database &&
 		testDbConfig.host === productionDbConfig.host &&
-		testDbConfig.port === productionDbConfig.port
-	){
+		testDbConfig.port === productionDbConfig.port) {
 		errorText = 'test_database has the same config as production db';
 		winston.error(errorText);
 		throw new Error(errorText);
@@ -70,38 +70,38 @@
 
 	nconf.set(dbType, testDbConfig);
 
-	var db = require('../../src/database'),
-		meta = require('../../src/meta');
+	var db = require('../../src/database');
+	var meta = require('../../src/meta');
 
 	before(function (done) {
-		db.init(function (err) {
-			if (err) {
-				return done(err);
-			}
-
-			//Clean up
-			db.flushdb(function (err) {
-				if(err) {
-					winston.error(err);
-					throw new Error(err);
-				}
-
+		async.waterfall([
+			function (next) {
+				db.init(next);
+			},
+			function (next) {
+				db.flushdb(next);
+			},
+			function (next) {
 				winston.info('test_database flushed');
+				meta.configs.init(next);
+			},
+			function (next) {
+				nconf.set('url', nconf.get('base_url') + (nconf.get('use_port') ? ':' + nconf.get('port') : '') + nconf.get('relative_path'));
+				nconf.set('core_templates_path', path.join(__dirname, '../../src/views'));
+				nconf.set('base_templates_path', path.join(nconf.get('themes_path'), 'nodebb-theme-vanilla/templates'));
+				nconf.set('theme_templates_path', meta.config['theme:templates'] ? path.join(nconf.get('themes_path'), meta.config['theme:id'], meta.config['theme:templates']) : nconf.get('base_templates_path'));
 
-				meta.configs.init(function () {
-					nconf.set('url', nconf.get('base_url') + (nconf.get('use_port') ? ':' + nconf.get('port') : '') + nconf.get('relative_path'));
-					nconf.set('core_templates_path', path.join(__dirname, '../../src/views'));
-					nconf.set('base_templates_path', path.join(nconf.get('themes_path'), 'nodebb-theme-vanilla/templates'));
-					nconf.set('theme_templates_path', meta.config['theme:templates'] ? path.join(nconf.get('themes_path'), meta.config['theme:id'], meta.config['theme:templates']) : nconf.get('base_templates_path'));
+				var	webserver = require('../../src/webserver');
+				var sockets = require('../../src/socket.io');
+				sockets.init(webserver.server);
 
-					var	webserver = require('../../src/webserver'),
-						sockets = require('../../src/socket.io');
-						sockets.init(webserver.server);
+				require('../../src/notifications').init();
+				require('../../src/user').startJobs();
 
-					done();
-				});
-			});
-		});
+				webserver.listen();
+				next();
+			}
+		], done);
 	});
 
 	module.exports = db;

@@ -7,7 +7,9 @@ module.exports = function (db, module) {
 
 	module.flushdb = function (callback) {
 		callback = callback || helpers.noop;
-		db.dropDatabase(callback);
+		db.dropDatabase(function (err) {
+			callback(err);
+		});
 	};
 
 	module.exists = function (key, callback) {
