@@ -1,25 +1,32 @@
 // see https://gist.github.com/jfromaniello/4087861#gistcomment-1447029
 // XMLHttpRequest to override.
-//var xhrPath = '../node_modules/socket.io-client/node_modules/engine.io-client/node_modules/xmlhttprequest';
-var xhrPath = '../../node_modules/socket.io-client/node_modules/engine.io-client/node_modules/xmlhttprequest-ssl';
-var name;
+/* globals console, require, module */
+var npm2Path = '../../node_modules/socket.io-client/node_modules/engine.io-client/node_modules/xmlhttprequest-ssl';
+var npm3Path = '../../node_modules/xmlhttprequest-ssl';
+var filePath;
+var winston = require('winston');
+
 // Make initial call to require so module is cached.
 try {
-	require(xhrPath);
-	name = require.resolve(xhrPath);
+	require(npm2Path);
+	filePath = require.resolve(npm2Path);
 } catch (err) {
-	console.log('err1', err);
+	if (err) {
+		winston.info('Couldn\'t find ' + npm2Path);
+	}
 	try {
-		require('../../node_modules/xmlhttprequest-ssl');
-		name = require.resolve('xmlhttprequest-ssl');
+		require(npm3Path);
+		filePath = require.resolve(npm3Path);
 	} catch (err) {
-		console.log('err2', err);
+		if (err) {
+			winston.info('Couldn\'t find ' + npm3Path);
+		}
 	}
 }
 
-console.log(name);
+winston.info('xmlhttprequest-ssl path: ' + filePath);
 // Get cached version.
-var cachedXhr = require.cache[name];
+var cachedXhr = require.cache[filePath];
 var stdXhr = cachedXhr.exports;
 
 // Callbacks exposes an object that callback functions can be added to.
@@ -32,7 +39,7 @@ var newXhr = function () {
 			callbacks[method].apply(this, arguments);
 		}
 	}
-}
+};
 
 newXhr.XMLHttpRequest = newXhr;
 
