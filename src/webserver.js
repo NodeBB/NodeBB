@@ -230,18 +230,17 @@ function listen(callback) {
 		winston.info('Using ports 80 and 443 is not recommend; use a proxy instead. See README.md');
 	}
 
-
-	var args = isSocket ? [socketPath] : [port, nconf.get('bind_address')];
-	var bind_address = ((nconf.get('bind_address') === "0.0.0.0" || !nconf.get('bind_address')) ? '0.0.0.0' : nconf.get('bind_address')) + ':' + port;
+	var bind_address = ((nconf.get('bind_address') === "0.0.0.0" || !nconf.get('bind_address')) ? '0.0.0.0' : nconf.get('bind_address'));
+	var args = isSocket ? [socketPath] : [port, bind_address];
 	var oldUmask;
 
 	args.push(function (err) {
 		if (err) {
-			winston.info('[startup] NodeBB was unable to listen on: ' + bind_address);
+			winston.info('[startup] NodeBB was unable to listen on: ' + bind_address + ':' + port);
 			process.exit();
 		}
 
-		winston.info('NodeBB is now listening on: ' + (isSocket ? socketPath : bind_address));
+		winston.info('NodeBB is now listening on: ' + (isSocket ? socketPath : bind_address + ':' + port));
 		if (oldUmask) {
 			process.umask(oldUmask);
 		}

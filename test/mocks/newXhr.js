@@ -4,7 +4,12 @@
 var xhrPath = '../../node_modules/socket.io-client/node_modules/engine.io-client/node_modules/xmlhttprequest-ssl';
 
 // Make initial call to require so module is cached.
-require(xhrPath);
+try {
+	require(xhrPath);
+} catch(e) {
+	require('xmlhttprequest-ssl');
+}
+
 
 var name = require.resolve(xhrPath);
 // Get cached version.

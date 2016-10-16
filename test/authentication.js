@@ -11,6 +11,17 @@ var db = require('./mocks/databasemock');
 describe('authentication', function () {
 	var jar = request.jar();
 
+	before(function(done) {
+		request({
+			url: nconf.get('url') + '/api/config',
+			json: true,
+			jar: jar
+		}, function (err, response, body) {
+			console.log('lel', body);
+			done();
+		});
+	});
+
 	it('should register and login a user', function (done) {
 		request({
 			url: nconf.get('url') + '/api/config',
