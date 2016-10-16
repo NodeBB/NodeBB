@@ -23,7 +23,7 @@
     "profile": "Perfil",
     "profile_views": "Visitas",
     "reputation": "Reputación",
-    "bookmarks": "Bookmarks",
+    "bookmarks": "Marcadores",
     "watched": "Suscritos",
     "followers": "Seguidores",
     "following": "Siguiendo",
@@ -93,7 +93,7 @@
     "incoming-message-sound": "Sonido del mensaje entrante",
     "outgoing-message-sound": "Sonido del mensaje saliente",
     "notification-sound": "Sonido de notificación",
-    "no-sound": "No sound",
+    "no-sound": "Sin sonido",
     "browsing": "Preferencias de navegación.",
     "open_links_in_new_tab": "Abrir los enlaces externos en una nueva pestaña",
     "enable_topic_searching": "Activar la búsqueda \"dentro del tema\"",
@@ -122,8 +122,8 @@
     "info.banned-permanently": "Baneado permanentemente",
     "info.banned-reason-label": "Motivo",
     "info.banned-no-reason": "Motivo no especificado",
-    "info.username-history": "Username History",
-    "info.email-history": "Email History",
-    "info.moderation-note": "Moderation Note",
-    "info.moderation-note.success": "Moderation note saved"
+    "info.username-history": "Histórico de nombre de usuario",
+    "info.email-history": "HIstórico de Email",
+    "info.moderation-note": "Nota de Moderación",
+    "info.moderation-note.success": "Nota de moderación guardada"
 }
