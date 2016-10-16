@@ -8,6 +8,7 @@
 	/*global require, before, __dirname*/
 
 	var async = require('async');
+	var winston = require('winston');
 	var path  = require('path');
 	var nconf = require('nconf');
 	var url = require('url');
@@ -75,6 +76,10 @@
 	}
 
 	nconf.set(dbType, testDbConfig);
+
+	winston.info('database config');
+	winston.info(dbType);
+	winsotn.info(testDbConfig);
 
 	var db = require('../../src/database');
 	var meta = require('../../src/meta');
