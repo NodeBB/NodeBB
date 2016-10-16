@@ -11,13 +11,13 @@ var db = require('./mocks/databasemock');
 describe('authentication', function () {
 	var jar = request.jar();
 
-	before(function(done) {
+	before(function (done) {
 		request({
 			url: nconf.get('url') + '/api/config',
 			json: true,
 			jar: jar
 		}, function (err, response, body) {
-			console.log('lel', body);
+			assert.ifError(err);
 			done();
 		});
 	});

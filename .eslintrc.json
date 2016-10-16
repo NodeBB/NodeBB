@@ -4,6 +4,8 @@
     "rules": {
         "handle-callback-err": [ "error","^(e$|(e|(.*(_e|E)))rr)" ],
         "linebreak-style": "off",
+        "import/no-unresolved": "off",
+        "import/no-extraneous-dependencies": "off",
         "one-var": "off",
         "no-undef": "off",
         "max-len": "off",
