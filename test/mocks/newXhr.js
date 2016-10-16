@@ -2,21 +2,22 @@
 // XMLHttpRequest to override.
 //var xhrPath = '../node_modules/socket.io-client/node_modules/engine.io-client/node_modules/xmlhttprequest';
 var xhrPath = '../../node_modules/socket.io-client/node_modules/engine.io-client/node_modules/xmlhttprequest-ssl';
-
+var name;
 // Make initial call to require so module is cached.
 try {
 	require(xhrPath);
-} catch(e) {
-	require('xmlhttprequest-ssl');
-}
-
-var name;
-try {
 	name = require.resolve(xhrPath);
-} catch(e) {
-	name = require.resolve('xmlhttprequest-ssl');
+} catch (err) {
+	console.log('err1', err);
+	try {
+		require('../../node_modules/xmlhttprequest-ssl');
+		name = require.resolve('xmlhttprequest-ssl');
+	} catch (err) {
+		console.log('err2', err);
+	}
 }
 
+console.log(name);
 // Get cached version.
 var cachedXhr = require.cache[name];
 var stdXhr = cachedXhr.exports;
