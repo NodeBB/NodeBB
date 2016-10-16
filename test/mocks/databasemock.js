@@ -23,6 +23,11 @@
 		relative_path: ''
 	});
 
+	if (!nconf.get('isCluster')) {
+		nconf.set('isPrimary', 'true');
+		nconf.set('isCluster', 'false');
+	}
+
 	var dbType = nconf.get('database');
 	var testDbConfig = nconf.get('test_database');
 	var productionDbConfig = nconf.get(dbType);
