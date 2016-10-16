@@ -293,29 +293,45 @@ module.exports = function (redisClient, module) {
 	};
 
 	module.getSortedSetRangeByLex = function (key, min, max, start, count, callback) {
-		if (min !== '-') {
-			min = '[' + min;
-		}
-		if (max !== '+') {
-			max = '(' + max;
-		}
-
-		sortedSetRangeByLex('zrangebylex', key, min, max, start, count, callback)
+		sortedSetLex('zrangebylex', false, key, min, max, start, count, callback)
 	};
 
 	module.getSortedSetRevRangeByLex = function (key, max, min, start, count, callback) {
-		if (min !== '-') {
-			min = '[' + min;
-		}
-		if (max !== '+') {
-			max = '(' + max;
-		}
-
-		sortedSetRangeByLex('zrevrangebylex', key, max, min, start, count, callback)
+		sortedSetLex('zrevrangebylex', true, key, max, min, start, count, callback)
 	};
 
-	function sortedSetRangeByLex(method, key, min, max, start, count, callback) {
-		redisClient[method]([key, min, max, 'LIMIT', start, count], callback);
+	module.sortedSetRemoveRangeByLex = function (key, min, max) {
+		sortedSetLex('zremrangebylex', false, key, min, max, callback)
+	};
+
+	module.sortedSetLexCount = function (key, min, max) {
+		sortedSetLex('zlexcount', false, key, min, max, callback)
+	};
+
+	function sortedSetLex(method, reverse, key, min, max, start, count, callback) {
+		if (!callback) callback === start;
+
+		if (reverse) {
+			if (min !== '+') {
+				min = '(' + min;
+			}
+			if (max !== '-') {
+				max = '[' + max;
+			}
+		} else {
+			if (min !== '-') {
+				min = '[' + min;
+			}
+			if (max !== '+') {
+				max = '(' + max;
+			}
+		}
+
+		if (count) {
+			redisClient[method]([key, min, max, 'LIMIT', start, count], callback);
+		} else {
+			redisClient[method]([key, min, max], callback);
+		}
 	}
 
 	module.sortedSetIntersectCard = function (keys, callback) {
