@@ -185,6 +185,25 @@ describe('Post\'s', function () {
 		});
 	});
 
+	describe('getPostSummaryByPids', function () {
+		it('should return empty array for empty pids', function (done) {
+			posts.getPostSummaryByPids([], 0, {}, function (err, data) {
+				assert.ifError(err);
+				assert.equal(data.length, 0);
+				done();
+			});
+		});
+
+		it('should get post summaries', function (done) {
+			posts.getPostSummaryByPids([postData.pid], 0, {}, function (err, data) {
+				assert.ifError(err);
+				assert(data[0].user);
+				assert(data[0].topic);
+				assert(data[0].category);
+				done();
+			});
+		});
+	});
 
 	after(function (done) {
 		db.flushdb(done);
