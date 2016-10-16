@@ -79,7 +79,7 @@
 
 	winston.info('database config');
 	winston.info(dbType);
-	winsotn.info(testDbConfig);
+	winston.info(testDbConfig);
 
 	var db = require('../../src/database');
 	var meta = require('../../src/meta');
