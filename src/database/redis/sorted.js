@@ -299,8 +299,24 @@ module.exports = function (redisClient, module) {
 		if (max !== '+') {
 			max = '(' + max;
 		}
-		redisClient.zrangebylex([key, min, max, 'LIMIT', start, count], callback);
+
+		sortedSetRangeByLex('zrangebylex', key, min, max, start, count, callback)
 	};
+
+	module.getSortedSetRevRangeByLex = function (key, max, min, start, count, callback) {
+		if (min !== '-') {
+			min = '[' + min;
+		}
+		if (max !== '+') {
+			max = '(' + max;
+		}
+
+		sortedSetRangeByLex('zrevrangebylex', key, max, min, start, count, callback)
+	};
+
+	function sortedSetRangeByLex(method, key, min, max, start, count, callback) {
+		redisClient[method]([key, min, max, 'LIMIT', start, count], callback);
+	}
 
 	module.sortedSetIntersectCard = function (keys, callback) {
 		if (!Array.isArray(keys) || !keys.length) {
