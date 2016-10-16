@@ -10,8 +10,13 @@ try {
 	require('xmlhttprequest-ssl');
 }
 
+var name;
+try {
+	name = require.resolve(xhrPath);
+} catch(e) {
+	name = require.resolve('xmlhttprequest-ssl');
+}
 
-var name = require.resolve(xhrPath);
 // Get cached version.
 var cachedXhr = require.cache[name];
 var stdXhr = cachedXhr.exports;
@@ -21,7 +26,7 @@ var callbacks = {};
 
 var newXhr = function () {
 	stdXhr.apply(this, arguments);
-	for (method in callbacks) {
+	for (var method in callbacks) {
 		if (typeof callbacks[method] == "function") {
 			callbacks[method].apply(this, arguments);
 		}

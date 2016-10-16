@@ -106,7 +106,8 @@
     "istanbul": "^0.4.2",
     "mocha": "~3.1.0",
     "mocha-lcov-reporter": "^1.2.0",
-    "xmlhttprequest": "1.8.0"
+    "xmlhttprequest": "1.8.0",
+    "xmlhttprequest-ssl": "1.5.3"
   },
   "bugs": {
     "url": "https://github.com/NodeBB/NodeBB/issues"
