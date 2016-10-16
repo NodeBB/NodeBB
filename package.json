@@ -105,7 +105,8 @@
     "grunt-contrib-watch": "^1.0.0",
     "istanbul": "^0.4.2",
     "mocha": "~3.1.0",
-    "mocha-lcov-reporter": "^1.2.0"
+    "mocha-lcov-reporter": "^1.2.0",
+    "xmlhttprequest": "1.8.0"
   },
   "bugs": {
     "url": "https://github.com/NodeBB/NodeBB/issues"

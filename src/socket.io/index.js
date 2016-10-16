@@ -88,7 +88,7 @@ var ratelimit = require('../middleware/ratelimit');
 			if (process.env.NODE_ENV === 'development') {
 				winston.warn('[socket.io] Unrecognized message: ' + eventName);
 			}
-			return;
+			return callback({message: '[[error:invalid-event]]'});
 		}
 
 		socket.previousEvents = socket.previousEvents || [];
