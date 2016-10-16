@@ -3,20 +3,20 @@
 
 var winston = require('winston');
 
-var	assert = require('assert'),
-	async = require('async'),
-	db = require('./mocks/databasemock');
+var	assert = require('assert');
+var async = require('async');
+var db = require('./mocks/databasemock');
 
-var User = require('../src/user'),
-	Topics = require('../src/topics'),
-	Categories = require('../src/categories'),
-	Meta = require('../src/meta'),
-	Password = require('../src/password');
+var User = require('../src/user');
+var Topics = require('../src/topics');
+var Categories = require('../src/categories');
+var Meta = require('../src/meta');
+var Password = require('../src/password');
 
 describe('User', function () {
-	var	userData,
-		testUid,
-		testCid;
+	var userData;
+	var testUid;
+	var testCid;
 
 	before(function (done) {
 		var groups = require('../src/groups');

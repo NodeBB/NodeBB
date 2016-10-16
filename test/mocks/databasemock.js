@@ -12,7 +12,6 @@
 	var path  = require('path');
 	var nconf = require('nconf');
 	var url = require('url');
-	var winston = require('winston');
 	var errorText;
 
 
@@ -82,10 +81,10 @@
 	winston.info(testDbConfig);
 
 	var db = require('../../src/database');
-	var meta = require('../../src/meta');
 
 	before(function (done) {
 		this.timeout(30000);
+		var meta;
 		async.waterfall([
 			function (next) {
 				db.init(next);
@@ -95,6 +94,7 @@
 			},
 			function (next) {
 				winston.info('test_database flushed');
+				meta = require('../../src/meta');
 				meta.configs.init(next);
 			},
 			function (next) {

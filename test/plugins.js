@@ -17,7 +17,6 @@ describe('Plugins', function () {
 			assert(plugins.libraries[pluginId]);
 			assert(plugins.loadedHooks['static:app.load']);
 			assert(plugins.staticDirs['nodebb-plugin-markdown/js']);
-			assert.notEqual(plugins.lessFiles.indexOf('nodebb-plugin-markdown/public/less/default.less'), -1);
 
 			done();
 		});

@@ -65,6 +65,7 @@ module.exports.listen = function (callback) {
 	emitter.all(['templates:compiled', 'meta:js.compiled', 'meta:css.compiled'], function () {
 		winston.info('NodeBB Ready');
 		emitter.emit('nodebb:ready');
+
 		listen(callback);
 	});
 
@@ -101,6 +102,19 @@ function initializeNodeBB(callback) {
 		async.apply(plugins.fireHook, 'static:assets.prepare', {}),
 		async.apply(meta.js.bridgeModules, app),
 		function (next) {
+			plugins.fireHook('static:app.preload', {
+				app: app,
+				middleware: middleware
+			}, next);
+		},
+		function (next) {
+			plugins.fireHook('filter:hotswap.prepare', [], next);
+		},
+		function (hotswapIds, next) {
+			routes(app, middleware, hotswapIds);
+			next();
+		},
+		function (next) {
 			async.series([
 				async.apply(meta.templates.compile),
 				async.apply(!skipJS ? meta.js.minify : meta.js.getFromFile, 'nodebb.min.js'),
@@ -110,17 +124,6 @@ function initializeNodeBB(callback) {
 				async.apply(languages.init),
 				async.apply(meta.blacklist.load)
 			], next);
-		},
-		function (results, next) {
-			plugins.fireHook('static:app.preload', {
-				app: app,
-				middleware: middleware
-			}, next);
-		},
-		async.apply(plugins.fireHook, 'filter:hotswap.prepare', []),
-		function (hotswapIds, next) {
-			routes(app, middleware, hotswapIds);
-			next();
 		}
 	], callback);
 }

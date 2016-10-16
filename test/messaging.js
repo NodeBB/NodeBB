@@ -1,13 +1,13 @@
 'use strict';
 /*global require, before, after*/
 
-var assert = require('assert'),
-	db = require('./mocks/databasemock'),
-	async = require('async'),
-	User = require('../src/user'),
-	Groups = require('../src/groups'),
-	Messaging = require('../src/messaging'),
-	testUids;
+var assert = require('assert');
+var db = require('./mocks/databasemock');
+var async = require('async');
+var User = require('../src/user');
+var Groups = require('../src/groups');
+var Messaging = require('../src/messaging');
+var testUids;
 
 describe('Messaging Library', function () {
 	before(function (done) {

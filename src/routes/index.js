@@ -1,6 +1,7 @@
 "use strict";
 
 var nconf = require('nconf');
+var winston = require('winston');
 var path = require('path');
 var async = require('async');
 var controllers = require('../controllers');
@@ -157,5 +158,10 @@ module.exports = function (app, middleware, hotswapIds) {
 		async.apply(plugins.reloadRoutes),
 		async.apply(authRoutes.reloadRoutes),
 		async.apply(user.addInterstitials)
-	]);
+	], function (err) {
+		if (err) {
+			return winston.error(err);
+		}
+		winston.info('Routes added');
+	});
 };

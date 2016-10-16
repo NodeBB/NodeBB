@@ -21,7 +21,7 @@ describe('translator shim', function (){
 describe('new Translator(language)', function (){
 	describe('.translate()', function (){
 		it('should handle basic translations', function (done) {
-            var translator = new Translator('en_GB');
+			var translator = new Translator('en_GB');
 
 			translator.translate('[[global:home]]').then(function (translated) {
 				assert.strictEqual(translated, 'Home');
@@ -30,7 +30,7 @@ describe('new Translator(language)', function (){
 		});
 
 		it('should handle language keys in regular text', function (done) {
-            var translator = new Translator('en_GB');
+			var translator = new Translator('en_GB');
 
 			translator.translate('Let\'s go [[global:home]]').then(function (translated) {
 				assert.strictEqual(translated, 'Let\'s go Home');
@@ -39,7 +39,7 @@ describe('new Translator(language)', function (){
 		});
 
 		it('should accept a language parameter and adjust accordingly', function (done) {
-            var translator = new Translator('de');
+			var translator = new Translator('de');
 
 			translator.translate('[[global:home]]').then(function (translated) {
 				assert.strictEqual(translated, 'Übersicht');
@@ -48,7 +48,7 @@ describe('new Translator(language)', function (){
 		});
 
 		it('should handle language keys in regular text with another language specified', function (done) {
-            var translator = new Translator('de');
+			var translator = new Translator('de');
 
 			translator.translate('[[global:home]] test').then(function (translated) {
 				assert.strictEqual(translated, 'Übersicht test');
@@ -57,7 +57,7 @@ describe('new Translator(language)', function (){
 		});
 
 		it('should handle language keys with parameters', function (done) {
-            var translator = new Translator('en_GB');
+			var translator = new Translator('en_GB');
 
 			translator.translate('[[global:pagination.out_of, 1, 5]]').then(function (translated) {
 				assert.strictEqual(translated, '1 out of 5');
@@ -66,7 +66,7 @@ describe('new Translator(language)', function (){
 		});
 
 		it('should handle language keys inside language keys', function (done) {
-            var translator = new Translator('en_GB');
+			var translator = new Translator('en_GB');
 
 			translator.translate('[[notifications:outgoing_link_message, [[global:guest]]]]').then(function (translated) {
 				assert.strictEqual(translated, 'You are now leaving Guest');
@@ -75,7 +75,7 @@ describe('new Translator(language)', function (){
 		});
 
 		it('should handle language keys inside language keys with multiple parameters', function (done) {
-            var translator = new Translator('en_GB');
+			var translator = new Translator('en_GB');
 
 			translator.translate('[[notifications:user_posted_to, [[global:guest]], My Topic]]').then(function (translated) {
 				assert.strictEqual(translated, '<strong>Guest</strong> has posted a reply to: <strong>My Topic</strong>');
@@ -84,7 +84,7 @@ describe('new Translator(language)', function (){
 		});
 
 		it('should handle language keys inside language keys with all parameters as language keys', function (done) {
-            var translator = new Translator('en_GB');
+			var translator = new Translator('en_GB');
 
 			translator.translate('[[notifications:user_posted_to, [[global:guest]], [[global:guest]]]]').then(function (translated) {
 				assert.strictEqual(translated, '<strong>Guest</strong> has posted a reply to: <strong>Guest</strong>');
@@ -93,7 +93,7 @@ describe('new Translator(language)', function (){
 		});
 
 		it('should properly handle parameters that contain square brackets', function (done) {
-            var translator = new Translator('en_GB');
+			var translator = new Translator('en_GB');
 
 			translator.translate('[[global:pagination.out_of, [guest], [[global:home]]]]').then(function (translated) {
 				assert.strictEqual(translated, '[guest] out of Home');
@@ -102,7 +102,7 @@ describe('new Translator(language)', function (){
 		});
 
 		it('should properly handle parameters that contain parentheses', function (done) {
-            var translator = new Translator('en_GB');
+			var translator = new Translator('en_GB');
 
 			translator.translate('[[global:pagination.out_of, (foobar), [[global:home]]]]').then(function (translated) {
 				assert.strictEqual(translated, '(foobar) out of Home');
@@ -111,7 +111,7 @@ describe('new Translator(language)', function (){
 		});
 
 		it('should not translate language key parameters with HTML in them', function (done) {
-            var translator = new Translator('en_GB');
+			var translator = new Translator('en_GB');
 
 			var key = '[[global:403.login, <strong>test</strong>]]';
 			translator.translate(key).then(function (translated) {

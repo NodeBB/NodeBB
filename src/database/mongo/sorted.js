@@ -19,7 +19,7 @@ module.exports = function (db, module) {
 
 		db.collection('objects').update({_key: key, value: value}, {$set: {score: parseInt(score, 10)}}, {upsert:true, w: 1}, function (err) {
 			if (err && err.message.startsWith('E11000 duplicate key error')) {
-				return module.sortedSetAdd(key, score, value, callback);
+				return process.nextTick(module.sortedSetAdd, key, score, value, callback);
 			}
 			callback(err);
 		});
@@ -572,7 +572,7 @@ module.exports = function (db, module) {
 			// https://jira.mongodb.org/browse/SERVER-14322
 			// https://docs.mongodb.org/manual/reference/command/findAndModify/#upsert-and-unique-index
 			if (err && err.message.startsWith('E11000 duplicate key error')) {
-				return module.sortedSetIncrBy(key, increment, value, callback);
+				return process.nextTick(module.sortedSetIncrBy, key, increment, value, callback);
 			}
 			callback(err, result && result.value ? result.value.score : null);
 		});

@@ -2,21 +2,17 @@
 /*global require, before*/
 
 var	assert = require('assert');
-var async = require('async');
 var nconf = require('nconf');
 var request = require('request');
 
 var db = require('./mocks/databasemock');
+var user = require('../src/user');
 
 describe('authentication', function () {
 	var jar = request.jar();
 
 	before(function (done) {
-		request({
-			url: nconf.get('url') + '/api/config',
-			json: true,
-			jar: jar
-		}, function (err, response, body) {
+		user.create({username: 'regular', password: 'regularpwd', email: 'regular@nodebb.org' }, function (err) {
 			assert.ifError(err);
 			done();
 		});
@@ -54,7 +50,7 @@ describe('authentication', function () {
 					assert(body);
 					assert.equal(body.username, 'admin');
 					assert.equal(body.email, 'admin@nodebb.org');
-					done()
+					done();
 				});
 			});
 		});
@@ -102,8 +98,8 @@ describe('authentication', function () {
 
 			request.post(nconf.get('url') + '/login', {
 				form: {
-					username: 'admin',
-					password: 'adminpwd',
+					username: 'regular',
+					password: 'regularpwd',
 				},
 				json: true,
 				jar: jar,
@@ -121,8 +117,8 @@ describe('authentication', function () {
 				}, function (err, response, body) {
 					assert.ifError(err);
 					assert(body);
-					assert.equal(body.username, 'admin');
-					assert.equal(body.email, 'admin@nodebb.org');
+					assert.equal(body.username, 'regular');
+					assert.equal(body.email, 'regular@nodebb.org');
 					done()
 				});
 			});

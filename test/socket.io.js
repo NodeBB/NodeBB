@@ -19,11 +19,10 @@ var groups = require('../src/groups');
 
 describe('socket.io', function () {
 
-	var adminUid;
 	var io;
 
 	before(function (done) {
-		async.parallel([
+		async.series([
 			async.apply(user.create, { username: 'admin', password: 'adminpwd' }),
 			async.apply(user.create, { username: 'regular', password: 'regularpwd' })
 		], function (err, uids) {
@@ -31,7 +30,6 @@ describe('socket.io', function () {
 				return done(err);
 			}
 
-			adminUid = uids[0];
 			groups.join('administrators', uids[0], done);
 		});
 	});

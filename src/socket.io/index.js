@@ -1,12 +1,10 @@
 "use strict";
 
-var SocketIO = require('socket.io');
-var socketioWildcard = require('socketio-wildcard')();
 var async = require('async');
 var nconf = require('nconf');
-var cookieParser = require('cookie-parser')(nconf.get('secret'));
 var winston = require('winston');
 var url = require('url');
+var cookieParser = require('cookie-parser')(nconf.get('secret'));
 
 var db = require('../database');
 var logger = require('../logger');
@@ -19,6 +17,8 @@ var ratelimit = require('../middleware/ratelimit');
 	Sockets.init = function (server) {
 		requireModules();
 
+		var SocketIO = require('socket.io');
+		var socketioWildcard = require('socketio-wildcard')();
 		io = new SocketIO({
 			path: nconf.get('relative_path') + '/socket.io'
 		});
