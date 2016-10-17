@@ -127,7 +127,7 @@ describe('authentication', function () {
 
 
 	after(function (done) {
-		db.flushdb(done);
+		db.emptydb(done);
 	});
 
 });

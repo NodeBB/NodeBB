@@ -12,6 +12,13 @@ module.exports = function (db, module) {
 		});
 	};
 
+	module.emptydb = function (callback) {
+		callback = callback || helpers.noop;
+		db.collection('objects').remove({}, function (err) {
+			callback(err);
+		});
+	};
+
 	module.exists = function (key, callback) {
 		if (!key) {
 			return callback();

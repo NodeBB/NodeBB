@@ -13,9 +13,9 @@ describe('Messaging Library', function () {
 	before(function (done) {
 		// Create 3 users: 1 admin, 2 regular
 		async.parallel([
-			async.apply(User.create, { username: 'foo', password: 'bar' }),	// admin
-			async.apply(User.create, { username: 'baz', password: 'quux' }),	// restricted user
-			async.apply(User.create, { username: 'herp', password: 'derp' })	// regular user
+			async.apply(User.create, { username: 'foo', password: 'barbar' }),	// admin
+			async.apply(User.create, { username: 'baz', password: 'quuxquux' }),	// restricted user
+			async.apply(User.create, { username: 'herp', password: 'derpderp' })	// regular user
 		], function (err, uids) {
 			if (err) {
 				return done(err);
@@ -71,6 +71,6 @@ describe('Messaging Library', function () {
 	});
 
 	after(function (done) {
-		db.flushdb(done);
+		db.emptydb(done);
 	});
 });

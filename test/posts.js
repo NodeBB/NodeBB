@@ -18,7 +18,7 @@ describe('Post\'s', function () {
 	var cid;
 
 	before(function (done) {
-		async.parallel({
+		async.series({
 			voterUid: function (next) {
 				user.create({username: 'upvoter'}, next);
 			},
@@ -206,6 +206,6 @@ describe('Post\'s', function () {
 	});
 
 	after(function (done) {
-		db.flushdb(done);
+		db.emptydb(done);
 	});
 });

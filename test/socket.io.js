@@ -102,7 +102,7 @@ describe('socket.io', function () {
 	});
 
 	after(function (done) {
-		done();
+		db.emptydb(done);
 	});
 
 });

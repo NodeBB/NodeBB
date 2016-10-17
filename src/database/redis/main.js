@@ -10,6 +10,10 @@ module.exports = function (redisClient, module) {
 		});
 	};
 
+	module.emptydb = function (callback) {
+		module.flushdb(callback);
+	};
+
 	module.exists = function (key, callback) {
 		redisClient.exists(key, function (err, exists) {
 			callback(err, exists === 1);

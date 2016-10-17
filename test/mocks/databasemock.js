@@ -90,12 +90,22 @@
 				db.init(next);
 			},
 			function (next) {
-				db.flushdb(next);
+				db.emptydb(next);
 			},
 			function (next) {
 				winston.info('test_database flushed');
 				meta = require('../../src/meta');
+				setupDefaultConfigs(meta, next);
+			},
+			function (next) {
 				meta.configs.init(next);
+			},
+			function (next) {
+				meta.config.postDelay = 0;
+				meta.config.initialPostDelay = 0;
+				meta.config.newbiePostDelay = 0;
+
+				enableDefaultPlugins(next);
 			},
 			function (next) {
 				// nconf defaults, if not set in config
@@ -130,6 +140,26 @@
 			}
 		], done);
 	});
+
+	function setupDefaultConfigs(meta, next) {
+		winston.info('Populating database with default configs, if not already set...\n');
+
+		var defaults = require(path.join(nconf.get('base_dir'), 'install/data/defaults.json'));
+
+		meta.configs.setOnEmpty(defaults, next);
+	}
+
+	function enableDefaultPlugins(callback) {
+		winston.info('Enabling default plugins\n');
+
+		var defaultEnabled = [
+			'nodebb-plugin-dbsearch'
+		];
+
+		winston.info('[install/enableDefaultPlugins] activating default plugins', defaultEnabled);
+
+		db.sortedSetAdd('plugins:active', [0], defaultEnabled, callback);
+	}
 
 	module.exports = db;
 

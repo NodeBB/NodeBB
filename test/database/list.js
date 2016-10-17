@@ -161,6 +161,6 @@ describe('List methods', function () {
 
 
 	after(function (done) {
-		db.flushdb(done);
+		db.emptydb(done);
 	});
 });
