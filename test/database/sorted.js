@@ -19,7 +19,7 @@ describe('Sorted Set methods', function () {
 				db.sortedSetAdd('sortedSetTest3', [2, 4], ['value2', 'value4'], next);
 			},
 			function (next) {
-				db.sortedSetAdd('sortedSetLex', [0, 0, 0, 0], ['a', 'b', 'c', 'd'], done);
+				db.sortedSetAdd('sortedSetLex', [0, 0, 0, 0], ['a', 'b', 'c', 'd'], next);
 			}
 		], done);
 	});

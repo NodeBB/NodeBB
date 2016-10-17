@@ -302,7 +302,9 @@ module.exports = function (redisClient, module) {
 
 	module.sortedSetRemoveRangeByLex = function (key, min, max, callback) {
 		callback = callback || helpers.noop;
-		sortedSetLex('zremrangebylex', false, key, min, max, callback);
+		sortedSetLex('zremrangebylex', false, key, min, max, function (err) {
+			callback(err);
+		});
 	};
 
 	module.sortedSetLexCount = function (key, min, max, callback) {

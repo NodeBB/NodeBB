@@ -582,7 +582,7 @@ module.exports = function (db, module) {
 		sortedSetLex(key, min, max, 1, start, count, callback);
 	};
 
-	module.getSortedSetRevRangeByLex = function (key, min, max, start, count, callback) {
+	module.getSortedSetRevRangeByLex = function (key, max, min, start, count, callback) {
 		sortedSetLex(key, min, max, -1, start, count, callback);
 	};
 
@@ -599,7 +599,7 @@ module.exports = function (db, module) {
 			count = 0;
 		}
 
-		var query = {_key: key, value: {}};
+		var query = {_key: key};
 
 		if (min !== '-') {
 			if (min.match(/^\(/)) {
