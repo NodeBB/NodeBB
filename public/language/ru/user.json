@@ -23,7 +23,7 @@
     "profile": "Профиль",
     "profile_views": "Просмотров профиля",
     "reputation": "Репутация",
-    "favourites": "Закладки",
+    "bookmarks": "Bookmarks",
     "watched": "Наблюдаемые",
     "followers": "Читателей",
     "following": "Читаемых",
@@ -122,8 +122,8 @@
     "info.banned-permanently": "Заблокирован навсегда",
     "info.banned-reason-label": "Причина",
     "info.banned-no-reason": "Без объяснения причин.",
-    "info.username-history": "Username History",
-    "info.email-history": "Email History",
-    "info.moderation-note": "Moderation Note",
-    "info.moderation-note.success": "Moderation note saved"
+    "info.username-history": "История имен",
+    "info.email-history": "История емейлов",
+    "info.moderation-note": "Примечание модератора",
+    "info.moderation-note.success": "Примечание модератора сохранено"
 }

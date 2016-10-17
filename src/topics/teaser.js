@@ -11,9 +11,9 @@ var posts = require('../posts');
 var plugins = require('../plugins');
 var utils = require('../../public/src/utils');
 
-module.exports = function(Topics) {
+module.exports = function (Topics) {
 
-	Topics.getTeasers = function(topics, callback) {
+	Topics.getTeasers = function (topics, callback) {
 		if (!Array.isArray(topics) || !topics.length) {
 			return callback(null, []);
 		}
@@ -23,7 +23,7 @@ module.exports = function(Topics) {
 		var postData;
 		var tidToPost = {};
 
-		topics.forEach(function(topic) {
+		topics.forEach(function (topic) {
 			counts.push(topic && (parseInt(topic.postcount, 10) || 0));
 			if (topic) {
 				if (topic.teaserPid === 'null') {
@@ -48,27 +48,27 @@ module.exports = function(Topics) {
 		});
 
 		async.waterfall([
-			function(next) {
+			function (next) {
 				posts.getPostsFields(teaserPids, ['pid', 'uid', 'timestamp', 'tid', 'content'], next);
 			},
-			function(_postData, next) {
+			function (_postData, next) {
 				postData = _postData;
-				var uids = postData.map(function(post) {
+				var uids = postData.map(function (post) {
 					return post.uid;
-				}).filter(function(uid, index, array) {
+				}).filter(function (uid, index, array) {
 					return array.indexOf(uid) === index;
 				});
 
 				user.getUsersFields(uids, ['uid', 'username', 'userslug', 'picture'], next);
 			},
-			function(usersData, next) {
+			function (usersData, next) {
 				var users = {};
-				usersData.forEach(function(user) {
+				usersData.forEach(function (user) {
 					users[user.uid] = user;
 				});
 
 
-				async.each(postData, function(post, next) {
+				async.each(postData, function (post, next) {
 					// If the post author isn't represented in the retrieved users' data, then it means they were deleted, assume guest.
 					if (!users.hasOwnProperty(post.uid)) {
 						post.uid = 0;
@@ -80,8 +80,8 @@ module.exports = function(Topics) {
 					posts.parsePost(post, next);
 				}, next);
 			},
-			function(next) {
-				var teasers = topics.map(function(topic, index) {
+			function (next) {
+				var teasers = topics.map(function (topic, index) {
 					if (!topic) {
 						return null;
 					}
@@ -97,34 +97,34 @@ module.exports = function(Topics) {
 
 				plugins.fireHook('filter:teasers.get', {teasers: teasers}, next);
 			},
-			function(data, next) {
+			function (data, next) {
 				next(null, data.teasers);
 			}
 		], callback);
 	};
 
-	Topics.getTeasersByTids = function(tids, callback) {
+	Topics.getTeasersByTids = function (tids, callback) {
 		if (!Array.isArray(tids) || !tids.length) {
 			return callback(null, []);
 		}
 		async.waterfall([
-			function(next) {
+			function (next) {
 				Topics.getTopicsFields(tids, ['tid', 'postcount', 'teaserPid'], next);
 			},
-			function(topics, next) {
+			function (topics, next) {
 				Topics.getTeasers(topics, next);
 			}
 		], callback);
 	};
 
-	Topics.getTeaser = function(tid, callback) {
-		Topics.getTeasersByTids([tid], function(err, teasers) {
+	Topics.getTeaser = function (tid, callback) {
+		Topics.getTeasersByTids([tid], function (err, teasers) {
 			callback(err, Array.isArray(teasers) && teasers.length ? teasers[0] : null);
 		});
 	};
 
-	Topics.updateTeaser = function(tid, callback) {
-		Topics.getLatestUndeletedReply(tid, function(err, pid) {
+	Topics.updateTeaser = function (tid, callback) {
+		Topics.getLatestUndeletedReply(tid, function (err, pid) {
 			if (err) {
 				return callback(err);
 			}

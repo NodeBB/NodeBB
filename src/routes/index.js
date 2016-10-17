@@ -1,6 +1,7 @@
 "use strict";
 
 var nconf = require('nconf');
+var winston = require('winston');
 var path = require('path');
 var async = require('async');
 var controllers = require('../controllers');
@@ -38,9 +39,12 @@ function mainRoutes(app, middleware, controllers) {
 	app.get('/sping', controllers.ping);
 }
 
+function modRoutes(app, middleware, controllers) {
+	setupPageRoute(app, '/posts/flags', middleware, [], controllers.mods.flagged);
+}
+
 function globalModRoutes(app, middleware, controllers) {
 	setupPageRoute(app, '/ip-blacklist', middleware, [], controllers.globalMods.ipBlacklist);
-	setupPageRoute(app, '/posts/flags', middleware, [], controllers.globalMods.flagged);
 }
 
 function topicRoutes(app, middleware, controllers) {
@@ -81,7 +85,7 @@ function groupRoutes(app, middleware, controllers) {
 	setupPageRoute(app, '/groups/:slug/members', middleware, middlewares, controllers.groups.members);
 }
 
-module.exports = function(app, middleware, hotswapIds) {
+module.exports = function (app, middleware, hotswapIds) {
 	var routers = [
 		express.Router(),	// plugin router
 		express.Router(),	// main app router
@@ -94,13 +98,13 @@ module.exports = function(app, middleware, hotswapIds) {
 	var ensureLoggedIn = require('connect-ensure-login');
 
 	if (Array.isArray(hotswapIds) && hotswapIds.length) {
-		for(var idx,x=0;x<hotswapIds.length;x++) {
+		for(var idx,x = 0;x < hotswapIds.length;x++) {
 			idx = routers.push(express.Router()) - 1;
 			routers[idx].hotswapId = hotswapIds[x];
 		}
 	}
 
-	pluginRouter.render = function() {
+	pluginRouter.render = function () {
 		app.render.apply(app, arguments);
 	};
 
@@ -123,6 +127,7 @@ module.exports = function(app, middleware, hotswapIds) {
 	mainRoutes(router, middleware, controllers);
 	topicRoutes(router, middleware, controllers);
 	postRoutes(router, middleware, controllers);
+	modRoutes(router, middleware, controllers);
 	globalModRoutes(router, middleware, controllers);
 	tagRoutes(router, middleware, controllers);
 	categoryRoutes(router, middleware, controllers);
@@ -130,7 +135,7 @@ module.exports = function(app, middleware, hotswapIds) {
 	userRoutes(router, middleware, controllers);
 	groupRoutes(router, middleware, controllers);
 
-	for(var x=0;x<routers.length;x++) {
+	for(var x = 0;x < routers.length;x++) {
 		app.use(relativePath, routers[x]);
 	}
 
@@ -153,5 +158,10 @@ module.exports = function(app, middleware, hotswapIds) {
 		async.apply(plugins.reloadRoutes),
 		async.apply(authRoutes.reloadRoutes),
 		async.apply(user.addInterstitials)
-	]);
+	], function (err) {
+		if (err) {
+			return winston.error(err);
+		}
+		winston.info('Routes added');
+	});
 };

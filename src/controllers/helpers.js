@@ -11,12 +11,12 @@ var meta = require('../meta');
 
 var helpers = {};
 
-helpers.notAllowed = function(req, res, error) {
+helpers.notAllowed = function (req, res, error) {
 	plugins.fireHook('filter:helpers.notAllowed', {
 		req: req,
 		res: res,
 		error: error
-	}, function(err, data) {
+	}, function (err, data) {
 		if (err) {
 			return winston.error(err);
 		}
@@ -46,7 +46,7 @@ helpers.notAllowed = function(req, res, error) {
 	});
 };
 
-helpers.redirect = function(res, url) {
+helpers.redirect = function (res, url) {
 	if (res.locals.isAPI) {
 		res.status(308).json(url);
 	} else {
@@ -54,13 +54,13 @@ helpers.redirect = function(res, url) {
 	}
 };
 
-helpers.buildCategoryBreadcrumbs = function(cid, callback) {
+helpers.buildCategoryBreadcrumbs = function (cid, callback) {
 	var breadcrumbs = [];
 
-	async.whilst(function() {
+	async.whilst(function () {
 		return parseInt(cid, 10);
-	}, function(next) {
-		categories.getCategoryFields(cid, ['name', 'slug', 'parentCid', 'disabled'], function(err, data) {
+	}, function (next) {
+		categories.getCategoryFields(cid, ['name', 'slug', 'parentCid', 'disabled'], function (err, data) {
 			if (err) {
 				return next(err);
 			}
@@ -75,7 +75,7 @@ helpers.buildCategoryBreadcrumbs = function(cid, callback) {
 			cid = data.parentCid;
 			next();
 		});
-	}, function(err) {
+	}, function (err) {
 		if (err) {
 			return callback(err);
 		}
@@ -96,7 +96,7 @@ helpers.buildCategoryBreadcrumbs = function(cid, callback) {
 	});
 };
 
-helpers.buildBreadcrumbs = function(crumbs) {
+helpers.buildBreadcrumbs = function (crumbs) {
 	var breadcrumbs = [
 		{
 			text: '[[global:home]]',
@@ -104,7 +104,7 @@ helpers.buildBreadcrumbs = function(crumbs) {
 		}
 	];
 
-	crumbs.forEach(function(crumb) {
+	crumbs.forEach(function (crumb) {
 		if (crumb) {
 			if (crumb.url) {
 				crumb.url = nconf.get('relative_path') + crumb.url;
@@ -116,14 +116,14 @@ helpers.buildBreadcrumbs = function(crumbs) {
 	return breadcrumbs;
 };
 
-helpers.buildTitle = function(pageTitle) {
+helpers.buildTitle = function (pageTitle) {
 	var titleLayout = meta.config.titleLayout || '{pageTitle} | {browserTitle}';
 
 	var browserTitle = validator.escape(String(meta.config.browserTitle || meta.config.title || 'NodeBB'));
 	pageTitle = pageTitle || '';
-	var title = titleLayout.replace('{pageTitle}', function() {
+	var title = titleLayout.replace('{pageTitle}', function () {
 		return pageTitle;
-	}).replace('{browserTitle}', function() {
+	}).replace('{browserTitle}', function () {
 		return browserTitle;
 	});
 	return title;

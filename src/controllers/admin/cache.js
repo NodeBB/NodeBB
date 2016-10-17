@@ -2,7 +2,7 @@
 
 var cacheController = {};
 
-cacheController.get = function(req, res, next) {
+cacheController.get = function (req, res, next) {
 	var postCache = require('../../posts/cache');
 	var groupCache = require('../../groups').cache;
 

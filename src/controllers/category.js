@@ -15,7 +15,7 @@ var utils = require('../../public/src/utils');
 
 var categoryController = {};
 
-categoryController.get = function(req, res, callback) {
+categoryController.get = function (req, res, callback) {
 	var cid = req.params.category_id;
 	var currentPage = parseInt(req.query.page, 10) || 1;
 	var pageCount = 1;
@@ -29,13 +29,13 @@ categoryController.get = function(req, res, callback) {
 	async.waterfall([
 		function (next) {
 			async.parallel({
-				categoryData: function(next) {
+				categoryData: function (next) {
 					categories.getCategoryFields(cid, ['slug', 'disabled', 'topic_count'], next);
 				},
-				privileges: function(next) {
+				privileges: function (next) {
 					privileges.categories.get(cid, req.uid, next);
 				},
-				userSettings: function(next) {
+				userSettings: function (next) {
 					user.getSettings(req.uid, next);
 				}
 			}, next);
@@ -101,10 +101,10 @@ categoryController.get = function(req, res, callback) {
 			};
 
 			async.waterfall([
-				function(next) {
+				function (next) {
 					user.getUidByUserslug(req.query.author, next);
 				},
-				function(uid, next) {
+				function (uid, next) {
 					payload.targetUid = uid;
 					if (uid) {
 						payload.set = 'cid:' + cid + ':uid:' + uid + ':tids';
@@ -132,7 +132,7 @@ categoryController.get = function(req, res, callback) {
 					url: nconf.get('relative_path') + '/category/' + categoryData.slug
 				}
 			];
-			helpers.buildCategoryBreadcrumbs(categoryData.parentCid, function(err, crumbs) {
+			helpers.buildCategoryBreadcrumbs(categoryData.parentCid, function (err, crumbs) {
 				if (err) {
 					return next(err);
 				}
@@ -146,7 +146,7 @@ categoryController.get = function(req, res, callback) {
 			}
 			var allCategories = [];
 			categories.flattenCategories(allCategories, categoryData.children);
-			categories.getRecentTopicReplies(allCategories, req.uid, function(err) {
+			categories.getRecentTopicReplies(allCategories, req.uid, function (err) {
 				next(err, categoryData);
 			});
 		}
@@ -205,7 +205,7 @@ categoryController.get = function(req, res, callback) {
 		categoryData.title = categoryData.name;
 		pageCount = Math.max(1, Math.ceil(categoryData.topic_count / settings.topicsPerPage));
 		categoryData.pagination = pagination.create(currentPage, pageCount, req.query);
-		categoryData.pagination.rel.forEach(function(rel) {
+		categoryData.pagination.rel.forEach(function (rel) {
 			rel.href = nconf.get('url') + '/category/' + categoryData.slug + rel.href;
 			res.locals.linkTags.push(rel);
 		});

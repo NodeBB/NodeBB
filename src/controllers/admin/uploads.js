@@ -13,14 +13,14 @@ var allowedImageTypes = ['image/png', 'image/jpeg', 'image/pjpeg', 'image/jpg', 
 
 var uploadsController = {};
 
-uploadsController.uploadCategoryPicture = function(req, res, next) {
+uploadsController.uploadCategoryPicture = function (req, res, next) {
 	var uploadedFile = req.files.files[0];
 	var params = null;
 
 	try {
 		params = JSON.parse(req.body.params);
 	} catch (e) {
-		fs.unlink(uploadedFile.path, function(err) {
+		fs.unlink(uploadedFile.path, function (err) {
 			if (err) {
 				winston.error(err);
 			}
@@ -34,13 +34,13 @@ uploadsController.uploadCategoryPicture = function(req, res, next) {
 	}
 };
 
-uploadsController.uploadFavicon = function(req, res, next) {
+uploadsController.uploadFavicon = function (req, res, next) {
 	var uploadedFile = req.files.files[0];
 	var allowedTypes = ['image/x-icon', 'image/vnd.microsoft.icon'];
 
 	if (validateUpload(req, res, next, uploadedFile, allowedTypes)) {
-		file.saveFileToLocal('favicon.ico', 'system', uploadedFile.path, function(err, image) {
-			fs.unlink(uploadedFile.path, function(err) {
+		file.saveFileToLocal('favicon.ico', 'system', uploadedFile.path, function (err, image) {
+			fs.unlink(uploadedFile.path, function (err) {
 				if (err) {
 					winston.error(err);
 				}
@@ -54,19 +54,19 @@ uploadsController.uploadFavicon = function(req, res, next) {
 	}
 };
 
-uploadsController.uploadTouchIcon = function(req, res, next) {
+uploadsController.uploadTouchIcon = function (req, res, next) {
 	var uploadedFile = req.files.files[0],
 		allowedTypes = ['image/png'],
 		sizes = [36, 48, 72, 96, 144, 192];
 
 	if (validateUpload(req, res, next, uploadedFile, allowedTypes)) {
-		file.saveFileToLocal('touchicon-orig.png', 'system', uploadedFile.path, function(err, imageObj) {
+		file.saveFileToLocal('touchicon-orig.png', 'system', uploadedFile.path, function (err, imageObj) {
 			if (err) {
 				return next(err);
 			}
 
 			// Resize the image into squares for use as touch icons at various DPIs
-			async.each(sizes, function(size, next) {
+			async.each(sizes, function (size, next) {
 				async.series([
 					async.apply(file.saveFileToLocal, 'touchicon-' + size + '.png', 'system', uploadedFile.path),
 					async.apply(image.resizeImage, {
@@ -76,8 +76,8 @@ uploadsController.uploadTouchIcon = function(req, res, next) {
 						height: size
 					})
 				], next);
-			}, function(err) {
-				fs.unlink(uploadedFile.path, function(err) {
+			}, function (err) {
+				fs.unlink(uploadedFile.path, function (err) {
 					if (err) {
 						winston.error(err);
 					}
@@ -93,14 +93,14 @@ uploadsController.uploadTouchIcon = function(req, res, next) {
 	}
 };
 
-uploadsController.uploadLogo = function(req, res, next) {
+uploadsController.uploadLogo = function (req, res, next) {
 	upload('site-logo', req, res, next);
 };
 
-uploadsController.uploadSound = function(req, res, next) {
+uploadsController.uploadSound = function (req, res, next) {
 	var uploadedFile = req.files.files[0];
 
-	file.saveFileToLocal(uploadedFile.name, 'sounds', uploadedFile.path, function(err) {
+	file.saveFileToLocal(uploadedFile.name, 'sounds', uploadedFile.path, function (err) {
 		if (err) {
 			return next(err);
 		}
@@ -114,7 +114,7 @@ uploadsController.uploadSound = function(req, res, next) {
 			fs.symlink(filePath, path.join(soundsPath, path.basename(filePath)), 'file');
 		}
 
-		fs.unlink(uploadedFile.path, function(err) {
+		fs.unlink(uploadedFile.path, function (err) {
 			if (err) {
 				return next(err);
 			}
@@ -124,11 +124,11 @@ uploadsController.uploadSound = function(req, res, next) {
 	});
 };
 
-uploadsController.uploadDefaultAvatar = function(req, res, next) {
+uploadsController.uploadDefaultAvatar = function (req, res, next) {
 	upload('avatar-default', req, res, next);
 };
 
-uploadsController.uploadOgImage = function(req, res, next) {
+uploadsController.uploadOgImage = function (req, res, next) {
 	upload('og:image', req, res, next);
 };
 
@@ -143,7 +143,7 @@ function upload(name, req, res, next) {
 
 function validateUpload(req, res, next, uploadedFile, allowedTypes) {
 	if (allowedTypes.indexOf(uploadedFile.type) === -1) {
-		fs.unlink(uploadedFile.path, function(err) {
+		fs.unlink(uploadedFile.path, function (err) {
 			if (err) {
 				winston.error(err);
 			}
@@ -158,7 +158,7 @@ function validateUpload(req, res, next, uploadedFile, allowedTypes) {
 
 function uploadImage(filename, folder, uploadedFile, req, res, next) {
 	function done(err, image) {
-		fs.unlink(uploadedFile.path, function(err) {
+		fs.unlink(uploadedFile.path, function (err) {
 			if (err) {
 				winston.error(err);
 			}

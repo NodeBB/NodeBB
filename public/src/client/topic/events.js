@@ -9,7 +9,7 @@ define('forum/topic/events', [
 	'forum/topic/posts',
 	'components',
 	'translator'
-], function(postTools, threadTools, posts, components, translator) {
+], function (postTools, threadTools, posts, components, translator) {
 
 	var Events = {};
 
@@ -47,7 +47,7 @@ define('forum/topic/events', [
 		'event:new_post': posts.onNewPost
 	};
 
-	Events.init = function() {
+	Events.init = function () {
 		Events.removeListeners();
 		for(var eventName in events) {
 			if (events.hasOwnProperty(eventName)) {
@@ -56,7 +56,7 @@ define('forum/topic/events', [
 		}
 	};
 
-	Events.removeListeners = function() {
+	Events.removeListeners = function () {
 		for(var eventName in events) {
 			if (events.hasOwnProperty(eventName)) {
 				socket.removeListener(eventName, events[eventName]);
@@ -107,18 +107,18 @@ define('forum/topic/events', [
 			var newUrl = 'topic/' + data.topic.slug + (window.location.search ? window.location.search : '');
 			history.replaceState({url: newUrl}, null, window.location.protocol + '//' + window.location.host + config.relative_path + '/' + newUrl);
 
-			topicTitle.fadeOut(250, function() {
+			topicTitle.fadeOut(250, function () {
 				topicTitle.html(data.topic.title).fadeIn(250);
 			});
-			breadCrumb.fadeOut(250, function() {
+			breadCrumb.fadeOut(250, function () {
 				breadCrumb.html(data.topic.title).fadeIn(250);
 			});
-			navbarTitle.fadeOut(250, function() {
+			navbarTitle.fadeOut(250, function () {
 				navbarTitle.html(data.topic.title).fadeIn(250);
 			});
 		}
 
-		editedPostEl.fadeOut(250, function() {
+		editedPostEl.fadeOut(250, function () {
 			editedPostEl.html(translator.unescape(data.post.content));
 			editedPostEl.find('img:not(.not-responsive)').addClass('img-responsive');
 			app.replaceSelfLinks(editedPostEl.find('a'));
@@ -132,8 +132,8 @@ define('forum/topic/events', [
 				editedISO: utils.toISOString(data.post.edited)
 			};
 
-			templates.parse('partials/topic/post-editor', editData, function(html) {
-				translator.translate(html, function(translated) {
+			templates.parse('partials/topic/post-editor', editData, function (html) {
+				translator.translate(html, function (translated) {
 					html = $(translated);
 					editorEl.replaceWith(html);
 					html.find('.timeago').timeago();
@@ -143,10 +143,10 @@ define('forum/topic/events', [
 		});
 
 		if (data.topic.tags && tagsUpdated(data.topic.tags)) {
-			templates.parse('partials/post_bar', 'tags', {tags: data.topic.tags}, function(html) {
+			templates.parse('partials/post_bar', 'tags', {tags: data.topic.tags}, function (html) {
 				var tags = $('.tags');
 
-				tags.fadeOut(250, function() {
+				tags.fadeOut(250, function () {
 					tags.html(html).fadeIn(250);
 				});
 			});
@@ -158,7 +158,7 @@ define('forum/topic/events', [
 			return true;
 		}
 
-		for (var i=0; i<tags.length; ++i) {
+		for (var i = 0; i < tags.length; ++i) {
 			if (!$('.tags .tag-item[data-tag="' + tags[i].value + '"]').length) {
 				return true;
 			}
@@ -167,7 +167,7 @@ define('forum/topic/events', [
 	}
 
 	function onPostPurged(pid) {
-		components.get('post', 'pid', pid).fadeOut(500, function() {
+		components.get('post', 'pid', pid).fadeOut(500, function () {
 			$(this).remove();
 			ajaxify.data.postcount --;
 			postTools.updatePostCount(ajaxify.data.postcount);

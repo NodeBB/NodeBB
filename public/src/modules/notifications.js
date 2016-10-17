@@ -2,19 +2,19 @@
 
 /* globals define, socket, app, ajaxify, templates, Tinycon*/
 
-define('notifications', ['sounds', 'translator', 'components'], function(sound, translator, components) {
+define('notifications', ['sounds', 'translator', 'components'], function (sound, translator, components) {
 	var Notifications = {};
 
 	var unreadNotifs = {};
 
-	Notifications.prepareDOM = function() {
+	Notifications.prepareDOM = function () {
 		var notifContainer = components.get('notifications'),
 			notifTrigger = notifContainer.children('a'),
 			notifList = components.get('notifications/list'),
 			notifIcon = components.get('notifications/icon');
 
 		notifTrigger
-			.on('click', function(e) {
+			.on('click', function (e) {
 				e.preventDefault();
 				if (notifContainer.hasClass('open')) {
 					return;
@@ -22,20 +22,20 @@ define('notifications', ['sounds', 'translator', 'components'], function(sound, 
 
 				Notifications.loadNotifications(notifList);
 			})
-			.on('dblclick', function(e) {
+			.on('dblclick', function (e) {
 				e.preventDefault();
 				if (parseInt(notifIcon.attr('data-content'), 10) > 0) {
 					Notifications.markAllRead();
 				}
 			});
 
-		notifList.on('click', '[data-nid]', function() {
+		notifList.on('click', '[data-nid]', function () {
 			var unread = $(this).hasClass('unread');
 			var nid = $(this).attr('data-nid');
 			if (!unread) {
 				return;
 			}
-			socket.emit('notifications.markRead', nid, function(err) {
+			socket.emit('notifications.markRead', nid, function (err) {
 				if (err) {
 					return app.alertError(err.message);
 				}
@@ -48,12 +48,12 @@ define('notifications', ['sounds', 'translator', 'components'], function(sound, 
 
 		notifContainer.on('click', '.mark-all-read', Notifications.markAllRead);
 
-		notifList.on('click', '.mark-read', function() {
+		notifList.on('click', '.mark-read', function () {
 			var liEl = $(this).parent();
 			var unread = liEl.hasClass('unread');
 			var nid = liEl.attr('data-nid');
 
-			socket.emit('notifications.mark' + (unread ? 'Read' : 'Unread'), nid, function(err) {
+			socket.emit('notifications.mark' + (unread ? 'Read' : 'Unread'), nid, function (err) {
 				if (err) {
 					return app.alertError(err.message);
 				}
@@ -72,7 +72,7 @@ define('notifications', ['sounds', 'translator', 'components'], function(sound, 
 			Notifications.updateNotifCount(count);
 		}
 
-		socket.on('event:new_notification', function(notifData) {
+		socket.on('event:new_notification', function (notifData) {
 			// If a path is defined, show notif data, otherwise show generic data
 			var payload = {
 				alert_id: 'new_notif',
@@ -83,7 +83,7 @@ define('notifications', ['sounds', 'translator', 'components'], function(sound, 
 			if (notifData.path) {
 				payload.message = notifData.bodyShort;
 				payload.type = 'info';
-				payload.clickfn = function() {
+				payload.clickfn = function () {
 					if (notifData.path.startsWith('http') && notifData.path.startsWith('https')) {
 						window.location.href = notifData.path;
 					} else {
@@ -102,7 +102,7 @@ define('notifications', ['sounds', 'translator', 'components'], function(sound, 
 				ajaxify.refresh();
 			}
 
-			socket.emit('notifications.getCount', function(err, count) {
+			socket.emit('notifications.getCount', function (err, count) {
 				if (err) {
 					return app.alertError(err.message);
 				}
@@ -116,34 +116,34 @@ define('notifications', ['sounds', 'translator', 'components'], function(sound, 
 			}
 		});
 
-		socket.on('event:notifications.updateCount', function(count) {
+		socket.on('event:notifications.updateCount', function (count) {
 			Notifications.updateNotifCount(count);
 		});
 	};
 
-	Notifications.loadNotifications = function(notifList) {
-		socket.emit('notifications.get', null, function(err, data) {
+	Notifications.loadNotifications = function (notifList) {
+		socket.emit('notifications.get', null, function (err, data) {
 			if (err) {
 				return app.alertError(err.message);
 			}
 
-			var notifs = data.unread.concat(data.read).sort(function(a, b) {
+			var notifs = data.unread.concat(data.read).sort(function (a, b) {
 				return parseInt(a.datetime, 10) > parseInt(b.datetime, 10) ? -1 : 1;
 			});
 
 			translator.toggleTimeagoShorthand();
-			for(var i=0; i<notifs.length; ++i) {
+			for(var i = 0; i < notifs.length; ++i) {
 				notifs[i].timeago = $.timeago(new Date(parseInt(notifs[i].datetime, 10)));
 			}
 			translator.toggleTimeagoShorthand();
 
-			templates.parse('partials/notifications_list', {notifications: notifs}, function(html) {
+			templates.parse('partials/notifications_list', {notifications: notifs}, function (html) {
 				notifList.translateHtml(html);
 			});
 		});
 	};
 
-	Notifications.updateNotifCount = function(count) {
+	Notifications.updateNotifCount = function (count) {
 		var notifIcon = components.get('notifications/icon');
 		count = Math.max(0, count);
 		if (count > 0) {
@@ -166,8 +166,8 @@ define('notifications', ['sounds', 'translator', 'components'], function(sound, 
 		}
 	};
 
-	Notifications.markAllRead = function() {
-		socket.emit('notifications.markAllRead', function(err) {
+	Notifications.markAllRead = function () {
+		socket.emit('notifications.markAllRead', function (err) {
 			if (err) {
 				app.alertError(err.message);
 			}

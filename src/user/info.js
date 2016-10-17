@@ -8,24 +8,24 @@ var db = require('../database');
 var posts = require('../posts');
 var topics = require('../topics');
 
-module.exports = function(User) {
-	User.getLatestBanInfo = function(uid, callback) {
+module.exports = function (User) {
+	User.getLatestBanInfo = function (uid, callback) {
 		// Simply retrieves the last record of the user's ban, even if they've been unbanned since then.
 		var timestamp, expiry, reason;
 
 		async.waterfall([
 			async.apply(db.getSortedSetRevRangeWithScores, 'uid:' + uid + ':bans', 0, 0),
-			function(record, next) {
+			function (record, next) {
 				timestamp = record[0].score;
 				expiry = record[0].value;
 
 				db.getSortedSetRangeByScore('banned:' + uid + ':reasons', 0, -1, timestamp, timestamp, next);
 			},
-			function(_reason, next) {
+			function (_reason, next) {
 				reason = _reason && _reason.length ? _reason[0] : '';
 				next();
 			}
-		], function(err) {
+		], function (err) {
 			if (err) {
 				return callback(err);
 			}
@@ -40,19 +40,19 @@ module.exports = function(User) {
 		})
 	};
 
-	User.getModerationHistory = function(uid, callback) {
+	User.getModerationHistory = function (uid, callback) {
 		async.waterfall([
-			function(next) {
+			function (next) {
 				async.parallel({
 					flags: async.apply(db.getSortedSetRevRangeWithScores, 'uid:' + uid + ':flag:pids', 0, 19),
 					bans: async.apply(db.getSortedSetRevRangeWithScores, 'uid:' + uid + ':bans', 0, 19),
 					reasons: async.apply(db.getSortedSetRevRangeWithScores, 'banned:' + uid + ':reasons', 0, 19)
 				}, next);
 			},
-			function(data, next) {
+			function (data, next) {
 				getFlagMetadata(data, next);
 			}
-		], function(err, data) {
+		], function (err, data) {
 			if (err) {
 				return callback(err);
 			}
@@ -61,12 +61,12 @@ module.exports = function(User) {
 		});
 	};
 
-	User.getHistory = function(set, callback) {
-		db.getSortedSetRevRangeWithScores(set, 0, -1, function(err, data) {
+	User.getHistory = function (set, callback) {
+		db.getSortedSetRevRangeWithScores(set, 0, -1, function (err, data) {
 			if (err) {
 				return callback(err);
 			}
-			callback(null, data.map(function(set) {
+			callback(null, data.map(function (set) {
 				set.timestamp = set.score;
 				set.timestampISO = new Date(set.score).toISOString();
 				set.value = validator.escape(String(set.value.split(':')[0]));
@@ -77,24 +77,24 @@ module.exports = function(User) {
 	};
 
 	function getFlagMetadata(data, callback) {
-		var pids = data.flags.map(function(flagObj) {
+		var pids = data.flags.map(function (flagObj) {
 			return parseInt(flagObj.value, 10);
 		});
 
-		posts.getPostsFields(pids, ['tid'], function(err, postData) {
+		posts.getPostsFields(pids, ['tid'], function (err, postData) {
 			if (err) {
 				return callback(err);
 			}
 
-			var tids = postData.map(function(post) {
+			var tids = postData.map(function (post) {
 				return post.tid;
 			});
 
-			topics.getTopicsFields(tids, ['title'], function(err, topicData) {
+			topics.getTopicsFields(tids, ['title'], function (err, topicData) {
 				if (err) {
 					return callback(err);
 				}
-				data.flags = data.flags.map(function(flagObj, idx) {
+				data.flags = data.flags.map(function (flagObj, idx) {
 					flagObj.pid = flagObj.value;
 					flagObj.timestamp = flagObj.score;
 					flagObj.timestampISO = new Date(flagObj.score).toISOString();
@@ -112,12 +112,12 @@ module.exports = function(User) {
 	}
 
 	function formatBanData(data) {
-		var reasons = data.reasons.reduce(function(memo, cur) {
+		var reasons = data.reasons.reduce(function (memo, cur) {
 				memo[cur.score] = cur.value;
 				return memo;
 			}, {});
 
-		data.bans = data.bans.map(function(banObj) {
+		data.bans = data.bans.map(function (banObj) {
 			banObj.until = parseInt(banObj.value, 10);
 			banObj.untilReadable = new Date(banObj.until).toString();
 			banObj.timestamp = parseInt(banObj.score, 10);

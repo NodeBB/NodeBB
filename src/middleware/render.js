@@ -7,15 +7,15 @@ var validator = require('validator');
 var plugins = require('../plugins');
 var translator = require('../../public/src/modules/translator');
 
-module.exports = function(middleware) {
+module.exports = function (middleware) {
 
-	middleware.processRender = function(req, res, next) {
+	middleware.processRender = function (req, res, next) {
 		// res.render post-processing, modified from here: https://gist.github.com/mrlannigan/5051687
 		var render = res.render;
-		res.render = function(template, options, fn) {
+		res.render = function (template, options, fn) {
 			var self = this;
 			var req = this.req;
-			var defaultFn = function(err, str) {
+			var defaultFn = function (err, str) {
 				if (err) {
 					return next(err);
 				}
@@ -33,10 +33,10 @@ module.exports = function(middleware) {
 
 			var ajaxifyData;
 			async.waterfall([
-				function(next) {
+				function (next) {
 					plugins.fireHook('filter:' + template + '.build', {req: req, res: res, templateData: options}, next);
 				},
-				function(data, next) {
+				function (data, next) {
 					options = data.templateData;
 
 					options.loggedIn = !!req.uid;
@@ -60,18 +60,18 @@ module.exports = function(middleware) {
 					ajaxifyData = JSON.stringify(options).replace(/<\//g, '<\\/');
 
 					async.parallel({
-						header: function(next) {
+						header: function (next) {
 							renderHeaderFooter('renderHeader', req, res, options, next);
 						},
-						content: function(next) {
+						content: function (next) {
 							render.call(self, template, options, next);
 						},
-						footer: function(next) {
+						footer: function (next) {
 							renderHeaderFooter('renderFooter', req, res, options, next);
 						}
 					}, next);
 				},
-				function(results, next) {
+				function (results, next) {
 					var str = results.header +
 						(res.locals.postHeader || '') +
 						results.content +
@@ -80,7 +80,7 @@ module.exports = function(middleware) {
 
 					translate(str, req, res, next);
 				},
-				function(translated, next) {
+				function (translated, next) {
 					next(null, translated + '<script id="ajaxify-data" type="application/json">' + ajaxifyData + '</script>');
 				}
 			], fn);
@@ -102,7 +102,7 @@ module.exports = function(middleware) {
 	function translate(str, req, res, next) {
 		var language = res.locals.config ? res.locals.config.userLang || 'en_GB' : 'en_GB';
 		language = req.query.lang ? validator.escape(String(req.query.lang)) : language;
-		translator.translate(str, language, function(translated) {
+		translator.translate(str, language, function (translated) {
 			next(null, translator.unescape(translated));
 		});
 	}
@@ -110,7 +110,7 @@ module.exports = function(middleware) {
 	function buildBodyClass(req) {
 		var clean = req.path.replace(/^\/api/, '').replace(/^\/|\/$/g, '');
 		var parts = clean.split('/').slice(0, 3);
-		parts.forEach(function(p, index) {
+		parts.forEach(function (p, index) {
 			parts[index] = index ? parts[0] + '-' + p : 'page-' + (p || 'home');
 		});
 		return parts.join(' ');

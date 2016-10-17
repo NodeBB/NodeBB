@@ -16,7 +16,7 @@ var unreadController = {};
 
 var validFilter = {'': true, 'new': true, 'watched': true};
 
-unreadController.get = function(req, res, next) {
+unreadController.get = function (req, res, next) {
 	var page = parseInt(req.query.page, 10) || 1;
 	var results;
 	var cid = req.query.cid;
@@ -27,24 +27,24 @@ unreadController.get = function(req, res, next) {
 	}
 	var settings;
 	async.waterfall([
-		function(next) {
+		function (next) {
 			async.parallel({
-				watchedCategories: function(next) {
+				watchedCategories: function (next) {
 					getWatchedCategories(req.uid, cid, next);
 				},
-				settings: function(next) {
+				settings: function (next) {
 					user.getSettings(req.uid, next);
 				}
 			}, next);
 		},
-		function(_results, next) {
+		function (_results, next) {
 			results = _results;
 			settings = results.settings;
 			var start = Math.max(0, (page - 1) * settings.topicsPerPage);
 			var stop = start + settings.topicsPerPage - 1;
 			topics.getUnreadTopics(cid, req.uid, start, stop, filter, next);
 		}
-	], function(err, data) {
+	], function (err, data) {
 		if (err) {
 			return next(err);
 		}
@@ -82,7 +82,7 @@ unreadController.get = function(req, res, next) {
 			filter: 'watched'
 		}];
 
-		data.selectedFilter = data.filters.filter(function(filter) {
+		data.selectedFilter = data.filters.filter(function (filter) {
 			return filter && filter.selected;
 		})[0];
 
@@ -104,12 +104,12 @@ function getWatchedCategories(uid, selectedCid, callback) {
 			categories.getCategoriesFields(cids, ['cid', 'name', 'slug', 'icon', 'link', 'color', 'bgColor', 'parentCid'], next);
 		},
 		function (categoryData, next) {
-			categoryData = categoryData.filter(function(category) {
+			categoryData = categoryData.filter(function (category) {
 				return category && !category.link;
 			});
 
 			var selectedCategory;
-			categoryData.forEach(function(category) {
+			categoryData.forEach(function (category) {
 				category.selected = parseInt(category.cid, 10) === parseInt(selectedCid, 10);
 				if (category.selected) {
 					selectedCategory = category;
@@ -119,7 +119,7 @@ function getWatchedCategories(uid, selectedCid, callback) {
 			var categoriesData = [];
 			var tree = categories.getTree(categoryData, 0);
 
-			tree.forEach(function(category) {
+			tree.forEach(function (category) {
 				recursive(category, categoriesData, '');
 			});
 
@@ -132,12 +132,12 @@ function recursive(category, categoriesData, level) {
 	category.level = level;
 	categoriesData.push(category);
 
-	category.children.forEach(function(child) {
+	category.children.forEach(function (child) {
 		recursive(child, categoriesData, '&nbsp;&nbsp;&nbsp;&nbsp;' + level);
 	});
 }
 
-unreadController.unreadTotal = function(req, res, next) {
+unreadController.unreadTotal = function (req, res, next) {
 	var filter = req.params.filter || '';
 
 	if (!validFilter[filter]) {

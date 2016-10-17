@@ -4,13 +4,13 @@ var sitemap = require('../sitemap');
 var meta = require('../meta');
 
 var sitemapController = {};
-sitemapController.render = function(req, res, next) {
-	sitemap.render(function(err, tplData) {
+sitemapController.render = function (req, res, next) {
+	sitemap.render(function (err, tplData) {
 		if (err) {
 			return next(err);
 		}
 
-		req.app.render('sitemap', tplData, function(err, xml) {
+		req.app.render('sitemap', tplData, function (err, xml) {
 			if (err) {
 				return next(err);
 			}
@@ -20,12 +20,12 @@ sitemapController.render = function(req, res, next) {
 	});
 };
 
-sitemapController.getPages = function(req, res, next) {
+sitemapController.getPages = function (req, res, next) {
 	if (parseInt(meta.config['feeds:disableSitemap'], 10) === 1) {
 		return next();
 	}
 
-	sitemap.getPages(function(err, xml) {
+	sitemap.getPages(function (err, xml) {
 		if (err) {
 			return next(err);
 		}
@@ -34,12 +34,12 @@ sitemapController.getPages = function(req, res, next) {
 	});
 };
 
-sitemapController.getCategories = function(req, res, next) {
+sitemapController.getCategories = function (req, res, next) {
 	if (parseInt(meta.config['feeds:disableSitemap'], 10) === 1) {
 		return next();
 	}
 
-	sitemap.getCategories(function(err, xml) {
+	sitemap.getCategories(function (err, xml) {
 		if (err) {
 			return next(err);
 		}
@@ -48,12 +48,12 @@ sitemapController.getCategories = function(req, res, next) {
 	});
 };
 
-sitemapController.getTopicPage = function(req, res, next) {
+sitemapController.getTopicPage = function (req, res, next) {
 	if (parseInt(meta.config['feeds:disableSitemap'], 10) === 1) {
 		return next();
 	}
 
-	sitemap.getTopicPage(parseInt(req.params[0], 10), function(err, xml) {
+	sitemap.getTopicPage(parseInt(req.params[0], 10), function (err, xml) {
 		if (err) {
 			return next(err);
 		} else if (!xml) {

@@ -3,7 +3,7 @@
 var navigationAdmin = require('../../navigation/admin'),
 	SocketNavigation = {};
 
-SocketNavigation.save = function(socket, data, callback) {
+SocketNavigation.save = function (socket, data, callback) {
 	navigationAdmin.save(data, callback);
 };
 

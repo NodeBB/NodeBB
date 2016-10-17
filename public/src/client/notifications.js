@@ -2,14 +2,14 @@
 
 /* globals define, socket, app */
 
-define('forum/notifications', ['components', 'notifications', 'forum/infinitescroll'], function(components, notifs, infinitescroll) {
+define('forum/notifications', ['components', 'notifications', 'forum/infinitescroll'], function (components, notifs, infinitescroll) {
 	var Notifications = {};
 
-	Notifications.init = function() {
+	Notifications.init = function () {
 		var listEl = $('.notifications-list');
-		listEl.on('click', '[component="notifications/item/link"]', function() {
+		listEl.on('click', '[component="notifications/item/link"]', function () {
 			var nid = $(this).parents('[data-nid]').attr('data-nid');
-			socket.emit('notifications.markRead', nid, function(err) {
+			socket.emit('notifications.markRead', nid, function (err) {
 				if (err) {
 					return app.alertError(err);
 				}
@@ -18,8 +18,8 @@ define('forum/notifications', ['components', 'notifications', 'forum/infinitescr
 
 		$('.timeago').timeago();
 
-		components.get('notifications/mark_all').on('click', function() {
-			socket.emit('notifications.markAllRead', function(err) {
+		components.get('notifications/mark_all').on('click', function () {
+			socket.emit('notifications.markAllRead', function (err) {
 				if (err) {
 					return app.alertError(err.message);
 				}
@@ -39,7 +39,7 @@ define('forum/notifications', ['components', 'notifications', 'forum/infinitescr
 		var notifList = $('.notifications-list');
 		infinitescroll.loadMore('notifications.loadMore', {
 			after: notifList.attr('data-nextstart')
-		}, function(data, done) {
+		}, function (data, done) {
 			if (!data) {
 				return done();
 			}
@@ -47,7 +47,7 @@ define('forum/notifications', ['components', 'notifications', 'forum/infinitescr
 			if (!data.notifications || !data.notifications.length) {
 				return done();
 			}
-			app.parseAndTranslate('notifications', 'notifications', {notifications: data.notifications}, function(html) {
+			app.parseAndTranslate('notifications', 'notifications', {notifications: data.notifications}, function (html) {
 				notifList.append(html);
 				html.find('.timeago').timeago();
 				done();

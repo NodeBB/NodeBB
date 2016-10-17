@@ -14,33 +14,33 @@ var controllers = {
 	helpers: require('../controllers/helpers')
 };
 
-module.exports = function(middleware) {
+module.exports = function (middleware) {
 
-	middleware.buildHeader = function(req, res, next) {
+	middleware.buildHeader = function (req, res, next) {
 		res.locals.renderHeader = true;
 		res.locals.isAPI = false;
 		async.waterfall([
-			function(next) {
+			function (next) {
 				middleware.applyCSRF(req, res, next);
 			},
-			function(next) {
+			function (next) {
 				async.parallel({
-					config: function(next) {
+					config: function (next) {
 						controllers.api.getConfig(req, res, next);
 					},
-					plugins: function(next) {
+					plugins: function (next) {
 						plugins.fireHook('filter:middleware.buildHeader', {req: req, locals: res.locals}, next);
 					}
 				}, next);
 			},
-			function(results, next) {
+			function (results, next) {
 				res.locals.config = results.config;
 				next();
 			}
 		], next);
 	};
 
-	middleware.renderHeader = function(req, res, data, callback) {
+	middleware.renderHeader = function (req, res, data, callback) {
 		var registrationType = meta.config.registrationType || 'normal';
 		var templateValues = {
 			bootswatchCSS: meta.config['theme:src'],
@@ -50,7 +50,7 @@ module.exports = function(middleware) {
 			'brand:logo': meta.config['brand:logo'] || '',
 			'brand:logo:url': meta.config['brand:logo:url'] || '',
 			'brand:logo:alt': meta.config['brand:logo:alt'] || '',
-			'brand:logo:display': meta.config['brand:logo']?'':'hide',
+			'brand:logo:display': meta.config['brand:logo'] ? '' : 'hide',
 			allowRegistration: registrationType === 'normal' || registrationType === 'admin-approval' || registrationType === 'admin-approval-ip',
 			searchEnabled: plugins.hasListeners('filter:search.query'),
 			config: res.locals.config,
@@ -61,16 +61,19 @@ module.exports = function(middleware) {
 		templateValues.configJSON = JSON.stringify(res.locals.config);
 
 		async.parallel({
-			scripts: function(next) {
+			scripts: function (next) {
 				plugins.fireHook('filter:scripts.get', [], next);
 			},
-			isAdmin: function(next) {
+			isAdmin: function (next) {
 				user.isAdministrator(req.uid, next);
 			},
-			isGlobalMod: function(next) {
+			isGlobalMod: function (next) {
 				user.isGlobalModerator(req.uid, next);
 			},
-			user: function(next) {
+			isModerator: function (next) {
+				user.isModeratorOfAnyCategory(req.uid, next);
+			},
+			user: function (next) {
 				var userData = {
 					uid: 0,
 					username: '[[global:guest]]',
@@ -88,7 +91,7 @@ module.exports = function(middleware) {
 					next(null, userData);
 				}
 			},
-			isEmailConfirmSent: function(next) {
+			isEmailConfirmSent: function (next) {
 				if (!meta.config.requireEmailConfirmation || !req.uid) {
 					return next(null, false);
 				}
@@ -96,7 +99,7 @@ module.exports = function(middleware) {
 			},
 			navigation: async.apply(navigation.get),
 			tags: async.apply(meta.tags.parse, res.locals.metaTags, res.locals.linkTags)
-		}, function(err, results) {
+		}, function (err, results) {
 			if (err) {
 				return callback(err);
 			}
@@ -108,6 +111,7 @@ module.exports = function(middleware) {
 
 			results.user.isAdmin = results.isAdmin;
 			results.user.isGlobalMod = results.isGlobalMod;
+			results.user.isMod = !!results.isModerator;
 			results.user.uid = parseInt(results.user.uid, 10);
 			results.user.email = String(results.user.email).replace(/\\/g, '\\\\').replace(/"/g, '\\"');
 			results.user['email:confirmed'] = parseInt(results.user['email:confirmed'], 10) === 1;
@@ -123,6 +127,7 @@ module.exports = function(middleware) {
 			templateValues.linkTags = results.tags.link;
 			templateValues.isAdmin = results.user.isAdmin;
 			templateValues.isGlobalMod = results.user.isGlobalMod;
+			templateValues.showModMenu = results.user.isAdmin || results.user.isGlobalMod || results.user.isMod;
 			templateValues.user = results.user;
 			templateValues.userJSON = JSON.stringify(results.user);
 			templateValues.useCustomCSS = parseInt(meta.config.useCustomCSS, 10) === 1 && meta.config.customCSS;
@@ -137,7 +142,7 @@ module.exports = function(middleware) {
 			templateValues.template = {name: res.locals.template};
 			templateValues.template[res.locals.template] = true;
 
-			templateValues.scripts = results.scripts.map(function(script) {
+			templateValues.scripts = results.scripts.map(function (script) {
 				return {src: script};
 			});
 
@@ -145,7 +150,7 @@ module.exports = function(middleware) {
 				modifyTitle(templateValues);
 			}
 
-			plugins.fireHook('filter:middleware.renderHeader', {templateValues: templateValues, req: req, res: res}, function(err, data) {
+			plugins.fireHook('filter:middleware.renderHeader', {templateValues: templateValues, req: req, res: res}, function (err, data) {
 				if (err) {
 					return callback(err);
 				}
@@ -155,8 +160,8 @@ module.exports = function(middleware) {
 		});
 	};
 
-	middleware.renderFooter = function(req, res, data, callback) {
-		plugins.fireHook('filter:middleware.renderFooter', {templateValues: data, req: req, res: res}, function(err, data) {
+	middleware.renderFooter = function (req, res, data, callback) {
+		plugins.fireHook('filter:middleware.renderFooter', {templateValues: data, req: req, res: res}, function (err, data) {
 			if (err) {
 				return callback(err);
 			}
@@ -169,7 +174,7 @@ module.exports = function(middleware) {
 		obj.browserTitle = title;
 
 		if (obj.metaTags) {
-			obj.metaTags.forEach(function(tag, i) {
+			obj.metaTags.forEach(function (tag, i) {
 				if (tag.property === 'og:title') {
 					obj.metaTags[i].content = title;
 				}

@@ -29,16 +29,16 @@
 			}
 
 			module.exports = factory(require('string'), loadServer);
-		})();
+		}());
 	} else {
 		window.translator = factory(window.string, loadClient);
 	}
-})(function (string, load) {
+}(function (string, load) {
 	'use strict';
 	var assign = Object.assign || jQuery.extend;
 	function classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-	var Translator = function () {
+	var Translator = (function () {
 		/**
 		 * Construct a new Translator object
 		 * @param {string} language - Language code for this translator instance
@@ -62,6 +62,11 @@
 		 * @returns {Promise<string>}
 		 */
 		Translator.prototype.translate = function translate(str) {
+			// regex for valid text in namespace / key
+			var validText = 'a-zA-Z0-9\\-_.\\/';
+			var validTextRegex = new RegExp('[' + validText + ']');
+			var invalidTextRegex = new RegExp('[^' + validText + '\\]]');
+
 			// current cursor position
 			var cursor = 0;
 			// last break of the input string
@@ -120,12 +125,45 @@
 					// the current level of nesting of the translation strings
 					var level = 0;
 					var sliced;
+					// validating the current string is actually a translation
+					var textBeforeColonFound = false;
+					var colonFound = false;
+					var textAfterColonFound = false;
+					var commaAfterNameFound = false;
 
 					while (cursor + 2 <= len) {
 						sliced = str.slice(cursor, cursor + 2);
+						// found some text after the double bracket, 
+						// so this is probably a translation string
+						if (!textBeforeColonFound && validTextRegex.test(sliced[0])) {
+							textBeforeColonFound = true;
+							cursor += 1;
+						// found a colon, so this is probably a translation string
+						} else if (textBeforeColonFound && !colonFound && sliced[0] === ':') {
+							colonFound = true;
+							cursor += 1;
+						// found some text after the colon,
+						// so this is probably a translation string
+						} else if (colonFound && !textAfterColonFound && validTextRegex.test(sliced[0])) {
+							textAfterColonFound = true;
+							cursor += 1;
+						} else if (textAfterColonFound && !commaAfterNameFound && sliced[0] === ',') {
+							commaAfterNameFound = true;
+							cursor += 1;
+						// a space or comma was found before the name
+						// this isn't a translation string, so back out
+						} else if (!(textBeforeColonFound && colonFound && textAfterColonFound && commaAfterNameFound) && 
+								invalidTextRegex.test(sliced[0])) {
+							cursor += 1;
+							lastBreak -= 2;
+							if (level > 0) {
+								level -= 1;
+							} else {
+								break;
+							}
 						// if we're at the beginning of another translation string,
 						// we're nested, so add to our level
-						if (sliced === '[[') {
+						} else if (sliced === '[[') {
 							level += 1;
 							cursor += 2;
 						// if we're at the end of a translation string
@@ -223,11 +261,8 @@
 			if (!namespace) {
 				console.warn('[translator] Parameter `namespace` is ' + namespace + (namespace === '' ? '(empty string)' : ''));
 				translation = Promise.resolve({});
-			} else if (this.translations[namespace]) {
-				translation = this.translations[namespace];
 			} else {
-				translation = this.load(this.lang, namespace);
-				this.translations[namespace] = translation;
+				translation = this.translations[namespace] = this.translations[namespace] || this.load(this.lang, namespace);
 			}
 
 			if (key) {
@@ -273,7 +308,7 @@
 		Translator.cache = {};
 
 		return Translator;
-	}();
+	}());
 
 	var adaptor = {
 		/**
@@ -421,4 +456,4 @@
 	};
 
 	return adaptor;
-});
+}));

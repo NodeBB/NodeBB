@@ -1,15 +1,15 @@
 
 'use strict';
 
-(function(module) {
+(function (module) {
 
-	var winston = require('winston'),
-		async = require('async'),
-		nconf = require('nconf'),
-		session = require('express-session'),
-		_ = require('underscore'),
-		semver = require('semver'),
-		db, mongoClient;
+	var winston = require('winston');
+	var async = require('async');
+	var nconf = require('nconf');
+	var session = require('express-session');
+	var _ = require('underscore');
+	var semver = require('semver');
+	var db;
 
 	_.mixin(require('underscore.deep'));
 
@@ -34,7 +34,7 @@
 			description: 'Password of your MongoDB database',
 			hidden: true,
 			default: nconf.get('mongo:password') || '',
-			before: function(value) { value = value || nconf.get('mongo:password') || ''; return value; }
+			before: function (value) { value = value || nconf.get('mongo:password') || ''; return value; }
 		},
 		{
 			name: "mongo:database",
@@ -46,17 +46,11 @@
 	module.helpers = module.helpers || {};
 	module.helpers.mongo = require('./mongo/helpers');
 
-	module.init = function(callback) {
-		callback = callback || function() {};
+	module.init = function (callback) {
+		callback = callback || function () {};
+		var mongoClient;
 		try {
-			var sessionStore;
 			mongoClient = require('mongodb').MongoClient;
-
-			if (!nconf.get('redis')) {
-				sessionStore = require('connect-mongo/es5')(session);
-			} else {
-				sessionStore = require('connect-redis')(session);
-			}
 		} catch (err) {
 			winston.error('Unable to initialize MongoDB! Is MongoDB installed? Error :' + err.message);
 			return callback(err);
@@ -96,7 +90,7 @@
 
 		connOptions = _.deepExtend((nconf.get('mongo:options') || {}), connOptions);
 
-		mongoClient.connect(connString, connOptions, function(err, _db) {
+		mongoClient.connect(connString, connOptions, function (err, _db) {
 			if (err) {
 				winston.error("NodeBB could not connect to your Mongo database. Mongo returned the following error: " + err.message);
 				return callback(err);
@@ -105,22 +99,6 @@
 			db = _db;
 
 			module.client = db;
-
-			if (!nconf.get('redis')) {
-				module.sessionStore = new sessionStore({
-					db: db
-				});
-			} else {
-				// Initial Redis database
-				var rdb = require('./redis');
-				// Create a new redis connection and store it in module (skeleton)
-				rdb.client = rdb.connect();
-
-				module.sessionStore = new sessionStore({
-					client: rdb.client,
-					ttl: 60 * 60 * 24 * 14
-				});
-			}
 
 			require('./mongo/main')(db, module);
 			require('./mongo/hash')(db, module);
@@ -131,14 +109,34 @@
 			if (nconf.get('mongo:password') && nconf.get('mongo:username')) {
 				db.authenticate(nconf.get('mongo:username'), nconf.get('mongo:password'), function (err) {
 					if (err) {
-						winston.error(err.stack);
-						process.exit();
+						return callback(err);
 					}
+					createSessionStore();
 					createIndices();
 				});
 			} else {
 				winston.warn('You have no mongo password setup!');
+				createSessionStore();
 				createIndices();
+			}
+
+			function createSessionStore() {
+				var sessionStore;
+				if (nconf.get('redis')) {
+					sessionStore = require('connect-redis')(session);
+					var rdb = require('./redis');
+					rdb.client = rdb.connect();
+
+					module.sessionStore = new sessionStore({
+						client: rdb.client,
+						ttl: 60 * 60 * 24 * 14
+					});
+				} else if (nconf.get('mongo')) {
+					sessionStore = require('connect-mongo')(session);
+					module.sessionStore = new sessionStore({
+						db: db
+					});
+				}
 			}
 
 			function createIndices() {
@@ -147,10 +145,11 @@
 					async.apply(createIndex, 'objects', {_key: 1, score: -1}, {background: true}),
 					async.apply(createIndex, 'objects', {_key: 1, value: -1}, {background: true, unique: true, sparse: true}),
 					async.apply(createIndex, 'objects', {expireAt: 1}, {expireAfterSeconds: 0, background: true})
-				], function(err) {
+				], function (err) {
 					if (err) {
 						winston.error('Error creating index ' + err.message);
 					}
+					winston.info('[database] Checking database indices done!');
 					callback(err);
 				});
 			}
@@ -161,7 +160,7 @@
 		});
 	};
 
-	module.checkCompatibility = function(callback) {
+	module.checkCompatibility = function (callback) {
 		var mongoPkg = require.main.require('./node_modules/mongodb/package.json'),
 			err = semver.lt(mongoPkg.version, '2.0.0') ? new Error('The `mongodb` package is out-of-date, please run `./nodebb setup` again.') : null;
 
@@ -171,32 +170,32 @@
 		callback(err);
 	};
 
-	module.info = function(db, callback) {
+	module.info = function (db, callback) {
 		async.parallel({
-			serverStatus: function(next) {
+			serverStatus: function (next) {
 				db.command({'serverStatus': 1}, next);
 			},
-			stats: function(next) {
+			stats: function (next) {
 				db.command({'dbStats': 1}, next);
 			},
-			listCollections: function(next) {
-				db.listCollections().toArray(function(err, items) {
+			listCollections: function (next) {
+				db.listCollections().toArray(function (err, items) {
 					if (err) {
 						return next(err);
 					}
-					async.map(items, function(collection, next) {
+					async.map(items, function (collection, next) {
 						db.collection(collection.name).stats(next);
 					}, next);
 				});
 			}
-		}, function(err, results) {
+		}, function (err, results) {
 			if (err) {
 				return callback(err);
 			}
 			var stats = results.stats;
 			var scale = 1024 * 1024;
 
-			results.listCollections = results.listCollections.map(function(collectionInfo) {
+			results.listCollections = results.listCollections.map(function (collectionInfo) {
 				return {
 					name: collectionInfo.ns,
 					count: collectionInfo.count,
@@ -228,7 +227,7 @@
 		});
 	};
 
-	module.close = function() {
+	module.close = function () {
 		db.close();
 	};
 

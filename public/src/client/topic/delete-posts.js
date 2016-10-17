@@ -2,14 +2,14 @@
 
 /* globals define, app, ajaxify, socket */
 
-define('forum/topic/delete-posts', ['components', 'postSelect'], function(components, postSelect) {
+define('forum/topic/delete-posts', ['components', 'postSelect'], function (components, postSelect) {
 
 	var DeletePosts = {};
 	var modal;
 	var deleteBtn;
 	var purgeBtn;
 
-	DeletePosts.init = function() {
+	DeletePosts.init = function () {
 		$('.topic').on('click', '[component="topic/delete/posts"]', onDeletePostsClicked);
 		$(window).on('action:ajaxify.start', onAjaxifyStart);
 	};
@@ -20,7 +20,7 @@ define('forum/topic/delete-posts', ['components', 'postSelect'], function(compon
 	}
 
 	function onDeletePostsClicked() {
-		app.parseAndTranslate('partials/delete_posts_modal', {}, function(html) {
+		app.parseAndTranslate('partials/delete_posts_modal', {}, function (html) {
 			modal = html;
 
 			$('body').append(modal);
@@ -30,16 +30,16 @@ define('forum/topic/delete-posts', ['components', 'postSelect'], function(compon
 
 			modal.find('.close,#delete_posts_cancel').on('click', closeModal);
 
-			postSelect.init(function() {
+			postSelect.init(function () {
 				checkButtonEnable();
 				showPostsSelected();
 			});
 			showPostsSelected();
 
-			deleteBtn.on('click', function() {
+			deleteBtn.on('click', function () {
 				deletePosts(deleteBtn, 'posts.deletePosts');
 			});
-			purgeBtn.on('click', function() {
+			purgeBtn.on('click', function () {
 				deletePosts(purgeBtn, 'posts.purgePosts');
 			});
 		});
@@ -50,7 +50,7 @@ define('forum/topic/delete-posts', ['components', 'postSelect'], function(compon
 		socket.emit(command, {
 			tid: ajaxify.data.tid,
 			pids: postSelect.pids
-		}, function(err) {
+		}, function (err) {
 			btn.removeAttr('disabled');
 			if (err) {
 				return app.alertError(err.message);
@@ -79,7 +79,7 @@ define('forum/topic/delete-posts', ['components', 'postSelect'], function(compon
 	}
 
 	function closeModal() {
-		postSelect.pids.forEach(function(pid) {
+		postSelect.pids.forEach(function (pid) {
 			components.get('post', 'pid', pid).toggleClass('bg-success', false);
 		});
 

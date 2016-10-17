@@ -10,9 +10,9 @@ var events = require('../../events');
 var meta = require('../../meta');
 var websockets = require('../index');
 
-module.exports = function(SocketPosts) {
+module.exports = function (SocketPosts) {
 
-	SocketPosts.edit = function(socket, data, callback) {
+	SocketPosts.edit = function (socket, data, callback) {
 		if (!socket.uid) {
 			return callback(new Error('[[error:not-logged-in]]'));
 		} else if (!data || !data.pid || !data.content) {
@@ -33,7 +33,7 @@ module.exports = function(SocketPosts) {
 
 		data.uid = socket.uid;
 		data.req = websockets.reqFromSocket(socket);
-		posts.edit(data, function(err, result) {
+		posts.edit(data, function (err, result) {
 			if (err) {
 				return callback(err);
 			}
@@ -59,16 +59,16 @@ module.exports = function(SocketPosts) {
 			async.parallel({
 				admins: async.apply(groups.getMembers, 'administrators', 0, -1),
 				moderators: async.apply(groups.getMembers, 'cid:' + result.topic.cid + ':privileges:mods', 0, -1)
-			}, function(err, results) {
+			}, function (err, results) {
 				if (err) {
 					return winston.error(err);
 				}
 
-				var uids = results.admins.concat(results.moderators).filter(function(uid, index, array) {
+				var uids = results.admins.concat(results.moderators).filter(function (uid, index, array) {
 					return uid && array.indexOf(uid) === index;
 				});
 
-				uids.forEach(function(uid) {
+				uids.forEach(function (uid) {
 					websockets.in('uid_' + uid).emit('event:post_edited', result);
 				});
 			});

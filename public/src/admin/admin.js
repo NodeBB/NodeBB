@@ -1,20 +1,20 @@
 "use strict";
 /*global config, componentHandler, socket, app, bootbox, Slideout, NProgress*/
 
-(function() {
+(function () {
 	var logoutTimer = 0;
 	function startLogoutTimer() {
 		if (logoutTimer) {
 			clearTimeout(logoutTimer);
 		}
 
-		logoutTimer = setTimeout(function() {
-			require(['translator'], function(translator) {
-				translator.translate('[[login:logged-out-due-to-inactivity]]', function(translated) {
+		logoutTimer = setTimeout(function () {
+			require(['translator'], function (translator) {
+				translator.translate('[[login:logged-out-due-to-inactivity]]', function (translated) {
 					bootbox.alert({
 						closeButton: false,
 						message: translated,
-						callback: function(){
+						callback: function (){
 							window.location.reload();
 						}
 					});
@@ -23,7 +23,7 @@
 		}, 3600000);
 	}
 
-	$(window).on('action:ajaxify.end', function() {
+	$(window).on('action:ajaxify.end', function () {
 		showCorrectNavTab();
 		startLogoutTimer();
 	});
@@ -35,11 +35,11 @@
 		}
 	}
 
-	$(document).ready(function() {
+	$(document).ready(function () {
 		setupKeybindings();
 
 		if(!/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
-			require(['admin/modules/search'], function(search) {
+			require(['admin/modules/search'], function (search) {
 				search.init();
 			});
 		}
@@ -51,7 +51,7 @@
 		setupNProgress();
 	});
 
-	$(window).on('action:ajaxify.contentLoaded', function(ev, data) {
+	$(window).on('action:ajaxify.contentLoaded', function (ev, data) {
 		selectMenuItem(data.url);
 		setupRestartLinks();
 
@@ -59,28 +59,28 @@
 	});
 
 	function setupNProgress() {
-		$(window).on('action:ajaxify.start', function() {
+		$(window).on('action:ajaxify.start', function () {
 			NProgress.set(0.7);
 		});
 
-		$(window).on('action:ajaxify.end', function() {
+		$(window).on('action:ajaxify.end', function () {
 			NProgress.done();
 		});
 	}
 
 	function setupKeybindings() {
-		require(['mousetrap'], function(mousetrap) {
-			mousetrap.bind('ctrl+shift+a r', function() {
-				require(['admin/modules/instance'], function(instance) {
+		require(['mousetrap'], function (mousetrap) {
+			mousetrap.bind('ctrl+shift+a r', function () {
+				require(['admin/modules/instance'], function (instance) {
 					instance.reload();
 				});
 			});
 
-			mousetrap.bind('ctrl+shift+a R', function() {
+			mousetrap.bind('ctrl+shift+a R', function () {
 				socket.emit('admin.restart');
 			});
 
-			mousetrap.bind('/', function() {
+			mousetrap.bind('/', function () {
 				$('#acp-search input').focus();
 
 				return false;
@@ -100,7 +100,7 @@
 		}
 
 		$('#main-menu li').removeClass('active');
-		$('#main-menu a').removeClass('active').each(function() {
+		$('#main-menu a').removeClass('active').each(function () {
 			var menu = $(this),
 				href = menu.attr('href'),
 				isLink = menu.parent().attr('data-link') === '1';
@@ -115,7 +115,7 @@
 		});
 
 		var acpPath = url.replace('admin/', '').split('/');
-		acpPath.forEach(function(path, i) {
+		acpPath.forEach(function (path, i) {
 			acpPath[i] = path.charAt(0).toUpperCase() + path.slice(1);
 		});
 		acpPath = acpPath.join(' > ');
@@ -124,18 +124,18 @@
 	}
 
 	function setupRestartLinks() {
-		$('.restart').off('click').on('click', function() {
-			bootbox.confirm('Are you sure you wish to restart NodeBB?', function(confirm) {
+		$('.restart').off('click').on('click', function () {
+			bootbox.confirm('Are you sure you wish to restart NodeBB?', function (confirm) {
 				if (confirm) {
-					require(['admin/modules/instance'], function(instance) {
+					require(['admin/modules/instance'], function (instance) {
 						instance.restart();
 					});
 				}
 			});
 		});
 
-		$('.reload').off('click').on('click', function() {
-			require(['admin/modules/instance'], function(instance) {
+		$('.reload').off('click').on('click', function () {
+			require(['admin/modules/instance'], function (instance) {
 				instance.reload();
 			});
 		});
@@ -144,8 +144,8 @@
 	function launchSnackbar(params) {
 		var message = (params.title ? "<strong>" + params.title + "</strong>" : '') + (params.message ? params.message : '');
 
-		require(['translator'], function(translator) {
-			translator.translate(message, function(html) {
+		require(['translator'], function (translator) {
+			translator.translate(message, function (html) {
 				var bar = $.snackbar({
 					content: html,
 					timeout: 3000,
@@ -167,15 +167,15 @@
 			'tolerance': 70
 		});
 
-		$('#mobile-menu').on('click', function() {
+		$('#mobile-menu').on('click', function () {
 			slideout.toggle();
 		});
 
-		$('#menu a').on('click', function() {
+		$('#menu a').on('click', function () {
 			slideout.close();
 		});
 
-		$(window).on('resize', function() {
+		$(window).on('resize', function () {
 			slideout.close();
 		});
 
@@ -190,7 +190,7 @@
 		slideout.on('open', onOpeningMenu);
 		slideout.on('translate', onOpeningMenu);
 
-		slideout.on('close', function() {
+		slideout.on('close', function () {
 			$('#header').css({
 				'top': '0px',
 				'position': 'fixed'

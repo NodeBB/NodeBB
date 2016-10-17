@@ -10,58 +10,62 @@ var posts = require('../src/posts');
 var categories = require('../src/categories');
 var user = require('../src/user');
 
-describe('Post\'s', function() {
+describe('Post\'s', function () {
 	var voterUid;
 	var voteeUid;
 	var postData;
+	var topicData;
+	var cid;
 
-	before(function(done) {
+	before(function (done) {
 		async.parallel({
-			voterUid: function(next) {
+			voterUid: function (next) {
 				user.create({username: 'upvoter'}, next);
 			},
-			voteeUid: function(next) {
+			voteeUid: function (next) {
 				user.create({username: 'upvotee'}, next);
 			},
-			category: function(next) {
+			category: function (next) {
 				categories.create({
 					name: 'Test Category',
 					description: 'Test category created by testing script'
 				}, next);
 			}
-		}, function(err, results) {
+		}, function (err, results) {
 			if (err) {
 				return done(err);
 			}
 
 			voterUid = results.voterUid;
 			voteeUid = results.voteeUid;
+			cid = results.category.cid;
 
 			topics.post({
 				uid: results.voteeUid,
 				cid: results.category.cid,
 				title: 'Test Topic Title',
 				content: 'The content of test topic'
-			}, function(err, data) {
+			}, function (err, data) {
 				if (err) {
 					return done(err);
 				}
 				postData = data.postData;
+				topicData = data.topicData;
 				done();
 			});
 		});
 	});
 
-	describe('voting', function() {
+	describe('voting', function () {
 
-		it('should upvote a post', function(done) {
-			posts.upvote(postData.pid, voterUid, function(err, result) {
+		it('should upvote a post', function (done) {
+			posts.upvote(postData.pid, voterUid, function (err, result) {
 				assert.ifError(err);
 				assert.equal(result.post.upvotes, 1);
 				assert.equal(result.post.downvotes, 0);
 				assert.equal(result.post.votes, 1);
 				assert.equal(result.user.reputation, 1);
-				posts.hasVoted(postData.pid, voterUid, function(err, data) {
+				posts.hasVoted(postData.pid, voterUid, function (err, data) {
 					assert.ifError(err);
 					assert.equal(data.upvoted, true);
 					assert.equal(data.downvoted, false);
@@ -70,14 +74,14 @@ describe('Post\'s', function() {
 			});
 		});
 
-		it('should unvote a post', function(done) {
-			posts.unvote(postData.pid, voterUid, function(err, result) {
+		it('should unvote a post', function (done) {
+			posts.unvote(postData.pid, voterUid, function (err, result) {
 				assert.ifError(err);
 				assert.equal(result.post.upvotes, 0);
 				assert.equal(result.post.downvotes, 0);
 				assert.equal(result.post.votes, 0);
 				assert.equal(result.user.reputation, 0);
-				posts.hasVoted(postData.pid, voterUid, function(err, data) {
+				posts.hasVoted(postData.pid, voterUid, function (err, data) {
 					assert.ifError(err);
 					assert.equal(data.upvoted, false);
 					assert.equal(data.downvoted, false);
@@ -86,14 +90,14 @@ describe('Post\'s', function() {
 			});
 		});
 
-		it('should downvote a post', function(done) {
-			posts.downvote(postData.pid, voterUid, function(err, result) {
+		it('should downvote a post', function (done) {
+			posts.downvote(postData.pid, voterUid, function (err, result) {
 				assert.ifError(err);
 				assert.equal(result.post.upvotes, 0);
 				assert.equal(result.post.downvotes, 1);
 				assert.equal(result.post.votes, -1);
 				assert.equal(result.user.reputation, -1);
-				posts.hasVoted(postData.pid, voterUid, function(err, data) {
+				posts.hasVoted(postData.pid, voterUid, function (err, data) {
 					assert.ifError(err);
 					assert.equal(data.upvoted, false);
 					assert.equal(data.downvoted, true);
@@ -103,12 +107,12 @@ describe('Post\'s', function() {
 		});
 	});
 
-	describe('bookmarking', function() {
-		it('should bookmark a post', function(done) {
-			posts.bookmark(postData.pid, voterUid, function(err, data) {
+	describe('bookmarking', function () {
+		it('should bookmark a post', function (done) {
+			posts.bookmark(postData.pid, voterUid, function (err, data) {
 				assert.ifError(err);
 				assert.equal(data.isBookmarked, true);
-				posts.hasBookmarked(postData.pid, voterUid, function(err, hasBookmarked) {
+				posts.hasBookmarked(postData.pid, voterUid, function (err, hasBookmarked) {
 					assert.ifError(err);
 					assert.equal(hasBookmarked, true);
 					done();
@@ -116,11 +120,11 @@ describe('Post\'s', function() {
 			});
 		});
 
-		it('should unbookmark a post', function(done) {
-			posts.unbookmark(postData.pid, voterUid, function(err, data) {
+		it('should unbookmark a post', function (done) {
+			posts.unbookmark(postData.pid, voterUid, function (err, data) {
 				assert.ifError(err);
 				assert.equal(data.isBookmarked, false);
-				posts.hasBookmarked([postData.pid], voterUid, function(err, hasBookmarked) {
+				posts.hasBookmarked([postData.pid], voterUid, function (err, hasBookmarked) {
 					assert.ifError(err);
 					assert.equal(hasBookmarked[0], false);
 					done();
@@ -129,8 +133,79 @@ describe('Post\'s', function() {
 		});
 	});
 
+	describe('delete/restore/purge', function () {
+		var pid;
+		before(function (done) {
+			topics.reply({
+				uid: voterUid,
+				tid: topicData.tid,
+				timestamp: Date.now(),
+				content: 'A post to delete/restore and purge'
+			}, function (err, data) {
+				assert.ifError(err);
+				pid = data.pid;
+				done();
+			});
+		});
 
-	after(function(done) {
+		it('should delete a post', function (done) {
+			posts.delete(pid, voterUid, function (err, postData) {
+				assert.ifError(err);
+				assert(postData);
+				posts.getPostField(pid, 'deleted', function (err, isDeleted) {
+					assert.ifError(err);
+					assert.equal(parseInt(isDeleted, 10), 1);
+					done();
+				});
+			});
+		});
+
+		it('should restore a post', function (done) {
+			posts.restore(pid, voterUid, function (err, postData) {
+				assert.ifError(err);
+				assert(postData);
+				posts.getPostField(pid, 'deleted', function (err, isDeleted) {
+					assert.ifError(err);
+					assert.equal(parseInt(isDeleted, 10), 0);
+					done();
+				});
+			});
+		});
+
+		it('should purge a post', function (done) {
+			posts.purge(pid, voterUid, function (err) {
+				assert.ifError(err);
+				assert.equal(arguments.length, 1);
+				posts.exists('post:' + pid, function (err, exists) {
+					assert.ifError(err);
+					assert.equal(exists, false);
+					done();
+				});
+			});
+		});
+	});
+
+	describe('getPostSummaryByPids', function () {
+		it('should return empty array for empty pids', function (done) {
+			posts.getPostSummaryByPids([], 0, {}, function (err, data) {
+				assert.ifError(err);
+				assert.equal(data.length, 0);
+				done();
+			});
+		});
+
+		it('should get post summaries', function (done) {
+			posts.getPostSummaryByPids([postData.pid], 0, {}, function (err, data) {
+				assert.ifError(err);
+				assert(data[0].user);
+				assert(data[0].topic);
+				assert(data[0].category);
+				done();
+			});
+		});
+	});
+
+	after(function (done) {
 		db.flushdb(done);
 	});
 });

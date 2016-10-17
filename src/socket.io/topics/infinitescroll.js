@@ -8,21 +8,21 @@ var meta = require('../../meta');
 var utils = require('../../../public/src/utils');
 var social = require('../../social');
 
-module.exports = function(SocketTopics) {
+module.exports = function (SocketTopics) {
 
-	SocketTopics.loadMore = function(socket, data, callback) {
+	SocketTopics.loadMore = function (socket, data, callback) {
 		if (!data || !data.tid || !utils.isNumber(data.after) || parseInt(data.after, 10) < 0)  {
 			return callback(new Error('[[error:invalid-data]]'));
 		}
 
 		async.parallel({
-			privileges: function(next) {
+			privileges: function (next) {
 				privileges.topics.get(data.tid, socket.uid, next);
 			},
-			topic: function(next) {
+			topic: function (next) {
 				topics.getTopicFields(data.tid, ['postcount', 'deleted'], next);
 			}
-		}, function(err, results) {
+		}, function (err, results) {
 			if (err) {
 				return callback(err);
 			}
@@ -58,19 +58,19 @@ module.exports = function(SocketTopics) {
 			stop = Math.max(0, stop);
 
 			async.parallel({
-				mainPost: function(next) {
+				mainPost: function (next) {
 					if (start > 0) {
 						return next();
 					}
 					topics.getMainPost(data.tid, socket.uid, next);
 				},
-				posts: function(next) {
+				posts: function (next) {
 					topics.getTopicPosts(data.tid, set, start, stop, socket.uid, reverse, next);
 				},
 				postSharing: function (next) {
 					social.getActivePostSharing(next);
 				}
-			}, function(err, topicData) {
+			}, function (err, topicData) {
 				if (err) {
 					return callback(err);
 				}
@@ -88,7 +88,7 @@ module.exports = function(SocketTopics) {
 		});
 	};
 
-	SocketTopics.loadMoreUnreadTopics = function(socket, data, callback) {
+	SocketTopics.loadMoreUnreadTopics = function (socket, data, callback) {
 		if (!data || !utils.isNumber(data.after) || parseInt(data.after, 10) < 0) {
 			return callback(new Error('[[error:invalid-data]]'));
 		}
@@ -99,7 +99,7 @@ module.exports = function(SocketTopics) {
 		topics.getUnreadTopics(data.cid, socket.uid, start, stop, data.filter, callback);
 	};
 
-	SocketTopics.loadMoreFromSet = function(socket, data, callback) {
+	SocketTopics.loadMoreFromSet = function (socket, data, callback) {
 		if (!data || !utils.isNumber(data.after) || parseInt(data.after, 10) < 0 || !data.set) {
 			return callback(new Error('[[error:invalid-data]]'));
 		}

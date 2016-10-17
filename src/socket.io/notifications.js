@@ -7,7 +7,7 @@ var utils = require('../../public/src/utils');
 
 var SocketNotifs = {};
 
-SocketNotifs.get = function(socket, data, callback) {
+SocketNotifs.get = function (socket, data, callback) {
 	if (data && Array.isArray(data.nids) && socket.uid) {
 		user.notifications.getNotifications(data.nids, socket.uid, callback);
 	} else {
@@ -15,7 +15,7 @@ SocketNotifs.get = function(socket, data, callback) {
 	}
 };
 
-SocketNotifs.loadMore = function(socket, data, callback) {
+SocketNotifs.loadMore = function (socket, data, callback) {
 	if (!data || !utils.isNumber(data.after) || parseInt(data.after, 10) < 0) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
@@ -24,7 +24,7 @@ SocketNotifs.loadMore = function(socket, data, callback) {
 	}
 	var start = parseInt(data.after, 10);
 	var stop = start + 20;
-	user.notifications.getAll(socket.uid, start, stop, function(err, notifications) {
+	user.notifications.getAll(socket.uid, start, stop, function (err, notifications) {
 		if (err) {
 			return callback(err);
 		}
@@ -32,11 +32,11 @@ SocketNotifs.loadMore = function(socket, data, callback) {
 	});
 };
 
-SocketNotifs.getCount = function(socket, data, callback) {
+SocketNotifs.getCount = function (socket, data, callback) {
 	user.notifications.getUnreadCount(socket.uid, callback);
 };
 
-SocketNotifs.deleteAll = function(socket, data, callback) {
+SocketNotifs.deleteAll = function (socket, data, callback) {
 	if (!socket.uid) {
 		return callback(new Error('[[error:no-privileges]]'));
 	}
@@ -44,15 +44,15 @@ SocketNotifs.deleteAll = function(socket, data, callback) {
 	user.notifications.deleteAll(socket.uid, callback);
 };
 
-SocketNotifs.markRead = function(socket, nid, callback) {
+SocketNotifs.markRead = function (socket, nid, callback) {
 	notifications.markRead(nid, socket.uid, callback);
 };
 
-SocketNotifs.markUnread = function(socket, nid, callback) {
+SocketNotifs.markUnread = function (socket, nid, callback) {
 	notifications.markUnread(nid, socket.uid, callback);
 };
 
-SocketNotifs.markAllRead = function(socket, data, callback) {
+SocketNotifs.markAllRead = function (socket, data, callback) {
 	notifications.markAllRead(socket.uid, callback);
 };
 

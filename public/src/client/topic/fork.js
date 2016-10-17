@@ -2,13 +2,13 @@
 
 /* globals define, app, ajaxify, socket */
 
-define('forum/topic/fork', ['components', 'postSelect'], function(components, postSelect) {
+define('forum/topic/fork', ['components', 'postSelect'], function (components, postSelect) {
 
 	var Fork = {};
 	var forkModal;
 	var forkCommit;
 
-	Fork.init = function() {
+	Fork.init = function () {
 		$('.topic').on('click', '[component="topic/fork"]', onForkThreadClicked);
 		$(window).on('action:ajaxify.start', onAjaxifyStart);
 	};
@@ -19,7 +19,7 @@ define('forum/topic/fork', ['components', 'postSelect'], function(components, po
 	}
 
 	function onForkThreadClicked() {
-		app.parseAndTranslate('partials/fork_thread_modal', {}, function(html) {
+		app.parseAndTranslate('partials/fork_thread_modal', {}, function (html) {
 			forkModal = html;
 
 			forkCommit = forkModal.find('#fork_thread_commit');
@@ -29,7 +29,7 @@ define('forum/topic/fork', ['components', 'postSelect'], function(components, po
 			forkModal.find('.close,#fork_thread_cancel').on('click', closeForkModal);
 			forkModal.find('#fork-title').on('keyup', checkForkButtonEnable);
 
-			postSelect.init(function() {
+			postSelect.init(function () {
 				checkForkButtonEnable();
 				showPostsSelected();
 			});
@@ -45,9 +45,9 @@ define('forum/topic/fork', ['components', 'postSelect'], function(components, po
 			title: forkModal.find('#fork-title').val(),
 			pids: postSelect.pids,
 			fromTid: ajaxify.data.tid
-		}, function(err, newTopic) {
+		}, function (err, newTopic) {
 			function fadeOutAndRemove(pid) {
-				components.get('post', 'pid', pid).fadeOut(500, function() {
+				components.get('post', 'pid', pid).fadeOut(500, function () {
 					$(this).remove();
 				});
 			}
@@ -61,12 +61,12 @@ define('forum/topic/fork', ['components', 'postSelect'], function(components, po
 				title: '[[global:alert.success]]',
 				message: '[[topic:fork_success]]',
 				type: 'success',
-				clickfn: function() {
+				clickfn: function () {
 					ajaxify.go('topic/' + newTopic.slug);
 				}
 			});
 
-			postSelect.pids.forEach(function(pid) {
+			postSelect.pids.forEach(function (pid) {
 				fadeOutAndRemove(pid);
 			});
 
@@ -91,7 +91,7 @@ define('forum/topic/fork', ['components', 'postSelect'], function(components, po
 	}
 
 	function closeForkModal() {
-		postSelect.pids.forEach(function(pid) {
+		postSelect.pids.forEach(function (pid) {
 			components.get('post', 'pid', pid).toggleClass('bg-success', false);
 		});
 

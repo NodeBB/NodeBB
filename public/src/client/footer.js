@@ -1,7 +1,7 @@
 "use strict";
 /*globals define, app, socket*/
 
-define('forum/footer', ['notifications', 'chat', 'components', 'translator'], function(Notifications, Chat, components, translator) {
+define('forum/footer', ['notifications', 'chat', 'components', 'translator'], function (Notifications, Chat, components, translator) {
 
 	Notifications.prepareDOM();
 	Chat.prepareDOM();
@@ -49,7 +49,7 @@ define('forum/footer', ['notifications', 'chat', 'components', 'translator'], fu
 			$('[data-tid="' + tid + '"]').addClass('unread');
 		}
 
-		$(window).on('action:ajaxify.end', function(ev, data) {
+		$(window).on('action:ajaxify.end', function (ev, data) {
 			if (data.url) {
 				var tid = data.url.match(/^topic\/(\d+)/);
 
@@ -63,7 +63,7 @@ define('forum/footer', ['notifications', 'chat', 'components', 'translator'], fu
 	}
 
 	if (app.user.uid) {
-		socket.emit('user.getUnreadCounts', function(err, data) {
+		socket.emit('user.getUnreadCounts', function (err, data) {
 			if (err) {
 				return app.alert(err.message);
 			}

@@ -30,20 +30,20 @@ var opts = {
 
 /* -- Logger -- */
 
-(function(Logger) {
+(function (Logger) {
 
 
-	Logger.init = function(app) {
+	Logger.init = function (app) {
 		opts.express.app = app;
 		/* Open log file stream & initialize express logging if meta.config.logger* variables are set */
 		Logger.setup();
 	};
 
-	Logger.setup = function() {
+	Logger.setup = function () {
 		Logger.setup_one('loggerPath', meta.config.loggerPath);
 	};
 
-	Logger.setup_one = function(key, value) {
+	Logger.setup_one = function (key, value) {
 		/*
 		 * 1. Open the logger stream: stdout or file
 		 * 2. Re-initialize the express logger hijack
@@ -54,7 +54,7 @@ var opts = {
 		}
 	};
 
-	Logger.setup_one_log = function(value) {
+	Logger.setup_one_log = function (value) {
 		/*
 		 * If logging is currently enabled, create a stream.
 		 * Otherwise, close the current stream
@@ -72,7 +72,7 @@ var opts = {
 		}
 	};
 
-	Logger.open = function(value) {
+	Logger.open = function (value) {
 		/* Open the streams to log to: either a path or stdout */
 		var stream;
 		if(value) {
@@ -91,7 +91,7 @@ var opts = {
 			}
 
 			if(stream) {
-				stream.on('error', function(err) {
+				stream.on('error', function (err) {
 					winston.error(err.message);
 				});
 			}
@@ -101,14 +101,14 @@ var opts = {
 		return stream;
 	};
 
-	Logger.close = function(stream) {
+	Logger.close = function (stream) {
 		if(stream.f !== process.stdout && stream.f) {
 			stream.end();
 		}
 		stream.f = null;
 	};
 
-	Logger.monitorConfig = function(socket, data) {
+	Logger.monitorConfig = function (socket, data) {
 		/*
 		 * This monitor's when a user clicks "save" in the Logger section of the admin panel
 		 */
@@ -117,7 +117,7 @@ var opts = {
 		Logger.io(socket);
 	};
 
-	Logger.express_open = function() {
+	Logger.express_open = function () {
 		if(opts.express.set !== 1) {
 			opts.express.set = 1;
 			opts.express.app.use(Logger.expressLogger);
@@ -128,7 +128,7 @@ var opts = {
 		opts.express.ofn = morgan('combined', {stream : opts.streams.log.f});
 	};
 
-	Logger.expressLogger = function(req,res,next) {
+	Logger.expressLogger = function (req,res,next) {
 		/*
 		 * The new express.logger
 		 *
@@ -141,21 +141,21 @@ var opts = {
 		}
 	};
 
-	Logger.prepare_io_string = function(_type, _uid, _args) {
+	Logger.prepare_io_string = function (_type, _uid, _args) {
 		/*
 		 * This prepares the output string for intercepted socket.io events
 		 *
 		 * The format is: io: <uid> <event> <args>
 		 */
 		try {
-			return 'io: '+_uid+' '+_type+' '+util.inspect(Array.prototype.slice.call(_args))+'\n';
+			return 'io: ' + _uid + ' ' + _type + ' ' + util.inspect(Array.prototype.slice.call(_args)) + '\n';
 		} catch(err) {
 			winston.info("Logger.prepare_io_string: Failed", err);
 			return "error";
 		}
 	};
 
-	Logger.io_close = function(socket) {
+	Logger.io_close = function (socket) {
 		/*
 		 * Restore all hijacked sockets to their original emit/on functions
 		 */
@@ -177,7 +177,7 @@ var opts = {
 		}
 	};
 
-	Logger.io = function(socket) {
+	Logger.io = function (socket) {
 		/*
 		 * Go through all of the currently established sockets & hook their .emit/.on
 		 */
@@ -194,12 +194,12 @@ var opts = {
 		}
 	};
 
-	Logger.io_one = function(socket, uid) {
+	Logger.io_one = function (socket, uid) {
 		/*
 		 * This function replaces a socket's .emit/.on functions in order to intercept events
 		 */
 		function override(method, name, errorMsg) {
-			return function() {
+			return function () {
 				if(opts.streams.log.f) {
 					opts.streams.log.f.write(Logger.prepare_io_string(name, uid, arguments));
 				}

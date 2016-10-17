@@ -9,7 +9,7 @@ var helpers = require('../helpers');
 
 var chatsController = {};
 
-chatsController.get = function(req, res, callback) {
+chatsController.get = function (req, res, callback) {
 	if (parseInt(meta.config.disableChat, 10) === 1) {
 		return callback();
 	}
@@ -18,13 +18,13 @@ chatsController.get = function(req, res, callback) {
 	var recentChats;
 
 	async.waterfall([
-		function(next) {
+		function (next) {
 			async.parallel({
 				uid: async.apply(user.getUidByUserslug, req.params.userslug),
 				username: async.apply(user.getUsernameByUserslug, req.params.userslug)
 			}, next);
 		},
-		function(results, next) {
+		function (results, next) {
 			uid = results.uid;
 			username = results.username;
 			if (!uid) {
@@ -32,7 +32,7 @@ chatsController.get = function(req, res, callback) {
 			}
 			messaging.getRecentChats(req.uid, uid, 0, 19, next);
 		},
-		function(_recentChats, next) {
+		function (_recentChats, next) {
 			recentChats = _recentChats;
 			if (!recentChats) {
 				return callback();
@@ -50,7 +50,7 @@ chatsController.get = function(req, res, callback) {
 			}
 			messaging.isUserInRoom(req.uid, req.params.roomid, next);
 		},
-		function(inRoom, next) {
+		function (inRoom, next) {
 			if (!inRoom) {
 				return callback();
 			}
@@ -65,7 +65,7 @@ chatsController.get = function(req, res, callback) {
 				room: async.apply(messaging.getRoomData, req.params.roomid)
 			}, next);
 		}
-	], function(err, data) {
+	], function (err, data) {
 		if (err) {
 			return callback(err);
 		}
@@ -73,7 +73,7 @@ chatsController.get = function(req, res, callback) {
 		room.messages = data.messages;
 
 		room.isOwner = parseInt(room.owner, 10) === parseInt(req.uid, 10);
-		room.users = data.users.filter(function(user) {
+		room.users = data.users.filter(function (user) {
 			return user && parseInt(user.uid, 10) && parseInt(user.uid, 10) !== req.uid;
 		});
 
@@ -96,12 +96,12 @@ chatsController.get = function(req, res, callback) {
 	});
 };
 
-chatsController.redirectToChat = function(req, res, next) {
+chatsController.redirectToChat = function (req, res, next) {
 	var roomid = parseInt(req.params.roomid, 10);
 	if (!req.uid) {
 		return next();
 	}
-	user.getUserField(req.uid, 'userslug', function(err, userslug) {
+	user.getUserField(req.uid, 'userslug', function (err, userslug) {
 		if (err || !userslug) {
 			return next(err);
 		}

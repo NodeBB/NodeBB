@@ -1,17 +1,17 @@
 "use strict";
 /*globals define, app, ajaxify, socket, config*/
 
-define('forum/reset_code', function() {
+define('forum/reset_code', function () {
 	var	ResetCode = {};
 
-	ResetCode.init = function() {
+	ResetCode.init = function () {
 		var reset_code = ajaxify.data.code;
 
 		var resetEl = $('#reset');
 		var password = $('#password');
 		var repeat = $('#repeat');
 
-		resetEl.on('click', function() {
+		resetEl.on('click', function () {
 			if (password.val().length < ajaxify.data.minimumPasswordLength) {
 				app.alertError('[[reset_password:password_too_short]]');
 			} else if (password.val() !== repeat.val()) {
@@ -21,7 +21,7 @@ define('forum/reset_code', function() {
 				socket.emit('user.reset.commit', {
 					code: reset_code,
 					password: password.val()
-				}, function(err) {
+				}, function (err) {
 					if (err) {
 						ajaxify.refresh();
 						return app.alertError(err.message);

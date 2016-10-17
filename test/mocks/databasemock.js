@@ -3,14 +3,16 @@
  * ATTENTION: testing db is flushed before every use!
  */
 
-(function(module) {
+(function (module) {
 	'use strict';
-	/*global require, before*/
+	/*global require, before, __dirname*/
 
-	var path  = require('path'),
-		nconf = require('nconf'),
-		winston = require('winston'),
-		errorText;
+	var async = require('async');
+	var winston = require('winston');
+	var path  = require('path');
+	var nconf = require('nconf');
+	var url = require('url');
+	var errorText;
 
 
 	nconf.file({ file: path.join(__dirname, '../../config.json') });
@@ -22,29 +24,34 @@
 		relative_path: ''
 	});
 
-	var dbType = nconf.get('database'),
-		testDbConfig = nconf.get('test_database'),
-		productionDbConfig = nconf.get(dbType);
+	if (!nconf.get('isCluster')) {
+		nconf.set('isPrimary', 'true');
+		nconf.set('isCluster', 'false');
+	}
 
-	if(!testDbConfig){
+	var dbType = nconf.get('database');
+	var testDbConfig = nconf.get('test_database');
+	var productionDbConfig = nconf.get(dbType);
+
+	if (!testDbConfig){
 		errorText = 'test_database is not defined';
 		winston.info(
-			'\n===========================================================\n'+
-			'Please, add parameters for test database in config.json\n'+
-			'For example (redis):\n'+
+			'\n===========================================================\n' +
+			'Please, add parameters for test database in config.json\n' +
+			'For example (redis):\n' +
 				'"test_database": {' + '\n' +
 				'    "host": "127.0.0.1",' + '\n' +
 				'    "port": "6379",' + '\n' +
 				'    "password": "",' + '\n' +
 				'    "database": "1"' + '\n' +
-			'}\n'+
+			'}\n' +
 			' or (mongo):\n' +
 				'"test_database": {' + '\n' +
 				'    "host": "127.0.0.1",' + '\n' +
 				'    "port": "27017",' + '\n' +
 				'    "password": "",' + '\n' +
 				'    "database": "1"' + '\n' +
-			'}\n'+
+			'}\n' +
 			' or (mongo) in a replicaset' + '\n' +
 			'"test_database": {' + '\n' +
 		    '    "host": "127.0.0.1,127.0.0.1,127.0.0.1",' + '\n' +
@@ -52,17 +59,16 @@
 		    '    "username": "",' + '\n' +
 		    '    "password": "",' + '\n' +
 		    '    "database": "nodebb_test"' + '\n' +
-		    '}\n'+
+		    '}\n' +
 			'==========================================================='
 		);
 		winston.error(errorText);
 		throw new Error(errorText);
 	}
 
-	if(	testDbConfig.database === productionDbConfig.database &&
+	if (testDbConfig.database === productionDbConfig.database &&
 		testDbConfig.host === productionDbConfig.host &&
-		testDbConfig.port === productionDbConfig.port
-	){
+		testDbConfig.port === productionDbConfig.port) {
 		errorText = 'test_database has the same config as production db';
 		winston.error(errorText);
 		throw new Error(errorText);
@@ -70,38 +76,59 @@
 
 	nconf.set(dbType, testDbConfig);
 
-	var db = require('../../src/database'),
-		meta = require('../../src/meta');
+	winston.info('database config');
+	winston.info(dbType);
+	winston.info(testDbConfig);
 
-	before(function(done) {
-		db.init(function(err) {
-			if (err) {
-				return done(err);
-			}
+	var db = require('../../src/database');
 
-			//Clean up
-			db.flushdb(function(err) {
-				if(err) {
-					winston.error(err);
-					throw new Error(err);
-				}
-
+	before(function (done) {
+		this.timeout(30000);
+		var meta;
+		async.waterfall([
+			function (next) {
+				db.init(next);
+			},
+			function (next) {
+				db.flushdb(next);
+			},
+			function (next) {
 				winston.info('test_database flushed');
+				meta = require('../../src/meta');
+				meta.configs.init(next);
+			},
+			function (next) {
+				// nconf defaults, if not set in config
+				if (!nconf.get('upload_path')) {
+					nconf.set('upload_path', '/public/uploads');
+				}
+				if (!nconf.get('sessionKey')) {
+					nconf.set('sessionKey', 'express.sid');
+				}
+				// Parse out the relative_url and other goodies from the configured URL
+				var urlObject = url.parse(nconf.get('url'));
+				var relativePath = urlObject.pathname !== '/' ? urlObject.pathname : '';
+				nconf.set('base_url', urlObject.protocol + '//' + urlObject.host);
+				nconf.set('secure', urlObject.protocol === 'https:');
+				nconf.set('use_port', !!urlObject.port);
+				nconf.set('relative_path', relativePath);
+				nconf.set('port', urlObject.port || nconf.get('port') || nconf.get('PORT') || (nconf.get('PORT_ENV_VAR') ? nconf.get(nconf.get('PORT_ENV_VAR')) : false) || 4567);
+				nconf.set('upload_url', nconf.get('upload_path').replace(/^\/public/, ''));
 
-				meta.configs.init(function () {
-					nconf.set('url', nconf.get('base_url') + (nconf.get('use_port') ? ':' + nconf.get('port') : '') + nconf.get('relative_path'));
-					nconf.set('core_templates_path', path.join(__dirname, '../../src/views'));
-					nconf.set('base_templates_path', path.join(nconf.get('themes_path'), 'nodebb-theme-vanilla/templates'));
-					nconf.set('theme_templates_path', meta.config['theme:templates'] ? path.join(nconf.get('themes_path'), meta.config['theme:id'], meta.config['theme:templates']) : nconf.get('base_templates_path'));
+				nconf.set('core_templates_path', path.join(__dirname, '../../src/views'));
+				nconf.set('base_templates_path', path.join(nconf.get('themes_path'), 'nodebb-theme-vanilla/templates'));
+				nconf.set('theme_templates_path', meta.config['theme:templates'] ? path.join(nconf.get('themes_path'), meta.config['theme:id'], meta.config['theme:templates']) : nconf.get('base_templates_path'));
 
-					var	webserver = require('../../src/webserver'),
-						sockets = require('../../src/socket.io');
-						sockets.init(webserver.server);
+				var	webserver = require('../../src/webserver');
+				var sockets = require('../../src/socket.io');
+				sockets.init(webserver.server);
 
-					done();
-				});
-			});
-		});
+				require('../../src/notifications').init();
+				require('../../src/user').startJobs();
+
+				webserver.listen(next);
+			}
+		], done);
 	});
 
 	module.exports = db;

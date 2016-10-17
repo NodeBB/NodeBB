@@ -10,7 +10,7 @@ var async = require('async');
 var file = require('../file');
 var db = require('../database');
 
-module.exports = function(Meta) {
+module.exports = function (Meta) {
 	Meta.themes = {};
 
 	Meta.themes.get = function (callback) {
@@ -68,7 +68,7 @@ module.exports = function(Meta) {
 		});
 	};
 
-	Meta.themes.set = function(data, callback) {
+	Meta.themes.set = function (data, callback) {
 		var	themeData = {
 			'theme:type': data.type,
 			'theme:id': data.id,
@@ -81,16 +81,16 @@ module.exports = function(Meta) {
 		case 'local':
 			async.waterfall([
 				async.apply(Meta.configs.get, 'theme:id'),
-				function(current, next) {
+				function (current, next) {
 					async.series([
 						async.apply(db.sortedSetRemove, 'plugins:active', current),
 						async.apply(db.sortedSetAdd, 'plugins:active', 0, data.id)
-					], function(err) {
+					], function (err) {
 						next(err);
 					});
 				},
-				function(next) {
-					fs.readFile(path.join(nconf.get('themes_path'), data.id, 'theme.json'), function(err, config) {
+				function (next) {
+					fs.readFile(path.join(nconf.get('themes_path'), data.id, 'theme.json'), function (err, config) {
 						if (!err) {
 							config = JSON.parse(config.toString());
 							next(null, config);
@@ -99,7 +99,7 @@ module.exports = function(Meta) {
 						}
 					});
 				},
-				function(config, next) {
+				function (config, next) {
 					themeData['theme:staticDir'] = config.staticDir ? config.staticDir : '';
 					themeData['theme:templates'] = config.templates ? config.templates : '';
 					themeData['theme:src'] = '';
@@ -120,20 +120,20 @@ module.exports = function(Meta) {
 		}
 	};
 
-	Meta.themes.setupPaths = function(callback) {
+	Meta.themes.setupPaths = function (callback) {
 		async.parallel({
 			themesData: Meta.themes.get,
-			currentThemeId: function(next) {
+			currentThemeId: function (next) {
 				db.getObjectField('config', 'theme:id', next);
 			}
-		}, function(err, data) {
+		}, function (err, data) {
 			if (err) {
 				return callback(err);
 			}
 
 			var themeId = data.currentThemeId || 'nodebb-theme-persona';
 
-			var	themeObj = data.themesData.filter(function(themeObj) {
+			var	themeObj = data.themesData.filter(function (themeObj) {
 					return themeObj.id === themeId;
 				})[0];
 
@@ -150,7 +150,7 @@ module.exports = function(Meta) {
 		});
 	};
 
-	Meta.themes.setPath = function(themeObj) {
+	Meta.themes.setPath = function (themeObj) {
 		// Theme's templates path
 		var themePath = nconf.get('base_templates_path'),
 			fallback = path.join(nconf.get('themes_path'), themeObj.id, 'templates');

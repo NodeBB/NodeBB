@@ -1,24 +1,24 @@
 "use strict";
 
-var SocketIO = require('socket.io');
-var socketioWildcard = require('socketio-wildcard')();
 var async = require('async');
 var nconf = require('nconf');
-var cookieParser = require('cookie-parser')(nconf.get('secret'));
 var winston = require('winston');
 var url = require('url');
+var cookieParser = require('cookie-parser')(nconf.get('secret'));
 
 var db = require('../database');
 var logger = require('../logger');
 var ratelimit = require('../middleware/ratelimit');
 
-(function(Sockets) {
+(function (Sockets) {
 	var Namespaces = {};
 	var io;
 
 	Sockets.init = function (server) {
 		requireModules();
 
+		var SocketIO = require('socket.io');
+		var socketioWildcard = require('socketio-wildcard')();
 		io = new SocketIO({
 			path: nconf.get('relative_path') + '/socket.io'
 		});
@@ -88,7 +88,7 @@ var ratelimit = require('../middleware/ratelimit');
 			if (process.env.NODE_ENV === 'development') {
 				winston.warn('[socket.io] Unrecognized message: ' + eventName);
 			}
-			return;
+			return callback({message: '[[error:invalid-event]]'});
 		}
 
 		socket.previousEvents = socket.previousEvents || [];
@@ -224,4 +224,4 @@ var ratelimit = require('../middleware/ratelimit');
 		};
 	};
 
-})(exports);
+}(exports));

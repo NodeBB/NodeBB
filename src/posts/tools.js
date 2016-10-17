@@ -5,14 +5,14 @@ var async = require('async');
 var privileges = require('../privileges');
 var cache = require('./cache');
 
-module.exports = function(Posts) {
+module.exports = function (Posts) {
 	Posts.tools = {};
 
-	Posts.tools.delete = function(uid, pid, callback) {
+	Posts.tools.delete = function (uid, pid, callback) {
 		togglePostDelete(uid, pid, true, callback);
 	};
 
-	Posts.tools.restore = function(uid, pid, callback) {
+	Posts.tools.restore = function (uid, pid, callback) {
 		togglePostDelete(uid, pid, false, callback);
 	};
 
@@ -45,7 +45,7 @@ module.exports = function(Posts) {
 					cache.del(pid);
 					Posts.delete(pid, uid, next);
 				} else {
-					Posts.restore(pid, uid, function(err, postData) {
+					Posts.restore(pid, uid, function (err, postData) {
 						if (err) {
 							return next(err);
 						}
@@ -56,7 +56,7 @@ module.exports = function(Posts) {
 		], callback);
 	}
 
-	Posts.tools.purge = function(uid, pid, callback) {
+	Posts.tools.purge = function (uid, pid, callback) {
 		async.waterfall([
 			function (next) {
 				privileges.posts.canPurge(pid, uid, next);

@@ -9,52 +9,52 @@ var batch = require('./batch');
 var user = require('./user');
 var utils = require('../public/src/utils');
 
-(function(events) {
-	events.log = function(data, callback) {
-		callback = callback || function() {};
+(function (events) {
+	events.log = function (data, callback) {
+		callback = callback || function () {};
 
 		async.waterfall([
-			function(next) {
+			function (next) {
 				db.incrObjectField('global', 'nextEid', next);
 			},
-			function(eid, next) {
+			function (eid, next) {
 				data.timestamp = Date.now();
 				data.eid = eid;
 
 				async.parallel([
-					function(next) {
+					function (next) {
 						db.sortedSetAdd('events:time', data.timestamp, eid, next);
 					},
-					function(next) {
+					function (next) {
 						db.setObject('event:' + eid, data, next);
 					}
 				], next);
 			}
-		], function(err, result) {
+		], function (err, result) {
 			callback(err);
 		});
 	};
 
-	events.getEvents = function(start, stop, callback) {
+	events.getEvents = function (start, stop, callback) {
 		async.waterfall([
-			function(next) {
+			function (next) {
 				db.getSortedSetRevRange('events:time', start, stop, next);
 			},
-			function(eids, next) {
-				var keys = eids.map(function(eid) {
+			function (eids, next) {
+				var keys = eids.map(function (eid) {
 					return 'event:' + eid;
 				});
 				db.getObjects(keys, next);
 			},
-			function(eventsData, next) {
+			function (eventsData, next) {
 				addUserData(eventsData, 'uid', 'user', next);
 			},
-			function(eventsData, next) {
+			function (eventsData, next) {
 				addUserData(eventsData, 'targetUid', 'targetUser', next);
 			},
-			function(eventsData, next) {
-				eventsData.forEach(function(event) {
-					Object.keys(event).forEach(function(key) {
+			function (eventsData, next) {
+				eventsData.forEach(function (event) {
+					Object.keys(event).forEach(function (key) {
 						if (typeof event[key] === 'string') {
 							event[key] = validator.escape(String(event[key] || ''));	
 						}						
@@ -70,9 +70,9 @@ var utils = require('../public/src/utils');
 	};
 
 	function addUserData(eventsData, field, objectName, callback) {
-		var uids = eventsData.map(function(event) {
+		var uids = eventsData.map(function (event) {
 			return event && event[field];
-		}).filter(function(uid, index, array) {
+		}).filter(function (uid, index, array) {
 			return uid && array.indexOf(uid) === index;
 		});
 
@@ -81,13 +81,13 @@ var utils = require('../public/src/utils');
 		}
 
 		async.parallel({
-			isAdmin: function(next) {
+			isAdmin: function (next) {
 				user.isAdministrator(uids, next);
 			},
-			userData: function(next) {
+			userData: function (next) {
 				user.getUsersFields(uids, ['username', 'userslug', 'picture'], next);
 			}
-		}, function(err, results) {
+		}, function (err, results) {
 			if (err) {
 				return callback(err);
 			}
@@ -95,12 +95,12 @@ var utils = require('../public/src/utils');
 			var userData = results.userData;
 
 			var map = {};
-			userData.forEach(function(user, index) {
+			userData.forEach(function (user, index) {
 				user.isAdmin = results.isAdmin[index];
 				map[user.uid] = user;
 			});
 
-			eventsData.forEach(function(event) {
+			eventsData.forEach(function (event) {
 				if (map[event[field]]) {
 					event[objectName] = map[event[field]];
 				}
@@ -109,25 +109,25 @@ var utils = require('../public/src/utils');
 		});
 	}
 
-	events.deleteEvents = function(eids, callback) {
-		callback = callback || function() {};
+	events.deleteEvents = function (eids, callback) {
+		callback = callback || function () {};
 		async.parallel([
-			function(next) {
-				var keys = eids.map(function(eid) {
+			function (next) {
+				var keys = eids.map(function (eid) {
 					return 'event:' + eid;
 				});
 				db.deleteAll(keys, next);
 			},
-			function(next) {
+			function (next) {
 				db.sortedSetRemove('events:time', eids, next);
 			}
 		], callback);
 	};
 
-	events.deleteAll = function(callback) {
-		callback = callback || function() {};
+	events.deleteAll = function (callback) {
+		callback = callback || function () {};
 
-		batch.processSortedSet('events:time', function(eids, next) {
+		batch.processSortedSet('events:time', function (eids, next) {
 			events.deleteEvents(eids, next);
 		}, {alwaysStartAt: 0}, callback);
 	};

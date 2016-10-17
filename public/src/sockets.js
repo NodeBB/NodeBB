@@ -23,12 +23,12 @@ app.isConnected = false;
 
 	socket.on('disconnect', onDisconnect);
 
-	socket.on('reconnect_failed', function() {
+	socket.on('reconnect_failed', function () {
 		// Wait ten times the reconnection delay and then start over
 		setTimeout(socket.connect.bind(socket), parseInt(config.reconnectionDelay, 10) * 10);
 	});
 
-	socket.on('checkSession', function(uid) {
+	socket.on('checkSession', function (uid) {
 		if (parseInt(uid, 10) !== parseInt(app.user.uid, 10)) {
 			app.handleInvalidSession();
 		}
@@ -61,7 +61,7 @@ app.isConnected = false;
 
 			$(window).trigger('action:reconnected');
 
-			setTimeout(function() {
+			setTimeout(function () {
 				reconnectEl.removeClass('active').addClass('hide');
 			}, 3000);
 		}
@@ -129,7 +129,7 @@ app.isConnected = false;
 			timeout: 1000
 		});
 
-		setTimeout(function() {
+		setTimeout(function () {
 			window.location.href = config.relative_path + '/';
 		}, 1000);
 	}

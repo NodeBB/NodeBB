@@ -12,7 +12,7 @@ var helpers =  require('./helpers');
 
 var tagsController = {};
 
-tagsController.getTag = function(req, res, next) {
+tagsController.getTag = function (req, res, next) {
 	var tag = validator.escape(String(req.params.tag));
 	var page = parseInt(req.query.page, 10) || 1;
 
@@ -34,10 +34,10 @@ tagsController.getTag = function(req, res, next) {
 			var stop = start + settings.topicsPerPage - 1;
 			templateData.nextStart = stop + 1;
 			async.parallel({
-				topicCount: function(next) {
+				topicCount: function (next) {
 					topics.getTagTopicCount(tag, next);
 				},
-				tids: function(next) {
+				tids: function (next) {
 					topics.getTagTids(req.params.tag, start, stop, next);
 				}
 			}, next);
@@ -49,7 +49,7 @@ tagsController.getTag = function(req, res, next) {
 			topicCount = results.topicCount;
 			topics.getTopics(results.tids, req.uid, next);
 		}
-	], function(err, topics) {
+	], function (err, topics) {
 		if (err) {
 			return next(err);
 		}
@@ -77,8 +77,8 @@ tagsController.getTag = function(req, res, next) {
 	});
 };
 
-tagsController.getTags = function(req, res, next) {
-	topics.getTags(0, 99, function(err, tags) {
+tagsController.getTags = function (req, res, next) {
+	topics.getTags(0, 99, function (err, tags) {
 		if (err) {
 			return next(err);
 		}
