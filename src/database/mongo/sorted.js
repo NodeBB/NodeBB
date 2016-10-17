@@ -579,7 +579,22 @@ module.exports = function (db, module) {
 	};
 
 	module.getSortedSetRangeByLex = function (key, min, max, start, count, callback) {
-		var query = {_key: key};
+		sortedSetLex(key, min, max, 1, start, count, callback);
+	};
+
+	module.getSortedSetRevRangeByLex = function (key, min, max, start, count, callback) {
+		sortedSetLex(key, min, max, -1, start, count, callback);
+	};
+
+	module.sortedSetLexCount = function (key, min, max, callback) {
+		sortedSetLex(key, min, max, 1, 0, 0, function (err, data) {
+			callback(err, data ? data.length : null);
+		});
+	};
+
+	function sortedSetLex(method, sort, key, min, max, start, count, callback) {
+		var query = {_key: key, value: {}};
+
 		if (min !== '-') {
 			query.value = {$gte: min};
 		}
@@ -587,8 +602,9 @@ module.exports = function (db, module) {
 			query.value = query.value || {};
 			query.value.$lte = max;
 		}
+
 		db.collection('objects').find(query, {_id: 0, value: 1})
-			.sort({value: 1})
+			.sort({value: sort})
 			.skip(start)
 			.limit(count === -1 ? 0 : count)
 			.toArray(function (err, data) {
@@ -599,6 +615,24 @@ module.exports = function (db, module) {
 					return item && item.value;
 				});
 				callback(err, data);
+		});
+	}
+
+	module.sortedSetRemoveRangeByLex = function (key, min, max, callback) {
+		callback = callback || helpers.noop;
+
+		var query = {_key: key};
+
+		if (min !== '-') {
+			query.value = {$gte: min};
+		}
+		if (max !== '+') {
+			query.value = query.value || {};
+			query.value.$lte = max;
+		}
+
+		db.collection('objects').remove(query, function (err) {
+			callback(err);
 		});
 	};
 
