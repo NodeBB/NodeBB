@@ -592,7 +592,13 @@ module.exports = function (db, module) {
 		});
 	};
 
-	function sortedSetLex(method, sort, key, min, max, start, count, callback) {
+	function sortedSetLex(key, min, max, sort, start, count, callback) {
+		if (!callback) {
+			callback = start;
+			start = 0;
+			count = 0;
+		}
+
 		var query = {_key: key, value: {}};
 
 		if (min !== '-') {
@@ -696,7 +702,6 @@ module.exports = function (db, module) {
 			callback
 		);
 	};
-
 
 	module.sortedSetIntersectCard = function (keys, callback) {
 		if (!Array.isArray(keys) || !keys.length) {
