@@ -136,6 +136,7 @@ module.exports = function (Posts) {
 				},
 				function (tags, next) {
 					topicData.tags = data.tags;
+					topicData.oldTitle = results.topic.title;
 					plugins.fireHook('action:topic.edit', topicData);
 					next(null, {
 						tid: tid,
