@@ -1,30 +1,37 @@
 "use strict";
 
 
-var admin = {},
-	async = require('async'),
-	plugins = require('../plugins'),
-	db = require('../database'),
-	translator = require('../../public/src/modules/translator');
 
+var async = require('async');
+var plugins = require('../plugins');
+var db = require('../database');
+var translator = require('../../public/src/modules/translator');
+var pubsub = require('../pubsub');
+
+var admin = {};
 admin.cache = null;
 
+pubsub.on('admin:navigation:save', function () {
+	admin.cache = null;
+});
+
 admin.save = function (data, callback) {
-	var order = Object.keys(data),
-		items = data.map(function (item, idx) {
-			var data = {};
+	var order = Object.keys(data);
+	var items = data.map(function (item, idx) {
+		var data = {};
 
-			for (var i in item) {
-				if (item.hasOwnProperty(i)) {
-					item[i] = typeof item[i] === 'string' ? translator.escape(item[i]) : item[i];
-				}
+		for (var i in item) {
+			if (item.hasOwnProperty(i)) {
+				item[i] = typeof item[i] === 'string' ? translator.escape(item[i]) : item[i];
 			}
+		}
 
-			data[idx] = item;
-			return JSON.stringify(data);
-		});
+		data[idx] = item;
+		return JSON.stringify(data);
+	});
 
 	admin.cache = null;
+	pubsub.publish('admin:navigation:save');
 	async.waterfall([
 		function (next) {
 			db.delete('navigation:enabled', next);
