@@ -1,9 +1,9 @@
 'use strict';
 
 
-var meta = require('../meta');
 var _ = require('underscore');
 
+var meta = require('../meta');
 
 module.exports = function (middleware) {
 
@@ -24,9 +24,9 @@ module.exports = function (middleware) {
 		_.defaults(headers, defaults);
 		headers = _.pick(headers, Boolean);		// Remove falsy headers
 
-		for(var key in headers) {
+		for (var key in headers) {
 			if (headers.hasOwnProperty(key)) {
-				res.setHeader(key, headers[key]);
+				res.setHeader(key, encodeURIComponent(value));
 			}
 		}
 
