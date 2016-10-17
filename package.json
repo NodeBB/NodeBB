@@ -65,7 +65,7 @@
     "nodebb-theme-persona": "4.1.63",
     "nodebb-theme-vanilla": "5.1.43",
     "nodebb-widget-essentials": "2.0.12",
-    "nodemailer": "2.0.0",
+    "nodemailer": "2.6.4",
     "nodemailer-sendmail-transport": "1.0.0",
     "nodemailer-smtp-transport": "^2.4.1",
     "passport": "^0.3.0",
