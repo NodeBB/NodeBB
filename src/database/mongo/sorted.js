@@ -596,18 +596,22 @@ module.exports = function (db, module) {
 		var query = {_key: key, value: {}};
 
 		if (min !== '-') {
-			if (min.match('(')) {
-				query.value = {$gt: parseInt(min, 10)};
+			if (min.match(/^\(/)) {
+				query.value = {$gt: min.slice(1)};
+			} else if (min.match(/^\[/)) {
+				query.value = {$gte: min.slice(1)};
 			} else {
-				query.value = {$gte: parseInt(min, 10)};
+				query.value = {$gte: min};
 			}
 		}
 		if (max !== '+') {
 			query.value = query.value || {};
-			if (max.match('(')) {
-				query.value = {$lt: parseInt(max, 10)};
+			if (max.match(/^\(/)) {
+				query.value.$lt = max.slice(1);
+			} else if (max.match(/^\[/)) {
+				query.value.$lte = max.slice(1);
 			} else {
-				query.value = {$lte: parseInt(max, 10)};
+				query.value.$lte = max;
 			}
 		}
 
@@ -632,18 +636,22 @@ module.exports = function (db, module) {
 		var query = {_key: key};
 
 		if (min !== '-') {
-			if (min.match('(')) {
-				query.value = {$gt: parseInt(min, 10)};
+			if (min.match(/^\(/)) {
+				query.value = {$gt: min.slice(1)};
+			} else if (min.match(/^\[/)) {
+				query.value = {$gte: min.slice(1)};
 			} else {
-				query.value = {$gte: parseInt(min, 10)};
+				query.value = {$gte: min};
 			}
 		}
 		if (max !== '+') {
 			query.value = query.value || {};
-			if (max.match('(')) {
-				query.value = {$lt: parseInt(max, 10)};
+			if (max.match(/^\(/)) {
+				query.value.$lt = max.slice(1);
+			} else if (max.match(/^\[/)) {
+				query.value.$lte = max.slice(1);
 			} else {
-				query.value = {$lte: parseInt(max, 10)};
+				query.value.$lte = max;
 			}
 		}
 

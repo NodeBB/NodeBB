@@ -293,23 +293,24 @@ module.exports = function (redisClient, module) {
 	};
 
 	module.getSortedSetRangeByLex = function (key, min, max, start, count, callback) {
-		sortedSetLex('zrangebylex', false, key, min, max, start, count, callback)
+		sortedSetLex('zrangebylex', false, key, min, max, start, count, callback);
 	};
 
 	module.getSortedSetRevRangeByLex = function (key, max, min, start, count, callback) {
-		sortedSetLex('zrevrangebylex', true, key, max, min, start, count, callback)
+		sortedSetLex('zrevrangebylex', true, key, max, min, start, count, callback);
 	};
 
-	module.sortedSetRemoveRangeByLex = function (key, min, max) {
-		sortedSetLex('zremrangebylex', false, key, min, max, callback)
+	module.sortedSetRemoveRangeByLex = function (key, min, max, callback) {
+		callback = callback || helpers.noop;
+		sortedSetLex('zremrangebylex', false, key, min, max, callback);
 	};
 
-	module.sortedSetLexCount = function (key, min, max) {
-		sortedSetLex('zlexcount', false, key, min, max, callback)
+	module.sortedSetLexCount = function (key, min, max, callback) {
+		sortedSetLex('zlexcount', false, key, min, max, callback);
 	};
 
 	function sortedSetLex(method, reverse, key, min, max, start, count, callback) {
-		if (!callback) callback === start;
+		callback = callback || start;
 
 		var minmin, maxmax;
 		if (reverse) {
@@ -321,12 +322,10 @@ module.exports = function (redisClient, module) {
 		}
 
 		if (min !== minmin) {
-			min = '' + min;
-			if (!min.match(/[\[\(]/)) min = '[' + min;
+			if (!min.match(/^[\[\(]/)) min = '[' + min;
 		}
 		if (max !== maxmax) {
-			max = '' + max;
-			if (!max.match(/[\[\(]/)) max = '[' + max;
+			if (!max.match(/^[\[\(]/)) max = '[' + max;
 		}
 
 		if (count) {
