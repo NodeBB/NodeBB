@@ -98,9 +98,10 @@ describe('Search', function () {
 
 		var meta = require('../src/meta');
 		meta.config.allowGuestSearching = 1;
+		var qs = '/api/search?term=cucumber&in=titlesposts&categories[]=' + cid1 + '&by=phoebe&replies=1&repliesFilter=atleast&sortBy=timestamp&sortDirection=desc&showAs=posts';
 
 		request({
-			url: nconf.get('url') + '/api/search?term=cucumber&in=titlesposts&by=phoebe&replies=1&repliesFilter=atleast&sortBy=timestamp&sortDirection=desc&showAs=posts',
+			url: nconf.get('url') + qs,
 			json: true
 		}, function (err, response, body) {
 			assert.ifError(err);
