@@ -311,20 +311,22 @@ module.exports = function (redisClient, module) {
 	function sortedSetLex(method, reverse, key, min, max, start, count, callback) {
 		if (!callback) callback === start;
 
+		var minmin, maxmax;
 		if (reverse) {
-			if (min !== '+') {
-				min = '(' + min;
-			}
-			if (max !== '-') {
-				max = '[' + max;
-			}
+			minmin = '+';
+			maxmax = '-';
 		} else {
-			if (min !== '-') {
-				min = '[' + min;
-			}
-			if (max !== '+') {
-				max = '(' + max;
-			}
+			minmin = '-';
+			maxmax = '+';
+		}
+
+		if (min !== minmin) {
+			min = '' + min;
+			if (!min.match(/[\[\(]/)) min = '[' + min;
+		}
+		if (max !== maxmax) {
+			max = '' + max;
+			if (!max.match(/[\[\(]/)) max = '[' + max;
 		}
 
 		if (count) {

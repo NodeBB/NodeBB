@@ -596,11 +596,19 @@ module.exports = function (db, module) {
 		var query = {_key: key, value: {}};
 
 		if (min !== '-') {
-			query.value = {$gte: min};
+			if (min.match('(')) {
+				query.value = {$gt: parseInt(min, 10)};
+			} else {
+				query.value = {$gte: parseInt(min, 10)};
+			}
 		}
 		if (max !== '+') {
 			query.value = query.value || {};
-			query.value.$lte = max;
+			if (max.match('(')) {
+				query.value = {$lt: parseInt(max, 10)};
+			} else {
+				query.value = {$lte: parseInt(max, 10)};
+			}
 		}
 
 		db.collection('objects').find(query, {_id: 0, value: 1})
@@ -624,11 +632,19 @@ module.exports = function (db, module) {
 		var query = {_key: key};
 
 		if (min !== '-') {
-			query.value = {$gte: min};
+			if (min.match('(')) {
+				query.value = {$gt: parseInt(min, 10)};
+			} else {
+				query.value = {$gte: parseInt(min, 10)};
+			}
 		}
 		if (max !== '+') {
 			query.value = query.value || {};
-			query.value.$lte = max;
+			if (max.match('(')) {
+				query.value = {$lt: parseInt(max, 10)};
+			} else {
+				query.value = {$lte: parseInt(max, 10)};
+			}
 		}
 
 		db.collection('objects').remove(query, function (err) {
