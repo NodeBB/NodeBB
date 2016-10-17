@@ -26,7 +26,7 @@ module.exports = function (middleware) {
 
 		for (var key in headers) {
 			if (headers.hasOwnProperty(key)) {
-				res.setHeader(key, encodeURIComponent(value));
+				res.setHeader(key, encodeURIComponent(headers[key]));
 			}
 		}
 
