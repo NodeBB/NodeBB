@@ -90,7 +90,7 @@
     "uglify-js": "^2.6.0",
     "underscore": "^1.8.3",
     "underscore.deep": "^0.5.1",
-    "validator": "^5.0.0",
+    "validator": "^6.1.0",
     "winston": "^2.1.0",
     "xregexp": "~3.1.0"
   },
