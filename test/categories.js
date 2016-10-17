@@ -4,6 +4,8 @@
 
 var async = require('async');
 var assert = require('assert');
+var nconf = require('nconf');
+var request = require('request');
 
 var db = require('./mocks/databasemock');
 var Categories = require('../src/categories');
@@ -26,42 +28,49 @@ describe('Categories', function () {
 		});
 	});
 
-	describe('.create', function () {
-		it('should create a new category', function (done) {
 
-			Categories.create({
-				name: 'Test Category',
-				description: 'Test category created by testing script',
-				icon: 'fa-check',
-				blockclass: 'category-blue',
-				order: '5'
-			}, function (err, category) {
-				assert.equal(err, null);
+	it('should create a new category', function (done) {
 
-				categoryObj = category;
-				done.apply(this, arguments);
-			});
+		Categories.create({
+			name: 'Test Category',
+			description: 'Test category created by testing script',
+			icon: 'fa-check',
+			blockclass: 'category-blue',
+			order: '5'
+		}, function (err, category) {
+			assert.ifError(err);
+
+			categoryObj = category;
+			done();
 		});
 	});
 
-	describe('.getCategoryById', function () {
-		it('should retrieve a newly created category by its ID', function (done) {
-			Categories.getCategoryById({
-				cid: categoryObj.cid,
-				set: 'cid:' + categoryObj.cid + ':tids',
-				reverse: true,
-				start: 0,
-				stop: -1,
-				uid: 0
-			}, function (err, categoryData) {
-				assert.equal(err, null);
+	it('should retrieve a newly created category by its ID', function (done) {
+		Categories.getCategoryById({
+			cid: categoryObj.cid,
+			set: 'cid:' + categoryObj.cid + ':tids',
+			reverse: true,
+			start: 0,
+			stop: -1,
+			uid: 0
+		}, function (err, categoryData) {
+			assert.equal(err, null);
 
-				assert(categoryData);
-				assert.equal(categoryObj.name, categoryData.name);
-				assert.equal(categoryObj.description, categoryData.description);
+			assert(categoryData);
+			assert.equal(categoryObj.name, categoryData.name);
+			assert.equal(categoryObj.description, categoryData.description);
 
-				done();
-			});
+			done();
+		});
+	});
+
+
+	it('should load a category route', function (done) {
+		request(nconf.get('url') + '/category/' + categoryObj.cid + '/test-category', function (err, response, body) {
+			assert.ifError(err);
+			assert.equal(response.statusCode, 200);
+			assert(body);
+			done();
 		});
 	});
 
