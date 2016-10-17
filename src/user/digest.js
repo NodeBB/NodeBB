@@ -49,7 +49,7 @@ var utils = require('../../public/src/utils');
 					if (err) {
 						winston.error('[user/jobs] Could not send digests (' + interval + '): ' + err.message);
 					} else {
-						winston.info('[user/jobs] Digest (' + interval + ') scheduling completed.');
+						winston.info('[user/jobs] Digest (' + interval + ') scheduling completed. ' + data.subscribers.length + ' email(s) sent.');
 					}
 				});
 			} else {
