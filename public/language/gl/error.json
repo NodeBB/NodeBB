@@ -29,7 +29,7 @@
     "username-too-long": "Nome de usuario demasiado longo.",
     "password-too-long": "Contrasinal moi longa",
     "user-banned": "Usuario expulsado",
-    "user-banned-reason": "User banned (Reason: %1)",
+    "user-banned-reason": "Usuario Baneado (Razón: %1)",
     "user-too-new": "Desculpa, agarda %1 second(s) antes de facer a túa primeira publicación.",
     "blacklisted-ip": "Sentímolo, o teu enderezo IP foi baneado desta comunidade. Se crees que se debe a un erro, por favor, contacte cun administrador.",
     "ban-expiry-missing": "Por favor, engade unha data de fin do ban",
@@ -62,7 +62,7 @@
     "content-too-long": "Por favor, introduce unha publicación máis curta. As publicacións non poden conter máis de %1 carácter(es).",
     "title-too-short": "Por favor, introduce un título máis longo. Os títulos deben conter %1 carácter(es) como mínimo.",
     "title-too-long": "Por favor, introduce un título máis curto. Os títulos non poden conter máis de %1 carácter(es).",
-    "category-not-selected": "Category not selected.",
+    "category-not-selected": "Categoría non seleccionada",
     "too-many-posts": "Só podes postear unha vez cada %1 segundo(s) - por favor agarda antes de publicar de novo.",
     "too-many-posts-newbie": "Como novo usuario, só podes publicar unha vez cada %1 segundo(s) ata que acades %2 de reputación -por favor, agarda para publicar de novo.",
     "tag-too-short": "Por favor, introduce unha etiqueta máis longa. As etiquetas deben conter %1 carácter(es) como mínimo.",
@@ -72,8 +72,8 @@
     "still-uploading": "Por favor, agarda a que remate a subida.",
     "file-too-big": "O tamaño máximo permitido é %1 kB - por favor, sube un arquivo máis pequeno",
     "guest-upload-disabled": "As subidas están deshabilitadas para os convidados",
-    "already-bookmarked": "You have already bookmarked this post",
-    "already-unbookmarked": "You have already unbookmarked this post",
+    "already-bookmarked": "Xa marcaches esta mensaxe",
+    "already-unbookmarked": "Xa desmarcaches esta mensaxe",
     "cant-ban-other-admins": "Non podes botar outros administradores!",
     "cant-remove-last-admin": "Eres o único administrador. Engade outros administradores antes de quitarte a ti mesmo como administrador.",
     "cant-delete-admin": "Retirar privilexios de administrador desta conta antes de intentar borrala",
@@ -126,6 +126,6 @@
     "cant-kick-self": "Non te podes expulsar  a ti mesmo do grupo",
     "no-users-selected": "Ningún usuario seleccionado",
     "invalid-home-page-route": "Ruta de páxina de inicio inválida",
-    "invalid-session": "Session Mismatch",
-    "invalid-session-text": "It looks like your login session is no longer active, or no longer matches with the server. Please refresh this page."
+    "invalid-session": "Non concordan os datos da sesión",
+    "invalid-session-text": "Parece que a súa sesión expirou ou non concorda co servidor. Por favor, recarge a páxina."
 }
