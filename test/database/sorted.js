@@ -17,6 +17,9 @@ describe('Sorted Set methods', function () {
 			},
 			function (next) {
 				db.sortedSetAdd('sortedSetTest3', [2, 4], ['value2', 'value4'], next);
+			},
+			function (next) {
+				db.sortedSetAdd('sortedSetLex', [0, 0, 0, 0], ['a', 'b', 'c', 'd'], next);
 			}
 		], done);
 	});
@@ -694,6 +697,177 @@ describe('Sorted Set methods', function () {
 		});
 	});
 
+	describe('getSortedSetRangeByLex', function () {
+		it('should return an array of all values', function (done) {
+			db.getSortedSetRangeByLex('sortedSetLex', '-', '+', function (err, data) {
+				assert.ifError(err);
+				assert.deepEqual(data, ['a', 'b', 'c', 'd']);
+				done();
+			});
+		});
+
+		it('should return an array with an inclusive range by default', function (done) {
+			db.getSortedSetRangeByLex('sortedSetLex', 'a', 'd', function (err, data) {
+				assert.ifError(err);
+				assert.deepEqual(data, ['a', 'b', 'c', 'd']);
+				done();
+			});
+		});
+
+		it('should return an array with an inclusive range', function (done) {
+			db.getSortedSetRangeByLex('sortedSetLex', '[a', '[d', function (err, data) {
+				assert.ifError(err);
+				assert.deepEqual(data, ['a', 'b', 'c', 'd']);
+				done();
+			});
+		});
+
+		it('should return an array with an exclusive range', function (done) {
+			db.getSortedSetRangeByLex('sortedSetLex', '(a', '(d', function (err, data) {
+				assert.ifError(err);
+				assert.deepEqual(data, ['b', 'c']);
+				done();
+			});
+		});
+
+		it('should return an array limited to the first two values', function (done) {
+			db.getSortedSetRangeByLex('sortedSetLex', '-', '+', 0, 2, function (err, data) {
+				assert.ifError(err);
+				assert.deepEqual(data, ['a', 'b']);
+				done();
+			});
+		});
+	});
+
+	describe('getSortedSetRevRangeByLex', function () {
+		it('should return an array of all values reversed', function (done) {
+			db.getSortedSetRevRangeByLex('sortedSetLex', '+', '-', function (err, data) {
+				assert.ifError(err);
+				assert.deepEqual(data, ['d', 'c', 'b', 'a']);
+				done();
+			});
+		});
+
+		it('should return an array with an inclusive range by default reversed', function (done) {
+			db.getSortedSetRevRangeByLex('sortedSetLex', 'd', 'a', function (err, data) {
+				assert.ifError(err);
+				assert.deepEqual(data, ['d', 'c', 'b', 'a']);
+				done();
+			});
+		});
+
+		it('should return an array with an inclusive range reversed', function (done) {
+			db.getSortedSetRevRangeByLex('sortedSetLex', '[d', '[a', function (err, data) {
+				assert.ifError(err);
+				assert.deepEqual(data, ['d', 'c', 'b', 'a']);
+				done();
+			});
+		});
+
+		it('should return an array with an exclusive range reversed', function (done) {
+			db.getSortedSetRevRangeByLex('sortedSetLex', '(d', '(a', function (err, data) {
+				assert.ifError(err);
+				assert.deepEqual(data, ['c', 'b']);
+				done();
+			});
+		});
+
+		it('should return an array limited to the first two values reversed', function (done) {
+			db.getSortedSetRevRangeByLex('sortedSetLex', '+', '-', 0, 2, function (err, data) {
+				assert.ifError(err);
+				assert.deepEqual(data, ['d', 'c']);
+				done();
+			});
+		});
+	});
+
+	describe('sortedSetLexCount', function () {
+		it('should return the count of all values', function (done) {
+			db.sortedSetLexCount('sortedSetLex', '-', '+', function (err, data) {
+				assert.ifError(err);
+				assert.strictEqual(data, 4);
+				done();
+			});
+		});
+
+		it('should return the count with an inclusive range by default', function (done) {
+			db.sortedSetLexCount('sortedSetLex', 'a', 'd', function (err, data) {
+				assert.ifError(err);
+				assert.strictEqual(data, 4);
+				done();
+			});
+		});
+
+		it('should return the count with an inclusive range', function (done) {
+			db.sortedSetLexCount('sortedSetLex', '[a', '[d', function (err, data) {
+				assert.ifError(err);
+				assert.strictEqual(data, 4);
+				done();
+			});
+		});
+
+		it('should return the count with an exclusive range', function (done) {
+			db.sortedSetLexCount('sortedSetLex', '(a', '(d', function (err, data) {
+				assert.ifError(err);
+				assert.strictEqual(data, 2);
+				done();
+			});
+		});
+	});
+
+	describe('sortedSetRemoveRangeByLex', function () {
+		before(function (done) {
+			db.sortedSetAdd('sortedSetLex2', [0, 0, 0, 0, 0, 0, 0], ['a', 'b', 'c', 'd', 'e', 'f', 'g'], done);
+		});
+
+		it('should remove an inclusive range by default', function (done) {
+			db.sortedSetRemoveRangeByLex('sortedSetLex2', 'a', 'b', function (err) {
+				assert.ifError(err);
+				assert.equal(arguments.length, 1);
+				db.getSortedSetRangeByLex('sortedSetLex2', '-', '+', function (err, data) {
+					assert.ifError(err);
+					assert.deepEqual(data, ['c', 'd', 'e', 'f', 'g']);
+					done();
+				});
+			});
+		});
+
+		it('should remove an inclusive range', function (done) {
+			db.sortedSetRemoveRangeByLex('sortedSetLex2', '[c', '[d', function (err) {
+				assert.ifError(err);
+				assert.equal(arguments.length, 1);
+				db.getSortedSetRangeByLex('sortedSetLex2', '-', '+', function (err, data) {
+					assert.ifError(err);
+					assert.deepEqual(data, ['e', 'f', 'g']);
+					done();
+				});
+			});
+		});
+
+		it('should remove an exclusive range', function (done) {
+			db.sortedSetRemoveRangeByLex('sortedSetLex2', '(e', '(g', function (err) {
+				assert.ifError(err);
+				assert.equal(arguments.length, 1);
+				db.getSortedSetRangeByLex('sortedSetLex2', '-', '+', function (err, data) {
+					assert.ifError(err);
+					assert.deepEqual(data, ['e', 'g']);
+					done();
+				});
+			});
+		});
+
+		it('should remove all values', function (done) {
+			db.sortedSetRemoveRangeByLex('sortedSetLex2', '-', '+', function (err) {
+				assert.ifError(err);
+				assert.equal(arguments.length, 1);
+				db.getSortedSetRangeByLex('sortedSetLex2', '-', '+', function (err, data) {
+					assert.ifError(err);
+					assert.deepEqual(data, []);
+					done();
+				});
+			});
+		});
+	});
 
 	after(function (done) {
 		db.emptydb(done);
