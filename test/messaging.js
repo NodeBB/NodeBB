@@ -7,9 +7,13 @@ var async = require('async');
 var User = require('../src/user');
 var Groups = require('../src/groups');
 var Messaging = require('../src/messaging');
-var testUids;
+
 
 describe('Messaging Library', function () {
+	var testUids;
+	var fooUid;
+	var bazUid;
+	var herpUid;
 	before(function (done) {
 		// Create 3 users: 1 admin, 2 regular
 		async.parallel([
@@ -22,6 +26,10 @@ describe('Messaging Library', function () {
 			}
 
 			testUids = uids;
+			fooUid = uids[0];
+			bazUid = uids[1];
+			herpUid = uids[2];
+
 			async.parallel([
 				async.apply(Groups.join, 'administrators', uids[0]),
 				async.apply(User.setSetting, testUids[1], 'restrictChat', '1')
@@ -66,6 +74,55 @@ describe('Messaging Library', function () {
 					assert.ifError(err);
 					done();
 				});
+			});
+		});
+	});
+
+	describe('rooms', function () {
+		var roomId;
+		it('should create a new chat room', function (done) {
+			Messaging.newRoom(fooUid, [bazUid, herpUid], function (err, _roomId) {
+				roomId = _roomId;
+				assert.ifError(err);
+				assert(roomId);
+				done();
+			});
+		});
+
+		it('should leave the chat room', function (done) {
+			Messaging.leaveRoom([bazUid], roomId, function (err) {
+				assert.ifError(err);
+				Messaging.isUserInRoom(bazUid, roomId, function (err, isUserInRoom) {
+					assert.ifError(err);
+					assert.equal(isUserInRoom, false);
+					done();
+				});
+			});
+		});
+
+		it('should send a message to a room', function (done) {
+			Messaging.sendMessage(fooUid, roomId, 'first chat message', Date.now(), function (err, messageData) {
+				assert.ifError(err);
+				assert(messageData);
+				assert.equal(messageData.content, 'first chat message');
+				assert(messageData.fromUser);
+				assert(messageData.roomId, roomId);
+				done();
+			});
+		});
+
+		it('should get messages from room', function (done) {
+			Messaging.getMessages({
+				callerUid: fooUid,
+				uid: fooUid,
+				roomId: roomId,
+				markRead: true
+			}, function (err, messages) {
+				assert.ifError(err);
+				assert(Array.isArray(messages));
+				assert.equal(messages[0].roomId, roomId);
+				assert.equal(messages[0].fromuid, fooUid);
+				done();
 			});
 		});
 	});
