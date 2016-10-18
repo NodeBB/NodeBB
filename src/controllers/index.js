@@ -81,7 +81,7 @@ Controllers.reset = function (req, res, next) {
 			res.render('reset_code', {
 				valid: valid,
 				displayExpiryNotice: req.session.passwordExpired,
-				code: req.params.code ? req.params.code : null,
+				code: req.params.code,
 				minimumPasswordLength: parseInt(meta.config.minimumPasswordLength, 10),
 				breadcrumbs: helpers.buildBreadcrumbs([{text: '[[reset_password:reset_password]]', url: '/reset'}, {text: '[[reset_password:update_password]]'}]),
 				title: '[[pages:reset]]'
@@ -91,12 +91,11 @@ Controllers.reset = function (req, res, next) {
 		});
 	} else {
 		res.render('reset', {
-			code: req.params.code ? req.params.code : null,
+			code: null,
 			breadcrumbs: helpers.buildBreadcrumbs([{text: '[[reset_password:reset_password]]'}]),
 			title: '[[pages:reset]]'
 		});
 	}
-
 };
 
 Controllers.login = function (req, res, next) {
@@ -275,12 +274,12 @@ Controllers.robots = function (req, res) {
 
 Controllers.manifest = function (req, res) {
 	var manifest = {
-			name: meta.config.title || 'NodeBB',
-			start_url: nconf.get('relative_path') + '/',
-			display: 'standalone',
-			orientation: 'portrait',
-			icons: []
-		};
+		name: meta.config.title || 'NodeBB',
+		start_url: nconf.get('relative_path') + '/',
+		display: 'standalone',
+		orientation: 'portrait',
+		icons: []
+	};
 
 	if (meta.config['brand:touchIcon']) {
 		manifest.icons.push({
