@@ -38,7 +38,7 @@ usersController.topPosters = function (req, res, next) {
 	getUsers('users:postcount', 'topposts', 0, '+inf', req, res, next);
 };
 
-usersController.mostReputaion = function(req, res, next) {
+usersController.mostReputaion = function (req, res, next) {
 	getUsers('users:reputation', 'mostreputation', 0, '+inf', req, res, next);
 };
 
