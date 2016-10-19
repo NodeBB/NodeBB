@@ -39,6 +39,8 @@ define('forum/account/edit', ['forum/account/header', 'uploader', 'translator', 
 			aboutme: $('#inputAboutMe').val()
 		};
 
+		$(window).trigger('action:profile.update', userData);
+
 		socket.emit('user.updateProfile', userData, function (err, data) {
 			if (err) {
 				return app.alertError(err.message);
