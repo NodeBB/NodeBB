@@ -30,16 +30,19 @@ module.exports = function (User) {
 	User.getUsersCSV = function (callback) {
 		winston.info('[user/getUsersCSV] Compiling User CSV data');
 		var csvContent = '';
-
+		var uids;
 		async.waterfall([
 			function (next) {
 				db.getSortedSetRangeWithScores('username:uid', 0, -1, next);
 			},
 			function (users, next) {
-				var uids = users.map(function (user) {
+				uids = users.map(function (user) {
 					return user.score;
 				});
-				User.getUsersFields(uids, ['uid', 'email', 'username'], next);
+				plugins.fireHook('filter:user.csvFields', {fields: ['uid', 'email', 'username']}, next);
+			},
+			function (data, next) {
+				User.getUsersFields(uids, data.fields, next);
 			},
 			function (usersData, next) {
 				usersData.forEach(function (user) {
