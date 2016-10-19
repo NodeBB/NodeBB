@@ -3,7 +3,7 @@
 
 var async = require('async');
 var validator = require('validator');
-	
+
 var db =  require('./database');
 var batch = require('./batch');
 var user = require('./user');
@@ -53,11 +53,14 @@ var utils = require('../public/src/utils');
 				addUserData(eventsData, 'targetUid', 'targetUser', next);
 			},
 			function (eventsData, next) {
-				eventsData.forEach(function (event) {
+				eventsData.filter(function (element) {
+					return element !== undefined;
+				})
+				.forEach(function (event) {
 					Object.keys(event).forEach(function (key) {
 						if (typeof event[key] === 'string') {
-							event[key] = validator.escape(String(event[key] || ''));	
-						}						
+							event[key] = validator.escape(String(event[key] || ''));
+						}
 					});
 					var e = utils.merge(event);
 					e.eid = e.uid = e.type = e.ip = e.user = undefined;
@@ -100,7 +103,9 @@ var utils = require('../public/src/utils');
 				map[user.uid] = user;
 			});
 
-			eventsData.forEach(function (event) {
+			eventsData.filter(function (element) {
+				return element !== undefined;
+			}).forEach(function (event) {
 				if (map[event[field]]) {
 					event[objectName] = map[event[field]];
 				}
