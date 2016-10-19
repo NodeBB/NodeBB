@@ -4,15 +4,9 @@
 		<div class="panel panel-default">
 			<div class="panel-heading"><i class="fa fa-user"></i> Users</div>
 			<div class="panel-body">
-				<ul class="nav nav-pills">
-					<li><a href='{config.relative_path}/admin/manage/users/latest'>Latest Users</a></li>
-					<li><a href='{config.relative_path}/admin/manage/users/not-validated'>Not validated</a></li>
-					<li><a href='{config.relative_path}/admin/manage/users/no-posts'>No Posts</a></li>
-					<li><a href='{config.relative_path}/admin/manage/users/inactive'>Inactive</a></li>
-					<li><a href='{config.relative_path}/admin/manage/users/flagged'>Most Flags</a></li>
-					<li><a href='{config.relative_path}/admin/manage/users/banned'>Banned</a></li>
-					<li><a href='{config.relative_path}/admin/manage/users/search'>User Search</a></li>
 
+
+				<div class="clearfix">
 					<div class="btn-group pull-right">
 						<button class="btn btn-default dropdown-toggle" data-toggle="dropdown" type="button">Edit <span class="caret"></span></button>
 						<ul class="dropdown-menu">
@@ -43,6 +37,18 @@
 					<!-- ENDIF inviteOnly -->
 
 					<button id="createUser" class="btn btn-primary pull-right">New User</button>
+				</div>
+
+				<ul class="nav nav-pills">
+					<li><a href='{config.relative_path}/admin/manage/users/latest'>Latest Users</a></li>
+					<li><a href='{config.relative_path}/admin/manage/users/not-validated'>Not validated</a></li>
+					<li><a href='{config.relative_path}/admin/manage/users/no-posts'>No Posts</a></li>
+					<li><a href='{config.relative_path}/admin/manage/users/top-posters'>Top Posters</a></li>
+					<li><a href='{config.relative_path}/admin/manage/users/most-reputation'>Most Reputation</a></li>
+					<li><a href='{config.relative_path}/admin/manage/users/inactive'>Inactive</a></li>
+					<li><a href='{config.relative_path}/admin/manage/users/flagged'>Most Flags</a></li>
+					<li><a href='{config.relative_path}/admin/manage/users/banned'>Banned</a></li>
+					<li><a href='{config.relative_path}/admin/manage/users/search'>User Search</a></li>
 				</ul>
 
 				<br />

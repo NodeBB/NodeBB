@@ -34,6 +34,14 @@ usersController.noPosts = function (req, res, next) {
 	getUsers('users:postcount', 'noposts', '-inf', 0, req, res, next);
 };
 
+usersController.topPosters = function (req, res, next) {
+	getUsers('users:postcount', 'topposts', 0, '+inf', req, res, next);
+};
+
+usersController.mostReputaion = function(req, res, next) {
+	getUsers('users:reputation', 'mostreputation', 0, '+inf', req, res, next);
+};
+
 usersController.flagged = function (req, res, next) {
 	getUsers('users:flags', 'mostflags', 1, '+inf', req, res, next);
 };
