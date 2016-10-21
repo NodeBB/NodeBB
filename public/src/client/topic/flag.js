@@ -8,8 +8,17 @@ define('forum/topic/flag', [], function() {
 		flagModal,
 		flagCommit;
 
+<<<<<<< HEAD
 	Flag.showFlagModal = function(pid) {
 		parseModal(function(html) {
+=======
+	Flag.showFlagModal = function (pid, username, userslug) {
+		parseModal({
+			pid: pid,
+			username: username,
+			userslug: userslug
+		}, function (html) {
+>>>>>>> 8159c44... exposing pid, username, and userslug to flag modal
 			flagModal = $(html);
 
 			flagModal.on('hidden.bs.modal', function() {
@@ -32,9 +41,9 @@ define('forum/topic/flag', [], function() {
 		});
 	};
 
-	function parseModal(callback) {
-		templates.parse('partials/modals/flag_post_modal', {}, function(html) {
-			require(['translator'], function(translator) {
+	function parseModal(tplData, callback) {
+		templates.parse('partials/modals/flag_post_modal', tplData, function (html) {
+			require(['translator'], function (translator) {
 				translator.translate(html, callback);
 			});
 		});
