@@ -42,6 +42,7 @@ apiController.getConfig = function (req, res, next) {
 	config.allowTopicsThumbnail = parseInt(meta.config.allowTopicsThumbnail, 10) === 1;
 	config.usePagination = parseInt(meta.config.usePagination, 10) === 1;
 	config.disableChat = parseInt(meta.config.disableChat, 10) === 1;
+	config.disableChatMessageEditing = parseInt(meta.config.disableChatMessageEditing, 10) === 1;
 	config.socketioTransports = nconf.get('socket.io:transports') || ['polling', 'websocket'];
 	config.websocketAddress = nconf.get('socket.io:address') || '';
 	config.maxReconnectionAttempts = meta.config.maxReconnectionAttempts || 5;
