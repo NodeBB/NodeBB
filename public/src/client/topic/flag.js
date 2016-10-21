@@ -8,8 +8,12 @@ define('forum/topic/flag', [], function () {
 		flagModal,
 		flagCommit;
 
-	Flag.showFlagModal = function (pid) {
-		parseModal(function (html) {
+	Flag.showFlagModal = function (pid, username, userslug) {
+		parseModal({
+			pid: pid,
+			username: username,
+			userslug: userslug
+		}, function (html) {
 			flagModal = $(html);
 
 			flagModal.on('hidden.bs.modal', function () {
@@ -32,8 +36,8 @@ define('forum/topic/flag', [], function () {
 		});
 	};
 
-	function parseModal(callback) {
-		templates.parse('partials/modals/flag_post_modal', {}, function (html) {
+	function parseModal(tplData, callback) {
+		templates.parse('partials/modals/flag_post_modal', tplData, function (html) {
 			require(['translator'], function (translator) {
 				translator.translate(html, callback);
 			});
