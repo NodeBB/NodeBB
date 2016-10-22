@@ -53,7 +53,7 @@
 
 			self.modules = Object.keys(Translator.moduleFactories).map(function (namespace) {
 				var factory = Translator.moduleFactories[namespace];
-				return [namespace, factory(self.lang)];
+				return [namespace, factory(language)];
 			}).reduce(function (prev, elem) {
 				var namespace = elem[0];
 				var module = elem[1];

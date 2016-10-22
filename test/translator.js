@@ -215,12 +215,21 @@ describe('Translator modules', function () {
 	});
 
 	it('should work after registered', function (done) {
-		var translator = Translator.create();
+		var translator = Translator.create('de');
 
 		translator.translate('[[test-custom-integer-format:octal, 23]]')
 		.then(function (translation) {
 			assert.strictEqual(translation, '27');
 			done();
 		});
+	});
+
+	it('registerModule be passed the language', function (done) {
+		Translator.registerModule('something', function (lang) {
+			assert.ok(lang);
+		});
+
+		var translator = Translator.create('fr_FR');
+		done();
 	});
 });
