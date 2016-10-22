@@ -41,7 +41,11 @@ define('forum/chats/search', ['components'], function (components) {
 
 	function displayResults(chatsListEl, data) {
 		chatsListEl.empty();
-
+		
+		data.users = data.users.filter(function (user) {
+			return parseInt(user.uid, 10) !== parseInt(app.user.uid, 10);
+		});
+		
 		if (!data.users.length) {
 			return chatsListEl.translateHtml('<li><div><span>[[users:no-users-found]]</span></div></li>');
 		}

@@ -367,6 +367,10 @@ var userNotifications = require('./user/notifications');
 			return callback(new Error('[[error:chat-disabled]]'));
 		}
 
+		if (parseInt(uid, 10) === parseInt(toUid, 10)) {
+			return callback(new Error('[[error:cant-chat-with-yourself'));
+		}
+
 		async.waterfall([
 			function (next) {
 				user.exists(toUid, next);
