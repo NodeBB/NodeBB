@@ -1,5 +1,5 @@
 {
-    "category": "Kategorija",
+    "category": "Od sedaj naprej spremljate posodobitve te kategorije in vseh njenih podkategorij.\nOd sedaj naprej ne spremljate posodobitve te kategorije in vseh njenih podkategorij.\n",
     "subcategories": "Podkategorije",
     "new_topic_button": "Nova tema",
     "guest-login-post": "Prijava",
@@ -14,7 +14,7 @@
     "ignoring": "Prezrto",
     "watching.description": "Pokaži teme v Neprebrano",
     "ignoring.description": "Ne pokaži tem v Neprebrano",
-    "watch.message": "You are now watching updates from this category and all subcategories",
-    "ignore.message": "You are now ignoring updates from this category and all subcategories",
+    "watch.message": "Od sedaj naprej spremljate posodobitve te kategorije in vseh njenih podkategorij.",
+    "ignore.message": "Od sedaj naprej ne spremljate posodobitve te kategorije in vseh njenih podkategorij.",
     "watched-categories": "Spremljane kategorije"
 }
