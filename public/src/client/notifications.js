@@ -13,6 +13,14 @@ define('forum/notifications', ['components', 'notifications', 'forum/infinitescr
 				if (err) {
 					return app.alertError(err);
 				}
+
+				socket.emit('notifications.getCount', function (err, count) {
+					if (err) {
+						return app.alertError(err.message);
+					}
+
+					notifs.updateNotifCount(count);
+				});
 			});
 		});
 
