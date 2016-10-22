@@ -71,7 +71,7 @@ define('forum/chats/messages', ['components', 'sounds', 'translator'], function 
 
 
 	messages.parseMessage = function (data, callback) {
-		templates.parse('partials/chat_message' + (Array.isArray(data) ? 's' : ''), {
+		templates.parse('partials/chats/message' + (Array.isArray(data) ? 's' : ''), {
 			messages: data
 		}, function (html) {
 			translator.translate(html, callback);

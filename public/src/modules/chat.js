@@ -117,7 +117,7 @@ define('chat', [
 			    return room.teaser;
 			});
 
-			templates.parse('partials/chat_dropdown', {
+			templates.parse('partials/chats/dropdown', {
 				rooms: rooms
 			}, function (html) {
 				translator.translate(html, function (translated) {

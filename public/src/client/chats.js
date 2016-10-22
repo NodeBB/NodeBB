@@ -28,6 +28,10 @@ define('forum/chats', [
 		Chats.createTagsInput($('[component="chat/messages"] .users-tag-input'), ajaxify.data);
 		Chats.createAutoComplete($('[component="chat/input"]'));
 
+		components.get('expanded-chat/controlsToggle').on('click', function() {
+			components.get('expanded-chat/controls').toggleClass('hide');
+		});
+
 		if (env === 'md' || env === 'lg') {
 			Chats.resizeMainWindow();
 			Chats.addHotkeys();
@@ -317,7 +321,7 @@ define('forum/chats', [
 						roomEl.addClass("unread");
 					} else {
 						var recentEl = components.get('chat/recent');
-						templates.parse('partials/chat_recent_room', {
+						templates.parse('partials/chats/recent_room', {
 							rooms: { "roomId": data.roomId, "lastUser": data.message.fromUser, "usernames": data.message.fromUser.username, "unread": true }
 						}, function (html) {
 							translator.translate(html, function (translated) {
