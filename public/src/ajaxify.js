@@ -147,6 +147,7 @@ $(document).ready(function () {
 			if (status === 403 || status === 404 || status === 500 || status === 502 || status === 503) {
 				if (status === 502 && retry) {
 					retry = false;
+					ajaxifyTimer = undefined;
 					return ajaxify.go(url, callback, quiet);
 				}
 				if (status === 502) {
@@ -167,6 +168,7 @@ $(document).ready(function () {
 				if (data.responseJSON && data.responseJSON.external) {
 					window.location.href = data.responseJSON.external;
 				} else if (typeof data.responseJSON === 'string') {
+					ajaxifyTimer = undefined;
 					ajaxify.go(data.responseJSON.slice(1), callback, quiet);
 				}
 			}
