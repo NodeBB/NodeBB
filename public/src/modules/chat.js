@@ -213,7 +213,7 @@ define('chat', [
 
 			chatModal.find('.modal-header').on('dblclick', gotoChats);
 			chatModal.find('button[data-action="maximize"]').on('click', gotoChats);
-			chatModal.find('button[data-action="minimize"]').on('click', function() {
+			chatModal.find('button[data-action="minimize"]').on('click', function () {
 				var uuid = chatModal.attr('uuid');
 				module.minimize(uuid);
 			});
