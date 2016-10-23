@@ -28,7 +28,7 @@ define('forum/chats', [
 		Chats.createTagsInput($('[component="chat/messages"] .users-tag-input'), ajaxify.data);
 		Chats.createAutoComplete($('[component="chat/input"]'));
 
-		components.get('expanded-chat/controlsToggle').on('click', function() {
+		components.get('expanded-chat/controlsToggle').on('click', function () {
 			components.get('expanded-chat/controls').toggleClass('hide');
 		});
 
