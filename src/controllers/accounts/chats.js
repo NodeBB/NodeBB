@@ -82,11 +82,12 @@ chatsController.get = function (req, res, callback) {
 		room.uid = uid;
 		room.userslug = req.params.userslug;
 		room.nextStart = recentChats.nextStart;
-		room.title = room.roomName;
+		room.usernames = messaging.generateUsernames(room.users, req.uid);
+		room.title = room.roomName || room.usernames || '[[pages:chats]]';
 		room.breadcrumbs = helpers.buildBreadcrumbs([
 			{text: username, url: '/user/' + req.params.userslug},
 			{text: '[[pages:chats]]', url: '/user/' + req.params.userslug + '/chats'},
-			{text: room.roomName}
+			{text: room.roomName || room.usernames || '[[pages:chats]]'}
 		]);
 		room.maximumUsersInChatRoom = parseInt(meta.config.maximumUsersInChatRoom, 10) || 0;
 		room.maximumChatMessageLength = parseInt(meta.config.maximumChatMessageLength, 10) || 1000;
