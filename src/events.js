@@ -47,16 +47,14 @@ var utils = require('../public/src/utils');
 				db.getObjects(keys, next);
 			},
 			function (eventsData, next) {
+				eventsData = eventsData.filter(Boolean);
 				addUserData(eventsData, 'uid', 'user', next);
 			},
 			function (eventsData, next) {
 				addUserData(eventsData, 'targetUid', 'targetUser', next);
 			},
 			function (eventsData, next) {
-				eventsData.filter(function (element) {
-					return element !== undefined;
-				})
-				.forEach(function (event) {
+				eventsData.forEach(function (event) {
 					Object.keys(event).forEach(function (key) {
 						if (typeof event[key] === 'string') {
 							event[key] = validator.escape(String(event[key] || ''));
@@ -103,9 +101,7 @@ var utils = require('../public/src/utils');
 				map[user.uid] = user;
 			});
 
-			eventsData.filter(function (element) {
-				return element !== undefined;
-			}).forEach(function (event) {
+			eventsData.forEach(function (event) {
 				if (map[event[field]]) {
 					event[objectName] = map[event[field]];
 				}
