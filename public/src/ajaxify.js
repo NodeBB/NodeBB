@@ -7,6 +7,7 @@ $(document).ready(function () {
 	var location = document.location || window.location;
 	var rootUrl = location.protocol + '//' + (location.hostname || location.host) + (location.port ? ':' + location.port : '');
 	var apiXHR = null;
+	var ajaxifyTimer;
 
 	var translator;
 	var retry = true;
@@ -47,6 +48,12 @@ $(document).ready(function () {
 			};
 			$(window).on('action:reconnected', ajaxify.reconnectAction);
 		}
+
+		// Abort subsequent requests if clicked multiple times within a short window of time
+		if (ajaxifyTimer && (Date.now() - ajaxifyTimer) < 500) {
+			return true;
+		}
+		ajaxifyTimer = Date.now();
 
 		if (ajaxify.handleRedirects(url)) {
 			return true;
@@ -205,6 +212,11 @@ $(document).ready(function () {
 		$(window).trigger('action:ajaxify.contentLoaded', {url: url, tpl: tpl_url});
 
 		app.processPage();
+
+		var timeElapsed = Date.now() - ajaxifyTimer;
+		if (config.environment === 'development' && !isNaN(timeElapsed)) {
+			console.info('[ajaxify ' + url + '] Time elapsed:', timeElapsed + 'ms');
+		}
 	};
 
 	ajaxify.parseData = function () {
