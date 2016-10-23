@@ -310,7 +310,7 @@ app.cacheBuster = null;
 				return app.alertError(err.message);
 			}
 
-			if (!ajaxify.currentPage.startsWith('chats')) {
+			if (!ajaxify.data.template.chats) {
 				app.openChat(roomId);
 			} else {
 				ajaxify.go('chats/' + roomId);
