@@ -328,8 +328,15 @@ SocketUser.setModerationNote = function (socket, data, callback) {
 		function (next) {
 			user.isAdminOrGlobalMod(socket.uid, next);
 		},
-		function (isAdminOrGlobalMod, next) {
-			if (!isAdminOrGlobalMod) {
+		function (allowed, next) {
+			if (allowed) {
+				return next(null, allowed);
+			}
+
+			user.isModeratorOfAnyCategory(socket.uid, next);
+		},
+		function (allowed, next) {
+			if (!allowed) {
 				return next(new Error('[[error:no-privileges]]'));
 			}
 			if (data.note) {
