@@ -40,18 +40,21 @@ module.exports = function (Meta) {
 						if (err) {
 							return next();
 						}
+						try {
+							var configObj = JSON.parse(file.toString());
 
-						var configObj = JSON.parse(file.toString());
-
-						// Minor adjustments for API output
-						configObj.type = 'local';
-						if (configObj.screenshot) {
-							configObj.screenshot_url = nconf.get('relative_path') + '/css/previews/' + configObj.id;
-						} else {
-							configObj.screenshot_url = nconf.get('relative_path') + '/images/themes/default.png';
+							// Minor adjustments for API output
+							configObj.type = 'local';
+							if (configObj.screenshot) {
+								configObj.screenshot_url = nconf.get('relative_path') + '/css/previews/' + configObj.id;
+							} else {
+								configObj.screenshot_url = nconf.get('relative_path') + '/images/themes/default.png';
+							}
+							next(null, configObj);
+						} catch (err) {
+							winston.error('[themes] Unable to parse theme.json ' + theme);
+							next(null, null);
 						}
-
-						next(null, configObj);
 					});
 
 				}, function (err, themes) {
@@ -59,9 +62,7 @@ module.exports = function (Meta) {
 						return callback(err);
 					}
 
-					themes = themes.filter(function (theme) {
-						return (theme !== undefined);
-					});
+					themes = themes.filter(Boolean);
 					callback(null, themes);
 				});
 			});
