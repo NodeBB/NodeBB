@@ -97,6 +97,9 @@ module.exports = function (User) {
 			},
 			function (next) {
 				markNotificationRead(username, next);
+			},
+			function (next) {
+				next(null, uid);
 			}
 		], callback);
 	};
