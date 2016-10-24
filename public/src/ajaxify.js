@@ -217,7 +217,7 @@ $(document).ready(function () {
 
 		var timeElapsed = Date.now() - ajaxifyTimer;
 		if (config.environment === 'development' && !isNaN(timeElapsed)) {
-			console.info('[ajaxify ' + url + '] Time elapsed:', timeElapsed + 'ms');
+			console.info('[ajaxify /' + url + '] Time elapsed:', timeElapsed + 'ms');
 		}
 	};
 
