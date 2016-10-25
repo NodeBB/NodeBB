@@ -43,7 +43,6 @@ define('forum/account/settings', ['forum/account/header', 'components', 'sounds'
 		toggleCustomRoute();
 
 		components.get('user/sessions').find('.timeago').timeago();
-		prepareSessionRevoking();
 	};
 
 	function loadSettings() {
@@ -113,37 +112,6 @@ define('forum/account/settings', ['forum/account/header', 'components', 'sounds'
 			$('#homePageCustom').hide();
 			$('[data-property="homePageCustom"]').val('');
 		}
-	}
-
-	function prepareSessionRevoking() {
-		components.get('user/sessions').on('click', '[data-action]', function () {
-			var parentEl = $(this).parents('[data-uuid]');
-			var uuid = parentEl.attr('data-uuid');
-
-			if (uuid) {
-				// This is done via DELETE because a user shouldn't be able to
-				// revoke his own session! This is what logout is for
-				$.ajax({
-					url: config.relative_path + '/api/user/' + ajaxify.data.userslug + '/session/' + uuid,
-					method: 'delete',
-					headers: {
-						'x-csrf-token': config.csrf_token
-					}
-				}).done(function () {
-					parentEl.remove();
-				}).fail(function (err) {
-					try {
-						var errorObj = JSON.parse(err.responseText);
-						if (errorObj.loggedIn === false) {
-							window.location.href = config.relative_path + '/login?error=' + errorObj.title;
-						}
-						app.alertError(errorObj.title);
-					} catch (e) {
-						app.alertError('[[error:invalid-data]]');
-					}
-				});
-			}
-		});
 	}
 
 	return AccountSettings;
