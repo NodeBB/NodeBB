@@ -117,7 +117,7 @@ module.exports = function (middleware) {
 			results.user['email:confirmed'] = parseInt(results.user['email:confirmed'], 10) === 1;
 			results.user.isEmailConfirmSent = !!results.isEmailConfirmSent;
 
-			if (parseInt(meta.config.disableCustomUserSkins, 10) !== 1 && res.locals.config.bootswatchSkin !== 'default') {
+			if (res.locals.config && parseInt(meta.config.disableCustomUserSkins, 10) !== 1 && res.locals.config.bootswatchSkin !== 'default') {
 				templateValues.bootswatchCSS = '//maxcdn.bootstrapcdn.com/bootswatch/latest/' + res.locals.config.bootswatchSkin + '/bootstrap.min.css';
 			}
 

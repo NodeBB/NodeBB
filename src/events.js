@@ -3,7 +3,7 @@
 
 var async = require('async');
 var validator = require('validator');
-	
+
 var db =  require('./database');
 var batch = require('./batch');
 var user = require('./user');
@@ -47,6 +47,7 @@ var utils = require('../public/src/utils');
 				db.getObjects(keys, next);
 			},
 			function (eventsData, next) {
+				eventsData = eventsData.filter(Boolean);
 				addUserData(eventsData, 'uid', 'user', next);
 			},
 			function (eventsData, next) {
@@ -56,8 +57,8 @@ var utils = require('../public/src/utils');
 				eventsData.forEach(function (event) {
 					Object.keys(event).forEach(function (key) {
 						if (typeof event[key] === 'string') {
-							event[key] = validator.escape(String(event[key] || ''));	
-						}						
+							event[key] = validator.escape(String(event[key] || ''));
+						}
 					});
 					var e = utils.merge(event);
 					e.eid = e.uid = e.type = e.ip = e.user = undefined;

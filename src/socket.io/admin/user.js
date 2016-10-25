@@ -222,11 +222,33 @@ User.deleteInvitation = function (socket, data, callback) {
 };
 
 User.acceptRegistration = function (socket, data, callback) {
-	user.acceptRegistration(data.username, callback);
+	user.acceptRegistration(data.username, function (err, uid) {
+		if (err) {
+			return callback(err);
+		}
+		events.log({
+			type: 'registration-approved',
+			uid: socket.uid,
+			ip: socket.ip,
+			targetUid: uid,
+		});
+		callback();
+	});
 };
 
 User.rejectRegistration = function (socket, data, callback) {
-	user.rejectRegistration(data.username, callback);
+	user.rejectRegistration(data.username, function (err) {
+		if (err) {
+			return callback(err);
+		}
+		events.log({
+			type: 'registration-rejected',
+			uid: socket.uid,
+			ip: socket.ip,
+			username: data.username,
+		});
+		callback();
+	});
 };
 
 User.restartJobs = function (socket, data, callback) {

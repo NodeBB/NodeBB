@@ -45,7 +45,9 @@ module.exports = function (Messaging) {
 	};
 
 	Messaging.canEdit = function (messageId, uid, callback) {
-		if (parseInt(meta.config.disableChat) === 1) {
+		if (parseInt(meta.config.disableChat, 10) === 1) {
+			return callback(null, false);
+		} else if (parseInt(meta.config.disableChatMessageEditing, 10) === 1) {
 			return callback(null, false);
 		}
 

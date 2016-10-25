@@ -36,6 +36,9 @@ helpers.getUserDataByUserSlug = function (userslug, callerUID, callback) {
 				isGlobalModerator: function (next) {
 					user.isGlobalModerator(callerUID, next);
 				},
+				isModerator: function (next) {
+					user.isModeratorOfAnyCategory(callerUID, next);
+				},
 				isFollowing: function (next) {
 					user.isFollowing(callerUID, uid, next);
 				},
@@ -65,6 +68,7 @@ helpers.getUserDataByUserSlug = function (userslug, callerUID, callback) {
 			var userSettings = results.userSettings;
 			var isAdmin = results.isAdmin;
 			var isGlobalModerator = results.isGlobalModerator;
+			var isModerator = results.isModerator;
 			var isSelf = parseInt(callerUID, 10) === parseInt(userData.uid, 10);
 
 			userData.joindateISO = utils.toISOString(userData.joindate);
@@ -87,7 +91,7 @@ helpers.getUserDataByUserSlug = function (userslug, callerUID, callback) {
 				userData.ips = results.ips;
 			}
 
-			if (!isAdmin && !isGlobalModerator) {
+			if (!isAdmin && !isGlobalModerator && !isModerator) {
 				userData.moderationNote = undefined;
 			}
 
@@ -96,7 +100,9 @@ helpers.getUserDataByUserSlug = function (userslug, callerUID, callback) {
 			userData.theirid = userData.uid;
 			userData.isAdmin = isAdmin;
 			userData.isGlobalModerator = isGlobalModerator;
+			userData.isModerator = isModerator;
 			userData.isAdminOrGlobalModerator = isAdmin || isGlobalModerator;
+			userData.isAdminOrGlobalModeratorOrModerator = isAdmin || isGlobalModerator || isModerator;
 			userData.canBan = isAdmin || isGlobalModerator;
 			userData.canChangePassword = isAdmin || (isSelf && parseInt(meta.config['password:disableEdit'], 10) !== 1);
 			userData.isSelf = isSelf;

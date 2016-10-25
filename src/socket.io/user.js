@@ -169,7 +169,7 @@ SocketUser.follow = function (socket, data, callback) {
 				bodyShort: '[[notifications:user_started_following_you, ' + userData.username + ']]',
 				nid: 'follow:' + data.uid + ':uid:' + socket.uid,
 				from: socket.uid,
-				path: '/uid/' + socket.uid,
+				path: '/uid/' + data.uid + '/followers',
 				mergeId: 'notifications:user_started_following_you'
 			}, next);
 		},
@@ -328,8 +328,15 @@ SocketUser.setModerationNote = function (socket, data, callback) {
 		function (next) {
 			user.isAdminOrGlobalMod(socket.uid, next);
 		},
-		function (isAdminOrGlobalMod, next) {
-			if (!isAdminOrGlobalMod) {
+		function (allowed, next) {
+			if (allowed) {
+				return next(null, allowed);
+			}
+
+			user.isModeratorOfAnyCategory(socket.uid, next);
+		},
+		function (allowed, next) {
+			if (!allowed) {
 				return next(new Error('[[error:no-privileges]]'));
 			}
 			if (data.note) {

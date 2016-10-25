@@ -117,7 +117,7 @@ define('chat', [
 			    return room.teaser;
 			});
 
-			templates.parse('partials/chat_dropdown', {
+			templates.parse('partials/chats/dropdown', {
 				rooms: rooms
 			}, function (html) {
 				translator.translate(html, function (translated) {
@@ -213,6 +213,10 @@ define('chat', [
 
 			chatModal.find('.modal-header').on('dblclick', gotoChats);
 			chatModal.find('button[data-action="maximize"]').on('click', gotoChats);
+			chatModal.find('button[data-action="minimize"]').on('click', function () {
+				var uuid = chatModal.attr('uuid');
+				module.minimize(uuid);
+			});
 
 			chatModal.on('click', function () {
 				module.bringModalToTop(chatModal);

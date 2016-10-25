@@ -70,7 +70,7 @@ define('taskbar', function () {
 
 	taskbar.minimize = function (module, uuid) {
 		var btnEl = taskbar.tasklist.find('[data-module="' + module + '"][data-uuid="' + uuid + '"]');
-		btnEl.removeClass('active');
+		btnEl.toggleClass('active', false);
 	};
 
 	taskbar.toggleNew = function (uuid, state, silent) {

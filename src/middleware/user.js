@@ -34,6 +34,18 @@ module.exports = function (middleware) {
 				}
 
 				user.isAdminOrGlobalMod(req.uid, next);
+			},
+			function(allowed, next) {
+				if (allowed) {
+					return next(null, allowed);
+				}
+
+				// For the account/info page only, allow plain moderators through
+				if (/user\/.+\/info$/.test(req.path)) {
+					user.isModeratorOfAnyCategory(req.uid, next);
+				} else {
+					next(null, false);
+				}
 			}
 		], function (err, allowed) {
 			if (err || allowed) {

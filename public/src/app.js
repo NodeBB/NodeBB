@@ -301,12 +301,16 @@ app.cacheBuster = null;
 			return app.alertError('[[error:not-logged-in]]');
 		}
 
+		if (parseInt(touid, 10) === parseInt(app.user.uid, 10)) {
+			return app.alertError('[[error:cant-chat-with-yourself]]');
+		}
+
 		socket.emit('modules.chats.newRoom', {touid: touid}, function (err, roomId) {
 			if (err) {
 				return app.alertError(err.message);
 			}
 
-			if (!ajaxify.currentPage.startsWith('chats')) {
+			if (!ajaxify.data.template.chats) {
 				app.openChat(roomId);
 			} else {
 				ajaxify.go('chats/' + roomId);

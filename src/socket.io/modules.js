@@ -166,12 +166,12 @@ SocketModules.chats.addUserToRoom = function (socket, data, callback) {
 			}
 			async.parallel({
 				settings: async.apply(user.getSettings, uid),
-				isAdmin: async.apply(user.isAdministrator, socket.uid),
+				isAdminOrGlobalMod: async.apply(user.isAdminOrGlobalMod, socket.uid),
 				isFollowing: async.apply(user.isFollowing, uid, socket.uid)
 			}, next);
 		},
 		function (results, next) {
-			if (results.settings.restrictChat && !results.isAdmin && !results.isFollowing) {
+			if (results.settings.restrictChat && !results.isAdminOrGlobalMod && !results.isFollowing) {
 				return next(new Error('[[error:chat-restricted]]'));
 			}
 
