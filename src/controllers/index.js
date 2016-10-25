@@ -104,12 +104,17 @@ Controllers.login = function (req, res, next) {
 	var registrationType = meta.config.registrationType || 'normal';
 
 	var allowLoginWith = (meta.config.allowLoginWith || 'username-email');
+	var returnTo = req.headers['x-return-to'].replace(nconf.get('url'), '');
 
 	var errorText;
 	if (req.query.error === 'csrf-invalid') {
 		errorText = '[[error:csrf-invalid]]';
 	} else if (req.query.error) {
 		errorText = validator.escape(String(req.query.error));
+	}
+
+	if (returnTo) {
+		req.session.returnTo = returnTo;
 	}
 
 	data.alternate_logins = loginStrategies.length > 0;

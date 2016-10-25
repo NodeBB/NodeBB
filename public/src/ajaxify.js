@@ -272,6 +272,9 @@ $(document).ready(function () {
 		apiXHR = $.ajax({
 			url: RELATIVE_PATH + '/api/' + url,
 			cache: false,
+			headers: {
+				'X-Return-To': app.previousUrl
+			},
 			success: function (data) {
 				if (!data) {
 					return;

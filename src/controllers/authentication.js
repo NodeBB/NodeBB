@@ -196,15 +196,6 @@ authenticationController.registerAbort = function (req, res) {
 };
 
 authenticationController.login = function (req, res, next) {
-	// Handle returnTo data
-	if (req.body.hasOwnProperty('returnTo') && !req.session.returnTo) {
-		// As req.body is data obtained via userland, it is untrusted, restrict to internal links only
-		var parsed = url.parse(req.body.returnTo);
-		var isInternal = utils.isInternalURI(url.parse(req.body.returnTo), nconf.get('url_parsed'), nconf.get('relative_path'));
-
-		req.session.returnTo = isInternal ? req.body.returnTo : nconf.get('url');
-	}
-
 	if (plugins.hasListeners('action:auth.overrideLogin')) {
 		return continueLogin(req, res, next);
 	}

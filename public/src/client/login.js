@@ -59,17 +59,6 @@ define('forum/login', ['translator'], function (translator) {
 		} else {
 			$('#content #username').focus();
 		}
-
-
-		// Add "returnTo" data if present
-		if (app.previousUrl && $('#returnTo').length === 0) {
-			var returnToEl = document.createElement('input');
-			returnToEl.type = 'hidden';
-			returnToEl.name = 'returnTo';
-			returnToEl.id = 'returnTo';
-			returnToEl.value = app.previousUrl;
-			$(returnToEl).appendTo(formEl);
-		}
 	};
 
 	return Login;
