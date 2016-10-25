@@ -66,7 +66,7 @@ module.exports = function (privileges) {
 
 							memberData.forEach(function (member) {
 								member.privileges = {};
-								for(var x = 0,numPrivs = userPrivileges.length;x < numPrivs;x++) {
+								for(var x = 0,numPrivs = userPrivileges.length; x < numPrivs; x++) {
 									member.privileges[userPrivileges[x]] = memberSets[x].indexOf(parseInt(member.uid, 10)) !== -1;
 								}
 							});
@@ -117,7 +117,7 @@ module.exports = function (privileges) {
 							var memberData = groupNames.map(function (member) {
 								memberPrivs = {};
 
-								for(var x = 0,numPrivs = groupPrivileges.length;x < numPrivs;x++) {
+								for(var x = 0,numPrivs = groupPrivileges.length; x < numPrivs; x++) {
 									memberPrivs[groupPrivileges[x]] = memberSets[x].indexOf(member) !== -1;
 								}
 								return {

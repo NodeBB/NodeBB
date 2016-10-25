@@ -107,9 +107,9 @@ var middleware;
 					return next();
 				}
 
-				plugins = plugins.filter(function (plugin){
+				plugins = plugins.filter(function (plugin) {
 					return plugin && typeof plugin === 'string';
-				}).map(function (plugin){
+				}).map(function (plugin) {
 					return path.join(__dirname, '../node_modules/', plugin);
 				});
 
@@ -122,7 +122,7 @@ var middleware;
 				if (Plugins.versionWarning.length && nconf.get('isPrimary') === 'true') {
 					process.stdout.write('\n');
 					winston.warn('[plugins/load] The following plugins may not be compatible with your version of NodeBB. This may cause unintended behaviour or crashing. In the event of an unresponsive NodeBB caused by this plugin, run `./nodebb reset -p PLUGINNAME` to disable it.');
-					for(var x = 0,numPlugins = Plugins.versionWarning.length;x < numPlugins;x++) {
+					for(var x = 0,numPlugins = Plugins.versionWarning.length; x < numPlugins; x++) {
 						process.stdout.write('  * '.yellow + Plugins.versionWarning[x] + '\n');
 					}
 					process.stdout.write('\n');
@@ -329,7 +329,7 @@ var middleware;
 				pluginArray.sort(function (a, b) {
 					if (a.name > b.name ) {
 						return 1;
-					} else if (a.name < b.name ){
+					} else if (a.name < b.name ) {
 						return -1;
 					} else {
 						return 0;
@@ -348,20 +348,20 @@ var middleware;
 			async.apply(fs.readdir, npmPluginPath),
 
 			function (dirs, next) {
-				dirs = dirs.filter(function (dir){
+				dirs = dirs.filter(function (dir) {
 					return dir.startsWith('nodebb-plugin-') ||
 						dir.startsWith('nodebb-widget-') ||
 						dir.startsWith('nodebb-rewards-') ||
 						dir.startsWith('nodebb-theme-');
-				}).map(function (dir){
+				}).map(function (dir) {
 					return path.join(npmPluginPath, dir);
 				});
 
-				async.filter(dirs, function (dir, callback){
-					fs.stat(dir, function (err, stats){
+				async.filter(dirs, function (dir, callback) {
+					fs.stat(dir, function (err, stats) {
 						callback(!err && stats.isDirectory());
 					});
-				}, function (plugins){
+				}, function (plugins) {
 					next(null, plugins);
 				});
 			},

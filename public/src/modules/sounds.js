@@ -19,7 +19,7 @@ define('sounds', ['buzz'], function (buzz) {
 			}
 			eventSoundMapping = mapping;
 		});
-	}
+	};
 
 	function loadData(callback) {
 		socket.emit('modules.sounds.getData', function (err, data) {

@@ -88,7 +88,7 @@ if ('undefined' !== typeof window) {
 		});
 	}(jQuery || {fn:{}}));
 
-	(function (){
+	(function () {
 		// FIX FOR #1245 - https://github.com/NodeBB/NodeBB/issues/1245
 		// from http://stackoverflow.com/questions/15931962/bootstrap-dropdown-disappear-with-right-click-on-firefox
 		// obtain a reference to the original handler

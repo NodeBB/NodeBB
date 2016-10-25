@@ -57,7 +57,7 @@ function getNodeInfo(callback) {
 			platform: os.platform(),
 			arch: os.arch(),
 			release: os.release(),
-			load: os.loadavg().map(function (load){ return load.toFixed(2); }).join(', ')
+			load: os.loadavg().map(function (load) { return load.toFixed(2); }).join(', ')
 		}
 	};
 

@@ -235,7 +235,7 @@ define('admin/manage/category', [
 				privs.push(el.getAttribute('data-privilege'));
 			}
 		});
-		for(var x = 0,numPrivs = privs.length;x < numPrivs;x++) {
+		for(var x = 0,numPrivs = privs.length; x < numPrivs; x++) {
 			var inputs = $('.privilege-table tr[data-group-name]:not([data-group-name="registered-users"],[data-group-name="guests"]) td[data-privilege="' + privs[x] + '"] input');
 			inputs.each(function (idx, el) {
 				if (!el.checked) {

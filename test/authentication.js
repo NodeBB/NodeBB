@@ -81,7 +81,7 @@ describe('authentication', function () {
 				}, function (err, response, body) {
 					assert.ifError(err);
 					assert.equal(body, 'not-authorized');
-					done()
+					done();
 				});
 			});
 		});
@@ -119,7 +119,7 @@ describe('authentication', function () {
 					assert(body);
 					assert.equal(body.username, 'regular');
 					assert.equal(body.email, 'regular@nodebb.org');
-					done()
+					done();
 				});
 			});
 		});

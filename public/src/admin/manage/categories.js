@@ -5,8 +5,8 @@ define('admin/manage/categories', ['vendor/jquery/serializeObject/jquery.ba-seri
 	var	Categories = {}, newCategoryId = -1, sortables;
 
 	Categories.init = function () {
-		socket.emit('admin.categories.getAll', function (error, payload){
-			if(error){
+		socket.emit('admin.categories.getAll', function (error, payload) {
+			if(error) {
 				return app.alertError(error.message);
 			}
 
@@ -85,7 +85,7 @@ define('admin/manage/categories', ['vendor/jquery/serializeObject/jquery.ba-seri
 		});
 	};
 
-	Categories.render = function (categories){
+	Categories.render = function (categories) {
 		var container = $('.categories');
 
 		if (!categories || !categories.length) {
@@ -124,7 +124,7 @@ define('admin/manage/categories', ['vendor/jquery/serializeObject/jquery.ba-seri
 		var isCategoryUpdate = (newCategoryId != -1);
 
 		//Update needed?
-		if((e.newIndex != undefined && e.oldIndex != e.newIndex) || isCategoryUpdate){
+		if((e.newIndex != undefined && e.oldIndex != e.newIndex) || isCategoryUpdate) {
 			var parentCategory = isCategoryUpdate ? sortables[newCategoryId] : sortables[e.from.dataset.cid],
 				modified = {}, i = 0, list = parentCategory.toArray(), len = list.length;
 
@@ -134,7 +134,7 @@ define('admin/manage/categories', ['vendor/jquery/serializeObject/jquery.ba-seri
 				};
 			}
 
-			if (isCategoryUpdate){
+			if (isCategoryUpdate) {
 				modified[e.item.dataset.cid].parentCid = newCategoryId;
 			}
 
@@ -151,7 +151,7 @@ define('admin/manage/categories', ['vendor/jquery/serializeObject/jquery.ba-seri
 	 * @param container {object} parent jquery element for the list
 	 * @param parentId {number} parent category identifier
 	 */
-	function renderList(categories, container, parentId){
+	function renderList(categories, container, parentId) {
 		// Translate category names if needed
 		var count = 0;
 		categories.forEach(function (category, idx, parent) {
@@ -179,7 +179,7 @@ define('admin/manage/categories', ['vendor/jquery/serializeObject/jquery.ba-seri
 				container.append(html);
 
 				// Handle and children categories in this level have
-				for(var x = 0,numCategories = categories.length;x < numCategories;x++) {
+				for(var x = 0,numCategories = categories.length; x < numCategories; x++) {
 					renderList(categories[x].children, $('li[data-cid="' + categories[x].cid + '"]'), categories[x].cid);
 				}
 

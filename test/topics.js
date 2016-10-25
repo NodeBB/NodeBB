@@ -252,14 +252,14 @@ describe('Topic\'s', function () {
 		});
 	});
 
-	describe('.ignore', function (){
+	describe('.ignore', function () {
 		var newTid;
 		var uid;
 		var newTopic;
-		before(function (done){
+		before(function (done) {
 			uid = topic.userId;
 			async.waterfall([
-				function (done){
+				function (done) {
 					topics.post({uid: topic.userId, title: 'Topic to be ignored', content: 'Just ignore me, please!', cid: topic.categoryId}, function (err, result) {
 						if (err) {
 							return done(err);
@@ -270,43 +270,43 @@ describe('Topic\'s', function () {
 						done();
 					});
 				},
-				function (done){
+				function (done) {
 					topics.markUnread( newTid, uid, done );
 				}
 			],done);
 		});
 
-		it('should not appear in the unread list', function (done){
+		it('should not appear in the unread list', function (done) {
 			async.waterfall([
-				function (done){
+				function (done) {
 					topics.ignore( newTid, uid, done );
 				},
-				function (done){
+				function (done) {
 					topics.getUnreadTopics(0, uid, 0, -1, '', done );
 				},
-				function (results, done){
+				function (results, done) {
 					var topics = results.topics;
-					var tids = topics.map( function (topic){ return topic.tid; } );
+					var tids = topics.map( function (topic) { return topic.tid; } );
 					assert.equal(tids.indexOf(newTid), -1, 'The topic appeared in the unread list.');
 					done();
 				}
 			], done);
 		});
 
-		it('should not appear as unread in the recent list', function (done){
+		it('should not appear as unread in the recent list', function (done) {
 			async.waterfall([
-				function (done){
+				function (done) {
 					topics.ignore( newTid, uid, done );
 				},
-				function (done){
+				function (done) {
 					topics.getLatestTopics( uid, 0, -1, 'year', done );
 				},
-				function (results, done){
+				function (results, done) {
 					var topics = results.topics;
 					var topic;
 					var i;
-					for(i = 0; i < topics.length; ++i){
-						if( topics[i].tid == newTid ){
+					for(i = 0; i < topics.length; ++i) {
+						if( topics[i].tid == newTid ) {
 							assert.equal(false, topics[i].unread, 'ignored topic was marked as unread in recent list');
 							return done();
 						}
@@ -317,40 +317,40 @@ describe('Topic\'s', function () {
 			], done);
 		});
 
-		it('should appear as unread again when marked as reading', function (done){
+		it('should appear as unread again when marked as reading', function (done) {
 			async.waterfall([
-				function (done){
+				function (done) {
 					topics.ignore( newTid, uid, done );
 				},
-				function (done){
+				function (done) {
 					topics.follow( newTid, uid, done );
 				},
-				function (done){
+				function (done) {
 					topics.getUnreadTopics(0, uid, 0, -1, '', done );
 				},
-				function (results, done){
+				function (results, done) {
 					var topics = results.topics;
-					var tids = topics.map( function (topic){ return topic.tid; } );
+					var tids = topics.map( function (topic) { return topic.tid; } );
 					assert.notEqual(tids.indexOf(newTid), -1, 'The topic did not appear in the unread list.');
 					done();
 				}
 			], done);
 		});
 
-		it('should appear as unread again when marked as following', function (done){
+		it('should appear as unread again when marked as following', function (done) {
 			async.waterfall([
-				function (done){
+				function (done) {
 					topics.ignore( newTid, uid, done );
 				},
-				function (done){
+				function (done) {
 					topics.follow( newTid, uid, done );
 				},
-				function (done){
+				function (done) {
 					topics.getUnreadTopics(0, uid, 0, -1, '', done );
 				},
-				function (results, done){
+				function (results, done) {
 					var topics = results.topics;
-					var tids = topics.map( function (topic){ return topic.tid; } );
+					var tids = topics.map( function (topic) { return topic.tid; } );
 					assert.notEqual(tids.indexOf(newTid), -1, 'The topic did not appear in the unread list.');
 					done();
 				}
@@ -360,12 +360,12 @@ describe('Topic\'s', function () {
 
 
 
-	describe('.fork', function (){
+	describe('.fork', function () {
 		var newTopic;
 		var replies = [];
 		var topicPids;
 		var originalBookmark = 5;
-		function postReply( next ){
+		function postReply( next ) {
 			topics.reply({uid: topic.userId, content: 'test post ' + replies.length, tid: newTopic.tid},
 				function (err, result) {
 					assert.equal(err, null, 'was created with error');
@@ -379,30 +379,30 @@ describe('Topic\'s', function () {
 		before( function (done) {
 			async.waterfall(
 				[
-				function (next){
+				function (next) {
 					groups.join('administrators', topic.userId, next);
 				},
-				function ( next ){
+				function ( next ) {
 					topics.post({uid: topic.userId, title: topic.title, content: topic.content, cid: topic.categoryId}, function (err, result) {
 						assert.ifError( err );
 						newTopic = result.topicData;
 						next();
 					});
 				},
-				function ( next ){ postReply( next );},
-				function ( next ){ postReply( next );},
-				function ( next ){ postReply( next );},
-				function ( next ){ postReply( next );},
-				function ( next ){ postReply( next );},
-				function ( next ){ postReply( next );},
-				function ( next ){ postReply( next );},
-				function ( next ){ postReply( next );},
-				function ( next ){ postReply( next );},
-				function ( next ){ postReply( next );},
-				function ( next ){ postReply( next );},
-				function ( next ){ postReply( next );},
-				function ( next ){
-					topicPids = replies.map( function ( reply ){ return reply.pid; } );
+				function ( next ) { postReply( next );},
+				function ( next ) { postReply( next );},
+				function ( next ) { postReply( next );},
+				function ( next ) { postReply( next );},
+				function ( next ) { postReply( next );},
+				function ( next ) { postReply( next );},
+				function ( next ) { postReply( next );},
+				function ( next ) { postReply( next );},
+				function ( next ) { postReply( next );},
+				function ( next ) { postReply( next );},
+				function ( next ) { postReply( next );},
+				function ( next ) { postReply( next );},
+				function ( next ) {
+					topicPids = replies.map( function ( reply ) { return reply.pid; } );
 					topics.setUserBookmark( newTopic.tid, topic.userId, originalBookmark, next );
 				}],
 				done );
@@ -413,9 +413,9 @@ describe('Topic\'s', function () {
 			done();
 		});
 
-		it('should not update the user\'s bookmark', function (done){
+		it('should not update the user\'s bookmark', function (done) {
 			async.waterfall([
-				function (next){
+				function (next) {
 					topics.createTopicFromPosts(
 						topic.userId,
 						'Fork test, no bookmark update',
@@ -423,19 +423,19 @@ describe('Topic\'s', function () {
 						newTopic.tid,
 						next );
 				},
-				function ( forkedTopicData, next){
+				function ( forkedTopicData, next) {
 					topics.getUserBookmark( newTopic.tid, topic.userId, next );
 				},
-				function ( bookmark, next ){
+				function ( bookmark, next ) {
 					assert.equal( originalBookmark, bookmark );
 					next();
 				}
 			],done);
 		});
 
-		it('should update the user\'s bookmark ', function (done){
+		it('should update the user\'s bookmark ', function (done) {
 			async.waterfall([
-				function (next){
+				function (next) {
 					topics.createTopicFromPosts(
 						topic.userId,
 						'Fork test, no bookmark update',
@@ -443,10 +443,10 @@ describe('Topic\'s', function () {
 						newTopic.tid,
 						next );
 				},
-				function ( forkedTopicData, next){
+				function ( forkedTopicData, next) {
 					topics.getUserBookmark( newTopic.tid, topic.userId, next );
 				},
-				function ( bookmark, next ){
+				function ( bookmark, next ) {
 					assert.equal( originalBookmark - 2, bookmark );
 					next();
 				}

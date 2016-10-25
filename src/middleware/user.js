@@ -161,6 +161,3 @@ module.exports = function (middleware) {
 	};
 
 };
-
-
-

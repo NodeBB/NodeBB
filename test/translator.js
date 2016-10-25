@@ -7,8 +7,8 @@ var Translator = shim.Translator;
 
 require('../src/languages').init(function () {});
 
-describe('translator shim', function (){
-	describe('.translate()', function (){
+describe('translator shim', function () {
+	describe('.translate()', function () {
 		it('should translate correctly', function (done) {
 			shim.translate('[[global:pagination.out_of, (foobar), [[global:home]]]]', function (translated) {
 				assert.strictEqual(translated, '(foobar) out of Home');
@@ -18,8 +18,8 @@ describe('translator shim', function (){
 	});
 });
 
-describe('new Translator(language)', function (){
-	describe('.translate()', function (){
+describe('new Translator(language)', function () {
+	describe('.translate()', function () {
 		it('should handle basic translations', function (done) {
 			var translator = new Translator('en_GB');
 
@@ -165,7 +165,7 @@ describe('new Translator(language)', function (){
 	});
 });
 
-describe('Translator.create()', function (){
+describe('Translator.create()', function () {
 	it('should return an instance of Translator', function (done) {
 		var translator = Translator.create('en_GB');
 

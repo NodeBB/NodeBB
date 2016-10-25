@@ -301,7 +301,7 @@ var privileges = require('./privileges');
 				category.parentCid = 0;
 			}
 
-			if (parseInt(category.parentCid, 10) === parseInt(parentCid, 10)){
+			if (parseInt(category.parentCid, 10) === parseInt(parentCid, 10)) {
 				tree.push(category);
 				category.children = Categories.getTree(categories, category.cid);
 			}
@@ -318,7 +318,7 @@ var privileges = require('./privileges');
 
 			var bullet = level ? '&bull; ' : '';
 			category.value = category.cid;
-			category.text = level + bullet + category.name
+			category.text = level + bullet + category.name;
 			categoriesData.push(category);
 
 			category.children.forEach(function (child) {
@@ -349,7 +349,7 @@ var privileges = require('./privileges');
 
 	Categories.filterIgnoringUids = function (cid, uids, callback) {
 		async.waterfall([
-			function (next){
+			function (next) {
 				db.sortedSetScores('cid:' + cid + ':ignorers', uids, next);
 			},
 			function (scores, next) {

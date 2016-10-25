@@ -122,6 +122,6 @@ module.exports = function (SocketUser) {
 			}
 
 			callback(null, data.list.pictures);
-		})
+		});
 	};
 };

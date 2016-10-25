@@ -7,7 +7,7 @@ var db = require('./mocks/databasemock');
 
 describe('Test database', function () {
 	it('should work', function () {
-		assert.doesNotThrow(function (){
+		assert.doesNotThrow(function () {
 			require('./mocks/databasemock');
 		});
 	});

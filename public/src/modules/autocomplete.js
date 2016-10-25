@@ -22,7 +22,7 @@ define('autocomplete', function () {
 
 						if (result && result.users) {
 							var names = result.users.map(function (user) {
-								var username = $('<div/>').html(user.username).text()
+								var username = $('<div/>').html(user.username).text();
 								return user && {
 									label: username,
 									value: username,

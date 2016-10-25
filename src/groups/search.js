@@ -131,7 +131,7 @@ module.exports = function (Groups) {
 					} else {
 						return 0;
 					}
-				})
+				});
 				next(null, results);
 			}
 		], callback);

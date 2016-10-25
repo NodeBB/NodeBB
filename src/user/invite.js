@@ -138,7 +138,7 @@ module.exports = function (User) {
 						db.delete('invitation:email:' + email, callback);
 					}
 				], function (err) {
-					next(err)
+					next(err);
 				});
 			}
 		], callback);

@@ -49,7 +49,7 @@ describe('User', function () {
 
 	describe('.create(), when created', function () {
 		it('should be created properly', function (done) {
-			User.create({username: userData.username, password: userData.password, email: userData.email}, function (error,userId){
+			User.create({username: userData.username, password: userData.password, email: userData.email}, function (error,userId) {
 				assert.equal(error, null, 'was created with error');
 				assert.ok(userId);
 

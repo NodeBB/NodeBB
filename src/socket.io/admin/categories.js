@@ -25,7 +25,7 @@ Categories.getAll = function (socket, data, callback) {
 			//Hook changes, there is no req, and res
 			plugins.fireHook('filter:admin.categories.get', {categories: categories}, next);
 		},
-		function (result, next){
+		function (result, next) {
 			next(null, categories.getTree(result.categories, 0));
 		}
 	], function (err, categoriesTree) {
