@@ -65,7 +65,6 @@
         "padded-blocks": "off",
         "eol-last": "off",
         "lines-around-directive": "off",
-        "space-before-blocks": "off",
         "no-restricted-syntax": "off",
         "vars-on-top": "off",
         "no-prototype-builtins": "off",

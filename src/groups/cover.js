@@ -65,7 +65,7 @@ module.exports = function (Groups) {
 			function (uploadData, next) {
 				Groups.setGroupField(data.groupName, 'cover:thumb:url', uploadData.url, next);
 			},
-			function (next){
+			function (next) {
 				fs.unlink(tempPath, next);	// Delete temporary file
 			}
 		], function (err) {

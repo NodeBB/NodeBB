@@ -11,7 +11,7 @@ define('admin/appearance/skins', function () {
 			url: 'https://bootswatch.com/api/3.json'
 		}).done(Skins.render);
 
-		$('#skins').on('click', function (e){
+		$('#skins').on('click', function (e) {
 			var target = $(e.target);
 
 			if (!target.attr('data-action')) {
@@ -72,7 +72,7 @@ define('admin/appearance/skins', function () {
 			if (config['theme:src']) {
 				var skin = config['theme:src']
 					.match(/latest\/(\S+)\/bootstrap.min.css/)[1]
-					.replace(/(^|\s)([a-z])/g , function (m,p1,p2){return p1 + p2.toUpperCase();});
+					.replace(/(^|\s)([a-z])/g , function (m,p1,p2) {return p1 + p2.toUpperCase();});
 
 				highlightSelectedTheme(skin);
 			}

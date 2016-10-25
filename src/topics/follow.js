@@ -147,10 +147,10 @@ module.exports = function (Topics) {
 
 	Topics.filterIgnoringUids = function (tid, uids, callback) {
 		async.waterfall([
-			function (next){
+			function (next) {
 				db.isSetMembers('tid:' + tid + ':ignorers', uids, next);
 			},
-			function (isMembers, next){
+			function (isMembers, next) {
 				var readingUids = uids.filter(function (uid, index) {
 					return uid && isMembers[index];
 				});

@@ -14,7 +14,7 @@
 					bootbox.alert({
 						closeButton: false,
 						message: translated,
-						callback: function (){
+						callback: function () {
 							window.location.reload();
 						}
 					});

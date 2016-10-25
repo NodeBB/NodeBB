@@ -443,7 +443,7 @@
 	};
 
 	if (typeof String.prototype.startsWith != 'function') {
-		String.prototype.startsWith = function (prefix){
+		String.prototype.startsWith = function (prefix) {
 			if (this.length < prefix.length) {
 				return false;
 			}

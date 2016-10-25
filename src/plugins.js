@@ -107,9 +107,9 @@ var middleware;
 					return next();
 				}
 
-				plugins = plugins.filter(function (plugin){
+				plugins = plugins.filter(function (plugin) {
 					return plugin && typeof plugin === 'string';
-				}).map(function (plugin){
+				}).map(function (plugin) {
 					return path.join(__dirname, '../node_modules/', plugin);
 				});
 
@@ -329,7 +329,7 @@ var middleware;
 				pluginArray.sort(function (a, b) {
 					if (a.name > b.name ) {
 						return 1;
-					} else if (a.name < b.name ){
+					} else if (a.name < b.name ) {
 						return -1;
 					} else {
 						return 0;
@@ -348,20 +348,20 @@ var middleware;
 			async.apply(fs.readdir, npmPluginPath),
 
 			function (dirs, next) {
-				dirs = dirs.filter(function (dir){
+				dirs = dirs.filter(function (dir) {
 					return dir.startsWith('nodebb-plugin-') ||
 						dir.startsWith('nodebb-widget-') ||
 						dir.startsWith('nodebb-rewards-') ||
 						dir.startsWith('nodebb-theme-');
-				}).map(function (dir){
+				}).map(function (dir) {
 					return path.join(npmPluginPath, dir);
 				});
 
-				async.filter(dirs, function (dir, callback){
-					fs.stat(dir, function (err, stats){
+				async.filter(dirs, function (dir, callback) {
+					fs.stat(dir, function (err, stats) {
 						callback(!err && stats.isDirectory());
 					});
-				}, function (plugins){
+				}, function (plugins) {
 					next(null, plugins);
 				});
 			},
