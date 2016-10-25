@@ -1,31 +1,24 @@
 <!DOCTYPE html>
 <html>
-<head>
-	<title>{title}</title>
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-	<link rel="stylesheet" type="text/css" href="{relative_path}/admin.css?{cache-buster}" />
-	<link rel="stylesheet" type="text/css" href="{relative_path}/vendor/mdl/mdl.min.css?{cache-buster}" />
-	<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-
-	<script>
-		var RELATIVE_PATH = "{relative_path}";
-		var config = JSON.parse('{{configJSON}}');
-		var app = {
-			template: "{template.name}",
-			user: JSON.parse('{{userJSON}}'),
-			config: JSON.parse(decodeURIComponent("{{adminConfigJSON}}")),
-			flags: {},
-			inAdmin: true
-		};
-	</script>
-
-	<!--[if lt IE 9]>
-		<script src="//cdnjs.cloudflare.com/ajax/libs/es5-shim/2.3.0/es5-shim.min.js"></script>
-		<script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7/html5shiv.js"></script>
-		<script src="//cdnjs.cloudflare.com/ajax/libs/respond.js/1.4.2/respond.js"></script>
-		<script>__lt_ie_9__ = 1;</script>
-	<![endif]-->
+	<head>
+		<title>{title}</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	
+		<link rel="stylesheet" type="text/css" href="{relative_path}/admin.css?{cache-buster}" />
+		<link rel="stylesheet" type="text/css" href="{relative_path}/vendor/mdl/mdl.min.css?{cache-buster}" />
+		<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+	
+		<script>
+			var RELATIVE_PATH = "{relative_path}";
+			var config = JSON.parse('{{configJSON}}');
+			var app = {
+				template: "{template.name}",
+				user: JSON.parse('{{userJSON}}'),
+				config: JSON.parse(decodeURIComponent("{{adminConfigJSON}}")),
+				flags: {},
+				inAdmin: true
+			};
+		</script>
 
 		<script src="https://storage.googleapis.com/code.getmdl.io/1.0.3/material.min.js"></script>
 		<script type="text/javascript" src="{relative_path}/vendor/jquery/sortable/Sortable.js?{cache-buster}"></script>
