@@ -35,7 +35,7 @@ module.exports = function (middleware) {
 
 				user.isAdminOrGlobalMod(req.uid, next);
 			},
-			function(allowed, next) {
+			function (allowed, next) {
 				if (allowed) {
 					return next(null, allowed);
 				}
