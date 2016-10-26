@@ -370,6 +370,7 @@ describe('User', function () {
 		});
 
 		it('should change a user\'s password', function (done) {
+			this.timeout(20000);
 			io.emit('user.changePassword', {uid: uid, newPassword: '654321', currentPassword: '123456'}, function (err) {
 				assert.ifError(err);
 				User.isPasswordCorrect(uid, '654321', function (err, correct) {
