@@ -18,7 +18,7 @@ describe('translator shim', function () {
 	});
 });
 
-describe('new Translator(language)', function (){
+describe('new Translator(language)', function () {
 	it('should throw if not passed a language', function (done) {
 		assert.throws(function () {
 			new Translator();
@@ -26,7 +26,7 @@ describe('new Translator(language)', function (){
 		done();
 	});
 
-	describe('.translate()', function (){
+	describe('.translate()', function () {
 		it('should handle basic translations', function (done) {
 			var translator = Translator.create('en_GB');
 
