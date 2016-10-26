@@ -1,6 +1,6 @@
 // see https://gist.github.com/jfromaniello/4087861#gistcomment-1447029
 // XMLHttpRequest to override.
-/* globals console, require, module */
+
 var npm2Path = '../../node_modules/socket.io-client/node_modules/engine.io-client/node_modules/xmlhttprequest-ssl';
 var npm3Path = '../../node_modules/xmlhttprequest-ssl';
 var filePath;

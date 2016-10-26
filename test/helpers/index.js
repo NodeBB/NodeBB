@@ -30,7 +30,7 @@ helpers.loginUser = function (username, password, callback) {
 			if (err || response.statusCode !== 200) {
 				return callback(err || new Error('[[error:invalid-response]]'));
 			}
-			callback();
+			callback(null, jar);
 		});
 	});
 };

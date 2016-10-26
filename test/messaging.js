@@ -1,5 +1,4 @@
 'use strict';
-/*global require, before, after*/
 
 var assert = require('assert');
 var async = require('async');
@@ -7,15 +6,19 @@ var request = require('request');
 var nconf = require('nconf');
 
 var db = require('./mocks/databasemock');
+var meta = require('../src/meta');
 var User = require('../src/user');
 var Groups = require('../src/groups');
 var Messaging = require('../src/messaging');
+var helpers = require('./helpers');
 
 describe('Messaging Library', function () {
 	var testUids;
 	var fooUid;
 	var bazUid;
 	var herpUid;
+	var roomId;
+
 	before(function (done) {
 		// Create 3 users: 1 admin, 2 regular
 		async.parallel([
@@ -81,7 +84,6 @@ describe('Messaging Library', function () {
 	});
 
 	describe('rooms', function () {
-		var roomId;
 		it('should create a new chat room', function (done) {
 			Messaging.newRoom(fooUid, [bazUid, herpUid], function (err, _roomId) {
 				roomId = _roomId;
@@ -130,11 +132,82 @@ describe('Messaging Library', function () {
 	});
 
 	describe('controller', function () {
-		it('should 404 for guest', function (done) {
+		it('should 404 if chat is disabled', function (done) {
+			meta.config.disableChat = 1;
 			request(nconf.get('url') + '/user/baz/chats', function (err, response) {
 				assert.ifError(err);
 				assert.equal(response.statusCode, 404);
 				done();
+			});
+		});
+
+		it('should 404 for guest', function (done) {
+			meta.config.disableChat = 0;
+			request(nconf.get('url') + '/user/baz/chats', function (err, response) {
+				assert.ifError(err);
+				assert.equal(response.statusCode, 404);
+				done();
+			});
+		});
+
+		it('should 404 for non-existent user', function (done) {
+			request(nconf.get('url') + '/user/doesntexist/chats', function (err, response) {
+				assert.ifError(err);
+				assert.equal(response.statusCode, 404);
+				done();
+			});
+		});
+
+	});
+
+	describe('logged in chat controller', function () {
+		var jar;
+		before(function (done) {
+			helpers.loginUser('herp', 'derpderp', function (err, _jar) {
+				assert.ifError(err);
+				jar = _jar;
+				done();
+			});
+		});
+
+		it('should return chats page data', function (done) {
+			request(nconf.get('url') + '/api/user/herp/chats', {json: true, jar: jar}, function (err, response, body) {
+				assert.ifError(err);
+				assert.equal(response.statusCode, 200);
+				assert(Array.isArray(body.rooms));
+				assert.equal(body.rooms.length, 1);
+				assert.equal(body.title, '[[pages:chats]]');
+				done();
+			});
+		});
+
+		it('should return room data', function (done) {
+			request(nconf.get('url') + '/api/user/herp/chats/' + roomId, {json: true, jar: jar}, function (err, response, body) {
+				assert.ifError(err);
+				assert.equal(response.statusCode, 200);
+				assert.equal(body.roomId, roomId);
+				assert.equal(body.isOwner, false);
+				done();
+			});
+		});
+
+		it('should redirect to chats page', function (done) {
+			request(nconf.get('url') + '/api/chats', {jar: jar}, function (err, response, body) {
+				assert.ifError(err);
+				assert.equal(body, '"/user/herp/chats"');
+				assert.equal(response.statusCode, 308);
+				done();
+			});
+		});
+
+		it('should return 404 if user is not in room', function (done) {
+			helpers.loginUser('baz', 'quuxquux', function (err, jar) {
+				assert.ifError(err);
+				request(nconf.get('url') + '/api/user/baz/chats/' + roomId, {json: true, jar: jar}, function (err, response, body) {
+					assert.ifError(err);
+					assert.equal(response.statusCode, 404);
+					done();
+				});
 			});
 		});
 	});

@@ -107,10 +107,7 @@ chatsController.redirectToChat = function (req, res, next) {
 			return next(err);
 		}
 
-		if (!roomid) {
-			return helpers.redirect(res, '/user/' + userslug + '/chats');
-		}
-		helpers.redirect(res, '/user/' + userslug + '/chats/' + roomid);
+		helpers.redirect(res, '/user/' + userslug + '/chats' + (roomid ? '/' + roomid : ''));
 	});
 };
 
