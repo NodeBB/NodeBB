@@ -34,9 +34,7 @@ uploadsController.upload = function (req, res, filesIterator) {
 			return res.status(500).send(err.message);
 		}
 
-		// IE8 - send it as text/html so browser won't trigger a file download for the json response
-		// malsup.com/jquery/form/#file-upload
-		res.status(200).send(req.xhr ? images : JSON.stringify(images));
+		res.status(200).send(images);
 	});
 };
 
