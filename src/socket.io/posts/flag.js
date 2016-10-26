@@ -107,7 +107,7 @@ module.exports = function (SocketPosts) {
 
 	SocketPosts.dismissFlag = function (socket, pid, callback) {
 		if (!pid || !socket.uid) {
-			return callback('[[error:invalid-data]]');
+			return callback(new Error('[[error:invalid-data]]'));
 		}
 		async.waterfall([
 			function (next) {
@@ -138,7 +138,7 @@ module.exports = function (SocketPosts) {
 
 	SocketPosts.updateFlag = function (socket, data, callback) {
 		if (!data || !(data.pid && data.data)) {
-			return callback('[[error:invalid-data]]');
+			return callback(new Error('[[error:invalid-data]]'));
 		}
 
 		var payload = {};

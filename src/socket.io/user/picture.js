@@ -11,7 +11,7 @@ module.exports = function (SocketUser) {
 
 	SocketUser.changePicture = function (socket, data, callback) {
 		if (!socket.uid) {
-			return callback('[[error:invalid-uid]]');
+			return callback(new Error('[[error:invalid-uid]]'));
 		}
 
 		if (!data) {

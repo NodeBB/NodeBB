@@ -84,11 +84,12 @@ module.exports = function (SocketUser) {
 	}
 
 	SocketUser.changePassword = function (socket, data, callback) {
+		if (!socket.uid) {
+			return callback(new Error('[[error:invalid-uid]]'));
+		}
+
 		if (!data || !data.uid) {
 			return callback(new Error('[[error:invalid-data]]'));
-		}
-		if (!socket.uid) {
-			return callback('[[error:invalid-uid]]');
 		}
 
 		user.changePassword(socket.uid, data, function (err) {
@@ -108,7 +109,7 @@ module.exports = function (SocketUser) {
 
 	SocketUser.updateProfile = function (socket, data, callback) {
 		if (!socket.uid) {
-			return callback('[[error:invalid-uid]]');
+			return callback(new Error('[[error:invalid-uid]]'));
 		}
 
 		if (!data || !data.uid) {

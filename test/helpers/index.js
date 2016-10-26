@@ -3,6 +3,8 @@
 var request = require('request');
 var nconf = require('nconf');
 
+var myXhr = require('../mocks/newXhr');
+
 var helpers = module.exports;
 
 helpers.loginUser = function (username, password, callback) {
@@ -11,8 +13,8 @@ helpers.loginUser = function (username, password, callback) {
 		url: nconf.get('url') + '/api/config',
 		json: true,
 		jar: jar
-	}, function (err, response, body) {
-		if (err || response.statusCode !== 200) {
+	}, function (err, res, body) {
+		if (err || res.statusCode !== 200) {
 			return callback(err || new Error('[[error:invalid-response]]'));
 		}
 
@@ -26,11 +28,61 @@ helpers.loginUser = function (username, password, callback) {
 			headers: {
 				'x-csrf-token': body.csrf_token
 			}
-		}, function (err, response) {
-			if (err || response.statusCode !== 200) {
+		}, function (err, res) {
+			if (err || res.statusCode !== 200) {
 				return callback(err || new Error('[[error:invalid-response]]'));
 			}
-			callback(null, jar);
+			myXhr.callbacks.test2 = function () {
+				this.setDisableHeaderCheck(true);
+				var stdOpen = this.open;
+				this.open = function () {
+					stdOpen.apply(this, arguments);
+					this.setRequestHeader('Cookie', res.headers['set-cookie'][0].split(';')[0]);
+				};
+			};
+
+			var socketClient = require('socket.io-client');
+
+			var io = socketClient.connect(nconf.get('url'), {forceNew: true, multiplex: false});
+			io.on('connect', function () {
+				callback(null, jar, io);
+			});
+
+			io.on('error', function (err) {
+				callback(err);
+			});
+		});
+	});
+};
+
+helpers.initSocketIO = function (callback) {
+	var jar;
+	request.get({
+		url: nconf.get('url') + '/api/config',
+		jar: jar,
+		json: true
+	}, function (err, res, body) {
+		if (err) {
+			return callback(err);
+		}
+
+		myXhr.callbacks.test2 = function () {
+			this.setDisableHeaderCheck(true);
+			var stdOpen = this.open;
+			this.open = function () {
+				stdOpen.apply(this, arguments);
+				this.setRequestHeader('Cookie', res.headers['set-cookie'][0].split(';')[0]);
+			};
+		};
+
+		var io = require('socket.io-client')(nconf.get('url'), {forceNew: true});
+
+		io.on('connect', function () {
+			callback(null, jar, io);
+		});
+
+		io.on('error', function (err) {
+			callback(err);
 		});
 	});
 };
