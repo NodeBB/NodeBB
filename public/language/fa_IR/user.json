@@ -124,6 +124,6 @@
     "info.banned-no-reason": "هیچ دلیلی ارایه نشد.",
     "info.username-history": "تاریخچه نام کاربری",
     "info.email-history": "تاریخچه رایانامه",
-    "info.moderation-note": "یادداشت میانه‌روی",
-    "info.moderation-note.success": "یادداشت میانه‌روی ذخیره شد"
+    "info.moderation-note": "یادداشت مدیر",
+    "info.moderation-note.success": "یادداشت مدیر ذخیره شد"
 }
