@@ -52,4 +52,88 @@ describe('Utility Methods', function () {
 			done();
 		});
 	});
+
+	it('should remove punctuation', function (done) {
+		var removed = utils.removePunctuation('some text with , ! punctuation inside "');
+		assert.equal(removed, 'some text with   punctuation inside ');
+		done();
+	});
+
+	it('should return true if string has language key', function (done) {
+		assert.equal(utils.hasLanguageKey('some text [[topic:title]] and [[user:reputaiton]]'), true);
+		done();
+	});
+
+	it('should return false if string does not have language key', function (done) {
+		assert.equal(utils.hasLanguageKey('some text with no language keys'), false);
+		done();
+	});
+
+	it('should shallow merge two objects', function (done) {
+		var a = {foo: 1, cat1: 'ginger'};
+		var b = {baz: 2, cat2: 'phoebe'};
+		var obj = utils.merge(a, b);
+		assert.strictEqual(obj.foo, 1);
+		assert.strictEqual(obj.baz, 2);
+		assert.strictEqual(obj.cat1, 'ginger');
+		assert.strictEqual(obj.cat2, 'phoebe');
+		done();
+	});
+
+	it('should return the file extesion', function (done) {
+		assert.equal(utils.fileExtension('/path/to/some/file.png'), 'png');
+		done();
+	});
+
+	it('should return file mime type', function (done) {
+		assert.equal(utils.fileMimeType('/path/to/some/file.png'), 'image/png');
+		done();
+	});
+
+	it('should check if url is relative', function (done) {
+		assert.equal(utils.isRelativeUrl('/topic/1/slug'), true);
+		done();
+	});
+
+	it('should check if url is relative', function (done) {
+		assert.equal(utils.isRelativeUrl('https://nodebb.org'), false);
+		done();
+	});
+
+	it('should make number human readable', function (done) {
+		assert.equal(utils.makeNumberHumanReadable('1000'), '1.0k');
+		done();
+	});
+
+	it('should make number human readable', function (done) {
+		assert.equal(utils.makeNumberHumanReadable('1100000'), '1.1m');
+		done();
+	});
+
+	it('should make number human readable', function (done) {
+		assert.equal(utils.makeNumberHumanReadable('100'), '100');
+		done();
+	});
+
+	it('should make number human readable', function (done) {
+		assert.equal(utils.makeNumberHumanReadable(null), null);
+		done();
+	});
+
+	it('should add commas to numbers', function (done) {
+		assert.equal(utils.addCommas('100'), '100');
+		done();
+	});
+
+	it('should add commas to numbers', function (done) {
+		assert.equal(utils.addCommas('1000'), '1,000');
+		done();
+	});
+
+	it('should add commas to numbers', function (done) {
+		assert.equal(utils.addCommas('1000000'), '1,000,000');
+		done();
+	});
+
+
 });
