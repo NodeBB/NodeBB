@@ -1,5 +1,4 @@
 'use strict';
-/*global require, before, after*/
 
 var async = require('async');
 var	assert = require('assert');
@@ -8,17 +7,37 @@ var request = require('request');
 
 var db = require('./mocks/databasemock');
 var categories = require('../src/categories');
+var topics = require('../src/topics');
+var user = require('../src/user');
 var meta = require('../src/meta');
 
 
 describe('Controllers', function () {
 
+	var tid;
+	var cid;
+
 	before(function (done) {
-		categories.create({
-			name: 'Test Category',
-			description: 'Test category created by testing script'
-		}, function (err) {
-			done(err);
+		async.series({
+			category: function (next) {
+				categories.create({
+					name: 'Test Category',
+					description: 'Test category created by testing script'
+				}, next);
+			},
+			user: function (next) {
+				user.create({username: 'foo', password: 'barbar'}, next);
+			}
+		}, function (err, results) {
+			if (err) {
+				return done(err);
+			}
+			cid = results.category.cid;
+
+			topics.post({uid: results.user, title: 'test topic title', content: 'test topic content', cid: results.category.cid}, function (err, result) {
+				tid = result.topicData.tid;
+				done(err);
+			});
 		});
 	});
 
@@ -191,6 +210,77 @@ describe('Controllers', function () {
 		});
 	});
 
+	it('should load topic rss feed', function (done) {
+		request(nconf.get('url') + '/topic/' + tid + '.rss', function (err, res, body) {
+			assert.ifError(err);
+			assert.equal(res.statusCode, 200);
+			assert(body);
+			done();
+		});
+	});
+
+	it('should load category rss feed', function (done) {
+		request(nconf.get('url') + '/category/' + cid + '.rss', function (err, res, body) {
+			assert.ifError(err);
+			assert.equal(res.statusCode, 200);
+			assert(body);
+			done();
+		});
+	});
+
+	it('should load recent rss feed', function (done) {
+		request(nconf.get('url') + '/recent.rss', function (err, res, body) {
+			assert.ifError(err);
+			assert.equal(res.statusCode, 200);
+			assert(body);
+			done();
+		});
+	});
+
+	it('should load popular rss feed', function (done) {
+		request(nconf.get('url') + '/popular.rss', function (err, res, body) {
+			assert.ifError(err);
+			assert.equal(res.statusCode, 200);
+			assert(body);
+			done();
+		});
+	});
+
+	it('should load popular rss feed with term', function (done) {
+		request(nconf.get('url') + '/popular/day.rss', function (err, res, body) {
+			assert.ifError(err);
+			assert.equal(res.statusCode, 200);
+			assert(body);
+			done();
+		});
+	});
+
+	it('should load recent posts rss feed', function (done) {
+		request(nconf.get('url') + '/recentposts.rss', function (err, res, body) {
+			assert.ifError(err);
+			assert.equal(res.statusCode, 200);
+			assert(body);
+			done();
+		});
+	});
+
+	it('should load category recent posts rss feed', function (done) {
+		request(nconf.get('url') + '/category/' + cid + '/recentposts.rss', function (err, res, body) {
+			assert.ifError(err);
+			assert.equal(res.statusCode, 200);
+			assert(body);
+			done();
+		});
+	});
+
+	it('should load user topics rss feed', function (done) {
+		request(nconf.get('url') + '/user/foo/topics.rss', function (err, res, body) {
+			assert.ifError(err);
+			assert.equal(res.statusCode, 200);
+			assert(body);
+			done();
+		});
+	});
 
 	after(function (done) {
 		db.emptydb(done);
