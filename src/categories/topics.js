@@ -89,7 +89,7 @@ module.exports = function (Categories) {
 					db.sortedSetAdd('cid:' + cid + ':tids', postData.timestamp, postData.tid, next);
 				}
 			},
-			function (next){
+			function (next) {
 				Categories.updateRecentTid(cid, postData.tid, next);
 			},
 			function (next) {

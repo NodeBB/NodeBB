@@ -2,6 +2,8 @@
 
 module.exports = function (redisClient, module) {
 
+	var utils = require('../../../public/src/utils');
+
 	var helpers = module.helpers.redis;
 
 	module.sortedSetAdd = function (key, score, value, callback) {
@@ -189,7 +191,9 @@ module.exports = function (redisClient, module) {
 	};
 
 	module.sortedSetScore = function (key, value, callback) {
-		redisClient.zscore(key, value, callback);
+		redisClient.zscore(key, value, function (err, score) {
+			callback(err, !err ? parseInt(score, 10) : undefined);
+		});
 	};
 
 	module.sortedSetsScore = function (keys, value, callback) {
@@ -202,7 +206,7 @@ module.exports = function (redisClient, module) {
 
 	module.isSortedSetMember = function (key, value, callback) {
 		module.sortedSetScore(key, value, function (err, score) {
-			callback(err, !!score);
+			callback(err, utils.isNumber(score));
 		});
 	};
 
@@ -289,7 +293,9 @@ module.exports = function (redisClient, module) {
 	}
 
 	module.sortedSetIncrBy = function (key, increment, value, callback) {
-		redisClient.zincrby(key, increment, value, callback);
+		redisClient.zincrby(key, increment, value, function (err, newValue) {
+			callback(err, !err ? parseInt(newValue, 10) : undefined);
+		});
 	};
 
 	module.getSortedSetRangeByLex = function (key, min, max, start, count, callback) {

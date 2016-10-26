@@ -33,7 +33,7 @@ app.cacheBuster = null;
 			app.handleSearch();
 		}
 
-		$('body').on('click', '#new_topic', function (){
+		$('body').on('click', '#new_topic', function () {
 			app.newTopic();
 		});
 
@@ -41,7 +41,7 @@ app.cacheBuster = null;
 			components.get('user/logout').on('click', app.logout);
 		});
 
-		Visibility.change(function (event, state){
+		Visibility.change(function (event, state) {
 			if (state === 'visible') {
 				app.isFocused = true;
 				app.alternatingTitle('');
@@ -428,7 +428,7 @@ app.cacheBuster = null;
 		$('#search-form').on('submit', dismissSearch);
 		searchInput.on('blur', dismissSearch);
 
-		function dismissSearch(){
+		function dismissSearch() {
 			searchFields.addClass('hidden');
 			searchButton.removeClass('hidden');
 		}

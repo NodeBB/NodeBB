@@ -7,8 +7,8 @@ var Translator = shim.Translator;
 
 require('../src/languages').init(function () {});
 
-describe('translator shim', function (){
-	describe('.translate()', function (){
+describe('translator shim', function () {
+	describe('.translate()', function () {
 		it('should translate correctly', function (done) {
 			shim.translate('[[global:pagination.out_of, (foobar), [[global:home]]]]', function (translated) {
 				assert.strictEqual(translated, '(foobar) out of Home');

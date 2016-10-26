@@ -21,7 +21,7 @@ module.exports = function (SocketPosts) {
 				privileges.posts.canMove(data.pid, socket.uid, next);
 			},
 			function (canMove, next) {
-				if (!canMove){
+				if (!canMove) {
 					return next(new Error('[[error:no-privileges]]'));
 				}
 

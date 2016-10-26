@@ -393,7 +393,7 @@ var social = require('./social');
 					});
 				}, next);
 			}
-		], function (err){
+		], function (err) {
 			callback(err);
 		});
 	};

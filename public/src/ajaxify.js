@@ -122,7 +122,7 @@ $(document).ready(function () {
 
 		var payload = {
 			url: url
-		}
+		};
 
 		$(window).trigger('action:ajaxify.start', payload);
 
@@ -272,6 +272,9 @@ $(document).ready(function () {
 		apiXHR = $.ajax({
 			url: RELATIVE_PATH + '/api/' + url,
 			cache: false,
+			headers: {
+				'X-Return-To': app.previousUrl
+			},
 			success: function (data) {
 				if (!data) {
 					return;

@@ -368,7 +368,7 @@ describe('Sorted Set methods', function () {
 
 		it('should return false if sorted set does not exist', function (done) {
 			db.isSortedSetMember('doesnotexist', 'value1', function (err, isMember) {
-				assert.equal(err, null);
+				assert.ifError(err);
 				assert.equal(arguments.length, 2);
 				assert.equal(isMember, false);
 				done();
@@ -377,7 +377,7 @@ describe('Sorted Set methods', function () {
 
 		it('should return false if element is not in sorted set', function (done) {
 			db.isSortedSetMember('sorted2', 'value5', function (err, isMember) {
-				assert.equal(err, null);
+				assert.ifError(err);
 				assert.equal(arguments.length, 2);
 				assert.equal(isMember, false);
 				done();
@@ -386,17 +386,17 @@ describe('Sorted Set methods', function () {
 
 		it('should return true if element is in sorted set', function (done) {
 			db.isSortedSetMember('sortedSetTest1', 'value2', function (err, isMember) {
-				assert.equal(err, null);
+				assert.ifError(err);
 				assert.equal(arguments.length, 2);
-				assert.deepEqual(isMember, true);
+				assert.strictEqual(isMember, true);
 				done();
 			});
 		});
 
-		it('should return true if element is in sorted set with score 0', function (done) {
+		it('should return true if element is in sorted set with sre 0', function (done) {
 			db.isSortedSetMember('zeroscore', 'itemwithzeroscore', function (err, isMember) {
 				assert.ifError(err);
-				assert.deepEqual(isMember, true);
+				assert.strictEqual(isMember, true);
 				done();
 			});
 		});
@@ -476,10 +476,10 @@ describe('Sorted Set methods', function () {
 			db.sortedSetIncrBy('sortedIncr', 1, 'field1', function (err, newValue) {
 				assert.equal(err, null);
 				assert.equal(arguments.length, 2);
-				assert.equal(newValue, 1);
+				assert.strictEqual(newValue, 1);
 				db.sortedSetScore('sortedIncr', 'field1', function (err, score) {
 					assert.equal(err, null);
-					assert.equal(score, 1);
+					assert.strictEqual(score, 1);
 					done();
 				});
 			});
@@ -489,10 +489,10 @@ describe('Sorted Set methods', function () {
 			db.sortedSetIncrBy('sortedIncr', 5, 'field1', function (err, newValue) {
 				assert.equal(err, null);
 				assert.equal(arguments.length, 2);
-				assert.equal(newValue, 6);
+				assert.strictEqual(newValue, 6);
 				db.sortedSetScore('sortedIncr', 'field1', function (err, score) {
 					assert.equal(err, null);
-					assert.equal(score, 6);
+					assert.strictEqual(score, 6);
 					done();
 				});
 			});

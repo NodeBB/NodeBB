@@ -51,6 +51,6 @@
     "membership.reject": "Ablehnen",
     "new-group.group_name": "Gruppenname:",
     "upload-group-cover": "Gruppentitelbild hochladen",
-    "bulk-invite-instructions": "Enter a list of comma separated usernames to invite to this group",
-    "bulk-invite": "Bulk Invite"
+    "bulk-invite-instructions": "Gib eine mit Kommata getrennte Liste von Benutzernamen ein, um sie in diese Gruppe aufzunehmen",
+    "bulk-invite": "Mehrere einladen"
 }

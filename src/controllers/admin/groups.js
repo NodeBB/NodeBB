@@ -52,7 +52,7 @@ groupsController.list = function (req, res, next) {
 groupsController.get = function (req, res, callback) {
 	var groupName = req.params.name;
 	async.waterfall([
-		function (next){
+		function (next) {
 			groups.exists(groupName, next);
 		},
 		function (exists, next) {

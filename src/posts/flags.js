@@ -62,11 +62,7 @@ module.exports = function (Posts) {
 				], next);
 			},
 			function (data, next) {
-				if (data[1] === 1) {	// Only update state on new flag
-					Posts.updateFlagData(uid, post.pid, {
-						state: 'open'
-					}, next);
-				}
+				openNewFlag(post.pid, uid, next);
 			}
 		], function (err) {
 			if (err) {
@@ -76,6 +72,21 @@ module.exports = function (Posts) {
 			callback();
 		});
 	};
+
+	function openNewFlag(pid, uid, callback) {
+		db.sortedSetScore('posts:flags:count', pid, function (err, count) {
+			if (err) {
+				return callback(err);
+			}
+			if (count === 1) {	// Only update state on new flag
+				Posts.updateFlagData(uid, pid, {
+					state: 'open'
+				}, callback);
+			} else {
+				callback();
+			}
+		});
+	}
 
 	function hasFlagged(pid, uid, callback) {
 		db.isSortedSetMember('pid:' + pid + ':flag:uids', uid, callback);

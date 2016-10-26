@@ -60,7 +60,7 @@ define('forum/groups/list', ['forum/infinitescroll'], function (infinitescroll) 
 				$('[component="groups/container"]').attr('data-nextstart', data.nextStart);
 			}
 		});
-	}
+	};
 
 	Groups.search = function () {
 		var groupsEl = $('#groups-list'),

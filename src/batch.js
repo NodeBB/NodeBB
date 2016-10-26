@@ -29,7 +29,7 @@ var async = require('async'),
 		}
 
 		// custom done condition
-		options.doneIf = typeof options.doneIf === 'function' ? options.doneIf : function (){};
+		options.doneIf = typeof options.doneIf === 'function' ? options.doneIf : function () {};
 
 		var batch = options.batch || DEFAULT_BATCH_SIZE;
 		var start = 0;

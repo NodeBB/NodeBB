@@ -7,7 +7,7 @@ var utils = require('./../public/src/utils.js');
 
 describe('Utility Methods', function () {
 	describe('username validation', function () {
-		it('accepts latin-1 characters', function (){
+		it('accepts latin-1 characters', function () {
 			var username = "John\"'-. Doeäâèéë1234";
 			assert(utils.isUserNameValid(username), 'invalid username');
 		});
@@ -29,7 +29,7 @@ describe('Utility Methods', function () {
 	});
 
 	describe('UUID generation', function () {
-		it('return unique random value every time', function (){
+		it('return unique random value every time', function () {
 			var uuid1 = utils.generateUUID(),
 				uuid2 = utils.generateUUID();
 			assert.notEqual(uuid1, uuid2, 'matches');

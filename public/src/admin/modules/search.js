@@ -59,7 +59,7 @@ define(function () {
 				value = $input.val().toLowerCase(),
 				menuItems = $('#acp-search .dropdown-menu').html('');
 
-			function toUpperCase(txt){
+			function toUpperCase(txt) {
 				return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
 			}
 

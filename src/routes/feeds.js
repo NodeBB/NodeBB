@@ -364,7 +364,7 @@ function sendFeed(feed, res) {
 	res.type('xml').set('Content-Length', Buffer.byteLength(xml)).send(xml);
 }
 
-module.exports = function (app, middleware, controllers){
+module.exports = function (app, middleware, controllers) {
 	app.get('/topic/:topic_id.rss', generateForTopic);
 	app.get('/category/:category_id.rss', generateForCategory);
 	app.get('/recent.rss', generateForRecent);

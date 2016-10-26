@@ -2,12 +2,14 @@
 /*global require, before, after*/
 
 var assert = require('assert');
-var db = require('./mocks/databasemock');
 var async = require('async');
+var request = require('request');
+var nconf = require('nconf');
+
+var db = require('./mocks/databasemock');
 var User = require('../src/user');
 var Groups = require('../src/groups');
 var Messaging = require('../src/messaging');
-
 
 describe('Messaging Library', function () {
 	var testUids;
@@ -126,6 +128,17 @@ describe('Messaging Library', function () {
 			});
 		});
 	});
+
+	describe('controller', function () {
+		it('should 404 for guest', function (done) {
+			request(nconf.get('url') + '/user/baz/chats', function (err, response) {
+				assert.ifError(err);
+				assert.equal(response.statusCode, 404);
+				done();
+			});
+		});
+	});
+
 
 	after(function (done) {
 		db.emptydb(done);

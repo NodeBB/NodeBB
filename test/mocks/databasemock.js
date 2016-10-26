@@ -33,7 +33,7 @@
 	var testDbConfig = nconf.get('test_database');
 	var productionDbConfig = nconf.get(dbType);
 
-	if (!testDbConfig){
+	if (!testDbConfig) {
 		errorText = 'test_database is not defined';
 		winston.info(
 			'\n===========================================================\n' +

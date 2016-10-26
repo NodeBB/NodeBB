@@ -5,7 +5,7 @@ define('admin/appearance/themes', function () {
 	var Themes = {};
 	
 	Themes.init = function () {
-		$('#installed_themes').on('click', function (e){
+		$('#installed_themes').on('click', function (e) {
 			var target = $(e.target),
 				action = target.attr('data-action');
 

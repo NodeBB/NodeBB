@@ -35,7 +35,7 @@ define('forum/tags', ['forum/infinitescroll'], function (infinitescroll) {
 	};
 
 	Tags.loadMoreTags = function (direction) {
-		if(direction < 0 || !$('.tag-list').length) {
+		if (direction < 0 || !$('.tag-list').length || $('#tag-search').val()) {
 			return;
 		}
 
