@@ -10,6 +10,7 @@ app.cacheBuster = null;
 
 (function () {
 	var showWelcomeMessage = !!utils.params().loggedin;
+	var showBannedMessage = !!utils.params().banned;
 
 	templates.setGlobal('config', config);
 
@@ -246,22 +247,59 @@ app.cacheBuster = null;
 		window.scrollTo(0, 0);
 	};
 
-	app.showLoginMessage = function () {
-		function showAlert() {
-			app.alert({
-				type: 'success',
+	app.showMessages = function () {
+		var messages = {
+			login: {
+				format: 'alert',
 				title: '[[global:welcome_back]] ' + app.user.username + '!',
-				message: '[[global:you_have_successfully_logged_in]]',
-				timeout: 5000
-			});
+				message: '[[global:you_have_successfully_logged_in]]'
+			},
+			banned: {
+				format: 'modal',
+				title: '[[error:user-banned]]',
+				message: '[[error:user-banned-reason, ' + utils.params().banned + ']]'
+			}
+		};
+
+		function showAlert(type) {
+			switch (messages[type].format) {
+				case 'alert':
+					app.alert({
+						type: 'success',
+						title: messages[type].title,
+						message: messages[type].message,
+						timeout: 5000
+					});
+					break;
+
+				case 'modal':
+					require(['translator'], function (translator) {
+						translator.translate(messages[type].message, function (translated) {
+							bootbox.alert({
+								title: messages[type].title,
+								message: translated
+							});
+						});
+					});
+					break;
+			}
 		}
 
 		if (showWelcomeMessage) {
 			showWelcomeMessage = false;
 			if (document.readyState !== 'complete') {
-				$(document).ready(showAlert);
+				$(document).ready(showAlert.bind(null, 'login'));
 			} else {
-				showAlert();
+				showAlert('login');
+			}
+		}
+
+		if (showBannedMessage) {
+			showBannedMessage = false;
+			if (document.readyState !== 'complete') {
+				$(document).ready(showAlert.bind(null, 'banned'));
+			} else {
+				showAlert('banned');
 			}
 		}
 	};

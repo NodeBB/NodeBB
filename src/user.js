@@ -19,6 +19,7 @@ var meta = require('./meta');
 
 	require('./user/data')(User);
 	require('./user/auth')(User);
+	require('./user/bans')(User);
 	require('./user/create')(User);
 	require('./user/posts')(User);
 	require('./user/topics')(User);

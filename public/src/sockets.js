@@ -42,7 +42,7 @@ app.isConnected = false;
 		app.isConnected = true;
 
 		if (!reconnecting) {
-			app.showLoginMessage();
+			app.showMessages();
 			$(window).trigger('action:connected');
 		}
 

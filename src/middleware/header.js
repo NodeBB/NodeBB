@@ -98,7 +98,8 @@ module.exports = function (middleware) {
 				db.get('uid:' + req.uid + ':confirm:email:sent', next);
 			},
 			navigation: async.apply(navigation.get),
-			tags: async.apply(meta.tags.parse, res.locals.metaTags, res.locals.linkTags)
+			tags: async.apply(meta.tags.parse, res.locals.metaTags, res.locals.linkTags),
+			banReason: async.apply(user.getBannedReason, req.uid)
 		}, function (err, results) {
 			if (err) {
 				return callback(err);
@@ -106,7 +107,7 @@ module.exports = function (middleware) {
 
 			if (results.user && parseInt(results.user.banned, 10) === 1) {
 				req.logout();
-				return res.redirect('/');
+				return res.redirect('/?banned=' + (results.banReason || ''));
 			}
 
 			results.user.isAdmin = results.isAdmin;
