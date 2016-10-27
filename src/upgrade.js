@@ -924,7 +924,7 @@ Upgrade.upgrade = function (callback) {
 						}
 
 						async.each(data, function (postData, next) {
-							if (!parseInt(post.toPid, 10)) {
+							if (!parseInt(postData.toPid, 10)) {
 								return next(null);
 							}
 							async.parallel([
