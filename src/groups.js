@@ -296,7 +296,7 @@ var utils = require('../public/src/utils');
 	};
 
 	Groups.isHidden = function (groupName, callback) {
-		db.getObjectField(groupName, 'hidden', function (err, isHidden) {
+		db.getObjectField('group:' + groupName, 'hidden', function (err, isHidden) {
 			if (err) {
 				return callback(err);
 			}

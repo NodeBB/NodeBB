@@ -16,6 +16,7 @@ describe('Controllers', function () {
 
 	var tid;
 	var cid;
+	var fooUid;
 
 	before(function (done) {
 		async.series({
@@ -33,6 +34,7 @@ describe('Controllers', function () {
 				return done(err);
 			}
 			cid = results.category.cid;
+			fooUid = results.user;
 
 			topics.post({uid: results.user, title: 'test topic title', content: 'test topic content', cid: results.category.cid}, function (err, result) {
 				tid = result.topicData.tid;
@@ -379,6 +381,84 @@ describe('Controllers', function () {
 			assert.equal(res.statusCode, 200);
 			assert(body);
 			done();
+		});
+	});
+
+	it('should load users page', function (done) {
+		request(nconf.get('url') + '/users', function (err, res, body) {
+			assert.ifError(err);
+			assert.equal(res.statusCode, 200);
+			assert(body);
+			done();
+		});
+	});
+
+	it('should load users page', function (done) {
+		request(nconf.get('url') + '/users?section=online', function (err, res, body) {
+			assert.ifError(err);
+			assert.equal(res.statusCode, 200);
+			assert(body);
+			done();
+		});
+	});
+
+	it('should load users search page', function (done) {
+		request(nconf.get('url') + '/users?term=bar&section=sort-posts', function (err, res, body) {
+			assert.ifError(err);
+			assert.equal(res.statusCode, 200);
+			assert(body);
+			done();
+		});
+	});
+
+	it('should load groups page', function (done) {
+		request(nconf.get('url') + '/groups', function (err, res, body) {
+			assert.ifError(err);
+			assert.equal(res.statusCode, 200);
+			assert(body);
+			done();
+		});
+	});
+
+	it('should load group details page', function (done) {
+		var groups = require('../src/groups');
+		groups.create({
+			name: 'group-details',
+			description: 'Foobar!',
+			hidden: 0
+		}, function (err) {
+			assert.ifError(err);
+			request(nconf.get('url') + '/groups/group-details', function (err, res, body) {
+				assert.ifError(err);
+				assert.equal(res.statusCode, 200);
+				assert(body);
+				done();
+			});
+		});
+	});
+
+	it('should load group members page', function (done) {
+		request(nconf.get('url') + '/groups/group-details/members', function (err, res, body) {
+			assert.ifError(err);
+			assert.equal(res.statusCode, 200);
+			assert(body);
+			done();
+		});
+	});
+
+	it('should 404 when trying to load group members of hidden group', function (done) {
+		var groups = require('../src/groups');
+		groups.create({
+			name: 'hidden-group',
+			description: 'Foobar!',
+			hidden: 1
+		}, function (err) {
+			assert.ifError(err);
+			request(nconf.get('url') + '/groups/hidden-group/members', function (err, res, body) {
+				assert.ifError(err);
+				assert.equal(res.statusCode, 404);
+				done();
+			});
 		});
 	});
 

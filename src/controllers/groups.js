@@ -115,19 +115,33 @@ groupsController.details = function (req, res, callback) {
 	});
 };
 
-groupsController.members = function (req, res, next) {
+groupsController.members = function (req, res, callback) {
 	var groupName;
 	async.waterfall([
 		function (next) {
 			groups.getGroupNameByGroupSlug(req.params.slug, next);
 		},
 		function (_groupName, next) {
+			if (!_groupName) {
+				return callback();
+			}
 			groupName = _groupName;
+			async.parallel({
+				isAdminOrGlobalMod: async.apply(user.isAdminOrGlobalMod, req.uid),
+				isMember: async.apply(groups.isMember, req.uid, groupName),
+				isHidden: async.apply(groups.isHidden, groupName)
+			}, next);
+		},
+		function (results, next) {
+			if (results.isHidden && !results.isMember && !results.isAdminOrGlobalMod) {
+				return callback();
+			}
+
 			user.getUsersFromSet('group:' + groupName + ':members', req.uid, 0, 49, next);
 		},
 	], function (err, users) {
-		if (err || !groupName) {
-			return next(err);
+		if (err) {
+			return callback(err);
 		}
 
 		var breadcrumbs = helpers.buildBreadcrumbs([
