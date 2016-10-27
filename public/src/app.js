@@ -10,7 +10,7 @@ app.cacheBuster = null;
 
 (function () {
 	var showWelcomeMessage = !!utils.params().loggedin;
-	var showBannedMessage = !!utils.params().banned;
+	var showBannedMessage = !!utils.params().banned && app.user && app.user.uid === 0;
 
 	templates.setGlobal('config', config);
 
