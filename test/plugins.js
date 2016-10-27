@@ -22,7 +22,7 @@ describe('Plugins', function () {
 		});
 	});
 
-	it('should return true of hook has listeners', function (done) {
+	it('should return true if hook has listeners', function (done) {
 		assert(plugins.hasListeners('filter:parse.post'));
 		done();
 	});
@@ -67,6 +67,31 @@ describe('Plugins', function () {
 		plugins.registerHook('test-plugin', {hook: 'static:test.hook', method: actionMethod});
 		plugins.fireHook('static:test.hook', {bar: 'test'}, function (err) {
 			assert.ifError(err);
+			done();
+		});
+	});
+
+	it('should get plugin data from nbbpm', function (done) {
+		plugins.get('nodebb-plugin-markdown', function (err, data) {
+			assert.ifError(err);
+			var keys = ['id', 'name', 'url', 'description', 'latest', 'installed', 'active', 'latest'];
+			assert.equal(data.name, 'nodebb-plugin-markdown');
+			assert.equal(data.id, 'nodebb-plugin-markdown');
+			keys.forEach(function (key) {
+				assert(data.hasOwnProperty(key));
+			});
+			done();
+		});
+	});
+
+	it('should get a list of plugins', function (done) {
+		plugins.list(function (err, data) {
+			assert.ifError(err);
+			var keys = ['id', 'name', 'url', 'description', 'latest', 'installed', 'active', 'latest'];
+			assert(Array.isArray(data));
+			keys.forEach(function (key) {
+				assert(data[0].hasOwnProperty(key));
+			});
 			done();
 		});
 	});

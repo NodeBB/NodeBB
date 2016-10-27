@@ -248,8 +248,8 @@ var middleware;
 			callback = matching;
 			matching = true;
 		}
-
-		var url = (nconf.get('registry') || 'https://packages.nodebb.org') + '/api/v1/plugins' + (matching !== false ? '?version=' + require('../package.json').version : '');
+		var version = require(path.join(nconf.get('base_dir'), 'package.json')).version;
+		var url = (nconf.get('registry') || 'https://packages.nodebb.org') + '/api/v1/plugins' + (matching !== false ? '?version=' + version : '');
 
 		require('request')(url, {
 			json: true
@@ -265,7 +265,7 @@ var middleware;
 
 	Plugins.normalise = function (apiReturn, callback) {
 		var pluginMap = {};
-		var dependencies = require.main.require('./package.json').dependencies;
+		var dependencies = require(path.join(nconf.get('base_dir'), 'package.json')).dependencies;
 		apiReturn = apiReturn || [];
 		for(var i = 0; i < apiReturn.length; ++i) {
 			apiReturn[i].id = apiReturn[i].name;
