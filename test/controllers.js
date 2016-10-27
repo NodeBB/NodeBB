@@ -282,6 +282,106 @@ describe('Controllers', function () {
 		});
 	});
 
+	it('should load stylesheet.css', function (done) {
+		request(nconf.get('url') + '/stylesheet.css', function (err, res, body) {
+			assert.ifError(err);
+			assert.equal(res.statusCode, 200);
+			assert(body);
+			done();
+		});
+	});
+
+	it('should load admin.css', function (done) {
+		request(nconf.get('url') + '/admin.css', function (err, res, body) {
+			assert.ifError(err);
+			assert.equal(res.statusCode, 200);
+			assert(body);
+			done();
+		});
+	});
+
+
+	it('should load nodebb.min.js', function (done) {
+		request(nconf.get('url') + '/nodebb.min.js', function (err, res, body) {
+			assert.ifError(err);
+			assert.equal(res.statusCode, 200);
+			assert(body);
+			done();
+		});
+	});
+
+	it('should load acp.min.js', function (done) {
+		request(nconf.get('url') + '/acp.min.js', function (err, res, body) {
+			assert.ifError(err);
+			assert.equal(res.statusCode, 200);
+			assert(body);
+			done();
+		});
+	});
+
+	it('should load sitemap.xml', function (done) {
+		request(nconf.get('url') + '/sitemap.xml', function (err, res, body) {
+			assert.ifError(err);
+			assert.equal(res.statusCode, 200);
+			assert(body);
+			done();
+		});
+	});
+
+	it('should load sitemap/pages.xml', function (done) {
+		request(nconf.get('url') + '/sitemap/pages.xml', function (err, res, body) {
+			assert.ifError(err);
+			assert.equal(res.statusCode, 200);
+			assert(body);
+			done();
+		});
+	});
+
+	it('should load sitemap/categories.xml', function (done) {
+		request(nconf.get('url') + '/sitemap/categories.xml', function (err, res, body) {
+			assert.ifError(err);
+			assert.equal(res.statusCode, 200);
+			assert(body);
+			done();
+		});
+	});
+
+	it('should load sitemap/topics/1.xml', function (done) {
+		request(nconf.get('url') + '/sitemap/topics.1.xml', function (err, res, body) {
+			assert.ifError(err);
+			assert.equal(res.statusCode, 200);
+			assert(body);
+			done();
+		});
+	});
+
+	it('should load robots.txt', function (done) {
+		request(nconf.get('url') + '/robots.txt', function (err, res, body) {
+			assert.ifError(err);
+			assert.equal(res.statusCode, 200);
+			assert(body);
+			done();
+		});
+	});
+
+	it('should load manifest.json', function (done) {
+		request(nconf.get('url') + '/manifest.json', function (err, res, body) {
+			assert.ifError(err);
+			assert.equal(res.statusCode, 200);
+			assert(body);
+			done();
+		});
+	});
+
+	it('should load theme screenshot', function (done) {
+		request(nconf.get('url') + '/css/previews/nodebb-theme-persona', function (err, res, body) {
+			assert.ifError(err);
+			assert.equal(res.statusCode, 200);
+			assert(body);
+			done();
+		});
+	});
+
 	after(function (done) {
 		db.emptydb(done);
 	});
