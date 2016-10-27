@@ -118,6 +118,13 @@ SocketPosts.getPidIndex = function (socket, data, callback) {
 	posts.getPidIndex(data.pid, data.tid, data.topicPostSort, callback);
 };
 
+SocketPosts.getReplies = function (socket, pid, callback) {
+	if (!utils.isNumber(pid)) {
+		return callback(new Error('[[error:invalid-data]'));
+	}
+
+	posts.getPostSummariesFromSet('pid:' + pid + ':replies', socket.uid, 0, -1, callback);
+};
 
 
 module.exports = SocketPosts;
