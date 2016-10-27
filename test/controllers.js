@@ -16,6 +16,7 @@ describe('Controllers', function () {
 
 	var tid;
 	var cid;
+	var pid;
 	var fooUid;
 
 	before(function (done) {
@@ -38,6 +39,7 @@ describe('Controllers', function () {
 
 			topics.post({uid: results.user, title: 'test topic title', content: 'test topic content', cid: results.category.cid}, function (err, result) {
 				tid = result.topicData.tid;
+				pid = result.postData.pid;
 				done(err);
 			});
 		});
@@ -459,6 +461,33 @@ describe('Controllers', function () {
 				assert.equal(res.statusCode, 404);
 				done();
 			});
+		});
+	});
+
+	it('should get post data', function (done) {
+		request(nconf.get('url') + '/api/post/pid/' + pid, function (err, res, body) {
+			assert.ifError(err);
+			assert.equal(res.statusCode, 200);
+			assert(body);
+			done();
+		});
+	});
+
+	it('should get topic data', function (done) {
+		request(nconf.get('url') + '/api/topic/tid/' + tid, function (err, res, body) {
+			assert.ifError(err);
+			assert.equal(res.statusCode, 200);
+			assert(body);
+			done();
+		});
+	});
+
+	it('should get category data', function (done) {
+		request(nconf.get('url') + '/api/category/cid/' + cid, function (err, res, body) {
+			assert.ifError(err);
+			assert.equal(res.statusCode, 200);
+			assert(body);
+			done();
 		});
 	});
 

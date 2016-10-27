@@ -21,36 +21,36 @@ module.exports = function (Posts) {
 	};
 
 	Posts.getCidsByPids = function (pids, callback) {
-		Posts.getPostsFields(pids, ['tid'], function (err, posts) {
-			if (err) {
-				return callback(err);
-			}
+		var tids;
+		var postData;
+		async.waterfall([
+			function (next) {
+				Posts.getPostsFields(pids, ['tid'], next);
+			},
+			function (_postData, next) {
+				postData = _postData;
+				tids = postData.map(function (post) {
+					return post.tid;
+				}).filter(function (tid, index, array) {
+					return tid && array.indexOf(tid) === index;
+				});
 
-			var tids = posts.map(function (post) {
-				return post.tid;
-			}).filter(function (tid, index, array) {
-				return tid && array.indexOf(tid) === index;
-			});
-
-			topics.getTopicsFields(tids, ['cid'], function (err, topics) {
-				if (err) {
-					return callback(err);
-				}
-
+				topics.getTopicsFields(tids, ['cid'], next);
+			},
+			function (topicData, next) {
 				var map = {};
-				topics.forEach(function (topic, index) {
+				topicData.forEach(function (topic, index) {
 					if (topic) {
 						map[tids[index]] = topic.cid;
 					}
 				});
 
-				var cids = posts.map(function (post) {
+				var cids = postData.map(function (post) {
 					return map[post.tid];
 				});
-
-				callback(null, cids);
-			});
-		});
+				next(null, cids);
+			}
+		], callback);
 	};
 
 	Posts.filterPidsByCid = function (pids, cid, callback) {
