@@ -44,14 +44,26 @@
 		 * @param {string} language - Language code for this translator instance
 		 */
 		function Translator(language) {
-			classCallCheck(this, Translator);
+			var self = this;
+			classCallCheck(self, Translator);
 
 			if (!language) {
 				throw new TypeError('Parameter `language` must be a language string. Received ' + language + (language === '' ? '(empty string)' : ''));
 			}
 
-			this.lang = language;
-			this.translations = {};
+			self.modules = Object.keys(Translator.moduleFactories).map(function (namespace) {
+				var factory = Translator.moduleFactories[namespace];
+				return [namespace, factory(language)];
+			}).reduce(function (prev, elem) {
+				var namespace = elem[0];
+				var module = elem[1];
+				prev[namespace] = module;
+
+				return prev;
+			}, {});
+
+			self.lang = language;
+			self.translations = {};
 		}
 
 		Translator.prototype.load = load;
@@ -221,6 +233,10 @@
 			var namespace = result[0];
 			var key = result[1];
 
+			if (self.modules[namespace]) {
+				return Promise.resolve(self.modules[namespace](key, args));
+			}
+
 			if (namespace && !key) {
 				return Promise.resolve('[[' + namespace + ']]');
 			}
@@ -306,6 +322,22 @@
 		};
 
 		Translator.cache = {};
+
+		/**
+		 * Register a custom module to handle translations
+		 * @param {string} namespace - Namespace to handle translation for
+		 * @param {Function} factory - Function to return the translation function for this namespace
+		 */
+		Translator.registerModule = function registerModule(namespace, factory) {
+			Translator.moduleFactories[namespace] = factory;
+
+			Object.keys(Translator.cache).forEach(function (key) {
+				var translator = Translator.cache[key];
+				translator.modules[namespace] = factory(translator.lang);
+			});
+		};
+
+		Translator.moduleFactories = {};
 
 		return Translator;
 	}());
