@@ -42,7 +42,7 @@ define('forum/topic/replies', ['navigator', 'components', 'translator'], functio
 		} else if (icon.is('.fa-minus')) {
 			icon.removeClass('fa-minus').addClass('fa-plus');
 
-			post.find('[component="post/replies"]').slideUp('fast', function() {
+			post.find('[component="post/replies"]').slideUp('fast', function () {
 				$(this).remove();
 			});
 		}
