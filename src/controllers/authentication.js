@@ -56,24 +56,29 @@ authenticationController.register = function (req, res, next) {
 			user.isPasswordValid(userData.password, next);
 		},
 		function (next) {
-			res.locals.processLogin = true;	// set it to false in plugin if you wish to just register only
-			plugins.fireHook('filter:register.check', {req: req, res: res, userData: userData}, next);
-		},
-		function (data, next) {
 			if (registrationType === 'normal' || registrationType === 'invite-only' || registrationType === 'admin-invite-only') {
-				registerAndLoginUser(req, res, userData, next);
+				next(null, false);
 			} else if (registrationType === 'admin-approval') {
-				addToApprovalQueue(req, userData, next);
+				next(null, true);
 			} else if (registrationType === 'admin-approval-ip') {
 				db.sortedSetCard('ip:' + req.ip + ':uid', function (err, count) {
 					if (err) {
 						next(err);
-					} else if (count) {
-						addToApprovalQueue(req, userData, next);
 					} else {
-						registerAndLoginUser(req, res, userData, next);
+						next(null, !!count);
 					}
 				});
+			}
+		},
+		function (queue, next) {
+			res.locals.processLogin = true;	// set it to false in plugin if you wish to just register only
+			plugins.fireHook('filter:register.check', {req: req, res: res, userData: userData, queue: queue}, next);
+		},
+		function (data, next) {
+			if (data.queue) {
+				addToApprovalQueue(req, userData, next);
+			} else {
+				registerAndLoginUser(req, res, userData, next);
 			}
 		}
 	], function (err, data) {
