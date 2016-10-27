@@ -260,19 +260,4 @@ var plugins = require('./plugins');
 		});
 	};
 
-	Posts.getReplyPids = function (pid, callback) {
-		db.getSortedSetRange('pid:' + pid + ':replies', 0, -1, callback);
-	};
-
-	Posts.getReplyPosts = function (pid, uid, callback) {
-		async.waterfall([
-			function (next) {
-				Posts.getReplyPids(pid, next);
-			},
-			function (pids, next) {
-				Posts.getPostsByPids(pids, uid, next);
-			}
-		], callback);
-	};
-
 }(exports));
