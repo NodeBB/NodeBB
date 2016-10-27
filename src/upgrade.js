@@ -923,10 +923,11 @@ Upgrade.upgrade = function (callback) {
 							return next(err);
 						}
 
-						async.each(data, function (postData, next) {
+						async.eachSeries(data, function (postData, next) {
 							if (!parseInt(postData.toPid, 10)) {
 								return next(null);
 							}
+							console.log('processing pid: ' + postData.pid + ' toPid: ' + postData.toPid);
 							async.parallel([
 								async.apply(db.sortedSetAdd, 'pid:' + postData.toPid + ':replies', postData.timestamp, postData.pid),
 								async.apply(db.incrObjectField, 'post:' + postData.toPid, 'replies')
