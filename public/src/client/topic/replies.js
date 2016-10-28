@@ -21,17 +21,24 @@ define('forum/topic/replies', ['navigator', 'components', 'translator'], functio
 	function onRepliesClicked(button, tid) {
 		var post = button.parents('[data-pid]');
 		var pid = post.data('pid');
-		var icon = button.children('.fa');
+		var open = button.children('[component="post/replies/open"]');
+		var loading = button.children('[component="post/replies/loading"]');
+		var close = button.children('[component="post/replies/close"]');
 
-		if (icon.is('.fa-plus')) {
-			icon.removeClass('fa-plus').addClass('fa-spin fa-spinner');
+		if (open.is(':not(.hidden)')) {
+			open.addClass('hidden');
+			loading.removeClass('hidden');
+
 			socket.emit('posts.getReplies', pid, function (err, data) {
 				if (err) {
-					icon.removeClass('fa-spin fa-spinner').addClass('fa-plus');
+					loading.addClass('hidden');
+					open.removeClass('hidden');
+
 					return app.alertError(err.message);
 				}
 
-				icon.removeClass('fa-spin fa-spinner').addClass('fa-minus');
+				loading.addClass('hidden');
+				close.removeClass('hidden');
 
 				templates.parse('partials/posts_list', data, function (html) {
 					translator.translate(html, function (translated) {
@@ -39,8 +46,9 @@ define('forum/topic/replies', ['navigator', 'components', 'translator'], functio
 					});
 				});
 			});
-		} else if (icon.is('.fa-minus')) {
-			icon.removeClass('fa-minus').addClass('fa-plus');
+		} else if (close.is(':not(.hidden)')) {
+			close.addClass('hidden');
+			open.removeClass('hidden');
 
 			post.find('[component="post/replies"]').slideUp('fast', function () {
 				$(this).remove();
