@@ -2,7 +2,7 @@
 /*global require, before, beforeEach, after*/
 
 var async = require('async');
-var	assert = require('assert');
+var assert = require('assert');
 var validator = require('validator');
 var nconf = require('nconf');
 
@@ -11,6 +11,7 @@ var topics = require('../src/topics');
 var categories = require('../src/categories');
 var User = require('../src/user');
 var groups = require('../src/groups');
+var socketPosts = require('../src/socket.io/posts');
 
 describe('Topic\'s', function () {
 	var topic;
@@ -117,6 +118,24 @@ describe('Topic\'s', function () {
 				assert.ok(result);
 
 				done();
+			});
+		});
+
+		it('should handle direct replies', function (done) {
+			topics.reply({uid: topic.userId, content: 'test reply', tid: newTopic.tid, toPid: newPost.pid}, function (err, result) {
+				assert.equal(err, null, 'was created with error');
+				assert.ok(result);
+
+				socketPosts.getReplies({uid: 0}, newPost.pid, function (err, response) {
+					assert.equal(err, null, 'posts.getReplies returned error');
+
+					assert.ok(response);
+
+					assert.equal(response.posts.length, 1, 'should have 1 result');
+					assert.equal(response.posts[0].pid, result.pid, 'result should be the reply we added');
+
+					done();
+				});
 			});
 		});
 
