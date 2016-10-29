@@ -18,7 +18,7 @@ module.exports = function (Posts) {
 		async.waterfall([
 			function (next) {
 				async.parallel({
-					hasFlagged: async.apply(hasFlagged, post.pid, uid),
+					hasFlagged: async.apply(Posts.isFlaggedByUser, post.pid, uid),
 					exists: async.apply(Posts.exists, post.pid)
 				}, next);
 			},
@@ -88,9 +88,9 @@ module.exports = function (Posts) {
 		});
 	}
 
-	function hasFlagged(pid, uid, callback) {
+	Posts.isFlaggedByUser = function (pid, uid, callback) {
 		db.isSortedSetMember('pid:' + pid + ':flag:uids', uid, callback);
-	}
+	};
 
 	Posts.dismissFlag = function (pid, callback) {
 		async.waterfall([

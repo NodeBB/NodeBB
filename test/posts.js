@@ -185,6 +185,202 @@ describe('Post\'s', function () {
 		});
 	});
 
+	describe('flagging a post', function () {
+		it('should flag a post', function (done) {
+			flagPost(function (err) {
+				assert.ifError(err);
+				done();
+			});
+		});
+
+		it('should return nothing without a uid or a reason', function (done) {
+			posts.flag(postData, null, "reason", function () {
+				assert.equal(arguments.length, 0);
+				posts.flag(postData, voteeUid, null, function () {
+					assert.equal(arguments.length, 0);
+					done();
+				});
+			});
+		});
+
+		it('should return an error without an existing post', function (done) {
+			posts.flag({}, voteeUid, "reason", function (err) {
+				assert.ifError(!err);
+				done();
+			});
+		});
+
+		it('should return an error if the flag already exists', function (done) {
+			posts.flag(postData, voteeUid, "reason", function (err) {
+				assert.ifError(!err);
+				done();
+			});
+		});
+	});
+
+	function flagPost(next) {
+		posts.flag(postData, voteeUid, "reason", next);
+	}
+
+	describe('get flag data', function () {
+		it('should see the flagged post', function (done) {
+			posts.isFlaggedByUser(postData.pid, voteeUid, function (err, hasFlagged) {
+				assert.ifError(err);
+				assert(hasFlagged);
+				done();
+			});
+		});
+
+		it('should return the flagged post data', function (done) {
+			posts.getFlags('posts:flagged', cid, voteeUid, 0, -1, function (err, flagData) {
+				assert.ifError(err);
+				assert(flagData.posts);
+				assert(flagData.count);
+				assert.equal(flagData.count, 1);
+				assert.equal(flagData.posts.length, 1);
+				assert(flagData.posts[0].flagReasons);
+				assert.equal(flagData.posts[0].flagReasons.length, 1);
+				assert.strictEqual(flagData.posts[0].flagReasons[0].reason, 'reason');
+				assert(flagData.posts[0].flagData);
+				assert.strictEqual(flagData.posts[0].flagData.state, 'open');
+				done();
+			});
+		});
+	});
+
+	describe('updating a flag', function () {
+		it('should update a flag', function (done) {
+			async.waterfall([
+				function (next) {
+					posts.updateFlagData(voteeUid, postData.pid, {
+						assignee: `${voteeUid}`,
+						notes: 'notes'
+					}, function (err) {
+						assert.ifError(err);
+						posts.getFlags('posts:flagged', cid, voteeUid, 0, -1, function (err, flagData) {
+							assert.ifError(err);
+							assert(flagData.posts);
+							assert.equal(flagData.posts.length, 1);
+							assert.deepEqual({
+								assignee: flagData.posts[0].flagData.assignee,
+								notes: flagData.posts[0].flagData.notes,
+								state: flagData.posts[0].flagData.state,
+								labelClass: flagData.posts[0].flagData.labelClass
+							}, {
+								assignee: `${voteeUid}`,
+								notes: 'notes',
+								state: 'open',
+								labelClass: 'info'
+							});
+							next();
+						});
+					});
+				}, function (next) {
+					posts.updateFlagData(voteeUid, postData.pid, {
+						state: 'rejected'
+					}, function (err) {
+						assert.ifError(err);
+						posts.getFlags('posts:flagged', cid, voteeUid, 0, -1, function (err, flagData) {
+							assert.ifError(err);
+							assert(flagData.posts);
+							assert.equal(flagData.posts.length, 1);
+							assert.deepEqual({
+								state: flagData.posts[0].flagData.state,
+								labelClass: flagData.posts[0].flagData.labelClass
+							}, {
+								state: 'rejected',
+								labelClass: 'danger'
+							});
+							next();
+						});
+					});
+				}, function (next) {
+					posts.updateFlagData(voteeUid, postData.pid, {
+						state: 'wip'
+					}, function (err) {
+						assert.ifError(err);
+						posts.getFlags('posts:flagged', cid, voteeUid, 0, -1, function (err, flagData) {
+							assert.ifError(err);
+							assert(flagData.posts);
+							assert.equal(flagData.posts.length, 1);
+							assert.deepEqual({
+								state: flagData.posts[0].flagData.state,
+								labelClass: flagData.posts[0].flagData.labelClass
+							}, {
+								state: 'wip',
+								labelClass: 'warning'
+							});
+							next();
+						});
+					});
+				}, function (next) {
+					posts.updateFlagData(voteeUid, postData.pid, {
+						state: 'resolved'
+					}, function (err) {
+						assert.ifError(err);
+						posts.getFlags('posts:flagged', cid, voteeUid, 0, -1, function (err, flagData) {
+							assert.ifError(err);
+							assert(flagData.posts);
+							assert.equal(flagData.posts.length, 1);
+							assert.deepEqual({
+								state: flagData.posts[0].flagData.state,
+								labelClass: flagData.posts[0].flagData.labelClass
+							}, {
+								state: 'resolved',
+								labelClass: 'success'
+							});
+							next();
+						});
+					});
+				}
+			], done);
+		});
+	});
+
+	describe('dismissing a flag', function () {
+		it('should dismiss a flag', function (done) {
+			posts.dismissFlag(postData.pid, function (err) {
+				assert.ifError(err);
+				posts.isFlaggedByUser(postData.pid, voteeUid, function (err, hasFlagged) {
+					assert.ifError(err);
+					assert(!hasFlagged);
+					flagPost(function (err) {
+						assert.ifError(err);
+						done();
+					});
+				});
+			});
+		});
+
+		it('should dismiss all of a user\'s flags', function (done) {
+			posts.dismissUserFlags(voteeUid, function (err) {
+				assert.ifError(err);
+				posts.isFlaggedByUser(postData.pid, voteeUid, function (err, hasFlagged) {
+					assert.ifError(err);
+					assert(!hasFlagged);
+					flagPost(function (err) {
+						assert.ifError(err);
+						done();
+					});
+				});
+			});
+		});
+
+		it('should dismiss all flags', function (done) {
+			posts.dismissAllFlags(function (err) {
+				assert.ifError(err);
+				posts.isFlaggedByUser(postData.pid, voteeUid, function (err, hasFlagged) {
+					assert.ifError(err);
+					assert(!hasFlagged);
+					flagPost(function (err) {
+						assert.ifError(err);
+						done();
+					});
+				});
+			});
+		});
+	});
+
 	describe('getPostSummaryByPids', function () {
 		it('should return empty array for empty pids', function (done) {
 			posts.getPostSummaryByPids([], 0, {}, function (err, data) {
