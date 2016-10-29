@@ -81,7 +81,6 @@ module.exports = function (middleware) {
 					email: '',
 					picture: meta.config.defaultAvatar,
 					status: 'offline',
-					banned: false,
 					reputation: 0,
 					'email:confirmed': false
 				};
@@ -99,13 +98,13 @@ module.exports = function (middleware) {
 			},
 			navigation: async.apply(navigation.get),
 			tags: async.apply(meta.tags.parse, res.locals.metaTags, res.locals.linkTags),
-			banReason: async.apply(user.getBannedReason, req.uid)
+			banned: async.apply(user.isBanned, req.uid)
 		}, function (err, results) {
 			if (err) {
 				return callback(err);
 			}
 
-			if (results.user && parseInt(results.user.banned, 10) === 1) {
+			if (results.banned) {
 				req.logout();
 				return res.redirect('/?banned=' + (results.banReason || ''));
 			}
