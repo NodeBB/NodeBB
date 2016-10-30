@@ -1,6 +1,6 @@
 'use strict';
 
-var	assert = require('assert');
+var assert = require('assert');
 var async = require('async');
 var db = require('./mocks/databasemock');
 
@@ -424,6 +424,34 @@ describe('User', function () {
 				db.getObjectField('user:' + uid, 'cover:url', function (err, url) {
 					assert.ifError(err);
 					assert.equal(url, null);
+					done();
+				});
+			});
+		});
+	});
+
+	describe('.getModerationHistory', function () {
+		it('should return the correct ban reason', function (done) {
+			async.series([
+				function (next) {
+					User.ban(testUid, 0, '', function (err) {
+						assert.ifError(err);
+						next(err);
+					});
+				},
+				function (next) {
+					User.getModerationHistory(testUid, function (err, data) {
+						assert.ifError(err);
+						assert.equal(data.bans.length, 1, 'one ban');
+						assert.equal(data.bans[0].reason, '[[user:info.banned-no-reason]]', 'no ban reason');
+
+						next(err);
+					});
+				}
+			], function (err) {
+				assert.ifError(err);
+				User.unban(testUid, function (err) {
+					assert.ifError(err);
 					done();
 				});
 			});

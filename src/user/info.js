@@ -123,7 +123,7 @@ module.exports = function (User) {
 			banObj.timestamp = parseInt(banObj.score, 10);
 			banObj.timestampReadable = new Date(banObj.score).toString();
 			banObj.timestampISO = new Date(banObj.score).toISOString();
-			banObj.reason = validator.escape(String(reasons[banObj.score])) || '[[user:info.banned-no-reason]]';
+			banObj.reason = validator.escape(String(reasons[banObj.score] || '')) || '[[user:info.banned-no-reason]]';
 
 			delete banObj.value;
 			delete banObj.score;
