@@ -138,6 +138,20 @@ module.exports = function (Posts) {
 						deletePostFromUsersVotes(pid, next);
 					},
 					function (next) {
+						Posts.getPostField(pid, 'toPid', function (err, toPid) {
+							if (err) {
+								return next(err);
+							}
+							if (!parseInt(toPid, 10)) {
+								return next(null);
+							}
+							async.parallel([
+								async.apply(db.sortedSetRemove, 'pid:' + toPid + ':replies', pid),
+								async.apply(db.decrObjectField, 'post:' + toPid, 'replies')
+							], next);
+						});
+					},
+					function (next) {
 						db.sortedSetsRemove(['posts:pid', 'posts:flagged'], pid, next);
 					},
 					function (next) {

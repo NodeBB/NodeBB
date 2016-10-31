@@ -9,10 +9,11 @@ define('forum/topic', [
 	'forum/topic/postTools',
 	'forum/topic/events',
 	'forum/topic/posts',
+	'forum/topic/replies',
 	'navigator',
 	'sort',
 	'components'
-], function (infinitescroll, threadTools, postTools, events, posts, navigator, sort, components) {
+], function (infinitescroll, threadTools, postTools, events, posts, replies, navigator, sort, components) {
 	var	Topic = {},
 		currentUrl = '';
 
@@ -51,6 +52,7 @@ define('forum/topic', [
 
 		postTools.init(tid);
 		threadTools.init(tid);
+		replies.init(tid);
 		events.init();
 
 		sort.handleSort('topicPostSort', 'user.setTopicSort', 'topic/' + ajaxify.data.slug);

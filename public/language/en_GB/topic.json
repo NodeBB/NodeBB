@@ -16,6 +16,7 @@
 	"notify_me": "Be notified of new replies in this topic",
 	"quote": "Quote",
 	"reply": "Reply",
+	"replies_to_this_post": "Replies: %1",
 	"reply-as-topic": "Reply as topic",
 	"guest-login-reply": "Log in to reply",
 	"edit": "Edit",

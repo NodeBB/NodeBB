@@ -10,7 +10,7 @@ var db = require('./database'),
 	schemaDate, thisSchemaDate,
 
 	// IMPORTANT: REMEMBER TO UPDATE VALUE OF latestSchema
-	latestSchema = Date.UTC(2016, 9, 8);
+	latestSchema = Date.UTC(2016, 9, 14);
 
 Upgrade.check = function (callback) {
 	db.get('schemaDate', function (err, value) {
@@ -905,6 +905,45 @@ Upgrade.upgrade = function (callback) {
 				});
 			} else {
 				winston.info('[2016/10/8] favourite -> bookmark refactor - skipped!');
+				next();
+			}
+		},
+		function (next) {
+			thisSchemaDate = Date.UTC(2016, 9, 14);
+
+			if (schemaDate < thisSchemaDate) {
+				updatesMade = true;
+				winston.info('[2016/10/14] Creating sorted sets for post replies');
+
+				var posts = require('./posts');
+				var batch = require('./batch');
+				batch.processSortedSet('posts:pid', function (ids, next) {
+					posts.getPostsFields(ids, ['pid', 'toPid', 'timestamp'], function (err, data) {
+						if (err) {
+							return next(err);
+						}
+
+						async.eachSeries(data, function (postData, next) {
+							if (!parseInt(postData.toPid, 10)) {
+								return next(null);
+							}
+							console.log('processing pid: ' + postData.pid + ' toPid: ' + postData.toPid);
+							async.parallel([
+								async.apply(db.sortedSetAdd, 'pid:' + postData.toPid + ':replies', postData.timestamp, postData.pid),
+								async.apply(db.incrObjectField, 'post:' + postData.toPid, 'replies')
+							], next);
+						}, next);
+					});
+				}, function (err) {
+					if (err) {
+						return next(err);
+					}
+
+					winston.info('[2016/10/14] Creating sorted sets for post replies - done');
+					Upgrade.update(thisSchemaDate, next);
+				});
+			} else {
+				winston.info('[2016/10/14] Creating sorted sets for post replies - skipped!');
 				next();
 			}
 		}
