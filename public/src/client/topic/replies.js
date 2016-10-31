@@ -41,7 +41,7 @@ define('forum/topic/replies', ['navigator', 'components', 'forum/topic/posts'], 
 				close.removeClass('hidden');
 
 				posts.modifyPostsByPrivileges(data);
-				var tplData ={
+				var tplData = {
 					posts: data,
 					privileges: ajaxify.data.privileges,
 					loggedIn: !!app.user.uid,
@@ -49,6 +49,7 @@ define('forum/topic/replies', ['navigator', 'components', 'forum/topic/posts'], 
 				};
 				app.parseAndTranslate('topic', 'posts', tplData, function (html) {
 					$('<div>', {component: 'post/replies'}).html(html).hide().insertAfter(button).slideDown('fast');
+					posts.processPage(html);
 				});
 			});
 		} else if (close.is(':not(.hidden)')) {
