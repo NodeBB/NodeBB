@@ -98,7 +98,8 @@ module.exports = function (middleware) {
 			},
 			navigation: async.apply(navigation.get),
 			tags: async.apply(meta.tags.parse, res.locals.metaTags, res.locals.linkTags),
-			banned: async.apply(user.isBanned, req.uid)
+			banned: async.apply(user.isBanned, req.uid),
+			banReason: async.apply(user.getBannedReason, req.uid)
 		}, function (err, results) {
 			if (err) {
 				return callback(err);
