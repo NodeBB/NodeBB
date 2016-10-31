@@ -1,12 +1,12 @@
 "use strict";
 
-var async = require('async'),
+var async = require('async');
 
-	db = require('../../database'),
-	groups = require('../../groups'),
-	meta = require('../../meta'),
-	pagination = require('../../pagination'),
-	helpers = require('../helpers');
+var db = require('../../database');
+var groups = require('../../groups');
+var meta = require('../../meta');
+var pagination = require('../../pagination');
+var helpers = require('../helpers');
 
 
 var groupsController = {};
