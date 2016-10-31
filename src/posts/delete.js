@@ -17,7 +17,7 @@ module.exports = function (Posts) {
 				plugins.fireHook('filter:post.delete', {pid: pid, uid: uid}, next);
 			},
 			function (data, next) {
-				Posts.setPostField(pid, 'deleted', 1, next);
+				Posts.setPostFields(pid, {deleted: 1, deleterUid: uid}, next);
 			},
 			function (next) {
 				Posts.getPostFields(pid, ['pid', 'tid', 'uid', 'timestamp'], next);
@@ -53,7 +53,7 @@ module.exports = function (Posts) {
 				plugins.fireHook('filter:post.restore', {pid: pid, uid: uid}, next);
 			},
 			function (data, next) {
-				Posts.setPostField(pid, 'deleted', 0, next);
+				Posts.setPostFields(pid, {deleted: 0, deleterUid: 0}, next);
 			},
 			function (next) {
 				Posts.getPostFields(pid, ['pid', 'tid', 'uid', 'content', 'timestamp'], next);

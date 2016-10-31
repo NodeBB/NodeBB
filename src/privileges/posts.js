@@ -158,7 +158,7 @@ module.exports = function (privileges) {
 		var postData;
 		async.waterfall([
 			function (next) {
-				posts.getPostFields(pid, ['tid', 'timestamp'], next);
+				posts.getPostFields(pid, ['uid', 'tid', 'timestamp', 'deleterUid'], next);
 			},
 			function (_postData, next) {
 				postData = _postData;
@@ -190,8 +190,9 @@ module.exports = function (privileges) {
 			if (postDeleteDuration && (Date.now() - parseInt(postData.timestamp, 10) > postDeleteDuration * 1000)) {
 				return callback(null, {flag: false, message: '[[error:post-delete-duration-expired, ' + meta.config.postDeleteDuration + ']]'});
 			}
-
-			callback(null, {flag: results.isOwner, message: '[[error:no-privileges]]'});
+			var deleterUid = parseInt(postData.deleterUid, 10) || 0;
+			var flag = results.isOwner && (deleterUid === 0 || deleterUid === parseInt(postData.uid, 10));
+			callback(null, {flag: flag, message: '[[error:no-privileges]]'});
 		});
 	};
 
