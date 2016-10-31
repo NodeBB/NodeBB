@@ -25,19 +25,17 @@ define('forum/topic/replies', ['navigator', 'components', 'forum/topic/posts'], 
 		var loading = button.children('[component="post/replies/loading"]');
 		var close = button.children('[component="post/replies/close"]');
 
-		if (open.is(':not(.hidden)')) {
+		if (open.is(':not(.hidden)') && loading.is('.hidden')) {
 			open.addClass('hidden');
 			loading.removeClass('hidden');
 
 			socket.emit('posts.getReplies', pid, function (err, data) {
+				loading.addClass('hidden');
 				if (err) {
-					loading.addClass('hidden');
 					open.removeClass('hidden');
-
 					return app.alertError(err.message);
 				}
 
-				loading.addClass('hidden');
 				close.removeClass('hidden');
 
 				posts.modifyPostsByPrivileges(data);
@@ -55,6 +53,7 @@ define('forum/topic/replies', ['navigator', 'components', 'forum/topic/posts'], 
 		} else if (close.is(':not(.hidden)')) {
 			close.addClass('hidden');
 			open.removeClass('hidden');
+			loading.addClass('hidden');
 			post.find('[component="post/replies"]').slideUp('fast', function () {
 				$(this).remove();
 			});
