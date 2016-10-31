@@ -16,21 +16,31 @@ var db = require('./mocks/databasemock');
 var myXhr = require('./mocks/newXhr');
 var user = require('../src/user');
 var groups = require('../src/groups');
+var categories = require('../src/categories');
 
 describe('socket.io', function () {
 
 	var io;
+	var cid;
+	var tid;
+	var adminUid;
 
 	before(function (done) {
 		async.series([
 			async.apply(user.create, { username: 'admin', password: 'adminpwd' }),
-			async.apply(user.create, { username: 'regular', password: 'regularpwd' })
-		], function (err, uids) {
+			async.apply(user.create, { username: 'regular', password: 'regularpwd' }),
+			async.apply(categories.create, {
+				name: 'Test Category',
+				description: 'Test category created by testing script'
+			})
+		], function (err, data) {
 			if (err) {
 				return done(err);
 			}
+			adminUid = data[0];
+			cid = data[2].cid;
 
-			groups.join('administrators', uids[0], done);
+			groups.join('administrators', data[0], done);
 		});
 	});
 
@@ -97,6 +107,27 @@ describe('socket.io', function () {
 			themes.forEach(function (theme) {
 				assert.notEqual(installed.indexOf(theme), -1);
 			});
+			done();
+		});
+	});
+
+	it('should post a topic', function (done) {
+		io.emit('topics.post', {title: 'test topic title', content: 'test topic main post content', uid: adminUid, cid: cid}, function (err, result) {
+			assert.ifError(err);
+			assert.equal(result.user.username, 'admin');
+			assert.equal(result.category.cid, cid);
+			assert.equal(result.mainPost.content, 'test topic main post content');
+			tid = result.tid;
+			done();
+		});
+	});
+
+	it('should reply to topic', function (done) {
+		io.emit('posts.reply', {tid: tid, uid: adminUid, content: 'test post content'}, function (err, result) {
+			assert.ifError(err);
+			assert.equal(result.uid, adminUid);
+			assert.equal(result.user.username, 'admin');
+			assert.equal(result.topic.tid, tid);
 			done();
 		});
 	});
