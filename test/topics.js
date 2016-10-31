@@ -126,13 +126,13 @@ describe('Topic\'s', function () {
 				assert.equal(err, null, 'was created with error');
 				assert.ok(result);
 
-				socketPosts.getReplies({uid: 0}, newPost.pid, function (err, response) {
+				socketPosts.getReplies({uid: 0}, newPost.pid, function (err, postData) {
 					assert.equal(err, null, 'posts.getReplies returned error');
 
-					assert.ok(response);
+					assert.ok(postData);
 
-					assert.equal(response.posts.length, 1, 'should have 1 result');
-					assert.equal(response.posts[0].pid, result.pid, 'result should be the reply we added');
+					assert.equal(postData.length, 1, 'should have 1 result');
+					assert.equal(postData[0].pid, result.pid, 'result should be the reply we added');
 
 					done();
 				});
