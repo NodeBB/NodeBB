@@ -1,8 +1,8 @@
 'use strict';
 
-/* globals define, app, ajaxify, bootbox, socket, templates, utils, config */
+/* globals define, app, ajaxify, socket */
 
-define('forum/topic/replies', ['navigator', 'components', 'translator'], function (navigator, components, translator) {
+define('forum/topic/replies', ['navigator', 'components', 'forum/topic/posts'], function (navigator, components, posts) {
 
 	var Replies = {};
 
@@ -19,7 +19,7 @@ define('forum/topic/replies', ['navigator', 'components', 'translator'], functio
 	}
 
 	function onRepliesClicked(button, tid) {
-		var post = button.parents('[data-pid]');
+		var post = button.closest('[data-pid]');
 		var pid = post.data('pid');
 		var open = button.children('[component="post/replies/open"]');
 		var loading = button.children('[component="post/replies/loading"]');
@@ -40,16 +40,20 @@ define('forum/topic/replies', ['navigator', 'components', 'translator'], functio
 				loading.addClass('hidden');
 				close.removeClass('hidden');
 
-				templates.parse('partials/posts_list', data, function (html) {
-					translator.translate(html, function (translated) {
-						$('<div>', {component: 'post/replies'}).html(translated).hide().insertAfter(button).slideDown('fast');
-					});
+				posts.modifyPostsByPrivileges(data);
+				var tplData ={
+					posts: data,
+					privileges: ajaxify.data.privileges,
+					loggedIn: !!app.user.uid,
+					hideReplies: true
+				};
+				app.parseAndTranslate('topic', 'posts', tplData, function (html) {
+					$('<div>', {component: 'post/replies'}).html(html).hide().insertAfter(button).slideDown('fast');
 				});
 			});
 		} else if (close.is(':not(.hidden)')) {
 			close.addClass('hidden');
 			open.removeClass('hidden');
-
 			post.find('[component="post/replies"]').slideUp('fast', function () {
 				$(this).remove();
 			});

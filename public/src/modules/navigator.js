@@ -162,6 +162,9 @@ define('navigator', ['forum/pagination', 'components'], function (pagination, co
 	};
 
 	navigator.updateTextAndProgressBar = function () {
+		if (!utils.isNumber(index)) {
+			return;
+		}
 		index = index > count ? count : index;
 
 		$('.pagination-block .pagination-text').translateHtml('[[global:pagination.out_of, ' + index + ', ' + count + ']]');

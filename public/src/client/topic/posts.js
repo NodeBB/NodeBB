@@ -25,14 +25,7 @@ define('forum/topic/posts', [
 
 		data.loggedIn = app.user.uid ? true : false;
 		data.privileges = ajaxify.data.privileges;
-		data.posts.forEach(function (post) {
-			post.selfPost = !!app.user.uid && parseInt(post.uid, 10) === parseInt(app.user.uid, 10);
-			post.display_edit_tools = (ajaxify.data.privileges['posts:edit'] && post.selfPost) || ajaxify.data.privileges.isAdminOrMod;
-			post.display_delete_tools = (ajaxify.data.privileges['posts:delete'] && post.selfPost) || ajaxify.data.privileges.isAdminOrMod;
-			post.display_moderator_tools = post.display_edit_tools || post.display_delete_tools;
-			post.display_move_tools = ajaxify.data.privileges.isAdminOrMod;
-			post.display_post_menu = ajaxify.data.privileges.isAdminOrMod || (post.selfPost && !ajaxify.data.locked) || ((app.user.uid || ajaxify.data.postSharing.length) && !post.deleted);
-		});
+		Posts.modifyPostsByPrivileges(data.posts);
 
 		updatePostCounts(data.posts);
 
@@ -44,6 +37,17 @@ define('forum/topic/posts', [
 		} else {
 			onNewPostInfiniteScroll(data);
 		}
+	};
+
+	Posts.modifyPostsByPrivileges = function (posts) {
+		posts.forEach(function (post) {
+			post.selfPost = !!app.user.uid && parseInt(post.uid, 10) === parseInt(app.user.uid, 10);
+			post.display_edit_tools = (ajaxify.data.privileges['posts:edit'] && post.selfPost) || ajaxify.data.privileges.isAdminOrMod;
+			post.display_delete_tools = (ajaxify.data.privileges['posts:delete'] && post.selfPost) || ajaxify.data.privileges.isAdminOrMod;
+			post.display_moderator_tools = post.display_edit_tools || post.display_delete_tools;
+			post.display_move_tools = ajaxify.data.privileges.isAdminOrMod;
+			post.display_post_menu = ajaxify.data.privileges.isAdminOrMod || (post.selfPost && !ajaxify.data.locked) || ((app.user.uid || ajaxify.data.postSharing.length) && !post.deleted);
+		});
 	};
 
 	function updatePostCounts(posts) {
