@@ -126,6 +126,40 @@ describe('Admin Controllers', function () {
 		});
 	});
 
+	it('should load /admin/general/homepage', function (done) {
+		request(nconf.get('url') + '/api/admin/general/homepage', {jar: jar, json: true}, function (err, res, body) {
+			assert.ifError(err);
+			assert.equal(res.statusCode, 200);
+			assert(body.routes);
+			done();
+		});
+	});
+
+	it('should load /admin/advanced/database', function (done) {
+		request(nconf.get('url') + '/api/admin/advanced/database', {jar: jar, json: true}, function (err, res, body) {
+			assert.ifError(err);
+			assert.equal(res.statusCode, 200);
+
+			if (nconf.get('redis')) {
+				assert(body.redis);
+			} else if (nconf.get('mongo')) {
+				assert(body.mongo);
+			}
+			done();
+		});
+	});
+
+	it('should load /admin/extend/plugins', function (done) {
+		request(nconf.get('url') + '/api/admin/extend/plugins', {jar: jar, json: true}, function (err, res, body) {
+			assert.ifError(err);
+			assert(body.hasOwnProperty('installed'));
+			assert(body.hasOwnProperty('upgradeCount'));
+			assert(body.hasOwnProperty('download'));
+			assert(body.hasOwnProperty('incompatible'));
+			done();
+		});
+	});
+
 	after(function (done) {
 		db.emptydb(done);
 	});
