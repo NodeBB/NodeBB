@@ -38,7 +38,8 @@ module.exports = function (Meta) {
 				'public/src/ajaxify.js',
 				'public/src/overrides.js',
 				'public/src/widgets.js',
-				"./node_modules/promise-polyfill/promise.js"
+				"./node_modules/promise-polyfill/promise.js",
+				"./node_modules/cookieconsent/build/cookieconsent.min.js"
 			],
 
 			// files listed below are only available client-side, or are bundled in to reduce # of network requests on cold load

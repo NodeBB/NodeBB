@@ -55,6 +55,7 @@ app.cacheBuster = null;
 		overrides.overrideTimeago();
 		createHeaderTooltips();
 		app.showEmailConfirmWarning();
+		app.showCookieWarning();
 
 		socket.removeAllListeners('event:nodebb.ready');
 		socket.on('event:nodebb.ready', function (data) {
@@ -621,5 +622,40 @@ app.cacheBuster = null;
 		linkEl.href = config.relative_path + '/js-enabled.css';
 
 		document.head.appendChild(linkEl);
+	};
+
+	app.showCookieWarning = function () {
+		if (!config.cookies.enabled) {
+			// Only show warning if enabled (obviously)
+			return;
+		} else if (window.location.pathname.startsWith(config.relative_path + '/admin')) {
+			// No need to show cookie consent warning in ACP
+			return;
+		}
+
+		var consentConfig = {
+			"palette": {
+				"popup": {
+					"background": config.cookies.palette.background,
+					"text": config.cookies.palette.text
+				},
+				"button": {
+					"background": config.cookies.palette.button,
+					"text": config.cookies.palette.buttonText
+				}
+			},
+			"theme": config.cookies.style,
+			"position": config.cookies.position,
+			"content": {
+				"dismiss": config.cookies.dismiss,
+				"link": config.cookies.link
+			}
+		};
+
+		if (config.cookies.message) {
+			consentConfig.content.message = config.cookies.message;
+		}
+
+		window.cookieconsent.initialise(consentConfig);
 	};
 }());

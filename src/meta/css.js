@@ -48,11 +48,11 @@ module.exports = function (Meta) {
 
 			async.waterfall([
 				function (next) {
-					getStyleSource(plugins.lessFiles, '\n@import ".', '.less', next);
+					getStyleSource(plugins.cssFiles, '\n@import (inline) ".', '.css', next);
 				},
 				function (src, next) {
 					source += src;
-					getStyleSource(plugins.cssFiles, '\n@import (inline) ".', '.css', next);
+					getStyleSource(plugins.lessFiles, '\n@import ".', '.less', next);
 				},
 				function (src, next) {
 					source += src;
@@ -67,6 +67,7 @@ module.exports = function (Meta) {
 
 				source += '\n@import (inline) "..' + path.sep + '..' + path.sep + 'public/vendor/jquery/css/smoothness/jquery-ui.css";';
 				source += '\n@import (inline) "..' + path.sep + '..' + path.sep + 'public/vendor/jquery/bootstrap-tagsinput/bootstrap-tagsinput.css";';
+				source += '\n@import (inline) "..' + path.sep + '..' + path.sep + 'node_modules/cookieconsent/build/cookieconsent.min.css";';
 				source += '\n@import (inline) "..' + path.sep + 'public/vendor/colorpicker/colorpicker.css";';
 				source += '\n@import "..' + path.sep + '..' + path.sep + 'public/less/flags.less";';
 				source += '\n@import "..' + path.sep + '..' + path.sep + 'public/less/blacklist.less";';

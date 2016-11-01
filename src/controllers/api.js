@@ -63,6 +63,21 @@ apiController.getConfig = function (req, res, next) {
 	config.searchEnabled = plugins.hasListeners('filter:search.query');
 	config.bootswatchSkin = 'default';
 
+	config.cookies = {
+		enabled: parseInt(meta.config.cookieConsentEnabled, 10) === 1,
+		position: meta.config.cookieConsentPosition || 'bottom',
+		style: meta.config.cookieConsentStyle || 'edgeless',
+		message: meta.config.cookieConsentMessage || '[[global:cookies.message]]',
+		dismiss: meta.config.cookieConsentDismiss || '[[global:cookies.accept]]',
+		link: meta.config.cookieConsentLink || '[[global:cookies.learn_more]]',
+		palette: {
+			background: meta.config.cookieConsentPaletteBackground || '#edeff5',
+			text: meta.config.cookieConsentPaletteText || '#838391',
+			button: meta.config.cookieConsentPaletteButton || '#59b3d0',
+			buttonText: meta.config.cookieConsentPaletteButtonText || '#ffffff',
+		}
+	};
+
 	async.waterfall([
 		function (next) {
 			if (!req.user) {
