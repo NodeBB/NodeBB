@@ -2,8 +2,10 @@
 
 var request = require('request');
 var nconf = require('nconf');
+var fs = require('fs');
 
 var myXhr = require('../mocks/newXhr');
+var utils = require('../../public/src/utils');
 
 var helpers = module.exports;
 
@@ -45,7 +47,7 @@ helpers.loginUser = function (username, password, callback) {
 
 			var io = socketClient.connect(nconf.get('url'), {forceNew: true, multiplex: false});
 			io.on('connect', function () {
-				callback(null, jar, io);
+				callback(null, jar, io, body.csrf_token);
 			});
 
 			io.on('error', function (err) {
@@ -84,5 +86,30 @@ helpers.initSocketIO = function (callback) {
 		io.on('error', function (err) {
 			callback(err);
 		});
+	});
+};
+
+
+helpers.uploadFile = function (uploadEndPoint, filePath, body, jar, csrf_token, callback) {
+	var formData = {
+		files: [
+			fs.createReadStream(filePath),
+			fs.createReadStream(filePath) // see https://github.com/request/request/issues/2445
+		]
+	};
+	formData = utils.merge(formData, body);
+	request.post({
+		url: uploadEndPoint,
+		formData: formData,
+		json: true,
+		jar: jar,
+		headers: {
+			'x-csrf-token': csrf_token
+		}
+	}, function (err, res, body) {
+		if (err) {
+			return callback(err);
+		}
+		callback(err, res, body);
 	});
 };
