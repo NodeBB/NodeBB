@@ -18,12 +18,14 @@ var user = require('../src/user');
 var groups = require('../src/groups');
 var categories = require('../src/categories');
 
+
 describe('socket.io', function () {
 
 	var io;
 	var cid;
 	var tid;
 	var adminUid;
+	var regularUid;
 
 	before(function (done) {
 		async.series([
@@ -38,6 +40,7 @@ describe('socket.io', function () {
 				return done(err);
 			}
 			adminUid = data[0];
+			regularUid = data[1];
 			cid = data[2].cid;
 
 			groups.join('administrators', data[0], done);
@@ -129,6 +132,42 @@ describe('socket.io', function () {
 			assert.equal(result.user.username, 'admin');
 			assert.equal(result.topic.tid, tid);
 			done();
+		});
+	});
+
+	it('should ban a user', function (done) {
+		var socketUser = require('../src/socket.io/user');
+		socketUser.banUsers({uid: adminUid}, {uids: [regularUid], reason: 'spammer'}, function (err) {
+			assert.ifError(err);
+			user.getLatestBanInfo(regularUid, function (err, data) {
+				assert.ifError(err);
+				assert(data.uid);
+				assert(data.timestamp);
+				assert(data.hasOwnProperty('expiry'));
+				assert(data.hasOwnProperty('expiry_readable'));
+				assert.equal(data.reason, 'spammer');
+				done();
+			});
+		});
+	});
+
+	it('should return ban reason', function (done) {
+		user.getBannedReason(regularUid, function (err, reason) {
+			assert.ifError(err);
+			assert.equal(reason, 'spammer');
+			done();
+		});
+	});
+
+	it('should unban a user', function (done) {
+		var socketUser = require('../src/socket.io/user');
+		socketUser.unbanUsers({uid: adminUid}, [regularUid], function (err) {
+			assert.ifError(err);
+			user.isBanned(regularUid, function (err, isBanned) {
+				assert.ifError(err);
+				assert(!isBanned);
+				done();
+			});
 		});
 	});
 

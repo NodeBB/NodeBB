@@ -97,7 +97,7 @@ module.exports = function (User) {
 
 	User.getBannedReason = function (uid, callback) {
 		// Grabs the latest ban reason
-		db.getSortedSetRevRange('banned:' + uid + ':reasons', 0, 1, function (err, reasons) {
+		db.getSortedSetRevRange('banned:' + uid + ':reasons', 0, 0, function (err, reasons) {
 			if (err) {
 				return callback(err);
 			}

@@ -18,6 +18,7 @@ describe('Admin Controllers', function () {
 	var cid;
 	var pid;
 	var adminUid;
+	var regularUid;
 	var jar;
 
 	before(function (done) {
@@ -28,21 +29,18 @@ describe('Admin Controllers', function () {
 					description: 'Test category created by testing script'
 				}, next);
 			},
-			user: function (next) {
-				async.waterfall([
-					function (next) {
-						user.create({username: 'admin', password: 'barbar'}, next);
-					},
-					function (_uid, next) {
-						adminUid = _uid;
-						next();
-					}
-				], next);
+			adminUid: function (next) {
+				user.create({username: 'admin', password: 'barbar'}, next);
+			},
+			regularUid: function (next) {
+				user.create({username: 'regular'}, next);
 			}
 		}, function (err, results) {
 			if (err) {
 				return done(err);
 			}
+			adminUid = results.adminUid;
+			regularUid = results.regularUid;
 			cid = results.category.cid;
 
 			topics.post({uid: adminUid, title: 'test topic title', content: 'test topic content', cid: results.category.cid}, function (err, result) {
@@ -111,6 +109,19 @@ describe('Admin Controllers', function () {
 			assert.ifError(err);
 			assert.equal(res.statusCode, 200);
 			assert(body);
+			done();
+		});
+	});
+
+	it('should load info page for a user', function (done) {
+		request(nconf.get('url') + '/api/user/regular/info', {jar: jar, json: true}, function (err, res, body) {
+			assert.ifError(err);
+			assert.equal(res.statusCode, 200);
+			assert(body.history);
+			assert(Array.isArray(body.history.flags));
+			assert(Array.isArray(body.history.bans));
+			assert(Array.isArray(body.history.reasons));
+			assert(Array.isArray(body.sessions));
 			done();
 		});
 	});
