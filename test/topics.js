@@ -1,5 +1,4 @@
 'use strict';
-/*global require, before, beforeEach, after*/
 
 var async = require('async');
 var assert = require('assert');
@@ -16,26 +15,19 @@ var socketPosts = require('../src/socket.io/posts');
 describe('Topic\'s', function () {
 	var topic;
 	var categoryObj;
+	var adminUid;
 
 	before(function (done) {
-		var userData = {
-			username: 'John Smith',
-			password: 'swordfish',
-			email: 'john@example.com',
-			callback: undefined
-		};
-
-		User.create({username: userData.username, password: userData.password, email: userData.email}, function (err, uid) {
+		User.create({username: 'admin'}, function (err, uid) {
 			if (err) {
 				return done(err);
 			}
 
+			adminUid = uid;
+
 			categories.create({
 				name: 'Test Category',
-				description: 'Test category created by testing script',
-				icon: 'fa-check',
-				blockclass: 'category-blue',
-				order: '5'
+				description: 'Test category created by testing script'
 			}, function (err, category) {
 				if (err) {
 					return done(err);
@@ -223,11 +215,16 @@ describe('Topic\'s', function () {
 		});
 	});
 
-	describe('delete/restore/purge', function () {
+	describe('tools/delete/restore/purge', function () {
 		var newTopic;
 		var followerUid;
+		var moveCid;
+		var socketTopics = require('../src/socket.io/topics');
 		before(function (done) {
 			async.waterfall([
+				function (next) {
+					groups.join('administrators', adminUid, next);
+				},
 				function (next) {
 					topics.post({uid: topic.userId, title: topic.title, content: topic.content, cid: topic.categoryId}, function (err, result) {
 						assert.ifError(err);
@@ -241,26 +238,112 @@ describe('Topic\'s', function () {
 				function (_uid, next) {
 					followerUid = _uid;
 					topics.follow(newTopic.tid, _uid, next);
+				},
+				function (next) {
+					categories.create({
+						name: 'Test Category',
+						description: 'Test category created by testing script'
+					}, function (err, category) {
+						if (err) {
+							return next(err);
+						}
+						moveCid = category.cid;
+						next();
+					});
 				}
 			], done);
 		});
 
+		it('should load topic tools', function (done) {
+			socketTopics.loadTopicTools({uid: 1}, {tid: newTopic.tid}, function (err, data) {
+				assert.ifError(err);
+				assert(data);
+				done();
+			});
+		});
+
 		it('should delete the topic', function (done) {
-			topics.delete(newTopic.tid, 1, function (err) {
+			socketTopics.delete({uid: 1}, {tids: [newTopic.tid], cid: categoryObj.cid}, function (err) {
 				assert.ifError(err);
 				done();
 			});
 		});
 
 		it('should restore the topic', function (done) {
-			topics.restore(newTopic.tid, 1, function (err) {
+			socketTopics.restore({uid: 1}, {tids: [newTopic.tid], cid: categoryObj.cid}, function (err) {
 				assert.ifError(err);
 				done();
 			});
 		});
 
+		it('should lock topic', function (done) {
+			socketTopics.lock({uid: 1}, {tids: [newTopic.tid], cid: categoryObj.cid}, function (err) {
+				assert.ifError(err);
+				topics.isLocked(newTopic.tid, function (err, isLocked) {
+					assert.ifError(err);
+					assert(isLocked);
+					done();
+				});
+			});
+		});
+
+		it('should unlock topic', function (done) {
+			socketTopics.unlock({uid: 1}, {tids: [newTopic.tid], cid: categoryObj.cid}, function (err) {
+				assert.ifError(err);
+				topics.isLocked(newTopic.tid, function (err, isLocked) {
+					assert.ifError(err);
+					assert(!isLocked);
+					done();
+				});
+			});
+		});
+
+		it('should pin topic', function (done) {
+			socketTopics.pin({uid: 1}, {tids: [newTopic.tid], cid: categoryObj.cid}, function (err) {
+				assert.ifError(err);
+				db.getObjectField('topic:' + newTopic.tid, 'pinned', function (err, pinned) {
+					assert.ifError(err);
+					assert.strictEqual(parseInt(pinned, 10), 1);
+					done();
+				});
+			});
+		});
+
+		it('should unpin topic', function (done) {
+			socketTopics.unpin({uid: 1}, {tids: [newTopic.tid], cid: categoryObj.cid}, function (err) {
+				assert.ifError(err);
+				db.getObjectField('topic:' + newTopic.tid, 'pinned', function (err, pinned) {
+					assert.ifError(err);
+					assert.strictEqual(parseInt(pinned, 10), 0);
+					done();
+				});
+			});
+		});
+
+		it('should move all topics', function (done) {
+			socketTopics.moveAll({uid: 1}, {cid: moveCid, currentCid: categoryObj.cid}, function (err) {
+				assert.ifError(err);
+				topics.getTopicField(newTopic.tid, 'cid', function (err, cid) {
+					assert.ifError(err);
+					assert.equal(cid, moveCid);
+					done();
+				});
+			});
+		});
+
+		it('should move a topic', function (done) {
+			socketTopics.move({uid: 1}, {cid: categoryObj.cid, tids: [newTopic.tid]}, function (err) {
+				assert.ifError(err);
+				topics.getTopicField(newTopic.tid, 'cid', function (err, cid) {
+					assert.ifError(err);
+					assert.equal(cid, categoryObj.cid);
+					done();
+				});
+			});
+		});
+
 		it('should purge the topic', function (done) {
-			topics.purge(newTopic.tid, 1, function (err) {
+			socketTopics.purge({uid: 1}, {tids: [newTopic.tid], cid: categoryObj.cid}, function (err) {
 				assert.ifError(err);
 				db.isSortedSetMember('uid:' + followerUid + ':followed_tids', newTopic.tid, function (err, isMember) {
 					assert.ifError(err);
@@ -325,7 +408,7 @@ describe('Topic\'s', function () {
 					var topic;
 					var i;
 					for(i = 0; i < topics.length; ++i) {
-						if( topics[i].tid == newTid ) {
+						if (parseInt(topics[i].tid, 10) === parseInt(newTid, 10)) {
 							assert.equal(false, topics[i].unread, 'ignored topic was marked as unread in recent list');
 							return done();
 						}
