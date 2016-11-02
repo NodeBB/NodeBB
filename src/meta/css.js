@@ -8,6 +8,7 @@ var less = require('less');
 var async = require('async');
 var autoprefixer = require('autoprefixer');
 var postcss = require('postcss');
+var clean = require('postcss-clean');
 
 var plugins = require('../plugins');
 var emitter = require('../emitter');
@@ -48,7 +49,7 @@ module.exports = function (Meta) {
 
 			async.waterfall([
 				function (next) {
-					getStyleSource(plugins.cssFiles, '\n@import (less) ".', '.css', next);
+					getStyleSource(plugins.cssFiles, '\n@import (inline) ".', '.css', next);
 				},
 				function (src, next) {
 					source += src;
@@ -65,10 +66,10 @@ module.exports = function (Meta) {
 
 				var acpSource = source;
 
-				source += '\n@import (less) "..' + path.sep + '..' + path.sep + 'public/vendor/jquery/css/smoothness/jquery-ui.css";';
-				source += '\n@import (less) "..' + path.sep + '..' + path.sep + 'public/vendor/jquery/bootstrap-tagsinput/bootstrap-tagsinput.css";';
-				source += '\n@import (less) "..' + path.sep + '..' + path.sep + 'node_modules/cookieconsent/build/cookieconsent.min.css";';
-				source += '\n@import (less) "..' + path.sep + 'public/vendor/colorpicker/colorpicker.css";';
+				source += '\n@import (inline) "..' + path.sep + '..' + path.sep + 'public/vendor/jquery/css/smoothness/jquery-ui.css";';
+				source += '\n@import (inline) "..' + path.sep + '..' + path.sep + 'public/vendor/jquery/bootstrap-tagsinput/bootstrap-tagsinput.css";';
+				source += '\n@import (inline) "..' + path.sep + '..' + path.sep + 'node_modules/cookieconsent/build/cookieconsent.min.css";';
+				source += '\n@import (inline) "..' + path.sep + 'public/vendor/colorpicker/colorpicker.css";';
 				source += '\n@import "..' + path.sep + '..' + path.sep + 'public/less/flags.less";';
 				source += '\n@import "..' + path.sep + '..' + path.sep + 'public/less/blacklist.less";';
 				source += '\n@import "..' + path.sep + '..' + path.sep + 'public/less/generics.less";';
@@ -78,9 +79,8 @@ module.exports = function (Meta) {
 
 				acpSource += '\n@import "..' + path.sep + 'public/less/admin/admin";\n';
 				acpSource += '\n@import "..' + path.sep + 'public/less/generics.less";\n';
-				acpSource += '\n@import (less) "..' + path.sep + 'public/vendor/colorpicker/colorpicker.css";\n';
-				acpSource += '\n@import (less) "..' + path.sep + 'public/vendor/jquery/css/smoothness/jquery-ui.css";';
-
+				acpSource += '\n@import (inline) "..' + path.sep + 'public/vendor/colorpicker/colorpicker.css";\n';
+				acpSource += '\n@import (inline) "..' + path.sep + 'public/vendor/jquery/css/smoothness/jquery-ui.css";';
 
 				var fromFile = nconf.get('from-file') || '';
 				
@@ -182,8 +182,7 @@ module.exports = function (Meta) {
 
 	function minify(source, paths, destination, callback) {
 		less.render(source, {
-			paths: paths,
-			compress: true
+			paths: paths
 		}, function (err, lessOutput) {
 			if (err) {
 				winston.error('[meta/css] Could not minify LESS/CSS: ' + err.message);
@@ -193,11 +192,10 @@ module.exports = function (Meta) {
 				return;
 			}
 
-			postcss([ autoprefixer ]).process(lessOutput.css).then(function (result) {
+			postcss([ autoprefixer, clean() ]).process(lessOutput.css).then(function (result) {
 				result.warnings().forEach(function (warn) {
 					winston.verbose(warn.toString());
 				});
-
 				Meta.css[destination] = result.css;
 
 				// Save the compiled CSS in public/ so things like nginx can serve it
