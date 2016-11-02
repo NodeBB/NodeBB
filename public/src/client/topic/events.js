@@ -69,14 +69,18 @@ define('forum/topic/events', [
 	}
 
 	function updatePostVotesAndUserReputation(data) {
-		var votes = $('[data-pid="' + data.post.pid + '"] [component="post/vote-count"]').first();
+		var votes = $('[data-pid="' + data.post.pid + '"] [component="post/vote-count"]').filter(function (index, el) {
+			return parseInt($(el).closest('[data-pid]').attr('data-pid'), 10) === parseInt(data.post.pid, 10);
+		});
 		var reputationElements = $('.reputation[data-uid="' + data.post.uid + '"]');
 		votes.html(data.post.votes).attr('data-votes', data.post.votes);
 		reputationElements.html(data.user.reputation).attr('data-reputation', data.user.reputation);
 	}
 
 	function updateBookmarkCount(data) {
-		$('[data-pid="' + data.post.pid + '"] .bookmarkCount').first().html(data.post.bookmarks).attr('data-bookmarks', data.post.bookmarks);
+		$('[data-pid="' + data.post.pid + '"] .bookmarkCount').filter(function (index, el) {
+			return parseInt($(el).closest('[data-pid]').attr('data-pid'), 10) === parseInt(data.post.pid, 10);
+		}).html(data.post.bookmarks).attr('data-bookmarks', data.post.bookmarks);
 	}
 
 	function onTopicPurged() {
@@ -204,8 +208,9 @@ define('forum/topic/events', [
 	}
 
 	function togglePostBookmark(data) {
-		var el = $('[data-pid="' + data.post.pid + '"] [component="post/bookmark"]').first();
-
+		var el = $('[data-pid="' + data.post.pid + '"] [component="post/bookmark"]').filter(function (index, el) {
+			return parseInt($(el).closest('[data-pid]').attr('data-pid'), 10) === parseInt(data.post.pid, 10);
+		});
 		if (!el.length) {
 			return;
 		}
@@ -218,8 +223,12 @@ define('forum/topic/events', [
 
 	function togglePostVote(data) {
 		var post = $('[data-pid="' + data.post.pid + '"]');
-		post.find('[component="post/upvote"]').first().toggleClass('upvoted', data.upvote);
-		post.find('[component="post/downvote"]').first().toggleClass('downvoted', data.downvote);
+		post.find('[component="post/upvote"]').filter(function (index, el) {
+			return parseInt($(el).closest('[data-pid]').attr('data-pid'), 10) === parseInt(data.post.pid, 10);
+		}).toggleClass('upvoted', data.upvote);
+		post.find('[component="post/downvote"]').filter(function (index, el) {
+			return parseInt($(el).closest('[data-pid]').attr('data-pid'), 10) === parseInt(data.post.pid, 10);
+		}).toggleClass('downvoted', data.downvote);
 	}
 
 	function onNewNotification(data) {
