@@ -2,12 +2,12 @@
     "title": "Neprečítané",
     "no_unread_topics": "Nie sú tu žiadne neprečítané témy.",
     "load_more": "Načítať dalšie",
-    "mark_as_read": "Označiť ako prečítan'é",
+    "mark_as_read": "Označiť ako prečítané",
     "selected": "Vybrané",
     "all": "Všetko",
-    "all_categories": "All categories",
+    "all_categories": "Všetky kategórie",
     "topics_marked_as_read.success": "Témy označiť ako prečítané!",
-    "all-topics": "All Topics",
-    "new-topics": "New Topics",
-    "watched-topics": "Watched Topics"
+    "all-topics": "Všetky témy",
+    "new-topics": "Nové témy",
+    "watched-topics": "Sledované témy"
 }

@@ -1,12 +1,12 @@
 {
-    "username-email": "Username / Email",
-    "username": "Username",
+    "username-email": "Uživateľské meno / Email",
+    "username": "Užívateľské meno",
     "email": "Email",
     "remember_me": "Zapamätať si ma?",
     "forgot_password": "Zabudol si heslo?",
     "alternative_logins": "Ďalšie spôsoby prihlásenia",
-    "failed_login_attempt": "Login Unsuccessful",
+    "failed_login_attempt": "Prihlásenie neuspešné",
     "login_successful": "Prihlásenie prebehlo úspešne!",
     "dont_have_account": "Nemáš účet?",
-    "logged-out-due-to-inactivity": "You have been logged out of the Admin Control Panel due to inactivity"
+    "logged-out-due-to-inactivity": "Boli ste odhlásení z ovládacieho panela administrátora v dôsledku nečinnosti"
 }

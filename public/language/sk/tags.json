@@ -1,7 +1,7 @@
 {
-    "no_tag_topics": "There are no topics with this tag.",
-    "tags": "Tagy",
-    "enter_tags_here": "Enter tags here, between %1 and %2 characters each.",
-    "enter_tags_here_short": "Zadaj tagy...",
-    "no_tags": "Nie sú tu zatiaľ žiadne tagy"
+    "no_tag_topics": "Nie sú žiadne témy s touto značkou.",
+    "tags": "Značky",
+    "enter_tags_here": "Sem zadajte značky, medzi %1 a %2 za každým znakom.",
+    "enter_tags_here_short": "Zadajte značky...",
+    "no_tags": "Nie sú tu zatiaľ žiadne značky"
 }
