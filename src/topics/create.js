@@ -134,6 +134,7 @@ module.exports = function (Topics) {
 				var postData = data;
 				postData.tid = tid;
 				postData.ip = data.req ? data.req.ip : null;
+				postData.isMain = true;
 				posts.create(postData, next);
 			},
 			function (postData, next) {
