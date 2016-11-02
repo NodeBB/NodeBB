@@ -20,7 +20,7 @@
 				</p>
 			</div>
 			<div class="form-group">
-				<label for="cookieConsentDismiss">Notification message</label>
+				<label for="cookieConsentDismiss">Acceptance message</label>
 				<input class="form-control" id="cookieConsentDismiss" type="text" data-field="cookieConsentDismiss" />
 				<p class="help-block">
 					Leave blank to use NodeBB localised defaults
@@ -38,7 +38,7 @@
 </div>
 
 <div class="row">
-	<div class="col-sm-2 col-xs-12 settings-header">EU Consent</div>
+	<div class="col-sm-2 col-xs-12 settings-header">Display</div>
 	<div class="col-sm-10 col-xs-12">
 		<form>
 			<div class="form-group">
