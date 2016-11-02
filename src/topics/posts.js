@@ -148,12 +148,7 @@ module.exports = function (Topics) {
 				post.display_post_menu = topicPrivileges.isAdminOrMod || (post.selfPost && !topicData.locked) || ((loggedIn || topicData.postSharing.length) && !post.deleted);
 				post.ip = topicPrivileges.isAdminOrMod ? post.ip : undefined;
 
-				if (post.deleted && !(topicPrivileges.isAdminOrMod || post.selfPost)) {
-					post.content = '[[topic:post_is_deleted]]';
-					if (post.user) {
-						post.user.signature = '';
-					}
-				}
+				posts.modifyPostByPrivilege(post, topicPrivileges.isAdminOrMod);
 			}
 		});
 	};

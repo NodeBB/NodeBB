@@ -260,4 +260,14 @@ var plugins = require('./plugins');
 		});
 	};
 
+	Posts.modifyPostByPrivilege = function (post, isAdminOrMod) {
+		if (post.deleted && !(isAdminOrMod || post.selfPost)) {
+			post.content = '[[topic:post_is_deleted]]';
+			if (post.user) {
+				post.user.signature = '';
+			}
+		}
+	};
+
+
 }(exports));

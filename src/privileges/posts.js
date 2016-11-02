@@ -26,7 +26,7 @@ module.exports = function (privileges) {
 			function (cids, next) {
 				async.parallel({
 					isAdmin: async.apply(user.isAdministrator, uid),
-					isModerator: async.apply(posts.isModerator, pids, uid),
+					isModerator: async.apply(user.isModerator, uid, cids),
 					isOwner: async.apply(posts.isOwner, pids, uid),
 					'topics:read': async.apply(helpers.isUserAllowedTo, 'topics:read', uid, cids),
 					read: async.apply(helpers.isUserAllowedTo, 'read', uid, cids),
