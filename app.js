@@ -38,9 +38,11 @@ winston.add(winston.transports.Console, {
 	colorize: true,
 	timestamp: function () {
 		var date = new Date();
-		return date.getDate() + '/' + (date.getMonth() + 1) + ' ' + date.toTimeString().substr(0,5) + ' [' + global.process.pid + ']';
+		return (global.env === 'production') ? date.toJSON() :	date.getDate() + '/' + (date.getMonth() + 1) + ' ' + date.toTimeString().substr(0,5) + ' [' + global.process.pid + ']';
 	},
-	level: nconf.get('log-level') || (global.env === 'production' ? 'info' : 'verbose')
+	level: nconf.get('log-level') || (global.env === 'production' ? 'info' : 'verbose'),
+	json: (global.env === 'production'),
+	stringify: (global.env === 'production')
 });
 
 
