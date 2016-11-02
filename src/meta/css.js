@@ -196,7 +196,6 @@ module.exports = function (Meta) {
 				result.warnings().forEach(function (warn) {
 					winston.verbose(warn.toString());
 				});
-				
 				Meta.css[destination] = result.css;
 
 				// Save the compiled CSS in public/ so things like nginx can serve it
