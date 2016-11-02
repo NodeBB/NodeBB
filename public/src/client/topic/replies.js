@@ -50,6 +50,7 @@ define('forum/topic/replies', ['navigator', 'components', 'forum/topic/posts'], 
 				app.parseAndTranslate('topic', 'posts', tplData, function (html) {
 					$('<div>', {component: 'post/replies'}).html(html).hide().insertAfter(button).slideDown('fast');
 					posts.processPage(html);
+					$(window).trigger('action:posts.loaded', {posts: data});
 				});
 			});
 		} else if (close.is(':not(.hidden)')) {

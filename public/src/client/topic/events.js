@@ -69,15 +69,14 @@ define('forum/topic/events', [
 	}
 
 	function updatePostVotesAndUserReputation(data) {
-		var votes = components.get('post/vote-count', data.post.pid);
+		var votes = $('[data-pid="' + data.post.pid + '"] [component="post/vote-count"]').first();
 		var reputationElements = $('.reputation[data-uid="' + data.post.uid + '"]');
-
 		votes.html(data.post.votes).attr('data-votes', data.post.votes);
 		reputationElements.html(data.user.reputation).attr('data-reputation', data.user.reputation);
 	}
 
 	function updateBookmarkCount(data) {
-		$('[data-pid="' + data.post.pid + '"] .bookmarkCount').html(data.post.bookmarks).attr('data-bookmarks', data.post.bookmarks);
+		$('[data-pid="' + data.post.pid + '"] .bookmarkCount').first().html(data.post.bookmarks).attr('data-bookmarks', data.post.bookmarks);
 	}
 
 	function onTopicPurged() {
@@ -96,8 +95,13 @@ define('forum/topic/events', [
 		if (!data || !data.post) {
 			return;
 		}
-		var editedPostEl = components.get('post/content', data.post.pid);
-		var editorEl = $('[data-pid="' + data.post.pid + '"] [component="post/editor"]');
+		var editedPostEl = components.get('post/content', data.post.pid).filter(function (index, el) {
+			return parseInt($(el).closest('[data-pid]').attr('data-pid'), 10) === parseInt(data.post.pid, 10);
+		});
+
+		var editorEl = $('[data-pid="' + data.post.pid + '"] [component="post/editor"]').filter(function (index, el) {
+			return parseInt($(el).closest('[data-pid]').attr('data-pid'), 10) === parseInt(data.post.pid, 10);
+		});
 		var topicTitle = components.get('topic/title');
 		var navbarTitle = components.get('navbar/title').find('span');
 		var breadCrumb = components.get('breadcrumb/current');
@@ -136,7 +140,7 @@ define('forum/topic/events', [
 				translator.translate(html, function (translated) {
 					html = $(translated);
 					editorEl.replaceWith(html);
-					html.find('.timeago').timeago();
+					$('[data-pid="' + data.post.pid + '"] [component="post/editor"] .timeago').timeago();
 					$(window).trigger('action:posts.edited', data);
 				});
 			});
@@ -200,7 +204,7 @@ define('forum/topic/events', [
 	}
 
 	function togglePostBookmark(data) {
-		var el = $('[data-pid="' + data.post.pid + '"] [component="post/bookmark"]');
+		var el = $('[data-pid="' + data.post.pid + '"] [component="post/bookmark"]').first();
 
 		if (!el.length) {
 			return;
@@ -214,8 +218,8 @@ define('forum/topic/events', [
 
 	function togglePostVote(data) {
 		var post = $('[data-pid="' + data.post.pid + '"]');
-		post.find('[component="post/upvote"]').toggleClass('upvoted', data.upvote);
-		post.find('[component="post/downvote"]').toggleClass('downvoted', data.downvote);
+		post.find('[component="post/upvote"]').first().toggleClass('upvoted', data.upvote);
+		post.find('[component="post/downvote"]').first().toggleClass('downvoted', data.downvote);
 	}
 
 	function onNewNotification(data) {
