@@ -191,7 +191,7 @@ module.exports = function (Meta) {
 				}
 				return;
 			}
-			
+
 			postcss([ autoprefixer, clean() ]).process(lessOutput.css).then(function (result) {
 				result.warnings().forEach(function (warn) {
 					winston.verbose(warn.toString());
