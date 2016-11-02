@@ -166,15 +166,16 @@ define('forum/topic/events', [
 		return false;
 	}
 
-	function onPostPurged(pid) {
-		components.get('post', 'pid', pid).fadeOut(500, function () {
+	function onPostPurged(postData) {
+		components.get('post', 'pid', postData.pid).fadeOut(500, function () {
 			$(this).remove();
-			ajaxify.data.postcount --;
-			postTools.updatePostCount(ajaxify.data.postcount);
 			posts.showBottomPostBar();
 		});
-
-		postTools.updatePostCount();
+		ajaxify.data.postcount --;
+		postTools.updatePostCount(ajaxify.data.postcount);
+		require(['forum/topic/replies'], function (replies) {
+			replies.onPostPurged(postData);
+		});
 	}
 
 	function togglePostDeleteState(data) {

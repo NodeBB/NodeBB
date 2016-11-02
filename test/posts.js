@@ -8,6 +8,7 @@ var db = require('./mocks/databasemock');
 var topics = require('../src/topics');
 var posts = require('../src/posts');
 var categories = require('../src/categories');
+var privileges = require('../src/privileges');
 var user = require('../src/user');
 
 describe('Post\'s', function () {
@@ -135,6 +136,7 @@ describe('Post\'s', function () {
 
 	describe('delete/restore/purge', function () {
 		var pid;
+		var socketPosts = require('../src/socket.io/posts');
 		before(function (done) {
 			topics.reply({
 				uid: voterUid,
@@ -144,14 +146,13 @@ describe('Post\'s', function () {
 			}, function (err, data) {
 				assert.ifError(err);
 				pid = data.pid;
-				done();
+				privileges.categories.give(['purge'], cid, 'registered-users', done);
 			});
 		});
 
 		it('should delete a post', function (done) {
-			posts.delete(pid, voterUid, function (err, postData) {
+			socketPosts.delete({uid: voterUid}, {pid: pid, tid: topicData.tid}, function (err) {
 				assert.ifError(err);
-				assert(postData);
 				posts.getPostField(pid, 'deleted', function (err, isDeleted) {
 					assert.ifError(err);
 					assert.equal(parseInt(isDeleted, 10), 1);
@@ -161,9 +162,8 @@ describe('Post\'s', function () {
 		});
 
 		it('should restore a post', function (done) {
-			posts.restore(pid, voterUid, function (err, postData) {
+			socketPosts.restore({uid: voterUid}, {pid: pid, tid: topicData.tid}, function (err) {
 				assert.ifError(err);
-				assert(postData);
 				posts.getPostField(pid, 'deleted', function (err, isDeleted) {
 					assert.ifError(err);
 					assert.equal(parseInt(isDeleted, 10), 0);
@@ -173,9 +173,8 @@ describe('Post\'s', function () {
 		});
 
 		it('should purge a post', function (done) {
-			posts.purge(pid, voterUid, function (err) {
+			socketPosts.purge({uid: voterUid}, {pid: pid}, function (err) {
 				assert.ifError(err);
-				assert.equal(arguments.length, 1);
 				posts.exists('post:' + pid, function (err, exists) {
 					assert.ifError(err);
 					assert.equal(exists, false);

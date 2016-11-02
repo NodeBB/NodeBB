@@ -37,6 +37,10 @@ define('forum/topic/posts', [
 		} else {
 			onNewPostInfiniteScroll(data);
 		}
+
+		require(['forum/topic/replies'], function (replies) {
+			replies.onNewPost(data);
+		});
 	};
 
 	Posts.modifyPostsByPrivileges = function (posts) {

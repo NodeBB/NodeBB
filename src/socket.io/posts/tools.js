@@ -1,7 +1,6 @@
 'use strict';
 
 var async = require('async');
-var winston = require('winston');
 var validator = require('validator');
 
 var posts = require('../../posts');
@@ -137,28 +136,29 @@ module.exports = function (SocketPosts) {
 
 	SocketPosts.purge = function (socket, data, callback) {
 		function purgePost() {
-			posts.tools.purge(socket.uid, data.pid, function (err) {
-				if (err) {
-					return callback(err);
-				}
-
-				websockets.in('topic_' + data.tid).emit('event:post_purged', data.pid);
-
-				topics.getTopicField(data.tid, 'title', function (err, title) {
-					if (err) {
-						return winston.error(err);
-					}
+			var postData;
+			async.waterfall([
+				function (next) {
+					posts.getPostField(data.pid, 'toPid', next);
+				},
+				function (toPid, next) {
+					postData = {pid: data.pid, toPid: toPid};
+					posts.tools.purge(socket.uid, data.pid, next);
+				},
+				function (next) {
+					websockets.in('topic_' + data.tid).emit('event:post_purged', postData);
+					topics.getTopicField(data.tid, 'title', next);
+				},
+				function (title, next) {
 					events.log({
 						type: 'post-purge',
 						uid: socket.uid,
 						pid: data.pid,
 						ip: socket.ip,
 						title: validator.escape(String(title))
-					});
-				});
-
-				callback();
-			});
+					}, next);
+				}
+			], callback);
 		}
 
 		if (!data || !parseInt(data.pid, 10)) {
