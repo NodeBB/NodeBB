@@ -82,7 +82,6 @@ module.exports = function (Meta) {
 				acpSource += '\n@import (inline) "..' + path.sep + 'public/vendor/colorpicker/colorpicker.css";\n';
 				acpSource += '\n@import (inline) "..' + path.sep + 'public/vendor/jquery/css/smoothness/jquery-ui.css";';
 
-
 				var fromFile = nconf.get('from-file') || '';
 				
 				async.series([
