@@ -117,13 +117,13 @@ define('forum/groups/details', [
 
 	Details.prepareSettings = function () {
 		var settingsFormEl = components.get('groups/settings');
-		var	colorValueEl = settingsFormEl.find('[name="labelColor"]');
-		var	iconBtn = settingsFormEl.find('[data-action="icon-select"]');
-		var	previewEl = settingsFormEl.find('.label');
-		var	previewIcon = previewEl.find('i');
-		var	userTitleEl = settingsFormEl.find('[name="userTitle"]');
-		var	userTitleEnabledEl = settingsFormEl.find('[name="userTitleEnabled"]');
-		var	iconValueEl = settingsFormEl.find('[name="icon"]');
+		var colorValueEl = settingsFormEl.find('[name="labelColor"]');
+		var iconBtn = settingsFormEl.find('[data-action="icon-select"]');
+		var previewEl = settingsFormEl.find('.label');
+		var previewIcon = previewEl.find('i');
+		var userTitleEl = settingsFormEl.find('[name="userTitle"]');
+		var userTitleEnabledEl = settingsFormEl.find('[name="userTitleEnabled"]');
+		var iconValueEl = settingsFormEl.find('[name="icon"]');
 		
 		colorValueEl.on('change', function() {
 			 previewEl.css('background-color', colorValueEl.val());
