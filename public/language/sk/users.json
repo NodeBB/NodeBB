@@ -9,13 +9,13 @@
     "users-found-search-took": "%1 user(s) found! Search took %2 seconds.",
     "filter-by": "Filter By",
     "online-only": "Iba online",
-    "invite": "Invite",
-    "invitation-email-sent": "An invitation email has been sent to %1",
+    "invite": "Pozvať",
+    "invitation-email-sent": "E-mailová pozvánka bola odoslaná na adresu %1",
     "user_list": "User List",
-    "recent_topics": "Recent Topics",
+    "recent_topics": "Nedávne témy",
     "popular_topics": "Popular Topics",
     "unread_topics": "Unread Topics",
     "categories": "Categories",
-    "tags": "Tagy",
+    "tags": "Značky",
     "no-users-found": "No users found!"
 }

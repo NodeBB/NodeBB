@@ -28,8 +28,8 @@
     "user_started_following_you_multiple": "<strong>%1</strong> and %2 others started following you.",
     "new_register": "<strong>%1</strong> sent a registration request.",
     "new_register_multiple": "There are <strong>%1</strong> registration requests awaiting review.",
-    "email-confirmed": "Email bol potvrdený",
-    "email-confirmed-message": "Ďakujeme za potvrdenie tvojho emailu. Účet je plne aktivovaný.",
-    "email-confirm-error-message": "Vyskytla sa chyba pri overení tvojej emailovej adresy. ",
-    "email-confirm-sent": "Práve sme poslali potvrdzujúci email."
+    "email-confirmed": "E-mail bol potvrdený",
+    "email-confirmed-message": "Ďakujeme za potvrdenie Vášho e-mailu. Účet je plne aktivovaný.",
+    "email-confirm-error-message": "Vyskytla sa chyba pri overení Vašej e-mailovej adresy. ",
+    "email-confirm-sent": "Potvrdzovací e-mail odoslaný."
 }
