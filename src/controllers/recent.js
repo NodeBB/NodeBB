@@ -95,7 +95,7 @@ recentController.get = function (req, res, next) {
 			return filter && filter.selected;
 		});
 
-		data.pagination = pagination.create(page, pageCount);
+		data.pagination = pagination.create(page, pageCount, req.query);
 		if (req.path.startsWith('/api/recent') || req.path.startsWith('/recent')) {
 			data.breadcrumbs = helpers.buildBreadcrumbs([{text: '[[recent:title]]'}]);
 		}
