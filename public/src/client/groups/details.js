@@ -125,7 +125,7 @@ define('forum/groups/details', [
 		var userTitleEnabledEl = settingsFormEl.find('[name="userTitleEnabled"]');
 		var iconValueEl = settingsFormEl.find('[name="icon"]');
 		
-		colorValueEl.on('change', function() {
+		colorValueEl.on('change', function () {
 			 previewEl.css('background-color', colorValueEl.val());
 		});
 
