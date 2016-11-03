@@ -159,6 +159,30 @@ module.exports = function (Topics) {
 		], callback);
 	};
 
+	Topics.filterWatchedTids = function (tids, uid, callback) {
+		db.sortedSetScores('uid:' + uid + ':followed_tids', tids, function (err, scores) {
+			if (err) {
+				return callback(err);
+			}
+			tids = tids.filter(function (tid, index) {
+				return tid && !!scores[index];
+			});
+			callback(null, tids);
+		});
+	};
+
+	Topics.filterNotIgnoredTids = function (tids, uid, callback) {
+		db.sortedSetScores('uid:' + uid + ':ignored_tids', tids, function (err, scores) {
+			if (err) {
+				return callback(err);
+			}
+			tids = tids.filter(function (tid, index) {
+				return tid && !scores[index];
+			});
+			callback(null, tids);
+		});
+	};
+
 	Topics.notifyFollowers = function (postData, exceptUid, callback) {
 		callback = callback || function () {};
 		var followers;

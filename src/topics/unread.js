@@ -135,7 +135,7 @@ module.exports = function (Topics) {
 				});
 
 				if (filter === 'watched') {
-					filterWatchedTids(uid, tids, next);
+					Topics.filterWatchedTids(tids, uid, next);
 				} else {
 					next(null, tids);
 				}
@@ -149,17 +149,6 @@ module.exports = function (Topics) {
 		], callback);
 	};
 
-	function filterWatchedTids(uid, tids, callback) {
-		db.sortedSetScores('uid:' + uid + ':followed_tids', tids, function (err, scores) {
-			if (err) {
-				return callback(err);
-			}
-			tids = tids.filter(function (tid, index) {
-				return tid && !!scores[index];
-			});
-			callback(null, tids);
-		});
-	}
 
 	function filterTopics(uid, tids, cid, ignoredCids, filter, callback) {
 		if (!Array.isArray(ignoredCids) || !tids.length) {
@@ -372,6 +361,18 @@ module.exports = function (Topics) {
 				db.sortedSetAdd('uid:' + uid + ':tids_unread', Date.now(), tid, next);
 			}
 		], callback);
+	};
+
+	Topics.filterNewTids = function (tids, uid, callback) {
+		db.sortedSetScores('uid:' + uid + ':tids_read', tids, function (err, scores) {
+			if (err) {
+				return callback(err);
+			}
+			tids = tids.filter(function (tid, index) {
+				return tid && !scores[index];
+			});
+			callback(null, tids);
+		});
 	};
 
 };

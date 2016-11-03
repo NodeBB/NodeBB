@@ -5,8 +5,6 @@ var async = require('async');
 var querystring = require('querystring');
 var validator = require('validator');
 
-var categories = require('../categories');
-var privileges = require('../privileges');
 var pagination = require('../pagination');
 var user = require('../user');
 var topics = require('../topics');
@@ -30,7 +28,7 @@ unreadController.get = function (req, res, next) {
 		function (next) {
 			async.parallel({
 				watchedCategories: function (next) {
-					getWatchedCategories(req.uid, cid, next);
+					helpers.getWatchedCategories(req.uid, cid, next);
 				},
 				settings: function (next) {
 					user.getSettings(req.uid, next);
@@ -82,60 +80,15 @@ unreadController.get = function (req, res, next) {
 			filter: 'watched'
 		}];
 
-		data.selectedFilter = data.filters.filter(function (filter) {
+		data.selectedFilter = data.filters.find(function (filter) {
 			return filter && filter.selected;
-		})[0];
+		});
 
 		data.querystring = cid ? ('?cid=' + validator.escape(String(cid))) : '';
 
 		res.render('unread', data);
 	});
 };
-
-function getWatchedCategories(uid, selectedCid, callback) {
-	async.waterfall([
-		function (next) {
-			user.getWatchedCategories(uid, next);
-		},
-		function (cids, next) {
-			privileges.categories.filterCids('read', cids, uid, next);
-		},
-		function (cids, next) {
-			categories.getCategoriesFields(cids, ['cid', 'name', 'slug', 'icon', 'link', 'color', 'bgColor', 'parentCid'], next);
-		},
-		function (categoryData, next) {
-			categoryData = categoryData.filter(function (category) {
-				return category && !category.link;
-			});
-
-			var selectedCategory;
-			categoryData.forEach(function (category) {
-				category.selected = parseInt(category.cid, 10) === parseInt(selectedCid, 10);
-				if (category.selected) {
-					selectedCategory = category;
-				}
-			});
-
-			var categoriesData = [];
-			var tree = categories.getTree(categoryData, 0);
-
-			tree.forEach(function (category) {
-				recursive(category, categoriesData, '');
-			});
-
-			next(null, {categories: categoriesData, selectedCategory: selectedCategory});
-		}
-	], callback);
-}
-
-function recursive(category, categoriesData, level) {
-	category.level = level;
-	categoriesData.push(category);
-
-	category.children.forEach(function (child) {
-		recursive(child, categoriesData, '&nbsp;&nbsp;&nbsp;&nbsp;' + level);
-	});
-}
 
 unreadController.unreadTotal = function (req, res, next) {
 	var filter = req.params.filter || '';

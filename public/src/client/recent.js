@@ -43,7 +43,7 @@ define('forum/recent', ['forum/infinitescroll', 'components'], function (infinit
 			return;
 		}
 
-		if (ajaxify.data.selectedFilter && ajaxify.data.selectedFilter.url === 'unread/watched') {
+		if (ajaxify.data.selectedFilter && ajaxify.data.selectedFilter.filter === 'watched') {
 			return;
 		}
 
@@ -69,11 +69,11 @@ define('forum/recent', ['forum/infinitescroll', 'components'], function (infinit
 			return;
 		}
 
-		if (ajaxify.data.selectedFilter && ajaxify.data.selectedFilter.url === 'unread/new') {
+		if (ajaxify.data.selectedFilter && ajaxify.data.selectedFilter.filter === 'new') {
 			return;
 		}
 
-		if (ajaxify.data.selectedFilter && ajaxify.data.selectedFilter.url === 'unread/watched') {
+		if (ajaxify.data.selectedFilter && ajaxify.data.selectedFilter.filter === 'watched') {
 			socket.emit('topics.isFollowed', post.tid, function (err, isFollowed) {
 				if (err) {
 					app.alertError(err.message);
@@ -127,13 +127,13 @@ define('forum/recent', ['forum/infinitescroll', 'components'], function (infinit
 	};
 
 	Recent.loadMoreTopics = function (direction) {
-		if(direction < 0 || !$('[component="category"]').length) {
+		if (direction < 0 || !$('[component="category"]').length) {
 			return;
 		}
 
 		infinitescroll.loadMore('topics.loadMoreFromSet', {
 			after: $('[component="category"]').attr('data-nextstart'),
-			set: $('[component="category"]').attr('data-set') ? $('[component="category"]').attr('data-set') : 'topics:recent' 
+			set: $('[component="category"]').attr('data-set') ? $('[component="category"]').attr('data-set') : 'topics:recent'
 		}, function (data, done) {
 			if (data.topics && data.topics.length) {
 				Recent.onTopicsLoaded('recent', data.topics, false, done);

@@ -5,6 +5,8 @@ var async = require('async');
 var validator = require('validator');
 var winston = require('winston');
 
+var user = require('../user');
+var privileges = require('../privileges');
 var categories = require('../categories');
 var plugins = require('../plugins');
 var meta = require('../meta');
@@ -128,5 +130,50 @@ helpers.buildTitle = function (pageTitle) {
 	});
 	return title;
 };
+
+helpers.getWatchedCategories = function(uid, selectedCid, callback) {
+	async.waterfall([
+		function (next) {
+			user.getWatchedCategories(uid, next);
+		},
+		function (cids, next) {
+			privileges.categories.filterCids('read', cids, uid, next);
+		},
+		function (cids, next) {
+			categories.getCategoriesFields(cids, ['cid', 'name', 'slug', 'icon', 'link', 'color', 'bgColor', 'parentCid'], next);
+		},
+		function (categoryData, next) {
+			categoryData = categoryData.filter(function (category) {
+				return category && !category.link;
+			});
+
+			var selectedCategory;
+			categoryData.forEach(function (category) {
+				category.selected = parseInt(category.cid, 10) === parseInt(selectedCid, 10);
+				if (category.selected) {
+					selectedCategory = category;
+				}
+			});
+
+			var categoriesData = [];
+			var tree = categories.getTree(categoryData, 0);
+
+			tree.forEach(function (category) {
+				recursive(category, categoriesData, '');
+			});
+
+			next(null, {categories: categoriesData, selectedCategory: selectedCategory});
+		}
+	], callback);
+};
+
+function recursive(category, categoriesData, level) {
+	category.level = level;
+	categoriesData.push(category);
+
+	category.children.forEach(function (child) {
+		recursive(child, categoriesData, '&nbsp;&nbsp;&nbsp;&nbsp;' + level);
+	});
+}
 
 module.exports = helpers;

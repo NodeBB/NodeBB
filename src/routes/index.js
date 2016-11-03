@@ -64,7 +64,7 @@ function tagRoutes(app, middleware, controllers) {
 function categoryRoutes(app, middleware, controllers) {
 	setupPageRoute(app, '/categories', middleware, [], controllers.categories.list);
 	setupPageRoute(app, '/popular/:term?', middleware, [], controllers.popular.get);
-	setupPageRoute(app, '/recent', middleware, [], controllers.recent.get);
+	setupPageRoute(app, '/recent/:filter?', middleware, [], controllers.recent.get);
 	setupPageRoute(app, '/unread/:filter?', middleware, [middleware.authenticate], controllers.unread.get);
 
 	setupPageRoute(app, '/category/:category_id/:slug/:topic_index', middleware, [], controllers.category.get);
