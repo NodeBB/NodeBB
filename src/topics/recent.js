@@ -5,6 +5,8 @@
 var async = require('async');
 var db = require('../database');
 var plugins = require('../plugins');
+var privileges = require('../privileges');
+var user = require('../user');
 
 module.exports = function (Topics) {
 	var terms = {
@@ -13,6 +15,76 @@ module.exports = function (Topics) {
 		month: 2592000000,
 		year: 31104000000
 	};
+
+	Topics.getRecentTopics = function (cid, uid, start, stop, filter, callback) {
+		var recentTopics = {
+			nextStart : 0,
+			topics: []
+		};
+
+		async.waterfall([
+			function (next) {
+				db.getSortedSetRevRange(cid ? 'cid:' + cid + ':tids' : 'topics:recent', 0, 199, next);
+			},
+			function (tids, next) {
+				filterTids(tids, uid, filter, next);
+			},
+			function (tids, next) {
+				recentTopics.topicCount = tids.length;
+				tids = tids.slice(start, stop + 1);
+				Topics.getTopicsByTids(tids, uid, next);
+			},
+			function (topicData, next) {
+				recentTopics.topics = topicData;
+				recentTopics.nextStart = stop + 1;
+				next(null, recentTopics);
+			}
+		], callback);
+	};
+
+
+	function filterTids(tids, uid, filter, callback) {
+		async.waterfall([
+			function (next) {
+				if (filter === 'watched') {
+					Topics.filterWatchedTids(tids, uid, next);
+				} else if (filter === 'new') {
+					Topics.filterNewTids(tids, uid, next);
+				} else {
+					Topics.filterNotIgnoredTids(tids, uid, next);
+				}
+			},
+			function (tids, next) {
+				privileges.topics.filterTids('read', tids, uid, next);
+			},
+			function (tids, next) {
+				async.parallel({
+					ignoredCids: function (next) {
+						if (filter === 'watched') {
+							return next(null, []);
+						}
+						user.getIgnoredCategories(uid, next);
+					},
+					topicData: function (next) {
+						Topics.getTopicsFields(tids, ['tid', 'cid'], next);
+					}
+				}, next);
+			},
+			function (results, next) {
+				tids = results.topicData.filter(function (topic) {
+					if (topic) {
+						return results.ignoredCids.indexOf(topic.cid.toString()) === -1;
+					} else {
+						return false;
+					}
+				}).map(function (topic) {
+					return topic.tid;
+				});
+				next(null, tids);
+			}
+		], callback);
+	}
+
 
 	Topics.getLatestTopics = function (uid, start, stop, term, callback) {
 		async.waterfall([

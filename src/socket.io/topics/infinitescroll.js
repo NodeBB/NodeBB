@@ -99,13 +99,25 @@ module.exports = function (SocketTopics) {
 		topics.getUnreadTopics(data.cid, socket.uid, start, stop, data.filter, callback);
 	};
 
+	SocketTopics.loadMoreRecentTopics = function (socket, data, callback) {
+		if (!data || !utils.isNumber(data.after) || parseInt(data.after, 10) < 0) {
+			return callback(new Error('[[error:invalid-data]]'));
+		}
+
+		var start = parseInt(data.after, 10);
+		var stop = start + 9;
+
+		topics.getRecentTopics(data.cid, socket.uid, start, stop, data.filter, callback);
+	};
+
+
 	SocketTopics.loadMoreFromSet = function (socket, data, callback) {
 		if (!data || !utils.isNumber(data.after) || parseInt(data.after, 10) < 0 || !data.set) {
 			return callback(new Error('[[error:invalid-data]]'));
 		}
 
-		var start = parseInt(data.after, 10),
-			stop = start + 9;
+		var start = parseInt(data.after, 10);
+		var stop = start + 9;
 
 		topics.getTopicsFromSet(data.set, socket.uid, start, stop, callback);
 	};

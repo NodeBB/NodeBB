@@ -131,8 +131,10 @@ define('forum/recent', ['forum/infinitescroll', 'components'], function (infinit
 			return;
 		}
 
-		infinitescroll.loadMore('topics.loadMoreFromSet', {
+		infinitescroll.loadMore('topics.loadMoreRecentTopics', {
 			after: $('[component="category"]').attr('data-nextstart'),
+			cid: utils.params().cid,
+			filter: ajaxify.data.selectedFilter.filter,
 			set: $('[component="category"]').attr('data-set') ? $('[component="category"]').attr('data-set') : 'topics:recent'
 		}, function (data, done) {
 			if (data.topics && data.topics.length) {
