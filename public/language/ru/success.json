@@ -1,6 +1,6 @@
 {
     "success": "Успешно",
     "topic-post": "Запись была успешно создана",
-    "authentication-successful": "Успешная аутентификация",
-    "settings-saved": "Настройки сохранены!"
+    "authentication-successful": "Авторизация выполнена успешно",
+    "settings-saved": "Настройки сохранены"
 }
