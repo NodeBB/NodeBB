@@ -131,7 +131,7 @@ helpers.buildTitle = function (pageTitle) {
 	return title;
 };
 
-helpers.getWatchedCategories = function(uid, selectedCid, callback) {
+helpers.getWatchedCategories = function (uid, selectedCid, callback) {
 	async.waterfall([
 		function (next) {
 			user.getWatchedCategories(uid, next);
