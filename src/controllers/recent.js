@@ -38,7 +38,7 @@ recentController.get = function (req, res, next) {
 					user.getSettings(req.uid, next);
 				},
 				tids: function (next) {
-					db.getSortedSetRevRange('topics:recent', 0, 199, next);
+					db.getSortedSetRevRange(cid ? 'cid:' + cid + ':tids' : 'topics:recent', 0, 199, next);
 				},
 				watchedCategories: function (next) {
 					helpers.getWatchedCategories(req.uid, cid, next);
@@ -48,7 +48,7 @@ recentController.get = function (req, res, next) {
 		function (results, next) {
 			settings = results.settings;
 			categoryData = results.watchedCategories;
-			filterTids(results.tids, req.uid, cid, categoryData.categories, filter, next);
+			filterTids(results.tids, req.uid, categoryData.categories, filter, next);
 		},
 		function (tids, next) {
 			var start = Math.max(0, (page - 1) * settings.topicsPerPage);
@@ -104,7 +104,7 @@ recentController.get = function (req, res, next) {
 	});
 };
 
-function filterTids(tids, uid, cid, watchedCategories, filter, callback) {
+function filterTids(tids, uid, watchedCategories, filter, callback) {
 	async.waterfall([
 		function (next) {
 			if (filter === 'watched') {
@@ -129,7 +129,7 @@ function filterTids(tids, uid, cid, watchedCategories, filter, callback) {
 			tids = topicData.filter(function (topic, index) {
 				if (topic) {
 					var topicCid = parseInt(topic.cid, 10);
-					return watchedCids.indexOf(topicCid) !== -1 && (!cid || parseInt(cid, 10) === topicCid);
+					return watchedCids.indexOf(topicCid) !== -1;
 				} else {
 					return false;
 				}
