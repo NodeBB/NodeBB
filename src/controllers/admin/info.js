@@ -81,7 +81,10 @@ function getNodeInfo(callback) {
 function getGitInfo(callback) {
 	function get(cmd,  callback) {
 		exec(cmd, function (err, stdout) {
-			callback(err, stdout ? stdout.replace(/\n$/, '') : '');
+			if (err) {
+				winston.error(err);
+			}
+			callback(null, stdout ? stdout.replace(/\n$/, '') : 'no-git-info');
 		});
 	}
 	async.parallel({
