@@ -1,12 +1,12 @@
 {
-    "username-email": "Имя пользователя / E-mail",
+    "username-email": "Введите имя пользователя или свою электронную почту",
     "username": "Имя пользователя",
-    "email": "Email",
+    "email": "Электронная почта",
     "remember_me": "Запомнить меня",
     "forgot_password": "Забыли пароль?",
     "alternative_logins": "Войти через",
-    "failed_login_attempt": "Некорректный логин",
+    "failed_login_attempt": "Неправильно указано имя пользователя или электронная почта",
     "login_successful": "Вы успешно вошли!",
-    "dont_have_account": "Нет акканута?",
+    "dont_have_account": "Регистрация",
     "logged-out-due-to-inactivity": "Вы вышли из панели управления администратора из-за бездействия"
 }

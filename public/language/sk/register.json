@@ -16,8 +16,8 @@
     "alternative_registration": "Iný spôsob registrácie",
     "terms_of_use": "Podmienky používania",
     "agree_to_terms_of_use": "Súhlasím s podmienkami používania",
-    "terms_of_use_error": "You must agree to the Terms of Use",
-    "registration-added-to-queue": "Your registration has been added to the approval queue. You will receive an email when it is accepted by an administrator.",
-    "interstitial.intro": "We require some additional information before we can create your account.",
-    "interstitial.errors-found": "We could not complete your registration:"
+    "terms_of_use_error": "Musíte súhlasiť s podmienkami použitia",
+    "registration-added-to-queue": "Vaša registrácia bola pridaná do fronty na schválenie. Obdržíte e-mail, keď Vaša registrácia bude prijatá správcom.",
+    "interstitial.intro": "Požadujeme nejaké dodatočné informácie, predtým ako vytvoríme Váš účet.",
+    "interstitial.errors-found": "Nepodarilo sa nám dokončiť registráciu:"
 }
