@@ -187,8 +187,8 @@ function setupCookie() {
 		maxAge: 1000 * 60 * 60 * 24 * (parseInt(meta.config.loginDays, 10) || 14)
 	};
 
-	if (meta.config.cookieDomain) {
-		cookie.domain = meta.config.cookieDomain;
+	if (nconf.get('cookieDomain') || meta.config.cookieDomain) {
+		cookie.domain = nconf.get('cookieDomain') || meta.config.cookieDomain;
 	}
 
 	if (nconf.get('secure')) {
