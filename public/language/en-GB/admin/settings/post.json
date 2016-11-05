@@ -44,5 +44,7 @@
 	"composer.enable-plugin-help": "Allow plugins to add content to the help tab",
 	"composer.custom-help": "Custom Help Text",
 	"ip-tracking": "IP Tracking",
-	"ip-tracking.each-post": "Track IP Address for each post"
+	"ip-tracking.each-post": "Track IP Address for each post",
+	"moderation-settings": "Moderation Settings",
+	"moderation-settings.allow-self-flag": "Allow users to flag their own posts"
 }
