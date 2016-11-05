@@ -34,7 +34,7 @@
     "flag_manage_title": "Gemeldeter Beitrag in %1",
     "flag_manage_history": "Aktions-Verlauf",
     "flag_manage_no_history": "Kein Ereignisverlauf zum Bericht",
-    "flag_manage_assignee": "Assignee",
+    "flag_manage_assignee": "Zugeordnete Person",
     "flag_manage_state": "Zustand",
     "flag_manage_state_open": "Neu/Offen",
     "flag_manage_state_wip": "In Arbeit",

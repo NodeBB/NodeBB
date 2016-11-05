@@ -1,16 +1,16 @@
 {
     "title": "Értesítések",
     "no_notifs": "Nincs új értesítés",
-    "see_all": "See all notifications",
-    "mark_all_read": "Mark all notifications read",
+    "see_all": "Minden értesítés megtekintése",
+    "mark_all_read": "Minden értesítés olvasottra",
     "back_to_home": "Vissza - %1",
     "outgoing_link": "Külső Link",
     "outgoing_link_message": "You are now leaving %1",
     "continue_to": "%1 megnyitás",
     "return_to": "Vissza - %1",
-    "new_notification": "New Notification",
-    "you_have_unread_notifications": "You have unread notifications.",
-    "new_message_from": "New message from <strong>%1</strong>",
+    "new_notification": "Új értesítés",
+    "you_have_unread_notifications": "Olvasatlan értesítéseid vannak.",
+    "new_message_from": "Új üzenet, feladó: <strong>%1</strong>",
     "upvoted_your_post_in": "<strong>%1</strong> has upvoted your post in <strong>%2</strong>.",
     "upvoted_your_post_in_dual": "<strong>%1</strong> and <strong>%2</strong> have upvoted your post in <strong>%3</strong>.",
     "upvoted_your_post_in_multiple": "<strong>%1</strong> and %2 others have upvoted your post in <strong>%3</strong>.",
@@ -28,8 +28,8 @@
     "user_started_following_you_multiple": "<strong>%1</strong> and %2 others started following you.",
     "new_register": "<strong>%1</strong> sent a registration request.",
     "new_register_multiple": "There are <strong>%1</strong> registration requests awaiting review.",
-    "email-confirmed": "Email Confirmed",
+    "email-confirmed": "E-mail megerősítve",
     "email-confirmed-message": "Thank you for validating your email. Your account is now fully activated.",
     "email-confirm-error-message": "There was a problem validating your email address. Perhaps the code was invalid or has expired.",
-    "email-confirm-sent": "Confirmation email sent."
+    "email-confirm-sent": "Megerősítő e-mail elküldve."
 }

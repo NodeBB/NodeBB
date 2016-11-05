@@ -26,10 +26,10 @@
     "user_started_following_you": "<strong>%1</strong> started following you.",
     "user_started_following_you_dual": "<strong>%1</strong> and <strong>%2</strong> started following you.",
     "user_started_following_you_multiple": "<strong>%1</strong> and %2 others started following you.",
-    "new_register": "<strong>%1</strong> sent a registration request.",
+    "new_register": "<strong>%1</strong>が登録リクエストを送りました。",
     "new_register_multiple": "There are <strong>%1</strong> registration requests awaiting review.",
-    "email-confirmed": "Email Confirmed",
-    "email-confirmed-message": "Thank you for validating your email. Your account is now fully activated.",
+    "email-confirmed": "Eメールが確認されました",
+    "email-confirmed-message": "メールアドレス検証をして頂き、ありがとうございます。あなたのアカウントは完全にアクティブになりました。",
     "email-confirm-error-message": "There was a problem validating your email address. Perhaps the code was invalid or has expired.",
-    "email-confirm-sent": "Confirmation email sent."
+    "email-confirm-sent": "確認メールが送信されました。"
 }

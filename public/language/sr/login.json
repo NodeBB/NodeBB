@@ -1,12 +1,12 @@
 {
-    "username-email": "Корисничко име / Лозинка",
+    "username-email": "Корисничко име / Е-пошта",
     "username": "Корисничко име",
     "email": "Е-пошта",
-    "remember_me": "Памти ме?",
+    "remember_me": "Запамти ме?",
     "forgot_password": "Заборављена лозинка?",
-    "alternative_logins": "Алтернативно пријављивање",
-    "failed_login_attempt": "Login Unsuccessful",
+    "alternative_logins": "Алтернативна пријављивања",
+    "failed_login_attempt": "Неуспешно пријављивање",
     "login_successful": "Успешно сте се пријавили!",
     "dont_have_account": "Немате налог?",
-    "logged-out-due-to-inactivity": "You have been logged out of the Admin Control Panel due to inactivity"
+    "logged-out-due-to-inactivity": "Одјављени сте са администраторске контролне табле због неактивности"
 }

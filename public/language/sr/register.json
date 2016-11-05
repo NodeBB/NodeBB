@@ -1,8 +1,8 @@
 {
     "register": "Регистрација",
-    "cancel_registration": "Cancel Registration",
+    "cancel_registration": "Откажи регистрацију",
     "help.email": "Ваша е-пошта ће подразумевано бити скривена од јавности.",
-    "help.username_restrictions": "Јединствено корисничко име између %1 и %2 знакова. Остали вас могу спомињати путем @<span id=„ВашеКорисничкоИме“>username</span>.",
+    "help.username_restrictions": "Јединствено корисничко име са %1 до %2 знакова. Остали вас могу спомињати путем @<span id='yourUsername'>корисничко име</span>.",
     "help.minimum_password_length": "Ваша лозинке мора имати најмање %1 знакова.",
     "email_address": "Адреса е-поште",
     "email_address_placeholder": "Унесите адресу е-поште",
@@ -16,8 +16,8 @@
     "alternative_registration": "Алтернативно регистровање",
     "terms_of_use": "Услови коришћења",
     "agree_to_terms_of_use": "Слажем се са условима коришћења",
-    "terms_of_use_error": "You must agree to the Terms of Use",
-    "registration-added-to-queue": "Ваша регистрација је додата у ред одобравања. Добићете меијл када администратор прихвати вашу регистрацију.",
-    "interstitial.intro": "We require some additional information before we can create your account.",
-    "interstitial.errors-found": "We could not complete your registration:"
+    "terms_of_use_error": "Морате се сложити са условима коришћења",
+    "registration-added-to-queue": "Ваша регистрација је додата у ред одобравања. Добићете е-пошту када администратор прихвати вашу регистрацију.",
+    "interstitial.intro": "Захтевамо неке додатне информације пре него што отворимо ваш налог.",
+    "interstitial.errors-found": "Нисмо могли комплетирати вашу регистрацију:"
 }

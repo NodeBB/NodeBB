@@ -24,7 +24,7 @@
     "digest.day": "日",
     "digest.week": "週",
     "digest.month": "月",
-    "digest.subject": "Digest for %1",
+    "digest.subject": "%1の為のダイジェスト",
     "notif.chat.subject": "%1さんからの新しいチャットメッセージがあります。",
     "notif.chat.cta": "クリックして会話を続ける",
     "notif.chat.unsub.info": "このチャットの通知はあなたの購読設定により送られました。",

@@ -2,8 +2,8 @@
     "register": "Registrácia",
     "cancel_registration": "Zrušiť registráciu",
     "help.email": "Váš e-mail nebude bez Vášho povolenia zverejnený.",
-    "help.username_restrictions": "Jedinečné užívateľské meno dlhé %1 až %2 znakov. Ostatní užívatelia Vás môžu spomenúť ako @<span id='yourUsername'>užívateľské-meno</span>.",
-    "help.minimum_password_length": "Dĺžka vašeho hesla musí byť aspoň %1 znakov.",
+    "help.username_restrictions": "Jedinečné užívateľské meno dlhé %1 až %2 znakov. Ostatní užívatelia Vás môžu spomenúť ako @<span id='yourUsername'>užívateľské meno</span>.",
+    "help.minimum_password_length": "Dĺžka Vášho hesla musí byť aspoň %1 znakov.",
     "email_address": "E-mail",
     "email_address_placeholder": "Zadajte e-mail",
     "username": "Užívateľské meno",
@@ -19,5 +19,5 @@
     "terms_of_use_error": "Musíte súhlasiť s podmienkami použitia",
     "registration-added-to-queue": "Vaša registrácia bola pridaná do fronty na schválenie. Obdržíte e-mail, keď Vaša registrácia bude prijatá správcom.",
     "interstitial.intro": "Požadujeme nejaké dodatočné informácie, predtým ako vytvoríme Váš účet.",
-    "interstitial.errors-found": "Nepodarilo sa nám dokončiť registráciu:"
+    "interstitial.errors-found": "Nepodarilo sa nám dokončiť Vašu registráciu:"
 }

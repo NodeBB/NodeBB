@@ -7,7 +7,7 @@
     "403.login": "権限を持っている場合は<a href='%1/login'>ログイン</a>すると閲覧出来ます。",
     "404.title": "見つかりません",
     "404.message": "あなたは存在してないページを訪問してます。<a href='%1/'>ホームページ</a>に戻ります。",
-    "500.title": "Internal Error.",
+    "500.title": "内部エラー",
     "500.message": "何か問題が発生しているようです。",
     "400.title": "Bad Request.",
     "400.message": "It looks like this link is malformed, please double-check and try again. Otherwise, return to the <a href='%1/'>home page</a>.",
