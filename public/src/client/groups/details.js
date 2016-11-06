@@ -6,8 +6,7 @@ define('forum/groups/details', [
 	'iconSelect',
 	'components',
 	'coverPhoto',
-	'uploader',
-	'vendor/colorpicker/colorpicker'
+	'uploader'
 ], function (memberList, iconSelect, components, coverPhoto, uploader) {
 
 	var Details = {};
@@ -117,26 +116,17 @@ define('forum/groups/details', [
 	};
 
 	Details.prepareSettings = function () {
-		var settingsFormEl = components.get('groups/settings'),
-			colorBtn = settingsFormEl.find('[data-action="color-select"]'),
-			colorValueEl = settingsFormEl.find('[name="labelColor"]'),
-			iconBtn = settingsFormEl.find('[data-action="icon-select"]'),
-			previewEl = settingsFormEl.find('.label'),
-			previewIcon = previewEl.find('i'),
-			userTitleEl = settingsFormEl.find('[name="userTitle"]'),
-			userTitleEnabledEl = settingsFormEl.find('[name="userTitleEnabled"]'),
-			iconValueEl = settingsFormEl.find('[name="icon"]');
-
-		// Add color picker to settings form
-		colorBtn.ColorPicker({
-			color: colorValueEl.val() || '#000',
-			onChange: function (hsb, hex) {
-				colorValueEl.val('#' + hex);
-				previewEl.css('background-color', '#' + hex);
-			},
-			onShow: function (colpkr) {
-				$(colpkr).css('z-index', 1051);
-			}
+		var settingsFormEl = components.get('groups/settings');
+		var colorValueEl = settingsFormEl.find('[name="labelColor"]');
+		var iconBtn = settingsFormEl.find('[data-action="icon-select"]');
+		var previewEl = settingsFormEl.find('.label');
+		var previewIcon = previewEl.find('i');
+		var userTitleEl = settingsFormEl.find('[name="userTitle"]');
+		var userTitleEnabledEl = settingsFormEl.find('[name="userTitleEnabled"]');
+		var iconValueEl = settingsFormEl.find('[name="icon"]');
+		
+		colorValueEl.on('change', function () {
+			 previewEl.css('background-color', colorValueEl.val());
 		});
 
 		// Add icon selection interface
