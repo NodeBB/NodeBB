@@ -17,7 +17,7 @@
     "moved_your_post": "<strong>%1</strong> has moved your post to <strong>%2</strong>",
     "moved_your_topic": "<strong>%1</strong> has moved <strong>%2</strong>",
     "user_flagged_post_in": "<strong>%1</strong> flagged a post in <strong>%2</strong>",
-    "user_flagged_post_in_dual": "<strong>%1</strong> and <strong>%2</strong> flagged a post in <strong>%3</strong>",
+    "user_flagged_post_in_dual": "<strong>%1</strong> と <strong>%2</strong> は <strong>%3</strong> のポストにフラグを立てました。",
     "user_flagged_post_in_multiple": "<strong>%1</strong> and %2 others flagged a post in <strong>%3</strong>",
     "user_posted_to": "<strong>%1</strong> は <strong>%2</strong> への返事を作成しました。",
     "user_posted_to_dual": "<strong>%1</strong> and <strong>%2</strong> have posted replies to: <strong>%3</strong>",

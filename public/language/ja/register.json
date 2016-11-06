@@ -16,8 +16,8 @@
     "alternative_registration": "ほかの登録方法",
     "terms_of_use": "利用規約",
     "agree_to_terms_of_use": "利用規約に同意する",
-    "terms_of_use_error": "You must agree to the Terms of Use",
+    "terms_of_use_error": "あなたは利用規約に同意する必要があります",
     "registration-added-to-queue": "あなたの登録申請は承認キューに追加されました。管理者によって受け入れられた時に、メールを受信します。",
     "interstitial.intro": "We require some additional information before we can create your account.",
-    "interstitial.errors-found": "We could not complete your registration:"
+    "interstitial.errors-found": "私達はあなたの登録を完了できませんでした:"
 }

@@ -1,5 +1,5 @@
 {
-    "results_matching": "%1 result(s) matching \"%2\", (%3 seconds)",
+    "results_matching": "%1 件の結果(s) キーワード \"%2\", (%3 秒)",
     "no-matches": "見つかりませんでした",
     "advanced-search": "高度な検索",
     "in": "で",
@@ -16,12 +16,12 @@
     "older-than": "より古い",
     "any-date": "すべて",
     "yesterday": "昨日",
-    "one-week": "One week",
-    "two-weeks": "Two weeks",
-    "one-month": "One month",
-    "three-months": "Three months",
-    "six-months": "Six months",
-    "one-year": "One year",
+    "one-week": "1週間",
+    "two-weeks": "2週間",
+    "one-month": "1ヶ月",
+    "three-months": "3ヶ月",
+    "six-months": "6ヶ月",
+    "one-year": "1年",
     "sort-by": "並び替え",
     "last-reply-time": "最後の返信時間",
     "topic-title": "トピック題名",
@@ -34,7 +34,7 @@
     "ascending": "昇順",
     "save-preferences": "設定を保存",
     "clear-preferences": "設定をクリア",
-    "search-preferences-saved": "Search preferences saved",
+    "search-preferences-saved": "検索設定は保存されました",
     "search-preferences-cleared": "検索設定をクリア",
-    "show-results-as": "Show results as"
+    "show-results-as": "結果を表示"
 }

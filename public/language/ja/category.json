@@ -10,11 +10,11 @@
     "share_this_category": "このカテゴリを共有する",
     "watch": "ウォッチする",
     "ignore": "無視する",
-    "watching": "Watching",
+    "watching": "ウォッチ中",
     "ignoring": "無視しています",
     "watching.description": "未読トピックを表示",
     "ignoring.description": "未読トピックを表示しない",
-    "watch.message": "You are now watching updates from this category and all subcategories",
-    "ignore.message": "You are now ignoring updates from this category and all subcategories",
+    "watch.message": "あなたは現在、このカテゴリと全てのサブカテゴリで行われる更新をウォッチ中です。",
+    "ignore.message": "あなたは現在、このカテゴリと全てのサブカテゴリで行われる更新を無視しています。",
     "watched-categories": "ウォッチ中のカテゴリ"
 }

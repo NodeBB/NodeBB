@@ -2,7 +2,7 @@
     "latest_users": "新しいユーザー",
     "top_posters": "最も投稿したユーザー",
     "most_reputation": "最も評価されたユーザー",
-    "most_flags": "Most Flags",
+    "most_flags": "最も多いフラッグ",
     "search": "検索",
     "enter_username": "検索するユーザー名を入力してください",
     "load_more": "もっと見る",
@@ -17,5 +17,5 @@
     "unread_topics": "未読トピック",
     "categories": "カテゴリ",
     "tags": "タグ",
-    "no-users-found": "No users found!"
+    "no-users-found": "ユーザーが見つかりません!"
 }
