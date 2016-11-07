@@ -126,6 +126,36 @@ describe('Upload Controllers', function () {
 				done();
 			});
 		});
+
+		it('should upload category image', function (done) {
+			helpers.uploadFile(nconf.get('url') + '/api/admin/category/uploadpicture', path.join(__dirname, '../public/logo.png'), {params: JSON.stringify({cid: cid})}, jar, csrf_token, function (err, res, body) {
+				assert.ifError(err);
+				assert.equal(res.statusCode, 200);
+				assert(Array.isArray(body));
+				assert.equal(body[0].url, '/uploads/category/category-1.png');
+				done();
+			});
+		});
+
+		it('should upload favicon', function (done) {
+			helpers.uploadFile(nconf.get('url') + '/api/admin/uploadfavicon', path.join(__dirname, '../public/favicon.ico'), {}, jar, csrf_token, function (err, res, body) {
+				assert.ifError(err);
+				assert.equal(res.statusCode, 200);
+				assert(Array.isArray(body));
+				assert.equal(body[0].url, '/uploads/system/favicon.ico');
+				done();
+			});
+		});
+
+		it('should upload touch icon', function (done) {
+			helpers.uploadFile(nconf.get('url') + '/api/admin/uploadTouchIcon', path.join(__dirname, '../public/logo.png'), {}, jar, csrf_token, function (err, res, body) {
+				assert.ifError(err);
+				assert.equal(res.statusCode, 200);
+				assert(Array.isArray(body));
+				assert.equal(body[0].url, '/uploads/system/touchicon-orig.png');
+				done();
+			});
+		});
 	});
 
 

@@ -160,6 +160,264 @@ describe('Admin Controllers', function () {
 		});
 	});
 
+	it('should load /admin/manage/users', function (done) {
+		request(nconf.get('url') + '/api/admin/manage/users', {jar: jar, json: true}, function (err, res, body) {
+			assert.ifError(err);
+			assert(body);
+			done();
+		});
+	});
+
+	it('should load /admin/manage/users/search', function (done) {
+		request(nconf.get('url') + '/api/admin/manage/users/search', {jar: jar, json: true}, function (err, res, body) {
+			assert.ifError(err);
+			assert(body.users);
+			done();
+		});
+	});
+
+	it('should load /admin/manage/users/not-validated', function (done) {
+		request(nconf.get('url') + '/api/admin/manage/users/not-validated', {jar: jar, json: true}, function (err, res, body) {
+			assert.ifError(err);
+			assert(body);
+			done();
+		});
+	});
+
+	it('should load /admin/manage/users/no-posts', function (done) {
+		request(nconf.get('url') + '/api/admin/manage/users/no-posts', {jar: jar, json: true}, function (err, res, body) {
+			assert.ifError(err);
+			assert(body);
+			done();
+		});
+	});
+
+	it('should load /admin/manage/users/top-posters', function (done) {
+		request(nconf.get('url') + '/api/admin/manage/users/top-posters', {jar: jar, json: true}, function (err, res, body) {
+			assert.ifError(err);
+			assert(body);
+			done();
+		});
+	});
+
+	it('should load /admin/manage/users/most-reputation', function (done) {
+		request(nconf.get('url') + '/api/admin/manage/users/most-reputation', {jar: jar, json: true}, function (err, res, body) {
+			assert.ifError(err);
+			assert(body);
+			done();
+		});
+	});
+
+	it('should load /admin/manage/users/inactive', function (done) {
+		request(nconf.get('url') + '/api/admin/manage/users/inactive', {jar: jar, json: true}, function (err, res, body) {
+			assert.ifError(err);
+			assert(body);
+			done();
+		});
+	});
+
+	it('should load /admin/manage/users/flagged', function (done) {
+		request(nconf.get('url') + '/api/admin/manage/users/flagged', {jar: jar, json: true}, function (err, res, body) {
+			assert.ifError(err);
+			assert(body);
+			done();
+		});
+	});
+
+	it('should load /admin/manage/users/banned', function (done) {
+		request(nconf.get('url') + '/api/admin/manage/users/banned', {jar: jar, json: true}, function (err, res, body) {
+			assert.ifError(err);
+			assert(body);
+			done();
+		});
+	});
+
+	it('should load /admin/manage/registration', function (done) {
+		request(nconf.get('url') + '/api/admin/manage/registration', {jar: jar, json: true}, function (err, res, body) {
+			assert.ifError(err);
+			assert(body);
+			done();
+		});
+	});
+
+	it('should load /admin/users/csv', function (done) {
+		request(nconf.get('url') + '/api/admin/users/csv', {jar: jar}, function (err, res, body) {
+			assert.ifError(err);
+			assert(body);
+			done();
+		});
+	});
+
+	it('should load /admin/manage/flags', function (done) {
+		request(nconf.get('url') + '/api/admin/manage/flags', {jar: jar, json: true}, function (err, res, body) {
+			assert.ifError(err);
+			assert(body);
+			done();
+		});
+	});
+
+	it('should load /admin/advanced/cache', function (done) {
+		request(nconf.get('url') + '/api/admin/advanced/cache', {jar: jar, json: true}, function (err, res, body) {
+			assert.ifError(err);
+			assert(body);
+			done();
+		});
+	});
+
+	it('should load /admin/advanced/errors', function (done) {
+		request(nconf.get('url') + '/api/admin/advanced/errors', {jar: jar, json: true}, function (err, res, body) {
+			assert.ifError(err);
+			assert(body);
+			done();
+		});
+	});
+
+	it('should load /admin/advanced/errors/export', function (done) {
+		request(nconf.get('url') + '/api/admin/advanced/errors/export', {jar: jar}, function (err, res, body) {
+			assert.ifError(err);
+			assert(body);
+			done();
+		});
+	});
+
+	it('should load /admin/advanced/logs', function (done) {
+		request(nconf.get('url') + '/api/admin/advanced/logs', {jar: jar, json: true}, function (err, res, body) {
+			assert.ifError(err);
+			assert(body);
+			done();
+		});
+	});
+
+	it('should load /admin/general/navigation', function (done) {
+		request(nconf.get('url') + '/api/admin/general/navigation', {jar: jar, json: true}, function (err, res, body) {
+			assert.ifError(err);
+			assert(body);
+			done();
+		});
+	});
+
+	it('should load /admin/development/info', function (done) {
+		request(nconf.get('url') + '/api/admin/development/info', {jar: jar, json: true}, function (err, res, body) {
+			assert.ifError(err);
+			assert(body);
+			done();
+		});
+	});
+
+	it('should load /admin/development/logger', function (done) {
+		request(nconf.get('url') + '/api/admin/development/logger', {jar: jar, json: true}, function (err, res, body) {
+			assert.ifError(err);
+			assert(body);
+			done();
+		});
+	});
+
+	it('should load /admin/advanced/events', function (done) {
+		request(nconf.get('url') + '/api/admin/advanced/events', {jar: jar, json: true}, function (err, res, body) {
+			assert.ifError(err);
+			assert(body);
+			done();
+		});
+	});
+
+	it('should load /admin/general/sounds', function (done) {
+		request(nconf.get('url') + '/api/admin/general/sounds', {jar: jar, json: true}, function (err, res, body) {
+			assert.ifError(err);
+			assert(body);
+			done();
+		});
+	});
+
+	it('should load /admin/manage/categories', function (done) {
+		request(nconf.get('url') + '/api/admin/manage/categories', {jar: jar, json: true}, function (err, res, body) {
+			assert.ifError(err);
+			assert(body);
+			done();
+		});
+	});
+
+	it('should load /admin/manage/categories/1', function (done) {
+		request(nconf.get('url') + '/api/admin/manage/categories/1', {jar: jar, json: true}, function (err, res, body) {
+			assert.ifError(err);
+			assert(body);
+			done();
+		});
+	});
+
+	it('should load /admin/manage/categories/1/analytics', function (done) {
+		request(nconf.get('url') + '/api/admin/manage/categories/1/analytics', {jar: jar, json: true}, function (err, res, body) {
+			assert.ifError(err);
+			assert(body);
+			done();
+		});
+	});
+
+	it('should load /admin/extend/rewards', function (done) {
+		request(nconf.get('url') + '/api/admin/extend/rewards', {jar: jar, json: true}, function (err, res, body) {
+			assert.ifError(err);
+			assert(body);
+			done();
+		});
+	});
+
+	it('should load /admin/extend/widgets', function (done) {
+		request(nconf.get('url') + '/api/admin/extend/widgets', {jar: jar, json: true}, function (err, res, body) {
+			assert.ifError(err);
+			assert(body);
+			done();
+		});
+	});
+
+	it('should load /admin/general/languages', function (done) {
+		request(nconf.get('url') + '/api/admin/general/languages', {jar: jar, json: true}, function (err, res, body) {
+			assert.ifError(err);
+			assert(body);
+			done();
+		});
+	});
+
+	it('should load /admin/general/social', function (done) {
+		request(nconf.get('url') + '/api/admin/general/social', {jar: jar, json: true}, function (err, res, body) {
+			assert.ifError(err);
+			assert(body);
+			done();
+		});
+	});
+
+	it('should load /admin/manage/tags', function (done) {
+		request(nconf.get('url') + '/api/admin/manage/tags', {jar: jar, json: true}, function (err, res, body) {
+			assert.ifError(err);
+			assert(body);
+			done();
+		});
+	});
+
+	it('should load /admin/manage/ip-blacklist', function (done) {
+		request(nconf.get('url') + '/api/admin/manage/ip-blacklist', {jar: jar, json: true}, function (err, res, body) {
+			assert.ifError(err);
+			assert(body);
+			done();
+		});
+	});
+
+	it('should load /admin/appearance/themes', function (done) {
+		request(nconf.get('url') + '/api/admin/appearance/themes', {jar: jar, json: true}, function (err, res, body) {
+			assert.ifError(err);
+			assert(body);
+			done();
+		});
+	});
+
+	it('should load /admin/appearance/customise', function (done) {
+		request(nconf.get('url') + '/api/admin/appearance/customise', {jar: jar, json: true}, function (err, res, body) {
+			assert.ifError(err);
+			assert(body);
+			done();
+		});
+	});
+
+
+
 	after(function (done) {
 		db.emptydb(done);
 	});
