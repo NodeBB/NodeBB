@@ -102,7 +102,7 @@
     "image_load_delay_help": "有効の場合、トピック内の画像はスクロールされるまで読み込みません",
     "scroll_to_my_post": "返信を投稿した後、新しい投稿を表示する",
     "follow_topics_you_reply_to": "Watch topics that you reply to",
-    "follow_topics_you_create": "Watch topics you create",
+    "follow_topics_you_create": "あなたが作成したトピックをウォッチする",
     "grouptitle": "グループ題名",
     "no-group-title": "グループ名がありません",
     "select-skin": "スキンを選んで下さい",

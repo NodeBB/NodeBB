@@ -14,8 +14,8 @@
     "invalid-password": "無効なパスワード",
     "invalid-username-or-password": "ユーザー名とパスワードの両方を指定してください",
     "invalid-search-term": "無効な検索ワード",
-    "csrf-invalid": "We were unable to log you in, likely due to an expired session. Please try again",
-    "invalid-pagination-value": "Invalid pagination value, must be at least %1 and at most %2",
+    "csrf-invalid": "セッションの期限切れと思われるため、私達はあなたのログイン状態を確認できませんでした。もう一度お試しください。",
+    "invalid-pagination-value": "無効なページネーション値です。%1 から%2の値でなければありません。",
     "username-taken": "ユーザー名は既に使われています",
     "email-taken": "メールアドレスは既に使われています",
     "email-not-confirmed": "あなたのメールアドレスはまだ確認されていません。メールアドレスを確認するためにはここをクリックしてください。",
@@ -124,8 +124,8 @@
     "not-in-room": "ユーザーが部屋にいません",
     "no-users-in-room": "この部屋にユーザーはいません",
     "cant-kick-self": "You can't kick yourself from the group",
-    "no-users-selected": "No user(s) selected",
-    "invalid-home-page-route": "Invalid home page route",
+    "no-users-selected": "ユーザー(s)が選択されていません",
+    "invalid-home-page-route": "ホームページのルートが無効",
     "invalid-session": "セッションの不一致",
     "invalid-session-text": "It looks like your login session is no longer active, or no longer matches with the server. Please refresh this page."
 }
