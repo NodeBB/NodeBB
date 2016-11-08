@@ -460,27 +460,23 @@ describe('Topic\'s', function () {
 		});
 	});
 
-
-
 	describe('.fork', function () {
 		var newTopic;
 		var replies = [];
 		var topicPids;
 		var originalBookmark = 5;
-		function postReply( next ) {
-			topics.reply({uid: topic.userId, content: 'test post ' + replies.length, tid: newTopic.tid},
-				function (err, result) {
+		function postReply(next) {
+			topics.reply({uid: topic.userId, content: 'test post ' + replies.length, tid: newTopic.tid}, function (err, result) {
 					assert.equal(err, null, 'was created with error');
 					assert.ok(result);
-					replies.push( result );
+					replies.push(result);
 					next();
 				}
 			);
 		}
 
-		before( function (done) {
-			async.waterfall(
-				[
+		before(function (done) {
+			async.waterfall([
 				function (next) {
 					groups.join('administrators', topic.userId, next);
 				},
@@ -575,6 +571,90 @@ describe('Topic\'s', function () {
 			});
 		});
 	});
+
+	describe('infinitescroll', function () {
+		var socketTopics = require('../src/socket.io/topics');
+		var tid;
+		before(function (done) {
+			topics.post({uid: topic.userId, title: topic.title, content: topic.content, cid: topic.categoryId}, function (err, result) {
+				assert.ifError(err);
+				tid = result.topicData.tid;
+				done();
+			});
+		});
+
+		it('should error with invalid data', function (done) {
+			socketTopics.loadMore({uid: adminUid}, {}, function (err) {
+				assert.equal(err.message, '[[error:invalid-data]]');
+				done();
+			});
+		});
+
+		it('should infinite load topic posts', function (done) {
+			socketTopics.loadMore({uid: adminUid}, {tid: tid, after: 0}, function (err, data) {
+				assert.ifError(err);
+				assert(data.mainPost);
+				assert(data.posts);
+				assert(data.privileges);
+				done();
+			});
+		});
+
+		it('should error with invalid data', function (done) {
+			socketTopics.loadMoreUnreadTopics({uid: adminUid}, {after: 'invalid'}, function (err, data) {
+				assert.equal(err.message, '[[error:invalid-data]]');
+				done();
+			});
+		});
+
+		it('should load more unread topics', function (done) {
+			socketTopics.markUnread({uid: adminUid}, tid, function (err) {
+				assert.ifError(err);
+				socketTopics.loadMoreUnreadTopics({uid: adminUid}, {cid: topic.categoryId, after: 0}, function (err, data) {
+					assert.ifError(err);
+					assert(data);
+					assert(Array.isArray(data.topics));
+					done();
+				});
+			});
+		});
+
+		it('should error with invalid data', function (done) {
+			socketTopics.loadMoreRecentTopics({uid: adminUid}, {after: 'invalid'}, function (err, data) {
+				assert.equal(err.message, '[[error:invalid-data]]');
+				done();
+			});
+		});
+
+
+		it('should load more recent topics', function (done) {
+			socketTopics.loadMoreRecentTopics({uid: adminUid}, {cid: topic.categoryId, after: 0}, function (err, data) {
+				assert.ifError(err);
+				assert(data);
+				assert(Array.isArray(data.topics));
+				done();
+			});
+		});
+
+		it('should error with invalid data', function (done) {
+			socketTopics.loadMoreFromSet({uid: adminUid}, {after: 'invalid'}, function (err, data) {
+				assert.equal(err.message, '[[error:invalid-data]]');
+				done();
+			});
+		});
+
+		it('should load more from custom set', function (done) {
+			socketTopics.loadMoreRecentTopics({uid: adminUid}, {set: 'uid:' + adminUid + ':topics', after: 0}, function (err, data) {
+				assert.ifError(err);
+				assert(data);
+				assert(Array.isArray(data.topics));
+				done();
+			});
+		});
+
+	});
+
+
 
 	after(function (done) {
 		db.emptydb(done);

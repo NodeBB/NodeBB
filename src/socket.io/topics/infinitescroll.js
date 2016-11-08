@@ -14,78 +14,80 @@ module.exports = function (SocketTopics) {
 		if (!data || !data.tid || !utils.isNumber(data.after) || parseInt(data.after, 10) < 0)  {
 			return callback(new Error('[[error:invalid-data]]'));
 		}
+		var userPrivileges;
 
-		async.parallel({
-			privileges: function (next) {
-				privileges.topics.get(data.tid, socket.uid, next);
-			},
-			topic: function (next) {
-				topics.getTopicFields(data.tid, ['postcount', 'deleted'], next);
-			}
-		}, function (err, results) {
-			if (err) {
-				return callback(err);
-			}
-
-			if (!results.privileges.read || (parseInt(results.topic.deleted, 10) && !results.privileges.view_deleted)) {
-				return callback(new Error('[[error:no-privileges]]'));
-			}
-
-			var set = 'tid:' + data.tid + ':posts';
-			if (data.topicPostSort === 'most_votes') {
-				set = 'tid:' + data.tid + ':posts:votes';
-			}
-			var reverse = data.topicPostSort === 'newest_to_oldest' || data.topicPostSort === 'most_votes';
-			var start = Math.max(0, parseInt(data.after, 10));
-
-			var infScrollPostsPerPage = 10;
-
-			if (data.direction > 0) {
-				if (reverse) {
-					start = results.topic.postcount - start;
-				}
-			} else {
-				if (reverse) {
-					start = results.topic.postcount - start - infScrollPostsPerPage - 1;
-				} else {
-					start = start - infScrollPostsPerPage - 1;
-				}
-			}
-
-			var stop = start + (infScrollPostsPerPage - 1);
-
-			start = Math.max(0, start);
-			stop = Math.max(0, stop);
-
-			async.parallel({
-				mainPost: function (next) {
-					if (start > 0) {
-						return next();
+		async.waterfall([
+			function (next) {
+				async.parallel({
+					privileges: function (next) {
+						privileges.topics.get(data.tid, socket.uid, next);
+					},
+					topic: function (next) {
+						topics.getTopicFields(data.tid, ['postcount', 'deleted'], next);
 					}
-					topics.getMainPost(data.tid, socket.uid, next);
-				},
-				posts: function (next) {
-					topics.getTopicPosts(data.tid, set, start, stop, socket.uid, reverse, next);
-				},
-				postSharing: function (next) {
-					social.getActivePostSharing(next);
+				}, next);
+			},
+			function (results, next) {
+				if (!results.privileges.read || (parseInt(results.topic.deleted, 10) && !results.privileges.view_deleted)) {
+					return callback(new Error('[[error:no-privileges]]'));
 				}
-			}, function (err, topicData) {
-				if (err) {
-					return callback(err);
+
+				userPrivileges = results.privileges;
+
+				var set = 'tid:' + data.tid + ':posts';
+				if (data.topicPostSort === 'most_votes') {
+					set = 'tid:' + data.tid + ':posts:votes';
 				}
+				var reverse = data.topicPostSort === 'newest_to_oldest' || data.topicPostSort === 'most_votes';
+				var start = Math.max(0, parseInt(data.after, 10));
+
+				var infScrollPostsPerPage = 10;
+
+				if (data.direction > 0) {
+					if (reverse) {
+						start = results.topic.postcount - start;
+					}
+				} else {
+					if (reverse) {
+						start = results.topic.postcount - start - infScrollPostsPerPage - 1;
+					} else {
+						start = start - infScrollPostsPerPage - 1;
+					}
+				}
+
+				var stop = start + (infScrollPostsPerPage - 1);
+
+				start = Math.max(0, start);
+				stop = Math.max(0, stop);
+
+				async.parallel({
+					mainPost: function (next) {
+						if (start > 0) {
+							return next();
+						}
+						topics.getMainPost(data.tid, socket.uid, next);
+					},
+					posts: function (next) {
+						topics.getTopicPosts(data.tid, set, start, stop, socket.uid, reverse, next);
+					},
+					postSharing: function (next) {
+						social.getActivePostSharing(next);
+					}
+				}, next);
+			},
+			function (topicData, next) {
 				if (topicData.mainPost) {
 					topicData.posts = [topicData.mainPost].concat(topicData.posts);
 				}
 
-				topicData.privileges = results.privileges;
+				topicData.privileges = userPrivileges;
 				topicData['reputation:disabled'] = parseInt(meta.config['reputation:disabled'], 10) === 1;
 				topicData['downvote:disabled'] = parseInt(meta.config['downvote:disabled'], 10) === 1;
 
-				topics.modifyPostsByPrivilege(topicData, results.privileges);
-				callback(null, topicData);
-			});
-		});
+				topics.modifyPostsByPrivilege(topicData, userPrivileges);
+				next(null, topicData);
+			}
+		], callback);
 	};
 
 	SocketTopics.loadMoreUnreadTopics = function (socket, data, callback) {
@@ -109,7 +111,6 @@ module.exports = function (SocketTopics) {
 
 		topics.getRecentTopics(data.cid, socket.uid, start, stop, data.filter, callback);
 	};
-
 
 	SocketTopics.loadMoreFromSet = function (socket, data, callback) {
 		if (!data || !utils.isNumber(data.after) || parseInt(data.after, 10) < 0 || !data.set) {
