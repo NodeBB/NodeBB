@@ -644,7 +644,7 @@ describe('Topic\'s', function () {
 		});
 
 		it('should load more from custom set', function (done) {
-			socketTopics.loadMoreRecentTopics({uid: adminUid}, {set: 'uid:' + adminUid + ':topics', after: 0}, function (err, data) {
+			socketTopics.loadMoreFromSet({uid: adminUid}, {set: 'uid:' + adminUid + ':topics', after: 0}, function (err, data) {
 				assert.ifError(err);
 				assert(data);
 				assert(Array.isArray(data.topics));
