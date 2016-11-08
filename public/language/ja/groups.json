@@ -1,7 +1,7 @@
 {
     "groups": "グループ",
     "view_group": "グループを閲覧",
-    "owner": "グループオーナー",
+    "owner": "グループ管理人",
     "new_group": "新しいグループを作成",
     "no_groups_found": "グループはありません",
     "pending.accept": "承認",

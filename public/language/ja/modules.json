@@ -25,7 +25,7 @@
     "composer.user_said_in": "%2で%1が発言 :",
     "composer.user_said": "%1 の発言:",
     "composer.discard": "本当にこの投稿を破棄しても構いませんか？",
-    "composer.submit_and_lock": "Submit and Lock",
+    "composer.submit_and_lock": "送信してロック",
     "composer.toggle_dropdown": "ドロップダウンの表示切り替え",
     "composer.uploading": " %1をアップロード中",
     "composer.formatting.bold": "太字",
@@ -42,6 +42,6 @@
     "bootbox.cancel": "キャンセル",
     "bootbox.confirm": "確認",
     "cover.dragging_title": "表紙の配置",
-    "cover.dragging_message": "Drag the cover photo to the desired position and click \"Save\"",
-    "cover.saved": "Cover photo image and position saved"
+    "cover.dragging_message": "カバー写真をドラッグで目的位置に移動し、\"保存\"をクリックします。",
+    "cover.saved": "カバー写真の画像と配置を保存しました。"
 }
