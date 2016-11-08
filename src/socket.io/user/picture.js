@@ -57,15 +57,17 @@ module.exports = function (SocketUser) {
 		if (!socket.uid || !data.url || !data.uid) {
 			return callback(new Error('[[error:invalid-data]]'));
 		}
-
-		user.isAdminOrSelf(socket.uid, data.uid, function (err) {
-			if (err) {
-				return callback(err);
+		async.waterfall([
+			function (next) {
+				user.isAdminOrSelf(socket.uid, data.uid, next);
+			},
+			function (next) {
+				user.uploadFromUrl(data.uid, data.url, next);
+			},
+			function (uploadedImage, next) {
+				next(null, uploadedImage ? uploadedImage.url : null);
 			}
-			user.uploadFromUrl(data.uid, data.url, function (err, uploadedImage) {
-				callback(err, uploadedImage ? uploadedImage.url : null);
-			});
-		});
+		], callback);
 	};
 
 	SocketUser.removeUploadedPicture = function (socket, data, callback) {
@@ -81,7 +83,7 @@ module.exports = function (SocketUser) {
 				user.getUserFields(data.uid, ['uploadedpicture', 'picture'], next);
 			},
 			function (userData, next) {
-				if (!userData.uploadedpicture.startsWith('http')) {
+				if (userData.uploadedpicture && !userData.uploadedpicture.startsWith('http')) {
 					require('fs').unlink(path.join(__dirname, '../../../public', userData.uploadedpicture), function (err) {
 						if (err) {
 							winston.error(err);

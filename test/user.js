@@ -2,8 +2,9 @@
 
 var assert = require('assert');
 var async = require('async');
-var db = require('./mocks/databasemock');
+var nconf = require('nconf');
 
+var db = require('./mocks/databasemock');
 var User = require('../src/user');
 var Topics = require('../src/topics');
 var Categories = require('../src/categories');
@@ -428,6 +429,78 @@ describe('User', function () {
 				});
 			});
 		});
+
+		it('should set user status', function (done) {
+			io.emit('user.setStatus', 'away', function (err, data) {
+				assert.ifError(err);
+				assert.equal(data.uid, uid);
+				assert.equal(data.status, 'away');
+				done();
+			});
+		});
+
+		it('should fail for invalid status', function (done) {
+			io.emit('user.setStatus', '12345', function (err) {
+				assert.equal(err.message, '[[error:invalid-user-status]]');
+				done();
+			});
+		});
+
+		it('should get user status', function (done) {
+			io.emit('user.checkStatus', uid, function (err, status) {
+				assert.ifError(err);
+				assert.equal(status, 'away');
+				done();
+			});
+		});
+
+		it('should change user picture', function (done) {
+			io.emit('user.changePicture', {type: 'default', uid: uid}, function (err) {
+				assert.ifError(err);
+				User.getUserField(uid, 'picture', function (err, picture) {
+					assert.ifError(err);
+					assert.equal(picture, '');
+					done();
+				});
+			});
+		});
+
+		it('should upload profile picture', function (done) {
+			var path = require('path');
+			var picture = {
+				path: path.join(nconf.get('base_dir'), 'public', 'logo.png'),
+				size: 7189,
+				name: 'logo.png'
+			};
+			User.uploadPicture(uid, picture, function (err, uploadedPicture) {
+				assert.ifError(err);
+				assert.equal(uploadedPicture.url, '/uploads/profile/' + uid + '-profileimg.png');
+				assert.equal(uploadedPicture.path, path.join(nconf.get('base_dir'), 'public', 'uploads', 'profile', uid + '-profileimg.png'));
+				done();
+			});
+		});
+
+		it('should get profile pictures', function (done) {
+			io.emit('user.getProfilePictures', {uid: uid}, function (err, data) {
+				assert.ifError(err);
+				assert(data);
+				assert(Array.isArray(data));
+				assert.equal(data[0].type, 'uploaded');
+				assert.equal(data[0].text, '[[user:uploaded_picture]]');
+				done();
+			});
+		});
+
+		it('should remove uploaded picture', function (done) {
+			io.emit('user.removeUploadedPicture', {uid: uid}, function (err) {
+				assert.ifError(err);
+				User.getUserField(uid, 'uploadedpicture', function (err, uploadedpicture) {
+					assert.ifError(err);
+					assert.equal(uploadedpicture, '');
+					done();
+				});
+			});
+		});
 	});
 
 	describe('.getModerationHistory', function () {
@@ -457,6 +530,9 @@ describe('User', function () {
 			});
 		});
 	});
+
+
+
 
 	after(function (done) {
 		db.emptydb(done);
