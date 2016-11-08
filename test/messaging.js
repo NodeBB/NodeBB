@@ -128,7 +128,6 @@ describe('Messaging Library', function () {
 			});
 		});
 
-
 		it('should get messages from room', function (done) {
 			socketModules.chats.getMessages({uid: fooUid}, {
 				uid: fooUid,
@@ -144,11 +143,68 @@ describe('Messaging Library', function () {
 			});
 		});
 
+		it('should mark room read', function (done) {
+			socketModules.chats.markRead({uid: fooUid}, roomId, function (err) {
+				assert.ifError(err);
+				done();
+			});
+		});
+
+		it('should mark all rooms read', function (done) {
+			socketModules.chats.markAllRead({uid: fooUid}, {}, function (err) {
+				assert.ifError(err);
+				done();
+			});
+		});
+
+		it('should rename room', function (done) {
+			socketModules.chats.renameRoom({uid: fooUid}, {roomId: roomId, newName: 'new room name'}, function (err) {
+				assert.ifError(err);
+
+				done();
+			});
+		});
+
 		it('should load chat room', function (done) {
 			socketModules.chats.loadRoom({uid: fooUid}, {roomId: roomId}, function (err, data) {
 				assert.ifError(err);
 				assert(data);
+				assert.equal(data.roomName, 'new room name');
 				done();
+			});
+		});
+	});
+
+	describe('edit/delete', function () {
+		var socketModules = require('../src/socket.io/modules');
+		var mid;
+		before(function (done) {
+			socketModules.chats.send({uid: fooUid}, {roomId: roomId, message: 'first chat message'}, function (err, messageData) {
+				assert.ifError(err);
+				mid = messageData.mid;
+				done();
+			});
+		});
+
+		it('should edit message', function (done) {
+			socketModules.chats.edit({uid: fooUid}, {mid: mid, roomId: roomId, message: 'message edited'}, function (err) {
+				assert.ifError(err);
+				socketModules.chats.getRaw({uid: fooUid}, {roomId: roomId, mid: mid}, function (err, raw) {
+					assert.ifError(err);
+					assert.equal(raw, 'message edited');
+					done();
+				});
+			});
+		});
+
+		it('should delete message', function (done) {
+			socketModules.chats.delete({uid: fooUid}, {messageId: mid, roomId: roomId}, function (err) {
+				assert.ifError(err);
+				db.exists('message:' + mid, function (err, exists) {
+					assert.ifError(err);
+					assert(!exists);
+					done();
+				});
 			});
 		});
 	});
