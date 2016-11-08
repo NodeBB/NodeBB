@@ -12,6 +12,7 @@ var Groups = require('../src/groups');
 var Messaging = require('../src/messaging');
 var helpers = require('./helpers');
 
+
 describe('Messaging Library', function () {
 	var testUids;
 	var fooUid;
@@ -84,8 +85,9 @@ describe('Messaging Library', function () {
 	});
 
 	describe('rooms', function () {
+		var socketModules = require('../src/socket.io/modules');
 		it('should create a new chat room', function (done) {
-			Messaging.newRoom(fooUid, [bazUid, herpUid], function (err, _roomId) {
+			socketModules.chats.newRoom({uid: fooUid}, {touid: bazUid}, function (err, _roomId) {
 				roomId = _roomId;
 				assert.ifError(err);
 				assert(roomId);
@@ -93,8 +95,15 @@ describe('Messaging Library', function () {
 			});
 		});
 
+		it('should add a user to room', function (done) {
+			socketModules.chats.addUserToRoom({uid: fooUid}, {roomId: roomId, username: 'herp'}, function (err) {
+				assert.ifError(err);
+				done();
+			});
+		});
+
 		it('should leave the chat room', function (done) {
-			Messaging.leaveRoom([bazUid], roomId, function (err) {
+			socketModules.chats.leave({uid: bazUid}, roomId, function (err) {
 				assert.ifError(err);
 				Messaging.isUserInRoom(bazUid, roomId, function (err, isUserInRoom) {
 					assert.ifError(err);
@@ -105,27 +114,40 @@ describe('Messaging Library', function () {
 		});
 
 		it('should send a message to a room', function (done) {
-			Messaging.sendMessage(fooUid, roomId, 'first chat message', Date.now(), function (err, messageData) {
+			socketModules.chats.send({uid: fooUid}, {roomId: roomId, message: 'first chat message'}, function (err, messageData) {
 				assert.ifError(err);
 				assert(messageData);
 				assert.equal(messageData.content, 'first chat message');
 				assert(messageData.fromUser);
 				assert(messageData.roomId, roomId);
-				done();
+				socketModules.chats.getRaw({uid: fooUid}, {roomId: roomId, mid: messageData.mid}, function (err, raw) {
+					assert.ifError(err);
+					assert.equal(raw, 'first chat message');
+					done();
+				});
 			});
 		});
 
+
 		it('should get messages from room', function (done) {
-			Messaging.getMessages({
-				callerUid: fooUid,
+			socketModules.chats.getMessages({uid: fooUid}, {
 				uid: fooUid,
 				roomId: roomId,
+				start: 0,
 				markRead: true
 			}, function (err, messages) {
 				assert.ifError(err);
 				assert(Array.isArray(messages));
 				assert.equal(messages[0].roomId, roomId);
 				assert.equal(messages[0].fromuid, fooUid);
+				done();
+			});
+		});
+
+		it('should load chat room', function (done) {
+			socketModules.chats.loadRoom({uid: fooUid}, {roomId: roomId}, function (err, data) {
+				assert.ifError(err);
+				assert(data);
 				done();
 			});
 		});

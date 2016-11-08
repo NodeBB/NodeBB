@@ -1,5 +1,4 @@
 "use strict";
-
 var async = require('async');
 var validator = require('validator');
 
@@ -82,7 +81,7 @@ SocketModules.chats.send = function (socket, data, callback) {
 		function (message, next) {
 			Messaging.notifyUsersInRoom(socket.uid, data.roomId, message);
 			user.updateOnlineUsers(socket.uid);
-			next();
+			next(null, message);
 		}
 	], callback);
 };
