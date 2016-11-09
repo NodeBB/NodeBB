@@ -294,18 +294,23 @@ function upgrade() {
 }
 
 function activate() {
-	require('./src/database').init(function (err) {
+	var db = require('./src/database');
+	db.init(function (err) {
 		if (err) {
 			winston.error(err.stack);
 			process.exit(1);
 		}
 
-		var plugin = nconf.get('_')[1] ? nconf.get('_')[1] : nconf.get('activate'),
-			db = require('./src/database');
+		var plugin = nconf.get('activate');
+		if (plugin.indexOf('nodebb-') !== 0) {
+			// Allow omission of `nodebb-plugin-`
+			plugin = 'nodebb-plugin-' + plugin;
+		}
 
-		winston.info('Activating plugin %s', plugin);
-
-		db.sortedSetAdd('plugins:active', 0, plugin, start);
+		winston.info('Activating plugin `%s`', plugin);
+		db.sortedSetAdd('plugins:active', 0, plugin, function(err) {
+			process.exit(err ? 1 : 0);
+		});
 	});
 }
 
