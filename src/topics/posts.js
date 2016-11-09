@@ -9,6 +9,7 @@ var db = require('../database');
 var user = require('../user');
 var posts = require('../posts');
 var meta = require('../meta');
+var plugins = require('../plugins');
 
 module.exports = function (Topics) {
 
@@ -133,7 +134,12 @@ module.exports = function (Topics) {
 				}
 			});
 
-			callback(null, postData);
+			plugins.fireHook('filter:topics.addPostData', {
+				posts: postData,
+				uid: uid
+			}, function (err, data) {
+				callback(err, data ? data.posts : null);
+			});
 		});
 	};
 
