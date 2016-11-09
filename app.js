@@ -308,7 +308,7 @@ function activate() {
 		}
 
 		winston.info('Activating plugin `%s`', plugin);
-		db.sortedSetAdd('plugins:active', 0, plugin, function(err) {
+		db.sortedSetAdd('plugins:active', 0, plugin, function (err) {
 			process.exit(err ? 1 : 0);
 		});
 	});
