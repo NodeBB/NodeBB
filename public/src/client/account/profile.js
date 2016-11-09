@@ -8,8 +8,8 @@ define('forum/account/profile', [
 	'translator',
 	'components'
 ], function (header, infinitescroll, translator) {
-	var Account = {},
-		theirid;
+	var Account = {};
+	var theirid;
 
 	Account.init = function () {
 		header.init();
@@ -22,8 +22,10 @@ define('forum/account/profile', [
 
 		socket.removeListener('event:user_status_change', onUserStatusChange);
 		socket.on('event:user_status_change', onUserStatusChange);
-
-		infinitescroll.init(loadMorePosts);
+		
+		if (!config.usePagination) {
+			infinitescroll.init(loadMorePosts);	
+		}		
 	};
 
 	function processPage() {

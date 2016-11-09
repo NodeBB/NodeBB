@@ -10,7 +10,7 @@ var plugins = require('../../plugins');
 var meta = require('../../meta');
 var accountHelpers = require('./helpers');
 var helpers = require('../helpers');
-
+var pagination = require('../../pagination');
 
 var profileController = {};
 
@@ -24,7 +24,10 @@ profileController.get = function (req, res, callback) {
 			return res.redirect(nconf.get('relative_path') + '/user/' + lowercaseSlug);
 		}
 	}
-
+	var page = Math.max(1, parseInt(req.query.page, 10) || 1);
+	var itemsPerPage = 10;
+	var start = (page - 1) * itemsPerPage;
+	var stop = start + itemsPerPage - 1;
 	var userData;
 	async.waterfall([
 		function (next) {
@@ -47,7 +50,7 @@ profileController.get = function (req, res, callback) {
 					user.isFollowing(req.uid, userData.theirid, next);
 				},
 				posts: function (next) {
-					posts.getPostSummariesFromSet('uid:' + userData.theirid + ':posts', req.uid, 0, 9, next);
+					posts.getPostSummariesFromSet('uid:' + userData.theirid + ':posts', req.uid, start, stop, next);
 				},
 				signature: function (next) {
 					posts.parseSignature(userData, req.uid, next);
@@ -75,6 +78,8 @@ profileController.get = function (req, res, callback) {
 			userData.isFollowing = results.isFollowing;
 			userData.breadcrumbs = helpers.buildBreadcrumbs([{text: userData.username}]);
 			userData.title = userData.username;
+			var pageCount = Math.ceil(userData.postcount / itemsPerPage);
+			userData.pagination = pagination.create(page, pageCount, req.query);
 
 			userData['cover:url'] = userData['cover:url'] || require('../../coverPhoto').getDefaultProfileCover(userData.uid);
 			userData['cover:position'] = userData['cover:position'] || '50% 50%';
