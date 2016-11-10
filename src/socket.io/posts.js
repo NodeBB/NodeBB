@@ -128,9 +128,6 @@ SocketPosts.getReplies = function (socket, pid, callback) {
 			posts.getPidsFromSet('pid:' + pid + ':replies', 0, -1, false, next);
 		},
 		function (pids, next) {
-			privileges.posts.filter('read', pids, socket.uid, next);
-		},
-		function (pids, next) {
 			async.parallel({
 				posts: function (next) {
 					posts.getPostsByPids(pids, socket.uid, next);
@@ -142,6 +139,9 @@ SocketPosts.getReplies = function (socket, pid, callback) {
 		},
 		function (results, next) {
 			postPrivileges = results.privileges;
+			results.posts = results.posts.filter(function (postData, index) {
+				return postData && postPrivileges[index].read;
+			});
 			topics.addPostData(results.posts, socket.uid, next);
 		},
 		function (postData, next) {
