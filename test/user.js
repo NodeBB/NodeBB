@@ -503,6 +503,15 @@ describe('User', function () {
 			});
 		});
 
+		it('should load profile page', function (done) {
+			request(nconf.get('url') + '/api/user/updatedagain', {jar: jar, json: true}, function (err, res, body) {
+				assert.ifError(err);
+				assert.equal(res.statusCode, 200);
+				assert(body);
+				done();
+			});
+		});
+
 		it('should load settings page', function (done) {
 			request(nconf.get('url') + '/api/user/updatedagain/settings', {jar: jar, json: true}, function (err, res, body) {
 				assert.ifError(err);
