@@ -122,16 +122,7 @@ app.isConnected = false;
 	}
 
 	function onEventBanned() {
-		app.alert({
-			title: '[[global:alert.banned]]',
-			message: '[[global:alert.banned.message]]',
-			type: 'danger',
-			timeout: 1000
-		});
-
-		setTimeout(function () {
-			window.location.href = config.relative_path + '/';
-		}, 1000);
+		window.location.href = config.relative_path + '/';
 	}
 
 }());

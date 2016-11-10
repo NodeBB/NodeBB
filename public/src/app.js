@@ -288,20 +288,14 @@ app.cacheBuster = null;
 
 		if (showWelcomeMessage) {
 			showWelcomeMessage = false;
-			if (document.readyState !== 'complete') {
-				$(document).ready(showAlert.bind(null, 'login'));
-			} else {
 				showAlert('login');
-			}
+			});
 		}
 
 		if (showBannedMessage) {
 			showBannedMessage = false;
-			if (document.readyState !== 'complete') {
-				$(document).ready(showAlert.bind(null, 'banned'));
-			} else {
 				showAlert('banned');
-			}
+			});
 		}
 	};
 

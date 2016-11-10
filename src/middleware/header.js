@@ -107,7 +107,7 @@ module.exports = function (middleware) {
 
 			if (results.banned) {
 				req.logout();
-				return res.redirect('/?banned=' + (results.banReason || ''));
+				return res.redirect('/?banned=' + (results.banReason || 'no-reason'));
 			}
 
 			results.user.isAdmin = results.isAdmin;
