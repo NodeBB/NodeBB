@@ -11,6 +11,7 @@ var meta = require('../../meta');
 var accountHelpers = require('./helpers');
 var helpers = require('../helpers');
 var pagination = require('../../pagination');
+var messaging = require('../../messaging');
 
 var profileController = {};
 
@@ -46,8 +47,8 @@ profileController.get = function (req, res, callback) {
 			}
 
 			async.parallel({
-				isFollowing: function (next) {
-					user.isFollowing(req.uid, userData.theirid, next);
+				hasPrivateChat: function (next) {
+					messaging.hasPrivateChat(req.uid, userData.uid, next);
 				},
 				posts: function (next) {
 					posts.getPostSummariesFromSet('uid:' + userData.theirid + ':posts', req.uid, start, stop, next);
@@ -72,10 +73,9 @@ profileController.get = function (req, res, callback) {
 			userData.posts = results.posts.posts.filter(function (p) {
 				return p && parseInt(p.deleted, 10) !== 1;
 			});
-
+			userData.hasPrivateChat = results.hasPrivateChat;
 			userData.aboutme = results.aboutme;
 			userData.nextStart = results.posts.nextStart;
-			userData.isFollowing = results.isFollowing;
 			userData.breadcrumbs = helpers.buildBreadcrumbs([{text: userData.username}]);
 			userData.title = userData.username;
 			var pageCount = Math.ceil(userData.postcount / itemsPerPage);

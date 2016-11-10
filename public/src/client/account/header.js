@@ -41,6 +41,11 @@ define('forum/account/header', [
 			});
 		});
 
+		components.get('account/new-chat').on('click', function () {
+			app.newChat(ajaxify.data.uid);
+		});
+
+
 		components.get('account/ban').on('click', banAccount);
 		components.get('account/unban').on('click', unbanAccount);
 		components.get('account/delete').on('click', deleteAccount);

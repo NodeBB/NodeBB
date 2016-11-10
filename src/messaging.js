@@ -444,6 +444,9 @@ var userNotifications = require('./user/notifications');
 	};
 
 	Messaging.hasPrivateChat = function (uid, withUid, callback) {
+		if (parseInt(uid, 10) === parseInt(withUid, 10)) {
+			return callback(null, 0);
+		}
 		async.waterfall([
 			function (next) {
 				async.parallel({
