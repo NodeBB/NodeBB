@@ -6,6 +6,7 @@ var _ = require('underscore');
 var db = require('../database');
 var topics = require('../topics');
 var user = require('../user');
+var notifications = require('../notifications');
 var plugins = require('../plugins');
 
 module.exports = function (Posts) {
@@ -126,7 +127,7 @@ module.exports = function (Posts) {
 			function (data, next) {
 				async.parallel([
 					function (next) {
-						deletePostFromTopicAndUser(pid, next);
+						deletePostFromTopicUserNotification(pid, next);
 					},
 					function (next) {
 						deletePostFromCategoryRecentPosts(pid, next);
@@ -138,18 +139,7 @@ module.exports = function (Posts) {
 						deletePostFromUsersVotes(pid, next);
 					},
 					function (next) {
-						Posts.getPostField(pid, 'toPid', function (err, toPid) {
-							if (err) {
-								return next(err);
-							}
-							if (!parseInt(toPid, 10)) {
-								return next(null);
-							}
-							async.parallel([
-								async.apply(db.sortedSetRemove, 'pid:' + toPid + ':replies', pid),
-								async.apply(db.decrObjectField, 'post:' + toPid, 'replies')
-							], next);
-						});
+						deletePostFromReplies(pid, next);
 					},
 					function (next) {
 						db.sortedSetsRemove(['posts:pid', 'posts:flagged'], pid, next);
@@ -168,54 +158,56 @@ module.exports = function (Posts) {
 		], callback);
 	};
 
-	function deletePostFromTopicAndUser(pid, callback) {
-		Posts.getPostFields(pid, ['tid', 'uid'], function (err, postData) {
-			if (err) {
-				return callback(err);
-			}
-
-			db.sortedSetsRemove([
-				'tid:' + postData.tid + ':posts',
-				'tid:' + postData.tid + ':posts:votes',
-				'uid:' + postData.uid + ':posts'
-			], pid, function (err) {
-				if (err) {
-					return callback(err);
-				}
-
-				topics.getTopicFields(postData.tid, ['tid', 'cid', 'pinned'], function (err, topicData) {
-					if (err) {
-						return callback(err);
+	function deletePostFromTopicUserNotification(pid, callback) {
+		var postData;
+		async.waterfall([
+			function (next) {
+				Posts.getPostFields(pid, ['tid', 'uid'], next);
+			},
+			function (_postData, next) {
+				postData = _postData;
+				db.sortedSetsRemove([
+					'tid:' + postData.tid + ':posts',
+					'tid:' + postData.tid + ':posts:votes',
+					'uid:' + postData.uid + ':posts'
+				], pid, next);
+			},
+			function (next) {
+				topics.getTopicFields(postData.tid, ['tid', 'cid', 'pinned'], next);
+			},
+			function (topicData, next) {
+				async.parallel([
+					function (next) {
+						db.decrObjectField('global', 'postCount', next);
+					},
+					function (next) {
+						db.decrObjectField('category:' + topicData.cid, 'post_count', next);
+					},
+					function (next) {
+						topics.decreasePostCount(postData.tid, next);
+					},
+					function (next) {
+						topics.updateTeaser(postData.tid, next);
+					},
+					function (next) {
+						updateTopicTimestamp(topicData, next);
+					},
+					function (next) {
+						db.sortedSetIncrBy('cid:' + topicData.cid + ':tids:posts', -1, postData.tid, next);
+					},
+					function (next) {
+						db.sortedSetIncrBy('tid:' + postData.tid + ':posters', -1, postData.uid, next);
+					},
+					function (next) {
+						user.incrementUserPostCountBy(postData.uid, -1, next);
+					},
+					function (next) {
+						notifications.rescind('new_post:tid:' + postData.tid + ':pid:' + pid + ':uid:' + postData.uid, next);
 					}
-
-					async.parallel([
-						function (next) {
-							db.decrObjectField('global', 'postCount', next);
-						},
-						function (next) {
-							db.decrObjectField('category:' + topicData.cid, 'post_count', next);
-						},
-						function (next) {
-							topics.decreasePostCount(postData.tid, next);
-						},
-						function (next) {
-							topics.updateTeaser(postData.tid, next);
-						},
-						function (next) {
-							updateTopicTimestamp(topicData, next);
-						},
-						function (next) {
-							db.sortedSetIncrBy('cid:' + topicData.cid + ':tids:posts', -1, postData.tid, next);
-						},
-						function (next) {
-							db.sortedSetIncrBy('tid:' + postData.tid + ':posters', -1, postData.uid, next);
-						},
-						function (next) {
-							user.incrementUserPostCountBy(postData.uid, -1, next);
-						}
-					], callback);
-				});
-			});
+				], next);
+			}
+		], function (err) {
+			callback(err);
 		});
 	}
 
@@ -287,5 +279,21 @@ module.exports = function (Posts) {
 			], callback);
 		});
 	}
+
+	function deletePostFromReplies(pid, callback) {
+		Posts.getPostField(pid, 'toPid', function (err, toPid) {
+			if (err) {
+				return callback(err);
+			}
+			if (!parseInt(toPid, 10)) {
+				return callback(null);
+			}
+			async.parallel([
+				async.apply(db.sortedSetRemove, 'pid:' + toPid + ':replies', pid),
+				async.apply(db.decrObjectField, 'post:' + toPid, 'replies')
+			], callback);
+		});
+	}
+
 
 };

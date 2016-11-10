@@ -464,7 +464,7 @@ var utils = require('../public/src/utils');
 							notifications[modifyIndex].bodyShort = '[[' + mergeId + '_multiple, ' + usernames[0] + ', ' + (numUsers - 1) + titleEscaped + ']]';
 						}
 
-						notifications[modifyIndex].path = set[set.length - 1].path;
+						notifications[modifyIndex].path = set[0].path;
 						break;
 
 					case 'new_register':
