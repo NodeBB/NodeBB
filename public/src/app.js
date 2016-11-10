@@ -627,31 +627,21 @@ app.cacheBuster = null;
 		} else if (window.location.pathname.startsWith(config.relative_path + '/admin')) {
 			// No need to show cookie consent warning in ACP
 			return;
+		} else if (window.localStorage.getItem('cookieconsent') === '1') {
+			return;
 		}
 
-		var consentConfig = {
-			"palette": {
-				"popup": {
-					"background": config.cookies.palette.background,
-					"text": config.cookies.palette.text
-				},
-				"button": {
-					"background": config.cookies.palette.button,
-					"text": config.cookies.palette.buttonText
-				}
-			},
-			"theme": config.cookies.style,
-			"position": config.cookies.position,
-			"content": {
-				"dismiss": config.cookies.dismiss,
-				"link": config.cookies.link
-			}
-		};
+		templates.parse('partials/cookie-consent', config.cookies, function(html) {
+			$(document.body).append(html);
 
-		if (config.cookies.message) {
-			consentConfig.content.message = config.cookies.message;
-		}
-
-		window.cookieconsent.initialise(consentConfig);
+			var warningEl = $('.cookie-consent');
+			var dismissEl = warningEl.find('button');
+			dismissEl.on('click', function() {
+				// Save consent cookie and remove warning element
+				var now = new Date();
+				window.localStorage.setItem('cookieconsent', '1');
+				warningEl.remove();
+			});
+		});
 	};
 }());
