@@ -84,7 +84,7 @@ profileController.get = function (req, res, callback) {
 			userData['cover:url'] = userData['cover:url'] || require('../../coverPhoto').getDefaultProfileCover(userData.uid);
 			userData['cover:position'] = userData['cover:position'] || '50% 50%';
 
-			if (!userData.profileviews) {
+			if (!parseInt(userData.profileviews, 10)) {
 				userData.profileviews = 1;
 			}
 
