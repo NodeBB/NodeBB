@@ -288,12 +288,14 @@ app.cacheBuster = null;
 
 		if (showWelcomeMessage) {
 			showWelcomeMessage = false;
+			$(document).ready(function () {
 				showAlert('login');
 			});
 		}
 
 		if (showBannedMessage) {
 			showBannedMessage = false;
+			$(document).ready(function () {
 				showAlert('banned');
 			});
 		}
