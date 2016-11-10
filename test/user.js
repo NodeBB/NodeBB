@@ -3,6 +3,7 @@
 var assert = require('assert');
 var async = require('async');
 var nconf = require('nconf');
+var request = require('request');
 
 var db = require('./mocks/databasemock');
 var User = require('../src/user');
@@ -499,6 +500,17 @@ describe('User', function () {
 					assert.equal(uploadedpicture, '');
 					done();
 				});
+			});
+		});
+
+		it('should load settings page', function (done) {
+			request(nconf.get('url') + '/api/user/updatedagain/settings', {jar: jar, json: true}, function (err, res, body) {
+				assert.ifError(err);
+				assert.equal(res.statusCode, 200);
+				assert(body.settings);
+				assert(body.languages);
+				assert(body.homePageRoutes);
+				done();
 			});
 		});
 	});
