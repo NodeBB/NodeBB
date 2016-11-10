@@ -99,5 +99,8 @@
     "allowed-file-types": "Разрешённые форматы файлов %1",
     "unsaved-changes": "У вас есть несохранённые изменения. Вы уверены, что хотите уйти?",
     "reconnecting-message": "Похоже, подключение к %1 было разорвано, подождите, пока мы пытаемся восстановить соединение.",
-    "play": "Воспроизвести"
+    "play": "Воспроизвести",
+    "cookies.message": "This website uses cookies to ensure you get the best experience on our website.",
+    "cookies.accept": "Got it!",
+    "cookies.learn_more": "Learn More"
 }

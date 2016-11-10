@@ -99,5 +99,8 @@
     "allowed-file-types": "Tillåtna filtyper är %1",
     "unsaved-changes": "Du har ändringar som inte sparats. Är du säker på att du vill navigera bort?",
     "reconnecting-message": "Ser ut som din anslutning till %1 gick förlorad, vänta medan vi försöker att återansluta.",
-    "play": "Spela"
+    "play": "Spela",
+    "cookies.message": "This website uses cookies to ensure you get the best experience on our website.",
+    "cookies.accept": "Got it!",
+    "cookies.learn_more": "Learn More"
 }

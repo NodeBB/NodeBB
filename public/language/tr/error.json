@@ -29,7 +29,7 @@
     "username-too-long": "Kullanıcı ismi çok uzun.",
     "password-too-long": "Parola çok uzun",
     "user-banned": "Kullanıcı Yasaklı",
-    "user-banned-reason": "Kullanıcı yasaklandı (Sebep: %1)",
+    "user-banned-reason": "Maalesef, bu hesap yasaklandı (Sebep:% 1)",
     "user-too-new": "Özür dileriz, ilk iletinizi yapmadan önce %1 saniye beklemeniz gerekiyor",
     "blacklisted-ip": "Üzgünüz, IP adresiniz, bu toplulukta yasaklandı. Bunun bir hata olduğunu düşünüyorsanız, bir yönetici ile irtibata geçiniz.",
     "ban-expiry-missing": "Bu yasak için bir bitiş tarihi girin",

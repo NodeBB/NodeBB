@@ -29,7 +29,7 @@
     "username-too-long": "Brukernavnet er for langt",
     "password-too-long": "Password too long",
     "user-banned": "Bruker utestengt",
-    "user-banned-reason": "User banned (Reason: %1)",
+    "user-banned-reason": "Sorry, this account has been banned (Reason: %1)",
     "user-too-new": "Beklager, du må vente %1 sekund(er) før du oppretter ditt første innlegg",
     "blacklisted-ip": "Sorry, your IP address has been banned from this community. If you feel this is in error, please contact an administrator.",
     "ban-expiry-missing": "Please provide an end date for this ban",

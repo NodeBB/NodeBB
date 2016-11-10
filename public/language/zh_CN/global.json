@@ -99,5 +99,8 @@
     "allowed-file-types": "允许的文件类型有 %1",
     "unsaved-changes": "您有未保存的更改，您确定您要离开么？",
     "reconnecting-message": "与 %1 的连接断开，我们正在尝试重连，请耐心等待",
-    "play": "播放"
+    "play": "播放",
+    "cookies.message": "This website uses cookies to ensure you get the best experience on our website.",
+    "cookies.accept": "Got it!",
+    "cookies.learn_more": "Learn More"
 }

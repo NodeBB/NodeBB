@@ -13,6 +13,7 @@
     "notify_me": "Serás notificado cuando haya nuevas respuestas en este tema",
     "quote": "Citar",
     "reply": "Responder",
+    "replies_to_this_post": "Respuestas: %1",
     "reply-as-topic": "Responder como tema",
     "guest-login-reply": "Accede para responder",
     "edit": "Editar",

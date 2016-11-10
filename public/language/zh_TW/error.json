@@ -29,7 +29,7 @@
     "username-too-long": "帳號太長",
     "password-too-long": "密碼太長",
     "user-banned": "該使用者已被停用",
-    "user-banned-reason": "User banned (Reason: %1)",
+    "user-banned-reason": "Sorry, this account has been banned (Reason: %1)",
     "user-too-new": "抱歉，發表你第一篇文章須要等待 %1 秒",
     "blacklisted-ip": "抱歉，你的IP位置已經被這個社群禁用了。如果你覺得這是一個失誤，請連絡管理員。",
     "ban-expiry-missing": "請提供這個禁用的到期時間",

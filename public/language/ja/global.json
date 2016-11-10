@@ -54,9 +54,9 @@
     "posts": "投稿",
     "best": "ベスト",
     "upvoters": "高評価したユーザー",
-    "upvoted": "投票増加",
+    "upvoted": "高評価",
     "downvoters": "低評価したユーザー",
-    "downvoted": "投票減少",
+    "downvoted": "低評価",
     "views": "閲覧数",
     "reputation": "評価",
     "read_more": "続きを読む",
@@ -99,5 +99,8 @@
     "allowed-file-types": "有効ファイルタイプは %1",
     "unsaved-changes": "変更はまだ保存されていません。本当にこのページから離れますか？",
     "reconnecting-message": "%1への接続が失われたと思われます。再接続されるまでしばらくお待ちください。",
-    "play": "再生"
+    "play": "再生",
+    "cookies.message": "このWEBサイトは、心地良くご使用頂くためにクッキーを使用しています。",
+    "cookies.accept": "了解!",
+    "cookies.learn_more": "もっと詳しく"
 }

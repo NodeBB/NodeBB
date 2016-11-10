@@ -29,7 +29,7 @@
     "username-too-long": "Izina ni rirerire cyane",
     "password-too-long": "Password too long",
     "user-banned": "Umuntu wirukanwe",
-    "user-banned-reason": "User banned (Reason: %1)",
+    "user-banned-reason": "Sorry, this account has been banned (Reason: %1)",
     "user-too-new": "Wihangena kuko usabwa gutegereza amasegonda (isegonda) %1 mbere yo gushyiraho ikintu cyawe cya mbere",
     "blacklisted-ip": "Sorry, your IP address has been banned from this community. If you feel this is in error, please contact an administrator.",
     "ban-expiry-missing": "Please provide an end date for this ban",

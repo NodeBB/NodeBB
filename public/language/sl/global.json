@@ -99,5 +99,8 @@
     "allowed-file-types": "Dovoljene vrste datotek: %1",
     "unsaved-changes": "Nekatere spremembe niso shranjene. A res želite zapustiti stran?",
     "reconnecting-message": "Kaže, da je bila povezava s/z %1 prekinjena. Prosimo, počakajte, ponovno poskušamo vzpostaviti povezavo.",
-    "play": "Play"
+    "play": "Play",
+    "cookies.message": "This website uses cookies to ensure you get the best experience on our website.",
+    "cookies.accept": "Got it!",
+    "cookies.learn_more": "Learn More"
 }

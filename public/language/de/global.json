@@ -99,5 +99,8 @@
     "allowed-file-types": "Erlaubte Dateitypen sind %1",
     "unsaved-changes": "Es gibt ungespeicherte Änderungen. Bist du dir sicher, dass du die Seite verlassen willst?",
     "reconnecting-message": "Es scheint als hättest du die Verbindung zu %1 verloren, bitte warte während wir versuchen sie wieder aufzubauen.",
-    "play": "Play"
+    "play": "Play",
+    "cookies.message": "This website uses cookies to ensure you get the best experience on our website.",
+    "cookies.accept": "Got it!",
+    "cookies.learn_more": "Learn More"
 }

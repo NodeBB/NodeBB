@@ -13,6 +13,7 @@
     "notify_me": "該主題有新回覆時通知我",
     "quote": "引用",
     "reply": "回覆",
+    "replies_to_this_post": "Replies: %1",
     "reply-as-topic": "回復為另一個新主題",
     "guest-login-reply": "登入以回覆",
     "edit": "編輯",

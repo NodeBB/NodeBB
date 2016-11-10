@@ -13,6 +13,7 @@
     "notify_me": "이 주제의 새 답글 알리기",
     "quote": "인용",
     "reply": "답글",
+    "replies_to_this_post": "Replies: %1",
     "reply-as-topic": "주제로 답글",
     "guest-login-reply": "답변을 위해 로그인하기",
     "edit": "수정",

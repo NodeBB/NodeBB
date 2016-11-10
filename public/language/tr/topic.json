@@ -13,6 +13,7 @@
     "notify_me": "Bu konudaki cevaplardan haberdar ol",
     "quote": "Alıntı",
     "reply": "Cevap",
+    "replies_to_this_post": "Yanıtlar: %1",
     "reply-as-topic": "İletiye Cevap Ver",
     "guest-login-reply": "Cevaplamak için giriş yapın",
     "edit": "Düzenle",

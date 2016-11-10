@@ -99,5 +99,8 @@
     "allowed-file-types": "Támogatott fájltípusok: %1",
     "unsaved-changes": "Mentetlen módosításaid vannak. Biztos el akarsz innen menni?",
     "reconnecting-message": "Úgy látszik, a(z) %1 csatlakozásod megszakadt, várj, míg megpróbáljuk helyreállítani.",
-    "play": "Play"
+    "play": "Play",
+    "cookies.message": "This website uses cookies to ensure you get the best experience on our website.",
+    "cookies.accept": "Got it!",
+    "cookies.learn_more": "Learn More"
 }

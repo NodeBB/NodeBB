@@ -13,6 +13,7 @@
     "notify_me": "Ilmoita, kun tähän keskusteluun tulee uusia viestejä",
     "quote": "Lainaa",
     "reply": "Vastaa",
+    "replies_to_this_post": "Replies: %1",
     "reply-as-topic": "Reply as topic",
     "guest-login-reply": "Kirjaudu sisään voidaksesi vastata",
     "edit": "Muokkaa",

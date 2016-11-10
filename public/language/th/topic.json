@@ -13,6 +13,7 @@
     "notify_me": "แจ้งเตือนเมื่อการตอบใหม่ในกระทู้นี้",
     "quote": "คำอ้างอิง",
     "reply": "ตอบ",
+    "replies_to_this_post": "Replies: %1",
     "reply-as-topic": "Reply as topic",
     "guest-login-reply": "เข้าสู่ระบบเพื่อตอบกลับ",
     "edit": "แก้ไข",

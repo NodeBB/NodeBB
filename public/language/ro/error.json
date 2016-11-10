@@ -29,7 +29,7 @@
     "username-too-long": "Numele de utilizator este prea lung",
     "password-too-long": "Parola prea lunga.",
     "user-banned": "Utilizator banat",
-    "user-banned-reason": "User banned (Reason: %1)",
+    "user-banned-reason": "Sorry, this account has been banned (Reason: %1)",
     "user-too-new": "Imi pare rau dar trebuie sa astepti %1 secunda(e) pentru a posta prima oara.",
     "blacklisted-ip": "Sorry, your IP address has been banned from this community. If you feel this is in error, please contact an administrator.",
     "ban-expiry-missing": "Please provide an end date for this ban",

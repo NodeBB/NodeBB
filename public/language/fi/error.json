@@ -29,7 +29,7 @@
     "username-too-long": "Käyttäjänimi on liian pitkä",
     "password-too-long": "Password too long",
     "user-banned": "Käyttäjä on estetty",
-    "user-banned-reason": "User banned (Reason: %1)",
+    "user-banned-reason": "Sorry, this account has been banned (Reason: %1)",
     "user-too-new": "Anteeksi, mutta sinun täytyy odottaa %1 sekunti(a) ennen sinun ensimmäisen viestin lähettämistä",
     "blacklisted-ip": "Sorry, your IP address has been banned from this community. If you feel this is in error, please contact an administrator.",
     "ban-expiry-missing": "Please provide an end date for this ban",

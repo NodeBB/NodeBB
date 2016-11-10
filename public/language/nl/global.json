@@ -99,5 +99,8 @@
     "allowed-file-types": "Toegestane bestandstypen zijn %1",
     "unsaved-changes": "Je hebt niet opgeslagen wijzigingen aangebracht. Weet je zeker dat je de pagina wilt verlaten?",
     "reconnecting-message": "Het lijkt erop dat je verbinding naar %1 verloren is gegaan, wacht even terwijl we de verbinding proberen te herstellen.",
-    "play": "Afspelen"
+    "play": "Afspelen",
+    "cookies.message": "This website uses cookies to ensure you get the best experience on our website.",
+    "cookies.accept": "Got it!",
+    "cookies.learn_more": "Learn More"
 }

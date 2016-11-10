@@ -29,7 +29,7 @@
     "username-too-long": "Användarnamnet är för långt",
     "password-too-long": "Lösenordet är för långt",
     "user-banned": "Användare bannlyst",
-    "user-banned-reason": "Användare bannlyst (Anledning: %1)",
+    "user-banned-reason": "Sorry, this account has been banned (Reason: %1)",
     "user-too-new": "När du är ny medlem måste du vänta %1 sekund(er) innan du gör ditt första inlägg",
     "blacklisted-ip": "Din IP-adress har blivit bannlyst från det här forumet. Om du tror att det beror på ett misstag, vad god kontakta en administratör. ",
     "ban-expiry-missing": "Ange ett slutdatum för denna banning",

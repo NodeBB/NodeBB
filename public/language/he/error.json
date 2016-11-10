@@ -29,7 +29,7 @@
     "username-too-long": "שם משתמש ארוך מדי",
     "password-too-long": "הסיסמה ארוכה מדי",
     "user-banned": "המשתמש מושעה",
-    "user-banned-reason": "User banned (Reason: %1)",
+    "user-banned-reason": "Sorry, this account has been banned (Reason: %1)",
     "user-too-new": "אנא המתן  %1 שניות לפני פרסום ההודעה",
     "blacklisted-ip": "מצטערים, אך הורחקת מקהילה זו. אם הנך סבור שמדובר בטעות, אנא צור קשר עם מנהלי הקהילה.",
     "ban-expiry-missing": "אנא ספק תאריך סיום להרחקה זו.",

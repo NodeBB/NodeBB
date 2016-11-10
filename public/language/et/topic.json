@@ -13,6 +13,7 @@
     "notify_me": "Saa teateid uutest postitustest selles teemas",
     "quote": "Tsiteeri",
     "reply": "Vasta",
+    "replies_to_this_post": "Replies: %1",
     "reply-as-topic": "Vasta teemana",
     "guest-login-reply": "Logi sisse, et vastata",
     "edit": "Muuda",

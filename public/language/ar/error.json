@@ -29,7 +29,7 @@
     "username-too-long": "اسم المستخدم طويل",
     "password-too-long": "كلمة السر طويلة ",
     "user-banned": "المستخدم محظور",
-    "user-banned-reason": "المستخدم محظور (السبب: %1)",
+    "user-banned-reason": "Sorry, this account has been banned (Reason: %1)",
     "user-too-new": "عذرا, يجب أن تنتظر 1% ثواني قبل قيامك بأول مشاركة",
     "blacklisted-ip": "نأسف، لقد تم حظرك من استخدام وتصفح المنتدى. إذا كنت تعتقد أن هذا خطأ رجاءًا اتصل بالإدارة. ",
     "ban-expiry-missing": "رجاءًا ضع تاريخ نهاية الحظر. ",

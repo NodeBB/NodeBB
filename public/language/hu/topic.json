@@ -13,6 +13,7 @@
     "notify_me": "Értesítést kérek az új hozzászólásokról ebben a topikban",
     "quote": "Idéz",
     "reply": "Válasz",
+    "replies_to_this_post": "Replies: %1",
     "reply-as-topic": "Reply as topic",
     "guest-login-reply": "Log in to reply",
     "edit": "Szerkeszt",

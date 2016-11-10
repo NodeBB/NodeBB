@@ -1,9 +1,9 @@
 {
-    "category": "カテゴリ",
-    "subcategories": "サブカテゴリ",
+    "category": "カテゴリー",
+    "subcategories": "サブカテゴリー",
     "new_topic_button": "新規トピック",
     "guest-login-post": "投稿するにはログインしてください",
-    "no_topics": "<strong>まだトピックはありません.</strong><br />一番目のトピックを書いてみませんか？",
+    "no_topics": "<strong>まだトピックはありません</strong><br />最初のトピックを書いてみませんか？",
     "browsing": "閲覧中",
     "no_replies": "返事はまだありません",
     "no_new_posts": "新しい投稿はありません",
@@ -14,7 +14,7 @@
     "ignoring": "無視しています",
     "watching.description": "未読トピックを表示",
     "ignoring.description": "未読トピックを表示しない",
-    "watch.message": "あなたは現在、このカテゴリと全てのサブカテゴリで行われる更新をウォッチ中です。",
+    "watch.message": "あなたは現在、このカテゴリと全てのサブカテゴリで行われる更新をウォッチしています。",
     "ignore.message": "あなたは現在、このカテゴリと全てのサブカテゴリで行われる更新を無視しています。",
     "watched-categories": "ウォッチ中のカテゴリ"
 }

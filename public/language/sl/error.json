@@ -29,7 +29,7 @@
     "username-too-long": "Uporabniško ime je predolgo.",
     "password-too-long": "Geslo je predolgo.",
     "user-banned": "Uporabnik je izločen.",
-    "user-banned-reason": "Uporabnik je izločen (vzrok: %1).",
+    "user-banned-reason": "Sorry, this account has been banned (Reason: %1)",
     "user-too-new": " Pred svojo prvo objavo počakajte %1 s.",
     "blacklisted-ip": "Vaš IP-naslov je izločen. Povprašajte skrbnika za več informacij.",
     "ban-expiry-missing": "Vnesite končni datum za to izločitev.",

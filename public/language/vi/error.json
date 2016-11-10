@@ -29,7 +29,7 @@
     "username-too-long": "Tên đăng nhập quá dài",
     "password-too-long": "Mật khẩu quá dài",
     "user-banned": "Tài khoản bị ban",
-    "user-banned-reason": "User banned (Reason: %1)",
+    "user-banned-reason": "Sorry, this account has been banned (Reason: %1)",
     "user-too-new": "Rất tiếc, bạn phải chờ %1 giây để đăng bài viết đầu tiên.",
     "blacklisted-ip": "Rất tiếc, địa chỉ IP của bạn đã bị cấm khỏi cộng đồng. Nếu bạn cảm thấy có gì không đúng, hãy liên lạc với người quản trị.",
     "ban-expiry-missing": "Vui lòng cung cấp ngày hết hạn của lệnh cấm",

@@ -99,5 +99,8 @@
     "allowed-file-types": "Los tipos de archivos permitidos son: %1",
     "unsaved-changes": "Tienes cambios sin guardar. Seguro que quieres salir?",
     "reconnecting-message": "Has perdido la conexión. Reconectando a %1.",
-    "play": "Reproducir"
+    "play": "Reproducir",
+    "cookies.message": "Esta web usa cookies para asegurar que usted recibe la mejor experiencia de navegación.",
+    "cookies.accept": "De Acuerdo!",
+    "cookies.learn_more": "Quiero saber más"
 }

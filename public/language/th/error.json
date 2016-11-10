@@ -29,7 +29,7 @@
     "username-too-long": "ชื่อบัญชีผู้ใช้ ยาวเกินไป",
     "password-too-long": "Password too long",
     "user-banned": "User banned",
-    "user-banned-reason": "User banned (Reason: %1)",
+    "user-banned-reason": "Sorry, this account has been banned (Reason: %1)",
     "user-too-new": "Sorry, you are required to wait %1 second(s) before making your first post",
     "blacklisted-ip": "Sorry, your IP address has been banned from this community. If you feel this is in error, please contact an administrator.",
     "ban-expiry-missing": "Please provide an end date for this ban",

@@ -99,5 +99,8 @@
     "allowed-file-types": "صيغ الملفات المدعومة هي 1%",
     "unsaved-changes": "لديك تغييرات لم تحفظ. هل أنت متأكد من تغيير الصفحة؟",
     "reconnecting-message": "يبدو أن اتصالك لـ %1 قد فقد. رجاءًا أنتظر ثم حاول الإتصال مرة اخرى.",
-    "play": "Play"
+    "play": "Play",
+    "cookies.message": "This website uses cookies to ensure you get the best experience on our website.",
+    "cookies.accept": "Got it!",
+    "cookies.learn_more": "Learn More"
 }
