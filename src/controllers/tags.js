@@ -12,8 +12,8 @@ var helpers =  require('./helpers');
 
 var tagsController = {};
 
-tagsController.getTag = function(req, res, next) {
-	var tag = validator.escape(req.params.tag);
+tagsController.getTag = function (req, res, next) {
+	var tag = validator.escape(String(req.params.tag));
 	var page = parseInt(req.query.page, 10) || 1;
 
 	var templateData = {
@@ -34,23 +34,22 @@ tagsController.getTag = function(req, res, next) {
 			var stop = start + settings.topicsPerPage - 1;
 			templateData.nextStart = stop + 1;
 			async.parallel({
-				topicCount: function(next) {
+				topicCount: function (next) {
 					topics.getTagTopicCount(tag, next);
 				},
-				tids: function(next) {
+				tids: function (next) {
 					topics.getTagTids(req.params.tag, start, stop, next);
 				}
 			}, next);
 		},
 		function (results, next) {
 			if (Array.isArray(results.tids) && !results.tids.length) {
-				topics.deleteTag(req.params.tag);
 				return res.render('tag', templateData);
 			}
 			topicCount = results.topicCount;
 			topics.getTopics(results.tids, req.uid, next);
 		}
-	], function(err, topics) {
+	], function (err, topics) {
 		if (err) {
 			return next(err);
 		}
@@ -78,14 +77,12 @@ tagsController.getTag = function(req, res, next) {
 	});
 };
 
-tagsController.getTags = function(req, res, next) {
-	topics.getTags(0, 99, function(err, tags) {
+tagsController.getTags = function (req, res, next) {
+	topics.getTags(0, 99, function (err, tags) {
 		if (err) {
 			return next(err);
 		}
-		tags = tags.filter(function(tag) {
-			return tag && tag.score > 0;
-		});
+		tags = tags.filter(Boolean);
 		var data = {
 			tags: tags,
 			nextStart: 100,

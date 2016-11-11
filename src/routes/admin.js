@@ -64,6 +64,8 @@ function addRoutes(router, middleware, controllers) {
 	router.get('/manage/users/latest', middlewares, controllers.admin.users.sortByJoinDate);
 	router.get('/manage/users/not-validated', middlewares, controllers.admin.users.notValidated);
 	router.get('/manage/users/no-posts', middlewares, controllers.admin.users.noPosts);
+	router.get('/manage/users/top-posters', middlewares, controllers.admin.users.topPosters);
+	router.get('/manage/users/most-reputation', middlewares, controllers.admin.users.mostReputaion);
 	router.get('/manage/users/inactive', middlewares, controllers.admin.users.inactive);
 	router.get('/manage/users/flagged', middlewares, controllers.admin.users.flagged);
 	router.get('/manage/users/banned', middlewares, controllers.admin.users.banned);
@@ -85,13 +87,13 @@ function addRoutes(router, middleware, controllers) {
 	router.get('/advanced/logs', middlewares, controllers.admin.logs.get);
 	router.get('/advanced/errors', middlewares, controllers.admin.errors.get);
 	router.get('/advanced/errors/export', middlewares, controllers.admin.errors.export);
-	router.get('/advanced/post-cache', middlewares, controllers.admin.postCache.get);
+	router.get('/advanced/cache', middlewares, controllers.admin.cache.get);
 
 	router.get('/development/logger', middlewares, controllers.admin.logger.get);
 	router.get('/development/info', middlewares, controllers.admin.info.get);
 }
 
-module.exports = function(app, middleware, controllers) {
+module.exports = function (app, middleware, controllers) {
 	app.use('/admin/', adminRouter(middleware, controllers));
 	app.use('/api/admin/', apiRouter(middleware, controllers));
 };

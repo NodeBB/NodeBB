@@ -5,13 +5,13 @@ var async = require('async'),
 	plugins = require('../plugins'),
 	db = require('../database');
 
-module.exports = function(User) {
+module.exports = function (User) {
 
-	User.follow = function(uid, followuid, callback) {
+	User.follow = function (uid, followuid, callback) {
 		toggleFollow('follow', uid, followuid, callback);
 	};
 
-	User.unfollow = function(uid, unfollowuid, callback) {
+	User.unfollow = function (uid, unfollowuid, callback) {
 		toggleFollow('unfollow', uid, unfollowuid, callback);
 	};
 
@@ -61,11 +61,11 @@ module.exports = function(User) {
 		], callback);
 	}
 
-	User.getFollowing = function(uid, start, stop, callback) {
+	User.getFollowing = function (uid, start, stop, callback) {
 		getFollow(uid, 'following', start, stop, callback);
 	};
 
-	User.getFollowers = function(uid, start, stop, callback) {
+	User.getFollowers = function (uid, start, stop, callback) {
 		getFollow(uid, 'followers', start, stop, callback);
 	};
 
@@ -74,7 +74,7 @@ module.exports = function(User) {
 			return callback(null, []);
 		}
 
-		db.getSortedSetRevRange(type + ':' + uid, start, stop, function(err, uids) {
+		db.getSortedSetRevRange(type + ':' + uid, start, stop, function (err, uids) {
 			if (err) {
 				return callback(err);
 			}
@@ -84,13 +84,17 @@ module.exports = function(User) {
 				uid: uid,
 				start: start,
 				stop: stop
-			}, function(err, data) {
+			}, function (err, data) {
+				if (err) {
+					return callback(err);
+				}
+
 				User.getUsers(data.uids, uid, callback);
 			});
 		});
 	}
 
-	User.isFollowing = function(uid, theirid, callback) {
+	User.isFollowing = function (uid, theirid, callback) {
 		if (!parseInt(uid, 10) || !parseInt(theirid, 10)) {
 			return callback(null, false);
 		}

@@ -16,7 +16,7 @@
 		<ul class="menu-section-list">
 			<li><a href="{relative_path}/admin/manage/categories">Categories</a></li>
 			<li><a href="{relative_path}/admin/manage/tags">Tags</a></li>
-			<li><a href="{relative_path}/admin/manage/users/latest">Users</a></li>
+			<li><a href="{relative_path}/admin/manage/users">Users</a></li>
 			<li><a href="{relative_path}/admin/manage/registration">Registration Queue</a></li>
 			<li><a href="{relative_path}/admin/manage/groups">Groups</a></li>
 			<li><a href="{relative_path}/admin/manage/flags">Flags</a></li>
@@ -39,6 +39,7 @@
 			<li><a href="{relative_path}/admin/settings/pagination">Pagination</a></li>
 			<li><a href="{relative_path}/admin/settings/tags">Tags</a></li>
 			<li><a href="{relative_path}/admin/settings/notifications">Notifications</a></li>
+			<li><a href="{relative_path}/admin/settings/cookies">Cookies</a></li>
 			<li><a href="{relative_path}/admin/settings/web-crawler">Web Crawler</a></li>
 			<li><a href="{relative_path}/admin/settings/sockets">Sockets</a></li>
 			<li><a href="{relative_path}/admin/settings/advanced">Advanced</a></li>
@@ -96,7 +97,7 @@
 			<li><a href="{relative_path}/admin/advanced/events">Events</a></li>
 			<li><a href="{relative_path}/admin/advanced/logs">Logs</a></li>
 			<li><a href="{relative_path}/admin/advanced/errors">Errors</a></li>
-			<li><a href="{relative_path}/admin/advanced/post-cache">Post Cache</a></li>
+			<li><a href="{relative_path}/admin/advanced/cache">Cache</a></li>
 			<!-- IF env -->
 			<li><a href="{relative_path}/admin/development/logger">Logger</a></li>
 			<!-- ENDIF env -->
@@ -118,20 +119,9 @@
 		<ul id="user_label" class="pull-right">
 			<li class="dropdown pull-right">
 				<a class="dropdown-toggle" data-toggle="dropdown" href="#" id="user_dropdown">
-					<i class="fa fa-ellipsis-v"></i>
+					<i class="fa fa-fw fa-ellipsis-v"></i>
 				</a>
 				<ul id="user-control-list" class="dropdown-menu" aria-labelledby="user_dropdown">
-					<li>
-						<a href="{relative_path}/" target="_top" title="View Forum">
-							View Forum
-						</a>
-					</li>
-					<li role="presentation" class="divider"></li>
-					<li>
-						<a href="#" class="reload" title="Reload Forum">
-							Reload Forum
-						</a>
-					</li>
 					<li>
 						<a href="#" class="restart" title="Restart Forum">
 							Restart Forum
@@ -143,6 +133,13 @@
 					</li>
 				</ul>
 			</li>
+
+			<li class="pull-right">
+				<a href="{config.relative_path}/">
+					<i class="fa fa-fw fa-home" title="View Forum"></i>
+				</a>
+			</li>
+
 			<form class="pull-right hidden-sm hidden-xs" role="search">
 				<div class="" id="acp-search" >
 					<div class="dropdown">
@@ -171,7 +168,7 @@
 				<ul class="dropdown-menu" role="menu">
 					<li><a href="{relative_path}/admin/manage/categories">Categories</a></li>
 					<li><a href="{relative_path}/admin/manage/tags">Tags</a></li>
-					<li><a href="{relative_path}/admin/manage/users/latest">Users</a></li>
+					<li><a href="{relative_path}/admin/manage/users">Users</a></li>
 					<li><a href="{relative_path}/admin/manage/registration">Registration Queue</a></li>
 					<li><a href="{relative_path}/admin/manage/groups">Groups</a></li>
 					<li><a href="{relative_path}/admin/manage/flags">Flags</a></li>
@@ -193,6 +190,7 @@
 					<li><a href="{relative_path}/admin/settings/pagination">Pagination</a></li>
 					<li><a href="{relative_path}/admin/settings/tags">Tags</a></li>
 					<li><a href="{relative_path}/admin/settings/notifications">Notifications</a></li>
+					<li><a href="{relative_path}/admin/settings/cookies">Cookies</a></li>
 					<li><a href="{relative_path}/admin/settings/web-crawler">Web Crawler</a></li>
 					<li><a href="{relative_path}/admin/settings/sockets">Sockets</a></li>
 					<li><a href="{relative_path}/admin/settings/advanced">Advanced</a></li>
@@ -249,7 +247,7 @@
 					<li><a href="{relative_path}/admin/advanced/events">Events</a></li>
 					<li><a href="{relative_path}/admin/advanced/logs">Logs</a></li>
 					<li><a href="{relative_path}/admin/advanced/errors">Errors</a></li>
-					<li><a href="{relative_path}/admin/advanced/post-cache">Post Cache</a></li>
+					<li><a href="{relative_path}/admin/advanced/cache">Cache</a></li>
 					<!-- IF env -->
 					<li><a href="{relative_path}/admin/development/logger">Logger</a></li>
 					<!-- ENDIF env -->

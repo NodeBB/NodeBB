@@ -1,24 +1,24 @@
 "use strict";
 
-var	SocketIO = require('socket.io');
-var socketioWildcard = require('socketio-wildcard')();
 var async = require('async');
 var nconf = require('nconf');
-var cookieParser = require('cookie-parser')(nconf.get('secret'));
 var winston = require('winston');
 var url = require('url');
+var cookieParser = require('cookie-parser')(nconf.get('secret'));
 
 var db = require('../database');
 var logger = require('../logger');
 var ratelimit = require('../middleware/ratelimit');
 
-(function(Sockets) {
+(function (Sockets) {
 	var Namespaces = {};
 	var io;
 
 	Sockets.init = function (server) {
 		requireModules();
 
+		var SocketIO = require('socket.io');
+		var socketioWildcard = require('socketio-wildcard')();
 		io = new SocketIO({
 			path: nconf.get('relative_path') + '/socket.io'
 		});
@@ -56,6 +56,8 @@ var ratelimit = require('../middleware/ratelimit');
 		} else {
 			socket.join('online_guests');
 		}
+
+		io.sockets.sockets[socket.id].emit('checkSession', socket.uid);
 	}
 
 	function onMessage(socket, payload) {
@@ -86,7 +88,7 @@ var ratelimit = require('../middleware/ratelimit');
 			if (process.env.NODE_ENV === 'development') {
 				winston.warn('[socket.io] Unrecognized message: ' + eventName);
 			}
-			return;
+			return callback({message: '[[error:invalid-event]]'});
 		}
 
 		socket.previousEvents = socket.previousEvents || [];
@@ -131,10 +133,10 @@ var ratelimit = require('../middleware/ratelimit');
 
 	function validateSession(socket, callback) {
 		var req = socket.request;
-		if (!req.signedCookies || !req.signedCookies['express.sid']) {
+		if (!req.signedCookies || !req.signedCookies[nconf.get('sessionKey')]) {
 			return callback(new Error('[[error:invalid-session]]'));
 		}
-		db.sessionStore.get(req.signedCookies['express.sid'], function (err, sessionData) {
+		db.sessionStore.get(req.signedCookies[nconf.get('sessionKey')], function (err, sessionData) {
 			if (err || !sessionData) {
 				return callback(err || new Error('[[error:invalid-session]]'));
 			}
@@ -155,7 +157,7 @@ var ratelimit = require('../middleware/ratelimit');
 				cookieParser(request, {}, next);
 			},
 			function (next) {
-				db.sessionStore.get(request.signedCookies['express.sid'], function (err, sessionData) {
+				db.sessionStore.get(request.signedCookies[nconf.get('sessionKey')], function (err, sessionData) {
 					if (err) {
 						return next(err);
 					}
@@ -175,9 +177,8 @@ var ratelimit = require('../middleware/ratelimit');
 		if (nconf.get('redis')) {
 			var redisAdapter = require('socket.io-redis');
 			var redis = require('../database/redis');
-			var pub = redis.connect({return_buffers: true});
+			var pub = redis.connect();
 			var sub = redis.connect({return_buffers: true});
-
 			io.adapter(redisAdapter({pubClient: pub, subClient: sub}));
 		} else if (nconf.get('isCluster') === 'true') {
 			winston.warn('[socket.io] Clustering detected, you are advised to configure Redis as a websocket store.');
@@ -199,13 +200,14 @@ var ratelimit = require('../middleware/ratelimit');
 
 
 	Sockets.reqFromSocket = function (socket, payload, event) {
-		var headers = socket.request.headers;
+		var headers = socket.request ? socket.request.headers : {};
+		var encrypted = socket.request ? !!socket.request.connection.encrypted : false;
 		var host = headers.host;
 		var referer = headers.referer || '';
 		var data = ((payload || {}).data || []);
 
 		if (!host) {
-			host = url.parse(referer).host;
+			host = url.parse(referer).host || '';
 		}
 
 		return {
@@ -215,12 +217,12 @@ var ratelimit = require('../middleware/ratelimit');
 			body: payload,
 			ip: headers['x-forwarded-for'] || socket.ip,
 			host: host,
-			protocol: socket.request.connection.encrypted ? 'https' : 'http',
-			secure: !!socket.request.connection.encrypted,
+			protocol: encrypted ? 'https' : 'http',
+			secure: encrypted,
 			url: referer,
 			path: referer.substr(referer.indexOf(host) + host.length),
 			headers: headers
 		};
 	};
 
-})(exports);
+}(exports));

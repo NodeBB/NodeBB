@@ -1,5 +1,6 @@
 {
     "register": "Daftar",
+    "cancel_registration": "Cancel Registration",
     "help.email": "Secara default, emailmu akan disembunyikan dari publik.",
     "help.username_restrictions": "Nama Pengguna yang unik antara %1 dan %2 karakter. Pengguna lain dapat menyebutmu dengan menggunakan @<span id='Nama Pengguna mu'>nama pengguna</span>.",
     "help.minimum_password_length": "Panjang password harus setidaknya %1 karakter.",
@@ -15,5 +16,8 @@
     "alternative_registration": "Pendaftaran Alternatif",
     "terms_of_use": "Aturan Penggunaan",
     "agree_to_terms_of_use": "Saya menyetujui Aturan Penggunaan",
-    "registration-added-to-queue": "Pendaftaranmu telah ditambahkan dalam daftar persetujuan. Kamu akan menerima email ketika pendaftaranmu disetujui oleh administrator."
+    "terms_of_use_error": "You must agree to the Terms of Use",
+    "registration-added-to-queue": "Pendaftaranmu telah ditambahkan dalam daftar persetujuan. Kamu akan menerima email ketika pendaftaranmu disetujui oleh administrator.",
+    "interstitial.intro": "We require some additional information before we can create your account.",
+    "interstitial.errors-found": "We could not complete your registration:"
 }

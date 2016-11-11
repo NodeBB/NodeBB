@@ -50,5 +50,7 @@
     "membership.leave-group": "Lahku grupist",
     "membership.reject": "Lükka tagasi",
     "new-group.group_name": "Grupi nimi:",
-    "upload-group-cover": "Lae gruppi pilt üles"
+    "upload-group-cover": "Lae gruppi pilt üles",
+    "bulk-invite-instructions": "Enter a list of comma separated usernames to invite to this group",
+    "bulk-invite": "Bulk Invite"
 }

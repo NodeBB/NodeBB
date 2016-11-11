@@ -1,6 +1,6 @@
 {
-    "uploading-file": "Uploading the file...",
-    "select-file-to-upload": "Select a file to upload!",
-    "upload-success": "File uploaded successfully!",
-    "maximum-file-size": "Maximum %1 kb"
+    "uploading-file": "Отпремање датотеке...",
+    "select-file-to-upload": "Изаберите датотеку за отпремање!",
+    "upload-success": "Датотека је успешно отпремљена!",
+    "maximum-file-size": "Највише %1 kb"
 }

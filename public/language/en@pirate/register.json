@@ -1,5 +1,6 @@
 {
     "register": "Board the ship",
+    "cancel_registration": "Cancel Registration",
     "help.email": "By default, your email will be hidden from the public.",
     "help.username_restrictions": "A unique username between %1 and %2 characters. Others can mention you with @<span id='yourUsername'>username</span>.",
     "help.minimum_password_length": "Your password's length must be at least %1 characters.",
@@ -15,5 +16,8 @@
     "alternative_registration": "Alternative Registration",
     "terms_of_use": "Terms of Use",
     "agree_to_terms_of_use": "I agree to the Terms of Use",
-    "registration-added-to-queue": "Your registration has been added to the approval queue. You will receive an email when it is accepted by an administrator."
+    "terms_of_use_error": "You must agree to the Terms of Use",
+    "registration-added-to-queue": "Your registration has been added to the approval queue. You will receive an email when it is accepted by an administrator.",
+    "interstitial.intro": "We require some additional information before we can create your account.",
+    "interstitial.errors-found": "We could not complete your registration:"
 }

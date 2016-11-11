@@ -1,15 +1,18 @@
 'use strict';
 
 var async = require('async');
+var winston = require('winston');
+var validator = require('validator');
+
 var topics = require('../../topics');
 var events = require('../../events');
 var privileges = require('../../privileges');
 var plugins = require('../../plugins');
 var socketHelpers = require('../helpers');
 
-module.exports = function(SocketTopics) {
+module.exports = function (SocketTopics) {
 
-	SocketTopics.loadTopicTools = function(socket, data, callback) {
+	SocketTopics.loadTopicTools = function (socket, data, callback) {
 		if (!socket.uid) {
 			return callback(new Error('[[error:no-privileges]]'));
 		}
@@ -20,10 +23,10 @@ module.exports = function(SocketTopics) {
 		async.waterfall([
 			function (next) {
 				async.parallel({
-					topic: function(next) {
+					topic: function (next) {
 						topics.getTopicData(data.tid, next);
 					},
-					privileges: function(next) {
+					privileges: function (next) {
 						privileges.topics.get(data.tid, socket.uid, next);
 					}
 				}, next);
@@ -43,36 +46,36 @@ module.exports = function(SocketTopics) {
 		], callback);
 	};
 
-	SocketTopics.delete = function(socket, data, callback) {
+	SocketTopics.delete = function (socket, data, callback) {
 		SocketTopics.doTopicAction('delete', 'event:topic_deleted', socket, data, callback);
 	};
 
-	SocketTopics.restore = function(socket, data, callback) {
+	SocketTopics.restore = function (socket, data, callback) {
 		SocketTopics.doTopicAction('restore', 'event:topic_restored', socket, data, callback);
 	};
 
-	SocketTopics.purge = function(socket, data, callback) {
+	SocketTopics.purge = function (socket, data, callback) {
 		SocketTopics.doTopicAction('purge', 'event:topic_purged', socket, data, callback);
 	};
 
-	SocketTopics.lock = function(socket, data, callback) {
+	SocketTopics.lock = function (socket, data, callback) {
 		SocketTopics.doTopicAction('lock', 'event:topic_locked', socket, data, callback);
 	};
 
-	SocketTopics.unlock = function(socket, data, callback) {
+	SocketTopics.unlock = function (socket, data, callback) {
 		SocketTopics.doTopicAction('unlock', 'event:topic_unlocked', socket, data, callback);
 	};
 
-	SocketTopics.pin = function(socket, data, callback) {
+	SocketTopics.pin = function (socket, data, callback) {
 		SocketTopics.doTopicAction('pin', 'event:topic_pinned', socket, data, callback);
 	};
 
-	SocketTopics.unpin = function(socket, data, callback) {
+	SocketTopics.unpin = function (socket, data, callback) {
 		SocketTopics.doTopicAction('unpin', 'event:topic_unpinned', socket, data, callback);
 	};
 
-	SocketTopics.doTopicAction = function(action, event, socket, data, callback) {
-		callback = callback || function() {};
+	SocketTopics.doTopicAction = function (action, event, socket, data, callback) {
+		callback = callback || function () {};
 		if (!socket.uid) {
 			return callback(new Error('[[error:no-privileges]]'));
 		}
@@ -85,8 +88,8 @@ module.exports = function(SocketTopics) {
 			return callback();
 		}
 
-		async.each(data.tids, function(tid, next) {
-			topics.tools[action](tid, socket.uid, function(err, data) {
+		async.each(data.tids, function (tid, next) {
+			topics.tools[action](tid, socket.uid, function (err, data) {
 				if (err) {
 					return next(err);
 				}
@@ -94,11 +97,17 @@ module.exports = function(SocketTopics) {
 				socketHelpers.emitToTopicAndCategory(event, data);
 
 				if (action === 'delete' || action === 'restore' || action === 'purge') {
-					events.log({
-						type: 'topic-' + action,
-						uid: socket.uid,
-						ip: socket.ip,
-						tid: tid
+					topics.getTopicField(tid, 'title', function (err, title) {
+						if (err) {
+							return winston.error(err);
+						}
+						events.log({
+							type: 'topic-' + action,
+							uid: socket.uid,
+							ip: socket.ip,
+							tid: tid,
+							title: validator.escape(String(title))
+						});
 					});
 				}
 

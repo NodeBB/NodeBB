@@ -5,13 +5,22 @@
 		}
 
 		.tag-row {
-			padding: 5px;
+			padding: 0.5rem;
 			float: left;
+			margin-left: 0.5rem;
 
 			.tag-item {
 				cursor: pointer;
 				display: inline-block;
 				font-size: 11px;
+			}
+
+			&.ui-selected {
+				background: lighten(@brand-success, 25%);
+			}
+
+			&.ui-selecting {
+				background: lighten(@brand-success, 40%);
 			}
 		}
 	}

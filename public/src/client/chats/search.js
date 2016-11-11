@@ -1,15 +1,15 @@
 'use strict';
 
-/* globals define, socket, app, ajaxify */
+/* globals define, socket, app */
 
-define('forum/chats/search', ['components'], function(components) {
+define('forum/chats/search', ['components'], function (components) {
 
 	var search = {};
 
-	search.init = function() {
+	search.init = function () {
 		var timeoutId = 0;
 
-		components.get('chat/search').on('keyup', function() {
+		components.get('chat/search').on('keyup', function () {
 			if (timeoutId) {
 				clearTimeout(timeoutId);
 				timeoutId = 0;
@@ -30,7 +30,7 @@ define('forum/chats/search', ['components'], function(components) {
 		socket.emit('user.search', {
 			query: username,
 			searchBy: 'username'
-		}, function(err, data) {
+		}, function (err, data) {
 			if (err) {
 				return app.alertError(err.message);
 			}
@@ -41,12 +41,16 @@ define('forum/chats/search', ['components'], function(components) {
 
 	function displayResults(chatsListEl, data) {
 		chatsListEl.empty();
-
+		
+		data.users = data.users.filter(function (user) {
+			return parseInt(user.uid, 10) !== parseInt(app.user.uid, 10);
+		});
+		
 		if (!data.users.length) {
 			return chatsListEl.translateHtml('<li><div><span>[[users:no-users-found]]</span></div></li>');
 		}
 
-		data.users.forEach(function(userObj) {
+		data.users.forEach(function (userObj) {
 			var chatEl = displayUser(chatsListEl, userObj);
 			onUserClick(chatEl, userObj);
 		});
@@ -55,7 +59,7 @@ define('forum/chats/search', ['components'], function(components) {
 	function displayUser(chatsListEl, userObj) {
 		function createUserImage() {
 			return (userObj.picture ?
-				'<img src="' +	userObj.picture + '" title="' +	userObj.username +'" />' :
+				'<img src="' +	userObj.picture + '" title="' +	userObj.username + '" />' :
 				'<div class="user-icon" style="background-color: ' + userObj['icon:bgColor'] + '">' + userObj['icon:text'] + '</div>') +
 				'<i class="fa fa-circle status ' + userObj.status + '"></i> ' + userObj.username;
 		}
@@ -69,13 +73,15 @@ define('forum/chats/search', ['components'], function(components) {
 	}
 
 	function onUserClick(chatEl, userObj) {
-		chatEl.on('click', function() {
-			socket.emit('modules.chats.hasPrivateChat', userObj.uid, function(err, roomId) {
+		chatEl.on('click', function () {
+			socket.emit('modules.chats.hasPrivateChat', userObj.uid, function (err, roomId) {
 				if (err) {
 					return app.alertError(err.message);
 				}
 				if (roomId) {
-					ajaxify.go('chats/' + roomId);
+					require(['forum/chats'], function (chats) {
+						chats.switchChat(roomId);
+					});
 				} else {
 					app.newChat(userObj.uid);
 				}

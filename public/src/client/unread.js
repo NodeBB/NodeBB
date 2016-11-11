@@ -2,19 +2,19 @@
 
 /* globals define, app, socket */
 
-define('forum/unread', ['forum/recent', 'topicSelect', 'forum/infinitescroll', 'components'], function(recent, topicSelect, infinitescroll, components) {
+define('forum/unread', ['forum/recent', 'topicSelect', 'forum/infinitescroll', 'components'], function (recent, topicSelect, infinitescroll, components) {
 	var Unread = {};
 
-	$(window).on('action:ajaxify.start', function(ev, data) {
+	$(window).on('action:ajaxify.start', function (ev, data) {
 		if (ajaxify.currentPage !== data.url) {
 			recent.removeListeners();
 		}
 	});
 
-	Unread.init = function() {
+	Unread.init = function () {
 		app.enterRoom('unread_topics');
 
-		$('#new-topics-alert').on('click', function() {
+		$('#new-topics-alert').on('click', function () {
 			$(this).addClass('hide');
 		});
 
@@ -22,12 +22,12 @@ define('forum/unread', ['forum/recent', 'topicSelect', 'forum/infinitescroll', '
 
 		$(window).trigger('action:topics.loaded', {topics: ajaxify.data.topics});
 
-		$('#markSelectedRead').on('click', function() {
+		$('#markSelectedRead').on('click', function () {
 			var tids = topicSelect.getSelectedTids();
 			if(!tids.length) {
 				return;
 			}
-			socket.emit('topics.markAsRead', tids, function(err) {
+			socket.emit('topics.markAsRead', tids, function (err) {
 				if(err) {
 					return app.alertError(err.message);
 				}
@@ -36,8 +36,8 @@ define('forum/unread', ['forum/recent', 'topicSelect', 'forum/infinitescroll', '
 			});
 		});
 
-		$('#markAllRead').on('click', function() {
-			socket.emit('topics.markAllRead', function(err) {
+		$('#markAllRead').on('click', function () {
+			socket.emit('topics.markAllRead', function (err) {
 				if(err) {
 					return app.alertError(err.message);
 				}
@@ -51,10 +51,10 @@ define('forum/unread', ['forum/recent', 'topicSelect', 'forum/infinitescroll', '
 			});
 		});
 
-		$('.markread').on('click', '.category', function() {
+		$('.markread').on('click', '.category', function () {
 			function getCategoryTids(cid) {
 				var tids = [];
-				components.get('category/topic', 'cid', cid).each(function() {
+				components.get('category/topic', 'cid', cid).each(function () {
 					tids.push($(this).attr('data-tid'));
 				});
 				return tids;
@@ -62,7 +62,7 @@ define('forum/unread', ['forum/recent', 'topicSelect', 'forum/infinitescroll', '
 			var cid = $(this).attr('data-cid');
 			var tids = getCategoryTids(cid);
 
-			socket.emit('topics.markCategoryTopicsRead', cid, function(err) {
+			socket.emit('topics.markCategoryTopicsRead', cid, function (err) {
 				if(err) {
 					return app.alertError(err.message);
 				}
@@ -77,7 +77,7 @@ define('forum/unread', ['forum/recent', 'topicSelect', 'forum/infinitescroll', '
 			$('#load-more-btn').show();
 		}
 
-		$('#load-more-btn').on('click', function() {
+		$('#load-more-btn').on('click', function () {
 			loadMoreTopics();
 		});
 
@@ -95,7 +95,7 @@ define('forum/unread', ['forum/recent', 'topicSelect', 'forum/infinitescroll', '
 				after: $('[component="category"]').attr('data-nextstart'),
 				cid: cid,
 				filter: ajaxify.data.selectedFilter.filter
-			}, function(data, done) {
+			}, function (data, done) {
 				if (data.topics && data.topics.length) {
 					recent.onTopicsLoaded('unread', data.topics, true, done);
 					$('[component="category"]').attr('data-nextstart', data.nextStart);
@@ -119,7 +119,7 @@ define('forum/unread', ['forum/recent', 'topicSelect', 'forum/infinitescroll', '
 	}
 
 	function removeTids(tids) {
-		for(var i=0; i<tids.length; ++i) {
+		for(var i = 0; i < tids.length; ++i) {
 			components.get('category/topic', 'tid', tids[i]).remove();
 		}
 	}

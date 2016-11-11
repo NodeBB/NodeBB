@@ -50,5 +50,7 @@
     "membership.leave-group": "그룹 나가기",
     "membership.reject": "거절",
     "new-group.group_name": "그룹명:",
-    "upload-group-cover": "그룹 커버 업로드"
+    "upload-group-cover": "그룹 커버 업로드",
+    "bulk-invite-instructions": "Enter a list of comma separated usernames to invite to this group",
+    "bulk-invite": "Bulk Invite"
 }

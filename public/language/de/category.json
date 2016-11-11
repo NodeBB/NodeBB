@@ -2,7 +2,7 @@
     "category": "Kategorie",
     "subcategories": "Unterkategorien",
     "new_topic_button": "Neues Thema",
-    "guest-login-post": "Anmelden, um einen Beitrag zu erstellen",
+    "guest-login-post": "Melde dich an, um einen Beitrag zu erstellen",
     "no_topics": "<strong>Es gibt noch keine Themen in dieser Kategorie.</strong><br />Warum beginnst du nicht eins?",
     "browsing": "Aktiv",
     "no_replies": "Niemand hat geantwortet",
@@ -10,7 +10,11 @@
     "share_this_category": "Teile diese Kategorie",
     "watch": "Beobachten",
     "ignore": "Ignorieren",
-    "watch.message": "Du beobachtest jetzt Änderungen in dieser Kategorie",
-    "ignore.message": "Du ignorierst jetzt Änderungen in dieser Kategorie",
+    "watching": "Beobachte",
+    "ignoring": "Ignoriere",
+    "watching.description": "Zeige Themen in",
+    "ignoring.description": "Zeige keine Themen in Ungelesen",
+    "watch.message": "Du beobachtest jetzt Änderungen in dieser Kategorie und allen Subkategorien",
+    "ignore.message": "Du ignorierst jetzt Änderungen in dieser Kategorie und allen Subkategorien",
     "watched-categories": "Zuletzt angesehen Kategorien"
 }

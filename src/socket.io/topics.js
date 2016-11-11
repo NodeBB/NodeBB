@@ -17,21 +17,16 @@ require('./topics/tools')(SocketTopics);
 require('./topics/infinitescroll')(SocketTopics);
 require('./topics/tags')(SocketTopics);
 
-SocketTopics.post = function(socket, data, callback) {
+SocketTopics.post = function (socket, data, callback) {
 	if (!data) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
 
-	topics.post({
-		uid: socket.uid,
-		handle: data.handle,
-		title: data.title,
-		content: data.content,
-		cid: data.category_id,
-		thumb: data.topic_thumb,
-		tags: data.tags,
-		req: websockets.reqFromSocket(socket)
-	}, function(err, result) {
+	data.uid = socket.uid;
+	data.req = websockets.reqFromSocket(socket);
+	data.timestamp = Date.now();
+
+	topics.post(data, function (err, result) {
 		if (err) {
 			return callback(err);
 		}
@@ -45,18 +40,18 @@ SocketTopics.post = function(socket, data, callback) {
 	});
 };
 
-SocketTopics.postcount = function(socket, tid, callback) {
+SocketTopics.postcount = function (socket, tid, callback) {
 	topics.getTopicField(tid, 'postcount', callback);
 };
 
-SocketTopics.bookmark = function(socket, data, callback) {
+SocketTopics.bookmark = function (socket, data, callback) {
 	if (!socket.uid || !data) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
 	topics.setUserBookmark(data.tid, socket.uid, data.index, callback);
 };
 
-SocketTopics.createTopicFromPosts = function(socket, data, callback) {
+SocketTopics.createTopicFromPosts = function (socket, data, callback) {
 	if (!socket.uid) {
 		return callback(new Error('[[error:not-logged-in]]'));
 	}
@@ -68,7 +63,7 @@ SocketTopics.createTopicFromPosts = function(socket, data, callback) {
 	topics.createTopicFromPosts(socket.uid, data.title, data.pids, data.fromTid, callback);
 };
 
-SocketTopics.changeWatching = function(socket, data, callback) {
+SocketTopics.changeWatching = function (socket, data, callback) {
 	if (!data.tid || !data.type) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
@@ -79,7 +74,7 @@ SocketTopics.changeWatching = function(socket, data, callback) {
 	followCommand(topics[data.type], socket, data.tid, callback);
 };
 
-SocketTopics.follow = function(socket, tid, callback) {
+SocketTopics.follow = function (socket, tid, callback) {
 	followCommand(topics.follow, socket, tid, callback);
 };
 
@@ -91,18 +86,18 @@ function followCommand(method, socket, tid, callback) {
 	method(tid, socket.uid, callback);
 }
 
-SocketTopics.isFollowed = function(socket, tid, callback) {
-	topics.isFollowing([tid], socket.uid, function(err, isFollowing) {
+SocketTopics.isFollowed = function (socket, tid, callback) {
+	topics.isFollowing([tid], socket.uid, function (err, isFollowing) {
 		callback(err, Array.isArray(isFollowing) && isFollowing.length ? isFollowing[0] : false);
 	});
 };
 
-SocketTopics.search = function(socket, data, callback) {
+SocketTopics.search = function (socket, data, callback) {
 	topics.search(data.tid, data.term, callback);
 };
 
-SocketTopics.isModerator = function(socket, tid, callback) {
-	topics.getTopicField(tid, 'cid', function(err, cid) {
+SocketTopics.isModerator = function (socket, tid, callback) {
+	topics.getTopicField(tid, 'cid', function (err, cid) {
 		if (err) {
 			return callback(err);
 		}

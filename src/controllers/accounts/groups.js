@@ -1,21 +1,21 @@
 'use strict';
 
 
-var async = require('async'),
+var async = require('async');
 
-	groups = require('../../groups'),
-	helpers = require('../helpers'),
-	accountHelpers = require('./helpers');
+var groups = require('../../groups');
+var helpers = require('../helpers');
+var accountHelpers = require('./helpers');
 
 var groupsController = {};
 
 
-groupsController.get = function(req, res, callback) {
+groupsController.get = function (req, res, callback) {
 	var userData;
 	var groupsData;
 	async.waterfall([
 		function (next) {
-			accountHelpers.getBaseUser(req.params.userslug, req.uid, next);
+			accountHelpers.getUserDataByUserSlug(req.params.userslug, req.uid, next);
 		},
 		function (_userData, next) {
 			userData = _userData;
@@ -27,19 +27,19 @@ groupsController.get = function(req, res, callback) {
 		},
 		function (_groupsData, next) {
 			groupsData = _groupsData[0];
-			var groupNames = groupsData.filter(Boolean).map(function(group) {
+			var groupNames = groupsData.filter(Boolean).map(function (group) {
 				return group.name;
 			});
 
 			groups.getMemberUsers(groupNames, 0, 3, next);
 		},
 		function (members, next) {
-			groupsData.forEach(function(group, index) {
+			groupsData.forEach(function (group, index) {
 				group.members = members[index];
 			});
 			next();
 		}
-	], function(err) {
+	], function (err) {
 		if (err) {
 			return callback(err);
 		}

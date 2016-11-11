@@ -1,18 +1,10 @@
-<div class="manage-users">
-	<div class="col-lg-9">
+<div class="row manage-users">
+	<div class="col-lg-12">
 		<div class="panel panel-default">
 			<div class="panel-heading"><i class="fa fa-user"></i> Users</div>
 			<div class="panel-body">
-				<ul class="nav nav-pills">
-					<li><a href='{config.relative_path}/admin/manage/users/latest'>Latest Users</a></li>
-					<li><a href='{config.relative_path}/admin/manage/users/not-validated'>Not validated</a></li>
-					<li><a href='{config.relative_path}/admin/manage/users/no-posts'>No Posts</a></li>
-					<li><a href='{config.relative_path}/admin/manage/users/inactive'>Inactive</a></li>
-					<li><a href='{config.relative_path}/admin/manage/users/flagged'>Most Flags</a></li>
-					<li><a href='{config.relative_path}/admin/manage/users/banned'>Banned</a></li>
-					<li><a href='{config.relative_path}/admin/manage/users/search'>User Search</a></li>
 
-
+				<div class="clearfix">
 					<div class="btn-group pull-right">
 						<button class="btn btn-default dropdown-toggle" data-toggle="dropdown" type="button">Edit <span class="caret"></span></button>
 						<ul class="dropdown-menu">
@@ -30,13 +22,36 @@
 							<li><a href="#" class="reset-flags"><i class="fa fa-fw fa-flag"></i> Reset Flags</a></li>
 							<li class="divider"></li>
 							<li><a href="#" class="delete-user"><i class="fa fa-fw fa-trash-o"></i> Delete User(s)</a></li>
+							<li><a href="#" class="delete-user-and-content"><i class="fa fa-fw fa-trash-o"></i> Delete User(s) and Content</a></li>
 						</ul>
 					</div>
+
+					<a target="_blank" href="{config.relative_path}/api/admin/users/csv" class="btn btn-primary pull-right">Download CSV</a>
+
+					<!-- IF inviteOnly -->
+					<!-- IF loggedIn -->
+					<button component="user/invite" class="btn btn-success form-control"><i class="fa fa-users"></i> Invite</button>
+					<!-- ENDIF loggedIn -->
+					<!-- ENDIF inviteOnly -->
+
+					<button id="createUser" class="btn btn-primary pull-right">New User</button>
+				</div>
+
+				<ul class="nav nav-pills">
+					<li><a href='{config.relative_path}/admin/manage/users/latest'>Latest Users</a></li>
+					<li><a href='{config.relative_path}/admin/manage/users/not-validated'>Not validated</a></li>
+					<li><a href='{config.relative_path}/admin/manage/users/no-posts'>No Posts</a></li>
+					<li><a href='{config.relative_path}/admin/manage/users/top-posters'>Top Posters</a></li>
+					<li><a href='{config.relative_path}/admin/manage/users/most-reputation'>Most Reputation</a></li>
+					<li><a href='{config.relative_path}/admin/manage/users/inactive'>Inactive</a></li>
+					<li><a href='{config.relative_path}/admin/manage/users/flagged'>Most Flags</a></li>
+					<li><a href='{config.relative_path}/admin/manage/users/banned'>Banned</a></li>
+					<li><a href='{config.relative_path}/admin/manage/users/search'>User Search</a></li>
 				</ul>
 
 				<br />
 
-				<div class="search {search_display} well">
+				<div class="search {search_display}">
 					<label>By User Name</label>
 					<input class="form-control" id="search-user-name" data-search-type="username" type="text" placeholder="Enter a username to search"/><br />
 
@@ -49,107 +64,50 @@
 					<i class="fa fa-spinner fa-spin hidden"></i>
 					<span id="user-notfound-notify" class="label label-danger hide">User not found!</span><br/>
 				</div>
+
 				<!-- IF inactive -->
 				<a href="{config.relative_path}/admin/manage/users/inactive?months=3" class="btn btn-default">3 months</a>
 				<a href="{config.relative_path}/admin/manage/users/inactive?months=6" class="btn btn-default">6 months</a>
 				<a href="{config.relative_path}/admin/manage/users/inactive?months=12" class="btn btn-default">12 months</a>
 				<!-- ENDIF inactive -->
 
-
-				<ul id="users-container">
-					<!-- BEGIN users -->
-					<div class="users-box" data-uid="{users.uid}" data-username="{users.username}">
-						<div class="user-image">
-							<!-- IF users.picture -->
-							<img src="{users.picture}" class="img-thumbnail user-selectable"/>
-							<!-- ELSE -->
-							<div class="user-icon user-selectable" style="background-color: {users.icon:bgColor};">{users.icon:text}</div>
-							<!-- ENDIF users.picture -->
-							<div class="labels">
-								<!-- IF config.requireEmailConfirmation -->
-								<!-- IF !users.email:confirmed -->
-								<span class="notvalidated label label-danger">Not Validated</span>
-								<!-- ENDIF !users.email:confirmed -->
-								<!-- ENDIF config.requireEmailConfirmation -->
-								<span class="administrator label label-primary <!-- IF !users.administrator -->hide<!-- ENDIF !users.administrator -->">Admin</span>
-								<span class="ban label label-danger <!-- IF !users.banned -->hide<!-- ENDIF !users.banned -->">Banned<!-- IF users.banned_until --> <i class="fa fa-clock-o" title="Banned until {../banned_until_readable}"></i><!-- ENDIF users.banned_until --></span>
-							</div>
-						</div>
-
-						<a href="{config.relative_path}/user/{users.userslug}" target="_blank">{users.username} ({users.uid})</a><br/>
-						<!-- IF users.email -->
-						<small><span title="{users.email}">{users.email}</span></small>
-						<!-- ENDIF users.email -->
-
-						joined <span class="timeago" title="{users.joindateISO}"></span><br/>
-						login <span class="timeago" title="{users.lastonlineISO}"></span><br/>
-						posts {users.postcount}
-
-						<!-- IF users.flags -->
-						<div><small><span><i class="fa fa-flag"></i> <a href="{config.relative_path}/admin/manage/flags?byUsername={users.username}">{users.flags}</a></span></small></div>
-						<!-- ENDIF users.flags -->
-					</div>
-					<!-- END users -->
-				</ul>
-
-				<!-- IMPORT partials/paginator.tpl -->
-
-				<div class="modal fade" id="create-modal">
-					<div class="modal-dialog">
-						<div class="modal-content">
-							<div class="modal-header">
-								<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-								<h4 class="modal-title">Create User</h4>
-							</div>
-							<div class="modal-body">
-								<div class="alert alert-danger hide" id="create-modal-error"></div>
-								<form>
-									<div class="form-group">
-										<label for="group-name">User Name</label>
-										<input type="text" class="form-control" id="create-user-name" placeholder="User Name" />
-									</div>
-									<div class="form-group">
-										<label for="group-name">Email</label>
-										<input type="text" class="form-control" id="create-user-email" placeholder="Email of this user" />
-									</div>
-
-									<div class="form-group">
-										<label for="group-name">Password</label>
-										<input type="password" class="form-control" id="create-user-password" placeholder="Password" />
-									</div>
-
-									<div class="form-group">
-										<label for="group-name">Password Confirm</label>
-										<input type="password" class="form-control" id="create-user-password-again" placeholder="Password" />
-									</div>
-
-								</form>
-							</div>
-							<div class="modal-footer">
-								<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-								<button type="button" class="btn btn-primary" id="create-modal-go">Create</button>
-							</div>
-						</div>
-					</div>
+				<div class="table-responsive">
+					<table class="table table-striped users-table">
+						<tr>
+							<th><input component="user/select/all" type="checkbox"/></th>
+							<th>uid</th>
+							<th>username</th>
+							<th>email</th>
+							<th class="text-right">postcount</th>
+							<th class="text-right">reputation</th>
+							<th class="text-right">flags</th>
+							<th>joined</th>
+							<th>last online</th>
+							<th>banned</th>
+						</tr>
+						<!-- BEGIN users -->
+						<tr class="user-row">
+							<th><input component="user/select/single" data-uid="{users.uid}" type="checkbox"/></th>
+							<td class="text-right">{users.uid}</td>
+							<td><i class="administrator fa fa-shield text-success<!-- IF !users.administrator --> hidden<!-- ENDIF !users.administrator -->"></i><a href="{config.relative_path}/user/{users.userslug}"> {users.username}</a></td>
+	
+							<td>
+							<!-- IF config.requireEmailConfirmation -->
+							<i class="validated fa fa-check text-success<!-- IF !users.email:confirmed --> hidden<!-- ENDIF !users.email:confirmed -->" title="validated"></i>
+							<i class="notvalidated fa fa-times text-danger<!-- IF users.email:confirmed --> hidden<!-- ENDIF users.email:confirmed -->" title="not validated"></i>
+							<!-- ENDIF config.requireEmailConfirmation --> {users.email}</td>
+							<td class="text-right">{users.postcount}</td>
+							<td class="text-right">{users.reputation}</td>
+							<td class="text-right"><!-- IF users.flags -->{users.flags}<!-- ELSE -->0<!-- ENDIF users.flags --></td>
+							<td><span class="timeago" title="{users.joindateISO}"></span></td>
+							<td><span class="timeago" title="{users.lastonlineISO}"></span></td>
+							<td class="text-center"><i class="ban fa fa-gavel text-danger<!-- IF !users.banned --> hidden<!-- ENDIF !users.banned -->"></i></td>
+						</tr>
+						<!-- END users -->
+					</table>
 				</div>
 
-			</div>
-		</div>
-	</div>
-
-	<div class="col-lg-3 acp-sidebar">
-		<div class="panel panel-default">
-			<div class="panel-heading">Users Control Panel</div>
-			<div class="panel-body">
-				<button id="createUser" class="btn btn-primary form-control">New User</button>
-				<a target="_blank" href="{config.relative_path}/api/admin/users/csv" class="btn btn-primary form-control">Download CSV</a>
-
-				<!-- IF inviteOnly -->
-				<!-- IF loggedIn -->
-				<button component="user/invite" class="btn btn-success form-control"><i class="fa fa-users"></i> Invite</button>
-				<!-- ENDIF loggedIn -->
-				<!-- ENDIF inviteOnly -->
-
+				<!-- IMPORT partials/paginator.tpl -->
 			</div>
 		</div>
 	</div>

@@ -1,24 +1,27 @@
 'use strict';
 
+var async = require('async');
+
 var user = require('../../user');
 var websockets = require('../index');
 
-module.exports = function(SocketUser) {
-	SocketUser.checkStatus = function(socket, uid, callback) {
-		if (!socket.uid) {
-			return callback('[[error:invalid-uid]]');
-		}
+module.exports = function (SocketUser) {
 
-		user.getUserFields(uid, ['lastonline', 'status'], function(err, userData) {
-			if (err) {
-				return callback(err);
+	SocketUser.checkStatus = function (socket, uid, callback) {
+		if (!socket.uid) {
+			return callback(new Error('[[error:invalid-uid]]'));
+		}
+		async.waterfall([
+			function (next) {
+				user.getUserFields(uid, ['lastonline', 'status'], next);
+			},
+			function (userData, next) {
+				next(null, user.getStatus(userData));
 			}
-			var status = user.getStatus(userData);
-			callback(null, status);
-		});
+		], callback);
 	};
 
-	SocketUser.setStatus = function(socket, status, callback) {
+	SocketUser.setStatus = function (socket, status, callback) {
 		if (!socket.uid) {
 			return callback(new Error('[[error:invalid-uid]]'));
 		}
@@ -27,16 +30,24 @@ module.exports = function(SocketUser) {
 		if (allowedStatus.indexOf(status) === -1) {
 			return callback(new Error('[[error:invalid-user-status]]'));
 		}
-		user.setUserField(socket.uid, 'status', status, function(err) {
-			if (err) {
-				return callback(err);
+
+		var data = {status: status};
+		if (status !== 'offline') {
+			data.lastonline = Date.now();
+		}
+
+		async.waterfall([
+			function (next) {
+				user.setUserFields(socket.uid, data, next);
+			},
+			function (next) {
+				var data = {
+					uid: socket.uid,
+					status: status
+				};
+				websockets.server.emit('event:user_status_change', data);
+				next(null, data);
 			}
-			var data = {
-				uid: socket.uid,
-				status: status
-			};
-			websockets.server.emit('event:user_status_change', data);
-			callback(null, data);
-		});
+		], callback);
 	};
 };

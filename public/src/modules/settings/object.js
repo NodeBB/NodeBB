@@ -69,7 +69,7 @@ define('settings/object', function () {
 				} catch (_error) {
 					return $(document.createTextNode(separator));
 				}
-			})();
+			}());
 			element.empty();
 			if (typeof value !== 'object') {
 				value = {};

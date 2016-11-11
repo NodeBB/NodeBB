@@ -6,7 +6,7 @@ var rewards = {},
 	db = require('../database');
 
 
-rewards.save = function(data, callback) {
+rewards.save = function (data, callback) {
 	function save(data, next) {
 		function commit(err, id) {
 			if (err) {
@@ -16,16 +16,16 @@ rewards.save = function(data, callback) {
 			data.id = id;
 			
 			async.series([
-				function(next) {
+				function (next) {
 					rewards.delete(data, next);
 				},
-				function(next) {
+				function (next) {
 					db.setAdd('rewards:list', data.id, next);
 				},
-				function(next) {
+				function (next) {
 					db.setObject('rewards:id:' + data.id, data, next);
 				},
-				function(next) {
+				function (next) {
 					db.setObject('rewards:id:' + data.id + ':rewards', rewardsData, next);
 				}
 			], next);
@@ -45,42 +45,46 @@ rewards.save = function(data, callback) {
 		}
 	}
 
-	async.each(data, save, function(err) {
+	async.each(data, save, function (err) {
+		if (err) {
+			return callback(err);
+		}
+
 		saveConditions(data, callback);
 	});
 };
 
-rewards.delete = function(data, callback) {
+rewards.delete = function (data, callback) {
 	async.parallel([
-		function(next) {
+		function (next) {
 			db.setRemove('rewards:list', data.id, next);
 		},
-		function(next) {
+		function (next) {
 			db.delete('rewards:id:' + data.id, next);
 		},
-		function(next) {
+		function (next) {
 			db.delete('rewards:id:' + data.id + ':rewards', next);
 		}
 	], callback);
 };
 
-rewards.get = function(callback) {
+rewards.get = function (callback) {
 	async.parallel({
 		active: getActiveRewards,
-		conditions: function(next) {
+		conditions: function (next) {
 			plugins.fireHook('filter:rewards.conditions', [], next);
 		},
-		conditionals: function(next) {
+		conditionals: function (next) {
 			plugins.fireHook('filter:rewards.conditionals', [], next);
 		},
-		rewards: function(next) {
+		rewards: function (next) {
 			plugins.fireHook('filter:rewards.rewards', [], next);
 		}
 	}, callback);
 };
 
 function saveConditions(data, callback) {
-	db.delete('conditions:active', function(err) {
+	db.delete('conditions:active', function (err) {
 		if (err) {
 			return callback(err);
 		}
@@ -88,7 +92,7 @@ function saveConditions(data, callback) {
 		var conditions = [],
 			rewardsPerCondition = {};
 
-		data.forEach(function(reward) {
+		data.forEach(function (reward) {
 			conditions.push(reward.condition);
 			rewardsPerCondition[reward.condition] = rewardsPerCondition[reward.condition] || [];
 			rewardsPerCondition[reward.condition].push(reward.id);
@@ -96,7 +100,7 @@ function saveConditions(data, callback) {
 
 		db.setAdd('conditions:active', conditions, callback);
 
-		async.each(Object.keys(rewardsPerCondition), function(condition, next) {
+		async.each(Object.keys(rewardsPerCondition), function (condition, next) {
 			db.setAdd('condition:' + condition + ':rewards', rewardsPerCondition[condition], next);
 		}, callback);
 	});
@@ -107,13 +111,13 @@ function getActiveRewards(callback) {
 
 	function load(id, next) {
 		async.parallel({
-			main: function(next) {
+			main: function (next) {
 				db.getObject('rewards:id:' + id, next);
 			},
-			rewards: function(next) {
+			rewards: function (next) {
 				db.getObject('rewards:id:' + id + ':rewards', next);
 			}
-		}, function(err, data) {
+		}, function (err, data) {
 			if (data.main) {
 				data.main.disabled = data.main.disabled === 'true';
 				data.main.rewards = data.rewards;
@@ -124,8 +128,12 @@ function getActiveRewards(callback) {
 		});
 	}
 
-	db.getSetMembers('rewards:list', function(err, rewards) {
-		async.eachSeries(rewards, load, function(err) {
+	db.getSetMembers('rewards:list', function (err, rewards) {
+		if (err) {
+			return callback(err);
+		}
+
+		async.eachSeries(rewards, load, function (err) {
 			callback(err, activeRewards);
 		});
 	});

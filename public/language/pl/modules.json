@@ -1,6 +1,6 @@
 {
     "chat.chatting_with": "Rozmawiaj z <span id=\"chat-with-name\"></span>",
-    "chat.placeholder": "Wpisz wiadomość tutaj i naciśnij Enter aby wysłać.",
+    "chat.placeholder": "Wpisz wiadomość tutaj i naciśnij Enter, aby wysłać.",
     "chat.send": "Wyślij",
     "chat.no_active": "Nie prowadzisz obecnie żadnych rozmów.",
     "chat.user_typing": "%1 pisze...",
@@ -18,8 +18,7 @@
     "chat.thirty_days": "30 dni",
     "chat.three_months": "3 miesiące",
     "chat.delete_message_confirm": "Jesteś pewny, że chcesz usunąć tą wiadomość?",
-    "chat.roomname": "Chat Room %1",
-    "chat.add-users-to-room": "Add users to room",
+    "chat.add-users-to-room": "Dodaj użytkownika do pokoju czatu",
     "composer.compose": "Twórz",
     "composer.show_preview": "Pokaż Podgląd",
     "composer.hide_preview": "Ukryj Podgląd",
@@ -37,10 +36,12 @@
     "composer.formatting.picture": "Obraz",
     "composer.upload-picture": "Wyślij obraz",
     "composer.upload-file": "Wyślij plik",
+    "composer.zen_mode": "Tryb Zen",
+    "composer.select_category": "Wybierz kategorie",
     "bootbox.ok": "OK",
     "bootbox.cancel": "Anuluj",
     "bootbox.confirm": "Potwierdź",
     "cover.dragging_title": "Pozycjonowanie tła",
-    "cover.dragging_message": "Przeciągnij i upuść zdjęcie na żądanym miejscu, po zakończeniu kliknij \"Zapisz\"",
+    "cover.dragging_message": "Przeciągnij i upuść zdjęcie na żądanym miejscu. Po zakończeniu kliknij \"Zapisz\"",
     "cover.saved": "Tło zapisane"
 }

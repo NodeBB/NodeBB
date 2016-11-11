@@ -5,20 +5,20 @@ var async = require('async');
 var db = require('../database');
 var sockets = require('../socket.io');
 
-module.exports = function(Messaging) {
+module.exports = function (Messaging) {
 
-	Messaging.getUnreadCount = function(uid, callback) {
+	Messaging.getUnreadCount = function (uid, callback) {
 		if (!parseInt(uid, 10)) {
 			return callback(null, 0);
 		}
 		db.sortedSetCard('uid:' + uid + ':chat:rooms:unread', callback);
 	};
 
-	Messaging.pushUnreadCount = function(uid) {
+	Messaging.pushUnreadCount = function (uid) {
 		if (!parseInt(uid, 10)) {
 			return callback(null, 0);
 		}
-		Messaging.getUnreadCount(uid, function(err, unreadCount) {
+		Messaging.getUnreadCount(uid, function (err, unreadCount) {
 			if (err) {
 				return;
 			}
@@ -26,15 +26,15 @@ module.exports = function(Messaging) {
 		});
 	};
 
-	Messaging.markRead = function(uid, roomId, callback) {
+	Messaging.markRead = function (uid, roomId, callback) {
 		db.sortedSetRemove('uid:' + uid + ':chat:rooms:unread', roomId, callback);
 	};
 
-	Messaging.markAllRead = function(uid, callback) {
+	Messaging.markAllRead = function (uid, callback) {
 		db.delete('uid:' + uid + ':chat:rooms:unread', callback);
 	};
 
-	Messaging.markUnread = function(uids, roomId, callback) {
+	Messaging.markUnread = function (uids, roomId, callback) {
 		async.waterfall([
 			function (next) {
 				Messaging.roomExists(roomId, next);
@@ -43,7 +43,7 @@ module.exports = function(Messaging) {
 				if (!exists) {
 					return next(new Error('[[error:chat-room-does-not-exist]]'));
 				}
-				var keys = uids.map(function(uid) {
+				var keys = uids.map(function (uid) {
 					return 'uid:' + uid + ':chat:rooms:unread';
 				});
 

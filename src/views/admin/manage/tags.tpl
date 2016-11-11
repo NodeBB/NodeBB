@@ -6,7 +6,7 @@
 				<!-- IF !tags.length -->
 				Your forum does not have any topics with tags yet.
 				<!-- ENDIF !tags.length -->
-			
+
 				<div class="tag-list">
 					<!-- BEGIN tags -->
 					<div class="tag-row" data-tag="{tags.value}">
@@ -32,9 +32,10 @@
 
 	<div class="col-lg-3 acp-sidebar">
 		<div class="panel panel-default">
-			<div class="panel-heading">Modify Tag</div>
+			<div class="panel-heading">Create & Modify Tags</div>
 			<div class="panel-body">
 				<p>Select tags via clicking and/or dragging, use shift to select multiple.</p>
+				<button class="btn btn-primary btn-block" id="create">Create Tag</button>
 				<button class="btn btn-primary btn-block" id="modify">Modify Tags</button>
 				<button class="btn btn-warning btn-block" id="deleteSelected">Delete Tags</button>
 			</div>
@@ -44,6 +45,28 @@
 			<div class="panel-body">
 				<input class="form-control" type="text" id="tag-search" placeholder="Search for tags..."/><br/>
 				Click <a href="/admin/settings/tags">here</a> to visit the tag settings page.
+			</div>
+		</div>
+	</div>
+
+	<div class="modal fade" id="create-modal">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h4 class="modal-title">Create Tag</h4>
+				</div>
+				<div class="modal-body">
+					<form>
+						<div class="form-group">
+							<label for="create-tag-name">Tag Name</label>
+							<input type="text" class="form-control" id="create-tag-name" placeholder="Tag Name" />
+						</div>
+					</form>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-primary" id="create-modal-go">Create</button>
+				</div>
 			</div>
 		</div>
 	</div>

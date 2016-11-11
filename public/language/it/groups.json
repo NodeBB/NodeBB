@@ -24,7 +24,7 @@
     "details.has_no_posts": "I membri di questo gruppo non hanno ancora postato.",
     "details.latest_posts": "Ultimi Post",
     "details.private": "Privato",
-    "details.disableJoinRequests": "Disable join requests",
+    "details.disableJoinRequests": "Disabilita le richieste d'adesione",
     "details.grant": "Concedi / Rimuovi la Proprietà",
     "details.kick": "Espelli",
     "details.owner_options": "Amministratore del Grupo",
@@ -41,7 +41,7 @@
     "details.hidden": "Nascosto",
     "details.hidden_help": "Se abilitato, questo gruppo non sarà visibile nella lista dei gruppi e gli utenti dovranno essere invitati manualmente",
     "details.delete_group": "Elimina il Gruppo",
-    "details.private_system_help": "Private groups is disabled at system level, this option does not do anything",
+    "details.private_system_help": "I gruppi privati sono disabilitati dal livello del sistema, questa opzione non fa nulla",
     "event.updated": "I dettagli del Gruppo sono stati aggiornati",
     "event.deleted": "Il gruppo \"%1\" è stato eliminato",
     "membership.accept-invitation": "Accetta l'invito",
@@ -50,5 +50,7 @@
     "membership.leave-group": "Lascia il Gruppo",
     "membership.reject": "Rifiuta",
     "new-group.group_name": "Nome Gruppo:",
-    "upload-group-cover": "Upload group cover"
+    "upload-group-cover": "Carica copertina del gruppo",
+    "bulk-invite-instructions": "Enter a list of comma separated usernames to invite to this group",
+    "bulk-invite": "Bulk Invite"
 }

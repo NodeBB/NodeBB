@@ -5,13 +5,13 @@ var path = require('path');
 
 var plugins = require('../plugins');
 
-module.exports = function(app, middleware, controllers) {
+module.exports = function (app, middleware, controllers) {
 	// Static Assets
-	app.get('/plugins/:id/*', middleware.addExpiresHeaders, function(req, res, next) {
+	app.get('/plugins/:id/*', middleware.addExpiresHeaders, function (req, res, next) {
 
 		var relPath = req._parsedUrl.pathname.replace('/plugins/', '');
 
-		var matches = _.map(plugins.staticDirs, function(realPath, mappedPath) {
+		var matches = _.map(plugins.staticDirs, function (realPath, mappedPath) {
 			if (relPath.match(mappedPath)) {
 				var pathToFile = path.join(plugins.staticDirs[mappedPath], decodeURIComponent(relPath.slice(mappedPath.length)));
 				if (pathToFile.startsWith(plugins.staticDirs[mappedPath])) {
@@ -26,7 +26,7 @@ module.exports = function(app, middleware, controllers) {
 			return next();
 		}
 
-		res.sendFile(matches[0], {}, function(err) {
+		res.sendFile(matches[0], {}, function (err) {
 			if (err) {
 				if (err.code === 'ENOENT') {
 					// File doesn't exist, this isn't an error, to send to 404 handler

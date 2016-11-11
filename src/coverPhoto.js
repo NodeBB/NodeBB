@@ -5,11 +5,11 @@ var meta = require('./meta');
 var nconf = require('nconf');
 
 
-coverPhoto.getDefaultGroupCover = function(groupName) {
+coverPhoto.getDefaultGroupCover = function (groupName) {
 	return getCover('groups', groupName);
 };
 
-coverPhoto.getDefaultProfileCover = function(uid) {
+coverPhoto.getDefaultProfileCover = function (uid) {
 	return getCover('profile', parseInt(uid, 10));
 };
 

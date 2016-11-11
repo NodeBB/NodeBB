@@ -2,12 +2,12 @@
 
 /* globals define, socket, app */
 
-define('forum/chats/recent', function() {
+define('forum/chats/recent', function () {
 
 	var recent = {};
 
-	recent.init = function() {
-		$('[component="chat/recent"]').on('scroll', function() {
+	recent.init = function () {
+		$('[component="chat/recent"]').on('scroll', function () {
 			var $this = $(this);
 			var bottom = ($this[0].scrollHeight - $this.height()) * 0.9;
 			if ($this.scrollTop() > bottom) {
@@ -23,14 +23,15 @@ define('forum/chats/recent', function() {
 		}
 		recentChats.attr('loading', 1);
 		socket.emit('modules.chats.getRecentChats', {
+			uid: ajaxify.data.uid,
 			after: recentChats.attr('data-nextstart')
-		}, function(err, data) {
+		}, function (err, data) {
 			if (err) {
 				return app.alertError(err.message);
 			}
 
 			if (data && data.rooms.length) {
-				onRecentChatsLoaded(data, function() {
+				onRecentChatsLoaded(data, function () {
 					recentChats.removeAttr('loading');
 					recentChats.attr('data-nextstart', data.nextStart);
 				});
@@ -45,7 +46,7 @@ define('forum/chats/recent', function() {
 			return callback();
 		}
 
-		app.parseAndTranslate('chats', 'rooms', data, function(html) {
+		app.parseAndTranslate('chats', 'rooms', data, function (html) {
 			$('[component="chat/recent"]').append(html);
 			html.find('.timeago').timeago();
 			callback();

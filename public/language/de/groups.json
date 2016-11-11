@@ -50,5 +50,7 @@
     "membership.leave-group": "Gruppe verlassen",
     "membership.reject": "Ablehnen",
     "new-group.group_name": "Gruppenname:",
-    "upload-group-cover": "Gruppentitelbild hochladen"
+    "upload-group-cover": "Gruppentitelbild hochladen",
+    "bulk-invite-instructions": "Gib eine mit Kommata getrennte Liste von Benutzernamen ein, um sie in diese Gruppe aufzunehmen",
+    "bulk-invite": "Mehrere einladen"
 }

@@ -1,44 +1,44 @@
 'use strict';
 
-var winston = require('winston'),
-	fork = require('child_process').fork,
-	path = require('path'),
-	async = require('async'),
-	nconf = require('nconf'),
-	fs = require('fs'),
-	file = require('../file'),
-	plugins = require('../plugins'),
-	emitter = require('../emitter'),
-	utils = require('../../public/src/utils');
+var winston = require('winston');
+var fork = require('child_process').fork;
+var path = require('path');
+var async = require('async');
+var nconf = require('nconf');
+var fs = require('fs');
+var file = require('../file');
+var plugins = require('../plugins');
+var emitter = require('../emitter');
+var utils = require('../../public/src/utils');
 
-module.exports = function(Meta) {
+module.exports = function (Meta) {
 
 	Meta.js = {
 		target: {},
 		scripts: {
 			base: [
-				'public/vendor/jquery/js/jquery.js',
+				'./node_modules/jquery/dist/jquery.js',
 				'./node_modules/socket.io-client/socket.io.js',
 				'public/vendor/jquery/timeago/jquery.timeago.js',
 				'public/vendor/jquery/js/jquery.form.min.js',
 				'public/vendor/visibility/visibility.min.js',
-				'public/vendor/bootstrap/js/bootstrap.min.js',
+				'public/vendor/bootstrap/js/bootstrap.js',
 				'public/vendor/jquery/bootstrap-tagsinput/bootstrap-tagsinput.min.js',
 				'public/vendor/jquery/textcomplete/jquery.textcomplete.js',
 				'public/vendor/requirejs/require.js',
+				'public/src/require-config.js',
 				'public/vendor/bootbox/bootbox.min.js',
 				'public/vendor/tinycon/tinycon.js',
 				'public/vendor/xregexp/xregexp.js',
 				'public/vendor/xregexp/unicode/unicode-base.js',
-				'public/vendor/autosize.js',
 				'./node_modules/templates.js/lib/templates.js',
 				'public/src/utils.js',
 				'public/src/sockets.js',
 				'public/src/app.js',
 				'public/src/ajaxify.js',
 				'public/src/overrides.js',
-				'public/src/variables.js',
-				'public/src/widgets.js'
+				'public/src/widgets.js',
+				"./node_modules/promise-polyfill/promise.js"
 			],
 
 			// files listed below are only available client-side, or are bundled in to reduce # of network requests on cold load
@@ -61,7 +61,6 @@ module.exports = function(Meta) {
 				'public/src/client/category.js',
 				'public/src/client/categoryTools.js',
 
-				'public/src/modules/csrf.js',
 				'public/src/modules/translator.js',
 				'public/src/modules/notifications.js',
 				'public/src/modules/chat.js',
@@ -80,21 +79,21 @@ module.exports = function(Meta) {
 
 			// modules listed below are routed through express (/src/modules) so they can be defined anonymously
 			modules: {
-				"Chart.js": './node_modules/chart.js/Chart.js',
-				"mousetrap.js": './node_modules/mousetrap/mousetrap.js',
-
+				"Chart.js": './node_modules/chart.js/dist/Chart.min.js',
+				"mousetrap.js": './node_modules/mousetrap/mousetrap.min.js',
+				"jqueryui.js": 'public/vendor/jquery/js/jquery-ui.js',
 				"buzz.js": 'public/vendor/buzz/buzz.js'
 			}
 		}
 	};
 
-	Meta.js.bridgeModules = function(app, callback) {
+	Meta.js.bridgeModules = function (app, callback) {
 		// Add routes for AMD-type modules to serve those files
 		var numBridged = 0,
-			addRoute = function(relPath) {
+			addRoute = function (relPath) {
 				var relativePath = nconf.get('relative_path');
-				
-				app.get(relativePath + '/src/modules/' + relPath, function(req, res) {
+
+				app.get(relativePath + '/src/modules/' + relPath, function (req, res) {
 					return res.sendFile(path.join(__dirname, '../../', Meta.js.scripts.modules[relPath]), {
 						maxAge: app.enabled('cache') ? 5184000000 : 0
 					});
@@ -102,7 +101,7 @@ module.exports = function(Meta) {
 			};
 
 		async.series([
-			function(next) {
+			function (next) {
 				for(var relPath in Meta.js.scripts.modules) {
 					if (Meta.js.scripts.modules.hasOwnProperty(relPath)) {
 						addRoute(relPath);
@@ -112,17 +111,17 @@ module.exports = function(Meta) {
 
 				next();
 			}
-		], function(err) {
+		], function (err) {
 			if (err) {
 				winston.error('[meta/js] Encountered error while bridging modules:' + err.message);
 			}
 
-			winston.verbose('[meta/js] ' + numBridged + ' of ' + Meta.js.scripts.modules.length + ' modules bridged');
+			winston.verbose('[meta/js] ' + numBridged + ' of ' + Object.keys(Meta.js.scripts.modules).length + ' modules bridged');
 			callback(err);
 		});
 	};
 
-	Meta.js.minify = function(target, callback) {
+	Meta.js.minify = function (target, callback) {
 		if (nconf.get('isPrimary') !== 'true') {
 			if (typeof callback === 'function') {
 				callback();
@@ -138,7 +137,7 @@ module.exports = function(Meta) {
 
 		Meta.js.target[target] = {};
 
-		Meta.js.prepare(target, function() {
+		Meta.js.prepare(target, function () {
 			minifier.send({
 				action: 'js',
 				minify: global.env !== 'development',
@@ -146,7 +145,7 @@ module.exports = function(Meta) {
 			});
 		});
 
-		minifier.on('message', function(message) {
+		minifier.on('message', function (message) {
 			switch(message.type) {
 			case 'end':
 				Meta.js.target[target].cache = message.minified;
@@ -162,7 +161,7 @@ module.exports = function(Meta) {
 				}
 
 				if (nconf.get('local-assets') === undefined || nconf.get('local-assets') !== false) {
-					return Meta.js.commitToFile(target, function() {
+					return Meta.js.commitToFile(target, function () {
 						if (typeof callback === 'function') {
 							callback();
 						}
@@ -189,12 +188,12 @@ module.exports = function(Meta) {
 		});
 	};
 
-	Meta.js.prepare = function(target, callback) {
+	Meta.js.prepare = function (target, callback) {
 		var pluginsScripts = [];
 
 		var pluginDirectories = [];
 
-		pluginsScripts = plugins[target === 'nodebb.min.js' ? 'clientScripts' : 'acpScripts'].filter(function(path) {
+		pluginsScripts = plugins[target === 'nodebb.min.js' ? 'clientScripts' : 'acpScripts'].filter(function (path) {
 			if (path.endsWith('.js')) {
 				return true;
 			}
@@ -203,12 +202,12 @@ module.exports = function(Meta) {
 			return false;
 		});
 
-		async.each(pluginDirectories, function(directory, next) {
-			utils.walk(directory, function(err, scripts) {
+		async.each(pluginDirectories, function (directory, next) {
+			utils.walk(directory, function (err, scripts) {
 				pluginsScripts = pluginsScripts.concat(scripts);
 				next(err);
 			});
-		}, function(err) {
+		}, function (err) {
 			if (err) {
 				return callback(err);
 			}
@@ -221,7 +220,7 @@ module.exports = function(Meta) {
 				Meta.js.target[target].scripts = Meta.js.target[target].scripts.concat(Meta.js.scripts.rjs);
 			}
 
-			Meta.js.target[target].scripts = Meta.js.target[target].scripts.map(function(script) {
+			Meta.js.target[target].scripts = Meta.js.target[target].scripts.map(function (script) {
 				return path.relative(basePath, script).replace(/\\/g, '/');
 			});
 
@@ -229,13 +228,13 @@ module.exports = function(Meta) {
 		});
 	};
 
-	Meta.js.killMinifier = function() {
+	Meta.js.killMinifier = function () {
 		if (Meta.js.minifierProc) {
 			Meta.js.minifierProc.kill('SIGTERM');
 		}
 	};
 
-	Meta.js.commitToFile = function(target, callback) {
+	Meta.js.commitToFile = function (target, callback) {
 		fs.writeFile(path.join(__dirname, '../../public/' + target), Meta.js.target[target].cache, function (err) {
 			if (err) {
 				winston.error('[meta/js] ' + err.message);
@@ -247,12 +246,12 @@ module.exports = function(Meta) {
 		});
 	};
 
-	Meta.js.getFromFile = function(target, callback) {
+	Meta.js.getFromFile = function (target, callback) {
 		var scriptPath = path.join(__dirname, '../../public/' + target),
 			mapPath = path.join(__dirname, '../../public/' + target + '.map'),
 			paths = [scriptPath];
 
-		file.exists(scriptPath, function(exists) {
+		file.exists(scriptPath, function (exists) {
 			if (!exists) {
 				winston.warn('[meta/js] ' + target + ' not found on disk, re-minifying');
 				Meta.js.minify(target, callback);
@@ -263,12 +262,16 @@ module.exports = function(Meta) {
 				return callback();
 			}
 
-			file.exists(mapPath, function(exists) {
+			file.exists(mapPath, function (exists) {
 				if (exists) {
 					paths.push(mapPath);
 				}
 
-				async.map(paths, fs.readFile, function(err, files) {
+				async.map(paths, fs.readFile, function (err, files) {
+					if (err) {
+						return callback(err);
+					}
+
 					Meta.js.target[target] = {
 						cache: files[0],
 						map: files[1] || ''

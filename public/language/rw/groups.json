@@ -50,5 +50,7 @@
     "membership.leave-group": "Va mu Itsinda",
     "membership.reject": "Hakanira",
     "new-group.group_name": "Izina ry'Itsinda:",
-    "upload-group-cover": "Shyiraho ifoto yo hejuru iranga itsinda"
+    "upload-group-cover": "Shyiraho ifoto yo hejuru iranga itsinda",
+    "bulk-invite-instructions": "Enter a list of comma separated usernames to invite to this group",
+    "bulk-invite": "Bulk Invite"
 }

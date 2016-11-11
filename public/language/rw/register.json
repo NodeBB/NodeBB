@@ -1,5 +1,6 @@
 {
     "register": "Iyandike",
+    "cancel_registration": "Cancel Registration",
     "help.email": "Ubusanzwe, email yawe ntabwo iba ibonwa na bose",
     "help.username_restrictions": "Izina rigomba kuba ryihariye kuri uru rubuga kandi rikaba rifite uburebure bw'inyuguti buva kuri %1 kugera kuri %2. Iryo zina ni ryo abantu bazajya bifashisha nka @<span id='yourUsername'>username</span> mu gihe bakoresheje izina ryawe mu byo banditse. ",
     "help.minimum_password_length": "Umubare w'inyuguti n'ibimenyetso bigize ijambobanga ryawe ugomba kuba nibura %1.",
@@ -15,5 +16,8 @@
     "alternative_registration": "Ukundi Wakwiyandika",
     "terms_of_use": "Amategeko n'Amabwiriza",
     "agree_to_terms_of_use": "Nzakurikiza Amategeko n'Amabwiriza",
-    "registration-added-to-queue": "Icyifuzo cy'iyandikwa ryawe cyakiriwe ariko gitegereje isuzuma. Uzabimenyeshwa biciye muri email niba ubuyobozi bwakwemereye kwandikwa. "
+    "terms_of_use_error": "You must agree to the Terms of Use",
+    "registration-added-to-queue": "Icyifuzo cy'iyandikwa ryawe cyakiriwe ariko gitegereje isuzuma. Uzabimenyeshwa biciye muri email niba ubuyobozi bwakwemereye kwandikwa. ",
+    "interstitial.intro": "We require some additional information before we can create your account.",
+    "interstitial.errors-found": "We could not complete your registration:"
 }

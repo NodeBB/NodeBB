@@ -6,7 +6,7 @@
 
 <script>
 	require(['admin/settings'], function(Settings) {
-		Settings.init();
+		Settings.prepare();
 		Settings.populateTOC();
 	});
 </script>

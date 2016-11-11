@@ -1,4 +1,4 @@
-(function(Auth) {
+(function (Auth) {
 	"use strict";
 
 	var passport = require('passport'),
@@ -13,11 +13,11 @@
 
 		loginStrategies = [];
 
-	Auth.initialize = function(app, middleware) {
+	Auth.initialize = function (app, middleware) {
 		app.use(passport.initialize());
 		app.use(passport.session());
 
-		app.use(function(req, res, next) {
+		app.use(function (req, res, next) {
 			req.uid = req.user ? parseInt(req.user.uid, 10) : 0;
 			next();
 		});
@@ -26,11 +26,11 @@
 		Auth.middleware = middleware;
 	};
 
-	Auth.getLoginStrategies = function() {
+	Auth.getLoginStrategies = function () {
 		return loginStrategies;
 	};
 
-	Auth.reloadRoutes = function(callback) {
+	Auth.reloadRoutes = function (callback) {
 		var router = express.Router();
 		router.hotswapId = 'auth';
 
@@ -43,13 +43,13 @@
 			passport.use(new passportLocal({passReqToCallback: true}, controllers.authentication.localLogin));
 		}
 
-		plugins.fireHook('filter:auth.init', loginStrategies, function(err) {
+		plugins.fireHook('filter:auth.init', loginStrategies, function (err) {
 			if (err) {
 				winston.error('filter:auth.init - plugin failure');
 				return callback(err);
 			}
 
-			loginStrategies.forEach(function(strategy) {
+			loginStrategies.forEach(function (strategy) {
 				if (strategy.url) {
 					router.get(strategy.url, passport.authenticate(strategy.name, {
 						scope: strategy.scope,
@@ -76,11 +76,11 @@
 		});
 	};
 
-	passport.serializeUser(function(user, done) {
+	passport.serializeUser(function (user, done) {
 		done(null, user.uid);
 	});
 
-	passport.deserializeUser(function(uid, done) {
+	passport.deserializeUser(function (uid, done) {
 		done(null, {
 			uid: uid
 		});

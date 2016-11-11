@@ -7,17 +7,10 @@
 	<title>NodeBB Web Installer</title>
 
 	<link rel="stylesheet" type="text/css" href="https://bootswatch.com/united/bootstrap.min.css">
-	<link href='http://fonts.googleapis.com/css?family=Roboto:400,300,500,700' rel='stylesheet' type='text/css'>
+	<link href='https://fonts.googleapis.com/css?family=Roboto:400,300,500,700' rel='stylesheet' type='text/css'>
 	<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
 	<link rel="stylesheet" type="text/css" href="stylesheet.css">
 
-
-	<!--[if lt IE 9]>
-  		<script src="//cdnjs.cloudflare.com/ajax/libs/es5-shim/2.3.0/es5-shim.min.js"></script>
-  		<script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7/html5shiv.js"></script>
-  		<script src="//cdnjs.cloudflare.com/ajax/libs/respond.js/1.4.2/respond.js"></script>
-  		<script>__lt_ie_9__ = 1;</script>
-	<![endif]-->
 </head>
 
 <body>
@@ -72,9 +65,9 @@
 				<div class="row input-row">
 					<div class="col-sm-7 col-xs-12 input-field">
 						<label for="admin:password">Password</label>
-						<input type="password" class="form-control" name="admin:password" value="<!-- IF admin:password -->{admin:password}<!-- ENDIF admin:password -->" placeholder="Password" />
+						<input type="password" class="form-control" name="admin:password" value="<!-- IF admin:password -->{admin:password}<!-- ENDIF admin:password -->" placeholder="Password" data-minimum-length="{minimumPasswordLength}" />
 					</div>
-					<div class="col-sm-5 help-text" data-help="Use a combination of numbers, symbols, and different cases. You can change the strictness of password creation in the Admin Control Panel."></div>
+					<div class="col-sm-5 help-text" data-help="Use a combination of numbers, symbols, and different cases. You can change the strictness of password creation in the Admin Control Panel. Minimum {minimumPasswordLength} characters."></div>
 				</div>
 				<div class="row input-row">
 					<div class="col-sm-7 col-xs-12 input-field">
@@ -119,7 +112,7 @@
 	<div class="container <!-- IF !success -->hide<!-- ENDIF !success -->">
 		<p>
 			<h1>Congratulations! Your NodeBB has been set-up.</h1>
-			
+
 			<button id="launch" class="btn btn-lg btn-success">Launch NodeBB <i class="fa fa-spinner fa-spin hide"></i></button>
 		</p>
 	</div>
@@ -136,7 +129,7 @@
 				</div>
 			<!-- END questions -->
 		</div>
-		<!-- END databases -->			
+		<!-- END databases -->
 	</div>
 
 	<script src="//code.jquery.com/jquery-1.11.2.min.js"></script>

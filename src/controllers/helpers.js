@@ -5,18 +5,20 @@ var async = require('async');
 var validator = require('validator');
 var winston = require('winston');
 
+var user = require('../user');
+var privileges = require('../privileges');
 var categories = require('../categories');
 var plugins = require('../plugins');
 var meta = require('../meta');
 
 var helpers = {};
 
-helpers.notAllowed = function(req, res, error) {
+helpers.notAllowed = function (req, res, error) {
 	plugins.fireHook('filter:helpers.notAllowed', {
 		req: req,
 		res: res,
 		error: error
-	}, function(err, data) {
+	}, function (err, data) {
 		if (err) {
 			return winston.error(err);
 		}
@@ -46,7 +48,7 @@ helpers.notAllowed = function(req, res, error) {
 	});
 };
 
-helpers.redirect = function(res, url) {
+helpers.redirect = function (res, url) {
 	if (res.locals.isAPI) {
 		res.status(308).json(url);
 	} else {
@@ -54,20 +56,20 @@ helpers.redirect = function(res, url) {
 	}
 };
 
-helpers.buildCategoryBreadcrumbs = function(cid, callback) {
+helpers.buildCategoryBreadcrumbs = function (cid, callback) {
 	var breadcrumbs = [];
 
-	async.whilst(function() {
+	async.whilst(function () {
 		return parseInt(cid, 10);
-	}, function(next) {
-		categories.getCategoryFields(cid, ['name', 'slug', 'parentCid', 'disabled'], function(err, data) {
+	}, function (next) {
+		categories.getCategoryFields(cid, ['name', 'slug', 'parentCid', 'disabled'], function (err, data) {
 			if (err) {
 				return next(err);
 			}
 
 			if (!parseInt(data.disabled, 10)) {
 				breadcrumbs.unshift({
-					text: validator.escape(data.name),
+					text: validator.escape(String(data.name)),
 					url: nconf.get('relative_path') + '/category/' + data.slug
 				});
 			}
@@ -75,7 +77,7 @@ helpers.buildCategoryBreadcrumbs = function(cid, callback) {
 			cid = data.parentCid;
 			next();
 		});
-	}, function(err) {
+	}, function (err) {
 		if (err) {
 			return callback(err);
 		}
@@ -96,7 +98,7 @@ helpers.buildCategoryBreadcrumbs = function(cid, callback) {
 	});
 };
 
-helpers.buildBreadcrumbs = function(crumbs) {
+helpers.buildBreadcrumbs = function (crumbs) {
 	var breadcrumbs = [
 		{
 			text: '[[global:home]]',
@@ -104,7 +106,7 @@ helpers.buildBreadcrumbs = function(crumbs) {
 		}
 	];
 
-	crumbs.forEach(function(crumb) {
+	crumbs.forEach(function (crumb) {
 		if (crumb) {
 			if (crumb.url) {
 				crumb.url = nconf.get('relative_path') + crumb.url;
@@ -116,17 +118,62 @@ helpers.buildBreadcrumbs = function(crumbs) {
 	return breadcrumbs;
 };
 
-helpers.buildTitle = function(pageTitle) {
+helpers.buildTitle = function (pageTitle) {
 	var titleLayout = meta.config.titleLayout || '{pageTitle} | {browserTitle}';
 
-	var browserTitle = validator.escape(meta.config.browserTitle || meta.config.title || 'NodeBB');
+	var browserTitle = validator.escape(String(meta.config.browserTitle || meta.config.title || 'NodeBB'));
 	pageTitle = pageTitle || '';
-	var title = titleLayout.replace('{pageTitle}', function() {
+	var title = titleLayout.replace('{pageTitle}', function () {
 		return pageTitle;
-	}).replace('{browserTitle}', function() {
+	}).replace('{browserTitle}', function () {
 		return browserTitle;
 	});
 	return title;
 };
+
+helpers.getWatchedCategories = function (uid, selectedCid, callback) {
+	async.waterfall([
+		function (next) {
+			user.getWatchedCategories(uid, next);
+		},
+		function (cids, next) {
+			privileges.categories.filterCids('read', cids, uid, next);
+		},
+		function (cids, next) {
+			categories.getCategoriesFields(cids, ['cid', 'name', 'slug', 'icon', 'link', 'color', 'bgColor', 'parentCid'], next);
+		},
+		function (categoryData, next) {
+			categoryData = categoryData.filter(function (category) {
+				return category && !category.link;
+			});
+
+			var selectedCategory;
+			categoryData.forEach(function (category) {
+				category.selected = parseInt(category.cid, 10) === parseInt(selectedCid, 10);
+				if (category.selected) {
+					selectedCategory = category;
+				}
+			});
+
+			var categoriesData = [];
+			var tree = categories.getTree(categoryData, 0);
+
+			tree.forEach(function (category) {
+				recursive(category, categoriesData, '');
+			});
+
+			next(null, {categories: categoriesData, selectedCategory: selectedCategory});
+		}
+	], callback);
+};
+
+function recursive(category, categoriesData, level) {
+	category.level = level;
+	categoriesData.push(category);
+
+	category.children.forEach(function (child) {
+		recursive(child, categoriesData, '&nbsp;&nbsp;&nbsp;&nbsp;' + level);
+	});
+}
 
 module.exports = helpers;

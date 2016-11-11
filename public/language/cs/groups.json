@@ -50,5 +50,7 @@
     "membership.leave-group": "Opustit skupinu",
     "membership.reject": "Odmítnout",
     "new-group.group_name": "Název skupiny:",
-    "upload-group-cover": "Nahrát titulní obrázek skupiny"
+    "upload-group-cover": "Nahrát titulní obrázek skupiny",
+    "bulk-invite-instructions": "Enter a list of comma separated usernames to invite to this group",
+    "bulk-invite": "Bulk Invite"
 }

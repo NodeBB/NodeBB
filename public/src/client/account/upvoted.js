@@ -2,10 +2,10 @@
 
 /* globals define */
 
-define('forum/account/upvoted', ['forum/account/header', 'forum/account/posts'], function(header, posts) {
+define('forum/account/upvoted', ['forum/account/header', 'forum/account/posts'], function (header, posts) {
 	var Upvoted = {};
 
-	Upvoted.init = function() {
+	Upvoted.init = function () {
 		header.init();
 
 		$('[component="post/content"] img:not(.not-responsive)').addClass('img-responsive');

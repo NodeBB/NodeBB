@@ -1,13 +1,15 @@
 "use strict";
 
-var express = require('express'),
-	nconf = require('nconf'),
-	user = require('./../user'),
-	categories = require('./../categories'),
-	topics = require('./../topics'),
-	posts = require('./../posts');
+var express = require('express');
+var nconf = require('nconf');
+var winston = require('winston');
+var user = require('../user');
+var categories = require('../categories');
+var topics = require('../topics');
+var posts = require('../posts');
+var db = require('../database');
 
-module.exports = function(app, middleware, controllers) {
+module.exports = function (app, middleware, controllers) {
 	var router = express.Router();
 
 	router.get('/uid/:uid', function (req, res) {
@@ -16,6 +18,10 @@ module.exports = function(app, middleware, controllers) {
 		}
 
 		user.getUserData(req.params.uid, function (err, data) {
+			if (err) {
+				winston.error(err);
+			}
+
 			if (data) {
 				res.send(data);
 			} else {
@@ -28,6 +34,10 @@ module.exports = function(app, middleware, controllers) {
 
 	router.get('/cid/:cid', function (req, res) {
 		categories.getCategoryData(req.params.cid, function (err, data) {
+			if (err) {
+				winston.error(err);
+			}
+
 			if (data) {
 				res.send(data);
 			} else {
@@ -38,6 +48,10 @@ module.exports = function(app, middleware, controllers) {
 
 	router.get('/tid/:tid', function (req, res) {
 		topics.getTopicData(req.params.tid, function (err, data) {
+			if (err) {
+				winston.error(err);
+			}
+
 			if (data) {
 				res.send(data);
 			} else {
@@ -48,6 +62,10 @@ module.exports = function(app, middleware, controllers) {
 
 	router.get('/pid/:pid', function (req, res) {
 		posts.getPostData(req.params.pid, function (err, data) {
+			if (err) {
+				winston.error(err);
+			}
+
 			if (data) {
 				res.send(data);
 			} else {
@@ -56,7 +74,7 @@ module.exports = function(app, middleware, controllers) {
 		});
 	});
 
-	router.get('/test', function(req, res) {
+	router.get('/test', function (req, res) {
 		res.redirect(404);
 	});
 

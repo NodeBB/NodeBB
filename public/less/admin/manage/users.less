@@ -16,6 +16,7 @@
 			height: auto;
 			max-width: 145px;
 			min-width: 145px;
+			padding: 1rem;
 
 			img, .user-icon {
 				.user-icon-style(80px, 4rem);
@@ -43,6 +44,14 @@
 					}
 				}
 			}
+		}
+
+		.ui-selected {
+			background: lighten(@brand-success, 25%);
+		}
+
+		.ui-selecting {
+			background: lighten(@brand-success, 40%);
 		}
 	}
 }

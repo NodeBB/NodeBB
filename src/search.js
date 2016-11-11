@@ -16,7 +16,7 @@ var search = {};
 
 module.exports = search;
 
-search.search = function(data, callback) {
+search.search = function (data, callback) {
 
 	var start = process.hrtime();
 	var searchIn = data.searchIn || 'titlesposts';
@@ -34,7 +34,7 @@ search.search = function(data, callback) {
 			}
 		},
 		function (result, next) {
-			result.search_query = validator.escape(data.query || '');
+			result.search_query = validator.escape(String(data.query || ''));
 			result.time = (process.elapsedTimeSince(start) / 1000).toFixed(2);
 			next(null, result);
 		}
@@ -44,26 +44,26 @@ search.search = function(data, callback) {
 function searchInContent(data, callback) {
 	data.uid = data.uid || 0;
 	async.parallel({
-		searchCids: function(next) {
+		searchCids: function (next) {
 			getSearchCids(data, next);
 		},
-		searchUids: function(next) {
+		searchUids: function (next) {
 			getSearchUids(data, next);
 		}
-	}, function(err, results) {
+	}, function (err, results) {
 		if (err) {
 			return callback(err);
 		}
 
 		async.parallel({
-			pids: function(next) {
+			pids: function (next) {
 				if (data.searchIn === 'posts' || data.searchIn === 'titlesposts') {
 					search.searchQuery('post', data.query, results.searchCids, results.searchUids, next);
 				} else {
 					next(null, []);
 				}
 			},
-			tids: function(next) {
+			tids: function (next) {
 				if (data.searchIn === 'titles' || data.searchIn === 'titlesposts') {
 					search.searchQuery('topic', data.query, results.searchCids, results.searchUids, next);
 				} else {
@@ -81,22 +81,22 @@ function searchInContent(data, callback) {
 			}
 
 			async.waterfall([
-				function(next) {
+				function (next) {
 					topics.getMainPids(results.tids, next);
 				},
-				function(mainPids, next) {
-					results.pids = mainPids.concat(results.pids).map(function(pid) {
+				function (mainPids, next) {
+					results.pids = mainPids.concat(results.pids).map(function (pid) {
 						return pid && pid.toString();
-					}).filter(function(pid, index, array) {
+					}).filter(function (pid, index, array) {
 						return pid && array.indexOf(pid) === index;
 					});
 
 					privileges.posts.filter('read', results.pids, data.uid, next);
 				},
-				function(pids, next) {
+				function (pids, next) {
 					filterAndSort(pids, data, next);
 				},
-				function(pids, next) {
+				function (pids, next) {
 					matchCount = pids.length;
 					if (data.page) {
 						var start = Math.max(0, (data.page - 1)) * 10;
@@ -105,7 +105,7 @@ function searchInContent(data, callback) {
 
 					posts.getPostSummaryByPids(pids, data.uid, {}, next);
 				},
-				function(posts, next) {
+				function (posts, next) {
 					next(null, {posts: posts, matchCount: matchCount, pageCount: Math.max(1, Math.ceil(parseInt(matchCount, 10) / 10))});
 				}
 			], callback);
@@ -114,7 +114,7 @@ function searchInContent(data, callback) {
 }
 
 function filterAndSort(pids, data, callback) {
-	getMatchedPosts(pids, data, function(err, posts) {
+	getMatchedPosts(pids, data, function (err, posts) {
 		if (err) {
 			return callback(err);
 		}
@@ -129,7 +129,7 @@ function filterAndSort(pids, data, callback) {
 
 		sortPosts(posts, data);
 
-		pids = posts.map(function(post) {
+		pids = posts.map(function (post) {
 			return post && post.pid;
 		});
 
@@ -162,21 +162,21 @@ function getMatchedPosts(pids, data, callback) {
 
 	var posts;
 	async.waterfall([
-		function(next) {
-			var keys = pids.map(function(pid) {
+		function (next) {
+			var keys = pids.map(function (pid) {
 				return 'post:' + pid;
 			});
 			db.getObjectsFields(keys, postFields, next);
 		},
-		function(_posts, next) {
-			posts = _posts.filter(function(post) {
+		function (_posts, next) {
+			posts = _posts.filter(function (post) {
 				return post && parseInt(post.deleted, 10) !== 1;
 			});
 
 			async.parallel({
-				users: function(next) {
+				users: function (next) {
 					if (data.sortBy && data.sortBy.startsWith('user')) {
-						var uids = posts.map(function(post) {
+						var uids = posts.map(function (post) {
 							return post.uid;
 						});
 						user.getUsersFields(uids, ['username'], next);
@@ -184,22 +184,22 @@ function getMatchedPosts(pids, data, callback) {
 						next();
 					}
 				},
-				topics: function(next) {
+				topics: function (next) {
 					var topics;
 					async.waterfall([
-						function(next) {
-							var topicKeys = posts.map(function(post) {
+						function (next) {
+							var topicKeys = posts.map(function (post) {
 								return 'topic:' + post.tid;
 							});
 							db.getObjectsFields(topicKeys, topicFields, next);
 						},
-						function(_topics, next) {
+						function (_topics, next) {
 							topics = _topics;
 
 							async.parallel({
-								teasers: function(next) {
+								teasers: function (next) {
 									if (topicFields.indexOf('teaserPid') !== -1) {
-										var teaserKeys = topics.map(function(topic) {
+										var teaserKeys = topics.map(function (topic) {
 											return 'post:' + topic.teaserPid;
 										});
 										db.getObjectsFields(teaserKeys, ['timestamp'], next);
@@ -207,23 +207,23 @@ function getMatchedPosts(pids, data, callback) {
 										next();
 									}
 								},
-								categories: function(next) {
+								categories: function (next) {
 									if (!categoryFields.length) {
 										return next();
 									}
-									var cids = topics.map(function(topic) {
+									var cids = topics.map(function (topic) {
 										return 'category:' + topic.cid;
 									});
 									db.getObjectsFields(cids, categoryFields, next);
 								}
 							}, next);
 						}
-					], function(err, results) {
+					], function (err, results) {
 						if (err) {
 							return next(err);
 						}
 
-						topics.forEach(function(topic, index) {
+						topics.forEach(function (topic, index) {
 							if (topic && results.categories && results.categories[index]) {
 								topic.category = results.categories[index];
 							}
@@ -237,9 +237,9 @@ function getMatchedPosts(pids, data, callback) {
 				}
 			}, next);
 		},
-		function(results, next) {
+		function (results, next) {
 
-			posts.forEach(function(post, index) {
+			posts.forEach(function (post, index) {
 				if (results.topics && results.topics[index]) {
 					post.topic = results.topics[index];
 					if (results.topics[index].category) {
@@ -255,7 +255,7 @@ function getMatchedPosts(pids, data, callback) {
 				}
 			});
 
-			posts = posts.filter(function(post) {
+			posts = posts.filter(function (post) {
 				return post && post.topic && parseInt(post.topic.deleted, 10) !== 1;
 			});
 
@@ -268,11 +268,11 @@ function filterByPostcount(posts, postCount, repliesFilter) {
 	postCount = parseInt(postCount, 10);
 	if (postCount) {
 		if (repliesFilter === 'atleast') {
-			posts = posts.filter(function(post) {
+			posts = posts.filter(function (post) {
 				return post.topic && post.topic.postcount >= postCount;
 			});
 		} else {
-			posts = posts.filter(function(post) {
+			posts = posts.filter(function (post) {
 				return post.topic && post.topic.postcount <= postCount;
 			});
 		}
@@ -285,11 +285,11 @@ function filterByTimerange(posts, timeRange, timeFilter) {
 	if (timeRange) {
 		var time = Date.now() - timeRange;
 		if (timeFilter === 'newer') {
-			posts = posts.filter(function(post) {
+			posts = posts.filter(function (post) {
 				return post.timestamp >= time;
 			});
 		} else {
-			posts = posts.filter(function(post) {
+			posts = posts.filter(function (post) {
 				return post.timestamp <= time;
 			});
 		}
@@ -298,15 +298,15 @@ function filterByTimerange(posts, timeRange, timeFilter) {
 }
 
 function sortPosts(posts, data) {
-	if (!posts.length) {
+	if (!posts.length || !data.sortBy) {
 		return;
 	}
-	data.sortBy = data.sortBy || 'timestamp';
+
 	data.sortDirection = data.sortDirection || 'desc';
 	var direction = data.sortDirection === 'desc' ? 1 : -1;
 
 	if (data.sortBy === 'timestamp') {
-		posts.sort(function(p1, p2) {
+		posts.sort(function (p1, p2) {
 			return direction * (p2.timestamp - p1.timestamp);
 		});
 
@@ -323,11 +323,11 @@ function sortPosts(posts, data) {
 	var isNumeric = utils.isNumber(firstPost[fields[0]][fields[1]]);
 
 	if (isNumeric) {
-		posts.sort(function(p1, p2) {
+		posts.sort(function (p1, p2) {
 			return direction * (p2[fields[0]][fields[1]] - p1[fields[0]][fields[1]]);
 		});
 	} else {
-		posts.sort(function(p1, p2) {
+		posts.sort(function (p1, p2) {
 			if (p1[fields[0]][fields[1]] > p2[fields[0]][fields[1]]) {
 				return direction;
 			} else if (p1[fields[0]][fields[1]] < p2[fields[0]][fields[1]]) {
@@ -345,10 +345,10 @@ function getSearchCids(data, callback) {
 
 	if (data.categories.indexOf('all') !== -1) {
 		async.waterfall([
-			function(next) {
+			function (next) {
 				db.getSortedSetRange('categories:cid', 0, -1, next);
 			},
-			function(cids, next) {
+			function (cids, next) {
 				privileges.categories.filterCids('read', cids, data.uid, next);
 			}
 		], callback);
@@ -356,26 +356,26 @@ function getSearchCids(data, callback) {
 	}
 
 	async.parallel({
-		watchedCids: function(next) {
+		watchedCids: function (next) {
 			if (data.categories.indexOf('watched') !== -1) {
 				user.getWatchedCategories(data.uid, next);
 			} else {
 				next(null, []);
 			}
 		},
-		childrenCids: function(next) {
+		childrenCids: function (next) {
 			if (data.searchChildren) {
 				getChildrenCids(data.categories, data.uid, next);
 			} else {
 				next(null, []);
 			}
 		}
-	}, function(err, results) {
+	}, function (err, results) {
 		if (err) {
 			return callback(err);
 		}
 
-		var cids = results.watchedCids.concat(results.childrenCids).concat(data.categories).filter(function(cid, index, array) {
+		var cids = results.watchedCids.concat(results.childrenCids).concat(data.categories).filter(function (cid, index, array) {
 			return cid && array.indexOf(cid) === index;
 		});
 
@@ -384,7 +384,7 @@ function getSearchCids(data, callback) {
 }
 
 function getChildrenCids(cids, uid, callback) {
-	categories.getChildren(cids, uid, function(err, childrenCategories) {
+	categories.getChildren(cids, uid, function (err, childrenCategories) {
 		if (err) {
 			return callback(err);
 		}
@@ -392,9 +392,9 @@ function getChildrenCids(cids, uid, callback) {
 		var childrenCids = [];
 		var allCategories = [];
 
-		childrenCategories.forEach(function(childrens) {
+		childrenCategories.forEach(function (childrens) {
 			categories.flattenCategories(allCategories, childrens);
-		 	childrenCids = childrenCids.concat(allCategories.map(function(category) {
+		 	childrenCids = childrenCids.concat(allCategories.map(function (category) {
 		 		return category && category.cid;
 		 	}));
 		 });
@@ -411,7 +411,7 @@ function getSearchUids(data, callback) {
 	}
 }
 
-search.searchQuery = function(index, content, cids, uids, callback) {
+search.searchQuery = function (index, content, cids, uids, callback) {
 	plugins.fireHook('filter:search.query', {
 		index: index,
 		content: content,

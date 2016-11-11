@@ -6,7 +6,7 @@ var fork = require('child_process').fork,
 	incomplete = [];
 
 
-module.exports = function(grunt) {
+module.exports = function (grunt) {
 	var args = [];
 	if (!grunt.option('verbose')) {
 		args.push('--log-level=info');
@@ -34,7 +34,7 @@ module.exports = function(grunt) {
 			fromFile = ['clientLess', 'acpLess', 'js', 'tpl'];
 		}
 
-		fromFile = fromFile.filter(function(ext) {
+		fromFile = fromFile.filter(function (ext) {
 			return incomplete.indexOf(ext) === -1;
 		});
 
@@ -44,7 +44,7 @@ module.exports = function(grunt) {
 		worker.kill();
 		worker = fork('app.js', updateArgs, { env: env });
 
-		worker.on('message', function() {
+		worker.on('message', function () {
 			if (incomplete.length) {
 				incomplete = [];
 

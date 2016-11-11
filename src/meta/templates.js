@@ -1,22 +1,22 @@
 "use strict";
 
-var mkdirp = require('mkdirp'),
-	rimraf = require('rimraf'),
-	winston = require('winston'),
-	async = require('async'),
-	path = require('path'),
-	fs = require('fs'),
-	nconf = require('nconf'),
+var mkdirp = require('mkdirp');
+var rimraf = require('rimraf');
+var winston = require('winston');
+var async = require('async');
+var path = require('path');
+var fs = require('fs');
+var nconf = require('nconf');
 
-	emitter = require('../emitter'),
-	plugins = require('../plugins'),
-	utils = require('../../public/src/utils'),
+var emitter = require('../emitter');
+var plugins = require('../plugins');
+var utils = require('../../public/src/utils');
 
-	Templates = {},
-	searchIndex = {};
+var Templates = {};
+var searchIndex = {};
 
-Templates.compile = function(callback) {
-	callback = callback || function() {};
+Templates.compile = function (callback) {
+	callback = callback || function () {};
 	var fromFile = nconf.get('from-file') || '';
 
 	if (nconf.get('isPrimary') === 'false' || fromFile.match('tpl')) {
@@ -58,13 +58,13 @@ function preparePaths(baseTemplatesPaths, callback) {
 		function (next) {
 			mkdirp(viewsPath, next);
 		},
-		function(viewsPath, next) {
+		function (viewsPath, next) {
 			plugins.fireHook('static:templates.precompile', {}, next);
 		},
-		function(next) {
+		function (next) {
 			plugins.getTemplates(next);
 		}
-	], function(err, pluginTemplates) {
+	], function (err, pluginTemplates) {
 		if (err) {
 			return callback(err);
 		}
@@ -72,13 +72,13 @@ function preparePaths(baseTemplatesPaths, callback) {
 		winston.verbose('[meta/templates] Compiling templates');
 
 		async.parallel({
-			coreTpls: function(next) {
+			coreTpls: function (next) {
 				utils.walk(coreTemplatesPath, next);
 			},
-			baseThemes: function(next) {
-				async.map(baseTemplatesPaths, function(baseTemplatePath, next) {
-					utils.walk(baseTemplatePath, function(err, paths) {
-						paths = paths.map(function(tpl) {
+			baseThemes: function (next) {
+				async.map(baseTemplatesPaths, function (baseTemplatePath, next) {
+					utils.walk(baseTemplatePath, function (err, paths) {
+						paths = paths.map(function (tpl) {
 							return {
 								base: baseTemplatePath,
 								path: tpl.replace(baseTemplatePath, '')
@@ -89,17 +89,17 @@ function preparePaths(baseTemplatesPaths, callback) {
 					});
 				}, next);
 			}
-		}, function(err, data) {
+		}, function (err, data) {
 			var baseThemes = data.baseThemes,
 				coreTpls = data.coreTpls,
 				paths = {};
 
-			coreTpls.forEach(function(el, i) {
+			coreTpls.forEach(function (el, i) {
 				paths[coreTpls[i].replace(coreTemplatesPath, '')] = coreTpls[i];
 			});
 
-			baseThemes.forEach(function(baseTpls) {
-				baseTpls.forEach(function(el, i) {
+			baseThemes.forEach(function (baseTpls) {
+				baseTpls.forEach(function (el, i) {
 					paths[baseTpls[i].path] = path.join(baseTpls[i].base, baseTpls[i].path);
 				});
 			});
@@ -121,12 +121,12 @@ function compile(callback) {
 		viewsPath = nconf.get('views_dir');
 
 
-	preparePaths(baseTemplatesPaths, function(err, paths) {
+	preparePaths(baseTemplatesPaths, function (err, paths) {
 		if (err) {
 			return callback(err);
 		}
 
-		async.each(Object.keys(paths), function(relativePath, next) {
+		async.each(Object.keys(paths), function (relativePath, next) {
 			var file = fs.readFileSync(paths[relativePath]).toString(),
 				matches = null,
 				regex = /[ \t]*<!-- IMPORT ([\s\S]*?)? -->[ \t]*/;
@@ -148,13 +148,13 @@ function compile(callback) {
 
 			mkdirp.sync(path.join(viewsPath, relativePath.split('/').slice(0, -1).join('/')));
 			fs.writeFile(path.join(viewsPath, relativePath), file, next);
-		}, function(err) {
+		}, function (err) {
 			if (err) {
 				winston.error('[meta/templates] ' + err.stack);
 				return callback(err);
 			}
 
-			compileIndex(viewsPath, function() {
+			compileIndex(viewsPath, function () {
 				winston.verbose('[meta/templates] Successfully compiled templates.');
 
 				emitter.emit('templates:compiled');

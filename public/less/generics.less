@@ -88,10 +88,22 @@
 	/* Contains the user icon class as a mixin, so there's no need to include that in the template */
 	.user-icon;
 
+	&.avatar-xs {
+		width: 16px;
+		height: 16px;
+		.user-icon-style(16px, 1rem);
+	}
+
 	&.avatar-sm {
 		width: 24px;
 		height: 24px;
 		.user-icon-style(24px, 1.5rem);
+	}
+
+	&.avatar-md {
+		width: 32px;
+		height: 32px;
+		.user-icon-style(32px, 1.5rem);
 	}
 
 	&.avatar-lg {
@@ -106,13 +118,15 @@
 }
 
 .ban-modal {
-	input[type="number"] {
-		width: 7rem;
-		text-align: center;
-		margin-left: 1rem;
-	}
-
 	.form-inline, .form-group {
 		width: 100%;
 	}
+
+	.units {
+		line-height: 5rem;
+	}
+}
+
+.admin .ban-modal .units {
+	line-height: 1.846;
 }

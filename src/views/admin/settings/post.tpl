@@ -53,6 +53,10 @@
 				<input id="postDeleteDuration" type="text" class="form-control" value="0" data-field="postDeleteDuration">
 			</div>
 			<div class="form-group">
+				<label for="preventTopicDeleteAfterReplies">Number of replies after users are disallowed to delete their own topics. (0 disabled)</label>
+				<input id="preventTopicDeleteAfterReplies" type="text" class="form-control" value="0" data-field="preventTopicDeleteAfterReplies">
+			</div>
+			<div class="form-group">
 				<label for="minimumTitleLength">Minimum Title Length</label>
 				<input id="minimumTitleLength" type="text" class="form-control" value="3" data-field="minimumTitleLength">
 			</div>

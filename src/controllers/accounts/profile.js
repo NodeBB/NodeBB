@@ -10,11 +10,12 @@ var plugins = require('../../plugins');
 var meta = require('../../meta');
 var accountHelpers = require('./helpers');
 var helpers = require('../helpers');
-
+var pagination = require('../../pagination');
+var messaging = require('../../messaging');
 
 var profileController = {};
 
-profileController.get = function(req, res, callback) {
+profileController.get = function (req, res, callback) {
 	var lowercaseSlug = req.params.userslug.toLowerCase();
 
 	if (req.params.userslug !== lowercaseSlug) {
@@ -24,7 +25,10 @@ profileController.get = function(req, res, callback) {
 			return res.redirect(nconf.get('relative_path') + '/user/' + lowercaseSlug);
 		}
 	}
-
+	var page = Math.max(1, parseInt(req.query.page, 10) || 1);
+	var itemsPerPage = 10;
+	var start = (page - 1) * itemsPerPage;
+	var stop = start + itemsPerPage - 1;
 	var userData;
 	async.waterfall([
 		function (next) {
@@ -43,16 +47,16 @@ profileController.get = function(req, res, callback) {
 			}
 
 			async.parallel({
-				isFollowing: function(next) {
-					user.isFollowing(req.uid, userData.theirid, next);
+				hasPrivateChat: function (next) {
+					messaging.hasPrivateChat(req.uid, userData.uid, next);
 				},
-				posts: function(next) {
-					posts.getPostSummariesFromSet('uid:' + userData.theirid + ':posts', req.uid, 0, 9, next);
+				posts: function (next) {
+					posts.getPostSummariesFromSet('uid:' + userData.theirid + ':posts', req.uid, start, stop, next);
 				},
-				signature: function(next) {
+				signature: function (next) {
 					posts.parseSignature(userData, req.uid, next);
 				},
-				aboutme: function(next) {
+				aboutme: function (next) {
 					if (userData.aboutme) {
 						plugins.fireHook('filter:parse.aboutme', userData.aboutme, next);
 					} else {
@@ -69,17 +73,18 @@ profileController.get = function(req, res, callback) {
 			userData.posts = results.posts.posts.filter(function (p) {
 				return p && parseInt(p.deleted, 10) !== 1;
 			});
-
+			userData.hasPrivateChat = results.hasPrivateChat;
 			userData.aboutme = results.aboutme;
 			userData.nextStart = results.posts.nextStart;
-			userData.isFollowing = results.isFollowing;
 			userData.breadcrumbs = helpers.buildBreadcrumbs([{text: userData.username}]);
 			userData.title = userData.username;
+			var pageCount = Math.ceil(userData.postcount / itemsPerPage);
+			userData.pagination = pagination.create(page, pageCount, req.query);
 
 			userData['cover:url'] = userData['cover:url'] || require('../../coverPhoto').getDefaultProfileCover(userData.uid);
 			userData['cover:position'] = userData['cover:position'] || '50% 50%';
 
-			if (!userData.profileviews) {
+			if (!parseInt(userData.profileviews, 10)) {
 				userData.profileviews = 1;
 			}
 
@@ -118,10 +123,13 @@ profileController.get = function(req, res, callback) {
 					}
 				);
 			}
+			userData.selectedGroup = userData.groups.find(function (group) {
+				return group && group.name === userData.groupTitle;
+			});
 
 			plugins.fireHook('filter:user.account', {userData: userData, uid: req.uid}, next);
 		}
-	], function(err, results) {
+	], function (err, results) {
 		if (err) {
 			return callback(err);
 		}

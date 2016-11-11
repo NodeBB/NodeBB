@@ -5,4 +5,4 @@ languages:
   PHP: true
 exclude_paths:
 - "public/vendor/*"
-- "tests/*"
+- "test/*"

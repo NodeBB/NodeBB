@@ -7,11 +7,11 @@ define('forum/account/profile', [
 	'forum/infinitescroll',
 	'translator',
 	'components'
-], function(header, infinitescroll, translator) {
-	var Account = {},
-		theirid;
+], function (header, infinitescroll, translator) {
+	var Account = {};
+	var theirid;
 
-	Account.init = function() {
+	Account.init = function () {
 		header.init();
 
 		theirid = ajaxify.data.theirid;
@@ -22,8 +22,10 @@ define('forum/account/profile', [
 
 		socket.removeListener('event:user_status_change', onUserStatusChange);
 		socket.on('event:user_status_change', onUserStatusChange);
-
-		infinitescroll.init(loadMorePosts);
+		
+		if (!config.usePagination) {
+			infinitescroll.init(loadMorePosts);	
+		}		
 	};
 
 	function processPage() {
@@ -48,7 +50,7 @@ define('forum/account/profile', [
 		infinitescroll.loadMore('posts.loadMoreUserPosts', {
 			after: $('[component="posts"]').attr('data-nextstart'),
 			uid: theirid
-		}, function(data, done) {
+		}, function (data, done) {
 			if (data.posts && data.posts.length) {
 				onPostsLoaded(data.posts, done);
 			} else {
@@ -60,7 +62,7 @@ define('forum/account/profile', [
 	}
 
 	function onPostsLoaded(posts, callback) {
-		posts = posts.filter(function(post) {
+		posts = posts.filter(function (post) {
 			return !$('[component="posts"] [data-pid=' + post.pid + ']').length;
 		});
 
@@ -68,7 +70,7 @@ define('forum/account/profile', [
 			return callback();
 		}
 
-		app.parseAndTranslate('account/profile', 'posts', {posts: posts}, function(html) {
+		app.parseAndTranslate('account/profile', 'posts', {posts: posts}, function (html) {
 
 			$('[component="posts"]').append(html);
 			html.find('.timeago').timeago();

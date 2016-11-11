@@ -10,19 +10,19 @@ var plugins = require('../../plugins');
 var homePageController = {};
 
 
-homePageController.get = function(req, res, next) {
+homePageController.get = function (req, res, next) {
 	async.waterfall([
-		function(next) {
+		function (next) {
 			db.getSortedSetRange('categories:cid', 0, -1, next);
 		},
-		function(cids, next) {
+		function (cids, next) {
 			privileges.categories.filterCids('find', cids, 0, next);
 		},
-		function(cids, next) {
+		function (cids, next) {
 			categories.getCategoriesFields(cids, ['name', 'slug'], next);
 		},
-		function(categoryData, next) {
-			categoryData = categoryData.map(function(category) {
+		function (categoryData, next) {
+			categoryData = categoryData.map(function (category) {
 				return {
 					route: 'category/' + category.slug,
 					name: 'Category: ' + category.name
@@ -30,7 +30,7 @@ homePageController.get = function(req, res, next) {
 			});
 			next(null, categoryData);
 		}
-	], function(err, categoryData) {
+	], function (err, categoryData) {
 		if (err || !categoryData) {
 			categoryData = [];
 		}
@@ -48,7 +48,11 @@ homePageController.get = function(req, res, next) {
 				route: 'popular',
 				name: 'Popular'
 			}
-		].concat(categoryData)}, function(err, data) {
+		].concat(categoryData)}, function (err, data) {
+			if (err) {
+				return next(err);
+			}
+
 			data.routes.push({
 				route: '',
 				name: 'Custom'

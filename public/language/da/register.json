@@ -1,5 +1,6 @@
 {
     "register": "Tilmeld",
+    "cancel_registration": "Cancel Registration",
     "help.email": "Den email er skjult som standard.",
     "help.username_restrictions": "Et unikt brugernavn mellem %1 og %2 karakterer. Andre kan nævne dig med @<span id='yourUsername'>brugernavn</span>.",
     "help.minimum_password_length": "Din adgangskode skal være på mindst %1 karakterer.",
@@ -15,5 +16,8 @@
     "alternative_registration": "Alternativ registrering",
     "terms_of_use": "Betingelser for brug",
     "agree_to_terms_of_use": "Jeg acceptere betingelserne for brug",
-    "registration-added-to-queue": "Din registrering er blevet tilføjet til godkendelses køen. Du vil mostage en email når du er blevet accepteret af en administrator."
+    "terms_of_use_error": "You must agree to the Terms of Use",
+    "registration-added-to-queue": "Din registrering er blevet tilføjet til godkendelses køen. Du vil mostage en email når du er blevet accepteret af en administrator.",
+    "interstitial.intro": "We require some additional information before we can create your account.",
+    "interstitial.errors-found": "We could not complete your registration:"
 }

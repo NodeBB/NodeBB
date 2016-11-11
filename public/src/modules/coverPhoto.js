@@ -3,19 +3,19 @@
 
 define('coverPhoto', [
 	'vendor/jquery/draggable-background/backgroundDraggable'
-], function() {
+], function () {
 
 	var coverPhoto = {
 		coverEl: null,
 		saveFn: null
 	};
 
-	coverPhoto.init = function(coverEl, saveFn, uploadFn, removeFn) {
+	coverPhoto.init = function (coverEl, saveFn, uploadFn, removeFn) {
 		coverPhoto.coverEl = coverEl;
 		coverPhoto.saveFn = saveFn;
 
 		coverEl.find('.upload').on('click', uploadFn);
-		coverEl.find('.resize').on('click', function() {
+		coverEl.find('.resize').on('click', function () {
 			enableDragging(coverEl);
 		});
 		coverEl.find('.remove').on('click', removeFn);
@@ -28,13 +28,13 @@ define('coverPhoto', [
 		coverEl.addClass('initialised');
 	};
 
-	coverPhoto.onDragOver = function(e) {
+	coverPhoto.onDragOver = function (e) {
 		e.stopPropagation();
 		e.preventDefault();
 		e.originalEvent.dataTransfer.dropEffect = 'copy';
 	};
 
-	coverPhoto.onDrop = function(e) {
+	coverPhoto.onDrop = function (e) {
 		e.stopPropagation();
 		e.preventDefault();
 
@@ -42,7 +42,7 @@ define('coverPhoto', [
 		reader = new FileReader();
 
 		if (files.length && files[0].type.match('image.*')) {
-			reader.onload = function(e) {
+			reader.onload = function (e) {
 				coverPhoto.coverEl.css('background-image', 'url(' + e.target.result + ')');
 				coverPhoto.newCover = e.target.result;
 			};
@@ -67,10 +67,10 @@ define('coverPhoto', [
 		});
 	}
 
-	coverPhoto.save = function() {
+	coverPhoto.save = function () {
 		coverPhoto.coverEl.addClass('saving');
 
-		coverPhoto.saveFn(coverPhoto.newCover || undefined, coverPhoto.coverEl.css('background-position'), function(err) {
+		coverPhoto.saveFn(coverPhoto.newCover || undefined, coverPhoto.coverEl.css('background-position'), function (err) {
 			if (!err) {
 				coverPhoto.coverEl.toggleClass('active', 0);
 				coverPhoto.coverEl.backgroundDraggable('disable');

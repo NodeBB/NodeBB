@@ -1,5 +1,6 @@
 {
     "register": "Εγγραφή",
+    "cancel_registration": "Cancel Registration",
     "help.email": "Από προεπιλογή, το email σου θα είναι κρυμμένο από την κοινή θέα.",
     "help.username_restrictions": "Ένα μοναδικό όνομα χρήστη μεταξύ %1 και %2 χαρακτήρων. Άλλα άτομα μπορούν να σε αναφέρουν με το @<span id='yourUsername'>username</span> σου.",
     "help.minimum_password_length": "Το μήκος του κωδικού σου πρέπει να είναι τουλάχιστον %1 χαρακτήρες.",
@@ -15,5 +16,8 @@
     "alternative_registration": "Εναλλακτική Εγγραφή",
     "terms_of_use": "Όροι Χρήσης",
     "agree_to_terms_of_use": "Συμφωνώ με τους Όρους Χρήσης",
-    "registration-added-to-queue": "Your registration has been added to the approval queue. You will receive an email when it is accepted by an administrator."
+    "terms_of_use_error": "You must agree to the Terms of Use",
+    "registration-added-to-queue": "Your registration has been added to the approval queue. You will receive an email when it is accepted by an administrator.",
+    "interstitial.intro": "We require some additional information before we can create your account.",
+    "interstitial.errors-found": "We could not complete your registration:"
 }
