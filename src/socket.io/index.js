@@ -200,13 +200,14 @@ var ratelimit = require('../middleware/ratelimit');
 
 
 	Sockets.reqFromSocket = function (socket, payload, event) {
-		var headers = socket.request.headers;
+		var headers = socket.request ? socket.request.headers : {};
+		var encrypted = socket.request ? !!socket.request.connection.encrypted : false;
 		var host = headers.host;
 		var referer = headers.referer || '';
 		var data = ((payload || {}).data || []);
 
 		if (!host) {
-			host = url.parse(referer).host;
+			host = url.parse(referer).host || '';
 		}
 
 		return {
@@ -216,8 +217,8 @@ var ratelimit = require('../middleware/ratelimit');
 			body: payload,
 			ip: headers['x-forwarded-for'] || socket.ip,
 			host: host,
-			protocol: socket.request.connection.encrypted ? 'https' : 'http',
-			secure: !!socket.request.connection.encrypted,
+			protocol: encrypted ? 'https' : 'http',
+			secure: encrypted,
 			url: referer,
 			path: referer.substr(referer.indexOf(host) + host.length),
 			headers: headers

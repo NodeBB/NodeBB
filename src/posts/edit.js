@@ -65,7 +65,7 @@ module.exports = function (Posts) {
 				results = _results;
 
 				postData.cid = results.topic.cid;
-
+				postData.topic = results.topic;
 				plugins.fireHook('action:post.edit', _.clone(postData));
 
 				cache.del(String(postData.pid));

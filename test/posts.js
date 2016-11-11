@@ -11,6 +11,7 @@ var categories = require('../src/categories');
 var privileges = require('../src/privileges');
 var user = require('../src/user');
 
+
 describe('Post\'s', function () {
 	var voterUid;
 	var voteeUid;
@@ -180,6 +181,137 @@ describe('Post\'s', function () {
 					assert.equal(exists, false);
 					done();
 				});
+			});
+		});
+	});
+
+	describe('edit', function () {
+		var pid;
+		var replyPid;
+		var tid;
+		var socketPosts = require('../src/socket.io/posts');
+		var meta = require('../src/meta');
+		before(function (done) {
+			topics.post({
+				uid: voterUid,
+				cid: cid,
+				title: 'topic to edit',
+				content: 'A post to edit'
+			}, function (err, data) {
+				assert.ifError(err);
+				pid = data.postData.pid;
+				tid = data.topicData.tid;
+				topics.reply({
+					uid: voterUid,
+					tid: tid,
+					timestamp: Date.now(),
+					content: 'A reply to edit'
+				}, function (err, data) {
+					assert.ifError(err);
+					replyPid = data.pid;
+					privileges.categories.give(['posts:edit'], cid, 'registered-users', done);
+				});
+			});
+		});
+
+		it('should error if user is not logged in', function (done) {
+			socketPosts.edit({uid: 0}, {}, function (err) {
+				assert.equal(err.message, '[[error:not-logged-in]]');
+				done();
+			});
+		});
+
+		it('should error if data is invalid or missing', function (done) {
+			socketPosts.edit({uid: voterUid}, {}, function (err) {
+				assert.equal(err.message, '[[error:invalid-data]]');
+				done();
+			});
+		});
+
+		it('should error if title is too short', function (done) {
+			socketPosts.edit({uid: voterUid}, {pid: pid, content: 'edited post content', title: 'a'}, function (err) {
+				assert.equal(err.message, '[[error:title-too-short, ' + meta.config.minimumTitleLength + ']]');
+				done();
+			});
+		});
+
+		it('should error if title is too long', function (done) {
+			var longTitle = new Array(parseInt(meta.config.maximumTitleLength, 10) + 2).join('a');
+			socketPosts.edit({uid: voterUid}, {pid: pid, content: 'edited post content', title: longTitle}, function (err) {
+				assert.equal(err.message, '[[error:title-too-long, ' + meta.config.maximumTitleLength + ']]');
+				done();
+			});
+		});
+
+		it('should error with too few tags', function (done) {
+			var oldValue = meta.config.minimumTagsPerTopic;
+			meta.config.minimumTagsPerTopic = 1;
+			socketPosts.edit({uid: voterUid}, {pid: pid, content: 'edited post content', tags: []}, function (err) {
+				assert.equal(err.message, '[[error:not-enough-tags, ' + meta.config.minimumTagsPerTopic + ']]');
+				meta.config.minimumTagsPerTopic = oldValue;
+				done();
+			});
+		});
+
+		it('should error with too many tags', function (done) {
+			var tags = [];
+			for(var i = 0; i < meta.config.maximumTagsPerTopic + 1; ++i) {
+				tags.push('tag' + i);
+			}
+			socketPosts.edit({uid: voterUid}, {pid: pid, content: 'edited post content', tags: tags}, function (err) {
+				assert.equal(err.message, '[[error:too-many-tags, ' + meta.config.maximumTagsPerTopic + ']]');
+				done();
+			});
+		});
+
+		it('should error if content is too short', function (done) {
+			socketPosts.edit({uid: voterUid}, {pid: pid, content: 'e'}, function (err) {
+				assert.equal(err.message, '[[error:content-too-short, ' + meta.config.minimumPostLength + ']]');
+				done();
+			});
+		});
+
+		it('should error if content is too long', function (done) {
+			var longContent = new Array(parseInt(meta.config.maximumPostLength, 10) + 2).join('a');
+			socketPosts.edit({uid: voterUid}, {pid: pid, content: longContent}, function (err) {
+				assert.equal(err.message, '[[error:content-too-long, ' + meta.config.maximumPostLength + ']]');
+				done();
+			});
+		});
+
+		it('should edit post', function (done) {
+			socketPosts.edit({uid: voterUid}, {pid: pid, content: 'edited post content', title: 'edited title', tags: ['edited']}, function (err, data) {
+				assert.ifError(err);
+				assert.equal(data.content, 'edited post content');
+				assert.equal(data.editor, voterUid);
+				assert.equal(data.topic.title, 'edited title');
+				assert.equal(data.topic.tags[0].value, 'edited');
+				done();
+			});
+		});
+
+		it('should edit a deleted post', function (done) {
+			socketPosts.delete({uid: voterUid}, {pid: pid, tid: tid}, function (err) {
+				assert.ifError(err);
+				socketPosts.edit({uid: voterUid}, {pid: pid, content: 'edited deleted content', title: 'edited deleted title', tags: ['deleted']}, function (err, data) {
+					assert.ifError(err);
+					assert.equal(data.content, 'edited deleted content');
+					assert.equal(data.editor, voterUid);
+					assert.equal(data.topic.title, 'edited deleted title');
+					assert.equal(data.topic.tags[0].value, 'deleted');
+					done();
+				});
+			});
+		});
+
+		it('should edit a reply post', function (done) {
+			socketPosts.edit({uid: voterUid}, {pid: replyPid, content: 'edited reply'}, function (err, data) {
+				assert.ifError(err);
+				assert.equal(data.content, 'edited reply');
+				assert.equal(data.editor, voterUid);
+				assert.equal(data.topic.isMainPost, false);
+				assert.equal(data.topic.renamed, false);
+				done();
 			});
 		});
 	});
