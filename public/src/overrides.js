@@ -152,13 +152,18 @@ if ('undefined' !== typeof window) {
 		var timeagoFn = $.fn.timeago;
 		$.timeago.settings.cutoff = 1000 * 60 * 60 * 24 * 30;
 		$.fn.timeago = function () {
-			var els = timeagoFn.apply(this, arguments);
+			var els = $(this);
 
-			if (els) {
-				els.each(function () {
-					$(this).attr('title', (new Date($(this).attr('title'))).toString());
-				});
-			}
+			// Convert "old" format to new format (#5108)
+			var options = { year: 'numeric', month: 'long', day: 'numeric' };
+			var iso;
+			els.each(function() {
+				iso = this.getAttribute('title');
+				this.setAttribute('datetime', iso);
+				this.setAttribute('title', new Date(iso).toLocaleString(config.userLang.replace('_', '-'), options));
+			});
+
+			timeagoFn.apply(this, arguments);
 		};
 	};
 
