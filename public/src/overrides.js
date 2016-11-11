@@ -155,7 +155,7 @@ if ('undefined' !== typeof window) {
 			var els = $(this);
 
 			// Convert "old" format to new format (#5108)
-			var options = { year: 'numeric', month: 'long', day: 'numeric' };
+			var options = { year: 'numeric', month: 'short', day: 'numeric', hour: 'numeric', minute: 'numeric' };
 			var iso;
 			els.each(function() {
 				iso = this.getAttribute('title');
