@@ -15,6 +15,8 @@ var plugins = require('../plugins');
 var utils = require('../../public/src/utils');
 var Password = require('../password');
 
+var sockets = require('../socket.io');
+
 var authenticationController = {};
 
 authenticationController.register = function (req, res, next) {
@@ -326,6 +328,10 @@ authenticationController.onSuccessfulLogin = function (req, uid, callback) {
 		if (err) {
 			return callback(err);
 		}
+
+		// Force session check for all connected socket.io clients with the same session id
+		sockets.in('sess_' + req.sessionID).emit('checkSession', uid);
+
 		plugins.fireHook('action:user.loggedIn', uid);
 		callback();
 	});
@@ -405,7 +411,9 @@ authenticationController.localLogin = function (req, username, password, next) {
 authenticationController.logout = function (req, res, next) {
 	if (req.user && parseInt(req.user.uid, 10) > 0 && req.sessionID) {
 		var uid = parseInt(req.user.uid, 10);
-		user.auth.revokeSession(req.sessionID, uid, function (err) {
+		var sessionID = req.sessionID;
+
+		user.auth.revokeSession(sessionID, uid, function (err) {
 			if (err) {
 				return next(err);
 			}
@@ -416,6 +424,9 @@ authenticationController.logout = function (req, res, next) {
 
 			plugins.fireHook('static:user.loggedOut', {req: req, res: res, uid: uid}, function () {
 				res.status(200).send('');
+
+				// Force session check for all connected socket.io clients with the same session id
+				sockets.in('sess_' + sessionID).emit('checkSession', 0);
 			});
 		});
 	} else {

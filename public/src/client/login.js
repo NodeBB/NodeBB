@@ -23,6 +23,14 @@ define('forum/login', ['translator'], function (translator) {
 				}
 
 				submitEl.addClass('disabled');
+
+				/*
+					Set session refresh flag (otherwise the session check will trip and throw invalid session modal)
+					We know the session is/will be invalid (uid mismatch) because the user is attempting a login
+				*/
+				app.flags = app.flags || {};
+				app.flags._sessionRefresh = true;
+
 				formEl.ajaxSubmit({
 					headers: {
 						'x-csrf-token': config.csrf_token
@@ -37,6 +45,7 @@ define('forum/login', ['translator'], function (translator) {
 							errorEl.find('p').translateText(data.responseText);
 							errorEl.show();
 							submitEl.removeClass('disabled');
+							app.flags._sessionRefresh = false;
 
 							// Select the entire password if that field has focus
 							if ($('#password:focus').size()) {

@@ -88,6 +88,14 @@ app.cacheBuster = null;
 
 	app.logout = function () {
 		$(window).trigger('action:app.logout');
+
+		/*
+			Set session refresh flag (otherwise the session check will trip and throw invalid session modal)
+			We know the session is/will be invalid (uid mismatch) because the user is logging out
+		*/
+		app.flags = app.flags || {};
+		app.flags._sessionRefresh = true;
+
 		$.ajax(config.relative_path + '/logout', {
 			type: 'POST',
 			headers: {
