@@ -150,6 +150,7 @@ if ('undefined' !== typeof window) {
 
 	overrides.overrideTimeago = function () {
 		var timeagoFn = $.fn.timeago;
+		$.timeago.settings.cutoff = 1000 * 60 * 60 * 24 * 30;
 		$.fn.timeago = function () {
 			var els = timeagoFn.apply(this, arguments);
 
