@@ -85,7 +85,24 @@
 </div>
 
 <div class="row">
-	<div class="col-sm-2 col-xs-12 settings-header">Teaser Settings</div>
+	<div class="col-sm-2 col-xs-12 settings-header">Timestamp</div>
+	<div class="col-sm-10 col-xs-12">
+		<form>
+			<div class="form-group">
+				<label for="timeagoCutoff">Date cut-off (in days)</label>
+				<input type="number" class="form-control" id="timeagoCutoff" data-field="timeagoCutoff" placeholder="30" value="30" />
+				<p class="help-block">
+					Dates &amp; times will be shown in a relative manner (e.g. "3 hours ago" / "5 days ago"), and localised into various
+					languages. After a certain point, this text can be switched to display the localised date itself
+					(e.g. 5 Nov 2016 15:30).<br /><em>(Default: <code>30</code>, or one month)</em>
+				</p>
+			</div>
+		</form>
+	</div>
+</div>
+
+<div class="row">
+	<div class="col-sm-2 col-xs-12 settings-header">Teaser</div>
 	<div class="col-sm-10 col-xs-12">
 		<form>
 			<div class="form-group">
@@ -99,7 +116,6 @@
 		</form>
 	</div>
 </div>
-
 
 <div class="row">
 	<div class="col-sm-2 col-xs-12 settings-header">Unread Settings</div>

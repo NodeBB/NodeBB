@@ -62,6 +62,7 @@ apiController.getConfig = function (req, res, next) {
 	config.csrf_token = req.csrfToken();
 	config.searchEnabled = plugins.hasListeners('filter:search.query');
 	config.bootswatchSkin = 'default';
+	config.timeagoCutoff = meta.config.timeagoCutoff;
 
 	config.cookies = {
 		enabled: parseInt(meta.config.cookieConsentEnabled, 10) === 1,
