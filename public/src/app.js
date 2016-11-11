@@ -631,12 +631,12 @@ app.cacheBuster = null;
 			return;
 		}
 
-		templates.parse('partials/cookie-consent', config.cookies, function(html) {
+		templates.parse('partials/cookie-consent', config.cookies, function (html) {
 			$(document.body).append(html);
 
 			var warningEl = $('.cookie-consent');
 			var dismissEl = warningEl.find('button');
-			dismissEl.on('click', function() {
+			dismissEl.on('click', function () {
 				// Save consent cookie and remove warning element
 				var now = new Date();
 				window.localStorage.setItem('cookieconsent', '1');
