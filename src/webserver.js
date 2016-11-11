@@ -31,7 +31,22 @@ var templates = require('templates.js');
 
 var helpers = require('../public/src/modules/helpers');
 
-if (nconf.get('ssl')) {
+if (nconf.get('http2')) {
+	var http2 = require('http2');
+	//express fix for http2
+	express.request.__proto__ = http2.IncomingMessage.prototype;
+	express.response.__proto__ = http2.ServerResponse.prototype;
+	server = http2.createServer({
+		key: fs.readFileSync(nconf.get('http2').key),
+		cert: fs.readFileSync(nconf.get('http2').cert)
+	}, app);
+} else if (nconf.get('spdy')) {
+	server = require('spdy').createServer({
+		key: fs.readFileSync(nconf.get('spdy').key),
+		cert: fs.readFileSync(nconf.get('spdy').cert),
+		spdy: nconf.get('spdy').opts
+	}, app);
+} else if (nconf.get('ssl')) {
 	server = require('https').createServer({
 		key: fs.readFileSync(nconf.get('ssl').key),
 		cert: fs.readFileSync(nconf.get('ssl').cert)
