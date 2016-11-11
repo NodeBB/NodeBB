@@ -157,7 +157,7 @@ if ('undefined' !== typeof window) {
 			// Convert "old" format to new format (#5108)
 			var options = { year: 'numeric', month: 'short', day: 'numeric', hour: 'numeric', minute: 'numeric' };
 			var iso;
-			els.each(function() {
+			els.each(function () {
 				iso = this.getAttribute('title');
 				this.setAttribute('datetime', iso);
 				this.setAttribute('title', new Date(iso).toLocaleString(config.userLang.replace('_', '-'), options));
