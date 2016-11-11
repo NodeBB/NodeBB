@@ -15,7 +15,7 @@
     "login": "Zaloguj się",
     "please_log_in": "Proszę się zalogować",
     "logout": "Wyloguj się",
-    "posting_restriction_info": "Pisanie jest dostępne tylko dla zarejestrowanych członków forum, kliknij tutaj aby się zalogować.",
+    "posting_restriction_info": "Pisanie jest dostępne tylko dla zarejestrowanych członków forum. Kliknij tutaj, aby się zalogować.",
     "welcome_back": "Witamy ponownie!",
     "you_have_successfully_logged_in": "Zostałeś pomyślnie zalogowany.",
     "save_changes": "Zapisz zmiany",
@@ -85,7 +85,7 @@
     "guest": "Gość",
     "guests": "Goście",
     "updated.title": "Forum zaktualizowane",
-    "updated.message": "To forum zostało zaktualizowane do najnowszej wersji. Kliknij tutaj by odświeżyć stronę",
+    "updated.message": "To forum zostało zaktualizowane do najnowszej wersji. Kliknij tutaj, by odświeżyć stronę.",
     "privacy": "Prywatność",
     "follow": "Śledź",
     "unfollow": "Przestań śledzić",
@@ -98,9 +98,9 @@
     "upload": "Załaduj",
     "allowed-file-types": "Dozwolone typy plików %1",
     "unsaved-changes": "Posiadasz niezapisane zmiany. Jesteś pewien, że chcesz opuścić stronę?",
-    "reconnecting-message": "Wygląda na to, że Twoje połączenie z %1 zostało przerwane. Proszę czekać gdy staramy się je odnowić.",
+    "reconnecting-message": "Wygląda na to, że Twoje połączenie z %1 zostało przerwane. Proszę czekać, gdy staramy się je odnowić.",
     "play": "Odtwórz",
-    "cookies.message": "This website uses cookies to ensure you get the best experience on our website.",
-    "cookies.accept": "Got it!",
-    "cookies.learn_more": "Learn More"
+    "cookies.message": "Ta strona używa plików cookies, by zapewnić Ci najlepsze działanie naszej strony.",
+    "cookies.accept": "Mam to!",
+    "cookies.learn_more": "Dowiedz się więcej"
 }

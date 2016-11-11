@@ -1,6 +1,6 @@
 {
     "chat.chatting_with": "Rozmawiaj z <span id=\"chat-with-name\"></span>",
-    "chat.placeholder": "Wpisz wiadomość tutaj i naciśnij Enter aby wysłać.",
+    "chat.placeholder": "Wpisz wiadomość tutaj i naciśnij Enter, aby wysłać.",
     "chat.send": "Wyślij",
     "chat.no_active": "Nie prowadzisz obecnie żadnych rozmów.",
     "chat.user_typing": "%1 pisze...",
@@ -42,6 +42,6 @@
     "bootbox.cancel": "Anuluj",
     "bootbox.confirm": "Potwierdź",
     "cover.dragging_title": "Pozycjonowanie tła",
-    "cover.dragging_message": "Przeciągnij i upuść zdjęcie na żądanym miejscu, po zakończeniu kliknij \"Zapisz\"",
+    "cover.dragging_message": "Przeciągnij i upuść zdjęcie na żądanym miejscu. Po zakończeniu kliknij \"Zapisz\"",
     "cover.saved": "Tło zapisane"
 }

@@ -45,6 +45,6 @@
     "account/best": "Najlepsze posty od %1",
     "confirm": "E-mail potwierdzony",
     "maintenance.text": "Obecnie trwają prace konserwacyjne nad %1. Proszę wrócić później.",
-    "maintenance.messageIntro": "Dodatkowo, administrator zostawił wiadomość:",
+    "maintenance.messageIntro": "Dodatkowo administrator zostawił wiadomość:",
     "throttled.text": "%1 jest niedostępny z powodu obciążenia. Proszę wrócić później."
 }
