@@ -153,22 +153,18 @@
 
 	// Groups helpers
 	helpers.membershipBtn = function (groupObj) {
-		if (groupObj.name === 'administrators') {
-			return '';
+		if (groupObj.isMember && groupObj.name !== 'administrators') {
+			return '<button class="btn btn-danger" data-action="leave" data-group="' + groupObj.displayName + '"><i class="fa fa-times"></i> [[groups:membership.leave-group]]</button>';
 		}
 
-		if (groupObj.isMember) {
-			return '<button class="btn btn-danger" data-action="leave" data-group="' + groupObj.displayName + '"><i class="fa fa-times"></i> [[groups:membership.leave-group]]</button>';
+		if (groupObj.isPending && groupObj.name !== 'administrators') {
+			return '<button class="btn btn-warning disabled"><i class="fa fa-clock-o"></i> [[groups:membership.invitation-pending]]</button>';
+		} else if (groupObj.isInvited) {
+			return '<button class="btn btn-link" data-action="rejectInvite" data-group="' + groupObj.displayName + '">[[groups:membership.reject]]</button><button class="btn btn-success" data-action="acceptInvite" data-group="' + groupObj.name + '"><i class="fa fa-plus"></i> [[groups:membership.accept-invitation]]</button>';
+		} else if (!groupObj.disableJoinRequests && groupObj.name !== 'administrators') {
+			return '<button class="btn btn-success" data-action="join" data-group="' + groupObj.displayName + '"><i class="fa fa-plus"></i> [[groups:membership.join-group]]</button>';
 		} else {
-			if (groupObj.isPending) {
-				return '<button class="btn btn-warning disabled"><i class="fa fa-clock-o"></i> [[groups:membership.invitation-pending]]</button>';
-			} else if (groupObj.isInvited) {
-				return '<button class="btn btn-link" data-action="rejectInvite" data-group="' + groupObj.displayName + '">[[groups:membership.reject]]</button><button class="btn btn-success" data-action="acceptInvite" data-group="' + groupObj.name + '"><i class="fa fa-plus"></i> [[groups:membership.accept-invitation]]</button>';
-			} else if (!groupObj.disableJoinRequests) {
-				return '<button class="btn btn-success" data-action="join" data-group="' + groupObj.displayName + '"><i class="fa fa-plus"></i> [[groups:membership.join-group]]</button>';
-			} else {
-				return '';
-			}
+			return '';
 		}
 	};
 
