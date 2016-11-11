@@ -36,11 +36,13 @@ global.env = process.env.NODE_ENV || 'production';
 winston.remove(winston.transports.Console);
 winston.add(winston.transports.Console, {
 	colorize: true,
-	timestamp: function() {
+	timestamp: function () {
 		var date = new Date();
-		return date.getDate() + '/' + (date.getMonth() + 1) + ' ' + date.toTimeString().substr(0,5) + ' [' + global.process.pid + ']';
+		return (global.env === 'production') ? date.toJSON() :	date.getDate() + '/' + (date.getMonth() + 1) + ' ' + date.toTimeString().substr(0,5) + ' [' + global.process.pid + ']';
 	},
-	level: nconf.get('log-level') || (global.env === 'production' ? 'info' : 'verbose')
+	level: nconf.get('log-level') || (global.env === 'production' ? 'info' : 'verbose'),
+	json: (global.env === 'production'),
+	stringify: (global.env === 'production')
 });
 
 
@@ -146,7 +148,7 @@ function start() {
 	process.on('SIGTERM', shutdown);
 	process.on('SIGINT', shutdown);
 	process.on('SIGHUP', restart);
-	process.on('message', function(message) {
+	process.on('message', function (message) {
 		if (typeof message !== 'object') {
 			return;
 		}
@@ -173,7 +175,7 @@ function start() {
 		}
 	});
 
-	process.on('uncaughtException', function(err) {
+	process.on('uncaughtException', function (err) {
 		winston.error(err.stack);
 		console.log(err.stack);
 
@@ -184,10 +186,10 @@ function start() {
 	async.waterfall([
 		async.apply(db.init),
 		async.apply(db.checkCompatibility),
-		function(next) {
+		function (next) {
 			require('./src/meta').configs.init(next);
 		},
-		function(next) {
+		function (next) {
 			if (nconf.get('dep-check') === undefined || nconf.get('dep-check') !== false) {
 				require('./src/meta').dependencies.check(next);
 			} else {
@@ -195,10 +197,10 @@ function start() {
 				setImmediate(next);
 			}
 		},
-		function(next) {
+		function (next) {
 			require('./src/upgrade').check(next);
 		},
-		function(next) {
+		function (next) {
 			var webserver = require('./src/webserver');
 			require('./src/socket.io').init(webserver.server);
 
@@ -209,7 +211,7 @@ function start() {
 
 			webserver.listen();
 		}
-	], function(err) {
+	], function (err) {
 		if (err) {
 			switch(err.message) {
 				case 'schema-out-of-date':
@@ -251,7 +253,7 @@ function setup() {
 	install.setup(function (err, data) {
 		var separator = '     ';
 		if (process.stdout.columns > 10) {
-			for(var x=0,cols=process.stdout.columns-10;x<cols;x++) {
+			for(var x = 0,cols = process.stdout.columns - 10; x < cols; x++) {
 				separator += '=';
 			}
 		}
@@ -280,7 +282,7 @@ function setup() {
 }
 
 function upgrade() {
-	require('./src/database').init(function(err) {
+	require('./src/database').init(function (err) {
 		if (err) {
 			winston.error(err.stack);
 			process.exit();
@@ -292,23 +294,28 @@ function upgrade() {
 }
 
 function activate() {
-	require('./src/database').init(function(err) {
+	var db = require('./src/database');
+	db.init(function (err) {
 		if (err) {
 			winston.error(err.stack);
 			process.exit(1);
 		}
 
-		var plugin = nconf.get('_')[1] ? nconf.get('_')[1] : nconf.get('activate'),
-			db = require('./src/database');
+		var plugin = nconf.get('activate');
+		if (plugin.indexOf('nodebb-') !== 0) {
+			// Allow omission of `nodebb-plugin-`
+			plugin = 'nodebb-plugin-' + plugin;
+		}
 
-		winston.info('Activating plugin %s', plugin);
-
-		db.sortedSetAdd('plugins:active', 0, plugin, start);
+		winston.info('Activating plugin `%s`', plugin);
+		db.sortedSetAdd('plugins:active', 0, plugin, function (err) {
+			process.exit(err ? 1 : 0);
+		});
 	});
 }
 
 function listPlugins() {
-	require('./src/database').init(function(err) {
+	require('./src/database').init(function (err) {
 		if (err) {
 			winston.error(err.stack);
 			process.exit(1);
@@ -316,7 +323,7 @@ function listPlugins() {
 
 		var db = require('./src/database');
 
-		db.getSortedSetRange('plugins:active', 0, -1, function(err, plugins) {
+		db.getSortedSetRange('plugins:active', 0, -1, function (err, plugins) {
 			if (err) {
 				winston.error(err.stack);
 				process.exit(1);

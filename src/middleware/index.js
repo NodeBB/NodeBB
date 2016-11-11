@@ -35,7 +35,7 @@ require('./maintenance')(middleware);
 require('./user')(middleware);
 require('./headers')(middleware);
 
-middleware.authenticate = function(req, res, next) {
+middleware.authenticate = function (req, res, next) {
 	if (req.user) {
 		return next();
 	} else if (plugins.hasListeners('action:middleware.authenticate')) {
@@ -49,7 +49,7 @@ middleware.authenticate = function(req, res, next) {
 	controllers.helpers.notAllowed(req, res);
 };
 
-middleware.pageView = function(req, res, next) {
+middleware.pageView = function (req, res, next) {
 	analytics.pageView({
 		ip: req.ip,
 		path: req.path,
@@ -72,16 +72,16 @@ middleware.pageView = function(req, res, next) {
 };
 
 
-middleware.pluginHooks = function(req, res, next) {
-	async.each(plugins.loadedHooks['filter:router.page'] || [], function(hookObj, next) {
+middleware.pluginHooks = function (req, res, next) {
+	async.each(plugins.loadedHooks['filter:router.page'] || [], function (hookObj, next) {
 		hookObj.method(req, res, next);
-	}, function() {
+	}, function () {
 		// If it got here, then none of the subscribed hooks did anything, or there were no hooks
 		next();
 	});
 };
 
-middleware.validateFiles = function(req, res, next) {
+middleware.validateFiles = function (req, res, next) {
 	if (!Array.isArray(req.files.files) || !req.files.files.length) {
 		return next(new Error(['[[error:invalid-files]]']));
 	}
@@ -89,12 +89,12 @@ middleware.validateFiles = function(req, res, next) {
 	next();
 };
 
-middleware.prepareAPI = function(req, res, next) {
+middleware.prepareAPI = function (req, res, next) {
 	res.locals.isAPI = true;
 	next();
 };
 
-middleware.routeTouchIcon = function(req, res) {
+middleware.routeTouchIcon = function (req, res) {
 	if (meta.config['brand:touchIcon'] && validator.isURL(meta.config['brand:touchIcon'])) {
 		return res.redirect(meta.config['brand:touchIcon']);
 	} else {
@@ -104,7 +104,7 @@ middleware.routeTouchIcon = function(req, res) {
 	}
 };
 
-middleware.privateTagListing = function(req, res, next) {
+middleware.privateTagListing = function (req, res, next) {
 	if (!req.user && parseInt(meta.config.privateTagListing, 10) === 1) {
 		controllers.helpers.notAllowed(req, res);
 	} else {
@@ -112,11 +112,11 @@ middleware.privateTagListing = function(req, res, next) {
 	}
 };
 
-middleware.exposeGroupName = function(req, res, next) {
+middleware.exposeGroupName = function (req, res, next) {
 	expose('groupName', groups.getGroupNameByGroupSlug, 'slug', req, res, next);
 };
 
-middleware.exposeUid = function(req, res, next) {
+middleware.exposeUid = function (req, res, next) {
 	expose('uid', user.getUidByUserslug, 'userslug', req, res, next);
 };
 
@@ -124,7 +124,7 @@ function expose(exposedField, method, field, req, res, next) {
 	if (!req.params.hasOwnProperty(field)) {
 		return next();
 	}
-	method(req.params[field], function(err, id) {
+	method(req.params[field], function (err, id) {
 		if (err) {
 			return next(err);
 		}
@@ -134,7 +134,7 @@ function expose(exposedField, method, field, req, res, next) {
 	});
 }
 
-middleware.privateUploads = function(req, res, next) {
+middleware.privateUploads = function (req, res, next) {
 	if (req.user || parseInt(meta.config.privateUploads, 10) !== 1) {
 		return next();
 	}
@@ -144,7 +144,7 @@ middleware.privateUploads = function(req, res, next) {
 	next();
 };
 
-middleware.busyCheck = function(req, res, next) {
+middleware.busyCheck = function (req, res, next) {
 	if (global.env === 'production' && (!meta.config.hasOwnProperty('eventLoopCheckEnabled') || parseInt(meta.config.eventLoopCheckEnabled, 10) === 1) && toobusy()) {
 		analytics.increment('errors:503');
 		res.status(503).type('text/html').sendFile(path.join(__dirname, '../../public/503.html'));
@@ -153,18 +153,18 @@ middleware.busyCheck = function(req, res, next) {
 	}
 };
 
-middleware.applyBlacklist = function(req, res, next) {
-	meta.blacklist.test(req.ip, function(err) {
+middleware.applyBlacklist = function (req, res, next) {
+	meta.blacklist.test(req.ip, function (err) {
 		next(err);
 	});
 };
 
-middleware.processLanguages = function(req, res, next) {
+middleware.processLanguages = function (req, res, next) {
 	var code = req.params.code;
 	var key = req.path.match(/[\w]+\.json/);
 
 	if (code && key) {
-		languages.get(code, key[0], function(err, language) {
+		languages.get(code, key[0], function (err, language) {
 			if (err) {
 				return next(err);
 			}
@@ -176,7 +176,7 @@ middleware.processLanguages = function(req, res, next) {
 	}
 };
 
-middleware.processTimeagoLocales = function(req, res, next) {
+middleware.processTimeagoLocales = function (req, res, next) {
 	var fallback = req.path.indexOf('-short') === -1 ? 'jquery.timeago.en.js' : 'jquery.timeago.en-short.js',
 		localPath = path.join(__dirname, '../../public/vendor/jquery/timeago/locales', req.path),
 		exists;

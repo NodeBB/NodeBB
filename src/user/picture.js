@@ -16,7 +16,7 @@ var image = require('../image');
 var meta = require('../meta');
 var db = require('../database');
 
-module.exports = function(User) {
+module.exports = function (User) {
 
 	User.uploadPicture = function (uid, picture, callback) {
 
@@ -41,7 +41,7 @@ module.exports = function(User) {
 		}
 
 		async.waterfall([
-			function(next) {
+			function (next) {
 				if (plugins.hasListeners('filter:uploadImage')) {
 					return plugins.fireHook('filter:uploadImage', {image: picture, uid: updateUid}, next);
 				}
@@ -49,10 +49,10 @@ module.exports = function(User) {
 				var filename = updateUid + '-profileimg' + (keepAllVersions ? '-' + Date.now() : '') + (convertToPNG ? '.png' : extension);
 
 				async.waterfall([
-					function(next) {
+					function (next) {
 						file.isFileTypeAllowed(picture.path, next);
 					},
-					function(next) {
+					function (next) {
 						image.resizeImage({
 							path: picture.path,
 							extension: extension,
@@ -60,38 +60,38 @@ module.exports = function(User) {
 							height: imageDimension
 						}, next);
 					},
-					function(next) {
+					function (next) {
 						if (!convertToPNG) {
 							return next();
 						}
 						async.series([
 							async.apply(image.normalise, picture.path, extension),
 							async.apply(fs.rename, picture.path + '.png', picture.path)
-						], function(err) {
+						], function (err) {
 							next(err);
 						});
 					},
-					function(next) {
+					function (next) {
 						file.saveFileToLocal(filename, 'profile', picture.path, next);
 					},
 				], next);
 			},
-			function(_image, next) {
+			function (_image, next) {
 				uploadedImage = _image;
 				User.setUserFields(updateUid, {uploadedpicture: uploadedImage.url, picture: uploadedImage.url}, next);
 			},
-			function(next) {
+			function (next) {
 				next(null, uploadedImage);
 			}
 		], callback);
 	};
 
-	User.uploadFromUrl = function(uid, url, callback) {
+	User.uploadFromUrl = function (uid, url, callback) {
 		if (!plugins.hasListeners('filter:uploadImage')) {
 			return callback(new Error('[[error:no-plugin]]'));
 		}
 
-		request.head(url, function(err, res) {
+		request.head(url, function (err, res) {
 			if (err) {
 				return callback(err);
 			}
@@ -109,7 +109,7 @@ module.exports = function(User) {
 			}
 
 			var picture = {url: url, name: ''};
-			plugins.fireHook('filter:uploadImage', {image: picture, uid: uid}, function(err, image) {
+			plugins.fireHook('filter:uploadImage', {image: picture, uid: uid}, function (err, image) {
 				if (err) {
 					return callback(err);
 				}
@@ -119,11 +119,11 @@ module.exports = function(User) {
 		});
 	};
 
-	User.updateCoverPosition = function(uid, position, callback) {
+	User.updateCoverPosition = function (uid, position, callback) {
 		User.setUserField(uid, 'cover:position', position, callback);
 	};
 
-	User.updateCoverPicture = function(data, callback) {
+	User.updateCoverPicture = function (data, callback) {
 		var keepAllVersions = parseInt(meta.config['profile:keepAllUserImages'], 10) === 1;
 		var url, md5sum;
 
@@ -136,7 +136,7 @@ module.exports = function(User) {
 		}
 
 		async.waterfall([
-			function(next) {
+			function (next) {
 				var size = data.file ? data.file.size : data.imageData.length;
 				meta.config.maximumCoverImageSize = meta.config.maximumCoverImageSize || 2048;
 				if (size > parseInt(meta.config.maximumCoverImageSize, 10) * 1024) {
@@ -161,7 +161,7 @@ module.exports = function(User) {
 					encoding: 'base64'
 				}, next);
 			},
-			function(next) {
+			function (next) {
 				var image = {
 					name: 'profileCover',
 					path: data.file.path,
@@ -188,21 +188,21 @@ module.exports = function(User) {
 					}
 				], next);
 			},
-			function(uploadData, next) {
+			function (uploadData, next) {
 				url = uploadData.url;
 				User.setUserField(data.uid, 'cover:url', uploadData.url, next);
 			},
-			function(next) {
-				fs.unlink(data.file.path, function(err) {
+			function (next) {
+				fs.unlink(data.file.path, function (err) {
 					if (err) {
 						winston.error(err);
 					}
 					next();
 				});
 			}
-		], function(err) {
+		], function (err) {
 			if (err) {
-				return fs.unlink(data.file.path, function(unlinkErr) {
+				return fs.unlink(data.file.path, function (unlinkErr) {
 					if (unlinkErr) {
 						winston.error(unlinkErr);
 					}
@@ -212,7 +212,7 @@ module.exports = function(User) {
 			}
 
 			if (data.position) {
-				User.updateCoverPosition(data.uid, data.position, function(err) {
+				User.updateCoverPosition(data.uid, data.position, function (err) {
 					callback(err, {url: url});
 				});
 			} else {
@@ -221,7 +221,7 @@ module.exports = function(User) {
 		});
 	};
 
-	User.removeCoverPicture = function(data, callback) {
+	User.removeCoverPicture = function (data, callback) {
 		db.deleteObjectField('user:' + data.uid, 'cover:url', callback);
 	};
 };

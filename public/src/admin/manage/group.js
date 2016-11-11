@@ -6,10 +6,10 @@ define('admin/manage/group', [
 	'iconSelect',
 	'admin/modules/colorpicker',
 	'translator'
-], function(memberList, iconSelect, colorpicker, translator) {
+], function (memberList, iconSelect, colorpicker, translator) {
 	var	Groups = {};
 
-	Groups.init = function() {
+	Groups.init = function () {
 		var	groupDetailsSearch = $('#group-details-search'),
 			groupDetailsSearchResults = $('#group-details-search-results'),
 			groupIcon = $('#group-icon'),
@@ -23,25 +23,25 @@ define('admin/manage/group', [
 
 		memberList.init();
 
-		changeGroupUserTitle.keyup(function() {
+		changeGroupUserTitle.keyup(function () {
 			groupLabelPreview.text(changeGroupUserTitle.val());
 		});
 
-		changeGroupLabelColor.keyup(function() {
+		changeGroupLabelColor.keyup(function () {
 			groupLabelPreview.css('background', changeGroupLabelColor.val() || '#000000');
 		});
 
-		groupDetailsSearch.on('keyup', function() {
+		groupDetailsSearch.on('keyup', function () {
 
 			if (searchDelay) {
 				clearTimeout(searchDelay);
 			}
 
-			searchDelay = setTimeout(function() {
+			searchDelay = setTimeout(function () {
 				var searchText = groupDetailsSearch.val(),
 					foundUser;
 
-				socket.emit('admin.user.search', {query: searchText}, function(err, results) {
+				socket.emit('admin.user.search', {query: searchText}, function (err, results) {
 					if (!err && results && results.users.length > 0) {
 						var numResults = results.users.length, x;
 						if (numResults > 20) {
@@ -75,14 +75,14 @@ define('admin/manage/group', [
 			}, 200);
 		});
 
-		groupDetailsSearchResults.on('click', 'li[data-uid]', function() {
+		groupDetailsSearchResults.on('click', 'li[data-uid]', function () {
 			var userLabel = $(this),
 				uid = parseInt(userLabel.attr('data-uid'), 10);
 
 			socket.emit('admin.groups.join', {
 				groupName: groupName,
 				uid: uid
-			}, function(err) {
+			}, function (err) {
 				if (err) {
 					return app.alertError(err.message);
 				}
@@ -96,15 +96,15 @@ define('admin/manage/group', [
 					"icon:text": userLabel.attr('data-usericon-text')
 				};
 
-				templates.parse('partials/groups/memberlist', 'members', {group: {isOwner: ajaxify.data.group.isOwner, members: [member]}}, function(html) {
-					translator.translate(html, function(html) {
+				templates.parse('partials/groups/memberlist', 'members', {group: {isOwner: ajaxify.data.group.isOwner, members: [member]}}, function (html) {
+					translator.translate(html, function (html) {
 						$('[component="groups/members"] tbody').prepend(html);
 					});
 				});
 			});
 		});
 
-		$('[component="groups/members"]').on('click', '[data-action]', function() {
+		$('[component="groups/members"]').on('click', '[data-action]', function () {
 			var btnEl = $(this),
 				userRow = btnEl.parents('[data-uid]'),
 				ownerFlagEl = userRow.find('.member-name i'),
@@ -117,7 +117,7 @@ define('admin/manage/group', [
 					socket.emit('groups.' + (isOwner ? 'rescind' : 'grant'), {
 						toUid: uid,
 						groupName: groupName
-					}, function(err) {
+					}, function (err) {
 						if (err) {
 							return app.alertError(err.message);
 						}
@@ -126,14 +126,14 @@ define('admin/manage/group', [
 					break;
 
 				case 'kick':
-					bootbox.confirm('Are you sure you want to remove this user?', function(confirm) {
+					bootbox.confirm('Are you sure you want to remove this user?', function (confirm) {
 						if (!confirm) {
 							return;
 						}
 						socket.emit('admin.groups.leave', {
 							uid: uid,
 							groupName: groupName
-						}, function(err) {
+						}, function (err) {
 							if (err) {
 								return app.alertError(err.message);
 							}
@@ -147,15 +147,15 @@ define('admin/manage/group', [
 			}
 		});
 
-		$('#group-icon').on('click', function() {
+		$('#group-icon').on('click', function () {
 			iconSelect.init(groupIcon);
 		});
 
-		colorpicker.enable(changeGroupLabelColor, function(hsb, hex) {
+		colorpicker.enable(changeGroupLabelColor, function (hsb, hex) {
 			groupLabelPreview.css('background-color', '#' + hex);
 		});
 
-		$('.save').on('click', function() {
+		$('.save').on('click', function () {
 			socket.emit('admin.groups.update', {
 				groupName: groupName,
 				values: {
@@ -169,7 +169,7 @@ define('admin/manage/group', [
 					hidden: $('#group-hidden').is(':checked'),
 					disableJoinRequests: $('#group-disableJoinRequests').is(':checked')
 				}
-			}, function(err) {
+			}, function (err) {
 				if (err) {
 					return app.alertError(err.message);
 				}

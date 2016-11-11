@@ -125,14 +125,14 @@ function setupConfig(next) {
 	prompt.colors = false;
 
 	if (!install.values) {
-		prompt.get(questions.main, function(err, config) {
+		prompt.get(questions.main, function (err, config) {
 			if (err) {
 				process.stdout.write('\n\n');
 				winston.warn('NodeBB setup ' + err.message);
 				process.exit();
 			}
 
-			configureDatabases(config, function(err, config) {
+			configureDatabases(config, function (err, config) {
 				completeConfigSetup(err, config, next);
 			});
 		});
@@ -147,7 +147,7 @@ function setupConfig(next) {
 			config[question.name] = install.values[question.name] || question['default'] || undefined;
 		});
 
-		configureDatabases(config, function(err, config) {
+		configureDatabases(config, function (err, config) {
 			completeConfigSetup(err, config, next);
 		});
 	}
@@ -168,7 +168,7 @@ function completeConfigSetup(err, config, next) {
 		}
 	}
 
-	install.save(config, function(err) {
+	install.save(config, function (err) {
 		if (err) {
 			return next(err);
 		}
@@ -194,7 +194,7 @@ function setupDefaultConfigs(next) {
 function enableDefaultTheme(next) {
 	var	meta = require('./meta');
 
-	meta.configs.get('theme:id', function(err, id) {
+	meta.configs.get('theme:id', function (err, id) {
 		if (err || id) {
 			process.stdout.write('Previous theme detected, skipping enabling default theme\n');
 			return next(err);
@@ -254,7 +254,7 @@ function createAdmin(callback) {
 			hidden: true,
 			type: 'string'
 		}],
-		success = function(err, results) {
+		success = function (err, results) {
 			if (err) {
 				return callback(err);
 			}
@@ -268,20 +268,20 @@ function createAdmin(callback) {
 			}
 			var adminUid;
 			async.waterfall([
-				function(next) {
+				function (next) {
 					User.create({username: results.username, password: results.password, email: results.email}, next);
 				},
-				function(uid, next) {
+				function (uid, next) {
 					adminUid = uid;
 					Groups.join('administrators', uid, next);
 				},
-				function(next) {
+				function (next) {
 					Groups.show('administrators', next);
 				},
-				function(next) {
+				function (next) {
 					Groups.ownership.grant(adminUid, 'administrators', next);
 				}
-			], function(err) {
+			], function (err) {
 				if (err) {
 					return callback(err);
 				}
@@ -382,7 +382,7 @@ function createCategories(next) {
 function createMenuItems(next) {
 	var db = require('./database');
 
-	db.exists('navigation:enabled', function(err, exists) {
+	db.exists('navigation:enabled', function (err, exists) {
 		if (err || exists) {
 			return next(err);
 		}
@@ -398,13 +398,13 @@ function createWelcomePost(next) {
 		Topics = require('./topics');
 
 	async.parallel([
-		function(next) {
+		function (next) {
 			fs.readFile(path.join(__dirname, '../', 'install/data/welcome.md'), next);
 		},
-		function(next) {
+		function (next) {
 			db.getObjectField('global', 'topicCount', next);
 		}
-	], function(err, results) {
+	], function (err, results) {
 		if (err) {
 			return next(err);
 		}
@@ -454,14 +454,14 @@ function enableDefaultPlugins(next) {
 		}
 	}
 
-	defaultEnabled = defaultEnabled.filter(function(plugin, index, array) {
+	defaultEnabled = defaultEnabled.filter(function (plugin, index, array) {
 		return array.indexOf(plugin) === index;
 	});
 
 	winston.info('[install/enableDefaultPlugins] activating default plugins', defaultEnabled);
 
 	var db = require('./database');
-	var order = defaultEnabled.map(function(plugin, index) {
+	var order = defaultEnabled.map(function (plugin, index) {
 		return index;
 	});
 	db.sortedSetAdd('plugins:active', order, defaultEnabled, next);
@@ -470,13 +470,13 @@ function enableDefaultPlugins(next) {
 function setCopyrightWidget(next) {
 	var	db = require('./database');
 	async.parallel({
-		footerJSON: function(next) {
+		footerJSON: function (next) {
 			fs.readFile(path.join(__dirname, '../', 'install/data/footer.json'), next);
 		},
-		footer: function(next) {
+		footer: function (next) {
 			db.getObjectField('widgets:global', 'footer', next);
 		}
-	}, function(err, results) {
+	}, function (err, results) {
 		if (err) {
 			return next(err);
 		}
@@ -507,7 +507,7 @@ install.setup = function (callback) {
 		setCopyrightWidget,
 		function (next) {
 			var upgrade = require('./upgrade');
-			upgrade.check(function(err, uptodate) {
+			upgrade.check(function (err, uptodate) {
 				if (err) {
 					return next(err);
 				}

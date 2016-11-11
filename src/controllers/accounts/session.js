@@ -7,7 +7,7 @@ var user = require('../../user');
 
 var sessionController = {};
 
-sessionController.revoke = function(req, res, next) {
+sessionController.revoke = function (req, res, next) {
 	if (!req.params.hasOwnProperty('uuid')) {
 		return next();
 	}
@@ -26,8 +26,8 @@ sessionController.revoke = function(req, res, next) {
 			db.getSortedSetRange('uid:' + uid + ':sessions', 0, -1, next);
 		},
 		function (sids, done) {
-			async.eachSeries(sids, function(sid, next) {
-				db.sessionStore.get(sid, function(err, sessionObj) {
+			async.eachSeries(sids, function (sid, next) {
+				db.sessionStore.get(sid, function (err, sessionObj) {
 					if (err) {
 						return next(err);
 					}
@@ -47,7 +47,7 @@ sessionController.revoke = function(req, res, next) {
 
 			user.auth.revokeSession(_id, uid, next);
 		}
-	], function(err) {
+	], function (err) {
 		if (err) {
 			return res.status(500).send(err.message);
 		} else {

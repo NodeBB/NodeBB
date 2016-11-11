@@ -1,6 +1,6 @@
 {
-    "uploading-file": "Uploading the file...",
-    "select-file-to-upload": "Select a file to upload!",
-    "upload-success": "File uploaded successfully!",
+    "uploading-file": "Fájl feltöltése...",
+    "select-file-to-upload": "Válassz feltöltendő fájlt!",
+    "upload-success": "Fájl feltöltése sikeres!",
     "maximum-file-size": "Maximum %1 kb"
 }

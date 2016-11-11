@@ -7,13 +7,13 @@ var winston = require('winston');
 
 var user = require('../../user');
 var groups = require('../../groups');
-var plugins =require('../../plugins');
+var plugins = require('../../plugins');
 var meta = require('../../meta');
 var utils = require('../../../public/src/utils');
 
 var helpers = {};
 
-helpers.getUserDataByUserSlug = function(userslug, callerUID, callback) {
+helpers.getUserDataByUserSlug = function (userslug, callerUID, callback) {
 	async.waterfall([
 		function (next) {
 			user.getUidByUserslug(userslug, next);
@@ -24,34 +24,37 @@ helpers.getUserDataByUserSlug = function(userslug, callerUID, callback) {
 			}
 
 			async.parallel({
-				userData : function(next) {
+				userData : function (next) {
 					user.getUserData(uid, next);
 				},
-				userSettings : function(next) {
+				userSettings : function (next) {
 					user.getSettings(uid, next);
 				},
-				isAdmin : function(next) {
+				isAdmin : function (next) {
 					user.isAdministrator(callerUID, next);
 				},
-				isGlobalModerator: function(next) {
+				isGlobalModerator: function (next) {
 					user.isGlobalModerator(callerUID, next);
 				},
-				isFollowing: function(next) {
+				isModerator: function (next) {
+					user.isModeratorOfAnyCategory(callerUID, next);
+				},
+				isFollowing: function (next) {
 					user.isFollowing(callerUID, uid, next);
 				},
-				ips: function(next) {
+				ips: function (next) {
 					user.getIPs(uid, 4, next);
 				},
-				profile_links: function(next) {
+				profile_links: function (next) {
 					plugins.fireHook('filter:user.profileLinks', [], next);
 				},
-				profile_menu: function(next) {
+				profile_menu: function (next) {
 					plugins.fireHook('filter:user.profileMenu', {uid: uid, callerUID: callerUID, links: []}, next);
 				},
-				groups: function(next) {
+				groups: function (next) {
 					groups.getUserGroups([uid], next);
 				},
-				sso: function(next) {
+				sso: function (next) {
 					plugins.fireHook('filter:auth.list', {uid: uid, associations: []}, next);
 				}
 			}, next);
@@ -65,6 +68,7 @@ helpers.getUserDataByUserSlug = function(userslug, callerUID, callback) {
 			var userSettings = results.userSettings;
 			var isAdmin = results.isAdmin;
 			var isGlobalModerator = results.isGlobalModerator;
+			var isModerator = results.isModerator;
 			var isSelf = parseInt(callerUID, 10) === parseInt(userData.uid, 10);
 
 			userData.joindateISO = utils.toISOString(userData.joindate);
@@ -87,7 +91,7 @@ helpers.getUserDataByUserSlug = function(userslug, callerUID, callback) {
 				userData.ips = results.ips;
 			}
 
-			if (!isAdmin && !isGlobalModerator) {
+			if (!isAdmin && !isGlobalModerator && !isModerator) {
 				userData.moderationNote = undefined;
 			}
 
@@ -96,7 +100,9 @@ helpers.getUserDataByUserSlug = function(userslug, callerUID, callback) {
 			userData.theirid = userData.uid;
 			userData.isAdmin = isAdmin;
 			userData.isGlobalModerator = isGlobalModerator;
+			userData.isModerator = isModerator;
 			userData.isAdminOrGlobalModerator = isAdmin || isGlobalModerator;
+			userData.isAdminOrGlobalModeratorOrModerator = isAdmin || isGlobalModerator || isModerator;
 			userData.canBan = isAdmin || isGlobalModerator;
 			userData.canChangePassword = isAdmin || (isSelf && parseInt(meta.config['password:disableEdit'], 10) !== 1);
 			userData.isSelf = isSelf;
@@ -137,13 +143,13 @@ helpers.getUserDataByUserSlug = function(userslug, callerUID, callback) {
 };
 
 
-helpers.getBaseUser = function(userslug, callerUID, callback) {
+helpers.getBaseUser = function (userslug, callerUID, callback) {
 	winston.warn('helpers.getBaseUser deprecated please use helpers.getUserDataByUserSlug');
 	helpers.getUserDataByUserSlug(userslug, callerUID, callback);
 };
 
 function filterLinks(links, self) {
-	return links.filter(function(link) {
+	return links.filter(function (link) {
 		return link && (link.public || self);
 	});
 }

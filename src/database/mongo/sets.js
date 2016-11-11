@@ -1,15 +1,15 @@
 "use strict";
 
-module.exports = function(db, module) {
+module.exports = function (db, module) {
 	var helpers = module.helpers.mongo;
 
-	module.setAdd = function(key, value, callback) {
+	module.setAdd = function (key, value, callback) {
 		callback = callback || helpers.noop;
 		if(!Array.isArray(value)) {
 			value = [value];
 		}
 
-		value.forEach(function(element, index, array) {
+		value.forEach(function (element, index, array) {
 			array[index] = helpers.valueToString(element);
 		});
 
@@ -24,12 +24,12 @@ module.exports = function(db, module) {
 		}, {
 			upsert: true,
 			w: 1
-		}, function(err, res) {
+		}, function (err, res) {
 			callback(err);
 		});
 	};
 
-	module.setsAdd = function(keys, value, callback) {
+	module.setsAdd = function (keys, value, callback) {
 		callback = callback || helpers.noop;
 
 		if (!Array.isArray(keys) || !keys.length) {
@@ -40,13 +40,13 @@ module.exports = function(db, module) {
 			value = [value];
 		}
 
-		value.forEach(function(element, index, array) {
+		value.forEach(function (element, index, array) {
 			array[index] = helpers.valueToString(element);
 		});
 
 		var bulk = db.collection('objects').initializeUnorderedBulkOp();
 
-		for(var i=0; i<keys.length; ++i) {
+		for(var i = 0; i < keys.length; ++i) {
 			bulk.find({_key: keys[i]}).upsert().updateOne({	$addToSet: {
 				members: {
 					$each: value
@@ -54,27 +54,27 @@ module.exports = function(db, module) {
 			}});
 		}
 
-		bulk.execute(function(err, res) {
+		bulk.execute(function (err, res) {
 			callback(err);
 		});
 	};
 
-	module.setRemove = function(key, value, callback) {
+	module.setRemove = function (key, value, callback) {
 		callback = callback || helpers.noop;
 		if(!Array.isArray(value)) {
 			value = [value];
 		}
 
-		value.forEach(function(element, index, array) {
+		value.forEach(function (element, index, array) {
 			array[index] = helpers.valueToString(element);
 		});
 
-		db.collection('objects').update({_key: key}, {$pullAll: {members: value}}, function(err, res) {
+		db.collection('objects').update({_key: key}, {$pullAll: {members: value}}, function (err, res) {
 			callback(err);
 		});
 	};
 
-	module.setsRemove = function(keys, value, callback) {
+	module.setsRemove = function (keys, value, callback) {
 		callback = callback || helpers.noop;
 		if (!Array.isArray(keys) || !keys.length) {
 			return callback();
@@ -83,43 +83,43 @@ module.exports = function(db, module) {
 
 		var bulk = db.collection('objects').initializeUnorderedBulkOp();
 
-		for(var i=0; i<keys.length; ++i) {
+		for(var i = 0; i < keys.length; ++i) {
 			bulk.find({_key: keys[i]}).updateOne({$pull: {
 				members: value
 			}});
 		}
 
-		bulk.execute(function(err, res) {
+		bulk.execute(function (err, res) {
 			callback(err);
 		});
 	};
 
-	module.isSetMember = function(key, value, callback) {
+	module.isSetMember = function (key, value, callback) {
 		if (!key) {
 			return callback(null, false);
 		}
 		value = helpers.valueToString(value);
 
-		db.collection('objects').findOne({_key: key, members: value}, {_id: 0, members: 0},function(err, item) {
+		db.collection('objects').findOne({_key: key, members: value}, {_id: 0, members: 0},function (err, item) {
 			callback(err, item !== null && item !== undefined);
 		});
 	};
 
-	module.isSetMembers = function(key, values, callback) {
+	module.isSetMembers = function (key, values, callback) {
 		if (!key || !Array.isArray(values) || !values.length) {
 			return callback(null, []);
 		}
 
-		for (var i=0; i<values.length; ++i) {
+		for (var i = 0; i < values.length; ++i) {
 			values[i] = helpers.valueToString(values[i]);
 		}
 
-		db.collection('objects').findOne({_key: key}, {_id: 0, _key: 0}, function(err, items) {
+		db.collection('objects').findOne({_key: key}, {_id: 0, _key: 0}, function (err, items) {
 			if (err) {
 				return callback(err);
 			}
 
-			values = values.map(function(value) {
+			values = values.map(function (value) {
 				return !!(items && Array.isArray(items.members) && items.members.indexOf(value) !== -1);
 			});
 
@@ -127,22 +127,22 @@ module.exports = function(db, module) {
 		});
 	};
 
-	module.isMemberOfSets = function(sets, value, callback) {
+	module.isMemberOfSets = function (sets, value, callback) {
 		if (!Array.isArray(sets) || !sets.length) {
 			return callback(null, []);
 		}
 		value = helpers.valueToString(value);
 
-		db.collection('objects').find({_key: {$in : sets}, members: value}, {_id:0, members: 0}).toArray(function(err, result) {
+		db.collection('objects').find({_key: {$in : sets}, members: value}, {_id:0, members: 0}).toArray(function (err, result) {
 			if (err) {
 				return callback(err);
 			}
 
-			result = result.map(function(item) {
+			result = result.map(function (item) {
 				return item._key;
 			});
 
-			result = sets.map(function(set) {
+			result = sets.map(function (set) {
 				return result.indexOf(set) !== -1;
 			});
 
@@ -150,69 +150,69 @@ module.exports = function(db, module) {
 		});
 	};
 
-	module.getSetMembers = function(key, callback) {
+	module.getSetMembers = function (key, callback) {
 		if (!key) {
 			return callback(null, []);
 		}
-		db.collection('objects').findOne({_key: key}, {members: 1}, {_id: 0, _key: 0}, function(err, data) {
+		db.collection('objects').findOne({_key: key}, {members: 1}, {_id: 0, _key: 0}, function (err, data) {
 			callback(err, data ? data.members : []);
 		});
 	};
 
-	module.getSetsMembers = function(keys, callback) {
+	module.getSetsMembers = function (keys, callback) {
 		if (!Array.isArray(keys) || !keys.length) {
 			return callback(null, []);
 		}
-		db.collection('objects').find({_key: {$in: keys}}, {_id: 0, _key: 1, members: 1}).toArray(function(err, data) {
+		db.collection('objects').find({_key: {$in: keys}}, {_id: 0, _key: 1, members: 1}).toArray(function (err, data) {
 			if (err) {
 				return callback(err);
 			}
 
 			var sets = {};
-			data.forEach(function(set) {
+			data.forEach(function (set) {
 				sets[set._key] = set.members || [];
 			});
 
 			var returnData = new Array(keys.length);
-			for(var i=0; i<keys.length; ++i) {
+			for(var i = 0; i < keys.length; ++i) {
 				returnData[i] = sets[keys[i]] || [];
 			}
 			callback(null, returnData);
 		});
 	};
 
-	module.setCount = function(key, callback) {
+	module.setCount = function (key, callback) {
 		if (!key) {
 			return callback(null, 0);
 		}
-		db.collection('objects').findOne({_key: key}, {_id: 0}, function(err, data) {
+		db.collection('objects').findOne({_key: key}, {_id: 0}, function (err, data) {
 			callback(err, data ? data.members.length : 0);
 		});
 	};
 
-	module.setsCount = function(keys, callback) {
-		module.getSetsMembers(keys, function(err, setsMembers) {
+	module.setsCount = function (keys, callback) {
+		module.getSetsMembers(keys, function (err, setsMembers) {
 			if (err) {
 				return callback(err);
 			}
 
-			var counts = setsMembers.map(function(members) {
+			var counts = setsMembers.map(function (members) {
 				return (members && members.length) || 0;
 			});
 			callback(null, counts);
 		});
 	};
 
-	module.setRemoveRandom = function(key, callback) {
-		callback = callback || function() {};
-		db.collection('objects').findOne({_key:key}, function(err, data) {
+	module.setRemoveRandom = function (key, callback) {
+		callback = callback || function () {};
+		db.collection('objects').findOne({_key:key}, function (err, data) {
 			if(err || !data) {
 				return callback(err);
 			}
 
 			var randomIndex = Math.floor(Math.random() * data.members.length);
 			var value = data.members[randomIndex];
-			module.setRemove(data._key, value, function(err) {
+			module.setRemove(data._key, value, function (err) {
 				callback(err, value);
 			});
 		});

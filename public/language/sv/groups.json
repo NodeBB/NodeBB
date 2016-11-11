@@ -51,6 +51,6 @@
     "membership.reject": "Neka",
     "new-group.group_name": "Gruppnamn:",
     "upload-group-cover": "Ladda upp omslagsbild för grupp",
-    "bulk-invite-instructions": "Enter a list of comma separated usernames to invite to this group",
-    "bulk-invite": "Bulk Invite"
+    "bulk-invite-instructions": "Ange en lista med kommaseparerade användarnamn som du vill bjuda in till denna grupp",
+    "bulk-invite": "Massinbjudning"
 }

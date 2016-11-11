@@ -10,11 +10,11 @@
     "share_this_category": "Chia sẻ chuyên mục này",
     "watch": "Theo dõi",
     "ignore": "Bỏ qua",
-    "watching": "Watching",
-    "ignoring": "Ignoring",
-    "watching.description": "Show topics in unread",
-    "ignoring.description": "Do not show topics in unread",
-    "watch.message": "You are now watching updates from this category and all subcategories",
-    "ignore.message": "You are now ignoring updates from this category and all subcategories",
-    "watched-categories": "Chuyên mục đang theo dõi"
+    "watching": "Đang theo dõi",
+    "ignoring": "Bỏ qua",
+    "watching.description": "Hiện các chủ đề chưa đọc",
+    "ignoring.description": "Không hiện những chủ đề chưa đọc",
+    "watch.message": "Bạn đang theo dõi các cập nhật ở chuyên mục này và các chuyên mục con",
+    "ignore.message": "Bạn đang bỏ qua các cập nhật ở chuyên mục này và các chuyên mục con",
+    "watched-categories": "Các chuyên mục đã xem"
 }

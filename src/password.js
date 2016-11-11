@@ -1,13 +1,13 @@
 'use strict';
 
-(function(module) {
+(function (module) {
 	var fork = require('child_process').fork;
 
-	module.hash = function(rounds, password, callback) {
+	module.hash = function (rounds, password, callback) {
 		forkChild({type: 'hash', rounds: rounds, password: password}, callback);
 	};
 
-	module.compare = function(password, hash, callback) {
+	module.compare = function (password, hash, callback) {
 		forkChild({type: 'compare', password: password, hash: hash}, callback);
 	};
 
@@ -18,7 +18,7 @@
 		}
 		var child = fork('./bcrypt', [], forkProcessParams);
 
-		child.on('message', function(msg) {
+		child.on('message', function (msg) {
 			if (msg.err) {
 				return callback(new Error(msg.err));
 			}
@@ -30,4 +30,4 @@
 	}
 
 	return module;
-})(exports);
+}(exports));

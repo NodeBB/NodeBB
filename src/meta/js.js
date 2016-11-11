@@ -11,7 +11,7 @@ var plugins = require('../plugins');
 var emitter = require('../emitter');
 var utils = require('../../public/src/utils');
 
-module.exports = function(Meta) {
+module.exports = function (Meta) {
 
 	Meta.js = {
 		target: {},
@@ -87,13 +87,13 @@ module.exports = function(Meta) {
 		}
 	};
 
-	Meta.js.bridgeModules = function(app, callback) {
+	Meta.js.bridgeModules = function (app, callback) {
 		// Add routes for AMD-type modules to serve those files
 		var numBridged = 0,
-			addRoute = function(relPath) {
+			addRoute = function (relPath) {
 				var relativePath = nconf.get('relative_path');
 
-				app.get(relativePath + '/src/modules/' + relPath, function(req, res) {
+				app.get(relativePath + '/src/modules/' + relPath, function (req, res) {
 					return res.sendFile(path.join(__dirname, '../../', Meta.js.scripts.modules[relPath]), {
 						maxAge: app.enabled('cache') ? 5184000000 : 0
 					});
@@ -101,7 +101,7 @@ module.exports = function(Meta) {
 			};
 
 		async.series([
-			function(next) {
+			function (next) {
 				for(var relPath in Meta.js.scripts.modules) {
 					if (Meta.js.scripts.modules.hasOwnProperty(relPath)) {
 						addRoute(relPath);
@@ -111,7 +111,7 @@ module.exports = function(Meta) {
 
 				next();
 			}
-		], function(err) {
+		], function (err) {
 			if (err) {
 				winston.error('[meta/js] Encountered error while bridging modules:' + err.message);
 			}
@@ -121,7 +121,7 @@ module.exports = function(Meta) {
 		});
 	};
 
-	Meta.js.minify = function(target, callback) {
+	Meta.js.minify = function (target, callback) {
 		if (nconf.get('isPrimary') !== 'true') {
 			if (typeof callback === 'function') {
 				callback();
@@ -137,7 +137,7 @@ module.exports = function(Meta) {
 
 		Meta.js.target[target] = {};
 
-		Meta.js.prepare(target, function() {
+		Meta.js.prepare(target, function () {
 			minifier.send({
 				action: 'js',
 				minify: global.env !== 'development',
@@ -145,7 +145,7 @@ module.exports = function(Meta) {
 			});
 		});
 
-		minifier.on('message', function(message) {
+		minifier.on('message', function (message) {
 			switch(message.type) {
 			case 'end':
 				Meta.js.target[target].cache = message.minified;
@@ -161,7 +161,7 @@ module.exports = function(Meta) {
 				}
 
 				if (nconf.get('local-assets') === undefined || nconf.get('local-assets') !== false) {
-					return Meta.js.commitToFile(target, function() {
+					return Meta.js.commitToFile(target, function () {
 						if (typeof callback === 'function') {
 							callback();
 						}
@@ -188,12 +188,12 @@ module.exports = function(Meta) {
 		});
 	};
 
-	Meta.js.prepare = function(target, callback) {
+	Meta.js.prepare = function (target, callback) {
 		var pluginsScripts = [];
 
 		var pluginDirectories = [];
 
-		pluginsScripts = plugins[target === 'nodebb.min.js' ? 'clientScripts' : 'acpScripts'].filter(function(path) {
+		pluginsScripts = plugins[target === 'nodebb.min.js' ? 'clientScripts' : 'acpScripts'].filter(function (path) {
 			if (path.endsWith('.js')) {
 				return true;
 			}
@@ -202,12 +202,12 @@ module.exports = function(Meta) {
 			return false;
 		});
 
-		async.each(pluginDirectories, function(directory, next) {
-			utils.walk(directory, function(err, scripts) {
+		async.each(pluginDirectories, function (directory, next) {
+			utils.walk(directory, function (err, scripts) {
 				pluginsScripts = pluginsScripts.concat(scripts);
 				next(err);
 			});
-		}, function(err) {
+		}, function (err) {
 			if (err) {
 				return callback(err);
 			}
@@ -220,7 +220,7 @@ module.exports = function(Meta) {
 				Meta.js.target[target].scripts = Meta.js.target[target].scripts.concat(Meta.js.scripts.rjs);
 			}
 
-			Meta.js.target[target].scripts = Meta.js.target[target].scripts.map(function(script) {
+			Meta.js.target[target].scripts = Meta.js.target[target].scripts.map(function (script) {
 				return path.relative(basePath, script).replace(/\\/g, '/');
 			});
 
@@ -228,13 +228,13 @@ module.exports = function(Meta) {
 		});
 	};
 
-	Meta.js.killMinifier = function() {
+	Meta.js.killMinifier = function () {
 		if (Meta.js.minifierProc) {
 			Meta.js.minifierProc.kill('SIGTERM');
 		}
 	};
 
-	Meta.js.commitToFile = function(target, callback) {
+	Meta.js.commitToFile = function (target, callback) {
 		fs.writeFile(path.join(__dirname, '../../public/' + target), Meta.js.target[target].cache, function (err) {
 			if (err) {
 				winston.error('[meta/js] ' + err.message);
@@ -246,12 +246,12 @@ module.exports = function(Meta) {
 		});
 	};
 
-	Meta.js.getFromFile = function(target, callback) {
+	Meta.js.getFromFile = function (target, callback) {
 		var scriptPath = path.join(__dirname, '../../public/' + target),
 			mapPath = path.join(__dirname, '../../public/' + target + '.map'),
 			paths = [scriptPath];
 
-		file.exists(scriptPath, function(exists) {
+		file.exists(scriptPath, function (exists) {
 			if (!exists) {
 				winston.warn('[meta/js] ' + target + ' not found on disk, re-minifying');
 				Meta.js.minify(target, callback);
@@ -262,12 +262,12 @@ module.exports = function(Meta) {
 				return callback();
 			}
 
-			file.exists(mapPath, function(exists) {
+			file.exists(mapPath, function (exists) {
 				if (exists) {
 					paths.push(mapPath);
 				}
 
-				async.map(paths, fs.readFile, function(err, files) {
+				async.map(paths, fs.readFile, function (err, files) {
 					if (err) {
 						return callback(err);
 					}

@@ -1,19 +1,19 @@
 'use strict';
 /* globals $, app, socket, templates, define, bootbox */
 
-define('admin/manage/ip-blacklist', [], function() {
+define('admin/manage/ip-blacklist', [], function () {
 
 	var Blacklist = {};
 
-	Blacklist.init = function() {
+	Blacklist.init = function () {
 		var blacklist = $('#blacklist-rules');
 
-		blacklist.on('keyup', function() {
+		blacklist.on('keyup', function () {
 		    $('#blacklist-rules-holder').val(blacklist.val());
 		});
 
-		$('[data-action="apply"]').on('click', function() {
-			socket.emit('blacklist.save', blacklist.val(), function(err) {
+		$('[data-action="apply"]').on('click', function () {
+			socket.emit('blacklist.save', blacklist.val(), function (err) {
 				if (err) {
 					return app.alertError(err.message);
 				}
@@ -25,15 +25,15 @@ define('admin/manage/ip-blacklist', [], function() {
 			});
 		});
 
-		$('[data-action="test"]').on('click', function() {
+		$('[data-action="test"]').on('click', function () {
 			socket.emit('blacklist.validate', {
 				rules: blacklist.val()
-			}, function(err, data) {
+			}, function (err, data) {
 				if (err) {
 					return app.alertError(err.message);
 				}
 
-				templates.parse('admin/partials/blacklist-validate', data, function(html) {
+				templates.parse('admin/partials/blacklist-validate', data, function (html) {
 					bootbox.alert(html);
 				});
 			});

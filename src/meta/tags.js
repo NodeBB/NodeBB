@@ -6,12 +6,12 @@ var async = require('async');
 var winston = require('winston');
 var plugins = require('../plugins');
 
-module.exports = function(Meta) {
+module.exports = function (Meta) {
 	Meta.tags = {};
 
-	Meta.tags.parse = function(meta, link, callback) {
+	Meta.tags.parse = function (meta, link, callback) {
 		async.parallel({
-			tags: function(next) {
+			tags: function (next) {
 				var defaultTags = [{
 					name: 'viewport',
 					content: 'width=device-width, initial-scale=1.0'
@@ -42,7 +42,7 @@ module.exports = function(Meta) {
 				}];
 				plugins.fireHook('filter:meta.getMetaTags', defaultTags, next);
 			},
-			links: function(next) {
+			links: function (next) {
 				var defaultLinks = [{
 					rel: "icon",
 					type: "image/x-icon",
@@ -85,12 +85,12 @@ module.exports = function(Meta) {
 				}
 				plugins.fireHook('filter:meta.getLinkTags', defaultLinks, next);
 			}
-		}, function(err, results) {
+		}, function (err, results) {
 			if (err) {
 				return callback(err);
 			}
 
-			meta = results.tags.concat(meta || []).map(function(tag) {
+			meta = results.tags.concat(meta || []).map(function (tag) {
 				if (!tag || typeof tag.content !== 'string') {
 					winston.warn('Invalid meta tag. ', tag);
 					return tag;
@@ -116,7 +116,7 @@ module.exports = function(Meta) {
 
 	function addDescription(meta) {
 		var hasDescription = false;
-		meta.forEach(function(tag) {
+		meta.forEach(function (tag) {
 			if (tag.name === 'description') {
 				hasDescription = true;
 			}

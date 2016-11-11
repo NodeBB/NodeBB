@@ -23,7 +23,7 @@
     "profile": "Профил",
     "profile_views": "Преглеждания на профила",
     "reputation": "Репутация",
-    "favourites": "Отметки",
+    "bookmarks": "Отметки",
     "watched": "Наблюдавани",
     "followers": "Последователи",
     "following": "Следва",
@@ -124,6 +124,6 @@
     "info.banned-no-reason": "Няма посочена причина.",
     "info.username-history": "История на потребителските имена",
     "info.email-history": "Историята на е-пощите",
-    "info.moderation-note": "Moderation Note",
-    "info.moderation-note.success": "Moderation note saved"
+    "info.moderation-note": "Модераторска бележка",
+    "info.moderation-note.success": "Модераторската бележка е запазена"
 }

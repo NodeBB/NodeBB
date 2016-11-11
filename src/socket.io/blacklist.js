@@ -9,12 +9,12 @@ var meta = require('../meta');
 
 var SocketBlacklist = {};
 
-SocketBlacklist.validate = function(socket, data, callback) {
+SocketBlacklist.validate = function (socket, data, callback) {
 	meta.blacklist.validate(data.rules, callback);
 };
 
-SocketBlacklist.save = function(socket, rules, callback) {
-	user.isAdminOrGlobalMod(socket.uid, function(err, isAdminOrGlobalMod) {
+SocketBlacklist.save = function (socket, rules, callback) {
+	user.isAdminOrGlobalMod(socket.uid, function (err, isAdminOrGlobalMod) {
 		if (err || !isAdminOrGlobalMod) {
 			return callback(err || new Error('[[error:no-privileges]]'));
 		}

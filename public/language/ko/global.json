@@ -75,6 +75,7 @@
     "norecenttopics": "최근 생성된 생성된 주제가 없습니다.",
     "recentposts": "최근 게시물",
     "recentips": "최근 로그인 IP",
+    "moderator_tools": "Moderator Tools",
     "away": "자리 비움",
     "dnd": "방해 금지",
     "invisible": "오프라인으로 표시",
@@ -98,5 +99,8 @@
     "allowed-file-types": "사용가능한 파일 유형: %1",
     "unsaved-changes": "You have unsaved changes. Are you sure you wish to navigate away?",
     "reconnecting-message": "Looks like your connection to %1 was lost, please wait while we try to reconnect.",
-    "play": "Play"
+    "play": "Play",
+    "cookies.message": "This website uses cookies to ensure you get the best experience on our website.",
+    "cookies.accept": "Got it!",
+    "cookies.learn_more": "Learn More"
 }

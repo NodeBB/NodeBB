@@ -6,9 +6,9 @@ var user = require('../../user');
 var meta = require('../../meta');
 var events = require('../../events');
 
-module.exports = function(SocketUser) {
+module.exports = function (SocketUser) {
 
-	SocketUser.changeUsernameEmail = function(socket, data, callback) {
+	SocketUser.changeUsernameEmail = function (socket, data, callback) {
 		if (!data || !data.uid || !socket.uid) {
 			return callback(new Error('[[error:invalid-data]]'));
 		}
@@ -23,12 +23,12 @@ module.exports = function(SocketUser) {
 		], callback);
 	};
 
-	SocketUser.updateCover = function(socket, data, callback) {
+	SocketUser.updateCover = function (socket, data, callback) {
 		if (!socket.uid) {
 			return callback(new Error('[[error:no-privileges]]'));
 		}
 
-		user.isAdministrator(socket.uid, function(err, isAdmin) {
+		user.isAdministrator(socket.uid, function (err, isAdmin) {
 			if (err) {
 				return callback(err);
 			}
@@ -41,12 +41,12 @@ module.exports = function(SocketUser) {
 		});
 	};
 
-	SocketUser.removeCover = function(socket, data, callback) {
+	SocketUser.removeCover = function (socket, data, callback) {
 		if (!socket.uid) {
 			return callback(new Error('[[error:no-privileges]]'));
 		}
 
-		user.isAdminOrSelf(socket.uid, data.uid, function(err) {
+		user.isAdminOrSelf(socket.uid, data.uid, function (err) {
 			if (err) {
 				return callback(err);
 			}
@@ -58,14 +58,14 @@ module.exports = function(SocketUser) {
 		async.parallel({
 			isAdmin: async.apply(user.isAdministrator, uid),
 			hasPassword: async.apply(user.hasPassword, data.uid),
-			passwordMatch: function(next) {
+			passwordMatch: function (next) {
 				if (data.password) {
 					user.isPasswordCorrect(data.uid, data.password, next);
 				} else {
 					next(null, false);
 				}
 			}
-		}, function(err, results) {
+		}, function (err, results) {
 			if (err) {
 				return callback(err);
 			}
@@ -83,15 +83,16 @@ module.exports = function(SocketUser) {
 		});
 	}
 
-	SocketUser.changePassword = function(socket, data, callback) {
+	SocketUser.changePassword = function (socket, data, callback) {
+		if (!socket.uid) {
+			return callback(new Error('[[error:invalid-uid]]'));
+		}
+
 		if (!data || !data.uid) {
 			return callback(new Error('[[error:invalid-data]]'));
 		}
-		if (!socket.uid) {
-			return callback('[[error:invalid-uid]]');
-		}
 
-		user.changePassword(socket.uid, data, function(err) {
+		user.changePassword(socket.uid, data, function (err) {
 			if (err) {
 				return callback(err);
 			}
@@ -106,9 +107,9 @@ module.exports = function(SocketUser) {
 		});
 	};
 
-	SocketUser.updateProfile = function(socket, data, callback) {
+	SocketUser.updateProfile = function (socket, data, callback) {
 		if (!socket.uid) {
-			return callback('[[error:invalid-uid]]');
+			return callback(new Error('[[error:invalid-uid]]'));
 		}
 
 		if (!data || !data.uid) {
@@ -128,7 +129,7 @@ module.exports = function(SocketUser) {
 
 				user.isAdminOrGlobalMod(socket.uid, next);
 			},
-			function(isAdminOrGlobalMod, next) {
+			function (isAdminOrGlobalMod, next) {
 				if (!isAdminOrGlobalMod && socket.uid !== parseInt(data.uid, 10)) {
 					return next(new Error('[[error:no-privileges]]'));
 				}

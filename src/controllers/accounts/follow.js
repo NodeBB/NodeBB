@@ -9,11 +9,11 @@ var pagination = require('../../pagination');
 
 var followController = {};
 
-followController.getFollowing = function(req, res, next) {
+followController.getFollowing = function (req, res, next) {
 	getFollow('account/following', 'following', req, res, next);
 };
 
-followController.getFollowers = function(req, res, next) {
+followController.getFollowers = function (req, res, next) {
 	getFollow('account/followers', 'followers', req, res, next);
 };
 
@@ -26,10 +26,10 @@ function getFollow(tpl, name, req, res, callback) {
 	var stop = start + resultsPerPage - 1;
 
 	async.waterfall([
-		function(next) {
+		function (next) {
 			accountHelpers.getUserDataByUserSlug(req.params.userslug, req.uid, next);
 		},
-		function(data, next) {
+		function (data, next) {
 			userData = data;
 			if (!userData) {
 				return callback();
@@ -37,7 +37,7 @@ function getFollow(tpl, name, req, res, callback) {
 			var method = name === 'following' ? 'getFollowing' : 'getFollowers';
 			user[method](userData.uid, start, stop, next);
 		}
-	], function(err, users) {
+	], function (err, users) {
 		if (err) {
 			return callback(err);
 		}

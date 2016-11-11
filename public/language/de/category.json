@@ -12,9 +12,9 @@
     "ignore": "Ignorieren",
     "watching": "Beobachte",
     "ignoring": "Ignoriere",
-    "watching.description": "Show topics in unread",
-    "ignoring.description": "Do not show topics in unread",
-    "watch.message": "You are now watching updates from this category and all subcategories",
-    "ignore.message": "You are now ignoring updates from this category and all subcategories",
+    "watching.description": "Zeige Themen in",
+    "ignoring.description": "Zeige keine Themen in Ungelesen",
+    "watch.message": "Du beobachtest jetzt Änderungen in dieser Kategorie und allen Subkategorien",
+    "ignore.message": "Du ignorierst jetzt Änderungen in dieser Kategorie und allen Subkategorien",
     "watched-categories": "Zuletzt angesehen Kategorien"
 }

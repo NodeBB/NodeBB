@@ -3,10 +3,11 @@
 
 var ajaxify = ajaxify || {};
 
-$(document).ready(function() {
+$(document).ready(function () {
 	var location = document.location || window.location;
 	var rootUrl = location.protocol + '//' + (location.hostname || location.host) + (location.port ? ':' + location.port : '');
 	var apiXHR = null;
+	var ajaxifyTimer;
 
 	var translator;
 	var retry = true;
@@ -14,7 +15,7 @@ $(document).ready(function() {
 
 	// Dumb hack to fool ajaxify into thinking translator is still a global
 	// When ajaxify is migrated to a require.js module, then this can be merged into the "define" call
-	require(['translator'], function(_translator) {
+	require(['translator'], function (_translator) {
 		translator = _translator;
 	});
 
@@ -27,7 +28,7 @@ $(document).ready(function() {
 					url: ev.state.returnPath
 				}, ev.state.returnPath, config.relative_path + '/' + ev.state.returnPath);
 			} else if (ev.state.url !== undefined) {
-				ajaxify.go(ev.state.url, function() {
+				ajaxify.go(ev.state.url, function () {
 					$(window).trigger('action:popstate', {url: ev.state.url});
 				}, true);
 			}
@@ -41,12 +42,18 @@ $(document).ready(function() {
 			if (ajaxify.reconnectAction) {
 				$(window).off('action:reconnected', ajaxify.reconnectAction);
 			}
-			ajaxify.reconnectAction = function(e) {
+			ajaxify.reconnectAction = function (e) {
 				ajaxify.go(url, callback, quiet);
 				$(window).off(e);
 			};
 			$(window).on('action:reconnected', ajaxify.reconnectAction);
 		}
+
+		// Abort subsequent requests if clicked multiple times within a short window of time
+		if (ajaxifyTimer && (Date.now() - ajaxifyTimer) < 500) {
+			return true;
+		}
+		ajaxifyTimer = Date.now();
 
 		if (ajaxify.handleRedirects(url)) {
 			return true;
@@ -75,7 +82,7 @@ $(document).ready(function() {
 		previousBodyClass = ajaxify.data.bodyClass;
 		$('#footer, #content').removeClass('hide').addClass('ajaxifying');
 
-		ajaxify.loadData(url, function(err, data) {
+		ajaxify.loadData(url, function (err, data) {
 
 			if (!err || (err && err.data && (parseInt(err.data.status, 10) !== 302 && parseInt(err.data.status, 10) !== 308))) {
 				ajaxify.updateHistory(url, quiet);
@@ -88,7 +95,7 @@ $(document).ready(function() {
 			retry = true;
 			app.template = data.template.name;
 
-			require(['translator'], function(translator) {
+			require(['translator'], function (translator) {
 				translator.load(config.defaultLang, data.template.name);
 				renderTemplate(url, data.template.name, data, callback);
 			});
@@ -97,7 +104,7 @@ $(document).ready(function() {
 		return true;
 	};
 
-	ajaxify.handleRedirects = function(url) {
+	ajaxify.handleRedirects = function (url) {
 		url = ajaxify.removeRelativePath(url.replace(/\/$/, '')).toLowerCase();
 		var isClientToAdmin = url.startsWith('admin') && window.location.pathname.indexOf(RELATIVE_PATH + '/admin') !== 0;
 		var isAdminToClient = !url.startsWith('admin') && window.location.pathname.indexOf(RELATIVE_PATH + '/admin') === 0;
@@ -110,19 +117,19 @@ $(document).ready(function() {
 	};
 
 
-	ajaxify.start = function(url) {
+	ajaxify.start = function (url) {
 		url = ajaxify.removeRelativePath(url.replace(/^\/|\/$/g, ''));
 
 		var payload = {
 			url: url
-		}
+		};
 
 		$(window).trigger('action:ajaxify.start', payload);
 
 		return payload.url;
 	};
 
-	ajaxify.updateHistory = function(url, quiet) {
+	ajaxify.updateHistory = function (url, quiet) {
 		ajaxify.currentPage = url.split(/[?#]/)[0];
 		if (window.history && window.history.pushState) {
 			window.history[!quiet ? 'pushState' : 'replaceState']({
@@ -140,6 +147,7 @@ $(document).ready(function() {
 			if (status === 403 || status === 404 || status === 500 || status === 502 || status === 503) {
 				if (status === 502 && retry) {
 					retry = false;
+					ajaxifyTimer = undefined;
 					return ajaxify.go(url, callback, quiet);
 				}
 				if (status === 502) {
@@ -160,6 +168,7 @@ $(document).ready(function() {
 				if (data.responseJSON && data.responseJSON.external) {
 					window.location.href = data.responseJSON.external;
 				} else if (typeof data.responseJSON === 'string') {
+					ajaxifyTimer = undefined;
 					ajaxify.go(data.responseJSON.slice(1), callback, quiet);
 				}
 			}
@@ -171,8 +180,8 @@ $(document).ready(function() {
 	function renderTemplate(url, tpl_url, data, callback) {
 		$(window).trigger('action:ajaxify.loadingTemplates', {});
 
-		templates.parse(tpl_url, data, function(template) {
-			translator.translate(template, function(translatedTemplate) {
+		templates.parse(tpl_url, data, function (template) {
+			translator.translate(template, function (translatedTemplate) {
 				translatedTemplate = translator.unescape(translatedTemplate);
 				$('body').removeClass(previousBodyClass).addClass(data.bodyClass);
 				$('#content').html(translatedTemplate);
@@ -190,7 +199,7 @@ $(document).ready(function() {
 		});
 	}
 
-	ajaxify.end = function(url, tpl_url) {
+	ajaxify.end = function (url, tpl_url) {
 		function done() {
 			if (--count === 0) {
 				$(window).trigger('action:ajaxify.end', {url: url, tpl_url: tpl_url, title: ajaxify.data.title});
@@ -205,9 +214,14 @@ $(document).ready(function() {
 		$(window).trigger('action:ajaxify.contentLoaded', {url: url, tpl: tpl_url});
 
 		app.processPage();
+
+		var timeElapsed = Date.now() - ajaxifyTimer;
+		if (config.environment === 'development' && !isNaN(timeElapsed)) {
+			console.info('[ajaxify /' + url + '] Time elapsed:', timeElapsed + 'ms');
+		}
 	};
 
-	ajaxify.parseData = function() {
+	ajaxify.parseData = function () {
 		var dataEl = $('#ajaxify-data');
 		if (dataEl.length) {
 			ajaxify.data = JSON.parse(dataEl.text());
@@ -215,18 +229,18 @@ $(document).ready(function() {
 		}
 	};
 
-	ajaxify.removeRelativePath = function(url) {
+	ajaxify.removeRelativePath = function (url) {
 		if (url.startsWith(RELATIVE_PATH.slice(1))) {
 			url = url.slice(RELATIVE_PATH.length);
 		}
 		return url;
 	};
 
-	ajaxify.refresh = function(callback) {
+	ajaxify.refresh = function (callback) {
 		ajaxify.go(ajaxify.currentPage + window.location.search + window.location.hash, callback, true);
 	};
 
-	ajaxify.loadScript = function(tpl_url, callback) {
+	ajaxify.loadScript = function (tpl_url, callback) {
 		var location = !app.inAdmin ? 'forum/' : '';
 
 		if (tpl_url.startsWith('admin')) {
@@ -239,7 +253,7 @@ $(document).ready(function() {
 
 		$(window).trigger('action:script.load', data);
 
-		require(data.scripts, function(script) {
+		require(data.scripts, function (script) {
 			if (script && script.init) {
 				script.init();
 			}
@@ -250,7 +264,7 @@ $(document).ready(function() {
 		});
 	};
 
-	ajaxify.loadData = function(url, callback) {
+	ajaxify.loadData = function (url, callback) {
 		url = ajaxify.removeRelativePath(url);
 
 		$(window).trigger('action:ajaxify.loadingData', {url: url});
@@ -258,7 +272,10 @@ $(document).ready(function() {
 		apiXHR = $.ajax({
 			url: RELATIVE_PATH + '/api/' + url,
 			cache: false,
-			success: function(data) {
+			headers: {
+				'X-Return-To': app.previousUrl
+			},
+			success: function (data) {
 				if (!data) {
 					return;
 				}
@@ -270,7 +287,7 @@ $(document).ready(function() {
 
 				callback(null, data);
 			},
-			error: function(data, textStatus) {
+			error: function (data, textStatus) {
 				if (data.status === 0 && textStatus === 'error') {
 					data.status = 500;
 				}
@@ -282,17 +299,17 @@ $(document).ready(function() {
 		});
 	};
 
-	ajaxify.loadTemplate = function(template, callback) {
+	ajaxify.loadTemplate = function (template, callback) {
 		if (templates.cache[template]) {
 			callback(templates.cache[template]);
 		} else {
 			$.ajax({
 				url: RELATIVE_PATH + '/templates/' + template + '.tpl' + (config['cache-buster'] ? '?v=' + config['cache-buster'] : ''),
 				type: 'GET',
-				success: function(data) {
+				success: function (data) {
 					callback(data.toString());
 				},
-				error: function(error) {
+				error: function (error) {
 					throw new Error("Unable to load template: " + template + " (" + error.statusText + ")");
 				}
 			});
@@ -309,7 +326,7 @@ $(document).ready(function() {
 		// Enhancing all anchors to ajaxify...
 		$(document.body).on('click', 'a', function (e) {
 			var _self = this;
-			var process = function() {
+			var process = function () {
 				if (!e.ctrlKey && !e.shiftKey && !e.metaKey && e.which === 1) {
 					if (internalLink) {
 						var pathname = this.href.replace(rootUrl + RELATIVE_PATH + '/', '');
@@ -358,8 +375,8 @@ $(document).ready(function() {
 			}
 
 			if (app.flags && app.flags.hasOwnProperty('_unsaved') && app.flags._unsaved === true) {
-				translator.translate('[[global:unsaved-changes]]', function(text) {
-					bootbox.confirm(text, function(navigate) {
+				translator.translate('[[global:unsaved-changes]]', function (text) {
+					bootbox.confirm(text, function (navigate) {
 						if (navigate) {
 							app.flags._unsaved = false;
 							process.call(_self);
@@ -382,7 +399,7 @@ $(document).ready(function() {
 
 	app.load();
 
-	$('[type="text/tpl"][data-template]').each(function() {
+	$('[type="text/tpl"][data-template]').each(function () {
 		templates.cache[$(this).attr('data-template')] = $('<div/>').html($(this).html()).text();
 		$(this).parent().remove();
 	});

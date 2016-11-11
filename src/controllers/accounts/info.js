@@ -8,13 +8,13 @@ var accountHelpers = require('./helpers');
 
 var infoController = {};
 
-infoController.get = function(req, res, callback) {
+infoController.get = function (req, res, callback) {
 	var userData;
 	async.waterfall([
-		function(next) {
+		function (next) {
 			accountHelpers.getUserDataByUserSlug(req.params.userslug, req.uid, next);
 		},
-		function(_userData, next) {
+		function (_userData, next) {
 			userData = _userData;
 			if (!userData) {
 				return callback();
@@ -26,7 +26,7 @@ infoController.get = function(req, res, callback) {
 				emails: async.apply(user.getHistory, 'user:' + userData.uid + ':emails')
 			}, next);
 		}
-	], function(err, data) {
+	], function (err, data) {
 		if (err) {
 			return callback(err);
 		}

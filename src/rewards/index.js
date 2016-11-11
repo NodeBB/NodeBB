@@ -6,10 +6,10 @@ var rewards = {},
 	async = require('async');
 
 
-rewards.checkConditionAndRewardUser = function(uid, condition, method, callback) {
+rewards.checkConditionAndRewardUser = function (uid, condition, method, callback) {
 	async.waterfall([
-		function(next) {
-			isConditionActive(condition, function(err, isActive) {
+		function (next) {
+			isConditionActive(condition, function (err, isActive) {
 				if (!isActive) {
 					return back(err);
 				}
@@ -17,16 +17,16 @@ rewards.checkConditionAndRewardUser = function(uid, condition, method, callback)
 				next(err);
 			});
 		},
-		function(next) {
-			getIDsByCondition(condition, function(err, ids) {
+		function (next) {
+			getIDsByCondition(condition, function (err, ids) {
 				next(err, ids);
 			});
 		},
-		function(ids, next) {
+		function (ids, next) {
 			getRewardDataByIDs(ids, next);
 		},
-		function(rewards, next) {
-			filterCompletedRewards(uid, rewards, function(err, filtered) {
+		function (rewards, next) {
+			filterCompletedRewards(uid, rewards, function (err, filtered) {
 				if (!filtered || !filtered.length) {
 					return back(err);
 				}
@@ -34,14 +34,14 @@ rewards.checkConditionAndRewardUser = function(uid, condition, method, callback)
 				next(err, filtered);
 			});
 		},
-		function(rewards, next) {
-			async.filter(rewards, function(reward, next) {
+		function (rewards, next) {
+			async.filter(rewards, function (reward, next) {
 				if (!reward) {
 					return next(false);
 				}
 
 				checkCondition(reward, method, next);
-			}, function(eligible) {
+			}, function (eligible) {
 				if (!eligible) {
 					return next(false);
 				}
@@ -68,18 +68,18 @@ function getIDsByCondition(condition, callback) {
 }
 
 function filterCompletedRewards(uid, rewards, callback) {
-	db.getSortedSetRangeByScoreWithScores('uid:' + uid + ':rewards', 0, -1, 1, '+inf', function(err, data) {
+	db.getSortedSetRangeByScoreWithScores('uid:' + uid + ':rewards', 0, -1, 1, '+inf', function (err, data) {
 		if (err) {
 			return callback(err);
 		}
 
 		var userRewards = {};
 
-		data.forEach(function(obj) {
+		data.forEach(function (obj) {
 			userRewards[obj.value] = parseInt(obj.score, 10);
 		});
 
-		rewards = rewards.filter(function(reward) {
+		rewards = rewards.filter(function (reward) {
 			if (!reward) {
 				return false;
 			}
@@ -98,36 +98,36 @@ function filterCompletedRewards(uid, rewards, callback) {
 }
 
 function getRewardDataByIDs(ids, callback) {
-	db.getObjects(ids.map(function(id) {
+	db.getObjects(ids.map(function (id) {
 		return 'rewards:id:' + id;
 	}), callback);
 }
 
 function getRewardsByRewardData(rewards, callback) {
-	db.getObjects(rewards.map(function(reward) {
+	db.getObjects(rewards.map(function (reward) {
 		return 'rewards:id:' + reward.id + ':rewards';
 	}), callback);
 }
 
 function checkCondition(reward, method, callback) {
-	method(function(err, value) {
+	method(function (err, value) {
 		if (err) {
 			return callback(err);
 		}
 
-		plugins.fireHook('filter:rewards.checkConditional:' + reward.conditional, {left: value, right: reward.value}, function(err, bool) {
+		plugins.fireHook('filter:rewards.checkConditional:' + reward.conditional, {left: value, right: reward.value}, function (err, bool) {
 			callback(err || bool);
 		});
 	});
 }
 
 function giveRewards(uid, rewards, callback) {
-	getRewardsByRewardData(rewards, function(err, rewardData) {
+	getRewardsByRewardData(rewards, function (err, rewardData) {
 		if (err) {
 			return callback(err);
 		}
 
-		async.each(rewards, function(reward, next) {
+		async.each(rewards, function (reward, next) {
 			plugins.fireHook('action:rewards.award:' + reward.rid, {uid: uid, reward: rewardData[rewards.indexOf(reward)]});
 			db.sortedSetIncrBy('uid:' + uid + ':rewards', 1, reward.id, next);
 		}, callback);

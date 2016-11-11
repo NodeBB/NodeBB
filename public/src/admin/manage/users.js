@@ -2,12 +2,10 @@
 
 /* global config, socket, define, templates, bootbox, app, ajaxify  */
 
-define('admin/manage/users', ['admin/modules/selectable', 'translator'], function(selectable, translator) {
+define('admin/manage/users', ['translator'], function (translator) {
 	var Users = {};
 
-	Users.init = function() {
-		selectable.enable('#users-container', '.users-box');
-
+	Users.init = function () {
 		var navPills = $('.nav-pills li');
 		var pathname = window.location.pathname;
 		if (!navPills.find('a[href="' + pathname + '"]').length) {
@@ -17,29 +15,33 @@ define('admin/manage/users', ['admin/modules/selectable', 'translator'], functio
 
 		function getSelectedUids() {
 			var uids = [];
-			$('#users-container .users-box.ui-selected').each(function() {
-				uids.push(this.getAttribute('data-uid'));
+
+			$('.users-table [component="user/select/single"]').each(function () {
+				if ($(this).is(':checked')) {
+					uids.push($(this).attr('data-uid'));
+				}
 			});
 
 			return uids;
 		}
 
 		function update(className, state) {
-			$('#users-container .users-box.ui-selected .labels').find(className).each(function() {
-				$(this).toggleClass('hide', !state);
+			$('.users-table [component="user/select/single"]:checked').parents('.user-row').find(className).each(function () {
+				$(this).toggleClass('hidden', !state);
 			});
 		}
 
 		function unselectAll() {
-			$('#users-container .users-box.ui-selected').removeClass('ui-selected');
+			$('.users-table [component="user/select/single"]').prop('checked', false);
+			$('.users-table [component="user/select/all"]').prop('checked', false);
 		}
 
 		function removeSelected() {
-			$('#users-container .users-box.ui-selected').remove();
+			$('.users-table [component="user/select/single"]:checked').parents('.user-row').remove();
 		}
 
 		function done(successMessage, className, flag) {
-			return function(err) {
+			return function (err) {
 				if (err) {
 					return app.alertError(err.message);
 				}
@@ -51,28 +53,36 @@ define('admin/manage/users', ['admin/modules/selectable', 'translator'], functio
 			};
 		}
 
-		$('.ban-user').on('click', function() {
+		$('[component="user/select/all"]').on('click', function () {
+			if ($(this).is(':checked')) {
+				$('.users-table [component="user/select/single"]').prop('checked', true);
+			} else {
+				$('.users-table [component="user/select/single"]').prop('checked', false);
+			}
+		});
+
+		$('.ban-user').on('click', function () {
 			var uids = getSelectedUids();
 			if (!uids.length) {
 				app.alertError('[[error:no-users-selected]]');
 				return false;	// specifically to keep the menu open
 			}
 
-			bootbox.confirm('Do you really want to ban ' + (uids.length > 1 ? 'these users' : 'this user') + ' <strong>permanently</strong>?', function(confirm) {
+			bootbox.confirm('Do you really want to ban ' + (uids.length > 1 ? 'these users' : 'this user') + ' <strong>permanently</strong>?', function (confirm) {
 				if (confirm) {
 					socket.emit('user.banUsers', { uids: uids, reason: '' }, done('User(s) banned!', '.ban', true));
 				}
 			});
 		});
 
-		$('.ban-user-temporary').on('click', function() {
+		$('.ban-user-temporary').on('click', function () {
 			var uids = getSelectedUids();
 			if (!uids.length) {
 				app.alertError('[[error:no-users-selected]]');
 				return false;	// specifically to keep the menu open
 			}
 
-			templates.parse('admin/partials/temporary-ban', {}, function(html) {
+			templates.parse('admin/partials/temporary-ban', {}, function (html) {
 				bootbox.dialog({
 					className: 'ban-modal',
 					title: '[[user:ban_account]]',
@@ -85,12 +95,12 @@ define('admin/manage/users', ['admin/modules/selectable', 'translator'], functio
 						},
 						submit: {
 							label: 'Ban ' + uids.length + (uids.length > 1 ? ' users' : ' user'),
-							callback: function() {
-								var formData = $('.ban-modal form').serializeArray().reduce(function(data, cur) {
+							callback: function () {
+								var formData = $('.ban-modal form').serializeArray().reduce(function (data, cur) {
 									data[cur.name] = cur.value;
 									return data;
 								}, {});
-								var until = formData.length ? (Date.now() + formData.length * 1000*60*60 * (parseInt(formData.unit, 10) ? 24 : 1)) : 0;
+								var until = formData.length ? (Date.now() + formData.length * 1000 * 60 * 60 * (parseInt(formData.unit, 10) ? 24 : 1)) : 0;
 								socket.emit('user.banUsers', { uids: uids, until: until, reason: formData.reason }, done('User(s) banned!', '.ban', true));
 							}
 						}
@@ -99,7 +109,7 @@ define('admin/manage/users', ['admin/modules/selectable', 'translator'], functio
 			});
 		});
 
-		$('.unban-user').on('click', function() {
+		$('.unban-user').on('click', function () {
 			var uids = getSelectedUids();
 			if (!uids.length) {
 				app.alertError('[[error:no-users-selected]]');
@@ -109,7 +119,7 @@ define('admin/manage/users', ['admin/modules/selectable', 'translator'], functio
 			socket.emit('user.unbanUsers', uids, done('User(s) unbanned!', '.ban', false));
 		});
 
-		$('.reset-lockout').on('click', function() {
+		$('.reset-lockout').on('click', function () {
 			var uids = getSelectedUids();
 			if (!uids.length) {
 				return;
@@ -118,7 +128,7 @@ define('admin/manage/users', ['admin/modules/selectable', 'translator'], functio
 			socket.emit('admin.user.resetLockouts', uids, done('Lockout(s) reset!'));
 		});
 
-		$('.reset-flags').on('click', function() {
+		$('.reset-flags').on('click', function () {
 			var uids = getSelectedUids();
 			if (!uids.length) {
 				return;
@@ -127,7 +137,7 @@ define('admin/manage/users', ['admin/modules/selectable', 'translator'], functio
 			socket.emit('admin.user.resetFlags', uids, done('Flags(s) reset!'));
 		});
 
-		$('.admin-user').on('click', function() {
+		$('.admin-user').on('click', function () {
 			var uids = getSelectedUids();
 			if (!uids.length) {
 				return;
@@ -140,7 +150,7 @@ define('admin/manage/users', ['admin/modules/selectable', 'translator'], functio
 			}
 		});
 
-		$('.remove-admin-user').on('click', function() {
+		$('.remove-admin-user').on('click', function () {
 			var uids = getSelectedUids();
 			if (!uids.length) {
 				return;
@@ -149,7 +159,7 @@ define('admin/manage/users', ['admin/modules/selectable', 'translator'], functio
 			if (uids.indexOf(app.user.uid.toString()) !== -1) {
 				app.alertError('You can\'t remove yourself as Administrator!');
 			} else {
-				bootbox.confirm('Do you really want to remove admins?', function(confirm) {
+				bootbox.confirm('Do you really want to remove admins?', function (confirm) {
 					if (confirm) {
 						socket.emit('admin.user.removeAdmins', uids, done('User(s) are no longer administrators.', '.administrator', false));
 					}
@@ -157,25 +167,34 @@ define('admin/manage/users', ['admin/modules/selectable', 'translator'], functio
 			}
 		});
 
-		$('.validate-email').on('click', function() {
+		$('.validate-email').on('click', function () {
 			var uids = getSelectedUids();
 			if (!uids.length) {
 				return;
 			}
 
-			bootbox.confirm('Do you want to validate email(s) of these user(s)?', function(confirm) {
-				if (confirm) {
-					socket.emit('admin.user.validateEmail', uids, done('Emails validated', '.notvalidated', false));
+			bootbox.confirm('Do you want to validate email(s) of these user(s)?', function (confirm) {
+				if (!confirm) {
+					return;
 				}
+				socket.emit('admin.user.validateEmail', uids, function (err) {
+					if (err) {
+						return app.alertError(err.message);
+					}
+					app.alertSuccess('Emails validated');
+					update('.notvalidated', false);
+					update('.validated', true);
+					unselectAll();
+				});
 			});
 		});
 
-		$('.send-validation-email').on('click', function() {
+		$('.send-validation-email').on('click', function () {
 			var uids = getSelectedUids();
 			if (!uids.length) {
 				return;
 			}
-			socket.emit('admin.user.sendValidationEmail', uids, function(err) {
+			socket.emit('admin.user.sendValidationEmail', uids, function (err) {
 				if (err) {
 					return app.alertError(err.message);
 				}
@@ -183,28 +202,28 @@ define('admin/manage/users', ['admin/modules/selectable', 'translator'], functio
 			});
 		});
 
-		$('.password-reset-email').on('click', function() {
+		$('.password-reset-email').on('click', function () {
 			var uids = getSelectedUids();
 			if (!uids.length) {
 				return;
 			}
 
-			bootbox.confirm('Do you want to send password reset email(s) to these user(s)?', function(confirm) {
+			bootbox.confirm('Do you want to send password reset email(s) to these user(s)?', function (confirm) {
 				if (confirm) {
 					socket.emit('admin.user.sendPasswordResetEmail', uids, done('Emails sent'));
 				}
 			});
 		});
 
-		$('.delete-user').on('click', function() {
+		$('.delete-user').on('click', function () {
 			var uids = getSelectedUids();
 			if (!uids.length) {
 				return;
 			}
 
-			bootbox.confirm('<b>Warning!</b><br/>Do you really want to delete user(s)?<br/> This action is not reversable, only the user account will be deleted, their posts and topics will not be deleled!', function(confirm) {
+			bootbox.confirm('<b>Warning!</b><br/>Do you really want to delete user(s)?<br/> This action is not reversable, only the user account will be deleted, their posts and topics will not be deleled!', function (confirm) {
 				if (confirm) {
-					socket.emit('admin.user.deleteUsers', uids, function(err) {
+					socket.emit('admin.user.deleteUsers', uids, function (err) {
 						if (err) {
 							return app.alertError(err.message);
 						}
@@ -217,14 +236,14 @@ define('admin/manage/users', ['admin/modules/selectable', 'translator'], functio
 			});
 		});
 
-		$('.delete-user-and-content').on('click', function() {
+		$('.delete-user-and-content').on('click', function () {
 			var uids = getSelectedUids();
 			if (!uids.length) {
 				return;
 			}
-			bootbox.confirm('<b>Warning!</b><br/>Do you really want to delete user(s) and their content?<br/> This action is not reversable, all user data and content will be erased!', function(confirm) {
+			bootbox.confirm('<b>Warning!</b><br/>Do you really want to delete user(s) and their content?<br/> This action is not reversable, all user data and content will be erased!', function (confirm) {
 				if (confirm) {
-					socket.emit('admin.user.deleteUsersAndContent', uids, function(err) {
+					socket.emit('admin.user.deleteUsersAndContent', uids, function (err) {
 						if (err) {
 							return app.alertError(err.message);
 						}
@@ -238,9 +257,9 @@ define('admin/manage/users', ['admin/modules/selectable', 'translator'], functio
 		});
 
 		function handleUserCreate() {
-			$('#createUser').on('click', function() {
-				templates.parse('admin/partials/create_user_modal', {}, function(html) {
-					translator.translate(html, function(html) {
+			$('#createUser').on('click', function () {
+				templates.parse('admin/partials/create_user_modal', {}, function (html) {
+					translator.translate(html, function (html) {
 						bootbox.dialog({
 							message: html,
 							title: 'Create User',
@@ -253,7 +272,7 @@ define('admin/manage/users', ['admin/modules/selectable', 'translator'], functio
 								create: {
 									label: 'Create',
 									className: 'btn-primary',
-									callback: function() {
+									callback: function () {
 										createUser.call(this);
 										return false;
 									}
@@ -284,13 +303,13 @@ define('admin/manage/users', ['admin/modules/selectable', 'translator'], functio
 				password: password
 			};
 
-			socket.emit('admin.user.createUser', user, function(err) {
+			socket.emit('admin.user.createUser', user, function (err) {
 				if(err) {
 					return errorEl.translateHtml('<strong>Error</strong><p>' + err.message + '</p>').removeClass('hide');
 				}
 
 				modal.modal('hide');
-				modal.on('hidden.bs.modal', function() {
+				modal.on('hidden.bs.modal', function () {
 					ajaxify.refresh();
 				});
 				app.alertSuccess('User created!');
@@ -299,9 +318,7 @@ define('admin/manage/users', ['admin/modules/selectable', 'translator'], functio
 
 		var timeoutId = 0;
 
-
-
-		$('#search-user-name, #search-user-email, #search-user-ip').on('keyup', function() {
+		$('#search-user-name, #search-user-email, #search-user-ip').on('keyup', function () {
 			if (timeoutId !== 0) {
 				clearTimeout(timeoutId);
 				timeoutId = 0;
@@ -310,32 +327,34 @@ define('admin/manage/users', ['admin/modules/selectable', 'translator'], functio
 			var $this = $(this);
 			var type =  $this.attr('data-search-type');
 
-			timeoutId = setTimeout(function() {
+			timeoutId = setTimeout(function () {
 				$('.fa-spinner').removeClass('hidden');
 
-				socket.emit('admin.user.search', {searchBy: type, query: $this.val()}, function(err, data) {
+				socket.emit('admin.user.search', {searchBy: type, query: $this.val()}, function (err, data) {
 					if (err) {
 						return app.alertError(err.message);
 					}
 
-					templates.parse('admin/manage/users', 'users', data, function(html) {
-						$('#users-container').html(html).find('.timeago').timeago();
-
+					templates.parse('admin/manage/users', 'users', data, function (html) {
+						html = $(html);
+						$('.users-table tr').not(':first').remove();
+						$('.users-table tr').first().after(html);
+						html.find('.timeago').timeago();
 						$('.fa-spinner').addClass('hidden');
 
 						if (data && data.users.length === 0) {
 							$('#user-notfound-notify').html('User not found!')
-								.show()
+								.removeClass('hide')
 								.addClass('label-danger')
 								.removeClass('label-success');
 						} else {
 							$('#user-notfound-notify').html(data.users.length + ' user' + (data.users.length > 1 ? 's' : '') + ' found! Search took ' + data.timing + ' ms.')
-								.show()
+								.removeClass('hide')
 								.addClass('label-success')
 								.removeClass('label-danger');
 						}
 
-						selectable.enable('#users-container', '.users-box');
+
 					});
 				});
 			}, 250);
@@ -348,13 +367,13 @@ define('admin/manage/users', ['admin/modules/selectable', 'translator'], functio
 	};
 
 	function handleInvite() {
-		$('[component="user/invite"]').on('click', function() {
-			bootbox.prompt('Email: ', function(email) {
+		$('[component="user/invite"]').on('click', function () {
+			bootbox.prompt('Email: ', function (email) {
 				if (!email) {
 					return;
 				}
 
-				socket.emit('user.invite', email, function(err) {
+				socket.emit('user.invite', email, function (err) {
 					if (err) {
 						return app.alertError(err.message);
 					}

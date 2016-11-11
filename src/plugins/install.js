@@ -12,35 +12,35 @@ var winston = require('winston'),
 	pubsub = require('../pubsub');
 
 
-module.exports = function(Plugins) {
+module.exports = function (Plugins) {
 
 	if (nconf.get('isPrimary') === 'true') {
-		pubsub.on('plugins:toggleInstall', function(data) {
+		pubsub.on('plugins:toggleInstall', function (data) {
 			if (data.hostname !== os.hostname()) {
 				toggleInstall(data.id, data.version);
 			}
 		});
 
-		pubsub.on('plugins:upgrade', function(data) {
+		pubsub.on('plugins:upgrade', function (data) {
 			if (data.hostname !== os.hostname()) {
 				upgrade(data.id, data.version);
 			}
 		});
 	}
 
-	Plugins.toggleActive = function(id, callback) {
-		callback = callback || function() {};
+	Plugins.toggleActive = function (id, callback) {
+		callback = callback || function () {};
 		var isActive;
 		async.waterfall([
-			function(next) {
+			function (next) {
 				Plugins.isActive(id, next);
 			},
-			function(_isActive, next) {
+			function (_isActive, next) {
 				isActive = _isActive;
 				if (isActive) {
 					db.sortedSetRemove('plugins:active', id, next);
 				} else {
-					db.sortedSetCard('plugins:active', function(err, count) {
+					db.sortedSetCard('plugins:active', function (err, count) {
 						if (err) {
 							return next(err);
 						}
@@ -48,12 +48,12 @@ module.exports = function(Plugins) {
 					});
 				}
 			},
-			function(next) {
+			function (next) {
 				meta.reloadRequired = true;
 				Plugins.fireHook(isActive ? 'action:plugin.deactivate' : 'action:plugin.activate', id);
 				next();
 			}
-		], function(err) {
+		], function (err) {
 			if (err) {
 				winston.warn('[plugins] Could not toggle active state on plugin \'' + id + '\'');
 				return callback(err);
@@ -62,40 +62,40 @@ module.exports = function(Plugins) {
 		});
 	};
 
-	Plugins.toggleInstall = function(id, version, callback) {
+	Plugins.toggleInstall = function (id, version, callback) {
 		pubsub.publish('plugins:toggleInstall', {hostname: os.hostname(), id: id, version: version});
 		toggleInstall(id, version, callback);
 	};
 
 	function toggleInstall(id, version, callback) {
-		Plugins.isInstalled(id, function(err, installed) {
+		Plugins.isInstalled(id, function (err, installed) {
 			if (err) {
 				return callback(err);
 			}
 			var type = installed ? 'uninstall' : 'install';
 			async.waterfall([
-				function(next) {
+				function (next) {
 					Plugins.isActive(id, next);
 				},
-				function(active, next) {
+				function (active, next) {
 					if (active) {
-						Plugins.toggleActive(id, function(err, status) {
+						Plugins.toggleActive(id, function (err, status) {
 							next(err);
 						});
 						return;
 					}
 					next();
 				},
-				function(next) {
+				function (next) {
 					var command = installed ? ('npm uninstall ' + id) : ('npm install ' + id + '@' + (version || 'latest'));
 					runNpmCommand(command, next);
 				}
-			], function(err) {
+			], function (err) {
 				if (err) {
 					return callback(err);
 				}
 
-				Plugins.get(id, function(err, pluginData) {
+				Plugins.get(id, function (err, pluginData) {
 					if (err) {
 						return callback(err);
 					}
@@ -117,39 +117,39 @@ module.exports = function(Plugins) {
 		 });
 	}
 
-	Plugins.upgrade = function(id, version, callback) {
+	Plugins.upgrade = function (id, version, callback) {
 		pubsub.publish('plugins:upgrade', {hostname: os.hostname(), id: id, version: version});
 		upgrade(id, version, callback);
 	};
 
 	function upgrade(id, version, callback) {
 		async.waterfall([
-			function(next) {
+			function (next) {
 				runNpmCommand('npm install ' + id + '@' + (version || 'latest'), next);
 			},
-			function(next) {
+			function (next) {
 				Plugins.isActive(id, next);
 			},
-			function(isActive, next) {
+			function (isActive, next) {
 				meta.reloadRequired = isActive;
 				next(null, isActive);
 			}
 		], callback);
 	}
 
-	Plugins.isInstalled = function(id, callback) {
+	Plugins.isInstalled = function (id, callback) {
 		var pluginDir = path.join(__dirname, '../../node_modules', id);
 
-		fs.stat(pluginDir, function(err, stats) {
+		fs.stat(pluginDir, function (err, stats) {
 			callback(null, err ? false : stats.isDirectory());
 		});
 	};
 
-	Plugins.isActive = function(id, callback) {
+	Plugins.isActive = function (id, callback) {
 		db.isSortedSetMember('plugins:active', id, callback);
 	};
 
-	Plugins.getActive = function(callback) {
+	Plugins.getActive = function (callback) {
 		db.getSortedSetRange('plugins:active', 0, -1, callback);
 	};
 };

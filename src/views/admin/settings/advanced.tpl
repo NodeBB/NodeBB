@@ -54,21 +54,6 @@
 </div>
 
 <div class="row">
-	<div class="col-sm-2 col-xs-12 settings-header">Cookies</div>
-	<div class="col-sm-10 col-xs-12">
-		<form>
-			<div class="form-group">
-				<label for="cookieDomain">Set domain for session cookie</label>
-				<input class="form-control" id="cookieDomain" type="text" placeholder=".domain.tld" data-field="cookieDomain" /><br />
-				<p class="help-block">
-					Leave blank for default
-				</p>
-			</div>
-		</form>
-	</div>
-</div>
-
-<div class="row">
 	<div class="col-sm-2 col-xs-12 settings-header">Traffic Management</div>
 	<div class="col-sm-10 col-xs-12">
 		<p class="help-block">

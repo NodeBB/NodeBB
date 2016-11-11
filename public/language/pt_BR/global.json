@@ -19,7 +19,7 @@
     "welcome_back": "Bem-vindo de volta",
     "you_have_successfully_logged_in": "Você logou com sucesso",
     "save_changes": "Salvar Alterações",
-    "save": "Save",
+    "save": "Salvar",
     "close": "Fechar",
     "pagination": "Paginação",
     "pagination.out_of": "%1 de %2",
@@ -75,6 +75,7 @@
     "norecenttopics": "Sem Tópicos Recentes",
     "recentposts": "Posts Recentes",
     "recentips": "Recentemente Logado nos IPs",
+    "moderator_tools": "Ferramentas de Moderação",
     "away": "Ausente",
     "dnd": "Não perturbar",
     "invisible": "Invisível",
@@ -98,5 +99,8 @@
     "allowed-file-types": "Os tipos de arquivo permitidos são %1",
     "unsaved-changes": "Você tem alterações não salvas. Tem certeza que você deseja sair da página?",
     "reconnecting-message": "Parece que sua conexão com %1 caiu, por favor aguarde enquanto tentamos reconectar.",
-    "play": "Executar"
+    "play": "Executar",
+    "cookies.message": "Este website utiliza cookies para assegrar que você tenha a melhor experiência em nosso site.",
+    "cookies.accept": "Entendi!",
+    "cookies.learn_more": "Saber Mais"
 }

@@ -1,12 +1,12 @@
 "use strict";
 /* global app, define, socket */
 
-define('admin/general/sounds', ['sounds', 'settings'], function(Sounds, Settings) {
+define('admin/general/sounds', ['sounds', 'settings'], function (Sounds, Settings) {
 	var	SoundsAdmin = {};
 
-	SoundsAdmin.init = function() {
+	SoundsAdmin.init = function () {
 		// Sounds tab
-		$('.sounds').find('button[data-action="play"]').on('click', function(e) {
+		$('.sounds').find('button[data-action="play"]').on('click', function (e) {
 			e.preventDefault();
 
 			var	fileName = $(this).parent().parent().find('select').val();
@@ -18,8 +18,8 @@ define('admin/general/sounds', ['sounds', 'settings'], function(Sounds, Settings
 
 		// Saving of Form Values
 		var	saveEl = $('#save');
-		saveEl.on('click', function() {
-			Settings.save('sounds', $('.sounds form'), function() {
+		saveEl.on('click', function () {
+			Settings.save('sounds', $('.sounds form'), function () {
 				socket.emit('admin.fireEvent', {
 					name: 'event:sounds.reloadMapping'
 				});

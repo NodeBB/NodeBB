@@ -14,6 +14,16 @@
 		</div>
 
 		<div class="form-group">
+			<div class="checkbox">
+				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
+					<input type="checkbox" class="mdl-switch__input" id="disableChatMessageEditing" data-field="disableChatMessageEditing">
+					<span class="mdl-switch__label"><strong>Disable chat message editing/deletion</strong></span>
+				</label>
+			</div>
+			<p class="help-block">Administrators and global moderators are exempt from this restriction</p>
+		</div>
+
+		<div class="form-group">
 			<label>Maximum length of chat messages</label>
 			<input type="text" class="form-control" value="1000" data-field="maximumChatMessageLength">
 		</div>

@@ -5,8 +5,8 @@
     "remember_me": "ログイン情報を記憶",
     "forgot_password": "パスワードを忘れましたか？",
     "alternative_logins": "ほかのログイン方法",
-    "failed_login_attempt": "Login Unsuccessful",
+    "failed_login_attempt": "ログインに成功",
     "login_successful": "ログインしました！",
     "dont_have_account": "アカウントをもっていませんか?",
-    "logged-out-due-to-inactivity": "You have been logged out of the Admin Control Panel due to inactivity"
+    "logged-out-due-to-inactivity": "しばらく操作されていなかったため、管理パネルよりログアウトされました。"
 }

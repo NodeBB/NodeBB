@@ -2,10 +2,10 @@
 
 /* globals define, app, socket*/
 
-define('forum/popular', ['components'], function(components) {
+define('forum/popular', ['components'], function (components) {
 	var Popular = {};
 
-	Popular.init = function() {
+	Popular.init = function () {
 		app.enterRoom('popular_topics');
 
 		components.get('popular/tab')

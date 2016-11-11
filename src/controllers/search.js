@@ -13,7 +13,7 @@ var helpers = require('./helpers');
 
 var searchController = {};
 
-searchController.search = function(req, res, next) {
+searchController.search = function (req, res, next) {
 	if (!plugins.hasListeners('filter:search.query')) {
 		return next();
 	}
@@ -47,7 +47,7 @@ searchController.search = function(req, res, next) {
 	async.parallel({
 		categories: async.apply(categories.buildForSelect, req.uid),
 		search: async.apply(search.search, data)
-	}, function(err, results) {
+	}, function (err, results) {
 		if (err) {
 			return next(err);
 		}

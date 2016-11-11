@@ -7,7 +7,7 @@ var plugins = require('./plugins');
 
 var image = module.exports;
 
-image.resizeImage = function(data, callback) {
+image.resizeImage = function (data, callback) {
 	if (plugins.hasListeners('filter:image.resize')) {
 		plugins.fireHook('filter:image.resize', {
 			path: data.path,
@@ -15,34 +15,34 @@ image.resizeImage = function(data, callback) {
 			extension: data.extension,
 			width: data.width,
 			height: data.height
-		}, function(err) {
+		}, function (err) {
 			callback(err);
 		});
 	} else {
-		new Jimp(data.path, function(err, image) {
+		new Jimp(data.path, function (err, image) {
 			if (err) {
 				return callback(err);
 			}
 
 			var w = image.bitmap.width,
 				h = image.bitmap.height,
-				origRatio = w/h,
-				desiredRatio = data.width && data.height ? data.width/data.height : origRatio,
+				origRatio = w / h,
+				desiredRatio = data.width && data.height ? data.width / data.height : origRatio,
 				x = 0,
 				y = 0,
 				crop;
 
 			if (origRatio !== desiredRatio) {
 				if (desiredRatio > origRatio) {
-					desiredRatio = 1/desiredRatio;
+					desiredRatio = 1 / desiredRatio;
 				}
 				if (origRatio >= 1) {
 					y = 0;	// height is the smaller dimension here
-					x = Math.floor((w/2) - (h * desiredRatio / 2));
+					x = Math.floor((w / 2) - (h * desiredRatio / 2));
 					crop = async.apply(image.crop.bind(image), x, y, h * desiredRatio, h);
 				} else {
 					x = 0;	// width is the smaller dimension here
-					y = Math.floor(h/2 - (w * desiredRatio / 2));
+					y = Math.floor(h / 2 - (w * desiredRatio / 2));
 					crop = async.apply(image.crop.bind(image), x, y, w, w * desiredRatio);
 				}
 			} else {
@@ -52,7 +52,7 @@ image.resizeImage = function(data, callback) {
 
 			async.waterfall([
 				crop,
-				function(_image, next) {
+				function (_image, next) {
 					if (typeof _image === 'function' && !next) {
 						next = _image;
 						_image = image;
@@ -64,52 +64,52 @@ image.resizeImage = function(data, callback) {
 						next(null, image);
 					}
 				},
-				function(image, next) {
+				function (image, next) {
 					image.write(data.target || data.path, next);
 				}
-			], function(err) {
+			], function (err) {
 				callback(err);
 			});
 		});
 	}
 };
 
-image.normalise = function(path, extension, callback) {
+image.normalise = function (path, extension, callback) {
 	if (plugins.hasListeners('filter:image.normalise')) {
 		plugins.fireHook('filter:image.normalise', {
 			path: path,
 			extension: extension
-		}, function(err) {
+		}, function (err) {
 			callback(err);
 		});
 	} else {
-		new Jimp(path, function(err, image) {
+		new Jimp(path, function (err, image) {
 			if (err) {
 				return callback(err);
 			}
-			image.write(path + '.png', function(err) {
+			image.write(path + '.png', function (err) {
 				callback(err);
 			});
 		});
 	}
 };
 
-image.size = function(path, callback) {
+image.size = function (path, callback) {
 	if (plugins.hasListeners('filter:image.size')) {
 		plugins.fireHook('filter:image.size', {
 			path: path,
-		}, function(err, image) {
+		}, function (err, image) {
 			callback(err, image);
 		});
 	} else {
-		new Jimp(path, function(err, data) {
+		new Jimp(path, function (err, data) {
 			callback(err, data ? data.bitmap : null);
 		});
 	}
 };
 
-image.convertImageToBase64 = function(path, callback) {
-	fs.readFile(path, function(err, data) {
+image.convertImageToBase64 = function (path, callback) {
+	fs.readFile(path, function (err, data) {
 		callback(err, data ? data.toString('base64') : null);
 	});
 };

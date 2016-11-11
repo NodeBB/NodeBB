@@ -16,36 +16,36 @@ var accountHelpers = require('./helpers');
 var settingsController = {};
 
 
-settingsController.get = function(req, res, callback) {
+settingsController.get = function (req, res, callback) {
 	var userData;
 	async.waterfall([
-		function(next) {
+		function (next) {
 			accountHelpers.getUserDataByUserSlug(req.params.userslug, req.uid, next);
 		},
-		function(_userData, next) {
+		function (_userData, next) {
 			userData = _userData;
 			if (!userData) {
 				return callback();
 			}
 			async.parallel({
-				settings: function(next) {
+				settings: function (next) {
 					user.getSettings(userData.uid, next);
 				},
-				languages: function(next) {
+				languages: function (next) {
 					languages.list(next);
 				},
-				homePageRoutes: function(next) {
+				homePageRoutes: function (next) {
 					getHomePageRoutes(next);
 				},
-				sounds: function(next) {
+				sounds: function (next) {
 					meta.sounds.getFiles(next);
 				},
-				soundsMapping: function(next) {
+				soundsMapping: function (next) {
 					meta.sounds.getMapping(userData.uid, next);
 				}
 			}, next);
 		},
-		function(results, next) {
+		function (results, next) {
 			userData.settings = results.settings;
 			userData.languages = results.languages;
 			userData.homePageRoutes = results.homePageRoutes;
@@ -56,20 +56,20 @@ settingsController.get = function(req, res, callback) {
 				'outgoingChatSound': 'chat-outgoing'
 			};
 
-			Object.keys(soundSettings).forEach(function(setting) {
-				userData[setting] = Object.keys(results.sounds).map(function(name) {
+			Object.keys(soundSettings).forEach(function (setting) {
+				userData[setting] = Object.keys(results.sounds).map(function (name) {
 					return {name: name, selected: name === results.soundsMapping[soundSettings[setting]]};
 				});
 			});
 
 			plugins.fireHook('filter:user.customSettings', {settings: results.settings, customSettings: [], uid: req.uid}, next);
 		},
-		function(data, next) {
+		function (data, next) {
 			userData.customSettings = data.customSettings;
 			userData.disableEmailSubscriptions = parseInt(meta.config.disableEmailSubscriptions, 10) === 1;
 			next();
 		}
-	], function(err) {
+	], function (err) {
 		if (err) {
 			return callback(err);
 		}
@@ -103,7 +103,7 @@ settingsController.get = function(req, res, callback) {
 		];
 
 		var isCustom = true;
-		userData.homePageRoutes.forEach(function(route) {
+		userData.homePageRoutes.forEach(function (route) {
 			route.selected = route.route === userData.settings.homePageRoute;
 			if (route.selected) {
 				isCustom = false;
@@ -120,11 +120,11 @@ settingsController.get = function(req, res, callback) {
 		 	selected: isCustom
 		});
 
-		userData.bootswatchSkinOptions.forEach(function(skin) {
+		userData.bootswatchSkinOptions.forEach(function (skin) {
 			skin.selected = skin.value === userData.settings.bootswatchSkin;
 		});
 
-		userData.languages.forEach(function(language) {
+		userData.languages.forEach(function (language) {
 			language.selected = language.code === userData.settings.userLang;
 		});
 
@@ -154,7 +154,7 @@ function getHomePageRoutes(callback) {
 			categories.getCategoriesFields(cids, ['name', 'slug'], next);
 		},
 		function (categoryData, next) {
-			categoryData = categoryData.map(function(category) {
+			categoryData = categoryData.map(function (category) {
 				return {
 					route: 'category/' + category.slug,
 					name: 'Category: ' + category.name

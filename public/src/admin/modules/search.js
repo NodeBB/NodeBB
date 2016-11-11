@@ -1,11 +1,11 @@
 "use strict";
 /*globals define, admin, ajaxify, RELATIVE_PATH*/
 
-define(function() {
+define(function () {
 	var search = {},
 		searchIndex;
 
-	search.init = function() {
+	search.init = function () {
 		$.getJSON(RELATIVE_PATH + '/templates/indexed.json', function (data) {
 			searchIndex = data;
 			for (var file in searchIndex) {
@@ -31,17 +31,17 @@ define(function() {
 			input = $('#acp-search input'),
 			firstResult = null;
 
-		input.on('keyup', function() {
+		input.on('keyup', function () {
 			$('#acp-search .dropdown').addClass('open');
 		});
 
-		$('#acp-search').parents('form').on('submit', function(ev) {
+		$('#acp-search').parents('form').on('submit', function (ev) {
 			var input = $(this).find('input'),
 				href = firstResult ? firstResult : RELATIVE_PATH + '/search/' + input.val();
 
 			ajaxify.go(href.replace(/^\//, ''));
 
-			setTimeout(function() {
+			setTimeout(function () {
 				$('#acp-search .dropdown').removeClass('open');
 				$(input).blur();
 			}, 150);
@@ -50,16 +50,16 @@ define(function() {
 			return false;
 		});
 
-		$('#main-menu a').each(function(idx, link) {
+		$('#main-menu a').each(function (idx, link) {
 			routes.push($(link).attr('href'));
 		});
 
-		input.on('keyup focus', function() {
+		input.on('keyup focus', function () {
 			var $input = $(this),
 				value = $input.val().toLowerCase(),
 				menuItems = $('#acp-search .dropdown-menu').html('');
 
-			function toUpperCase(txt){
+			function toUpperCase(txt) {
 				return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
 			}
 

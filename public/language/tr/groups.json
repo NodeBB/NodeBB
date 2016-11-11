@@ -51,6 +51,6 @@
     "membership.reject": "Reddet",
     "new-group.group_name": "Grup İsmi:",
     "upload-group-cover": "Grup kapağı yükle",
-    "bulk-invite-instructions": "Enter a list of comma separated usernames to invite to this group",
-    "bulk-invite": "Bulk Invite"
+    "bulk-invite-instructions": "Bu gruba davet etmek için virgülle ayrılmış adlarının bir listesini girin",
+    "bulk-invite": "Toplu Davet"
 }

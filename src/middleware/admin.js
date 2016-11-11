@@ -11,9 +11,9 @@ var controllers = {
 	helpers: require('../controllers/helpers')
 };
 
-module.exports = function(middleware) {
+module.exports = function (middleware) {
 	middleware.admin = {};
-	middleware.admin.isAdmin = function(req, res, next) {
+	middleware.admin.isAdmin = function (req, res, next) {
 		winston.warn('[middleware.admin.isAdmin] deprecation warning, no need to use this from plugins!');
 
 		if (!req.user) {
@@ -29,10 +29,10 @@ module.exports = function(middleware) {
 		});
 	};
 
-	middleware.admin.buildHeader = function(req, res, next) {
+	middleware.admin.buildHeader = function (req, res, next) {
 		res.locals.renderAdminHeader = true;
 
-		controllers.api.getConfig(req, res, function(err, config) {
+		controllers.api.getConfig(req, res, function (err, config) {
 			if (err) {
 				return next(err);
 			}
@@ -42,13 +42,13 @@ module.exports = function(middleware) {
 		});
 	};
 
-	middleware.admin.renderHeader = function(req, res, data, next) {
+	middleware.admin.renderHeader = function (req, res, data, next) {
 		var custom_header = {
 			'plugins': [],
 			'authentication': []
 		};
 
-		user.getUserFields(req.uid, ['username', 'userslug', 'email', 'picture', 'email:confirmed'], function(err, userData) {
+		user.getUserFields(req.uid, ['username', 'userslug', 'email', 'picture', 'email:confirmed'], function (err, userData) {
 			if (err) {
 				return next(err);
 			}
@@ -57,36 +57,36 @@ module.exports = function(middleware) {
 			userData['email:confirmed'] = parseInt(userData['email:confirmed'], 10) === 1;
 
 			async.parallel({
-				scripts: function(next) {
-					plugins.fireHook('filter:admin.scripts.get', [], function(err, scripts) {
+				scripts: function (next) {
+					plugins.fireHook('filter:admin.scripts.get', [], function (err, scripts) {
 						if (err) {
 							return next(err);
 						}
 						var arr = [];
-						scripts.forEach(function(script) {
+						scripts.forEach(function (script) {
 							arr.push({src: script});
 						});
 
 						next(null, arr);
 					});
 				},
-				custom_header: function(next) {
+				custom_header: function (next) {
 					plugins.fireHook('filter:admin.header.build', custom_header, next);
 				},
-				config: function(next) {
+				config: function (next) {
 					controllers.api.getConfig(req, res, next);
 				},
-				configs: function(next) {
+				configs: function (next) {
 					meta.configs.list(next);
 				}
-			}, function(err, results) {
+			}, function (err, results) {
 				if (err) {
 					return next(err);
 				}
 				res.locals.config = results.config;
 
 				var acpPath = req.path.slice(1).split('/');
-				acpPath.forEach(function(path, i) {
+				acpPath.forEach(function (path, i) {
 					acpPath[i] = path.charAt(0).toUpperCase() + path.slice(1);
 				});
 				acpPath = acpPath.join(' > ');
@@ -116,7 +116,7 @@ module.exports = function(middleware) {
 	};
 
 
-	middleware.admin.renderFooter = function(req, res, data, next) {
+	middleware.admin.renderFooter = function (req, res, data, next) {
 		req.app.render('admin/footer', data, next);
 	};
 };

@@ -9,14 +9,15 @@ define('forum/topic', [
 	'forum/topic/postTools',
 	'forum/topic/events',
 	'forum/topic/posts',
+	'forum/topic/replies',
 	'navigator',
 	'sort',
 	'components'
-], function(infinitescroll, threadTools, postTools, events, posts, navigator, sort, components) {
+], function (infinitescroll, threadTools, postTools, events, posts, replies, navigator, sort, components) {
 	var	Topic = {},
 		currentUrl = '';
 
-	$(window).on('action:ajaxify.start', function(ev, data) {
+	$(window).on('action:ajaxify.start', function (ev, data) {
 		if (Topic.replaceURLTimeout) {
 			clearTimeout(Topic.replaceURLTimeout);
 			Topic.replaceURLTimeout = 0;
@@ -32,7 +33,7 @@ define('forum/topic', [
 		}
 
 		if (data.url && !data.url.startsWith('topic/')) {
-			require(['search'], function(search) {
+			require(['search'], function (search) {
 				if (search.topicDOM.active) {
 					search.topicDOM.end();
 				}
@@ -40,7 +41,7 @@ define('forum/topic', [
 		}
 	});
 
-	Topic.init = function() {
+	Topic.init = function () {
 		var tid = ajaxify.data.tid;
 
 		$(window).trigger('action:topic.loading');
@@ -51,6 +52,7 @@ define('forum/topic', [
 
 		postTools.init(tid);
 		threadTools.init(tid);
+		replies.init(tid);
 		events.init();
 
 		sort.handleSort('topicPostSort', 'user.setTopicSort', 'topic/' + ajaxify.data.slug);
@@ -98,16 +100,16 @@ define('forum/topic', [
 	}
 
 	function handleTopicSearch() {
-		require(['search', 'mousetrap'], function(search, mousetrap) {
+		require(['search', 'mousetrap'], function (search, mousetrap) {
 			$('.topic-search')
-				.on('click', '.prev', function() {
+				.on('click', '.prev', function () {
 					search.topicDOM.prev();
 				})
-				.on('click', '.next', function() {
+				.on('click', '.next', function () {
 					search.topicDOM.next();
 				});
 
-			mousetrap.bind('ctrl+f', function(e) {
+			mousetrap.bind('ctrl+f', function (e) {
 				if (config.topicSearchEnabled) {
 					// If in topic, open search window and populate, otherwise regular behaviour
 					var match = ajaxify.currentPage.match(/^topic\/([\d]+)/),
@@ -123,12 +125,12 @@ define('forum/topic', [
 		});
 	}
 
-	Topic.toTop = function() {
+	Topic.toTop = function () {
 		navigator.scrollTop(0);
 	};
 
-	Topic.toBottom = function() {
-		socket.emit('topics.postcount', ajaxify.data.tid, function(err, postCount) {
+	Topic.toBottom = function () {
+		socket.emit('topics.postcount', ajaxify.data.tid, function (err, postCount) {
 			if (err) {
 				return app.alertError(err.message);
 			}
@@ -155,14 +157,14 @@ define('forum/topic', [
 				message: '[[topic:bookmark_instructions]]',
 				timeout: 0,
 				type: 'info',
-				clickfn : function() {
+				clickfn : function () {
 					navigator.scrollToPost(parseInt(bookmark - 1, 10), true);
 				},
-				closefn : function() {
+				closefn : function () {
 					localStorage.removeItem('topic:' + tid + ':bookmark');
 				}
 			});
-			setTimeout(function() {
+			setTimeout(function () {
 				app.removeAlert('bookmark');
 			}, 10000);
 		} else {
@@ -187,7 +189,7 @@ define('forum/topic', [
 	}
 
 	function addBlockQuoteHandler() {
-		components.get('topic').on('click', 'blockquote .toggle', function() {
+		components.get('topic').on('click', 'blockquote .toggle', function () {
 			var blockQuote = $(this).parent('blockquote');
 			var toggle = $(this);
 			blockQuote.toggleClass('uncollapsed');
@@ -197,7 +199,7 @@ define('forum/topic', [
 	}
 
 	function addParentHandler() {
-		components.get('topic').on('click', '[component="post/parent"]', function(e) {
+		components.get('topic').on('click', '[component="post/parent"]', function (e) {
 			var toPid = $(this).attr('data-topid');
 
 			var toPost = $('[component="post"][data-pid="' + toPid + '"]');
@@ -221,14 +223,14 @@ define('forum/topic', [
 		}
 	}
 
-	Topic.calculateIndex = function(index, elementCount) {
+	Topic.calculateIndex = function (index, elementCount) {
 		if (index !== 1 && config.topicPostSort !== 'oldest_to_newest') {
 			return elementCount - index + 2;
 		}
 		return index;
 	};
 
-	Topic.navigatorCallback = function(index, elementCount, threshold) {
+	Topic.navigatorCallback = function (index, elementCount, threshold) {
 		var path = ajaxify.removeRelativePath(window.location.pathname.slice(1));
 		if (!path.startsWith('topic')) {
 			return;
@@ -248,7 +250,7 @@ define('forum/topic', [
 				clearTimeout(Topic.replaceURLTimeout);
 			}
 
-			Topic.replaceURLTimeout = setTimeout(function() {
+			Topic.replaceURLTimeout = setTimeout(function () {
 
 				if (index >= elementCount && app.user.uid) {
 					socket.emit('topics.markAsRead', [ajaxify.data.tid]);
@@ -281,7 +283,7 @@ define('forum/topic', [
 				socket.emit('topics.bookmark', {
 					'tid': ajaxify.data.tid,
 					'index': index
-				}, function(err) {
+				}, function (err) {
 					if (err) {
 						return app.alertError(err.message);
 					}

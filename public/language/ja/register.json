@@ -1,6 +1,6 @@
 {
     "register": "登録",
-    "cancel_registration": "Cancel Registration",
+    "cancel_registration": "登録をキャンセル",
     "help.email": "初期設定ではメールアドレスは公開されません。",
     "help.username_restrictions": "%1から%2 文字までのユニークなユーザー名.ツイッター（twitter）の@<span id='yourUsername'>username</span> 方式でメンションすることができます。",
     "help.minimum_password_length": "パスワードには最小 %1 文字が必要です。",
@@ -16,8 +16,8 @@
     "alternative_registration": "ほかの登録方法",
     "terms_of_use": "利用規約",
     "agree_to_terms_of_use": "利用規約に同意する",
-    "terms_of_use_error": "You must agree to the Terms of Use",
+    "terms_of_use_error": "あなたは利用規約に同意する必要があります",
     "registration-added-to-queue": "あなたの登録申請は承認キューに追加されました。管理者によって受け入れられた時に、メールを受信します。",
-    "interstitial.intro": "We require some additional information before we can create your account.",
-    "interstitial.errors-found": "We could not complete your registration:"
+    "interstitial.intro": "私たちは、あなたのアカウント作成においていくつかの情報をお訪ねします。",
+    "interstitial.errors-found": "私達はあなたの登録を完了できませんでした:"
 }

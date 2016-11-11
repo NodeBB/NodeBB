@@ -1,22 +1,22 @@
 "use strict";
 /* global define, socket, app */
 
-define('admin/advanced/logs', function() {
+define('admin/advanced/logs', function () {
 	var	Logs = {};
 
-	Logs.init = function() {
+	Logs.init = function () {
 		var logsEl = $('.logs pre');
 		logsEl.scrollTop(logsEl.prop('scrollHeight'));
 		// Affix menu
 		$('.affix').affix();
 
-		$('.logs').find('button[data-action]').on('click', function(event) {
+		$('.logs').find('button[data-action]').on('click', function (event) {
 			var btnEl = $(this),
 				action = btnEl.attr('data-action');
 
 			switch(action) {
 				case 'reload':
-					socket.emit('admin.logs.get', function(err, logs) {
+					socket.emit('admin.logs.get', function (err, logs) {
 						if (!err) {
 							logsEl.text(logs);
 							logsEl.scrollTop(logsEl.prop('scrollHeight'));
@@ -27,7 +27,7 @@ define('admin/advanced/logs', function() {
 					break;
 
 				case 'clear':
-					socket.emit('admin.logs.clear', function(err) {
+					socket.emit('admin.logs.clear', function (err) {
 						if (!err) {
 							app.alertSuccess('Logs Cleared!');
 							btnEl.prev().click();

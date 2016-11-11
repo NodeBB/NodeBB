@@ -7,9 +7,9 @@ var plugins = require('../plugins');
 var db = require('../database');
 
 
-module.exports = function(Messaging) {
+module.exports = function (Messaging) {
 
-	Messaging.sendMessage = function(uid, roomId, content, timestamp, callback) {
+	Messaging.sendMessage = function (uid, roomId, content, timestamp, callback) {
 		async.waterfall([
 			function (next) {
 				Messaging.checkContent(content, next);
@@ -27,7 +27,7 @@ module.exports = function(Messaging) {
 		], callback);
 	};
 
-	Messaging.checkContent = function(content, callback) {
+	Messaging.checkContent = function (content, callback) {
 		if (!content) {
 			return callback(new Error('[[error:invalid-chat-message]]'));
 		}
@@ -38,7 +38,7 @@ module.exports = function(Messaging) {
 		callback();
 	};
 
-	Messaging.addMessage = function(fromuid, roomId, content, timestamp, callback) {
+	Messaging.addMessage = function (fromuid, roomId, content, timestamp, callback) {
 		var mid;
 		var message;
 		var isNewSet;
@@ -98,21 +98,21 @@ module.exports = function(Messaging) {
 		], callback);
 	};
 
-	Messaging.addRoomToUsers = function(roomId, uids, timestamp, callback) {
+	Messaging.addRoomToUsers = function (roomId, uids, timestamp, callback) {
 		if (!uids.length) {
 			return callback();
 		}
-		var keys = uids.map(function(uid) {
+		var keys = uids.map(function (uid) {
 			return 'uid:' + uid + ':chat:rooms';
 		});
 		db.sortedSetsAdd(keys, timestamp, roomId, callback);
 	};
 
-	Messaging.addMessageToUsers = function(roomId, uids, mid, timestamp, callback) {
+	Messaging.addMessageToUsers = function (roomId, uids, mid, timestamp, callback) {
 		if (!uids.length) {
 			return callback();
 		}
-		var keys = uids.map(function(uid) {
+		var keys = uids.map(function (uid) {
 			return 'uid:' + uid + ':chat:room:' + roomId + ':mids';
 		});
 		db.sortedSetsAdd(keys, timestamp, mid, callback);

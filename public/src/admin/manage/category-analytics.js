@@ -1,18 +1,18 @@
 "use strict";
 /*global define, ajaxify, utils */
 
-define('admin/manage/category-analytics', ['Chart'], function(Chart) {
+define('admin/manage/category-analytics', ['Chart'], function (Chart) {
 	var CategoryAnalytics = {};
 
-	CategoryAnalytics.init = function() {
+	CategoryAnalytics.init = function () {
 		var hourlyCanvas = document.getElementById('pageviews:hourly');
 		var	dailyCanvas = document.getElementById('pageviews:daily');
 		var	topicsCanvas = document.getElementById('topics:daily');
 		var	postsCanvas = document.getElementById('posts:daily');
-		var	hourlyLabels = utils.getHoursArray().map(function(text, idx) {
+		var	hourlyLabels = utils.getHoursArray().map(function (text, idx) {
 				return idx % 3 ? '' : text;
 			});
-		var	dailyLabels = utils.getDaysArray().map(function(text, idx) {
+		var	dailyLabels = utils.getDaysArray().map(function (text, idx) {
 				return idx % 3 ? '' : text;
 			});
 

@@ -10,7 +10,7 @@ var helpers = require('./helpers');
 
 var categoriesController = {};
 
-categoriesController.list = function(req, res, next) {
+categoriesController.list = function (req, res, next) {
 	res.locals.metaTags = [{
 		name: "title",
 		content: validator.escape(String(meta.config.title || 'NodeBB'))
@@ -49,7 +49,7 @@ categoriesController.list = function(req, res, next) {
 
 			categories.getRecentTopicReplies(allCategories, req.uid, next);
 		}
-	], function(err) {
+	], function (err) {
 		if (err) {
 			return next(err);
 		}
@@ -63,7 +63,7 @@ categoriesController.list = function(req, res, next) {
 			data.breadcrumbs = helpers.buildBreadcrumbs([{text: data.title}]);
 		}
 
-		data.categories.forEach(function(category) {
+		data.categories.forEach(function (category) {
 			if (category && Array.isArray(category.posts) && category.posts.length) {
 				category.teaser = {
 					url: nconf.get('relative_path') + '/topic/' + category.posts[0].topic.slug + '/' + category.posts[0].index,

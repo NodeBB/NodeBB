@@ -15,7 +15,7 @@ var server;
 winston.add(winston.transports.File, {
 	filename: 'logs/webinstall.log',
 	colorize: true,
-	timestamp: function() {
+	timestamp: function () {
 		var date = new Date();
 		return date.getDate() + '/' + (date.getMonth() + 1) + ' ' + date.toTimeString().substr(0,5) + ' [' + global.process.pid + ']';
 	},
@@ -30,7 +30,7 @@ var scripts = [
 	'public/src/installer/install.js'
 ];
 
-web.install = function(port) {
+web.install = function (port) {
 	port = port || 4567;
 	winston.info('Launching web installer on port', port);
 
@@ -42,7 +42,7 @@ web.install = function(port) {
 		extended: true
 	}));
 
-	async.parallel([compileLess, compileJS], function() {
+	async.parallel([compileLess, compileJS], function () {
 		setupRoutes();
 		launchExpress(port);
 	});
@@ -50,7 +50,7 @@ web.install = function(port) {
 
 
 function launchExpress(port) {
-	server = app.listen(port, function() {
+	server = app.listen(port, function () {
 		winston.info('Web installer listening on http://%s:%s', '0.0.0.0', port);
 	});
 }
@@ -63,7 +63,7 @@ function setupRoutes() {
 
 function welcome(req, res) {
 	var dbs = ['redis', 'mongo'];
-	var databases = dbs.map(function(el) {
+	var databases = dbs.map(function (el) {
 		return {
 			name: el,
 			questions: require('../src/database/' + el).questions
@@ -93,7 +93,7 @@ function install(req, res) {
 		env: process.env
 	});
 
-	child.on('close', function(data) {
+	child.on('close', function (data) {
 		if (data === 0) {
 			res.locals.success = true;
 		} else {
@@ -129,12 +129,12 @@ function compileLess(callback) {
 		return callback(false);
 	}
 
-	fs.readFile(path.join(__dirname, '../public/less/install.less'), function(err, style) {
+	fs.readFile(path.join(__dirname, '../public/less/install.less'), function (err, style) {
 		if (err) {
 			return winston.error('Unable to read LESS install file: ', err);
 		}
 
-		less.render(style.toString(), function(err, css) {
+		less.render(style.toString(), function (err, css) {
 			if(err) {
 				return winston.error('Unable to compile LESS: ', err);
 			}
@@ -151,7 +151,7 @@ function compileJS(callback) {
 	}
 
 	var scriptPath = path.join(__dirname, '..');
-	var result = uglify.minify(scripts.map(function(script) {
+	var result = uglify.minify(scripts.map(function (script) {
 		return path.join(scriptPath, script);
 	}));
 

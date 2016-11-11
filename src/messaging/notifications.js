@@ -10,12 +10,12 @@ var notifications = require('../notifications');
 var meta = require('../meta');
 var sockets = require('../socket.io');
 
-module.exports = function(Messaging) {
+module.exports = function (Messaging) {
 
 	Messaging.notifyQueue = {};	// Only used to notify a user of a new chat message, see Messaging.notifyUser
 
-	Messaging.notifyUsersInRoom = function(fromUid, roomId, messageObj) {
-		Messaging.getUidsInRoom(roomId, 0, -1, function(err, uids) {
+	Messaging.notifyUsersInRoom = function (fromUid, roomId, messageObj) {
+		Messaging.getUidsInRoom(roomId, 0, -1, function (err, uids) {
 			if (err) {
 				return;
 			}
@@ -25,7 +25,7 @@ module.exports = function(Messaging) {
 				fromUid: fromUid,
 				message: messageObj
 			};
-			uids.forEach(function(uid) {
+			uids.forEach(function (uid) {
 				data.self = parseInt(uid, 10) === parseInt(fromUid) ? 1 : 0;
 				Messaging.pushUnreadCount(uid);
 				sockets.in('uid_' + uid).emit('event:chats.receive', data);
@@ -42,8 +42,8 @@ module.exports = function(Messaging) {
 				};
 			}
 
-			queueObj.timeout = setTimeout(function() {
-				sendNotifications(fromUid, uids, roomId, queueObj.message, function(err) {
+			queueObj.timeout = setTimeout(function () {
+				sendNotifications(fromUid, uids, roomId, queueObj.message, function (err) {
 					if (!err) {
 						delete Messaging.notifyQueue[fromUid + ':' + roomId];
 					}
@@ -53,12 +53,12 @@ module.exports = function(Messaging) {
 	};
 
 	function sendNotifications(fromuid, uids, roomId, messageObj, callback) {
-		user.isOnline(uids, function(err, isOnline) {
+		user.isOnline(uids, function (err, isOnline) {
 			if (err) {
 				return callback(err);
 			}
 
-			uids = uids.filter(function(uid, index) {
+			uids = uids.filter(function (uid, index) {
 				return !isOnline[index] && parseInt(fromuid, 10) !== parseInt(uid, 10);
 			});
 
@@ -72,7 +72,7 @@ module.exports = function(Messaging) {
 				nid: 'chat_' + fromuid + '_' + roomId,
 				from: fromuid,
 				path: '/chats/' + messageObj.roomId
-			}, function(err, notification) {
+			}, function (err, notification) {
 				if (!err && notification) {
 					notifications.push(notification, uids, callback);
 				}
@@ -88,22 +88,22 @@ module.exports = function(Messaging) {
 		}
 
 		async.parallel({
-			userData: function(next) {
+			userData: function (next) {
 				user.getUsersFields(uids, ['uid', 'username', 'userslug'], next);
 			},
-			userSettings: function(next) {
+			userSettings: function (next) {
 				user.getMultipleUserSettings(uids, next);
 			}
-		}, function(err, results) {
+		}, function (err, results) {
 			if (err) {
 				return winston.error(err);
 			}
 
-			results.userData = results.userData.filter(function(userData, index) {
+			results.userData = results.userData.filter(function (userData, index) {
 				return userData && results.userSettings[index] && results.userSettings[index].sendChatNotifications;
 			});
 
-			async.each(results.userData, function(userData, next) {
+			async.each(results.userData, function (userData, next) {
 				emailer.send('notif_chat', userData.uid, {
 					subject: '[[email:notif.chat.subject, ' + messageObj.fromUser.username + ']]',
 					summary: '[[notifications:new_message_from, ' + messageObj.fromUser.username + ']]',
@@ -114,7 +114,7 @@ module.exports = function(Messaging) {
 					username: userData.username,
 					userslug: userData.userslug
 				}, next);
-			}, function(err) {
+			}, function (err) {
 				if (err) {
 					winston.error(err);
 				}

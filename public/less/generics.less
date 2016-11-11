@@ -88,6 +88,12 @@
 	/* Contains the user icon class as a mixin, so there's no need to include that in the template */
 	.user-icon;
 
+	&.avatar-xs {
+		width: 16px;
+		height: 16px;
+		.user-icon-style(16px, 1rem);
+	}
+
 	&.avatar-sm {
 		width: 24px;
 		height: 24px;

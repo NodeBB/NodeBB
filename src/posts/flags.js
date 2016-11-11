@@ -8,21 +8,21 @@ var db = require('../database');
 var user = require('../user');
 var analytics = require('../analytics');
 
-module.exports = function(Posts) {
+module.exports = function (Posts) {
 
-	Posts.flag = function(post, uid, reason, callback) {
+	Posts.flag = function (post, uid, reason, callback) {
 		if (!parseInt(uid, 10) || !reason) {
 			return callback();
 		}
 
 		async.waterfall([
-			function(next) {
+			function (next) {
 				async.parallel({
-					hasFlagged: async.apply(hasFlagged, post.pid, uid),
+					hasFlagged: async.apply(Posts.isFlaggedByUser, post.pid, uid),
 					exists: async.apply(Posts.exists, post.pid)
 				}, next);
 			},
-			function(results, next) {
+			function (results, next) {
 				if (!results.exists) {
 					return next(new Error('[[error:no-post]]'));
 				}
@@ -33,22 +33,22 @@ module.exports = function(Posts) {
 
 				var now = Date.now();
 				async.parallel([
-					function(next) {
+					function (next) {
 						db.sortedSetAdd('posts:flagged', now, post.pid, next);
 					},
-					function(next) {
+					function (next) {
 						db.sortedSetIncrBy('posts:flags:count', 1, post.pid, next);
 					},
-					function(next) {
+					function (next) {
 						db.incrObjectField('post:' + post.pid, 'flags', next);
 					},
-					function(next) {
+					function (next) {
 						db.sortedSetAdd('pid:' + post.pid + ':flag:uids', now, uid, next);
 					},
-					function(next) {
+					function (next) {
 						db.sortedSetAdd('pid:' + post.pid + ':flag:uid:reason', 0, uid + ':' + reason, next);
 					},
-					function(next) {
+					function (next) {
 						if (parseInt(post.uid, 10)) {
 							async.parallel([
 								async.apply(db.sortedSetIncrBy, 'users:flags', 1, post.uid),
@@ -60,8 +60,11 @@ module.exports = function(Posts) {
 						}
 					}
 				], next);
+			},
+			function (data, next) {
+				openNewFlag(post.pid, uid, next);
 			}
-		], function(err) {
+		], function (err) {
 			if (err) {
 				return callback(err);
 			}
@@ -70,21 +73,36 @@ module.exports = function(Posts) {
 		});
 	};
 
-	function hasFlagged(pid, uid, callback) {
-		db.isSortedSetMember('pid:' + pid + ':flag:uids', uid, callback);
+	function openNewFlag(pid, uid, callback) {
+		db.sortedSetScore('posts:flags:count', pid, function (err, count) {
+			if (err) {
+				return callback(err);
+			}
+			if (count === 1) {	// Only update state on new flag
+				Posts.updateFlagData(uid, pid, {
+					state: 'open'
+				}, callback);
+			} else {
+				callback();
+			}
+		});
 	}
 
-	Posts.dismissFlag = function(pid, callback) {
+	Posts.isFlaggedByUser = function (pid, uid, callback) {
+		db.isSortedSetMember('pid:' + pid + ':flag:uids', uid, callback);
+	};
+
+	Posts.dismissFlag = function (pid, callback) {
 		async.waterfall([
-			function(next) {
+			function (next) {
 				db.getObjectFields('post:' + pid, ['pid', 'uid', 'flags'], next);
 			},
-			function(postData, next) {
+			function (postData, next) {
 				if (!postData.pid) {
 					return callback();
 				}
 				async.parallel([
-					function(next) {
+					function (next) {
 						if (parseInt(postData.uid, 10)) {
 							if (parseInt(postData.flags, 10) > 0) {
 								async.parallel([
@@ -98,22 +116,22 @@ module.exports = function(Posts) {
 							next();
 						}
 					},
-					function(next) {
+					function (next) {
 						db.sortedSetsRemove([
 							'posts:flagged',
 							'posts:flags:count',
 							'uid:' + postData.uid + ':flag:pids'
 						], pid, next);
 					},
-					function(next) {
+					function (next) {
 						async.series([
-							function(next) {
-								db.getSortedSetRange('pid:' + pid + ':flag:uids', 0, -1, function(err, uids) {
+							function (next) {
+								db.getSortedSetRange('pid:' + pid + ':flag:uids', 0, -1, function (err, uids) {
 									if (err) {
 										return next(err);
 									}
 
-									async.each(uids, function(uid, next) {
+									async.each(uids, function (uid, next) {
 										var nid = 'post_flag:' + pid + ':uid:' + uid;
 										async.parallel([
 											async.apply(db.delete, 'notifications:' + nid),
@@ -126,17 +144,18 @@ module.exports = function(Posts) {
 						], next);
 					},
 					async.apply(db.deleteObjectField, 'post:' + pid, 'flags'),
-					async.apply(db.delete, 'pid:' + pid + ':flag:uid:reason')
+					async.apply(db.delete, 'pid:' + pid + ':flag:uid:reason'),
+					async.apply(db.deleteObjectFields, 'post:' + pid, ['flag:state', 'flag:assignee', 'flag:notes', 'flag:history'])
 				], next);
 			},
-			function(results, next) {
+			function (results, next) {
 				db.sortedSetsRemoveRangeByScore(['users:flags'], '-inf', 0, next);
 			}
 		], callback);
 	};
 
-	Posts.dismissAllFlags = function(callback) {
-		db.getSortedSetRange('posts:flagged', 0, -1, function(err, pids) {
+	Posts.dismissAllFlags = function (callback) {
+		db.getSortedSetRange('posts:flagged', 0, -1, function (err, pids) {
 			if (err) {
 				return callback(err);
 			}
@@ -144,8 +163,8 @@ module.exports = function(Posts) {
 		});
 	};
 
-	Posts.dismissUserFlags = function(uid, callback) {
-		db.getSortedSetRange('uid:' + uid + ':flag:pids', 0, -1, function(err, pids) {
+	Posts.dismissUserFlags = function (uid, callback) {
+		db.getSortedSetRange('uid:' + uid + ':flag:pids', 0, -1, function (err, pids) {
 			if (err) {
 				return callback(err);
 			}
@@ -153,7 +172,7 @@ module.exports = function(Posts) {
 		});
 	};
 
-	Posts.getFlags = function(set, cid, uid, start, stop, callback) {
+	Posts.getFlags = function (set, cid, uid, start, stop, callback) {
 		async.waterfall([
 			function (next) {
 				if (Array.isArray(set)) {
@@ -184,31 +203,31 @@ module.exports = function(Posts) {
 		async.waterfall([
 			function (next) {
 				async.parallel({
-					uidsReasons: function(next) {
-						async.map(pids, function(pid, next) {
+					uidsReasons: function (next) {
+						async.map(pids, function (pid, next) {
 							db.getSortedSetRange('pid:' + pid + ':flag:uid:reason', 0, -1, next);
 						}, next);
 					},
-					posts: function(next) {
+					posts: function (next) {
 						Posts.getPostSummaryByPids(pids, uid, {stripTags: false, extraFields: ['flags', 'flag:assignee', 'flag:state', 'flag:notes', 'flag:history']}, next);
 					}
 				}, next);
 			},
 			function (results, next) {
-				async.map(results.uidsReasons, function(uidReasons, next) {
-					async.map(uidReasons, function(uidReason, next) {
+				async.map(results.uidsReasons, function (uidReasons, next) {
+					async.map(uidReasons, function (uidReason, next) {
 						var uid = uidReason.split(':')[0];
 						var reason = uidReason.substr(uidReason.indexOf(':') + 1);
-						user.getUserFields(uid, ['username', 'userslug', 'picture'], function(err, userData) {
+						user.getUserFields(uid, ['username', 'userslug', 'picture'], function (err, userData) {
 							next(err, {user: userData, reason: reason});
 						});
 					}, next);
-				}, function(err, reasons) {
+				}, function (err, reasons) {
 					if (err) {
 						return callback(err);
 					}
 
-					results.posts.forEach(function(post, index) {
+					results.posts.forEach(function (post, index) {
 						if (post) {
 							post.flagReasons = reasons[index];
 						}
@@ -218,9 +237,9 @@ module.exports = function(Posts) {
 				});
 			},
 			async.apply(Posts.expandFlagHistory),
-			function(posts, next) {
+			function (posts, next) {
 				// Parse out flag data into its own object inside each post hash
-				posts = posts.map(function(postObj) {
+				async.map(posts, function (postObj, next) {
 					for(var prop in postObj) {
 						postObj.flagData = postObj.flagData || {};
 
@@ -248,34 +267,38 @@ module.exports = function(Posts) {
 						}
 					}
 
-					return postObj;
-				});
+					if (postObj.flagData.assignee) {
+						user.getUserFields(parseInt(postObj.flagData.assignee, 10), ['username', 'picture'], function (err, userData) {
+							if (err) {
+								return next(err);
+							}
 
-				setImmediate(next.bind(null, null, posts));
+							postObj.flagData.assigneeUser = userData;
+							next(null, postObj);
+						});
+					} else {
+						setImmediate(next.bind(null, null, postObj));
+					}
+				}, next);
 			}
 		], callback);
 	}
 
-	Posts.updateFlagData = function(uid, pid, flagObj, callback) {
+	Posts.updateFlagData = function (uid, pid, flagObj, callback) {
 		// Retrieve existing flag data to compare for history-saving purposes
 		var changes = [];
 		var changeset = {};
 		var prop;
 
-		Posts.getPostData(pid, function(err, postData) {
+		Posts.getPostData(pid, function (err, postData) {
 			if (err) {
 				return callback(err);
 			}
 
 			// Track new additions
 			for(prop in flagObj) {
-				if (flagObj.hasOwnProperty(prop) && !postData.hasOwnProperty('flag:' + prop)) {
+				if (flagObj.hasOwnProperty(prop) && !postData.hasOwnProperty('flag:' + prop) && flagObj[prop].length) {
 					changes.push(prop);
-				}
-
-				// Generate changeset for object modification
-				if (flagObj.hasOwnProperty(prop)) {
-					changeset['flag:' + prop] = flagObj[prop];
 				}
 			}
 
@@ -290,12 +313,17 @@ module.exports = function(Posts) {
 				}
 			}
 
+			changeset = changes.reduce(function (memo, prop) {
+				memo['flag:' + prop] = flagObj[prop];
+				return memo;
+			}, {});
+
 			// Append changes to history string
 			if (changes.length) {
 				try {
 					var history = JSON.parse(postData['flag:history'] || '[]');
 
-					changes.forEach(function(property) {
+					changes.forEach(function (property) {
 						switch(property) {
 							case 'assignee':	// intentional fall-through
 							case 'state':
@@ -323,13 +351,17 @@ module.exports = function(Posts) {
 			}
 
 			// Save flag data into post hash
-			Posts.setPostFields(pid, changeset, callback);
+			if (changes.length) {
+				Posts.setPostFields(pid, changeset, callback);
+			} else {
+				setImmediate(callback);
+			}
 		});
 	};
 
-	Posts.expandFlagHistory = function(posts, callback) {
+	Posts.expandFlagHistory = function (posts, callback) {
 		// Expand flag history
-		async.map(posts, function(post, next) {
+		async.map(posts, function (post, next) {
 			var history;
 			try {
 				history = JSON.parse(post['flag:history'] || '[]');
@@ -338,12 +370,12 @@ module.exports = function(Posts) {
 				return callback(e);
 			}
 
-			async.map(history, function(event, next) {
+			async.map(history, function (event, next) {
 				event.timestampISO = new Date(event.timestamp).toISOString();
 
 				async.parallel([
-					function(next) {
-						user.getUserFields(event.uid, ['username', 'picture'], function(err, userData) {
+					function (next) {
+						user.getUserFields(event.uid, ['username', 'picture'], function (err, userData) {
 							if (err) {
 								return next(err);
 							}
@@ -352,9 +384,9 @@ module.exports = function(Posts) {
 							next();
 						});
 					},
-					function(next) {
+					function (next) {
 						if (event.type === 'assignee') {
-							user.getUserField(parseInt(event.value, 10), 'username', function(err, username) {
+							user.getUserField(parseInt(event.value, 10), 'username', function (err, username) {
 								if (err) {
 									return next(err);
 								}
@@ -369,10 +401,10 @@ module.exports = function(Posts) {
 							setImmediate(next);
 						}
 					}
-				], function(err) {
+				], function (err) {
 					next(err, event);
 				});
-			}, function(err, history) {
+			}, function (err, history) {
 				if (err) {
 					return next(err);
 				}

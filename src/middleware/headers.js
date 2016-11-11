@@ -1,11 +1,11 @@
 'use strict';
 
 
-var meta = require('../meta');
 var _ = require('underscore');
 
+var meta = require('../meta');
 
-module.exports = function(middleware) {
+module.exports = function (middleware) {
 
 	middleware.addHeaders = function (req, res, next) {
 		var defaults = {
@@ -24,16 +24,16 @@ module.exports = function(middleware) {
 		_.defaults(headers, defaults);
 		headers = _.pick(headers, Boolean);		// Remove falsy headers
 
-		for(var key in headers) {
+		for (var key in headers) {
 			if (headers.hasOwnProperty(key)) {
-				res.setHeader(key, headers[key]);
+				res.setHeader(key, encodeURIComponent(headers[key]));
 			}
 		}
 
 		next();
 	};
 
-	middleware.addExpiresHeaders = function(req, res, next) {
+	middleware.addExpiresHeaders = function (req, res, next) {
 		if (req.app.enabled('cache')) {
 			res.setHeader("Cache-Control", "public, max-age=5184000");
 			res.setHeader("Expires", new Date(Date.now() + 5184000000).toUTCString());

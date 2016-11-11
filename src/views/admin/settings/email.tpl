@@ -25,6 +25,19 @@
 <div class="row">
 	<div class="col-sm-2 col-xs-12 settings-header">Gmail Routing</div>
 	<div class="col-sm-10 col-xs-12">
+		<div class="alert alert-warning">
+			<p>
+				There have been reports of Gmail Routing not working on accounts with heightened security. In those scenarios,
+				you will have to <a href="https://www.google.com/settings/security/lesssecureapps">configure your GMail account
+				to allow less secure apps</a>.
+			</p>
+			<p>
+				For more information about this workaround, <a href="https://nodemailer.com/using-gmail/">please consult
+				this NodeMailer article on the issue.</a> An alternative would be to utilise a third-party emailer plugin
+				such as SendGrid, Mailgun, etc. <a href="{config.relative_path}/admin/extend/plugins">Browse available plugins
+				here</a>.
+			</p>
+		</div>
 		<form>
 			<div class="checkbox">
 				<label for="email:GmailTransport:enabled" class="mdl-switch mdl-js-switch mdl-js-ripple-effect">

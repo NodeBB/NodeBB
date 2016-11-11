@@ -1,23 +1,23 @@
 "use strict";
 /* global define, socket, app, ajaxify, ace */
 
-define('admin/settings/email', ['admin/settings'], function(settings) {
+define('admin/settings/email', ['admin/settings'], function (settings) {
 	var module = {},
 		emailEditor;
 
-	module.init = function() {
+	module.init = function () {
 		configureEmailTester();
 		configureEmailEditor();
 
 		$(window).on('action:admin.settingsLoaded action:admin.settingsSaved', handleDigestHourChange);
-		$(window).on('action:admin.settingsSaved', function() {
+		$(window).on('action:admin.settingsSaved', function () {
 			socket.emit('admin.user.restartJobs');
 		});
 	};
 
 	function configureEmailTester() {
-		$('button[data-action="email.test"]').off('click').on('click', function() {
-			socket.emit('admin.email.test', {template: $('#test-email').val()}, function(err) {
+		$('button[data-action="email.test"]').off('click').on('click', function () {
+			socket.emit('admin.email.test', {template: $('#test-email').val()}, function (err) {
 				if (err) {
 					return app.alertError(err.message);
 				}
@@ -34,10 +34,10 @@ define('admin/settings/email', ['admin/settings'], function(settings) {
 		emailEditor.setTheme("ace/theme/twilight");
 		emailEditor.getSession().setMode("ace/mode/html");
 
-		emailEditor.on('change', function() {
+		emailEditor.on('change', function () {
 			var emailPath = $('#email-editor-selector').val();
 			var original;
-			ajaxify.data.emails.forEach(function(email) {
+			ajaxify.data.emails.forEach(function (email) {
 				if (email.path === emailPath) {
 					original = email.original;
 				}
@@ -46,8 +46,8 @@ define('admin/settings/email', ['admin/settings'], function(settings) {
 			$('#email-editor-holder').val(newEmail !== original ? newEmail : '');
 		});
 
-		$('button[data-action="email.revert"]').off('click').on('click', function() {
-			ajaxify.data.emails.forEach(function(email) {
+		$('button[data-action="email.revert"]').off('click').on('click', function () {
+			ajaxify.data.emails.forEach(function (email) {
 				if (email.path === $('#email-editor-selector').val()) {
 					emailEditor.getSession().setValue(email.original);
 					$('#email-editor-holder').val('');
@@ -59,7 +59,7 @@ define('admin/settings/email', ['admin/settings'], function(settings) {
 	}
 
 	function updateEmailEditor() {
-		ajaxify.data.emails.forEach(function(email) {
+		ajaxify.data.emails.forEach(function (email) {
 			if (email.path === $('#email-editor-selector').val()) {
 				emailEditor.getSession().setValue(email.text);
 				$('#email-editor-holder')
@@ -78,7 +78,7 @@ define('admin/settings/email', ['admin/settings'], function(settings) {
 			hour = 0;
 		}
 
-		socket.emit('meta.getServerTime', {}, function(err, now) {
+		socket.emit('meta.getServerTime', {}, function (err, now) {
 			if (err) {
 				return app.alertError(err.message);
 			}

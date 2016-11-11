@@ -9,11 +9,11 @@ var Blacklist = {
 		_rules: []
 	};
 
-Blacklist.load = function(callback) {
+Blacklist.load = function (callback) {
 	async.waterfall([
 		async.apply(db.get, 'ip-blacklist-rules'),
 		async.apply(Blacklist.validate)
-	], function(err, rules) {
+	], function (err, rules) {
 		if (err) {
 			return callback(err);
 		}
@@ -33,8 +33,8 @@ Blacklist.load = function(callback) {
 	});
 };
 
-Blacklist.save = function(rules, callback) {
-	db.set('ip-blacklist-rules', rules, function(err) {
+Blacklist.save = function (rules, callback) {
+	db.set('ip-blacklist-rules', rules, function (err) {
 		if (err) {
 			return callback(err);
 		}
@@ -42,15 +42,15 @@ Blacklist.save = function(rules, callback) {
 	});
 };
 
-Blacklist.get = function(callback) {
+Blacklist.get = function (callback) {
 	db.get('ip-blacklist-rules', callback);
 };
 
-Blacklist.test = function(clientIp, callback) {
+Blacklist.test = function (clientIp, callback) {
 	if (
 		Blacklist._rules.ipv4.indexOf(clientIp) === -1	// not explicitly specified in ipv4 list
 		&& Blacklist._rules.ipv6.indexOf(clientIp) === -1	// not explicitly specified in ipv6 list
-		&& !Blacklist._rules.cidr.some(function(subnet) {
+		&& !Blacklist._rules.cidr.some(function (subnet) {
 			return ip.cidrSubnet(subnet).contains(clientIp);
 		})	// not in a blacklisted cidr range
 	) {
@@ -71,7 +71,7 @@ Blacklist.test = function(clientIp, callback) {
 	}
 };
 
-Blacklist.validate = function(rules, callback) {
+Blacklist.validate = function (rules, callback) {
 	rules = (rules || '').split('\n');
 	var ipv4 = [];
 	var ipv6 = [];
@@ -84,13 +84,13 @@ Blacklist.validate = function(rules, callback) {
 
 	// Filter out blank lines and lines starting with the hash character (comments)
 	// Also trim inputs and remove inline comments
-	rules = rules.map(function(rule) {
+	rules = rules.map(function (rule) {
 		rule = rule.replace(inlineCommentMatch, '').trim();
 		return rule.length && !rule.startsWith('#') ? rule : null;
 	}).filter(Boolean);
 
 	// Filter out invalid rules
-	rules = rules.filter(function(rule) {
+	rules = rules.filter(function (rule) {
 		if (whitelist.indexOf(rule) !== -1) {
 			invalid.push(rule);
 			return false;

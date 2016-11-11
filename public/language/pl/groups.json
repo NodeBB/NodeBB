@@ -24,7 +24,7 @@
     "details.has_no_posts": "Członkowie tej grupy nie napisali żadnych postów.",
     "details.latest_posts": "Ostatnie posty",
     "details.private": "Prywatna",
-    "details.disableJoinRequests": "Disable join requests",
+    "details.disableJoinRequests": "Wyłączono prośbę o dołączenie",
     "details.grant": "Nadaj/Cofnij prawa Właściciela",
     "details.kick": "Wykop",
     "details.owner_options": "Administracja grupy",
@@ -51,6 +51,6 @@
     "membership.reject": "Odrzuć",
     "new-group.group_name": "Nazwa Grupy:",
     "upload-group-cover": "Załaduj zdjęcie tła grupy",
-    "bulk-invite-instructions": "Enter a list of comma separated usernames to invite to this group",
-    "bulk-invite": "Bulk Invite"
+    "bulk-invite-instructions": "Wprowadź listę oddzielonych przecinkami nazw użytkowników, których chcesz zaprosić do tej grupy",
+    "bulk-invite": "Wielki zaproszenie"
 }

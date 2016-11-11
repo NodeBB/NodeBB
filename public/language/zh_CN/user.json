@@ -23,7 +23,7 @@
     "profile": "资料",
     "profile_views": "资料浏览",
     "reputation": "威望",
-    "favourites": "书签",
+    "bookmarks": "书签",
     "watched": "已订阅",
     "followers": "粉丝",
     "following": "关注",
@@ -93,7 +93,7 @@
     "incoming-message-sound": "消息到达提示音",
     "outgoing-message-sound": "消息送出提示音",
     "notification-sound": "通知提示音",
-    "no-sound": "No sound",
+    "no-sound": "没有声音",
     "browsing": "浏览设置",
     "open_links_in_new_tab": "在新标签打开外部链接",
     "enable_topic_searching": "启用主题内搜索",
@@ -122,8 +122,8 @@
     "info.banned-permanently": "永久封禁",
     "info.banned-reason-label": "原因",
     "info.banned-no-reason": "没有原因",
-    "info.username-history": "Username History",
-    "info.email-history": "Email History",
-    "info.moderation-note": "Moderation Note",
-    "info.moderation-note.success": "Moderation note saved"
+    "info.username-history": "历史用户名",
+    "info.email-history": "历史邮箱",
+    "info.moderation-note": "版主留言",
+    "info.moderation-note.success": "修改未保存"
 }
