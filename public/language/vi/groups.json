@@ -51,6 +51,6 @@
     "membership.reject": "Từ chối",
     "new-group.group_name": "Tên nhóm",
     "upload-group-cover": "Tải ảnh bìa lên cho nhóm",
-    "bulk-invite-instructions": "Enter a list of comma separated usernames to invite to this group",
-    "bulk-invite": "Bulk Invite"
+    "bulk-invite-instructions": "Nhập danh sách username, ngăn cách bằng dấu phẩy, để mời vào nhóm",
+    "bulk-invite": "Mời nhiều người"
 }
