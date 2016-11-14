@@ -132,7 +132,7 @@ Controllers.login = function (req, res, next) {
 				external: data.authentication[0].url
 			});
 		} else {
-			return res.redirect(data.authentication[0].url);
+			return res.redirect(nconf.get('relative_path') + data.authentication[0].url);
 		}
 	}
 	if (req.uid) {
