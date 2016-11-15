@@ -30,7 +30,7 @@ describe('socket.io', function () {
 	before(function (done) {
 		async.series([
 			async.apply(user.create, { username: 'admin', password: 'adminpwd' }),
-			async.apply(user.create, { username: 'regular', password: 'regularpwd' }),
+			async.apply(user.create, { username: 'regular', password: 'regularpwd', email: 'regular@test.com'}),
 			async.apply(categories.create, {
 				name: 'Test Category',
 				description: 'Test category created by testing script'
@@ -42,7 +42,7 @@ describe('socket.io', function () {
 			adminUid = data[0];
 			regularUid = data[1];
 			cid = data[2].cid;
-
+			groups.resetCache();
 			groups.join('administrators', data[0], done);
 		});
 	});
@@ -168,6 +168,110 @@ describe('socket.io', function () {
 				assert(!isBanned);
 				done();
 			});
+		});
+	});
+
+	it('should make user admin', function (done) {
+		var socketAdmin = require('../src/socket.io/admin');
+		socketAdmin.user.makeAdmins({uid: adminUid}, [regularUid], function (err) {
+			assert.ifError(err);
+			groups.isMember(regularUid, 'administrators', function (err, isMember) {
+				assert.ifError(err);
+				assert(isMember);
+				done();
+			});
+		});
+	});
+
+	it('should make user non-admin', function (done) {
+		var socketAdmin = require('../src/socket.io/admin');
+		socketAdmin.user.removeAdmins({uid: adminUid}, [regularUid], function (err) {
+			assert.ifError(err);
+			groups.isMember(regularUid, 'administrators', function (err, isMember) {
+				assert.ifError(err);
+				assert(!isMember);
+				done();
+			});
+		});
+	});
+
+	describe('create/delete', function () {
+		var socketAdmin = require('../src/socket.io/admin');
+		var uid;
+		it('should create a user', function (done) {
+			socketAdmin.user.createUser({uid: adminUid}, {username: 'foo1'}, function (err, _uid) {
+				assert.ifError(err);
+				uid = _uid;
+				groups.isMember(uid, 'registered-users', function (err, isMember) {
+					assert.ifError(err);
+					assert(isMember);
+					done();
+				});
+			});
+		});
+
+		it('should delete users', function (done) {
+			socketAdmin.user.deleteUsers({uid: adminUid}, [uid], function (err) {
+				assert.ifError(err);
+				groups.isMember(uid, 'registered-users', function (err, isMember) {
+					assert.ifError(err);
+					assert(!isMember);
+					done();
+				});
+			});
+		});
+
+		it('should delete users and their content', function (done) {
+			socketAdmin.user.deleteUsersAndContent({uid: adminUid}, [uid], function (err) {
+				assert.ifError(err);
+				done();
+			});
+		});
+	});
+
+	it('should error with invalid data', function (done) {
+		var socketAdmin = require('../src/socket.io/admin');
+		socketAdmin.user.createUser({uid: adminUid}, null, function (err) {
+			assert.equal(err.message, '[[error:invalid-data]]');
+			done();
+		});
+	});
+
+	it('should reset lockouts', function (done) {
+		var socketAdmin = require('../src/socket.io/admin');
+		socketAdmin.user.resetLockouts({uid: adminUid}, [regularUid], function (err) {
+			assert.ifError(err);
+			done();
+		});
+	});
+
+	it('should reset flags', function (done) {
+		var socketAdmin = require('../src/socket.io/admin');
+		socketAdmin.user.resetFlags({uid: adminUid}, [regularUid], function (err) {
+			assert.ifError(err);
+			done();
+		});
+	});
+
+	it('should validate emails', function (done) {
+		var socketAdmin = require('../src/socket.io/admin');
+		socketAdmin.user.validateEmail({uid: adminUid}, [regularUid], function (err) {
+			assert.ifError(err);
+			user.getUserField(regularUid, 'email:confirmed', function (err, emailConfirmed) {
+				assert.ifError(err);
+				assert.equal(parseInt(emailConfirmed, 10), 1);
+				done();
+			});
+		});
+	});
+
+	it('should search users', function (done) {
+		var socketAdmin = require('../src/socket.io/admin');
+		socketAdmin.user.search({uid: adminUid}, {query: 'reg', searchBy: 'username'}, function (err, data) {
+			assert.ifError(err);
+			assert.equal(data.matchCount, 1);
+			assert.equal(data.users[0].username, 'regular');
+			done();
 		});
 	});
 
