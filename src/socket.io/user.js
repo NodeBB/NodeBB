@@ -13,6 +13,7 @@ var events = require('../events');
 var emailer = require('../emailer');
 var db = require('../database');
 var apiController = require('../controllers/api');
+var privileges = require('../privileges');
 
 var SocketUser = {};
 
@@ -211,10 +212,7 @@ SocketUser.saveSettings = function (socket, data, callback) {
 
 	async.waterfall([
 		function (next) {
-			if (socket.uid === parseInt(data.uid, 10)) {
-				return next(null, true);
-			}
-			user.isAdminOrGlobalMod(socket.uid, next);
+			privileges.users.canEdit(socket.uid, data.uid, next);
 		},
 		function (allowed, next) {
 			if (!allowed) {
@@ -326,7 +324,7 @@ SocketUser.setModerationNote = function (socket, data, callback) {
 
 	async.waterfall([
 		function (next) {
-			user.isAdminOrGlobalMod(socket.uid, next);
+			privileges.users.canEdit(socket.uid, data.uid, next);
 		},
 		function (allowed, next) {
 			if (allowed) {

@@ -2,8 +2,10 @@
 
 var async = require('async');
 var nconf =  require('nconf');
+
 var meta = require('../meta');
 var user = require('../user');
+var privileges = require('../privileges');
 
 var controllers = {
 	helpers: require('../controllers/helpers')
@@ -29,11 +31,7 @@ module.exports = function (middleware) {
 				user.getUidByUserslug(req.params.userslug, next);
 			},
 			function (uid, next) {
-				if (parseInt(uid, 10) === req.uid) {
-					return next(null, true);
-				}
-
-				user.isAdminOrGlobalMod(req.uid, next);
+				privileges.users.canEdit(req.uid, uid, next);
 			},
 			function (allowed, next) {
 				if (allowed) {

@@ -12,6 +12,7 @@ var plugins = require('../../plugins');
 var helpers = require('../helpers');
 var groups = require('../../groups');
 var accountHelpers = require('./helpers');
+var privileges = require('../../privileges');
 
 var editController = {};
 
@@ -118,11 +119,8 @@ editController.uploadPicture = function (req, res, next) {
 		},
 		function (uid, next) {
 			updateUid = uid;
-			if (parseInt(req.uid, 10) === parseInt(uid, 10)) {
-				return next(null, true);
-			}
 
-			user.isAdminOrGlobalMod(req.uid, next);
+			privileges.users.canEdit(req.uid, uid, next);
 		},
 		function (isAllowed, next) {
 			if (!isAllowed) {

@@ -5,6 +5,7 @@ var async = require('async');
 var user = require('../../user');
 var meta = require('../../meta');
 var events = require('../../events');
+var privileges = require('../../privileges');
 
 module.exports = function (SocketUser) {
 
@@ -127,18 +128,25 @@ module.exports = function (SocketUser) {
 					return next(new Error('[[error:invalid-data]]'));
 				}
 
-				user.isAdminOrGlobalMod(socket.uid, next);
+				async.parallel({
+					isAdminOrGlobalMod: function (next) {
+						user.isAdminOrGlobalMod(socket.uid, next);
+					},
+					canEdit: function (next) {
+						privileges.users.canEdit(socket.uid, data.uid, next);
+					}
+				}, next);
 			},
-			function (isAdminOrGlobalMod, next) {
-				if (!isAdminOrGlobalMod && socket.uid !== parseInt(data.uid, 10)) {
+			function (results, next) {
+				if (!results.canEdit) {
 					return next(new Error('[[error:no-privileges]]'));
 				}
 
-				if (!isAdminOrGlobalMod && parseInt(meta.config['username:disableEdit'], 10) === 1) {
+				if (!results.isAdminOrGlobalMod && parseInt(meta.config['username:disableEdit'], 10) === 1) {
 					data.username = oldUserData.username;
 				}
 
-				if (!isAdminOrGlobalMod && parseInt(meta.config['email:disableEdit'], 10) === 1) {
+				if (!results.isAdminOrGlobalMod && parseInt(meta.config['email:disableEdit'], 10) === 1) {
 					data.email = oldUserData.email;
 				}
 
