@@ -44,7 +44,7 @@
 		<div class="panel panel-default">
 			<div class="panel-body">
 				<input class="form-control" type="text" id="tag-search" placeholder="Search for tags..."/><br/>
-				Click <a href="/admin/settings/tags">here</a> to visit the tag settings page.
+				Click <a href="{config.relative_path}/admin/settings/tags">here</a> to visit the tag settings page.
 			</div>
 		</div>
 	</div>
