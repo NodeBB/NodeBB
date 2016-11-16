@@ -11,6 +11,7 @@ var privileges = require('../../privileges');
 var notifications = require('../../notifications');
 var plugins = require('../../plugins');
 var meta = require('../../meta');
+var utils = require('../../../public/src/utils');
 
 module.exports = function (SocketPosts) {
 
@@ -51,7 +52,8 @@ module.exports = function (SocketPosts) {
 				}, next);
 			},
 			function (user, next) {
-				if (!user.isAdminOrMod && parseInt(user.userData.reputation, 10) < parseInt(meta.config['privileges:flag'] || 1, 10)) {
+				var minimumReputation = utils.isNumber(meta.config['privileges:flag']) ? parseInt(meta.config['privileges:flag'], 10) : 1;
+				if (!user.isAdminOrMod && parseInt(user.userData.reputation, 10) < minimumReputation) {
 					return next(new Error('[[error:not-enough-reputation-to-flag]]'));
 				}
 
@@ -163,9 +165,8 @@ module.exports = function (SocketPosts) {
 					return memo;
 				}, payload);
 
-				next(null, socket.uid, data.pid, payload);
-			},
-			async.apply(posts.updateFlagData)
+				posts.updateFlagData(socket.uid, data.pid, payload, next);
+			}
 		], callback);
 	};
 };
