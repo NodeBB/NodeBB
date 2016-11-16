@@ -79,7 +79,7 @@ Loader.addWorkerEvents = function (worker) {
 		if (!(worker.suicide || code === 0)) {
 			console.log('[cluster] Spinning up another process...');
 
-			forkWorker(worker.index, worker.isPrimary);
+			forkWorker(worker.index, worker.isPrimary, true);
 		}
 	});
 
@@ -153,7 +153,7 @@ Loader.start = function (callback) {
 	console.log('Clustering enabled: Spinning up ' + numProcs + ' process(es).\n');
 
 	for (var x = 0; x < numProcs; ++x) {
-		forkWorker(x, x === 0);
+		forkWorker(x, x === 0, false);
 	}
 
 	if (callback) {
@@ -161,8 +161,9 @@ Loader.start = function (callback) {
 	}
 };
 
-function forkWorker(index, isPrimary) {
+function forkWorker(index, isPrimary, isRestart) {
 	var ports = getPorts();
+	var args = [];
 
 	if(!ports[index]) {
 		return console.log('[cluster] invalid port for worker : ' + index + ' ports: ' + ports.length);
@@ -172,7 +173,12 @@ function forkWorker(index, isPrimary) {
 	process.env.isCluster = ports.length > 1 ? true : false;
 	process.env.port = ports[index];
 
-	var worker = fork('app.js', [], {
+	// If primary node restarts, there's no need to mark it primary any longer (isPrimary used on startup only)
+	if (isPrimary && isRestart) {
+		args.push('--from-file', 'js,clientLess,acpLess,tpl');
+	}
+
+	var worker = fork('app.js', args, {
 		silent: silent,
 		env: process.env
 	});
