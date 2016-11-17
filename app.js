@@ -260,7 +260,7 @@ function setup() {
 		async.apply(install.setup),
 		async.apply(loadConfig),
 		async.apply(build, true)
-	], function(err, data) {
+	], function (err, data) {
 		// Disregard build step data
 		data = data[0];
 
@@ -294,17 +294,17 @@ function setup() {
 	});
 };
 
-function build (targets, callback) {
+function build(targets, callback) {
 	var db = require('./src/database');
 	var meta = require('./src/meta');
 	var valid = ['js', 'css', 'tpl'];
-	var step = function(target, next) {
+	var step = function (target, next) {
 		winston.info('[build] Build step completed in ' + ((Date.now() - startTime) / 1000) + 's');
 		next();
 	};
 	var startTime;
 
-	targets = (targets === true ? valid : targets.split(',').filter(function(target) {
+	targets = (targets === true ? valid : targets.split(',').filter(function (target) {
 		return valid.indexOf(target) !== -1;
 	}));
 
@@ -323,7 +323,7 @@ function build (targets, callback) {
 		}
 
 		// eachSeries because it potentially(tm) runs faster on Windows this way
-		async.eachSeries(targets, function(target, next) {
+		async.eachSeries(targets, function (target, next) {
 			switch(target) {
 				case 'js':
 					winston.info('[build] Building javascript');
@@ -351,7 +351,7 @@ function build (targets, callback) {
 					setImmediate(next);
 					break;
 			}
-		}, function(err) {
+		}, function (err) {
 			if (err) {
 				winston.error('[build] Encountered error during build step: ' + err.message);
 				return process.exit(1);
@@ -368,7 +368,7 @@ function build (targets, callback) {
 	});
 };
 
-function upgrade () {
+function upgrade() {
 	var db = require('./src/database');
 	var meta = require('./src/meta');
 	var upgrade = require('./src/upgrade');
@@ -378,7 +378,7 @@ function upgrade () {
 		async.apply(meta.configs.init),
 		async.apply(upgrade.upgrade),
 		async.apply(build, true)
-	], function(err) {
+	], function (err) {
 		if (err) {
 			winston.error(err.stack);
 			process.exit(1);
