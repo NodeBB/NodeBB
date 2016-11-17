@@ -38,6 +38,7 @@ module.exports = function (grunt) {
 			return incomplete.indexOf(ext) === -1;
 		});
 
+		// @psychobunny, re: #5211, instead of this, just call `node app --build js` or `node app --build css,tpl`
 		updateArgs.push('--from-file=' + fromFile.join(','));
 		incomplete.push(compiling);
 
