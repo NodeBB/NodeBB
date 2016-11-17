@@ -335,6 +335,13 @@ switch(process.argv[2]) {
 		});
 		break;
 
+	case 'build':
+		var args = process.argv.slice(0);
+		args[2] = '--' + args[2];
+
+		fork(args);
+		break;
+
 	case 'setup':
 		cproc.fork('app.js', ['--setup'], {
 			cwd: __dirname,
@@ -401,13 +408,14 @@ switch(process.argv[2]) {
 
 	default:
 		process.stdout.write('\nWelcome to NodeBB\n\n'.bold);
-		process.stdout.write('Usage: ./nodebb {start|stop|reload|restart|log|setup|reset|upgrade|dev}\n\n');
+		process.stdout.write('Usage: ./nodebb {start|slog|stop|reload|restart|log|build|setup|reset|upgrade|dev}\n\n');
 		process.stdout.write('\t' + 'start'.yellow + '\t\tStart the NodeBB server\n');
 		process.stdout.write('\t' + 'slog'.yellow + '\t\tStarts the NodeBB server and displays the live output log\n');
 		process.stdout.write('\t' + 'stop'.yellow + '\t\tStops the NodeBB server\n');
 		process.stdout.write('\t' + 'reload'.yellow + '\t\tRestarts NodeBB\n');
 		process.stdout.write('\t' + 'restart'.yellow + '\t\tRestarts NodeBB\n');
 		process.stdout.write('\t' + 'log'.yellow + '\t\tOpens the logging interface (useful for debugging)\n');
+		process.stdout.write('\t' + 'build'.yellow + '\t\tCompiles javascript, css stylesheets, and templates\n');
 		process.stdout.write('\t' + 'setup'.yellow + '\t\tRuns the NodeBB setup script\n');
 		process.stdout.write('\t' + 'reset'.yellow + '\t\tDisables all plugins, restores the default theme.\n');
 		process.stdout.write('\t' + 'activate'.yellow + '\tActivates a plugin for the next startup of NodeBB.\n');
