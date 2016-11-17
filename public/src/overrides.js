@@ -160,7 +160,7 @@ if ('undefined' !== typeof window) {
 			els.each(function () {
 				iso = this.getAttribute('title');
 				this.setAttribute('datetime', iso);
-				this.setAttribute('title', new Date(iso).toLocaleString(config.userLang.replace('_', '-'), options));
+				this.setAttribute('title', new Date(iso).toLocaleString(config.userLang.replace('_', '-').replace('@', '-x-'), options));
 			});
 
 			timeagoFn.apply(this, arguments);
