@@ -85,7 +85,7 @@ if (nconf.get('setup') || nconf.get('install')) {
 	start();
 }
 
-function loadConfig() {
+function loadConfig(callback) {
 	winston.verbose('* using configuration stored in: %s', configFile);
 
 	nconf.file({
@@ -111,6 +111,10 @@ function loadConfig() {
 
 	if (nconf.get('url')) {
 		nconf.set('url_parsed', url.parse(nconf.get('url')));
+	}
+
+	if (typeof callback === 'function') {
+		callback();
 	}
 }
 
@@ -252,7 +256,14 @@ function setup() {
 	process.stdout.write('\nThis looks like a new installation, so you\'ll have to answer a few questions about your environment before we can proceed.\n');
 	process.stdout.write('Press enter to accept the default setting (shown in brackets).\n');
 
-	install.setup(function (err, data) {
+	async.series([
+		async.apply(install.setup),
+		async.apply(loadConfig),
+		async.apply(build, true)
+	], function(err, data) {
+		// Disregard build step data
+		data = data[0];
+
 		var separator = '     ';
 		if (process.stdout.columns > 10) {
 			for(var x = 0,cols = process.stdout.columns - 10; x < cols; x++) {
@@ -281,9 +292,9 @@ function setup() {
 
 		process.exit();
 	});
-}
+};
 
-function build (targets) {
+function build (targets, callback) {
 	var db = require('./src/database');
 	var meta = require('./src/meta');
 	var valid = ['js', 'css', 'tpl'];
@@ -336,7 +347,7 @@ function build (targets) {
 					break;
 
 				default:
-					winston.warn('[build] Unknown target: \'' + target + '\'');
+					winston.warn('[build] Unknown build target: \'' + target + '\'');
 					setImmediate(next);
 					break;
 			}
@@ -346,21 +357,34 @@ function build (targets) {
 				return process.exit(1);
 			}
 
-			winston.info('[build] Asset compilation successful. Exiting.');
-			process.exit(0);
+			winston.info('[build] Asset compilation successful.');
+
+			if (typeof callback === 'function') {
+				callback();
+			} else {
+				process.exit(0);
+			}
 		});
 	});
 };
 
 function upgrade () {
-	require('./src/database').init(function (err) {
+	var db = require('./src/database');
+	var meta = require('./src/meta');
+	var upgrade = require('./src/upgrade');
+
+	async.series([
+		async.apply(db.init),
+		async.apply(meta.configs.init),
+		async.apply(upgrade.upgrade),
+		async.apply(build, true)
+	], function(err) {
 		if (err) {
 			winston.error(err.stack);
-			process.exit();
+			process.exit(1);
+		} else {
+			process.exit(0);
 		}
-		require('./src/meta').configs.init(function () {
-			require('./src/upgrade').upgrade();
-		});
 	});
 };
 
