@@ -81,25 +81,9 @@ module.exports = function (Meta) {
 				acpSource += '\n@import (inline) "..' + path.sep + 'public/vendor/colorpicker/colorpicker.css";\n';
 				acpSource += '\n@import (inline) "..' + path.sep + 'public/vendor/jquery/css/smoothness/jquery-ui.css";';
 
-				var fromFile = nconf.get('from-file') || '';
-				
 				async.series([
-					function (next) {
-						if (fromFile.match('clientLess')) {
-							winston.info('[minifier] Compiling front-end LESS files skipped');
-							return Meta.css.getFromFile(path.join(__dirname, '../../public/stylesheet.css'), 'cache', next);
-						}
-
-						minify(source, paths, 'cache', next);
-					},
-					function (next) {
-						if (fromFile.match('acpLess')) {
-							winston.info('[minifier] Compiling ACP LESS files skipped');
-							return Meta.css.getFromFile(path.join(__dirname, '../../public/admin.css'), 'acpCache', next);
-						}
-						
-						minify(acpSource, paths, 'acpCache', next);
-					}
+					async.apply(minify, source, paths, 'cache'),
+					async.apply(minify, acpSource, paths, 'acpCache')
 				], function (err, minified) {
 					if (err) {
 						return callback(err);
@@ -109,8 +93,8 @@ module.exports = function (Meta) {
 					if (process.send) {
 						process.send({
 							action: 'css-propagate',
-							cache: fromFile.match('clientLess') ? Meta.css.cache : minified[0],
-							acpCache: fromFile.match('acpLess') ? Meta.css.acpCache : minified[1]
+							cache: minified[0],
+							acpCache: minified[1]
 						});
 					}
 
@@ -119,6 +103,30 @@ module.exports = function (Meta) {
 					callback();
 				});
 			});
+		});
+	};
+
+	Meta.css.getFromFile = function(callback) {
+		async.series([
+			async.apply(Meta.css.loadFile, path.join(__dirname, '../../public/stylesheet.css'), 'cache'),
+			async.apply(Meta.css.loadFile, path.join(__dirname, '../../public/admin.css'), 'acpCache')
+		], function (err, minified) {
+			if (err) {
+				return callback(err);
+			}
+
+			// Propagate to other workers
+			if (process.send) {
+				process.send({
+					action: 'css-propagate',
+					cache: Meta.css.cache,
+					acpCache: Meta.css.acpCache
+				});
+			}
+
+			emitter.emit('meta:css.compiled');
+
+			callback();
 		});
 	};
 
@@ -166,7 +174,7 @@ module.exports = function (Meta) {
 		});
 	};
 
-	Meta.css.getFromFile = function (filePath, filename, callback) {
+	Meta.css.loadFile = function (filePath, filename, callback) {
 		winston.verbose('[meta/css] Reading stylesheet ' + filePath.split('/').pop() + ' from file');
 
 		fs.readFile(filePath, function (err, file) {

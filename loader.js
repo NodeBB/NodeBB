@@ -173,11 +173,6 @@ function forkWorker(index, isPrimary, isRestart) {
 	process.env.isCluster = ports.length > 1 ? true : false;
 	process.env.port = ports[index];
 
-	// If primary node restarts, there's no need to mark it primary any longer (isPrimary used on startup only)
-	if (isPrimary && isRestart) {
-		args.push('--from-file', 'js,clientLess,acpLess,tpl');
-	}
-
 	var worker = fork('app.js', args, {
 		silent: silent,
 		env: process.env

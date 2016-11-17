@@ -84,15 +84,7 @@ module.exports.listen = function (callback) {
 
 function initializeNodeBB(callback) {
 	winston.info('initializing NodeBB ...');
-
-	var skipJS;
-	var fromFile = nconf.get('from-file') || '';
 	var middleware = require('./middleware');
-
-	if (fromFile.match('js')) {
-		winston.info('[minifier] Minifying client-side JS skipped');
-		skipJS = true;
-	}
 
 	async.waterfall([
 		async.apply(meta.themes.setupPaths),
@@ -116,10 +108,13 @@ function initializeNodeBB(callback) {
 		},
 		function (next) {
 			async.series([
-				async.apply(meta.templates.compile),
-				async.apply(!skipJS ? meta.js.minify : meta.js.getFromFile, 'nodebb.min.js'),
-				async.apply(!skipJS ? meta.js.minify : meta.js.getFromFile, 'acp.min.js'),
-				async.apply(meta.css.minify),
+				async.apply(function(next) {
+					emitter.emit('templates:compiled');
+					setImmediate(next);
+				}),
+				async.apply(meta.js.getFromFile, 'nodebb.min.js'),
+				async.apply(meta.js.getFromFile, 'acp.min.js'),
+				async.apply(meta.css.getFromFile),
 				async.apply(meta.sounds.init),
 				async.apply(languages.init),
 				async.apply(meta.blacklist.load)

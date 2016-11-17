@@ -17,14 +17,9 @@ var searchIndex = {};
 
 Templates.compile = function (callback) {
 	callback = callback || function () {};
-	var fromFile = nconf.get('from-file') || '';
 
-	if (nconf.get('isPrimary') === 'false' || fromFile.match('tpl')) {
-		if (fromFile.match('tpl')) {
-			emitter.emit('templates:compiled');
-			winston.info('[minifier] Compiling templates skipped');
-		}
-
+	if (nconf.get('isPrimary') === 'false') {
+		emitter.emit('templates:compiled');
 		return callback();
 	}
 
