@@ -280,9 +280,9 @@ function build(targets, callback) {
 	var db = require('./src/database');
 	var meta = require('./src/meta');
 	var plugins = require('./src/plugins');
-	var valid = ['js', 'css', 'tpl'];
+	var valid = ['js', 'clientCSS', 'acpCSS', 'tpl'];
 	var step = function (target, next) {
-		winston.info('[build] Build step completed in ' + ((Date.now() - startTime) / 1000) + 's');
+		winston.info('[build]  => Completed in ' + ((Date.now() - startTime) / 1000) + 's');
 		next();
 	};
 	var startTime;
@@ -318,10 +318,16 @@ function build(targets, callback) {
 					], step.bind(this, target, next));
 					break;
 
-				case 'css':
-					winston.info('[build] Building CSS stylesheets');
+				case 'clientCSS':
+					winston.info('[build] Building client-side CSS');
 					startTime = Date.now();
-					meta.css.minify(step.bind(this, target, next));
+					meta.css.minify('stylesheet.css', step.bind(this, target, next));
+					break;
+
+				case 'acpCSS':
+					winston.info('[build] Building admin control panel CSS');
+					startTime = Date.now();
+					meta.css.minify('admin.css', step.bind(this, target, next));
 					break;
 
 				case 'tpl':

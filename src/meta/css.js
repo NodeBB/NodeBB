@@ -21,7 +21,7 @@ module.exports = function (Meta) {
 	Meta.css.cache = undefined;
 	Meta.css.acpCache = undefined;
 
-	Meta.css.minify = function (callback) {
+	Meta.css.minify = function (target, callback) {
 		callback = callback || function () {};
 
 		winston.verbose('[meta/css] Minifying LESS/CSS');
@@ -61,27 +61,26 @@ module.exports = function (Meta) {
 
 				var acpSource = source;
 
-				source += '\n@import (inline) "..' + path.sep + '..' + path.sep + 'public/vendor/jquery/css/smoothness/jquery-ui.css";';
-				source += '\n@import (inline) "..' + path.sep + '..' + path.sep + 'public/vendor/jquery/bootstrap-tagsinput/bootstrap-tagsinput.css";';
-				source += '\n@import (inline) "..' + path.sep + 'public/vendor/colorpicker/colorpicker.css";';
-				source += '\n@import "..' + path.sep + '..' + path.sep + 'public/less/flags.less";';
-				source += '\n@import "..' + path.sep + '..' + path.sep + 'public/less/blacklist.less";';
-				source += '\n@import "..' + path.sep + '..' + path.sep + 'public/less/generics.less";';
-				source += '\n@import "..' + path.sep + '..' + path.sep + 'public/less/mixins.less";';
-				source += '\n@import "..' + path.sep + '..' + path.sep + 'public/less/global.less";';
-				source = '@import "./theme";\n' + source;
+				if (target !== 'admin.css') {
+					source += '\n@import (inline) "..' + path.sep + '..' + path.sep + 'public/vendor/jquery/css/smoothness/jquery-ui.css";';
+					source += '\n@import (inline) "..' + path.sep + '..' + path.sep + 'public/vendor/jquery/bootstrap-tagsinput/bootstrap-tagsinput.css";';
+					source += '\n@import (inline) "..' + path.sep + 'public/vendor/colorpicker/colorpicker.css";';
+					source += '\n@import "..' + path.sep + '..' + path.sep + 'public/less/flags.less";';
+					source += '\n@import "..' + path.sep + '..' + path.sep + 'public/less/blacklist.less";';
+					source += '\n@import "..' + path.sep + '..' + path.sep + 'public/less/generics.less";';
+					source += '\n@import "..' + path.sep + '..' + path.sep + 'public/less/mixins.less";';
+					source += '\n@import "..' + path.sep + '..' + path.sep + 'public/less/global.less";';
+					source = '@import "./theme";\n' + source;
 
-				acpSource += '\n@import "..' + path.sep + 'public/less/admin/admin";\n';
-				acpSource += '\n@import "..' + path.sep + 'public/less/generics.less";\n';
-				acpSource += '\n@import (inline) "..' + path.sep + 'public/vendor/colorpicker/colorpicker.css";\n';
-				acpSource += '\n@import (inline) "..' + path.sep + 'public/vendor/jquery/css/smoothness/jquery-ui.css";';
+					minify(source, paths, 'cache', callback);
+				} else {
+					acpSource += '\n@import "..' + path.sep + 'public/less/admin/admin";\n';
+					acpSource += '\n@import "..' + path.sep + 'public/less/generics.less";\n';
+					acpSource += '\n@import (inline) "..' + path.sep + 'public/vendor/colorpicker/colorpicker.css";\n';
+					acpSource += '\n@import (inline) "..' + path.sep + 'public/vendor/jquery/css/smoothness/jquery-ui.css";';
 
-				async.series([
-					async.apply(minify, source, paths, 'cache'),
-					async.apply(minify, acpSource, paths, 'acpCache')
-				], function (err) {
-					callback(err);
-				});
+					minify(acpSource, paths, 'acpCache', callback);
+				}
 			});
 		});
 	};
