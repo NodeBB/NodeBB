@@ -2,8 +2,9 @@
 
 var fork = require('child_process').fork,
 	env = process.env,
-	worker,
-	incomplete = [];
+	worker, updateWorker,
+	incomplete = [],
+	running = 0;
 
 
 module.exports = function (grunt) {
@@ -19,39 +20,44 @@ module.exports = function (grunt) {
 			time = Date.now();
 		
 		if (target === 'lessUpdated_Client') {
-			fromFile = ['js', 'tpl', 'acpLess'];
-			compiling = 'clientLess';
+			compiling = 'clientCSS';
 		} else if (target === 'lessUpdated_Admin') {
-			fromFile = ['js', 'tpl', 'clientLess'];
-			compiling = 'acpLess';
+			compiling = 'acpCSS';
 		} else if (target === 'clientUpdated') {
-			fromFile = ['clientLess', 'acpLess', 'tpl'];
 			compiling = 'js';
 		} else if (target === 'templatesUpdated') {
-			fromFile = ['js', 'clientLess', 'acpLess'];
 			compiling = 'tpl';
 		} else if (target === 'serverUpdated') {
-			fromFile = ['clientLess', 'acpLess', 'js', 'tpl'];
+			// Do nothing, just restart
 		}
 
-		fromFile = fromFile.filter(function (ext) {
-			return incomplete.indexOf(ext) === -1;
-		});
+		if (incomplete.indexOf(compiling) === -1) {
+			incomplete.push(compiling);
+		}
 
 		// @psychobunny, re: #5211, instead of this, just call `node app --build js` or `node app --build css,tpl`
-		updateArgs.push('--from-file=' + fromFile.join(','));
-		incomplete.push(compiling);
+		updateArgs.push('--build');
+		updateArgs.push(incomplete.join(','));
 
 		worker.kill();
-		worker = fork('app.js', updateArgs, { env: env });
+		if (updateWorker) {
+			updateWorker.kill('SIGKILL');
+		}
+		updateWorker = fork('app.js', updateArgs, { env: env });
+		++running;
+		updateWorker.on('exit', function () {
+			--running;
+			if (running === 0) {
+				worker = fork('app.js', args, { env: env });
+				worker.on('message', function () {
+					if (incomplete.length) {
+						incomplete = [];
 
-		worker.on('message', function () {
-			if (incomplete.length) {
-				incomplete = [];
-
-				if (grunt.option('verbose')) {
-					grunt.log.writeln('NodeBB restarted in ' + (Date.now() - time) + ' ms');
-				}
+						if (grunt.option('verbose')) {
+							grunt.log.writeln('NodeBB restarted in ' + (Date.now() - time) + ' ms');
+						}
+					}
+				});
 			}
 		});
 	}

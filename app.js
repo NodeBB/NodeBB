@@ -226,6 +226,12 @@ function start() {
 			// Either way, bad stuff happened. Abort start.
 			process.exit();
 		}
+
+		if (process.send) {
+			process.send({
+				action: 'listening'
+			});
+		}
 	});
 }
 
