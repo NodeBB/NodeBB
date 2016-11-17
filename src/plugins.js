@@ -48,9 +48,11 @@ var middleware;
 			return callback();
 		}
 
-		app = nbbApp;
-		middleware = nbbMiddleware;
-		hotswap.prepare(nbbApp);
+		if (nbbApp) {
+			app = nbbApp;
+			middleware = nbbMiddleware;
+			hotswap.prepare(nbbApp);
+		}
 
 		if (global.env === 'development') {
 			winston.verbose('[plugins] Initializing plugins system');

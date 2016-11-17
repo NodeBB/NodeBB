@@ -279,6 +279,7 @@ function setup() {
 function build(targets, callback) {
 	var db = require('./src/database');
 	var meta = require('./src/meta');
+	var plugins = require('./src/plugins');
 	var valid = ['js', 'css', 'tpl'];
 	var step = function (target, next) {
 		winston.info('[build] Build step completed in ' + ((Date.now() - startTime) / 1000) + 's');
@@ -297,7 +298,8 @@ function build(targets, callback) {
 
 	async.series([
 		async.apply(db.init),
-		async.apply(meta.themes.setupPaths)
+		async.apply(meta.themes.setupPaths),
+		async.apply(plugins.init, null, null)
 	], function (err) {
 		if (err) {
 			winston.error('[build] Encountered error preparing for build: ' + err.message);
