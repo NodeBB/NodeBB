@@ -8,7 +8,6 @@ var nconf = require('nconf');
 var fs = require('fs');
 var file = require('../file');
 var plugins = require('../plugins');
-var emitter = require('../emitter');
 var utils = require('../../public/src/utils');
 
 module.exports = function (Meta) {
@@ -122,14 +121,6 @@ module.exports = function (Meta) {
 	};
 
 	Meta.js.minify = function (target, callback) {
-		if (nconf.get('isPrimary') !== 'true') {
-			if (typeof callback === 'function') {
-				callback();
-			}
-
-			return;
-		}
-
 		winston.verbose('[meta/js] Minifying ' + target);
 
 		var forkProcessParams = setupDebugging();
@@ -137,7 +128,10 @@ module.exports = function (Meta) {
 
 		Meta.js.target[target] = {};
 
-		Meta.js.prepare(target, function () {
+		Meta.js.prepare(target, function (err) {
+			if (err) {
+				return callback(err);
+			}
 			minifier.send({
 				action: 'js',
 				minify: global.env !== 'development',
@@ -153,24 +147,10 @@ module.exports = function (Meta) {
 				winston.verbose('[meta/js] ' + target + ' minification complete');
 				minifier.kill();
 
-				if (process.send && Meta.js.target['nodebb.min.js'] && Meta.js.target['acp.min.js']) {
-					process.send({
-						action: 'js-propagate',
-						data: Meta.js.target
-					});
-				}
-
 				if (nconf.get('local-assets') === undefined || nconf.get('local-assets') !== false) {
-					return Meta.js.commitToFile(target, function () {
-						if (typeof callback === 'function') {
-							callback();
-						}
-					});
+					return Meta.js.commitToFile(target, callback);
 				} else {
-					emitter.emit('meta:js.compiled');
-					if (typeof callback === 'function') {
-						return callback();
-					}
+					return callback();
 				}
 
 				break;
@@ -178,11 +158,7 @@ module.exports = function (Meta) {
 				winston.error('[meta/js] Could not compile ' + target + ': ' + message.message);
 				minifier.kill();
 
-				if (typeof callback === 'function') {
-					callback(new Error(message.message));
-				} else {
-					process.exit(0);
-				}
+				callback(new Error(message.message));
 				break;
 			}
 		});
@@ -236,13 +212,7 @@ module.exports = function (Meta) {
 
 	Meta.js.commitToFile = function (target, callback) {
 		fs.writeFile(path.join(__dirname, '../../public/' + target), Meta.js.target[target].cache, function (err) {
-			if (err) {
-				winston.error('[meta/js] ' + err.message);
-				process.exit(0);
-			}
-
-			emitter.emit('meta:js.compiled');
-			callback();
+			callback(err);
 		});
 	};
 
@@ -277,7 +247,6 @@ module.exports = function (Meta) {
 						map: files[1] || ''
 					};
 
-					emitter.emit('meta:js.compiled');
 					callback();
 				});
 			});

@@ -1,6 +1,6 @@
 'use strict';
 
-var	async = require('async');
+var async = require('async');
 var winston = require('winston');
 
 var user = require('../user');

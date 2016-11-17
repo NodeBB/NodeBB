@@ -22,15 +22,7 @@ var	pidFilePath = __dirname + '/pidfile',
 	workers = [],
 
 	Loader = {
-		timesStarted: 0,
-		js: {
-			target: {}
-		},
-		css: {
-			cache: undefined,
-			acpCache: undefined
-		},
-		templatesCompiled: false
+		timesStarted: 0
 	};
 
 Loader.init = function (callback) {
@@ -79,37 +71,13 @@ Loader.addWorkerEvents = function (worker) {
 		if (!(worker.suicide || code === 0)) {
 			console.log('[cluster] Spinning up another process...');
 
-			forkWorker(worker.index, worker.isPrimary, true);
+			forkWorker(worker.index, worker.isPrimary);
 		}
 	});
 
 	worker.on('message', function (message) {
 		if (message && typeof message === 'object' && message.action) {
 			switch (message.action) {
-				case 'ready':
-					if (Loader.js.target['nodebb.min.js'] && Loader.js.target['acp.min.js'] && !worker.isPrimary) {
-						worker.send({
-							action: 'js-propagate',
-							data: Loader.js.target
-						});
-					}
-
-					if (Loader.css.cache && !worker.isPrimary) {
-						worker.send({
-							action: 'css-propagate',
-							cache: Loader.css.cache,
-							acpCache: Loader.css.acpCache
-						});
-					}
-
-					if (Loader.templatesCompiled && !worker.isPrimary) {
-						worker.send({
-							action: 'templates:compiled'
-						});
-					}
-
-
-				break;
 				case 'restart':
 					console.log('[cluster] Restarting...');
 					Loader.restart();
@@ -117,31 +85,6 @@ Loader.addWorkerEvents = function (worker) {
 				case 'reload':
 					console.log('[cluster] Reloading...');
 					Loader.reload();
-				break;
-				case 'js-propagate':
-					Loader.js.target = message.data;
-
-					Loader.notifyWorkers({
-						action: 'js-propagate',
-						data: message.data
-					}, worker.pid);
-				break;
-				case 'css-propagate':
-					Loader.css.cache = message.cache;
-					Loader.css.acpCache = message.acpCache;
-
-					Loader.notifyWorkers({
-						action: 'css-propagate',
-						cache: message.cache,
-						acpCache: message.acpCache
-					}, worker.pid);
-				break;
-				case 'templates:compiled':
-					Loader.templatesCompiled = true;
-
-					Loader.notifyWorkers({
-						action: 'templates:compiled',
-					}, worker.pid);
 				break;
 			}
 		}
@@ -153,7 +96,7 @@ Loader.start = function (callback) {
 	console.log('Clustering enabled: Spinning up ' + numProcs + ' process(es).\n');
 
 	for (var x = 0; x < numProcs; ++x) {
-		forkWorker(x, x === 0, false);
+		forkWorker(x, x === 0);
 	}
 
 	if (callback) {
@@ -161,7 +104,7 @@ Loader.start = function (callback) {
 	}
 };
 
-function forkWorker(index, isPrimary, isRestart) {
+function forkWorker(index, isPrimary) {
 	var ports = getPorts();
 	var args = [];
 

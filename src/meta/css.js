@@ -11,7 +11,6 @@ var postcss = require('postcss');
 var clean = require('postcss-clean');
 
 var plugins = require('../plugins');
-var emitter = require('../emitter');
 var db = require('../database');
 var file = require('../file');
 var utils = require('../../public/src/utils');
@@ -24,10 +23,6 @@ module.exports = function (Meta) {
 
 	Meta.css.minify = function (callback) {
 		callback = callback || function () {};
-		if (nconf.get('isPrimary') !== 'true') {
-			winston.verbose('[meta/css] Cluster worker ' + process.pid + ' skipping LESS/CSS compilation');
-			return callback();
-		}
 
 		winston.verbose('[meta/css] Minifying LESS/CSS');
 		db.getObjectFields('config', ['theme:type', 'theme:id'], function (err, themeData) {
@@ -84,23 +79,8 @@ module.exports = function (Meta) {
 				async.series([
 					async.apply(minify, source, paths, 'cache'),
 					async.apply(minify, acpSource, paths, 'acpCache')
-				], function (err, minified) {
-					if (err) {
-						return callback(err);
-					}
-
-					// Propagate to other workers
-					if (process.send) {
-						process.send({
-							action: 'css-propagate',
-							cache: minified[0],
-							acpCache: minified[1]
-						});
-					}
-
-					emitter.emit('meta:css.compiled');
-
-					callback();
+				], function (err) {
+					callback(err);
 				});
 			});
 		});
@@ -110,23 +90,8 @@ module.exports = function (Meta) {
 		async.series([
 			async.apply(Meta.css.loadFile, path.join(__dirname, '../../public/stylesheet.css'), 'cache'),
 			async.apply(Meta.css.loadFile, path.join(__dirname, '../../public/admin.css'), 'acpCache')
-		], function (err, minified) {
-			if (err) {
-				return callback(err);
-			}
-
-			// Propagate to other workers
-			if (process.send) {
-				process.send({
-					action: 'css-propagate',
-					cache: Meta.css.cache,
-					acpCache: Meta.css.acpCache
-				});
-			}
-
-			emitter.emit('meta:css.compiled');
-
-			callback();
+		], function (err) {
+			callback(err);
 		});
 	};
 

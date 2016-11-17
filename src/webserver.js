@@ -62,23 +62,15 @@ module.exports.listen = function (callback) {
 
 	logger.init(app);
 
-	emitter.all(['templates:compiled', 'meta:js.compiled', 'meta:css.compiled'], function () {
+	initializeNodeBB(function (err) {
+		if (err) {
+			return callback(err);
+		}
+
 		winston.info('NodeBB Ready');
 		emitter.emit('nodebb:ready');
 
 		listen(callback);
-	});
-
-	initializeNodeBB(function (err) {
-		if (err) {
-			winston.error(err);
-			process.exit();
-		}
-		if (process.send) {
-			process.send({
-				action: 'ready'
-			});
-		}
 	});
 };
 
@@ -108,10 +100,6 @@ function initializeNodeBB(callback) {
 		},
 		function (next) {
 			async.series([
-				async.apply(function(next) {
-					emitter.emit('templates:compiled');
-					setImmediate(next);
-				}),
 				async.apply(meta.js.getFromFile, 'nodebb.min.js'),
 				async.apply(meta.js.getFromFile, 'acp.min.js'),
 				async.apply(meta.css.getFromFile),

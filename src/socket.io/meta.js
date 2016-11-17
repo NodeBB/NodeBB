@@ -1,15 +1,15 @@
 'use strict';
 
-var meta = require('../meta'),
-	user = require('../user'),
-	topics = require('../topics'),
-	emitter = require('../emitter'),
+var meta = require('../meta');
+var user = require('../user');
+var topics = require('../topics');
+var emitter = require('../emitter');
 
-	websockets = require('./'),
+var websockets = require('./');
 
-	SocketMeta = {
-		rooms: {}
-	};
+var SocketMeta = {
+	rooms: {}
+};
 
 SocketMeta.reconnected = function (socket, data, callback) {
 	if (socket.uid) {

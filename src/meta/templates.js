@@ -8,7 +8,6 @@ var path = require('path');
 var fs = require('fs');
 var nconf = require('nconf');
 
-var emitter = require('../emitter');
 var plugins = require('../plugins');
 var utils = require('../../public/src/utils');
 
@@ -17,11 +16,6 @@ var searchIndex = {};
 
 Templates.compile = function (callback) {
 	callback = callback || function () {};
-
-	if (nconf.get('isPrimary') === 'false') {
-		emitter.emit('templates:compiled');
-		return callback();
-	}
 
 	compile(callback);
 };
@@ -149,15 +143,12 @@ function compile(callback) {
 				return callback(err);
 			}
 
-			compileIndex(viewsPath, function () {
+			compileIndex(viewsPath, function (err) {
+				if (err) {
+					return callback(err);
+				}
 				winston.verbose('[meta/templates] Successfully compiled templates.');
 
-				emitter.emit('templates:compiled');
-				if (process.send) {
-					process.send({
-						action: 'templates:compiled'
-					});
-				}
 				callback();
 			});
 		});
