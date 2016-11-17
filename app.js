@@ -79,6 +79,8 @@ if (nconf.get('setup') || nconf.get('install')) {
 	activate();
 } else if (nconf.get('plugins')) {
 	listPlugins();
+} else if (nconf.get('build')) {
+	build(nconf.get('build'));
 } else {
 	start();
 }
@@ -281,7 +283,76 @@ function setup() {
 	});
 }
 
-function upgrade() {
+function build (targets) {
+	var db = require('./src/database');
+	var meta = require('./src/meta');
+	var valid = ['js', 'css', 'tpl'];
+	var step = function(target, next) {
+		winston.info('[build] Build step completed in ' + ((Date.now() - startTime) / 1000) + 's');
+		next();
+	};
+	var startTime;
+
+	targets = (targets === true ? valid : targets.split(',').filter(function(target) {
+		return valid.indexOf(target) !== -1;
+	}));
+
+	if (!targets) {
+		winston.error('[build] No valid build targets found. Aborting.');
+		return process.exit(0);
+	}
+
+	async.series([
+		async.apply(db.init),
+		async.apply(meta.themes.setupPaths)
+	], function (err) {
+		if (err) {
+			winston.error('[build] Encountered error preparing for build: ' + err.message);
+			return process.exit(1);
+		}
+
+		// eachSeries because it potentially(tm) runs faster on Windows this way
+		async.eachSeries(targets, function(target, next) {
+			switch(target) {
+				case 'js':
+					winston.info('[build] Building javascript');
+					startTime = Date.now();
+					async.series([
+						async.apply(meta.js.minify, 'nodebb.min.js'),
+						async.apply(meta.js.minify, 'acp.min.js')
+					], step.bind(this, target, next));
+					break;
+
+				case 'css':
+					winston.info('[build] Building CSS stylesheets');
+					startTime = Date.now();
+					meta.css.minify(step.bind(this, target, next));
+					break;
+
+				case 'tpl':
+					winston.info('[build] Building templates');
+					startTime = Date.now();
+					meta.templates.compile(step.bind(this, target, next));
+					break;
+
+				default:
+					winston.warn('[build] Unknown target: \'' + target + '\'');
+					setImmediate(next);
+					break;
+			}
+		}, function(err) {
+			if (err) {
+				winston.error('[build] Encountered error during build step: ' + err.message);
+				return process.exit(1);
+			}
+
+			winston.info('[build] Asset compilation successful. Exiting.');
+			process.exit(0);
+		});
+	});
+};
+
+function upgrade () {
 	require('./src/database').init(function (err) {
 		if (err) {
 			winston.error(err.stack);
@@ -291,7 +362,7 @@ function upgrade() {
 			require('./src/upgrade').upgrade();
 		});
 	});
-}
+};
 
 function activate() {
 	var db = require('./src/database');
