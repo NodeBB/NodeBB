@@ -201,7 +201,7 @@ function start() {
 				require('./src/user').startJobs();
 			}
 
-			webserver.listen();
+			webserver.listen(next);
 		}
 	], function (err) {
 		if (err) {
@@ -219,11 +219,7 @@ function start() {
 					winston.warn('    ./nodebb upgrade');
 					break;
 				default:
-					if (err.stacktrace !== false) {
-						winston.error(err.stack);
-					} else {
-						winston.error(err.message);
-					}
+					winston.error(err);
 					break;
 			}
 

@@ -86,7 +86,7 @@ module.exports = function (Meta) {
 		});
 	};
 
-	Meta.css.getFromFile = function(callback) {
+	Meta.css.getFromFile = function (callback) {
 		async.series([
 			async.apply(Meta.css.loadFile, path.join(__dirname, '../../public/stylesheet.css'), 'cache'),
 			async.apply(Meta.css.loadFile, path.join(__dirname, '../../public/admin.css'), 'acpCache')
