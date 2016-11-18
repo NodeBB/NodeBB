@@ -1,20 +1,20 @@
 'use strict';
 
-var meta = require('../meta');
+
 var user = require('../user');
 var topics = require('../topics');
-
-var websockets = require('./');
 
 var SocketMeta = {
 	rooms: {}
 };
 
 SocketMeta.reconnected = function (socket, data, callback) {
+	callback = callback || function () {};
 	if (socket.uid) {
 		topics.pushUnreadCount(socket.uid);
 		user.notifications.pushCount(socket.uid);
 	}
+	callback();
 };
 
 /* Rooms */

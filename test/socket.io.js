@@ -275,6 +275,53 @@ describe('socket.io', function () {
 		});
 	});
 
+	it('should push unread notifications on reconnect', function (done) {
+		var socketMeta = require('../src/socket.io/meta');
+		socketMeta.reconnected({uid: 1}, {}, function (err) {
+			assert.ifError(err);
+			done();
+		});
+	});
+
+
+	it('should error if the room is missing', function (done) {
+		io.emit('meta.rooms.enter', null, function (err) {
+			assert.equal(err.message, '[[error:invalid-data]]');
+			done();
+		});
+	});
+
+	it('should return if uid is 0', function (done) {
+		var socketMeta = require('../src/socket.io/meta');
+		socketMeta.rooms.enter({uid: 0}, null, function (err) {
+			assert.ifError(err);
+			done();
+		});
+	});
+
+	it('should join a room', function (done) {
+		io.emit('meta.rooms.enter', {enter: 'recent_topics'}, function (err) {
+			assert.ifError(err);
+			done();
+		});
+	});
+
+	it('should leave current room', function (done) {
+		io.emit('meta.rooms.leaveCurrent', {}, function (err) {
+			assert.ifError(err);
+			done();
+		});
+	});
+
+	it('should get server time', function (done) {
+		var socketMeta = require('../src/socket.io/meta');
+		socketMeta.getServerTime({uid: 1}, null, function (err, time) {
+			assert.ifError(err);
+			assert(time);
+			done();
+		});
+	});
+
 	after(function (done) {
 		db.emptydb(done);
 	});
