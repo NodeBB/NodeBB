@@ -123,6 +123,11 @@
 				</a>
 				<ul id="user-control-list" class="dropdown-menu" aria-labelledby="user_dropdown">
 					<li>
+						<a href="#" class="reload" title="Reload Forum">
+							Reload Forum
+						</a>
+					</li>
+					<li>
 						<a href="#" class="restart" title="Restart Forum">
 							Restart Forum
 						</a>

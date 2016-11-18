@@ -3,6 +3,7 @@
 var async = require('async');
 var winston = require('winston');
 var nconf = require('nconf');
+var path = require('path');
 
 var meta = require('../meta');
 var plugins = require('../plugins');
@@ -49,7 +50,7 @@ SocketAdmin.before = function (socket, method, data, next) {
 	});
 };
 
-SocketAdmin.restart = function (socket, data, callback) {
+SocketAdmin.reload = function (socket, data, callback) {
 	events.log({
 		type: 'restart',
 		uid: socket.uid,
@@ -57,12 +58,33 @@ SocketAdmin.restart = function (socket, data, callback) {
 	});
 	meta.restart();
 	callback();
-};
+}
 
-/**
- * Reload deprecated as of v1.1.2+, remove in v2.x
- */
-SocketAdmin.reload = SocketAdmin.restart;
+SocketAdmin.restart = function (socket, data, callback) {
+	// Rebuild assets and reload NodeBB
+	var child_process = require('child_process');
+	var build_worker = child_process.fork('app.js', ['--build'], {
+		cwd: path.join(__dirname, '../../'),
+		stdio: 'pipe'
+	});
+
+	build_worker.on('exit', function() {
+		events.log({
+			type: 'build',
+			uid: socket.uid,
+			ip: socket.ip
+		});
+
+		events.log({
+			type: 'restart',
+			uid: socket.uid,
+			ip: socket.ip
+		});
+
+		meta.restart();
+		callback();
+	});
+};
 
 SocketAdmin.fireEvent = function (socket, data, callback) {
 	index.server.emit(data.name, data.payload || {});
