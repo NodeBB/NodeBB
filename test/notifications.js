@@ -81,7 +81,7 @@ describe('Notifications', function () {
 	});
 
 	it('should push a notification to groups', function (done) {
-		notifications.pushGroup(notification, ['registered-users', 'administrators'], function (err) {
+		notifications.pushGroups(notification, ['registered-users', 'administrators'], function (err) {
 			assert.ifError(err);
 			setTimeout(function () {
 				db.isSortedSetMember('uid:' + uid + ':notifications:unread', notification.nid, function (err, isMember) {
