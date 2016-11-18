@@ -67,6 +67,32 @@ describe('Notifications', function () {
 		});
 	});
 
+	it('should push a notification to a group', function (done) {
+		notifications.pushGroup(notification, 'registered-users', function (err) {
+			assert.ifError(err);
+			setTimeout(function () {
+				db.isSortedSetMember('uid:' + uid + ':notifications:unread', notification.nid, function (err, isMember) {
+					assert.ifError(err);
+					assert(isMember);
+					done();
+				});
+			}, 2000);
+		});
+	});
+
+	it('should push a notification to groups', function (done) {
+		notifications.pushGroup(notification, ['registered-users', 'administrators'], function (err) {
+			assert.ifError(err);
+			setTimeout(function () {
+				db.isSortedSetMember('uid:' + uid + ':notifications:unread', notification.nid, function (err, isMember) {
+					assert.ifError(err);
+					assert(isMember);
+					done();
+				});
+			}, 2000);
+		});
+	});
+
 	it('should mark a notification read', function (done) {
 		notifications.markRead(notification.nid, uid, function (err) {
 			assert.ifError(err);
