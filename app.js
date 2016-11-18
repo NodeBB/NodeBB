@@ -23,13 +23,12 @@
 var nconf = require('nconf');
 nconf.argv().env('__');
 
-var url = require('url'),
-	async = require('async'),
-	winston = require('winston'),
-	colors = require('colors'),
-	path = require('path'),
-	pkg = require('./package.json'),
-	file = require('./src/file');
+var url = require('url');
+var async = require('async');
+var winston = require('winston');
+var path = require('path');
+var pkg = require('./package.json');
+var file = require('./src/file');
 
 global.env = process.env.NODE_ENV || 'production';
 
@@ -80,7 +79,7 @@ if (nconf.get('setup') || nconf.get('install')) {
 } else if (nconf.get('plugins')) {
 	listPlugins();
 } else if (nconf.get('build')) {
-	build(nconf.get('build'));
+	require('./build').build(nconf.get('build'));
 } else {
 	start();
 }
@@ -159,7 +158,7 @@ function start() {
 			return;
 		}
 		var meta = require('./src/meta');
-		var emitter = require('./src/emitter');
+
 		switch (message.action) {
 			case 'reload':
 				meta.reload();
@@ -239,6 +238,7 @@ function setup() {
 	winston.info('NodeBB Setup Triggered via Command Line');
 
 	var install = require('./src/install');
+	var build = require('./build');
 
 	process.stdout.write('\nWelcome to NodeBB!\n');
 	process.stdout.write('\nThis looks like a new installation, so you\'ll have to answer a few questions about your environment before we can proceed.\n');
@@ -247,7 +247,7 @@ function setup() {
 	async.series([
 		async.apply(install.setup),
 		async.apply(loadConfig),
-		async.apply(build, true)
+		async.apply(build.build, true)
 	], function (err, data) {
 		// Disregard build step data
 		data = data[0];
@@ -280,100 +280,19 @@ function setup() {
 
 		process.exit();
 	});
-};
-
-function build(targets, callback) {
-	var db = require('./src/database');
-	var meta = require('./src/meta');
-	var plugins = require('./src/plugins');
-	var valid = ['js', 'clientCSS', 'acpCSS', 'tpl'];
-	var step = function (target, next) {
-		winston.info('[build]  => Completed in ' + ((Date.now() - startTime) / 1000) + 's');
-		next();
-	};
-	var startTime;
-
-	targets = (targets === true ? valid : targets.split(',').filter(function (target) {
-		return valid.indexOf(target) !== -1;
-	}));
-
-	if (!targets) {
-		winston.error('[build] No valid build targets found. Aborting.');
-		return process.exit(0);
-	}
-
-	async.series([
-		async.apply(db.init),
-		async.apply(meta.themes.setupPaths),
-		async.apply(plugins.init, null, null)
-	], function (err) {
-		if (err) {
-			winston.error('[build] Encountered error preparing for build: ' + err.message);
-			return process.exit(1);
-		}
-
-		// eachSeries because it potentially(tm) runs faster on Windows this way
-		async.eachSeries(targets, function (target, next) {
-			switch(target) {
-				case 'js':
-					winston.info('[build] Building javascript');
-					startTime = Date.now();
-					async.series([
-						async.apply(meta.js.minify, 'nodebb.min.js'),
-						async.apply(meta.js.minify, 'acp.min.js')
-					], step.bind(this, target, next));
-					break;
-
-				case 'clientCSS':
-					winston.info('[build] Building client-side CSS');
-					startTime = Date.now();
-					meta.css.minify('stylesheet.css', step.bind(this, target, next));
-					break;
-
-				case 'acpCSS':
-					winston.info('[build] Building admin control panel CSS');
-					startTime = Date.now();
-					meta.css.minify('admin.css', step.bind(this, target, next));
-					break;
-
-				case 'tpl':
-					winston.info('[build] Building templates');
-					startTime = Date.now();
-					meta.templates.compile(step.bind(this, target, next));
-					break;
-
-				default:
-					winston.warn('[build] Unknown build target: \'' + target + '\'');
-					setImmediate(next);
-					break;
-			}
-		}, function (err) {
-			if (err) {
-				winston.error('[build] Encountered error during build step: ' + err.message);
-				return process.exit(1);
-			}
-
-			winston.info('[build] Asset compilation successful.');
-
-			if (typeof callback === 'function') {
-				callback();
-			} else {
-				process.exit(0);
-			}
-		});
-	});
-};
+}
 
 function upgrade() {
 	var db = require('./src/database');
 	var meta = require('./src/meta');
 	var upgrade = require('./src/upgrade');
+	var build = require('./build');
 
 	async.series([
 		async.apply(db.init),
 		async.apply(meta.configs.init),
 		async.apply(upgrade.upgrade),
-		async.apply(build, true)
+		async.apply(build.build, true)
 	], function (err) {
 		if (err) {
 			winston.error(err.stack);
@@ -382,7 +301,7 @@ function upgrade() {
 			process.exit(0);
 		}
 	});
-};
+}
 
 function activate() {
 	var db = require('./src/database');

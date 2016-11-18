@@ -553,7 +553,6 @@ describe('Controllers', function () {
 						assert.ifError(err);
 						assert.equal(res.statusCode, 200);
 						assert.equal(body, 'OK');
-						console.log(err, res.statusCode, body);
 						done();
 					});
 				});

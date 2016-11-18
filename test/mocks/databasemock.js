@@ -126,9 +126,13 @@
 				nconf.set('upload_url', nconf.get('upload_path').replace(/^\/public/, ''));
 
 				nconf.set('core_templates_path', path.join(__dirname, '../../src/views'));
-				nconf.set('base_templates_path', path.join(nconf.get('themes_path'), 'nodebb-theme-vanilla/templates'));
+				nconf.set('base_templates_path', path.join(nconf.get('themes_path'), 'nodebb-theme-persona/templates'));
 				nconf.set('theme_templates_path', meta.config['theme:templates'] ? path.join(nconf.get('themes_path'), meta.config['theme:id'], meta.config['theme:templates']) : nconf.get('base_templates_path'));
+				nconf.set('theme_config', path.join(nconf.get('themes_path'), 'nodebb-theme-persona', 'theme.json'));
 
+				require('../../build').buildTargets(['js', 'clientCSS', 'acpCSS', 'tpl'], next);
+			},
+			function (next) {
 				var	webserver = require('../../src/webserver');
 				var sockets = require('../../src/socket.io');
 				sockets.init(webserver.server);
