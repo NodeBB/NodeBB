@@ -45,6 +45,8 @@ describe('Controllers', function () {
 		});
 	});
 
+
+
 	it('should load default home route', function (done) {
 		request(nconf.get('url'), function (err, res, body) {
 			assert.ifError(err);
@@ -615,6 +617,10 @@ describe('Controllers', function () {
 
 
 	after(function (done) {
-		db.emptydb(done);
+		var analytics = require('../src/analytics');
+		analytics.writeData(function (err) {
+			assert.ifError(err);
+			db.emptydb(done);
+		});
 	});
 });

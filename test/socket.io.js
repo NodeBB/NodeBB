@@ -322,6 +322,24 @@ describe('socket.io', function () {
 		});
 	});
 
+	it('should get daily analytics', function (done) {
+		io.emit('admin.analytics.get', {graph: 'traffic', units: 'days'}, function (err, data) {
+			assert.ifError(err);
+			assert(data);
+			assert(data.monthlyPageViews);
+			done();
+		});
+	});
+
+	it('should get hourly analytics', function (done) {
+		io.emit('admin.analytics.get', {graph: 'traffic', units: 'hours'}, function (err, data) {
+			assert.ifError(err);
+			assert(data);
+			assert(data.monthlyPageViews);
+			done();
+		});
+	});
+
 	after(function (done) {
 		db.emptydb(done);
 	});
