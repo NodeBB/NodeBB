@@ -120,7 +120,7 @@ SocketAdmin.plugins.upgrade = function (socket, data, callback) {
 };
 
 SocketAdmin.widgets.set = function (socket, data, callback) {
-	if(!data) {
+	if (!data) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
 

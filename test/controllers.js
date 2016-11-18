@@ -558,7 +558,59 @@ describe('Controllers', function () {
 				});
 			});
 		});
+	});
 
+	describe('widgets', function () {
+		var widgets = require('../src/widgets');
+
+		before(function (done) {
+			async.waterfall([
+				function (next) {
+					widgets.reset(next);
+				},
+				function (next) {
+					var data = {
+						template: 'categories.tpl',
+						location: 'sidebar',
+						widgets: [
+							{
+								widget: 'html',
+								data: [ {
+									widget: 'html',
+									data: {
+										html: 'test',
+										title: '',
+										container: ''
+									}
+								} ]
+							}
+						]
+					};
+
+					widgets.setArea(data, next);
+				}
+			], done);
+		});
+
+		it('should return {} if there is no template or locations', function (done) {
+			request(nconf.get('url') + '/api/widgets/render', {json: true}, function (err, res, body) {
+				assert.ifError(err);
+				assert.equal(res.statusCode, 200);
+				assert(body);
+				assert.equal(Object.keys(body), 0);
+				done();
+			});
+		});
+
+		it('should render templates', function (done) {
+			var url = nconf.get('url') + '/api/widgets/render?template=categories.tpl&url=&isMobile=false&locations%5B%5D=sidebar&locations%5B%5D=footer&locations%5B%5D=header';
+			request(url, {json: true}, function (err, res, body) {
+				assert.ifError(err);
+				assert.equal(res.statusCode, 200);
+				assert(body);
+				done();
+			});
+		});
 	});
 
 
