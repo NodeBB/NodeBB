@@ -223,7 +223,7 @@ var meta = require('./meta');
 	};
 
 	User.getUidsByEmails = function (emails, callback) {
-		emails = emails.map(function(email) {
+		emails = emails.map(function (email) {
 			return email && email.toLowerCase();
 		});
 		db.sortedSetScores('email:uid', emails, callback);
