@@ -222,6 +222,13 @@ var meta = require('./meta');
 		db.sortedSetScore('email:uid', email.toLowerCase(), callback);
 	};
 
+	User.getUidsByEmails = function (emails, callback) {
+		emails = emails.map(function(email) {
+			return email && email.toLowerCase();
+		});
+		db.sortedSetScores('email:uid', emails, callback);
+	};
+
 	User.getUsernameByEmail = function (email, callback) {
 		db.sortedSetScore('email:uid', email.toLowerCase(), function (err, uid) {
 			if (err) {

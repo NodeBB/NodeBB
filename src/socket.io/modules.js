@@ -114,6 +114,7 @@ SocketModules.chats.loadRoom = function (socket, data, callback) {
 
 			async.parallel({
 				roomData: async.apply(Messaging.getRoomData, data.roomId),
+				canReply: async.apply(Messaging.canReply, data.roomId, socket.uid),
 				users: async.apply(Messaging.getUsersInRoom, data.roomId, 0, -1),
 				messages: async.apply(Messaging.getMessages, {
 					callerUid: socket.uid,
@@ -125,6 +126,7 @@ SocketModules.chats.loadRoom = function (socket, data, callback) {
 		},
 		function (results, next) {
 			results.roomData.users = results.users;
+			results.roomData.canReply = results.canReply;
 			results.roomData.usernames = Messaging.generateUsernames(results.users, socket.uid);
 			results.roomData.messages = results.messages;
 			results.roomData.groupChat = results.roomData.hasOwnProperty('groupChat') ? results.roomData.groupChat : results.users.length > 2;
