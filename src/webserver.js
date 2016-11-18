@@ -26,7 +26,6 @@ var logger = require('./logger');
 var plugins = require('./plugins');
 var routes = require('./routes');
 var auth = require('./routes/authentication');
-var emitter = require('./emitter');
 var templates = require('templates.js');
 
 var helpers = require('../public/src/modules/helpers');
@@ -68,7 +67,12 @@ module.exports.listen = function (callback) {
 		}
 
 		winston.info('NodeBB Ready');
-		emitter.emit('nodebb:ready');
+
+		require('./socket.io').server.emit('event:nodebb.ready', {
+			'cache-buster': meta.config['cache-buster']
+		});
+
+		plugins.fireHook('action:nodebb.ready');
 
 		listen(callback);
 	});

@@ -3,7 +3,6 @@
 var meta = require('../meta');
 var user = require('../user');
 var topics = require('../topics');
-var emitter = require('../emitter');
 
 var websockets = require('./');
 
@@ -17,13 +16,6 @@ SocketMeta.reconnected = function (socket, data, callback) {
 		user.notifications.pushCount(socket.uid);
 	}
 };
-
-emitter.on('nodebb:ready', function () {
-	websockets.server.emit('event:nodebb.ready', {
-		'cache-buster': meta.config['cache-buster']
-	});
-});
-
 
 /* Rooms */
 

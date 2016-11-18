@@ -9,7 +9,6 @@ var express = require('express');
 var nconf = require('nconf');
 
 var db = require('./database');
-var emitter = require('./emitter');
 var utils = require('../public/src/utils');
 var hotswap = require('./hotswap');
 var file = require('./file');
@@ -69,7 +68,6 @@ var middleware;
 			}
 
 			Plugins.initialized = true;
-			emitter.emit('plugins:loaded');
 			callback();
 		});
 	};
