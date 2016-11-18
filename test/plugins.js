@@ -96,5 +96,60 @@ describe('Plugins', function () {
 		});
 	});
 
+	describe('install/activate/uninstall', function () {
+		var latest;
+		var pluginName = 'nodebb-plugin-imgur';
+		it('should install a plugin', function (done) {
+			plugins.toggleInstall(pluginName, '1.0.16', function (err, pluginData) {
+				assert.ifError(err);
+
+				latest = pluginData.latest;
+
+				assert.equal(pluginData.name, pluginName);
+				assert.equal(pluginData.id, pluginName);
+				assert.equal(pluginData.url, 'https://github.com/barisusakli/nodebb-plugin-imgur#readme');
+				assert.equal(pluginData.description, 'A Plugin that uploads images to imgur');
+				assert.equal(pluginData.active, false);
+				assert.equal(pluginData.installed, true);
+
+				done();
+			});
+		});
+
+		it('should activate plugin', function (done) {
+			plugins.toggleActive(pluginName, function (err) {
+				assert.ifError(err);
+				plugins.isActive(pluginName, function (err, isActive) {
+					assert.ifError(err);
+					assert(isActive);
+					done();
+				});
+			});
+		});
+
+		it('should upgrade plugin', function (done) {
+			plugins.upgrade(pluginName, 'latest', function (err, isActive) {
+				assert.ifError(err);
+				assert(isActive);
+				plugins.loadPluginInfo(path.join(nconf.get('base_dir'), 'node_modules', pluginName), function (err, pluginInfo) {
+					assert.ifError(err);
+					assert.equal(pluginInfo.version, latest);
+					done();
+				});
+			});
+		});
+
+		it('should uninstall a plugin', function (done) {
+			plugins.toggleInstall(pluginName, 'latest', function (err, pluginData) {
+				assert.ifError(err);
+				assert.equal(pluginData.installed, false);
+				assert.equal(pluginData.active, false);
+				done();
+			});
+		});
+	});
+
+
+
 });
 
