@@ -3,7 +3,11 @@
 var async = require('async');
 var winston = require('winston');
 
+var buildStart;
+
 exports.build = function build(targets, callback) {
+	buildStart = Date.now();
+
 	var db = require('./src/database');
 	var meta = require('./src/meta');
 	var plugins = require('./src/plugins');
@@ -21,7 +25,7 @@ exports.build = function build(targets, callback) {
 	async.series([
 		async.apply(db.init),
 		async.apply(meta.themes.setupPaths),
-		async.apply(plugins.init, null, null)
+		async.apply(plugins.prepareForBuild)
 	], function (err) {
 		if (err) {
 			winston.error('[build] Encountered error preparing for build: ' + err.message);
@@ -80,7 +84,9 @@ exports.buildTargets = function (targets, callback) {
 			return process.exit(1);
 		}
 
-		winston.info('[build] Asset compilation successful.');
+		var time = (Date.now() - buildStart) / 1000;
+
+		winston.info('[build] Asset compilation successful. Completed in ' + time + 's.');
 
 		if (typeof callback === 'function') {
 			callback();

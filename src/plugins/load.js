@@ -1,5 +1,6 @@
 'use strict';
 
+var db = require('../database');
 var fs = require('fs');
 var path = require('path');
 var semver = require('semver');
@@ -14,6 +15,49 @@ var meta = require('../meta');
 
 
 module.exports = function (Plugins) {
+	Plugins.getPluginPaths = function (callback) {
+		async.waterfall([
+			function (next) {
+				db.getSortedSetRange('plugins:active', 0, -1, next);
+			},
+			function (plugins, next) {
+				if (!Array.isArray(plugins)) {
+					return next();
+				}
+
+				plugins = plugins.filter(function (plugin) {
+					return plugin && typeof plugin === 'string';
+				}).map(function (plugin) {
+					return path.join(__dirname, '../../node_modules/', plugin);
+				});
+
+				async.filter(plugins, file.exists, function (plugins) {
+					next(null, plugins);
+				});
+			},
+		], callback);
+	};
+
+	Plugins.prepareForBuild = function (callback) {
+		async.waterfall([
+			async.apply(Plugins.getPluginPaths),
+			function(paths, next) {
+				async.map(paths, function(path, next) {
+					Plugins.loadPluginInfo(path, next);
+				}, next);
+			},
+			function(plugins, next) {
+				async.each(plugins, function(pluginData, next) {
+					var idx = plugins.indexOf(pluginData);
+					async.parallel([
+						async.apply(mapFiles, pluginData, 'css', 'cssFiles'),
+						async.apply(mapFiles, pluginData, 'less', 'lessFiles'),
+						async.apply(mapClientSideScripts, pluginData)
+					], next);
+				}, next);
+			}
+		], callback);
+	};
 
 	Plugins.loadPlugin = function (pluginPath, callback) {
 		Plugins.loadPluginInfo(pluginPath, function (err, pluginData) {

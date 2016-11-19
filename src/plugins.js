@@ -99,23 +99,9 @@ var middleware;
 					next();
 				});
 			},
-			function (next) {
-				db.getSortedSetRange('plugins:active', 0, -1, next);
-			},
-			function (plugins, next) {
-				if (!Array.isArray(plugins)) {
-					return next();
-				}
-
-				plugins = plugins.filter(function (plugin) {
-					return plugin && typeof plugin === 'string';
-				}).map(function (plugin) {
-					return path.join(__dirname, '../node_modules/', plugin);
-				});
-
-				async.filter(plugins, file.exists, function (plugins) {
-					async.eachSeries(plugins, Plugins.loadPlugin, next);
-				});
+			async.apply(Plugins.getPluginPaths),
+			function(paths, next) {
+				async.eachSeries(paths, Plugins.loadPlugin, next);
 			},
 			function (next) {
 				// If some plugins are incompatible, throw the warning here
