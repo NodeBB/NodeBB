@@ -1,15 +1,15 @@
 'use strict';
 
-var winston = require('winston'),
-	async = require('async'),
-	path = require('path'),
-	fs = require('fs'),
-	nconf = require('nconf'),
-	os = require('os'),
+var winston = require('winston');
+var async = require('async');
+var path = require('path');
+var fs = require('fs');
+var nconf = require('nconf');
+var os = require('os');
 
-	db = require('../database'),
-	meta = require('../meta'),
-	pubsub = require('../pubsub');
+var db = require('../database');
+var meta = require('../meta');
+var pubsub = require('../pubsub');
 
 
 module.exports = function (Plugins) {
@@ -68,43 +68,38 @@ module.exports = function (Plugins) {
 	};
 
 	function toggleInstall(id, version, callback) {
-		Plugins.isInstalled(id, function (err, installed) {
-			if (err) {
-				return callback(err);
+		var type;
+		var installed;
+		async.waterfall([
+			function (next) {
+				Plugins.isInstalled(id, next);
+			},
+			function (_installed, next) {
+				installed = _installed;
+				type = installed ? 'uninstall' : 'install';
+				Plugins.isActive(id, next);
+			},
+			function (active, next) {
+				if (active) {
+					Plugins.toggleActive(id, function (err, status) {
+						next(err);
+					});
+					return;
+				}
+				next();
+			},
+			function (next) {
+				var command = installed ? ('npm uninstall ' + id) : ('npm install ' + id + '@' + (version || 'latest'));
+				runNpmCommand(command, next);
+			},
+			function (next) {
+				Plugins.get(id, next);
+			},
+			function (pluginData, next) {
+				Plugins.fireHook('action:plugin.' + type, id);
+				next(null, pluginData);
 			}
-			var type = installed ? 'uninstall' : 'install';
-			async.waterfall([
-				function (next) {
-					Plugins.isActive(id, next);
-				},
-				function (active, next) {
-					if (active) {
-						Plugins.toggleActive(id, function (err, status) {
-							next(err);
-						});
-						return;
-					}
-					next();
-				},
-				function (next) {
-					var command = installed ? ('npm uninstall ' + id) : ('npm install ' + id + '@' + (version || 'latest'));
-					runNpmCommand(command, next);
-				}
-			], function (err) {
-				if (err) {
-					return callback(err);
-				}
-
-				Plugins.get(id, function (err, pluginData) {
-					if (err) {
-						return callback(err);
-					}
-
-					Plugins.fireHook('action:plugin.' + type, id);
-					callback(null, pluginData);
-				});
-			});
-		});
+		], callback);
 	}
 
 	function runNpmCommand(command, callback) {
@@ -113,7 +108,7 @@ module.exports = function (Plugins) {
 				return callback(err);
 			}
 			winston.info('[plugins] ' + stdout);
-			callback(err);
+			callback();
 		 });
 	}
 

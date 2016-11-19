@@ -45,6 +45,8 @@ describe('Controllers', function () {
 		});
 	});
 
+
+
 	it('should load default home route', function (done) {
 		request(nconf.get('url'), function (err, res, body) {
 			assert.ifError(err);
@@ -491,7 +493,134 @@ describe('Controllers', function () {
 		});
 	});
 
+
+	describe('revoke session', function () {
+		var uid;
+		var jar;
+		var csrf_token;
+		var helpers = require('./helpers');
+		before(function (done) {
+			user.create({username: 'revokeme', password: 'barbar'}, function (err, _uid) {
+				assert.ifError(err);
+				uid = _uid;
+				helpers.loginUser('revokeme', 'barbar', function (err, _jar, io, _csrf_token) {
+					assert.ifError(err);
+					jar = _jar;
+					csrf_token = _csrf_token;
+					done();
+				});
+			});
+		});
+
+		it('should fail to revoke session with missing uuid', function (done) {
+			request.del(nconf.get('url') + '/api/user/revokeme/session', {
+				jar: jar,
+				headers: {
+					'x-csrf-token': csrf_token
+				}
+			}, function (err, res, body) {
+				assert.ifError(err);
+				assert.equal(res.statusCode, 404);
+				done();
+			});
+		});
+
+		it('should fail if user doesn\'t exist', function (done) {
+			request.del(nconf.get('url') + '/api/user/doesnotexist/session/1112233', {
+				jar: jar,
+				headers: {
+					'x-csrf-token': csrf_token
+				}
+			}, function (err, res, body) {
+				assert.ifError(err);
+				assert.equal(res.statusCode, 500);
+				assert.equal(body, '[[error:no-session-found]]');
+				done();
+			});
+		});
+
+		it('should revoke user session', function (done) {
+			db.getSortedSetRange('uid:' + uid + ':sessions', 0, -1, function (err, sids) {
+				assert.ifError(err);
+				var sid = sids[0];
+
+				db.sessionStore.get(sid, function (err, sessionObj) {
+					assert.ifError(err);
+					request.del(nconf.get('url') + '/api/user/revokeme/session/' + sessionObj.meta.uuid, {
+						jar: jar,
+						headers: {
+							'x-csrf-token': csrf_token
+						}
+					}, function (err, res, body) {
+						assert.ifError(err);
+						assert.equal(res.statusCode, 200);
+						assert.equal(body, 'OK');
+						done();
+					});
+				});
+			});
+		});
+	});
+
+	describe('widgets', function () {
+		var widgets = require('../src/widgets');
+
+		before(function (done) {
+			async.waterfall([
+				function (next) {
+					widgets.reset(next);
+				},
+				function (next) {
+					var data = {
+						template: 'categories.tpl',
+						location: 'sidebar',
+						widgets: [
+							{
+								widget: 'html',
+								data: [ {
+									widget: 'html',
+									data: {
+										html: 'test',
+										title: '',
+										container: ''
+									}
+								} ]
+							}
+						]
+					};
+
+					widgets.setArea(data, next);
+				}
+			], done);
+		});
+
+		it('should return {} if there is no template or locations', function (done) {
+			request(nconf.get('url') + '/api/widgets/render', {json: true}, function (err, res, body) {
+				assert.ifError(err);
+				assert.equal(res.statusCode, 200);
+				assert(body);
+				assert.equal(Object.keys(body), 0);
+				done();
+			});
+		});
+
+		it('should render templates', function (done) {
+			var url = nconf.get('url') + '/api/widgets/render?template=categories.tpl&url=&isMobile=false&locations%5B%5D=sidebar&locations%5B%5D=footer&locations%5B%5D=header';
+			request(url, {json: true}, function (err, res, body) {
+				assert.ifError(err);
+				assert.equal(res.statusCode, 200);
+				assert(body);
+				done();
+			});
+		});
+	});
+
+
 	after(function (done) {
-		db.emptydb(done);
+		var analytics = require('../src/analytics');
+		analytics.writeData(function (err) {
+			assert.ifError(err);
+			db.emptydb(done);
+		});
 	});
 });

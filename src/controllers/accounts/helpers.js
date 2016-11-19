@@ -24,13 +24,16 @@ helpers.getUserDataByUserSlug = function (userslug, callerUID, callback) {
 			}
 
 			async.parallel({
-				userData : function (next) {
+				userData: function (next) {
 					user.getUserData(uid, next);
 				},
-				userSettings : function (next) {
+				isTargetAdmin: function (next) {
+					user.isAdministrator(uid, next);
+				},
+				userSettings: function (next) {
 					user.getSettings(uid, next);
 				},
-				isAdmin : function (next) {
+				isAdmin: function (next) {
 					user.isAdministrator(callerUID, next);
 				},
 				isGlobalModerator: function (next) {
@@ -87,7 +90,7 @@ helpers.getUserDataByUserSlug = function (userslug, callerUID, callback) {
 				userData.fullname = '';
 			}
 
-			if (isAdmin || isGlobalModerator || isSelf) {
+			if (isAdmin || isSelf || (isGlobalModerator && !results.isTargetAdmin)) {
 				userData.ips = results.ips;
 			}
 
@@ -98,16 +101,18 @@ helpers.getUserDataByUserSlug = function (userslug, callerUID, callback) {
 			userData.uid = userData.uid;
 			userData.yourid = callerUID;
 			userData.theirid = userData.uid;
+			userData.isTargetAdmin = results.isTargetAdmin;
 			userData.isAdmin = isAdmin;
 			userData.isGlobalModerator = isGlobalModerator;
 			userData.isModerator = isModerator;
 			userData.isAdminOrGlobalModerator = isAdmin || isGlobalModerator;
 			userData.isAdminOrGlobalModeratorOrModerator = isAdmin || isGlobalModerator || isModerator;
-			userData.canBan = isAdmin || isGlobalModerator;
+			userData.canEdit = isAdmin || (isGlobalModerator && !results.isTargetAdmin);
+			userData.canBan = isAdmin || (isGlobalModerator && !results.isTargetAdmin);
 			userData.canChangePassword = isAdmin || (isSelf && parseInt(meta.config['password:disableEdit'], 10) !== 1);
 			userData.isSelf = isSelf;
 			userData.isFollowing = results.isFollowing;
-			userData.showHidden = isSelf || isAdmin || isGlobalModerator;
+			userData.showHidden = isSelf || isAdmin || (isGlobalModerator && !results.isTargetAdmin);
 			userData.groups = Array.isArray(results.groups) && results.groups.length ? results.groups[0] : [];
 			userData.disableSignatures = meta.config.disableSignatures !== undefined && parseInt(meta.config.disableSignatures, 10) === 1;
 			userData['reputation:disabled'] = parseInt(meta.config['reputation:disabled'], 10) === 1;

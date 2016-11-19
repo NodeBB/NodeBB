@@ -317,7 +317,17 @@ describe('Post\'s', function () {
 	});
 
 	describe('flagging a post', function () {
+		var socketPosts = require('../src/socket.io/posts');
+		it('should fail to flag a post due to low reputation', function (done) {
+			flagPost(function (err) {
+				assert.equal(err.message, '[[error:not-enough-reputation-to-flag]]');
+				done();
+			});
+		});
+
 		it('should flag a post', function (done) {
+			var meta = require('../src/meta');
+			meta.config['privileges:flag'] = -1;
 			flagPost(function (err) {
 				assert.ifError(err);
 				done();
@@ -325,32 +335,33 @@ describe('Post\'s', function () {
 		});
 
 		it('should return nothing without a uid or a reason', function (done) {
-			posts.flag(postData, null, "reason", function () {
-				assert.equal(arguments.length, 0);
-				posts.flag(postData, voteeUid, null, function () {
-					assert.equal(arguments.length, 0);
+			socketPosts.flag({uid: 0}, {pid: postData.pid, reason: 'reason'}, function (err) {
+				assert.equal(err.message, '[[error:not-logged-in]]');
+				socketPosts.flag({uid: voteeUid}, {}, function (err) {
+					assert.equal(err.message, '[[error:invalid-data]]');
 					done();
 				});
 			});
 		});
 
 		it('should return an error without an existing post', function (done) {
-			posts.flag({}, voteeUid, "reason", function (err) {
-				assert.ifError(!err);
+			socketPosts.flag({uid: voteeUid}, {pid: 12312312, reason: 'reason'}, function (err) {
+				assert.equal(err.message, '[[error:no-post]]');
 				done();
 			});
 		});
 
 		it('should return an error if the flag already exists', function (done) {
-			posts.flag(postData, voteeUid, "reason", function (err) {
-				assert.ifError(!err);
+			socketPosts.flag({uid: voteeUid}, {pid: postData.pid, reason: 'reason'}, function (err) {
+				assert.equal(err.message, '[[error:already-flagged]]');
 				done();
 			});
 		});
 	});
 
 	function flagPost(next) {
-		posts.flag(postData, voteeUid, "reason", next);
+		var socketPosts = require('../src/socket.io/posts');
+		socketPosts.flag({uid: voteeUid}, {pid: postData.pid, reason: 'reason'}, next);
 	}
 
 	describe('get flag data', function () {
@@ -380,12 +391,22 @@ describe('Post\'s', function () {
 	});
 
 	describe('updating a flag', function () {
+		var socketPosts = require('../src/socket.io/posts');
+		var groups = require('../src/groups');
+
+		before(function (done) {
+			groups.join('Global Moderators', voteeUid, done);
+		});
+
 		it('should update a flag', function (done) {
 			async.waterfall([
 				function (next) {
-					posts.updateFlagData(voteeUid, postData.pid, {
-						assignee: `${voteeUid}`,
-						notes: 'notes'
+					socketPosts.updateFlag({uid: voteeUid}, {
+						pid: postData.pid,
+						data: [
+							{name: 'assignee', value: `${voteeUid}`},
+							{name: 'notes', value: 'notes'}
+						]
 					}, function (err) {
 						assert.ifError(err);
 						posts.getFlags('posts:flagged', cid, voteeUid, 0, -1, function (err, flagData) {
@@ -469,8 +490,10 @@ describe('Post\'s', function () {
 	});
 
 	describe('dismissing a flag', function () {
+		var socketPosts = require('../src/socket.io/posts');
+
 		it('should dismiss a flag', function (done) {
-			posts.dismissFlag(postData.pid, function (err) {
+			socketPosts.dismissFlag({uid: voteeUid}, postData.pid, function (err) {
 				assert.ifError(err);
 				posts.isFlaggedByUser(postData.pid, voteeUid, function (err, hasFlagged) {
 					assert.ifError(err);
@@ -498,7 +521,7 @@ describe('Post\'s', function () {
 		});
 
 		it('should dismiss all flags', function (done) {
-			posts.dismissAllFlags(function (err) {
+			socketPosts.dismissAllFlags({uid: voteeUid}, {}, function (err) {
 				assert.ifError(err);
 				posts.isFlaggedByUser(postData.pid, voteeUid, function (err, hasFlagged) {
 					assert.ifError(err);

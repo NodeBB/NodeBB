@@ -60,7 +60,6 @@ User.createUser = function (socket, userData, callback) {
 	user.create(userData, callback);
 };
 
-
 User.resetLockouts = function (socket, uids, callback) {
 	if (!Array.isArray(uids)) {
 		return callback(new Error('[[error:invalid-data]]'));
@@ -185,25 +184,25 @@ function deleteUsers(socket, uids, method, callback) {
 }
 
 User.search = function (socket, data, callback) {
-	user.search({query: data.query, searchBy: data.searchBy, uid: socket.uid}, function (err, searchData) {
-		if (err) {
-			return callback(err);
-		}
-		if (!searchData.users.length) {
-			return callback(null, searchData);
-		}
-
-		var userData = searchData.users;
-		var uids = userData.map(function (user) {
-			return user && user.uid;
-		});
-
-		user.getUsersFields(uids, ['email', 'flags', 'lastonline', 'joindate'], function (err, userInfo) {
-			if (err) {
-				return callback(err);
+	var searchData;
+	async.waterfall([
+		function (next) {
+			user.search({query: data.query, searchBy: data.searchBy, uid: socket.uid}, next);
+		},
+		function (_searchData, next) {
+			searchData = _searchData;
+			if (!searchData.users.length) {
+				return callback(null, searchData);
 			}
 
-			userData.forEach(function (user, index) {
+			var uids = searchData.users.map(function (user) {
+				return user && user.uid;
+			});
+
+			user.getUsersFields(uids, ['email', 'flags', 'lastonline', 'joindate'], next);
+		},
+		function (userInfo, next) {
+			searchData.users.forEach(function (user, index) {
 				if (user && userInfo[index]) {
 					user.email = validator.escape(String(userInfo[index].email || ''));
 					user.flags = userInfo[index].flags || 0;
@@ -211,10 +210,9 @@ User.search = function (socket, data, callback) {
 					user.joindateISO = userInfo[index].joindateISO;
 				}
 			});
-
-			callback(null, searchData);
-		});
-	});
+			next(null, searchData);
+		}
+	], callback);
 };
 
 User.deleteInvitation = function (socket, data, callback) {

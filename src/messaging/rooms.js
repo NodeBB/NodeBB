@@ -209,4 +209,18 @@ module.exports = function (Messaging) {
 		], callback);
 	};
 
+	Messaging.canReply = function (roomId, uid, callback) {
+		async.waterfall([
+			function (next) {
+				db.isSortedSetMember('chat:room:' + roomId + ':uids', uid, next);
+			},
+			function (inRoom, next) {
+				plugins.fireHook('filter:messaging.canReply', {uid: uid, roomId: roomId, inRoom: inRoom, canReply: inRoom}, next);
+			},
+			function (data, next) {
+				next(null, data.canReply);
+			}
+		], callback);
+	};
+
 };

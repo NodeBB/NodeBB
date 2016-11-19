@@ -124,11 +124,6 @@ function launch(req, res) {
 }
 
 function compileLess(callback) {
-	if ((nconf.get('from-file') || '').indexOf('less') !== -1) {
-		winston.info('LESS compilation skipped');
-		return callback(false);
-	}
-
 	fs.readFile(path.join(__dirname, '../public/less/install.less'), function (err, style) {
 		if (err) {
 			return winston.error('Unable to read LESS install file: ', err);
@@ -145,11 +140,6 @@ function compileLess(callback) {
 }
 
 function compileJS(callback) {
-	if ((nconf.get('from-file') || '').indexOf('js') !== -1) {
-		winston.info('Client-side JS compilation skipped');
-		return callback(false);
-	}
-
 	var scriptPath = path.join(__dirname, '..');
 	var result = uglify.minify(scripts.map(function (script) {
 		return path.join(scriptPath, script);

@@ -136,4 +136,29 @@ module.exports = function (privileges) {
 		});
 	}
 
+	privileges.users.canEdit = function (callerUid, uid, callback) {
+		if (parseInt(callerUid, 10) === parseInt(uid, 10)) {
+			return process.nextTick(callback, null, true);
+		}
+
+		async.parallel({
+			isAdmin: function (next) {
+				privileges.users.isAdministrator(callerUid, next);
+			},
+			isGlobalMod: function (next) {
+				privileges.users.isGlobalModerator(callerUid, next);
+			},
+			isTargetAdmin: function (next) {
+				privileges.users.isAdministrator(uid, next);
+			}
+		}, function (err, results) {
+			if (err) {
+				return callback(err);
+			}
+			var canEdit = results.isAdmin || (results.isGlobalMod && !results.isTargetAdmin);
+
+			callback(null, canEdit);
+		});
+	};
+
 };

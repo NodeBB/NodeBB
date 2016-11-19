@@ -11,7 +11,6 @@ var postcss = require('postcss');
 var clean = require('postcss-clean');
 
 var plugins = require('../plugins');
-var emitter = require('../emitter');
 var db = require('../database');
 var file = require('../file');
 var utils = require('../../public/src/utils');
@@ -22,12 +21,8 @@ module.exports = function (Meta) {
 	Meta.css.cache = undefined;
 	Meta.css.acpCache = undefined;
 
-	Meta.css.minify = function (callback) {
+	Meta.css.minify = function (target, callback) {
 		callback = callback || function () {};
-		if (nconf.get('isPrimary') !== 'true') {
-			winston.verbose('[meta/css] Cluster worker ' + process.pid + ' skipping LESS/CSS compilation');
-			return callback();
-		}
 
 		winston.verbose('[meta/css] Minifying LESS/CSS');
 		db.getObjectFields('config', ['theme:type', 'theme:id'], function (err, themeData) {
@@ -66,59 +61,36 @@ module.exports = function (Meta) {
 
 				var acpSource = source;
 
-				source += '\n@import (inline) "..' + path.sep + '..' + path.sep + 'public/vendor/jquery/css/smoothness/jquery-ui.css";';
-				source += '\n@import (inline) "..' + path.sep + '..' + path.sep + 'public/vendor/jquery/bootstrap-tagsinput/bootstrap-tagsinput.css";';
-				source += '\n@import (inline) "..' + path.sep + 'public/vendor/colorpicker/colorpicker.css";';
-				source += '\n@import "..' + path.sep + '..' + path.sep + 'public/less/flags.less";';
-				source += '\n@import "..' + path.sep + '..' + path.sep + 'public/less/blacklist.less";';
-				source += '\n@import "..' + path.sep + '..' + path.sep + 'public/less/generics.less";';
-				source += '\n@import "..' + path.sep + '..' + path.sep + 'public/less/mixins.less";';
-				source += '\n@import "..' + path.sep + '..' + path.sep + 'public/less/global.less";';
-				source = '@import "./theme";\n' + source;
+				if (target !== 'admin.css') {
+					source += '\n@import (inline) "..' + path.sep + '..' + path.sep + 'public/vendor/jquery/css/smoothness/jquery-ui.css";';
+					source += '\n@import (inline) "..' + path.sep + '..' + path.sep + 'public/vendor/jquery/bootstrap-tagsinput/bootstrap-tagsinput.css";';
+					source += '\n@import (inline) "..' + path.sep + 'public/vendor/colorpicker/colorpicker.css";';
+					source += '\n@import "..' + path.sep + '..' + path.sep + 'public/less/flags.less";';
+					source += '\n@import "..' + path.sep + '..' + path.sep + 'public/less/blacklist.less";';
+					source += '\n@import "..' + path.sep + '..' + path.sep + 'public/less/generics.less";';
+					source += '\n@import "..' + path.sep + '..' + path.sep + 'public/less/mixins.less";';
+					source += '\n@import "..' + path.sep + '..' + path.sep + 'public/less/global.less";';
+					source = '@import "./theme";\n' + source;
 
-				acpSource += '\n@import "..' + path.sep + 'public/less/admin/admin";\n';
-				acpSource += '\n@import "..' + path.sep + 'public/less/generics.less";\n';
-				acpSource += '\n@import (inline) "..' + path.sep + 'public/vendor/colorpicker/colorpicker.css";\n';
-				acpSource += '\n@import (inline) "..' + path.sep + 'public/vendor/jquery/css/smoothness/jquery-ui.css";';
+					minify(source, paths, 'cache', callback);
+				} else {
+					acpSource += '\n@import "..' + path.sep + 'public/less/admin/admin";\n';
+					acpSource += '\n@import "..' + path.sep + 'public/less/generics.less";\n';
+					acpSource += '\n@import (inline) "..' + path.sep + 'public/vendor/colorpicker/colorpicker.css";\n';
+					acpSource += '\n@import (inline) "..' + path.sep + 'public/vendor/jquery/css/smoothness/jquery-ui.css";';
 
-				var fromFile = nconf.get('from-file') || '';
-				
-				async.series([
-					function (next) {
-						if (fromFile.match('clientLess')) {
-							winston.info('[minifier] Compiling front-end LESS files skipped');
-							return Meta.css.getFromFile(path.join(__dirname, '../../public/stylesheet.css'), 'cache', next);
-						}
-
-						minify(source, paths, 'cache', next);
-					},
-					function (next) {
-						if (fromFile.match('acpLess')) {
-							winston.info('[minifier] Compiling ACP LESS files skipped');
-							return Meta.css.getFromFile(path.join(__dirname, '../../public/admin.css'), 'acpCache', next);
-						}
-						
-						minify(acpSource, paths, 'acpCache', next);
-					}
-				], function (err, minified) {
-					if (err) {
-						return callback(err);
-					}
-
-					// Propagate to other workers
-					if (process.send) {
-						process.send({
-							action: 'css-propagate',
-							cache: fromFile.match('clientLess') ? Meta.css.cache : minified[0],
-							acpCache: fromFile.match('acpLess') ? Meta.css.acpCache : minified[1]
-						});
-					}
-
-					emitter.emit('meta:css.compiled');
-
-					callback();
-				});
+					minify(acpSource, paths, 'acpCache', callback);
+				}
 			});
+		});
+	};
+
+	Meta.css.getFromFile = function (callback) {
+		async.series([
+			async.apply(Meta.css.loadFile, path.join(__dirname, '../../public/stylesheet.css'), 'cache'),
+			async.apply(Meta.css.loadFile, path.join(__dirname, '../../public/admin.css'), 'acpCache')
+		], function (err) {
+			callback(err);
 		});
 	};
 
@@ -166,7 +138,7 @@ module.exports = function (Meta) {
 		});
 	};
 
-	Meta.css.getFromFile = function (filePath, filename, callback) {
+	Meta.css.loadFile = function (filePath, filename, callback) {
 		winston.verbose('[meta/css] Reading stylesheet ' + filePath.split('/').pop() + ' from file');
 
 		fs.readFile(filePath, function (err, file) {

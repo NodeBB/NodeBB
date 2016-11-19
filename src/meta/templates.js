@@ -8,7 +8,6 @@ var path = require('path');
 var fs = require('fs');
 var nconf = require('nconf');
 
-var emitter = require('../emitter');
 var plugins = require('../plugins');
 var utils = require('../../public/src/utils');
 
@@ -17,16 +16,6 @@ var searchIndex = {};
 
 Templates.compile = function (callback) {
 	callback = callback || function () {};
-	var fromFile = nconf.get('from-file') || '';
-
-	if (nconf.get('isPrimary') === 'false' || fromFile.match('tpl')) {
-		if (fromFile.match('tpl')) {
-			emitter.emit('templates:compiled');
-			winston.info('[minifier] Compiling templates skipped');
-		}
-
-		return callback();
-	}
 
 	compile(callback);
 };
@@ -154,15 +143,12 @@ function compile(callback) {
 				return callback(err);
 			}
 
-			compileIndex(viewsPath, function () {
+			compileIndex(viewsPath, function (err) {
+				if (err) {
+					return callback(err);
+				}
 				winston.verbose('[meta/templates] Successfully compiled templates.');
 
-				emitter.emit('templates:compiled');
-				if (process.send) {
-					process.send({
-						action: 'templates:compiled'
-					});
-				}
 				callback();
 			});
 		});
