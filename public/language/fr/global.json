@@ -100,7 +100,7 @@
     "unsaved-changes": "Vous avez des modifications non sauvegardées. Êtes-vous sûr de vouloir naviguer tout de même ?",
     "reconnecting-message": "Il semble que votre connexion ait été perdue, veuillez patienter pendant que nous vous re-connectons.",
     "play": "Lire",
-    "cookies.message": "Ce site utilise des cookies pour vous permettre d'avoir la meilleure expérience possible.",
+    "cookies.message": "Ce site utilise des cookies pour vous permettre d\\'avoir la meilleure expérience possible.",
     "cookies.accept": "Compris !",
     "cookies.learn_more": "En savoir plus"
 }
