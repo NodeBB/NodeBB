@@ -16,8 +16,8 @@
     "please_log_in": "Por favor, conéctate",
     "logout": "Desconectarse",
     "posting_restriction_info": "As publicacións están restrinxidas a membros rexistrados, pica aquí para rexistrarte.",
-    "welcome_back": "Benvido de novo",
-    "you_have_successfully_logged_in": "Fuches rexistrado con éxito.",
+    "welcome_back": "Benvido de novo!",
+    "you_have_successfully_logged_in": "Sesión iniciada con éxito. Sentidiño!",
     "save_changes": "Gardar Cambios",
     "save": "Gardar",
     "close": "Pechar ",
@@ -60,7 +60,7 @@
     "views": "Vistas",
     "reputation": "Reputación",
     "read_more": "ler máis",
-    "more": "máis",
+    "more": "Máis",
     "posted_ago_by_guest": "Publicado %1 por Invitado",
     "posted_ago_by": "Publicado %1 por %2",
     "posted_ago": "Publicado %1",
@@ -100,7 +100,7 @@
     "unsaved-changes": "Non gardaches tódolos cambios. Queres continuar e saír da páxina?",
     "reconnecting-message": "Conexión perdida. Reconectando a %1.",
     "play": "Reproducir",
-    "cookies.message": "This website uses cookies to ensure you get the best experience on our website.",
-    "cookies.accept": "Got it!",
-    "cookies.learn_more": "Learn More"
+    "cookies.message": "Esta web emprega cookies para asegurar que recibes unha mellor experiencia de navegación.",
+    "cookies.accept": "De Acordo!",
+    "cookies.learn_more": "Saber máis"
 }
