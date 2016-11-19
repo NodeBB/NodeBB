@@ -454,14 +454,6 @@
 					languageCode = 'no';
 					break;
 
-				case 'zh-TW':
-					languageCode = 'zh-TW';
-					break;
-
-				case 'zh-CN':
-					languageCode = 'zh-CN';
-					break;
-
 				default:
 					languageCode = config.userLang;
 					break;
