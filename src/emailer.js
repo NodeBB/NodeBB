@@ -73,7 +73,7 @@ var fallbackTransport;
 	Emailer.sendToEmail = function (template, email, language, params, callback) {
 		callback = callback || function () {};
 
-		var lang = language || meta.config.defaultLang || 'en_GB';
+		var lang = language || meta.config.defaultLang || 'en-GB';
 
 		async.waterfall([
 			function (next) {

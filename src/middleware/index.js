@@ -159,17 +159,17 @@ middleware.applyBlacklist = function (req, res, next) {
 	});
 };
 
-middleware.processLanguages = function (req, res, next) {
-	var code = req.params.code;
-	var key = req.path.match(/[\w]+\.json/);
+middleware.getTranslation = function (req, res, next) {
+	var language = req.params.language;
+	var namespace = req.params.namespace;
 
-	if (code && key) {
-		languages.get(code, key[0], function (err, language) {
+	if (language && namespace) {
+		languages.get(language, namespace, function (err, translations) {
 			if (err) {
 				return next(err);
 			}
 
-			res.status(200).json(language);
+			res.status(200).json(translations);
 		});
 	} else {
 		res.status(404).json('{}');

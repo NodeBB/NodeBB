@@ -351,7 +351,7 @@ Controllers.ping = function (req, res) {
 
 Controllers.handle404 = function (req, res) {
 	var relativePath = nconf.get('relative_path');
-	var isLanguage = new RegExp('^' + relativePath + '/language/.*/.*.json');
+	var isLanguage = new RegExp('^' + relativePath + '/api/language/.*/.*');
 	var isClientScript = new RegExp('^' + relativePath + '\\/src\\/.+\\.js');
 
 	if (plugins.hasListeners('action:meta.override404')) {

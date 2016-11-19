@@ -65,7 +65,7 @@ module.exports = function (User) {
 			settings.usePagination = parseInt(getSetting(settings, 'usePagination', 0), 10) === 1;
 			settings.topicsPerPage = Math.min(settings.topicsPerPage ? parseInt(settings.topicsPerPage, 10) : defaultTopicsPerPage, defaultTopicsPerPage);
 			settings.postsPerPage = Math.min(settings.postsPerPage ? parseInt(settings.postsPerPage, 10) : defaultPostsPerPage, defaultPostsPerPage);
-			settings.userLang = settings.userLang || meta.config.defaultLang || 'en_GB';
+			settings.userLang = settings.userLang || meta.config.defaultLang || 'en-GB';
 			settings.topicPostSort = getSetting(settings, 'topicPostSort', 'oldest_to_newest');
 			settings.categoryTopicSort = getSetting(settings, 'categoryTopicSort', 'newest_to_oldest');
 			settings.followTopicsOnCreate = parseInt(getSetting(settings, 'followTopicsOnCreate', 1), 10) === 1;
