@@ -28,18 +28,14 @@ module.exports = function (SocketUser) {
 		if (!socket.uid) {
 			return callback(new Error('[[error:no-privileges]]'));
 		}
-
-		user.isAdministrator(socket.uid, function (err, isAdmin) {
-			if (err) {
-				return callback(err);
+		async.waterfall([
+			function (next) {
+				user.isAdminOrSelf(socket.uid, data.uid, next);
+			},
+			function (next) {
+				user.updateCoverPicture(data, next);
 			}
-
-			if (!isAdmin && data.uid !== socket.uid) {
-				return callback(new Error('[[error:no-privileges]]'));
-			}
-
-			user.updateCoverPicture(data, callback);
-		});
+		], callback);
 	};
 
 	SocketUser.removeCover = function (socket, data, callback) {
@@ -47,12 +43,14 @@ module.exports = function (SocketUser) {
 			return callback(new Error('[[error:no-privileges]]'));
 		}
 
-		user.isAdminOrSelf(socket.uid, data.uid, function (err) {
-			if (err) {
-				return callback(err);
+		async.waterfall([
+			function (next) {
+				user.isAdminOrSelf(socket.uid, data.uid, next);
+			},
+			function (next) {
+				user.removeCoverPicture(data, next);
 			}
-			user.removeCoverPicture(data, callback);
-		});
+		], callback);
 	};
 
 	function isAdminOrSelfAndPasswordMatch(uid, data, callback) {
@@ -70,13 +68,13 @@ module.exports = function (SocketUser) {
 			if (err) {
 				return callback(err);
 			}
-			var self = parseInt(uid, 10) === parseInt(data.uid, 10);
+			var isSelf = parseInt(uid, 10) === parseInt(data.uid, 10);
 
-			if (!results.isAdmin && !self) {
+			if (!results.isAdmin && !isSelf) {
 				return callback(new Error('[[error:no-privileges]]'));
 			}
 
-			if (self && results.hasPassword && !results.passwordMatch) {
+			if (isSelf && results.hasPassword && !results.passwordMatch) {
 				return callback(new Error('[[error:invalid-password]]'));
 			}
 
