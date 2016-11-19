@@ -1,6 +1,6 @@
 'use strict';
 
-var	fs = require('fs');
+var fs = require('fs');
 var path = require('path');
 var async = require('async');
 var LRU = require('lru-cache');
