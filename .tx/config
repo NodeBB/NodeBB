@@ -4,7 +4,7 @@ host = https://www.transifex.com
 [nodebb.category]
 file_filter = public/language/<lang>/category.json
 source_file = public/language/en-GB/category.json
-source_lang = en-GB
+source_lang = en_GB
 trans.ar = public/language/ar/category.json
 trans.bn = public/language/bn/category.json
 trans.bg = public/language/bg/category.json
@@ -50,7 +50,7 @@ type = KEYVALUEJSON
 [nodebb.login]
 file_filter = public/language/<lang>/login.json
 source_file = public/language/en-GB/login.json
-source_lang = en-GB
+source_lang = en_GB
 trans.ar = public/language/ar/login.json
 trans.bn = public/language/bn/login.json
 trans.bg = public/language/bg/login.json
@@ -96,7 +96,7 @@ type = KEYVALUEJSON
 [nodebb.recent]
 file_filter = public/language/<lang>/recent.json
 source_file = public/language/en-GB/recent.json
-source_lang = en-GB
+source_lang = en_GB
 trans.ar = public/language/ar/recent.json
 trans.bn = public/language/bn/recent.json
 trans.bg = public/language/bg/recent.json
@@ -142,7 +142,7 @@ type = KEYVALUEJSON
 [nodebb.unread]
 file_filter = public/language/<lang>/unread.json
 source_file = public/language/en-GB/unread.json
-source_lang = en-GB
+source_lang = en_GB
 trans.ar = public/language/ar/unread.json
 trans.bn = public/language/bn/unread.json
 trans.bg = public/language/bg/unread.json
@@ -188,7 +188,7 @@ type = KEYVALUEJSON
 [nodebb.modules]
 file_filter = public/language/<lang>/modules.json
 source_file = public/language/en-GB/modules.json
-source_lang = en-GB
+source_lang = en_GB
 trans.ar = public/language/ar/modules.json
 trans.bn = public/language/bn/modules.json
 trans.bg = public/language/bg/modules.json
@@ -234,7 +234,7 @@ type = KEYVALUEJSON
 [nodebb.register]
 file_filter = public/language/<lang>/register.json
 source_file = public/language/en-GB/register.json
-source_lang = en-GB
+source_lang = en_GB
 trans.ar = public/language/ar/register.json
 trans.bn = public/language/bn/register.json
 trans.bg = public/language/bg/register.json
@@ -280,7 +280,7 @@ type = KEYVALUEJSON
 [nodebb.user]
 file_filter = public/language/<lang>/user.json
 source_file = public/language/en-GB/user.json
-source_lang = en-GB
+source_lang = en_GB
 trans.ar = public/language/ar/user.json
 trans.bn = public/language/bn/user.json
 trans.bg = public/language/bg/user.json
@@ -326,7 +326,7 @@ type = KEYVALUEJSON
 [nodebb.global]
 file_filter = public/language/<lang>/global.json
 source_file = public/language/en-GB/global.json
-source_lang = en-GB
+source_lang = en_GB
 trans.ar = public/language/ar/global.json
 trans.bn = public/language/bn/global.json
 trans.bg = public/language/bg/global.json
@@ -372,7 +372,7 @@ type = KEYVALUEJSON
 [nodebb.notifications]
 file_filter = public/language/<lang>/notifications.json
 source_file = public/language/en-GB/notifications.json
-source_lang = en-GB
+source_lang = en_GB
 trans.ar = public/language/ar/notifications.json
 trans.bn = public/language/bn/notifications.json
 trans.bg = public/language/bg/notifications.json
@@ -418,7 +418,7 @@ type = KEYVALUEJSON
 [nodebb.reset_password]
 file_filter = public/language/<lang>/reset_password.json
 source_file = public/language/en-GB/reset_password.json
-source_lang = en-GB
+source_lang = en_GB
 trans.ar = public/language/ar/reset_password.json
 trans.bn = public/language/bn/reset_password.json
 trans.bg = public/language/bg/reset_password.json
@@ -464,7 +464,7 @@ type = KEYVALUEJSON
 [nodebb.users]
 file_filter = public/language/<lang>/users.json
 source_file = public/language/en-GB/users.json
-source_lang = en-GB
+source_lang = en_GB
 trans.ar = public/language/ar/users.json
 trans.bn = public/language/bn/users.json
 trans.bg = public/language/bg/users.json
@@ -510,7 +510,7 @@ type = KEYVALUEJSON
 [nodebb.language-1]
 file_filter = public/language/<lang>/language.json
 source_file = public/language/en-GB/language.json
-source_lang = en-GB
+source_lang = en_GB
 trans.ar = public/language/ar/language.json
 trans.bn = public/language/bn/language.json
 trans.bg = public/language/bg/language.json
@@ -556,7 +556,7 @@ type = KEYVALUEJSON
 [nodebb.pages]
 file_filter = public/language/<lang>/pages.json
 source_file = public/language/en-GB/pages.json
-source_lang = en-GB
+source_lang = en_GB
 trans.ar = public/language/ar/pages.json
 trans.bn = public/language/bn/pages.json
 trans.bg = public/language/bg/pages.json
@@ -602,7 +602,7 @@ type = KEYVALUEJSON
 [nodebb.topic]
 file_filter = public/language/<lang>/topic.json
 source_file = public/language/en-GB/topic.json
-source_lang = en-GB
+source_lang = en_GB
 trans.ar = public/language/ar/topic.json
 trans.bn = public/language/bn/topic.json
 trans.bg = public/language/bg/topic.json
@@ -648,7 +648,7 @@ type = KEYVALUEJSON
 [nodebb.success]
 file_filter = public/language/<lang>/success.json
 source_file = public/language/en-GB/success.json
-source_lang = en-GB
+source_lang = en_GB
 trans.ar = public/language/ar/success.json
 trans.bn = public/language/bn/success.json
 trans.bg = public/language/bg/success.json
@@ -694,7 +694,7 @@ type = KEYVALUEJSON
 [nodebb.error]
 file_filter = public/language/<lang>/error.json
 source_file = public/language/en-GB/error.json
-source_lang = en-GB
+source_lang = en_GB
 trans.ar = public/language/ar/error.json
 trans.bn = public/language/bn/error.json
 trans.bg = public/language/bg/error.json
@@ -740,7 +740,7 @@ type = KEYVALUEJSON
 [nodebb.tags]
 file_filter = public/language/<lang>/tags.json
 source_file = public/language/en-GB/tags.json
-source_lang = en-GB
+source_lang = en_GB
 trans.ar = public/language/ar/tags.json
 trans.bn = public/language/bn/tags.json
 trans.bg = public/language/bg/tags.json
@@ -786,7 +786,7 @@ type = KEYVALUEJSON
 [nodebb.email]
 file_filter = public/language/<lang>/email.json
 source_file = public/language/en-GB/email.json
-source_lang = en-GB
+source_lang = en_GB
 trans.ar = public/language/ar/email.json
 trans.bn = public/language/bn/email.json
 trans.bg = public/language/bg/email.json
@@ -832,7 +832,7 @@ type = KEYVALUEJSON
 [nodebb.search]
 file_filter = public/language/<lang>/search.json
 source_file = public/language/en-GB/search.json
-source_lang = en-GB
+source_lang = en_GB
 trans.ar = public/language/ar/search.json
 trans.bn = public/language/bn/search.json
 trans.bg = public/language/bg/search.json
@@ -878,7 +878,7 @@ type = KEYVALUEJSON
 [nodebb.groups]
 file_filter = public/language/<lang>/groups.json
 source_file = public/language/en-GB/groups.json
-source_lang = en-GB
+source_lang = en_GB
 trans.ar = public/language/ar/groups.json
 trans.bn = public/language/bn/groups.json
 trans.bg = public/language/bg/groups.json
@@ -924,7 +924,7 @@ type = KEYVALUEJSON
 [nodebb.uploads]
 file_filter = public/language/<lang>/uploads.json
 source_file = public/language/en-GB/uploads.json
-source_lang = en-GB
+source_lang = en_GB
 trans.ar = public/language/ar/uploads.json
 trans.bn = public/language/bn/uploads.json
 trans.bg = public/language/bg/uploads.json
