@@ -58,7 +58,7 @@ SocketAdmin.reload = function (socket, data, callback) {
 	});
 	meta.restart();
 	callback();
-}
+};
 
 SocketAdmin.restart = function (socket, data, callback) {
 	// Rebuild assets and reload NodeBB
@@ -68,7 +68,7 @@ SocketAdmin.restart = function (socket, data, callback) {
 		stdio: 'pipe'
 	});
 
-	build_worker.on('exit', function() {
+	build_worker.on('exit', function () {
 		events.log({
 			type: 'build',
 			uid: socket.uid,
