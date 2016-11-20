@@ -12,6 +12,7 @@ var categories = require('../categories');
 var privileges = require('../privileges');
 var plugins = require('../plugins');
 var widgets = require('../widgets');
+var translator = require('../../public/src/modules/translator');
 var accountHelpers = require('../controllers/accounts/helpers');
 
 var apiController = {};
@@ -66,9 +67,9 @@ apiController.getConfig = function (req, res, next) {
 
 	config.cookies = {
 		enabled: parseInt(meta.config.cookieConsentEnabled, 10) === 1,
-		message: meta.config.cookieConsentMessage || '[[global:cookies.message]]',
-		dismiss: meta.config.cookieConsentDismiss || '[[global:cookies.accept]]',
-		link: meta.config.cookieConsentLink || '[[global:cookies.learn_more]]'
+		message: translator.escape(meta.config.cookieConsentMessage || '[[global:cookies.message]]').replace(/\\/g, '\\\\'),
+		dismiss: translator.escape(meta.config.cookieConsentDismiss || '[[global:cookies.accept]]').replace(/\\/g, '\\\\'),
+		link: translator.escape(meta.config.cookieConsentLink || '[[global:cookies.learn_more]]').replace(/\\/g, '\\\\')
 	};
 
 	async.waterfall([

@@ -640,18 +640,24 @@ app.cacheBuster = null;
 		} else if (window.localStorage.getItem('cookieconsent') === '1') {
 			return;
 		}
+		require(['translator'], function (translator) {
+			config.cookies.message = translator.unescape(config.cookies.message);
+			config.cookies.dismiss = translator.unescape(config.cookies.dismiss);
+			config.cookies.link = translator.unescape(config.cookies.link)
 
-		templates.parse('partials/cookie-consent', config.cookies, function (html) {
-			$(document.body).append(html);
+			app.parseAndTranslate('partials/cookie-consent', config.cookies, function (html) {
+				$(document.body).append(html);
 
-			var warningEl = $('.cookie-consent');
-			var dismissEl = warningEl.find('button');
-			dismissEl.on('click', function () {
-				// Save consent cookie and remove warning element
-				var now = new Date();
-				window.localStorage.setItem('cookieconsent', '1');
-				warningEl.remove();
+				var warningEl = $('.cookie-consent');
+				var dismissEl = warningEl.find('button');
+				dismissEl.on('click', function () {
+					// Save consent cookie and remove warning element
+					var now = new Date();
+					window.localStorage.setItem('cookieconsent', '1');
+					warningEl.remove();
+				});
 			});
 		});
+
 	};
 }());
