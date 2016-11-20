@@ -643,7 +643,7 @@ app.cacheBuster = null;
 		require(['translator'], function (translator) {
 			config.cookies.message = translator.unescape(config.cookies.message);
 			config.cookies.dismiss = translator.unescape(config.cookies.dismiss);
-			config.cookies.link = translator.unescape(config.cookies.link)
+			config.cookies.link = translator.unescape(config.cookies.link);
 
 			app.parseAndTranslate('partials/cookie-consent', config.cookies, function (html) {
 				$(document.body).append(html);
@@ -652,7 +652,6 @@ app.cacheBuster = null;
 				var dismissEl = warningEl.find('button');
 				dismissEl.on('click', function () {
 					// Save consent cookie and remove warning element
-					var now = new Date();
 					window.localStorage.setItem('cookieconsent', '1');
 					warningEl.remove();
 				});
