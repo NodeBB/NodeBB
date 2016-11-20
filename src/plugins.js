@@ -100,7 +100,7 @@ var middleware;
 				});
 			},
 			async.apply(Plugins.getPluginPaths),
-			function(paths, next) {
+			function (paths, next) {
 				async.eachSeries(paths, Plugins.loadPlugin, next);
 			},
 			function (next) {

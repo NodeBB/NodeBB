@@ -41,14 +41,13 @@ module.exports = function (Plugins) {
 	Plugins.prepareForBuild = function (callback) {
 		async.waterfall([
 			async.apply(Plugins.getPluginPaths),
-			function(paths, next) {
-				async.map(paths, function(path, next) {
+			function (paths, next) {
+				async.map(paths, function (path, next) {
 					Plugins.loadPluginInfo(path, next);
 				}, next);
 			},
-			function(plugins, next) {
-				async.each(plugins, function(pluginData, next) {
-					var idx = plugins.indexOf(pluginData);
+			function (plugins, next) {
+				async.each(plugins, function (pluginData, next) {
 					async.parallel([
 						async.apply(mapFiles, pluginData, 'css', 'cssFiles'),
 						async.apply(mapFiles, pluginData, 'less', 'lessFiles'),
