@@ -1,11 +1,11 @@
 {
-    "title": "Legújabb",
+    "title": "Legrissebb",
     "day": "Nap",
     "week": "Hét",
     "month": "Hónap",
     "year": "Év",
     "alltime": "Minden idők",
-    "no_recent_topics": "Nincs friss topik.",
+    "no_recent_topics": "Nincs friss témakör.",
     "no_popular_topics": "Nincs népszerű témakör.",
     "there-is-a-new-topic": "Van egy új témakör.",
     "there-is-a-new-topic-and-a-new-post": "Van egy új témakör és új hozzászólás.",
