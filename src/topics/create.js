@@ -329,7 +329,9 @@ module.exports = function (Topics) {
 
 	function check(item, min, max, minError, maxError, callback) {
 		// Trim and remove HTML (latter for composers that send in HTML, like redactor)
-		item = S(item.trim()).stripTags().s;
+		if (typeof item === 'string') {
+			item = S(item.trim()).stripTags().s;
+		}
 
 		if (!item || item.length < parseInt(min, 10)) {
 			return callback(new Error('[[error:' + minError + ', ' + min + ']]'));
