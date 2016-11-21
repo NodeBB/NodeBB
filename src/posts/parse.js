@@ -3,7 +3,9 @@
 var nconf = require('nconf');
 var url = require('url');
 var winston = require('winston');
+var S = require('string');
 
+var meta = require('../meta');
 var cache = require('./cache');
 var plugins = require('../plugins');
 var translator = require('../../public/src/modules/translator');
@@ -41,8 +43,7 @@ module.exports = function (Posts) {
 	};
 
 	Posts.parseSignature = function (userData, uid, callback) {
-		userData.signature = userData.signature || '';
-
+		userData.signature = sanitizeSignature(userData.signature || '');
 		plugins.fireHook('filter:parse.signature', {userData: userData, uid: uid}, callback);
 	};
 
@@ -73,4 +74,19 @@ module.exports = function (Posts) {
 
 		return content;
 	};
+
+	function sanitizeSignature(signature) {
+		var	string = S(signature),
+			tagsToStrip = [];
+
+		if (parseInt(meta.config['signatures:disableLinks'], 10) === 1) {
+			tagsToStrip.push('a');
+		}
+
+		if (parseInt(meta.config['signatures:disableImages'], 10) === 1) {
+			tagsToStrip.push('img');
+		}
+
+		return tagsToStrip.length ? string.stripTags.apply(string, tagsToStrip).s : signature;
+	}
 };
