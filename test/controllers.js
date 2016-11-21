@@ -615,6 +615,55 @@ describe('Controllers', function () {
 		});
 	});
 
+	describe('tags', function () {
+		var tid;
+		before(function (done) {
+			topics.post({
+				uid: fooUid,
+				title: 'topic title',
+				content: 'test topic content',
+				cid: cid,
+				tags: ['nodebb', 'bug', 'test']
+			}, function (err, result) {
+				assert.ifError(err);
+				tid = result.topicData.tid;
+				done();
+			});
+		});
+
+		it('should render tags page', function (done) {
+			request(nconf.get('url') + '/api/tags', {json: true}, function (err, res, body) {
+				assert.ifError(err);
+				assert.equal(res.statusCode, 200);
+				assert(body);
+				assert(Array.isArray(body.tags));
+				done();
+			});
+		});
+
+		it('should render tag page with no topics', function (done) {
+			request(nconf.get('url') + '/api/tags/notag', {json: true}, function (err, res, body) {
+				assert.ifError(err);
+				assert.equal(res.statusCode, 200);
+				assert(body);
+				assert(Array.isArray(body.topics));
+				assert.equal(body.topics.length, 0);
+				done();
+			});
+		});
+
+		it('should render tag page with 1 topic', function (done) {
+			request(nconf.get('url') + '/api/tags/nodebb', {json: true}, function (err, res, body) {
+				assert.ifError(err);
+				assert.equal(res.statusCode, 200);
+				assert(body);
+				assert(Array.isArray(body.topics));
+				assert.equal(body.topics.length, 1);
+				done();
+			});
+		});
+	});
+
 
 	after(function (done) {
 		var analytics = require('../src/analytics');
