@@ -182,6 +182,130 @@ describe('Categories', function () {
 		});
 	});
 
+	describe('socket methods', function () {
+		var socketCategories = require('../src/socket.io/categories');
+
+		before(function (done) {
+			Topics.post({
+				uid: posterUid,
+				cid: categoryObj.cid,
+				title: 'Test Topic Title',
+				content: 'The content of test topic',
+				tags: ['nodebb']
+			}, done);
+		});
+
+		it('should get recent replies in category', function (done) {
+			socketCategories.getRecentReplies({uid: posterUid}, categoryObj.cid, function (err, data) {
+				assert.ifError(err);
+				assert(Array.isArray(data));
+				done();
+			});
+		});
+
+		it('should get categories', function (done) {
+			socketCategories.get({uid: posterUid}, {}, function (err, data) {
+				assert.ifError(err);
+				assert(Array.isArray(data));
+				done();
+			});
+		});
+
+		it('should get watched categories', function (done) {
+			socketCategories.getWatchedCategories({uid: posterUid}, {}, function (err, data) {
+				assert.ifError(err);
+				assert(Array.isArray(data));
+				done();
+			});
+		});
+
+		it('should load more topics', function (done) {
+			socketCategories.loadMore({uid: posterUid}, {cid: categoryObj.cid, after: 0, author: 'poster', tag: 'nodebb'}, function (err, data) {
+				assert.ifError(err);
+				assert(Array.isArray(data.topics));
+				assert.equal(data.topics[0].user.username, 'poster');
+				assert.equal(data.topics[0].tags[0].value, 'nodebb');
+				assert.equal(data.topics[0].category.cid, categoryObj.cid);
+				done();
+			});
+		});
+
+		it('should load page count', function (done) {
+			socketCategories.getPageCount({uid: posterUid}, categoryObj.cid, function (err, pageCount) {
+				assert.ifError(err);
+				assert.equal(pageCount, 1);
+				done();
+			});
+		});
+
+		it('should load page count', function (done) {
+			socketCategories.getTopicCount({uid: posterUid}, categoryObj.cid, function (err, topicCount) {
+				assert.ifError(err);
+				assert.equal(topicCount, 2);
+				done();
+			});
+		});
+
+		it('should load category by privilege', function (done) {
+			socketCategories.getCategoriesByPrivilege({uid: posterUid}, 'find', function (err, data) {
+				assert.ifError(err);
+				assert(Array.isArray(data));
+				done();
+			});
+		});
+
+		it('should get move categories', function (done) {
+			socketCategories.getMoveCategories({uid: posterUid}, {}, function (err, data) {
+				assert.ifError(err);
+				assert(Array.isArray(data));
+				done();
+			});
+		});
+
+		it('should ignore category', function (done) {
+			socketCategories.ignore({uid: posterUid}, categoryObj.cid, function (err) {
+				assert.ifError(err);
+				Categories.isIgnored([categoryObj.cid], posterUid, function (err, isIgnored) {
+					assert.ifError(err);
+					assert.equal(isIgnored[0], true);
+					done();
+				});
+			});
+		});
+
+		it('should watch category', function (done) {
+			socketCategories.watch({uid: posterUid}, categoryObj.cid, function (err) {
+				assert.ifError(err);
+				Categories.isIgnored([categoryObj.cid], posterUid, function (err, isIgnored) {
+					assert.ifError(err);
+					assert.equal(isIgnored[0], false);
+					done();
+				});
+			});
+		});
+
+		it('should check if user is moderator', function (done) {
+			socketCategories.isModerator({uid: posterUid}, {}, function (err, isModerator) {
+				assert.ifError(err);
+				assert(!isModerator);
+				done();
+			});
+		});
+
+		it('should get category data' , function (done) {
+			socketCategories.getCategory({uid: posterUid}, categoryObj.cid, function (err, data) {
+				assert.ifError(err);
+				assert.equal(categoryObj.cid, data.cid);
+				done();
+			});
+		});
+
+
+	});
+
+
+
+
 	after(function (done) {
 		db.emptydb(done);
 	});
