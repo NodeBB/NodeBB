@@ -89,7 +89,7 @@ module.exports = function (Topics) {
 
 	Topics.post = function (data, callback) {
 		var uid = data.uid;
-		var title = data.title ? data.title.trim() : data.title;
+		var title = String(data.title).trim();
 		data.tags = data.tags || [];
 
 		async.waterfall([
