@@ -654,6 +654,34 @@ describe('Topic\'s', function () {
 
 	});
 
+	describe('suggested topics', function () {
+		var tid1;
+		var tid2;
+		before(function (done) {
+			async.parallel({
+				topic1: function (next) {
+					topics.post({uid: adminUid, tags: ['nodebb'], title: 'topic title 1', content: 'topic 1 content', cid: topic.categoryId}, next);
+				},
+				topic2: function (next) {
+					topics.post({uid: adminUid, tags: ['nodebb'], title: 'topic title 2', content: 'topic 2 content', cid: topic.categoryId}, next);
+				}
+			}, function (err, results) {
+				assert.ifError(err);
+				tid1 = results.topic1.topicData.tid;
+				tid2 = results.topic2.topicData.tid;
+				done();
+			});
+		});
+
+		it('should return suggested topics', function (done) {
+			topics.getSuggestedTopics(tid1, adminUid, 0, -1, function (err, topics) {
+				assert.ifError(err);
+				assert(Array.isArray(topics));
+				done();
+			});
+		});
+	});
+
 
 
 	after(function (done) {

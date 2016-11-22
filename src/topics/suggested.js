@@ -1,13 +1,11 @@
 
 'use strict';
 
-var async = require('async'),
-	_ = require('underscore'),
+var async = require('async');
+var _ = require('underscore');
 
-	categories = require('../categories'),
-	search = require('../search'),
-	db = require('../database');
-
+var categories = require('../categories');
+var search = require('../search');
 
 module.exports = function (Topics) {
 
@@ -29,7 +27,13 @@ module.exports = function (Topics) {
 			var tids = results.tagTids.concat(results.searchTids).concat(results.categoryTids);
 			tids = tids.filter(function (_tid, index, array) {
 				return parseInt(_tid, 10) !== parseInt(tid, 10) && array.indexOf(_tid) === index;
-			}).slice(start, stop + 1);
+			});
+
+			if (stop === -1) {
+				tids = tids.slice(start);
+			} else {
+				tids = tids.slice(start, stop + 1);
+			}
 
 			Topics.getTopics(tids, uid, callback);
 		});
@@ -63,12 +67,14 @@ module.exports = function (Topics) {
 	}
 
 	function getCategoryTids(tid, callback) {
-		Topics.getTopicField(tid, 'cid', function (err, cid) {
-			if (err || !cid) {
-				return callback(err, []);
+		async.waterfall([
+			function (next) {
+				Topics.getTopicField(tid, 'cid', next);
+			},
+			function (cid, next) {
+				categories.getTopicIds('cid:' + cid + ':tids', true, 0, 9, next);
 			}
-			categories.getTopicIds('cid:' + cid + ':tids', true, 0, 9, callback);
-		});
+		], callback);
 	}
 
 };
