@@ -9,6 +9,8 @@ var Groups = require('../src/groups');
 var User = require('../src/user');
 
 describe('Groups', function () {
+	var adminUid;
+	var testUid;
 	before(function (done) {
 		Groups.resetCache();
 		async.parallel([
@@ -20,6 +22,22 @@ describe('Groups', function () {
 				}, next);
 			},
 			function (next) {
+				Groups.create({
+					name: 'PrivateNoJoin',
+					description: 'Private group',
+					private: 1,
+					disableJoinRequests: 1
+				}, next);
+			},
+			function (next) {
+				Groups.create({
+					name: 'PrivateCanJoin',
+					description: 'Private group',
+					private: 1,
+					disableJoinRequests: 0
+				}, next);
+			},
+			function (next) {
 				// Create a new user
 				User.create({
 					username: 'testuser',
@@ -27,17 +45,28 @@ describe('Groups', function () {
 				}, next);
 			},
 			function (next) {
+				User.create({
+					username: 'admin',
+					email: 'admin@admin.com'
+				}, next);
+			},
+			function (next) {
 				// Also create a hidden group
 				Groups.join('Hidden', 'Test', next);
 			}
-		], done);
+		], function (err, results) {
+			assert.ifError(err);
+			testUid = results[3];
+			adminUid = results[4];
+			Groups.join('administrators', adminUid, done);
+		});
 	});
 
 	describe('.list()', function () {
 		it('should list the groups present', function (done) {
 			Groups.getGroupsFromSet('groups:createtime', 0, 0, -1, function (err, groups) {
 				assert.ifError(err);
-				assert.equal(groups.length, 3);
+				assert.equal(groups.length, 6);
 				done();
 			});
 		});
@@ -50,8 +79,7 @@ describe('Groups', function () {
 
 		it('with no options, should show group information', function (done) {
 			Groups.get('Test', {}, function (err, groupObj) {
-				if (err) return done(err);
-
+				assert.ifError(err);
 				assert.equal(typeof groupObj, 'object');
 				assert(Array.isArray(groupObj.members));
 				assert.strictEqual(groupObj.name, 'Test');
@@ -67,7 +95,7 @@ describe('Groups', function () {
 	describe('.search()', function () {
 		it('should return the "Test" group when searched for', function (done) {
 			Groups.search('test', {}, function (err, groups) {
-				if (err) return done(err);
+				assert.ifError(err);
 				assert.equal(1, groups.length);
 				assert.strictEqual('Test', groups[0].name);
 				done();
@@ -78,20 +106,16 @@ describe('Groups', function () {
 	describe('.isMember()', function () {
 		it('should return boolean true when a user is in a group', function (done) {
 			Groups.isMember(1, 'Test', function (err, isMember) {
-				if (err) return done(err);
-
+				assert.ifError(err);
 				assert.strictEqual(isMember, true);
-
 				done();
 			});
 		});
 
 		it('should return boolean false when a user is not in a group', function (done) {
 			Groups.isMember(2, 'Test', function (err, isMember) {
-				if (err) return done(err);
-
+				assert.ifError(err);
 				assert.strictEqual(isMember, false);
-
 				done();
 			});
 		});
@@ -100,20 +124,16 @@ describe('Groups', function () {
 	describe('.isMemberOfGroupList', function () {
 		it('should report that a user is part of a groupList, if they are', function (done) {
 			Groups.isMemberOfGroupList(1, 'Hidden', function (err, isMember) {
-				if (err) return done(err);
-
+				assert.ifError(err);
 				assert.strictEqual(isMember, true);
-
 				done();
 			});
 		});
 
 		it('should report that a user is not part of a groupList, if they are not', function (done) {
 			Groups.isMemberOfGroupList(2, 'Hidden', function (err, isMember) {
-				if (err) return done(err);
-
+				assert.ifError(err);
 				assert.strictEqual(isMember, false);
-
 				done();
 			});
 		});
@@ -122,28 +142,23 @@ describe('Groups', function () {
 	describe('.exists()', function () {
 		it('should verify that the test group exists', function (done) {
 			Groups.exists('Test', function (err, exists) {
-				if (err) return done(err);
-
+				assert.ifError(err);
 				assert.strictEqual(exists, true);
-
 				done();
 			});
 		});
 
 		it('should verify that a fake group does not exist', function (done) {
 			Groups.exists('Derp', function (err, exists) {
-				if (err) return done(err);
-
+				assert.ifError(err);
 				assert.strictEqual(exists, false);
-
 				done();
 			});
 		});
 
 		it('should check if group exists using an array', function (done) {
 			Groups.exists(['Test', 'Derp'], function (err, groupsExists) {
-				if (err) return done(err);
-
+				assert.ifError(err);
 				assert.strictEqual(groupsExists[0], true);
 				assert.strictEqual(groupsExists[1], false);
 				done();
@@ -157,8 +172,7 @@ describe('Groups', function () {
 				name: 'foo',
 				description: 'bar'
 			}, function (err) {
-				if (err) return done(err);
-
+				assert.ifError(err);
 				Groups.get('foo', {}, done);
 			});
 		});
@@ -175,13 +189,11 @@ describe('Groups', function () {
 	describe('.hide()', function () {
 		it('should mark the group as hidden', function (done) {
 			Groups.hide('foo', function (err) {
-				if (err) return done(err);
+				assert.ifError(err);
 
 				Groups.get('foo', {}, function (err, groupObj) {
-					if (err) return done(err);
-
+					assert.ifError(err);
 					assert.strictEqual(true, groupObj.hidden);
-
 					done();
 				});
 			});
@@ -202,13 +214,11 @@ describe('Groups', function () {
 			Groups.update('updateTestGroup', {
 				description: 'baz'
 			}, function (err) {
-				if (err) return done(err);
+				assert.ifError(err);
 
 				Groups.get('updateTestGroup', {}, function (err, groupObj) {
-					if (err) return done(err);
-
+					assert.ifError(err);
 					assert.strictEqual('baz', groupObj.description);
-
 					done();
 				});
 			});
@@ -218,14 +228,12 @@ describe('Groups', function () {
 			Groups.update('updateTestGroup', {
 				name: 'updateTestGroup?'
 			}, function (err) {
-				if (err) return done(err);
+				assert.ifError(err);
 
 				Groups.get('updateTestGroup?', {}, function (err, groupObj) {
-					if (err) return done(err);
-
+					assert.ifError(err);
 					assert.strictEqual('updateTestGroup?', groupObj.name);
 					assert.strictEqual('updatetestgroup', groupObj.slug);
-
 					done();
 				});
 			});
@@ -239,7 +247,7 @@ describe('Groups', function () {
 
 		it('should destroy a group', function (done) {
 			Groups.destroy('foobar?', function (err) {
-				if (err) return done(err);
+				assert.ifError(err);
 
 				Groups.get('foobar?', {}, function (err) {
 					assert(err, 'Group still exists!');
@@ -251,7 +259,7 @@ describe('Groups', function () {
 
 		it('should also remove the members set', function (done) {
 			db.exists('group:foo:members', function (err, exists) {
-				if (err) return done(err);
+				assert.ifError(err);
 
 				assert.strictEqual(false, exists);
 
@@ -267,10 +275,10 @@ describe('Groups', function () {
 
 		it('should add a user to a group', function (done) {
 			Groups.join('Test', 1, function (err) {
-				if (err) return done(err);
+				assert.ifError(err);
 
 				Groups.isMember(1, 'Test', function (err, isMember) {
-					assert.equal(err, null);
+					assert.ifError(err);
 					assert.strictEqual(true, isMember);
 
 					done();
@@ -282,10 +290,10 @@ describe('Groups', function () {
 	describe('.leave()', function () {
 		it('should remove a user from a group', function (done) {
 			Groups.leave('Test', 1, function (err) {
-				if (err) return done(err);
+				assert.ifError(err);
 
 				Groups.isMember(1, 'Test', function (err, isMember) {
-					assert.equal(err, null);
+					assert.ifError(err);
 					assert.strictEqual(false, isMember);
 
 					done();
@@ -297,15 +305,13 @@ describe('Groups', function () {
 	describe('.leaveAllGroups()', function () {
 		it('should remove a user from all groups', function (done) {
 			Groups.leaveAllGroups(1, function (err) {
-				if (err) return done(err);
+				assert.ifError(err);
 
 				var	groups = ['Test', 'Hidden'];
 				async.every(groups, function (group, next) {
 					Groups.isMember(1, group, function (err, isMember) {
-						if (err) done(err);
-						else {
-							next(!isMember);
-						}
+						assert.ifError(err);
+						next(!isMember);
 					});
 				}, function (result) {
 					assert(result);
@@ -342,6 +348,109 @@ describe('Groups', function () {
 				});
 			});
 		});
+	});
+
+
+	describe('socket methods', function () {
+		var socketGroups = require('../src/socket.io/groups');
+		var meta = require('../src/meta');
+
+
+		it('should error if data is null', function (done) {
+			socketGroups.before({uid: 0}, 'groups.join', null, function (err) {
+				assert.equal(err.message, '[[error:invalid-data]]');
+				done();
+			});
+		});
+
+		it('should return error if not logged in', function (done) {
+			socketGroups.join({uid: 0}, {}, function (err) {
+				assert.equal(err.message, '[[error:invalid-uid]]');
+				done();
+			});
+		});
+
+		it('should return error if group name is special', function (done) {
+			socketGroups.join({uid: adminUid}, {groupName: 'administrators'}, function (err) {
+				assert.equal(err.message, '[[error:not-allowed]]');
+				done();
+			});
+		});
+
+		it('should error if group does not exist', function (done) {
+			socketGroups.join({uid: adminUid}, {groupName: 'doesnotexist'}, function (err) {
+				assert.equal(err.message, '[[error:no-group]]');
+				done();
+			});
+		});
+
+		it('should join test group', function (done) {
+			meta.config.allowPrivateGroups = 0;
+			socketGroups.join({uid: adminUid}, {groupName: 'Test'}, function (err) {
+				assert.ifError(err);
+				Groups.isMember(adminUid, 'Test', function (err, isMember) {
+					assert.ifError(err);
+					assert(isMember);
+					done();
+				});
+			});
+		});
+
+		it('should error if not logged in', function (done) {
+			socketGroups.leave({uid: 0}, {}, function (err) {
+				assert.equal(err.message, '[[error:invalid-uid]]');
+				done();
+			});
+		});
+
+		it('should return error if group name is special', function (done) {
+			socketGroups.leave({uid: adminUid}, {groupName: 'administrators'}, function (err) {
+				assert.equal(err.message, '[[error:cant-remove-self-as-admin]]');
+				done();
+			});
+		});
+
+		it('should leave test group', function (done) {
+			socketGroups.leave({uid: adminUid}, {groupName: 'Test'}, function (err) {
+				assert.ifError(err);
+				Groups.isMember('Test', adminUid, function (err, isMember) {
+					assert.ifError(err);
+					assert(!isMember);
+					done();
+				});
+			});
+		});
+
+		it('should fail to join if group is private and join requests are disabled', function (done) {
+			meta.config.allowPrivateGroups = 1;
+			socketGroups.join({uid: testUid}, {groupName: 'PrivateNoJoin'}, function (err) {
+				assert.equal(err.message, '[[error:join-requests-disabled]]');
+				done();
+			});
+		});
+
+		it('should join if user is admin', function (done) {
+			socketGroups.join({uid: adminUid}, {groupName: 'PrivateCanJoin'}, function (err) {
+				assert.ifError(err);
+				Groups.isMember(adminUid, 'PrivateCanJoin', function (err, isMember) {
+					assert.ifError(err);
+					assert(isMember);
+					done();
+				});
+			});
+		});
+
+		it('should request membership for regular user', function (done) {
+			socketGroups.join({uid: testUid}, {groupName: 'PrivateCanJoin'}, function (err) {
+				assert.ifError(err);
+				Groups.isPending(testUid, 'PrivateCanJoin', function (err, isPending) {
+					assert.ifError(err);
+					assert(isPending);
+					done();
+				});
+			});
+		});
+
 	});
 
 	after(function (done) {

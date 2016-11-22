@@ -1,14 +1,14 @@
 "use strict";
 
-var	async = require('async'),
+var	async = require('async');
 
-	groups = require('../groups'),
-	meta = require('../meta'),
-	user = require('../user'),
-	utils = require('../../public/src/utils'),
-	groupsController = require('../controllers/groups'),
+var groups = require('../groups');
+var meta = require('../meta');
+var user = require('../user');
+var utils = require('../../public/src/utils');
+var groupsController = require('../controllers/groups');
 
-	SocketGroups = {};
+var SocketGroups = {};
 
 
 SocketGroups.before = function (socket, method, data, next) {
@@ -27,34 +27,36 @@ SocketGroups.join = function (socket, data, callback) {
 		return callback(new Error('[[error:not-allowed]]'));
 	}
 
-	groups.exists(data.groupName, function (err, exists) {
-		if (err || !exists) {
-			return callback(err || new Error('[[error:no-group]]'));
-		}
-
-		if (parseInt(meta.config.allowPrivateGroups, 10) !== 1) {
-			return groups.join(data.groupName, socket.uid, callback);
-		}
-
-		async.parallel({
-			isAdmin: async.apply(user.isAdministrator, socket.uid),
-			groupData: async.apply(groups.getGroupData, data.groupName)
-		}, function (err, results) {
-			if (err) {
-				return callback(err);
+	async.waterfall([
+		function (next) {
+			groups.exists(data.groupName, next);
+		},
+		function (exists, next) {
+			if (!exists) {
+				return next(new Error('[[error:no-group]]'));
 			}
 
+			if (parseInt(meta.config.allowPrivateGroups, 10) !== 1) {
+				return groups.join(data.groupName, socket.uid, callback);
+			}
+
+			async.parallel({
+				isAdmin: async.apply(user.isAdministrator, socket.uid),
+				groupData: async.apply(groups.getGroupData, data.groupName)
+			}, next);
+		},
+		function (results, next) {
 			if (results.groupData.private && results.groupData.disableJoinRequests) {
-				return callback(new Error('[[error:join-requests-disabled]]'));
+				return next(new Error('[[error:join-requests-disabled]]'));
 			}
 
 			if (!results.groupData.private || results.isAdmin) {
-				groups.join(data.groupName, socket.uid, callback);
+				groups.join(data.groupName, socket.uid, next);
 			} else {
-				groups.requestMembership(data.groupName, socket.uid, callback);
+				groups.requestMembership(data.groupName, socket.uid, next);
 			}
-		});
-	});
+		}
+	], callback);
 };
 
 SocketGroups.leave = function (socket, data, callback) {
