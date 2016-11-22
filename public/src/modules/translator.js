@@ -1,9 +1,9 @@
-/* global define, jQuery, config, RELATIVE_PATH, utils, window, Promise */
+/* global define, jQuery, config, utils, window, Promise */
 
 (function (factory) {
 	'use strict';
 	function loadClient(language, namespace) {
-		return Promise.resolve(jQuery.getJSON(RELATIVE_PATH + '/api/language/' + language + '/' + namespace));
+		return Promise.resolve(jQuery.getJSON(config.relative_path + '/api/language/' + language + '/' + namespace));
 	}
 	if (typeof define === 'function' && define.amd) {
 		// AMD. Register as a named module
@@ -459,12 +459,12 @@
 					break;
 			}
 
-			jQuery.getScript(RELATIVE_PATH + '/vendor/jquery/timeago/locales/jquery.timeago.' + languageCode + '.js').done(function () {
+			jQuery.getScript(config.relative_path + '/vendor/jquery/timeago/locales/jquery.timeago.' + languageCode + '.js').done(function () {
 				jQuery('.timeago').timeago();
 				adaptor.timeagoShort = assign({}, jQuery.timeago.settings.strings);
 
 				// Retrieve the shorthand timeago values as well
-				jQuery.getScript(RELATIVE_PATH + '/vendor/jquery/timeago/locales/jquery.timeago.' + languageCode + '-short.js').done(function () {
+				jQuery.getScript(config.relative_path + '/vendor/jquery/timeago/locales/jquery.timeago.' + languageCode + '-short.js').done(function () {
 					// Switch back to long-form
 					adaptor.toggleTimeagoShorthand();
 				});
