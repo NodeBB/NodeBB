@@ -22,7 +22,6 @@ app.cacheBuster = null;
 
 	app.load = function () {
 		app.loadProgressiveStylesheet();
-		overrides.overrideTimeago();
 
 		var url = ajaxify.start(window.location.pathname.slice(1) + window.location.search + window.location.hash);
 		ajaxify.updateHistory(url, true);
@@ -53,6 +52,7 @@ app.cacheBuster = null;
 		});
 
 		overrides.overrideBootbox();
+		overrides.overrideTimeago();
 		createHeaderTooltips();
 		app.showEmailConfirmWarning();
 		app.showCookieWarning();
