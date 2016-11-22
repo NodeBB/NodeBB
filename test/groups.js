@@ -363,6 +363,13 @@ describe('Groups', function () {
 			});
 		});
 
+		it('should not error if data is valid', function (done) {
+			socketGroups.before({uid: 0}, 'groups.join', {}, function (err) {
+				assert.ifError(err);
+				done();
+			});
+		});
+
 		it('should return error if not logged in', function (done) {
 			socketGroups.join({uid: 0}, {}, function (err) {
 				assert.equal(err.message, '[[error:invalid-uid]]');
@@ -446,6 +453,50 @@ describe('Groups', function () {
 				Groups.isPending(testUid, 'PrivateCanJoin', function (err, isPending) {
 					assert.ifError(err);
 					assert(isPending);
+					done();
+				});
+			});
+		});
+
+		it('should accept membership of user', function (done) {
+			socketGroups.accept({uid: adminUid}, {groupName: 'PrivateCanJoin', toUid: testUid}, function (err) {
+				assert.ifError(err);
+				Groups.isMember(testUid, 'PrivateCanJoin', function (err, isMember) {
+					assert.ifError(err);
+					assert(isMember);
+					done();
+				});
+			});
+		});
+
+		it('should grant ownership to user', function (done) {
+			socketGroups.grant({uid: adminUid}, {groupName: 'PrivateCanJoin', toUid: testUid}, function (err) {
+				assert.ifError(err);
+				Groups.ownership.isOwner(testUid, 'PrivateCanJoin', function (err, isOwner) {
+					assert.ifError(err);
+					assert(isOwner);
+					done();
+				});
+			});
+		});
+
+		it('should rescind ownership from user', function (done) {
+			socketGroups.rescind({uid: adminUid}, {groupName: 'PrivateCanJoin', toUid: testUid}, function (err) {
+				assert.ifError(err);
+				Groups.ownership.isOwner(testUid, 'PrivateCanJoin', function (err, isOwner) {
+					assert.ifError(err);
+					assert(!isOwner);
+					done();
+				});
+			});
+		});
+
+		it('should kick user from group', function (done) {
+			socketGroups.kick({uid: adminUid}, {groupName: 'PrivateCanJoin', uid: testUid}, function (err) {
+				assert.ifError(err);
+				Groups.isMember(testUid, 'PrivateCanJoin', function (err, isMember) {
+					assert.ifError(err);
+					assert(!isMember);
 					done();
 				});
 			});
