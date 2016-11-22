@@ -317,8 +317,10 @@ describe('Post\'s', function () {
 	});
 
 	describe('flagging a post', function () {
+		var meta = require('../src/meta');
 		var socketPosts = require('../src/socket.io/posts');
 		it('should fail to flag a post due to low reputation', function (done) {
+			meta.config['privileges:flag'] = 10;
 			flagPost(function (err) {
 				assert.equal(err.message, '[[error:not-enough-reputation-to-flag]]');
 				done();
@@ -326,7 +328,6 @@ describe('Post\'s', function () {
 		});
 
 		it('should flag a post', function (done) {
-			var meta = require('../src/meta');
 			meta.config['privileges:flag'] = -1;
 			flagPost(function (err) {
 				assert.ifError(err);
