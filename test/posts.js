@@ -10,11 +10,12 @@ var posts = require('../src/posts');
 var categories = require('../src/categories');
 var privileges = require('../src/privileges');
 var user = require('../src/user');
-
+var groups = require('../src/groups');
 
 describe('Post\'s', function () {
 	var voterUid;
 	var voteeUid;
+	var globalModUid;
 	var postData;
 	var topicData;
 	var cid;
@@ -26,6 +27,9 @@ describe('Post\'s', function () {
 			},
 			voteeUid: function (next) {
 				user.create({username: 'upvotee'}, next);
+			},
+			globalModUid: function (next) {
+				user.create({username: 'globalmod'}, next);
 			},
 			category: function (next) {
 				categories.create({
@@ -40,6 +44,7 @@ describe('Post\'s', function () {
 
 			voterUid = results.voterUid;
 			voteeUid = results.voteeUid;
+			globalModUid = results.globalModUid;
 			cid = results.category.cid;
 
 			topics.post({
@@ -53,7 +58,8 @@ describe('Post\'s', function () {
 				}
 				postData = data.postData;
 				topicData = data.topicData;
-				done();
+
+				groups.join('Global Moderators', globalModUid, done);
 			});
 		});
 	});
@@ -393,24 +399,19 @@ describe('Post\'s', function () {
 
 	describe('updating a flag', function () {
 		var socketPosts = require('../src/socket.io/posts');
-		var groups = require('../src/groups');
-
-		before(function (done) {
-			groups.join('Global Moderators', voteeUid, done);
-		});
 
 		it('should update a flag', function (done) {
 			async.waterfall([
 				function (next) {
-					socketPosts.updateFlag({uid: voteeUid}, {
+					socketPosts.updateFlag({uid: globalModUid}, {
 						pid: postData.pid,
 						data: [
-							{name: 'assignee', value: `${voteeUid}`},
+							{name: 'assignee', value: `${globalModUid}`},
 							{name: 'notes', value: 'notes'}
 						]
 					}, function (err) {
 						assert.ifError(err);
-						posts.getFlags('posts:flagged', cid, voteeUid, 0, -1, function (err, flagData) {
+						posts.getFlags('posts:flagged', cid, globalModUid, 0, -1, function (err, flagData) {
 							assert.ifError(err);
 							assert(flagData.posts);
 							assert.equal(flagData.posts.length, 1);
@@ -420,7 +421,7 @@ describe('Post\'s', function () {
 								state: flagData.posts[0].flagData.state,
 								labelClass: flagData.posts[0].flagData.labelClass
 							}, {
-								assignee: `${voteeUid}`,
+								assignee: `${globalModUid}`,
 								notes: 'notes',
 								state: 'open',
 								labelClass: 'info'
@@ -429,11 +430,11 @@ describe('Post\'s', function () {
 						});
 					});
 				}, function (next) {
-					posts.updateFlagData(voteeUid, postData.pid, {
+					posts.updateFlagData(globalModUid, postData.pid, {
 						state: 'rejected'
 					}, function (err) {
 						assert.ifError(err);
-						posts.getFlags('posts:flagged', cid, voteeUid, 0, -1, function (err, flagData) {
+						posts.getFlags('posts:flagged', cid, globalModUid, 0, -1, function (err, flagData) {
 							assert.ifError(err);
 							assert(flagData.posts);
 							assert.equal(flagData.posts.length, 1);
@@ -448,11 +449,11 @@ describe('Post\'s', function () {
 						});
 					});
 				}, function (next) {
-					posts.updateFlagData(voteeUid, postData.pid, {
+					posts.updateFlagData(globalModUid, postData.pid, {
 						state: 'wip'
 					}, function (err) {
 						assert.ifError(err);
-						posts.getFlags('posts:flagged', cid, voteeUid, 0, -1, function (err, flagData) {
+						posts.getFlags('posts:flagged', cid, globalModUid, 0, -1, function (err, flagData) {
 							assert.ifError(err);
 							assert(flagData.posts);
 							assert.equal(flagData.posts.length, 1);
@@ -467,11 +468,11 @@ describe('Post\'s', function () {
 						});
 					});
 				}, function (next) {
-					posts.updateFlagData(voteeUid, postData.pid, {
+					posts.updateFlagData(globalModUid, postData.pid, {
 						state: 'resolved'
 					}, function (err) {
 						assert.ifError(err);
-						posts.getFlags('posts:flagged', cid, voteeUid, 0, -1, function (err, flagData) {
+						posts.getFlags('posts:flagged', cid, globalModUid, 0, -1, function (err, flagData) {
 							assert.ifError(err);
 							assert(flagData.posts);
 							assert.equal(flagData.posts.length, 1);
@@ -494,7 +495,7 @@ describe('Post\'s', function () {
 		var socketPosts = require('../src/socket.io/posts');
 
 		it('should dismiss a flag', function (done) {
-			socketPosts.dismissFlag({uid: voteeUid}, postData.pid, function (err) {
+			socketPosts.dismissFlag({uid: globalModUid}, postData.pid, function (err) {
 				assert.ifError(err);
 				posts.isFlaggedByUser(postData.pid, voteeUid, function (err, hasFlagged) {
 					assert.ifError(err);
@@ -522,7 +523,7 @@ describe('Post\'s', function () {
 		});
 
 		it('should dismiss all flags', function (done) {
-			socketPosts.dismissAllFlags({uid: voteeUid}, {}, function (err) {
+			socketPosts.dismissAllFlags({uid: globalModUid}, {}, function (err) {
 				assert.ifError(err);
 				posts.isFlaggedByUser(postData.pid, voteeUid, function (err, hasFlagged) {
 					assert.ifError(err);

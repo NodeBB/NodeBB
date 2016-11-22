@@ -38,6 +38,7 @@ exports.build = function build(targets, callback) {
 
 exports.buildTargets = function (targets, callback) {
 	var meta = require('./src/meta');
+	buildStart = buildStart || Date.now();
 	var startTime;
 	var step = function (target, next) {
 		winston.info('[build]  => Completed in ' + ((Date.now() - startTime) / 1000) + 's');
