@@ -11,6 +11,7 @@ var Topics = require('../src/topics');
 var Categories = require('../src/categories');
 var Meta = require('../src/meta');
 var Password = require('../src/password');
+var groups = require('../src/groups');
 var helpers = require('./helpers');
 
 describe('User', function () {
@@ -19,7 +20,7 @@ describe('User', function () {
 	var testCid;
 
 	before(function (done) {
-		var groups = require('../src/groups');
+
 		groups.resetCache();
 
 		Categories.create({
@@ -521,6 +522,26 @@ describe('User', function () {
 				assert(body.homePageRoutes);
 				done();
 			});
+		});
+
+		it('should load user\'s groups page', function (done) {
+			groups.create({
+				name: 'Test',
+				description: 'Foobar!'
+			}, function (err) {
+				assert.ifError(err);
+				groups.join('Test', uid, function (err) {
+					assert.ifError(err);
+					request(nconf.get('url') + '/api/user/updatedagain/groups', {jar: jar, json: true}, function (err, res, body) {
+						assert.ifError(err);
+						assert.equal(res.statusCode, 200);
+						assert(Array.isArray(body.groups));
+						assert.equal(body.groups[0].name, 'Test');
+						done();
+					});
+				});
+			});
+
 		});
 	});
 
