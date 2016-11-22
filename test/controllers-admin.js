@@ -416,6 +416,17 @@ describe('Admin Controllers', function () {
 		});
 	});
 
+	it('should load /recent in maintenance mode', function (done) {
+		var meta = require('../src/meta');
+		meta.config.maintenanceMode = 1;
+		request(nconf.get('url') + '/api/recent', {jar: jar, json: true}, function (err, res, body) {
+			assert.ifError(err);
+			assert.equal(res.statusCode, 200);
+			assert(body);
+			meta.config.maintenanceMode = 0;
+			done();
+		});
+	});
 
 
 	after(function (done) {

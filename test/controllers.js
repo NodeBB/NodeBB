@@ -665,6 +665,44 @@ describe('Controllers', function () {
 	});
 
 
+	describe('maintenance mode', function () {
+
+		before(function (done) {
+			meta.config.maintenanceMode = 1;
+			done();
+		});
+		after(function (done) {
+			meta.config.maintenanceMode = 0;
+			done();
+		});
+
+		it('should return 503 in maintenance mode', function (done) {
+			request(nconf.get('url') + '/recent', {json: true}, function (err, res, body) {
+				assert.ifError(err);
+				assert.equal(res.statusCode, 503);
+				done();
+			});
+		});
+
+		it('should return 503 in maintenance mode', function (done) {
+			request(nconf.get('url') + '/api/recent', {json: true}, function (err, res, body) {
+				assert.ifError(err);
+				assert.equal(res.statusCode, 503);
+				assert(body);
+				done();
+			});
+		});
+
+		it('should return 200 in maintenance mode', function (done) {
+			request(nconf.get('url') + '/api/login', {json: true}, function (err, res, body) {
+				assert.ifError(err);
+				assert.equal(res.statusCode, 200);
+				assert(body);
+				done();
+			});
+		});
+	});
+
 	after(function (done) {
 		var analytics = require('../src/analytics');
 		analytics.writeData(function (err) {

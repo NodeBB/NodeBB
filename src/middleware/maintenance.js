@@ -27,20 +27,6 @@ module.exports = function (middleware) {
 			'^/language/.+',
 			'^/uploads/system/site-logo.png'
 		];
-		var render = function () {
-			res.status(503);
-			var data = {
-				site_title: meta.config.title || 'NodeBB',
-				message: meta.config.maintenanceModeMessage
-			};
-			if (!isApiRoute.test(url)) {
-				middleware.buildHeader(req, res, function () {
-					res.render('503', data);
-				});
-			} else {
-				res.json(data);
-			}
-		};
 
 		var isAllowed = function (url) {
 			for(var x = 0,numAllowed = allowedRoutes.length,route; x < numAllowed; x++) {
@@ -52,25 +38,28 @@ module.exports = function (middleware) {
 			return false;
 		};
 
-		var isApiRoute = /^\/api/;
-
 		if (isAllowed(url)) {
 			return next();
 		}
 
-		if (!req.user) {
-			return render();
-		}
-
-		user.isAdministrator(req.user.uid, function (err, isAdmin) {
-			if (err) {
+		user.isAdministrator(req.uid, function (err, isAdmin) {
+			if (err || isAdmin) {
 				return next(err);
 			}
-			if (!isAdmin) {
-				render();
-			} else {
-				next();
+
+			res.status(503);
+			var data = {
+				site_title: meta.config.title || 'NodeBB',
+				message: meta.config.maintenanceModeMessage
+			};
+
+			if (res.locals.isAPI) {
+				return res.json(data);
 			}
+
+			middleware.buildHeader(req, res, function () {
+				res.render('503', data);
+			});
 		});
 	};
 
