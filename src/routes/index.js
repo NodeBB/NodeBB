@@ -112,11 +112,11 @@ module.exports = function (app, middleware, hotswapIds) {
 	pluginRouter.hotswapId = 'plugins';
 	authRouter.hotswapId = 'auth';
 
-	app.use(middleware.maintenanceMode);
-
 	app.all(relativePath + '(/api|/api/*?)', middleware.prepareAPI);
 	app.all(relativePath + '(/api/admin|/api/admin/*?)', middleware.isAdmin);
 	app.all(relativePath + '(/admin|/admin/*?)', ensureLoggedIn.ensureLoggedIn(nconf.get('relative_path') + '/login?local=1'), middleware.applyCSRF, middleware.isAdmin);
+
+	app.use(middleware.maintenanceMode);
 
 	adminRoutes(router, middleware, controllers);
 	metaRoutes(router, middleware, controllers);
