@@ -87,36 +87,27 @@ module.exports = function (Meta) {
 
 	Meta.js.bridgeModules = function (app, callback) {
 		// Add routes for AMD-type modules to serve those files
-		var numBridged = 0,
-			addRoute = function (relPath) {
-				var relativePath = nconf.get('relative_path');
+		function addRoute(relPath) {
+			var relativePath = nconf.get('relative_path');
 
-				app.get(relativePath + '/src/modules/' + relPath, function (req, res) {
-					return res.sendFile(path.join(__dirname, '../../', Meta.js.scripts.modules[relPath]), {
-						maxAge: app.enabled('cache') ? 5184000000 : 0
-					});
+			app.get(relativePath + '/src/modules/' + relPath, function (req, res) {
+				return res.sendFile(path.join(__dirname, '../../', Meta.js.scripts.modules[relPath]), {
+					maxAge: app.enabled('cache') ? 5184000000 : 0
 				});
-			};
+			});
+		}
 
-		async.series([
-			function (next) {
-				for(var relPath in Meta.js.scripts.modules) {
-					if (Meta.js.scripts.modules.hasOwnProperty(relPath)) {
-						addRoute(relPath);
-						++numBridged;
-					}
-				}
+		var numBridged = 0;
 
-				next();
+		for(var relPath in Meta.js.scripts.modules) {
+			if (Meta.js.scripts.modules.hasOwnProperty(relPath)) {
+				addRoute(relPath);
+				++numBridged;
 			}
-		], function (err) {
-			if (err) {
-				winston.error('[meta/js] Encountered error while bridging modules:' + err.message);
-			}
+		}
 
-			winston.verbose('[meta/js] ' + numBridged + ' of ' + Object.keys(Meta.js.scripts.modules).length + ' modules bridged');
-			callback(err);
-		});
+		winston.verbose('[meta/js] ' + numBridged + ' of ' + Object.keys(Meta.js.scripts.modules).length + ' modules bridged');
+		callback();
 	};
 
 	Meta.js.minify = function (target, callback) {
