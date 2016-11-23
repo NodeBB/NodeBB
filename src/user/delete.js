@@ -15,6 +15,7 @@ module.exports = function (User) {
 		if (!parseInt(uid, 10)) {
 			return callback(new Error('[[error:invalid-uid]]'));
 		}
+
 		async.waterfall([
 			function (next) {
 				deletePosts(callerUid, uid, next);
@@ -48,6 +49,12 @@ module.exports = function (User) {
 		var userData;
 		async.waterfall([
 			function (next) {
+				User.exists(uid, next);
+			},
+			function (exists, next) {
+				if (!exists) {
+					return callback();
+				}
 				User.getUserFields(uid, ['username', 'userslug', 'fullname', 'email'], next);
 			},
 			function (_userData, next)  {

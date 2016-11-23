@@ -171,6 +171,9 @@
 	};
 
 	module.info = function (db, callback) {
+		if (!db) {
+			return callback();
+		}
 		async.parallel({
 			serverStatus: function (next) {
 				db.command({'serverStatus': 1}, next);

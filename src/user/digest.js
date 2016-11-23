@@ -1,6 +1,6 @@
 "use strict";
 
-var	async = require('async');
+var async = require('async');
 var winston = require('winston');
 var nconf = require('nconf');
 
@@ -57,7 +57,7 @@ var utils = require('../../public/src/utils');
 			if (err) {
 				winston.error('[user/jobs] Could not send digests (' + interval + '): ' + err.message);
 			} else {
-				winston.info('[user/jobs] Digest (' + interval + ') scheduling completed. ' + subscribers.length + ' email(s) sent.');
+				winston.verbose('[user/jobs] Digest (' + interval + ') scheduling completed. ' + subscribers.length + ' email(s) sent.');
 			}
 
 			callback(err);
@@ -65,25 +65,27 @@ var utils = require('../../public/src/utils');
 	};
 
 	Digest.getSubscribers = function (interval, callback) {
-		db.getSortedSetRange('digest:' + interval + ':uids', 0, -1, function (err, subscribers) {
-			if (err) {
-				return callback(err);
+		async.waterfall([
+			function (next) {
+				db.getSortedSetRange('digest:' + interval + ':uids', 0, -1, next);
+			},
+			function (subscribers, next) {
+				plugins.fireHook('filter:digest.subscribers', {
+					interval: interval,
+					subscribers: subscribers
+				}, next);
+			},
+			function (results, next) {
+				next(null, results.subscribers);
 			}
-
-			plugins.fireHook('filter:digest.subscribers', {
-				interval: interval,
-				subscribers: subscribers
-			}, function (err, returnData) {
-				callback(err, returnData.subscribers);
-			});
-		});
+		], callback);
 	};
 
 	Digest.send = function (data, callback) {
 		if (!data || !data.subscribers || !data.subscribers.length) {
 			return callback();
 		}
-		var	now = new Date();
+		var now = new Date();
 
 		async.waterfall([
 			function (next) {

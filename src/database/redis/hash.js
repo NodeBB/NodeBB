@@ -6,6 +6,14 @@ module.exports = function (redisClient, module) {
 
 	module.setObject = function (key, data, callback) {
 		callback = callback || function () {};
+		if (!key || !data) {
+			return callback();
+		}
+		Object.keys(data).forEach(function (key) {
+			if (data[key] === undefined) {
+				delete data[key];
+			}
+		});
 		redisClient.hmset(key, data, function (err) {
 			callback(err);
 		});

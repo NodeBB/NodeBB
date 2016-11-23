@@ -107,7 +107,7 @@ module.exports = function (Plugins) {
 			if (err) {
 				return callback(err);
 			}
-			winston.info('[plugins] ' + stdout);
+			winston.verbose('[plugins] ' + stdout);
 			callback();
 		 });
 	}

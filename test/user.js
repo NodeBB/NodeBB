@@ -573,17 +573,27 @@ describe('User', function () {
 		});
 	});
 
-
-	it('should send digests', function (done) {
-		User.updateDigestSetting(testUid, 'day', function (err) {
-			assert.ifError(err);
-			User.digest.execute('day', function (err) {
+	describe('digests', function () {
+		var uid;
+		before(function (done) {
+			User.create({username: 'digestuser', email: 'test@example.com'}, function (err, _uid) {
 				assert.ifError(err);
+				uid = _uid;
 				done();
 			});
 		});
-	});
 
+		it('should send digests', function (done) {
+			User.updateDigestSetting(uid, 'day', function (err) {
+				assert.ifError(err);
+					User.digest.execute('day', function (err) {
+					assert.ifError(err);
+					done();
+				});
+			});
+		});
+
+	});
 
 
 	after(function (done) {

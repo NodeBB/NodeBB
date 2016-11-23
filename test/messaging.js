@@ -14,15 +14,16 @@ var helpers = require('./helpers');
 
 
 describe('Messaging Library', function () {
-	var testUids;
+	//var testUids;
 	var fooUid;
 	var bazUid;
 	var herpUid;
 	var roomId;
 
 	before(function (done) {
+		Groups.resetCache();
 		// Create 3 users: 1 admin, 2 regular
-		async.parallel([
+		async.series([
 			async.apply(User.create, { username: 'foo', password: 'barbar' }),	// admin
 			async.apply(User.create, { username: 'baz', password: 'quuxquux' }),	// restricted user
 			async.apply(User.create, { username: 'herp', password: 'derpderp' })	// regular user
@@ -31,36 +32,29 @@ describe('Messaging Library', function () {
 				return done(err);
 			}
 
-			testUids = uids;
 			fooUid = uids[0];
 			bazUid = uids[1];
 			herpUid = uids[2];
 
 			async.parallel([
-				async.apply(Groups.join, 'administrators', uids[0]),
-				async.apply(User.setSetting, testUids[1], 'restrictChat', '1')
+				async.apply(Groups.join, 'administrators', fooUid),
+				async.apply(User.setSetting, bazUid, 'restrictChat', '1')
 			], done);
 		});
 	});
 
 	describe('.canMessage()', function () {
-		it('should not error out', function (done) {
-			Messaging.canMessageUser(testUids[1], testUids[2], function (err) {
-				assert.ifError(err);
-				done();
-			});
-		});
-
 		it('should allow messages to be sent to an unrestricted user', function (done) {
-			Messaging.canMessageUser(testUids[1], testUids[2], function (err) {
+			Messaging.canMessageUser(bazUid, herpUid, function (err) {
 				assert.ifError(err);
 				done();
 			});
 		});
 
 		it('should NOT allow messages to be sent to a restricted user', function (done) {
-			User.setSetting(testUids[1], 'restrictChat', '1', function () {
-				Messaging.canMessageUser(testUids[2], testUids[1], function (err) {
+			User.setSetting(bazUid, 'restrictChat', '1', function (err) {
+				assert.ifError(err);
+				Messaging.canMessageUser(herpUid, bazUid, function (err) {
 					assert.strictEqual(err.message, '[[error:chat-restricted]]');
 					done();
 				});
@@ -68,15 +62,15 @@ describe('Messaging Library', function () {
 		});
 
 		it('should always allow admins through', function (done) {
-			Messaging.canMessageUser(testUids[0], testUids[1], function (err) {
+			Messaging.canMessageUser(fooUid, bazUid, function (err) {
 				assert.ifError(err);
 				done();
 			});
 		});
 
 		it('should allow messages to be sent to a restricted user if restricted user follows sender', function (done) {
-			User.follow(testUids[1], testUids[2], function () {
-				Messaging.canMessageUser(testUids[2], testUids[1], function (err) {
+			User.follow(bazUid, herpUid, function () {
+				Messaging.canMessageUser(herpUid, bazUid, function (err) {
 					assert.ifError(err);
 					done();
 				});

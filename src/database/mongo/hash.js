@@ -5,7 +5,7 @@ module.exports = function (db, module) {
 
 	module.setObject = function (key, data, callback) {
 		callback = callback || helpers.noop;
-		if (!key) {
+		if (!key || !data) {
 			return callback();
 		}
 
