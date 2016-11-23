@@ -13,7 +13,7 @@ describe('Groups', function () {
 	var testUid;
 	before(function (done) {
 		Groups.resetCache();
-		async.parallel([
+		async.series([
 			function (next) {
 				// Create a group to play around with
 				Groups.create({
@@ -74,7 +74,7 @@ describe('Groups', function () {
 
 	describe('.get()', function () {
 		before(function (done) {
-			Groups.join('Test', 1, done);
+			Groups.join('Test', testUid, done);
 		});
 
 		it('with no options, should show group information', function (done) {
@@ -270,14 +270,14 @@ describe('Groups', function () {
 
 	describe('.join()', function () {
 		before(function (done) {
-			Groups.leave('Test', 1, done);
+			Groups.leave('Test', testUid, done);
 		});
 
 		it('should add a user to a group', function (done) {
-			Groups.join('Test', 1, function (err) {
+			Groups.join('Test', testUid, function (err) {
 				assert.ifError(err);
 
-				Groups.isMember(1, 'Test', function (err, isMember) {
+				Groups.isMember(testUid, 'Test', function (err, isMember) {
 					assert.ifError(err);
 					assert.strictEqual(true, isMember);
 
@@ -289,10 +289,10 @@ describe('Groups', function () {
 
 	describe('.leave()', function () {
 		it('should remove a user from a group', function (done) {
-			Groups.leave('Test', 1, function (err) {
+			Groups.leave('Test', testUid, function (err) {
 				assert.ifError(err);
 
-				Groups.isMember(1, 'Test', function (err, isMember) {
+				Groups.isMember(testUid, 'Test', function (err, isMember) {
 					assert.ifError(err);
 					assert.strictEqual(false, isMember);
 
@@ -304,12 +304,12 @@ describe('Groups', function () {
 
 	describe('.leaveAllGroups()', function () {
 		it('should remove a user from all groups', function (done) {
-			Groups.leaveAllGroups(1, function (err) {
+			Groups.leaveAllGroups(testUid, function (err) {
 				assert.ifError(err);
 
 				var	groups = ['Test', 'Hidden'];
 				async.every(groups, function (group, next) {
-					Groups.isMember(1, group, function (err, isMember) {
+					Groups.isMember(testUid, group, function (err, isMember) {
 						assert.ifError(err);
 						next(!isMember);
 					});
