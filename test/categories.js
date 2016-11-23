@@ -11,20 +11,27 @@ var db = require('./mocks/databasemock');
 var Categories = require('../src/categories');
 var Topics = require('../src/topics');
 var User = require('../src/user');
+var groups = require('../src/groups');
 
 describe('Categories', function () {
 	var categoryObj;
 	var posterUid;
+	var adminUid;
 
 	before(function (done) {
-		User.create({username: 'poster'}, function (err, _posterUid) {
-			if (err) {
-				return done(err);
+		groups.resetCache();
+		async.parallel({
+			posterUid: function (next) {
+				User.create({username: 'poster'}, next);
+			},
+			adminUid: function (next) {
+				User.create({username: 'admin'}, next);
 			}
-
-			posterUid = _posterUid;
-
-			done();
+		}, function (err, results) {
+			assert.ifError(err);
+			posterUid = results.posterUid;
+			adminUid = results.adminUid;
+			groups.join('administrators', adminUid, done);
 		});
 	});
 
@@ -299,8 +306,66 @@ describe('Categories', function () {
 				done();
 			});
 		});
+	});
 
+	describe('admin socket methods', function () {
+		var socketCategories = require('../src/socket.io/admin/categories');
+		var cid;
+		before(function (done) {
+			Categories.create({
+				name: 'update name',
+				description: 'update description',
+				parentCid: categoryObj.cid,
+				icon: 'fa-check',
+				order: '5'
+			}, function (err, category) {
+				assert.ifError(err);
 
+				cid = category.cid;
+				done();
+			});
+		});
+
+		it('should return error with invalid data', function (done) {
+			socketCategories.update({uid: adminUid}, null, function (err) {
+				assert.equal(err.message, '[[error:invalid-data]]');
+				done();
+			});
+		});
+
+		it('should error if you try to set parent as self', function (done) {
+			var updateData = {};
+			updateData[cid] = {
+				parentCid: cid
+			};
+			socketCategories.update({uid: adminUid}, updateData, function (err) {
+				assert.equal(err.message, '[[error:cant-set-self-as-parent]]');
+				done();
+			});
+		});
+
+		it('should update category data', function (done) {
+			var updateData = {};
+			updateData[cid] = {
+				name: 'new name',
+				description: 'new description',
+				parentCid: 0,
+				order: 3,
+				icon: 'fa-hammer'
+			};
+			socketCategories.update({uid: adminUid}, updateData, function (err) {
+				assert.ifError(err);
+				Categories.getCategoryData(cid, function (err, data) {
+					assert.ifError(err);
+					assert.equal(data.name, updateData[cid].name);
+					assert.equal(data.description, updateData[cid].description);
+					assert.equal(data.parentCid, updateData[cid].parentCid);
+					assert.equal(data.order, updateData[cid].order);
+					assert.equal(data.icon, updateData[cid].icon);
+					done();
+				});
+			});
+		});
 	});
 
 
