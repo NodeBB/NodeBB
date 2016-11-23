@@ -13,7 +13,7 @@
     "delete_account": "Odstrániť účet",
     "delete_account_confirm": "Naozaj ste si istý že chcete odstrániť tento účet? <br /><strong>Táto akcia je nezvratná a taktiež nebudete môcť obnoviť žiadne Vaše dáta</strong><br /><br />Zadajte svoje používateľské meno pre potvrdenie, že chcete zničiť tento účet.",
     "delete_this_account_confirm": "Naozaj ste si istý že chcete odstrániť tento účet? <br /><strong>Táto akcia je nezvratná a taktiež nebudete môcť obnoviť žiadne Vaše dáta</strong><br /><br />",
-    "account-deleted": "Účet odstránený",
+    "account-deleted": "Účet bol odstránený",
     "fullname": "Meno a Priezvisko",
     "website": "Webová stránka",
     "location": "Poloha",
