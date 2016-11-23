@@ -1,17 +1,17 @@
 'use strict';
 
 var path = require('path');
+var nconf = require('nconf');
 var fs = require('fs');
 var winston = require('winston');
 
 module.exports = function (Meta) {
-
 	Meta.logs = {
-		path: path.join('logs', path.sep, 'output.log')
+		path: path.join(nconf.get('base_dir'), 'logs', 'output.log')
 	};
 
 	Meta.logs.get = function (callback) {
-		fs.readFile(this.path, {
+		fs.readFile(Meta.logs.path, {
 			encoding: 'utf-8'
 		}, function (err, logs) {
 			if (err) {
@@ -23,6 +23,7 @@ module.exports = function (Meta) {
 	};
 
 	Meta.logs.clear = function (callback) {
-		fs.truncate(this.path, 0, callback);
+		fs.truncate(Meta.logs.path, 0, callback);
 	};
+
 };
