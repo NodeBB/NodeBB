@@ -14,11 +14,11 @@ module.exports = function (middleware) {
 			'Access-Control-Allow-Origin': 'null'	// yes, string null.
 		};
 		var headers = {
-			'X-Powered-By': meta.config['powered-by'],
-			'X-Frame-Options': meta.config['allow-from-uri'] ? 'ALLOW-FROM ' + meta.config['allow-from-uri'] : undefined,
-			'Access-Control-Allow-Origin': meta.config['access-control-allow-origin'],
-			'Access-Control-Allow-Methods': meta.config['access-control-allow-methods'],
-			'Access-Control-Allow-Headers': meta.config['access-control-allow-headers']
+			'X-Powered-By': encodeURI(meta.config['powered-by']),
+			'X-Frame-Options': meta.config['allow-from-uri'] ? 'ALLOW-FROM ' + encodeURI(meta.config['allow-from-uri']) : undefined,
+			'Access-Control-Allow-Origin': encodeURI(meta.config['access-control-allow-origin']),
+			'Access-Control-Allow-Methods': encodeURI(meta.config['access-control-allow-methods']),
+			'Access-Control-Allow-Headers': encodeURI(meta.config['access-control-allow-headers'])
 		};
 
 		_.defaults(headers, defaults);
@@ -26,7 +26,7 @@ module.exports = function (middleware) {
 
 		for (var key in headers) {
 			if (headers.hasOwnProperty(key)) {
-				res.setHeader(key, encodeURI(headers[key]));
+				res.setHeader(key, headers[key]);
 			}
 		}
 
