@@ -13,48 +13,54 @@ var emailer = require('../emailer');
 var utils = require('../../public/src/utils');
 
 (function (Digest) {
-	Digest.execute = function (interval) {
-		var digestsDisabled = meta.config.disableEmailSubscriptions !== undefined && parseInt(meta.config.disableEmailSubscriptions, 10) === 1;
+	Digest.execute = function (interval, callback) {
+		callback = callback || function () {};
+
+		var digestsDisabled = parseInt(meta.config.disableEmailSubscriptions, 10) === 1;
 		if (digestsDisabled) {
-			return winston.verbose('[user/jobs] Did not send digests (' + interval + ') because subscription system is disabled.');
+			winston.verbose('[user/jobs] Did not send digests (' + interval + ') because subscription system is disabled.');
+			return callback();
 		}
 
 		if (!interval) {
 			// interval is one of: day, week, month, or year
 			interval = 'day';
 		}
-
-		async.parallel({
-			topics: async.apply(topics.getLatestTopics, 0, 0, 9, interval),
-			subscribers: async.apply(Digest.getSubscribers, interval)
-		}, function (err, data) {
-			if (err) {
-				return winston.error('[user/jobs] Could not send digests (' + interval + '): ' + err.message);
-			}
-
-			// Fix relative paths in topic data
-			data.topics.topics = data.topics.topics.map(function (topicObj) {
-				var user = topicObj.hasOwnProperty('teaser') && topicObj.teaser !== undefined ? topicObj.teaser.user : topicObj.user;
-				if (user && user.picture && utils.isRelativeUrl(user.picture)) {
-					user.picture = nconf.get('base_url') + user.picture;
+		var subscribers;
+		async.waterfall([
+			function (next) {
+				async.parallel({
+					topics: async.apply(topics.getLatestTopics, 0, 0, 9, interval),
+					subscribers: async.apply(Digest.getSubscribers, interval)
+				}, next);
+			},
+			function (data, next) {
+				subscribers = data.subscribers;
+				if (!data.subscribers.length) {
+					return callback();
 				}
 
-				return topicObj;
-			});
-
-			data.interval = interval;
-
-			if (data.subscribers.length) {
-				Digest.send(data, function (err) {
-					if (err) {
-						winston.error('[user/jobs] Could not send digests (' + interval + '): ' + err.message);
-					} else {
-						winston.info('[user/jobs] Digest (' + interval + ') scheduling completed. ' + data.subscribers.length + ' email(s) sent.');
+				// Fix relative paths in topic data
+				data.topics.topics = data.topics.topics.map(function (topicObj) {
+					var user = topicObj.hasOwnProperty('teaser') && topicObj.teaser !== undefined ? topicObj.teaser.user : topicObj.user;
+					if (user && user.picture && utils.isRelativeUrl(user.picture)) {
+						user.picture = nconf.get('base_url') + user.picture;
 					}
+
+					return topicObj;
 				});
-			} else {
-				winston.verbose('[user/jobs] No users subscribing to digest (' + interval + '). Digest not sent.');
+
+				data.interval = interval;
+				Digest.send(data, next);
 			}
+		], function (err) {
+			if (err) {
+				winston.error('[user/jobs] Could not send digests (' + interval + '): ' + err.message);
+			} else {
+				winston.info('[user/jobs] Digest (' + interval + ') scheduling completed. ' + subscribers.length + ' email(s) sent.');
+			}
+
+			callback(err);
 		});
 	};
 
@@ -74,48 +80,50 @@ var utils = require('../../public/src/utils');
 	};
 
 	Digest.send = function (data, callback) {
+		if (!data || !data.subscribers || !data.subscribers.length) {
+			return callback();
+		}
 		var	now = new Date();
 
-		user.getUsersFields(data.subscribers, ['uid', 'username', 'userslug', 'lastonline'], function (err, users) {
-			if (err) {
-				winston.error('[user/jobs] Could not send digests (' + data.interval + '): ' + err.message);
-				return callback(err);
-			}
+		async.waterfall([
+			function (next) {
+				user.getUsersFields(data.subscribers, ['uid', 'username', 'userslug', 'lastonline'], next);
+			},
+			function (users, next) {
+				async.eachLimit(users, 100, function (userObj, next) {
+					async.waterfall([
+						function (next) {
+							user.notifications.getDailyUnread(userObj.uid, next);
+						},
+						function (notifications, next) {
+							notifications = notifications.filter(Boolean);
+							// If there are no notifications and no new topics, don't bother sending a digest
+							if (!notifications.length && !data.topics.topics.length) {
+								return next();
+							}
 
-			async.eachLimit(users, 100, function (userObj, next) {
-				user.notifications.getDailyUnread(userObj.uid, function (err, notifications) {
-					if (err) {
-						winston.error('[user/jobs] Could not send digests (' + data.interval + '): ' + err.message);
-						return next(err);
-					}
-
-					notifications = notifications.filter(Boolean);
-
-					// If there are no notifications and no new topics, don't bother sending a digest
-					if (!notifications.length && !data.topics.topics.length) {
-						return next();
-					}
-
-					for(var i = 0; i < notifications.length; ++i) {
-						if (notifications[i].image && notifications[i].image.indexOf('http') !== 0) {
-							notifications[i].image = nconf.get('url') + notifications[i].image;
+							notifications.forEach(function (notification) {
+								if (notification.image && !notification.image.startsWith('http')) {
+									notification.image = nconf.get('url') + notification.image;
+								}
+							});
+							emailer.send('digest', userObj.uid, {
+								subject: '[' + meta.config.title + '] [[email:digest.subject, ' + (now.getFullYear() + '/' + (now.getMonth() + 1) + '/' + now.getDate()) + ']]',
+								username: userObj.username,
+								userslug: userObj.userslug,
+								url: nconf.get('url'),
+								site_title: meta.config.title || meta.config.browserTitle || 'NodeBB',
+								notifications: notifications,
+								recent: data.topics.topics,
+								interval: data.interval
+							});
+							next();
 						}
-					}
-
-					emailer.send('digest', userObj.uid, {
-						subject: '[' + meta.config.title + '] [[email:digest.subject, ' + (now.getFullYear() + '/' + (now.getMonth() + 1) + '/' + now.getDate()) + ']]',
-						username: userObj.username,
-						userslug: userObj.userslug,
-						url: nconf.get('url'),
-						site_title: meta.config.title || meta.config.browserTitle || 'NodeBB',
-						notifications: notifications,
-						recent: data.topics.topics,
-						interval: data.interval
-					});
-
-					next();
-				});
-			}, callback);
+					], next);
+				}, next);
+			}
+		], function (err) {
+			callback(err);
 		});
 	};
 
