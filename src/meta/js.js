@@ -211,7 +211,9 @@ module.exports = function (Meta) {
 			fs.readFile(filePath, function (err, contents) {
 				if (err) {
 					if (err.code === 'ENOENT') {
-						winston.warn('[meta/js] ' + filePath + ' not found on disk, did you run ./nodebb build?');
+						if (!filePath.endsWith('.map')) {
+							winston.warn('[meta/js] ' + filePath + ' not found on disk, did you run ./nodebb build?');
+						}
 						return next(null, '');
 					}
 				}
