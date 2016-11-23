@@ -387,7 +387,11 @@ authenticationController.localLogin = function (req, username, password, next) {
 				// Retrieve ban reason and show error
 				return user.getLatestBanInfo(uid, function (err, banInfo) {
 					if (err) {
-						next(err);
+						if (err.message === 'no-ban-info') {
+							next(new Error('[[error:user-banned]]'));
+						} else {
+							next(err);
+						}
 					} else if (banInfo.reason) {
 						next(new Error('[[error:user-banned-reason, ' + banInfo.reason + ']]'));
 					} else {
