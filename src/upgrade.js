@@ -963,8 +963,12 @@ Upgrade.upgrade = function (callback) {
 				var i = 0;
 				var j = 0;
 				async.parallel([
-					function(next) {
-						meta.configs.get('defaultLang', function(err, defaultLang) {
+					function (next) {
+						meta.configs.get('defaultLang', function (err, defaultLang) {
+							if (err) {
+								return next(err);
+							}
+
 							if (!defaultLang) {
 								return setImmediate(next);
 							}
@@ -979,10 +983,10 @@ Upgrade.upgrade = function (callback) {
 					},
 					function (next) {
 						batch.processSortedSet('users:joindate', function (ids, next) {
-							async.each(ids, function(uid, next) {
+							async.each(ids, function (uid, next) {
 								async.waterfall([
 									async.apply(db.getObjectField, 'user:' + uid + ':settings', 'userLang'),
-									function(language, next) {
+									function (language, next) {
 										++i;
 										if (!language) {
 											return setImmediate(next);
