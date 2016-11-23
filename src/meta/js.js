@@ -228,10 +228,6 @@ module.exports = function (Meta) {
 				return;
 			}
 
-			if (nconf.get('isPrimary') !== 'true') {
-				return callback();
-			}
-
 			file.exists(mapPath, function (exists) {
 				if (exists) {
 					paths.push(mapPath);
