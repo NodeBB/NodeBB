@@ -261,6 +261,7 @@ module.exports = function (Plugins) {
 		}
 
 		var pathToFolder = path.join(__dirname, '../../node_modules/', pluginData.id, pluginData.languages);
+		var defaultLang = pluginData.defaultLang.replace('_', '-').replace('@', '-x-');
 
 		utils.walk(pathToFolder, function (err, languages) {
 			if (err) {
@@ -273,7 +274,9 @@ module.exports = function (Plugins) {
 						return next(err);
 					}
 					var data;
-					var route = pathToLang.replace(pathToFolder + '/', '');
+					var language = path.dirname(pathToLang).split(/[\/\\]/).pop().replace('_', '-').replace('@', '-x-');
+					var namespace = path.basename(pathToLang, '.json');
+					var langNamespace = language + '/' + namespace;
 
 					try {
 						data = JSON.parse(file.toString());
@@ -282,18 +285,15 @@ module.exports = function (Plugins) {
 						return next(err);
 					}
 
-					Plugins.customLanguages[route] = Plugins.customLanguages[route] || {};
-					_.extendOwn(Plugins.customLanguages[route], data);
+					Plugins.customLanguages[langNamespace] = Plugins.customLanguages[langNamespace] || {};
+					Object.assign(Plugins.customLanguages[langNamespace], data);
 
-					if (pluginData.defaultLang && pathToLang.endsWith(pluginData.defaultLang + '/' + path.basename(pathToLang))) {
-						Plugins.languageCodes.map(function (code) {
-							if (pluginData.defaultLang !== code) {
-								return code + '/' + path.basename(pathToLang);
-							} else {
-								return null;
-							}
-						}).filter(Boolean).forEach(function (key) {
-							Plugins.customLanguages[key] = _.defaults(Plugins.customLanguages[key] || {}, data);
+					if (defaultLang && defaultLang === language) {
+						Plugins.languageCodes.filter(function (lang) {
+							return defaultLang !== lang;
+						}).forEach(function (lang) {
+							var langNS = lang + '/' + namespace;
+							Plugins.customLanguages[langNS] = Object.assign(Plugins.customLanguages[langNS] || {}, data);
 						});
 					}
 

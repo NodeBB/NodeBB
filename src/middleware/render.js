@@ -100,7 +100,7 @@ module.exports = function (middleware) {
 	}
 
 	function translate(str, req, res, next) {
-		var language = res.locals.config ? res.locals.config.userLang || 'en_GB' : 'en_GB';
+		var language = res.locals.config && res.locals.config.userLang || 'en-GB';
 		language = req.query.lang ? validator.escape(String(req.query.lang)) : language;
 		translator.translate(str, language, function (translated) {
 			next(null, translator.unescape(translated));

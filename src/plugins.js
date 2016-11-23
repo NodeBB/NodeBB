@@ -12,6 +12,7 @@ var db = require('./database');
 var utils = require('../public/src/utils');
 var hotswap = require('./hotswap');
 var file = require('./file');
+var languages = require('./languages');
 
 var app;
 var middleware;
@@ -87,13 +88,13 @@ var middleware;
 		async.waterfall([
 			function (next) {
 				// Build language code list
-				fs.readdir(path.join(__dirname, '../public/language'), function (err, directories) {
+				languages.list(function (err, languages) {
 					if (err) {
 						return next(err);
 					}
 
-					Plugins.languageCodes = directories.filter(function (code) {
-						return code !== 'TODO';
+					Plugins.languageCodes = languages.map(function (data) {
+						return data.code;
 					});
 
 					next();

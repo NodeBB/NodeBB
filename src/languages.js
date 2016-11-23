@@ -1,14 +1,14 @@
 'use strict';
 
-var	fs = require('fs'),
-	path = require('path'),
-	async = require('async'),
-	LRU = require('lru-cache'),
-	_ = require('underscore');
+var fs = require('fs');
+var path = require('path');
+var async = require('async');
+var LRU = require('lru-cache');
 
 var plugins = require('./plugins');
 
 var Languages = {};
+var	languagesPath = path.join(__dirname, '../public/language');
 
 Languages.init = function (next) {
 	if (Languages.hasOwnProperty('_cache')) {
@@ -20,16 +20,16 @@ Languages.init = function (next) {
 	next();
 };
 
-Languages.get = function (code, key, callback) {
-	var combined = [code, key].join('/');
+Languages.get = function (language, namespace, callback) {
+	var langNamespace = language + '/' + namespace;
 
-	if (Languages._cache && Languages._cache.has(combined)) {
-		return callback(null, Languages._cache.get(combined));
+	if (Languages._cache && Languages._cache.has(langNamespace)) {
+		return callback(null, Languages._cache.get(langNamespace));
 	}
 
 	var languageData;
 
-	fs.readFile(path.join(__dirname, '../public/language/', code, key), { encoding: 'utf-8' }, function (err, data) {
+	fs.readFile(path.join(languagesPath, language, namespace + '.json'), { encoding: 'utf-8' }, function (err, data) {
 		if (err && err.code !== 'ENOENT') {
 			return callback(err);
 		}
@@ -41,12 +41,12 @@ Languages.get = function (code, key, callback) {
 			languageData = {};
 		}
 
-		if (plugins.customLanguages.hasOwnProperty(combined)) {
-			_.extendOwn(languageData, plugins.customLanguages[combined]);
+		if (plugins.customLanguages.hasOwnProperty(langNamespace)) {
+			Object.assign(languageData, plugins.customLanguages[langNamespace]);
 		}
 
 		if (Languages._cache) {
-			Languages._cache.set(combined, languageData);
+			Languages._cache.set(langNamespace, languageData);
 		}
 
 		callback(null, languageData);
@@ -54,8 +54,7 @@ Languages.get = function (code, key, callback) {
 };
 
 Languages.list = function (callback) {
-	var	languagesPath = path.join(__dirname, '../public/language'),
-		languages = [];
+	var languages = [];
 
 	fs.readdir(languagesPath, function (err, files) {
 		if (err) {

@@ -136,7 +136,7 @@ module.exports = function (middleware) {
 			templateValues.useCustomJS = parseInt(meta.config.useCustomJS, 10) === 1;
 			templateValues.customJS = templateValues.useCustomJS ? meta.config.customJS : '';
 			templateValues.maintenanceHeader = parseInt(meta.config.maintenanceMode, 10) === 1 && !results.isAdmin;
-			templateValues.defaultLang = meta.config.defaultLang || 'en_GB';
+			templateValues.defaultLang = meta.config.defaultLang || 'en-GB';
 			templateValues.privateUserInfo = parseInt(meta.config.privateUserInfo, 10) === 1;
 			templateValues.privateTagListing = parseInt(meta.config.privateTagListing, 10) === 1;
 
