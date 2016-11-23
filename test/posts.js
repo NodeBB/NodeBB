@@ -66,9 +66,9 @@ describe('Post\'s', function () {
 	});
 
 	describe('voting', function () {
-
+		var socketPosts = require('../src/socket.io/posts');
 		it('should upvote a post', function (done) {
-			posts.upvote(postData.pid, voterUid, function (err, result) {
+			socketPosts.upvote({uid: voterUid}, {pid: postData.pid, room_id: 'topic_1'}, function (err, result) {
 				assert.ifError(err);
 				assert.equal(result.post.upvotes, 1);
 				assert.equal(result.post.downvotes, 0);
@@ -83,8 +83,28 @@ describe('Post\'s', function () {
 			});
 		});
 
+		it('should get voters', function (done) {
+			socketPosts.getVoters({uid: globalModUid}, {pid: postData.pid, cid: cid}, function (err, data) {
+				assert.ifError(err);
+				assert.equal(data.upvoteCount, 1);
+				assert.equal(data.downvoteCount, 0);
+				assert(Array.isArray(data.upvoters));
+				assert.equal(data.upvoters[0].username, 'upvoter');
+				done();
+			});
+		});
+
+		it('should get upvoters', function (done) {
+			socketPosts.getUpvoters({uid: globalModUid}, [postData.pid], function (err, data) {
+				assert.ifError(err);
+				assert.equal(data[0].otherCount, 0);
+				assert.equal(data[0].usernames, 'upvoter');
+				done();
+			});
+		});
+
 		it('should unvote a post', function (done) {
-			posts.unvote(postData.pid, voterUid, function (err, result) {
+			socketPosts.unvote({uid: voterUid}, {pid: postData.pid, room_id: 'topic_1'}, function (err, result) {
 				assert.ifError(err);
 				assert.equal(result.post.upvotes, 0);
 				assert.equal(result.post.downvotes, 0);
@@ -100,7 +120,7 @@ describe('Post\'s', function () {
 		});
 
 		it('should downvote a post', function (done) {
-			posts.downvote(postData.pid, voterUid, function (err, result) {
+			socketPosts.downvote({uid: voterUid}, {pid: postData.pid, room_id: 'topic_1'}, function (err, result) {
 				assert.ifError(err);
 				assert.equal(result.post.upvotes, 0);
 				assert.equal(result.post.downvotes, 1);
