@@ -6,7 +6,6 @@ var path = require('path');
 var async = require('async');
 var nconf = require('nconf');
 var fs = require('fs');
-var file = require('../file');
 var plugins = require('../plugins');
 var utils = require('../../public/src/utils');
 
@@ -217,35 +216,37 @@ module.exports = function (Meta) {
 	};
 
 	Meta.js.getFromFile = function (target, callback) {
-		var scriptPath = path.join(__dirname, '../../public/' + target),
-			mapPath = path.join(__dirname, '../../public/' + target + '.map'),
-			paths = [scriptPath];
-
-		file.exists(scriptPath, function (exists) {
-			if (!exists) {
-				winston.warn('[meta/js] ' + target + ' not found on disk, re-minifying');
-				Meta.js.minify(target, callback);
-				return;
-			}
-
-			file.exists(mapPath, function (exists) {
-				if (exists) {
-					paths.push(mapPath);
-				}
-
-				async.map(paths, fs.readFile, function (err, files) {
-					if (err) {
-						return callback(err);
+		function readFile(filePath, next) {
+			fs.readFile(filePath, function (err, contents) {
+				if (err) {
+					if (err.code === 'ENOENT') {
+						winston.warn('[meta/js] ' + filePath + ' not found on disk, did you run ./nodebb build?');
+						return next(null, '');
 					}
-
-					Meta.js.target[target] = {
-						cache: files[0],
-						map: files[1] || ''
-					};
-
-					callback();
-				});
+				}
+				next(err, contents);
 			});
+		}
+
+		var scriptPath = path.join(nconf.get('base_dir'), 'public/' + target);
+		var mapPath = path.join(nconf.get('base_dir'), 'public/' + target + '.map');
+
+		async.parallel({
+			script: function (next) {
+				readFile(scriptPath, next);
+			},
+			map: function (next) {
+				readFile(mapPath, next);
+			}
+		}, function (err, results) {
+			if (err) {
+				return callback(err);
+			}
+			Meta.js.target[target] = {
+				cache: results.script,
+				map: results.map
+			};
+			callback();
 		});
 	};
 
