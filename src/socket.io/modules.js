@@ -330,13 +330,8 @@ SocketModules.chats.getMessages = function (socket, data, callback) {
 		uid: data.uid,
 		roomId: data.roomId,
 		start: parseInt(data.start, 10) || 0,
-		count: 50,
-		markRead: false
+		count: 50
 	};
-
-	if (data.hasOwnProperty('markRead')) {
-		params.markRead = data.markRead;
-	}
 
 	Messaging.getMessages(params, callback);
 };

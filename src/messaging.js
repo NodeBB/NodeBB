@@ -46,7 +46,6 @@ var userNotifications = require('./user/notifications');
 		var isNew = params.isNew || false;
 		var start = params.hasOwnProperty('start') ? params.start : 0;
 		var stop = parseInt(start, 10) + ((params.count || 50) - 1);
-		var markRead = params.markRead || true;
 
 		var indices = {};
 		async.waterfall([
@@ -79,16 +78,6 @@ var userNotifications = require('./user/notifications');
 				next(null, messageData);
 			}
 		], callback);
-
-		if (markRead) {
-			notifications.markRead('chat_' + roomId + '_' + uid, uid, function (err) {
-				if (err) {
-					winston.error('[messaging] Could not mark notifications related to this chat as read: ' + err.message);
-				}
-
-				userNotifications.pushCount(uid);
-			});
-		}
 	};
 
 	function canGetMessages(callerUid, uid, callback) {

@@ -126,8 +126,7 @@ describe('Messaging Library', function () {
 			socketModules.chats.getMessages({uid: fooUid}, {
 				uid: fooUid,
 				roomId: roomId,
-				start: 0,
-				markRead: true
+				start: 0
 			}, function (err, messages) {
 				assert.ifError(err);
 				assert(Array.isArray(messages));
