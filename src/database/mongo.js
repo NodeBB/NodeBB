@@ -141,7 +141,7 @@
 
 			function createIndices() {
 				winston.info('[database] Checking database indices.');
-				async.parallel([
+				async.series([
 					async.apply(createIndex, 'objects', {_key: 1, score: -1}, {background: true}),
 					async.apply(createIndex, 'objects', {_key: 1, value: -1}, {background: true, unique: true, sparse: true}),
 					async.apply(createIndex, 'objects', {expireAt: 1}, {expireAfterSeconds: 0, background: true})
@@ -155,7 +155,7 @@
 			}
 
 			function createIndex(collection, index, options, callback) {
-				db.collection(collection).ensureIndex(index, options, callback);
+				db.collection(collection).createIndex(index, options, callback);
 			}
 		});
 	};
