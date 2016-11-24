@@ -12,6 +12,7 @@ var notifications = require('../../notifications');
 var plugins = require('../../plugins');
 var meta = require('../../meta');
 var utils = require('../../../public/src/utils');
+var flags = require('../../flags');
 
 module.exports = function (SocketPosts) {
 
@@ -64,7 +65,7 @@ module.exports = function (SocketPosts) {
 				flaggingUser = user.userData;
 				flaggingUser.uid = socket.uid;
 
-				posts.flag(post, socket.uid, data.reason, next);
+				flags.create('post', post.pid, socket.uid, data.reason, next);
 			},
 			function (next) {
 				async.parallel({
@@ -119,7 +120,7 @@ module.exports = function (SocketPosts) {
 				if (!isAdminOrGlobalModerator) {
 					return next(new Error('[[no-privileges]]'));
 				}
-				posts.dismissFlag(pid, next);
+				flags.dismiss(pid, next);
 			}
 		], callback);
 	};
@@ -133,7 +134,7 @@ module.exports = function (SocketPosts) {
 				if (!isAdminOrGlobalModerator) {
 					return next(new Error('[[no-privileges]]'));
 				}
-				posts.dismissAllFlags(next);
+				flags.dismissAll(next);
 			}
 		], callback);
 	};
@@ -165,7 +166,7 @@ module.exports = function (SocketPosts) {
 					return memo;
 				}, payload);
 
-				posts.updateFlagData(socket.uid, data.pid, payload, next);
+				flags.update(socket.uid, data.pid, payload, next);
 			}
 		], callback);
 	};

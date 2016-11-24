@@ -462,8 +462,9 @@ Upgrade.upgrade = function (callback) {
 				updatesMade = true;
 				winston.info('[2016/04/29] Dismiss flags from deleted topics');
 
-				var posts = require('./posts'),
-					topics = require('./topics');
+				var posts = require('./posts');
+				var topics = require('./topics');
+				var flags = require('./flags');
 
 				var pids, tids;
 
@@ -486,7 +487,7 @@ Upgrade.upgrade = function (callback) {
 						}).filter(Boolean);
 
 						winston.info('[2016/04/29] ' + toDismiss.length + ' dismissable flags found');
-						async.each(toDismiss, posts.dismissFlag, next);
+						async.each(toDismiss, flags.dismiss, next);
 					}
 				], function (err) {
 					if (err) {

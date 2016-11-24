@@ -8,6 +8,7 @@ var topics = require('../topics');
 var user = require('../user');
 var notifications = require('../notifications');
 var plugins = require('../plugins');
+var flags = require('../flags');
 
 module.exports = function (Posts) {
 
@@ -145,7 +146,7 @@ module.exports = function (Posts) {
 						db.sortedSetsRemove(['posts:pid', 'posts:flagged'], pid, next);
 					},
 					function (next) {
-						Posts.dismissFlag(pid, next);
+						flags.dismiss(pid, next);
 					}
 				], function (err) {
 					if (err) {

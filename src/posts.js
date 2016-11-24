@@ -21,7 +21,6 @@ var plugins = require('./plugins');
 	require('./posts/category')(Posts);
 	require('./posts/summary')(Posts);
 	require('./posts/recent')(Posts);
-	require('./posts/flags')(Posts);
 	require('./posts/tools')(Posts);
 	require('./posts/votes')(Posts);
 	require('./posts/bookmarks')(Posts);

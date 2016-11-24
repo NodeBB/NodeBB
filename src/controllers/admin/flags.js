@@ -5,6 +5,7 @@ var validator = require('validator');
 
 var posts = require('../../posts');
 var user = require('../../user');
+var flags = require('../../flags');
 var categories = require('../../categories');
 var analytics = require('../../analytics');
 var pagination = require('../../pagination');
@@ -94,7 +95,7 @@ function getFlagData(req, res, callback) {
 				sets.push('uid:' + uid + ':flag:pids');
 			}
 
-			posts.getFlags(sets, cid, req.uid, start, stop, next);
+			flags.get(sets, cid, req.uid, start, stop, next);
 		}
 	], callback);
 }

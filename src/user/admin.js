@@ -6,6 +6,7 @@ var db = require('../database');
 var posts = require('../posts');
 var plugins = require('../plugins');
 var winston = require('winston');
+var flags = require('../flags');
 
 module.exports = function (User) {
 
@@ -62,7 +63,7 @@ module.exports = function (User) {
 		}
 
 		async.eachSeries(uids, function (uid, next) {
-			posts.dismissUserFlags(uid, next);
+			flags.dismissByUid(uid, next);
 		}, callback);
 	};
 };
