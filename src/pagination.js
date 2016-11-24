@@ -22,7 +22,10 @@ pagination.create = function (currentPage, pageCount, queryObj) {
 	var previous = Math.max(1, currentPage - 1);
 	var next = Math.min(pageCount, currentPage + 1);
 
-	var startPage = currentPage - 2;
+	var startPage = Math.max(1, currentPage - 2);
+	if (startPage > pageCount - 5) {
+		startPage -= 2 - (pageCount - currentPage);
+	}
 	for(var i = 0; i < 5; ++i) {
 		pagesToShow.push(startPage + i);
 	}
