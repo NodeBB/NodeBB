@@ -246,7 +246,7 @@ Flags.get = function (set, cid, uid, start, stop, callback) {
 		},
 		function (pids, next) {
 			if (cid) {
-				Posts.filterPidsByCid(pids, cid, next);
+				posts.filterPidsByCid(pids, cid, next);
 			} else {
 				process.nextTick(next, null, pids);
 			}
@@ -272,7 +272,7 @@ function getFlaggedPostsWithReasons(pids, uid, callback) {
 					}, next);
 				},
 				posts: function (next) {
-					Posts.getPostSummaryByPids(pids, uid, {stripTags: false, extraFields: ['flags', 'flag:assignee', 'flag:state', 'flag:notes', 'flag:history']}, next);
+					posts.getPostSummaryByPids(pids, uid, {stripTags: false, extraFields: ['flags', 'flag:assignee', 'flag:state', 'flag:notes', 'flag:history']}, next);
 				}
 			}, next);
 		},
@@ -299,7 +299,7 @@ function getFlaggedPostsWithReasons(pids, uid, callback) {
 				next(null, results.posts);
 			});
 		},
-		async.apply(Posts.expandFlagHistory),
+		async.apply(Flags.expandFlagHistory),
 		function (posts, next) {
 			// Parse out flag data into its own object inside each post hash
 			async.map(posts, function (postObj, next) {
@@ -355,7 +355,7 @@ Flags.update = function (uid, pid, flagObj, callback) {
 	var changeset = {};
 	var prop;
 
-	Posts.getPostData(pid, function (err, postData) {
+	posts.getPostData(pid, function (err, postData) {
 		if (err) {
 			return callback(err);
 		}
@@ -417,7 +417,7 @@ Flags.update = function (uid, pid, flagObj, callback) {
 
 		// Save flag data into post hash
 		if (changes.length) {
-			Posts.setPostFields(pid, changeset, callback);
+			posts.setPostFields(pid, changeset, callback);
 		} else {
 			setImmediate(callback);
 		}
