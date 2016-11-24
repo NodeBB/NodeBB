@@ -63,7 +63,7 @@ editController.email = function (req, res, next) {
 
 function renderRoute(name, req, res, next) {
 	getUserData(req, next, function (err, userData) {
-		if (err) {
+		if (err || !userData) {
 			return next(err);
 		}
 		if ((name === 'username' && userData['username:disableEdit']) || (name === 'email' && userData['email:disableEdit'])) {
@@ -94,7 +94,7 @@ function getUserData(req, next, callback) {
 		function (data, next) {
 			userData = data;
 			if (!userData) {
-				return next();
+				return callback();
 			}
 			db.getObjectField('user:' + userData.uid, 'password', next);
 		}

@@ -524,6 +524,24 @@ describe('User', function () {
 			});
 		});
 
+		it('should load edit page', function (done) {
+			request(nconf.get('url') + '/api/user/updatedagain/edit', {jar: jar, json: true}, function (err, res, body) {
+				assert.ifError(err);
+				assert.equal(res.statusCode, 200);
+				assert(body);
+				done();
+			});
+		});
+
+		it('should load edit/email page', function (done) {
+			request(nconf.get('url') + '/api/user/updatedagain/edit/email', {jar: jar, json: true}, function (err, res, body) {
+				assert.ifError(err);
+				assert.equal(res.statusCode, 200);
+				assert(body);
+				done();
+			});
+		});
+
 		it('should load user\'s groups page', function (done) {
 			groups.create({
 				name: 'Test',

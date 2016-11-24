@@ -126,6 +126,14 @@ describe('Admin Controllers', function () {
 		});
 	});
 
+	it('should 404 for edit/email page if user does not exist', function (done) {
+		request(nconf.get('url') + '/api/user/doesnotexist/edit/email', {jar: jar, json: true}, function (err, res, body) {
+			assert.ifError(err);
+			assert.equal(res.statusCode, 404);
+			done();
+		});
+	});
+
 	it('should load /admin/general/homepage', function (done) {
 		request(nconf.get('url') + '/api/admin/general/homepage', {jar: jar, json: true}, function (err, res, body) {
 			assert.ifError(err);
