@@ -46,7 +46,9 @@ pagination.create = function (currentPage, pageCount, queryObj) {
 	});
 
 	for (i = pages.length - 1; i > 0; --i) {
-		if (pages[i - 1].page !== pages[i].page - 1) {
+		if (pages[i].page - 2 === pages[i - 1].page) {
+			pages.splice(i, 0, {page: pages[i].page - 1, active: false, qs: qs.stringify(queryObj)});
+		} else if (pages[i].page - 1 !== pages[i - 1].page) {
 			pages.splice(i, 0, {separator: true});
 		}
 	}

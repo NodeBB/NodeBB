@@ -18,8 +18,8 @@ describe('Pagination', function () {
 
 	it('should create pagination for 10 pages', function (done) {
 		var data = pagination.create(2, 10);
-		// [1, (2), 3, 4, separator, 9, 10]
-		assert.equal(data.pages.length, 7);
+		// [1, (2), 3, 4, 5, separator, 9, 10]
+		assert.equal(data.pages.length, 8);
 		assert.equal(data.rel.length, 2);
 		assert.equal(data.pageCount, 10);
 		assert.equal(data.prev.page, 1);
