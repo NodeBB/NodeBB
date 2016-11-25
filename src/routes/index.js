@@ -40,7 +40,8 @@ function mainRoutes(app, middleware, controllers) {
 }
 
 function modRoutes(app, middleware, controllers) {
-	setupPageRoute(app, '/flags', middleware, [], controllers.mods.flagged);
+	setupPageRoute(app, '/flags', middleware, [], controllers.mods.flags.list);
+	setupPageRoute(app, '/flags/:flagId', middleware, [], controllers.mods.flags.detail);
 }
 
 function globalModRoutes(app, middleware, controllers) {

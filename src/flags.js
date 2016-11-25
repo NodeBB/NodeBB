@@ -18,6 +18,30 @@ var Flags = {
 	}
 };
 
+Flags.get = function (flagId, callback) {
+	async.waterfall([
+		async.apply(async.parallel, {
+			base: async.apply(db.getObject.bind(db), 'flag:' + flagId),
+			history: async.apply(db.getSortedSetRevRange.bind(db), 'flag:' + flagId + ':history', 0, -1),
+			notes: async.apply(db.getSortedSetRevRange.bind(db), 'flag:' + flagId + ':notes', 0, -1)
+		}),
+		function (data, next) {
+			user.getUserFields(data.base.uid, ['username', 'picture'], function (err, userObj) {
+				next(err, Object.assign(data.base, {
+					history: data.history,
+					notes: data.notes,
+					reporter: {
+						username: userObj.username,
+						picture: userObj.picture,
+						'icon:bgColor': userObj['icon:bgColor'],
+						'icon:text': userObj['icon:text']
+					}
+				}));
+			});
+		}
+	], callback);
+};
+
 Flags.list = function (filters, callback) {
 	if (typeof filters === 'function' && !callback) {
 		callback = filters;
@@ -33,7 +57,7 @@ Flags.list = function (filters, callback) {
 					function (flagObj, next) {
 						user.getUserFields(flagObj.uid, ['username', 'picture'], function (err, userObj) {
 							next(err, Object.assign(flagObj, {
-								user: {
+								reporter: {
 									username: userObj.username,
 									picture: userObj.picture,
 									'icon:bgColor': userObj['icon:bgColor'],
@@ -63,7 +87,7 @@ Flags.list = function (filters, callback) {
 					}
 
 					next(null, Object.assign(flagObj, {
-						target_readable: flagObj.type.charAt(0).toUpperCase() + flagObj.type.slice(1) + ' ' + flagObj.id,
+						target_readable: flagObj.type.charAt(0).toUpperCase() + flagObj.type.slice(1) + ' ' + flagObj.targetId,
 						datetimeISO: new Date(parseInt(flagObj.datetime, 10)).toISOString()
 					}));
 				});
@@ -95,18 +119,19 @@ Flags.create = function (type, id, uid, reason, callback) {
 				}
 			});
 		},
-		function (next) {
-			var flagId = utils.generateUUID();
-
+		async.apply(db.incrObjectField, 'global', 'nextFlagId'),
+		function (flagId, next) {
 			async.parallel([
 				async.apply(db.setObject.bind(db), 'flag:' + flagId, Object.assign({}, Flags._defaults, {
+					flagId: flagId,
 					type: type,
-					id: id,
+					targetId: id,
 					description: reason,
 					uid: uid,
 					datetime: Date.now()
 				})),
-				async.apply(db.sortedSetAdd.bind(db), 'flags:datetime', Date.now(), flagId)
+				async.apply(db.sortedSetAdd.bind(db), 'flags:datetime', Date.now(), flagId),
+				async.apply(db.setObjectField.bind(db), 'flagHash:flagId', [type, id, uid].join(':'), flagId)
 			], next);
 		}
 	], function (err) {
@@ -280,32 +305,33 @@ Flags.dismissByUid = function (uid, callback) {
 	});
 };
 
-Flags.get = function (set, cid, uid, start, stop, callback) {
-	async.waterfall([
-		function (next) {
-			if (Array.isArray(set)) {
-				db.getSortedSetRevIntersect({sets: set, start: start, stop: -1, aggregate: 'MAX'}, next);
-			} else {
-				db.getSortedSetRevRange(set, start, -1, next);
-			}
-		},
-		function (pids, next) {
-			if (cid) {
-				posts.filterPidsByCid(pids, cid, next);
-			} else {
-				process.nextTick(next, null, pids);
-			}
-		},
-		function (pids, next) {
-			getFlaggedPostsWithReasons(pids, uid, next);
-		},
-		function (posts, next) {
-			var count = posts.length;
-			var end = stop - start + 1;
-			next(null, {posts: posts.slice(0, stop === -1 ? undefined : end), count: count});
-		}
-	], callback);
-};
+// This is the old method to get list of flags, supercede by Flags.list();
+// Flags.get = function (set, cid, uid, start, stop, callback) {
+// 	async.waterfall([
+// 		function (next) {
+// 			if (Array.isArray(set)) {
+// 				db.getSortedSetRevIntersect({sets: set, start: start, stop: -1, aggregate: 'MAX'}, next);
+// 			} else {
+// 				db.getSortedSetRevRange(set, start, -1, next);
+// 			}
+// 		},
+// 		function (pids, next) {
+// 			if (cid) {
+// 				posts.filterPidsByCid(pids, cid, next);
+// 			} else {
+// 				process.nextTick(next, null, pids);
+// 			}
+// 		},
+// 		function (pids, next) {
+// 			getFlaggedPostsWithReasons(pids, uid, next);
+// 		},
+// 		function (posts, next) {
+// 			var count = posts.length;
+// 			var end = stop - start + 1;
+// 			next(null, {posts: posts.slice(0, stop === -1 ? undefined : end), count: count});
+// 		}
+// 	], callback);
+// };
 
 function getFlaggedPostsWithReasons(pids, uid, callback) {
 	async.waterfall([

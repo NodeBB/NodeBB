@@ -1,5 +1,6 @@
 {
     "quick-filters": "Quick Filters",
+    "state": "State",
     "reporter": "Reporter",
     "reported-at": "Reported At",
     "no-flags": "Hooray! No flags found."
