@@ -245,7 +245,7 @@ SocketModules.chats.markRead = function (socket, roomId, callback) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
 	async.parallel({
-		usersInRoom: async.apply(Messaging.getUidsInRoom, roomId, 0, -1),
+		uidsInRoom: async.apply(Messaging.getUidsInRoom, roomId, 0, -1),
 		markRead: async.apply(Messaging.markRead, socket.uid, roomId)
 	}, function (err, results) {
 		if (err) {
@@ -253,9 +253,14 @@ SocketModules.chats.markRead = function (socket, roomId, callback) {
 		}
 
 		Messaging.pushUnreadCount(socket.uid);
+		server.in('uid_' + socket.uid).emit('event:chats.markedAsRead', {roomId: roomId});
+
+		if (results.uidsInRoom.indexOf(socket.uid.toString()) === -1) {
+			return callback();
+		}
 
 		// Mark notification read
-		var nids = results.usersInRoom.filter(function (uid) {
+		var nids = results.uidsInRoom.filter(function (uid) {
 			return parseInt(uid, 10) !== socket.uid;
 		}).map(function (uid) {
 			return 'chat_' + uid + '_' + roomId;
@@ -265,7 +270,6 @@ SocketModules.chats.markRead = function (socket, roomId, callback) {
 			user.notifications.pushCount(socket.uid);
 		});
 
-		server.in('uid_' + socket.uid).emit('event:chats.markedAsRead', {roomId: roomId});
 		callback();
 	});
 };
