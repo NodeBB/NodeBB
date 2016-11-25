@@ -105,9 +105,9 @@ topicsController.get = function (req, res, callback) {
 			} else if (!req.query.page) {
 				var index;
 				if (reverse) {
-					index = Math.max(0, postCount - (req.params.post_index || postCount));
+					index = Math.max(0, postCount - (req.params.post_index || postCount) + 2);
 				} else {
-					index = Math.max(0, req.params.post_index - 1) || 0;
+					index = Math.max(0, req.params.post_index) || 0;
 				}
 
 				currentPage = Math.max(1, Math.ceil(index / settings.postsPerPage));
