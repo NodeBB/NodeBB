@@ -64,7 +64,7 @@ Flags.list = function (filters, callback) {
 									'icon:text': userObj['icon:text']
 								}
 							}));
-						})
+						});
 					}
 				], function (err, flagObj) {
 					if (err) {
@@ -110,6 +110,10 @@ Flags.create = function (type, id, uid, reason, callback) {
 				async.apply(Flags.exists, type, id, uid),
 				async.apply(Flags.targetExists, type, id)
 			], function (err, checks) {
+				if (err) {
+					return next(err);
+				}
+
 				if (checks[0]) {
 					return next(new Error('[[error:already-flagged]]'));
 				} else if (!checks[1]) {
@@ -132,15 +136,16 @@ Flags.create = function (type, id, uid, reason, callback) {
 				})),
 				async.apply(db.sortedSetAdd.bind(db), 'flags:datetime', Date.now(), flagId),
 				async.apply(db.setObjectField.bind(db), 'flagHash:flagId', [type, id, uid].join(':'), flagId)
-			], next);
-		}
-	], function (err) {
-		if (err) {
-			return callback(err);
-		}
+			], function (err, data) {
+				if (err) {
+					return next(err);
+				}
 
-		callback();
-	});
+				next(null, flagId);
+			});
+		},
+		async.apply(Flags.get)
+	], callback);
 	// if (!parseInt(uid, 10) || !reason) {
 	// 	return callback();
 	// }

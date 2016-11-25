@@ -25,7 +25,11 @@ modsController.flags.list = function (req, res, next) {
 			res.locals.cids = results.moderatedCids;
 		}
 
-		flags.list({}, function(err, flags) {
+		flags.list({}, function (err, flags) {
+			if (err) {
+				return next(err);
+			}
+
 			res.render('flags/list', {
 				flags: flags
 			});
