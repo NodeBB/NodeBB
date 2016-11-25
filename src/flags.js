@@ -13,8 +13,69 @@ var utils = require('../public/src/utils');
 
 var Flags = {
 	_defaults: {
-		state: 'open'
+		state: 'open',
+		assignee: null
 	}
+};
+
+Flags.list = function (filters, callback) {
+	if (typeof filters === 'function' && !callback) {
+		callback = filters;
+		filters = {};
+	}
+
+	async.waterfall([
+		async.apply(db.getSortedSetRevRange.bind(db), 'flags:datetime', 0, 19),
+		function (flagIds, next) {
+			async.map(flagIds, function (flagId, next) {
+				async.waterfall([
+					async.apply(db.getObject, 'flag:' + flagId),
+					function (flagObj, next) {
+						user.getUserFields(flagObj.uid, ['username', 'picture'], function (err, userObj) {
+							next(err, Object.assign(flagObj, {
+								user: {
+									username: userObj.username,
+									picture: userObj.picture,
+									'icon:bgColor': userObj['icon:bgColor'],
+									'icon:text': userObj['icon:text']
+								}
+							}));
+						})
+					}
+				], function (err, flagObj) {
+					if (err) {
+						return next(err);
+					}
+
+					switch(flagObj.state) {
+						case 'open':
+							flagObj.labelClass = 'info';
+							break;
+						case 'wip':
+							flagObj.labelClass = 'warning';
+							break;
+						case 'resolved':
+							flagObj.labelClass = 'success';
+							break;
+						case 'rejected':
+							flagObj.labelClass = 'danger';
+							break;
+					}
+
+					next(null, Object.assign(flagObj, {
+						target_readable: flagObj.type.charAt(0).toUpperCase() + flagObj.type.slice(1) + ' ' + flagObj.id,
+						datetimeISO: new Date(parseInt(flagObj.datetime, 10)).toISOString()
+					}));
+				});
+			},  next);
+		}
+	], function (err, flags) {
+		if (err) {
+			return callback(err);
+		}
+
+		return callback(null, flags);
+	});
 };
 
 Flags.create = function (type, id, uid, reason, callback) {
@@ -38,23 +99,22 @@ Flags.create = function (type, id, uid, reason, callback) {
 			var flagId = utils.generateUUID();
 
 			async.parallel([
-				async.apply(db.setObject.bind(db), 'flag:' + flagId, _.defaults({
-					description: reason
-				}), Flags._defaults),
-				async.apply(db.sortedSetAdd.bind(db), 'flags:datetime', now, flagId)
-			], function (err) {
-				if (err) {
-					return next(err);
-				}
-			});
+				async.apply(db.setObject.bind(db), 'flag:' + flagId, Object.assign({}, Flags._defaults, {
+					type: type,
+					id: id,
+					description: reason,
+					uid: uid,
+					datetime: Date.now()
+				})),
+				async.apply(db.sortedSetAdd.bind(db), 'flags:datetime', Date.now(), flagId)
+			], next);
 		}
 	], function (err) {
 		if (err) {
 			return callback(err);
 		}
 
-		console.log('done', arguments);
-		process.exit();
+		callback();
 	});
 	// if (!parseInt(uid, 10) || !reason) {
 	// 	return callback();
@@ -107,7 +167,7 @@ Flags.create = function (type, id, uid, reason, callback) {
 	// 		], next);
 	// 	},
 	// 	function (data, next) {
-	// 		openNewFlag(post.pid, uid, next);
+	// 		openNewFlag(post.pid, uid, next);		// removed, used to just update flag to open state if new flag
 	// 	}
 	// ], function (err) {
 	// 	if (err) {
@@ -117,21 +177,6 @@ Flags.create = function (type, id, uid, reason, callback) {
 	// 	callback();
 	// });
 };
-
-function openNewFlag(pid, uid, callback) {
-	db.sortedSetScore('posts:flags:count', pid, function (err, count) {
-		if (err) {
-			return callback(err);
-		}
-		if (count === 1) {	// Only update state on new flag
-			Flags.update(uid, pid, {
-				state: 'open'
-			}, callback);
-		} else {
-			callback();
-		}
-	});
-}
 
 Flags.exists = function (type, id, uid, callback) {
 	db.isObjectField('flagHash:flagId', [type, id, uid].join(':'), callback);

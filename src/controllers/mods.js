@@ -3,7 +3,8 @@
 var async = require('async');
 
 var user = require('../user');
-var adminFlagsController = require('./admin/flags');
+var flags = require('../flags');
+// var adminFlagsController = require('./admin/flags');
 
 var modsController = {};
 
@@ -20,7 +21,11 @@ modsController.flagged = function (req, res, next) {
 			res.locals.cids = results.moderatedCids;
 		}
 
-		adminFlagsController.get(req, res, next);
+		flags.list({}, function(err, flags) {
+			res.render('flags', {
+				flags: flags
+			});
+		});
 	});
 };
 
