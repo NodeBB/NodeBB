@@ -72,7 +72,7 @@ module.exports = function (Topics) {
 				Topics.getTopicField(tid, 'cid', next);
 			},
 			function (cid, next) {
-				categories.getTopicIds('cid:' + cid + ':tids', true, 0, 9, next);
+				categories.getTopicIds(cid, 'cid:' + cid + ':tids', true, 0, 9, next);
 			}
 		], callback);
 	}

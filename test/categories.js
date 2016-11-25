@@ -366,6 +366,28 @@ describe('Categories', function () {
 				});
 			});
 		});
+
+		it('should purge category', function (done) {
+			Categories.create({
+				name: 'purge me',
+				description: 'update description'
+			}, function (err, category) {
+				assert.ifError(err);
+				Topics.post({
+					uid: posterUid,
+					cid: category.cid,
+					title: 'Test Topic Title',
+					content: 'The content of test topic'
+				}, function (err) {
+					assert.ifError(err);
+					socketCategories.purge({uid: adminUid}, category.cid, function (err) {
+						assert.ifError(err);
+						done();
+					});
+				});
+
+			});
+		});
 	});
 
 

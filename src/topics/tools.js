@@ -4,7 +4,6 @@ var async = require('async');
 
 var db = require('../database');
 var categories = require('../categories');
-var meta = require('../meta');
 var plugins = require('../plugins');
 var privileges = require('../privileges');
 
@@ -167,7 +166,7 @@ module.exports = function (Topics) {
 				if (!exists) {
 					return callback(new Error('[[error:no-topic]]'));
 				}
-				Topics.getTopicFields(tid, ['cid', 'lastposttime'], next);
+				Topics.getTopicFields(tid, ['cid', 'lastposttime', 'postcount'], next);
 			},
 			function (_topicData, next) {
 				topicData = _topicData;
@@ -177,9 +176,24 @@ module.exports = function (Topics) {
 				if (!isAdminOrMod) {
 					return next(new Error('[[error:no-privileges]]'));
 				}
+
 				async.parallel([
 					async.apply(Topics.setTopicField, tid, 'pinned', pin ? 1 : 0),
-					async.apply(db.sortedSetAdd, 'cid:' + topicData.cid + ':tids', pin ? Math.pow(2, 53) : topicData.lastposttime, tid)
+					function (next) {
+						if (pin) {
+							async.parallel([
+								async.apply(db.sortedSetAdd, 'cid:' + topicData.cid + ':tids:pinned', Date.now(), tid),
+								async.apply(db.sortedSetRemove, 'cid:' + topicData.cid + ':tids', tid),
+								async.apply(db.sortedSetRemove, 'cid:' + topicData.cid + ':tids:posts', tid),
+							], next);
+						} else {
+							async.parallel([
+								async.apply(db.sortedSetRemove, 'cid:' + topicData.cid + ':tids:pinned', tid),
+								async.apply(db.sortedSetAdd, 'cid:' + topicData.cid + ':tids', topicData.lastposttime, tid),
+								async.apply(db.sortedSetAdd, 'cid:' + topicData.cid + ':tids:posts', topicData.postcount, tid),
+							], next);
+						}
+					}
 				], next);
 			},
 			function (results, next) {
@@ -213,20 +227,24 @@ module.exports = function (Topics) {
 				topic = topicData;
 				db.sortedSetsRemove([
 					'cid:' + topicData.cid + ':tids',
+					'cid:' + topicData.cid + ':tids:pinned',
 					'cid:' + topicData.cid + ':tids:posts'
 				], tid, next);
 			},
 			function (next) {
-				var timestamp = parseInt(topic.pinned, 10) ? Math.pow(2, 53) : topic.lastposttime;
-				async.parallel([
-					function (next) {
-						db.sortedSetAdd('cid:' + cid + ':tids', timestamp, tid, next);
-					},
-					function (next) {
-						topic.postcount = topic.postcount || 0;
-						db.sortedSetAdd('cid:' + cid + ':tids:posts', topic.postcount, tid, next);
-					}
-				], next);
+				if (parseInt(topic.pinned, 10)) {
+					db.sortedSetAdd('cid:' + cid + ':tids:pinned', Date.now(), tid, next);
+				} else {
+					async.parallel([
+						function (next) {
+							db.sortedSetAdd('cid:' + cid + ':tids', topic.lastposttime, tid, next);
+						},
+						function (next) {
+							topic.postcount = topic.postcount || 0;
+							db.sortedSetAdd('cid:' + cid + ':tids:posts', topic.postcount, tid, next);
+						}
+					], next);
+				}
 			}
 		], function (err) {
 			if (err) {

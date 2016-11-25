@@ -62,7 +62,7 @@ module.exports = function (SocketTopics) {
 					return callback(new Error('[[error:no-privileges]]'));
 				}
 
-				categories.getTopicIds('cid:' + data.currentCid + ':tids', true, 0, -1, next);
+				categories.getAllTopicIds(data.currentCid, 0, -1, next);
 			},
 			function (tids, next) {
 				async.eachLimit(tids, 50, function (tid, next) {

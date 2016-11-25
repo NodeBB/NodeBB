@@ -1,6 +1,6 @@
 "use strict";
 
-/* globals define, console, require */
+/* globals console, require */
 
 var db = require('./database'),
 	async = require('async'),
@@ -1016,7 +1016,49 @@ Upgrade.upgrade = function (callback) {
 				winston.info('[2016/11/22] Update global and user language keys - skipped!');
 				next();
 			}
-		}
+		},
+		function (next) {
+			thisSchemaDate = Date.UTC(2016, 10, 25);
+
+			if (schemaDate < thisSchemaDate) {
+				updatesMade = true;
+				winston.info('[2016/11/25] Creating sorted sets for pinned topcis');
+
+				var topics = require('./topics');
+				var batch = require('./batch');
+				batch.processSortedSet('topics:tid', function (ids, next) {
+					topics.getTopicsFields(ids, ['tid', 'cid', 'pinned', 'lastposttime'], function (err, data) {
+						if (err) {
+							return next(err);
+						}
+
+						data = data.filter(function (topicData) {
+							return parseInt(topicData.pinned, 10) === 1;
+						});
+
+						async.eachSeries(data, function (topicData, next) {
+							console.log('processing tid: ' + topicData.tid);
+
+							async.parallel([
+								async.apply(db.sortedSetAdd, 'cid:' + topicData.cid + ':tids:pinned', Date.now(), topicData.tid),
+								async.apply(db.sortedSetRemove, 'cid:' + topicData.cid + ':tids', topicData.tid),
+								async.apply(db.sortedSetRemove, 'cid:' + topicData.cid + ':tids:posts', topicData.tid)
+							], next);
+						}, next);
+					});
+				}, function (err) {
+					if (err) {
+						return next(err);
+					}
+
+					winston.info('[2016/11/25] Creating sorted sets for pinned topics - done');
+					Upgrade.update(thisSchemaDate, next);
+				});
+			} else {
+				winston.info('[2016/11/25] Creating sorted sets for pinned topics - skipped!');
+				next();
+			}
+		},
 		// Add new schema updates here
 		// IMPORTANT: REMEMBER TO UPDATE VALUE OF latestSchema IN LINE 24!!!
 	], function (err) {

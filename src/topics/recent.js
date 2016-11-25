@@ -7,6 +7,7 @@ var db = require('../database');
 var plugins = require('../plugins');
 var privileges = require('../privileges');
 var user = require('../user');
+var categories =  require('../categories');
 
 module.exports = function (Topics) {
 	var terms = {
@@ -24,7 +25,11 @@ module.exports = function (Topics) {
 
 		async.waterfall([
 			function (next) {
-				db.getSortedSetRevRange(cid ? 'cid:' + cid + ':tids' : 'topics:recent', 0, 199, next);
+				if (cid) {
+					categories.getTopicIds(cid, 'cid:' + cid + ':tids', true, 0, 199, next);
+				} else {
+					db.getSortedSetRevRange('topics:recent', 0, 199, next);
+				}
 			},
 			function (tids, next) {
 				filterTids(tids, uid, filter, next);

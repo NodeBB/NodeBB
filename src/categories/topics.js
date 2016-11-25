@@ -14,7 +14,7 @@ module.exports = function (Categories) {
 				plugins.fireHook('filter:category.topics.prepare', data, next);
 			},
 			function (data, next) {
-				Categories.getTopicIds(data.set, data.reverse, data.start, data.stop, next);
+				Categories.getTopicIds(data.cid, data.set, data.reverse, data.start, data.stop, next);
 			},
 			function (tids, next) {
 				topics.getTopicsByTids(tids, data.uid, next);
@@ -36,6 +36,58 @@ module.exports = function (Categories) {
 		], callback);
 	};
 
+	Categories.getTopicIds = function (cid, set, reverse, start, stop, callback) {
+	 	var pinnedTids;
+		var pinnedCount;
+		var totalPinnedCount;
+
+		async.waterfall([
+			function (next) {
+				Categories.getPinnedTids(cid, 0, -1, next);
+			},
+			function (_pinnedTids, next) {
+				totalPinnedCount = _pinnedTids.length;
+
+				pinnedTids = _pinnedTids.slice(start, stop === -1 ? undefined : stop + 1);
+
+				pinnedCount = pinnedTids.length;
+
+				var topicsPerPage = stop - start + 1;
+
+				var normalTidsToGet = Math.max(0, topicsPerPage - pinnedCount);
+
+				if (!normalTidsToGet && stop !== -1) {
+					return next(null, []);
+				}
+				if (start > 0 && totalPinnedCount) {
+					start -= totalPinnedCount - pinnedCount;
+				}
+				stop = stop === -1 ? stop : start + normalTidsToGet - 1;
+
+				if (Array.isArray(set)) {
+					db[reverse ? 'getSortedSetRevIntersect' : 'getSortedSetIntersect']({sets: set, start: start, stop: stop}, next);
+				} else {
+					db[reverse ? 'getSortedSetRevRange' : 'getSortedSetRange'](set, start, stop, next);
+				}
+			},
+			function (normalTids, next) {
+				normalTids = normalTids.filter(function (tid) {
+					return pinnedTids.indexOf(tid) === -1;
+				});
+
+				next(null, pinnedTids.concat(normalTids));
+			}
+		], callback);
+	};
+
+	Categories.getAllTopicIds = function (cid, start, stop, callback) {
+		db.getSortedSetRange(['cid:' + cid + ':tids:pinned', 'cid:' + cid + ':tids'], start, stop, callback);
+	};
+
+	Categories.getPinnedTids = function (cid, start, stop, callback) {
+		db.getSortedSetRevRange('cid:' + cid + ':tids:pinned', start, stop, callback);
+	};
+
 	Categories.modifyTopicsByPrivilege = function (topics, privileges) {
 		if (!Array.isArray(topics) || !topics.length || privileges.isAdminOrMod) {
 			return;
@@ -52,22 +104,9 @@ module.exports = function (Categories) {
 		});
 	};
 
-	Categories.getTopicIds = function (set, reverse, start, stop, callback) {
-		if (Array.isArray(set)) {
-			db[reverse ? 'getSortedSetRevIntersect' : 'getSortedSetIntersect']({sets: set, start: start, stop: stop}, callback);
-		} else {
-			db[reverse ? 'getSortedSetRevRange' : 'getSortedSetRange'](set, start, stop, callback);
-		}
-	};
-
 	Categories.getTopicIndex = function (tid, callback) {
-		topics.getTopicField(tid, 'cid', function (err, cid) {
-			if (err) {
-				return callback(err);
-			}
-
-			db.sortedSetRevRank('cid:' + cid + ':tids', tid, callback);
-		});
+		console.warn('[Categories.getTopicIndex] deprecated');
+		callback(null, 1);
 	};
 
 	Categories.onNewPostMade = function (cid, pinned, postData, callback) {
