@@ -56,7 +56,13 @@ module.exports = function (Groups) {
 				}
 				async.series([
 					async.apply(checkNameChange, groupName, values.name),
-					async.apply(updatePrivacy, groupName, values.private),
+					function (next) {
+						if (values.hasOwnProperty('private')) {
+							updatePrivacy(groupName, values.private, next);
+						} else {
+							next();
+						}
+					},
 					function (next) {
 						if (values.hasOwnProperty('hidden')) {
 							updateVisibility(groupName, values.hidden, next);
@@ -118,35 +124,33 @@ module.exports = function (Groups) {
 		});
 	}
 
-	function updatePrivacy(groupName, newValue, callback) {
-		if (!newValue) {
-			return callback();
-		}
+	function updatePrivacy(groupName, isPrivate, callback) {
+		async.waterfall([
+			function (next) {
+				Groups.getGroupFields(groupName, ['private'], next);
+			},
+			function (currentValue, next) {
+				var currentlyPrivate = parseInt(currentValue.private, 10) === 1;
+				if (!currentlyPrivate || currentlyPrivate === isPrivate)  {
+					return callback();
+				}
+				db.getSetMembers('group:' + groupName + ':pending', next);
+			},
+			function (uids, next) {
+				if (!uids.length) {
+					return callback();
+				}
+				var now = Date.now();
+				var scores = uids.map(function () { return now; });
 
-		Groups.getGroupFields(groupName, ['private'], function (err, currentValue) {
-			if (err) {
-				return callback(err);
+				winston.verbose('[groups.update] Group is now public, automatically adding ' + uids.length + ' new members, who were pending prior.');
+				async.series([
+					async.apply(db.sortedSetAdd, 'group:' + groupName + ':members', scores, uids),
+					async.apply(db.delete, 'group:' + groupName + ':pending')
+				], next);
 			}
-			currentValue = currentValue.private === '1';
-
-			if (currentValue !== newValue && currentValue === true) {
-				// Group is now public, so all pending users are automatically considered members
-				db.getSetMembers('group:' + groupName + ':pending', function (err, uids) {
-					if (err) { return callback(err); }
-					else if (!uids) { return callback(); }	// No pending users, we're good to go
-
-					var now = Date.now(),
-						scores = uids.map(function () { return now; });	// There's probably a better way to initialise an Array of size x with the same value...
-
-					winston.verbose('[groups.update] Group is now public, automatically adding ' + uids.length + ' new members, who were pending prior.');
-					async.series([
-						async.apply(db.sortedSetAdd, 'group:' + groupName + ':members', scores, uids),
-						async.apply(db.delete, 'group:' + groupName + ':pending')
-					], callback);
-				});
-			} else {
-				callback();
-			}
+		], function (err) {
+			callback(err);
 		});
 	}
 
