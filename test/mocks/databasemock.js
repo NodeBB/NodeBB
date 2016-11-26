@@ -101,6 +101,9 @@
 				meta.configs.init(next);
 			},
 			function (next) {
+				meta.dependencies.check(next);
+			},
+			function (next) {
 				meta.config.postDelay = 0;
 				meta.config.initialPostDelay = 0;
 				meta.config.newbiePostDelay = 0;
