@@ -12,45 +12,48 @@ module.exports = function (Groups) {
 
 	Groups.update = function (groupName, values, callback) {
 		callback = callback || function () {};
-		db.exists('group:' + groupName, function (err, exists) {
-			if (err || !exists) {
-				return callback(err || new Error('[[error:no-group]]'));
-			}
 
-			plugins.fireHook('filter:group.update', {
-				groupName: groupName,
-				values: values
-			}, function (err) {
-				if (err) {
-					return callback(err);
+		async.waterfall([
+			function (next) {
+				db.exists('group:' + groupName, next);
+			},
+			function (exists, next) {
+				if (!exists) {
+					return next(new Error('[[error:no-group]]'));
 				}
+				plugins.fireHook('filter:group.update', {
+					groupName: groupName,
+					values: values
+				}, next);
+			},
+			function (result, next) {
+				values = result.values;
 
 				var payload = {
 					description: values.description || '',
 					icon: values.icon || '',
 					labelColor: values.labelColor || '#000000'
 				};
-	
+
 				if (values.hasOwnProperty('userTitle')) {
 					payload.userTitle = values.userTitle || '';
 				}
-	
+
 				if (values.hasOwnProperty('userTitleEnabled')) {
 					payload.userTitleEnabled = values.userTitleEnabled ? '1' : '0';
 				}
-	
+
 				if (values.hasOwnProperty('hidden')) {
 					payload.hidden = values.hidden ? '1' : '0';
 				}
-	
+
 				if (values.hasOwnProperty('private')) {
 					payload.private = values.private ? '1' : '0';
 				}
-	
+
 				if (values.hasOwnProperty('disableJoinRequests')) {
 					payload.disableJoinRequests = values.disableJoinRequests ? '1' : '0';
 				}
-	
 				async.series([
 					async.apply(checkNameChange, groupName, values.name),
 					async.apply(updatePrivacy, groupName, values.private),
@@ -63,19 +66,16 @@ module.exports = function (Groups) {
 					},
 					async.apply(db.setObject, 'group:' + groupName, payload),
 					async.apply(renameGroup, groupName, values.name)
-				], function (err) {
-					if (err) {
-						return callback(err);
-					}
-	
-					plugins.fireHook('action:group.update', {
-						name: groupName,
-						values: values
-					});
-					callback();
+				], next);
+			},
+			function (result, next) {
+				plugins.fireHook('action:group.update', {
+					name: groupName,
+					values: values
 				});
-			});
-		});
+				next();
+			}
+		], callback);
 	};
 
 	function updateVisibility(groupName, hidden, callback) {

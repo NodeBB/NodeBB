@@ -504,6 +504,128 @@ describe('Groups', function () {
 
 	});
 
+	describe('admin socket methods', function () {
+		var socketGroups = require('../src/socket.io/admin/groups');
+
+		it('should fail to create group with invalid data', function (done) {
+			socketGroups.create({uid: adminUid}, null, function (err) {
+				assert.equal(err.message, '[[error:invalid-data]]');
+				done();
+			});
+		});
+
+		it('should fail to create group if group name is privilege group', function (done) {
+			socketGroups.create({uid: adminUid}, {name: 'cid:1:privileges:read'}, function (err) {
+				assert.equal(err.message, '[[error:invalid-group-name]]');
+				done();
+			});
+		});
+
+		it('should create a group', function (done) {
+			socketGroups.create({uid: adminUid}, {name: 'newgroup', description: 'group created by admin'}, function (err, groupData) {
+				assert.ifError(err);
+				assert.equal(groupData.name, 'newgroup');
+				assert.equal(groupData.description, 'group created by admin');
+				assert.equal(groupData.ownerUid, adminUid);
+				assert.equal(groupData.private, true);
+				assert.equal(groupData.memberCount, 1);
+				done();
+			});
+		});
+
+		it('should fail to join with invalid data', function (done) {
+			socketGroups.join({uid: adminUid}, null, function (err) {
+				assert.equal(err.message, '[[error:invalid-data]]');
+				done();
+			});
+		});
+
+		it('should add user to group', function (done) {
+			socketGroups.join({uid: adminUid}, {uid: testUid, groupName: 'newgroup'}, function (err) {
+				assert.ifError(err);
+				Groups.isMember(testUid, 'newgroup', function (err, isMember) {
+					assert.ifError(err);
+					assert(isMember);
+					done();
+				});
+			});
+		});
+
+		it('should fail to if user is already member', function (done) {
+			socketGroups.join({uid: adminUid}, {uid: testUid, groupName: 'newgroup'}, function (err) {
+				assert.equal(err.message, '[[error:group-already-member]]');
+				done();
+			});
+		});
+
+		it('it should fail with invalid data', function (done) {
+			socketGroups.leave({uid: adminUid}, null, function (err) {
+				assert.equal(err.message, '[[error:invalid-data]]');
+				done();
+			});
+		});
+
+		it('it should fail if admin tries to remove self', function (done) {
+			socketGroups.leave({uid: adminUid}, {uid: adminUid, groupName: 'administrators'}, function (err) {
+				assert.equal(err.message, '[[error:cant-remove-self-as-admin]]');
+				done();
+			});
+		});
+
+		it('should fail if user is not member', function (done) {
+			socketGroups.leave({uid: adminUid}, {uid: 3, groupName: 'newgroup'}, function (err) {
+				assert.equal(err.message, '[[error:group-not-member]]');
+				done();
+			});
+		});
+
+		it('should remove user from group', function (done) {
+			socketGroups.leave({uid: adminUid}, {uid: testUid, groupName: 'newgroup'}, function (err) {
+				assert.ifError(err);
+				Groups.isMember(testUid, 'newgroup', function (err, isMember) {
+					assert.ifError(err);
+					assert(!isMember);
+					done();
+				});
+			});
+		});
+
+		it('should fail with invalid data', function (done) {
+			socketGroups.update({uid: adminUid}, null, function (err) {
+				assert.equal(err.message, '[[error:invalid-data]]');
+				done();
+			});
+		});
+
+		it('should update group', function (done) {
+			var data = {
+				groupName: 'newgroup',
+				values: {
+					name: 'renamedgroup',
+					description: 'cat group',
+					userTitle: 'cats',
+					userTitleEnabled: 1,
+					disableJoinRequests: 1,
+					hidden: 1,
+					private: 0
+				}
+			};
+			socketGroups.update({uid: adminUid}, data, function (err) {
+				assert.ifError(err);
+				Groups.get('renamedgroup', {}, function (err, groupData) {
+					assert.ifError(err);
+					assert.equal(groupData.name, 'renamedgroup');
+					assert.equal(groupData.userTitle, 'cats');
+					assert.equal(groupData.description, 'cat group');
+					assert.equal(groupData.hidden, true);
+					assert.equal(groupData.disableJoinRequests, true);
+					assert.equal(groupData.private, false);
+					done();
+				});
+			});
+		});
+	});
+
 	after(function (done) {
 		db.emptydb(done);
 	});
