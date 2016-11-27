@@ -9,13 +9,14 @@ var categories = require('./categories');
 var topics = require('./topics');
 var privileges = require('./privileges');
 var meta = require('./meta');
+var plugins = require('./plugins');
 var utils = require('../public/src/utils');
 
 var sitemap = {
-		maps: {
-			topics: []
-		}
-	};
+	maps: {
+		topics: []
+	}
+};
 
 sitemap.render = function (callback) {
 	var numTopics = parseInt(meta.config.sitemapTopics, 10) || 500;
@@ -71,13 +72,18 @@ sitemap.getPages = function (callback) {
 			priority: 0.4
 		}];
 
-	sitemap.maps.pages = sm.createSitemap({
-		hostname: nconf.get('url'),
-		cacheTime: 1000 * 60 * 60 * 24,	// Cached for 24 hours
-		urls: urls
-	});
+	plugins.fireHook('filter:sitemap.getPages', {urls: urls}, function (err, data) {
+		if (err) {
+			return callback(err);
+		}
+		sitemap.maps.pages = sm.createSitemap({
+			hostname: nconf.get('url'),
+			cacheTime: 1000 * 60 * 60 * 24,	// Cached for 24 hours
+			urls: data.urls
+		});
 
-	sitemap.maps.pages.toXML(callback);
+		sitemap.maps.pages.toXML(callback);
+	});
 };
 
 sitemap.getCategories = function (callback) {
