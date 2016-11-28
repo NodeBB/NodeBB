@@ -2,12 +2,11 @@
 
 var fs = require('fs');
 var path = require('path');
-var nconf = require('nconf');
-var sanitize = require('sanitize-html');
+var sanitizeHTML = require('sanitize-html');
 
 var languages = require('../languages');
-var meta = require('../meta');
 var utils = require('../../public/src/utils');
+var Translator = require('../../public/src/modules/translator');
 
 function walk(directory) {
 	return new Promise(function (resolve, reject) {
@@ -45,117 +44,102 @@ function loadLanguage(language, filename) {
 	});
 }
 
+function filterDirectories(directories) {
+	return directories.map(function (dir) {
+		// get the relative path
+		return dir.replace(/^.*(admin.*?).tpl$/, '$1');
+	}).filter(function (dir) {
+		// exclude partials
+		// only include subpaths
+		return !dir.includes('/partials/') && /\/.*\//.test(dir);
+	});
+}
+
 function getAdminNamespaces() {
 	return walk(path.resolve('./public/templates/admin'))
-		.then(function (directories) {
-			return directories.map(function (dir) {
-				return dir.replace(/^.*(admin.*?).tpl$/, '$1');
-			}).filter(function (dir) {
-				return !dir.includes('/partials/');
-			}).filter(function (dir) {
-				return dir.match(/\/.*\//);
-			});
-		});
+		.then(filterDirectories);
+}
+
+function sanitize(html) {
+	// reduce the template to just meaningful text
+	// remove all tags and strip out scripts, etc completely
+	return sanitizeHTML(html, {
+		allowedTags: [],
+		allowedAttributes: [],
+	});
+}
+
+function simplify(translations) {
+	return translations
+		// remove all mustaches
+		.replace(/(?:\{{1,2}[^\}]*?\}{1,2})/g, '')
+		// collapse whitespace
+		.replace(/(?:[ \t]*[\n\r]+[ \t]*)+/g, '\n')
+		.replace(/[\t ]+/g, ' ');
 }
 
 var fallbackCache = {};
 
-function removeTranslatorPatterns(str) {
-	var len = str.len;
-	var cursor = 0;
-	var lastBreak = 0;
-	var level = 0;
-	var out = '';
-	var sub;
+function initFallback(namespace) {
+	return readFile(path.resolve('./public/templates/', namespace + '.tpl'))
+		.then(function (template) {
+			var translations = sanitize(template);
+			translations = simplify(translations);
+			translations = Translator.removePatterns(translations);
 
-	while (cursor < len) {
-		sub = str.slice(cursor, cursor + 2);
-		if (sub === '[[') {
-			if (level === 0) {
-				out += str.slice(lastBreak, cursor);
-			}
-			level += 1;
-			cursor += 2;
-		} else if (sub === ']]') {
-			level -= 1;
-			cursor += 2;
-			if (level === 0) {
-				lastBreak = cursor;
-			}
-		} else {
-			cursor += 1;
-		}
-	}
-	out += str.slice(lastBreak, cursor);
-	return out;
+			return {
+				namespace: namespace,
+				translations: translations,
+			};
+		});
 }
 
 function fallback(namespace) {
-	fallbackCache[namespace] = fallbackCache[namespace] ||
-		readFile(path.resolve('./public/templates/', namespace + '.tpl'))
-			.then(function (template) {
-				// reduce the template to just meaningful text
-				// remove scripts, etc and replace all tags with divs
-				var translations = sanitize(template, {
-					transformTags: {
-						'*': function () {
-							return {
-								tagName: 'div'
-							};
-						}
-					}
-				})
-					// remove all html tags, templating stuff, and translation strings
-					.replace(/(?:<div>)|(?:<\/div>)|(?:\{[^\{\}]*\})/g, '')
-					// collapse whitespace
-					.replace(/([\n\r]+ ?)+/g, '\n')
-					.replace(/[\t ]+/g, ' ');
-				
-				translations = removeTranslatorPatterns(translations);
-				
-				return {
-					namespace: namespace,
-					translations: translations,
-				};
-			});
-	
+	// use cache if exists, else make it
+	fallbackCache[namespace] = fallbackCache[namespace] || initFallback(namespace);
 	return fallbackCache[namespace];
 }
 
 function initDict(language) {
 	return getAdminNamespaces().then(function (namespaces) {
 		return Promise.all(namespaces.map(function (namespace) {
-			return loadLanguage(language, namespace).then(function (translations) {
-				return { namespace: namespace, translations: translations };
-			}).then(function (params) {
-				var namespace = params.namespace;
-				var translations = params.translations;
+			return loadLanguage(language, namespace)
+				.then(function (translations) {
+					// join all translations into one string separated by newlines
+					var str = Object.keys(translations).map(function (key) {
+						return translations[key];
+					}).join('\n');
 
-				var str = Object.keys(translations).map(function (key) {
-					return translations[key];
-				}).join('\n');
-
-				return {
-					namespace: namespace,
-					translations: str
-				};
-			})
-			// TODO: Use translator to get title for admin route?
-			.catch(function () {
-				return fallback(namespace);
-			})
-			.catch(function () {
-				return { namespace: namespace, translations: '' };
-			});
+					return {
+						namespace: namespace,
+						translations: str,
+					};
+				})
+				// TODO: Use translator to get title for admin route?
+				.catch(function () {
+					// no translations for this route, fallback to template
+					return fallback(namespace);
+				})
+				.catch(function () {
+					// no fallback, just return blank
+					return {
+						namespace: namespace,
+						translations: '',
+					};
+				});
 		}));
 	});
 }
 
 var cache = {};
 
-function getDict(language, term) {
+function getDict(language) {
+	// use cache if exists, else make it
 	cache[language] = cache[language] || initDict(language);
 	return cache[language];
 }
 
 module.exports.getDict = getDict;
+module.exports.filterDirectories = filterDirectories;
+module.exports.simplify = simplify;
+module.exports.sanitize = sanitize;
