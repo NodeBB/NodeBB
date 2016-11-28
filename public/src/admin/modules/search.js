@@ -19,11 +19,16 @@ define(function () {
 			var title = params.title == null ? nsToTitle(namespace) : params.title;
 
 			var results = translations
+				// remove all lines without a match
 				.replace(new RegExp('^(?:(?!' + term + ').)*$', 'gmi'), '')
+				// get up to 25 characaters of context on both sides of the match
+				// and wrap the match in a `.search-match` element
 				.replace(
 					new RegExp('^[\\s\\S]*?(.{0,25})(' + term + ')(.{0,25})[\\s\\S]*?$', 'gmi'),
 					'...$1<span class="search-match">$2</span>$3...<br>'
-				).replace(/(\n ?)+/g, '\n');
+				)
+				// collapse whitespace
+				.replace(/(?:\n ?)+/g, '\n');
 
 			return '<li role="presentation" class="result">' +
 				'<a role= "menuitem" href= "' + RELATIVE_PATH + '/' + namespace + '" >' +

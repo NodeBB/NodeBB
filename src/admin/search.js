@@ -60,10 +60,42 @@ function getAdminNamespaces() {
 
 var fallbackCache = {};
 
+function removeTranslatorPatterns(str) {
+	var len = str.len;
+	var cursor = 0;
+	var lastBreak = 0;
+	var level = 0;
+	var out = '';
+	var sub;
+
+	while (cursor < len) {
+		sub = str.slice(cursor, cursor + 2);
+		if (sub === '[[') {
+			if (level === 0) {
+				out += str.slice(lastBreak, cursor);
+			}
+			level += 1;
+			cursor += 2;
+		} else if (sub === ']]') {
+			level -= 1;
+			cursor += 2;
+			if (level === 0) {
+				lastBreak = cursor;
+			}
+		} else {
+			cursor += 1;
+		}
+	}
+	out += str.slice(lastBreak, cursor);
+	return out;
+}
+
 function fallback(namespace) {
 	fallbackCache[namespace] = fallbackCache[namespace] ||
 		readFile(path.resolve('./public/templates/', namespace + '.tpl'))
 			.then(function (template) {
+				// reduce the template to just meaningful text
+				// remove scripts, etc and replace all tags with divs
 				var translations = sanitize(template, {
 					transformTags: {
 						'*': function () {
@@ -73,15 +105,20 @@ function fallback(namespace) {
 						}
 					}
 				})
-					.replace(/(<div>)|(<\/div>)/g, '')
+					// remove all html tags, templating stuff, and translation strings
+					.replace(/(?:<div>)|(?:<\/div>)|(?:\{[^\{\}]*\})/g, '')
+					// collapse whitespace
 					.replace(/([\n\r]+ ?)+/g, '\n')
 					.replace(/[\t ]+/g, ' ');
+				
+				translations = removeTranslatorPatterns(translations);
 				
 				return {
 					namespace: namespace,
 					translations: translations,
 				};
 			});
+	
 	return fallbackCache[namespace];
 }
 
@@ -109,10 +146,6 @@ function initDict(language) {
 			})
 			.catch(function () {
 				return { namespace: namespace, translations: '' };
-			})
-			.then(function (params) {
-				params.translations = params.translations.replace(/\{[^\{\}]*\}/g, '');
-				return params;
 			});
 		}));
 	});
