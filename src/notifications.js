@@ -352,7 +352,9 @@ var utils = require('../public/src/utils');
 				function (next) {
 					db.sortedSetAdd('uid:' + uid + ':notifications:read', datetimes, nids, next);
 				}
-			], callback);
+			], function (err) {
+				callback(err);
+			});
 		});
 	};
 

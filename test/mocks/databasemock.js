@@ -111,6 +111,12 @@
 				enableDefaultPlugins(next);
 			},
 			function (next) {
+				meta.themes.set({
+					type: 'local',
+					id: 'nodebb-theme-persona'
+				}, next);
+			},
+			function (next) {
 				// nconf defaults, if not set in config
 				if (!nconf.get('upload_path')) {
 					nconf.set('upload_path', '/public/uploads');

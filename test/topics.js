@@ -683,6 +683,200 @@ describe('Topic\'s', function () {
 		});
 	});
 
+	describe('unread', function () {
+		var socketTopics = require('../src/socket.io/topics');
+		var tid;
+		var mainPid;
+		var uid;
+		before(function (done) {
+			async.parallel({
+				topic: function (next) {
+					topics.post({uid: topic.userId, title: 'unread topic', content: 'unread topic content', cid: topic.categoryId}, next);
+				},
+				user: function (next) {
+					User.create({username: 'regularJoe'}, next);
+				}
+			}, function (err, results) {
+				assert.ifError(err);
+				tid = results.topic.topicData.tid;
+				mainPid = results.topic.postData.pid;
+				uid = results.user;
+				done();
+			});
+		});
+
+		it('should fail with invalid data', function (done) {
+			socketTopics.markUnread({uid: adminUid}, null, function (err) {
+				assert.equal(err.message, '[[error:invalid-data]]');
+				done();
+			});
+		});
+
+		it('should fail if topic does not exist', function (done) {
+			socketTopics.markUnread({uid: adminUid}, 1231082, function (err) {
+				assert.equal(err.message, '[[error:no-topic]]');
+				done();
+			});
+		});
+
+		it('should mark topic unread', function (done) {
+			socketTopics.markUnread({uid: adminUid}, tid, function (err) {
+				assert.ifError(err);
+				topics.hasReadTopic(tid, adminUid, function (err, hasRead) {
+					assert.ifError(err);
+					assert.equal(hasRead, false);
+					done();
+				});
+			});
+		});
+
+
+		it('should fail with invalid data', function (done) {
+			socketTopics.markAsRead({uid: 0}, null, function (err) {
+				assert.equal(err.message, '[[error:invalid-data]]');
+				done();
+			});
+		});
+
+
+		it('should mark topic read', function (done) {
+			socketTopics.markAsRead({uid: adminUid}, [tid], function (err) {
+				assert.ifError(err);
+				topics.hasReadTopic(tid, adminUid, function (err, hasRead) {
+					assert.ifError(err);
+					assert(hasRead);
+					done();
+				});
+			});
+		});
+
+		it('should fail with invalid data', function (done) {
+			socketTopics.markTopicNotificationsRead({uid: 0}, null, function (err) {
+				assert.equal(err.message, '[[error:invalid-data]]');
+				done();
+			});
+		});
+
+		it('should mark topic notifications read', function (done) {
+			var socketPosts = require('../src/socket.io/posts');
+
+			async.waterfall([
+				function (next) {
+					socketTopics.follow({uid: adminUid}, tid, next);
+				},
+				function (next) {
+					socketPosts.reply({uid: uid}, {content: 'some content', tid: tid}, next);
+				},
+				function (data, next) {
+					setTimeout(next, 2500);
+				},
+				function (next) {
+					User.notifications.getUnreadCount(adminUid, next);
+				},
+				function (count, next) {
+					assert.equal(count, 1);
+					socketTopics.markTopicNotificationsRead({uid: adminUid}, [tid], next);
+				},
+				function (next) {
+					User.notifications.getUnreadCount(adminUid, next);
+				},
+				function (count, next) {
+					assert.equal(count, 0);
+					next();
+				}
+			], function (err) {
+				assert.ifError(err);
+				done();
+			});
+		});
+
+		it('should fail with invalid data', function (done) {
+			socketTopics.markAllRead({uid: 0}, null, function (err) {
+				assert.equal(err.message, '[[error:invalid-uid]]');
+				done();
+			});
+		});
+
+		it('should mark all read', function (done) {
+			socketTopics.markUnread({uid: adminUid}, tid, function (err) {
+				assert.ifError(err);
+				socketTopics.markAllRead({uid: adminUid}, {}, function (err) {
+					assert.ifError(err);
+					topics.hasReadTopic(tid, adminUid, function (err, hasRead) {
+						assert.ifError(err);
+						assert(hasRead);
+						done();
+					});
+				});
+			});
+		});
+
+		it('should mark all read', function (done) {
+			socketTopics.markUnread({uid: adminUid}, tid, function (err) {
+				assert.ifError(err);
+				socketTopics.markCategoryTopicsRead({uid: adminUid}, topic.categoryId, function (err) {
+					assert.ifError(err);
+					topics.hasReadTopic(tid, adminUid, function (err, hasRead) {
+						assert.ifError(err);
+						assert(hasRead);
+						done();
+					});
+				});
+			});
+		});
+
+
+		it('should fail with invalid data', function (done) {
+			socketTopics.markAsUnreadForAll({uid: adminUid}, null, function (err) {
+				assert.equal(err.message, '[[error:invalid-tid]]');
+				done();
+			});
+		});
+
+		it('should fail with invalid data', function (done) {
+			socketTopics.markAsUnreadForAll({uid: 0}, [tid], function (err) {
+				assert.equal(err.message, '[[error:no-privileges]]');
+				done();
+			});
+		});
+
+		it('should fail if user is not admin', function (done) {
+			socketTopics.markAsUnreadForAll({uid: uid}, [tid], function (err) {
+				assert.equal(err.message, '[[error:no-privileges]]');
+				done();
+			});
+		});
+
+		it('should fail if topic does not exist', function (done) {
+			socketTopics.markAsUnreadForAll({uid: uid}, [12312313], function (err) {
+				assert.equal(err.message, '[[error:no-topic]]');
+				done();
+			});
+		});
+
+		it('should mark topic unread for everyone', function (done) {
+			socketTopics.markAsUnreadForAll({uid: adminUid}, [tid], function (err) {
+				assert.ifError(err);
+				async.parallel({
+					adminRead: function (next) {
+						topics.hasReadTopic(tid, adminUid, next);
+					},
+					regularRead: function (next) {
+						topics.hasReadTopic(tid, uid, next);
+					}
+				}, function (err, results) {
+					assert.ifError(err);
+					assert.equal(results.adminRead, false);
+					assert.equal(results.regularRead, false);
+					done();
+				});
+			});
+		});
+
+
+
+
+	});
 
 
 	after(function (done) {
