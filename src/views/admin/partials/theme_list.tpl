@@ -10,13 +10,13 @@
 
 			<!-- IF themes.url -->
 			<p>
-				<a href="{themes.url}" target="_blank">Homepage</a>
+				<a href="{themes.url}" target="_blank">[[admin/appearance/themes:homepage]]</a>
 			</p>
 			<!-- ENDIF themes.url -->
 		</div>
 		<div class="mdl-card__actions mdl-card--border">
 			<a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect" data-action="use">
-				<!-- IF themes.skin -->Select Skin<!-- ELSE -->Select Theme<!-- ENDIF themes.skin -->
+				<!-- IF themes.skin -->[[admin/appearance/themes:select-skin]]<!-- ELSE -->[[admin/appearance/themes:select-theme]]<!-- ENDIF themes.skin -->
 			</a>
 		</div>
 	</div>

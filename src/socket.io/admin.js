@@ -15,6 +15,7 @@ var emailer = require('../emailer');
 var db = require('../database');
 var analytics = require('../analytics');
 var index = require('./index');
+var getAdminSearchDict = require('../admin/search').getDict;
 
 var SocketAdmin = {
 	user: require('./admin/user'),
@@ -275,6 +276,19 @@ SocketAdmin.errors.clear = function (socket, data, callback) {
 
 SocketAdmin.deleteAllEvents = function (socket, data, callback) {
 	events.deleteAll(callback);
+};
+
+SocketAdmin.getSearchDict = function (socket, data, callback) {
+	user.getSettings(socket.uid, function (err, settings) {
+		if (err) {
+			return callback(err);
+		}
+		var lang = settings.userLang || meta.config.defaultLang || 'en_GB';
+		getAdminSearchDict(lang)
+			.then(function (results) {
+				callback(null, results);
+			}, callback);
+	});
 };
 
 
