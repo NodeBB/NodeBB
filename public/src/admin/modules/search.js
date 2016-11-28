@@ -1,5 +1,5 @@
 "use strict";
-/*globals define, admin, ajaxify, RELATIVE_PATH*/
+/* globals socket, app, define, ajaxify, config */
 
 define(function () {
 	var search = {};
@@ -31,7 +31,7 @@ define(function () {
 				.replace(/(?:\n ?)+/g, '\n');
 
 			return '<li role="presentation" class="result">' +
-				'<a role= "menuitem" href= "' + RELATIVE_PATH + '/' + namespace + '" >' +
+				'<a role= "menuitem" href= "' + config.relative_path + '/' + namespace + '" >' +
 					title +
 					'<br>' +
 					'<small><code>' +
@@ -68,7 +68,7 @@ define(function () {
 
 		$('#acp-search').parents('form').on('submit', function (ev) {
 			var firstResult = menu.find('li:first-child > a').attr('href');
-			var href = firstResult ? firstResult : RELATIVE_PATH + '/search/' + input.val();
+			var href = firstResult ? firstResult : config.relative_path + '/search/' + input.val();
 
 			ajaxify.go(href.replace(/^\//, ''));
 
@@ -102,7 +102,7 @@ define(function () {
 				menu.find('.search-forum')
 					.not('.divider')
 					.find('a')
-					.attr('href', RELATIVE_PATH + '/search/' + value)
+					.attr('href', config.relative_path + '/search/' + value)
 					.find('strong')
 					.html(value);
 			} else {
