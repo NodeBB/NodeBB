@@ -6,7 +6,7 @@ var sanitizeHTML = require('sanitize-html');
 
 var languages = require('../languages');
 var utils = require('../../public/src/utils');
-var Translator = require('../../public/src/modules/translator');
+var Translator = require('../../public/src/modules/translator').Translator;
 
 function walk(directory) {
 	return new Promise(function (resolve, reject) {
@@ -32,9 +32,9 @@ function readFile(path) {
 	});
 }
 
-function loadLanguage(language, filename) {
+function loadLanguage(language, namespace) {
 	return new Promise(function (resolve, reject) {
-		languages.get(language, filename + '.json', function (err, data) {
+		languages.get(language, namespace, function (err, data) {
 			if (err || !data || !Object.keys(data).length) {
 				reject(err);
 			} else {
@@ -56,7 +56,7 @@ function filterDirectories(directories) {
 }
 
 function getAdminNamespaces() {
-	return walk(path.resolve('./public/templates/admin'))
+	return walk(path.resolve(__dirname, '../../public/templates/admin'))
 		.then(filterDirectories);
 }
 
@@ -81,7 +81,7 @@ function simplify(translations) {
 var fallbackCache = {};
 
 function initFallback(namespace) {
-	return readFile(path.resolve('./public/templates/', namespace + '.tpl'))
+	return readFile(path.resolve(__dirname, '../../public/templates/', namespace + '.tpl'))
 		.then(function (template) {
 			var translations = sanitize(template);
 			translations = simplify(translations);

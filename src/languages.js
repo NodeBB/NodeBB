@@ -75,7 +75,7 @@ Languages.list = function (callback) {
 
 				fs.readFile(configPath, function (err, stream) {
 					if (err) {
-						next();
+						return next(err);
 					}
 					languages.push(JSON.parse(stream.toString()));
 					next();

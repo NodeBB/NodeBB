@@ -283,7 +283,7 @@ SocketAdmin.getSearchDict = function (socket, data, callback) {
 		if (err) {
 			return callback(err);
 		}
-		var lang = settings.userLang || meta.config.defaultLang || 'en_GB';
+		var lang = settings.userLang || meta.config.defaultLang || 'en-GB';
 		getAdminSearchDict(lang)
 			.then(function (results) {
 				callback(null, results);
