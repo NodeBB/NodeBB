@@ -20,21 +20,30 @@ var Flags = {
 
 Flags.get = function (flagId, callback) {
 	async.waterfall([
+		// First stage
 		async.apply(async.parallel, {
 			base: async.apply(db.getObject.bind(db), 'flag:' + flagId),
 			history: async.apply(db.getSortedSetRevRange.bind(db), 'flag:' + flagId + ':history', 0, -1),
 			notes: async.apply(db.getSortedSetRevRange.bind(db), 'flag:' + flagId + ':notes', 0, -1)
 		}),
 		function (data, next) {
-			user.getUserFields(data.base.uid, ['username', 'picture'], function (err, userObj) {
+			// Second stage
+			async.parallel({
+				userObj: async.apply(user.getUserFields, data.base.uid, ['username', 'picture']),
+				targetObj: async.apply(Flags.getTarget, data.base.type, data.base.targetId, data.base.uid)
+			}, function (err, payload) {
+				// Final object return construction
 				next(err, Object.assign(data.base, {
+					datetimeISO: new Date(data.base.datetime).toISOString(),
+					target_readable: data.base.type.charAt(0).toUpperCase() + data.base.type.slice(1) + ' ' + data.base.targetId,
+					target: payload.targetObj,
 					history: data.history,
 					notes: data.notes,
 					reporter: {
-						username: userObj.username,
-						picture: userObj.picture,
-						'icon:bgColor': userObj['icon:bgColor'],
-						'icon:text': userObj['icon:text']
+						username: payload.userObj.username,
+						picture: payload.userObj.picture,
+						'icon:bgColor': payload.userObj['icon:bgColor'],
+						'icon:text': payload.userObj['icon:text']
 					}
 				}));
 			});
@@ -100,6 +109,25 @@ Flags.list = function (filters, callback) {
 
 		return callback(null, flags);
 	});
+};
+
+Flags.getTarget = function (type, id, uid, callback) {
+	switch (type) {
+		case 'post':
+			async.waterfall([
+				async.apply(posts.getPostsByPids, [id], uid),
+				function (posts, next) {
+					topics.addPostData(posts, uid, next);
+				}
+			], function (err, posts) {
+				callback(err, posts[0]);
+			});
+			break;
+		
+		case 'user':
+			user.getUsersData(id, callback);
+			break;
+	}
 };
 
 Flags.create = function (type, id, uid, reason, callback) {

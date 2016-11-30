@@ -1,7 +1,13 @@
 {
-    "quick-filters": "Quick Filters",
-    "state": "State",
-    "reporter": "Reporter",
-    "reported-at": "Reported At",
-    "no-flags": "Hooray! No flags found."
+	"quick-filters": "Quick Filters",
+	"state": "State",
+	"reporter": "Reporter",
+	"reported-at": "Reported At",
+	"no-flags": "Hooray! No flags found.",
+
+	"state": "State",
+	"state-open": "New/Open",
+	"state-wip": "Work in Progress",
+	"state-resolved": "Resolved",
+	"state-rejected": "Rejected"
 }
