@@ -4,6 +4,7 @@
 var	assert = require('assert');
 var path = require('path');
 var nconf = require('nconf');
+var request = require('request');
 
 var db = require('./mocks/databasemock');
 var plugins = require('../src/plugins');
@@ -144,6 +145,35 @@ describe('Plugins', function () {
 				assert.ifError(err);
 				assert.equal(pluginData.installed, false);
 				assert.equal(pluginData.active, false);
+				done();
+			});
+		});
+	});
+
+	describe('static assets', function () {
+		it('should 404 if resource does not exist', function (done) {
+			request.get(nconf.get('url') + '/plugins/doesnotexist/should404.tpl', function (err, res, body) {
+				assert.ifError(err);
+				assert.equal(res.statusCode, 404);
+				assert(body);
+				done();
+			});
+		});
+
+		it('should 404 if resource does not exist', function (done) {
+			request.get(nconf.get('url') + '/plugins/nodebb-plugin-dbsearch/dbsearch/templates/admin/plugins/should404.tpl', function (err, res, body) {
+				assert.ifError(err);
+				assert.equal(res.statusCode, 404);
+				assert(body);
+				done();
+			});
+		});
+
+		it('should get resource', function (done) {
+			request.get(nconf.get('url') + '/plugins/nodebb-plugin-dbsearch/dbsearch/templates/admin/plugins/dbsearch.tpl', function (err, res, body) {
+				assert.ifError(err);
+				assert.equal(res.statusCode, 200);
+				assert(body);
 				done();
 			});
 		});
