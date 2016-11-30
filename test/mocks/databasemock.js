@@ -101,11 +101,20 @@
 				meta.configs.init(next);
 			},
 			function (next) {
+				meta.dependencies.check(next);
+			},
+			function (next) {
 				meta.config.postDelay = 0;
 				meta.config.initialPostDelay = 0;
 				meta.config.newbiePostDelay = 0;
 
 				enableDefaultPlugins(next);
+			},
+			function (next) {
+				meta.themes.set({
+					type: 'local',
+					id: 'nodebb-theme-persona'
+				}, next);
 			},
 			function (next) {
 				// nconf defaults, if not set in config

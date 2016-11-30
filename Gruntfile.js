@@ -35,7 +35,6 @@ module.exports = function (grunt) {
 			incomplete.push(compiling);
 		}
 
-		// @psychobunny, re: #5211, instead of this, just call `node app --build js` or `node app --build css,tpl`
 		updateArgs.push('--build');
 		updateArgs.push(incomplete.join(','));
 

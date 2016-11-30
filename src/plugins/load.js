@@ -261,7 +261,7 @@ module.exports = function (Plugins) {
 		}
 
 		var pathToFolder = path.join(__dirname, '../../node_modules/', pluginData.id, pluginData.languages);
-		var defaultLang = pluginData.defaultLang.replace('_', '-').replace('@', '-x-');
+		var defaultLang = (pluginData.defaultLang || 'en_GB').replace('_', '-').replace('@', '-x-');
 
 		utils.walk(pathToFolder, function (err, languages) {
 			if (err) {
@@ -346,9 +346,11 @@ module.exports = function (Plugins) {
 			if (err) {
 				return callback(err);
 			}
+			var pluginData;
+			var packageData;
 			try {
-				var pluginData = JSON.parse(results.plugin);
-				var packageData = JSON.parse(results.package);
+				pluginData = JSON.parse(results.plugin);
+				packageData = JSON.parse(results.package);
 
 				pluginData.id = packageData.name;
 				pluginData.name = packageData.name;
@@ -356,16 +358,15 @@ module.exports = function (Plugins) {
 				pluginData.version = packageData.version;
 				pluginData.repository = packageData.repository;
 				pluginData.nbbpm = packageData.nbbpm;
-
-				callback(null, pluginData);
 			} catch(err) {
 				var pluginDir = pluginPath.split(path.sep);
 				pluginDir = pluginDir[pluginDir.length - 1];
 
 				winston.error('[plugins/' + pluginDir + '] Error in plugin.json or package.json! ' + err.message);
 
-				callback(new Error('[[error:parse-error]]'));
+				return callback(new Error('[[error:parse-error]]'));
 			}
+			callback(null, pluginData);
 		});
 	};
 };

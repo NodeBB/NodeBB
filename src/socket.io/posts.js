@@ -44,7 +44,7 @@ SocketPosts.reply = function (socket, data, callback) {
 
 		callback(null, postData);
 
-		socket.emit('event:new_post', result);
+		websockets.in('uid_' + socket.uid).emit('event:new_post', result);
 
 		user.updateOnlineUsers(socket.uid);
 

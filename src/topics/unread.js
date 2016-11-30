@@ -2,7 +2,6 @@
 'use strict';
 
 var async = require('async');
-var winston = require('winston');
 
 var db = require('../database');
 var user = require('../user');
@@ -277,9 +276,10 @@ module.exports = function (Topics) {
 		], callback);
 	};
 
-	Topics.markTopicNotificationsRead = function (tids, uid) {
+	Topics.markTopicNotificationsRead = function (tids, uid, callback) {
+		callback = callback || function () {};
 		if (!Array.isArray(tids) || !tids.length) {
-			return;
+			return callback();
 		}
 
 		async.waterfall([
@@ -288,23 +288,23 @@ module.exports = function (Topics) {
 			},
 			function (nids, next) {
 				notifications.markReadMultiple(nids, uid, next);
+			},
+			function (next) {
+				user.notifications.pushCount(uid);
+				next();
 			}
-		], function (err) {
-			if (err) {
-				return winston.error(err);
-			}
-			user.notifications.pushCount(uid);
-		});
+		], callback);
 	};
 
 	Topics.markCategoryUnreadForAll = function (tid, callback) {
-		Topics.getTopicField(tid, 'cid', function (err, cid) {
-			if(err) {
-				return callback(err);
+		async.waterfall([
+			function (next) {
+				Topics.getTopicField(tid, 'cid', next);
+			},
+			function (cid, next) {
+				categories.markAsUnreadForAll(cid, next);
 			}
-
-			categories.markAsUnreadForAll(cid, callback);
-		});
+		], callback);
 	};
 
 	Topics.hasReadTopics = function (tids, uid, callback) {
