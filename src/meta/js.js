@@ -16,7 +16,7 @@ module.exports = function (Meta) {
 		scripts: {
 			base: [
 				'./node_modules/jquery/dist/jquery.js',
-				'./node_modules/socket.io-client/socket.io.js',
+				'./node_modules/socket.io-client/dist/socket.io.js',
 				'public/vendor/jquery/timeago/jquery.timeago.js',
 				'public/vendor/jquery/js/jquery.form.min.js',
 				'public/vendor/visibility/visibility.min.js',

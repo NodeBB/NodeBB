@@ -39,47 +39,58 @@ exports.build = function build(targets, callback) {
 exports.buildTargets = function (targets, callback) {
 	var meta = require('./src/meta');
 	buildStart = buildStart || Date.now();
-	var startTime;
-	var step = function (target, next) {
-		winston.info('[build]  => Completed in ' + ((Date.now() - startTime) / 1000) + 's');
+
+	var step = function (startTime, target, next) {
+		winston.info('[build] ' + target + ' => Completed in ' + ((Date.now() - startTime) / 1000) + 's');
 		next();
 	};
-	// eachSeries because it potentially(tm) runs faster on Windows this way
-	async.eachSeries(targets, function (target, next) {
-		switch(target) {
-			case 'js':
+
+	async.parallel([
+		function (next) {
+			if (targets.indexOf('js') !== -1) {
 				winston.info('[build] Building javascript');
-				startTime = Date.now();
+				var startTime = Date.now();
 				async.series([
 					async.apply(meta.js.minify, 'nodebb.min.js'),
 					async.apply(meta.js.minify, 'acp.min.js')
-				], step.bind(this, target, next));
-				break;
-
-			case 'clientCSS':
-				winston.info('[build] Building client-side CSS');
-				startTime = Date.now();
-				meta.css.minify('stylesheet.css', step.bind(this, target, next));
-				break;
-
-			case 'acpCSS':
-				winston.info('[build] Building admin control panel CSS');
-				startTime = Date.now();
-				meta.css.minify('admin.css', step.bind(this, target, next));
-				break;
-
-			case 'tpl':
-				winston.info('[build] Building templates');
-				startTime = Date.now();
-				meta.templates.compile(step.bind(this, target, next));
-				break;
-
-			default:
-				winston.warn('[build] Unknown build target: \'' + target + '\'');
+				], step.bind(this, startTime, 'js', next));
+			} else {
 				setImmediate(next);
-				break;
+			}
+		},
+		function (next) {
+			async.eachSeries(targets, function (target, next) {
+				var startTime;
+				switch(target) {
+					case 'js':
+						setImmediate(next);
+						break;
+					case 'clientCSS':
+						winston.info('[build] Building client-side CSS');
+						startTime = Date.now();
+						meta.css.minify('stylesheet.css', step.bind(this, startTime, target, next));
+						break;
+
+					case 'acpCSS':
+						winston.info('[build] Building admin control panel CSS');
+						startTime = Date.now();
+						meta.css.minify('admin.css', step.bind(this, startTime, target, next));
+						break;
+
+					case 'tpl':
+						winston.info('[build] Building templates');
+						startTime = Date.now();
+						meta.templates.compile(step.bind(this, startTime, target, next));
+						break;
+
+					default:
+						winston.warn('[build] Unknown build target: \'' + target + '\'');
+						setImmediate(next);
+						break;
+				}
+			}, next);
 		}
-	}, function (err) {
+	], function (err) {
 		if (err) {
 			winston.error('[build] Encountered error during build step: ' + err.message);
 			return process.exit(1);

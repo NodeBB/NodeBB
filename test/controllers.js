@@ -703,6 +703,132 @@ describe('Controllers', function () {
 		});
 	});
 
+	describe('account post pages', function () {
+		var helpers = require('./helpers');
+		var jar;
+		before(function (done) {
+			helpers.loginUser('foo', 'barbar', function (err, _jar) {
+				assert.ifError(err);
+				jar = _jar;
+				done();
+			});
+		});
+
+		it('should load /user/foo/posts', function (done) {
+			request(nconf.get('url') + '/api/user/foo/posts', function (err, res, body) {
+				assert.ifError(err);
+				assert.equal(res.statusCode, 200);
+				assert(body);
+				done();
+			});
+		});
+
+		it('should 401 if not logged in', function (done) {
+			request(nconf.get('url') + '/api/user/foo/bookmarks', function (err, res, body) {
+				assert.ifError(err);
+				assert.equal(res.statusCode, 401);
+				assert(body);
+				done();
+			});
+		});
+
+		it('should load /user/foo/bookmarks', function (done) {
+			request(nconf.get('url') + '/api/user/foo/bookmarks', {jar: jar}, function (err, res, body) {
+				assert.ifError(err);
+				assert.equal(res.statusCode, 200);
+				assert(body);
+				done();
+			});
+		});
+
+		it('should load /user/foo/upvoted', function (done) {
+			request(nconf.get('url') + '/api/user/foo/upvoted', {jar: jar}, function (err, res, body) {
+				assert.ifError(err);
+				assert.equal(res.statusCode, 200);
+				assert(body);
+				done();
+			});
+		});
+
+		it('should load /user/foo/downvoted', function (done) {
+			request(nconf.get('url') + '/api/user/foo/downvoted', {jar: jar}, function (err, res, body) {
+				assert.ifError(err);
+				assert.equal(res.statusCode, 200);
+				assert(body);
+				done();
+			});
+		});
+
+		it('should load /user/foo/best', function (done) {
+			request(nconf.get('url') + '/api/user/foo/best', function (err, res, body) {
+				assert.ifError(err);
+				assert.equal(res.statusCode, 200);
+				assert(body);
+				done();
+			});
+		});
+
+		it('should load /user/foo/watched', function (done) {
+			request(nconf.get('url') + '/api/user/foo/watched', {jar: jar}, function (err, res, body) {
+				assert.ifError(err);
+				assert.equal(res.statusCode, 200);
+				assert(body);
+				done();
+			});
+		});
+
+		it('should load /user/foo/topics', function (done) {
+			request(nconf.get('url') + '/api/user/foo/topics', function (err, res, body) {
+				assert.ifError(err);
+				assert.equal(res.statusCode, 200);
+				assert(body);
+				done();
+			});
+		});
+	});
+
+	describe('account follow page', function () {
+		var socketUser = require('../src/socket.io/user');
+		var uid;
+		before(function (done) {
+			user.create({username: 'follower'}, function (err, _uid) {
+				assert.ifError(err);
+				uid = _uid;
+				socketUser.follow({uid: uid}, {uid: fooUid}, done);
+			});
+		});
+
+		it('should get followers page', function (done) {
+			request(nconf.get('url') + '/api/user/foo/followers', {json: true}, function (err, res, body) {
+				assert.ifError(err);
+				assert.equal(res.statusCode, 200);
+				assert.equal(body.users[0].username, 'follower');
+				done();
+			});
+		});
+
+		it('should get following page', function (done) {
+			request(nconf.get('url') + '/api/user/follower/following', {json: true}, function (err, res, body) {
+				assert.ifError(err);
+				assert.equal(res.statusCode, 200);
+				assert.equal(body.users[0].username, 'foo');
+				done();
+			});
+		});
+
+		it('should return empty after unfollow', function (done ) {
+			socketUser.unfollow({uid: uid}, {uid: fooUid}, function (err) {
+				assert.ifError(err);
+				request(nconf.get('url') + '/api/user/foo/followers', {json: true}, function (err, res, body) {
+					assert.ifError(err);
+					assert.equal(res.statusCode, 200);
+					assert.equal(body.users.length, 0);
+					done();
+				});
+			});
+		});
+	});
+
 	after(function (done) {
 		var analytics = require('../src/analytics');
 		analytics.writeData(function (err) {

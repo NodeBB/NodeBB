@@ -150,7 +150,12 @@ if ('undefined' !== typeof window) {
 
 	overrides.overrideTimeago = function () {
 		var timeagoFn = $.fn.timeago;
-		$.timeago.settings.cutoff = 1000 * 60 * 60 * 24 * (parseInt(config.timeagoCutoff, 10) || 60);
+		if (parseInt(config.timeagoCutoff, 10) === 0) {
+			$.timeago.settings.cutoff = 1;
+		} else if (parseInt(config.timeagoCutoff, 10) > 0) {
+			$.timeago.settings.cutoff = 1000 * 60 * 60 * 24 * (parseInt(config.timeagoCutoff, 10) || 30);
+		}
+
 		$.fn.timeago = function () {
 			var els = $(this);
 

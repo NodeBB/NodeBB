@@ -610,7 +610,55 @@ describe('User', function () {
 				});
 			});
 		});
+	});
 
+	describe('socket methods', function () {
+		var socketUser = require('../src/socket.io/user');
+
+		it('should fail with invalid data', function (done) {
+			socketUser.exists({uid: testUid}, null, function (err) {
+				assert.equal(err.message, '[[error:invalid-data]]');
+				done();
+			});
+		});
+
+		it('should return true if user/group exists', function (done) {
+			socketUser.exists({uid: testUid}, {username: 'registered-users'}, function (err, exists) {
+				assert.ifError(err);
+				assert(exists);
+				done();
+			});
+		});
+
+		it('should return true if user/group exists', function (done) {
+			socketUser.exists({uid: testUid}, {username: 'John Smith'}, function (err, exists) {
+				assert.ifError(err);
+				assert(exists);
+				done();
+			});
+		});
+
+		it('should return false if user/group does not exists', function (done) {
+			socketUser.exists({uid: testUid}, {username: 'doesnot exist'}, function (err, exists) {
+				assert.ifError(err);
+				assert(!exists);
+				done();
+			});
+		});
+
+		it('should delete user', function (done) {
+			User.create({username: 'tobedeleted'}, function (err, _uid) {
+				assert.ifError(err);
+				socketUser.deleteAccount({uid: _uid}, {}, function (err) {
+					assert.ifError(err);
+					socketUser.exists({uid: testUid}, {username: 'doesnot exist'}, function (err, exists) {
+						assert.ifError(err);
+						assert(!exists);
+						done();
+					});
+				});
+			});
+		});
 	});
 
 

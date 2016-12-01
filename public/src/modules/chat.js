@@ -258,7 +258,7 @@ define('chat', [
 			Chats.addScrollHandler(chatModal.attr('roomId'), data.uid, chatModal.find('.chat-content'));
 
 			taskbar.push('chat', chatModal.attr('UUID'), {
-				title: data.users.length ? data.users[0].username : '',
+				title: data.roomName || (data.users.length ? data.users[0].username : ''),
 				roomId: data.roomId,
 				icon: 'fa-comment',
 				state: ''
