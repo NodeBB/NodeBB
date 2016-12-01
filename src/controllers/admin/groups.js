@@ -44,7 +44,7 @@ groupsController.list = function (req, res, next) {
 		res.render('admin/manage/groups', {
 			groups: data.groups,
 			pagination: data.pagination,
-			yourid: req.user.uid
+			yourid: req.uid
 		});
 	});
 };

@@ -11,19 +11,30 @@ var privileges = require('../privileges');
 module.exports = function (Categories) {
 
 	Categories.purge = function (cid, uid, callback) {
-		batch.processSortedSet('cid:' + cid + ':tids', function (tids, next) {
-			async.eachLimit(tids, 10, function (tid, next) {
-				topics.purgePostsAndTopic(tid, uid, next);
-			}, next);
-		}, {alwaysStartAt: 0}, function (err) {
-			if (err) {
-				return callback(err);
+		async.waterfall([
+			function (next) {
+				batch.processSortedSet('cid:' + cid + ':tids', function (tids, next) {
+					async.eachLimit(tids, 10, function (tid, next) {
+						topics.purgePostsAndTopic(tid, uid, next);
+					}, next);
+				}, {alwaysStartAt: 0}, next);
+			},
+			function (next) {
+				Categories.getPinnedTids('cid:' + cid + ':tids:pinned', 0, -1, next);
+			},
+			function (pinnedTids, next) {
+				async.eachLimit(pinnedTids, 10, function (tid, next) {
+					topics.purgePostsAndTopic(tid, uid, next);
+				}, next);
+			},
+			function (next) {
+				purgeCategory(cid, next);
+			},
+			function (next) {
+				plugins.fireHook('action:category.delete', cid);
+				next();
 			}
-			async.series([
-				async.apply(purgeCategory, cid),
-				async.apply(plugins.fireHook, 'action:category.delete', cid)
-			], callback);
-		});
+		], callback);
 	};
 
 	function purgeCategory(cid, callback) {
@@ -37,6 +48,7 @@ module.exports = function (Categories) {
 			function (next) {
 				db.deleteAll([
 					'cid:' + cid + ':tids',
+					'cid:' + cid + ':tids:pinned',
 					'cid:' + cid + ':tids:posts',
 					'cid:' + cid + ':pids',
 					'cid:' + cid + ':read_by_uid',
@@ -50,7 +62,9 @@ module.exports = function (Categories) {
 					groups.destroy('cid:' + cid + ':privileges:' + privilege, next);
 				}, next);
 			}
-		], callback);
+		], function (err) {
+			callback(err);
+		});
 	}
 
 	function removeFromParent(cid, callback) {

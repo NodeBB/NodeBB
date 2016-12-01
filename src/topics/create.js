@@ -3,6 +3,7 @@
 
 var async = require('async');
 var validator = require('validator');
+var S = require('string');
 var db = require('../database');
 var utils = require('../../public/src/utils');
 var plugins = require('../plugins');
@@ -89,7 +90,7 @@ module.exports = function (Topics) {
 
 	Topics.post = function (data, callback) {
 		var uid = data.uid;
-		var title = data.title ? data.title.trim() : data.title;
+		var title = String(data.title).trim();
 		data.tags = data.tags || [];
 
 		async.waterfall([
@@ -327,6 +328,11 @@ module.exports = function (Topics) {
 	}
 
 	function check(item, min, max, minError, maxError, callback) {
+		// Trim and remove HTML (latter for composers that send in HTML, like redactor)
+		if (typeof item === 'string') {
+			item = S(item.trim()).stripTags().s;
+		}
+
 		if (!item || item.length < parseInt(min, 10)) {
 			return callback(new Error('[[error:' + minError + ', ' + min + ']]'));
 		} else if (item.length > parseInt(max, 10)) {

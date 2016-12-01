@@ -23,6 +23,8 @@ app.cacheBuster = null;
 	app.load = function () {
 		app.loadProgressiveStylesheet();
 
+		overrides.overrideTimeago();
+
 		var url = ajaxify.start(window.location.pathname.slice(1) + window.location.search + window.location.hash);
 		ajaxify.updateHistory(url, true);
 		ajaxify.parseData();
@@ -52,7 +54,6 @@ app.cacheBuster = null;
 		});
 
 		overrides.overrideBootbox();
-		overrides.overrideTimeago();
 		createHeaderTooltips();
 		app.showEmailConfirmWarning();
 		app.showCookieWarning();
@@ -88,6 +89,14 @@ app.cacheBuster = null;
 
 	app.logout = function () {
 		$(window).trigger('action:app.logout');
+
+		/*
+			Set session refresh flag (otherwise the session check will trip and throw invalid session modal)
+			We know the session is/will be invalid (uid mismatch) because the user is logging out
+		*/
+		app.flags = app.flags || {};
+		app.flags._sessionRefresh = true;
+
 		$.ajax(config.relative_path + '/logout', {
 			type: 'POST',
 			headers: {
@@ -126,6 +135,8 @@ app.cacheBuster = null;
 	};
 
 	app.alertError = function (message, timeout) {
+		message = message.message || message;
+
 		if (message === '[[error:invalid-session]]') {
 			return app.handleInvalidSession();
 		}
@@ -630,18 +641,23 @@ app.cacheBuster = null;
 		} else if (window.localStorage.getItem('cookieconsent') === '1') {
 			return;
 		}
+		require(['translator'], function (translator) {
+			config.cookies.message = translator.unescape(config.cookies.message);
+			config.cookies.dismiss = translator.unescape(config.cookies.dismiss);
+			config.cookies.link = translator.unescape(config.cookies.link);
 
-		templates.parse('partials/cookie-consent', config.cookies, function (html) {
-			$(document.body).append(html);
+			app.parseAndTranslate('partials/cookie-consent', config.cookies, function (html) {
+				$(document.body).append(html);
 
-			var warningEl = $('.cookie-consent');
-			var dismissEl = warningEl.find('button');
-			dismissEl.on('click', function () {
-				// Save consent cookie and remove warning element
-				var now = new Date();
-				window.localStorage.setItem('cookieconsent', '1');
-				warningEl.remove();
+				var warningEl = $('.cookie-consent');
+				var dismissEl = warningEl.find('button');
+				dismissEl.on('click', function () {
+					// Save consent cookie and remove warning element
+					window.localStorage.setItem('cookieconsent', '1');
+					warningEl.remove();
+				});
 			});
 		});
+
 	};
 }());

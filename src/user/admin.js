@@ -28,7 +28,7 @@ module.exports = function (User) {
 	};
 
 	User.getUsersCSV = function (callback) {
-		winston.info('[user/getUsersCSV] Compiling User CSV data');
+		winston.verbose('[user/getUsersCSV] Compiling User CSV data');
 		var csvContent = '';
 		var uids;
 		async.waterfall([

@@ -5,6 +5,7 @@ var fs = require('fs');
 var async = require('async');
 var semver = require('semver');
 var winston = require('winston');
+var colors = require('colors');
 
 var pkg = require('../../package.json');
 
@@ -15,7 +16,7 @@ module.exports = function (Meta) {
 		var modules = Object.keys(pkg.dependencies);
 		var depsOutdated = false;
 		var depsMissing = false;
-		
+
 		winston.verbose('Checking dependencies for outdated modules');
 
 		async.every(modules, function (module, next) {

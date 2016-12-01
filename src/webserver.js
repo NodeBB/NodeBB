@@ -26,7 +26,6 @@ var logger = require('./logger');
 var plugins = require('./plugins');
 var routes = require('./routes');
 var auth = require('./routes/authentication');
-var emitter = require('./emitter');
 var templates = require('templates.js');
 
 var helpers = require('../public/src/modules/helpers');
@@ -62,37 +61,26 @@ module.exports.listen = function (callback) {
 
 	logger.init(app);
 
-	emitter.all(['templates:compiled', 'meta:js.compiled', 'meta:css.compiled'], function () {
-		winston.info('NodeBB Ready');
-		emitter.emit('nodebb:ready');
-
-		listen(callback);
-	});
-
 	initializeNodeBB(function (err) {
 		if (err) {
-			winston.error(err);
-			process.exit();
+			return callback(err);
 		}
-		if (process.send) {
-			process.send({
-				action: 'ready'
-			});
-		}
+
+		winston.info('NodeBB Ready');
+
+		require('./socket.io').server.emit('event:nodebb.ready', {
+			'cache-buster': meta.config['cache-buster']
+		});
+
+		plugins.fireHook('action:nodebb.ready');
+
+		listen(callback);
 	});
 };
 
 function initializeNodeBB(callback) {
 	winston.info('initializing NodeBB ...');
-
-	var skipJS;
-	var fromFile = nconf.get('from-file') || '';
 	var middleware = require('./middleware');
-
-	if (fromFile.match('js')) {
-		winston.info('[minifier] Minifying client-side JS skipped');
-		skipJS = true;
-	}
 
 	async.waterfall([
 		async.apply(meta.themes.setupPaths),
@@ -116,10 +104,9 @@ function initializeNodeBB(callback) {
 		},
 		function (next) {
 			async.series([
-				async.apply(meta.templates.compile),
-				async.apply(!skipJS ? meta.js.minify : meta.js.getFromFile, 'nodebb.min.js'),
-				async.apply(!skipJS ? meta.js.minify : meta.js.getFromFile, 'acp.min.js'),
-				async.apply(meta.css.minify),
+				async.apply(meta.js.getFromFile, 'nodebb.min.js'),
+				async.apply(meta.js.getFromFile, 'acp.min.js'),
+				async.apply(meta.css.getFromFile),
 				async.apply(meta.sounds.init),
 				async.apply(languages.init),
 				async.apply(meta.blacklist.load)

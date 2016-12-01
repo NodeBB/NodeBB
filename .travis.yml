@@ -23,7 +23,6 @@ addons:
     - g++-4.8
 node_js:
     - "6"
-    - "5"
     - "4"
 branches:
     only:

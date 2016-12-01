@@ -1,9 +1,9 @@
-/* global define, jQuery, config, RELATIVE_PATH, utils, window, Promise */
+/* global define, jQuery, config, utils, window, Promise */
 
 (function (factory) {
 	'use strict';
-	function loadClient(language, filename) {
-		return Promise.resolve(jQuery.getJSON(config.relative_path + '/language/' + language + '/' + (filename + '.json?v=' + config['cache-buster'])));
+	function loadClient(language, namespace) {
+		return Promise.resolve(jQuery.getJSON(config.relative_path + '/api/language/' + language + '/' + namespace));
 	}
 	if (typeof define === 'function' && define.amd) {
 		// AMD. Register as a named module
@@ -16,9 +16,9 @@
 			require('promise-polyfill');
 			var languages = require('../../../src/languages');
 
-			function loadServer(language, filename) {
+			function loadServer(language, namespace) {
 				return new Promise(function (resolve, reject) {
-					languages.get(language, filename + '.json', function (err, data) {
+					languages.get(language, namespace, function (err, data) {
 						if (err) {
 							reject(err);
 						} else {
@@ -297,10 +297,10 @@
 			var lang;
 
 			if (typeof window === 'object' && window.config && window.utils) {
-				lang = utils.params().lang || config.userLang || config.defaultLang || 'en_GB';
+				lang = utils.params().lang || config.userLang || config.defaultLang || 'en-GB';
 			} else {
 				var meta = require('../../../src/meta');
-				lang = meta.config.defaultLang || 'en_GB';
+				lang = meta.config.defaultLang || 'en-GB';
 			}
 
 			return lang;
@@ -308,7 +308,7 @@
 
 		/**
 		 * Create and cache a new Translator instance, or return a cached one
-		 * @param {string} [language] - ('en_GB') Language string
+		 * @param {string} [language] - ('en-GB') Language string
 		 * @returns {Translator}
 		 */
 		Translator.create = function create(language) {
@@ -401,8 +401,8 @@
 		/**
 		 * Add translations to the cache
 		 */
-		addTranslation: function addTranslation(language, filename, translation) {
-			Translator.create(language).getTranslation(filename).then(function (translations) {
+		addTranslation: function addTranslation(language, namespace, translation) {
+			Translator.create(language).getTranslation(namespace).then(function (translations) {
 				assign(translations, translation);
 			});
 		},
@@ -410,16 +410,16 @@
 		/**
 		 * Get the translations object
 		 */
-		getTranslations: function getTranslations(language, filename, callback) {
+		getTranslations: function getTranslations(language, namespace, callback) {
 			callback = callback || function () {};
-			Translator.create(language).getTranslation(filename).then(callback);
+			Translator.create(language).getTranslation(namespace).then(callback);
 		},
 
 		/**
 		 * Alias of getTranslations
 		 */
-		load: function load(language, filename, callback) {
-			adaptor.getTranslations(language, filename, callback);
+		load: function load(language, namespace, callback) {
+			adaptor.getTranslations(language, namespace, callback);
 		},
 
 		/**
@@ -437,16 +437,16 @@
 			// and correct NodeBB language codes to timeago codes, if necessary
 			var languageCode = void 0;
 			switch (config.userLang) {
-				case 'en_GB':
-				case 'en_US':
+				case 'en-GB':
+				case 'en-US':
 					languageCode = 'en';
 					break;
 
-				case 'fa_IR':
+				case 'fa-IR':
 					languageCode = 'fa';
 					break;
 
-				case 'pt_BR':
+				case 'pt-BR':
 					languageCode = 'pt-br';
 					break;
 
@@ -454,25 +454,17 @@
 					languageCode = 'no';
 					break;
 
-				case 'zh_TW':
-					languageCode = 'zh-TW';
-					break;
-
-				case 'zh_CN':
-					languageCode = 'zh-CN';
-					break;
-
 				default:
 					languageCode = config.userLang;
 					break;
 			}
 
-			jQuery.getScript(RELATIVE_PATH + '/vendor/jquery/timeago/locales/jquery.timeago.' + languageCode + '.js').done(function () {
+			jQuery.getScript(config.relative_path + '/vendor/jquery/timeago/locales/jquery.timeago.' + languageCode + '.js').done(function () {
 				jQuery('.timeago').timeago();
 				adaptor.timeagoShort = assign({}, jQuery.timeago.settings.strings);
 
 				// Retrieve the shorthand timeago values as well
-				jQuery.getScript(RELATIVE_PATH + '/vendor/jquery/timeago/locales/jquery.timeago.' + languageCode + '-short.js').done(function () {
+				jQuery.getScript(config.relative_path + '/vendor/jquery/timeago/locales/jquery.timeago.' + languageCode + '-short.js').done(function () {
 					// Switch back to long-form
 					adaptor.toggleTimeagoShorthand();
 				});

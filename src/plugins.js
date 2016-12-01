@@ -9,10 +9,10 @@ var express = require('express');
 var nconf = require('nconf');
 
 var db = require('./database');
-var emitter = require('./emitter');
 var utils = require('../public/src/utils');
 var hotswap = require('./hotswap');
 var file = require('./file');
+var languages = require('./languages');
 
 var app;
 var middleware;
@@ -48,9 +48,11 @@ var middleware;
 			return callback();
 		}
 
-		app = nbbApp;
-		middleware = nbbMiddleware;
-		hotswap.prepare(nbbApp);
+		if (nbbApp) {
+			app = nbbApp;
+			middleware = nbbMiddleware;
+			hotswap.prepare(nbbApp);
+		}
 
 		if (global.env === 'development') {
 			winston.verbose('[plugins] Initializing plugins system');
@@ -67,7 +69,6 @@ var middleware;
 			}
 
 			Plugins.initialized = true;
-			emitter.emit('plugins:loaded');
 			callback();
 		});
 	};
@@ -87,35 +88,21 @@ var middleware;
 		async.waterfall([
 			function (next) {
 				// Build language code list
-				fs.readdir(path.join(__dirname, '../public/language'), function (err, directories) {
+				languages.list(function (err, languages) {
 					if (err) {
 						return next(err);
 					}
 
-					Plugins.languageCodes = directories.filter(function (code) {
-						return code !== 'TODO';
+					Plugins.languageCodes = languages.map(function (data) {
+						return data.code;
 					});
 
 					next();
 				});
 			},
-			function (next) {
-				db.getSortedSetRange('plugins:active', 0, -1, next);
-			},
-			function (plugins, next) {
-				if (!Array.isArray(plugins)) {
-					return next();
-				}
-
-				plugins = plugins.filter(function (plugin) {
-					return plugin && typeof plugin === 'string';
-				}).map(function (plugin) {
-					return path.join(__dirname, '../node_modules/', plugin);
-				});
-
-				async.filter(plugins, file.exists, function (plugins) {
-					async.eachSeries(plugins, Plugins.loadPlugin, next);
-				});
+			async.apply(Plugins.getPluginPaths),
+			function (paths, next) {
+				async.eachSeries(paths, Plugins.loadPlugin, next);
 			},
 			function (next) {
 				// If some plugins are incompatible, throw the warning here

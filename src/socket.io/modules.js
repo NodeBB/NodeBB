@@ -114,6 +114,7 @@ SocketModules.chats.loadRoom = function (socket, data, callback) {
 
 			async.parallel({
 				roomData: async.apply(Messaging.getRoomData, data.roomId),
+				canReply: async.apply(Messaging.canReply, data.roomId, socket.uid),
 				users: async.apply(Messaging.getUsersInRoom, data.roomId, 0, -1),
 				messages: async.apply(Messaging.getMessages, {
 					callerUid: socket.uid,
@@ -125,6 +126,7 @@ SocketModules.chats.loadRoom = function (socket, data, callback) {
 		},
 		function (results, next) {
 			results.roomData.users = results.users;
+			results.roomData.canReply = results.canReply;
 			results.roomData.usernames = Messaging.generateUsernames(results.users, socket.uid);
 			results.roomData.messages = results.messages;
 			results.roomData.groupChat = results.roomData.hasOwnProperty('groupChat') ? results.roomData.groupChat : results.users.length > 2;
@@ -243,7 +245,7 @@ SocketModules.chats.markRead = function (socket, roomId, callback) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
 	async.parallel({
-		usersInRoom: async.apply(Messaging.getUidsInRoom, roomId, 0, -1),
+		uidsInRoom: async.apply(Messaging.getUidsInRoom, roomId, 0, -1),
 		markRead: async.apply(Messaging.markRead, socket.uid, roomId)
 	}, function (err, results) {
 		if (err) {
@@ -251,9 +253,14 @@ SocketModules.chats.markRead = function (socket, roomId, callback) {
 		}
 
 		Messaging.pushUnreadCount(socket.uid);
+		server.in('uid_' + socket.uid).emit('event:chats.markedAsRead', {roomId: roomId});
+
+		if (results.uidsInRoom.indexOf(socket.uid.toString()) === -1) {
+			return callback();
+		}
 
 		// Mark notification read
-		var nids = results.usersInRoom.filter(function (uid) {
+		var nids = results.uidsInRoom.filter(function (uid) {
 			return parseInt(uid, 10) !== socket.uid;
 		}).map(function (uid) {
 			return 'chat_' + uid + '_' + roomId;
@@ -263,7 +270,6 @@ SocketModules.chats.markRead = function (socket, roomId, callback) {
 			user.notifications.pushCount(socket.uid);
 		});
 
-		server.in('uid_' + socket.uid).emit('event:chats.markedAsRead', {roomId: roomId});
 		callback();
 	});
 };
@@ -328,13 +334,8 @@ SocketModules.chats.getMessages = function (socket, data, callback) {
 		uid: data.uid,
 		roomId: data.roomId,
 		start: parseInt(data.start, 10) || 0,
-		count: 50,
-		markRead: false
+		count: 50
 	};
-
-	if (data.hasOwnProperty('markRead')) {
-		params.markRead = data.markRead;
-	}
 
 	Messaging.getMessages(params, callback);
 };

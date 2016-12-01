@@ -194,41 +194,7 @@
         $(this).text(inWords(data.datetime));
       } else {
         if ($(this).attr('title').length > 0) {
-            //$(this).text($(this).attr('title'));
-            var languageCode = void 0;
-            switch (config.userLang) {
-              case 'en_GB':
-              case 'en_US':
-                languageCode = 'en';
-                break;
-
-              case 'fa_IR':
-                languageCode = 'fa';
-                break;
-
-              case 'pt_BR':
-                languageCode = 'pt-br';
-                break;
-
-              case 'nb':
-                languageCode = 'no';
-                break;
-
-              case 'zh_TW':
-                languageCode = 'zh-TW';
-                break;
-
-              case 'zh_CN':
-                languageCode = 'zh-CN';
-                break;
-
-              default:
-                languageCode = config.userLang;
-                break;
-            }
-
-            var options = { year: 'numeric', month: 'long', day: 'numeric' };
-            $(this).text(new Date($(this).attr('title')).toLocaleString(languageCode, options));
+            $(this).text($(this).attr('title'));
         }
       }
     }

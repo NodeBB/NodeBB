@@ -74,7 +74,10 @@ module.exports = function (Topics) {
 			function (next) {
 				method2(tid, uid, next);
 			},
-			async.apply(plugins.fireHook, hook, {uid: uid, tid: tid})
+			function (next) {
+				plugins.fireHook(hook, {uid: uid, tid: tid});
+				next();
+			}
 		], callback);
 	}
 

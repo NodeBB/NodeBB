@@ -1,5 +1,7 @@
 "use strict";
 
+/* globals console, require */
+
 var db = require('./database'),
 	async = require('async'),
 	winston = require('winston'),
@@ -10,7 +12,7 @@ var db = require('./database'),
 	schemaDate, thisSchemaDate,
 
 	// IMPORTANT: REMEMBER TO UPDATE VALUE OF latestSchema
-	latestSchema = Date.UTC(2016, 9, 14);
+	latestSchema = Date.UTC(2016, 10, 22);
 
 Upgrade.check = function (callback) {
 	db.get('schemaDate', function (err, value) {
@@ -946,7 +948,117 @@ Upgrade.upgrade = function (callback) {
 				winston.info('[2016/10/14] Creating sorted sets for post replies - skipped!');
 				next();
 			}
-		}
+		},
+		function (next) {
+			thisSchemaDate = Date.UTC(2016, 10, 22);
+
+			if (schemaDate < thisSchemaDate) {
+				updatesMade = true;
+				winston.info('[2016/11/22] Update global and user language keys');
+
+				var user = require('./user');
+				var meta = require('./meta');
+				var batch = require('./batch');
+				var newLanguage;
+				var i = 0;
+				var j = 0;
+				async.parallel([
+					function (next) {
+						meta.configs.get('defaultLang', function (err, defaultLang) {
+							if (err) {
+								return next(err);
+							}
+
+							if (!defaultLang) {
+								return setImmediate(next);
+							}
+
+							newLanguage = defaultLang.replace('_', '-').replace('@', '-x-');
+							if (newLanguage !== defaultLang) {
+								meta.configs.set('defaultLang', newLanguage, next);
+							} else {
+								setImmediate(next);
+							}
+						});
+					},
+					function (next) {
+						batch.processSortedSet('users:joindate', function (ids, next) {
+							async.each(ids, function (uid, next) {
+								async.waterfall([
+									async.apply(db.getObjectField, 'user:' + uid + ':settings', 'userLang'),
+									function (language, next) {
+										++i;
+										if (!language) {
+											return setImmediate(next);
+										}
+
+										newLanguage = language.replace('_', '-').replace('@', '-x-');
+										if (newLanguage !== language) {
+											++j;
+											user.setSetting(uid, 'userLang', newLanguage, next);
+										} else {
+											setImmediate(next);
+										}
+									}
+								], next);
+							}, next);
+						}, next);
+					}
+				], function (err) {
+					if (err) {
+						return next(err);
+					}
+
+					winston.info('[2016/11/22] Update global and user language keys - done (' + i + ' processed, ' + j + ' updated)');
+					Upgrade.update(thisSchemaDate, next);
+				});
+			} else {
+				winston.info('[2016/11/22] Update global and user language keys - skipped!');
+				next();
+			}
+		},
+		function (next) {
+			thisSchemaDate = Date.UTC(2016, 10, 25);
+
+			if (schemaDate < thisSchemaDate) {
+				updatesMade = true;
+				winston.info('[2016/11/25] Creating sorted sets for pinned topcis');
+
+				var topics = require('./topics');
+				var batch = require('./batch');
+				batch.processSortedSet('topics:tid', function (ids, next) {
+					topics.getTopicsFields(ids, ['tid', 'cid', 'pinned', 'lastposttime'], function (err, data) {
+						if (err) {
+							return next(err);
+						}
+
+						data = data.filter(function (topicData) {
+							return parseInt(topicData.pinned, 10) === 1;
+						});
+
+						async.eachSeries(data, function (topicData, next) {
+							console.log('processing tid: ' + topicData.tid);
+
+							async.parallel([
+								async.apply(db.sortedSetAdd, 'cid:' + topicData.cid + ':tids:pinned', Date.now(), topicData.tid),
+								async.apply(db.sortedSetRemove, 'cid:' + topicData.cid + ':tids', topicData.tid),
+								async.apply(db.sortedSetRemove, 'cid:' + topicData.cid + ':tids:posts', topicData.tid)
+							], next);
+						}, next);
+					});
+				}, function (err) {
+					if (err) {
+						return next(err);
+					}
+
+					winston.info('[2016/11/25] Creating sorted sets for pinned topics - done');
+					Upgrade.update(thisSchemaDate, next);
+				});
+			} else {
+				winston.info('[2016/11/25] Creating sorted sets for pinned topics - skipped!');
+				next();
+			}
+		},
 		// Add new schema updates here
 		// IMPORTANT: REMEMBER TO UPDATE VALUE OF latestSchema IN LINE 24!!!
 	], function (err) {

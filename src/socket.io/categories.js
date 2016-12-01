@@ -38,7 +38,7 @@ SocketCategories.get = function (socket, data, callback) {
 
 SocketCategories.getWatchedCategories = function (socket, data, callback) {
 	async.parallel({
-		categories: async.apply(categories.getCategoriesByPrivilege, socket.uid, 'find'),
+		categories: async.apply(categories.getCategoriesByPrivilege, 'cid:0:children', socket.uid, 'find'),
 		ignoredCids: async.apply(user.getIgnoredCategories, socket.uid)
 	}, function (err, results) {
 		if (err) {
@@ -47,6 +47,7 @@ SocketCategories.getWatchedCategories = function (socket, data, callback) {
 		var watchedCategories =  results.categories.filter(function (category) {
 			return category && results.ignoredCids.indexOf(category.cid.toString()) === -1;
 		});
+
 		callback(null, watchedCategories);
 	});
 };
@@ -90,7 +91,7 @@ SocketCategories.loadMore = function (socket, data, callback) {
 			set = 'cid:' + data.cid + ':tids:posts';
 		}
 
-		var start = Math.max(0, parseInt(data.after, 10)) + 1;
+		var start = Math.max(0, parseInt(data.after, 10));
 
 		if (data.direction === -1) {
 			start = start - (reverse ? infScrollTopicsPerPage : -infScrollTopicsPerPage);
@@ -155,6 +156,9 @@ SocketCategories.getMoveCategories = function (socket, data, callback) {
 			async.waterfall([
 				function (next) {
 					db.getSortedSetRange('cid:0:children', 0, -1, next);
+				},
+				function (cids, next) {
+					privileges.categories.filterCids('read', cids, socket.uid, next);
 				},
 				function (cids, next) {
 					categories.getCategories(cids, socket.uid, next);

@@ -57,6 +57,7 @@ var ratelimit = require('../middleware/ratelimit');
 			socket.join('online_guests');
 		}
 
+		socket.join('sess_' + socket.request.signedCookies[nconf.get('sessionKey')]);
 		io.sockets.sockets[socket.id].emit('checkSession', socket.uid);
 	}
 

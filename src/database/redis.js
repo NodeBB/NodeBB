@@ -127,6 +127,9 @@
 	};
 
 	module.info = function (cxn, callback) {
+		if (!cxn) {
+			return callback();
+		}
 		cxn.info(function (err, data) {
 			if (err) {
 				return callback(err);

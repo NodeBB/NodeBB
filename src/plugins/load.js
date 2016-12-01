@@ -1,5 +1,6 @@
 'use strict';
 
+var db = require('../database');
 var fs = require('fs');
 var path = require('path');
 var semver = require('semver');
@@ -14,6 +15,48 @@ var meta = require('../meta');
 
 
 module.exports = function (Plugins) {
+	Plugins.getPluginPaths = function (callback) {
+		async.waterfall([
+			function (next) {
+				db.getSortedSetRange('plugins:active', 0, -1, next);
+			},
+			function (plugins, next) {
+				if (!Array.isArray(plugins)) {
+					return next();
+				}
+
+				plugins = plugins.filter(function (plugin) {
+					return plugin && typeof plugin === 'string';
+				}).map(function (plugin) {
+					return path.join(__dirname, '../../node_modules/', plugin);
+				});
+
+				async.filter(plugins, file.exists, function (plugins) {
+					next(null, plugins);
+				});
+			},
+		], callback);
+	};
+
+	Plugins.prepareForBuild = function (callback) {
+		async.waterfall([
+			async.apply(Plugins.getPluginPaths),
+			function (paths, next) {
+				async.map(paths, function (path, next) {
+					Plugins.loadPluginInfo(path, next);
+				}, next);
+			},
+			function (plugins, next) {
+				async.each(plugins, function (pluginData, next) {
+					async.parallel([
+						async.apply(mapFiles, pluginData, 'css', 'cssFiles'),
+						async.apply(mapFiles, pluginData, 'less', 'lessFiles'),
+						async.apply(mapClientSideScripts, pluginData)
+					], next);
+				}, next);
+			}
+		], callback);
+	};
 
 	Plugins.loadPlugin = function (pluginPath, callback) {
 		Plugins.loadPluginInfo(pluginPath, function (err, pluginData) {
@@ -218,6 +261,7 @@ module.exports = function (Plugins) {
 		}
 
 		var pathToFolder = path.join(__dirname, '../../node_modules/', pluginData.id, pluginData.languages);
+		var defaultLang = (pluginData.defaultLang || 'en_GB').replace('_', '-').replace('@', '-x-');
 
 		utils.walk(pathToFolder, function (err, languages) {
 			if (err) {
@@ -230,7 +274,9 @@ module.exports = function (Plugins) {
 						return next(err);
 					}
 					var data;
-					var route = pathToLang.replace(pathToFolder + '/', '');
+					var language = path.dirname(pathToLang).split(/[\/\\]/).pop().replace('_', '-').replace('@', '-x-');
+					var namespace = path.basename(pathToLang, '.json');
+					var langNamespace = language + '/' + namespace;
 
 					try {
 						data = JSON.parse(file.toString());
@@ -239,18 +285,15 @@ module.exports = function (Plugins) {
 						return next(err);
 					}
 
-					Plugins.customLanguages[route] = Plugins.customLanguages[route] || {};
-					_.extendOwn(Plugins.customLanguages[route], data);
+					Plugins.customLanguages[langNamespace] = Plugins.customLanguages[langNamespace] || {};
+					Object.assign(Plugins.customLanguages[langNamespace], data);
 
-					if (pluginData.defaultLang && pathToLang.endsWith(pluginData.defaultLang + '/' + path.basename(pathToLang))) {
-						Plugins.languageCodes.map(function (code) {
-							if (pluginData.defaultLang !== code) {
-								return code + '/' + path.basename(pathToLang);
-							} else {
-								return null;
-							}
-						}).filter(Boolean).forEach(function (key) {
-							Plugins.customLanguages[key] = _.defaults(Plugins.customLanguages[key] || {}, data);
+					if (defaultLang && defaultLang === language) {
+						Plugins.languageCodes.filter(function (lang) {
+							return defaultLang !== lang;
+						}).forEach(function (lang) {
+							var langNS = lang + '/' + namespace;
+							Plugins.customLanguages[langNS] = Object.assign(Plugins.customLanguages[langNS] || {}, data);
 						});
 					}
 
@@ -303,9 +346,11 @@ module.exports = function (Plugins) {
 			if (err) {
 				return callback(err);
 			}
+			var pluginData;
+			var packageData;
 			try {
-				var pluginData = JSON.parse(results.plugin);
-				var packageData = JSON.parse(results.package);
+				pluginData = JSON.parse(results.plugin);
+				packageData = JSON.parse(results.package);
 
 				pluginData.id = packageData.name;
 				pluginData.name = packageData.name;
@@ -313,16 +358,15 @@ module.exports = function (Plugins) {
 				pluginData.version = packageData.version;
 				pluginData.repository = packageData.repository;
 				pluginData.nbbpm = packageData.nbbpm;
-
-				callback(null, pluginData);
 			} catch(err) {
 				var pluginDir = pluginPath.split(path.sep);
 				pluginDir = pluginDir[pluginDir.length - 1];
 
 				winston.error('[plugins/' + pluginDir + '] Error in plugin.json or package.json! ' + err.message);
 
-				callback(new Error('[[error:parse-error]]'));
+				return callback(new Error('[[error:parse-error]]'));
 			}
+			callback(null, pluginData);
 		});
 	};
 };

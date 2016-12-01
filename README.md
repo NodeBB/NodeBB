@@ -11,16 +11,17 @@
 
 Additional functionality is enabled through the use of third-party plugins.
 
-* [Get NodeBB](http://www.nodebb.org/ "NodeBB")
 * [Demo & Meta Discussion](http://community.nodebb.org)
 * [Documentation & Installation Instructions](http://docs.nodebb.org)
 * [Help translate NodeBB](https://www.transifex.com/projects/p/nodebb/)
 * [NodeBB Blog](http://blog.nodebb.org)
-* [Join us on IRC](https://kiwiirc.com/client/irc.freenode.net/nodebb) - #nodebb on Freenode
+* [Premium Hosting for NodeBB](http://www.nodebb.org/ "NodeBB")
 * [Follow us on Twitter](http://www.twitter.com/NodeBB/ "NodeBB Twitter")
 * [Like us on Facebook](http://www.facebook.com/NodeBB/ "NodeBB Facebook")
 
 ## Screenshots
+
+NodeBB's theming engine is highly flexible and does not restrict your design choices. Check out some themed installs in these screenshots below:
 
 [![](http://i.imgur.com/VCoOFyqb.png)](http://i.imgur.com/VCoOFyq.png)
 [![](http://i.imgur.com/FLOUuIqb.png)](http://i.imgur.com/FLOUuIq.png)
@@ -30,6 +31,8 @@ Additional functionality is enabled through the use of third-party plugins.
 [![](http://i.imgur.com/AaRRrU2b.png)](http://i.imgur.com/AaRRrU2.png)
 [![](http://i.imgur.com/LmHtPhob.png)](http://i.imgur.com/LmHtPho.png)
 [![](http://i.imgur.com/paiJPJkb.jpg)](http://i.imgur.com/paiJPJk.jpg)
+
+Our minimalist "Persona" theme gets you going right away, no coding experience required.
 
 [![](http://i.imgur.com/HwNEXGu.png)](http://i.imgur.com/HwNEXGu.png)
 [![](http://i.imgur.com/II1byYs.png)](http://i.imgur.com/II1byYs.png)
@@ -47,7 +50,7 @@ Additional functionality is enabled through the use of third-party plugins.
 
 NodeBB requires the following software to be installed:
 
-* A version of Node.js at least 4 or greater
+* A version of Node.js at least 4 or greater ([installation/upgrade instructions](https://github.com/nodesource/distributions))
 * Redis, version 2.8.9 or greater **or** MongoDB, version 2.6 or greater
 * nginx, version 1.3.13 or greater (**only if** intending to use nginx to proxy requests to a NodeBB)
 

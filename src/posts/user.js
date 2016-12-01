@@ -84,7 +84,6 @@ module.exports = function (Posts) {
 					}
 
 					userData.custom_profile_info = results.customProfileInfo.profile;
-					userData.signature = sanitizeSignature(userData.signature);
 
 					plugins.fireHook('filter:posts.modifyUserInfo', userData, next);
 				});
@@ -129,18 +128,3 @@ module.exports = function (Posts) {
 		});
 	};
 };
-
-function sanitizeSignature(signature) {
-	var	string = require('string')(signature),
-		tagsToStrip = [];
-
-	if (parseInt(meta.config['signatures:disableLinks'], 10) === 1) {
-		tagsToStrip.push('a');
-	}
-
-	if (parseInt(meta.config['signatures:disableImages'], 10) === 1) {
-		tagsToStrip.push('img');
-	}
-
-	return tagsToStrip.length ? string.stripTags.apply(string, tagsToStrip).s : signature;
-}

@@ -12,6 +12,7 @@ var categories = require('../categories');
 var privileges = require('../privileges');
 var plugins = require('../plugins');
 var widgets = require('../widgets');
+var translator = require('../../public/src/modules/translator');
 var accountHelpers = require('../controllers/accounts/helpers');
 
 var apiController = {};
@@ -52,7 +53,7 @@ apiController.getConfig = function (req, res, next) {
 	config.maximumFileSize = meta.config.maximumFileSize;
 	config['theme:id'] = meta.config['theme:id'];
 	config['theme:src'] = meta.config['theme:src'];
-	config.defaultLang = meta.config.defaultLang || 'en_GB';
+	config.defaultLang = meta.config.defaultLang || 'en-GB';
 	config.userLang = req.query.lang ? validator.escape(String(req.query.lang)) : config.defaultLang;
 	config.loggedIn = !!req.user;
 	config['cache-buster'] = meta.config['cache-buster'] || '';
@@ -63,11 +64,14 @@ apiController.getConfig = function (req, res, next) {
 	config.searchEnabled = plugins.hasListeners('filter:search.query');
 	config.bootswatchSkin = 'default';
 
+	var timeagoCutoff = meta.config.timeagoCutoff === undefined ? 30 : meta.config.timeagoCutoff;
+	config.timeagoCutoff = timeagoCutoff !== '' ? Math.max(0, parseInt(timeagoCutoff, 10)) : timeagoCutoff;
+
 	config.cookies = {
 		enabled: parseInt(meta.config.cookieConsentEnabled, 10) === 1,
-		message: meta.config.cookieConsentMessage || '[[global:cookies.message]]',
-		dismiss: meta.config.cookieConsentDismiss || '[[global:cookies.accept]]',
-		link: meta.config.cookieConsentLink || '[[global:cookies.learn_more]]'
+		message: translator.escape(meta.config.cookieConsentMessage || '[[global:cookies.message]]').replace(/\\/g, '\\\\'),
+		dismiss: translator.escape(meta.config.cookieConsentDismiss || '[[global:cookies.accept]]').replace(/\\/g, '\\\\'),
+		link: translator.escape(meta.config.cookieConsentLink || '[[global:cookies.learn_more]]').replace(/\\/g, '\\\\')
 	};
 
 	async.waterfall([

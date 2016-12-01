@@ -88,3 +88,30 @@ div.categories {
 	}
 
 }
+
+.category {
+	.privilege-table {
+		tr > th:first-child {
+			min-width: 150px;
+		}
+
+		.privilege-table-header {
+			background: white;
+
+			th {
+				text-align: center;
+				border-top: 0;
+				text-transform: uppercase;
+				font-size: 9px;
+			}
+
+			.arrowed:after {
+				border-bottom: 1px dashed #ccc;
+				content: "";
+				width: 100%;
+				display: block;
+				padding-top: 5px;
+			}
+		}
+	}
+}

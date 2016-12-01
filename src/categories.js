@@ -67,16 +67,7 @@ var privileges = require('./privileges');
 	};
 
 	Categories.isIgnored = function (cids, uid, callback) {
-		user.getIgnoredCategories(uid, function (err, ignoredCids) {
-			if (err) {
-				return callback(err);
-			}
-
-			cids = cids.map(function (cid) {
-				return ignoredCids.indexOf(cid.toString()) !== -1;
-			});
-			callback(null, cids);
-		});
+		db.isSortedSetMembers('uid:' + uid + ':ignored:cids', cids, callback);
 	};
 
 	Categories.getPageCount = function (cid, uid, callback) {

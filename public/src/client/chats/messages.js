@@ -27,6 +27,7 @@ define('forum/chats/messages', ['components', 'sounds', 'translator'], function 
 				message: msg
 			}, function (err) {
 				if (err) {
+					inputEl.val(msg);
 					if (err.message === '[[error:email-not-confirmed-chat]]') {
 						return app.showEmailConfirmWarning(err);
 					}
@@ -42,6 +43,8 @@ define('forum/chats/messages', ['components', 'sounds', 'translator'], function 
 				message: msg
 			}, function (err) {
 				if (err) {
+					inputEl.val(msg);
+					inputEl.attr('data-mid', mid);
 					return app.alertError(err.message);
 				}
 			});

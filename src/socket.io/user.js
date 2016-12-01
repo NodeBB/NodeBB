@@ -1,6 +1,6 @@
 'use strict';
 
-var	async = require('async');
+var async = require('async');
 var winston = require('winston');
 
 var user = require('../user');
@@ -13,6 +13,7 @@ var events = require('../events');
 var emailer = require('../emailer');
 var db = require('../database');
 var apiController = require('../controllers/api');
+var privileges = require('../privileges');
 
 var SocketUser = {};
 
@@ -45,7 +46,7 @@ SocketUser.deleteAccount = function (socket, data, callback) {
 			user.deleteAccount(socket.uid, next);
 		},
 		function (next) {
-			socket.broadcast.emit('event:user_status_change', {uid: socket.uid, status: 'offline'});
+			require('./index').server.sockets.emit('event:user_status_change', {uid: socket.uid, status: 'offline'});
 
 			events.log({
 				type: 'user-delete',
@@ -211,10 +212,7 @@ SocketUser.saveSettings = function (socket, data, callback) {
 
 	async.waterfall([
 		function (next) {
-			if (socket.uid === parseInt(data.uid, 10)) {
-				return next(null, true);
-			}
-			user.isAdminOrGlobalMod(socket.uid, next);
+			privileges.users.canEdit(socket.uid, data.uid, next);
 		},
 		function (allowed, next) {
 			if (!allowed) {
@@ -326,7 +324,7 @@ SocketUser.setModerationNote = function (socket, data, callback) {
 
 	async.waterfall([
 		function (next) {
-			user.isAdminOrGlobalMod(socket.uid, next);
+			privileges.users.canEdit(socket.uid, data.uid, next);
 		},
 		function (allowed, next) {
 			if (allowed) {

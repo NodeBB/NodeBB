@@ -6,9 +6,7 @@ var path = require('path');
 var async = require('async');
 var nconf = require('nconf');
 var fs = require('fs');
-var file = require('../file');
 var plugins = require('../plugins');
-var emitter = require('../emitter');
 var utils = require('../../public/src/utils');
 
 module.exports = function (Meta) {
@@ -89,47 +87,30 @@ module.exports = function (Meta) {
 
 	Meta.js.bridgeModules = function (app, callback) {
 		// Add routes for AMD-type modules to serve those files
-		var numBridged = 0,
-			addRoute = function (relPath) {
-				var relativePath = nconf.get('relative_path');
+		function addRoute(relPath) {
+			var relativePath = nconf.get('relative_path');
 
-				app.get(relativePath + '/src/modules/' + relPath, function (req, res) {
-					return res.sendFile(path.join(__dirname, '../../', Meta.js.scripts.modules[relPath]), {
-						maxAge: app.enabled('cache') ? 5184000000 : 0
-					});
+			app.get(relativePath + '/src/modules/' + relPath, function (req, res) {
+				return res.sendFile(path.join(__dirname, '../../', Meta.js.scripts.modules[relPath]), {
+					maxAge: app.enabled('cache') ? 5184000000 : 0
 				});
-			};
+			});
+		}
 
-		async.series([
-			function (next) {
-				for(var relPath in Meta.js.scripts.modules) {
-					if (Meta.js.scripts.modules.hasOwnProperty(relPath)) {
-						addRoute(relPath);
-						++numBridged;
-					}
-				}
+		var numBridged = 0;
 
-				next();
+		for(var relPath in Meta.js.scripts.modules) {
+			if (Meta.js.scripts.modules.hasOwnProperty(relPath)) {
+				addRoute(relPath);
+				++numBridged;
 			}
-		], function (err) {
-			if (err) {
-				winston.error('[meta/js] Encountered error while bridging modules:' + err.message);
-			}
+		}
 
-			winston.verbose('[meta/js] ' + numBridged + ' of ' + Object.keys(Meta.js.scripts.modules).length + ' modules bridged');
-			callback(err);
-		});
+		winston.verbose('[meta/js] ' + numBridged + ' of ' + Object.keys(Meta.js.scripts.modules).length + ' modules bridged');
+		callback();
 	};
 
 	Meta.js.minify = function (target, callback) {
-		if (nconf.get('isPrimary') !== 'true') {
-			if (typeof callback === 'function') {
-				callback();
-			}
-
-			return;
-		}
-
 		winston.verbose('[meta/js] Minifying ' + target);
 
 		var forkProcessParams = setupDebugging();
@@ -137,7 +118,10 @@ module.exports = function (Meta) {
 
 		Meta.js.target[target] = {};
 
-		Meta.js.prepare(target, function () {
+		Meta.js.prepare(target, function (err) {
+			if (err) {
+				return callback(err);
+			}
 			minifier.send({
 				action: 'js',
 				minify: global.env !== 'development',
@@ -153,24 +137,10 @@ module.exports = function (Meta) {
 				winston.verbose('[meta/js] ' + target + ' minification complete');
 				minifier.kill();
 
-				if (process.send && Meta.js.target['nodebb.min.js'] && Meta.js.target['acp.min.js']) {
-					process.send({
-						action: 'js-propagate',
-						data: Meta.js.target
-					});
-				}
-
 				if (nconf.get('local-assets') === undefined || nconf.get('local-assets') !== false) {
-					return Meta.js.commitToFile(target, function () {
-						if (typeof callback === 'function') {
-							callback();
-						}
-					});
+					return Meta.js.commitToFile(target, callback);
 				} else {
-					emitter.emit('meta:js.compiled');
-					if (typeof callback === 'function') {
-						return callback();
-					}
+					return callback();
 				}
 
 				break;
@@ -178,11 +148,7 @@ module.exports = function (Meta) {
 				winston.error('[meta/js] Could not compile ' + target + ': ' + message.message);
 				minifier.kill();
 
-				if (typeof callback === 'function') {
-					callback(new Error(message.message));
-				} else {
-					process.exit(0);
-				}
+				callback(new Error(message.message));
 				break;
 			}
 		});
@@ -236,51 +202,44 @@ module.exports = function (Meta) {
 
 	Meta.js.commitToFile = function (target, callback) {
 		fs.writeFile(path.join(__dirname, '../../public/' + target), Meta.js.target[target].cache, function (err) {
-			if (err) {
-				winston.error('[meta/js] ' + err.message);
-				process.exit(0);
-			}
-
-			emitter.emit('meta:js.compiled');
-			callback();
+			callback(err);
 		});
 	};
 
 	Meta.js.getFromFile = function (target, callback) {
-		var scriptPath = path.join(__dirname, '../../public/' + target),
-			mapPath = path.join(__dirname, '../../public/' + target + '.map'),
-			paths = [scriptPath];
-
-		file.exists(scriptPath, function (exists) {
-			if (!exists) {
-				winston.warn('[meta/js] ' + target + ' not found on disk, re-minifying');
-				Meta.js.minify(target, callback);
-				return;
-			}
-
-			if (nconf.get('isPrimary') !== 'true') {
-				return callback();
-			}
-
-			file.exists(mapPath, function (exists) {
-				if (exists) {
-					paths.push(mapPath);
-				}
-
-				async.map(paths, fs.readFile, function (err, files) {
-					if (err) {
-						return callback(err);
+		function readFile(filePath, next) {
+			fs.readFile(filePath, function (err, contents) {
+				if (err) {
+					if (err.code === 'ENOENT') {
+						if (!filePath.endsWith('.map')) {
+							winston.warn('[meta/js] ' + filePath + ' not found on disk, did you run ./nodebb build?');
+						}
+						return next(null, '');
 					}
-
-					Meta.js.target[target] = {
-						cache: files[0],
-						map: files[1] || ''
-					};
-
-					emitter.emit('meta:js.compiled');
-					callback();
-				});
+				}
+				next(err, contents);
 			});
+		}
+
+		var scriptPath = path.join(nconf.get('base_dir'), 'public/' + target);
+		var mapPath = path.join(nconf.get('base_dir'), 'public/' + target + '.map');
+
+		async.parallel({
+			script: function (next) {
+				readFile(scriptPath, next);
+			},
+			map: function (next) {
+				readFile(mapPath, next);
+			}
+		}, function (err, results) {
+			if (err) {
+				return callback(err);
+			}
+			Meta.js.target[target] = {
+				cache: results.script,
+				map: results.map
+			};
+			callback();
 		});
 	};
 

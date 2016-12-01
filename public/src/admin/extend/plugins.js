@@ -1,7 +1,7 @@
 "use strict";
 /* global define, app, socket, bootbox */
 
-define('admin/extend/plugins', function () {
+define('admin/extend/plugins', ['jqueryui'], function (jqueryui) {
 	var Plugins = {};
 	Plugins.init = function () {
 		var pluginsList = $('.plugins'),

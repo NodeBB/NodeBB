@@ -139,7 +139,7 @@ define('forum/category', [
 
 				$('[component="category"]').empty();
 
-				loadTopicsAfter(Math.max(0, bookmarkIndex - 1), 1, function () {
+				loadTopicsAfter(Math.max(0, bookmarkIndex - 1) + 1, 1, function () {
 					Category.scrollToTopic(bookmarkIndex, clickedIndex, 0);
 				});
 			}
@@ -261,7 +261,7 @@ define('forum/category', [
 
 		var topics = $('[component="category/topic"]');
 		var afterEl = direction > 0 ? topics.last() : topics.first();
-		var after = parseInt(afterEl.attr('data-index'), 10) || 0;
+		var after = (parseInt(afterEl.attr('data-index'), 10) || 0) + 1;
 
 		loadTopicsAfter(after, direction);
 	};

@@ -11,61 +11,67 @@ module.exports = function (SocketTopics) {
 		if (!Array.isArray(tids) || !socket.uid) {
 			return callback(new Error('[[error:invalid-data]]'));
 		}
+		async.waterfall([
+			function (next) {
+				topics.markAsRead(tids, socket.uid, next);
+			},
+			function (hasMarked, next) {
+				if (hasMarked) {
+					topics.pushUnreadCount(socket.uid);
 
-		topics.markAsRead(tids, socket.uid, function (err) {
-			if (err) {
-				return callback(err);
+					topics.markTopicNotificationsRead(tids, socket.uid);
+				}
+				next();
 			}
-
-			topics.pushUnreadCount(socket.uid);
-
-			topics.markTopicNotificationsRead(tids, socket.uid);
-
-			callback();
-		});
+		], callback);
 	};
 
 	SocketTopics.markTopicNotificationsRead = function (socket, tids, callback) {
 		if (!Array.isArray(tids) || !socket.uid) {
 			return callback(new Error('[[error:invalid-data]]'));
 		}
-		topics.markTopicNotificationsRead(tids, socket.uid);
+		topics.markTopicNotificationsRead(tids, socket.uid, callback);
 	};
 
 	SocketTopics.markAllRead = function (socket, data, callback) {
-		topics.markAllRead(socket.uid, function (err) {
-			if (err) {
-				return callback(err);
+		if (!socket.uid) {
+			return callback(new Error('[[error:invalid-uid]]'));
+		}
+		async.waterfall([
+			function (next) {
+				topics.markAllRead(socket.uid, next);
+			},
+			function (next) {
+				topics.pushUnreadCount(socket.uid);
+				next();
 			}
-
-			topics.pushUnreadCount(socket.uid);
-
-			callback();
-		});
+		], callback);
 	};
 
 	SocketTopics.markCategoryTopicsRead = function (socket, cid, callback) {
-		topics.getUnreadTids(cid, socket.uid, '', function (err, tids) {
-			if (err) {
-				return callback(err);
+		async.waterfall([
+			function (next) {
+				topics.getUnreadTids(cid, socket.uid, '', next);
+			},
+			function (tids, next) {
+				SocketTopics.markAsRead(socket, tids, next);
 			}
-
-			SocketTopics.markAsRead(socket, tids, callback);
-		});
+		], callback);
 	};
 
 	SocketTopics.markUnread = function (socket, tid, callback) {
 		if (!tid || !socket.uid) {
 			return callback(new Error('[[error:invalid-data]]'));
 		}
-		topics.markUnread(tid, socket.uid, function (err) {
-			if (err) {
-				return callback(err);
+		async.waterfall([
+			function (next) {
+				topics.markUnread(tid, socket.uid, next);
+			},
+			function (next) {
+				topics.pushUnreadCount(socket.uid);
+				next();
 			}
-
-			topics.pushUnreadCount(socket.uid);
-			callback();
-		});
+		], callback);
 	};
 
 	SocketTopics.markAsUnreadForAll = function (socket, tids, callback) {
@@ -77,42 +83,41 @@ module.exports = function (SocketTopics) {
 			return callback(new Error('[[error:no-privileges]]'));
 		}
 
-		user.isAdministrator(socket.uid, function (err, isAdmin) {
-			if (err) {
-				return callback(err);
-			}
-
-			async.each(tids, function (tid, next) {
-				async.waterfall([
-					function (next) {
-						topics.exists(tid, next);
-					},
-					function (exists, next) {
-						if (!exists) {
-							return next(new Error('[[error:invalid-tid]]'));
+		async.waterfall([
+			function (next) {
+				user.isAdministrator(socket.uid, next);
+			},
+			function (isAdmin, next) {
+				async.each(tids, function (tid, next) {
+					async.waterfall([
+						function (next) {
+							topics.exists(tid, next);
+						},
+						function (exists, next) {
+							if (!exists) {
+								return next(new Error('[[error:no-topic]]'));
+							}
+							topics.getTopicField(tid, 'cid', next);
+						},
+						function (cid, next) {
+							user.isModerator(socket.uid, cid, next);
+						},
+						function (isMod, next) {
+							if (!isAdmin && !isMod) {
+								return next(new Error('[[error:no-privileges]]'));
+							}
+							topics.markAsUnreadForAll(tid, next);
+						},
+						function (next) {
+							topics.updateRecent(tid, Date.now(), next);
 						}
-						topics.getTopicField(tid, 'cid', next);
-					},
-					function (cid, next) {
-						user.isModerator(socket.uid, cid, next);
-					},
-					function (isMod, next) {
-						if (!isAdmin && !isMod) {
-							return next(new Error('[[error:no-privileges]]'));
-						}
-						topics.markAsUnreadForAll(tid, next);
-					},
-					function (next) {
-						topics.updateRecent(tid, Date.now(), next);
-					}
-				], next);
-			}, function (err) {
-				if (err) {
-					return callback(err);
-				}
+					], next);
+				}, next);
+			},
+			function (next) {
 				topics.pushUnreadCount(socket.uid);
-				callback();
-			});
-		});
+				next();
+			}
+		], callback);
 	};
 };

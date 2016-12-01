@@ -51,6 +51,9 @@ module.exports = function (redisClient, module) {
 
 	module.sortedSetRemove = function (key, value, callback) {
 		callback = callback || function () {};
+		if (!value) {
+			return callback();
+		}
 		if (!Array.isArray(value)) {
 			value = [value];
 		}

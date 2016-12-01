@@ -124,6 +124,16 @@
 	}
 
 	function setupRestartLinks() {
+		$('.reload').off('click').on('click', function () {
+			bootbox.confirm('Are you sure you wish to reload NodeBB?', function (confirm) {
+				if (confirm) {
+					require(['admin/modules/instance'], function (instance) {
+						instance.reload();
+					});
+				}
+			});
+		});
+
 		$('.restart').off('click').on('click', function () {
 			bootbox.confirm('Are you sure you wish to restart NodeBB?', function (confirm) {
 				if (confirm) {
@@ -133,13 +143,7 @@
 				}
 			});
 		});
-
-		$('.reload').off('click').on('click', function () {
-			require(['admin/modules/instance'], function (instance) {
-				instance.reload();
-			});
-		});
-	}
+	};
 
 	function launchSnackbar(params) {
 		var message = (params.title ? "<strong>" + params.title + "</strong>" : '') + (params.message ? params.message : '');
@@ -148,7 +152,7 @@
 			translator.translate(message, function (html) {
 				var bar = $.snackbar({
 					content: html,
-					timeout: 3000,
+					timeout: params.timeout || 3000,
 					htmlAllowed: true
 				});
 

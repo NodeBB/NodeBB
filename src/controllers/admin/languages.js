@@ -13,7 +13,7 @@ languagesController.get = function (req, res, next) {
 		}
 
 		languages.forEach(function (language) {
-			language.selected = language.code === (meta.config.defaultLang || 'en_GB');
+			language.selected = language.code === (meta.config.defaultLang || 'en-GB');
 		});
 
 		res.render('admin/general/languages', {

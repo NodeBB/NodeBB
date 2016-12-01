@@ -56,13 +56,14 @@ chatsController.get = function (req, res, callback) {
 			}
 			async.parallel({
 				users: async.apply(messaging.getUsersInRoom, req.params.roomid, 0, -1),
+				canReply: async.apply(messaging.canReply, req.params.roomid, req.uid),
+				room: async.apply(messaging.getRoomData, req.params.roomid),
 				messages: async.apply(messaging.getMessages, {
 					callerUid: req.uid,
 					uid: uid,
 					roomId: req.params.roomid,
 					isNew: false
-				}),
-				room: async.apply(messaging.getRoomData, req.params.roomid)
+				})
 			}, next);
 		}
 	], function (err, data) {
@@ -77,6 +78,7 @@ chatsController.get = function (req, res, callback) {
 			return user && parseInt(user.uid, 10) && parseInt(user.uid, 10) !== req.uid;
 		});
 
+		room.canReply = data.canReply;
 		room.groupChat = room.hasOwnProperty('groupChat') ? room.groupChat : room.users.length > 2;
 		room.rooms = recentChats.rooms;
 		room.uid = uid;

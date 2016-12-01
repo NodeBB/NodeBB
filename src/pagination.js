@@ -22,7 +22,10 @@ pagination.create = function (currentPage, pageCount, queryObj) {
 	var previous = Math.max(1, currentPage - 1);
 	var next = Math.min(pageCount, currentPage + 1);
 
-	var startPage = currentPage - 2;
+	var startPage = Math.max(1, currentPage - 2);
+	if (startPage > pageCount - 5) {
+		startPage -= 2 - (pageCount - currentPage);
+	}
 	for(var i = 0; i < 5; ++i) {
 		pagesToShow.push(startPage + i);
 	}
@@ -43,7 +46,9 @@ pagination.create = function (currentPage, pageCount, queryObj) {
 	});
 
 	for (i = pages.length - 1; i > 0; --i) {
-		if (pages[i - 1].page !== pages[i].page - 1) {
+		if (pages[i].page - 2 === pages[i - 1].page) {
+			pages.splice(i, 0, {page: pages[i].page - 1, active: false, qs: qs.stringify(queryObj)});
+		} else if (pages[i].page - 1 !== pages[i - 1].page) {
 			pages.splice(i, 0, {separator: true});
 		}
 	}

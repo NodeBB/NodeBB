@@ -11,6 +11,7 @@ var Topics = require('../src/topics');
 var Categories = require('../src/categories');
 var Meta = require('../src/meta');
 var Password = require('../src/password');
+var groups = require('../src/groups');
 var helpers = require('./helpers');
 
 describe('User', function () {
@@ -19,7 +20,7 @@ describe('User', function () {
 	var testCid;
 
 	before(function (done) {
-		var groups = require('../src/groups');
+
 		groups.resetCache();
 
 		Categories.create({
@@ -522,6 +523,44 @@ describe('User', function () {
 				done();
 			});
 		});
+
+		it('should load edit page', function (done) {
+			request(nconf.get('url') + '/api/user/updatedagain/edit', {jar: jar, json: true}, function (err, res, body) {
+				assert.ifError(err);
+				assert.equal(res.statusCode, 200);
+				assert(body);
+				done();
+			});
+		});
+
+		it('should load edit/email page', function (done) {
+			request(nconf.get('url') + '/api/user/updatedagain/edit/email', {jar: jar, json: true}, function (err, res, body) {
+				assert.ifError(err);
+				assert.equal(res.statusCode, 200);
+				assert(body);
+				done();
+			});
+		});
+
+		it('should load user\'s groups page', function (done) {
+			groups.create({
+				name: 'Test',
+				description: 'Foobar!'
+			}, function (err) {
+				assert.ifError(err);
+				groups.join('Test', uid, function (err) {
+					assert.ifError(err);
+					request(nconf.get('url') + '/api/user/updatedagain/groups', {jar: jar, json: true}, function (err, res, body) {
+						assert.ifError(err);
+						assert.equal(res.statusCode, 200);
+						assert(Array.isArray(body.groups));
+						assert.equal(body.groups[0].name, 'Test');
+						done();
+					});
+				});
+			});
+
+		});
 	});
 
 	describe('.getModerationHistory', function () {
@@ -552,7 +591,75 @@ describe('User', function () {
 		});
 	});
 
+	describe('digests', function () {
+		var uid;
+		before(function (done) {
+			User.create({username: 'digestuser', email: 'test@example.com'}, function (err, _uid) {
+				assert.ifError(err);
+				uid = _uid;
+				done();
+			});
+		});
 
+		it('should send digests', function (done) {
+			User.updateDigestSetting(uid, 'day', function (err) {
+				assert.ifError(err);
+					User.digest.execute('day', function (err) {
+					assert.ifError(err);
+					done();
+				});
+			});
+		});
+	});
+
+	describe('socket methods', function () {
+		var socketUser = require('../src/socket.io/user');
+
+		it('should fail with invalid data', function (done) {
+			socketUser.exists({uid: testUid}, null, function (err) {
+				assert.equal(err.message, '[[error:invalid-data]]');
+				done();
+			});
+		});
+
+		it('should return true if user/group exists', function (done) {
+			socketUser.exists({uid: testUid}, {username: 'registered-users'}, function (err, exists) {
+				assert.ifError(err);
+				assert(exists);
+				done();
+			});
+		});
+
+		it('should return true if user/group exists', function (done) {
+			socketUser.exists({uid: testUid}, {username: 'John Smith'}, function (err, exists) {
+				assert.ifError(err);
+				assert(exists);
+				done();
+			});
+		});
+
+		it('should return false if user/group does not exists', function (done) {
+			socketUser.exists({uid: testUid}, {username: 'doesnot exist'}, function (err, exists) {
+				assert.ifError(err);
+				assert(!exists);
+				done();
+			});
+		});
+
+		it('should delete user', function (done) {
+			User.create({username: 'tobedeleted'}, function (err, _uid) {
+				assert.ifError(err);
+				socketUser.deleteAccount({uid: _uid}, {}, function (err) {
+					assert.ifError(err);
+					socketUser.exists({uid: testUid}, {username: 'doesnot exist'}, function (err, exists) {
+						assert.ifError(err);
+						assert(!exists);
+						done();
+					});
+				});
+			});
+		});
+	});
 
 
 	after(function (done) {

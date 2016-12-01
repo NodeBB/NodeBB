@@ -104,7 +104,7 @@ Controllers.login = function (req, res, next) {
 	var registrationType = meta.config.registrationType || 'normal';
 
 	var allowLoginWith = (meta.config.allowLoginWith || 'username-email');
-	var returnTo = (req.headers['x-return-to'] || '').replace(nconf.get('url'), '');
+	var returnTo = (req.headers['x-return-to'] || '').replace(nconf.get('base_url'), '');
 
 	var errorText;
 	if (req.query.error === 'csrf-invalid') {
@@ -132,7 +132,7 @@ Controllers.login = function (req, res, next) {
 				external: data.authentication[0].url
 			});
 		} else {
-			return res.redirect(data.authentication[0].url);
+			return res.redirect(nconf.get('relative_path') + data.authentication[0].url);
 		}
 	}
 	if (req.uid) {
@@ -351,7 +351,7 @@ Controllers.ping = function (req, res) {
 
 Controllers.handle404 = function (req, res) {
 	var relativePath = nconf.get('relative_path');
-	var isLanguage = new RegExp('^' + relativePath + '/language/.*/.*.json');
+	var isLanguage = new RegExp('^' + relativePath + '/api/language/.*/.*');
 	var isClientScript = new RegExp('^' + relativePath + '\\/src\\/.+\\.js');
 
 	if (plugins.hasListeners('action:meta.override404')) {

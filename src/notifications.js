@@ -236,6 +236,19 @@ var utils = require('../public/src/utils');
 		});
 	};
 
+	Notifications.pushGroups = function (notification, groupNames, callback) {
+		callback = callback || function () {};
+		groups.getMembersOfGroups(groupNames, function (err, groupMembers) {
+			if (err) {
+				return callback(err);
+			}
+
+			var members = _.unique(_.flatten(groupMembers));
+
+			Notifications.push(notification, members, callback);
+		});
+	};
+
 	Notifications.rescind = function (nid, callback) {
 		callback = callback || function () {};
 
@@ -339,7 +352,9 @@ var utils = require('../public/src/utils');
 				function (next) {
 					db.sortedSetAdd('uid:' + uid + ':notifications:read', datetimes, nids, next);
 				}
-			], callback);
+			], function (err) {
+				callback(err);
+			});
 		});
 	};
 

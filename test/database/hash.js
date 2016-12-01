@@ -24,6 +24,24 @@ describe('Hash methods', function () {
 				done();
 			});
 		});
+
+		it('should do nothing if key is falsy', function (done) {
+			db.setObject('', {foo: 1, derp: 2}, function (err) {
+				assert.ifError(err);
+				done();
+			});
+		});
+
+		it('should do nothing if data is falsy', function (done) {
+			db.setObject('falsy', null, function (err) {
+				assert.ifError(err);
+				db.exists('falsy', function (err, exists) {
+					assert.ifError(err);
+					assert.equal(exists, false);
+					done();
+				});
+			});
+		});
 	});
 
 	describe('setObjectField()', function () {

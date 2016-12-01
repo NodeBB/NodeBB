@@ -16,6 +16,10 @@ module.exports = function (User) {
 		async.waterfall([
 			async.apply(db.getSortedSetRevRangeWithScores, 'uid:' + uid + ':bans', 0, 0),
 			function (record, next) {
+				if (!record.length) {
+					return next(new Error('no-ban-info'));
+				}
+
 				timestamp = record[0].score;
 				expiry = record[0].value;
 

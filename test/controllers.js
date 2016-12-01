@@ -45,6 +45,8 @@ describe('Controllers', function () {
 		});
 	});
 
+
+
 	it('should load default home route', function (done) {
 		request(nconf.get('url'), function (err, res, body) {
 			assert.ifError(err);
@@ -491,7 +493,347 @@ describe('Controllers', function () {
 		});
 	});
 
+
+	describe('revoke session', function () {
+		var uid;
+		var jar;
+		var csrf_token;
+		var helpers = require('./helpers');
+		before(function (done) {
+			user.create({username: 'revokeme', password: 'barbar'}, function (err, _uid) {
+				assert.ifError(err);
+				uid = _uid;
+				helpers.loginUser('revokeme', 'barbar', function (err, _jar, io, _csrf_token) {
+					assert.ifError(err);
+					jar = _jar;
+					csrf_token = _csrf_token;
+					done();
+				});
+			});
+		});
+
+		it('should fail to revoke session with missing uuid', function (done) {
+			request.del(nconf.get('url') + '/api/user/revokeme/session', {
+				jar: jar,
+				headers: {
+					'x-csrf-token': csrf_token
+				}
+			}, function (err, res, body) {
+				assert.ifError(err);
+				assert.equal(res.statusCode, 404);
+				done();
+			});
+		});
+
+		it('should fail if user doesn\'t exist', function (done) {
+			request.del(nconf.get('url') + '/api/user/doesnotexist/session/1112233', {
+				jar: jar,
+				headers: {
+					'x-csrf-token': csrf_token
+				}
+			}, function (err, res, body) {
+				assert.ifError(err);
+				assert.equal(res.statusCode, 500);
+				assert.equal(body, '[[error:no-session-found]]');
+				done();
+			});
+		});
+
+		it('should revoke user session', function (done) {
+			db.getSortedSetRange('uid:' + uid + ':sessions', 0, -1, function (err, sids) {
+				assert.ifError(err);
+				var sid = sids[0];
+
+				db.sessionStore.get(sid, function (err, sessionObj) {
+					assert.ifError(err);
+					request.del(nconf.get('url') + '/api/user/revokeme/session/' + sessionObj.meta.uuid, {
+						jar: jar,
+						headers: {
+							'x-csrf-token': csrf_token
+						}
+					}, function (err, res, body) {
+						assert.ifError(err);
+						assert.equal(res.statusCode, 200);
+						assert.equal(body, 'OK');
+						done();
+					});
+				});
+			});
+		});
+	});
+
+	describe('widgets', function () {
+		var widgets = require('../src/widgets');
+
+		before(function (done) {
+			async.waterfall([
+				function (next) {
+					widgets.reset(next);
+				},
+				function (next) {
+					var data = {
+						template: 'categories.tpl',
+						location: 'sidebar',
+						widgets: [
+							{
+								widget: 'html',
+								data: [ {
+									widget: 'html',
+									data: {
+										html: 'test',
+										title: '',
+										container: ''
+									}
+								} ]
+							}
+						]
+					};
+
+					widgets.setArea(data, next);
+				}
+			], done);
+		});
+
+		it('should return {} if there is no template or locations', function (done) {
+			request(nconf.get('url') + '/api/widgets/render', {json: true}, function (err, res, body) {
+				assert.ifError(err);
+				assert.equal(res.statusCode, 200);
+				assert(body);
+				assert.equal(Object.keys(body), 0);
+				done();
+			});
+		});
+
+		it('should render templates', function (done) {
+			var url = nconf.get('url') + '/api/widgets/render?template=categories.tpl&url=&isMobile=false&locations%5B%5D=sidebar&locations%5B%5D=footer&locations%5B%5D=header';
+			request(url, {json: true}, function (err, res, body) {
+				assert.ifError(err);
+				assert.equal(res.statusCode, 200);
+				assert(body);
+				done();
+			});
+		});
+	});
+
+	describe('tags', function () {
+		var tid;
+		before(function (done) {
+			topics.post({
+				uid: fooUid,
+				title: 'topic title',
+				content: 'test topic content',
+				cid: cid,
+				tags: ['nodebb', 'bug', 'test']
+			}, function (err, result) {
+				assert.ifError(err);
+				tid = result.topicData.tid;
+				done();
+			});
+		});
+
+		it('should render tags page', function (done) {
+			request(nconf.get('url') + '/api/tags', {json: true}, function (err, res, body) {
+				assert.ifError(err);
+				assert.equal(res.statusCode, 200);
+				assert(body);
+				assert(Array.isArray(body.tags));
+				done();
+			});
+		});
+
+		it('should render tag page with no topics', function (done) {
+			request(nconf.get('url') + '/api/tags/notag', {json: true}, function (err, res, body) {
+				assert.ifError(err);
+				assert.equal(res.statusCode, 200);
+				assert(body);
+				assert(Array.isArray(body.topics));
+				assert.equal(body.topics.length, 0);
+				done();
+			});
+		});
+
+		it('should render tag page with 1 topic', function (done) {
+			request(nconf.get('url') + '/api/tags/nodebb', {json: true}, function (err, res, body) {
+				assert.ifError(err);
+				assert.equal(res.statusCode, 200);
+				assert(body);
+				assert(Array.isArray(body.topics));
+				assert.equal(body.topics.length, 1);
+				done();
+			});
+		});
+	});
+
+
+	describe('maintenance mode', function () {
+
+		before(function (done) {
+			meta.config.maintenanceMode = 1;
+			done();
+		});
+		after(function (done) {
+			meta.config.maintenanceMode = 0;
+			done();
+		});
+
+		it('should return 503 in maintenance mode', function (done) {
+			request(nconf.get('url') + '/recent', {json: true}, function (err, res, body) {
+				assert.ifError(err);
+				assert.equal(res.statusCode, 503);
+				done();
+			});
+		});
+
+		it('should return 503 in maintenance mode', function (done) {
+			request(nconf.get('url') + '/api/recent', {json: true}, function (err, res, body) {
+				assert.ifError(err);
+				assert.equal(res.statusCode, 503);
+				assert(body);
+				done();
+			});
+		});
+
+		it('should return 200 in maintenance mode', function (done) {
+			request(nconf.get('url') + '/api/login', {json: true}, function (err, res, body) {
+				assert.ifError(err);
+				assert.equal(res.statusCode, 200);
+				assert(body);
+				done();
+			});
+		});
+	});
+
+	describe('account post pages', function () {
+		var helpers = require('./helpers');
+		var jar;
+		before(function (done) {
+			helpers.loginUser('foo', 'barbar', function (err, _jar) {
+				assert.ifError(err);
+				jar = _jar;
+				done();
+			});
+		});
+
+		it('should load /user/foo/posts', function (done) {
+			request(nconf.get('url') + '/api/user/foo/posts', function (err, res, body) {
+				assert.ifError(err);
+				assert.equal(res.statusCode, 200);
+				assert(body);
+				done();
+			});
+		});
+
+		it('should 401 if not logged in', function (done) {
+			request(nconf.get('url') + '/api/user/foo/bookmarks', function (err, res, body) {
+				assert.ifError(err);
+				assert.equal(res.statusCode, 401);
+				assert(body);
+				done();
+			});
+		});
+
+		it('should load /user/foo/bookmarks', function (done) {
+			request(nconf.get('url') + '/api/user/foo/bookmarks', {jar: jar}, function (err, res, body) {
+				assert.ifError(err);
+				assert.equal(res.statusCode, 200);
+				assert(body);
+				done();
+			});
+		});
+
+		it('should load /user/foo/upvoted', function (done) {
+			request(nconf.get('url') + '/api/user/foo/upvoted', {jar: jar}, function (err, res, body) {
+				assert.ifError(err);
+				assert.equal(res.statusCode, 200);
+				assert(body);
+				done();
+			});
+		});
+
+		it('should load /user/foo/downvoted', function (done) {
+			request(nconf.get('url') + '/api/user/foo/downvoted', {jar: jar}, function (err, res, body) {
+				assert.ifError(err);
+				assert.equal(res.statusCode, 200);
+				assert(body);
+				done();
+			});
+		});
+
+		it('should load /user/foo/best', function (done) {
+			request(nconf.get('url') + '/api/user/foo/best', function (err, res, body) {
+				assert.ifError(err);
+				assert.equal(res.statusCode, 200);
+				assert(body);
+				done();
+			});
+		});
+
+		it('should load /user/foo/watched', function (done) {
+			request(nconf.get('url') + '/api/user/foo/watched', {jar: jar}, function (err, res, body) {
+				assert.ifError(err);
+				assert.equal(res.statusCode, 200);
+				assert(body);
+				done();
+			});
+		});
+
+		it('should load /user/foo/topics', function (done) {
+			request(nconf.get('url') + '/api/user/foo/topics', function (err, res, body) {
+				assert.ifError(err);
+				assert.equal(res.statusCode, 200);
+				assert(body);
+				done();
+			});
+		});
+	});
+
+	describe('account follow page', function () {
+		var socketUser = require('../src/socket.io/user');
+		var uid;
+		before(function (done) {
+			user.create({username: 'follower'}, function (err, _uid) {
+				assert.ifError(err);
+				uid = _uid;
+				socketUser.follow({uid: uid}, {uid: fooUid}, done);
+			});
+		});
+
+		it('should get followers page', function (done) {
+			request(nconf.get('url') + '/api/user/foo/followers', {json: true}, function (err, res, body) {
+				assert.ifError(err);
+				assert.equal(res.statusCode, 200);
+				assert.equal(body.users[0].username, 'follower');
+				done();
+			});
+		});
+
+		it('should get following page', function (done) {
+			request(nconf.get('url') + '/api/user/follower/following', {json: true}, function (err, res, body) {
+				assert.ifError(err);
+				assert.equal(res.statusCode, 200);
+				assert.equal(body.users[0].username, 'foo');
+				done();
+			});
+		});
+
+		it('should return empty after unfollow', function (done ) {
+			socketUser.unfollow({uid: uid}, {uid: fooUid}, function (err) {
+				assert.ifError(err);
+				request(nconf.get('url') + '/api/user/foo/followers', {json: true}, function (err, res, body) {
+					assert.ifError(err);
+					assert.equal(res.statusCode, 200);
+					assert.equal(body.users.length, 0);
+					done();
+				});
+			});
+		});
+	});
+
 	after(function (done) {
-		db.emptydb(done);
+		var analytics = require('../src/analytics');
+		analytics.writeData(function (err) {
+			assert.ifError(err);
+			db.emptydb(done);
+		});
 	});
 });

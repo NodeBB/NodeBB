@@ -66,7 +66,7 @@ topicsController.get = function (req, res, callback) {
 
 			settings = results.settings;
 			var postCount = parseInt(results.topic.postcount, 10);
-			pageCount = Math.max(1, Math.ceil((postCount - 1) / settings.postsPerPage));
+			pageCount = Math.max(1, Math.ceil(postCount / settings.postsPerPage));
 
 			if (utils.isNumber(req.params.post_index) && (req.params.post_index < 1 || req.params.post_index > postCount)) {
 				return helpers.redirect(res, '/topic/' + req.params.topic_id + '/' + req.params.slug + (req.params.post_index > postCount ? '/' + postCount : ''));
@@ -105,9 +105,9 @@ topicsController.get = function (req, res, callback) {
 			} else if (!req.query.page) {
 				var index;
 				if (reverse) {
-					index = Math.max(0, postCount - (req.params.post_index || postCount));
+					index = Math.max(0, postCount - (req.params.post_index || postCount) + 2);
 				} else {
-					index = Math.max(0, req.params.post_index - 1) || 0;
+					index = Math.max(0, req.params.post_index) || 0;
 				}
 
 				currentPage = Math.max(1, Math.ceil(index / settings.postsPerPage));

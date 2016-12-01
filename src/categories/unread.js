@@ -33,6 +33,9 @@ module.exports = function (Categories) {
 	};
 
 	Categories.markAsUnreadForAll = function (cid, callback) {
+		if (!parseInt(cid, 10)) {
+			return callback();
+		}
 		callback = callback || function () {};
 		db.delete('cid:' + cid + ':read_by_uid', callback);
 	};
