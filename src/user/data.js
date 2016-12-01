@@ -81,15 +81,15 @@ module.exports = function (User) {
 		}
 
 		// Eliminate duplicates and build ref table
-		uids = uids.filter(function (uid, index) {
+		var uniqueUids = uids.filter(function (uid, index) {
 			return index === uids.indexOf(uid);
 		});
-		var ref = uids.reduce(function (memo, cur, idx) {
+		var ref = uniqueUids.reduce(function (memo, cur, idx) {
 			memo[cur] = idx;
 			return memo;
 		}, {});
 
-		var keys = uids.map(function (uid) {
+		var keys = uniqueUids.map(function (uid) {
 			return 'user:' + uid;
 		});
 
