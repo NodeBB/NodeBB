@@ -80,6 +80,15 @@ module.exports = function (User) {
 			return callback(null, []);
 		}
 
+		// Eliminate duplicates and build ref table
+		uids = uids.filter(function (uid, index) {
+			return index === uids.indexOf(uid);
+		});
+		var ref = uids.reduce(function (memo, cur, idx) {
+			memo[cur] = idx;
+			return memo;
+		}, {});
+
 		var keys = uids.map(function (uid) {
 			return 'user:' + uid;
 		});
@@ -88,6 +97,10 @@ module.exports = function (User) {
 			if (err) {
 				return callback(err);
 			}
+
+			users = uids.map(function (uid) {
+				return users[ref[uid]];
+			});
 
 			modifyUserData(users, [], callback);
 		});

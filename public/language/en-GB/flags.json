@@ -4,10 +4,15 @@
 	"reporter": "Reporter",
 	"reported-at": "Reported At",
 	"no-flags": "Hooray! No flags found.",
+	"assignee": "Assignee",
+	"update": "Update",
+	"notes": "Flag Notes",
+	"add-note": "Add Note",
 
 	"state": "State",
 	"state-open": "New/Open",
 	"state-wip": "Work in Progress",
 	"state-resolved": "Resolved",
-	"state-rejected": "Rejected"
+	"state-rejected": "Rejected",
+	"no-assignee": "Not Assigned"
 }

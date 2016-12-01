@@ -10,6 +10,7 @@ var analytics = require('./analytics');
 var topics = require('./topics');
 var posts = require('./posts');
 var utils = require('../public/src/utils');
+var _ = require('underscore');
 
 var Flags = {
 	_defaults: {
@@ -24,7 +25,7 @@ Flags.get = function (flagId, callback) {
 		async.apply(async.parallel, {
 			base: async.apply(db.getObject.bind(db), 'flag:' + flagId),
 			history: async.apply(db.getSortedSetRevRange.bind(db), 'flag:' + flagId + ':history', 0, -1),
-			notes: async.apply(db.getSortedSetRevRange.bind(db), 'flag:' + flagId + ':notes', 0, -1)
+			notes: async.apply(Flags.getNotes, flagId)
 		}),
 		function (data, next) {
 			// Second stage
@@ -128,6 +129,43 @@ Flags.getTarget = function (type, id, uid, callback) {
 			user.getUsersData(id, callback);
 			break;
 	}
+};
+
+Flags.getNotes = function (flagId, callback) {
+	async.waterfall([
+		async.apply(db.getSortedSetRevRangeWithScores.bind(db), 'flag:' + flagId + ':notes', 0, -1),
+		function (notes, next) {
+			var uids = [];
+			var noteObj;
+			notes = notes.map(function (note) {
+				try {
+					noteObj = JSON.parse(note.value);
+					uids.push(noteObj[0]);
+					return {
+						uid: noteObj[0],
+						content: noteObj[1],
+						datetime: note.score,
+						datetimeISO: new Date(note.score).toISOString()
+					};
+				} catch (e) {
+					return next(e);
+				}
+			});
+			next(null, notes, uids);
+		},
+		function (notes, uids, next) {
+			user.getUsersData(uids, function (err, users) {
+				if (err) {
+					return next(err);
+				}
+
+				next(null, notes.map(function (note, idx) {
+					note.user = users[idx];
+					return note;
+				}));
+			});
+		}
+	], callback);
 };
 
 Flags.create = function (type, id, uid, reason, callback) {

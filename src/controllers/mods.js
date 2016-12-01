@@ -41,7 +41,8 @@ modsController.flags.detail = function (req, res, next) {
 	async.parallel({
 		isAdminOrGlobalMod: async.apply(user.isAdminOrGlobalMod, req.uid),
 		moderatedCids: async.apply(user.getModeratedCids, req.uid),
-		flagData: async.apply(flags.get, req.params.flagId)
+		flagData: async.apply(flags.get, req.params.flagId),
+		assignees: async.apply(user.getAdminsandGlobalModsandModerators)
 	}, function (err, results) {
 		if (err || !results.flagData) {
 			return next(err || new Error('[[error:invalid-data]]'));
@@ -49,7 +50,9 @@ modsController.flags.detail = function (req, res, next) {
 			return next(new Error('[[error:no-privileges]]'));
 		}
 
-		res.render('flags/detail', results.flagData);
+		res.render('flags/detail', Object.assign(results.flagData, {
+			assignees: results.assignees
+		}));
 	});
 };
 
