@@ -788,12 +788,13 @@ describe('Controllers', function () {
 	});
 
 	describe('account follow page', function () {
+		var socketUser = require('../src/socket.io/user');
 		var uid;
 		before(function (done) {
 			user.create({username: 'follower'}, function (err, _uid) {
 				assert.ifError(err);
 				uid = _uid;
-				user.follow(uid, fooUid, done);
+				socketUser.follow({uid: uid}, {uid: fooUid}, done);
 			});
 		});
 
@@ -816,7 +817,7 @@ describe('Controllers', function () {
 		});
 
 		it('should return empty after unfollow', function (done ) {
-			user.unfollow(uid, fooUid, function (err) {
+			socketUser.unfollow({uid: uid}, {uid: fooUid}, function (err) {
 				assert.ifError(err);
 				request(nconf.get('url') + '/api/user/foo/followers', {json: true}, function (err, res, body) {
 					assert.ifError(err);
