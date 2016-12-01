@@ -101,6 +101,48 @@ describe('Flags', function () {
 		});
 	});
 
+	describe('.getTarget()', function() {
+		it('should return a post\'s data if queried with type "post"', function (done) {
+			Flags.getTarget('post', 1, 1, function (err, data) {
+				assert.ifError(err);
+				var compare = {
+					uid: 1,
+					pid: 1,
+					content: 'This is flaggable content'
+				};
+
+				for(var key in compare) {
+					if (compare.hasOwnProperty(key)) {
+						assert.ok(data[key]);
+						assert.strictEqual(data[key], compare[key]);
+					}
+				}
+
+				done();
+			});
+		});
+
+		it('should return a user\'s data if queried with type "user"', function (done) {
+			Flags.getTarget('user', 1, 1, function (err, data) {
+				assert.ifError(err);
+				var compare = {
+					uid: 1,
+					username: 'testUser',
+					email: 'b@c.com'
+				};
+
+				for(var key in compare) {
+					if (compare.hasOwnProperty(key)) {
+						assert.ok(data[key]);
+						assert.strictEqual(data[key], compare[key]);
+					}
+				}
+
+				done();
+			});
+		});
+	});;
+
 	after(function (done) {
 		db.emptydb(done);
 	});

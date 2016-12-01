@@ -126,7 +126,9 @@ Flags.getTarget = function (type, id, uid, callback) {
 			break;
 		
 		case 'user':
-			user.getUsersData(id, callback);
+			user.getUsersData([id], function (err, users) {
+				callback(err, users ? users[0] : undefined);
+			});
 			break;
 	}
 };
