@@ -136,7 +136,8 @@ SocketFlags.update = function (socket, data, callback) {
 			}, payload);
 
 			flags.update(data.flagId, socket.uid, payload, next);
-		}
+		},
+		async.apply(flags.getHistory, data.flagId)
 	], callback);
 };
 
@@ -160,6 +161,12 @@ SocketFlags.appendNote = function (socket, data, callback) {
 			}
 
 			flags.appendNote(data.flagId, socket.uid, data.note, next);
+		},
+		function (next) {
+			async.parallel({
+				"notes": async.apply(flags.getNotes, data.flagId),
+				"history": async.apply(flags.getHistory, data.flagId)
+			}, next);
 		}
 	], callback);
 };

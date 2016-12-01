@@ -6,8 +6,11 @@
 	"no-flags": "Hooray! No flags found.",
 	"assignee": "Assignee",
 	"update": "Update",
+	"updated": "Updated",
 	"notes": "Flag Notes",
 	"add-note": "Add Note",
+	"history": "Flag History",
+	"back": "Back to Flags List",
 
 	"state": "State",
 	"state-open": "New/Open",

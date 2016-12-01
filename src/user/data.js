@@ -34,11 +34,20 @@ module.exports = function (User) {
 			}
 		}
 
-		if (!Array.isArray(uids) || !uids.length) {
+		// Eliminate duplicates and build ref table
+		var uniqueUids = uids.filter(function (uid, index) {
+			return index === uids.indexOf(uid);
+		});
+		var ref = uniqueUids.reduce(function (memo, cur, idx) {
+			memo[cur] = idx;
+			return memo;
+		}, {});
+
+		if (!Array.isArray(uniqueUids) || !uniqueUids.length) {
 			return callback(null, []);
 		}
 
-		var keys = uids.map(function (uid) {
+		var keys = uniqueUids.map(function (uid) {
 			return 'user:' + uid;
 		});
 
@@ -59,6 +68,10 @@ module.exports = function (User) {
 			if (err) {
 				return callback(err);
 			}
+
+			users = uids.map(function (uid) {
+				return users[ref[uid]];
+			});
 
 			modifyUserData(users, fieldsToRemove, callback);
 		});

@@ -24,7 +24,7 @@ Flags.get = function (flagId, callback) {
 		// First stage
 		async.apply(async.parallel, {
 			base: async.apply(db.getObject.bind(db), 'flag:' + flagId),
-			history: async.apply(db.getSortedSetRevRange.bind(db), 'flag:' + flagId + ':history', 0, -1),
+			history: async.apply(Flags.getHistory, flagId),
 			notes: async.apply(Flags.getNotes, flagId)
 		}),
 		function (data, next) {
@@ -156,7 +156,7 @@ Flags.getNotes = function (flagId, callback) {
 			next(null, notes, uids);
 		},
 		function (notes, uids, next) {
-			user.getUsersData(uids, function (err, users) {
+			user.getUsersFields(uids, ['username', 'userslug', 'picture'], function (err, users) {
 				if (err) {
 					return next(err);
 				}
@@ -398,13 +398,61 @@ Flags.update = function (flagId, uid, changeset, callback) {
 				async.apply(db.setObject, 'flag:' + flagId, changeset),
 				// Append history
 				async.apply(Flags.appendHistory, flagId, uid, Object.keys(changeset))
-			], next);
+			], function (err, data) {
+				return next(err);
+			});
 		}
 	], callback);
 };
 
+Flags.getHistory = function (flagId, callback) {
+	var history;
+	var uids = [];
+	async.waterfall([
+		async.apply(db.getSortedSetRevRangeWithScores.bind(db), 'flag:' + flagId + ':history', 0, -1),
+		function (_history, next) {
+			history = _history.map(function (entry) {
+				try {
+					entry.value = JSON.parse(entry.value);
+				} catch (e) {
+					return callback(e);
+				}
+
+				uids.push(entry.value[0]);
+
+				return {
+					uid: entry.value[0],
+					fields: entry.value[1],
+					datetime: entry.score,
+					datetimeISO: new Date(entry.score).toISOString()
+				};
+			});
+
+			user.getUsersFields(uids, ['username', 'userslug', 'picture'], next);
+		}
+	], function (err, users) {
+		if (err) {
+			return callback(err);
+		}
+
+		history = history.map(function (event, idx) {
+			event.user = users[idx];
+			return event;
+		});
+
+		callback(null, history);
+	});
+};
+
 Flags.appendHistory = function (flagId, uid, changeset, callback) {
-	return callback();
+	var payload;
+	try {
+		payload = JSON.stringify([uid, changeset, Date.now()]);
+	} catch (e) {
+		return callback(e);
+	}
+
+	db.sortedSetAdd('flag:' + flagId + ':history', Date.now(), payload, callback);
 };
 
 Flags.appendNote = function (flagId, uid, note, callback) {
@@ -417,7 +465,7 @@ Flags.appendNote = function (flagId, uid, note, callback) {
 
 	async.waterfall([
 		async.apply(db.sortedSetAdd, 'flag:' + flagId + ':notes', Date.now(), payload),
-		async.apply(Flags.getNotes, flagId)
+		async.apply(Flags.appendHistory, flagId, uid, ['notes'])
 	], callback);
 };
 

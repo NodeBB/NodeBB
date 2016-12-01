@@ -2,7 +2,7 @@
 
 /* globals define */
 
-define('forum/flags/detail', ['components'], function (components) {
+define('forum/flags/detail', ['components', 'translator'], function (components, translator) {
 	var Flags = {};
 
 	Flags.init = function () {
@@ -18,11 +18,12 @@ define('forum/flags/detail', ['components'], function (components) {
 					socket.emit('flags.update', {
 						flagId: ajaxify.data.flagId,
 						data: $('#attributes').serializeArray()
-					}, function (err) {
+					}, function (err, history) {
 						if (err) {
 							return app.alertError(err.message);
 						} else {
 							app.alertSuccess('[[flags:updated]]');
+							Flags.reloadHistory(history);
 						}
 					});
 					break;
@@ -31,12 +32,13 @@ define('forum/flags/detail', ['components'], function (components) {
 					socket.emit('flags.appendNote', {
 						flagId: ajaxify.data.flagId,
 						note: document.getElementById('note').value
-					}, function (err, notes) {
+					}, function (err, payload) {
 						if (err) {
 							return app.alertError(err.message);
 						} else {
 							app.alertSuccess('[[flags:note-added]]');
-							Flags.reloadNotes(notes);
+							Flags.reloadNotes(payload.notes);
+							Flags.reloadHistory(payload.history);
 						}
 					});
 					break;
@@ -53,6 +55,19 @@ define('forum/flags/detail', ['components'], function (components) {
 			wrapperEl.html(html);
 			wrapperEl.find('span.timeago').timeago();
 			document.getElementById('note').value = '';
+		});
+	};
+
+	Flags.reloadHistory = function (history) {
+		templates.parse('flags/detail', 'history', {
+			history: history
+		}, function (html) {
+			translator.translate(html, function (translated) {
+				var wrapperEl = components.get('flag/history');
+				wrapperEl.empty();
+				wrapperEl.html(translated);
+				wrapperEl.find('span.timeago').timeago();
+			});
 		});
 	};
 
