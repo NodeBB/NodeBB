@@ -66,10 +66,6 @@ module.exports = function (Groups) {
 	Groups.searchMembers = function (data, callback) {
 
 		function findUids(query, searchBy, callback) {
-			if (!query) {
-				return Groups.getMembers(data.groupName, 0, -1, callback);
-			}
-
 			query = query.toLowerCase();
 
 			async.waterfall([

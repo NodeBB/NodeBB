@@ -703,6 +703,91 @@ describe('Controllers', function () {
 		});
 	});
 
+	describe('account post pages', function () {
+		var helpers = require('./helpers');
+		var jar;
+		before(function (done) {
+			helpers.loginUser('foo', 'barbar', function (err, _jar) {
+				assert.ifError(err);
+				jar = _jar;
+				done();
+			});
+		});
+
+		it('should load /user/foo/posts', function (done) {
+			request(nconf.get('url') + '/api/user/foo/posts', function (err, res, body) {
+				assert.ifError(err);
+				assert.equal(res.statusCode, 200);
+				assert(body);
+				done();
+			});
+		});
+
+		it('should 401 if not logged in', function (done) {
+			request(nconf.get('url') + '/api/user/foo/bookmarks', function (err, res, body) {
+				assert.ifError(err);
+				assert.equal(res.statusCode, 401);
+				assert(body);
+				done();
+			});
+		});
+
+		it('should load /user/foo/bookmarks', function (done) {
+			request(nconf.get('url') + '/api/user/foo/bookmarks', {jar: jar}, function (err, res, body) {
+				assert.ifError(err);
+				assert.equal(res.statusCode, 200);
+				assert(body);
+				done();
+			});
+		});
+
+		it('should load /user/foo/upvoted', function (done) {
+			request(nconf.get('url') + '/api/user/foo/upvoted', {jar: jar}, function (err, res, body) {
+				assert.ifError(err);
+				assert.equal(res.statusCode, 200);
+				assert(body);
+				done();
+			});
+		});
+
+		it('should load /user/foo/downvoted', function (done) {
+			request(nconf.get('url') + '/api/user/foo/downvoted', {jar: jar}, function (err, res, body) {
+				assert.ifError(err);
+				assert.equal(res.statusCode, 200);
+				assert(body);
+				done();
+			});
+		});
+
+		it('should load /user/foo/best', function (done) {
+			request(nconf.get('url') + '/api/user/foo/best', function (err, res, body) {
+				assert.ifError(err);
+				assert.equal(res.statusCode, 200);
+				assert(body);
+				done();
+			});
+		});
+
+		it('should load /user/foo/watched', function (done) {
+			request(nconf.get('url') + '/api/user/foo/watched', {jar: jar}, function (err, res, body) {
+				assert.ifError(err);
+				assert.equal(res.statusCode, 200);
+				assert(body);
+				done();
+			});
+		});
+
+		it('should load /user/foo/topics', function (done) {
+			request(nconf.get('url') + '/api/user/foo/topics', function (err, res, body) {
+				assert.ifError(err);
+				assert.equal(res.statusCode, 200);
+				assert(body);
+				done();
+			});
+		});
+
+	});
+
 	after(function (done) {
 		var analytics = require('../src/analytics');
 		analytics.writeData(function (err) {

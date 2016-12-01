@@ -90,11 +90,11 @@
 		<form>
 			<div class="form-group">
 				<label for="timeagoCutoff">Date cut-off (in days)</label>
-				<input type="number" class="form-control" id="timeagoCutoff" data-field="timeagoCutoff" placeholder="30" value="30" />
+				<input type="number" class="form-control" id="timeagoCutoff" data-field="timeagoCutoff" value="30" />
 				<p class="help-block">
 					Dates &amp; times will be shown in a relative manner (e.g. "3 hours ago" / "5 days ago"), and localised into various
 					languages. After a certain point, this text can be switched to display the localised date itself
-					(e.g. 5 Nov 2016 15:30).<br /><em>(Default: <code>30</code>, or one month)</em>
+					(e.g. 5 Nov 2016 15:30).<br /><em>(Default: <code>30</code>, or one month). Set to 0 to always display dates, leave blank to always display relative times.</em>
 				</p>
 			</div>
 		</form>
