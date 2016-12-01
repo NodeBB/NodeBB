@@ -373,138 +373,52 @@ Flags.dismissByUid = function (uid, callback) {
 	});
 };
 
-// New method signature (type, id, flagObj, callback) and name (.update())
-// uid used in history string, which should be rewritten too.
-Flags.update = function (uid, pid, flagObj, callback) {
+Flags.update = function (flagId, uid, changeset, callback) {
 	// Retrieve existing flag data to compare for history-saving purposes
-	var changes = [];
-	var changeset = {};
-	var prop;
+	var fields = ['state', 'assignee'];
 
-	posts.getPostData(pid, function (err, postData) {
-		if (err) {
-			return callback(err);
-		}
-
-		// Track new additions
-		for(prop in flagObj) {
-			if (flagObj.hasOwnProperty(prop) && !postData.hasOwnProperty('flag:' + prop) && flagObj[prop].length) {
-				changes.push(prop);
-			}
-		}
-
-		// Track changed items
-		for(prop in postData) {
-			if (
-				postData.hasOwnProperty(prop) && prop.startsWith('flag:') &&
-				flagObj.hasOwnProperty(prop.slice(5)) &&
-				postData[prop] !== flagObj[prop.slice(5)]
-			) {
-				changes.push(prop.slice(5));
-			}
-		}
-
-		changeset = changes.reduce(function (memo, prop) {
-			memo['flag:' + prop] = flagObj[prop];
-			return memo;
-		}, {});
-
-		// Append changes to history string
-		if (changes.length) {
-			try {
-				var history = JSON.parse(postData['flag:history'] || '[]');
-
-				changes.forEach(function (property) {
-					switch(property) {
-						case 'assignee':	// intentional fall-through
-						case 'state':
-							history.unshift({
-								uid: uid,
-								type: property,
-								value: flagObj[property],
-								timestamp: Date.now()
-							});
-							break;
-
-						case 'notes':
-							history.unshift({
-								uid: uid,
-								type: property,
-								timestamp: Date.now()
-							});
-					}
-				});
-
-				changeset['flag:history'] = JSON.stringify(history);
-			} catch (e) {
-				winston.warn('[flags/update] Unable to deserialise post flag history, likely malformed data');
-			}
-		}
-
-		// Save flag data into post hash
-		if (changes.length) {
-			posts.setPostFields(pid, changeset, callback);
-		} else {
-			setImmediate(callback);
-		}
-	});
-};
-
-// To be rewritten and deprecated
-Flags.expandFlagHistory = function (posts, callback) {
-	// Expand flag history
-	async.map(posts, function (post, next) {
-		var history;
-		try {
-			history = JSON.parse(post['flag:history'] || '[]');
-		} catch (e) {
-			winston.warn('[flags/get] Unable to deserialise post flag history, likely malformed data');
-			return callback(e);
-		}
-
-		async.map(history, function (event, next) {
-			event.timestampISO = new Date(event.timestamp).toISOString();
-
-			async.parallel([
-				function (next) {
-					user.getUserFields(event.uid, ['username', 'picture'], function (err, userData) {
-						if (err) {
-							return next(err);
-						}
-
-						event.user = userData;
-						next();
-					});
-				},
-				function (next) {
-					if (event.type === 'assignee') {
-						user.getUserField(parseInt(event.value, 10), 'username', function (err, username) {
-							if (err) {
-								return next(err);
-							}
-
-							event.label = username || 'Unknown user';
-							next(null);
-						});
-					} else if (event.type === 'state') {
-						event.label = '[[topic:flag_manage_state_' + event.value + ']]';
-						setImmediate(next);
-					} else {
-						setImmediate(next);
+	async.waterfall([
+		async.apply(db.getObjectFields.bind(db), 'flag:' + flagId, fields),
+		function (current, next) {
+			for(var prop in changeset) {
+				if (changeset.hasOwnProperty(prop)) {
+					if (current[prop] === changeset[prop]) {
+						delete changeset[prop];
 					}
 				}
-			], function (err) {
-				next(err, event);
-			});
-		}, function (err, history) {
-			if (err) {
-				return next(err);
 			}
 
-			post['flag:history'] = history;
-			next(null, post);
-		});
-	}, callback);
+			if (!Object.keys(changeset).length) {
+				// No changes
+				return next();
+			}
+
+			async.parallel([
+				// Save new object to db (upsert)
+				async.apply(db.setObject, 'flag:' + flagId, changeset),
+				// Append history
+				async.apply(Flags.appendHistory, flagId, uid, Object.keys(changeset))
+			], next);
+		}
+	], callback);
+};
+
+Flags.appendHistory = function (flagId, uid, changeset, callback) {
+	return callback();
+};
+
+Flags.appendNote = function (flagId, uid, note, callback) {
+	var payload;
+	try {
+		payload = JSON.stringify([uid, note]);
+	} catch (e) {
+		return callback(e);
+	}
+
+	async.waterfall([
+		async.apply(db.sortedSetAdd, 'flag:' + flagId + ':notes', Date.now(), payload),
+		async.apply(Flags.getNotes, flagId)
+	], callback);
 };
 
 module.exports = Flags;

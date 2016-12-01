@@ -14,5 +14,7 @@
 	"state-wip": "Work in Progress",
 	"state-resolved": "Resolved",
 	"state-rejected": "Rejected",
-	"no-assignee": "Not Assigned"
+	"no-assignee": "Not Assigned",
+	"updated": "Flag Details Updated",
+	"note-added": "Note Added"
 }
