@@ -292,11 +292,6 @@ Flags.targetExists = function (type, id, callback) {
 	}
 };
 
-/* new signature (type, id, uid, callback) */
-Flags.isFlaggedByUser = function (pid, uid, callback) {
-	db.isSortedSetMember('pid:' + pid + ':flag:uids', uid, callback);
-};
-
 Flags.dismiss = function (pid, callback) {
 	async.waterfall([
 		function (next) {
@@ -377,119 +372,6 @@ Flags.dismissByUid = function (uid, callback) {
 		async.eachSeries(pids, Flags.dismiss, callback);
 	});
 };
-
-// This is the old method to get list of flags, supercede by Flags.list();
-// Flags.get = function (set, cid, uid, start, stop, callback) {
-// 	async.waterfall([
-// 		function (next) {
-// 			if (Array.isArray(set)) {
-// 				db.getSortedSetRevIntersect({sets: set, start: start, stop: -1, aggregate: 'MAX'}, next);
-// 			} else {
-// 				db.getSortedSetRevRange(set, start, -1, next);
-// 			}
-// 		},
-// 		function (pids, next) {
-// 			if (cid) {
-// 				posts.filterPidsByCid(pids, cid, next);
-// 			} else {
-// 				process.nextTick(next, null, pids);
-// 			}
-// 		},
-// 		function (pids, next) {
-// 			getFlaggedPostsWithReasons(pids, uid, next);
-// 		},
-// 		function (posts, next) {
-// 			var count = posts.length;
-// 			var end = stop - start + 1;
-// 			next(null, {posts: posts.slice(0, stop === -1 ? undefined : end), count: count});
-// 		}
-// 	], callback);
-// };
-
-function getFlaggedPostsWithReasons(pids, uid, callback) {
-	async.waterfall([
-		function (next) {
-			async.parallel({
-				uidsReasons: function (next) {
-					async.map(pids, function (pid, next) {
-						db.getSortedSetRange('pid:' + pid + ':flag:uid:reason', 0, -1, next);
-					}, next);
-				},
-				posts: function (next) {
-					posts.getPostSummaryByPids(pids, uid, {stripTags: false, extraFields: ['flags', 'flag:assignee', 'flag:state', 'flag:notes', 'flag:history']}, next);
-				}
-			}, next);
-		},
-		function (results, next) {
-			async.map(results.uidsReasons, function (uidReasons, next) {
-				async.map(uidReasons, function (uidReason, next) {
-					var uid = uidReason.split(':')[0];
-					var reason = uidReason.substr(uidReason.indexOf(':') + 1);
-					user.getUserFields(uid, ['username', 'userslug', 'picture'], function (err, userData) {
-						next(err, {user: userData, reason: reason});
-					});
-				}, next);
-			}, function (err, reasons) {
-				if (err) {
-					return callback(err);
-				}
-
-				results.posts.forEach(function (post, index) {
-					if (post) {
-						post.flagReasons = reasons[index];
-					}
-				});
-
-				next(null, results.posts);
-			});
-		},
-		async.apply(Flags.expandFlagHistory),
-		function (posts, next) {
-			// Parse out flag data into its own object inside each post hash
-			async.map(posts, function (postObj, next) {
-				for(var prop in postObj) {
-					postObj.flagData = postObj.flagData || {};
-
-					if (postObj.hasOwnProperty(prop) && prop.startsWith('flag:')) {
-						postObj.flagData[prop.slice(5)] = postObj[prop];
-
-						if (prop === 'flag:state') {
-							switch(postObj[prop]) {
-								case 'open':
-									postObj.flagData.labelClass = 'info';
-									break;
-								case 'wip':
-									postObj.flagData.labelClass = 'warning';
-									break;
-								case 'resolved':
-									postObj.flagData.labelClass = 'success';
-									break;
-								case 'rejected':
-									postObj.flagData.labelClass = 'danger';
-									break;
-							}
-						}
-
-						delete postObj[prop];
-					}
-				}
-
-				if (postObj.flagData.assignee) {
-					user.getUserFields(parseInt(postObj.flagData.assignee, 10), ['username', 'picture'], function (err, userData) {
-						if (err) {
-							return next(err);
-						}
-
-						postObj.flagData.assigneeUser = userData;
-						next(null, postObj);
-					});
-				} else {
-					setImmediate(next.bind(null, null, postObj));
-				}
-			}, next);
-		}
-	], callback);
-}
 
 // New method signature (type, id, flagObj, callback) and name (.update())
 // uid used in history string, which should be rewritten too.
