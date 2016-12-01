@@ -93,14 +93,68 @@ describe('Groups', function () {
 	});
 
 	describe('.search()', function () {
+		var socketGroups = require('../src/socket.io/groups');
+
+		it('should return the groups when search query is empty', function (done) {
+			socketGroups.search({uid: adminUid}, {query: ''}, function (err, groups) {
+				assert.ifError(err);
+				assert.equal(3, groups.length);
+				done();
+			});
+		});
+
 		it('should return the "Test" group when searched for', function (done) {
-			Groups.search('test', {}, function (err, groups) {
+			socketGroups.search({uid: adminUid}, {query: 'test'}, function (err, groups) {
 				assert.ifError(err);
 				assert.equal(1, groups.length);
 				assert.strictEqual('Test', groups[0].name);
 				done();
 			});
 		});
+
+		it('should return the "Test" group when searched for and sort by member count', function (done) {
+			Groups.search('test', {filterHidden: true, sort: 'count'}, function (err, groups) {
+				assert.ifError(err);
+				assert.equal(1, groups.length);
+				assert.strictEqual('Test', groups[0].name);
+				done();
+			});
+		});
+
+		it('should return the "Test" group when searched for and sort by creation time', function (done) {
+			Groups.search('test', {filterHidden: true, sort: 'date'}, function (err, groups) {
+				assert.ifError(err);
+				assert.equal(1, groups.length);
+				assert.strictEqual('Test', groups[0].name);
+				done();
+			});
+		});
+
+		it('should return all users if no query', function (done) {
+			User.create({
+				username: 'newuser',
+				email: 'newuser@b.com'
+			}, function (err, uid) {
+				assert.ifError(err);
+				Groups.join('Test', uid, function (err) {
+					assert.ifError(err);
+					socketGroups.searchMembers({uid: adminUid}, {groupName: 'Test', query: ''}, function (err, data) {
+						assert.ifError(err);
+						assert.equal(data.users.length, 2);
+						done();
+					});
+				});
+			});
+		});
+
+		it('should search group members', function (done) {
+			socketGroups.searchMembers({uid: adminUid}, {groupName: 'Test', query: 'test'}, function (err, data) {
+				assert.ifError(err);
+				assert.strictEqual('testuser', data.users[0].username);
+				done();
+			});
+		});
+
 	});
 
 	describe('.isMember()', function () {

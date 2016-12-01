@@ -237,7 +237,7 @@ SocketGroups.search = function (socket, data, callback) {
 		return;
 	}
 
-	groups.search(data.query, data.options || {}, callback);
+	groups.search(data.query, data.options, callback);
 };
 
 SocketGroups.loadMore = function (socket, data, callback) {
