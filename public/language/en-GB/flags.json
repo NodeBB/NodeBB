@@ -7,10 +7,14 @@
 	"assignee": "Assignee",
 	"update": "Update",
 	"updated": "Updated",
+
 	"notes": "Flag Notes",
 	"add-note": "Add Note",
+	"no-notes": "No shared notes.",
+
 	"history": "Flag History",
 	"back": "Back to Flags List",
+	"no-history": "No flag history.",
 
 	"state": "State",
 	"state-open": "New/Open",
