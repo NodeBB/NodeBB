@@ -785,7 +785,48 @@ describe('Controllers', function () {
 				done();
 			});
 		});
+	});
 
+	describe('account follow page', function () {
+		var socketUser = require('../src/socket.io/user');
+		var uid;
+		before(function (done) {
+			user.create({username: 'follower'}, function (err, _uid) {
+				assert.ifError(err);
+				uid = _uid;
+				socketUser.follow({uid: uid}, {uid: fooUid}, done);
+			});
+		});
+
+		it('should get followers page', function (done) {
+			request(nconf.get('url') + '/api/user/foo/followers', {json: true}, function (err, res, body) {
+				assert.ifError(err);
+				assert.equal(res.statusCode, 200);
+				assert.equal(body.users[0].username, 'follower');
+				done();
+			});
+		});
+
+		it('should get following page', function (done) {
+			request(nconf.get('url') + '/api/user/follower/following', {json: true}, function (err, res, body) {
+				assert.ifError(err);
+				assert.equal(res.statusCode, 200);
+				assert.equal(body.users[0].username, 'foo');
+				done();
+			});
+		});
+
+		it('should return empty after unfollow', function (done ) {
+			socketUser.unfollow({uid: uid}, {uid: fooUid}, function (err) {
+				assert.ifError(err);
+				request(nconf.get('url') + '/api/user/foo/followers', {json: true}, function (err, res, body) {
+					assert.ifError(err);
+					assert.equal(res.statusCode, 200);
+					assert.equal(body.users.length, 0);
+					done();
+				});
+			});
+		});
 	});
 
 	after(function (done) {

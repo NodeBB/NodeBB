@@ -90,7 +90,7 @@
 		<form>
 			<div class="form-group">
 				<label for="timeagoCutoff">Date cut-off (in days)</label>
-				<input type="number" class="form-control" id="timeagoCutoff" data-field="timeagoCutoff" value="30" />
+				<input type="number" class="form-control" id="timeagoCutoff" data-field="timeagoCutoff"  />
 				<p class="help-block">
 					Dates &amp; times will be shown in a relative manner (e.g. "3 hours ago" / "5 days ago"), and localised into various
 					languages. After a certain point, this text can be switched to display the localised date itself

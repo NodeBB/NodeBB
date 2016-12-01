@@ -1,4 +1,10 @@
-					<table class="table table-striped table-hover privilege-table">
+					<table class="table table-striped privilege-table">
+						<tr class="privilege-table-header">
+							<th colspan="2"></th>
+							<th class="arrowed" colspan="3">Viewing Privileges</th>
+							<th class="arrowed" colspan="7">Posting Privileges</th>
+							<th class="arrowed" colspan="2">Moderation Privileges</th>
+						</tr><tr><!-- zebrastripe reset --></tr>
 						<tr>
 							<th colspan="2">User</th>
 							<!-- BEGIN privileges.labels.users -->
@@ -34,7 +40,13 @@
 						<!-- ENDIF privileges.users.length -->
 					</table>
 
-					<table class="table table-striped table-hover privilege-table">
+					<table class="table table-striped privilege-table">
+						<tr class="privilege-table-header">
+							<th colspan="2"></th>
+							<th class="arrowed" colspan="3">Viewing Privileges</th>
+							<th class="arrowed" colspan="7">Posting Privileges</th>
+							<th class="arrowed" colspan="2">Moderation Privileges</th>
+						</tr><tr><!-- zebrastripe reset --></tr>
 						<tr>
 							<th colspan="2">Group</th>
 							<!-- BEGIN privileges.labels.groups -->
