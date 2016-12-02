@@ -107,6 +107,7 @@ helpers.getUserDataByUserSlug = function (userslug, callerUID, callback) {
 			userData.isModerator = isModerator;
 			userData.isAdminOrGlobalModerator = isAdmin || isGlobalModerator;
 			userData.isAdminOrGlobalModeratorOrModerator = isAdmin || isGlobalModerator || isModerator;
+			userData.isSelfOrAdminOrGlobalModerator = isSelf || isAdmin || isGlobalModerator;
 			userData.canEdit = isAdmin || (isGlobalModerator && !results.isTargetAdmin);
 			userData.canBan = isAdmin || (isGlobalModerator && !results.isTargetAdmin);
 			userData.canChangePassword = isAdmin || (isSelf && parseInt(meta.config['password:disableEdit'], 10) !== 1);

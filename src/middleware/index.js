@@ -49,8 +49,16 @@ middleware.authenticate = function (req, res, next) {
 	controllers.helpers.notAllowed(req, res);
 };
 
-middleware.ensureGlobalPrivilege = function (req, res, next) {
+middleware.ensureSelfOrGlobalPrivilege = function (req, res, next) {
+	/*
+		The "self" part of this middleware hinges on you having used
+		middleware.exposeUid prior to invoking this middleware.
+	*/
 	if (req.user) {
+		if (req.user.uid === res.locals.uid) {
+			return next();
+		}
+
 		user.isAdminOrGlobalMod(req.uid, function (err, ok) {
 			if (err) {
 				return next(err);
