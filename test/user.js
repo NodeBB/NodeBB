@@ -170,11 +170,36 @@ describe('User', function () {
 	});
 
 	describe('.search()', function () {
+		var socketUser = require('../src/socket.io/user');
 		it('should return an object containing an array of matching users', function (done) {
 			User.search({query: 'john'}, function (err, searchData) {
 				assert.ifError(err);
 				assert.equal(Array.isArray(searchData.users) && searchData.users.length > 0, true);
 				assert.equal(searchData.users[0].username, 'John Smith');
+				done();
+			});
+		});
+
+		it('should search user', function (done) {
+			socketUser.search({uid: testUid}, {query: 'john'}, function (err, searchData) {
+				assert.ifError(err);
+				assert.equal(searchData.users[0].username, 'John Smith');
+				done();
+			});
+		});
+
+		it('should error for guest', function (done) {
+			Meta.config.allowGuestUserSearching = 0;
+			socketUser.search({uid: 0}, {query: 'john'}, function (err) {
+				assert.equal(err.message, '[[error:not-logged-in]]');
+				Meta.config.allowGuestUserSearching = 1;
+				done();
+			});
+		});
+
+		it('should error with invalid data', function (done) {
+			socketUser.search({uid: testUid}, null, function (err) {
+				assert.equal(err.message, '[[error:invalid-data]]');
 				done();
 			});
 		});
