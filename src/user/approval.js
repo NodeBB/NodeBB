@@ -46,18 +46,19 @@ module.exports = function (User) {
 	};
 
 	function sendNotificationToAdmins(username, callback) {
-		notifications.create({
-			bodyShort: '[[notifications:new_register, ' + username + ']]',
-			nid: 'new_register:' + username,
-			path: '/admin/manage/registration',
-			mergeId: 'new_register'
-		}, function (err, notification) {
-			if (err || !notification) {
-				return callback(err);
+		async.waterfall([
+			function (next) {
+				notifications.create({
+					bodyShort: '[[notifications:new_register, ' + username + ']]',
+					nid: 'new_register:' + username,
+					path: '/admin/manage/registration',
+					mergeId: 'new_register'
+				}, next);
+			},
+			function (notification, next) {
+				notifications.pushGroup(notification, 'administrators', next);
 			}
-
-			notifications.pushGroup(notification, 'administrators', callback);
-		});
+		], callback);
 	}
 
 	User.acceptRegistration = function (username, callback) {
@@ -79,6 +80,12 @@ module.exports = function (User) {
 				User.setUserField(uid, 'password', userData.hashedPassword, next);
 			},
 			function (next) {
+				removeFromQueue(username, next);
+			},
+			function (next) {
+				markNotificationRead(username, next);
+			},
+			function (next) {
 				var title = meta.config.title || meta.config.browserTitle || 'NodeBB';
 				translator.translate('[[email:welcome-to, ' + title + ']]', meta.config.defaultLang, function (subject) {
 					var data = {
@@ -91,12 +98,6 @@ module.exports = function (User) {
 
 					emailer.send('registration_accepted', uid, data, next);
 				});
-			},
-			function (next) {
-				removeFromQueue(username, next);
-			},
-			function (next) {
-				markNotificationRead(username, next);
 			},
 			function (next) {
 				next(null, uid);
@@ -153,12 +154,10 @@ module.exports = function (User) {
 			},
 			function (users, next) {
 				users = users.map(function (user, index) {
-					if (!user) {
-						return null;
+					if (user) {
+						user.timestampISO = utils.toISOString(data[index].score);
+						delete user.hashedPassword;
 					}
-
-					user.timestampISO = utils.toISOString(data[index].score);
-					delete user.hashedPassword;
 
 					return user;
 				}).filter(Boolean);

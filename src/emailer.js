@@ -132,7 +132,12 @@ var fallbackTransport;
 		delete data.from_name;
 
 		winston.verbose('[emailer] Sending email to uid ' + data.uid);
-		fallbackTransport.sendMail(data, callback);
+		fallbackTransport.sendMail(data, function (err) {
+			if (err) {
+				winston.error(err);
+			}
+			callback();
+		});
 	};
 
 	function render(tpl, params, next) {

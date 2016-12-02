@@ -187,39 +187,37 @@ var plugins = require('./plugins');
 			return callback(null, []);
 		}
 
-		user.getSettings(uid, function (err, settings) {
-			if (err) {
-				return callback(err);
-			}
+		async.waterfall([
+			function (next) {
+				user.getSettings(uid, next);
+			},
+			function (settings, next) {
+				var byVotes = settings.topicPostSort === 'most_votes';
+				var sets = posts.map(function (post) {
+					return byVotes ? 'tid:' + post.tid + ':posts:votes' : 'tid:' + post.tid + ':posts';
+				});
 
-			var byVotes = settings.topicPostSort === 'most_votes';
-			var sets = posts.map(function (post) {
-				return byVotes ? 'tid:' + post.tid + ':posts:votes' : 'tid:' + post.tid + ':posts';
-			});
-
-			var uniqueSets = _.uniq(sets);
-			var method = 'sortedSetsRanks';
-			if (uniqueSets.length === 1) {
-				method = 'sortedSetRanks';
-				sets = uniqueSets[0];
-			}
-
-			var pids = posts.map(function (post) {
-				return post.pid;
-			});
-
-			db[method](sets, pids, function (err, indices) {
-				if (err) {
-					return callback(err);
+				var uniqueSets = _.uniq(sets);
+				var method = 'sortedSetsRanks';
+				if (uniqueSets.length === 1) {
+					method = 'sortedSetRanks';
+					sets = uniqueSets[0];
 				}
 
+				var pids = posts.map(function (post) {
+					return post.pid;
+				});
+
+				db[method](sets, pids, next);
+			},
+			function (indices, next) {
 				for (var i = 0; i < indices.length; ++i) {
 					indices[i] = utils.isNumber(indices[i]) ? parseInt(indices[i], 10) + 1 : 0;
 				}
 
-				callback(null, indices);
-			});
-		});
+				next(null, indices);
+			}
+		], callback);
 	};
 
 	Posts.updatePostVoteCount = function (postData, callback) {

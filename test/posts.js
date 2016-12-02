@@ -343,6 +343,55 @@ describe('Post\'s', function () {
 		});
 	});
 
+	describe('move', function () {
+		var replyPid;
+		var tid;
+		var moveTid;
+		var socketPosts = require('../src/socket.io/posts');
+
+		before(function (done) {
+			async.waterfall([
+				function (next) {
+					topics.post({
+						uid: voterUid,
+						cid: cid,
+						title: 'topic 1',
+						content: 'some content'
+					}, next);
+				},
+				function (data, next) {
+					tid = data.topicData.tid;
+					topics.post({
+						uid: voterUid,
+						cid: cid,
+						title: 'topic 2',
+						content: 'some content'
+					}, next);
+				},
+				function (data, next) {
+					moveTid = data.topicData.tid;
+					topics.reply({
+						uid: voterUid,
+						tid: tid,
+						timestamp: Date.now(),
+						content: 'A reply to move'
+					}, function (err, data) {
+						assert.ifError(err);
+						replyPid = data.pid;
+						socketPosts.movePost({uid: globalModUid}, {pid: replyPid, tid: moveTid}, next);
+					});
+				},
+				function (next) {
+					posts.getPostField(replyPid, 'tid', next);
+				},
+				function (tid, next) {
+					assert(tid, moveTid);
+					next();
+				}
+			], done);
+		});
+	});
+
 	describe('flagging a post', function () {
 		var meta = require('../src/meta');
 		var socketPosts = require('../src/socket.io/posts');

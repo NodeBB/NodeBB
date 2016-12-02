@@ -13,13 +13,9 @@ sessionController.revoke = function (req, res, next) {
 	}
 
 	var _id;
-	var uid;
+	var uid = res.locals.uid;
 	async.waterfall([
 		function (next) {
-			user.getUidByUserslug(req.params.userslug, next);
-		},
-		function (_uid, next) {
-			uid = _uid;
 			if (!uid) {
 				return next(new Error('[[error:no-session-found]]'));
 			}

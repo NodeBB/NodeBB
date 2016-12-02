@@ -253,13 +253,45 @@ describe('socket.io', function () {
 		});
 	});
 
-	it('should validate emails', function (done) {
+
+
+	describe('validation emails', function () {
 		var socketAdmin = require('../src/socket.io/admin');
-		socketAdmin.user.validateEmail({uid: adminUid}, [regularUid], function (err) {
-			assert.ifError(err);
-			user.getUserField(regularUid, 'email:confirmed', function (err, emailConfirmed) {
+		var meta = require('../src/meta');
+
+		it('should validate emails', function (done) {
+			socketAdmin.user.validateEmail({uid: adminUid}, [regularUid], function (err) {
 				assert.ifError(err);
-				assert.equal(parseInt(emailConfirmed, 10), 1);
+				user.getUserField(regularUid, 'email:confirmed', function (err, emailConfirmed) {
+					assert.ifError(err);
+					assert.equal(parseInt(emailConfirmed, 10), 1);
+					done();
+				});
+			});
+		});
+
+		it('should error with invalid uids', function (done) {
+			var socketAdmin = require('../src/socket.io/admin');
+			socketAdmin.user.sendValidationEmail({uid: adminUid}, null, function (err) {
+				assert.equal(err.message, '[[error:invalid-data]]');
+				done();
+			});
+		});
+
+		it('should error if email validation is not required', function (done) {
+			var socketAdmin = require('../src/socket.io/admin');
+			socketAdmin.user.sendValidationEmail({uid: adminUid}, [regularUid], function (err) {
+				assert.equal(err.message, '[[error:email-confirmations-are-disabled]]');
+				done();
+			});
+		});
+
+		it('should send validation email', function (done) {
+			var socketAdmin = require('../src/socket.io/admin');
+			meta.config.requireEmailConfirmation = 1;
+			socketAdmin.user.sendValidationEmail({uid: adminUid}, [regularUid], function (err) {
+				assert.ifError(err);
+				meta.config.requireEmailConfirmation = 0;
 				done();
 			});
 		});

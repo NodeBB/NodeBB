@@ -113,3 +113,57 @@ helpers.uploadFile = function (uploadEndPoint, filePath, body, jar, csrf_token, 
 		callback(err, res, body);
 	});
 };
+
+helpers.registerUser = function (data, callback) {
+	var jar = request.jar();
+	request({
+		url: nconf.get('url') + '/api/config',
+		json: true,
+		jar: jar
+	}, function (err, response, body) {
+		if (err) {
+			return callback(err);
+		}
+
+		request.post(nconf.get('url') + '/register', {
+			form: data,
+			json: true,
+			jar: jar,
+			headers: {
+				'x-csrf-token': body.csrf_token
+			}
+		}, function (err, res, body) {
+			if (err) {
+				return callback(err);
+			}
+
+			callback(null, jar);
+		});
+	});
+};
+
+//http://stackoverflow.com/a/14387791/583363
+helpers.copyFile = function (source, target, callback) {
+
+	var cbCalled = false;
+
+	var rd = fs.createReadStream(source);
+	rd.on("error", function (err) {
+		done(err);
+	});
+	var wr = fs.createWriteStream(target);
+	wr.on("error", function (err) {
+		done(err);
+	});
+	wr.on("close", function () {
+		done();
+	});
+	rd.pipe(wr);
+
+	function done(err) {
+		if (!cbCalled) {
+			callback(err);
+			cbCalled = true;
+		}
+	}
+};

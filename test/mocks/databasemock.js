@@ -138,7 +138,7 @@
 				nconf.set('base_templates_path', path.join(nconf.get('themes_path'), 'nodebb-theme-persona/templates'));
 				nconf.set('theme_templates_path', meta.config['theme:templates'] ? path.join(nconf.get('themes_path'), meta.config['theme:id'], meta.config['theme:templates']) : nconf.get('base_templates_path'));
 				nconf.set('theme_config', path.join(nconf.get('themes_path'), 'nodebb-theme-persona', 'theme.json'));
-				nconf.set('bcrypt_rounds', 4);
+				nconf.set('bcrypt_rounds', 1);
 
 				require('../../build').buildTargets(['js', 'clientCSS', 'acpCSS', 'tpl'], next);
 			},

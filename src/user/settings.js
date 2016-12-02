@@ -160,6 +160,9 @@ module.exports = function (User) {
 	};
 
 	User.setSetting = function (uid, key, value, callback) {
+		if (!parseInt(uid, 10)) {
+			return callback();
+		}
 		db.setObjectField('user:' + uid + ':settings', key, value, callback);
 	};
 };

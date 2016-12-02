@@ -72,15 +72,21 @@ SocketUser.emailConfirm = function (socket, data, callback) {
 	}
 
 	if (parseInt(meta.config.requireEmailConfirmation, 10) !== 1) {
-		callback();
+		return callback(new Error('[[error:email-confirmations-are-disabled]]'));
 	}
-	user.getUserField(socket.uid, 'email', function (err, email) {
-		if (err || !email) {
-			return callback(err);
-		}
 
-		user.email.sendValidationEmail(socket.uid, email, callback);
-	});
+	async.waterfall([
+		function (next) {
+			user.getUserField(socket.uid, 'email', next);
+		},
+		function (email, next) {
+			if (!email) {
+				return callback();
+			}
+
+			user.email.sendValidationEmail(socket.uid, email, next);
+		}
+	], callback);
 };
 
 
@@ -109,39 +115,37 @@ SocketUser.reset.commit = function (socket, data, callback) {
 	if (!data || !data.code || !data.password) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
+	var uid;
+	async.waterfall([
+		function (next) {
+			async.parallel({
+				uid: async.apply(db.getObjectField, 'reset:uid', data.code),
+				reset: async.apply(user.reset.commit, data.code, data.password)
+			}, next);
+		},
+		function (results, next) {
+			uid = results.uid;
+			events.log({
+				type: 'password-reset',
+				uid: uid,
+				ip: socket.ip
+			});
 
-	async.parallel({
-		uid: async.apply(db.getObjectField, 'reset:uid', data.code),
-		reset: async.apply(user.reset.commit, data.code, data.password)
-	}, function (err, results) {
-		if (err) {
-			return callback(err);
-		}
-
-		var uid = results.uid;
-		var now = new Date();
-		var parsedDate = now.getFullYear() + '/' + (now.getMonth() + 1) + '/' + now.getDate();
-
-		user.getUserField(uid, 'username', function (err, username) {
-			if (err) {
-				return callback(err);
-			}
-
+			user.getUserField(uid, 'username', next);
+		},
+		function (username, next) {
+			var now = new Date();
+			var parsedDate = now.getFullYear() + '/' + (now.getMonth() + 1) + '/' + now.getDate();
 			emailer.send('reset_notify', uid, {
 				username: username,
 				date: parsedDate,
 				site_title: meta.config.title || 'NodeBB',
 				subject: '[[email:reset.notify.subject]]'
 			});
-		});
 
-		events.log({
-			type: 'password-reset',
-			uid: uid,
-			ip: socket.ip
-		});
-		callback();
-	});
+			next();
+		}
+	], callback);
 };
 
 SocketUser.isFollowing = function (socket, data, callback) {
@@ -224,16 +228,10 @@ SocketUser.saveSettings = function (socket, data, callback) {
 };
 
 SocketUser.setTopicSort = function (socket, sort, callback) {
-	if (!socket.uid) {
-		return callback();
-	}
 	user.setSetting(socket.uid, 'topicPostSort', sort, callback);
 };
 
 SocketUser.setCategorySort = function (socket, sort, callback) {
-	if (!socket.uid) {
-		return callback();
-	}
 	user.setSetting(socket.uid, 'categoryTopicSort', sort, callback);
 };
 

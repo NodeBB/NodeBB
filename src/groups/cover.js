@@ -10,7 +10,6 @@ var mime = require('mime');
 var winston = require('winston');
 
 var db = require('../database');
-var file = require('../file');
 var uploadsController = require('../controllers/uploads');
 
 module.exports = function (Groups) {
@@ -25,7 +24,7 @@ module.exports = function (Groups) {
 	Groups.updateCover = function (uid, data, callback) {
 
 		// Position only? That's fine
-		if (!data.imageData && data.position) {
+		if (!data.imageData && !data.file && data.position) {
 			return Groups.updateCoverPosition(data.groupName, data.position, callback);
 		}
 
@@ -66,26 +65,19 @@ module.exports = function (Groups) {
 				Groups.setGroupField(data.groupName, 'cover:thumb:url', uploadData.url, next);
 			},
 			function (next) {
-				fs.unlink(tempPath, next);	// Delete temporary file
+				if (data.position) {
+					Groups.updateCoverPosition(data.groupName, data.position, next);
+				} else {
+					next(null);
+				}
 			}
 		], function (err) {
-			if (err) {
-				return fs.unlink(tempPath, function (unlinkErr) {
-					if (unlinkErr) {
-						winston.error(unlinkErr);
-					}
-
-					callback(err);	// send back original error
-				});
-			}
-
-			if (data.position) {
-				Groups.updateCoverPosition(data.groupName, data.position, function (err) {
-					callback(err, {url: url});
-				});
-			} else {
+			fs.unlink(tempPath, function (unlinkErr) {
+				if (unlinkErr) {
+					winston.error(unlinkErr);
+				}
 				callback(err, {url: url});
-			}
+			});
 		});
 	};
 

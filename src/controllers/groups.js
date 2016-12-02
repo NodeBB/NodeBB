@@ -162,14 +162,24 @@ groupsController.members = function (req, res, callback) {
 groupsController.uploadCover = function (req, res, next) {
 	var params = JSON.parse(req.body.params);
 
-	groups.updateCover(req.uid, {
-		file: req.files.files[0].path,
-		groupName: params.groupName
-	}, function (err, image) {
+	async.waterfall([
+		function (next) {
+			groups.ownership.isOwner(req.uid, params.groupName, next);
+		},
+		function (isOwner, next) {
+			if (!isOwner) {
+				return next(new Error('[[error:no-privileges]]'));
+			}
+
+			groups.updateCover(req.uid, {
+				file: req.files.files[0].path,
+				groupName: params.groupName
+			}, next);
+		}
+	], function (err, image) {
 		if (err) {
 			return next(err);
 		}
-
 		res.json([{url: image.url.startsWith('http') ? image.url : nconf.get('relative_path') + image.url}]);
 	});
 };

@@ -49,6 +49,30 @@ middleware.authenticate = function (req, res, next) {
 	controllers.helpers.notAllowed(req, res);
 };
 
+middleware.ensureSelfOrGlobalPrivilege = function (req, res, next) {
+	/*
+		The "self" part of this middleware hinges on you having used
+		middleware.exposeUid prior to invoking this middleware.
+	*/
+	if (req.user) {
+		if (req.user.uid === res.locals.uid) {
+			return next();
+		}
+
+		user.isAdminOrGlobalMod(req.uid, function (err, ok) {
+			if (err) {
+				return next(err);
+			} else if (ok) {
+				return next();
+			} else {
+				controllers.helpers.notAllowed(req, res);
+			}
+		});
+	} else {
+		controllers.helpers.notAllowed(req, res);
+	}
+};
+
 middleware.pageView = function (req, res, next) {
 	analytics.pageView({
 		ip: req.ip,

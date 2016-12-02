@@ -533,8 +533,8 @@ describe('Controllers', function () {
 				}
 			}, function (err, res, body) {
 				assert.ifError(err);
-				assert.equal(res.statusCode, 500);
-				assert.equal(body, '[[error:no-session-found]]');
+				assert.equal(res.statusCode, 403);
+				assert.equal(body, '{"path":"/user/doesnotexist/session/1112233","loggedIn":true,"title":"[[global:403.title]]"}');
 				done();
 			});
 		});
@@ -794,7 +794,14 @@ describe('Controllers', function () {
 			user.create({username: 'follower'}, function (err, _uid) {
 				assert.ifError(err);
 				uid = _uid;
-				socketUser.follow({uid: uid}, {uid: fooUid}, done);
+				socketUser.follow({uid: uid}, {uid: fooUid}, function (err) {
+					assert.ifError(err);
+					socketUser.isFollowing({uid: uid}, {uid: fooUid}, function (err, isFollowing) {
+						assert.ifError(err);
+						assert(isFollowing);
+						done();
+					});
+				});
 			});
 		});
 
@@ -825,6 +832,25 @@ describe('Controllers', function () {
 					assert.equal(body.users.length, 0);
 					done();
 				});
+			});
+		});
+	});
+
+	describe('post redirect', function () {
+		it('should 404 for invalid pid', function (done) {
+			request(nconf.get('url') + '/post/fail', function (err, res) {
+				assert.ifError(err);
+				assert.equal(res.statusCode, 404);
+				done();
+			});
+		});
+
+		it('should return correct post path', function (done) {
+			request(nconf.get('url') + '/api/post/' + pid, function (err, res, body) {
+				assert.ifError(err);
+				assert.equal(res.statusCode, 308);
+				assert.equal(body, '"/topic/1/test-topic-title/1"');
+				done();
 			});
 		});
 	});
