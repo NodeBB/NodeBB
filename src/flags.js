@@ -341,9 +341,19 @@ Flags.getHistory = function (flagId, callback) {
 				// Deserialise field object
 				var fields = entry.value[1].map(function (field) {
 					field = field.toString().split(':');
+
+					switch (field[0]) {
+						case 'state':
+							field[1] = field[1] === undefined ? null : '[[flags:state-' + field[1] + ']]';
+							break;
+
+						default:
+							field[1] = field[1] === undefined ? null : field[1];
+							break;
+					}
 					return {
 						"attribute": field[0],
-						"value": field[1] === undefined ? null : field[1]
+						"value": field[1]
 					};
 				});
 
