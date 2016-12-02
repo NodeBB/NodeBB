@@ -223,4 +223,33 @@ describe('Translator static methods', function () {
 			done();
 		});
 	});
+	describe('.escape', function () {
+		it('should escape translation patterns within text', function (done) {
+			assert.strictEqual(
+				Translator.escape('some nice text [[global:home]] here'),
+				'some nice text \\[\\[global:home\\]\\] here'
+			);
+			done();
+		});
+	});
+
+	describe('.unescape', function () {
+		it('should unescape escaped translation patterns within text', function (done) {
+			assert.strictEqual(
+				Translator.unescape('some nice text \\[\\[global:home\\]\\] here'),
+				'some nice text [[global:home]] here'
+			);
+			done();
+		});
+	});
+
+	describe('.compile', function () {
+		it('should create a translator pattern from a key and list of arguments', function (done) {
+			assert.strictEqual(
+				Translator.compile('amazing:cool', 'awesome', 'great'),
+				'[[amazing:cool, awesome, great]]'
+			);
+			done();
+		});
+	});
 });

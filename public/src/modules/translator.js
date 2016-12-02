@@ -395,11 +395,13 @@
 
 		/**
 		 * Construct a translator pattern
+		 * @param {string} name - Translation name
+		 * @param {...string} arg - Optional argument for the pattern
 		 */
 		Translator.compile = function compile() {
-			var args = Array.prototype.slice.call(arguments, 0);
+		var args = Array.prototype.slice.call(arguments, 0);
 
-			return '[[' + args.join(', ') + ']]';
+		return '[[' + args.join(', ') + ']]';
 		};
 
 		return Translator;
