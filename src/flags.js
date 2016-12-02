@@ -290,14 +290,18 @@ Flags.targetExists = function (type, id, callback) {
 Flags.update = function (flagId, uid, changeset, callback) {
 	// Retrieve existing flag data to compare for history-saving purposes
 	var fields = ['state', 'assignee'];
+	var history = [];
 
 	async.waterfall([
 		async.apply(db.getObjectFields.bind(db), 'flag:' + flagId, fields),
 		function (current, next) {
-			for(var prop in changeset) {
+			for (var prop in changeset) {
 				if (changeset.hasOwnProperty(prop)) {
 					if (current[prop] === changeset[prop]) {
 						delete changeset[prop];
+					} else {
+						// Append to history payload
+						history.push(prop + ':' + changeset[prop]);
 					}
 				}
 			}
@@ -311,7 +315,7 @@ Flags.update = function (flagId, uid, changeset, callback) {
 				// Save new object to db (upsert)
 				async.apply(db.setObject, 'flag:' + flagId, changeset),
 				// Append history
-				async.apply(Flags.appendHistory, flagId, uid, Object.keys(changeset))
+				async.apply(Flags.appendHistory, flagId, uid, history)
 			], function (err, data) {
 				return next(err);
 			});
@@ -334,9 +338,18 @@ Flags.getHistory = function (flagId, callback) {
 
 				uids.push(entry.value[0]);
 
+				// Deserialise field object
+				var fields = entry.value[1].map(function (field) {
+					field = field.toString().split(':');
+					return {
+						"attribute": field[0],
+						"value": field[1] === undefined ? null : field[1]
+					};
+				});
+
 				return {
 					uid: entry.value[0],
-					fields: entry.value[1],
+					fields: fields,
 					datetime: entry.score,
 					datetimeISO: new Date(entry.score).toISOString()
 				};
@@ -349,6 +362,7 @@ Flags.getHistory = function (flagId, callback) {
 			return callback(err);
 		}
 
+		// Append user data to each history event
 		history = history.map(function (event, idx) {
 			event.user = users[idx];
 			return event;
