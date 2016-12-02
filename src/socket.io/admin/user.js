@@ -220,33 +220,37 @@ User.deleteInvitation = function (socket, data, callback) {
 };
 
 User.acceptRegistration = function (socket, data, callback) {
-	user.acceptRegistration(data.username, function (err, uid) {
-		if (err) {
-			return callback(err);
+	async.waterfall([
+		function (next) {
+			user.acceptRegistration(data.username, next);
+		},
+		function (uid, next) {
+			events.log({
+				type: 'registration-approved',
+				uid: socket.uid,
+				ip: socket.ip,
+				targetUid: uid
+			});
+			next(null, uid);
 		}
-		events.log({
-			type: 'registration-approved',
-			uid: socket.uid,
-			ip: socket.ip,
-			targetUid: uid,
-		});
-		callback();
-	});
+	], callback);
 };
 
 User.rejectRegistration = function (socket, data, callback) {
-	user.rejectRegistration(data.username, function (err) {
-		if (err) {
-			return callback(err);
+	async.waterfall([
+		function (next) {
+			user.rejectRegistration(data.username, next);
+		},
+		function (next) {
+			events.log({
+				type: 'registration-rejected',
+				uid: socket.uid,
+				ip: socket.ip,
+				username: data.username,
+			});
+			next();
 		}
-		events.log({
-			type: 'registration-rejected',
-			uid: socket.uid,
-			ip: socket.ip,
-			username: data.username,
-		});
-		callback();
-	});
+	], callback);
 };
 
 User.restartJobs = function (socket, data, callback) {

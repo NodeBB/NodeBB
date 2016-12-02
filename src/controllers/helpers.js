@@ -26,13 +26,15 @@ helpers.notAllowed = function (req, res, error) {
 			if (res.locals.isAPI) {
 				res.status(403).json({
 					path: req.path.replace(/^\/api/, ''),
-					loggedIn: !!req.uid, error: error,
+					loggedIn: !!req.uid,
+					error: error,
 					title: '[[global:403.title]]'
 				});
 			} else {
 				res.status(403).render('403', {
 					path: req.path,
-					loggedIn: !!req.uid, error: error,
+					loggedIn: !!req.uid,
+					error: error,
 					title: '[[global:403.title]]'
 				});
 			}

@@ -79,6 +79,12 @@ module.exports = function (User) {
 				User.setUserField(uid, 'password', userData.hashedPassword, next);
 			},
 			function (next) {
+				removeFromQueue(username, next);
+			},
+			function (next) {
+				markNotificationRead(username, next);
+			},
+			function (next) {
 				var title = meta.config.title || meta.config.browserTitle || 'NodeBB';
 				translator.translate('[[email:welcome-to, ' + title + ']]', meta.config.defaultLang, function (subject) {
 					var data = {
@@ -91,12 +97,6 @@ module.exports = function (User) {
 
 					emailer.send('registration_accepted', uid, data, next);
 				});
-			},
-			function (next) {
-				removeFromQueue(username, next);
-			},
-			function (next) {
-				markNotificationRead(username, next);
 			},
 			function (next) {
 				next(null, uid);

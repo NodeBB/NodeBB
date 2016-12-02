@@ -661,6 +661,80 @@ describe('User', function () {
 		});
 	});
 
+	describe('approval queue', function () {
+		var socketAdmin = require('../src/socket.io/admin');
+
+		var oldRegistrationType;
+		var adminUid;
+		before(function (done) {
+			oldRegistrationType = Meta.config.registrationType;
+			Meta.config.registrationType = 'admin-approval';
+			User.create({username: 'admin', password: '123456'}, function (err, uid) {
+				assert.ifError(err);
+				adminUid = uid;
+				groups.join('administrators', uid, done);
+			});
+		});
+
+		after(function (done) {
+			Meta.config.registrationType = oldRegistrationType;
+			done();
+		});
+
+		it('should add user to approval queue', function (done) {
+			helpers.registerUser({
+				username: 'rejectme',
+				password: '123456',
+				email: 'reject@me.com'
+			}, function (err) {
+				assert.ifError(err);
+				helpers.loginUser('admin', '123456', function (err, jar) {
+					assert.ifError(err);
+					request(nconf.get('url') + '/api/admin/manage/registration', {jar: jar, json: true}, function (err, res, body) {
+						assert.ifError(err);
+						assert.equal(body.users[0].username, 'rejectme');
+						assert.equal(body.users[0].email, 'reject@me.com');
+						done();
+					});
+				});
+			});
+		});
+
+		it('should reject user registration', function (done) {
+			socketAdmin.user.rejectRegistration({uid: adminUid}, {username: 'rejectme'}, function (err) {
+				assert.ifError(err);
+				User.getRegistrationQueue(0, -1, function (err, users) {
+					assert.ifError(err);
+					assert.equal(users.length, 0);
+					done();
+				});
+			});
+		});
+
+		it('should accept user registration', function (done) {
+			helpers.registerUser({
+				username: 'acceptme',
+				password: '123456',
+				email: 'accept@me.com'
+			}, function (err) {
+				assert.ifError(err);
+				socketAdmin.user.acceptRegistration({uid: adminUid}, {username: 'acceptme'}, function (err, uid) {
+					assert.ifError(err);
+					User.exists(uid, function (err, exists) {
+						assert.ifError(err);
+						assert(exists);
+						User.getRegistrationQueue(0, -1, function (err, users) {
+							assert.ifError(err);
+							assert.equal(users.length, 0);
+							done();
+						});
+					});
+				});
+			});
+		});
+
+	});
+
 
 	after(function (done) {
 		db.emptydb(done);
