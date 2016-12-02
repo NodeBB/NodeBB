@@ -684,6 +684,29 @@ describe('User', function () {
 				});
 			});
 		});
+
+		it('should fail if data is invalid', function (done) {
+			socketUser.emailExists({uid: testUid}, null, function (err) {
+				assert.equal(err.message, '[[error:invalid-data]]');
+				done();
+			});
+		});
+
+		it('should return true if email exists', function (done) {
+			socketUser.emailExists({uid: testUid}, {email: 'john@example.com'}, function (err, exists) {
+				assert.ifError(err);
+				assert(exists);
+				done();
+			});
+		});
+
+		it('should return false if email does not exist', function (done) {
+			socketUser.emailExists({uid: testUid}, {email: 'does@not.exist'}, function (err, exists) {
+				assert.ifError(err);
+				assert(!exists);
+				done();
+			});
+		});
 	});
 
 	describe('approval queue', function () {

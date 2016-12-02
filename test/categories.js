@@ -390,7 +390,27 @@ describe('Categories', function () {
 		});
 	});
 
+	it('should get active users', function (done) {
+		Categories.create({
+			name: 'test'
+		}, function (err, category) {
+			assert.ifError(err);
+			Topics.post({
+				uid: posterUid,
+				cid: category.cid,
+				title: 'Test Topic Title',
+				content: 'The content of test topic'
+			}, function (err) {
+				assert.ifError(err);
+				Categories.getActiveUsers(category.cid, function (err, uids) {
+					assert.ifError(err);
+					assert.equal(uids[0], posterUid);
+					done();
+				});
+			});
+		});
 
+	});
 
 
 	after(function (done) {

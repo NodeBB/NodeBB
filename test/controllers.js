@@ -829,6 +829,25 @@ describe('Controllers', function () {
 		});
 	});
 
+	describe('post redirect', function () {
+		it('should 404 for invalid pid', function (done) {
+			request(nconf.get('url') + '/post/fail', function (err, res) {
+				assert.ifError(err);
+				assert.equal(res.statusCode, 404);
+				done();
+			});
+		});
+
+		it('should return correct post path', function (done) {
+			request(nconf.get('url') + '/api/post/' + pid, function (err, res, body) {
+				assert.ifError(err);
+				assert.equal(res.statusCode, 308);
+				assert.equal(body, '"/topic/1/test-topic-title/1"');
+				done();
+			});
+		});
+	});
+
 	after(function (done) {
 		var analytics = require('../src/analytics');
 		analytics.writeData(function (err) {

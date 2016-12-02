@@ -104,19 +104,20 @@ User.sendValidationEmail = function (socket, uids, callback) {
 		return callback(new Error('[[error:email-confirmations-are-disabled]]'));
 	}
 
-	user.getUsersFields(uids, ['uid', 'email'], function (err, usersData) {
-		if (err) {
-			return callback(err);
+	async.waterfall([
+		function (next) {
+			user.getUsersFields(uids, ['uid', 'email'], next);
+		},
+		function (usersData, next) {
+			async.eachLimit(usersData, 50, function (userData, next) {
+				if (userData.email && userData.uid) {
+					user.email.sendValidationEmail(userData.uid, userData.email, next);
+				} else {
+					next();
+				}
+			}, next);
 		}
-
-		async.eachLimit(usersData, 50, function (userData, next) {
-			if (userData.email && userData.uid) {
-				user.email.sendValidationEmail(userData.uid, userData.email, next);
-			} else {
-				next();
-			}
-		}, callback);
-	});
+	], callback);
 };
 
 User.sendPasswordResetEmail = function (socket, uids, callback) {
