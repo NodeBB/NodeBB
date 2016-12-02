@@ -30,7 +30,7 @@ Flags.get = function (flagId, callback) {
 		function (data, next) {
 			// Second stage
 			async.parallel({
-				userObj: async.apply(user.getUserFields, data.base.uid, ['username', 'picture']),
+				userObj: async.apply(user.getUserFields, data.base.uid, ['username', 'userslug', 'picture']),
 				targetObj: async.apply(Flags.getTarget, data.base.type, data.base.targetId, data.base.uid)
 			}, function (err, payload) {
 				// Final object return construction
@@ -40,12 +40,7 @@ Flags.get = function (flagId, callback) {
 					target: payload.targetObj,
 					history: data.history,
 					notes: data.notes,
-					reporter: {
-						username: payload.userObj.username,
-						picture: payload.userObj.picture,
-						'icon:bgColor': payload.userObj['icon:bgColor'],
-						'icon:text': payload.userObj['icon:text']
-					}
+					reporter: payload.userObj
 				}));
 			});
 		}
