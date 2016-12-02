@@ -1,0 +1,29 @@
+{
+	"installed": "Installed",
+	"active": "Active",
+	"inactive": "Inactive",
+	"out-of-date": "Out of Date",
+	"find-plugins": "Find Plugins",
+
+	"plugin-search": "Plugin Search",
+	"plugin-search-placeholder": "Search for plugin...",
+	"reorder-plugins": "Re-order Plugins",
+	"order-active": "Order Active Plugins",
+	"dev-interested": "Interested in writing plugins for NodeBB?",
+	"docs-info": "Full documentation regarding plugin authoring can be found in the <a target=\"_blank\" href=\"https://docs.nodebb.org/en/latest/plugins/create.html\">NodeBB Docs Portal</a>.",
+
+	"order.description": "Certain plugins work ideally when they are initialised before/after other plugins.",
+	"order.explanation": "Plugins load in the order specified here, from top to bottom",
+	
+	"plugin-item.themes": "Themes",
+	"plugin-item.deactivate": "Deactivate",
+	"plugin-item.activate": "Activate",
+	"plugin-item.uninstall": "Uninstall",
+	"plugin-item.settings": "Settings",
+	"plugin-item.installed": "Installed",
+	"plugin-item.latest": "Latest",
+	"plugin-item.upgrade": "Upgrade",
+	"plugin-item.more-info": "For more information:",
+	"plugin-item.unknown": "Unknown",
+	"plugin-item.unknown-explanation": "The state of this plugin could not be determined, possibly due to a misconfiguration error."
+}

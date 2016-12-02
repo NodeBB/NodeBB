@@ -1,0 +1,13 @@
+{
+	"rewards": "Rewards",
+	"condition-if-users": "If User's",
+	"condition-is": "Is:",
+	"condition-then": "Then:",
+	"max-claims": "Amount of times reward is claimable",
+	"zero-infinite": "Enter 0 for infinite",
+	"delete": "Delete",
+	"enable": "Enable",
+	"disable": "Disable",
+	"control-panel": "Rewards Control",
+	"new-reward": "New Reward"
+}
