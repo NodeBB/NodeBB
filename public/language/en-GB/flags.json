@@ -3,6 +3,7 @@
 	"state": "State",
 	"reporter": "Reporter",
 	"reported-at": "Reported At",
+	"description": "Description",
 	"no-flags": "Hooray! No flags found.",
 	"assignee": "Assignee",
 	"update": "Update",
