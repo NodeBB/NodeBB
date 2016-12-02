@@ -127,14 +127,13 @@ describe('new Translator(language)', function () {
 			});
 		});
 
-		it('should properly escape % and ,', function (done) {
+		it('should properly escape and ignore % and \\, in arguments', function (done) {
 			var translator = Translator.create('en-GB');
 
-			var title = 'Test 1, 2, 3 % salmon';
-			title = title.replace(/%/g, '&#37;').replace(/,/g, '&#44;');
+			var title = 'Test 1\\, 2\\, 3 % salmon';
 			var key = "[[topic:composer.replying_to, " + title + "]]";
 			translator.translate(key).then(function (translated) {
-				assert.strictEqual(translated, 'Replying to Test 1, 2, 3 % salmon');
+				assert.strictEqual(translated, 'Replying to Test 1&#44; 2&#44; 3 &#37; salmon');
 				done();
 			});
 		});

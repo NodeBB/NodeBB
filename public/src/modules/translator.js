@@ -105,7 +105,7 @@
 					} else if (text.slice(i, i + 2) === ']]') {
 						level -= 1;
 						i += 1;
-					} else if (level === 0 && text[i] === ',') {
+					} else if (level === 0 && text[i] === ',' && text[i - 1] !== '\\') {
 						arr.push(text.slice(brk, i).trim());
 						i += 1;
 						brk = i;
@@ -260,7 +260,8 @@
 				}
 				var out = translated;
 				translatedArgs.forEach(function (arg, i) {
-					out = out.replace(new RegExp('%' + (i + 1), 'g'), arg);
+					var escaped = arg.replace(/%/g, '&#37;').replace(/\\,/g, '&#44;');
+					out = out.replace(new RegExp('%' + (i + 1), 'g'), escaped);
 				});
 				return out;
 			});
