@@ -794,7 +794,14 @@ describe('Controllers', function () {
 			user.create({username: 'follower'}, function (err, _uid) {
 				assert.ifError(err);
 				uid = _uid;
-				socketUser.follow({uid: uid}, {uid: fooUid}, done);
+				socketUser.follow({uid: uid}, {uid: fooUid}, function (err) {
+					assert.ifError(err);
+					socketUser.isFollowing({uid: uid}, {uid: fooUid}, function (err, isFollowing) {
+						assert.ifError(err);
+						assert(isFollowing);
+						done();
+					});
+				});
 			});
 		});
 

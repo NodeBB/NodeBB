@@ -707,6 +707,102 @@ describe('User', function () {
 				done();
 			});
 		});
+
+		it('should error if requireEmailConfirmation is disabled', function (done) {
+			socketUser.emailConfirm({uid: testUid}, {}, function (err) {
+				assert.equal(err.message, '[[error:email-confirmations-are-disabled]]');
+				done();
+			});
+		});
+
+		it('should send email confirm', function (done) {
+			Meta.config.requireEmailConfirmation = 1;
+			socketUser.emailConfirm({uid: testUid}, {}, function (err) {
+				assert.ifError(err);
+				Meta.config.requireEmailConfirmation = 0;
+				done();
+			});
+		});
+
+		it('should send reset email', function (done) {
+			socketUser.reset.send({uid: 0}, 'john@example.com', function (err) {
+				assert.ifError(err);
+				done();
+			});
+		});
+
+		it('should return invalid-data error', function (done) {
+			socketUser.reset.send({uid: 0}, null, function (err) {
+				assert.equal(err.message, '[[error:invalid-data]]');
+				done();
+			});
+		});
+
+		it('should not error', function (done) {
+			socketUser.reset.send({uid: 0}, 'doestnot@exist.com', function (err) {
+				assert.ifError(err);
+				done();
+			});
+		});
+
+		it('should commit reset', function (done) {
+			db.getObject('reset:uid', function (err, data) {
+				assert.ifError(err);
+				var code = Object.keys(data)[0];
+				socketUser.reset.commit({uid: 0}, {code: code, password: 'swordfish'}, function (err) {
+					assert.ifError(err);
+					done();
+				});
+			});
+		});
+
+		it('should save user settings', function (done) {
+			var data = {
+				uid: 1,
+				settings: {
+					bootswatchSkin: 'default',
+					homePageRoute: 'none',
+					homePageCustom: '',
+					openOutgoingLinksInNewTab: 0,
+					scrollToMyPost: 1,
+					delayImageLoading: 1,
+					userLang: 'en-GB',
+					usePagination: 1,
+					topicsPerPage: '10',
+					postsPerPage: '5',
+					showemail: 1,
+					showfullname: 1,
+					restrictChat: 0,
+					followTopicsOnCreate: 1,
+					followTopicsOnReply: 1,
+					notificationSound: '',
+					incomingChatSound: '',
+					outgoingChatSound: ''
+				}
+			};
+			socketUser.saveSettings({uid: testUid}, data, function (err) {
+				assert.ifError(err);
+				done();
+			});
+		});
+
+		it('should set moderation note', function (done) {
+			User.create({username: 'noteadmin'}, function (err, adminUid) {
+				assert.ifError(err);
+				groups.join('administrators', adminUid, function (err) {
+					assert.ifError(err);
+					socketUser.setModerationNote({uid: adminUid}, {uid: testUid, note: 'this is a test user'}, function (err) {
+						assert.ifError(err);
+						User.getUserField(testUid, 'moderationNote', function (err, note) {
+							assert.ifError(err);
+							assert.equal(note, 'this is a test user');
+							done();
+						});
+					});
+				});
+			});
+
+		});
 	});
 
 	describe('approval queue', function () {
