@@ -52,7 +52,9 @@ middleware.authenticate = function (req, res, next) {
 middleware.ensureGlobalPrivilege = function (req, res, next) {
 	if (req.user) {
 		user.isAdminOrGlobalMod(req.uid, function (err, ok) {
-			if (ok) {
+			if (err) {
+				return next(err);
+			} else if (ok) {
 				return next();
 			} else {
 				controllers.helpers.notAllowed(req, res);
