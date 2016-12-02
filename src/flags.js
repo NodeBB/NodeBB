@@ -53,8 +53,31 @@ Flags.list = function (filters, callback) {
 		filters = {};
 	}
 
+	var sets = [];
+	if (Object.keys(filters).length > 0) {
+		for (var type in filters) {
+			switch (type) {
+				case 'type':
+					sets.push('flags:byType:' + filters[type]);
+					break;
+				
+				case 'reporterId':
+					sets.push('flags:byReporter:' + filters[type]);
+					break;
+			}
+		}
+
+	}
+	sets = sets.length ? sets : ['flags:datetime'];	// No filter default
+
 	async.waterfall([
-		async.apply(db.getSortedSetRevRange.bind(db), 'flags:datetime', 0, 19),
+		function (next) {
+			if (sets.length === 1) {
+				db.getSortedSetRevRange(sets[0], 0, 19, next);
+			} else {
+				db.getSortedSetRevIntersect({sets: sets, start: 0, stop: -1, aggregate: 'MAX'}, next);
+			}
+		},
 		function (flagIds, next) {
 			async.map(flagIds, function (flagId, next) {
 				async.waterfall([
@@ -197,8 +220,10 @@ Flags.create = function (type, id, uid, reason, callback) {
 					uid: uid,
 					datetime: Date.now()
 				})),
-				async.apply(db.sortedSetAdd.bind(db), 'flags:datetime', Date.now(), flagId),
-				async.apply(db.setObjectField.bind(db), 'flagHash:flagId', [type, id, uid].join(':'), flagId)
+				async.apply(db.sortedSetAdd.bind(db), 'flags:datetime', Date.now(), flagId),	// by time, the default
+				async.apply(db.sortedSetAdd.bind(db), 'flags:byReporter:' + uid, Date.now(), flagId),	// by reporter
+				async.apply(db.sortedSetAdd.bind(db), 'flags:byType:' + type, Date.now(), flagId),	// by flag type
+				async.apply(db.setObjectField.bind(db), 'flagHash:flagId', [type, id, uid].join(':'), flagId)	// save hash for existence checking
 			], function (err, data) {
 				if (err) {
 					return next(err);

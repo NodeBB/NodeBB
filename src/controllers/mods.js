@@ -25,7 +25,17 @@ modsController.flags.list = function (req, res, next) {
 			res.locals.cids = results.moderatedCids;
 		}
 
-		flags.list({}, function (err, flags) {
+		// Parse query string params for filters
+		var valid = ['reporterId', 'type'];
+		var filters = valid.reduce(function (memo, cur) {
+			if (req.query.hasOwnProperty(cur)) {
+				memo[cur] = req.query[cur];
+			}
+
+			return memo;
+		}, {});
+
+		flags.list(filters, function (err, flags) {
 			if (err) {
 				return next(err);
 			}

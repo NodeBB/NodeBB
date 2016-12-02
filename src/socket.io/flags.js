@@ -67,7 +67,7 @@ SocketFlags.create = function (socket, data, callback) {
 
 			flags.create('post', post.pid, socket.uid, data.reason, next);
 		},
-		function (next) {
+		function (flagObj, next) {
 			async.parallel({
 				post: function (next) {
 					posts.parsePost(post, next);

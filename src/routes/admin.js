@@ -56,7 +56,6 @@ function addRoutes(router, middleware, controllers) {
 	router.get('/manage/categories/:category_id/analytics', middlewares, controllers.admin.categories.getAnalytics);
 
 	router.get('/manage/tags', middlewares, controllers.admin.tags.get);
-	router.get('/manage/flags', middlewares, controllers.admin.flags.get);
 	router.get('/manage/ip-blacklist', middlewares, controllers.admin.blacklist.get);
 
 	router.get('/manage/users', middlewares, controllers.admin.users.sortByJoinDate);

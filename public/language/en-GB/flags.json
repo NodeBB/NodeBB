@@ -9,6 +9,13 @@
 	"update": "Update",
 	"updated": "Updated",
 
+	"filters": "Filter Options",
+	"filter-reporterId": "Reporter UID",
+	"filter-type": "Flag Type",
+	"filter-type-all": "All Content",
+	"filter-type-post": "Post",
+	"apply-filters": "Apply Filters",
+
 	"notes": "Flag Notes",
 	"add-note": "Add Note",
 	"no-notes": "No shared notes.",

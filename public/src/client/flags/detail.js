@@ -2,7 +2,7 @@
 
 /* globals define */
 
-define('forum/flags/detail', ['components', 'translator'], function (components, translator) {
+define('forum/flags/detail', ['forum/flags/list', 'components', 'translator'], function (FlagsList, components, translator) {
 	var Flags = {};
 
 	Flags.init = function () {
@@ -44,6 +44,8 @@ define('forum/flags/detail', ['components', 'translator'], function (components,
 					break;
 			}
 		});
+
+		FlagsList.enableFilterForm();
 	};
 
 	Flags.reloadNotes = function (notes) {
