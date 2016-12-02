@@ -49,6 +49,20 @@ middleware.authenticate = function (req, res, next) {
 	controllers.helpers.notAllowed(req, res);
 };
 
+middleware.ensureGlobalPrivilege = function (req, res, next) {
+	if (req.user) {
+		user.isAdminOrGlobalMod(req.uid, function (err, ok) {
+			if (ok) {
+				return next();
+			} else {
+				controllers.helpers.notAllowed(req, res);
+			}
+		});
+	} else {
+		controllers.helpers.notAllowed(req, res);
+	}
+};
+
 middleware.pageView = function (req, res, next) {
 	analytics.pageView({
 		ip: req.ip,
