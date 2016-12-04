@@ -115,7 +115,7 @@ module.exports = function (redisClient, module) {
 			}
 			var objects = [];
 			for(var i = 0; i < data.length; i += 2) {
-				objects.push({value: data[i], score: parseInt(data[i + 1], 10)});
+				objects.push({value: data[i], score: parseFloat(data[i + 1])});
 			}
 			callback(null, objects);
 		});
@@ -144,7 +144,7 @@ module.exports = function (redisClient, module) {
 			}
 			var objects = [];
 			for(var i = 0; i < data.length; i += 2) {
-				objects.push({value: data[i], score: parseInt(data[i + 1], 10)});
+				objects.push({value: data[i], score: parseFloat(data[i + 1])});
 			}
 			callback(null, objects);
 		});
@@ -195,7 +195,7 @@ module.exports = function (redisClient, module) {
 
 	module.sortedSetScore = function (key, value, callback) {
 		redisClient.zscore(key, value, function (err, score) {
-			callback(err, !err ? parseInt(score, 10) : undefined);
+			callback(err, !err ? parseFloat(score) : undefined);
 		});
 	};
 
@@ -289,7 +289,7 @@ module.exports = function (redisClient, module) {
 			results = results[1] || [];
 			var objects = [];
 			for(var i = 0; i < results.length; i += 2) {
-				objects.push({value: results[i], score: parseInt(results[i + 1], 10)});
+				objects.push({value: results[i], score: parseFloat(results[i + 1])});
 			}
 			callback(null, objects);
 		});
@@ -297,7 +297,7 @@ module.exports = function (redisClient, module) {
 
 	module.sortedSetIncrBy = function (key, increment, value, callback) {
 		redisClient.zincrby(key, increment, value, function (err, newValue) {
-			callback(err, !err ? parseInt(newValue, 10) : undefined);
+			callback(err, !err ? parseFloat(newValue) : undefined);
 		});
 	};
 
