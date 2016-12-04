@@ -1,0 +1,42 @@
+{
+	"forum-traffic": "Forum Traffic",
+	"page-views": "Page Views",
+	"unique-visitors": "Unique Visitors",
+	"page-views-last-month": "Page views Last Month",
+	"page-views-this-month": "Page views This Month",
+	"page-views-last-day": "Page views in last 24 hours",
+
+	"stats.day": "Day",
+	"stats.week": "Week",
+	"stats.month": "Month",
+	"stats.all": "All Time",
+	
+	"updates": "Updates",
+	"running-version": "You are running <strong>NodeBB v<span id=\"version\">%1</span></strong>.",
+	"keep-updated": "Always make sure that your NodeBB is up to date for the latest security patches and bug fixes.",
+
+	"notices": "Notices",
+
+	"control-panel": "System Control",
+	"reload": "Reload",
+	"restart": "Restart",
+	"restart-warning": "Reloading or Restarting your NodeBB will drop all existing connections for a few seconds.",
+	"maintenance-mode": "Maintenance Mode",
+	"maintenance-mode-title": "Click here to set up maintenance mode for NodeBB",
+	"realtime-chart-updates": "Realtime Chart Updates",
+
+	"active-users": "Active Users",
+
+	"anonymous-registered-users": "Anonymous vs Registered Users",
+	"anonymous": "Anonymous",
+	"registered": "Registered",
+
+	"user-presence": "User Presence",
+	"on-categories": "On categories list",
+	"reading-posts": "Reading posts",
+	"browsing-topics": "Browsing topics",
+	"recent": "Recent",
+	"unread": "Unread",
+
+	"high-presence-topics": "High Presence Topics"
+}
