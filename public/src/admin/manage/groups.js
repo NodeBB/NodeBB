@@ -102,8 +102,10 @@ define('admin/manage/groups', [
 				templates.parse('admin/manage/groups', 'groups', {
 					groups: groups
 				}, function (html) {
-					groupsEl.find('[data-groupname]').remove();
-					groupsEl.find('tr').after(html);
+					translator.translate(html, function (html) {
+						groupsEl.find('[data-groupname]').remove();
+						groupsEl.find('tr').after(html);
+					});
 				});
 			});
 		}

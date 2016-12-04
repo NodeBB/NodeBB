@@ -336,25 +336,25 @@ define('admin/manage/users', ['translator'], function (translator) {
 					}
 
 					templates.parse('admin/manage/users', 'users', data, function (html) {
-						html = $(html);
-						$('.users-table tr').not(':first').remove();
-						$('.users-table tr').first().after(html);
-						html.find('.timeago').timeago();
-						$('.fa-spinner').addClass('hidden');
+						translator.translate(html, function (html) {
+							html = $(html);
+							$('.users-table tr').not(':first').remove();
+							$('.users-table tr').first().after(html);
+							html.find('.timeago').timeago();
+							$('.fa-spinner').addClass('hidden');
 
-						if (data && data.users.length === 0) {
-							$('#user-notfound-notify').html('User not found!')
-								.removeClass('hide')
-								.addClass('label-danger')
-								.removeClass('label-success');
-						} else {
-							$('#user-notfound-notify').html(data.users.length + ' user' + (data.users.length > 1 ? 's' : '') + ' found! Search took ' + data.timing + ' ms.')
-								.removeClass('hide')
-								.addClass('label-success')
-								.removeClass('label-danger');
-						}
-
-
+							if (data && data.users.length === 0) {
+								$('#user-notfound-notify').html('User not found!')
+									.removeClass('hide')
+									.addClass('label-danger')
+									.removeClass('label-success');
+							} else {
+								$('#user-notfound-notify').html(data.users.length + ' user' + (data.users.length > 1 ? 's' : '') + ' found! Search took ' + data.timing + ' ms.')
+									.removeClass('hide')
+									.addClass('label-success')
+									.removeClass('label-danger');
+							}
+						});
 					});
 				});
 			}, 250);

@@ -1,7 +1,7 @@
 "use strict";
 /* global define, app, ajaxify, socket, templates, bootbox */
 
-define('admin/extend/rewards', function () {
+define('admin/extend/rewards', ['translator'], function (translator) {
 	var rewards = {};
 
 
@@ -142,9 +142,11 @@ define('admin/extend/rewards', function () {
 		};
 
 		templates.parse('admin/extend/rewards', 'active', data, function (li) {
-			li = $(li);
-			ul.append(li);
-			li.find('select').val('');
+			translator.translate(li, function (li) {
+				li = $(li);
+				ul.append(li);
+				li.find('select').val('');
+			});
 		});
 	}
 

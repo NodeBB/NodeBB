@@ -69,15 +69,19 @@ define('admin/general/navigation', ['translator', 'iconSelect', 'jqueryui'], fun
 		data.index = (parseInt($('#enabled').children().last().attr('data-index'), 10) || 0) + 1;
 
 		templates.parse('admin/general/navigation', 'navigation', {navigation: [data]}, function (li) {
-			li = $(translator.unescape(li));
-			el.after(li);
-			el.remove();
+			translator.translate(li, function (li) {
+				li = $(translator.unescape(li));
+				el.after(li);
+				el.remove();
+			});
 		});
 
 		templates.parse('admin/general/navigation', 'enabled', {enabled: [data]}, function (li) {
-			li = $(translator.unescape(li));
-			$('#enabled').append(li);
-			componentHandler.upgradeDom();
+			translator.translate(li, function (li) {
+				li = $(translator.unescape(li));
+				$('#enabled').append(li);
+				componentHandler.upgradeDom();
+			});			
 		});
 	}
 
