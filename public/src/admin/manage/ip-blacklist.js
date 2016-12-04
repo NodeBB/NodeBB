@@ -1,7 +1,7 @@
 'use strict';
 /* globals $, app, socket, templates, define, bootbox */
 
-define('admin/manage/ip-blacklist', [], function () {
+define('admin/manage/ip-blacklist', ['translator'], function (translator) {
 
 	var Blacklist = {};
 
@@ -34,7 +34,9 @@ define('admin/manage/ip-blacklist', [], function () {
 				}
 
 				templates.parse('admin/partials/blacklist-validate', data, function (html) {
-					bootbox.alert(html);
+					translator.translate(html, function (html) {
+						bootbox.alert(html);
+					});
 				});
 			});
 		});

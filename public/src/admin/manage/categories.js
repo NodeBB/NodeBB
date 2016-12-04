@@ -40,29 +40,31 @@ define('admin/manage/categories', ['vendor/jquery/serializeObject/jquery.ba-seri
 			templates.parse('admin/partials/categories/create', {
 				categories: categories
 			}, function (html) {
-				function submit() {
-					var formData = modal.find('form').serializeObject();
-					formData.description = '';
-					formData.icon = 'fa-comments';
+				translator.translate(html, function (html) {
+					function submit() {
+						var formData = modal.find('form').serializeObject();
+						formData.description = '';
+						formData.icon = 'fa-comments';
 
-					Categories.create(formData);
-					modal.modal('hide');
-					return false;
-				}
-
-				var modal = bootbox.dialog({
-					title: 'Create a Category',
-					message: html,
-					buttons: {
-						save: {
-							label: 'Save',
-							className: 'btn-primary',
-							callback: submit
-						}
+						Categories.create(formData);
+						modal.modal('hide');
+						return false;
 					}
-				});
 
-				modal.find('form').on('submit', submit);
+					var modal = bootbox.dialog({
+						title: 'Create a Category',
+						message: html,
+						buttons: {
+							save: {
+								label: 'Save',
+								className: 'btn-primary',
+								callback: submit
+							}
+						}
+					});
+
+					modal.find('form').on('submit', submit);
+				});
 			});
 		});
 	};
@@ -176,22 +178,24 @@ define('admin/manage/categories', ['vendor/jquery/serializeObject/jquery.ba-seri
 				cid: parentId,
 				categories: categories
 			}, function (html) {
-				container.append(html);
+				translator.translate(html, function (html) {
+					container.append(html);
 
-				// Handle and children categories in this level have
-				for(var x = 0,numCategories = categories.length; x < numCategories; x++) {
-					renderList(categories[x].children, $('li[data-cid="' + categories[x].cid + '"]'), categories[x].cid);
-				}
+					// Handle and children categories in this level have
+					for(var x = 0,numCategories = categories.length; x < numCategories; x++) {
+						renderList(categories[x].children, $('li[data-cid="' + categories[x].cid + '"]'), categories[x].cid);
+					}
 
-				// Make list sortable
-				sortables[parentId] = Sortable.create($('ul[data-cid="' + parentId + '"]')[0], {
-					group: 'cross-categories',
-					animation: 150,
-					handle: '.icon',
-					dataIdAttr: 'data-cid',
-					ghostClass: "placeholder",
-					onAdd: itemDidAdd,
-					onEnd: itemDragDidEnd
+					// Make list sortable
+					sortables[parentId] = Sortable.create($('ul[data-cid="' + parentId + '"]')[0], {
+						group: 'cross-categories',
+						animation: 150,
+						handle: '.icon',
+						dataIdAttr: 'data-cid',
+						ghostClass: "placeholder",
+						onAdd: itemDidAdd,
+						onEnd: itemDragDidEnd
+					});
 				});
 			});
 		}

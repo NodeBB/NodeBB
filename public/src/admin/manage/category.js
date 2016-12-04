@@ -5,8 +5,9 @@ define('admin/manage/category', [
 	'uploader',
 	'iconSelect',
 	'admin/modules/colorpicker',
-	'autocomplete'
-], function (uploader, iconSelect, colorpicker, autocomplete) {
+	'autocomplete',
+	'translator'
+], function (uploader, iconSelect, colorpicker, autocomplete, translator) {
 	var	Category = {};
 	var modified_categories = {};
 
@@ -232,8 +233,10 @@ define('admin/manage/category', [
 			templates.parse('admin/partials/categories/privileges', {
 				privileges: privileges
 			}, function (html) {
-				$('.privilege-table-container').html(html);
-				Category.exposeAssumedPrivileges();
+				translator.translate(html, function (html) {
+					$('.privilege-table-container').html(html);
+					Category.exposeAssumedPrivileges();
+				});
 			});
 		});
 	};
@@ -289,33 +292,35 @@ define('admin/manage/category', [
 			templates.parse('partials/category_list', {
 				categories: categories
 			}, function (html) {
-				var modal = bootbox.dialog({
-					message: html,
-					title: 'Set Parent Category'
-				});
+				translator.translate(html, function (html) {
+					var modal = bootbox.dialog({
+						message: html,
+						title: 'Set Parent Category'
+					});
 
-				modal.find('li[data-cid]').on('click', function () {
-					var parentCid = $(this).attr('data-cid'),
-						payload = {};
+					modal.find('li[data-cid]').on('click', function () {
+						var parentCid = $(this).attr('data-cid'),
+							payload = {};
 
-					payload[ajaxify.data.category.cid] = {
-						parentCid: parentCid
-					};
+						payload[ajaxify.data.category.cid] = {
+							parentCid: parentCid
+						};
 
-					socket.emit('admin.categories.update', payload, function (err) {
-						if (err) {
-							return app.alertError(err.message);
-						}
-						var parent = categories.filter(function (category) {
-							return category && parseInt(category.cid, 10) === parseInt(parentCid, 10);
+						socket.emit('admin.categories.update', payload, function (err) {
+							if (err) {
+								return app.alertError(err.message);
+							}
+							var parent = categories.filter(function (category) {
+								return category && parseInt(category.cid, 10) === parseInt(parentCid, 10);
+							});
+							parent = parent[0];
+
+							modal.modal('hide');
+							$('button[data-action="removeParent"]').parent().removeClass('hide');
+							$('button[data-action="setParent"]').addClass('hide');
+							var buttonHtml = '<i class="fa ' + parent.icon + '"></i> ' + parent.name;
+							$('button[data-action="changeParent"]').html(buttonHtml).parent().removeClass('hide');
 						});
-						parent = parent[0];
-
-						modal.modal('hide');
-						$('button[data-action="removeParent"]').parent().removeClass('hide');
-						$('button[data-action="setParent"]').addClass('hide');
-						var buttonHtml = '<i class="fa ' + parent.icon + '"></i> ' + parent.name;
-						$('button[data-action="changeParent"]').html(buttonHtml).parent().removeClass('hide');
 					});
 				});
 			});
@@ -407,26 +412,28 @@ define('admin/manage/category', [
 			templates.parse('admin/partials/categories/select-category', {
 				categories: categories
 			}, function (html) {
-				function submit() {
-					var formData = modal.find('form').serializeObject();
-					callback(formData['select-cid']);
-					modal.modal('hide');
-					return false;
-				}
-
-				var modal = bootbox.dialog({
-					title: 'Select a Category',
-					message: html,
-					buttons: {
-						save: {
-							label: 'Copy',
-							className: 'btn-primary',
-							callback: submit
-						}
+				translator.translate(html, function (html) {
+					function submit() {
+						var formData = modal.find('form').serializeObject();
+						callback(formData['select-cid']);
+						modal.modal('hide');
+						return false;
 					}
-				});
 
-				modal.find('form').on('submit', submit);
+					var modal = bootbox.dialog({
+						title: 'Select a Category',
+						message: html,
+						buttons: {
+							save: {
+								label: 'Copy',
+								className: 'btn-primary',
+								callback: submit
+							}
+						}
+					});
+
+					modal.find('form').on('submit', submit);
+				});
 			});
 		});
 	}
