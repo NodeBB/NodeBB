@@ -60,11 +60,19 @@ Flags.list = function (filters, uid, callback) {
 				case 'type':
 					sets.push('flags:byType:' + filters[type]);
 					break;
+
+				case 'state':
+					sets.push('flags:byState:' + filters[type]);
+					break;
 				
 				case 'reporterId':
 					sets.push('flags:byReporter:' + filters[type]);
 					break;
 				
+				case 'assignee':
+					sets.push('flags:byAssignee:' + filters[type]);
+					break;
+
 				case 'quick':
 					switch (filters.quick) {
 						case 'mine':
@@ -236,6 +244,7 @@ Flags.create = function (type, id, uid, reason, callback) {
 					return next(err);
 				}
 
+				Flags.appendHistory(flagId, uid, ['created']);
 				next(null, flagId);
 			});
 		},

@@ -26,7 +26,7 @@ modsController.flags.list = function (req, res, next) {
 		}
 
 		// Parse query string params for filters
-		var valid = ['reporterId', 'type', 'quick'];
+		var valid = ['assignee', 'state', 'reporterId', 'type', 'quick'];
 		var filters = valid.reduce(function (memo, cur) {
 			if (req.query.hasOwnProperty(cur)) {
 				memo[cur] = req.query[cur];

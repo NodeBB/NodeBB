@@ -16,6 +16,8 @@
 	"filter-type": "Flag Type",
 	"filter-type-all": "All Content",
 	"filter-type-post": "Post",
+	"filter-state": "State",
+	"filter-assignee": "Assignee UID",
 	"filter-quick-mine": "Assigned to me",
 	"apply-filters": "Apply Filters",
 

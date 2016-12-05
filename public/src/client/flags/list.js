@@ -13,7 +13,7 @@ define('forum/flags/list', ['components'], function (components) {
 		var filtersEl = components.get('flags/filters');
 
 		// Parse ajaxify data to set form values to reflect current filters
-		for(var filter in ajaxify.data.filters) {
+		for (var filter in ajaxify.data.filters) {
 			filtersEl.find('[name="' + filter + '"]').val(ajaxify.data.filters[filter]);
 		}
 
@@ -26,7 +26,7 @@ define('forum/flags/list', ['components'], function (components) {
 			}).filter(Boolean).join('&');
 
 			ajaxify.go('flags?' + qs);
-		})
+		});
 	};
 
 	return Flags;
