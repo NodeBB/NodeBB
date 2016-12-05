@@ -872,10 +872,101 @@ describe('Topic\'s', function () {
 				});
 			});
 		});
+	});
 
+	describe('tags', function () {
+		var socketTopics = require('../src/socket.io/topics');
+		before(function (done) {
+			async.parallel({
+				topic1: function (next) {
+					topics.post({uid: adminUid, tags: ['php', 'nosql', 'psql', 'nodebb'], title: 'topic title 1', content: 'topic 1 content', cid: topic.categoryId}, next);
+				},
+				topic2: function (next) {
+					topics.post({uid: adminUid, tags: ['javascript', 'mysql', 'python', 'nodejs'], title: 'topic title 2', content: 'topic 2 content', cid: topic.categoryId}, next);
+				}
+			}, function (err, results) {
+				assert.ifError(err);
+				done();
+			});
+		});
 
+		it('should return empty array if query is falsy', function (done) {
+			socketTopics.autocompleteTags({uid: adminUid}, {query: ''}, function (err, data) {
+				assert.ifError(err);
+				assert.deepEqual([], data);
+				done();
+			});
+		});
 
+		it('should autocomplete tags', function (done) {
+			socketTopics.autocompleteTags({uid: adminUid}, {query: 'p'}, function (err, data) {
+				assert.ifError(err);
+				['php', 'psql', 'python'].forEach(function (tag) {
+					assert.notEqual(data.indexOf(tag), -1);
+				});
+				done();
+			});
+		});
 
+		it('should return empty array if query is falsy', function (done) {
+			socketTopics.searchTags({uid: adminUid}, {query: ''}, function (err, data) {
+				assert.ifError(err);
+				assert.deepEqual([], data);
+				done();
+			});
+		});
+
+		it('should search tags', function (done) {
+			socketTopics.searchTags({uid: adminUid}, {query: 'no'}, function (err, data) {
+				assert.ifError(err);
+				['nodebb', 'nodejs', 'nosql'].forEach(function (tag) {
+					assert.notEqual(data.indexOf(tag), -1);
+				});
+				done();
+			});
+		});
+
+		it('should return empty array if query is falsy', function (done) {
+			socketTopics.searchAndLoadTags({uid: adminUid}, {query: ''}, function (err, data) {
+				assert.ifError(err);
+				assert.equal(data.matchCount, 0);
+				assert.equal(data.pageCount, 1);
+				assert.deepEqual(data.tags, []);
+				done();
+			});
+		});
+
+		it('should search and load tags', function (done) {
+			socketTopics.searchAndLoadTags({uid: adminUid}, {query: 'no'}, function (err, data) {
+				assert.ifError(err);
+				assert.equal(data.matchCount, 3);
+				assert.equal(data.pageCount, 1);
+				var tagData = [
+					{ value: 'nodebb', color: '', bgColor: '', score: 3 },
+					{ value: 'nodejs', color: '', bgColor: '', score: 1 },
+					{ value: 'nosql', color: '', bgColor: '', score: 1 }
+				];
+				assert.deepEqual(data.tags, tagData);
+
+				done();
+			});
+		});
+
+		it('shold return error if data is invalid', function (done) {
+			socketTopics.loadMoreTags({uid: adminUid}, {after: 'asd'}, function (err) {
+				assert.equal(err.message, '[[error:invalid-data]]');
+				done();
+			});
+		});
+
+		it('should load more tags', function (done) {
+			socketTopics.loadMoreTags({uid: adminUid}, {after: 0}, function (err, data) {
+				assert.ifError(err);
+				assert(Array.isArray(data.tags));
+				assert.equal(data.nextStart, 100);
+				done();
+			});
+		});
 	});
 
 
