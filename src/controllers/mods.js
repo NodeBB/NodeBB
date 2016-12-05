@@ -26,7 +26,7 @@ modsController.flags.list = function (req, res, next) {
 		}
 
 		// Parse query string params for filters
-		var valid = ['reporterId', 'type'];
+		var valid = ['reporterId', 'type', 'quick'];
 		var filters = valid.reduce(function (memo, cur) {
 			if (req.query.hasOwnProperty(cur)) {
 				memo[cur] = req.query[cur];
@@ -35,13 +35,15 @@ modsController.flags.list = function (req, res, next) {
 			return memo;
 		}, {});
 
-		flags.list(filters, function (err, flags) {
+		flags.list(filters, req.uid, function (err, flags) {
 			if (err) {
 				return next(err);
 			}
 
 			res.render('flags/list', {
-				flags: flags
+				flags: flags,
+				hasFilter: !!Object.keys(filters).length,
+				filters: filters
 			});
 		});
 	});

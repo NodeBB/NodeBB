@@ -47,7 +47,7 @@ Flags.get = function (flagId, callback) {
 	], callback);
 };
 
-Flags.list = function (filters, callback) {
+Flags.list = function (filters, uid, callback) {
 	if (typeof filters === 'function' && !callback) {
 		callback = filters;
 		filters = {};
@@ -64,16 +64,23 @@ Flags.list = function (filters, callback) {
 				case 'reporterId':
 					sets.push('flags:byReporter:' + filters[type]);
 					break;
+				
+				case 'quick':
+					switch (filters.quick) {
+						case 'mine':
+							sets.push('flags:byAssignee:' + uid);
+							break;
+					}
+					break;
 			}
 		}
-
 	}
 	sets = sets.length ? sets : ['flags:datetime'];	// No filter default
 
 	async.waterfall([
 		function (next) {
 			if (sets.length === 1) {
-				db.getSortedSetRevRange(sets[0], 0, 19, next);
+				db.getSortedSetRevRange(sets[0], 0, -1, next);
 			} else {
 				db.getSortedSetRevIntersect({sets: sets, start: 0, stop: -1, aggregate: 'MAX'}, next);
 			}
@@ -316,6 +323,8 @@ Flags.update = function (flagId, uid, changeset, callback) {
 	// Retrieve existing flag data to compare for history-saving purposes
 	var fields = ['state', 'assignee'];
 	var history = [];
+	var tasks = [];
+	var now = Date.now();
 
 	async.waterfall([
 		async.apply(db.getObjectFields.bind(db), 'flag:' + flagId, fields),
@@ -325,6 +334,18 @@ Flags.update = function (flagId, uid, changeset, callback) {
 					if (current[prop] === changeset[prop]) {
 						delete changeset[prop];
 					} else {
+						// Add tasks as necessary
+						switch (prop) {
+							case 'state':
+								tasks.push(async.apply(db.sortedSetAdd.bind(db), 'flags:byState:' + changeset[prop], now, flagId));
+								tasks.push(async.apply(db.sortedSetRemove.bind(db), 'flags:byState:' + current[prop], flagId));
+								break;
+							
+							case 'assignee':
+								tasks.push(async.apply(db.sortedSetAdd.bind(db), 'flags:byAssignee:' + changeset[prop], now, flagId));
+								break;
+						}
+
 						// Append to history payload
 						history.push(prop + ':' + changeset[prop]);
 					}
@@ -336,12 +357,12 @@ Flags.update = function (flagId, uid, changeset, callback) {
 				return next();
 			}
 
-			async.parallel([
-				// Save new object to db (upsert)
-				async.apply(db.setObject, 'flag:' + flagId, changeset),
-				// Append history
-				async.apply(Flags.appendHistory, flagId, uid, history)
-			], function (err, data) {
+			// Save new object to db (upsert)
+			tasks.push(async.apply(db.setObject, 'flag:' + flagId, changeset));
+			// Append history
+			tasks.push(async.apply(Flags.appendHistory, flagId, uid, history))
+
+			async.parallel(tasks, function (err, data) {
 				return next(err);
 			});
 		}

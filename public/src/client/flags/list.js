@@ -12,6 +12,11 @@ define('forum/flags/list', ['components'], function (components) {
 	Flags.enableFilterForm = function () {
 		var filtersEl = components.get('flags/filters');
 
+		// Parse ajaxify data to set form values to reflect current filters
+		for(var filter in ajaxify.data.filters) {
+			filtersEl.find('[name="' + filter + '"]').val(ajaxify.data.filters[filter]);
+		}
+
 		filtersEl.find('button').on('click', function () {
 			var payload = filtersEl.serializeArray();
 			var qs = payload.map(function (filter) {
