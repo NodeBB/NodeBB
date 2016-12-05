@@ -1,5 +1,6 @@
 'use strict';
 
+var async = require('async');
 var topics = require('../../topics');
 var utils = require('../../../public/src/utils');
 
@@ -13,9 +14,6 @@ module.exports = function (SocketTopics) {
 	};
 
 	SocketTopics.searchAndLoadTags = function (socket, data, callback) {
-		if (!data) {
-			return callback(new Error('[[error:invalid-data]]'));
-		}
 		topics.searchAndLoadTags(data, callback);
 	};
 
@@ -26,13 +24,14 @@ module.exports = function (SocketTopics) {
 
 		var start = parseInt(data.after, 10);
 		var stop = start + 99;
-
-		topics.getTags(start, stop, function (err, tags) {
-			if (err) {
-				return callback(err);
+		async.waterfall([
+			function (next) {
+				topics.getTags(start, stop, next);
+			},
+			function (tags, next) {
+				tags = tags.filter(Boolean);
+				next(null, {tags: tags, nextStart: stop + 1});
 			}
-			tags = tags.filter(Boolean);
-			callback(null, {tags: tags, nextStart: stop + 1});
-		});
+		], callback);
 	};
 };

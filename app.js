@@ -73,7 +73,12 @@ if (nconf.get('setup') || nconf.get('install')) {
 } else if (nconf.get('upgrade')) {
 	upgrade();
 } else if (nconf.get('reset')) {
-	require('./src/reset').reset();
+	async.waterfall([
+		async.apply(require('./src/reset').reset),
+		async.apply(require('./build').build, true)
+	], function (err) {
+		process.exit(err ? 1 : 0);
+	});
 } else if (nconf.get('activate')) {
 	activate();
 } else if (nconf.get('plugins')) {

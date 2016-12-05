@@ -1,8 +1,7 @@
 'use strict';
 
-var user = require('../../user'),
-	helpers = require('../helpers');
-
+var user = require('../../user');
+var helpers = require('../helpers');
 
 var notificationsController = {};
 

@@ -703,7 +703,7 @@ describe('Controllers', function () {
 		});
 	});
 
-	describe('account post pages', function () {
+	describe('account pages', function () {
 		var helpers = require('./helpers');
 		var jar;
 		before(function (done) {
@@ -784,6 +784,46 @@ describe('Controllers', function () {
 				assert(body);
 				done();
 			});
+		});
+
+		it('should load notifications page', function (done) {
+			var notifications = require('../src/notifications');
+			var notifData = {
+				bodyShort: '[[notifications:user_posted_to, test1, test2]]',
+				bodyLong: 'some post content',
+				pid: 1,
+				path: '/post/' + 1,
+				nid: 'new_post:tid:' + 1 + ':pid:' + 1 + ':uid:' + fooUid,
+				tid: 1,
+				from: fooUid,
+				mergeId: 'notifications:user_posted_to|' + 1,
+				topicTitle: 'topic title'
+			};
+			async.waterfall([
+				function (next) {
+					notifications.create(notifData, next);
+				},
+				function (notification, next) {
+					notifications.push(notification, fooUid, next);
+				},
+				function (next) {
+					setTimeout(next, 2500);
+				},
+				function (next) {
+					request(nconf.get('url') + '/api/notifications', {jar: jar, json: true}, next);
+				},
+				function (res, body, next) {
+					assert.equal(res.statusCode, 200);
+					assert(body);
+					var notif = body.notifications[0];
+					assert.equal(notif.bodyShort, notifData.bodyShort);
+					assert.equal(notif.bodyLong, notifData.bodyLong);
+					assert.equal(notif.pid, notifData.pid);
+					assert.equal(notif.path, notifData.path);
+					assert.equal(notif.nid, notifData.nid);
+					next();
+				}
+			], done);
 		});
 	});
 
