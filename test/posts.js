@@ -378,17 +378,43 @@ describe('Post\'s', function () {
 					}, function (err, data) {
 						assert.ifError(err);
 						replyPid = data.pid;
-						socketPosts.movePost({uid: globalModUid}, {pid: replyPid, tid: moveTid}, next);
+						next();
 					});
-				},
-				function (next) {
-					posts.getPostField(replyPid, 'tid', next);
-				},
-				function (tid, next) {
-					assert(tid, moveTid);
-					next();
 				}
 			], done);
+		});
+
+		it('should error if uid is not logged in', function (done) {
+			socketPosts.movePost({uid: 0}, {}, function (err) {
+				assert.equal(err.message, '[[error:not-logged-in]]');
+				done();
+			});
+		});
+
+		it('should error if data is invalid', function (done) {
+			socketPosts.movePost({uid: globalModUid}, {}, function (err) {
+				assert.equal(err.message, '[[error:invalid-data]]');
+				done();
+			});
+		});
+
+		it('should error if user does not have move privilege', function (done) {
+			socketPosts.movePost({uid: voterUid}, {pid: replyPid, tid: moveTid}, function (err) {
+				assert.equal(err.message, '[[error:no-privileges]]');
+				done();
+			});
+		});
+
+
+		it('should move a post', function (done) {
+			socketPosts.movePost({uid: globalModUid}, {pid: replyPid, tid: moveTid}, function (err) {
+				assert.ifError(err);
+				posts.getPostField(replyPid, 'tid', function (err, tid) {
+					assert.ifError(err);
+					assert(tid, moveTid);
+					done();
+				});
+			});
 		});
 	});
 
