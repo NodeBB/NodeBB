@@ -21,89 +21,22 @@ SocketFlags.create = function (socket, data, callback) {
 		return callback(new Error('[[error:not-logged-in]]'));
 	}
 
-	if (!data || !data.pid || !data.reason) {
+	if (!data || !data.type || !data.id || !data.reason) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
 
-	var flaggingUser = {};
-	var post;
-
 	async.waterfall([
+		async.apply(flags.validate, {
+			uid: socket.uid,
+			type: data.type,
+			id: data.id
+		}),
 		function (next) {
-			posts.getPostFields(data.pid, ['pid', 'tid', 'uid', 'content', 'deleted'], next);
-		},
-		function (postData, next) {
-			if (parseInt(postData.deleted, 10) === 1) {
-				return next(new Error('[[error:post-deleted]]'));
-			}
-
-			post = postData;
-			topics.getTopicFields(post.tid, ['title', 'cid'], next);
-		},
-		function (topicData, next) {
-			post.topic = topicData;
-
-			async.parallel({
-				isAdminOrMod: function (next) {
-					privileges.categories.isAdminOrMod(post.topic.cid, socket.uid, next);
-				},
-				userData: function (next) {
-					user.getUserFields(socket.uid, ['username', 'reputation', 'banned'], next);
-				}
-			}, next);
-		},
-		function (user, next) {
-			var minimumReputation = utils.isNumber(meta.config['privileges:flag']) ? parseInt(meta.config['privileges:flag'], 10) : 1;
-			if (!user.isAdminOrMod && parseInt(user.userData.reputation, 10) < minimumReputation) {
-				return next(new Error('[[error:not-enough-reputation-to-flag]]'));
-			}
-
-			if (parseInt(user.banned, 10) === 1) {
-				return next(new Error('[[error:user-banned]]'));
-			}
-
-			flaggingUser = user.userData;
-			flaggingUser.uid = socket.uid;
-
-			flags.create('post', post.pid, socket.uid, data.reason, next);
+			// If we got here, then no errors occurred
+			flags.create(data.type, data.id, socket.uid, data.reason, next);
 		},
 		function (flagObj, next) {
-			async.parallel({
-				post: function (next) {
-					posts.parsePost(post, next);
-				},
-				admins: function (next) {
-					groups.getMembers('administrators', 0, -1, next);
-				},
-				globalMods: function (next) {
-					groups.getMembers('Global Moderators', 0, -1, next);
-				},
-				moderators: function (next) {
-					groups.getMembers('cid:' + post.topic.cid + ':privileges:mods', 0, -1, next);
-				}
-			}, next);
-		},
-		function (results, next) {
-			var title = S(post.topic.title).decodeHTMLEntities().s;
-			var titleEscaped = title.replace(/%/g, '&#37;').replace(/,/g, '&#44;');
-
-			notifications.create({
-				bodyShort: '[[notifications:user_flagged_post_in, ' + flaggingUser.username + ', ' + titleEscaped + ']]',
-				bodyLong: post.content,
-				pid: data.pid,
-				path: '/post/' + data.pid,
-				nid: 'post_flag:' + data.pid + ':uid:' + socket.uid,
-				from: socket.uid,
-				mergeId: 'notifications:user_flagged_post_in|' + data.pid,
-				topicTitle: post.topic.title
-			}, function (err, notification) {
-				if (err || !notification) {
-					return next(err);
-				}
-
-				plugins.fireHook('action:post.flag', {post: post, reason: data.reason, flaggingUser: flaggingUser});
-				notifications.push(notification, results.admins.concat(results.moderators).concat(results.globalMods), next);
-			});
+			flags.notify(flagObj, socket.uid, next);
 		}
 	], callback);
 };

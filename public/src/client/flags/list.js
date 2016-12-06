@@ -7,6 +7,7 @@ define('forum/flags/list', ['components'], function (components) {
 
 	Flags.init = function () {
 		Flags.enableFilterForm();
+		Flags.enableChatButtons();
 	};
 
 	Flags.enableFilterForm = function () {
@@ -26,6 +27,12 @@ define('forum/flags/list', ['components'], function (components) {
 			}).filter(Boolean).join('&');
 
 			ajaxify.go('flags?' + qs);
+		});
+	};
+
+	Flags.enableChatButtons = function () {
+		$('[data-chat]').on('click', function () {
+			app.newChat(this.getAttribute('data-chat'));
 		});
 	};
 

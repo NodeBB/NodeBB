@@ -1,23 +1,22 @@
-
-
 'use strict';
 
 var async = require('async');
 var winston = require('winston');
 var db = require('./database');
 var user = require('./user');
+var groups = require('./groups');
+var meta = require('./meta');
+var notifications = require('./notifications');
 var analytics = require('./analytics');
 var topics = require('./topics');
 var posts = require('./posts');
+var privileges = require('./privileges');
+var plugins = require('./plugins');
 var utils = require('../public/src/utils');
 var _ = require('underscore');
+var S = require('string');
 
-var Flags = {
-	_defaults: {
-		state: 'open',
-		assignee: null
-	}
-};
+var Flags = {};
 
 Flags.get = function (flagId, callback) {
 	async.waterfall([
@@ -71,6 +70,10 @@ Flags.list = function (filters, uid, callback) {
 				
 				case 'assignee':
 					sets.push('flags:byAssignee:' + filters[type]);
+					break;
+				
+				case 'targetUid':
+					sets.push('flags:byTargetUid:' + filters[type]);
 					break;
 
 				case 'quick':
@@ -145,6 +148,43 @@ Flags.list = function (filters, uid, callback) {
 	});
 };
 
+Flags.validate = function (payload, callback) {
+	async.parallel({
+		targetExists: async.apply(Flags.targetExists, payload.type, payload.id),
+		target: async.apply(Flags.getTarget, payload.type, payload.id, payload.uid),
+		reporter: async.apply(user.getUserData, payload.uid)
+	}, function (err, data) {
+		if (err) {
+			return callback(err);
+		}
+
+		if (data.target.deleted) {
+			return callback(new Error('[[error:post-deleted]]'));
+		} else if (data.reporter.banned) {
+			return callback(new Error('[[error:user-banned]]'));
+		}
+
+		switch (payload.type) {
+			case 'post':
+				async.parallel({
+					privileges: async.apply(privileges.posts.get, [payload.id], payload.uid)
+				}, function (err, subdata) {
+					if (err) {
+						return callback(err);
+					}
+
+					var minimumReputation = utils.isNumber(meta.config['privileges:flag']) ? parseInt(meta.config['privileges:flag'], 10) : 1;
+					if (!subdata.privileges[0].isAdminOrMod && parseInt(data.reporter.reputation, 10) < minimumReputation) {
+						return callback(new Error('[[error:not-enough-reputation-to-flag]]'));
+					}
+
+					callback();
+				});
+				break;
+		} 
+	});
+};
+
 Flags.getTarget = function (type, id, uid, callback) {
 	switch (type) {
 		case 'post':
@@ -204,16 +244,21 @@ Flags.getNotes = function (flagId, callback) {
 };
 
 Flags.create = function (type, id, uid, reason, callback) {
+	var targetUid;
+
 	async.waterfall([
 		function (next) {
 			// Sanity checks
 			async.parallel([
 				async.apply(Flags.exists, type, id, uid),
-				async.apply(Flags.targetExists, type, id)
+				async.apply(Flags.targetExists, type, id),
+				async.apply(Flags.getTargetUid, type, id)
 			], function (err, checks) {
 				if (err) {
 					return next(err);
 				}
+
+				targetUid = checks[2] || null;
 
 				if (checks[0]) {
 					return next(new Error('[[error:already-flagged]]'));
@@ -226,25 +271,31 @@ Flags.create = function (type, id, uid, reason, callback) {
 		},
 		async.apply(db.incrObjectField, 'global', 'nextFlagId'),
 		function (flagId, next) {
-			async.parallel([
-				async.apply(db.setObject.bind(db), 'flag:' + flagId, Object.assign({}, Flags._defaults, {
+			var tasks = [
+				async.apply(db.setObject.bind(db), 'flag:' + flagId, {
 					flagId: flagId,
 					type: type,
 					targetId: id,
 					description: reason,
 					uid: uid,
 					datetime: Date.now()
-				})),
+				}),
 				async.apply(db.sortedSetAdd.bind(db), 'flags:datetime', Date.now(), flagId),	// by time, the default
 				async.apply(db.sortedSetAdd.bind(db), 'flags:byReporter:' + uid, Date.now(), flagId),	// by reporter
 				async.apply(db.sortedSetAdd.bind(db), 'flags:byType:' + type, Date.now(), flagId),	// by flag type
 				async.apply(db.setObjectField.bind(db), 'flagHash:flagId', [type, id, uid].join(':'), flagId)	// save hash for existence checking
-			], function (err, data) {
+			];
+
+			if (targetUid) {
+				tasks.push(async.apply(db.sortedSetAdd.bind(db), 'flags:byTargetUid:' + targetUid, Date.now(), flagId));	// by target uid
+			}
+		
+			async.parallel(tasks, function (err, data) {
 				if (err) {
 					return next(err);
 				}
 
-				Flags.appendHistory(flagId, uid, ['created']);
+				Flags.update(flagId, uid, { "state": "open" });
 				next(null, flagId);
 			});
 		},
@@ -318,12 +369,20 @@ Flags.exists = function (type, id, uid, callback) {
 
 Flags.targetExists = function (type, id, callback) {
 	switch (type) {
-		case 'topic':
+		case 'topic':	// just an example...
 			topics.exists(id, callback);
 			break;
 		
 		case 'post':
 			posts.exists(id, callback);
+			break;
+	}
+};
+
+Flags.getTargetUid = function (type, id, callback) {
+	switch (type) {
+		case 'post':
+			posts.getPostField(id, 'uid', callback);
 			break;
 	}
 };
@@ -369,7 +428,7 @@ Flags.update = function (flagId, uid, changeset, callback) {
 			// Save new object to db (upsert)
 			tasks.push(async.apply(db.setObject, 'flag:' + flagId, changeset));
 			// Append history
-			tasks.push(async.apply(Flags.appendHistory, flagId, uid, history))
+			tasks.push(async.apply(Flags.appendHistory, flagId, uid, history));
 
 			async.parallel(tasks, function (err, data) {
 				return next(err);
@@ -460,6 +519,58 @@ Flags.appendNote = function (flagId, uid, note, callback) {
 		async.apply(db.sortedSetAdd, 'flag:' + flagId + ':notes', Date.now(), payload),
 		async.apply(Flags.appendHistory, flagId, uid, ['notes'])
 	], callback);
+};
+
+Flags.notify = function (flagObj, uid, callback) {
+	// Notify administrators, mods, and other associated people
+	switch (flagObj.type) {
+		case 'post':
+			async.parallel({
+				post: function (next) {
+					async.waterfall([
+						async.apply(posts.getPostData, flagObj.targetId),
+						async.apply(posts.parsePost)
+					], next);
+				},
+				title: async.apply(topics.getTitleByPid, flagObj.targetId),
+				admins: async.apply(groups.getMembers, 'administrators', 0, -1),
+				globalMods: async.apply(groups.getMembers, 'Global Moderators', 0, -1),
+				moderators: function (next) {
+					async.waterfall([
+						async.apply(posts.getCidByPid, flagObj.targetId),
+						function (cid, next) {
+							groups.getMembers('cid:' + cid + ':privileges:mods', 0, -1, next);
+						}
+					], next);
+				}
+			}, function (err, results) {
+				if (err) {
+					return callback(err);
+				}
+
+				var title = S(results.title).decodeHTMLEntities().s;
+				var titleEscaped = title.replace(/%/g, '&#37;').replace(/,/g, '&#44;');
+
+				notifications.create({
+					bodyShort: '[[notifications:user_flagged_post_in, ' + flagObj.reporter.username + ', ' + titleEscaped + ']]',
+					bodyLong: results.post.content,
+					pid: flagObj.targetId,
+					path: '/post/' + flagObj.targetId,
+					nid: 'flag:post:' + flagObj.targetId + ':uid:' + uid,
+					from: uid,
+					mergeId: 'notifications:user_flagged_post_in|' + flagObj.targetId,
+					topicTitle: results.title
+				}, function (err, notification) {
+					if (err || !notification) {
+						return callback(err);
+					}
+
+					plugins.fireHook('action:post.flag', {post: results.post, reason: flagObj.description, flaggingUser: flagObj.reporter});
+					notifications.push(notification, results.admins.concat(results.moderators).concat(results.globalMods), callback);
+				});
+			});
+			break;
+	}
 };
 
 module.exports = Flags;

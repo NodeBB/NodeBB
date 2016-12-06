@@ -13,6 +13,7 @@
 	"filter-reset": "Remove Filters",
 	"filters": "Filter Options",
 	"filter-reporterId": "Reporter UID",
+	"filter-targetUid": "Flagged UID",
 	"filter-type": "Flag Type",
 	"filter-type-all": "All Content",
 	"filter-type-post": "Post",
@@ -20,6 +21,13 @@
 	"filter-assignee": "Assignee UID",
 	"filter-quick-mine": "Assigned to me",
 	"apply-filters": "Apply Filters",
+
+	"quick-links": "Quick Links",
+	"flagged-user": "Flagged User",
+	"reporter": "Reporting User",
+	"view-profile": "View Profile",
+	"start-new-chat": "Start New Chat",
+	"go-to-target": "View Flag Target",
 
 	"notes": "Flag Notes",
 	"add-note": "Add Note",
