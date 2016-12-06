@@ -149,7 +149,23 @@
 				<div class="" id="acp-search" >
 					<div class="dropdown">
 						<input type="text" data-toggle="dropdown" class="form-control" placeholder="Search...">
-						<ul class="dropdown-menu dropdown-menu-right" role="menu"></ul>
+						<ul class="dropdown-menu dropdown-menu-right state-start-typing" role="menu">
+							<li role="presentation" class="no-results">
+								<a>No results...</a>
+							</li>
+							<li role="presentation" class="divider search-forum"></li>
+							<li role="presentation" class="search-forum">
+								<a role="menuitem" target="_top" href="#">
+									Search the forum for <strong></strong>
+								</a>
+							</li>
+							<li role="presentation" class="keep-typing">
+								<a>Type more to see results...</a>
+							</li>
+							<li role="presentation" class="start-typing">
+								<a>Start typing to see results...</a>
+							</li>
+						</ul>
 					</div>
 				</div>
 			</form>
