@@ -2,6 +2,15 @@
     .dropdown-menu {
         max-height: 75vh;
         overflow-y: auto;
+
+        > li > a {
+            &.focus {
+                &:extend(.dropdown-menu>li>a:focus);
+            }
+            &:focus {
+                outline: none;
+            }
+        }
     }
 
     .state-start-typing {

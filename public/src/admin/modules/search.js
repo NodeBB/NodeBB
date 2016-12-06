@@ -1,7 +1,7 @@
 "use strict";
 /* globals socket, app, define, ajaxify, config */
 
-define(function () {
+define(['mousetrap'], function (mousetrap) {
 	var search = {};
 
 	function nsToTitle(namespace) {
@@ -67,8 +67,11 @@ define(function () {
 		});
 
 		$('#acp-search').parents('form').on('submit', function (ev) {
-			var firstResult = menu.find('li:first-child > a').attr('href');
-			var href = firstResult ? firstResult : config.relative_path + '/search/' + input.val();
+			var selected = menu.find('li.result > a.focus').attr('href');
+			if (!selected.length) {
+				selected = menu.find('li.result > a').first().attr('href');
+			}
+			var href = selected ? selected : config.relative_path + '/search/' + input.val();
 
 			ajaxify.go(href.replace(/^\//, ''));
 
@@ -81,8 +84,41 @@ define(function () {
 			return false;
 		});
 
+		mousetrap(input[0]).bind(['up', 'down'], function (ev, key) {
+			var next;
+			if (key === 'up') {
+				next = menu.find('li.result > a.focus').removeClass('focus').parent().prev('.result').children();
+				if (!next.length) {
+					next = menu.find('li.result > a').last();
+				}
+				next.addClass('focus');
+				if (menu[0].getBoundingClientRect().top > next[0].getBoundingClientRect().top) {
+					next[0].scrollIntoView(true);
+				}
+			} else if (key === 'down') {
+				next = menu.find('li.result > a.focus').removeClass('focus').parent().next('.result').children();
+				if (!next.length) {
+					next = menu.find('li.result > a').first();
+				}
+				next.addClass('focus');
+				if (menu[0].getBoundingClientRect().bottom < next[0].getBoundingClientRect().bottom) {
+					next[0].scrollIntoView(false);
+				}
+			}
+
+			ev.preventDefault();
+		});
+
+		var prevValue;
+
 		input.on('keyup focus', function () {
 			var value = input.val().toLowerCase();
+
+			if (value === prevValue) {
+				return;
+			}
+			prevValue = value;
+
 			menu.children('.result').remove();
 
 			var len = value.length;
@@ -106,7 +142,7 @@ define(function () {
 					.find('strong')
 					.html(value);
 			} else {
-				menu.removeClass('state-no-results');
+				menu.removeClass('state-no-results state-yes-results');
 			}
 		});
 	}
