@@ -16,7 +16,7 @@
 		</div>
 		<div class="mdl-card__actions mdl-card--border">
 			<a class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect" data-action="use">
-				<!-- IF themes.skin -->[[admin/appearance/themes:select-skin]]<!-- ELSE -->[[admin/appearance/themes:select-theme]]<!-- ENDIF themes.skin -->
+				<!-- IF themes.skin -->[[admin/appearance/skins:select-skin]]<!-- ELSE -->[[admin/appearance/themes:select-theme]]<!-- ENDIF themes.skin -->
 			</a>
 		</div>
 	</div>

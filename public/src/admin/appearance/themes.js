@@ -1,7 +1,7 @@
 "use strict";
 /* global define, app, socket, bootbox, templates, config */
 
-define('admin/appearance/themes', function () {
+define('admin/appearance/themes', ['translator'], function (translator) {
 	var Themes = {};
 	
 	Themes.init = function () {
@@ -28,8 +28,8 @@ define('admin/appearance/themes', function () {
 					app.alert({
 						alert_id: 'admin:theme',
 						type: 'info',
-						title: 'Theme Changed',
-						message: 'Please restart your NodeBB to fully activate this theme',
+						title: '[[admin/appearance/themes:theme-changed]]',
+						message: '[[admin/appearance/themes:restart-to-activate]]',
 						timeout: 5000,
 						clickfn: function () {
 							socket.emit('admin.restart');
@@ -38,27 +38,29 @@ define('admin/appearance/themes', function () {
 				});
 			}
 		});
-
-		$('#revert_theme').on('click', function () {
-			bootbox.confirm('Are you sure you wish to restore the default NodeBB theme?', function (confirm) {
-				if (confirm) {
-					socket.emit('admin.themes.set', {
-						type: 'local',
-						id: 'nodebb-theme-persona'
-					}, function (err) {
-						if (err) {
-							return app.alertError(err.message);
-						}
-						highlightSelectedTheme('nodebb-theme-persona');
-						app.alert({
-							alert_id: 'admin:theme',
-							type: 'success',
-							title: 'Theme Changed',
-							message: 'You have successfully reverted your NodeBB back to it\'s default theme.',
-							timeout: 3500
+		
+		translator.translate('[[admin/appearance/themes:revert-confirm]]', function (revert) {
+			$('#revert_theme').on('click', function () {
+				bootbox.confirm(revert, function (confirm) {
+					if (confirm) {
+						socket.emit('admin.themes.set', {
+							type: 'local',
+							id: 'nodebb-theme-persona'
+						}, function (err) {
+							if (err) {
+								return app.alertError(err.message);
+							}
+							highlightSelectedTheme('nodebb-theme-persona');
+							app.alert({
+								alert_id: 'admin:theme',
+								type: 'success',
+								title: '[[admin/appearance/themes:theme-changed]]',
+								message: '[[admin/appearance/themes:revert-success]]',
+								timeout: 3500
+							});
 						});
-					});
-				}
+					}
+				});
 			});
 		});
 
@@ -70,17 +72,17 @@ define('admin/appearance/themes', function () {
 			var instListEl = $('#installed_themes');
 
 			if (!themes.length) {
-				instListEl.append($('<li/ >').addClass('no-themes').html('No installed themes found'));
+				translator.translate('[[admin/appearance/themes:no-themes]]', function (text) {
+					instListEl.append($('<li/ >').addClass('no-themes').html(text));
+				});
 				return;
 			} else {
 				templates.parse('admin/partials/theme_list', {
 					themes: themes
 				}, function (html) {
-					require(['translator'], function (translator) {
-						translator.translate(html, function (html) {
-							instListEl.html(html);
-							highlightSelectedTheme(config['theme:id']);
-						});
+					translator.translate(html, function (html) {
+						instListEl.html(html);
+						highlightSelectedTheme(config['theme:id']);
 					});
 				});
 			}
@@ -88,19 +90,25 @@ define('admin/appearance/themes', function () {
 	};
 
 	function highlightSelectedTheme(themeId) {
-		$('[data-theme]')
-			.removeClass('selected')
-			.find('[data-action="use"]')
-				.html('Select Theme')
-				.removeClass('btn-success')
-				.addClass('btn-primary');
+		translator.translate('[[admin/appearance/themes:select-theme]]  ||  [[admin/appearance/themes:current-theme]]', function (text) {
+			text = text.split('  ||  ');
+			var select = text[0];
+			var current = text[1];
 
-		$('[data-theme="' + themeId + '"]')
-			.addClass('selected')
-			.find('[data-action="use"]')
-				.html('Current Theme')
-				.removeClass('btn-primary')
-				.addClass('btn-success');
+			$('[data-theme]')
+				.removeClass('selected')
+				.find('[data-action="use"]')
+					.html(select)
+					.removeClass('btn-success')
+					.addClass('btn-primary');
+
+			$('[data-theme="' + themeId + '"]')
+				.addClass('selected')
+				.find('[data-action="use"]')
+					.html(current)
+					.removeClass('btn-primary')
+					.addClass('btn-success');
+		});
 	}
 
 	return Themes;
