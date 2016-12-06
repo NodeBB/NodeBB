@@ -15,7 +15,7 @@ var emailer = require('../emailer');
 var db = require('../database');
 var analytics = require('../analytics');
 var index = require('./index');
-var getAdminSearchDict = require('../admin/search').getDict;
+var getAdminSearchDict = require('../admin/search').getDictionary;
 
 var SocketAdmin = {
 	user: require('./admin/user'),
@@ -284,10 +284,7 @@ SocketAdmin.getSearchDict = function (socket, data, callback) {
 			return callback(err);
 		}
 		var lang = settings.userLang || meta.config.defaultLang || 'en-GB';
-		getAdminSearchDict(lang)
-			.then(function (results) {
-				callback(null, results);
-			}, callback);
+		getAdminSearchDict(lang, callback);
 	});
 };
 

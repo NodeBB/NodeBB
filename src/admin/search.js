@@ -2,47 +2,12 @@
 
 var fs = require('fs');
 var path = require('path');
+var async = require('async');
 var sanitizeHTML = require('sanitize-html');
 
 var languages = require('../languages');
 var utils = require('../../public/src/utils');
 var Translator = require('../../public/src/modules/translator').Translator;
-
-function walk(directory) {
-	return new Promise(function (resolve, reject) {
-		utils.walk(directory, function (err, data) {
-			if (err) {
-				reject(err);
-			} else {
-				resolve(data);
-			}
-		});
-	});
-}
-
-function readFile(path) {
-	return new Promise(function (resolve, reject) {
-		fs.readFile(path, function (err, data) {
-			if (err) {
-				reject(err);
-			} else {
-				resolve(data.toString());
-			}
-		});
-	});
-}
-
-function loadLanguage(language, namespace) {
-	return new Promise(function (resolve, reject) {
-		languages.get(language, namespace, function (err, data) {
-			if (err || !data || !Object.keys(data).length) {
-				reject(err);
-			} else {
-				resolve(data);
-			}
-		});
-	});
-}
 
 function filterDirectories(directories) {
 	return directories.map(function (dir) {
@@ -51,13 +16,21 @@ function filterDirectories(directories) {
 	}).filter(function (dir) {
 		// exclude partials
 		// only include subpaths
-		return !dir.includes('/partials/') && /\/.*\//.test(dir);
+		// exclude category.tpl, group.tpl, category-analytics.tpl
+		return !dir.includes('/partials/') &&
+			/\/.*\//.test(dir) &&
+			!/category|group|category\-analytics$/.test(dir);
 	});
 }
 
-function getAdminNamespaces() {
-	return walk(path.resolve(__dirname, '../../public/templates/admin'))
-		.then(filterDirectories);
+function getAdminNamespaces(callback) {
+	utils.walk(path.resolve(__dirname, '../../public/templates/admin'), function (err, directories) {
+		if (err) {
+			return callback(err);
+		}
+
+		callback(null, filterDirectories(directories));
+	});
 }
 
 function sanitize(html) {
@@ -78,68 +51,133 @@ function simplify(translations) {
 		.replace(/[\t ]+/g, ' ');
 }
 
+function nsToTitle(namespace) {
+	return namespace.replace('admin/', '').split('/').map(function (str) {
+		return str[0].toUpperCase() + str.slice(1);
+	}).join(' > ');
+}
+
+var fallbackCacheInProgress = {};
 var fallbackCache = {};
 
-function initFallback(namespace) {
-	return readFile(path.resolve(__dirname, '../../public/templates/', namespace + '.tpl'))
-		.then(function (template) {
-			var translations = sanitize(template);
-			translations = simplify(translations);
-			translations = Translator.removePatterns(translations);
+function initFallback(namespace, callback) {
+	fs.readFile(path.resolve(__dirname, '../../public/templates/', namespace + '.tpl'), function (err, file) {
+		if (err) {
+			return callback(err);
+		}
 
-			return {
-				namespace: namespace,
-				translations: translations,
-			};
+		var template = file.toString();
+
+		var translations = sanitize(template);
+		translations = Translator.removePatterns(translations);
+		translations = simplify(translations);
+		translations += '\n' + nsToTitle(namespace);
+
+		callback(null, {
+			namespace: namespace,
+			translations: translations,
 		});
+	});
 }
 
-function fallback(namespace) {
-	// use cache if exists, else make it
-	fallbackCache[namespace] = fallbackCache[namespace] || initFallback(namespace);
-	return fallbackCache[namespace];
+function fallback(namespace, callback) {
+	if (fallbackCache[namespace]) {
+		return callback(null, fallbackCache[namespace]);
+	}
+	if (fallbackCacheInProgress[namespace]) {
+		return fallbackCacheInProgress[namespace].push(callback);
+	}
+
+	fallbackCacheInProgress[namespace] = [function (err, params) {
+		if (err) {
+			return callback(err);
+		}
+
+		callback(null, params);
+	}];
+	initFallback(namespace, function (err, params) {
+		fallbackCacheInProgress[namespace].forEach(function (fn) {
+			fn(err, params);
+		});
+		fallbackCacheInProgress[namespace] = null;
+		fallbackCache[namespace] = params;
+	});
 }
 
-function initDict(language) {
-	return getAdminNamespaces().then(function (namespaces) {
-		return Promise.all(namespaces.map(function (namespace) {
-			return loadLanguage(language, namespace)
-				.then(function (translations) {
+function initDict(language, callback) {
+	getAdminNamespaces(function (err, namespaces) {
+		if (err) {
+			return callback(err);
+		}
+
+		async.map(namespaces, function (namespace, cb) {
+			async.waterfall([
+				function (next) {
+					languages.get(language, namespace, next);
+				},
+				function (translations, next) {
+					if (!translations || !Object.keys(translations).length) {
+						return next(Error('No translations for ' + language + '/' + namespace));
+					}
+
 					// join all translations into one string separated by newlines
 					var str = Object.keys(translations).map(function (key) {
 						return translations[key];
 					}).join('\n');
 
-					return {
+					next(null, {
 						namespace: namespace,
 						translations: str,
-					};
-				})
-				// TODO: Use translator to get title for admin route?
-				.catch(function () {
-					// no translations for this route, fallback to template
-					return fallback(namespace);
-				})
-				.catch(function () {
-					// no fallback, just return blank
-					return {
-						namespace: namespace,
-						translations: '',
-					};
-				});
-		}));
+					});
+				}
+			], function (err, params) {
+				if (err) {
+					return fallback(namespace, function (err, params) {
+						if (err) {
+							return cb({
+								namespace: namespace,
+								translations: '',
+							});
+						}
+
+						cb(null, params);
+					});
+				}
+
+				cb(null, params);
+			});
+		}, callback);
 	});
 }
 
+var cacheInProgress = {};
 var cache = {};
 
-function getDict(language) {
-	// use cache if exists, else make it
-	cache[language] = cache[language] || initDict(language);
-	return cache[language];
+function getDictionary(language, callback) {
+	if (cache[language]) {
+		return callback(null, cache[language]);
+	}
+	if (cacheInProgress[language]) {
+		return cacheInProgress[language].push(callback);
+	}
+
+	cacheInProgress[language] = [function (err, params) {
+		if (err) {
+			return callback(err);
+		}
+
+		callback(null, params);
+	}];
+	initDict(language, function (err, params) {
+		cacheInProgress[language].forEach(function (fn) {
+			fn(err, params);
+		});
+		cacheInProgress[language] = null;
+		cache[language] = params;
+	});
 }
 
-module.exports.getDict = getDict;
+module.exports.getDictionary = getDictionary;
 module.exports.filterDirectories = filterDirectories;
 module.exports.simplify = simplify;
 module.exports.sanitize = sanitize;

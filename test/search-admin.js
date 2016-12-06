@@ -2,7 +2,7 @@
 /*global require*/
 
 var assert = require('assert');
-var search = require('../src/admin/search.js');
+var search = require('../src/admin/search');
 
 describe('admin search', function () {
     describe('filterDirectories', function () {
@@ -60,7 +60,7 @@ describe('admin search', function () {
             assert.equal(
                 search.simplify(
                     'Pellentesque tristique {{senectus}}habitant morbi' +
-                    'liquam tincidunt {{mauris.eu}}risus'
+                    'liquam tincidunt {mauris.eu}risus'
                 ),
                 'Pellentesque tristique habitant morbi' +
                 'liquam tincidunt risus'
