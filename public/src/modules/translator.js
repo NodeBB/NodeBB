@@ -3,7 +3,7 @@
 (function (factory) {
 	'use strict';
 	function loadClient(language, namespace) {
-		return Promise.resolve(jQuery.getJSON(config.relative_path + '/api/language/' + language + '/' + namespace));
+		return Promise.resolve(jQuery.getJSON(config.relative_path + '/api/language/' + language + '/' + encodeURIComponent(namespace)));
 	}
 	if (typeof define === 'function' && define.amd) {
 		// AMD. Register as a named module
