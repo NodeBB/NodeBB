@@ -1,7 +1,7 @@
 "use strict";
 /* globals socket, app, define, ajaxify, config */
 
-define(['mousetrap'], function (mousetrap) {
+define('admin/modules/search', ['mousetrap'], function (mousetrap) {
 	var search = {};
 
 	function nsToTitle(namespace) {
