@@ -43,7 +43,8 @@ modsController.flags.list = function (req, res, next) {
 			res.render('flags/list', {
 				flags: flags,
 				hasFilter: !!Object.keys(filters).length,
-				filters: filters
+				filters: filters,
+				title: '[[pages:flags]]'
 			});
 		});
 	});
@@ -67,7 +68,8 @@ modsController.flags.detail = function (req, res, next) {
 			type_bool: ['post', 'user'].reduce(function (memo, cur) {
 				memo[cur] = results.flagData.type === cur;
 				return memo;
-			}, {})
+			}, {}),
+			title: '[[pages:flag-details, ' + req.params.flagId + ']]'
 		}));
 	});
 };
