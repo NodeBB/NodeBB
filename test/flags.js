@@ -8,7 +8,9 @@ var db = require('./mocks/databasemock');
 var Flags = require('../src/flags');
 var Categories = require('../src/categories');
 var Topics = require('../src/topics');
+var Posts = require('../src/posts');
 var User = require('../src/user');
+var Meta = require('../src/meta');
 
 describe('Flags', function () {
 	before(function (done) {
@@ -43,8 +45,7 @@ describe('Flags', function () {
 					uid: 1,
 					targetId: 1,
 					type: 'post',
-					description: 'Test flag',
-					state: 'open'
+					description: 'Test flag'
 				};
 
 				for(var key in compare) {
@@ -86,7 +87,7 @@ describe('Flags', function () {
 
 	describe('.list()', function () {
 		it('should show a list of flags (with one item)', function (done) {
-			Flags.list({}, function (err, flags) {
+			Flags.list({}, 1, function (err, flags) {
 				assert.ifError(err);
 				assert.ok(Array.isArray(flags));
 				assert.equal(flags.length, 1);
@@ -101,7 +102,49 @@ describe('Flags', function () {
 		});
 	});
 
-	describe('.getTarget()', function() {
+	describe('.update()', function () {
+		it('should alter a flag\'s various attributes and persist them to the database', function (done) {
+			Flags.update(1, 1, {
+				"state": "wip",
+				"assignee": 1
+			}, function (err) {
+				assert.ifError(err);
+				db.getObjectFields('flag:1', ['state', 'assignee'], function (err, data) {
+					if (err) {
+						throw err;
+					}
+
+					assert.strictEqual('wip', data.state);
+					assert.strictEqual(1, data.assignee);
+					done();
+				});
+			});
+		});
+
+		it('should persist to the flag\'s history', function (done) {
+			Flags.getHistory(1, function (err, history) {
+				if (err) {
+					throw err;
+				}
+
+				history.forEach(function (change) {
+					switch (change.attribute) {
+						case 'state':
+							assert.strictEqual('[[flags:state-wip]]', change.value);
+							break;
+						
+						case 'assignee':
+							assert.strictEqual(1, change.value);
+							break;
+					}
+				});
+
+				done();
+			});
+		});
+	});
+
+	describe('.getTarget()', function () {
 		it('should return a post\'s data if queried with type "post"', function (done) {
 			Flags.getTarget('post', 1, 1, function (err, data) {
 				assert.ifError(err);
@@ -141,7 +184,142 @@ describe('Flags', function () {
 				done();
 			});
 		});
-	});;
+	});
+
+	describe('.validate()', function () {
+		it('should error out if type is post and post is deleted', function (done) {
+			Posts.delete(1, 1, function (err) {
+				if (err) {
+					throw err;
+				}
+
+				Flags.validate({
+					type: 'post',
+					id: 1,
+					uid: 1
+				}, function (err) {
+					assert.ok(err);
+					assert.strictEqual('[[error:post-deleted]]', err.message);
+					Posts.restore(1, 1, done);
+				});
+			});
+		});
+
+		it('should not pass validation if flag threshold is set and user rep does not meet it', function (done) {
+			Meta.configs.set('privileges:flag', '50', function (err) {
+				assert.ifError(err);
+
+				Flags.validate({
+					type: 'post',
+					id: 1,
+					uid: 1
+				}, function (err) {
+					assert.ok(err);
+					assert.strictEqual('[[error:not-enough-reputation-to-flag]]', err.message);
+					Meta.configs.set('privileges:flag', 0, done);
+				});
+			});
+		});
+	});
+
+	describe('.appendNote()', function () {
+		it('should add a note to a flag', function (done) {
+			Flags.appendNote(1, 1, 'this is my note', function (err) {
+				assert.ifError(err);
+				
+				db.getSortedSetRange('flag:1:notes', 0, -1, function (err, notes) {
+					if (err) {
+						throw err;
+					}
+
+					assert.strictEqual('[1,"this is my note"]', notes[0]);
+					done();
+				});
+			});
+		});
+
+		it('should be a JSON string', function (done) {
+			db.getSortedSetRange('flag:1:notes', 0, -1, function (err, notes) {
+				if (err) {
+					throw err;
+				}
+
+				try {
+					JSON.parse(notes[0]);
+				} catch (e) {
+					assert.ifError(e);
+				}
+
+				done();
+			});
+		});
+	});
+
+	describe('.getNotes()', function () {
+		before(function (done) {
+			// Add a second note
+			Flags.appendNote(1, 1, 'this is the second note', done);
+		});
+
+		it('return should match a predefined spec', function (done) {
+			Flags.getNotes(1, function (err, notes) {
+				assert.ifError(err);
+				var compare = {
+					uid: 1,
+					content: 'this is my note'
+				};
+				
+				var data = notes[1];
+				for(var key in compare) {
+					if (compare.hasOwnProperty(key)) {
+						assert.ok(data[key]);
+						assert.strictEqual(data[key], compare[key]);
+					}
+				}
+
+				done();
+			});
+		});
+
+		it('should retrieve a list of notes, from newest to oldest', function (done) {
+			Flags.getNotes(1, function (err, notes) {
+				assert.ifError(err);
+				assert(notes[0].datetime > notes[1].datetime);
+				assert.strictEqual('this is the second note', notes[0].content);
+				done();
+			});
+		});
+	});
+
+	describe('.appendHistory()', function () {
+		var entries;
+		before(function (done) {
+			db.sortedSetCard('flag:1:history', function (err, count) {
+				entries = count;
+				done(err);
+			});
+		});
+
+		it('should add a new entry into a flag\'s history', function (done) {
+			Flags.appendHistory(1, 1, ['state:rejected'], function (err) {
+				assert.ifError(err);
+
+				Flags.getHistory(1, function (err, history) {
+					assert.strictEqual(entries + 1, history.length);
+					done();
+				});
+			});
+		});
+	});
+
+	describe('.getHistory()', function () {
+		it('should retrieve a flag\'s history', function (done) {
+			Flags.getHistory(1, function (err, history) {
+				assert.strictEqual(history[0].fields[0].value, '[[flags:state-rejected]]');
+				done();
+			});
+		});
+	});
 
 	after(function (done) {
 		db.emptydb(done);
