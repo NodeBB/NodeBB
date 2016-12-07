@@ -255,6 +255,13 @@ describe('Groups', function () {
 				done();
 			});
 		});
+
+		it('should fail if group name is invalid', function (done) {
+			Groups.create({name: 'not:valid'}, function (err) {
+				assert.equal(err.message, '[[error:invalid-group-name]]');
+				done();
+			});
+		});
 	});
 
 	describe('.hide()', function () {
