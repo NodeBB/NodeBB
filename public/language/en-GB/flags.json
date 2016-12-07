@@ -29,6 +29,9 @@
 	"start-new-chat": "Start New Chat",
 	"go-to-target": "View Flag Target",
 
+	"user-view": "View Profile",
+	"user-edit": "Edit Profile",
+
 	"notes": "Flag Notes",
 	"add-note": "Add Note",
 	"no-notes": "No shared notes.",
@@ -43,5 +46,13 @@
 	"state-resolved": "Resolved",
 	"state-rejected": "Rejected",
 	"no-assignee": "Not Assigned",
-	"note-added": "Note Added"
+	"note-added": "Note Added",
+
+	"modal-title": "Report Inappropriate Content",
+	"modal-body": "Please specify your reason for flagging %1 %2 for review. Alternatively, use one of the quick report buttons if applicable.",
+	"modal-reason-spam": "Spam",
+	"modal-reason-offensive": "Offensive",
+	"modal-reason-custom": "Reason for reporting this content...",
+	"modal-submit": "Submit Report",
+	"modal-submit-success": "Content has been flagged for moderation."
 }

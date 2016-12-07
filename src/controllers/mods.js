@@ -63,7 +63,11 @@ modsController.flags.detail = function (req, res, next) {
 		}
 
 		res.render('flags/detail', Object.assign(results.flagData, {
-			assignees: results.assignees
+			assignees: results.assignees,
+			type_bool: ['post', 'user'].reduce(function (memo, cur) {
+				memo[cur] = results.flagData.type === cur;
+				return memo;
+			}, {})
 		}));
 	});
 };

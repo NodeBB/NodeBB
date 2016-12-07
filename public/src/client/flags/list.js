@@ -23,6 +23,8 @@ define('forum/flags/list', ['components'], function (components) {
 			var qs = payload.map(function (filter) {
 				if (filter.value) {
 					return filter.name + '=' + filter.value;
+				} else {
+					return;
 				}
 			}).filter(Boolean).join('&');
 

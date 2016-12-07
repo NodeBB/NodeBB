@@ -167,19 +167,43 @@ Flags.validate = function (payload, callback) {
 		switch (payload.type) {
 			case 'post':
 				async.parallel({
-					privileges: async.apply(privileges.posts.get, [payload.id], payload.uid)
+					editable: async.apply(privileges.posts.canEdit, payload.id, payload.uid)
 				}, function (err, subdata) {
 					if (err) {
 						return callback(err);
 					}
 
 					var minimumReputation = utils.isNumber(meta.config['privileges:flag']) ? parseInt(meta.config['privileges:flag'], 10) : 1;
-					if (!subdata.privileges[0].isAdminOrMod && parseInt(data.reporter.reputation, 10) < minimumReputation) {
+					// Check if reporter meets rep threshold (or can edit the target post, in which case threshold does not apply)
+					if (!subdata.editable.flag && parseInt(data.reporter.reputation, 10) < minimumReputation) {
 						return callback(new Error('[[error:not-enough-reputation-to-flag]]'));
 					}
 
 					callback();
 				});
+				break;
+			
+			case 'user':
+				async.parallel({
+					editable: async.apply(privileges.users.canEdit, payload.uid, payload.id)
+				}, function (err, subdata) {
+					if (err) {
+						return callback(err);
+					}
+
+
+					var minimumReputation = utils.isNumber(meta.config['privileges:flag']) ? parseInt(meta.config['privileges:flag'], 10) : 1;
+					// Check if reporter meets rep threshold (or can edit the target user, in which case threshold does not apply)
+					if (!subdata.editable && parseInt(data.reporter.reputation, 10) < minimumReputation) {
+						return callback(new Error('[[error:not-enough-reputation-to-flag]]'));
+					}
+
+					callback();
+				});
+				break;
+			
+			default:
+				callback(new Error('[[error:invalid-data]]'));
 				break;
 		} 
 	});
@@ -369,12 +393,16 @@ Flags.exists = function (type, id, uid, callback) {
 
 Flags.targetExists = function (type, id, callback) {
 	switch (type) {
-		case 'topic':	// just an example...
-			topics.exists(id, callback);
-			break;
-		
 		case 'post':
 			posts.exists(id, callback);
+			break;
+		
+		case 'user':
+			user.exists(id, callback);
+			break;
+
+		default:
+			callback(new Error('[[error:invalid-data]]'));
 			break;
 	}
 };
@@ -384,6 +412,10 @@ Flags.getTargetUid = function (type, id, callback) {
 		case 'post':
 			posts.getPostField(id, 'uid', callback);
 			break;
+		
+		case 'user':
+			setImmediate(callback, null, id);
+			break; 
 	}
 };
 
@@ -553,7 +585,7 @@ Flags.notify = function (flagObj, uid, callback) {
 
 				notifications.create({
 					bodyShort: '[[notifications:user_flagged_post_in, ' + flagObj.reporter.username + ', ' + titleEscaped + ']]',
-					bodyLong: results.post.content,
+					bodyLong: flagObj.description,
 					pid: flagObj.targetId,
 					path: '/post/' + flagObj.targetId,
 					nid: 'flag:post:' + flagObj.targetId + ':uid:' + uid,
@@ -569,6 +601,36 @@ Flags.notify = function (flagObj, uid, callback) {
 					notifications.push(notification, results.admins.concat(results.moderators).concat(results.globalMods), callback);
 				});
 			});
+			break;
+
+		case 'user':
+			async.parallel({
+				admins: async.apply(groups.getMembers, 'administrators', 0, -1),
+				globalMods: async.apply(groups.getMembers, 'Global Moderators', 0, -1),
+			}, function (err, results) {
+				if (err) {
+					return callback(err);
+				}
+
+				notifications.create({
+					bodyShort: '[[notifications:user_flagged_user, ' + flagObj.reporter.username + ', ' + flagObj.target.username + ']]',
+					bodyLong: flagObj.description,
+					path: '/uid/' + flagObj.targetId,
+					nid: 'flag:user:' + flagObj.targetId + ':uid:' + uid,
+					from: uid,
+					mergeId: 'notifications:user_flagged_user|' + flagObj.targetId
+				}, function (err, notification) {
+					if (err || !notification) {
+						return callback(err);
+					}
+
+					notifications.push(notification, results.admins.concat(results.globalMods), callback);
+				});
+			});
+			break;
+		
+		default:
+			callback(new Error('[[error:invalid-data]]'));
 			break;
 	}
 };

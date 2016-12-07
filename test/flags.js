@@ -32,6 +32,11 @@ describe('Flags', function () {
 						content: 'This is flaggable content'
 					}, next);
 				});
+			},
+			function (topicData, next) {
+				User.create({
+					username: 'testUser2', password: 'abcdef', email: 'c@d.com'
+				}, next);
 			}
 		], done);
 	});
@@ -212,7 +217,7 @@ describe('Flags', function () {
 				Flags.validate({
 					type: 'post',
 					id: 1,
-					uid: 1
+					uid: 2
 				}, function (err) {
 					assert.ok(err);
 					assert.strictEqual('[[error:not-enough-reputation-to-flag]]', err.message);
@@ -305,6 +310,10 @@ describe('Flags', function () {
 				assert.ifError(err);
 
 				Flags.getHistory(1, function (err, history) {
+					if (err) {
+						throw err;
+					}
+
 					assert.strictEqual(entries + 1, history.length);
 					done();
 				});
@@ -315,6 +324,7 @@ describe('Flags', function () {
 	describe('.getHistory()', function () {
 		it('should retrieve a flag\'s history', function (done) {
 			Flags.getHistory(1, function (err, history) {
+				assert.ifError(err);
 				assert.strictEqual(history[0].fields[0].value, '[[flags:state-rejected]]');
 				done();
 			});
