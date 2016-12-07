@@ -87,7 +87,7 @@
     "socket.io-redis": "2.0.0",
     "socketio-wildcard": "~0.3.0",
     "string": "^3.0.0",
-    "templates.js": "0.3.4",
+    "templates.js": "0.3.5",
     "toobusy-js": "^0.5.1",
     "uglify-js": "^2.6.0",
     "underscore": "^1.8.3",
