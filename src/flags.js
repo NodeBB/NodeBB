@@ -485,12 +485,6 @@ Flags.getHistory = function (flagId, callback) {
 				if (changeset.hasOwnProperty('state')) {
 					changeset.state = changeset.state === undefined ? '' : '[[flags:state-' + changeset.state + ']]';
 				}
-				if (changeset.hasOwnProperty('assignee')) {
-					changeset.assignee = changeset.assignee || '';
-				}
-				if (changeset.hasOwnProperty('notes')) {
-					changeset.notes = changeset.notes || '';
-				}
 
 				return {
 					uid: entry.value[0],
