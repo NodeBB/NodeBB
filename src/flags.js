@@ -422,7 +422,6 @@ Flags.getTargetUid = function (type, id, callback) {
 Flags.update = function (flagId, uid, changeset, callback) {
 	// Retrieve existing flag data to compare for history-saving purposes
 	var fields = ['state', 'assignee'];
-	var history = [];
 	var tasks = [];
 	var now = Date.now();
 
@@ -445,9 +444,6 @@ Flags.update = function (flagId, uid, changeset, callback) {
 								tasks.push(async.apply(db.sortedSetAdd.bind(db), 'flags:byAssignee:' + changeset[prop], now, flagId));
 								break;
 						}
-
-						// Append to history payload
-						history.push(prop + ':' + changeset[prop]);
 					}
 				}
 			}
@@ -460,7 +456,7 @@ Flags.update = function (flagId, uid, changeset, callback) {
 			// Save new object to db (upsert)
 			tasks.push(async.apply(db.setObject, 'flag:' + flagId, changeset));
 			// Append history
-			tasks.push(async.apply(Flags.appendHistory, flagId, uid, history));
+			tasks.push(async.apply(Flags.appendHistory, flagId, uid, changeset));
 
 			async.parallel(tasks, function (err, data) {
 				return next(err);
@@ -484,28 +480,21 @@ Flags.getHistory = function (flagId, callback) {
 
 				uids.push(entry.value[0]);
 
-				// Deserialise field object
-				var fields = entry.value[1].map(function (field) {
-					field = field.toString().split(':');
-
-					switch (field[0]) {
-						case 'state':
-							field[1] = field[1] === undefined ? null : '[[flags:state-' + field[1] + ']]';
-							break;
-
-						default:
-							field[1] = field[1] === undefined ? null : field[1];
-							break;
-					}
-					return {
-						"attribute": field[0],
-						"value": field[1]
-					};
-				});
+				// Deserialise changeset
+				var changeset = entry.value[1];
+				if (changeset.hasOwnProperty('state')) {
+					changeset.state = changeset.state === undefined ? '' : '[[flags:state-' + changeset.state + ']]';
+				}
+				if (changeset.hasOwnProperty('assignee')) {
+					changeset.assignee = changeset.assignee || '';
+				}
+				if (changeset.hasOwnProperty('notes')) {
+					changeset.notes = changeset.notes || '';
+				}
 
 				return {
 					uid: entry.value[0],
-					fields: fields,
+					fields: changeset,
 					datetime: entry.score,
 					datetimeISO: new Date(entry.score).toISOString()
 				};
@@ -549,7 +538,9 @@ Flags.appendNote = function (flagId, uid, note, callback) {
 
 	async.waterfall([
 		async.apply(db.sortedSetAdd, 'flag:' + flagId + ':notes', Date.now(), payload),
-		async.apply(Flags.appendHistory, flagId, uid, ['notes'])
+		async.apply(Flags.appendHistory, flagId, uid, {
+			notes: null
+		})
 	], callback);
 };
 
