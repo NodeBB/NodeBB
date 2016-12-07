@@ -597,7 +597,9 @@ Flags.notify = function (flagObj, uid, callback) {
 						return callback(err);
 					}
 
-					plugins.fireHook('action:post.flag', {post: results.post, reason: flagObj.description, flaggingUser: flagObj.reporter});
+					plugins.fireHook('action:flag.create', {
+						flag: flagObj
+					});
 					notifications.push(notification, results.admins.concat(results.moderators).concat(results.globalMods), callback);
 				});
 			});
@@ -624,6 +626,9 @@ Flags.notify = function (flagObj, uid, callback) {
 						return callback(err);
 					}
 
+					plugins.fireHook('action:flag.create', {
+						flag: flagObj
+					});
 					notifications.push(notification, results.admins.concat(results.globalMods), callback);
 				});
 			});
