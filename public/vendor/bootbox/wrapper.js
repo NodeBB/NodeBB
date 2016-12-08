@@ -3,27 +3,52 @@
 require(['translator'], function (shim) {
 	"use strict";
 
+	function descendantTextNodes(node) {
+		var textNodes = [];
+
+		function helper(node) {
+			if (node.nodeType === 3) {
+				textNodes.push(node);
+			} else {
+				for (var i = 0, c = node.childNodes, l = c.length; i < l; i += 1) {
+					helper(c[i]);
+				}
+			}
+		}
+
+		helper(node);
+		return textNodes;
+	}
+
 	var translator = shim.Translator.create();
 	var dialog = bootbox.dialog;
 	bootbox.dialog = function (options) {
-		var translate = [
-			translator.translate(options.message),
-			options.title && translator.translate(options.title),
-		].concat(Object.keys(options.buttons).map(function (key) {
-			if (/cancel|confirm|ok/.test(key)) {
-				return null;
-			}
-			return translator.translate(options.buttons[key].label).then(function (label) {
-				options.buttons[key].label = label;
+		var show, $elem, nodes, text;
+
+		show = options.show !== false;
+		options.show = false;
+
+		$elem = dialog.call(bootbox, options);
+
+		if (/\[\[[a-zA-Z0-9\-_.\/:]+\]\]/.test($elem[0].outerHTML)) {
+			nodes = descendantTextNodes($elem[0]);
+			text = nodes.map(function (node) {
+				return node.nodeValue;
+			}).join('  ||  ');
+
+			translator.translate(text).then(function (translated) {
+				translated.split('  ||  ').forEach(function (str, i) {
+					nodes[i].nodeValue = str;
+				});
+				if (show) {
+					$elem.modal('show');
+				}
 			});
-		}));
+		} else if (show) {
+			$elem.modal('show');
+		}
 
-		Promise.all(translate).then(function (translations) {
-			options.message = translations[0];
-			options.title = translations[1];
-
-			dialog.call(bootbox, options);
-		});
+		return $elem;
 	};
 
 	Promise.all([

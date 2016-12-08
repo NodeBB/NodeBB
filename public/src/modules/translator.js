@@ -22,8 +22,8 @@
 
 			if (global.env === 'development') {
 				var winston = require('winston');
-				warn = function (a, b, c, d) {
-					winston.warn(a, b, c, d);
+				warn = function (a) {
+					winston.warn(a);
 				};
 			}
 
