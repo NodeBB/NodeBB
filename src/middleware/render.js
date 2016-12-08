@@ -111,6 +111,7 @@ module.exports = function (middleware) {
 		var clean = req.path.replace(/^\/api/, '').replace(/^\/|\/$/g, '');
 		var parts = clean.split('/').slice(0, 3);
 		parts.forEach(function (p, index) {
+			p = decodeURIComponent(p);
 			parts[index] = index ? parts[0] + '-' + p : 'page-' + (p || 'home');
 		});
 		return parts.join(' ');
