@@ -111,43 +111,6 @@ if ('undefined' !== typeof window) {
 			});
 	}());
 
-	overrides.overrideBootbox = function () {
-		require(['translator'], function (translator) {
-			var dialog = bootbox.dialog,
-				prompt = bootbox.prompt,
-				confirm = bootbox.confirm;
-
-			function translate(modal) {
-				var header = modal.find('.modal-header'),
-					footer = modal.find('.modal-footer');
-				translator.translate(header.html(), function (html) {
-					header.html(html);
-				});
-				translator.translate(footer.html(), function (html) {
-					footer.html(html);
-				});
-			}
-
-			bootbox.dialog = function () {
-				var modal = $(dialog.apply(this, arguments)[0]);
-				translate(modal);
-				return modal;
-			};
-
-			bootbox.prompt = function () {
-				var modal = $(prompt.apply(this, arguments)[0]);
-				translate(modal);
-				return modal;
-			};
-
-			bootbox.confirm = function () {
-				var modal = $(confirm.apply(this, arguments)[0]);
-				translate(modal);
-				return modal;
-			};
-		});
-	};
-
 	overrides.overrideTimeago = function () {
 		var timeagoFn = $.fn.timeago;
 		if (parseInt(config.timeagoCutoff, 10) === 0) {
