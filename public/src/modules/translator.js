@@ -5,16 +5,27 @@
 	function loadClient(language, namespace) {
 		return Promise.resolve(jQuery.getJSON(config.relative_path + '/api/language/' + language + '/' + encodeURIComponent(namespace)));
 	}
+	var warn = function () {};
+	if (typeof config === 'object' && config.environment === 'development') {
+		warn = console.warn.bind(console);
+	}
 	if (typeof define === 'function' && define.amd) {
 		// AMD. Register as a named module
 		define('translator', ['string'], function (string) {
-			return factory(string, loadClient);
+			return factory(string, loadClient, warn);
 		});
 	} else if (typeof module === 'object' && module.exports) {
 		// Node
 		(function () {
 			require('promise-polyfill');
 			var languages = require('../../../src/languages');
+
+			if (global.env === 'development') {
+				var winston = require('winston');
+				warn = function (a, b, c, d) {
+					winston.warn(a, b, c, d);
+				};
+			}
 
 			function loadServer(language, namespace) {
 				return new Promise(function (resolve, reject) {
@@ -28,12 +39,12 @@
 				});
 			}
 
-			module.exports = factory(require('string'), loadServer);
+			module.exports = factory(require('string'), loadServer, warn);
 		}());
 	} else {
-		window.translator = factory(window.string, loadClient);
+		window.translator = factory(window.string, loadClient, warn);
 	}
-}(function (string, load) {
+}(function (string, load, warn) {
 	'use strict';
 	var assign = Object.assign || jQuery.extend;
 	function classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -238,6 +249,7 @@
 			}
 
 			if (namespace && !key) {
+				warn('Missing key in translation token "' + name + '"');
 				return Promise.resolve('[[' + namespace + ']]');
 			}
 
@@ -256,6 +268,7 @@
 				var translatedArgs = result.slice(1);
 
 				if (!translated) {
+					warn('Missing translation "' + name + '"');
 					return key;
 				}
 				var out = translated;
@@ -276,7 +289,7 @@
 		Translator.prototype.getTranslation = function getTranslation(namespace, key) {
 			var translation;
 			if (!namespace) {
-				console.warn('[translator] Parameter `namespace` is ' + namespace + (namespace === '' ? '(empty string)' : ''));
+				warn('[translator] Parameter `namespace` is ' + namespace + (namespace === '' ? '(empty string)' : ''));
 				translation = Promise.resolve({});
 			} else {
 				translation = this.translations[namespace] = this.translations[namespace] || this.load(this.lang, namespace);
@@ -441,7 +454,7 @@
 			Translator.create(lang).translate(text).then(function (output) {
 				return cb(output);
 			}).catch(function (err) {
-				console.error('Translation failed: ' + err.stack);
+				warn('Translation failed: ' + err.stack);
 			});
 		},
 
