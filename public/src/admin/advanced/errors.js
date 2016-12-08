@@ -1,7 +1,7 @@
 "use strict";
 /*global config, define, app, socket, ajaxify, bootbox, templates, Chart, utils */
 
-define('admin/advanced/errors', ['Chart'], function (Chart) {
+define('admin/advanced/errors', ['Chart', 'translator'], function (Chart, translator) {
 	var Errors = {};
 
 	Errors.init = function () {
@@ -11,7 +11,7 @@ define('admin/advanced/errors', ['Chart'], function (Chart) {
 	};
 
 	Errors.clear404 = function () {
-		bootbox.confirm('Are you sure you wish to clear the 404 error logs?', function (ok) {
+		bootbox.confirm('[[admin/advanced/errors:clear404-confirm]]', function (ok) {
 			if (ok) {
 				socket.emit('admin.errors.clear', {}, function (err) {
 					if (err) {
@@ -19,7 +19,7 @@ define('admin/advanced/errors', ['Chart'], function (Chart) {
 					}
 
 					ajaxify.refresh();
-					app.alertSuccess('"404 Not Found" errors cleared');
+					app.alertSuccess('[[admin/advanced/errors:clear404-success]]');
 				});
 			}
 		});
