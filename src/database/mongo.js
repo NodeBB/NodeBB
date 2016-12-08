@@ -140,7 +140,7 @@
 		});
 	};
 
-	module.createIndices = function(callback) {
+	module.createIndices = function (callback) {
 		function createIndex(collection, index, options, callback) {
 			module.client.collection(collection).createIndex(index, options, callback);				
 		}
