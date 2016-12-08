@@ -167,12 +167,12 @@
 
 	module.checkCompatibility = function (callback) {
 		var mongoPkg = require.main.require('./node_modules/mongodb/package.json');
-		var err = semver.lt(mongoPkg.version, '2.0.0') ? new Error('The `mongodb` package is out-of-date, please run `./nodebb setup` again.') : null;
-
-		if (err) {
-			err.stacktrace = false;
+		
+		if (semver.lt(mongoPkg.version, '2.0.0')) {
+			return callback(new Error('The `mongodb` package is out-of-date, please run `./nodebb setup` again.'));
 		}
-		callback(err);
+		
+		callback();
 	};
 
 	module.info = function (db, callback) {

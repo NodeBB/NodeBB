@@ -118,11 +118,10 @@
 			}
 
 			if (semver.lt(info.redis_version, '2.8.9')) {
-				err = new Error('Your Redis version is not new enough to support NodeBB, please upgrade Redis to v2.8.9 or higher.');
-				err.stacktrace = false;
+				return callback(new Error('Your Redis version is not new enough to support NodeBB, please upgrade Redis to v2.8.9 or higher.'));
 			}
 
-			callback(err);
+			callback();
 		});
 	};
 
