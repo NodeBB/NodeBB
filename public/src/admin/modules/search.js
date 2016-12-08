@@ -1,114 +1,148 @@
 "use strict";
-/*globals define, admin, ajaxify, RELATIVE_PATH*/
+/* globals socket, app, define, ajaxify, config */
 
-define(function () {
-	var search = {},
-		searchIndex;
+define('admin/modules/search', ['mousetrap'], function (mousetrap) {
+	var search = {};
+
+	function nsToTitle(namespace) {
+		return namespace.replace('admin/', '').split('/').map(function (str) {
+			return str[0].toUpperCase() + str.slice(1);
+		}).join(' > ');
+	}
+
+	function find(dict, term) {
+		var html = dict.filter(function (elem) {
+			return elem.translations.toLowerCase().includes(term);
+		}).map(function (params) {
+			var namespace = params.namespace;
+			var translations = params.translations;
+			var title = params.title == null ? nsToTitle(namespace) : params.title;
+
+			var results = translations
+				// remove all lines without a match
+				.replace(new RegExp('^(?:(?!' + term + ').)*$', 'gmi'), '')
+				// get up to 25 characaters of context on both sides of the match
+				// and wrap the match in a `.search-match` element
+				.replace(
+					new RegExp('^[\\s\\S]*?(.{0,25})(' + term + ')(.{0,25})[\\s\\S]*?$', 'gmi'),
+					'...$1<span class="search-match">$2</span>$3...<br>'
+				)
+				// collapse whitespace
+				.replace(/(?:\n ?)+/g, '\n');
+
+			return '<li role="presentation" class="result">' +
+				'<a role= "menuitem" href= "' + config.relative_path + '/' + namespace + '" >' +
+					title +
+					'<br>' +
+					'<small><code>' +
+						results +
+					'</small></code>' +
+				'</a>' +
+			'</li>';
+		}).join('');
+		return html;
+	}
 
 	search.init = function () {
-		$.getJSON(RELATIVE_PATH + '/templates/indexed.json', function (data) {
-			searchIndex = data;
-			for (var file in searchIndex) {
-				if (searchIndex.hasOwnProperty(file)) {
-					searchIndex[file] = searchIndex[file].replace(/<img/g, '<none'); // can't think of a better solution, see #2153
-					searchIndex[file] = $('<div class="search-container">' + searchIndex[file] + '</div>');
-					searchIndex[file].find('script').remove();
-
-					searchIndex[file] = searchIndex[file].text().toLowerCase().replace(/[ |\r|\n]+/g, ' ');
-				}
+		socket.emit('admin.getSearchDict', {}, function (err, dict) {
+			if (err) {
+				app.alertError(err);
+				throw err;
 			}
-
-			delete searchIndex['/admin/header.tpl'];
-			delete searchIndex['/admin/footer.tpl'];
-
-			setupACPSearch();
+			setupACPSearch(dict);
 		});
 	};
 
-	function setupACPSearch() {
-		var menu = $('#acp-search .dropdown-menu'),
-			routes = [],
-			input = $('#acp-search input'),
-			firstResult = null;
+	function setupACPSearch(dict) {
+		var dropdown = $('#acp-search .dropdown');
+		var menu = $('#acp-search .dropdown-menu');
+		var input = $('#acp-search input');
+
+		if (!config.searchEnabled) {
+			menu.addClass('search-disabled');
+		}
 
 		input.on('keyup', function () {
-			$('#acp-search .dropdown').addClass('open');
+			dropdown.addClass('open');
 		});
 
 		$('#acp-search').parents('form').on('submit', function (ev) {
-			var input = $(this).find('input'),
-				href = firstResult ? firstResult : RELATIVE_PATH + '/search/' + input.val();
+			var selected = menu.find('li.result > a.focus').attr('href');
+			if (!selected.length) {
+				selected = menu.find('li.result > a').first().attr('href');
+			}
+			var href = selected ? selected : config.relative_path + '/search/' + input.val();
 
 			ajaxify.go(href.replace(/^\//, ''));
 
 			setTimeout(function () {
-				$('#acp-search .dropdown').removeClass('open');
-				$(input).blur();
+				dropdown.removeClass('open');
+				input.blur();
 			}, 150);
 
 			ev.preventDefault();
 			return false;
 		});
 
-		$('#main-menu a').each(function (idx, link) {
-			routes.push($(link).attr('href'));
+		mousetrap(input[0]).bind(['up', 'down'], function (ev, key) {
+			var next;
+			if (key === 'up') {
+				next = menu.find('li.result > a.focus').removeClass('focus').parent().prev('.result').children();
+				if (!next.length) {
+					next = menu.find('li.result > a').last();
+				}
+				next.addClass('focus');
+				if (menu[0].getBoundingClientRect().top > next[0].getBoundingClientRect().top) {
+					next[0].scrollIntoView(true);
+				}
+			} else if (key === 'down') {
+				next = menu.find('li.result > a.focus').removeClass('focus').parent().next('.result').children();
+				if (!next.length) {
+					next = menu.find('li.result > a').first();
+				}
+				next.addClass('focus');
+				if (menu[0].getBoundingClientRect().bottom < next[0].getBoundingClientRect().bottom) {
+					next[0].scrollIntoView(false);
+				}
+			}
+
+			ev.preventDefault();
 		});
 
+		var prevValue;
+
 		input.on('keyup focus', function () {
-			var $input = $(this),
-				value = $input.val().toLowerCase(),
-				menuItems = $('#acp-search .dropdown-menu').html('');
+			var value = input.val().toLowerCase();
 
-			function toUpperCase(txt) {
-				return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+			if (value === prevValue) {
+				return;
 			}
+			prevValue = value;
 
-			firstResult = null;
+			menu.children('.result').remove();
 
-			if (value.length >= 3) {
-				for (var file in searchIndex) {
-					if (searchIndex.hasOwnProperty(file)) {
-						var position = searchIndex[file].indexOf(value);
+			var len = value.length;
+			var results;
 
-						if (position !== -1) {
-							var href = file.replace('.tpl', ''),
-								title = href.replace(/^\/admin\//, '').split('/'),
-								description = searchIndex[file].substring(Math.max(0, position - 25), Math.min(searchIndex[file].length - 1, position + 25))
-									.replace(value, '<span class="search-match">' + value + '</span>');
+			menu.toggleClass('state-start-typing', len === 0);
+			menu.toggleClass('state-keep-typing', len > 0 && len < 3);
+			
+			if (len >= 3) {
+				menu.prepend(find(dict, value));
 
-							for (var t in title) {
-								if (title.hasOwnProperty(t)) {
-									title[t] = title[t]
-										.replace('-', ' ')
-										.replace(/\w\S*/g, toUpperCase);
-								}
-							}
+				results = menu.children('.result').length;
 
-							title = title.join(' > ');
-							href = RELATIVE_PATH + href;
-							firstResult = firstResult ? firstResult : href;
+				menu.toggleClass('state-no-results', !results);
+				menu.toggleClass('state-yes-results', !!results);
 
-							if ($.inArray(href, routes) !== -1) {
-								menuItems.append('<li role="presentation"><a role="menuitem" href="' + href + '">' + title + '<br /><small><code>...' + description + '...</code></small></a></li>');
-							}
-						}
-					}
-				}
-
-				if (menuItems.html() === '') {
-					menuItems.append('<li role="presentation"><a role="menuitem" href="#">No results...</a></li>');
-				}
-			}
-
-			if (value.length > 0) {
-				if (config.searchEnabled) {
-					menuItems.append('<li role="presentation" class="divider"></li>');
-					menuItems.append('<li role="presentation"><a role="menuitem" target="_top" href="' + RELATIVE_PATH + '/search/' + value + '">Search the forum for <strong>' + value + '</strong></a></li>');
-				} else if (value.length < 3) {
-					menuItems.append('<li role="presentation"><a role="menuitem" href="#">Type more to see results...</a></li>');
-				}
+				menu.find('.search-forum')
+					.not('.divider')
+					.find('a')
+					.attr('href', config.relative_path + '/search/' + value)
+					.find('strong')
+					.html(value);
 			} else {
-				menuItems.append('<li role="presentation"><a role="menuitem" href="#">Start typing to see results...</a></li>');
+				menu.removeClass('state-no-results state-yes-results');
 			}
 		});
 	}

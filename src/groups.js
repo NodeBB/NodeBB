@@ -57,30 +57,24 @@ var utils = require('../public/src/utils');
 	};
 
 	Groups.getGroupsFromSet = function (set, uid, start, stop, callback) {
-		var method;
-		var args;
-		if (set === 'groups:visible:name') {
-			method = db.getSortedSetRangeByLex;
-			args = [set, '-', '+', start, stop - start + 1, done];
-		} else {
-			method = db.getSortedSetRevRange;
-			args = [set, start, stop, done];
-		}
-		method.apply(null, args);
+		async.waterfall([
+			function (next) {
+				if (set === 'groups:visible:name') {
+					db.getSortedSetRangeByLex(set, '-', '+', start, stop - start + 1, next);
+				} else {
+					db.getSortedSetRevRange(set, start, stop, next);
+				}
+			},
+			function (groupNames, next) {
+				if (set === 'groups:visible:name') {
+					groupNames = groupNames.map(function (name) {
+						return name.split(':')[1];
+					});
+				}
 
-		function done(err, groupNames) {
-			if (err) {
-				return callback(err);
+				Groups.getGroupsAndMembers(groupNames, next);
 			}
-
-			if (set === 'groups:visible:name') {
-				groupNames = groupNames.map(function (name) {
-					return name.split(':')[1];
-				});
-			}
-
-			Groups.getGroupsAndMembers(groupNames, callback);
-		}
+		], callback);
 	};
 
 	Groups.getGroups = function (set, start, stop, callback) {

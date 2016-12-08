@@ -12,7 +12,6 @@ var plugins = require('../plugins');
 var utils = require('../../public/src/utils');
 
 var Templates = {};
-var searchIndex = {};
 
 Templates.compile = function (callback) {
 	callback = callback || function () {};
@@ -131,10 +130,6 @@ function compile(callback) {
 				}
 			}
 
-			if (relativePath.match(/^\/admin\/[\s\S]*?/)) {
-				addIndex(relativePath, file);
-			}
-
 			mkdirp.sync(path.join(viewsPath, relativePath.split('/').slice(0, -1).join('/')));
 			fs.writeFile(path.join(viewsPath, relativePath), file, next);
 		}, function (err) {
@@ -143,25 +138,11 @@ function compile(callback) {
 				return callback(err);
 			}
 
-			compileIndex(viewsPath, function (err) {
-				if (err) {
-					return callback(err);
-				}
-				winston.verbose('[meta/templates] Successfully compiled templates.');
+			winston.verbose('[meta/templates] Successfully compiled templates.');
 
-				callback();
-			});
+			callback();
 		});
 	});
-}
-
-
-function addIndex(path, file) {
-	searchIndex[path] = file;
-}
-
-function compileIndex(viewsPath, callback) {
-	fs.writeFile(path.join(viewsPath, '/indexed.json'), JSON.stringify(searchIndex), callback);
 }
 
 module.exports = Templates;

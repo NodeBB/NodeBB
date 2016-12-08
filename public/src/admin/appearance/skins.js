@@ -1,7 +1,7 @@
 "use strict";
 /* global define, app, socket, templates */
 
-define('admin/appearance/skins', function () {
+define('admin/appearance/skins', ['translator'], function (translator) {
 	var Skins = {};
 	
 	Skins.init = function () {
@@ -40,8 +40,8 @@ define('admin/appearance/skins', function () {
 					app.alert({
 						alert_id: 'admin:theme',
 						type: 'info',
-						title: 'Skin Updated',
-						message: themeId ? (themeId + ' skin was successfully applied') : 'Skin reverted to base colours',
+						title: '[[admin/appearance/skins:skin-updated]]',
+						message: themeId ? ('[[admin/appearance/skins:applied-success, ' + themeId + ']]') : '[[admin/appearance/skins:revert-success]]',
 						timeout: 5000
 					});
 				});
@@ -67,40 +67,48 @@ define('admin/appearance/skins', function () {
 			}),
 			showRevert: true
 		}, function (html) {
-			themeContainer.html(html);
+			translator.translate(html, function (html) {
+				themeContainer.html(html);
 
-			if (config['theme:src']) {
-				var skin = config['theme:src']
+				if (config['theme:src']) {
+					var skin = config['theme:src']
 					.match(/latest\/(\S+)\/bootstrap.min.css/)[1]
 					.replace(/(^|\s)([a-z])/g , function (m,p1,p2) {return p1 + p2.toUpperCase();});
 
-				highlightSelectedTheme(skin);
-			}
+					highlightSelectedTheme(skin);
+				}
+			});
 		});
 	};
 
 	function highlightSelectedTheme(themeId) {
-		$('[data-theme]')
-			.removeClass('selected')
-			.find('[data-action="use"]').each(function () {
-				if ($(this).parents('[data-theme]').attr('data-theme')) {
-					$(this)
-						.html('Select Skin')
-						.removeClass('btn-success')
-						.addClass('btn-primary');
-				}
-			});
+		translator.translate('[[admin/appearance/skins:select-skin]]  ||  [[admin/appearance/skins:current-skin]]', function (text) {
+			text = text.split('  ||  ');
+			var select = text[0];
+			var current = text[1];
 
-		if (!themeId) {
-			return;
-		}
+			$('[data-theme]')
+				.removeClass('selected')
+				.find('[data-action="use"]').each(function () {
+					if ($(this).parents('[data-theme]').attr('data-theme')) {
+						$(this)
+							.html(select)
+							.removeClass('btn-success')
+							.addClass('btn-primary');
+					}
+				});
 
-		$('[data-theme="' + themeId + '"]')
-			.addClass('selected')
-			.find('[data-action="use"]')
-				.html('Current Skin')
-				.removeClass('btn-primary')
-				.addClass('btn-success');
+			if (!themeId) {
+				return;
+			}
+
+			$('[data-theme="' + themeId + '"]')
+				.addClass('selected')
+				.find('[data-action="use"]')
+					.html(current)
+					.removeClass('btn-primary')
+					.addClass('btn-success');
+		});
 	}
 
 	return Skins;

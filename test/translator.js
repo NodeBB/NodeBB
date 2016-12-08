@@ -233,3 +233,15 @@ describe('Translator modules', function () {
 		done();
 	});
 });
+
+describe('Translator static methods', function () {
+	describe('.removePatterns', function () {
+		it('should remove translator patterns from text', function (done) {
+			assert.strictEqual(
+				Translator.removePatterns('Lorem ipsum dolor [[sit:amet]], consectetur adipiscing elit. [[sed:vitae, [[semper:dolor]]]] lorem'),
+				'Lorem ipsum dolor , consectetur adipiscing elit.  lorem'
+			);
+			done();
+		});
+	});
+});
