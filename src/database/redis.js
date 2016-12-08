@@ -2,13 +2,13 @@
 
 (function (module) {
 
-	var winston = require('winston'),
-		nconf = require('nconf'),
-		semver = require('semver'),
-		session = require('express-session'),
-		redis,
-		connectRedis,
-		redisClient;
+	var winston = require('winston');
+	var nconf = require('nconf');
+	var semver = require('semver');
+	var session = require('express-session');
+	var redis;
+	var connectRedis;
+	var redisClient;
 
 	module.questions = [
 		{
@@ -105,6 +105,10 @@
 		}
 
 		return cxn;
+	};
+
+	module.createIndices = function (callback) {
+		setImmediate(callback);
 	};
 
 	module.checkCompatibility = function (callback) {
