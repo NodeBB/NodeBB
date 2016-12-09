@@ -79,7 +79,8 @@ define('forum/flags/list', ['components', 'Chart'], function (components, Chart)
 				scales: {
 					yAxes: [{
 						ticks: {
-							beginAtZero: true
+							beginAtZero: true,
+							stepSize: 1
 						}
 					}]
 				}
