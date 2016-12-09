@@ -1,5 +1,7 @@
 'use strict';
 
+var async = require('async');
+
 var db = require('../database');
 var plugins = require('../plugins');
 
@@ -18,20 +20,20 @@ module.exports = function (Meta) {
 	};
 
 	Meta.settings.set = function (hash, values, callback) {
-		var key = 'settings:' + hash;
-		db.setObject(key, values, function (err) {
-			if (err) {
-				return callback(err);
+		async.waterfall([
+			function (next) {
+				db.setObject('settings:' + hash, values, next);
+			},
+			function (next) {
+				plugins.fireHook('action:settings.set', {
+					plugin: hash,
+					settings: values
+				});
+
+				Meta.reloadRequired = true;
+				next();
 			}
-
-			plugins.fireHook('action:settings.set', {
-				plugin: hash,
-				settings: values
-			});
-
-			Meta.reloadRequired = true;
-			callback();
-		});
+		], callback);
 	};
 
 	Meta.settings.setOne = function (hash, field, value, callback) {
@@ -39,23 +41,25 @@ module.exports = function (Meta) {
 	};
 
 	Meta.settings.setOnEmpty = function (hash, values, callback) {
-		db.getObject('settings:' + hash, function (err, settings) {
-			if (err) {
-				return callback(err);
-			}
-			settings = settings || {};
-			var empty = {};
-			Object.keys(values).forEach(function (key) {
-				if (!settings.hasOwnProperty(key)) {
-					empty[key] = values[key];
-				}
-			});
+		async.waterfall([
+			function (next) {
+				db.getObject('settings:' + hash, next);
+			},
+			function (settings, next) {
+				settings = settings || {};
+				var empty = {};
+				Object.keys(values).forEach(function (key) {
+					if (!settings.hasOwnProperty(key)) {
+						empty[key] = values[key];
+					}
+				});
 
-			if (Object.keys(empty).length) {
-				db.setObject('settings:' + hash, empty, callback);
-			} else {
-				callback();
+				if (Object.keys(empty).length) {
+					db.setObject('settings:' + hash, empty, next);
+				} else {
+					next();
+				}
 			}
-		});
+		], callback);
 	};
 };
