@@ -10,5 +10,10 @@
 	"container.panel": "Panel",
 	"container.panel-header": "Panel Header",
 	"container.panel-body": "Panel Body",
-	"container.alert": "Alert"
+	"container.alert": "Alert",
+
+	"alert.confirm-delete": "Are you sure you wish to delete this widget?",
+	"alert.updated": "Widgets Updated",
+	"alert.update-success": "Successfully updated widgets"
+
 }

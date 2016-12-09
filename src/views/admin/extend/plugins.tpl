@@ -58,7 +58,7 @@
 			<div class="panel-heading">[[admin/extend/plugins:dev-interested]]</div>
 			<div class="panel-body">
 				<p>
-					[[admin/extend/plugins:documentation-info]]
+					[[admin/extend/plugins:docs-info]]
 				</p>
 			</div>
 		</div>

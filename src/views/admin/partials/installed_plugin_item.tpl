@@ -2,7 +2,7 @@
 					<li id="{installed.id}" data-plugin-id="{installed.id}" data-version="{installed.version}" class="clearfix <!-- IF installed.active -->active<!-- ENDIF installed.active -->">
 						<div class="pull-right controls">
 							<!-- IF installed.isTheme -->
-							<a href="{config.relative_path}/admin/appearance/themes" class="btn btn-info">[[admin/extend/plugins:themes]]</a>
+							<a href="{config.relative_path}/admin/appearance/themes" class="btn btn-info">[[admin/extend/plugins:plugin-item.themes]]</a>
 							<!-- ELSE -->
 							<button data-action="toggleActive" class="btn <!-- IF installed.active --> btn-warning<!-- ELSE --> btn-success<!-- ENDIF installed.active -->">
 							<i class="fa fa-power-off"></i> <!-- IF installed.active -->[[admin/extend/plugins:plugin-item.deactivate]]<!-- ELSE -->[[admin/extend/plugins:plugin-item.activate]]<!-- ENDIF installed.active --></button>
