@@ -141,6 +141,9 @@ var privileges = require('./privileges');
 			parents: function (next) {
 				Categories.getParents(cids, next);
 			},
+			tagWhitelist: function (next) {
+				Categories.getTagWhitelist(cids, next);
+			},
 			hasRead: function (next) {
 				Categories.hasReadCategories(cids, uid, next);
 			}
@@ -149,20 +152,26 @@ var privileges = require('./privileges');
 				return callback(err);
 			}
 
-			var categories = results.categories;
-			var hasRead = results.hasRead;
 			uid = parseInt(uid, 10);
-			for(var i = 0; i < results.categories.length; ++i) {
-				if (categories[i]) {
-					categories[i]['unread-class'] = (parseInt(categories[i].topic_count, 10) === 0 || (hasRead[i] && uid !== 0)) ? '' : 'unread';
-					categories[i].children = results.children[i];
-					categories[i].parent = results.parents[i] || undefined;
-					calculateTopicPostCount(categories[i]);
+			results.categories.forEach(function (category, i) {
+				if (category) {
+					category['unread-class'] = (parseInt(category.topic_count, 10) === 0 || (results.hasRead[i] && uid !== 0)) ? '' : 'unread';
+					category.children = results.children[i];
+					category.parent = results.parents[i] || undefined;
+					category.tagWhitelist = results.tagWhitelist[i];
+					calculateTopicPostCount(category);
 				}
-			}
+			});
 
-			callback(null, categories);
+			callback(null, results.categories);
 		});
+	};
+
+	Categories.getTagWhitelist = function (cids, callback) {
+		var keys = cids.map(function (cid) {
+			return 'cid:' + cid + ':tag:whitelist';
+		});
+		db.getSortedSetsMembers(keys, callback);
 	};
 
 	function calculateTopicPostCount(category) {

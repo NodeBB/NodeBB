@@ -1,16 +1,15 @@
 'use strict';
 
-var async = require('async'),
-	fs = require('fs'),
-	path = require('path'),
-	prompt = require('prompt'),
-	winston = require('winston'),
-	nconf = require('nconf'),
-	utils = require('../public/src/utils.js');
+var async = require('async');
+var fs = require('fs');
+var path = require('path');
+var prompt = require('prompt');
+var winston = require('winston');
+var nconf = require('nconf');
+var utils = require('../public/src/utils.js');
 
-
-var install = {},
-	questions = {};
+var install = {};
+var questions = {};
 
 questions.main = [
 	{
@@ -124,40 +123,33 @@ function setupConfig(next) {
 	prompt.delimiter = '';
 	prompt.colors = false;
 
-	if (!install.values) {
-		prompt.get(questions.main, function (err, config) {
-			if (err) {
-				process.stdout.write('\n\n');
-				winston.warn('NodeBB setup ' + err.message);
-				process.exit();
+	async.waterfall([
+		function (next) {
+			if (install.values) {
+				// Use provided values, fall back to defaults
+				var config = {};
+				var redisQuestions = require('./database/redis').questions;
+				var mongoQuestions = require('./database/mongo').questions;
+				var allQuestions = questions.main.concat(questions.optional).concat(redisQuestions).concat(mongoQuestions);
+
+				allQuestions.forEach(function (question) {
+					config[question.name] = install.values[question.name] || question['default'] || undefined;
+				});
+				setImmediate(next, null, config);
+			} else {
+				prompt.get(questions.main, next);
 			}
-
-			configureDatabases(config, function (err, config) {
-				completeConfigSetup(err, config, next);
-			});
-		});
-	} else {
-		// Use provided values, fall back to defaults
-		var	config = {},
-			redisQuestions = require('./database/redis').questions,
-			mongoQuestions = require('./database/mongo').questions,
-			allQuestions = questions.main.concat(questions.optional).concat(redisQuestions).concat(mongoQuestions);
-
-		allQuestions.forEach(function (question) {
-			config[question.name] = install.values[question.name] || question['default'] || undefined;
-		});
-
-		configureDatabases(config, function (err, config) {
-			completeConfigSetup(err, config, next);
-		});
-	}
+		},
+		function (config, next) {
+			configureDatabases(config, next);
+		},
+		function (config, next) {
+			completeConfigSetup(config, next);
+		}
+	], next);
 }
 
-function completeConfigSetup(err, config, next) {
-	if (err) {
-		return next(err);
-	}
-
+function completeConfigSetup(config, next) {
 	// Add CI object
 	if (install.ciVals) {
 		config.test_database = {};
@@ -168,13 +160,17 @@ function completeConfigSetup(err, config, next) {
 		}
 	}
 
-	install.save(config, function (err) {
-		if (err) {
-			return next(err);
+	async.waterfall([
+		function (next) {
+			install.save(config, next);
+		},
+		function (next) {
+			require('./database').init(next);
+		},
+		function (next) {
+			require('./database').createIndices(next);
 		}
-
-		require('./database').init(next);
-	});
+	], next);
 }
 
 function setupDefaultConfigs(next) {
@@ -490,7 +486,6 @@ function setCopyrightWidget(next) {
 }
 
 install.setup = function (callback) {
-
 
 	async.series([
 		checkSetupFlag,

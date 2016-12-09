@@ -101,7 +101,7 @@
 		},
 
 		cleanUpTag: function (tag, maxLength) {
-			if (typeof tag !== 'string' || !tag.length ) {
+			if (typeof tag !== 'string' || !tag.length) {
 				return '';
 			}
 

@@ -2,13 +2,13 @@
 
 (function (module) {
 
-	var winston = require('winston'),
-		nconf = require('nconf'),
-		semver = require('semver'),
-		session = require('express-session'),
-		redis,
-		connectRedis,
-		redisClient;
+	var winston = require('winston');
+	var nconf = require('nconf');
+	var semver = require('semver');
+	var session = require('express-session');
+	var redis;
+	var connectRedis;
+	var redisClient;
 
 	module.questions = [
 		{
@@ -107,6 +107,10 @@
 		return cxn;
 	};
 
+	module.createIndices = function (callback) {
+		setImmediate(callback);
+	};
+
 	module.checkCompatibility = function (callback) {
 		module.info(module.client, function (err, info) {
 			if (err) {
@@ -114,11 +118,10 @@
 			}
 
 			if (semver.lt(info.redis_version, '2.8.9')) {
-				err = new Error('Your Redis version is not new enough to support NodeBB, please upgrade Redis to v2.8.9 or higher.');
-				err.stacktrace = false;
+				return callback(new Error('Your Redis version is not new enough to support NodeBB, please upgrade Redis to v2.8.9 or higher.'));
 			}
 
-			callback(err);
+			callback();
 		});
 	};
 

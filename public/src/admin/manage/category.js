@@ -8,44 +8,9 @@ define('admin/manage/category', [
 	'autocomplete'
 ], function (uploader, iconSelect, colorpicker, autocomplete) {
 	var	Category = {};
+	var modified_categories = {};
 
 	Category.init = function () {
-		var modified_categories = {};
-
-		function modified(el) {
-			var cid = $(el).parents('form').attr('data-cid');
-
-			if (cid) {
-				modified_categories[cid] = modified_categories[cid] || {};
-				modified_categories[cid][$(el).attr('data-name')] = $(el).val();
-
-				app.flags = app.flags || {};
-				app.flags._unsaved = true;
-			}
-		}
-
-		function save(e) {
-			e.preventDefault();
-
-			if(Object.keys(modified_categories).length) {
-				socket.emit('admin.categories.update', modified_categories, function (err, result) {
-					if (err) {
-						return app.alertError(err.message);
-					}
-
-					if (result && result.length) {
-						app.flags._unsaved = false;
-						app.alert({
-							title: 'Updated Categories',
-							message: 'Category IDs ' + result.join(', ') + ' was successfully updated.',
-							type: 'success',
-							timeout: 2000
-						});
-					}
-				});
-				modified_categories = {};
-			}
-		}
 
 		$('.blockclass, form.category select').each(function () {
 			var $this = $(this);
@@ -85,7 +50,28 @@ define('admin/manage/category', [
 
 		$('[data-name="bgColor"], [data-name="color"]').each(enableColorPicker);
 
-		$('#save').on('click', save);
+		$('#save').on('click', function () {
+			if (Object.keys(modified_categories).length) {
+				socket.emit('admin.categories.update', modified_categories, function (err, result) {
+					if (err) {
+						return app.alertError(err.message);
+					}
+
+					if (result && result.length) {
+						app.flags._unsaved = false;
+						app.alert({
+							title: 'Updated Categories',
+							message: 'Category IDs ' + result.join(', ') + ' was successfully updated.',
+							type: 'success',
+							timeout: 2000
+						});
+					}
+				});
+				modified_categories = {};
+			}
+			return false;
+		});
+
 		$('.purge').on('click', function (e) {
 			e.preventDefault();
 
@@ -171,7 +157,36 @@ define('admin/manage/category', [
 		});
 
 		Category.setupPrivilegeTable();
+
+		handleTags();
 	};
+
+	function modified(el) {
+		var cid = ajaxify.data.category.cid;
+
+		if (cid) {
+			modified_categories[cid] = modified_categories[cid] || {};
+			modified_categories[cid][$(el).attr('data-name')] = $(el).val();
+
+			app.flags = app.flags || {};
+			app.flags._unsaved = true;
+		}
+	}
+
+	function handleTags() {
+		var tagEl = $('#tag-whitelist');
+		tagEl.tagsinput({
+			confirmKeys: [13, 44],
+			trimValue: true
+		});
+
+		ajaxify.data.category.tagWhitelist.forEach(function (tag) {
+			tagEl.tagsinput('add', tag);
+		});
+		tagEl.on('itemAdded itemRemoved', function (event) {
+			modified(tagEl);
+		});
+	}
 
 	Category.setupPrivilegeTable = function () {
 		$('.privilege-table-container').on('change', 'input[type="checkbox"]', function () {

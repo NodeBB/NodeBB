@@ -111,13 +111,11 @@
 					if (err) {
 						return callback(err);
 					}
-					createSessionStore();
-					createIndices();
+					createSessionStore();					
 				});
 			} else {
 				winston.warn('You have no mongo password setup!');
 				createSessionStore();
-				createIndices();
 			}
 
 			function createSessionStore() {
@@ -137,37 +135,44 @@
 						db: db
 					});
 				}
-			}
-
-			function createIndices() {
-				winston.info('[database] Checking database indices.');
-				async.series([
-					async.apply(createIndex, 'objects', {_key: 1, score: -1}, {background: true}),
-					async.apply(createIndex, 'objects', {_key: 1, value: -1}, {background: true, unique: true, sparse: true}),
-					async.apply(createIndex, 'objects', {expireAt: 1}, {expireAfterSeconds: 0, background: true})
-				], function (err) {
-					if (err) {
-						winston.error('Error creating index ' + err.message);
-					}
-					winston.info('[database] Checking database indices done!');
-					callback(err);
-				});
-			}
-
-			function createIndex(collection, index, options, callback) {
-				db.collection(collection).createIndex(index, options, callback);
-			}
+				callback();
+			}			
 		});
 	};
 
-	module.checkCompatibility = function (callback) {
-		var mongoPkg = require.main.require('./node_modules/mongodb/package.json'),
-			err = semver.lt(mongoPkg.version, '2.0.0') ? new Error('The `mongodb` package is out-of-date, please run `./nodebb setup` again.') : null;
-
-		if (err) {
-			err.stacktrace = false;
+	module.createIndices = function (callback) {
+		function createIndex(collection, index, options, callback) {
+			module.client.collection(collection).createIndex(index, options, callback);				
 		}
-		callback(err);
+
+		if (!module.client) {
+			winston.warn('[database/createIndices] database not initialized');
+			return callback();
+		}
+
+		winston.info('[database] Checking database indices.');
+		async.series([
+			async.apply(createIndex, 'objects', {_key: 1, score: -1}, {background: true}),
+			async.apply(createIndex, 'objects', {_key: 1, value: -1}, {background: true, unique: true, sparse: true}),
+			async.apply(createIndex, 'objects', {expireAt: 1}, {expireAfterSeconds: 0, background: true})
+		], function (err) {
+			if (err) {
+				winston.error('Error creating index ' + err.message);
+				return callback(err);
+			}
+			winston.info('[database] Checking database indices done!');
+			callback();
+		});			
+	};
+
+	module.checkCompatibility = function (callback) {
+		var mongoPkg = require.main.require('./node_modules/mongodb/package.json');
+		
+		if (semver.lt(mongoPkg.version, '2.0.0')) {
+			return callback(new Error('The `mongodb` package is out-of-date, please run `./nodebb setup` again.'));
+		}
+		
+		callback();
 	};
 
 	module.info = function (db, callback) {

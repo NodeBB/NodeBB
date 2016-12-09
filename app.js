@@ -37,7 +37,7 @@ winston.add(winston.transports.Console, {
 	colorize: true,
 	timestamp: function () {
 		var date = new Date();
-		return (!!nconf.get('json-logging')) ? date.toJSON() :	date.getDate() + '/' + (date.getMonth() + 1) + ' ' + date.toTimeString().substr(0,5) + ' [' + global.process.pid + ']';
+		return (!!nconf.get('json-logging')) ? date.toJSON() :	date.getDate() + '/' + (date.getMonth() + 1) + ' ' + date.toTimeString().substr(0,8) + ' [' + global.process.pid + ']';
 	},
 	level: nconf.get('log-level') || (global.env === 'production' ? 'info' : 'verbose'),
 	json: (!!nconf.get('json-logging')),
@@ -180,21 +180,26 @@ function start() {
 	});
 
 	async.waterfall([
-		async.apply(db.init),
-		async.apply(db.checkCompatibility),
+		async.apply(db.init),		
 		function (next) {
-			require('./src/meta').configs.init(next);
-		},
-		function (next) {
-			if (nconf.get('dep-check') === undefined || nconf.get('dep-check') !== false) {
-				require('./src/meta').dependencies.check(next);
-			} else {
-				winston.warn('[init] Dependency checking skipped!');
-				setImmediate(next);
-			}
-		},
-		function (next) {
-			require('./src/upgrade').check(next);
+			var meta = require('./src/meta');
+			async.parallel([
+				async.apply(db.checkCompatibility),
+				async.apply(meta.configs.init),	
+				function (next) {
+					if (nconf.get('dep-check') === undefined || nconf.get('dep-check') !== false) {
+						meta.dependencies.check(next);
+					} else {
+						winston.warn('[init] Dependency checking skipped!');
+						setImmediate(next);
+					}
+				},
+				function (next) {
+					require('./src/upgrade').check(next);	
+				}				
+			], function (err) {
+				next(err);
+			});
 		},
 		function (next) {
 			var webserver = require('./src/webserver');

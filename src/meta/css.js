@@ -78,6 +78,7 @@ module.exports = function (Meta) {
 					acpSource += '\n@import "..' + path.sep + 'public/less/generics.less";\n';
 					acpSource += '\n@import (inline) "..' + path.sep + 'public/vendor/colorpicker/colorpicker.css";\n';
 					acpSource += '\n@import (inline) "..' + path.sep + 'public/vendor/jquery/css/smoothness/jquery-ui.css";';
+					acpSource += '\n@import (inline) "..' + path.sep + 'public/vendor/jquery/bootstrap-tagsinput/bootstrap-tagsinput.css";';
 
 					minify(acpSource, paths, 'acpCache', callback);
 				}
