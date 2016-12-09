@@ -1,22 +1,22 @@
 "use strict";
 /*global define, ajaxify, app, socket, utils, bootbox, RELATIVE_PATH*/
 
-define('admin/general/dashboard', ['semver', 'Chart'], function (semver, Chart) {
+define('admin/general/dashboard', ['semver', 'Chart', 'translator'], function (semver, Chart, translator) {
 	var	Admin = {};
 	var	intervals = {
-			rooms: false,
-			graphs: false
-		};
+		rooms: false,
+		graphs: false
+	};
 	var	isMobile = false;
 	var	isPrerelease = /^v?\d+\.\d+\.\d+-.+$/;
 	var	graphData = {
-			rooms: {},
-			traffic: {}
-		};
+		rooms: {},
+		traffic: {}
+	};
 	var	currentGraph = {
-			units: 'hours',
-			until: undefined
-		};
+		units: 'hours',
+		until: undefined
+	};
 
 	var DEFAULTS = {
 		roomInterval: 10000,
@@ -53,23 +53,28 @@ define('admin/general/dashboard', ['semver', 'Chart'], function (semver, Chart) 
 
 			var	version = $('#version').html(),
 				latestVersion = releases[0].name.slice(1),
-				checkEl = $('.version-check');
+				checkEl = $('.version-check'),
+				text;
 
 			// Alter box colour accordingly
 			if (semver.eq(latestVersion, version)) {
 				checkEl.removeClass('alert-info').addClass('alert-success');
-				checkEl.append('<p>You are <strong>up-to-date</strong> <i class="fa fa-check"></i></p>');
+				text = '[[admin/general/dashboard:up-to-date]]';
 			} else if (semver.gt(latestVersion, version)) {
 				checkEl.removeClass('alert-info').addClass('alert-warning');
 				if (!isPrerelease.test(version)) {
-					checkEl.append('<p>A new version (v' + latestVersion + ') has been released. Consider <a href="https://docs.nodebb.org/en/latest/upgrading/index.html">upgrading your NodeBB</a>.</p>');
+					text = '[[admin/general/dashboard:upgrade-available, ' + latestVersion + ']]';
 				} else {
-					checkEl.append('<p>This is an outdated pre-release version of NodeBB. A new version (v' + latestVersion + ') has been released. Consider <a href="https://docs.nodebb.org/en/latest/upgrading/index.html">upgrading your NodeBB</a>.</p>');
+					text = '[[admin/general/dashboard:prerelease-upgrade-available, ' + latestVersion + ']]';
 				}
 			} else if (isPrerelease.test(version)) {
 				checkEl.removeClass('alert-info').addClass('alert-info');
-				checkEl.append('<p>This is a <strong>pre-release</strong> version of NodeBB. Unintended bugs may occur. <i class="fa fa-exclamation-triangle"></i>.</p>');
+				text = '[[admin/general/dashboard:prerelease-warning]]';
 			}
+
+			translator.translate(text, function (text) {
+				checkEl.append(text);
+			});
 		});
 
 		$('[data-toggle="tooltip"]').tooltip();
@@ -92,26 +97,28 @@ define('admin/general/dashboard', ['semver', 'Chart'], function (semver, Chart) 
 
 		var html = '<div class="text-center pull-left">' +
 						'<div>' + data.onlineRegisteredCount + '</div>' +
-						'<div>Users</div>' +
+						'<div>[[admin/general/dashboard:active-users.users]]</div>' +
 					'</div>' +
 					'<div class="text-center pull-left">' +
 						'<div>' + data.onlineGuestCount + '</div>' +
-						'<div>Guests</div>' +
+						'<div>[[admin/general/dashboard:active-users.guests]]</div>' +
 					'</div>' +
 					'<div class="text-center pull-left">' +
 						'<div>' + (data.onlineRegisteredCount + data.onlineGuestCount) + '</div>' +
-						'<div>Total</div>' +
+						'<div>[[admin/general/dashboard:active-users.total]]</div>' +
 					'</div>' +
 					'<div class="text-center pull-left">' +
 						'<div>' + data.socketCount + '</div>' +
-						'<div>Connections</div>' +
+						'<div>[[admin/general/dashboard:active-users.connections]]</div>' +
 					'</div>';
 
 		updateRegisteredGraph(data.onlineRegisteredCount, data.onlineGuestCount);
 		updatePresenceGraph(data.users);
 		updateTopicsGraph(data.topics);
 
-		$('#active-users').html(html);
+		translator.translate(html, function (html) {
+			$('#active-users').html(html);
+		});
 	};
 
 	var graphs = {
@@ -168,119 +175,132 @@ define('admin/general/dashboard', ['semver', 'Chart'], function (semver, Chart) 
 			Chart.defaults.global.tooltips.enabled = false;
 		}
 
-		var data = {
-			labels: trafficLabels,
-			datasets: [
-				{
-					label: "Page Views",
-					backgroundColor: "rgba(220,220,220,0.2)",
-					borderColor: "rgba(220,220,220,1)",
-					pointBackgroundColor: "rgba(220,220,220,1)",
-					pointHoverBackgroundColor: "#fff",
-					pointBorderColor: "#fff",
-					pointHoverBorderColor: "rgba(220,220,220,1)",
-					data: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
-				},
-				{
-					label: "Unique Visitors",
-					backgroundColor: "rgba(151,187,205,0.2)",
-					borderColor: "rgba(151,187,205,1)",
-					pointBackgroundColor: "rgba(151,187,205,1)",
-					pointHoverBackgroundColor: "#fff",
-					pointBorderColor: "#fff",
-					pointHoverBorderColor: "rgba(151,187,205,1)",
-					data: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
-				}
-			]
-		};
+		var t = translator.Translator.create();
+		Promise.all([
+			t.translateKey('admin/general/dashboard:graphs.page-views', []),
+			t.translateKey('admin/general/dashboard:graphs.unique-visitors', []),
+			t.translateKey('admin/general/dashboard:graphs.registered-users', []),
+			t.translateKey('admin/general/dashboard:graphs.anonymous-users', []),
+			t.translateKey('admin/general/dashboard:on-categories', []),
+			t.translateKey('admin/general/dashboard:reading-posts', []),
+			t.translateKey('admin/general/dashboard:browsing-topics', []),
+			t.translateKey('admin/general/dashboard:recent', []),
+			t.translateKey('admin/general/dashboard:unread', []),
+		]).then(function (translations) {
+			var data = {
+				labels: trafficLabels,
+				datasets: [
+					{
+						label: translations[0],
+						backgroundColor: "rgba(220,220,220,0.2)",
+						borderColor: "rgba(220,220,220,1)",
+						pointBackgroundColor: "rgba(220,220,220,1)",
+						pointHoverBackgroundColor: "#fff",
+						pointBorderColor: "#fff",
+						pointHoverBorderColor: "rgba(220,220,220,1)",
+						data: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
+					},
+					{
+						label: translations[1],
+						backgroundColor: "rgba(151,187,205,0.2)",
+						borderColor: "rgba(151,187,205,1)",
+						pointBackgroundColor: "rgba(151,187,205,1)",
+						pointHoverBackgroundColor: "#fff",
+						pointBorderColor: "#fff",
+						pointHoverBorderColor: "rgba(151,187,205,1)",
+						data: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
+					}
+				]
+			};
 
-		trafficCanvas.width = $(trafficCanvas).parent().width();
-		graphs.traffic = new Chart(trafficCtx, {
-			type: 'line',
-			data: data,
-			options: {
-				responsive: true,
-				legend: {
-					display: false
-				},
-				scales: {
-					yAxes: [{
-						ticks: {
-							beginAtZero: true
-						}
+			trafficCanvas.width = $(trafficCanvas).parent().width();
+			graphs.traffic = new Chart(trafficCtx, {
+				type: 'line',
+				data: data,
+				options: {
+					responsive: true,
+					legend: {
+						display: false
+					},
+					scales: {
+						yAxes: [{
+							ticks: {
+								beginAtZero: true
+							}
+						}]
+					}
+				}
+			});
+			
+			graphs.registered = new Chart(registeredCtx, {
+				type: 'doughnut',
+				data: {
+					labels: translations.slice(2, 4),
+					datasets: [{
+						data: [1, 1],
+						backgroundColor: ["#F7464A", "#46BFBD"],
+						hoverBackgroundColor: ["#FF5A5E", "#5AD3D1"]
 					}]
+				},
+				options: {
+					responsive: true,
+					legend: {
+						display: false
+					}
 				}
-			}
-		});
-		
-		graphs.registered = new Chart(registeredCtx, {
-			type: 'doughnut',
-			data: {
-				labels: ["Registered Users", "Anonymous Users"],
-				datasets: [{
-					data: [1, 1],
-					backgroundColor: ["#F7464A", "#46BFBD"],
-					hoverBackgroundColor: ["#FF5A5E", "#5AD3D1"]
-				}]
-			},
-			options: {
-				responsive: true,
-				legend: {
-					display: false
-				}
-			}
-		});
+			});
 
-		graphs.presence = new Chart(presenceCtx, {
-			type: 'doughnut',
-			data: {
-				labels: ["On categories list", "Reading posts", "Browsing topics", "Recent", "Unread"],
-				datasets: [{
-					data: [1, 1, 1, 1, 1],
-					backgroundColor: ["#F7464A", "#46BFBD", "#FDB45C", "#949FB1", "#9FB194"],
-					hoverBackgroundColor: ["#FF5A5E", "#5AD3D1", "#FFC870", "#A8B3C5", "#A8B3C5"]
-				}]
- 			},
- 			options: {
-				responsive: true,
-				legend: {
-					display: false
+			graphs.presence = new Chart(presenceCtx, {
+				type: 'doughnut',
+				data: {
+					labels: translations.slice(4, 9),
+					datasets: [{
+						data: [1, 1, 1, 1, 1],
+						backgroundColor: ["#F7464A", "#46BFBD", "#FDB45C", "#949FB1", "#9FB194"],
+						hoverBackgroundColor: ["#FF5A5E", "#5AD3D1", "#FFC870", "#A8B3C5", "#A8B3C5"]
+					}]
+				},
+				options: {
+					responsive: true,
+					legend: {
+						display: false
+					}
 				}
- 			}
-		});
+			});
  			
-		graphs.topics = new Chart(topicsCtx, {
-			type: 'doughnut',
-			data: {
-				labels: [],
-				datasets: [{
-					data: [],
-					backgroundColor: [],
-					hoverBackgroundColor: []
-				}]
-			},
-			options: {
-				responsive: true,
-				legend: {
-					display: false
+			graphs.topics = new Chart(topicsCtx, {
+				type: 'doughnut',
+				data: {
+					labels: [],
+					datasets: [{
+						data: [],
+						backgroundColor: [],
+						hoverBackgroundColor: []
+					}]
+				},
+				options: {
+					responsive: true,
+					legend: {
+						display: false
+					}
 				}
- 			}
-		});
+			});
 
-		updateTrafficGraph();
+			updateTrafficGraph();
 
-		$(window).on('resize', adjustPieCharts);
-		adjustPieCharts();
+			$(window).on('resize', adjustPieCharts);
+			adjustPieCharts();
 
-		$('[data-action="updateGraph"]').on('click', function () {
-			var until;
-			switch($(this).attr('data-until')) {
-				case 'last-month':
-					var lastMonth = new Date();
-					lastMonth.setDate(lastMonth.getDate() - 30);
-					until = lastMonth.getTime();
-			}
-			updateTrafficGraph($(this).attr('data-units'), until);
+			$('[data-action="updateGraph"]').on('click', function () {
+				var until;
+				switch($(this).attr('data-until')) {
+					case 'last-month':
+						var lastMonth = new Date();
+						lastMonth.setDate(lastMonth.getDate() - 30);
+						until = lastMonth.getTime();
+				}
+				updateTrafficGraph($(this).attr('data-units'), until);
+			});
 		});
 	}
 

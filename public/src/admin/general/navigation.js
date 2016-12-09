@@ -12,8 +12,8 @@ define('admin/general/navigation', ['translator', 'iconSelect', 'jqueryui'], fun
 			$(this).val(translator.unescape($(this).val()));
 		});
 
-		translator.translate(translator.unescape($('#available').html()), function (html) {
-			$('#available').html(html)
+		translator.translate($('#available').html(), function (html) {
+			$('#available').html(translator.unescape(html))
 				.find('li .drag-item').draggable({
 					connectToSortable: '#active-navigation',
 					helper: 'clone',

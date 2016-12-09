@@ -104,7 +104,7 @@
 					[[admin/general/dashboard:restart-warning]]
 				</p>
 				<p>
-					<a href="{config.relative_path}/admin/settings/advanced" class="btn btn-info btn-block" data-placement="bottom" data-toggle="tooltip" title="[[admin/general/dashboard:maintenance-mode-title]]">[[maintenance-mode]]</a>
+					<a href="{config.relative_path}/admin/settings/advanced" class="btn btn-info btn-block" data-placement="bottom" data-toggle="tooltip" title="[[admin/general/dashboard:maintenance-mode-title]]">[[admin/general/dashboard:maintenance-mode]]</a>
 				</p>
 
 				<hr />
