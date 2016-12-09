@@ -14,6 +14,10 @@
 	"updates": "Updates",
 	"running-version": "You are running <strong>NodeBB v<span id=\"version\">%1</span></strong>.",
 	"keep-updated": "Always make sure that your NodeBB is up to date for the latest security patches and bug fixes.",
+	"up-to-date": "<p>You are <strong>up-to-date</strong> <i class=\"fa fa-check\"></i></p>",
+	"upgrade-available": "<p>A new version (v%1) has been released. Consider <a href=\"https://docs.nodebb.org/en/latest/upgrading/index.html\">upgrading your NodeBB</a>.</p>",
+	"prerelease-upgrade-available": "<p>This is an outdated pre-release version of NodeBB. A new version (v%1) has been released. Consider <a href=\"https://docs.nodebb.org/en/latest/upgrading/index.html\">upgrading your NodeBB</a>.</p>",
+	"prerelease-warning": "<p>This is a <strong>pre-release</strong> version of NodeBB. Unintended bugs may occur. <i class=\"fa fa-exclamation-triangle\"></i></p>",
 
 	"notices": "Notices",
 
@@ -26,6 +30,10 @@
 	"realtime-chart-updates": "Realtime Chart Updates",
 
 	"active-users": "Active Users",
+	"active-users.users": "Users",
+	"active-users.guests": "Guests",
+	"active-users.total": "Total",
+	"active-users.connections": "Connections",
 
 	"anonymous-registered-users": "Anonymous vs Registered Users",
 	"anonymous": "Anonymous",
@@ -38,5 +46,10 @@
 	"recent": "Recent",
 	"unread": "Unread",
 
-	"high-presence-topics": "High Presence Topics"
+	"high-presence-topics": "High Presence Topics",
+
+	"graphs.page-views": "Page Views",
+	"graphs.unique-visitors": "Unique Visitors",
+	"graphs.registered-users": "Registered Users",
+	"graphs.anonymous-users": "Anonymous Users"
 }

@@ -127,7 +127,7 @@
 						</div>
 						<p>
 							<strong>{available.text}</strong> {available.route} <br/>
-							<!-- IF available.core --> [[admin/general/navigation:core]] <!-- ELSE --> [[plugin]] <!-- ENDIF available.core -->
+							<!-- IF available.core --> [[admin/general/navigation:core]] <!-- ELSE --> [[admin/general/navigation:plugin]] <!-- ENDIF available.core -->
 						</p>
 					</li>
 					<!-- END available -->
