@@ -58,6 +58,7 @@
 	"advanced/errors": "Errors",
 	"advanced/cache": "Cache",
 	"development/logger": "Logger",
+	"development/info": "Info",
 
 	"reload-forum": "Reload Forum",
 	"restart-forum": "Restart Forum",

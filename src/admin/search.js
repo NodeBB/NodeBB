@@ -54,7 +54,7 @@ function simplify(translations) {
 function nsToTitle(namespace) {
 	return namespace.replace('admin/', '').split('/').map(function (str) {
 		return str[0].toUpperCase() + str.slice(1);
-	}).join(' > ');
+	}).join(' > ').replace(/[^a-zA-Z> ]/g, ' ');
 }
 
 var fallbackCacheInProgress = {};
@@ -67,15 +67,17 @@ function initFallback(namespace, callback) {
 		}
 
 		var template = file.toString();
+		var title = nsToTitle(namespace);
 
 		var translations = sanitize(template);
 		translations = Translator.removePatterns(translations);
 		translations = simplify(translations);
-		translations += '\n' + nsToTitle(namespace);
+		translations += '\n' + title;
 
 		callback(null, {
 			namespace: namespace,
 			translations: translations,
+			title: title,
 		});
 	});
 }
@@ -124,17 +126,32 @@ function initDict(language, callback) {
 					var str = Object.keys(translations).map(function (key) {
 						return translations[key];
 					}).join('\n');
+					str = sanitize(str);
 
-					next(null, {
-						namespace: namespace,
-						translations: str,
-					});
-				}
+					var title = namespace;
+					if (/admin\/general\/dashboard$/.test(title)) {
+						title = '[[admin/menu:general/dashboard]]';
+					} else {
+						title = title.match(/admin\/(.+?)\/(.+?)$/);
+						title = '[[admin/menu:section-' + 
+							(title[1] === 'development' ? 'advanced' : title[1]) +
+							']]' + (title[2] ? (' > [[admin/menu:' +
+							title[1] + '/' + title[2] + ']]') : '');
+					}
+
+					Translator.create(language).translate(title).then(function (title) {
+						next(null, {
+							namespace: namespace,
+							translations: str + '\n' + title,
+							title: title,
+						});
+					}).catch(err);
+				},
 			], function (err, params) {
 				if (err) {
 					return fallback(namespace, function (err, params) {
 						if (err) {
-							return cb({
+							return cb(null, {
 								namespace: namespace,
 								translations: '',
 							});
