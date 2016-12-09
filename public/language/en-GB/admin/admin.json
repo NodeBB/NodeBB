@@ -1,0 +1,6 @@
+{
+	"alert.confirm-reload": "Are you sure you wish to reload NodeBB?",
+	"alert.confirm-restart": "Are you sure you wish to restart NodeBB?",
+
+	"acp-title": "%1 | NodeBB Admin Control Panel"
+}
