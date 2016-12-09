@@ -59,6 +59,10 @@
 								</div>
 							</div>
 						</fieldset>
+						<fieldset>
+							<label for="tag-whitelist">Tag Whitelist</label><br />
+							<input id="tag-whitelist" type="text" class="form-control" placeholder="Enter category tags here" data-name="tagWhitelist" value="" />
+						</fieldset>
 					</div>
 				</div>
 

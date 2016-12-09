@@ -31,6 +31,10 @@ module.exports = function (Topics) {
 					return tag && tag.length >= (meta.config.minimumTagLength || 3) && array.indexOf(tag) === index;
 				});
 
+				filterCategoryTags(tags, tid, next);
+			},
+			function (_tags, next) {
+				tags = _tags;
 				var keys = tags.map(function (tag) {
 					return 'tag:' + tag + ':topics';
 				});
@@ -39,14 +43,34 @@ module.exports = function (Topics) {
 					async.apply(db.setAdd, 'topic:' + tid + ':tags', tags),
 					async.apply(db.sortedSetsAdd, keys, timestamp, tid)
 				], function (err) {
-					if (err) {
-						return next(err);
-					}
-					async.each(tags, updateTagCount, next);
+					next(err);
 				});
+			},
+			function (next) {
+				async.each(tags, updateTagCount, next);
 			}
 		], callback);
 	};
+
+	function filterCategoryTags(tags, tid, callback) {
+		async.waterfall([
+			function (next) {
+				Topics.getTopicField(tid, 'cid', next);
+			},
+			function (cid, next) {
+				db.getSortedSetRange('cid:' + cid + ':tag:whitelist', 0, -1, next);
+			},
+			function (tagWhitelist, next) {
+				if (!tagWhitelist.length) {
+					return next(null, tags);
+				}
+				tags = tags.filter(function (tag) {
+					return tagWhitelist.indexOf(tag) !== -1;
+				});
+				next(null, tags);
+			}
+		], callback);
+	}
 
 	Topics.createEmptyTag = function (tag, callback) {
 		if (!tag) {
@@ -273,7 +297,7 @@ module.exports = function (Topics) {
 				if (plugins.hasListeners('filter:topics.searchTags')) {
 					plugins.fireHook('filter:topics.searchTags', {data: data}, next);
 				} else {
-					findMatches(data.query, next);
+					findMatches(data.query, 0, next);
 				}
 			},
 			function (result, next) {
@@ -295,7 +319,7 @@ module.exports = function (Topics) {
 				if (plugins.hasListeners('filter:topics.autocompleteTags')) {
 					plugins.fireHook('filter:topics.autocompleteTags', {data: data}, next);
 				} else {
-					findMatches(data.query, next);
+					findMatches(data.query, data.cid, next);
 				}
 			},
 			function (result, next) {
@@ -304,10 +328,21 @@ module.exports = function (Topics) {
 		], callback);
 	};
 
-	function findMatches(query, callback) {
+	function findMatches(query, cid, callback) {
 		async.waterfall([
 			function (next) {
-				db.getSortedSetRevRange('tags:topic:count', 0, -1, next);
+				if (parseInt(cid, 10)) {
+					db.getSortedSetRange('cid:' + cid + ':tag:whitelist', 0, -1, next);
+				} else {
+					setImmediate(next, null, []);
+				}
+			},
+			function (tagWhitelist, next) {
+				if (tagWhitelist.length) {
+					setImmediate(next, null, tagWhitelist);
+				} else {
+					db.getSortedSetRevRange('tags:topic:count', 0, -1, next);
+				}
 			},
 			function (tags, next) {
 				query = query.toLowerCase();

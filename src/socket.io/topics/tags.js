@@ -1,10 +1,29 @@
 'use strict';
 
 var async = require('async');
+var db = require('../../database');
 var topics = require('../../topics');
 var utils = require('../../../public/src/utils');
 
 module.exports = function (SocketTopics) {
+
+	SocketTopics.isTagAllowed = function (socket, data, callback) {
+		if (!data || !data.cid || !data.tag) {
+			return callback(new Error('[[error:invalid-data]]'));
+		}
+		async.waterfall([
+			function (next) {
+				db.getSortedSetRange('cid:' + data.cid + ':tag:whitelist', 0, -1, next);
+			},
+			function (tagWhitelist, next) {
+				if (!tagWhitelist.length) {
+					return next(null, true);
+				}
+				next(null, tagWhitelist.indexOf(data.tag) !== -1);
+			}
+		], callback);
+	};
+
 	SocketTopics.autocompleteTags = function (socket, data, callback) {
 		topics.autocompleteTags(data, callback);
 	};

@@ -541,7 +541,80 @@ describe('Categories', function () {
 				});
 			});
 		});
+	});
 
+	describe('tag whitelist', function () {
+		var cid;
+		var socketTopics = require('../src/socket.io/topics');
+		before(function (done) {
+			Categories.create({
+				name: 'test'
+			}, function (err, category) {
+				assert.ifError(err);
+				cid = category.cid;
+				done();
+			});
+		});
+
+		it('should error if data is invalid', function (done) {
+			socketTopics.isTagAllowed({uid: posterUid}, null, function (err) {
+				assert.equal(err.message, '[[error:invalid-data]]');
+				done();
+			});
+		});
+
+		it('should return true if category whitelist is empty', function (done) {
+			socketTopics.isTagAllowed({uid: posterUid}, {tag: 'notallowed', cid: cid}, function (err, allowed) {
+				assert.ifError(err);
+				assert(allowed);
+				done();
+			});
+		});
+
+		it('should add tags to category whitelist', function (done) {
+			var data = {};
+			data[cid] = {
+				tagWhitelist: 'nodebb,jquery,javascript'
+			};
+			Categories.update(data, function (err) {
+				assert.ifError(err);
+				db.getSortedSetRange('cid:' + cid + ':tag:whitelist', 0, -1, function (err, tagWhitelist) {
+					assert.ifError(err);
+					assert.deepEqual(['nodebb', 'jquery', 'javascript'], tagWhitelist);
+					done();
+				});
+			});
+		});
+
+		it('should return false if category whitelist does not have tag', function (done) {
+			socketTopics.isTagAllowed({uid: posterUid}, {tag: 'notallowed', cid: cid}, function (err, allowed) {
+				assert.ifError(err);
+				assert(!allowed);
+				done();
+			});
+		});
+
+		it('should return true if category whitelist has tag', function (done) {
+			socketTopics.isTagAllowed({uid: posterUid}, {tag: 'nodebb', cid: cid}, function (err, allowed) {
+				assert.ifError(err);
+				assert(allowed);
+				done();
+			});
+		});
+
+		it('should post a topic with only allowed tags', function (done) {
+			Topics.post({
+				uid: posterUid,
+				cid: cid,
+				title: 'Test Topic Title',
+				content: 'The content of test topic',
+				tags: ['nodebb', 'jquery', 'notallowed']
+			}, function (err, data) {
+				assert.ifError(err);
+				assert.equal(data.topicData.tags.length, 2);
+				done();
+			});
+		});
 	});
 
 
