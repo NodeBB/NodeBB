@@ -116,13 +116,14 @@
 				});
 			});
 
-			var title;
-			if (/admin\/general\/dashboard$/.test(url)) {
+			var title = url;
+			if (/admin\/general\/dashboard$/.test(title)) {
 				title = '[[admin/menu:general/dashboard]]';
 			} else {
-				title = url.match(/admin\/(.+?)\/(.+?)$/);
-				title = '[[admin/menu:section-' + title[1] + ']]' + 
-					(title[2] ? (' > [[admin/menu:' +
+				title = title.match(/admin\/(.+?)\/(.+?)$/);
+				title = '[[admin/menu:section-' + 
+					(title[1] === 'development' ? 'advanced' : title[1]) +
+					']]' + (title[2] ? (' > [[admin/menu:' +
 					title[1] + '/' + title[2] + ']]') : '');
 			}
 
