@@ -336,91 +336,85 @@ module.exports = function (Groups) {
 			return process.nextTick(callback, null, cache.get(cacheKey));
 		}
 
-		db.isSortedSetMember('group:' + groupName + ':members', uid, function (err, isMember) {
-			if (err) {
-				return callback(err);
+		async.waterfall([
+			function (next) {
+				db.isSortedSetMember('group:' + groupName + ':members', uid, next);
+			},
+			function (isMember, next) {
+				cache.set(cacheKey, isMember);
+				next(null, isMember);
 			}
-
-			cache.set(cacheKey, isMember);
-			callback(null, isMember);
-		});
+		], callback);
 	};
 
 	Groups.isMembers = function (uids, groupName, callback) {
+		function getFromCache(next) {
+			process.nextTick(next, null, uids.map(function (uid) {
+				return cache.get(uid + ':' + groupName);
+			}));
+		}
+
 		if (!groupName || !uids.length) {
 			return callback(null, uids.map(function () {return false;}));
 		}
 
-		var nonCachedUids = [];
-		uids.forEach(function (uid) {
-			if (!cache.has(uid + ':' + groupName)) {
-				nonCachedUids.push(uid);
-			}
+		var nonCachedUids = uids.filter(function (uid) {
+			return !cache.has(uid + ':' + groupName);
 		});
 
 		if (!nonCachedUids.length) {
-			var result = uids.map(function (uid) {
-				return cache.get(uid + ':' + groupName);
-			});
-			return process.nextTick(callback, null, result);
+			return getFromCache(callback);
 		}
 
-		db.isSortedSetMembers('group:' + groupName + ':members', nonCachedUids, function (err, isMembers) {
-			if (err) {
-				return callback(err);
+		async.waterfall([
+			function (next) {
+				db.isSortedSetMembers('group:' + groupName + ':members', nonCachedUids, next);
+			},
+			function (isMembers, next) {
+				nonCachedUids.forEach(function (uid, index) {
+					cache.set(uid + ':' + groupName, isMembers[index]);
+				});
+
+				getFromCache(next);
 			}
-
-			nonCachedUids.forEach(function (uid, index) {
-				cache.set(uid + ':' + groupName, isMembers[index]);
-			});
-
-			var result = uids.map(function (uid) {
-				return cache.get(uid + ':' + groupName);
-			});
-
-			callback(null, result);
-		});
+		], callback);
 	};
 
 	Groups.isMemberOfGroups = function (uid, groups, callback) {
+		function getFromCache(next) {
+			process.nextTick(next, null, groups.map(function (groupName) {
+				return cache.get(uid + ':' + groupName);
+			}));
+		}
+
 		if (!uid || parseInt(uid, 10) <= 0 || !groups.length) {
 			return callback(null, groups.map(function () {return false;}));
 		}
 
-		var nonCachedGroups = [];
-
-		groups.forEach(function (groupName) {
-			if (!cache.has(uid + ':' + groupName)) {
-				nonCachedGroups.push(groupName);
-			}
+		var nonCachedGroups = groups.filter(function (groupName) {
+			return !cache.has(uid + ':' + groupName);
 		});
 
-		// are they all cached?
 		if (!nonCachedGroups.length) {
-			var result = groups.map(function (groupName) {
-				return cache.get(uid + ':' + groupName);
-			});
-			return process.nextTick(callback, null, result);
+			return getFromCache(callback);
 		}
 
 		var nonCachedGroupsMemberSets = nonCachedGroups.map(function (groupName) {
 			return 'group:' + groupName + ':members';
 		});
 
-		db.isMemberOfSortedSets(nonCachedGroupsMemberSets, uid, function (err, isMembers) {
-			if (err) {
-				return callback(err);
+		async.waterfall([
+			function (next) {
+				db.isMemberOfSortedSets(nonCachedGroupsMemberSets, uid, next);
+			},
+			function (isMembers, next) {
+				nonCachedGroups.forEach(function (groupName, index) {
+					cache.set(uid + ':' + groupName, isMembers[index]);
+				});
+
+				getFromCache(next);
 			}
-
-			nonCachedGroups.forEach(function (groupName, index) {
-				cache.set(uid + ':' + groupName, isMembers[index]);
-			});
-
-			var result = groups.map(function (groupName) {
-				return cache.get(uid + ':' + groupName);
-			});
-			callback(null, result);
-		});
+		], callback);
 	};
 
 	Groups.getMemberCount = function (groupName, callback) {
