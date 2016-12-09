@@ -9,5 +9,9 @@
 	"enable": "Enable",
 	"disable": "Disable",
 	"control-panel": "Rewards Control",
-	"new-reward": "New Reward"
+	"new-reward": "New Reward",
+
+	"alert.delete-success": "Successfully deleted reward",
+	"alert.no-inputs-found": "Illegal reward - no inputs found!",
+	"alert.save-success": "Successfully saved rewards"
 }
