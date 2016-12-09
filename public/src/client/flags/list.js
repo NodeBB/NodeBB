@@ -2,12 +2,13 @@
 
 /* globals define */
 
-define('forum/flags/list', ['components'], function (components) {
+define('forum/flags/list', ['components', 'Chart'], function (components, Chart) {
 	var Flags = {};
 
 	Flags.init = function () {
 		Flags.enableFilterForm();
 		Flags.enableChatButtons();
+		Flags.handleGraphs();
 	};
 
 	Flags.enableFilterForm = function () {
@@ -35,6 +36,54 @@ define('forum/flags/list', ['components'], function (components) {
 	Flags.enableChatButtons = function () {
 		$('[data-chat]').on('click', function () {
 			app.newChat(this.getAttribute('data-chat'));
+		});
+	};
+
+	Flags.handleGraphs = function () {
+		var dailyCanvas = document.getElementById('flags:daily');
+		var dailyLabels = utils.getDaysArray().map(function (text, idx) {
+			return idx % 3 ? '' : text;
+		});
+
+		if (utils.isMobile()) {
+			Chart.defaults.global.tooltips.enabled = false;
+		}
+		var data = {
+			'flags:daily': {
+				labels: dailyLabels,
+				datasets: [
+					{
+						label: "",
+						backgroundColor: "rgba(151,187,205,0.2)",
+						borderColor: "rgba(151,187,205,1)",
+						pointBackgroundColor: "rgba(151,187,205,1)",
+						pointHoverBackgroundColor: "#fff",
+						pointBorderColor: "#fff",
+						pointHoverBorderColor: "rgba(151,187,205,1)",
+						data: ajaxify.data.analytics
+					}
+				]
+			}
+		};
+
+		dailyCanvas.width = $(dailyCanvas).parent().width();
+		new Chart(dailyCanvas.getContext('2d'), {
+			type: 'line',
+			data: data['flags:daily'],
+			options: {
+				responsive: true,
+				animation: false,
+				legend: {
+					display: false
+				},
+				scales: {
+					yAxes: [{
+						ticks: {
+							beginAtZero: true
+						}
+					}]
+				}
+			}
 		});
 	};
 

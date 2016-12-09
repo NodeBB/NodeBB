@@ -4,6 +4,7 @@ var async = require('async');
 
 var user = require('../user');
 var flags = require('../flags');
+var analytics = require('../analytics');
 // var adminFlagsController = require('./admin/flags');
 
 var modsController = {
@@ -35,13 +36,17 @@ modsController.flags.list = function (req, res, next) {
 			return memo;
 		}, {});
 
-		flags.list(filters, req.uid, function (err, flags) {
+		async.parallel({
+			flags: async.apply(flags.list, filters, req.uid),
+			analytics: async.apply(analytics.getDailyStatsForSet, 'analytics:flags', Date.now(), 30)
+		}, function (err, data) {
 			if (err) {
 				return next(err);
 			}
 
 			res.render('flags/list', {
-				flags: flags,
+				flags: data.flags,
+				analytics: data.analytics,
 				hasFilter: !!Object.keys(filters).length,
 				filters: filters,
 				title: '[[pages:flags]]'

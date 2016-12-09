@@ -267,8 +267,16 @@ Flags.getNotes = function (flagId, callback) {
 	], callback);
 };
 
-Flags.create = function (type, id, uid, reason, callback) {
+Flags.create = function (type, id, uid, reason, timestamp, callback) {
 	var targetUid;
+	var doHistoryAppend = false;
+
+	// timestamp is optional
+	if (typeof timestamp === 'function' && !callback) {
+		callback = timestamp;
+		timestamp = Date.now();
+		doHistoryAppend = true;
+	}
 
 	async.waterfall([
 		function (next) {
@@ -302,16 +310,17 @@ Flags.create = function (type, id, uid, reason, callback) {
 					targetId: id,
 					description: reason,
 					uid: uid,
-					datetime: Date.now()
+					datetime: timestamp
 				}),
-				async.apply(db.sortedSetAdd.bind(db), 'flags:datetime', Date.now(), flagId),	// by time, the default
-				async.apply(db.sortedSetAdd.bind(db), 'flags:byReporter:' + uid, Date.now(), flagId),	// by reporter
-				async.apply(db.sortedSetAdd.bind(db), 'flags:byType:' + type, Date.now(), flagId),	// by flag type
-				async.apply(db.setObjectField.bind(db), 'flagHash:flagId', [type, id, uid].join(':'), flagId)	// save hash for existence checking
+				async.apply(db.sortedSetAdd.bind(db), 'flags:datetime', timestamp, flagId),	// by time, the default
+				async.apply(db.sortedSetAdd.bind(db), 'flags:byReporter:' + uid, timestamp, flagId),	// by reporter
+				async.apply(db.sortedSetAdd.bind(db), 'flags:byType:' + type, timestamp, flagId),	// by flag type
+				async.apply(db.setObjectField.bind(db), 'flagHash:flagId', [type, id, uid].join(':'), flagId),	// save hash for existence checking
+				async.apply(analytics.increment, 'flags')	// some fancy analytics
 			];
 
 			if (targetUid) {
-				tasks.push(async.apply(db.sortedSetAdd.bind(db), 'flags:byTargetUid:' + targetUid, Date.now(), flagId));	// by target uid
+				tasks.push(async.apply(db.sortedSetAdd.bind(db), 'flags:byTargetUid:' + targetUid, timestamp, flagId));	// by target uid
 			}
 		
 			async.parallel(tasks, function (err, data) {
@@ -319,7 +328,10 @@ Flags.create = function (type, id, uid, reason, callback) {
 					return next(err);
 				}
 
-				Flags.update(flagId, uid, { "state": "open" });
+				if (doHistoryAppend) {
+					Flags.update(flagId, uid, { "state": "open" });
+				}
+
 				next(null, flagId);
 			});
 		},
@@ -423,7 +435,7 @@ Flags.update = function (flagId, uid, changeset, callback) {
 	// Retrieve existing flag data to compare for history-saving purposes
 	var fields = ['state', 'assignee'];
 	var tasks = [];
-	var now = Date.now();
+	var now = changeset.datetime || Date.now();
 
 	async.waterfall([
 		async.apply(db.getObjectFields.bind(db), 'flag:' + flagId, fields),
@@ -513,16 +525,24 @@ Flags.getHistory = function (flagId, callback) {
 
 Flags.appendHistory = function (flagId, uid, changeset, callback) {
 	var payload;
+	var datetime = changeset.datetime || Date.now();
+	delete changeset.datetime;
+
 	try {
-		payload = JSON.stringify([uid, changeset, Date.now()]);
+		payload = JSON.stringify([uid, changeset, datetime]);
 	} catch (e) {
 		return callback(e);
 	}
 
-	db.sortedSetAdd('flag:' + flagId + ':history', Date.now(), payload, callback);
+	db.sortedSetAdd('flag:' + flagId + ':history', datetime, payload, callback);
 };
 
-Flags.appendNote = function (flagId, uid, note, callback) {
+Flags.appendNote = function (flagId, uid, note, datetime, callback) {
+	if (typeof datetime === 'function' && !callback) {
+		callback = datetime;
+		datetime = Date.now();
+	}
+
 	var payload;
 	try {
 		payload = JSON.stringify([uid, note]);
@@ -531,9 +551,10 @@ Flags.appendNote = function (flagId, uid, note, callback) {
 	}
 
 	async.waterfall([
-		async.apply(db.sortedSetAdd, 'flag:' + flagId + ':notes', Date.now(), payload),
+		async.apply(db.sortedSetAdd, 'flag:' + flagId + ':notes', datetime, payload),
 		async.apply(Flags.appendHistory, flagId, uid, {
-			notes: null
+			notes: null,
+			datetime: datetime
 		})
 	], callback);
 };
