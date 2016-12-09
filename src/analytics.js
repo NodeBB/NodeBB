@@ -16,7 +16,7 @@ var uniquevisitors = 0;
 
 var isCategory = /^(?:\/api)?\/category\/(\d+)/;
 
-new cronJob('*/10 * * * *', function () {
+new cronJob('*/10 * * * * *', function () {
 	Analytics.writeData();
 }, null, true);
 
