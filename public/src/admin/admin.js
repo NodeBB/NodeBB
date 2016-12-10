@@ -87,7 +87,7 @@
 			url = url
 				.replace(/\/\d+$/, '')
 				.split('/').slice(0, 3).join('/')
-				.split('?')[0];
+				.split('?')[0].replace(/(\/+$)|(^\/+)/, '');
 
 			// If index is requested, load the dashboard
 			if (url === 'admin') {

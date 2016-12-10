@@ -1,6 +1,8 @@
-<a class="btn btn-primary" href="{config.relative_path}/admin/manage/categories"><i class="fa fa-fw fa-chevron-left"></i> Back to Categories List</a>
+<a class="btn btn-primary" href="{config.relative_path}/admin/manage/categories">
+	<i class="fa fa-fw fa-chevron-left"></i> [[admin/manage/categories:analytics.back]]
+</a>
 
-<h3>Analytics for "{name}" category</h3>
+<h3>[[admin/manage/categories:analytics.title, {name}]]</h3>
 <hr />
 
 <div class="row">
@@ -12,7 +14,7 @@
 					
 				</p>
 			</div>
-			<div class="panel-footer"><small><strong>Figure 1</strong> &ndash; Hourly page views for this category</small></div>
+			<div class="panel-footer"><small>[[admin/manage/categories:analytics.pageviews-hourly]]</div>
 		</div>
 	</div>
 	<div class="col-sm-6 text-center">
@@ -23,7 +25,7 @@
 					
 				</p>
 			</div>
-			<div class="panel-footer"><small><strong>Figure 2</strong> &ndash; Daily page views for this category</small></div>
+			<div class="panel-footer"><small>[[admin/manage/categories:analytics.pageviews-daily]]</div>
 		</div>
 	</div>
 </div>
@@ -36,7 +38,7 @@
 					
 				</p>
 			</div>
-			<div class="panel-footer"><small><strong>Figure 3</strong> &ndash; Daily topics created in this category</small></div>
+			<div class="panel-footer"><small>[[admin/manage/categories:analytics.topics-daily]]</div>
 		</div>
 	</div>
 	<div class="col-sm-6 text-center">
@@ -47,7 +49,7 @@
 					
 				</p>
 			</div>
-			<div class="panel-footer"><small><strong>Figure 4</strong> &ndash; Daily posts made in this category</small></div>
+			<div class="panel-footer"><small>[[admin/manage/categories:analytics.posts-daily]]</div>
 		</div>
 	</div>
 </div>
