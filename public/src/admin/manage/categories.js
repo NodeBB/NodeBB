@@ -40,31 +40,29 @@ define('admin/manage/categories', ['vendor/jquery/serializeObject/jquery.ba-seri
 			templates.parse('admin/partials/categories/create', {
 				categories: categories
 			}, function (html) {
-				translator.translate(html, function (html) {
-					function submit() {
-						var formData = modal.find('form').serializeObject();
-						formData.description = '';
-						formData.icon = 'fa-comments';
+				function submit() {
+					var formData = modal.find('form').serializeObject();
+					formData.description = '';
+					formData.icon = 'fa-comments';
 
-						Categories.create(formData);
-						modal.modal('hide');
-						return false;
-					}
+					Categories.create(formData);
+					modal.modal('hide');
+					return false;
+				}
 
-					var modal = bootbox.dialog({
-						title: 'Create a Category',
-						message: html,
-						buttons: {
-							save: {
-								label: 'Save',
-								className: 'btn-primary',
-								callback: submit
-							}
+				var modal = bootbox.dialog({
+					title: '[[admin/manage/categories:alert.create]]',
+					message: html,
+					buttons: {
+						save: {
+							label: '[[global:save]]',
+							className: 'btn-primary',
+							callback: submit
 						}
-					});
-
-					modal.find('form').on('submit', submit);
+					}
 				});
+
+				modal.find('form').on('submit', submit);
 			});
 		});
 	};
@@ -77,8 +75,8 @@ define('admin/manage/categories', ['vendor/jquery/serializeObject/jquery.ba-seri
 
 			app.alert({
 				alert_id: 'category_created',
-				title: 'Created',
-				message: 'Category successfully created!',
+				title: '[[admin/manage/categories:alert.created]]',
+				message: '[[admin/manage/categories:alert.create-success]]',
 				type: 'success',
 				timeout: 2000
 			});
@@ -91,10 +89,12 @@ define('admin/manage/categories', ['vendor/jquery/serializeObject/jquery.ba-seri
 		var container = $('.categories');
 
 		if (!categories || !categories.length) {
-			$('<div></div>')
-				.addClass('alert alert-info text-center')
-				.text('You have no active categories.')
-				.appendTo(container);
+			translator.translate('[[admin/manage/categories:alert.none-active]]', function (text) {
+				$('<div></div>')
+					.addClass('alert alert-info text-center')
+					.text(text)
+					.appendTo(container);
+			});
 		} else {
 			sortables = {};
 			renderList(categories, container, 0);

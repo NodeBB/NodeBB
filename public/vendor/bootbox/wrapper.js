@@ -30,15 +30,15 @@ require(['translator'], function (shim) {
 
 		$elem = dialog.call(bootbox, options);
 
-		if (/\[\[[a-zA-Z0-9\-_.\/:]+\]\]/.test($elem[0].outerHTML)) {
+		if (/\[\[.+\]\]/.test($elem[0].outerHTML)) {
 			nodes = descendantTextNodes($elem[0]);
 			text = nodes.map(function (node) {
 				return node.nodeValue;
 			}).join('  ||  ');
 
 			translator.translate(text).then(function (translated) {
-				translated.split('  ||  ').forEach(function (str, i) {
-					nodes[i].nodeValue = str;
+				translated.split('  ||  ').forEach(function (html, i) {
+					$(nodes[i]).replaceWith(html);
 				});
 				if (show) {
 					$elem.modal('show');
