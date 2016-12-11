@@ -251,5 +251,13 @@ describe('Translator static methods', function () {
 			);
 			done();
 		});
+
+		it('should escape `%` and `,` in arguments', function (done) {
+			assert.strictEqual(
+				Translator.compile('amazing:cool', '100% awesome!', 'one, two, and three'),
+				'[[amazing:cool, 100&#37; awesome!, one&#44; two&#44; and three]]'
+			);
+			done();
+		});
 	});
 });
