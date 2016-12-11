@@ -43,9 +43,7 @@ define('admin/extend/rewards', ['translator'], function (translator) {
 				var btn = $(this),
 					disabled = btn.hasClass('btn-success'),
 					id = $(this).parents('[data-id]').attr('data-id');
-				translator.translate('[[admin/extend/rewards:' + disabled ? 'disable' : 'enable' + ']]', function (text) {
-					btn.toggleClass('btn-warning').toggleClass('btn-success').html(text);
-				});
+				btn.toggleClass('btn-warning').toggleClass('btn-success').translateHtml('[[admin/extend/rewards:' + disabled ? 'disable' : 'enable' + ']]');
 				// send disable api call
 				return false;
 			});

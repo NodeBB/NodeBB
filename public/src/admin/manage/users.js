@@ -68,9 +68,9 @@ define('admin/manage/users', ['translator'], function (translator) {
 				return false;	// specifically to keep the menu open
 			}
 
-			bootbox.confirm('Do you really want to ban ' + (uids.length > 1 ? 'these users' : 'this user') + ' <strong>permanently</strong>?', function (confirm) {
+			bootbox.confirm((uids.length > 1 ? '[[admin/manage/users:alerts.confirm-ban-multi]]' : '[[admin/manage/users:alerts.confirm-ban]]'), function (confirm) {
 				if (confirm) {
-					socket.emit('user.banUsers', { uids: uids, reason: '' }, done('User(s) banned!', '.ban', true));
+					socket.emit('user.banUsers', { uids: uids, reason: '' }, done('[[admin/manage/users:alerts.ban-success]]', '.ban', true));
 				}
 			});
 		});
@@ -94,14 +94,14 @@ define('admin/manage/users', ['translator'], function (translator) {
 							className: 'btn-link'
 						},
 						submit: {
-							label: 'Ban ' + uids.length + (uids.length > 1 ? ' users' : ' user'),
+							label: '[[admin/manage/users:alerts.button-ban-x, ' + uids.length + ']]',
 							callback: function () {
 								var formData = $('.ban-modal form').serializeArray().reduce(function (data, cur) {
 									data[cur.name] = cur.value;
 									return data;
 								}, {});
 								var until = formData.length ? (Date.now() + formData.length * 1000 * 60 * 60 * (parseInt(formData.unit, 10) ? 24 : 1)) : 0;
-								socket.emit('user.banUsers', { uids: uids, until: until, reason: formData.reason }, done('User(s) banned!', '.ban', true));
+								socket.emit('user.banUsers', { uids: uids, until: until, reason: formData.reason }, done('[[admin/manage/users:alerts.ban-success]]', '.ban', true));
 							}
 						}
 					}
@@ -116,7 +116,7 @@ define('admin/manage/users', ['translator'], function (translator) {
 				return false;	// specifically to keep the menu open
 			}
 
-			socket.emit('user.unbanUsers', uids, done('User(s) unbanned!', '.ban', false));
+			socket.emit('user.unbanUsers', uids, done('[[admin/manage/users:alerts.unban-success]]', '.ban', false));
 		});
 
 		$('.reset-lockout').on('click', function () {
@@ -125,7 +125,7 @@ define('admin/manage/users', ['translator'], function (translator) {
 				return;
 			}
 
-			socket.emit('admin.user.resetLockouts', uids, done('Lockout(s) reset!'));
+			socket.emit('admin.user.resetLockouts', uids, done('[[admin/manage/users:alerts.lockout-reset-success]]'));
 		});
 
 		$('.reset-flags').on('click', function () {
@@ -134,7 +134,7 @@ define('admin/manage/users', ['translator'], function (translator) {
 				return;
 			}
 
-			socket.emit('admin.user.resetFlags', uids, done('Flags(s) reset!'));
+			socket.emit('admin.user.resetFlags', uids, done('[[admin/manage/users:alerts.flag-reset-success]]'));
 		});
 
 		$('.admin-user').on('click', function () {
@@ -144,9 +144,9 @@ define('admin/manage/users', ['translator'], function (translator) {
 			}
 
 			if (uids.indexOf(app.user.uid.toString()) !== -1) {
-				app.alertError('You can\'t remove yourself as Administrator!');
+				app.alertError('[[admin/manage/users:alerts.no-remove-yourself-admin]]');
 			} else {
-				socket.emit('admin.user.makeAdmins', uids, done('User(s) are now administrators.', '.administrator', true));
+				socket.emit('admin.user.makeAdmins', uids, done('[[admin/manage/users:alerts.make-admin-success]]', '.administrator', true));
 			}
 		});
 
@@ -157,11 +157,11 @@ define('admin/manage/users', ['translator'], function (translator) {
 			}
 
 			if (uids.indexOf(app.user.uid.toString()) !== -1) {
-				app.alertError('You can\'t remove yourself as Administrator!');
+				app.alertError('[[admin/manage/users:alerts.no-remove-yourself-admin]]');
 			} else {
-				bootbox.confirm('Do you really want to remove admins?', function (confirm) {
+				bootbox.confirm('[[admin/manage/users:alerts.confirm-remove-admin]]', function (confirm) {
 					if (confirm) {
-						socket.emit('admin.user.removeAdmins', uids, done('User(s) are no longer administrators.', '.administrator', false));
+						socket.emit('admin.user.removeAdmins', uids, done('[[admin/manage/users:alerts.remove-admin-success]]', '.administrator', false));
 					}
 				});
 			}
@@ -173,7 +173,7 @@ define('admin/manage/users', ['translator'], function (translator) {
 				return;
 			}
 
-			bootbox.confirm('Do you want to validate email(s) of these user(s)?', function (confirm) {
+			bootbox.confirm('[[admin/manage/users:alerts.confirm-validate-email]]', function (confirm) {
 				if (!confirm) {
 					return;
 				}
@@ -181,7 +181,7 @@ define('admin/manage/users', ['translator'], function (translator) {
 					if (err) {
 						return app.alertError(err.message);
 					}
-					app.alertSuccess('Emails validated');
+					app.alertSuccess('[[admin/manage/users:alerts.validate-email-success]]');
 					update('.notvalidated', false);
 					update('.validated', true);
 					unselectAll();
@@ -208,9 +208,9 @@ define('admin/manage/users', ['translator'], function (translator) {
 				return;
 			}
 
-			bootbox.confirm('Do you want to send password reset email(s) to these user(s)?', function (confirm) {
+			bootbox.confirm('[[admin/manage/users:alerts.password-reset-confirm]]', function (confirm) {
 				if (confirm) {
-					socket.emit('admin.user.sendPasswordResetEmail', uids, done('Emails sent'));
+					socket.emit('admin.user.sendPasswordResetEmail', uids, done('[[notifications:email-confirm-sent]]'));
 				}
 			});
 		});
@@ -221,14 +221,14 @@ define('admin/manage/users', ['translator'], function (translator) {
 				return;
 			}
 
-			bootbox.confirm('<b>Warning!</b><br/>Do you really want to delete user(s)?<br/> This action is not reversable, only the user account will be deleted, their posts and topics will not be deleled!', function (confirm) {
+			bootbox.confirm('[[admin/manage/users:alerts.confirm-delete]]', function (confirm) {
 				if (confirm) {
 					socket.emit('admin.user.deleteUsers', uids, function (err) {
 						if (err) {
 							return app.alertError(err.message);
 						}
 
-						app.alertSuccess('User(s) Deleted!');
+						app.alertSuccess('[[admin/manage/users:alerts.delete-success]]');
 						removeSelected();
 						unselectAll();
 					});
@@ -241,14 +241,14 @@ define('admin/manage/users', ['translator'], function (translator) {
 			if (!uids.length) {
 				return;
 			}
-			bootbox.confirm('<b>Warning!</b><br/>Do you really want to delete user(s) and their content?<br/> This action is not reversable, all user data and content will be erased!', function (confirm) {
+			bootbox.confirm('[[admin/manage/users:alerts.confirm-purge]]', function (confirm) {
 				if (confirm) {
 					socket.emit('admin.user.deleteUsersAndContent', uids, function (err) {
 						if (err) {
 							return app.alertError(err.message);
 						}
 
-						app.alertSuccess('User(s) Deleted!');
+						app.alertSuccess('[[admin/manage/users:alerts.delete-success]]');
 						removeSelected();
 						unselectAll();
 					});
@@ -259,26 +259,24 @@ define('admin/manage/users', ['translator'], function (translator) {
 		function handleUserCreate() {
 			$('#createUser').on('click', function () {
 				templates.parse('admin/partials/create_user_modal', {}, function (html) {
-					translator.translate(html, function (html) {
-						bootbox.dialog({
-							message: html,
-							title: 'Create User',
-							onEscape: true,
-							buttons: {
-								cancel: {
-									label: 'Cancel',
-									className: 'btn-link'
-								},
-								create: {
-									label: 'Create',
-									className: 'btn-primary',
-									callback: function () {
-										createUser.call(this);
-										return false;
-									}
+					bootbox.dialog({
+						message: html,
+						title: '[[admin/manage/users:alerts.create]]',
+						onEscape: true,
+						buttons: {
+							cancel: {
+								label: '[[admin/manage/users:alerts.button-cancel]]',
+								className: 'btn-link'
+							},
+							create: {
+								label: '[[admin/manage/users:alerts.button-create]]',
+								className: 'btn-primary',
+								callback: function () {
+									createUser.call(this);
+									return false;
 								}
 							}
-						});
+						}
 					});
 				});
 			});
@@ -294,7 +292,7 @@ define('admin/manage/users', ['translator'], function (translator) {
 			var errorEl = $('#create-modal-error');
 
 			if (password !== passwordAgain) {
-				return errorEl.html('<strong>Error</strong><p>Passwords must match!</p>').removeClass('hide');
+				return errorEl.translateHtml('[[admin/manage/users:alerts.error-x, [[admin/manage/users:alerts.error-passwords-different]]]]').removeClass('hide');
 			}
 
 			var user = {
@@ -305,14 +303,14 @@ define('admin/manage/users', ['translator'], function (translator) {
 
 			socket.emit('admin.user.createUser', user, function (err) {
 				if(err) {
-					return errorEl.translateHtml('<strong>Error</strong><p>' + err.message + '</p>').removeClass('hide');
+					return errorEl.translateHtml('[[admin/manage/users:alerts.error-x, ' + err.message + ']]').removeClass('hide');
 				}
 
 				modal.modal('hide');
 				modal.on('hidden.bs.modal', function () {
 					ajaxify.refresh();
 				});
-				app.alertSuccess('User created!');
+				app.alertSuccess('[[admin/manage/users:alerts.create-success]]');
 			});
 		}
 
@@ -344,12 +342,12 @@ define('admin/manage/users', ['translator'], function (translator) {
 							$('.fa-spinner').addClass('hidden');
 
 							if (data && data.users.length === 0) {
-								$('#user-notfound-notify').html('User not found!')
+								$('#user-notfound-notify').translateHtml('[[admin/manage/users:search.not-found]]')
 									.removeClass('hide')
 									.addClass('label-danger')
 									.removeClass('label-success');
 							} else {
-								$('#user-notfound-notify').html(data.users.length + ' user' + (data.users.length > 1 ? 's' : '') + ' found! Search took ' + data.timing + ' ms.')
+								$('#user-notfound-notify').translateHtml(translator.compile('admin/manage/users:alerts.x-users-found', data.users.length, data.timing))
 									.removeClass('hide')
 									.addClass('label-success')
 									.removeClass('label-danger');
@@ -368,7 +366,7 @@ define('admin/manage/users', ['translator'], function (translator) {
 
 	function handleInvite() {
 		$('[component="user/invite"]').on('click', function () {
-			bootbox.prompt('Email: ', function (email) {
+			bootbox.prompt('[[admin/manage/users:alerts.prompt-email]]', function (email) {
 				if (!email) {
 					return;
 				}
@@ -377,7 +375,7 @@ define('admin/manage/users', ['translator'], function (translator) {
 					if (err) {
 						return app.alertError(err.message);
 					}
-					app.alertSuccess('An invitation email has been sent to ' + email);
+					app.alertSuccess('[[admin/manage/users:alerts.email-sent-to, ' + email + ']]');
 				});
 			});
 		});

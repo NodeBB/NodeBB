@@ -39,7 +39,7 @@ define('admin/manage/registration', function () {
 				parent.remove();
 			};
 			if (action === 'delete') {
-				bootbox.confirm('Are you sure you wish to delete this invitation?', function (confirm) {
+				bootbox.confirm('[[admin/manage/registration:invitations.confirm-delete]]', function (confirm) {
 					if (confirm) {
 						socket.emit(method, {email: email, invitedBy: invitedBy}, function (err) {
 							if (err) {

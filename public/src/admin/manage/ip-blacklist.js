@@ -20,7 +20,7 @@ define('admin/manage/ip-blacklist', ['translator'], function (translator) {
 				app.alert({
 					type: 'success',
 					alert_id: 'blacklist-saved',
-					title: 'Blacklist Applied',
+					title: '[[admin/manage/ip-blacklist:alerts.applied]]',
 				});
 			});
 		});
@@ -34,9 +34,7 @@ define('admin/manage/ip-blacklist', ['translator'], function (translator) {
 				}
 
 				templates.parse('admin/partials/blacklist-validate', data, function (html) {
-					translator.translate(html, function (html) {
-						bootbox.alert(html);
-					});
+					bootbox.alert(html);
 				});
 			});
 		});

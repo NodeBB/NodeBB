@@ -71,9 +71,7 @@ define('admin/appearance/themes', ['translator'], function (translator) {
 			var instListEl = $('#installed_themes');
 
 			if (!themes.length) {
-				translator.translate('[[admin/appearance/themes:no-themes]]', function (text) {
-					instListEl.append($('<li/ >').addClass('no-themes').html(text));
-				});
+				instListEl.append($('<li/ >').addClass('no-themes').translateHtml('[[admin/appearance/themes:no-themes]]'));
 				return;
 			} else {
 				templates.parse('admin/partials/theme_list', {

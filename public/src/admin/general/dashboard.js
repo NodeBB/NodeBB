@@ -116,9 +116,7 @@ define('admin/general/dashboard', ['semver', 'Chart', 'translator'], function (s
 		updatePresenceGraph(data.users);
 		updateTopicsGraph(data.topics);
 
-		translator.translate(html, function (html) {
-			$('#active-users').html(html);
-		});
+		$('#active-users').translateHtml(html);
 	};
 
 	var graphs = {
