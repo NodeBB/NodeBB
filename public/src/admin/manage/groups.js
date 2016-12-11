@@ -1,10 +1,7 @@
 "use strict";
 /*global define, templates, socket, ajaxify, app, admin, bootbox, utils, config */
 
-define('admin/manage/groups', [
-	'translator',
-	'components'
-], function (translator, components) {
+define('admin/manage/groups', ['translator'], function (translator) {
 	var	Groups = {};
 
 	var intervalId = 0;
@@ -40,12 +37,9 @@ define('admin/manage/groups', [
 			socket.emit('admin.groups.create', submitObj, function (err) {
 				if (err) {
 					if (err.hasOwnProperty('message') && utils.hasLanguageKey(err.message)) {
-						translator.translate(err.message, config.defaultLang, function (translated) {
-							createModalError.html(translated).removeClass('hide');
-						});
-					} else {
-						createModalError.html('<strong>Uh-Oh</strong><p>There was a problem creating your group. Please try again later!</p>').removeClass('hide');
+						err = '[[admin/manage/groups:alerts.create-failure]]';
 					}
+					createModalError.translateHtml(err).removeClass('hide');
 				} else {
 					createModalError.addClass('hide');
 					createGroupName.val('');
@@ -64,7 +58,7 @@ define('admin/manage/groups', [
 
 			switch (action) {
 			case 'delete':
-				bootbox.confirm('Are you sure you wish to delete this group?', function (confirm) {
+				bootbox.confirm('[[admin/manage/groups:alerts.confirm-delete]]', function (confirm) {
 					if (confirm) {
 						socket.emit('groups.delete', {
 							groupName: groupName
