@@ -14,7 +14,6 @@ var helpers = require('./helpers');
 
 
 describe('Messaging Library', function () {
-	//var testUids;
 	var fooUid;
 	var bazUid;
 	var herpUid;

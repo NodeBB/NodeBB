@@ -366,7 +366,7 @@ $(document).ready(function () {
 			}
 
 			// Default behaviour for rss feeds
-			if (internalLink && $(this).attr('href').endsWith('.rss')) {
+			if (internalLink && $(this).attr('href') && $(this).attr('href').endsWith('.rss')) {
 				return;
 			}
 
