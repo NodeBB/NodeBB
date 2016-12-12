@@ -13,9 +13,8 @@
     "start": "node loader.js",
     "lint": "eslint --cache .",
     "pretest": "npm run lint",
-    "test": "istanbul cover _mocha test",
-    "coveralls": "istanbul cover _mocha --report lcovonly -- -R spec && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage",
-    "test-windows": "_mocha test"
+    "test": "istanbul cover node_modules/mocha/bin/_mocha -- -R spec",
+    "coveralls": "istanbul cover _mocha --report lcovonly -- -R spec && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage"
   },
   "dependencies": {
     "async": "~1.5.0",
