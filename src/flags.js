@@ -494,6 +494,10 @@ Flags.appendNote = function (flagId, uid, note, datetime, callback) {
 
 Flags.notify = function (flagObj, uid, callback) {
 	// Notify administrators, mods, and other associated people
+	if (!callback) {
+		callback = function () {};
+	}
+
 	switch (flagObj.type) {
 		case 'post':
 			async.parallel({

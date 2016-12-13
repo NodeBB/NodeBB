@@ -10,6 +10,7 @@ var Categories = require('../src/categories');
 var Topics = require('../src/topics');
 var Posts = require('../src/posts');
 var User = require('../src/user');
+var Groups = require('../src/groups');
 var Meta = require('../src/meta');
 
 describe('Flags', function () {
@@ -37,296 +38,375 @@ describe('Flags', function () {
 				User.create({
 					username: 'testUser2', password: 'abcdef', email: 'c@d.com'
 				}, next);
+			},
+			function (uid, next) {
+				Groups.join('administrators', uid, next);
 			}
 		], done);
 	});
 
-	describe('.create()', function () {
-		it('should create a flag and return its data', function (done) {
-			Flags.create('post', 1, 1, 'Test flag', function (err, flagData) {
-				assert.ifError(err);
-				var compare = {
-					flagId: 1,
-					uid: 1,
-					targetId: 1,
-					type: 'post',
-					description: 'Test flag'
-				};
+	// describe('.create()', function () {
+	// 	it('should create a flag and return its data', function (done) {
+	// 		Flags.create('post', 1, 1, 'Test flag', function (err, flagData) {
+	// 			assert.ifError(err);
+	// 			var compare = {
+	// 				flagId: 1,
+	// 				uid: 1,
+	// 				targetId: 1,
+	// 				type: 'post',
+	// 				description: 'Test flag'
+	// 			};
 
-				for(var key in compare) {
-					if (compare.hasOwnProperty(key)) {
-						assert.ok(flagData[key]);
-						assert.strictEqual(flagData[key], compare[key]);
-					}
-				}
+	// 			for(var key in compare) {
+	// 				if (compare.hasOwnProperty(key)) {
+	// 					assert.ok(flagData[key]);
+	// 					assert.strictEqual(flagData[key], compare[key]);
+	// 				}
+	// 			}
 
-				done();
-			});
-		});
-	});
+	// 			done();
+	// 		});
+	// 	});
+	// });
 
-	describe('.get()', function () {
-		it('should retrieve and display a flag\'s data', function (done) {
-			Flags.get(1, function (err, flagData) {
-				assert.ifError(err);
-				var compare = {
-					flagId: 1,
-					uid: 1,
-					targetId: 1,
-					type: 'post',
-					description: 'Test flag',
-					state: 'open'
-				};
+	// describe('.get()', function () {
+	// 	it('should retrieve and display a flag\'s data', function (done) {
+	// 		Flags.get(1, function (err, flagData) {
+	// 			assert.ifError(err);
+	// 			var compare = {
+	// 				flagId: 1,
+	// 				uid: 1,
+	// 				targetId: 1,
+	// 				type: 'post',
+	// 				description: 'Test flag',
+	// 				state: 'open'
+	// 			};
 
-				for(var key in compare) {
-					if (compare.hasOwnProperty(key)) {
-						assert.ok(flagData[key]);
-						assert.strictEqual(flagData[key], compare[key]);
-					}
-				}
+	// 			for(var key in compare) {
+	// 				if (compare.hasOwnProperty(key)) {
+	// 					assert.ok(flagData[key]);
+	// 					assert.strictEqual(flagData[key], compare[key]);
+	// 				}
+	// 			}
 
-				done();
-			});
-		});
-	});
+	// 			done();
+	// 		});
+	// 	});
+	// });
 
-	describe('.list()', function () {
-		it('should show a list of flags (with one item)', function (done) {
-			Flags.list({}, 1, function (err, flags) {
-				assert.ifError(err);
-				assert.ok(Array.isArray(flags));
-				assert.equal(flags.length, 1);
+	// describe('.list()', function () {
+	// 	it('should show a list of flags (with one item)', function (done) {
+	// 		Flags.list({}, 1, function (err, flags) {
+	// 			assert.ifError(err);
+	// 			assert.ok(Array.isArray(flags));
+	// 			assert.equal(flags.length, 1);
 				
-				Flags.get(flags[0].flagId, function (err, flagData) {
-					assert.ifError(err);
-					assert.equal(flags[0].flagId, flagData.flagId);
-					assert.equal(flags[0].description, flagData.description);
-					done();
-				});
-			});
-		});
-	});
+	// 			Flags.get(flags[0].flagId, function (err, flagData) {
+	// 				assert.ifError(err);
+	// 				assert.equal(flags[0].flagId, flagData.flagId);
+	// 				assert.equal(flags[0].description, flagData.description);
+	// 				done();
+	// 			});
+	// 		});
+	// 	});
+	// });
 
-	describe('.update()', function () {
-		it('should alter a flag\'s various attributes and persist them to the database', function (done) {
-			Flags.update(1, 1, {
-				"state": "wip",
-				"assignee": 1
-			}, function (err) {
-				assert.ifError(err);
-				db.getObjectFields('flag:1', ['state', 'assignee'], function (err, data) {
-					if (err) {
-						throw err;
-					}
+	// describe('.update()', function () {
+	// 	it('should alter a flag\'s various attributes and persist them to the database', function (done) {
+	// 		Flags.update(1, 1, {
+	// 			"state": "wip",
+	// 			"assignee": 1
+	// 		}, function (err) {
+	// 			assert.ifError(err);
+	// 			db.getObjectFields('flag:1', ['state', 'assignee'], function (err, data) {
+	// 				if (err) {
+	// 					throw err;
+	// 				}
 
-					assert.strictEqual('wip', data.state);
-					assert.strictEqual(1, data.assignee);
-					done();
-				});
-			});
-		});
+	// 				assert.strictEqual('wip', data.state);
+	// 				assert.strictEqual(1, data.assignee);
+	// 				done();
+	// 			});
+	// 		});
+	// 	});
 
-		it('should persist to the flag\'s history', function (done) {
-			Flags.getHistory(1, function (err, history) {
-				if (err) {
-					throw err;
-				}
+	// 	it('should persist to the flag\'s history', function (done) {
+	// 		Flags.getHistory(1, function (err, history) {
+	// 			if (err) {
+	// 				throw err;
+	// 			}
 
-				history.forEach(function (change) {
-					switch (change.attribute) {
-						case 'state':
-							assert.strictEqual('[[flags:state-wip]]', change.value);
-							break;
+	// 			history.forEach(function (change) {
+	// 				switch (change.attribute) {
+	// 					case 'state':
+	// 						assert.strictEqual('[[flags:state-wip]]', change.value);
+	// 						break;
 						
-						case 'assignee':
-							assert.strictEqual(1, change.value);
-							break;
-					}
-				});
+	// 					case 'assignee':
+	// 						assert.strictEqual(1, change.value);
+	// 						break;
+	// 				}
+	// 			});
 
-				done();
-			});
-		});
-	});
+	// 			done();
+	// 		});
+	// 	});
+	// });
 
-	describe('.getTarget()', function () {
-		it('should return a post\'s data if queried with type "post"', function (done) {
-			Flags.getTarget('post', 1, 1, function (err, data) {
-				assert.ifError(err);
-				var compare = {
-					uid: 1,
-					pid: 1,
-					content: 'This is flaggable content'
-				};
+	// describe('.getTarget()', function () {
+	// 	it('should return a post\'s data if queried with type "post"', function (done) {
+	// 		Flags.getTarget('post', 1, 1, function (err, data) {
+	// 			assert.ifError(err);
+	// 			var compare = {
+	// 				uid: 1,
+	// 				pid: 1,
+	// 				content: 'This is flaggable content'
+	// 			};
 
-				for(var key in compare) {
-					if (compare.hasOwnProperty(key)) {
-						assert.ok(data[key]);
-						assert.strictEqual(data[key], compare[key]);
-					}
-				}
+	// 			for(var key in compare) {
+	// 				if (compare.hasOwnProperty(key)) {
+	// 					assert.ok(data[key]);
+	// 					assert.strictEqual(data[key], compare[key]);
+	// 				}
+	// 			}
 
-				done();
-			});
-		});
+	// 			done();
+	// 		});
+	// 	});
 
-		it('should return a user\'s data if queried with type "user"', function (done) {
-			Flags.getTarget('user', 1, 1, function (err, data) {
-				assert.ifError(err);
-				var compare = {
-					uid: 1,
-					username: 'testUser',
-					email: 'b@c.com'
-				};
+	// 	it('should return a user\'s data if queried with type "user"', function (done) {
+	// 		Flags.getTarget('user', 1, 1, function (err, data) {
+	// 			assert.ifError(err);
+	// 			var compare = {
+	// 				uid: 1,
+	// 				username: 'testUser',
+	// 				email: 'b@c.com'
+	// 			};
 
-				for(var key in compare) {
-					if (compare.hasOwnProperty(key)) {
-						assert.ok(data[key]);
-						assert.strictEqual(data[key], compare[key]);
-					}
-				}
+	// 			for(var key in compare) {
+	// 				if (compare.hasOwnProperty(key)) {
+	// 					assert.ok(data[key]);
+	// 					assert.strictEqual(data[key], compare[key]);
+	// 				}
+	// 			}
 
-				done();
-			});
-		});
-	});
+	// 			done();
+	// 		});
+	// 	});
+	// });
 
-	describe('.validate()', function () {
-		it('should error out if type is post and post is deleted', function (done) {
-			Posts.delete(1, 1, function (err) {
-				if (err) {
-					throw err;
-				}
+	// describe('.validate()', function () {
+	// 	it('should error out if type is post and post is deleted', function (done) {
+	// 		Posts.delete(1, 1, function (err) {
+	// 			if (err) {
+	// 				throw err;
+	// 			}
 
-				Flags.validate({
-					type: 'post',
-					id: 1,
-					uid: 1
-				}, function (err) {
-					assert.ok(err);
-					assert.strictEqual('[[error:post-deleted]]', err.message);
-					Posts.restore(1, 1, done);
-				});
-			});
-		});
+	// 			Flags.validate({
+	// 				type: 'post',
+	// 				id: 1,
+	// 				uid: 1
+	// 			}, function (err) {
+	// 				assert.ok(err);
+	// 				assert.strictEqual('[[error:post-deleted]]', err.message);
+	// 				Posts.restore(1, 1, done);
+	// 			});
+	// 		});
+	// 	});
 
-		it('should not pass validation if flag threshold is set and user rep does not meet it', function (done) {
-			Meta.configs.set('privileges:flag', '50', function (err) {
-				assert.ifError(err);
+	// 	it('should not pass validation if flag threshold is set and user rep does not meet it', function (done) {
+	// 		Meta.configs.set('privileges:flag', '50', function (err) {
+	// 			assert.ifError(err);
 
-				Flags.validate({
-					type: 'post',
-					id: 1,
-					uid: 2
-				}, function (err) {
-					assert.ok(err);
-					assert.strictEqual('[[error:not-enough-reputation-to-flag]]', err.message);
-					Meta.configs.set('privileges:flag', 0, done);
-				});
-			});
-		});
-	});
+	// 			Flags.validate({
+	// 				type: 'post',
+	// 				id: 1,
+	// 				uid: 2
+	// 			}, function (err) {
+	// 				assert.ok(err);
+	// 				assert.strictEqual('[[error:not-enough-reputation-to-flag]]', err.message);
+	// 				Meta.configs.set('privileges:flag', 0, done);
+	// 			});
+	// 		});
+	// 	});
+	// });
 
-	describe('.appendNote()', function () {
-		it('should add a note to a flag', function (done) {
-			Flags.appendNote(1, 1, 'this is my note', function (err) {
-				assert.ifError(err);
+	// describe('.appendNote()', function () {
+	// 	it('should add a note to a flag', function (done) {
+	// 		Flags.appendNote(1, 1, 'this is my note', function (err) {
+	// 			assert.ifError(err);
 				
-				db.getSortedSetRange('flag:1:notes', 0, -1, function (err, notes) {
-					if (err) {
-						throw err;
-					}
+	// 			db.getSortedSetRange('flag:1:notes', 0, -1, function (err, notes) {
+	// 				if (err) {
+	// 					throw err;
+	// 				}
 
-					assert.strictEqual('[1,"this is my note"]', notes[0]);
-					done();
-				});
-			});
-		});
+	// 				assert.strictEqual('[1,"this is my note"]', notes[0]);
+	// 				done();
+	// 			});
+	// 		});
+	// 	});
 
-		it('should be a JSON string', function (done) {
-			db.getSortedSetRange('flag:1:notes', 0, -1, function (err, notes) {
-				if (err) {
-					throw err;
-				}
+	// 	it('should be a JSON string', function (done) {
+	// 		db.getSortedSetRange('flag:1:notes', 0, -1, function (err, notes) {
+	// 			if (err) {
+	// 				throw err;
+	// 			}
 
-				try {
-					JSON.parse(notes[0]);
-				} catch (e) {
-					assert.ifError(e);
-				}
+	// 			try {
+	// 				JSON.parse(notes[0]);
+	// 			} catch (e) {
+	// 				assert.ifError(e);
+	// 			}
 
-				done();
-			});
-		});
-	});
+	// 			done();
+	// 		});
+	// 	});
+	// });
 
-	describe('.getNotes()', function () {
-		before(function (done) {
-			// Add a second note
-			Flags.appendNote(1, 1, 'this is the second note', done);
-		});
+	// describe('.getNotes()', function () {
+	// 	before(function (done) {
+	// 		// Add a second note
+	// 		Flags.appendNote(1, 1, 'this is the second note', done);
+	// 	});
 
-		it('return should match a predefined spec', function (done) {
-			Flags.getNotes(1, function (err, notes) {
-				assert.ifError(err);
-				var compare = {
-					uid: 1,
-					content: 'this is my note'
-				};
+	// 	it('return should match a predefined spec', function (done) {
+	// 		Flags.getNotes(1, function (err, notes) {
+	// 			assert.ifError(err);
+	// 			var compare = {
+	// 				uid: 1,
+	// 				content: 'this is my note'
+	// 			};
 				
-				var data = notes[1];
-				for(var key in compare) {
-					if (compare.hasOwnProperty(key)) {
-						assert.ok(data[key]);
-						assert.strictEqual(data[key], compare[key]);
-					}
-				}
+	// 			var data = notes[1];
+	// 			for(var key in compare) {
+	// 				if (compare.hasOwnProperty(key)) {
+	// 					assert.ok(data[key]);
+	// 					assert.strictEqual(data[key], compare[key]);
+	// 				}
+	// 			}
 
-				done();
-			});
-		});
+	// 			done();
+	// 		});
+	// 	});
 
-		it('should retrieve a list of notes, from newest to oldest', function (done) {
-			Flags.getNotes(1, function (err, notes) {
-				assert.ifError(err);
-				assert(notes[0].datetime > notes[1].datetime);
-				assert.strictEqual('this is the second note', notes[0].content);
-				done();
-			});
-		});
-	});
+	// 	it('should retrieve a list of notes, from newest to oldest', function (done) {
+	// 		Flags.getNotes(1, function (err, notes) {
+	// 			assert.ifError(err);
+	// 			assert(notes[0].datetime > notes[1].datetime);
+	// 			assert.strictEqual('this is the second note', notes[0].content);
+	// 			done();
+	// 		});
+	// 	});
+	// });
 
-	describe('.appendHistory()', function () {
-		var entries;
+	// describe('.appendHistory()', function () {
+	// 	var entries;
+	// 	before(function (done) {
+	// 		db.sortedSetCard('flag:1:history', function (err, count) {
+	// 			entries = count;
+	// 			done(err);
+	// 		});
+	// 	});
+
+	// 	it('should add a new entry into a flag\'s history', function (done) {
+	// 		Flags.appendHistory(1, 1, ['state:rejected'], function (err) {
+	// 			assert.ifError(err);
+
+	// 			Flags.getHistory(1, function (err, history) {
+	// 				if (err) {
+	// 					throw err;
+	// 				}
+
+	// 				assert.strictEqual(entries + 1, history.length);
+	// 				done();
+	// 			});
+	// 		});
+	// 	});
+	// });
+
+	// describe('.getHistory()', function () {
+	// 	it('should retrieve a flag\'s history', function (done) {
+	// 		Flags.getHistory(1, function (err, history) {
+	// 			assert.ifError(err);
+	// 			assert.strictEqual(history[0].fields[0].value, '[[flags:state-rejected]]');
+	// 			done();
+	// 		});
+	// 	});
+	// });
+
+	describe('(websockets)', function () {
+		var SocketFlags = require('../src/socket.io/flags.js');
+		var tid, pid, flag;
+
 		before(function (done) {
-			db.sortedSetCard('flag:1:history', function (err, count) {
-				entries = count;
+			Topics.post({
+				cid: 1,
+				uid: 1,
+				title: 'Another topic',
+				content: 'This is flaggable content'
+			}, function (err, topic) {
+				tid = topic.postData.tid;
+				pid = topic.postData.pid;
+
 				done(err);
 			});
 		});
 
-		it('should add a new entry into a flag\'s history', function (done) {
-			Flags.appendHistory(1, 1, ['state:rejected'], function (err) {
-				assert.ifError(err);
+		describe('.create()', function () {
+			it('should create a flag with no errors', function (done) {
+				SocketFlags.create({ uid: 2 }, {
+					type: 'post',
+					id: pid,
+					reason: 'foobar'
+				}, function (err, flagObj) {
+					flag = flagObj;
+					assert.ifError(err);
 
-				Flags.getHistory(1, function (err, history) {
-					if (err) {
-						throw err;
-					}
+					Flags.exists('post', pid, 1, function (err, exists) {
+						assert.ifError(err);
+						assert(true);
+						done();
+					});
+				});
+			});
+		});
 
-					assert.strictEqual(entries + 1, history.length);
+		describe('.update()', function () {
+			it('should update a flag\'s properties', function (done) {
+				SocketFlags.update({ uid: 2 }, {
+					flagId: flag.flagId,
+					data: [{
+						name: 'state',
+						value: 'wip'
+					}]
+				}, function (err, history) {
+					assert.ifError(err);
+					assert(Array.isArray(history));
+					assert(history[0].fields.hasOwnProperty('state'));
+					assert.strictEqual('[[flags:state-wip]]', history[0].fields.state);
 					done();
 				});
 			});
 		});
-	});
 
-	describe('.getHistory()', function () {
-		it('should retrieve a flag\'s history', function (done) {
-			Flags.getHistory(1, function (err, history) {
-				assert.ifError(err);
-				assert.strictEqual(history[0].fields[0].value, '[[flags:state-rejected]]');
-				done();
+		describe('.appendNote()', function () {
+			it('should append a note to the flag', function (done) {
+				SocketFlags.appendNote({ uid: 2 }, {
+					flagId: flag.flagId,
+					note: 'lorem ipsum dolor sit amet'
+				}, function (err, data) {
+					assert(data.hasOwnProperty('notes'));
+					assert(Array.isArray(data.notes));
+					assert.strictEqual('lorem ipsum dolor sit amet', data.notes[0].content);
+					assert.strictEqual(2, data.notes[0].uid);
+
+					assert(data.hasOwnProperty('history'));
+					assert(Array.isArray(data.history));
+					assert.strictEqual(1, Object.keys(data.history[0].fields).length);
+					assert(data.history[0].fields.hasOwnProperty('notes'));
+					done();
+				});
 			});
 		});
 	});

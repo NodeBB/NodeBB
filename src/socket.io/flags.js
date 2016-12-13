@@ -34,11 +34,15 @@ SocketFlags.create = function (socket, data, callback) {
 		function (next) {
 			// If we got here, then no errors occurred
 			flags.create(data.type, data.id, socket.uid, data.reason, next);
-		},
-		function (flagObj, next) {
-			flags.notify(flagObj, socket.uid, next);
 		}
-	], callback);
+	], function (err, flagObj) {
+		if (err) {
+			return callback(err);
+		}
+
+		flags.notify(flagObj, socket.uid);
+		callback(null, flagObj);
+	});
 };
 
 SocketFlags.update = function (socket, data, callback) {
