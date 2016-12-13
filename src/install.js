@@ -221,8 +221,8 @@ function createAdministrator(next) {
 
 function createAdmin(callback) {
 	var User = require('./user');
-	var	Groups = require('./groups');
-	var	password;
+	var Groups = require('./groups');
+	var password;
 	var meta = require('./meta');
 
 	winston.warn('No administrators have been detected, running initial user setup\n');
