@@ -3,7 +3,7 @@
 
 define('admin/appearance/themes', ['translator'], function (translator) {
 	var Themes = {};
-	
+
 	Themes.init = function () {
 		$('#installed_themes').on('click', function (e) {
 			var target = $(e.target),
@@ -23,6 +23,7 @@ define('admin/appearance/themes', ['translator'], function (translator) {
 					if (err) {
 						return app.alertError(err.message);
 					}
+					config['theme:id'] = themeId;
 					highlightSelectedTheme(themeId);
 
 					app.alert({
@@ -38,7 +39,7 @@ define('admin/appearance/themes', ['translator'], function (translator) {
 				});
 			}
 		});
-		
+
 		translator.translate('[[admin/appearance/themes:revert-confirm]]', function (revert) {
 			$('#revert_theme').on('click', function () {
 				bootbox.confirm(revert, function (confirm) {

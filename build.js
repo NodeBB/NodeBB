@@ -5,13 +5,19 @@ var winston = require('winston');
 
 var buildStart;
 
+var valid = ['js', 'clientCSS', 'acpCSS', 'tpl'];
+
+exports.buildAll = function (callback) {
+	exports.build(valid.join(','), callback);
+};
+
 exports.build = function build(targets, callback) {
 	buildStart = Date.now();
 
 	var db = require('./src/database');
 	var meta = require('./src/meta');
 	var plugins = require('./src/plugins');
-	var valid = ['js', 'clientCSS', 'acpCSS', 'tpl'];
+
 
 	targets = (targets === true ? valid : targets.split(',').filter(function (target) {
 		return valid.indexOf(target) !== -1;

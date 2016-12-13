@@ -10,7 +10,7 @@ describe('Sorted Set methods', function () {
 	before(function (done) {
 		async.parallel([
 			function (next) {
-				db.sortedSetAdd('sortedSetTest1', [1, 2, 3], ['value1', 'value2', 'value3'], next);
+				db.sortedSetAdd('sortedSetTest1', [1.1, 1.2, 1.3], ['value1', 'value2', 'value3'], next);
 			},
 			function (next) {
 				db.sortedSetAdd('sortedSetTest2', [1, 4], ['value1', 'value4'], next);
@@ -97,7 +97,7 @@ describe('Sorted Set methods', function () {
 			db.getSortedSetRangeWithScores('sortedSetTest1', 0, -1, function (err, values) {
 				assert.equal(err, null);
 				assert.equal(arguments.length, 2);
-				assert.deepEqual(values, [{value: 'value1', score: 1}, {value: 'value2', score: 2}, {value: 'value3', score: 3}]);
+				assert.deepEqual(values, [{value: 'value1', score: 1.1}, {value: 'value2', score: 1.2}, {value: 'value3', score: 1.3}]);
 				done();
 			});
 		});
@@ -108,7 +108,7 @@ describe('Sorted Set methods', function () {
 			db.getSortedSetRevRangeWithScores('sortedSetTest1', 0, -1, function (err, values) {
 				assert.equal(err, null);
 				assert.equal(arguments.length, 2);
-				assert.deepEqual(values, [{value: 'value3', score: 3}, {value: 'value2', score: 2}, {value: 'value1', score: 1}]);
+				assert.deepEqual(values, [{value: 'value3', score: 1.3}, {value: 'value2', score: 1.2}, {value: 'value1', score: 1.1}]);
 				done();
 			});
 		});
@@ -116,7 +116,7 @@ describe('Sorted Set methods', function () {
 
 	describe('getSortedSetRangeByScore()', function () {
 		it('should get count elements with score between min max sorted by score lowest to highest', function (done) {
-			db.getSortedSetRangeByScore('sortedSetTest1', 0, -1, '-inf', 2, function (err, values) {
+			db.getSortedSetRangeByScore('sortedSetTest1', 0, -1, '-inf', 1.2, function (err, values) {
 				assert.equal(err, null);
 				assert.equal(arguments.length, 2);
 				assert.deepEqual(values, ['value1', 'value2']);
@@ -127,7 +127,7 @@ describe('Sorted Set methods', function () {
 
 	describe('getSortedSetRevRangeByScore()', function () {
 		it('should get count elements with score between max min sorted by score highest to lowest', function (done) {
-			db.getSortedSetRevRangeByScore('sortedSetTest1', 0, -1, '+inf', 2, function (err, values) {
+			db.getSortedSetRevRangeByScore('sortedSetTest1', 0, -1, '+inf', 1.2, function (err, values) {
 				assert.equal(err, null);
 				assert.equal(arguments.length, 2);
 				assert.deepEqual(values, ['value3', 'value2']);
@@ -138,10 +138,10 @@ describe('Sorted Set methods', function () {
 
 	describe('getSortedSetRangeByScoreWithScores()', function () {
 		it('should get count elements with score between min max sorted by score lowest to highest with scores', function (done) {
-			db.getSortedSetRangeByScoreWithScores('sortedSetTest1', 0, -1, '-inf', 2, function (err, values) {
+			db.getSortedSetRangeByScoreWithScores('sortedSetTest1', 0, -1, '-inf', 1.2, function (err, values) {
 				assert.equal(err, null);
 				assert.equal(arguments.length, 2);
-				assert.deepEqual(values, [{value: 'value1', score: 1}, {value: 'value2', score: 2}]);
+				assert.deepEqual(values, [{value: 'value1', score: 1.1}, {value: 'value2', score: 1.2}]);
 				done();
 			});
 		});
@@ -149,10 +149,10 @@ describe('Sorted Set methods', function () {
 
 	describe('getSortedSetRevRangeByScoreWithScores()', function () {
 		it('should get count elements with score between max min sorted by score highest to lowest', function (done) {
-			db.getSortedSetRevRangeByScoreWithScores('sortedSetTest1', 0, -1, '+inf', 2, function (err, values) {
+			db.getSortedSetRevRangeByScoreWithScores('sortedSetTest1', 0, -1, '+inf', 1.2, function (err, values) {
 				assert.equal(err, null);
 				assert.equal(arguments.length, 2);
-				assert.deepEqual(values, [{value: 'value3', score: 3}, {value: 'value2', score: 2}]);
+				assert.deepEqual(values, [{value: 'value3', score: 1.3}, {value: 'value2', score: 1.2}]);
 				done();
 			});
 		});
@@ -169,7 +169,7 @@ describe('Sorted Set methods', function () {
 		});
 
 		it('should return number of elements between scores min max inclusive', function (done) {
-			db.sortedSetCount('sortedSetTest1', '-inf', 2, function (err, count) {
+			db.sortedSetCount('sortedSetTest1', '-inf', 1.2, function (err, count) {
 				assert.equal(err, null);
 				assert.equal(arguments.length, 2);
 				assert.equal(count, 2);
@@ -321,7 +321,7 @@ describe('Sorted Set methods', function () {
 			db.sortedSetScore('sortedSetTest1', 'value2', function (err, score) {
 				assert.equal(err, null);
 				assert.equal(arguments.length, 2);
-				assert.equal(score, 2);
+				assert.equal(score, 1.2);
 				done();
 			});
 		});
@@ -332,7 +332,7 @@ describe('Sorted Set methods', function () {
 			db.sortedSetsScore(['sortedSetTest1', 'sortedSetTest2', 'doesnotexist'], 'value1', function (err, scores) {
 				assert.equal(err, null);
 				assert.equal(arguments.length, 2);
-				assert.deepEqual(scores, [1, 1, null]);
+				assert.deepEqual(scores, [1.1, 1, null]);
 				done();
 			});
 		});
@@ -355,7 +355,7 @@ describe('Sorted Set methods', function () {
 			db.sortedSetScores('sortedSetTest1', ['value2', 'value1', 'doesnotexist'], function (err, scores) {
 				assert.equal(err, null);
 				assert.equal(arguments.length, 2);
-				assert.deepEqual(scores, [2, 1, null]);
+				assert.deepEqual(scores, [1.2, 1.1, null]);
 				done();
 			});
 		});

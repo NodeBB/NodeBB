@@ -34,17 +34,20 @@ module.exports = function (middleware) {
 			var ajaxifyData;
 			async.waterfall([
 				function (next) {
-					plugins.fireHook('filter:' + template + '.build', {req: req, res: res, templateData: options}, next);
-				},
-				function (data, next) {
-					options = data.templateData;
-
 					options.loggedIn = !!req.uid;
 					options.relative_path = nconf.get('relative_path');
 					options.template = {name: template};
 					options.template[template] = true;
 					options.url = (req.baseUrl + req.path).replace(/^\/api/, '');
 					options.bodyClass = buildBodyClass(req);
+
+					plugins.fireHook('filter:' + template + '.build', {req: req, res: res, templateData: options}, next);
+				},
+				function (data, next) {
+					plugins.fireHook('filter:middleware.render', {req: res, res: res, templateData: data.templateData}, next);
+				},
+				function (data, next) {
+					options = data.templateData;
 
 					res.locals.template = template;
 					options._locals = undefined;

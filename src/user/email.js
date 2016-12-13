@@ -100,6 +100,9 @@ var emailer = require('../emailer');
 					async.apply(db.delete, 'uid:' + confirmObj.uid + ':confirm:email:sent'),
 					function (next) {
 						db.sortedSetRemove('users:notvalidated', confirmObj.uid, next);
+					},
+					function (next) {
+						plugins.fireHook('action:user.email.confirmed', {uid: confirmObj.uid, email: confirmObj.email}, next);
 					}
 				], function (err) {
 					callback(err ? new Error('[[error:email-confirm-failed]]') : null);

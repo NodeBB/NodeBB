@@ -220,9 +220,10 @@ function createAdministrator(next) {
 }
 
 function createAdmin(callback) {
-	var User = require('./user'),
-		Groups = require('./groups'),
-		password;
+	var User = require('./user');
+	var Groups = require('./groups');
+	var password;
+	var meta = require('./meta');
 
 	winston.warn('No administrators have been detected, running initial user setup\n');
 
@@ -262,6 +263,12 @@ function createAdmin(callback) {
 				winston.warn("Passwords did not match, please try again");
 				return retryPassword(results);
 			}
+			
+			if (results.password.length < meta.config.minimumPasswordLength) {
+				winston.warn("Password too short, please try again");
+				return retryPassword(results);
+			}
+			
 			var adminUid;
 			async.waterfall([
 				function (next) {

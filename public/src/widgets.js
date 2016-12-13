@@ -33,6 +33,7 @@
 			locations: widgetLocations,
 			template: template + '.tpl',
 			url: url,
+			cid: ajaxify.data.cid,
 			isMobile: utils.isMobile()
 		}, function (renderedAreas) {
 			for (var x = 0; x < renderedAreas.length; ++x) {
