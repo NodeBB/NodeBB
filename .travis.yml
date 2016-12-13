@@ -27,3 +27,4 @@ node_js:
 branches:
     only:
         - master
+        - develop
