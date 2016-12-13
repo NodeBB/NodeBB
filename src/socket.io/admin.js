@@ -64,7 +64,7 @@ SocketAdmin.reload = function (socket, data, callback) {
 SocketAdmin.restart = function (socket, data, callback) {
 	require('../../build').buildAll(function (err) {
 		if (err) {
-			return callback(err)
+			return callback(err);
 		}
 
 		events.log({
