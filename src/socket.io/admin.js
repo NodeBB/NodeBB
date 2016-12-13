@@ -62,14 +62,11 @@ SocketAdmin.reload = function (socket, data, callback) {
 };
 
 SocketAdmin.restart = function (socket, data, callback) {
-	// Rebuild assets and reload NodeBB
-	var child_process = require('child_process');
-	var build_worker = child_process.fork('app.js', ['--build'], {
-		cwd: path.join(__dirname, '../../'),
-		stdio: 'pipe'
-	});
+	require('../../build').buildAll(function (err) {
+		if (err) {
+			return callback(err)
+		}
 
-	build_worker.on('exit', function () {
 		events.log({
 			type: 'build',
 			uid: socket.uid,

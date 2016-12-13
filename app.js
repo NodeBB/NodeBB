@@ -75,7 +75,7 @@ if (nconf.get('setup') || nconf.get('install')) {
 } else if (nconf.get('reset')) {
 	async.waterfall([
 		async.apply(require('./src/reset').reset),
-		async.apply(require('./build').build, true)
+		async.apply(require('./build').buildAll)
 	], function (err) {
 		process.exit(err ? 1 : 0);
 	});
@@ -180,12 +180,12 @@ function start() {
 	});
 
 	async.waterfall([
-		async.apply(db.init),		
+		async.apply(db.init),
 		function (next) {
 			var meta = require('./src/meta');
 			async.parallel([
 				async.apply(db.checkCompatibility),
-				async.apply(meta.configs.init),	
+				async.apply(meta.configs.init),
 				function (next) {
 					if (nconf.get('dep-check') === undefined || nconf.get('dep-check') !== false) {
 						meta.dependencies.check(next);
@@ -195,8 +195,8 @@ function start() {
 					}
 				},
 				function (next) {
-					require('./src/upgrade').check(next);	
-				}				
+					require('./src/upgrade').check(next);
+				}
 			], function (err) {
 				next(err);
 			});
@@ -257,7 +257,7 @@ function setup() {
 	async.series([
 		async.apply(install.setup),
 		async.apply(loadConfig),
-		async.apply(build.build, true)
+		async.apply(build.buildAll)
 	], function (err, data) {
 		// Disregard build step data
 		data = data[0];
@@ -302,7 +302,7 @@ function upgrade() {
 		async.apply(db.init),
 		async.apply(meta.configs.init),
 		async.apply(upgrade.upgrade),
-		async.apply(build.build, true)
+		async.apply(build.buildAll)
 	], function (err) {
 		if (err) {
 			winston.error(err.stack);
