@@ -139,13 +139,7 @@ Flags.list = function (filters, uid, callback) {
 				});
 			},  next);
 		}
-	], function (err, flags) {
-		if (err) {
-			return callback(err);
-		}
-
-		return callback(null, flags);
-	});
+	], callback);
 };
 
 Flags.validate = function (payload, callback) {
@@ -166,16 +160,14 @@ Flags.validate = function (payload, callback) {
 
 		switch (payload.type) {
 			case 'post':
-				async.parallel({
-					editable: async.apply(privileges.posts.canEdit, payload.id, payload.uid)
-				}, function (err, subdata) {
+				privileges.posts.canEdit(payload.id, payload.uid, function (err, editable) {
 					if (err) {
 						return callback(err);
 					}
 
 					var minimumReputation = utils.isNumber(meta.config['privileges:flag']) ? parseInt(meta.config['privileges:flag'], 10) : 1;
 					// Check if reporter meets rep threshold (or can edit the target post, in which case threshold does not apply)
-					if (!subdata.editable.flag && parseInt(data.reporter.reputation, 10) < minimumReputation) {
+					if (!editable.flag && parseInt(data.reporter.reputation, 10) < minimumReputation) {
 						return callback(new Error('[[error:not-enough-reputation-to-flag]]'));
 					}
 
@@ -184,17 +176,14 @@ Flags.validate = function (payload, callback) {
 				break;
 			
 			case 'user':
-				async.parallel({
-					editable: async.apply(privileges.users.canEdit, payload.uid, payload.id)
-				}, function (err, subdata) {
+				privileges.users.canEdit(payload.uid, payload.id, function (err, editable) {
 					if (err) {
 						return callback(err);
 					}
 
-
 					var minimumReputation = utils.isNumber(meta.config['privileges:flag']) ? parseInt(meta.config['privileges:flag'], 10) : 1;
 					// Check if reporter meets rep threshold (or can edit the target user, in which case threshold does not apply)
-					if (!subdata.editable && parseInt(data.reporter.reputation, 10) < minimumReputation) {
+					if (!editable && parseInt(data.reporter.reputation, 10) < minimumReputation) {
 						return callback(new Error('[[error:not-enough-reputation-to-flag]]'));
 					}
 
@@ -227,6 +216,10 @@ Flags.getTarget = function (type, id, uid, callback) {
 				callback(err, users ? users[0] : undefined);
 			});
 			break;
+		
+		default:
+			 callback(new Error('[[error:invalid-data]]'));
+			 break;
 	}
 };
 
@@ -315,7 +308,7 @@ Flags.create = function (type, id, uid, reason, timestamp, callback) {
 				async.apply(db.sortedSetAdd.bind(db), 'flags:datetime', timestamp, flagId),	// by time, the default
 				async.apply(db.sortedSetAdd.bind(db), 'flags:byReporter:' + uid, timestamp, flagId),	// by reporter
 				async.apply(db.sortedSetAdd.bind(db), 'flags:byType:' + type, timestamp, flagId),	// by flag type
-				async.apply(db.setObjectField.bind(db), 'flagHash:flagId', [type, id, uid].join(':'), flagId),	// save hash for existence checking
+				async.apply(db.sortedSetAdd.bind(db), 'flags:hash', flagId, [type, id, uid].join(':')),	// save zset for duplicate checking
 				async.apply(analytics.increment, 'flags')	// some fancy analytics
 			];
 
@@ -337,70 +330,10 @@ Flags.create = function (type, id, uid, reason, timestamp, callback) {
 		},
 		async.apply(Flags.get)
 	], callback);
-	// if (!parseInt(uid, 10) || !reason) {
-	// 	return callback();
-	// }
-
-	// async.waterfall([
-	// 	function (next) {
-	// 		async.parallel({
-	// 			hasFlagged: async.apply(Flags.isFlaggedByUser, post.pid, uid),
-	// 			exists: async.apply(Posts.exists, post.pid)
-	// 		}, next);
-	// 	},
-	// 	function (results, next) {
-	// 		if (!results.exists) {
-	// 			return next(new Error('[[error:no-post]]'));
-	// 		}
-
-	// 		if (results.hasFlagged) {
-	// 			return next(new Error('[[error:already-flagged]]'));
-	// 		}
-
-	// 		var now = Date.now();
-	// 		async.parallel([
-	// 			function (next) {
-	// 				db.sortedSetAdd('posts:flagged', now, post.pid, next);
-	// 			},
-	// 			function (next) {
-	// 				db.sortedSetIncrBy('posts:flags:count', 1, post.pid, next);
-	// 			},
-	// 			function (next) {
-	// 				db.incrObjectField('post:' + post.pid, 'flags', next);
-	// 			},
-	// 			function (next) {
-	// 				db.sortedSetAdd('pid:' + post.pid + ':flag:uids', now, uid, next);
-	// 			},
-	// 			function (next) {
-	// 				db.sortedSetAdd('pid:' + post.pid + ':flag:uid:reason', 0, uid + ':' + reason, next);
-	// 			},
-	// 			function (next) {
-	// 				if (parseInt(post.uid, 10)) {
-	// 					async.parallel([
-	// 						async.apply(db.sortedSetIncrBy, 'users:flags', 1, post.uid),
-	// 						async.apply(db.incrObjectField, 'user:' + post.uid, 'flags'),
-	// 						async.apply(db.sortedSetAdd, 'uid:' + post.uid + ':flag:pids', now, post.pid)
-	// 					], next);
-	// 				} else {
-	// 					next();
-	// 				}
-	// 			}
-	// 		], next);
-	// 	},
-	// 	function (data, next) {
-	// 		openNewFlag(post.pid, uid, next);		// removed, used to just update flag to open state if new flag
-	// 	}
-	// ], function (err) {
-	// 	if (err) {
-	// 		return callback(err);
-	// 	}
-	// 	analytics.increment('flags');
-	// 	callback();
-	// });
 };
 
 Flags.exists = function (type, id, uid, callback) {
-	db.isObjectField('flagHash:flagId', [type, id, uid].join(':'), callback);
+	db.isSortedSetMember('flags:hash', [type, id, uid].join(':'), callback);
 };
 
 Flags.targetExists = function (type, id, callback) {
