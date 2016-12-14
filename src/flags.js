@@ -47,7 +47,7 @@ Flags.get = function (flagId, callback) {
 };
 
 Flags.list = function (filters, uid, callback) {
-	if (typeof filters === 'function' && !callback) {
+	if (typeof filters === 'function' && !uid && !callback) {
 		callback = filters;
 		filters = {};
 	}

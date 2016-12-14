@@ -41,6 +41,11 @@ describe('Flags', function () {
 			},
 			function (uid, next) {
 				Groups.join('administrators', uid, next);
+			},
+			function (next) {
+				User.create({
+					username: 'unprivileged', password: 'abcdef', email: 'd@e.com'
+				}, next);
 			}
 		], done);
 	});
@@ -107,6 +112,15 @@ describe('Flags', function () {
 					assert.equal(flags[0].description, flagData.description);
 					done();
 				});
+			});
+		});
+
+		it('should return a filtered list of flags if said filters are passed in', function (done) {
+			Flags.list({
+				state: 'open'
+			}, 1, function (err, flags) {
+				assert.ifError(err);
+				done();
 			});
 		});
 	});
@@ -221,7 +235,7 @@ describe('Flags', function () {
 				Flags.validate({
 					type: 'post',
 					id: 1,
-					uid: 2
+					uid: 3
 				}, function (err) {
 					assert.ok(err);
 					assert.strictEqual('[[error:not-enough-reputation-to-flag]]', err.message);
@@ -310,7 +324,9 @@ describe('Flags', function () {
 		});
 
 		it('should add a new entry into a flag\'s history', function (done) {
-			Flags.appendHistory(1, 1, ['state:rejected'], function (err) {
+			Flags.appendHistory(1, 1, {
+				state: 'rejected'
+			}, function (err) {
 				assert.ifError(err);
 
 				Flags.getHistory(1, function (err, history) {
@@ -329,7 +345,7 @@ describe('Flags', function () {
 		it('should retrieve a flag\'s history', function (done) {
 			Flags.getHistory(1, function (err, history) {
 				assert.ifError(err);
-				assert.strictEqual(history[0].fields[0].value, '[[flags:state-rejected]]');
+				assert.strictEqual(history[0].fields.state, '[[flags:state-rejected]]');
 				done();
 			});
 		});
