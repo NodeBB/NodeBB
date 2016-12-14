@@ -89,8 +89,7 @@ module.exports = function (Plugins) {
 				next();
 			},
 			function (next) {
-				var command = installed ? ('npm uninstall ' + id) : ('npm install ' + id + '@' + (version || 'latest'));
-				runNpmCommand(command, next);
+				runNpmCommand(type, id, version || 'latest', next);
 			},
 			function (next) {
 				Plugins.get(id, next);
@@ -102,12 +101,13 @@ module.exports = function (Plugins) {
 		], callback);
 	}
 
-	function runNpmCommand(command, callback) {
-		require('child_process').exec(command, function (err, stdout) {
+	function runNpmCommand(command, pkgName, version, callback) {
+		require('child_process').execFile('npm', [command, pkgName + (command === 'install' ? '@' + version : '')], function (err, stdout) {
 			if (err) {
 				return callback(err);
 			}
-			winston.verbose('[plugins] ' + stdout);
+
+			winston.verbose('[plugins/' + command + '] ' + stdout);
 			callback();
 		 });
 	}
@@ -119,9 +119,7 @@ module.exports = function (Plugins) {
 
 	function upgrade(id, version, callback) {
 		async.waterfall([
-			function (next) {
-				runNpmCommand('npm install ' + id + '@' + (version || 'latest'), next);
-			},
+			async.apply(runNpmCommand, 'install', id, version || 'latest'),
 			function (next) {
 				Plugins.isActive(id, next);
 			},
