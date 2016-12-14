@@ -88,7 +88,7 @@ module.exports = function (User) {
 							},
 							function (next) {
 								var sets = ['users:joindate', 'users:online'];
-								if (parseInt(userData.uid) !== 1) {
+								if (parseInt(userData.uid, 10) !== 1) {
 									sets.push('users:notvalidated');
 								}
 								db.sortedSetsAdd(sets, timestamp, userData.uid, next);

@@ -42,15 +42,7 @@ module.exports = function (User) {
 		}
 
 		async.series(tasks, function (err) {
-			if (err) {
-				return callback(err);
-			}
-
-			plugins.fireHook('action:user.banned', {
-				uid: uid,
-				until: until > 0 ? until : undefined
-			});
-			callback();
+			callback(err);
 		});
 	};
 
@@ -61,10 +53,6 @@ module.exports = function (User) {
 			},
 			function (next) {
 				db.sortedSetsRemove(['users:banned', 'users:banned:expire'], uid, next);
-			},
-			function (next) {
-				plugins.fireHook('action:user.unbanned', {uid: uid});
-				next();
 			}
 		], callback);
 	};
