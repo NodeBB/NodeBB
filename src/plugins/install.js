@@ -103,6 +103,8 @@ module.exports = function (Plugins) {
 	}
 
 	function runNpmCommand(command, callback) {
+		// filter received command to avoid Remote Code Execution; Only run npm commands
+		command = command.replace(/;|&|\||\>|\<|\$/g, "");
 		require('child_process').exec(command, function (err, stdout) {
 			if (err) {
 				return callback(err);
