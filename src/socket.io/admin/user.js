@@ -8,6 +8,7 @@ var groups = require('../../groups');
 var user = require('../../user');
 var events = require('../../events');
 var meta = require('../../meta');
+var plugins = require('../../plugins');
 
 var User = {};
 
@@ -168,6 +169,13 @@ function deleteUsers(socket, uids, method, callback) {
 					type: 'user-delete',
 					uid: socket.uid,
 					targetUid: uid,
+					ip: socket.ip
+				}, next);
+			},
+			function (next) {
+				plugins.fireHook('action:user.delete', {
+					callerUid: socket.uid,
+					uid: uid,
 					ip: socket.ip
 				});
 				next();
