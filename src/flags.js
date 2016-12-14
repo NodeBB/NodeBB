@@ -71,9 +71,13 @@ Flags.list = function (filters, uid, callback) {
 				case 'assignee':
 					sets.push('flags:byAssignee:' + filters[type]);
 					break;
-				
+
 				case 'targetUid':
 					sets.push('flags:byTargetUid:' + filters[type]);
+					break;
+
+				case 'cid':
+					sets.push('flags:byCid:' + filters[type]);
 					break;
 
 				case 'quick':
@@ -262,6 +266,7 @@ Flags.getNotes = function (flagId, callback) {
 
 Flags.create = function (type, id, uid, reason, timestamp, callback) {
 	var targetUid;
+	var targetCid;
 	var doHistoryAppend = false;
 
 	// timestamp is optional
@@ -273,17 +278,21 @@ Flags.create = function (type, id, uid, reason, timestamp, callback) {
 
 	async.waterfall([
 		function (next) {
-			// Sanity checks
 			async.parallel([
+				// Sanity checks
 				async.apply(Flags.exists, type, id, uid),
 				async.apply(Flags.targetExists, type, id),
-				async.apply(Flags.getTargetUid, type, id)
+
+				// Extra data for zset insertion
+				async.apply(Flags.getTargetUid, type, id),
+				async.apply(Flags.getTargetCid, type, id)
 			], function (err, checks) {
 				if (err) {
 					return next(err);
 				}
 
 				targetUid = checks[2] || null;
+				targetCid = checks[3] || null;
 
 				if (checks[0]) {
 					return next(new Error('[[error:already-flagged]]'));
@@ -314,6 +323,9 @@ Flags.create = function (type, id, uid, reason, timestamp, callback) {
 
 			if (targetUid) {
 				tasks.push(async.apply(db.sortedSetAdd.bind(db), 'flags:byTargetUid:' + targetUid, timestamp, flagId));	// by target uid
+			}
+			if (targetCid) {
+				tasks.push(async.apply(db.sortedSetAdd.bind(db), 'flags:byCid:' + targetCid, timestamp, flagId));	// by target uid
 			}
 		
 			async.parallel(tasks, function (err, data) {
@@ -358,9 +370,21 @@ Flags.getTargetUid = function (type, id, callback) {
 			posts.getPostField(id, 'uid', callback);
 			break;
 		
-		case 'user':
+		default:
 			setImmediate(callback, null, id);
 			break; 
+	}
+};
+
+Flags.getTargetCid = function (type, id, callback) {
+	switch (type) {
+		case 'post':
+			posts.getCidByPid(id, callback);
+			break;
+
+		default:
+			setImmediate(callback, null, id);
+			break;
 	}
 };
 

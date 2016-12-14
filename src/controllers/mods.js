@@ -3,6 +3,7 @@
 var async = require('async');
 
 var user = require('../user');
+var categories = require('../categories');
 var flags = require('../flags');
 var analytics = require('../analytics');
 
@@ -26,7 +27,7 @@ modsController.flags.list = function (req, res, next) {
 		}
 
 		// Parse query string params for filters
-		var valid = ['assignee', 'state', 'reporterId', 'type', 'targetUid', 'quick'];
+		var valid = ['assignee', 'state', 'reporterId', 'type', 'targetUid', 'cid', 'quick'];
 		var filters = valid.reduce(function (memo, cur) {
 			if (req.query.hasOwnProperty(cur)) {
 				memo[cur] = req.query[cur];
@@ -37,15 +38,23 @@ modsController.flags.list = function (req, res, next) {
 
 		async.parallel({
 			flags: async.apply(flags.list, filters, req.uid),
-			analytics: async.apply(analytics.getDailyStatsForSet, 'analytics:flags', Date.now(), 30)
+			analytics: async.apply(analytics.getDailyStatsForSet, 'analytics:flags', Date.now(), 30),
+			categories: async.apply(categories.buildForSelect, req.uid)
 		}, function (err, data) {
 			if (err) {
 				return next(err);
 			}
 
+			// Minimal returned set for templates.js
+			data.categories = data.categories.reduce(function (memo, cur) {
+				memo[cur.cid] = cur.name;
+				return memo;
+			}, {});
+
 			res.render('flags/list', {
 				flags: data.flags,
 				analytics: data.analytics,
+				categories: data.categories,
 				hasFilter: !!Object.keys(filters).length,
 				filters: filters,
 				title: '[[pages:flags]]'

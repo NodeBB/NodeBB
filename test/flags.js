@@ -72,6 +72,14 @@ describe('Flags', function () {
 				done();
 			});
 		});
+
+		it('should add the flag to the byCid zset for category 1 if it is of type post', function (done) {
+			db.isSortedSetMember('flags:byCid:' + 1, 1, function (err, isMember) {
+				assert.ifError(err);
+				assert.ok(isMember);
+				done();
+			});
+		});
 	});
 
 	describe('.get()', function () {
@@ -115,12 +123,49 @@ describe('Flags', function () {
 			});
 		});
 
-		it('should return a filtered list of flags if said filters are passed in', function (done) {
-			Flags.list({
-				state: 'open'
-			}, 1, function (err, flags) {
-				assert.ifError(err);
-				done();
+		describe('(with filters)', function () {
+			it('should return a filtered list of flags if said filters are passed in', function (done) {
+				Flags.list({
+					state: 'open'
+				}, 1, function (err, flags) {
+					assert.ifError(err);
+					assert.ok(Array.isArray(flags));
+					assert.strictEqual(1, flags[0].flagId);
+					done();
+				});
+			});
+
+			it('should return no flags if a filter with no matching flags is used', function (done) {
+				Flags.list({
+					state: 'rejected'
+				}, 1, function (err, flags) {
+					assert.ifError(err);
+					assert.ok(Array.isArray(flags));
+					assert.strictEqual(0, flags.length);
+					done();
+				});
+			});
+
+			it('should return a flag when filtered by cid 1', function (done) {
+				Flags.list({
+					cid: 1
+				}, 1, function (err, flags) {
+					assert.ifError(err);
+					assert.ok(Array.isArray(flags));
+					assert.strictEqual(1, flags.length);
+					done();
+				});
+			});
+
+			it('shouldn\'t return a flag when filtered by cid 2', function (done) {
+				Flags.list({
+					cid: 2
+				}, 1, function (err, flags) {
+					assert.ifError(err);
+					assert.ok(Array.isArray(flags));
+					assert.strictEqual(0, flags.length);
+					done();
+				});
 			});
 		});
 	});

@@ -19,7 +19,9 @@
 	"filter-type-post": "Post",
 	"filter-state": "State",
 	"filter-assignee": "Assignee UID",
+	"filter-cid": "Category",
 	"filter-quick-mine": "Assigned to me",
+	"filter-cid-all": "All categories",
 	"apply-filters": "Apply Filters",
 
 	"quick-links": "Quick Links",
