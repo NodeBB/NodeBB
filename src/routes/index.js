@@ -148,7 +148,7 @@ module.exports = function (app, middleware, hotswapIds) {
 	app.use(relativePath, express.static(path.join(__dirname, '../../', 'public'), {
 		maxAge: app.enabled('cache') ? 5184000000 : 0
 	}));
-	app.use('/vendor/jquery/timeago/locales', middleware.processTimeagoLocales);
+	app.use(relativePath + '/vendor/jquery/timeago/locales', middleware.processTimeagoLocales);
 	app.use(controllers.handle404);
 	app.use(controllers.handleURIErrors);
 	app.use(controllers.handleErrors);
