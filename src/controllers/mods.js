@@ -5,7 +5,6 @@ var async = require('async');
 var user = require('../user');
 var flags = require('../flags');
 var analytics = require('../analytics');
-// var adminFlagsController = require('./admin/flags');
 
 var modsController = {
 	flags: {}

@@ -41,6 +41,7 @@
 	"no-history": "No flag history.",
 
 	"state": "State",
+	"state-all": "All states",
 	"state-open": "New/Open",
 	"state-wip": "Work in Progress",
 	"state-resolved": "Resolved",

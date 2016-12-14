@@ -20,16 +20,10 @@ define('forum/flags/list', ['components', 'Chart'], function (components, Chart)
 		}
 
 		filtersEl.find('button').on('click', function () {
-			var payload = filtersEl.serializeArray();
-			var qs = payload.map(function (filter) {
-				if (filter.value) {
-					return filter.name + '=' + filter.value;
-				} else {
-					return;
-				}
-			}).filter(Boolean).join('&');
-
-			ajaxify.go('flags?' + qs);
+			var payload = filtersEl.serializeArray().filter(function (item) {
+				return !!item.value;
+			});
+			ajaxify.go('flags?' + $.param(payload));
 		});
 	};
 
