@@ -36,7 +36,7 @@ define('admin/modules/instance', function () {
 			alert_id: 'instance_restart',
 			type: 'info',
 			title: 'Rebuilding... <i class="fa fa-spin fa-refresh"></i>',
-			message: 'NodeBB is rebiulding front-end assets (css, javascript, etc).',
+			message: 'NodeBB is rebuilding front-end assets (css, javascript, etc).',
 			timeout: 10000
 		});
 
@@ -64,6 +64,6 @@ define('admin/modules/instance', function () {
 			});
 		});
 	};
-	
+
 	return instance;
 });
