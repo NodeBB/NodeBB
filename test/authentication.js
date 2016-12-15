@@ -10,10 +10,11 @@ var user = require('../src/user');
 
 describe('authentication', function () {
 	var jar = request.jar();
-
+	var regularUid;
 	before(function (done) {
-		user.create({username: 'regular', password: 'regularpwd', email: 'regular@nodebb.org' }, function (err) {
+		user.create({username: 'regular', password: 'regularpwd', email: 'regular@nodebb.org' }, function (err, uid) {
 			assert.ifError(err);
+			regularUid = uid;
 			done();
 		});
 	});
@@ -71,7 +72,7 @@ describe('authentication', function () {
 				headers: {
 					'x-csrf-token': body.csrf_token
 				}
-			}, function (err, response, body) {
+			}, function (err) {
 				assert.ifError(err);
 
 				request({
@@ -123,6 +124,23 @@ describe('authentication', function () {
 				});
 			});
 		});
+	});
+
+	it('should revoke all sessions', function (done) {
+		var socketAdmin = require('../src/socket.io/admin');
+		db.sortedSetCard('uid:' + regularUid + ':sessions', function (err, count) {
+			assert.ifError(err);
+			assert(count);
+			socketAdmin.deleteAllSessions({uid: 1}, {}, function (err) {
+				assert.ifError(err);
+				db.sortedSetCard('uid:' + regularUid + ':sessions', function (err, count) {
+					assert.ifError(err);
+					assert(!count);
+					done();
+				});
+			});
+		});
+
 	});
 
 

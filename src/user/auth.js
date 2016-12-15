@@ -5,6 +5,7 @@ var winston = require('winston');
 var db = require('../database');
 var meta = require('../meta');
 var events = require('../events');
+var batch = require('../batch');
 
 module.exports = function (User) {
 	User.auth = {};
@@ -141,5 +142,37 @@ module.exports = function (User) {
 				}, next);
 			}
 		], callback);
+	};
+
+	User.auth.deleteAllSessions = function (callback) {
+		var _ = require('underscore');
+		batch.processSortedSet('users:joindate', function (uids, next) {
+
+			var sessionKeys = uids.map(function (uid) {
+				return 'uid:' + uid + ':sessions';
+			});
+
+			var sessionUUIDKeys = uids.map(function (uid) {
+				return 'uid:' + uid + ':sessionUUID:sessionId';
+			});
+
+			async.waterfall([
+				function (next) {
+					db.getSortedSetRange(sessionKeys, 0, -1, next);
+				},
+				function (sids, next) {
+					sids = _.flatten(sids);
+					async.parallel([
+						async.apply(db.deleteAll, sessionUUIDKeys),
+						async.apply(db.deleteAll, sessionKeys),
+						function (next) {
+							async.each(sids, function (sid, next) {
+								db.sessionStore.destroy(sid, next);
+							}, next);
+						}
+					], next);
+				}
+			], next);
+		}, {batch: 1000}, callback);
 	};
 };

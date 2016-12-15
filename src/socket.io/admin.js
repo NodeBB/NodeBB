@@ -3,7 +3,6 @@
 var async = require('async');
 var winston = require('winston');
 var nconf = require('nconf');
-var path = require('path');
 
 var meta = require('../meta');
 var plugins = require('../plugins');
@@ -283,6 +282,10 @@ SocketAdmin.getSearchDict = function (socket, data, callback) {
 		var lang = settings.userLang || meta.config.defaultLang || 'en-GB';
 		getAdminSearchDict(lang, callback);
 	});
+};
+
+SocketAdmin.deleteAllSessions = function (socket, data, callback) {
+	user.auth.deleteAllSessions(callback);
 };
 
 
