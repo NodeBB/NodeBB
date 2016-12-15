@@ -1,20 +1,20 @@
-<!-- IMPORT admin/settings/header.tpl -->
+<!-- IMPORT admin/partials/settings/header.tpl -->
 
 
 <div class="row">
-	<div class="col-sm-2 col-xs-12 settings-header">Reputation Settings</div>
+	<div class="col-sm-2 col-xs-12 settings-header">[[admin/settings/reputation:reputation]]</div>
 	<div class="col-sm-10 col-xs-12">
 		<form>
 			<div class="checkbox">
 				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
 					<input type="checkbox" class="mdl-switch__input" data-field="reputation:disabled">
-					<span class="mdl-switch__label"><strong>Disable Reputation System</strong></span>
+					<span class="mdl-switch__label"><strong>[[admin/settings/reputation:disable]]</strong></span>
 				</label>
 			</div>
 			<div class="checkbox">
 				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
 					<input type="checkbox" class="mdl-switch__input" data-field="downvote:disabled">
-					<span class="mdl-switch__label"><strong>Disable Down Voting</trong></strong>
+					<span class="mdl-switch__label"><strong>[[admin/settings/reputation:disable-down-voting]]</trong></strong>
 				</label>
 			</div>
 		</form>
@@ -23,13 +23,13 @@
 
 
 <div class="row">
-	<div class="col-sm-2 col-xs-12 settings-header">Activity Thresholds</div>
+	<div class="col-sm-2 col-xs-12 settings-header">[[admin/settings/reputation:thresholds]]</div>
 	<div class="col-sm-10 col-xs-12">
 		<form>
-			<strong>Minimum reputation to downvote posts</strong><br /> <input type="text" class="form-control" placeholder="0" data-field="privileges:downvote"><br />
-			<strong>Minimum reputation to flag posts</strong><br /> <input type="text" class="form-control" placeholder="0" data-field="privileges:flag"><br />
+			<strong>[[admin/settings/reputation:min-rep-downvote]]</strong><br /> <input type="text" class="form-control" placeholder="0" data-field="privileges:downvote"><br />
+			<strong>[[admin/settings/reputation:min-rep-flag]]</strong><br /> <input type="text" class="form-control" placeholder="0" data-field="privileges:flag"><br />
 		</form>
 	</div>
 </div>
 
-<!-- IMPORT admin/settings/footer.tpl -->
+<!-- IMPORT admin/partials/settings/footer.tpl -->

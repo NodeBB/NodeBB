@@ -1,59 +1,58 @@
-<!-- IMPORT admin/settings/header.tpl -->
+<!-- IMPORT admin/partials/settings/header.tpl -->
 
 <div class="row">
 	<div class="col-sm-2 col-xs-12 settings-header">
-		Posts
+		[[admin/settings/uploads:posts]]
 	</div>
 	<div class="col-sm-10 col-xs-12">
 		<form>
 			<div class="checkbox">
 				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
 					<input class="mdl-switch__input" type="checkbox" data-field="allowFileUploads">
-					<span class="mdl-switch__label"><strong>Allow users to upload regular files</strong></span>
+					<span class="mdl-switch__label"><strong>[[admin/settings/uploads:allow-files]]</strong></span>
 				</label>
 			</div>
 
 			<div class="checkbox">
 				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
 					<input class="mdl-switch__input" type="checkbox" data-field="privateUploads">
-					<span class="mdl-switch__label"><strong>Make uploaded files private</strong></span>
+					<span class="mdl-switch__label"><strong>[[admin/settings/uploads:private]]</strong></span>
 				</label>
 			</div>
 
 			<div class="form-group">
-				<label for="maximumImageWidth">Resize images down to specified width (in pixels)</label>
+				<label for="maximumImageWidth">[[admin/settings/uploads:max-image-width]]</label>
 				<input type="text" class="form-control" value="760" data-field="maximumImageWidth" placeholder="760">
 				<p class="help-block">
-					(in pixels, default: 760 pixels, set to 0 to disable)
+					[[admin/settings/uploads:max-image-width-help]]
 				</p>
 			</div>
 
 			<div class="form-group">
-				<label for="maximumFileSize">Maximum File Size (in KiB)</label>
+				<label for="maximumFileSize">[[admin/settings/uploads:max-file-size]]</label>
 				<input type="text" class="form-control" value="2048" data-field="maximumFileSize">
 				<p class="help-block">
-					(in kilobytes, default: 2048 KiB)
+					[[admin/settings/uploads:max-file-size-help]]
 				</p>
 			</div>
 
 			<div class="checkbox">
 				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
 					<input class="mdl-switch__input" type="checkbox" data-field="allowTopicsThumbnail">
-					<span class="mdl-switch__label"><strong>Allow users to upload topic thumbnails</strong></span>
+					<span class="mdl-switch__label"><strong>[[admin/settings/uploads:allow-topic-thumbnails]]</strong></span>
 				</label>
 			</div>
 
 			<div class="form-group">
-				<label for="topicThumbSize">Topic Thumb Size</label>
+				<label for="topicThumbSize">[[admin/settings/uploads:topic-thumb-size]]</label>
 				<input type="text" class="form-control" value="120" data-field="topicThumbSize">
 			</div>
 
 			<div class="form-group">
-				<label for="allowedFileExtensions">Allowed File Extensions</label>
+				<label for="allowedFileExtensions">[[admin/settings/uploads:allowed-file-extensions]]</label>
 				<input type="text" class="form-control" value="" data-field="allowedFileExtensions" />
 				<p class="help-block">
-					Enter comma-separated list of file extensions here (e.g. <code>pdf,xls,doc</code>).
-					An empty list means all extensions are allowed.
+					[[admin/settings/uploads:allowed-file-extensions-help]]
 				</p>
 			</div>
 		</form>
@@ -62,62 +61,62 @@
 
 <div class="row">
 	<div class="col-sm-2 col-xs-12 settings-header">
-		Profile Avatars
+		[[admin/settings/uploads:profile-avatars]]
 	</div>
 	<div class="col-sm-10 col-xs-12">
 		<form>
 			<div class="checkbox">
 				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
 					<input class="mdl-switch__input" type="checkbox" data-field="allowProfileImageUploads">
-					<span class="mdl-switch__label"><strong>Allow users to upload profile images</strong></span>
+					<span class="mdl-switch__label"><strong>[[admin/settings/uploads:allow-profile-image-uploads]]</strong></span>
 				</label>
 			</div>
 
 			<div class="checkbox">
 				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
 					<input class="mdl-switch__input" type="checkbox" data-field="profile:convertProfileImageToPNG">
-					<span class="mdl-switch__label"><strong>Convert profile image uploads to PNG</strong></span>
+					<span class="mdl-switch__label"><strong>[[admin/settings/uploads:convert-profile-image-png]]</strong></span>
 				</label>
 			</div>
 
 			<div class="form-group">
-				<label>Custom Default Avatar</label>
+				<label>[[admin/settings/uploads:default-avatar]]</label>
 				<div class="input-group">
 					<input id="defaultAvatar" type="text" class="form-control" placeholder="A custom image to use instead of user icons" data-field="defaultAvatar" />
 					<span class="input-group-btn">
-						<input data-action="upload" data-target="defaultAvatar" data-route="{config.relative_path}/api/admin/uploadDefaultAvatar" type="button" class="btn btn-default" value="Upload"></input>
+						<input data-action="upload" data-target="defaultAvatar" data-route="{config.relative_path}/api/admin/uploadDefaultAvatar" type="button" class="btn btn-default" value="[[admin/settings/uploads:upload]]"></input>
 					</span>
 				</div>
 			</div>
 
 			<div class="form-group">
-				<label for="profileImageDimension">Profile Image Dimension</label>
+				<label for="profileImageDimension">[[admin/settings/uploads:profile-image-dimension]]</label>
 				<input id="profileImageDimension" type="text" class="form-control" data-field="profileImageDimension" placeholder="128" />
 				<p class="help-block">
-					(in pixels, default: 128 pixels)
+					[[admin/settings/uploads:profile-image-dimension-help]]
 				</p>
 			</div>
 
 			<div class="form-group">
-				<label>Maximum Profile Image File Size</label>
+				<label>[[admin/settings/uploads:max-profile-image-size]]</label>
 				<input type="text" class="form-control" placeholder="Maximum size of uploaded user images in kilobytes" data-field="maximumProfileImageSize" />
 				<p class="help-block">
-					(in kilobytes, default: 256 KiB)
+					[[admin/settings/uploads:max-profile-image-size-help]]
 				</p>
 			</div>
 
 			<div class="form-group">
-				<label>Maximum Cover Image File Size</label>
+				<label>[[admin/settings/uploads:max-cover-image-size]]</label>
 				<input type="text" class="form-control" placeholder="Maximum size of uploaded cover images in kilobytes" data-field="maximumCoverImageSize" />
 				<p class="help-block">
-					(in kilobytes, default: 2,048 KiB)
+					[[admin/settings/uploads:max-cover-image-size-help]]
 				</p>
 			</div>
 
 			<div class="checkbox">
 				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
 					<input class="mdl-switch__input" type="checkbox" data-field="profile:keepAllUserImages">
-					<span class="mdl-switch__label"><strong>Keep old versions of avatars and profile covers on the server</strong></span>
+					<span class="mdl-switch__label"><strong>[[admin/settings/uploads:keep-all-user-images]]</strong></span>
 				</label>
 			</div>
 		</form>
@@ -125,16 +124,16 @@
 </div>
 
 <div class="row">
-	<div class="col-sm-2 col-xs-12 settings-header">Profile Covers</div>
+	<div class="col-sm-2 col-xs-12 settings-header">[[admin/settings/uploads:profile-covers]]</div>
 	<div class="col-sm-10 col-xs-12">
 		<form>
-			<label for="profile:defaultCovers"><strong>Default Cover Images</strong></label>
+			<label for="profile:defaultCovers"><strong>[[admin/settings/uploads:default-covers]]</strong></label>
 			<p class="help-block">
-				Add comma-separated default cover images for accounts that don't have an uploaded cover image
+				[[admin/settings/uploads:default-covers-help]]
 			</p>
 			<input type="text" class="form-control input-lg" id="profile:defaultCovers" data-field="profile:defaultCovers" value="{config.relative_path}/images/cover-default.png" placeholder="https://example.com/group1.png, https://example.com/group2.png" />
 		</form>
 	</div>
 </div>
 
-<!-- IMPORT admin/settings/footer.tpl -->
+<!-- IMPORT admin/partials/settings/footer.tpl -->
