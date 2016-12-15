@@ -24,12 +24,14 @@ SocketNotifs.loadMore = function (socket, data, callback) {
 	}
 	var start = parseInt(data.after, 10);
 	var stop = start + 20;
-	user.notifications.getAll(socket.uid, start, stop, function (err, notifications) {
-		if (err) {
-			return callback(err);
+	async.waterfall([
+		function (next) {
+			user.notifications.getAll(socket.uid, start, stop, next);
+		},
+		function (notifications, next) {
+			next(null, {notifications: notifications, nextStart: stop});
 		}
-		callback(null, {notifications: notifications, nextStart: stop});
-	});
+	], callback);
 };
 
 SocketNotifs.getCount = function (socket, data, callback) {

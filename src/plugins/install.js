@@ -109,7 +109,7 @@ module.exports = function (Plugins) {
 
 			winston.verbose('[plugins/' + command + '] ' + stdout);
 			callback();
-		 });
+		});
 	}
 
 	Plugins.upgrade = function (id, version, callback) {
