@@ -1046,6 +1046,21 @@ describe('Topic\'s', function () {
 			});
 		});
 
+		it('should return related topics', function (done) {
+			var meta = require('../src/meta');
+			meta.config.maximumRelatedTopics = 2;
+			var topicData = {
+				tags: [{value: 'javascript'}]
+			};
+			topics.getRelatedTopics(topicData, 0, function (err, data) {
+				assert.ifError(err);
+				assert(Array.isArray(data));
+				assert.equal(data[0].title, 'topic title 2');
+				meta.config.maximumRelatedTopics = 0;
+				done();
+			});
+		});
+
 		it('should return error with invalid data', function (done) {
 			socketAdmin.tags.deleteTags({uid: adminUid}, null, function (err) {
 				assert.equal(err.message, '[[error:invalid-data]]');
@@ -1063,7 +1078,7 @@ describe('Topic\'s', function () {
 		it('should delete tags', function (done) {
 			socketAdmin.tags.create({uid: adminUid}, {tag: 'emptytag2'}, function (err) {
 				assert.ifError(err);
-				socketAdmin.tags.deleteTags({uid: adminUid}, {tags: ['emptytag', 'emptytag2']}, function (err) {
+				socketAdmin.tags.deleteTags({uid: adminUid}, {tags: ['emptytag', 'emptytag2', 'nodebb', 'nodejs']}, function (err) {
 					assert.ifError(err);
 					db.getObjects(['tag:emptytag', 'tag:emptytag2'], function (err, data) {
 						assert.ifError(err);
@@ -1074,6 +1089,19 @@ describe('Topic\'s', function () {
 				});
 			});
 		});
+
+		it('should delete tag', function (done) {
+			topics.deleteTag('javascript', function (err) {
+				assert.ifError(err);
+				db.getObject('tag:javascript', function (err, data) {
+					assert.ifError(err);
+					assert(!data);
+					done();
+				});
+			});
+		});
+
+
 	});
 
 

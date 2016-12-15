@@ -104,14 +104,16 @@ module.exports = function (Topics) {
 
 	function updateTagCount(tag, callback) {
 		callback = callback || function () {};
-		Topics.getTagTopicCount(tag, function (err, count) {
-			if (err) {
-				return callback(err);
-			}
-			count = count || 0;
+		async.waterfall([
+			function (next) {
+				Topics.getTagTopicCount(tag, next);
+			},
+			function (count, next) {
+				count = count || 0;
 
-			db.sortedSetAdd('tags:topic:count', count, tag, callback);
-		});
+				db.sortedSetAdd('tags:topic:count', count, tag, next);
+			}
+		], callback);
 	}
 
 	Topics.getTagTids = function (tag, start, stop, callback) {
@@ -163,19 +165,19 @@ module.exports = function (Topics) {
 		}, callback);
 	}
 
-	Topics.deleteTag = function (tag) {
-		db.delete('tag:' + tag + ':topics');
-		db.sortedSetRemove('tags:topic:count', tag);
+	Topics.deleteTag = function (tag, callback) {
+		Topics.deleteTags([tag], callback);
 	};
 
 	Topics.getTags = function (start, stop, callback) {
-		db.getSortedSetRevRangeWithScores('tags:topic:count', start, stop, function (err, tags) {
-			if (err) {
-				return callback(err);
+		async.waterfall([
+			function (next) {
+				db.getSortedSetRevRangeWithScores('tags:topic:count', start, stop, next);
+			},
+			function (tags, next) {
+				Topics.getTagData(tags, next);
 			}
-
-			Topics.getTagData(tags, callback);
-		});
+		], callback);
 	};
 
 	Topics.getTagData = function (tags, callback) {
@@ -183,17 +185,18 @@ module.exports = function (Topics) {
 			return 'tag:' + tag.value;
 		});
 
-		db.getObjects(keys, function (err, tagData) {
-			if (err) {
-				return callback(err);
+		async.waterfall([
+			function (next) {
+				db.getObjects(keys, next);
+			},
+			function (tagData, next) {
+				tags.forEach(function (tag, index) {
+					tag.color = tagData[index] ? tagData[index].color : '';
+					tag.bgColor = tagData[index] ? tagData[index].bgColor : '';
+				});
+				next(null, tags);
 			}
-
-			tags.forEach(function (tag, index) {
-				tag.color = tagData[index] ? tagData[index].color : '';
-				tag.bgColor = tagData[index] ? tagData[index].bgColor : '';
-			});
-			callback(null, tags);
-		});
+		], callback);
 	};
 
 	Topics.getTopicTags = function (tid, callback) {
