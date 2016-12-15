@@ -602,7 +602,7 @@ describe('Topic\'s', function () {
 		});
 
 		it('should error with invalid data', function (done) {
-			socketTopics.loadMoreUnreadTopics({uid: adminUid}, {after: 'invalid'}, function (err, data) {
+			socketTopics.loadMoreUnreadTopics({uid: adminUid}, {after: 'invalid'}, function (err) {
 				assert.equal(err.message, '[[error:invalid-data]]');
 				done();
 			});
@@ -621,7 +621,7 @@ describe('Topic\'s', function () {
 		});
 
 		it('should error with invalid data', function (done) {
-			socketTopics.loadMoreRecentTopics({uid: adminUid}, {after: 'invalid'}, function (err, data) {
+			socketTopics.loadMoreRecentTopics({uid: adminUid}, {after: 'invalid'}, function (err) {
 				assert.equal(err.message, '[[error:invalid-data]]');
 				done();
 			});
@@ -638,7 +638,7 @@ describe('Topic\'s', function () {
 		});
 
 		it('should error with invalid data', function (done) {
-			socketTopics.loadMoreFromSet({uid: adminUid}, {after: 'invalid'}, function (err, data) {
+			socketTopics.loadMoreFromSet({uid: adminUid}, {after: 'invalid'}, function (err) {
 				assert.equal(err.message, '[[error:invalid-data]]');
 				done();
 			});
@@ -876,6 +876,8 @@ describe('Topic\'s', function () {
 
 	describe('tags', function () {
 		var socketTopics = require('../src/socket.io/topics');
+		var socketAdmin = require('../src/socket.io/admin');
+
 		before(function (done) {
 			async.parallel({
 				topic1: function (next) {
@@ -884,7 +886,7 @@ describe('Topic\'s', function () {
 				topic2: function (next) {
 					topics.post({uid: adminUid, tags: ['javascript', 'mysql', 'python', 'nodejs'], title: 'topic title 2', content: 'topic 2 content', cid: topic.categoryId}, next);
 				}
-			}, function (err, results) {
+			}, function (err) {
 				assert.ifError(err);
 				done();
 			});
@@ -952,7 +954,7 @@ describe('Topic\'s', function () {
 			});
 		});
 
-		it('shold return error if data is invalid', function (done) {
+		it('should return error if data is invalid', function (done) {
 			socketTopics.loadMoreTags({uid: adminUid}, {after: 'asd'}, function (err) {
 				assert.equal(err.message, '[[error:invalid-data]]');
 				done();
@@ -965,6 +967,111 @@ describe('Topic\'s', function () {
 				assert(Array.isArray(data.tags));
 				assert.equal(data.nextStart, 100);
 				done();
+			});
+		});
+
+		it('should error if data is invalid', function (done) {
+			socketAdmin.tags.create({uid: adminUid}, null, function (err) {
+				assert.equal(err.message, '[[error:invalid-data]]');
+				done();
+			});
+		});
+
+		it('should error if tag is invalid', function (done) {
+			socketAdmin.tags.create({uid: adminUid}, {tag: ''}, function (err) {
+				assert.equal(err.message, '[[error:invalid-tag]]');
+				done();
+			});
+		});
+
+		it('should error if tag is too short', function (done) {
+			socketAdmin.tags.create({uid: adminUid}, {tag: 'as'}, function (err) {
+				assert.equal(err.message, '[[error:tag-too-short]]');
+				done();
+			});
+		});
+
+		it('should create empty tag', function (done) {
+			socketAdmin.tags.create({uid: adminUid}, {tag: 'emptytag'}, function (err) {
+				assert.ifError(err);
+				db.sortedSetScore('tags:topic:count', 'emptytag', function (err, score) {
+					assert.ifError(err);
+					assert.equal(score, 0);
+					done();
+				});
+			});
+		});
+
+		it('should do nothing if tag exists', function (done) {
+			socketAdmin.tags.create({uid: adminUid}, {tag: 'emptytag'}, function (err) {
+				assert.ifError(err);
+				db.sortedSetScore('tags:topic:count', 'emptytag', function (err, score) {
+					assert.ifError(err);
+					assert.equal(score, 0);
+					done();
+				});
+			});
+		});
+
+		it('should error if data is invalid', function (done) {
+			socketAdmin.tags.update({uid: adminUid}, null, function (err) {
+				assert.equal(err.message, '[[error:invalid-data]]');
+				done();
+			});
+		});
+
+		it('should error if data.tag is invalid', function (done) {
+			socketAdmin.tags.update({uid: adminUid}, {
+				bgColor: '#ff0000',
+				color: '#00ff00'
+			}, function (err) {
+				assert.equal(err.message, '[[error:invalid-tag]]');
+				done();
+			});
+		});
+
+		it('should update tag', function (done) {
+			socketAdmin.tags.update({uid: adminUid}, {
+				tag: 'emptytag',
+				bgColor: '#ff0000',
+				color: '#00ff00'
+			}, function (err) {
+				assert.ifError(err);
+				db.getObject('tag:emptytag', function (err, data) {
+					assert.ifError(err);
+					assert.equal(data.bgColor, '#ff0000');
+					assert.equal(data.color, '#00ff00');
+					done();
+				});
+			});
+		});
+
+		it('should return error with invalid data', function (done) {
+			socketAdmin.tags.deleteTags({uid: adminUid}, null, function (err) {
+				assert.equal(err.message, '[[error:invalid-data]]');
+				done();
+			});
+		});
+
+		it('should do nothing if arrays is empty', function (done) {
+			socketAdmin.tags.deleteTags({uid: adminUid}, {tags: []}, function (err) {
+				assert.ifError(err);
+				done();
+			});
+		});
+
+		it('should delete tags', function (done) {
+			socketAdmin.tags.create({uid: adminUid}, {tag: 'emptytag2'}, function (err) {
+				assert.ifError(err);
+				socketAdmin.tags.deleteTags({uid: adminUid}, {tags: ['emptytag', 'emptytag2']}, function (err) {
+					assert.ifError(err);
+					db.getObjects(['tag:emptytag', 'tag:emptytag2'], function (err, data) {
+						assert.ifError(err);
+						assert(!data[0]);
+						assert(!data[1]);
+						done();
+					});
+				});
 			});
 		});
 	});

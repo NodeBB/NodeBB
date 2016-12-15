@@ -96,6 +96,9 @@ module.exports = function (Topics) {
 	};
 
 	Topics.updateTag = function (tag, data, callback) {
+		if (!tag) {
+			return setImmediate(callback, new Error('[[error:invalid-tag]]'));
+		}
 		db.setObject('tag:' + tag, data, callback);
 	};
 
@@ -136,6 +139,11 @@ module.exports = function (Topics) {
 			},
 			function (next) {
 				db.sortedSetRemove('tags:topic:count', tags, next);
+			},
+			function (next) {
+				db.deleteAll(tags.map(function (tag) {
+					return 'tag:' + tag;
+				}), next);
 			}
 		], callback);
 	};

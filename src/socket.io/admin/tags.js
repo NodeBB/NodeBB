@@ -1,7 +1,8 @@
 "use strict";
 
 var topics = require('../../topics');
-var Tags = {};
+
+var Tags = module.exports;
 
 Tags.create = function (socket, data, callback) {
 	if (!data) {
@@ -20,8 +21,9 @@ Tags.update = function (socket, data, callback) {
 };
 
 Tags.deleteTags = function (socket, data, callback) {
+	if (!data) {
+		return callback(new Error('[[error:invalid-data]]'));
+	}
+
 	topics.deleteTags(data.tags, callback);
 };
-
-
-module.exports = Tags;
