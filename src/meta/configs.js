@@ -1,7 +1,7 @@
 
 'use strict';
 
-var winston = require('winston');
+var async = require('async');
 var nconf = require('nconf');
 
 var db = require('../database');
@@ -16,17 +16,17 @@ module.exports = function (Meta) {
 	Meta.configs.init = function (callback) {
 		delete Meta.config;
 
-		Meta.configs.list(function (err, config) {
-			if (err) {
-				winston.error(err.stack);
-				return callback(err);
+		async.waterfall([
+			function (next) {
+				Meta.configs.list(next);
+			},
+			function (config, next) {
+				config['cache-buster'] = utils.generateUUID();
+
+				Meta.config = config;
+				setImmediate(next);
 			}
-
-			config['cache-buster'] = utils.generateUUID();
-
-			Meta.config = config;
-			callback();
-		});
+		], callback);
 	};
 
 	Meta.configs.list = function (callback) {
@@ -49,57 +49,50 @@ module.exports = function (Meta) {
 	Meta.configs.set = function (field, value, callback) {
 		callback = callback || function () {};
 		if (!field) {
-			return callback(new Error('invalid config field'));
+			return callback(new Error('[[error:invalid-data]]'));
 		}
 
-		db.setObjectField('config', field, value, function (err) {
-			if (err) {
-				return callback(err);
-			}
-			var data = {};
-			data[field] = value;
-			updateConfig(data);
-
-			callback();
-		});
+		var data = {};
+		data[field] = value;
+		Meta.configs.setMultiple(data, callback);
 	};
 
-	Meta.configs.setMultiple = function (data, callback) {
-		processConfig(data, function (err) {
-			if (err) {
-				return callback(err);
-			}
-			db.setObject('config', data, function (err) {
-				if (err) {
-					return callback(err);
-				}
 
+	Meta.configs.setMultiple = function (data, callback) {
+		async.waterfall([
+			function (next) {
+				processConfig(data, next);
+			},
+			function (next) {
+				db.setObject('config', data, next);
+			},
+			function (next) {
 				updateConfig(data);
-				callback();
-			});
-		});
+				setImmediate(next);
+			}
+		], callback);
 	};
 
 	function processConfig(data, callback) {
 		if (data.customCSS) {
-			saveRenderedCss(data, callback);
-			return;
+			return saveRenderedCss(data, callback);
 		}
-		callback();
+		setImmediate(callback);
 	}
 
 	function saveRenderedCss(data, callback) {
 		var less = require('less');
-		less.render(data.customCSS, {
-			compress: true
-		}, function (err, lessObject) {
-			if (err) {
-				winston.error('[less] Could not convert custom LESS to CSS! Please check your syntax.');
-				return callback(null, '');
+		async.waterfall([
+			function (next) {
+				less.render(data.customCSS, {
+					compress: true
+				}, next);
+			},
+			function (lessObject, next) {
+				data.renderedCustomCSS = lessObject.css;
+				setImmediate(next);
 			}
-			data.renderedCustomCSS = lessObject.css;
-			callback();
-		});
+		], callback);
 	}
 
 	function updateConfig(config) {
@@ -107,39 +100,39 @@ module.exports = function (Meta) {
 	}
 
 	pubsub.on('config:update', function onConfigReceived(config) {
-		if (typeof config !== 'object' || !Meta.config) {
-			return;
-		}
-
-		for(var field in config) {
-			if(config.hasOwnProperty(field)) {
-				Meta.config[field] = config[field];
+		if (typeof config === 'object' && Meta.config) {
+			for (var field in config) {
+				if (config.hasOwnProperty(field)) {
+					Meta.config[field] = config[field];
+				}
 			}
 		}
 	});
 
 	Meta.configs.setOnEmpty = function (values, callback) {
-		db.getObject('config', function (err, data) {
-			if (err) {
-				return callback(err);
-			}
-			data = data || {};
-			var empty = {};
-			Object.keys(values).forEach(function (key) {
-				if (!data.hasOwnProperty(key)) {
-					empty[key] = values[key];
+		async.waterfall([
+			function (next) {
+				db.getObject('config', next);
+			},
+			function (data, next) {
+				data = data || {};
+				var empty = {};
+				Object.keys(values).forEach(function (key) {
+					if (!data.hasOwnProperty(key)) {
+						empty[key] = values[key];
+					}
+				});
+				if (Object.keys(empty).length) {
+					db.setObject('config', empty, next);
+				} else {
+					setImmediate(next);
 				}
-			});
-			if (Object.keys(empty).length) {
-				db.setObject('config', empty, callback);
-			} else {
-				callback();
 			}
-		});
+		], callback);
 	};
 
-	Meta.configs.remove = function (field) {
-		db.deleteObjectField('config', field);
+	Meta.configs.remove = function (field, callback) {
+		db.deleteObjectField('config', field, callback);
 	};
 
 };

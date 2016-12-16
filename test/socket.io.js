@@ -372,6 +372,14 @@ describe('socket.io', function () {
 		});
 	});
 
+	it('should return error', function (done) {
+		var socketAdmin = require('../src/socket.io/admin');
+ 		socketAdmin.before({uid: 10}, 'someMethod', {}, function (err) {
+ 			assert.equal(err.message, '[[error:no-privileges]]');
+ 			done();
+ 		});
+	});
+
 	after(function (done) {
 		db.emptydb(done);
 	});
