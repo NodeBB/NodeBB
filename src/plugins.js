@@ -259,7 +259,6 @@ var middleware;
 			apiReturn[i].installed = false;
 			apiReturn[i].active = false;
 			apiReturn[i].url = apiReturn[i].url ? apiReturn[i].url : apiReturn[i].repository ? apiReturn[i].repository.url : '';
-			apiReturn[i].latest = apiReturn[i].latest;
 			pluginMap[apiReturn[i].name] = apiReturn[i];
 		}
 
