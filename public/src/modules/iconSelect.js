@@ -7,13 +7,17 @@ define('iconSelect', function () {
 
 	iconSelect.init = function (el, onModified) {
 		onModified = onModified || function () {};
-		var doubleSize = el.hasClass('fa-2x'),
-			selected = el.attr('class').replace('fa-2x', '').replace('fa', '').replace(/\s+/g, '');
+		var doubleSize = el.hasClass('fa-2x');
+		var selected = el.attr('class').replace('fa-2x', '').replace('fa', '').replace(/\s+/g, '');
 
 		$('#icons .selected').removeClass('selected');
 
 		if (selected) {
-			$('#icons .fa-icons .fa.' + selected).addClass('selected');
+			try {
+				$('#icons .fa-icons .fa.' + selected).addClass('selected');
+			} catch (err) {
+				selected = '';
+			}			
 		}
 
 		templates.parse('partials/fontawesome', {}, function (html) {

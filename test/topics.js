@@ -152,6 +152,13 @@ describe('Topic\'s', function () {
 				done();
 			});
 		});
+
+		it('should fail to create new reply with invalid toPid', function (done) {
+			topics.reply({uid: topic.userId, content: 'test post', tid: newTopic.tid, toPid: '"onmouseover=alert(1);//'}, function (err) {
+				assert.equal(err.message, '[[error:invalid-pid]]');
+				done();
+			});
+		});
 	});
 
 	describe('Get methods', function () {

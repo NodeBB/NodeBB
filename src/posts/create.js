@@ -9,7 +9,7 @@ var plugins = require('../plugins');
 var user = require('../user');
 var topics = require('../topics');
 var categories = require('../categories');
-
+var utils = require('../../public/src/utils');
 
 module.exports = function (Posts) {
 
@@ -22,6 +22,10 @@ module.exports = function (Posts) {
 
 		if (!uid && parseInt(uid, 10) !== 0) {
 			return callback(new Error('[[error:invalid-uid]]'));
+		}
+
+		if (data.toPid && !utils.isNumber(data.toPid)) {
+			return callback(new Error('[[error:invalid-pid]]'));
 		}
 
 		var postData;
