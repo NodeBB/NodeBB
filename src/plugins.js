@@ -259,7 +259,6 @@ var middleware;
 			apiReturn[i].installed = false;
 			apiReturn[i].active = false;
 			apiReturn[i].url = apiReturn[i].url ? apiReturn[i].url : apiReturn[i].repository ? apiReturn[i].repository.url : '';
-			apiReturn[i].latest = apiReturn[i].latest;
 			pluginMap[apiReturn[i].name] = apiReturn[i];
 		}
 
@@ -291,6 +290,7 @@ var middleware;
 				pluginMap[plugin.id].error = plugin.error || false;
 				pluginMap[plugin.id].active = plugin.active;
 				pluginMap[plugin.id].version = plugin.version;
+				pluginMap[plugin.id].settingsRoute = plugin.settingsRoute;
 
 				// If package.json defines a version to use, stick to that
 				if (dependencies.hasOwnProperty(plugin.id) && semver.valid(dependencies[plugin.id])) {

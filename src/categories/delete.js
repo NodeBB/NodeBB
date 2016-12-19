@@ -54,6 +54,7 @@ module.exports = function (Categories) {
 					'cid:' + cid + ':read_by_uid',
 					'cid:' + cid + ':ignorers',
 					'cid:' + cid + ':children',
+					'cid:' + cid + ':tag:whitelist',
 					'category:' + cid
 				], next);
 			},

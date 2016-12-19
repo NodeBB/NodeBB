@@ -1,6 +1,6 @@
 					<!-- IF !installed.error -->
 					<li id="{installed.id}" data-plugin-id="{installed.id}" data-version="{installed.version}" class="clearfix <!-- IF installed.active -->active<!-- ENDIF installed.active -->">
-						<div class="pull-right">
+						<div class="pull-right controls">
 							<!-- IF installed.isTheme -->
 							<a href="{config.relative_path}/admin/appearance/themes" class="btn btn-info">Themes</a>
 							<!-- ELSE -->
@@ -8,6 +8,12 @@
 							<!-- ENDIF installed.isTheme -->
 
 							<button data-action="toggleInstall" data-installed="1" class="btn btn-danger"><i class="fa fa-trash-o"></i> Uninstall</button>
+
+							<!-- IF installed.active -->
+							<!-- IF installed.settingsRoute -->
+							<a href="{config.relative_path}{installed.settingsRoute}" class="btn btn-primary"><i class="fa fa-wrench"></i> Settings </a>
+							<!-- ENDIF installed.settingsRoute -->
+							<!-- ENDIF installed.active -->
 						</div>
 
 						<h2><strong>{installed.name}</strong></h2>
@@ -30,6 +36,7 @@
 							<button class="btn btn-default disabled"><i class="fa fa-exclamation-triangle"></i> Unknown</button>
 
 							<button data-action="toggleInstall" data-installed="1" class="btn btn-danger"><i class="fa fa-trash-o"></i> Uninstall</button>
+
 						</div>
 
 						<h2><strong>{installed.id}</strong></h2>

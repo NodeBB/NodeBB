@@ -54,6 +54,7 @@ define('admin/extend/widgets', ['jqueryui'], function (jqueryui) {
 
 		$('#widgets .widget-area').sortable({
 			update: function (event, ui) {
+				createDatePicker(ui.item);
 				appendToggle(ui.item);
 			},
 			connectWith: "div"
@@ -154,6 +155,15 @@ define('admin/extend/widgets', ['jqueryui'], function (jqueryui) {
 		});
 	}
 
+	function createDatePicker(el) {
+		var currentYear = new Date().getFullYear();
+		el.find('.date-selector').datepicker({
+			changeMonth: true,
+			changeYear: true,
+			yearRange: currentYear + ':' + (currentYear + 100)
+		});
+	}
+
 	function appendToggle(el) {
 		if (!el.hasClass('block')) {
 			el.addClass('block').css('width', '').css('height', '')
@@ -209,6 +219,7 @@ define('admin/extend/widgets', ['jqueryui'], function (jqueryui) {
 
 					widgetArea.append(populateWidget(widgetEl, widgetData.data));
 					appendToggle(widgetEl);
+					createDatePicker(widgetEl);
 				}
 			}
 

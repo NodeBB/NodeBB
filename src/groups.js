@@ -57,30 +57,24 @@ var utils = require('../public/src/utils');
 	};
 
 	Groups.getGroupsFromSet = function (set, uid, start, stop, callback) {
-		var method;
-		var args;
-		if (set === 'groups:visible:name') {
-			method = db.getSortedSetRangeByLex;
-			args = [set, '-', '+', start, stop - start + 1, done];
-		} else {
-			method = db.getSortedSetRevRange;
-			args = [set, start, stop, done];
-		}
-		method.apply(null, args);
+		async.waterfall([
+			function (next) {
+				if (set === 'groups:visible:name') {
+					db.getSortedSetRangeByLex(set, '-', '+', start, stop - start + 1, next);
+				} else {
+					db.getSortedSetRevRange(set, start, stop, next);
+				}
+			},
+			function (groupNames, next) {
+				if (set === 'groups:visible:name') {
+					groupNames = groupNames.map(function (name) {
+						return name.split(':')[1];
+					});
+				}
 
-		function done(err, groupNames) {
-			if (err) {
-				return callback(err);
+				Groups.getGroupsAndMembers(groupNames, next);
 			}
-
-			if (set === 'groups:visible:name') {
-				groupNames = groupNames.map(function (name) {
-					return name.split(':')[1];
-				});
-			}
-
-			Groups.getGroupsAndMembers(groupNames, callback);
-		}
+		], callback);
 	};
 
 	Groups.getGroups = function (set, start, stop, callback) {
@@ -163,7 +157,9 @@ var utils = require('../public/src/utils');
 			}
 
 			results.base['cover:url'] = results.base['cover:url'] || require('./coverPhoto').getDefaultGroupCover(groupName);
-			results.base['cover:position'] = results.base['cover:position'] || '50% 50%';
+			results.base['cover:position'] = validator.escape(String(results.base['cover:position'] || '50% 50%'));
+			results.base.labelColor = validator.escape(String(results.base.labelColor || '#000000'));
+			results.base.icon = validator.escape(String(results.base.icon || ''));
 
 			plugins.fireHook('filter:parse.raw', results.base.description, function (err, descriptionParsed) {
 				if (err) {
@@ -406,7 +402,8 @@ var utils = require('../public/src/utils');
 				if (group) {
 					Groups.escapeGroupData(group);
 					group.userTitleEnabled = group.userTitleEnabled ? parseInt(group.userTitleEnabled, 10) === 1 : true;
-					group.labelColor = group.labelColor || '#000000';
+					group.labelColor = validator.escape(String(group.labelColor || '#000000'));
+					group.icon = validator.escape(String(group.icon || ''));
 					group.createtimeISO = utils.toISOString(group.createtime);
 					group.hidden = parseInt(group.hidden, 10) === 1;
 					group.system = parseInt(group.system, 10) === 1;
@@ -415,7 +412,7 @@ var utils = require('../public/src/utils');
 
 					group['cover:url'] = group['cover:url'] || require('./coverPhoto').getDefaultGroupCover(group.name);
 					group['cover:thumb:url'] = group['cover:thumb:url'] || group['cover:url'];
-					group['cover:position'] = group['cover:position'] || '50% 50%';
+					group['cover:position'] = validator.escape(String(group['cover:position'] || '50% 50%'));
 				}
 			});
 

@@ -78,6 +78,7 @@ module.exports = function (Meta) {
 					acpSource += '\n@import "..' + path.sep + 'public/less/generics.less";\n';
 					acpSource += '\n@import (inline) "..' + path.sep + 'public/vendor/colorpicker/colorpicker.css";\n';
 					acpSource += '\n@import (inline) "..' + path.sep + 'public/vendor/jquery/css/smoothness/jquery-ui.css";';
+					acpSource += '\n@import (inline) "..' + path.sep + 'public/vendor/jquery/bootstrap-tagsinput/bootstrap-tagsinput.css";';
 
 					minify(acpSource, paths, 'acpCache', callback);
 				}
@@ -152,15 +153,13 @@ module.exports = function (Meta) {
 	};
 
 	function minify(source, paths, destination, callback) {
+		callback = callback || function () {};
 		less.render(source, {
 			paths: paths
 		}, function (err, lessOutput) {
 			if (err) {
 				winston.error('[meta/css] Could not minify LESS/CSS: ' + err.message);
-				if (typeof callback === 'function') {
-					callback(err);
-				}
-				return;
+				return callback(err);
 			}
 
 			postcss([ autoprefixer, clean() ]).process(lessOutput.css).then(function (result) {
@@ -170,19 +169,14 @@ module.exports = function (Meta) {
 				Meta.css[destination] = result.css;
 
 				// Save the compiled CSS in public/ so things like nginx can serve it
-				if (nconf.get('isPrimary') === 'true' && (nconf.get('local-assets') === undefined || nconf.get('local-assets') !== false)) {
+				if (nconf.get('local-assets') === undefined || nconf.get('local-assets') !== false) {
 					return Meta.css.commitToFile(destination, function () {
-						if (typeof callback === 'function') {
-							callback(null, result.css);
-						}
+						callback(null, result.css);
 					});
 				}
 
-				if (typeof callback === 'function') {
-					callback(null, result.css);
-				}
+				callback(null, result.css);
 			});
-
 		});
 	}
 

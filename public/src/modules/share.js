@@ -1,6 +1,6 @@
 'use strict';
 
-/* globals define */
+/* globals define, config */
 
 define('share', function () {
 
@@ -11,7 +11,7 @@ define('share', function () {
 		var baseUrl = window.location.protocol + '//' + window.location.host;
 
 		function openShare(url, urlToPost, width, height) {
-			window.open(url + encodeURIComponent(baseUrl + urlToPost), '_blank', 'width=' + width + ',height=' + height + ',scrollbars=no,status=no');
+			window.open(url + encodeURIComponent(baseUrl + config.relative_path + urlToPost), '_blank', 'width=' + width + ',height=' + height + ',scrollbars=no,status=no');
 			return false;
 		}
 

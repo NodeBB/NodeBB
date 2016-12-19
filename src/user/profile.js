@@ -14,7 +14,7 @@ module.exports = function (User) {
 
 	User.updateProfile = function (uid, data, callback) {
 		var fields = ['username', 'email', 'fullname', 'website', 'location',
-			'groupTitle', 'birthday', 'signature', 'aboutme', 'picture', 'uploadedpicture'];
+			'groupTitle', 'birthday', 'signature', 'aboutme'];
 
 		async.waterfall([
 			function (next) {
@@ -147,31 +147,33 @@ module.exports = function (User) {
 	}
 
 	function updateEmail(uid, newEmail, callback) {
-		User.getUserFields(uid, ['email', 'picture', 'uploadedpicture'], function (err, userData) {
-			if (err) {
-				return callback(err);
-			}
+		async.waterfall([
+			function (next) {
+				User.getUserField(uid, 'email', next);
+			},
+			function (oldEmail, next) {
+				oldEmail = oldEmail || '';
 
-			userData.email = userData.email || '';
-
-			if (userData.email === newEmail) {
-				return callback();
-			}
-			async.series([
-				async.apply(db.sortedSetRemove, 'email:uid', userData.email.toLowerCase()),
-				async.apply(db.sortedSetRemove, 'email:sorted', userData.email.toLowerCase() + ':' + uid)
-			], function (err) {
-				if (err) {
-					return callback(err);
+				if (oldEmail === newEmail) {
+					return callback();
 				}
-
+				async.series([
+					async.apply(db.sortedSetRemove, 'email:uid', oldEmail.toLowerCase()),
+					async.apply(db.sortedSetRemove, 'email:sorted', oldEmail.toLowerCase() + ':' + uid)
+				], function (err) {
+					next(err);
+				});
+			},
+			function (next) {
 				async.parallel([
 					function (next) {
 						db.sortedSetAdd('email:uid', uid, newEmail.toLowerCase(), next);
 					},
-					async.apply(db.sortedSetAdd, 'user:' + uid + ':emails', Date.now(), newEmail + ':' + Date.now()),
 					function (next) {
 						db.sortedSetAdd('email:sorted',  0, newEmail.toLowerCase() + ':' + uid, next);
+					},
+					function (next) {
+						db.sortedSetAdd('user:' + uid + ':emails', Date.now(), newEmail + ':' + Date.now(), next);
 					},
 					function (next) {
 						User.setUserField(uid, 'email', newEmail, next);
@@ -185,9 +187,11 @@ module.exports = function (User) {
 					function (next) {
 						db.sortedSetAdd('users:notvalidated', Date.now(), uid, next);
 					}
-				], callback);
-			});
-		});
+				], function (err) {
+					next(err);
+				});
+			}
+		], callback);
 	}
 
 	function updateUsername(uid, newUsername, callback) {

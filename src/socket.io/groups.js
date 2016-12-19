@@ -277,13 +277,18 @@ SocketGroups.cover.update = function (socket, data, callback) {
 		return callback(new Error('[[error:no-privileges]]'));
 	}
 
-	groups.ownership.isOwner(socket.uid, data.groupName, function (err, isOwner) {
-		if (err || !isOwner) {
-			return callback(err || new Error('[[error:no-privileges]]'));
-		}
+	async.waterfall([
+		function (next) {
+			groups.ownership.isOwner(socket.uid, data.groupName, next);
+		},
+		function (isOwner, next) {
+			if (!isOwner) {
+				return next(new Error('[[error:no-privileges]]'));
+			}
 
-		groups.updateCover(socket.uid, data, callback);
-	});
+			groups.updateCover(socket.uid, data, next);
+		}
+	], callback);
 };
 
 SocketGroups.cover.remove = function (socket, data, callback) {
@@ -291,13 +296,18 @@ SocketGroups.cover.remove = function (socket, data, callback) {
 		return callback(new Error('[[error:no-privileges]]'));
 	}
 
-	groups.ownership.isOwner(socket.uid, data.groupName, function (err, isOwner) {
-		if (err || !isOwner) {
-			return callback(err || new Error('[[error:no-privileges]]'));
-		}
+	async.waterfall([
+		function (next) {
+			groups.ownership.isOwner(socket.uid, data.groupName, next);
+		},
+		function (isOwner, next) {
+			if (!isOwner) {
+				return next(new Error('[[error:no-privileges]]'));
+			}
 
-		groups.removeCover(data, callback);
-	});
+			groups.removeCover(data, next);
+		}
+	], callback);
 };
 
 module.exports = SocketGroups;

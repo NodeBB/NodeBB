@@ -8,7 +8,7 @@ var db = require('./database');
 var Reset = {};
 
 
-Reset.reset = function () {
+Reset.reset = function (callback) {
 	db.init(function (err) {
 		if (err) {
 			winston.error(err.message);
@@ -17,20 +17,20 @@ Reset.reset = function () {
 
 		if (nconf.get('t')) {
 			if(nconf.get('t') === true) {
-				resetThemes();
+				resetThemes(callback);
 			} else {
-				resetTheme(nconf.get('t'));
+				resetTheme(nconf.get('t'), callback);
 			}
 		} else if (nconf.get('p')) {
 			if (nconf.get('p') === true) {
-				resetPlugins();
+				resetPlugins(callback);
 			} else {
-				resetPlugin(nconf.get('p'));
+				resetPlugin(nconf.get('p'), callback);
 			}
 		} else if (nconf.get('w')) {
-			resetWidgets();
+			resetWidgets(callback);
 		} else if (nconf.get('s')) {
-			resetSettings();
+			resetSettings(callback);
 		} else if (nconf.get('a')) {
 			require('async').series([resetWidgets, resetThemes, resetPlugins, resetSettings], function (err) {
 				if (!err) {
@@ -38,7 +38,12 @@ Reset.reset = function () {
 				} else {
 					winston.error('[reset] Errors were encountered while resetting your forum settings: %s', err.message);
 				}
-				process.exit();
+
+				if (typeof callback === 'function') {
+					callback();
+				} else {
+					process.exit(0);
+				}
 			});
 		} else {
 			process.stdout.write('\nNodeBB Reset\n'.bold);
@@ -52,6 +57,7 @@ Reset.reset = function () {
 
 			process.stdout.write('\nPlugin and theme reset flags (-p & -t) can take a single argument\n');
 			process.stdout.write('    e.g. ./nodebb reset -p nodebb-plugin-mentions, ./nodebb reset -t nodebb-theme-persona\n');
+
 			process.exit();
 		}
 	});
@@ -69,7 +75,7 @@ function resetSettings(callback) {
 	});
 }
 
-function resetTheme(themeId) {
+function resetTheme(themeId, callback) {
 	var meta = require('./meta');
 	var fs = require('fs');
 	
@@ -88,7 +94,11 @@ function resetTheme(themeId) {
 					winston.info('[reset] Theme reset to ' + themeId);
 				}
 
-				process.exit();
+				if (typeof callback === 'function') {
+					callback();
+				} else {
+					process.exit(0);
+				}
 			});		
 		}
 	});
@@ -105,12 +115,12 @@ function resetThemes(callback) {
 		if (typeof callback === 'function') {
 			callback(err);
 		} else {
-			process.exit();
+			process.exit(0);
 		}
 	});
 }
 
-function resetPlugin(pluginId) {
+function resetPlugin(pluginId, callback) {
 	var active = false;
 
 	async.waterfall([
@@ -136,7 +146,11 @@ function resetPlugin(pluginId) {
 			}
 		}
 
-		process.exit();
+		if (typeof callback === 'function') {
+			callback();
+		} else {
+			process.exit(0);
+		}
 	});
 }
 
@@ -146,7 +160,7 @@ function resetPlugins(callback) {
 		if (typeof callback === 'function') {
 			callback(err);
 		} else {
-			process.exit();
+			process.exit(0);
 		}
 	});
 }

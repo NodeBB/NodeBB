@@ -533,8 +533,8 @@ describe('Controllers', function () {
 				}
 			}, function (err, res, body) {
 				assert.ifError(err);
-				assert.equal(res.statusCode, 500);
-				assert.equal(body, '[[error:no-session-found]]');
+				assert.equal(res.statusCode, 403);
+				assert.equal(body, '{"path":"/user/doesnotexist/session/1112233","loggedIn":true,"title":"[[global:403.title]]"}');
 				done();
 			});
 		});
@@ -703,7 +703,7 @@ describe('Controllers', function () {
 		});
 	});
 
-	describe('account post pages', function () {
+	describe('account pages', function () {
 		var helpers = require('./helpers');
 		var jar;
 		before(function (done) {
@@ -785,6 +785,46 @@ describe('Controllers', function () {
 				done();
 			});
 		});
+
+		it('should load notifications page', function (done) {
+			var notifications = require('../src/notifications');
+			var notifData = {
+				bodyShort: '[[notifications:user_posted_to, test1, test2]]',
+				bodyLong: 'some post content',
+				pid: 1,
+				path: '/post/' + 1,
+				nid: 'new_post:tid:' + 1 + ':pid:' + 1 + ':uid:' + fooUid,
+				tid: 1,
+				from: fooUid,
+				mergeId: 'notifications:user_posted_to|' + 1,
+				topicTitle: 'topic title'
+			};
+			async.waterfall([
+				function (next) {
+					notifications.create(notifData, next);
+				},
+				function (notification, next) {
+					notifications.push(notification, fooUid, next);
+				},
+				function (next) {
+					setTimeout(next, 2500);
+				},
+				function (next) {
+					request(nconf.get('url') + '/api/notifications', {jar: jar, json: true}, next);
+				},
+				function (res, body, next) {
+					assert.equal(res.statusCode, 200);
+					assert(body);
+					var notif = body.notifications[0];
+					assert.equal(notif.bodyShort, notifData.bodyShort);
+					assert.equal(notif.bodyLong, notifData.bodyLong);
+					assert.equal(notif.pid, notifData.pid);
+					assert.equal(notif.path, notifData.path);
+					assert.equal(notif.nid, notifData.nid);
+					next();
+				}
+			], done);
+		});
 	});
 
 	describe('account follow page', function () {
@@ -794,7 +834,14 @@ describe('Controllers', function () {
 			user.create({username: 'follower'}, function (err, _uid) {
 				assert.ifError(err);
 				uid = _uid;
-				socketUser.follow({uid: uid}, {uid: fooUid}, done);
+				socketUser.follow({uid: uid}, {uid: fooUid}, function (err) {
+					assert.ifError(err);
+					socketUser.isFollowing({uid: uid}, {uid: fooUid}, function (err, isFollowing) {
+						assert.ifError(err);
+						assert(isFollowing);
+						done();
+					});
+				});
 			});
 		});
 
@@ -825,6 +872,25 @@ describe('Controllers', function () {
 					assert.equal(body.users.length, 0);
 					done();
 				});
+			});
+		});
+	});
+
+	describe('post redirect', function () {
+		it('should 404 for invalid pid', function (done) {
+			request(nconf.get('url') + '/post/fail', function (err, res) {
+				assert.ifError(err);
+				assert.equal(res.statusCode, 404);
+				done();
+			});
+		});
+
+		it('should return correct post path', function (done) {
+			request(nconf.get('url') + '/api/post/' + pid, function (err, res, body) {
+				assert.ifError(err);
+				assert.equal(res.statusCode, 308);
+				assert.equal(body, '"/topic/1/test-topic-title/1"');
+				done();
 			});
 		});
 	});

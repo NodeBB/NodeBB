@@ -90,12 +90,12 @@ module.exports = function (Topics) {
 
 	Topics.post = function (data, callback) {
 		var uid = data.uid;
-		var title = String(data.title).trim();
+		data.title = String(data.title).trim();
 		data.tags = data.tags || [];
 
 		async.waterfall([
 			function (next) {
-				check(title, meta.config.minimumTitleLength, meta.config.maximumTitleLength, 'title-too-short', 'title-too-long', next);
+				check(data.title, meta.config.minimumTitleLength, meta.config.maximumTitleLength, 'title-too-short', 'title-too-long', next);
 			},
 			function (next) {
 				check(data.tags, meta.config.minimumTagsPerTopic, meta.config.maximumTagsPerTopic, 'not-enough-tags', 'too-many-tags', next);

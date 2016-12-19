@@ -3,7 +3,6 @@
 var async = require('async');
 var winston = require('winston');
 var nconf = require('nconf');
-var path = require('path');
 
 var meta = require('../meta');
 var plugins = require('../plugins');
@@ -15,6 +14,7 @@ var emailer = require('../emailer');
 var db = require('../database');
 var analytics = require('../analytics');
 var index = require('./index');
+var getAdminSearchDict = require('../admin/search').getDictionary;
 
 var SocketAdmin = {
 	user: require('./admin/user'),
@@ -37,16 +37,12 @@ var SocketAdmin = {
 };
 
 SocketAdmin.before = function (socket, method, data, next) {
-	if (!socket.uid) {
-		return;
-	}
-
 	user.isAdministrator(socket.uid, function (err, isAdmin) {
 		if (err || isAdmin) {
 			return next(err);
 		}
-
 		winston.warn('[socket.io] Call to admin method ( ' + method + ' ) blocked (accessed by uid ' + socket.uid + ')');
+		next(new Error('[[error:no-privileges]]'));
 	});
 };
 
@@ -61,14 +57,11 @@ SocketAdmin.reload = function (socket, data, callback) {
 };
 
 SocketAdmin.restart = function (socket, data, callback) {
-	// Rebuild assets and reload NodeBB
-	var child_process = require('child_process');
-	var build_worker = child_process.fork('app.js', ['--build'], {
-		cwd: path.join(__dirname, '../../'),
-		stdio: 'pipe'
-	});
+	require('../../build').buildAll(function (err) {
+		if (err) {
+			return callback(err);
+		}
 
-	build_worker.on('exit', function () {
 		events.log({
 			type: 'build',
 			uid: socket.uid,
@@ -153,21 +146,9 @@ SocketAdmin.config.set = function (socket, data, callback) {
 	if (!data) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
-
-	meta.configs.set(data.key, data.value, function (err) {
-		if (err) {
-			return callback(err);
-		}
-
-		callback();
-
-		plugins.fireHook('action:config.set', {
-			key: data.key,
-			value: data.value
-		});
-
-		logger.monitorConfig({io: index.server}, data);
-	});
+	var _data = {};
+	_data[data.key] = data.value;
+	SocketAdmin.config.setMultiple(socket, data, callback);
 };
 
 SocketAdmin.config.setMultiple = function (socket, data, callback) {
@@ -175,29 +156,29 @@ SocketAdmin.config.setMultiple = function (socket, data, callback) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
 
-	meta.configs.setMultiple(data, function (err) {
-		if(err) {
-			return callback(err);
-		}
-
-		callback();
-		var setting;
-		for(var field in data) {
-			if (data.hasOwnProperty(field)) {
-				setting = {
-					key: field,
-					value: data[field]
-				};
-				plugins.fireHook('action:config.set', setting);
-				logger.monitorConfig({io: index.server}, setting);
+	async.waterfall([
+		function (next) {
+			meta.configs.setMultiple(data, next);
+		},
+		function (next) {
+			var setting;
+			for (var field in data) {
+				if (data.hasOwnProperty(field)) {
+					setting = {
+						key: field,
+						value: data[field]
+					};
+					plugins.fireHook('action:config.set', setting);
+					logger.monitorConfig({io: index.server}, setting);
+				}
 			}
+			setImmediate(next);
 		}
-	});
+	], callback);
 };
 
 SocketAdmin.config.remove = function (socket, key, callback) {
-	meta.configs.remove(key);
-	callback();
+	meta.configs.remove(key, callback);
 };
 
 SocketAdmin.settings.get = function (socket, data, callback) {
@@ -275,6 +256,20 @@ SocketAdmin.errors.clear = function (socket, data, callback) {
 
 SocketAdmin.deleteAllEvents = function (socket, data, callback) {
 	events.deleteAll(callback);
+};
+
+SocketAdmin.getSearchDict = function (socket, data, callback) {
+	user.getSettings(socket.uid, function (err, settings) {
+		if (err) {
+			return callback(err);
+		}
+		var lang = settings.userLang || meta.config.defaultLang || 'en-GB';
+		getAdminSearchDict(lang, callback);
+	});
+};
+
+SocketAdmin.deleteAllSessions = function (socket, data, callback) {
+	user.auth.deleteAllSessions(callback);
 };
 
 

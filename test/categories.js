@@ -12,6 +12,7 @@ var Categories = require('../src/categories');
 var Topics = require('../src/topics');
 var User = require('../src/user');
 var groups = require('../src/groups');
+var privileges = require('../src/privileges');
 
 describe('Categories', function () {
 	var categoryObj;
@@ -312,7 +313,7 @@ describe('Categories', function () {
 		var socketCategories = require('../src/socket.io/admin/categories');
 		var cid;
 		before(function (done) {
-			Categories.create({
+			socketCategories.create({uid: adminUid}, {
 				name: 'update name',
 				description: 'update description',
 				parentCid: categoryObj.cid,
@@ -388,9 +389,233 @@ describe('Categories', function () {
 
 			});
 		});
+
+		it('should get all categories', function (done) {
+			socketCategories.getAll({uid: adminUid}, {}, function (err, data) {
+				assert.ifError(err);
+				done();
+			});
+		});
+
+		it('should get all category names', function (done) {
+			socketCategories.getNames({uid: adminUid}, {}, function (err, data) {
+				assert.ifError(err);
+				assert(Array.isArray(data));
+				done();
+			});
+		});
+
+		it('should give privilege', function (done) {
+			socketCategories.setPrivilege({uid: adminUid}, {cid: categoryObj.cid, privilege: ['groups:topics:delete'], set: true, member: 'registered-users'}, function (err) {
+				assert.ifError(err);
+				privileges.categories.can('topics:delete', categoryObj.cid, posterUid, function (err, canDeleteTopcis) {
+					assert.ifError(err);
+					assert(canDeleteTopcis);
+					done();
+				});
+			});
+		});
+
+		it('should remove privilege', function (done) {
+			socketCategories.setPrivilege({uid: adminUid}, {cid: categoryObj.cid, privilege: 'groups:topics:delete', set: false, member: 'registered-users'}, function (err) {
+				assert.ifError(err);
+				privileges.categories.can('topics:delete', categoryObj.cid, posterUid, function (err, canDeleteTopcis) {
+					assert.ifError(err);
+					assert(!canDeleteTopcis);
+					done();
+				});
+			});
+		});
+
+		it('should get privilege settings', function (done) {
+			socketCategories.getPrivilegeSettings({uid: adminUid}, categoryObj.cid, function (err, data) {
+				assert.ifError(err);
+				assert(data);
+				done();
+			});
+		});
+
+		it('should copy privileges to children', function (done) {
+			var parentCid;
+			var child1Cid;
+			var child2Cid;
+			async.waterfall([
+				function (next) {
+					Categories.create({name: 'parent'}, next);
+				},
+				function (category, next) {
+					parentCid = category.cid;
+					Categories.create({name: 'child1', parentCid: parentCid}, next);
+				},
+				function (category, next) {
+					child1Cid = category.cid;
+					Categories.create({name: 'child2', parentCid: child1Cid}, next);
+				},
+				function (category, next) {
+					child2Cid = category.cid;
+					socketCategories.setPrivilege({uid: adminUid}, {cid: parentCid, privilege: 'groups:topics:delete', set: true, member: 'registered-users'}, next);
+				},
+				function (next) {
+					socketCategories.copyPrivilegesToChildren({uid: adminUid}, parentCid, next);
+				},
+				function (next) {
+					privileges.categories.can('topics:delete', child2Cid, posterUid, next);
+				},
+				function (canDelete, next) {
+					assert(canDelete);
+					next();
+				}
+			], done);
+		});
+
+		it('should copy settings from', function (done) {
+			var child1Cid;
+			var parentCid;
+			async.waterfall([
+				function (next) {
+					Categories.create({name: 'parent', description: 'copy me'}, next);
+				},
+				function (category, next) {
+					parentCid = category.cid;
+					Categories.create({name: 'child1'}, next);
+				},
+				function (category, next) {
+					child1Cid = category.cid;
+					socketCategories.copySettingsFrom({uid: adminUid}, {fromCid: parentCid, toCid: child1Cid}, next);
+				},
+				function (canDelete, next) {
+					Categories.getCategoryField(child1Cid, 'description', next);
+				},
+				function (description, next) {
+					assert.equal(description, 'copy me');
+					next();
+				}
+			], done);
+		});
+
+		it('should copy privileges from', function (done) {
+			var child1Cid;
+			var parentCid;
+			async.waterfall([
+				function (next) {
+					Categories.create({name: 'parent', description: 'copy me'}, next);
+				},
+				function (category, next) {
+					parentCid = category.cid;
+					Categories.create({name: 'child1'}, next);
+				},
+				function (category, next) {
+					child1Cid = category.cid;
+					socketCategories.setPrivilege({uid: adminUid}, {cid: parentCid, privilege: 'groups:topics:delete', set: true, member: 'registered-users'}, next);
+				},
+				function (next) {
+					socketCategories.copyPrivilegesFrom({uid: adminUid}, {fromCid: parentCid, toCid: child1Cid}, next);
+				},
+				function (next) {
+					privileges.categories.can('topics:delete', child1Cid, posterUid, next);
+				},
+				function (canDelete, next) {
+					assert(canDelete);
+					next();
+				}
+			], done);
+		});
 	});
 
+	it('should get active users', function (done) {
+		Categories.create({
+			name: 'test'
+		}, function (err, category) {
+			assert.ifError(err);
+			Topics.post({
+				uid: posterUid,
+				cid: category.cid,
+				title: 'Test Topic Title',
+				content: 'The content of test topic'
+			}, function (err) {
+				assert.ifError(err);
+				Categories.getActiveUsers(category.cid, function (err, uids) {
+					assert.ifError(err);
+					assert.equal(uids[0], posterUid);
+					done();
+				});
+			});
+		});
+	});
 
+	describe('tag whitelist', function () {
+		var cid;
+		var socketTopics = require('../src/socket.io/topics');
+		before(function (done) {
+			Categories.create({
+				name: 'test'
+			}, function (err, category) {
+				assert.ifError(err);
+				cid = category.cid;
+				done();
+			});
+		});
+
+		it('should error if data is invalid', function (done) {
+			socketTopics.isTagAllowed({uid: posterUid}, null, function (err) {
+				assert.equal(err.message, '[[error:invalid-data]]');
+				done();
+			});
+		});
+
+		it('should return true if category whitelist is empty', function (done) {
+			socketTopics.isTagAllowed({uid: posterUid}, {tag: 'notallowed', cid: cid}, function (err, allowed) {
+				assert.ifError(err);
+				assert(allowed);
+				done();
+			});
+		});
+
+		it('should add tags to category whitelist', function (done) {
+			var data = {};
+			data[cid] = {
+				tagWhitelist: 'nodebb,jquery,javascript'
+			};
+			Categories.update(data, function (err) {
+				assert.ifError(err);
+				db.getSortedSetRange('cid:' + cid + ':tag:whitelist', 0, -1, function (err, tagWhitelist) {
+					assert.ifError(err);
+					assert.deepEqual(['nodebb', 'jquery', 'javascript'], tagWhitelist);
+					done();
+				});
+			});
+		});
+
+		it('should return false if category whitelist does not have tag', function (done) {
+			socketTopics.isTagAllowed({uid: posterUid}, {tag: 'notallowed', cid: cid}, function (err, allowed) {
+				assert.ifError(err);
+				assert(!allowed);
+				done();
+			});
+		});
+
+		it('should return true if category whitelist has tag', function (done) {
+			socketTopics.isTagAllowed({uid: posterUid}, {tag: 'nodebb', cid: cid}, function (err, allowed) {
+				assert.ifError(err);
+				assert(allowed);
+				done();
+			});
+		});
+
+		it('should post a topic with only allowed tags', function (done) {
+			Topics.post({
+				uid: posterUid,
+				cid: cid,
+				title: 'Test Topic Title',
+				content: 'The content of test topic',
+				tags: ['nodebb', 'jquery', 'notallowed']
+			}, function (err, data) {
+				assert.ifError(err);
+				assert.equal(data.topicData.tags.length, 2);
+				done();
+			});
+		});
+	});
 
 
 	after(function (done) {

@@ -107,6 +107,7 @@ helpers.getUserDataByUserSlug = function (userslug, callerUID, callback) {
 			userData.isModerator = isModerator;
 			userData.isAdminOrGlobalModerator = isAdmin || isGlobalModerator;
 			userData.isAdminOrGlobalModeratorOrModerator = isAdmin || isGlobalModerator || isModerator;
+			userData.isSelfOrAdminOrGlobalModerator = isSelf || isAdmin || isGlobalModerator;
 			userData.canEdit = isAdmin || (isGlobalModerator && !results.isTargetAdmin);
 			userData.canBan = isAdmin || (isGlobalModerator && !results.isTargetAdmin);
 			userData.canChangePassword = isAdmin || (isSelf && parseInt(meta.config['password:disableEdit'], 10) !== 1);
@@ -138,7 +139,7 @@ helpers.getUserDataByUserSlug = function (userslug, callerUID, callback) {
 			userData.moderationNote = validator.escape(String(userData.moderationNote || ''));
 
 			userData['cover:url'] = userData['cover:url'] || require('../../coverPhoto').getDefaultProfileCover(userData.uid);
-			userData['cover:position'] = userData['cover:position'] || '50% 50%';
+			userData['cover:position'] = validator.escape(String(userData['cover:position'] || '50% 50%'));
 			userData['username:disableEdit'] = !userData.isAdmin && parseInt(meta.config['username:disableEdit'], 10) === 1;
 			userData['email:disableEdit'] = !userData.isAdmin && parseInt(meta.config['email:disableEdit'], 10) === 1;
 

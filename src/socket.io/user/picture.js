@@ -3,6 +3,7 @@
 var async = require('async');
 var winston = require('winston');
 var path = require('path');
+var nconf = require('nconf');
 
 var user = require('../../user');
 var plugins = require('../../plugins');
@@ -84,11 +85,14 @@ module.exports = function (SocketUser) {
 			},
 			function (userData, next) {
 				if (userData.uploadedpicture && !userData.uploadedpicture.startsWith('http')) {
-					require('fs').unlink(path.join(__dirname, '../../../public', userData.uploadedpicture), function (err) {
-						if (err) {
-							winston.error(err);
-						}
-					});
+					var pathToFile = path.join(nconf.get('base_dir'), 'public', userData.uploadedpicture);
+					if (pathToFile.startsWith(path.join(nconf.get('base_dir'), nconf.get('upload_path')))) {
+						require('fs').unlink(pathToFile, function (err) {
+							if (err) {
+								winston.error(err);
+							}
+						});
+					}
 				}
 
 				user.setUserFields(data.uid, {

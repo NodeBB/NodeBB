@@ -343,6 +343,81 @@ describe('Post\'s', function () {
 		});
 	});
 
+	describe('move', function () {
+		var replyPid;
+		var tid;
+		var moveTid;
+		var socketPosts = require('../src/socket.io/posts');
+
+		before(function (done) {
+			async.waterfall([
+				function (next) {
+					topics.post({
+						uid: voterUid,
+						cid: cid,
+						title: 'topic 1',
+						content: 'some content'
+					}, next);
+				},
+				function (data, next) {
+					tid = data.topicData.tid;
+					topics.post({
+						uid: voterUid,
+						cid: cid,
+						title: 'topic 2',
+						content: 'some content'
+					}, next);
+				},
+				function (data, next) {
+					moveTid = data.topicData.tid;
+					topics.reply({
+						uid: voterUid,
+						tid: tid,
+						timestamp: Date.now(),
+						content: 'A reply to move'
+					}, function (err, data) {
+						assert.ifError(err);
+						replyPid = data.pid;
+						next();
+					});
+				}
+			], done);
+		});
+
+		it('should error if uid is not logged in', function (done) {
+			socketPosts.movePost({uid: 0}, {}, function (err) {
+				assert.equal(err.message, '[[error:not-logged-in]]');
+				done();
+			});
+		});
+
+		it('should error if data is invalid', function (done) {
+			socketPosts.movePost({uid: globalModUid}, {}, function (err) {
+				assert.equal(err.message, '[[error:invalid-data]]');
+				done();
+			});
+		});
+
+		it('should error if user does not have move privilege', function (done) {
+			socketPosts.movePost({uid: voterUid}, {pid: replyPid, tid: moveTid}, function (err) {
+				assert.equal(err.message, '[[error:no-privileges]]');
+				done();
+			});
+		});
+
+
+		it('should move a post', function (done) {
+			socketPosts.movePost({uid: globalModUid}, {pid: replyPid, tid: moveTid}, function (err) {
+				assert.ifError(err);
+				posts.getPostField(replyPid, 'tid', function (err, tid) {
+					assert.ifError(err);
+					assert(tid, moveTid);
+					done();
+				});
+			});
+		});
+	});
+
 	describe('flagging a post', function () {
 		var meta = require('../src/meta');
 		var socketPosts = require('../src/socket.io/posts');

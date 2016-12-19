@@ -1,0 +1,20 @@
+{
+    "category": "Categoria",
+    "subcategories": "Subcategorias",
+    "new_topic_button": "Novo tópico",
+    "guest-login-post": "Inicie sessão para publicar algo",
+    "no_topics": "<strong>Não existe nenhum tópico nesta categoria.</strong><br />Que tal seres o primeiro a publicar aqui?",
+    "browsing": "navegação",
+    "no_replies": "Sem respostas",
+    "no_new_posts": "Não existem publicações novas.",
+    "share_this_category": "Partilhar esta categoria",
+    "watch": "Seguir",
+    "ignore": "Ignorar",
+    "watching": "Seguir",
+    "ignoring": "Ignorar",
+    "watching.description": "Mostrar tópicos em não lido",
+    "ignoring.description": "Não mostrar tópicos em não lido",
+    "watch.message": "Estás agora a ver atualizações desta categoria e todas as suas subcategorias",
+    "ignore.message": "Estás agora a ignorar todas as atualizações desta categoria e todas as suas subcategorias",
+    "watched-categories": "Categorias subscritas"
+}

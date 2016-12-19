@@ -8,6 +8,7 @@ var groups = require('../../groups');
 var user = require('../../user');
 var events = require('../../events');
 var meta = require('../../meta');
+var plugins = require('../../plugins');
 
 var User = {};
 
@@ -104,19 +105,20 @@ User.sendValidationEmail = function (socket, uids, callback) {
 		return callback(new Error('[[error:email-confirmations-are-disabled]]'));
 	}
 
-	user.getUsersFields(uids, ['uid', 'email'], function (err, usersData) {
-		if (err) {
-			return callback(err);
+	async.waterfall([
+		function (next) {
+			user.getUsersFields(uids, ['uid', 'email'], next);
+		},
+		function (usersData, next) {
+			async.eachLimit(usersData, 50, function (userData, next) {
+				if (userData.email && userData.uid) {
+					user.email.sendValidationEmail(userData.uid, userData.email, next);
+				} else {
+					next();
+				}
+			}, next);
 		}
-
-		async.eachLimit(usersData, 50, function (userData, next) {
-			if (userData.email && userData.uid) {
-				user.email.sendValidationEmail(userData.uid, userData.email, next);
-			} else {
-				next();
-			}
-		}, callback);
-	});
+	], callback);
 };
 
 User.sendPasswordResetEmail = function (socket, uids, callback) {
@@ -176,6 +178,13 @@ function deleteUsers(socket, uids, method, callback) {
 					uid: socket.uid,
 					targetUid: uid,
 					ip: socket.ip
+				}, next);
+			},
+			function (next) {
+				plugins.fireHook('action:user.delete', {
+					callerUid: socket.uid,
+					uid: uid,
+					ip: socket.ip
 				});
 				next();
 			}
@@ -220,33 +229,37 @@ User.deleteInvitation = function (socket, data, callback) {
 };
 
 User.acceptRegistration = function (socket, data, callback) {
-	user.acceptRegistration(data.username, function (err, uid) {
-		if (err) {
-			return callback(err);
+	async.waterfall([
+		function (next) {
+			user.acceptRegistration(data.username, next);
+		},
+		function (uid, next) {
+			events.log({
+				type: 'registration-approved',
+				uid: socket.uid,
+				ip: socket.ip,
+				targetUid: uid
+			});
+			next(null, uid);
 		}
-		events.log({
-			type: 'registration-approved',
-			uid: socket.uid,
-			ip: socket.ip,
-			targetUid: uid,
-		});
-		callback();
-	});
+	], callback);
 };
 
 User.rejectRegistration = function (socket, data, callback) {
-	user.rejectRegistration(data.username, function (err) {
-		if (err) {
-			return callback(err);
+	async.waterfall([
+		function (next) {
+			user.rejectRegistration(data.username, next);
+		},
+		function (next) {
+			events.log({
+				type: 'registration-rejected',
+				uid: socket.uid,
+				ip: socket.ip,
+				username: data.username,
+			});
+			next();
 		}
-		events.log({
-			type: 'registration-rejected',
-			uid: socket.uid,
-			ip: socket.ip,
-			username: data.username,
-		});
-		callback();
-	});
+	], callback);
 };
 
 User.restartJobs = function (socket, data, callback) {

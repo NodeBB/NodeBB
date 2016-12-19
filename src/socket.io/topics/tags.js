@@ -1,9 +1,29 @@
 'use strict';
 
+var async = require('async');
+var db = require('../../database');
 var topics = require('../../topics');
 var utils = require('../../../public/src/utils');
 
 module.exports = function (SocketTopics) {
+
+	SocketTopics.isTagAllowed = function (socket, data, callback) {
+		if (!data || !data.cid || !data.tag) {
+			return callback(new Error('[[error:invalid-data]]'));
+		}
+		async.waterfall([
+			function (next) {
+				db.getSortedSetRange('cid:' + data.cid + ':tag:whitelist', 0, -1, next);
+			},
+			function (tagWhitelist, next) {
+				if (!tagWhitelist.length) {
+					return next(null, true);
+				}
+				next(null, tagWhitelist.indexOf(data.tag) !== -1);
+			}
+		], callback);
+	};
+
 	SocketTopics.autocompleteTags = function (socket, data, callback) {
 		topics.autocompleteTags(data, callback);
 	};
@@ -13,9 +33,6 @@ module.exports = function (SocketTopics) {
 	};
 
 	SocketTopics.searchAndLoadTags = function (socket, data, callback) {
-		if (!data) {
-			return callback(new Error('[[error:invalid-data]]'));
-		}
 		topics.searchAndLoadTags(data, callback);
 	};
 
@@ -26,13 +43,14 @@ module.exports = function (SocketTopics) {
 
 		var start = parseInt(data.after, 10);
 		var stop = start + 99;
-
-		topics.getTags(start, stop, function (err, tags) {
-			if (err) {
-				return callback(err);
+		async.waterfall([
+			function (next) {
+				topics.getTags(start, stop, next);
+			},
+			function (tags, next) {
+				tags = tags.filter(Boolean);
+				next(null, {tags: tags, nextStart: stop + 1});
 			}
-			tags = tags.filter(Boolean);
-			callback(null, {tags: tags, nextStart: stop + 1});
-		});
+		], callback);
 	};
 };

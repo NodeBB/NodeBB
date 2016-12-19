@@ -75,5 +75,40 @@ define('autocomplete', function () {
 		});
 	};
 
+	module.tag = function (input, onselect) {
+		app.loadJQueryUI(function () {
+			input.autocomplete({
+				delay: 100,
+				open: function () {
+					$(this).autocomplete('widget').css('z-index', 20000);
+				},
+				select: function (event, ui) {
+					onselect = onselect || function () {};
+					var e = jQuery.Event('keypress');
+					e.which = 13;
+					e.keyCode = 13;
+					setTimeout(function () {
+						input.trigger(e);
+					}, 100);
+					onselect(event, ui);
+				},
+				source: function (request, response) {
+					socket.emit('topics.autocompleteTags', {
+						query: request.term,
+						cid: ajaxify.data.cid || 0
+					}, function (err, tags) {
+						if (err) {
+							return app.alertError(err.message);
+						}
+						if (tags) {
+							response(tags);
+						}
+						$('.ui-autocomplete a').attr('data-ajaxify', 'false');
+					});
+				}
+			});
+		});
+	};
+
 	return module;
 });

@@ -61,7 +61,7 @@ describe('Search', function () {
 							cid: cid1,
 							title: 'nodebb mongodb bugs',
 							content: 'avocado cucumber apple orange fox',
-							tags: ['nodebb', 'bug', 'plugin', 'nodebb-plugin']
+							tags: ['nodebb', 'bug', 'plugin', 'nodebb-plugin', 'jquery']
 						}, next);
 					},
 					function (results, next) {
@@ -73,7 +73,7 @@ describe('Search', function () {
 							cid: cid2,
 							title: 'java mongodb redis',
 							content: 'avocado cucumber carrot armadillo',
-							tags: ['nodebb', 'bug', 'plugin', 'nodebb-plugin']
+							tags: ['nodebb', 'bug', 'plugin', 'nodebb-plugin', 'javascript']
 						}, next);
 					},
 					function (results, next) {
@@ -151,6 +151,18 @@ describe('Search', function () {
 			searchIn: 'invalidfilter'
 		}, function (err) {
 			assert.equal(err.message, '[[error:unknown-search-filter]]');
+			done();
+		});
+	});
+
+	it('should search with tags filter', function (done) {
+		search.search({
+			query: 'mongodb',
+			searchIn: 'titles',
+			hasTags: ['nodebb', 'javascript']
+		}, function (err, data) {
+			assert.ifError(err);
+			assert.equal(data.posts[0].tid, topic2Data.tid);
 			done();
 		});
 	});

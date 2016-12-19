@@ -2,7 +2,9 @@
 'use strict';
 
 var async = require('async');
+
 var db = require('../database');
+var meta = require('../meta');
 var utils = require('../../public/src/utils');
 var translator = require('../../public/src/modules/translator');
 var plugins = require('../plugins');
@@ -66,6 +68,8 @@ module.exports = function (Categories) {
 	function updateCategoryField(cid, key, value, callback) {
 		if (key === 'parentCid') {
 			return updateParent(cid, value, callback);
+		} else if (key === 'tagWhitelist') {
+			return updateTagWhitelist(cid, value, callback);
 		}
 
 		async.waterfall([
@@ -110,6 +114,25 @@ module.exports = function (Categories) {
 		], function (err) {
 			callback(err);
 		});
+	}
+
+	function updateTagWhitelist(cid, tags, callback) {
+		tags = tags.split(',');
+		tags = tags.map(function (tag) {
+			return utils.cleanUpTag(tag, meta.config.maximumTagLength);
+		}).filter(Boolean);
+
+		async.waterfall([
+			function (next) {
+				db.delete('cid:' + cid + ':tag:whitelist', next);
+			},
+			function (next) {
+				var scores = tags.map(function (tag, index) {
+					return index;
+				});
+				db.sortedSetAdd('cid:' + cid + ':tag:whitelist', scores, tags, next);
+			}
+		], callback);
 	}
 
 	function updateOrder(cid, order, callback) {

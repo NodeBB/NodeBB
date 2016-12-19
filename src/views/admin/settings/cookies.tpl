@@ -48,6 +48,13 @@
 					Leave blank for default
 				</p>
 			</div>
+
+			<div class="form-group">
+				<button id="delete-all-sessions" class="btn btn-danger">Revoke All Sessions</button>
+				<p class="help-block">
+					This will delete all sessions, you will be logged out and will have to login again!
+				</p>
+			</div>
 		</form>
 	</div>
 </div>

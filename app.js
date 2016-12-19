@@ -37,7 +37,7 @@ winston.add(winston.transports.Console, {
 	colorize: true,
 	timestamp: function () {
 		var date = new Date();
-		return (!!nconf.get('json-logging')) ? date.toJSON() :	date.getDate() + '/' + (date.getMonth() + 1) + ' ' + date.toTimeString().substr(0,5) + ' [' + global.process.pid + ']';
+		return (!!nconf.get('json-logging')) ? date.toJSON() :	date.getDate() + '/' + (date.getMonth() + 1) + ' ' + date.toTimeString().substr(0,8) + ' [' + global.process.pid + ']';
 	},
 	level: nconf.get('log-level') || (global.env === 'production' ? 'info' : 'verbose'),
 	json: (!!nconf.get('json-logging')),
@@ -73,7 +73,12 @@ if (nconf.get('setup') || nconf.get('install')) {
 } else if (nconf.get('upgrade')) {
 	upgrade();
 } else if (nconf.get('reset')) {
-	require('./src/reset').reset();
+	async.waterfall([
+		async.apply(require('./src/reset').reset),
+		async.apply(require('./build').buildAll)
+	], function (err) {
+		process.exit(err ? 1 : 0);
+	});
 } else if (nconf.get('activate')) {
 	activate();
 } else if (nconf.get('plugins')) {
@@ -176,20 +181,25 @@ function start() {
 
 	async.waterfall([
 		async.apply(db.init),
-		async.apply(db.checkCompatibility),
 		function (next) {
-			require('./src/meta').configs.init(next);
-		},
-		function (next) {
-			if (nconf.get('dep-check') === undefined || nconf.get('dep-check') !== false) {
-				require('./src/meta').dependencies.check(next);
-			} else {
-				winston.warn('[init] Dependency checking skipped!');
-				setImmediate(next);
-			}
-		},
-		function (next) {
-			require('./src/upgrade').check(next);
+			var meta = require('./src/meta');
+			async.parallel([
+				async.apply(db.checkCompatibility),
+				async.apply(meta.configs.init),
+				function (next) {
+					if (nconf.get('dep-check') === undefined || nconf.get('dep-check') !== false) {
+						meta.dependencies.check(next);
+					} else {
+						winston.warn('[init] Dependency checking skipped!');
+						setImmediate(next);
+					}
+				},
+				function (next) {
+					require('./src/upgrade').check(next);
+				}
+			], function (err) {
+				next(err);
+			});
 		},
 		function (next) {
 			var webserver = require('./src/webserver');
@@ -247,7 +257,7 @@ function setup() {
 	async.series([
 		async.apply(install.setup),
 		async.apply(loadConfig),
-		async.apply(build.build, true)
+		async.apply(build.buildAll)
 	], function (err, data) {
 		// Disregard build step data
 		data = data[0];
@@ -292,7 +302,7 @@ function upgrade() {
 		async.apply(db.init),
 		async.apply(meta.configs.init),
 		async.apply(upgrade.upgrade),
-		async.apply(build.build, true)
+		async.apply(build.buildAll)
 	], function (err) {
 		if (err) {
 			winston.error(err.stack);

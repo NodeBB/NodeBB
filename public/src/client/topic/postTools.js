@@ -15,7 +15,7 @@ define('forum/topic/postTools', ['share', 'navigator', 'components', 'translator
 
 		addPostHandlers(tid);
 
-		share.addShareHandlers(ajaxify.data.title);
+		share.addShareHandlers(ajaxify.data.titleRaw);
 
 		addVoteHandler();
 
