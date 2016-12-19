@@ -7,6 +7,7 @@
 	"assignee": "Assignee",
 	"update": "Update",
 	"updated": "Updated",
+	"target-purged": "The content this flag referred to has been purged and is no longer available.",
 
 	"quick-filters": "Quick Filters",
 	"filter-active": "There are one or more filters active in this list of flags",

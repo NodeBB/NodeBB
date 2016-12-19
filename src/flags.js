@@ -202,31 +202,6 @@ Flags.validate = function (payload, callback) {
 	});
 };
 
-Flags.getTarget = function (type, id, uid, callback) {
-	switch (type) {
-		case 'post':
-			async.waterfall([
-				async.apply(posts.getPostsByPids, [id], uid),
-				function (posts, next) {
-					topics.addPostData(posts, uid, next);
-				}
-			], function (err, posts) {
-				callback(err, posts[0]);
-			});
-			break;
-		
-		case 'user':
-			user.getUsersData([id], function (err, users) {
-				callback(err, users ? users[0] : undefined);
-			});
-			break;
-		
-		default:
-			 callback(new Error('[[error:invalid-data]]'));
-			 break;
-	}
-};
-
 Flags.getNotes = function (flagId, callback) {
 	async.waterfall([
 		async.apply(db.getSortedSetRevRangeWithScores.bind(db), 'flag:' + flagId + ':notes', 0, -1),
@@ -346,6 +321,41 @@ Flags.create = function (type, id, uid, reason, timestamp, callback) {
 
 Flags.exists = function (type, id, uid, callback) {
 	db.isSortedSetMember('flags:hash', [type, id, uid].join(':'), callback);
+};
+
+Flags.getTarget = function (type, id, uid, callback) {
+	async.waterfall([
+		async.apply(Flags.targetExists, type, id),
+		function (exists, next) {
+			if (exists) {
+				switch (type) {
+					case 'post':
+						async.waterfall([
+							async.apply(posts.getPostsByPids, [id], uid),
+							function (posts, next) {
+								topics.addPostData(posts, uid, next);
+							}
+						], function (err, posts) {
+							next(err, posts[0]);
+						});
+						break;
+
+					case 'user':
+						user.getUsersData([id], function (err, users) {
+							next(err, users ? users[0] : undefined);
+						});
+						break;
+
+					default:
+						next(new Error('[[error:invalid-data]]'));
+						break;
+				}
+			} else {
+				// Target used to exist (otherwise flag creation'd fail), but no longer
+				next(null, {});
+			}
+		}
+	], callback);
 };
 
 Flags.targetExists = function (type, id, callback) {

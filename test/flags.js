@@ -82,6 +82,42 @@ describe('Flags', function () {
 		});
 	});
 
+	describe('.exists()', function () {
+		it('should return Boolean True if a flag matching the flag hash already exists', function (done) {
+			Flags.exists('post', 1, 1, function (err, exists) {
+				assert.ifError(err);
+				assert.strictEqual(true, exists);
+				done();
+			});
+		});
+
+		it('should return Boolean False if a flag matching the flag hash does not already exists', function (done) {
+			Flags.exists('post', 1, 2, function (err, exists) {
+				assert.ifError(err);
+				assert.strictEqual(false, exists);
+				done();
+			});
+		});
+	});
+
+	describe('.targetExists()', function () {
+		it('should return Boolean True if the targeted element exists', function (done) {
+			Flags.targetExists('post', 1, function (err, exists) {
+				assert.ifError(err);
+				assert.strictEqual(true, exists);
+				done();
+			});
+		});
+
+		it('should return Boolean False if the targeted element does not exist', function (done) {
+			Flags.targetExists('post', 15, function (err, exists) {
+				assert.ifError(err);
+				assert.strictEqual(false, exists);
+				done();
+			});
+		});
+	});
+
 	describe('.get()', function () {
 		it('should retrieve and display a flag\'s data', function (done) {
 			Flags.get(1, function (err, flagData) {
@@ -249,6 +285,14 @@ describe('Flags', function () {
 					}
 				}
 
+				done();
+			});
+		});
+
+		it('should return a plain object with no properties if the target no longer exists', function (done) {
+			Flags.getTarget('user', 15, 1, function (err, data) {
+				assert.ifError(err);
+				assert.strictEqual(0, Object.keys(data).length);
 				done();
 			});
 		});

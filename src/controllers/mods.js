@@ -78,8 +78,13 @@ modsController.flags.detail = function (req, res, next) {
 
 		res.render('flags/detail', Object.assign(results.flagData, {
 			assignees: results.assignees,
-			type_bool: ['post', 'user'].reduce(function (memo, cur) {
-				memo[cur] = results.flagData.type === cur;
+			type_bool: ['post', 'user', 'empty'].reduce(function (memo, cur) {
+				if (cur !== 'empty') {
+					memo[cur] = results.flagData.type === cur && !!Object.keys(results.flagData.target).length;
+				} else {
+					memo[cur] = !Object.keys(results.flagData.target).length;
+				}
+
 				return memo;
 			}, {}),
 			title: '[[pages:flag-details, ' + req.params.flagId + ']]'

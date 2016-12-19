@@ -56,14 +56,4 @@ module.exports = function (User) {
 			}
 		], callback);
 	};
-
-	User.resetFlags = function (uids, callback) {
-		if (!Array.isArray(uids) || !uids.length) {
-			return callback();
-		}
-
-		async.eachSeries(uids, function (uid, next) {
-			flags.dismissByUid(uid, next);
-		}, callback);
-	};
 };
