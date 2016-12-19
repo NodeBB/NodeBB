@@ -457,6 +457,7 @@ describe('Flags', function () {
 					flagId: flag.flagId,
 					note: 'lorem ipsum dolor sit amet'
 				}, function (err, data) {
+					assert.ifError(err);
 					assert(data.hasOwnProperty('notes'));
 					assert(Array.isArray(data.notes));
 					assert.strictEqual('lorem ipsum dolor sit amet', data.notes[0].content);
