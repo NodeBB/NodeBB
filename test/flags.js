@@ -65,7 +65,7 @@ describe('Flags', function () {
 				for(var key in compare) {
 					if (compare.hasOwnProperty(key)) {
 						assert.ok(flagData[key]);
-						assert.strictEqual(flagData[key], compare[key]);
+						assert.equal(flagData[key], compare[key]);
 					}
 				}
 
@@ -134,7 +134,7 @@ describe('Flags', function () {
 				for(var key in compare) {
 					if (compare.hasOwnProperty(key)) {
 						assert.ok(flagData[key]);
-						assert.strictEqual(flagData[key], compare[key]);
+						assert.equal(flagData[key], compare[key]);
 					}
 				}
 
@@ -166,7 +166,7 @@ describe('Flags', function () {
 				}, 1, function (err, flags) {
 					assert.ifError(err);
 					assert.ok(Array.isArray(flags));
-					assert.strictEqual(1, flags[0].flagId);
+					assert.strictEqual(1, parseInt(flags[0].flagId, 10));
 					done();
 				});
 			});
@@ -219,7 +219,8 @@ describe('Flags', function () {
 					}
 
 					assert.strictEqual('wip', data.state);
-					assert.strictEqual(1, data.assignee);
+					assert.ok(!isNaN(parseInt(data.assignee, 10)));
+					assert.strictEqual(1, parseInt(data.assignee, 10));
 					done();
 				});
 			});
@@ -261,7 +262,7 @@ describe('Flags', function () {
 				for(var key in compare) {
 					if (compare.hasOwnProperty(key)) {
 						assert.ok(data[key]);
-						assert.strictEqual(data[key], compare[key]);
+						assert.equal(data[key], compare[key]);
 					}
 				}
 
@@ -281,7 +282,7 @@ describe('Flags', function () {
 				for(var key in compare) {
 					if (compare.hasOwnProperty(key)) {
 						assert.ok(data[key]);
-						assert.strictEqual(data[key], compare[key]);
+						assert.equal(data[key], compare[key]);
 					}
 				}
 
@@ -480,7 +481,7 @@ describe('Flags', function () {
 		describe('.update()', function () {
 			it('should update a flag\'s properties', function (done) {
 				SocketFlags.update({ uid: 2 }, {
-					flagId: flag.flagId,
+					flagId: 2,
 					data: [{
 						name: 'state',
 						value: 'wip'
@@ -498,7 +499,7 @@ describe('Flags', function () {
 		describe('.appendNote()', function () {
 			it('should append a note to the flag', function (done) {
 				SocketFlags.appendNote({ uid: 2 }, {
-					flagId: flag.flagId,
+					flagId: 2,
 					note: 'lorem ipsum dolor sit amet'
 				}, function (err, data) {
 					assert.ifError(err);
