@@ -33,6 +33,7 @@ searchController.search = function (req, res, next) {
 		postedBy: req.query.by,
 		categories: req.query.categories,
 		searchChildren: req.query.searchChildren,
+		hasTags: req.query.hasTags,
 		replies: req.query.replies,
 		repliesFilter: req.query.repliesFilter,
 		timeRange: req.query.timeRange,

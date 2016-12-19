@@ -41,6 +41,7 @@ module.exports = function (Meta) {
 						next(true);
 					}
 				} catch(e) {
+					console.log(e);
 					process.stdout.write('[' + 'missing'.red + '] ' + module.bold + ' is a required dependency but could not be found\n');
 					depsMissing = true;
 					next(true);

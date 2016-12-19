@@ -12,8 +12,6 @@ define('forum/search', ['search', 'autocomplete'], function (searchModule, autoc
 
 		var searchIn = $('#search-in');
 
-		fillOutForm();
-
 		searchIn.on('change', function () {
 			updateFormItemVisiblity(searchIn.val());
 		});
@@ -31,6 +29,8 @@ define('forum/search', ['search', 'autocomplete'], function (searchModule, autoc
 		handleSavePreferences();
 
 		enableAutoComplete();
+
+		fillOutForm();
 	};
 
 	function getSearchData() {
@@ -43,6 +43,7 @@ define('forum/search', ['search', 'autocomplete'], function (searchModule, autoc
 			searchData.by = form.find('#posted-by-user').val();
 			searchData.categories = form.find('#posted-in-categories').val();
 			searchData.searchChildren = form.find('#search-children').is(':checked');
+			searchData.hasTags = form.find('#has-tags').tagsinput('items');
 			searchData.replies = form.find('#reply-count').val();
 			searchData.repliesFilter = form.find('#reply-count-filter').val();
 			searchData.timeFilter = form.find('#post-time-filter').val();
@@ -79,13 +80,19 @@ define('forum/search', ['search', 'autocomplete'], function (searchModule, autoc
 				$('#posted-by-user').val(formData.by);
 			}
 
-
 			if (formData.categories) {
 				$('#posted-in-categories').val(formData.categories);
 			}
 
 			if (formData.searchChildren) {
 				$('#search-children').prop('checked', true);
+			}
+
+			if (formData.hasTags) {
+				formData.hasTags = Array.isArray(formData.hasTags) ? formData.hasTags : [formData.hasTags];
+				formData.hasTags.forEach(function (tag) {
+					$('#has-tags').tagsinput('add', tag);
+				});
 			}
 
 			if (formData.replies) {
@@ -157,6 +164,14 @@ define('forum/search', ['search', 'autocomplete'], function (searchModule, autoc
 
 	function enableAutoComplete() {
 		autocomplete.user($('#posted-by-user'));
+
+		var tagEl = $('#has-tags');
+		tagEl.tagsinput({
+			confirmKeys: [13, 44],
+			trimValue: true
+		});
+
+		autocomplete.tag($('#has-tags').siblings('.bootstrap-tagsinput').find('input'));
 	}
 
 	return Search;
