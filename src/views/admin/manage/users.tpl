@@ -19,7 +19,6 @@
 							<li><a href="#" class="ban-user-temporary"><i class="fa fa-fw fa-clock-o"></i> Ban User(s) Temporarily</a></li>
 							<li><a href="#" class="unban-user"><i class="fa fa-fw fa-comment-o"></i> Unban User(s)</a></li>
 							<li><a href="#" class="reset-lockout"><i class="fa fa-fw fa-unlock"></i> Reset Lockout</a></li>
-							<li><a href="#" class="reset-flags"><i class="fa fa-fw fa-flag"></i> Reset Flags</a></li>
 							<li class="divider"></li>
 							<li><a href="#" class="delete-user"><i class="fa fa-fw fa-trash-o"></i> Delete User(s)</a></li>
 							<li><a href="#" class="delete-user-and-content"><i class="fa fa-fw fa-trash-o"></i> Delete User(s) and Content</a></li>

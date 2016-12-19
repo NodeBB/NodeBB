@@ -415,6 +415,7 @@ var utils = require('../public/src/utils');
 				'notifications:user_started_following_you',
 				'notifications:user_posted_to',
 				'notifications:user_flagged_post_in',
+				'notifications:user_flagged_user',
 				'new_register'
 			],
 			isolated, differentiators, differentiator, modifyIndex, set;
@@ -462,6 +463,7 @@ var utils = require('../public/src/utils');
 					case 'notifications:user_started_following_you':
 					case 'notifications:user_posted_to':
 					case 'notifications:user_flagged_post_in':
+					case 'notifications:user_flagged_user':
 						var usernames = set.map(function (notifObj) {
 							return notifObj && notifObj.user && notifObj.user.username;
 						}).filter(function (username, idx, array) {

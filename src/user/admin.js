@@ -6,6 +6,7 @@ var db = require('../database');
 var posts = require('../posts');
 var plugins = require('../plugins');
 var winston = require('winston');
+var flags = require('../flags');
 
 module.exports = function (User) {
 
@@ -54,15 +55,5 @@ module.exports = function (User) {
 				next(null, csvContent);
 			}
 		], callback);
-	};
-
-	User.resetFlags = function (uids, callback) {
-		if (!Array.isArray(uids) || !uids.length) {
-			return callback();
-		}
-
-		async.eachSeries(uids, function (uid, next) {
-			posts.dismissUserFlags(uid, next);
-		}, callback);
 	};
 };

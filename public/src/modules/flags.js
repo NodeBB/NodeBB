@@ -2,18 +2,13 @@
 
 /* globals define, app, socket, templates */
 
-define('forum/topic/flag', [], function () {
-
+define('flags', [], function () {
 	var Flag = {},
 		flagModal,
 		flagCommit;
 
-	Flag.showFlagModal = function (pid, username, userslug) {
-		parseModal({
-			pid: pid,
-			username: username,
-			userslug: userslug
-		}, function (html) {
+	Flag.showFlagModal = function (data) {
+		parseModal(data, function (html) {
 			flagModal = $(html);
 
 			flagModal.on('hidden.bs.modal', function () {
@@ -23,11 +18,11 @@ define('forum/topic/flag', [], function () {
 			flagCommit = flagModal.find('#flag-post-commit');
 
 			flagModal.on('click', '.flag-reason', function () {
-				flagPost(pid, $(this).text());
+				createFlag(data.type, data.id, $(this).text());
 			});
 
 			flagCommit.on('click', function () {
-				flagPost(pid, flagModal.find('#flag-reason-custom').val());
+				createFlag(data.type, data.id, flagModal.find('#flag-reason-custom').val());
 			});
 
 			flagModal.modal('show');
@@ -37,24 +32,24 @@ define('forum/topic/flag', [], function () {
 	};
 
 	function parseModal(tplData, callback) {
-		templates.parse('partials/modals/flag_post_modal', tplData, function (html) {
+		templates.parse('partials/modals/flag_modal', tplData, function (html) {
 			require(['translator'], function (translator) {
 				translator.translate(html, callback);
 			});
 		});
 	}
 
-	function flagPost(pid, reason) {
-		if (!pid || !reason) {
+	function createFlag(type, id, reason) {
+		if (!type || !id || !reason) {
 			return;
 		}
-		socket.emit('posts.flag', {pid: pid, reason: reason}, function (err) {
+		socket.emit('flags.create', {type: type, id: id, reason: reason}, function (err) {
 			if (err) {
 				return app.alertError(err.message);
 			}
 
 			flagModal.modal('hide');
-			app.alertSuccess('[[topic:flag_success]]');
+			app.alertSuccess('[[flags:modal-submit-success]]');
 		});
 	}
 

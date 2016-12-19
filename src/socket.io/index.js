@@ -123,8 +123,10 @@ var ratelimit = require('../middleware/ratelimit');
 	}
 
 	function requireModules() {
-		var modules = ['admin', 'categories', 'groups', 'meta', 'modules',
-			'notifications', 'plugins', 'posts', 'topics', 'user', 'blacklist'
+		var modules = [
+			'admin', 'categories', 'groups', 'meta', 'modules',
+			'notifications', 'plugins', 'posts', 'topics', 'user',
+			'blacklist', 'flags'
 		];
 
 		modules.forEach(function (module) {

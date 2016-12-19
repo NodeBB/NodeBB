@@ -12,7 +12,7 @@ var db = require('./database'),
 	schemaDate, thisSchemaDate,
 
 	// IMPORTANT: REMEMBER TO UPDATE VALUE OF latestSchema
-	latestSchema = Date.UTC(2016, 10, 22);
+	latestSchema = Date.UTC(2016, 11, 7);
 
 Upgrade.check = function (callback) {
 	db.get('schemaDate', function (err, value) {
@@ -452,52 +452,6 @@ Upgrade.upgrade = function (callback) {
 				});
 			} else {
 				winston.info('[2016/04/19] Users post count per tid skipped!');
-				next();
-			}
-		},
-		function (next) {
-			thisSchemaDate = Date.UTC(2016, 3, 29);
-
-			if (schemaDate < thisSchemaDate) {
-				updatesMade = true;
-				winston.info('[2016/04/29] Dismiss flags from deleted topics');
-
-				var posts = require('./posts'),
-					topics = require('./topics');
-
-				var pids, tids;
-
-				async.waterfall([
-					async.apply(db.getSortedSetRange, 'posts:flagged', 0, -1),
-					function (_pids, next) {
-						pids = _pids;
-						posts.getPostsFields(pids, ['tid'], next);
-					},
-					function (_tids, next) {
-						tids = _tids.map(function (a) {
-							return a.tid;
-						});
-
-						topics.getTopicsFields(tids, ['deleted'], next);
-					},
-					function (state, next) {
-						var toDismiss = state.map(function (a, idx) {
-							return parseInt(a.deleted, 10) === 1 ? pids[idx] : null;
-						}).filter(Boolean);
-
-						winston.info('[2016/04/29] ' + toDismiss.length + ' dismissable flags found');
-						async.each(toDismiss, posts.dismissFlag, next);
-					}
-				], function (err) {
-					if (err) {
-						return next(err);
-					}
-
-					winston.info('[2016/04/29] Dismiss flags from deleted topics done');
-					Upgrade.update(thisSchemaDate, next);
-				});
-			} else {
-				winston.info('[2016/04/29] Dismiss flags from deleted topics skipped!');
 				next();
 			}
 		},
@@ -1022,7 +976,7 @@ Upgrade.upgrade = function (callback) {
 
 			if (schemaDate < thisSchemaDate) {
 				updatesMade = true;
-				winston.info('[2016/11/25] Creating sorted sets for pinned topcis');
+				winston.info('[2016/11/25] Creating sorted sets for pinned topics');
 
 				var topics = require('./topics');
 				var batch = require('./batch');
@@ -1059,6 +1013,89 @@ Upgrade.upgrade = function (callback) {
 				next();
 			}
 		},
+		function (next) {
+			thisSchemaDate = Date.UTC(2016, 11, 7);
+
+			if (schemaDate < thisSchemaDate) {
+				updatesMade = true;
+				winston.info('[2016/12/07] Migrating flags to new schema (#5232)');
+
+				var batch = require('./batch');
+				var posts = require('./posts');
+				var flags = require('./flags');
+				var migrated = 0;
+
+				batch.processSortedSet('posts:pid', function (ids, next) {
+					posts.getPostsByPids(ids, 1, function (err, posts) {
+						if (err) {
+							return next(err);
+						}
+
+						posts = posts.filter(function (post) {
+							return post.hasOwnProperty('flags');
+						});
+						
+						async.each(posts, function (post, next) {
+							async.parallel({
+								uids: async.apply(db.getSortedSetRangeWithScores, 'pid:' + post.pid + ':flag:uids', 0, -1),
+								reasons: async.apply(db.getSortedSetRange, 'pid:' + post.pid + ':flag:uid:reason', 0, -1)
+							}, function (err, data) {
+								if (err) {
+									return next(err);
+								}
+
+								// Just take the first entry
+								var datetime = data.uids[0].score;
+								var reason = data.reasons[0].split(':')[1];
+								var flagObj;
+
+								async.waterfall([
+									async.apply(flags.create, 'post', post.pid, data.uids[0].value, reason, datetime),
+									function (_flagObj, next) {
+										flagObj = _flagObj;
+										if (post['flag:state'] || post['flag:assignee']) {
+											flags.update(flagObj.flagId, 1, {
+												state: post['flag:state'],
+												assignee: post['flag:assignee'],
+												datetime: datetime
+											}, next);
+										} else {
+											setImmediate(next);
+										}
+									},
+									function (next) {
+										if (post.hasOwnProperty('flag:notes') && post['flag:notes'].length) {
+											try {
+												var history = JSON.parse(post['flag:history']);
+												history = history.filter(function (event) {
+													return event.type === 'notes';
+												})[0];
+
+												flags.appendNote(flagObj.flagId, history.uid, post['flag:notes'], history.timestamp, next);
+											} catch (e) {
+												next(e);
+											}
+										} else {
+											setImmediate(next);
+										}
+									}
+								], next);
+							});
+						}, next);
+					});
+				}, function (err) {
+					if (err) {
+						return next(err);
+					}
+
+					winston.info('[2016/12/07] Migrating flags to new schema (#5232) - done');
+					Upgrade.update(thisSchemaDate, next);
+				});
+			} else {
+				winston.info('[2016/12/07] Migrating flags to new schema (#5232) - skipped!');
+				next();
+			}
+		}
 		// Add new schema updates here
 		// IMPORTANT: REMEMBER TO UPDATE VALUE OF latestSchema IN LINE 24!!!
 	], function (err) {

@@ -49,7 +49,6 @@ module.exports = function (Meta) {
 				'public/src/client/unread.js',
 				'public/src/client/topic.js',
 				'public/src/client/topic/events.js',
-				'public/src/client/topic/flag.js',
 				'public/src/client/topic/fork.js',
 				'public/src/client/topic/move.js',
 				'public/src/client/topic/posts.js',
@@ -72,7 +71,8 @@ module.exports = function (Meta) {
 				'public/src/modules/taskbar.js',
 				'public/src/modules/helpers.js',
 				'public/src/modules/sounds.js',
-				'public/src/modules/string.js'
+				'public/src/modules/string.js',
+				'public/src/modules/flags.js'
 			],
 
 			// modules listed below are routed through express (/src/modules) so they can be defined anonymously
