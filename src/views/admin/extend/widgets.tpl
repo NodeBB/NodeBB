@@ -28,12 +28,12 @@
 
 	<div class="col-md-5">
 		<div class="panel panel-default">
-			<div class="panel-heading">Available Widgets</div>
+			<div class="panel-heading">[[admin/extend/widgets:available]]</div>
 			<div class="panel-body">
 				<div class="available-widgets">
-					<p>Select a widget from the dropdown menu and then drag and drop it into a template's widget area on the left.</p>
+					<p>[[admin/extend/widgets:explanation]]</p>
 					<!-- IF !widgets.length -->
-					<div class="alert alert-info">No widgets found! Activate the essential widgets plugin in the <a href="{config.relative_path}/admin/extend/plugins">plugins</a> control panel.</div>
+					<div class="alert alert-info">[[none-installed, {config.relative_path}/admin/extend/plugins]]</div>
 					<!-- ENDIF !widgets.length -->
 					<p>
 						<select id="widget-selector" class="form-control">
@@ -63,28 +63,28 @@
 			</div>
 		</div>
 		<div class="panel panel-default">
-			<div class="panel-heading">Available Containers</div>
+			<div class="panel-heading">[[admin/extend/widgets:containers.available]]</div>
 			<div class="panel-body">
-				<p>Drag and drop on top of any active widget</p>
+				<p>[[admin/extend/widgets:containers.explanation]]</p>
 				<div class="available-containers">
 					<div class="containers">
 						<div class="pointer" style="padding: 20px; border: 1px dotted #dedede; margin-bottom: 20px;" data-container-html=" ">
-							None
+							[[admin/extend/widgets:containers.none]]
 						</div>
 						<div class="well pointer" data-container-html='<div class="well">\{{body\}}</div>'>
-							Well
+							[[admin/extend/widgets:container.well]]
 						</div>
 						<div class="jumbotron pointer" data-container-html='<div class="jumbotron">\{{body\}}</div>'>
-							Jumbotron
+							[[admin/extend/widgets:container.jumbotron]]
 						</div>
 						<div class="panel" data-container-html='<div class="panel panel-default"><div class="panel-body">\{{body\}}</div></div>'>
 							<div class="panel-body pointer">
-								Panel
+								[[admin/extend/widgets:container.panel]]
 							</div>
 						</div>
 						<div class="panel panel-default pointer" data-container-html='<div class="panel panel-default"><div class="panel-heading"><h3 class="panel-title">\{{title\}}</h3></div><div class="panel-body">\{{body\}}</div></div>'>
 							<div class="panel-heading">
-								Panel Header
+								[[admin/extend/widgets:container.panel-header]]
 								<div class="pull-right color-selector">
 									<button data-class="panel-default" class="btn btn-xs">&nbsp;&nbsp;</button>
 									<button data-class="panel-primary" class="btn btn-xs btn-primary">&nbsp;&nbsp;</button>
@@ -95,12 +95,12 @@
 								</div>
 							</div>
 							<div class="panel-body">
-								Panel Body
+								[[admin/extend/widgets:container.panel-body]]
 							</div>
 						</div>
 
 						<div class="alert alert-info pointer" data-container-html='<div class="alert alert-info">\{{body\}}</div>'>
-							Alert
+							[[admin/extend/widgets:container.alert]]
 							<div class="pull-right color-selector">
 								<button data-class="alert-success" class="btn btn-xs btn-success">&nbsp;&nbsp;</button>
 								<button data-class="alert-info" class="btn btn-xs btn-info">&nbsp;&nbsp;</button>

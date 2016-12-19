@@ -39,29 +39,27 @@ define('admin/appearance/themes', ['translator'], function (translator) {
 				});
 			}
 		});
-
-		translator.translate('[[admin/appearance/themes:revert-confirm]]', function (revert) {
-			$('#revert_theme').on('click', function () {
-				bootbox.confirm(revert, function (confirm) {
-					if (confirm) {
-						socket.emit('admin.themes.set', {
-							type: 'local',
-							id: 'nodebb-theme-persona'
-						}, function (err) {
-							if (err) {
-								return app.alertError(err.message);
-							}
-							highlightSelectedTheme('nodebb-theme-persona');
-							app.alert({
-								alert_id: 'admin:theme',
-								type: 'success',
-								title: '[[admin/appearance/themes:theme-changed]]',
-								message: '[[admin/appearance/themes:revert-success]]',
-								timeout: 3500
-							});
+		
+		$('#revert_theme').on('click', function () {
+			bootbox.confirm('[[admin/appearance/themes:revert-confirm]]', function (confirm) {
+				if (confirm) {
+					socket.emit('admin.themes.set', {
+						type: 'local',
+						id: 'nodebb-theme-persona'
+					}, function (err) {
+						if (err) {
+							return app.alertError(err.message);
+						}
+						highlightSelectedTheme('nodebb-theme-persona');
+						app.alert({
+							alert_id: 'admin:theme',
+							type: 'success',
+							title: '[[admin/appearance/themes:theme-changed]]',
+							message: '[[admin/appearance/themes:revert-success]]',
+							timeout: 3500
 						});
-					}
-				});
+					});
+				}
 			});
 		});
 
@@ -73,9 +71,7 @@ define('admin/appearance/themes', ['translator'], function (translator) {
 			var instListEl = $('#installed_themes');
 
 			if (!themes.length) {
-				translator.translate('[[admin/appearance/themes:no-themes]]', function (text) {
-					instListEl.append($('<li/ >').addClass('no-themes').html(text));
-				});
+				instListEl.append($('<li/ >').addClass('no-themes').translateHtml('[[admin/appearance/themes:no-themes]]'));
 				return;
 			} else {
 				templates.parse('admin/partials/theme_list', {

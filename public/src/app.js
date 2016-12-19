@@ -53,7 +53,6 @@ app.cacheBuster = null;
 			}
 		});
 
-		overrides.overrideBootbox();
 		createHeaderTooltips();
 		app.showEmailConfirmWarning();
 		app.showCookieWarning();

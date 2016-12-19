@@ -86,7 +86,7 @@ define('admin/manage/tags', [
 			}
 
 			var firstTag = $(tagsToModify[0]),
-				title = tagsToModify.length > 1 ? 'Editing multiple tags' : 'Editing ' + firstTag.find('.tag-item').text() + ' tag';
+				title = tagsToModify.length > 1 ? '[[admin/manage/tags:alerts.editing-multiple]]' : '[[admin/manage/tags:alerts.editing-x, ' + firstTag.find('.tag-item').text() + ']]';
 
 			var modal = bootbox.dialog({
 				title:  title,
@@ -125,7 +125,7 @@ define('admin/manage/tags', [
 				return;
 			}
 
-			bootbox.confirm('Do you want to delete the selected tags?', function (confirm) {
+			bootbox.confirm('[[admin/manage/tags:alerts.confirm-delete]]', function (confirm) {
 				if (!confirm) {
 					return;
 				}
@@ -164,7 +164,7 @@ define('admin/manage/tags', [
 				return app.alertError(err.message);
 			}
 
-			app.alertSuccess('Tag Updated!');
+			app.alertSuccess('[[admin/manage/tags:alerts.update-success]]');
 		});
 	}
 

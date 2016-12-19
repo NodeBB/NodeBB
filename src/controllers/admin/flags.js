@@ -65,7 +65,6 @@ flagsController.get = function (req, res, next) {
 			sortByCount: sortBy === 'count',
 			sortByTime: sortBy === 'time',
 			pagination: pagination.create(page, pageCount, req.query),
-			title: '[[pages:flagged-posts]]'
 		};
 		res.render('admin/manage/flags', data);
 	});

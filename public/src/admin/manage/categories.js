@@ -51,11 +51,11 @@ define('admin/manage/categories', ['vendor/jquery/serializeObject/jquery.ba-seri
 				}
 
 				var modal = bootbox.dialog({
-					title: 'Create a Category',
+					title: '[[admin/manage/categories:alert.create]]',
 					message: html,
 					buttons: {
 						save: {
-							label: 'Save',
+							label: '[[global:save]]',
 							className: 'btn-primary',
 							callback: submit
 						}
@@ -75,8 +75,8 @@ define('admin/manage/categories', ['vendor/jquery/serializeObject/jquery.ba-seri
 
 			app.alert({
 				alert_id: 'category_created',
-				title: 'Created',
-				message: 'Category successfully created!',
+				title: '[[admin/manage/categories:alert.created]]',
+				message: '[[admin/manage/categories:alert.create-success]]',
 				type: 'success',
 				timeout: 2000
 			});
@@ -89,10 +89,12 @@ define('admin/manage/categories', ['vendor/jquery/serializeObject/jquery.ba-seri
 		var container = $('.categories');
 
 		if (!categories || !categories.length) {
-			$('<div></div>')
-				.addClass('alert alert-info text-center')
-				.text('You have no active categories.')
-				.appendTo(container);
+			translator.translate('[[admin/manage/categories:alert.none-active]]', function (text) {
+				$('<div></div>')
+					.addClass('alert alert-info text-center')
+					.text(text)
+					.appendTo(container);
+			});
 		} else {
 			sortables = {};
 			renderList(categories, container, 0);
@@ -176,22 +178,24 @@ define('admin/manage/categories', ['vendor/jquery/serializeObject/jquery.ba-seri
 				cid: parentId,
 				categories: categories
 			}, function (html) {
-				container.append(html);
+				translator.translate(html, function (html) {
+					container.append(html);
 
-				// Handle and children categories in this level have
-				for(var x = 0,numCategories = categories.length; x < numCategories; x++) {
-					renderList(categories[x].children, $('li[data-cid="' + categories[x].cid + '"]'), categories[x].cid);
-				}
+					// Handle and children categories in this level have
+					for(var x = 0,numCategories = categories.length; x < numCategories; x++) {
+						renderList(categories[x].children, $('li[data-cid="' + categories[x].cid + '"]'), categories[x].cid);
+					}
 
-				// Make list sortable
-				sortables[parentId] = Sortable.create($('ul[data-cid="' + parentId + '"]')[0], {
-					group: 'cross-categories',
-					animation: 150,
-					handle: '.icon',
-					dataIdAttr: 'data-cid',
-					ghostClass: "placeholder",
-					onAdd: itemDidAdd,
-					onEnd: itemDragDidEnd
+					// Make list sortable
+					sortables[parentId] = Sortable.create($('ul[data-cid="' + parentId + '"]')[0], {
+						group: 'cross-categories',
+						animation: 150,
+						handle: '.icon',
+						dataIdAttr: 'data-cid',
+						ghostClass: "placeholder",
+						onAdd: itemDidAdd,
+						onEnd: itemDragDidEnd
+					});
 				});
 			});
 		}

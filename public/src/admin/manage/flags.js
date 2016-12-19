@@ -4,8 +4,9 @@
 define('admin/manage/flags', [
 	'autocomplete',
 	'Chart',
-	'components'
-], function (autocomplete, Chart, components) {
+	'components',
+	'translator'
+], function (autocomplete, Chart, components, translator) {
 
 	var	Flags = {};
 
@@ -56,7 +57,7 @@ define('admin/manage/flags', [
 	function handleDelete() {
 		$('.flags').on('click', '.delete', function () {
 			var btn = $(this);
-			bootbox.confirm('Do you really want to delete this post?', function (confirm) {
+			bootbox.confirm('[[admin/manage/flags:alerts.confirm-delete-post]]', function (confirm) {
 				if (!confirm) {
 					return;
 				}
@@ -76,7 +77,9 @@ define('admin/manage/flags', [
 		btn.parents('[data-pid]').fadeOut(function () {
 			$(this).remove();
 			if (!$('.flags [data-pid]').length) {
-				$('.post-container').text('No flagged posts!');
+				translator.translate('[[admin/manage/flags:none-flagged]]', function (text) {
+					$('.post-container').text(text);
+				});
 			}
 		});
 	}
@@ -130,7 +133,8 @@ define('admin/manage/flags', [
 	}
 
 	function updateFlagDetails(source) {
-		// As the flag details are returned in the API, update the form controls to show the correct data
+		// As the flag details are returned in the API, 
+		// update the form controls to show the correct data
 
 		// Create reference hash for use in this method
 		source = source.reduce(function (memo, cur) {
@@ -140,7 +144,7 @@ define('admin/manage/flags', [
 
 		components.get('posts/flag').each(function (idx, el) {
 			var pid = el.getAttribute('data-pid');
-			var el = $(el);
+			el = $(el);
 
 			if (source[pid]) {
 				for(var prop in source[pid]) {

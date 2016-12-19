@@ -10,7 +10,7 @@
 
 					</p>
 				</div>
-				<div class="panel-footer"><small>Daily flags</small></div>
+				<div class="panel-footer"><small>[[admin/manage/flags:daily]]</small></div>
 			</div>
 		</div>
 
@@ -18,8 +18,8 @@
 			<div class="form-group">
 				<div>
 					<div>
-						<label>Flags by user</label>
-						<input type="text" class="form-control" id="byUsername" placeholder="Search flagged posts by username" name="byUsername" value="{byUsername}">
+						<label>[[admin/manage/flags:by-user]]</label>
+						<input type="text" class="form-control" id="byUsername" placeholder="[[admin/manage/flags:by-user-search]]" name="byUsername" value="{byUsername}">
 					</div>
 				</div>
 			</div>
@@ -27,7 +27,7 @@
 			<div class="form-group">
 				<div>
 					<div>
-						<label>Category</label>
+						<label>[[admin/manage/flags:category]]</label>
 						<select class="form-control" id="category-selector" name="cid">
 							<option value="">[[unread:all_categories]]</option>
 							<!-- BEGIN categories -->
@@ -39,18 +39,18 @@
 			</div>
 
 			<div class="form-group">
-				<label>Sort By</label>
+				<label>[[admin/manage/flags:sort-by]]</label>
 				<div>
 					<div>
 						<select id="flag-sort-by" class="form-control" name="sortBy">
-							<option value="count" <!-- IF sortByCount -->selected<!-- ENDIF sortByCount -->>Most Flags</option>
-							<option value="time" <!-- IF sortByTime -->selected<!-- ENDIF sortByTime -->>Most Recent</option>
+							<option value="count" <!-- IF sortByCount -->selected<!-- ENDIF sortByCount -->>[[admin/manage/flags:sort-by.most-flags]]</option>
+							<option value="time" <!-- IF sortByTime -->selected<!-- ENDIF sortByTime -->>[[admin/manage/flags:sort-by.most-recent]]</option>
 						</select>
 					</div>
 				</div>
 			</div>
 
-			<button type="submit" class="btn btn-primary">Search</button>
+			<button type="submit" class="btn btn-primary">[[admin/manage/flags:search]]</button>
 			<button class="btn btn-primary" id="dismissAll">Dismiss All</button>
 		</form>
 
@@ -61,7 +61,7 @@
 			<div component="posts/flags" class="panel-group post-container" id="accordion" role="tablist" aria-multiselectable="true" data-next="{next}">
 				<!-- IF !posts.length -->
 				<div class="alert alert-success">
-					No flagged posts!
+					[[admin/manage/flags:none-flagged]]
 				</div>
 				<!-- ENDIF !posts.length -->
 
@@ -106,14 +106,16 @@
 										</div>
 										<small>
 											<span class="pull-right">
-												Posted in <a href="{config.relative_path}/category/{posts.category.slug}" target="_blank"><i class="fa {posts.category.icon}"></i> {posts.category.name}</a>, <span class="timeago" title="{posts.timestampISO}"></span> &bull;
-												<a href="{config.relative_path}/post/{posts.pid}" target="_blank">Read More</a>
+												[[posted-in, <a href="{config.relative_path}/category/{posts.category.slug}" target="_blank"><i class="fa {posts.category.icon}"></i> {posts.category.name}</a>]], 
+												<span class="timeago" title="{posts.timestampISO}"></span> &bull;
+												<a href="{config.relative_path}/post/{posts.pid}" target="_blank">[[admin/manage/flags:read-more]]</a>
 											</span>
 										</small>
 									</div>
 								</div>
 								<div class="col-sm-4">
-									<i class="fa fa-flag"></i> This post has been flagged {posts.flags} time(s):
+									<i class="fa fa-flag"></i> 
+									[[admin/manage/flags:flagged-x-times, {posts.flags}]]
 									<blockquote class="flag-reporters">
 										<ul>
 											<!-- BEGIN posts.flagReasons -->
@@ -131,8 +133,12 @@
 										</ul>
 									</blockquote>
 									<div class="btn-group">
-										<button class="btn btn-sm btn-success dismiss">Dismiss this Flag</button>
-										<button class="btn btn-sm btn-danger delete">Delete the Post</button>
+										<button class="btn btn-sm btn-success dismiss">
+											[[admin/manage/flags:dismiss]]
+										</button>
+										<button class="btn btn-sm btn-danger delete">
+											[[admin/manage/flags:delete-post]]
+										</button>
 									</div>
 								</div>
 							</div>
@@ -141,7 +147,9 @@
 								<div class="col-sm-6">
 									<form role="form">
 										<div class="form-group">
-											<label for="{posts.pid}-assignee">[[topic:flag_manage_assignee]]</label>
+											<label for="{posts.pid}-assignee">
+												[[topic:flag_manage_assignee]]
+											</label>
 											<select class="form-control" id="{posts.pid}-assignee" name="assignee">
 												<!-- BEGIN assignees -->
 												<option value="{assignees.uid}">{assignees.username}</option>
@@ -149,25 +157,41 @@
 											</select>
 										</div>
 										<div class="form-group">
-											<label for="{posts.pid}-state">[[topic:flag_manage_state]]</label>
+											<label for="{posts.pid}-state">
+												[[topic:flag_manage_state]]
+											</label>
 											<select class="form-control" id="{posts.pid}-state" name="state">
-												<option value="open">[[topic:flag_manage_state_open]]</option>
-												<option value="wip">[[topic:flag_manage_state_wip]]</option>
-												<option value="resolved">[[topic:flag_manage_state_resolved]]</option>
-												<option value="rejected">[[topic:flag_manage_state_rejected]]</option>
+												<option value="open">
+													[[topic:flag_manage_state_open]]
+												</option>
+												<option value="wip">
+													[[topic:flag_manage_state_wip]]
+												</option>
+												<option value="resolved">
+													[[topic:flag_manage_state_resolved]]
+												</option>
+												<option value="rejected">
+													[[topic:flag_manage_state_rejected]]
+												</option>
 											</select>
 										</div>
 										<div class="form-group">
-											<label for="{posts.pid}-notes">[[topic:flag_manage_notes]]</label>
+											<label for="{posts.pid}-notes">
+												[[topic:flag_manage_notes]]
+											</label>
 											<textarea class="form-control" id="{posts.pid}-notes" name="notes"></textarea>
 										</div>
-										<button type="button" component="posts/flag/update" class="btn btn-sm btn-primary btn-block">[[topic:flag_manage_update]]</button>
+										<button type="button" component="posts/flag/update" class="btn btn-sm btn-primary btn-block">
+											[[topic:flag_manage_update]]
+										</button>
 									</form>
 								</div>
 								<div class="col-sm-6">
 									<h5>[[topic:flag_manage_history]]</h5>
 									<!-- IF !posts.flagData.history.length -->
-									<div class="alert alert-info">[[topic:flag_manage_no_history]]</div>
+									<div class="alert alert-info">
+										[[topic:flag_manage_no_history]]
+									</div>
 									<!-- ELSE -->
 									<ul class="list-group" component="posts/flag/history">
 										<!-- BEGIN posts.flagData.history -->

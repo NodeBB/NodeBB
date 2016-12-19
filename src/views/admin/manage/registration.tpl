@@ -1,21 +1,19 @@
 <div class="registration panel panel-primary">
 	<div class="panel-heading">
-		Queue
+		[[admin/manage/registration:queue]]
 	</div>
 	<!-- IF !users.length -->
 	<p class="panel-body">
-		There are no users in the registration queue. <br>
-		To enable this feature, go to <a href="{config.relative_path}/admin/settings/user">Settings &rarr; User &rarr; User Registration</a> and set
-		<strong>Registration Type</strong> to "Admin Approval".
+		[[admin/manage/registration:description, {config.relative_path}/admin/settings/user]]
 	</p>
 	<!-- ENDIF !users.length -->
 	<div class="table-responsive">
 		<table class="table table-striped users-list">
 			<tr>
-				<th>Name</th>
-				<th>Email</th>
-				<th class="hidden-xs">IP</th>
-				<th class="hidden-xs">Time</th>
+				<th>[[admin/manage/registration:list.name]]</th>
+				<th>[[admin/manage/registration:list.email]]</th>
+				<th class="hidden-xs">[[admin/manage/registration:list.ip]]</th>
+				<th class="hidden-xs">[[admin/manage/registration:list.time]]</th>
 				<!-- BEGIN customHeaders -->
 				<th class="hidden-xs">{customHeaders.label}</th>
 				<!-- END customHeaders -->
@@ -25,7 +23,7 @@
 			<tr data-username="{users.username}">
 				<td>
 					<!-- IF users.usernameSpam -->
-					<i class="fa fa-times-circle text-danger" title="Frequency: {users.spamData.username.frequency} Appears: {users.spamData.username.appears} Confidence: {users.spamData.username.confidence}"></i>
+					<i class="fa fa-times-circle text-danger" title="[[admin/manage/registration:list.username-spam, {users.spamData.username.frequency}, {users.spamData.username.appears}, {users.spamData.username.confidence}]]"></i>
 					<!-- ELSE -->
 					<i class="fa fa-check text-success"></i>
 					<!-- ENDIF users.usernameSpam -->
@@ -33,7 +31,7 @@
 				</td>
 				<td>
 					<!-- IF users.emailSpam -->
-					<i class="fa fa-times-circle text-danger" title="Frequency: {users.spamData.email.frequency} Appears: {users.spamData.email.appears}"></i>
+					<i class="fa fa-times-circle text-danger" title="[[admin/manage/registration:list.email-spam, {users.spamData.email.frequency}, {users.spamData.email.appears}]]"></i>
 					<!-- ELSE -->
 					<i class="fa fa-check text-success"></i>
 					<!-- ENDIF users.emailSpam -->
@@ -41,7 +39,7 @@
 				</td>
 				<td class="hidden-xs">
 					<!-- IF users.ipSpam -->
-					<i class="fa fa-times-circle text-danger" title="Frequency: {users.spamData.ip.frequency} Appears: {users.spamData.ip.appears}"></i>
+					<i class="fa fa-times-circle text-danger" title="[[admin/manage/registration:list.ip-spam, {users.spamData.ip.frequency}, {users.spamData.ip.appears}]]"></i>
 					<!-- ELSE -->
 					<i class="fa fa-check text-success"></i>
 					<!-- ENDIF users.ipSpam -->
@@ -80,19 +78,17 @@
 
 <div class="invitations panel panel-success">
 	<div class="panel-heading">
-		Invitations
+		[[admin/manage/registration:invitations]]
 	</div>
 	<p class="panel-body">
-		Below is a complete list of invitations sent. Use ctrl-f to search through the list by email or username.
-		<br><br>
-		The username will be displayed to the right of the emails for users who have redeemed their invitations.
+		[[admin/manage/registration:invitations.description]]
 	</p>
 	<div class="table-responsive">
 		<table class="table table-striped invites-list">
 			<tr>
-				<th>Inviter Username</th>
-				<th>Invitee Email</th>
-				<th>Invitee Username (if registered)</th>
+				<th>[[admin/manage/registration:invitations.inviter-username]]</th>
+				<th>[[admin/manage/registration:invitations.invitee-email]]</th>
+				<th>[[admin/manage/registration:invitations.invitee-username]]</th>
 			</tr>
 			<!-- BEGIN invites -->
 			<!-- BEGIN invites.invitations -->
