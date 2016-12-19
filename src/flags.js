@@ -34,7 +34,7 @@ Flags.get = function (flagId, callback) {
 			}, function (err, payload) {
 				// Final object return construction
 				next(err, Object.assign(data.base, {
-					datetimeISO: new Date(data.base.datetime).toISOString(),
+					datetimeISO: new Date(parseInt(data.base.datetime, 10)).toISOString(),
 					target_readable: data.base.type.charAt(0).toUpperCase() + data.base.type.slice(1) + ' ' + data.base.targetId,
 					target: payload.targetObj,
 					history: data.history,
@@ -216,7 +216,7 @@ Flags.getNotes = function (flagId, callback) {
 						uid: noteObj[0],
 						content: noteObj[1],
 						datetime: note.score,
-						datetimeISO: new Date(note.score).toISOString()
+						datetimeISO: new Date(parseInt(note.score, 10)).toISOString()
 					};
 				} catch (e) {
 					return next(e);
@@ -469,7 +469,7 @@ Flags.getHistory = function (flagId, callback) {
 					uid: entry.value[0],
 					fields: changeset,
 					datetime: entry.score,
-					datetimeISO: new Date(entry.score).toISOString()
+					datetimeISO: new Date(parseInt(entry.score, 10)).toISOString()
 				};
 			});
 
