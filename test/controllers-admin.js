@@ -443,7 +443,7 @@ describe('Admin Controllers', function () {
 			assert(body);
 			done();
 		});
-	})
+	});
 
 	after(function (done) {
 		db.emptydb(done);
