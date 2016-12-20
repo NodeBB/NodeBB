@@ -14,6 +14,8 @@ var hotswap = require('./hotswap');
 var file = require('./file');
 var languages = require('./languages');
 
+var api = require('./api');
+
 var app;
 var middleware;
 
@@ -37,8 +39,15 @@ var middleware;
 
 	Plugins.initialized = false;
 
-	Plugins.requireLibrary = function (pluginID, libraryPath) {
-		Plugins.libraries[pluginID] = require(libraryPath);
+	Plugins.requireLibrary = function (pluginID, libraryPath, api) {
+		var plugin = require(libraryPath);
+
+		if (typeof plugin === 'function') {
+			Plugins.libraries[pluginID] = plugin(api);
+		} else {
+			Plugins.libraries[pluginID] = plugin;
+		}
+
 		Plugins.libraryPaths.push(libraryPath);
 	};
 
@@ -102,7 +111,13 @@ var middleware;
 			},
 			async.apply(Plugins.getPluginPaths),
 			function (paths, next) {
-				async.eachSeries(paths, Plugins.loadPlugin, next);
+				async.eachSeries(
+					paths,
+					function (pluginPath, callback) {
+						Plugins.loadPlugin(pluginPath, api, callback);
+					},
+					next
+				);
 			},
 			function (next) {
 				// If some plugins are incompatible, throw the warning here

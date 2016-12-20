@@ -5,6 +5,7 @@ var	assert = require('assert');
 var path = require('path');
 var nconf = require('nconf');
 var request = require('request');
+var sinon = require('sinon');
 
 var db = require('./mocks/databasemock');
 var plugins = require('../src/plugins');
@@ -179,7 +180,22 @@ describe('Plugins', function () {
 		});
 	});
 
+	describe('API', function () {
+		it('should inject the given API object to the plugin when the plugin exports a function', function (done) {
+			var api = { foo: sinon.stub() };
 
+			plugins.loadPlugin(path.join(__dirname, 'fixtures/plugins/plugin-api'), api, function (err) {
+				assert.ifError(err);
+				assert.strictEqual(api.foo.calledOnce, true);
+
+				var loadedPlugin = plugins.libraries['plugin-api'];
+
+				assert.deepStrictEqual(loadedPlugin, { any: 'plugin-method' });
+
+				done();
+			});
+		});
+	});
 
 });
 
