@@ -374,11 +374,53 @@ describe('socket.io', function () {
 
 	it('should return error', function (done) {
 		var socketAdmin = require('../src/socket.io/admin');
- 		socketAdmin.before({uid: 10}, 'someMethod', {}, function (err) {
- 			assert.equal(err.message, '[[error:no-privileges]]');
- 			done();
- 		});
+		socketAdmin.before({uid: 10}, 'someMethod', {}, function (err) {
+			assert.equal(err.message, '[[error:no-privileges]]');
+			done();
+		});
 	});
+
+	it('should get room stats', function (done) {
+		var socketAdmin = require('../src/socket.io/admin');
+
+		io.emit('meta.rooms.enter', {enter: 'topic_1'}, function (err) {
+			assert.ifError(err);
+			socketAdmin.rooms.getAll({uid: 10}, {}, function (err) {
+				assert.ifError(err);
+				setTimeout(function () {
+					socketAdmin.rooms.getAll({uid: 10}, {}, function (err, data) {
+						assert.ifError(err);
+						assert(data.hasOwnProperty('onlineGuestCount'));
+						assert(data.hasOwnProperty('onlineRegisteredCount'));
+						assert(data.hasOwnProperty('socketCount'));
+						assert(data.hasOwnProperty('topics'));
+						assert(data.hasOwnProperty('users'));
+						assert.equal(data.topics['1'].title, 'test topic title')
+						done();
+					});
+				}, 1000);
+			});
+		});
+	});
+
+	it('should get room stats', function (done) {
+		var socketAdmin = require('../src/socket.io/admin');
+
+		io.emit('meta.rooms.enter', {enter: 'category_1'}, function (err) {
+			assert.ifError(err);
+			socketAdmin.rooms.getAll({uid: 10}, {}, function (err) {
+				assert.ifError(err);
+				setTimeout(function () {
+					socketAdmin.rooms.getAll({uid: 10}, {}, function (err, data) {
+						assert.ifError(err);
+						assert.equal(data.users.category, 1);
+						done();
+					});
+				}, 1000);
+			});
+		});
+	});
+
 
 	after(function (done) {
 		db.emptydb(done);
