@@ -1,8 +1,10 @@
 <div class="row">
 	<form role="form" class="category" data-cid="{category.cid}">
 		<ul class="nav nav-pills">
-			<li class="active"><a href="#category-settings" data-toggle="tab">Category Settings</a></li>
-			<li><a href="#privileges" data-toggle="tab">Privileges</a></li>
+			<li class="active"><a href="#category-settings" data-toggle="tab">
+				[[admin/manage/categories:settings]]
+			</a></li>
+			<li><a href="#privileges" data-toggle="tab">[[admin/manage/categories:privileges]]</a></li>
 		</ul>
 		<br />
 		<div class="tab-content">
@@ -10,30 +12,40 @@
 				<div class="col-md-9">
 					<div class="category-settings-form">
 						<fieldset>
-							<label for="cid-{category.cid}-name">Category Name</label>
-							<input id="cid-{category.cid}-name" type="text" class="form-control" placeholder="Category Name" data-name="name" value="{category.name}" /><br />
+							<label for="cid-{category.cid}-name">
+								[[admin/manage/categories:name]]
+							</label>
+							<input id="cid-{category.cid}-name" type="text" class="form-control" placeholder="[[admin/manage/categories:name]]" data-name="name" value="{category.name}" /><br />
 
-							<label for="cid-{category.cid}-description">Category Description</label>
-							<input id="cid-{category.cid}-description" data-name="description" placeholder="Category Description" value="{category.description}" class="form-control category_description description"></input><br />
+							<label for="cid-{category.cid}-description">
+								[[admin/manage/categories:description]]
+							</label>
+							<input id="cid-{category.cid}-description" data-name="description" placeholder="[[admin/manage/categories:description]]" value="{category.description}" class="form-control category_description description" /><br />
 						</fieldset>
 
 						<fieldset class="row">
 							<div class="col-sm-4 col-xs-12">
 								<div class="form-group">
-									<label for="cid-{category.cid}-bgColor">Background Colour</label>
+									<label for="cid-{category.cid}-bgColor">
+										[[admin/manage/categories:bg-color]]
+									</label>
 									<input id="cid-{category.cid}-bgColor" placeholder="#0059b2" data-name="bgColor" value="{category.bgColor}" class="form-control category_bgColor" />
 								</div>
 							</div>
 							<div class="col-sm-4 col-xs-12">
 								<div class="form-group">
-									<label for="cid-{category.cid}-color">Text Colour</label>
+									<label for="cid-{category.cid}-color">
+										[[admin/manage/categories:text-color]]
+									</label>
 									<input id="cid-{category.cid}-color" placeholder="#fff" data-name="color" value="{category.color}" class="form-control category_color" />
 								</div>
 							</div>
 							<div class="col-sm-4 col-xs-12">
 								<div class="form-group">
-									<label for="cid-{category.cid}-imageClass">Background Image Size</label>
-										<select id="cid-{category.cid}-imageClass" class="form-control" data-name="imageClass" data-value="{category.imageClass}">
+									<label for="cid-{category.cid}-imageClass">
+										[[admin/manage/categories:bg-image-size]]
+									</label>
+									<select id="cid-{category.cid}-imageClass" class="form-control" data-name="imageClass" data-value="{category.imageClass}">
 										<option value="auto">auto</option>
 										<option value="cover">cover</option>
 										<option value="contain">contain</option>
@@ -42,19 +54,25 @@
 							</div><br />
 							<div class="col-sm-4 col-xs-12">
 								<div class="form-group">
-									<label for="cid-{category.cid}-class">Custom Class</label>
+									<label for="cid-{category.cid}-class">
+										[[admin/manage/categories:custom-class]]
+									</label>
 									<input id="cid-{category.cid}-class" type="text" class="form-control" placeholder="col-md-6 col-xs-6" data-name="class" value="{category.class}" />
 								</div>
 							</div>
 							<div class="col-sm-4 col-xs-12">
 								<div class="form-group">
-									<label for="cid-{category.cid}-numRecentReplies"># of Recent Replies</label>
+									<label for="cid-{category.cid}-numRecentReplies">
+										[[admin/manage/categories:num-recent-replies]]
+									</label>
 									<input id="cid-{category.cid}-numRecentReplies" type="text" class="form-control" placeholder="2" data-name="numRecentReplies" value="{category.numRecentReplies}" />
 								</div>
 							</div>
 							<div class="col-sm-4 col-xs-12">
 								<div class="form-group">
-									<label for="cid-{category.cid}-link">External Link</label>
+									<label for="cid-{category.cid}-link">
+										[[admin/manage/categories:ext-link]]
+									</label>
 									<input id="cid-{category.cid}-link" type="text" class="form-control" placeholder="http://domain.com" data-name="link" value="{category.link}" />
 								</div>
 							</div>
@@ -81,38 +99,53 @@
 							</div>
 							<div class="btn-group btn-group-justified">
 								<div class="btn-group">
-									<button type="button" data-cid="{category.cid}" class="btn btn-default upload-button"><i class="fa fa-upload"></i> Upload Image</button>
+									<button type="button" data-cid="{category.cid}" class="btn btn-default upload-button">
+										<i class="fa fa-upload"></i> 
+										[[admin/manage/categories:upload-image]]
+									</button>
 								</div>
 								<!-- IF category.image -->
 								<div class="btn-group">
-									<button class="btn btn-warning delete-image"><i data-name="icon" value="fa-times" class="fa fa-times"></i> Remove</button>
+									<button class="btn btn-warning delete-image">
+										<i data-name="icon" value="fa-times" class="fa fa-times"></i> 
+										[[admin/manage/categories:delete-image]]
+									</button>
 								</div>
 								<!-- ENDIF category.image -->
 							</div><br />
 
 							<fieldset>
 								<div class="form-group text-center">
-									<label for="category-image">Category Image</label>
+									<label for="category-image">
+										[[admin/manage/categories:category-image]]
+									</label>
 									<br/>
-									<input id="category-image" type="text" class="form-control" placeholder="Category Image" data-name="image" value="{category.image}" />
+									<input id="category-image" type="text" class="form-control" placeholder="[[admin/manage/categories:category-image]]" data-name="image" value="{category.image}" />
 								</div>
 							</fieldset>
 
 							<fieldset>
 								<div class="form-group text-center">
-									<label for="cid-{category.cid}-parentCid">Parent Category</label>
+									<label for="cid-{category.cid}-parentCid">[[admin/manage/categories:parent-category]]</label>
 									<br/>
 									<div class="btn-group <!-- IF !category.parent.name -->hide<!-- ENDIF !category.parent.name -->">
 										<button type="button" class="btn btn-default" data-action="changeParent" data-parentCid="{category.parent.cid}"><i class="fa {category.parent.icon}"></i> {category.parent.name}</button>
 										<button type="button" class="btn btn-warning" data-action="removeParent" data-parentCid="{category.parent.cid}"><i class="fa fa-times"></i></button>
 									</div>
-									<button type="button" class="btn btn-default btn-block <!-- IF category.parent.name -->hide<!-- ENDIF category.parent.name -->" data-action="setParent"><i class="fa fa-sitemap"></i> (None)</button>
+									<button type="button" class="btn btn-default btn-block <!-- IF category.parent.name -->hide<!-- ENDIF category.parent.name -->" data-action="setParent">
+										<i class="fa fa-sitemap"></i> 
+										[[admin/manage/categories:parent-category-none]]
+									</button>
 								</div>
 							</fieldset>
 							<hr/>
-							<button class="btn btn-info btn-block copy-settings"><i class="fa fa-files-o"></i> Copy Settings From</button>
+							<button class="btn btn-info btn-block copy-settings">
+								<i class="fa fa-files-o"></i> [[admin/manage/categories:copy-settings]]
+							</button>
 							<hr />
-							<button class="btn btn-danger btn-block purge"><i class="fa fa-eraser"></i> Purge Category</button>
+							<button class="btn btn-danger btn-block purge">
+								<i class="fa fa-eraser"></i> [[admin/manage/categories:purge]]
+							</button>
 						</div>
 					</div>
 				</div>
@@ -120,12 +153,10 @@
 
 			<div class="tab-pane fade col-xs-12" id="privileges">
 				<p>
-					You can configure the access control privileges for this category in this section. Privileges can be granted on a per-user or
-					a per-group basis. You can add a new user to this table by searching for them in the form below.
+					[[admin/manage/categories:privileges.description]]
 				</p>
 				<p class="text-warning">
-					<strong>Note</strong>: Privilege settings take effect immediately. It is not necessary to save the category after adjusting
-					these settings.
+					[[admin/manage/categories:privileges.warning]]
 				</p>
 				<hr />
 				<div class="privilege-table-container">
@@ -139,4 +170,3 @@
 <button id="save" class="floating-button mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored">
     <i class="material-icons">save</i>
 </button>
-

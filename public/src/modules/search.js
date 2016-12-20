@@ -53,6 +53,10 @@ define('search', ['navigator', 'translator'], function (nav, translator) {
 			}
 		}
 
+		if (data.hasTags && data.hasTags.length) {
+			query.hasTags = data.hasTags;
+		}
+
 		if (parseInt(data.replies, 10) > 0) {
 			query.replies = data.replies;
 			query.repliesFilter = data.repliesFilter || 'atleast';

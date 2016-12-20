@@ -4,39 +4,41 @@
 define('admin/modules/search', ['mousetrap'], function (mousetrap) {
 	var search = {};
 
-	function nsToTitle(namespace) {
-		return namespace.replace('admin/', '').split('/').map(function (str) {
-			return str[0].toUpperCase() + str.slice(1);
-		}).join(' > ');
-	}
-
 	function find(dict, term) {
 		var html = dict.filter(function (elem) {
 			return elem.translations.toLowerCase().includes(term);
 		}).map(function (params) {
 			var namespace = params.namespace;
 			var translations = params.translations;
-			var title = params.title == null ? nsToTitle(namespace) : params.title;
+			var title = params.title;
 
 			var results = translations
 				// remove all lines without a match
 				.replace(new RegExp('^(?:(?!' + term + ').)*$', 'gmi'), '')
-				// get up to 25 characaters of context on both sides of the match
+				// remove lines that only match the title
+				.replace(new RegExp('(^|\\n).*?' + title + '.*?(\\n|$)', 'g'), '')
+				// get up to 25 characters of context on both sides of the match
 				// and wrap the match in a `.search-match` element
 				.replace(
 					new RegExp('^[\\s\\S]*?(.{0,25})(' + term + ')(.{0,25})[\\s\\S]*?$', 'gmi'),
 					'...$1<span class="search-match">$2</span>$3...<br>'
 				)
 				// collapse whitespace
-				.replace(/(?:\n ?)+/g, '\n');
+				.replace(/(?:\n ?)+/g, '\n')
+				.trim();
+
+			title = title.replace(
+				new RegExp('(^.*?)(' + term + ')(.*?$)', 'gi'),
+				'$1<span class="search-match">$2</span>$3'
+			);
 
 			return '<li role="presentation" class="result">' +
 				'<a role= "menuitem" href= "' + config.relative_path + '/' + namespace + '" >' +
 					title +
-					'<br>' +
-					'<small><code>' +
+					'<br>' + (!results ? '' :
+					('<small><code>' +
 						results +
-					'</small></code>' +
+					'</small></code>')) +
 				'</a>' +
 			'</li>';
 		}).join('');

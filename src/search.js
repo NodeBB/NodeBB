@@ -126,6 +126,7 @@ function filterAndSort(pids, data, callback) {
 
 		posts = filterByPostcount(posts, data.replies, data.repliesFilter);
 		posts = filterByTimerange(posts, data.timeRange, data.timeFilter);
+		posts = filterByTags(posts, data.hasTags);
 
 		sortPosts(posts, data);
 
@@ -166,6 +167,7 @@ function getMatchedPosts(pids, data, callback) {
 			var keys = pids.map(function (pid) {
 				return 'post:' + pid;
 			});
+
 			db.getObjectsFields(keys, postFields, next);
 		},
 		function (_posts, next) {
@@ -185,7 +187,7 @@ function getMatchedPosts(pids, data, callback) {
 					}
 				},
 				topics: function (next) {
-					var topics;
+					var topicsData;
 					async.waterfall([
 						function (next) {
 							var topicKeys = posts.map(function (post) {
@@ -194,12 +196,12 @@ function getMatchedPosts(pids, data, callback) {
 							db.getObjectsFields(topicKeys, topicFields, next);
 						},
 						function (_topics, next) {
-							topics = _topics;
+							topicsData = _topics;
 
 							async.parallel({
 								teasers: function (next) {
 									if (topicFields.indexOf('teaserPid') !== -1) {
-										var teaserKeys = topics.map(function (topic) {
+										var teaserKeys = topicsData.map(function (topic) {
 											return 'post:' + topic.teaserPid;
 										});
 										db.getObjectsFields(teaserKeys, ['timestamp'], next);
@@ -211,10 +213,20 @@ function getMatchedPosts(pids, data, callback) {
 									if (!categoryFields.length) {
 										return next();
 									}
-									var cids = topics.map(function (topic) {
+									var cids = topicsData.map(function (topic) {
 										return 'category:' + topic.cid;
 									});
 									db.getObjectsFields(cids, categoryFields, next);
+								},
+								tags: function (next) {
+									if (data.hasTags && data.hasTags.length) {
+										var tids = posts.map(function (post) {
+											return post && post.tid;
+										});
+										topics.getTopicsTags(tids, next);
+									} else {
+										setImmediate(next);
+									}
 								}
 							}, next);
 						}
@@ -223,16 +235,19 @@ function getMatchedPosts(pids, data, callback) {
 							return next(err);
 						}
 
-						topics.forEach(function (topic, index) {
+						topicsData.forEach(function (topic, index) {
 							if (topic && results.categories && results.categories[index]) {
 								topic.category = results.categories[index];
 							}
 							if (topic && results.teasers && results.teasers[index]) {
 								topic.teaser = results.teasers[index];
 							}
+							if (topic && results.tags && results.tags[index]) {
+								topic.tags = results.tags[index];
+							}
 						});
 
-						next(null, topics);
+						next(null, topicsData);
 					});
 				}
 			}, next);
@@ -293,6 +308,21 @@ function filterByTimerange(posts, timeRange, timeFilter) {
 				return post.timestamp <= time;
 			});
 		}
+	}
+	return posts;
+}
+
+function filterByTags(posts, hasTags) {
+	if (hasTags && hasTags.length) {
+		posts = posts.filter(function (post) {
+			var hasAllTags = false;
+			if (post && post.topic && post.topic.tags && post.topic.tags.length) {
+				hasAllTags = hasTags.every(function (tag) {
+					return post.topic.tags.indexOf(tag) !== -1;
+				});
+			}
+			return hasAllTags;
+		});
 	}
 	return posts;
 }

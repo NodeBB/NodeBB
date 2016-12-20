@@ -1,0 +1,8 @@
+{
+	"reputation": "Reputation Settings",
+	"disable": "Disable Reputation System",
+	"disable-down-voting": "Disable Down Voting",
+	"thresholds": "Activity Thresholds",
+	"min-rep-downvote": "Minimum reputation to downvote posts",
+	"min-rep-flag": "Minimum reputation to flag posts"
+}

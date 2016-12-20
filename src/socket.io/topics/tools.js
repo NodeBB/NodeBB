@@ -1,7 +1,6 @@
 'use strict';
 
 var async = require('async');
-var winston = require('winston');
 var validator = require('validator');
 
 var topics = require('../../topics');
@@ -89,31 +88,37 @@ module.exports = function (SocketTopics) {
 		}
 
 		async.each(data.tids, function (tid, next) {
-			topics.tools[action](tid, socket.uid, function (err, data) {
-				if (err) {
-					return next(err);
+			async.waterfall([
+				function (next) {
+					topics.tools[action](tid, socket.uid, next);
+				},
+				function (data, next) {
+					socketHelpers.emitToTopicAndCategory(event, data);
+					logTopicAction(action, socket, tid, next);
 				}
-
-				socketHelpers.emitToTopicAndCategory(event, data);
-
-				if (action === 'delete' || action === 'restore' || action === 'purge') {
-					topics.getTopicField(tid, 'title', function (err, title) {
-						if (err) {
-							return winston.error(err);
-						}
-						events.log({
-							type: 'topic-' + action,
-							uid: socket.uid,
-							ip: socket.ip,
-							tid: tid,
-							title: validator.escape(String(title))
-						});
-					});
-				}
-
-				next();
-			});
+			], next);
 		}, callback);
 	};
+
+	function logTopicAction(action, socket, tid, callback) {
+		var actionsToLog = ['delete', 'restore', 'purge'];
+		if (actionsToLog.indexOf(action) === -1) {
+			return setImmediate(callback);
+		}
+		async.waterfall([
+			function (next) {
+				topics.getTopicField(tid, 'title', next);
+			},
+			function (title, next) {
+				events.log({
+					type: 'topic-' + action,
+					uid: socket.uid,
+					ip: socket.ip,
+					tid: tid,
+					title: validator.escape(String(title))
+				}, next);
+			}
+		], callback);
+	}
 
 };

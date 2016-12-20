@@ -1,0 +1,12 @@
+{
+    "tag": "Tag Settings",
+    "min-per-topic": "Minimum Tags per Topic",
+    "max-per-topic": "Maximum Tags per Topic",
+    "min-length": "Minimum Tag Length",
+    "max-length": "Maximum Tag Length",
+    "goto-manage": "Click here to visit the tag management page.",
+    "privacy": "Privacy",
+    "list-private": "Make the tags list private",
+    "related-topics": "Related Topics",
+    "max-related-topics": "Maximum related topics to display (if supported by theme)"
+}

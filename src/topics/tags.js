@@ -203,6 +203,13 @@ module.exports = function (Topics) {
 		db.getSetMembers('topic:' + tid + ':tags', callback);
 	};
 
+	Topics.getTopicsTags = function (tids, callback) {
+		var keys = tids.map(function (tid) {
+			return 'topic:' + tid + ':tags';
+		});
+		db.getSetsMembers(keys, callback);
+	};
+
 	Topics.getTopicTagsObjects = function (tid, callback) {
 		Topics.getTopicsTagsObjects([tid], function (err, data) {
 			callback(err, Array.isArray(data) && data.length ? data[0] : []);

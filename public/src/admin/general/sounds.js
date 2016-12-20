@@ -23,7 +23,7 @@ define('admin/general/sounds', ['sounds', 'settings'], function (Sounds, Setting
 				socket.emit('admin.fireEvent', {
 					name: 'event:sounds.reloadMapping'
 				});
-				app.alertSuccess('Settings Saved');
+				app.alertSuccess('[[admin/general/sounds:saved]]');
 			});
 		});
 	};
