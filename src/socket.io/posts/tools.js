@@ -150,7 +150,7 @@ module.exports = function (SocketPosts) {
 					return callback(new Error('[[error:cant-purge-main-post]]'));
 				}
 				if (results.isMain && results.isLast) {
-					deleteTopicOf(data.pid, socket, next);
+					return deleteTopicOf(data.pid, socket, next);
 				}
 				setImmediate(next);
 			},

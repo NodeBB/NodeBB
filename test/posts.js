@@ -185,31 +185,37 @@ describe('Post\'s', function () {
 	});
 
 	describe('delete/restore/purge', function () {
+		function createTopicWithReply(callback) {
+			topics.post({
+				uid: voterUid,
+				cid: cid,
+				title: 'topic to delete/restore/purge',
+				content: 'A post to delete/restore/purge'
+			}, function (err, topicPostData) {
+				assert.ifError(err);
+				topics.reply({
+					uid: voterUid,
+					tid: topicPostData.topicData.tid,
+					timestamp: Date.now(),
+					content: 'A post to delete/restore and purge'
+				}, function (err, replyData) {
+					assert.ifError(err);
+					callback(topicPostData, replyData);
+				});
+			});
+		}
+
 		var tid;
 		var mainPid;
 		var replyPid;
 
 		var socketPosts = require('../src/socket.io/posts');
 		before(function (done) {
-			topics.post({
-				uid: voterUid,
-				cid: cid,
-				title: 'topic to delete/restore/purge',
-				content: 'A post to delete/restore/purge'
-			}, function (err, data) {
-				assert.ifError(err);
-				tid = data.topicData.tid;
-				mainPid = data.postData.pid;
-				topics.reply({
-					uid: voterUid,
-					tid: topicData.tid,
-					timestamp: Date.now(),
-					content: 'A post to delete/restore and purge'
-				}, function (err, data) {
-					assert.ifError(err);
-					replyPid = data.pid;
-					privileges.categories.give(['purge'], cid, 'registered-users', done);
-				});
+			createTopicWithReply(function (topicPostData, replyData) {
+				tid = topicPostData.topicData.tid;
+				mainPid = topicPostData.postData.pid;
+				replyPid = replyData.pid;
+				privileges.categories.give(['purge'], cid, 'registered-users', done);
 			});
 		});
 
@@ -242,27 +248,48 @@ describe('Post\'s', function () {
 			});
 		});
 
-		it('should delete posts and topic', function (done) {
+		it('should delete posts', function (done) {
 			socketPosts.deletePosts({uid: globalModUid}, {pids: [replyPid, mainPid], tid: tid}, function (err) {
 				assert.ifError(err);
-				topics.getTopicField(tid, 'deleted', function (err, deleted) {
+				posts.getPostField(replyPid, 'deleted', function (err, deleted) {
 					assert.ifError(err);
 					assert.equal(parseInt(deleted, 10), 1);
-					done();
+					posts.getPostField(mainPid, 'deleted', function (err, deleted) {
+						assert.ifError(err);
+						assert.equal(parseInt(deleted, 10), 1);
+						done();
+					});
 				});
 			});
 		});
 
-		it('should purge posts', function (done) {
-			var socketTopics = require('../src/socket.io/topics');
-			socketTopics.restore({uid: globalModUid}, {tids: [tid], cid: cid}, function (err) {
+		it('should delete topic if last main post is deleted', function (done) {
+			topics.post({uid: voterUid, cid: cid, title: 'test topic', content: 'test topic'}, function (err, data) {
 				assert.ifError(err);
-				socketPosts.purgePosts({uid: voterUid}, {pids: [replyPid, mainPid], tid: tid}, function (err) {
+				socketPosts.deletePosts({uid: globalModUid}, {pids: [data.postData.pid], tid: data.topicData.tid}, function (err) {
 					assert.ifError(err);
-					posts.exists('post:' + replyPid, function (err, exists) {
+					topics.getTopicField(data.topicData.tid, 'deleted', function (err, deleted) {
+						assert.ifError(err);
+						assert.equal(parseInt(deleted, 10), 1);
+						done();
+					});
+				});
+			});
+		});
+
+		it('should purge posts and delete topic', function (done) {
+
+			createTopicWithReply(function (topicPostData, replyData) {
+				socketPosts.purgePosts({uid: voterUid}, {pids: [replyData.pid, topicPostData.postData.pid], tid: topicPostData.topicData.tid}, function (err) {
+					assert.ifError(err);
+					posts.exists('post:' + replyData.pid, function (err, exists) {
 						assert.ifError(err);
 						assert.equal(exists, false);
-						done();
+						topics.getTopicField(topicPostData.topicData.tid, 'deleted', function (err, deleted) {
+							assert.ifError(err);
+							assert.equal(parseInt(deleted, 10), 1);
+							done();
+						});
 					});
 				});
 			});
