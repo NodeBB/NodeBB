@@ -119,6 +119,8 @@ if ('undefined' !== typeof window) {
 			$.timeago.settings.cutoff = 1000 * 60 * 60 * 24 * (parseInt(config.timeagoCutoff, 10) || 30);
 		}
 
+		$.timeago.settings.allowFuture = true;
+
 		$.fn.timeago = function () {
 			var els = $(this);
 
