@@ -95,6 +95,7 @@
 			}
 
 			url = [config.relative_path, url].join('/');
+			var fallback;
 
 			$('#main-menu li').removeClass('active');
 			$('#main-menu a').removeClass('active').filter('[href="' + url + '"]').each(function () {
@@ -102,35 +103,34 @@
 				menu
 					.parent().addClass('active')
 					.parents('.menu-item').addClass('active');
-				
-				var match = menu.attr('href').match(/admin\/((.+?)\/.+?)$/);
-				if (!match) {
-					return;
-				}
-				var str = '[[admin/menu:' + match[1] + ']]';
-				if (match[2] === 'settings') {
-					str = translator.compile('admin/menu:settings.page-title', str);
-				}
-				translator.translate(str, function (text) {
-					$('#main-page-title').text(text);
-				});
+				fallback = menu.text();
 			});
 
-			var title = url;
-			if (/admin\/general\/dashboard$/.test(title)) {
-				title = '[[admin/menu:general/dashboard]]';
+			var mainTitle;
+			var pageTitle;
+			if (/admin\/general\/dashboard$/.test(url)) {
+				mainTitle = pageTitle = '[[admin/menu:general/dashboard]]';
+			} else if (/admin\/plugins\//.test(url)) {
+				mainTitle = fallback;
+				pageTitle = '[[admin/menu:section-plugins]] > ' + mainTitle;
 			} else {
-				title = title.match(/admin\/(.+?)\/(.+?)$/);
-				title = '[[admin/menu:section-' + 
-					(title[1] === 'development' ? 'advanced' : title[1]) +
-					']]' + (title[2] ? (' > [[admin/menu:' +
-					title[1] + '/' + title[2] + ']]') : '');
+				var matches = url.match(/admin\/(.+?)\/(.+?)$/);
+				mainTitle = '[[admin/menu:' + matches[1] + '/' + matches[2] + ']]';
+				pageTitle = '[[admin/menu:section-' + 
+					(matches[1] === 'development' ? 'advanced' : matches[1]) +
+					']]' + (matches[2] ? (' > ' + mainTitle) : '');
+				if (matches[2] === 'settings') {
+					mainTitle = translator.compile('admin/menu:settings.page-title', mainTitle);
+				}
 			}
 
-			title = '[[admin/admin:acp-title, ' + title + ']]';
+			pageTitle = translator.compile('admin/admin:acp-title', pageTitle);
 
-			translator.translate(title, function (title) {
+			translator.translate(pageTitle, function (title) {
 				document.title = title.replace(/&gt;/g, '>');
+			});
+			translator.translate(mainTitle, function (text) {
+				$('#main-page-title').text(text);
 			});
 		});
 	}
