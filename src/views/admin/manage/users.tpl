@@ -29,9 +29,7 @@
 					<a target="_blank" href="{config.relative_path}/api/admin/users/csv" class="btn btn-primary pull-right">[[admin/manage/users:download-csv]]</a>
 
 					<!-- IF inviteOnly -->
-					<!-- IF loggedIn -->
 					<button component="user/invite" class="btn btn-success form-control"><i class="fa fa-users"></i> [[admin/manage/users:invite]]</button>
-					<!-- ENDIF loggedIn -->
 					<!-- ENDIF inviteOnly -->
 
 					<button id="createUser" class="btn btn-primary pull-right">[[admin/manage/users:new]]</button>
