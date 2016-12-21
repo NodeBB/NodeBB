@@ -111,7 +111,7 @@ module.exports = function (Categories) {
 
 	Categories.onNewPostMade = function (cid, pinned, postData, callback) {
 		if (!cid || !postData) {
-			return callback();
+			return setImmediate(callback);
 		}
 
 		async.parallel([
@@ -123,17 +123,23 @@ module.exports = function (Categories) {
 			},
 			function (next) {
 				if (parseInt(pinned, 10) === 1) {
-					next();
-				} else {
-					db.sortedSetAdd('cid:' + cid + ':tids', postData.timestamp, postData.tid, next);
+					return setImmediate(next);
 				}
+				 
+				async.parallel([
+					function (next) {
+						db.sortedSetAdd('cid:' + cid + ':tids', postData.timestamp, postData.tid, next);
+					},
+					function (next) {
+						db.sortedSetIncrBy('cid:' + cid + ':tids:posts', 1, postData.tid, next);
+					}
+				], function (err) {
+					next(err);
+				});					
 			},
 			function (next) {
 				Categories.updateRecentTid(cid, postData.tid, next);
-			},
-			function (next) {
-				db.sortedSetIncrBy('cid:' + cid + ':tids:posts', 1, postData.tid, next);
-			}
+			}			
 		], callback);
 	};
 

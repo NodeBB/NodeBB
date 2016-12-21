@@ -184,13 +184,13 @@ module.exports = function (Topics) {
 							async.parallel([
 								async.apply(db.sortedSetAdd, 'cid:' + topicData.cid + ':tids:pinned', Date.now(), tid),
 								async.apply(db.sortedSetRemove, 'cid:' + topicData.cid + ':tids', tid),
-								async.apply(db.sortedSetRemove, 'cid:' + topicData.cid + ':tids:posts', tid),
+								async.apply(db.sortedSetRemove, 'cid:' + topicData.cid + ':tids:posts', tid)
 							], next);
 						} else {
 							async.parallel([
 								async.apply(db.sortedSetRemove, 'cid:' + topicData.cid + ':tids:pinned', tid),
 								async.apply(db.sortedSetAdd, 'cid:' + topicData.cid + ':tids', topicData.lastposttime, tid),
-								async.apply(db.sortedSetAdd, 'cid:' + topicData.cid + ':tids:posts', topicData.postcount, tid),
+								async.apply(db.sortedSetAdd, 'cid:' + topicData.cid + ':tids:posts', topicData.postcount, tid)
 							], next);
 						}
 					}
