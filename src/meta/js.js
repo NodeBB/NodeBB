@@ -58,7 +58,7 @@ module.exports = function (Meta) {
 				'public/src/client/topic/threadTools.js',
 				'public/src/client/categories.js',
 				'public/src/client/category.js',
-				'public/src/client/categoryTools.js',
+				'public/src/client/category/tools.js',
 
 				'public/src/modules/translator.js',
 				'public/src/modules/notifications.js',

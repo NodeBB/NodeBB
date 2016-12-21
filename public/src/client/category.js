@@ -5,7 +5,7 @@ define('forum/category', [
 	'forum/infinitescroll',
 	'share',
 	'navigator',
-	'forum/categoryTools',
+	'forum/category/tools',
 	'sort',
 	'components',
 	'translator',

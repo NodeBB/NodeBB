@@ -1,6 +1,7 @@
 'use strict';
 
 var async = require('async');
+var _ = require('underscore');
 
 var db = require('../database');
 var categories = require('../categories');
@@ -210,6 +211,49 @@ module.exports = function (Topics) {
 			}
 		], callback);
 	}
+
+	topicTools.orderPinnedTopics = function (uid, data, callback) {
+		var cid;
+		async.waterfall([
+			function (next) {
+				var tids = data.map(function (topic) {
+					return topic && topic.tid;
+				});
+				Topics.getTopicsFields(tids, ['cid'], next);
+			},
+			function (topicData, next) {
+				var uniqueCids = _.unique(topicData.map(function (topicData) {
+					return topicData && parseInt(topicData.cid, 10);
+				}));
+				
+				if (uniqueCids.length > 1 || !uniqueCids.length || !uniqueCids[0]) {
+					return next(new Error('[[error:invalid-data]]'));
+				}
+				cid = uniqueCids[0];
+
+				privileges.categories.isAdminOrMod(cid, uid, next);
+			},
+			function (isAdminOrMod, next) {
+				if (!isAdminOrMod) {
+					return next(new Error('[[error:no-privileges]]'));
+				}
+				async.eachSeries(data, function (topicData, next) {
+					async.waterfall([
+						function (next) {
+							db.isSortedSetMember('cid:' + cid + ':tids:pinned', topicData.tid, next);
+						},
+						function (isPinned, next) {
+							if (isPinned) {
+								db.sortedSetAdd('cid:' + cid + ':tids:pinned', topicData.order, topicData.tid, next);
+							} else {
+								setImmediate(next);
+							}
+						}
+					], next);					
+				}, next);
+			}
+		], callback);
+	};
 
 	topicTools.move = function (tid, cid, uid, callback) {
 		var topic;

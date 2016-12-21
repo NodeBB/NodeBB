@@ -45,8 +45,6 @@ describe('Topic\'s', function () {
 				done();
 			});
 		});
-
-
 	});
 
 	describe('.post', function () {
@@ -361,6 +359,98 @@ describe('Topic\'s', function () {
 			});
 		});
 	});
+
+	describe('order pinned topics', function () {
+		var tid1;
+		var tid2;
+		var tid3;
+		before(function (done) {
+			function createTopic(callback) {
+				topics.post({
+					uid: topic.userId,
+					title: 'topic for test',
+					content: 'topic content',
+					cid: topic.categoryId
+				}, callback);
+			}
+			async.series({
+				topic1: function (next) {
+					createTopic(next);
+				},
+				topic2: function (next) {
+					createTopic(next);
+				},
+				topic3: function (next) {
+					createTopic(next);
+				}
+			}, function (err, results) {
+				assert.ifError(err);
+				tid1 = results.topic1.topicData.tid;
+				tid2 = results.topic2.topicData.tid;
+				tid3 = results.topic3.topicData.tid;
+				async.series([
+					function (next) {
+						topics.tools.pin(tid1, adminUid, next);
+					},
+					function (next) {
+						topics.tools.pin(tid2, adminUid, next);
+					}
+				], done);
+			});
+		});
+
+		var socketTopics = require('../src/socket.io/topics');
+		it('should error with invalid data', function (done) {
+			socketTopics.orderPinnedTopics({uid: adminUid}, null, function (err) {
+				assert.equal(err.message, '[[error:invalid-data]]');
+				done();
+			});
+		});
+
+		it('should error with invalid data', function (done) {
+			socketTopics.orderPinnedTopics({uid: adminUid}, [null, null], function (err) {
+				assert.equal(err.message, '[[error:invalid-data]]');
+				done();
+			});
+		});
+
+		it('should error with unprivileged user', function (done) {
+			socketTopics.orderPinnedTopics({uid: 0}, [{tid: tid1}, {tid: tid2}], function (err) {
+				assert.equal(err.message, '[[error:no-privileges]]');
+				done();
+			});
+		});
+
+		it('should not do anything if topics are not pinned', function (done) {
+			socketTopics.orderPinnedTopics({uid: adminUid}, [{tid: tid3}], function (err) {
+				assert.ifError(err);
+				db.isSortedSetMember('cid:' + topic.categoryId + ':tids:pinned', tid3, function (err, isMember) {
+					assert.ifError(err);
+					assert(!isMember);
+					done();
+				});
+			});
+		});
+
+		it('should order pinned topics', function (done) {
+			db.getSortedSetRevRange('cid:' + topic.categoryId + ':tids:pinned', 0, -1, function (err, pinnedTids) {
+				assert.ifError(err);
+				assert.equal(pinnedTids[0], tid2);
+				assert.equal(pinnedTids[1], tid1);
+				socketTopics.orderPinnedTopics({uid: adminUid}, [{tid: tid1, order: 1}, {tid: tid2, order: 0}], function (err) {
+					assert.ifError(err);
+					db.getSortedSetRevRange('cid:' + topic.categoryId + ':tids:pinned', 0, -1, function (err, pinnedTids) {
+						assert.ifError(err);
+						assert.equal(pinnedTids[0], tid1);
+						assert.equal(pinnedTids[1], tid2);
+						done();
+					});
+				});			
+			});
+		});
+
+	});
+
 
 	describe('.ignore', function () {
 		var newTid;
