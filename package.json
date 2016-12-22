@@ -13,7 +13,7 @@
     "start": "node loader.js",
     "lint": "eslint --cache .",
     "pretest": "npm run lint",
-    "test": "istanbul cover node_modules/mocha/bin/_mocha -- -R dot",
+    "test": "istanbul cover node_modules/mocha/bin/_mocha -- -R spec",
     "coveralls": "istanbul cover _mocha --report lcovonly -- -R dot && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage"
   },
   "dependencies": {
@@ -61,7 +61,7 @@
     "nodebb-plugin-spam-be-gone": "0.4.10",
     "nodebb-rewards-essentials": "0.0.9",
     "nodebb-theme-lavender": "3.0.15",
-    "nodebb-theme-persona": "4.1.90",
+    "nodebb-theme-persona": "4.1.93",
     "nodebb-theme-vanilla": "5.1.57",
     "nodebb-widget-essentials": "2.0.13",
     "nodemailer": "2.6.4",

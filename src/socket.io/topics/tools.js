@@ -121,4 +121,12 @@ module.exports = function (SocketTopics) {
 		], callback);
 	}
 
+	SocketTopics.orderPinnedTopics = function (socket, data, callback) {
+		if (!Array.isArray(data)) {
+			return callback(new Error('[[error:invalid-data]]'));
+		}
+
+		topics.tools.orderPinnedTopics(socket.uid, data, callback);
+	};
+
 };

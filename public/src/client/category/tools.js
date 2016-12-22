@@ -4,7 +4,12 @@
 /* globals define, app, socket, bootbox, ajaxify */
 
 
-define('forum/categoryTools', ['forum/topic/move', 'topicSelect', 'components', 'translator'], function (move, topicSelect, components, translator) {
+define('forum/category/tools', [
+	'forum/topic/move', 
+	'topicSelect', 
+	'components', 
+	'translator'
+], function (move, topicSelect, components, translator) {
 
 	var CategoryTools = {};
 
@@ -12,6 +17,8 @@ define('forum/categoryTools', ['forum/topic/move', 'topicSelect', 'components', 
 		CategoryTools.cid = cid;
 
 		topicSelect.init(updateDropdownOptions);
+
+		handlePinnedTopicSort();
 
 		components.get('topic/delete').on('click', function () {
 			categoryCommand('delete', topicSelect.getSelectedTids());
@@ -233,6 +240,31 @@ define('forum/categoryTools', ['forum/topic/move', 'topicSelect', 'components', 
 
 	function onTopicPurged(data) {
 		getTopicEl(data.tid).remove();
+	}
+
+	function handlePinnedTopicSort() {
+		if (!ajaxify.data.privileges.isAdminOrMod) {
+			return;
+		}
+		app.loadJQueryUI(function () {
+			$('[component="category"]').sortable({
+				items: '[component="category/topic"].pinned',
+				update: function () {
+					var data = [];
+
+					var pinnedTopics = $('[component="category/topic"].pinned');
+					pinnedTopics.each(function (index, element) {
+						data.push({tid: $(element).attr('data-tid'), order: pinnedTopics.length - index - 1});
+					});
+
+					socket.emit('topics.orderPinnedTopics', data, function (err) {
+						if (err) {
+							return app.alertError(err.message);
+						}
+					});
+				}
+			});
+		});
 	}
 
 	return CategoryTools;
