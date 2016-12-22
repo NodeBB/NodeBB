@@ -65,8 +65,8 @@ module.exports = function (Posts) {
 					}
 					post.user = results.users[post.uid];
 					post.topic = results.topics[post.tid];
-					post.category = results.categories[post.topic.cid];
-					post.isMainPost = parseInt(post.pid, 10) === parseInt(post.topic.mainPid, 10);
+					post.category = post.topic && results.categories[post.topic.cid];
+					post.isMainPost = post.topic && parseInt(post.pid, 10) === parseInt(post.topic.mainPid, 10);
 					post.deleted = parseInt(post.deleted, 10) === 1;
 					post.upvotes = parseInt(post.upvotes, 10) || 0;
 					post.downvotes = parseInt(post.downvotes, 10) || 0;
