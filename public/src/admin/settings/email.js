@@ -31,6 +31,7 @@ define('admin/settings/email', ['admin/settings'], function (settings) {
 		$('#email-editor-selector').on('change', updateEmailEditor);
 
 		emailEditor = ace.edit("email-editor");
+		emailEditor.$blockScrolling = Infinity;
 		emailEditor.setTheme("ace/theme/twilight");
 		emailEditor.getSession().setMode("ace/mode/html");
 
