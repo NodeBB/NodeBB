@@ -69,7 +69,7 @@ define('admin/manage/group', [
 							groupDetailsSearchResults.append(foundUser);
 						}
 					} else {
-						groupDetailsSearchResults.html('<li>No Users Found</li>');
+						groupDetailsSearchResults.translateHtml('<li>[[admin/manage/groups:edit.no-users-found]]</li>');
 					}
 				});
 			}, 200);
@@ -126,7 +126,7 @@ define('admin/manage/group', [
 					break;
 
 				case 'kick':
-					bootbox.confirm('Are you sure you want to remove this user?', function (confirm) {
+					bootbox.confirm('[[admin/manage/groups:edit.confirm-remove-user]]', function (confirm) {
 						if (!confirm) {
 							return;
 						}
@@ -178,7 +178,7 @@ define('admin/manage/group', [
 
 				// If the group name changed, change url
 				if (groupName === newName) {
-					app.alertSuccess('Changes saved!');
+					app.alertSuccess('[[admin/manage/groups:edit.save-success]]');
 				} else {
 					ajaxify.go('admin/manage/groups/' + encodeURIComponent(newName), undefined, true);
 				}

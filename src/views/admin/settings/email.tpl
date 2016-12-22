@@ -1,20 +1,20 @@
-<!-- IMPORT admin/settings/header.tpl -->
+<!-- IMPORT admin/partials/settings/header.tpl -->
 
 <div class="row">
-	<div class="col-sm-2 col-xs-12 settings-header">Email Settings</div>
+	<div class="col-sm-2 col-xs-12 settings-header">[[admin/settings/email:email-settings]]</div>
 	<div class="col-sm-10 col-xs-12">
 		<form>
 			<div class="form-group">
-				<label for="email:from"><strong>Email Address</strong></label>
+				<label for="email:from"><strong>[[admin/settings/email:address]]</strong></label>
 				<p class="help-block">
-					The following email address refers to the email that the recipient will see in the "From" and "Reply To" fields.
+					
 				</p>
 				<input type="text" class="form-control input-lg" id="email:from" data-field="email:from" placeholder="info@example.org" /><br />
 			</div>
 			<div class="form-group">
 				<label for="email:from_name"><strong>From Name</strong></label>
 				<p class="help-block">
-					The from name to display in the email.
+					[[admin/settings/email:from-help]]
 				</p>
 				<input type="text" class="form-control input-lg" id="email:from_name" data-field="email:from_name" placeholder="NodeBB" /><br />
 			</div>
@@ -23,37 +23,32 @@
 </div>
 
 <div class="row">
-	<div class="col-sm-2 col-xs-12 settings-header">Gmail Routing</div>
+	<div class="col-sm-2 col-xs-12 settings-header">[[admin/settings/email:gmail-routing]]</div>
 	<div class="col-sm-10 col-xs-12">
 		<div class="alert alert-warning">
 			<p>
-				There have been reports of Gmail Routing not working on accounts with heightened security. In those scenarios,
-				you will have to <a href="https://www.google.com/settings/security/lesssecureapps">configure your GMail account
-				to allow less secure apps</a>.
+				[[admin/settings/email:gmail-routing-help1]]
 			</p>
 			<p>
-				For more information about this workaround, <a href="https://nodemailer.com/using-gmail/">please consult
-				this NodeMailer article on the issue.</a> An alternative would be to utilise a third-party emailer plugin
-				such as SendGrid, Mailgun, etc. <a href="{config.relative_path}/admin/extend/plugins">Browse available plugins
-				here</a>.
+				[[admin/settings/email:gmail-routing-help2]]
 			</p>
 		</div>
 		<form>
 			<div class="checkbox">
 				<label for="email:GmailTransport:enabled" class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
 					<input class="mdl-switch__input" type="checkbox" id="email:GmailTransport:enabled" data-field="email:GmailTransport:enabled" name="email:GmailTransport:enabled" />
-					<span class="mdl-switch__label">Route emails through a Gmail/Google Apps account</span>
+					<span class="mdl-switch__label">[[admin/settings/email:gmail-transport]]</span>
 				</label>
 			</div>
 			<div class="form-group">
-				<label for="email:GmailTransport:user"><strong>Username</strong></label>
+				<label for="email:GmailTransport:user"><strong>[[admin/settings/email:gmail-transport.username]]</strong></label>
 				<input type="text" class="form-control input-lg" id="email:GmailTransport:user" data-field="email:GmailTransport:user" placeholder="admin@example.org" />
 				<p class="help-block">
-					Enter the full email address here, especially if you are using a Google Apps managed domain.
+					[[admin/settings/email:gmail-transport.username-help]]
 				</p>
 			</div>
 			<div class="form-group">
-				<label for="email:GmailTransport:pass"><strong>Password</strong></label>
+				<label for="email:GmailTransport:pass"><strong>[[admin/settings/email:gmail-transport.password]]</strong></label>
 				<input type="password" class="form-control input-lg" id="email:GmailTransport:pass" data-field="email:GmailTransport:pass" />
 			</div>
 		</form>
@@ -61,9 +56,9 @@
 </div>
 
 <div class="row">
-	<div class="col-sm-2 col-xs-12 settings-header">Edit Email Template</div>
+	<div class="col-sm-2 col-xs-12 settings-header">[[admin/settings/email:template]]</div>
 	<div class="col-sm-10 col-xs-12">
-		<label>Select Email Template</label><br />
+		<label>[[admin/settings/email:template.select]]</label><br />
 		<select id="email-editor-selector" class="form-control">
 			<!-- BEGIN emails -->
 			<option value="{emails.path}">{emails.path}</option>
@@ -73,51 +68,48 @@
 		<div id="email-editor"></div>
 		<input type="hidden" id="email-editor-holder" value="" data-field="" />
 		<br />
-		<button class="btn btn-warning" type="button" data-action="email.revert">Revert to Original</button>
+		<button class="btn btn-warning" type="button" data-action="email.revert">[[admin/settings/email:template.revert]]</button>
 	</div>
 </div>
 
 <div class="row">
-	<div class="col-sm-2 col-xs-12 settings-header">Email Testing</div>
+	<div class="col-sm-2 col-xs-12 settings-header">[[admin/settings/email:testing]]</div>
 	<div class="col-sm-10 col-xs-12">
 		<div class="form-group">
-			<label>Select Email Template</label>
+			<label>[[admin/settings/email:testing.select]]</label>
 			<select id="test-email" class="form-control">
 				<!-- BEGIN sendable -->
 				<option value="{sendable.path}">{sendable.path}</option>
 				<!-- END sendable -->
 			</select>
 		</div>
-		<button class="btn btn-primary" type="button" data-action="email.test">Send Test Email</button>
+		<button class="btn btn-primary" type="button" data-action="email.test">[[admin/settings/email:testing.send]]</button>
 		<p class="help-block">
-			The test email will be sent to the currently logged in user's email address.
+			[[admin/settings/email:testing.send-help]]
 		</p>
 	</div>
 </div>
 
 <div class="row">
-	<div class="col-sm-2 col-xs-12 settings-header">Email Subscriptions</div>
+	<div class="col-sm-2 col-xs-12 settings-header">[[admin/settings/email:subscriptions]]</div>
 	<div class="col-sm-10 col-xs-12">
 		<form>
 			<div class="checkbox">
 				<label for="disableEmailSubscriptions" class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
 					<input class="mdl-switch__input" type="checkbox" id="disableEmailSubscriptions" data-field="disableEmailSubscriptions" name="disableEmailSubscriptions" />
-					<span class="mdl-switch__label">Disable subscriber notification emails</span>
+					<span class="mdl-switch__label">[[admin/settings/email:subscriptions.disable]]</span>
 				</label>
 			</div>
 
 			<div class="form-group">
-				<label for="digestHour"><strong>Digest Hour</strong></label>
+				<label for="digestHour"><strong>[[admin/settings/email:subscriptions.hour]]</strong></label>
 				<input type="number" class="form-control input-lg" id="digestHour" data-field="digestHour" placeholder="17" min="0" max="24" />
 				<p class="help-block">
-					Please enter a number representing the hour to send scheduled email digests (e.g. <code>0</code> for midnight, <code>17</code> for 5:00pm).
-					Keep in mind that this is the hour according to the server itself, and may not exactly match your system clock.<br />
-					The approximate server time is: <span id="serverTime"></span><br />
-					The next daily digest is scheduled to be sent  <span id="nextDigestTime"></span>
+					[[admin/settings/email:subscriptions.hour-help]]
 				</p>
 			</div>
 		</form>
 	</div>
 </div>
 
-<!-- IMPORT admin/settings/footer.tpl -->
+<!-- IMPORT admin/partials/settings/footer.tpl -->

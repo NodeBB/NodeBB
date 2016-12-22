@@ -25,7 +25,8 @@ module.exports = function (Meta) {
 				'public/vendor/jquery/textcomplete/jquery.textcomplete.js',
 				'public/vendor/requirejs/require.js',
 				'public/src/require-config.js',
-				'public/vendor/bootbox/bootbox.min.js',
+				'public/vendor/bootbox/bootbox.js',
+				'public/vendor/bootbox/wrapper.js',
 				'public/vendor/tinycon/tinycon.js',
 				'public/vendor/xregexp/xregexp.js',
 				'public/vendor/xregexp/unicode/unicode-base.js',
@@ -57,7 +58,7 @@ module.exports = function (Meta) {
 				'public/src/client/topic/threadTools.js',
 				'public/src/client/categories.js',
 				'public/src/client/category.js',
-				'public/src/client/categoryTools.js',
+				'public/src/client/category/tools.js',
 
 				'public/src/modules/translator.js',
 				'public/src/modules/notifications.js',

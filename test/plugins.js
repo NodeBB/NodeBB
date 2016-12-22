@@ -101,6 +101,7 @@ describe('Plugins', function () {
 		var latest;
 		var pluginName = 'nodebb-plugin-imgur';
 		it('should install a plugin', function (done) {
+			this.timeout(20000);
 			plugins.toggleInstall(pluginName, '1.0.16', function (err, pluginData) {
 				assert.ifError(err);
 

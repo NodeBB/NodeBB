@@ -437,6 +437,14 @@ describe('Admin Controllers', function () {
 	});
 
 
+	it('should load /posts/flags', function (done) {
+		request(nconf.get('url') + '/api/posts/flags', {jar: jar, json: true}, function (err, res, body) {
+			assert.ifError(err);
+			assert(body);
+			done();
+		});
+	});
+
 	after(function (done) {
 		db.emptydb(done);
 	});

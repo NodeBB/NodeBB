@@ -9,16 +9,12 @@
 		}
 
 		logoutTimer = setTimeout(function () {
-			require(['translator'], function (translator) {
-				translator.translate('[[login:logged-out-due-to-inactivity]]', function (translated) {
-					bootbox.alert({
-						closeButton: false,
-						message: translated,
-						callback: function () {
-							window.location.reload();
-						}
-					});
-				});
+			bootbox.alert({
+				closeButton: false,
+				message: '[[login:logged-out-due-to-inactivity]]',
+				callback: function () {
+					window.location.reload();
+				}
 			});
 		}, 3600000);
 	}
@@ -69,11 +65,9 @@
 	}
 
 	function setupKeybindings() {
-		require(['mousetrap'], function (mousetrap) {
+		require(['mousetrap', 'admin/modules/instance'], function (mousetrap, instance) {
 			mousetrap.bind('ctrl+shift+a r', function () {
-				require(['admin/modules/instance'], function (instance) {
-					instance.reload();
-				});
+				instance.reload();
 			});
 
 			mousetrap.bind('ctrl+shift+a R', function () {
@@ -89,43 +83,61 @@
 	}
 
 	function selectMenuItem(url) {
-		url = url
-			.replace(/\/\d+$/, '')
-			.split('/').slice(0, 3).join('/')
-			.split('?')[0];
+		require(['translator'], function (translator) {
+			url = url
+				.replace(/\/\d+$/, '')
+				.split('/').slice(0, 3).join('/')
+				.split('?')[0].replace(/(\/+$)|(^\/+)/, '');
 
-		// If index is requested, load the dashboard
-		if (url === 'admin') {
-			url = 'admin/general/dashboard';
-		}
+			// If index is requested, load the dashboard
+			if (url === 'admin') {
+				url = 'admin/general/dashboard';
+			}
 
-		$('#main-menu li').removeClass('active');
-		$('#main-menu a').removeClass('active').each(function () {
-			var menu = $(this),
-				href = menu.attr('href'),
-				isLink = menu.parent().attr('data-link') === '1';
+			url = [config.relative_path, url].join('/');
+			var fallback;
 
-			if (!isLink && href && href === [config.relative_path, url].join('/')) {
+			$('#main-menu li').removeClass('active');
+			$('#main-menu a').removeClass('active').filter('[href="' + url + '"]').each(function () {
+				var menu = $(this);
 				menu
 					.parent().addClass('active')
 					.parents('.menu-item').addClass('active');
+				fallback = menu.text();
+			});
 
-				$('#main-page-title').text(menu.text() + (menu.parents('.menu-item').children('a').text() === 'Settings' ? ' Settings' : ''));
+			var mainTitle;
+			var pageTitle;
+			if (/admin\/general\/dashboard$/.test(url)) {
+				mainTitle = pageTitle = '[[admin/menu:general/dashboard]]';
+			} else if (/admin\/plugins\//.test(url)) {
+				mainTitle = fallback;
+				pageTitle = '[[admin/menu:section-plugins]] > ' + mainTitle;
+			} else {
+				var matches = url.match(/admin\/(.+?)\/(.+?)$/);
+				mainTitle = '[[admin/menu:' + matches[1] + '/' + matches[2] + ']]';
+				pageTitle = '[[admin/menu:section-' + 
+					(matches[1] === 'development' ? 'advanced' : matches[1]) +
+					']]' + (matches[2] ? (' > ' + mainTitle) : '');
+				if (matches[2] === 'settings') {
+					mainTitle = translator.compile('admin/menu:settings.page-title', mainTitle);
+				}
 			}
-		});
 
-		var acpPath = url.replace('admin/', '').split('/');
-		acpPath.forEach(function (path, i) {
-			acpPath[i] = path.charAt(0).toUpperCase() + path.slice(1);
-		});
-		acpPath = acpPath.join(' > ');
+			pageTitle = translator.compile('admin/admin:acp-title', pageTitle);
 
-		document.title = (url === 'admin/general/dashboard' ? 'Dashboard' : acpPath) + ' | NodeBB Admin Control Panel';
+			translator.translate(pageTitle, function (title) {
+				document.title = title.replace(/&gt;/g, '>');
+			});
+			translator.translate(mainTitle, function (text) {
+				$('#main-page-title').text(text);
+			});
+		});
 	}
 
 	function setupRestartLinks() {
 		$('.reload').off('click').on('click', function () {
-			bootbox.confirm('Are you sure you wish to reload NodeBB?', function (confirm) {
+			bootbox.confirm('[[admin/admin:alert.confirm-reload]]', function (confirm) {
 				if (confirm) {
 					require(['admin/modules/instance'], function (instance) {
 						instance.reload();
@@ -135,7 +147,7 @@
 		});
 
 		$('.restart').off('click').on('click', function () {
-			bootbox.confirm('Are you sure you wish to restart NodeBB?', function (confirm) {
+			bootbox.confirm('[[admin/admin:alert.confirm-restart]]', function (confirm) {
 				if (confirm) {
 					require(['admin/modules/instance'], function (instance) {
 						instance.restart();
@@ -143,7 +155,7 @@
 				}
 			});
 		});
-	};
+	}
 
 	function launchSnackbar(params) {
 		var message = (params.title ? "<strong>" + params.title + "</strong>" : '') + (params.message ? params.message : '');

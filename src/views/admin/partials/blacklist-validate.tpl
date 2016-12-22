@@ -1,10 +1,10 @@
 <p class="lead">
-	<strong>{valid.length}</strong> out of <strong>{numRules}</strong> rule(s) valid.
+	[[admin/manage/ip-blacklist:validate.x-valid, {valid.length}, {numRules}]]
 </p>
 
 <!-- IF invalid.length -->
 <p>
-	The following <strong>{invalid.length}</strong> rules are invalid:
+	[[admin/manage/ip-blacklist:validate.x-invalid, {invalid.length}]]
 </p>
 <ul>
 	<!-- BEGIN invalid -->

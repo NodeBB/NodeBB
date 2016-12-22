@@ -2,27 +2,27 @@
 	<div class="col-sm-9">
 		<!-- IF mongo -->
 		<div class="panel panel-default">
-			<div class="panel-heading"><i class="fa fa-hdd-o"></i> Mongo</div>
+			<div class="panel-heading"><i class="fa fa-hdd-o"></i> [[admin/advanced/database:mongo]]</div>
 			<div class="panel-body">
 				<div class="database-info">
-					<span>MongoDB Version</span> <span class="text-right">{mongo.version}</span><br/>
+					<span>[[admin/advanced/database:mongo.version]]</span> <span class="text-right">{mongo.version}</span><br/>
 					<hr/>
-					<span>Uptime in Seconds</span> <span class="text-right formatted-number">{mongo.uptime}</span><br/>
-					<span>Storage Engine</span> <span class="text-right">{mongo.storageEngine}</span><br/>
-					<span>Collections</span> <span class="text-right formatted-number">{mongo.collections}</span><br/>
-					<span>Objects</span> <span class="text-right formatted-number">{mongo.objects}</span><br/>
-					<span>Avg. Object Size</span> <span class="text-right">{mongo.avgObjSize} b</span><br/>
+					<span>[[admin/advanced/database:uptime-seconds]]</span> <span class="text-right formatted-number">{mongo.uptime}</span><br/>
+					<span>[[admin/advanced/database:mongo.storage-engine]]</span> <span class="text-right">{mongo.storageEngine}</span><br/>
+					<span>[[admin/advanced/database:mongo.collections]]</span> <span class="text-right formatted-number">{mongo.collections}</span><br/>
+					<span>[[admin/advanced/database:mongo.objects]]</span> <span class="text-right formatted-number">{mongo.objects}</span><br/>
+					<span>[[admin/advanced/database:mongo.avg-object-size]]</span> <span class="text-right">[[admin/advanced/database:x-b, {mongo.avgObjSize}]]</span><br/>
 					<hr/>
-					<span>Data Size</span> <span class="text-right">{mongo.dataSize} mb</span><br/>
-					<span>Storage Size</span> <span class="text-right">{mongo.storageSize} mb</span><br/>
-					<span>Index Size</span> <span class="text-right">{mongo.indexSize} mb</span><br/>
+					<span>[[admin/advanced/database:mongo.data-size]]</span> <span class="text-right">[[admin/advanced/database:x-mb, {mongo.dataSize}]]</span><br/>
+					<span>[[admin/advanced/database:mongo.storage-size]]</span> <span class="text-right">[[admin/advanced/database:x-mb, {mongo.storageSize}]]</span><br/>
+					<span>[[admin/advanced/database:mongo.index-size]]</span> <span class="text-right">[[admin/advanced/database:x-mb, {mongo.indexSize}]]</span><br/>
 					<!-- IF mongo.fileSize -->
-					<span>File Size</span> <span class="text-right">{mongo.fileSize} mb</span><br/>
+					<span>[[admin/advanced/database:mongo.file-size]]</span> <span class="text-right">[[admin/advanced/database:x-mb, {mongo.fileSize}]]</span><br/>
 					<!-- ENDIF mongo.fileSize -->
 					<hr/>
-					<span>Resident Memory</span> <span class="text-right">{mongo.mem.resident} mb</span><br/>
-					<span>Virtual Memory</span> <span class="text-right">{mongo.mem.virtual} mb</span><br/>
-					<span>Mapped Memory</span> <span class="text-right">{mongo.mem.mapped} mb</span><br/>
+					<span>[[admin/advanced/database:mongo.resident-memory]]</span> <span class="text-right">[[admin/advanced/database:x-mb, {mongo.mem.resident}]]</span><br/>
+					<span>[[admin/advanced/database:mongo.virtual-memory]]</span> <span class="text-right">[[admin/advanced/database:x-mb, {mongo.mem.virtual]]</span><br/>
+					<span>[[admin/advanced/database:mongo.mapped-memory]]</span> <span class="text-right">[[admin/advanced/database:x-mb, {mongo.mem.mapped}]]</span><br/>
 				</div>
 			</div>
 		</div>
@@ -30,28 +30,28 @@
 
 		<!-- IF redis -->
 		<div class="panel panel-default">
-			<div class="panel-heading"><i class="fa fa-hdd-o"></i> Redis</div>
+			<div class="panel-heading"><i class="fa fa-hdd-o"></i> [[admin/advanced/database:redis]]</div>
 			<div class="panel-body">
 				<div class="database-info">
-					<span>Redis Version</span> <span class="text-right">{redis.redis_version}</span><br/>
+					<span>[[admin/advanced/database:redis.version]]</span> <span class="text-right">{redis.redis_version}</span><br/>
 					<hr/>
-					<span>Uptime in Seconds</span> <span class="text-right formatted-number">{redis.uptime_in_seconds}</span><br/>
-					<span>Uptime in Days</span> <span class="text-right">{redis.uptime_in_days}</span><br/>
+					<span>[[admin/advanced/database:uptime-seconds]]</span> <span class="text-right formatted-number">{redis.uptime_in_seconds}</span><br/>
+					<span>[[admin/advanced/database:uptime-days]]</span> <span class="text-right">{redis.uptime_in_days}</span><br/>
 					<hr/>
-					<span>Connected Clients</span> <span class="text-right">{redis.connected_clients}</span><br/>
-					<span>Connected Slaves</span> <span class="text-right">{redis.connected_slaves}</span><br/>
-					<span>Blocked Clients</span> <span class="text-right">{redis.blocked_clients}</span><br/>
+					<span>[[admin/advanced/database:redis.connected-clients]]</span> <span class="text-right">{redis.connected_clients}</span><br/>
+					<span>[[admin/advanced/database:redis.connected-slaves]]</span> <span class="text-right">{redis.connected_slaves}</span><br/>
+					<span>[[admin/advanced/database:redis.blocked-clients]]</span> <span class="text-right">{redis.blocked_clients}</span><br/>
 					<hr/>
 
-					<span>Used Memory</span> <span class="text-right">{redis.used_memory_human}</span><br/>
-					<span>Memory Fragmentation Ratio</span> <span class="text-right">{redis.mem_fragmentation_ratio}</span><br/>
+					<span>[[admin/advanced/database:redis.used-memory]]</span> <span class="text-right">{redis.used_memory_human}</span><br/>
+					<span>[[admin/advanced/database:redis.memory-frag-ratio]]</span> <span class="text-right">{redis.mem_fragmentation_ratio}</span><br/>
 					<hr/>
-					<span>Total Connections Received</span> <span class="text-right formatted-number">{redis.total_connections_received}</span><br/>
-					<span>Total Commands Processed</span> <span class="text-right formatted-number">{redis.total_commands_processed}</span><br/>
-					<span>Instantaneous Ops. Per Second</span> <span class="text-right formatted-number">{redis.instantaneous_ops_per_sec}</span><br/>
+					<span>[[admin/advanced/database:redis.total-connections-recieved]]</span> <span class="text-right formatted-number">{redis.total_connections_received}</span><br/>
+					<span>[[admin/advanced/database:redis.total-commands-processed]]</span> <span class="text-right formatted-number">{redis.total_commands_processed}</span><br/>
+					<span>[[admin/advanced/database:redis.iops]]</span> <span class="text-right formatted-number">{redis.instantaneous_ops_per_sec}</span><br/>
 					<hr/>
-					<span>Keyspace Hits</span> <span class="text-right formatted-number">{redis.keyspace_hits}</span><br/>
-					<span>Keyspace Misses</span> <span class="text-right formatted-number">{redis.keyspace_misses}</span><br/>
+					<span>[[admin/advanced/database:redis.keyspace-hits]]</span> <span class="text-right formatted-number">{redis.keyspace_hits}</span><br/>
+					<span>[[admin/advanced/database:redis.keyspace-misses]]</span> <span class="text-right formatted-number">{redis.keyspace_misses}</span><br/>
 				</div>
 			</div>
 		</div>
@@ -60,7 +60,7 @@
 		<!-- IF mongo -->
 		<div class="panel panel-default">
 			<div class="panel-heading" data-toggle="collapse" data-target=".mongodb-raw">
-				<h3 class="panel-title"><i class="fa fa-caret-down"></i> MongoDB Raw Info</h3>
+				<h3 class="panel-title"><i class="fa fa-caret-down"></i> [[admin/advanced/database:mongo.raw-info]]</h3>
 			</div>
 
 			<div class="panel-body mongodb-raw collapse">
@@ -74,7 +74,7 @@
 		<!-- IF redis -->
 		<div class="panel panel-default">
 			<div class="panel-heading" data-toggle="collapse" data-target=".redis-raw">
-				<h3 class="panel-title"><i class="fa fa-caret-down"></i> Redis Raw Info</h3>
+				<h3 class="panel-title"><i class="fa fa-caret-down"></i> [[admin/advanced/database:redis.raw-info]]</h3>
 			</div>
 
 			<div class="panel-body redis-raw collapse">

@@ -18,7 +18,7 @@ define('admin/general/social', [], function () {
 					return app.alertError(err);
 				}
 
-				app.alertSuccess('Successfully saved Post Sharing Networks!');
+				app.alertSuccess('[[admin/general/social:save-success]]');
 			});
 		});
 	};

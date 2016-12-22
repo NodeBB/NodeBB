@@ -1,0 +1,34 @@
+{
+	"name": "Group Name",
+	"description": "Group Description",
+	"system": "System Group",
+	"edit": "Edit",
+	"search-placeholder": "Search",
+	"create": "Create Group",
+	"description-placeholder": "A short description about your group",
+	"create-button": "Create",
+
+	"alerts.create-failure": "<strong>Uh-Oh</strong><p>There was a problem creating your group. Please try again later!</p>",
+	"alerts.confirm-delete": "Are you sure you wish to delete this group?",
+
+	"edit.name": "Name",
+	"edit.description": "Description",
+	"edit.user-title": "Title of Members",
+	"edit.icon": "Group Icon",
+	"edit.label-color": "Group Label Color",
+	"edit.show-badge": "Show Badge",
+	"edit.private-details": "If enabled, joining of groups requires approval from a group owner.",
+	"edit.private-override": "Warning: Private groups is disabled at system level, which overrides this option.",
+	"edit.disable-requests": "Disable join requests",
+	"edit.hidden": "Hidden",
+	"edit.hidden-details": "If enabled, this group will not be found in the groups listing, and users will have to be invited manually",
+	"edit.add-user": "Add User to Group",
+	"edit.add-user-search": "Search Users",
+	"edit.members": "Member List",
+	"control-panel": "Groups Control Panel",
+	"revert": "Revert",
+
+	"edit.no-users-found": "No Users Found",
+	"edit.confirm-remove-user": "Are you sure you want to remove this user?",
+	"edit.save-success": "Changes saved!"
+}

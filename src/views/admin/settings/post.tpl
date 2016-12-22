@@ -1,23 +1,23 @@
-<!-- IMPORT admin/settings/header.tpl -->
+<!-- IMPORT admin/partials/settings/header.tpl -->
 
 <div class="row">
-	<div class="col-sm-2 col-xs-12 settings-header">Post Sorting</div>
+	<div class="col-sm-2 col-xs-12 settings-header">[[admin/settings/post:sorting]]</div>
 	<div class="col-sm-10 col-xs-12">
 		<form>
 			<div class="form-group">
-				<label>Default Post Sorting</label>
+				<label>[[admin/settings/post:sorting.post-default]]</label>
 				<select class="form-control" data-field="topicPostSort">
-					<option value="oldest_to_newest">Oldest to Newest</option>
-					<option value="newest_to_oldest">Newest to Oldest</option>
-					<option value="most_votes">Most Votes</option>
+					<option value="oldest_to_newest">[[admin/settings/post:sorting.oldest-to-newest]]</option>
+					<option value="newest_to_oldest">[[admin/settings/post:sorting.newest-to-oldest]]</option>
+					<option value="most_votes">[[admin/settings/post:sorting.most-votes]]</option>
 				</select>
 			</div>
 			<div class="form-group">
-				<label>Default Topic Sorting</label>
+				<label>[[admin/settings/post:sorting.topic-default]]</label>
 				<select class="form-control" data-field="categoryTopicSort">
-					<option value="newest_to_oldest">Newest to Oldest</option>
-					<option value="oldest_to_newest">Oldest to Newest</option>
-					<option value="most_posts">Most Posts</option>
+					<option value="oldest_to_newest">[[admin/settings/post:sorting.oldest-to-newest]]</option>
+					<option value="newest_to_oldest">[[admin/settings/post:sorting.newest-to-oldest]]</option>
+					<option value="most_votes">[[admin/settings/post:sorting.most-votes]]</option>
 				</select>
 			</div>
 		</form>
@@ -25,59 +25,58 @@
 </div>
 
 <div class="row">
-	<div class="col-sm-2 col-xs-12 settings-header">Posting Restrictions</div>
+	<div class="col-sm-2 col-xs-12 settings-header">[[admin/settings/post:restrictions]]</div>
 	<div class="col-sm-10 col-xs-12">
 		<form>
 			<div class="form-group">
-				<label for="postDelay">Seconds between Posts</label>
+				<label for="postDelay">[[admin/settings/post:restrictions.seconds-between]]</label>
 				<input id="postDelay" type="text" class="form-control" value="10" data-field="postDelay">
 			</div>
 			<div class="form-group">
-				<label for="newbiePostDelay">Seconds between Posts for New Users</label>
+				<label for="newbiePostDelay">[[admin/settings/post:restrictions.seconds-between-new]]</label>
 				<input id="newbiePostDelay" type="text" class="form-control" value="120" data-field="newbiePostDelay">
 			</div>
 			<div class="form-group">
-				<label for="newbiePostDelayThreshold">Reputation threshold before this restriction is lifted</label>
+				<label for="newbiePostDelayThreshold">[[admin/settings/post:restrictions.rep-threshold]]</label>
 				<input id="newbiePostDelayThreshold" type="text" class="form-control" value="3" data-field="newbiePostDelayThreshold">
 			</div>
 			<div class="form-group">
-				<label for="initialPostDelay">Seconds before new user can post</label>
+				<label for="initialPostDelay">[[admin/settings/post:restrictions.seconds-defore-new]]</label>
 				<input id="initialPostDelay" type="text" class="form-control" value="10" data-field="initialPostDelay">
 			</div>
 			<div class="form-group">
-				<label for="postEditDuration">Number of seconds users are allowed to edit posts after posting. (0 disabled)</label>
+				<label for="postEditDuration">[[admin/settings/post:restrictions.seconds-edit-after]]</label>
 				<input id="postEditDuration" type="text" class="form-control" value="0" data-field="postEditDuration">
 			</div>
 			<div class="form-group">
-				<label for="postDeleteDuration">Number of seconds users are allowed to delete posts after posting. (0 disabled)</label>
+				<label for="postDeleteDuration">[[admin/settings/post:restrictions.seconds-delete-after]]</label>
 				<input id="postDeleteDuration" type="text" class="form-control" value="0" data-field="postDeleteDuration">
 			</div>
 			<div class="form-group">
-				<label for="preventTopicDeleteAfterReplies">Number of replies after users are disallowed to delete their own topics. (0 disabled)</label>
+				<label for="preventTopicDeleteAfterReplies">[[admin/settings/post:restrictions.replies-no-delete]]</label>
 				<input id="preventTopicDeleteAfterReplies" type="text" class="form-control" value="0" data-field="preventTopicDeleteAfterReplies">
 			</div>
 			<div class="form-group">
-				<label for="minimumTitleLength">Minimum Title Length</label>
+				<label for="minimumTitleLength">[[admin/settings/post:restrictions.min-title-length]]</label>
 				<input id="minimumTitleLength" type="text" class="form-control" value="3" data-field="minimumTitleLength">
 			</div>
 			<div class="form-group">
-				<label for="maximumTitleLength">Maximum Title Length</label>
+				<label for="maximumTitleLength">[[admin/settings/post:restrictions.max-title-length]]</label>
 				<input id="maximumTitleLength" type="text" class="form-control" value="255" data-field="maximumTitleLength">
 			</div>
 			<div class="form-group">
-				<label for="minimumPostLength">Minimum Post Length</label>
+				<label for="minimumPostLength">[[admin/settings/post:restrictions.min-post-length]]</label>
 				<input id="minimumPostLength" type="text" class="form-control" value="8" data-field="minimumPostLength">
 			</div>
 			<div class="form-group">
-				<label for="maximumPostLength">Maximum Post Length</label>
+				<label for="maximumPostLength">[[admin/settings/post:restrictions.max-post-length]]</label>
 				<input id="maximumPostLength" type="text" class="form-control" value="32767" data-field="maximumPostLength">
 			</div>
 			<div class="form-group">
-				<label for="topicStaleDays">Days until Topic is considered stale</label>
+				<label for="topicStaleDays">[[admin/settings/post:restrictions.days-until-stale]]</label>
 				<input id="topicStaleDays" type="text" class="form-control" value="60" data-field="topicStaleDays">
 				<p class="help-block">
-					If a topic is considered "stale", then a warning will be shown to users who attempt to reply
-					to that topic.
+					[[admin/settings/post:restrictions.stale-help]]
 				</p>
 			</div>
 		</form>
@@ -85,16 +84,14 @@
 </div>
 
 <div class="row">
-	<div class="col-sm-2 col-xs-12 settings-header">Timestamp</div>
+	<div class="col-sm-2 col-xs-12 settings-header">[[admin/settings/post:timestamp]]</div>
 	<div class="col-sm-10 col-xs-12">
 		<form>
 			<div class="form-group">
-				<label for="timeagoCutoff">Date cut-off (in days)</label>
+				<label for="timeagoCutoff">[[admin/settings/post:timestamp.cut-off]]</label>
 				<input type="number" class="form-control" id="timeagoCutoff" data-field="timeagoCutoff"  />
 				<p class="help-block">
-					Dates &amp; times will be shown in a relative manner (e.g. "3 hours ago" / "5 days ago"), and localised into various
-					languages. After a certain point, this text can be switched to display the localised date itself
-					(e.g. 5 Nov 2016 15:30).<br /><em>(Default: <code>30</code>, or one month). Set to 0 to always display dates, leave blank to always display relative times.</em>
+					[[admin/settings/post:timestamp.cut-off-help]]
 				</p>
 			</div>
 		</form>
@@ -106,11 +103,11 @@
 	<div class="col-sm-10 col-xs-12">
 		<form>
 			<div class="form-group">
-				<label>Teaser Post</label>
+				<label>[[admin/settings/post:teaser]]</label>
 				<select class="form-control" data-field="teaserPost">
-					<option value="last-post">Last &ndash; Show the latest post, including the original post, if no replies</option>
-					<option value="last-reply">Last &ndash; Show the latest reply, or a "No replies" placeholder if no replies</option>
-					<option value="first">First</option>
+					<option value="last-post">[[admin/settings/post:teaser.last-post]]</option>
+					<option value="last-reply">[[admin/settings/post:teaser.last-reply]]</option>
+					<option value="first">[[admin/settings/post:teaser.first]]</option>
 				</select>
 			</div>
 		</form>
@@ -118,15 +115,15 @@
 </div>
 
 <div class="row">
-	<div class="col-sm-2 col-xs-12 settings-header">Unread Settings</div>
+	<div class="col-sm-2 col-xs-12 settings-header">[[admin/settings/post:unread]]</div>
 	<div class="col-sm-10 col-xs-12">
 		<form>
 			<div class="form-group">
-				<label for="unreadCutoff">Unread cutoff days</label>
+				<label for="unreadCutoff">[[admin/settings/post:unread.cutoff]]</label>
 				<input id="unreadCutoff" type="text" class="form-control" value="2" data-field="unreadCutoff">
 			</div>
 			<div class="form-group">
- 				<label for="bookmarkthreshold">Minimum posts in topic before tracking last read</label>
+ 				<label for="bookmarkthreshold">[[admin/settings/post:unread.min-track-last]]</label>
  				<input id="bookmarkthreshold" type="text" class="form-control" value="5" data-field="bookmarkThreshold">
  			</div>
 		</form>
@@ -134,29 +131,29 @@
 </div>
 
 <div class="row">
-	<div class="col-sm-2 col-xs-12 settings-header">Signature Settings</div>
+	<div class="col-sm-2 col-xs-12 settings-header">[[admin/settings/post:signature]]</div>
 	<div class="col-sm-10 col-xs-12">
 		<form>
 			<div class="checkbox">
 				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
 					<input class="mdl-switch__input" type="checkbox" data-field="disableSignatures">
-					<span class="mdl-switch__label"><strong>Disable signatures</strong></span>
+					<span class="mdl-switch__label"><strong>[[admin/settings/post:signature.disable]]</strong></span>
 				</label>
 			</div>
 			<div class="checkbox">
 				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
 					<input class="mdl-switch__input" type="checkbox" data-field="signatures:disableLinks">
-					<span class="mdl-switch__label"><strong>Disable links in signatures</strong></span>
+					<span class="mdl-switch__label"><strong>[[admin/settings/post:signature.no-links]]</strong></span>
 				</label>
 			</div>
 			<div class="checkbox">
 				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
 					<input class="mdl-switch__input" type="checkbox" data-field="signatures:disableImages">
-					<span class="mdl-switch__label"><strong>Disable images in signatures</strong></span>
+					<span class="mdl-switch__label"><strong>[[admin/settings/post:signature.no-images]]</strong></span>
 				</label>
 			</div>
 			<div class="form-group">
-				<label>Maximum Signature Length</label>
+				<label>[[admin/settings/post:signature.max-length]]</label>
 				<input type="text" class="form-control" value="255" data-field="maximumSignatureLength">
 			</div>
 		</form>
@@ -164,27 +161,26 @@
 </div>
 
 <div class="row">
-	<div class="col-sm-2 col-xs-12 settings-header">Composer Settings</div>
+	<div class="col-sm-2 col-xs-12 settings-header">[[admin/settings/post:composer]]</div>
 	<div class="col-sm-10 col-xs-12">
 		<form>
 			<p>
-				The following settings govern the functionality and/or appearance of the post composer shown
-				to users when they create new topics, or reply to existing topics.
+				[[admin/settings/post:composer-help]]
 			</p>
 			<div class="checkbox">
 				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="composer:showHelpTab">
 					<input class="mdl-switch__input" type="checkbox" id="composer:showHelpTab" data-field="composer:showHelpTab" checked />
-					<span class="mdl-switch__label">Show "Help" tab</span>
+					<span class="mdl-switch__label">[[admin/settings/post:composer.show-help]]</span>
 				</label>
 			</div>
 			<div class="checkbox">
 				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="composer:allowPluginHelp">
 					<input class="mdl-switch__input" type="checkbox" id="composer:allowPluginHelp" data-field="composer:allowPluginHelp" checked />
-					<span class="mdl-switch__label">Allow plugins to add content to the help tab</span>
+					<span class="mdl-switch__label">[[admin/settings/post:composer.enable-plugin-help]]</span>
 				</label>
 			</div>
 			<div class="form-group">
-				<label for="composer:customHelpText">Custom Help Text</label>
+				<label for="composer:customHelpText">[[admin/settings/post:composer.custom-help]]</label>
 				<textarea class="form-control" id="composer:customHelpText" data-field="composer:customHelpText" rows="5"></textarea>
 			</div>
 		</form>
@@ -192,16 +188,16 @@
 </div>
 
 <div class="row">
-	<div class="col-sm-2 col-xs-12 settings-header">IP Tracking</div>
+	<div class="col-sm-2 col-xs-12 settings-header">[[admin/settings/post:ip-tracking]]</div>
 	<div class="col-sm-10 col-xs-12">
 		<form>
 			<div class="checkbox">
 				<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
 					<input class="mdl-switch__input" type="checkbox" data-field="trackIpPerPost">
-					<span class="mdl-switch__label"><strong>Track IP Address for each post</strong></span>
+					<span class="mdl-switch__label"><strong>[[admin/settings/post:ip-tracking.each-post]]</strong></span>
 				</label>
 			</div>
 		</form>
 	</div>
 </div>
-<!-- IMPORT admin/settings/footer.tpl -->
+<!-- IMPORT admin/partials/settings/footer.tpl -->

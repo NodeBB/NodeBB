@@ -1,0 +1,75 @@
+{
+	"section-general": "General",
+	"general/dashboard": "Dashboard",
+	"general/homepage": "Home Page",
+	"general/navigation": "Navigation",
+	"general/languages": "Languages",
+	"general/sounds": "Sounds",
+	"general/social": "Social",
+
+	"section-manage": "Manage",
+	"manage/categories": "Categories",
+	"manage/tags": "Tags",
+	"manage/users": "Users",
+	"manage/registration": "Registration Queue",
+	"manage/groups": "Groups",
+	"manage/flags": "Flags",
+	"manage/ip-blacklist": "IP Blacklist",
+
+	"section-settings": "Settings",
+	"settings/general": "General",
+	"settings/reputation": "Reputation",
+	"settings/email": "Email",
+	"settings/user": "User",
+	"settings/group": "Group",
+	"settings/guest": "Guests",
+	"settings/uploads": "Uploads",
+	"settings/post": "Post",
+	"settings/chat": "Chat",
+	"settings/pagination": "Pagination",
+	"settings/tags": "Tags",
+	"settings/notifications": "Notifications",
+	"settings/cookies": "Cookies",
+	"settings/web-crawler": "Web Crawler",
+	"settings/sockets": "Sockets",
+	"settings/advanced": "Advanced",
+
+	"settings.page-title": "%1 Settings",
+
+	"section-appearance": "Appearance",
+	"appearance/themes": "Themes",
+	"appearance/skins": "Skins",
+	"appearance/customise": "Custom HTML &amp; CSS",
+
+	"section-extend": "Extend",
+	"extend/plugins": "Plugins",
+	"extend/widgets": "Widgets",
+	"extend/rewards": "Rewards",
+
+	"section-social-auth": "Social Authentication",
+
+	"section-plugins": "Plugins",
+	"extend/plugins.install": "Install Plugins",
+
+	"section-advanced": "Advanced",
+	"advanced/database": "Database",
+	"advanced/events": "Events",
+	"advanced/logs": "Logs",
+	"advanced/errors": "Errors",
+	"advanced/cache": "Cache",
+	"development/logger": "Logger",
+	"development/info": "Info",
+
+	"reload-forum": "Reload Forum",
+	"restart-forum": "Restart Forum",
+	"logout": "Log out",
+	"view-forum": "View Forum",
+
+	"search.placeholder": "Search...",
+	"search.no-results": "No results...",
+	"search.search-forum": "Search the forum for <strong></strong>",
+	"search.keep-typing": "Type more to see results...",
+	"search.start-typing": "Start typing to see results...",
+
+	"connection-lost": "Connection to %1 has been lost, attempting to reconnect..."
+}

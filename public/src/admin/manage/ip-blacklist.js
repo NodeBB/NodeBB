@@ -1,7 +1,7 @@
 'use strict';
 /* globals $, app, socket, templates, define, bootbox */
 
-define('admin/manage/ip-blacklist', [], function () {
+define('admin/manage/ip-blacklist', ['translator'], function (translator) {
 
 	var Blacklist = {};
 
@@ -20,7 +20,7 @@ define('admin/manage/ip-blacklist', [], function () {
 				app.alert({
 					type: 'success',
 					alert_id: 'blacklist-saved',
-					title: 'Blacklist Applied',
+					title: '[[admin/manage/ip-blacklist:alerts.applied]]',
 				});
 			});
 		});

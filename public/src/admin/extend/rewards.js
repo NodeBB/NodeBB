@@ -1,7 +1,7 @@
 "use strict";
 /* global define, app, ajaxify, socket, templates, bootbox */
 
-define('admin/extend/rewards', function () {
+define('admin/extend/rewards', ['translator'], function (translator) {
 	var rewards = {};
 
 
@@ -32,7 +32,7 @@ define('admin/extend/rewards', function () {
 					if (err) {
 						app.alertError(err.message);
 					} else {
-						app.alertSuccess('Successfully deleted reward');
+						app.alertSuccess('[[admin/extend/rewards:alert.delete-success]]');
 					}
 				});
 
@@ -43,8 +43,7 @@ define('admin/extend/rewards', function () {
 				var btn = $(this),
 					disabled = btn.hasClass('btn-success'),
 					id = $(this).parents('[data-id]').attr('data-id');
-
-				btn.toggleClass('btn-warning').toggleClass('btn-success').html(disabled ? 'Disable' : 'Enable');
+				btn.toggleClass('btn-warning').toggleClass('btn-success').translateHtml('[[admin/extend/rewards:' + disabled ? 'disable' : 'enable' + ']]');
 				// send disable api call
 				return false;
 			});
@@ -90,7 +89,7 @@ define('admin/extend/rewards', function () {
 		}
 
 		if (!inputs) {
-			return app.alertError('Illegal reward - no inputs found! ' + el.attr('data-selected'));
+			return app.alertError('[[admin/extend/rewards:alert.no-inputs-found]] ' + el.attr('data-selected'));
 		}
 
 		inputs.forEach(function (input) {
@@ -142,9 +141,11 @@ define('admin/extend/rewards', function () {
 		};
 
 		templates.parse('admin/extend/rewards', 'active', data, function (li) {
-			li = $(li);
-			ul.append(li);
-			li.find('select').val('');
+			translator.translate(li, function (li) {
+				li = $(li);
+				ul.append(li);
+				li.find('select').val('');
+			});
 		});
 	}
 
@@ -174,7 +175,7 @@ define('admin/extend/rewards', function () {
 			if (err) {
 				app.alertError(err.message);
 			} else {
-				app.alertSuccess('Successfully saved rewards');
+				app.alertSuccess('[[admin/extend/rewards:alert.save-success]]');
 			}
 		});
 	}

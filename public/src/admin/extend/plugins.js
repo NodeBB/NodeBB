@@ -1,7 +1,7 @@
 "use strict";
 /* global define, app, socket, bootbox */
 
-define('admin/extend/plugins', ['jqueryui'], function (jqueryui) {
+define('admin/extend/plugins', ['jqueryui', 'translator'], function (jqueryui, translator) {
 	var Plugins = {};
 	Plugins.init = function () {
 		var pluginsList = $('.plugins'),
@@ -9,7 +9,9 @@ define('admin/extend/plugins', ['jqueryui'], function (jqueryui) {
 			pluginID;
 
 		if (!numPlugins) {
-			pluginsList.append('<li><p><i>No plugins found.</i></p></li>');
+			translator.translate('<li><p><i>[[admin/extend/plugins:none-found]]</i></p></li>', function (html) {
+				pluginsList.append(html);
+			});
 			return;
 		}
 
@@ -23,25 +25,27 @@ define('admin/extend/plugins', ['jqueryui'], function (jqueryui) {
 				if (err) {
 					return app.alertError(err);
 				}
-				btn.html('<i class="fa fa-power-off"></i> ' + (status.active ? 'Deactivate' : 'Activate'));
-				btn.toggleClass('btn-warning', status.active).toggleClass('btn-success', !status.active);
+				translator.translate('<i class="fa fa-power-off"></i> [[admin/extend/plugins:plugin-item.' + (status.active ? 'deactivate' : 'activate') + ']]', function (buttonText) {
+					btn.html(buttonText);
+					btn.toggleClass('btn-warning', status.active).toggleClass('btn-success', !status.active);
 
-				//clone it to active plugins tab
-				if (status.active && !$('#active #' + pluginID).length) {
-					$('#active ul').prepend(pluginEl.clone(true));
-				}
-
-				app.alert({
-					alert_id: 'plugin_toggled',
-					title: 'Plugin ' + (status.active ? 'Enabled' : 'Disabled'),
-					message: status.active ? 'Please restart your NodeBB to fully activate this plugin' : 'Plugin successfully deactivated',
-					type: status.active ? 'warning' : 'success',
-					timeout: 5000,
-					clickfn: function () {
-						require(['admin/modules/instance'], function (instance) {
-							instance.restart();
-						});
+					//clone it to active plugins tab
+					if (status.active && !$('#active #' + pluginID).length) {
+						$('#active ul').prepend(pluginEl.clone(true));
 					}
+
+					app.alert({
+						alert_id: 'plugin_toggled',
+						title: '[[admin/extend/plugins:alert.' + (status.active ? 'enabled' : 'disabled') + ']]',
+						message: '[[admin/extend/plugins:alert.' + (status.active ? 'activate-success' : 'deactivate-success') + ']]',
+						type: status.active ? 'warning' : 'success',
+						timeout: 5000,
+						clickfn: function () {
+							require(['admin/modules/instance'], function (instance) {
+								instance.restart();
+							});
+						}
+					});
 				});
 			});
 		});
@@ -57,7 +61,7 @@ define('admin/extend/plugins', ['jqueryui'], function (jqueryui) {
 
 			Plugins.suggest(pluginID, function (err, payload) {
 				if (err) {
-					bootbox.confirm('<p>NodeBB could not reach the package manager, proceed with installation of latest version?</p><div class="alert alert-danger"><strong>Server returned (' + err.status + ')</strong>: ' + err.responseText + '</div>', function (confirm) {
+					bootbox.confirm(translator.compile('admin/extend/plugins:alert.suggest-error', err.status, err.responseText), function (confirm) {
 						if (confirm) {
 							Plugins.toggleInstall(pluginID, 'latest');
 						} else {
@@ -92,7 +96,7 @@ define('admin/extend/plugins', ['jqueryui'], function (jqueryui) {
 
 			Plugins.suggest(pluginID, function (err, payload) {
 				if (err) {
-					return bootbox.alert('<p>NodeBB could not reach the package manager, an upgrade is not suggested at this time.</p>');
+					return bootbox.alert('[[admin/extend/plugins:alert.package-manager-unreachable]]');
 				}
 
 				require(['semver'], function (semver) {
@@ -103,7 +107,7 @@ define('admin/extend/plugins', ['jqueryui'], function (jqueryui) {
 							upgrade(pluginID, btn, payload.version);
 						});
 					} else {
-						bootbox.alert('<p>Your version of NodeBB (v' + app.config.version + ') is only cleared to upgrade to v' + payload.version + ' of this plugin. Please update your NodeBB if you wish to install a newer version of this plugin.');
+						bootbox.alert(translator.compile('admin/extend/plugins:alert.incompatible', app.config.version, payload.version));
 					}
 				});
 			});
@@ -128,7 +132,10 @@ define('admin/extend/plugins', ['jqueryui'], function (jqueryui) {
 					html += '<li class="">' + plugin + '</li>';
 				});
 				if (!activePlugins.length) {
-					html = 'No Active Plugins';
+					translator.translate('[[admin/extend/plugins:none-active]]', function (text) {
+						$('#order-active-plugins-modal .plugin-list').html(text).sortable();
+					});
+					return;
 				}
 				$('#order-active-plugins-modal .plugin-list').html(html).sortable();
 			});
@@ -154,11 +161,7 @@ define('admin/extend/plugins', ['jqueryui'], function (jqueryui) {
 	};
 
 	function confirmInstall(pluginID, callback) {
-		bootbox.confirm(
-			'<div class="alert alert-warning"><p><strong>No Compatibility Infomation Found</strong></p><p>This plugin did not specify a specific version for installation given your NodeBB version. Full compatibility cannot be guaranteed, and may cause your NodeBB to no longer start properly.</p></div>' +
-			'<p>In the event that NodeBB cannot boot properly:</p>' +
-			'<pre><code>$ ./nodebb reset plugin="' + pluginID + '"</code></pre>' +
-			'<p>Continue installation of latest version of this plugin?</p>', function (confirm) {
+		bootbox.confirm(translator.compile('admin/extend/plugins:alert.possibly-incompatible', pluginID), function (confirm) {
 				callback(confirm);
 		});
 	}
@@ -179,8 +182,8 @@ define('admin/extend/plugins', ['jqueryui'], function (jqueryui) {
 			if (isActive) {
 				app.alert({
 					alert_id: 'plugin_upgraded',
-					title: 'Plugin Upgraded',
-					message: 'Please reload your NodeBB to fully upgrade this plugin',
+					title: '[[admin/extend/plugins:alert.upgraded]]',
+					message: '[[admin/extend/plugins:alert.upgrade-success]]',
 					type: 'warning',
 					timeout: 5000,
 					clickfn: function () {
@@ -211,8 +214,8 @@ define('admin/extend/plugins', ['jqueryui'], function (jqueryui) {
 
 			app.alert({
 				alert_id: 'plugin_toggled',
-				title: 'Plugin ' + (pluginData.installed ? 'Installed' : 'Uninstalled'),
-				message: pluginData.installed ? 'Plugin successfully installed, please activate the plugin.' : 'The plugin has been successfully deactivated and uninstalled.',
+				title: '[[admin/extend/plugins:alert.' + (pluginData.installed ? 'installed' : 'uninstalled') + ']]',
+				message: '[[admin/extend/plugins:alert.' + (pluginData.installed ? 'install-success' : 'uninstall-success') + ']]',
 				type: 'info',
 				timeout: 5000
 			});
