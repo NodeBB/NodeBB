@@ -7,7 +7,7 @@ define('forum/topic/move-post', [], function () {
 	var MovePost = {};
 
 
-	MovePost.openMovePostModal = function(button) {
+	MovePost.openMovePostModal = function (button) {
 		app.parseAndTranslate('partials/move_post_modal', {}, function (html) {
 			var moveModal = $(html);
 
