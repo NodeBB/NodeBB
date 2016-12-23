@@ -154,9 +154,9 @@ function restart() {
 
 function shutdown(code) {
 	winston.info('[app] Shutdown (SIGTERM/SIGINT) Initialised.');
-	require('./src/database').close();
+	require('./database').close();
 	winston.info('[app] Database connection closed.');
-	require('./src/webserver').server.close();
+	require('./webserver').server.close();
 	winston.info('[app] Web server closed to connections.');
 
 	winston.info('[app] Shutdown complete.');
