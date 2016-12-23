@@ -86,7 +86,7 @@ if (nconf.get('setup') || nconf.get('install')) {
 } else if (nconf.get('build')) {
 	require('./build').build(nconf.get('build'));
 } else {
-	start();
+	require('./src/start').start();
 }
 
 function loadConfig(callback) {
@@ -120,128 +120,6 @@ function loadConfig(callback) {
 	if (typeof callback === 'function') {
 		callback();
 	}
-}
-
-
-function start() {
-	var db = require('./src/database');
-
-	// nconf defaults, if not set in config
-	if (!nconf.get('upload_path')) {
-		nconf.set('upload_path', '/public/uploads');
-	}
-	if (!nconf.get('sessionKey')) {
-		nconf.set('sessionKey', 'express.sid');
-	}
-	// Parse out the relative_url and other goodies from the configured URL
-	var urlObject = url.parse(nconf.get('url'));
-	var relativePath = urlObject.pathname !== '/' ? urlObject.pathname : '';
-	nconf.set('base_url', urlObject.protocol + '//' + urlObject.host);
-	nconf.set('secure', urlObject.protocol === 'https:');
-	nconf.set('use_port', !!urlObject.port);
-	nconf.set('relative_path', relativePath);
-	nconf.set('port', urlObject.port || nconf.get('port') || nconf.get('PORT') || (nconf.get('PORT_ENV_VAR') ? nconf.get(nconf.get('PORT_ENV_VAR')) : false) || 4567);
-	nconf.set('upload_url', nconf.get('upload_path').replace(/^\/public/, ''));
-
-	if (nconf.get('isPrimary') === 'true') {
-		winston.info('Time: %s', (new Date()).toString());
-		winston.info('Initializing NodeBB v%s', nconf.get('version'));
-
-
-		var host = nconf.get(nconf.get('database') + ':host'),
-			storeLocation = host ? 'at ' + host + (host.indexOf('/') === -1 ? ':' + nconf.get(nconf.get('database') + ':port') : '') : '';
-
-		winston.verbose('* using %s store %s', nconf.get('database'), storeLocation);
-		winston.verbose('* using themes stored in: %s', nconf.get('themes_path'));
-	}
-
-	process.on('SIGTERM', shutdown);
-	process.on('SIGINT', shutdown);
-	process.on('SIGHUP', restart);
-	process.on('message', function (message) {
-		if (typeof message !== 'object') {
-			return;
-		}
-		var meta = require('./src/meta');
-
-		switch (message.action) {
-			case 'reload':
-				meta.reload();
-			break;
-		}
-	});
-
-	process.on('uncaughtException', function (err) {
-		winston.error(err.stack);
-		console.log(err.stack);
-
-		require('./src/meta').js.killMinifier();
-		shutdown(1);
-	});
-
-	async.waterfall([
-		async.apply(db.init),
-		function (next) {
-			var meta = require('./src/meta');
-			async.parallel([
-				async.apply(db.checkCompatibility),
-				async.apply(meta.configs.init),
-				function (next) {
-					if (nconf.get('dep-check') === undefined || nconf.get('dep-check') !== false) {
-						meta.dependencies.check(next);
-					} else {
-						winston.warn('[init] Dependency checking skipped!');
-						setImmediate(next);
-					}
-				},
-				function (next) {
-					require('./src/upgrade').check(next);
-				}
-			], function (err) {
-				next(err);
-			});
-		},
-		function (next) {
-			var webserver = require('./src/webserver');
-			require('./src/socket.io').init(webserver.server);
-
-			if (nconf.get('isPrimary') === 'true' && !nconf.get('jobsDisabled')) {
-				require('./src/notifications').init();
-				require('./src/user').startJobs();
-			}
-
-			webserver.listen(next);
-		}
-	], function (err) {
-		if (err) {
-			switch(err.message) {
-				case 'schema-out-of-date':
-					winston.warn('Your NodeBB schema is out-of-date. Please run the following command to bring your dataset up to spec:');
-					winston.warn('    ./nodebb upgrade');
-					break;
-				case 'dependencies-out-of-date':
-					winston.warn('One or more of NodeBB\'s dependent packages are out-of-date. Please run the following command to update them:');
-					winston.warn('    ./nodebb upgrade');
-					break;
-				case 'dependencies-missing':
-					winston.warn('One or more of NodeBB\'s dependent packages are missing. Please run the following command to update them:');
-					winston.warn('    ./nodebb upgrade');
-					break;
-				default:
-					winston.error(err);
-					break;
-			}
-
-			// Either way, bad stuff happened. Abort start.
-			process.exit();
-		}
-
-		if (process.send) {
-			process.send({
-				action: 'listening'
-			});
-		}
-	});
 }
 
 function setup() {
@@ -353,30 +231,6 @@ function listPlugins() {
 			process.exit();
 		});
 	});
-}
-
-
-function shutdown(code) {
-	winston.info('[app] Shutdown (SIGTERM/SIGINT) Initialised.');
-	require('./src/database').close();
-	winston.info('[app] Database connection closed.');
-	require('./src/webserver').server.close();
-	winston.info('[app] Web server closed to connections.');
-
-	winston.info('[app] Shutdown complete.');
-	process.exit(code || 0);
-}
-
-function restart() {
-	if (process.send) {
-		winston.info('[app] Restarting...');
-		process.send({
-			action: 'restart'
-		});
-	} else {
-		winston.error('[app] Could not restart server. Shutting down.');
-		shutdown(1);
-	}
 }
 
 function versionCheck() {
