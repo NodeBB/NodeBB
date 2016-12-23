@@ -29,7 +29,7 @@ module.exports = function (redisClient, module) {
 
 	function sortedSetRange(method, key, start, stop, withScores, callback) {
 		if (Array.isArray(key)) {
-			return sortedSetUnion({method: method, sets: key, start: start, stop: stop, withScores: withScores}, callback);
+			return module.sortedSetUnion({method: method, sets: key, start: start, stop: stop, withScores: withScores}, callback);
 		}
 
 		var params = [key, start, stop];

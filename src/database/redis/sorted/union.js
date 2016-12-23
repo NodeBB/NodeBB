@@ -21,15 +21,15 @@ module.exports = function (redisClient, module) {
 
 	module.getSortedSetUnion = function (params, callback) {
 		params.method = 'zrange';
-		sortedSetUnion(params, callback);
+		module.sortedSetUnion(params, callback);
 	};
 
 	module.getSortedSetRevUnion = function (params, callback) {
 		params.method = 'zrevrange';
-		sortedSetUnion(params, callback);
+		module.sortedSetUnion(params, callback);
 	};
 
-	function sortedSetUnion(params, callback) {
+	module.sortedSetUnion = function (params, callback) {
 
 		var tempSetName = 'temp_' + Date.now();
 
@@ -56,5 +56,5 @@ module.exports = function (redisClient, module) {
 			}
 			callback(null, objects);
 		});
-	}
+	};
 };
