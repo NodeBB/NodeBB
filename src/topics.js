@@ -29,27 +29,29 @@ var social = require('./social');
 	require('./topics/suggested')(Topics);
 	require('./topics/tools')(Topics);
 	require('./topics/thumb')(Topics);
+	require('./topics/bookmarks')(Topics);
 
 	Topics.exists = function (tid, callback) {
 		db.isSortedSetMember('topics:tid', tid, callback);
 	};
 
 	Topics.getPageCount = function (tid, uid, callback) {
-		Topics.getTopicField(tid, 'postcount', function (err, postCount) {
-			if (err) {
-				return callback(err);
-			}
-			if (!parseInt(postCount, 10)) {
-				return callback(null, 1);
-			}
-			user.getSettings(uid, function (err, settings) {
-				if (err) {
-					return callback(err);
+		var postCount;
+		async.waterfall([
+			function (next) {
+				Topics.getTopicField(tid, 'postcount', next);
+			},
+			function (_postCount, next) {
+				if (!parseInt(_postCount, 10)) {
+					return callback(null, 1);
 				}
-
-				callback(null, Math.ceil((parseInt(postCount, 10) - 1) / settings.postsPerPage));
-			});
-		});
+				postCount = _postCount;
+				user.getSettings(uid, next);
+			},
+			function (settings, next) {
+				next(null, Math.ceil((parseInt(postCount, 10) - 1) / settings.postsPerPage));
+			}
+		], callback);
 	};
 
 	Topics.getTidPage = function (tid, uid, callback) {
@@ -301,25 +303,6 @@ var social = require('./social');
 		});
 	}
 
-	Topics.getUserBookmark = function (tid, uid, callback) {
-		db.sortedSetScore('tid:' + tid + ':bookmarks', uid, callback);
-	};
-
-	Topics.getUserBookmarks = function (tids, uid, callback) {
-		if (!parseInt(uid, 10)) {
-			return callback(null, tids.map(function () {
-				return null;
-			}));
-		}
-		db.sortedSetsScore(tids.map(function (tid) {
-			return 'tid:' + tid + ':bookmarks';
-		}), uid, callback);
-	};
-
-	Topics.setUserBookmark = function (tid, uid, index, callback) {
-		db.sortedSetAdd('tid:' + tid + ':bookmarks', index, uid, callback);
-	};
-
 	Topics.isLocked = function (tid, callback) {
 		Topics.getTopicField(tid, 'locked', function (err, locked) {
 			callback(err, parseInt(locked, 10) === 1);
@@ -337,56 +320,4 @@ var social = require('./social');
 		}
 	};
 
-	Topics.getTopicBookmarks = function (tid, callback) {
-		db.getSortedSetRangeWithScores(['tid:' + tid + ':bookmarks'], 0, -1, callback);
-	};
-
-	Topics.updateTopicBookmarks = function (tid, pids, callback) {
-		var maxIndex;
-
-		async.waterfall([
-			function (next) {
-				Topics.getPostCount(tid, next);
-			},
-			function (postcount, next) {
-				maxIndex = postcount;
-				Topics.getTopicBookmarks(tid, next);
-			},
-			function (bookmarks, next) {
-				var forkedPosts = pids.map(function (pid) {
-					return {pid: pid, tid: tid};
-				});
-
-				var uidData = bookmarks.map(function (bookmark) {
-					return {
-						uid: bookmark.value,
-						bookmark: bookmark.score
-					};
-				});
-
-				async.eachLimit(uidData, 50, function (data, next) {
-					posts.getPostIndices(forkedPosts, data.uid, function (err, postIndices) {
-						if (err) {
-							return next(err);
-						}
-
-						var bookmark = data.bookmark;
-						bookmark = bookmark < maxIndex ? bookmark : maxIndex;
-
-						for (var i = 0; i < postIndices.length && postIndices[i] < data.bookmark; ++i) {
-							--bookmark;
-						}
-
-						if (parseInt(bookmark, 10) !== parseInt(data.bookmark, 10)) {
-							Topics.setUserBookmark(tid, data.uid, bookmark, next);
-						} else {
-							next();
-						}
-					});
-				}, next);
-			}
-		], function (err) {
-			callback(err);
-		});
-	};
 }(exports));
