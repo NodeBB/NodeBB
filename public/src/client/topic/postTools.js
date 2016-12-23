@@ -2,7 +2,14 @@
 
 /* globals define, app, ajaxify, bootbox, socket, templates, utils, config */
 
-define('forum/topic/postTools', ['share', 'navigator', 'components', 'translator'], function (share, navigator, components, translator) {
+define('forum/topic/postTools', [
+	'share',
+	'navigator',
+	'components',
+	'translator',
+	'forum/topic/votes',
+	'forum/topic/move-post'
+], function (share, navigator, components, translator, votes, movePost) {
 
 	var PostTools = {};
 
@@ -17,7 +24,7 @@ define('forum/topic/postTools', ['share', 'navigator', 'components', 'translator
 
 		share.addShareHandlers(ajaxify.data.titleRaw);
 
-		addVoteHandler();
+		votes.addVoteHandler();
 
 		PostTools.updatePostCount(ajaxify.data.postcount);
 	};
@@ -69,62 +76,6 @@ define('forum/topic/postTools', ['share', 'navigator', 'components', 'translator
 		navigator.setCount(postCount);
 	};
 
-	function addVoteHandler() {
-		components.get('topic').on('mouseenter', '[data-pid] [component="post/vote-count"]', loadDataAndCreateTooltip);
-		components.get('topic').on('mouseout', '[data-pid] [component="post/vote-count"]', function () {
-			var el = $(this).parent();
-			el.on('shown.bs.tooltip', function () {
-				$('.tooltip').tooltip('destroy');
-				el.off('shown.bs.tooltip');
-			});
-
-			$('.tooltip').tooltip('destroy');
-		});
-	}
-
-	function loadDataAndCreateTooltip(e) {
-		e.stopPropagation();
-
-		var $this = $(this);
-		var el = $this.parent();
-		var pid = el.parents('[data-pid]').attr('data-pid');
-
-		$('.tooltip').tooltip('destroy');
-		$this.off('mouseenter', loadDataAndCreateTooltip);
-
-		socket.emit('posts.getUpvoters', [pid], function (err, data) {
-			if (err) {
-				return app.alertError(err.message);
-			}
-
-			if (data.length) {
-				createTooltip(el, data[0]);
-			}
-			$this.off('mouseenter').on('mouseenter', loadDataAndCreateTooltip);
-		});
-		return false;
-	}
-
-	function createTooltip(el, data) {
-		function doCreateTooltip(title) {
-			el.attr('title', title).tooltip('fixTitle').tooltip('show');
-		}
-		var usernames = data.usernames;
-		if (!usernames.length) {
-			return;
-		}
-		if (usernames.length + data.otherCount > 6) {
-			usernames = usernames.join(', ').replace(/,/g, '|');
-			translator.translate('[[topic:users_and_others, ' + usernames + ', ' + data.otherCount + ']]', function (translated) {
-				translated = translated.replace(/\|/g, ',');
-				doCreateTooltip(translated);
-			});
-		} else {
-			usernames = usernames.join(', ');
-			doCreateTooltip(usernames);
-		}
-	}
-
 	function addPostHandlers(tid) {
 		var postContainer = components.get('topic');
 
@@ -150,19 +101,19 @@ define('forum/topic/postTools', ['share', 'navigator', 'components', 'translator
 		});
 
 		postContainer.on('click', '[component="post/bookmark"]', function () {
-			bookmarkPost($(this), getData($(this), 'data-pid'));
+			return bookmarkPost($(this), getData($(this), 'data-pid'));
 		});
 
 		postContainer.on('click', '[component="post/upvote"]', function () {
-			return toggleVote($(this), '.upvoted', 'posts.upvote');
+			return votes.toggleVote($(this), '.upvoted', 'posts.upvote');
 		});
 
 		postContainer.on('click', '[component="post/downvote"]', function () {
-			return toggleVote($(this), '.downvoted', 'posts.downvote');
+			return votes.toggleVote($(this), '.downvoted', 'posts.downvote');
 		});
 
 		postContainer.on('click', '[component="post/vote-count"]', function () {
-			showVotes(getData($(this), 'data-pid'));
+			votes.showVotes(getData($(this), 'data-pid'));
 		});
 
 		postContainer.on('click', '[component="post/flag"]', function () {
@@ -237,7 +188,7 @@ define('forum/topic/postTools', ['share', 'navigator', 'components', 'translator
 		});
 
 		postContainer.on('click', '[component="post/move"]', function () {
-			openMovePostModal($(this));
+			movePost.openMovePostModal($(this));
 		});
 
 		postContainer.on('click', '[component="post/chat"]', function () {
@@ -347,55 +298,6 @@ define('forum/topic/postTools', ['share', 'navigator', 'components', 'translator
 		return false;
 	}
 
-	function toggleVote(button, className, method) {
-		var post = button.parents('[data-pid]'),
-			currentState = post.find(className).length;
-
-		socket.emit(currentState ? 'posts.unvote' : method , {
-			pid: post.attr('data-pid'),
-			room_id: app.currentRoom
-		}, function (err) {
-			if (err) {
-				if (err.message === 'self-vote') {
-					showVotes(post.attr('data-pid'));
-				} else {
-					app.alertError(err.message);
-				}
-			}
-		});
-
-		return false;
-	}
-
-	function showVotes(pid) {
-		socket.emit('posts.getVoters', {pid: pid, cid: ajaxify.data.cid}, function (err, data) {
-			if (err) {
-				if (err.message === '[[error:no-privileges]]') {
-					return;
-				}
-
-				// Only show error if it's an unexpected error.
-				return app.alertError(err.message);
-			}
-
-			templates.parse('partials/modals/votes_modal', data, function (html) {
-				translator.translate(html, function (translated) {
-					var dialog = bootbox.dialog({
-						title: 'Voters',
-						message: translated,
-						className: 'vote-modal',
-						show: true
-					});
-
-					dialog.on('click', function () {
-						dialog.modal('hide');
-					});
-
-				});
-			});
-		});
-	}
-
 	function getData(button, data) {
 		return button.parents('[data-pid]').attr(data);
 	}
@@ -446,67 +348,6 @@ define('forum/topic/postTools', ['share', 'navigator', 'components', 'translator
 					}
 				});
 			});
-		});
-	}
-
-	function openMovePostModal(button) {
-		parseMoveModal(function (html) {
-			var moveModal = $(html);
-
-			var	moveBtn = moveModal.find('#move_post_commit'),
-				topicId = moveModal.find('#topicId');
-
-			moveModal.on('hidden.bs.modal', function () {
-				moveModal.remove();
-			});
-
-			showMoveModal(moveModal);
-
-			moveModal.find('.close, #move_post_cancel').on('click', function () {
-				moveModal.addClass('hide');
-			});
-
-			topicId.on('keyup change', function () {
-				moveBtn.attr('disabled', !topicId.val());
-			});
-
-			moveBtn.on('click', function () {
-				movePost(button.parents('[data-pid]'), getData(button, 'data-pid'), topicId.val(), function () {
-					moveModal.modal('hide');
-					topicId.val('');
-				});
-			});
-
-		});
-	}
-
-	function parseMoveModal(callback) {
-		templates.parse('partials/move_post_modal', {}, function (html) {
-			translator.translate(html, callback);
-		});
-	}
-
-	function showMoveModal(modal) {
-		modal.modal('show')
-			.css("position", "fixed")
-			.css("left", Math.max(0, (($(window).width() - modal.outerWidth()) / 2) + $(window).scrollLeft()) + "px")
-			.css("top", "0px")
-			.css("z-index", "2000");
-	}
-
-	function movePost(post, pid, tid, callback) {
-		socket.emit('posts.movePost', {pid: pid, tid: tid}, function (err) {
-			if (err) {
-				app.alertError(err.message);
-				return callback();
-			}
-
-			post.fadeOut(500, function () {
-				post.remove();
-			});
-
-			app.alertSuccess('[[topic:post_moved]]');
-			callback();
 		});
 	}
 
