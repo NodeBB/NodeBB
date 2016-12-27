@@ -21,12 +21,6 @@ define('notifications', ['sounds', 'translator', 'components'], function (sound,
 				}
 
 				Notifications.loadNotifications(notifList);
-			})
-			.on('dblclick', function (e) {
-				e.preventDefault();
-				if (parseInt(notifIcon.attr('data-content'), 10) > 0) {
-					Notifications.markAllRead();
-				}
 			});
 
 		notifList.on('click', '[data-nid]', function () {

@@ -1,0 +1,117 @@
+'use strict';
+
+/* globals define, app, socket, ajaxify, templates, bootbox */
+
+define('forum/topic/votes', ['components', 'translator'], function (components, translator) {
+
+	var Votes = {};
+
+	Votes.addVoteHandler = function () {
+		components.get('topic').on('mouseenter', '[data-pid] [component="post/vote-count"]', loadDataAndCreateTooltip);
+		components.get('topic').on('mouseout', '[data-pid] [component="post/vote-count"]', function () {
+			var el = $(this).parent();
+			el.on('shown.bs.tooltip', function () {
+				$('.tooltip').tooltip('destroy');
+				el.off('shown.bs.tooltip');
+			});
+
+			$('.tooltip').tooltip('destroy');
+		});
+	};
+
+	function loadDataAndCreateTooltip(e) {
+		e.stopPropagation();
+
+		var $this = $(this);
+		var el = $this.parent();
+		var pid = el.parents('[data-pid]').attr('data-pid');
+
+		$('.tooltip').tooltip('destroy');
+		$this.off('mouseenter', loadDataAndCreateTooltip);
+
+		socket.emit('posts.getUpvoters', [pid], function (err, data) {
+			if (err) {
+				return app.alertError(err.message);
+			}
+
+			if (data.length) {
+				createTooltip(el, data[0]);
+			}
+			$this.off('mouseenter').on('mouseenter', loadDataAndCreateTooltip);
+		});
+		return false;
+	}
+
+	function createTooltip(el, data) {
+		function doCreateTooltip(title) {
+			el.attr('title', title).tooltip('fixTitle').tooltip('show');
+		}
+		var usernames = data.usernames;
+		if (!usernames.length) {
+			return;
+		}
+		if (usernames.length + data.otherCount > 6) {
+			usernames = usernames.join(', ').replace(/,/g, '|');
+			translator.translate('[[topic:users_and_others, ' + usernames + ', ' + data.otherCount + ']]', function (translated) {
+				translated = translated.replace(/\|/g, ',');
+				doCreateTooltip(translated);
+			});
+		} else {
+			usernames = usernames.join(', ');
+			doCreateTooltip(usernames);
+		}
+	}
+
+
+	Votes.toggleVote = function (button, className, method) {
+		var post = button.parents('[data-pid]'),
+			currentState = post.find(className).length;
+
+		socket.emit(currentState ? 'posts.unvote' : method , {
+			pid: post.attr('data-pid'),
+			room_id: app.currentRoom
+		}, function (err) {
+			if (err) {
+				if (err.message === 'self-vote') {
+					Votes.showVotes(post.attr('data-pid'));
+				} else {
+					app.alertError(err.message);
+				}
+			}
+		});
+
+		return false;
+	};
+
+	Votes.showVotes = function (pid) {
+		socket.emit('posts.getVoters', {pid: pid, cid: ajaxify.data.cid}, function (err, data) {
+			if (err) {
+				if (err.message === '[[error:no-privileges]]') {
+					return;
+				}
+
+				// Only show error if it's an unexpected error.
+				return app.alertError(err.message);
+			}
+
+			templates.parse('partials/modals/votes_modal', data, function (html) {
+				translator.translate(html, function (translated) {
+					var dialog = bootbox.dialog({
+						title: 'Voters',
+						message: translated,
+						className: 'vote-modal',
+						show: true
+					});
+
+					dialog.on('click', function () {
+						dialog.modal('hide');
+					});
+
+				});
+			});
+		});
+	};
+
+
+	return Votes;
+});

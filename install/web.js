@@ -118,9 +118,17 @@ function launch(req, res) {
 	process.stdout.write('    "./nodebb log" to view server output\n');
 	process.stdout.write('    "./nodebb restart" to restart NodeBB\n');
 
-	child.unref();
-	process.exit(0);
+	async.parallel([
+		async.apply(fs.unlink(path.join(__dirname, '../public/installer.css'))),
+		async.apply(fs.unlink(path.join(__dirname, '../public/installer.min.js')))	
+	], function (err) {
+		if (err) {
+			winston.warn('Unable to remove installer files');
+		}
 
+		child.unref();
+		process.exit(0);
+	});
 }
 
 function compileLess(callback) {
@@ -134,7 +142,7 @@ function compileLess(callback) {
 				return winston.error('Unable to compile LESS: ', err);
 			}
 
-			fs.writeFile(path.join(__dirname, '../public/stylesheet.css'), css.css, callback);
+			fs.writeFile(path.join(__dirname, '../public/installer.css'), css.css, callback);
 		});
 	});
 }
@@ -146,7 +154,7 @@ function compileJS(callback) {
 	}));
 
 
-	fs.writeFile(path.join(__dirname, '../public/nodebb.min.js'), result.code, callback);
+	fs.writeFile(path.join(__dirname, '../public/installer.min.js'), result.code, callback);
 }
 
 module.exports = web;

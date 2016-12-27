@@ -21,7 +21,7 @@
 					<!-- ENDIF mongo.fileSize -->
 					<hr/>
 					<span>[[admin/advanced/database:mongo.resident-memory]]</span> <span class="text-right">[[admin/advanced/database:x-mb, {mongo.mem.resident}]]</span><br/>
-					<span>[[admin/advanced/database:mongo.virtual-memory]]</span> <span class="text-right">[[admin/advanced/database:x-mb, {mongo.mem.virtual]]</span><br/>
+					<span>[[admin/advanced/database:mongo.virtual-memory]]</span> <span class="text-right">[[admin/advanced/database:x-mb, {mongo.mem.virtual}]]</span><br/>
 					<span>[[admin/advanced/database:mongo.mapped-memory]]</span> <span class="text-right">[[admin/advanced/database:x-mb, {mongo.mem.mapped}]]</span><br/>
 				</div>
 			</div>
