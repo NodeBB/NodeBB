@@ -8,7 +8,7 @@ var winston = require('winston');
 
 var Upgrade = {};
 
-var minSchemaDate = Date.UTC(2015, 10, 6);		// This value gets updated every new MAJOR version
+var minSchemaDate = Date.UTC(2016, 8, 7);		// This value gets updated every new MAJOR version
 var schemaDate;
 var thisSchemaDate;
 
