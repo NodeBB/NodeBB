@@ -13,6 +13,7 @@ var Meta = require('../src/meta');
 var Password = require('../src/password');
 var groups = require('../src/groups');
 var helpers = require('./helpers');
+var meta = require('../src/meta');
 
 describe('User', function () {
 	var userData;
@@ -503,6 +504,47 @@ describe('User', function () {
 				assert.ifError(err);
 				assert.equal(uploadedPicture.url, '/uploads/profile/' + uid + '-profileimg.png');
 				assert.equal(uploadedPicture.path, path.join(nconf.get('base_dir'), 'public', 'uploads', 'profile', uid + '-profileimg.png'));
+				done();
+			});
+		});
+		
+		it('should return error if profile image uploads disabled', function (done) {
+			meta.config.allowProfileImageUploads = 0;
+			var path = require('path');
+			var picture = {
+				path: path.join(nconf.get('base_dir'), 'public', 'logo.png'),
+				size: 7189,
+				name: 'logo.png'
+			};
+			User.uploadPicture(uid, picture, function (err, uploadedPicture) {
+				assert.equal(err.message, '[[error:profile-image-uploads-disabled]]');
+				done();
+			});
+		});
+		
+		it('should return error if profile image is too big', function (done) {
+			meta.config.allowProfileImageUploads = 1;
+			var path = require('path');
+			var picture = {
+				path: path.join(nconf.get('base_dir'), 'public', 'logo.png'),
+				size: 265000,
+				name: 'logo.png'
+			};
+			User.uploadPicture(uid, picture, function (err, uploadedPicture) {
+				assert.equal(err.message, '[[error:file-too-big, 256]]');
+				done();
+			});
+		});
+		
+		it('should return error if profile image file has no extension', function (done) {
+			var path = require('path');
+			var picture = {
+				path: path.join(nconf.get('base_dir'), 'public', 'logo.png'),
+				size: 7189,
+				name: 'logo'
+			};
+			User.uploadPicture(uid, picture, function (err, uploadedPicture) {
+				assert.equal(err.message, '[[error:invalid-image-extension]]');
 				done();
 			});
 		});
