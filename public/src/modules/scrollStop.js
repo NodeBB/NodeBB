@@ -21,7 +21,7 @@ define('scrollStop', function () {
 			
 			if (
 				(e.originalEvent.deltaY < 0 && scrollTop === 0) ||							// scroll up
-				(e.originalEvent.deltaY > 0 && (elementHeight + scrollTop) > scrollHeight)	// scroll down
+				(e.originalEvent.deltaY > 0 && (elementHeight + scrollTop) >= scrollHeight)	// scroll down
 			) {
 				return false;
 			}

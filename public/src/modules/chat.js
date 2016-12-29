@@ -8,8 +8,9 @@ define('chat', [
 	'sounds',
 	'forum/chats',
 	'forum/chats/messages',
-	'translator'
-], function (components, taskbar, S, sounds, Chats, ChatsMessages, translator) {
+	'translator',
+	'scrollStop'
+], function (components, taskbar, S, sounds, Chats, ChatsMessages, translator, scrollStop) {
 
 	var module = {};
 	var newMessage = false;
@@ -196,6 +197,8 @@ define('chat', [
 					handle: '.modal-header'
 				});
 			});
+			
+			scrollStop.apply(chatModal.find('[component="chat/messages"]'));
 
 			chatModal.find('#chat-close-btn').on('click', function () {
 				module.close(chatModal);
