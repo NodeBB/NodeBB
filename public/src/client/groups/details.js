@@ -7,8 +7,9 @@ define('forum/groups/details', [
 	'components',
 	'coverPhoto',
 	'uploader',
+	'translator',
 	'vendor/colorpicker/colorpicker'
-], function (memberList, iconSelect, components, coverPhoto, uploader) {
+], function (memberList, iconSelect, components, coverPhoto, uploader, translator) {
 
 	var Details = {};
 	var groupName;
@@ -265,14 +266,22 @@ define('forum/groups/details', [
 	}
 
 	function removeCover() {
-		socket.emit('groups.cover.remove', {
-			groupName: ajaxify.data.group.name
-		}, function (err) {
-			if (!err) {
-				ajaxify.refresh();
-			} else {
-				app.alertError(err.message);
-			}
+		translator.translate('[[groups:remove_group_cover_confirm]]', function (translated) {
+			bootbox.confirm(translated, function (confirm) {
+				if (!confirm) {
+					return;
+				}
+						
+				socket.emit('groups.cover.remove', {
+					groupName: ajaxify.data.group.name
+				}, function (err) {
+					if (!err) {
+						ajaxify.refresh();
+					} else {
+						app.alertError(err.message);
+					}
+				});
+			});
 		});
 	}
 
