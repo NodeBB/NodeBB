@@ -276,6 +276,18 @@ var meta = require('./meta');
 			callback();
 		});
 	};
+	
+	User.isAdminOrGlobalModOrSelf = function (callerUid, uid, callback) {
+		if (parseInt(callerUid, 10) === parseInt(uid, 10)) {
+			return callback();
+		}
+		User.isAdminOrGlobalMod(callerUid, function (err, isAdminOrGlobalMod) {
+			if (err || !isAdminOrGlobalMod) {
+				return callback(err || new Error('[[error:no-privileges]]'));
+			}
+			callback();
+		});
+	};
 
 	User.getAdminsandGlobalMods = function (callback) {
 		async.parallel({
