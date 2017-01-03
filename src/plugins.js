@@ -352,9 +352,7 @@ var middleware;
 						}
 						callback(null, stats.isDirectory());
 					});
-				}, function (plugins) {
-					next(null, plugins);
-				});
+				}, next);
 			},
 
 			function (files, next) {
