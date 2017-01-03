@@ -319,7 +319,7 @@ authenticationController.onSuccessfulLogin = function (req, uid, callback) {
 			user.auth.addSession(uid, req.sessionID, next);
 		},
 		function (next) {
-			db.setObjectField('uid:' + uid + 'sessionUUID:sessionId', uuid, req.sessionID, next);
+			db.setObjectField('uid:' + uid + ':sessionUUID:sessionId', uuid, req.sessionID, next);
 		},
 		function (next) {
 			user.updateLastOnlineTime(uid, next);
