@@ -31,9 +31,7 @@ module.exports = function (Plugins) {
 					return path.join(__dirname, '../../node_modules/', plugin);
 				});
 
-				async.filter(plugins, file.exists, function (plugins) {
-					next(null, plugins);
-				});
+				async.filter(plugins, file.exists, next);
 			},
 		], callback);
 	};

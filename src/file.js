@@ -87,19 +87,27 @@ file.allowedExtensions = function () {
 
 file.exists = function (path, callback) {
 	fs.stat(path, function (err, stat) {
-		callback(!err && stat);
+		if (err) {
+			if (err.code === 'ENOENT') {
+				return callback(null, false);
+			}
+			return callback(err);
+		}
+		return callback(null, true);
 	});
 };
 
 file.existsSync = function (path) {
-	var exists = false;
 	try {
-		exists = fs.statSync(path);
-	} catch(err) {
-		exists = false;
+		fs.statSync(path);
+	} catch (err) {
+		if (err.code === 'ENOENT') {
+			return false;
+		}
+		throw err;
 	}
 
-	return !!exists;
+	return true;
 };
 
 module.exports = file;
