@@ -178,14 +178,22 @@ define('forum/account/header', [
 	}
 
 	function removeCover() {
-		socket.emit('user.removeCover', {
-			uid: ajaxify.data.uid
-		}, function (err) {
-			if (!err) {
-				ajaxify.refresh();
-			} else {
-				app.alertError(err.message);
-			}
+		translator.translate('[[user:remove_cover_picture_confirm]]', function (translated) {
+			bootbox.confirm(translated, function (confirm) {
+				if (!confirm) {
+					return;
+				}
+						
+				socket.emit('user.removeCover', {
+					uid: ajaxify.data.uid
+				}, function (err) {
+					if (!err) {
+						ajaxify.refresh();
+					} else {
+						app.alertError(err.message);
+					}
+				});
+			});
 		});
 	}
 

@@ -195,19 +195,19 @@ module.exports = function (Plugins) {
 	}
 
 	function mapClientSideScripts(pluginData, callback) {
-		function mapScripts(scripts, globalScripts) {
+		function mapScripts(scripts, param) {
 			if (Array.isArray(scripts) && scripts.length) {
 				if (global.env === 'development') {
 					winston.verbose('[plugins] Found ' + scripts.length + ' js file(s) for plugin ' + pluginData.id);
 				}
 
-				globalScripts = globalScripts.concat(scripts.map(function (file) {
+				Plugins[param] = Plugins[param].concat(scripts.map(function (file) {
 					return resolveModulePath(path.join(__dirname, '../../node_modules/', pluginData.id, file), file);
 				})).filter(Boolean);
 			}
 		}
-		mapScripts(pluginData.scripts, Plugins.clientScripts);
-		mapScripts(pluginData.acpScripts, Plugins.acpScripts);
+		mapScripts(pluginData.scripts, 'clientScripts');
+		mapScripts(pluginData.acpScripts, 'acpScripts');
 
 		callback();
 	}

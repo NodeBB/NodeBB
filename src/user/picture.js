@@ -222,6 +222,6 @@ module.exports = function (User) {
 	};
 
 	User.removeCoverPicture = function (data, callback) {
-		db.deleteObjectField('user:' + data.uid, 'cover:url', callback);
+		db.deleteObjectFields('user:' + data.uid, ['cover:url', 'cover:position'], callback);
 	};
 };

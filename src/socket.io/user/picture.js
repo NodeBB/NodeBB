@@ -23,7 +23,7 @@ module.exports = function (SocketUser) {
 
 		async.waterfall([
 			function (next) {
-				user.isAdminOrSelf(socket.uid, data.uid, next);
+				user.isAdminOrGlobalModOrSelf(socket.uid, data.uid, next);
 			},
 			function (next) {
 				switch(type) {
