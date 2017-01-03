@@ -53,31 +53,45 @@ Flags.list = function (filters, uid, callback) {
 	}
 
 	var sets = [];
+	var orSets = [];
+	var prepareSets = function (setPrefix, value) {
+		if (!Array.isArray(value)) {
+			sets.push(setPrefix + value);
+		} else if (value.length) {
+			value.forEach(function (x) {
+				orSets.push(setPrefix + x);
+			});
+		} else {
+			// Empty array, do nothing
+			return;
+		}
+	};
+
 	if (Object.keys(filters).length > 0) {
 		for (var type in filters) {
 			switch (type) {
 				case 'type':
-					sets.push('flags:byType:' + filters[type]);
+					prepareSets('flags:byType:', filters[type]);
 					break;
 
 				case 'state':
-					sets.push('flags:byState:' + filters[type]);
+					prepareSets('flags:byState:', filters[type]);
 					break;
 				
 				case 'reporterId':
-					sets.push('flags:byReporter:' + filters[type]);
+					prepareSets('flags:byReporter:', filters[type]);
 					break;
 				
 				case 'assignee':
-					sets.push('flags:byAssignee:' + filters[type]);
+					prepareSets('flags:byAssignee:', filters[type]);
 					break;
 
 				case 'targetUid':
-					sets.push('flags:byTargetUid:' + filters[type]);
+					prepareSets('flags:byTargetUid:', filters[type]);
 					break;
 
 				case 'cid':
-					sets.push('flags:byCid:' + filters[type]);
+					prepareSets('flags:byCid:', filters[type]);
 					break;
 
 				case 'quick':
@@ -90,14 +104,36 @@ Flags.list = function (filters, uid, callback) {
 			}
 		}
 	}
-	sets = sets.length ? sets : ['flags:datetime'];	// No filter default
+	sets = (sets.length || orSets.length) ? sets : ['flags:datetime'];	// No filter default
 
 	async.waterfall([
 		function (next) {
 			if (sets.length === 1) {
 				db.getSortedSetRevRange(sets[0], 0, -1, next);
+			} else if (sets.length > 1) {
+				db.getSortedSetRevIntersect({ sets: sets, start: 0, stop: -1, aggregate: 'MAX' }, next);
 			} else {
-				db.getSortedSetRevIntersect({sets: sets, start: 0, stop: -1, aggregate: 'MAX'}, next);
+				next(null, []);
+			}
+		},
+		function (flagIds, next) {
+			// Find flags according to "or" rules, if any
+			if (orSets.length) {
+				db.getSortedSetRevUnion({ sets: orSets, start: 0, stop: -1, aggregate: 'MAX' }, function (err, _flagIds) {
+					if (err) {
+						return next(err);
+					}
+
+					if (sets.length) {
+						// If flag ids are already present, return a subset of flags that are in both sets
+						next(null, _.intersection(flagIds, _flagIds));
+					} else {
+						// Otherwise, return all flags returned via orSets
+						next(null, _.union(flagIds, _flagIds));
+					}
+				});
+			} else {
+				setImmediate(next, null, flagIds);
 			}
 		},
 		function (flagIds, next) {

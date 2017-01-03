@@ -203,6 +203,41 @@ describe('Flags', function () {
 					done();
 				});
 			});
+
+			it('should return a flag when filtered by both cid 1 and 2', function (done) {
+				Flags.list({
+					cid: [1, 2]
+				}, 1, function (err, flags) {
+					assert.ifError(err);
+					assert.ok(Array.isArray(flags));
+					assert.strictEqual(1, flags.length);
+					done();
+				});
+			});
+
+			it('should return one flag if filtered by both cid 1 and 2 and open state', function (done) {
+				Flags.list({
+					cid: [1, 2],
+					state: 'open'
+				}, 1, function (err, flags) {
+					assert.ifError(err);
+					assert.ok(Array.isArray(flags));
+					assert.strictEqual(1, flags.length);
+					done();
+				});
+			});
+
+			it('should return no flag if filtered by both cid 1 and 2 and non-open state', function (done) {
+				Flags.list({
+					cid: [1, 2],
+					state: 'resolved'
+				}, 1, function (err, flags) {
+					assert.ifError(err);
+					assert.ok(Array.isArray(flags));
+					assert.strictEqual(0, flags.length);
+					done();
+				});
+			});
 		});
 	});
 

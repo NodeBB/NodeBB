@@ -27,6 +27,7 @@ modsController.flags.list = function (req, res, next) {
 		}
 
 		// Parse query string params for filters
+		var hasFilter = false;
 		var valid = ['assignee', 'state', 'reporterId', 'type', 'targetUid', 'cid', 'quick'];
 		var filters = valid.reduce(function (memo, cur) {
 			if (req.query.hasOwnProperty(cur)) {
@@ -35,6 +36,24 @@ modsController.flags.list = function (req, res, next) {
 
 			return memo;
 		}, {});
+		hasFilter = !!Object.keys(filters).length;
+
+		if (res.locals.cids) {
+			if (!filters.cid) {
+				// If mod and no cid filter, add filter for their modded categories
+				filters.cid = res.locals.cids;
+			} else {
+				// Remove cids they do not moderate
+				if (Array.isArray(filters.cid)) {
+					filters.cid = filters.cid.filter(function (cid) {
+						return res.locals.cids.indexOf(String(cid)) !== -1;
+					});
+				} else if (res.locals.cids.indexOf(String(filters.cid)) === -1) {
+					filters.cid = res.locals.cids;
+					hasFilter = false;
+				}
+			}
+		}
 
 		async.parallel({
 			flags: async.apply(flags.list, filters, req.uid),
@@ -45,9 +64,25 @@ modsController.flags.list = function (req, res, next) {
 				return next(err);
 			}
 
+			// If res.locals.cids is populated, then slim down the categories list
+			if (res.locals.cids) {
+				data.categories = data.categories.filter(function (category) {
+					return res.locals.cids.indexOf(String(category.cid)) !== -1;
+				});
+			}
+
 			// Minimal returned set for templates.js
 			data.categories = data.categories.reduce(function (memo, cur) {
-				memo[cur.cid] = cur.name;
+				if (!res.locals.cids) {
+					memo[cur.cid] = cur.name;
+					return memo;
+				}
+
+				// If mod, remove categories they can't moderate
+				if (res.locals.cids.indexOf(String(cur.cid)) !== -1) {
+					memo[cur.cid] = cur.name;
+				}
+
 				return memo;
 			}, {});
 
@@ -55,7 +90,7 @@ modsController.flags.list = function (req, res, next) {
 				flags: data.flags,
 				analytics: data.analytics,
 				categories: data.categories,
-				hasFilter: !!Object.keys(filters).length,
+				hasFilter: hasFilter,
 				filters: filters,
 				title: '[[pages:flags]]'
 			});
