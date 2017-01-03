@@ -10,9 +10,6 @@ define('topicSelect', ['components'], function (components) {
 
 	TopicSelect.init = function (onSelect) {
 		topicsContainer = $('[component="category"]');
-		topicsContainer.on('selectstart', function () {
-			return false;
-		});
 
 		topicsContainer.on('click', '[component="topic/select"]', function (ev) {
 			var select = $(this);
