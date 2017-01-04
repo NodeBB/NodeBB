@@ -1,18 +1,18 @@
 {
-	"none": "Your forum does not have any topics with tags yet.",
-	"bg-color": "Background Colour",
-	"text-color": "Text Colour",
-	"create-modify": "Create & Modify Tags",
-	"description": "Select tags via clicking and/or dragging, use shift to select multiple.",
-	"create": "Create Tag",
-	"modify": "Modify Tags",
-	"delete": "Delete Selected Tags",
-	"search": "Search for tags...",
-	"settings": "Click <a href=\"%1\">here</a> to visit the tag settings page.",
-	"name": "Tag Name",
+	"none": "O seu fórum ainda não tem quaisquer tópicos com tags.",
+	"bg-color": "Cor de Fundo",
+	"text-color": "Cor do Text",
+	"create-modify": "Criar & Modificar Tags",
+	"description": "Escolha tags clicando e/ou arrastando, use shift para escolher diversas.",
+	"create": "Criar Tag",
+	"modify": "Modificar Tags",
+	"delete": "Excluir Tags Selecionadas",
+	"search": "Pesquisar por tags...",
+	"settings": "Clique <a href=\"%1\">aqui</a> para visitar a página de configurações de tag.",
+	"name": "Nome da Tag",
 
-	"alerts.editing-multiple": "Editing multiple tags",
-	"alerts.editing-x": "Editing \"%1\" tag",
-	"alerts.confirm-delete": "Do you want to delete the selected tags?",
-	"alerts.update-success": "Tag Updated!"
+	"alerts.editing-multiple": "Editando múltiplas tags",
+	"alerts.editing-x": "Editando a Tag \"%1\"",
+	"alerts.confirm-delete": "Você deseja excluir as tags selecionadas?",
+	"alerts.update-success": "Tag Atualizada!"
 }

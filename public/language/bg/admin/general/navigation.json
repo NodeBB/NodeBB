@@ -1,27 +1,27 @@
 {
-	"icon": "Icon:",
-	"change-icon": "change",
-	"route": "Route:",
-	"tooltip": "Tooltip:",
-	"text": "Text:",
-	"text-class": "Text Class: <small>optional</small>",
-	"id": "ID: <small>optional</small>",
+	"icon": "Иконка:",
+	"change-icon": "промяна",
+	"route": "Маршрут:",
+	"tooltip": "Подсказка:",
+	"text": "Текст:",
+	"text-class": "Текстов клас: <small>незадължително</small>",
+	"id": "Идентификатор: <small>незадължително</small>",
 
-	"properties": "Properties:",
-	"only-admins": "Only display to Admins",
-	"only-global-mods-and-admins": "Only display to Global Moderators and Admins",
-	"only-logged-in": "Only display to logged in users",
-	"open-new-window": "Open in a new window",
+	"properties": "Свойства:",
+	"only-admins": "Да е видимо само за администраторите",
+	"only-global-mods-and-admins": "Да е видимо само за глобалните модератори и администраторите",
+	"only-logged-in": "Да е видимо само за вписаните потребители",
+	"open-new-window": "Отваряне в нов прозорец",
 
-	"installed-plugins-required": "Installed Plugins Required:",
-	"search-plugin": "Search plugin",
+	"installed-plugins-required": "Нужни инсталирани добавки:",
+	"search-plugin": "Търсене на добавката",
 
-	"btn.delete": "Delete",
-	"btn.disable": "Disable",
-	"btn.enable": "Enable",
+	"btn.delete": "Изтриване",
+	"btn.disable": "Изключване",
+	"btn.enable": "Включване",
 
-	"available-menu-items": "Available Menu Items",
-	"custom-route": "Custom Route",
-	"core": "core",
-	"plugin": "plugin"
+	"available-menu-items": "Налични елементи за менюто",
+	"custom-route": "Персонализиран маршрут",
+	"core": "ядро",
+	"plugin": "добавка"
 }

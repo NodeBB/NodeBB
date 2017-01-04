@@ -1,18 +1,18 @@
 {
-	"none": "Your forum does not have any topics with tags yet.",
-	"bg-color": "Background Colour",
-	"text-color": "Text Colour",
-	"create-modify": "Create & Modify Tags",
-	"description": "Select tags via clicking and/or dragging, use shift to select multiple.",
-	"create": "Create Tag",
-	"modify": "Modify Tags",
-	"delete": "Delete Selected Tags",
-	"search": "Search for tags...",
-	"settings": "Click <a href=\"%1\">here</a> to visit the tag settings page.",
-	"name": "Tag Name",
+	"none": "Форумът все още няма теми с етикети.",
+	"bg-color": "Цвят на фона",
+	"text-color": "Цвят на текста",
+	"create-modify": "Създаване и редактиране на етикети",
+	"description": "Изберете етикетите чрез щракване и/или влачене. Използвайте „Shift“, за да изберете няколко етикета.",
+	"create": "Създаване на етикет",
+	"modify": "Редактиране на етикети",
+	"delete": "Изтриване на избраните етикети",
+	"search": "Търсене на етикети…",
+	"settings": "Натиснете <a href=\"%1\">тук</a>, за да отворите страницата с настройки на етикета.",
+	"name": "Име на етикета",
 
-	"alerts.editing-multiple": "Editing multiple tags",
-	"alerts.editing-x": "Editing \"%1\" tag",
-	"alerts.confirm-delete": "Do you want to delete the selected tags?",
-	"alerts.update-success": "Tag Updated!"
+	"alerts.editing-multiple": "Редактиране на множество етикети",
+	"alerts.editing-x": "Редактиране на етикета „%1“",
+	"alerts.confirm-delete": "Наистина ли искате да изтриете избраните етикети?",
+	"alerts.update-success": "Етикетът е променен!"
 }

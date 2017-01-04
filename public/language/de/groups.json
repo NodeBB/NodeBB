@@ -52,5 +52,6 @@
     "new-group.group_name": "Gruppenname:",
     "upload-group-cover": "Gruppentitelbild hochladen",
     "bulk-invite-instructions": "Gib eine mit Kommata getrennte Liste von Benutzernamen ein, um sie in diese Gruppe aufzunehmen",
-    "bulk-invite": "Mehrere einladen"
+    "bulk-invite": "Mehrere einladen",
+    "remove_group_cover_confirm": "Are you sure you want to remove the cover picture?"
 }

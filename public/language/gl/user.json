@@ -63,6 +63,7 @@
     "upload_a_picture": "Subir unha foto",
     "remove_uploaded_picture": "Borrar unha foto subida",
     "upload_cover_picture": "Subir imaxen de portada",
+    "remove_cover_picture_confirm": "Are you sure you want to remove the cover picture?",
     "settings": "Opcións",
     "show_email": "Amosa-lo meu Email",
     "show_fullname": "Amosa-lo meu Nome Completo",

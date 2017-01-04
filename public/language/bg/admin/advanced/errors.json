@@ -1,14 +1,14 @@
 {
-	"figure-x": "Figure %1",
-	"error-events-per-day": "<code>%1</code> events per day",
-	"error.404": "404 Not Found",
-	"error.503": "503 Service Unavailable",
-	"manage-error-log": "Manage Error Log",
-	"export-error-log": "Export Error Log (CSV)",
-	"clear-error-log": "Clear Error Log",
-	"route": "Route",
-	"count": "Count",
-	"no-routes-not-found": "Hooray! There are no routes that were not found.",
-	"clear404-confirm": "Are you sure you wish to clear the 404 error logs?",
-	"clear404-success": "\"404 Not Found\" errors cleared"
+	"figure-x": "Фигура %1",
+	"error-events-per-day": "<code>%1</code> събития на ден",
+	"error.404": "Страницата не е намерена (Грешка 404)",
+	"error.503": "Услугата е недостъпна (Грешка 503)",
+	"manage-error-log": "Управление на журнала за грешки",
+	"export-error-log": "Изнасяне на журнала за грешки (CSV)",
+	"clear-error-log": "Изчистване на журнала за грешки",
+	"route": "Маршрут",
+	"count": "Брой",
+	"no-routes-not-found": "Ура! Няма неоткрити маршрути.",
+	"clear404-confirm": "Наистина ли искате да изчистите журналите за грешки от вида 404?",
+	"clear404-success": "Грешките от вида „Страницата не е намерена (Грешка 404)“ бяха изчистени."
 }

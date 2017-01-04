@@ -1,11 +1,11 @@
 {
-	"post-cache": "Post Cache",
-	"posts-in-cache": "Posts in Cache",
-	"average-post-size": "Average Post Size",
-	"length-to-max": "Length / Max",
-	"percent-full": "%1% Full",
-	"post-cache-size": "Post Cache Size",
-	"items-in-cache": "Items in Cache",
-	"control-panel": "Control Panel",
-	"update-settings": "Update Cache Settings"
+	"post-cache": "发帖",
+	"posts-in-cache": "缓存中的帖子",
+	"average-post-size": "平均帖子长度",
+	"length-to-max": "长度/最大值",
+	"percent-full": "%1% 容量",
+	"post-cache-size": "帖子缓存大小",
+	"items-in-cache": "缓存中的条目数量",
+	"control-panel": "控制面板",
+	"update-settings": "更新缓存设置"
 }

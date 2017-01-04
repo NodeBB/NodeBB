@@ -1,6 +1,6 @@
 {
     "reconnection": "Reconnection Settings",
     "max-attempts": "Max Reconnection Attempts",
-    "default-placeholder": "Default: %1",
+    "default-placeholder": "По подразбиране: %1",
     "delay": "Reconnection Delay"
 }

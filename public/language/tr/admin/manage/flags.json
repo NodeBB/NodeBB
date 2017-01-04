@@ -1,9 +1,9 @@
 {
-	"daily": "Daily flags",
+	"daily": "Günlük Bayraklar",
 	"by-user": "Flags by user",
 	"by-user-search": "Search flagged posts by username",
-	"category": "Category",
-	"sort-by": "Sort By",
+	"category": "Kategori",
+	"sort-by": "Sıralama",
 	"sort-by.most-flags": "Most Flags",
 	"sort-by.most-recent": "Most Recent",
 	"search": "Search",

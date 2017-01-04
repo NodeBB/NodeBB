@@ -1,6 +1,6 @@
 {
-	"chat-settings": "Chat Settings",
-	"disable": "Disable chat",
+	"chat-settings": "Sohbet Ayarları",
+	"disable": "Sohbeti kapat",
 	"disable-editing": "Disable chat message editing/deletion",
 	"disable-editing-help": "Administrators and global moderators are exempt from this restriction",
 	"max-length": "Maximum length of chat messages",

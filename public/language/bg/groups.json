@@ -37,13 +37,13 @@
     "details.change_colour": "Промяна на цвета",
     "details.badge_text": "Текст на емблемата",
     "details.userTitleEnabled": "Показване на емблемата",
-    "details.private_help": "Ако е включено, присъединяването към група изисква одобрението на собственика ѝ",
+    "details.private_help": "В случай че е разрешена, присъединяването към групи изисква одобрение на собственика на групата",
     "details.hidden": "Скрита",
-    "details.hidden_help": "Ако е включено, тази група няма да бъде извеждана в списъка от групи и потребителите ще трябва да бъдат поканени лично",
-    "details.delete_group": "Изтриване на групата",
+    "details.hidden_help": "В случай че е разрешена, групата няма да бъде намирана в списъка с групи и ще се наложи потребителите да бъдат поканени ръчно",
+    "details.delete_group": "Изтрий групата",
     "details.private_system_help": "Частните групи са забранени на системно ниво; тази възможност не върши нищо",
     "event.updated": "Подробностите за групата бяха обновени",
-    "event.deleted": "Групата „%1“ беше изтрита",
+    "event.deleted": "Групата „%1“ е изтрита",
     "membership.accept-invitation": "Приемане на поканата",
     "membership.invitation-pending": "Чакаща покана",
     "membership.join-group": "Присъединяване към групата",
@@ -52,5 +52,6 @@
     "new-group.group_name": "Име на групата:",
     "upload-group-cover": "Качване на снимка за показване на групата",
     "bulk-invite-instructions": "Въведете списък от потребителски имена, разделени със запетаи",
-    "bulk-invite": "Масова покана"
+    "bulk-invite": "Масова покана",
+    "remove_group_cover_confirm": "Are you sure you want to remove the cover picture?"
 }

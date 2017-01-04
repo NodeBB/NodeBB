@@ -1,9 +1,9 @@
 {
-	"section-general": "General",
-	"general/dashboard": "Dashboard",
+	"section-general": "Genel",
+	"general/dashboard": "Pano",
 	"general/homepage": "Home Page",
 	"general/navigation": "Navigation",
-	"general/languages": "Languages",
+	"general/languages": "Diller",
 	"general/sounds": "Sounds",
 	"general/social": "Social",
 
@@ -39,7 +39,7 @@
 	"section-appearance": "Appearance",
 	"appearance/themes": "Themes",
 	"appearance/skins": "Skins",
-	"appearance/customise": "Custom HTML &amp; CSS",
+	"appearance/customise": "Custom HTML & CSS",
 
 	"section-extend": "Extend",
 	"extend/plugins": "Plugins",

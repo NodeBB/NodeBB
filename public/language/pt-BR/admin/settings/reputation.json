@@ -1,8 +1,8 @@
 {
-	"reputation": "Reputation Settings",
-	"disable": "Disable Reputation System",
-	"disable-down-voting": "Disable Down Voting",
-	"thresholds": "Activity Thresholds",
-	"min-rep-downvote": "Minimum reputation to downvote posts",
-	"min-rep-flag": "Minimum reputation to flag posts"
+	"reputation": "Configurações de Reputação",
+	"disable": "Desabilitar o Sistema de Reputação",
+	"disable-down-voting": "Desabilitar Baixo Votar",
+	"thresholds": "Limiares de Atividade",
+	"min-rep-downvote": "Reputação mínima para baixovotar posts",
+	"min-rep-flag": "Reputação mínima para sinalizar posts"
 }

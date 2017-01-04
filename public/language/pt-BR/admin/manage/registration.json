@@ -1,20 +1,20 @@
 {
-	"queue": "Queue",
-	"description": "There are no users in the registration queue. <br> To enable this feature, go to <a href=\"%1\">Settings &rarr; User &rarr; User Registration</a> and set <strong>Registration Type</strong> to \"Admin Approval\".",
+	"queue": "Fila",
+	"description": "Não existem usuários na fila de registro. <br> Para habilitar esta função, acesse <a href=\"%1\">Configurações &rarr; Usuário &rarr; Registro de Usuário</a> e defina <strong>Tipo de Registro</strong> para \"Aprovação do Administrador\".",
 
-	"list.name": "Name",
+	"list.name": "Nome",
 	"list.email": "Email",
 	"list.ip": "IP",
-	"list.time": "Time",
-	"list.username-spam": "Frequency: %1 Appears: %2 Confidence: %3",
-	"list.email-spam": "Frequency: %1 Appears: %2",
-	"list.ip-spam": "Frequency: %1 Appears: %2",
+	"list.time": "Tempo",
+	"list.username-spam": "Frequência: %1 Aparece: %2 Confiança: %3",
+	"list.email-spam": "Frequência: %1 Aparece: %2",
+	"list.ip-spam": "Frequência: %1 Aparece: %2",
 
-	"invitations": "Invitations",
-	"invitations.description": "Below is a complete list of invitations sent. Use ctrl-f to search through the list by email or username. <br><br>The username will be displayed to the right of the emails for users who have redeemed their invitations.",
-	"invitations.inviter-username": "Inviter Username",
-	"invitations.invitee-email": "Invitee Email",
-	"invitations.invitee-username": "Invitee Username (if registered)",
+	"invitations": "Convites",
+	"invitations.description": "Abaixo está uma lista completa dos convites enviados. Use ctrl-f para procurar pela lista por email ou nome se usuário. <br><br>O nome de usuário será exibido à direita dos emails para usuários que aceitaram seus convites.",
+	"invitations.inviter-username": "Nome de Usuário do Convidante",
+	"invitations.invitee-email": "Email do Convidado",
+	"invitations.invitee-username": "Nome do Usuário do Convidado (se registrado)",
 
-	"invitations.confirm-delete": "Are you sure you wish to delete this invitation?"
+	"invitations.confirm-delete": "Tem certeza que deseja excluir este convite?"
 } 

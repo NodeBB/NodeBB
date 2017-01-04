@@ -63,6 +63,7 @@
     "upload_a_picture": "Ladda upp en bild",
     "remove_uploaded_picture": "Ta bort uppladdad bild",
     "upload_cover_picture": "Ladda upp omslagsbild",
+    "remove_cover_picture_confirm": "Are you sure you want to remove the cover picture?",
     "settings": "Inställningar",
     "show_email": "Visa min e-postadress",
     "show_fullname": "Visa fullständigt namn",

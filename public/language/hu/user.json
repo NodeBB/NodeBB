@@ -63,6 +63,7 @@
     "upload_a_picture": "Egy kép feltöltése",
     "remove_uploaded_picture": "Feltöltött kép eltávolítása",
     "upload_cover_picture": "Címlap kép feltöltése",
+    "remove_cover_picture_confirm": "Are you sure you want to remove the cover picture?",
     "settings": "Beállítások",
     "show_email": "E-mail címem mutatása",
     "show_fullname": "A teljes nevem mutatása",

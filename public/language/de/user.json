@@ -63,6 +63,7 @@
     "upload_a_picture": "Ein Bild hochladen",
     "remove_uploaded_picture": "Hochgeladenes Bild entfernen",
     "upload_cover_picture": "Titelbild hochladen",
+    "remove_cover_picture_confirm": "Are you sure you want to remove the cover picture?",
     "settings": "Einstellungen",
     "show_email": "Zeige meine E-Mail Adresse an.",
     "show_fullname": "Zeige meinen kompletten Namen an",

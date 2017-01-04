@@ -1,11 +1,11 @@
 {
-    "checking-for-installed": "Checking for installed themes...",
+    "checking-for-installed": "Procurando por temas instalados...",
     "homepage": "Homepage",
-    "select-theme": "Select Theme",
-    "current-theme": "Current Theme",
-    "no-themes": "No installed themes found",
-    "revert-confirm": "Are you sure you wish to restore the default NodeBB theme?",
-    "theme-changed": "Theme Changed",
-    "revert-success": "You have successfully reverted your NodeBB back to it's default theme.",
-    "restart-to-activate": "Please restart your NodeBB to fully activate this theme"
+    "select-theme": "Escolher Tema",
+    "current-theme": "Tema Atual",
+    "no-themes": "Nenhum tema instalado encontrado",
+    "revert-confirm": "Tem certeza que você deseja restaurar o tema padrão do NodeBB?",
+    "theme-changed": "Tema Alterado",
+    "revert-success": "Você reverteu com sucesso o seu NodeBB para seu tema padrão.",
+    "restart-to-activate": "Por favor reinicei o seu NodeBB para ativar completamente este tema"
 }

@@ -1,11 +1,11 @@
 {
     "chat.chatting_with": "Ћаскај са <span id=\"chat-with-name\"></span>",
-    "chat.placeholder": "Унесите текст поруке овде, притисните ентер за слање",
+    "chat.placeholder": "Овде унесите текст поруке, притисните ентер за слање",
     "chat.send": "Пошаљи",
-    "chat.no_active": "Немате активних ћаскања.",
+    "chat.no_active": "Нема активних ћаскања.",
     "chat.user_typing": "%1 куца ...",
     "chat.user_has_messaged_you": "%1 вам је послао поруку.",
-    "chat.see_all": "Погледајте сва ћаскања",
+    "chat.see_all": "Прикажи сва ћаскања",
     "chat.mark_all_read": "Означи све разговоре као прочитане",
     "chat.no-messages": "Изаберите примаоца да бисте видели историју ћаскања",
     "chat.no-users-in-room": "Нема корисника у овој соби",
@@ -13,6 +13,7 @@
     "chat.contacts": "Контакти",
     "chat.message-history": "Историјат порука",
     "chat.pop-out": "Истакни ћаскање",
+    "chat.minimize": "Minimize",
     "chat.maximize": "Максимизуј",
     "chat.seven_days": "7 дана",
     "chat.thirty_days": "30 дана",
@@ -36,12 +37,12 @@
     "composer.formatting.picture": "Слика",
     "composer.upload-picture": "Отпреми слику",
     "composer.upload-file": "Отпреми датотеку",
-    "composer.zen_mode": "Zen режим",
+    "composer.zen_mode": "Цео екран",
     "composer.select_category": "Изаберите категорију",
     "bootbox.ok": "ОК",
     "bootbox.cancel": "Откажи",
     "bootbox.confirm": "Потврди",
     "cover.dragging_title": "Позиционирање насловне фотографије",
-    "cover.dragging_message": "Повуците насловну фотографију до жељене локације и кликните \"Сачувај\"",
-    "cover.saved": "Насловна фотографија и позиција сачувана"
+    "cover.dragging_message": "Повуците насловну фотографију до жељене локације и кликните на \"Сачувај\"",
+    "cover.saved": "Насловна фотографија и позиција су сачуване"
 }

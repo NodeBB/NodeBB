@@ -1,9 +1,9 @@
 {
-	"loading": "Loading Skins...",
-	"homepage": "Homepage",
-	"select-skin": "Select Skin",
-	"current-skin": "Current Skin",
-	"skin-updated": "Skin Updated",
-	"applied-success": "%1 skin was succesfully applied",
-	"revert-success": "Skin reverted to base colours"
+	"loading": "正在加载皮肤...",
+	"homepage": "主页",
+	"select-skin": "选择皮肤",
+	"current-skin": "当前皮肤",
+	"skin-updated": "皮肤已更新",
+	"applied-success": "%1 皮肤已成功应用",
+	"revert-success": "皮肤恢复到基础颜色"
 }

@@ -63,6 +63,7 @@
     "upload_a_picture": "یک تصویر بارگذاری کنید",
     "remove_uploaded_picture": "پاک کردن عکس بارگذاری شده",
     "upload_cover_picture": "بارگذاری عکس کاور",
+    "remove_cover_picture_confirm": "Are you sure you want to remove the cover picture?",
     "settings": "تنظیمات",
     "show_email": "نمایش ایمیل‌های من",
     "show_fullname": "نام کامل من را نشان بده",

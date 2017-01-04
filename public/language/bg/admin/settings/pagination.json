@@ -1,8 +1,8 @@
 {
-	"pagination": "Pagination Settings",
-	"enable": "Paginate topics and posts instead of using infinite scroll.",
-	"topics": "Topic Pagination",
-	"posts-per-page": "Posts per Page",
+	"pagination": "Настройки за страниците",
+	"enable": "Разделяне на темите и публикациите на страници, вместо да се превърта безкрайно.",
+	"topics": "Страници в темите",
+	"posts-per-page": "Публикации на страница",
 	"categories": "Category Pagination",
 	"topics-per-page": "Topics per Page",
 	"initial-num-load": "Initial Number of Topics to Load on Unread, Recent, and Popular"

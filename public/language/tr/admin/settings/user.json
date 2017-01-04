@@ -6,7 +6,7 @@
 	"email-confirm-email2": "minutes have elapsed",
 	"allow-login-with": "Allow login with",
 	"allow-login-with.username-email": "Username or Email",
-	"allow-login-with.username": "Username Only",
+	"allow-login-with.username": "Sadece kullanıcı adı",
 	"allow-login-with.email": "Email Only",
 	"account-settings": "Account Settings",
 	"disable-username-changes": "Disable username changes",

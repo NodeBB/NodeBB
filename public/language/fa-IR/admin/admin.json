@@ -1,7 +1,7 @@
 {
-	"alert.confirm-reload": "Are you sure you wish to reload NodeBB?",
-	"alert.confirm-restart": "Are you sure you wish to restart NodeBB?",
+	"alert.confirm-reload": "آیا مایل به بارگذاری مجدد نود‌بی‌بی هستید؟",
+	"alert.confirm-restart": "آیا از راه اندازی مجدد نود‌بی‌بی مطمئن هستید؟",
 
-	"acp-title": "%1 | NodeBB Admin Control Panel",
+	"acp-title": "%1 | کنترل پنل مدیر کل نود‌بی‌بی",
 	"settings-header-contents": "Contents"
 }

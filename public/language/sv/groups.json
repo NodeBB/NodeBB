@@ -52,5 +52,6 @@
     "new-group.group_name": "Gruppnamn:",
     "upload-group-cover": "Ladda upp omslagsbild för grupp",
     "bulk-invite-instructions": "Ange en lista med kommaseparerade användarnamn som du vill bjuda in till denna grupp",
-    "bulk-invite": "Massinbjudning"
+    "bulk-invite": "Massinbjudning",
+    "remove_group_cover_confirm": "Are you sure you want to remove the cover picture?"
 }

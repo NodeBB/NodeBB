@@ -63,6 +63,7 @@
     "upload_a_picture": "Tải lên một hình ảnh",
     "remove_uploaded_picture": "Xoá ảnh đã tải lên",
     "upload_cover_picture": "Tải ảnh bìa lên",
+    "remove_cover_picture_confirm": "Are you sure you want to remove the cover picture?",
     "settings": "Thiết lập",
     "show_email": "Hiện Email của tôi",
     "show_fullname": "Hiện tên đầy đủ",

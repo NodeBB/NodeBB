@@ -1,9 +1,9 @@
 {
-	"name": "Group Name",
-	"description": "Group Description",
+	"name": "Grup Adı",
+	"description": "Grup Açıklaması",
 	"system": "System Group",
-	"edit": "Edit",
-	"search-placeholder": "Search",
+	"edit": "Düzenle",
+	"search-placeholder": "Ara",
 	"create": "Create Group",
 	"description-placeholder": "A short description about your group",
 	"create-button": "Create",

@@ -1,6 +1,6 @@
 {
-	"you-are-on": "Info - You are on <strong>%1:%2</strong>",
-	"host": "host",
+	"you-are-on": "Informacja - Jesteś na  <strong>%1:%2</strong>",
+	"host": "Host",
 	"pid": "pid",
 	"nodejs": "nodejs",
 	"online": "online",

@@ -63,6 +63,7 @@
     "upload_a_picture": "Naloži fotografijo",
     "remove_uploaded_picture": "Odstrani preneseno sliko ",
     "upload_cover_picture": "Prenesi fotografijo naslovnice",
+    "remove_cover_picture_confirm": "Are you sure you want to remove the cover picture?",
     "settings": "Nastavitve",
     "show_email": "Pokaži moj e-poštni naslov.",
     "show_fullname": "Pokaži moj ime in priimek.",

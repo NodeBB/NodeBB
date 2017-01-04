@@ -1,19 +1,19 @@
 {
-	"available": "Available Widgets",
-	"explanation": "Select a widget from the dropdown menu and then drag and drop it into a template's widget area on the left.",
-	"none-installed": "No widgets found! Activate the essential widgets plugin in the <a href=\"%1\">plugins</a> control panel.",
-	"containers.available": "Available Containers",
-	"containers.explanation": "Drag and drop on top of any active widget",
-	"containers.none": "None",
+	"available": "Widgets disponibles",
+	"explanation": "Sélectionnez un widget depuis le menu puis glissez déposez-le dans une zone template du widget à gauche.",
+	"none-installed": "Aucun widget trouvé ! Activez le plugin widgets essentiels dans le panneau de contrôle <a href=\"%1\">plugins</a>.",
+	"containers.available": "Conteneurs disponibles",
+	"containers.explanation": "Glissez déposez sur n'importe quel widget actif",
+	"containers.none": "Aucun",
 	"container.well": "Well",
-	"container.jumbotron": "Jumbotron",
-	"container.panel": "Panel",
-	"container.panel-header": "Panel Header",
-	"container.panel-body": "Panel Body",
-	"container.alert": "Alert",
+	"container.jumbotron": "Jombotron",
+	"container.panel": "Panneau",
+	"container.panel-header": "En-tête de panneau",
+	"container.panel-body": "Corps de panneau",
+	"container.alert": "Alerte",
 
-	"alert.confirm-delete": "Are you sure you wish to delete this widget?",
-	"alert.updated": "Widgets Updated",
-	"alert.update-success": "Successfully updated widgets"
+	"alert.confirm-delete": "Êtes-vous sûr de vouloir supprimer ce widget ?",
+	"alert.updated": "Widgets mis à jour",
+	"alert.update-success": "Widgets mis à jour avec succès"
 
 }

@@ -52,5 +52,6 @@
     "new-group.group_name": "Име групе:",
     "upload-group-cover": "Отпреми насловницу групе",
     "bulk-invite-instructions": "Унесите списак корисничких имена одвојених зарезима да бисте позвали у ову групу ",
-    "bulk-invite": "Масовни позив"
+    "bulk-invite": "Масовни позив",
+    "remove_group_cover_confirm": "Are you sure you want to remove the cover picture?"
 }

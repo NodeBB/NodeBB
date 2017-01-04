@@ -1,7 +1,7 @@
 {
-	"logs": "Logs",
-	"control-panel": "Logs Control Panel",
-	"reload": "Reload Logs",
+	"logs": "Logi",
+	"control-panel": "Logi Panelu Kontroli",
+	"reload": "Przeładuj logi",
 	"clear": "Clear Logs",
 	"clear-success": "Logs Cleared!"
 }
