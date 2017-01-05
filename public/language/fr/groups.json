@@ -53,5 +53,5 @@
     "upload-group-cover": "Envoyer une image de groupe",
     "bulk-invite-instructions": "Entrez une liste de nom d'utilisateurs séparés par des virgules pour les inviter à rejoindre ce groupe.",
     "bulk-invite": "Invitation multiple",
-    "remove_group_cover_confirm": "Are you sure you want to remove the cover picture?"
+    "remove_group_cover_confirm": "Êtes-vous sûr de vouloir supprimer l'image de couverture ?"
 }

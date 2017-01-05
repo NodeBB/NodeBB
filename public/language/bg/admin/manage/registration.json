@@ -6,9 +6,9 @@
 	"list.email": "Е-поща",
 	"list.ip": "IP адрес",
 	"list.time": "Време",
-	"list.username-spam": "Frequency: %1 Appears: %2 Confidence: %3",
-	"list.email-spam": "Frequency: %1 Appears: %2",
-	"list.ip-spam": "Frequency: %1 Appears: %2",
+	"list.username-spam": "Честота: %1 Появяване: %2 Увереност: %3",
+	"list.email-spam": "Честота: %1 Появяване: %2",
+	"list.ip-spam": "Честота: %1 Появяване: %2",
 
 	"invitations": "Покани",
 	"invitations.description": "По-долу ще намерите пълен списък от изпратените покани. Използвайте „Ctrl-F“, за да търсите е-поща или потребителско име в списъка. <br><br>Потребителското име ще бъде показано вдясно от е-пощата за потребителите, които са приели поканата си.",

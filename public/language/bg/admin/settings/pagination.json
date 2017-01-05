@@ -1,9 +1,9 @@
 {
-	"pagination": "Настройки за страниците",
+	"pagination": "Настройки за страницирането",
 	"enable": "Разделяне на темите и публикациите на страници, вместо да се превърта безкрайно.",
-	"topics": "Страници в темите",
+	"topics": "Странициране в темите",
 	"posts-per-page": "Публикации на страница",
-	"categories": "Category Pagination",
-	"topics-per-page": "Topics per Page",
-	"initial-num-load": "Initial Number of Topics to Load on Unread, Recent, and Popular"
+	"categories": "Странициране на категориите",
+	"topics-per-page": "Теми на страница",
+	"initial-num-load": "Начален брой теми, които да бъдат заредени за „непрочетени“, „скорошни“ и „популярни“"
 }

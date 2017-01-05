@@ -1,6 +1,6 @@
 {
-    "reconnection": "Reconnection Settings",
-    "max-attempts": "Max Reconnection Attempts",
-    "default-placeholder": "Default: %1",
-    "delay": "Reconnection Delay"
+    "reconnection": "Réglages de reconnexion",
+    "max-attempts": "Nombre maximal de tentatives de reconnexion",
+    "default-placeholder": "Défaut : %1",
+    "delay": "Délai de reconnexion"
 }

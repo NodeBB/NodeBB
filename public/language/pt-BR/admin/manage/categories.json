@@ -59,7 +59,7 @@
 	"alert.copy-success": "Configurações Copiadas!",
 	"alert.set-parent-category": "Definir Categoria Mãe",
 	"alert.updated": "Categorias Atualizadas",
-	"alert.updated-success": "Category IDs %1 successfully updated.",
+	"alert.updated-success": "Categoria com IDs %1 foi atualizada.",
 	"alert.upload-image": "Enviar imagem de categoria",
 	"alert.find-user": "Encontrar um Usuário",
 	"alert.user-search": "Procure por um usuário aqui...",
