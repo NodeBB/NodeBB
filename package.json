@@ -21,7 +21,7 @@
     "autoprefixer": "^6.2.3",
     "bcryptjs": "~2.3.0",
     "body-parser": "^1.9.0",
-    "chart.js": "^2.1.0",
+    "chart.js": "^2.4.0",
     "colors": "^1.1.0",
     "compression": "^1.1.0",
     "connect-ensure-login": "^0.1.1",
