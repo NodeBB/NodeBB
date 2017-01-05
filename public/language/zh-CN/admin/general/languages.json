@@ -1,5 +1,5 @@
 {
-	"language-settings": "Language Settings",
-	"description": "The default language determines the language settings for all users who are visiting your forum. <br />Individual users can override the default language on their account settings page.",
-	"default-language": "Default Language"
+	"language-settings": "语言设置",
+	"description": "默认语言会决定所有访客的语言设定。 <br />单一用户可以各自在帐户设置中覆盖此项设定。",
+	"default-language": "默认语言"
 }

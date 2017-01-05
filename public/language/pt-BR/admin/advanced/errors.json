@@ -1,14 +1,14 @@
 {
-	"figure-x": "Figure %1",
-	"error-events-per-day": "<code>%1</code> events per day",
-	"error.404": "404 Not Found",
-	"error.503": "503 Service Unavailable",
-	"manage-error-log": "Manage Error Log",
-	"export-error-log": "Export Error Log (CSV)",
-	"clear-error-log": "Clear Error Log",
-	"route": "Route",
-	"count": "Count",
-	"no-routes-not-found": "Hooray! There are no routes that were not found.",
-	"clear404-confirm": "Are you sure you wish to clear the 404 error logs?",
-	"clear404-success": "\"404 Not Found\" errors cleared"
+	"figure-x": "Figura %1",
+	"error-events-per-day": "<code>%1</code> eventos por dia",
+	"error.404": "404 Não Encontrada",
+	"error.503": "503 Serviço Indisponível",
+	"manage-error-log": "Administrar Log de Erros",
+	"export-error-log": "Exportar Log de Erros (CSV)",
+	"clear-error-log": "Limpar Log de Erros",
+	"route": "Rota",
+	"count": "Contagem",
+	"no-routes-not-found": "Eeeee! Não tem quaisquer rotas que não foram encontradas.",
+	"clear404-confirm": "Você tem certeza que deseja limpar todos os logs de erro 404?",
+	"clear404-success": "Erros de \"404 Não Encontrada\" apagados"
 }

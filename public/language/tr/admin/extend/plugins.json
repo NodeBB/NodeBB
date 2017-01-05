@@ -1,9 +1,9 @@
 {
-	"installed": "Installed",
-	"active": "Active",
+	"installed": "Yüklendi",
+	"active": "Aktif",
 	"inactive": "Inactive",
 	"out-of-date": "Out of Date",
-	"none-found": "No plugins found.",
+	"none-found": "Hiç eklenti bulunamadı.",
 	"none-active": "No Active Plugins",
 	"find-plugins": "Find Plugins",
 
@@ -20,6 +20,7 @@
 	"plugin-item.themes": "Themes",
 	"plugin-item.deactivate": "Deactivate",
 	"plugin-item.activate": "Activate",
+	"plugin-item.install": "Install",
 	"plugin-item.uninstall": "Uninstall",
 	"plugin-item.settings": "Settings",
 	"plugin-item.installed": "Installed",

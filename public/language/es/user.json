@@ -63,6 +63,7 @@
     "upload_a_picture": "Subir una foto",
     "remove_uploaded_picture": "Borrar Imagen subida",
     "upload_cover_picture": "Subir imagen de portada",
+    "remove_cover_picture_confirm": "Are you sure you want to remove the cover picture?",
     "settings": "Opciones",
     "show_email": "Mostrar mi correo electrónico",
     "show_fullname": "Mostrar mi nombre completo",

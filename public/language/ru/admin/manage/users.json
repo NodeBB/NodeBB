@@ -79,7 +79,7 @@
 	"alerts.delete-success": "User(s) Deleted!",
 	"alerts.confirm-purge": "<b>Warning!</b><br/>Do you really want to delete user(s) and their content?<br/> This action is not reversable! All user data and content will be erased!",
 	"alerts.create": "Create User",
-	"alerts.button-create": "Create",
+	"alerts.button-create": "Создать",
 	"alerts.button-cancel": "Cancel",
 	"alerts.error-passwords-different": "Passwords must match!",
 	"alerts.error-x": "<strong>Error</strong><p>%1</p>",

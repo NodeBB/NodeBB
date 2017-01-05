@@ -63,6 +63,7 @@
     "upload_a_picture": "Įkelti paveikslėlį",
     "remove_uploaded_picture": "Ištrinti paveikslėlį",
     "upload_cover_picture": "Įkelti viršelio nuotrauką",
+    "remove_cover_picture_confirm": "Are you sure you want to remove the cover picture?",
     "settings": "Nustatymai",
     "show_email": "Rodyti mano el. paštą viešai",
     "show_fullname": "Rodyti mano vardą ir pavardę",

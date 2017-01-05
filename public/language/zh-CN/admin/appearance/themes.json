@@ -1,11 +1,11 @@
 {
-    "checking-for-installed": "Checking for installed themes...",
-    "homepage": "Homepage",
-    "select-theme": "Select Theme",
-    "current-theme": "Current Theme",
-    "no-themes": "No installed themes found",
-    "revert-confirm": "Are you sure you wish to restore the default NodeBB theme?",
-    "theme-changed": "Theme Changed",
-    "revert-success": "You have successfully reverted your NodeBB back to it's default theme.",
-    "restart-to-activate": "Please restart your NodeBB to fully activate this theme"
+    "checking-for-installed": "正在检查已安装的主题...",
+    "homepage": "首页",
+    "select-theme": "选择主题",
+    "current-theme": "当前主题",
+    "no-themes": "未发现已安装的主题",
+    "revert-confirm": "确认恢复到NodeBB默认主题？",
+    "theme-changed": "主题已更改",
+    "revert-success": "已成功恢复到NodeBB默认主题。",
+    "restart-to-activate": "请重启NodeBB来完全激活该主题"
 }

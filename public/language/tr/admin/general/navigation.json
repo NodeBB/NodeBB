@@ -1,9 +1,9 @@
 {
-	"icon": "Icon:",
+	"icon": "İkon:",
 	"change-icon": "change",
 	"route": "Route:",
 	"tooltip": "Tooltip:",
-	"text": "Text:",
+	"text": "Yazı:",
 	"text-class": "Text Class: <small>optional</small>",
 	"id": "ID: <small>optional</small>",
 

@@ -1,9 +1,9 @@
 {
-	"custom-css": "Custom CSS",
-	"custom-css.description": "Enter your own CSS declarations here, which will be applied after all other styles.",
-	"custom-css.enable": "Enable Custom CSS",
+	"custom-css": "自定义 CSS",
+	"custom-css.description": "在这里输入自定义CSS变量声明，它们将被添加在样式中。",
+	"custom-css.enable": "启用自定义CSS",
 
-	"custom-header": "Custom Header",
-	"custom-header.description": "Enter custom HTML here (ex. JavaScript, Meta Tags, etc.), which will be appended to the <code>&lt;head&gt;</code> section of your forum's markup.",
-	"custom-header.enable": "Enable Custom Header"
+	"custom-header": "自定义header",
+	"custom-header.description": "请输入自定义的HTML代码 (如JavaScript，Meta Tags等)，这些代码会被添加到论坛的<code>&lt;head&gt;</code>部分。",
+	"custom-header.enable": "启用自定义header"
 }

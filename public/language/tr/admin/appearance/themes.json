@@ -1,7 +1,7 @@
 {
     "checking-for-installed": "Checking for installed themes...",
-    "homepage": "Homepage",
-    "select-theme": "Select Theme",
+    "homepage": "Anasayfa",
+    "select-theme": "Tema Seç",
     "current-theme": "Current Theme",
     "no-themes": "No installed themes found",
     "revert-confirm": "Are you sure you wish to restore the default NodeBB theme?",

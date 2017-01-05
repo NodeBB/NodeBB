@@ -1,9 +1,9 @@
 {
-	"custom-css": "Custom CSS",
-	"custom-css.description": "Enter your own CSS declarations here, which will be applied after all other styles.",
-	"custom-css.enable": "Enable Custom CSS",
+	"custom-css": "Персонализиран CSS",
+	"custom-css.description": "Въведете своите собствени декларации за стилове, те ще бъдат приложени след всички останали стилове.",
+	"custom-css.enable": "Включване на персонализиран CSS",
 
-	"custom-header": "Custom Header",
-	"custom-header.description": "Enter custom HTML here (ex. JavaScript, Meta Tags, etc.), which will be appended to the <code>&lt;head&gt;</code> section of your forum's markup.",
-	"custom-header.enable": "Enable Custom Header"
+	"custom-header": "Персонализирана заглавна част",
+	"custom-header.description": "Въведете своя персонализиран код HTML тук (напр. JavaScript, елементи „meta“ и т.н.), те ще бъдат добавени към секцията <code>&lt;head&gt;</code> в кода на Вашия форум.",
+	"custom-header.enable": "Включване на персонализирана заглавна част"
 }

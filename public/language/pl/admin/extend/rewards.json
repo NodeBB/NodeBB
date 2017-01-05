@@ -1,7 +1,7 @@
 {
-	"rewards": "Rewards",
+	"rewards": "Nagrody",
 	"condition-if-users": "If User's",
-	"condition-is": "Is:",
+	"condition-is": "Jest:",
 	"condition-then": "Then:",
 	"max-claims": "Amount of times reward is claimable",
 	"zero-infinite": "Enter 0 for infinite",

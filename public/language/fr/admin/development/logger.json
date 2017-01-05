@@ -1,12 +1,12 @@
 {
-	"logger-settings": "Logger Settings",
-	"description": "By enabling the check boxes, you will receive logs to your terminal. If you specify a path, logs will then be saved to a file instead. HTTP logging is useful for collecting statistics about who, when, and what people access on your forum. In addition to logging HTTP requests, we can also log socket.io events. Socket.io logging, in combination with redis-cli monitor, can be very helpful for learning NodeBB's internals.",
-	"explanation": "Simply check/uncheck the logging settings to enable or disable logging on the fly. No restart needed.",
-	"enable-http": "Enable HTTP logging",
-	"enable-socket": "Enable socket.io event logging",
-	"file-path": "Path to log file",
-	"file-path-placeholder": "/path/to/log/file.log ::: leave blank to log to your terminal",
+	"logger-settings": "Réglages de la journalisation",
+	"description": "En activant les cases, vous recevrez des journaux dans votre terminal. Si vous spécifiez un chemin, les journaux seront sauvegardés à la place. La journalisation HTTP est utile pour collecter des statistiques sur les personnes qui accèdent à votre forum. En plus de la journalisation des requêtes HTTP, nous pouvons également journaliser les évènements. La journalisation socket.io, associée au monitoring de redis-cli, peut être très utile pour apprendre les rouages de NodeBB.",
+	"explanation": "Cochez ou décochez simplement les réglages de la journalisation pour l'activer ou la désactiver. Aucun redémarrage n'est nécessaire.",
+	"enable-http": "Activer la journalisation HTTP",
+	"enable-socket": "Activer la journalisation des événements socket.io",
+	"file-path": "Chemin vers le fichier journal",
+	"file-path-placeholder": "/path/to/log/file.log ::: laissez vide pour journaliser vers votre terminal",
 
-	"control-panel": "Logger Control Panel",
-	"update-settings": "Update Logger Settings"
+	"control-panel": "Panneau de contrôle de la journalisation",
+	"update-settings": "Mettre à jour les réglages de la journalisation"
 }

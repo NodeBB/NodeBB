@@ -1,9 +1,9 @@
 {
-	"pagination": "Pagination Settings",
-	"enable": "Paginate topics and posts instead of using infinite scroll.",
-	"topics": "Topic Pagination",
-	"posts-per-page": "Posts per Page",
-	"categories": "Category Pagination",
-	"topics-per-page": "Topics per Page",
-	"initial-num-load": "Initial Number of Topics to Load on Unread, Recent, and Popular"
+	"pagination": "Настройки за страницирането",
+	"enable": "Разделяне на темите и публикациите на страници, вместо да се превърта безкрайно.",
+	"topics": "Странициране в темите",
+	"posts-per-page": "Публикации на страница",
+	"categories": "Странициране на категориите",
+	"topics-per-page": "Теми на страница",
+	"initial-num-load": "Начален брой теми, които да бъдат заредени за „непрочетени“, „скорошни“ и „популярни“"
 }

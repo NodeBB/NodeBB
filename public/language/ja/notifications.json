@@ -19,7 +19,7 @@
     "user_flagged_post_in": "<strong>%1</strong> は <strong>%2</strong> の投稿にフラグを付けました。",
     "user_flagged_post_in_dual": "<strong>%1</strong> と <strong>%2</strong> は <strong>%3</strong> の投稿にフラグを立てました。",
     "user_flagged_post_in_multiple": "<strong>%1</strong> と %2 または他のユーザーが投稿 <strong>%3</strong>にフラグをつけました。",
-    "user_posted_to": "<strong>%1</strong> は <strong>%2</strong> への返事を作成しました。",
+    "user_posted_to": "<strong>%1</strong>さんは <strong>%2</strong>に返信しました。",
     "user_posted_to_dual": "<strong>%1</strong> と <strong>%2</strong> は、返信しました: <strong>%3</strong>",
     "user_posted_to_multiple": "<strong>%1</strong> と %2 または他のユーザーが返信しました: <strong>%3</strong>",
     "user_posted_topic": "<strong>%1</strong> が新しいトピックを投稿しました。: <strong>%2</strong>",

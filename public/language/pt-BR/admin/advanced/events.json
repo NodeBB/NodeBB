@@ -1,6 +1,6 @@
 {
-	"events": "Events",
-	"no-events": "There are no events",
-	"control-panel": "Events Control Panel",
-	"delete-events": "Delete Events"
+	"events": "Eventos",
+	"no-events": "Não há eventos",
+	"control-panel": "Painel de Controle de Eventos",
+	"delete-events": "Excluir Eventos"
 }

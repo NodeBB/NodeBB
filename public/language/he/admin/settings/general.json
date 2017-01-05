@@ -12,7 +12,7 @@
 	"keywords": "Site Keywords",
 	"keywords-placeholder": "Keywords describing your community, comma-separated",
 	"logo": "Site Logo",
-	"logo.image": "Image",
+	"logo.image": "תמונה",
 	"logo.image-placeholder": "Path to a logo to display on forum header",
 	"logo.upload": "Upload",
 	"logo.url": "URL",

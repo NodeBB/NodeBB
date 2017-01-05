@@ -52,5 +52,6 @@
     "new-group.group_name": "Nombre de Grupo:",
     "upload-group-cover": "Cargar foto para el grupo",
     "bulk-invite-instructions": "Escribe una lista de nombres de usuario separados por comas a invitar a este grupo",
-    "bulk-invite": "Invitación multiple"
+    "bulk-invite": "Invitación multiple",
+    "remove_group_cover_confirm": "Are you sure you want to remove the cover picture?"
 }

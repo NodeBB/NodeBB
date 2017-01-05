@@ -63,6 +63,7 @@
     "upload_a_picture": "사진 업로드",
     "remove_uploaded_picture": "등록된 사진을 삭제",
     "upload_cover_picture": "커버 사진 업로드",
+    "remove_cover_picture_confirm": "Are you sure you want to remove the cover picture?",
     "settings": "설정",
     "show_email": "이메일 공개",
     "show_fullname": "실명 공개",

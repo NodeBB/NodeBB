@@ -63,6 +63,7 @@
     "upload_a_picture": "อัปโหลดรูป",
     "remove_uploaded_picture": "Remove Uploaded Picture",
     "upload_cover_picture": "Upload cover picture",
+    "remove_cover_picture_confirm": "Are you sure you want to remove the cover picture?",
     "settings": "ตั้งค่า",
     "show_email": "แสดงอีเมล์",
     "show_fullname": "แสดงชื่อจริง",

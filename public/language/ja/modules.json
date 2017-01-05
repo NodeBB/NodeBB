@@ -1,6 +1,6 @@
 {
-    "chat.chatting_with": "<span id=\"chat-with-name\"></span>とチャット",
-    "chat.placeholder": "ここにメッセージを入力し、Enterで送信",
+    "chat.chatting_with": "<span id=\"chat-with-name\"></span>さんとチャットする",
+    "chat.placeholder": "メッセージを入力し、Enterで送信",
     "chat.send": "送信",
     "chat.no_active": "チャットはありません。",
     "chat.user_typing": "%1 が入力中 ...",
@@ -13,6 +13,7 @@
     "chat.contacts": "お問い合わせ",
     "chat.message-history": "メッセージ履歴",
     "chat.pop-out": "チャットを別ウィンドウで表示する",
+    "chat.minimize": "Minimize",
     "chat.maximize": "最大化",
     "chat.seven_days": "7日間",
     "chat.thirty_days": "30日間",
@@ -41,7 +42,7 @@
     "bootbox.ok": "OK",
     "bootbox.cancel": "キャンセル",
     "bootbox.confirm": "確認",
-    "cover.dragging_title": "表紙の配置",
+    "cover.dragging_title": "カバー写真の配置について",
     "cover.dragging_message": "カバー写真をドラッグで目的位置に移動し、\"保存\"をクリックします。",
-    "cover.saved": "カバー写真の画像と配置を保存しました。"
+    "cover.saved": "カバー写真と配置設定を保存しました。"
 }

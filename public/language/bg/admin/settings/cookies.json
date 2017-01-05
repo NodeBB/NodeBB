@@ -1,11 +1,11 @@
 {
-	"eu-consent": "EU Consent",
-	"consent.enabled": "Enabled",
-	"consent.message": "Notification message",
-	"consent.acceptance": "Acceptance message",
-	"consent.link-text": "Policy Link Text",
-	"consent.blank-localised-default": "Leave blank to use NodeBB localised defaults",
-	"settings": "Settings",
-	"cookie-domain": "Session cookie domain",
-	"blank-default": "Leave blank for default"
+	"eu-consent": "Съглашение на ЕС",
+	"consent.enabled": "Включено",
+	"consent.message": "Съобщение за известие",
+	"consent.acceptance": "Съобщение за приемане",
+	"consent.link-text": "Връзка към текста на политиката",
+	"consent.blank-localised-default": "Оставете това празно, за да използвате данните по подразбиране на NodeBB, които са преведени",
+	"settings": "Настройки",
+	"cookie-domain": "Домейн на бисквитката за сесията",
+	"blank-default": "Оставете празно, за да използвате стойността по подразбиране"
 }

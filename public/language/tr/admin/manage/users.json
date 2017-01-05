@@ -1,7 +1,7 @@
 {
-	"users": "Users",
-	"edit": "Edit",
-	"make-admin": "Make Admin",
+	"users": "Kullanıcılar",
+	"edit": "Düzenle",
+	"make-admin": "Yönetici Yap",
 	"remove-admin": "Remove Admin",
 	"validate-email": "Validate Email",
 	"send-validation-email": "Send Validation Email",

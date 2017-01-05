@@ -1,7 +1,7 @@
 {
-	"installed": "Installed",
+	"installed": "Zainstalowane",
 	"active": "Active",
-	"inactive": "Inactive",
+	"inactive": "Nieaktywny",
 	"out-of-date": "Out of Date",
 	"none-found": "No plugins found.",
 	"none-active": "No Active Plugins",
@@ -20,6 +20,7 @@
 	"plugin-item.themes": "Themes",
 	"plugin-item.deactivate": "Deactivate",
 	"plugin-item.activate": "Activate",
+	"plugin-item.install": "Install",
 	"plugin-item.uninstall": "Uninstall",
 	"plugin-item.settings": "Settings",
 	"plugin-item.installed": "Installed",

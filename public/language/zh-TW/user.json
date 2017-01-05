@@ -63,6 +63,7 @@
     "upload_a_picture": "上傳一張照片",
     "remove_uploaded_picture": "移除上傳的圖片",
     "upload_cover_picture": "上傳封面圖片",
+    "remove_cover_picture_confirm": "Are you sure you want to remove the cover picture?",
     "settings": "設定",
     "show_email": "顯示我的電子郵件地址",
     "show_fullname": "顯示我的全名",

@@ -1,9 +1,9 @@
 {
-	"loading": "Loading Skins...",
-	"homepage": "Homepage",
-	"select-skin": "Select Skin",
-	"current-skin": "Current Skin",
-	"skin-updated": "Skin Updated",
-	"applied-success": "%1 skin was succesfully applied",
-	"revert-success": "Skin reverted to base colours"
+	"loading": "Зареждане на облиците…",
+	"homepage": "Начална страница",
+	"select-skin": "Изберете облик",
+	"current-skin": "Текущ облик",
+	"skin-updated": "Обликът е променен",
+	"applied-success": "Обликът „%1“ беше успешно приложен",
+	"revert-success": "Обликът е върнат към основните цветове."
 }

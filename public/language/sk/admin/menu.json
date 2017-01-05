@@ -1,5 +1,5 @@
 {
-	"section-general": "General",
+	"section-general": "Všeobecné",
 	"general/dashboard": "Dashboard",
 	"general/homepage": "Home Page",
 	"general/navigation": "Navigation",
@@ -39,7 +39,7 @@
 	"section-appearance": "Appearance",
 	"appearance/themes": "Themes",
 	"appearance/skins": "Skins",
-	"appearance/customise": "Custom HTML &amp; CSS",
+	"appearance/customise": "Custom HTML & CSS",
 
 	"section-extend": "Extend",
 	"extend/plugins": "Plugins",

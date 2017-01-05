@@ -63,6 +63,7 @@
     "upload_a_picture": "Lae pilt üles",
     "remove_uploaded_picture": "Eemalda üleslaetud pilt",
     "upload_cover_picture": "Lae üles katte pilt",
+    "remove_cover_picture_confirm": "Are you sure you want to remove the cover picture?",
     "settings": "Seaded",
     "show_email": "Näita minu emaili",
     "show_fullname": "Näita minu täisnime",

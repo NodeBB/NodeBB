@@ -1,7 +1,7 @@
 {
-	"home-page": "Home Page",
-	"description": "Choose what page is shown when users navigate to the root URL of your forum.",
-	"home-page-route": "Home Page Route",
-	"custom-route": "Custom Route",
-	"allow-user-home-pages": "Allow User Home Pages"
+	"home-page": "Page d'accueil",
+	"description": "Choisissez la page affichée lorsque les utilisateurs naviguent à la racine de votre forum.",
+	"home-page-route": "Route de la page d'accueil",
+	"custom-route": "Route personnalisée",
+	"allow-user-home-pages": "Permettre aux utilisateurs de choisir une page d'accueil personnalisée"
 }

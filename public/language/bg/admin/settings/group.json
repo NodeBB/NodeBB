@@ -1,12 +1,12 @@
 {
-	"general": "General",
-	"private-groups": "Private Groups",
-	"private-groups.help": "If enabled, joining of groups requires the approval of the group owner <em>(Default: enabled)</em>",
-	"private-groups.warning": "<strong>Beware!</strong> If this option is disabled and you have private groups, they automatically become public.",
-	"allow-creation": "Allow Group Creation",
-	"allow-creation-help": "If enabled, users can create groups <em>(Default: disabled)</em>",
-	"max-name-length": "Maximum Group Name Length",
-	"cover-image": "Group Cover Image",
-	"default-cover": "Default Cover Images",
-	"default-cover-help": "Add comma-separated default cover images for groups that don't have an uploaded cover image"
+	"general": "Общи",
+	"private-groups": "Частни групи",
+	"private-groups.help": "Ако е включено, присъединяването към групи ще изисква одобрение от собственик на групата. <em>(По подразбиране: включено)</em>",
+	"private-groups.warning": "<strong>Внимание!</strong> Ако това е изключено и имате частни групи, те автоматично ще станат публични.",
+	"allow-creation": "Позволяване на създаването на групи",
+	"allow-creation-help": "Ако е включено, потребителите ще могат да създават групи. <em>(По подразбиране: изключено)</em>",
+	"max-name-length": "Минимална дължина на името на група",
+	"cover-image": "Представящо изображение за групата",
+	"default-cover": "Стандартни представящи изображения",
+	"default-cover-help": "Добавете стандартни представящи изображения (разделени със запетаи) за групите, които нямат качено представящо изображение."
 }
