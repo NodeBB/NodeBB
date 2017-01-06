@@ -30,7 +30,7 @@
 	"settings/tags": "Етикети",
 	"settings/notifications": "Известия",
 	"settings/cookies": "Бисквитки",
-	"settings/web-crawler": "Анализатор на уеб страници",
+	"settings/web-crawler": "Обхождач на уеб страници",
 	"settings/sockets": "Сокети",
 	"settings/advanced": "Разширени",
 
@@ -39,7 +39,7 @@
 	"section-appearance": "Външен вид",
 	"appearance/themes": "Теми",
 	"appearance/skins": "Облици",
-	"appearance/customise": "Custom HTML & CSS",
+	"appearance/customise": "Персонализиран HTML и CSS",
 
 	"section-extend": "Разширяване",
 	"extend/plugins": "Добавки",

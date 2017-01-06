@@ -3,7 +3,7 @@
 	"active": "Включени",
 	"inactive": "Изключени",
 	"out-of-date": "Остарели",
-	"none-found": "Няма открити добавки.",
+	"none-found": "Няма намерени добавки.",
 	"none-active": "Няма включени добавки.",
 	"find-plugins": "Търсене на добавки",
 
@@ -20,7 +20,7 @@
 	"plugin-item.themes": "Теми",
 	"plugin-item.deactivate": "Изключване",
 	"plugin-item.activate": "Включване",
-	"plugin-item.install": "Install",
+	"plugin-item.install": "Инсталиране",
 	"plugin-item.uninstall": "Деинсталиране",
 	"plugin-item.settings": "Настройки",
 	"plugin-item.installed": "Инсталирани",
