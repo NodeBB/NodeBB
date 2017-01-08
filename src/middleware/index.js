@@ -185,7 +185,7 @@ middleware.applyBlacklist = function (req, res, next) {
 
 middleware.getTranslation = function (req, res, next) {
 	var language = req.params.language;
-	var namespace = req.params.namespace;
+	var namespace = req.params[0];
 
 	if (language && namespace) {
 		languages.get(language, namespace, function (err, translations) {
