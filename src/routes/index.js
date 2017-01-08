@@ -145,7 +145,7 @@ module.exports = function (app, middleware, hotswapIds) {
 	}
 
 	app.use(middleware.privateUploads);
-	app.use(relativePath + '/api/language/:language/:namespace', middleware.getTranslation);
+	app.use(relativePath + '/api/language/:language/(([a-zA-Z0-9\\-_.\\/]+))', middleware.getTranslation);
 	app.use(relativePath, express.static(path.join(__dirname, '../../', 'public'), {
 		maxAge: app.enabled('cache') ? 5184000000 : 0
 	}));

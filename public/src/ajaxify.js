@@ -253,15 +253,45 @@ $(document).ready(function () {
 
 		$(window).trigger('action:script.load', data);
 
-		require(data.scripts, function (script) {
-			if (script && script.init) {
-				script.init();
+		// Require and parse modules
+		var outstanding = 0;
+		var onReady = function () {
+			if (outstanding) {
+				return setTimeout(onReady, 100);
 			}
 
-			if (callback) {
-				callback();
+			data.scripts = data.scripts.filter(Boolean);
+			data.scripts.forEach(function (functionRef) {
+				functionRef();
+			});
+		};
+
+		data.scripts.forEach(function (script, idx) {
+			switch (typeof script) {
+				case 'string':
+					++outstanding;
+					(function (idx) {
+						require([script], function (script) {
+							if (script && script.init) {
+								data.scripts[idx] = script.init;
+							}
+							--outstanding;
+						});
+					}(idx));
+					break;
+
+				case 'function':
+					// No changes needed
+					break;
+
+				default:
+					// Neither? No comprende
+					data.scripts[idx] = undefined;
+					break;
 			}
 		});
+
+		onReady();
 	};
 
 	ajaxify.loadData = function (url, callback) {

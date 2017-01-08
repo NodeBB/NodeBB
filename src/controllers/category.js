@@ -111,7 +111,13 @@ categoryController.get = function (req, res, callback) {
 					}
 
 					if (req.query.tag) {
-						payload.set = [payload.set, 'tag:' + req.query.tag + ':topics'];
+						if (Array.isArray(req.query.tag)) {
+							payload.set = [payload.set].concat(req.query.tag.map(function (tag) {
+								return 'tag:' + tag + ':topics';
+							}));
+						} else {
+							payload.set = [payload.set, 'tag:' + req.query.tag + ':topics'];
+						}
 					}
 					categories.getCategoryById(payload, next);
 				}

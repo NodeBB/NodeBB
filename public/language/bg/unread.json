@@ -1,7 +1,7 @@
 {
     "title": "Непрочетени",
     "no_unread_topics": "Няма непрочетени теми.",
-    "load_more": "Зареди още",
+    "load_more": "Зареждане на още",
     "mark_as_read": "Отбелязване като прочетени",
     "selected": "Избраните",
     "all": "Всички",
@@ -9,5 +9,5 @@
     "topics_marked_as_read.success": "Темите бяха отбелязани като прочетени!",
     "all-topics": "Всички теми",
     "new-topics": "Нови теми",
-    "watched-topics": "Наблюдавани теми"
+    "watched-topics": "Следени теми"
 }

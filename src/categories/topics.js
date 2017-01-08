@@ -125,7 +125,7 @@ module.exports = function (Categories) {
 				if (parseInt(pinned, 10) === 1) {
 					return setImmediate(next);
 				}
-				 
+
 				async.parallel([
 					function (next) {
 						db.sortedSetAdd('cid:' + cid + ':tids', postData.timestamp, postData.tid, next);
@@ -135,11 +135,11 @@ module.exports = function (Categories) {
 					}
 				], function (err) {
 					next(err);
-				});					
+				});
 			},
 			function (next) {
 				Categories.updateRecentTid(cid, postData.tid, next);
-			}			
+			}
 		], callback);
 	};
 
