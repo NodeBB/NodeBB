@@ -3,7 +3,7 @@
 (function (factory) {
 	'use strict';
 	function loadClient(language, namespace) {
-		return Promise.resolve(jQuery.getJSON(config.relative_path + '/api/language/' + language + '/' + encodeURIComponent(namespace)));
+		return Promise.resolve(jQuery.getJSON(config.relative_path + '/api/language/' + language + '/' + namespace));
 	}
 	var warn = function () {};
 	if (typeof config === 'object' && config.environment === 'development') {
