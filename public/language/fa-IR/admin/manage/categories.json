@@ -1,9 +1,9 @@
 {
-	"settings": "Category Settings",
+	"settings": "تنظیمات دسته‌بندی",
 	"privileges": "Privileges",
 
-	"name": "Category Name",
-	"description": "Category Description",
+	"name": "نام دسته‌بندی",
+	"description": "توضیحات دسته‌بندی",
 	"bg-color": "Background Colour",
 	"text-color": "Text Colour",
 	"bg-image-size": "Background Image Size",
