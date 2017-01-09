@@ -264,6 +264,8 @@ $(document).ready(function () {
 			data.scripts.forEach(function (functionRef) {
 				functionRef();
 			});
+
+			callback();
 		};
 
 		data.scripts.forEach(function (script, idx) {
