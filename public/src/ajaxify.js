@@ -276,6 +276,8 @@ $(document).ready(function () {
 						require([script], function (script) {
 							if (script && script.init) {
 								data.scripts[idx] = script.init;
+							} else {
+								data.scripts[idx] = null;
 							}
 							--outstanding;
 						});
