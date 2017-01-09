@@ -56,9 +56,9 @@ module.exports = function (Topics) {
 				topicData.deleted = isDelete ? 1 : 0;
 
 				if (isDelete) {
-					plugins.fireHook('action:topic.delete', topicData);
+					plugins.fireHook('action:topic.delete', {topic: topicData, uid: uid});
 				} else {
-					plugins.fireHook('action:topic.restore', topicData);
+					plugins.fireHook('action:topic.restore', {topic: topicData, uid: uid});
 				}
 
 				var data = {
@@ -225,7 +225,7 @@ module.exports = function (Topics) {
 				var uniqueCids = _.unique(topicData.map(function (topicData) {
 					return topicData && parseInt(topicData.cid, 10);
 				}));
-				
+
 				if (uniqueCids.length > 1 || !uniqueCids.length || !uniqueCids[0]) {
 					return next(new Error('[[error:invalid-data]]'));
 				}
@@ -249,7 +249,7 @@ module.exports = function (Topics) {
 								setImmediate(next);
 							}
 						}
-					], next);					
+					], next);
 				}, next);
 			}
 		], callback);
