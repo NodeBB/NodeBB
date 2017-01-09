@@ -27,7 +27,6 @@
 
 	"quick-links": "Quick Links",
 	"flagged-user": "Flagged User",
-	"reporter": "Reporting User",
 	"view-profile": "View Profile",
 	"start-new-chat": "Start New Chat",
 	"go-to-target": "View Flag Target",
@@ -43,7 +42,6 @@
 	"back": "Back to Flags List",
 	"no-history": "No flag history.",
 
-	"state": "State",
 	"state-all": "All states",
 	"state-open": "New/Open",
 	"state-wip": "Work in Progress",
