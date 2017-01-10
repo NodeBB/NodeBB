@@ -1,7 +1,7 @@
 {
-	"logs": "Logs",
-	"control-panel": "Logs Control Panel",
-	"reload": "Reload Logs",
-	"clear": "Clear Logs",
-	"clear-success": "Logs Cleared!"
+	"logs": "Registro",
+	"control-panel": "Panel de control del registro",
+	"reload": "Recargar registro",
+	"clear": "Borrar registro",
+	"clear-success": "¡Registros borrados!"
 }
