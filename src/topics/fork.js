@@ -2,14 +2,12 @@
 'use strict';
 
 var async = require('async');
-var winston = require('winston');
+
 var db = require('../database');
-var user = require('../user');
 var posts = require('../posts');
 var privileges = require('../privileges');
 var plugins = require('../plugins');
 var meta = require('../meta');
-
 
 module.exports = function (Topics) {
 
@@ -55,11 +53,14 @@ module.exports = function (Topics) {
 				}
 				Topics.create({uid: results.postData.uid, title: title, cid: cid}, next);
 			},
-			function (results, next) {
-				Topics.updateTopicBookmarks(fromTid, pids, function () { next( null, results );} );
+			function (_tid, next) {
+				Topics.updateTopicBookmarks(fromTid, pids, function (err) {
+					next(err, _tid);
+				});
 			},
 			function (_tid, next) {
-				function move(pid, next) {
+				tid = _tid;
+				async.eachSeries(pids, function (pid, next) {
 					privileges.posts.canEdit(pid, uid, function (err, canEdit) {
 						if (err || !canEdit.flag) {
 							return next(err || new Error(canEdit.message));
@@ -67,14 +68,13 @@ module.exports = function (Topics) {
 
 						Topics.movePostToTopic(pid, tid, next);
 					});
-				}
-				tid = _tid;
-				async.eachSeries(pids, move, next);
+				}, next);
 			},
 			function (next) {
 				Topics.updateTimestamp(tid, Date.now(), next);
 			},
 			function (next) {
+				plugins.fireHook('action:topic.fork', {tid: tid, fromTid: fromTid, uid: uid});
 				Topics.getTopicData(tid, next);
 			}
 		], callback);
