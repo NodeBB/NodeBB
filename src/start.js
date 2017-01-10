@@ -40,6 +40,9 @@ start.start = function () {
 				next(err);
 			});
 		},
+		function(next) {
+			db.initSessionStore(next);
+		},
 		function (next) {
 			var webserver = require('./webserver');
 			require('./socket.io').init(webserver.server);

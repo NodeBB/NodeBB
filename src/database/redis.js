@@ -38,7 +38,6 @@
 	module.init = function (callback) {
 		try {
 			redis = require('redis');
-			connectRedis = require('connect-redis')(session);
 		} catch (err) {
 			winston.error('Unable to initialize Redis! Is Redis installed? Error :' + err.message);
 			process.exit();
@@ -48,16 +47,27 @@
 
 		module.client = redisClient;
 
-		module.sessionStore = new connectRedis({
-			client: redisClient,
-			ttl: 60 * 60 * 24 * 14
-		});
-
 		require('./redis/main')(redisClient, module);
 		require('./redis/hash')(redisClient, module);
 		require('./redis/sets')(redisClient, module);
 		require('./redis/sorted')(redisClient, module);
 		require('./redis/list')(redisClient, module);
+
+		if (typeof callback === 'function') {
+			callback();
+		}
+	};
+
+	module.initSessionStore = function (callback) {
+		var meta = require('../meta');		
+		connectRedis = require('connect-redis')(session);
+
+		var ttlDays = 1000 * 60 * 60 * 24 * (parseInt(meta.config.loginDays, 10) || 14);
+
+		module.sessionStore = new connectRedis({
+			client: redisClient,
+			ttl: ttlDays
+		});
 
 		if (typeof callback === 'function') {
 			callback();
@@ -97,7 +107,7 @@
 		var dbIdx = parseInt(nconf.get('redis:database'), 10);
 		if (dbIdx) {
 			cxn.select(dbIdx, function (error) {
-				if(error) {
+				if (error) {
 					winston.error("NodeBB could not connect to your Redis database. Redis returned the following error: " + error.message);
 					process.exit();
 				}
@@ -156,5 +166,5 @@
 
 	module.helpers = module.helpers || {};
 	module.helpers.redis = require('./redis/helpers');
-}(exports));
+} (exports));
 
