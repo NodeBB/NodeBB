@@ -42,7 +42,7 @@ module.exports = function (Posts) {
 				], next);
 			},
 			function (results, next) {
-				plugins.fireHook('action:post.delete', pid);
+				plugins.fireHook('action:post.delete', {pid: pid, uid: uid});
 				next(null, postData);
 			}
 		], callback);
@@ -79,7 +79,7 @@ module.exports = function (Posts) {
 				], next);
 			},
 			function (results, next) {
-				plugins.fireHook('action:post.restore', _.clone(postData));
+				plugins.fireHook('action:post.restore', {post: _.clone(postData), uid: uid});
 				next(null, postData);
 			}
 		], callback);
@@ -149,7 +149,7 @@ module.exports = function (Posts) {
 					if (err) {
 						return next(err);
 					}
-					plugins.fireHook('action:post.purge', pid);
+					plugins.fireHook('action:post.purge', {pid: pid, uid: uid});
 					db.delete('post:' + pid, next);
 				});
 			}
