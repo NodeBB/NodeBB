@@ -119,7 +119,13 @@ helpers.getUserDataByUserSlug = function (userslug, callerUID, callback) {
 			userData['reputation:disabled'] = parseInt(meta.config['reputation:disabled'], 10) === 1;
 			userData['downvote:disabled'] = parseInt(meta.config['downvote:disabled'], 10) === 1;
 			userData['email:confirmed'] = !!parseInt(userData['email:confirmed'], 10);
-			userData.profile_links = filterLinks(results.profile_links.concat(results.profile_menu.links), isSelf);
+			userData.profile_links = filterLinks(results.profile_links.concat(results.profile_menu.links), {
+				self: isSelf,
+				other: !isSelf,
+				moderator: isModerator,
+				globalMod: isGlobalModerator,
+				admin: isAdmin
+			});
 
 			userData.sso = results.sso.associations;
 			userData.status = user.getStatus(userData);
@@ -154,9 +160,30 @@ helpers.getBaseUser = function (userslug, callerUID, callback) {
 	helpers.getUserDataByUserSlug(userslug, callerUID, callback);
 };
 
-function filterLinks(links, self) {
-	return links.filter(function (link) {
-		return link && (link.public || self);
+function filterLinks(links, states) {
+	return links.filter(function (link, index) {
+		// "public" is the old property, if visibility is defined, discard `public`
+		if (link.hasOwnProperty('public') && !link.hasOwnProperty('visibility')) {
+			winston.warn('[account/profileMenu (' + link.id + ')] Use of the `.public` property is deprecated, use `visibility` now');
+			return link && (link.public || states.self);
+		}
+
+		// Default visibility
+		link.visibility = Object.assign({
+			self: true,
+			other: true,
+			moderator: true,
+			globalMod: true,
+			admin: true
+		}, link.visibility);
+
+		// Iterate through states and permit if every test passes (or is not defined)
+		var permit = Object.keys(states).some(function (state) {
+			return states[state] === link.visibility[state];
+		});
+
+		links[index].public = permit;
+		return permit;
 	});
 }
 
