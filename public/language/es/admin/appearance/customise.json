@@ -4,6 +4,6 @@
 	"custom-css.enable": "Activar CSS personalizado",
 
 	"custom-header": "Cabezera personalizada",
-	"custom-header.description": "Introduce HTML personalizado aquí (ej. JavaScript, Meta Etiquetas, etc.), las cuales se adjuntarán al <code>&lt;head&gt;</code> en la sección de la marca de su foro.",
+	"custom-header.description": "Introduce HTML personalizado aquí (ej. JavaScript, Meta Etiquetas, etc.), el cual se adjuntará a la sección <code>&lt;head&gt;</code> del código de su foro.",
 	"custom-header.enable": "Activar cabecera personalizada"
 }
