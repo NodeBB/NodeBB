@@ -52,7 +52,7 @@ server.on('error', function (err) {
 });
 
 module.exports.listen = function (callback) {
-	callback = callback || function () {};
+	callback = callback || function () { };
 	emailer.registerApp(app);
 
 	setupExpressApp(app);
@@ -139,7 +139,7 @@ function setupExpressApp(app) {
 
 	app.use(relativePath + '/apple-touch-icon', middleware.routeTouchIcon);
 
-	app.use(bodyParser.urlencoded({extended: true}));
+	app.use(bodyParser.urlencoded({ extended: true }));
 	app.use(bodyParser.json());
 	app.use(cookieParser());
 	app.use(useragent.express());
@@ -170,8 +170,14 @@ function setupFavicon(app) {
 }
 
 function setupCookie() {
+	var ttlDays = 1000 * 60 * 60 * 24 * (parseInt(meta.config.loginDays, 10) || 0);
+	var ttlHours = 1000 * 60 * 60 * (parseInt(meta.config.loginHours, 10) || 0);
+	var ttlMinutes = 1000 * 60 * (parseInt(meta.config.loginMinutes, 10) || 0);
+	var ttlSeconds = 1000 * (parseInt(meta.config.loginSeconds, 10) || 0);
+	var ttlTotal = (ttlDays + ttlHours + ttlMinutes + ttlSeconds) || 1209600000; // Default to 14 days
+
 	var cookie = {
-		maxAge: 1000 * 60 * 60 * 24 * (parseInt(meta.config.loginDays, 10) || 14)
+		maxAge: ttlTotal
 	};
 
 	if (nconf.get('cookieDomain') || meta.config.cookieDomain) {
@@ -191,7 +197,7 @@ function setupCookie() {
 }
 
 function listen(callback) {
-	callback = callback || function () {};
+	callback = callback || function () { };
 	var port = parseInt(nconf.get('port'), 10);
 	var isSocket = isNaN(port);
 	var socketPath = isSocket ? nconf.get('port') : '';

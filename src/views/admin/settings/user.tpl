@@ -20,7 +20,8 @@
 
 			<div class="form-group form-inline">
 				<label for="emailConfirmInterval">[[admin/settings/user:email-confirm-interval]]</label>
-				<input class="form-control" data-field="emailConfirmInterval" type="number" id="emailConfirmInterval" placeholder="Default: 10" value="10" />
+				<input class="form-control" data-field="emailConfirmInterval" type="number" id="emailConfirmInterval" placeholder="Default: 10"
+					value="10" />
 				<label for="emailConfirmInterval">[[admin/settings/user:email-confirm-email2]]</label>
 			</div>
 
@@ -104,12 +105,27 @@
 				<input id="lockoutDuration" type="text" class="form-control" data-field="lockoutDuration" placeholder="60" />
 			</div>
 			<div class="form-group">
-				<label>[[admin/settings/user:login-days]]</label>
-				<input type="text" class="form-control" data-field="loginDays" placeholder="14" />
-			</div>
-			<div class="form-group">
 				<label>[[admin/settings/user:password-expiry-days]]</label>
 				<input type="text" class="form-control" data-field="passwordExpiryDays" placeholder="0" />
+			</div>
+		</form>
+	</div>
+</div>
+
+<div class="row">
+	<div class="col-sm-2 col-xs-12 settings-header">Session time
+	</div>
+	<div class="col-sm-10 col-xs-12">
+		<form>
+			<div class="form-group">
+				<label>Days: </label>
+				<input type="text" class="form-control" data-field="loginDays" placeholder="Days" />
+				<label>Hours: </label>
+				<input type="text" class="form-control" data-field="loginHours" placeholder="Hours" />
+				<label>Minutes: </label>
+				<input type="text" class="form-control" data-field="loginMinutes" placeholder="Minutes" />
+				<label>Seconds: </label>
+				<input type="text" class="form-control" data-field="loginSeconds" placeholder="Seconds" />
 			</div>
 		</form>
 	</div>

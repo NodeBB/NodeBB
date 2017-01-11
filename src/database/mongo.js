@@ -129,11 +129,15 @@
 			var rdb = require('./redis');
 			rdb.client = rdb.connect();
 
-			var ttlDays = 1000 * 60 * 60 * 24 * (parseInt(meta.config.loginDays, 10) || 14);
+			var ttlDays = 1000 * 60 * 60 * 24 * (parseInt(meta.config.loginDays, 10) || 0);
+			var ttlHours = 1000 * 60 * 60 * (parseInt(meta.config.loginHours, 10) || 0);
+			var ttlMinutes = 1000 * 60 * (parseInt(meta.config.loginMinutes, 10) || 0);
+			var ttlSeconds = 1000 * (parseInt(meta.config.loginSeconds, 10) || 0);
+			var ttlTotal = (ttlDays + ttlHours + ttlMinutes + ttlSeconds) || 1209600000; // Default to 14 days
 
 			module.sessionStore = new sessionStore({
 				client: rdb.client,
-				ttl: ttlDays
+				ttl: ttlTotal
 			});
 		} else if (nconf.get('mongo')) {
 			sessionStore = require('connect-mongo')(session);
@@ -141,7 +145,7 @@
 				db: db
 			});
 		}
-		
+
 		callback();
 	};
 
