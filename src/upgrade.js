@@ -347,7 +347,7 @@ Upgrade.upgrade = function (callback) {
 
 								// Adding in another check here in case a post was improperly dismissed (flag count > 1 but no flags in db)
 								if (!data.uids.length || !data.reasons.length) {
-									setInterval(next);
+									return setImmediate(next);
 								}
 
 								// Just take the first entry
