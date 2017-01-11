@@ -345,6 +345,11 @@ Upgrade.upgrade = function (callback) {
 									return next(err);
 								}
 
+								// Adding in another check here in case a post was improperly dismissed (flag count > 1 but no flags in db)
+								if (!data.uids.length || !data.reasons.length) {
+									setInterval(next);
+								}
+
 								// Just take the first entry
 								var datetime = data.uids[0].score;
 								var reason = data.reasons[0].split(':')[1];
