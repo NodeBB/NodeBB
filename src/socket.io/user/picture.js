@@ -99,6 +99,9 @@ module.exports = function (SocketUser) {
 					uploadedpicture: '',
 					picture: userData.uploadedpicture === userData.picture ? '' : userData.picture	// if current picture is uploaded picture, reset to user icon
 				}, next);
+			},
+			function (next) {
+				plugins.fireHook('action:user.removeUploadedPicture', {callerUid: socket.uid, uid: data.uid});
 			}
 		], callback);
 	};
