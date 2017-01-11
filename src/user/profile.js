@@ -63,6 +63,7 @@ module.exports = function (User) {
 				}, next);
 			},
 			function (next) {
+				plugins.fireHook('action:user.updateProfile', {uid: uid, data: data, fields: fields, oldData: oldData});
 				User.getUserFields(updateUid, ['email', 'username', 'userslug', 'picture', 'icon:text', 'icon:bgColor'], next);
 			}
 		], callback);
