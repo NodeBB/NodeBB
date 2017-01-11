@@ -101,7 +101,7 @@ module.exports = function (SocketUser) {
 				}, next);
 			},
 			function (next) {
-				plugins.fireHook('action:user.removeUploadedPicture', {callerUid: socket.uid, uid: data.uid});
+				plugins.fireHook('action:user.removeUploadedPicture', {callerUid: socket.uid, uid: data.uid}, next);
 			}
 		], callback);
 	};
