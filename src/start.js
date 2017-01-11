@@ -40,7 +40,7 @@ start.start = function () {
 				next(err);
 			});
 		},
-		function(next) {
+		function (next) {
 			db.initSessionStore(next);
 		},
 		function (next) {
