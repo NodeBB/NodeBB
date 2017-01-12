@@ -470,8 +470,12 @@ Flags.update = function (flagId, uid, changeset, callback) {
 
 			// Save new object to db (upsert)
 			tasks.push(async.apply(db.setObject, 'flag:' + flagId, changeset));
+
 			// Append history
 			tasks.push(async.apply(Flags.appendHistory, flagId, uid, changeset));
+
+			// Fire plugin hook
+			tasks.push(async.apply(plugins.fireHook, 'action:flag.update', { changeset: changeset, uid: uid }));
 
 			async.parallel(tasks, function (err, data) {
 				return next(err);
