@@ -147,12 +147,15 @@ module.exports = function (Posts) {
 						db.sortedSetsRemove(['posts:pid', 'posts:flagged'], pid, next);
 					}
 				], function (err) {
-					if (err) {
-						return next(err);
-					}
-					plugins.fireHook('action:post.purge', {pid: pid, uid: uid});
-					db.delete('post:' + pid, next);
+					next(err);
 				});
+			},
+			function (next) {
+				Posts.getPostData(pid, next);
+			},
+			function (postData, next) {
+				plugins.fireHook('action:post.purge', {post: postData, uid: uid});
+				db.delete('post:' + pid, next);
 			}
 		], callback);
 	};
