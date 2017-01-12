@@ -81,7 +81,6 @@ define('admin/general/dashboard', ['semver', 'Chart', 'translator'], function (s
 
 		setupRealtimeButton();
 		setupGraphs();
-		initiateDashboard();
 	};
 
 	Admin.updateRoomUsage = function (err, data) {
@@ -299,6 +298,8 @@ define('admin/general/dashboard', ['semver', 'Chart', 'translator'], function (s
 				}
 				updateTrafficGraph($(this).attr('data-units'), until);
 			});
+
+			initiateDashboard();
 		});
 	}
 
