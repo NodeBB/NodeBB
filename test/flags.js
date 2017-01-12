@@ -80,6 +80,14 @@ describe('Flags', function () {
 				done();
 			});
 		});
+
+		it('should add the flag to the byPid zset for pid 1 if it is of type post', function (done) {
+			db.isSortedSetMember('flags:byPid:' + 1, 1, function (err, isMember) {
+				assert.ifError(err);
+				assert.ok(isMember);
+				done();
+			});
+		});
 	});
 
 	describe('.exists()', function () {
