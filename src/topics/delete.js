@@ -137,15 +137,18 @@ module.exports = function (Topics) {
 					function (next) {
 						reduceCounters(tid, next);
 					}
-				], next);
+				], function (err) {
+					next(err);
+				});
+			},
+			function (next) {
+				Topics.getTopicData(tid, next);
+			},
+			function (topicData, next) {
+				plugins.fireHook('action:topic.purge', {topic: topicData, uid: uid});
+				db.delete('topic:' + tid, next);
 			}
-		], function (err) {
-			if (err) {
-				return callback(err);
-			}
-			plugins.fireHook('action:topic.purge', tid);
-			db.delete('topic:' + tid, callback);
-		});
+		], callback);
 	};
 
 	function deleteFromFollowersIgnorers(tid, callback) {
