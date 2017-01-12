@@ -29,6 +29,7 @@ module.exports = function (Posts) {
 				topics.getTopicFields(_post.tid, ['tid', 'cid', 'pinned'], next);
 			},
 			function (topicData, next) {
+				postData.cid = topicData.cid;
 				async.parallel([
 					function (next) {
 						updateTopicTimestamp(topicData, next);
@@ -42,7 +43,7 @@ module.exports = function (Posts) {
 				], next);
 			},
 			function (results, next) {
-				plugins.fireHook('action:post.delete', {pid: pid, uid: uid});
+				plugins.fireHook('action:post.delete', {post: _.clone(postData), uid: uid});
 				next(null, postData);
 			}
 		], callback);
