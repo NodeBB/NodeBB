@@ -37,7 +37,6 @@ define('admin/general/dashboard', ['semver', 'Chart', 'translator'], function (s
 
 	Admin.init = function () {
 		app.enterRoom('admin');
-		socket.emit('admin.rooms.getAll', Admin.updateRoomUsage);
 
 		isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 
@@ -299,6 +298,7 @@ define('admin/general/dashboard', ['semver', 'Chart', 'translator'], function (s
 				updateTrafficGraph($(this).attr('data-units'), until);
 			});
 
+			socket.emit('admin.rooms.getAll', Admin.updateRoomUsage);
 			initiateDashboard();
 		});
 	}
