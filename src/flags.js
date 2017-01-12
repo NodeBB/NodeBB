@@ -475,7 +475,7 @@ Flags.update = function (flagId, uid, changeset, callback) {
 			tasks.push(async.apply(Flags.appendHistory, flagId, uid, changeset));
 
 			// Fire plugin hook
-			tasks.push(async.apply(plugins.fireHook, 'action:flag.update', { changeset: changeset, uid: uid }));
+			tasks.push(async.apply(plugins.fireHook, 'action:flag.update', { flagId: flagId, changeset: changeset, uid: uid }));
 
 			async.parallel(tasks, function (err, data) {
 				return next(err);
