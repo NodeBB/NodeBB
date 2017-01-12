@@ -1,5 +1,5 @@
 {
-	"alert.confirm-reload": "确认重新载入NodeBB？",
+	"alert.confirm-reload": "确认重启NodeBB？",
 	"alert.confirm-restart": "确认重启NodeBB？",
 
 	"acp-title": "%1 | NodeBB 管理员控制面板",
