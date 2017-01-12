@@ -1,8 +1,8 @@
 {
 	"x-b": "%1 b",
 	"x-mb": "%1 mb",
-	"uptime-seconds": "Uptime in Seconds",
-	"uptime-days": "Uptime in Days",
+	"uptime-seconds": "Saniyede Bir Çalışma Zamanı",
+	"uptime-days": "Günde Bir Çalışma Zamanı",
 
 	"mongo": "Mongo",
 	"mongo.version": "MongoDB Version",
