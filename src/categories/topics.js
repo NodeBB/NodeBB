@@ -28,7 +28,7 @@ module.exports = function (Categories) {
 					topics[i].index = data.start + i;
 				}
 
-				plugins.fireHook('filter:category.topics.get', {topics: topics, uid: data.uid}, next);
+				plugins.fireHook('filter:category.topics.get', {cid: data.cid, topics: topics, uid: data.uid}, next);
 			},
 			function (results, next) {
 				next(null, {topics: results.topics, nextStart: data.stop + 1});

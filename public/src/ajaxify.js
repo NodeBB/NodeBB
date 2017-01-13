@@ -67,9 +67,7 @@ $(document).ready(function () {
 			apiXHR.abort();
 		}
 
-		if (!window.location.pathname.match(/\/(403|404)$/g)) {
-			app.previousUrl = window.location.href;
-		}
+		app.previousUrl = window.location.href;
 
 		url = ajaxify.start(url);
 
