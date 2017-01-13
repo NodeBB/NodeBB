@@ -9,8 +9,6 @@ var winston = require('winston');
 var nconf = require('nconf');
 var _ = require('underscore');
 var file = require('../file');
-
-var utils = require('../../public/src/utils');
 var meta = require('../meta');
 
 
@@ -93,9 +91,6 @@ module.exports = function (Plugins) {
 				function (next) {
 					mapClientModules(pluginData, next);
 				},
-				function (next) {
-					loadLanguages(pluginData, next);
-				}
 			], function (err) {
 				if (err) {
 					winston.verbose('[plugins] Could not load plugin : ' + pluginData.id);
@@ -254,60 +249,6 @@ module.exports = function (Plugins) {
 		callback();
 	}
 
-	function loadLanguages(pluginData, callback) {
-		if (typeof pluginData.languages !== 'string') {
-			return callback();
-		}
-
-		var pathToFolder = path.join(__dirname, '../../node_modules/', pluginData.id, pluginData.languages);
-		var defaultLang = (pluginData.defaultLang || 'en_GB').replace('_', '-').replace('@', '-x-');
-
-		utils.walk(pathToFolder, function (err, languages) {
-			if (err) {
-				return callback(err);
-			}
-
-			async.each(languages, function (pathToLang, next) {
-				fs.readFile(pathToLang, function (err, file) {
-					if (err) {
-						return next(err);
-					}
-					var data;
-					var language = path.dirname(pathToLang).split(/[\/\\]/).pop().replace('_', '-').replace('@', '-x-');
-					var namespace = path.basename(pathToLang, '.json');
-					var langNamespace = language + '/' + namespace;
-
-					try {
-						data = JSON.parse(file.toString());
-					} catch (err) {
-						winston.error('[plugins] Unable to parse custom language file: ' + pathToLang + '\r\n' + err.stack);
-						return next(err);
-					}
-
-					Plugins.customLanguages[langNamespace] = Plugins.customLanguages[langNamespace] || {};
-					Object.assign(Plugins.customLanguages[langNamespace], data);
-
-					if (defaultLang && defaultLang === language) {
-						Plugins.languageCodes.filter(function (lang) {
-							return defaultLang !== lang;
-						}).forEach(function (lang) {
-							var langNS = lang + '/' + namespace;
-							Plugins.customLanguages[langNS] = Object.assign(Plugins.customLanguages[langNS] || {}, data);
-						});
-					}
-
-					next();
-				});
-			}, function (err) {
-				if (err) {
-					return callback(err);
-				}
-
-				callback();
-			});
-		});
-	}
-
 	function resolveModulePath(fullPath, relPath) {
 		/**
 		  * With npm@3, dependencies can become flattened, and appear at the root level.
@@ -365,6 +306,7 @@ module.exports = function (Plugins) {
 
 				return callback(new Error('[[error:parse-error]]'));
 			}
+
 			callback(null, pluginData);
 		});
 	};

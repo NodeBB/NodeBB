@@ -5,7 +5,7 @@ var winston = require('winston');
 
 var buildStart;
 
-var valid = ['js', 'clientCSS', 'acpCSS', 'tpl'];
+var valid = ['js', 'clientCSS', 'acpCSS', 'tpl', 'lang'];
 
 exports.buildAll = function (callback) {
 	exports.build(valid.join(','), callback);
@@ -87,6 +87,12 @@ exports.buildTargets = function (targets, callback) {
 						winston.info('[build] Building templates');
 						startTime = Date.now();
 						meta.templates.compile(step.bind(this, startTime, target, next));
+						break;
+					
+					case 'lang':
+						winston.info('[build] Building language files');
+						startTime = Date.now();
+						meta.languages.build(step.bind(this, startTime, target, next));
 						break;
 
 					default:

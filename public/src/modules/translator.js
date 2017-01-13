@@ -3,7 +3,7 @@
 (function (factory) {
 	'use strict';
 	function loadClient(language, namespace) {
-		return Promise.resolve(jQuery.getJSON(config.relative_path + '/api/language/' + language + '/' + namespace));
+		return Promise.resolve(jQuery.getJSON(config.relative_path + '/public/language/' + language + '/' + namespace + '.json'));
 	}
 	var warn = function () {};
 	if (typeof config === 'object' && config.environment === 'development') {
@@ -17,7 +17,6 @@
 	} else if (typeof module === 'object' && module.exports) {
 		// Node
 		(function () {
-			require('promise-polyfill');
 			var languages = require('../../../src/languages');
 
 			if (global.env === 'development') {
@@ -292,7 +291,7 @@
 				warn('[translator] Parameter `namespace` is ' + namespace + (namespace === '' ? '(empty string)' : ''));
 				translation = Promise.resolve({});
 			} else {
-				translation = this.translations[namespace] = this.translations[namespace] || this.load(this.lang, namespace);
+				translation = this.translations[namespace] = this.translations[namespace] || this.load(this.lang, namespace).catch(function () { return {}; });
 			}
 
 			if (key) {

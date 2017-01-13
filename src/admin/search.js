@@ -5,7 +5,6 @@ var path = require('path');
 var async = require('async');
 var sanitizeHTML = require('sanitize-html');
 
-var languages = require('../languages');
 var utils = require('../../public/src/utils');
 var Translator = require('../../public/src/modules/translator').Translator;
 
@@ -107,6 +106,8 @@ function fallback(namespace, callback) {
 }
 
 function initDict(language, callback) {
+	var translator = Translator.create(language);
+
 	getAdminNamespaces(function (err, namespaces) {
 		if (err) {
 			return callback(err);
@@ -115,7 +116,9 @@ function initDict(language, callback) {
 		async.map(namespaces, function (namespace, cb) {
 			async.waterfall([
 				function (next) {
-					languages.get(language, namespace, next);
+					translator.getTranslation(namespace).then(function (translations) {
+						next(null, translations);
+					}, next);
 				},
 				function (translations, next) {
 					if (!translations || !Object.keys(translations).length) {
@@ -139,7 +142,7 @@ function initDict(language, callback) {
 							title[1] + '/' + title[2] + ']]') : '');
 					}
 
-					Translator.create(language).translate(title).then(function (title) {
+					translator.translate(title).then(function (title) {
 						next(null, {
 							namespace: namespace,
 							translations: str + '\n' + title,

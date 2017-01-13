@@ -351,7 +351,6 @@ Controllers.ping = function (req, res) {
 
 Controllers.handle404 = function (req, res) {
 	var relativePath = nconf.get('relative_path');
-	var isLanguage = new RegExp('^' + relativePath + '/api/language/.*/.*');
 	var isClientScript = new RegExp('^' + relativePath + '\\/src\\/.+\\.js');
 
 	if (plugins.hasListeners('action:meta.override404')) {
@@ -364,8 +363,6 @@ Controllers.handle404 = function (req, res) {
 
 	if (isClientScript.test(req.url)) {
 		res.type('text/javascript').status(200).send('');
-	} else if (isLanguage.test(req.url)) {
-		res.status(200).json({});
 	} else if (req.path.startsWith(relativePath + '/uploads') || (req.get('accept') && req.get('accept').indexOf('text/html') === -1) || req.path === '/favicon.ico') {
 		meta.errors.log404(req.path || '');
 		res.sendStatus(404);

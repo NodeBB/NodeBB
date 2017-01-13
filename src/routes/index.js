@@ -144,7 +144,17 @@ module.exports = function (app, middleware, hotswapIds) {
 	}
 
 	app.use(middleware.privateUploads);
-	app.use(relativePath + '/api/language/:language/(([a-zA-Z0-9\\-_.\\/]+))', middleware.getTranslation);
+	app.use(relativePath + '/public/language', express.static(path.join(__dirname, '../../', 'build/public/language'), {
+		maxAge: app.enabled('cache') ? 5184000000 : 0
+	}));
+
+	// DEPRECATED
+	app.use(relativePath + '/api/language', function (req, res) {
+		winston.warn('[deprecated] Accessing language files from `/api/language` is deprecated. ' + 
+			'Use `/public/language/[langCode]/[namespace].json` for prefetch paths.');
+		res.redirect(relativePath + '/public/language' + req.path + '.json');
+	});
+
 	app.use(relativePath, express.static(path.join(__dirname, '../../', 'public'), {
 		maxAge: app.enabled('cache') ? 5184000000 : 0
 	}));
