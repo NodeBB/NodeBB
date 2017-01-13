@@ -272,7 +272,7 @@ module.exports = function (Topics) {
 				db.sortedSetsRemove([
 					'cid:' + topicData.cid + ':tids',
 					'cid:' + topicData.cid + ':tids:pinned',
-					'cid:' + topicData.cid + ':tids:posts'
+					'cid:' + topicData.cid + ':tids:posts'	// post count
 				], tid, next);
 			},
 			function (next) {
