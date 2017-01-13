@@ -18,7 +18,7 @@ function filterDirectories(directories) {
 		// exclude category.tpl, group.tpl, category-analytics.tpl
 		return !dir.includes('/partials/') &&
 			/\/.*\//.test(dir) &&
-			!/category|group|category\-analytics$/.test(dir);
+			!/manage\/(category|group|category\-analytics)$/.test(dir);
 	});
 }
 
