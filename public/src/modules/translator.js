@@ -3,7 +3,7 @@
 (function (factory) {
 	'use strict';
 	function loadClient(language, namespace) {
-		return Promise.resolve(jQuery.getJSON(config.relative_path + '/public/language/' + language + '/' + namespace + '.json?' + config['cache-buster']));
+		return Promise.resolve(jQuery.getJSON(config.relative_path + '/assets/language/' + language + '/' + namespace + '.json?' + config['cache-buster']));
 	}
 	var warn = function () {};
 	if (typeof config === 'object' && config.environment === 'development') {

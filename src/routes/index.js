@@ -4,6 +4,7 @@ var nconf = require('nconf');
 var winston = require('winston');
 var path = require('path');
 var async = require('async');
+var meta = require('../meta');
 var controllers = require('../controllers');
 var plugins = require('../plugins');
 var user = require('../user');
@@ -144,15 +145,15 @@ module.exports = function (app, middleware, hotswapIds) {
 	}
 
 	app.use(middleware.privateUploads);
-	app.use(relativePath + '/public', express.static(path.join(__dirname, '../../', 'build/public'), {
+	app.use(relativePath + '/assets', express.static(path.join(__dirname, '../../', 'build/public'), {
 		maxAge: app.enabled('cache') ? 5184000000 : 0
 	}));
 
 	// DEPRECATED
 	app.use(relativePath + '/api/language', function (req, res) {
 		winston.warn('[deprecated] Accessing language files from `/api/language` is deprecated. ' + 
-			'Use `/public/language/[langCode]/[namespace].json` for prefetch paths.');
-		res.redirect(relativePath + '/public/language' + req.path + '.json');
+			'Use `/assets/language/[langCode]/[namespace].json` for prefetch paths.');
+		res.redirect(relativePath + '/assets/language' + req.path + '.json?' + meta.config['cache-buster']);
 	});
 
 	app.use(relativePath, express.static(path.join(__dirname, '../../', 'public'), {
