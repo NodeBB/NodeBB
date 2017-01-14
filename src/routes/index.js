@@ -144,7 +144,7 @@ module.exports = function (app, middleware, hotswapIds) {
 	}
 
 	app.use(middleware.privateUploads);
-	app.use(relativePath + '/public/language', express.static(path.join(__dirname, '../../', 'build/public/language'), {
+	app.use(relativePath + '/public', express.static(path.join(__dirname, '../../', 'build/public'), {
 		maxAge: app.enabled('cache') ? 5184000000 : 0
 	}));
 

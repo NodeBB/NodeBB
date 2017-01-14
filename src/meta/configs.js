@@ -21,7 +21,7 @@ module.exports = function (Meta) {
 				Meta.configs.list(next);
 			},
 			function (config, next) {
-				config['cache-buster'] = utils.generateUUID();
+				config['cache-buster'] = 'v=' + utils.generateUUID();
 
 				Meta.config = config;
 				setImmediate(next);
