@@ -54,7 +54,8 @@ module.exports = function (Plugins) {
 					async.parallel([
 						async.apply(mapFiles, pluginData, 'css', 'cssFiles'),
 						async.apply(mapFiles, pluginData, 'less', 'lessFiles'),
-						async.apply(mapClientSideScripts, pluginData)
+						async.apply(mapClientSideScripts, pluginData),
+						async.apply(mapClientModules, pluginData),
 					], next);
 				}, next);
 			}

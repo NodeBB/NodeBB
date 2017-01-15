@@ -45,7 +45,7 @@ server.on('error', function (err) {
 	winston.error(err);
 	if (err.code === 'EADDRINUSE') {
 		winston.error('NodeBB address in use, exiting...');
-		process.exit(0);
+		process.exit(1);
 	} else {
 		throw err;
 	}

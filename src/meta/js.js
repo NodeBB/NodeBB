@@ -4,9 +4,11 @@ var winston = require('winston');
 var fork = require('child_process').fork;
 var path = require('path');
 var async = require('async');
-var nconf = require('nconf');
 var fs = require('fs');
 var mkdirp = require('mkdirp');
+var rimraf = require('rimraf');
+
+var file = require('../file');
 var plugins = require('../plugins');
 var utils = require('../../public/src/utils');
 
@@ -88,19 +90,10 @@ module.exports = function (Meta) {
 	};
 	
 	Meta.js.linkModules = function (callback) {
-		function link(filePath, destPath, cb) {
-			if (process.platform === 'win32') {
-				fs.link(filePath, destPath, cb);
-			} else {
-				fs.symlink(filePath, destPath, 'file', cb);
-			}
-		}
-
-		plugins.reload(function (err) {
+		rimraf(path.join(__dirname, '../../build/public/src/modules'), function (err) {
 			if (err) {
 				return callback(err);
 			}
-			
 			async.each(Object.keys(Meta.js.scripts.modules), function (relPath, next) {
 				var filePath = path.join(__dirname, '../../', Meta.js.scripts.modules[relPath]);
 				var destPath = path.join(__dirname, '../../build/public/src/modules', relPath);
@@ -110,7 +103,7 @@ module.exports = function (Meta) {
 						return next(err);
 					}
 
-					link(filePath, destPath, next);
+					file.link(filePath, destPath, next);
 				});
 			}, callback);
 		});
@@ -143,12 +136,7 @@ module.exports = function (Meta) {
 				winston.verbose('[meta/js] ' + target + ' minification complete');
 				minifier.kill();
 
-				if (nconf.get('local-assets') === undefined || nconf.get('local-assets') !== false) {
-					return Meta.js.commitToFile(target, callback);
-				} else {
-					return callback();
-				}
-
+				Meta.js.commitToFile(target, callback);
 				break;
 			case 'error':
 				winston.error('[meta/js] Could not compile ' + target + ': ' + message.message);

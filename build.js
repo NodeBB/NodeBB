@@ -46,7 +46,11 @@ exports.buildTargets = function (targets, callback) {
 	var meta = require('./src/meta');
 	buildStart = buildStart || Date.now();
 
-	var step = function (startTime, target, next) {
+	var step = function (startTime, target, next, err) {
+		if (err) {
+			winston.error('Build failed: ' + err.message);
+			process.exit(1);
+		}
 		winston.info('[build] ' + target + ' => Completed in ' + ((Date.now() - startTime) / 1000) + 's');
 		next();
 	};
@@ -75,13 +79,13 @@ exports.buildTargets = function (targets, callback) {
 					case 'clientCSS':
 						winston.info('[build] Building client-side CSS');
 						startTime = Date.now();
-						meta.css.minify('stylesheet.css', step.bind(this, startTime, target, next));
+						meta.css.minify('client', step.bind(this, startTime, target, next));
 						break;
 
 					case 'acpCSS':
 						winston.info('[build] Building admin control panel CSS');
 						startTime = Date.now();
-						meta.css.minify('admin.css', step.bind(this, startTime, target, next));
+						meta.css.minify('admin', step.bind(this, startTime, target, next));
 						break;
 
 					case 'tpl':

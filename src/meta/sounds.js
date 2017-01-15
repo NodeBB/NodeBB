@@ -8,6 +8,7 @@ var rimraf = require('rimraf');
 var mkdirp = require('mkdirp');
 var async = require('async');
 
+var file = require('../file');
 var plugins = require('../plugins');
 var db = require('../database');
 
@@ -107,21 +108,6 @@ module.exports = function (Meta) {
 						return;
 					}
 
-					if (nconf.get('local-assets') === false) {
-						// Don't regenerate the public/sounds/ directory. Instead, create a mapping for the router to use
-						Meta.sounds._filePathHash = filePaths.reduce(function (hash, filePath) {
-							hash[path.basename(filePath)] = filePath;
-							return hash;
-						}, {});
-
-						winston.verbose('[sounds] Sounds OK');
-						if (typeof next === 'function') {
-							return next();
-						} else {
-							return;
-						}
-					}
-
 					// Clear the sounds directory
 					async.series([
 						function (next) {
@@ -138,11 +124,7 @@ module.exports = function (Meta) {
 
 						// Link paths
 						async.each(filePaths, function (filePath, next) {
-							if (process.platform === 'win32') {
-								fs.link(filePath, path.join(soundsPath, path.basename(filePath)), next);
-							} else {
-								fs.symlink(filePath, path.join(soundsPath, path.basename(filePath)), 'file', next);
-							}
+							file.link(filePath, path.join(soundsPath, path.basename(filePath)), next);
 						}, function (err) {
 							if (!err) {
 								winston.verbose('[sounds] Sounds OK');

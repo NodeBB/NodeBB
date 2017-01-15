@@ -167,7 +167,8 @@ module.exports = function (app, middleware, hotswapIds) {
 		'/templates/',
 		'/src/',
 		'/images/',
-		// '/sounds/',
+		'/language/',
+		'/sounds/',
 	];
 	app.use(relativePath, function (req, res, next) {
 		if (deprecatedPaths.some(function (path) { return req.path.startsWith(path); })) {
