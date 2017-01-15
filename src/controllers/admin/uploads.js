@@ -105,7 +105,7 @@ uploadsController.uploadSound = function (req, res, next) {
 			return next(err);
 		}
 
-		var	soundsPath = path.join(__dirname, '../../../public/sounds'),
+		var	soundsPath = path.join(__dirname, '../../../build/public/sounds'),
 			filePath = path.join(__dirname, '../../../public/uploads/sounds', uploadedFile.name);
 
 		if (process.platform === 'win32') {

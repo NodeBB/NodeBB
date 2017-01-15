@@ -2,6 +2,7 @@
 
 
 var async = require('async');
+var nconf = require('nconf');
 var meta = require('../../meta');
 
 var settingsController = module.exports;
@@ -25,7 +26,7 @@ function renderEmail(req, res, next) {
 	var path = require('path');
 	var utils = require('../../../public/src/utils');
 
-	var emailsPath = path.join(__dirname, '../../../public/templates/emails');
+	var emailsPath = path.join(nconf.get('views_dir'), 'emails');
 
 	async.waterfall([
 		function (next) {

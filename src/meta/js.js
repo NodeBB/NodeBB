@@ -6,6 +6,7 @@ var path = require('path');
 var async = require('async');
 var nconf = require('nconf');
 var fs = require('fs');
+var mkdirp = require('mkdirp');
 var plugins = require('../plugins');
 var utils = require('../../public/src/utils');
 
@@ -85,30 +86,34 @@ module.exports = function (Meta) {
 			}
 		}
 	};
-
-	Meta.js.bridgeModules = function (app, callback) {
-		// Add routes for AMD-type modules to serve those files
-		function addRoute(relPath) {
-			var relativePath = nconf.get('relative_path');
-
-			app.get(relativePath + '/src/modules/' + relPath, function (req, res) {
-				return res.sendFile(path.join(__dirname, '../../', Meta.js.scripts.modules[relPath]), {
-					maxAge: app.enabled('cache') ? 5184000000 : 0
-				});
-			});
-		}
-
-		var numBridged = 0;
-
-		for(var relPath in Meta.js.scripts.modules) {
-			if (Meta.js.scripts.modules.hasOwnProperty(relPath)) {
-				addRoute(relPath);
-				++numBridged;
+	
+	Meta.js.linkModules = function (callback) {
+		function link(filePath, destPath, cb) {
+			if (process.platform === 'win32') {
+				fs.link(filePath, destPath, cb);
+			} else {
+				fs.symlink(filePath, destPath, 'file', cb);
 			}
 		}
 
-		winston.verbose('[meta/js] ' + numBridged + ' of ' + Object.keys(Meta.js.scripts.modules).length + ' modules bridged');
-		callback();
+		plugins.reload(function (err) {
+			if (err) {
+				return callback(err);
+			}
+			
+			async.each(Object.keys(Meta.js.scripts.modules), function (relPath, next) {
+				var filePath = path.join(__dirname, '../../', Meta.js.scripts.modules[relPath]);
+				var destPath = path.join(__dirname, '../../build/public/src/modules', relPath);
+
+				mkdirp(path.dirname(destPath), function (err) {
+					if (err) {
+						return next(err);
+					}
+
+					link(filePath, destPath, next);
+				});
+			}, callback);
+		});
 	};
 
 	Meta.js.minify = function (target, callback) {
@@ -202,45 +207,8 @@ module.exports = function (Meta) {
 	};
 
 	Meta.js.commitToFile = function (target, callback) {
-		fs.writeFile(path.join(__dirname, '../../public/' + target), Meta.js.target[target].cache, function (err) {
+		fs.writeFile(path.join(__dirname, '../../build/public/' + target), Meta.js.target[target].cache, function (err) {
 			callback(err);
-		});
-	};
-
-	Meta.js.getFromFile = function (target, callback) {
-		function readFile(filePath, next) {
-			fs.readFile(filePath, function (err, contents) {
-				if (err) {
-					if (err.code === 'ENOENT') {
-						if (!filePath.endsWith('.map')) {
-							winston.warn('[meta/js] ' + filePath + ' not found on disk, did you run ./nodebb build?');
-						}
-						return next(null, '');
-					}
-				}
-				next(err, contents);
-			});
-		}
-
-		var scriptPath = path.join(nconf.get('base_dir'), 'public/' + target);
-		var mapPath = path.join(nconf.get('base_dir'), 'public/' + target + '.map');
-
-		async.parallel({
-			script: function (next) {
-				readFile(scriptPath, next);
-			},
-			map: function (next) {
-				readFile(mapPath, next);
-			}
-		}, function (err, results) {
-			if (err) {
-				return callback(err);
-			}
-			Meta.js.target[target] = {
-				cache: results.script,
-				map: results.map
-			};
-			callback();
 		});
 	};
 

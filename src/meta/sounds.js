@@ -28,7 +28,7 @@ module.exports = function (Meta) {
 	Meta.sounds.getFiles = function (callback) {
 		async.waterfall([
 			function (next) {
-				fs.readdir(path.join(__dirname, '../../public/sounds'), next);
+				fs.readdir(path.join(__dirname, '../../build/public/sounds'), next);
 			},
 			function (sounds, next) {
 				fs.readdir(path.join(__dirname, '../../public/uploads/sounds'), function (err, uploaded) {
@@ -88,7 +88,7 @@ module.exports = function (Meta) {
 	};
 
 	function setupSounds(callback) {
-		var	soundsPath = path.join(__dirname, '../../public/sounds');
+		var	soundsPath = path.join(__dirname, '../../build/public/sounds');
 
 		async.waterfall([
 			function (next) {

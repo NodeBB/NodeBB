@@ -86,15 +86,6 @@ module.exports = function (Meta) {
 		});
 	};
 
-	Meta.css.getFromFile = function (callback) {
-		async.series([
-			async.apply(Meta.css.loadFile, path.join(__dirname, '../../public/stylesheet.css'), 'cache'),
-			async.apply(Meta.css.loadFile, path.join(__dirname, '../../public/admin.css'), 'acpCache')
-		], function (err) {
-			callback(err);
-		});
-	};
-
 	function getStyleSource(files, prefix, extension, callback) {
 		var	pluginDirectories = [],
 			source = '';
@@ -127,7 +118,7 @@ module.exports = function (Meta) {
 	Meta.css.commitToFile = function (filename, callback) {
 		var file = (filename === 'acpCache' ? 'admin' : 'stylesheet') + '.css';
 
-		fs.writeFile(path.join(__dirname, '../../public/' + file), Meta.css[filename], function (err) {
+		fs.writeFile(path.join(__dirname, '../../build/public/' + file), Meta.css[filename], function (err) {
 			if (!err) {
 				winston.verbose('[meta/css] ' + file + ' committed to disk.');
 			} else {
@@ -135,19 +126,6 @@ module.exports = function (Meta) {
 				process.exit(0);
 			}
 
-			callback();
-		});
-	};
-
-	Meta.css.loadFile = function (filePath, filename, callback) {
-		winston.verbose('[meta/css] Reading stylesheet ' + filePath.split('/').pop() + ' from file');
-
-		fs.readFile(filePath, function (err, file) {
-			if (err) {
-				return callback(err);
-			}
-
-			Meta.css[filename] = file;
 			callback();
 		});
 	};

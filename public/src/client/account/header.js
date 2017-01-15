@@ -84,7 +84,7 @@ define('forum/account/header', [
 					params: {uid: ajaxify.data.uid },
 					accept: '.png,.jpg,.bmp'
 				}, function (imageUrlOnServer) {
-					components.get('account/cover').css('background-image', 'url(' + imageUrlOnServer + '?v=' + Date.now() + ')');
+					components.get('account/cover').css('background-image', 'url(' + imageUrlOnServer + '?' + config['cache-buster'] + ')');
 				});
 			},
 			removeCover

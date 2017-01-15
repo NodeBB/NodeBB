@@ -4,6 +4,7 @@ var fs = require('fs');
 var path = require('path');
 var async = require('async');
 var sanitizeHTML = require('sanitize-html');
+var nconf = require('nconf');
 
 var utils = require('../../public/src/utils');
 var Translator = require('../../public/src/modules/translator').Translator;
@@ -23,7 +24,7 @@ function filterDirectories(directories) {
 }
 
 function getAdminNamespaces(callback) {
-	utils.walk(path.resolve(__dirname, '../../public/templates/admin'), function (err, directories) {
+	utils.walk(path.resolve(nconf.get('views_dir'), 'admin'), function (err, directories) {
 		if (err) {
 			return callback(err);
 		}
@@ -60,7 +61,7 @@ var fallbackCacheInProgress = {};
 var fallbackCache = {};
 
 function initFallback(namespace, callback) {
-	fs.readFile(path.resolve(__dirname, '../../public/templates/', namespace + '.tpl'), function (err, file) {
+	fs.readFile(path.resolve(nconf.get('views_dir'), namespace + '.tpl'), function (err, file) {
 		if (err) {
 			return callback(err);
 		}

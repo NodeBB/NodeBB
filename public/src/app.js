@@ -558,7 +558,7 @@ app.cacheBuster = null;
 
 		var scriptEl = document.createElement('script');
 		scriptEl.type = 'text/javascript';
-		scriptEl.src = config.relative_path + '/vendor/jquery/js/jquery-ui.js' + (app.cacheBuster ? '?v=' + app.cacheBuster : '');
+		scriptEl.src = config.relative_path + '/vendor/jquery/js/jquery-ui.js' + '?' + config['cache-buster'];
 		scriptEl.onload = callback;
 		document.head.appendChild(scriptEl);
 	};
@@ -625,7 +625,7 @@ app.cacheBuster = null;
 	app.loadProgressiveStylesheet = function () {
 		var linkEl = document.createElement('link');
 		linkEl.rel = 'stylesheet';
-		linkEl.href = config.relative_path + '/js-enabled.css';
+		linkEl.href = config.relative_path + '/assets/js-enabled.css';
 
 		document.head.appendChild(linkEl);
 	};
