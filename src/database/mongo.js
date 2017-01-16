@@ -9,7 +9,6 @@
 	var session = require('express-session');
 	var _ = require('underscore');
 	var semver = require('semver');
-	var meta = require('../meta');
 	var db;
 
 	_.mixin(require('underscore.deep'));
@@ -130,14 +129,12 @@
 			rdb.client = rdb.connect();
 
 			var ttlDays = 1000 * 60 * 60 * 24 * (parseInt(meta.config.loginDays, 10) || 0);
-			var ttlHours = 1000 * 60 * 60 * (parseInt(meta.config.loginHours, 10) || 0);
-			var ttlMinutes = 1000 * 60 * (parseInt(meta.config.loginMinutes, 10) || 0);
 			var ttlSeconds = 1000 * (parseInt(meta.config.loginSeconds, 10) || 0);
-			var ttlTotal = (ttlDays + ttlHours + ttlMinutes + ttlSeconds) || 1209600000; // Default to 14 days
+			var ttl = ttlSeconds || ttlDays || 1209600000; // Default to 14 days
 
 			module.sessionStore = new sessionStore({
 				client: rdb.client,
-				ttl: ttlTotal
+				ttl: ttl
 			});
 		} else if (nconf.get('mongo')) {
 			sessionStore = require('connect-mongo')(session);

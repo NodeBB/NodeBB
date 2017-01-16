@@ -113,19 +113,18 @@
 </div>
 
 <div class="row">
-	<div class="col-sm-2 col-xs-12 settings-header">Session time
+	<div class="col-sm-2 col-xs-12 settings-header">
+		Session time
 	</div>
 	<div class="col-sm-10 col-xs-12">
 		<form>
 			<div class="form-group">
 				<label>Days: </label>
 				<input type="text" class="form-control" data-field="loginDays" placeholder="Days" />
-				<label>Hours: </label>
-				<input type="text" class="form-control" data-field="loginHours" placeholder="Hours" />
-				<label>Minutes: </label>
-				<input type="text" class="form-control" data-field="loginMinutes" placeholder="Minutes" />
 				<label>Seconds: </label>
 				<input type="text" class="form-control" data-field="loginSeconds" placeholder="Seconds" />
+				<p class="help-block">Note that only one of these values will be used. If there is no <i>seconds</i> value we fall back to <i>days</i>. If
+					there is no <i>days</i> value we default to <i>14 days</i>.
 			</div>
 		</form>
 	</div>
