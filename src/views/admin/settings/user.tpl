@@ -20,7 +20,8 @@
 
 			<div class="form-group form-inline">
 				<label for="emailConfirmInterval">[[admin/settings/user:email-confirm-interval]]</label>
-				<input class="form-control" data-field="emailConfirmInterval" type="number" id="emailConfirmInterval" placeholder="Default: 10" value="10" />
+				<input class="form-control" data-field="emailConfirmInterval" type="number" id="emailConfirmInterval" placeholder="Default: 10"
+					value="10" />
 				<label for="emailConfirmInterval">[[admin/settings/user:email-confirm-email2]]</label>
 			</div>
 
@@ -104,12 +105,26 @@
 				<input id="lockoutDuration" type="text" class="form-control" data-field="lockoutDuration" placeholder="60" />
 			</div>
 			<div class="form-group">
-				<label>[[admin/settings/user:login-days]]</label>
-				<input type="text" class="form-control" data-field="loginDays" placeholder="14" />
-			</div>
-			<div class="form-group">
 				<label>[[admin/settings/user:password-expiry-days]]</label>
 				<input type="text" class="form-control" data-field="passwordExpiryDays" placeholder="0" />
+			</div>
+		</form>
+	</div>
+</div>
+
+<div class="row">
+	<div class="col-sm-2 col-xs-12 settings-header">
+		Session time
+	</div>
+	<div class="col-sm-10 col-xs-12">
+		<form>
+			<div class="form-group">
+				<label>Days: </label>
+				<input type="text" class="form-control" data-field="loginDays" placeholder="Days" />
+				<label>Seconds: </label>
+				<input type="text" class="form-control" data-field="loginSeconds" placeholder="Seconds" />
+				<p class="help-block">Note that only one of these values will be used. If there is no <i>seconds</i> value we fall back to <i>days</i>. If
+					there is no <i>days</i> value we default to <i>14 days</i>.</p>
 			</div>
 		</form>
 	</div>
