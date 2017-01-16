@@ -19,6 +19,7 @@ module.exports = function (Posts) {
 		var tid = data.tid;
 		var content = data.content.toString();
 		var timestamp = data.timestamp || Date.now();
+		var isMain = data.isMain || false;
 
 		if (!uid && parseInt(uid, 10) !== 0) {
 			return callback(new Error('[[error:invalid-uid]]'));
@@ -42,7 +43,8 @@ module.exports = function (Posts) {
 					'tid': tid,
 					'content': content,
 					'timestamp': timestamp,
-					'deleted': 0
+					'deleted': 0,
+					'isMain': isMain
 				};
 
 				if (data.toPid) {
