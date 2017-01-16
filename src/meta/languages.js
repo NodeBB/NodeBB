@@ -46,10 +46,10 @@ function getTranslationTree(callback) {
 						return;
 					}
 
-					if (!languages.includes(language)) {
+					if (languages.indexOf(language) === -1) {
 						languages.push(language);
 					}
-					if (!namespaces.includes(namespace)) {
+					if (namespaces.indexOf(namespace) === -1) {
 						namespaces.push(namespace);
 					}
 				});
