@@ -100,6 +100,9 @@
 			function (next) {
 				meta.configs.init(next);
 			},
+			function(next) {
+				db.initSessionStore(next);
+			},
 			function (next) {
 				meta.dependencies.check(next);
 			},
