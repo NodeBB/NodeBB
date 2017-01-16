@@ -139,7 +139,8 @@
 		} else if (nconf.get('mongo')) {
 			sessionStore = require('connect-mongo')(session);
 			module.sessionStore = new sessionStore({
-				db: db
+				db: db,
+				ttl: ttl
 			});
 		}
 
