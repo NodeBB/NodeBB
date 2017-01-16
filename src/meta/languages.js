@@ -14,17 +14,6 @@ var db = require('../database');
 var buildLanguagesPath = path.join(__dirname, '../../build/public/language');
 var	coreLanguagesPath = path.join(__dirname, '../../public/language');
 
-function extrude(languageDir, paths) {
-	return paths.map(function (p) {
-		var rel = p.split(languageDir)[1].split(/[\/\\]/).slice(1);
-		return {
-			language: rel.shift().replace('_', '-').replace('@', '-x-'),
-			namespace: rel.join('/').replace(/\.json$/, ''),
-			path: p,
-		};
-	});
-}
-
 function getTranslationTree(callback) {
 	async.waterfall([
 		function (next) {
@@ -45,65 +34,138 @@ function getTranslationTree(callback) {
 			async.map(paths, Plugins.loadPluginInfo, next);
 		},
 		function (plugins, next) {
-			async.parallel({
-				corePaths: function (cb) {
+			var languages = [], namespaces = [];
+
+			function extrude(languageDir, paths) {
+				paths.forEach(function (p) {
+					var rel = p.split(languageDir)[1].split(/[\/\\]/).slice(1);
+					var language = rel.shift().replace('_', '-').replace('@', '-x-');
+					var namespace = rel.join('/').replace(/\.json$/, '');
+
+					if (!language || !namespace) {
+						return;
+					}
+
+					if (!languages.includes(language)) {
+						languages.push(language);
+					}
+					if (!namespaces.includes(namespace)) {
+						namespaces.push(namespace);
+					}
+				});
+			}
+
+			plugins = plugins.filter(function (pluginData) {
+				return (typeof pluginData.languages === 'string');
+			});
+			async.parallel([
+				function (nxt) {
 					utils.walk(coreLanguagesPath, function (err, paths) {
 						if (err) {
-							return cb(err);
+							return nxt(err);
 						}
 
-						cb(null, extrude(coreLanguagesPath, paths));
+						extrude(coreLanguagesPath, paths);
+						nxt();
 					});
 				},
-				pluginPaths: function (nxt) {
-					plugins = plugins.filter(function (pluginData) {
-						return (typeof pluginData.languages === 'string');
-					});
-					async.map(plugins, function (pluginData, cb) {
+				function (nxt) {
+					async.each(plugins, function (pluginData, cb) {
 						var pathToFolder = path.join(__dirname, '../../node_modules/', pluginData.id, pluginData.languages);
 						utils.walk(pathToFolder, function (err, paths) {
 							if (err) {
 								return cb(err);
 							}
 
-							cb(null, extrude(pathToFolder, paths));
+							extrude(pathToFolder, paths);
+							cb();
 						});
 					}, nxt);
+				},
+			], function (err) {
+				if (err) {
+					return next(err);
 				}
-			}, next);
-		},
-		function (data, next) {
-			var paths = data.pluginPaths.concat.apply([], data.pluginPaths);
-			paths = data.corePaths.concat(paths);
-			paths = paths.filter(function (p) {
-				return p.language && p.namespace && p.path;
+
+				next(null, {
+					languages: languages,
+					namespaces: namespaces,
+					plugins: plugins,
+				});
 			});
+		},
+		function (ref, next) {
+			var languages = ref.languages;
+			var namespaces = ref.namespaces;
+			var plugins = ref.plugins;
 
 			var tree = {};
-			
-			async.eachLimit(paths, 1000, function (data, cb) {
-				fs.readFile(data.path, function (err, file) {
-					if (err) {
-						return cb(err);
-					}
 
-					try {
-						var obj = JSON.parse(file.toString());
+			async.eachLimit(languages, 10, function (lang, nxt) {
+				async.eachLimit(namespaces, 10, function (ns, cb) {
+					var translations = {};
+					async.series([
+						function (n) {
+							fs.readFile(path.join(coreLanguagesPath, lang, ns + '.json'), function (err, buffer) {
+								if (err) {
+									if (err.code === 'ENOENT') {
+										return n();
+									}
+									return n(err);
+								}
 
-						tree[data.language] = tree[data.language] || {};
-						tree[data.language][data.namespace] = tree[data.language][data.namespace] || {};
-						Object.assign(tree[data.language][data.namespace], obj);
-						
-						cb();
-					} catch (e) {
-						winston.warn('[build] Invalid JSON file at `' + data.path + '`');
-						cb();
-					}
-				});
+								try {
+									Object.assign(translations, JSON.parse(buffer.toString()));
+									n();
+								} catch (err) {
+									n(err);
+								}
+							});
+						},
+						function (n) {
+							async.eachLimit(plugins, 10, function (pluginData, call) {
+								var pluginLanguages = path.join(__dirname, '../../node_modules/', pluginData.id, pluginData.languages);
+								function tryLang(lang, onEnoent) {
+									fs.readFile(path.join(pluginLanguages, lang, ns + '.json'), function (err, buffer) {
+										if (err) {
+											if (err.code === 'ENOENT') {
+												return onEnoent();
+											}
+											return call(err);
+										}
+
+										try {
+											Object.assign(translations, JSON.parse(buffer.toString()));
+											call();
+										} catch (err) {
+											call(err);
+										}
+									});
+								}
+
+								tryLang(lang, function () {
+									tryLang(lang.replace('-', '_').replace('-x-', '@'), function () {
+										tryLang(pluginData.defaultLang, function () {
+											tryLang(pluginData.defaultLang.replace('-', '_').replace('-x-', '@'), call);
+										});
+									});
+								});
+							}, function (err) {
+								if (err) {
+									return n(err);
+								}
+
+								tree[lang] = tree[lang] || {};
+								tree[lang][ns] = translations;
+								n();
+							});
+						},
+					], cb);
+				}, nxt);
 			}, function (err) {
 				next(err, tree);
 			});
-		}
+		},
 	], callback);
 }
 
