@@ -43,8 +43,7 @@ module.exports = function (Posts) {
 					'tid': tid,
 					'content': content,
 					'timestamp': timestamp,
-					'deleted': 0,
-					'isMain': isMain
+					'deleted': 0
 				};
 
 				if (data.toPid) {
@@ -108,6 +107,7 @@ module.exports = function (Posts) {
 				});
 			},
 			function (postData, next) {
+				postData.isMain = isMain;
 				plugins.fireHook('action:post.save', _.clone(postData));
 				next(null, postData);
 			}
