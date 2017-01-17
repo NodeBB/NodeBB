@@ -22,8 +22,9 @@ require(['translator'], function (shim) {
 
 	var translator = shim.Translator.create();
 	var dialog = bootbox.dialog;
+	var attrsToTranslate = ['placeholder', 'title', 'value'];
 	bootbox.dialog = function (options) {
-		var show, $elem, nodes, text;
+		var show, $elem, nodes, text, attrNodes, attrText;
 
 		show = options.show !== false;
 		options.show = false;
@@ -36,9 +37,26 @@ require(['translator'], function (shim) {
 				return node.nodeValue;
 			}).join('  ||  ');
 
-			translator.translate(text).then(function (translated) {
+			attrNodes = attrsToTranslate.reduce(function (prev, attr) {
+				return prev.concat(nodes.map.call($elem.find('[' + attr + '*="[["]'), function (el) {
+					return [attr, el];
+				}));
+			}, []);
+			attrText = attrNodes.map(function (node) {
+				return node[1].getAttribute(node[0]);
+			}).join('  ||  ');
+
+			Promise.all([
+				translator.translate(text),
+				translator.translate(attrText),
+			]).then(function (ref) {
+				var translated = ref[0];
+				var translatedAttrs = ref[1];
 				translated.split('  ||  ').forEach(function (html, i) {
 					$(nodes[i]).replaceWith(html);
+				});
+				translatedAttrs.split('  ||  ').forEach(function (text, i) {
+					attrNodes[i][1].setAttribute(attrNodes[i][0], text);
 				});
 				if (show) {
 					$elem.modal('show');

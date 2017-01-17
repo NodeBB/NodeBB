@@ -131,7 +131,7 @@ var fallbackTransport;
 		data.from = data.from_name + '<' + data.from + '>';
 		delete data.from_name;
 
-		winston.verbose('[emailer] Sending email to uid ' + data.uid);
+		winston.verbose('[emailer] Sending email to uid ' + data.uid + ' (' + data.to + ')');
 		fallbackTransport.sendMail(data, function (err) {
 			if (err) {
 				winston.error(err);
