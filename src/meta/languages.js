@@ -16,6 +16,7 @@ var	coreLanguagesPath = path.join(__dirname, '../../public/language');
 
 function getTranslationTree(callback) {
 	async.waterfall([
+		// get plugin data
 		function (next) {
 			db.getSortedSetRange('plugins:active', 0, -1, next);
 		},
@@ -33,9 +34,12 @@ function getTranslationTree(callback) {
 		function (paths, next) {
 			async.map(paths, Plugins.loadPluginInfo, next);
 		},
+
+		// generate list of languages and namespaces
 		function (plugins, next) {
 			var languages = [], namespaces = [];
 
+			// pull languages and namespaces from paths
 			function extrude(languageDir, paths) {
 				paths.forEach(function (p) {
 					var rel = p.split(languageDir)[1].split(/[\/\\]/).slice(1);
@@ -59,6 +63,7 @@ function getTranslationTree(callback) {
 				return (typeof pluginData.languages === 'string');
 			});
 			async.parallel([
+				// get core languages and namespaces
 				function (nxt) {
 					utils.walk(coreLanguagesPath, function (err, paths) {
 						if (err) {
@@ -69,6 +74,7 @@ function getTranslationTree(callback) {
 						nxt();
 					});
 				},
+				// get plugin languages and namespaces
 				function (nxt) {
 					async.each(plugins, function (pluginData, cb) {
 						var pathToFolder = path.join(__dirname, '../../node_modules/', pluginData.id, pluginData.languages);
@@ -94,6 +100,10 @@ function getTranslationTree(callback) {
 				});
 			});
 		},
+
+		// for each language and namespace combination,
+		// run through core and all plugins to generate
+		// a full translation hash
 		function (ref, next) {
 			var languages = ref.languages;
 			var namespaces = ref.namespaces;
@@ -104,7 +114,9 @@ function getTranslationTree(callback) {
 			async.eachLimit(languages, 10, function (lang, nxt) {
 				async.eachLimit(namespaces, 10, function (ns, cb) {
 					var translations = {};
+
 					async.series([
+						// core first
 						function (n) {
 							fs.readFile(path.join(coreLanguagesPath, lang, ns + '.json'), function (err, buffer) {
 								if (err) {
@@ -123,6 +135,11 @@ function getTranslationTree(callback) {
 							});
 						},
 						function (n) {
+							// for each plugin, fallback in this order:
+							//  1. correct language string (en-GB)
+							//  2. old language string (en_GB)
+							//  3. plugin defaultLang (en-US)
+							//  4. old plugin defaultLang (en_US)
 							async.eachLimit(plugins, 10, function (pluginData, call) {
 								var pluginLanguages = path.join(__dirname, '../../node_modules/', pluginData.id, pluginData.languages);
 								function tryLang(lang, onEnoent) {
@@ -169,7 +186,9 @@ function getTranslationTree(callback) {
 	], callback);
 }
 
+// write translation hashes from the generated tree to language files
 function writeLanguageFiles(tree, callback) {
+	// iterate over languages and namespaces
 	async.eachLimit(Object.keys(tree), 10, function (language, cb) {
 		var namespaces = tree[language];
 		async.eachLimit(Object.keys(namespaces), 100, function (namespace, next) {
@@ -188,17 +207,15 @@ function writeLanguageFiles(tree, callback) {
 	}, callback);
 }
 
-module.exports = {
-	build: function buildLanguages(callback) {
-		async.waterfall([
-			getTranslationTree,
-			writeLanguageFiles,
-		], function (err) {
-			if (err) {
-				winston.error('[build] Language build failed');
-				throw err;
-			}
-			callback();
-		});
-	},
+exports.build = function buildLanguages(callback) {
+	async.waterfall([
+		getTranslationTree,
+		writeLanguageFiles,
+	], function (err) {
+		if (err) {
+			winston.error('[build] Language build failed: ' + err.message);
+			throw err;
+		}
+		callback();
+	});
 };
