@@ -31,6 +31,10 @@ module.exports = function (Posts) {
 					groupsData: async.apply(groups.getGroupsData, groupTitles),
 					userGroups: function (cb) {
 						groups.getUserGroups(uids, function (err, groups) {
+							if (err) {
+								return cb(err);
+							}
+
 							var allGroups = [];
 							groups.forEach(function (group, i) {
 								userGroupsMap[uids[i]] = group;

@@ -124,7 +124,7 @@ topicsController.get = function (req, res, callback) {
 
 			topics.modifyPostsByPrivilege(topicData, userPrivileges);
 
-			plugins.fireHook('filter:controllers.topic.get', {topicData: topicData, uid: req.uid}, next);
+			plugins.fireHook('filter:controllers.topic.get', { topicData: topicData, uid: req.uid }, next);
 		},
 		function (data, next) {
 
@@ -148,7 +148,7 @@ topicsController.get = function (req, res, callback) {
 		},
 		function (topicData, next) {
 			function findPost(index) {
-				for(var i = 0; i < topicData.posts.length; ++i) {
+				for (var i = 0; i < topicData.posts.length; ++i) {
 					if (parseInt(topicData.posts[i].index, 10) === parseInt(index, 10)) {
 						return topicData.posts[i];
 					}
@@ -316,7 +316,7 @@ topicsController.teaser = function (req, res, next) {
 			if (!pid) {
 				return res.status(404).json('not-found');
 			}
-			posts.getPostSummaryByPids([pid], req.uid, {stripTags: false}, next);
+			posts.getPostSummaryByPids([pid], req.uid, { stripTags: false }, next);
 		}
 	], function (err, posts) {
 		if (err) {
