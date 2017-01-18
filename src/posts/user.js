@@ -12,6 +12,7 @@ module.exports = function (Posts) {
 
 	Posts.getUserInfoForPosts = function (uids, uid, callback) {
 		var groupsMap = {};
+		var userGroupsMap = {};
 		var userData;
 		async.waterfall([
 			function (next) {
@@ -19,19 +20,35 @@ module.exports = function (Posts) {
 			},
 			function (_userData, next) {
 				userData = _userData;
+
 				var groupTitles = userData.map(function (userData) {
 					return userData && userData.groupTitle;
 				}).filter(function (groupTitle, index, array) {
 					return groupTitle && array.indexOf(groupTitle) === index;
 				});
-				groups.getGroupsData(groupTitles, next);
+
+				async.parallel({
+					groupsData: async.apply(groups.getGroupsData, groupTitles),
+					userGroups: function (cb) {
+						groups.getUserGroups(uids, function (err, groups) {
+							var allGroups = [];
+							groups.forEach(function (group, i) {
+								userGroupsMap[uids[i]] = group;
+								group.forEach(function (groupChild) {
+									allGroups.push(groupChild);
+								});
+							});
+							cb(null, userGroupsMap);
+						});
+					}
+				}, next);
 			}
-		], function (err, groupsData) {
+		], function (err, data) {
 			if (err) {
 				return callback(err);
 			}
 
-			groupsData.forEach(function (group) {
+			data.groupsData.forEach(function (group) {
 				if (group && group.userTitleEnabled) {
 					groupsMap[group.name] = {
 						name: group.name,
@@ -72,7 +89,7 @@ module.exports = function (Posts) {
 						Posts.parseSignature(userData, uid, next);
 					},
 					customProfileInfo: function (next) {
-						plugins.fireHook('filter:posts.custom_profile_info', {profile: [], uid: userData.uid}, next);
+						plugins.fireHook('filter:posts.custom_profile_info', { profile: [], uid: userData.uid }, next);
 					}
 				}, function (err, results) {
 					if (err) {
@@ -82,6 +99,8 @@ module.exports = function (Posts) {
 					if (results.isMemberOfGroup && userData.groupTitle && groupsMap[userData.groupTitle]) {
 						userData.selectedGroup = groupsMap[userData.groupTitle];
 					}
+
+					userData.allGroups = userGroupsMap[userData.uid];
 
 					userData.custom_profile_info = results.customProfileInfo.profile;
 
@@ -95,7 +114,7 @@ module.exports = function (Posts) {
 		uid = parseInt(uid, 10);
 		if (Array.isArray(pid)) {
 			if (!uid) {
-				return callback(null, pid.map(function () {return false;}));
+				return callback(null, pid.map(function () { return false; }));
 			}
 			Posts.getPostsFields(pid, ['uid'], function (err, posts) {
 				if (err) {
@@ -118,7 +137,7 @@ module.exports = function (Posts) {
 
 	Posts.isModerator = function (pids, uid, callback) {
 		if (!parseInt(uid, 10)) {
-			return callback(null, pids.map(function () {return false;}));
+			return callback(null, pids.map(function () { return false; }));
 		}
 		Posts.getCidsByPids(pids, function (err, cids) {
 			if (err) {

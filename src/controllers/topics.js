@@ -1,6 +1,5 @@
 "use strict";
 
-
 var async = require('async');
 var S = require('string');
 var nconf = require('nconf');
@@ -265,6 +264,7 @@ topicsController.get = function (req, res, callback) {
 		data.bookmarkThreshold = parseInt(meta.config.bookmarkThreshold, 10) || 5;
 		data.postEditDuration = parseInt(meta.config.postEditDuration, 10) || 0;
 		data.postDeleteDuration = parseInt(meta.config.postDeleteDuration, 10) || 0;
+		data.showMultipleBadges = parseInt(meta.config.showMultipleBadges, 10) === 1;
 		data.scrollToMyPost = settings.scrollToMyPost;
 		data.rssFeedUrl = nconf.get('relative_path') + '/topic/' + data.tid + '.rss';
 		data.pagination = pagination.create(currentPage, pageCount, req.query);
