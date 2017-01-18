@@ -432,12 +432,8 @@ var utils = require('../public/src/utils');
 				db.getSortedSetRevRange(set, 0, -1, next);
 			},
 			function (groupNames, next) {
-				var groupSets = groupNames.map(function (name) {
-					return 'group:' + name + ':members';
-				});
-
 				async.map(uids, function (uid, next) {
-					db.isMemberOfSortedSets(groupSets, uid, function (err, isMembers) {
+					Groups.isMemberOfGroups(uid, groupNames, function (err, isMembers) {
 						if (err) {
 							return next(err);
 						}
