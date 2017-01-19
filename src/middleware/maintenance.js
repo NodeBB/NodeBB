@@ -24,7 +24,7 @@ module.exports = function (middleware) {
 			'^/templates/[\\w/]+.tpl',
 			'^/api/login',
 			'^/api/widgets/render',
-			'^/api/language/.+',
+			'^/public/language',
 			'^/uploads/system/site-logo.png'
 		];
 

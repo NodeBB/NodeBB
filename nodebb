@@ -375,7 +375,7 @@ switch(process.argv[2]) {
 		async.series([
 			function (next) {
 				process.stdout.write('1. '.bold + 'Bringing base dependencies up to date... '.yellow);
-				require('child_process').execFile('/usr/bin/env', ['npm', 'i', '--production'], { stdio: 'ignore' }, next);
+				cproc.exec('npm i --production', { cwd: __dirname, stdio: 'ignore' }, next);
 			},
 			function (next) {
 				process.stdout.write('OK\n'.green);
