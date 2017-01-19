@@ -102,6 +102,9 @@ module.exports = function (grunt) {
 					'node_modules/nodebb-*/**/*.json',
 					'!node_modules/nodebb-*/node_modules/**',
 					'!node_modules/nodebb-*/.git/**',
+					'!node_modules/nodebb-*/plugin.json',
+					'!node_modules/nodebb-*/package.json',
+					'!node_modules/nodebb-*/theme.json',
 				],
 			},
 		}
