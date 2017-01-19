@@ -52,12 +52,16 @@ require(['translator'], function (shim) {
 			]).then(function (ref) {
 				var translated = ref[0];
 				var translatedAttrs = ref[1];
-				translated.split('  ||  ').forEach(function (html, i) {
-					$(nodes[i]).replaceWith(html);
-				});
-				translatedAttrs.split('  ||  ').forEach(function (text, i) {
-					attrNodes[i][1].setAttribute(attrNodes[i][0], text);
-				});
+				if (translated) {
+					translated.split('  ||  ').forEach(function (html, i) {
+						$(nodes[i]).replaceWith(html);
+					});
+				}
+				if (translatedAttrs) {
+					translatedAttrs.split('  ||  ').forEach(function (text, i) {
+						attrNodes[i][1].setAttribute(attrNodes[i][0], text);
+					});
+				}
 				if (show) {
 					$elem.modal('show');
 				}
