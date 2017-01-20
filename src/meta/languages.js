@@ -143,12 +143,13 @@ function getTranslationTree(callback) {
 							//  4. old plugin defaultLang (en_US)
 							async.eachLimit(plugins, 10, function (pluginData, call) {
 								var pluginLanguages = path.join(__dirname, '../../node_modules/', pluginData.id, pluginData.languages);
+								var defaultLang = pluginData.defaultLang || 'en-GB';
 
 								async.some([
 									lang,
 									lang.replace('-', '_').replace('-x-', '@'),
-									pluginData.defaultLang.replace('_', '-').replace('@', '-x-'),
-									pluginData.defaultLang.replace('-', '_').replace('-x-', '@'),
+									defaultLang.replace('_', '-').replace('@', '-x-'),
+									defaultLang.replace('-', '_').replace('-x-', '@'),
 								], function (language, next) {
 									fs.readFile(path.join(pluginLanguages, language, ns + '.json'), function (err, buffer) {
 										if (err) {
