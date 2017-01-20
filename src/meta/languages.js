@@ -5,6 +5,7 @@ var path = require('path');
 var async = require('async');
 var fs = require('fs');
 var mkdirp = require('mkdirp');
+var rimraf = require('rimraf');
 
 var file = require('../file');
 var utils = require('../../public/src/utils');
@@ -138,42 +139,42 @@ function getTranslationTree(callback) {
 							// for each plugin, fallback in this order:
 							//  1. correct language string (en-GB)
 							//  2. old language string (en_GB)
-							//  3. plugin defaultLang (en-US)
+							//  3. corrected plugin defaultLang (en-US)
 							//  4. old plugin defaultLang (en_US)
 							async.eachLimit(plugins, 10, function (pluginData, call) {
 								var pluginLanguages = path.join(__dirname, '../../node_modules/', pluginData.id, pluginData.languages);
-								function tryLang(lang, onEnoent) {
-									fs.readFile(path.join(pluginLanguages, lang, ns + '.json'), function (err, buffer) {
+
+								async.some([
+									lang,
+									lang.replace('-', '_').replace('-x-', '@'),
+									pluginData.defaultLang.replace('_', '-').replace('@', '-x-'),
+									pluginData.defaultLang.replace('-', '_').replace('-x-', '@'),
+								], function (language, next) {
+									fs.readFile(path.join(pluginLanguages, language, ns + '.json'), function (err, buffer) {
 										if (err) {
 											if (err.code === 'ENOENT') {
-												return onEnoent();
+												return next(null, false);
 											}
-											return call(err);
+											return next(err);
 										}
 
 										try {
 											Object.assign(translations, JSON.parse(buffer.toString()));
-											call();
+											next(null, true);
 										} catch (err) {
-											call(err);
+											next(err);
 										}
 									});
-								}
-
-								tryLang(lang, function () {
-									tryLang(lang.replace('-', '_').replace('-x-', '@'), function () {
-										tryLang(pluginData.defaultLang, function () {
-											tryLang(pluginData.defaultLang.replace('-', '_').replace('-x-', '@'), call);
-										});
-									});
-								});
+								}, call);
 							}, function (err) {
 								if (err) {
 									return n(err);
 								}
 
-								tree[lang] = tree[lang] || {};
-								tree[lang][ns] = translations;
+								if (Object.keys(translations).length) {
+									tree[lang] = tree[lang] || {};
+									tree[lang][ns] = translations;
+								}
 								n();
 							});
 						},
@@ -209,6 +210,9 @@ function writeLanguageFiles(tree, callback) {
 
 exports.build = function buildLanguages(callback) {
 	async.waterfall([
+		function (next) {
+			rimraf(buildLanguagesPath, next);
+		},
 		getTranslationTree,
 		writeLanguageFiles,
 	], function (err) {

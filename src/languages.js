@@ -52,7 +52,10 @@ Languages.list = function (callback) {
 						return next(err);
 					}
 					if (buffer) {
-						languages.push(JSON.parse(buffer.toString()));
+						var lang = JSON.parse(buffer.toString());
+						if (lang.name && lang.code && lang.dir) {
+							languages.push(lang);
+						}
 					}
 					next();
 				});
