@@ -207,23 +207,6 @@ middleware.applyBlacklist = function (req, res, next) {
 	});
 };
 
-middleware.getTranslation = function (req, res, next) {
-	var language = req.params.language;
-	var namespace = req.params[0];
-
-	if (language && namespace) {
-		languages.get(language, namespace, function (err, translations) {
-			if (err) {
-				return next(err);
-			}
-
-			res.status(200).json(translations);
-		});
-	} else {
-		res.status(404).json('{}');
-	}
-};
-
 middleware.processTimeagoLocales = function (req, res, next) {
 	var fallback = req.path.indexOf('-short') === -1 ? 'jquery.timeago.en.js' : 'jquery.timeago.en-short.js',
 		localPath = path.join(__dirname, '../../public/vendor/jquery/timeago/locales', req.path),
