@@ -1,8 +1,8 @@
 {
-	"name": "Group Name",
-	"description": "Group Description",
-	"system": "System Group",
-	"edit": "Edit",
+	"name": "小组名",
+	"description": "小组描述",
+	"system": "系统用户组",
+	"edit": "编辑",
 	"search-placeholder": "Search",
 	"create": "Create Group",
 	"description-placeholder": "A short description about your group",

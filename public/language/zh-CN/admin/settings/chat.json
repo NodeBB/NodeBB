@@ -1,8 +1,8 @@
 {
-	"chat-settings": "Chat Settings",
-	"disable": "Disable chat",
-	"disable-editing": "Disable chat message editing/deletion",
-	"disable-editing-help": "Administrators and global moderators are exempt from this restriction",
+	"chat-settings": "聊天设置",
+	"disable": "禁用聊天",
+	"disable-editing": "禁止编辑/删除聊天消息",
+	"disable-editing-help": "管理员和超级管理员不受此限制",
 	"max-length": "Maximum length of chat messages",
 	"max-room-size": "Maximum number of users in chat rooms",
 	"delay": "Time between chat messages in milliseconds"

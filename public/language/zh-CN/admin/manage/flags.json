@@ -1,8 +1,8 @@
 {
-	"daily": "Daily flags",
-	"by-user": "Flags by user",
-	"by-user-search": "Search flagged posts by username",
-	"category": "Category",
+	"daily": "日举报",
+	"by-user": "用户举报",
+	"by-user-search": "根据用户名搜索被举报帖子",
+	"category": "版块",
 	"sort-by": "Sort By",
 	"sort-by.most-flags": "Most Flags",
 	"sort-by.most-recent": "Most Recent",

@@ -1,7 +1,7 @@
 {
-	"general": "General",
-	"private-groups": "Private Groups",
-	"private-groups.help": "If enabled, joining of groups requires the approval of the group owner <em>(Default: enabled)</em>",
+	"general": "通用",
+	"private-groups": "私有组",
+	"private-groups.help": "启用此选项后，加入小组需要组长审批<em>（默认启用）</em>。",
 	"private-groups.warning": "<strong>Beware!</strong> If this option is disabled and you have private groups, they automatically become public.",
 	"allow-creation": "Allow Group Creation",
 	"allow-creation-help": "If enabled, users can create groups <em>(Default: disabled)</em>",

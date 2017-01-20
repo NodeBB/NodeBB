@@ -1,10 +1,10 @@
 {
-	"settings": "Category Settings",
-	"privileges": "Privileges",
+	"settings": "版块设置",
+	"privileges": "权限",
 
-	"name": "Category Name",
-	"description": "Category Description",
-	"bg-color": "Background Colour",
+	"name": "版块名",
+	"description": "版块描述",
+	"bg-color": "背景颜色",
 	"text-color": "Text Colour",
 	"bg-image-size": "Background Image Size",
 	"custom-class": "Custom Class",

@@ -1,8 +1,8 @@
 {
 	"sorting": "Post Sorting",
-	"sorting.post-default": "Default Post Sorting",
-	"sorting.oldest-to-newest": "Oldest to Newest",
-	"sorting.newest-to-oldest": "Newest to Oldest",
+	"sorting.post-default": "默认帖子排序",
+	"sorting.oldest-to-newest": "从旧到新",
+	"sorting.newest-to-oldest": "从新到旧",
 	"sorting.most-votes": "Most Votes",
 	"sorting.topic-default": "Default Topic Sorting",
 	"restrictions": "Posting Restrictions",

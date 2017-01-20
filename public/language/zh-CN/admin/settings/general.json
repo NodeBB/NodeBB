@@ -1,7 +1,7 @@
 {
-	"site-settings": "Site Settings",
-	"title": "Site Title",
-	"title.name": "Your Community Name",
+	"site-settings": "站点设置",
+	"title": "站点标题",
+	"title.name": "你的社区名",
 	"title.show-in-header": "Show Site Title in Header",
 	"browser-title": "Browser Title",
 	"browser-title-help": "If no browser title is specified, the site title will be used",

@@ -1,7 +1,7 @@
 {
-	"daily": "Daily flags",
-	"by-user": "Flags by user",
-	"by-user-search": "Search flagged posts by username",
+	"daily": "日付フラッグ",
+	"by-user": "ユーザーからのフラグ",
+	"by-user-search": "フラグを付けたユーザーを検索",
 	"category": "Category",
 	"sort-by": "Sort By",
 	"sort-by.most-flags": "Most Flags",

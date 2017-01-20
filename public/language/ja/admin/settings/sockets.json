@@ -1,5 +1,5 @@
 {
-    "reconnection": "Reconnection Settings",
+    "reconnection": "再接続の設定",
     "max-attempts": "Max Reconnection Attempts",
     "default-placeholder": "Default: %1",
     "delay": "Reconnection Delay"

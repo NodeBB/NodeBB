@@ -1,8 +1,8 @@
 {
-	"lead": "Configure your IP blacklist here.",
+	"lead": "在此配置IP黑名单",
 	"description": "Occasionally, a user account ban is not enough of a deterrant. Other times, restricting access to the forum to a specific IP or a range of IPs is the best way to protect a forum. In these scenarios, you can add troublesome IP addresses or entire CIDR blocks to this blacklist, and they will be prevented from logging in to or registering a new account.",
-	"active-rules": "Active Rules",
-	"validate": "Validate Blacklist",
+	"active-rules": "生效规则",
+	"validate": "验证黑名单",
 	"apply": "Apply Blacklist",
 	"hints": "Syntax Hints",
 	"hint-1": "Define a single IP addresses per line. You can add IP blocks as long as they follow the CIDR format (e.g. <code>192.168.100.0/22</code>).",

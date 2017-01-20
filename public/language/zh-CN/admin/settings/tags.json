@@ -1,8 +1,8 @@
 {
-    "tag": "Tag Settings",
-    "min-per-topic": "Minimum Tags per Topic",
-    "max-per-topic": "Maximum Tags per Topic",
-    "min-length": "Minimum Tag Length",
+    "tag": "标签设置",
+    "min-per-topic": "每个主题的最少标签数",
+    "max-per-topic": "每话题的最大标签数",
+    "min-length": "最短标签长度",
     "max-length": "Maximum Tag Length",
     "goto-manage": "Click here to visit the tag management page.",
     "privacy": "Privacy",

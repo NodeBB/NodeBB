@@ -1,7 +1,7 @@
 {
-	"email-settings": "Email Settings",
-	"address": "Email Address",
-	"address-help": "The following email address refers to the email that the recipient will see in the \"From\" and \"Reply To\" fields.",
+	"email-settings": "邮件设置",
+	"address": "电子邮箱地址",
+	"address-help": "下面的电子邮件地址代表收件人在“发件人”和“回复”中所看到的地址。",
 	"from": "From Name",
 	"from-help": "The from name to display in the email.",
 	"gmail-routing": "Gmail Routing",

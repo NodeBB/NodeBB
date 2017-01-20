@@ -1,8 +1,8 @@
 {
-	"authentication": "Authentication",
-	"allow-local-login": "Allow local login",
-	"require-email-confirmation": "Require Email Confirmation",
-	"email-confirm-interval": "User may not resend a confirmation email until",
+	"authentication": "验证",
+	"allow-local-login": "允许本地登录",
+	"require-email-confirmation": "需要邮件确认",
+	"email-confirm-interval": "用户无法重新发送确认直到",
 	"email-confirm-email2": "minutes have elapsed",
 	"allow-login-with": "Allow login with",
 	"allow-login-with.username-email": "Username or Email",

@@ -1,8 +1,8 @@
 {
-	"none": "Your forum does not have any topics with tags yet.",
-	"bg-color": "Background Colour",
-	"text-color": "Text Colour",
-	"create-modify": "Create & Modify Tags",
+	"none": "你的论坛目前没有带有标签的主题",
+	"bg-color": "背景颜色",
+	"text-color": "文字颜色",
+	"create-modify": "创建或修改标签",
 	"description": "Select tags via clicking and/or dragging, use shift to select multiple.",
 	"create": "Create Tag",
 	"modify": "Modify Tags",

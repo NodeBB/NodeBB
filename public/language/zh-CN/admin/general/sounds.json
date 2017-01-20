@@ -1,8 +1,8 @@
 {
-	"notifications": "Notifications",
-	"chat-messages": "Chat Messages",
+	"notifications": "通知",
+	"chat-messages": "聊天信息",
 	"play-sound": "Play",
-	"incoming-message": "Incoming Message",
+	"incoming-message": "收到新消息",
 	"outgoing-message": "Outgoing Message",
 	"upload-new-sound": "Upload New Sound",
 	"saved": "Settings Saved"

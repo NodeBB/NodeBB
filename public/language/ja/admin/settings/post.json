@@ -1,6 +1,6 @@
 {
-	"sorting": "Post Sorting",
-	"sorting.post-default": "Default Post Sorting",
+	"sorting": "投稿の並び順",
+	"sorting.post-default": "標準のポスト並び順",
 	"sorting.oldest-to-newest": "Oldest to Newest",
 	"sorting.newest-to-oldest": "Newest to Oldest",
 	"sorting.most-votes": "Most Votes",

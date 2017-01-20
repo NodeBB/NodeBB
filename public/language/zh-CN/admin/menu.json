@@ -1,9 +1,9 @@
 {
 	"section-general": "General",
-	"general/dashboard": "Dashboard",
-	"general/homepage": "Home Page",
-	"general/navigation": "Navigation",
-	"general/languages": "Languages",
+	"general/dashboard": "控制面板",
+	"general/homepage": "主页",
+	"general/navigation": "导航",
+	"general/languages": "语言",
 	"general/sounds": "Sounds",
 	"general/social": "Social",
 

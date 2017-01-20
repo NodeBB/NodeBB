@@ -1,8 +1,8 @@
 {
-	"users": "Users",
-	"edit": "Edit",
-	"make-admin": "Make Admin",
-	"remove-admin": "Remove Admin",
+	"users": "用户",
+	"edit": "编辑",
+	"make-admin": "设为管理",
+	"remove-admin": "取消管理员",
 	"validate-email": "Validate Email",
 	"send-validation-email": "Send Validation Email",
 	"password-reset-email": "Send Password Reset Email",

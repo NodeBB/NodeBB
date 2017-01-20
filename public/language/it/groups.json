@@ -51,7 +51,7 @@
     "membership.reject": "Rifiuta",
     "new-group.group_name": "Nome Gruppo:",
     "upload-group-cover": "Carica copertina del gruppo",
-    "bulk-invite-instructions": "Enter a list of comma separated usernames to invite to this group",
+    "bulk-invite-instructions": "Inserisci una lista di nomi utente da invitare in questo gruppo separati da virgole",
     "bulk-invite": "Bulk Invite",
-    "remove_group_cover_confirm": "Are you sure you want to remove the cover picture?"
+    "remove_group_cover_confirm": "Sei sicuro di voler rimuovere l'immagine copertina?"
 }
