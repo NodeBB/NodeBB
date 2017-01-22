@@ -19,14 +19,14 @@ dashboardController.get = function (req, res, next) {
 			var notices = [
 				{
 					done: !meta.reloadRequired,
-					doneText: 'Restart not required',
-					notDoneText:'Restart required'
+					doneText: '[[admin/general/dashboard:restart-not-required]]',
+					notDoneText:'[[admin/general/dashboard:restart-required]]'
 				},
 				{
 					done: plugins.hasListeners('filter:search.query'),
-					doneText: 'Search Plugin Installed',
-					notDoneText:'Search Plugin not installed',
-					tooltip: 'Install a search plugin from the plugin page in order to activate search functionality',
+					doneText: '[[admin/general/dashboard:search-plugin-installed]]',
+					notDoneText:'[[admin/general/dashboard:search-plugin-not-installed]]',
+					tooltip: '[[admin/general/dashboard:search-plugin-tooltip]]',
 					link:'/admin/extend/plugins'
 				}
 			];
@@ -62,10 +62,10 @@ function getStats(callback) {
 		if (err) {
 			return callback(err);
 		}
-		results[0].name = 'Unique Visitors';
-		results[1].name = 'Users';
-		results[2].name = 'Posts';
-		results[3].name = 'Topics';
+		results[0].name = '[[admin/general/dashboard:unique-visitors]]';
+		results[1].name = '[[admin/general/dashboard:users]]';
+		results[2].name = '[[admin/general/dashboard:posts]]';
+		results[3].name = '[[admin/general/dashboard:topics]]';
 
 		callback(null, results);
 	});
