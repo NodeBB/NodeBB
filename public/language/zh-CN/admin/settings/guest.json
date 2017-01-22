@@ -3,6 +3,6 @@
 	"handles.enabled": "Allow guest handles",
 	"handles.enabled-help": "这个选项将允许访客使用一个额外的输入框来设置发帖时的用户名，如果被禁用，仅会统一显示为“访客”",
 	"privileges": "访客权限",
-	"privileges.can-search": "Allow guests to search without logging in",
-	"privileges.can-search-users": "Allow guests to search users without logging in"
+	"privileges.can-search": "允许未登录的访客使用搜索",
+	"privileges.can-search-users": "允许未登录的访客查找用户"
 }
