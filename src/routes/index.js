@@ -15,7 +15,6 @@ var metaRoutes = require('./meta');
 var apiRoutes = require('./api');
 var adminRoutes = require('./admin');
 var feedRoutes = require('./feeds');
-var pluginRoutes = require('./plugins');
 var authRoutes = require('./authentication');
 var helpers = require('./helpers');
 
@@ -123,7 +122,6 @@ module.exports = function (app, middleware, hotswapIds) {
 	metaRoutes(router, middleware, controllers);
 	apiRoutes(router, middleware, controllers);
 	feedRoutes(router, middleware, controllers);
-	pluginRoutes(router, middleware, controllers);
 
 	mainRoutes(router, middleware, controllers);
 	topicRoutes(router, middleware, controllers);
@@ -150,6 +148,10 @@ module.exports = function (app, middleware, hotswapIds) {
 		maxAge: app.enabled('cache') ? 5184000000 : 0
 	}));
 	app.use(relativePath + '/assets', express.static(path.join(__dirname, '../../public'), {
+		maxAge: app.enabled('cache') ? 5184000000 : 0
+	}));
+	// TODO: deprecate?
+	app.use(relativePath + '/plugins', express.static(path.join(__dirname, '../../build/public/plugins'), {
 		maxAge: app.enabled('cache') ? 5184000000 : 0
 	}));
 

@@ -94,7 +94,7 @@ module.exports = function (Meta) {
 			if (err) {
 				return callback(err);
 			}
-			async.each(Object.keys(Meta.js.scripts.modules), function (relPath, next) {
+			async.eachLimit(Object.keys(Meta.js.scripts.modules), 1000, function (relPath, next) {
 				var filePath = path.join(__dirname, '../../', Meta.js.scripts.modules[relPath]);
 				var destPath = path.join(__dirname, '../../build/public/src/modules', relPath);
 
@@ -104,6 +104,26 @@ module.exports = function (Meta) {
 					}
 
 					file.link(filePath, destPath, next);
+				});
+			}, callback);
+		});
+	};
+
+	Meta.js.linkStatics = function (callback) {
+		rimraf(path.join(__dirname, '../../build/public/plugins'), function (err) {
+			if (err) {
+				return callback(err);
+			}
+			async.eachLimit(Object.keys(plugins.staticDirs), 1000, function (mappedPath, next) {
+				var sourceDir = plugins.staticDirs[mappedPath];
+				var destDir = path.join(__dirname, '../../build/public/plugins', mappedPath);
+
+				mkdirp(path.dirname(destDir), function (err) {
+					if (err) {
+						return next(err);
+					}
+
+					file.linkDirs(sourceDir, destDir, next);
 				});
 			}, callback);
 		});

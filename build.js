@@ -62,6 +62,7 @@ exports.buildTargets = function (targets, callback) {
 				var startTime = Date.now();
 				async.series([
 					meta.js.linkModules,
+					meta.js.linkStatics,
 					async.apply(meta.js.minify, 'nodebb.min.js'),
 					async.apply(meta.js.minify, 'acp.min.js')
 				], step.bind(this, startTime, 'js', next));
