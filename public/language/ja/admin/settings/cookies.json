@@ -1,7 +1,7 @@
 {
-	"eu-consent": "EU Consent",
-	"consent.enabled": "Enabled",
-	"consent.message": "Notification message",
+	"eu-consent": "EU承諾",
+	"consent.enabled": "有効",
+	"consent.message": "通知メッセージ",
 	"consent.acceptance": "Acceptance message",
 	"consent.link-text": "Policy Link Text",
 	"consent.blank-localised-default": "Leave blank to use NodeBB localised defaults",

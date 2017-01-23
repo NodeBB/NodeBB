@@ -1,11 +1,11 @@
 {
-	"post-cache": "Post Cache",
-	"posts-in-cache": "Posts in Cache",
-	"average-post-size": "Average Post Size",
-	"length-to-max": "Length / Max",
-	"percent-full": "%1% Full",
-	"post-cache-size": "Post Cache Size",
-	"items-in-cache": "Items in Cache",
-	"control-panel": "Control Panel",
-	"update-settings": "Update Cache Settings"
+	"post-cache": "投稿キャッシュ",
+	"posts-in-cache": "ポストにキャッシュがあります",
+	"average-post-size": "平均投稿サイズ",
+	"length-to-max": "長さ / 最大",
+	"percent-full": "%1% がフル",
+	"post-cache-size": "投稿キャッシュのサイズ",
+	"items-in-cache": "キャッシュ内のアイテム",
+	"control-panel": "コントロールパネル",
+	"update-settings": "キャッシュの設定を更新"
 }

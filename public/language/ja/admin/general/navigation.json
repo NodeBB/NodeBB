@@ -1,8 +1,8 @@
 {
-	"icon": "Icon:",
-	"change-icon": "change",
-	"route": "Route:",
-	"tooltip": "Tooltip:",
+	"icon": "アイコン:",
+	"change-icon": "変更",
+	"route": "ルート:",
+	"tooltip": "ツールチップ:",
 	"text": "Text:",
 	"text-class": "Text Class: <small>optional</small>",
 	"id": "ID: <small>optional</small>",

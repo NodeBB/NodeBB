@@ -1,8 +1,8 @@
 {
-	"section-general": "General",
-	"general/dashboard": "Dashboard",
-	"general/homepage": "Home Page",
-	"general/navigation": "Navigation",
+	"section-general": "一般",
+	"general/dashboard": "ダッシュボード",
+	"general/homepage": "ホームページ",
+	"general/navigation": "ナビゲーション",
 	"general/languages": "Languages",
 	"general/sounds": "Sounds",
 	"general/social": "Social",

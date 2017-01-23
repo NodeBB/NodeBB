@@ -1,9 +1,9 @@
 {
-	"queue": "Queue",
-	"description": "There are no users in the registration queue. <br> To enable this feature, go to <a href=\"%1\">Settings &rarr; User &rarr; User Registration</a> and set <strong>Registration Type</strong> to \"Admin Approval\".",
+	"queue": "队列",
+	"description": "注册队列里面没有用户。<br>要开启这项功能，请去<a href=\"%1\">设置 &rarr; 用户 &rarr; 用户注册</a> 并设置<strong>注册类型</strong>为“管理员批准”。",
 
-	"list.name": "Name",
-	"list.email": "Email",
+	"list.name": "姓名",
+	"list.email": "邮件",
 	"list.ip": "IP",
 	"list.time": "Time",
 	"list.username-spam": "Frequency: %1 Appears: %2 Confidence: %3",

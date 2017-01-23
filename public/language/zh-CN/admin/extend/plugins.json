@@ -20,7 +20,7 @@
 	"plugin-item.themes": "主题",
 	"plugin-item.deactivate": "停用",
 	"plugin-item.activate": "启用",
-	"plugin-item.install": "Install",
+	"plugin-item.install": "安装",
 	"plugin-item.uninstall": "卸载",
 	"plugin-item.settings": "设置",
 	"plugin-item.installed": "已安装",

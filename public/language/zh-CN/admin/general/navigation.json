@@ -1,27 +1,27 @@
 {
-	"icon": "Icon:",
-	"change-icon": "change",
-	"route": "Route:",
-	"tooltip": "Tooltip:",
-	"text": "Text:",
-	"text-class": "Text Class: <small>optional</small>",
-	"id": "ID: <small>optional</small>",
+	"icon": "图标:",
+	"change-icon": "更改",
+	"route": "路由:",
+	"tooltip": "提示:",
+	"text": "文本:",
+	"text-class": "文本分类:<small>可选</small>",
+	"id": "ID: <small>可选</small>",
 
-	"properties": "Properties:",
-	"only-admins": "Only display to Admins",
-	"only-global-mods-and-admins": "Only display to Global Moderators and Admins",
-	"only-logged-in": "Only display to logged in users",
-	"open-new-window": "Open in a new window",
+	"properties": "性能:",
+	"only-admins": "仅向管理员展示",
+	"only-global-mods-and-admins": "仅向全局版主及管理员展示",
+	"only-logged-in": "仅向已登录用户展示",
+	"open-new-window": "在新窗口中打开",
 
-	"installed-plugins-required": "Installed Plugins Required:",
-	"search-plugin": "Search plugin",
+	"installed-plugins-required": "安装该插件所需要：",
+	"search-plugin": "搜索插件",
 
-	"btn.delete": "Delete",
-	"btn.disable": "Disable",
-	"btn.enable": "Enable",
+	"btn.delete": "删除",
+	"btn.disable": "关闭",
+	"btn.enable": "激活",
 
-	"available-menu-items": "Available Menu Items",
-	"custom-route": "Custom Route",
-	"core": "core",
-	"plugin": "plugin"
+	"available-menu-items": "可用的菜单项目",
+	"custom-route": "定制路由",
+	"core": "核心",
+	"plugin": "插件"
 }

@@ -1,8 +1,8 @@
 {
-	"settings": "Category Settings",
-	"privileges": "Privileges",
+	"settings": "カテゴリー設定",
+	"privileges": "特権",
 
-	"name": "Category Name",
+	"name": "カテゴリー名",
 	"description": "Category Description",
 	"bg-color": "Background Colour",
 	"text-color": "Text Colour",

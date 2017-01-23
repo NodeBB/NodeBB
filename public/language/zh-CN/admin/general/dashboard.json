@@ -1,10 +1,10 @@
 {
 	"forum-traffic": "论坛流量",
-	"page-views": "页面察看",
+	"page-views": "PV数目",
 	"unique-visitors": "单一访客",
-	"page-views-last-month": "上个月页面察看",
-	"page-views-this-month": "本月页面察看",
-	"page-views-last-day": "过去24小时页面察看",
+	"page-views-last-month": "上个月PV数量",
+	"page-views-this-month": "本月PV数量",
+	"page-views-last-day": "过去24小时PV量",
 
 	"stats.day": "日",
 	"stats.week": "周",
