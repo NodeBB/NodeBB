@@ -104,7 +104,7 @@ module.exports = function (Posts) {
 						return next(err);
 					}
 
-					userData.allGroups = userGroupsMap[userData.uid];
+					userData.allGroups = userGroupsMap[userData.uid] || [];
 
 					if (results.isMemberOfGroup && userData.groupTitle && groupsMap[userData.groupTitle]) {
 						userData.selectedGroup = groupsMap[userData.groupTitle];
