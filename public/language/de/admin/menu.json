@@ -51,7 +51,7 @@
 	"section-plugins": "Plugins",
 	"extend/plugins.install": "Plugins installieren",
 
-	"section-advanced": "Überwachung",
+	"section-advanced": "System",
 	"advanced/database": "Datenbank",
 	"advanced/events": "Ereignisse",
 	"advanced/logs": "Protokoll",
