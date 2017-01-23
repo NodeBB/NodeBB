@@ -136,7 +136,7 @@ define('taskbar', function () {
 		$(window).trigger('action:taskbar.pushed', data);
 	}
 
-	taskbar.updateTitle = function(module, uuid, newTitle) {
+	taskbar.updateTitle = function (module, uuid, newTitle) {
 		taskbar.tasklist.find('[data-module="' + module + '"][data-uuid="' + uuid + '"] [component="taskbar/title"]').text(newTitle);
 	};
 
