@@ -15,7 +15,14 @@ module.exports = function (Messaging) {
 	Messaging.notifyQueue = {};	// Only used to notify a user of a new chat message, see Messaging.notifyUser
 
 	Messaging.notifyUsersInRoom = function (fromUid, roomId, messageObj) {
-		Messaging.getUidsInRoom(roomId, 0, -1, function (err, uids) {
+		async.parallel({
+			uids: function (next) {
+				Messaging.getUidsInRoom(roomId, 0, -1, next);
+			},
+			roomData: function (next) {
+				Messaging.getRoomData(roomId, next);
+			}
+		}, function (err, results) {
 			if (err) {
 				return;
 			}
@@ -23,9 +30,10 @@ module.exports = function (Messaging) {
 			var data = {
 				roomId: roomId,
 				fromUid: fromUid,
-				message: messageObj
+				message: messageObj,
+				roomName: results.roomData.roomName
 			};
-			uids.forEach(function (uid) {
+			results.uids.forEach(function (uid) {
 				data.self = parseInt(uid, 10) === parseInt(fromUid) ? 1 : 0;
 				Messaging.pushUnreadCount(uid);
 				sockets.in('uid_' + uid).emit('event:chats.receive', data);
@@ -43,7 +51,7 @@ module.exports = function (Messaging) {
 			}
 
 			queueObj.timeout = setTimeout(function () {
-				sendNotifications(fromUid, uids, roomId, queueObj.message, function (err) {
+				sendNotifications(fromUid, results.uids, roomId, queueObj.message, function (err) {
 					if (!err) {
 						delete Messaging.notifyQueue[fromUid + ':' + roomId];
 					}
