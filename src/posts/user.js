@@ -30,6 +30,10 @@ module.exports = function (Posts) {
 				async.parallel({
 					groupsData: async.apply(groups.getGroupsData, groupTitles),
 					userGroups: function (cb) {
+						if (parseInt(meta.config.showMultipleBadges, 10) !== 1) {
+							return cb(null, {});
+						}
+
 						groups.getUserGroups(uids, function (err, groups) {
 							if (err) {
 								return cb(err);
@@ -100,11 +104,19 @@ module.exports = function (Posts) {
 						return next(err);
 					}
 
+					userData.allGroups = userGroupsMap[userData.uid];
+
 					if (results.isMemberOfGroup && userData.groupTitle && groupsMap[userData.groupTitle]) {
 						userData.selectedGroup = groupsMap[userData.groupTitle];
-					}
 
-					userData.allGroups = userGroupsMap[userData.uid];
+						for (var i = 0; i < userData.allGroups.length; i++) {
+							if (userData.allGroups[i].name === userData.selectedGroup.name) {
+								userData.allGroups.splice(i, 1);
+								userData.allGroups.unshift(userData.selectedGroup);
+								break;
+							}
+						}
+					}
 
 					userData.custom_profile_info = results.customProfileInfo.profile;
 
