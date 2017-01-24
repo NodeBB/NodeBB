@@ -157,6 +157,11 @@ module.exports = function (app, middleware, hotswapIds) {
 		res.redirect(relativePath + '/assets/language' + req.path + '.json?' + meta.config['cache-buster']);
 	});
 
+	// stop 404's on `/assets/language` route
+	app.use(relativePath + '/assets/language', function (req, res) {
+		res.json({});
+	});
+
 	app.use(relativePath, express.static(path.join(__dirname, '../../', 'public'), {
 		maxAge: app.enabled('cache') ? 5184000000 : 0
 	}));
