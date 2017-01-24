@@ -44,6 +44,8 @@ exports.build = function build(targets, callback) {
 
 exports.buildTargets = function (targets, callback) {
 	var meta = require('./src/meta');
+	var cacheBuster = require('./src/meta/cacheBuster');
+
 	buildStart = buildStart || Date.now();
 
 	var step = function (startTime, target, next, err) {
@@ -114,14 +116,21 @@ exports.buildTargets = function (targets, callback) {
 			return process.exit(1);
 		}
 
-		var time = (Date.now() - buildStart) / 1000;
+		cacheBuster.write(function (err) {
+			if (err) {
+				winston.error('[build] Failed to write `cache-buster.conf`: ' + err.message);
+				return process.exit(1);
+			}
 
-		winston.info('[build] Asset compilation successful. Completed in ' + time + 's.');
+			var time = (Date.now() - buildStart) / 1000;
 
-		if (typeof callback === 'function') {
-			callback();
-		} else {
-			process.exit(0);
-		}
+			winston.info('[build] Asset compilation successful. Completed in ' + time + 's.');
+
+			if (typeof callback === 'function') {
+				callback();
+			} else {
+				process.exit(0);
+			}
+		});
 	});
 };
