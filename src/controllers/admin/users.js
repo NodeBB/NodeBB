@@ -128,7 +128,11 @@ function getUsers(set, section, min, max, req, res, next) {
 			if (byScore) {
 				db.sortedSetCount(set, min, max, next);
 			} else {
-				db.sortedSetCard(set, next);
+				if (set === 'users:banned' || set === 'users:notvalidated') {
+					db.sortedSetCard(set, next);
+				} else {
+					db.getObjectField('global', 'userCount', next);
+				}
 			}
 		},
 		users: function (next) {
