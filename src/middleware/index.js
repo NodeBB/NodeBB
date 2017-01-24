@@ -79,7 +79,7 @@ middleware.ensureSelfOrPrivileged = function (req, res, next) {
 		middleware.exposeUid prior to invoking this middleware.
 	*/
 	if (req.user) {
-		if (req.user.uid === res.locals.uid) {
+		if (parseInt(req.user.uid, 10) === parseInt(res.locals.uid, 10)) {
 			return next();
 		}
 
