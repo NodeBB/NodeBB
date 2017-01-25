@@ -8,7 +8,7 @@
 	"find-plugins": "Find Plugins",
 
 	"plugin-search": "Plugin Search",
-	"plugin-search-placeholder": "Search for plugin...",
+	"plugin-search-placeholder": "Hledat rozšíření…",
 	"reorder-plugins": "Re-order Plugins",
 	"order-active": "Order Active Plugins",
 	"dev-interested": "Interested in writing plugins for NodeBB?",
