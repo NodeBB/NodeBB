@@ -385,7 +385,14 @@ Upgrade.upgrade = function (callback) {
 											setImmediate(next);
 										}
 									}
-								], next);
+								], function (err) {
+									if (err && err.message === '[[error:already-flagged]]') {
+										// Already flagged, no need to parse, but not an error
+										next();
+									} else {
+										next(err);
+									}
+								});
 							});
 						}, next);
 					});
