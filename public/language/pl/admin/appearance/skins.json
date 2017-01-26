@@ -2,8 +2,8 @@
 	"loading": "Ładowania skórki...",
 	"homepage": "Strona główna",
 	"select-skin": "Wybierz Skórkę",
-	"current-skin": "Current Skin",
-	"skin-updated": "Skin Updated",
-	"applied-success": "%1 skin was succesfully applied",
-	"revert-success": "Skin reverted to base colours"
+	"current-skin": "Obecna skórka",
+	"skin-updated": "Skórka zaktualizowana",
+	"applied-success": "%1 skórki jest zachowana z powodzeniem",
+	"revert-success": "Skórka przywrócowana do pierwotnych kolorów"
 }
