@@ -50,7 +50,7 @@ module.exports = function (Plugins) {
 			},
 			function (next) {
 				meta.reloadRequired = true;
-				Plugins.fireHook(isActive ? 'action:plugin.deactivate' : 'action:plugin.activate', id);
+				Plugins.fireHook(isActive ? 'action:plugin.deactivate' : 'action:plugin.activate', {id: id});
 				next();
 			}
 		], function (err) {
@@ -95,7 +95,7 @@ module.exports = function (Plugins) {
 				Plugins.get(id, next);
 			},
 			function (pluginData, next) {
-				Plugins.fireHook('action:plugin.' + type, id);
+				Plugins.fireHook('action:plugin.' + type, {id: id, version: version});
 				next(null, pluginData);
 			}
 		], callback);

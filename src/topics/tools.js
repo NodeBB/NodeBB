@@ -114,18 +114,18 @@ module.exports = function (Topics) {
 	function toggleLock(tid, uid, lock, callback) {
 		callback = callback || function () {};
 
-		var cid;
+		var topicData;
 
 		async.waterfall([
 			function (next) {
-				Topics.getTopicField(tid, 'cid', next);
+				Topics.getTopicFields(tid, ['tid', 'uid', 'cid'], next);
 			},
-			function (_cid, next) {
-				cid = _cid;
-				if (!cid) {
+			function (_topicData, next) {
+				topicData = _topicData;
+				if (!topicData || !topicData.cid) {
 					return next(new Error('[[error:no-topic]]'));
 				}
-				privileges.categories.isAdminOrMod(cid, uid, next);
+				privileges.categories.isAdminOrMod(topicData.cid, uid, next);
 			},
 			function (isAdminOrMod, next) {
 				if (!isAdminOrMod) {
@@ -135,16 +135,11 @@ module.exports = function (Topics) {
 				Topics.setTopicField(tid, 'locked', lock ? 1 : 0, next);
 			},
 			function (next) {
-				var data = {
-					tid: tid,
-					isLocked: lock,
-					uid: uid,
-					cid: cid
-				};
+				topicData.isLocked = lock;
 
-				plugins.fireHook('action:topic.lock', data);
+				plugins.fireHook('action:topic.lock', {topic: _.clone(topicData), uid: uid});
 
-				next(null, data);
+				next(null, topicData);
 			}
 		], callback);
 	}
@@ -167,7 +162,7 @@ module.exports = function (Topics) {
 				if (!exists) {
 					return callback(new Error('[[error:no-topic]]'));
 				}
-				Topics.getTopicFields(tid, ['cid', 'lastposttime', 'postcount'], next);
+				Topics.getTopicFields(tid, ['uid', 'tid', 'cid', 'lastposttime', 'postcount'], next);
 			},
 			function (_topicData, next) {
 				topicData = _topicData;
@@ -198,16 +193,12 @@ module.exports = function (Topics) {
 				], next);
 			},
 			function (results, next) {
-				var data = {
-					tid: tid,
-					isPinned: pin,
-					uid: uid,
-					cid: topicData.cid
-				};
 
-				plugins.fireHook('action:topic.pin', data);
+				topicData.isPinned = pin;
 
-				next(null, data);
+				plugins.fireHook('action:topic.pin', {topic: _.clone(topicData), uid: uid});
+
+				next(null, topicData);
 			}
 		], callback);
 	}

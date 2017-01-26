@@ -168,10 +168,11 @@ SocketAdmin.config.setMultiple = function (socket, data, callback) {
 						key: field,
 						value: data[field]
 					};
-					plugins.fireHook('action:config.set', setting);
+
 					logger.monitorConfig({io: index.server}, setting);
 				}
 			}
+			plugins.fireHook('action:config.set', {settings: data});
 			setImmediate(next);
 		}
 	], callback);

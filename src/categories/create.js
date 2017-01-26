@@ -73,7 +73,7 @@ module.exports = function (Categories) {
 				next(null, category);
 			},
 			function (category, next) {
-				plugins.fireHook('action:category.create', category);
+				plugins.fireHook('action:category.create', {category: category});
 				next(null, category);
 			}
 		], callback);

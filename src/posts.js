@@ -156,7 +156,7 @@ var plugins = require('./plugins');
 				pid: pid
 			};
 			data[field] = value;
-			plugins.fireHook('action:post.setFields', data);
+			plugins.fireHook('action:post.setFields', {data: data});
 			callback();
 		});
 	};
@@ -167,7 +167,7 @@ var plugins = require('./plugins');
 				return callback(err);
 			}
 			data.pid = pid;
-			plugins.fireHook('action:post.setFields', data);
+			plugins.fireHook('action:post.setFields', {data: data});
 			callback();
 		});
 	};
