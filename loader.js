@@ -156,7 +156,7 @@ Loader.restart = function () {
 	nconf.remove('file');
 	nconf.use('file', { file: pathToConfig });
 
-	fs.readFile(pathToConfig, {encoding: 'utf-8'}, function(err, configFile) {
+	fs.readFile(pathToConfig, {encoding: 'utf-8'}, function (err, configFile) {
 		if (err) {
 			console.log('Error reading config : ' + err.message);
 			process.exit();
