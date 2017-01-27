@@ -3,16 +3,16 @@
 	"bg-color": "背景颜色",
 	"text-color": "文字颜色",
 	"create-modify": "创建或修改标签",
-	"description": "Select tags via clicking and/or dragging, use shift to select multiple.",
-	"create": "Create Tag",
-	"modify": "Modify Tags",
-	"delete": "Delete Selected Tags",
-	"search": "Search for tags...",
-	"settings": "Click <a href=\"%1\">here</a> to visit the tag settings page.",
-	"name": "Tag Name",
+	"description": "通过点击或拖动选择标签，按住shift进行多选。",
+	"create": "创建标签",
+	"modify": "修改标签",
+	"delete": "删除所选标签",
+	"search": "搜索标签...",
+	"settings": "点击<a href=\"%1\">此处</a> 访问标签设置页面。",
+	"name": "标签名",
 
-	"alerts.editing-multiple": "Editing multiple tags",
-	"alerts.editing-x": "Editing \"%1\" tag",
-	"alerts.confirm-delete": "Do you want to delete the selected tags?",
-	"alerts.update-success": "Tag Updated!"
+	"alerts.editing-multiple": "编辑多项标签",
+	"alerts.editing-x": "编辑 \"%1\" 标签",
+	"alerts.confirm-delete": "是否要删除所选标签？",
+	"alerts.update-success": "标签已更新！"
 }

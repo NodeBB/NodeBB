@@ -1,8 +1,8 @@
 {
 	"reputation": "声望设置",
 	"disable": "禁用声望系统",
-	"disable-down-voting": "Disable Down Voting",
-	"thresholds": "Activity Thresholds",
-	"min-rep-downvote": "Minimum reputation to downvote posts",
-	"min-rep-flag": "Minimum reputation to flag posts"
+	"disable-down-voting": "禁用 踩",
+	"thresholds": "活动阈值",
+	"min-rep-downvote": "能够投踩票的帖子所需要的最小声望",
+	"min-rep-flag": "举报帖子所需要的最小声望"
 }
