@@ -210,7 +210,9 @@ Messaging.getTeaser = function (uid, roomId, callback) {
 		},
 		function (user, next) {
 			teaser.user = user;
-			next(null, teaser);
+			plugins.fireHook('filter:messaging.getTeaser', { teaser: teaser }, function (err, data) {
+				next(err, data.teaser);
+			});
 		}
 	], callback);
 };
