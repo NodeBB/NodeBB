@@ -155,7 +155,7 @@
 
 					while (cursor + 2 <= len) {
 						sliced = str.slice(cursor, cursor + 2);
-						// found some text after the double bracket, 
+						// found some text after the double bracket,
 						// so this is probably a translation string
 						if (!textBeforeColonFound && validTextRegex.test(sliced[0])) {
 							textBeforeColonFound = true;
@@ -174,7 +174,7 @@
 							cursor += 1;
 						// a space or comma was found before the name
 						// this isn't a translation string, so back out
-						} else if (!(textBeforeColonFound && colonFound && textAfterColonFound && commaAfterNameFound) && 
+						} else if (!(textBeforeColonFound && colonFound && textAfterColonFound && commaAfterNameFound) &&
 								invalidTextRegex.test(sliced[0])) {
 							cursor += 1;
 							lastBreak -= 2;
@@ -272,7 +272,7 @@
 				}
 				var out = translated;
 				translatedArgs.forEach(function (arg, i) {
-					var escaped = arg.replace(/%/g, '&#37;').replace(/\\,/g, '&#44;');
+					var escaped = arg.replace(/%(?=\d)/g, '&#37;').replace(/\\,/g, '&#44;');
 					out = out.replace(new RegExp('%' + (i + 1), 'g'), escaped);
 				});
 				return out;
