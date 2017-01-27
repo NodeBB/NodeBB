@@ -51,7 +51,7 @@ module.exports = function (SocketTopics) {
 	SocketTopics.markCategoryTopicsRead = function (socket, cid, callback) {
 		async.waterfall([
 			function (next) {
-				topics.getUnreadTids(cid, socket.uid, '', next);
+				topics.getUnreadTids({cid: cid, uid: socket.uid, filter: ''}, next);
 			},
 			function (tids, next) {
 				SocketTopics.markAsRead(socket, tids, next);

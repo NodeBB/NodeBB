@@ -445,7 +445,7 @@ describe('Topic\'s', function () {
 						assert.equal(pinnedTids[1], tid2);
 						done();
 					});
-				});			
+				});
 			});
 		});
 
@@ -482,7 +482,7 @@ describe('Topic\'s', function () {
 					topics.ignore( newTid, uid, done );
 				},
 				function (done) {
-					topics.getUnreadTopics(0, uid, 0, -1, '', done );
+					topics.getUnreadTopics({cid: 0, uid: uid, start: 0, stop: -1, filter: ''}, done );
 				},
 				function (results, done) {
 					var topics = results.topics;
@@ -526,7 +526,7 @@ describe('Topic\'s', function () {
 					topics.follow( newTid, uid, done );
 				},
 				function (done) {
-					topics.getUnreadTopics(0, uid, 0, -1, '', done );
+					topics.getUnreadTopics({cid: 0, uid: uid, start: 0, stop: -1, filter: ''}, done );
 				},
 				function (results, done) {
 					var topics = results.topics;
@@ -546,7 +546,7 @@ describe('Topic\'s', function () {
 					topics.follow( newTid, uid, done );
 				},
 				function (done) {
-					topics.getUnreadTopics(0, uid, 0, -1, '', done );
+					topics.getUnreadTopics({cid: 0, uid: uid, start: 0, stop: -1, filter: ''}, done );
 				},
 				function (results, done) {
 					var topics = results.topics;
