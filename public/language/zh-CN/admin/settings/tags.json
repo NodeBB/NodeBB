@@ -3,10 +3,10 @@
     "min-per-topic": "每个主题的最少标签数",
     "max-per-topic": "每话题的最大标签数",
     "min-length": "最短标签长度",
-    "max-length": "Maximum Tag Length",
-    "goto-manage": "Click here to visit the tag management page.",
-    "privacy": "Privacy",
-    "list-private": "Make the tags list private",
-    "related-topics": "Related Topics",
-    "max-related-topics": "Maximum related topics to display (if supported by theme)"
+    "max-length": "最长标签长度",
+    "goto-manage": "点击这里访问标签管理页面。",
+    "privacy": "隐私",
+    "list-private": "使标签列表私有化",
+    "related-topics": "相关主题",
+    "max-related-topics": "最大相关主题显示量(如果主题支持)"
 }

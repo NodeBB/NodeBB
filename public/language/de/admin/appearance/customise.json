@@ -1,9 +1,9 @@
 {
-	"custom-css": "Custom CSS",
-	"custom-css.description": "Enter your own CSS declarations here, which will be applied after all other styles.",
-	"custom-css.enable": "Enable Custom CSS",
+	"custom-css": "Benutzerdefiniertes CSS",
+	"custom-css.description": "Füge hier deine eigenen CSS-Eigenschaften ein, sie werden als letztes angewendet.",
+	"custom-css.enable": "Aktiviere benutzerdefiniertes CSS",
 
-	"custom-header": "Custom Header",
-	"custom-header.description": "Enter custom HTML here (ex. JavaScript, Meta Tags, etc.), which will be appended to the <code>&lt;head&gt;</code> section of your forum's markup.",
-	"custom-header.enable": "Enable Custom Header"
+	"custom-header": "Benutzerdefinierter Kopfbereich",
+	"custom-header.description": "Füge hier dein benutzerdefiniertes HTML (z.B. Javascript, Meta Tags, usw.) ein, welches vor dem <code>&lt;head&gt;</code> Tag eingefügt wird.",
+	"custom-header.enable": "Aktiviere benutzerdefinierten Kopfbereich"
 }

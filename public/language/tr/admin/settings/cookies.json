@@ -5,7 +5,7 @@
 	"consent.acceptance": "Acceptance message",
 	"consent.link-text": "Policy Link Text",
 	"consent.blank-localised-default": "Leave blank to use NodeBB localised defaults",
-	"settings": "Settings",
+	"settings": "Ayarlar",
 	"cookie-domain": "Session cookie domain",
 	"blank-default": "Leave blank for default"
 }

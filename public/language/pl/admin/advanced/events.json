@@ -1,6 +1,6 @@
 {
 	"events": "Wydarzenia",
-	"no-events": "There are no events",
-	"control-panel": "Events Control Panel",
-	"delete-events": "Delete Events"
+	"no-events": "Brak zdarzeń",
+	"control-panel": "Panel zdarzeń",
+	"delete-events": "Usuń zdarzenia"
 }

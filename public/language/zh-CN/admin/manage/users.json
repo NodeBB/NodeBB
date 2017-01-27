@@ -65,7 +65,7 @@
 	"alerts.confirm-ban-multi": "你确定要<strong>永久</strong>封禁这些用户吗？",
 	"alerts.ban-success": "用户已封禁！",
 	"alerts.button-ban-x": "封禁 %1 名用户",
-	"alerts.unban-success": "用户已解封！",
+	"alerts.unban-success": "用户已解封!",
 	"alerts.lockout-reset-success": "闭锁已重置！",
 	"alerts.flag-reset-success": "标记已重置！",
 	"alerts.no-remove-yourself-admin": "你无法撤销自己的管理员身份！",

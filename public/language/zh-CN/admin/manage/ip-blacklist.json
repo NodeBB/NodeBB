@@ -1,15 +1,15 @@
 {
-	"lead": "在此配置IP黑名单",
-	"description": "Occasionally, a user account ban is not enough of a deterrant. Other times, restricting access to the forum to a specific IP or a range of IPs is the best way to protect a forum. In these scenarios, you can add troublesome IP addresses or entire CIDR blocks to this blacklist, and they will be prevented from logging in to or registering a new account.",
+	"lead": "在此配置 IP 黑名单",
+	"description": "有时，一份账号封禁并不足以作为威慑。更多的时候，限制有权浏览论坛的具体 IP 或者一个 IP 范围这一行为可以更好地保护论坛。在以上情况下，您可以添加一些令人厌恶者的 IP 地址或者 CIDR 地址块到此黑名单，此后他们（被加入黑名单者）将被阻止进行登录或者注册新账号的行为。",
 	"active-rules": "生效规则",
 	"validate": "验证黑名单",
-	"apply": "Apply Blacklist",
-	"hints": "Syntax Hints",
-	"hint-1": "Define a single IP addresses per line. You can add IP blocks as long as they follow the CIDR format (e.g. <code>192.168.100.0/22</code>).",
-	"hint-2": "You can add in comments by starting lines with the <code>#</code> symbol.",
+	"apply": "应用黑名单",
+	"hints": "格式建议",
+	"hint-1": "每行定义一个独立 IP 地址。您可以添加 IP 块，只要它们满足 CIDR 格式(e.g. <code>192.168.100.0/22</code>)。",
+	"hint-2": "您可以通过以<code>#</code>标志开头的行来添加注释。",
 
-	"validate.x-valid": "<strong>%1</strong> out of <strong>%2</strong> rule(s) valid.",
-	"validate.x-invalid": "The following <strong>%1</strong> rules are invalid:",
+	"validate.x-valid": "<strong>%1</strong> / <strong>%2</strong>的规则有效。",
+	"validate.x-invalid": "下列 <strong>%0</strong> 个规则无效：",
 
-	"alerts.applied-success": "Blacklist Applied"
+	"alerts.applied-success": "黑名单生效"
 }

@@ -1,7 +1,7 @@
 {
-	"alert.confirm-reload": "Are you sure you wish to reload NodeBB?",
-	"alert.confirm-restart": "Are you sure you wish to restart NodeBB?",
+	"alert.confirm-reload": "確認重載NodeBB？",
+	"alert.confirm-restart": "確認重啟NodeBB？",
 
-	"acp-title": "%1 | NodeBB Admin Control Panel",
-	"settings-header-contents": "Contents"
+	"acp-title": "%1 | NodeBB 管理控制面板",
+	"settings-header-contents": "内容"
 }
