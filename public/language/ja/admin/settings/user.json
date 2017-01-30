@@ -1,6 +1,6 @@
 {
 	"authentication": "認証",
-	"allow-local-login": "Allow local login",
+	"allow-local-login": "ローカルログインを有効にする",
 	"require-email-confirmation": "Eメールの確認が必要です",
 	"email-confirm-interval": "User may not resend a confirmation email until",
 	"email-confirm-email2": "minutes have elapsed",
