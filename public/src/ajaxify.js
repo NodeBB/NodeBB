@@ -93,10 +93,7 @@ $(document).ready(function () {
 			retry = true;
 			app.template = data.template.name;
 
-			require(['translator'], function (translator) {
-				translator.load(translator.getLanguage(), data.template.name);
-				renderTemplate(url, data.template.name, data, callback);
-			});
+			renderTemplate(url, data.template.name, data, callback);
 		});
 
 		return true;
