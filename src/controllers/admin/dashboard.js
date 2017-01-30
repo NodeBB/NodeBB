@@ -64,7 +64,7 @@ function getStats(callback) {
 		}
 		results[0].name = '[[admin/general/dashboard:unique-visitors]]';
 		results[1].name = '[[admin/general/dashboard:users]]';
-		results[2].name = '[[admin/general/dashboard:posts]';
+		results[2].name = '[[admin/general/dashboard:posts]]';
 		results[3].name = '[[admin/general/dashboard:topics]]';
 
 		callback(null, results);
