@@ -19,6 +19,7 @@
 
 "use strict";
 /*global require, global, process*/
+require('iisnodePlugin');
 
 var nconf = require('nconf');
 nconf.argv().env('__');
