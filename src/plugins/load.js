@@ -88,7 +88,7 @@ module.exports = function (Plugins) {
 				},
 				function (next) {
 					mapClientModules(pluginData, next);
-				},
+				}
 			], function (err) {
 				if (err) {
 					winston.verbose('[plugins] Could not load plugin : ' + pluginData.id);

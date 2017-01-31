@@ -50,8 +50,11 @@ module.exports = function (Plugins) {
 			},
 			function (next) {
 				meta.reloadRequired = true;
-				Plugins.fireHook(isActive ? 'action:plugin.deactivate' : 'action:plugin.activate', {id: id});
-				next();
+				if (isActive) {
+					Plugins.fireHook('action:plugin.deactivate', {id: id});
+				}
+
+				setImmediate(next);
 			}
 		], function (err) {
 			if (err) {
@@ -68,7 +71,6 @@ module.exports = function (Plugins) {
 	};
 
 	function toggleInstall(id, version, callback) {
-		var type;
 		var installed;
 		async.waterfall([
 			function (next) {
@@ -76,7 +78,6 @@ module.exports = function (Plugins) {
 			},
 			function (_installed, next) {
 				installed = _installed;
-				type = installed ? 'uninstall' : 'install';
 				Plugins.isActive(id, next);
 			},
 			function (active, next) {
@@ -86,17 +87,20 @@ module.exports = function (Plugins) {
 					});
 					return;
 				}
-				next();
+				setImmediate(next);
 			},
 			function (next) {
-				runNpmCommand(type, id, version || 'latest', next);
+				runNpmCommand(installed ? 'uninstall' : 'install', id, version || 'latest', next);
 			},
 			function (next) {
 				Plugins.get(id, next);
 			},
 			function (pluginData, next) {
-				Plugins.fireHook('action:plugin.' + type, {id: id, version: version});
-				next(null, pluginData);
+				if (installed) {
+					Plugins.fireHook('action:plugin.uninstall', {id: id, version: version});
+				}
+
+				setImmediate(next, null, pluginData);
 			}
 		], callback);
 	}
