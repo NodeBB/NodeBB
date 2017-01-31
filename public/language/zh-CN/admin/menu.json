@@ -8,11 +8,11 @@
 	"general/social": "社交",
 
 	"section-manage": "管理",
-	"manage/categories": "版面",
+	"manage/categories": "版块",
 	"manage/tags": "话题",
 	"manage/users": "用户",
 	"manage/registration": "注册队列",
-	"manage/groups": "小组",
+	"manage/groups": "用户组",
 	"manage/flags": "举报",
 	"manage/ip-blacklist": "IP黑名单",
 
@@ -21,7 +21,7 @@
 	"settings/reputation": "声望",
 	"settings/email": "邮件",
 	"settings/user": "用户",
-	"settings/group": "小组",
+	"settings/group": "用户组",
 	"settings/guest": "游客",
 	"settings/uploads": "上传",
 	"settings/post": "发帖",
@@ -30,7 +30,7 @@
 	"settings/tags": "话题",
 	"settings/notifications": "通知",
 	"settings/cookies": "Cookies",
-	"settings/web-crawler": "Web爬虫",
+	"settings/web-crawler": "Web 爬虫",
 	"settings/sockets": "套接字",
 	"settings/advanced": "高级",
 
@@ -39,7 +39,7 @@
 	"section-appearance": "界面",
 	"appearance/themes": "主题",
 	"appearance/skins": "皮肤",
-	"appearance/customise": "自定义HTML&CSS",
+	"appearance/customise": "自定义 HTML&CSS",
 
 	"section-extend": "扩展",
 	"extend/plugins": "插件",

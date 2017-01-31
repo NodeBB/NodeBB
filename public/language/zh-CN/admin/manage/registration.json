@@ -16,5 +16,5 @@
 	"invitations.invitee-email": "受邀请的电子邮箱",
 	"invitations.invitee-username": "受邀请的用户名(如果已经注册)",
 
-	"invitations.confirm-delete": "你确认你要删除这个邀请？"
+	"invitations.confirm-delete": "确认删除这个邀请？"
 } 

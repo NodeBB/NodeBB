@@ -35,9 +35,9 @@
 	"privileges.section-user": "用户",
 	"privileges.search-user": "添加用户",
 	"privileges.no-users": "此类别中没有用户特定的权限。",
-	"privileges.section-group": "小组",
-	"privileges.group-private": "这个小组是私密的",
-	"privileges.search-group": "添加小组",
+	"privileges.section-group": "用户组",
+	"privileges.group-private": "这个用户组是私密的",
+	"privileges.search-group": "添加用户组",
 	"privileges.copy-to-children": "复制到子版块",
 	"privileges.copy-from-category": "从板块复制",
 	"privileges.inherit": "如果 <code>registered-users</ code> 组被授予特定权限，所有其他组都会收到<strong>隐式权限</ strong>，即使它们未被明确定义/检查。 将显示此隐式权限，因为所有用户都是 <code>registered-users</ code> 用户组的一部分，因此无需显式授予其他组的权限。",
@@ -63,6 +63,6 @@
 	"alert.upload-image": "上传板块图片",
 	"alert.find-user": "查找用户",
 	"alert.user-search": "在这里查找用户…",
-	"alert.find-group": "查找小组",
-	"alert.group-search": "在此处搜索群组..."
+	"alert.find-group": "查找用户组",
+	"alert.group-search": "在此处搜索用户组..."
 }

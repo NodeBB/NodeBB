@@ -3,6 +3,6 @@
 	"disable": "禁用声望系统",
 	"disable-down-voting": "禁用 踩",
 	"thresholds": "活动阈值",
-	"min-rep-downvote": "能够投踩票的帖子所需要的最小声望",
-	"min-rep-flag": "举报帖子所需要的最小声望"
+	"min-rep-downvote": "踩帖子所需要声望的最小值",
+	"min-rep-flag": "举报帖子所需要声望的最小值"
 }

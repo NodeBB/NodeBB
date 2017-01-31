@@ -1,18 +1,18 @@
 {
-	"none": "你的论坛目前没有带有标签的主题",
+	"none": "你的论坛目前没有带有话题的主题",
 	"bg-color": "背景颜色",
 	"text-color": "文字颜色",
-	"create-modify": "创建或修改标签",
-	"description": "通过点击或拖动选择标签，按住shift进行多选。",
-	"create": "创建标签",
-	"modify": "修改标签",
-	"delete": "删除所选标签",
-	"search": "搜索标签...",
-	"settings": "点击<a href=\"%1\">此处</a> 访问标签设置页面。",
-	"name": "标签名",
+	"create-modify": "创建或修改话题",
+	"description": "通过点击或拖动选择话题，按住shift进行多选。",
+	"create": "创建话题",
+	"modify": "修改话题",
+	"delete": "删除所选话题",
+	"search": "搜索话题...",
+	"settings": "点击<a href=\"%1\">此处</a> 访问话题设置页面。",
+	"name": "话题名",
 
-	"alerts.editing-multiple": "编辑多项标签",
-	"alerts.editing-x": "编辑 \"%1\" 标签",
-	"alerts.confirm-delete": "是否要删除所选标签？",
-	"alerts.update-success": "标签已更新！"
+	"alerts.editing-multiple": "编辑多项话题",
+	"alerts.editing-x": "编辑 \"%1\" 话题",
+	"alerts.confirm-delete": "是否要删除所选话题？",
+	"alerts.update-success": "话题已更新！"
 }
