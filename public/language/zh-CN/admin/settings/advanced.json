@@ -6,14 +6,14 @@
 	"headers.allow-from": "设置 ALLOW-FROM 来放置 NodeBB 于 iFrame 中",
 	"headers.powered-by": "自定义由 NodeBB 发送的 \"Powered By\" 头部 ",
 	"headers.acao": "Access-Control-Allow-Origin",
-	"headers.acao-help": "要拒绝所有网站？在这留空 或者 设置成 <code>null</code>",
+	"headers.acao-help": "要拒绝所有网站访问？在这留空或者设置成 <code>null</code>",
 	"headers.acam": "Access-Control-Allow-Methods",
 	"headers.acah": "Access-Control-Allow-Headers",
-	"traffic-management": "交通管理",
-	"traffic.help": "NodeBB拥有在高流量情况下自动拒绝请求的模块。 您可以在这里调整这些设置，虽然默认值就很棒。",
-	"traffic.enable": "启用交通管理",
+	"traffic-management": "流量管理",
+	"traffic.help": "NodeBB 拥有在高流量情况下自动拒绝请求的模块。 您可以在这里调整这些设置，虽然默认值就很棒。",
+	"traffic.enable": "启用流量管理",
 	"traffic.event-lag": "事件循环滞后阈值（毫秒）",
 	"traffic.event-lag-help": "降低此值会减少页面加载的等待时间，但也会向更多用户显示“过载”消息。(需要重新启动)",
 	"traffic.lag-check-interval": "检查间隔（毫秒）",
-	"traffic.lag-check-interval-help": "降低此值会造成NodeBB的负载峰值变得更加敏感，但也可能导致检查变得过于敏感（需要重新启动）"
+	"traffic.lag-check-interval-help": "降低此值会造成 NodeBB 的负载峰值变得更加敏感，但也可能导致检查变得过于敏感（需要重新启动）"
 }

@@ -1,7 +1,7 @@
 {
 	"general": "通用",
-	"private-groups": "私有组",
-	"private-groups.help": "启用此选项后，加入小组需要组长审批<em>（默认启用）</em>。",
+	"private-groups": "私有用户组",
+	"private-groups.help": "启用此选项后，加入用户组需要组长审批<em>（默认启用）</em>。",
 	"private-groups.warning": "<strong>注意!</strong>如果这个选项未启用并且你有私有用户组，那么你的用户组将变为公共的。",
 	"allow-creation": "允许创建用户组",
 	"allow-creation-help": "如果启用，用户就可以创建用户组<em>(默认：不启用)</em>",

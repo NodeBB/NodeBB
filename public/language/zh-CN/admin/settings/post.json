@@ -21,7 +21,7 @@
 	"restrictions.stale-help": "如果某个主题被视为“过时”，则会向尝试回复该主题的用户显示警告。",
 	"timestamp": "时间戳",
 	"timestamp.cut-off": "日期截止日期 (天) ",
-	"timestamp.cut-off-help": "日期＆amp;时间将以相对方式 (例如，“3小时前”/“5天前”) 显示，并且被本地化为各种各样的\n\\t\\t\\t\\t\\t语言。在某一点之后，可以切换该文本以显示本地化日期本身\n\\t\\t\\t\\t\\t (例如2016年11月5日15:30) 。<br /> <em> (默认值：<code> 30 </ code>或一个月) 。 设置为0可始终显示日期，留空以始终显示相对时间。</ em>",
+	"timestamp.cut-off-help": "日期&amp;时间将以相对方式 (例如，“3小时前” / “5天前”) 显示，并且被本地化为各种各样的\n\\t\\t\\t\\t\\t语言。在某一点之后，可以切换该文本以显示本地化日期本身\n\\t\\t\\t\\t\\t (例如2016年11月5日15:30) 。<br /> <em> (默认值：<code> 30 </code>或一个月) 。 设置为0可始终显示日期，留空以始终显示相对时间。</em>",
 	"teaser": "预览帖子",
 	"teaser.last-post": "最后&ndash; 显示最新的帖子，包括原帖，如果没有回复",
 	"teaser.last-reply": "最后&ndash; 显示最新回复，如果没有回复，则显示“无回复”占位符",
@@ -40,5 +40,5 @@
 	"composer.enable-plugin-help": "允许插件将内容添加到帮助选项卡",
 	"composer.custom-help": "自定义帮助文本",
 	"ip-tracking": "IP 跟踪",
-	"ip-tracking.each-post": "跟踪每个帖子的IP地址"
+	"ip-tracking.each-post": "跟踪每个帖子的 IP 地址"
 }
