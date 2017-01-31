@@ -450,10 +450,12 @@
 				return cb('');
 			}
 
-			Translator.create(lang).translate(text).then(function (output) {
-				return cb(output);
-			}).catch(function (err) {
+			Translator.create(lang).translate(text).catch(function (err) {
 				warn('Translation failed: ' + err.stack);
+			}).then(function (output) {
+				cb(output);
+			}).catch(function (err) {
+				console.error(err);
 			});
 		},
 
