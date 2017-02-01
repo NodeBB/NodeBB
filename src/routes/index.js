@@ -152,7 +152,7 @@ module.exports = function (app, middleware, hotswapIds) {
 	// DEPRECATED
 	app.use(relativePath + '/api/language', function (req, res) {
 		winston.warn('[deprecated] Accessing language files from `/api/language` is deprecated. ' + 
-			'Use `/assets/language/[langCode]/[namespace].json` for prefetch paths.');
+			'Use `/assets/language' + req.path + '.json` for prefetch paths.');
 		res.redirect(relativePath + '/assets/language' + req.path + '.json?' + meta.config['cache-buster']);
 	});
 
