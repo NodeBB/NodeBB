@@ -1,8 +1,8 @@
 {
 	"figure-x": "Figure %1",
-	"error-events-per-day": "<code>%1</code> events per day",
+	"error-events-per-day": "<code>%1</code> günlük olay",
 	"error.404": "404 Bulunamadı",
-	"error.503": "503 Service Unavailable",
+	"error.503": "503 Servis Kullanılamıyor",
 	"manage-error-log": "Manage Error Log",
 	"export-error-log": "Hata Kayıtlarını Dışarı Çıkar (CSV)",
 	"clear-error-log": "Hata Kayıtlarını Temizle",
