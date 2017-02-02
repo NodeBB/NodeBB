@@ -34,7 +34,7 @@
     "account/info": "Informácie o účte",
     "account/following": "Ľudia sledujúci %1",
     "account/followers": "Ľudia, ktorí sledujú %1",
-    "account/posts": "Príspevky vytvorené %1",
+    "account/posts": "Príspevky vytvorené užívateľom %1",
     "account/topics": "Témy vytvoril %1",
     "account/groups": "%1 skupiny",
     "account/bookmarks": "%1 príspevky v záložkach",

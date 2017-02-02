@@ -1,9 +1,9 @@
 {
-	"chat-settings": "Chat Settings",
-	"disable": "Disable chat",
-	"disable-editing": "Disable chat message editing/deletion",
-	"disable-editing-help": "Administrators and global moderators are exempt from this restriction",
-	"max-length": "Maximum length of chat messages",
-	"max-room-size": "Maximum number of users in chat rooms",
-	"delay": "Time between chat messages in milliseconds"
+	"chat-settings": "Configurações de Chat",
+	"disable": "Desabilitar o chat",
+	"disable-editing": "Desabilitar editar/apagar mensagem ",
+	"disable-editing-help": "Administradores e moderadores globais estão isentos desta restrição",
+	"max-length": "Tamanho máximo das mensagens de chat",
+	"max-room-size": "Número máximo de usuários nas salas de chat",
+	"delay": "Tempo entre mensagens de chat em milisegundos"
 }

@@ -1,8 +1,8 @@
 {
-	"reputation": "Reputation Settings",
-	"disable": "Disable Reputation System",
-	"disable-down-voting": "Disable Down Voting",
-	"thresholds": "Activity Thresholds",
-	"min-rep-downvote": "Minimum reputation to downvote posts",
-	"min-rep-flag": "Minimum reputation to flag posts"
+	"reputation": "声望设置",
+	"disable": "禁用声望系统",
+	"disable-down-voting": "禁用 踩",
+	"thresholds": "活动阈值",
+	"min-rep-downvote": "踩帖子所需要声望的最小值",
+	"min-rep-flag": "举报帖子所需要声望的最小值"
 }

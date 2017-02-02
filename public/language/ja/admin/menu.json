@@ -1,8 +1,8 @@
 {
-	"section-general": "General",
-	"general/dashboard": "Dashboard",
-	"general/homepage": "Home Page",
-	"general/navigation": "Navigation",
+	"section-general": "一般",
+	"general/dashboard": "ダッシュボード",
+	"general/homepage": "ホームページ",
+	"general/navigation": "ナビゲーション",
 	"general/languages": "Languages",
 	"general/sounds": "Sounds",
 	"general/social": "Social",
@@ -39,7 +39,7 @@
 	"section-appearance": "Appearance",
 	"appearance/themes": "Themes",
 	"appearance/skins": "Skins",
-	"appearance/customise": "Custom HTML &amp; CSS",
+	"appearance/customise": "Custom HTML & CSS",
 
 	"section-extend": "Extend",
 	"extend/plugins": "Plugins",

@@ -75,7 +75,7 @@
     "norecenttopics": "Geen recente onderwerpen",
     "recentposts": "Recente berichten",
     "recentips": "IP-adressen van recente gebruikers",
-    "moderator_tools": "Moderator Tools",
+    "moderator_tools": "Moderator gereedschappen",
     "away": "Afwezig",
     "dnd": "Niet storen",
     "invisible": "Onzichtbaar",
@@ -102,5 +102,6 @@
     "play": "Afspelen",
     "cookies.message": "Deze website gebruikt cookies om je ervan te verzekeren dat je de beste ervaring krijgt tijdens het gebruik van onze website.",
     "cookies.accept": "Begrepen",
-    "cookies.learn_more": "Meer"
+    "cookies.learn_more": "Meer",
+    "edited": "Edited"
 }

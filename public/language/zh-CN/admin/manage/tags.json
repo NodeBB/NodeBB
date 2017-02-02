@@ -1,18 +1,18 @@
 {
-	"none": "Your forum does not have any topics with tags yet.",
-	"bg-color": "Background Colour",
-	"text-color": "Text Colour",
-	"create-modify": "Create & Modify Tags",
-	"description": "Select tags via clicking and/or dragging, use shift to select multiple.",
-	"create": "Create Tag",
-	"modify": "Modify Tags",
-	"delete": "Delete Selected Tags",
-	"search": "Search for tags...",
-	"settings": "Click <a href=\"%1\">here</a> to visit the tag settings page.",
-	"name": "Tag Name",
+	"none": "你的论坛目前没有带有话题的主题",
+	"bg-color": "背景颜色",
+	"text-color": "文字颜色",
+	"create-modify": "创建或修改话题",
+	"description": "通过点击或拖动选择话题，按住shift进行多选。",
+	"create": "创建话题",
+	"modify": "修改话题",
+	"delete": "删除所选话题",
+	"search": "搜索话题...",
+	"settings": "点击<a href=\"%1\">此处</a> 访问话题设置页面。",
+	"name": "话题名",
 
-	"alerts.editing-multiple": "Editing multiple tags",
-	"alerts.editing-x": "Editing \"%1\" tag",
-	"alerts.confirm-delete": "Do you want to delete the selected tags?",
-	"alerts.update-success": "Tag Updated!"
+	"alerts.editing-multiple": "编辑多项话题",
+	"alerts.editing-x": "编辑 \"%1\" 话题",
+	"alerts.confirm-delete": "是否要删除所选话题？",
+	"alerts.update-success": "话题已更新！"
 }

@@ -120,7 +120,12 @@ describe('authentication', function () {
 					assert(body);
 					assert.equal(body.username, 'regular');
 					assert.equal(body.email, 'regular@nodebb.org');
-					done();
+					db.getObject('uid:' + regularUid + ':sessionUUID:sessionId', function (err, sessions) {
+						assert.ifError(err);
+						assert(sessions);
+						assert(Object.keys(sessions).length > 0);
+						done();
+					});
 				});
 			});
 		});

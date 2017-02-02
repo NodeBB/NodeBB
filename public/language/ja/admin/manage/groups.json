@@ -1,8 +1,8 @@
 {
-	"name": "Group Name",
-	"description": "Group Description",
-	"system": "System Group",
-	"edit": "Edit",
+	"name": "グループ名",
+	"description": "グループの説明",
+	"system": "システムグループ",
+	"edit": "編集",
 	"search-placeholder": "Search",
 	"create": "Create Group",
 	"description-placeholder": "A short description about your group",

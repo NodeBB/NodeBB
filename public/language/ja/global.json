@@ -28,7 +28,7 @@
     "header.categories": "カテゴリ",
     "header.recent": "最近",
     "header.unread": "未読",
-    "header.tags": "Tags",
+    "header.tags": "タグ",
     "header.popular": "人気",
     "header.users": "ユーザー",
     "header.groups": "グループ",
@@ -86,7 +86,7 @@
     "guests": "ゲスト",
     "updated.title": "Forum Updated",
     "updated.message": "This forum has just been updated to the latest version. Click here to refresh the page.",
-    "privacy": "Privacy",
+    "privacy": "プライバシー設定",
     "follow": "Follow",
     "unfollow": "Unfollow",
     "delete_all": "Delete All",
@@ -96,11 +96,12 @@
     "enter_page_number": "ページ番号を入力",
     "upload_file": "ファイルをアップロード",
     "upload": "アップロード",
-    "allowed-file-types": "有効ファイルタイプは %1",
+    "allowed-file-types": "有効なファイル形式は %1 です。",
     "unsaved-changes": "変更はまだ保存されていません。本当にこのページから離れますか？",
     "reconnecting-message": "%1への接続が失われたと思われます。再接続されるまでしばらくお待ちください。",
     "play": "再生",
     "cookies.message": "このWEBサイトは、心地良くご使用頂くためにクッキーを使用しています。",
     "cookies.accept": "了解!",
-    "cookies.learn_more": "もっと詳しく"
+    "cookies.learn_more": "もっと詳しく",
+    "edited": "Edited"
 }

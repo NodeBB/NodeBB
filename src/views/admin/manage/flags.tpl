@@ -51,7 +51,7 @@
 			</div>
 
 			<button type="submit" class="btn btn-primary">[[admin/manage/flags:search]]</button>
-			<button class="btn btn-primary" id="dismissAll">Dismiss All</button>
+			<button class="btn btn-primary" id="dismissAll">[[admin/manage/flags:dismiss-all]]</button>
 		</form>
 
 		<hr/>

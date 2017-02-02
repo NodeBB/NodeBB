@@ -52,5 +52,6 @@
     "new-group.group_name": "Názov skupiny:",
     "upload-group-cover": "Nahrať obrázok skupiny",
     "bulk-invite-instructions": "Zadajte zoznam užívateľských mien oddelených čiarkou, k pozvaniu do tejto skupiny",
-    "bulk-invite": "Hromadné pozvanie"
+    "bulk-invite": "Hromadné pozvanie",
+    "remove_group_cover_confirm": "Ste si naozaj istý, že chcete odstrániť titulný obrázok?"
 }

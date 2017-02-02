@@ -15,7 +15,7 @@
     "users/banned": "Zabanovaní uživatelé",
     "users/most-flags": "Most flagged users",
     "users/search": "Hledání uživatele",
-    "notifications": "Oznámení",
+    "notifications": "Upozornění",
     "tags": "Tagy",
     "tag": "Téma označeno pod \"%1\"",
     "register": "Zaregistrovat účet",
@@ -43,7 +43,7 @@
     "account/upvoted": "Posts upvoted by %1",
     "account/downvoted": "Posts downvoted by %1",
     "account/best": "Nejlepší příspěvky od %1",
-    "confirm": "Email potvrzen",
+    "confirm": "E-mail potvrzen",
     "maintenance.text": "%1 is currently undergoing maintenance. Please come back another time.",
     "maintenance.messageIntro": "Additionally, the administrator has left this message:",
     "throttled.text": "%1 je v současnou chvíli nedostupný pro velkou zátěž. Prosíme zkuste to za chvíli."

@@ -1,9 +1,9 @@
 {
-	"notifications": "Notifications",
-	"chat-messages": "Chat Messages",
-	"play-sound": "Play",
+	"notifications": "Bildiriler",
+	"chat-messages": "Sohbet Mesajları",
+	"play-sound": "Oynat",
 	"incoming-message": "Incoming Message",
 	"outgoing-message": "Outgoing Message",
-	"upload-new-sound": "Upload New Sound",
+	"upload-new-sound": "Yeni Ses Yükle",
 	"saved": "Settings Saved"
 }

@@ -73,7 +73,7 @@ define('admin/manage/category', [
 		}
 
 
-		$('form.category input, form.category select')
+		$('form.category input, form.category select').not($('.privilege-table-container input'))
 			.on('change', function (ev) {
 				modified(ev.target);
 			})

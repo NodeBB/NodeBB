@@ -151,9 +151,25 @@ function getPorts() {
 
 Loader.restart = function () {
 	killWorkers();
+
+	var pathToConfig = path.join(__dirname, '/config.json');
 	nconf.remove('file');
-	nconf.use('file', { file: path.join(__dirname, '/config.json') });
-	Loader.start();
+	nconf.use('file', { file: pathToConfig });
+
+	fs.readFile(pathToConfig, {encoding: 'utf-8'}, function (err, configFile) {
+		if (err) {
+			console.log('Error reading config : ' + err.message);
+			process.exit();
+		}
+
+		var conf = JSON.parse(configFile);
+
+		nconf.stores.env.readOnly = false;
+		nconf.set('url', conf.url);
+		nconf.stores.env.readOnly = true;
+
+		Loader.start();
+	});
 };
 
 Loader.reload = function () {

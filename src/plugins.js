@@ -29,8 +29,6 @@ var middleware;
 	Plugins.lessFiles = [];
 	Plugins.clientScripts = [];
 	Plugins.acpScripts = [];
-	Plugins.customLanguages = {};
-	Plugins.customLanguageFallbacks = {};
 	Plugins.libraryPaths = [];
 	Plugins.versionWarning = [];
 	Plugins.languageCodes = [];

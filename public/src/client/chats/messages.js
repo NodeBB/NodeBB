@@ -21,6 +21,12 @@ define('forum/chats/messages', ['components', 'sounds', 'translator'], function 
 		inputEl.val('');
 		inputEl.removeAttr('data-mid');
 
+		$(window).trigger('action:chat.sent', {
+			roomId: roomId,
+			message: msg,
+			mid: mid
+		});
+		
 		if (!mid) {
 			socket.emit('modules.chats.send', {
 				roomId: roomId,

@@ -67,9 +67,7 @@ $(document).ready(function () {
 			apiXHR.abort();
 		}
 
-		if (!window.location.pathname.match(/\/(403|404)$/g)) {
-			app.previousUrl = window.location.href;
-		}
+		app.previousUrl = window.location.href;
 
 		url = ajaxify.start(url);
 
@@ -95,10 +93,7 @@ $(document).ready(function () {
 			retry = true;
 			app.template = data.template.name;
 
-			require(['translator'], function (translator) {
-				translator.load(translator.getLanguage(), data.template.name);
-				renderTemplate(url, data.template.name, data, callback);
-			});
+			renderTemplate(url, data.template.name, data, callback);
 		});
 
 		return true;
@@ -253,15 +248,49 @@ $(document).ready(function () {
 
 		$(window).trigger('action:script.load', data);
 
-		require(data.scripts, function (script) {
-			if (script && script.init) {
-				script.init();
+		// Require and parse modules
+		var outstanding = 0;
+		var onReady = function () {
+			if (outstanding) {
+				return setTimeout(onReady, 100);
 			}
 
-			if (callback) {
-				callback();
+			data.scripts = data.scripts.filter(Boolean);
+			data.scripts.forEach(function (functionRef) {
+				functionRef();
+			});
+
+			callback();
+		};
+
+		data.scripts.forEach(function (script, idx) {
+			switch (typeof script) {
+				case 'string':
+					++outstanding;
+					(function (idx) {
+						require([script], function (script) {
+							if (script && script.init) {
+								data.scripts[idx] = script.init;
+							} else {
+								data.scripts[idx] = null;
+							}
+							--outstanding;
+						});
+					}(idx));
+					break;
+
+				case 'function':
+					// No changes needed
+					break;
+
+				default:
+					// Neither? No comprende
+					data.scripts[idx] = undefined;
+					break;
 			}
 		});
+
+		onReady();
 	};
 
 	ajaxify.loadData = function (url, callback) {

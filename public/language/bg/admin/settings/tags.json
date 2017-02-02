@@ -1,12 +1,12 @@
 {
-    "tag": "Tag Settings",
-    "min-per-topic": "Minimum Tags per Topic",
-    "max-per-topic": "Maximum Tags per Topic",
-    "min-length": "Minimum Tag Length",
-    "max-length": "Maximum Tag Length",
-    "goto-manage": "Click here to visit the tag management page.",
-    "privacy": "Privacy",
-    "list-private": "Make the tags list private",
-    "related-topics": "Related Topics",
-    "max-related-topics": "Maximum related topics to display (if supported by theme)"
+    "tag": "Настройки за етикетите",
+    "min-per-topic": "Минимален брой етикети за тема",
+    "max-per-topic": "Максимален брой етикети за тема",
+    "min-length": "Минимална дължина на етикетите",
+    "max-length": "Максимална дължина на етикетите",
+    "goto-manage": "Щракнете тук, за да отворите страницата за управление на етикетите.",
+    "privacy": "Поверителност",
+    "list-private": "Списъкът с етикети да бъде частен",
+    "related-topics": "Свързани теми",
+    "max-related-topics": "Максимален брой свързани теми, които да бъдат показвани (ако това се поддържа от темата)"
 }

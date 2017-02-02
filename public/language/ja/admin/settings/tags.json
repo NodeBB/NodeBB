@@ -1,7 +1,7 @@
 {
-    "tag": "Tag Settings",
-    "min-per-topic": "Minimum Tags per Topic",
-    "max-per-topic": "Maximum Tags per Topic",
+    "tag": "タグ設定",
+    "min-per-topic": "トピックごとの最小タグ数",
+    "max-per-topic": "トピックごとの最大タグ数",
     "min-length": "Minimum Tag Length",
     "max-length": "Maximum Tag Length",
     "goto-manage": "Click here to visit the tag management page.",

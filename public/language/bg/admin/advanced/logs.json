@@ -1,7 +1,7 @@
 {
-	"logs": "Logs",
-	"control-panel": "Logs Control Panel",
-	"reload": "Reload Logs",
-	"clear": "Clear Logs",
-	"clear-success": "Logs Cleared!"
+	"logs": "Журнали",
+	"control-panel": "Контролен панел за журналите",
+	"reload": "Презареждане на журналите",
+	"clear": "Изчистване на журналите",
+	"clear-success": "Журналите са изчистени!"
 }

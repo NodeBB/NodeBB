@@ -1,9 +1,9 @@
 {
-	"settings": "Category Settings",
+	"settings": "تنظیمات دسته‌بندی",
 	"privileges": "Privileges",
 
-	"name": "Category Name",
-	"description": "Category Description",
+	"name": "نام دسته‌بندی",
+	"description": "توضیحات دسته‌بندی",
 	"bg-color": "Background Colour",
 	"text-color": "Text Colour",
 	"bg-image-size": "Background Image Size",
@@ -59,7 +59,7 @@
 	"alert.copy-success": "Settings Copied!",
 	"alert.set-parent-category": "Set Parent Category",
 	"alert.updated": "Updated Categories",
-	"alert.updated-success": "Category IDs %1 was successfully updated.",
+	"alert.updated-success": "Category IDs %1 successfully updated.",
 	"alert.upload-image": "Upload category image",
 	"alert.find-user": "Find a User",
 	"alert.user-search": "Search for a user here...",

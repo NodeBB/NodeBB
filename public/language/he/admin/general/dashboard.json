@@ -6,9 +6,9 @@
 	"page-views-this-month": "Page views This Month",
 	"page-views-last-day": "Page views in last 24 hours",
 
-	"stats.day": "Day",
-	"stats.week": "Week",
-	"stats.month": "Month",
+	"stats.day": "יום",
+	"stats.week": "שבוע",
+	"stats.month": "חודש",
 	"stats.all": "All Time",
 	
 	"updates": "Updates",
@@ -22,7 +22,7 @@
 	"notices": "Notices",
 
 	"control-panel": "System Control",
-	"reload": "Reload",
+	"reload": "רענן",
 	"restart": "Restart",
 	"restart-warning": "Reloading or Restarting your NodeBB will drop all existing connections for a few seconds.",
 	"maintenance-mode": "Maintenance Mode",
@@ -30,8 +30,8 @@
 	"realtime-chart-updates": "Realtime Chart Updates",
 
 	"active-users": "Active Users",
-	"active-users.users": "Users",
-	"active-users.guests": "Guests",
+	"active-users.users": "משתמשים",
+	"active-users.guests": "אורחים",
 	"active-users.total": "Total",
 	"active-users.connections": "Connections",
 

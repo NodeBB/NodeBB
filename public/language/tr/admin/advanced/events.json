@@ -1,6 +1,6 @@
 {
-	"events": "Events",
-	"no-events": "There are no events",
+	"events": "Olaylar",
+	"no-events": "Olay yok",
 	"control-panel": "Events Control Panel",
-	"delete-events": "Delete Events"
+	"delete-events": "Olayları Sil"
 }

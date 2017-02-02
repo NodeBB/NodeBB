@@ -1,6 +1,6 @@
 {
-	"events": "Events",
-	"no-events": "There are no events",
-	"control-panel": "Events Control Panel",
-	"delete-events": "Delete Events"
+	"events": "Събития",
+	"no-events": "Няма събития",
+	"control-panel": "Контролен панел за събитията",
+	"delete-events": "Изтриване на събитията"
 }

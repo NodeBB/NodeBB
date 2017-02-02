@@ -109,7 +109,7 @@
     "composer.handle_placeholder": "Nom",
     "composer.discard": "Abandonner",
     "composer.submit": "Envoyer",
-    "composer.replying_to": "Réponse à %1",
+    "composer.replying_to": "En réponse à %1",
     "composer.new_topic": "Nouveau sujet",
     "composer.uploading": "envoi en cours…",
     "composer.thumb_url_label": "Coller une URL de vignette du sujet",

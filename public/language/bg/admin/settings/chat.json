@@ -1,9 +1,9 @@
 {
-	"chat-settings": "Chat Settings",
-	"disable": "Disable chat",
-	"disable-editing": "Disable chat message editing/deletion",
-	"disable-editing-help": "Administrators and global moderators are exempt from this restriction",
-	"max-length": "Maximum length of chat messages",
-	"max-room-size": "Maximum number of users in chat rooms",
-	"delay": "Time between chat messages in milliseconds"
+	"chat-settings": "Настройки на разговорите",
+	"disable": "Изключване на разговорите",
+	"disable-editing": "Изключване на редактирането и изтриването на съобщения в разговорите",
+	"disable-editing-help": "Това ограничение не засяга администраторите и глобалните модератори",
+	"max-length": "Максимална дължина на съобщенията в разговорите",
+	"max-room-size": "Максимален брой потребители в стая за разговор",
+	"delay": "Време между съобщеният в разговорите (в милисекунди)"
 }

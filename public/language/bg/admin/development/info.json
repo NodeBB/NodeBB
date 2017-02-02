@@ -1,16 +1,16 @@
 {
-	"you-are-on": "Info - You are on <strong>%1:%2</strong>",
-	"host": "host",
-	"pid": "pid",
+	"you-are-on": "Информация — Вие сте на <strong>%1:%2</strong>",
+	"host": "сървър",
+	"pid": "ид. на процеса",
 	"nodejs": "nodejs",
-	"online": "online",
+	"online": "на линия",
 	"git": "git",
-	"load": "load",
-	"uptime": "uptime",
+	"load": "натоварване",
+	"uptime": "активно време",
 
-	"registered": "Registered",
-	"sockets": "Sockets",
-	"guests": "Guests",
+	"registered": "Регистрирани",
+	"sockets": "Сокети",
+	"guests": "Гости",
 
-	"info": "Info"
+	"info": "Информация"
 }

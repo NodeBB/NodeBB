@@ -1,11 +1,11 @@
 {
 	"x-b": "%1 b",
 	"x-mb": "%1 mb",
-	"uptime-seconds": "Uptime in Seconds",
-	"uptime-days": "Uptime in Days",
+	"uptime-seconds": "Uptime in secondi",
+	"uptime-days": "Uptime in giorni",
 
 	"mongo": "Mongo",
-	"mongo.version": "MongoDB Version",
+	"mongo.version": "Versione MongoDB",
 	"mongo.storage-engine": "Storage Engine",
 	"mongo.collections": "Collections",
 	"mongo.objects": "Objects",

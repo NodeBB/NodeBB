@@ -1,18 +1,18 @@
 {
-	"none": "Your forum does not have any topics with tags yet.",
-	"bg-color": "Background Colour",
-	"text-color": "Text Colour",
-	"create-modify": "Create & Modify Tags",
-	"description": "Select tags via clicking and/or dragging, use shift to select multiple.",
-	"create": "Create Tag",
-	"modify": "Modify Tags",
-	"delete": "Delete Selected Tags",
-	"search": "Search for tags...",
-	"settings": "Click <a href=\"%1\">here</a> to visit the tag settings page.",
-	"name": "Tag Name",
+	"none": "Votre forum n'a pour l'instant aucun sujet avec mot-clés.",
+	"bg-color": "Couleur d'arrière plan",
+	"text-color": "Couleur du texte",
+	"create-modify": "Créer et modifier les mots-clés",
+	"description": "Sélectionnez les mot-clés par clic ou glisser-déposer, maintenez shift pour en sélectionner plusieurs.",
+	"create": "Créer le mot-clés",
+	"modify": "Modifier le mot-clés",
+	"delete": "Supprimer les mots-clés sélectionnés",
+	"search": "Chercher des mots-clés...",
+	"settings": "Cliquez <a href=\"%1\">ici</a> pour visiter la page de paramètres des mots clés.",
+	"name": "Nom du mot-clés",
 
-	"alerts.editing-multiple": "Editing multiple tags",
-	"alerts.editing-x": "Editing \"%1\" tag",
-	"alerts.confirm-delete": "Do you want to delete the selected tags?",
-	"alerts.update-success": "Tag Updated!"
+	"alerts.editing-multiple": "Éditer plusieurs mots-clés",
+	"alerts.editing-x": "Éditer le mot-clés %1",
+	"alerts.confirm-delete": "Vous-voulez réellement supprimer les mots-clés sélectionnés ?",
+	"alerts.update-success": "Mot-clés mis à jour !"
 }

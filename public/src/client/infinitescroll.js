@@ -23,7 +23,9 @@ define('forum/infinitescroll', function () {
 	};
 
 	function onScroll() {
-		if (loadingMore) {
+		var bsEnv = utils.findBootstrapEnvironment();
+		var mobileComposerOpen = (bsEnv === 'xs' || bsEnv === 'sm') && $('html').hasClass('composing');
+		if (loadingMore || mobileComposerOpen) {
 			return;
 		}
 		var currentScrollTop = $(window).scrollTop();

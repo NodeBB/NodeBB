@@ -23,6 +23,7 @@ var utils = require('../public/src/utils');
 	require('./meta/dependencies')(Meta);
 	Meta.templates = require('./meta/templates');
 	Meta.blacklist = require('./meta/blacklist');
+	Meta.languages = require('./meta/languages');
 
 	/* Assorted */
 	Meta.userOrGroupExists = function (slug, callback) {

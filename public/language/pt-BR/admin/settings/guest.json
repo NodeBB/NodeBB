@@ -1,8 +1,8 @@
 {
-	"handles": "Guest Handles",
-	"handles.enabled": "Allow guest handles",
-	"handles.enabled-help": "This option exposes a new field that allows guests to pick a name to associate with each post they make. If disabled, they will simply be called \"Guest\"",
-	"privileges": "Guest Privileges",
-	"privileges.can-search": "Allow guests to search without logging in",
-	"privileges.can-search-users": "Allow guests to search users without logging in"
+	"handles": "Handles para Visitantes",
+	"handles.enabled": "Permitir handles de visitantes",
+	"handles.enabled-help": "Esta opção mostra um novo campo que permite visitantes de escolher um nome para associar à cada post que eles fizerem. Se desabilitado, eles serão simplesmente chamados de \"Visitante\".",
+	"privileges": "Privilégios de Visitantes",
+	"privileges.can-search": "Permitir convidados de pesquisar sem logarem-se",
+	"privileges.can-search-users": "Permitir visitantes de pesquisar por usuários sem logar"
 }

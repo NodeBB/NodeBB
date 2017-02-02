@@ -3,6 +3,7 @@
 var async = require('async');
 var nconf = require('nconf');
 var validator = require('validator');
+var winston = require('winston');
 
 var plugins = require('../plugins');
 var translator = require('../../public/src/modules/translator');
@@ -114,7 +115,13 @@ module.exports = function (middleware) {
 		var clean = req.path.replace(/^\/api/, '').replace(/^\/|\/$/g, '');
 		var parts = clean.split('/').slice(0, 3);
 		parts.forEach(function (p, index) {
-			p = decodeURIComponent(p);
+			try {
+				p = decodeURIComponent(p);
+			} catch (err) {
+				winston.error(err.message);
+				p = '';
+			}
+
 			parts[index] = index ? parts[0] + '-' + p : 'page-' + (p || 'home');
 		});
 		return parts.join(' ');

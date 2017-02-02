@@ -9,8 +9,6 @@ var winston = require('winston');
 var nconf = require('nconf');
 var _ = require('underscore');
 var file = require('../file');
-
-var utils = require('../../public/src/utils');
 var meta = require('../meta');
 
 
@@ -43,7 +41,7 @@ module.exports = function (Plugins) {
 		Plugins.lessFiles.length = 0;
 		Plugins.clientScripts.length = 0;
 		Plugins.acpScripts.length = 0;
-		
+
 		async.waterfall([
 			async.apply(Plugins.getPluginPaths),
 			function (paths, next) {
@@ -93,9 +91,6 @@ module.exports = function (Plugins) {
 				function (next) {
 					mapClientModules(pluginData, next);
 				},
-				function (next) {
-					loadLanguages(pluginData, next);
-				}
 			], function (err) {
 				if (err) {
 					winston.verbose('[plugins] Could not load plugin : ' + pluginData.id);
@@ -195,25 +190,19 @@ module.exports = function (Plugins) {
 	}
 
 	function mapClientSideScripts(pluginData, callback) {
-		if (Array.isArray(pluginData.scripts)) {
-			if (global.env === 'development') {
-				winston.verbose('[plugins] Found ' + pluginData.scripts.length + ' js file(s) for plugin ' + pluginData.id);
+		function mapScripts(scripts, param) {
+			if (Array.isArray(scripts) && scripts.length) {
+				if (global.env === 'development') {
+					winston.verbose('[plugins] Found ' + scripts.length + ' js file(s) for plugin ' + pluginData.id);
+				}
+
+				Plugins[param] = Plugins[param].concat(scripts.map(function (file) {
+					return resolveModulePath(path.join(__dirname, '../../node_modules/', pluginData.id, file), file);
+				})).filter(Boolean);
 			}
-
-			Plugins.clientScripts = Plugins.clientScripts.concat(pluginData.scripts.map(function (file) {
-				return resolveModulePath(path.join(__dirname, '../../node_modules/', pluginData.id, file), file);
-			})).filter(Boolean);
 		}
-
-		if (Array.isArray(pluginData.acpScripts)) {
-			if (global.env === 'development') {
-				winston.verbose('[plugins] Found ' + pluginData.acpScripts.length + ' ACP js file(s) for plugin ' + pluginData.id);
-			}
-
-			Plugins.acpScripts = Plugins.acpScripts.concat(pluginData.acpScripts.map(function (file) {
-				return resolveModulePath(path.join(__dirname, '../../node_modules/', pluginData.id, file), file);
-			})).filter(Boolean);
-		}
+		mapScripts(pluginData.scripts, 'clientScripts');
+		mapScripts(pluginData.acpScripts, 'acpScripts');
 
 		callback();
 	}
@@ -258,60 +247,6 @@ module.exports = function (Plugins) {
 		}
 
 		callback();
-	}
-
-	function loadLanguages(pluginData, callback) {
-		if (typeof pluginData.languages !== 'string') {
-			return callback();
-		}
-
-		var pathToFolder = path.join(__dirname, '../../node_modules/', pluginData.id, pluginData.languages);
-		var defaultLang = (pluginData.defaultLang || 'en_GB').replace('_', '-').replace('@', '-x-');
-
-		utils.walk(pathToFolder, function (err, languages) {
-			if (err) {
-				return callback(err);
-			}
-
-			async.each(languages, function (pathToLang, next) {
-				fs.readFile(pathToLang, function (err, file) {
-					if (err) {
-						return next(err);
-					}
-					var data;
-					var language = path.dirname(pathToLang).split(/[\/\\]/).pop().replace('_', '-').replace('@', '-x-');
-					var namespace = path.basename(pathToLang, '.json');
-					var langNamespace = language + '/' + namespace;
-
-					try {
-						data = JSON.parse(file.toString());
-					} catch (err) {
-						winston.error('[plugins] Unable to parse custom language file: ' + pathToLang + '\r\n' + err.stack);
-						return next(err);
-					}
-
-					Plugins.customLanguages[langNamespace] = Plugins.customLanguages[langNamespace] || {};
-					Object.assign(Plugins.customLanguages[langNamespace], data);
-
-					if (defaultLang && defaultLang === language) {
-						Plugins.languageCodes.filter(function (lang) {
-							return defaultLang !== lang;
-						}).forEach(function (lang) {
-							var langNS = lang + '/' + namespace;
-							Plugins.customLanguages[langNS] = Object.assign(Plugins.customLanguages[langNS] || {}, data);
-						});
-					}
-
-					next();
-				});
-			}, function (err) {
-				if (err) {
-					return callback(err);
-				}
-
-				callback();
-			});
-		});
 	}
 
 	function resolveModulePath(fullPath, relPath) {
@@ -371,6 +306,7 @@ module.exports = function (Plugins) {
 
 				return callback(new Error('[[error:parse-error]]'));
 			}
+
 			callback(null, pluginData);
 		});
 	};

@@ -1,7 +1,7 @@
 {
-	"users": "Users",
-	"edit": "Edit",
-	"make-admin": "Make Admin",
+	"users": "Użytkownicy",
+	"edit": "Edytuj",
+	"make-admin": "Nadaj Admina",
 	"remove-admin": "Remove Admin",
 	"validate-email": "Validate Email",
 	"send-validation-email": "Send Validation Email",

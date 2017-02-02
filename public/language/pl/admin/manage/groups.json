@@ -1,7 +1,7 @@
 {
-	"name": "Group Name",
+	"name": "Nazwa Grupy",
 	"description": "Group Description",
-	"system": "System Group",
+	"system": "System Grup",
 	"edit": "Edit",
 	"search-placeholder": "Search",
 	"create": "Create Group",

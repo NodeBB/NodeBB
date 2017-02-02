@@ -63,6 +63,7 @@
     "upload_a_picture": "Uploadează o poză",
     "remove_uploaded_picture": "Remove Uploaded Picture",
     "upload_cover_picture": "Upload cover picture",
+    "remove_cover_picture_confirm": "Are you sure you want to remove the cover picture?",
     "settings": "Setări",
     "show_email": "Arată adresa mea de email",
     "show_fullname": "Show My Full Name",

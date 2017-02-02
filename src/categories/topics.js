@@ -28,7 +28,7 @@ module.exports = function (Categories) {
 					topics[i].index = data.start + i;
 				}
 
-				plugins.fireHook('filter:category.topics.get', {topics: topics, uid: data.uid}, next);
+				plugins.fireHook('filter:category.topics.get', {cid: data.cid, topics: topics, uid: data.uid}, next);
 			},
 			function (results, next) {
 				next(null, {topics: results.topics, nextStart: data.stop + 1});
@@ -125,7 +125,7 @@ module.exports = function (Categories) {
 				if (parseInt(pinned, 10) === 1) {
 					return setImmediate(next);
 				}
-				 
+
 				async.parallel([
 					function (next) {
 						db.sortedSetAdd('cid:' + cid + ':tids', postData.timestamp, postData.tid, next);
@@ -135,11 +135,11 @@ module.exports = function (Categories) {
 					}
 				], function (err) {
 					next(err);
-				});					
+				});
 			},
 			function (next) {
 				Categories.updateRecentTid(cid, postData.tid, next);
-			}			
+			}
 		], callback);
 	};
 

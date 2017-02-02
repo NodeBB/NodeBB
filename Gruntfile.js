@@ -27,6 +27,8 @@ module.exports = function (grunt) {
 			compiling = 'js';
 		} else if (target === 'templatesUpdated') {
 			compiling = 'tpl';
+		} else if (target === 'langUpdated') {
+			compiling = 'lang';
 		} else if (target === 'serverUpdated') {
 			// Do nothing, just restart
 		}
@@ -93,7 +95,19 @@ module.exports = function (grunt) {
 					'!node_modules/nodebb-*/node_modules/**',
 					'!node_modules/nodebb-*/.git/**'
 				]
-			}
+			},
+			langUpdated: {
+				files: [
+					'public/language/en-GB/*.json',
+					'public/language/en-GB/**/*.json',
+					'node_modules/nodebb-*/**/*.json',
+					'!node_modules/nodebb-*/node_modules/**',
+					'!node_modules/nodebb-*/.git/**',
+					'!node_modules/nodebb-*/plugin.json',
+					'!node_modules/nodebb-*/package.json',
+					'!node_modules/nodebb-*/theme.json',
+				],
+			},
 		}
 	});
 

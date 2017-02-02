@@ -1,7 +1,7 @@
 {
 	"logs": "Logs",
-	"control-panel": "Logs Control Panel",
-	"reload": "Reload Logs",
-	"clear": "Clear Logs",
-	"clear-success": "Logs Cleared!"
+	"control-panel": "Painel de Controle de Logs",
+	"reload": "Recarregar Logs",
+	"clear": "Limpar Logs",
+	"clear-success": "Logs Apagados!"
 }

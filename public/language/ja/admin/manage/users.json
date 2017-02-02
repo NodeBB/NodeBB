@@ -1,7 +1,7 @@
 {
-	"users": "Users",
-	"edit": "Edit",
-	"make-admin": "Make Admin",
+	"users": "ユーザー",
+	"edit": "編集",
+	"make-admin": "管理者にする",
 	"remove-admin": "Remove Admin",
 	"validate-email": "Validate Email",
 	"send-validation-email": "Send Validation Email",
