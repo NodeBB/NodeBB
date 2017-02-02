@@ -1,10 +1,10 @@
 {
 	"rewards": "Récompenses",
 	"condition-if-users": "Si la propriété de l'utilisateur",
-	"condition-is": "est",
-	"condition-then": "alors",
+	"condition-is": "Est :",
+	"condition-then": "Alors :",
 	"max-claims": "Nombre de fois que la récompense peut être obtenue",
-	"zero-infinite": "Entrez 0 pour un nombre infini",
+	"zero-infinite": "Entrez 0 pour infini",
 	"delete": "Supprimer",
 	"enable": "Activer",
 	"disable": "Désactiver",

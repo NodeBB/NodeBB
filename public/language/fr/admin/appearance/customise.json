@@ -1,6 +1,6 @@
 {
 	"custom-css": "CSS personnalisé",
-	"custom-css.description": "Entrez vos déclarations CSS ici, elles seront appliquées après tous les autres styles.",
+	"custom-css.description": "Entrez vos propres déclarations de CSS ici, elles seront appliquées après tous les autres styles.",
 	"custom-css.enable": "Activer les CSS personnalisés",
 
 	"custom-header": "En-tête personnalisé",

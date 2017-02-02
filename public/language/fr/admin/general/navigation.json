@@ -1,8 +1,8 @@
 {
-	"icon": "Icone :",
+	"icon": "Icône :",
 	"change-icon": "changer",
 	"route": "Route :",
-	"tooltip": "Tooltip :",
+	"tooltip": "Info-bulle :",
 	"text": "Texte :",
 	"text-class": "Classe de texte : <small>optionnel</small>",
 	"id": "ID : <small>optionnel</small>",
