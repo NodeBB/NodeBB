@@ -185,8 +185,7 @@
 			'tolerance': 70
 		});
 		
-		if (env === 'md' || env === 'lg')
-		{
+		if (env === 'md' || env === 'lg') {
 			slideout.disableTouch();
 		}
 		
