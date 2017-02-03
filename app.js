@@ -75,7 +75,7 @@ if (nconf.get('setup') || nconf.get('install')) {
 } else if (nconf.get('reset')) {
 	async.waterfall([
 		async.apply(require('./src/reset').reset),
-		async.apply(require('./build').buildAll)
+		async.apply(require('./src/meta/build').buildAll)
 	], function (err) {
 		process.exit(err ? 1 : 0);
 	});
@@ -84,7 +84,7 @@ if (nconf.get('setup') || nconf.get('install')) {
 } else if (nconf.get('plugins')) {
 	listPlugins();
 } else if (nconf.get('build')) {
-	require('./build').build(nconf.get('build'));
+	require('./src/meta/build').build(nconf.get('build'));
 } else {
 	require('./src/start').start();
 }
@@ -126,7 +126,7 @@ function setup() {
 	winston.info('NodeBB Setup Triggered via Command Line');
 
 	var install = require('./src/install');
-	var build = require('./build');
+	var build = require('./src/meta/build');
 
 	process.stdout.write('\nWelcome to NodeBB!\n');
 	process.stdout.write('\nThis looks like a new installation, so you\'ll have to answer a few questions about your environment before we can proceed.\n');
@@ -174,7 +174,7 @@ function upgrade() {
 	var db = require('./src/database');
 	var meta = require('./src/meta');
 	var upgrade = require('./src/upgrade');
-	var build = require('./build');
+	var build = require('./src/meta/build');
 
 	async.series([
 		async.apply(db.init),

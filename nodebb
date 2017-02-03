@@ -1,15 +1,17 @@
 #!/usr/bin/env node
 
+'use strict';
+
 try {
-	var colors = require('colors'),
-		cproc = require('child_process'),
-		argv = require('minimist')(process.argv.slice(2)),
-		fs = require('fs'),
-		path = require('path'),
-		request = require('request'),
-		semver = require('semver'),
-		prompt = require('prompt'),
-		async = require('async');
+	require('colors');
+	var cproc = require('child_process');
+	var args = require('minimist')(process.argv.slice(2));
+	var fs = require('fs');
+	var path = require('path');
+	var request = require('request');
+	var semver = require('semver');
+	var prompt = require('prompt');
+	var async = require('async');
 } catch (e) {
 	if (e.code === 'MODULE_NOT_FOUND') {
 		process.stdout.write('NodeBB could not be started because it\'s dependencies have not been installed.\n');
@@ -21,407 +23,460 @@ try {
 	}
 }
 
-var getRunningPid = function (callback) {
-		fs.readFile(__dirname + '/pidfile', {
-			encoding: 'utf-8'
-		}, function (err, pid) {
-			if (err) {
-				return callback(err);
+if (args.dev) {
+	process.env.NODE_ENV = 'development';
+}
+
+function getRunningPid(callback) {
+	fs.readFile(__dirname + '/pidfile', {
+		encoding: 'utf-8'
+	}, function (err, pid) {
+		if (err) {
+			return callback(err);
+		}
+
+		try {
+			process.kill(parseInt(pid, 10), 0);
+			callback(null, parseInt(pid, 10));
+		} catch(e) {
+			callback(e);
+		}
+	});
+}
+function getCurrentVersion(callback) {
+	fs.readFile(path.join(__dirname, 'package.json'), { encoding: 'utf-8' }, function (err, pkg) {
+		if (err) {
+			return callback(err);
+		}
+
+		try {
+			pkg = JSON.parse(pkg);
+			return callback(null, pkg.version);
+		} catch(err) {
+			return callback(err);
+		}
+	});
+}
+function fork(args) {
+	return cproc.fork('app.js', args, {
+		cwd: __dirname,
+		silent: false
+	});
+}
+function getInstalledPlugins(callback) {
+	async.parallel({
+		files: async.apply(fs.readdir, path.join(__dirname, 'node_modules')),
+		deps: async.apply(fs.readFile, path.join(__dirname, 'package.json'), { encoding: 'utf-8' })
+	}, function (err, payload) {
+		if (err) {
+			return callback(err);
+		}
+
+		var isNbbModule = /^nodebb-(?:plugin|theme|widget|rewards)-[\w\-]+$/,
+			moduleName, isGitRepo;
+
+		payload.files = payload.files.filter(function (file) {
+			return isNbbModule.test(file);
+		});
+
+		try {
+			payload.deps = JSON.parse(payload.deps).dependencies;
+			payload.bundled = [];
+			payload.installed = [];
+		} catch (err) {
+			return callback(err);
+		}
+
+		for (moduleName in payload.deps) {
+			if (isNbbModule.test(moduleName)) {
+				payload.bundled.push(moduleName);
+			}
+		}
+
+		// Whittle down deps to send back only extraneously installed plugins/themes/etc
+		payload.files.forEach(function (moduleName) {
+			try {
+				fs.accessSync(path.join(__dirname, 'node_modules/' + moduleName, '.git'));
+				isGitRepo = true;
+			} catch(e) {
+				isGitRepo = false;
 			}
 
-			try {
-				process.kill(parseInt(pid, 10), 0);
-				callback(null, parseInt(pid, 10));
-			} catch(e) {
-				callback(e);
+			if (
+				payload.files.indexOf(moduleName) !== -1 &&	// found in `node_modules/`
+				payload.bundled.indexOf(moduleName) === -1 &&	// not found in `package.json`
+				!fs.lstatSync(path.join(__dirname, 'node_modules/' + moduleName)).isSymbolicLink() &&	// is not a symlink
+				!isGitRepo	// .git/ does not exist, so it is not a git repository
+			) {
+				payload.installed.push(moduleName);
 			}
 		});
-	},
-	getCurrentVersion = function (callback) {
-		fs.readFile(path.join(__dirname, 'package.json'), { encoding: 'utf-8' }, function (err, pkg) {
+
+		getModuleVersions(payload.installed, callback);
+	});
+}
+function getModuleVersions(modules, callback) {
+	var versionHash = {};
+
+	async.eachLimit(modules, 50, function (module, next) {
+		fs.readFile(path.join(__dirname, 'node_modules/' + module + '/package.json'), { encoding: 'utf-8' }, function (err, pkg) {
 			if (err) {
-				return callback(err);
+				return next(err);
 			}
 
 			try {
 				pkg = JSON.parse(pkg);
-				return callback(null, pkg.version);
-			} catch(err) {
-				return callback(err);
-			}
-		});
-	},
-	fork = function (args) {
-		cproc.fork('app.js', args, {
-			cwd: __dirname,
-			silent: false
-		});
-	},
-	getInstalledPlugins = function (callback) {
-		async.parallel({
-			files: async.apply(fs.readdir, path.join(__dirname, 'node_modules')),
-			deps: async.apply(fs.readFile, path.join(__dirname, 'package.json'), { encoding: 'utf-8' })
-		}, function (err, payload) {
-			if (err) {
-				return callback(err);
-			}
-
-			var isNbbModule = /^nodebb-(?:plugin|theme|widget|rewards)-[\w\-]+$/,
-				moduleName, isGitRepo;
-
-			payload.files = payload.files.filter(function (file) {
-				return isNbbModule.test(file);
-			});
-
-			try {
-				payload.deps = JSON.parse(payload.deps).dependencies;
-				payload.bundled = [];
-				payload.installed = [];
+				versionHash[module] = pkg.version;
+				next();
 			} catch (err) {
-				return callback(err);
+				next(err);
 			}
-
-			for (moduleName in payload.deps) {
-				if (isNbbModule.test(moduleName)) {
-					payload.bundled.push(moduleName);
-				}
-			}
-
-			// Whittle down deps to send back only extraneously installed plugins/themes/etc
-			payload.files.forEach(function (moduleName) {
-				try {
-					fs.accessSync(path.join(__dirname, 'node_modules/' + moduleName, '.git'));
-					isGitRepo = true;
-				} catch(e) {
-					isGitRepo = false;
-				}
-
-				if (
-					payload.files.indexOf(moduleName) !== -1	// found in `node_modules/`
-					&& payload.bundled.indexOf(moduleName) === -1	// not found in `package.json`
-					&& !fs.lstatSync(path.join(__dirname, 'node_modules/' + moduleName)).isSymbolicLink()	// is not a symlink
-					&& !isGitRepo	// .git/ does not exist, so it is not a git repository
-				) {
-					payload.installed.push(moduleName);
-				}
-			});
-
-			getModuleVersions(payload.installed, callback);
 		});
-	},
-	getModuleVersions = function (modules, callback) {
-		var versionHash = {};
+	}, function (err) {
+		callback(err, versionHash);
+	});
+}
+function checkPlugins(standalone, callback) {
+	if (standalone) {
+		process.stdout.write('Checking installed plugins and themes for updates... ');
+	}
 
-		async.eachLimit(modules, 50, function (module, next) {
-			fs.readFile(path.join(__dirname, 'node_modules/' + module + '/package.json'), { encoding: 'utf-8' }, function (err, pkg) {
+	async.waterfall([
+		async.apply(async.parallel, {
+			plugins: async.apply(getInstalledPlugins),
+			version: async.apply(getCurrentVersion)
+		}),
+		function (payload, next) {
+			var toCheck = Object.keys(payload.plugins);
+
+			if (!toCheck.length) {
+				process.stdout.write('OK'.green + '\n'.reset);
+				return next(null, []);	// no extraneous plugins installed
+			}
+
+			request({
+				method: 'GET',
+				url: 'https://packages.nodebb.org/api/v1/suggest?version=' + payload.version + '&package[]=' + toCheck.join('&package[]='),
+				json: true
+			}, function (err, res, body) {
 				if (err) {
+					process.stdout.write('error'.red + '\n'.reset);
 					return next(err);
 				}
+				process.stdout.write('OK'.green + '\n'.reset);
 
-				try {
-					pkg = JSON.parse(pkg);
-					versionHash[module] = pkg.version;
-					next();
-				} catch (err) {
-					next(err);
+				if (!Array.isArray(body) && toCheck.length === 1) {
+					body = [body];
 				}
+
+				var current, suggested,
+					upgradable = body.map(function (suggestObj) {
+						current = payload.plugins[suggestObj.package];
+						suggested = suggestObj.version;
+
+						if (suggestObj.code === 'match-found' && semver.gt(suggested, current)) {
+							return {
+								name: suggestObj.package,
+								current: current,
+								suggested: suggested
+							};
+						} else {
+							return null;
+						}
+					}).filter(Boolean);
+
+				next(null, upgradable);
 			});
-		}, function (err) {
-			callback(err, versionHash);
-		});
-	},
-	checkPlugins = function (standalone, callback) {
-		if (standalone) {
-			process.stdout.write('Checking installed plugins and themes for updates... ');
+		}
+	], callback);
+}
+function upgradePlugins(callback) {
+	var standalone = false;
+	if (typeof callback !== 'function') {
+		callback = function () {};
+		standalone = true;
+	}
+
+	checkPlugins(standalone, function (err, found) {
+		if (err) {
+			process.stdout.write('\Warning'.yellow + ': An unexpected error occured when attempting to verify plugin upgradability\n'.reset);
+			return callback(err);
 		}
 
-		async.waterfall([
-			async.apply(async.parallel, {
-				plugins: async.apply(getInstalledPlugins),
-				version: async.apply(getCurrentVersion)
-			}),
-			function (payload, next) {
-				var toCheck = Object.keys(payload.plugins);
-
-				if (!toCheck.length) {
-					process.stdout.write('OK'.green + '\n'.reset);
-					return next(null, []);	// no extraneous plugins installed
-				}
-
-				request({
-					method: 'GET',
-					url: 'https://packages.nodebb.org/api/v1/suggest?version=' + payload.version + '&package[]=' + toCheck.join('&package[]='),
-					json: true
-				}, function (err, res, body) {
-					if (err) {
-						process.stdout.write('error'.red + '\n'.reset);
-						return next(err);
-					}
-					process.stdout.write('OK'.green + '\n'.reset);
-
-					if (!Array.isArray(body) && toCheck.length === 1) {
-						body = [body];
-					}
-
-					var current, suggested,
-						upgradable = body.map(function (suggestObj) {
-							current = payload.plugins[suggestObj.package];
-							suggested = suggestObj.version;
-
-							if (suggestObj.code === 'match-found' && semver.gt(suggested, current)) {
-								return {
-									name: suggestObj.package,
-									current: current,
-									suggested: suggested
-								};
-							} else {
-								return null;
-							}
-						}).filter(Boolean);
-
-					next(null, upgradable);
-				});
+		if (found && found.length) {
+			process.stdout.write('\nA total of ' + String(found.length).bold + ' package(s) can be upgraded:\n');
+			found.forEach(function (suggestObj) {
+				process.stdout.write('  * '.yellow + suggestObj.name.reset + ' (' + suggestObj.current.yellow + ' -> '.reset + suggestObj.suggested.green + ')\n'.reset);
+			});
+			process.stdout.write('\n');
+		} else {
+			if (standalone) {
+				process.stdout.write('\nAll packages up-to-date!'.green + '\n'.reset);
 			}
-		], callback);
-	},
-	upgradePlugins = function (callback) {
-		var standalone = false;
-		if (typeof callback !== 'function') {
-			callback = function () {};
-			standalone = true;
-		};
+			return callback();
+		}
 
-		checkPlugins(standalone, function (err, found) {
+		prompt.message = '';
+		prompt.delimiter = '';
+
+		prompt.start();
+		prompt.get({
+			name: 'upgrade',
+			description: 'Proceed with upgrade (y|n)?'.reset,
+			type: 'string'
+		}, function (err, result) {
 			if (err) {
-				process.stdout.write('\Warning'.yellow + ': An unexpected error occured when attempting to verify plugin upgradability\n'.reset);
 				return callback(err);
 			}
 
-			if (found && found.length) {
-				process.stdout.write('\nA total of ' + String(found.length).bold + ' package(s) can be upgraded:\n');
+			if (['y', 'Y', 'yes', 'YES'].indexOf(result.upgrade) !== -1) {
+				process.stdout.write('\nUpgrading packages...');
+				var args = ['npm', 'i'];
 				found.forEach(function (suggestObj) {
-					process.stdout.write('  * '.yellow + suggestObj.name.reset + ' (' + suggestObj.current.yellow + ' -> '.reset + suggestObj.suggested.green + ')\n'.reset);
+					args.push(suggestObj.name + '@' + suggestObj.suggested);
 				});
-				process.stdout.write('\n');
+
+				require('child_process').execFile('/usr/bin/env', args, { stdio: 'ignore' }, function (err) {
+					if (!err) {
+						process.stdout.write(' OK\n'.green);
+					}
+
+					callback(err);
+				});
 			} else {
-				if (standalone) {
-					process.stdout.write('\nAll packages up-to-date!'.green + '\n'.reset);
-				}
-				return callback();
+				process.stdout.write('\nPackage upgrades skipped'.yellow + '. Check for upgrades at any time by running "'.reset + './nodebb upgrade-plugins'.green + '".\n'.reset);
+				callback();
 			}
+		});
+	});
+}
 
-			prompt.message = '';
-			prompt.delimiter = '';
-
-			prompt.start();
-			prompt.get({
-				name: 'upgrade',
-				description: 'Proceed with upgrade (y|n)?'.reset,
-				type: 'string'
-			}, function (err, result) {
-				if (err) {
-					return callback(err);
-				}
-
-				if (['y', 'Y', 'yes', 'YES'].indexOf(result.upgrade) !== -1) {
-					process.stdout.write('\nUpgrading packages...');
-					var args = ['npm', 'i'];
-					found.forEach(function (suggestObj) {
-						args.push(suggestObj.name + '@' + suggestObj.suggested);
-					});
-
-					require('child_process').execFile('/usr/bin/env', args, { stdio: 'ignore' }, function (err) {
-						if (!err) {
-							process.stdout.write(' OK\n'.green);
-						}
-
-						callback(err);
-					});
+var commands = {
+	status: {
+		description: 'View the status of the NodeBB server',
+		usage: 'Usage: ' + './nodebb status'.yellow,
+		handler: function () {
+			getRunningPid(function (err, pid) {
+				if (!err) {
+					process.stdout.write('\nNodeBB Running '.bold + '(pid '.cyan + pid.toString().cyan + ')\n'.cyan);
+					process.stdout.write('\t"' + './nodebb stop'.yellow + '" to stop the NodeBB server\n');
+					process.stdout.write('\t"' + './nodebb log'.yellow + '" to view server output\n');
+					process.stdout.write('\t"' + './nodebb restart'.yellow + '" to restart NodeBB\n\n');
 				} else {
-					process.stdout.write('\nPackage upgrades skipped'.yellow + '. Check for upgrades at any time by running "'.reset + './nodebb upgrade-plugins'.green + '".\n'.reset);
-					callback();
+					process.stdout.write('\nNodeBB is not running\n'.bold);
+					process.stdout.write('\t"' + './nodebb start'.yellow + '" to launch the NodeBB server\n\n'.reset);
 				}
 			});
-		});
-	};
+		},
+	},
+	start: {
+		description: 'Start the NodeBB server',
+		usage: 'Usage: ' + './nodebb start'.yellow,
+		handler: function () {
+			process.stdout.write('\nStarting NodeBB\n'.bold);
+			process.stdout.write('  "' + './nodebb stop'.yellow + '" to stop the NodeBB server\n');
+			process.stdout.write('  "' + './nodebb log'.yellow + '" to view server output\n');
+			process.stdout.write('  "' + './nodebb restart'.yellow + '" to restart NodeBB\n\n'.reset);
 
-switch(process.argv[2]) {
-	case 'status':
-		getRunningPid(function (err, pid) {
-			if (!err) {
-				process.stdout.write('\nNodeBB Running '.bold + '(pid '.cyan + pid.toString().cyan + ')\n'.cyan);
-				process.stdout.write('\t"' + './nodebb stop'.yellow + '" to stop the NodeBB server\n');
-				process.stdout.write('\t"' + './nodebb log'.yellow + '" to view server output\n');
-				process.stdout.write('\t"' + './nodebb restart'.yellow + '" to restart NodeBB\n\n');
-			} else {
-				process.stdout.write('\nNodeBB is not running\n'.bold);
-				process.stdout.write('\t"' + './nodebb start'.yellow + '" to launch the NodeBB server\n\n'.reset);
+			// Spawn a new NodeBB process
+			cproc.fork(__dirname + '/loader.js', {
+				env: process.env
+			});
+		},
+	},
+	stop: {
+		description: 'Stop the NodeBB server',
+		usage: 'Usage: ' + './nodebb stop'.yellow,
+		handler: function () {
+			getRunningPid(function (err, pid) {
+				if (!err) {
+					process.kill(pid, 'SIGTERM');
+					process.stdout.write('Stopping NodeBB. Goodbye!\n');
+				} else {
+					process.stdout.write('NodeBB is already stopped.\n');
+				}
+			});
+		},
+	},
+	restart: {
+		description: 'Restart the NodeBB server',
+		usage: 'Usage: ' + './nodebb restart'.yellow,
+		handler: function () {
+			getRunningPid(function (err, pid) {
+				if (!err) {
+					process.kill(pid, 'SIGHUP');
+					process.stdout.write('\nRestarting NodeBB\n'.bold);
+				} else {
+					process.stdout.write('NodeBB could not be restarted, as a running instance could not be found.\n');
+				}
+			});
+		},
+	},
+	log: {
+		description: 'Open the output log (useful for debugging)',
+		usage: 'Usage: ' + './nodebb log'.yellow,
+		handler: function () {
+			process.stdout.write('\nHit '.red + 'Ctrl-C '.bold + 'to exit'.red);
+			process.stdout.write('\n\n'.reset);
+			cproc.spawn('tail', ['-F', './logs/output.log'], {
+				cwd: __dirname,
+				stdio: 'inherit'
+			});
+		},
+	},
+	slog: {
+		description: 'Start the NodeBB server and view the live output log',
+		usage: 'Usage: ' + './nodebb slog'.yellow,
+		handler: function () {
+			process.stdout.write('\nStarting NodeBB with logging output\n'.bold);
+			process.stdout.write('\nHit '.red + 'Ctrl-C '.bold + 'to exit'.red);
+			process.stdout.write('\n\n'.reset);
+
+			// Spawn a new NodeBB process
+			cproc.fork(__dirname + '/loader.js', {
+				env: process.env
+			});
+			cproc.spawn('tail', ['-F', './logs/output.log'], {
+				cwd: __dirname,
+				stdio: 'inherit'
+			});
+		},
+	},
+	dev: {
+		description: 'Start NodeBB in verbose development mode',
+		usage: 'Usage: ' + './nodebb dev'.yellow,
+		handler: function () {
+			process.env.NODE_ENV = 'development';
+			cproc.fork(__dirname + '/loader.js', ['--no-daemon', '--no-silent'], {
+				env: process.env
+			});
+		},
+	},
+	build: {
+		description: 'Compile static assets (CSS, Javascript, etc)',
+		usage: 'Usage: ' + './nodebb build'.yellow + ' [js,clientCSS,acpCSS,tpl,lang]'.red + '\n' + 
+			'    e.g. ' + './nodebb build js,tpl'.yellow + '\tbuilds JS and templates\n' +
+			'         ' + './nodebb build'.yellow + '\t\tbuilds all targets\n',
+		handler: function () {
+			var arr = ['--build'].concat(process.argv.slice(3));
+			fork(arr);
+		},
+	},
+	setup: {
+		description: 'Run the NodeBB setup script',
+		usage: 'Usage: ' + './nodebb setup'.yellow,
+		handler: function () {
+			var arr = ['--setup'].concat(process.argv.slice(3));
+			fork(arr);
+		},
+	},
+	reset: {
+		description: 'Disable plugins and restore the default theme',
+		usage: 'Usage: ' + './nodebb reset '.yellow + '{-t|-p|-w|-s|-a}'.red + '\n' +
+			'    -t <theme>\tuse specified theme\n' +
+			'    -p <plugin>\tdisable specified plugin\n' +
+			'\n' +
+			'    -t\t\tuse default theme\n' +
+			'    -p\t\tdisable all but core plugins\n' +
+			'    -w\t\twidgets\n' +
+			'    -s\t\tsettings\n' +
+			'    -a\t\tall of the above\n',
+		handler: function () {
+			var arr = ['--reset'].concat(process.argv.slice(3));
+			fork(arr);
+		},
+	},
+	activate: {
+		description: 'Activate a plugin for the next startup of NodeBB',
+		usage: 'Usage: ' + './nodebb activate <plugin>'.yellow,
+		handler: function () {
+			var arr = ['--activate=' + args._[1]].concat(process.argv.slice(4));
+			fork(arr);
+		},
+	},
+	plugins: {
+		description: 'List all installed plugins',
+		usage: 'Usage: ' + './nodebb plugins'.yellow,
+		handler: function () {
+			var arr = ['--plugins'].concat(process.argv.slice(3));
+			fork(arr);
+		},
+	},
+	upgrade: {
+		description: 'Run NodeBB upgrade scripts, ensure packages are up-to-date',
+		usage: 'Usage: ' + './nodebb upgrade'.yellow,
+		handler: function () {
+			async.series([
+				function (next) {
+					process.stdout.write('1. '.bold + 'Bringing base dependencies up to date... '.yellow);
+					cproc.exec('npm i --production', { cwd: __dirname, stdio: 'ignore' }, next);
+				},
+				function (next) {
+					process.stdout.write('OK\n'.green);
+					process.stdout.write('2. '.bold + 'Checking installed plugins for updates... '.yellow);
+					upgradePlugins(next);
+				},
+				function (next) {
+					process.stdout.write('3. '.bold + 'Updating NodeBB data store schema...\n'.yellow);
+					var arr = ['--upgrade'].concat(process.argv.slice(3));
+					var upgradeProc = fork(arr);
+
+					upgradeProc.on('close', next);
+				}
+			], function (err) {
+				if (err) {
+					process.stdout.write('\nError'.red + ': ' + err.message + '\n');
+				} else {
+					var message = 'NodeBB Upgrade Complete!';
+					// some consoles will return undefined/zero columns, so just use 2 spaces in upgrade script if we can't get our column count
+					var columns = process.stdout.columns;
+					var spaces = columns ? new Array(Math.floor(columns / 2) - (message.length / 2) + 1).join(' ') : "  ";
+
+					process.stdout.write('OK\n'.green);
+					process.stdout.write('\n' + spaces + message.green.bold + '\n\n'.reset);
+				}
+			});
+		},
+	},
+	upgradePlugins: {
+		hidden: true,
+		description: '',
+		handler: function () {
+			upgradePlugins();
+		},
+	},
+	help: {
+		description: 'Display the help message for a given command',
+		usage: 'Usage: ' + './nodebb help <command>'.yellow,
+		handler: function () {
+			var command = commands[args._[1]];
+			if (command) {
+				process.stdout.write(command.description + '\n'.reset);
+				process.stdout.write(command.usage + '\n'.reset);
+
+				return;
 			}
-		});
-		break;
+			var keys = Object.keys(commands).filter(function (key) {
+				return !commands[key].hidden;
+			});
 
-	case 'start':
-		process.stdout.write('\nStarting NodeBB\n'.bold);
-		process.stdout.write('  "' + './nodebb stop'.yellow + '" to stop the NodeBB server\n');
-		process.stdout.write('  "' + './nodebb log'.yellow + '" to view server output\n');
-		process.stdout.write('  "' + './nodebb restart'.yellow + '" to restart NodeBB\n\n'.reset);
+			process.stdout.write('\nWelcome to NodeBB\n\n'.bold);
+			process.stdout.write('Usage: ./nodebb {' + keys.join('|') + '}\n\n');
 
-		// Spawn a new NodeBB process
-		cproc.fork(__dirname + '/loader.js', {
-			env: process.env
-		});
-		break;
-	
-	case 'slog':
-		process.stdout.write('\nStarting NodeBB with logging output\n'.bold);
-		process.stdout.write('\nHit '.red + 'Ctrl-C '.bold + 'to exit'.red);
-		process.stdout.write('\n\n'.reset);
+			var usage = keys.map(function (key) {
+				var line = '\t' + key.yellow + (key.length < 8 ? '\t\t' : '\t');
+				return line + commands[key].description;
+			}).join('\n');
 
-		// Spawn a new NodeBB process
-		cproc.fork(__dirname + '/loader.js', {
-			env: process.env
-		});
-		cproc.spawn('tail', ['-F', './logs/output.log'], {
-			cwd: __dirname,
-			stdio: 'inherit'
-		});
-		break;
+			process.stdout.write(usage + '\n'.reset);
+		},
+	},
+};
 
-	case 'stop':
-		getRunningPid(function (err, pid) {
-			if (!err) {
-				process.kill(pid, 'SIGTERM');
-				process.stdout.write('Stopping NodeBB. Goodbye!\n');
-			} else {
-				process.stdout.write('NodeBB is already stopped.\n');
-			}
-		});
-		break;
+commands['upgrade-plugins'] = commands.upgradePlugins;
 
-	case 'restart':
-		getRunningPid(function (err, pid) {
-			if (!err) {
-				process.kill(pid, 'SIGHUP');
-				process.stdout.write('\nRestarting NodeBB\n'.bold);
-			} else {
-				process.stdout.write('NodeBB could not be restarted, as a running instance could not be found.\n');
-			}
-		});
-		break;
-
-	case 'reload':
-		getRunningPid(function (err, pid) {
-			if (!err) {
-				process.kill(pid, 'SIGUSR2');
-			} else {
-				process.stdout.write('NodeBB could not be reloaded, as a running instance could not be found.\n');
-			}
-		});
-		break;
-
-	case 'dev':
-		process.env.NODE_ENV = 'development';
-		cproc.fork(__dirname + '/loader.js', ['--no-daemon', '--no-silent'], {
-			env: process.env
-		});
-		break;
-
-	case 'log':
-		process.stdout.write('\nHit '.red + 'Ctrl-C '.bold + 'to exit'.red);
-		process.stdout.write('\n\n'.reset);
-		cproc.spawn('tail', ['-F', './logs/output.log'], {
-			cwd: __dirname,
-			stdio: 'inherit'
-		});
-		break;
-
-	case 'build':
-		var args = process.argv.slice(0);
-		args[2] = '--' + args[2];
-
-		fork(args);
-		break;
-
-	case 'setup':
-		cproc.fork('app.js', ['--setup'], {
-			cwd: __dirname,
-			silent: false
-		});
-		break;
-
-	case 'reset':
-		var args = process.argv.slice(0);
-		args.unshift('--reset');
-		fork(args);
-		break;
-
-	case 'activate':
-		var args = process.argv.slice(0);
-		args.unshift('--activate=' + process.argv[3]);
-		fork(args);
-		break;
-
-	case 'plugins':
-		var args = process.argv.slice(0);
-		args.unshift('--plugins');
-		fork(args);
-		break;
-
-	case 'upgrade-plugins':
-		upgradePlugins();
-		break;
-
-	case 'upgrade':
-		async.series([
-			function (next) {
-				process.stdout.write('1. '.bold + 'Bringing base dependencies up to date... '.yellow);
-				cproc.exec('npm i --production', { cwd: __dirname, stdio: 'ignore' }, next);
-			},
-			function (next) {
-				process.stdout.write('OK\n'.green);
-				process.stdout.write('2. '.bold + 'Checking installed plugins for updates... '.yellow);
-				upgradePlugins(next);
-			},
-			function (next) {
-				process.stdout.write('3. '.bold + 'Updating NodeBB data store schema...\n'.yellow);
-				var upgradeProc = cproc.fork('app.js', ['--upgrade'], {
-					cwd: __dirname,
-					silent: false
-				});
-
-				upgradeProc.on('close', next);
-			}
-		], function (err) {
-			if (err) {
-				process.stdout.write('\nError'.red + ': ' + err.message + '\n');
-			} else {
-				var message = 'NodeBB Upgrade Complete!';
-				// some consoles will return undefined/zero columns, so just use 2 spaces in upgrade script if we can't get our column count
-				var columns = process.stdout.columns;
-				var spaces = columns ? new Array(Math.floor(columns / 2) - (message.length / 2) + 1).join(' ') : "  ";
-
-				process.stdout.write('OK\n'.green);
-				process.stdout.write('\n' + spaces + message.green.bold + '\n\n'.reset);
-			}
-		});
-		break;
-
-	default:
-		process.stdout.write('\nWelcome to NodeBB\n\n'.bold);
-		process.stdout.write('Usage: ./nodebb {start|slog|stop|reload|restart|log|build|setup|reset|upgrade|dev}\n\n');
-		process.stdout.write('\t' + 'start'.yellow + '\t\tStart the NodeBB server\n');
-		process.stdout.write('\t' + 'slog'.yellow + '\t\tStarts the NodeBB server and displays the live output log\n');
-		process.stdout.write('\t' + 'stop'.yellow + '\t\tStops the NodeBB server\n');
-		process.stdout.write('\t' + 'reload'.yellow + '\t\tRestarts NodeBB\n');
-		process.stdout.write('\t' + 'restart'.yellow + '\t\tRestarts NodeBB\n');
-		process.stdout.write('\t' + 'log'.yellow + '\t\tOpens the logging interface (useful for debugging)\n');
-		process.stdout.write('\t' + 'build'.yellow + '\t\tCompiles javascript, css stylesheets, and templates\n');
-		process.stdout.write('\t' + 'setup'.yellow + '\t\tRuns the NodeBB setup script\n');
-		process.stdout.write('\t' + 'reset'.yellow + '\t\tDisables all plugins, restores the default theme.\n');
-		process.stdout.write('\t' + 'activate'.yellow + '\tActivates a plugin for the next startup of NodeBB.\n');
-		process.stdout.write('\t' + 'plugins'.yellow + '\t\tList all plugins that have been installed.\n');
-		process.stdout.write('\t' + 'upgrade'.yellow + '\t\tRun NodeBB upgrade scripts, ensure packages are up-to-date\n');
-		process.stdout.write('\t' + 'dev'.yellow + '\t\tStart NodeBB in interactive development mode\n');
-		process.stdout.write('\n'.reset);
-		break;
+if (!commands[args._[0]]) {
+	commands.help.handler();
+} else {
+	commands[args._[0]].handler();
 }
