@@ -152,7 +152,7 @@ describe('Plugins', function () {
 	});
 
 	describe('static assets', function () {
-		it('should 404 if resource does not exist', function (done) {
+		it('should 404 if plugin does not exist', function (done) {
 			request.get(nconf.get('url') + '/plugins/doesnotexist/should404.tpl', function (err, res, body) {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 404);
@@ -162,7 +162,7 @@ describe('Plugins', function () {
 		});
 
 		it('should 404 if resource does not exist', function (done) {
-			request.get(nconf.get('url') + '/plugins/nodebb-plugin-dbsearch/dbsearch/templates/admin/plugins/should404.tpl', function (err, res, body) {
+			request.get(nconf.get('url') + '/plugins/nodebb-plugin-markdown/js/should404.js', function (err, res, body) {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 404);
 				assert(body);
@@ -171,7 +171,7 @@ describe('Plugins', function () {
 		});
 
 		it('should get resource', function (done) {
-			request.get(nconf.get('url') + '/plugins/nodebb-plugin-dbsearch/dbsearch/templates/admin/plugins/dbsearch.tpl', function (err, res, body) {
+			request.get(nconf.get('url') + '/plugins/nodebb-plugin-markdown/js/admin.js', function (err, res, body) {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 200);
 				assert(body);
