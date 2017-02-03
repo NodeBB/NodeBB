@@ -1,7 +1,7 @@
 {
 	"logs": "Kayıtlar",
-	"control-panel": "Logs Control Panel",
-	"reload": "Reload Logs",
+	"control-panel": "Kayıt Kontrol Paneli",
+	"reload": "Kayıtları Yeniden Yükle",
 	"clear": "Kayıtları Temizle",
 	"clear-success": "Kayıtlar Temizlendi!"
 }

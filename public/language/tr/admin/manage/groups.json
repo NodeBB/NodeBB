@@ -4,9 +4,9 @@
 	"system": "System Group",
 	"edit": "Düzenle",
 	"search-placeholder": "Ara",
-	"create": "Create Group",
+	"create": "Grup Oluştur",
 	"description-placeholder": "A short description about your group",
-	"create-button": "Create",
+	"create-button": "Oluştur",
 
 	"alerts.create-failure": "<strong>Uh-Oh</strong><p>There was a problem creating your group. Please try again later!</p>",
 	"alerts.confirm-delete": "Are you sure you wish to delete this group?",

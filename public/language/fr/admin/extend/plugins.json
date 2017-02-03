@@ -12,15 +12,15 @@
 	"reorder-plugins": "Re-ordonner les plugins",
 	"order-active": "Trier les plugins actifs",
 	"dev-interested": "Êtes-vous intéressés par l'écriture de plugins pour NodeBB ?",
-	"docs-info": "La documentation complete sur l'écriture de plugins peut être trouvée sur le<a target=\"_blank\" href=\"https://docs.nodebb.org/en/latest/plugins/create.html\">portail de documentation NodeBB</a>.",
+	"docs-info": "La documentation complète sur l'écriture de plugins peut être trouvée sur le<a target=\"_blank\" href=\"https://docs.nodebb.org/en/latest/plugins/create.html\">portail de documentation NodeBB</a>.",
 
-	"order.description": "Certains plugins fonctionnent de la meilleure façon lorsqu'ils sont initialisés avant/après d'autres plugins.",
-	"order.explanation": "Les plugins chargent dans l'ordre spécifié ici, de haut en bas.",
+	"order.description": "Certains plugins fonctionnent mieux lorsqu'ils sont initialisés avant/après d'autres plugins.",
+	"order.explanation": "Les plugins se chargent dans l'ordre spécifié, ici de haut en bas.",
 	
 	"plugin-item.themes": "Thèmes",
 	"plugin-item.deactivate": "Désactiver",
 	"plugin-item.activate": "Activer",
-	"plugin-item.install": "Install",
+	"plugin-item.install": "Installer",
 	"plugin-item.uninstall": "Désinstaller",
 	"plugin-item.settings": "Réglages",
 	"plugin-item.installed": "Installé",
@@ -28,7 +28,7 @@
 	"plugin-item.upgrade": "Mettre à jour",
 	"plugin-item.more-info": "Pour plus d'informations :",
 	"plugin-item.unknown": "Inconnu",
-	"plugin-item.unknown-explanation": "L'état de ce plugin n'a pas pu être déterminé, possiblement à cause une erreur de configuration.",
+	"plugin-item.unknown-explanation": "L'état de ce plugin n'a pas pu être déterminé, possiblement à cause d'une erreur de configuration.",
 
 	"alert.enabled": "Plugin activé",
 	"alert.disabled": "Plugin désactivé",
@@ -39,9 +39,9 @@
 	"alert.deactivate-success": "Plugin désactivé avec succès",
 	"alert.upgrade-success": "Veuillez recharger votre NodeBB pour achever la mise à jour de ce plugin.",
 	"alert.install-success": "Plugin installé avec succès, veuillez maintenant l'activer.",
-	"alert.uninstall-success": "Le plugin a été désactivé et desinstallé avec succès.",
-	"alert.suggest-error": "<p>NodeBB n'a pas pu joindre le gestionnaire de paquets, procéder à l'installation de la dernière version ?</p><div class=\"alert alert-danger\"><strong>Le serveur a retourné (%1)</strong> : %2</div>",
+	"alert.uninstall-success": "Le plugin a été désactivé et désinstallé avec succès.",
+	"alert.suggest-error": "<p>NodeBB n'a pas pu joindre le gestionnaire de paquets, procéder à l'installation de la dernière version ?</p><div class=\"alert alert-danger\"><strong>Le serveur a répondu (%1)</strong> : %2</div>",
 	"alert.package-manager-unreachable": "<p>NodeBB n'a pas pu joindre le gestionnaire de paquets, une mise à jour n'est pas suggérée pour le moment.</p>",
 	"alert.incompatible": "<p>Votre version de NodeBB (v%1) ne peut mettre à jour que vers la version v%2 de ce plugin. Veuillez mettre à jour NodeBB si vous souhaitez installer une version plus récente de ce plugin.</p>",
-	"alert.possibly-incompatible": "<div class=\"alert alert-warning\"><p><strong>Aucune information de compatibilité trouvée</strong></p><p>Ce plugin n'a pas spécifié de version pour une installation sur votre version de NodeBB. Aucune compatibilité ne peut être garantie, et ce plugin pourrait empêcher NodeBB de démarrer correctement.</p></div><p>Dans l'éventualité où NodeBB ne pourrait pas démarrer proprement :</p><pre><code>$ ./nodebb reset plugin=\"%1\"</code></pre><p>Voulez-vous continuer l'installation de ce plugin ?</p>"
+	"alert.possibly-incompatible": "<div class=\"alert alert-warning\"><p><strong>Aucune information de compatibilité trouvée</strong></p><p>Ce plugin n'a pas spécifié de version pour une installation sur votre version de NodeBB. Aucune compatibilité ne peut être garantie et ce plugin pourrait empêcher NodeBB de démarrer correctement.</p></div><p>Dans l'éventualité où NodeBB ne pourrait pas démarrer proprement :</p><pre><code>$ ./nodebb reset plugin=\"%1\"</code></pre><p>Voulez-vous continuer l'installation de ce plugin ?</p>"
 }

@@ -197,11 +197,8 @@ function uploadFile(uid, uploadedFile, callback) {
 
 	if (meta.config.hasOwnProperty('allowedFileExtensions')) {
 		var allowed = file.allowedExtensions();
-		var extension = path.extname(uploadedFile.name);
-		if (!extension) {
-			extension = '.' + mime.extension(uploadedFile.type);
-		}
-		if (allowed.length > 0 && allowed.indexOf(extension) === -1) {
+		var extension = typeToExtension(uploadedFile.type);
+		if (!extension || (allowed.length > 0 && allowed.indexOf(extension) === -1)) {
 			return callback(new Error('[[error:invalid-file-type, ' + allowed.join('&#44; ') + ']]'));
 		}
 	}
@@ -210,14 +207,13 @@ function uploadFile(uid, uploadedFile, callback) {
 }
 
 function saveFileToLocal(uploadedFile, callback) {
-	var extension = path.extname(uploadedFile.name);
-	if (!extension && uploadedFile.type) {
-		extension = '.' + mime.extension(uploadedFile.type);
+	var extension = typeToExtension(uploadedFile.type);
+	if (!extension) {
+		return callback(new Error('[[error:invalid-extension]]'));
 	}
-
 	var filename = uploadedFile.name || 'upload';
 
-	filename = Date.now() + '-' + validator.escape(filename.replace(extension, '')).substr(0, 255) + extension;
+	filename = Date.now() + '-' + validator.escape(filename.replace(path.extname(uploadedFile.name) || '', '')).substr(0, 255) + extension;
 
 	file.saveFileToLocal(filename, 'files', uploadedFile.path, function (err, upload) {
 		if (err) {
@@ -230,6 +226,14 @@ function saveFileToLocal(uploadedFile, callback) {
 			name: uploadedFile.name
 		});
 	});
+}
+
+function typeToExtension(type) {
+	var extension;
+	if (type) {
+		extension = '.' + mime.extension(type);
+	}
+	return extension;
 }
 
 function deleteTempFiles(files) {

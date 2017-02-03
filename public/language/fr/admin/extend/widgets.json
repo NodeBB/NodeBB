@@ -1,9 +1,9 @@
 {
 	"available": "Widgets disponibles",
-	"explanation": "Sélectionnez un widget depuis le menu puis glissez déposez-le dans une zone template du widget à gauche.",
+	"explanation": "Sélectionnez un widget depuis le menu puis glissez-déposez le dans une zone template du widget à gauche.",
 	"none-installed": "Aucun widget trouvé ! Activez le plugin widgets essentiels dans le panneau de contrôle <a href=\"%1\">plugins</a>.",
 	"containers.available": "Conteneurs disponibles",
-	"containers.explanation": "Glissez déposez sur n'importe quel widget actif",
+	"containers.explanation": "Glissez-déposez sur n'importe quel widget actif",
 	"containers.none": "Aucun",
 	"container.well": "Well",
 	"container.jumbotron": "Jombotron",

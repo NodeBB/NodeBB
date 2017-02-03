@@ -1,27 +1,27 @@
 {
 	"icon": "Icon:",
-	"change-icon": "change",
-	"route": "Route:",
+	"change-icon": "ändern",
+	"route": "Pfad:",
 	"tooltip": "Tooltip:",
 	"text": "Text:",
-	"text-class": "Text Class: <small>optional</small>",
+	"text-class": "Text Stil: <small>optional</small>",
 	"id": "ID: <small>optional</small>",
 
-	"properties": "Properties:",
-	"only-admins": "Only display to Admins",
-	"only-global-mods-and-admins": "Only display to Global Moderators and Admins",
-	"only-logged-in": "Only display to logged in users",
-	"open-new-window": "Open in a new window",
+	"properties": "Eigenschaften:",
+	"only-admins": "Nur sichtbar für Admins",
+	"only-global-mods-and-admins": "Nur sichtbar für Globale Moderatoren und Admins",
+	"only-logged-in": "Nur sichtbar für angemeldete Benutzer",
+	"open-new-window": "In neuem Fenster öffnen",
 
-	"installed-plugins-required": "Installed Plugins Required:",
+	"installed-plugins-required": "Installierte Plugins notwendig:",
 	"search-plugin": "Search plugin",
 
-	"btn.delete": "Delete",
-	"btn.disable": "Disable",
-	"btn.enable": "Enable",
+	"btn.delete": "Löschen",
+	"btn.disable": "Deaktivieren",
+	"btn.enable": "Aktivieren",
 
-	"available-menu-items": "Available Menu Items",
-	"custom-route": "Custom Route",
-	"core": "core",
-	"plugin": "plugin"
+	"available-menu-items": "Verfügbare Menüpunkte",
+	"custom-route": "Benutzerdefinierter Pfad",
+	"core": "Kern",
+	"plugin": "Plugin"
 }

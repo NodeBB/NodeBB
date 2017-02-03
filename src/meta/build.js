@@ -14,9 +14,9 @@ exports.buildAll = function (callback) {
 exports.build = function build(targets, callback) {
 	buildStart = Date.now();
 
-	var db = require('./src/database');
-	var meta = require('./src/meta');
-	var plugins = require('./src/plugins');
+	var db = require('../database');
+	var meta = require('../meta');
+	var plugins = require('../plugins');
 
 
 	targets = (targets === true ? valid : targets.split(',').filter(function (target) {
@@ -43,9 +43,8 @@ exports.build = function build(targets, callback) {
 };
 
 exports.buildTargets = function (targets, callback) {
-	var meta = require('./src/meta');
-	var cacheBuster = require('./src/meta/cacheBuster');
-
+	var cacheBuster = require('./cacheBuster');
+	var meta = require('../meta');
 	buildStart = buildStart || Date.now();
 
 	var step = function (startTime, target, next, err) {

@@ -69,10 +69,10 @@
 
 	helpers.stripTags = function (str) {
 		if (typeof S !== 'undefined') {
-			return S(str).stripTags().s;
+			return S(String(str)).stripTags().s;
 		} else {
 			var S = require('string');
-			return S(str).stripTags().s;
+			return S(String(str)).stripTags().s;
 		}
 	};
 

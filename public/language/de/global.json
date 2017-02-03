@@ -100,8 +100,8 @@
     "unsaved-changes": "Es gibt ungespeicherte Änderungen. Bist du dir sicher, dass du die Seite verlassen willst?",
     "reconnecting-message": "Es scheint als hättest du die Verbindung zu %1 verloren, bitte warte während wir versuchen sie wieder aufzubauen.",
     "play": "Play",
-    "cookies.message": "This website uses cookies to ensure you get the best experience on our website.",
-    "cookies.accept": "Got it!",
-    "cookies.learn_more": "Learn More",
-    "edited": "Edited"
+    "cookies.message": "Diese Website verwendet Cookies, um sicherzustellen, dass du die besten Erfahrungen auf unserer Website machst.",
+    "cookies.accept": "Verstanden!",
+    "cookies.learn_more": "Erfahre mehr",
+    "edited": "Bearbeitet"
 }

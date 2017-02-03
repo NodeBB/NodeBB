@@ -29,7 +29,7 @@
     "username-too-long": "Benutzername ist zu lang",
     "password-too-long": "Passwort ist zu lang",
     "user-banned": "Benutzer ist gesperrt",
-    "user-banned-reason": "Sorry, this account has been banned (Reason: %1)",
+    "user-banned-reason": "Entschuldige, dieses Konto wurde gebannt (Grund: %1)",
     "user-too-new": "Entschuldigung, du musst %1 Sekunde(n) warten, bevor du deinen ersten Beitrag schreiben kannst.",
     "blacklisted-ip": "Deine IP-Adresse ist für diese Plattform gesperrt. Sollte dies ein Irrtum sein, dann kontaktiere bitte einen Administrator.",
     "ban-expiry-missing": "Bitte gebe ein Enddatum für diesen Ban an",

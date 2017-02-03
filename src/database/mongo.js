@@ -47,7 +47,7 @@
 	module.helpers.mongo = require('./mongo/helpers');
 
 	module.init = function (callback) {
-		callback = callback || function () {};
+		callback = callback || function () { };
 		var mongoClient;
 		try {
 			mongoClient = require('mongodb').MongoClient;
@@ -111,38 +111,46 @@
 					if (err) {
 						return callback(err);
 					}
-					createSessionStore();					
+					callback();
 				});
 			} else {
 				winston.warn('You have no mongo password setup!');
-				createSessionStore();
-			}
-
-			function createSessionStore() {
-				var sessionStore;
-				if (nconf.get('redis')) {
-					sessionStore = require('connect-redis')(session);
-					var rdb = require('./redis');
-					rdb.client = rdb.connect();
-
-					module.sessionStore = new sessionStore({
-						client: rdb.client,
-						ttl: 60 * 60 * 24 * 14
-					});
-				} else if (nconf.get('mongo')) {
-					sessionStore = require('connect-mongo')(session);
-					module.sessionStore = new sessionStore({
-						db: db
-					});
-				}
 				callback();
-			}			
+			}
 		});
+	};
+
+	module.initSessionStore = function (callback) {
+		var meta = require('../meta');
+		var sessionStore;
+
+		var ttlDays = 1000 * 60 * 60 * 24 * (parseInt(meta.config.loginDays, 10) || 0);
+		var ttlSeconds = 1000 * (parseInt(meta.config.loginSeconds, 10) || 0);
+		var ttl = ttlSeconds || ttlDays || 1209600000; // Default to 14 days
+
+		if (nconf.get('redis')) {
+			sessionStore = require('connect-redis')(session);
+			var rdb = require('./redis');
+			rdb.client = rdb.connect();
+
+			module.sessionStore = new sessionStore({
+				client: rdb.client,
+				ttl: ttl
+			});
+		} else if (nconf.get('mongo')) {
+			sessionStore = require('connect-mongo')(session);
+			module.sessionStore = new sessionStore({
+				db: db,
+				ttl: ttl
+			});
+		}
+
+		callback();
 	};
 
 	module.createIndices = function (callback) {
 		function createIndex(collection, index, options, callback) {
-			module.client.collection(collection).createIndex(index, options, callback);				
+			module.client.collection(collection).createIndex(index, options, callback);
 		}
 
 		if (!module.client) {
@@ -152,9 +160,9 @@
 
 		winston.info('[database] Checking database indices.');
 		async.series([
-			async.apply(createIndex, 'objects', {_key: 1, score: -1}, {background: true}),
-			async.apply(createIndex, 'objects', {_key: 1, value: -1}, {background: true, unique: true, sparse: true}),
-			async.apply(createIndex, 'objects', {expireAt: 1}, {expireAfterSeconds: 0, background: true})
+			async.apply(createIndex, 'objects', { _key: 1, score: -1 }, { background: true }),
+			async.apply(createIndex, 'objects', { _key: 1, value: -1 }, { background: true, unique: true, sparse: true }),
+			async.apply(createIndex, 'objects', { expireAt: 1 }, { expireAfterSeconds: 0, background: true })
 		], function (err) {
 			if (err) {
 				winston.error('Error creating index ' + err.message);
@@ -162,16 +170,16 @@
 			}
 			winston.info('[database] Checking database indices done!');
 			callback();
-		});			
+		});
 	};
 
 	module.checkCompatibility = function (callback) {
 		var mongoPkg = require.main.require('./node_modules/mongodb/package.json');
-		
+
 		if (semver.lt(mongoPkg.version, '2.0.0')) {
 			return callback(new Error('The `mongodb` package is out-of-date, please run `./nodebb setup` again.'));
 		}
-		
+
 		callback();
 	};
 
@@ -181,10 +189,10 @@
 		}
 		async.parallel({
 			serverStatus: function (next) {
-				db.command({'serverStatus': 1}, next);
+				db.command({ 'serverStatus': 1 }, next);
 			},
 			stats: function (next) {
-				db.command({'dbStats': 1}, next);
+				db.command({ 'dbStats': 1 }, next);
 			},
 			listCollections: function (next) {
 				db.listCollections().toArray(function (err, items) {
@@ -239,4 +247,4 @@
 		db.close();
 	};
 
-}(exports));
+} (exports));

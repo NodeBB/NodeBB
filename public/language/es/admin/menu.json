@@ -1,7 +1,7 @@
 {
 	"section-general": "General",
 	"general/dashboard": "Panel",
-	"general/homepage": "Página Inicial",
+	"general/homepage": "Inicio",
 	"general/navigation": "Navegación",
 	"general/languages": "Lenguajes",
 	"general/sounds": "Sonidos",
@@ -13,7 +13,7 @@
 	"manage/users": "Usuarios",
 	"manage/registration": "Cola de Registro",
 	"manage/groups": "Grupos",
-	"manage/flags": "Banderas",
+	"manage/flags": "Reportes",
 	"manage/ip-blacklist": "Lista negra de IP",
 
 	"section-settings": "Opciones",
@@ -24,39 +24,39 @@
 	"settings/group": "Grupo",
 	"settings/guest": "Invitados",
 	"settings/uploads": "Subidas",
-	"settings/post": "Anuncio",
+	"settings/post": "Mensaje",
 	"settings/chat": "Chat",
 	"settings/pagination": "Paginación",
 	"settings/tags": "Etiquetas",
 	"settings/notifications": "Notificaciones",
 	"settings/cookies": "Cookies",
-	"settings/web-crawler": "Web Crawler",
-	"settings/sockets": "Zócalos",
+	"settings/web-crawler": "Rastreador web",
+	"settings/sockets": "Sockets",
 	"settings/advanced": "Avanzado",
 
 	"settings.page-title": "%1 Opciones",
 
 	"section-appearance": "Apariencia",
 	"appearance/themes": "Temas",
-	"appearance/skins": "Skins",
+	"appearance/skins": "Pieles",
 	"appearance/customise": "HTML & CSS personalizado",
 
 	"section-extend": "Extender",
-	"extend/plugins": "Plugins",
+	"extend/plugins": "Extensiones",
 	"extend/widgets": "Widgets",
 	"extend/rewards": "Recompensas",
 
 	"section-social-auth": "Autentificación Social",
 
-	"section-plugins": "Plugins",
-	"extend/plugins.install": "Instalar plugins",
+	"section-plugins": "Extensiones",
+	"extend/plugins.install": "Instalar extensiones",
 
 	"section-advanced": "Avanzado",
 	"advanced/database": "Base de datos",
 	"advanced/events": "Eventos",
 	"advanced/logs": "Registros",
 	"advanced/errors": "Errores",
-	"advanced/cache": "Cache",
+	"advanced/cache": "Caché",
 	"development/logger": "Registro",
 	"development/info": "Información",
 
@@ -67,9 +67,9 @@
 
 	"search.placeholder": "Buscar...",
 	"search.no-results": "Sin resultados...",
-	"search.search-forum": "Search the forum for <strong></strong>",
+	"search.search-forum": "Buscar en el foro <strong></strong>",
 	"search.keep-typing": "Escribe más para ver resultados...",
 	"search.start-typing": "Empieza a escribir para ver resultados...",
 
-	"connection-lost": "La connexión a %1 se ha perdido, intentando reconectarse..."
+	"connection-lost": "La conexión a %1 se ha perdido, intentando reconectar..."
 }

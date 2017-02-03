@@ -1,8 +1,8 @@
 {
-	"post-cache": "发帖",
+	"post-cache": "帖子缓存",
 	"posts-in-cache": "缓存中的帖子",
 	"average-post-size": "平均帖子长度",
-	"length-to-max": "长度/最大值",
+	"length-to-max": "长度 / 最大值",
 	"percent-full": "%1% 容量",
 	"post-cache-size": "帖子缓存大小",
 	"items-in-cache": "缓存中的条目数量",

@@ -1,5 +1,5 @@
 {
-	"crawlability-settings": "Crawlability Settings",
+	"crawlability-settings": "クロール性の設定",
 	"robots-txt": "Custom Robots.txt <small>Leave blank for default</small>",
 	"sitemap-feed-settings": "Sitemap & Feed Settings",
 	"disable-rss-feeds": "Disable RSS Feeds",

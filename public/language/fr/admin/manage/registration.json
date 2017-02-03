@@ -1,11 +1,11 @@
 {
-	"queue": "Queue",
-	"description": "There are no users in the registration queue. <br> To enable this feature, go to <a href=\"%1\">Settings &rarr; User &rarr; User Registration</a> and set <strong>Registration Type</strong> to \"Admin Approval\".",
+	"queue": "File d'attente",
+	"description": "Il n'y a aucun utilisateur dans la file d'inscription.<br> Pour activer cette fonctionnalité, allez dans <a href=\"%1\">Paramètres &rarr; Utilisateurs &rarr; inscription des utilisateurs</a> et définissez <strong>Type d'inscription</strong> en \"Approbation par l'administrateur\".",
 
-	"list.name": "Name",
-	"list.email": "Email",
+	"list.name": "Nom",
+	"list.email": "E-mail",
 	"list.ip": "IP",
-	"list.time": "Time",
+	"list.time": "Date",
 	"list.username-spam": "Frequency: %1 Appears: %2 Confidence: %3",
 	"list.email-spam": "Frequency: %1 Appears: %2",
 	"list.ip-spam": "Frequency: %1 Appears: %2",
@@ -16,5 +16,5 @@
 	"invitations.invitee-email": "Invitee Email",
 	"invitations.invitee-username": "Invitee Username (if registered)",
 
-	"invitations.confirm-delete": "Are you sure you wish to delete this invitation?"
+	"invitations.confirm-delete": "Êtes-vous sûr de vouloir supprimer l'invitation ?"
 } 

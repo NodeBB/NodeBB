@@ -1,16 +1,16 @@
 {
-	"you-are-on": "Info - You are on <strong>%1:%2</strong>",
-	"host": "host",
+	"you-are-on": "お知らせ - あなたは<strong>%1:%2</strong>",
+	"host": "ホスト",
 	"pid": "pid",
 	"nodejs": "nodejs",
-	"online": "online",
+	"online": "オンライン",
 	"git": "git",
-	"load": "load",
-	"uptime": "uptime",
+	"load": "ロード",
+	"uptime": "稼働時間",
 
-	"registered": "Registered",
-	"sockets": "Sockets",
-	"guests": "Guests",
+	"registered": "登録数",
+	"sockets": "ソケット数",
+	"guests": "ゲスト数",
 
-	"info": "Info"
+	"info": "情報"
 }

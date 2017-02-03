@@ -1,9 +1,9 @@
 {
-	"pagination": "Pagination Settings",
-	"enable": "Paginate topics and posts instead of using infinite scroll.",
-	"topics": "Topic Pagination",
-	"posts-per-page": "Posts per Page",
-	"categories": "Category Pagination",
-	"topics-per-page": "Topics per Page",
-	"initial-num-load": "Initial Number of Topics to Load on Unread, Recent, and Popular"
+	"pagination": "分页设置",
+	"enable": "在主题和帖子使用分页替代无限滚动浏览。",
+	"topics": "话题分页",
+	"posts-per-page": "每页帖子数",
+	"categories": "板块分页",
+	"topics-per-page": "每页主题数",
+	"initial-num-load": "最初加载未读，最新，热门的话题"
 }

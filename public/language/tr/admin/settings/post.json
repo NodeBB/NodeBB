@@ -1,6 +1,6 @@
 {
-	"sorting": "Post Sorting",
-	"sorting.post-default": "Default Post Sorting",
+	"sorting": "İleti Sıralama",
+	"sorting.post-default": "Varsayılan İleti Sıralama",
 	"sorting.oldest-to-newest": "Oldest to Newest",
 	"sorting.newest-to-oldest": "Newest to Oldest",
 	"sorting.most-votes": "Most Votes",

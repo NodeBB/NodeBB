@@ -212,7 +212,9 @@ Controllers.registerInterstitial = function (req, res, next) {
 		}
 
 		if (!data.interstitials.length) {
-			return next();
+			// No interstitials, redirect to home
+			delete req.session.registration;
+			return res.redirect('/');
 		}
 
 		var renders = data.interstitials.map(function (interstitial) {

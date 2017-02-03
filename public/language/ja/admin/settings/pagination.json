@@ -1,7 +1,7 @@
 {
-	"pagination": "Pagination Settings",
+	"pagination": "ページ設定",
 	"enable": "Paginate topics and posts instead of using infinite scroll.",
-	"topics": "Topic Pagination",
+	"topics": "トピックページ",
 	"posts-per-page": "Posts per Page",
 	"categories": "Category Pagination",
 	"topics-per-page": "Topics per Page",

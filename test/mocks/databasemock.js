@@ -101,6 +101,9 @@
 				meta.configs.init(next);
 			},
 			function (next) {
+				db.initSessionStore(next);
+			},
+			function (next) {
 				meta.dependencies.check(next);
 			},
 			function (next) {
@@ -140,7 +143,7 @@
 				nconf.set('theme_config', path.join(nconf.get('themes_path'), 'nodebb-theme-persona', 'theme.json'));
 				nconf.set('bcrypt_rounds', 1);
 
-				require('../../build').buildAll(next);
+				next();
 			},
 			function (next) {
 				var	webserver = require('../../src/webserver');

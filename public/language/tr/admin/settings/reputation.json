@@ -1,7 +1,7 @@
 {
-	"reputation": "Reputation Settings",
+	"reputation": "Oylama Ayarları",
 	"disable": "Disable Reputation System",
-	"disable-down-voting": "Disable Down Voting",
+	"disable-down-voting": "Eksi oyu devredışı bırak",
 	"thresholds": "Activity Thresholds",
 	"min-rep-downvote": "Minimum reputation to downvote posts",
 	"min-rep-flag": "Minimum reputation to flag posts"

@@ -1,10 +1,10 @@
 {
 	"forum-traffic": "论坛流量",
-	"page-views": "页面察看",
+	"page-views": "PV 数量",
 	"unique-visitors": "单一访客",
-	"page-views-last-month": "上个月页面察看",
-	"page-views-this-month": "本月页面察看",
-	"page-views-last-day": "过去24小时页面察看",
+	"page-views-last-month": "上个月 PV 数量",
+	"page-views-this-month": "本月 PV 数量",
+	"page-views-last-day": "过去24小时 PV 数量",
 
 	"stats.day": "日",
 	"stats.week": "周",
@@ -12,21 +12,21 @@
 	"stats.all": "总计",
 	
 	"updates": "更新",
-	"running-version": "你正在使用<strong>NodeBB v<span id=\"version\">%1</span></strong>.",
-	"keep-updated": "请确保NodeBB的版本保持最新以便获得最新的安全补丁和bug修复。",
+	"running-version": "你正在使用 <strong>NodeBB v<span id=\"version\">%1</span> </strong>.",
+	"keep-updated": "请确保您已及时更新 NodeBB 以获得最新的安全补丁与 Bug 修复。",
 	"up-to-date": "<p>正在使用 <strong>最新版本</strong> <i class=\"fa fa-check\"></i></p>",
 	"upgrade-available": "<p>新的版本已经发布 (v%1). 请考虑<a href=\"https://docs.nodebb.org/en/latest/upgrading/index.html\">更新你的 NodeBB</a>。</p>",
 	"prerelease-upgrade-available": "<p>你正在使用NodeBB过期的测试版。新的版本已经发布 (v%1). 请考虑<a href=\"https://docs.nodebb.org/en/latest/upgrading/index.html\">更新你的 NodeBB</a>。</p>",
-	"prerelease-warning": "<p>正在使用<strong>测试版</strong> NodeBB。可能会出现意外的bug。<i class=\"fa fa-exclamation-triangle\"></i></p>",
+	"prerelease-warning": "<p>正在使用<strong>测试版</strong> NodeBB。可能会出现意外的 Bug。<i class=\"fa fa-exclamation-triangle\"></i></p>",
 
-	"notices": "告知",
+	"notices": "提醒",
 
 	"control-panel": "系统控制",
-	"reload": "重新载入",
+	"reload": "重载",
 	"restart": "重启",
-	"restart-warning": "重新载入或重启NodeBB会丢弃数秒内所有的连接。",
+	"restart-warning": "重新载入或重启 NodeBB 会丢弃数秒内所有的连接。",
 	"maintenance-mode": "维护模式",
-	"maintenance-mode-title": "点击此处设置NodeBB的维护模式",
+	"maintenance-mode-title": "点击此处设置 NodeBB 的维护模式",
 	"realtime-chart-updates": "实时图表更新",
 
 	"active-users": "活跃用户",
@@ -35,7 +35,7 @@
 	"active-users.total": "全部",
 	"active-users.connections": "连接",
 
-	"anonymous-registered-users": "匿名　vs　注册用户",
+	"anonymous-registered-users": "匿名 vs 注册用户",
 	"anonymous": "匿名",
 	"registered": "已注册",
 
@@ -46,7 +46,7 @@
 	"recent": "最近",
 	"unread": "未读",
 
-	"high-presence-topics": "高频话题",
+	"high-presence-topics": "热门话题",
 
 	"graphs.page-views": "页面察看",
 	"graphs.unique-visitors": "单一访客",

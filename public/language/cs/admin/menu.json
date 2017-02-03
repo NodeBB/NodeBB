@@ -65,11 +65,11 @@
 	"logout": "Log out",
 	"view-forum": "View Forum",
 
-	"search.placeholder": "Search...",
-	"search.no-results": "No results...",
+	"search.placeholder": "Hledat",
+	"search.no-results": "Žádné výsledky…",
 	"search.search-forum": "Search the forum for <strong></strong>",
-	"search.keep-typing": "Type more to see results...",
-	"search.start-typing": "Start typing to see results...",
+	"search.keep-typing": "Pište dále pro zobrazení výsledků…",
+	"search.start-typing": "Začněte psát pro zobrazení výsledků…",
 
-	"connection-lost": "Connection to %1 has been lost, attempting to reconnect..."
+	"connection-lost": "Připojení k %1 bylo ztraceno. Snaha o opětovné připojení…"
 }

@@ -5,12 +5,12 @@
 	"nodejs": "nodejs",
 	"online": "online",
 	"git": "git",
-	"load": "load",
+	"load": "obciążenie",
 	"uptime": "uptime",
 
-	"registered": "Registered",
-	"sockets": "Sockets",
-	"guests": "Guests",
+	"registered": "Zarejestrowane",
+	"sockets": "Sockety",
+	"guests": "Goście",
 
-	"info": "Info"
+	"info": "Informacja"
 }
