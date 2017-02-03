@@ -2,7 +2,7 @@
 
 /* globals define, ajaxify, socket, app, config, templates, bootbox */
 
-define('forum/account/edit', ['forum/account/header', 'uploader', 'translator', 'components'], function (header, uploader, translator, components) {
+define('forum/account/edit', ['forum/account/header', 'uploader', 'translator', 'components', 'cropper'], function (header, uploader, translator, components, cropper) {
 	var AccountEdit = {};
 
 	AccountEdit.init = function () {
@@ -210,6 +210,38 @@ define('forum/account/edit', ['forum/account/header', 'uploader', 'translator', 
 				updateHeader();
 			}
 		}
+		
+		function handleImageCrop(data) {
+			templates.parse('partials/modals/crop_uploaded_picture', {url: data.url}, function (cropperHtml) {
+				translator.translate(cropperHtml, function(translated) {
+					var cropperModal = $(translated);
+					cropperModal.modal('show');
+					
+					var img = document.getElementById('cropped-image');
+					var cropperTool = new cropper.default(img, {});
+					
+					cropperModal.find('.crop-btn').on('click', function () {
+						$(this).addClass('disabled');
+						var imageData = data.imageType ? cropperTool.getCroppedCanvas().toDataURL(data.imageType) : cropperTool.getCroppedCanvas().toDataURL();
+						
+						cropperModal.find('#upload-progress-bar').css('width', '100%');
+						cropperModal.find('#upload-progress-box').show().removeClass('hide');
+						
+						socket.emit('user.uploadCroppedPicture', {
+							uid: ajaxify.data.theirid,
+							imageData: imageData
+						}, function (err, imageData) {
+							if (err) {
+								app.alertError(err.message);
+							}
+							
+							onUploadComplete(imageData.url);
+							cropperModal.modal('hide');
+						});
+					});
+				});
+			});
+		}
 
 		modal.find('[data-action="upload"]').on('click', function () {
 			modal.modal('hide');
@@ -221,8 +253,8 @@ define('forum/account/edit', ['forum/account/header', 'uploader', 'translator', 
 				title: '[[user:upload_picture]]',
 				description: '[[user:upload_a_picture]]',
 				accept: '.png,.jpg,.bmp'
-			}, function (imageUrlOnServer) {
-				onUploadComplete(imageUrlOnServer);
+			}, function (data) {
+				handleImageCrop(data);
 			});
 
 			return false;
@@ -240,15 +272,10 @@ define('forum/account/edit', ['forum/account/header', 'uploader', 'translator', 
 						if (!url) {
 							return;
 						}
-						socket.emit('user.uploadProfileImageFromUrl', {url: url, uid: ajaxify.data.theirid}, function (err, imageUrlOnServer) {
-							if (err) {
-								return app.alertError(err.message);
-							}
-							onUploadComplete(imageUrlOnServer);
-
-							uploadModal.modal('hide');
-						});
-
+						
+						uploadModal.modal('hide');
+						handleImageCrop({url: url});
+						
 						return false;
 					});
 				});
