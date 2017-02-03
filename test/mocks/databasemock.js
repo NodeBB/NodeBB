@@ -143,7 +143,7 @@
 				nconf.set('theme_config', path.join(nconf.get('themes_path'), 'nodebb-theme-persona', 'theme.json'));
 				nconf.set('bcrypt_rounds', 1);
 
-				require('../../build').buildTargets(['js', 'clientCSS', 'acpCSS', 'tpl'], next);
+				require('../../build').buildAll(next);
 			},
 			function (next) {
 				var	webserver = require('../../src/webserver');

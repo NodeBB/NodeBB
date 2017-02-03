@@ -1,6 +1,6 @@
 {
-	"none": "Your forum does not have any topics with tags yet.",
-	"bg-color": "Background Colour",
+	"none": "Forumda henüz etiketli herhangi bir başlık yok.",
+	"bg-color": "Arkaplan Rengi",
 	"text-color": "Yazı Rengi",
 	"create-modify": "Create & Modify Tags",
 	"description": "Select tags via clicking and/or dragging, use shift to select multiple.",
