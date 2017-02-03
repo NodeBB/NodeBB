@@ -218,7 +218,10 @@ define('forum/account/edit', ['forum/account/header', 'uploader', 'translator', 
 					cropperModal.modal('show');
 					
 					var img = document.getElementById('cropped-image');
-					var cropperTool = new cropper.default(img, {});
+					var cropperTool = new cropper.default(img, {
+						aspectRatio: 1 / 1,
+						viewMode: 1
+					});
 					
 					cropperModal.find('.crop-btn').on('click', function () {
 						$(this).addClass('disabled');
