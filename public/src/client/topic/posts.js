@@ -99,6 +99,11 @@ define('forum/topic/posts', [
 	function onNewPostInfiniteScroll(data) {
 		var direction = config.topicPostSort === 'oldest_to_newest' || config.topicPostSort === 'most_votes' ? 1 : -1;
 
+		var isPreviousPostAdded = $('[component="post"][data-index="' + (data.posts[0].index - 1) + '"]').length;
+		if (!isPreviousPostAdded && (!data.posts[0].selfPost || !ajaxify.data.scrollToMyPost)) {
+			return;
+		}
+
 		createNewPosts(data, components.get('post').not('[data-index=0]'), direction, function (html) {
 			if (html) {
 				html.addClass('new');
@@ -109,11 +114,7 @@ define('forum/topic/posts', [
 	}
 
 	function scrollToPostIfSelf(post) {
-		if (!ajaxify.data.scrollToMyPost) {
-			return;
-		}
-		var isSelfPost = parseInt(post.uid, 10) === parseInt(app.user.uid, 10);
-		if (isSelfPost) {
+		if (post.selfPost && ajaxify.data.scrollToMyPost) {
 			navigator.scrollBottom(post.index);
 		}
 	}
