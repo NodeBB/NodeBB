@@ -98,7 +98,8 @@ module.exports = function (grunt) {
 			},
 			langUpdated: {
 				files: [
-					'public/language/**/*.json',
+					'public/language/en-GB/*.json',
+					'public/language/en-GB/**/*.json',
 					'node_modules/nodebb-*/**/*.json',
 					'!node_modules/nodebb-*/node_modules/**',
 					'!node_modules/nodebb-*/.git/**',

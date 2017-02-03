@@ -1,12 +1,12 @@
 {
-	"general": "General",
-	"private-groups": "Private Groups",
-	"private-groups.help": "If enabled, joining of groups requires the approval of the group owner <em>(Default: enabled)</em>",
-	"private-groups.warning": "<strong>Beware!</strong> If this option is disabled and you have private groups, they automatically become public.",
-	"allow-creation": "Allow Group Creation",
-	"allow-creation-help": "If enabled, users can create groups <em>(Default: disabled)</em>",
-	"max-name-length": "Maximum Group Name Length",
-	"cover-image": "Group Cover Image",
-	"default-cover": "Default Cover Images",
-	"default-cover-help": "Add comma-separated default cover images for groups that don't have an uploaded cover image"
+	"general": "Général",
+	"private-groups": "Groupes privés",
+	"private-groups.help": "Si cette case est cochée, rejoindre un groupe nécessitera l'accord d'un propriétaire du groupe <em>(Par défaut : activé)</em>",
+	"private-groups.warning": "<strong>Attention !</strong> Si cette option est désactivée et que vous avez des groupes privés, ils deviendront automatiquement publics.",
+	"allow-creation": "Autoriser la création de groupes",
+	"allow-creation-help": "Si activé, les utilisateurs peuvent créer des groupes (Par défaut : Désactivé)",
+	"max-name-length": "Longueur maximum des noms de groupes",
+	"cover-image": "Image de couverture du groupe",
+	"default-cover": "Images de couverture par défaut",
+	"default-cover-help": "Ajouter des images de couvertures par défaut séparées par des virgules pour les groupes n'ayant pas téléchargé d'image de couverture"
 }

@@ -30,7 +30,7 @@
 	"settings/tags": "Mots-clés",
 	"settings/notifications": "Notifications",
 	"settings/cookies": "Cookies",
-	"settings/web-crawler": "Navigateur web",
+	"settings/web-crawler": "Robot d'indexation Web",
 	"settings/sockets": "Sockets",
 	"settings/advanced": "Avancé",
 
@@ -39,14 +39,14 @@
 	"section-appearance": "Apparence",
 	"appearance/themes": "Thèmes",
 	"appearance/skins": "Skins",
-	"appearance/customise": "Custom HTML & CSS",
+	"appearance/customise": "HTML et CSS personnalisés",
 
 	"section-extend": "Extensions",
 	"extend/plugins": "Plugins",
 	"extend/widgets": "Widgets",
 	"extend/rewards": "Récompenses",
 
-	"section-social-auth": "Authentification sociale",
+	"section-social-auth": "Authentification via les réseaux sociaux",
 
 	"section-plugins": "Plugins",
 	"extend/plugins.install": "Installer des plugins",
@@ -71,5 +71,5 @@
 	"search.keep-typing": "Continuez de taper pour afficher les résultats…",
 	"search.start-typing": "Commencez à taper pour afficher les résultats…",
 
-	"connection-lost": "La connexion à %1 a été perdue, tentative de déconnexion en cours…"
+	"connection-lost": "La connexion à %1 a été perdue, tentative de reconnexion…"
 }

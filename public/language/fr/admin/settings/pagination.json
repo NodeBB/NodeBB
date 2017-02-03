@@ -1,9 +1,9 @@
 {
-	"pagination": "Pagination Settings",
-	"enable": "Paginate topics and posts instead of using infinite scroll.",
-	"topics": "Topic Pagination",
-	"posts-per-page": "Posts per Page",
-	"categories": "Category Pagination",
-	"topics-per-page": "Topics per Page",
-	"initial-num-load": "Initial Number of Topics to Load on Unread, Recent, and Popular"
+	"pagination": "Paramètres de pagination",
+	"enable": "Utiliser la pagination des sujets et messages au lieu du défilement infini",
+	"topics": "Pagination des sujets",
+	"posts-per-page": "Messages par page",
+	"categories": "Pagination des categories",
+	"topics-per-page": "Sujets par page",
+	"initial-num-load": "Nombre initial de sujets à charger dans Non lus, Récents et Populaires"
 }
