@@ -88,7 +88,7 @@ exports.buildTargets = function (targets, callback) {
 						startTime = Date.now();
 						meta.templates.compile(step.bind(this, startTime, target, next));
 						break;
-					
+
 					case 'lang':
 						winston.info('[build] Building language files');
 						startTime = Date.now();
