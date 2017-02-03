@@ -365,12 +365,12 @@ function sendFeed(feed, res) {
 }
 
 module.exports = function (app, middleware, controllers) {
-	app.get('/topic/:topic_id.rss', generateForTopic);
-	app.get('/category/:category_id.rss', generateForCategory);
-	app.get('/recent.rss', generateForRecent);
-	app.get('/popular.rss', generateForPopular);
-	app.get('/popular/:term.rss', generateForPopular);
-	app.get('/recentposts.rss', generateForRecentPosts);
-	app.get('/category/:category_id/recentposts.rss', generateForCategoryRecentPosts);
-	app.get('/user/:userslug/topics.rss', generateForUserTopics);
+	app.get('/topic/:topic_id.rss', middleware.maintenanceMode, generateForTopic);
+	app.get('/category/:category_id.rss', middleware.maintenanceMode, generateForCategory);
+	app.get('/recent.rss', middleware.maintenanceMode, generateForRecent);
+	app.get('/popular.rss', middleware.maintenanceMode, generateForPopular);
+	app.get('/popular/:term.rss', middleware.maintenanceMode, generateForPopular);
+	app.get('/recentposts.rss', middleware.maintenanceMode, generateForRecentPosts);
+	app.get('/category/:category_id/recentposts.rss', middleware.maintenanceMode, generateForCategoryRecentPosts);
+	app.get('/user/:userslug/topics.rss', middleware.maintenanceMode, generateForUserTopics);
 };

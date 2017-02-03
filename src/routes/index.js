@@ -117,8 +117,6 @@ module.exports = function (app, middleware, hotswapIds) {
 	app.all(relativePath + '(/api/admin|/api/admin/*?)', middleware.isAdmin);
 	app.all(relativePath + '(/admin|/admin/*?)', ensureLoggedIn.ensureLoggedIn(nconf.get('relative_path') + '/login?local=1'), middleware.applyCSRF, middleware.isAdmin);
 
-	app.use(middleware.maintenanceMode);
-
 	adminRoutes(router, middleware, controllers);
 	metaRoutes(router, middleware, controllers);
 	apiRoutes(router, middleware, controllers);
@@ -151,7 +149,7 @@ module.exports = function (app, middleware, hotswapIds) {
 
 	// DEPRECATED
 	app.use(relativePath + '/api/language', function (req, res) {
-		winston.warn('[deprecated] Accessing language files from `/api/language` is deprecated. ' + 
+		winston.warn('[deprecated] Accessing language files from `/api/language` is deprecated. ' +
 			'Use `/assets/language' + req.path + '.json` for prefetch paths.');
 		res.redirect(relativePath + '/assets/language' + req.path + '.json?' + meta.config['cache-buster']);
 	});
