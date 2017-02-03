@@ -42,7 +42,7 @@
 
 		$('[component="logout"]').on('click', app.logout);
 		app.alert = launchSnackbar;
-		
+
 		configureSlidemenu();
 		setupNProgress();
 	});
