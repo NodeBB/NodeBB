@@ -57,7 +57,8 @@ module.exports = function (User) {
 							path: picture.path,
 							extension: extension,
 							width: imageDimension,
-							height: imageDimension
+							height: imageDimension,
+							write: false,
 						}, next);
 					},
 					function (next) {
