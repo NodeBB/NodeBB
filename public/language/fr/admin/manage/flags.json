@@ -7,12 +7,12 @@
 	"sort-by.most-flags": "Les plus signalés",
 	"sort-by.most-recent": "Les plus récents",
 	"search": "Rechercher",
-	"dismiss-all": "Tout rejeté",
+	"dismiss-all": "Tout classer",
 	"none-flagged": "Aucun sujet signalé !",
 	"posted-in": "Posté dans 1%",
 	"read-more": "Lire la suite",
 	"flagged-x-times": "Ce sujet a été signalé %1 fois :",
-	"dismiss": "Rejeté ce signalement",
+	"dismiss": "Classer ce signalement",
 	"delete-post": "Supprimer le message",
 
 	"alerts.confirm-delete-post": "Voulez vous réellement supprimer ce message ?"
