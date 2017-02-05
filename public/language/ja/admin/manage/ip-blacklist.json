@@ -1,15 +1,15 @@
 {
 	"lead": "IPブラックリストをこちらで設定します。",
-	"description": "Occasionally, a user account ban is not enough of a deterrant. Other times, restricting access to the forum to a specific IP or a range of IPs is the best way to protect a forum. In these scenarios, you can add troublesome IP addresses or entire CIDR blocks to this blacklist, and they will be prevented from logging in to or registering a new account.",
+	"description": "場合によては、ユーザーアカウントを禁止せざるを得ないこともあります。フォーラムを保護するための最善の方法は、特定のIPまたはIPの範囲へのアクセスを制限することです。このような場合は、厄介なIPアドレスまたはCIDRブロック全体をこのブラックリストに追加することができ、新しいアカウントにログインしたり登録することができなくなります。",
 	"active-rules": "アクティブルール",
-	"validate": "Validate Blacklist",
-	"apply": "Apply Blacklist",
-	"hints": "Syntax Hints",
-	"hint-1": "Define a single IP addresses per line. You can add IP blocks as long as they follow the CIDR format (e.g. <code>192.168.100.0/22</code>).",
-	"hint-2": "You can add in comments by starting lines with the <code>#</code> symbol.",
+	"validate": "ブラックリストの検証",
+	"apply": "ブラックリスト",
+	"hints": "構文のヒント",
+	"hint-1": "1行に1つのIPアドレスを定義します。あなたはCIDR形式(例：<code> 192.168.100.0/22 </ code>)に従っている限り、IPブロックを追加できます。",
+	"hint-2": "<code>＃</ code>記号でコメントを追加することができます。",
 
-	"validate.x-valid": "<strong>%1</strong> out of <strong>%2</strong> rule(s) valid.",
-	"validate.x-invalid": "The following <strong>%1</strong> rules are invalid:",
+	"validate.x-valid": "<strong>％2</ strong>のルールのうち<strong>％1 </ strong>のルール(s) が有効です。",
+	"validate.x-invalid": "次の<strong>％1 </ strong>ルールは無効:",
 
-	"alerts.applied-success": "Blacklist Applied"
+	"alerts.applied-success": "ブラックリストに適用されました"
 }

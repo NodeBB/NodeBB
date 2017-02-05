@@ -1,20 +1,20 @@
 {
 	"queue": "キュー",
-	"description": "There are no users in the registration queue. <br> To enable this feature, go to <a href=\"%1\">Settings &rarr; User &rarr; User Registration</a> and set <strong>Registration Type</strong> to \"Admin Approval\".",
+	"description": "登録キューにはユーザーが居ません。<br> この機能を有効にするには、<a href=\"%1\">設定 &rarr; ユーザー &rarr; ユーザー登録 &rarr; </a>へ移動し、<strong>登録タイプ</strong> の項目を \"管理者承認\"にしてください。",
 
 	"list.name": "名前",
-	"list.email": "Email",
+	"list.email": "メール",
 	"list.ip": "IP",
-	"list.time": "Time",
-	"list.username-spam": "Frequency: %1 Appears: %2 Confidence: %3",
-	"list.email-spam": "Frequency: %1 Appears: %2",
-	"list.ip-spam": "Frequency: %1 Appears: %2",
+	"list.time": "時間",
+	"list.username-spam": "周波数：%1 出現: %2 信頼度: %3",
+	"list.email-spam": "周波数：%1 出現: %2",
+	"list.ip-spam": "周波数：%1 出現: %2",
 
-	"invitations": "Invitations",
-	"invitations.description": "Below is a complete list of invitations sent. Use ctrl-f to search through the list by email or username. <br><br>The username will be displayed to the right of the emails for users who have redeemed their invitations.",
-	"invitations.inviter-username": "Inviter Username",
-	"invitations.invitee-email": "Invitee Email",
-	"invitations.invitee-username": "Invitee Username (if registered)",
+	"invitations": "招待状",
+	"invitations.description": "以下は送信された招待状の完全なリストです。Ctrl-Fを使用して、電子メールまたはユーザー名でリストを検索します。<br><br>ユーザー名は、招待状を引き換えたユーザーのメールの右側に表示されます。",
+	"invitations.inviter-username": "招待者のユーザー名",
+	"invitations.invitee-email": "招待メール",
+	"invitations.invitee-username": "招待されたユーザー名(登録されている場合)",
 
 	"invitations.confirm-delete": "Are you sure you wish to delete this invitation?"
 } 

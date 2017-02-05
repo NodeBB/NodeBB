@@ -2,11 +2,11 @@
     "tag": "タグ設定",
     "min-per-topic": "トピックごとの最小タグ数",
     "max-per-topic": "トピックごとの最大タグ数",
-    "min-length": "Minimum Tag Length",
-    "max-length": "Maximum Tag Length",
-    "goto-manage": "Click here to visit the tag management page.",
-    "privacy": "Privacy",
-    "list-private": "Make the tags list private",
-    "related-topics": "Related Topics",
-    "max-related-topics": "Maximum related topics to display (if supported by theme)"
+    "min-length": "タグの最小文字数",
+    "max-length": "タグの最大文字数",
+    "goto-manage": "タグ管理ページにアクセスするには、ここをクリックしてください。",
+    "privacy": "プライバシー",
+    "list-private": "タグリストを非公開にする",
+    "related-topics": "関連トピック",
+    "max-related-topics": "表示する関連トピックの最大数(テーマでサポートされている場合)"
 }

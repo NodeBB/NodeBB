@@ -1,9 +1,9 @@
 {
 	"pagination": "ページ設定",
-	"enable": "Paginate topics and posts instead of using infinite scroll.",
+	"enable": "スクロールでのページ自動ロードはしない",
 	"topics": "トピックページ",
-	"posts-per-page": "Posts per Page",
-	"categories": "Category Pagination",
-	"topics-per-page": "Topics per Page",
-	"initial-num-load": "Initial Number of Topics to Load on Unread, Recent, and Popular"
+	"posts-per-page": "ページごとの投稿数",
+	"categories": "カテゴリページ",
+	"topics-per-page": "ページごとのスレッド数",
+	"initial-num-load": "未読、最近、および人気に読み込むトピックの初期数"
 }
