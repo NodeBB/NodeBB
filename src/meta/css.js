@@ -23,9 +23,10 @@ module.exports = function (Meta) {
 		client: function (source) {
 			return '@import "./theme";\n' + source + '\n' + [
 				'@import "font-awesome";',
-				'@import (inline) "../../public/vendor/jquery/css/smoothness/jquery-ui.css";',
-				'@import (inline) "../../public/vendor/jquery/bootstrap-tagsinput/bootstrap-tagsinput.css";',
-				'@import (inline) "..' + path.sep + 'public/vendor/colorpicker/colorpicker.css";',
+				'@import (inline) "../public/vendor/jquery/css/smoothness/jquery-ui.css";',
+				'@import (inline) "../public/vendor/jquery/bootstrap-tagsinput/bootstrap-tagsinput.css";',
+				'@import (inline) "../public/vendor/colorpicker/colorpicker.css";',
+        '@import (inline) "../node_modules/cropperjs/dist/cropper.css";',
 				'@import "../../public/less/flags.less";',
 				'@import "../../public/less/blacklist.less";',
 				'@import "../../public/less/generics.less";',

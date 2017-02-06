@@ -1,5 +1,5 @@
 {
 	"language-settings": "Ustawienia Językowe",
-	"description": "The default language determines the language settings for all users who are visiting your forum. <br />Individual users can override the default language on their account settings page.",
-	"default-language": "Default Language"
+	"description": "Domyślnym językiem określa ustawienia języka dla wszystkich użytkowników, którzy odwiedzają forum. <br /> Użytkownicy mogą zmienić domyślny język, w ustawieniach konta.",
+	"default-language": "Domyślny Język"
 }

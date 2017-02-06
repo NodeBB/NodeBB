@@ -5,11 +5,11 @@
 	"from": "Nom de l’expéditeur",
 	"from-help": "Le nom de l’expéditeur à afficher dans l'e-mail",
 	"gmail-routing": "Routing Gmail",
-	"gmail-routing-help1": "There have been reports of Gmail Routing not working on accounts with heightened security. In those scenarios, you will have to <a href=\"https://www.google.com/settings/security/lesssecureapps\">configure your GMail account to allow less secure apps</a>.",
-	"gmail-routing-help2": "For more information about this workaround, <a href=\"https://nodemailer.com/using-gmail/\">please consult this NodeMailer article on the issue.</a> An alternative would be to utilise a third-party emailer plugin such as SendGrid, Mailgun, etc. <a href=\"{config.relative_path}/admin/extend/plugins\">Browse available plugins here</a>.",
+	"gmail-routing-help1": "Il y a eu des rapports selon lesquels le routage Gmail ne fonctionne pas avec les comptes ayant une sécurité plus élevée. Dans ce cas vous devez<a href=\"https://www.google.com/settings/security/lesssecureapps\">configuer votre compte Gmail pour qu'il autorise les applications moins sécurisées.",
+	"gmail-routing-help2": "Pour plus d'information sur cette astuce, <a href=\"https://nodemailer.com/using-gmail/\">merci de consulter l'article de NodeMailer sur ce sujet.</a> Une alternative serait d'utiliser un service tiers d'envoi d'email tel que SendGrid, Mailgun, etc. <a href=\"{config.relative_path}/admin/extend/plugins\">Afficher les plugins disponibles ici</a>.",
 	"gmail-transport": "Router les e-mails via un compte Gmail/Google Apps",
 	"gmail-transport.username": "Nom d'utilisateur",
-	"gmail-transport.username-help": "Entrer l'adresse e-mail complète ici, surtout si vous utilisez un domaine géré par Google Aps.",
+	"gmail-transport.username-help": "Entrer l'adresse e-mail complète ici, surtout si vous utilisez un domaine géré par Google Apps.",
 	"gmail-transport.password": "Mot de passe",
 	"template": "Modifier le modèle d'e-mail",
 	"template.select": "Sélectionner un modèle d'e-mail ",
@@ -20,6 +20,6 @@
 	"testing.send-help": "Le test d'e-mail sera envoyé à l'adresse e-mail de l'utilisateur actuellement connecté.",
 	"subscriptions": "Abonnements d'e-mail",
 	"subscriptions.disable": "Désactiver les e-mails de notification des abonnés",
-	"subscriptions.hour": "Digest Hour",
-	"subscriptions.hour-help": "Please enter a number representing the hour to send scheduled email digests (e.g. <code>0</code> for midnight, <code>17</code> for 5:00pm). Keep in mind that this is the hour according to the server itself, and may not exactly match your system clock.<br /> The approximate server time is: <span id=\"serverTime\"></span><br /> The next daily digest is scheduled to be sent  <span id=\"nextDigestTime\"></span>"
+	"subscriptions.hour": "Heure d'envoi",
+	"subscriptions.hour-help": "Veuillez entrer un nombre représentant l'heure à laquelle envoyer les emails de résumé (c'est à dire <code>0</code> pour minuit, <code>17</code> pour 5:00 pm). Gardez à l'esprit qu'il s'agit de l'heure du serveur, et peut ne pas correspondre à votre heure locale.<br /> L'heure du serveur est : <span id=\"serverTime\"></span><br /> Le prochain mail de resumé sera envoyé à <span id=\"nextDigestTime\"></span>"
 }

@@ -421,6 +421,18 @@ describe('socket.io', function () {
 		});
 	});
 
+	it('should get admin search dictionary', function (done) {
+		var socketAdmin = require('../src/socket.io/admin');
+		socketAdmin.getSearchDict({uid: adminUid}, {}, function (err, data) {
+			assert.ifError(err);
+			assert(Array.isArray(data));
+			assert(data[0].namespace);
+			assert(data[0].translations);
+			assert(data[0].title);
+			done();
+		});
+	});
+
 
 	after(function (done) {
 		db.emptydb(done);

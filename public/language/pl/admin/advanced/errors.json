@@ -1,14 +1,14 @@
 {
-	"figure-x": "Figure %1",
-	"error-events-per-day": "<code>%1</code> events per day",
+	"figure-x": "Błąd %1",
+	"error-events-per-day": "<code>%1</code> wydarzeń dziennie",
 	"error.404": "404 Nie znaleziono",
 	"error.503": "503 Usługa niedostępna",
 	"manage-error-log": "Zarządzaj dziennikiem błędów",
 	"export-error-log": "Eksportuj dziennik błędów (CSV)",
 	"clear-error-log": "Wyczyść dziennik błędów",
-	"route": "Route",
-	"count": "Count",
-	"no-routes-not-found": "Hooray! There are no routes that were not found.",
+	"route": "Scieżka",
+	"count": "Licznik",
+	"no-routes-not-found": "Brawo! Nie znaleziono błędów.",
 	"clear404-confirm": "Czy chcesz wyczyścić dziennik błędów 404?",
 	"clear404-success": "Wyczyszczono błędy \"404 Nie znaleziono\""
 }

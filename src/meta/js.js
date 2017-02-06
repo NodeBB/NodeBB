@@ -84,7 +84,8 @@ module.exports = function (Meta) {
 				"Chart.js": './node_modules/chart.js/dist/Chart.min.js',
 				"mousetrap.js": './node_modules/mousetrap/mousetrap.min.js',
 				"jqueryui.js": 'public/vendor/jquery/js/jquery-ui.js',
-				"buzz.js": 'public/vendor/buzz/buzz.js'
+				"buzz.js": 'public/vendor/buzz/buzz.js',
+				"cropper.js": './node_modules/cropperjs/dist/cropper.min.js'
 			}
 		}
 	};

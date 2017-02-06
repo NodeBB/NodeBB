@@ -1,19 +1,19 @@
 {
 	"available": "利用可能なウィジェット",
-	"explanation": "Select a widget from the dropdown menu and then drag and drop it into a template's widget area on the left.",
-	"none-installed": "No widgets found! Activate the essential widgets plugin in the <a href=\"%1\">plugins</a> control panel.",
-	"containers.available": "Available Containers",
-	"containers.explanation": "Drag and drop on top of any active widget",
-	"containers.none": "None",
-	"container.well": "Well",
-	"container.jumbotron": "Jumbotron",
-	"container.panel": "Panel",
-	"container.panel-header": "Panel Header",
-	"container.panel-body": "Panel Body",
-	"container.alert": "Alert",
+	"explanation": "ドロップダウンメニューからウィジェットを選択し、左のテンプレートのウィジェットエリアにドラッグ&ドロップします。",
+	"none-installed": "ウィジェットがありません!必須のウィジェットプラグインを<a href=\"%1\">プラグイン</a>のコントロールパネルで有効にしてください。",
+	"containers.available": "利用可能なコンテナ",
+	"containers.explanation": "アクティブなウィジェットの上にドラッグアンドドロップしてください",
+	"containers.none": "無い",
+	"container.well": "十分",
+	"container.jumbotron": "ジャンボトロン",
+	"container.panel": "パネル",
+	"container.panel-header": "パネルヘッダー",
+	"container.panel-body": "パネル本体",
+	"container.alert": "警告",
 
-	"alert.confirm-delete": "Are you sure you wish to delete this widget?",
-	"alert.updated": "Widgets Updated",
-	"alert.update-success": "Successfully updated widgets"
+	"alert.confirm-delete": "このウィジェットを削除してもよろしいですか？",
+	"alert.updated": "ウィジェットが更新されました。",
+	"alert.update-success": "ウィジェットを保存しました"
 
 }

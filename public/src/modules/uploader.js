@@ -1,8 +1,8 @@
 'use strict';
 
-/* globals define, templates */
+/* globals define, ajaxify, socket, app, templates */
 
-define('uploader', ['translator'], function (translator) {
+define('uploader', ['translator', 'cropper'], function (translator, cropper) {
 
 	var module = {};
 
@@ -61,70 +61,33 @@ define('uploader', ['translator'], function (translator) {
 			uploadModal.find('#alert-' + type).translateText(message).removeClass('hide');
 		}
 
-		showAlert('status', '[[uploads:uploading-file]]');
-
-		uploadModal.find('#upload-progress-bar').css('width', '0%');
-		uploadModal.find('#upload-progress-box').show().removeClass('hide');
-
 		var fileInput = uploadModal.find('#fileInput');
 		if (!fileInput.val()) {
 			return showAlert('error', '[[uploads:select-file-to-upload]]');
 		}
-		if (!hasValidFileSize(fileInput[0], fileSize)) {
-			return showAlert('error', '[[error:file-too-big, ' + fileSize + ']]');
+		
+		var file    = fileInput[0].files[0];
+		var reader  = new FileReader();
+		var imageUrl;
+		var imageType = file.type;
+		
+		reader.addEventListener("load", function () {
+			imageUrl = reader.result;
+			
+			uploadModal.modal('hide');
+			
+			callback({url: imageUrl, imageType: imageType});
+		}, false);
+		
+		if (file) {
+			reader.readAsDataURL(file);
 		}
-
-		uploadModal.find('#uploadForm').ajaxSubmit({
-			headers: {
-				'x-csrf-token': config.csrf_token
-			},
-			error: function (xhr) {
-				xhr = maybeParse(xhr);
-				showAlert('error', xhr.responseJSON ? (xhr.responseJSON.error || xhr.statusText) : 'error uploading, code : ' + xhr.status);
-			},
-			uploadProgress: function (event, position, total, percent) {
-				uploadModal.find('#upload-progress-bar').css('width', percent + '%');
-			},
-			success: function (response) {
-				response = maybeParse(response);
-
-				if (response.error) {
-					return showAlert('error', response.error);
-				}
-
-				callback(response[0].url);
-
-				showAlert('success', '[[uploads:upload-success]]');
-				setTimeout(function () {
-					module.hideAlerts(uploadModal);
-					uploadModal.modal('hide');
-				}, 750);
-			}
-		});
 	}
 
 	function parseModal(tplVals, callback) {
 		templates.parse('partials/modals/upload_file_modal', tplVals, function (html) {
 			translator.translate(html, callback);
 		});
-	}
-
-	function maybeParse(response) {
-		if (typeof response === 'string') {
-			try {
-				return $.parseJSON(response);
-			} catch (e) {
-				return {error: '[[error:parse-error]]'};
-			}
-		}
-		return response;
-	}
-
-	function hasValidFileSize(fileElement, maxSize) {
-		if (window.FileReader && maxSize) {
-			return fileElement.files[0].size <= maxSize * 1000;
-		}
-		return true;
 	}
 
 	return module;

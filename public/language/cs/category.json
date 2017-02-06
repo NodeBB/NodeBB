@@ -10,11 +10,11 @@
     "share_this_category": "Share this category",
     "watch": "Sledovat",
     "ignore": "Ignorovat",
-    "watching": "Watching",
+    "watching": "Sledováno",
     "ignoring": "Ignoring",
     "watching.description": "Show topics in unread",
     "ignoring.description": "Do not show topics in unread",
-    "watch.message": "You are now watching updates from this category and all subcategories",
+    "watch.message": "Nyní sledujete všechny aktualizace z této kategorie a všech podkategorií",
     "ignore.message": "You are now ignoring updates from this category and all subcategories",
     "watched-categories": "Sledované kategorie"
 }

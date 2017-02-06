@@ -221,6 +221,84 @@ module.exports = function (User) {
 			}
 		});
 	};
+	
+	User.uploadCroppedPicture = function (data, callback) {
+		var keepAllVersions = parseInt(meta.config['profile:keepAllUserImages'], 10) === 1;
+		var url, md5sum;
+
+		if (!data.imageData) {
+			return callback(new Error('[[error:invalid-data]]'));
+		}
+		
+		async.waterfall([
+			function (next) {
+				var size = data.file ? data.file.size : data.imageData.length;
+				var uploadSize = parseInt(meta.config.maximumProfileImageSize, 10) || 256;
+				if (size > uploadSize * 1024) {
+					return next(new Error('[[error:file-too-big, ' + meta.config.maximumProfileImageSize + ']]'));
+				}
+
+				md5sum = crypto.createHash('md5');
+				md5sum.update(data.imageData);
+				md5sum = md5sum.digest('hex');
+
+				data.file = {
+					path: path.join(os.tmpdir(), md5sum)
+				};
+
+				var buffer = new Buffer(data.imageData.slice(data.imageData.indexOf('base64') + 7), 'base64');
+
+				fs.writeFile(data.file.path, buffer, {
+					encoding: 'base64'
+				}, next);
+			},
+			function (next) {
+				var image = {
+					name: 'profileAvatar',
+					path: data.file.path,
+					uid: data.uid
+				};
+
+				if (plugins.hasListeners('filter:uploadImage')) {
+					return plugins.fireHook('filter:uploadImage', {image: image, uid: data.uid}, next);
+				}
+
+				var filename = data.uid + '-profileavatar' + (keepAllVersions ? '-' + Date.now() : '');
+				async.waterfall([
+					function (next) {
+						file.isFileTypeAllowed(data.file.path, next);
+					},
+					function (next) {
+						file.saveFileToLocal(filename, 'profile', image.path, next);
+					},
+					function (upload, next) {
+						next(null, {
+							url: nconf.get('relative_path') + upload.url,
+							name: image.name
+						});
+					}
+				], next);
+			},
+			function (uploadData, next) {
+				url = uploadData.url;
+				User.setUserFields(data.uid, {uploadedpicture: url, picture: url}, next);
+			},
+			function (next) {
+				fs.unlink(data.file.path, function (err) {
+					if (err) {
+						winston.error(err);
+					}
+					next();
+				});
+			}
+		], function (err) {
+			if (err) {
+				callback(err);	// send back the original error
+			}
+
+			callback(err, {url: url});
+		});
+	};
 
 	User.removeCoverPicture = function (data, callback) {
 		db.deleteObjectFields('user:' + data.uid, ['cover:url', 'cover:position'], callback);
