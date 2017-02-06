@@ -14,5 +14,5 @@
 	"alerts.editing-multiple": "複数のタグを編集する",
 	"alerts.editing-x": "\"％1\"のタグを編集",
 	"alerts.confirm-delete": "選択したタグを削除しますか？",
-	"alerts.update-success": "Tag Updated!"
+	"alerts.update-success": "タグが更新されました!"
 }

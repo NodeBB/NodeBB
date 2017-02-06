@@ -13,7 +13,7 @@
 	"read-more": "続きを読む",
 	"flagged-x-times": "この投稿には％1回のフラグが設定されています(s):",
 	"dismiss": "このフラグを却下する",
-	"delete-post": "Delete the Post",
+	"delete-post": "投稿を削除",
 
-	"alerts.confirm-delete-post": "Do you really want to delete this post?"
+	"alerts.confirm-delete-post": "本当にこの投稿を削除しますか？"
 }

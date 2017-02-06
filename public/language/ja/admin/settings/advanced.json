@@ -13,7 +13,7 @@
 	"traffic.help": "NodeBBは、トラフィックの多い状況で要求を自動的に拒否するモジュールを備えています。これらの設定はここで調整することができますが、はじめはデフォルト設定にしておくことをお勧めします。",
 	"traffic.enable": "トラフィック管理を有効にする",
 	"traffic.event-lag": "イベントループの場所のしきい値(ミリ秒単位)",
-	"traffic.event-lag-help": "Lowering this value decreases wait times for page loads, but will also show the \"excessive load\" message to more users. (Restart required)",
-	"traffic.lag-check-interval": "Check Interval (in milliseconds)",
-	"traffic.lag-check-interval-help": "Lowering this value causes NodeBB to become more sensitive to spikes in load, but may also cause the check to become too sensitive. (Restart required)"
+	"traffic.event-lag-help": "この値を下げるとページの読み込み時間が短縮されますが、さらに多くのユーザーには「過剰な読み込み」メッセージが表示されます。(再起動が必要)",
+	"traffic.lag-check-interval": "チェック間隔(ミリ秒単位)",
+	"traffic.lag-check-interval-help": "この値を小さくすると、NodeBBは負荷のスパイクに対してより敏感になりますが、チェックが過敏になる可能性もあります。(再起動が必要)"
 }

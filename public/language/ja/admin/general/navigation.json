@@ -16,12 +16,12 @@
 	"installed-plugins-required": "インストール済みのプラグインが必要です:",
 	"search-plugin": "検索プラグイン",
 
-	"btn.delete": "Delete",
-	"btn.disable": "Disable",
+	"btn.delete": "削除",
+	"btn.disable": "無効",
 	"btn.enable": "有効",
 
 	"available-menu-items": "利用可能なメニューアイテム",
-	"custom-route": "Custom Route",
-	"core": "core",
-	"plugin": "plugin"
+	"custom-route": "カスタムルート",
+	"core": "コア",
+	"plugin": "プラグイン"
 }

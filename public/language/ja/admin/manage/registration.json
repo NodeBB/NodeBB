@@ -16,5 +16,5 @@
 	"invitations.invitee-email": "招待メール",
 	"invitations.invitee-username": "招待されたユーザー名(登録されている場合)",
 
-	"invitations.confirm-delete": "Are you sure you wish to delete this invitation?"
+	"invitations.confirm-delete": "この招待状を削除してもよろしいですか？"
 } 
