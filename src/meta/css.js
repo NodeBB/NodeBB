@@ -26,7 +26,7 @@ module.exports = function (Meta) {
 				'@import (inline) "../public/vendor/jquery/css/smoothness/jquery-ui.css";',
 				'@import (inline) "../public/vendor/jquery/bootstrap-tagsinput/bootstrap-tagsinput.css";',
 				'@import (inline) "../public/vendor/colorpicker/colorpicker.css";',
-        '@import (inline) "../node_modules/cropperjs/dist/cropper.css";',
+				'@import (inline) "../node_modules/cropperjs/dist/cropper.css";',
 				'@import "../../public/less/flags.less";',
 				'@import "../../public/less/blacklist.less";',
 				'@import "../../public/less/generics.less";',
