@@ -224,6 +224,22 @@ define('forum/account/edit', ['forum/account/header', 'uploader', 'translator', 
 						viewMode: 1
 					});
 					
+					cropperModal.find('.rotate').on('click', function () {
+						var degrees = this.getAttribute("data-degrees");
+						cropperTool.rotate(degrees);	
+					});
+					
+					cropperModal.find('.flip').on('click', function () {
+						var option = this.getAttribute("data-option");
+						var method = this.getAttribute("data-method");
+						method === 'scaleX' ? cropperTool.scaleX(option) : cropperTool.scaleY(option);
+						this.setAttribute("data-option", option * -1);
+					});
+					
+					cropperModal.find('.reset').on('click', function () {
+						cropperTool.reset();	
+					});
+					
 					cropperModal.find('.crop-btn').on('click', function () {
 						$(this).addClass('disabled');
 						var imageData = data.imageType ? cropperTool.getCroppedCanvas().toDataURL(data.imageType) : cropperTool.getCroppedCanvas().toDataURL();
