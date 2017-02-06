@@ -212,7 +212,8 @@ define('forum/account/edit', ['forum/account/header', 'uploader', 'translator', 
 		}
 		
 		function handleImageCrop(data) {
-			templates.parse('partials/modals/crop_uploaded_picture', {url: data.url}, function (cropperHtml) {
+			$('#crop-picture-modal').remove();
+			templates.parse('modals/crop_picture', {url: data.url}, function (cropperHtml) {
 				translator.translate(cropperHtml, function (translated) {
 					var cropperModal = $(translated);
 					cropperModal.modal('show');
