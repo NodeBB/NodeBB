@@ -2,6 +2,6 @@
 	"logs": "Logi",
 	"control-panel": "Logi Panelu Kontroli",
 	"reload": "Przeładuj logi",
-	"clear": "Clear Logs",
-	"clear-success": "Logs Cleared!"
+	"clear": "Wyczyść Logi",
+	"clear-success": "Logi Wyczyszczone!"
 }

@@ -4,7 +4,7 @@
 	"none-installed": "No widgets found! Activate the essential widgets plugin in the <a href=\"%1\">plugins</a> control panel.",
 	"containers.available": "Available Containers",
 	"containers.explanation": "Drag and drop on top of any active widget",
-	"containers.none": "None",
+	"containers.none": "Żadna",
 	"container.well": "Well",
 	"container.jumbotron": "Jumbotron",
 	"container.panel": "Panel",

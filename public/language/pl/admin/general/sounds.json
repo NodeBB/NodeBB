@@ -1,9 +1,9 @@
 {
 	"notifications": "Powiadomienia",
-	"chat-messages": "Chat Messages",
-	"play-sound": "Play",
-	"incoming-message": "Incoming Message",
-	"outgoing-message": "Outgoing Message",
-	"upload-new-sound": "Upload New Sound",
-	"saved": "Settings Saved"
+	"chat-messages": "Wiadomości Czatu",
+	"play-sound": "Otwórz",
+	"incoming-message": "Przychodzące Wiadomości",
+	"outgoing-message": "Wychodzące Wiadomości",
+	"upload-new-sound": "Prześlij Nowy Dźwięk",
+	"saved": "Ustawienia Zapisane"
 }

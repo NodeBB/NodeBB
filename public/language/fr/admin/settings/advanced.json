@@ -7,13 +7,13 @@
 	"headers.powered-by": "Personnaliser l'en-tête \"Propulsé par\" envoyé par NodeBB",
 	"headers.acao": "Access-Control-Allow-Origin",
 	"headers.acao-help": "Pour interdire l'accès à tous les sites, laisser vide ou définissez comme <code>null</code>",
-	"headers.acam": "Access-Control-Allow-Methods",
-	"headers.acah": "Access-Control-Allow-Headers",
+	"headers.acam": "\nAccess-Control-Allow-Methods",
+	"headers.acah": "\nAccess-Control-Allow-Headers",
 	"traffic-management": "Gestion du trafic",
-	"traffic.help": "NodeBB deploys equipped with a module that automatically denies requests in high-traffic situations. You can tune these settings here, although the defaults are a good starting point.",
+	"traffic.help": "NodeBB est déployé équipé d'un module qui refuse les requêtes en cas de situation de haut traffic. Vous pouvez changer les paramètres ici, bien que les paramètres par défaut sont un bon commencement.",
 	"traffic.enable": "Activé la gestion du trafic",
-	"traffic.event-lag": "Event Loop Lag Threshold (in milliseconds)",
-	"traffic.event-lag-help": "Lowering this value decreases wait times for page loads, but will also show the \"excessive load\" message to more users. (Restart required)",
+	"traffic.event-lag": "Seuil de lag des boucles d'événements (en millisecondes) ",
+	"traffic.event-lag-help": "Descendre cette valeur réduit le temps d'attente pour le chargement de s pages, mais montrera le message \"charge excessive\" à plus d'utilisateurs. (redémarrage requis)",
 	"traffic.lag-check-interval": "Vérifier l’intervalle (en millisecondes)",
-	"traffic.lag-check-interval-help": "Lowering this value causes NodeBB to become more sensitive to spikes in load, but may also cause the check to become too sensitive. (Restart required)"
+	"traffic.lag-check-interval-help": "Descendre cette valeur rend NodeBB plus sensible aux pics dans le chargement, mais rend aussi le contrôle trop sensible. (redémarrage requis)"
 }

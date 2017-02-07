@@ -59,7 +59,7 @@
 	"alert.copy-success": "Настройките са копирани!",
 	"alert.set-parent-category": "Задаване на базова категория",
 	"alert.updated": "Обновени категории",
-	"alert.updated-success": "Category IDs %1 successfully updated.",
+	"alert.updated-success": "Категориите с идентификатори %1 са обновени успешно.",
 	"alert.upload-image": "Качване на изображение за категорията",
 	"alert.find-user": "Търсене на потребител",
 	"alert.user-search": "Потърсете потребител тук…",

@@ -1,4 +1,4 @@
-<nav id="menu" class="visible-xs visible-sm">
+<nav id="menu" class="hidden-md hidden-lg">
 	<section class="menu-section">
 		<h3 class="menu-section-title">[[admin/menu:section-general]]</h3>
 		<ul class="menu-section-list">

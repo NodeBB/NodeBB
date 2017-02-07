@@ -37,6 +37,20 @@ module.exports = function (SocketUser) {
 			}
 		], callback);
 	};
+	
+	SocketUser.uploadCroppedPicture = function (socket, data, callback) {
+		if (!socket.uid) {
+			return callback(new Error('[[error:no-privileges]]'));
+		}
+		async.waterfall([
+			function (next) {
+				user.isAdminOrSelf(socket.uid, data.uid, next);
+			},
+			function (next) {
+				user.uploadCroppedPicture(data, next);
+			}
+		], callback);
+	};
 
 	SocketUser.removeCover = function (socket, data, callback) {
 		if (!socket.uid) {

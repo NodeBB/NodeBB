@@ -1,5 +1,5 @@
 {
 	"language-settings": "言語設定",
-	"description": "The default language determines the language settings for all users who are visiting your forum. <br />Individual users can override the default language on their account settings page.",
-	"default-language": "Default Language"
+	"description": "デフォルトの言語は、フォーラムにアクセスしているすべてのユーザーの言語表示を決定します。<br />個々のユーザーは、アカウント設定ページでデフォルトの言語を上書きできます。",
+	"default-language": "デフォルトの言語"
 }

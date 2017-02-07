@@ -22,7 +22,7 @@
     "user_posted_to": "<strong>%1</strong>さんは <strong>%2</strong>に返信しました。",
     "user_posted_to_dual": "<strong>%1</strong> と <strong>%2</strong> は、返信しました: <strong>%3</strong>",
     "user_posted_to_multiple": "<strong>%1</strong> と %2 または他のユーザーが返信しました: <strong>%3</strong>",
-    "user_posted_topic": "<strong>%1</strong> が新しいトピックを投稿しました。: <strong>%2</strong>",
+    "user_posted_topic": "<strong>%1</strong> が新しいスレッドを投稿しました。: <strong>%2</strong>",
     "user_started_following_you": "<strong>%1</strong>があなたをフォローしました。",
     "user_started_following_you_dual": "<strong>%1</strong> と <strong>%2</strong> があなたをフォローしました。",
     "user_started_following_you_multiple": "<strong>%1</strong> と %2 または他のユーザーがあなたをフォローしました。",

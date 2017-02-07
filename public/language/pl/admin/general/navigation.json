@@ -1,24 +1,24 @@
 {
 	"icon": "Ikona:",
 	"change-icon": "zmień",
-	"route": "Route:",
+	"route": "Ścieżka:",
 	"tooltip": "Tooltip:",
-	"text": "Text:",
+	"text": "Tekst:",
 	"text-class": "Text Class: <small>optional</small>",
 	"id": "ID: <small>optional</small>",
 
 	"properties": "Properties:",
-	"only-admins": "Only display to Admins",
-	"only-global-mods-and-admins": "Only display to Global Moderators and Admins",
-	"only-logged-in": "Only display to logged in users",
-	"open-new-window": "Open in a new window",
+	"only-admins": "Pokaż tylko dla administracji",
+	"only-global-mods-and-admins": "Pokaż tylko dla globalnych moderatorów oraz administracji",
+	"only-logged-in": "Pokaż tylko dla zalogowanych użytkowników",
+	"open-new-window": "Otwórz w nowym oknie",
 
 	"installed-plugins-required": "Installed Plugins Required:",
 	"search-plugin": "Search plugin",
 
-	"btn.delete": "Delete",
-	"btn.disable": "Disable",
-	"btn.enable": "Enable",
+	"btn.delete": "Usunąć",
+	"btn.disable": "Wyłącz",
+	"btn.enable": "Włącz",
 
 	"available-menu-items": "Available Menu Items",
 	"custom-route": "Custom Route",

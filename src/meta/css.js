@@ -70,6 +70,7 @@ module.exports = function (Meta) {
 					source += '\n@import "..' + path.sep + '..' + path.sep + 'public/less/generics.less";';
 					source += '\n@import "..' + path.sep + '..' + path.sep + 'public/less/mixins.less";';
 					source += '\n@import "..' + path.sep + '..' + path.sep + 'public/less/global.less";';
+					source += '\n@import (inline) "..' + path.sep + 'node_modules/cropperjs/dist/cropper.css";';
 					source = '@import "./theme";\n' + source;
 
 					minify(source, paths, 'cache', callback);
