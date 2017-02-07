@@ -26,7 +26,7 @@ function getCover(type, id) {
 		return covers[id];
 	}
 
-	return nconf.get('relative_path') + '/images/cover-default.png';
+	return nconf.get('relative_path') + '/assets/images/cover-default.png';
 }
 
 module.exports = coverPhoto;

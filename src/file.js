@@ -110,4 +110,17 @@ file.existsSync = function (path) {
 	return true;
 };
 
+file.link = function link(filePath, destPath, cb) {
+	if (process.platform === 'win32') {
+		fs.link(filePath, destPath, cb);
+	} else {
+		fs.symlink(filePath, destPath, 'file', cb);
+	}
+};
+
+file.linkDirs = function linkDirs(sourceDir, destDir, callback) {
+	var type = (process.platform === 'win32') ? 'junction' : 'dir';
+	fs.symlink(sourceDir, destDir, type, callback);
+};
+
 module.exports = file;

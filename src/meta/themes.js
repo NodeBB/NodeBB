@@ -58,7 +58,7 @@ module.exports = function (Meta) {
 							if (configObj.screenshot) {
 								configObj.screenshot_url = nconf.get('relative_path') + '/css/previews/' + configObj.id;
 							} else {
-								configObj.screenshot_url = nconf.get('relative_path') + '/images/themes/default.png';
+								configObj.screenshot_url = nconf.get('relative_path') + '/assets/images/themes/default.png';
 							}
 							next(null, configObj);
 						} catch (err) {

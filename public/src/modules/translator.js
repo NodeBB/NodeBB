@@ -515,12 +515,12 @@
 					break;
 			}
 
-			jQuery.getScript(config.relative_path + '/vendor/jquery/timeago/locales/jquery.timeago.' + languageCode + '.js').done(function () {
+			jQuery.getScript(config.relative_path + '/assets/vendor/jquery/timeago/locales/jquery.timeago.' + languageCode + '.js').done(function () {
 				jQuery('.timeago').timeago();
 				adaptor.timeagoShort = assign({}, jQuery.timeago.settings.strings);
 
 				// Retrieve the shorthand timeago values as well
-				jQuery.getScript(config.relative_path + '/vendor/jquery/timeago/locales/jquery.timeago.' + languageCode + '-short.js').done(function () {
+				jQuery.getScript(config.relative_path + '/assets/vendor/jquery/timeago/locales/jquery.timeago.' + languageCode + '-short.js').done(function () {
 					// Switch back to long-form
 					adaptor.toggleTimeagoShorthand();
 				});

@@ -52,7 +52,9 @@ module.exports = function (Plugins) {
 					async.parallel([
 						async.apply(mapFiles, pluginData, 'css', 'cssFiles'),
 						async.apply(mapFiles, pluginData, 'less', 'lessFiles'),
-						async.apply(mapClientSideScripts, pluginData)
+						async.apply(mapClientSideScripts, pluginData),
+						async.apply(mapClientModules, pluginData),
+						async.apply(mapStaticDirectories, pluginData, pluginData.path),
 					], next);
 				}, next);
 			}
@@ -296,6 +298,7 @@ module.exports = function (Plugins) {
 				pluginData.version = packageData.version;
 				pluginData.repository = packageData.repository;
 				pluginData.nbbpm = packageData.nbbpm;
+				pluginData.path = pluginPath;
 			} catch(err) {
 				var pluginDir = pluginPath.split(path.sep);
 				pluginDir = pluginDir[pluginDir.length - 1];

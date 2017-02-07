@@ -43,10 +43,15 @@ exports.build = function build(targets, callback) {
 };
 
 exports.buildTargets = function (targets, callback) {
+	var cacheBuster = require('./cacheBuster');
 	var meta = require('../meta');
 	buildStart = buildStart || Date.now();
 
-	var step = function (startTime, target, next) {
+	var step = function (startTime, target, next, err) {
+		if (err) {
+			winston.error('Build failed: ' + err.message);
+			process.exit(1);
+		}
 		winston.info('[build] ' + target + ' => Completed in ' + ((Date.now() - startTime) / 1000) + 's');
 		next();
 	};
@@ -57,6 +62,8 @@ exports.buildTargets = function (targets, callback) {
 				winston.info('[build] Building javascript');
 				var startTime = Date.now();
 				async.series([
+					meta.js.linkModules,
+					meta.js.linkStatics,
 					async.apply(meta.js.minify, 'nodebb.min.js'),
 					async.apply(meta.js.minify, 'acp.min.js')
 				], step.bind(this, startTime, 'js', next));
@@ -74,13 +81,13 @@ exports.buildTargets = function (targets, callback) {
 					case 'clientCSS':
 						winston.info('[build] Building client-side CSS');
 						startTime = Date.now();
-						meta.css.minify('stylesheet.css', step.bind(this, startTime, target, next));
+						meta.css.minify('client', step.bind(this, startTime, target, next));
 						break;
 
 					case 'acpCSS':
 						winston.info('[build] Building admin control panel CSS');
 						startTime = Date.now();
-						meta.css.minify('admin.css', step.bind(this, startTime, target, next));
+						meta.css.minify('admin', step.bind(this, startTime, target, next));
 						break;
 
 					case 'tpl':
@@ -108,14 +115,21 @@ exports.buildTargets = function (targets, callback) {
 			return process.exit(1);
 		}
 
-		var time = (Date.now() - buildStart) / 1000;
+		cacheBuster.write(function (err) {
+			if (err) {
+				winston.error('[build] Failed to write `cache-buster.conf`: ' + err.message);
+				return process.exit(1);
+			}
 
-		winston.info('[build] Asset compilation successful. Completed in ' + time + 's.');
+			var time = (Date.now() - buildStart) / 1000;
 
-		if (typeof callback === 'function') {
-			callback();
-		} else {
-			process.exit(0);
-		}
+			winston.info('[build] Asset compilation successful. Completed in ' + time + 's.');
+
+			if (typeof callback === 'function') {
+				callback();
+			} else {
+				process.exit(0);
+			}
+		});
 	});
 };

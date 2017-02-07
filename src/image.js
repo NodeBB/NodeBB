@@ -65,6 +65,9 @@ image.resizeImage = function (data, callback) {
 					}
 				},
 				function (image, next) {
+					if (data.write === false) {
+						return next();
+					}
 					image.write(data.target || data.path, next);
 				}
 			], function (err) {
