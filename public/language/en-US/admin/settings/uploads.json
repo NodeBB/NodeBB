@@ -9,7 +9,7 @@
 	"allow-topic-thumbnails": "Allow users to upload topic thumbnails",
 	"topic-thumb-size": "Topic Thumb Size",
 	"allowed-file-extensions": "Allowed File Extensions",
-	"allowed-file-extensions-help": "Enter comma-separated list of file extensions here (e.g. <code>pdf,xls,doc</code>).\n\\t\\t\\t\\t\\tAn empty list means all extensions are allowed.",
+	"allowed-file-extensions-help": "Enter comma-separated list of file extensions here (e.g. <code>pdf,xls,doc</code>). An empty list means all extensions are allowed.",
 	"profile-avatars": "Profile Avatars",
 	"allow-profile-image-uploads": "Allow users to upload profile images",
 	"convert-profile-image-png": "Convert profile image uploads to PNG",

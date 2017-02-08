@@ -13,7 +13,6 @@
 	"manage/users": "Utilisateurs",
 	"manage/registration": "File d'inscription",
 	"manage/groups": "Groupes",
-	"manage/flags": "Signalements",
 	"manage/ip-blacklist": "Liste noire d'IPs",
 
 	"section-settings": "Réglages",

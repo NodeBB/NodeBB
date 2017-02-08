@@ -1,14 +1,14 @@
 {
-	"figure-x": "Figure %1",
-	"error-events-per-day": "<code>%1</code> events per day",
-	"error.404": "404 Not Found",
-	"error.503": "503 Service Unavailable",
-	"manage-error-log": "Manage Error Log",
-	"export-error-log": "Export Error Log (CSV)",
-	"clear-error-log": "Clear Error Log",
-	"route": "Route",
-	"count": "Count",
-	"no-routes-not-found": "Hooray! There are no routes that were not found.",
-	"clear404-confirm": "Are you sure you wish to clear the 404 error logs?",
-	"clear404-success": "\"404 Not Found\" errors cleared"
+	"figure-x": "表 %1",
+	"error-events-per-day": "<code>%1</code> 事件/天",
+	"error.404": "404 伺服器無法回應",
+	"error.503": "503 伺服器忙碌中",
+	"manage-error-log": "管理錯誤日誌",
+	"export-error-log": "匯出錯誤日誌 (CSV)",
+	"clear-error-log": "清除錯誤日誌",
+	"route": "路由",
+	"count": "計數",
+	"no-routes-not-found": "太好了！這裡沒有未找到的路由",
+	"clear404-confirm": "您確定要清除404錯誤日誌嗎?",
+	"clear404-success": "\"404 Not Found\" 錯誤已清除"
 }
