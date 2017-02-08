@@ -413,15 +413,14 @@ module.exports = function (Topics) {
 							posts.getPostField(replyPids[0], 'timestamp', function (err, timestamp) {
 								next(err, utils.toISOString(timestamp));
 							});
-						},
-						"count": function (next) {
-							db.sortedSetCard('pid:' + pid + ':replies', next);
 						}
 					}, function (err, replies) {
 						if (replies.users.length > 5) {
 							replies.users.shift();
 							replies.hasMore = true;
 						}
+
+						replies.count = replyPids.length;
 
 						next(err, replies);
 					});
