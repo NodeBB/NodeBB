@@ -38,7 +38,7 @@ searchController.search = function (req, res, next) {
 		repliesFilter: req.query.repliesFilter,
 		timeRange: req.query.timeRange,
 		timeFilter: req.query.timeFilter,
-		sortBy: req.query.sortBy,
+		sortBy: req.query.sortBy || meta.config.searchDefaultSortBy || '',
 		sortDirection: req.query.sortDirection,
 		page: page,
 		uid: req.uid,
@@ -67,6 +67,7 @@ searchController.search = function (req, res, next) {
 		searchData.title = '[[global:header.search]]';
 		searchData.breadcrumbs = helpers.buildBreadcrumbs([{text: '[[global:search]]'}]);
 		searchData.expandSearch = !req.query.term;
+		searchData.searchDefaultSortBy = meta.config.searchDefaultSortBy || '';
 
 		res.render('search', searchData);
 	});
