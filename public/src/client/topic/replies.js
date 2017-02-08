@@ -21,9 +21,9 @@ define('forum/topic/replies', ['navigator', 'components', 'forum/topic/posts'], 
 	function onRepliesClicked(button, tid) {
 		var post = button.closest('[data-pid]');
 		var pid = post.data('pid');
-		var open = button.children('[component="post/replies/open"]');
-		var loading = button.children('[component="post/replies/loading"]');
-		var close = button.children('[component="post/replies/close"]');
+		var open = button.find('[component="post/replies/open"]');
+		var loading = button.find('[component="post/replies/loading"]');
+		var close = button.find('[component="post/replies/close"]');
 
 		if (open.is(':not(.hidden)') && loading.is('.hidden')) {
 			open.addClass('hidden');
@@ -86,10 +86,12 @@ define('forum/topic/replies', ['navigator', 'components', 'forum/topic/posts'], 
 	function incrementCount(post, inc) {
 		var replyCount = $('[component="post"][data-pid="' + post.toPid + '"]').find('[component="post/reply-count"]').first();
 		var countEl = replyCount.find('[component="post/reply-count/text"]');
+		var avatars = replyCount.find('[component="post/reply-count/avatars"]');
 		var count = Math.max(0, parseInt(countEl.attr('data-replies'), 10) + inc);
 		countEl.attr('data-replies', count);
 		replyCount.toggleClass('hidden', !count);
 		countEl.translateText('[[topic:replies_to_this_post, ' + count + ']]');
+		avatars.addClass('hasMore');
 	}
 
 	return Replies;

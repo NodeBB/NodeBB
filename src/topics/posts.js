@@ -10,6 +10,7 @@ var user = require('../user');
 var posts = require('../posts');
 var meta = require('../meta');
 var plugins = require('../plugins');
+var utils = require('../../public/src/utils');
 
 module.exports = function (Topics) {
 
@@ -109,6 +110,9 @@ module.exports = function (Topics) {
 			},
 			parents: function (next) {
 				Topics.addParentPosts(postData, next);
+			},
+			replies: function (next) {
+				getPostReplies(pids, uid, next);
 			}
 		}, function (err, results) {
 			if (err) {
@@ -123,8 +127,8 @@ module.exports = function (Topics) {
 					postObj.bookmarked = results.bookmarks[i];
 					postObj.upvoted = results.voteData.upvotes[i];
 					postObj.downvoted = results.voteData.downvotes[i];
+					postObj.replies = results.replies[i];
 					postObj.votes = postObj.votes || 0;
-					postObj.replies = postObj.replies || 0;
 					postObj.selfPost = !!parseInt(uid, 10) && parseInt(uid, 10) === parseInt(postObj.uid, 10);
 
 					// Username override for guests, if enabled
@@ -384,4 +388,45 @@ module.exports = function (Topics) {
 		db.getObjectField('topic:' + tid, 'postcount', callback);
 	};
 
+	function getPostReplies(pids, callerUid, callback) {
+		async.map(pids, function (pid, next) {
+			db.getSortedSetRange('pid:' + pid + ':replies', 0, -1, function (err, replyPids) {
+				var uids = [], count = 0;
+
+				async.until(function () {
+					return count === replyPids.length || uids.length === 6;
+				}, function (next) {
+					posts.getPostField(replyPids[count], 'uid', function (err, uid) {
+						uid = parseInt(uid, 10);
+						if (uids.indexOf(uid) === -1) {
+							uids.push(uid);
+						} 
+						count++;
+						next(err);
+					});
+				}, function (err) {
+					async.parallel({
+						"users": function (next) {
+							user.getUsersWithFields(uids, ['uid', 'username', 'userslug', 'picture'], callerUid, next);
+						},
+						"timestampISO": function (next) {
+							posts.getPostField(replyPids[0], 'timestamp', function (err, timestamp) {
+								next(err, utils.toISOString(timestamp));
+							});
+						},
+						"count": function (next) {
+							db.sortedSetCard('pid:' + pid + ':replies', next);
+						}
+					}, function (err, replies) {
+						if (replies.users.length > 5) {
+							replies.users.shift();
+							replies.hasMore = true;
+						}
+
+						next(err, replies);
+					});
+				});
+			});
+		}, callback);
+	}
 };
