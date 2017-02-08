@@ -2,6 +2,7 @@
 'use strict';
 
 var async = require('async');
+var _ = require('underscore');
 var validator = require('validator');
 var S = require('string');
 var db = require('../database');
@@ -82,7 +83,7 @@ module.exports = function (Topics) {
 				], next);
 			},
 			function (results, next) {
-				plugins.fireHook('action:topic.save', topicData);
+				plugins.fireHook('action:topic.save', {topic: _.clone(topicData)});
 				next(null, topicData.tid);
 			}
 		], callback);
@@ -174,7 +175,7 @@ module.exports = function (Topics) {
 				data.postData.index = 0;
 
 				analytics.increment(['topics', 'topics:byCid:' + data.topicData.cid]);
-				plugins.fireHook('action:topic.post', data.topicData);
+				plugins.fireHook('action:topic.post', {topic: data.topicData, post: data.postData});
 
 				if (parseInt(uid, 10)) {
 					user.notifications.sendTopicNotificationToFollowers(uid, data.topicData, data.postData);
@@ -269,7 +270,7 @@ module.exports = function (Topics) {
 
 				Topics.notifyFollowers(postData, uid);
 				analytics.increment(['posts', 'posts:byCid:' + cid]);
-				plugins.fireHook('action:topic.reply', postData);
+				plugins.fireHook('action:topic.reply', {post: _.clone(postData)});
 
 				next(null, postData);
 			}

@@ -159,9 +159,7 @@ var middleware;
 				});
 
 				// Filter out plugins with invalid paths
-				async.filter(paths, file.exists, function (paths) {
-					next(null, paths);
-				});
+				async.filter(paths, file.exists, next);
 			},
 			function (paths, next) {
 				async.map(paths, Plugins.loadPluginInfo, next);
@@ -344,11 +342,15 @@ var middleware;
 
 				async.filter(dirs, function (dir, callback) {
 					fs.stat(dir, function (err, stats) {
-						callback(!err && stats.isDirectory());
+						if (err) {
+							if (err.code === 'ENOENT') {
+								return callback(null, false);
+							}
+							return callback(err);
+						}
+						callback(null, stats.isDirectory());
 					});
-				}, function (plugins) {
-					next(null, plugins);
-				});
+				}, next);
 			},
 
 			function (files, next) {

@@ -1,5 +1,5 @@
 require.config({
-	baseUrl: config.relative_path + "/src/modules",
+	baseUrl: config.relative_path + '/assets/src/modules',
 	waitSeconds: 7,
 	urlArgs: config['cache-buster'],
 	paths: {

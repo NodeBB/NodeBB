@@ -18,3 +18,4 @@ logs/
 *.ipr
 *.iws
 /coverage
+/build

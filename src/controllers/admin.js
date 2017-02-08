@@ -4,7 +4,6 @@ var adminController = {
 	dashboard: require('./admin/dashboard'),
 	categories: require('./admin/categories'),
 	tags: require('./admin/tags'),
-	flags: require('./admin/flags'),
 	blacklist: require('./admin/blacklist'),
 	groups: require('./admin/groups'),
 	appearance: require('./admin/appearance'),

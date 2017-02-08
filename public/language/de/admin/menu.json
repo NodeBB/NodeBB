@@ -13,7 +13,6 @@
 	"manage/users": "Benutzer",
 	"manage/registration": "Warteliste",
 	"manage/groups": "Gruppen",
-	"manage/flags": "Markierungen",
 	"manage/ip-blacklist": "IP Blacklist",
 
 	"section-settings": "Einstellungen",

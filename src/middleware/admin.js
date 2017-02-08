@@ -101,7 +101,7 @@ module.exports = function (middleware) {
 					plugins: results.custom_header.plugins,
 					authentication: results.custom_header.authentication,
 					scripts: results.scripts,
-					'cache-buster': meta.config['cache-buster'] ? 'v=' + meta.config['cache-buster'] : '',
+					'cache-buster': meta.config['cache-buster'] || '',
 					env: process.env.NODE_ENV ? true : false,
 					title: (acpPath || 'Dashboard') + ' | NodeBB Admin Control Panel',
 					bodyClass: data.bodyClass

@@ -6,7 +6,7 @@ var nconf = require('nconf');
 
 var db = require('../database');
 var pubsub = require('../pubsub');
-var utils = require('../../public/src/utils');
+var cacheBuster = require('./cacheBuster');
 
 module.exports = function (Meta) {
 
@@ -21,10 +21,16 @@ module.exports = function (Meta) {
 				Meta.configs.list(next);
 			},
 			function (config, next) {
-				config['cache-buster'] = 'v=' + utils.generateUUID();
+				cacheBuster.read(function (err, buster) {
+					if (err) {
+						return next(err);
+					}
+					
+					config['cache-buster'] = 'v=' + (buster || Date.now());
 
-				Meta.config = config;
-				setImmediate(next);
+					Meta.config = config;
+					next();
+				});
 			}
 		], callback);
 	};

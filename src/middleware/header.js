@@ -46,7 +46,7 @@ module.exports = function (middleware) {
 			bootswatchCSS: meta.config['theme:src'],
 			title: meta.config.title || '',
 			description: meta.config.description || '',
-			'cache-buster': meta.config['cache-buster'] ? 'v=' + meta.config['cache-buster'] : '',
+			'cache-buster': meta.config['cache-buster'] || '',
 			'brand:logo': meta.config['brand:logo'] || '',
 			'brand:logo:url': meta.config['brand:logo:url'] || '',
 			'brand:logo:alt': meta.config['brand:logo:alt'] || '',

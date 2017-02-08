@@ -147,7 +147,7 @@ function getMatchedPosts(pids, data, callback) {
 		topicFields.push('postcount');
 	}
 
-	if (data.sortBy) {
+	if (data.sortBy && data.sortBy !== 'relevance') {
 		if (data.sortBy.startsWith('category')) {
 			topicFields.push('cid');
 		} else if (data.sortBy.startsWith('topic.')) {
@@ -328,7 +328,7 @@ function filterByTags(posts, hasTags) {
 }
 
 function sortPosts(posts, data) {
-	if (!posts.length || !data.sortBy) {
+	if (!posts.length || !data.sortBy || data.sortBy === 'relevance') {
 		return;
 	}
 

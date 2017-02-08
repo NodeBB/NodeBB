@@ -29,9 +29,7 @@ module.exports = function (Plugins) {
 					return path.join(__dirname, '../../node_modules/', plugin);
 				});
 
-				async.filter(plugins, file.exists, function (plugins) {
-					next(null, plugins);
-				});
+				async.filter(plugins, file.exists, next);
 			},
 		], callback);
 	};
@@ -54,7 +52,9 @@ module.exports = function (Plugins) {
 					async.parallel([
 						async.apply(mapFiles, pluginData, 'css', 'cssFiles'),
 						async.apply(mapFiles, pluginData, 'less', 'lessFiles'),
-						async.apply(mapClientSideScripts, pluginData)
+						async.apply(mapClientSideScripts, pluginData),
+						async.apply(mapClientModules, pluginData),
+						async.apply(mapStaticDirectories, pluginData, pluginData.path),
 					], next);
 				}, next);
 			}
@@ -90,7 +90,7 @@ module.exports = function (Plugins) {
 				},
 				function (next) {
 					mapClientModules(pluginData, next);
-				},
+				}
 			], function (err) {
 				if (err) {
 					winston.verbose('[plugins] Could not load plugin : ' + pluginData.id);
@@ -157,13 +157,13 @@ module.exports = function (Plugins) {
 				var realPath = pluginData.staticDirs[mappedPath];
 				var staticDir = path.join(pluginPath, realPath);
 
-				file.exists(staticDir, function (exists) {
+				file.exists(staticDir, function (err, exists) {
 					if (exists) {
 						Plugins.staticDirs[pluginData.id + '/' + mappedPath] = staticDir;
 					} else {
 						winston.warn('[plugins/' + pluginData.id + '] Mapped path \'' + mappedPath + ' => ' + staticDir + '\' not found.');
 					}
-					callback();
+					callback(err);
 				});
 			}
 		}
@@ -298,6 +298,7 @@ module.exports = function (Plugins) {
 				pluginData.version = packageData.version;
 				pluginData.repository = packageData.repository;
 				pluginData.nbbpm = packageData.nbbpm;
+				pluginData.path = pluginPath;
 			} catch(err) {
 				var pluginDir = pluginPath.split(path.sep);
 				pluginDir = pluginDir[pluginDir.length - 1];

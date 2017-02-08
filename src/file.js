@@ -87,19 +87,40 @@ file.allowedExtensions = function () {
 
 file.exists = function (path, callback) {
 	fs.stat(path, function (err, stat) {
-		callback(!err && stat);
+		if (err) {
+			if (err.code === 'ENOENT') {
+				return callback(null, false);
+			}
+			return callback(err);
+		}
+		return callback(null, true);
 	});
 };
 
 file.existsSync = function (path) {
-	var exists = false;
 	try {
-		exists = fs.statSync(path);
-	} catch(err) {
-		exists = false;
+		fs.statSync(path);
+	} catch (err) {
+		if (err.code === 'ENOENT') {
+			return false;
+		}
+		throw err;
 	}
 
-	return !!exists;
+	return true;
+};
+
+file.link = function link(filePath, destPath, cb) {
+	if (process.platform === 'win32') {
+		fs.link(filePath, destPath, cb);
+	} else {
+		fs.symlink(filePath, destPath, 'file', cb);
+	}
+};
+
+file.linkDirs = function linkDirs(sourceDir, destDir, callback) {
+	var type = (process.platform === 'win32') ? 'junction' : 'dir';
+	fs.symlink(sourceDir, destDir, type, callback);
 };
 
 module.exports = file;

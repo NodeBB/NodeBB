@@ -18,14 +18,13 @@ module.exports = function (Topics) {
 			callback = filter;
 			filter = '';
 		}
-		Topics.getUnreadTids(0, uid, filter, function (err, tids) {
+		Topics.getUnreadTids({cid: 0, uid: uid, filter: filter}, function (err, tids) {
 			callback(err, Array.isArray(tids) ? tids.length : 0);
 		});
 	};
 
 
-	Topics.getUnreadTopics = function (cid, uid, start, stop, filter, callback) {
-
+	Topics.getUnreadTopics = function (params, callback) {
 		var unreadTopics = {
 			showSelect: true,
 			nextStart : 0,
@@ -34,7 +33,7 @@ module.exports = function (Topics) {
 
 		async.waterfall([
 			function (next) {
-				Topics.getUnreadTids(cid, uid, filter, next);
+				Topics.getUnreadTids(params, next);
 			},
 			function (tids, next) {
 				unreadTopics.topicCount = tids.length;
@@ -43,13 +42,13 @@ module.exports = function (Topics) {
 					return next(null, []);
 				}
 
-				if (stop === -1) {
-					tids = tids.slice(start);
+				if (params.stop === -1) {
+					tids = tids.slice(params.start);
 				} else {
-					tids = tids.slice(start, stop + 1);
+					tids = tids.slice(params.start, params.stop + 1);
 				}
 
-				Topics.getTopicsByTids(tids, uid, next);
+				Topics.getTopicsByTids(tids, params.uid, next);
 			},
 			function (topicData, next) {
 				if (!Array.isArray(topicData) || !topicData.length) {
@@ -57,7 +56,7 @@ module.exports = function (Topics) {
 				}
 
 				unreadTopics.topics = topicData;
-				unreadTopics.nextStart = stop + 1;
+				unreadTopics.nextStart = params.stop + 1;
 				next(null, unreadTopics);
 			}
 		], callback);
@@ -67,21 +66,19 @@ module.exports = function (Topics) {
 		return Date.now() - (parseInt(meta.config.unreadCutoff, 10) || 2) * 86400000;
 	};
 
-	Topics.getUnreadTids = function (cid, uid, filter, callback) {
-		uid = parseInt(uid, 10);
+	Topics.getUnreadTids = function (params, callback) {
+		var uid = parseInt(params.uid, 10);
 		if (uid === 0) {
 			return callback(null, []);
 		}
-
-		var cutoff = Topics.unreadCutoff();
-
+		var cutoff = params.cutoff || Topics.unreadCutoff();
 		var ignoredCids;
 
 		async.waterfall([
 			function (next) {
 				async.parallel({
 					ignoredCids: function (next) {
-						if (filter === 'watched') {
+						if (params.filter === 'watched') {
 							return next(null, []);
 						}
 						user.getIgnoredCategories(uid, next);
@@ -121,7 +118,7 @@ module.exports = function (Topics) {
 					if (results.ignoredTids.indexOf(recentTopic.value.toString()) !== -1) {
 						return false;
 					}
-					switch (filter) {
+					switch (params.filter) {
 						case 'new':
 							return !userRead[recentTopic.value];
 						default:
@@ -133,7 +130,7 @@ module.exports = function (Topics) {
 					return array.indexOf(tid) === index;
 				});
 
-				if (filter === 'watched') {
+				if (params.filter === 'watched') {
 					Topics.filterWatchedTids(tids, uid, next);
 				} else {
 					next(null, tids);
@@ -143,7 +140,7 @@ module.exports = function (Topics) {
 
 				tids = tids.slice(0, 200);
 
-				filterTopics(uid, tids, cid, ignoredCids, filter, next);
+				filterTopics(uid, tids, params.cid, ignoredCids, params.filter, next);
 			}
 		], callback);
 	};

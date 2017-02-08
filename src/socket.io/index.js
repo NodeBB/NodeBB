@@ -130,7 +130,7 @@ function onMessage(socket, payload) {
 
 function requireModules() {
 	var modules = ['admin', 'categories', 'groups', 'meta', 'modules',
-		'notifications', 'plugins', 'posts', 'topics', 'user', 'blacklist'
+		'notifications', 'plugins', 'posts', 'topics', 'user', 'blacklist', 'flags'
 	];
 
 	modules.forEach(function (module) {

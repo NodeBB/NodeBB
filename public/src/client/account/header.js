@@ -49,6 +49,7 @@ define('forum/account/header', [
 		components.get('account/ban').on('click', banAccount);
 		components.get('account/unban').on('click', unbanAccount);
 		components.get('account/delete').on('click', deleteAccount);
+		components.get('account/flag').on('click', flagAccount);
 	};
 
 	function hidePrivateLinks() {
@@ -84,7 +85,7 @@ define('forum/account/header', [
 					params: {uid: ajaxify.data.uid },
 					accept: '.png,.jpg,.bmp'
 				}, function (imageUrlOnServer) {
-					components.get('account/cover').css('background-image', 'url(' + imageUrlOnServer + '?v=' + Date.now() + ')');
+					components.get('account/cover').css('background-image', 'url(' + imageUrlOnServer + '?' + config['cache-buster'] + ')');
 				});
 			},
 			removeCover
@@ -163,6 +164,15 @@ define('forum/account/header', [
 					app.alertSuccess('[[user:account-deleted]]');
 					history.back();
 				});
+			});
+		});
+	}
+
+	function flagAccount() {
+		require(['flags'], function (flags) {
+			flags.showFlagModal({
+				type: 'user',
+				id: ajaxify.data.uid
 			});
 		});
 	}

@@ -21,7 +21,6 @@ var plugins = require('./plugins');
 	require('./posts/category')(Posts);
 	require('./posts/summary')(Posts);
 	require('./posts/recent')(Posts);
-	require('./posts/flags')(Posts);
 	require('./posts/tools')(Posts);
 	require('./posts/votes')(Posts);
 	require('./posts/bookmarks')(Posts);
@@ -157,7 +156,7 @@ var plugins = require('./plugins');
 				pid: pid
 			};
 			data[field] = value;
-			plugins.fireHook('action:post.setFields', data);
+			plugins.fireHook('action:post.setFields', {data: data});
 			callback();
 		});
 	};
@@ -168,7 +167,7 @@ var plugins = require('./plugins');
 				return callback(err);
 			}
 			data.pid = pid;
-			plugins.fireHook('action:post.setFields', data);
+			plugins.fireHook('action:post.setFields', {data: data});
 			callback();
 		});
 	};

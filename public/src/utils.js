@@ -193,7 +193,7 @@
 		},
 
 		isRelativeUrl: function (url) {
-			var firstChar = url.slice(0, 1);
+			var firstChar = String(url || '').charAt(0);
 			return (firstChar === '.' || firstChar === '/');
 		},
 

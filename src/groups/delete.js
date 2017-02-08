@@ -17,8 +17,6 @@ module.exports = function (Groups) {
 			}
 			var groupObj = groupsData[0];
 
-			plugins.fireHook('action:group.destroy', groupObj);
-
 			async.parallel([
 				async.apply(db.delete, 'group:' + groupName),
 				async.apply(db.sortedSetRemove, 'groups:createtime', groupName),
@@ -45,6 +43,7 @@ module.exports = function (Groups) {
 					return callback(err);
 				}
 				Groups.resetCache();
+				plugins.fireHook('action:group.destroy', {group: groupObj});
 				callback();
 			});
 		});

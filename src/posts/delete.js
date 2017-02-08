@@ -8,6 +8,7 @@ var topics = require('../topics');
 var user = require('../user');
 var notifications = require('../notifications');
 var plugins = require('../plugins');
+var flags = require('../flags');
 
 module.exports = function (Posts) {
 
@@ -28,6 +29,7 @@ module.exports = function (Posts) {
 				topics.getTopicFields(_post.tid, ['tid', 'cid', 'pinned'], next);
 			},
 			function (topicData, next) {
+				postData.cid = topicData.cid;
 				async.parallel([
 					function (next) {
 						updateTopicTimestamp(topicData, next);
@@ -41,7 +43,7 @@ module.exports = function (Posts) {
 				], next);
 			},
 			function (results, next) {
-				plugins.fireHook('action:post.delete', pid);
+				plugins.fireHook('action:post.delete', {post: _.clone(postData), uid: uid});
 				next(null, postData);
 			}
 		], callback);
@@ -78,7 +80,7 @@ module.exports = function (Posts) {
 				], next);
 			},
 			function (results, next) {
-				plugins.fireHook('action:post.restore', _.clone(postData));
+				plugins.fireHook('action:post.restore', {post: _.clone(postData), uid: uid});
 				next(null, postData);
 			}
 		], callback);
@@ -143,17 +145,17 @@ module.exports = function (Posts) {
 					},
 					function (next) {
 						db.sortedSetsRemove(['posts:pid', 'posts:flagged'], pid, next);
-					},
-					function (next) {
-						Posts.dismissFlag(pid, next);
 					}
 				], function (err) {
-					if (err) {
-						return next(err);
-					}
-					plugins.fireHook('action:post.purge', pid);
-					db.delete('post:' + pid, next);
+					next(err);
 				});
+			},
+			function (next) {
+				Posts.getPostData(pid, next);
+			},
+			function (postData, next) {
+				plugins.fireHook('action:post.purge', {post: postData, uid: uid});
+				db.delete('post:' + pid, next);
 			}
 		], callback);
 	};

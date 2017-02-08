@@ -15,7 +15,6 @@ var metaRoutes = require('./meta');
 var apiRoutes = require('./api');
 var adminRoutes = require('./admin');
 var feedRoutes = require('./feeds');
-var pluginRoutes = require('./plugins');
 var authRoutes = require('./authentication');
 var helpers = require('./helpers');
 
@@ -41,7 +40,8 @@ function mainRoutes(app, middleware, controllers) {
 }
 
 function modRoutes(app, middleware, controllers) {
-	setupPageRoute(app, '/posts/flags', middleware, [], controllers.mods.flagged);
+	setupPageRoute(app, '/flags', middleware, [], controllers.mods.flags.list);
+	setupPageRoute(app, '/flags/:flagId', middleware, [], controllers.mods.flags.detail);
 }
 
 function globalModRoutes(app, middleware, controllers) {
@@ -121,7 +121,6 @@ module.exports = function (app, middleware, hotswapIds) {
 	metaRoutes(router, middleware, controllers);
 	apiRoutes(router, middleware, controllers);
 	feedRoutes(router, middleware, controllers);
-	pluginRoutes(router, middleware, controllers);
 
 	mainRoutes(router, middleware, controllers);
 	topicRoutes(router, middleware, controllers);
@@ -143,10 +142,44 @@ module.exports = function (app, middleware, hotswapIds) {
 	}
 
 	app.use(middleware.privateUploads);
-	app.use(relativePath + '/assets', express.static(path.join(__dirname, '../../', 'build/public'), {
+
+	app.use(relativePath + '/assets', express.static(path.join(__dirname, '../../build/public'), {
+		maxAge: app.enabled('cache') ? 5184000000 : 0
+	}));
+	app.use(relativePath + '/assets', express.static(path.join(__dirname, '../../public'), {
+		maxAge: app.enabled('cache') ? 5184000000 : 0
+	}));
+	// TODO: deprecate?
+	app.use(relativePath + '/plugins', express.static(path.join(__dirname, '../../build/public/plugins'), {
 		maxAge: app.enabled('cache') ? 5184000000 : 0
 	}));
 
+	// DEPRECATED
+	var deprecatedPaths = [
+		'/nodebb.min.js',
+		'/acp.min.js',
+		'/stylesheet.css',
+		'/js-enabled.css',
+		'/admin.css',
+		'/logo.png',
+		'/favicon.ico',
+		'/vendor/',
+		'/uploads/',
+		'/templates/',
+		'/src/',
+		'/images/',
+		'/language/',
+		'/sounds/',
+	];
+	app.use(relativePath, function (req, res, next) {
+		if (deprecatedPaths.some(function (path) { return req.path.startsWith(path); })) {
+			winston.warn('[deprecated] Accessing `' + req.path.slice(1) + '` from `/` is deprecated. ' + 
+				'Use `/assets' + req.path + '` to access this file.');
+			res.redirect(relativePath + '/assets' + req.path + '?' + meta.config['cache-buster']);
+		} else {
+			next();
+		}
+	});
 	// DEPRECATED
 	app.use(relativePath + '/api/language', function (req, res) {
 		winston.warn('[deprecated] Accessing language files from `/api/language` is deprecated. ' +
@@ -154,10 +187,7 @@ module.exports = function (app, middleware, hotswapIds) {
 		res.redirect(relativePath + '/assets/language' + req.path + '.json?' + meta.config['cache-buster']);
 	});
 
-	app.use(relativePath, express.static(path.join(__dirname, '../../', 'public'), {
-		maxAge: app.enabled('cache') ? 5184000000 : 0
-	}));
-	app.use(relativePath + '/vendor/jquery/timeago/locales', middleware.processTimeagoLocales);
+	app.use(relativePath + '/assets/vendor/jquery/timeago/locales', middleware.processTimeagoLocales);
 	app.use(controllers.handle404);
 	app.use(controllers.handleURIErrors);
 	app.use(controllers.handleErrors);

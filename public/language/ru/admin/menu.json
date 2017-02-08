@@ -13,7 +13,6 @@
 	"manage/users": "Пользователи",
 	"manage/registration": "Очередь на регистрацию",
 	"manage/groups": "Группы",
-	"manage/flags": "Жалобы",
 	"manage/ip-blacklist": "Блокировка IP",
 
 	"section-settings": "Настройки",

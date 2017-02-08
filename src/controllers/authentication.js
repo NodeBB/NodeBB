@@ -332,7 +332,7 @@ authenticationController.onSuccessfulLogin = function (req, uid, callback) {
 		// Force session check for all connected socket.io clients with the same session id
 		sockets.in('sess_' + req.sessionID).emit('checkSession', uid);
 
-		plugins.fireHook('action:user.loggedIn', uid);
+		plugins.fireHook('action:user.loggedIn', {uid: uid, req: req});
 		callback();
 	});
 };

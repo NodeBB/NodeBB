@@ -2,6 +2,9 @@
 	"forum-traffic": "Tráfego do Forum",
 	"page-views": "Visualizações de Página",
 	"unique-visitors": "Visitantes Únicos",
+	"users": "Users",
+	"posts": "Posts",
+	"topics": "Topics",
 	"page-views-last-month": "Visualizações de página no Último Mês",
 	"page-views-this-month": "Visualizações de Página Este Mês",
 	"page-views-last-day": "Visualizações de página nas últimas 24 horas",
@@ -20,6 +23,11 @@
 	"prerelease-warning": "<p>Esta é uma versão <strong>pre-release</strong> do NodeBB. Bugs inesperados podem ocorrer. <i class=\"fa fa-exclamation-triangle\"></i></p>",
 
 	"notices": "Avisos",
+	"restart-not-required": "Restart not required",
+	"restart-required": "Restart required",
+	"search-plugin-installed": "Search Plugin installed",
+	"search-plugin-not-installed": "Search Plugin not installed",
+	"search-plugin-tooltip": "Install a search plugin from the plugin page in order to activate search functionality",
 
 	"control-panel": "Controle do Sistema",
 	"reload": "Recarregar",

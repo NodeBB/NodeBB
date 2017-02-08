@@ -70,7 +70,7 @@ define('chat', [
 					sounds.play('chat-incoming');
 
 					taskbar.push('chat', modal.attr('UUID'), {
-						title: username,
+						title: data.roomName || username,
 						touid: data.message.fromUser.uid,
 						roomId: data.roomId
 					});
@@ -102,7 +102,10 @@ define('chat', [
 		});
 
 		socket.on('event:chats.roomRename', function (data) {
-			module.getModal(data.roomId).find('[component="chat/room/name"]').val($('<div/>').html(data.newName).text());
+			var newTitle = $('<div/>').html(data.newName).text();
+			var modal = module.getModal(data.roomId);
+			modal.find('[component="chat/room/name"]').val(newTitle);
+			taskbar.updateTitle('chat', modal.attr('UUID'), newTitle);
 		});
 
 		ChatsMessages.onChatMessageEdit();
@@ -197,7 +200,7 @@ define('chat', [
 					handle: '.modal-header'
 				});
 			});
-			
+
 			scrollStop.apply(chatModal.find('[component="chat/messages"]'));
 
 			chatModal.find('#chat-close-btn').on('click', function () {

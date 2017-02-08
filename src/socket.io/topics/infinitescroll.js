@@ -98,7 +98,7 @@ module.exports = function (SocketTopics) {
 		var start = parseInt(data.after, 10);
 		var stop = start + 9;
 
-		topics.getUnreadTopics(data.cid, socket.uid, start, stop, data.filter, callback);
+		topics.getUnreadTopics({cid: data.cid, uid: socket.uid, start: start, stop: stop, filter: data.filter}, callback);
 	};
 
 	SocketTopics.loadMoreRecentTopics = function (socket, data, callback) {

@@ -31,7 +31,7 @@ module.exports = function (Categories) {
 				purgeCategory(cid, next);
 			},
 			function (next) {
-				plugins.fireHook('action:category.delete', cid);
+				plugins.fireHook('action:category.delete', {cid: cid, uid: uid});
 				next();
 			}
 		], callback);

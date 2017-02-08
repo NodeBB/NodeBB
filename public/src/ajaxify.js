@@ -333,7 +333,7 @@ $(document).ready(function () {
 			callback(templates.cache[template]);
 		} else {
 			$.ajax({
-				url: RELATIVE_PATH + '/templates/' + template + '.tpl' + (config['cache-buster'] ? '?v=' + config['cache-buster'] : ''),
+				url: config.relative_path + '/assets/templates/' + template + '.tpl' + '?' + config['cache-buster'],
 				type: 'GET',
 				success: function (data) {
 					callback(data.toString());
