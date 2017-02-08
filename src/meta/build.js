@@ -45,6 +45,9 @@ exports.build = function build(targets, callback) {
 exports.buildTargets = function (targets, callback) {
 	var cacheBuster = require('./cacheBuster');
 	var meta = require('../meta');
+	var numCpus = require('os').cpus().length;
+	var strategy = (targets.length > 1 && numCpus > 1);
+
 	buildStart = buildStart || Date.now();
 
 	var step = function (startTime, target, next, err) {
@@ -56,7 +59,13 @@ exports.buildTargets = function (targets, callback) {
 		next();
 	};
 
-	async.parallel([
+	if (strategy) {
+		winston.verbose('[build] Utilising multiple cores/processes');
+	} else {
+		winston.verbose('[build] Utilising single-core');
+	}
+
+	async[strategy ? 'parallel' : 'series']([
 		function (next) {
 			if (targets.indexOf('js') !== -1) {
 				winston.info('[build] Building javascript');

@@ -117,6 +117,17 @@ function loadConfig(callback) {
 		nconf.set('url_parsed', url.parse(nconf.get('url')));
 	}
 
+	// Explicitly cast 'jobsDisabled' as Bool
+	var castAsBool = ['jobsDisabled'];
+	nconf.stores.env.readOnly = false;
+	castAsBool.forEach(function (prop) {
+		var value = nconf.get(prop);
+		if (value) {
+			nconf.set(prop, typeof value === 'boolean' ? value : String(value).toLowerCase() === 'true');
+		}
+	});
+	nconf.stores.env.readOnly = true;
+
 	if (typeof callback === 'function') {
 		callback();
 	}
