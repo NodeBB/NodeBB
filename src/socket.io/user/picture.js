@@ -86,7 +86,7 @@ module.exports = function (SocketUser) {
 			function (userData, next) {
 				if (userData.uploadedpicture && !userData.uploadedpicture.startsWith('http')) {
 					var pathToFile = path.join(nconf.get('base_dir'), 'public', userData.uploadedpicture);
-					if (pathToFile.startsWith(path.join(nconf.get('base_dir'), nconf.get('upload_path')))) {
+					if (pathToFile.startsWith(nconf.get('upload_path'))) {
 						require('fs').unlink(pathToFile, function (err) {
 							if (err) {
 								winston.error(err);

@@ -99,6 +99,7 @@ function loadConfig(callback) {
 	nconf.defaults({
 		base_dir: __dirname,
 		themes_path: path.join(__dirname, 'node_modules'),
+		upload_path: 'public/uploads',
 		views_dir: path.join(__dirname, 'build/public/templates'),
 		version: pkg.version
 	});
@@ -112,6 +113,8 @@ function loadConfig(callback) {
 	nconf.set('themes_path', path.resolve(__dirname, nconf.get('themes_path')));
 	nconf.set('core_templates_path', path.join(__dirname, 'src/views'));
 	nconf.set('base_templates_path', path.join(nconf.get('themes_path'), 'nodebb-theme-persona/templates'));
+	
+	nconf.set('upload_path', path.resolve(nconf.get('base_dir'), nconf.get('upload_path')));
 
 	if (nconf.get('url')) {
 		nconf.set('url_parsed', url.parse(nconf.get('url')));

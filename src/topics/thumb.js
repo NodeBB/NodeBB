@@ -41,7 +41,7 @@ module.exports = function (Topics) {
 					extension = '.' + mime.extension(type);
 				}
 				filename = Date.now() + '-topic-thumb' + extension;
-				pathToUpload = path.join(nconf.get('base_dir'), nconf.get('upload_path'), 'files', filename);
+				pathToUpload = path.join(nconf.get('upload_path'), 'files', filename);
 
 				request(data.thumb).pipe(fs.createWriteStream(pathToUpload)).on('close', next);
 			},
@@ -59,7 +59,7 @@ module.exports = function (Topics) {
 			},
 			function (next) {
 				if (!plugins.hasListeners('filter:uploadImage')) {
-					data.thumb = path.join(nconf.get('upload_url'), 'files', filename);
+					data.thumb = '/assets/uploads/files/' + filename;
 					return callback();
 				}
 

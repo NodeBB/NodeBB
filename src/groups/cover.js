@@ -105,7 +105,7 @@ module.exports = function (Groups) {
 		md5sum = md5sum.digest('hex');
 
 		// Save image
-		var tempPath = path.join(nconf.get('base_dir'), nconf.get('upload_path'), md5sum) + '.png';
+		var tempPath = path.join(nconf.get('upload_path'), md5sum + '.png');
 		var buffer = new Buffer(imageData.slice(imageData.indexOf('base64') + 7), 'base64');
 
 		fs.writeFile(tempPath, buffer, {

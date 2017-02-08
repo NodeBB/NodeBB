@@ -72,7 +72,7 @@ describe('Upload Controllers', function () {
 				assert.equal(res.statusCode, 200);
 				assert(Array.isArray(body));
 				assert.equal(body.length, 1);
-				assert.equal(body[0].url, '/uploads/profile/' + regularUid + '-profileimg.png');
+				assert.equal(body[0].url, '/assets/uploads/profile/' + regularUid + '-profileimg.png');
 				done();
 			});
 		});
@@ -122,7 +122,7 @@ describe('Upload Controllers', function () {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 200);
 				assert(Array.isArray(body));
-				assert.equal(body[0].url, '/uploads/system/site-logo.png');
+				assert.equal(body[0].url, '/assets/uploads/system/site-logo.png');
 				done();
 			});
 		});
@@ -132,7 +132,7 @@ describe('Upload Controllers', function () {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 200);
 				assert(Array.isArray(body));
-				assert.equal(body[0].url, '/uploads/category/category-1.png');
+				assert.equal(body[0].url, '/assets/uploads/category/category-1.png');
 				done();
 			});
 		});
@@ -142,7 +142,7 @@ describe('Upload Controllers', function () {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 200);
 				assert(Array.isArray(body));
-				assert.equal(body[0].url, '/uploads/system/favicon.ico');
+				assert.equal(body[0].url, '/assets/uploads/system/favicon.ico');
 				done();
 			});
 		});
@@ -152,7 +152,7 @@ describe('Upload Controllers', function () {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 200);
 				assert(Array.isArray(body));
-				assert.equal(body[0].url, '/uploads/system/touchicon-orig.png');
+				assert.equal(body[0].url, '/assets/uploads/system/touchicon-orig.png');
 				done();
 			});
 		});

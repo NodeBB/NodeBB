@@ -144,6 +144,11 @@ module.exports = function (app, middleware, hotswapIds) {
 
 	app.use(middleware.privateUploads);
 
+	if (path.resolve(__dirname, '../../public/uploads') !== nconf.get('upload_path')) {
+		app.use(relativePath + '/assets/uploads', express.static(nconf.get('upload_path'), {
+			maxAge: app.enabled('cache') ? 5184000000 : 0
+		}));
+	}
 	app.use(relativePath + '/assets', express.static(path.join(__dirname, '../../build/public'), {
 		maxAge: app.enabled('cache') ? 5184000000 : 0
 	}));

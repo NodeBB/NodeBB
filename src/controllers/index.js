@@ -290,32 +290,32 @@ Controllers.manifest = function (req, res) {
 
 	if (meta.config['brand:touchIcon']) {
 		manifest.icons.push({
-			src: nconf.get('relative_path') + '/uploads/system/touchicon-36.png',
+			src: nconf.get('relative_path') + '/assets/uploads/system/touchicon-36.png',
 			sizes: '36x36',
 			type: 'image/png',
 			density: 0.75
 		}, {
-			src: nconf.get('relative_path') + '/uploads/system/touchicon-48.png',
+			src: nconf.get('relative_path') + '/assets/uploads/system/touchicon-48.png',
 			sizes: '48x48',
 			type: 'image/png',
 			density: 1.0
 		}, {
-			src: nconf.get('relative_path') + '/uploads/system/touchicon-72.png',
+			src: nconf.get('relative_path') + '/assets/uploads/system/touchicon-72.png',
 			sizes: '72x72',
 			type: 'image/png',
 			density: 1.5
 		}, {
-			src: nconf.get('relative_path') + '/uploads/system/touchicon-96.png',
+			src: nconf.get('relative_path') + '/assets/uploads/system/touchicon-96.png',
 			sizes: '96x96',
 			type: 'image/png',
 			density: 2.0
 		}, {
-			src: nconf.get('relative_path') + '/uploads/system/touchicon-144.png',
+			src: nconf.get('relative_path') + '/assets/uploads/system/touchicon-144.png',
 			sizes: '144x144',
 			type: 'image/png',
 			density: 3.0
 		}, {
-			src: nconf.get('relative_path') + '/uploads/system/touchicon-192.png',
+			src: nconf.get('relative_path') + '/assets/uploads/system/touchicon-192.png',
 			sizes: '192x192',
 			type: 'image/png',
 			density: 4.0

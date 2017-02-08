@@ -32,11 +32,23 @@ module.exports = function (Meta) {
 				fs.readdir(path.join(__dirname, '../../build/public/sounds'), next);
 			},
 			function (sounds, next) {
-				fs.readdir(path.join(__dirname, '../../public/uploads/sounds'), function (err, uploaded) {
-					next(err, sounds.concat(uploaded));
+				fs.readdir(path.join(nconf.get('upload_path'), 'sounds'), function (err, uploaded) {
+					if (err) {
+						if (err.code === 'ENOENT') {
+							return next(null, sounds);
+						}
+						return next(err);
+					}
+					next(null, sounds.concat(uploaded));
 				});
 			}
 		], function (err, files) {
+			if (err) {
+				winston.error('Could not get local sound files:' + err.message);
+				console.log(err.stack);
+				return callback(null, []);
+			}
+
 			var	localList = {};
 
 			// Filter out hidden files
@@ -44,15 +56,9 @@ module.exports = function (Meta) {
 				return !filename.startsWith('.');
 			});
 
-			if (err) {
-				winston.error('Could not get local sound files:' + err.message);
-				console.log(err.stack);
-				return callback(null, []);
-			}
-
 			// Return proper paths
 			files.forEach(function (filename) {
-				localList[filename] = nconf.get('relative_path') + '/sounds/' + filename;
+				localList[filename] = nconf.get('relative_path') + '/assets/sounds/' + filename;
 			});
 
 			callback(null, localList);
@@ -93,13 +99,22 @@ module.exports = function (Meta) {
 
 		async.waterfall([
 			function (next) {
-				fs.readdir(path.join(__dirname, '../../public/uploads/sounds'), next);
+				fs.readdir(path.join(nconf.get('upload_path'), 'sounds'), function (err, files) {
+					if (err) {
+						if (err.code === 'ENOENT') {
+							return next(null, []);
+						}
+						return next(err);
+					}
+
+					next(null, files);
+				});
 			},
 			function (uploaded, next) {
 				uploaded = uploaded.filter(function (filename) {
 					return !filename.startsWith('.');
 				}).map(function (filename) {
-					return path.join(__dirname, '../../public/uploads/sounds', filename);
+					return path.join(nconf.get('upload_path'), 'sounds', filename);
 				});
 
 				plugins.fireHook('filter:sounds.get', uploaded, function (err, filePaths) {

@@ -5,6 +5,7 @@ var nconf = require('nconf');
 var path = require('path');
 var winston = require('winston');
 var jimp = require('jimp');
+var mkdirp = require('mkdirp');
 
 var utils = require('../public/src/utils');
 
@@ -20,27 +21,31 @@ file.saveFileToLocal = function (filename, folder, tempPath, callback) {
 	});
 	filename = filename.join('.');
 
-	var uploadPath = path.join(nconf.get('base_dir'), nconf.get('upload_path'), folder, filename);
+	var uploadPath = path.join(nconf.get('upload_path'), folder, filename);
 
 	winston.verbose('Saving file ' + filename + ' to : ' + uploadPath);
+	mkdirp(path.dirname(uploadPath), function (err) {
+		if (err) {
+			callback(err);
+		}
 
-	var is = fs.createReadStream(tempPath);
-	var os = fs.createWriteStream(uploadPath);
-	is.on('end', function () {
-		callback(null, {
-			url: nconf.get('upload_url') + '/' + folder + '/' + filename,
-			path: uploadPath
+		var is = fs.createReadStream(tempPath);
+		var os = fs.createWriteStream(uploadPath);
+		is.on('end', function () {
+			callback(null, {
+				url: '/assets/uploads/' + folder + '/' + filename,
+				path: uploadPath
+			});
 		});
+
+		os.on('error', callback);
+		is.pipe(os);
 	});
-
-	os.on('error', callback);
-
-	is.pipe(os);
 };
 
 file.base64ToLocal = function (imageData, uploadPath, callback) {
 	var buffer = new Buffer(imageData.slice(imageData.indexOf('base64') + 7), 'base64');
-	uploadPath = path.join(nconf.get('base_dir'), nconf.get('upload_path'), uploadPath);
+	uploadPath = path.join(nconf.get('upload_path'), uploadPath);
 
 	fs.writeFile(uploadPath, buffer, {
 		encoding: 'base64'
