@@ -13,7 +13,6 @@
 	"manage/users": "ユーザー",
 	"manage/registration": "登録キュー",
 	"manage/groups": "グループ",
-	"manage/flags": "フラグ",
 	"manage/ip-blacklist": "IPブラックリスト",
 
 	"section-settings": "設定",

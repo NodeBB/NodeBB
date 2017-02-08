@@ -9,7 +9,7 @@
 	"allow-topic-thumbnails": "允许用户上传主题缩略图",
 	"topic-thumb-size": "主题缩略图大小",
 	"allowed-file-extensions": "允许的文件扩展名",
-	"allowed-file-extensions-help": "在这里输入以逗号分隔的文件扩展名(例如：<code>pdf,xls,doc</code>)。\n填写空意味着所有扩展名是允许的。",
+	"allowed-file-extensions-help": "在此处输入以逗号分隔的文件扩展名列表 (例如<code> pdf，xls，doc </code>)。 为空则表示允许所有扩展名。",
 	"profile-avatars": "个人头像",
 	"allow-profile-image-uploads": "允许用户上传个人资料照片",
 	"convert-profile-image-png": "转换个人资料图片为 PNG",
