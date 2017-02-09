@@ -53,7 +53,7 @@
     "mousetrap": "^1.5.3",
     "nconf": "~0.8.2",
     "nodebb-plugin-composer-default": "4.4.0",
-    "nodebb-plugin-dbsearch": "2.0.1",
+    "nodebb-plugin-dbsearch": "2.0.2",
     "nodebb-plugin-emoji-extended": "1.1.1",
     "nodebb-plugin-emoji-one": "1.1.5",
     "nodebb-plugin-markdown": "7.1.0",
