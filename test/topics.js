@@ -1236,17 +1236,17 @@ describe('Topic\'s', function () {
 				assert.equal(err.message, '[[error:invalid-data]]');
 				done();
 			});
-		})
+		});
 
 		it('should error with invalid type', function (done) {
 			socketTopics.changeWatching({uid: followerUid}, {tid: tid, type: 'derp'}, function (err) {
 				assert.equal(err.message, '[[error:invalid-command]]');
 				done();
 			});
-		})
+		});
 
 		it('should follow topic', function (done) {
-			topics.toggleFollow(tid, followerUid, function(err, isFollowing) {
+			topics.toggleFollow(tid, followerUid, function (err, isFollowing) {
 				assert.ifError(err);
 				assert(isFollowing);
 				topics.isFollowing([tid], followerUid, function (err, isFollowing) {
