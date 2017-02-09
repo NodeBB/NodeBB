@@ -153,9 +153,9 @@ module.exports = function (Topics) {
 			function (next) {
 				db.isSetMembers('tid:' + tid + ':ignorers', uids, next);
 			},
-			function (isMembers, next) {
+			function (isIgnoring, next) {
 				var readingUids = uids.filter(function (uid, index) {
-					return uid && isMembers[index];
+					return uid && !isIgnoring[index];
 				});
 				next(null, readingUids);
 			}

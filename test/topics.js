@@ -445,7 +445,7 @@ describe('Topic\'s', function () {
 						assert.equal(pinnedTids[1], tid2);
 						done();
 					});
-				});			
+				});
 			});
 		});
 
@@ -1197,8 +1197,65 @@ describe('Topic\'s', function () {
 				});
 			});
 		});
+	});
 
+	describe('follow/unfollow', function () {
+		var socketTopics = require('../src/socket.io/topics');
+		var tid;
+		var followerUid;
+		before(function (done) {
+			User.create({username: 'follower'}, function (err, uid) {
+				if (err) {
+					return done(err);
+				}
+				followerUid = uid;
+				topics.post({uid: adminUid, title: 'topic title', content: 'some content', cid: topic.categoryId}, function (err, result) {
+					if (err) {
+						return done(err);
+					}
+					tid = result.topicData.tid;
+					done();
+				});
+			});
+		});
 
+		it('should filter ignoring uids', function (done) {
+			socketTopics.changeWatching({uid: followerUid}, {tid: tid, type: 'ignore'}, function (err) {
+				assert.ifError(err);
+				topics.filterIgnoringUids(tid, [adminUid, followerUid], function (err, uids) {
+					assert.ifError(err);
+					assert.equal(uids.length, 1);
+					assert.equal(uids[0], adminUid);
+					done();
+				});
+			});
+		});
+
+		it('should error with invalid data', function (done) {
+			socketTopics.changeWatching({uid: followerUid}, {}, function (err) {
+				assert.equal(err.message, '[[error:invalid-data]]');
+				done();
+			});
+		})
+
+		it('should error with invalid type', function (done) {
+			socketTopics.changeWatching({uid: followerUid}, {tid: tid, type: 'derp'}, function (err) {
+				assert.equal(err.message, '[[error:invalid-command]]');
+				done();
+			});
+		})
+
+		it('should follow topic', function (done) {
+			topics.toggleFollow(tid, followerUid, function(err, isFollowing) {
+				assert.ifError(err);
+				assert(isFollowing);
+				topics.isFollowing([tid], followerUid, function (err, isFollowing) {
+					assert.ifError(err);
+					assert(isFollowing);
+					done();
+				});
+			});
+		});
 	});
 
 
