@@ -353,7 +353,7 @@ Controllers.ping = function (req, res) {
 
 Controllers.handle404 = function (req, res) {
 	var relativePath = nconf.get('relative_path');
-	var isClientScript = new RegExp('^' + relativePath + '\\/src\\/.+\\.js');
+	var isClientScript = new RegExp('^' + relativePath + '\\/assets\\/src\\/.+\\.js');
 
 	if (plugins.hasListeners('action:meta.override404')) {
 		return plugins.fireHook('action:meta.override404', {
