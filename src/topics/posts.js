@@ -439,7 +439,7 @@ module.exports = function (Topics) {
 
 					next(null, replies);
 				}
-			], next);
+			], _next);
 		}, callback);
 	}
 };
