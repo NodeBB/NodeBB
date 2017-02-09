@@ -142,16 +142,25 @@ module.exports = function (app, middleware, hotswapIds) {
 
 	app.use(middleware.privateUploads);
 
-	app.use(relativePath + '/assets', express.static(path.join(__dirname, '../../build/public'), {
-		maxAge: app.enabled('cache') ? 5184000000 : 0
-	}));
-	app.use(relativePath + '/assets', express.static(path.join(__dirname, '../../public'), {
-		maxAge: app.enabled('cache') ? 5184000000 : 0
-	}));
-	// TODO: deprecate?
-	app.use(relativePath + '/plugins', express.static(path.join(__dirname, '../../build/public/plugins'), {
-		maxAge: app.enabled('cache') ? 5184000000 : 0
-	}));
+	var statics = [
+		{ route: '/assets', path: path.join(__dirname, '../../build/public') },
+		{ route: '/assets', path: path.join(__dirname, '../../public') },
+		{ route: '/plugins', path: path.join(__dirname, '../../build/public/plugins') },
+	];
+	var staticOptions = {
+		maxAge: app.enabled('cache') ? 5184000000 : 0,
+	};
+
+	if (path.resolve(__dirname, '../../public/uploads') !== nconf.get('upload_path')) {
+		statics.unshift({ route: '/assets/uploads', path: nconf.get('upload_path') });
+	}
+	
+	statics.forEach(function (obj) {
+		app.use(relativePath + obj.route, express.static(obj.path, staticOptions));
+	});
+	app.use(relativePath + '/uploads', function (req, res) {
+		res.redirect(relativePath + '/assets/uploads' + req.path + '?' + meta.config['cache-buster']);
+	});
 
 	// DEPRECATED
 	var deprecatedPaths = [
@@ -163,7 +172,6 @@ module.exports = function (app, middleware, hotswapIds) {
 		'/logo.png',
 		'/favicon.ico',
 		'/vendor/',
-		'/uploads/',
 		'/templates/',
 		'/src/',
 		'/images/',
