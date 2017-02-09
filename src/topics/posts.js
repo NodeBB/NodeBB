@@ -389,10 +389,10 @@ module.exports = function (Topics) {
 	};
 
 	function getPostReplies(pids, callerUid, callback) {
-		var uids = [];
 		var count = 0;
 		var replyPids;
 		async.map(pids, function (pid, _next) {
+			var uids = [];
 			async.waterfall([
 				function (next) {
 					db.getSortedSetRange('pid:' + pid + ':replies', 0, -1, next);
