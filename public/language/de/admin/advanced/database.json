@@ -14,9 +14,9 @@
 	"mongo.storage-size": "Speichergröße",
 	"mongo.index-size": "Indexgröße",
 	"mongo.file-size": "Dateigröße",
-	"mongo.resident-memory": "Resident Memory",
+	"mongo.resident-memory": "Permanenter Speicher",
 	"mongo.virtual-memory": "virtueller Speicher",
-	"mongo.mapped-memory": "Mapped Memory",
+	"mongo.mapped-memory": "Zugeordneter Speicher",
 	"mongo.raw-info": "MongoDB Rohinfo",
 
 	"redis": "Redis",
