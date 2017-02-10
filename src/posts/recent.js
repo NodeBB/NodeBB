@@ -1,8 +1,8 @@
 'use strict';
 
-var async = require('async'),
-	db = require('../database'),
-	privileges = require('../privileges');
+var async = require('async');
+var db = require('../database');
+var privileges = require('../privileges');
 
 
 module.exports = function (Posts) {
@@ -42,12 +42,12 @@ module.exports = function (Posts) {
 				Posts.getPostsFields(pids, ['uid'], next);
 			},
 			function (postData, next) {
-				postData = postData.map(function (post) {
+				var uids = postData.map(function (post) {
 					return post && post.uid;
-				}).filter(function (value, index, array) {
-					return value && array.indexOf(value) === index;
+				}).filter(function (uid, index, array) {
+					return uid && array.indexOf(uid) === index;
 				});
-				next(null, postData);
+				next(null, uids);
 			}
 		], callback);
  	};
