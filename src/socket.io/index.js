@@ -197,7 +197,7 @@ function addRedisAdapter(io) {
 		var redisAdapter = require('socket.io-redis');
 		var redis = require('../database/redis');
 		var pub = redis.connect();
-		var sub = redis.connect({return_buffers: true});
+		var sub = redis.connect();
 		io.adapter(redisAdapter({pubClient: pub, subClient: sub}));
 	} else if (nconf.get('isCluster') === 'true') {
 		winston.warn('[socket.io] Clustering detected, you are advised to configure Redis as a websocket store.');
