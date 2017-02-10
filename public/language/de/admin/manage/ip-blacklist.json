@@ -1,15 +1,15 @@
 {
-	"lead": "Configure your IP blacklist here.",
-	"description": "Occasionally, a user account ban is not enough of a deterrant. Other times, restricting access to the forum to a specific IP or a range of IPs is the best way to protect a forum. In these scenarios, you can add troublesome IP addresses or entire CIDR blocks to this blacklist, and they will be prevented from logging in to or registering a new account.",
-	"active-rules": "Active Rules",
-	"validate": "Validate Blacklist",
-	"apply": "Apply Blacklist",
-	"hints": "Syntax Hints",
-	"hint-1": "Define a single IP addresses per line. You can add IP blocks as long as they follow the CIDR format (e.g. <code>192.168.100.0/22</code>).",
-	"hint-2": "You can add in comments by starting lines with the <code>#</code> symbol.",
+	"lead": "Konfiguriere hier deine IP-Blacklist",
+	"description": "Manchmal ist ein User-Bann nicht abschreckend genug. In vielen Fällen ist es daher sinvoll, den Zugriff auf ein Forum für eine bestimmte Reihe von IP-Adressen zu blockieren. In diesen Fällen können Sie problematische IP-Adressen oder komplette CIDR Blöcke zu dieser Blacklist hinzufügen, welche dann daran gehindert werden sich einzuloggen, oder einen neuen Account zu erstellen.",
+	"active-rules": "Aktive Regeln",
+	"validate": "Blacklist validieren",
+	"apply": "Blacklist anwenden",
+	"hints": "Syntax Hinweise",
+	"hint-1": "Fügen Sie einzelne IP-Adresses pro Zeile ein. Sie können IP-Blöcke hinzufügen, so lange diese im CIDR Format (z.b. <code>192.168.100.0/22</code>) eingegeben werden.",
+	"hint-2": "Sie können Kommentare hinzufügen, indem Sie die Zeilen mit dem <code>#</code> Symbol beginnen.",
 
-	"validate.x-valid": "<strong>%1</strong> out of <strong>%2</strong> rule(s) valid.",
-	"validate.x-invalid": "The following <strong>%1</strong> rules are invalid:",
+	"validate.x-valid": "<strong>%1</strong> von <strong>%2</strong> Regel(n) zulässig.",
+	"validate.x-invalid": "Die folgenden <strong>%1</strong> Regeln sind unzulässig:",
 
-	"alerts.applied-success": "Blacklist Applied"
+	"alerts.applied-success": "Blacklist angewandt"
 }

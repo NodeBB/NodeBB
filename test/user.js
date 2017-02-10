@@ -503,7 +503,7 @@ describe('User', function () {
 			};
 			User.uploadPicture(uid, picture, function (err, uploadedPicture) {
 				assert.ifError(err);
-				assert.equal(uploadedPicture.url, '/uploads/profile/' + uid + '-profileimg.png');
+				assert.equal(uploadedPicture.url, '/assets/uploads/profile/' + uid + '-profileimg.png');
 				assert.equal(uploadedPicture.path, path.join(nconf.get('base_dir'), 'public', 'uploads', 'profile', uid + '-profileimg.png'));
 				done();
 			});

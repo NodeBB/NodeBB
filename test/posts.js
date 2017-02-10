@@ -522,6 +522,24 @@ describe('Post\'s', function () {
 		});
 	});
 
+	it('should get recent poster uids', function (done) {
+		topics.reply({
+			uid: voterUid,
+			tid: topicData.tid,
+			timestamp: Date.now(),
+			content: 'some content'
+		}, function (err) {
+			assert.ifError(err);
+			posts.getRecentPosterUids(0, 1, function (err, uids) {
+				assert.ifError(err);
+				assert(Array.isArray(uids));
+				assert.equal(uids.length, 2);
+				assert.equal(uids[0], voterUid);
+				done();
+			});
+		});
+	});
+
 	after(function (done) {
 		db.emptydb(done);
 	});

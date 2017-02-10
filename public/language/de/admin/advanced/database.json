@@ -1,6 +1,6 @@
 {
-	"x-b": "%1 b",
-	"x-mb": "%1 mb",
+	"x-b": "%1 B",
+	"x-mb": "%1 MB",
 	"uptime-seconds": "Laufzeit in Sekunden",
 	"uptime-days": "Laufzeit in Tagen",
 
@@ -15,7 +15,7 @@
 	"mongo.index-size": "Indexgröße",
 	"mongo.file-size": "Dateigröße",
 	"mongo.resident-memory": "Permanenter Speicher",
-	"mongo.virtual-memory": "virtueller Speicher",
+	"mongo.virtual-memory": "Virtueller Speicher",
 	"mongo.mapped-memory": "Zugeordneter Speicher",
 	"mongo.raw-info": "MongoDB Rohinfo",
 
@@ -29,7 +29,7 @@
 	"redis.total-connections-recieved": "Insgesamt Verbindungen empfangen",
 	"redis.total-commands-processed": "Insgesamt Kommandos ausgeführt",
 	"redis.iops": "Durchschnittliche Anzahl von Ein-/Ausgaben pro Sekunde",
-	"redis.keyspace-hits": "Keyspace Hits",
-	"redis.keyspace-misses": "Keyspace Misses",
+	"redis.keyspace-hits": "Schlüsselraum Treffer",
+	"redis.keyspace-misses": "Schlüsselraum Verfehlungen",
 	"redis.raw-info": "Redis Rohinfo"
 }

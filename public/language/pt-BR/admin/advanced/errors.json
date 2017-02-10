@@ -8,7 +8,7 @@
 	"clear-error-log": "Limpar Log de Erros",
 	"route": "Rota",
 	"count": "Contagem",
-	"no-routes-not-found": "Eeeee! Não tem quaisquer rotas que não foram encontradas.",
+	"no-routes-not-found": "Hooray! No 404 errors!",
 	"clear404-confirm": "Você tem certeza que deseja limpar todos os logs de erro 404?",
 	"clear404-success": "Erros de \"404 Não Encontrada\" apagados"
 }

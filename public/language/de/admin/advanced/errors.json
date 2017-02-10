@@ -3,12 +3,12 @@
 	"error-events-per-day": "<code>%1</code> Ereignisse pro Tag",
 	"error.404": "404 Not Found",
 	"error.503": "503 Service Unavailable",
-	"manage-error-log": "Aktionen Fehlerprotokoll",
+	"manage-error-log": "Fehlerprotokoll verwalten",
 	"export-error-log": "Exportiere das Fehlerprotokoll (CSV)",
-	"clear-error-log": "Lösche Fehlerprotokoll",
+	"clear-error-log": "Fehlerprotokoll leeren",
 	"route": "Zielroute",
 	"count": "Anzahl",
-	"no-routes-not-found": "Hurra! Es gibt keine Zielrouten, die nicht gefunden wurden.",
+	"no-routes-not-found": "Juhui! Keine 404 Fehler!",
 	"clear404-confirm": "Bist du dir sicher, dass du das 404 Fehlerprotokoll löschen möchtest?",
 	"clear404-success": "\"404 Not Found\" Fehler gelöscht"
 }

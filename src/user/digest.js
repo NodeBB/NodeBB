@@ -18,7 +18,7 @@ var utils = require('../../public/src/utils');
 
 		var digestsDisabled = parseInt(meta.config.disableEmailSubscriptions, 10) === 1;
 		if (digestsDisabled) {
-			winston.verbose('[user/jobs] Did not send digests (' + interval + ') because subscription system is disabled.');
+			winston.info('[user/jobs] Did not send digests (' + interval + ') because subscription system is disabled.');
 			return callback();
 		}
 
@@ -57,7 +57,7 @@ var utils = require('../../public/src/utils');
 			if (err) {
 				winston.error('[user/jobs] Could not send digests (' + interval + '): ' + err.message);
 			} else {
-				winston.verbose('[user/jobs] Digest (' + interval + ') scheduling completed. ' + subscribers.length + ' email(s) sent.');
+				winston.info('[user/jobs] Digest (' + interval + ') scheduling completed. ' + subscribers.length + ' email(s) sent.');
 			}
 
 			callback(err);
@@ -109,6 +109,7 @@ var utils = require('../../public/src/utils');
 									notification.image = nconf.get('url') + notification.image;
 								}
 							});
+
 							emailer.send('digest', userObj.uid, {
 								subject: '[' + meta.config.title + '] [[email:digest.subject, ' + (now.getFullYear() + '/' + (now.getMonth() + 1) + '/' + now.getDate()) + ']]',
 								username: userObj.username,

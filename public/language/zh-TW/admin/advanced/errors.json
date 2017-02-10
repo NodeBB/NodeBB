@@ -8,7 +8,7 @@
 	"clear-error-log": "清除錯誤日誌",
 	"route": "路由",
 	"count": "計數",
-	"no-routes-not-found": "太好了！這裡沒有未找到的路由",
+	"no-routes-not-found": "Hooray! No 404 errors!",
 	"clear404-confirm": "您確定要清除404錯誤日誌嗎?",
 	"clear404-success": "\"404 Not Found\" 錯誤已清除"
 }

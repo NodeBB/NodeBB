@@ -26,5 +26,6 @@
 	"touch-icon.upload": "Yükle",
 	"touch-icon.help": "Recommended size and format: 192x192, PNG format only. If no touch icon is specified, NodeBB will fall back to using the favicon.",
 	"outgoing-links": "Outgoing Links",
-	"outgoing-links.warning-page": "Use Outgoing Links Warning Page"
+	"outgoing-links.warning-page": "Use Outgoing Links Warning Page",
+	"search-default-sort-by": "Search default sort by"
 }
