@@ -1,0 +1,74 @@
+{
+	"section-general": "Загальні",
+	"general/dashboard": "Панель приладів",
+	"general/homepage": "Головна",
+	"general/navigation": "Навігація",
+	"general/languages": "Мови",
+	"general/sounds": "Звуки",
+	"general/social": "Соціальні",
+
+	"section-manage": "Керування",
+	"manage/categories": "Категорії",
+	"manage/tags": "Теги",
+	"manage/users": "Користувачі",
+	"manage/registration": "Черга реєстрації",
+	"manage/groups": "Групи",
+	"manage/ip-blacklist": "Чорний список IP-адрес",
+
+	"section-settings": "Налаштування",
+	"settings/general": "Загальні",
+	"settings/reputation": "Репутація",
+	"settings/email": "Електронна пошта",
+	"settings/user": "Користувач",
+	"settings/group": "Група",
+	"settings/guest": "Гості",
+	"settings/uploads": "Завантаження",
+	"settings/post": "Пост",
+	"settings/chat": "Чат",
+	"settings/pagination": "Пагінація",
+	"settings/tags": "Теги",
+	"settings/notifications": "Сповіщення",
+	"settings/cookies": "Куки",
+	"settings/web-crawler": "Роботи",
+	"settings/sockets": "Сокети",
+	"settings/advanced": "Розширені",
+
+	"settings.page-title": "Налаштування %1",
+
+	"section-appearance": "Зовнішній вигляд",
+	"appearance/themes": "Теми",
+	"appearance/skins": "Стилі",
+	"appearance/customise": "Користувацькі HTML та CSS",
+
+	"section-extend": "Розширити",
+	"extend/plugins": "Плагіни",
+	"extend/widgets": "Віджети",
+	"extend/rewards": "Нагороди",
+
+	"section-social-auth": "Авторизація соцмережами",
+
+	"section-plugins": "Плагіни",
+	"extend/plugins.install": "Встановити плагіни",
+
+	"section-advanced": "Розширені",
+	"advanced/database": "База даних",
+	"advanced/events": "Події",
+	"advanced/logs": "Логи",
+	"advanced/errors": "Помилки",
+	"advanced/cache": "Кеш",
+	"development/logger": "Логування",
+	"development/info": "Інформація",
+
+	"reload-forum": "Перевантажити форум",
+	"restart-forum": "Перезавантажити форум",
+	"logout": "Вийти",
+	"view-forum": "Переглянути форум",
+
+	"search.placeholder": "Пошук...",
+	"search.no-results": "Без результатів...",
+	"search.search-forum": "Шукати на форумі <strong></strong>",
+	"search.keep-typing": "Для результатів, надрукуйте ще...",
+	"search.start-typing": "Для результатів, почніть друкувати...",
+
+	"connection-lost": "З'єднання з %1 було втрачено, намагаємось під'єднатись знов..."
+}
