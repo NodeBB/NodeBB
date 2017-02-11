@@ -32,15 +32,15 @@ exports.read = function read(callback) {
 	fs.readFile(filePath, function (err, buffer) {
 		if (err) {
 			winston.warn('[cache-buster] could not read cache buster: ' + err.message);
-			return callback();
+			return callback(null, generate());
 		}
 
-		buffer = buffer.toString();
-		if (buffer) {
-			cached = buffer;
-			return callback(null, cached);
+		if (!buffer || buffer.toString().length !== 11) {
+			winston.warn('[cache-buster] cache buster string invalid: expected /[a-z0-9]{11}/, got `' + buffer + '`');
+			return callback(null, generate());
 		}
 
-		callback();
+		cached = buffer.toString();
+		callback(null, cached);
 	});
 };
