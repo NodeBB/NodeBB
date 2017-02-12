@@ -1,0 +1,27 @@
+{
+	"icon": "Іконка:",
+	"change-icon": "змінити",
+	"route": "Шлях:",
+	"tooltip": "Підказка:",
+	"text": "Текст:",
+	"text-class": "Класс тексту: <small>необов'язковий</small>",
+	"id": "ID: <small>необов'язковий</small>",
+
+	"properties": "Властивості:",
+	"only-admins": "Показувати лише Адмінам",
+	"only-global-mods-and-admins": "Показувати лише Модераторам та Адмінам",
+	"only-logged-in": "Показувати лише увійшовшим користувачам",
+	"open-new-window": "Відкривати у новому вікні",
+
+	"installed-plugins-required": "Необхідні встановлені плагіни:",
+	"search-plugin": "Пошуковий плагін",
+
+	"btn.delete": "Видалити",
+	"btn.disable": "Вимкнути",
+	"btn.enable": "Увімкнути",
+
+	"available-menu-items": "Доступні пункти меню",
+	"custom-route": "Користувацький шлях",
+	"core": "ядро",
+	"plugin": "плагін"
+}

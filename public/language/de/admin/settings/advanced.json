@@ -8,7 +8,7 @@
 	"headers.acao": "Access-Control-Allow-Origin",
 	"headers.acao-help": "Um den Zugriff auf alle Seiten zu blockieren, leer lassen oder auf <code>null</code> setzen",
 	"headers.acam": "Access-Control-Allow-Methods",
-	"headers.acah": "Access-Control-Allow-Methods",
+	"headers.acah": "Access-Control-Allow-Headers",
 	"traffic-management": "Traffic Management",
 	"traffic.help": "NodeBB wird mit einem module geliefert, welches automatisch anfragen in \"High-Traffic\" situationen blockiert. Sie können diese Einstellungen hier Fine-Tunen, auch wenn die Standardeinstellungen einen guten Anfang darstellen sollten",
 	"traffic.enable": "Traffic Management aktivieren",
