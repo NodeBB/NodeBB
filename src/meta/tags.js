@@ -29,17 +29,26 @@ module.exports = function (Meta) {
 					property: 'og:site_name',
 					content: Meta.config.title || 'NodeBB'
 				}, {
-					name: 'keywords',
-					content: Meta.config.keywords || ''
-				}, {
 					name: 'msapplication-badge',
 					content: 'frequency=30; polling-uri=' + nconf.get('url') + '/sitemap.xml',
 					noEscape: true
-				}, {
-					name: 'msapplication-square150x150logo',
-					content: Meta.config['brand:logo'] || '',
-					noEscape: true
 				}];
+
+				if (Meta.config.keywords) {
+					defaultTags.push({
+						name: 'keywords',
+						content: Meta.config.keywords
+					});
+				}
+
+				if (Meta.config['brand:logo']) {
+					defaultTags.push({
+						name: 'msapplication-square150x150logo',
+						content: Meta.config['brand:logo'],
+						noEscape: true
+					});
+				}
+
 				plugins.fireHook('filter:meta.getMetaTags', defaultTags, next);
 			},
 			links: function (next) {
