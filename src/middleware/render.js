@@ -78,14 +78,15 @@ module.exports = function (middleware) {
 				function (results, next) {
 					var str = results.header +
 						(res.locals.postHeader || '') +
-						results.content +
+						results.content + '<script id="ajaxify-data"></script>' +
 						(res.locals.preFooter || '') +
 						results.footer;
 
 					translate(str, req, res, next);
 				},
 				function (translated, next) {
-					next(null, translated + '<script id="ajaxify-data" type="application/json">' + ajaxifyData + '</script>');
+					translated = translated.replace('<script id="ajaxify-data"></script>', '<script id="ajaxify-data" type="application/json">' + ajaxifyData + '</script>');
+					next(null, translated);
 				}
 			], fn);
 		};
