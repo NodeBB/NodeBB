@@ -28,7 +28,7 @@ module.exports = function (Topics) {
 	};
 
 	Topics.getTopicPosts = function (tid, set, start, stop, uid, reverse, callback) {
-		callback = callback || function () { };
+		callback = callback || function () {};
 		async.parallel({
 			posts: function (next) {
 				posts.getPostsFromSet(set, start, stop, uid, reverse, next);
@@ -69,7 +69,7 @@ module.exports = function (Topics) {
 			userData: function (next) {
 				var uids = [];
 
-				for (var i = 0; i < postData.length; ++i) {
+				for(var i = 0; i < postData.length; ++i) {
 					if (postData[i] && uids.indexOf(postData[i].uid) === -1) {
 						uids.push(postData[i].uid);
 					}
@@ -90,7 +90,7 @@ module.exports = function (Topics) {
 			},
 			editors: function (next) {
 				var editors = [];
-				for (var i = 0; i < postData.length; ++i) {
+				for(var i = 0; i < postData.length; ++i) {
 					if (postData[i] && postData[i].editor && editors.indexOf(postData[i].editor) === -1) {
 						editors.push(postData[i].editor);
 					}
@@ -186,7 +186,7 @@ module.exports = function (Topics) {
 				});
 				var parents = {};
 				parentPosts.forEach(function (post, i) {
-					parents[parentPids[i]] = { username: usersMap[post.uid] };
+					parents[parentPids[i]] = {username: usersMap[post.uid]};
 				});
 
 				postData.forEach(function (post) {
@@ -349,7 +349,7 @@ module.exports = function (Topics) {
 	};
 
 	function incrementFieldAndUpdateSortedSet(tid, field, by, set, callback) {
-		callback = callback || function () { };
+		callback = callback || function () {};
 		db.incrObjectFieldBy('topic:' + tid, field, by, function (err, value) {
 			if (err) {
 				return callback(err);
