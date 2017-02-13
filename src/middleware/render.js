@@ -85,7 +85,7 @@ module.exports = function (middleware) {
 					translate(str, req, res, next);
 				},
 				function (translated, next) {
-					translated = translated.replace('<script id="ajaxify-data"></script>', function() {
+					translated = translated.replace('<script id="ajaxify-data"></script>', function () {
 						return '<script id="ajaxify-data" type="application/json">' + ajaxifyData + '</script>';
 					});
 					next(null, translated);
