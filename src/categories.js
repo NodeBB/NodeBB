@@ -350,11 +350,11 @@ var privileges = require('./privileges');
 	Categories.filterIgnoringUids = function (cid, uids, callback) {
 		async.waterfall([
 			function (next) {
-				db.sortedSetScores('cid:' + cid + ':ignorers', uids, next);
+				db.isSortedSetMembers('cid:' + cid + ':ignorers', uids, next);
 			},
-			function (scores, next) {
+			function (isIgnoring, next) {
 				var readingUids = uids.filter(function (uid, index) {
-					return uid && !!scores[index];
+					return uid && !isIgnoring[index];
 				});
 				next(null, readingUids);
 			}

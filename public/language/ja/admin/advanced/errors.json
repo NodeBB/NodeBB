@@ -8,7 +8,7 @@
 	"clear-error-log": "エラーログの消去",
 	"route": "ルート",
 	"count": "カウント",
-	"no-routes-not-found": "やりましたね！見つからなかったルートはありませんでした。",
+	"no-routes-not-found": "ストップ!No 404 エラーです!",
 	"clear404-confirm": "本当に404エラーログを消去してもよろしいですか？",
 	"clear404-success": "\"404 Not Found\"エラーは消去されました"
 }

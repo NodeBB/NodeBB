@@ -19,7 +19,7 @@
 	nconf.defaults({
 		base_dir: path.join(__dirname,'../..'),
 		themes_path: path.join(__dirname, '../../node_modules'),
-		upload_url: path.join(path.sep, '../../uploads', path.sep),
+		upload_path: 'public/uploads',
 		views_dir: path.join(__dirname, '../../build/public/templates'),
 		relative_path: ''
 	});
@@ -121,9 +121,6 @@
 			},
 			function (next) {
 				// nconf defaults, if not set in config
-				if (!nconf.get('upload_path')) {
-					nconf.set('upload_path', '/public/uploads');
-				}
 				if (!nconf.get('sessionKey')) {
 					nconf.set('sessionKey', 'express.sid');
 				}
@@ -135,7 +132,7 @@
 				nconf.set('use_port', !!urlObject.port);
 				nconf.set('relative_path', relativePath);
 				nconf.set('port', urlObject.port || nconf.get('port') || nconf.get('PORT') || (nconf.get('PORT_ENV_VAR') ? nconf.get(nconf.get('PORT_ENV_VAR')) : false) || 4567);
-				nconf.set('upload_url', nconf.get('upload_path').replace(/^\/public/, ''));
+				nconf.set('upload_path', path.join(nconf.get('base_dir'), nconf.get('upload_path')));
 
 				nconf.set('core_templates_path', path.join(__dirname, '../../src/views'));
 				nconf.set('base_templates_path', path.join(nconf.get('themes_path'), 'nodebb-theme-persona/templates'));

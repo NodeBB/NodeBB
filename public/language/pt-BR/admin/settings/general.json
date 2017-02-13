@@ -26,5 +26,6 @@
 	"touch-icon.upload": "Enviar",
 	"touch-icon.help": "Tamanho e formato recomendados: 192x192, apenas formato PNG. Se nenhum ícone de touch screen for especificado, o NodeBB usará o seu favicon, ao invés dele.",
 	"outgoing-links": "Links Externos",
-	"outgoing-links.warning-page": "Utilizar Página de Aviso de Links Externos"
+	"outgoing-links.warning-page": "Utilizar Página de Aviso de Links Externos",
+	"search-default-sort-by": "Search default sort by"
 }

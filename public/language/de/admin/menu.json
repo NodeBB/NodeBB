@@ -9,7 +9,7 @@
 
 	"section-manage": "Verwalten",
 	"manage/categories": "Kategorien",
-	"manage/tags": "Schlagworte",
+	"manage/tags": "Tags",
 	"manage/users": "Benutzer",
 	"manage/registration": "Warteliste",
 	"manage/groups": "Gruppen",
@@ -26,7 +26,7 @@
 	"settings/post": "Beiträge",
 	"settings/chat": "Chat",
 	"settings/pagination": "Seitennummerierung",
-	"settings/tags": "Schlagworte",
+	"settings/tags": "Tags",
 	"settings/notifications": "Benachrichtigungen",
 	"settings/cookies": "Cookies",
 	"settings/web-crawler": "Web Crawler",
@@ -38,7 +38,7 @@
 	"section-appearance": "Aussehen",
 	"appearance/themes": "Themes",
 	"appearance/skins": "Skins",
-	"appearance/customise": "Eigene HTML & CSS",
+	"appearance/customise": "Benutzerdefiniertes HTML & CSS",
 
 	"section-extend": "Erweitert",
 	"extend/plugins": "Plugins",

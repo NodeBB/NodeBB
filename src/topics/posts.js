@@ -389,43 +389,57 @@ module.exports = function (Topics) {
 	};
 
 	function getPostReplies(pids, callerUid, callback) {
-		async.map(pids, function (pid, next) {
-			db.getSortedSetRange('pid:' + pid + ':replies', 0, -1, function (err, replyPids) {
-				var uids = [], count = 0;
-
-				async.until(function () {
-					return count === replyPids.length || uids.length === 6;
-				}, function (next) {
-					posts.getPostField(replyPids[count], 'uid', function (err, uid) {
-						uid = parseInt(uid, 10);
-						if (uids.indexOf(uid) === -1) {
-							uids.push(uid);
-						} 
-						count++;
-						next(err);
-					});
-				}, function (err) {
+		async.map(pids, function (pid, _next) {
+			var replyPids;
+			var uids = [];
+			var count = 0;
+			async.waterfall([
+				function (next) {
+					db.getSortedSetRange('pid:' + pid + ':replies', 0, -1, next);
+				},
+				function (_replyPids, next) {
+					replyPids = _replyPids;
+					if (!replyPids.length) {
+						return _next(null, {count: 0});
+					}
+					async.until(function () {
+						return count === replyPids.length || uids.length === 6;
+					}, function (next) {
+						posts.getPostField(replyPids[count], 'uid', function (err, uid) {
+							if (err) {
+								return next(err);
+							}
+							uid = parseInt(uid, 10);
+							if (uids.indexOf(uid) === -1) {
+								uids.push(uid);
+							}
+							count++;
+							next();
+						});
+					}, next);
+				},
+				function (next) {
 					async.parallel({
-						"users": function (next) {
+						users: function (next) {
 							user.getUsersWithFields(uids, ['uid', 'username', 'userslug', 'picture'], callerUid, next);
 						},
-						"timestampISO": function (next) {
-							posts.getPostField(replyPids[0], 'timestamp', function (err, timestamp) {
-								next(err, utils.toISOString(timestamp));
-							});
+						timestampISO: function (next) {
+							posts.getPostField(replyPids[replyPids.length - 1], 'timestamp', next);
 						}
-					}, function (err, replies) {
-						if (replies.users.length > 5) {
-							replies.users.shift();
-							replies.hasMore = true;
-						}
+					}, next);
+				},
+				function (replies, next) {
+					if (replies.users.length > 5) {
+						replies.users.shift();
+						replies.hasMore = true;
+					}
 
-						replies.count = replyPids.length;
+					replies.count = replyPids.length;
+					replies.timestampISO = utils.toISOString(replies.timestampISO);
 
-						next(err, replies);
-					});
-				});
-			});
+					next(null, replies);
+				}
+			], _next);
 		}, callback);
 	}
 };

@@ -1,8 +1,8 @@
 {
-	"handles": "Guest Handles",
-	"handles.enabled": "Allow guest handles",
-	"handles.enabled-help": "This option exposes a new field that allows guests to pick a name to associate with each post they make. If disabled, they will simply be called \"Guest\"",
-	"privileges": "Guest Privileges",
-	"privileges.can-search": "Allow guests to search without logging in",
-	"privileges.can-search-users": "Allow guests to search users without logging in"
+	"handles": "Gastzugang",
+	"handles.enabled": "Gastzugänge erlauben",
+	"handles.enabled-help": "Diese option offenbart ein neues Feld, welches Gästen erlaubt einen Nutzernamen zu wählen, welcher Sie mit jedem Beitrag assoziiert den sie erstellen. Wenn diese option deaktiviert ist, werden sie einfach \"Gast\" genannt",
+	"privileges": "Gast-Berechtigungen",
+	"privileges.can-search": "Gästen erlauben das Forum zu durchsuchen ohne eingeloggt zu sein",
+	"privileges.can-search-users": "Gästen erlauben nach Benutzern zu suchen ohne eingeloggt zu sein"
 }

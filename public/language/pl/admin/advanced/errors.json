@@ -8,7 +8,7 @@
 	"clear-error-log": "Wyczyść dziennik błędów",
 	"route": "Scieżka",
 	"count": "Licznik",
-	"no-routes-not-found": "Brawo! Nie znaleziono błędów.",
+	"no-routes-not-found": "Hooray! No 404 errors!",
 	"clear404-confirm": "Czy chcesz wyczyścić dziennik błędów 404?",
 	"clear404-success": "Wyczyszczono błędy \"404 Nie znaleziono\""
 }
