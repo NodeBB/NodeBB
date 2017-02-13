@@ -115,6 +115,7 @@
 		<div class="panel panel-default">
 			<div class="panel-heading">[[admin/general/dashboard:active-users]]</div>
 			<div class="panel-body">
+				<div id="active-users" class="stats"></div>
 			</div>
 		</div>
 
