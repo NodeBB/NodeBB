@@ -29,25 +29,25 @@
 		<div class="row">
 			<!-- BEGIN stats -->
 			<div class="col-lg-6">
-				<div class="panel panel-default">
+				<div class="panel panel-default stats">
 					<div class="panel-heading">{stats.name}</div>
 					<div class="panel-body">
 						<div id="unique-visitors">
 							<div class="text-center pull-left">
 								<span class="formatted-number">{stats.day}</span>
-								<div>[[admin/general/dashboard:stats.day]]</div>
+								<div class="stat">[[admin/general/dashboard:stats.day]]</div>
 							</div>
 							<div class="text-center pull-left">
 								<span class="formatted-number">{stats.week}</span>
-								<div>[[admin/general/dashboard:stats.week]]</div>
+								<div class="stat">[[admin/general/dashboard:stats.week]]</div>
 							</div>
 							<div class="text-center pull-left">
 								<span class="formatted-number">{stats.month}</span>
-								<div>[[admin/general/dashboard:stats.month]]</div>
+								<div class="stat">[[admin/general/dashboard:stats.month]]</div>
 							</div>
 							<div class="text-center pull-left">
 								<span class="formatted-number">{stats.alltime}</span>
-								<div>[[admin/general/dashboard:stats.all]]</div>
+								<div class="stat">[[admin/general/dashboard:stats.all]]</div>
 							</div>
 						</div>
 					</div>
@@ -115,7 +115,6 @@
 		<div class="panel panel-default">
 			<div class="panel-heading">[[admin/general/dashboard:active-users]]</div>
 			<div class="panel-body">
-				<div id="active-users"></div>
 			</div>
 		</div>
 
