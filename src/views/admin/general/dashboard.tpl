@@ -11,15 +11,15 @@
 					<canvas id="analytics-traffic" width="100%" height="400"></canvas>
 				</div>
 				<hr/>
-				<div class="text-center pull-left monthly-pageviews">
+				<div class="text-center pull-left pageview-stats">
 					<div><strong id="pageViewsLastMonth"></strong></div>
 					<div><a href="#" data-action="updateGraph" data-units="days" data-until="last-month">[[admin/general/dashboard:page-views-last-month]]</a></div>
 				</div>
-				<div class="text-center pull-left monthly-pageviews">
+				<div class="text-center pull-left pageview-stats">
 					<div><strong id="pageViewsThisMonth"></strong></div>
 					<div><a href="#" data-action="updateGraph" data-units="days">[[admin/general/dashboard:page-views-this-month]]</a></div>
 				</div>
-				<div class="text-center pull-left monthly-pageviews">
+				<div class="text-center pull-left pageview-stats">
 					<div><strong id="pageViewsPastDay"></strong></div>
 					<div><a href="#" data-action="updateGraph" data-units="hours">[[admin/general/dashboard:page-views-last-day]]</a></div>
 				</div>
