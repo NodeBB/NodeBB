@@ -296,6 +296,8 @@ define('admin/general/dashboard', ['semver', 'Chart', 'translator'], function (s
 						until = lastMonth.getTime();
 				}
 				updateTrafficGraph($(this).attr('data-units'), until);
+				$('[data-action="updateGraph"]').removeClass('active');
+				$(this).addClass('active');
 			});
 
 			socket.emit('admin.rooms.getAll', Admin.updateRoomUsage);

@@ -13,15 +13,15 @@
 				<hr/>
 				<div class="text-center pull-left pageview-stats">
 					<div><strong id="pageViewsLastMonth"></strong></div>
-					<div><a href="#" data-action="updateGraph" data-units="days" data-until="last-month">[[admin/general/dashboard:page-views-last-month]]</a></div>
+					<div><a href="#" class="updatePageviewsGraph" data-action="updateGraph" data-units="days" data-until="last-month">[[admin/general/dashboard:page-views-last-month]]</a></div>
 				</div>
 				<div class="text-center pull-left pageview-stats">
 					<div><strong id="pageViewsThisMonth"></strong></div>
-					<div><a href="#" data-action="updateGraph" data-units="days">[[admin/general/dashboard:page-views-this-month]]</a></div>
+					<div><a href="#" class="updatePageviewsGraph" data-action="updateGraph" data-units="days">[[admin/general/dashboard:page-views-this-month]]</a></div>
 				</div>
 				<div class="text-center pull-left pageview-stats">
 					<div><strong id="pageViewsPastDay"></strong></div>
-					<div><a href="#" data-action="updateGraph" data-units="hours">[[admin/general/dashboard:page-views-last-day]]</a></div>
+					<div><a href="#" class="updatePageviewsGraph active" data-action="updateGraph" data-units="hours">[[admin/general/dashboard:page-views-last-day]]</a></div>
 				</div>
 			</div>
 		</div>
