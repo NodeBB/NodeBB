@@ -263,7 +263,7 @@ define('forum/account/edit', ['forum/account/header', 'uploader', 'translator', 
 						});
 					});
 					
-					cropperModal.find('.upload-btn').on('click', function() {
+					cropperModal.find('.upload-btn').on('click', function () {
 						$(this).addClass('disabled');
 						cropperTool.destroy();
 					
