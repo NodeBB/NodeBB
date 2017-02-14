@@ -268,9 +268,9 @@ define('forum/account/edit', ['forum/account/header', 'uploader', 'translator', 
 					    cropperTool.destroy();
 
 					    cropperTool = new cropper.default(img, {
-							viewMode: 1,
-							autoCropArea: 1
-						});
+					    	viewMode: 1,
+					    	autoCropArea: 1
+					    });
 
 						cropperModal.find('.crop-btn').trigger('click');
 					})
