@@ -382,8 +382,9 @@ function generateForTag(req, res, next) {
 	}
 	var tag = validator.escape(String(req.params.tag));
 	var page = parseInt(req.query.page, 10) || 1;
-	var start = Math.max(0, (page - 1) * meta.config.topicsPerPage);
-	var stop = start + meta.config.topicsPerPage - 1;
+	var topicsPerPage = meta.config.topicsPerPage || 20;
+	var start = Math.max(0, (page - 1) * topicsPerPage);
+	var stop = start + topicsPerPage - 1;
 	generateForTopics({
 		uid: req.uid,
 		title: 'Topics tagged with ' + tag,

@@ -1,35 +1,14 @@
 "use strict";
 
-var rewards = {},
-	async = require('async'),
-	plugins = require('../plugins'),
-	db = require('../database');
+var async = require('async');
+var plugins = require('../plugins');
+var db = require('../database');
 
+var rewards = module.exports;
 
 rewards.save = function (data, callback) {
-	function save(data, next) {
-		function commit(err, id) {
-			if (err) {
-				return callback(err);
-			}
 
-			data.id = id;
-			
-			async.series([
-				function (next) {
-					rewards.delete(data, next);
-				},
-				function (next) {
-					db.setAdd('rewards:list', data.id, next);
-				},
-				function (next) {
-					db.setObject('rewards:id:' + data.id, data, next);
-				},
-				function (next) {
-					db.setObject('rewards:id:' + data.id + ':rewards', rewardsData, next);
-				}
-			], next);
-		}
+	async.each(data, function save(data, next) {
 
 		if (!Object.keys(data.rewards).length) {
 			return next();
@@ -38,14 +17,36 @@ rewards.save = function (data, callback) {
 		var rewardsData = data.rewards;
 		delete data.rewards;
 
-		if (!parseInt(data.id, 10)) {
-			db.incrObjectField('global', 'rewards:id', commit);
-		} else {
-			commit(false, data.id);
-		}
-	}
+		async.waterfall([
+			function (next) {
+				if (!parseInt(data.id, 10)) {
+					db.incrObjectField('global', 'rewards:id', next);
+				} else {
+					next(null, data.id);
+				}
+			},
+			function (rid, next) {
 
-	async.each(data, save, function (err) {
+				data.id = rid;
+
+				async.series([
+					function (next) {
+						rewards.delete(data, next);
+					},
+					function (next) {
+						db.setAdd('rewards:list', data.id, next);
+					},
+					function (next) {
+						db.setObject('rewards:id:' + data.id, data, next);
+					},
+					function (next) {
+						db.setObject('rewards:id:' + data.id + ':rewards', rewardsData, next);
+					}
+				], next);
+			}
+		], next);
+
+	}, function (err) {
 		if (err) {
 			return callback(err);
 		}
@@ -84,25 +85,29 @@ rewards.get = function (callback) {
 };
 
 function saveConditions(data, callback) {
-	db.delete('conditions:active', function (err) {
-		if (err) {
-			return callback(err);
+	var rewardsPerCondition = {};
+	async.waterfall([
+		function (next) {
+			db.delete('conditions:active', next);
+		},
+		function (next) {
+			var conditions = [];
+
+			data.forEach(function (reward) {
+				conditions.push(reward.condition);
+				rewardsPerCondition[reward.condition] = rewardsPerCondition[reward.condition] || [];
+				rewardsPerCondition[reward.condition].push(reward.id);
+			});
+
+			db.setAdd('conditions:active', conditions, next);
+		},
+		function (next) {
+			async.each(Object.keys(rewardsPerCondition), function (condition, next) {
+				db.setAdd('condition:' + condition + ':rewards', rewardsPerCondition[condition], next);
+			}, next);
 		}
-
-		var conditions = [],
-			rewardsPerCondition = {};
-
-		data.forEach(function (reward) {
-			conditions.push(reward.condition);
-			rewardsPerCondition[reward.condition] = rewardsPerCondition[reward.condition] || [];
-			rewardsPerCondition[reward.condition].push(reward.id);
-		});
-
-		db.setAdd('conditions:active', conditions, callback);
-
-		async.each(Object.keys(rewardsPerCondition), function (condition, next) {
-			db.setAdd('condition:' + condition + ':rewards', rewardsPerCondition[condition], next);
-		}, callback);
+	], function (err) {
+		callback(err);
 	});
 }
 
@@ -138,5 +143,3 @@ function getActiveRewards(callback) {
 		});
 	});
 }
-
-module.exports = rewards;
