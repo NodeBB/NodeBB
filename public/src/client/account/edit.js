@@ -221,7 +221,7 @@ define('forum/account/edit', ['forum/account/header', 'uploader', 'translator', 
 					var img = document.getElementById('cropped-image');
 					var cropperTool = new cropper.default(img, {
 						aspectRatio: 1 / 1,
-						viewMode: 1
+						viewMode: 1,
 					});
 					
 					cropperModal.find('.rotate').on('click', function () {
@@ -252,6 +252,9 @@ define('forum/account/edit', ['forum/account/header', 'uploader', 'translator', 
 							imageData: imageData
 						}, function (err, imageData) {
 							if (err) {
+								cropperModal.find('#upload-progress-box').hide();
+								cropperModal.find('.upload-btn').removeClass('disabled');
+								cropperModal.find('.crop-btn').removeClass('disabled');
 								app.alertError(err.message);
 							}
 							
@@ -259,6 +262,19 @@ define('forum/account/edit', ['forum/account/header', 'uploader', 'translator', 
 							cropperModal.modal('hide');
 						});
 					});
+					
+					cropperModal.find('.upload-btn').on('click', function() {
+					    $(this).addClass('disabled');
+					    
+					    cropperTool.destroy();
+					    
+					    cropperTool = new cropper.default(img, {
+							viewMode: 1,
+							autoCropArea: 1
+						});
+						
+						cropperModal.find('.crop-btn').trigger('click');
+					})
 				});
 			});
 		}
