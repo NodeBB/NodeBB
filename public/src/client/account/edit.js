@@ -264,16 +264,16 @@ define('forum/account/edit', ['forum/account/header', 'uploader', 'translator', 
 					});
 					
 					cropperModal.find('.upload-btn').on('click', function() {
-					    $(this).addClass('disabled');
-					    cropperTool.destroy();
-
-					    cropperTool = new cropper.default(img, {
-					    	viewMode: 1,
-					    	autoCropArea: 1
-					    });
-
+						$(this).addClass('disabled');
+						cropperTool.destroy();
+					
+						cropperTool = new cropper.default(img, {
+							viewMode: 1,
+							autoCropArea: 1
+						});
+					
 						cropperModal.find('.crop-btn').trigger('click');
-					})
+					});
 				});
 			});
 		}
