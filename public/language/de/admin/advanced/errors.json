@@ -8,7 +8,7 @@
 	"clear-error-log": "Fehlerprotokoll leeren",
 	"route": "Zielroute",
 	"count": "Anzahl",
-	"no-routes-not-found": "Juhui! Keine 404 Fehler!",
+	"no-routes-not-found": "Hurra! Keine 404 Fehler!",
 	"clear404-confirm": "Bist du dir sicher, dass du das 404 Fehlerprotokoll löschen möchtest?",
 	"clear404-success": "\"404 Not Found\" Fehler gelöscht"
 }

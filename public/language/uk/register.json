@@ -1,0 +1,23 @@
+{
+    "register": "Реєстрація",
+    "cancel_registration": "Відмінити реєстрацію",
+    "help.email": "За замовчуванням, ваша email-адреса буде прихована від інших. ",
+    "help.username_restrictions": "Унікальне ім'я довжиною від %1 до %2 символів. Інші можуть вас згадувати за допомогою @<span id='yourUsername'>ім'я</span>.",
+    "help.minimum_password_length": "Довжина паролю має бути щонайменше %1 символів.",
+    "email_address": "Електронна адреса",
+    "email_address_placeholder": "Уведіть електронну адресу",
+    "username": "Ім'я користувача",
+    "username_placeholder": "Уведіть ім'я",
+    "password": "Пароль",
+    "password_placeholder": "Уведіть пароль",
+    "confirm_password": "Підтвердіть пароль",
+    "confirm_password_placeholder": "Підтвердження пароля",
+    "register_now_button": "Зареєструватися зараз",
+    "alternative_registration": "Альтернативна реєстрація",
+    "terms_of_use": "Умови користування",
+    "agree_to_terms_of_use": "Я погоджуюсь з Умовами користування",
+    "terms_of_use_error": "Ви маєте погодитись з Умовами користування",
+    "registration-added-to-queue": "Ваша реєстрація була додана в чергу затвердження. Ви отримаєте листа на електронну пошту, коли адміністратор її підтвердить.",
+    "interstitial.intro": "Нам потрібна додаткова інформація, перш ніж ми створимо ваш обліковий запис.",
+    "interstitial.errors-found": "Нам не вдалося вас зареєструвати:"
+}

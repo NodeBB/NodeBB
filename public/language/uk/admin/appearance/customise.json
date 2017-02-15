@@ -1,0 +1,9 @@
+{
+	"custom-css": "Користувацькі CSS",
+	"custom-css.description": "Уведіть власні CSS правила, що будуть примінені після всіх інших стилів.",
+	"custom-css.enable": "Увімкнути користувацькі CSS",
+
+	"custom-header": "Користувацький заголовок",
+	"custom-header.description": "Уведіть власний HTML (JavaScript, мета теги, тощо), що буде додано до секції <code>&lt;head&gt;</code> вашого форуму.",
+	"custom-header.enable": "Увімкнути користувацький заголовок"
+}

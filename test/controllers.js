@@ -288,6 +288,15 @@ describe('Controllers', function () {
 		});
 	});
 
+	it('should load tag rss feed', function (done) {
+		request(nconf.get('url') + '/tags/nodebb.rss', function (err, res, body) {
+			assert.ifError(err);
+			assert.equal(res.statusCode, 200);
+			assert(body);
+			done();
+		});
+	});
+
 	it('should load stylesheet.css', function (done) {
 		request(nconf.get('url') + '/stylesheet.css', function (err, res, body) {
 			assert.ifError(err);

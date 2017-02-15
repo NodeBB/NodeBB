@@ -1,0 +1,63 @@
+{
+	"forum-traffic": "Трафік форуму",
+	"page-views": "Перегляди сторінок",
+	"unique-visitors": "Унікальні відвідувачі",
+	"users": "Користувачі",
+	"posts": "Пости",
+	"topics": "Теми",
+	"page-views-last-month": "Переглядів останнього місяця",
+	"page-views-this-month": "Переглядів цього місяця",
+	"page-views-last-day": "Переглядів за останні 24 години",
+
+	"stats.day": "День",
+	"stats.week": "Тиждень",
+	"stats.month": "Місяць",
+	"stats.all": "Увесь час",
+	
+	"updates": "Оновлень",
+	"running-version": "У вас працює <strong>NodeBB v<span id=\"version\">%1</span></strong>.",
+	"keep-updated": "Регулярно перевіряйте, що ваш NodeBB знаходиться в актуальному стані, щоб мати останні патчі та виправлення.",
+	"up-to-date": "<p>Ваша версія <strong>актуальна</strong> <i class=\"fa fa-check\"></i></p>",
+	"upgrade-available": "Була випущена нова версія (v%1). Подумайте про <a href=\"https://docs.nodebb.org/en/latest/upgrading/index.html\">оновлення свого NodeBB</a>.</p>",
+	"prerelease-upgrade-available": "У вас встановлено застарілу пре-релізну версію NodeBB. Була випущена нова версія (v%1). Подумайте про <a href=\"https://docs.nodebb.org/en/latest/upgrading/index.html\">оновлення свого NodeBB</a>.</p>",
+	"prerelease-warning": "<p>Це <strong>пре-релізна</strong> версія NodeBB. Можуть виникати неочікувані помилки. <i class=\"fa fa-exclamation-triangle\"></i></p>",
+
+	"notices": "Сповіщення",
+	"restart-not-required": "Перезавантаження не потрібне",
+	"restart-required": "Потрібне перезавантаження",
+	"search-plugin-installed": "Пошуковий плагін встановлено",
+	"search-plugin-not-installed": "Пошуковий плагін не встановлено",
+	"search-plugin-tooltip": "Встановіть пошуковий плагін зі сторінки плагінів, що активувати пошуковий функціонал",
+
+	"control-panel": "Керування системою",
+	"reload": "Перевантажити",
+	"restart": "Перезавантажити",
+	"restart-warning": "Перевантажування або перезавантаження вашого NodeBB скине всі існуючі з`єднання на декілька секунд.",
+	"maintenance-mode": "Режим обслуговування",
+	"maintenance-mode-title": "Натисніть тут, щоб налаштувати режим обслуговування NodeBB",
+	"realtime-chart-updates": "Оновлення графіків в реальному часі",
+
+	"active-users": "Активні користувачі",
+	"active-users.users": "Користувачі",
+	"active-users.guests": "Гості",
+	"active-users.total": "Разом",
+	"active-users.connections": "З'єднання",
+
+	"anonymous-registered-users": "Аноніми проти Зареєстрованих",
+	"anonymous": "Аноніми",
+	"registered": "Зареєстровані",
+
+	"user-presence": "Присутність користувача",
+	"on-categories": "На списку категорій",
+	"reading-posts": "Читають пости",
+	"browsing-topics": "Переглядають теми",
+	"recent": "Недавні",
+	"unread": "Непрочитані",
+
+	"high-presence-topics": "Теми з високою присутністю",
+
+	"graphs.page-views": "Перегляди сторінок",
+	"graphs.unique-visitors": "Унікальні відвідувачі",
+	"graphs.registered-users": "Зареєстровані користувачі",
+	"graphs.anonymous-users": "Анонімні користувачі"
+}

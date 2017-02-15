@@ -1,0 +1,19 @@
+{
+	"available": "Доступні віджети",
+	"explanation": "Оберіть віджет із випадаючого меню і перетягніть його в область зліва.",
+	"none-installed": "Віджетів не знайдено! Активуйте необхідний плагін віджетів в панелі керування  <a href=\"%1\">плагінами</a>.",
+	"containers.available": "Доступні контейнери",
+	"containers.explanation": "Перетягніть поверх будь-якого активного віджету",
+	"containers.none": "Ніякий",
+	"container.well": "Криниця",
+	"container.jumbotron": "Екран",
+	"container.panel": "Панель",
+	"container.panel-header": "Заголовок панелі",
+	"container.panel-body": "Тіло панелі",
+	"container.alert": "Тривога",
+
+	"alert.confirm-delete": "Ви впевнені, що бажаєте видалити цей віджет?",
+	"alert.updated": "Віджети оновлено",
+	"alert.update-success": "Віджети успішно оновлено"
+
+}

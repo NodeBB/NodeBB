@@ -252,12 +252,27 @@ define('forum/account/edit', ['forum/account/header', 'uploader', 'translator', 
 							imageData: imageData
 						}, function (err, imageData) {
 							if (err) {
+								cropperModal.find('#upload-progress-box').hide();
+								cropperModal.find('.upload-btn').removeClass('disabled');
+								cropperModal.find('.crop-btn').removeClass('disabled');
 								app.alertError(err.message);
 							}
 							
 							onUploadComplete(imageData.url);
 							cropperModal.modal('hide');
 						});
+					});
+					
+					cropperModal.find('.upload-btn').on('click', function () {
+						$(this).addClass('disabled');
+						cropperTool.destroy();
+					
+						cropperTool = new cropper.default(img, {
+							viewMode: 1,
+							autoCropArea: 1
+						});
+					
+						cropperModal.find('.crop-btn').trigger('click');
 					});
 				});
 			});

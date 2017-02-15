@@ -1,12 +1,12 @@
 {
-    "tag": "Tag Settings",
-    "min-per-topic": "Minimum Tags per Topic",
-    "max-per-topic": "Maximum Tags per Topic",
-    "min-length": "Minimum Tag Length",
-    "max-length": "Maximum Tag Length",
-    "goto-manage": "Click here to visit the tag management page.",
-    "privacy": "Privacy",
-    "list-private": "Make the tags list private",
-    "related-topics": "Related Topics",
-    "max-related-topics": "Maximum related topics to display (if supported by theme)"
+    "tag": "Tag-Einstellungen",
+    "min-per-topic": "Minimale Tags pro Thema",
+    "max-per-topic": "Maximale Tags pro Thema",
+    "min-length": "Minimale Tag Länge",
+    "max-length": "Maximale Tag Länge",
+    "goto-manage": "Klicken Sie hier um die Tag Managementseite aufzurufen.",
+    "privacy": "Privatsphäre",
+    "list-private": "Tag-Liste privatisieren",
+    "related-topics": "Zusammenhängende Themen",
+    "max-related-topics": "Maximale Anzahl an Zusammenhängenden Themen die angezeigt werden sollen (Wenn vom Design unterstützt)"
 }
