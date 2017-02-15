@@ -205,7 +205,7 @@ define('forum/topic/postTools', [
 				username = '';
 			}
 
-			var toPid = button.is('[component="post/reply"]') ? getData(button, 'data-pid') : null;
+			var toPid = button.is('[component="topic/reply"]') || button.is('[component="post/reply"]') ? getData(button, 'data-pid') : null;
 
 			if (selectedText) {
 				$(window).trigger('action:composer.addQuote', {
