@@ -365,7 +365,7 @@ Controllers.handle404 = function (req, res) {
 
 	if (isClientScript.test(req.url)) {
 		res.type('text/javascript').status(200).send('');
-	} else if (req.path.startsWith(relativePath + '/uploads') || (req.get('accept') && req.get('accept').indexOf('text/html') === -1) || req.path === '/favicon.ico') {
+	} else if (req.path.startsWith(relativePath + '/assets/uploads') || (req.get('accept') && req.get('accept').indexOf('text/html') === -1) || req.path === '/favicon.ico') {
 		meta.errors.log404(req.path || '');
 		res.sendStatus(404);
 	} else if (req.accepts('html')) {
