@@ -1,40 +1,36 @@
 "use strict";
 
-var rewards = {},
-	db = require('../database'),
-	plugins = require('../plugins'),
-	async = require('async');
 
+var db = require('../database');
+var plugins = require('../plugins');
+var async = require('async');
+
+var rewards = module.exports;
 
 rewards.checkConditionAndRewardUser = function (uid, condition, method, callback) {
+	callback = callback || function () {};
+
 	async.waterfall([
 		function (next) {
-			isConditionActive(condition, function (err, isActive) {
-				if (!isActive) {
-					return back(err);
-				}
-
-				next(err);
-			});
+			isConditionActive(condition, next);
 		},
-		function (next) {
-			getIDsByCondition(condition, function (err, ids) {
-				next(err, ids);
-			});
+		function (isActive, next) {
+			if (!isActive) {
+				return callback();
+			}
+			getIDsByCondition(condition, next);
 		},
 		function (ids, next) {
 			getRewardDataByIDs(ids, next);
 		},
 		function (rewards, next) {
-			filterCompletedRewards(uid, rewards, function (err, filtered) {
-				if (!filtered || !filtered.length) {
-					return back(err);
-				}
-
-				next(err, filtered);
-			});
+			filterCompletedRewards(uid, rewards, next);
 		},
 		function (rewards, next) {
+			if (!rewards || !rewards.length) {
+				return callback();
+			}
+
 			async.filter(rewards, function (reward, next) {
 				if (!reward) {
 					return next(null, false);
@@ -51,14 +47,7 @@ rewards.checkConditionAndRewardUser = function (uid, condition, method, callback
 				giveRewards(uid, eligible, next);
 			});
 		}
-	], back);
-
-
-	function back(err) {
-		if (typeof callback === 'function') {
-			callback(err);
-		}
-	}
+	], callback);
 };
 
 function isConditionActive(condition, callback) {
@@ -88,14 +77,10 @@ function filterCompletedRewards(uid, rewards, callback) {
 
 			var claimable = parseInt(reward.claimable, 10);
 
-			if (claimable === 0) {
-				return true;
-			}
-
-			return (userRewards[reward.id] >= reward.claimable) ? false : true;
+			return claimable === 0 || (userRewards[reward.id] < reward.claimable);
 		});
 
-		callback(false, rewards);
+		callback(null, rewards);
 	});
 }
 
@@ -135,6 +120,3 @@ function giveRewards(uid, rewards, callback) {
 		}, callback);
 	});
 }
-
-
-module.exports = rewards;

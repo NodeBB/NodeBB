@@ -7,7 +7,7 @@
 	"bg-color": "背景颜色",
 	"text-color": "文字颜色",
 	"bg-image-size": "背景图片大小",
-	"custom-class": "自定义分类",
+	"custom-class": "自定义 Class",
 	"num-recent-replies": "最近回复数",
 	"ext-link": "外部链接",
 	"upload-image": "上传图片",
@@ -16,7 +16,7 @@
 	"parent-category": "父板块",
 	"optional-parent-category": "(可选)父板块",
 	"parent-category-none": "(无)",
-	"copy-settings": "复制设置窗体",
+	"copy-settings": "复制设置",
 	"optional-clone-settings": "(可选) 从板块复制设置",
 	"purge": "删除板块",
 

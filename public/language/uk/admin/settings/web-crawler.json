@@ -1,0 +1,10 @@
+{
+	"crawlability-settings": "Налаштування можливості сканування",
+	"robots-txt": "Користувацький Robots.txt <small>Залишити пустим для налаштувань за замовчуванням</small>",
+	"sitemap-feed-settings": "Налаштування мапи сайту та стрічки оновлень",
+	"disable-rss-feeds": "Вимкнути RSS-стрічки",
+	"disable-sitemap-xml": "Вимкнути Sitemap.xml",
+	"sitemap-topics": "Кількість тем для показу в мапі сайту",
+	"clear-sitemap-cache": "Очистити кеш мапи сайту",
+	"view-sitemap": "Переглянути мапу сайту"
+}
