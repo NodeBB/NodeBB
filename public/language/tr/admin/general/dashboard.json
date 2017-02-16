@@ -29,7 +29,7 @@
 	"search-plugin-not-installed": "Search Plugin not installed",
 	"search-plugin-tooltip": "Install a search plugin from the plugin page in order to activate search functionality",
 
-	"control-panel": "System Control",
+	"control-panel": "Sistem Kontrol",
 	"reload": "Reload",
 	"restart": "Restart",
 	"restart-warning": "Reloading or Restarting your NodeBB will drop all existing connections for a few seconds.",
