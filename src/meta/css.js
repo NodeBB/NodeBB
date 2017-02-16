@@ -143,7 +143,12 @@ module.exports = function (Meta) {
 				return callback(err);
 			}
 
-			postcss(global.env === 'development' ? [ autoprefixer ] : [ autoprefixer, clean() ]).process(lessOutput.css).then(function (result) {
+			postcss(global.env === 'development' ? [ autoprefixer ] : [
+				autoprefixer,
+				clean({
+					processImportFrom: ['local']
+				}),
+			]).process(lessOutput.css).then(function (result) {
 				result.warnings().forEach(function (warn) {
 					winston.verbose(warn.toString());
 				});
