@@ -266,7 +266,7 @@ define('forum/topic/postTools', [
 		var selection = window.getSelection ? window.getSelection() : document.selection.createRange();
 		var postContents = $('[component="post"] [component="post/content"]');
 		var content;
-		postContents.each(function(index, el) {
+		postContents.each(function (index, el) {
 			if (selection && selection.containsNode && el && selection.containsNode(el, true)) {
 				content = el;
 			}
