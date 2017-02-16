@@ -197,7 +197,7 @@ define('forum/topic/postTools', [
 	}
 
 	function onReplyClicked(button, tid) {
-		var selectedText = getSelectedText(button);
+		var selectedNode = getSelectedNode();
 
 		showStaleWarning(function () {
 			var username = getUserName(button);
@@ -207,15 +207,15 @@ define('forum/topic/postTools', [
 
 			var toPid = button.is('[component="post/reply"]') ? getData(button, 'data-pid') : null;
 
-			if (selectedText) {
+			if (selectedNode.text && (!toPid || !selectedNode.pid || toPid === selectedNode.pid)) {
+				username = username || selectedNode.username;
 				$(window).trigger('action:composer.addQuote', {
 					tid: tid,
-					slug: ajaxify.data.slug,
-					index: getData(button, 'data-index'),
 					pid: toPid,
 					topicName: ajaxify.data.titleRaw,
 					username: username,
-					text: selectedText
+					text: selectedNode.text,
+					selectedPid: selectedNode.pid
 				});
 			} else {
 				$(window).trigger('action:composer.post.new', {
@@ -229,16 +229,14 @@ define('forum/topic/postTools', [
 	}
 
 	function onQuoteClicked(button, tid) {
-		var selectedText = getSelectedText(button);
+		var selectedNode = getSelectedNode();
 
 		showStaleWarning(function () {
 
 			function quote(text) {
 				$(window).trigger('action:composer.addQuote', {
 					tid: tid,
-					slug: ajaxify.data.slug,
-					index: getData(button, 'data-index'),
-					pid: pid,
+					pid: toPid,
 					username: username,
 					topicName: ajaxify.data.titleRaw,
 					text: text
@@ -246,12 +244,12 @@ define('forum/topic/postTools', [
 			}
 
 			var username = getUserName(button);
-			var pid = getData(button, 'data-pid');
+			var toPid = getData(button, 'data-pid');
 
-			if (selectedText) {
-				return quote(selectedText);
+			if (selectedNode.text && toPid && toPid === selectedNode.pid) {
+				return quote(selectedNode.text);
 			}
-			socket.emit('posts.getRawPost', pid, function (err, post) {
+			socket.emit('posts.getRawPost', toPid, function (err, post) {
 				if (err) {
 					return app.alertError(err.message);
 				}
@@ -261,12 +259,20 @@ define('forum/topic/postTools', [
 		});
 	}
 
-	function getSelectedText(button) {
-		var selectionText = '';
+	function getSelectedNode() {
+		var selectedText = '';
+		var selectedPid;
+		var username = '';
 		var selection = window.getSelection ? window.getSelection() : document.selection.createRange();
-		var content = button.parents('[component="post"]').find('[component="post/content"]').get(0);
+		var postContents = $('[component="post"] [component="post/content"]');
+		var content;
+		postContents.each(function(index, el) {
+			if (selection && selection.containsNode && el && selection.containsNode(el, true)) {
+				content = el;
+			}
+		});
 
-		if (selection && selection.containsNode && content && selection.containsNode(content, true)) {
+		if (content) {
 			var bounds = document.createRange();
 			bounds.selectNodeContents(content);
 			var range = selection.getRangeAt(0).cloneRange();
@@ -277,10 +283,13 @@ define('forum/topic/postTools', [
 				range.setEnd(bounds.endContainer, bounds.endOffset);
 			}
 			bounds.detach();
-			selectionText = range.toString();
+			selectedText = range.toString();
+			var postEl = $(content).parents('[component="post"]');
+			selectedPid = postEl.attr('data-pid');
+			username = getUserName($(content));
 			range.detach();
 		}
-		return selectionText;
+		return {text: selectedText, pid: selectedPid, username: username};
 	}
 
 	function bookmarkPost(button, pid) {
