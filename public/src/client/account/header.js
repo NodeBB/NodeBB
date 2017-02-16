@@ -28,23 +28,17 @@ define('forum/account/header', [
 			toggleFollow('unfollow');
 		});
 
-		components.get('account/chat').on('click', function () {
-			socket.emit('modules.chats.hasPrivateChat', ajaxify.data.uid, function (err, roomId) {
-				if (err) {
-					return app.alertError(err.message);
-				}
-				if (roomId) {
-					app.openChat(roomId);
-				} else {
-					app.newChat(ajaxify.data.uid);
-				}
-			});
-		});
+		addContinueChatListener();
 
 		components.get('account/new-chat').on('click', function () {
 			app.newChat(ajaxify.data.uid);
+			if (components.get('account/chat').length === 0) {
+				translator.translate('[[user:chat_with, ' + ajaxify.data.username + ']]', function (translated) {
+					$('.account-fab .dropdown-menu').prepend('<li><a component="account/chat" href="#">' + translated + '</a></li>');
+					addContinueChatListener();
+				});
+			}
 		});
-
 
 		components.get('account/ban').on('click', banAccount);
 		components.get('account/unban').on('click', unbanAccount);
@@ -188,4 +182,19 @@ define('forum/account/header', [
 	}
 
 	return AccountHeader;
+	
+	function addContinueChatListener() {
+		components.get('account/chat').on('click', function () {
+			socket.emit('modules.chats.hasPrivateChat', ajaxify.data.uid, function (err, roomId) {
+				if (err) {
+					return app.alertError(err.message);
+				}
+				if (roomId) {
+					app.openChat(roomId);
+				} else {
+					app.newChat(ajaxify.data.uid);
+				}
+			});
+		});
+	}
 });
