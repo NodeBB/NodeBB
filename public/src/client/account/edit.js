@@ -2,7 +2,7 @@
 
 /* globals define, ajaxify, socket, app, config, templates, bootbox */
 
-define('forum/account/edit', ['forum/account/header', 'uploader', 'translator', 'components', 'cropper'], function (header, uploader, translator, components, cropper) {
+define('forum/account/edit', ['forum/account/header', 'uploader', 'translator', 'components', 'pictureCropper'], function (header, uploader, translator, components, pictureCropper) {
 	var AccountEdit = {};
 
 	AccountEdit.init = function () {
@@ -210,86 +210,21 @@ define('forum/account/edit', ['forum/account/header', 'uploader', 'translator', 
 				updateHeader();
 			}
 		}
-		
-		function handleImageCrop(data) {
-			$('#crop-picture-modal').remove();
-			templates.parse('modals/crop_picture', {url: data.url}, function (cropperHtml) {
-				translator.translate(cropperHtml, function (translated) {
-					var cropperModal = $(translated);
-					cropperModal.modal('show');
-					
-					var img = document.getElementById('cropped-image');
-					var cropperTool = new cropper.default(img, {
-						aspectRatio: 1 / 1,
-						viewMode: 1
-					});
-					
-					cropperModal.find('.rotate').on('click', function () {
-						var degrees = this.getAttribute("data-degrees");
-						cropperTool.rotate(degrees);	
-					});
-					
-					cropperModal.find('.flip').on('click', function () {
-						var option = this.getAttribute("data-option");
-						var method = this.getAttribute("data-method");
-						method === 'scaleX' ? cropperTool.scaleX(option) : cropperTool.scaleY(option);
-						this.setAttribute("data-option", option * -1);
-					});
-					
-					cropperModal.find('.reset').on('click', function () {
-						cropperTool.reset();	
-					});
-					
-					cropperModal.find('.crop-btn').on('click', function () {
-						$(this).addClass('disabled');
-						var imageData = data.imageType ? cropperTool.getCroppedCanvas().toDataURL(data.imageType) : cropperTool.getCroppedCanvas().toDataURL();
-						
-						cropperModal.find('#upload-progress-bar').css('width', '100%');
-						cropperModal.find('#upload-progress-box').show().removeClass('hide');
-						
-						socket.emit('user.uploadCroppedPicture', {
-							uid: ajaxify.data.theirid,
-							imageData: imageData
-						}, function (err, imageData) {
-							if (err) {
-								cropperModal.find('#upload-progress-box').hide();
-								cropperModal.find('.upload-btn').removeClass('disabled');
-								cropperModal.find('.crop-btn').removeClass('disabled');
-								app.alertError(err.message);
-							}
-							
-							onUploadComplete(imageData.url);
-							cropperModal.modal('hide');
-						});
-					});
-					
-					cropperModal.find('.upload-btn').on('click', function () {
-						$(this).addClass('disabled');
-						cropperTool.destroy();
-					
-						cropperTool = new cropper.default(img, {
-							viewMode: 1,
-							autoCropArea: 1
-						});
-					
-						cropperModal.find('.crop-btn').trigger('click');
-					});
-				});
-			});
-		}
 
 		modal.find('[data-action="upload"]').on('click', function () {
 			modal.modal('hide');
 
 			uploader.show({
-				route: config.relative_path + '/api/user/' + ajaxify.data.userslug + '/uploadpicture',
-				params: {},
+				socketMethod: 'user.uploadCroppedPicture',
+				aspectRatio: '1 / 1',
+				paramName: 'uid',
+				paramValue: ajaxify.data.theirid,
 				fileSize: ajaxify.data.maximumProfileImageSize,
 				title: '[[user:upload_picture]]',
 				description: '[[user:upload_a_picture]]',
 				accept: '.png,.jpg,.bmp'
-			}, function (data) {
-				handleImageCrop(data);
+			}, function (url) {
+				onUploadComplete(url);
 			});
 
 			return false;
@@ -309,7 +244,14 @@ define('forum/account/edit', ['forum/account/header', 'uploader', 'translator', 
 						}
 						
 						uploadModal.modal('hide');
-						handleImageCrop({url: url});
+						
+						pictureCropper.handleImageCrop({
+							url: url,
+							socketMethod: 'user.uploadCroppedPicture',
+							aspectRatio: '1 / 1',
+							paramName: 'uid',
+							paramValue: ajaxify.data.theirid,
+						}, onUploadComplete);
 						
 						return false;
 					});

@@ -80,8 +80,10 @@ define('forum/account/header', [
 			function () {
 				uploader.show({
 					title: '[[user:upload_cover_picture]]',
-					route: config.relative_path + '/api/user/' + ajaxify.data.userslug + '/uploadcover',
-					params: {uid: ajaxify.data.uid },
+					socketMethod: 'user.updateCover',
+					aspectRatio: '16 / 9',
+					paramName: 'uid',
+					paramValue: ajaxify.data.theirid,
 					accept: '.png,.jpg,.bmp'
 				}, function (imageUrlOnServer) {
 					components.get('account/cover').css('background-image', 'url(' + imageUrlOnServer + '?' + config['cache-buster'] + ')');

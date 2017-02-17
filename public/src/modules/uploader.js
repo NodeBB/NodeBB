@@ -1,8 +1,8 @@
 'use strict';
 
-/* globals define, ajaxify, socket, app, templates */
+/* globals define, templates */
 
-define('uploader', ['translator', 'cropper'], function (translator, cropper) {
+define('uploader', ['translator', 'pictureCropper'], function (translator, pictureCropper) {
 
 	var module = {};
 
@@ -32,17 +32,10 @@ define('uploader', ['translator', 'cropper'], function (translator, cropper) {
 				uploadModal.remove();
 			});
 
-			var uploadForm = uploadModal.find('#uploadForm');
-			uploadForm.attr('action', data.route);
-			uploadForm.find('#params').val(JSON.stringify(data.params));
-
 			uploadModal.find('#fileUploadSubmitBtn').on('click', function () {
 				$(this).addClass('disabled');
-				uploadForm.submit();
-			});
-
-			uploadForm.submit(function () {
-				onSubmit(uploadModal, fileSize, callback);
+				data.uploadModal = uploadModal;
+				onSubmit(data, callback);
 				return false;
 			});
 		});
@@ -52,16 +45,16 @@ define('uploader', ['translator', 'cropper'], function (translator, cropper) {
 		$(modal).find('#alert-status, #alert-success, #alert-error, #upload-progress-box').addClass('hide');
 	};
 
-	function onSubmit(uploadModal, fileSize, callback) {
+	function onSubmit(data, callback) {
 		function showAlert(type, message) {
-			module.hideAlerts(uploadModal);
+			module.hideAlerts(data.uploadModal);
 			if (type === 'error') {
-				uploadModal.find('#fileUploadSubmitBtn').removeClass('disabled');
+				data.uploadModal.find('#fileUploadSubmitBtn').removeClass('disabled');
 			}
-			uploadModal.find('#alert-' + type).translateText(message).removeClass('hide');
+			data.uploadModal.find('#alert-' + type).translateText(message).removeClass('hide');
 		}
 
-		var fileInput = uploadModal.find('#fileInput');
+		var fileInput = data.uploadModal.find('#fileInput');
 		if (!fileInput.val()) {
 			return showAlert('error', '[[uploads:select-file-to-upload]]');
 		}
@@ -74,9 +67,16 @@ define('uploader', ['translator', 'cropper'], function (translator, cropper) {
 		reader.addEventListener("load", function () {
 			imageUrl = reader.result;
 			
-			uploadModal.modal('hide');
+			data.uploadModal.modal('hide');
 			
-			callback({url: imageUrl, imageType: imageType});
+			pictureCropper.handleImageCrop({
+				url: imageUrl,
+				imageType: imageType,
+				socketMethod: data.socketMethod,
+				aspectRatio: data.aspectRatio,
+				paramName: data.paramName,
+				paramValue: data.paramValue
+			}, callback);
 		}, false);
 		
 		if (file) {

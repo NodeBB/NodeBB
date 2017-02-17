@@ -33,8 +33,10 @@ define('forum/groups/details', [
 				function () {
 					uploader.show({
 						title: '[[groups:upload-group-cover]]',
-						route: config.relative_path + '/api/groups/uploadpicture',
-						params: {groupName: groupName}
+						socketMethod: 'groups.cover.update',
+						aspectRatio: '16 / 9',
+						paramName: 'groupName',
+						paramValue: groupName
 					}, function (imageUrlOnServer) {
 						components.get('groups/cover').css('background-image', 'url(' + imageUrlOnServer + ')');
 					});
