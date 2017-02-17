@@ -249,48 +249,37 @@ $(document).ready(function () {
 		$(window).trigger('action:script.load', data);
 
 		// Require and parse modules
-		var outstanding = 0;
-		var onReady = function () {
-			if (outstanding) {
-				return setTimeout(onReady, 100);
-			}
+		var outstanding = data.scripts.length;
 
-			data.scripts = data.scripts.filter(Boolean);
-			data.scripts.forEach(function (functionRef) {
-				functionRef();
+		data.scripts.map(function (script) {
+			if (typeof script === 'function') {
+				return function (next) {
+					script();
+					next();
+				};
+			}
+			if (typeof script === 'string') {
+				return function (next) {
+					require([script], function (script) {
+						if (script && script.init) {
+							script.init();
+						}
+						next();
+					}, function () {
+						// ignore 404 error
+						next();
+					});
+				};
+			}
+			return null;
+		}).filter(Boolean).forEach(function (fn) {
+			fn(function () {
+				outstanding -= 1;
+				if (outstanding === 0) {
+					callback();
+				}
 			});
-
-			callback();
-		};
-
-		data.scripts.forEach(function (script, idx) {
-			switch (typeof script) {
-				case 'string':
-					++outstanding;
-					(function (idx) {
-						require([script], function (script) {
-							if (script && script.init) {
-								data.scripts[idx] = script.init;
-							} else {
-								data.scripts[idx] = null;
-							}
-							--outstanding;
-						});
-					}(idx));
-					break;
-
-				case 'function':
-					// No changes needed
-					break;
-
-				default:
-					// Neither? No comprende
-					data.scripts[idx] = undefined;
-					break;
-			}
 		});
-
-		onReady();
 	};
 
 	ajaxify.loadData = function (url, callback) {
