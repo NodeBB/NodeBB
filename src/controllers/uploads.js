@@ -43,8 +43,7 @@ uploadsController.uploadPost = function (req, res, next) {
 		var isImage = uploadedFile.type.match(/image./);
 		if (isImage) {
 			uploadAsImage(req, uploadedFile, next);
-		}
-		else {
+		} else {
 			uploadAsFile(req, uploadedFile, next);
 		}
 	}, next);
