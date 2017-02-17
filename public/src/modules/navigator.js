@@ -241,7 +241,7 @@ define('navigator', ['forum/pagination', 'components'], function (pagination, co
 		navigator.scrollToElement(scrollTo, highlight, duration);
 	};
 
-	navigator.scrollToElement = function(scrollTo, highlight, duration) {
+	navigator.scrollToElement = function (scrollTo, highlight, duration) {
 		if (!scrollTo.length) {
 			navigator.scrollActive = false;
 			return;
