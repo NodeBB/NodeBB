@@ -65,10 +65,15 @@ define('sounds', function () {
 			}
 			
 			if (id) {
-				if (localStorage.getItem('sounds.handled:' + id)) {
+				var item = 'sounds.handled:' + id;
+				if (sessionStorage.getItem(item)) {
 					return;
 				}
-				localStorage.setItem('sounds.handled:' + id, true);
+				sessionStorage.setItem(item, true);
+
+				setTimeout(function () {
+					sessionStorage.removeItem(item);
+				}, 5000);
 			}
 
 			Sounds.playSound(soundMap[type]);

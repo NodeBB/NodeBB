@@ -75,7 +75,7 @@ settingsController.get = function (req, res, callback) {
 					};
 				});
 
-				userData[type.replace('-', '_') + '_sound'] = soundpacks;
+				userData[type + '-sound'] = soundpacks;
 				// fallback
 				userData[aliases[type]] = soundpacks.concat.apply([], soundpacks.map(function (pack) {
 					return pack.sounds.map(function (sound) {

@@ -9,15 +9,15 @@
 						<div class="form-group col-xs-9">
 							<select class="form-control" id="notification" name="notification">
 								<option value="">[[user:no-sound]]</option>
-								<!-- BEGIN notification_sound -->
-								<optgroup label="{notification_sound.name}">
-									<!-- BEGIN notification_sound.sounds -->
-									<option value="{notification_sound.sounds.value}" <!-- IF notification_sound.sounds.selected -->selected<!-- ENDIF notification_sound.sounds.selected -->>
-										{notification_sound.sounds.name}
+								<!-- BEGIN notification-sound -->
+								<optgroup label="{notification-sound.name}">
+									<!-- BEGIN notification-sound.sounds -->
+									<option value="{notification-sound.sounds.value}" <!-- IF notification-sound.sounds.selected -->selected<!-- ENDIF notification-sound.sounds.selected -->>
+										{notification-sound.sounds.name}
 									</option>
-									<!-- END notification_sound.sounds -->
+									<!-- END notification-sound.sounds -->
 								</optgroup>
-								<!-- END notification_sound -->
+								<!-- END notification-sound -->
 							</select>
 						</div>
 						<div class="btn-group col-xs-3">
@@ -35,15 +35,15 @@
 						<div class="form-group col-xs-9">
 							<select class="form-control" id="chat-incoming" name="chat-incoming">
 								<option value="">[[user:no-sound]]</option>
-								<!-- BEGIN chat_incoming_sound -->
-								<optgroup label="{chat_incoming_sound.name}">
-									<!-- BEGIN chat_incoming_sound.sounds -->
-									<option value="{chat_incoming_sound.sounds.value}" <!-- IF chat_incoming_sound.sounds.selected -->selected<!-- ENDIF chat_incoming_sound.sounds.selected -->>
-										{chat_incoming_sound.sounds.name}
+								<!-- BEGIN chat-incoming-sound -->
+								<optgroup label="{chat-incoming-sound.name}">
+									<!-- BEGIN chat-incoming-sound.sounds -->
+									<option value="{chat-incoming-sound.sounds.value}" <!-- IF chat-incoming-sound.sounds.selected -->selected<!-- ENDIF chat-incoming-sound.sounds.selected -->>
+										{chat-incoming-sound.sounds.name}
 									</option>
-									<!-- END chat_incoming_sound.sounds -->
+									<!-- END chat-incoming-sound.sounds -->
 								</optgroup>
-								<!-- END chat_incoming_sound -->
+								<!-- END chat-incoming-sound -->
 							</select>
 						</div>
 						<div class="btn-group col-xs-3">
@@ -56,15 +56,15 @@
 						<div class="form-group col-xs-9">
 							<select class="form-control" id="chat-outgoing" name="chat-outgoing">
 								<option value="">[[user:no-sound]]</option>
-								<!-- BEGIN chat_outgoing_sound -->
-								<optgroup label="{chat_outgoing_sound.name}">
-									<!-- BEGIN chat_outgoing_sound.sounds -->
-									<option value="{chat_outgoing_sound.sounds.value}" <!-- IF chat_outgoing_sound.sounds.selected -->selected<!-- ENDIF chat_outgoing_sound.sounds.selected -->>
-										{chat_outgoing_sound.sounds.name}
+								<!-- BEGIN chat-outgoing-sound -->
+								<optgroup label="{chat-outgoing-sound.name}">
+									<!-- BEGIN chat-outgoing-sound.sounds -->
+									<option value="{chat-outgoing-sound.sounds.value}" <!-- IF chat-outgoing-sound.sounds.selected -->selected<!-- ENDIF chat-outgoing-sound.sounds.selected -->>
+										{chat-outgoing-sound.sounds.name}
 									</option>
-									<!-- END chat_outgoing_sound.sounds -->
+									<!-- END chat-outgoing-sound.sounds -->
 								</optgroup>
-								<!-- END chat_outgoing_sound -->
+								<!-- END chat-outgoing-sound -->
 							</select>
 						</div>
 						<div class="btn-group col-xs-3">

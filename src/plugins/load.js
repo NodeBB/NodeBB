@@ -37,11 +37,11 @@ module.exports = function (Plugins) {
 	};
 
 	Plugins.prepareForBuild = function (callback) {
-		Plugins.cssFiles = [];
-		Plugins.lessFiles = [];
-		Plugins.clientScripts = [];
-		Plugins.acpScripts = [];
-		Plugins.soundpacks = [];
+		Plugins.cssFiles.length = 0;
+		Plugins.lessFiles.length = 0;
+		Plugins.clientScripts.length = 0;
+		Plugins.acpScripts.length = 0;
+		Plugins.soundpacks.length = 0;
 
 		async.waterfall([
 			async.apply(Plugins.getPluginPaths),

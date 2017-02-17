@@ -37,7 +37,7 @@ soundsController.get = function (req, res, next) {
 				};
 			});
 
-			output[type.replace('-', '_') + '_sound'] = soundpacks;
+			output[type + '-sound'] = soundpacks;
 		});
 
 		res.render('admin/general/sounds', output);
