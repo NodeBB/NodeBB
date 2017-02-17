@@ -135,23 +135,24 @@ module.exports = function (grunt) {
 
 	grunt.loadNpmTasks('grunt-contrib-watch');
 
-	if (grunt.option('skip')) {
-		grunt.registerTask('default', ['watch:serverUpdated']);
-	} else {
-		grunt.registerTask('default', ['watch']);
-	}
-
+	grunt.registerTask('default', ['watch']);
 	env.NODE_ENV = 'development';
 
-	initWorker = fork('app.js', initArgs, {
-		env: env
-	});
-
-	initWorker.on('exit', function () {
+	if (grunt.option('skip')) {
 		worker = fork('app.js', args, {
 			env: env
 		});
-	});
+	} else {
+		initWorker = fork('app.js', initArgs, {
+			env: env
+		});
+
+		initWorker.on('exit', function () {
+			worker = fork('app.js', args, {
+				env: env
+			});
+		});
+	}
 
 	grunt.event.on('watch', update);
 };
