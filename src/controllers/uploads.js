@@ -43,7 +43,8 @@ uploadsController.uploadPost = function (req, res, next) {
 		var isImage = uploadedFile.type.match(/image./);
 		if (isImage) {
 			uploadAsImage(req, uploadedFile, next);
-		} else {
+		}
+		else {
 			uploadAsFile(req, uploadedFile, next);
 		}
 	}, next);
@@ -59,7 +60,10 @@ function uploadAsImage(req, uploadedFile, callback) {
 				return next(new Error('[[error:no-privileges]]'));
 			}
 			if (plugins.hasListeners('filter:uploadImage')) {
-				return plugins.fireHook('filter:uploadImage', {image: uploadedFile, uid: req.uid}, callback);
+				return plugins.fireHook('filter:uploadImage', {
+					image: uploadedFile,
+					uid: req.uid
+				}, callback);
 			}
 			file.isFileTypeAllowed(uploadedFile.path, next);
 		},
@@ -156,7 +160,10 @@ uploadsController.uploadThumb = function (req, res, next) {
 				}
 
 				if (plugins.hasListeners('filter:uploadImage')) {
-					return plugins.fireHook('filter:uploadImage', {image: uploadedFile, uid: req.uid}, next);
+					return plugins.fireHook('filter:uploadImage', {
+						image: uploadedFile,
+						uid: req.uid
+					}, next);
 				}
 
 				uploadFile(req.uid, uploadedFile, next);
@@ -167,11 +174,17 @@ uploadsController.uploadThumb = function (req, res, next) {
 
 uploadsController.uploadGroupCover = function (uid, uploadedFile, callback) {
 	if (plugins.hasListeners('filter:uploadImage')) {
-		return plugins.fireHook('filter:uploadImage', {image: uploadedFile, uid: uid}, callback);
+		return plugins.fireHook('filter:uploadImage', {
+			image: uploadedFile,
+			uid: uid
+		}, callback);
 	}
 
 	if (plugins.hasListeners('filter:uploadFile')) {
-		return plugins.fireHook('filter:uploadFile', {file: uploadedFile, uid: uid}, callback);
+		return plugins.fireHook('filter:uploadFile', {
+			file: uploadedFile,
+			uid: uid
+		}, callback);
 	}
 
 	file.isFileTypeAllowed(uploadedFile.path, function (err) {
@@ -184,7 +197,10 @@ uploadsController.uploadGroupCover = function (uid, uploadedFile, callback) {
 
 function uploadFile(uid, uploadedFile, callback) {
 	if (plugins.hasListeners('filter:uploadFile')) {
-		return plugins.fireHook('filter:uploadFile', {file: uploadedFile, uid: uid}, callback);
+		return plugins.fireHook('filter:uploadFile', {
+			file: uploadedFile,
+			uid: uid
+		}, callback);
 	}
 
 	if (!uploadedFile) {
@@ -197,7 +213,7 @@ function uploadFile(uid, uploadedFile, callback) {
 
 	if (meta.config.hasOwnProperty('allowedFileExtensions')) {
 		var allowed = file.allowedExtensions();
-		var extension = typeToExtension(uploadedFile.type);
+		var extension = file.typeToExtension(uploadedFile.type);
 		if (!extension || (allowed.length > 0 && allowed.indexOf(extension) === -1)) {
 			return callback(new Error('[[error:invalid-file-type, ' + allowed.join('&#44; ') + ']]'));
 		}
@@ -207,7 +223,7 @@ function uploadFile(uid, uploadedFile, callback) {
 }
 
 function saveFileToLocal(uploadedFile, callback) {
-	var extension = typeToExtension(uploadedFile.type);
+	var extension = file.typeToExtension(uploadedFile.type);
 	if (!extension) {
 		return callback(new Error('[[error:invalid-extension]]'));
 	}
@@ -228,14 +244,6 @@ function saveFileToLocal(uploadedFile, callback) {
 	});
 }
 
-function typeToExtension(type) {
-	var extension;
-	if (type) {
-		extension = '.' + mime.extension(type);
-	}
-	return extension;
-}
-
 function deleteTempFiles(files) {
 	async.each(files, function (file, next) {
 		fs.unlink(file.path, function (err) {
@@ -246,7 +254,5 @@ function deleteTempFiles(files) {
 		});
 	});
 }
-
-
 
 module.exports = uploadsController;
