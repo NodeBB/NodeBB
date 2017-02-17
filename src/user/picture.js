@@ -8,6 +8,7 @@ var nconf = require('nconf');
 var crypto = require('crypto');
 var winston = require('winston');
 var request = require('request');
+var mime = require('mime');
 
 var plugins = require('../plugins');
 var file = require('../file');
@@ -104,7 +105,7 @@ module.exports = function (User) {
 			var uploadSize = parseInt(meta.config.maximumProfileImageSize, 10) || 256;
 			var size = res.headers['content-length'];
 			var type = res.headers['content-type'];
-			var extension = file.typeToExtension(type);
+			var extension = mime.extension(type);
 
 			if (['png', 'jpeg', 'jpg', 'gif'].indexOf(extension) === -1) {
 				return callback(new Error('[[error:invalid-image-extension]]'));
@@ -236,8 +237,7 @@ module.exports = function (User) {
 						url: url
 					});
 				});
-			}
-			else {
+			} else {
 				callback(err, {
 					url: url
 				});
@@ -323,7 +323,7 @@ module.exports = function (User) {
 			}
 		], function (err) {
 			if (err) {
-				callback(err); // send back the original error
+				return callback(err); // send back the original error
 			}
 
 			callback(err, {
