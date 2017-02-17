@@ -2,7 +2,7 @@
 
 /* globals define, templates */
 
-define('uploader', ['translator', 'pictureCropper'], function (translator, pictureCropper) {
+define('uploader', ['translator'], function (translator) {
 
 	var module = {};
 
@@ -32,10 +32,17 @@ define('uploader', ['translator', 'pictureCropper'], function (translator, pictu
 				uploadModal.remove();
 			});
 
+			var uploadForm = uploadModal.find('#uploadForm');
+			uploadForm.attr('action', data.route);
+			uploadForm.find('#params').val(JSON.stringify(data.params));
+
 			uploadModal.find('#fileUploadSubmitBtn').on('click', function () {
 				$(this).addClass('disabled');
-				data.uploadModal = uploadModal;
-				onSubmit(data, callback);
+				uploadForm.submit();
+			});
+
+			uploadForm.submit(function () {
+				onSubmit(uploadModal, fileSize, callback);
 				return false;
 			});
 		});
@@ -45,49 +52,79 @@ define('uploader', ['translator', 'pictureCropper'], function (translator, pictu
 		$(modal).find('#alert-status, #alert-success, #alert-error, #upload-progress-box').addClass('hide');
 	};
 
-	function onSubmit(data, callback) {
+	function onSubmit(uploadModal, fileSize, callback) {
 		function showAlert(type, message) {
-			module.hideAlerts(data.uploadModal);
+			module.hideAlerts(uploadModal);
 			if (type === 'error') {
-				data.uploadModal.find('#fileUploadSubmitBtn').removeClass('disabled');
+				uploadModal.find('#fileUploadSubmitBtn').removeClass('disabled');
 			}
-			data.uploadModal.find('#alert-' + type).translateText(message).removeClass('hide');
+			uploadModal.find('#alert-' + type).translateText(message).removeClass('hide');
 		}
 
-		var fileInput = data.uploadModal.find('#fileInput');
+		showAlert('status', '[[uploads:uploading-file]]');
+
+		uploadModal.find('#upload-progress-bar').css('width', '0%');
+		uploadModal.find('#upload-progress-box').show().removeClass('hide');
+
+		var fileInput = uploadModal.find('#fileInput');
 		if (!fileInput.val()) {
 			return showAlert('error', '[[uploads:select-file-to-upload]]');
 		}
-		
-		var file    = fileInput[0].files[0];
-		var reader  = new FileReader();
-		var imageUrl;
-		var imageType = file.type;
-		
-		reader.addEventListener("load", function () {
-			imageUrl = reader.result;
-			
-			data.uploadModal.modal('hide');
-			
-			pictureCropper.handleImageCrop({
-				url: imageUrl,
-				imageType: imageType,
-				socketMethod: data.socketMethod,
-				aspectRatio: data.aspectRatio,
-				paramName: data.paramName,
-				paramValue: data.paramValue
-			}, callback);
-		}, false);
-		
-		if (file) {
-			reader.readAsDataURL(file);
+		if (!hasValidFileSize(fileInput[0], fileSize)) {
+			return showAlert('error', '[[error:file-too-big, ' + fileSize + ']]');
 		}
+
+		uploadModal.find('#uploadForm').ajaxSubmit({
+			headers: {
+				'x-csrf-token': config.csrf_token
+			},
+			error: function (xhr) {
+				xhr = maybeParse(xhr);
+				showAlert('error', xhr.responseJSON ? (xhr.responseJSON.error || xhr.statusText) : 'error uploading, code : ' + xhr.status);
+			},
+			uploadProgress: function (event, position, total, percent) {
+				uploadModal.find('#upload-progress-bar').css('width', percent + '%');
+			},
+			success: function (response) {
+				response = maybeParse(response);
+
+				if (response.error) {
+					return showAlert('error', response.error);
+				}
+
+				callback(response[0].url);
+
+				showAlert('success', '[[uploads:upload-success]]');
+				setTimeout(function () {
+					module.hideAlerts(uploadModal);
+					uploadModal.modal('hide');
+				}, 750);
+			}
+		});
 	}
 
 	function parseModal(tplVals, callback) {
 		templates.parse('partials/modals/upload_file_modal', tplVals, function (html) {
 			translator.translate(html, callback);
 		});
+	}
+
+	function maybeParse(response) {
+		if (typeof response === 'string') {
+			try {
+				return $.parseJSON(response);
+			} catch (e) {
+				return {error: '[[error:parse-error]]'};
+			}
+		}
+		return response;
+	}
+
+	function hasValidFileSize(fileElement, maxSize) {
+		if (window.FileReader && maxSize) {
+			return fileElement.files[0].size <= maxSize * 1000;
+		}
+		return true;
 	}
 
 	return module;
