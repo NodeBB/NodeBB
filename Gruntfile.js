@@ -1,24 +1,24 @@
 "use strict";
 
-var fork = require('child_process').fork,
-	env = process.env,
-	worker, updateWorker,
-	incomplete = [],
-	running = 0;
-
+var fork = require('child_process').fork;
+var env = process.env;
+var worker, updateWorker, initWorker;
+var incomplete = [];
+var running = 0;
 
 module.exports = function (grunt) {
 	var args = [];
+	var initArgs = ['--build'];
 	if (!grunt.option('verbose')) {
 		args.push('--log-level=info');
+		initArgs.push('--log-level=info');
 	}
 
 	function update(action, filepath, target) {
-		var updateArgs = args.slice(),
-			fromFile = '',
-			compiling = '',
-			time = Date.now();
-		
+		var updateArgs = args.slice();
+		var compiling = '';
+		var time = Date.now();
+
 		if (target === 'lessUpdated_Client') {
 			compiling = 'clientCSS';
 		} else if (target === 'lessUpdated_Admin') {
@@ -44,12 +44,16 @@ module.exports = function (grunt) {
 		if (updateWorker) {
 			updateWorker.kill('SIGKILL');
 		}
-		updateWorker = fork('app.js', updateArgs, { env: env });
+		updateWorker = fork('app.js', updateArgs, {
+			env: env
+		});
 		++running;
 		updateWorker.on('exit', function () {
 			--running;
 			if (running === 0) {
-				worker = fork('app.js', args, { env: env });
+				worker = fork('app.js', args, {
+					env: env
+				});
 				worker.on('message', function () {
 					if (incomplete.length) {
 						incomplete = [];
@@ -136,10 +140,18 @@ module.exports = function (grunt) {
 	} else {
 		grunt.registerTask('default', ['watch']);
 	}
-	
 
 	env.NODE_ENV = 'development';
 
-	worker = fork('app.js', args, { env: env });
+	initWorker = fork('app.js', initArgs, {
+		env: env
+	});
+
+	initWorker.on('exit', function () {
+		worker = fork('app.js', args, {
+			env: env
+		});
+	});
+
 	grunt.event.on('watch', update);
 };
