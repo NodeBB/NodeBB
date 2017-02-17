@@ -37,11 +37,8 @@ settingsController.get = function (req, res, callback) {
 				homePageRoutes: function (next) {
 					getHomePageRoutes(next);
 				},
-				sounds: function (next) {
-					meta.sounds.getFiles(next);
-				},
 				soundsMapping: function (next) {
-					meta.sounds.getMapping(userData.uid, next);
+					meta.sounds.getUserSoundMap(userData.uid, next);
 				}
 			}, next);
 		},
@@ -50,19 +47,47 @@ settingsController.get = function (req, res, callback) {
 			userData.languages = results.languages;
 			userData.homePageRoutes = results.homePageRoutes;
 
-			var soundSettings = {
-				'notificationSound': 'notification',
-				'incomingChatSound': 'chat-incoming',
-				'outgoingChatSound': 'chat-outgoing'
+			var types = [
+				'notification',
+				'chat-incoming',
+				'chat-outgoing',
+			];
+			var aliases = {
+				'notification': 'notificationSound',
+				'chat-incoming': 'incomingChatSound',
+				'chat-outgoing': 'outgoingChatSound',
 			};
 
-			Object.keys(soundSettings).forEach(function (setting) {
-				userData[setting] = Object.keys(results.sounds).map(function (name) {
-					return {name: name, selected: name === results.soundsMapping[soundSettings[setting]]};
+			types.forEach(function (type) {
+				var soundpacks = plugins.soundpacks.map(function (pack) {
+					var sounds = Object.keys(pack.sounds).map(function (soundName) {
+						var value = pack.name + ' | ' + soundName;
+						return {
+							name: soundName,
+							value: value,
+							selected: value === results.soundsMapping[type],
+						};
+					});
+
+					return {
+						name: pack.name,
+						sounds: sounds,
+					};
 				});
+
+				userData[type.replace('-', '_') + '_sound'] = soundpacks;
+				// fallback
+				userData[aliases[type]] = soundpacks.concat.apply([], soundpacks.map(function (pack) {
+					return pack.sounds.map(function (sound) {
+						return {
+							name: sound.value,
+							selected: sound.selected,
+						};
+					});
+				}));
 			});
 
-			plugins.fireHook('filter:user.customSettings', {settings: results.settings, customSettings: [], uid: req.uid}, next);
+			plugins.fireHook('filter:user.customSettings', { settings: results.settings, customSettings: [], uid: req.uid }, next);
 		},
 		function (data, next) {
 			userData.customSettings = data.customSettings;
@@ -75,10 +100,10 @@ settingsController.get = function (req, res, callback) {
 		}
 
 		userData.dailyDigestFreqOptions = [
-			{value: 'off', name: '[[user:digest_off]]', selected: 'off' === userData.settings.dailyDigestFreq},
-			{value: 'day', name: '[[user:digest_daily]]', selected: 'day' === userData.settings.dailyDigestFreq},
-			{value: 'week', name: '[[user:digest_weekly]]', selected: 'week' === userData.settings.dailyDigestFreq},
-			{value: 'month', name: '[[user:digest_monthly]]', selected: 'month' === userData.settings.dailyDigestFreq}
+			{ value: 'off', name: '[[user:digest_off]]', selected: 'off' === userData.settings.dailyDigestFreq },
+			{ value: 'day', name: '[[user:digest_daily]]', selected: 'day' === userData.settings.dailyDigestFreq },
+			{ value: 'week', name: '[[user:digest_weekly]]', selected: 'week' === userData.settings.dailyDigestFreq },
+			{ value: 'month', name: '[[user:digest_monthly]]', selected: 'month' === userData.settings.dailyDigestFreq }
 		];
 
 
