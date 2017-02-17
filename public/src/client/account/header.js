@@ -42,7 +42,9 @@ define('forum/account/header', [
 		});
 
 		components.get('account/new-chat').on('click', function () {
-			app.newChat(ajaxify.data.uid);
+			app.newChat(ajaxify.data.uid, function () {
+				components.get('account/chat').parent().removeClass('hidden');
+			});
 		});
 
 
@@ -173,7 +175,7 @@ define('forum/account/header', [
 				if (!confirm) {
 					return;
 				}
-						
+
 				socket.emit('user.removeCover', {
 					uid: ajaxify.data.uid
 				}, function (err) {
