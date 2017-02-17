@@ -69,7 +69,7 @@ categoryController.get = function (req, res, callback) {
 			}
 
 			if (!settings.usePagination) {
-				topicIndex = Math.max(topicIndex - (settings.topicsPerPage - 1), 0);
+				topicIndex = Math.max(0, topicIndex - (Math.ceil(settings.topicsPerPage / 2) - 1));
 			} else if (!req.query.page) {
 				var index = Math.max(parseInt((topicIndex || 0), 10), 0);
 				currentPage = Math.ceil((index + 1) / settings.topicsPerPage);
