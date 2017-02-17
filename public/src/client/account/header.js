@@ -3,10 +3,10 @@
 
 define('forum/account/header', [
 	'coverPhoto',
-	'uploader',
+	'pictureCropper',
 	'components',
 	'translator'
-], function (coverPhoto, uploader, components, translator) {
+], function (coverPhoto, pictureCropper, components, translator) {
 	var AccountHeader = {};
 	var isAdminOrSelfOrGlobalMod;
 
@@ -78,7 +78,7 @@ define('forum/account/header', [
 				}, callback);
 			},
 			function () {
-				uploader.show({
+				pictureCropper.show({
 					title: '[[user:upload_cover_picture]]',
 					socketMethod: 'user.updateCover',
 					aspectRatio: '16 / 9',

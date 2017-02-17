@@ -6,10 +6,10 @@ define('forum/groups/details', [
 	'iconSelect',
 	'components',
 	'coverPhoto',
-	'uploader',
+	'pictureCropper',
 	'translator',
 	'vendor/colorpicker/colorpicker'
-], function (memberList, iconSelect, components, coverPhoto, uploader, translator) {
+], function (memberList, iconSelect, components, coverPhoto, pictureCropper, translator) {
 
 	var Details = {};
 	var groupName;
@@ -31,7 +31,7 @@ define('forum/groups/details', [
 					}, callback);
 				},
 				function () {
-					uploader.show({
+					pictureCropper.show({
 						title: '[[groups:upload-group-cover]]',
 						socketMethod: 'groups.cover.update',
 						aspectRatio: '16 / 9',

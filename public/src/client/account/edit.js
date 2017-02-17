@@ -2,7 +2,7 @@
 
 /* globals define, ajaxify, socket, app, config, templates, bootbox */
 
-define('forum/account/edit', ['forum/account/header', 'uploader', 'translator', 'components', 'pictureCropper'], function (header, uploader, translator, components, pictureCropper) {
+define('forum/account/edit', ['forum/account/header', 'translator', 'components', 'pictureCropper'], function (header, translator, components, pictureCropper) {
 	var AccountEdit = {};
 
 	AccountEdit.init = function () {
@@ -214,7 +214,7 @@ define('forum/account/edit', ['forum/account/header', 'uploader', 'translator', 
 		modal.find('[data-action="upload"]').on('click', function () {
 			modal.modal('hide');
 
-			uploader.show({
+			pictureCropper.show({
 				socketMethod: 'user.uploadCroppedPicture',
 				aspectRatio: '1 / 1',
 				paramName: 'uid',
