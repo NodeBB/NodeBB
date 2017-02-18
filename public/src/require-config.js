@@ -3,9 +3,9 @@ require.config({
 	waitSeconds: 7,
 	urlArgs: config['cache-buster'],
 	paths: {
-		'forum': '../client',
-		'admin': '../admin',
-		'vendor': '../../vendor',
-		'plugins': '../../plugins',
+		forum: '../client',
+		admin: '../admin',
+		vendor: '../../vendor',
+		plugins: '../../plugins',
 	},
 });

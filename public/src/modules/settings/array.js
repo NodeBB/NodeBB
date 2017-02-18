@@ -12,7 +12,7 @@ define('settings/array', function () {
 	 */
 	function createRemoveButton(elements) {
 		var rm = $(helper.createElement('button', {
-			"class": 'btn btn-xs btn-primary remove',
+			class: 'btn btn-xs btn-primary remove',
 			title: 'Remove Item',
 		}, '-'));
 		rm.click(function (event) {
@@ -75,7 +75,7 @@ define('settings/array', function () {
 		var addSpace = $(document.createTextNode(' '));
 		var newValue = element.data('new') || '';
 		var add = $(helper.createElement('button', {
-			"class": 'btn btn-sm btn-primary add',
+			class: 'btn btn-sm btn-primary add',
 			title: 'Expand Array',
 		}, '+'));
 		add.click(function (event) {

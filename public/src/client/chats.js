@@ -321,7 +321,7 @@ define('forum/chats', [
 					} else {
 						var recentEl = components.get('chat/recent');
 						templates.parse('partials/chats/recent_room', {
-							rooms: { "roomId": data.roomId, "lastUser": data.message.fromUser, "usernames": data.message.fromUser.username, "unread": true },
+							rooms: { roomId: data.roomId, lastUser: data.message.fromUser, usernames: data.message.fromUser.username, unread: true },
 						}, function (html) {
 							translator.translate(html, function (translated) {
 							    recentEl.prepend(translated);

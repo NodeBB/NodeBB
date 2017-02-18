@@ -15,7 +15,7 @@ questions.main = [
 	{
 		name: 'url',
 		description: 'URL used to access this NodeBB',
-		'default':
+		default:
 			nconf.get('url') ||
 			(nconf.get('base_url') ? (nconf.get('base_url') + (nconf.get('use_port') ? ':' + nconf.get('port') : '')) : null) ||	// backwards compatibility (remove for v0.7.0)
 			'http://localhost:4567',
@@ -25,12 +25,12 @@ questions.main = [
 	{
 		name: 'secret',
 		description: 'Please enter a NodeBB secret',
-		'default': nconf.get('secret') || utils.generateUUID(),
+		default: nconf.get('secret') || utils.generateUUID(),
 	},
 	{
 		name: 'database',
 		description: 'Which database to use',
-		'default': nconf.get('database') || 'mongo',
+		default: nconf.get('database') || 'mongo',
 	},
 ];
 

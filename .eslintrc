@@ -102,7 +102,7 @@
         "prefer-rest-params": "off",
         "space-in-parens": "off",
         "block-spacing": "off",
-        "quote-props": "off",
+        // "quote-props": "off",
         // "space-unary-ops": "off",
         // "no-plusplus": "off",
         // "no-empty": "off",

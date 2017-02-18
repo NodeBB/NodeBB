@@ -279,8 +279,8 @@ define('forum/topic', [
 		if (ajaxify.data.postcount > ajaxify.data.bookmarkThreshold && (!currentBookmark || parseInt(index, 10) > parseInt(currentBookmark, 10))) {
 			if (app.user.uid) {
 				socket.emit('topics.bookmark', {
-					'tid': ajaxify.data.tid,
-					'index': index,
+					tid: ajaxify.data.tid,
+					index: index,
 				}, function (err) {
 					if (err) {
 						return app.alertError(err.message);

@@ -39,7 +39,7 @@ define('search', ['navigator', 'translator'], function (nav, translator) {
 		var postedBy = data.by || '';
 		var query = {
 			term: data.term,
-			'in': searchIn,
+			in: searchIn,
 		};
 
 		if (postedBy && (searchIn === 'posts' || searchIn === 'titles' || searchIn === 'titlesposts')) {

@@ -17,17 +17,17 @@
 		{
 			name: 'mongo:host',
 			description: 'Host IP or address of your MongoDB instance',
-			'default': nconf.get('mongo:host') || '127.0.0.1',
+			default: nconf.get('mongo:host') || '127.0.0.1',
 		},
 		{
 			name: 'mongo:port',
 			description: 'Host port of your MongoDB instance',
-			'default': nconf.get('mongo:port') || 27017,
+			default: nconf.get('mongo:port') || 27017,
 		},
 		{
 			name: 'mongo:username',
 			description: 'MongoDB username',
-			'default': nconf.get('mongo:username') || '',
+			default: nconf.get('mongo:username') || '',
 		},
 		{
 			name: 'mongo:password',
@@ -39,7 +39,7 @@
 		{
 			name: "mongo:database",
 			description: "MongoDB database name",
-			'default': nconf.get('mongo:database') || 'nodebb',
+			default: nconf.get('mongo:database') || 'nodebb',
 		},
 	];
 
@@ -189,10 +189,10 @@
 		}
 		async.parallel({
 			serverStatus: function (next) {
-				db.command({ 'serverStatus': 1 }, next);
+				db.command({ serverStatus: 1 }, next);
 			},
 			stats: function (next) {
-				db.command({ 'dbStats': 1 }, next);
+				db.command({ dbStats: 1 }, next);
 			},
 			listCollections: function (next) {
 				db.listCollections().toArray(function (err, items) {

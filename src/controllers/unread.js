@@ -12,7 +12,7 @@ var helpers = require('./helpers');
 
 var unreadController = {};
 
-var validFilter = {'': true, 'new': true, 'watched': true};
+var validFilter = {'': true, new: true, watched: true};
 
 unreadController.get = function (req, res, next) {
 	var page = parseInt(req.query.page, 10) || 1;

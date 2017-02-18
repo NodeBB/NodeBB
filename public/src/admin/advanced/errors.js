@@ -52,7 +52,7 @@ define('admin/advanced/errors', ['Chart', 'translator'], function (Chart, transl
 					},
 				],
 			},
-			'toobusy': {
+			toobusy: {
 				labels: dailyLabels,
 				datasets: [
 					{

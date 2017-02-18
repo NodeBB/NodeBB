@@ -13,7 +13,7 @@ var pagination = require('../pagination');
 
 var recentController = {};
 
-var validFilter = {'': true, 'new': true, 'watched': true};
+var validFilter = {'': true, new: true, watched: true};
 
 recentController.get = function (req, res, next) {
 	var page = parseInt(req.query.page, 10) || 1;

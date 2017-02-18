@@ -179,10 +179,10 @@
 		var env = utils.findBootstrapEnvironment();
 		
 		var slideout = new Slideout({
-			'panel': document.getElementById('panel'),
-			'menu': document.getElementById('menu'),
-			'padding': 256,
-			'tolerance': 70,
+			panel: document.getElementById('panel'),
+			menu: document.getElementById('menu'),
+			padding: 256,
+			tolerance: 70,
 		});
 		
 		if (env === 'md' || env === 'lg') {
@@ -205,20 +205,20 @@
 			if (env === 'md' || env === 'lg') {
 				slideout.disableTouch();
 				$('#header').css({
-					'position': 'relative',
+					position: 'relative',
 				});	
 			} else {
 				slideout.enableTouch();
 				$('#header').css({
-					'position': 'fixed',
+					position: 'fixed',
 				});
 			}
 		});
 
 		function onOpeningMenu() {
 			$('#header').css({
-				'top': $('#panel').position().top * -1 + 'px',
-				'position': 'absolute',
+				top: $('#panel').position().top * -1 + 'px',
+				position: 'absolute',
 			});
 		}
 
@@ -226,8 +226,8 @@
 		
 		slideout.on('close', function () {
 			$('#header').css({
-				'top': '0px',
-				'position': 'fixed',
+				top: '0px',
+				position: 'fixed',
 			});
 		});
 	}

@@ -44,8 +44,8 @@ module.exports = function (middleware) {
 
 	middleware.admin.renderHeader = function (req, res, data, next) {
 		var custom_header = {
-			'plugins': [],
-			'authentication': [],
+			plugins: [],
+			authentication: [],
 		};
 
 		user.getUserFields(req.uid, ['username', 'userslug', 'email', 'picture', 'email:confirmed'], function (err, userData) {

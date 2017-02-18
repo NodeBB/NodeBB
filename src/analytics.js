@@ -194,7 +194,7 @@ Analytics.getCategoryAnalytics = function (cid, callback) {
 Analytics.getErrorAnalytics = function (callback) {
 	async.parallel({
 		'not-found': async.apply(Analytics.getDailyStatsForSet, 'analytics:errors:404', Date.now(), 7),
-		'toobusy': async.apply(Analytics.getDailyStatsForSet, 'analytics:errors:503', Date.now(), 7),
+		toobusy: async.apply(Analytics.getDailyStatsForSet, 'analytics:errors:503', Date.now(), 7),
 	}, callback);
 };
 

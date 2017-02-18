@@ -180,7 +180,7 @@ Controllers.register = function (req, res, next) {
 		var loginStrategies = require('../routes/authentication').getLoginStrategies();
 		var data = {
 			'register_window:spansize': loginStrategies.length ? 'col-md-6' : 'col-md-12',
-			'alternate_logins': !!loginStrategies.length,
+			alternate_logins: !!loginStrategies.length,
 		};
 
 		data.authentication = loginStrategies;

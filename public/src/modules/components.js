@@ -10,10 +10,10 @@ define('components', function () {
 				return $('[component="topic/teaser"]');
 			}
 		},
-		'topic': function (name, value) {
+		topic: function (name, value) {
 			return $('[component="topic"][data-' + name + '="' + value + '"]');
 		},
-		'post': function (name, value) {
+		post: function (name, value) {
 			return $('[component="post"][data-' + name + '="' + value + '"]');
 		},
 		'post/content': function (pid) {

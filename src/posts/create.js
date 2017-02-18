@@ -38,12 +38,12 @@ module.exports = function (Posts) {
 			function (pid, next) {
 
 				postData = {
-					'pid': pid,
-					'uid': uid,
-					'tid': tid,
-					'content': content,
-					'timestamp': timestamp,
-					'deleted': 0,
+					pid: pid,
+					uid: uid,
+					tid: tid,
+					content: content,
+					timestamp: timestamp,
+					deleted: 0,
 				};
 
 				if (data.toPid) {

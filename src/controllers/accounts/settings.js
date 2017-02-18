@@ -51,9 +51,9 @@ settingsController.get = function (req, res, callback) {
 			userData.homePageRoutes = results.homePageRoutes;
 
 			var soundSettings = {
-				'notificationSound': 'notification',
-				'incomingChatSound': 'chat-incoming',
-				'outgoingChatSound': 'chat-outgoing',
+				notificationSound: 'notification',
+				incomingChatSound: 'chat-incoming',
+				outgoingChatSound: 'chat-outgoing',
 			};
 
 			Object.keys(soundSettings).forEach(function (setting) {
@@ -83,23 +83,23 @@ settingsController.get = function (req, res, callback) {
 
 
 		userData.bootswatchSkinOptions = [
-			{ "name": "Default", "value": "default" },
-			{ "name": "Cerulean", "value": "cerulean" },
-			{ "name": "Cosmo", "value": "cosmo"	},
-			{ "name": "Cyborg", "value": "cyborg" },
-			{ "name": "Darkly", "value": "darkly" },
-			{ "name": "Flatly", "value": "flatly" },
-			{ "name": "Journal", "value": "journal"	},
-			{ "name": "Lumen", "value": "lumen" },
-			{ "name": "Paper", "value": "paper" },
-			{ "name": "Readable", "value": "readable" },
-			{ "name": "Sandstone", "value": "sandstone" },
-			{ "name": "Simplex", "value": "simplex" },
-			{ "name": "Slate", "value": "slate"	},
-			{ "name": "Spacelab", "value": "spacelab" },
-			{ "name": "Superhero", "value": "superhero" },
-			{ "name": "United", "value": "united" },
-			{ "name": "Yeti", "value": "yeti" },
+			{ name: "Default", value: "default" },
+			{ name: "Cerulean", value: "cerulean" },
+			{ name: "Cosmo", value: "cosmo"	},
+			{ name: "Cyborg", value: "cyborg" },
+			{ name: "Darkly", value: "darkly" },
+			{ name: "Flatly", value: "flatly" },
+			{ name: "Journal", value: "journal"	},
+			{ name: "Lumen", value: "lumen" },
+			{ name: "Paper", value: "paper" },
+			{ name: "Readable", value: "readable" },
+			{ name: "Sandstone", value: "sandstone" },
+			{ name: "Simplex", value: "simplex" },
+			{ name: "Slate", value: "slate"	},
+			{ name: "Spacelab", value: "spacelab" },
+			{ name: "Superhero", value: "superhero" },
+			{ name: "United", value: "united" },
+			{ name: "Yeti", value: "yeti" },
 		];
 
 		var isCustom = true;
