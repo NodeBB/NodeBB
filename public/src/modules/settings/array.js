@@ -130,7 +130,7 @@ define('settings/array', function () {
 				child = $(child);
 				var val = helper.readValue(child);
 				var empty = helper.isTrue(child.data('empty'));
-				if (empty || val !== void 0 && (val == null || val.length !== 0)) {
+				if (empty || (val !== void 0 && (val == null || val.length !== 0))) {
 					return values.push(val);
 				}
 			});

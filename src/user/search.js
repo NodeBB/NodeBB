@@ -156,7 +156,7 @@ module.exports = function (User) {
 			},
 			function (users, next) {
 				var diff = process.hrtime(start);
-				var timing = (diff[0] * 1e3 + diff[1] / 1e6).toFixed(1);
+				var timing = ((diff[0] * 1e3) + (diff[1] / 1e6)).toFixed(1);
 				next(null, {timing: timing, users: users});
 			},
 		], callback);

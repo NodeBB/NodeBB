@@ -64,7 +64,8 @@ module.exports = function (Topics) {
 	};
 
 	Topics.unreadCutoff = function () {
-		return Date.now() - (parseInt(meta.config.unreadCutoff, 10) || 2) * 86400000;
+		var cutoff = parseInt(meta.config.unreadCutoff, 10) || 2;
+		return Date.now() - (cutoff * 86400000);
 	};
 
 	Topics.getUnreadTids = function (cid, uid, filter, callback) {

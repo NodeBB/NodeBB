@@ -15,7 +15,7 @@
 
 		process.elapsedTimeSince = function (start) {
 			var diff = process.hrtime(start);
-			return diff[0] * 1e3 + diff[1] / 1e6;
+			return (diff[0] * 1e3) + (diff[1] / 1e6);
 		};
 
 	} else {
@@ -27,7 +27,7 @@
 		generateUUID: function () {
 			return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
 				var r = Math.random() * 16 | 0;
-				var v = c === 'x' ? r : (r & 0x3 | 0x8);
+				var v = c === 'x' ? r : ((r & 0x3) | 0x8);
 				return v.toString(16);
 			});
 		},

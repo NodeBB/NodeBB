@@ -162,7 +162,7 @@ module.exports = function (Posts) {
 			var hook;
 			var current = voteStatus.upvoted ? 'upvote' : 'downvote';
 
-			if (voteStatus.upvoted && command === 'downvote' || voteStatus.downvoted && command === 'upvote') {	// e.g. User *has* upvoted, and clicks downvote
+			if ((voteStatus.upvoted && command === 'downvote') || (voteStatus.downvoted && command === 'upvote')) {	// e.g. User *has* upvoted, and clicks downvote
 				hook = command;
 			} else if (voteStatus.upvoted || voteStatus.downvoted) {	// e.g. User *has* upvoted, clicks upvote (so we "unvote")
 				hook = 'unvote';

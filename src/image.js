@@ -42,7 +42,7 @@ image.resizeImage = function (data, callback) {
 					crop = async.apply(image.crop.bind(image), x, y, h * desiredRatio, h);
 				} else {
 					x = 0;	// width is the smaller dimension here
-					y = Math.floor(h / 2 - (w * desiredRatio / 2));
+					y = Math.floor((h / 2) - (w * desiredRatio / 2));
 					crop = async.apply(image.crop.bind(image), x, y, w, w * desiredRatio);
 				}
 			} else {

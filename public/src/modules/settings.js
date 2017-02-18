@@ -171,7 +171,7 @@ define('settings', function () {
 				if (trim && value != null && typeof value.trim === 'function') {
 					value = value.trim();
 				}
-				if (empty || value !== void 0 && (value == null || value.length !== 0)) {
+				if (empty || (value !== void 0 && (value == null || value.length !== 0))) {
 					return value;
 				} else {
 					return void 0;

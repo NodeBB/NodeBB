@@ -15,6 +15,7 @@
         "no-underscore-dangle": "off",
         "newline-per-chained-call": "off",
         "no-console": "off",
+        "no-mixed-operators": ["error", { "allowSamePrecedence": true }],
 
         // ES6
         "prefer-rest-params": "off",
@@ -99,7 +100,7 @@
         "no-multi-spaces": "off",
         "quotes": "off",
         "keyword-spacing": "off",
-        "no-mixed-operators": "off",
+        // "no-mixed-operators": "off",
         // "comma-spacing": "off",
         // "no-trailing-spaces": "off",
         // "key-spacing": "off",

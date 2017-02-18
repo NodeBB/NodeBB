@@ -216,7 +216,7 @@
 
 		function onOpeningMenu() {
 			$('#header').css({
-				top: $('#panel').position().top * -1 + 'px',
+				top: ($('#panel').position().top * -1) + 'px',
 				position: 'absolute',
 			});
 		}

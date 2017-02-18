@@ -48,7 +48,7 @@ var emailer = require('../emailer');
 				db.sortedSetScore('reset:issueDate:uid', uid, next);
 			},
 			function (score, next) {
-				if (score > Date.now() - 1000 * 60) {
+				if (score > Date.now() - (1000 * 60)) {
 					return next(new Error('[[error:cant-reset-password-more-than-once-a-minute]]'));
 				}
 				next();

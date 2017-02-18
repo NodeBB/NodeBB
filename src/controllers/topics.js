@@ -113,7 +113,7 @@ topicsController.get = function (req, res, callback) {
 				currentPage = Math.max(1, Math.ceil(index / settings.postsPerPage));
 			}
 
-			var start = (currentPage - 1) * settings.postsPerPage + postIndex;
+			var start = ((currentPage - 1) * settings.postsPerPage) + postIndex;
 			var stop = start + settings.postsPerPage - 1;
 
 			topics.getTopicWithPosts(results.topic, set, req.uid, start, stop, reverse, next);

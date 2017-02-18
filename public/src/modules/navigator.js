@@ -114,7 +114,7 @@ define('navigator', ['forum/pagination', 'components'], function (pagination, co
 		var scrollTop = $(window).scrollTop();
 		var windowHeight = $(window).height();
 		var documentHeight = $(document).height();
-		var middleOfViewport = scrollTop + windowHeight / 2;
+		var middleOfViewport = scrollTop + (windowHeight / 2);
 		var previousDistance = Number.MAX_VALUE;
 		els.each(function () {
 			var distanceToMiddle = Math.abs(middleOfViewport - $(this).offset().top);

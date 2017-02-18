@@ -129,7 +129,7 @@ define('forum/account/header', [
 								data[cur.name] = cur.value;
 								return data;
 							}, {});
-							var until = parseInt(formData.length, 10) ? (Date.now() + formData.length * 1000 * 60 * 60 * (parseInt(formData.unit, 10) ? 24 : 1)) : 0;
+							var until = parseInt(formData.length, 10) ? (Date.now() + (formData.length * 1000 * 60 * 60 * (parseInt(formData.unit, 10) ? 24 : 1))) : 0;
 
 							socket.emit('user.banUsers', { uids: [ajaxify.data.theirid], until: until, reason: formData.reason || '' }, function (err) {
 								if (err) {

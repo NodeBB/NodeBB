@@ -87,7 +87,7 @@ categoryController.get = function (req, res, callback) {
 				set = 'cid:' + cid + ':tids:posts';
 			}
 
-			var start = (currentPage - 1) * settings.topicsPerPage + topicIndex;
+			var start = ((currentPage - 1) * settings.topicsPerPage) + topicIndex;
 			var stop = start + settings.topicsPerPage - 1;
 
 			var payload = {

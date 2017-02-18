@@ -128,7 +128,7 @@ module.exports = function (privileges) {
 			if (err) {
 				return callback(err);
 			}
-			if (Array.isArray(uid) && !Array.isArray(data.isModerator) || Array.isArray(cid) && !Array.isArray(data.isModerator)) {
+			if ((Array.isArray(uid) || Array.isArray(cid)) && !Array.isArray(data.isModerator)) {
 				return callback(new Error('filter:user.isModerator - i/o mismatch'));
 			}
 

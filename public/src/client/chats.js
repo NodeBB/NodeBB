@@ -355,7 +355,7 @@ define('forum/chats', [
 
 			messagesList.height($(window).height() - (fromTop + inputHeight + (margin * 4)));
 			components.get('chat/recent').height($('.expanded-chat').height() - (searchHeight + searchListHeight));
-			$('[component="chat/search/list"]').css('max-height', components.get('chat/recent').height() / 2 + 'px');
+			$('[component="chat/search/list"]').css('max-height', (components.get('chat/recent').height() / 2) + 'px');
 		}
 
 		Chats.setActive();

@@ -60,7 +60,7 @@ Loader.addWorkerEvents = function (worker) {
 					Loader.timesStarted = 0;
 				}, 10000);
 			} else {
-				console.log(numProcs * 3 + ' restarts in 10 seconds, most likely an error on startup. Halting.');
+				console.log((numProcs * 3) + ' restarts in 10 seconds, most likely an error on startup. Halting.');
 				process.exit();
 			}
 		}

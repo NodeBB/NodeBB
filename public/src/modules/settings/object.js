@@ -102,7 +102,7 @@ define('settings/object', function () {
 				var val = helper.readValue(property);
 				var prop = property.data('prop');
 				var empty = helper.isTrue(property.data('empty'));
-				if (empty || val !== void 0 && (val == null || val.length !== 0)) {
+				if (empty || (val !== void 0 && (val == null || val.length !== 0))) {
 					return value[prop] = val;
 				}
 			});
