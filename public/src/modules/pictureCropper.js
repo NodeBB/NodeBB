@@ -50,7 +50,11 @@ define('pictureCropper', ['translator', 'cropper'], function (translator, croppe
 						cropperModal.find('.flip').on('click', function () {
 							var option = this.getAttribute('data-option');
 							var method = this.getAttribute('data-method');
-							method === 'scaleX' ? cropperTool.scaleX(option) : cropperTool.scaleY(option);
+							if (method === 'scaleX') {
+								cropperTool.scaleX(option);
+							} else {
+								cropperTool.scaleY(option);
+							}
 							this.setAttribute('data-option', option * -1);
 						});
 

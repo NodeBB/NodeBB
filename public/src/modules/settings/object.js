@@ -23,7 +23,7 @@ define('settings/object', function () {
 		delete attributes['data-prepend'];
 		delete attributes['data-append'];
 		attributes = helper.deepClone(attributes);
-		type = attributes['data-type'] || attributes.type || 'text',
+		type = attributes['data-type'] || attributes.type || 'text';
 		element = $(helper.createElementOfType(type, attributes.tagName, attributes));
 		element.attr('data-parent', '_' + key);
 		element.attr('data-prop', prop);
