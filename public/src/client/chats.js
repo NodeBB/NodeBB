@@ -322,7 +322,7 @@ define('forum/chats', [
 						rooms: { roomId: data.roomId, lastUser: data.message.fromUser, usernames: data.message.fromUser.username, unread: true },
 					}, function (html) {
 						translator.translate(html, function (translated) {
-							    recentEl.prepend(translated);
+							recentEl.prepend(translated);
 						});
 					});
 				}

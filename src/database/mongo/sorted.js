@@ -362,13 +362,13 @@ module.exports = function (db, module) {
 
 			var sets = {};
 			data.forEach(function (set) {
-			 	sets[set._key] = sets[set._key] || [];
-			 	sets[set._key].push(set.value);
+				sets[set._key] = sets[set._key] || [];
+				sets[set._key].push(set.value);
 			});
 
 			var returnData = new Array(keys.length);
 			for (var i = 0; i < keys.length; i += 1) {
-			 	returnData[i] = sets[keys[i]] || [];
+				returnData[i] = sets[keys[i]] || [];
 			}
 			callback(null, returnData);
 		});

@@ -114,7 +114,7 @@ define('chat', [
 			}
 
 			var rooms = data.rooms.filter(function (room) {
-			    return room.teaser;
+				return room.teaser;
 			});
 
 			templates.parse('partials/chats/dropdown', {

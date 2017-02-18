@@ -36,7 +36,7 @@ module.exports = function (Categories) {
 	};
 
 	Categories.getTopicIds = function (cid, set, reverse, start, stop, callback) {
-	 	var pinnedTids;
+		var pinnedTids;
 		var pinnedCount;
 		var totalPinnedCount;
 

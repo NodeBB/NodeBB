@@ -17,7 +17,7 @@ define('pictureCropper', ['translator', 'cropper'], function (translator, croppe
 			uploadModal = $(uploadModal);
 
 			uploadModal.modal('show');
-		 	uploadModal.on('hidden.bs.modal', function () {
+			uploadModal.on('hidden.bs.modal', function () {
 				uploadModal.remove();
 			});
 
@@ -74,15 +74,15 @@ define('pictureCropper', ['translator', 'cropper'], function (translator, croppe
 							socketData.imageData = imageData;
 
 							socket.emit(data.socketMethod, socketData, function (err, imageData) {
-							    if (err) {
-							        cropperModal.find('#upload-progress-box').hide();
-							        cropperModal.find('.upload-btn').removeClass('disabled');
-							        cropperModal.find('.crop-btn').removeClass('disabled');
-							        return app.alertError(err.message);
-							    }
+								if (err) {
+									cropperModal.find('#upload-progress-box').hide();
+									cropperModal.find('.upload-btn').removeClass('disabled');
+									cropperModal.find('.crop-btn').removeClass('disabled');
+									return app.alertError(err.message);
+								}
 
-							    callback(imageData.url);
-							    cropperModal.modal('hide');
+								callback(imageData.url);
+								cropperModal.modal('hide');
 							});
 						});
 

@@ -50,5 +50,5 @@ module.exports = function (Posts) {
 				next(null, uids);
 			},
 		], callback);
- 	};
+	};
 };

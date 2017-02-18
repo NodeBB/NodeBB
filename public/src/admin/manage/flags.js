@@ -37,7 +37,7 @@ define('admin/manage/flags', [
 			socket.emit('posts.dismissFlag', pid, function (err) {
 				done(err, btn);
 			});
- 		});
+		});
 	}
 
 	function handleDismissAll() {

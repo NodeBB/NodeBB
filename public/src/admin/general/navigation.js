@@ -40,8 +40,8 @@ define('admin/general/navigation', ['translator', 'iconSelect', 'jqueryui'], fun
 		$('#active-navigation').on('click', 'li', onSelect);
 
 		$('#enabled')
-		 	.on('click', '.delete', remove)
-		 	.on('click', '.toggle', toggle);
+			.on('click', '.delete', remove)
+			.on('click', '.toggle', toggle);
 
 		$('#save').on('click', save);
 	};

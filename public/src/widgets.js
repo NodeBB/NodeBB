@@ -29,7 +29,7 @@
 			}
 		});
 
-		$.get(config.relative_path + '/api/widgets/render' + '?' + config['cache-buster'], {
+		$.get(config.relative_path + '/api/widgets/render?' + config['cache-buster'], {
 			locations: widgetLocations,
 			template: template + '.tpl',
 			url: url,

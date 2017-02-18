@@ -558,7 +558,7 @@ app.cacheBuster = null;
 
 		var scriptEl = document.createElement('script');
 		scriptEl.type = 'text/javascript';
-		scriptEl.src = config.relative_path + '/assets/vendor/jquery/js/jquery-ui.js' + '?' + config['cache-buster'];
+		scriptEl.src = config.relative_path + '/assets/vendor/jquery/js/jquery-ui.js?' + config['cache-buster'];
 		scriptEl.onload = callback;
 		document.head.appendChild(scriptEl);
 	};

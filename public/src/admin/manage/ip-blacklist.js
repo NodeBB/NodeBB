@@ -8,7 +8,7 @@ define('admin/manage/ip-blacklist', ['translator'], function (translator) {
 		var blacklist = $('#blacklist-rules');
 
 		blacklist.on('keyup', function () {
-		    $('#blacklist-rules-holder').val(blacklist.val());
+			$('#blacklist-rules-holder').val(blacklist.val());
 		});
 
 		$('[data-action="apply"]').on('click', function () {

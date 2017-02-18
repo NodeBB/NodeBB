@@ -18,7 +18,7 @@ define('admin/appearance/customise', ['admin/settings'], function (Settings) {
 			customCSS.on('change', function (event) {
 				app.flags = app.flags || {};
 				app.flags._unsaved = true;
-			    $('#customCSS-holder').val(customCSS.getValue());
+				$('#customCSS-holder').val(customCSS.getValue());
 			});
 
 			customHTML.setTheme('ace/theme/twilight');
@@ -27,7 +27,7 @@ define('admin/appearance/customise', ['admin/settings'], function (Settings) {
 			customHTML.on('change', function (event) {
 				app.flags = app.flags || {};
 				app.flags._unsaved = true;
-			    $('#customHTML-holder').val(customHTML.getValue());
+				$('#customHTML-holder').val(customHTML.getValue());
 			});
 		});
 	};

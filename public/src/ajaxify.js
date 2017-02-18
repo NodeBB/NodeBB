@@ -321,7 +321,7 @@ $(document).ready(function () {
 			callback(templates.cache[template]);
 		} else {
 			$.ajax({
-				url: config.relative_path + '/assets/templates/' + template + '.tpl' + '?' + config['cache-buster'],
+				url: config.relative_path + '/assets/templates/' + template + '.tpl?' + config['cache-buster'],
 				type: 'GET',
 				success: function (data) {
 					callback(data.toString());

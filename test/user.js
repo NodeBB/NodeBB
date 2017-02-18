@@ -383,9 +383,9 @@ describe('User', function () {
 			io.emit('user.updateProfile', data, function (err, result) {
 				assert.ifError(err);
 
-  				assert.equal(result.username, 'updatedUserName');
-  				assert.equal(result.userslug, 'updatedusername');
-  				assert.equal(result.email, 'updatedEmail@me.com');
+				assert.equal(result.username, 'updatedUserName');
+				assert.equal(result.userslug, 'updatedusername');
+				assert.equal(result.email, 'updatedEmail@me.com');
 
 				db.getObject('user:' + uid, function (err, userData) {
 					assert.ifError(err);

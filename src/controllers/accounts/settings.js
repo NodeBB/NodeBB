@@ -115,9 +115,9 @@ settingsController.get = function (req, res, callback) {
 		}
 
 		userData.homePageRoutes.push({
-		 	route: 'custom',
-		 	name: 'Custom',
-		 	selected: isCustom,
+			route: 'custom',
+			name: 'Custom',
+			selected: isCustom,
 		});
 
 		userData.bootswatchSkinOptions.forEach(function (skin) {

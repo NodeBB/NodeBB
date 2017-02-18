@@ -26,7 +26,7 @@ define('uploader', ['translator'], function (translator) {
 			uploadModal = $(uploadModal);
 
 			uploadModal.modal('show');
-		 	uploadModal.on('hidden.bs.modal', function () {
+			uploadModal.on('hidden.bs.modal', function () {
 				uploadModal.remove();
 			});
 

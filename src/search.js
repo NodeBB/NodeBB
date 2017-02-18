@@ -422,10 +422,10 @@ function getChildrenCids(cids, uid, callback) {
 
 		childrenCategories.forEach(function (childrens) {
 			categories.flattenCategories(allCategories, childrens);
-		 	childrenCids = childrenCids.concat(allCategories.map(function (category) {
-		 		return category && category.cid;
-		 	}));
-		 });
+			childrenCids = childrenCids.concat(allCategories.map(function (category) {
+				return category && category.cid;
+			}));
+		});
 
 		callback(null, childrenCids);
 	});
