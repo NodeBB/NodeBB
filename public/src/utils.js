@@ -448,6 +448,11 @@
 		},
 	};
 
+	if ('undefined' !== typeof window) {
+		window.utils = module.exports;
+	}
+
+		/* eslint "no-extend-native": "off" */
 	if (typeof String.prototype.startsWith !== 'function') {
 		String.prototype.startsWith = function (prefix) {
 			if (this.length < prefix.length) {
@@ -473,10 +478,6 @@
 		String.prototype.rtrim = function () {
 			return this.replace(/\s+$/g, '');
 		};
-	}
-
-	if ('undefined' !== typeof window) {
-		window.utils = module.exports;
 	}
 }('undefined' === typeof module ? {
 	module: {

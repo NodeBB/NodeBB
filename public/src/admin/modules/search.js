@@ -73,7 +73,7 @@ define('admin/modules/search', ['mousetrap'], function (mousetrap) {
 			if (!selected.length) {
 				selected = menu.find('li.result > a').first().attr('href');
 			}
-			var href = selected ? selected : config.relative_path + '/search/' + input.val();
+			var href = selected || config.relative_path + '/search/' + input.val();
 
 			ajaxify.go(href.replace(/^\//, ''));
 

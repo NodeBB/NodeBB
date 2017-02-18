@@ -21,7 +21,7 @@ define('forum/topic/posts', [
 			return;
 		}
 
-		data.loggedIn = app.user.uid ? true : false;
+		data.loggedIn = !!app.user.uid;
 		data.privileges = ajaxify.data.privileges;
 		Posts.modifyPostsByPrivileges(data.posts);
 

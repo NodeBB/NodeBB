@@ -108,7 +108,7 @@ define('admin/manage/group', [
 			var btnEl = $(this);
 			var userRow = btnEl.parents('[data-uid]');
 			var ownerFlagEl = userRow.find('.member-name i');
-			var isOwner = !ownerFlagEl.hasClass('invisible') ? true : false;
+			var isOwner = !ownerFlagEl.hasClass('invisible');
 			var uid = userRow.attr('data-uid');
 			var action = btnEl.attr('data-action');
 

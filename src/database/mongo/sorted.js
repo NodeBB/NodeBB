@@ -138,7 +138,7 @@ module.exports = function (db, module) {
 		}
 
 		db.collection('objects').count(query, function (err, count) {
-			callback(err, count ? count : 0);
+			callback(err, count || 0);
 		});
 	};
 
@@ -148,7 +148,7 @@ module.exports = function (db, module) {
 		}
 		db.collection('objects').count({ _key: key }, function (err, count) {
 			count = parseInt(count, 10);
-			callback(err, count ? count : 0);
+			callback(err, count || 0);
 		});
 	};
 

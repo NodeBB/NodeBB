@@ -17,7 +17,7 @@ module.exports = function (User) {
 				return callback(err);
 			}
 
-			onSettingsLoaded(uid, settings ? settings : {}, callback);
+			onSettingsLoaded(uid, settings || {}, callback);
 		});
 	};
 

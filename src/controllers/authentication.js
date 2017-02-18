@@ -214,7 +214,7 @@ authenticationController.login = function (req, res, next) {
 			if (err) {
 				return next(err);
 			}
-			req.body.username = username ? username : req.body.username;
+			req.body.username = username || req.body.username;
 			continueLogin(req, res, next);
 		});
 	} else if (loginWith.indexOf('username') !== -1 && !validator.isEmail(req.body.username)) {

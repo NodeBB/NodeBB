@@ -75,8 +75,8 @@ function welcome(req, res) {
 	res.render('install/index', {
 		databases: databases,
 		skipDatabaseSetup: !!nconf.get('database'),
-		error: res.locals.error ? true : false,
-		success: res.locals.success ? true : false,
+		error: !!res.locals.error,
+		success: !!res.locals.success,
 		values: req.body,
 		minimumPasswordLength: defaults.minimumPasswordLength,
 	});

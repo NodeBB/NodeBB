@@ -10,7 +10,7 @@ define('forum/topic/move', function () {
 		Move.tids = tids;
 		Move.currentCid = currentCid;
 		Move.onComplete = onComplete;
-		Move.moveAll = tids ? false : true;
+		Move.moveAll = !tids;
 
 		socket.emit('categories.getMoveCategories', onCategoriesLoaded);
 	};

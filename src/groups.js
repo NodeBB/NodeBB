@@ -285,7 +285,7 @@ var utils = require('../public/src/utils');
 				return callback(err);
 			}
 
-			callback(null, (parseInt(isPrivate, 10) === 0) ? false : true);
+			callback(null, parseInt(isPrivate, 10) !== 0);
 		});
 	};
 
