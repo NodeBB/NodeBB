@@ -4,7 +4,7 @@
 var overrides = overrides || {};
 
 if ('undefined' !== typeof window) {
-	(function ($, undefined) {
+	(function ($) {
 		require(['translator'], function (translator) {
 			$.fn.getCursorPosition = function () {
 				var el = $(this).get(0);
