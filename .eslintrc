@@ -98,7 +98,7 @@
 		"no-shadow": "off",
 		"prefer-template": "off",
 		"padded-blocks": "off",
-		"eol-last": "off",
+		// "eol-last": "off",
 		// "lines-around-directive": "off",
 		// "strict": "off",
 		// "comma-dangle": "off",
