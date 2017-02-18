@@ -6,6 +6,7 @@ var path = require('path');
 var winston = require('winston');
 var jimp = require('jimp');
 var mkdirp = require('mkdirp');
+var mime = require('mime');
 
 var utils = require('../public/src/utils');
 
@@ -13,8 +14,8 @@ var file = {};
 
 file.saveFileToLocal = function (filename, folder, tempPath, callback) {
 	/*
-	* remarkable doesn't allow spaces in hyperlinks, once that's fixed, remove this.
-	*/
+	 * remarkable doesn't allow spaces in hyperlinks, once that's fixed, remove this.
+	 */
 	filename = filename.split('.');
 	filename.forEach(function (name, idx) {
 		filename[idx] = utils.slugify(name);
@@ -100,7 +101,8 @@ file.existsSync = function (path) {
 	var exists = false;
 	try {
 		exists = fs.statSync(path);
-	} catch(err) {
+	}
+	catch (err) {
 		exists = false;
 	}
 
@@ -110,7 +112,8 @@ file.existsSync = function (path) {
 file.link = function link(filePath, destPath, cb) {
 	if (process.platform === 'win32') {
 		fs.link(filePath, destPath, cb);
-	} else {
+	}
+	else {
 		fs.symlink(filePath, destPath, 'file', cb);
 	}
 };
@@ -118,6 +121,14 @@ file.link = function link(filePath, destPath, cb) {
 file.linkDirs = function linkDirs(sourceDir, destDir, callback) {
 	var type = (process.platform === 'win32') ? 'junction' : 'dir';
 	fs.symlink(sourceDir, destDir, type, callback);
+};
+
+file.typeToExtension = function (type) {
+	var extension;
+	if (type) {
+		extension = '.' + mime.extension(type);
+	}
+	return extension;
 };
 
 module.exports = file;
