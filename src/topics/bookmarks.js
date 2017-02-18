@@ -63,8 +63,8 @@ module.exports = function (Topics) {
 						var bookmark = data.bookmark;
 						bookmark = bookmark < maxIndex ? bookmark : maxIndex;
 
-						for (var i = 0; i < postIndices.length && postIndices[i] < data.bookmark; ++i) {
-							--bookmark;
+						for (var i = 0; i < postIndices.length && postIndices[i] < data.bookmark; i += 1) {
+							bookmark -= 1;
 						}
 
 						if (parseInt(bookmark, 10) !== parseInt(data.bookmark, 10)) {

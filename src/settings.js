@@ -134,7 +134,7 @@ Settings.prototype.get = function (key, def) {
 	var obj = this.cfg._;
 	var parts = (key || '').split('.');
 	var part;
-	for (var i = 0; i < parts.length; i++) {
+	for (var i = 0; i < parts.length; i += 1) {
 		part = parts[i];
 		if (part && obj != null) {
 			obj = obj[part];
@@ -143,7 +143,7 @@ Settings.prototype.get = function (key, def) {
 	if (obj === void 0) {
 		if (def === void 0) {
 			def = this.defCfg;
-			for (var j = 0; j < parts.length; j++) {
+			for (var j = 0; j < parts.length; j += 1) {
 				part = parts[j];
 				if (part && def != null) {
 					def = def[part];
@@ -197,7 +197,7 @@ Settings.prototype.set = function (key, val) {
 	} else {
 		obj = this.cfg._;
 		parts = key.split('.');
-		for (var i = 0, _len = parts.length - 1; i < _len; i++) {
+		for (var i = 0, _len = parts.length - 1; i < _len; i += 1) {
 			if (part = parts[i]) {
 				if (!obj.hasOwnProperty(part)) {
 					obj[part] = {};

@@ -131,7 +131,7 @@ define('settings/key', function () {
 		var key = new Key();
 		var sep = /([^CtrlAShifMea#\d]+)(?:#|\d)/.exec(str);
 		var parts = sep != null ? str.split(sep[1]) : [str];
-		for (var i = 0; i < parts.length; i++) {
+		for (var i = 0; i < parts.length; i += 1) {
 			var part = parts[i];
 			switch (part) {
 			case 'C':

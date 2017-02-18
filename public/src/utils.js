@@ -58,13 +58,15 @@
 								}
 
 								results = results.concat(res);
-								if (!--pending) {
+								pending -= 1;
+								if (!pending) {
 									done(null, results);
 								}
 							});
 						} else {
 							results.push(file);
-							if (!--pending) {
+							pending -= 1;
+							if (!pending) {
 								done(null, results);
 							}
 						}
@@ -148,10 +150,10 @@
 			var result = {};
 			var obj;
 			var keys;
-			for (var i = 0; i < arguments.length; i++) {
+			for (var i = 0; i < arguments.length; i += 1) {
 				obj = arguments[i] || {};
 				keys = Object.keys(obj);
-				for (var j = 0; j < keys.length; j++) {
+				for (var j = 0; j < keys.length; j += 1) {
 					result[keys[j]] = obj[keys[j]];
 				}
 			}
@@ -276,7 +278,7 @@
 
 			$el.appendTo($('body'));
 
-			for (var i = envs.length - 1; i >= 0; i--) {
+			for (var i = envs.length - 1; i >= 0; i -= 1) {
 				var env = envs[i];
 
 				$el.addClass('hidden-' + env);
@@ -298,7 +300,7 @@
 			var currentHour = new Date().getHours();
 			var labels = [];
 
-			for (var i = currentHour, ii = currentHour - 24; i > ii; i--) {
+			for (var i = currentHour, ii = currentHour - 24; i > ii; i -= 1) {
 				var hour = i < 0 ? 24 + i : i;
 				labels.push(hour + ':00');
 			}
@@ -312,7 +314,7 @@
 			var labels = [];
 			var tmpDate;
 
-			for(var x = 29; x >= 0; x--) {
+			for(var x = 29; x >= 0; x -= 1) {
 				tmpDate = new Date(currentDay - (1000 * 60 * 60 * 24 * x));
 				labels.push(months[tmpDate.getMonth()] + ' ' + tmpDate.getDate());
 			}

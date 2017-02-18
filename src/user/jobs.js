@@ -27,7 +27,7 @@ module.exports = function (User) {
 				winston.verbose('[user/jobs] Terminating job (' + jobId + ')');
 				jobs[jobId].stop();
 				delete jobs[jobId];
-				++terminated;
+				terminated += 1;
 			}
 		}
 		winston.verbose('[user/jobs] ' + terminated + ' jobs terminated');
@@ -37,25 +37,25 @@ module.exports = function (User) {
 			User.digest.execute('day');
 		}, null, true);
 		winston.verbose('[user/jobs] Starting job (digest.daily)');
-		++started;
+		started += 1;
 
 		jobs['digest.weekly'] = new cronJob('0 ' + digestHour + ' * * 0', function () {
 			winston.verbose('[user/jobs] Digest job (weekly) started.');
 			User.digest.execute('week');
 		}, null, true);
 		winston.verbose('[user/jobs] Starting job (digest.weekly)');
-		++started;
+		started += 1;
 
 		jobs['digest.monthly'] = new cronJob('0 ' + digestHour + ' 1 * *', function () {
 			winston.verbose('[user/jobs] Digest job (monthly) started.');
 			User.digest.execute('month');
 		}, null, true);
 		winston.verbose('[user/jobs] Starting job (digest.monthly)');
-		++started;
+		started += 1;
 
 		jobs['reset.clean'] = new cronJob('0 0 * * *', User.reset.clean, null, true);
 		winston.verbose('[user/jobs] Starting job (reset.clean)');
-		++started;
+		started += 1;
 
 		winston.verbose('[user/jobs] ' + started + ' jobs started');
 

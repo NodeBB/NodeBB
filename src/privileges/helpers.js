@@ -33,7 +33,7 @@ function isUserAllowedToCids(privilege, uid, cids, callback) {
 
 	var userKeys = [];
 	var groupKeys = [];
-	for (var i = 0; i < cids.length; ++i) {
+	for (var i = 0; i < cids.length; i += 1) {
 		userKeys.push('cid:' + cids[i] + ':privileges:' + privilege);
 		groupKeys.push('cid:' + cids[i] + ':privileges:groups:' + privilege);
 	}
@@ -51,7 +51,7 @@ function isUserAllowedToCids(privilege, uid, cids, callback) {
 		}
 
 		var result = [];
-		for (var i = 0; i < cids.length; ++i) {
+		for (var i = 0; i < cids.length; i += 1) {
 			result.push(results.hasUserPrivilege[i] || results.hasGroupPrivilege[i]);
 		}
 
@@ -66,7 +66,7 @@ function isUserAllowedToPrivileges(privileges, uid, cid, callback) {
 
 	var userKeys = [];
 	var groupKeys = [];
-	for (var i = 0; i < privileges.length; ++i) {
+	for (var i = 0; i < privileges.length; i += 1) {
 		userKeys.push('cid:' + cid + ':privileges:' + privileges[i]);
 		groupKeys.push('cid:' + cid + ':privileges:groups:' + privileges[i]);
 	}
@@ -84,7 +84,7 @@ function isUserAllowedToPrivileges(privileges, uid, cid, callback) {
 		}
 
 		var result = [];
-		for (var i = 0; i < privileges.length; ++i) {
+		for (var i = 0; i < privileges.length; i += 1) {
 			result.push(results.hasUserPrivilege[i] || results.hasGroupPrivilege[i]);
 		}
 
@@ -107,7 +107,7 @@ helpers.isUsersAllowedTo = function (privilege, uids, cid, callback) {
 		}
 
 		var result = [];
-		for(var i = 0; i < uids.length; ++i) {
+		for(var i = 0; i < uids.length; i += 1) {
 			result.push(results.hasUserPrivilege[i] || results.hasGroupPrivilege[i]);
 		}
 
@@ -117,7 +117,7 @@ helpers.isUsersAllowedTo = function (privilege, uids, cid, callback) {
 
 function isGuestAllowedToCids(privilege, cids, callback) {
 	var groupKeys = [];
-	for (var i = 0; i < cids.length; ++i) {
+	for (var i = 0; i < cids.length; i += 1) {
 		groupKeys.push('cid:' + cids[i] + ':privileges:groups:' + privilege);
 	}
 
@@ -126,7 +126,7 @@ function isGuestAllowedToCids(privilege, cids, callback) {
 
 function isGuestAllowedToPrivileges(privileges, cid, callback) {
 	var groupKeys = [];
-	for (var i = 0; i < privileges.length; ++i) {
+	for (var i = 0; i < privileges.length; i += 1) {
 		groupKeys.push('cid:' + cid + ':privileges:groups:' + privileges[i]);
 	}
 

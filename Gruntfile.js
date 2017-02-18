@@ -46,9 +46,9 @@ module.exports = function (grunt) {
 			updateWorker.kill('SIGKILL');
 		}
 		updateWorker = fork('app.js', updateArgs, { env: env });
-		++running;
+		running += 1;
 		updateWorker.on('exit', function () {
-			--running;
+			running -= 1;
 			if (running === 0) {
 				worker = fork('app.js', args, { env: env });
 				worker.on('message', function () {

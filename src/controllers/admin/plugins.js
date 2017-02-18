@@ -39,7 +39,7 @@ pluginsController.get = function (req, res, next) {
 			}),
 			upgradeCount: payload.compatible.reduce(function (count, current) {
 				if (current.installed && current.outdated) {
-					++count;
+					count += 1;
 				}
 				return count;
 			}, 0),

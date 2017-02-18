@@ -4,7 +4,7 @@ define('settings/select', function () {
 	var SettingsSelect;
 
 	function addOptions(element, options) {
-		for (var i = 0; i < options.length; i++) {
+		for (var i = 0; i < options.length; i += 1) {
 			var optionData = options[i];
 			var value = optionData.text || optionData.value;
 			delete optionData.text;

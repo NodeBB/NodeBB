@@ -69,7 +69,7 @@ module.exports = function (Topics) {
 			userData: function (next) {
 				var uids = [];
 
-				for(var i = 0; i < postData.length; ++i) {
+				for(var i = 0; i < postData.length; i += 1) {
 					if (postData[i] && uids.indexOf(postData[i].uid) === -1) {
 						uids.push(postData[i].uid);
 					}
@@ -90,7 +90,7 @@ module.exports = function (Topics) {
 			},
 			editors: function (next) {
 				var editors = [];
-				for(var i = 0; i < postData.length; ++i) {
+				for(var i = 0; i < postData.length; i += 1) {
 					if (postData[i] && postData[i].editor && editors.indexOf(postData[i].editor) === -1) {
 						editors.push(postData[i].editor);
 					}
@@ -253,7 +253,7 @@ module.exports = function (Topics) {
 						if (!isDeleted) {
 							latestPid = pids[0];
 						}
-						++index;
+						index += 1;
 						next();
 					});
 				});

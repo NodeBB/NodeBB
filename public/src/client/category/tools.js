@@ -180,7 +180,7 @@ define('forum/category/tools', [
 	}
 
 	function isAny(method, tids) {
-		for(var i = 0; i < tids.length; ++i) {
+		for(var i = 0; i < tids.length; i += 1) {
 			if(method(tids[i])) {
 				return true;
 			}
@@ -189,7 +189,7 @@ define('forum/category/tools', [
 	}
 
 	function areAll(method, tids) {
-		for(var i = 0; i < tids.length; ++i) {
+		for(var i = 0; i < tids.length; i += 1) {
 			if(!method(tids[i])) {
 				return false;
 			}

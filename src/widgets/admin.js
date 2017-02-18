@@ -60,7 +60,7 @@ admin.get = function (callback) {
 						areas: [],
 					});
 
-					index++;
+					index += 1;
 				}
 
 				templates[list[area.template]].areas.push({

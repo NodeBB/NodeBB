@@ -505,7 +505,7 @@ describe('Topic\'s', function () {
 					var topics = results.topics;
 					var topic;
 					var i;
-					for(i = 0; i < topics.length; ++i) {
+					for(i = 0; i < topics.length; i += 1) {
 						if (parseInt(topics[i].tid, 10) === parseInt(newTid, 10)) {
 							assert.equal(false, topics[i].unread, 'ignored topic was marked as unread in recent list');
 							return done();

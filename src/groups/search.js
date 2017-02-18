@@ -77,7 +77,7 @@ module.exports = function (Groups) {
 				},
 				function (users, next) {
 					var uids = [];
-					for(var i = 0; i < users.length; ++i) {
+					for(var i = 0; i < users.length; i += 1) {
 						var field = users[i][searchBy];
 						if (field.toLowerCase().startsWith(query)) {
 							uids.push(users[i].uid);

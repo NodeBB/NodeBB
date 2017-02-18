@@ -52,7 +52,7 @@ Loader.addWorkerEvents = function (worker) {
 	worker.on('exit', function (code, signal) {
 		if (code !== 0) {
 			if (Loader.timesStarted < numProcs * 3) {
-				Loader.timesStarted++;
+				Loader.timesStarted += 1;
 				if (Loader.crashTimer) {
 					clearTimeout(Loader.crashTimer);
 				}
@@ -93,7 +93,7 @@ Loader.start = function (callback) {
 	numProcs = getPorts().length;
 	console.log('Clustering enabled: Spinning up ' + numProcs + ' process(es).\n');
 
-	for (var x = 0; x < numProcs; ++x) {
+	for (var x = 0; x < numProcs; x += 1) {
 		forkWorker(x, x === 0);
 	}
 

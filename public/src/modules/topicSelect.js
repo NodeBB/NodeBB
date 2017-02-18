@@ -70,7 +70,7 @@ define('topicSelect', ['components'], function (components) {
 			end = tmp;
 		}
 
-		for(var i = start; i <= end; ++i) {
+		for(var i = start; i <= end; i += 1) {
 			var topic = $('[component="category/topic"]').eq(i);
 			toggleSelect(topic.find('[component="topic/select"]'), isSelected);
 		}

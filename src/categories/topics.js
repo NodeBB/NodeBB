@@ -24,7 +24,7 @@ module.exports = function (Categories) {
 					return next(null, {topics: [], uid: data.uid});
 				}
 
-				for (var i = 0; i < topics.length; ++i) {
+				for (var i = 0; i < topics.length; i += 1) {
 					topics[i].index = data.start + i;
 				}
 

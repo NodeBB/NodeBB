@@ -171,7 +171,7 @@ var meta = require('./meta');
 
 	User.existsBySlug = function (userslug, callback) {
 		User.getUidByUserslug(userslug, function (err, exists) {
-			callback(err, !! exists);
+			callback(err, !!exists);
 		});
 	};
 

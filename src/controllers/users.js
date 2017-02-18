@@ -79,7 +79,7 @@ usersController.getOnlineUsers = function (req, res, next) {
 		if (!userData.isAdminOrGlobalMod) {
 			userData.users = userData.users.filter(function (user) {
 				if (user && user.status === 'offline') {
-					hiddenCount ++;
+					hiddenCount += 1;
 				}
 				return user && user.status !== 'offline';
 			});

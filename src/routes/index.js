@@ -98,7 +98,7 @@ module.exports = function (app, middleware, hotswapIds) {
 	var ensureLoggedIn = require('connect-ensure-login');
 
 	if (Array.isArray(hotswapIds) && hotswapIds.length) {
-		for(var idx,x = 0; x < hotswapIds.length; x++) {
+		for(var idx,x = 0; x < hotswapIds.length; x += 1) {
 			idx = routers.push(express.Router()) - 1;
 			routers[idx].hotswapId = hotswapIds[x];
 		}
@@ -132,7 +132,7 @@ module.exports = function (app, middleware, hotswapIds) {
 	userRoutes(router, middleware, controllers);
 	groupRoutes(router, middleware, controllers);
 
-	for(var x = 0; x < routers.length; x++) {
+	for(var x = 0; x < routers.length; x += 1) {
 		app.use(relativePath, routers[x]);
 	}
 

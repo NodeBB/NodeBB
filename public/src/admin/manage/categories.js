@@ -135,7 +135,7 @@ define('admin/manage/categories', ['vendor/jquery/serializeObject/jquery.ba-seri
 			var list = parentCategory.toArray();
 			var len = list.length;
 
-			for(i; i < len; ++i) {
+			for(i; i < len; i += 1) {
 				modified[list[i]] = {
 					order: (i + 1),
 				};
@@ -166,7 +166,7 @@ define('admin/manage/categories', ['vendor/jquery/serializeObject/jquery.ba-seri
 				if (category.name !== translated) {
 					category.name = translated;
 				}
-				++count;
+				count += 1;
 
 				if (count === parent.length) {
 					continueRender();
@@ -187,7 +187,7 @@ define('admin/manage/categories', ['vendor/jquery/serializeObject/jquery.ba-seri
 					container.append(html);
 
 					// Handle and children categories in this level have
-					for(var x = 0,numCategories = categories.length; x < numCategories; x++) {
+					for(var x = 0, numCategories = categories.length; x < numCategories; x += 1) {
 						renderList(categories[x].children, $('li[data-cid="' + categories[x].cid + '"]'), categories[x].cid);
 					}
 

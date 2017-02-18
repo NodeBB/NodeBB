@@ -123,7 +123,7 @@ SocketRooms.getOnlineUserCount = function (io) {
 	if (io) {
 		for (var key in io.sockets.adapter.rooms) {
 			if (io.sockets.adapter.rooms.hasOwnProperty(key) && key.startsWith('uid_')) {
-				++ count;
+				count += 1;
 			}
 		}
 	}

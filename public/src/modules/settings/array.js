@@ -115,7 +115,7 @@ define('settings/array', function () {
 			if (!(value instanceof Array)) {
 				value = [];
 			}
-			for (var i = 0; i < value.length; i++) {
+			for (var i = 0; i < value.length; i += 1) {
 				addArrayChildElement(element, key, attributes, value[i], separator.clone(), function (el) {
 					element.append(el);
 				});

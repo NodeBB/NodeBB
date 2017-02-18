@@ -331,7 +331,7 @@ Messaging.hasPrivateChat = function (uid, withUid, callback) {
 						roomId = roomIds[index];
 						next(null, roomId);
 					} else {
-						++ index;
+						index += 1;
 						next();
 					}
 				});

@@ -51,7 +51,7 @@ define('admin/manage/group', [
 
 						groupDetailsSearchResults.empty();
 
-						for (x = 0; x < numResults; x++) {
+						for (x = 0; x < numResults; x += 1) {
 							foundUser = $('<li />');
 							foundUser
 								.attr({title: results.users[x].username,

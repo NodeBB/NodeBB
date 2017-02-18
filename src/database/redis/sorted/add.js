@@ -23,7 +23,7 @@ module.exports = function (redisClient, module) {
 
 		var args = [key];
 
-		for(var i = 0; i < scores.length; ++i) {
+		for(var i = 0; i < scores.length; i += 1) {
 			args.push(scores[i], values[i]);
 		}
 
@@ -36,7 +36,7 @@ module.exports = function (redisClient, module) {
 		callback = callback || function () {};
 		var multi = redisClient.multi();
 
-		for(var i = 0; i < keys.length; ++i) {
+		for(var i = 0; i < keys.length; i += 1) {
 			multi.zadd(keys[i], score, value);
 		}
 

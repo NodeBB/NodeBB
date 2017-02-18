@@ -84,7 +84,7 @@ module.exports = function (Posts) {
 		var upvoteSets = [];
 		var downvoteSets = [];
 
-		for (var i = 0; i < pids.length; ++i) {
+		for (var i = 0; i < pids.length; i += 1) {
 			upvoteSets.push('pid:' + pids[i] + ':upvote');
 			downvoteSets.push('pid:' + pids[i] + ':downvote');
 		}

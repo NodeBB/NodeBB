@@ -129,7 +129,7 @@ define('settings', function () {
 			if (!trim && empty) {
 				return array;
 			}
-			for (var i = 0; i < array.length; i++) {
+			for (var i = 0; i < array.length; i += 1) {
 				var value = array[i];
 				if (trim) {
 					value = value === true ? 1 : value === false ? 0 : typeof value.trim === 'function' ? value.trim() : value;
@@ -226,7 +226,7 @@ define('settings', function () {
 				if (hook != null) {
 					hook.call(Settings, field);
 				}
-				for (var i = 0; i < keyParts.length; i++) {
+				for (var i = 0; i < keyParts.length; i += 1) {
 					var part = keyParts[i];
 					if (part && value != null) {
 						value = value[part];
@@ -254,7 +254,7 @@ define('settings', function () {
 			if (waitingJobs > 0) {
 				waitingJobs -= amount;
 				if (waitingJobs <= 0) {
-					for (var i = 0; i < onReady.length; i++) {
+					for (var i = 0; i < onReady.length; i += 1) {
 						onReady[i]();
 					}
 					onReady = [];
@@ -352,7 +352,7 @@ define('settings', function () {
 			if (typeof service.use === 'function') {
 				service.use.call(Settings);
 			}
-			for (var i = 0; i < types.length; i++) {
+			for (var i = 0; i < types.length; i += 1) {
 				var type = types[i].toLowerCase();
 				if (Settings.plugins[type] == null) {
 					Settings.plugins[type] = service;
@@ -415,14 +415,14 @@ define('settings', function () {
 			if (notify == null) {
 				notify = true;
 			}
-			for (var i = 0; i < fields.length; i++) {
+			for (var i = 0; i < fields.length; i += 1) {
 				var field = $(fields[i]);
 				var value = helper.readValue(field);
 				var parentCfg = Settings.get();
 				var keyParts = field.data('key').split('.');
 				var lastKey = keyParts[keyParts.length - 1];
 				if (keyParts.length > 1) {
-					for (var j = 0; j < keyParts.length - 1; j++) {
+					for (var j = 0; j < keyParts.length - 1; j += 1) {
 						var part = keyParts[j];
 						if (part && parentCfg != null) {
 							parentCfg = parentCfg[part];
@@ -534,7 +534,7 @@ define('settings', function () {
 
 	helper.registerReadyJobs(1);
 	require(DEFAULT_PLUGINS, function () {
-		for (var i = 0; i < arguments.length; i++) {
+		for (var i = 0; i < arguments.length; i += 1) {
 			Settings.registerPlugin(arguments[i]);
 		}
 		helper.beforeReadyJobsDecreased();

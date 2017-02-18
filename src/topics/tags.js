@@ -366,7 +366,7 @@ module.exports = function (Topics) {
 				query = query.toLowerCase();
 
 				var matches = [];
-				for(var i = 0; i < tags.length; ++i) {
+				for(var i = 0; i < tags.length; i += 1) {
 					if (tags[i].toLowerCase().startsWith(query)) {
 						matches.push(tags[i]);
 						if (matches.length > 19) {

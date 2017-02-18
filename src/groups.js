@@ -34,8 +34,7 @@ var utils = require('../public/src/utils');
 			};
 		},
 		removeEphemeralGroups: function (groups) {
-			var x = groups.length;
-			while(x--) {
+			for (var x = groups.length; x >= 0; x -= 1) {
 				if (ephemeralGroups.indexOf(groups[x]) !== -1) {
 					groups.splice(x, 1);
 				}

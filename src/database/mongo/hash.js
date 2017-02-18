@@ -44,7 +44,7 @@ module.exports = function (db, module) {
 			var map = helpers.toMap(data);
 			var returnData = [];
 
-			for (var i = 0; i < keys.length; ++i) {
+			for (var i = 0; i < keys.length; i += 1) {
 				returnData.push(map[keys[i]]);
 			}
 
@@ -78,7 +78,7 @@ module.exports = function (db, module) {
 			_id: 0,
 		};
 
-		for(var i = 0; i < fields.length; ++i) {
+		for(var i = 0; i < fields.length; i += 1) {
 			fields[i] = helpers.fieldToString(fields[i]);
 			_fields[fields[i]] = 1;
 		}
@@ -88,7 +88,7 @@ module.exports = function (db, module) {
 			}
 			item = item || {};
 			var result = {};
-			for(i = 0; i < fields.length; ++i) {
+			for(i = 0; i < fields.length; i += 1) {
 				result[fields[i]] = item[fields[i]] !== undefined ? item[fields[i]] : null;
 			}
 			callback(null, result);
@@ -104,7 +104,7 @@ module.exports = function (db, module) {
 			_key: 1,
 		};
 
-		for(var i = 0; i < fields.length; ++i) {
+		for(var i = 0; i < fields.length; i += 1) {
 			fields[i] = helpers.fieldToString(fields[i]);
 			_fields[fields[i]] = 1;
 		}
@@ -122,10 +122,10 @@ module.exports = function (db, module) {
 			var returnData = [];
 			var item;
 
-			for (var i = 0; i < keys.length; ++i) {
+			for (var i = 0; i < keys.length; i += 1) {
 				item = map[keys[i]] || {};
 
-				for (var k = 0; k < fields.length; ++k) {
+				for (var k = 0; k < fields.length; k += 1) {
 					if (item[fields[k]] === undefined) {
 						item[fields[k]] = null;
 					}

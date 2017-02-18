@@ -10,7 +10,7 @@ HotSwap.prepare = function (app) {
 
 HotSwap.find = function (id) {
 	if (stack) {
-		for(var x = 0,numEntries = stack.length; x < numEntries; x++) {
+		for(var x = 0, numEntries = stack.length; x < numEntries; x += 1) {
 			if (stack[x].handle.hotswapId === id) {
 				return x;
 			}

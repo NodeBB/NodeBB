@@ -36,7 +36,7 @@ define('admin/settings', ['uploader'], function (uploader) {
 			app.flags._unsaved = true;
 		});
 
-		for (x = 0; x < numFields; x++) {
+		for (x = 0; x < numFields; x += 1) {
 			field = fields.eq(x);
 			key = field.attr('data-field');
 			inputType = field.attr('type');

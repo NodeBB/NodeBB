@@ -366,7 +366,7 @@ describe('Post\'s', function () {
 
 		it('should error with too many tags', function (done) {
 			var tags = [];
-			for(var i = 0; i < meta.config.maximumTagsPerTopic + 1; ++i) {
+			for(var i = 0; i < meta.config.maximumTagsPerTopic + 1; i += 1) {
 				tags.push('tag' + i);
 			}
 			socketPosts.edit({uid: voterUid}, {pid: pid, content: 'edited post content', tags: tags}, function (err) {

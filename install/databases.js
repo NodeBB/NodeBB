@@ -74,7 +74,7 @@ function saveDatabaseConfig(config, databaseConfig, callback) {
 	}
 
 	var allQuestions = questions.redis.concat(questions.mongo);
-	for (var x = 0; x < allQuestions.length; x++) {
+	for (var x = 0; x < allQuestions.length; x += 1) {
 		delete config[allQuestions[x].name];
 	}
 

@@ -165,7 +165,7 @@ define('forum/topic/events', [
 			return true;
 		}
 
-		for (var i = 0; i < tags.length; ++i) {
+		for (var i = 0; i < tags.length; i += 1) {
 			if (!$('.tags .tag-item[data-tag="' + tags[i].value + '"]').length) {
 				return true;
 			}
@@ -178,7 +178,7 @@ define('forum/topic/events', [
 			$(this).remove();
 			posts.showBottomPostBar();
 		});
-		ajaxify.data.postcount --;
+		ajaxify.data.postcount -= 1;
 		postTools.updatePostCount(ajaxify.data.postcount);
 		require(['forum/topic/replies'], function (replies) {
 			replies.onPostPurged(postData);

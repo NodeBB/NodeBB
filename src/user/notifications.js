@@ -146,7 +146,7 @@ var privileges = require('../privileges');
 
 			callback(err, mergeIds.reduce(function (count, cur, idx, arr) {
 				if (cur === null || idx === arr.indexOf(cur)) {
-					++count;
+					count += 1;
 				}
 
 				return count;

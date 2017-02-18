@@ -107,7 +107,7 @@ var middleware;
 				if (Plugins.versionWarning.length && nconf.get('isPrimary') === 'true') {
 					process.stdout.write('\n');
 					winston.warn('[plugins/load] The following plugins may not be compatible with your version of NodeBB. This may cause unintended behaviour or crashing. In the event of an unresponsive NodeBB caused by this plugin, run `./nodebb reset -p PLUGINNAME` to disable it.');
-					for(var x = 0,numPlugins = Plugins.versionWarning.length; x < numPlugins; x++) {
+					for(var x = 0, numPlugins = Plugins.versionWarning.length; x < numPlugins; x += 1) {
 						process.stdout.write('  * '.yellow + Plugins.versionWarning[x] + '\n');
 					}
 					process.stdout.write('\n');
@@ -252,7 +252,7 @@ var middleware;
 		var pluginMap = {};
 		var dependencies = require(path.join(nconf.get('base_dir'), 'package.json')).dependencies;
 		apiReturn = apiReturn || [];
-		for(var i = 0; i < apiReturn.length; ++i) {
+		for(var i = 0; i < apiReturn.length; i += 1) {
 			apiReturn[i].id = apiReturn[i].name;
 			apiReturn[i].installed = false;
 			apiReturn[i].active = false;

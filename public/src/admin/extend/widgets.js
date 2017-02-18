@@ -117,7 +117,7 @@ define('admin/extend/widgets', ['jqueryui'], function (jqueryui) {
 					location: location,
 					widgets: widgets,
 				}, function (err) {
-					total--;
+					total -= 1;
 
 					if (err) {
 						app.alertError(err.message);
@@ -209,13 +209,13 @@ define('admin/extend/widgets', ['jqueryui'], function (jqueryui) {
 		$.get(RELATIVE_PATH + '/api/admin/extend/widgets', function (data) {
 			var areas = data.areas;
 
-			for(var i = 0; i < areas.length; ++i) {
+			for(var i = 0; i < areas.length; i += 1) {
 				var area = areas[i];
 				var widgetArea = $('#widgets .area[data-template="' + area.template + '"][data-location="' + area.location + '"]').find('.widget-area');
 
 				widgetArea.html('');
 
-				for (var k = 0; k < area.data.length; ++k) {
+				for (var k = 0; k < area.data.length; k += 1) {
 					var widgetData = area.data[k];
 					var widgetEl = $('.available-widgets [data-widget="' + widgetData.widget + '"]').clone(true).removeClass('hide');
 

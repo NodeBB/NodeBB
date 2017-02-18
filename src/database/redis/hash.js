@@ -52,14 +52,14 @@ module.exports = function (redisClient, module) {
 		}
 		var	multi = redisClient.multi();
 
-		for(var x = 0; x < keys.length; ++x) {
+		for(var x = 0; x < keys.length; x += 1) {
 			multi.hmget.apply(multi, [keys[x]].concat(fields));
 		}
 
 		function makeObject(array) {
 			var obj = {};
 
-			for (var i = 0, ii = fields.length; i < ii; ++i) {
+			for (var i = 0, ii = fields.length; i < ii; i += 1) {
 				obj[fields[i]] = array[i];
 			}
 			return obj;

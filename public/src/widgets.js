@@ -36,12 +36,12 @@
 			cid: ajaxify.data.cid,
 			isMobile: utils.isMobile(),
 		}, function (renderedAreas) {
-			for (var x = 0; x < renderedAreas.length; ++x) {
+			for (var x = 0; x < renderedAreas.length; x += 1) {
 				var renderedWidgets = renderedAreas[x].widgets;
 				var location = renderedAreas[x].location;
 				var html = '';
 
-				for (var i = 0; i < renderedWidgets.length; ++i) {
+				for (var i = 0; i < renderedWidgets.length; i += 1) {
 					html += templates.parse(renderedWidgets[i].html, {});
 				}
 

@@ -149,7 +149,7 @@ topicsController.get = function (req, res, callback) {
 		},
 		function (topicData, next) {
 			function findPost(index) {
-				for(var i = 0; i < topicData.posts.length; ++i) {
+				for(var i = 0; i < topicData.posts.length; i += 1) {
 					if (parseInt(topicData.posts[i].index, 10) === parseInt(index, 10)) {
 						return topicData.posts[i];
 					}

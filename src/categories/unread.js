@@ -43,7 +43,7 @@ module.exports = function (Categories) {
 	Categories.hasReadCategories = function (cids, uid, callback) {
 		var sets = [];
 
-		for (var i = 0, ii = cids.length; i < ii; i++) {
+		for (var i = 0, ii = cids.length; i < ii; i += 1) {
 			sets.push('cid:' + cids[i] + ':read_by_uid');
 		}
 

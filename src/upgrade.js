@@ -241,14 +241,14 @@ Upgrade.upgrade = function (callback) {
 								async.waterfall([
 									async.apply(db.getObjectField, 'user:' + uid + ':settings', 'userLang'),
 									function (language, next) {
-										++i;
+										i += 1;
 										if (!language) {
 											return setImmediate(next);
 										}
 
 										newLanguage = language.replace('_', '-').replace('@', '-x-');
 										if (newLanguage !== language) {
-											++j;
+											j += 1;
 											user.setSetting(uid, 'userLang', newLanguage, next);
 										} else {
 											setImmediate(next);

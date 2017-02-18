@@ -30,7 +30,7 @@ describe('Plugins', function () {
 
 	it('should register and fire a filter hook', function (done) {
 		function filterMethod1(data, callback) {
-			data.foo ++;
+			data.foo += 1;
 			callback(null, data);
 		}
 		function filterMethod2(data, callback) {

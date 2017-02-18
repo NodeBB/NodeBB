@@ -196,7 +196,8 @@ $(document).ready(function () {
 
 	ajaxify.end = function (url, tpl_url) {
 		function done() {
-			if (--count === 0) {
+			count -= 1;
+			if (count === 0) {
 				$(window).trigger('action:ajaxify.end', {url: url, tpl_url: tpl_url, title: ajaxify.data.title});
 			}
 		}

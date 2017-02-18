@@ -46,7 +46,7 @@ module.exports = function (db, module) {
 
 		var bulk = db.collection('objects').initializeUnorderedBulkOp();
 
-		for(var i = 0; i < keys.length; ++i) {
+		for(var i = 0; i < keys.length; i += 1) {
 			bulk.find({_key: keys[i]}).upsert().updateOne({	$addToSet: {
 				members: {
 					$each: value,
@@ -83,7 +83,7 @@ module.exports = function (db, module) {
 
 		var bulk = db.collection('objects').initializeUnorderedBulkOp();
 
-		for(var i = 0; i < keys.length; ++i) {
+		for(var i = 0; i < keys.length; i += 1) {
 			bulk.find({_key: keys[i]}).updateOne({$pull: {
 				members: value,
 			}});
@@ -110,7 +110,7 @@ module.exports = function (db, module) {
 			return callback(null, []);
 		}
 
-		for (var i = 0; i < values.length; ++i) {
+		for (var i = 0; i < values.length; i += 1) {
 			values[i] = helpers.valueToString(values[i]);
 		}
 
@@ -174,7 +174,7 @@ module.exports = function (db, module) {
 			});
 
 			var returnData = new Array(keys.length);
-			for(var i = 0; i < keys.length; ++i) {
+			for(var i = 0; i < keys.length; i += 1) {
 				returnData[i] = sets[keys[i]] || [];
 			}
 			callback(null, returnData);

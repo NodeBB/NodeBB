@@ -226,7 +226,7 @@ define('forum/category', [
 				}
 
 				if (numTopics > 0) {
-					for (var x = 0; x < numTopics; x++) {
+					for (var x = 0; x < numTopics; x += 1) {
 						var pinned = $(topics[x]).hasClass('pinned');
 						if (!pinned) {
 							topic.insertBefore(topics[x]);

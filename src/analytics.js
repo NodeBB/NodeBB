@@ -25,12 +25,12 @@ Analytics.increment = function (keys) {
 
 	keys.forEach(function (key) {
 		counters[key] = counters[key] || 0;
-		++counters[key];
+		counters[key] += 1;
 	});
 };
 
 Analytics.pageView = function (payload) {
-	++pageViews;
+	pageViews += 1;
 
 	if (payload.ip) {
 		db.sortedSetScore('ip:recent', payload.ip, function (err, score) {
@@ -38,12 +38,12 @@ Analytics.pageView = function (payload) {
 				return;
 			}
 			if (!score) {
-				++uniqueIPCount;
+				uniqueIPCount += 1;
 			}
 			var today = new Date();
 			today.setHours(today.getHours(), 0, 0, 0);
 			if (!score || score < today.getTime()) {
-				++uniquevisitors;
+				uniquevisitors += 1;
 				db.sortedSetAdd('ip:recent', Date.now(), payload.ip);
 			}
 		});
@@ -109,7 +109,7 @@ Analytics.getHourlyStatsForSet = function (set, hour, numHours, callback) {
 	hour = new Date(hour);
 	hour.setHours(hour.getHours(), 0, 0, 0);
 
-	for (var i = 0, ii = numHours; i < ii; i++) {
+	for (var i = 0, ii = numHours; i < ii; i += 1) {
 		hoursArr.push(hour.getTime());
 		hour.setHours(hour.getHours() - 1, 0, 0, 0);
 	}
@@ -142,7 +142,8 @@ Analytics.getDailyStatsForSet = function (set, day, numDays, callback) {
 	day.setHours(0, 0, 0, 0);
 
 	async.whilst(function () {
-		return numDays--;
+		numDays -= 1;
+		return numDays + 1;
 	}, function (next) {
 		Analytics.getHourlyStatsForSet(set, day.getTime() - (1000 * 60 * 60 * 24 * numDays), 24, function (err, day) {
 			if (err) {

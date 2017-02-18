@@ -387,7 +387,7 @@ define('admin/general/dashboard', ['semver', 'Chart', 'translator'], function (s
 		graphs.topics.data.datasets[0].backgroundColor = [];
 		graphs.topics.data.datasets[0].hoverBackgroundColor = [];
 		
-		for (var i = 0, ii = tids.length; i < ii; i++) {
+		for (var i = 0, ii = tids.length; i < ii; i += 1) {
 			graphs.topics.data.labels.push(topics[tids[i]].title);
 			graphs.topics.data.datasets[0].data.push(topics[tids[i]].value);
 			graphs.topics.data.datasets[0].backgroundColor.push(topicColors[i]);
@@ -397,7 +397,7 @@ define('admin/general/dashboard', ['semver', 'Chart', 'translator'], function (s
 		function buildTopicsLegend() {
 			var legend = $('#topics-legend').html('');
 
-			for (var i = 0, ii = tids.length; i < ii; i++) {
+			for (var i = 0, ii = tids.length; i < ii; i += 1) {
 				var topic = topics[tids[i]];
 				var	label = topic.value === '0' ? topic.title : '<a title="' + topic.title + '"href="' + RELATIVE_PATH + '/topic/' + tids[i] + '" target="_blank"> ' + topic.title + '</a>';
 			

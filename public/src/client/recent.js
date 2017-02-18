@@ -46,13 +46,13 @@ define('forum/recent', ['forum/infinitescroll', 'components'], function (infinit
 			return;
 		}
 
-		++newTopicCount;
+		newTopicCount += 1;
 		Recent.updateAlertText();
 	}
 
 	function onNewPost(data) {
 		function showAlert() {
-			++newPostCount;
+			newPostCount += 1;
 			Recent.updateAlertText();
 		}
 

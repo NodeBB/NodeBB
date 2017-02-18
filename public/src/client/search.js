@@ -137,7 +137,7 @@ define('forum/search', ['search', 'autocomplete'], function (searchModule, autoc
 
 			result.html(result.html().replace(regex, '<strong>$1</strong>'));
 
-			for (var i = 0, ii = nested.length; i < ii; i++) {
+			for (var i = 0, ii = nested.length; i < ii; i += 1) {
 				result.html(result.html().replace('<!-- ' + i + ' -->', nested[i].html()));
 			}
 		});

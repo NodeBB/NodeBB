@@ -35,7 +35,7 @@ module.exports = function (db, module) {
 
 		var bulk = db.collection('objects').initializeUnorderedBulkOp();
 
-		for(var i = 0; i < scores.length; ++i) {
+		for(var i = 0; i < scores.length; i += 1) {
 			bulk.find({_key: key, value: values[i]}).upsert().updateOne({$set: {score: parseFloat(scores[i])}});
 		}
 
@@ -53,7 +53,7 @@ module.exports = function (db, module) {
 
 		var bulk = db.collection('objects').initializeUnorderedBulkOp();
 
-		for(var i = 0; i < keys.length; ++i) {
+		for(var i = 0; i < keys.length; i += 1) {
 			bulk.find({_key: keys[i], value: value}).upsert().updateOne({$set: {score: parseFloat(score)}});
 		}
 

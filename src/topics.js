@@ -138,7 +138,7 @@ var social = require('./social');
 				var users = _.object(uids, results.users);
 				var categories = _.object(cids, results.categories);
 
-				for (var i = 0; i < topics.length; ++i) {
+				for (var i = 0; i < topics.length; i += 1) {
 					if (topics[i]) {
 						topics[i].category = categories[topics[i].cid];
 						topics[i].user = users[topics[i].uid];
@@ -224,9 +224,9 @@ var social = require('./social');
 		async.waterfall([
 			function (next) {
 				if (stop > 0) {
-					stop--;
+					stop -= 1;
 					if (start > 0) {
-						start --;
+						start -= 1;
 					}
 				}
 
