@@ -7,9 +7,8 @@ define('components', function () {
 		'topic/teaser': function (tid) {
 			if (tid) {
 				return $('[component="category/topic"][data-tid="' + tid + '"] [component="topic/teaser"]');
-			} else {
-				return $('[component="topic/teaser"]');
 			}
+			return $('[component="topic/teaser"]');
 		},
 		topic: function (name, value) {
 			return $('[component="topic"][data-' + name + '="' + value + '"]');
@@ -61,9 +60,8 @@ define('components', function () {
 
 		if (components.core[arguments[0]] && args.length) {
 			return components.core[arguments[0]].apply(this, args);
-		} else {
-			return $('[component="' + arguments[0] + '"]');
 		}
+		return $('[component="' + arguments[0] + '"]');
 	};
 
 	return components;

@@ -45,9 +45,8 @@ $('document').ready(function () {
 			$('html, body').animate({ scrollTop: '0px' }, 400);
 
 			return false;
-		} else {
-			$('#submit .fa-spin').removeClass('hide');
 		}
+		$('#submit .fa-spin').removeClass('hide');
 	}
 
 	function activate(type, el) {

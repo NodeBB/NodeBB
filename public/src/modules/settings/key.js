@@ -78,9 +78,8 @@ define('settings/key', function () {
 			return String.fromCharCode(code).toUpperCase();
 		} else if (code >= 112 && code <= 123) {
 			return 'F' + (code - 111);
-		} else {
-			return keyMap[code] || ('#' + code);
 		}
+		return keyMap[code] || ('#' + code);
 	}
 
 	/**
@@ -99,9 +98,8 @@ define('settings/key', function () {
 		if (!key.char) {
 			if (human) {
 				return 'Enter a key';
-			} else {
-				return '';
 			}
+			return '';
 		}
 		if (!separator || /CtrlAShifMea#/.test(separator)) {
 			separator = human ? ' + ' : '+';

@@ -57,10 +57,9 @@ module.exports = function (Plugins) {
 				method = data.method.split('.').reduce(function (memo, prop) {
 					if (memo && memo[prop]) {
 						return memo[prop];
-					} else {
-						// Couldn't find method by path, aborting
-						return null;
 					}
+						// Couldn't find method by path, aborting
+					return null;
 				}, Plugins.libraries[data.id]);
 
 				// Write the actual method reference to the hookObj

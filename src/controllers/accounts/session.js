@@ -46,9 +46,8 @@ sessionController.revoke = function (req, res, next) {
 	], function (err) {
 		if (err) {
 			return res.status(500).send(err.message);
-		} else {
-			return res.sendStatus(200);
 		}
+		return res.sendStatus(200);
 	});
 };
 

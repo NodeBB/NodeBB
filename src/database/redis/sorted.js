@@ -207,10 +207,10 @@ module.exports = function (redisClient, module) {
 			maxmax = '+';
 		}
 
-		if (min !== minmin && !min.match(/^[\[\(]/)) {
+		if (min !== minmin && !min.match(/^[[(]/)) {
 			min = '[' + min;
 		}
-		if (max !== maxmax && !max.match(/^[\[\(]/)) {
+		if (max !== maxmax && !max.match(/^[[(]/)) {
 			max = '[' + max;
 		}
 

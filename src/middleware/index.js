@@ -64,9 +64,8 @@ middleware.ensureSelfOrGlobalPrivilege = function (req, res, next) {
 				return next(err);
 			} else if (ok) {
 				return next();
-			} else {
-				controllers.helpers.notAllowed(req, res);
 			}
+			controllers.helpers.notAllowed(req, res);
 		});
 	} else {
 		controllers.helpers.notAllowed(req, res);
@@ -121,11 +120,10 @@ middleware.prepareAPI = function (req, res, next) {
 middleware.routeTouchIcon = function (req, res) {
 	if (meta.config['brand:touchIcon'] && validator.isURL(meta.config['brand:touchIcon'])) {
 		return res.redirect(meta.config['brand:touchIcon']);
-	} else {
-		return res.sendFile(path.join(__dirname, '../../public', meta.config['brand:touchIcon'] || '/logo.png'), {
-			maxAge: req.app.enabled('cache') ? 5184000000 : 0,
-		});
 	}
+	return res.sendFile(path.join(__dirname, '../../public', meta.config['brand:touchIcon'] || '/logo.png'), {
+		maxAge: req.app.enabled('cache') ? 5184000000 : 0,
+	});
 };
 
 middleware.privateTagListing = function (req, res, next) {

@@ -38,7 +38,7 @@ describe('Utility Methods', function () {
 
 	describe('cleanUpTag', function () {
 		it('should cleanUp a tag', function (done) {
-			var cleanedTag = utils.cleanUpTag(',\/#!$%\^\*;TaG1:{}=_`<>\'"~()?\|');
+			var cleanedTag = utils.cleanUpTag(',/#!$%^*;TaG1:{}=_`<>\'"~()?|');
 			assert.equal(cleanedTag, 'tag1');
 			done();
 		});

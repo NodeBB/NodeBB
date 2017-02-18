@@ -131,9 +131,8 @@ Controllers.login = function (req, res, next) {
 			return helpers.redirect(res, {
 				external: data.authentication[0].url,
 			});
-		} else {
-			return res.redirect(nconf.get('relative_path') + data.authentication[0].url);
 		}
+		return res.redirect(nconf.get('relative_path') + data.authentication[0].url);
 	}
 	if (req.uid) {
 		user.getUserFields(req.uid, ['username', 'email'], function (err, user) {

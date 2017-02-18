@@ -165,9 +165,8 @@ define('admin/manage/flags', [
 		}, function (err) {
 			if (err) {
 				return app.alertError(err.message);
-			} else {
-				app.alertSuccess('[[topic:flag_manage_saved]]');
 			}
+			app.alertSuccess('[[topic:flag_manage_saved]]');
 		});
 	}
 

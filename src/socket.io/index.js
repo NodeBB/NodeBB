@@ -83,9 +83,8 @@ function onMessage(socket, payload) {
 	var methodToCall = parts.reduce(function (prev, cur) {
 		if (prev !== null && prev[cur]) {
 			return prev[cur];
-		} else {
-			return null;
 		}
+		return null;
 	}, Namespaces);
 
 	if (!methodToCall) {

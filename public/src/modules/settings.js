@@ -36,9 +36,8 @@ define('settings', function () {
 		hook = plugin[name];
 		if (typeof hook === 'function') {
 			return hook;
-		} else {
-			return null;
 		}
+		return null;
 	}
 
 	helper = {
@@ -48,9 +47,8 @@ define('settings', function () {
 		deepClone: function (obj) {
 			if (typeof obj === 'object') {
 				return JSON.parse(JSON.stringify(obj));
-			} else {
-				return obj;
 			}
+			return obj;
 		},
 		/**
 		 Creates a new Element with given data.
@@ -169,14 +167,13 @@ define('settings', function () {
 				value = element.val();
 				var array = (value != null && value.split(split || ',')) || [];
 				return helper.cleanArray(array, trim, empty);
-			} else {
-				value = element.val();
-				if (trim && value != null && typeof value.trim === 'function') {
-					value = value.trim();
-				}
-				if (empty || (value !== undefined && (value == null || value.length !== 0))) {
-					return value;
-				}
+			}
+			value = element.val();
+			if (trim && value != null && typeof value.trim === 'function') {
+				value = value.trim();
+			}
+			if (empty || (value !== undefined && (value == null || value.length !== 0))) {
+				return value;
 			}
 		},
 		/**

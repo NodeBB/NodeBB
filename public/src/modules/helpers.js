@@ -56,18 +56,16 @@
 	helpers.escape = function (str) {
 		if (typeof utils !== 'undefined') {
 			return utils.escapeHTML(str);
-		} else {
-			return require('../utils').escapeHTML(str);
 		}
+		return require('../utils').escapeHTML(str);
 	};
 
 	helpers.stripTags = function (str) {
 		if (typeof window !== 'undefined' && window.S) {
 			return window.S(String(str)).stripTags().s;
-		} else {
-			var S = require('string');
-			return S(String(str)).stripTags().s;
 		}
+		var S = require('string');
+		return S(String(str)).stripTags().s;
 	};
 
 	helpers.generateCategoryBackground = function (category) {
@@ -157,9 +155,8 @@
 			return '<button class="btn btn-link" data-action="rejectInvite" data-group="' + groupObj.displayName + '">[[groups:membership.reject]]</button><button class="btn btn-success" data-action="acceptInvite" data-group="' + groupObj.name + '"><i class="fa fa-plus"></i> [[groups:membership.accept-invitation]]</button>';
 		} else if (!groupObj.disableJoinRequests && groupObj.name !== 'administrators') {
 			return '<button class="btn btn-success" data-action="join" data-group="' + groupObj.displayName + '"><i class="fa fa-plus"></i> [[groups:membership.join-group]]</button>';
-		} else {
-			return '';
 		}
+		return '';
 	};
 
 	helpers.spawnPrivilegeStates = function (member, privileges) {
@@ -184,25 +181,21 @@
 	helpers.renderTopicImage = function (topicObj) {
 		if (topicObj.thumb) {
 			return '<img src="' + topicObj.thumb + '" class="img-circle user-img" title="' + topicObj.user.username + '" />';
-		} else {
-			return '<img component="user/picture" data-uid="' + topicObj.user.uid + '" src="' + topicObj.user.picture + '" class="user-img" title="' + topicObj.user.username + '" />';
 		}
+		return '<img component="user/picture" data-uid="' + topicObj.user.uid + '" src="' + topicObj.user.picture + '" class="user-img" title="' + topicObj.user.username + '" />';
 	};
 
 	helpers.renderDigestAvatar = function (block) {
 		if (block.teaser) {
 			if (block.teaser.user.picture) {
 				return '<img style="vertical-align: middle; width: 16px; height: 16px; padding-right: 1em;" src="' + block.teaser.user.picture + '" title="' + block.teaser.user.username + '" />';
-			} else {
-				return '<div style="width: 16px; height: 16px; line-height: 16px; font-size: 10px; margin-right: 1em; background-color: ' + block.teaser.user['icon:bgColor'] + '; color: white; text-align: center; display: inline-block;">' + block.teaser.user['icon:text'] + '</div>';
 			}
-		} else {
-			if (block.user.picture) {
-				return '<img style="vertical-align: middle; width: 16px; height: 16px; padding-right: 1em;" src="' + block.user.picture + '" title="' + block.user.username + '" />';
-			} else {
-				return '<div style="width: 16px; height: 16px; line-height: 16px; font-size: 10px; margin-right: 1em; background-color: ' + block.user['icon:bgColor'] + '; color: white; text-align: center; display: inline-block;">' + block.user['icon:text'] + '</div>';
-			}
+			return '<div style="width: 16px; height: 16px; line-height: 16px; font-size: 10px; margin-right: 1em; background-color: ' + block.teaser.user['icon:bgColor'] + '; color: white; text-align: center; display: inline-block;">' + block.teaser.user['icon:text'] + '</div>';
 		}
+		if (block.user.picture) {
+			return '<img style="vertical-align: middle; width: 16px; height: 16px; padding-right: 1em;" src="' + block.user.picture + '" title="' + block.user.username + '" />';
+		}
+		return '<div style="width: 16px; height: 16px; line-height: 16px; font-size: 10px; margin-right: 1em; background-color: ' + block.user['icon:bgColor'] + '; color: white; text-align: center; display: inline-block;">' + block.user['icon:text'] + '</div>';
 	};
 
 	helpers.userAgentIcons = function (data) {

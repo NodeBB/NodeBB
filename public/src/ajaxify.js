@@ -377,9 +377,8 @@ $(document).ready(function () {
 			if ($(this).attr('data-ajaxify') === 'false') {
 				if (!internalLink) {
 					return;
-				} else {
-					return e.preventDefault();
 				}
+				return e.preventDefault();
 			}
 
 			// Default behaviour for rss feeds

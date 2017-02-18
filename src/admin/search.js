@@ -19,7 +19,7 @@ function filterDirectories(directories) {
 		// exclude category.tpl, group.tpl, category-analytics.tpl
 		return !dir.includes('/partials/') &&
 			/\/.*\//.test(dir) &&
-			!/manage\/(category|group|category\-analytics)$/.test(dir);
+			!/manage\/(category|group|category-analytics)$/.test(dir);
 	});
 }
 
@@ -45,7 +45,7 @@ function sanitize(html) {
 function simplify(translations) {
 	return translations
 		// remove all mustaches
-		.replace(/(?:\{{1,2}[^\}]*?\}{1,2})/g, '')
+		.replace(/(?:\{{1,2}[^}]*?\}{1,2})/g, '')
 		// collapse whitespace
 		.replace(/(?:[ \t]*[\n\r]+[ \t]*)+/g, '\n')
 		.replace(/[\t ]+/g, ' ');

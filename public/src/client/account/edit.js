@@ -166,15 +166,14 @@ define('forum/account/edit', ['forum/account/header', 'translator', 'components'
 					if ($('#confirm-username').val() !== app.user.username) {
 						app.alertError('[[error:invalid-username]]');
 						return false;
-					} else {
-						socket.emit('user.deleteAccount', {}, function (err) {
-							if (err) {
-								return app.alertError(err.message);
-							}
-
-							window.location.href = config.relative_path + '/';
-						});
 					}
+					socket.emit('user.deleteAccount', {}, function (err) {
+						if (err) {
+							return app.alertError(err.message);
+						}
+
+						window.location.href = config.relative_path + '/';
+					});
 				});
 
 				modal.on('shown.bs.modal', function () {

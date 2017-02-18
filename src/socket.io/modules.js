@@ -93,9 +93,9 @@ function rateLimitExceeded(socket) {
 	var delay = meta.config.hasOwnProperty('chatMessageDelay') ? parseInt(meta.config.chatMessageDelay, 10) : 200;
 	if (now - socket.lastChatMessageTime < delay) {
 		return true;
-	} else {
-		socket.lastChatMessageTime = now;
 	}
+	socket.lastChatMessageTime = now;
+
 	return false;
 }
 

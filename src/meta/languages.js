@@ -44,7 +44,7 @@ function getTranslationTree(callback) {
 			// pull languages and namespaces from paths
 			function extrude(languageDir, paths) {
 				paths.forEach(function (p) {
-					var rel = p.split(languageDir)[1].split(/[\/\\]/).slice(1);
+					var rel = p.split(languageDir)[1].split(/[/\\]/).slice(1);
 					var language = rel.shift().replace('_', '-').replace('@', '-x-');
 					var namespace = rel.join('/').replace(/\.json$/, '');
 

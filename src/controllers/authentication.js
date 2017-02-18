@@ -113,11 +113,10 @@ function registerAndLoginUser(req, res, userData, callback) {
 
 				if (!deferRegistration) {
 					return next();
-				} else {
-					userData.register = true;
-					req.session.registration = userData;
-					return res.json({ referrer: nconf.get('relative_path') + '/register/complete' });
 				}
+				userData.register = true;
+				req.session.registration = userData;
+				return res.json({ referrer: nconf.get('relative_path') + '/register/complete' });
 			});
 		},
 		function (next) {

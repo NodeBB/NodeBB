@@ -132,9 +132,8 @@ var opts = {
 		 */
 		if (meta.config.loggerStatus > 0) {
 			return opts.express.ofn(req, res, next);
-		} else {
-			return next();
 		}
+		return next();
 	};
 
 	Logger.prepare_io_string = function (_type, _uid, _args) {

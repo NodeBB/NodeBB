@@ -225,7 +225,7 @@ module.exports = function (Plugins) {
 
 			pluginData.modules.forEach(function (file) {
 				if (strip) {
-					modules[file.replace(new RegExp('\.?(\/[^\/]+){' + strip + '}\/'), '')] = path.join('./node_modules/', pluginData.id, file);
+					modules[file.replace(new RegExp('.?(/[^/]+){' + strip + '}/'), '')] = path.join('./node_modules/', pluginData.id, file);
 				} else {
 					modules[path.basename(file)] = path.join('./node_modules/', pluginData.id, file);
 				}
@@ -268,11 +268,10 @@ module.exports = function (Plugins) {
 			if (!atRootLevel && relPath) {
 				winston.verbose('[plugins/load] File not found: ' + fullPath + ' (Ascending)');
 				return resolveModulePath(path.join(__dirname, '../..', relPath));
-			} else {
-				// Already at root level, file was simply not found
-				winston.warn('[plugins/load] File not found: ' + fullPath + ' (Ignoring)');
-				return null;
 			}
+				// Already at root level, file was simply not found
+			winston.warn('[plugins/load] File not found: ' + fullPath + ' (Ignoring)');
+			return null;
 		}
 	}
 

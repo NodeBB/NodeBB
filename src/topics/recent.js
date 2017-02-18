@@ -79,9 +79,8 @@ module.exports = function (Topics) {
 				tids = results.topicData.filter(function (topic) {
 					if (topic) {
 						return results.ignoredCids.indexOf(topic.cid.toString()) === -1;
-					} else {
-						return false;
 					}
+					return false;
 				}).map(function (topic) {
 					return topic.tid;
 				});

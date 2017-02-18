@@ -148,12 +148,11 @@ module.exports = function (middleware) {
 		// If the user's session contains registration data, redirect the user to complete registration
 		if (!req.session.hasOwnProperty('registration')) {
 			return next();
+		}
+		if (!req.path.endsWith('/register/complete')) {
+			controllers.helpers.redirect(res, '/register/complete');
 		} else {
-			if (!req.path.endsWith('/register/complete')) {
-				controllers.helpers.redirect(res, '/register/complete');
-			} else {
-				return next();
-			}
+			return next();
 		}
 	};
 };

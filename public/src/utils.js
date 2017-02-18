@@ -111,7 +111,7 @@
 			tag = tag.trim().toLowerCase();
 			// see https://github.com/NodeBB/NodeBB/issues/4378
 			tag = tag.replace(/\u202E/gi, '');
-			tag = tag.replace(/[,\/#!$%\^\*;:{}=_`<>'"~()?\|]/g, '');
+			tag = tag.replace(/[,/#!$%^*;:{}=_`<>'"~()?|]/g, '');
 			tag = tag.substr(0, maxLength || 15).trim();
 			var matches = tag.match(/^[.-]*(.+?)[.-]*$/);
 			if (matches && matches.length > 1) {
@@ -121,7 +121,7 @@
 		},
 
 		removePunctuation: function (str) {
-			return str.replace(/[\.,-\/#!$%\^&\*;:{}=\-_`<>'"~()?]/g, '');
+			return str.replace(/[.,-/#!$%^&*;:{}=\-_`<>'"~()?]/g, '');
 		},
 
 		isEmailValid: function (email) {
@@ -129,7 +129,7 @@
 		},
 
 		isUserNameValid: function (name) {
-			return (name && name !== '' && (/^['"\s\-\+.*0-9\u00BF-\u1FFF\u2C00-\uD7FF\w]+$/.test(name)));
+			return (name && name !== '' && (/^['"\s\-+.*0-9\u00BF-\u1FFF\u2C00-\uD7FF\w]+$/.test(name)));
 		},
 
 		isPasswordValid: function (password) {
@@ -390,24 +390,23 @@
 			var type = typeof str;
 			if (type !== 'string') {
 				return str;
-			} else {
-				var nb = parseFloat(str);
-				if (!isNaN(nb) && isFinite(str)) {
-					return nb;
-				}
-				if (str === 'false') {
-					return false;
-				}
-				if (str === 'true') {
-					return true;
-				}
-
-				try {
-					str = JSON.parse(str);
-				} catch (e) {}
-
-				return str;
 			}
+			var nb = parseFloat(str);
+			if (!isNaN(nb) && isFinite(str)) {
+				return nb;
+			}
+			if (str === 'false') {
+				return false;
+			}
+			if (str === 'true') {
+				return true;
+			}
+
+			try {
+				str = JSON.parse(str);
+			} catch (e) {}
+
+			return str;
 		},
 
 		// Safely get/set chained properties on an object
