@@ -1,4 +1,5 @@
 'use strict';
+
 define('components', function () {
 	var components = {};
 

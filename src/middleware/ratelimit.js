@@ -1,6 +1,5 @@
-
-
 'use strict';
+
 var winston = require('winston');
 
 var ratelimit = module.exports;
