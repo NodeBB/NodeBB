@@ -1,7 +1,6 @@
 'use strict';
 
 
-
 define('forum/account/profile', [
 	'forum/account/header',
 	'forum/infinitescroll',

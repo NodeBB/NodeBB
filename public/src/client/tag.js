@@ -1,7 +1,6 @@
 'use strict';
 
 
-
 define('forum/tag', ['forum/recent', 'forum/infinitescroll'], function (recent, infinitescroll) {
 	var Tag = {};
 

@@ -159,8 +159,6 @@ describe('Upload Controllers', function () {
 	});
 
 
-
-
 	after(function (done) {
 		db.emptydb(done);
 	});

@@ -1,7 +1,6 @@
 'use strict';
 
 
-
 define('forum/notifications', ['components', 'notifications', 'forum/infinitescroll'], function (components, notifs, infinitescroll) {
 	var Notifications = {};
 

@@ -284,4 +284,3 @@ module.exports.testSocket = function (socketPath, callback) {
 	], callback);
 };
 
-

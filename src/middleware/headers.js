@@ -36,5 +36,3 @@ module.exports = function (middleware) {
 
 };
 
-
-

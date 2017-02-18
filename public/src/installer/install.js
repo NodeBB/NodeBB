@@ -17,7 +17,6 @@ $('document').ready(function () {
 	$('#launch').on('click', launchForum);
 
 
-
 	function setupInputs() {
 		$('form').on('focus', '.form-control', function () {
 			var parent = $(this).parents('.input-row');

@@ -2,8 +2,6 @@
 'use strict';
 
 
-
-
 define('forum/category/tools', [
 	'forum/topic/move', 
 	'topicSelect', 

@@ -1,7 +1,6 @@
 'use strict';
 
 
-
 define('forum/users', ['translator'], function (translator) {
 	var	Users = {};
 

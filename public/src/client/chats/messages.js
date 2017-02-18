@@ -1,7 +1,6 @@
 'use strict';
 
 
-
 define('forum/chats/messages', ['components', 'sounds', 'translator'], function (components, sounds, translator) {
 
 	var messages = {};

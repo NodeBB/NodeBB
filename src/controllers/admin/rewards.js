@@ -13,5 +13,4 @@ rewardsController.get = function (req, res, next) {
 };
 
 
-
 module.exports = rewardsController;

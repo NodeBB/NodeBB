@@ -401,4 +401,3 @@ function sendFeed(feed, res) {
 	res.type('xml').set('Content-Length', Buffer.byteLength(xml)).send(xml);
 }
 
-

@@ -1,7 +1,6 @@
 'use strict';
 
 
-
 define('forum/topic/votes', ['components', 'translator'], function (components, translator) {
 
 	var Votes = {};

@@ -92,7 +92,7 @@
         "import/newline-after-import": "off",
         "no-underscore-dangle": "off",
         "prefer-spread": "off",
-        "no-multiple-empty-lines": "off",
+        // "no-multiple-empty-lines": "off",
         "spaced-comment": "off",
         "prefer-rest-params": "off",
         "space-in-parens": "off",

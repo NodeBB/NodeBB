@@ -1,7 +1,6 @@
 'use strict';
 
 
-
 define('forum/account/edit/email', ['forum/account/header'], function (header) {
 	var AccountEditEmail = {};
 

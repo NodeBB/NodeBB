@@ -1,7 +1,6 @@
 'use strict';
 
 
-
 define('notifications', ['sounds', 'translator', 'components'], function (sound, translator, components) {
 	var Notifications = {};
 

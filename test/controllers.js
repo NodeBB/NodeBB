@@ -46,7 +46,6 @@ describe('Controllers', function () {
 	});
 
 
-
 	it('should load default home route', function (done) {
 		request(nconf.get('url'), function (err, res, body) {
 			assert.ifError(err);

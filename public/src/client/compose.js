@@ -1,7 +1,6 @@
 'use strict';
 
 
-
 define('forum/compose', [], function () {
 	var Compose = {};
 

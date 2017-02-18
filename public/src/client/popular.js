@@ -1,7 +1,6 @@
 'use strict';
 
 
-
 define('forum/popular', ['components'], function (components) {
 	var Popular = {};
 

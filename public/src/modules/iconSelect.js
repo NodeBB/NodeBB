@@ -1,7 +1,6 @@
 "use strict";
 
 
-
 define('iconSelect', function () {
 	var iconSelect = {};
 

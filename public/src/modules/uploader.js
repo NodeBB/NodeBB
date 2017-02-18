@@ -1,7 +1,6 @@
 'use strict';
 
 
-
 define('uploader', ['translator'], function (translator) {
 
 	var module = {};

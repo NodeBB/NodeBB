@@ -1,7 +1,6 @@
 'use strict';
 
 
-
 define('forum/unread', ['forum/recent', 'topicSelect', 'forum/infinitescroll', 'components'], function (recent, topicSelect, infinitescroll, components) {
 	var Unread = {};
 

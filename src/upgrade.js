@@ -1,7 +1,6 @@
 "use strict";
 
 
-
 var db = require('./database');
 var async = require('async');
 var winston = require('winston');

@@ -1,7 +1,6 @@
 'use strict';
 
 
-
 define('forum/account/settings', ['forum/account/header', 'components', 'sounds'], function (header, components, sounds) {
 	var	AccountSettings = {};
 

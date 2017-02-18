@@ -1,7 +1,6 @@
 'use strict';
 
 
-
 define('forum/topic/threadTools', [
 	'forum/topic/fork',
 	'forum/topic/move',

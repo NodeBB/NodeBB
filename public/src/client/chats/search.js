@@ -1,7 +1,6 @@
 'use strict';
 
 
-
 define('forum/chats/search', ['components'], function (components) {
 
 	var search = {};

@@ -1,7 +1,6 @@
 'use strict';
 
 
-
 var overrides = overrides || {};
 
 if ('undefined' !== typeof window) {

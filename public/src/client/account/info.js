@@ -1,7 +1,6 @@
 'use strict';
 
 
-
 define('forum/account/info', ['forum/account/header', 'components'], function (header, components) {
 	var Info = {};
 

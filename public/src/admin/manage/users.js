@@ -1,7 +1,6 @@
 "use strict";
 
 
-
 define('admin/manage/users', ['translator'], function (translator) {
 	var Users = {};
 

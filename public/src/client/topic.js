@@ -1,8 +1,6 @@
 'use strict';
 
 
-
-
 define('forum/topic', [
 	'forum/infinitescroll',
 	'forum/topic/threadTools',

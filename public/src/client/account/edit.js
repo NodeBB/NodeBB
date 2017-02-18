@@ -1,7 +1,6 @@
 'use strict';
 
 
-
 define('forum/account/edit', ['forum/account/header', 'translator', 'components', 'pictureCropper'], function (header, translator, components, pictureCropper) {
 	var AccountEdit = {};
 

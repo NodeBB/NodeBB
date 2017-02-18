@@ -1,7 +1,6 @@
 "use strict";
 
 
-
 define('admin/modules/instance', function () {
 	var instance = {};
 

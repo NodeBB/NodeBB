@@ -1,7 +1,6 @@
 'use strict';
 
 
-
 define('forum/categories', ['components', 'translator'], function (components, translator) {
 	var	categories = {};
 

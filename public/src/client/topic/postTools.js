@@ -1,7 +1,6 @@
 'use strict';
 
 
-
 define('forum/topic/postTools', [
 	'share',
 	'navigator',

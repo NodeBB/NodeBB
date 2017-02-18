@@ -1,7 +1,6 @@
 'use strict';
 
 
-
 define('postSelect', ['components'], function (components) {
 	var PostSelect = {};
 
@@ -52,7 +51,6 @@ define('postSelect', ['components'], function (components) {
 	PostSelect.enableClicksOnPosts = function () {
 		components.get('post').off('click', 'button,a', disableClicks);
 	};
-
 
 
 	return PostSelect;

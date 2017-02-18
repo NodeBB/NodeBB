@@ -1,7 +1,6 @@
 'use strict';
 
 
-
 define('forum/account/edit/password', ['forum/account/header', 'translator'], function (header, translator) {
 	var AccountEditPassword = {};
 

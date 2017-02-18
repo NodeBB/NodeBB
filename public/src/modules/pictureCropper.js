@@ -1,7 +1,6 @@
 'use strict';
 
 
-
 define('pictureCropper', ['translator', 'cropper'], function (translator, cropper) {
 	var module = {};
 

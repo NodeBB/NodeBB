@@ -1,8 +1,6 @@
 'use strict';
 
 
-
-
 define('forum/register', ['translator'], function (translator) {
 	var Register = {};
 	var validationError = false;

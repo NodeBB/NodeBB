@@ -1,7 +1,6 @@
 'use strict';
 
 
-
 var async = require('async');
 var assert = require('assert');
 var nconf = require('nconf');

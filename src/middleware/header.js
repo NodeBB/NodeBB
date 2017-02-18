@@ -187,5 +187,3 @@ module.exports = function (middleware) {
 
 };
 
-
-

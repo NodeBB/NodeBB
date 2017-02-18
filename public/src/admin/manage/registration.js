@@ -1,7 +1,6 @@
 "use strict";
 
 
-
 define('admin/manage/registration', function () {
 	var Registration = {};
 

@@ -1,7 +1,6 @@
 'use strict';
 
 
-
 define('forum/recent', ['forum/infinitescroll', 'components'], function (infinitescroll, components) {
 	var	Recent = {};
 

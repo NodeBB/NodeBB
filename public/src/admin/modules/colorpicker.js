@@ -1,7 +1,6 @@
 "use strict";
 
 
-
 define('admin/modules/colorpicker', function () {
 	var colorpicker = {};
 
