@@ -63,7 +63,7 @@ define('admin/advanced/errors', ['Chart', 'translator'], function (Chart, transl
 						pointHoverBackgroundColor: "#fff",
 						pointBorderColor: "#fff",
 						pointHoverBorderColor: "rgba(151,187,205,1)",
-						data: ajaxify.data.analytics['toobusy'],
+						data: ajaxify.data.analytics.toobusy,
 					},
 				],
 			},
@@ -92,7 +92,7 @@ define('admin/advanced/errors', ['Chart', 'translator'], function (Chart, transl
 		
 		new Chart(tooBusyCanvas.getContext('2d'), {
 			type: 'line',
-			data: data['toobusy'],
+			data: data.toobusy,
 			options: {
 				responsive: true,
 				legend: {

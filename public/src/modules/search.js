@@ -35,7 +35,7 @@ define('search', ['navigator', 'translator'], function (nav, translator) {
 	};
 
 	function createQueryString(data) {
-		var searchIn = data['in'] || 'titlesposts';
+		var searchIn = data.in || 'titlesposts';
 		var postedBy = data.by || '';
 		var query = {
 			term: data.term,

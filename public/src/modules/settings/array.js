@@ -45,7 +45,7 @@ define('settings/array', function () {
 		var element = $(helper.createElementOfType(type, attributes.tagName, attributes));
 		element.attr('data-parent', '_' + key);
 		delete attributes['data-type'];
-		delete attributes['tagName'];
+		delete attributes.tagName;
 		for (var name in attributes) {
 			var val = attributes[name];
 			if (name.search('data-') === 0) {

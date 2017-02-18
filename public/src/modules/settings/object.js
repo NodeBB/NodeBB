@@ -27,7 +27,7 @@ define('settings/object', function () {
 		element.attr('data-parent', '_' + key);
 		element.attr('data-prop', prop);
 		delete attributes['data-type'];
-		delete attributes['tagName'];
+		delete attributes.tagName;
 		for (var name in attributes) {
 			var val = attributes[name];
 			if (name.search('data-') === 0) {

@@ -67,7 +67,7 @@ define('pictureCropper', ['translator', 'cropper'], function (translator, croppe
 							
 							var socketData = {};
 							socketData[data.paramName] = data.paramValue;
-							socketData['imageData'] = imageData;
+							socketData.imageData = imageData;
 							
 							socket.emit(data.socketMethod, socketData, function (err, imageData) {
 							    if (err) {

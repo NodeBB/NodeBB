@@ -133,7 +133,7 @@ function setupConfig(next) {
 				var allQuestions = questions.main.concat(questions.optional).concat(redisQuestions).concat(mongoQuestions);
 
 				allQuestions.forEach(function (question) {
-					config[question.name] = install.values[question.name] || question['default'] || undefined;
+					config[question.name] = install.values[question.name] || question.default || undefined;
 				});
 				setImmediate(next, null, config);
 			} else {
