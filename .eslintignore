@@ -16,3 +16,4 @@ logs/
 *.iws
 /coverage
 /build
+.eslintrc

@@ -94,7 +94,9 @@ define('admin/extend/widgets', ['jqueryui'], function (jqueryui) {
 							if (data[d].name) {
 								if (widgetData[data[d].name]) {
 									if(!Array.isArray(widgetData[data[d].name])) {
-										widgetData[data[d].name] = [ widgetData[data[d].name] ];
+										widgetData[data[d].name] = [
+											widgetData[data[d].name],
+										];
 									}
 									widgetData[data[d].name].push(data[d].value);
 								}else{

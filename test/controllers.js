@@ -585,14 +585,14 @@ describe('Controllers', function () {
 						widgets: [
 							{
 								widget: 'html',
-								data: [ {
+								data: [{
 									widget: 'html',
 									data: {
 										html: 'test',
 										title: '',
 										container: '',
 									},
-								} ],
+								}],
 							},
 						],
 					};

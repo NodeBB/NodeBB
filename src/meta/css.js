@@ -143,7 +143,7 @@ module.exports = function (Meta) {
 				return callback(err);
 			}
 
-			postcss(global.env === 'development' ? [ autoprefixer ] : [
+			postcss(global.env === 'development' ? [autoprefixer] : [
 				autoprefixer,
 				clean({
 					processImportFrom: ['local'],
