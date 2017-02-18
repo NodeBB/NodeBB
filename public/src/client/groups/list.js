@@ -63,9 +63,9 @@ define('forum/groups/list', ['forum/infinitescroll'], function (infinitescroll) 
 	};
 
 	Groups.search = function () {
-		var groupsEl = $('#groups-list'),
-			queryEl = $('#search-text'),
-			sortEl = $('#search-sort');
+		var groupsEl = $('#groups-list');
+		var queryEl = $('#search-text');
+		var sortEl = $('#search-sort');
 
 		socket.emit('groups.search', {
 			query: queryEl.val(),

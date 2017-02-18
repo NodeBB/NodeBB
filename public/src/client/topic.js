@@ -14,8 +14,8 @@ define('forum/topic', [
 	'sort',
 	'components',
 ], function (infinitescroll, threadTools, postTools, events, posts, replies, navigator, sort, components) {
-	var	Topic = {},
-		currentUrl = '';
+	var	Topic = {};
+	var currentUrl = '';
 
 	$(window).on('action:ajaxify.start', function (ev, data) {
 		if (Topic.replaceURLTimeout) {
@@ -112,8 +112,8 @@ define('forum/topic', [
 			mousetrap.bind('ctrl+f', function (e) {
 				if (config.topicSearchEnabled) {
 					// If in topic, open search window and populate, otherwise regular behaviour
-					var match = ajaxify.currentPage.match(/^topic\/([\d]+)/),
-						tid;
+					var match = ajaxify.currentPage.match(/^topic\/([\d]+)/);
+					var tid;
 					if (match) {
 						e.preventDefault();
 						tid = match[1];

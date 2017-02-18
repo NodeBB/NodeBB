@@ -11,7 +11,9 @@ var topics = require('../topics');
 module.exports = function (User) {
 	User.getLatestBanInfo = function (uid, callback) {
 		// Simply retrieves the last record of the user's ban, even if they've been unbanned since then.
-		var timestamp, expiry, reason;
+		var timestamp;
+		var expiry;
+		var reason;
 
 		async.waterfall([
 			async.apply(db.getSortedSetRevRangeWithScores, 'uid:' + uid + ':bans', 0, 0),

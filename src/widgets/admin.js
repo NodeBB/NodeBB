@@ -48,8 +48,9 @@ admin.get = function (callback) {
 				w.content += widgetData.adminTemplate;
 			});
 
-			var templates = [],
-				list = {}, index = 0;
+			var templates = [];
+			var list = {};
+			var index = 0;
 
 			widgetData.areas.forEach(function (area) {
 				if (typeof list[area.template] === 'undefined') {

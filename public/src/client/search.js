@@ -128,7 +128,8 @@ define('forum/search', ['search', 'autocomplete'], function (searchModule, autoc
 		var regex = new RegExp('(' + regexStr + ')', 'gi');
 
 		$('.search-result-text p, .search-result-text h4').each(function () {
-			var result = $(this), nested = [];
+			var result = $(this);
+			var nested = [];
 
 			result.find('*').each(function () {
 				$(this).after('<!-- ' + nested.length + ' -->');

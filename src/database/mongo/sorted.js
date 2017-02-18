@@ -259,9 +259,9 @@ module.exports = function (db, module) {
 				return callback(err);
 			}
 
-			var map = helpers.toMap(result),
-				returnData = [],
-				item;
+			var map = helpers.toMap(result);
+			var returnData = [];
+			var item;
 
 			for(var i = 0; i < keys.length; ++i) {
 				item = map[keys[i]];
@@ -500,7 +500,7 @@ module.exports = function (db, module) {
 					});
 				});
 			},
-			callback,
+			callback
 		);
 	};
 

@@ -26,9 +26,9 @@ define('admin/advanced/errors', ['Chart', 'translator'], function (Chart, transl
 	};
 
 	Errors.setupCharts = function () {
-		var notFoundCanvas = document.getElementById('not-found'),
-			tooBusyCanvas = document.getElementById('toobusy'),
-			dailyLabels = utils.getDaysArray();
+		var notFoundCanvas = document.getElementById('not-found');
+		var tooBusyCanvas = document.getElementById('toobusy');
+		var dailyLabels = utils.getDaysArray();
 
 		dailyLabels = dailyLabels.slice(-7);
 

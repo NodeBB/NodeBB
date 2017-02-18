@@ -5,10 +5,10 @@ define('admin/extend/rewards', ['translator'], function (translator) {
 	var rewards = {};
 
 
-	var available,
-		active,
-		conditions,
-		conditionals;
+	var available;
+	var active;
+	var conditions;
+	var conditionals;
 
 	rewards.init = function () {
 		available = ajaxify.data.rewards;
@@ -25,8 +25,8 @@ define('admin/extend/rewards', ['translator'], function (translator) {
 				update($(this));
 			})
 			.on('click', '.delete', function () {
-				var parent = $(this).parents('[data-id]'),
-					id = parent.attr('data-id');
+				var parent = $(this).parents('[data-id]');
+				var id = parent.attr('data-id');
 
 				socket.emit('admin.rewards.delete', {id: id}, function (err) {
 					if (err) {
@@ -40,9 +40,9 @@ define('admin/extend/rewards', ['translator'], function (translator) {
 				return false;
 			})
 			.on('click', '.toggle', function () {
-				var btn = $(this),
-					disabled = btn.hasClass('btn-success'),
-					id = $(this).parents('[data-id]').attr('data-id');
+				var btn = $(this);
+				var disabled = btn.hasClass('btn-success');
+				var id = $(this).parents('[data-id]').attr('data-id');
 				btn.toggleClass('btn-warning').toggleClass('btn-success').translateHtml('[[admin/extend/rewards:' + disabled ? 'disable' : 'enable' + ']]');
 				// send disable api call
 				return false;
@@ -73,10 +73,10 @@ define('admin/extend/rewards', ['translator'], function (translator) {
 	}
 
 	function selectReward(el) {
-		var parent = el.parents('[data-rid]'),
-			div = parent.find('.inputs'),
-			inputs,
-			html = '';
+		var parent = el.parents('[data-rid]');
+		var div = parent.find('.inputs');
+		var inputs;
+		var html = '';
 
 		for (var reward in available) {
 			if (available.hasOwnProperty(reward)) {
@@ -113,8 +113,8 @@ define('admin/extend/rewards', ['translator'], function (translator) {
 
 	function populateInputs() {
 		$('[data-rid]').each(function (i) {
-			var div = $(this).find('.inputs'),
-				rewards = active[i].rewards;
+			var div = $(this).find('.inputs');
+			var rewards = active[i].rewards;
 
 			for (var reward in rewards) {
 				if (rewards.hasOwnProperty(reward)) {
@@ -153,9 +153,9 @@ define('admin/extend/rewards', ['translator'], function (translator) {
 		var activeRewards = [];
 
 		$('#active li').each(function () {
-			var data = {rewards: {}},
-				main = $(this).find('form.main').serializeArray(),
-				rewards = $(this).find('form.rewards').serializeArray();
+			var data = {rewards: {}};
+			var main = $(this).find('form.main').serializeArray();
+			var rewards = $(this).find('form.rewards').serializeArray();
 
 			main.forEach(function (obj) {
 				data[obj.name] = obj.value;

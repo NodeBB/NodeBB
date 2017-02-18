@@ -4,14 +4,14 @@
  * Logger module: ability to dynamically turn on/off logging for http requests & socket.io events
  */
 
-var fs = require('fs'),
-	path = require('path'),
-	winston = require('winston'),
-	util = require('util'),
+var fs = require('fs');
+var path = require('path');
+var winston = require('winston');
+var util = require('util');
 
-	file = require('./file'),
-	meta = require('./meta'),
-	morgan = require('morgan');
+var file = require('./file');
+var meta = require('./meta');
+var morgan = require('morgan');
 
 var opts = {
 	/*

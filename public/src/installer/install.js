@@ -52,9 +52,9 @@ $('document').ready(function () {
 	}
 
 	function activate(type, el) {
-		var field = el.val(),
-			parent = el.parents('.input-row'),
-			help = parent.children('.help-text');
+		var field = el.val();
+		var parent = el.parents('.input-row');
+		var help = parent.children('.help-text');
 
 		function validateUsername(field) {
 			if (!utils.isUserNameValid(field) || !utils.slugify(field)) {

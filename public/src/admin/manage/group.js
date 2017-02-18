@@ -10,13 +10,13 @@ define('admin/manage/group', [
 	var	Groups = {};
 
 	Groups.init = function () {
-		var	groupDetailsSearch = $('#group-details-search'),
-			groupDetailsSearchResults = $('#group-details-search-results'),
-			groupIcon = $('#group-icon'),
-			changeGroupUserTitle = $('#change-group-user-title'),
-			changeGroupLabelColor = $('#change-group-label-color'),
-			groupLabelPreview = $('#group-label-preview'),
-			searchDelay;
+		var	groupDetailsSearch = $('#group-details-search');
+		var groupDetailsSearchResults = $('#group-details-search-results');
+		var groupIcon = $('#group-icon');
+		var changeGroupUserTitle = $('#change-group-user-title');
+		var changeGroupLabelColor = $('#change-group-label-color');
+		var groupLabelPreview = $('#group-label-preview');
+		var searchDelay;
 
 
 		var groupName = ajaxify.data.group.name;
@@ -38,12 +38,13 @@ define('admin/manage/group', [
 			}
 
 			searchDelay = setTimeout(function () {
-				var searchText = groupDetailsSearch.val(),
-					foundUser;
+				var searchText = groupDetailsSearch.val();
+				var foundUser;
 
 				socket.emit('admin.user.search', {query: searchText}, function (err, results) {
 					if (!err && results && results.users.length > 0) {
-						var numResults = results.users.length, x;
+						var numResults = results.users.length;
+						var x;
 						if (numResults > 20) {
 							numResults = 20;
 						}
@@ -76,8 +77,8 @@ define('admin/manage/group', [
 		});
 
 		groupDetailsSearchResults.on('click', 'li[data-uid]', function () {
-			var userLabel = $(this),
-				uid = parseInt(userLabel.attr('data-uid'), 10);
+			var userLabel = $(this);
+			var uid = parseInt(userLabel.attr('data-uid'), 10);
 
 			socket.emit('admin.groups.join', {
 				groupName: groupName,
@@ -105,12 +106,12 @@ define('admin/manage/group', [
 		});
 
 		$('[component="groups/members"]').on('click', '[data-action]', function () {
-			var btnEl = $(this),
-				userRow = btnEl.parents('[data-uid]'),
-				ownerFlagEl = userRow.find('.member-name i'),
-				isOwner = !ownerFlagEl.hasClass('invisible') ? true : false,
-				uid = userRow.attr('data-uid'),
-				action = btnEl.attr('data-action');
+			var btnEl = $(this);
+			var userRow = btnEl.parents('[data-uid]');
+			var ownerFlagEl = userRow.find('.member-name i');
+			var isOwner = !ownerFlagEl.hasClass('invisible') ? true : false;
+			var uid = userRow.attr('data-uid');
+			var action = btnEl.attr('data-action');
 
 			switch(action) {
 				case 'toggleOwnership':

@@ -13,10 +13,10 @@ define('settings', function () {
 		'settings/object',
 	];
 
-	var Settings,
-		onReady = [],
-		waitingJobs = 0,
-		helper;
+	var Settings;
+	var onReady = [];
+	var waitingJobs = 0;
+	var helper;
 
 	/**
 	 Returns the hook of given name that matches the given type or element.
@@ -24,7 +24,8 @@ define('settings', function () {
 	 @param name The name of the hook.
 	 */
 	function getHook(type, name) {
-		var hook, plugin;
+		var hook;
+		var plugin;
 		if (typeof type !== 'string') {
 			type = $(type);
 			type = type.data('type') || type.attr('type') || type.prop('tagName');
@@ -99,7 +100,8 @@ define('settings', function () {
 		 @returns JQuery The created element.
 		 */
 		createElementOfType: function (type, tagName, data) {
-			var element, hook = getHook(type, 'create');
+			var element;
+			var hook = getHook(type, 'create');
 			if (hook != null) {
 				element = $(hook.call(Settings, type, tagName, data));
 			} else {
@@ -151,11 +153,11 @@ define('settings', function () {
 		 @returns Object The value of the element.
 		 */
 		readValue: function (element) {
-			var empty = !helper.isFalse(element.data('empty')),
-				trim = !helper.isFalse(element.data('trim')),
-				split = element.data('split'),
-				hook = getHook(element, 'get'),
-				value;
+			var empty = !helper.isFalse(element.data('empty'));
+			var trim = !helper.isFalse(element.data('trim'));
+			var split = element.data('split');
+			var hook = getHook(element, 'get');
+			var value;
 			if (hook != null) {
 				return hook.call(Settings, element, trim, empty);
 			}
@@ -183,8 +185,8 @@ define('settings', function () {
 		 @param value The value to set.
 		 */
 		fillField: function (element, value) {
-			var hook = getHook(element, 'set'),
-				trim = element.data('trim');
+			var hook = getHook(element, 'set');
+			var trim = element.data('trim');
 			trim = trim !== 'false' && +trim !== 0;
 			if (hook != null) {
 				return hook.call(Settings, element, value, trim);
@@ -218,9 +220,9 @@ define('settings', function () {
 		initFields: function (wrapper) {
 			$('[data-key]', wrapper).each(function (ignored, field) {
 				field = $(field);
-				var hook = getHook(field, 'init'),
-					keyParts = field.data('key').split('.'),
-					value = Settings.get();
+				var hook = getHook(field, 'init');
+				var keyParts = field.data('key').split('.');
+				var value = Settings.get();
 				if (hook != null) {
 					hook.call(Settings, field);
 				}
@@ -408,17 +410,17 @@ define('settings', function () {
 		 @param notify Whether to send notification when settings got saved.
 		 */
 		persist: function (hash, wrapper, callback, notify) {
-			var notSaved = [],
-				fields = $('[data-key]', wrapper || 'form').toArray();
+			var notSaved = [];
+			var fields = $('[data-key]', wrapper || 'form').toArray();
 			if (notify == null) {
 				notify = true;
 			}
 			for (var i = 0; i < fields.length; i++) {
-				var field = $(fields[i]),
-					value = helper.readValue(field),
-					parentCfg = Settings.get(),
-					keyParts = field.data('key').split('.'),
-					lastKey = keyParts[keyParts.length - 1];
+				var field = $(fields[i]);
+				var value = helper.readValue(field);
+				var parentCfg = Settings.get();
+				var keyParts = field.data('key').split('.');
+				var lastKey = keyParts[keyParts.length - 1];
 				if (keyParts.length > 1) {
 					for (var j = 0; j < keyParts.length - 1; j++) {
 						var part = keyParts[j];

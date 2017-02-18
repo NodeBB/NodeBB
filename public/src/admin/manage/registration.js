@@ -30,9 +30,9 @@ define('admin/manage/registration', function () {
 			var method = 'admin.user.deleteInvitation';
 
 			var removeRow = function () {
-				var nextRow = parent.next(),
-					thisRowinvitedBy = parent.find('.invited-by'),
-					nextRowInvitedBy = nextRow.find('.invited-by');
+				var nextRow = parent.next();
+				var thisRowinvitedBy = parent.find('.invited-by');
+				var nextRowInvitedBy = nextRow.find('.invited-by');
 				if (nextRowInvitedBy.html() !== undefined && nextRowInvitedBy.html().length < 2) {
 					nextRowInvitedBy.html(thisRowinvitedBy.html());
 				}

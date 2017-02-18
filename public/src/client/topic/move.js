@@ -4,9 +4,9 @@
 
 define('forum/topic/move', function () {
 
-	var Move = {},
-		modal,
-		selectedEl;
+	var Move = {};
+	var modal;
+	var selectedEl;
 
 	Move.init = function (tids, currentCid, onComplete) {
 		Move.tids = tids;

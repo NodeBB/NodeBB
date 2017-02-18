@@ -6,14 +6,14 @@ define('admin/appearance/themes', ['translator'], function (translator) {
 
 	Themes.init = function () {
 		$('#installed_themes').on('click', function (e) {
-			var target = $(e.target),
-				action = target.attr('data-action');
+			var target = $(e.target);
+			var action = target.attr('data-action');
 
 			if (action && action === 'use') {
-				var parentEl = target.parents('[data-theme]'),
-					themeType = parentEl.attr('data-type'),
-					cssSrc = parentEl.attr('data-css'),
-					themeId = parentEl.attr('data-theme');
+				var parentEl = target.parents('[data-theme]');
+				var themeType = parentEl.attr('data-type');
+				var cssSrc = parentEl.attr('data-css');
+				var themeId = parentEl.attr('data-theme');
 
 				socket.emit('admin.themes.set', {
 					type: themeType,

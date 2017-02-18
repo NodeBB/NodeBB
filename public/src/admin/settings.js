@@ -11,8 +11,8 @@ define('admin/settings', ['uploader'], function (uploader) {
 
 	Settings.populateTOC = function () {
 		$('.settings-header').each(function () {
-			var header = $(this).text(),
-				anchor = header.toLowerCase().replace(/ /g, '-').trim();
+			var header = $(this).text();
+			var anchor = header.toLowerCase().replace(/ /g, '-').trim();
 
 			$(this).prepend('<a name="' + anchor + '"></a>');
 			$('.section-content ul').append('<li><a href="#' + anchor + '">' + header + '</a></li>');
@@ -21,11 +21,14 @@ define('admin/settings', ['uploader'], function (uploader) {
 
 	Settings.prepare = function (callback) {
 		// Populate the fields on the page from the config
-		var fields = $('#content [data-field]'),
-			numFields = fields.length,
-			saveBtn = $('#save'),
-			revertBtn = $('#revert'),
-			x, key, inputType, field;
+		var fields = $('#content [data-field]');
+		var	numFields = fields.length;
+		var	saveBtn = $('#save');
+		var	revertBtn = $('#revert');
+		var	x;
+		var key;
+		var inputType;
+		var field;
 
 		// Handle unsaved changes
 		$(fields).on('change', function () {
@@ -148,8 +151,9 @@ define('admin/settings', ['uploader'], function (uploader) {
 
 		fields.each(function () {
 			var field = $(this);
-			var key = field.attr('data-field'),
-				value, inputType;
+			var key = field.attr('data-field');
+			var value;
+			var inputType;
 
 			if (field.is('input')) {
 				inputType = field.attr('type');

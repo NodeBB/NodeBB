@@ -1,10 +1,10 @@
 
 'use strict';
 
-var nconf = require('nconf'),
-	util = require('util'),
-	winston = require('winston'),
-	EventEmitter = require('events').EventEmitter;
+var nconf = require('nconf');
+var util = require('util');
+var winston = require('winston');
+var EventEmitter = require('events').EventEmitter;
 
 var channelName;
 

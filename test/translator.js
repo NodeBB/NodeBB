@@ -218,7 +218,7 @@ describe('Translator static methods', function () {
 		it('should remove translator patterns from text', function (done) {
 			assert.strictEqual(
 				Translator.removePatterns('Lorem ipsum dolor [[sit:amet]], consectetur adipiscing elit. [[sed:vitae, [[semper:dolor]]]] lorem'),
-				'Lorem ipsum dolor , consectetur adipiscing elit.  lorem',
+				'Lorem ipsum dolor , consectetur adipiscing elit.  lorem'
 			);
 			done();
 		});
@@ -227,7 +227,7 @@ describe('Translator static methods', function () {
 		it('should escape translation patterns within text', function (done) {
 			assert.strictEqual(
 				Translator.escape('some nice text [[global:home]] here'),
-				'some nice text \\[\\[global:home\\]\\] here',
+				'some nice text \\[\\[global:home\\]\\] here'
 			);
 			done();
 		});
@@ -237,7 +237,7 @@ describe('Translator static methods', function () {
 		it('should unescape escaped translation patterns within text', function (done) {
 			assert.strictEqual(
 				Translator.unescape('some nice text \\[\\[global:home\\]\\] here'),
-				'some nice text [[global:home]] here',
+				'some nice text [[global:home]] here'
 			);
 			done();
 		});
@@ -247,7 +247,7 @@ describe('Translator static methods', function () {
 		it('should create a translator pattern from a key and list of arguments', function (done) {
 			assert.strictEqual(
 				Translator.compile('amazing:cool', 'awesome', 'great'),
-				'[[amazing:cool, awesome, great]]',
+				'[[amazing:cool, awesome, great]]'
 			);
 			done();
 		});
@@ -255,7 +255,7 @@ describe('Translator static methods', function () {
 		it('should escape `%` and `,` in arguments', function (done) {
 			assert.strictEqual(
 				Translator.compile('amazing:cool', '100% awesome!', 'one, two, and three'),
-				'[[amazing:cool, 100&#37; awesome!, one&#44; two&#44; and three]]',
+				'[[amazing:cool, 100&#37; awesome!, one&#44; two&#44; and three]]'
 			);
 			done();
 		});

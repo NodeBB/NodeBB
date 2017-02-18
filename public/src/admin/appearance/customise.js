@@ -9,8 +9,8 @@ define('admin/appearance/customise', ['admin/settings'], function (Settings) {
 			$('#customCSS').text($('#customCSS-holder').val());
 			$('#customHTML').text($('#customHTML-holder').val());
 			
-			var customCSS = ace.edit("customCSS"),
-				customHTML = ace.edit("customHTML");
+			var customCSS = ace.edit("customCSS");
+			var customHTML = ace.edit("customHTML");
 
 			customCSS.setTheme("ace/theme/twilight");
 			customCSS.getSession().setMode("ace/mode/css");	

@@ -24,13 +24,13 @@ image.resizeImage = function (data, callback) {
 				return callback(err);
 			}
 
-			var w = image.bitmap.width,
-				h = image.bitmap.height,
-				origRatio = w / h,
-				desiredRatio = data.width && data.height ? data.width / data.height : origRatio,
-				x = 0,
-				y = 0,
-				crop;
+			var w = image.bitmap.width;
+			var h = image.bitmap.height;
+			var origRatio = w / h;
+			var desiredRatio = data.width && data.height ? data.width / data.height : origRatio;
+			var x = 0;
+			var y = 0;
+			var crop;
 
 			if (origRatio !== desiredRatio) {
 				if (desiredRatio > origRatio) {

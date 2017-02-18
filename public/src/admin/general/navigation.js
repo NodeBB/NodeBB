@@ -2,8 +2,8 @@
 /* global define, app, ajaxify, socket, templates */
 
 define('admin/general/navigation', ['translator', 'iconSelect', 'jqueryui'], function (translator, iconSelect, jqueryui) {
-	var navigation = {},
-		available;
+	var navigation = {};
+	var available;
 
 	navigation.init = function () {
 		available = ajaxify.data.available;
@@ -61,9 +61,9 @@ define('admin/general/navigation', ['translator', 'iconSelect', 'jqueryui'], fun
 	}
 
 	function drop(ev, ui) {
-		var id = ui.helper.attr('data-id'),
-			el = $('#active-navigation [data-id="' + id + '"]'),
-			data = id === 'custom' ? {iconClass: 'fa-navicon'} : available[id];
+		var id = ui.helper.attr('data-id');
+		var el = $('#active-navigation [data-id="' + id + '"]');
+		var data = id === 'custom' ? {iconClass: 'fa-navicon'} : available[id];
 
 		data.enabled = false;
 		data.index = (parseInt($('#enabled').children().last().attr('data-index'), 10) || 0) + 1;
@@ -95,9 +95,9 @@ define('admin/general/navigation', ['translator', 'iconSelect', 'jqueryui'], fun
 
 		indices.forEach(function (index) {
 			var el = $('#enabled').children('[data-index="' + index + '"]');
-			var form = el.find('form').serializeArray(),
-				data = {},
-				properties = {};
+			var form = el.find('form').serializeArray();
+			var data = {};
+			var properties = {};
 
 			form.forEach(function (input) {
 				if (input.name.slice(0, 9) === 'property:' && input.value === 'on') {
@@ -135,8 +135,8 @@ define('admin/general/navigation', ['translator', 'iconSelect', 'jqueryui'], fun
 	}
 
 	function toggle() {
-		var btn = $(this),
-			disabled = btn.hasClass('btn-success');
+		var btn = $(this);
+		var disabled = btn.hasClass('btn-success');
 		translator.translate(disabled ? '[[admin/general/navigation:btn.disable]]' : '[[admin/general/navigation:btn.enable]]', function (html) {
 			btn.toggleClass('btn-warning').toggleClass('btn-success').html(html);
 			btn.parents('li').find('[name="enabled"]').val(disabled ? 'on' : '');

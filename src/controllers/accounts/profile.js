@@ -120,7 +120,7 @@ profileController.get = function (req, res, callback) {
 						property: "og:image:url",
 						content: userData.picture,
 						noEscape: true,
-					},
+					}
 				);
 			}
 			userData.selectedGroup = userData.groups.find(function (group) {

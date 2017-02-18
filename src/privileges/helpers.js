@@ -31,7 +31,8 @@ function isUserAllowedToCids(privilege, uid, cids, callback) {
 		return isGuestAllowedToCids(privilege, cids, callback);
 	}
 
-	var userKeys = [], groupKeys = [];
+	var userKeys = [];
+	var groupKeys = [];
 	for (var i = 0; i < cids.length; ++i) {
 		userKeys.push('cid:' + cids[i] + ':privileges:' + privilege);
 		groupKeys.push('cid:' + cids[i] + ':privileges:groups:' + privilege);
@@ -63,7 +64,8 @@ function isUserAllowedToPrivileges(privileges, uid, cid, callback) {
 		return isGuestAllowedToPrivileges(privileges, cid, callback);
 	}
 
-	var userKeys = [], groupKeys = [];
+	var userKeys = [];
+	var groupKeys = [];
 	for (var i = 0; i < privileges.length; ++i) {
 		userKeys.push('cid:' + cid + ':privileges:' + privileges[i]);
 		groupKeys.push('cid:' + cid + ':privileges:groups:' + privileges[i]);

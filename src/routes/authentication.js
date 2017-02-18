@@ -1,17 +1,17 @@
 (function (Auth) {
 	"use strict";
 
-	var passport = require('passport'),
-		passportLocal = require('passport-local').Strategy,
-		nconf = require('nconf'),
-		winston = require('winston'),
-		express = require('express'),
+	var passport = require('passport');
+	var	passportLocal = require('passport-local').Strategy;
+	var	nconf = require('nconf');
+	var	winston = require('winston');
+	var	express = require('express');
 
-		controllers = require('../controllers'),
-		plugins = require('../plugins'),
-		hotswap = require('../hotswap'),
+	var	controllers = require('../controllers');
+	var	plugins = require('../plugins');
+	var	hotswap = require('../hotswap');
 
-		loginStrategies = [];
+	var	loginStrategies = [];
 
 	Auth.initialize = function (app, middleware) {
 		app.use(passport.initialize());

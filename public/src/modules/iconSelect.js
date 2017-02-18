@@ -62,8 +62,8 @@ define('iconSelect', function () {
 				});
 
 			picker.on('show.bs.modal', function () {
-				var modalEl = $(this),
-					searchEl = modalEl.find('input');
+				var modalEl = $(this);
+				var searchEl = modalEl.find('input');
 
 				if (selected) {
 					modalEl.find('.' + selected).addClass('selected');
@@ -72,10 +72,10 @@ define('iconSelect', function () {
 			}).modal('show');
 
 			picker.on('shown.bs.modal', function () {
-				var modalEl = $(this),
-					searchEl = modalEl.find('input'),
-					icons = modalEl.find('.fa-icons i'),
-					submitEl = modalEl.find('button.btn-primary');
+				var modalEl = $(this);
+				var searchEl = modalEl.find('input');
+				var icons = modalEl.find('.fa-icons i');
+				var submitEl = modalEl.find('button.btn-primary');
 
 				function changeSelection(newSelection) {
 					modalEl.find('i.selected').removeClass('selected');

@@ -211,10 +211,10 @@ define('forum/category', [
 			template: {category: true},
 		}, function (html) {
 			translator.translate(html, function (translatedHTML) {
-				var topic = $(translatedHTML),
-					container = $('[component="category"]'),
-					topics = $('[component="category/topic"]'),
-					numTopics = topics.length;
+				var topic = $(translatedHTML);
+				var container = $('[component="category"]');
+				var topics = $('[component="category/topic"]');
+				var numTopics = topics.length;
 
 				$('[component="category"]').removeClass('hidden');
 				$('.category-sidebar').removeClass('hidden');
@@ -319,7 +319,8 @@ define('forum/category', [
 
 		data.showSelect = data.privileges.editable;
 
-		var after, before;
+		var after;
+		var before;
 		var topics = $('[component="category/topic"]');
 
 		if (direction > 0 && topics.length) {
@@ -337,8 +338,8 @@ define('forum/category', [
 			if (after) {
 				html.insertAfter(after);
 			} else if (before) {
-				var height = $(document).height(),
-				 	scrollTop = $(window).scrollTop();
+				var height = $(document).height();
+				var scrollTop = $(window).scrollTop();
 
 				html.insertBefore(before);
 

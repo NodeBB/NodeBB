@@ -1,7 +1,7 @@
 define('settings/textarea', function () {
 
-	var Settings = null,
-		SettingsArea;
+	var Settings = null;
+	var SettingsArea;
 
 	SettingsArea = {
 		types: ['textarea'],

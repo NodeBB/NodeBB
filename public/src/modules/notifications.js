@@ -8,10 +8,10 @@ define('notifications', ['sounds', 'translator', 'components'], function (sound,
 	var unreadNotifs = {};
 
 	Notifications.prepareDOM = function () {
-		var notifContainer = components.get('notifications'),
-			notifTrigger = notifContainer.children('a'),
-			notifList = components.get('notifications/list'),
-			notifIcon = components.get('notifications/icon');
+		var notifContainer = components.get('notifications');
+		var notifTrigger = notifContainer.children('a');
+		var notifList = components.get('notifications/list');
+		var notifIcon = components.get('notifications/icon');
 
 		notifTrigger
 			.on('click', function (e) {

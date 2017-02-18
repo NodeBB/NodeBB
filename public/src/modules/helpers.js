@@ -37,19 +37,19 @@
 	};
 
 	helpers.buildMetaTag = function (tag) {
-		var name = tag.name ? 'name="' + tag.name + '" ' : '',
-			property = tag.property ? 'property="' + tag.property + '" ' : '',
-			content = tag.content ? 'content="' + tag.content.replace(/\n/g, ' ') + '" ' : '';
+		var name = tag.name ? 'name="' + tag.name + '" ' : '';
+		var property = tag.property ? 'property="' + tag.property + '" ' : '';
+		var content = tag.content ? 'content="' + tag.content.replace(/\n/g, ' ') + '" ' : '';
 
 		return '<meta ' + name + property + content + '/>\n\t';
 	};
 
 	helpers.buildLinkTag = function (tag) {
-		var link = tag.link ? 'link="' + tag.link + '" ' : '',
-			rel = tag.rel ? 'rel="' + tag.rel + '" ' : '',
-			type = tag.type ? 'type="' + tag.type + '" ' : '',
-			href = tag.href ? 'href="' + tag.href + '" ' : '',
-			sizes = tag.sizes ? 'sizes="' + tag.sizes + '" ' : '';
+		var link = tag.link ? 'link="' + tag.link + '" ' : '';
+		var rel = tag.rel ? 'rel="' + tag.rel + '" ' : '';
+		var type = tag.type ? 'type="' + tag.type + '" ' : '';
+		var href = tag.href ? 'href="' + tag.href + '" ' : '';
+		var sizes = tag.sizes ? 'sizes="' + tag.sizes + '" ' : '';
 
 		return '<link ' + link + rel + type + sizes + href + '/>\n\t';
 	};
@@ -285,5 +285,5 @@
 }(
 	typeof exports === 'object' ? exports :
 	typeof define === 'function' && define.amd ? {} :
-	helpers = {},
+	helpers = {}
 ));

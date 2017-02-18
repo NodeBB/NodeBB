@@ -90,8 +90,8 @@ module.exports = function (Meta) {
 	};
 
 	function getStyleSource(files, prefix, extension, callback) {
-		var	pluginDirectories = [],
-			source = '';
+		var	pluginDirectories = [];
+		var source = '';
 
 		files.forEach(function (styleFile) {
 			if (styleFile.endsWith(extension)) {

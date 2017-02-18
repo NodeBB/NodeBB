@@ -3,10 +3,17 @@
 
     "rules": {
         "handle-callback-err": [ "error","^(e$|(e|(.*(_e|E)))rr)" ],
+        "comma-dangle": ["error", {
+            "arrays": "always-multiline",
+            "objects": "always-multiline",
+            "imports": "always-multiline",
+            "exports": "always-multiline",
+            "functions": "never"
+        }],
         // "linebreak-style": "off",
         "import/no-unresolved": "off",
         "import/no-extraneous-dependencies": "off",
-        "one-var": "off",
+        // "one-var": "off",
         "no-undef": "off",
         "max-len": "off",
         "no-new": "off",

@@ -80,14 +80,14 @@ define('admin/extend/widgets', ['jqueryui'], function (jqueryui) {
 			$('#widgets [data-template][data-location]').each(function (i, el) {
 				el = $(el);
 
-				var template = el.attr('data-template'),
-					location = el.attr('data-location'),
-					area = el.children('.widget-area'),
-					widgets = [];
+				var template = el.attr('data-template');
+				var location = el.attr('data-location');
+				var area = el.children('.widget-area');
+				var widgets = [];
 
 				area.find('.widget-panel[data-widget]').each(function () {
-					var widgetData = {},
-						data = $(this).find('form').serializeArray();
+					var widgetData = {};
+					var data = $(this).find('form').serializeArray();
 
 					for (var d in data) {
 						if (data.hasOwnProperty(d)) {
@@ -136,10 +136,10 @@ define('admin/extend/widgets', ['jqueryui'], function (jqueryui) {
 		}
 
 		$('.color-selector').on('click', '.btn', function () {
-			var btn = $(this),
-				selector = btn.parents('.color-selector'),
-				container = selector.parents('[data-container-html]'),
-				classList = [];
+			var btn = $(this);
+			var selector = btn.parents('.color-selector');
+			var container = selector.parents('[data-container-html]');
+			var classList = [];
 
 			selector.children().each(function () {
 				classList.push($(this).attr('data-class'));
@@ -150,7 +150,7 @@ define('admin/extend/widgets', ['jqueryui'], function (jqueryui) {
 				.addClass(btn.attr('data-class'));
 
 			container.attr('data-container-html', container.attr('data-container-html')
-				.replace(/class="[a-zA-Z0-9-\s]+"/, 'class="' + container[0].className.replace(' pointer ui-draggable', '') + '"'),
+				.replace(/class="[a-zA-Z0-9-\s]+"/, 'class="' + container[0].className.replace(' pointer ui-draggable', '') + '"')
 			);
 		});
 	}
@@ -191,8 +191,8 @@ define('admin/extend/widgets', ['jqueryui'], function (jqueryui) {
 			}
 
 			widget.find('input, textarea, select').each(function () {
-				var input = $(this),
-					value = data[input.attr('name')];
+				var input = $(this);
+				var value = data[input.attr('name')];
 
 				if (input.attr('type') === 'checkbox') {
 					input.prop('checked', !!value).trigger('change');
@@ -208,14 +208,14 @@ define('admin/extend/widgets', ['jqueryui'], function (jqueryui) {
 			var areas = data.areas;
 
 			for(var i = 0; i < areas.length; ++i) {
-				var area = areas[i],
-					widgetArea = $('#widgets .area[data-template="' + area.template + '"][data-location="' + area.location + '"]').find('.widget-area');
+				var area = areas[i];
+				var widgetArea = $('#widgets .area[data-template="' + area.template + '"][data-location="' + area.location + '"]').find('.widget-area');
 
 				widgetArea.html('');
 
 				for (var k = 0; k < area.data.length; ++k) {
-					var widgetData = area.data[k],
-						widgetEl = $('.available-widgets [data-widget="' + widgetData.widget + '"]').clone(true).removeClass('hide');
+					var widgetData = area.data[k];
+					var widgetEl = $('.available-widgets [data-widget="' + widgetData.widget + '"]').clone(true).removeClass('hide');
 
 					widgetArea.append(populateWidget(widgetEl, widgetData.data));
 					appendToggle(widgetEl);

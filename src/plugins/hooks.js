@@ -1,7 +1,7 @@
 'use strict';
 
-var winston = require('winston'),
-	async = require('async');
+var winston = require('winston');
+var async = require('async');
 
 module.exports = function (Plugins) {
 	Plugins.deprecatedHooks = {
@@ -36,7 +36,7 @@ module.exports = function (Plugins) {
 				(Plugins.deprecatedHooks[data.hook] ?
 					'please use `' + Plugins.deprecatedHooks[data.hook] + '` instead.' :
 					'there is no alternative.'
-				),
+				)
 			);
 		} else {
 			// handle hook's startsWith, i.e. action:homepage.get

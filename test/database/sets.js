@@ -1,9 +1,9 @@
 'use strict';
 /*global require, after, before*/
 
-var	async = require('async'),
-	assert = require('assert'),
-	db = require('../mocks/databasemock');
+var	async = require('async');
+var assert = require('assert');
+var db = require('../mocks/databasemock');
 
 describe('Set methods', function () {
 

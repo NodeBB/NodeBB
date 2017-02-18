@@ -38,8 +38,8 @@ define('coverPhoto', [
 		e.stopPropagation();
 		e.preventDefault();
 
-		var files = e.originalEvent.dataTransfer.files,
-		reader = new FileReader();
+		var files = e.originalEvent.dataTransfer.files;
+		var reader = new FileReader();
 
 		if (files.length && files[0].type.match('image.*')) {
 			reader.onload = function (e) {

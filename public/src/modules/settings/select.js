@@ -1,12 +1,12 @@
 define('settings/select', function () {
 
-	var Settings = null,
-		SettingsSelect;
+	var Settings = null;
+	var SettingsSelect;
 
 	function addOptions(element, options) {
 		for (var i = 0; i < options.length; i++) {
-			var optionData = options[i],
-				value = optionData.text || optionData.value;
+			var optionData = options[i];
+			var value = optionData.text || optionData.value;
 			delete optionData.text;
 			element.append($(Settings.helper.createElement('option', optionData)).text(value));
 		}

@@ -38,7 +38,8 @@ function getTranslationTree(callback) {
 
 		// generate list of languages and namespaces
 		function (plugins, next) {
-			var languages = [], namespaces = [];
+			var languages = [];
+	 namespaces = [];
 
 			// pull languages and namespaces from paths
 			function extrude(languageDir, paths) {

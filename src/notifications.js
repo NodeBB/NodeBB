@@ -373,8 +373,8 @@ var utils = require('../public/src/utils');
 	};
 
 	Notifications.prune = function () {
-		var	week = 604800000,
-			numPruned = 0;
+		var	week = 604800000;
+		var numPruned = 0;
 
 		var	cutoffTime = Date.now() - week;
 
@@ -411,13 +411,17 @@ var utils = require('../public/src/utils');
 	Notifications.merge = function (notifications, callback) {
 		// When passed a set of notification objects, merge any that can be merged
 		var mergeIds = [
-				'notifications:upvoted_your_post_in',
-				'notifications:user_started_following_you',
-				'notifications:user_posted_to',
-				'notifications:user_flagged_post_in',
-				'new_register',
-			],
-			isolated, differentiators, differentiator, modifyIndex, set;
+			'notifications:upvoted_your_post_in',
+			'notifications:user_started_following_you',
+			'notifications:user_posted_to',
+			'notifications:user_flagged_post_in',
+			'new_register',
+		];
+		var isolated;
+		var differentiators;
+		var differentiator;
+		var modifyIndex;
+		var set;
 
 		notifications = mergeIds.reduce(function (notifications, mergeId) {
 			isolated = notifications.filter(function (notifObj) {

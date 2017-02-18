@@ -41,7 +41,7 @@ define('forum/groups/details', [
 						components.get('groups/cover').css('background-image', 'url(' + imageUrlOnServer + ')');
 					});
 				},
-				removeCover,
+				removeCover
 			);
 		}
 
@@ -52,12 +52,12 @@ define('forum/groups/details', [
 		components.get('groups/activity').find('.content img:not(.not-responsive)').addClass('img-responsive');
 
 		detailsPage.on('click', '[data-action]', function () {
-			var btnEl = $(this),
-				userRow = btnEl.parents('[data-uid]'),
-				ownerFlagEl = userRow.find('.member-name > i'),
-				isOwner = !ownerFlagEl.hasClass('invisible') ? true : false,
-				uid = userRow.attr('data-uid'),
-				action = btnEl.attr('data-action');
+			var btnEl = $(this);
+			var userRow = btnEl.parents('[data-uid]');
+			var ownerFlagEl = userRow.find('.member-name > i');
+			var isOwner = !ownerFlagEl.hasClass('invisible') ? true : false;
+			var uid = userRow.attr('data-uid');
+			var action = btnEl.attr('data-action');
 
 			switch(action) {
 				case 'toggleOwnership':
@@ -120,15 +120,15 @@ define('forum/groups/details', [
 	};
 
 	Details.prepareSettings = function () {
-		var settingsFormEl = components.get('groups/settings'),
-			colorBtn = settingsFormEl.find('[data-action="color-select"]'),
-			colorValueEl = settingsFormEl.find('[name="labelColor"]'),
-			iconBtn = settingsFormEl.find('[data-action="icon-select"]'),
-			previewEl = settingsFormEl.find('.label'),
-			previewIcon = previewEl.find('i'),
-			userTitleEl = settingsFormEl.find('[name="userTitle"]'),
-			userTitleEnabledEl = settingsFormEl.find('[name="userTitleEnabled"]'),
-			iconValueEl = settingsFormEl.find('[name="icon"]');
+		var settingsFormEl = components.get('groups/settings');
+		var colorBtn = settingsFormEl.find('[data-action="color-select"]');
+		var colorValueEl = settingsFormEl.find('[name="labelColor"]');
+		var iconBtn = settingsFormEl.find('[data-action="icon-select"]');
+		var previewEl = settingsFormEl.find('.label');
+		var previewIcon = previewEl.find('i');
+		var userTitleEl = settingsFormEl.find('[name="userTitle"]');
+		var userTitleEnabledEl = settingsFormEl.find('[name="userTitleEnabled"]');
+		var iconValueEl = settingsFormEl.find('[name="icon"]');
 
 		// Add color picker to settings form
 		colorBtn.ColorPicker({
@@ -171,8 +171,8 @@ define('forum/groups/details', [
 	};
 
 	Details.update = function () {
-		var settingsFormEl = components.get('groups/settings'),
-			checkboxes = settingsFormEl.find('input[type="checkbox"][name]');
+		var settingsFormEl = components.get('groups/settings');
+		var checkboxes = settingsFormEl.find('input[type="checkbox"][name]');
 
 		if (settingsFormEl.length) {
 			require(['vendor/jquery/serializeObject/jquery.ba-serializeobject.min'], function () {

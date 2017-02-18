@@ -462,9 +462,9 @@ app.cacheBuster = null;
 	}
 
 	app.handleSearch = function () {
-		var searchButton = $("#search-button"),
-			searchFields = $("#search-fields"),
-			searchInput = $('#search-fields input');
+		var searchButton = $("#search-button");
+		var searchFields = $("#search-fields");
+		var searchInput = $('#search-fields input');
 
 		$('#search-form .advanced-search-link').on('mousedown', function () {
 			ajaxify.go('/search');

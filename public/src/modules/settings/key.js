@@ -1,31 +1,31 @@
 define('settings/key', function () {
 
-	var Settings = null,
-		SettingsKey,
-		helper = null,
-		lastKey = null,
-		oldKey = null,
-		keyMap = Object.freeze({
-			0: '',
-			8: 'Backspace',
-			9: 'Tab',
-			13: 'Enter',
-			27: 'Escape',
-			32: 'Space',
-			37: 'Left',
-			38: 'Up',
-			39: 'Right',
-			40: 'Down',
-			45: 'Insert',
-			46: 'Delete',
-			187: '=',
-			189: '-',
-			190: '.',
-			191: '/',
-			219: '[',
-			220: '\\',
-			221: ']',
-		});
+	var Settings = null;
+	var SettingsKey;
+	var helper = null;
+	var lastKey = null;
+	var oldKey = null;
+	var keyMap = Object.freeze({
+		0: '',
+		8: 'Backspace',
+		9: 'Tab',
+		13: 'Enter',
+		27: 'Escape',
+		32: 'Space',
+		37: 'Left',
+		38: 'Up',
+		39: 'Right',
+		40: 'Down',
+		45: 'Insert',
+		46: 'Delete',
+		187: '=',
+		189: '-',
+		190: '.',
+		191: '/',
+		219: '[',
+		220: '\\',
+		221: ']',
+	});
 
 	function Key() {
 		this.c = false;
@@ -42,9 +42,9 @@ define('settings/key', function () {
 	 @returns Key | null The Key-Object the focused element should be set to.
 	 */
 	function getKey(event) {
-		var anyModChange = event.ctrlKey !== lastKey.c || event.altKey !== lastKey.a || event.shiftKey !== lastKey.s || event.metaKey !== lastKey.m,
-			modChange = event.ctrlKey + event.altKey + event.shiftKey + event.metaKey - lastKey.c - lastKey.a - lastKey.s - lastKey.m,
-			key = new Key();
+		var anyModChange = event.ctrlKey !== lastKey.c || event.altKey !== lastKey.a || event.shiftKey !== lastKey.s || event.metaKey !== lastKey.m;
+		var modChange = event.ctrlKey + event.altKey + event.shiftKey + event.metaKey - lastKey.c - lastKey.a - lastKey.s - lastKey.m;
+		var key = new Key();
 		key.c = event.ctrlKey;
 		key.a = event.altKey;
 		key.s = event.shiftKey;
@@ -128,9 +128,9 @@ define('settings/key', function () {
 		if (str instanceof Key) {
 			return str;
 		}
-		var key = new Key(),
-			sep = /([^CtrlAShifMea#\d]+)(?:#|\d)/.exec(str),
-			parts = sep != null ? str.split(sep[1]) : [str];
+		var key = new Key();
+		var sep = /([^CtrlAShifMea#\d]+)(?:#|\d)/.exec(str);
+		var parts = sep != null ? str.split(sep[1]) : [str];
 		for (var i = 0; i < parts.length; i++) {
 			var part = parts[i];
 			switch (part) {
@@ -199,9 +199,9 @@ define('settings/key', function () {
 			element.val(getKeyString(key, true, false, ' + '));
 		},
 		get: function (element, trim, empty) {
-			var key = element.data('keyData'),
-				separator = element.data('split') || element.data('separator') || '+',
-				short = !helper.isFalse(element.data('short'));
+			var key = element.data('keyData');
+			var separator = element.data('split') || element.data('separator') || '+';
+			var short = !helper.isFalse(element.data('short'));
 			if (trim) {
 				if (empty || (key != null && key.char)) {
 					return getKeyString(key, false, short, separator);

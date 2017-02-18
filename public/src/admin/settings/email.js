@@ -2,8 +2,8 @@
 /* global define, socket, app, ajaxify, ace */
 
 define('admin/settings/email', ['admin/settings'], function (settings) {
-	var module = {},
-		emailEditor;
+	var module = {};
+	var emailEditor;
 
 	module.init = function () {
 		configureEmailTester();

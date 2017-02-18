@@ -1,16 +1,16 @@
 'use strict';
 
-var async = require('async'),
-	nconf = require('nconf'),
-	winston = require('winston'),
+var async = require('async');
+var nconf = require('nconf');
+var winston = require('winston');
 
-	user = require('../user'),
-	utils = require('../../public/src/utils'),
-	translator = require('../../public/src/modules/translator'),
+var user = require('../user');
+var utils = require('../../public/src/utils');
+var translator = require('../../public/src/modules/translator');
 
-	db = require('../database'),
-	meta = require('../meta'),
-	emailer = require('../emailer');
+var db = require('../database');
+var meta = require('../meta');
+var emailer = require('../emailer');
 
 (function (UserReset) {
 	var twoHours = 7200000;

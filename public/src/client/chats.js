@@ -134,16 +134,16 @@ define('forum/chats', [
 
 	Chats.addHotkeys = function () {
 		mousetrap.bind('ctrl+up', function () {
-			var activeContact = $('.chats-list .bg-primary'),
-				prev = activeContact.prev();
+			var activeContact = $('.chats-list .bg-primary');
+			var prev = activeContact.prev();
 
 			if (prev.length) {
 				Chats.switchChat(prev.attr('data-roomid'));
 			}
 		});
 		mousetrap.bind('ctrl+down', function () {
-			var activeContact = $('.chats-list .bg-primary'),
-				next = activeContact.next();
+			var activeContact = $('.chats-list .bg-primary');
+			var next = activeContact.next();
 
 			if (next.length) {
 				Chats.switchChat(next.attr('data-roomid'));

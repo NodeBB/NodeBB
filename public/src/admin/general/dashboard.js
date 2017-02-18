@@ -51,10 +51,10 @@ define('admin/general/dashboard', ['semver', 'Chart', 'translator'], function (s
 				return !isPrerelease.test(version.name);	// filter out automated prerelease versions
 			});
 
-			var	version = $('#version').html(),
-				latestVersion = releases[0].name.slice(1),
-				checkEl = $('.version-check'),
-				text;
+			var	version = $('#version').html();
+			var latestVersion = releases[0].name.slice(1);
+			var checkEl = $('.version-check');
+			var text;
 
 			// Alter box colour accordingly
 			if (semver.eq(latestVersion, version)) {
@@ -159,15 +159,15 @@ define('admin/general/dashboard', ['semver', 'Chart', 'translator'], function (s
 	}
 
 	function setupGraphs() {
-		var trafficCanvas = document.getElementById('analytics-traffic'),
-			registeredCanvas = document.getElementById('analytics-registered'),
-			presenceCanvas = document.getElementById('analytics-presence'),
-			topicsCanvas = document.getElementById('analytics-topics'),
-			trafficCtx = trafficCanvas.getContext('2d'),
-			registeredCtx = registeredCanvas.getContext('2d'),
-			presenceCtx = presenceCanvas.getContext('2d'),
-			topicsCtx = topicsCanvas.getContext('2d'),
-			trafficLabels = utils.getHoursArray();
+		var trafficCanvas = document.getElementById('analytics-traffic');
+		var registeredCanvas = document.getElementById('analytics-registered');
+		var presenceCanvas = document.getElementById('analytics-presence');
+		var topicsCanvas = document.getElementById('analytics-topics');
+		var trafficCtx = trafficCanvas.getContext('2d');
+		var registeredCtx = registeredCanvas.getContext('2d');
+		var presenceCtx = presenceCanvas.getContext('2d');
+		var topicsCtx = topicsCanvas.getContext('2d');
+		var trafficLabels = utils.getHoursArray();
 
 		if (isMobile) {
 			Chart.defaults.global.tooltips.enabled = false;

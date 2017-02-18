@@ -230,8 +230,8 @@ describe('User', function () {
 	});
 
 	describe('passwordReset', function () {
-		var uid,
-			code;
+		var uid;
+		var code;
 		before(function (done) {
 			User.create({username: 'resetuser', password: '123456', email: 'reset@me.com'}, function (err, newUid) {
 				assert.ifError(err);

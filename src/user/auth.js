@@ -78,8 +78,8 @@ module.exports = function (User) {
 				});
 
 				// Revoke any sessions that have expired, return filtered list
-				var expiredSids = [],
-					expired;
+				var expiredSids = [];
+				var expired;
 
 				sessions = sessions.filter(function (sessionObj, idx) {
 					expired = !sessionObj || !sessionObj.hasOwnProperty('passport') ||

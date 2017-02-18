@@ -1,8 +1,8 @@
 define('settings/array', function () {
 
-	var Settings = null,
-		SettingsArray,
-		helper = null;
+	var Settings = null;
+	var SettingsArray;
+	var helper = null;
 
 	/**
 	 Creates a new button that removes itself and the given elements on click.
@@ -41,8 +41,8 @@ define('settings/array', function () {
 	 */
 	function addArrayChildElement(field, key, attributes, value, separator, insertCb) {
 		attributes = helper.deepClone(attributes);
-		var type = attributes['data-type'] || attributes.type || 'text',
-			element = $(helper.createElementOfType(type, attributes.tagName, attributes));
+		var type = attributes['data-type'] || attributes.type || 'text';
+		var element = $(helper.createElementOfType(type, attributes.tagName, attributes));
 		element.attr('data-parent', '_' + key);
 		delete attributes['data-type'];
 		delete attributes['tagName'];
@@ -72,12 +72,12 @@ define('settings/array', function () {
 	 @param separator The separator to forward to {@link addArrayChildElement}.
 	 */
 	function addAddButton(element, key, attributes, separator) {
-		var addSpace = $(document.createTextNode(' ')),
-			newValue = element.data('new') || '',
-			add = $(helper.createElement('button', {
-				"class": 'btn btn-sm btn-primary add',
-				title: 'Expand Array',
-			}, '+'));
+		var addSpace = $(document.createTextNode(' '));
+		var newValue = element.data('new') || '';
+		var add = $(helper.createElement('button', {
+			"class": 'btn btn-sm btn-primary add',
+			title: 'Expand Array',
+		}, '+'));
 		add.click(function (event) {
 			event.preventDefault();
 			addArrayChildElement(element, key, attributes, newValue, separator.clone(), function (el) {
@@ -98,9 +98,9 @@ define('settings/array', function () {
 			return helper.createElement(tagName || 'div');
 		},
 		set: function (element, value) {
-			var attributes = element.data('attributes'),
-				key = element.data('key') || element.data('parent'),
-				separator = element.data('split') || ', ';
+			var attributes = element.data('attributes');
+			var key = element.data('key') || element.data('parent');
+			var separator = element.data('split') || ', ';
 			separator = (function () {
 				try {
 					return $(separator);
@@ -123,13 +123,13 @@ define('settings/array', function () {
 			addAddButton(element, key, attributes, separator);
 		},
 		get: function (element, trim, empty) {
-			var key = element.data('key') || element.data('parent'),
-				children = $("[data-parent=\"_" + key + "\"]", element),
-				values = [];
+			var key = element.data('key') || element.data('parent');
+			var children = $("[data-parent=\"_" + key + "\"]", element);
+			var values = [];
 			children.each(function (i, child) {
 				child = $(child);
-				var val = helper.readValue(child),
-					empty = helper.isTrue(child.data('empty'));
+				var val = helper.readValue(child);
+				var empty = helper.isTrue(child.data('empty'));
 				if (empty || val !== void 0 && (val == null || val.length !== 0)) {
 					return values.push(val);
 				}

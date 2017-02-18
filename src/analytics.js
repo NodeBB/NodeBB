@@ -50,8 +50,8 @@ Analytics.pageView = function (payload) {
 	}
 
 	if (payload.path) {
-		var categoryMatch = payload.path.match(isCategory),
-			cid = categoryMatch ? parseInt(categoryMatch[1], 10) : null;
+		var categoryMatch = payload.path.match(isCategory);
+		var cid = categoryMatch ? parseInt(categoryMatch[1], 10) : null;
 
 		if (cid) {
 			Analytics.increment(['pageviews:byCid:' + cid]);
@@ -103,8 +103,8 @@ Analytics.writeData = function (callback) {
 };
 
 Analytics.getHourlyStatsForSet = function (set, hour, numHours, callback) {
-	var terms = {},
-		hoursArr = [];
+	var terms = {};
+	var hoursArr = [];
 
 	hour = new Date(hour);
 	hour.setHours(hour.getHours(), 0, 0, 0);

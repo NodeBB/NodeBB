@@ -1,8 +1,8 @@
 'use strict';
 
-var	async = require('async'),
-	db = require('../database'),
-	plugins = require('../plugins');
+var	async = require('async');
+var db = require('../database');
+var plugins = require('../plugins');
 
 module.exports = function (Groups) {
 

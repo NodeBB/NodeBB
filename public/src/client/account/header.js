@@ -91,7 +91,7 @@ define('forum/account/header', [
 					components.get('account/cover').css('background-image', 'url(' + imageUrlOnServer + '?' + config['cache-buster'] + ')');
 				});
 			},
-			removeCover,
+			removeCover
 		);
 	}
 

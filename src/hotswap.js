@@ -1,8 +1,8 @@
 "use strict";
 
-var HotSwap = {},
-	winston = require('winston'),
-	stack;
+var HotSwap = {};
+var winston = require('winston');
+var stack;
 
 HotSwap.prepare = function (app) {
 	stack = app._router.stack;

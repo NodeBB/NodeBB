@@ -13,9 +13,9 @@ define('taskbar', function () {
 			$(document.body).append(self.taskbar);
 
 			self.taskbar.on('click', 'li', function () {
-				var	$btn = $(this),
-					module = $btn.attr('data-module'),
-					uuid = $btn.attr('data-uuid');
+				var	$btn = $(this);
+				var module = $btn.attr('data-module');
+				var uuid = $btn.attr('data-uuid');
 
 				require([module], function (module) {
 					if (!$btn.hasClass('active')) {

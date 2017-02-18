@@ -21,8 +21,9 @@ Templates.compile = function (callback) {
 
 
 function getBaseTemplates(theme) {
-	var baseTemplatesPaths = [],
-		baseThemePath, baseThemeConfig;
+	var baseTemplatesPaths = [];
+	var baseThemePath;
+	var baseThemeConfig;
 
 	while (theme) {
 		baseThemePath = path.join(nconf.get('themes_path'), theme);
@@ -78,9 +79,9 @@ function preparePaths(baseTemplatesPaths, callback) {
 				}, next);
 			},
 		}, function (err, data) {
-			var baseThemes = data.baseThemes,
-				coreTpls = data.coreTpls,
-				paths = {};
+			var baseThemes = data.baseThemes;
+			var coreTpls = data.coreTpls;
+			var paths = {};
 
 			coreTpls.forEach(function (el, i) {
 				paths[coreTpls[i].replace(coreTemplatesPath, '')] = coreTpls[i];
@@ -104,9 +105,9 @@ function preparePaths(baseTemplatesPaths, callback) {
 }
 
 function compile(callback) {
-	var themeConfig = require(nconf.get('theme_config')),
-		baseTemplatesPaths = themeConfig.baseTheme ? getBaseTemplates(themeConfig.baseTheme) : [nconf.get('base_templates_path')],
-		viewsPath = nconf.get('views_dir');
+	var themeConfig = require(nconf.get('theme_config'));
+	var baseTemplatesPaths = themeConfig.baseTheme ? getBaseTemplates(themeConfig.baseTheme) : [nconf.get('base_templates_path')];
+	var viewsPath = nconf.get('views_dir');
 
 
 	preparePaths(baseTemplatesPaths, function (err, paths) {
@@ -115,9 +116,9 @@ function compile(callback) {
 		}
 
 		async.each(Object.keys(paths), function (relativePath, next) {
-			var file = fs.readFileSync(paths[relativePath]).toString(),
-				matches = null,
-				regex = /[ \t]*<!-- IMPORT ([\s\S]*?)? -->[ \t]*/;
+			var file = fs.readFileSync(paths[relativePath]).toString();
+			var matches = null;
+			var regex = /[ \t]*<!-- IMPORT ([\s\S]*?)? -->[ \t]*/;
 
 			while((matches = file.match(regex)) !== null) {
 				var partial = "/" + matches[1];

@@ -228,84 +228,84 @@ function createAdmin(callback) {
 	winston.warn('No administrators have been detected, running initial user setup\n');
 
 	var questions = [{
-			name: 'username',
-			description: 'Administrator username',
-			required: true,
-			type: 'string',
-		}, {
-			name: 'email',
-			description: 'Administrator email address',
-			pattern: /.+@.+/,
-			required: true,
-		}],
-		passwordQuestions = [{
-			name: 'password',
-			description: 'Password',
-			required: true,
-			hidden: true,
-			type: 'string',
-		}, {
-			name: 'password:confirm',
-			description: 'Confirm Password',
-			required: true,
-			hidden: true,
-			type: 'string',
-		}],
-		success = function (err, results) {
+		name: 'username',
+		description: 'Administrator username',
+		required: true,
+		type: 'string',
+	}, {
+		name: 'email',
+		description: 'Administrator email address',
+		pattern: /.+@.+/,
+		required: true,
+	}];
+	var passwordQuestions = [{
+		name: 'password',
+		description: 'Password',
+		required: true,
+		hidden: true,
+		type: 'string',
+	}, {
+		name: 'password:confirm',
+		description: 'Confirm Password',
+		required: true,
+		hidden: true,
+		type: 'string',
+	}];
+	function success(err, results) {
+		if (err) {
+			return callback(err);
+		}
+		if (!results) {
+			return callback(new Error('aborted'));
+		}
+
+		if (results['password:confirm'] !== results.password) {
+			winston.warn("Passwords did not match, please try again");
+			return retryPassword(results);
+		}
+		
+		if (results.password.length < meta.config.minimumPasswordLength) {
+			winston.warn("Password too short, please try again");
+			return retryPassword(results);
+		}
+		
+		var adminUid;
+		async.waterfall([
+			function (next) {
+				User.create({username: results.username, password: results.password, email: results.email}, next);
+			},
+			function (uid, next) {
+				adminUid = uid;
+				Groups.join('administrators', uid, next);
+			},
+			function (next) {
+				Groups.show('administrators', next);
+			},
+			function (next) {
+				Groups.ownership.grant(adminUid, 'administrators', next);
+			},
+		], function (err) {
 			if (err) {
 				return callback(err);
 			}
+			callback(null, password ? results : undefined);
+		});
+	}
+	function retryPassword(originalResults) {
+		// Ask only the password questions
+		prompt.get(passwordQuestions, function (err, results) {
 			if (!results) {
 				return callback(new Error('aborted'));
 			}
 
-			if (results['password:confirm'] !== results.password) {
-				winston.warn("Passwords did not match, please try again");
-				return retryPassword(results);
-			}
-			
-			if (results.password.length < meta.config.minimumPasswordLength) {
-				winston.warn("Password too short, please try again");
-				return retryPassword(results);
-			}
-			
-			var adminUid;
-			async.waterfall([
-				function (next) {
-					User.create({username: results.username, password: results.password, email: results.email}, next);
-				},
-				function (uid, next) {
-					adminUid = uid;
-					Groups.join('administrators', uid, next);
-				},
-				function (next) {
-					Groups.show('administrators', next);
-				},
-				function (next) {
-					Groups.ownership.grant(adminUid, 'administrators', next);
-				},
-			], function (err) {
-				if (err) {
-					return callback(err);
-				}
-				callback(null, password ? results : undefined);
-			});
-		},
-		retryPassword = function (originalResults) {
-			// Ask only the password questions
-			prompt.get(passwordQuestions, function (err, results) {
-				if (!results) {
-					return callback(new Error('aborted'));
-				}
+			// Update the original data with newly collected password
+			originalResults.password = results.password;
+			originalResults['password:confirm'] = results['password:confirm'];
 
-				// Update the original data with newly collected password
-				originalResults.password = results.password;
-				originalResults['password:confirm'] = results['password:confirm'];
-
-				// Send back to success to handle
-				success(err, originalResults);
-			});
-		};
+			// Send back to success to handle
+			success(err, originalResults);
+		});
+	}
 
 	// Add the password questions
 	questions = questions.concat(passwordQuestions);
@@ -389,16 +389,16 @@ function createMenuItems(next) {
 		if (err || exists) {
 			return next(err);
 		}
-		var navigation = require('./navigation/admin'),
-			data = require('../install/data/navigation.json');
+		var navigation = require('./navigation/admin');
+		var data = require('../install/data/navigation.json');
 
 		navigation.save(data, next);
 	});
 }
 
 function createWelcomePost(next) {
-	var db = require('./database'),
-		Topics = require('./topics');
+	var db = require('./database');
+	var Topics = require('./topics');
 
 	async.parallel([
 		function (next) {
@@ -412,8 +412,8 @@ function createWelcomePost(next) {
 			return next(err);
 		}
 
-		var content = results[0],
-			numTopics = results[1];
+		var content = results[0];
+		var numTopics = results[1];
 
 		if (!parseInt(numTopics, 10)) {
 			process.stdout.write('Creating welcome post!\n');
@@ -434,16 +434,16 @@ function enableDefaultPlugins(next) {
 	process.stdout.write('Enabling default plugins\n');
 
 	var defaultEnabled = [
-			'nodebb-plugin-composer-default',
-			'nodebb-plugin-markdown',
-			'nodebb-plugin-mentions',
-			'nodebb-widget-essentials',
-			'nodebb-rewards-essentials',
-			'nodebb-plugin-soundpack-default',
-			'nodebb-plugin-emoji-extended',
-			'nodebb-plugin-emoji-one',
-		],
-		customDefaults = nconf.get('defaultPlugins');
+		'nodebb-plugin-composer-default',
+		'nodebb-plugin-markdown',
+		'nodebb-plugin-mentions',
+		'nodebb-widget-essentials',
+		'nodebb-rewards-essentials',
+		'nodebb-plugin-soundpack-default',
+		'nodebb-plugin-emoji-extended',
+		'nodebb-plugin-emoji-one',
+	];
+	var customDefaults = nconf.get('defaultPlugins');
 
 	winston.info('[install/defaultPlugins] customDefaults', customDefaults);
 

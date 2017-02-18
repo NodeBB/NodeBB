@@ -1,10 +1,11 @@
 "use strict";
 
-var fork = require('child_process').fork,
-	env = process.env,
-	worker, updateWorker,
-	incomplete = [],
-	running = 0;
+var fork = require('child_process').fork;
+var env = process.env;
+var worker;
+var updateWorker;
+var incomplete = [];
+var running = 0;
 
 
 module.exports = function (grunt) {
@@ -14,10 +15,10 @@ module.exports = function (grunt) {
 	}
 
 	function update(action, filepath, target) {
-		var updateArgs = args.slice(),
-			fromFile = '',
-			compiling = '',
-			time = Date.now();
+		var updateArgs = args.slice();
+		var fromFile = '';
+		var compiling = '';
+		var time = Date.now();
 		
 		if (target === 'lessUpdated_Client') {
 			compiling = 'clientCSS';

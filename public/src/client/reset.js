@@ -5,9 +5,9 @@ define('forum/reset', function () {
 	var	ResetPassword = {};
 
 	ResetPassword.init = function () {
-		var inputEl = $('#email'),
-			errorEl = $('#error'),
-			successEl = $('#success');
+		var inputEl = $('#email');
+		var errorEl = $('#error');
+		var successEl = $('#success');
 
 		$('#reset').on('click', function () {
 			if (inputEl.val() && inputEl.val().indexOf('@') !== -1) {

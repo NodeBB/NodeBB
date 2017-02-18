@@ -569,7 +569,7 @@ describe('Topic\'s', function () {
 					assert.ok(result);
 					replies.push(result);
 					next();
-				},
+				}
 			);
 		}
 

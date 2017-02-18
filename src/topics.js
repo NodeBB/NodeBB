@@ -89,7 +89,9 @@ var social = require('./social');
 			return callback(null, []);
 		}
 
-		var uids, cids, topics;
+		var uids;
+		var cids;
+		var topics;
 
 		async.waterfall([
 			function (next) {

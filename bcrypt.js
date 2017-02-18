@@ -1,8 +1,8 @@
 
 'use strict';
 
-var bcrypt = require('bcryptjs'),
-	async = require('async');
+var bcrypt = require('bcryptjs');
+var async = require('async');
 
 
 process.on('message', function (msg) {

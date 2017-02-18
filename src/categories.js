@@ -293,7 +293,10 @@ var privileges = require('./privileges');
 	 * @param parentCid {number} start from 0 to build full tree
 	 */
 	Categories.getTree = function (categories, parentCid) {
-		var tree = [], i = 0, len = categories.length, category;
+		var tree = [];
+		var i = 0;
+		var len = categories.length;
+		var category;
 
 		for (i; i < len; ++i) {
 			category = categories[i];

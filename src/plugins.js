@@ -147,8 +147,8 @@ var middleware;
 	};
 
 	Plugins.getTemplates = function (callback) {
-		var templates = {},
-			tplName;
+		var templates = {};
+		var tplName;
 
 		async.waterfall([
 			async.apply(db.getSortedSetRange, 'plugins:active', 0, -1),

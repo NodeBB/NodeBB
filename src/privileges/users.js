@@ -73,9 +73,9 @@ module.exports = function (privileges) {
 				}
 
 				var isMembers = checks.user.map(function (isMember, idx) {
-						return isMember || checks.group[idx];
-					}),
-					map = {};
+					return isMember || checks.group[idx];
+				});
+				var map = {};
 
 				uniqueCids.forEach(function (cid, index) {
 					map[cid] = isMembers[index];

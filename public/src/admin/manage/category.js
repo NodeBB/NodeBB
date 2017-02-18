@@ -41,7 +41,7 @@ define('admin/manage/category', [
 							title: '[[admin/manage/categories:alert.updated]]',
 							message: translator.compile(
 								'admin/manage/categories:alert.updated-success',
-								results.join('&#44; '),
+								results.join('&#44; ')
 							),
 							type: 'success',
 							timeout: 2000,
@@ -58,8 +58,8 @@ define('admin/manage/category', [
 		});
 
 		function enableColorPicker(idx, inputEl) {
-			var $inputEl = $(inputEl),
-				previewEl = $inputEl.parents('[data-cid]').find('.category-preview');
+			var $inputEl = $(inputEl);
+			var previewEl = $inputEl.parents('[data-cid]').find('.category-preview');
 
 			colorpicker.enable($inputEl, function (hsb, hex) {
 				if ($inputEl.attr('data-name') === 'bgColor') {
@@ -117,7 +117,7 @@ define('admin/manage/category', [
 
 			bootbox.confirm(translator.compile(
 				'admin/manage/categories:alert.confirm-purge',
-				$('form.category').find('input[data-name="name"]').val(),
+				$('form.category').find('input[data-name="name"]').val()
 			), function (confirm) {
 				if (!confirm) {
 					return;
@@ -233,13 +233,13 @@ define('admin/manage/category', [
 
 	Category.setupPrivilegeTable = function () {
 		$('.privilege-table-container').on('change', 'input[type="checkbox"]', function () {
-			var checkboxEl = $(this),
-				privilege = checkboxEl.parent().attr('data-privilege'),
-				state = checkboxEl.prop('checked'),
-				rowEl = checkboxEl.parents('tr'),
-				member = rowEl.attr('data-group-name') || rowEl.attr('data-uid'),
-				isPrivate = parseInt(rowEl.attr('data-private') || 0, 10),
-				isGroup = rowEl.attr('data-group-name') !== undefined;
+			var checkboxEl = $(this);
+			var privilege = checkboxEl.parent().attr('data-privilege');
+			var state = checkboxEl.prop('checked');
+			var rowEl = checkboxEl.parents('tr');
+			var member = rowEl.attr('data-group-name') || rowEl.attr('data-uid');
+			var isPrivate = parseInt(rowEl.attr('data-private') || 0, 10);
+			var isGroup = rowEl.attr('data-group-name') !== undefined;
 
 			if (member) {
 				if (isGroup && privilege === 'groups:moderate' && !isPrivate && state) {
@@ -340,8 +340,8 @@ define('admin/manage/category', [
 				});
 
 				modal.find('li[data-cid]').on('click', function () {
-					var parentCid = $(this).attr('data-cid'),
-						payload = {};
+					var parentCid = $(this).attr('data-cid');
+					var payload = {};
 
 					payload[ajaxify.data.category.cid] = {
 						parentCid: parentCid,

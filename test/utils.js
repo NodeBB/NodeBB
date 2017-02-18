@@ -30,8 +30,8 @@ describe('Utility Methods', function () {
 
 	describe('UUID generation', function () {
 		it('return unique random value every time', function () {
-			var uuid1 = utils.generateUUID(),
-				uuid2 = utils.generateUUID();
+			var uuid1 = utils.generateUUID();
+			var uuid2 = utils.generateUUID();
 			assert.notEqual(uuid1, uuid2, 'matches');
 		});
 	});

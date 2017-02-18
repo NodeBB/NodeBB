@@ -1,7 +1,7 @@
 define('settings/checkbox', function () {
 
-	var Settings = null,
-		SettingsCheckbox;
+	var Settings = null;
+	var SettingsCheckbox;
 
 	SettingsCheckbox = {
 		types: ['checkbox'],

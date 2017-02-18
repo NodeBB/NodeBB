@@ -4,9 +4,9 @@
 
 define('forum/topic/flag', [], function () {
 
-	var Flag = {},
-		flagModal,
-		flagCommit;
+	var Flag = {};
+	var flagModal;
+	var flagCommit;
 
 	Flag.showFlagModal = function (pid, username, userslug) {
 		parseModal({

@@ -3,7 +3,11 @@
 var meta = require('./meta');
 
 function expandObjBy(obj1, obj2) {
-	var key, val1, val2, xorValIsArray, changed = false;
+	var key;
+	var val1;
+	var val2;
+	var xorValIsArray;
+	var changed = false;
 	for (key in obj2) {
 		if (obj2.hasOwnProperty(key)) {
 			val2 = obj2[key];
@@ -23,7 +27,8 @@ function expandObjBy(obj1, obj2) {
 }
 
 function trim(obj1, obj2) {
-	var key, val1;
+	var key;
+	var val1;
 	for (key in obj1) {
 		if (obj1.hasOwnProperty(key)) {
 			val1 = obj1[key];
@@ -106,8 +111,8 @@ Settings.prototype.sync = function (callback) {
  @param callback Gets called when done.
  */
 Settings.prototype.persist = function (callback) {
-	var conf = this.cfg._,
-		_this = this;
+	var conf = this.cfg._;
+	var _this = this;
 	if (typeof conf === 'object') {
 		conf = JSON.stringify(conf);
 	}
@@ -126,9 +131,9 @@ Settings.prototype.persist = function (callback) {
  @returns Object The setting to be used.
  */
 Settings.prototype.get = function (key, def) {
-	var obj = this.cfg._,
-		parts = (key || '').split('.'),
-		part;
+	var obj = this.cfg._;
+	var parts = (key || '').split('.');
+	var part;
 	for (var i = 0; i < parts.length; i++) {
 		part = parts[i];
 		if (part && obj != null) {
@@ -183,7 +188,9 @@ Settings.prototype.createDefaultWrapper = function () {
  @param val The value to set.
  */
 Settings.prototype.set = function (key, val) {
-	var part, obj, parts;
+	var part;
+	var obj;
+	var parts;
 	this.cfg.v = this.version;
 	if (val == null || !key) {
 		this.cfg._ = val || key;

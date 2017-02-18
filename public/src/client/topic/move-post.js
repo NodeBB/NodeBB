@@ -11,8 +11,8 @@ define('forum/topic/move-post', [], function () {
 		app.parseAndTranslate('partials/move_post_modal', {}, function (html) {
 			var moveModal = $(html);
 
-			var	moveBtn = moveModal.find('#move_post_commit'),
-				topicId = moveModal.find('#topicId');
+			var	moveBtn = moveModal.find('#move_post_commit');
+			var topicId = moveModal.find('#topicId');
 
 			moveModal.on('hidden.bs.modal', function () {
 				moveModal.remove();

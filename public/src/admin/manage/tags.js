@@ -6,8 +6,8 @@ define('admin/manage/tags', [
 	'admin/modules/selectable',
 	'admin/modules/colorpicker',
 ], function (infinitescroll, selectable, colorpicker) {
-	var	Tags = {},
-		timeoutId = 0;
+	var	Tags = {};
+	var timeoutId = 0;
 
 	Tags.init = function () {
 		selectable.enable('.tag-management', '.tag-row');
@@ -85,8 +85,8 @@ define('admin/manage/tags', [
 				return;
 			}
 
-			var firstTag = $(tagsToModify[0]),
-				title = tagsToModify.length > 1 ? '[[admin/manage/tags:alerts.editing-multiple]]' : '[[admin/manage/tags:alerts.editing-x, ' + firstTag.find('.tag-item').text() + ']]';
+			var firstTag = $(tagsToModify[0]);
+			var title = tagsToModify.length > 1 ? '[[admin/manage/tags:alerts.editing-multiple]]' : '[[admin/manage/tags:alerts.editing-x, ' + firstTag.find('.tag-item').text() + ']]';
 
 			var modal = bootbox.dialog({
 				title:  title,
@@ -96,9 +96,9 @@ define('admin/manage/tags', [
 						label: "Save",
 						className: "btn-primary save",
 						callback: function () {
-							var modal = $('.bootbox'),
-								bgColor = modal.find('[data-name="bgColor"]').val(),
-								color = modal.find('[data-name="color"]').val();
+							var modal = $('.bootbox');
+							var bgColor = modal.find('[data-name="bgColor"]').val();
+							var color = modal.find('[data-name="color"]').val();
 
 							tagsToModify.each(function (idx, tag) {
 								tag = $(tag);

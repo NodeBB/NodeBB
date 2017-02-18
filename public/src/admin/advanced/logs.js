@@ -11,8 +11,8 @@ define('admin/advanced/logs', function () {
 		$('.affix').affix();
 
 		$('.logs').find('button[data-action]').on('click', function (event) {
-			var btnEl = $(this),
-				action = btnEl.attr('data-action');
+			var btnEl = $(this);
+			var action = btnEl.attr('data-action');
 
 			switch(action) {
 				case 'reload':

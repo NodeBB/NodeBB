@@ -126,7 +126,8 @@ module.exports = function (User) {
 
 	User.updateCoverPicture = function (data, callback) {
 		var keepAllVersions = parseInt(meta.config['profile:keepAllUserImages'], 10) === 1;
-		var url, md5sum;
+		var url;
+		var md5sum;
 
 		if (!data.imageData && data.position) {
 			return User.updateCoverPosition(data.uid, data.position, callback);
@@ -224,7 +225,8 @@ module.exports = function (User) {
 	
 	User.uploadCroppedPicture = function (data, callback) {
 		var keepAllVersions = parseInt(meta.config['profile:keepAllUserImages'], 10) === 1;
-		var url, md5sum;
+		var url;
+		var md5sum;
 
 		if (!data.imageData) {
 			return callback(new Error('[[error:invalid-data]]'));

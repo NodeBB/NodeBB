@@ -198,7 +198,8 @@ module.exports = function (redisClient, module) {
 	function sortedSetLex(method, reverse, key, min, max, start, count, callback) {
 		callback = callback || start;
 
-		var minmin, maxmax;
+		var minmin;
+		var maxmax;
 		if (reverse) {
 			minmin = '+';
 			maxmax = '-';

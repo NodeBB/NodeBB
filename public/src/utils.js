@@ -1,7 +1,9 @@
 (function (module) {
 	'use strict';
 
-	var utils, fs, XRegExp;
+	var utils;
+	var fs;
+	var XRegExp;
 
 	if ('undefined' === typeof window) {
 		fs = require('fs');
@@ -24,8 +26,8 @@
 	module.exports = utils = {
 		generateUUID: function () {
 			return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
-				var r = Math.random() * 16 | 0,
-					v = c === 'x' ? r : (r & 0x3 | 0x8);
+				var r = Math.random() * 16 | 0;
+				var v = c === 'x' ? r : (r & 0x3 | 0x8);
 				return v.toString(16);
 			});
 		},
@@ -143,7 +145,9 @@
 
 		// shallow objects merge
 		merge: function () {
-			var result = {}, obj, keys;
+			var result = {};
+			var obj;
+			var keys;
 			for (var i = 0; i < arguments.length; i++) {
 				obj = arguments[i] || {};
 				keys = Object.keys(obj);
@@ -268,8 +272,8 @@
 
 		findBootstrapEnvironment: function () {
 			//http://stackoverflow.com/questions/14441456/how-to-detect-which-device-view-youre-on-using-twitter-bootstrap-api
-			var envs = ['xs', 'sm', 'md', 'lg'],
-				$el = $('<div>');
+			var envs = ['xs', 'sm', 'md', 'lg'];
+			var $el = $('<div>');
 
 			$el.appendTo($('body'));
 
@@ -292,8 +296,8 @@
 		},
 
 		getHoursArray: function () {
-			var currentHour = new Date().getHours(),
-				labels = [];
+			var currentHour = new Date().getHours();
+			var labels = [];
 
 			for (var i = currentHour, ii = currentHour - 24; i > ii; i--) {
 				var hour = i < 0 ? 24 + i : i;
@@ -304,10 +308,10 @@
 		},
 
 		getDaysArray: function (from) {
-			var currentDay = new Date(from || Date.now()).getTime(),
-				months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-				labels = [],
-				tmpDate;
+			var currentDay = new Date(from || Date.now()).getTime();
+			var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+			var labels = [];
+			var tmpDate;
 
 			for(var x = 29; x >= 0; x--) {
 				tmpDate = new Date(currentDay - (1000 * 60 * 60 * 24 * x));
@@ -336,7 +340,9 @@
 
 		// get all the url params in a single key/value hash
 		params: function (options) {
-			var a, hash = {}, params;
+			var a;
+			var hash = {};
+			var params;
 
 			options = options || {};
 			options.skipToType = options.skipToType || {};
@@ -347,9 +353,9 @@
 			params = (a ? a.search : window.location.search).substring(1).split("&");
 
 			params.forEach(function (param) {
-				var val = param.split('='),
-					key = decodeURI(val[0]),
-					value = options.skipToType[key] ? decodeURI(val[1]) : utils.toType(decodeURI(val[1]));
+				var val = param.split('=');
+				var key = decodeURI(val[0]);
+				var value = options.skipToType[key] ? decodeURI(val[1]) : utils.toType(decodeURI(val[1]));
 
 				if (key) {
 					if (key.substr(-2, 2) === '[]') {
@@ -423,8 +429,8 @@
 				}
 				return obj[props];
 			}
-			var prop = props.slice(0, i),
-				newProps = props.slice(i + 1);
+			var prop = props.slice(0, i);
+			var newProps = props.slice(i + 1);
 
 			if(props !== undefined && !(obj[prop] instanceof Object) ) {
 				obj[prop] = {};

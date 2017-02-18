@@ -1,29 +1,27 @@
 'use strict';
 
-var	nconf = require('nconf'),
-	fs = require('fs'),
-	url = require('url'),
-	path = require('path'),
-	fork = require('child_process').fork,
-
-	async = require('async'),
-	logrotate = require('logrotate-stream'),
-	file = require('./src/file'),
-	pkg = require('./package.json');
+var	nconf = require('nconf');
+var fs = require('fs');
+var url = require('url');
+var path = require('path');
+var fork = require('child_process').fork;
+var async = require('async');
+var logrotate = require('logrotate-stream');
+var file = require('./src/file');
+var pkg = require('./package.json');
 
 nconf.argv().env().file({
 	file: path.join(__dirname, '/config.json'),
 });
 
-var	pidFilePath = __dirname + '/pidfile',
-	output = logrotate({ file: __dirname + '/logs/output.log', size: '1m', keep: 3, compress: true }),
-	silent = nconf.get('silent') === 'false' ? false : nconf.get('silent') !== false,
-	numProcs,
-	workers = [],
-
-	Loader = {
-		timesStarted: 0,
-	};
+var	pidFilePath = __dirname + '/pidfile';
+var output = logrotate({ file: __dirname + '/logs/output.log', size: '1m', keep: 3, compress: true });
+var silent = nconf.get('silent') === 'false' ? false : nconf.get('silent') !== false;
+var numProcs;
+var workers = [];
+var Loader = {
+	timesStarted: 0,
+};
 
 Loader.init = function (callback) {
 	if (silent) {

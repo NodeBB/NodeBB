@@ -91,7 +91,7 @@ define('forum/chats/messages', ['components', 'sounds', 'translator'], function 
 	messages.scrollToBottom = function (containerEl) {
 		if (containerEl.length) {
 			containerEl.scrollTop(
-				containerEl[0].scrollHeight - containerEl.height(),
+				containerEl[0].scrollHeight - containerEl.height()
 			);
 		}
 	};

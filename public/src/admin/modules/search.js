@@ -21,7 +21,7 @@ define('admin/modules/search', ['mousetrap'], function (mousetrap) {
 				// and wrap the match in a `.search-match` element
 				.replace(
 					new RegExp('^[\\s\\S]*?(.{0,25})(' + term + ')(.{0,25})[\\s\\S]*?$', 'gmi'),
-					'...$1<span class="search-match">$2</span>$3...<br>',
+					'...$1<span class="search-match">$2</span>$3...<br>'
 				)
 				// collapse whitespace
 				.replace(/(?:\n ?)+/g, '\n')
@@ -29,7 +29,7 @@ define('admin/modules/search', ['mousetrap'], function (mousetrap) {
 
 			title = title.replace(
 				new RegExp('(^.*?)(' + term + ')(.*?$)', 'gi'),
-				'$1<span class="search-match">$2</span>$3',
+				'$1<span class="search-match">$2</span>$3'
 			);
 
 			return '<li role="presentation" class="result">' +

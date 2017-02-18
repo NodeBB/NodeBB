@@ -40,7 +40,7 @@ describe('admin search', function () {
                 search.sanitize('Pellentesque tristique senectus' +
                     '<script>alert("nope");</script> habitant morbi'),
                 'Pellentesque tristique senectus' +
-                ' habitant morbi',
+                ' habitant morbi'
             );
             done();
         });
@@ -49,7 +49,7 @@ describe('admin search', function () {
                 search.sanitize('<p>Pellentesque <b>habitant morbi</b> tristique senectus' +
                     'Aenean <i>vitae</i> est.Mauris <a href="placerat">eleifend</a> leo.</p>'),
                 'Pellentesque habitant morbi tristique senectus' +
-                'Aenean vitae est.Mauris eleifend leo.',
+                'Aenean vitae est.Mauris eleifend leo.'
             );
             done();
         });
@@ -60,10 +60,10 @@ describe('admin search', function () {
             assert.equal(
                 search.simplify(
                     'Pellentesque tristique {{senectus}}habitant morbi' +
-                    'liquam tincidunt {mauris.eu}risus',
+                    'liquam tincidunt {mauris.eu}risus'
                 ),
                 'Pellentesque tristique habitant morbi' +
-                'liquam tincidunt risus',
+                'liquam tincidunt risus'
             );
             done();
         });
@@ -71,10 +71,10 @@ describe('admin search', function () {
             assert.equal(
                 search.simplify(
                     'Pellentesque tristique   habitant morbi' +
-                    '  \n\n    liquam tincidunt mauris eu risus.',
+                    '  \n\n    liquam tincidunt mauris eu risus.'
                 ),
                 'Pellentesque tristique habitant morbi' +
-                '\nliquam tincidunt mauris eu risus.',
+                '\nliquam tincidunt mauris eu risus.'
             );
             done();
         });

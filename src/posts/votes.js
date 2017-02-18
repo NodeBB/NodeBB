@@ -158,9 +158,9 @@ module.exports = function (Posts) {
 				return callback(new Error('[[error:not-enough-reputation-to-downvote]]'));
 			}
 
-			var voteStatus = results.voteStatus,
-				hook,
-				current = voteStatus.upvoted ? 'upvote' : 'downvote';
+			var voteStatus = results.voteStatus;
+			var hook;
+			var current = voteStatus.upvoted ? 'upvote' : 'downvote';
 
 			if (voteStatus.upvoted && command === 'downvote' || voteStatus.downvoted && command === 'upvote') {	// e.g. User *has* upvoted, and clicks downvote
 				hook = command;

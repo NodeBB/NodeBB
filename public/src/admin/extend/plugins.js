@@ -4,9 +4,9 @@
 define('admin/extend/plugins', ['jqueryui', 'translator'], function (jqueryui, translator) {
 	var Plugins = {};
 	Plugins.init = function () {
-		var pluginsList = $('.plugins'),
-			numPlugins = pluginsList[0].querySelectorAll('li').length,
-			pluginID;
+		var pluginsList = $('.plugins');
+		var numPlugins = pluginsList[0].querySelectorAll('li').length;
+		var pluginID;
 
 		if (!numPlugins) {
 			translator.translate('<li><p><i>[[admin/extend/plugins:none-found]]</i></p></li>', function (html) {

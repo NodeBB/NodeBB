@@ -2,7 +2,9 @@
 /*global define, socket, app, bootbox, templates, ajaxify, Sortable */
 
 define('admin/manage/categories', ['vendor/jquery/serializeObject/jquery.ba-serializeobject.min', 'translator'], function (serialize, translator) {
-	var	Categories = {}, newCategoryId = -1, sortables;
+	var	Categories = {};
+	var newCategoryId = -1;
+	var sortables;
 
 	Categories.init = function () {
 		socket.emit('admin.categories.getAll', function (error, payload) {
@@ -17,10 +19,10 @@ define('admin/manage/categories', ['vendor/jquery/serializeObject/jquery.ba-seri
 
 		// Enable/Disable toggle events
 		$('.categories').on('click', 'button[data-action="toggle"]', function () {
-			var $this = $(this),
-				cid = $this.attr('data-cid'),
-				parentEl = $this.parents('li[data-cid="' + cid + '"]'),
-				disabled = parentEl.hasClass('disabled');
+			var $this = $(this);
+			var cid = $this.attr('data-cid');
+			var parentEl = $this.parents('li[data-cid="' + cid + '"]');
+			var disabled = parentEl.hasClass('disabled');
 
 			var children = parentEl.find('li[data-cid]').map(function () {
 				return $(this).attr('data-cid');
@@ -127,8 +129,11 @@ define('admin/manage/categories', ['vendor/jquery/serializeObject/jquery.ba-seri
 
 		//Update needed?
 		if((e.newIndex != undefined && e.oldIndex != e.newIndex) || isCategoryUpdate) {
-			var parentCategory = isCategoryUpdate ? sortables[newCategoryId] : sortables[e.from.dataset.cid],
-				modified = {}, i = 0, list = parentCategory.toArray(), len = list.length;
+			var parentCategory = isCategoryUpdate ? sortables[newCategoryId] : sortables[e.from.dataset.cid];
+			var modified = {};
+			var i = 0;
+			var list = parentCategory.toArray();
+			var len = list.length;
 
 			for(i; i < len; ++i) {
 				modified[list[i]] = {

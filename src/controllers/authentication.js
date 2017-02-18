@@ -343,7 +343,8 @@ authenticationController.localLogin = function (req, username, password, next) {
 	}
 
 	var userslug = utils.slugify(username);
-	var uid, userData = {};
+	var uid;
+	var userData = {};
 
 	async.waterfall([
 		function (next) {

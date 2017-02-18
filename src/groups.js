@@ -20,30 +20,30 @@ var utils = require('../public/src/utils');
 	require('./groups/search')(Groups);
 	require('./groups/cover')(Groups);
 
-	var ephemeralGroups = ['guests'],
+	var ephemeralGroups = ['guests'];
 
-		internals = {
-			getEphemeralGroup: function (groupName) {
-				return {
-					name: groupName,
-					slug: utils.slugify(groupName),
-					description: '',
-					deleted: '0',
-					hidden: '0',
-					system: '1',
-				};
-			},
-			removeEphemeralGroups: function (groups) {
-				var x = groups.length;
-				while(x--) {
-					if (ephemeralGroups.indexOf(groups[x]) !== -1) {
-						groups.splice(x, 1);
-					}
+	var internals = {
+		getEphemeralGroup: function (groupName) {
+			return {
+				name: groupName,
+				slug: utils.slugify(groupName),
+				description: '',
+				deleted: '0',
+				hidden: '0',
+				system: '1',
+			};
+		},
+		removeEphemeralGroups: function (groups) {
+			var x = groups.length;
+			while(x--) {
+				if (ephemeralGroups.indexOf(groups[x]) !== -1) {
+					groups.splice(x, 1);
 				}
+			}
 
-				return groups;
-			},
-		};
+			return groups;
+		},
+	};
 
 	Groups.internals = internals;
 

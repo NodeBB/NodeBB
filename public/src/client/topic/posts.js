@@ -165,7 +165,8 @@ define('forum/topic/posts', [
 			return callback();
 		}
 
-		var after, before;
+		var after;
+		var before;
 
 		if (direction > 0 && repliesSelector.length) {
 			after = repliesSelector.last();
@@ -188,8 +189,8 @@ define('forum/topic/posts', [
 				html.insertAfter(after);
 			} else if (before) {
 				// Save document height and position for future reference (about 5 lines down)
-				var height = $(document).height(),
-					scrollTop = $(window).scrollTop();
+				var height = $(document).height();
+				var scrollTop = $(window).scrollTop();
 
 				html.insertBefore(before);
 
@@ -290,40 +291,42 @@ define('forum/topic/posts', [
 				default
 			*/
 
-			var images = components.get('post/content').find('img[data-state="unloaded"]'),
-				visible = images.filter(function () {
+			var images = components.get('post/content').find('img[data-state="unloaded"]');
+			var visible = images.filter(function () {
 					return utils.isElementInViewport(this);
-				}),
-				posts = $.unique(visible.map(function () {
+				});
+			var posts = $.unique(visible.map(function () {
 					return $(this).parents('[component="post"]').get(0);
-				})),
-				scrollTop = $(window).scrollTop(),
-				adjusting = false,
-				adjustQueue = [],
-				adjustPosition = function () {
-					adjusting = true;
-					oldHeight = document.body.clientHeight;
+				}));
+			var scrollTop = $(window).scrollTop();
+			var adjusting = false;
+			var adjustQueue = [];
+			var oldHeight;
+			var newHeight;
 
-					// Display the image
-					$(this).attr('data-state', 'loaded');
-					newHeight = document.body.clientHeight;
+			function adjustPosition() {
+				adjusting = true;
+				oldHeight = document.body.clientHeight;
 
-					var imageRect = this.getBoundingClientRect();
-					if (imageRect.top < threshold) {
-						scrollTop = scrollTop + (newHeight - oldHeight);
-						$(window).scrollTop(scrollTop);
-					}
+				// Display the image
+				$(this).attr('data-state', 'loaded');
+				newHeight = document.body.clientHeight;
 
-					if (adjustQueue.length) {
-						adjustQueue.pop()();
-					} else {
-						adjusting = false;
+				var imageRect = this.getBoundingClientRect();
+				if (imageRect.top < threshold) {
+					scrollTop = scrollTop + (newHeight - oldHeight);
+					$(window).scrollTop(scrollTop);
+				}
 
-						Posts.wrapImagesInLinks(posts);
-						posts.length = 0;
-					}
-				},
-				oldHeight, newHeight;
+				if (adjustQueue.length) {
+					adjustQueue.pop()();
+				} else {
+					adjusting = false;
+
+					Posts.wrapImagesInLinks(posts);
+					posts.length = 0;
+				}
+			};
 
 			// For each image, reset the source and adjust scrollTop when loaded
 			visible.attr('data-state', 'loading');
@@ -346,9 +349,9 @@ define('forum/topic/posts', [
 
 	Posts.wrapImagesInLinks = function (posts) {
 		posts.find('[component="post/content"] img:not(.emoji)').each(function () {
-			var $this = $(this),
-				src = $this.attr('src'),
-				suffixRegex = /-resized(\.[\w]+)?$/;
+			var $this = $(this);
+			var src = $this.attr('src');
+			var suffixRegex = /-resized(\.[\w]+)?$/;
 
 			if (src === 'about:blank') {
 				return;

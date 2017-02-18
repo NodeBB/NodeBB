@@ -263,7 +263,7 @@ module.exports = function (Topics) {
 			},
 			function (err) {
 				callback(err, latestPid);
-			},
+			}
 		);
 	};
 

@@ -21,10 +21,10 @@ define('admin/appearance/skins', ['translator'], function (translator) {
 			var action = target.attr('data-action');
 
 			if (action && action === 'use') {
-				var parentEl = target.parents('[data-theme]'),
-					themeType = parentEl.attr('data-type'),
-					cssSrc = parentEl.attr('data-css'),
-					themeId = parentEl.attr('data-theme');
+				var parentEl = target.parents('[data-theme]');
+				var themeType = parentEl.attr('data-type');
+				var cssSrc = parentEl.attr('data-css');
+				var themeId = parentEl.attr('data-theme');
 
 
 				socket.emit('admin.themes.set', {

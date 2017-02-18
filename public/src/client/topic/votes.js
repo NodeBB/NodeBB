@@ -64,8 +64,8 @@ define('forum/topic/votes', ['components', 'translator'], function (components, 
 
 
 	Votes.toggleVote = function (button, className, method) {
-		var post = button.parents('[data-pid]'),
-			currentState = post.find(className).length;
+		var post = button.parents('[data-pid]');
+		var currentState = post.find(className).length;
 
 		socket.emit(currentState ? 'posts.unvote' : method , {
 			pid: post.attr('data-pid'),

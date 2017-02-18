@@ -49,7 +49,9 @@ module.exports = function (Posts) {
 
 	Posts.relativeToAbsolute = function (content) {
 		// Turns relative links in post body to absolute urls
-		var parsed, current, absolute;
+		var parsed;
+		var current;
+		var absolute;
 
 		while ((current = urlRegex.exec(content)) !== null) {
 			if (current[1]) {
@@ -76,8 +78,8 @@ module.exports = function (Posts) {
 	};
 
 	function sanitizeSignature(signature) {
-		var	string = S(signature),
-			tagsToStrip = [];
+		var	string = S(signature);
+		var tagsToStrip = [];
 
 		if (parseInt(meta.config['signatures:disableLinks'], 10) === 1) {
 			tagsToStrip.push('a');

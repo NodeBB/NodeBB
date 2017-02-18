@@ -5,9 +5,9 @@ define('forum/login', ['translator'], function (translator) {
 	var	Login = {};
 
 	Login.init = function () {
-		var errorEl = $('#login-error-notify'),
-			submitEl = $('#login'),
-			formEl = $('#login-form');
+		var errorEl = $('#login-error-notify');
+		var submitEl = $('#login');
+		var formEl = $('#login-form');
 
 		submitEl.on('click', function (e) {
 			e.preventDefault();

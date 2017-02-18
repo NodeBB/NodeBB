@@ -55,9 +55,9 @@ uploadsController.uploadFavicon = function (req, res, next) {
 };
 
 uploadsController.uploadTouchIcon = function (req, res, next) {
-	var uploadedFile = req.files.files[0],
-		allowedTypes = ['image/png'],
-		sizes = [36, 48, 72, 96, 144, 192];
+	var uploadedFile = req.files.files[0];
+	var allowedTypes = ['image/png'];
+	var sizes = [36, 48, 72, 96, 144, 192];
 
 	if (validateUpload(req, res, next, uploadedFile, allowedTypes)) {
 		file.saveFileToLocal('touchicon-orig.png', 'system', uploadedFile.path, function (err, imageObj) {
@@ -105,8 +105,8 @@ uploadsController.uploadSound = function (req, res, next) {
 			return next(err);
 		}
 
-		var	soundsPath = path.join(__dirname, '../../../build/public/sounds'),
-			filePath = path.join(nconf.get('upload_path'), 'sounds', uploadedFile.name);
+		var	soundsPath = path.join(__dirname, '../../../build/public/sounds');
+		var filePath = path.join(nconf.get('upload_path'), 'sounds', uploadedFile.name);
 
 		file.link(filePath, path.join(soundsPath, path.basename(filePath)));
 

@@ -153,8 +153,8 @@ module.exports = function (Meta) {
 
 	Meta.themes.setPath = function (themeObj) {
 		// Theme's templates path
-		var themePath = nconf.get('base_templates_path'),
-			fallback = path.join(nconf.get('themes_path'), themeObj.id, 'templates');
+		var themePath = nconf.get('base_templates_path');
+		var fallback = path.join(nconf.get('themes_path'), themeObj.id, 'templates');
 
 		if (themeObj.templates) {
 			themePath = path.join(nconf.get('themes_path'), themeObj.id, themeObj.templates);

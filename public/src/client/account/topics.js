@@ -4,7 +4,8 @@
 
 define('forum/account/topics', ['forum/account/header', 'forum/infinitescroll'], function (header, infinitescroll) {
 	var AccountTopics = {};
-	var template, set;
+	var template;
+	var set;
 
 	AccountTopics.init = function () {
 		header.init();

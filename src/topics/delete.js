@@ -70,7 +70,8 @@ module.exports = function (Topics) {
 							postData = postData.filter(function (post) {
 								return post && parseInt(post.deleted, 10) !== 1;
 							});
-							var pidsToAdd = [], scores = [];
+							var pidsToAdd = [];
+							var scores = [];
 							postData.forEach(function (post) {
 								pidsToAdd.push(post.pid);
 								scores.push(post.timestamp);
