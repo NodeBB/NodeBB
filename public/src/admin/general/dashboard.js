@@ -292,10 +292,10 @@ define('admin/general/dashboard', ['semver', 'Chart', 'translator'], function (s
 			$('[data-action="updateGraph"]').on('click', function () {
 				var until;
 				switch ($(this).attr('data-until')) {
-					case 'last-month':
-						var lastMonth = new Date();
-						lastMonth.setDate(lastMonth.getDate() - 30);
-						until = lastMonth.getTime();
+				case 'last-month':
+					var lastMonth = new Date();
+					lastMonth.setDate(lastMonth.getDate() - 30);
+					until = lastMonth.getTime();
 				}
 				updateTrafficGraph($(this).attr('data-units'), until);
 			});

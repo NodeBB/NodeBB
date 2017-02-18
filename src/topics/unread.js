@@ -121,10 +121,10 @@ module.exports = function (Topics) {
 						return false;
 					}
 					switch (filter) {
-						case 'new':
-							return !userRead[recentTopic.value];
-						default:
-							return !userRead[recentTopic.value] || recentTopic.score > userRead[recentTopic.value];
+					case 'new':
+						return !userRead[recentTopic.value];
+					default:
+						return !userRead[recentTopic.value] || recentTopic.score > userRead[recentTopic.value];
 					}
 				}).map(function (topic) {
 					return topic.value;

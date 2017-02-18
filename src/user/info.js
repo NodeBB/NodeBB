@@ -119,9 +119,9 @@ module.exports = function (User) {
 
 	function formatBanData(data) {
 		var reasons = data.reasons.reduce(function (memo, cur) {
-				memo[cur.score] = cur.value;
-				return memo;
-			}, {});
+			memo[cur.score] = cur.value;
+			return memo;
+		}, {});
 
 		data.bans = data.bans.map(function (banObj) {
 			banObj.until = parseInt(banObj.value, 10);

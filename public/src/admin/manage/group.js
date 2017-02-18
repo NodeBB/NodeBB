@@ -113,36 +113,36 @@ define('admin/manage/group', [
 			var action = btnEl.attr('data-action');
 
 			switch (action) {
-				case 'toggleOwnership':
-					socket.emit('groups.' + (isOwner ? 'rescind' : 'grant'), {
-						toUid: uid,
+			case 'toggleOwnership':
+				socket.emit('groups.' + (isOwner ? 'rescind' : 'grant'), {
+					toUid: uid,
+					groupName: groupName,
+				}, function (err) {
+					if (err) {
+						return app.alertError(err.message);
+					}
+					ownerFlagEl.toggleClass('invisible');
+				});
+				break;
+
+			case 'kick':
+				bootbox.confirm('[[admin/manage/groups:edit.confirm-remove-user]]', function (confirm) {
+					if (!confirm) {
+						return;
+					}
+					socket.emit('admin.groups.leave', {
+						uid: uid,
 						groupName: groupName,
 					}, function (err) {
 						if (err) {
 							return app.alertError(err.message);
 						}
-						ownerFlagEl.toggleClass('invisible');
+						userRow.slideUp().remove();
 					});
-					break;
-
-				case 'kick':
-					bootbox.confirm('[[admin/manage/groups:edit.confirm-remove-user]]', function (confirm) {
-						if (!confirm) {
-							return;
-						}
-						socket.emit('admin.groups.leave', {
-							uid: uid,
-							groupName: groupName,
-						}, function (err) {
-							if (err) {
-								return app.alertError(err.message);
-							}
-							userRow.slideUp().remove();
-						});
-					});
-					break;
-				default:
-					break;
+				});
+				break;
+			default:
+				break;
 			}
 		});
 

@@ -21,11 +21,16 @@
 		"no-mixed-operators": ["error", { "allowSamePrecedence": true }],
 		"strict": ["error", "global"],
 		"consistent-return": "off",
+		"func-names": "off",
+		"no-tabs": "off",
+		"indent": ["error", "tab"],
 
 		// ES6
 		"prefer-rest-params": "off",
 		"prefer-spread": "off",
 		"prefer-arrow-callback": "off",
+		"prefer-template": "off",
+		"no-var": "off",
 
 		// TODO
 		"import/no-unresolved": "off",
@@ -90,13 +95,9 @@
 		"no-restricted-module": "off",
 		"no-return-assign": "off",
 		"no-restricted-modules": "off",
-		"no-tabs": "off",
-		"indent": "off",
-		"func-names": "off",
 		"object-curly-spacing": "off",
-		"no-var": "off",
 		"no-shadow": "off",
-		"prefer-template": "off",
+		// "indent": "off",
 		// "padded-blocks": "off",
 		// "eol-last": "off",
 		// "lines-around-directive": "off",

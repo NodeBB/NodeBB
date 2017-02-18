@@ -84,37 +84,37 @@ exports.buildTargets = function (targets, callback) {
 			async.eachSeries(targets, function (target, next) {
 				var startTime;
 				switch (target) {
-					case 'js':
-						setImmediate(next);
-						break;
-					case 'clientCSS':
-						winston.info('[build] Building client-side CSS');
-						startTime = Date.now();
-						meta.css.minify('client', step.bind(this, startTime, target, next));
-						break;
+				case 'js':
+					setImmediate(next);
+					break;
+				case 'clientCSS':
+					winston.info('[build] Building client-side CSS');
+					startTime = Date.now();
+					meta.css.minify('client', step.bind(this, startTime, target, next));
+					break;
 
-					case 'acpCSS':
-						winston.info('[build] Building admin control panel CSS');
-						startTime = Date.now();
-						meta.css.minify('admin', step.bind(this, startTime, target, next));
-						break;
+				case 'acpCSS':
+					winston.info('[build] Building admin control panel CSS');
+					startTime = Date.now();
+					meta.css.minify('admin', step.bind(this, startTime, target, next));
+					break;
 
-					case 'tpl':
-						winston.info('[build] Building templates');
-						startTime = Date.now();
-						meta.templates.compile(step.bind(this, startTime, target, next));
-						break;
+				case 'tpl':
+					winston.info('[build] Building templates');
+					startTime = Date.now();
+					meta.templates.compile(step.bind(this, startTime, target, next));
+					break;
 
-					case 'lang':
-						winston.info('[build] Building language files');
-						startTime = Date.now();
-						meta.languages.build(step.bind(this, startTime, target, next));
-						break;
+				case 'lang':
+					winston.info('[build] Building language files');
+					startTime = Date.now();
+					meta.languages.build(step.bind(this, startTime, target, next));
+					break;
 
-					default:
-						winston.warn('[build] Unknown build target: \'' + target + '\'');
-						setImmediate(next);
-						break;
+				default:
+					winston.warn('[build] Unknown build target: \'' + target + '\'');
+					setImmediate(next);
+					break;
 				}
 			}, next);
 		},

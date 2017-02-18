@@ -10,11 +10,11 @@ define('admin/manage/category-analytics', ['Chart'], function (Chart) {
 		var	topicsCanvas = document.getElementById('topics:daily');
 		var	postsCanvas = document.getElementById('posts:daily');
 		var	hourlyLabels = utils.getHoursArray().map(function (text, idx) {
-				return idx % 3 ? '' : text;
-			});
+			return idx % 3 ? '' : text;
+		});
 		var	dailyLabels = utils.getDaysArray().map(function (text, idx) {
-				return idx % 3 ? '' : text;
-			});
+			return idx % 3 ? '' : text;
+		});
 
 		if (utils.isMobile()) {
 			Chart.defaults.global.tooltips.enabled = false;

@@ -562,11 +562,11 @@ describe('Topic\'s', function () {
 		var originalBookmark = 5;
 		function postReply(next) {
 			topics.reply({uid: topic.userId, content: 'test post ' + replies.length, tid: newTopic.tid}, function (err, result) {
-					assert.equal(err, null, 'was created with error');
-					assert.ok(result);
-					replies.push(result);
-					next();
-				}
+				assert.equal(err, null, 'was created with error');
+				assert.ok(result);
+				replies.push(result);
+				next();
+			}
 			);
 		}
 

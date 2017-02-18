@@ -491,26 +491,26 @@
 			// and correct NodeBB language codes to timeago codes, if necessary
 			var languageCode = void 0;
 			switch (config.userLang) {
-				case 'en-GB':
-				case 'en-US':
-					languageCode = 'en';
-					break;
+			case 'en-GB':
+			case 'en-US':
+				languageCode = 'en';
+				break;
 
-				case 'fa-IR':
-					languageCode = 'fa';
-					break;
+			case 'fa-IR':
+				languageCode = 'fa';
+				break;
 
-				case 'pt-BR':
-					languageCode = 'pt-br';
-					break;
+			case 'pt-BR':
+				languageCode = 'pt-br';
+				break;
 
-				case 'nb':
-					languageCode = 'no';
-					break;
+			case 'nb':
+				languageCode = 'no';
+				break;
 
-				default:
-					languageCode = config.userLang;
-					break;
+			default:
+				languageCode = config.userLang;
+				break;
 			}
 
 			jQuery.getScript(config.relative_path + '/assets/vendor/jquery/timeago/locales/jquery.timeago.' + languageCode + '.js').done(function () {

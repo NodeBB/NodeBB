@@ -57,18 +57,18 @@ define('admin/extend/rewards', ['translator'], function (translator) {
 	function select(el) {
 		el.val(el.attr('data-selected'));
 		switch (el.attr('name')) {
-			case 'rid':
-					selectReward(el);
-				break;
+		case 'rid':
+			selectReward(el);
+			break;
 		}
 	}
 
 	function update(el) {
 		el.attr('data-selected', el.val());
 		switch (el.attr('name')) {
-			case 'rid':
-					selectReward(el);
-				break;
+		case 'rid':
+			selectReward(el);
+			break;
 		}
 	}
 
@@ -95,15 +95,15 @@ define('admin/extend/rewards', ['translator'], function (translator) {
 		inputs.forEach(function (input) {
 			html += '<label for="' + input.name + '">' + input.label + '<br />';
 			switch (input.type) {
-				case 'select':
-						html += '<select name="' + input.name + '">';
-						input.values.forEach(function (value) {
-							html += '<option value="' + value.value + '">' + value.name + '</option>';
-						});
-					break;
-				case 'text':
-						html += '<input type="text" name="' + input.name + '" />';
-					break;
+			case 'select':
+				html += '<select name="' + input.name + '">';
+				input.values.forEach(function (value) {
+					html += '<option value="' + value.value + '">' + value.name + '</option>';
+				});
+				break;
+			case 'text':
+				html += '<input type="text" name="' + input.name + '" />';
+				break;
 			}
 			html += '</label><br />';
 		});

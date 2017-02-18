@@ -302,8 +302,8 @@ var utils = require('../public/src/utils');
 	Groups.exists = function (name, callback) {
 		if (Array.isArray(name)) {
 			var slugs = name.map(function (groupName) {
-					return utils.slugify(groupName);
-				});
+				return utils.slugify(groupName);
+			});
 			async.parallel([
 				function (next) {
 					next(null, slugs.map(function (slug) {

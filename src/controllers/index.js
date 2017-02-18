@@ -419,11 +419,11 @@ Controllers.handleURIErrors = function (err, req, res, next) {
 
 Controllers.handleErrors = function (err, req, res, next) {
 	switch (err.code) {
-		case 'EBADCSRFTOKEN':
-			winston.error(req.path + '\n', err.message);
-			return res.sendStatus(403);
-		case 'blacklisted-ip':
-			return res.status(403).type('text/plain').send(err.message);
+	case 'EBADCSRFTOKEN':
+		winston.error(req.path + '\n', err.message);
+		return res.sendStatus(403);
+	case 'blacklisted-ip':
+		return res.status(403).type('text/plain').send(err.message);
 	}
 
 	if (parseInt(err.status, 10) === 302 && err.path) {

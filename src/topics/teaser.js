@@ -30,18 +30,18 @@ module.exports = function (Topics) {
 				}
 
 				switch (meta.config.teaserPost) {
-					case 'first':
-						teaserPids.push(topic.mainPid);
-						break;
+				case 'first':
+					teaserPids.push(topic.mainPid);
+					break;
 
-					case 'last-post':
-						teaserPids.push(topic.teaserPid || topic.mainPid);
-						break;
+				case 'last-post':
+					teaserPids.push(topic.teaserPid || topic.mainPid);
+					break;
 
-					case 'last-reply':	// intentional fall-through
-					default:
-						teaserPids.push(topic.teaserPid);
-						break;
+				case 'last-reply':	// intentional fall-through
+				default:
+					teaserPids.push(topic.teaserPid);
+					break;
 				}
 			}
 		});

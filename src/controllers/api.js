@@ -124,11 +124,11 @@ apiController.renderWidgets = function (req, res, next) {
 		req,
 		res,
 		function (err, widgets) {
-		if (err) {
-			return next(err);
-		}
-		res.status(200).json(widgets);
-	});
+			if (err) {
+				return next(err);
+			}
+			res.status(200).json(widgets);
+		});
 };
 
 apiController.getPostData = function (pid, uid, callback) {

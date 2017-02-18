@@ -11,12 +11,12 @@ settingsController.get = function (req, res, next) {
 	var term = req.params.term ? req.params.term : 'general';
 
 	switch (req.params.term) {
-		case 'email':
-			renderEmail(req, res, next);
-			break;
+	case 'email':
+		renderEmail(req, res, next);
+		break;
 
-		default:
-			res.render('admin/settings/' + term);
+	default:
+		res.render('admin/settings/' + term);
 	}
 };
 

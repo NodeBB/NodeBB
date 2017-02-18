@@ -56,13 +56,13 @@ define('forum/account/settings', ['forum/account/header', 'components', 'sounds'
 			}
 
 			switch (input.attr('type')) {
-				case 'text':
-				case 'textarea':
-					settings[setting] = input.val();
-					break;
-				case 'checkbox':
-					settings[setting] = input.is(':checked') ? 1 : 0;
-					break;
+			case 'text':
+			case 'textarea':
+				settings[setting] = input.val();
+				break;
+			case 'checkbox':
+				settings[setting] = input.is(':checked') ? 1 : 0;
+				break;
 			}
 		});
 

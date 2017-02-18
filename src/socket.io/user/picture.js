@@ -26,25 +26,25 @@ module.exports = function (SocketUser) {
 			},
 			function (next) {
 				switch (type) {
-					case 'default':
-						next(null, '');
-						break;
-					case 'uploaded':
-						user.getUserField(data.uid, 'uploadedpicture', next);
-						break;
-					default:
-						plugins.fireHook('filter:user.getPicture', {
-							uid: socket.uid,
-							type: type,
-							picture: undefined,
-						}, function (err, returnData) {
-							if (err) {
-								return next(err);
-							}
+				case 'default':
+					next(null, '');
+					break;
+				case 'uploaded':
+					user.getUserField(data.uid, 'uploadedpicture', next);
+					break;
+				default:
+					plugins.fireHook('filter:user.getPicture', {
+						uid: socket.uid,
+						type: type,
+						picture: undefined,
+					}, function (err, returnData) {
+						if (err) {
+							return next(err);
+						}
 
-							next(null, returnData.picture || '');
-						});
-						break;
+						next(null, returnData.picture || '');
+					});
+					break;
 				}
 			},
 			function (picture, next) {

@@ -50,9 +50,9 @@ function minifyScripts(scripts, callback) {
 	// Follow along here: https://github.com/mishoo/UglifyJS2/issues/700
 	try {
 		var minified = uglifyjs.minify(scripts, {
-				// outSourceMap: "nodebb.min.js.map",
-				compress: false,
-			});
+			// outSourceMap: "nodebb.min.js.map",
+			compress: false,
+		});
 
 		callback(minified.code/* , minified.map*/);
 	} catch (err) {

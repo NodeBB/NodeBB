@@ -431,7 +431,7 @@ module.exports = function (db, module) {
 					return item && item.value;
 				});
 				callback(err, data);
-		});
+			});
 	}
 
 	module.sortedSetRemoveRangeByLex = function (key, min, max, callback) {

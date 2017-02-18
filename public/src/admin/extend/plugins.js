@@ -162,7 +162,7 @@ define('admin/extend/plugins', ['jqueryui', 'translator'], function (jqueryui, t
 
 	function confirmInstall(pluginID, callback) {
 		bootbox.confirm(translator.compile('admin/extend/plugins:alert.possibly-incompatible', pluginID), function (confirm) {
-				callback(confirm);
+			callback(confirm);
 		});
 	}
 

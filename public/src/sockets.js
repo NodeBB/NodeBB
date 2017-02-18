@@ -72,29 +72,29 @@ app.isConnected = false;
 		var room;
 
 		switch (url_parts[0]) {
-			case 'user':
-				room = 'user/' + (ajaxify.data ? ajaxify.data.theirid : 0);
+		case 'user':
+			room = 'user/' + (ajaxify.data ? ajaxify.data.theirid : 0);
 			break;
-			case 'topic':
-				room = 'topic_' + url_parts[1];
+		case 'topic':
+			room = 'topic_' + url_parts[1];
 			break;
-			case 'category':
-				room = 'category_' + url_parts[1];
+		case 'category':
+			room = 'category_' + url_parts[1];
 			break;
-			case 'recent':
-				room = 'recent_topics';
+		case 'recent':
+			room = 'recent_topics';
 			break;
-			case 'unread':
-				room = 'unread_topics';
+		case 'unread':
+			room = 'unread_topics';
 			break;
-			case 'popular':
-				room = 'popular_topics';
+		case 'popular':
+			room = 'popular_topics';
 			break;
-			case 'admin':
-				room = 'admin';
+		case 'admin':
+			room = 'admin';
 			break;
-			case 'categories':
-				room = 'categories';
+		case 'categories':
+			room = 'categories';
 			break;
 		}
 		app.currentRoom = '';

@@ -38,25 +38,25 @@ module.exports = function (Groups) {
 
 	Groups.sort = function (strategy, groups, next) {
 		switch (strategy) {
-			case 'count':
-				groups = groups.sort(function (a, b) {
-					return a.slug > b.slug;
-				}).sort(function (a, b) {
-					return b.memberCount - a.memberCount;
-				});
-				break;
+		case 'count':
+			groups = groups.sort(function (a, b) {
+				return a.slug > b.slug;
+			}).sort(function (a, b) {
+				return b.memberCount - a.memberCount;
+			});
+			break;
 
-			case 'date':
-				groups = groups.sort(function (a, b) {
-					return b.createtime - a.createtime;
-				});
-				break;
+		case 'date':
+			groups = groups.sort(function (a, b) {
+				return b.createtime - a.createtime;
+			});
+			break;
 
-			case 'alpha':	// intentional fall-through
-			default:
-				groups = groups.sort(function (a, b) {
-					return a.slug > b.slug ? 1 : -1;
-				});
+		case 'alpha':	// intentional fall-through
+		default:
+			groups = groups.sort(function (a, b) {
+				return a.slug > b.slug ? 1 : -1;
+			});
 		}
 
 		next(null, groups);

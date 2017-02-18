@@ -290,11 +290,11 @@ define('forum/topic/posts', [
 
 			var images = components.get('post/content').find('img[data-state="unloaded"]');
 			var visible = images.filter(function () {
-					return utils.isElementInViewport(this);
-				});
+				return utils.isElementInViewport(this);
+			});
 			var posts = $.unique(visible.map(function () {
-					return $(this).parents('[component="post"]').get(0);
-				}));
+				return $(this).parents('[component="post"]').get(0);
+			}));
 			var scrollTop = $(window).scrollTop();
 			var adjusting = false;
 			var adjustQueue = [];

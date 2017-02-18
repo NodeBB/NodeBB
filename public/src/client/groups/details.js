@@ -59,61 +59,61 @@ define('forum/groups/details', [
 			var action = btnEl.attr('data-action');
 
 			switch (action) {
-				case 'toggleOwnership':
-					socket.emit('groups.' + (isOwner ? 'rescind' : 'grant'), {
-						toUid: uid,
-						groupName: groupName,
-					}, function (err) {
-						if (!err) {
-							ownerFlagEl.toggleClass('invisible');
-						} else {
-							app.alertError(err.message);
-						}
-					});
-					break;
+			case 'toggleOwnership':
+				socket.emit('groups.' + (isOwner ? 'rescind' : 'grant'), {
+					toUid: uid,
+					groupName: groupName,
+				}, function (err) {
+					if (!err) {
+						ownerFlagEl.toggleClass('invisible');
+					} else {
+						app.alertError(err.message);
+					}
+				});
+				break;
 
-				case 'kick':
-					socket.emit('groups.kick', {
-						uid: uid,
-						groupName: groupName,
-					}, function (err) {
-						if (!err) {
-							userRow.slideUp().remove();
-						} else {
-							app.alertError(err.message);
-						}
-					});
-					break;
+			case 'kick':
+				socket.emit('groups.kick', {
+					uid: uid,
+					groupName: groupName,
+				}, function (err) {
+					if (!err) {
+						userRow.slideUp().remove();
+					} else {
+						app.alertError(err.message);
+					}
+				});
+				break;
 
-				case 'update':
-					Details.update();
-					break;
+			case 'update':
+				Details.update();
+				break;
 
-				case 'delete':
-					Details.deleteGroup();
-					break;
+			case 'delete':
+				Details.deleteGroup();
+				break;
 
-				case 'join':	// intentional fall-throughs!
-				case 'leave':
-				case 'accept':
-				case 'reject':
-				case 'issueInvite':
-				case 'rescindInvite':
-				case 'acceptInvite':
-				case 'rejectInvite':
-				case 'acceptAll':
-				case 'rejectAll':
-					socket.emit('groups.' + action, {
-						toUid: uid,
-						groupName: groupName,
-					}, function (err) {
-						if (!err) {
-							ajaxify.refresh();
-						} else {
-							app.alertError(err.message);
-						}
-					});
-					break;
+			case 'join':	// intentional fall-throughs!
+			case 'leave':
+			case 'accept':
+			case 'reject':
+			case 'issueInvite':
+			case 'rescindInvite':
+			case 'acceptInvite':
+			case 'rejectInvite':
+			case 'acceptAll':
+			case 'rejectAll':
+				socket.emit('groups.' + action, {
+					toUid: uid,
+					groupName: groupName,
+				}, function (err) {
+					if (!err) {
+						ajaxify.refresh();
+					} else {
+						app.alertError(err.message);
+					}
+				});
+				break;
 			}
 		});
 	};

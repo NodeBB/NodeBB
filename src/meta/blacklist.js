@@ -6,8 +6,8 @@ var async = require('async');
 var db = require('../database');
 
 var Blacklist = {
-		_rules: [],
-	};
+	_rules: [],
+};
 
 Blacklist.load = function (callback) {
 	async.waterfall([

@@ -30,8 +30,8 @@ pluginsController.get = function (req, res, next) {
 			return next(err);
 		}
 		var compatiblePkgNames = payload.compatible.map(function (pkgData) {
-				return pkgData.name;
-			});
+			return pkgData.name;
+		});
 
 		res.render('admin/extend/plugins', {
 			installed: payload.compatible.filter(function (plugin) {

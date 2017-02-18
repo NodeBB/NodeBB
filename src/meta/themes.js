@@ -134,8 +134,8 @@ module.exports = function (Meta) {
 			var themeId = data.currentThemeId || 'nodebb-theme-persona';
 
 			var	themeObj = data.themesData.filter(function (themeObj) {
-					return themeObj.id === themeId;
-				})[0];
+				return themeObj.id === themeId;
+			})[0];
 
 			if (process.env.NODE_ENV === 'development') {
 				winston.info('[themes] Using theme ' + themeId);

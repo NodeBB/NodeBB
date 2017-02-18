@@ -24,41 +24,41 @@ define('iconSelect', function () {
 			html.find('.fa-icons').prepend($('<i class="fa fa-nbb-none"></i>'));
 
 			var picker = bootbox.dialog({
-					onEscape: true,
-					backdrop: true,
-					show: false,
-					message: html,
-					title: 'Select an Icon',
-					buttons: {
-						noIcon: {
-							label: 'No Icon',
-							className: 'btn-default',
-							callback: function () {
-								el.attr('class', 'fa ' + (doubleSize ? 'fa-2x ' : ''));
-								el.val('');
-								el.attr('value', '');
+				onEscape: true,
+				backdrop: true,
+				show: false,
+				message: html,
+				title: 'Select an Icon',
+				buttons: {
+					noIcon: {
+						label: 'No Icon',
+						className: 'btn-default',
+						callback: function () {
+							el.attr('class', 'fa ' + (doubleSize ? 'fa-2x ' : ''));
+							el.val('');
+							el.attr('value', '');
 
-								onModified(el);
-							},
-						},
-						success: {
-							label: 'Select',
-							className: 'btn-primary',
-							callback: function (confirm) {
-								var iconClass = $('.bootbox .selected').attr('class');
-								var categoryIconClass = $('<div/>').addClass(iconClass).removeClass('fa').removeClass('selected').attr('class');
-
-								if (categoryIconClass) {
-									el.attr('class', 'fa ' + (doubleSize ? 'fa-2x ' : '') + categoryIconClass);
-									el.val(categoryIconClass);
-									el.attr('value', categoryIconClass);
-								}
-
-								onModified(el);
-							},
+							onModified(el);
 						},
 					},
-				});
+					success: {
+						label: 'Select',
+						className: 'btn-primary',
+						callback: function (confirm) {
+							var iconClass = $('.bootbox .selected').attr('class');
+							var categoryIconClass = $('<div/>').addClass(iconClass).removeClass('fa').removeClass('selected').attr('class');
+
+							if (categoryIconClass) {
+								el.attr('class', 'fa ' + (doubleSize ? 'fa-2x ' : '') + categoryIconClass);
+								el.val(categoryIconClass);
+								el.attr('value', categoryIconClass);
+							}
+
+							onModified(el);
+						},
+					},
+				},
+			});
 
 			picker.on('show.bs.modal', function () {
 				var modalEl = $(this);

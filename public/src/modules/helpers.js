@@ -214,49 +214,49 @@
 		var icons = '';
 
 		switch (data.platform) {
-			case 'Linux':
-				icons += '<i class="fa fa-fw fa-linux"></i>';
-				break;
-			case 'Microsoft Windows':
-				icons += '<i class="fa fa-fw fa-windows"></i>';
-				break;
-			case 'Apple Mac':
-				icons += '<i class="fa fa-fw fa-apple"></i>';
-				break;
-			case 'Android':
-				icons += '<i class="fa fa-fw fa-android"></i>';
-				break;
-			case 'iPad':
-				icons += '<i class="fa fa-fw fa-tablet"></i>';
-				break;
-			case 'iPod':	// intentional fall-through
-			case 'iPhone':
-				icons += '<i class="fa fa-fw fa-mobile"></i>';
-				break;
-			default:
-				icons += '<i class="fa fa-fw fa-question-circle"></i>';
-				break;
+		case 'Linux':
+			icons += '<i class="fa fa-fw fa-linux"></i>';
+			break;
+		case 'Microsoft Windows':
+			icons += '<i class="fa fa-fw fa-windows"></i>';
+			break;
+		case 'Apple Mac':
+			icons += '<i class="fa fa-fw fa-apple"></i>';
+			break;
+		case 'Android':
+			icons += '<i class="fa fa-fw fa-android"></i>';
+			break;
+		case 'iPad':
+			icons += '<i class="fa fa-fw fa-tablet"></i>';
+			break;
+		case 'iPod':	// intentional fall-through
+		case 'iPhone':
+			icons += '<i class="fa fa-fw fa-mobile"></i>';
+			break;
+		default:
+			icons += '<i class="fa fa-fw fa-question-circle"></i>';
+			break;
 		}
 
 		switch (data.browser) {
-			case 'Chrome':
-				icons += '<i class="fa fa-fw fa-chrome"></i>';
-				break;
-			case 'Firefox':
-				icons += '<i class="fa fa-fw fa-firefox"></i>';
-				break;
-			case 'Safari':
-				icons += '<i class="fa fa-fw fa-safari"></i>';
-				break;
-			case 'IE':
-				icons += '<i class="fa fa-fw fa-internet-explorer"></i>';
-				break;
-			case 'Edge':
-				icons += '<i class="fa fa-fw fa-edge"></i>';
-				break;
-			default:
-				icons += '<i class="fa fa-fw fa-question-circle"></i>';
-				break;
+		case 'Chrome':
+			icons += '<i class="fa fa-fw fa-chrome"></i>';
+			break;
+		case 'Firefox':
+			icons += '<i class="fa fa-fw fa-firefox"></i>';
+			break;
+		case 'Safari':
+			icons += '<i class="fa fa-fw fa-safari"></i>';
+			break;
+		case 'IE':
+			icons += '<i class="fa fa-fw fa-internet-explorer"></i>';
+			break;
+		case 'Edge':
+			icons += '<i class="fa fa-fw fa-edge"></i>';
+			break;
+		default:
+			icons += '<i class="fa fa-fw fa-question-circle"></i>';
+			break;
 		}
 
 		return icons;

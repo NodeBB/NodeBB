@@ -256,7 +256,7 @@ Messaging.canMessageUser = function (uid, toUid, callback) {
 				return next();
 			}
 
-				next(new Error('[[error:chat-restricted]]'));
+			next(new Error('[[error:chat-restricted]]'));
 		},
 	], callback);
 };

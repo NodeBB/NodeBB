@@ -75,13 +75,13 @@ Loader.addWorkerEvents = function (worker) {
 	worker.on('message', function (message) {
 		if (message && typeof message === 'object' && message.action) {
 			switch (message.action) {
-				case 'restart':
-					console.log('[cluster] Restarting...');
-					Loader.restart();
+			case 'restart':
+				console.log('[cluster] Restarting...');
+				Loader.restart();
 				break;
-				case 'reload':
-					console.log('[cluster] Reloading...');
-					Loader.reload();
+			case 'reload':
+				console.log('[cluster] Reloading...');
+				Loader.reload();
 				break;
 			}
 		}

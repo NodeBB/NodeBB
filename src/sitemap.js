@@ -21,9 +21,9 @@ var sitemap = {
 sitemap.render = function (callback) {
 	var numTopics = parseInt(meta.config.sitemapTopics, 10) || 500;
 	var returnData = {
-			url: nconf.get('url'),
-			topics: [],
-		};
+		url: nconf.get('url'),
+		topics: [],
+	};
 	var numPages;
 
 	async.waterfall([
@@ -55,22 +55,22 @@ sitemap.getPages = function (callback) {
 	}
 
 	var urls = [{
-			url: '',
-			changefreq: 'weekly',
-			priority: 0.6,
-		}, {
-			url: '/recent',
-			changefreq: 'daily',
-			priority: 0.4,
-		}, {
-			url: '/users',
-			changefreq: 'daily',
-			priority: 0.4,
-		}, {
-			url: '/groups',
-			changefreq: 'daily',
-			priority: 0.4,
-		}];
+		url: '',
+		changefreq: 'weekly',
+		priority: 0.6,
+	}, {
+		url: '/recent',
+		changefreq: 'daily',
+		priority: 0.4,
+	}, {
+		url: '/users',
+		changefreq: 'daily',
+		priority: 0.4,
+	}, {
+		url: '/groups',
+		changefreq: 'daily',
+		priority: 0.4,
+	}];
 
 	plugins.fireHook('filter:sitemap.getPages', {urls: urls}, function (err, data) {
 		if (err) {

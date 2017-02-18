@@ -247,18 +247,18 @@ module.exports = function (Posts) {
 
 							if (prop === 'flag:state') {
 								switch (postObj[prop]) {
-									case 'open':
-										postObj.flagData.labelClass = 'info';
-										break;
-									case 'wip':
-										postObj.flagData.labelClass = 'warning';
-										break;
-									case 'resolved':
-										postObj.flagData.labelClass = 'success';
-										break;
-									case 'rejected':
-										postObj.flagData.labelClass = 'danger';
-										break;
+								case 'open':
+									postObj.flagData.labelClass = 'info';
+									break;
+								case 'wip':
+									postObj.flagData.labelClass = 'warning';
+									break;
+								case 'resolved':
+									postObj.flagData.labelClass = 'success';
+									break;
+								case 'rejected':
+									postObj.flagData.labelClass = 'danger';
+									break;
 								}
 							}
 
@@ -324,22 +324,22 @@ module.exports = function (Posts) {
 
 					changes.forEach(function (property) {
 						switch (property) {
-							case 'assignee':	// intentional fall-through
-							case 'state':
-								history.unshift({
-									uid: uid,
-									type: property,
-									value: flagObj[property],
-									timestamp: Date.now(),
-								});
-								break;
+						case 'assignee':	// intentional fall-through
+						case 'state':
+							history.unshift({
+								uid: uid,
+								type: property,
+								value: flagObj[property],
+								timestamp: Date.now(),
+							});
+							break;
 
-							case 'notes':
-								history.unshift({
-									uid: uid,
-									type: property,
-									timestamp: Date.now(),
-								});
+						case 'notes':
+							history.unshift({
+								uid: uid,
+								type: property,
+								timestamp: Date.now(),
+							});
 						}
 					});
 
