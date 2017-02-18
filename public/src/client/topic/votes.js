@@ -1,6 +1,6 @@
 'use strict';
 
-/* globals define, app, socket, ajaxify, templates, bootbox */
+
 
 define('forum/topic/votes', ['components', 'translator'], function (components, translator) {
 

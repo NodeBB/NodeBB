@@ -1,5 +1,5 @@
 "use strict";
-/*global define, app, templates*/
+
 
 define('taskbar', function () {
 	var taskbar = {};

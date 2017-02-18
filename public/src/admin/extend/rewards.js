@@ -1,5 +1,5 @@
 "use strict";
-/* global define, app, ajaxify, socket, templates, bootbox */
+
 
 define('admin/extend/rewards', ['translator'], function (translator) {
 	var rewards = {};

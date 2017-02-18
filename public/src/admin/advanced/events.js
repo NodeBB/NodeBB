@@ -1,6 +1,6 @@
 "use strict";
 
-/* global define, socket, app */
+
 
 
 define('admin/advanced/events', function () {

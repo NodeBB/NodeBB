@@ -1,5 +1,5 @@
 "use strict";
-/* global define, app, config, RELATIVE_PATH */
+
 
 define('forum/login', ['translator'], function (translator) {
 	var	Login = {};

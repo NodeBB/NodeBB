@@ -1,5 +1,5 @@
 "use strict";
-/* global define, app, socket, bootbox, templates, config */
+
 
 define('admin/appearance/themes', ['translator'], function (translator) {
 	var Themes = {};

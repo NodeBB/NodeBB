@@ -1,6 +1,6 @@
 'use strict';
 
-/* globals define, socket, app, templates */
+
 
 define('pictureCropper', ['translator', 'cropper'], function (translator, cropper) {
 	var module = {};

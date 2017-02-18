@@ -1,5 +1,5 @@
 "use strict";
-/* global define, socket, app */
+
 
 define('admin/advanced/logs', function () {
 	var	Logs = {};

@@ -1,5 +1,5 @@
 "use strict";
-/*globals define, app, socket*/
+
 
 define('forum/footer', ['notifications', 'chat', 'components', 'translator'], function (Notifications, Chat, components, translator) {
 

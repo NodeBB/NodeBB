@@ -1,5 +1,5 @@
 "use strict";
-/* globals define, socket, ajaxify, app */
+
 
 define('forum/groups/memberlist', ['components', 'forum/infinitescroll'], function (components, infinitescroll) {
 

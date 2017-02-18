@@ -1,5 +1,5 @@
 "use strict";
-/*global utils*/
+
 
 $('document').ready(function () {
 	setupInputs();

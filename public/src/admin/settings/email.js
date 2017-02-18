@@ -1,5 +1,5 @@
 "use strict";
-/* global define, socket, app, ajaxify, ace */
+
 
 define('admin/settings/email', ['admin/settings'], function (settings) {
 	var module = {};

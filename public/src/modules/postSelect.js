@@ -1,6 +1,6 @@
 'use strict';
 
-/* globals define*/
+
 
 define('postSelect', ['components'], function (components) {
 	var PostSelect = {};

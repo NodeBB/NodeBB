@@ -5,7 +5,7 @@
 
 (function (module) {
 	'use strict';
-	/*global require, before, __dirname*/
+	
 
 	var async = require('async');
 	var winston = require('winston');

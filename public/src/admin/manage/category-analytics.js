@@ -1,5 +1,5 @@
 "use strict";
-/*global define, ajaxify, utils */
+
 
 define('admin/manage/category-analytics', ['Chart'], function (Chart) {
 	var CategoryAnalytics = {};

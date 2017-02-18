@@ -1,6 +1,6 @@
 'use strict';
 
-/* globals define, socket, app */
+
 
 define('forum/infinitescroll', function () {
 

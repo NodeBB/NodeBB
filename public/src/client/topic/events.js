@@ -1,7 +1,7 @@
 
 'use strict';
 
-/* globals config, app, ajaxify, define, socket, templates, utils */
+
 
 define('forum/topic/events', [
 	'forum/topic/postTools',

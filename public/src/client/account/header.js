@@ -1,5 +1,5 @@
 'use strict';
-/* globals define, app, config, ajaxify, socket, bootbox, templates */
+
 
 define('forum/account/header', [
 	'coverPhoto',

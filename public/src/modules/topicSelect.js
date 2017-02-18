@@ -1,6 +1,6 @@
 'use strict';
 
-/* globals define*/
+
 
 define('topicSelect', ['components'], function (components) {
 	var TopicSelect = {};

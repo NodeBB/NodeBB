@@ -1,5 +1,5 @@
 "use strict";
-/* global define, app, ajaxify, socket, templates */
+
 
 define('admin/general/navigation', ['translator', 'iconSelect', 'jqueryui'], function (translator, iconSelect, jqueryui) {
 	var navigation = {};

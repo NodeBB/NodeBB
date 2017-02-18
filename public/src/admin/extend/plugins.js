@@ -1,5 +1,5 @@
 "use strict";
-/* global define, app, socket, bootbox */
+
 
 define('admin/extend/plugins', ['jqueryui', 'translator'], function (jqueryui, translator) {
 	var Plugins = {};

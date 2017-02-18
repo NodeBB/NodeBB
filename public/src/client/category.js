@@ -1,5 +1,5 @@
 "use strict";
-/* global define, config, templates, app, utils, ajaxify, socket */
+
 
 define('forum/category', [
 	'forum/infinitescroll',

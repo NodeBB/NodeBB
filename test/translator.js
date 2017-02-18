@@ -1,5 +1,5 @@
 'use strict';
-/*global require*/
+
 
 var assert = require('assert');
 var shim = require('../public/src/modules/translator.js');

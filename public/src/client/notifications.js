@@ -1,6 +1,6 @@
 'use strict';
 
-/* globals define, socket, app */
+
 
 define('forum/notifications', ['components', 'notifications', 'forum/infinitescroll'], function (components, notifs, infinitescroll) {
 	var Notifications = {};

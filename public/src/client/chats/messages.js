@@ -1,6 +1,6 @@
 'use strict';
 
-/* globals define, socket, app, ajaxify, templates, bootbox */
+
 
 define('forum/chats/messages', ['components', 'sounds', 'translator'], function (components, sounds, translator) {
 

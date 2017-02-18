@@ -1,5 +1,5 @@
 "use strict";
-/* global define, app, socket, bootbox */
+
 
 define('admin/extend/widgets', ['jqueryui'], function (jqueryui) {
 	var Widgets = {};

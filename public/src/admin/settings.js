@@ -1,5 +1,5 @@
 'use strict';
-/*global define, app, socket, ajaxify */
+
 
 define('admin/settings', ['uploader'], function (uploader) {
 	var Settings = {};

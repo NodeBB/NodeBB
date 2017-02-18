@@ -1,5 +1,5 @@
 "use strict";
-/* globals define, socket, ajaxify, app, bootbox, utils, config */
+
 
 define('forum/groups/details', [
 	'forum/groups/memberlist',

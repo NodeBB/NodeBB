@@ -1,6 +1,6 @@
 'use strict';
 
-/* globals define, ajaxify, socket, app, config, templates, bootbox */
+
 
 define('forum/account/edit', ['forum/account/header', 'translator', 'components', 'pictureCropper'], function (header, translator, components, pictureCropper) {
 	var AccountEdit = {};

@@ -1,6 +1,6 @@
 'use strict';
 
-/* global bootbox */
+
 
 var overrides = overrides || {};
 

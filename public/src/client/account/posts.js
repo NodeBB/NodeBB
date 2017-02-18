@@ -1,6 +1,6 @@
 'use strict';
 
-/* globals define, app, socket, utils, config, ajaxify */
+
 
 define('forum/account/posts', ['forum/account/header', 'forum/infinitescroll'], function (header, infinitescroll) {
 	var AccountPosts = {};

@@ -1,6 +1,6 @@
 'use strict';
 
-/* globals define, app, ajaxify, socket */
+
 
 define('forum/tag', ['forum/recent', 'forum/infinitescroll'], function (recent, infinitescroll) {
 	var Tag = {};

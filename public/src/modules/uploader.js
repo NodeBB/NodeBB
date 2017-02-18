@@ -1,6 +1,6 @@
 'use strict';
 
-/* globals define, templates */
+
 
 define('uploader', ['translator'], function (translator) {
 

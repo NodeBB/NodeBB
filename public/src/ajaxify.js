@@ -1,5 +1,5 @@
 "use strict";
-/*global app, bootbox, templates, socket, config, RELATIVE_PATH*/
+
 
 var ajaxify = ajaxify || {};
 

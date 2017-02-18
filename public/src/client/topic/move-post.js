@@ -1,6 +1,6 @@
 'use strict';
 
-/* globals define, app, socket */
+
 
 define('forum/topic/move-post', [], function () {
 

@@ -1,5 +1,5 @@
 "use strict";
-/*globals define, app, ajaxify, socket, config*/
+
 
 define('forum/reset_code', function () {
 	var	ResetCode = {};

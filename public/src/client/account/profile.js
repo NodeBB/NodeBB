@@ -1,6 +1,6 @@
 'use strict';
 
-/* globals define, ajaxify, app, socket, bootbox */
+
 
 define('forum/account/profile', [
 	'forum/account/header',

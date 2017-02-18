@@ -1,6 +1,6 @@
 'use strict';
 
-/* globals define, app, ajaxify, socket, bootbox, templates */
+
 
 define('forum/topic/threadTools', [
 	'forum/topic/fork',

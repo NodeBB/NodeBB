@@ -16,7 +16,7 @@ module.exports = function (Messaging) {
 
 	Messaging.pushUnreadCount = function (uid) {
 		if (!parseInt(uid, 10)) {
-			return callback(null, 0);
+			return;
 		}
 		Messaging.getUnreadCount(uid, function (err, unreadCount) {
 			if (err) {

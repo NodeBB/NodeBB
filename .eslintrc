@@ -14,7 +14,7 @@
         "import/no-unresolved": "off",
         "import/no-extraneous-dependencies": "off",
         // "one-var": "off",
-        "no-undef": "off",
+        // "no-undef": "off",
         "max-len": "off",
         "no-new": "off",
         "max-nested-callbacks": "off",

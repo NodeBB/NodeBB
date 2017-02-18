@@ -2,7 +2,7 @@
 
 // see https://gist.github.com/jfromaniello/4087861#gistcomment-1447029
 
-/* global process, require, before, after*/
+
 
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
 

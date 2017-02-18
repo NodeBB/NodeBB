@@ -1,5 +1,5 @@
 "use strict";
-/*globals define, app, socket*/
+
 
 define('forum/reset', function () {
 	var	ResetPassword = {};

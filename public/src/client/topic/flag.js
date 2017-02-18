@@ -1,6 +1,6 @@
 'use strict';
 
-/* globals define, app, socket, templates */
+
 
 define('forum/topic/flag', [], function () {
 

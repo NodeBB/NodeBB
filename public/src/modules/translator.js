@@ -1,4 +1,4 @@
-/* global define, jQuery, config, utils, window, Promise */
+
 
 (function (factory) {
 	'use strict';

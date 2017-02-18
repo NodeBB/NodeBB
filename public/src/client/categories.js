@@ -1,6 +1,6 @@
 'use strict';
 
-/* globals define, socket, app, templates, ajaxify*/
+
 
 define('forum/categories', ['components', 'translator'], function (components, translator) {
 	var	categories = {};

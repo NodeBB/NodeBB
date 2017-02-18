@@ -1,5 +1,5 @@
 "use strict";
-/*global define, templates, socket, ajaxify, app, bootbox */
+
 
 define('admin/manage/group', [
 	'forum/groups/memberlist',

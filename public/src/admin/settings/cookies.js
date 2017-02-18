@@ -1,6 +1,6 @@
 'use strict';
 
-/* globals define */
+
 
 define('admin/settings/cookies', [
 	'admin/modules/colorpicker',

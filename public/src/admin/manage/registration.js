@@ -1,6 +1,6 @@
 "use strict";
 
-/* global config, socket, define, templates, bootbox, app, ajaxify,  */
+
 
 define('admin/manage/registration', function () {
 	var Registration = {};

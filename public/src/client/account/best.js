@@ -1,6 +1,6 @@
 'use strict';
 
-/* globals define */
+
 
 define('forum/account/best', ['forum/account/header', 'forum/account/posts'], function (header, posts) {
 	var Best = {};

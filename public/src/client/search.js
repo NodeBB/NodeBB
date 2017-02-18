@@ -1,6 +1,6 @@
 'use strict';
 
-/* globals app, define, utils*/
+
 
 define('forum/search', ['search', 'autocomplete'], function (searchModule, autocomplete) {
 	var	Search = {};

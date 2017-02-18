@@ -1,6 +1,6 @@
 'use strict';
 
-/* globals define, app, utils, socket, config, ajaxify, bootbox */
+
 
 
 define('forum/register', ['translator'], function (translator) {

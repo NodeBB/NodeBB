@@ -1,5 +1,5 @@
 "use strict";
-/* global app, define, socket, config */
+
 
 define('sounds', ['buzz'], function (buzz) {
 	var	Sounds = {};

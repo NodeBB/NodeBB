@@ -1,6 +1,6 @@
 'use strict';
 
-/*global define, socket, app, ajaxify, config*/
+
 
 define('forum/account/settings', ['forum/account/header', 'components', 'sounds'], function (header, components, sounds) {
 	var	AccountSettings = {};

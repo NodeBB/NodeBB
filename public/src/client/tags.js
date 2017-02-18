@@ -1,6 +1,6 @@
 'use strict';
 
-/* globals define, app, utils, socket */
+
 
 define('forum/tags', ['forum/infinitescroll'], function (infinitescroll) {
 	var Tags = {};

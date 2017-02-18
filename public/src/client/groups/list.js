@@ -1,5 +1,5 @@
 "use strict";
-/* globals app, define, ajaxify, socket, bootbox, utils, templates */
+
 
 define('forum/groups/list', ['forum/infinitescroll'], function (infinitescroll) {
 	var Groups = {};

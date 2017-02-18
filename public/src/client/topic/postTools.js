@@ -1,6 +1,6 @@
 'use strict';
 
-/* globals define, app, ajaxify, bootbox, socket, templates, utils, config */
+
 
 define('forum/topic/postTools', [
 	'share',

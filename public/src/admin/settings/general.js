@@ -1,5 +1,5 @@
 "use strict";
-/* global define, socket */
+
 
 define('admin/settings/general', ['admin/settings'], function (Settings) {
 	var Module = {};

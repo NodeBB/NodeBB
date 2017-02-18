@@ -1,5 +1,5 @@
 "use strict";
-/*global ajaxify, templates, config, utils*/
+
 
 (function (ajaxify) {
 	ajaxify.widgets = {};

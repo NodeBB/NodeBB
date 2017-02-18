@@ -1,6 +1,6 @@
 ;(function (exports) {
 	"use strict";
-	/* globals define, utils, config */
+	
 
 	// export the class if we are in a Node-like system.
 	if (typeof module === 'object' && module.exports === exports) {
@@ -285,5 +285,5 @@
 }(
 	typeof exports === 'object' ? exports :
 	typeof define === 'function' && define.amd ? {} :
-	helpers = {}
+	window.helpers = {}
 ));

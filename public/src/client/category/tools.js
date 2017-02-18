@@ -1,7 +1,7 @@
 
 'use strict';
 
-/* globals define, app, socket, bootbox, ajaxify */
+
 
 
 define('forum/category/tools', [

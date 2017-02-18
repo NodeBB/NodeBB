@@ -1,5 +1,5 @@
 "use strict";
-/*global define, socket, app, utils, bootbox, ajaxify*/
+
 
 define('admin/manage/tags', [
 	'forum/infinitescroll',

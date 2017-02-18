@@ -1,6 +1,6 @@
 "use strict";
 
-/*globals define, app, socket*/
+
 
 define('admin/modules/instance', function () {
 	var instance = {};

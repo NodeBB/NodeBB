@@ -1,5 +1,5 @@
 "use strict";
-/*global define, app, socket*/
+
 
 define('settings', function () {
 

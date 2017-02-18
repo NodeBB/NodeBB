@@ -1,6 +1,6 @@
 'use strict';
 
-/* globals define, socket, app, templates, bootbox, utils */
+
 
 define('forum/users', ['translator'], function (translator) {
 	var	Users = {};

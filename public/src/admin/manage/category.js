@@ -1,5 +1,5 @@
 "use strict";
-/*global config, define, app, socket, ajaxify, bootbox, templates */
+
 
 define('admin/manage/category', [
 	'uploader',

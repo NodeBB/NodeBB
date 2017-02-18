@@ -1,6 +1,6 @@
 'use strict';
 
-/* globals define, socket, ajaxify, app */
+
 
 define('forum/account/info', ['forum/account/header', 'components'], function (header, components) {
 	var Info = {};

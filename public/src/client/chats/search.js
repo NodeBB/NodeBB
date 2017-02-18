@@ -1,6 +1,6 @@
 'use strict';
 
-/* globals define, socket, app */
+
 
 define('forum/chats/search', ['components'], function (components) {
 

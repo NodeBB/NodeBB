@@ -1,6 +1,6 @@
 'use strict';
 
-/* globals define, config */
+
 
 define('share', function () {
 

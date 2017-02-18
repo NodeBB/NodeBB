@@ -1,6 +1,6 @@
 'use strict';
 
-/* globals define, ajaxify, socket, app, utils */
+
 
 define('forum/account/edit/password', ['forum/account/header', 'translator'], function (header, translator) {
 	var AccountEditPassword = {};

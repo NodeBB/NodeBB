@@ -1,6 +1,6 @@
 "use strict";
 
-/* globals define, bootbox, templates */
+
 
 define('iconSelect', function () {
 	var iconSelect = {};

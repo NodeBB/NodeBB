@@ -1,0 +1,22 @@
+{
+	"globals": {
+		"app": true,
+		"io": true,
+		"socket": true,
+		"ajaxify": true,
+		"config": true,
+		"RELATIVE_PATH": true,
+		"utils": true,
+		"overrides": true,
+		"componentHandler": true,
+		"bootbox": true,
+		"templates": true,
+		"Visibility": true,
+		"Tinycon": true
+	},
+	"env": {
+		"jquery": true,
+		"amd": true,
+		"browser": true
+	}
+}

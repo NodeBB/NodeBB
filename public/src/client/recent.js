@@ -1,6 +1,6 @@
 'use strict';
 
-/* globals define, app, socket, utils, ajaxify, config */
+
 
 define('forum/recent', ['forum/infinitescroll', 'components'], function (infinitescroll, components) {
 	var	Recent = {};

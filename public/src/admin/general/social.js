@@ -1,5 +1,5 @@
 "use strict";
-/*global define, socket*/
+
 
 define('admin/general/social', [], function () {
 	var social = {};

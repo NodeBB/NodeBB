@@ -1,6 +1,6 @@
 "use strict";
 
-/*globals define*/
+
 
 define('admin/modules/colorpicker', function () {
 	var colorpicker = {};

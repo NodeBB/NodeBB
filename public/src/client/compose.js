@@ -1,6 +1,6 @@
 'use strict';
 
-/* globals define */
+
 
 define('forum/compose', [], function () {
 	var Compose = {};

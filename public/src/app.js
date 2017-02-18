@@ -1,5 +1,5 @@
 "use strict";
-/*global templates, ajaxify, utils, bootbox, overrides, socket, config, Visibility*/
+
 
 var app = app || {};
 

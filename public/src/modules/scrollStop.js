@@ -1,6 +1,6 @@
 'use strict';
 
-/* globals console, define */
+
 
 /*
 	The point of this library is to enhance(tm) a textarea so that if scrolled,

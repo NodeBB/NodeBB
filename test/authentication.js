@@ -1,5 +1,5 @@
 'use strict';
-/*global require, before*/
+
 
 var	assert = require('assert');
 var nconf = require('nconf');

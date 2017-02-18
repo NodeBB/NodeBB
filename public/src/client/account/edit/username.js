@@ -1,6 +1,6 @@
 'use strict';
 
-/* globals define, ajaxify, socket, app, utils, config  */
+
 
 define('forum/account/edit/username', ['forum/account/header'], function (header) {
 	var AccountEditUsername = {};

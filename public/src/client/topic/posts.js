@@ -1,6 +1,6 @@
 'use strict';
 
-/* globals config, app, ajaxify, define, utils */
+
 
 define('forum/topic/posts', [
 	'forum/pagination',

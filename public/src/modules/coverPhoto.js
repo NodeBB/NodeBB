@@ -1,5 +1,5 @@
 "use strict";
-/* globals define, app */
+
 
 define('coverPhoto', [
 	'vendor/jquery/draggable-background/backgroundDraggable',

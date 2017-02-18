@@ -1,5 +1,5 @@
 "use strict";
-/*global define, socket, app, bootbox, templates, ajaxify, Sortable */
+
 
 define('admin/manage/categories', ['vendor/jquery/serializeObject/jquery.ba-serializeobject.min', 'translator'], function (serialize, translator) {
 	var	Categories = {};

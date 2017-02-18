@@ -1,5 +1,5 @@
 "use strict";
-/* globals socket, ajaxify, app, define, config */
+
 
 define('search', ['navigator', 'translator'], function (nav, translator) {
 

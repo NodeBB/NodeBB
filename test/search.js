@@ -1,5 +1,5 @@
 'use strict';
-/*global require, before, after*/
+
 
 var	assert = require('assert');
 var async = require('async');

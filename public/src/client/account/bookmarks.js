@@ -1,6 +1,6 @@
 'use strict';
 
-/* globals define */
+
 
 define('forum/account/bookmarks', ['forum/account/header', 'forum/account/posts'], function (header, posts) {
 	var Bookmarks = {};

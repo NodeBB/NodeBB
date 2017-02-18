@@ -1,5 +1,5 @@
 "use strict";
-/* globals socket, app, define, ajaxify, config */
+
 
 define('admin/modules/search', ['mousetrap'], function (mousetrap) {
 	var search = {};

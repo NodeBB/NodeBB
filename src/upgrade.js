@@ -1,6 +1,6 @@
 "use strict";
 
-/* globals console, require */
+
 
 var db = require('./database');
 var async = require('async');

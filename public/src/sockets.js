@@ -1,5 +1,5 @@
 'use strict';
-/* globals config, io, ajaxify */
+
 
 var app = app || {};
 var socket;

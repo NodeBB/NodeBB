@@ -1,5 +1,5 @@
 "use strict";
-/*global define, templates, socket, ajaxify, app, admin, bootbox, utils, config */
+
 
 define('admin/manage/groups', ['translator'], function (translator) {
 	var	Groups = {};

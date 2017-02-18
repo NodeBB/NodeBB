@@ -1,5 +1,5 @@
 'use strict';
-/* globals $, app, socket, templates, define, bootbox */
+
 
 define('admin/manage/ip-blacklist', ['translator'], function (translator) {
 

@@ -1,6 +1,6 @@
 'use strict';
 
-/* globals define, app, ajaxify, socket */
+
 
 define('forum/topic/fork', ['components', 'postSelect'], function (components, postSelect) {
 

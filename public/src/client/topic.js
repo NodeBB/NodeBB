@@ -1,7 +1,7 @@
 'use strict';
 
 
-/* globals define, app, socket, config, ajaxify, RELATIVE_PATH, utils */
+
 
 define('forum/topic', [
 	'forum/infinitescroll',

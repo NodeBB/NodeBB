@@ -1,5 +1,5 @@
 "use strict";
-/*global define*/
+
 
 define('admin/general/homepage', ['admin/settings'], function (Settings) {
 

@@ -1,6 +1,6 @@
 'use strict';
 
-/* globals define, app, ajaxify, utils, socket, templates */
+
 
 define('forum/chats', [
 	'components',

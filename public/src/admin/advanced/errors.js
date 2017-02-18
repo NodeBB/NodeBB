@@ -1,5 +1,5 @@
 "use strict";
-/*global config, define, app, socket, ajaxify, bootbox, templates, Chart, utils */
+
 
 define('admin/advanced/errors', ['Chart', 'translator'], function (Chart, translator) {
 	var Errors = {};

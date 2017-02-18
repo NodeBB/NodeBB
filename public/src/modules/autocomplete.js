@@ -1,7 +1,7 @@
 
 'use strict';
 
-/* globals define, socket, app */
+
 
 define('autocomplete', function () {
 	var module = {};
