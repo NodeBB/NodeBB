@@ -25,7 +25,7 @@ editController.get = function (req, res, callback) {
 		userData.maximumSignatureLength = parseInt(meta.config.maximumSignatureLength, 10) || 255;
 		userData.maximumAboutMeLength = parseInt(meta.config.maximumAboutMeLength, 10) || 1000;
 		userData.maximumProfileImageSize = parseInt(meta.config.maximumProfileImageSize, 10);
-		userData.allowProfileImageUploads = parseInt(meta.config.allowProfileImageUploads) === 1;
+		userData.allowProfileImageUploads = parseInt(meta.config.allowProfileImageUploads, 10) === 1;
 		userData.allowAccountDelete = parseInt(meta.config.allowAccountDelete, 10) === 1;
 
 		userData.groups = userData.groups.filter(function (group) {

@@ -26,7 +26,7 @@ module.exports = function (User) {
 		var keepAllVersions = parseInt(meta.config['profile:keepAllUserImages'], 10) === 1;
 		var uploadedImage;
 
-		if (parseInt(meta.config.allowProfileImageUploads) !== 1) {
+		if (parseInt(meta.config.allowProfileImageUploads, 10) !== 1) {
 			return callback(new Error('[[error:profile-image-uploads-disabled]]'));
 		}
 

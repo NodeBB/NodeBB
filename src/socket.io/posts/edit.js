@@ -50,7 +50,7 @@ module.exports = function (SocketPosts) {
 					});
 				}
 
-				if (parseInt(result.post.deleted) !== 1) {
+				if (parseInt(result.post.deleted, 10) !== 1) {
 					websockets.in('topic_' + result.topic.tid).emit('event:post_edited', result);
 					return callback(null, result.post);
 				}

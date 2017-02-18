@@ -70,7 +70,7 @@
 		"one-var-declaration-per-line": "off",
 		"new-cap": "off",
 		"no-lonely-if": "off",
-		"radix": "off",
+		// "radix": "off",
 		// "no-else-return": "off",
 		// "no-useless-escape": "off",
 		// "block-scoped-var": "off",

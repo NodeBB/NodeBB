@@ -130,7 +130,7 @@ module.exports = function (Categories) {
 				results.teasers.forEach(function (teaser, index) {
 					if (teaser) {
 						teaser.cid = topicData[index].cid;
-						teaser.parentCid = parseInt(parentCids[teaser.cid]) || 0;
+						teaser.parentCid = parseInt(parentCids[teaser.cid], 10) || 0;
 						teaser.tid = teaser.uid = teaser.user.uid = undefined;
 						teaser.topic = {
 							slug: topicData[index].slug,

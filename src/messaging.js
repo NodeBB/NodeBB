@@ -218,7 +218,7 @@ Messaging.getTeaser = function (uid, roomId, callback) {
 };
 
 Messaging.canMessageUser = function (uid, toUid, callback) {
-	if (parseInt(meta.config.disableChat) === 1 || !uid || uid === toUid) {
+	if (parseInt(meta.config.disableChat, 10) === 1 || !uid || uid === toUid) {
 		return callback(new Error('[[error:chat-disabled]]'));
 	}
 
@@ -262,7 +262,7 @@ Messaging.canMessageUser = function (uid, toUid, callback) {
 };
 
 Messaging.canMessageRoom = function (uid, roomId, callback) {
-	if (parseInt(meta.config.disableChat) === 1 || !uid) {
+	if (parseInt(meta.config.disableChat, 10) === 1 || !uid) {
 		return callback(new Error('[[error:chat-disabled]]'));
 	}
 

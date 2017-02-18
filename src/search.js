@@ -294,7 +294,7 @@ function filterByPostcount(posts, postCount, repliesFilter) {
 }
 
 function filterByTimerange(posts, timeRange, timeFilter) {
-	timeRange = parseInt(timeRange) * 1000;
+	timeRange = parseInt(timeRange, 10) * 1000;
 	if (timeRange) {
 		var time = Date.now() - timeRange;
 		if (timeFilter === 'newer') {

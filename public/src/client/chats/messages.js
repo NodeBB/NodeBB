@@ -111,7 +111,7 @@ define('forum/chats/messages', ['components', 'sounds', 'translator'], function 
 	messages.onChatMessageEdit = function () {
 		socket.on('event:chats.edit', function (data) {
 			data.messages.forEach(function (message) {
-				var self = parseInt(message.fromuid, 10) === parseInt(app.user.uid);
+				var self = parseInt(message.fromuid, 10) === parseInt(app.user.uid, 10);
 				message.self = self ? 1 : 0;
 				messages.parseMessage(message, function (html) {
 				    var body = components.get('chat/message', message.messageId);

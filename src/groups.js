@@ -406,7 +406,7 @@ var utils = require('../public/src/utils');
 					group.hidden = parseInt(group.hidden, 10) === 1;
 					group.system = parseInt(group.system, 10) === 1;
 					group.private = (group.private === null || group.private === undefined) ? true : !!parseInt(group.private, 10);
-					group.disableJoinRequests = parseInt(group.disableJoinRequests) === 1;
+					group.disableJoinRequests = parseInt(group.disableJoinRequests, 10) === 1;
 
 					group['cover:url'] = group['cover:url'] || require('./coverPhoto').getDefaultGroupCover(group.name);
 					group['cover:thumb:url'] = group['cover:thumb:url'] || group['cover:url'];
