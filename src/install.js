@@ -513,8 +513,11 @@ install.setup = function (callback) {
 				if (err) {
 					return next(err);
 				}
-				if (!uptodate) { upgrade.upgrade(next); }
-				else { next(); }
+				if (!uptodate) {
+					upgrade.upgrade(next);
+				} else {
+					next();
+				}
 			});
 		},
 	], function (err, results) {

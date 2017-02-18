@@ -214,8 +214,7 @@
 			}
 			if (n > 999999) {
 				return (n / 1000000).toFixed(1) + 'm';
-			}
-			else if(n > 999) {
+			} else if(n > 999) {
 				return (n / 1000).toFixed(1) + 'k';
 			}
 			return n;
