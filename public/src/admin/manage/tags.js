@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 
 define('admin/manage/tags', [
@@ -93,8 +93,8 @@ define('admin/manage/tags', [
 				message: firstTag.find('.tag-modal').html(),
 				buttons: {
 					success: {
-						label: "Save",
-						className: "btn-primary save",
+						label: 'Save',
+						className: 'btn-primary save',
 						callback: function () {
 							var modal = $('.bootbox');
 							var bgColor = modal.find('[data-name="bgColor"]').val();

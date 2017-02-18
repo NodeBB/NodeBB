@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 
 define('admin/general/homepage', ['admin/settings'], function (Settings) {

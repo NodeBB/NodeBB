@@ -57,7 +57,7 @@ define('settings/array', function () {
 			}
 		}
 		helper.fillField(element, value);
-		if ($("[data-parent=\"_" + key + "\"]", field).length) {
+		if ($('[data-parent="_' + key + '"]', field).length) {
 			insertCb(separator);
 		}
 		insertCb(element);
@@ -124,7 +124,7 @@ define('settings/array', function () {
 		},
 		get: function (element, trim, empty) {
 			var key = element.data('key') || element.data('parent');
-			var children = $("[data-parent=\"_" + key + "\"]", element);
+			var children = $('[data-parent="_' + key + '"]', element);
 			var values = [];
 			children.each(function (i, child) {
 				child = $(child);

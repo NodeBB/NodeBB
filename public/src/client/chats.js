@@ -313,11 +313,11 @@ define('forum/chats', [
 
 				messages.appendChatMessage($('.expanded-chat .chat-content'), data.message);
 			} else {
-				if (ajaxify.currentPage.startsWith("chats")) {
+				if (ajaxify.currentPage.startsWith('chats')) {
 					var roomEl = $('[data-roomid=' + data.roomId + ']');
 
 					if (roomEl.length > 0) {
-						roomEl.addClass("unread");
+						roomEl.addClass('unread');
 					} else {
 						var recentEl = components.get('chat/recent');
 						templates.parse('partials/chats/recent_room', {

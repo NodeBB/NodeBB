@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 
 define('admin/general/sounds', ['sounds', 'settings'], function (Sounds, Settings) {

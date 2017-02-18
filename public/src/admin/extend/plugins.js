@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 
 define('admin/extend/plugins', ['jqueryui', 'translator'], function (jqueryui, translator) {

@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 
 define('admin/general/languages', ['admin/settings'], function (Settings) {

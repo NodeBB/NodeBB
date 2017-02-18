@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 
 define('admin/appearance/customise', ['admin/settings'], function (Settings) {
@@ -9,11 +9,11 @@ define('admin/appearance/customise', ['admin/settings'], function (Settings) {
 			$('#customCSS').text($('#customCSS-holder').val());
 			$('#customHTML').text($('#customHTML-holder').val());
 
-			var customCSS = ace.edit("customCSS");
-			var customHTML = ace.edit("customHTML");
+			var customCSS = ace.edit('customCSS');
+			var customHTML = ace.edit('customHTML');
 
-			customCSS.setTheme("ace/theme/twilight");
-			customCSS.getSession().setMode("ace/mode/css");
+			customCSS.setTheme('ace/theme/twilight');
+			customCSS.getSession().setMode('ace/mode/css');
 
 			customCSS.on('change', function (event) {
 				app.flags = app.flags || {};
@@ -21,8 +21,8 @@ define('admin/appearance/customise', ['admin/settings'], function (Settings) {
 			    $('#customCSS-holder').val(customCSS.getValue());
 			});
 
-			customHTML.setTheme("ace/theme/twilight");
-			customHTML.getSession().setMode("ace/mode/html");
+			customHTML.setTheme('ace/theme/twilight');
+			customHTML.getSession().setMode('ace/mode/html');
 
 			customHTML.on('change', function (event) {
 				app.flags = app.flags || {};

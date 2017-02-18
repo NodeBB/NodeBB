@@ -165,29 +165,29 @@
 		},
 
 		extensionMimeTypeMap: {
-			bmp: "image/bmp",
-			cmx: "image/x-cmx",
-			cod: "image/cis-cod",
-			gif: "image/gif",
-			ico: "image/x-icon",
-			ief: "image/ief",
-			jfif: "image/pipeg",
-			jpe: "image/jpeg",
-			jpeg: "image/jpeg",
-			jpg: "image/jpeg",
-			png: "image/png",
-			pbm: "image/x-portable-bitmap",
-			pgm: "image/x-portable-graymap",
-			pnm: "image/x-portable-anymap",
-			ppm: "image/x-portable-pixmap",
-			ras: "image/x-cmu-raster",
-			rgb: "image/x-rgb",
-			svg: "image/svg+xml",
-			tif: "image/tiff",
-			tiff: "image/tiff",
-			xbm: "image/x-xbitmap",
-			xpm: "image/x-xpixmap",
-			xwd: "image/x-xwindowdump",
+			bmp: 'image/bmp',
+			cmx: 'image/x-cmx',
+			cod: 'image/cis-cod',
+			gif: 'image/gif',
+			ico: 'image/x-icon',
+			ief: 'image/ief',
+			jfif: 'image/pipeg',
+			jpe: 'image/jpeg',
+			jpeg: 'image/jpeg',
+			jpg: 'image/jpeg',
+			png: 'image/png',
+			pbm: 'image/x-portable-bitmap',
+			pgm: 'image/x-portable-graymap',
+			pnm: 'image/x-portable-anymap',
+			ppm: 'image/x-portable-pixmap',
+			ras: 'image/x-cmu-raster',
+			rgb: 'image/x-rgb',
+			svg: 'image/svg+xml',
+			tif: 'image/tiff',
+			tiff: 'image/tiff',
+			xbm: 'image/x-xbitmap',
+			xpm: 'image/x-xpixmap',
+			xwd: 'image/x-xwindowdump',
 		},
 
 		fileMimeType: function (path) {
@@ -230,7 +230,7 @@
 
 		// takes a string like 1000 and returns 1,000
 		addCommas: function (text) {
-			return text.replace(/(\d)(?=(\d\d\d)+(?!\d))/g, "$1,");
+			return text.replace(/(\d)(?=(\d\d\d)+(?!\d))/g, '$1,');
 		},
 
 		toISOString: function (timestamp) {
@@ -254,11 +254,11 @@
 			'th', 'thead', 'time', 'title', 'tr', 'track', 'tt', 'u', 'ul', 'var', 'video', 'wbr'],
 
 		escapeRegexChars: function (text) {
-			return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
+			return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&');
 		},
 
 		escapeHTML: function (raw) {
-			return raw.replace(/&/gm, "&amp;").replace(/</gm, "&lt;").replace(/>/gm, "&gt;");
+			return raw.replace(/&/gm, '&amp;').replace(/</gm, '&lt;').replace(/>/gm, '&gt;');
 		},
 
 		isAndroidBrowser: function () {
@@ -325,7 +325,7 @@
 		/* Retrieved from http://stackoverflow.com/a/7557433 @ 27 Mar 2016 */
 		isElementInViewport: function (el) {
 			// special bonus for those using jQuery
-			if (typeof jQuery === "function" && el instanceof jQuery) {
+			if (typeof jQuery === 'function' && el instanceof jQuery) {
 				el = el[0];
 			}
 
@@ -351,7 +351,7 @@
 			if (options.url) {
 				a = utils.urlToLocation(options.url);
 			}
-			params = (a ? a.search : window.location.search).substring(1).split("&");
+			params = (a ? a.search : window.location.search).substring(1).split('&');
 
 			params.forEach(function (param) {
 				var val = param.split('=');

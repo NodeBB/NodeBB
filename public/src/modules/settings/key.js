@@ -75,9 +75,9 @@ define('settings/key', function () {
 		} else if (code >= 48 && code <= 90) {
 			return String.fromCharCode(code).toUpperCase();
 		} else if (code >= 112 && code <= 123) {
-			return "F" + (code - 111);
+			return 'F' + (code - 111);
 		} else {
-			return keyMap[code] || ("#" + code);
+			return keyMap[code] || ('#' + code);
 		}
 	}
 

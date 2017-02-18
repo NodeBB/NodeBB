@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 
 var ajaxify = ajaxify || {};
@@ -329,7 +329,7 @@ $(document).ready(function () {
 					callback(data.toString());
 				},
 				error: function (error) {
-					throw new Error("Unable to load template: " + template + " (" + error.statusText + ")");
+					throw new Error('Unable to load template: ' + template + ' (' + error.statusText + ')');
 				},
 			});
 		}

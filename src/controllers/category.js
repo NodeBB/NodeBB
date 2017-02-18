@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 
 var async = require('async');
@@ -178,7 +178,7 @@ categoryController.get = function (req, res, callback) {
 				content: categoryData.description,
 			},
 			{
-				property: "og:type",
+				property: 'og:type',
 				content: 'website',
 			},
 		];

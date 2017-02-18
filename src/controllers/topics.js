@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 
 var async = require('async');
@@ -187,11 +187,11 @@ topicsController.get = function (req, res, callback) {
 
 			res.locals.metaTags = [
 				{
-					name: "title",
+					name: 'title',
 					content: topicData.titleRaw,
 				},
 				{
-					name: "description",
+					name: 'description',
 					content: description,
 				},
 				{
@@ -203,11 +203,11 @@ topicsController.get = function (req, res, callback) {
 					content: description,
 				},
 				{
-					property: "og:type",
+					property: 'og:type',
 					content: 'article',
 				},
 				{
-					property: "og:url",
+					property: 'og:url',
 					content: nconf.get('url') + '/topic/' + topicData.slug + (req.params.post_index ? ('/' + req.params.post_index) : ''),
 					noEscape: true,
 				},
@@ -217,12 +217,12 @@ topicsController.get = function (req, res, callback) {
 					noEscape: true,
 				},
 				{
-					property: "og:image:url",
+					property: 'og:image:url',
 					content: ogImageUrl,
 					noEscape: true,
 				},
 				{
-					property: "article:published_time",
+					property: 'article:published_time',
 					content: utils.toISOString(topicData.timestamp),
 				},
 				{

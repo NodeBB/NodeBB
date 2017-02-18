@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 
 define('admin/manage/flags', [
@@ -98,13 +98,13 @@ define('admin/manage/flags', [
 				labels: dailyLabels,
 				datasets: [
 					{
-						label: "",
-						backgroundColor: "rgba(151,187,205,0.2)",
-						borderColor: "rgba(151,187,205,1)",
-						pointBackgroundColor: "rgba(151,187,205,1)",
-						pointHoverBackgroundColor: "#fff",
-						pointBorderColor: "#fff",
-						pointHoverBorderColor: "rgba(151,187,205,1)",
+						label: '',
+						backgroundColor: 'rgba(151,187,205,0.2)',
+						borderColor: 'rgba(151,187,205,1)',
+						pointBackgroundColor: 'rgba(151,187,205,1)',
+						pointHoverBackgroundColor: '#fff',
+						pointBorderColor: '#fff',
+						pointHoverBorderColor: 'rgba(151,187,205,1)',
 						data: ajaxify.data.analytics,
 					},
 				],

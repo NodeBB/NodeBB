@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 
 define('search', ['navigator', 'translator'], function (nav, translator) {

@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 
 define('admin/extend/widgets', ['jqueryui'], function (jqueryui) {
@@ -35,7 +35,7 @@ define('admin/extend/widgets', ['jqueryui'], function (jqueryui) {
 				return $(e.target).parents('.widget-panel').clone();
 			},
 			distance: 10,
-			connectToSortable: ".widget-area",
+			connectToSortable: '.widget-area',
 		});
 
 		$('#widgets .available-containers .containers > [data-container-html]')
@@ -57,7 +57,7 @@ define('admin/extend/widgets', ['jqueryui'], function (jqueryui) {
 				createDatePicker(ui.item);
 				appendToggle(ui.item);
 			},
-			connectWith: "div",
+			connectWith: 'div',
 		}).on('click', '.delete-widget', function () {
 			var panel = $(this).parents('.widget-panel');
 
@@ -177,7 +177,7 @@ define('admin/extend/widgets', ['jqueryui'], function (jqueryui) {
 						el.find('.panel-body .container-html').val(ui.draggable.attr('data-container-html'));
 						el.find('.panel-body').removeClass('hidden');
 					},
-					hoverClass: "panel-info",
+					hoverClass: 'panel-info',
 				})
 				.children('.panel-heading')
 				.append('<div class="pull-right pointer"><span class="delete-widget"><i class="fa fa-times-circle"></i></span></div><div class="pull-left pointer"><span class="toggle-widget"><i class="fa fa-chevron-circle-down"></i></span>&nbsp;</div>')

@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 (function () {
 	var logoutTimer = 0;
@@ -157,7 +157,7 @@
 	}
 
 	function launchSnackbar(params) {
-		var message = (params.title ? "<strong>" + params.title + "</strong>" : '') + (params.message ? params.message : '');
+		var message = (params.title ? '<strong>' + params.title + '</strong>' : '') + (params.message ? params.message : '');
 
 		require(['translator'], function (translator) {
 			translator.translate(message, function (html) {

@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 var uglifyjs = require('uglify-js');
 var async = require('async');

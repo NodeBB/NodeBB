@@ -43,15 +43,15 @@ define('pictureCropper', ['translator', 'cropper'], function (translator, croppe
 					viewMode: 1,
 					ready: function () {
 						cropperModal.find('.rotate').on('click', function () {
-							var degrees = this.getAttribute("data-degrees");
+							var degrees = this.getAttribute('data-degrees');
 							cropperTool.rotate(degrees);
 						});
 
 						cropperModal.find('.flip').on('click', function () {
-							var option = this.getAttribute("data-option");
-							var method = this.getAttribute("data-method");
+							var option = this.getAttribute('data-option');
+							var method = this.getAttribute('data-method');
 							method === 'scaleX' ? cropperTool.scaleX(option) : cropperTool.scaleY(option);
-							this.setAttribute("data-option", option * -1);
+							this.setAttribute('data-option', option * -1);
 						});
 
 						cropperModal.find('.reset').on('click', function () {
@@ -119,7 +119,7 @@ define('pictureCropper', ['translator', 'cropper'], function (translator, croppe
 		var imageUrl;
 		var imageType = file.type;
 
-		reader.addEventListener("load", function () {
+		reader.addEventListener('load', function () {
 			imageUrl = reader.result;
 
 			data.uploadModal.modal('hide');

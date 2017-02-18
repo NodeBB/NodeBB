@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 var async = require('async');
 var nconf = require('nconf');
@@ -12,10 +12,10 @@ var categoriesController = {};
 
 categoriesController.list = function (req, res, next) {
 	res.locals.metaTags = [{
-		name: "title",
+		name: 'title',
 		content: validator.escape(String(meta.config.title || 'NodeBB')),
 	}, {
-		name: "description",
+		name: 'description',
 		content: validator.escape(String(meta.config.description || '')),
 	}, {
 		property: 'og:title',

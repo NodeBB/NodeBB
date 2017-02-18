@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 
 define('admin/modules/search', ['mousetrap'], function (mousetrap) {

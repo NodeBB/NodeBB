@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 
 define('admin/general/dashboard', ['semver', 'Chart', 'translator'], function (semver, Chart, translator) {
@@ -126,14 +126,14 @@ define('admin/general/dashboard', ['semver', 'Chart', 'translator'], function (s
 		topics: null,
 	};
 
-	var topicColors = ["#bf616a", "#5B90BF", "#d08770", "#ebcb8b", "#a3be8c", "#96b5b4", "#8fa1b3", "#b48ead", "#ab7967", "#46BFBD"];
+	var topicColors = ['#bf616a', '#5B90BF', '#d08770', '#ebcb8b', '#a3be8c', '#96b5b4', '#8fa1b3', '#b48ead', '#ab7967', '#46BFBD'];
 	var	usedTopicColors = [];
 
 	// from chartjs.org
 	function lighten(col, amt) {
 		var usePound = false;
 
-		if (col[0] == "#") {
+		if (col[0] == '#') {
 			col = col.slice(1);
 			usePound = true;
 		}
@@ -155,7 +155,7 @@ define('admin/general/dashboard', ['semver', 'Chart', 'translator'], function (s
 		if (g > 255) g = 255;
 		else if (g < 0) g = 0;
 
-		return (usePound ? "#" : "") + (g | (b << 8) | (r << 16)).toString(16);
+		return (usePound ? '#' : '') + (g | (b << 8) | (r << 16)).toString(16);
 	}
 
 	function setupGraphs() {
@@ -190,22 +190,22 @@ define('admin/general/dashboard', ['semver', 'Chart', 'translator'], function (s
 				datasets: [
 					{
 						label: translations[0],
-						backgroundColor: "rgba(220,220,220,0.2)",
-						borderColor: "rgba(220,220,220,1)",
-						pointBackgroundColor: "rgba(220,220,220,1)",
-						pointHoverBackgroundColor: "#fff",
-						pointBorderColor: "#fff",
-						pointHoverBorderColor: "rgba(220,220,220,1)",
+						backgroundColor: 'rgba(220,220,220,0.2)',
+						borderColor: 'rgba(220,220,220,1)',
+						pointBackgroundColor: 'rgba(220,220,220,1)',
+						pointHoverBackgroundColor: '#fff',
+						pointBorderColor: '#fff',
+						pointHoverBorderColor: 'rgba(220,220,220,1)',
 						data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
 					},
 					{
 						label: translations[1],
-						backgroundColor: "rgba(151,187,205,0.2)",
-						borderColor: "rgba(151,187,205,1)",
-						pointBackgroundColor: "rgba(151,187,205,1)",
-						pointHoverBackgroundColor: "#fff",
-						pointBorderColor: "#fff",
-						pointHoverBorderColor: "rgba(151,187,205,1)",
+						backgroundColor: 'rgba(151,187,205,0.2)',
+						borderColor: 'rgba(151,187,205,1)',
+						pointBackgroundColor: 'rgba(151,187,205,1)',
+						pointHoverBackgroundColor: '#fff',
+						pointBorderColor: '#fff',
+						pointHoverBorderColor: 'rgba(151,187,205,1)',
 						data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
 					},
 				],
@@ -236,8 +236,8 @@ define('admin/general/dashboard', ['semver', 'Chart', 'translator'], function (s
 					labels: translations.slice(2, 4),
 					datasets: [{
 						data: [1, 1],
-						backgroundColor: ["#F7464A", "#46BFBD"],
-						hoverBackgroundColor: ["#FF5A5E", "#5AD3D1"],
+						backgroundColor: ['#F7464A', '#46BFBD'],
+						hoverBackgroundColor: ['#FF5A5E', '#5AD3D1'],
 					}],
 				},
 				options: {
@@ -254,8 +254,8 @@ define('admin/general/dashboard', ['semver', 'Chart', 'translator'], function (s
 					labels: translations.slice(4, 9),
 					datasets: [{
 						data: [1, 1, 1, 1, 1],
-						backgroundColor: ["#F7464A", "#46BFBD", "#FDB45C", "#949FB1", "#9FB194"],
-						hoverBackgroundColor: ["#FF5A5E", "#5AD3D1", "#FFC870", "#A8B3C5", "#A8B3C5"],
+						backgroundColor: ['#F7464A', '#46BFBD', '#FDB45C', '#949FB1', '#9FB194'],
+						hoverBackgroundColor: ['#FF5A5E', '#5AD3D1', '#FFC870', '#A8B3C5', '#A8B3C5'],
 					}],
 				},
 				options: {
@@ -375,7 +375,7 @@ define('admin/general/dashboard', ['semver', 'Chart', 'translator'], function (s
 	function updateTopicsGraph(topics) {
 		if (!Object.keys(topics).length) {
 			topics = {0: {
-				title: "No users browsing",
+				title: 'No users browsing',
 				value: 1,
 			}};
 		}

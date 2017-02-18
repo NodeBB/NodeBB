@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 
 define('settings', function () {
@@ -293,14 +293,14 @@ define('settings', function () {
 						app.alert({
 							title: 'Settings Not Saved',
 							type: 'danger',
-							message: "NodeBB failed to save the settings.",
+							message: 'NodeBB failed to save the settings.',
 							timeout: 5000,
 						});
 					} else {
 						app.alert({
 							title: 'Settings Saved',
 							type: 'success',
-							message: "Settings have been successfully saved",
+							message: 'Settings have been successfully saved',
 							timeout: 2500,
 						});
 					}

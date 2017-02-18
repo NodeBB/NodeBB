@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 
 define('admin/settings/email', ['admin/settings'], function (settings) {
@@ -30,10 +30,10 @@ define('admin/settings/email', ['admin/settings'], function (settings) {
 	function configureEmailEditor() {
 		$('#email-editor-selector').on('change', updateEmailEditor);
 
-		emailEditor = ace.edit("email-editor");
+		emailEditor = ace.edit('email-editor');
 		emailEditor.$blockScrolling = Infinity;
-		emailEditor.setTheme("ace/theme/twilight");
-		emailEditor.getSession().setMode("ace/mode/html");
+		emailEditor.setTheme('ace/theme/twilight');
+		emailEditor.getSession().setMode('ace/mode/html');
 
 		emailEditor.on('change', function () {
 			var emailPath = $('#email-editor-selector').val();

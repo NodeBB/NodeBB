@@ -3,7 +3,7 @@
 // see https://gist.github.com/jfromaniello/4087861#gistcomment-1447029
 
 
-process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 
 var assert = require('assert');
 var async = require('async');

@@ -220,7 +220,7 @@ function listen(callback) {
 		winston.info('Using ports 80 and 443 is not recommend; use a proxy instead. See README.md');
 	}
 
-	var bind_address = ((nconf.get('bind_address') === "0.0.0.0" || !nconf.get('bind_address')) ? '0.0.0.0' : nconf.get('bind_address'));
+	var bind_address = ((nconf.get('bind_address') === '0.0.0.0' || !nconf.get('bind_address')) ? '0.0.0.0' : nconf.get('bind_address'));
 	var args = isSocket ? [socketPath] : [port, bind_address];
 	var oldUmask;
 

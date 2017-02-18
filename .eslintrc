@@ -98,7 +98,7 @@
         "strict": "off",
         // "comma-dangle": "off",
         // "no-multi-spaces": "off",
-        "quotes": "off",
+        // "quotes": "off",
         // "keyword-spacing": "off",
         // "no-mixed-operators": "off",
         // "comma-spacing": "off",

@@ -92,11 +92,11 @@ profileController.get = function (req, res, callback) {
 
 			res.locals.metaTags = [
 				{
-					name: "title",
+					name: 'title',
 					content: userData.fullname || userData.username,
 				},
 				{
-					name: "description",
+					name: 'description',
 					content: plainAboutMe,
 				},
 				{
@@ -117,7 +117,7 @@ profileController.get = function (req, res, callback) {
 						noEscape: true,
 					},
 					{
-						property: "og:image:url",
+						property: 'og:image:url',
 						content: userData.picture,
 						noEscape: true,
 					}

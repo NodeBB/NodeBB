@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 
 define('forum/footer', ['notifications', 'chat', 'components', 'translator'], function (Notifications, Chat, components, translator) {

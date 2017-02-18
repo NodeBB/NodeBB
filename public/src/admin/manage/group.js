@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 
 define('admin/manage/group', [
@@ -93,8 +93,8 @@ define('admin/manage/group', [
 					username: userLabel.attr('data-username'),
 					userslug: userLabel.attr('data-userslug'),
 					picture: userLabel.attr('data-picture'),
-					"icon:bgColor": userLabel.attr('data-usericon-bgColor'),
-					"icon:text": userLabel.attr('data-usericon-text'),
+					'icon:bgColor': userLabel.attr('data-usericon-bgColor'),
+					'icon:text': userLabel.attr('data-usericon-text'),
 				};
 
 				templates.parse('partials/groups/memberlist', 'members', {group: {isOwner: ajaxify.data.group.isOwner, members: [member]}}, function (html) {

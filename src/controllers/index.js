@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 var async = require('async');
 var nconf = require('nconf');
@@ -61,7 +61,7 @@ Controllers.home = function (req, res, next) {
 			var match = /^category\/(\d+)\/(.*)$/.exec(route);
 
 			if (match) {
-				req.params.topic_index = "1";
+				req.params.topic_index = '1';
 				req.params.category_id = match[1];
 				req.params.slug = match[2];
 				Controllers.category.get(req, res, next);
@@ -270,12 +270,12 @@ Controllers.confirmEmail = function (req, res) {
 Controllers.robots = function (req, res) {
 	res.set('Content-Type', 'text/plain');
 
-	if (meta.config["robots.txt"]) {
-		res.send(meta.config["robots.txt"]);
+	if (meta.config['robots.txt']) {
+		res.send(meta.config['robots.txt']);
 	} else {
-		res.send("User-agent: *\n" +
-			"Disallow: " + nconf.get('relative_path') + "/admin/\n" +
-			"Sitemap: " + nconf.get('url') + "/sitemap.xml");
+		res.send('User-agent: *\n' +
+			'Disallow: ' + nconf.get('relative_path') + '/admin/\n' +
+			'Sitemap: ' + nconf.get('url') + '/sitemap.xml');
 	}
 };
 

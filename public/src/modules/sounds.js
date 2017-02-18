@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 
 define('sounds', ['buzz'], function (buzz) {

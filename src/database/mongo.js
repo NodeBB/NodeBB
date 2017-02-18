@@ -37,8 +37,8 @@
 			before: function (value) { value = value || nconf.get('mongo:password') || ''; return value; },
 		},
 		{
-			name: "mongo:database",
-			description: "MongoDB database name",
+			name: 'mongo:database',
+			description: 'MongoDB database name',
 			default: nconf.get('mongo:database') || 'nodebb',
 		},
 	];
@@ -92,7 +92,7 @@
 
 		mongoClient.connect(connString, connOptions, function (err, _db) {
 			if (err) {
-				winston.error("NodeBB could not connect to your Mongo database. Mongo returned the following error: " + err.message);
+				winston.error('NodeBB could not connect to your Mongo database. Mongo returned the following error: ' + err.message);
 				return callback(err);
 			}
 

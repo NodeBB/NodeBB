@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 var social = require('../../social');
 var SocketSocial = {};

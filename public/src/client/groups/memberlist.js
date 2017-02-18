@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 
 define('forum/groups/memberlist', ['components', 'forum/infinitescroll'], function (components, infinitescroll) {

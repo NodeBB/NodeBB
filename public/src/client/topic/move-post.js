@@ -39,10 +39,10 @@ define('forum/topic/move-post', [], function () {
 
 	function showMoveModal(modal) {
 		modal.modal('show')
-			.css("position", "fixed")
-			.css("left", Math.max(0, (($(window).width() - modal.outerWidth()) / 2) + $(window).scrollLeft()) + "px")
-			.css("top", "0px")
-			.css("z-index", "2000");
+			.css('position', 'fixed')
+			.css('left', Math.max(0, (($(window).width() - modal.outerWidth()) / 2) + $(window).scrollLeft()) + 'px')
+			.css('top', '0px')
+			.css('z-index', '2000');
 	}
 
 	function movePost(post, pid, tid, callback) {

@@ -46,7 +46,7 @@
 }(function (string, load, warn) {
 	'use strict';
 	var assign = Object.assign || jQuery.extend;
-	function classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	function classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
 	var Translator = (function () {
 		/**

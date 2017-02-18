@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 var fs = require('fs');
 var nconf = require('nconf');

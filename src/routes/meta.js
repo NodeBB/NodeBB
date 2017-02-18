@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 module.exports = function (app, middleware, controllers) {
 	app.get('/sitemap.xml', controllers.sitemap.render);

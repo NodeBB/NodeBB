@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 var fork = require('child_process').fork;
 var env = process.env;

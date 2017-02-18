@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 var navigationAdmin = require('../../navigation/admin');
 var SocketNavigation = {};

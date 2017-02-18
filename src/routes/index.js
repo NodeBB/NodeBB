@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 var nconf = require('nconf');
 var winston = require('winston');

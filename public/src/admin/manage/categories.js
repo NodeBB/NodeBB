@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 
 define('admin/manage/categories', ['vendor/jquery/serializeObject/jquery.ba-serializeobject.min', 'translator'], function (serialize, translator) {
@@ -197,7 +197,7 @@ define('admin/manage/categories', ['vendor/jquery/serializeObject/jquery.ba-seri
 						animation: 150,
 						handle: '.icon',
 						dataIdAttr: 'data-cid',
-						ghostClass: "placeholder",
+						ghostClass: 'placeholder',
 						onAdd: itemDidAdd,
 						onEnd: itemDragDidEnd,
 					});

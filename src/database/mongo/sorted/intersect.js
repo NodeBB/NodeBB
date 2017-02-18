@@ -58,7 +58,7 @@ module.exports = function (db, module) {
 						score: {
 							$cond: {
 								if: {
-									$eq: ["$_key", sets[index]],
+									$eq: ['$_key', sets[index]],
 								},
 								then: {
 									$multiply: ['$score', weight],

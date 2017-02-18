@@ -40,7 +40,7 @@ module.exports = function (Meta) {
 				'public/src/ajaxify.js',
 				'public/src/overrides.js',
 				'public/src/widgets.js',
-				"./node_modules/promise-polyfill/promise.js",
+				'./node_modules/promise-polyfill/promise.js',
 			],
 
 			// files listed below are only available client-side, or are bundled in to reduce # of network requests on cold load
@@ -81,11 +81,11 @@ module.exports = function (Meta) {
 
 			// modules listed below are routed through express (/src/modules) so they can be defined anonymously
 			modules: {
-				"Chart.js": './node_modules/chart.js/dist/Chart.min.js',
-				"mousetrap.js": './node_modules/mousetrap/mousetrap.min.js',
-				"jqueryui.js": 'public/vendor/jquery/js/jquery-ui.js',
-				"buzz.js": 'public/vendor/buzz/buzz.js',
-				"cropper.js": './node_modules/cropperjs/dist/cropper.min.js',
+				'Chart.js': './node_modules/chart.js/dist/Chart.min.js',
+				'mousetrap.js': './node_modules/mousetrap/mousetrap.min.js',
+				'jqueryui.js': 'public/vendor/jquery/js/jquery-ui.js',
+				'buzz.js': 'public/vendor/buzz/buzz.js',
+				'cropper.js': './node_modules/cropperjs/dist/cropper.min.js',
 			},
 		},
 	};

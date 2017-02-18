@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 
 define('admin/advanced/errors', ['Chart', 'translator'], function (Chart, translator) {
@@ -41,13 +41,13 @@ define('admin/advanced/errors', ['Chart', 'translator'], function (Chart, transl
 				labels: dailyLabels,
 				datasets: [
 					{
-						label: "",
-						backgroundColor: "rgba(186,139,175,0.2)",
-						borderColor: "rgba(186,139,175,1)",
-						pointBackgroundColor: "rgba(186,139,175,1)",
-						pointHoverBackgroundColor: "#fff",
-						pointBorderColor: "#fff",
-						pointHoverBorderColor: "rgba(186,139,175,1)",
+						label: '',
+						backgroundColor: 'rgba(186,139,175,0.2)',
+						borderColor: 'rgba(186,139,175,1)',
+						pointBackgroundColor: 'rgba(186,139,175,1)',
+						pointHoverBackgroundColor: '#fff',
+						pointBorderColor: '#fff',
+						pointHoverBorderColor: 'rgba(186,139,175,1)',
 						data: ajaxify.data.analytics['not-found'],
 					},
 				],
@@ -56,13 +56,13 @@ define('admin/advanced/errors', ['Chart', 'translator'], function (Chart, transl
 				labels: dailyLabels,
 				datasets: [
 					{
-						label: "",
-						backgroundColor: "rgba(151,187,205,0.2)",
-						borderColor: "rgba(151,187,205,1)",
-						pointBackgroundColor: "rgba(151,187,205,1)",
-						pointHoverBackgroundColor: "#fff",
-						pointBorderColor: "#fff",
-						pointHoverBorderColor: "rgba(151,187,205,1)",
+						label: '',
+						backgroundColor: 'rgba(151,187,205,0.2)',
+						borderColor: 'rgba(151,187,205,1)',
+						pointBackgroundColor: 'rgba(151,187,205,1)',
+						pointHoverBackgroundColor: '#fff',
+						pointBorderColor: '#fff',
+						pointHoverBorderColor: 'rgba(151,187,205,1)',
 						data: ajaxify.data.analytics.toobusy,
 					},
 				],

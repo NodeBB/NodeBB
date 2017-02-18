@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 var winston = require('winston');
 var express = require('express');

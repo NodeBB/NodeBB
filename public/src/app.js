@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 
 var app = app || {};
@@ -462,8 +462,8 @@ app.cacheBuster = null;
 	}
 
 	app.handleSearch = function () {
-		var searchButton = $("#search-button");
-		var searchFields = $("#search-fields");
+		var searchButton = $('#search-button');
+		var searchFields = $('#search-fields');
 		var searchInput = $('#search-fields input');
 
 		$('#search-form .advanced-search-link').on('mousedown', function () {
@@ -507,8 +507,8 @@ app.cacheBuster = null;
 	};
 
 	app.prepareSearch = function () {
-		$("#search-fields").removeClass('hidden');
-		$("#search-button").addClass('hidden');
+		$('#search-fields').removeClass('hidden');
+		$('#search-button').addClass('hidden');
 		$('#search-fields input').focus();
 	};
 

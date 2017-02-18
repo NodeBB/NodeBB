@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 
 define('admin/general/navigation', ['translator', 'iconSelect', 'jqueryui'], function (translator, iconSelect, jqueryui) {

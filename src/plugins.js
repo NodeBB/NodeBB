@@ -179,7 +179,7 @@ var middleware;
 						if (pluginTemplates) {
 							pluginTemplates.forEach(function (pluginTemplate) {
 								if (pluginTemplate.endsWith('.tpl')) {
-									tplName = "/" + pluginTemplate.replace(templatesPath, '').substring(1);
+									tplName = '/' + pluginTemplate.replace(templatesPath, '').substring(1);
 
 									if (templates.hasOwnProperty(tplName)) {
 										winston.verbose('[plugins] ' + tplName + ' replaced by ' + plugin.id);

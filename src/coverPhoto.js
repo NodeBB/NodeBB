@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 var coverPhoto = {};
 var meta = require('./meta');

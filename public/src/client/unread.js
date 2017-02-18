@@ -72,7 +72,7 @@ define('forum/unread', ['forum/recent', 'topicSelect', 'forum/infinitescroll', '
 
 		topicSelect.init();
 
-		if ($("body").height() <= $(window).height() && $('[component="category"]').children().length >= 20) {
+		if ($('body').height() <= $(window).height() && $('[component="category"]').children().length >= 20) {
 			$('#load-more-btn').show();
 		}
 

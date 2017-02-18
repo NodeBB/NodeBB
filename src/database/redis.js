@@ -29,8 +29,8 @@
 			before: function (value) { value = value || nconf.get('redis:password') || ''; return value; },
 		},
 		{
-			name: "redis:database",
-			description: "Which database to use (0..n)",
+			name: 'redis:database',
+			description: 'Which database to use (0..n)',
 			default: nconf.get('redis:database') || 0,
 		},
 	];
@@ -110,7 +110,7 @@
 		if (dbIdx) {
 			cxn.select(dbIdx, function (error) {
 				if (error) {
-					winston.error("NodeBB could not connect to your Redis database. Redis returned the following error: " + error.message);
+					winston.error('NodeBB could not connect to your Redis database. Redis returned the following error: ' + error.message);
 					process.exit();
 				}
 			});
@@ -150,7 +150,7 @@
 				return callback(err);
 			}
 
-			var lines = data.toString().split("\r\n").sort();
+			var lines = data.toString().split('\r\n').sort();
 			var redisData = {};
 			lines.forEach(function (line) {
 				var parts = line.split(':');

@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 module.exports = function (db, module) {
 	var helpers = module.helpers.mongo;

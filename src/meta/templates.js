@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 var mkdirp = require('mkdirp');
 var rimraf = require('rimraf');
@@ -121,13 +121,13 @@ function compile(callback) {
 			var regex = /[ \t]*<!-- IMPORT ([\s\S]*?)? -->[ \t]*/;
 
 			while ((matches = file.match(regex)) !== null) {
-				var partial = "/" + matches[1];
+				var partial = '/' + matches[1];
 
 				if (paths[partial] && relativePath !== partial) {
 					file = file.replace(regex, fs.readFileSync(paths[partial]).toString());
 				} else {
 					winston.warn('[meta/templates] Partial not loaded: ' + matches[1]);
-					file = file.replace(regex, "");
+					file = file.replace(regex, '');
 				}
 			}
 

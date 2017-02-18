@@ -260,12 +260,12 @@ function createAdmin(callback) {
 		}
 
 		if (results['password:confirm'] !== results.password) {
-			winston.warn("Passwords did not match, please try again");
+			winston.warn('Passwords did not match, please try again');
 			return retryPassword(results);
 		}
 
 		if (results.password.length < meta.config.minimumPasswordLength) {
-			winston.warn("Password too short, please try again");
+			winston.warn('Password too short, please try again');
 			return retryPassword(results);
 		}
 

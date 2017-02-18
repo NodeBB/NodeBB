@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 
 define('admin/extend/rewards', ['translator'], function (translator) {
