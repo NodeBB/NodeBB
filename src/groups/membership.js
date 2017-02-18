@@ -241,12 +241,10 @@ module.exports = function (Groups) {
 				}
 				if (Groups.isPrivilegeGroup(groupName) && parseInt(groupData.memberCount, 10) === 0) {
 					Groups.destroy(groupName, next);
+				} else if (parseInt(groupData.hidden, 10) !== 1) {
+					db.sortedSetAdd('groups:visible:memberCount', groupData.memberCount, groupName, next);
 				} else {
-					if (parseInt(groupData.hidden, 10) !== 1) {
-						db.sortedSetAdd('groups:visible:memberCount', groupData.memberCount, groupName, next);
-					} else {
-						next();
-					}
+					next();
 				}
 			},
 			function (next) {

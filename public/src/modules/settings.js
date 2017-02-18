@@ -510,20 +510,18 @@ define('settings', function () {
 
 					if (typeof callback === 'function') {
 						callback(err);
+					} else if (err) {
+						app.alert({
+							title: 'Error while saving settings',
+							type: 'error',
+							timeout: 2500,
+						});
 					} else {
-						if (err) {
-							app.alert({
-								title: 'Error while saving settings',
-								type: 'error',
-								timeout: 2500,
-							});
-						} else {
-							app.alert({
-								title: 'Settings Saved',
-								type: 'success',
-								timeout: 2500,
-							});
-						}
+						app.alert({
+							title: 'Settings Saved',
+							type: 'success',
+							timeout: 2500,
+						});
 					}
 				});
 			}

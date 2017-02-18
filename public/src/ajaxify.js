@@ -351,10 +351,8 @@ $(document).ready(function () {
 						// Special handling for urls with hashes
 						if (window.location.pathname === this.pathname && this.hash.length) {
 							window.location.hash = this.hash;
-						} else {
-							if (ajaxify.go(pathname)) {
-								e.preventDefault();
-							}
+						} else if (ajaxify.go(pathname)) {
+							e.preventDefault();
 						}
 					} else if (window.location.pathname !== '/outgoing') {
 						if (config.openOutgoingLinksInNewTab && $.contains(contentEl, this)) {

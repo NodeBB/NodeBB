@@ -311,22 +311,20 @@ define('forum/chats', [
 				data.message.self = data.self;
 
 				messages.appendChatMessage($('.expanded-chat .chat-content'), data.message);
-			} else {
-				if (ajaxify.currentPage.startsWith('chats')) {
-					var roomEl = $('[data-roomid=' + data.roomId + ']');
+			} else if (ajaxify.currentPage.startsWith('chats')) {
+				var roomEl = $('[data-roomid=' + data.roomId + ']');
 
-					if (roomEl.length > 0) {
-						roomEl.addClass('unread');
-					} else {
-						var recentEl = components.get('chat/recent');
-						templates.parse('partials/chats/recent_room', {
-							rooms: { roomId: data.roomId, lastUser: data.message.fromUser, usernames: data.message.fromUser.username, unread: true },
-						}, function (html) {
-							translator.translate(html, function (translated) {
+				if (roomEl.length > 0) {
+					roomEl.addClass('unread');
+				} else {
+					var recentEl = components.get('chat/recent');
+					templates.parse('partials/chats/recent_room', {
+						rooms: { roomId: data.roomId, lastUser: data.message.fromUser, usernames: data.message.fromUser.username, unread: true },
+					}, function (html) {
+						translator.translate(html, function (translated) {
 							    recentEl.prepend(translated);
-							});
 						});
-					}
+					});
 				}
 			}
 		});

@@ -28,12 +28,10 @@ module.exports = function (privileges) {
 	privileges.users.isModerator = function (uid, cid, callback) {
 		if (Array.isArray(cid)) {
 			isModeratorOfCategories(cid, uid, callback);
+		} else if (Array.isArray(uid)) {
+			isModeratorsOfCategory(cid, uid, callback);
 		} else {
-			if (Array.isArray(uid)) {
-				isModeratorsOfCategory(cid, uid, callback);
-			} else {
-				isModeratorOfCategory(cid, uid, callback);
-			}
+			isModeratorOfCategory(cid, uid, callback);
 		}
 	};
 

@@ -18,10 +18,8 @@ module.exports = function (Meta) {
 	Meta.sounds.init = function (callback) {
 		if (nconf.get('isPrimary') === 'true') {
 			setupSounds(callback);
-		} else {
-			if (typeof callback === 'function') {
-				callback();
-			}
+		} else if (typeof callback === 'function') {
+			callback();
 		}
 	};
 

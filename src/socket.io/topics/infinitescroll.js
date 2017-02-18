@@ -46,12 +46,10 @@ module.exports = function (SocketTopics) {
 					if (reverse) {
 						start = results.topic.postcount - start;
 					}
+				} else if (reverse) {
+					start = results.topic.postcount - start - infScrollPostsPerPage - 1;
 				} else {
-					if (reverse) {
-						start = results.topic.postcount - start - infScrollPostsPerPage - 1;
-					} else {
-						start = start - infScrollPostsPerPage - 1;
-					}
+					start = start - infScrollPostsPerPage - 1;
 				}
 
 				var stop = start + (infScrollPostsPerPage - 1);

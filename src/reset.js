@@ -133,14 +133,12 @@ function resetPlugin(pluginId, callback) {
 	], function (err) {
 		if (err) {
 			winston.error('[reset] Could not disable plugin: %s encountered error %s', pluginId, err.message);
+		} else if (active) {
+			winston.info('[reset] Plugin `%s` disabled', pluginId);
 		} else {
-			if (active) {
-				winston.info('[reset] Plugin `%s` disabled', pluginId);
-			} else {
-				winston.warn('[reset] Plugin `%s` was not active on this forum', pluginId);
-				winston.info('[reset] No action taken.');
-				err = new Error('plugin-not-active');
-			}
+			winston.warn('[reset] Plugin `%s` was not active on this forum', pluginId);
+			winston.info('[reset] No action taken.');
+			err = new Error('plugin-not-active');
 		}
 
 		callback(err);

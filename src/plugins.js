@@ -190,12 +190,10 @@ var middleware;
 									winston.warn('[plugins] Skipping ' + pluginTemplate + ' by plugin ' + plugin.id);
 								}
 							});
+						} else if (err) {
+							winston.error(err);
 						} else {
-							if (err) {
-								winston.error(err);
-							} else {
-								winston.warn('[plugins/' + plugin.id + '] A templates directory was defined for this plugin, but was not found.');
-							}
+							winston.warn('[plugins/' + plugin.id + '] A templates directory was defined for this plugin, but was not found.');
 						}
 
 						next(false);

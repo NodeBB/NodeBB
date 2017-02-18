@@ -38,14 +38,12 @@ helpers.notAllowed = function (req, res, error) {
 					title: '[[global:403.title]]',
 				});
 			}
+		} else if (res.locals.isAPI) {
+			req.session.returnTo = nconf.get('relative_path') + req.url.replace(/^\/api/, '');
+			res.status(401).json('not-authorized');
 		} else {
-			if (res.locals.isAPI) {
-				req.session.returnTo = nconf.get('relative_path') + req.url.replace(/^\/api/, '');
-				res.status(401).json('not-authorized');
-			} else {
-				req.session.returnTo = nconf.get('relative_path') + req.url;
-				res.redirect(nconf.get('relative_path') + '/login');
-			}
+			req.session.returnTo = nconf.get('relative_path') + req.url;
+			res.redirect(nconf.get('relative_path') + '/login');
 		}
 	});
 };
