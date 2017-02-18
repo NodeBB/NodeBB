@@ -239,7 +239,8 @@ define('settings', function () {
 		 @param amount The amount of jobs to register.
 		 */
 		registerReadyJobs: function (amount) {
-			return waitingJobs += amount;
+			waitingJobs += amount;
+			return waitingJobs;
 		},
 		/**
 		 Decreases the amount of jobs before settings are ready by given amount or 1.

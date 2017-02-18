@@ -61,7 +61,8 @@ define('settings/key', function () {
 			key.code = event.which;
 			key.char = convertKeyCodeToChar(key.code);
 		}
-		return oldKey = key;
+		oldKey = key;
+		return key;
 	}
 
 	/**

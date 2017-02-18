@@ -104,7 +104,8 @@ define('settings/object', function () {
 				var prop = property.data('prop');
 				var empty = helper.isTrue(property.data('empty'));
 				if (empty || (val !== void 0 && (val == null || val.length !== 0))) {
-					return value[prop] = val;
+					value[prop] = val;
+					return val;
 				}
 			});
 			if (empty || Object.keys(value).length) {
