@@ -25,6 +25,7 @@
 		"no-tabs": "off",
 		"indent": ["error", "tab"],
 		"no-eq-null": "off",
+		"camelcase": "off",
 
 		// ES6
 		"prefer-rest-params": "off",
@@ -64,10 +65,9 @@
 		"no-unused-vars": "off",
 		"no-mixed-spaces-and-tabs": "off",
 		"no-useless-concat": "off",
-		"require-jsdoc": "off",
-		"eqeqeq": "off",
-		"camelcase": "off",
-		"no-negated-condition": "off",
+		// "require-jsdoc": "off",
+		// "eqeqeq": "off",
+		// "no-negated-condition": "off",
 		// "one-var-declaration-per-line": "off",
 		// "no-lonely-if": "off",
 		// "radix": "off",

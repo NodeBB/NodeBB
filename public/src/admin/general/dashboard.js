@@ -133,7 +133,7 @@ define('admin/general/dashboard', ['semver', 'Chart', 'translator'], function (s
 	function lighten(col, amt) {
 		var usePound = false;
 
-		if (col[0] == '#') {
+		if (col[0] === '#') {
 			col = col.slice(1);
 			usePound = true;
 		}

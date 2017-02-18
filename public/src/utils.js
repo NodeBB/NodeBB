@@ -422,7 +422,7 @@
 				return undefined;
 			}
 			var i = props.indexOf('.');
-			if (i == -1) {
+			if (i === -1) {
 				if (value !== undefined) {
 					obj[props] = value;
 				}

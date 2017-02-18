@@ -37,7 +37,7 @@ var callbacks = {};
 var newXhr = function () {
 	stdXhr.apply(this, arguments);
 	for (var method in callbacks) {
-		if (typeof callbacks[method] == 'function') {
+		if (typeof callbacks[method] === 'function') {
 			callbacks[method].apply(this, arguments);
 		}
 	}
