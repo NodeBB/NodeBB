@@ -77,8 +77,9 @@ module.exports = function (db, module) {
 		var _fields = {
 			_id: 0,
 		};
+		var i;
 
-		for (var i = 0; i < fields.length; i += 1) {
+		for (i = 0; i < fields.length; i += 1) {
 			fields[i] = helpers.fieldToString(fields[i]);
 			_fields[fields[i]] = 1;
 		}

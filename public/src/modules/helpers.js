@@ -62,8 +62,8 @@
 	};
 
 	helpers.stripTags = function (str) {
-		if (typeof S !== 'undefined') {
-			return S(String(str)).stripTags().s;
+		if (typeof window !== 'undefined' && window.S) {
+			return window.S(String(str)).stripTags().s;
 		} else {
 			var S = require('string');
 			return S(String(str)).stripTags().s;

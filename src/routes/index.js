@@ -97,8 +97,11 @@ module.exports = function (app, middleware, hotswapIds) {
 	var relativePath = nconf.get('relative_path');
 	var ensureLoggedIn = require('connect-ensure-login');
 
+	var idx;
+	var x;
+
 	if (Array.isArray(hotswapIds) && hotswapIds.length) {
-		for (var idx, x = 0; x < hotswapIds.length; x += 1) {
+		for (x = 0; x < hotswapIds.length; x += 1) {
 			idx = routers.push(express.Router()) - 1;
 			routers[idx].hotswapId = hotswapIds[x];
 		}

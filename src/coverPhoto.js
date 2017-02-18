@@ -20,7 +20,7 @@ function getCover(type, id) {
 		if (typeof id === 'string') {
 			id = (id.charCodeAt(0) + id.charCodeAt(1)) % covers.length;
 		} else {
-			id = id % covers.length;
+			id %= covers.length;
 		}
 
 		return covers[id];

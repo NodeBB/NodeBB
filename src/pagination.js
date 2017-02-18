@@ -26,7 +26,8 @@ pagination.create = function (currentPage, pageCount, queryObj) {
 	if (startPage > pageCount - 5) {
 		startPage -= 2 - (pageCount - currentPage);
 	}
-	for (var i = 0; i < 5; i += 1) {
+	var i;
+	for (i = 0; i < 5; i += 1) {
 		pagesToShow.push(startPage + i);
 	}
 

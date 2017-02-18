@@ -311,7 +311,7 @@ define('forum/topic/posts', [
 
 				var imageRect = this.getBoundingClientRect();
 				if (imageRect.top < threshold) {
-					scrollTop = scrollTop + (newHeight - oldHeight);
+					scrollTop += newHeight - oldHeight;
 					$(window).scrollTop(scrollTop);
 				}
 

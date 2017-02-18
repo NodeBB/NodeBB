@@ -94,7 +94,7 @@ SocketCategories.loadMore = function (socket, data, callback) {
 		var start = Math.max(0, parseInt(data.after, 10));
 
 		if (data.direction === -1) {
-			start = start - (reverse ? infScrollTopicsPerPage : -infScrollTopicsPerPage);
+			start -= reverse ? infScrollTopicsPerPage : -infScrollTopicsPerPage;
 		}
 
 		var stop = start + infScrollTopicsPerPage - 1;
