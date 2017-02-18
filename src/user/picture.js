@@ -98,41 +98,41 @@ module.exports = function (User) {
 			return callback(new Error('[[error:no-plugin]]'));
 		}
 
-		request.head(url, function (err, res) {
-			if (err) {
-				return callback(err);
-			}
-			var uploadSize = parseInt(meta.config.maximumProfileImageSize, 10) || 256;
-			var size = res.headers['content-length'];
-			var type = res.headers['content-type'];
-			var extension = mime.extension(type);
+		async.waterfall([
+			function (next) {
+				request.head(url, next);
+			},
+			function (res, body, next) {
+				var uploadSize = parseInt(meta.config.maximumProfileImageSize, 10) || 256;
+				var size = res.headers['content-length'];
+				var type = res.headers['content-type'];
+				var extension = mime.extension(type);
 
-			if (['png', 'jpeg', 'jpg', 'gif'].indexOf(extension) === -1) {
-				return callback(new Error('[[error:invalid-image-extension]]'));
-			}
-
-			if (size > uploadSize * 1024) {
-				return callback(new Error('[[error:file-too-big, ' + uploadSize + ']]'));
-			}
-
-			var picture = {
-				url: url,
-				name: ''
-			};
-			plugins.fireHook('filter:uploadImage', {
-				image: picture,
-				uid: uid
-			}, function (err, image) {
-				if (err) {
-					return callback(err);
+				if (['png', 'jpeg', 'jpg', 'gif'].indexOf(extension) === -1) {
+					return callback(new Error('[[error:invalid-image-extension]]'));
 				}
+
+				if (size > uploadSize * 1024) {
+					return callback(new Error('[[error:file-too-big, ' + uploadSize + ']]'));
+				}
+
+				plugins.fireHook('filter:uploadImage', {
+					uid: uid,
+					image: {
+						url: url,
+						name: ''
+					}
+				}, next);
+			},
+			function (image, next) {
 				User.setUserFields(uid, {
 					uploadedpicture: image.url,
 					picture: image.url
+				}, function (err) {
+					next(err, image);
 				});
-				callback(null, image);
-			});
-		});
+			}
+		], callback);
 	};
 
 	User.updateCoverPosition = function (uid, position, callback) {
@@ -140,8 +140,12 @@ module.exports = function (User) {
 	};
 
 	User.updateCoverPicture = function (data, callback) {
-		var keepAllVersions = parseInt(meta.config['profile:keepAllUserImages'], 10) === 1;
-		var url, md5sum;
+
+		var url;
+		var image = {
+			name: 'profileCover',
+			uid: data.uid
+		};
 
 		if (!data.imageData && data.position) {
 			return User.updateCoverPosition(data.uid, data.position, callback);
@@ -160,94 +164,42 @@ module.exports = function (User) {
 				}
 
 				if (data.file) {
-					return next();
+					return setImmediate(next, null, data.file.path);
 				}
 
-				md5sum = crypto.createHash('md5');
-				md5sum.update(data.imageData);
-				md5sum = md5sum.digest('hex');
-
-				data.file = {
-					path: path.join(os.tmpdir(), md5sum)
-				};
-
-				var buffer = new Buffer(data.imageData.slice(data.imageData.indexOf('base64') + 7), 'base64');
-
-				fs.writeFile(data.file.path, buffer, {
-					encoding: 'base64'
-				}, next);
+				saveImageDataToTempFile(data.imageData, next);
 			},
-			function (next) {
-				var image = {
-					name: 'profileCover',
-					path: data.file.path,
-					uid: data.uid
-				};
+			function (path, next) {
+				image.path = path;
 
-				if (plugins.hasListeners('filter:uploadImage')) {
-					return plugins.fireHook('filter:uploadImage', {
-						image: image,
-						uid: data.uid
-					}, next);
-				}
-
-				var extension = file.typeToExtension(data.imageData.slice(5, data.imageData.indexOf('base64') - 1));
-				var filename = data.uid + '-profilecover' + (keepAllVersions ? '-' + Date.now() : '') + (extension || '');
-				async.waterfall([
-					function (next) {
-						file.isFileTypeAllowed(data.file.path, next);
-					},
-					function (next) {
-						file.saveFileToLocal(filename, 'profile', image.path, next);
-					},
-					function (upload, next) {
-						next(null, {
-							url: nconf.get('relative_path') + upload.url,
-							name: image.name
-						});
-					}
-				], next);
+				uploadProfileOrCover('profilecover', image, data.imageData, next);
 			},
 			function (uploadData, next) {
 				url = uploadData.url;
 				User.setUserField(data.uid, 'cover:url', uploadData.url, next);
 			},
 			function (next) {
-				fs.unlink(data.file.path, function (err) {
-					if (err) {
-						winston.error(err);
-					}
-					next();
-				});
+				if (data.position) {
+					User.updateCoverPosition(data.uid, data.position, next);
+				} else {
+					setImmediate(next);
+				}
 			}
 		], function (err) {
-			if (err) {
-				return fs.unlink(data.file.path, function (unlinkErr) {
-					if (unlinkErr) {
-						winston.error(unlinkErr);
-					}
-
-					callback(err); // send back the original error
-				});
-			}
-
-			if (data.position) {
-				User.updateCoverPosition(data.uid, data.position, function (err) {
-					callback(err, {
-						url: url
-					});
-				});
-			} else {
-				callback(err, {
-					url: url
-				});
-			}
+			deleteFile(image.path);
+			callback(err, {
+				url: url
+			});
 		});
 	};
 
 	User.uploadCroppedPicture = function (data, callback) {
-		var keepAllVersions = parseInt(meta.config['profile:keepAllUserImages'], 10) === 1;
-		var url, md5sum;
+
+		var url;
+		var image = {
+			name: 'profileAvatar',
+			uid: data.uid
+		};
 
 		if (!data.imageData) {
 			return callback(new Error('[[error:invalid-data]]'));
@@ -255,56 +207,18 @@ module.exports = function (User) {
 
 		async.waterfall([
 			function (next) {
-				var size = data.file ? data.file.size : data.imageData.length;
+				var size = data.imageData.length;
 				var uploadSize = parseInt(meta.config.maximumProfileImageSize, 10) || 256;
 				if (size > uploadSize * 1024) {
 					return next(new Error('[[error:file-too-big, ' + meta.config.maximumProfileImageSize + ']]'));
 				}
 
-				md5sum = crypto.createHash('md5');
-				md5sum.update(data.imageData);
-				md5sum = md5sum.digest('hex');
-
-				data.file = {
-					path: path.join(os.tmpdir(), md5sum)
-				};
-
-				var buffer = new Buffer(data.imageData.slice(data.imageData.indexOf('base64') + 7), 'base64');
-
-				fs.writeFile(data.file.path, buffer, {
-					encoding: 'base64'
-				}, next);
+				saveImageDataToTempFile(data.imageData, next);
 			},
-			function (next) {
-				var image = {
-					name: 'profileAvatar',
-					path: data.file.path,
-					uid: data.uid
-				};
+			function (path, next) {
+				image.path = path;
 
-				if (plugins.hasListeners('filter:uploadImage')) {
-					return plugins.fireHook('filter:uploadImage', {
-						image: image,
-						uid: data.uid
-					}, next);
-				}
-
-				var extension = file.typeToExtension(data.imageData.slice(5, data.imageData.indexOf('base64') - 1));
-				var filename = data.uid + '-profileavatar' + (keepAllVersions ? '-' + Date.now() : '') + (extension || '');
-				async.waterfall([
-					function (next) {
-						file.isFileTypeAllowed(data.file.path, next);
-					},
-					function (next) {
-						file.saveFileToLocal(filename, 'profile', image.path, next);
-					},
-					function (upload, next) {
-						next(null, {
-							url: nconf.get('relative_path') + upload.url,
-							name: image.name
-						});
-					}
-				], next);
+				uploadProfileOrCover('profileavatar', image, data.imageData, next);
 			},
 			function (uploadData, next) {
 				url = uploadData.url;
@@ -312,25 +226,72 @@ module.exports = function (User) {
 					uploadedpicture: url,
 					picture: url
 				}, next);
-			},
-			function (next) {
-				fs.unlink(data.file.path, function (err) {
-					if (err) {
-						winston.error(err);
-					}
-					next();
-				});
 			}
 		], function (err) {
-			if (err) {
-				return callback(err); // send back the original error
-			}
-
+			deleteFile(image.path);
 			callback(err, {
 				url: url
 			});
 		});
 	};
+
+	function saveImageDataToTempFile(imageData, callback) {
+		var filename = crypto.createHash('md5').update(imageData).digest('hex');
+		var filepath = path.join(os.tmpdir(), filename);
+
+		var buffer = new Buffer(imageData.slice(imageData.indexOf('base64') + 7), 'base64');
+
+		fs.writeFile(filepath, buffer, {
+			encoding: 'base64'
+		}, function (err) {
+			callback(err, filepath);
+		});
+	}
+
+	function uploadProfileOrCover(type, image, imageData, callback) {
+		if (plugins.hasListeners('filter:uploadImage')) {
+			return plugins.fireHook('filter:uploadImage', {
+				image: image,
+				uid: image.uid
+			}, callback);
+		}
+		var filename = generateProfileImageFilename(image.uid, type, imageData);
+		saveFileToLocal(filename, image, callback);
+	}
+
+	function generateProfileImageFilename(uid, type, imageData) {
+		var extension = file.typeToExtension(imageData.slice(5, imageData.indexOf('base64') - 1));
+		var keepAllVersions = parseInt(meta.config['profile:keepAllUserImages'], 10) === 1;
+		var filename = uid + '-' + type + (keepAllVersions ? '-' + Date.now() : '') + (extension || '');
+		return filename;
+	}
+
+	function saveFileToLocal(filename, image, callback) {
+		async.waterfall([
+			function (next) {
+				file.isFileTypeAllowed(image.path, next);
+			},
+			function (next) {
+				file.saveFileToLocal(filename, 'profile', image.path, next);
+			},
+			function (upload, next) {
+				next(null, {
+					url: nconf.get('relative_path') + upload.url,
+					name: image.name
+				});
+			}
+		], callback);
+	}
+
+	function deleteFile(path) {
+		if (path) {
+			fs.unlink(path, function (err) {
+				if (err) {
+					winston.error(err);
+				}
+			});
+		}
+	}
 
 	User.removeCoverPicture = function (data, callback) {
 		db.deleteObjectFields('user:' + data.uid, ['cover:url', 'cover:position'], callback);
