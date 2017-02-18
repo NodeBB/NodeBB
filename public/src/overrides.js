@@ -40,7 +40,7 @@ if ('undefined' !== typeof window) {
 				});
 			};
 
-			//http://stackoverflow.com/questions/511088/use-javascript-to-place-cursor-at-end-of-text-in-text-input-element
+			// http://stackoverflow.com/questions/511088/use-javascript-to-place-cursor-at-end-of-text-in-text-input-element
 			$.fn.putCursorAtEnd = function () {
 				return this.each(function () {
 					$(this).focus();

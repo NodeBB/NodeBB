@@ -231,7 +231,7 @@ module.exports = function (Meta) {
 			 * use the line below if you want to debug minifier.js script too (or even --debug-brk option, but
 			 * you'll have to setup your debugger and connect to the forked process)
 			 */
-			//forkProcessParams = {execArgv: ['--debug=' + (global.process.debugPort + 1), '--nolazy']};
+			// forkProcessParams = {execArgv: ['--debug=' + (global.process.debugPort + 1), '--nolazy']};
 
 			/**
 			 * otherwise, just clean up --debug/--debug-brk options which are set up by default from the parent one

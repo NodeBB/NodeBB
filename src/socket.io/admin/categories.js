@@ -22,7 +22,7 @@ Categories.getAll = function (socket, data, callback) {
 		async.apply(db.getSortedSetRange, 'categories:cid', 0, -1),
 		async.apply(categories.getCategoriesData),
 		function (categories, next) {
-			//Hook changes, there is no req, and res
+			// Hook changes, there is no req, and res
 			plugins.fireHook('filter:admin.categories.get', {categories: categories}, next);
 		},
 		function (result, next) {

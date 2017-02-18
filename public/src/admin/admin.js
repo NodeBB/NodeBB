@@ -1,5 +1,4 @@
 "use strict";
-/*global config, componentHandler, socket, app, bootbox, Slideout, NProgress, utils*/
 
 (function () {
 	var logoutTimer = 0;

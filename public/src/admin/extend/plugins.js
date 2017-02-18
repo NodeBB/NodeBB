@@ -29,7 +29,7 @@ define('admin/extend/plugins', ['jqueryui', 'translator'], function (jqueryui, t
 					btn.html(buttonText);
 					btn.toggleClass('btn-warning', status.active).toggleClass('btn-success', !status.active);
 
-					//clone it to active plugins tab
+					// clone it to active plugins tab
 					if (status.active && !$('#active #' + pluginID).length) {
 						$('#active ul').prepend(pluginEl.clone(true));
 					}

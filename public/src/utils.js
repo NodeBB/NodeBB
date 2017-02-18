@@ -32,7 +32,7 @@
 			});
 		},
 
-		//Adapted from http://stackoverflow.com/questions/5827612/node-js-fs-readdir-recursive-directory-search
+		// Adapted from http://stackoverflow.com/questions/5827612/node-js-fs-readdir-recursive-directory-search
 		walk: function (dir, done) {
 			var results = [];
 
@@ -85,7 +85,7 @@
 		isLatin: /^[\w\d\s.,\-@]+$/,
 		languageKeyRegex: /\[\[[\w]+:.+\]\]/,
 
-		//http://dense13.com/blog/2009/05/03/converting-string-to-slug-javascript/
+		// http://dense13.com/blog/2009/05/03/converting-string-to-slug-javascript/
 		slugify: function (str, preserveCase) {
 			if (!str) {
 				return '';
@@ -272,7 +272,7 @@
 		},
 
 		findBootstrapEnvironment: function () {
-			//http://stackoverflow.com/questions/14441456/how-to-detect-which-device-view-youre-on-using-twitter-bootstrap-api
+			// http://stackoverflow.com/questions/14441456/how-to-detect-which-device-view-youre-on-using-twitter-bootstrap-api
 			var envs = ['xs', 'sm', 'md', 'lg'];
 			var $el = $('<div>');
 
@@ -324,7 +324,7 @@
 
 		/* Retrieved from http://stackoverflow.com/a/7557433 @ 27 Mar 2016 */
 		isElementInViewport: function (el) {
-			//special bonus for those using jQuery
+			// special bonus for those using jQuery
 			if (typeof jQuery === "function" && el instanceof jQuery) {
 				el = el[0];
 			}
@@ -334,8 +334,8 @@
 			return (
 				rect.top >= 0 &&
 				rect.left >= 0 &&
-				rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) && /*or $(window).height() */
-				rect.right <= (window.innerWidth || document.documentElement.clientWidth) /*or $(window).width() */
+				rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) && /* or $(window).height() */
+				rect.right <= (window.innerWidth || document.documentElement.clientWidth) /* or $(window).width() */
 			);
 		},
 

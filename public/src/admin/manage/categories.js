@@ -127,7 +127,7 @@ define('admin/manage/categories', ['vendor/jquery/serializeObject/jquery.ba-seri
 	function itemDragDidEnd(e) {
 		var isCategoryUpdate = (newCategoryId != -1);
 
-		//Update needed?
+		// Update needed?
 		if((e.newIndex != undefined && e.oldIndex != e.newIndex) || isCategoryUpdate) {
 			var parentCategory = isCategoryUpdate ? sortables[newCategoryId] : sortables[e.from.dataset.cid];
 			var modified = {};
