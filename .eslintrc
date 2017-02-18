@@ -110,7 +110,7 @@
         "array-bracket-spacing": "off",
         "object-property-newline": "off",
         "no-continue": "off",
-        "no-extra-semi": "off",
+        // "no-extra-semi": "off",
         // "no-spaced-func": "off",
         // "no-useless-return": "off"
     }

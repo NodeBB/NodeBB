@@ -325,7 +325,7 @@ define('forum/topic/posts', [
 					Posts.wrapImagesInLinks(posts);
 					posts.length = 0;
 				}
-			};
+			}
 
 			// For each image, reset the source and adjust scrollTop when loaded
 			visible.attr('data-state', 'loading');
