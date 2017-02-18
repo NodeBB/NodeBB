@@ -67,7 +67,7 @@ define('admin/extend/widgets', ['jqueryui'], function (jqueryui) {
 				}
 			});
 		}).on('mouseup', '> .panel > .panel-heading', function (evt) {
-			if ( !( $(this).parent().is('.ui-sortable-helper') || $(evt.target).closest('.delete-widget').length ) ) {
+			if (!($(this).parent().is('.ui-sortable-helper') || $(evt.target).closest('.delete-widget').length)) {
 				$(this).parent().children('.panel-body').toggleClass('hidden');
 			}
 		});

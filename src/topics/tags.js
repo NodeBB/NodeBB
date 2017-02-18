@@ -252,7 +252,7 @@ module.exports = function (Topics) {
 
 				topicTags.forEach(function (tags, index) {
 					if (Array.isArray(tags)) {
-						topicTags[index] = tags.map(function (tag) {return tagData[tag];});
+						topicTags[index] = tags.map(function (tag) { return tagData[tag]; });
 					}
 				});
 

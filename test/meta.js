@@ -142,7 +142,7 @@ describe('meta', function () {
 			});
 		});
 
-		it('should set multiple values', function (done ) {
+		it('should set multiple values', function (done) {
 			socketAdmin.config.setMultiple({uid: fooUid}, {
 				someField1: 'someValue1',
 				someField2: 'someValue2',

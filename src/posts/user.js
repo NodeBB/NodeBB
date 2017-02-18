@@ -95,7 +95,7 @@ module.exports = function (Posts) {
 		uid = parseInt(uid, 10);
 		if (Array.isArray(pid)) {
 			if (!uid) {
-				return callback(null, pid.map(function () {return false;}));
+				return callback(null, pid.map(function () { return false; }));
 			}
 			Posts.getPostsFields(pid, ['uid'], function (err, posts) {
 				if (err) {
@@ -118,7 +118,7 @@ module.exports = function (Posts) {
 
 	Posts.isModerator = function (pids, uid, callback) {
 		if (!parseInt(uid, 10)) {
-			return callback(null, pids.map(function () {return false;}));
+			return callback(null, pids.map(function () { return false; }));
 		}
 		Posts.getCidsByPids(pids, function (err, cids) {
 			if (err) {

@@ -471,7 +471,7 @@ describe('Topic\'s', function () {
 					});
 				},
 				function (done) {
-					topics.markUnread( newTid, uid, done );
+					topics.markUnread(newTid, uid, done);
 				},
 			],done);
 		});
@@ -479,14 +479,14 @@ describe('Topic\'s', function () {
 		it('should not appear in the unread list', function (done) {
 			async.waterfall([
 				function (done) {
-					topics.ignore( newTid, uid, done );
+					topics.ignore(newTid, uid, done);
 				},
 				function (done) {
-					topics.getUnreadTopics(0, uid, 0, -1, '', done );
+					topics.getUnreadTopics(0, uid, 0, -1, '', done);
 				},
 				function (results, done) {
 					var topics = results.topics;
-					var tids = topics.map( function (topic) { return topic.tid; } );
+					var tids = topics.map(function (topic) { return topic.tid; });
 					assert.equal(tids.indexOf(newTid), -1, 'The topic appeared in the unread list.');
 					done();
 				},
@@ -496,10 +496,10 @@ describe('Topic\'s', function () {
 		it('should not appear as unread in the recent list', function (done) {
 			async.waterfall([
 				function (done) {
-					topics.ignore( newTid, uid, done );
+					topics.ignore(newTid, uid, done);
 				},
 				function (done) {
-					topics.getLatestTopics( uid, 0, -1, 'year', done );
+					topics.getLatestTopics(uid, 0, -1, 'year', done);
 				},
 				function (results, done) {
 					var topics = results.topics;
@@ -520,17 +520,17 @@ describe('Topic\'s', function () {
 		it('should appear as unread again when marked as reading', function (done) {
 			async.waterfall([
 				function (done) {
-					topics.ignore( newTid, uid, done );
+					topics.ignore(newTid, uid, done);
 				},
 				function (done) {
-					topics.follow( newTid, uid, done );
+					topics.follow(newTid, uid, done);
 				},
 				function (done) {
-					topics.getUnreadTopics(0, uid, 0, -1, '', done );
+					topics.getUnreadTopics(0, uid, 0, -1, '', done);
 				},
 				function (results, done) {
 					var topics = results.topics;
-					var tids = topics.map( function (topic) { return topic.tid; } );
+					var tids = topics.map(function (topic) { return topic.tid; });
 					assert.notEqual(tids.indexOf(newTid), -1, 'The topic did not appear in the unread list.');
 					done();
 				},
@@ -540,17 +540,17 @@ describe('Topic\'s', function () {
 		it('should appear as unread again when marked as following', function (done) {
 			async.waterfall([
 				function (done) {
-					topics.ignore( newTid, uid, done );
+					topics.ignore(newTid, uid, done);
 				},
 				function (done) {
-					topics.follow( newTid, uid, done );
+					topics.follow(newTid, uid, done);
 				},
 				function (done) {
-					topics.getUnreadTopics(0, uid, 0, -1, '', done );
+					topics.getUnreadTopics(0, uid, 0, -1, '', done);
 				},
 				function (results, done) {
 					var topics = results.topics;
-					var tids = topics.map( function (topic) { return topic.tid; } );
+					var tids = topics.map(function (topic) { return topic.tid; });
 					assert.notEqual(tids.indexOf(newTid), -1, 'The topic did not appear in the unread list.');
 					done();
 				},
@@ -578,34 +578,34 @@ describe('Topic\'s', function () {
 				function (next) {
 					groups.join('administrators', topic.userId, next);
 				},
-				function ( next ) {
+				function (next) {
 					topics.post({uid: topic.userId, title: topic.title, content: topic.content, cid: topic.categoryId}, function (err, result) {
-						assert.ifError( err );
+						assert.ifError(err);
 						newTopic = result.topicData;
 						next();
 					});
 				},
-				function ( next ) { postReply( next );},
-				function ( next ) { postReply( next );},
-				function ( next ) { postReply( next );},
-				function ( next ) { postReply( next );},
-				function ( next ) { postReply( next );},
-				function ( next ) { postReply( next );},
-				function ( next ) { postReply( next );},
-				function ( next ) { postReply( next );},
-				function ( next ) { postReply( next );},
-				function ( next ) { postReply( next );},
-				function ( next ) { postReply( next );},
-				function ( next ) { postReply( next );},
-				function ( next ) {
-					topicPids = replies.map( function ( reply ) { return reply.pid; } );
-					topics.setUserBookmark( newTopic.tid, topic.userId, originalBookmark, next );
+				function (next) { postReply(next); },
+				function (next) { postReply(next); },
+				function (next) { postReply(next); },
+				function (next) { postReply(next); },
+				function (next) { postReply(next); },
+				function (next) { postReply(next); },
+				function (next) { postReply(next); },
+				function (next) { postReply(next); },
+				function (next) { postReply(next); },
+				function (next) { postReply(next); },
+				function (next) { postReply(next); },
+				function (next) { postReply(next); },
+				function (next) {
+					topicPids = replies.map(function (reply) { return reply.pid; });
+					topics.setUserBookmark(newTopic.tid, topic.userId, originalBookmark, next);
 				}],
-				done );
+				done);
 		});
 
 		it('should have 12 replies', function (done) {
-			assert.equal( 12, replies.length );
+			assert.equal(12, replies.length);
 			done();
 		});
 
@@ -615,15 +615,15 @@ describe('Topic\'s', function () {
 					topics.createTopicFromPosts(
 						topic.userId,
 						'Fork test, no bookmark update',
-						topicPids.slice( -2 ),
+						topicPids.slice(-2),
 						newTopic.tid,
-						next );
+						next);
 				},
-				function ( forkedTopicData, next) {
-					topics.getUserBookmark( newTopic.tid, topic.userId, next );
+				function (forkedTopicData, next) {
+					topics.getUserBookmark(newTopic.tid, topic.userId, next);
 				},
-				function ( bookmark, next ) {
-					assert.equal( originalBookmark, bookmark );
+				function (bookmark, next) {
+					assert.equal(originalBookmark, bookmark);
 					next();
 				},
 			],done);
@@ -635,15 +635,15 @@ describe('Topic\'s', function () {
 					topics.createTopicFromPosts(
 						topic.userId,
 						'Fork test, no bookmark update',
-						topicPids.slice( 1, 3 ),
+						topicPids.slice(1, 3),
 						newTopic.tid,
-						next );
+						next);
 				},
-				function ( forkedTopicData, next) {
-					topics.getUserBookmark( newTopic.tid, topic.userId, next );
+				function (forkedTopicData, next) {
+					topics.getUserBookmark(newTopic.tid, topic.userId, next);
 				},
-				function ( bookmark, next ) {
-					assert.equal( originalBookmark - 2, bookmark );
+				function (bookmark, next) {
+					assert.equal(originalBookmark - 2, bookmark);
 					next();
 				},
 			],done);

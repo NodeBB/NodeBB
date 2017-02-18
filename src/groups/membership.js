@@ -355,7 +355,7 @@ module.exports = function (Groups) {
 		}
 
 		if (!groupName || !uids.length) {
-			return callback(null, uids.map(function () {return false;}));
+			return callback(null, uids.map(function () { return false; }));
 		}
 
 		var nonCachedUids = uids.filter(function (uid) {
@@ -388,7 +388,7 @@ module.exports = function (Groups) {
 		}
 
 		if (!uid || parseInt(uid, 10) <= 0 || !groups.length) {
-			return callback(null, groups.map(function () {return false;}));
+			return callback(null, groups.map(function () { return false; }));
 		}
 
 		var nonCachedGroups = groups.filter(function (groupName) {

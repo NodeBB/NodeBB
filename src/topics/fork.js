@@ -56,7 +56,7 @@ module.exports = function (Topics) {
 				Topics.create({uid: results.postData.uid, title: title, cid: cid}, next);
 			},
 			function (results, next) {
-				Topics.updateTopicBookmarks(fromTid, pids, function () { next( null, results );} );
+				Topics.updateTopicBookmarks(fromTid, pids, function () { next(null, results); });
 			},
 			function (_tid, next) {
 				function move(pid, next) {

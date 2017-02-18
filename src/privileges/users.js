@@ -40,7 +40,7 @@ module.exports = function (privileges) {
 
 	function isModeratorOfCategories(cids, uid, callback) {
 		if (!parseInt(uid, 10)) {
-			return filterIsModerator(cids, uid, cids.map(function () {return false;}), callback);
+			return filterIsModerator(cids, uid, cids.map(function () { return false; }), callback);
 		}
 
 		privileges.users.isGlobalModerator(uid, function (err, isGlobalModerator) {
@@ -48,7 +48,7 @@ module.exports = function (privileges) {
 				return callback(err);
 			}
 			if (isGlobalModerator) {
-				return filterIsModerator(cids, uid, cids.map(function () {return true;}), callback);
+				return filterIsModerator(cids, uid, cids.map(function () { return true; }), callback);
 			}
 
 

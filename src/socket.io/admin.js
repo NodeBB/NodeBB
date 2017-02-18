@@ -232,7 +232,7 @@ SocketAdmin.analytics.get = function (socket, data, callback) {
 					analytics.getMonthlyPageViews(next);
 				},
 			}, function (err, data) {
-				data.pastDay = data.pageviews.reduce(function (a, b) {return parseInt(a, 10) + parseInt(b, 10);});
+				data.pastDay = data.pageviews.reduce(function (a, b) { return parseInt(a, 10) + parseInt(b, 10); });
 				data.pageviews[data.pageviews.length - 1] = parseInt(data.pageviews[data.pageviews.length - 1], 10) + analytics.getUnwrittenPageviews();
 				callback(err, data);
 			});

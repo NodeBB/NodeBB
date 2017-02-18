@@ -424,7 +424,7 @@
 				return undefined;
 			}
 			var i = props.indexOf('.');
-			if( i == -1 ) {
+			if(i == -1) {
 				if(value !== undefined) {
 					obj[props] = value;
 				}
@@ -433,7 +433,7 @@
 			var prop = props.slice(0, i);
 			var newProps = props.slice(i + 1);
 
-			if(props !== undefined && !(obj[prop] instanceof Object) ) {
+			if(props !== undefined && !(obj[prop] instanceof Object)) {
 				obj[prop] = {};
 			}
 

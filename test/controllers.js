@@ -871,7 +871,7 @@ describe('Controllers', function () {
 			});
 		});
 
-		it('should return empty after unfollow', function (done ) {
+		it('should return empty after unfollow', function (done) {
 			socketUser.unfollow({uid: uid}, {uid: fooUid}, function (err) {
 				assert.ifError(err);
 				request(nconf.get('url') + '/api/user/foo/followers', {json: true}, function (err, res, body) {

@@ -214,7 +214,7 @@ var privileges = require('./privileges');
 				});
 
 				if (!parentCids.length) {
-					return callback(null, cids.map(function () {return null;}));
+					return callback(null, cids.map(function () { return null; }));
 				}
 
 				Categories.getCategoriesData(parentCids, next);

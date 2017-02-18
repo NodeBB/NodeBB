@@ -236,7 +236,7 @@ define('forum/topic/threadTools', [
 		components.get('topic/not-following/check').toggleClass('fa-check', state === 'unfollow');
 
 		menu = components.get('topic/ignoring/menu');
-		menu.toggleClass('hidden', state !== 'ignore' );
+		menu.toggleClass('hidden', state !== 'ignore');
 		components.get('topic/ignoring/check').toggleClass('fa-check', state === 'ignore');
 	}
 
