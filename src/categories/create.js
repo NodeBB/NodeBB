@@ -41,7 +41,7 @@ module.exports = function (Categories) {
 					link: '',
 					numRecentReplies: 1,
 					class: ( data.class ? data.class : 'col-md-3 col-xs-6' ),
-					imageClass: 'cover'
+					imageClass: 'cover',
 				};
 
 				plugins.fireHook('filter:category.create', {category: category, data: data}, next);
@@ -63,7 +63,7 @@ module.exports = function (Categories) {
 					async.apply(db.sortedSetAdd, 'cid:' + parentCid + ':children', category.order, category.cid),
 					async.apply(privileges.categories.give, defaultPrivileges, category.cid, 'administrators'),
 					async.apply(privileges.categories.give, defaultPrivileges, category.cid, 'registered-users'),
-					async.apply(privileges.categories.give, ['find', 'read', 'topics:read'], category.cid, 'guests')
+					async.apply(privileges.categories.give, ['find', 'read', 'topics:read'], category.cid, 'guests'),
 				], next);
 			},
 			function (results, next) {
@@ -75,7 +75,7 @@ module.exports = function (Categories) {
 			function (category, next) {
 				plugins.fireHook('action:category.create', category);
 				next(null, category);
-			}
+			},
 		], callback);
 	};
 
@@ -93,7 +93,7 @@ module.exports = function (Categories) {
 			function (next) {
 				async.parallel({
 					source: async.apply(db.getObject, 'category:' + fromCid),
-					destination: async.apply(db.getObject, 'category:' + toCid)
+					destination: async.apply(db.getObject, 'category:' + toCid),
 				}, next);
 			},
 			function (results, next) {
@@ -132,7 +132,7 @@ module.exports = function (Categories) {
 			},
 			function (results, next) {
 				Categories.copyPrivilegesFrom(fromCid, toCid, next);
-			}
+			},
 		], function (err) {
 			callback(err, destination);
 		});
@@ -165,7 +165,7 @@ module.exports = function (Categories) {
 				async.eachSeries(members, function (member, next) {
 					groups.join('cid:' + toCid + ':privileges:' + privilege, member, next);
 				}, next);
-			}
+			},
 		], callback);
 	}
 

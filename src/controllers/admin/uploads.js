@@ -73,8 +73,8 @@ uploadsController.uploadTouchIcon = function (req, res, next) {
 						path: path.join(nconf.get('upload_path'), 'system', 'touchicon-' + size + '.png'),
 						extension: 'png',
 						width: size,
-						height: size
-					})
+						height: size,
+					}),
 				], next);
 			}, function (err) {
 				fs.unlink(uploadedFile.path, function (err) {

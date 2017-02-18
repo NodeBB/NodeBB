@@ -19,7 +19,7 @@ describe('meta', function () {
 		async.series([
 			async.apply(User.create, { username: 'foo', password: 'barbar' }),	// admin
 			async.apply(User.create, { username: 'baz', password: 'quuxquux' }),	// restricted user
-			async.apply(User.create, { username: 'herp', password: 'derpderp' })	// regular user
+			async.apply(User.create, { username: 'herp', password: 'derpderp' }),	// regular user
 		], function (err, uids) {
 			if (err) {
 				return done(err);
@@ -146,7 +146,7 @@ describe('meta', function () {
 			socketAdmin.config.setMultiple({uid: fooUid}, {
 				someField1: 'someValue1',
 				someField2: 'someValue2',
-				customCSS: '.derp{color:#00ff00;}'
+				customCSS: '.derp{color:#00ff00;}',
 			}, function (err) {
 				assert.ifError(err);
 				meta.configs.getFields(['someField1', 'someField2'], function (err, data) {

@@ -22,7 +22,7 @@ module.exports = function (SocketTopics) {
 					topics.markTopicNotificationsRead(tids, socket.uid);
 				}
 				next();
-			}
+			},
 		], callback);
 	};
 
@@ -44,7 +44,7 @@ module.exports = function (SocketTopics) {
 			function (next) {
 				topics.pushUnreadCount(socket.uid);
 				next();
-			}
+			},
 		], callback);
 	};
 
@@ -55,7 +55,7 @@ module.exports = function (SocketTopics) {
 			},
 			function (tids, next) {
 				SocketTopics.markAsRead(socket, tids, next);
-			}
+			},
 		], callback);
 	};
 
@@ -70,7 +70,7 @@ module.exports = function (SocketTopics) {
 			function (next) {
 				topics.pushUnreadCount(socket.uid);
 				next();
-			}
+			},
 		], callback);
 	};
 
@@ -110,14 +110,14 @@ module.exports = function (SocketTopics) {
 						},
 						function (next) {
 							topics.updateRecent(tid, Date.now(), next);
-						}
+						},
 					], next);
 				}, next);
 			},
 			function (next) {
 				topics.pushUnreadCount(socket.uid);
 				next();
-			}
+			},
 		], callback);
 	};
 };

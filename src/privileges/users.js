@@ -66,7 +66,7 @@ module.exports = function (privileges) {
 
 			async.parallel({
 				user: async.apply(groups.isMemberOfGroups, uid, groupNames),
-				group: async.apply(groups.isMemberOfGroupsList, uid, groupListNames)
+				group: async.apply(groups.isMemberOfGroupsList, uid, groupListNames),
 			}, function (err, checks) {
 				if (err) {
 					return callback(err);
@@ -94,7 +94,7 @@ module.exports = function (privileges) {
 		async.parallel([
 			async.apply(privileges.users.isGlobalModerator, uids),
 			async.apply(groups.isMembers, uids, 'cid:' + cid + ':privileges:mods'),
-			async.apply(groups.isMembersOfGroupList, uids, 'cid:' + cid + ':privileges:groups:moderate')
+			async.apply(groups.isMembersOfGroupList, uids, 'cid:' + cid + ':privileges:groups:moderate'),
 		], function (err, checks) {
 			if (err) {
 				return callback(err);
@@ -112,7 +112,7 @@ module.exports = function (privileges) {
 		async.parallel([
 			async.apply(privileges.users.isGlobalModerator, uid),
 			async.apply(groups.isMember, uid, 'cid:' + cid + ':privileges:mods'),
-			async.apply(groups.isMemberOfGroupList, uid, 'cid:' + cid + ':privileges:groups:moderate')
+			async.apply(groups.isMemberOfGroupList, uid, 'cid:' + cid + ':privileges:groups:moderate'),
 		], function (err, checks) {
 			if (err) {
 				return callback(err);
@@ -150,7 +150,7 @@ module.exports = function (privileges) {
 			},
 			isTargetAdmin: function (next) {
 				privileges.users.isAdministrator(uid, next);
-			}
+			},
 		}, function (err, results) {
 			if (err) {
 				return callback(err);

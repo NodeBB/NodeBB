@@ -70,17 +70,17 @@ module.exports = function (grunt) {
 					'public/*.less',
 					'node_modules/nodebb-*/*.less', 'node_modules/nodebb-*/**/*.less',
 					'!node_modules/nodebb-*/node_modules/**',
-					'!node_modules/nodebb-*/.git/**'
+					'!node_modules/nodebb-*/.git/**',
 				],
 				options: {
-					interval: 1000
-				}
+					interval: 1000,
+				},
 			},
 			lessUpdated_Admin: {
 				files: ['public/**/*.less'],
 				options: {
-					interval: 1000
-				}
+					interval: 1000,
+				},
 			},
 			clientUpdated: {
 				files: [
@@ -88,28 +88,28 @@ module.exports = function (grunt) {
 					'node_modules/nodebb-*/*.js', 'node_modules/nodebb-*/**/*.js',
 					'!node_modules/nodebb-*/node_modules/**',
 					'node_modules/templates.js/lib/templates.js',
-					'!node_modules/nodebb-*/.git/**'
+					'!node_modules/nodebb-*/.git/**',
 				],
 				options: {
-					interval: 1000
-				}
+					interval: 1000,
+				},
 			},
 			serverUpdated: {
 				files: ['*.js', 'install/*.js', 'src/**/*.js'],
 				options: {
-					interval: 1000
-				}
+					interval: 1000,
+				},
 			},
 			templatesUpdated: {
 				files: [
 					'src/views/**/*.tpl',
 					'node_modules/nodebb-*/*.tpl', 'node_modules/nodebb-*/**/*.tpl',
 					'!node_modules/nodebb-*/node_modules/**',
-					'!node_modules/nodebb-*/.git/**'
+					'!node_modules/nodebb-*/.git/**',
 				],
 				options: {
-					interval: 1000
-				}
+					interval: 1000,
+				},
 			},
 			langUpdated: {
 				files: [
@@ -123,10 +123,10 @@ module.exports = function (grunt) {
 					'!node_modules/nodebb-*/theme.json',
 				],
 				options: {
-					interval: 1000
-				}
+					interval: 1000,
+				},
 			},
-		}
+		},
 	});
 
 	grunt.loadNpmTasks('grunt-contrib-watch');

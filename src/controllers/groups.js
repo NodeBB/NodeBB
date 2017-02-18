@@ -40,7 +40,7 @@ groupsController.getGroupsFromSet = function (uid, sort, start, stop, callback) 
 		callback(null, {
 			groups: groups,
 			allowGroupCreation: parseInt(meta.config.allowGroupCreation, 10) === 1,
-			nextStart: stop + 1
+			nextStart: stop + 1,
 		});
 	});
 };
@@ -58,7 +58,7 @@ groupsController.details = function (req, res, callback) {
 			}
 			async.parallel({
 				exists: async.apply(groups.exists, groupName),
-				hidden: async.apply(groups.isHidden, groupName)
+				hidden: async.apply(groups.isHidden, groupName),
 			}, next);
 		},
 		function (results, next) {
@@ -70,7 +70,7 @@ groupsController.details = function (req, res, callback) {
 			}
 			async.parallel({
 				isMember: async.apply(groups.isMember, req.uid, groupName),
-				isInvited: async.apply(groups.isInvited, req.uid, groupName)
+				isInvited: async.apply(groups.isInvited, req.uid, groupName),
 			}, function (err, checks) {
 				if (err || checks.isMember || checks.isInvited) {
 					return next(err);
@@ -84,7 +84,7 @@ groupsController.details = function (req, res, callback) {
 					groups.get(groupName, {
 						uid: req.uid,
 						truncateUserList: true,
-						userListCount: 20
+						userListCount: 20,
 					}, next);
 				},
 				posts: function (next) {
@@ -95,9 +95,9 @@ groupsController.details = function (req, res, callback) {
 				},
 				isGlobalMod: function (next) {
 					user.isGlobalModerator(req.uid, next);
-				}
+				},
 			}, next);
-		}
+		},
 	], function (err, results) {
 		if (err) {
 			return callback(err);
@@ -129,7 +129,7 @@ groupsController.members = function (req, res, callback) {
 			async.parallel({
 				isAdminOrGlobalMod: async.apply(user.isAdminOrGlobalMod, req.uid),
 				isMember: async.apply(groups.isMember, req.uid, groupName),
-				isHidden: async.apply(groups.isHidden, groupName)
+				isHidden: async.apply(groups.isHidden, groupName),
 			}, next);
 		},
 		function (results, next) {
@@ -147,14 +147,14 @@ groupsController.members = function (req, res, callback) {
 		var breadcrumbs = helpers.buildBreadcrumbs([
 			{text: '[[pages:groups]]', url: '/groups' },
 			{text: validator.escape(String(groupName)), url: '/groups/' + req.params.slug},
-			{text: '[[groups:details.members]]'}
+			{text: '[[groups:details.members]]'},
 		]);
 
 		res.render('groups/members', {
 			users: users,
 			nextStart: 50,
 			loadmore_display: users.length > 50 ? 'block' : 'hide',
-			breadcrumbs: breadcrumbs
+			breadcrumbs: breadcrumbs,
 		});
 	});
 };
@@ -173,9 +173,9 @@ groupsController.uploadCover = function (req, res, next) {
 
 			groups.updateCover(req.uid, {
 				file: req.files.files[0].path,
-				groupName: params.groupName
+				groupName: params.groupName,
 			}, next);
-		}
+		},
 	], function (err, image) {
 		if (err) {
 			return next(err);

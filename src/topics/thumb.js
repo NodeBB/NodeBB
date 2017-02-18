@@ -54,7 +54,7 @@ module.exports = function (Topics) {
 					path: pathToUpload,
 					extension: path.extname(pathToUpload),
 					width: size,
-					height: size
+					height: size,
 				}, next);
 			},
 			function (next) {
@@ -69,7 +69,7 @@ module.exports = function (Topics) {
 				deleteFile(pathToUpload);
 				data.thumb = uploadedFile.url;
 				next();
-			}
+			},
 		], function (err) {
 			if (err) {
 				deleteFile(pathToUpload);

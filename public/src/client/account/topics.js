@@ -28,7 +28,7 @@ define('forum/account/topics', ['forum/account/header', 'forum/infinitescroll'],
 
 		infinitescroll.loadMore('topics.loadMoreFromSet', {
 			set: set,
-			after: $('[component="category"]').attr('data-nextstart')
+			after: $('[component="category"]').attr('data-nextstart'),
 		}, function (data, done) {
 			if (data.topics && data.topics.length) {
 				onTopicsLoaded(data.topics, done);

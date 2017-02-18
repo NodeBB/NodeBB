@@ -32,7 +32,7 @@ module.exports = function (privileges) {
 					read: async.apply(helpers.isUserAllowedTo, 'read', uid, cids),
 					'posts:edit': async.apply(helpers.isUserAllowedTo, 'posts:edit', uid, cids),
 				}, next);
-			}
+			},
 		], function (err, results) {
 			if (err) {
 				return callback(err);
@@ -50,7 +50,7 @@ module.exports = function (privileges) {
 					move: isAdminOrMod,
 					isAdminOrMod: isAdminOrMod,
 					'topics:read': results['topics:read'][i] || isAdminOrMod,
-					read: results.read[i] || isAdminOrMod
+					read: results.read[i] || isAdminOrMod,
 				});
 			}
 
@@ -130,18 +130,18 @@ module.exports = function (privileges) {
 				plugins.fireHook('filter:privileges.posts.filter', {
 					privilege: privilege,
 					uid: uid,
-					pids: pids
+					pids: pids,
 				}, function (err, data) {
 					next(err, data ? data.pids : null);
 				});
-			}
+			},
 		], callback);
 	};
 
 	privileges.posts.canEdit = function (pid, uid, callback) {
 		async.parallel({
 			isEditable: async.apply(isPostEditable, pid, uid),
-			isAdminOrMod: async.apply(isAdminOrMod, pid, uid)
+			isAdminOrMod: async.apply(isAdminOrMod, pid, uid),
 		}, function (err, results) {
 			if (err) {
 				return callback(err);
@@ -166,9 +166,9 @@ module.exports = function (privileges) {
 					isAdminOrMod: async.apply(isAdminOrMod, pid, uid),
 					isLocked: async.apply(topics.isLocked, postData.tid),
 					isOwner: async.apply(posts.isOwner, pid, uid),
-					'posts:delete': async.apply(privileges.posts.can, 'posts:delete', pid, uid)
+					'posts:delete': async.apply(privileges.posts.can, 'posts:delete', pid, uid),
 				}, next);
-			}
+			},
 		], function (err, results) {
 			if (err) {
 				return callback(err);
@@ -214,12 +214,12 @@ module.exports = function (privileges) {
 				async.parallel({
 					purge: async.apply(privileges.categories.isUserAllowedTo, 'purge', cid, uid),
 					owner: async.apply(posts.isOwner, pid, uid),
-					isAdminOrMod: async.apply(privileges.categories.isAdminOrMod, cid, uid)
+					isAdminOrMod: async.apply(privileges.categories.isAdminOrMod, cid, uid),
 				}, next);
 			},
 			function (results, next) {
 				next(null, results.isAdminOrMod || (results.purge && results.owner));
-			}
+			},
 		], callback);
 	};
 
@@ -244,12 +244,12 @@ module.exports = function (privileges) {
 
 				async.parallel({
 					owner: async.apply(posts.isOwner, pid, uid),
-					edit: async.apply(privileges.posts.can, 'posts:edit', pid, uid)
+					edit: async.apply(privileges.posts.can, 'posts:edit', pid, uid),
 				}, next);
 			},
 			function (result, next) {
 				next(null, {flag: result.owner && result.edit, message: '[[error:no-privileges]]'});
-			}
+			},
 		], callback);
 	}
 
@@ -266,7 +266,7 @@ module.exports = function (privileges) {
 			},
 			function (next) {
 				user.isAdministrator(uid, next);
-			}
+			},
 		], callback);
 	}
 };

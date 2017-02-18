@@ -7,11 +7,11 @@ define('forum/topic/posts', [
 	'forum/infinitescroll',
 	'forum/topic/postTools',
 	'navigator',
-	'components'
+	'components',
 ], function (pagination, infinitescroll, postTools, navigator, components) {
 
 	var Posts = {
-		_imageLoaderTimeout: undefined
+		_imageLoaderTimeout: undefined,
 	};
 
 	Posts.onNewPost = function (data) {
@@ -235,7 +235,7 @@ define('forum/topic/posts', [
 			tid: tid,
 			after: after,
 			direction: direction,
-			topicPostSort: config.topicPostSort
+			topicPostSort: config.topicPostSort,
 		}, function (data, done) {
 			indicatorEl.fadeOut();
 

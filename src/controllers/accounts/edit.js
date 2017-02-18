@@ -78,7 +78,7 @@ function renderRoute(name, req, res, next) {
 		userData.breadcrumbs = helpers.buildBreadcrumbs([
 			{text: userData.username, url: '/user/' + userData.userslug},
 			{text: '[[user:edit]]', url: '/user/' + userData.userslug + '/edit'},
-			{text: '[[user:' + name + ']]'}
+			{text: '[[user:' + name + ']]'},
 		]);
 
 		res.render('account/edit/' + name, userData);
@@ -97,7 +97,7 @@ function getUserData(req, next, callback) {
 				return callback();
 			}
 			db.getObjectField('user:' + userData.uid, 'password', next);
-		}
+		},
 	], function (err, password) {
 		if (err) {
 			return callback(err);
@@ -128,7 +128,7 @@ editController.uploadPicture = function (req, res, next) {
 			}
 
 			user.uploadPicture(updateUid, userPhoto, next);
-		}
+		},
 	], function (err, image) {
 		fs.unlink(userPhoto.path, function (err) {
 			if (err) {
@@ -148,7 +148,7 @@ editController.uploadCoverPicture = function (req, res, next) {
 
 	user.updateCoverPicture({
 		file: req.files.files[0],
-		uid: params.uid
+		uid: params.uid,
 	}, function (err, image) {
 		if (err) {
 			return next(err);

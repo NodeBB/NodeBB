@@ -24,7 +24,7 @@ databaseController.get = function (req, res, next) {
 			} else {
 				next();
 			}
-		}
+		},
 	}, function (err, results) {
 		if (err) {
 			return next(err);

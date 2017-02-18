@@ -6,13 +6,13 @@ var async = require('async');
 var db = require('../database');
 
 var Blacklist = {
-		_rules: []
+		_rules: [],
 	};
 
 Blacklist.load = function (callback) {
 	async.waterfall([
 		async.apply(db.get, 'ip-blacklist-rules'),
-		async.apply(Blacklist.validate)
+		async.apply(Blacklist.validate),
 	], function (err, rules) {
 		if (err) {
 			return callback(err);
@@ -26,7 +26,7 @@ Blacklist.load = function (callback) {
 		Blacklist._rules = {
 			ipv4: rules.ipv4,
 			ipv6: rules.ipv6,
-			cidr: rules.cidr
+			cidr: rules.cidr,
 		};
 
 		callback();
@@ -119,7 +119,7 @@ Blacklist.validate = function (rules, callback) {
 		ipv6: ipv6,
 		cidr: cidr,
 		valid: rules,
-		invalid: invalid
+		invalid: invalid,
 	});
 };
 

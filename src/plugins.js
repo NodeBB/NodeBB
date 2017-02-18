@@ -121,7 +121,7 @@ var middleware;
 				});
 
 				next();
-			}
+			},
 		], callback);
 	};
 
@@ -165,7 +165,7 @@ var middleware;
 			},
 			function (paths, next) {
 				async.map(paths, Plugins.loadPluginInfo, next);
-			}
+			},
 		], function (err, plugins) {
 			if (err) {
 				return callback(err);
@@ -213,7 +213,7 @@ var middleware;
 		var url = (nconf.get('registry') || 'https://packages.nodebb.org') + '/api/v1/plugins/' + id;
 
 		require('request')(url, {
-			json: true
+			json: true,
 		}, function (err, res, body) {
 			if (res.statusCode === 404 || !body.payload) {
 				return callback(err, {});
@@ -237,7 +237,7 @@ var middleware;
 		var url = (nconf.get('registry') || 'https://packages.nodebb.org') + '/api/v1/plugins' + (matching !== false ? '?version=' + version : '');
 
 		require('request')(url, {
-			json: true
+			json: true,
 		}, function (err, res, body) {
 			if (err) {
 				winston.error('Error parsing plugins : ' + err.message);
@@ -372,7 +372,7 @@ var middleware;
 								pluginData.error = false;
 								next(null, pluginData);
 							});
-						}
+						},
 					], function (err, pluginData) {
 						if (err) {
 							return next(); // Silently fail
@@ -384,7 +384,7 @@ var middleware;
 				}, function (err) {
 					next(err, plugins);
 				});
-			}
+			},
 		], callback);
 	};
 

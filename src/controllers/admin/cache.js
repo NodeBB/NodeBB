@@ -19,15 +19,15 @@ cacheController.get = function (req, res, next) {
 			max: postCache.max,
 			itemCount: postCache.itemCount,
 			percentFull: percentFull,
-			avgPostSize: avgPostSize
+			avgPostSize: avgPostSize,
 		},
 		groupCache: {
 			length: groupCache.length,
 			max: groupCache.max,
 			itemCount: groupCache.itemCount,
 			percentFull: ((groupCache.length / groupCache.max) * 100).toFixed(2),
-			dump: req.query.debug ? JSON.stringify(groupCache.dump(), null, 4) : false
-		}
+			dump: req.query.debug ? JSON.stringify(groupCache.dump(), null, 4) : false,
+		},
 	});
 };
 

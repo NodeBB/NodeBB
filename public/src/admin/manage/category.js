@@ -6,7 +6,7 @@ define('admin/manage/category', [
 	'iconSelect',
 	'admin/modules/colorpicker',
 	'autocomplete',
-	'translator'
+	'translator',
 ], function (uploader, iconSelect, colorpicker, autocomplete, translator) {
 	var	Category = {};
 	var modified_categories = {};
@@ -41,10 +41,10 @@ define('admin/manage/category', [
 							title: '[[admin/manage/categories:alert.updated]]',
 							message: translator.compile(
 								'admin/manage/categories:alert.updated-success',
-								results.join('&#44; ')
+								results.join('&#44; '),
 							),
 							type: 'success',
-							timeout: 2000
+							timeout: 2000,
 						});
 					}
 				});
@@ -103,7 +103,7 @@ define('admin/manage/category', [
 							title: 'Updated Categories',
 							message: 'Category IDs ' + result.join(', ') + ' was successfully updated.',
 							type: 'success',
-							timeout: 2000
+							timeout: 2000,
 						});
 					}
 				});
@@ -117,7 +117,7 @@ define('admin/manage/category', [
 
 			bootbox.confirm(translator.compile(
 				'admin/manage/categories:alert.confirm-purge',
-				$('form.category').find('input[data-name="name"]').val()
+				$('form.category').find('input[data-name="name"]').val(),
 			), function (confirm) {
 				if (!confirm) {
 					return;
@@ -152,7 +152,7 @@ define('admin/manage/category', [
 			uploader.show({
 				title: '[[admin/manage/categories:alert.upload-image]]',
 				route: config.relative_path + '/api/admin/category/uploadpicture',
-				params: {cid: cid}
+				params: {cid: cid},
 			}, function (imageUrlOnServer) {
 				$('#category-image').val(imageUrlOnServer);
 				var previewBox = inputEl.parent().parent().siblings('.category-preview');
@@ -186,7 +186,7 @@ define('admin/manage/category', [
 		$('button[data-action="removeParent"]').on('click', function () {
 			var payload = {};
 			payload[ajaxify.data.category.cid] = {
-				parentCid: 0
+				parentCid: 0,
 			};
 
 			socket.emit('admin.categories.update', payload, function (err) {
@@ -220,7 +220,7 @@ define('admin/manage/category', [
 		var tagEl = $('#tag-whitelist');
 		tagEl.tagsinput({
 			confirmKeys: [13, 44],
-			trimValue: true
+			trimValue: true,
 		});
 
 		ajaxify.data.category.tagWhitelist.forEach(function (tag) {
@@ -273,7 +273,7 @@ define('admin/manage/category', [
 			}
 
 			templates.parse('admin/partials/categories/privileges', {
-				privileges: privileges
+				privileges: privileges,
 			}, function (html) {
 				translator.translate(html, function (html) {
 					$('.privilege-table-container').html(html);
@@ -310,7 +310,7 @@ define('admin/manage/category', [
 			cid: ajaxify.data.category.cid,
 			privilege: privilege,
 			set: state,
-			member: member
+			member: member,
 		}, function (err) {
 			if (err) {
 				return app.alertError(err.message);
@@ -332,11 +332,11 @@ define('admin/manage/category', [
 			});
 
 			templates.parse('partials/category_list', {
-				categories: categories
+				categories: categories,
 			}, function (html) {
 				var modal = bootbox.dialog({
 					message: html,
-					title: '[[admin/manage/categories:alert.set-parent-category]]'
+					title: '[[admin/manage/categories:alert.set-parent-category]]',
 				});
 
 				modal.find('li[data-cid]').on('click', function () {
@@ -344,7 +344,7 @@ define('admin/manage/category', [
 						payload = {};
 
 					payload[ajaxify.data.category.cid] = {
-						parentCid: parentCid
+						parentCid: parentCid,
 					};
 
 					socket.emit('admin.categories.update', payload, function (err) {
@@ -371,7 +371,7 @@ define('admin/manage/category', [
 		var modal = bootbox.dialog({
 			title: '[[admin/manage/categories:alert.find-user]]',
 			message: '<input class="form-control input-lg" placeholder="[[admin/manage/categories:alert.user-search]]" />',
-			show: true
+			show: true,
 		});
 
 		modal.on('shown.bs.modal', function () {
@@ -382,7 +382,7 @@ define('admin/manage/category', [
 					cid: ajaxify.data.category.cid,
 					privilege: ['find', 'read', 'topics:read'],
 					set: true,
-					member: ui.item.user.uid
+					member: ui.item.user.uid,
 				}, function (err) {
 					if (err) {
 						return app.alertError(err.message);
@@ -399,7 +399,7 @@ define('admin/manage/category', [
 		var modal = bootbox.dialog({
 			title: '[[admin/manage/categories:alert.find-group]]',
 			message: '<input class="form-control input-lg" placeholder="[[admin/manage/categories:alert.group-search]]" />',
-			show: true
+			show: true,
 		});
 
 		modal.on('shown.bs.modal', function () {
@@ -410,7 +410,7 @@ define('admin/manage/category', [
 					cid: ajaxify.data.category.cid,
 					privilege: ['groups:find', 'groups:read', 'groups:topics:read'],
 					set: true,
-					member: ui.item.group.name
+					member: ui.item.group.name,
 				}, function (err) {
 					if (err) {
 						return app.alertError(err.message);
@@ -450,7 +450,7 @@ define('admin/manage/category', [
 			}
 
 			templates.parse('admin/partials/categories/select-category', {
-				categories: categories
+				categories: categories,
 			}, function (html) {
 				translator.translate(html, function (html) {
 					function submit() {
@@ -467,9 +467,9 @@ define('admin/manage/category', [
 							save: {
 								label: 'Copy',
 								className: 'btn-primary',
-								callback: submit
-							}
-						}
+								callback: submit,
+							},
+						},
 					});
 
 					modal.find('form').on('submit', submit);

@@ -13,7 +13,7 @@ define('settings/array', function () {
 	function createRemoveButton(elements) {
 		var rm = $(helper.createElement('button', {
 			"class": 'btn btn-xs btn-primary remove',
-			title: 'Remove Item'
+			title: 'Remove Item',
 		}, '-'));
 		rm.click(function (event) {
 			event.preventDefault();
@@ -76,7 +76,7 @@ define('settings/array', function () {
 			newValue = element.data('new') || '',
 			add = $(helper.createElement('button', {
 				"class": 'btn btn-sm btn-primary add',
-				title: 'Expand Array'
+				title: 'Expand Array',
 			}, '+'));
 		add.click(function (event) {
 			event.preventDefault();
@@ -139,7 +139,7 @@ define('settings/array', function () {
 			} else {
 				return void 0;
 			}
-		}
+		},
 	};
 
 	return SettingsArray;

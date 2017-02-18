@@ -10,7 +10,7 @@ var adminController = {
 	appearance: require('./admin/appearance'),
 	extend: {
 		widgets: require('./admin/widgets'),
-		rewards: require('./admin/rewards')
+		rewards: require('./admin/rewards'),
 	},
 	events: require('./admin/events'),
 	logs: require('./admin/logs'),
@@ -28,7 +28,7 @@ var adminController = {
 	themes: require('./admin/themes'),
 	users: require('./admin/users'),
 	uploads: require('./admin/uploads'),
-	info: require('./admin/info')
+	info: require('./admin/info'),
 };
 
 

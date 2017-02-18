@@ -12,7 +12,7 @@ module.exports = function (User) {
 	User.addTopicIdToUser = function (uid, tid, timestamp, callback) {
 		async.parallel([
 			async.apply(db.sortedSetAdd, 'uid:' + uid + ':topics', timestamp, tid),
-			async.apply(User.incrementUserFieldBy, uid, 'topiccount', 1)
+			async.apply(User.incrementUserFieldBy, uid, 'topiccount', 1),
 		], callback);
 	};
 

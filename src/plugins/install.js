@@ -52,7 +52,7 @@ module.exports = function (Plugins) {
 				meta.reloadRequired = true;
 				Plugins.fireHook(isActive ? 'action:plugin.deactivate' : 'action:plugin.activate', id);
 				next();
-			}
+			},
 		], function (err) {
 			if (err) {
 				winston.warn('[plugins] Could not toggle active state on plugin \'' + id + '\'');
@@ -97,7 +97,7 @@ module.exports = function (Plugins) {
 			function (pluginData, next) {
 				Plugins.fireHook('action:plugin.' + type, id);
 				next(null, pluginData);
-			}
+			},
 		], callback);
 	}
 
@@ -126,7 +126,7 @@ module.exports = function (Plugins) {
 			function (isActive, next) {
 				meta.reloadRequired = isActive;
 				next(null, isActive);
-			}
+			},
 		], callback);
 	}
 

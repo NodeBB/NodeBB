@@ -12,12 +12,12 @@ soundsController.get = function (req, res, next) {
 
 		sounds = Object.keys(sounds).map(function (name) {
 			return {
-				name: name
+				name: name,
 			};
 		});
 
 		res.render('admin/general/sounds', {
-			sounds: sounds
+			sounds: sounds,
 		});
 	});
 };

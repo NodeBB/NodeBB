@@ -13,7 +13,7 @@ var user = require('../user');
 var SocketModules = {
 	chats: {},
 	sounds: {},
-	settings: {}
+	settings: {},
 };
 
 /* Chat */
@@ -31,7 +31,7 @@ SocketModules.chats.getRaw = function (socket, data, callback) {
 				return next(new Error('[[error:not-allowed]]'));
 			}
 			Messaging.getMessageField(data.mid, 'content', next);
-		}
+		},
 	], callback);
 };
 
@@ -66,7 +66,7 @@ SocketModules.chats.send = function (socket, data, callback) {
 		function (next) {
 			plugins.fireHook('filter:messaging.send', {
 				data: data,
-				uid: socket.uid
+				uid: socket.uid,
 			}, function (err, results) {
 				data = results.data;
 				next(err);
@@ -82,7 +82,7 @@ SocketModules.chats.send = function (socket, data, callback) {
 			Messaging.notifyUsersInRoom(socket.uid, data.roomId, message);
 			user.updateOnlineUsers(socket.uid);
 			next(null, message);
-		}
+		},
 	], callback);
 };
 
@@ -120,7 +120,7 @@ SocketModules.chats.loadRoom = function (socket, data, callback) {
 					callerUid: socket.uid,
 					uid: data.uid || socket.uid,
 					roomId: data.roomId,
-					isNew: false
+					isNew: false,
 				}),
 			}, next);
 		},
@@ -134,7 +134,7 @@ SocketModules.chats.loadRoom = function (socket, data, callback) {
 			results.roomData.maximumUsersInChatRoom = parseInt(meta.config.maximumUsersInChatRoom, 10) || 0;
 			results.roomData.showUserInput = !results.roomData.maximumUsersInChatRoom || results.roomData.maximumUsersInChatRoom > 2;
 			next(null, results.roomData);
-		}
+		},
 	], callback);
 };
 
@@ -168,7 +168,7 @@ SocketModules.chats.addUserToRoom = function (socket, data, callback) {
 			async.parallel({
 				settings: async.apply(user.getSettings, uid),
 				isAdminOrGlobalMod: async.apply(user.isAdminOrGlobalMod, socket.uid),
-				isFollowing: async.apply(user.isFollowing, uid, socket.uid)
+				isFollowing: async.apply(user.isFollowing, uid, socket.uid),
 			}, next);
 		},
 		function (results, next) {
@@ -177,7 +177,7 @@ SocketModules.chats.addUserToRoom = function (socket, data, callback) {
 			}
 
 			Messaging.addUsersToRoom(socket.uid, [uid], data.roomId, next);
-		}
+		},
 	], callback);
 };
 
@@ -195,7 +195,7 @@ SocketModules.chats.removeUserFromRoom = function (socket, data, callback) {
 			}
 
 			Messaging.removeUsersFromRoom(socket.uid, [uid], data.roomId, next);
-		}
+		},
 	], callback);
 };
 
@@ -246,7 +246,7 @@ SocketModules.chats.markRead = function (socket, roomId, callback) {
 	}
 	async.parallel({
 		uidsInRoom: async.apply(Messaging.getUidsInRoom, roomId, 0, -1),
-		markRead: async.apply(Messaging.markRead, socket.uid, roomId)
+		markRead: async.apply(Messaging.markRead, socket.uid, roomId),
 	}, function (err, results) {
 		if (err) {
 			return callback(err);
@@ -282,7 +282,7 @@ SocketModules.chats.markAllRead = function (socket, data, callback) {
 		function (next) {
 			Messaging.pushUnreadCount(socket.uid);
 			next();
-		}
+		},
 	], callback);
 };
 
@@ -304,7 +304,7 @@ SocketModules.chats.renameRoom = function (socket, data, callback) {
 				server.in('uid_' + uid).emit('event:chats.roomRename', eventData);
 			});
 			next();
-		}
+		},
 	], callback);
 };
 
@@ -334,7 +334,7 @@ SocketModules.chats.getMessages = function (socket, data, callback) {
 		uid: data.uid,
 		roomId: data.roomId,
 		start: parseInt(data.start, 10) || 0,
-		count: 50
+		count: 50,
 	};
 
 	Messaging.getMessages(params, callback);
@@ -353,7 +353,7 @@ SocketModules.sounds.getMapping = function (socket, data, callback) {
 SocketModules.sounds.getData = function (socket, data, callback) {
 	async.parallel({
 		mapping: async.apply(meta.sounds.getMapping, socket.uid),
-		files: async.apply(meta.sounds.getFiles)
+		files: async.apply(meta.sounds.getFiles),
 	}, callback);
 };
 

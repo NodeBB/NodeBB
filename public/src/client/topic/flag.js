@@ -12,7 +12,7 @@ define('forum/topic/flag', [], function () {
 		parseModal({
 			pid: pid,
 			username: username,
-			userslug: userslug
+			userslug: userslug,
 		}, function (html) {
 			flagModal = $(html);
 

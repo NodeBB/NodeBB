@@ -44,7 +44,7 @@ define('admin/extend/plugins', ['jqueryui', 'translator'], function (jqueryui, t
 							require(['admin/modules/instance'], function (instance) {
 								instance.restart();
 							});
-						}
+						},
 					});
 				});
 			});
@@ -170,7 +170,7 @@ define('admin/extend/plugins', ['jqueryui', 'translator'], function (jqueryui, t
 		btn.attr('disabled', true).find('i').attr('class', 'fa fa-refresh fa-spin');
 		socket.emit('admin.plugins.upgrade', {
 			id: pluginID,
-			version: version
+			version: version,
 		}, function (err, isActive) {
 			if (err) {
 				return app.alertError(err.message);
@@ -190,7 +190,7 @@ define('admin/extend/plugins', ['jqueryui', 'translator'], function (jqueryui, t
 						require(['admin/modules/instance'], function (instance) {
 							instance.reload();
 						});
-					}
+					},
 				});
 			}
 		});
@@ -203,7 +203,7 @@ define('admin/extend/plugins', ['jqueryui', 'translator'], function (jqueryui, t
 
 		socket.emit('admin.plugins.toggleInstall', {
 			id: pluginID,
-			version: version
+			version: version,
 		}, function (err, pluginData) {
 			if (err) {
 				btn.removeAttr('disabled');
@@ -217,7 +217,7 @@ define('admin/extend/plugins', ['jqueryui', 'translator'], function (jqueryui, t
 				title: '[[admin/extend/plugins:alert.' + (pluginData.installed ? 'installed' : 'uninstalled') + ']]',
 				message: '[[admin/extend/plugins:alert.' + (pluginData.installed ? 'install-success' : 'uninstall-success') + ']]',
 				type: 'info',
-				timeout: 5000
+				timeout: 5000,
 			});
 
 			if (typeof callback === 'function') {
@@ -232,9 +232,9 @@ define('admin/extend/plugins', ['jqueryui', 'translator'], function (jqueryui, t
 			type: 'GET',
 			data: {
 				package: pluginId,
-				version: nbbVersion[0]
+				version: nbbVersion[0],
 			},
-			dataType: 'json'
+			dataType: 'json',
 		}).done(function (payload) {
 			callback(undefined, payload);
 		}).fail(callback);

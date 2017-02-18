@@ -29,7 +29,7 @@ define('forum/account/posts', ['forum/account/header', 'forum/infinitescroll'], 
 
 		infinitescroll.loadMore(method, {
 			uid: ajaxify.data.theirid,
-			after: $('[component="posts"]').attr('data-nextstart')
+			after: $('[component="posts"]').attr('data-nextstart'),
 		}, function (data, done) {
 			if (data.posts && data.posts.length) {
 				onPostsLoaded(data.posts, done);

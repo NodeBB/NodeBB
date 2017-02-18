@@ -24,7 +24,7 @@ module.exports = function (SocketTopics) {
 					},
 					topic: function (next) {
 						topics.getTopicFields(data.tid, ['postcount', 'deleted'], next);
-					}
+					},
 				}, next);
 			},
 			function (results, next) {
@@ -72,7 +72,7 @@ module.exports = function (SocketTopics) {
 					},
 					postSharing: function (next) {
 						social.getActivePostSharing(next);
-					}
+					},
 				}, next);
 			},
 			function (topicData, next) {
@@ -86,7 +86,7 @@ module.exports = function (SocketTopics) {
 
 				topics.modifyPostsByPrivilege(topicData, userPrivileges);
 				next(null, topicData);
-			}
+			},
 		], callback);
 	};
 

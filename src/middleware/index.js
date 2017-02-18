@@ -19,7 +19,7 @@ var analytics = require('../analytics');
 
 var controllers = {
 	api: require('./../controllers/api'),
-	helpers: require('../controllers/helpers')
+	helpers: require('../controllers/helpers'),
 };
 
 var middleware = {};
@@ -42,7 +42,7 @@ middleware.authenticate = function (req, res, next) {
 		return plugins.fireHook('action:middleware.authenticate', {
 			req: req,
 			res: res,
-			next: next
+			next: next,
 		});
 	}
 
@@ -77,7 +77,7 @@ middleware.pageView = function (req, res, next) {
 	analytics.pageView({
 		ip: req.ip,
 		path: req.path,
-		uid: req.uid
+		uid: req.uid,
 	});
 
 	plugins.fireHook('action:middleware.pageView', {req: req});
@@ -123,7 +123,7 @@ middleware.routeTouchIcon = function (req, res) {
 		return res.redirect(meta.config['brand:touchIcon']);
 	} else {
 		return res.sendFile(path.join(__dirname, '../../public', meta.config['brand:touchIcon'] || '/logo.png'), {
-			maxAge: req.app.enabled('cache') ? 5184000000 : 0
+			maxAge: req.app.enabled('cache') ? 5184000000 : 0,
 		});
 	}
 };
@@ -196,11 +196,11 @@ middleware.processTimeagoLocales = function (req, res, next) {
 
 	if (exists) {
 		res.status(200).sendFile(localPath, {
-			maxAge: req.app.enabled('cache') ? 5184000000 : 0
+			maxAge: req.app.enabled('cache') ? 5184000000 : 0,
 		});
 	} else {
 		res.status(200).sendFile(path.join(__dirname, '../../public/vendor/jquery/timeago/locales', fallback), {
-			maxAge: req.app.enabled('cache') ? 5184000000 : 0
+			maxAge: req.app.enabled('cache') ? 5184000000 : 0,
 		});
 	}
 };

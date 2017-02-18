@@ -32,7 +32,7 @@ unreadController.get = function (req, res, next) {
 				},
 				settings: function (next) {
 					user.getSettings(req.uid, next);
-				}
+				},
 			}, next);
 		},
 		function (_results, next) {
@@ -41,7 +41,7 @@ unreadController.get = function (req, res, next) {
 			var start = Math.max(0, (page - 1) * settings.topicsPerPage);
 			var stop = start + settings.topicsPerPage - 1;
 			topics.getUnreadTopics(cid, req.uid, start, stop, filter, next);
-		}
+		},
 	], function (err, data) {
 		if (err) {
 			return next(err);
@@ -67,17 +67,17 @@ unreadController.get = function (req, res, next) {
 			name: '[[unread:all-topics]]',
 			url: 'unread',
 			selected: filter === '',
-			filter: ''
+			filter: '',
 		}, {
 			name: '[[unread:new-topics]]',
 			url: 'unread/new',
 			selected: filter === 'new',
-			filter: 'new'
+			filter: 'new',
 		}, {
 			name: '[[unread:watched-topics]]',
 			url: 'unread/watched',
 			selected: filter === 'watched',
-			filter: 'watched'
+			filter: 'watched',
 		}];
 
 		data.selectedFilter = data.filters.find(function (filter) {

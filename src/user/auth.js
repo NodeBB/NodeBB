@@ -37,10 +37,10 @@ module.exports = function (User) {
 				events.log({
 					type: 'account-locked',
 					uid: uid,
-					ip: ip
+					ip: ip,
 				});
 				next(new Error('[[error:account-locked]]'));
-			}
+			},
 		], callback);
 	};
 
@@ -51,7 +51,7 @@ module.exports = function (User) {
 	User.auth.resetLockout = function (uid, callback) {
 		async.parallel([
 			async.apply(db.delete, 'loginAttempts:' + uid),
-			async.apply(db.delete, 'lockout:' + uid)
+			async.apply(db.delete, 'lockout:' + uid),
 		], callback);
 	};
 
@@ -98,7 +98,7 @@ module.exports = function (User) {
 				}, function (err) {
 					next(err, sessions);
 				});
-			}
+			},
 		], function (err, sessions) {
 			callback(err, sessions ? sessions.map(function (sessObj) {
 				sessObj.meta.datetimeISO = new Date(sessObj.meta.datetime).toISOString();
@@ -128,7 +128,7 @@ module.exports = function (User) {
 					}
 				},
 				async.apply(db.sortedSetRemove, 'uid:' + uid + ':sessions', sessionId),
-				async.apply(db.sessionStore.destroy.bind(db.sessionStore), sessionId)
+				async.apply(db.sessionStore.destroy.bind(db.sessionStore), sessionId),
 			], callback);
 		});
 	};
@@ -140,7 +140,7 @@ module.exports = function (User) {
 				async.each(sids, function (sid, next) {
 					User.auth.revokeSession(sid, uid, next);
 				}, next);
-			}
+			},
 		], callback);
 	};
 
@@ -169,9 +169,9 @@ module.exports = function (User) {
 							async.each(sids, function (sid, next) {
 								db.sessionStore.destroy(sid, next);
 							}, next);
-						}
+						},
 					], next);
-				}
+				},
 			], next);
 		}, {batch: 1000}, callback);
 	};

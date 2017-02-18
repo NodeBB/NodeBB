@@ -50,7 +50,7 @@ module.exports = function (Posts) {
 					},
 					topicsAndCategories: function (next) {
 						getTopicAndCategories(topicKeys, next);
-					}
+					},
 				}, next);
 			},
 			function (results, next) {
@@ -85,7 +85,7 @@ module.exports = function (Posts) {
 			},
 			function (data, next) {
 				next(null, data.posts);
-			}
+			},
 		], callback);
 	};
 

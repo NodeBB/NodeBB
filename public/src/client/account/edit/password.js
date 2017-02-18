@@ -66,7 +66,7 @@ define('forum/account/edit/password', ['forum/account/header', 'translator'], fu
 				socket.emit('user.changePassword', {
 					'currentPassword': currentPassword.val(),
 					'newPassword': password.val(),
-					'uid': ajaxify.data.theirid
+					'uid': ajaxify.data.theirid,
 				}, function (err) {
 					btn.removeClass('disabled').find('i').addClass('hide');
 					currentPassword.val('');

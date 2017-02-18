@@ -24,7 +24,7 @@ module.exports = function (SocketUser) {
 						type: 'user-ban',
 						uid: socket.uid,
 						targetUid: uid,
-						ip: socket.ip
+						ip: socket.ip,
 					}, next);
 				},
 				function (next) {
@@ -32,10 +32,10 @@ module.exports = function (SocketUser) {
 						callerUid: socket.uid,
 						ip: socket.ip,
 						uid: uid,
-						until: data.until > 0 ? data.until : undefined
+						until: data.until > 0 ? data.until : undefined,
 					});
 					next();
-				}
+				},
 			], next);
 		}, callback);
 	};
@@ -51,17 +51,17 @@ module.exports = function (SocketUser) {
 						type: 'user-unban',
 						uid: socket.uid,
 						targetUid: uid,
-						ip: socket.ip
+						ip: socket.ip,
 					}, next);
 				},
 				function (next) {
 					plugins.fireHook('action:user.unbanned', {
 						callerUid: socket.uid,
 						ip: socket.ip,
-						uid: uid
+						uid: uid,
 					});
 					next();
-				}
+				},
 			], next);
 		}, callback);
 	};
@@ -80,7 +80,7 @@ module.exports = function (SocketUser) {
 					return next(new Error('[[error:no-privileges]]'));
 				}
 				async.each(uids, method, next);
-			}
+			},
 		], callback);
 	}
 
@@ -98,7 +98,7 @@ module.exports = function (SocketUser) {
 			function (next) {
 				websockets.in('uid_' + uid).emit('event:banned');
 				next();
-			}
+			},
 		], callback);
 	}
 };

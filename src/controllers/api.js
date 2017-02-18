@@ -71,7 +71,7 @@ apiController.getConfig = function (req, res, next) {
 		enabled: parseInt(meta.config.cookieConsentEnabled, 10) === 1,
 		message: translator.escape(meta.config.cookieConsentMessage || '[[global:cookies.message]]').replace(/\\/g, '\\\\'),
 		dismiss: translator.escape(meta.config.cookieConsentDismiss || '[[global:cookies.accept]]').replace(/\\/g, '\\\\'),
-		link: translator.escape(meta.config.cookieConsentLink || '[[global:cookies.learn_more]]').replace(/\\/g, '\\\\')
+		link: translator.escape(meta.config.cookieConsentLink || '[[global:cookies.learn_more]]').replace(/\\/g, '\\\\'),
 	};
 
 	async.waterfall([
@@ -93,7 +93,7 @@ apiController.getConfig = function (req, res, next) {
 			config.delayImageLoading = settings.delayImageLoading !== undefined ? settings.delayImageLoading : true;
 			config.bootswatchSkin = settings.bootswatchSkin || config.bootswatchSkin;
 			plugins.fireHook('filter:config.get', config, next);
-		}
+		},
 	], function (err, config) {
 		if (err) {
 			return next(err);
@@ -119,7 +119,7 @@ apiController.renderWidgets = function (req, res, next) {
 			url: req.query.url,
 			locations: req.query.locations,
 			isMobile: req.query.isMobile === 'true',
-			cid: req.query.cid
+			cid: req.query.cid,
 		},
 		req,
 		res,
@@ -138,7 +138,7 @@ apiController.getPostData = function (pid, uid, callback) {
 		},
 		post: function (next) {
 			posts.getPostData(pid, next);
-		}
+		},
 	}, function (err, results) {
 		if (err || !results.post) {
 			return callback(err);
@@ -167,7 +167,7 @@ apiController.getTopicData = function (tid, uid, callback) {
 		},
 		topic: function (next) {
 			topics.getTopicData(tid, next);
-		}
+		},
 	}, function (err, results) {
 		if (err || !results.topic) {
 			return callback(err);
@@ -187,7 +187,7 @@ apiController.getCategoryData = function (cid, uid, callback) {
 		},
 		category: function (next) {
 			categories.getCategoryData(cid, next);
-		}
+		},
 	}, function (err, results) {
 		if (err || !results.category) {
 			return callback(err);
@@ -205,7 +205,7 @@ apiController.getObject = function (req, res, next) {
 	var methods = {
 		post: apiController.getPostData,
 		topic: apiController.getTopicData,
-		category: apiController.getCategoryData
+		category: apiController.getCategoryData,
 	};
 	var method = methods[req.params.type];
 	if (!method) {
@@ -230,7 +230,7 @@ apiController.getCurrentUser = function (req, res, next) {
 		},
 		function (userslug, next) {
 			accountHelpers.getUserDataByUserSlug(userslug, req.uid, next);
-		}
+		},
 	], function (err, userData) {
 		if (err) {
 			return next(err);
@@ -278,7 +278,7 @@ apiController.getUserDataByField = function (callerUid, field, fieldValue, callb
 				return next();
 			}
 			apiController.getUserDataByUID(callerUid, uid, next);
-		}
+		},
 	], callback);
 };
 
@@ -293,7 +293,7 @@ apiController.getUserDataByUID = function (callerUid, uid, callback) {
 
 	async.parallel({
 		userData: async.apply(user.getUserData, uid),
-		settings: async.apply(user.getSettings, uid)
+		settings: async.apply(user.getSettings, uid),
 	}, function (err, results) {
 		if (err || !results.userData) {
 			return callback(err || new Error('[[error:no-user]]'));

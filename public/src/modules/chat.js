@@ -9,7 +9,7 @@ define('chat', [
 	'forum/chats',
 	'forum/chats/messages',
 	'translator',
-	'scrollStop'
+	'scrollStop',
 ], function (components, taskbar, S, sounds, Chats, ChatsMessages, translator, scrollStop) {
 
 	var module = {};
@@ -72,7 +72,7 @@ define('chat', [
 					taskbar.push('chat', modal.attr('UUID'), {
 						title: username,
 						touid: data.message.fromUser.uid,
-						roomId: data.roomId
+						roomId: data.roomId,
 					});
 				}
 			} else {
@@ -119,7 +119,7 @@ define('chat', [
 			});
 
 			templates.parse('partials/chats/dropdown', {
-				rooms: rooms
+				rooms: rooms,
 			}, function (html) {
 				translator.translate(html, function (translated) {
 					chatsListEl.empty().html(translated);
@@ -175,7 +175,7 @@ define('chat', [
 				chatModal.find('.modal-content').resizable({
 					handles: 'n, e, s, w, se',
 					minHeight: 250,
-					minWidth: 400
+					minWidth: 400,
 				});
 
 				chatModal.find('.modal-content').on('resize', function (event, ui) {
@@ -194,7 +194,7 @@ define('chat', [
 						chatModal.find('#chat-message-input').focus();
 					},
 					distance: 10,
-					handle: '.modal-header'
+					handle: '.modal-header',
 				});
 			});
 			
@@ -264,7 +264,7 @@ define('chat', [
 				title: data.roomName || (data.users.length ? data.users[0].username : ''),
 				roomId: data.roomId,
 				icon: 'fa-comment',
-				state: ''
+				state: '',
 			});
 
 			$(window).trigger('action:chat.loaded', chatModal);

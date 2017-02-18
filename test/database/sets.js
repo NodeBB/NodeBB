@@ -157,7 +157,7 @@ describe('Set methods', function () {
 			async.parallel([
 				async.apply(db.setAdd, 'set5', [1,2,3,4,5]),
 				async.apply(db.setAdd, 'set6', 1),
-				async.apply(db.setAdd, 'set7', 2)
+				async.apply(db.setAdd, 'set7', 2),
 			], done);
 		});
 

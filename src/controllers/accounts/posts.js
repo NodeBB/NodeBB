@@ -18,44 +18,44 @@ var templateToData = {
 		set: 'bookmarks',
 		type: 'posts',
 		noItemsFoundKey: '[[topic:bookmarks.has_no_bookmarks]]',
-		crumb: '[[user:bookmarks]]'
+		crumb: '[[user:bookmarks]]',
 	},
 	'account/posts': {
 		set: 'posts',
 		type: 'posts',
 		noItemsFoundKey: '[[user:has_no_posts]]',
-		crumb: '[[global:posts]]'
+		crumb: '[[global:posts]]',
 	},
 	'account/upvoted': {
 		set: 'upvote',
 		type: 'posts',
 		noItemsFoundKey: '[[user:has_no_upvoted_posts]]',
-		crumb: '[[global:upvoted]]'
+		crumb: '[[global:upvoted]]',
 	},
 	'account/downvoted': {
 		set: 'downvote',
 		type: 'posts',
 		noItemsFoundKey: '[[user:has_no_downvoted_posts]]',
-		crumb: '[[global:downvoted]]'
+		crumb: '[[global:downvoted]]',
 	},
 	'account/best': {
 		set: 'posts:votes',
 		type: 'posts',
 		noItemsFoundKey: '[[user:has_no_voted_posts]]',
-		crumb: '[[global:best]]'
+		crumb: '[[global:best]]',
 	},
 	'account/watched': {
 		set: 'followed_tids',
 		type: 'topics',
 		noItemsFoundKey: '[[user:has_no_watched_topics]]',
-		crumb: '[[user:watched]]'
+		crumb: '[[user:watched]]',
 	},
 	'account/topics': {
 		set: 'topics',
 		type: 'topics',
 		noItemsFoundKey: '[[user:has_no_topics]]',
-		crumb: '[[global:topics]]'
-	}
+		crumb: '[[global:topics]]',
+	},
 };
 
 postsController.getBookmarks = function (req, res, next) {
@@ -101,7 +101,7 @@ function getFromUserSet(template, req, res, callback) {
 				},
 				userData: function (next) {
 					accountHelpers.getUserDataByUserSlug(req.params.userslug, req.uid, next);
-				}
+				},
 			}, next);
 		},
 		function (results, next) {
@@ -127,9 +127,9 @@ function getFromUserSet(template, req, res, callback) {
 					var start = (page - 1) * itemsPerPage;
 					var stop = start + itemsPerPage - 1;
 					data.method(setName, req.uid, start, stop, next);
-				}
+				},
 			}, next);
-		}
+		},
 	], function (err, results) {
 		if (err) {
 			return callback(err);

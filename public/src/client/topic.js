@@ -12,7 +12,7 @@ define('forum/topic', [
 	'forum/topic/replies',
 	'navigator',
 	'sort',
-	'components'
+	'components',
 ], function (infinitescroll, threadTools, postTools, events, posts, replies, navigator, sort, components) {
 	var	Topic = {},
 		currentUrl = '';
@@ -162,7 +162,7 @@ define('forum/topic', [
 				},
 				closefn : function () {
 					localStorage.removeItem('topic:' + tid + ':bookmark');
-				}
+				},
 			});
 			setTimeout(function () {
 				app.removeAlert('bookmark');
@@ -266,7 +266,7 @@ define('forum/topic', [
 					}
 
 					history.replaceState({
-						url: newUrl + search
+						url: newUrl + search,
 					}, null, window.location.protocol + '//' + window.location.host + RELATIVE_PATH + '/' + newUrl + search);
 				}
 				currentUrl = newUrl;
@@ -282,7 +282,7 @@ define('forum/topic', [
 			if (app.user.uid) {
 				socket.emit('topics.bookmark', {
 					'tid': ajaxify.data.tid,
-					'index': index
+					'index': index,
 				}, function (err) {
 					if (err) {
 						return app.alertError(err.message);

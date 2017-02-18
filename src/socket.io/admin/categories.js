@@ -27,7 +27,7 @@ Categories.getAll = function (socket, data, callback) {
 		},
 		function (result, next) {
 			next(null, categories.getTree(result.categories, 0));
-		}
+		},
 	], function (err, categoriesTree) {
 		if (err) {
 			return callback(err);

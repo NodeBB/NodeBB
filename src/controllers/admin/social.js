@@ -12,7 +12,7 @@ socialController.get = function (req, res, next) {
 		}
 
 		res.render('admin/general/social', {
-			posts: posts
+			posts: posts,
 		});
 	});
 };

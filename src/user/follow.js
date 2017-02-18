@@ -44,7 +44,7 @@ module.exports = function (User) {
 						async.apply(db.sortedSetAdd, 'following:' + uid, now, theiruid),
 						async.apply(db.sortedSetAdd, 'followers:' + theiruid, now, uid),
 						async.apply(User.incrementUserFieldBy, uid, 'followingCount', 1),
-						async.apply(User.incrementUserFieldBy, theiruid, 'followerCount', 1)
+						async.apply(User.incrementUserFieldBy, theiruid, 'followerCount', 1),
 					], next);
 				} else {
 					if (!isFollowing) {
@@ -54,10 +54,10 @@ module.exports = function (User) {
 						async.apply(db.sortedSetRemove, 'following:' + uid, theiruid),
 						async.apply(db.sortedSetRemove, 'followers:' + theiruid, uid),
 						async.apply(User.decrementUserFieldBy, uid, 'followingCount', 1),
-						async.apply(User.decrementUserFieldBy, theiruid, 'followerCount', 1)
+						async.apply(User.decrementUserFieldBy, theiruid, 'followerCount', 1),
 					], next);
 				}
-			}
+			},
 		], callback);
 	}
 
@@ -82,12 +82,12 @@ module.exports = function (User) {
 					uids: uids,
 					uid: uid,
 					start: start,
-					stop: stop
+					stop: stop,
 				}, next);
 			},
 			function (data, next) {
 				User.getUsers(data.uids, uid, next);
-			}
+			},
 		], callback);
 	}
 

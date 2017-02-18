@@ -7,7 +7,7 @@ define('admin/modules/selectable', ['jqueryui'], function (jqueryui) {
 
 	selectable.enable = function (containerEl, targets) {
 		$(containerEl).selectable({
-			filter: targets
+			filter: targets,
 		});
 	};
 

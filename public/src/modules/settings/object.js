@@ -108,7 +108,7 @@ define('settings/object', function () {
 			} else {
 				return void 0;
 			}
-		}
+		},
 	};
 
 	return SettingsObject;

@@ -41,7 +41,7 @@ module.exports = function (SocketPosts) {
 					},
 					postSharing: function (next) {
 						social.getActivePostSharing(next);
-					}
+					},
 				}, next);
 			},
 			function (results, next) {
@@ -54,7 +54,7 @@ module.exports = function (SocketPosts) {
 				results.posts.display_moderator_tools = results.posts.display_edit_tools || results.posts.display_delete_tools;
 				results.posts.display_move_tools = results.isAdminOrMod;
 				next(null, results);
-			}
+			},
 		], callback);
 	};
 
@@ -85,11 +85,11 @@ module.exports = function (SocketPosts) {
 					type: 'post-delete',
 					uid: socket.uid,
 					pid: data.pid,
-					ip: socket.ip
+					ip: socket.ip,
 				});
 
 				next();
-			}
+			},
 		], callback);
 	};
 
@@ -110,11 +110,11 @@ module.exports = function (SocketPosts) {
 					type: 'post-restore',
 					uid: socket.uid,
 					pid: data.pid,
-					ip: socket.ip
+					ip: socket.ip,
 				});
 
 				setImmediate(next);
-			}
+			},
 		], callback);
 	};
 
@@ -171,9 +171,9 @@ module.exports = function (SocketPosts) {
 					uid: socket.uid,
 					pid: data.pid,
 					ip: socket.ip,
-					title: validator.escape(String(title))
+					title: validator.escape(String(title)),
 				}, next);
-			}
+			},
 		], callback);
 	};
 
@@ -184,7 +184,7 @@ module.exports = function (SocketPosts) {
 			},
 			function (topic, next) {
 				socketTopics.doTopicAction('delete', 'event:topic_deleted', socket, {tids: [topic.tid], cid: topic.cid}, next);
-			}
+			},
 		], callback);
 	}
 
@@ -197,7 +197,7 @@ module.exports = function (SocketPosts) {
 				posts.getTopicFields(pid, ['postcount'], function (err, topic) {
 					next(err, topic ? parseInt(topic.postcount, 10) === 1 : false);
 				});
-			}
+			},
 		}, callback);
 	}
 

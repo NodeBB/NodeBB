@@ -21,7 +21,7 @@ module.exports = function (SocketUser) {
 			onlineOnly: data.onlineOnly,
 			bannedOnly: data.bannedOnly,
 			flaggedOnly: data.flaggedOnly,
-			uid: socket.uid
+			uid: socket.uid,
 		}, function (err, result) {
 			if (err) {
 				return callback(err);

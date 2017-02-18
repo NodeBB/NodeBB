@@ -11,7 +11,7 @@ define('uploader', ['translator'], function (translator) {
 		module.show({
 			route: route,
 			params: params,
-			fileSize: fileSize
+			fileSize: fileSize,
 		}, callback);
 	};
 
@@ -23,7 +23,7 @@ define('uploader', ['translator'], function (translator) {
 			title: data.title || '[[global:upload_file]]',
 			description: data.description || '',
 			button: data.button || '[[global:upload]]',
-			accept: data.accept ? data.accept.replace(/,/g, '&#44; ') : ''
+			accept: data.accept ? data.accept.replace(/,/g, '&#44; ') : '',
 		}, function (uploadModal) {
 			uploadModal = $(uploadModal);
 
@@ -76,7 +76,7 @@ define('uploader', ['translator'], function (translator) {
 
 		uploadModal.find('#uploadForm').ajaxSubmit({
 			headers: {
-				'x-csrf-token': config.csrf_token
+				'x-csrf-token': config.csrf_token,
 			},
 			error: function (xhr) {
 				xhr = maybeParse(xhr);
@@ -99,7 +99,7 @@ define('uploader', ['translator'], function (translator) {
 					module.hideAlerts(uploadModal);
 					uploadModal.modal('hide');
 				}, 750);
-			}
+			},
 		});
 	}
 

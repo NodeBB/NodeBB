@@ -30,7 +30,7 @@ module.exports = function (SocketPosts) {
 					},
 					downvoteUids: function (next) {
 						db.getSetMembers('pid:' + data.pid + ':downvote', next);
-					}
+					},
 				}, next);
 			},
 			function (results, next) {
@@ -46,9 +46,9 @@ module.exports = function (SocketPosts) {
 					},
 					downvoteCount: function (next) {
 						next(null, results.downvoteUids.length);
-					}
+					},
 				}, next);
-			}
+			},
 		], callback);
 	};
 
@@ -71,7 +71,7 @@ module.exports = function (SocketPosts) {
 				user.getUsernamesByUids(uids, function (err, usernames) {
 					next(err, {
 						otherCount: otherCount,
-						usernames: usernames
+						usernames: usernames,
 					});
 				});
 			}, callback);

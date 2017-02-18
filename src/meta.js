@@ -32,7 +32,7 @@ var utils = require('../public/src/utils');
 		slug = utils.slugify(slug);
 		async.parallel([
 			async.apply(user.existsBySlug, slug),
-			async.apply(groups.existsBySlug, slug)
+			async.apply(groups.existsBySlug, slug),
 		], function (err, results) {
 			callback(err, results ? results.some(function (result) { return result; }) : false);
 		});
@@ -62,7 +62,7 @@ var utils = require('../public/src/utils');
 	function restart() {
 		if (process.send) {
 			process.send({
-				action: 'restart'
+				action: 'restart',
 			});
 		} else {
 			winston.error('[meta.restart] Could not restart, are you sure NodeBB was started with `./nodebb start`?');

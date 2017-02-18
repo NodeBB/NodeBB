@@ -50,7 +50,7 @@ module.exports = function (Topics) {
 				var uidData = bookmarks.map(function (bookmark) {
 					return {
 						uid: bookmark.value,
-						bookmark: bookmark.score
+						bookmark: bookmark.score,
 					};
 				});
 
@@ -74,7 +74,7 @@ module.exports = function (Topics) {
 						}
 					});
 				}, next);
-			}
+			},
 		], function (err) {
 			callback(err);
 		});

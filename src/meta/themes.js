@@ -75,7 +75,7 @@ module.exports = function (Meta) {
 			'theme:id': data.id,
 			'theme:staticDir': '',
 			'theme:templates': '',
-			'theme:src': ''
+			'theme:src': '',
 		};
 
 		switch(data.type) {
@@ -85,7 +85,7 @@ module.exports = function (Meta) {
 				function (current, next) {
 					async.series([
 						async.apply(db.sortedSetRemove, 'plugins:active', current),
-						async.apply(db.sortedSetAdd, 'plugins:active', 0, data.id)
+						async.apply(db.sortedSetAdd, 'plugins:active', 0, data.id),
 					], function (err) {
 						next(err);
 					});
@@ -109,7 +109,7 @@ module.exports = function (Meta) {
 
 					// Re-set the themes path (for when NodeBB is reloaded)
 					Meta.themes.setPath(config);
-				}
+				},
 			], callback);
 
 			Meta.reloadRequired = true;
@@ -126,7 +126,7 @@ module.exports = function (Meta) {
 			themesData: Meta.themes.get,
 			currentThemeId: function (next) {
 				db.getObjectField('config', 'theme:id', next);
-			}
+			},
 		}, function (err, data) {
 			if (err) {
 				return callback(err);

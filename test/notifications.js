@@ -29,7 +29,7 @@ describe('Notifications', function () {
 		notifications.create({
 			bodyShort: 'bodyShort',
 			nid: 'notification_id',
-			path: '/notification/path'
+			path: '/notification/path',
 		}, function (err, _notification) {
 			notification = _notification;
 			assert.ifError(err);
@@ -162,7 +162,7 @@ describe('Notifications', function () {
 
 				categories.create({
 					name: 'Test Category',
-					description: 'Test category created by testing script'
+					description: 'Test category created by testing script',
 				}, next);
 			},
 			function (category, next) {
@@ -172,7 +172,7 @@ describe('Notifications', function () {
 					uid: watcherUid,
 					cid: cid,
 					title: 'Test Topic Title',
-					content: 'The content of test topic'
+					content: 'The content of test topic',
 				}, next);
 			},
 			function (topic, next) {
@@ -184,7 +184,7 @@ describe('Notifications', function () {
 				topics.reply({
 					uid: uid,
 					content: 'This is the first reply.',
-					tid: tid
+					tid: tid,
 				}, next);
 			},
 			function (post, next) {
@@ -193,7 +193,7 @@ describe('Notifications', function () {
 				topics.reply({
 					uid: uid,
 					content: 'This is the second reply.',
-					tid: tid
+					tid: tid,
 				}, next);
 			},
 			function (post, next) {
@@ -207,7 +207,7 @@ describe('Notifications', function () {
 				assert.equal(notifications.unread.length, 1, 'there should be 1 unread notification');
 				assert.equal('/post/' + pid, notifications.unread[0].path, 'the notification should link to the first unread post');
 				next();
-			}
+			},
 		], function (err) {
 			assert.ifError(err);
 			done();

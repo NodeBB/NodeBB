@@ -25,7 +25,7 @@ module.exports = function (Posts) {
 					return groupTitle && array.indexOf(groupTitle) === index;
 				});
 				groups.getGroupsData(groupTitles, next);
-			}
+			},
 		], function (err, groupsData) {
 			if (err) {
 				return callback(err);
@@ -38,7 +38,7 @@ module.exports = function (Posts) {
 						slug: group.slug,
 						labelColor: group.labelColor,
 						icon: group.icon,
-						userTitle: group.userTitle
+						userTitle: group.userTitle,
 					};
 				}
 			});
@@ -73,7 +73,7 @@ module.exports = function (Posts) {
 					},
 					customProfileInfo: function (next) {
 						plugins.fireHook('filter:posts.custom_profile_info', {profile: [], uid: userData.uid}, next);
-					}
+					},
 				}, function (err, results) {
 					if (err) {
 						return next(err);

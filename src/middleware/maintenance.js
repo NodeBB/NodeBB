@@ -24,7 +24,7 @@ module.exports = function (middleware) {
 			res.status(503);
 			var data = {
 				site_title: meta.config.title || 'NodeBB',
-				message: meta.config.maintenanceModeMessage
+				message: meta.config.maintenanceModeMessage,
 			};
 
 			if (res.locals.isAPI) {

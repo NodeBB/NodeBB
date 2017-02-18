@@ -33,7 +33,7 @@ var SocketAdmin = {
 	email: {},
 	analytics: {},
 	logs: {},
-	errors: {}
+	errors: {},
 };
 
 SocketAdmin.before = function (socket, method, data, next) {
@@ -50,7 +50,7 @@ SocketAdmin.reload = function (socket, data, callback) {
 	events.log({
 		type: 'restart',
 		uid: socket.uid,
-		ip: socket.ip
+		ip: socket.ip,
 	});
 	meta.restart();
 	callback();
@@ -65,13 +65,13 @@ SocketAdmin.restart = function (socket, data, callback) {
 		events.log({
 			type: 'build',
 			uid: socket.uid,
-			ip: socket.ip
+			ip: socket.ip,
 		});
 
 		events.log({
 			type: 'restart',
 			uid: socket.uid,
-			ip: socket.ip
+			ip: socket.ip,
 		});
 
 		meta.restart();
@@ -166,14 +166,14 @@ SocketAdmin.config.setMultiple = function (socket, data, callback) {
 				if (data.hasOwnProperty(field)) {
 					setting = {
 						key: field,
-						value: data[field]
+						value: data[field],
 					};
 					plugins.fireHook('action:config.set', setting);
 					logger.monitorConfig({io: index.server}, setting);
 				}
 			}
 			setImmediate(next);
-		}
+		},
 	], callback);
 };
 
@@ -199,7 +199,7 @@ SocketAdmin.email.test = function (socket, data, callback) {
 	emailer.send(data.template, socket.uid, {
 		subject: '[' + site_title + '] Test Email',
 		site_title: site_title,
-		url: nconf.get('url')
+		url: nconf.get('url'),
 	}, callback);
 };
 
@@ -230,7 +230,7 @@ SocketAdmin.analytics.get = function (socket, data, callback) {
 				},
 				monthlyPageViews: function (next) {
 					analytics.getMonthlyPageViews(next);
-				}
+				},
 			}, function (err, data) {
 				data.pastDay = data.pageviews.reduce(function (a, b) {return parseInt(a, 10) + parseInt(b, 10);});
 				data.pageviews[data.pageviews.length - 1] = parseInt(data.pageviews[data.pageviews.length - 1], 10) + analytics.getUnwrittenPageviews();

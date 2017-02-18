@@ -20,7 +20,7 @@ module.exports = function (SocketTopics) {
 					return next(null, true);
 				}
 				next(null, tagWhitelist.indexOf(data.tag) !== -1);
-			}
+			},
 		], callback);
 	};
 
@@ -50,7 +50,7 @@ module.exports = function (SocketTopics) {
 			function (tags, next) {
 				tags = tags.filter(Boolean);
 				next(null, {tags: tags, nextStart: stop + 1});
-			}
+			},
 		], callback);
 	};
 };

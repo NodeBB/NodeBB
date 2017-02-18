@@ -44,7 +44,7 @@ define('forum/topic/fork', ['components', 'postSelect'], function (components, p
 		socket.emit('topics.createTopicFromPosts', {
 			title: forkModal.find('#fork-title').val(),
 			pids: postSelect.pids,
-			fromTid: ajaxify.data.tid
+			fromTid: ajaxify.data.tid,
 		}, function (err, newTopic) {
 			function fadeOutAndRemove(pid) {
 				components.get('post', 'pid', pid).fadeOut(500, function () {
@@ -63,7 +63,7 @@ define('forum/topic/fork', ['components', 'postSelect'], function (components, p
 				type: 'success',
 				clickfn: function () {
 					ajaxify.go('topic/' + newTopic.slug);
-				}
+				},
 			});
 
 			postSelect.pids.forEach(function (pid) {

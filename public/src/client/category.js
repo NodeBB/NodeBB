@@ -10,7 +10,7 @@ define('forum/category', [
 	'components',
 	'translator',
 	'topicSelect',
-	'forum/pagination'
+	'forum/pagination',
 ], function (infinitescroll, share, navigator, categoryTools, sort, components, translator, topicSelect, pagination) {
 	var Category = {};
 
@@ -178,7 +178,7 @@ define('forum/category', [
 
 		if (scrollTo.length) {
 			$('html, body').animate({
-				scrollTop: (scrollTo.offset().top - offset) + 'px'
+				scrollTop: (scrollTo.offset().top - offset) + 'px',
 			}, duration !== undefined ? duration : 400, function () {
 				Category.highlightTopic(clickedIndex);
 				navigator.update();
@@ -208,7 +208,7 @@ define('forum/category', [
 			privileges: {editable: editable},
 			showSelect: editable,
 			topics: [topic],
-			template: {category: true}
+			template: {category: true},
 		}, function (html) {
 			translator.translate(html, function (translatedHTML) {
 				var topic = $(translatedHTML),
@@ -287,7 +287,7 @@ define('forum/category', [
 			direction: direction,
 			author: params.author,
 			tag: params.tag,
-			categoryTopicSort: config.categoryTopicSort
+			categoryTopicSort: config.categoryTopicSort,
 		}, function (data, done) {
 			if (data.topics && data.topics.length) {
 				Category.onTopicsLoaded(data, direction, done);

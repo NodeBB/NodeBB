@@ -52,7 +52,7 @@ module.exports = function (Posts) {
 						Posts.parsePost(postData, next);
 					});
 				}
-			}
+			},
 		], callback);
 	}
 
@@ -67,7 +67,7 @@ module.exports = function (Posts) {
 				}
 				cache.del(pid);
 				Posts.purge(pid, uid, next);
-			}
+			},
 		], callback);
 	};
 

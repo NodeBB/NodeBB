@@ -39,7 +39,7 @@ module.exports = function (Groups) {
 							db.sortedSetRemove('group:' + group + ':members', groupName, next);
 						}, next);
 					});
-				}
+				},
 			], function (err) {
 				if (err) {
 					return callback(err);

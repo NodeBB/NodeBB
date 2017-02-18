@@ -30,7 +30,7 @@ var utils = require('../public/src/utils');
 					description: '',
 					deleted: '0',
 					hidden: '0',
-					system: '1'
+					system: '1',
 				};
 			},
 			removeEphemeralGroups: function (groups) {
@@ -42,7 +42,7 @@ var utils = require('../public/src/utils');
 				}
 
 				return groups;
-			}
+			},
 		};
 
 	Groups.internals = internals;
@@ -73,7 +73,7 @@ var utils = require('../public/src/utils');
 				}
 
 				Groups.getGroupsAndMembers(groupNames, next);
-			}
+			},
 		], callback);
 	};
 
@@ -88,7 +88,7 @@ var utils = require('../public/src/utils');
 			},
 			members: function (next) {
 				Groups.getMemberUsers(groupNames, 0, 3, next);
-			}
+			},
 		}, function (err, data) {
 			if (err) {
 				return callback(err);
@@ -132,7 +132,7 @@ var utils = require('../public/src/utils');
 					},
 					function (uids, next) {
 						user.getUsersData(uids, next);
-					}
+					},
 				], next);
 			},
 			invited: function (next) {
@@ -142,13 +142,13 @@ var utils = require('../public/src/utils');
 					},
 					function (uids, next) {
 						user.getUsersData(uids, next);
-					}
+					},
 				], next);
 			},
 			isMember: async.apply(Groups.isMember, options.uid, groupName),
 			isPending: async.apply(Groups.isPending, options.uid, groupName),
 			isInvited: async.apply(Groups.isInvited, options.uid, groupName),
-			isOwner: async.apply(Groups.ownership.isOwner, options.uid, groupName)
+			isOwner: async.apply(Groups.ownership.isOwner, options.uid, groupName),
 		}, function (err, results) {
 			if (err) {
 				return callback(err);
@@ -206,12 +206,12 @@ var utils = require('../public/src/utils');
 					},
 					function (uids, next) {
 						user.getUsers(uids, uid, next);
-					}
+					},
 				], next);
 			},
 			members: function (next) {
 				user.getUsersFromSet('group:' + groupName + ':members', uid, start, stop, next);
-			}
+			},
 		}, function (err, results) {
 			if (err) {
 				return callback(err);
@@ -312,7 +312,7 @@ var utils = require('../public/src/utils');
 						return ephemeralGroups.indexOf(slug) !== -1;
 					}));
 				},
-				async.apply(db.isSortedSetMembers, 'groups:createtime', name)
+				async.apply(db.isSortedSetMembers, 'groups:createtime', name),
 			], function (err, results) {
 				if (err) {
 					return callback(err);
@@ -327,7 +327,7 @@ var utils = require('../public/src/utils');
 				function (next) {
 					next(null, ephemeralGroups.indexOf(slug) !== -1);
 				},
-				async.apply(db.isSortedSetMember, 'groups:createtime', name)
+				async.apply(db.isSortedSetMember, 'groups:createtime', name),
 			], function (err, results) {
 				callback(err, !err ? (results[0] || results[1]) : null);
 			});
@@ -361,7 +361,7 @@ var utils = require('../public/src/utils');
 			},
 			function (pids, next) {
 				posts.getPostSummaryByPids(pids, uid, {stripTags: false}, next);
-			}
+			},
 		], callback);
 	};
 
@@ -452,7 +452,7 @@ var utils = require('../public/src/utils');
 						Groups.getGroupsData(memberOf, next);
 					});
 				}, next);
-			}
+			},
 		], callback);
 	};
 

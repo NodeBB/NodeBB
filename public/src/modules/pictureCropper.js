@@ -13,7 +13,7 @@ define('pictureCropper', ['translator', 'cropper'], function (translator, croppe
 			title: data.title || '[[global:upload_file]]',
 			description: data.description || '',
 			button: data.button || '[[global:upload]]',
-			accept: data.accept ? data.accept.replace(/,/g, '&#44; ') : ''
+			accept: data.accept ? data.accept.replace(/,/g, '&#44; ') : '',
 		}, function (uploadModal) {
 			uploadModal = $(uploadModal);
 
@@ -92,10 +92,10 @@ define('pictureCropper', ['translator', 'cropper'], function (translator, croppe
 								autoCropArea: 1,
 								ready: function () {
 									cropperModal.find('.crop-btn').trigger('click');
-								}
+								},
 							});
 						});
-					}
+					},
 				});
 			});
 		});
@@ -131,7 +131,7 @@ define('pictureCropper', ['translator', 'cropper'], function (translator, croppe
 				socketMethod: data.socketMethod,
 				aspectRatio: data.aspectRatio,
 				paramName: data.paramName,
-				paramValue: data.paramValue
+				paramValue: data.paramValue,
 			}, callback);
 		}, false);
 

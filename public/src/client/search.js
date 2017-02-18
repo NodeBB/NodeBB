@@ -36,7 +36,7 @@ define('forum/search', ['search', 'autocomplete'], function (searchModule, autoc
 	function getSearchData() {
 		var form = $('#advanced-search');
 		var searchData = {
-			in: $('#search-in').val()
+			in: $('#search-in').val(),
 		};
 		searchData.term = $('#search-input').val();
 		if (searchData.in === 'posts' || searchData.in === 'titlesposts' || searchData.in === 'titles') {
@@ -168,7 +168,7 @@ define('forum/search', ['search', 'autocomplete'], function (searchModule, autoc
 		var tagEl = $('#has-tags');
 		tagEl.tagsinput({
 			confirmKeys: [13, 44],
-			trimValue: true
+			trimValue: true,
 		});
 
 		autocomplete.tag($('#has-tags').siblings('.bootstrap-tagsinput').find('input'));

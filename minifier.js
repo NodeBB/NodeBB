@@ -6,7 +6,7 @@ var fs = require('fs');
 var file = require('./src/file');
 
 var Minifier = {
-	js: {}
+	js: {},
 };
 
 /* Javascript */
@@ -39,7 +39,7 @@ process.on('message', function (payload) {
 			process.send({
 				type: 'end',
 				// sourceMap: sourceMap,
-				minified: minified
+				minified: minified,
 			});
 		});
 		break;
@@ -52,14 +52,14 @@ function minifyScripts(scripts, callback) {
 	try {
 		var minified = uglifyjs.minify(scripts, {
 				// outSourceMap: "nodebb.min.js.map",
-				compress: false
+				compress: false,
 			});
 
 		callback(minified.code/*, minified.map*/);
 	} catch(err) {
 		process.send({
 			type: 'error',
-			message: err.message
+			message: err.message,
 		});
 	}
 }
@@ -69,7 +69,7 @@ function concatenateScripts(scripts, callback) {
 		if (err) {
 			process.send({
 				type: 'error',
-				message: err.message
+				message: err.message,
 			});
 			return;
 		}

@@ -30,7 +30,7 @@ module.exports = function (SocketTopics) {
 					topicData = _topicData;
 					topicData.tid = tid;
 					topics.tools.move(tid, data.cid, socket.uid, next);
-				}
+				},
 			], function (err) {
 				if (err) {
 					return next(err);
@@ -66,7 +66,7 @@ module.exports = function (SocketTopics) {
 				async.eachLimit(tids, 50, function (tid, next) {
 					topics.tools.move(tid, data.cid, socket.uid, next);
 				}, next);
-			}
+			},
 		], callback);
 	};
 };

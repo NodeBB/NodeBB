@@ -54,7 +54,7 @@ var privileges = require('../privileges');
 			},
 			read: function (next) {
 				getNotificationsFromSet('uid:' + uid + ':notifications:read', true, uid, start, stop, next);
-			}
+			},
 		}, callback);
 	}
 
@@ -89,7 +89,7 @@ var privileges = require('../privileges');
 				}
 
 				notifications.merge(notifs, next);
-			}
+			},
 		], callback);
 	}
 
@@ -137,7 +137,7 @@ var privileges = require('../privileges');
 				});
 
 				db.getObjectsFields(keys, ['mergeId'], next);
-			}
+			},
 		], function (err, mergeIds) {
 			// A missing (null) mergeId means that notification is counted separately.
 			mergeIds = mergeIds.map(function (set) {
@@ -195,7 +195,7 @@ var privileges = require('../privileges');
 			},
 			function (next) {
 				db.delete('uid:' + uid + ':notifications:read', next);
-			}
+			},
 		], callback);
 	};
 
@@ -229,9 +229,9 @@ var privileges = require('../privileges');
 					path: '/post/' + postData.pid,
 					nid: 'tid:' + postData.tid + ':uid:' + uid,
 					tid: postData.tid,
-					from: uid
+					from: uid,
 				}, next);
-			}
+			},
 		], function (err, notification) {
 			if (err) {
 				return winston.error(err);
@@ -254,7 +254,7 @@ var privileges = require('../privileges');
 		notifications.create({
 			bodyShort: meta.config.welcomeNotification,
 			path: path,
-			nid: 'welcome_' + uid
+			nid: 'welcome_' + uid,
 		}, function (err, notification) {
 			if (err || !notification) {
 				return callback(err);
@@ -269,7 +269,7 @@ var privileges = require('../privileges');
 			bodyShort: '[[user:username_taken_workaround, ' + username + ']]',
 			image: 'brand:logo',
 			nid: 'username_taken:' + uid,
-			datetime: Date.now()
+			datetime: Date.now(),
 		}, function (err, notification) {
 			if (!err && notification) {
 				notifications.push(notification, uid);

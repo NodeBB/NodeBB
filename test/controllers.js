@@ -24,12 +24,12 @@ describe('Controllers', function () {
 			category: function (next) {
 				categories.create({
 					name: 'Test Category',
-					description: 'Test category created by testing script'
+					description: 'Test category created by testing script',
 				}, next);
 			},
 			user: function (next) {
 				user.create({username: 'foo', password: 'barbar'}, next);
-			}
+			},
 		}, function (err, results) {
 			if (err) {
 				return done(err);
@@ -438,7 +438,7 @@ describe('Controllers', function () {
 		groups.create({
 			name: 'group-details',
 			description: 'Foobar!',
-			hidden: 0
+			hidden: 0,
 		}, function (err) {
 			assert.ifError(err);
 			request(nconf.get('url') + '/groups/group-details', function (err, res, body) {
@@ -464,7 +464,7 @@ describe('Controllers', function () {
 		groups.create({
 			name: 'hidden-group',
 			description: 'Foobar!',
-			hidden: 1
+			hidden: 1,
 		}, function (err) {
 			assert.ifError(err);
 			request(nconf.get('url') + '/groups/hidden-group/members', function (err, res, body) {
@@ -525,8 +525,8 @@ describe('Controllers', function () {
 			request.del(nconf.get('url') + '/api/user/revokeme/session', {
 				jar: jar,
 				headers: {
-					'x-csrf-token': csrf_token
-				}
+					'x-csrf-token': csrf_token,
+				},
 			}, function (err, res, body) {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 404);
@@ -538,8 +538,8 @@ describe('Controllers', function () {
 			request.del(nconf.get('url') + '/api/user/doesnotexist/session/1112233', {
 				jar: jar,
 				headers: {
-					'x-csrf-token': csrf_token
-				}
+					'x-csrf-token': csrf_token,
+				},
 			}, function (err, res, body) {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 403);
@@ -558,8 +558,8 @@ describe('Controllers', function () {
 					request.del(nconf.get('url') + '/api/user/revokeme/session/' + sessionObj.meta.uuid, {
 						jar: jar,
 						headers: {
-							'x-csrf-token': csrf_token
-						}
+							'x-csrf-token': csrf_token,
+						},
 					}, function (err, res, body) {
 						assert.ifError(err);
 						assert.equal(res.statusCode, 200);
@@ -591,15 +591,15 @@ describe('Controllers', function () {
 									data: {
 										html: 'test',
 										title: '',
-										container: ''
-									}
-								} ]
-							}
-						]
+										container: '',
+									},
+								} ],
+							},
+						],
 					};
 
 					widgets.setArea(data, next);
-				}
+				},
 			], done);
 		});
 
@@ -632,7 +632,7 @@ describe('Controllers', function () {
 				title: 'topic title',
 				content: 'test topic content',
 				cid: cid,
-				tags: ['nodebb', 'bug', 'test']
+				tags: ['nodebb', 'bug', 'test'],
 			}, function (err, result) {
 				assert.ifError(err);
 				tid = result.topicData.tid;
@@ -806,7 +806,7 @@ describe('Controllers', function () {
 				tid: 1,
 				from: fooUid,
 				mergeId: 'notifications:user_posted_to|' + 1,
-				topicTitle: 'topic title'
+				topicTitle: 'topic title',
 			};
 			async.waterfall([
 				function (next) {
@@ -831,7 +831,7 @@ describe('Controllers', function () {
 					assert.equal(notif.path, notifData.path);
 					assert.equal(notif.nid, notifData.nid);
 					next();
-				}
+				},
 			], done);
 		});
 	});

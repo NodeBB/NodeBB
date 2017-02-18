@@ -532,7 +532,7 @@
 					jQuery('html').css('direction', value).attr('data-dir', value);
 				}
 			});
-		}
+		},
 	};
 
 	return adaptor;

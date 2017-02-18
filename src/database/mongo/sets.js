@@ -14,16 +14,16 @@ module.exports = function (db, module) {
 		});
 
 		db.collection('objects').update({
-			_key: key
+			_key: key,
 		}, {
 			$addToSet: {
 				members: {
-					$each: value
-				}
-			}
+					$each: value,
+				},
+			},
 		}, {
 			upsert: true,
-			w: 1
+			w: 1,
 		}, function (err, res) {
 			callback(err);
 		});
@@ -49,8 +49,8 @@ module.exports = function (db, module) {
 		for(var i = 0; i < keys.length; ++i) {
 			bulk.find({_key: keys[i]}).upsert().updateOne({	$addToSet: {
 				members: {
-					$each: value
-				}
+					$each: value,
+				},
 			}});
 		}
 
@@ -85,7 +85,7 @@ module.exports = function (db, module) {
 
 		for(var i = 0; i < keys.length; ++i) {
 			bulk.find({_key: keys[i]}).updateOne({$pull: {
-				members: value
+				members: value,
 			}});
 		}
 

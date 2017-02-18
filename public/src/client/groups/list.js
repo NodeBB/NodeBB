@@ -14,7 +14,7 @@ define('forum/groups/list', ['forum/infinitescroll'], function (infinitescroll) 
 			bootbox.prompt('[[groups:new-group.group_name]]', function (name) {
 				if (name && name.length) {
 					socket.emit('groups.create', {
-						name: name
+						name: name,
 					}, function (err) {
 						if (!err) {
 							ajaxify.go('groups/' + utils.slugify(name));
@@ -43,11 +43,11 @@ define('forum/groups/list', ['forum/infinitescroll'], function (infinitescroll) 
 
 		infinitescroll.loadMore('groups.loadMore', {
 			sort: $('#search-sort').val(),
-			after: $('[component="groups/container"]').attr('data-nextstart')
+			after: $('[component="groups/container"]').attr('data-nextstart'),
 		}, function (data, done) {
 			if (data && data.groups.length) {
 				templates.parse('partials/groups/list', {
-					groups: data.groups
+					groups: data.groups,
 				}, function (html) {
 					$('#groups-list').append(html);
 					done();
@@ -71,8 +71,8 @@ define('forum/groups/list', ['forum/infinitescroll'], function (infinitescroll) 
 			query: queryEl.val(),
 			options: {
 				sort: sortEl.val(),
-				filterHidden: true
-			}
+				filterHidden: true,
+			},
 		}, function (err, groups) {
 			if (err) {
 				return app.alertError(err.message);
@@ -81,7 +81,7 @@ define('forum/groups/list', ['forum/infinitescroll'], function (infinitescroll) 
 				return group.name !== 'registered-users' && group.name !== 'guests';
 			});
 			templates.parse('partials/groups/list', {
-				groups: groups
+				groups: groups,
 			}, function (html) {
 				groupsEl.empty().append(html);
 			});

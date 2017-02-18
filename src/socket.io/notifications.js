@@ -30,7 +30,7 @@ SocketNotifs.loadMore = function (socket, data, callback) {
 		},
 		function (notifications, next) {
 			next(null, {notifications: notifications, nextStart: stop});
-		}
+		},
 	], callback);
 };
 

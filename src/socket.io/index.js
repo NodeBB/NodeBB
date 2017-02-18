@@ -23,7 +23,7 @@ Sockets.init = function (server) {
 	var SocketIO = require('socket.io');
 	var socketioWildcard = require('socketio-wildcard')();
 	io = new SocketIO({
-		path: nconf.get('relative_path') + '/socket.io'
+		path: nconf.get('relative_path') + '/socket.io',
 	});
 
 	addRedisAdapter(io);
@@ -34,7 +34,7 @@ Sockets.init = function (server) {
 	io.on('connection', onConnection);
 
 	io.listen(server, {
-		transports: nconf.get('socket.io:transports')
+		transports: nconf.get('socket.io:transports'),
 	});
 
 	Sockets.server = io;
@@ -122,7 +122,7 @@ function onMessage(socket, payload) {
 		},
 		function (next) {
 			methodToCall(socket, params, next);
-		}
+		},
 	], function (err, result) {
 		callback(err ? {message: err.message} : null, result);
 	});
@@ -130,7 +130,7 @@ function onMessage(socket, payload) {
 
 function requireModules() {
 	var modules = ['admin', 'categories', 'groups', 'meta', 'modules',
-		'notifications', 'plugins', 'posts', 'topics', 'user', 'blacklist'
+		'notifications', 'plugins', 'posts', 'topics', 'user', 'blacklist',
 	];
 
 	modules.forEach(function (module) {
@@ -188,7 +188,7 @@ function authorize(socket, callback) {
 				}
 				next();
 			});
-		}
+		},
 	], callback);
 }
 
@@ -240,7 +240,7 @@ Sockets.reqFromSocket = function (socket, payload, event) {
 		secure: encrypted,
 		url: referer,
 		path: referer.substr(referer.indexOf(host) + host.length),
-		headers: headers
+		headers: headers,
 	};
 };
 

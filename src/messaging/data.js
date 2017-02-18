@@ -110,7 +110,7 @@ module.exports = function (Messaging) {
 						},
 						function (mid, next) {
 							Messaging.getMessageFields(mid, ['fromuid', 'timestamp'], next);
-						}
+						},
 					], function (err, fields) {
 						if (err) {
 							return next(err);
@@ -129,7 +129,7 @@ module.exports = function (Messaging) {
 				} else {
 					next(null, []);
 				}
-			}
+			},
 		], callback);
 	};
 

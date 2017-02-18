@@ -31,7 +31,7 @@ module.exports = function (Topics) {
 						}
 						db.sortedSetRemove('cid:' + topicData.cid + ':pids', pids, next);
 					});
-				}
+				},
 			], function (err) {
 				callback(err);
 			});
@@ -78,7 +78,7 @@ module.exports = function (Topics) {
 							db.sortedSetAdd('cid:' + topicData.cid + ':pids', scores, pidsToAdd, next);
 						});
 					});
-				}
+				},
 			], function (err) {
 				callback(err);
 			});
@@ -104,7 +104,7 @@ module.exports = function (Topics) {
 			},
 			function (next) {
 				Topics.purge(tid, uid, next);
-			}
+			},
 		], callback);
 	};
 
@@ -122,7 +122,7 @@ module.exports = function (Topics) {
 							'tid:' + tid + ':posts',
 							'tid:' + tid + ':posts:votes',
 							'tid:' + tid + ':bookmarks',
-							'tid:' + tid + ':posters'
+							'tid:' + tid + ':posters',
 						], next);
 					},
 					function (next) {
@@ -136,9 +136,9 @@ module.exports = function (Topics) {
 					},
 					function (next) {
 						reduceCounters(tid, next);
-					}
+					},
 				], next);
-			}
+			},
 		], function (err) {
 			if (err) {
 				return callback(err);
@@ -153,7 +153,7 @@ module.exports = function (Topics) {
 			function (next) {
 				async.parallel({
 					followers: async.apply(db.getSetMembers, 'tid:' + tid + ':followers'),
-					ignorers: async.apply(db.getSetMembers, 'tid:' + tid + ':ignorers')
+					ignorers: async.apply(db.getSetMembers, 'tid:' + tid + ':ignorers'),
 				}, next);
 			},
 			function (results, next) {
@@ -164,7 +164,7 @@ module.exports = function (Topics) {
 					return 'uid:' + uid + 'ignored_tids';
 				});
 				db.sortedSetsRemove(followerKeys.concat(ignorerKeys), tid, next);
-			}
+			},
 		], callback);
 	}
 
@@ -180,12 +180,12 @@ module.exports = function (Topics) {
 						'cid:' + topicData.cid + ':tids:pinned',
 						'cid:' + topicData.cid + ':tids:posts',
 						'cid:' + topicData.cid + ':uid:' + topicData.uid + ':tids',
-						'uid:' + topicData.uid + ':topics'
+						'uid:' + topicData.uid + ':topics',
 					], tid, next);
 				},
 				function (next) {
 					user.decrementUserFieldBy(topicData.uid, 'topiccount', 1, next);
-				}
+				},
 			], callback);
 		});
 	}
@@ -214,10 +214,10 @@ module.exports = function (Topics) {
 						},
 						function (next) {
 							db.incrObjectFieldBy('category:' + topicData.cid, 'topic_count', incr, next);
-						}
+						},
 					], next);
 				});
-			}
+			},
 		], callback);
 	}
 };

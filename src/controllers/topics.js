@@ -39,7 +39,7 @@ topicsController.get = function (req, res, callback) {
 				},
 				topic: function (next) {
 					topics.getTopicData(tid, next);
-				}
+				},
 			}, next);
 		},
 		function (results, next) {
@@ -132,11 +132,11 @@ topicsController.get = function (req, res, callback) {
 			var breadcrumbs = [
 				{
 					text: data.topicData.category.name,
-					url: nconf.get('relative_path') + '/category/' + data.topicData.category.slug
+					url: nconf.get('relative_path') + '/category/' + data.topicData.category.slug,
 				},
 				{
-					text: data.topicData.title
-				}
+					text: data.topicData.title,
+				},
 			];
 
 			helpers.buildCategoryBreadcrumbs(data.topicData.category.parentCid, function (err, crumbs) {
@@ -188,70 +188,70 @@ topicsController.get = function (req, res, callback) {
 			res.locals.metaTags = [
 				{
 					name: "title",
-					content: topicData.titleRaw
+					content: topicData.titleRaw,
 				},
 				{
 					name: "description",
-					content: description
+					content: description,
 				},
 				{
 					property: 'og:title',
-					content: topicData.titleRaw
+					content: topicData.titleRaw,
 				},
 				{
 					property: 'og:description',
-					content: description
+					content: description,
 				},
 				{
 					property: "og:type",
-					content: 'article'
+					content: 'article',
 				},
 				{
 					property: "og:url",
 					content: nconf.get('url') + '/topic/' + topicData.slug + (req.params.post_index ? ('/' + req.params.post_index) : ''),
-					noEscape: true
+					noEscape: true,
 				},
 				{
 					property: 'og:image',
 					content: ogImageUrl,
-					noEscape: true
+					noEscape: true,
 				},
 				{
 					property: "og:image:url",
 					content: ogImageUrl,
-					noEscape: true
+					noEscape: true,
 				},
 				{
 					property: "article:published_time",
-					content: utils.toISOString(topicData.timestamp)
+					content: utils.toISOString(topicData.timestamp),
 				},
 				{
 					property: 'article:modified_time',
-					content: utils.toISOString(topicData.lastposttime)
+					content: utils.toISOString(topicData.lastposttime),
 				},
 				{
 					property: 'article:section',
-					content: topicData.category ? topicData.category.name : ''
-				}
+					content: topicData.category ? topicData.category.name : '',
+				},
 			];
 
 			res.locals.linkTags = [
 				{
 					rel: 'alternate',
 					type: 'application/rss+xml',
-					href: nconf.get('url') + '/topic/' + tid + '.rss'
-				}
+					href: nconf.get('url') + '/topic/' + tid + '.rss',
+				},
 			];
 
 			if (topicData.category) {
 				res.locals.linkTags.push({
 					rel: 'up',
-					href: nconf.get('url') + '/category/' + topicData.category.slug
+					href: nconf.get('url') + '/category/' + topicData.category.slug,
 				});
 			}
 
 			next(null, topicData);
-		}
+		},
 	], function (err, data) {
 		if (err) {
 			return callback(err);
@@ -317,7 +317,7 @@ topicsController.teaser = function (req, res, next) {
 				return res.status(404).json('not-found');
 			}
 			posts.getPostSummaryByPids([pid], req.uid, {stripTags: false}, next);
-		}
+		},
 	], function (err, posts) {
 		if (err) {
 			return next(err);
@@ -341,7 +341,7 @@ topicsController.pagination = function (req, res, callback) {
 	async.parallel({
 		privileges: async.apply(privileges.topics.get, tid, req.uid),
 		settings: async.apply(user.getSettings, req.uid),
-		topic: async.apply(topics.getTopicData, tid)
+		topic: async.apply(topics.getTopicData, tid),
 	}, function (err, results) {
 		if (err || !results.topic) {
 			return callback(err);

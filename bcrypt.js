@@ -20,7 +20,7 @@ function hashPassword(password, rounds) {
 		},
 		function (salt, next) {
 			bcrypt.hash(password, salt, next);
-		}
+		},
 	], done);
 }
 

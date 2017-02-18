@@ -35,8 +35,8 @@ define('forum/account/info', ['forum/account/header', 'components'], function (h
 					url: config.relative_path + '/api/user/' + ajaxify.data.userslug + '/session/' + uuid,
 					method: 'delete',
 					headers: {
-						'x-csrf-token': config.csrf_token
-					}
+						'x-csrf-token': config.csrf_token,
+					},
 				}).done(function () {
 					parentEl.remove();
 				}).fail(function (err) {

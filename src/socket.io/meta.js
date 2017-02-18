@@ -5,7 +5,7 @@ var user = require('../user');
 var topics = require('../topics');
 
 var SocketMeta = {
-	rooms: {}
+	rooms: {},
 };
 
 SocketMeta.reconnected = function (socket, data, callback) {

@@ -8,7 +8,7 @@ define('forum/category/tools', [
 	'forum/topic/move', 
 	'topicSelect', 
 	'components', 
-	'translator'
+	'translator',
 ], function (move, topicSelect, components, translator) {
 
 	var CategoryTools = {};
@@ -262,7 +262,7 @@ define('forum/category/tools', [
 							return app.alertError(err.message);
 						}
 					});
-				}
+				},
 			});
 		});
 	}

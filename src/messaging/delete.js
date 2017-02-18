@@ -21,7 +21,7 @@ module.exports = function (Messaging) {
 			},
 			function (next) {
 				db.delete('message:' + mid, next);
-			}
+			},
 		], callback);
 	};
 };

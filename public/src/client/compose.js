@@ -10,7 +10,7 @@ define('forum/compose', [], function () {
 
 		if (container.length) {
 			$(window).trigger('action:composer.enhance', {
-				container: container
+				container: container,
 			});
 		}
 	};

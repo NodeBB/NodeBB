@@ -10,7 +10,7 @@ define('settings', function () {
 		'settings/select',
 		'settings/array',
 		'settings/key',
-		'settings/object'
+		'settings/object',
 	];
 
 	var Settings,
@@ -284,7 +284,7 @@ define('settings', function () {
 			}
 			socket.emit('admin.settings.set', {
 				hash: hash,
-				values: settings
+				values: settings,
 			}, function (err) {
 				if (notify) {
 					if (err) {
@@ -292,14 +292,14 @@ define('settings', function () {
 							title: 'Settings Not Saved',
 							type: 'danger',
 							message: "NodeBB failed to save the settings.",
-							timeout: 5000
+							timeout: 5000,
 						});
 					} else {
 						app.alert({
 							title: 'Settings Saved',
 							type: 'success',
 							message: "Settings have been successfully saved",
-							timeout: 2500
+							timeout: 2500,
 						});
 					}
 				}
@@ -317,7 +317,7 @@ define('settings', function () {
 				settings._ = JSON.parse(settings._);
 			} catch (_error) {}
 			Settings.cfg = settings;
-		}
+		},
 	};
 
 
@@ -383,7 +383,7 @@ define('settings', function () {
 		 */
 		sync: function (hash, wrapper, callback) {
 			socket.emit('admin.settings.get', {
-				hash: hash
+				hash: hash,
 			}, function (err, values) {
 				if (err) {
 					if (typeof callback === 'function') {
@@ -442,7 +442,7 @@ define('settings', function () {
 					title: 'Attributes Not Saved',
 					message: "'" + (notSaved.join(', ')) + "' could not be saved. Please contact the plugin-author!",
 					type: 'danger',
-					timeout: 5000
+					timeout: 5000,
 				});
 			}
 			helper.persistSettings(hash, Settings.cfg, notify, callback);
@@ -450,7 +450,7 @@ define('settings', function () {
 		load: function (hash, formEl, callback) {
 			callback = callback || function () {};
 			socket.emit('admin.settings.get', {
-				hash: hash
+				hash: hash,
 			}, function (err, values) {
 				if (err) {
 					return callback(err);
@@ -502,7 +502,7 @@ define('settings', function () {
 
 				socket.emit('admin.settings.set', {
 					hash: hash,
-					values: values
+					values: values,
 				}, function (err) {
 					// Remove unsaved flag to re-enable ajaxify
 					app.flags._unsaved = false;
@@ -514,19 +514,19 @@ define('settings', function () {
 							app.alert({
 								title: 'Error while saving settings',
 								type: 'error',
-								timeout: 2500
+								timeout: 2500,
 							});
 						} else {
 							app.alert({
 								title: 'Settings Saved',
 								type: 'success',
-								timeout: 2500
+								timeout: 2500,
 							});
 						}
 					}
 				});
 			}
-		}
+		},
 	};
 
 

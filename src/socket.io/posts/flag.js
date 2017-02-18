@@ -48,7 +48,7 @@ module.exports = function (SocketPosts) {
 					},
 					userData: function (next) {
 						user.getUserFields(socket.uid, ['username', 'reputation', 'banned'], next);
-					}
+					},
 				}, next);
 			},
 			function (user, next) {
@@ -79,7 +79,7 @@ module.exports = function (SocketPosts) {
 					},
 					moderators: function (next) {
 						groups.getMembers('cid:' + post.topic.cid + ':privileges:mods', 0, -1, next);
-					}
+					},
 				}, next);
 			},
 			function (results, next) {
@@ -94,7 +94,7 @@ module.exports = function (SocketPosts) {
 					nid: 'post_flag:' + data.pid + ':uid:' + socket.uid,
 					from: socket.uid,
 					mergeId: 'notifications:user_flagged_post_in|' + data.pid,
-					topicTitle: post.topic.title
+					topicTitle: post.topic.title,
 				}, function (err, notification) {
 					if (err || !notification) {
 						return next(err);
@@ -103,7 +103,7 @@ module.exports = function (SocketPosts) {
 					plugins.fireHook('action:post.flag', {post: post, reason: data.reason, flaggingUser: flaggingUser});
 					notifications.push(notification, results.admins.concat(results.moderators).concat(results.globalMods), next);
 				});
-			}
+			},
 		], callback);
 	};
 
@@ -120,7 +120,7 @@ module.exports = function (SocketPosts) {
 					return next(new Error('[[no-privileges]]'));
 				}
 				posts.dismissFlag(pid, next);
-			}
+			},
 		], callback);
 	};
 
@@ -134,7 +134,7 @@ module.exports = function (SocketPosts) {
 					return next(new Error('[[no-privileges]]'));
 				}
 				posts.dismissAllFlags(next);
-			}
+			},
 		], callback);
 	};
 
@@ -149,7 +149,7 @@ module.exports = function (SocketPosts) {
 			function (next) {
 				async.parallel([
 					async.apply(user.isAdminOrGlobalMod, socket.uid),
-					async.apply(user.isModeratorOfAnyCategory, socket.uid)
+					async.apply(user.isModeratorOfAnyCategory, socket.uid),
 				], function (err, results) {
 					next(err, results[0] || results[1]);
 				});
@@ -166,7 +166,7 @@ module.exports = function (SocketPosts) {
 				}, payload);
 
 				posts.updateFlagData(socket.uid, data.pid, payload, next);
-			}
+			},
 		], callback);
 	};
 };

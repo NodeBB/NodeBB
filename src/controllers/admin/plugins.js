@@ -24,7 +24,7 @@ pluginsController.get = function (req, res, next) {
 
 				next(null, plugins);
 			});
-		}
+		},
 	}, function (err, payload) {
 		if (err) {
 			return next(err);
@@ -48,7 +48,7 @@ pluginsController.get = function (req, res, next) {
 			}),
 			incompatible: payload.all.filter(function (plugin) {
 				return compatiblePkgNames.indexOf(plugin.name) === -1;
-			})
+			}),
 		});
 	});
 };

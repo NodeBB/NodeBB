@@ -174,7 +174,7 @@
 			if (privileges.hasOwnProperty(priv)) {
 				states.push({
 					name: priv,
-					state: privileges[priv]
+					state: privileges[priv],
 				});
 			}
 		}
@@ -285,5 +285,5 @@
 }(
 	typeof exports === 'object' ? exports :
 	typeof define === 'function' && define.amd ? {} :
-	helpers = {}
+	helpers = {},
 ));

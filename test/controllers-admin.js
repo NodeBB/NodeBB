@@ -26,7 +26,7 @@ describe('Admin Controllers', function () {
 			category: function (next) {
 				categories.create({
 					name: 'Test Category',
-					description: 'Test category created by testing script'
+					description: 'Test category created by testing script',
 				}, next);
 			},
 			adminUid: function (next) {
@@ -34,7 +34,7 @@ describe('Admin Controllers', function () {
 			},
 			regularUid: function (next) {
 				user.create({username: 'regular'}, next);
-			}
+			},
 		}, function (err, results) {
 			if (err) {
 				return done(err);

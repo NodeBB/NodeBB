@@ -24,7 +24,7 @@ define('settings/key', function () {
 			191: '/',
 			219: '[',
 			220: '\\',
-			221: ']'
+			221: ']',
 		});
 
 	function Key() {
@@ -213,7 +213,7 @@ define('settings/key', function () {
 			} else {
 				return void 0;
 			}
-		}
+		},
 	};
 
 	return SettingsKey;

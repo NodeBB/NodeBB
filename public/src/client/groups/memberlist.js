@@ -56,7 +56,7 @@ define('forum/groups/memberlist', ['components', 'forum/infinitescroll'], functi
 		members.attr('loading', 1);
 		socket.emit('groups.loadMoreMembers', {
 			groupName: groupName,
-			after: members.attr('data-nextstart')
+			after: members.attr('data-nextstart'),
 		}, function (err, data) {
 			if (err) {
 				return app.alertError(err.message);
@@ -88,8 +88,8 @@ define('forum/groups/memberlist', ['components', 'forum/infinitescroll'], functi
 		app.parseAndTranslate('groups/details', 'members', {
 			group: {
 				members: users,
-				isOwner: ajaxify.data.group.isOwner
-			}
+				isOwner: ajaxify.data.group.isOwner,
+			},
 		}, callback);
 	}
 

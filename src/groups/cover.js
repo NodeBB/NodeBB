@@ -44,7 +44,7 @@ module.exports = function (Groups) {
 				uploadsController.uploadGroupCover(uid, {
 					name: 'groupCover',
 					path: tempPath,
-					type: type
+					type: type,
 				}, next);
 			},
 			function (uploadData, next) {
@@ -58,7 +58,7 @@ module.exports = function (Groups) {
 				uploadsController.uploadGroupCover(uid, {
 					name: 'groupCoverThumb',
 					path: tempPath,
-					type: type
+					type: type,
 				}, next);
 			},
 			function (uploadData, next) {
@@ -70,7 +70,7 @@ module.exports = function (Groups) {
 				} else {
 					next(null);
 				}
-			}
+			},
 		], function (err) {
 			fs.unlink(tempPath, function (unlinkErr) {
 				if (unlinkErr) {
@@ -91,7 +91,7 @@ module.exports = function (Groups) {
 			},
 			function (image, next) {
 				image.write(path, next);
-			}
+			},
 		], function (err) {
 			callback(err);
 		});
@@ -109,7 +109,7 @@ module.exports = function (Groups) {
 		var buffer = new Buffer(imageData.slice(imageData.indexOf('base64') + 7), 'base64');
 
 		fs.writeFile(tempPath, buffer, {
-			encoding: 'base64'
+			encoding: 'base64',
 		}, function (err) {
 			callback(err, tempPath);
 		});

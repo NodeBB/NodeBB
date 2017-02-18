@@ -35,7 +35,7 @@ define('admin/extend/widgets', ['jqueryui'], function (jqueryui) {
 				return $(e.target).parents('.widget-panel').clone();
 			},
 			distance: 10,
-			connectToSortable: ".widget-area"
+			connectToSortable: ".widget-area",
 		});
 
 		$('#widgets .available-containers .containers > [data-container-html]')
@@ -46,7 +46,7 @@ define('admin/extend/widgets', ['jqueryui'], function (jqueryui) {
 
 					return target.clone().addClass('block').width(target.width()).css('opacity', '0.5');
 				},
-				distance: 10
+				distance: 10,
 			})
 			.each(function () {
 				$(this).attr('data-container-html', $(this).attr('data-container-html').replace(/\\\{([\s\S]*?)\\\}/g, '{$1}'));
@@ -57,7 +57,7 @@ define('admin/extend/widgets', ['jqueryui'], function (jqueryui) {
 				createDatePicker(ui.item);
 				appendToggle(ui.item);
 			},
-			connectWith: "div"
+			connectWith: "div",
 		}).on('click', '.delete-widget', function () {
 			var panel = $(this).parents('.widget-panel');
 
@@ -106,14 +106,14 @@ define('admin/extend/widgets', ['jqueryui'], function (jqueryui) {
 
 					widgets.push({
 						widget: $(this).attr('data-widget'),
-						data: widgetData
+						data: widgetData,
 					});
 				});
 
 				socket.emit('admin.widgets.set', {
 					template: template,
 					location: location,
-					widgets: widgets
+					widgets: widgets,
 				}, function (err) {
 					total--;
 
@@ -127,7 +127,7 @@ define('admin/extend/widgets', ['jqueryui'], function (jqueryui) {
 							type: 'success',
 							title: '[[admin/extend/widgets:alert.updated]]',
 							message: '[[admin/extend/widgets:alert.update-success]]',
-							timeout: 2500
+							timeout: 2500,
 						});
 					}
 
@@ -150,7 +150,7 @@ define('admin/extend/widgets', ['jqueryui'], function (jqueryui) {
 				.addClass(btn.attr('data-class'));
 
 			container.attr('data-container-html', container.attr('data-container-html')
-				.replace(/class="[a-zA-Z0-9-\s]+"/, 'class="' + container[0].className.replace(' pointer ui-draggable', '') + '"')
+				.replace(/class="[a-zA-Z0-9-\s]+"/, 'class="' + container[0].className.replace(' pointer ui-draggable', '') + '"'),
 			);
 		});
 	}
@@ -160,7 +160,7 @@ define('admin/extend/widgets', ['jqueryui'], function (jqueryui) {
 		el.find('.date-selector').datepicker({
 			changeMonth: true,
 			changeYear: true,
-			yearRange: currentYear + ':' + (currentYear + 100)
+			yearRange: currentYear + ':' + (currentYear + 100),
 		});
 	}
 
@@ -175,7 +175,7 @@ define('admin/extend/widgets', ['jqueryui'], function (jqueryui) {
 						el.find('.panel-body .container-html').val(ui.draggable.attr('data-container-html'));
 						el.find('.panel-body').removeClass('hidden');
 					},
-					hoverClass: "panel-info"
+					hoverClass: "panel-info",
 				})
 				.children('.panel-heading')
 				.append('<div class="pull-right pointer"><span class="delete-widget"><i class="fa fa-times-circle"></i></span></div><div class="pull-left pointer"><span class="toggle-widget"><i class="fa fa-chevron-circle-down"></i></span>&nbsp;</div>')

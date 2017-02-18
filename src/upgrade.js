@@ -131,7 +131,7 @@ Upgrade.upgrade = function (callback) {
 							},
 							function (next) {
 								db.deleteObjectField('post:' + id, 'reputation', next);
-							}
+							},
 						], next);
 					}, next);
 				}, {}, next);
@@ -187,7 +187,7 @@ Upgrade.upgrade = function (callback) {
 							console.log('processing pid: ' + postData.pid + ' toPid: ' + postData.toPid);
 							async.parallel([
 								async.apply(db.sortedSetAdd, 'pid:' + postData.toPid + ':replies', postData.timestamp, postData.pid),
-								async.apply(db.incrObjectField, 'post:' + postData.toPid, 'replies')
+								async.apply(db.incrObjectField, 'post:' + postData.toPid, 'replies'),
 							], next);
 						}, next);
 					});
@@ -254,11 +254,11 @@ Upgrade.upgrade = function (callback) {
 										} else {
 											setImmediate(next);
 										}
-									}
+									},
 								], next);
 							}, next);
 						}, next);
-					}
+					},
 				], function (err) {
 					if (err) {
 						return next(err);
@@ -297,7 +297,7 @@ Upgrade.upgrade = function (callback) {
 							async.parallel([
 								async.apply(db.sortedSetAdd, 'cid:' + topicData.cid + ':tids:pinned', Date.now(), topicData.tid),
 								async.apply(db.sortedSetRemove, 'cid:' + topicData.cid + ':tids', topicData.tid),
-								async.apply(db.sortedSetRemove, 'cid:' + topicData.cid + ':tids:posts', topicData.tid)
+								async.apply(db.sortedSetRemove, 'cid:' + topicData.cid + ':tids:posts', topicData.tid),
 							], next);
 						}, next);
 					});

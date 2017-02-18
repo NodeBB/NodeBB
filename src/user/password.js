@@ -34,7 +34,7 @@ module.exports = function (User) {
 
 					Password.compare(password, hashedPassword, next);
 				});
-			}
+			},
 		], callback);
 	};
 

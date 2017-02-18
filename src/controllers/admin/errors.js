@@ -11,7 +11,7 @@ var errorsController = {};
 errorsController.get = function (req, res, next) {
 	async.parallel({
 		'not-found': async.apply(meta.errors.get, true),
-		analytics: async.apply(analytics.getErrorAnalytics)
+		analytics: async.apply(analytics.getErrorAnalytics),
 	}, function (err, data) {
 		if (err) {
 			return next(err);
@@ -24,7 +24,7 @@ errorsController.get = function (req, res, next) {
 errorsController.export = function (req, res, next) {
 	async.waterfall([
 		async.apply(meta.errors.get, false),
-		async.apply(json2csv)
+		async.apply(json2csv),
 	], function (err, csv) {
 		if (err) {
 			return next(err);

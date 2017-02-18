@@ -21,7 +21,7 @@ module.exports = function (User) {
 			},
 			isAdminOrMod: function (next) {
 				privileges.categories.isAdminOrMod(cid, uid, next);
-			}
+			},
 		}, function (err, results) {
 			if (err) {
 				return callback(err);
@@ -75,7 +75,7 @@ module.exports = function (User) {
 			},
 			function (next) {
 				User.updateLastOnlineTime(postData.uid, next);
-			}
+			},
 		], callback);
 	};
 

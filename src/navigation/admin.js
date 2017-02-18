@@ -38,14 +38,14 @@ admin.save = function (data, callback) {
 		},
 		function (next) {
 			db.sortedSetAdd('navigation:enabled', order, items, next);
-		}
+		},
 	], callback);
 };
 
 admin.getAdmin = function (callback) {
 	async.parallel({
 		enabled: admin.get,
-		available: getAvailable
+		available: getAvailable,
 	}, callback);
 };
 

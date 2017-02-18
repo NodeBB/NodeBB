@@ -173,13 +173,13 @@ define('navigator', ['forum/pagination', 'components'], function (pagination, co
 
 	navigator.scrollUp = function () {
 		$('body,html').animate({
-			scrollTop: $(window).scrollTop() - $(window).height()
+			scrollTop: $(window).scrollTop() - $(window).height(),
 		});
 	};
 
 	navigator.scrollDown = function () {
 		$('body,html').animate({
-			scrollTop: $(window).scrollTop() + $(window).height()
+			scrollTop: $(window).scrollTop() + $(window).height(),
 		});
 	};
 
@@ -266,7 +266,7 @@ define('navigator', ['forum/pagination', 'components'], function (pagination, co
 			}
 
 			$('html, body').animate({
-				scrollTop: scrollTop + 'px'
+				scrollTop: scrollTop + 'px',
 			}, duration, function () {
 				if (done) {
 					// Re-enable onScroll behaviour

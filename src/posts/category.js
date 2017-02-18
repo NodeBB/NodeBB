@@ -16,7 +16,7 @@ module.exports = function (Posts) {
 			},
 			function (tid, next) {
 				topics.getTopicField(tid, 'cid', next);
-			}
+			},
 		], callback);
 	};
 
@@ -49,7 +49,7 @@ module.exports = function (Posts) {
 					return map[post.tid];
 				});
 				next(null, cids);
-			}
+			},
 		], callback);
 	};
 

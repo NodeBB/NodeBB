@@ -27,9 +27,9 @@ var utils = require('../public/src/utils');
 					},
 					function (next) {
 						db.setObject('event:' + eid, data, next);
-					}
+					},
 				], next);
-			}
+			},
 		], function (err, result) {
 			callback(err);
 		});
@@ -66,7 +66,7 @@ var utils = require('../public/src/utils');
 					event.timestampISO = new Date(parseInt(event.timestamp, 10)).toUTCString();
 				});
 				next(null, eventsData);
-			}
+			},
 		], callback);
 	};
 
@@ -87,7 +87,7 @@ var utils = require('../public/src/utils');
 			},
 			userData: function (next) {
 				user.getUsersFields(uids, ['username', 'userslug', 'picture'], next);
-			}
+			},
 		}, function (err, results) {
 			if (err) {
 				return callback(err);
@@ -121,7 +121,7 @@ var utils = require('../public/src/utils');
 			},
 			function (next) {
 				db.sortedSetRemove('events:time', eids, next);
-			}
+			},
 		], callback);
 	};
 

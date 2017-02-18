@@ -133,7 +133,7 @@ define('admin/extend/rewards', ['translator'], function (translator) {
 				value: '',
 				claimable: 1,
 				rid: null,
-				id: null
+				id: null,
 			}],
 			conditions: conditions,
 			conditionals: conditionals,

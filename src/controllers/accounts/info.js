@@ -23,9 +23,9 @@ infoController.get = function (req, res, callback) {
 				history: async.apply(user.getModerationHistory, userData.uid),
 				sessions: async.apply(user.auth.getSessions, userData.uid, req.sessionID),
 				usernames: async.apply(user.getHistory, 'user:' + userData.uid + ':usernames'),
-				emails: async.apply(user.getHistory, 'user:' + userData.uid + ':emails')
+				emails: async.apply(user.getHistory, 'user:' + userData.uid + ':emails'),
 			}, next);
-		}
+		},
 	], function (err, data) {
 		if (err) {
 			return callback(err);

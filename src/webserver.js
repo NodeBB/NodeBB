@@ -33,7 +33,7 @@ var helpers = require('../public/src/modules/helpers');
 if (nconf.get('ssl')) {
 	server = require('https').createServer({
 		key: fs.readFileSync(nconf.get('ssl').key),
-		cert: fs.readFileSync(nconf.get('ssl').cert)
+		cert: fs.readFileSync(nconf.get('ssl').cert),
 	}, app);
 } else {
 	server = require('http').createServer(app);
@@ -69,7 +69,7 @@ module.exports.listen = function (callback) {
 		winston.info('NodeBB Ready');
 
 		require('./socket.io').server.emit('event:nodebb.ready', {
-			'cache-buster': meta.config['cache-buster']
+			'cache-buster': meta.config['cache-buster'],
 		});
 
 		plugins.fireHook('action:nodebb.ready');
@@ -91,7 +91,7 @@ function initializeNodeBB(callback) {
 		function (next) {
 			plugins.fireHook('static:app.preload', {
 				app: app,
-				middleware: middleware
+				middleware: middleware,
 			}, next);
 		},
 		function (next) {
@@ -105,9 +105,9 @@ function initializeNodeBB(callback) {
 			async.series([
 				async.apply(meta.sounds.init),
 				async.apply(languages.init),
-				async.apply(meta.blacklist.load)
+				async.apply(meta.blacklist.load),
 			], next);
-		}
+		},
 	], callback);
 }
 
@@ -146,7 +146,7 @@ function setupExpressApp(app) {
 		key: nconf.get('sessionKey'),
 		cookie: setupCookie(),
 		resave: true,
-		saveUninitialized: true
+		saveUninitialized: true,
 	}));
 
 	app.use(middleware.addHeaders);
@@ -171,7 +171,7 @@ function setupCookie() {
 	var ttl = ttlSeconds || ttlDays || 1209600000; // Default to 14 days
 
 	var cookie = {
-		maxAge: ttl
+		maxAge: ttl,
 	};
 
 	if (nconf.get('cookieDomain') || meta.config.cookieDomain) {

@@ -8,10 +8,10 @@ define('forum/chats', [
 	'mousetrap',
 	'forum/chats/recent',
 	'forum/chats/search',
-	'forum/chats/messages'
+	'forum/chats/messages',
 ], function (components, translator, mousetrap, recentChats, search, messages) {
 	var Chats = {
-		initialised: false
+		initialised: false,
 	};
 
 	var newMessage = false;
@@ -207,8 +207,8 @@ define('forum/chats', [
 					this.$el.css(this._applyPlacement(position));
 					this.$el.css('position', 'absolute');
 					return this;
-				}
-			}
+				},
+			},
 		};
 
 		$(window).trigger('chat:autocomplete:init', data);
@@ -220,7 +220,7 @@ define('forum/chats', [
 	Chats.createTagsInput = function (tagEl, data) {
 		tagEl.tagsinput({
 			confirmKeys: [13, 44],
-			trimValue: true
+			trimValue: true,
 		});
 
 		if (data.users && data.users.length) {
@@ -322,7 +322,7 @@ define('forum/chats', [
 					} else {
 						var recentEl = components.get('chat/recent');
 						templates.parse('partials/chats/recent_room', {
-							rooms: { "roomId": data.roomId, "lastUser": data.message.fromUser, "usernames": data.message.fromUser.username, "unread": true }
+							rooms: { "roomId": data.roomId, "lastUser": data.message.fromUser, "usernames": data.message.fromUser.username, "unread": true },
 						}, function (html) {
 							translator.translate(html, function (translated) {
 							    recentEl.prepend(translated);

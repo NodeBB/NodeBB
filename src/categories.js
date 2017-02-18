@@ -49,7 +49,7 @@ var privileges = require('./privileges');
 					},
 					isIgnored: function (next) {
 						Categories.isIgnored([data.cid], data.uid, next);
-					}
+					},
 				}, next);
 			},
 			function (results, next) {
@@ -62,7 +62,7 @@ var privileges = require('./privileges');
 			},
 			function (data, next) {
 				next(null, data.category);
-			}
+			},
 		], callback);
 	};
 
@@ -73,7 +73,7 @@ var privileges = require('./privileges');
 	Categories.getPageCount = function (cid, uid, callback) {
 		async.parallel({
 			topicCount: async.apply(Categories.getCategoryField, cid, 'topic_count'),
-			settings: async.apply(user.getSettings, uid)
+			settings: async.apply(user.getSettings, uid),
 		}, function (err, results) {
 			if (err) {
 				return callback(err);
@@ -107,7 +107,7 @@ var privileges = require('./privileges');
 			},
 			function (cids, next) {
 				Categories.getCategories(cids, uid, next);
-			}
+			},
 		], callback);
 	};
 
@@ -146,7 +146,7 @@ var privileges = require('./privileges');
 			},
 			hasRead: function (next) {
 				Categories.hasReadCategories(cids, uid, next);
-			}
+			},
 		}, function (err, results) {
 			if (err) {
 				return callback(err);
@@ -224,7 +224,7 @@ var privileges = require('./privileges');
 					return parentData[parentCids.indexOf(parseInt(category.parentCid, 10))];
 				});
 				next(null, parentData);
-			}
+			},
 		], callback);
 	};
 
@@ -266,7 +266,7 @@ var privileges = require('./privileges');
 				async.each(category.children, function (child, next) {
 					getChildrenRecursive(child, uid, next);
 				}, next);
-			}
+			},
 		], callback);
 	}
 
@@ -357,7 +357,7 @@ var privileges = require('./privileges');
 					return uid && !isIgnoring[index];
 				});
 				next(null, readingUids);
-			}
+			},
 		], callback);
 	};
 

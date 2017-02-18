@@ -40,7 +40,7 @@ define('iconSelect', function () {
 								el.attr('value', '');
 
 								onModified(el);
-							}
+							},
 						},
 						success: {
 							label: 'Select',
@@ -56,9 +56,9 @@ define('iconSelect', function () {
 								}
 
 								onModified(el);
-							}
-						}
-					}
+							},
+						},
+					},
 				});
 
 			picker.on('show.bs.modal', function () {

@@ -5,23 +5,23 @@ define('admin/general/dashboard', ['semver', 'Chart', 'translator'], function (s
 	var	Admin = {};
 	var	intervals = {
 		rooms: false,
-		graphs: false
+		graphs: false,
 	};
 	var	isMobile = false;
 	var	isPrerelease = /^v?\d+\.\d+\.\d+-.+$/;
 	var	graphData = {
 		rooms: {},
-		traffic: {}
+		traffic: {},
 	};
 	var	currentGraph = {
 		units: 'hours',
-		until: undefined
+		until: undefined,
 	};
 
 	var DEFAULTS = {
 		roomInterval: 10000,
 		graphInterval: 15000,
-		realtimeInterval: 1500
+		realtimeInterval: 1500,
 	};
 	
 	$(window).on('action:ajaxify.start', function (ev, data) {
@@ -123,7 +123,7 @@ define('admin/general/dashboard', ['semver', 'Chart', 'translator'], function (s
 		traffic: null,
 		registered: null,
 		presence: null,
-		topics: null
+		topics: null,
 	};
 
 	var topicColors = ["#bf616a","#5B90BF","#d08770","#ebcb8b","#a3be8c","#96b5b4","#8fa1b3","#b48ead","#ab7967","#46BFBD"];
@@ -196,7 +196,7 @@ define('admin/general/dashboard', ['semver', 'Chart', 'translator'], function (s
 						pointHoverBackgroundColor: "#fff",
 						pointBorderColor: "#fff",
 						pointHoverBorderColor: "rgba(220,220,220,1)",
-						data: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
+						data: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
 					},
 					{
 						label: translations[1],
@@ -206,9 +206,9 @@ define('admin/general/dashboard', ['semver', 'Chart', 'translator'], function (s
 						pointHoverBackgroundColor: "#fff",
 						pointBorderColor: "#fff",
 						pointHoverBorderColor: "rgba(151,187,205,1)",
-						data: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
-					}
-				]
+						data: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+					},
+				],
 			};
 
 			trafficCanvas.width = $(trafficCanvas).parent().width();
@@ -218,16 +218,16 @@ define('admin/general/dashboard', ['semver', 'Chart', 'translator'], function (s
 				options: {
 					responsive: true,
 					legend: {
-						display: false
+						display: false,
 					},
 					scales: {
 						yAxes: [{
 							ticks: {
-								beginAtZero: true
-							}
-						}]
-					}
-				}
+								beginAtZero: true,
+							},
+						}],
+					},
+				},
 			});
 			
 			graphs.registered = new Chart(registeredCtx, {
@@ -237,15 +237,15 @@ define('admin/general/dashboard', ['semver', 'Chart', 'translator'], function (s
 					datasets: [{
 						data: [1, 1],
 						backgroundColor: ["#F7464A", "#46BFBD"],
-						hoverBackgroundColor: ["#FF5A5E", "#5AD3D1"]
-					}]
+						hoverBackgroundColor: ["#FF5A5E", "#5AD3D1"],
+					}],
 				},
 				options: {
 					responsive: true,
 					legend: {
-						display: false
-					}
-				}
+						display: false,
+					},
+				},
 			});
 
 			graphs.presence = new Chart(presenceCtx, {
@@ -255,15 +255,15 @@ define('admin/general/dashboard', ['semver', 'Chart', 'translator'], function (s
 					datasets: [{
 						data: [1, 1, 1, 1, 1],
 						backgroundColor: ["#F7464A", "#46BFBD", "#FDB45C", "#949FB1", "#9FB194"],
-						hoverBackgroundColor: ["#FF5A5E", "#5AD3D1", "#FFC870", "#A8B3C5", "#A8B3C5"]
-					}]
+						hoverBackgroundColor: ["#FF5A5E", "#5AD3D1", "#FFC870", "#A8B3C5", "#A8B3C5"],
+					}],
 				},
 				options: {
 					responsive: true,
 					legend: {
-						display: false
-					}
-				}
+						display: false,
+					},
+				},
 			});
  			
 			graphs.topics = new Chart(topicsCtx, {
@@ -273,15 +273,15 @@ define('admin/general/dashboard', ['semver', 'Chart', 'translator'], function (s
 					datasets: [{
 						data: [],
 						backgroundColor: [],
-						hoverBackgroundColor: []
-					}]
+						hoverBackgroundColor: [],
+					}],
 				},
 				options: {
 					responsive: true,
 					legend: {
-						display: false
-					}
-				}
+						display: false,
+					},
+				},
 			});
 
 			updateTrafficGraph();
@@ -322,7 +322,7 @@ define('admin/general/dashboard', ['semver', 'Chart', 'translator'], function (s
 		socket.emit('admin.analytics.get', {
 			graph: 'traffic',
 			units: units || 'hours',
-			until: until
+			until: until,
 		}, function (err, data) {
 			if (err) {
 				return app.alertError(err.message);
@@ -376,7 +376,7 @@ define('admin/general/dashboard', ['semver', 'Chart', 'translator'], function (s
 		if (!Object.keys(topics).length) {
 			topics = {"0": {
 				title: "No users browsing",
-				value: 1
+				value: 1,
 			}};
 		}
 

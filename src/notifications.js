@@ -143,7 +143,7 @@ var utils = require('../public/src/utils');
 				},
 				function (next) {
 					db.setObject('notifications:' + data.nid, data, next);
-				}
+				},
 			], function (err) {
 				callback(err, data);
 			});
@@ -221,7 +221,7 @@ var utils = require('../public/src/utils');
 
 				plugins.fireHook('action:notification.pushed', {notification: notification, uids: uids});
 				next();
-			}
+			},
 		], callback);
 	}
 
@@ -254,7 +254,7 @@ var utils = require('../public/src/utils');
 
 		async.parallel([
 			async.apply(db.sortedSetRemove, 'notifications', nid),
-			async.apply(db.delete, 'notifications:' + nid)
+			async.apply(db.delete, 'notifications:' + nid),
 		], function (err) {
 			if (err) {
 				winston.error('Encountered error rescinding notification (' + nid + '): ' + err.message);
@@ -288,7 +288,7 @@ var utils = require('../public/src/utils');
 
 			async.parallel([
 				async.apply(db.sortedSetRemove, 'uid:' + uid + ':notifications:read', nid),
-				async.apply(db.sortedSetAdd, 'uid:' + uid + ':notifications:unread', notification.datetime, nid)
+				async.apply(db.sortedSetAdd, 'uid:' + uid + ':notifications:unread', notification.datetime, nid),
 			], callback);
 		});
 	};
@@ -325,7 +325,7 @@ var utils = require('../public/src/utils');
 				});
 
 				db.getObjectsFields(notificationKeys, ['nid', 'datetime'], next);
-			}
+			},
 		], function (err, notificationData) {
 			if (err) {
 				return callback(err);
@@ -351,7 +351,7 @@ var utils = require('../public/src/utils');
 				},
 				function (next) {
 					db.sortedSetAdd('uid:' + uid + ':notifications:read', datetimes, nids, next);
-				}
+				},
 			], function (err) {
 				callback(err);
 			});
@@ -399,7 +399,7 @@ var utils = require('../public/src/utils');
 				},
 				function (next) {
 					db.deleteAll(keys, next);
-				}
+				},
 			], function (err) {
 				if (err) {
 					return winston.error('Encountered error pruning notifications: ' + err.message);
@@ -415,7 +415,7 @@ var utils = require('../public/src/utils');
 				'notifications:user_started_following_you',
 				'notifications:user_posted_to',
 				'notifications:user_flagged_post_in',
-				'new_register'
+				'new_register',
 			],
 			isolated, differentiators, differentiator, modifyIndex, set;
 
@@ -501,7 +501,7 @@ var utils = require('../public/src/utils');
 		}, notifications);
 
 		plugins.fireHook('filter:notifications.merge', {
-			notifications: notifications
+			notifications: notifications,
 		}, function (err, data) {
 			callback(err, data.notifications);
 		});

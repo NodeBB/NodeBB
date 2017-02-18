@@ -37,7 +37,7 @@ search.search = function (data, callback) {
 			result.search_query = validator.escape(String(data.query || ''));
 			result.time = (process.elapsedTimeSince(start) / 1000).toFixed(2);
 			next(null, result);
-		}
+		},
 	], callback);
 };
 
@@ -49,7 +49,7 @@ function searchInContent(data, callback) {
 		},
 		searchUids: function (next) {
 			getSearchUids(data, next);
-		}
+		},
 	}, function (err, results) {
 		if (err) {
 			return callback(err);
@@ -69,7 +69,7 @@ function searchInContent(data, callback) {
 				} else {
 					next(null, []);
 				}
-			}
+			},
 		}, function (err, results) {
 			if (err) {
 				return callback(err);
@@ -107,7 +107,7 @@ function searchInContent(data, callback) {
 				},
 				function (posts, next) {
 					next(null, {posts: posts, matchCount: matchCount, pageCount: Math.max(1, Math.ceil(parseInt(matchCount, 10) / 10))});
-				}
+				},
 			], callback);
 		});
 	});
@@ -227,9 +227,9 @@ function getMatchedPosts(pids, data, callback) {
 									} else {
 										setImmediate(next);
 									}
-								}
+								},
 							}, next);
-						}
+						},
 					], function (err, results) {
 						if (err) {
 							return next(err);
@@ -249,7 +249,7 @@ function getMatchedPosts(pids, data, callback) {
 
 						next(null, topicsData);
 					});
-				}
+				},
 			}, next);
 		},
 		function (results, next) {
@@ -275,7 +275,7 @@ function getMatchedPosts(pids, data, callback) {
 			});
 
 			next(null, posts);
-		}
+		},
 	], callback);
 }
 
@@ -380,7 +380,7 @@ function getSearchCids(data, callback) {
 			},
 			function (cids, next) {
 				privileges.categories.filterCids('read', cids, data.uid, next);
-			}
+			},
 		], callback);
 		return;
 	}
@@ -399,7 +399,7 @@ function getSearchCids(data, callback) {
 			} else {
 				next(null, []);
 			}
-		}
+		},
 	}, function (err, results) {
 		if (err) {
 			return callback(err);
@@ -446,7 +446,7 @@ search.searchQuery = function (index, content, cids, uids, callback) {
 		index: index,
 		content: content,
 		cid: cids,
-		uid: uids
+		uid: uids,
 	}, callback);
 };
 

@@ -27,7 +27,7 @@ module.exports = function (SocketTopics) {
 					},
 					privileges: function (next) {
 						privileges.topics.get(data.tid, socket.uid, next);
-					}
+					},
 				}, next);
 			},
 			function (results, next) {
@@ -41,7 +41,7 @@ module.exports = function (SocketTopics) {
 				topic.pinned = parseInt(topic.pinned, 10) === 1;
 				topic.thread_tools = data.tools;
 				next(null, topic);
-			}
+			},
 		], callback);
 	};
 
@@ -95,7 +95,7 @@ module.exports = function (SocketTopics) {
 				function (data, next) {
 					socketHelpers.emitToTopicAndCategory(event, data);
 					logTopicAction(action, socket, tid, next);
-				}
+				},
 			], next);
 		}, callback);
 	};
@@ -115,9 +115,9 @@ module.exports = function (SocketTopics) {
 					uid: socket.uid,
 					ip: socket.ip,
 					tid: tid,
-					title: validator.escape(String(title))
+					title: validator.escape(String(title)),
 				}, next);
-			}
+			},
 		], callback);
 	}
 

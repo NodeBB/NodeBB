@@ -19,7 +19,7 @@ define('admin/modules/colorpicker', function () {
 				},
 				onShow: function (colpkr) {
 					$(colpkr).css('z-index', 1051);
-				}
+				},
 			});
 		});
 	};

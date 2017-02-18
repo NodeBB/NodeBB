@@ -33,8 +33,8 @@ describe('socket.io', function () {
 			async.apply(user.create, { username: 'regular', password: 'regularpwd', email: 'regular@test.com'}),
 			async.apply(categories.create, {
 				name: 'Test Category',
-				description: 'Test category created by testing script'
-			})
+				description: 'Test category created by testing script',
+			}),
 		], function (err, data) {
 			if (err) {
 				return done(err);
@@ -52,7 +52,7 @@ describe('socket.io', function () {
 		request.get({
 			url: nconf.get('url') + '/api/config',
 			jar: cookies,
-			json: true
+			json: true,
 		}, function (err, res, body) {
 			assert.ifError(err);
 
@@ -60,12 +60,12 @@ describe('socket.io', function () {
 				jar: cookies,
 				form: {
 					username: 'admin',
-					password: 'adminpwd'
+					password: 'adminpwd',
 				},
 				headers: {
-					'x-csrf-token': body.csrf_token
+					'x-csrf-token': body.csrf_token,
 				},
-				json: true
+				json: true,
 			}, function (err, res, body) {
 				assert.ifError(err);
 

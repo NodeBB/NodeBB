@@ -19,7 +19,7 @@ module.exports = function (Posts) {
 			function (next) {
 				async.parallel({
 					hasFlagged: async.apply(Posts.isFlaggedByUser, post.pid, uid),
-					exists: async.apply(Posts.exists, post.pid)
+					exists: async.apply(Posts.exists, post.pid),
 				}, next);
 			},
 			function (results, next) {
@@ -53,17 +53,17 @@ module.exports = function (Posts) {
 							async.parallel([
 								async.apply(db.sortedSetIncrBy, 'users:flags', 1, post.uid),
 								async.apply(db.incrObjectField, 'user:' + post.uid, 'flags'),
-								async.apply(db.sortedSetAdd, 'uid:' + post.uid + ':flag:pids', now, post.pid)
+								async.apply(db.sortedSetAdd, 'uid:' + post.uid + ':flag:pids', now, post.pid),
 							], next);
 						} else {
 							next();
 						}
-					}
+					},
 				], next);
 			},
 			function (data, next) {
 				openNewFlag(post.pid, uid, next);
-			}
+			},
 		], function (err) {
 			if (err) {
 				return callback(err);
@@ -80,7 +80,7 @@ module.exports = function (Posts) {
 			}
 			if (count === 1) {	// Only update state on new flag
 				Posts.updateFlagData(uid, pid, {
-					state: 'open'
+					state: 'open',
 				}, callback);
 			} else {
 				callback();
@@ -107,7 +107,7 @@ module.exports = function (Posts) {
 							if (parseInt(postData.flags, 10) > 0) {
 								async.parallel([
 									async.apply(db.sortedSetIncrBy, 'users:flags', -postData.flags, postData.uid),
-									async.apply(db.incrObjectFieldBy, 'user:' + postData.uid, 'flags', -postData.flags)
+									async.apply(db.incrObjectFieldBy, 'user:' + postData.uid, 'flags', -postData.flags),
 								], next);
 							} else {
 								next();
@@ -120,7 +120,7 @@ module.exports = function (Posts) {
 						db.sortedSetsRemove([
 							'posts:flagged',
 							'posts:flags:count',
-							'uid:' + postData.uid + ':flag:pids'
+							'uid:' + postData.uid + ':flag:pids',
 						], pid, next);
 					},
 					function (next) {
@@ -135,22 +135,22 @@ module.exports = function (Posts) {
 										var nid = 'post_flag:' + pid + ':uid:' + uid;
 										async.parallel([
 											async.apply(db.delete, 'notifications:' + nid),
-											async.apply(db.sortedSetRemove, 'notifications', 'post_flag:' + pid + ':uid:' + uid)
+											async.apply(db.sortedSetRemove, 'notifications', 'post_flag:' + pid + ':uid:' + uid),
 										], next);
 									}, next);
 								});
 							},
-							async.apply(db.delete, 'pid:' + pid + ':flag:uids')
+							async.apply(db.delete, 'pid:' + pid + ':flag:uids'),
 						], next);
 					},
 					async.apply(db.deleteObjectField, 'post:' + pid, 'flags'),
 					async.apply(db.delete, 'pid:' + pid + ':flag:uid:reason'),
-					async.apply(db.deleteObjectFields, 'post:' + pid, ['flag:state', 'flag:assignee', 'flag:notes', 'flag:history'])
+					async.apply(db.deleteObjectFields, 'post:' + pid, ['flag:state', 'flag:assignee', 'flag:notes', 'flag:history']),
 				], next);
 			},
 			function (results, next) {
 				db.sortedSetsRemoveRangeByScore(['users:flags'], '-inf', 0, next);
-			}
+			},
 		], callback);
 	};
 
@@ -195,7 +195,7 @@ module.exports = function (Posts) {
 				var count = posts.length;
 				var end = stop - start + 1;
 				next(null, {posts: posts.slice(0, stop === -1 ? undefined : end), count: count});
-			}
+			},
 		], callback);
 	};
 
@@ -210,7 +210,7 @@ module.exports = function (Posts) {
 					},
 					posts: function (next) {
 						Posts.getPostSummaryByPids(pids, uid, {stripTags: false, extraFields: ['flags', 'flag:assignee', 'flag:state', 'flag:notes', 'flag:history']}, next);
-					}
+					},
 				}, next);
 			},
 			function (results, next) {
@@ -280,7 +280,7 @@ module.exports = function (Posts) {
 						setImmediate(next.bind(null, null, postObj));
 					}
 				}, next);
-			}
+			},
 		], callback);
 	}
 
@@ -331,7 +331,7 @@ module.exports = function (Posts) {
 									uid: uid,
 									type: property,
 									value: flagObj[property],
-									timestamp: Date.now()
+									timestamp: Date.now(),
 								});
 								break;
 
@@ -339,7 +339,7 @@ module.exports = function (Posts) {
 								history.unshift({
 									uid: uid,
 									type: property,
-									timestamp: Date.now()
+									timestamp: Date.now(),
 								});
 						}
 					});
@@ -400,7 +400,7 @@ module.exports = function (Posts) {
 						} else {
 							setImmediate(next);
 						}
-					}
+					},
 				], function (err) {
 					next(err, event);
 				});

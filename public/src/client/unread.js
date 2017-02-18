@@ -94,7 +94,7 @@ define('forum/unread', ['forum/recent', 'topicSelect', 'forum/infinitescroll', '
 			infinitescroll.loadMore('topics.loadMoreUnreadTopics', {
 				after: $('[component="category"]').attr('data-nextstart'),
 				cid: cid,
-				filter: ajaxify.data.selectedFilter.filter
+				filter: ajaxify.data.selectedFilter.filter,
 			}, function (data, done) {
 				if (data.topics && data.topics.length) {
 					recent.onTopicsLoaded('unread', data.topics, true, done);

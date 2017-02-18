@@ -5,7 +5,7 @@ define('forum/account/header', [
 	'coverPhoto',
 	'pictureCropper',
 	'components',
-	'translator'
+	'translator',
 ], function (coverPhoto, pictureCropper, components, translator) {
 	var AccountHeader = {};
 	var isAdminOrSelfOrGlobalMod;
@@ -76,7 +76,7 @@ define('forum/account/header', [
 				socket.emit('user.updateCover', {
 					uid: ajaxify.data.uid,
 					imageData: imageData,
-					position: position
+					position: position,
 				}, callback);
 			},
 			function () {
@@ -86,18 +86,18 @@ define('forum/account/header', [
 					aspectRatio: '16 / 9',
 					paramName: 'uid',
 					paramValue: ajaxify.data.theirid,
-					accept: '.png,.jpg,.bmp'
+					accept: '.png,.jpg,.bmp',
 				}, function (imageUrlOnServer) {
 					components.get('account/cover').css('background-image', 'url(' + imageUrlOnServer + '?' + config['cache-buster'] + ')');
 				});
 			},
-			removeCover
+			removeCover,
 		);
 	}
 
 	function toggleFollow(type) {
 		socket.emit('user.' + type, {
-			uid: ajaxify.data.uid
+			uid: ajaxify.data.uid,
 		}, function (err) {
 			if (err) {
 				return app.alertError(err.message);
@@ -120,7 +120,7 @@ define('forum/account/header', [
 				buttons: {
 					close: {
 						label: '[[global:close]]',
-						className: 'btn-link'
+						className: 'btn-link',
 					},
 					submit: {
 						label: '[[user:ban_account]]',
@@ -137,9 +137,9 @@ define('forum/account/header', [
 								}
 								ajaxify.refresh();
 							});
-						}
-					}
-				}
+						},
+					},
+				},
 			});
 		});
 	}
@@ -179,7 +179,7 @@ define('forum/account/header', [
 				}
 
 				socket.emit('user.removeCover', {
-					uid: ajaxify.data.uid
+					uid: ajaxify.data.uid,
 				}, function (err) {
 					if (!err) {
 						ajaxify.refresh();

@@ -82,7 +82,7 @@ authenticationController.register = function (req, res, next) {
 			} else {
 				registerAndLoginUser(req, res, userData, next);
 			}
-		}
+		},
 	], function (err, data) {
 		if (err) {
 			return res.status(400).send(err.message);
@@ -102,7 +102,7 @@ function registerAndLoginUser(req, res, userData, callback) {
 		function (next) {
 			plugins.fireHook('filter:register.interstitial', {
 				userData: userData,
-				interstitials: []
+				interstitials: [],
 			}, function (err, data) {
 				if (err) {
 					return next(err);
@@ -134,7 +134,7 @@ function registerAndLoginUser(req, res, userData, callback) {
 		function (next) {
 			user.deleteInvitationKey(userData.email);
 			plugins.fireHook('filter:register.complete', {uid: uid, referrer: req.body.referrer || nconf.get('relative_path') + '/'}, next);
-		}
+		},
 	], callback);
 }
 
@@ -146,7 +146,7 @@ function addToApprovalQueue(req, userData, callback) {
 		},
 		function (next) {
 			next(null, {message: '[[register:registration-added-to-queue]]'});
-		}
+		},
 	], callback);
 }
 
@@ -154,7 +154,7 @@ authenticationController.registerComplete = function (req, res, next) {
 	// For the interstitials that respond, execute the callback with the form body
 	plugins.fireHook('filter:register.interstitial', {
 		userData: req.session.registration,
-		interstitials: []
+		interstitials: [],
 	}, function (err, data) {
 		if (err) {
 			return next(err);
@@ -310,7 +310,7 @@ authenticationController.onSuccessfulLogin = function (req, uid, callback) {
 		datetime: Date.now(),
 		platform: req.useragent.platform,
 		browser: req.useragent.browser,
-		version: req.useragent.version
+		version: req.useragent.version,
 	});
 
 	// Associate login session with user
@@ -323,7 +323,7 @@ authenticationController.onSuccessfulLogin = function (req, uid, callback) {
 		},
 		function (next) {
 			user.updateLastOnlineTime(uid, next);
-		}
+		},
 	], function (err) {
 		if (err) {
 			return callback(err);
@@ -369,7 +369,7 @@ authenticationController.localLogin = function (req, username, password, next) {
 				},
 				banned: function (next) {
 					user.isBanned(uid, next);
-				}
+				},
 			}, next);
 		},
 		function (result, next) {
@@ -408,7 +408,7 @@ authenticationController.localLogin = function (req, username, password, next) {
 			}
 			user.auth.clearLoginAttempts(uid);
 			next(null, userData, '[[success:authentication-successful]]');
-		}
+		},
 	], next);
 };
 

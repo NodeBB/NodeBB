@@ -95,7 +95,7 @@ module.exports = function (Posts) {
 			},
 			downvotes: function (next) {
 				db.isMemberOfSets(downvoteSets, uid, next);
-			}
+			},
 		}, callback);
 	};
 
@@ -144,7 +144,7 @@ module.exports = function (Posts) {
 			},
 			reputation: function (next) {
 				user.getUserField(uid, 'reputation', next);
-			}
+			},
 		}, function (err, results) {
 			if (err) {
 				return callback(err);
@@ -175,7 +175,7 @@ module.exports = function (Posts) {
 				pid: pid,
 				uid: uid,
 				owner: results.owner,
-				current: current
+				current: current,
 			});
 
 			if (!voteStatus || (!voteStatus.upvoted && !voteStatus.downvoted)) {
@@ -224,11 +224,11 @@ module.exports = function (Posts) {
 				adjustPostVotes(postData, uid, type, unvote, function (err) {
 					callback(err, {
 						user: {
-							reputation: newreputation
+							reputation: newreputation,
 						},
 						post: postData,
 						upvote: type === 'upvote' && !unvote,
-						downvote: type === 'downvote' && !unvote
+						downvote: type === 'downvote' && !unvote,
 					});
 				});
 			});
@@ -248,7 +248,7 @@ module.exports = function (Posts) {
 			},
 			function (next) {
 				db.setRemove('pid:' + postData.pid + ':' + notType, uid, next);
-			}
+			},
 		], function (err) {
 			if (err) {
 				return callback(err);
@@ -260,7 +260,7 @@ module.exports = function (Posts) {
 				},
 				downvotes: function (next) {
 					db.setCount('pid:' + postData.pid + ':downvote', next);
-				}
+				},
 			}, function (err, results) {
 				if (err) {
 					return callback(err);

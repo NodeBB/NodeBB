@@ -51,7 +51,7 @@ function preparePaths(baseTemplatesPaths, callback) {
 		},
 		function (next) {
 			plugins.getTemplates(next);
-		}
+		},
 	], function (err, pluginTemplates) {
 		if (err) {
 			return callback(err);
@@ -69,14 +69,14 @@ function preparePaths(baseTemplatesPaths, callback) {
 						paths = paths.map(function (tpl) {
 							return {
 								base: baseTemplatePath,
-								path: tpl.replace(baseTemplatePath, '')
+								path: tpl.replace(baseTemplatePath, ''),
 							};
 						});
 
 						next(err, paths);
 					});
 				}, next);
-			}
+			},
 		}, function (err, data) {
 			var baseThemes = data.baseThemes,
 				coreTpls = data.coreTpls,

@@ -8,7 +8,7 @@ define('admin/appearance/skins', ['translator'], function (translator) {
 		// Populate skins from Bootswatch API
 		$.ajax({
 			method: 'get',
-			url: 'https://bootswatch.com/api/3.json'
+			url: 'https://bootswatch.com/api/3.json',
 		}).done(Skins.render);
 
 		$('#skins').on('click', function (e) {
@@ -30,7 +30,7 @@ define('admin/appearance/skins', ['translator'], function (translator) {
 				socket.emit('admin.themes.set', {
 					type: themeType,
 					id: themeId,
-					src: cssSrc
+					src: cssSrc,
 				}, function (err) {
 					if (err) {
 						return app.alertError(err.message);
@@ -42,7 +42,7 @@ define('admin/appearance/skins', ['translator'], function (translator) {
 						type: 'info',
 						title: '[[admin/appearance/skins:skin-updated]]',
 						message: themeId ? ('[[admin/appearance/skins:applied-success, ' + themeId + ']]') : '[[admin/appearance/skins:revert-success]]',
-						timeout: 5000
+						timeout: 5000,
 					});
 				});
 			}
@@ -62,10 +62,10 @@ define('admin/appearance/skins', ['translator'], function (translator) {
 					screenshot_url: theme.thumbnail,
 					url: theme.preview,
 					css: theme.cssCdn,
-					skin: true
+					skin: true,
 				};
 			}),
-			showRevert: true
+			showRevert: true,
 		}, function (html) {
 			translator.translate(html, function (html) {
 				themeContainer.html(html);

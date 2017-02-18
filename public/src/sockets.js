@@ -12,7 +12,7 @@ app.isConnected = false;
 		reconnectionAttempts: config.maxReconnectionAttempts,
 		reconnectionDelay: config.reconnectionDelay,
 		transports: config.socketioTransports,
-		path: config.relative_path + '/socket.io'
+		path: config.relative_path + '/socket.io',
 	};
 
 	socket = io(config.websocketAddress, ioParams);
@@ -112,7 +112,7 @@ app.isConnected = false;
 		}
 
 		reconnectEl.addClass('active').removeClass('hide').tooltip({
-			placement: 'bottom'
+			placement: 'bottom',
 		});
 	}
 

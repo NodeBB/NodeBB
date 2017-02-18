@@ -8,7 +8,7 @@ define('settings/number', function () {
 				return value ? +value : void 0;
 			}
 			return value ? +value : 0;
-		}
+		},
 	};
 
 });

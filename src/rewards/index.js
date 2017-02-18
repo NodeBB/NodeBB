@@ -44,7 +44,7 @@ rewards.checkConditionAndRewardUser = function (uid, condition, method, callback
 
 				giveRewards(uid, eligible, next);
 			});
-		}
+		},
 	], callback);
 };
 

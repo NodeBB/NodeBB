@@ -9,7 +9,7 @@ module.exports = function (Posts) {
 	var terms = {
 		day: 86400000,
 		week: 604800000,
-		month: 2592000000
+		month: 2592000000,
 	};
 
 	Posts.getRecentPosts = function (uid, start, stop, term, callback) {
@@ -29,7 +29,7 @@ module.exports = function (Posts) {
 			},
 			function (pids, next) {
 				Posts.getPostSummaryByPids(pids, uid, {stripTags: true}, next);
-			}
+			},
 		], callback);
 	};
 
@@ -48,7 +48,7 @@ module.exports = function (Posts) {
 					return uid && array.indexOf(uid) === index;
 				});
 				next(null, uids);
-			}
+			},
 		], callback);
  	};
 };

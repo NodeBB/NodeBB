@@ -42,7 +42,7 @@ widgets.render = function (uid, area, req, res, callback) {
 					area: area,
 					data: widget.data,
 					req: req,
-					res: res
+					res: res,
 				}, function (err, html) {
 					if (err || html === null) {
 						return next(err);
@@ -56,7 +56,7 @@ widgets.render = function (uid, area, req, res, callback) {
 						translator.translate(widget.data.title, function (title) {
 							html = templates.parse(widget.data.container, {
 								title: title,
-								body: html
+								body: html,
 							});
 
 							next(null, {html: html});
@@ -133,7 +133,7 @@ widgets.reset = function (callback) {
 	var defaultAreas = [
 		{ name: 'Draft Zone', template: 'global', location: 'header' },
 		{ name: 'Draft Zone', template: 'global', location: 'footer' },
-		{ name: 'Draft Zone', template: 'global', location: 'sidebar' }
+		{ name: 'Draft Zone', template: 'global', location: 'sidebar' },
 	];
 
 	async.parallel({
@@ -142,7 +142,7 @@ widgets.reset = function (callback) {
 		},
 		drafts: function (next) {
 			widgets.getArea('global', 'drafts', next);
-		}
+		},
 	}, function (err, results) {
 		if (err) {
 			return callback(err);
@@ -167,7 +167,7 @@ widgets.reset = function (callback) {
 			widgets.setArea({
 				template: 'global',
 				location: 'drafts',
-				widgets: drafts
+				widgets: drafts,
 			}, callback);
 		});
 	});

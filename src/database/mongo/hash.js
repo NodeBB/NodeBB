@@ -58,7 +58,7 @@ module.exports = function (db, module) {
 		}
 		field = helpers.fieldToString(field);
 		var _fields = {
-			_id: 0
+			_id: 0,
 		};
 		_fields[field] = 1;
 		db.collection('objects').findOne({_key: key}, {fields: _fields}, function (err, item) {
@@ -75,7 +75,7 @@ module.exports = function (db, module) {
 			return callback();
 		}
 		var _fields = {
-			_id: 0
+			_id: 0,
 		};
 
 		for(var i = 0; i < fields.length; ++i) {
@@ -101,7 +101,7 @@ module.exports = function (db, module) {
 		}
 		var _fields = {
 			_id: 0,
-			_key: 1
+			_key: 1,
 		};
 
 		for(var i = 0; i < fields.length; ++i) {

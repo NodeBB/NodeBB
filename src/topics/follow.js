@@ -40,7 +40,7 @@ module.exports = function (Topics) {
 			},
 			function (next) {
 				next(null, !isFollowing);
-			}
+			},
 		], callback);
 	};
 
@@ -77,7 +77,7 @@ module.exports = function (Topics) {
 			function (next) {
 				plugins.fireHook(hook, {uid: uid, tid: tid});
 				next();
-			}
+			},
 		], callback);
 	}
 
@@ -104,7 +104,7 @@ module.exports = function (Topics) {
 			},
 			function (next) {
 				db.sortedSetAdd(set2, Date.now(), tid, next);
-			}
+			},
 		], callback);
 	}
 
@@ -115,7 +115,7 @@ module.exports = function (Topics) {
 			},
 			function (next) {
 				db.sortedSetRemove(set2, tid, next);
-			}
+			},
 		], callback);
 	}
 
@@ -158,7 +158,7 @@ module.exports = function (Topics) {
 					return uid && !isIgnoring[index];
 				});
 				next(null, readingUids);
-			}
+			},
 		], callback);
 	};
 
@@ -233,7 +233,7 @@ module.exports = function (Topics) {
 					tid: postData.topic.tid,
 					from: exceptUid,
 					mergeId: 'notifications:user_posted_to|' + postData.topic.tid,
-					topicTitle: title
+					topicTitle: title,
 				}, next);
 			},
 			function (notification, next) {
@@ -248,7 +248,7 @@ module.exports = function (Topics) {
 				async.eachLimit(followers, 3, function (toUid, next) {
 					async.parallel({
 						userData: async.apply(user.getUserFields, toUid, ['username', 'userslug']),
-						userSettings: async.apply(user.getSettings, toUid)
+						userSettings: async.apply(user.getSettings, toUid),
 					}, function (err, data) {
 						if (err) {
 							return next(err);
@@ -266,7 +266,7 @@ module.exports = function (Topics) {
 								url: nconf.get('url') + '/topic/' + postData.topic.tid,
 								topicSlug: postData.topic.slug,
 								postCount: postData.topic.postcount,
-								base_url: nconf.get('url')
+								base_url: nconf.get('url'),
 							}, next);
 						} else {
 							winston.debug('[topics.notifyFollowers] uid ' + toUid + ' does not have post notifications enabled, skipping.');
@@ -275,7 +275,7 @@ module.exports = function (Topics) {
 					});
 				});
 				next();
-			}
+			},
 		], callback);
 	};
 };

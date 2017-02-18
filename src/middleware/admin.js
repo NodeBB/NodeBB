@@ -8,7 +8,7 @@ var plugins = require('../plugins');
 
 var controllers = {
 	api: require('../controllers/api'),
-	helpers: require('../controllers/helpers')
+	helpers: require('../controllers/helpers'),
 };
 
 module.exports = function (middleware) {
@@ -45,7 +45,7 @@ module.exports = function (middleware) {
 	middleware.admin.renderHeader = function (req, res, data, next) {
 		var custom_header = {
 			'plugins': [],
-			'authentication': []
+			'authentication': [],
 		};
 
 		user.getUserFields(req.uid, ['username', 'userslug', 'email', 'picture', 'email:confirmed'], function (err, userData) {
@@ -78,7 +78,7 @@ module.exports = function (middleware) {
 				},
 				configs: function (next) {
 					meta.configs.list(next);
-				}
+				},
 			}, function (err, results) {
 				if (err) {
 					return next(err);
@@ -104,7 +104,7 @@ module.exports = function (middleware) {
 					'cache-buster': meta.config['cache-buster'] || '',
 					env: process.env.NODE_ENV ? true : false,
 					title: (acpPath || 'Dashboard') + ' | NodeBB Admin Control Panel',
-					bodyClass: data.bodyClass
+					bodyClass: data.bodyClass,
 				};
 
 				templateValues.template = {name: res.locals.template};

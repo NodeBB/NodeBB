@@ -57,7 +57,7 @@ exports.processSortedSet = function (setKey, process, options, callback) {
 				});
 			});
 		},
-		callback
+		callback,
 	);
 };
 
@@ -105,6 +105,6 @@ exports.processArray = function (array, process, options, callback) {
 		},
 		function (err) {
 			callback(err);
-		}
+		},
 	);
 };

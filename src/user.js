@@ -66,7 +66,7 @@ var meta = require('./meta');
 				topics.pushUnreadCount(uid);
 				plugins.fireHook('action:user.online', {uid: uid, timestamp: now});
 				next();
-			}
+			},
 		], callback);
 	};
 
@@ -87,7 +87,7 @@ var meta = require('./meta');
 			},
 			function (uids, next) {
 				User.getUsers(uids, uid, next);
-			}
+			},
 		], callback);
 	};
 
@@ -107,7 +107,7 @@ var meta = require('./meta');
 					},
 					isAdmin: function (next) {
 						User.isAdministrator(uids, next);
-					}
+					},
 				}, next);
 			},
 			function (results, next) {
@@ -125,7 +125,7 @@ var meta = require('./meta');
 			},
 			function (data, next) {
 				next(null, data.users);
-			}
+			},
 		], callback);
 	};
 
@@ -214,7 +214,7 @@ var meta = require('./meta');
 			},
 			function (uid, next) {
 				User.getUserField(uid, 'username', next);
-			}
+			},
 		], callback);
 	};
 
@@ -259,7 +259,7 @@ var meta = require('./meta');
 	User.isAdminOrGlobalMod = function (uid, callback) {
 		async.parallel({
 			isAdmin: async.apply(User.isAdministrator, uid),
-			isGlobalMod: async.apply(User.isGlobalModerator, uid)
+			isGlobalMod: async.apply(User.isGlobalModerator, uid),
 		}, function (err, results) {
 			callback(err, results ? (results.isAdmin || results.isGlobalMod) : false);
 		});
@@ -292,7 +292,7 @@ var meta = require('./meta');
 	User.getAdminsandGlobalMods = function (callback) {
 		async.parallel({
 			admins: async.apply(groups.getMembers, 'administrators', 0, -1),
-			mods: async.apply(groups.getMembers, 'Global Moderators', 0, -1)
+			mods: async.apply(groups.getMembers, 'Global Moderators', 0, -1),
 		}, function (err, results) {
 			if (err) {
 				return callback(err);
@@ -308,7 +308,7 @@ var meta = require('./meta');
 		async.parallel([
 			async.apply(groups.getMembers, 'administrators', 0, -1),
 			async.apply(groups.getMembers, 'Global Moderators', 0, -1),
-			async.apply(User.getModeratorUids)
+			async.apply(User.getModeratorUids),
 		], function (err, results) {
 			if (err) {
 				return callback(err);
@@ -333,7 +333,7 @@ var meta = require('./meta');
 
 					next(null, _.union.apply(_, memberSets));
 				});
-			}
+			},
 		], callback);
 	};
 
@@ -352,7 +352,7 @@ var meta = require('./meta');
 					return cid && isMods[index];
 				});
 				next(null, cids);
-			}
+			},
 		], callback);
 	};
 
@@ -364,7 +364,7 @@ var meta = require('./meta');
 					data.interstitials.push({
 						template: 'partials/acceptTos',
 						data: {
-							termsOfUse: meta.config.termsOfUse
+							termsOfUse: meta.config.termsOfUse,
 						},
 						callback: function (userData, formData, next) {
 							if (formData['agree-terms'] === 'on') {
@@ -372,12 +372,12 @@ var meta = require('./meta');
 							}
 
 							next(userData.acceptTos ? null : new Error('[[register:terms_of_use_error]]'));
-						}
+						},
 					});
 				}
 
 				callback(null, data);
-			}
+			},
 		});
 
 		callback();

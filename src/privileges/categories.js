@@ -29,14 +29,14 @@ module.exports = function (privileges) {
 			{name: 'Upload Images'},
 			{name: 'Upload Files'},
 			{name: 'Purge'},
-			{name: 'Moderate'}
+			{name: 'Moderate'},
 		];
 
 		async.parallel({
 			labels: function (next) {
 				async.parallel({
 					users: async.apply(plugins.fireHook, 'filter:privileges.list_human', privilegeLabels),
-					groups: async.apply(plugins.fireHook, 'filter:privileges.groups.list_human', privilegeLabels)
+					groups: async.apply(plugins.fireHook, 'filter:privileges.groups.list_human', privilegeLabels),
 				}, next);
 			},
 			users: function (next) {
@@ -73,7 +73,7 @@ module.exports = function (privileges) {
 
 							next(null, memberData);
 						});
-					}
+					},
 				], next);
 			},
 			groups: function (next) {
@@ -141,9 +141,9 @@ module.exports = function (privileges) {
 								next(null, member);
 							});
 						}, next);
-					}
+					},
 				], next);
-			}
+			},
 		}, function (err, payload) {
 			if (err) {
 				return callback(err);
@@ -167,7 +167,7 @@ module.exports = function (privileges) {
 			},
 			isModerator: function (next) {
 				user.isModerator(uid, cid, next);
-			}
+			},
 		}, function (err, results) {
 			if (err) {
 				return callback(err);
@@ -183,7 +183,7 @@ module.exports = function (privileges) {
 				uid: uid,
 				editable: isAdminOrMod,
 				view_deleted: isAdminOrMod,
-				isAdminOrMod: isAdminOrMod
+				isAdminOrMod: isAdminOrMod,
 			}, callback);
 		});
 	};
@@ -198,7 +198,7 @@ module.exports = function (privileges) {
 			},
 			function (next) {
 				user.isAdministrator(uid, next);
-			}
+			},
 		], callback);
 	};
 
@@ -236,7 +236,7 @@ module.exports = function (privileges) {
 				},
 				function (next) {
 					user.isAdministrator(uid, next);
-				}
+				},
 			], callback);
 		});
 	};
@@ -277,7 +277,7 @@ module.exports = function (privileges) {
 			},
 			isAdmin: function (next) {
 				user.isAdministrator(uid, next);
-			}
+			},
 		}, callback);
 	};
 
@@ -299,7 +299,7 @@ module.exports = function (privileges) {
 			},
 			isAdmin: function (next) {
 				user.isAdministrator(uids, next);
-			}
+			},
 		}, function (err, results) {
 			if (err) {
 				return callback(err);
@@ -336,7 +336,7 @@ module.exports = function (privileges) {
 			},
 			moderatorOfTarget: function (next) {
 				user.isModerator(uid, targetCid, next);
-			}
+			},
 		}, function (err, results) {
 			if (err) {
 				return callback(err);
@@ -372,7 +372,7 @@ module.exports = function (privileges) {
 			},
 			mods: function (next) {
 				user.isModerator(uid, cid, next);
-			}
+			},
 		}, callback);
 	};
 
@@ -399,7 +399,7 @@ module.exports = function (privileges) {
 			},
 			'groups:topics:read': function (next) {
 				groups.isMember(groupName, 'cid:' + cid + ':privileges:groups:topics:read', next);
-			}
+			},
 		}, callback);
 	};
 

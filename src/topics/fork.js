@@ -46,7 +46,7 @@ module.exports = function (Topics) {
 					},
 					isAdminOrMod: function (next) {
 						privileges.categories.isAdminOrMod(cid, uid, next);
-					}
+					},
 				}, next);
 			},
 			function (results, next) {
@@ -76,7 +76,7 @@ module.exports = function (Topics) {
 			},
 			function (next) {
 				Topics.getTopicData(tid, next);
-			}
+			},
 		], callback);
 	};
 
@@ -122,15 +122,15 @@ module.exports = function (Topics) {
 					},
 					function (next) {
 						Topics.addPostToTopic(tid, postData, next);
-					}
+					},
 				], next);
 			},
 			function (results, next) {
 				async.parallel([
 					async.apply(updateRecentTopic, tid),
-					async.apply(updateRecentTopic, postData.tid)
+					async.apply(updateRecentTopic, postData.tid),
 				], next);
-			}
+			},
 		], function (err) {
 			if (err) {
 				return callback(err);
@@ -153,7 +153,7 @@ module.exports = function (Topics) {
 			}
 			async.parallel([
 				async.apply(db.incrObjectFieldBy, 'category:' + topicData[0].cid, 'post_count', -1),
-				async.apply(db.incrObjectFieldBy, 'category:' + topicData[1].cid, 'post_count', 1)
+				async.apply(db.incrObjectFieldBy, 'category:' + topicData[1].cid, 'post_count', 1),
 			], callback);
 		});
 	}
@@ -171,7 +171,7 @@ module.exports = function (Topics) {
 			},
 			function (timestamp, next) {
 				Topics.updateTimestamp(tid, timestamp, next);
-			}
+			},
 		], callback);
 	}
 

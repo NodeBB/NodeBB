@@ -27,7 +27,7 @@ define('admin/manage/ip-blacklist', ['translator'], function (translator) {
 
 		$('[data-action="test"]').on('click', function () {
 			socket.emit('blacklist.validate', {
-				rules: blacklist.val()
+				rules: blacklist.val(),
 			}, function (err, data) {
 				if (err) {
 					return app.alertError(err.message);

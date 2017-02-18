@@ -67,7 +67,7 @@ module.exports = function (User) {
 						}
 						async.series([
 							async.apply(image.normalise, picture.path, extension),
-							async.apply(fs.rename, picture.path + '.png', picture.path)
+							async.apply(fs.rename, picture.path + '.png', picture.path),
 						], function (err) {
 							next(err);
 						});
@@ -83,7 +83,7 @@ module.exports = function (User) {
 			},
 			function (next) {
 				next(null, uploadedImage);
-			}
+			},
 		], callback);
 	};
 
@@ -153,20 +153,20 @@ module.exports = function (User) {
 				md5sum = md5sum.digest('hex');
 
 				data.file = {
-					path: path.join(os.tmpdir(), md5sum)
+					path: path.join(os.tmpdir(), md5sum),
 				};
 
 				var buffer = new Buffer(data.imageData.slice(data.imageData.indexOf('base64') + 7), 'base64');
 
 				fs.writeFile(data.file.path, buffer, {
-					encoding: 'base64'
+					encoding: 'base64',
 				}, next);
 			},
 			function (next) {
 				var image = {
 					name: 'profileCover',
 					path: data.file.path,
-					uid: data.uid
+					uid: data.uid,
 				};
 
 				if (plugins.hasListeners('filter:uploadImage')) {
@@ -184,9 +184,9 @@ module.exports = function (User) {
 					function (upload, next) {
 						next(null, {
 							url: nconf.get('relative_path') + upload.url,
-							name: image.name
+							name: image.name,
 						});
-					}
+					},
 				], next);
 			},
 			function (uploadData, next) {
@@ -200,7 +200,7 @@ module.exports = function (User) {
 					}
 					next();
 				});
-			}
+			},
 		], function (err) {
 			if (err) {
 				return fs.unlink(data.file.path, function (unlinkErr) {
@@ -243,20 +243,20 @@ module.exports = function (User) {
 				md5sum = md5sum.digest('hex');
 
 				data.file = {
-					path: path.join(os.tmpdir(), md5sum)
+					path: path.join(os.tmpdir(), md5sum),
 				};
 
 				var buffer = new Buffer(data.imageData.slice(data.imageData.indexOf('base64') + 7), 'base64');
 
 				fs.writeFile(data.file.path, buffer, {
-					encoding: 'base64'
+					encoding: 'base64',
 				}, next);
 			},
 			function (next) {
 				var image = {
 					name: 'profileAvatar',
 					path: data.file.path,
-					uid: data.uid
+					uid: data.uid,
 				};
 
 				if (plugins.hasListeners('filter:uploadImage')) {
@@ -274,9 +274,9 @@ module.exports = function (User) {
 					function (upload, next) {
 						next(null, {
 							url: nconf.get('relative_path') + upload.url,
-							name: image.name
+							name: image.name,
 						});
-					}
+					},
 				], next);
 			},
 			function (uploadData, next) {
@@ -290,7 +290,7 @@ module.exports = function (User) {
 					}
 					next();
 				});
-			}
+			},
 		], function (err) {
 			if (err) {
 				callback(err);	// send back the original error

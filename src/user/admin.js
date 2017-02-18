@@ -52,7 +52,7 @@ module.exports = function (User) {
 				});
 
 				next(null, csvContent);
-			}
+			},
 		], callback);
 	};
 

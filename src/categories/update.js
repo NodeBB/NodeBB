@@ -61,7 +61,7 @@ module.exports = function (Categories) {
 			function (next) {
 				plugins.fireHook('action:category.update', {cid: cid, modified: category});
 				next();
-			}
+			},
 		], callback);
 	}
 
@@ -84,7 +84,7 @@ module.exports = function (Categories) {
 				} else {
 					next();
 				}
-			}
+			},
 		], callback);
 	}
 
@@ -108,9 +108,9 @@ module.exports = function (Categories) {
 					},
 					function (next) {
 						db.setObjectField('category:' + cid, 'parentCid', newParent, next);
-					}
+					},
 				], next);
-			}
+			},
 		], function (err) {
 			callback(err);
 		});
@@ -131,7 +131,7 @@ module.exports = function (Categories) {
 					return index;
 				});
 				db.sortedSetAdd('cid:' + cid + ':tag:whitelist', scores, tags, next);
-			}
+			},
 		], callback);
 	}
 
@@ -148,9 +148,9 @@ module.exports = function (Categories) {
 					function (next) {
 						parentCid = parseInt(parentCid, 10) || 0;
 						db.sortedSetAdd('cid:' + parentCid + ':children', order, cid, next);
-					}
+					},
 				], next);
-			}
+			},
 		], function (err) {
 			callback(err);
 		});
@@ -163,7 +163,7 @@ module.exports = function (Categories) {
 			},
 			function (parsedDescription, next) {
 				Categories.setCategoryField(cid, 'descriptionParsed', parsedDescription, next);
-			}
+			},
 		], callback);
 	};
 

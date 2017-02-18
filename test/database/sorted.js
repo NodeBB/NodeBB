@@ -20,7 +20,7 @@ describe('Sorted Set methods', function () {
 			},
 			function (next) {
 				db.sortedSetAdd('sortedSetLex', [0, 0, 0, 0], ['a', 'b', 'c', 'd'], next);
-			}
+			},
 		], done);
 	});
 
@@ -565,7 +565,7 @@ describe('Sorted Set methods', function () {
 				},
 				function (next) {
 					db.sortedSetAdd('interSet2', [4,5,6], ['value2', 'value3', 'value5'], next);
-				}
+				},
 			], done);
 		});
 
@@ -573,7 +573,7 @@ describe('Sorted Set methods', function () {
 			db.getSortedSetIntersect({
 				sets: ['interSet1', 'interSet2'],
 				start: 0,
-				stop: -1
+				stop: -1,
 			}, function (err, data) {
 				assert.ifError(err);
 				assert.deepEqual(['value2', 'value3'], data);
@@ -586,7 +586,7 @@ describe('Sorted Set methods', function () {
 				sets: ['interSet1', 'interSet2'],
 				start: 0,
 				stop: -1,
-				withScores: true
+				withScores: true,
 			}, function (err, data) {
 				assert.ifError(err);
 				assert.deepEqual([{value: 'value2', score: 6}, {value: 'value3', score: 8}], data);
@@ -600,7 +600,7 @@ describe('Sorted Set methods', function () {
 				start: 0,
 				stop: -1,
 				withScores: true,
-				aggregate: 'MIN'
+				aggregate: 'MIN',
 			}, function (err, data) {
 				assert.ifError(err);
 				assert.deepEqual([{value: 'value2', score: 2}, {value: 'value3', score: 3}], data);
@@ -614,7 +614,7 @@ describe('Sorted Set methods', function () {
 				start: 0,
 				stop: -1,
 				withScores: true,
-				aggregate: 'MAX'
+				aggregate: 'MAX',
 			}, function (err, data) {
 				assert.ifError(err);
 				assert.deepEqual([{value: 'value2', score: 4}, {value: 'value3', score: 5}], data);
@@ -628,7 +628,7 @@ describe('Sorted Set methods', function () {
 				start: 0,
 				stop: -1,
 				withScores: true,
-				weights: [1, 0.5]
+				weights: [1, 0.5],
 			}, function (err, data) {
 				assert.ifError(err);
 				assert.deepEqual([{value: 'value2', score: 4}, {value: 'value3', score: 5.5}], data);
@@ -640,7 +640,7 @@ describe('Sorted Set methods', function () {
 			db.getSortedSetIntersect({
 				sets: ['interSet10', 'interSet12'],
 				start: 0,
-				stop: -1
+				stop: -1,
 			}, function (err, data) {
 				assert.ifError(err);
 				assert.equal(data.length, 0);
@@ -652,7 +652,7 @@ describe('Sorted Set methods', function () {
 			db.getSortedSetIntersect({
 				sets: ['interSet1', 'interSet12'],
 				start: 0,
-				stop: -1
+				stop: -1,
 			}, function (err, data) {
 				assert.ifError(err);
 				assert.equal(data.length, 0);
@@ -676,7 +676,7 @@ describe('Sorted Set methods', function () {
 				},
 				function (next) {
 					db.sortedSetAdd('interCard4', [0, 0, 0], ['value4', 'value5', 'value6'], next);
-				}
+				},
 			], done);
 		});
 

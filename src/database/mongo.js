@@ -17,30 +17,30 @@
 		{
 			name: 'mongo:host',
 			description: 'Host IP or address of your MongoDB instance',
-			'default': nconf.get('mongo:host') || '127.0.0.1'
+			'default': nconf.get('mongo:host') || '127.0.0.1',
 		},
 		{
 			name: 'mongo:port',
 			description: 'Host port of your MongoDB instance',
-			'default': nconf.get('mongo:port') || 27017
+			'default': nconf.get('mongo:port') || 27017,
 		},
 		{
 			name: 'mongo:username',
 			description: 'MongoDB username',
-			'default': nconf.get('mongo:username') || ''
+			'default': nconf.get('mongo:username') || '',
 		},
 		{
 			name: 'mongo:password',
 			description: 'Password of your MongoDB database',
 			hidden: true,
 			default: nconf.get('mongo:password') || '',
-			before: function (value) { value = value || nconf.get('mongo:password') || ''; return value; }
+			before: function (value) { value = value || nconf.get('mongo:password') || ''; return value; },
 		},
 		{
 			name: "mongo:database",
 			description: "MongoDB database name",
-			'default': nconf.get('mongo:database') || 'nodebb'
-		}
+			'default': nconf.get('mongo:database') || 'nodebb',
+		},
 	];
 
 	module.helpers = module.helpers || {};
@@ -84,8 +84,8 @@
 
 		var connOptions = {
 			server: {
-				poolSize: parseInt(nconf.get('mongo:poolSize'), 10) || 10
-			}
+				poolSize: parseInt(nconf.get('mongo:poolSize'), 10) || 10,
+			},
 		};
 
 		connOptions = _.deepExtend((nconf.get('mongo:options') || {}), connOptions);
@@ -135,13 +135,13 @@
 
 			module.sessionStore = new sessionStore({
 				client: rdb.client,
-				ttl: ttl
+				ttl: ttl,
 			});
 		} else if (nconf.get('mongo')) {
 			sessionStore = require('connect-mongo')(session);
 			module.sessionStore = new sessionStore({
 				db: db,
-				ttl: ttl
+				ttl: ttl,
 			});
 		}
 
@@ -162,7 +162,7 @@
 		async.series([
 			async.apply(createIndex, 'objects', { _key: 1, score: -1 }, { background: true }),
 			async.apply(createIndex, 'objects', { _key: 1, value: -1 }, { background: true, unique: true, sparse: true }),
-			async.apply(createIndex, 'objects', { expireAt: 1 }, { expireAfterSeconds: 0, background: true })
+			async.apply(createIndex, 'objects', { expireAt: 1 }, { expireAfterSeconds: 0, background: true }),
 		], function (err) {
 			if (err) {
 				winston.error('Error creating index ' + err.message);
@@ -203,7 +203,7 @@
 						db.collection(collection.name).stats(next);
 					}, next);
 				});
-			}
+			},
 		}, function (err, results) {
 			if (err) {
 				return callback(err);
@@ -219,7 +219,7 @@
 					avgObjSize: collectionInfo.avgObjSize,
 					storageSize: collectionInfo.storageSize,
 					totalIndexSize: collectionInfo.totalIndexSize,
-					indexSizes: collectionInfo.indexSizes
+					indexSizes: collectionInfo.indexSizes,
 				};
 			});
 

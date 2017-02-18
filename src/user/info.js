@@ -28,7 +28,7 @@ module.exports = function (User) {
 			function (_reason, next) {
 				reason = _reason && _reason.length ? _reason[0] : '';
 				next();
-			}
+			},
 		], function (err) {
 			if (err) {
 				return callback(err);
@@ -39,7 +39,7 @@ module.exports = function (User) {
 				timestamp: timestamp,
 				expiry: parseInt(expiry, 10),
 				expiry_readable: new Date(parseInt(expiry, 10)).toString().replace(/:/g, '%3A'),
-				reason: validator.escape(String(reason))
+				reason: validator.escape(String(reason)),
 			});
 		});
 	};
@@ -50,12 +50,12 @@ module.exports = function (User) {
 				async.parallel({
 					flags: async.apply(db.getSortedSetRevRangeWithScores, 'uid:' + uid + ':flag:pids', 0, 19),
 					bans: async.apply(db.getSortedSetRevRangeWithScores, 'uid:' + uid + ':bans', 0, 19),
-					reasons: async.apply(db.getSortedSetRevRangeWithScores, 'banned:' + uid + ':reasons', 0, 19)
+					reasons: async.apply(db.getSortedSetRevRangeWithScores, 'banned:' + uid + ':reasons', 0, 19),
 				}, next);
 			},
 			function (data, next) {
 				getFlagMetadata(data, next);
-			}
+			},
 		], function (err, data) {
 			if (err) {
 				return callback(err);

@@ -35,7 +35,7 @@ groupsController.list = function (req, res, next) {
 		},
 		function (groupData, next) {
 			next(null, {groups: groupData, pagination: pagination.create(page, pageCount)});
-		}
+		},
 	], function (err, data) {
 		if (err) {
 			return next(err);
@@ -44,7 +44,7 @@ groupsController.list = function (req, res, next) {
 		res.render('admin/manage/groups', {
 			groups: data.groups,
 			pagination: data.pagination,
-			yourid: req.uid
+			yourid: req.uid,
 		});
 	});
 };
@@ -60,7 +60,7 @@ groupsController.get = function (req, res, callback) {
 				return callback();
 			}
 			groups.get(groupName, {uid: req.uid, truncateUserList: true, userListCount: 20}, next);
-		}
+		},
 	], function (err, group) {
 		if (err) {
 			return callback(err);

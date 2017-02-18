@@ -21,7 +21,7 @@ define('admin/general/sounds', ['sounds', 'settings'], function (Sounds, Setting
 		saveEl.on('click', function () {
 			Settings.save('sounds', $('.sounds form'), function () {
 				socket.emit('admin.fireEvent', {
-					name: 'event:sounds.reloadMapping'
+					name: 'event:sounds.reloadMapping',
 				});
 				app.alertSuccess('[[admin/general/sounds:saved]]');
 			});

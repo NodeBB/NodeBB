@@ -4,7 +4,7 @@
 define('admin/manage/tags', [
 	'forum/infinitescroll',
 	'admin/modules/selectable',
-	'admin/modules/colorpicker'
+	'admin/modules/colorpicker',
 ], function (infinitescroll, selectable, colorpicker) {
 	var	Tags = {},
 		timeoutId = 0;
@@ -38,7 +38,7 @@ define('admin/manage/tags', [
 
 		createModalGo.on('click', function () {
 			socket.emit('admin.tags.create', {
-				tag: createTagName.val()
+				tag: createTagName.val(),
 			}, function (err) {
 				if (err) {
 					return app.alertError(err.message);
@@ -109,9 +109,9 @@ define('admin/manage/tags', [
 
 								save(tag);
 							});
-						}
-					}
-				}
+						},
+					},
+				},
 			});
 
 			handleColorPickers(modal);
@@ -156,7 +156,7 @@ define('admin/manage/tags', [
 		var data = {
 			tag: tag.attr('data-tag'),
 			bgColor : tag.find('[data-name="bgColor"]').val(),
-			color : tag.find('[data-name="color"]').val()
+			color : tag.find('[data-name="color"]').val(),
 		};
 
 		socket.emit('admin.tags.update', data, function (err) {

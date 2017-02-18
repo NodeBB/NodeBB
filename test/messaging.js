@@ -25,7 +25,7 @@ describe('Messaging Library', function () {
 		async.series([
 			async.apply(User.create, { username: 'foo', password: 'barbar' }),	// admin
 			async.apply(User.create, { username: 'baz', password: 'quuxquux' }),	// restricted user
-			async.apply(User.create, { username: 'herp', password: 'derpderp' })	// regular user
+			async.apply(User.create, { username: 'herp', password: 'derpderp' }),	// regular user
 		], function (err, uids) {
 			if (err) {
 				return done(err);
@@ -37,7 +37,7 @@ describe('Messaging Library', function () {
 
 			async.parallel([
 				async.apply(Groups.join, 'administrators', fooUid),
-				async.apply(User.setSetting, bazUid, 'restrictChat', '1')
+				async.apply(User.setSetting, bazUid, 'restrictChat', '1'),
 			], done);
 		});
 	});
@@ -125,7 +125,7 @@ describe('Messaging Library', function () {
 			socketModules.chats.getMessages({uid: fooUid}, {
 				uid: fooUid,
 				roomId: roomId,
-				start: 0
+				start: 0,
 			}, function (err, messages) {
 				assert.ifError(err);
 				assert(Array.isArray(messages));

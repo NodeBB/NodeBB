@@ -109,7 +109,7 @@ define('forum/topic/move', function () {
 		socket.emit(Move.moveAll ? 'topics.moveAll' : 'topics.move', {
 			tids: Move.tids,
 			cid: selectedEl.attr('data-cid'),
-			currentCid: Move.currentCid
+			currentCid: Move.currentCid,
 		}, function (err) {
 			modal.modal('hide');
 

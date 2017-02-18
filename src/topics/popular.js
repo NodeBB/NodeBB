@@ -19,7 +19,7 @@ module.exports = function (Topics) {
 			},
 			function (tids, next) {
 				getTopics(tids, uid, count, next);
-			}
+			},
 		], callback);
 	};
 
@@ -46,7 +46,7 @@ module.exports = function (Topics) {
 			},
 			function (tids, next) {
 				Topics.getTopicsByTids(tids, uid, next);
-			}
+			},
 		], callback);
 	}
 };

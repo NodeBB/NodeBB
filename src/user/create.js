@@ -42,7 +42,7 @@ module.exports = function (User) {
 				'topiccount': 0,
 				'lastposttime': 0,
 				'banned': 0,
-				'status': 'online'
+				'status': 'online',
 			};
 
 			async.parallel({
@@ -51,7 +51,7 @@ module.exports = function (User) {
 				},
 				userData: function (next) {
 					plugins.fireHook('filter:user.create', {user: userData, data: data}, next);
-				}
+				},
 			}, function (err, results) {
 				if (err) {
 					return callback(err);
@@ -106,7 +106,7 @@ module.exports = function (User) {
 								if (userData.email) {
 									async.parallel([
 										async.apply(db.sortedSetAdd, 'email:uid', userData.uid, userData.email.toLowerCase()),
-										async.apply(db.sortedSetAdd, 'email:sorted', 0, userData.email.toLowerCase() + ':' + userData.uid)
+										async.apply(db.sortedSetAdd, 'email:sorted', 0, userData.email.toLowerCase() + ':' + userData.uid),
 									], next);
 
 									if (parseInt(userData.uid, 10) !== 1 && parseInt(meta.config.requireEmailConfirmation, 10) === 1) {
@@ -128,13 +128,13 @@ module.exports = function (User) {
 
 									async.parallel([
 										async.apply(User.setUserField, userData.uid, 'password', hash),
-										async.apply(User.reset.updateExpiry, userData.uid)
+										async.apply(User.reset.updateExpiry, userData.uid),
 									], next);
 								});
 							},
 							function (next) {
 								User.updateDigestSetting(userData.uid, meta.config.dailyDigestFreq, next);
-							}
+							},
 						], next);
 					},
 					function (results, next) {
@@ -143,7 +143,7 @@ module.exports = function (User) {
 						}
 						plugins.fireHook('action:user.create', userData);
 						next(null, userData.uid);
-					}
+					},
 				], callback);
 			});
 		});
@@ -179,7 +179,7 @@ module.exports = function (User) {
 				} else {
 					next();
 				}
-			}
+			},
 		}, function (err) {
 			callback(err);
 		});

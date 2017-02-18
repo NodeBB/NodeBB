@@ -58,7 +58,7 @@ module.exports = function (Posts) {
 					},
 					topic: function (next) {
 						editMainPost(data, postData, next);
-					}
+					},
 				}, next);
 			},
 			function (_results, next) {
@@ -76,7 +76,7 @@ module.exports = function (Posts) {
 			function (postData, next) {
 				results.post = postData;
 				next(null, results);
-			}
+			},
 		], callback);
 	};
 
@@ -90,7 +90,7 @@ module.exports = function (Posts) {
 			},
 			isMain: function (next) {
 				Posts.isMain(data.pid, next);
-			}
+			},
 		}, function (err, results) {
 			if (err) {
 				return callback(err);
@@ -101,7 +101,7 @@ module.exports = function (Posts) {
 					tid: tid,
 					cid: results.topic.cid,
 					isMainPost: false,
-					renamed: false
+					renamed: false,
 				});
 			}
 
@@ -109,7 +109,7 @@ module.exports = function (Posts) {
 				tid: tid,
 				cid: results.topic.cid,
 				uid: postData.uid,
-				mainPid: data.pid
+				mainPid: data.pid,
 			};
 
 			if (title) {
@@ -147,9 +147,9 @@ module.exports = function (Posts) {
 						slug: topicData.slug,
 						isMainPost: true,
 						renamed: title !== results.topic.title,
-						tags: tags
+						tags: tags,
 					});
-				}
+				},
 			], callback);
 		});
 	}

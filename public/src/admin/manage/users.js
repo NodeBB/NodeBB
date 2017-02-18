@@ -91,7 +91,7 @@ define('admin/manage/users', ['translator'], function (translator) {
 					buttons: {
 						close: {
 							label: '[[global:close]]',
-							className: 'btn-link'
+							className: 'btn-link',
 						},
 						submit: {
 							label: '[[admin/manage/users:alerts.button-ban-x, ' + uids.length + ']]',
@@ -102,9 +102,9 @@ define('admin/manage/users', ['translator'], function (translator) {
 								}, {});
 								var until = formData.length ? (Date.now() + formData.length * 1000 * 60 * 60 * (parseInt(formData.unit, 10) ? 24 : 1)) : 0;
 								socket.emit('user.banUsers', { uids: uids, until: until, reason: formData.reason }, done('[[admin/manage/users:alerts.ban-success]]', '.ban', true));
-							}
-						}
-					}
+							},
+						},
+					},
 				});
 			});
 		});
@@ -266,7 +266,7 @@ define('admin/manage/users', ['translator'], function (translator) {
 						buttons: {
 							cancel: {
 								label: '[[admin/manage/users:alerts.button-cancel]]',
-								className: 'btn-link'
+								className: 'btn-link',
 							},
 							create: {
 								label: '[[admin/manage/users:alerts.button-create]]',
@@ -274,9 +274,9 @@ define('admin/manage/users', ['translator'], function (translator) {
 								callback: function () {
 									createUser.call(this);
 									return false;
-								}
-							}
-						}
+								},
+							},
+						},
 					});
 				});
 			});
@@ -298,7 +298,7 @@ define('admin/manage/users', ['translator'], function (translator) {
 			var user = {
 				username: username,
 				email: email,
-				password: password
+				password: password,
 			};
 
 			socket.emit('admin.user.createUser', user, function (err) {

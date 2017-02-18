@@ -27,7 +27,7 @@ define('settings/textarea', function () {
 			} else {
 				return void 0;
 			}
-		}
+		},
 	};
 
 	return SettingsArea;

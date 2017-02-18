@@ -14,7 +14,7 @@ notificationsController.get = function (req, res, next) {
 			notifications: notifications,
 			nextStart: 40,
 			title: '[[pages:notifications]]',
-			breadcrumbs: helpers.buildBreadcrumbs([{text: '[[pages:notifications]]'}])
+			breadcrumbs: helpers.buildBreadcrumbs([{text: '[[pages:notifications]]'}]),
 		});
 	});
 };

@@ -18,7 +18,7 @@ define('forum/categories', ['components', 'translator'], function (components, t
 		socket.on('event:new_post', categories.onNewPost);
 
 		$('.category-header').tooltip({
-			placement: 'bottom'
+			placement: 'bottom',
 		});
 	};
 

@@ -11,7 +11,7 @@ var navigation = require('../navigation');
 
 var controllers = {
 	api: require('../controllers/api'),
-	helpers: require('../controllers/helpers')
+	helpers: require('../controllers/helpers'),
 };
 
 module.exports = function (middleware) {
@@ -30,13 +30,13 @@ module.exports = function (middleware) {
 					},
 					plugins: function (next) {
 						plugins.fireHook('filter:middleware.buildHeader', {req: req, locals: res.locals}, next);
-					}
+					},
 				}, next);
 			},
 			function (results, next) {
 				res.locals.config = results.config;
 				next();
-			}
+			},
 		], next);
 	};
 
@@ -55,7 +55,7 @@ module.exports = function (middleware) {
 			searchEnabled: plugins.hasListeners('filter:search.query'),
 			config: res.locals.config,
 			relative_path: nconf.get('relative_path'),
-			bodyClass: data.bodyClass
+			bodyClass: data.bodyClass,
 		};
 
 		templateValues.configJSON = JSON.stringify(res.locals.config);
@@ -82,7 +82,7 @@ module.exports = function (middleware) {
 					picture: meta.config.defaultAvatar,
 					status: 'offline',
 					reputation: 0,
-					'email:confirmed': false
+					'email:confirmed': false,
 				};
 				if (req.uid) {
 					user.getUserFields(req.uid, Object.keys(userData), next);
@@ -99,7 +99,7 @@ module.exports = function (middleware) {
 			navigation: async.apply(navigation.get),
 			tags: async.apply(meta.tags.parse, res.locals.metaTags, res.locals.linkTags),
 			banned: async.apply(user.isBanned, req.uid),
-			banReason: async.apply(user.getBannedReason, req.uid)
+			banReason: async.apply(user.getBannedReason, req.uid),
 		}, function (err, results) {
 			if (err) {
 				return callback(err);

@@ -16,7 +16,7 @@ define('forum/account/edit', ['forum/account/header', 'translator', 'components'
 				changeMonth: true,
 				changeYear: true,
 				yearRange: '1900:-5y',
-				defaultDate: '-13y'
+				defaultDate: '-13y',
 			});
 		});
 
@@ -36,7 +36,7 @@ define('forum/account/edit', ['forum/account/header', 'translator', 'components'
 			location: $('#inputLocation').val(),
 			groupTitle: $('#groupTitle').val(),
 			signature: $('#inputSignature').val(),
-			aboutme: $('#inputAboutMe').val()
+			aboutme: $('#inputAboutMe').val(),
 		};
 
 		$(window).trigger('action:profile.update', userData);
@@ -86,7 +86,7 @@ define('forum/account/edit', ['forum/account/header', 'translator', 'components'
 				templates.parse('partials/modals/change_picture_modal', {
 					pictures: pictures,
 					uploaded: uploaded,
-					allowProfileImageUploads: ajaxify.data.allowProfileImageUploads
+					allowProfileImageUploads: ajaxify.data.allowProfileImageUploads,
 				}, function (html) {
 					translator.translate(html, function (html) {
 						var modal = bootbox.dialog({
@@ -98,13 +98,13 @@ define('forum/account/edit', ['forum/account/header', 'translator', 'components'
 								close: {
 									label: '[[global:close]]',
 									callback: onCloseModal,
-									className: 'btn-link'
+									className: 'btn-link',
 								},
 								update: {
 									label: '[[global:save_changes]]',
-									callback: saveSelection
-								}
-							}
+									callback: saveSelection,
+								},
+							},
 						});
 
 						modal.on('shown.bs.modal', updateImages);
@@ -222,7 +222,7 @@ define('forum/account/edit', ['forum/account/header', 'translator', 'components'
 				fileSize: ajaxify.data.maximumProfileImageSize,
 				title: '[[user:upload_picture]]',
 				description: '[[user:upload_a_picture]]',
-				accept: '.png,.jpg,.bmp'
+				accept: '.png,.jpg,.bmp',
 			}, function (url) {
 				onUploadComplete(url);
 			});
@@ -288,7 +288,7 @@ define('forum/account/edit', ['forum/account/header', 'translator', 'components'
 	function changeUserPicture(type, callback) {
 		socket.emit('user.changePicture', {
 			type: type,
-			uid: ajaxify.data.theirid
+			uid: ajaxify.data.theirid,
 		}, callback);
 	}
 

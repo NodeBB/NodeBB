@@ -11,7 +11,7 @@ module.exports = function (db, module) {
 			{ $match: { _key: {$in: keys}} },
 			{ $group: { _id: {value: '$value'}, count: {$sum: 1}} },
 			{ $match: { count: keys.length} },
-			{ $group: { _id: null,  count: { $sum: 1 } } }
+			{ $group: { _id: null,  count: { $sum: 1 } } },
 		];
 
 		db.collection('objects').aggregate(pipeline, function (err, data) {
@@ -56,9 +56,9 @@ module.exports = function (db, module) {
 					$project: {
 						value: 1,
 						score: {
-							$cond: { if: { $eq: [ "$_key", sets[index] ] }, then: { $multiply: [ '$score', weight ] }, else: '$score' }
-						}
-					}
+							$cond: { if: { $eq: [ "$_key", sets[index] ] }, then: { $multiply: [ '$score', weight ] }, else: '$score' },
+						},
+					},
 				});
 			}
 		});

@@ -24,7 +24,7 @@ var opts = {
 	},
 	streams : {
 		log : { f : process.stdout },
-	}
+	},
 };
 
 

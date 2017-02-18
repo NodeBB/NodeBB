@@ -54,7 +54,7 @@ module.exports = function (User) {
 				searchResult.timing = (process.elapsedTimeSince(startTime) / 1000).toFixed(2);
 				searchResult.users = userData;
 				next(null, searchResult);
-			}
+			},
 		], callback);
 	};
 
@@ -158,7 +158,7 @@ module.exports = function (User) {
 				var diff = process.hrtime(start);
 				var timing = (diff[0] * 1e3 + diff[1] / 1e6).toFixed(1);
 				next(null, {timing: timing, users: users});
-			}
+			},
 		], callback);
 	}
 };

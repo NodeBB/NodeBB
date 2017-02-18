@@ -14,7 +14,7 @@ image.resizeImage = function (data, callback) {
 			target: data.target,
 			extension: data.extension,
 			width: data.width,
-			height: data.height
+			height: data.height,
 		}, function (err) {
 			callback(err);
 		});
@@ -69,7 +69,7 @@ image.resizeImage = function (data, callback) {
 						return next();
 					}
 					image.write(data.target || data.path, next);
-				}
+				},
 			], function (err) {
 				callback(err);
 			});
@@ -81,7 +81,7 @@ image.normalise = function (path, extension, callback) {
 	if (plugins.hasListeners('filter:image.normalise')) {
 		plugins.fireHook('filter:image.normalise', {
 			path: path,
-			extension: extension
+			extension: extension,
 		}, function (err) {
 			callback(err);
 		});

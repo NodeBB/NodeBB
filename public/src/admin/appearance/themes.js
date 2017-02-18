@@ -18,7 +18,7 @@ define('admin/appearance/themes', ['translator'], function (translator) {
 				socket.emit('admin.themes.set', {
 					type: themeType,
 					id: themeId,
-					src: cssSrc
+					src: cssSrc,
 				}, function (err) {
 					if (err) {
 						return app.alertError(err.message);
@@ -34,7 +34,7 @@ define('admin/appearance/themes', ['translator'], function (translator) {
 						timeout: 5000,
 						clickfn: function () {
 							socket.emit('admin.restart');
-						}
+						},
 					});
 				});
 			}
@@ -45,7 +45,7 @@ define('admin/appearance/themes', ['translator'], function (translator) {
 				if (confirm) {
 					socket.emit('admin.themes.set', {
 						type: 'local',
-						id: 'nodebb-theme-persona'
+						id: 'nodebb-theme-persona',
 					}, function (err) {
 						if (err) {
 							return app.alertError(err.message);
@@ -56,7 +56,7 @@ define('admin/appearance/themes', ['translator'], function (translator) {
 							type: 'success',
 							title: '[[admin/appearance/themes:theme-changed]]',
 							message: '[[admin/appearance/themes:revert-success]]',
-							timeout: 3500
+							timeout: 3500,
 						});
 					});
 				}
@@ -75,7 +75,7 @@ define('admin/appearance/themes', ['translator'], function (translator) {
 				return;
 			} else {
 				templates.parse('admin/partials/theme_list', {
-					themes: themes
+					themes: themes,
 				}, function (html) {
 					translator.translate(html, function (html) {
 						instListEl.html(html);

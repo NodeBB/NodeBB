@@ -22,7 +22,7 @@ eventsController.get = function (req, res, next) {
 		},
 		events: function (next) {
 			events.getEvents(start, stop, next);
-		}
+		},
 	}, function (err, results) {
 		if (err) {
 			return next(err);
@@ -33,7 +33,7 @@ eventsController.get = function (req, res, next) {
 		res.render('admin/advanced/events', {
 			events: results.events,
 			pagination: pagination.create(page, pageCount),
-			next: 20
+			next: 20,
 		});
 	});
 };

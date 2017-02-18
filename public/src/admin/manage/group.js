@@ -5,7 +5,7 @@ define('admin/manage/group', [
 	'forum/groups/memberlist',
 	'iconSelect',
 	'admin/modules/colorpicker',
-	'translator'
+	'translator',
 ], function (memberList, iconSelect, colorpicker, translator) {
 	var	Groups = {};
 
@@ -59,7 +59,7 @@ define('admin/manage/group', [
 									'data-userslug': results.users[x].userslug,
 									'data-picture': results.users[x].picture,
 									'data-usericon-bgColor': results.users[x]['icon:bgColor'],
-									'data-usericon-text': results.users[x]['icon:text']
+									'data-usericon-text': results.users[x]['icon:text'],
 								})
 								.append(results.users[x].picture ?
 									$('<img />').addClass('avatar avatar-sm').attr('src', results.users[x].picture) :
@@ -81,7 +81,7 @@ define('admin/manage/group', [
 
 			socket.emit('admin.groups.join', {
 				groupName: groupName,
-				uid: uid
+				uid: uid,
 			}, function (err) {
 				if (err) {
 					return app.alertError(err.message);
@@ -93,7 +93,7 @@ define('admin/manage/group', [
 					userslug: userLabel.attr('data-userslug'),
 					picture: userLabel.attr('data-picture'),
 					"icon:bgColor": userLabel.attr('data-usericon-bgColor'),
-					"icon:text": userLabel.attr('data-usericon-text')
+					"icon:text": userLabel.attr('data-usericon-text'),
 				};
 
 				templates.parse('partials/groups/memberlist', 'members', {group: {isOwner: ajaxify.data.group.isOwner, members: [member]}}, function (html) {
@@ -116,7 +116,7 @@ define('admin/manage/group', [
 				case 'toggleOwnership':
 					socket.emit('groups.' + (isOwner ? 'rescind' : 'grant'), {
 						toUid: uid,
-						groupName: groupName
+						groupName: groupName,
 					}, function (err) {
 						if (err) {
 							return app.alertError(err.message);
@@ -132,7 +132,7 @@ define('admin/manage/group', [
 						}
 						socket.emit('admin.groups.leave', {
 							uid: uid,
-							groupName: groupName
+							groupName: groupName,
 						}, function (err) {
 							if (err) {
 								return app.alertError(err.message);
@@ -167,8 +167,8 @@ define('admin/manage/group', [
 					userTitleEnabled: $('#group-userTitleEnabled').is(':checked'),
 					private: $('#group-private').is(':checked'),
 					hidden: $('#group-hidden').is(':checked'),
-					disableJoinRequests: $('#group-disableJoinRequests').is(':checked')
-				}
+					disableJoinRequests: $('#group-disableJoinRequests').is(':checked'),
+				},
 			}, function (err) {
 				if (err) {
 					return app.alertError(err.message);

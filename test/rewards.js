@@ -19,7 +19,7 @@ describe('rewards', function () {
 		async.series([
 			async.apply(User.create, { username: 'foo', password: 'barbar' }),
 			async.apply(User.create, { username: 'baz', password: 'quuxquux' }),
-			async.apply(User.create, { username: 'herp', password: 'derpderp' })
+			async.apply(User.create, { username: 'herp', password: 'derpderp' }),
 		], function (err, uids) {
 			if (err) {
 				return done(err);
@@ -35,7 +35,7 @@ describe('rewards', function () {
 				},
 				function (next) {
 					Groups.join('rewardGroup', adminUid, done);
-				}
+				},
 			], done);
 		});
 	});
@@ -53,8 +53,8 @@ describe('rewards', function () {
 					rid: 'essentials/add-to-group',
 					claimable: '1',
 					id: '',
-					disabled: false
-				}
+					disabled: false,
+				},
 			];
 
 			socketAdmin.rewards.save({uid: adminUid}, data, function (err) {

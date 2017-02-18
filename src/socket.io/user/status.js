@@ -17,7 +17,7 @@ module.exports = function (SocketUser) {
 			},
 			function (userData, next) {
 				next(null, user.getStatus(userData));
-			}
+			},
 		], callback);
 	};
 
@@ -43,11 +43,11 @@ module.exports = function (SocketUser) {
 			function (next) {
 				var data = {
 					uid: socket.uid,
-					status: status
+					status: status,
 				};
 				websockets.server.emit('event:user_status_change', data);
 				next(null, data);
-			}
+			},
 		], callback);
 	};
 };

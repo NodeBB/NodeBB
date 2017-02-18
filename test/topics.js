@@ -28,7 +28,7 @@ describe('Topic\'s', function () {
 
 			categories.create({
 				name: 'Test Category',
-				description: 'Test category created by testing script'
+				description: 'Test category created by testing script',
 			}, function (err, category) {
 				if (err) {
 					return done(err);
@@ -40,7 +40,7 @@ describe('Topic\'s', function () {
 					userId: uid,
 					categoryId: categoryObj.cid,
 					title: 'Test Topic Title',
-					content: 'The content of test topic'
+					content: 'The content of test topic',
 				};
 				done();
 			});
@@ -248,7 +248,7 @@ describe('Topic\'s', function () {
 				function (next) {
 					categories.create({
 						name: 'Test Category',
-						description: 'Test category created by testing script'
+						description: 'Test category created by testing script',
 					}, function (err, category) {
 						if (err) {
 							return next(err);
@@ -256,7 +256,7 @@ describe('Topic\'s', function () {
 						moveCid = category.cid;
 						next();
 					});
-				}
+				},
 			], done);
 		});
 
@@ -370,7 +370,7 @@ describe('Topic\'s', function () {
 					uid: topic.userId,
 					title: 'topic for test',
 					content: 'topic content',
-					cid: topic.categoryId
+					cid: topic.categoryId,
 				}, callback);
 			}
 			async.series({
@@ -382,7 +382,7 @@ describe('Topic\'s', function () {
 				},
 				topic3: function (next) {
 					createTopic(next);
-				}
+				},
 			}, function (err, results) {
 				assert.ifError(err);
 				tid1 = results.topic1.topicData.tid;
@@ -394,7 +394,7 @@ describe('Topic\'s', function () {
 					},
 					function (next) {
 						topics.tools.pin(tid2, adminUid, next);
-					}
+					},
 				], done);
 			});
 		});
@@ -472,7 +472,7 @@ describe('Topic\'s', function () {
 				},
 				function (done) {
 					topics.markUnread( newTid, uid, done );
-				}
+				},
 			],done);
 		});
 
@@ -489,7 +489,7 @@ describe('Topic\'s', function () {
 					var tids = topics.map( function (topic) { return topic.tid; } );
 					assert.equal(tids.indexOf(newTid), -1, 'The topic appeared in the unread list.');
 					done();
-				}
+				},
 			], done);
 		});
 
@@ -513,7 +513,7 @@ describe('Topic\'s', function () {
 					}
 					assert.ok(topic, 'topic didn\'t appear in the recent list');
 					done();
-				}
+				},
 			], done);
 		});
 
@@ -533,7 +533,7 @@ describe('Topic\'s', function () {
 					var tids = topics.map( function (topic) { return topic.tid; } );
 					assert.notEqual(tids.indexOf(newTid), -1, 'The topic did not appear in the unread list.');
 					done();
-				}
+				},
 			], done);
 		});
 
@@ -553,7 +553,7 @@ describe('Topic\'s', function () {
 					var tids = topics.map( function (topic) { return topic.tid; } );
 					assert.notEqual(tids.indexOf(newTid), -1, 'The topic did not appear in the unread list.');
 					done();
-				}
+				},
 			], done);
 		});
 	});
@@ -569,7 +569,7 @@ describe('Topic\'s', function () {
 					assert.ok(result);
 					replies.push(result);
 					next();
-				}
+				},
 			);
 		}
 
@@ -625,7 +625,7 @@ describe('Topic\'s', function () {
 				function ( bookmark, next ) {
 					assert.equal( originalBookmark, bookmark );
 					next();
-				}
+				},
 			],done);
 		});
 
@@ -645,7 +645,7 @@ describe('Topic\'s', function () {
 				function ( bookmark, next ) {
 					assert.equal( originalBookmark - 2, bookmark );
 					next();
-				}
+				},
 			],done);
 		});
 	});
@@ -656,7 +656,7 @@ describe('Topic\'s', function () {
 			title: 'topic for controller test',
 			content: 'topic content',
 			cid: topic.categoryId,
-			thumb: 'http://i.imgur.com/64iBdBD.jpg'
+			thumb: 'http://i.imgur.com/64iBdBD.jpg',
 		}, function (err, result) {
 			assert.ifError(err);
 			assert.ok(result);
@@ -762,7 +762,7 @@ describe('Topic\'s', function () {
 				},
 				topic2: function (next) {
 					topics.post({uid: adminUid, tags: ['nodebb'], title: 'topic title 2', content: 'topic 2 content', cid: topic.categoryId}, next);
-				}
+				},
 			}, function (err, results) {
 				assert.ifError(err);
 				tid1 = results.topic1.topicData.tid;
@@ -792,7 +792,7 @@ describe('Topic\'s', function () {
 				},
 				user: function (next) {
 					User.create({username: 'regularJoe'}, next);
-				}
+				},
 			}, function (err, results) {
 				assert.ifError(err);
 				tid = results.topic.topicData.tid;
@@ -880,7 +880,7 @@ describe('Topic\'s', function () {
 				function (count, next) {
 					assert.equal(count, 0);
 					next();
-				}
+				},
 			], function (err) {
 				assert.ifError(err);
 				done();
@@ -960,7 +960,7 @@ describe('Topic\'s', function () {
 					},
 					regularRead: function (next) {
 						topics.hasReadTopic(tid, uid, next);
-					}
+					},
 				}, function (err, results) {
 					assert.ifError(err);
 					assert.equal(results.adminRead, false);
@@ -982,7 +982,7 @@ describe('Topic\'s', function () {
 				},
 				topic2: function (next) {
 					topics.post({uid: adminUid, tags: ['javascript', 'mysql', 'python', 'nodejs'], title: 'topic title 2', content: 'topic 2 content', cid: topic.categoryId}, next);
-				}
+				},
 			}, function (err) {
 				assert.ifError(err);
 				done();
@@ -1043,7 +1043,7 @@ describe('Topic\'s', function () {
 				var tagData = [
 					{ value: 'nodebb', color: '', bgColor: '', score: 3 },
 					{ value: 'nodejs', color: '', bgColor: '', score: 1 },
-					{ value: 'nosql', color: '', bgColor: '', score: 1 }
+					{ value: 'nosql', color: '', bgColor: '', score: 1 },
 				];
 				assert.deepEqual(data.tags, tagData);
 
@@ -1120,7 +1120,7 @@ describe('Topic\'s', function () {
 		it('should error if data.tag is invalid', function (done) {
 			socketAdmin.tags.update({uid: adminUid}, {
 				bgColor: '#ff0000',
-				color: '#00ff00'
+				color: '#00ff00',
 			}, function (err) {
 				assert.equal(err.message, '[[error:invalid-tag]]');
 				done();
@@ -1131,7 +1131,7 @@ describe('Topic\'s', function () {
 			socketAdmin.tags.update({uid: adminUid}, {
 				tag: 'emptytag',
 				bgColor: '#ff0000',
-				color: '#00ff00'
+				color: '#00ff00',
 			}, function (err) {
 				assert.ifError(err);
 				db.getObject('tag:emptytag', function (err, data) {
@@ -1147,7 +1147,7 @@ describe('Topic\'s', function () {
 			var meta = require('../src/meta');
 			meta.config.maximumRelatedTopics = 2;
 			var topicData = {
-				tags: [{value: 'javascript'}]
+				tags: [{value: 'javascript'}],
 			};
 			topics.getRelatedTopics(topicData, 0, function (err, data) {
 				assert.ifError(err);

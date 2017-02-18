@@ -96,7 +96,7 @@ module.exports = function (Categories) {
 			async.apply(db.getSortedSetRange, 'categories:cid', 0, -1),
 			function (cids, next) {
 				Categories.getCategoriesFields(cids, fields, next);
-			}
+			},
 		], callback);
 	};
 

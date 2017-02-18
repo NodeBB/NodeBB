@@ -49,7 +49,7 @@ function getNodeInfo(callback) {
 			title: process.title,
 			version: process.version,
 			memoryUsage: process.memoryUsage(),
-			uptime: process.uptime()
+			uptime: process.uptime(),
 		},
 		os: {
 			hostname: os.hostname(),
@@ -57,8 +57,8 @@ function getNodeInfo(callback) {
 			platform: os.platform(),
 			arch: os.arch(),
 			release: os.release(),
-			load: os.loadavg().map(function (load) { return load.toFixed(2); }).join(', ')
-		}
+			load: os.loadavg().map(function (load) { return load.toFixed(2); }).join(', '),
+		},
 	};
 
 	async.parallel({
@@ -67,7 +67,7 @@ function getNodeInfo(callback) {
 		},
 		gitInfo: function (next) {
 			getGitInfo(next);
-		}
+		},
 	}, function (err, results) {
 		if (err) {
 			return callback(err);
@@ -93,7 +93,7 @@ function getGitInfo(callback) {
 		},
 		branch: function (next) {
 			get('git rev-parse --abbrev-ref HEAD', next);
-		}
+		},
 	}, callback);
 }
 

@@ -29,7 +29,7 @@ module.exports = function (Categories) {
 			},
 			function (pids, next) {
 				posts.getPostSummaryByPids(pids, uid, {stripTags: true}, next);
-			}
+			},
 		], callback);
 	};
 
@@ -40,7 +40,7 @@ module.exports = function (Categories) {
 			},
 			numRecentReplies: function (next) {
 				db.getObjectField('category:' + cid, 'numRecentReplies', next);
-			}
+			},
 		}, function (err, results) {
 			if (err) {
 				return callback(err);
@@ -61,7 +61,7 @@ module.exports = function (Categories) {
 				},
 				function (next) {
 					db.sortedSetAdd('cid:' + cid + ':recent_tids', Date.now(), tid, next);
-				}
+				},
 			], callback);
 		});
 	};
@@ -95,7 +95,7 @@ module.exports = function (Categories) {
 				bubbleUpChildrenPosts(categoryData);
 
 				next();
-			}
+			},
 		], callback);
 	};
 
@@ -135,13 +135,13 @@ module.exports = function (Categories) {
 						teaser.tid = teaser.uid = teaser.user.uid = undefined;
 						teaser.topic = {
 							slug: topicData[index].slug,
-							title: validator.escape(String(topicData[index].title))
+							title: validator.escape(String(topicData[index].title)),
 						};
 					}
 				});
 				results.teasers = results.teasers.filter(Boolean);
 				next(null, results.teasers);
-			}
+			},
 		], callback);
 	}
 
@@ -211,9 +211,9 @@ module.exports = function (Categories) {
 							},
 							function (next) {
 								db.sortedSetAdd('cid:' + cid + ':pids', timestamps, pids, next);
-							}
+							},
 						], next);
-					}
+					},
 				], next);
 			}, function (err) {
 				if (err) {
@@ -238,7 +238,7 @@ module.exports = function (Categories) {
 				},
 				function (next) {
 					db.incrObjectFieldBy('category:' + newCid, 'post_count', postCount, next);
-				}
+				},
 			], function (err) {
 				if (err) {
 					winston.error(err.message);

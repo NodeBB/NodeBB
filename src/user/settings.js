@@ -124,7 +124,7 @@ module.exports = function (User) {
 			scrollToMyPost: data.scrollToMyPost,
 			notificationSound: data.notificationSound,
 			incomingChatSound: data.incomingChatSound,
-			outgoingChatSound: data.outgoingChatSound
+			outgoingChatSound: data.outgoingChatSound,
 		};
 
 		if (data.bootswatchSkin) {
@@ -140,7 +140,7 @@ module.exports = function (User) {
 			},
 			function (next) {
 				User.getSettings(uid, next);
-			}
+			},
 		], callback);
 	};
 
@@ -155,7 +155,7 @@ module.exports = function (User) {
 				} else {
 					next();
 				}
-			}
+			},
 		], callback);
 	};
 

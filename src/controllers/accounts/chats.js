@@ -21,7 +21,7 @@ chatsController.get = function (req, res, callback) {
 		function (next) {
 			async.parallel({
 				uid: async.apply(user.getUidByUserslug, req.params.userslug),
-				username: async.apply(user.getUsernameByUserslug, req.params.userslug)
+				username: async.apply(user.getUsernameByUserslug, req.params.userslug),
 			}, next);
 		},
 		function (results, next) {
@@ -45,7 +45,7 @@ chatsController.get = function (req, res, callback) {
 					nextStart: recentChats.nextStart,
 					allowed: true,
 					title: '[[pages:chats]]',
-					breadcrumbs: helpers.buildBreadcrumbs([{text: username, url: '/user/' + req.params.userslug}, {text: '[[pages:chats]]'}])
+					breadcrumbs: helpers.buildBreadcrumbs([{text: username, url: '/user/' + req.params.userslug}, {text: '[[pages:chats]]'}]),
 				});
 			}
 			messaging.isUserInRoom(req.uid, req.params.roomid, next);
@@ -62,10 +62,10 @@ chatsController.get = function (req, res, callback) {
 					callerUid: req.uid,
 					uid: uid,
 					roomId: req.params.roomid,
-					isNew: false
-				})
+					isNew: false,
+				}),
 			}, next);
-		}
+		},
 	], function (err, data) {
 		if (err) {
 			return callback(err);
@@ -89,7 +89,7 @@ chatsController.get = function (req, res, callback) {
 		room.breadcrumbs = helpers.buildBreadcrumbs([
 			{text: username, url: '/user/' + req.params.userslug},
 			{text: '[[pages:chats]]', url: '/user/' + req.params.userslug + '/chats'},
-			{text: room.roomName || room.usernames || '[[pages:chats]]'}
+			{text: room.roomName || room.usernames || '[[pages:chats]]'},
 		]);
 		room.maximumUsersInChatRoom = parseInt(meta.config.maximumUsersInChatRoom, 10) || 0;
 		room.maximumChatMessageLength = parseInt(meta.config.maximumChatMessageLength, 10) || 1000;

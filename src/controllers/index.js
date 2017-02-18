@@ -28,7 +28,7 @@ var Controllers = {
 	admin: require('./admin'),
 	globalMods: require('./globalmods'),
 	mods: require('./mods'),
-	sitemap: require('./sitemap')
+	sitemap: require('./sitemap'),
 };
 
 
@@ -84,7 +84,7 @@ Controllers.reset = function (req, res, next) {
 				code: req.params.code,
 				minimumPasswordLength: parseInt(meta.config.minimumPasswordLength, 10),
 				breadcrumbs: helpers.buildBreadcrumbs([{text: '[[reset_password:reset_password]]', url: '/reset'}, {text: '[[reset_password:update_password]]'}]),
-				title: '[[pages:reset]]'
+				title: '[[pages:reset]]',
 			});
 
 			delete req.session.passwordExpired;
@@ -93,7 +93,7 @@ Controllers.reset = function (req, res, next) {
 		res.render('reset', {
 			code: null,
 			breadcrumbs: helpers.buildBreadcrumbs([{text: '[[reset_password:reset_password]]'}]),
-			title: '[[pages:reset]]'
+			title: '[[pages:reset]]',
 		});
 	}
 };
@@ -129,7 +129,7 @@ Controllers.login = function (req, res, next) {
 	if (!data.allowLocalLogin && !data.allowRegistration && data.alternate_logins && data.authentication.length === 1) {
 		if (res.locals.isAPI) {
 			return helpers.redirect(res, {
-				external: data.authentication[0].url
+				external: data.authentication[0].url,
 			});
 		} else {
 			return res.redirect(nconf.get('relative_path') + data.authentication[0].url);
@@ -172,7 +172,7 @@ Controllers.register = function (req, res, next) {
 		},
 		function (next) {
 			plugins.fireHook('filter:parse.post', {postData: {content: meta.config.termsOfUse || ''}}, next);
-		}
+		},
 	], function (err, termsOfUse) {
 		if (err) {
 			return next(err);
@@ -180,7 +180,7 @@ Controllers.register = function (req, res, next) {
 		var loginStrategies = require('../routes/authentication').getLoginStrategies();
 		var data = {
 			'register_window:spansize': loginStrategies.length ? 'col-md-6' : 'col-md-12',
-			'alternate_logins': !!loginStrategies.length
+			'alternate_logins': !!loginStrategies.length,
 		};
 
 		data.authentication = loginStrategies;
@@ -205,7 +205,7 @@ Controllers.registerInterstitial = function (req, res, next) {
 
 	plugins.fireHook('filter:register.interstitial', {
 		userData: req.session.registration,
-		interstitials: []
+		interstitials: [],
 	}, function (err, data) {
 		if (err) {
 			return next(err);
@@ -230,7 +230,7 @@ Controllers.registerInterstitial = function (req, res, next) {
 			res.render('registerComplete', {
 				title: '[[pages:registration-complete]]',
 				errors: errors,
-				sections: sections
+				sections: sections,
 			});
 		});
 	});
@@ -241,7 +241,7 @@ Controllers.compose = function (req, res, next) {
 		req: req,
 		res: res,
 		next: next,
-		templateData: {}
+		templateData: {},
 	}, function (err, data) {
 		if (err) {
 			return next(err);
@@ -249,7 +249,7 @@ Controllers.compose = function (req, res, next) {
 
 		if (data.templateData.disabled) {
 			res.render('', {
-				title: '[[modules:composer.compose]]'
+				title: '[[modules:composer.compose]]',
 			});
 		} else {
 			data.templateData.title = '[[modules:composer.compose]]';
@@ -285,7 +285,7 @@ Controllers.manifest = function (req, res) {
 		start_url: nconf.get('relative_path') + '/',
 		display: 'standalone',
 		orientation: 'portrait',
-		icons: []
+		icons: [],
 	};
 
 	if (meta.config['brand:touchIcon']) {
@@ -293,32 +293,32 @@ Controllers.manifest = function (req, res) {
 			src: nconf.get('relative_path') + '/assets/uploads/system/touchicon-36.png',
 			sizes: '36x36',
 			type: 'image/png',
-			density: 0.75
+			density: 0.75,
 		}, {
 			src: nconf.get('relative_path') + '/assets/uploads/system/touchicon-48.png',
 			sizes: '48x48',
 			type: 'image/png',
-			density: 1.0
+			density: 1.0,
 		}, {
 			src: nconf.get('relative_path') + '/assets/uploads/system/touchicon-72.png',
 			sizes: '72x72',
 			type: 'image/png',
-			density: 1.5
+			density: 1.5,
 		}, {
 			src: nconf.get('relative_path') + '/assets/uploads/system/touchicon-96.png',
 			sizes: '96x96',
 			type: 'image/png',
-			density: 2.0
+			density: 2.0,
 		}, {
 			src: nconf.get('relative_path') + '/assets/uploads/system/touchicon-144.png',
 			sizes: '144x144',
 			type: 'image/png',
-			density: 3.0
+			density: 3.0,
 		}, {
 			src: nconf.get('relative_path') + '/assets/uploads/system/touchicon-192.png',
 			sizes: '192x192',
 			type: 'image/png',
-			density: 4.0
+			density: 4.0,
 		});
 	}
 
@@ -330,7 +330,7 @@ Controllers.outgoing = function (req, res) {
 	var data = {
 		outgoing: validator.escape(String(url)),
 		title: meta.config.title,
-		breadcrumbs: helpers.buildBreadcrumbs([{text: '[[notifications:outgoing_link]]'}])
+		breadcrumbs: helpers.buildBreadcrumbs([{text: '[[notifications:outgoing_link]]'}]),
 	};
 
 	if (url) {
@@ -359,7 +359,7 @@ Controllers.handle404 = function (req, res) {
 		return plugins.fireHook('action:meta.override404', {
 			req: req,
 			res: res,
-			error: {}
+			error: {},
 		});
 	}
 
@@ -404,7 +404,7 @@ Controllers.handleURIErrors = function (err, req, res, next) {
 			winston.warn('[controller] Bad request: ' + req.path);
 			if (res.locals.isAPI) {
 				res.status(400).json({
-					error: '[[global:400.title]]'
+					error: '[[global:400.title]]',
 				});
 			} else {
 				var middleware = require('../middleware');

@@ -8,7 +8,7 @@ define('forum/groups/details', [
 	'coverPhoto',
 	'pictureCropper',
 	'translator',
-	'vendor/colorpicker/colorpicker'
+	'vendor/colorpicker/colorpicker',
 ], function (memberList, iconSelect, components, coverPhoto, pictureCropper, translator) {
 
 	var Details = {};
@@ -27,7 +27,7 @@ define('forum/groups/details', [
 					socket.emit('groups.cover.update', {
 						groupName: groupName,
 						imageData: imageData,
-						position: position
+						position: position,
 					}, callback);
 				},
 				function () {
@@ -36,12 +36,12 @@ define('forum/groups/details', [
 						socketMethod: 'groups.cover.update',
 						aspectRatio: '16 / 9',
 						paramName: 'groupName',
-						paramValue: groupName
+						paramValue: groupName,
 					}, function (imageUrlOnServer) {
 						components.get('groups/cover').css('background-image', 'url(' + imageUrlOnServer + ')');
 					});
 				},
-				removeCover
+				removeCover,
 			);
 		}
 
@@ -63,7 +63,7 @@ define('forum/groups/details', [
 				case 'toggleOwnership':
 					socket.emit('groups.' + (isOwner ? 'rescind' : 'grant'), {
 						toUid: uid,
-						groupName: groupName
+						groupName: groupName,
 					}, function (err) {
 						if (!err) {
 							ownerFlagEl.toggleClass('invisible');
@@ -76,7 +76,7 @@ define('forum/groups/details', [
 				case 'kick':
 					socket.emit('groups.kick', {
 						uid: uid,
-						groupName: groupName
+						groupName: groupName,
 					}, function (err) {
 						if (!err) {
 							userRow.slideUp().remove();
@@ -106,7 +106,7 @@ define('forum/groups/details', [
 				case 'rejectAll':
 					socket.emit('groups.' + action, {
 						toUid: uid,
-						groupName: groupName
+						groupName: groupName,
 					}, function (err) {
 						if (!err) {
 							ajaxify.refresh();
@@ -139,7 +139,7 @@ define('forum/groups/details', [
 			},
 			onShow: function (colpkr) {
 				$(colpkr).css('z-index', 1051);
-			}
+			},
 		});
 
 		// Add icon selection interface
@@ -188,7 +188,7 @@ define('forum/groups/details', [
 
 				socket.emit('groups.update', {
 					groupName: groupName,
-					values: settings
+					values: settings,
 				}, function (err) {
 					if (err) {
 						return app.alertError(err.message);
@@ -214,7 +214,7 @@ define('forum/groups/details', [
 				bootbox.prompt('Please enter the name of this group in order to delete it:', function (response) {
 					if (response === groupName) {
 						socket.emit('groups.delete', {
-							groupName: groupName
+							groupName: groupName,
 						}, function (err) {
 							if (!err) {
 								app.alertSuccess('[[groups:event.deleted, ' + utils.escapeHTML(groupName) + ']]');
@@ -239,7 +239,7 @@ define('forum/groups/details', [
 			autocomplete.user(searchInput, function (event, selected) {
 				socket.emit('groups.issueInvite', {
 					toUid: selected.item.user.uid,
-					groupName: ajaxify.data.group.name
+					groupName: ajaxify.data.group.name,
 				}, function (err) {
 					if (err) {
 						return app.alertError(err.message);
@@ -256,7 +256,7 @@ define('forum/groups/details', [
 			}
 			socket.emit('groups.issueMassInvite', {
 				usernames: usernames,
-				groupName: ajaxify.data.group.name
+				groupName: ajaxify.data.group.name,
 			}, function (err) {
 				if (err) {
 					return app.alertError(err.message);
@@ -275,7 +275,7 @@ define('forum/groups/details', [
 				}
 						
 				socket.emit('groups.cover.remove', {
-					groupName: ajaxify.data.group.name
+					groupName: ajaxify.data.group.name,
 				}, function (err) {
 					if (!err) {
 						ajaxify.refresh();

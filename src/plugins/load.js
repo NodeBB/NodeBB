@@ -59,7 +59,7 @@ module.exports = function (Plugins) {
 						async.apply(mapStaticDirectories, pluginData, pluginData.path),
 					], next);
 				}, next);
-			}
+			},
 		], callback);
 	};
 
@@ -283,7 +283,7 @@ module.exports = function (Plugins) {
 			},
 			plugin: function (next) {
 				fs.readFile(path.join(pluginPath, 'plugin.json'), next);
-			}
+			},
 		}, function (err, results) {
 			if (err) {
 				return callback(err);

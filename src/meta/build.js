@@ -31,7 +31,7 @@ exports.build = function build(targets, callback) {
 	async.series([
 		async.apply(db.init),
 		async.apply(meta.themes.setupPaths),
-		async.apply(plugins.prepareForBuild)
+		async.apply(plugins.prepareForBuild),
 	], function (err) {
 		if (err) {
 			winston.error('[build] Encountered error preparing for build: ' + err.message);
@@ -74,7 +74,7 @@ exports.buildTargets = function (targets, callback) {
 					meta.js.linkModules,
 					meta.js.linkStatics,
 					async.apply(meta.js.minify, 'nodebb.min.js'),
-					async.apply(meta.js.minify, 'acp.min.js')
+					async.apply(meta.js.minify, 'acp.min.js'),
 				], step.bind(this, startTime, 'js', next));
 			} else {
 				setImmediate(next);
@@ -117,7 +117,7 @@ exports.buildTargets = function (targets, callback) {
 						break;
 				}
 			}, next);
-		}
+		},
 	], function (err) {
 		if (err) {
 			winston.error('[build] Encountered error during build step: ' + err.message);

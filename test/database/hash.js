@@ -9,7 +9,7 @@ describe('Hash methods', function () {
 	var testData = {
 		name: 'baris',
 		lastname: 'usakli',
-		age: 99
+		age: 99,
 	};
 
 	beforeEach(function (done) {
@@ -87,7 +87,7 @@ describe('Hash methods', function () {
 		before(function (done) {
 			async.parallel([
 				async.apply(db.setObject, 'testObject4', {name: 'baris'}),
-				async.apply(db.setObjectField, 'testObject5', 'name', 'ginger')
+				async.apply(db.setObjectField, 'testObject5', 'name', 'ginger'),
 			], done);
 		});
 
@@ -162,7 +162,7 @@ describe('Hash methods', function () {
 		before(function (done) {
 			async.parallel([
 				async.apply(db.setObject, 'testObject8', {name: 'baris', age:99}),
-				async.apply(db.setObject, 'testObject9', {name: 'ginger', age: 3})
+				async.apply(db.setObject, 'testObject9', {name: 'ginger', age: 3}),
 			], done);
 		});
 
@@ -299,7 +299,7 @@ describe('Hash methods', function () {
 				assert.equal(arguments.length, 1);
 				async.parallel({
 					delete1: async.apply(db.isObjectField, 'testObject10', 'delete1'),
-					delete2: async.apply(db.isObjectField, 'testObject10', 'delete2')
+					delete2: async.apply(db.isObjectField, 'testObject10', 'delete2'),
 				}, function (err, results) {
 					assert.ifError(err);
 					assert.equal(results.delete1, false);

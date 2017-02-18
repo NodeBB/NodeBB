@@ -14,7 +14,7 @@ helpers.loginUser = function (username, password, callback) {
 	request({
 		url: nconf.get('url') + '/api/config',
 		json: true,
-		jar: jar
+		jar: jar,
 	}, function (err, res, body) {
 		if (err || res.statusCode !== 200) {
 			return callback(err || new Error('[[error:invalid-response]]'));
@@ -28,8 +28,8 @@ helpers.loginUser = function (username, password, callback) {
 			json: true,
 			jar: jar,
 			headers: {
-				'x-csrf-token': body.csrf_token
-			}
+				'x-csrf-token': body.csrf_token,
+			},
 		}, function (err, res) {
 			if (err || res.statusCode !== 200) {
 				return callback(err || new Error('[[error:invalid-response]]'));
@@ -62,7 +62,7 @@ helpers.initSocketIO = function (callback) {
 	request.get({
 		url: nconf.get('url') + '/api/config',
 		jar: jar,
-		json: true
+		json: true,
 	}, function (err, res, body) {
 		if (err) {
 			return callback(err);
@@ -94,8 +94,8 @@ helpers.uploadFile = function (uploadEndPoint, filePath, body, jar, csrf_token, 
 	var formData = {
 		files: [
 			fs.createReadStream(filePath),
-			fs.createReadStream(filePath) // see https://github.com/request/request/issues/2445
-		]
+			fs.createReadStream(filePath), // see https://github.com/request/request/issues/2445
+		],
 	};
 	formData = utils.merge(formData, body);
 	request.post({
@@ -104,8 +104,8 @@ helpers.uploadFile = function (uploadEndPoint, filePath, body, jar, csrf_token, 
 		json: true,
 		jar: jar,
 		headers: {
-			'x-csrf-token': csrf_token
-		}
+			'x-csrf-token': csrf_token,
+		},
 	}, function (err, res, body) {
 		if (err) {
 			return callback(err);
@@ -119,7 +119,7 @@ helpers.registerUser = function (data, callback) {
 	request({
 		url: nconf.get('url') + '/api/config',
 		json: true,
-		jar: jar
+		jar: jar,
 	}, function (err, response, body) {
 		if (err) {
 			return callback(err);
@@ -130,8 +130,8 @@ helpers.registerUser = function (data, callback) {
 			json: true,
 			jar: jar,
 			headers: {
-				'x-csrf-token': body.csrf_token
-			}
+				'x-csrf-token': body.csrf_token,
+			},
 		}, function (err, res, body) {
 			if (err) {
 				return callback(err);

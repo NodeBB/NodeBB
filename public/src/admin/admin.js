@@ -14,7 +14,7 @@
 				message: '[[login:logged-out-due-to-inactivity]]',
 				callback: function () {
 					window.location.reload();
-				}
+				},
 			});
 		}, 3600000);
 	}
@@ -165,7 +165,7 @@
 				var bar = $.snackbar({
 					content: html,
 					timeout: params.timeout || 3000,
-					htmlAllowed: true
+					htmlAllowed: true,
 				});
 
 				if (params.clickfn) {
@@ -182,7 +182,7 @@
 			'panel': document.getElementById('panel'),
 			'menu': document.getElementById('menu'),
 			'padding': 256,
-			'tolerance': 70
+			'tolerance': 70,
 		});
 		
 		if (env === 'md' || env === 'lg') {
@@ -205,12 +205,12 @@
 			if (env === 'md' || env === 'lg') {
 				slideout.disableTouch();
 				$('#header').css({
-					'position': 'relative'
+					'position': 'relative',
 				});	
 			} else {
 				slideout.enableTouch();
 				$('#header').css({
-					'position': 'fixed'
+					'position': 'fixed',
 				});
 			}
 		});
@@ -218,7 +218,7 @@
 		function onOpeningMenu() {
 			$('#header').css({
 				'top': $('#panel').position().top * -1 + 'px',
-				'position': 'absolute'
+				'position': 'absolute',
 			});
 		}
 
@@ -227,7 +227,7 @@
 		slideout.on('close', function () {
 			$('#header').css({
 				'top': '0px',
-				'position': 'fixed'
+				'position': 'fixed',
 			});
 		});
 	}

@@ -25,7 +25,7 @@ module.exports = function (User) {
 			},
 			function (next) {
 				User.deleteAccount(uid, next);
-			}
+			},
 		], callback);
 	};
 
@@ -88,7 +88,7 @@ module.exports = function (User) {
 						if (userData.email) {
 							async.parallel([
 								async.apply(db.sortedSetRemove, 'email:uid', userData.email.toLowerCase()),
-								async.apply(db.sortedSetRemove, 'email:sorted', userData.email.toLowerCase() + ':' + uid)
+								async.apply(db.sortedSetRemove, 'email:sorted', userData.email.toLowerCase() + ':' + uid),
 							], next);
 						} else {
 							next();
@@ -104,7 +104,7 @@ module.exports = function (User) {
 							'users:notvalidated',
 							'digest:day:uids',
 							'digest:week:uids',
-							'digest:month:uids'
+							'digest:month:uids',
 						], uid, next);
 					},
 					function (next) {
@@ -123,7 +123,7 @@ module.exports = function (User) {
 							'uid:' + uid + ':chat:rooms', 'uid:' + uid + ':chat:rooms:unread',
 							'uid:' + uid + ':upvote', 'uid:' + uid + ':downvote',
 							'uid:' + uid + ':ignored:cids', 'uid:' + uid + ':flag:pids',
-							'uid:' + uid + ':sessions', 'uid:' + uid + ':sessionUUID:sessionId'
+							'uid:' + uid + ':sessions', 'uid:' + uid + ':sessionUUID:sessionId',
 						];
 						db.deleteAll(keys, next);
 					},
@@ -135,12 +135,12 @@ module.exports = function (User) {
 					},
 					function (next) {
 						groups.leaveAllGroups(uid, next);
-					}
+					},
 				], next);
 			},
 			function (results, next) {
 				db.deleteAll(['followers:' + uid, 'following:' + uid, 'user:' + uid], next);
-			}
+			},
 		], callback);
 	};
 
@@ -149,7 +149,7 @@ module.exports = function (User) {
 			function (next) {
 				async.parallel({
 					upvotedPids: async.apply(db.getSortedSetRange, 'uid:' + uid + ':upvote', 0, -1),
-					downvotedPids: async.apply(db.getSortedSetRange, 'uid:' + uid + ':downvote', 0, -1)
+					downvotedPids: async.apply(db.getSortedSetRange, 'uid:' + uid + ':downvote', 0, -1),
 				}, next);
 			},
 			function (pids, next) {
@@ -160,7 +160,7 @@ module.exports = function (User) {
 				async.eachSeries(pids, function (pid, next) {
 					posts.unvote(pid, uid, next);
 				}, next);
-			}
+			},
 		], function (err) {
 			callback(err);
 		});
@@ -181,9 +181,9 @@ module.exports = function (User) {
 
 				async.parallel([
 					async.apply(db.sortedSetsRemove, roomKeys, uid),
-					async.apply(db.deleteAll, userKeys)
+					async.apply(db.deleteAll, userKeys),
 				], next);
-			}
+			},
 		], function (err) {
 			callback(err);
 		});
@@ -202,14 +202,14 @@ module.exports = function (User) {
 			},
 			function (next) {
 				db.delete('uid:' + uid + ':ip', next);
-			}
+			},
 		], callback);
 	}
 
 	function deleteUserFromFollowers(uid, callback) {
 		async.parallel({
 			followers: async.apply(db.getSortedSetRange, 'followers:' + uid, 0, -1),
-			following: async.apply(db.getSortedSetRange, 'following:' + uid, 0, -1)
+			following: async.apply(db.getSortedSetRange, 'following:' + uid, 0, -1),
 		}, function (err, results) {
 			function updateCount(uids, name, fieldName, next) {
 				async.each(uids, function (uid, next) {
@@ -238,7 +238,7 @@ module.exports = function (User) {
 			async.parallel([
 				async.apply(db.sortedSetsRemove, followerSets.concat(followingSets), uid),
 				async.apply(updateCount, results.following, 'followers:', 'followerCount'),
-				async.apply(updateCount, results.followers, 'following:', 'followingCount')
+				async.apply(updateCount, results.followers, 'following:', 'followingCount'),
 			], callback);
 		});
 	}

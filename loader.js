@@ -12,7 +12,7 @@ var	nconf = require('nconf'),
 	pkg = require('./package.json');
 
 nconf.argv().env().file({
-	file: path.join(__dirname, '/config.json')
+	file: path.join(__dirname, '/config.json'),
 });
 
 var	pidFilePath = __dirname + '/pidfile',
@@ -22,7 +22,7 @@ var	pidFilePath = __dirname + '/pidfile',
 	workers = [],
 
 	Loader = {
-		timesStarted: 0
+		timesStarted: 0,
 	};
 
 Loader.init = function (callback) {
@@ -118,7 +118,7 @@ function forkWorker(index, isPrimary) {
 
 	var worker = fork('app.js', args, {
 		silent: silent,
-		env: process.env
+		env: process.env,
 	});
 
 	worker.index = index;
@@ -175,7 +175,7 @@ Loader.restart = function () {
 Loader.reload = function () {
 	workers.forEach(function (worker) {
 		worker.send({
-			action: 'reload'
+			action: 'reload',
 		});
 	});
 };
@@ -222,7 +222,7 @@ fs.open(path.join(__dirname, 'config.json'), 'r', function (err) {
 
 			require('daemon')({
 				stdout: process.stdout,
-				stderr: process.stderr
+				stderr: process.stderr,
 			});
 
 			fs.writeFile(__dirname + '/pidfile', process.pid);
@@ -231,7 +231,7 @@ fs.open(path.join(__dirname, 'config.json'), 'r', function (err) {
 		async.series([
 			Loader.init,
 			Loader.displayStartupMessages,
-			Loader.start
+			Loader.start,
 		], function (err) {
 			if (err) {
 				console.log('[loader] Error during startup: ' + err.message);

@@ -35,7 +35,7 @@ start.start = function () {
 				},
 				function (next) {
 					require('./upgrade').check(next);
-				}
+				},
 			], function (err) {
 				next(err);
 			});
@@ -53,7 +53,7 @@ start.start = function () {
 			}
 
 			webserver.listen(next);
-		}
+		},
 	], function (err) {
 		if (err) {
 			switch(err.message) {
@@ -80,7 +80,7 @@ start.start = function () {
 
 		if (process.send) {
 			process.send({
-				action: 'listening'
+				action: 'listening',
 			});
 		}
 	});
@@ -143,7 +143,7 @@ function restart() {
 	if (process.send) {
 		winston.info('[app] Restarting...');
 		process.send({
-			action: 'restart'
+			action: 'restart',
 		});
 	} else {
 		winston.error('[app] Could not restart server. Shutting down.');

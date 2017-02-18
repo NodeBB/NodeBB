@@ -13,7 +13,7 @@ logsController.get = function (req, res, next) {
 		}
 
 		res.render('admin/advanced/logs', {
-			data: validator.escape(logs)
+			data: validator.escape(logs),
 		});
 	});
 };

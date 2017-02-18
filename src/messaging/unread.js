@@ -48,7 +48,7 @@ module.exports = function (Messaging) {
 				});
 
 				db.sortedSetsAdd(keys, Date.now(), roomId, next);
-			}
+			},
 		], callback);
 	};
 

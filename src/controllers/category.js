@@ -37,7 +37,7 @@ categoryController.get = function (req, res, callback) {
 				},
 				userSettings: function (next) {
 					user.getSettings(req.uid, next);
-				}
+				},
 			}, next);
 		},
 		function (results, next) {
@@ -97,7 +97,7 @@ categoryController.get = function (req, res, callback) {
 				start: start,
 				stop: stop,
 				uid: req.uid,
-				settings: settings
+				settings: settings,
 			};
 
 			async.waterfall([
@@ -120,7 +120,7 @@ categoryController.get = function (req, res, callback) {
 						}
 					}
 					categories.getCategoryById(payload, next);
-				}
+				},
 			], next);
 		},
 		function (categoryData, next) {
@@ -135,8 +135,8 @@ categoryController.get = function (req, res, callback) {
 			var breadcrumbs = [
 				{
 					text: categoryData.name,
-					url: nconf.get('relative_path') + '/category/' + categoryData.slug
-				}
+					url: nconf.get('relative_path') + '/category/' + categoryData.slug,
+				},
 			];
 			helpers.buildCategoryBreadcrumbs(categoryData.parentCid, function (err, crumbs) {
 				if (err) {
@@ -155,7 +155,7 @@ categoryController.get = function (req, res, callback) {
 			categories.getRecentTopicReplies(allCategories, req.uid, function (err) {
 				next(err, categoryData);
 			});
-		}
+		},
 	], function (err, categoryData) {
 		if (err) {
 			return callback(err);
@@ -167,26 +167,26 @@ categoryController.get = function (req, res, callback) {
 		res.locals.metaTags = [
 			{
 				name: 'title',
-				content: categoryData.name
+				content: categoryData.name,
 			},
 			{
 				property: 'og:title',
-				content: categoryData.name
+				content: categoryData.name,
 			},
 			{
 				name: 'description',
-				content: categoryData.description
+				content: categoryData.description,
 			},
 			{
 				property: "og:type",
-				content: 'website'
-			}
+				content: 'website',
+			},
 		];
 
 		if (categoryData.backgroundImage) {
 			res.locals.metaTags.push({
 				name: 'og:image',
-				content: categoryData.backgroundImage
+				content: categoryData.backgroundImage,
 			});
 		}
 
@@ -194,12 +194,12 @@ categoryController.get = function (req, res, callback) {
 			{
 				rel: 'alternate',
 				type: 'application/rss+xml',
-				href: nconf.get('url') + '/category/' + cid + '.rss'
+				href: nconf.get('url') + '/category/' + cid + '.rss',
 			},
 			{
 				rel: 'up',
-				href: nconf.get('url')
-			}
+				href: nconf.get('url'),
+			},
 		];
 
 		if (parseInt(req.uid, 10)) {

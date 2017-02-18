@@ -53,13 +53,13 @@
 				if (strategy.url) {
 					router.get(strategy.url, passport.authenticate(strategy.name, {
 						scope: strategy.scope,
-						prompt: strategy.prompt || undefined
+						prompt: strategy.prompt || undefined,
 					}));
 				}
 
 				router.get(strategy.callbackURL, passport.authenticate(strategy.name, {
 					successReturnToOrRedirect: nconf.get('relative_path') + (strategy.successUrl !== undefined ? strategy.successUrl : '/'),
-					failureRedirect: nconf.get('relative_path') + (strategy.failureUrl !== undefined ? strategy.failureUrl : '/login')
+					failureRedirect: nconf.get('relative_path') + (strategy.failureUrl !== undefined ? strategy.failureUrl : '/login'),
 				}));
 			});
 
@@ -82,7 +82,7 @@
 
 	passport.deserializeUser(function (uid, done) {
 		done(null, {
-			uid: uid
+			uid: uid,
 		});
 	});
 

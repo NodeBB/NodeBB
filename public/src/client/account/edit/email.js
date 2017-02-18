@@ -12,7 +12,7 @@ define('forum/account/edit/email', ['forum/account/header'], function (header) {
 			var userData = {
 				uid: $('#inputUID').val(),
 				email: $('#inputNewEmail').val(),
-				password: $('#inputCurrentPassword').val()
+				password: $('#inputCurrentPassword').val(),
 			};
 
 			if (!userData.email) {

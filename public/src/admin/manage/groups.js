@@ -30,7 +30,7 @@ define('admin/manage/groups', ['translator'], function (translator) {
 		createModalGo.on('click', function () {
 			var submitObj = {
 					name: createGroupName.val(),
-					description: $('#create-group-desc').val()
+					description: $('#create-group-desc').val(),
 				},
 				errorText;
 
@@ -61,7 +61,7 @@ define('admin/manage/groups', ['translator'], function (translator) {
 				bootbox.confirm('[[admin/manage/groups:alerts.confirm-delete]]', function (confirm) {
 					if (confirm) {
 						socket.emit('groups.delete', {
-							groupName: groupName
+							groupName: groupName,
 						}, function (err, data) {
 							if(err) {
 								return app.alertError(err.message);
@@ -86,15 +86,15 @@ define('admin/manage/groups', ['translator'], function (translator) {
 			socket.emit('groups.search', {
 				query: queryEl.val(),
 				options: {
-					sort: 'date'
-				}
+					sort: 'date',
+				},
 			}, function (err, groups) {
 				if (err) {
 					return app.alertError(err.message);
 				}
 
 				templates.parse('admin/manage/groups', 'groups', {
-					groups: groups
+					groups: groups,
 				}, function (html) {
 					translator.translate(html, function (html) {
 						groupsEl.find('[data-groupname]').remove();

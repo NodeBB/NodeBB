@@ -69,7 +69,7 @@ define('forum/topic/votes', ['components', 'translator'], function (components, 
 
 		socket.emit(currentState ? 'posts.unvote' : method , {
 			pid: post.attr('data-pid'),
-			room_id: app.currentRoom
+			room_id: app.currentRoom,
 		}, function (err) {
 			if (err) {
 				if (err.message === 'self-vote') {
@@ -100,7 +100,7 @@ define('forum/topic/votes', ['components', 'translator'], function (components, 
 						title: 'Voters',
 						message: translated,
 						className: 'vote-modal',
-						show: true
+						show: true,
 					});
 
 					dialog.on('click', function () {

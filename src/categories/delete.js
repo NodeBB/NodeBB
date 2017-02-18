@@ -33,7 +33,7 @@ module.exports = function (Categories) {
 			function (next) {
 				plugins.fireHook('action:category.delete', cid);
 				next();
-			}
+			},
 		], callback);
 	};
 
@@ -55,14 +55,14 @@ module.exports = function (Categories) {
 					'cid:' + cid + ':ignorers',
 					'cid:' + cid + ':children',
 					'cid:' + cid + ':tag:whitelist',
-					'category:' + cid
+					'category:' + cid,
 				], next);
 			},
 			function (next) {
 				async.each(privileges.privilegeList, function (privilege, next) {
 					groups.destroy('cid:' + cid + ':privileges:' + privilege, next);
 				}, next);
-			}
+			},
 		], function (err) {
 			callback(err);
 		});
@@ -77,7 +77,7 @@ module.exports = function (Categories) {
 					},
 					children: function (next) {
 						db.getSortedSetRange('cid:' + cid + ':children', 0, -1, next);
-					}
+					},
 				}, next);
 			},
 			function (results, next) {
@@ -94,12 +94,12 @@ module.exports = function (Categories) {
 								},
 								function (next) {
 									db.sortedSetAdd('cid:0:children', cid, cid, next);
-								}
+								},
 							], next);
 						}, next);
-					}
+					},
 				], next);
-			}
+			},
 		], function (err) {
 			callback(err);
 		});

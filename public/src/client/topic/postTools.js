@@ -8,7 +8,7 @@ define('forum/topic/postTools', [
 	'components',
 	'translator',
 	'forum/topic/votes',
-	'forum/topic/move-post'
+	'forum/topic/move-post',
 ], function (share, navigator, components, translator, votes, movePost) {
 
 	var PostTools = {};
@@ -95,7 +95,7 @@ define('forum/topic/postTools', [
 			translator.translate('[[topic:link_back, ' + ajaxify.data.titleRaw + ', ' + config.relative_path + '/topic/' + ajaxify.data.slug + ']]', function (body) {
 				$(window).trigger('action:composer.topic.new', {
 					cid: ajaxify.data.cid,
-					body: body
+					body: body,
 				});
 			});
 		});
@@ -133,7 +133,7 @@ define('forum/topic/postTools', [
 
 			if (checkDuration(postEditDuration, timestamp, 'post-edit-duration-expired')) {
 				$(window).trigger('action:composer.post.edit', {
-					pid: getData(btn, 'data-pid')
+					pid: getData(btn, 'data-pid'),
 				});
 			}
 		});
@@ -215,14 +215,14 @@ define('forum/topic/postTools', [
 					topicName: ajaxify.data.titleRaw,
 					username: username,
 					text: selectedNode.text,
-					selectedPid: selectedNode.pid
+					selectedPid: selectedNode.pid,
 				});
 			} else {
 				$(window).trigger('action:composer.post.new', {
 					tid: tid,
 					pid: toPid,
 					topicName: ajaxify.data.titleRaw,
-					text: username ? username + ' ' : ''
+					text: username ? username + ' ' : '',
 				});
 			}
 		});
@@ -239,7 +239,7 @@ define('forum/topic/postTools', [
 					pid: toPid,
 					username: username,
 					topicName: ajaxify.data.titleRaw,
-					text: text
+					text: text,
 				});
 			}
 
@@ -297,7 +297,7 @@ define('forum/topic/postTools', [
 
 		socket.emit(method, {
 			pid: pid,
-			room_id: app.currentRoom
+			room_id: app.currentRoom,
 		}, function (err) {
 			if (err) {
 				app.alertError(err.message);
@@ -350,7 +350,7 @@ define('forum/topic/postTools', [
 
 				socket.emit('posts.' + action, {
 					pid: pid,
-					tid: tid
+					tid: tid,
 				}, function (err) {
 					if (err) {
 						app.alertError(err.message);
@@ -384,7 +384,7 @@ define('forum/topic/postTools', [
 							callback: function () {
 								staleReplyAnyway = true;
 								callback();
-							}
+							},
 						},
 						create: {
 							label: '[[topic:stale.create]]',
@@ -393,12 +393,12 @@ define('forum/topic/postTools', [
 								translator.translate('[[topic:link_back, ' + ajaxify.data.title + ', ' + config.relative_path + '/topic/' + ajaxify.data.slug + ']]', function (body) {
 									$(window).trigger('action:composer.topic.new', {
 										cid: ajaxify.data.cid,
-										body: body
+										body: body,
 									});
 								});
-							}
-						}
-					}
+							},
+						},
+					},
 				});
 
 			warning.modal();

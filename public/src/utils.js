@@ -181,7 +181,7 @@
 			"tiff": "image/tiff",
 			"xbm": "image/x-xbitmap",
 			"xpm": "image/x-xpixmap",
-			"xwd": "image/x-xwindowdump"
+			"xwd": "image/x-xwindowdump",
 		},
 
 		fileMimeType: function (path) {
@@ -439,7 +439,7 @@
 					targetLocation.host === referenceLocation.host && targetLocation.protocol === referenceLocation.protocol &&	// Otherwise need to check if protocol and host match
 					(relative_path.length > 0 ? targetLocation.pathname.indexOf(relative_path) === 0 : true)	// Subfolder installs need this additional check
 				);
-		}
+		},
 	};
 
 	if (typeof String.prototype.startsWith != 'function') {
@@ -480,6 +480,6 @@
 
 }('undefined' === typeof module ? {
 	module: {
-		exports: {}
-	}
+		exports: {},
+	},
 } : module));

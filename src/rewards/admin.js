@@ -41,9 +41,9 @@ rewards.save = function (data, callback) {
 					},
 					function (next) {
 						db.setObject('rewards:id:' + data.id + ':rewards', rewardsData, next);
-					}
+					},
 				], next);
-			}
+			},
 		], next);
 
 	}, function (err) {
@@ -65,7 +65,7 @@ rewards.delete = function (data, callback) {
 		},
 		function (next) {
 			db.delete('rewards:id:' + data.id + ':rewards', next);
-		}
+		},
 	], callback);
 };
 
@@ -80,7 +80,7 @@ rewards.get = function (callback) {
 		},
 		rewards: function (next) {
 			plugins.fireHook('filter:rewards.rewards', [], next);
-		}
+		},
 	}, callback);
 };
 
@@ -105,7 +105,7 @@ function saveConditions(data, callback) {
 			async.each(Object.keys(rewardsPerCondition), function (condition, next) {
 				db.setAdd('condition:' + condition + ':rewards', rewardsPerCondition[condition], next);
 			}, next);
-		}
+		},
 	], function (err) {
 		callback(err);
 	});
@@ -121,7 +121,7 @@ function getActiveRewards(callback) {
 			},
 			rewards: function (next) {
 				db.getObject('rewards:id:' + id + ':rewards', next);
-			}
+			},
 		}, function (err, data) {
 			if (data.main) {
 				data.main.disabled = data.main.disabled === 'true';

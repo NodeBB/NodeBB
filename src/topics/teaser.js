@@ -99,7 +99,7 @@ module.exports = function (Topics) {
 			},
 			function (data, next) {
 				next(null, data.teasers);
-			}
+			},
 		], callback);
 	};
 
@@ -113,7 +113,7 @@ module.exports = function (Topics) {
 			},
 			function (topics, next) {
 				Topics.getTeasers(topics, next);
-			}
+			},
 		], callback);
 	};
 

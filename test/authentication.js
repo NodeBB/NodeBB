@@ -23,7 +23,7 @@ describe('authentication', function () {
 		request({
 			url: nconf.get('url') + '/api/config',
 			json: true,
-			jar: jar
+			jar: jar,
 		}, function (err, response, body) {
 			assert.ifError(err);
 
@@ -36,8 +36,8 @@ describe('authentication', function () {
 				json: true,
 				jar: jar,
 				headers: {
-					'x-csrf-token': body.csrf_token
-				}
+					'x-csrf-token': body.csrf_token,
+				},
 			}, function (err, response, body) {
 				assert.ifError(err);
 				assert(body);
@@ -45,7 +45,7 @@ describe('authentication', function () {
 				request({
 					url: nconf.get('url') + '/api/me',
 					json: true,
-					jar: jar
+					jar: jar,
 				}, function (err, response, body) {
 					assert.ifError(err);
 					assert(body);
@@ -61,7 +61,7 @@ describe('authentication', function () {
 		request({
 			url: nconf.get('url') + '/api/config',
 			json: true,
-			jar: jar
+			jar: jar,
 		}, function (err, response, body) {
 			assert.ifError(err);
 
@@ -70,15 +70,15 @@ describe('authentication', function () {
 				json: true,
 				jar: jar,
 				headers: {
-					'x-csrf-token': body.csrf_token
-				}
+					'x-csrf-token': body.csrf_token,
+				},
 			}, function (err) {
 				assert.ifError(err);
 
 				request({
 					url: nconf.get('url') + '/api/me',
 					json: true,
-					jar: jar
+					jar: jar,
 				}, function (err, response, body) {
 					assert.ifError(err);
 					assert.equal(body, 'not-authorized');
@@ -93,7 +93,7 @@ describe('authentication', function () {
 		request({
 			url: nconf.get('url') + '/api/config',
 			json: true,
-			jar: jar
+			jar: jar,
 		}, function (err, response, body) {
 			assert.ifError(err);
 
@@ -105,8 +105,8 @@ describe('authentication', function () {
 				json: true,
 				jar: jar,
 				headers: {
-					'x-csrf-token': body.csrf_token
-				}
+					'x-csrf-token': body.csrf_token,
+				},
 			}, function (err, response, body) {
 				assert.ifError(err);
 				assert(body);
@@ -114,7 +114,7 @@ describe('authentication', function () {
 				request({
 					url: nconf.get('url') + '/api/me',
 					json: true,
-					jar: jar
+					jar: jar,
 				}, function (err, response, body) {
 					assert.ifError(err);
 					assert(body);

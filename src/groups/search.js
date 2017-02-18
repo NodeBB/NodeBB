@@ -33,7 +33,7 @@ module.exports = function (Groups) {
 				}
 
 				Groups.sort(options.sort, groupsData, next);
-			}
+			},
 		], callback);
 	};
 
@@ -84,7 +84,7 @@ module.exports = function (Groups) {
 						}
 					}
 					next(null, uids);
-				}
+				},
 			], callback);
 		}
 
@@ -129,7 +129,7 @@ module.exports = function (Groups) {
 					}
 				});
 				next(null, results);
-			}
+			},
 		], callback);
 	};
 };

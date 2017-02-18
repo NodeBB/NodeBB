@@ -7,7 +7,7 @@ define('forum/topic/threadTools', [
 	'forum/topic/move',
 	'forum/topic/delete-posts',
 	'components',
-	'translator'
+	'translator',
 ], function (fork, move, deletePosts, components, translator) {
 
 	var ThreadTools = {};
@@ -101,7 +101,7 @@ define('forum/topic/threadTools', [
 						alert_id: 'topic_follow',
 						title: '[[global:please_log_in]]',
 						message: '[[topic:login_to_subscribe]]',
-						timeout: 5000
+						timeout: 5000,
 					});
 				}
 				var message = '';
@@ -118,7 +118,7 @@ define('forum/topic/threadTools', [
 					alert_id: 'follow_thread',
 					message: message,
 					type: 'success',
-					timeout: 5000
+					timeout: 5000,
 				});
 
 				$(window).trigger('action:topics.changeWatching', {tid: tid, type: type});

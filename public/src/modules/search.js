@@ -4,7 +4,7 @@
 define('search', ['navigator', 'translator'], function (nav, translator) {
 
 	var Search = {
-		current: {}
+		current: {},
 	};
 
 	Search.query = function (data, callback) {
@@ -39,7 +39,7 @@ define('search', ['navigator', 'translator'], function (nav, translator) {
 		var postedBy = data.by || '';
 		var query = {
 			term: data.term,
-			'in': searchIn
+			'in': searchIn,
 		};
 
 		if (postedBy && (searchIn === 'posts' || searchIn === 'titles' || searchIn === 'titlesposts')) {
@@ -89,7 +89,7 @@ define('search', ['navigator', 'translator'], function (nav, translator) {
 	Search.queryTopic = function (tid, term, callback) {
 		socket.emit('topics.search', {
 			tid: tid,
-			term: term
+			term: term,
 		}, function (err, pids) {
 			if (err) {
 				return app.alertError(err.message);
@@ -102,7 +102,7 @@ define('search', ['navigator', 'translator'], function (nav, translator) {
 						return a - b;
 					}),
 					tid: tid,
-					term: term
+					term: term,
 				};
 
 				Search.checkPagePresence(tid, function () {
@@ -121,7 +121,7 @@ define('search', ['navigator', 'translator'], function (nav, translator) {
 	};
 
 	Search.topicDOM = {
-		active: false
+		active: false,
 	};
 
 	Search.topicDOM.prev = function () {
@@ -144,7 +144,7 @@ define('search', ['navigator', 'translator'], function (nav, translator) {
 			var data = {
 				pid: Search.current.results[index],
 				tid: Search.current.tid,
-				topicPostSort: config.topicPostSort
+				topicPostSort: config.topicPostSort,
 			};
 			socket.emit('posts.getPidIndex', data, function (err, postIndex) {
 				if (err) {

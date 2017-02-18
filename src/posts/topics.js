@@ -15,7 +15,7 @@ module.exports = function (Posts) {
 			},
 			function (pids, next) {
 				Posts.getPostsByPids(pids, uid, next);
-			}
+			},
 		], callback);
 	};
 
@@ -29,7 +29,7 @@ module.exports = function (Posts) {
 			},
 			function (mainPid, next) {
 				next(null, parseInt(pid, 10) === parseInt(mainPid, 10));
-			}
+			},
 		], callback);
 	};
 
@@ -40,7 +40,7 @@ module.exports = function (Posts) {
 			},
 			function (tid, next) {
 				topics.getTopicFields(tid, fields, next);
-			}
+			},
 		], callback);
 	};
 
@@ -66,7 +66,7 @@ module.exports = function (Posts) {
 						});
 
 						topics.getTopicsFields(tids, ['slug'], next);
-					}
+					},
 				}, next);
 			},
 			function (results, next) {
@@ -81,7 +81,7 @@ module.exports = function (Posts) {
 				});
 
 				next(null, paths);
-			}
+			},
 		], callback);
 	};
 

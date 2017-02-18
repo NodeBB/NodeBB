@@ -33,7 +33,7 @@ define('forum/login', ['translator'], function (translator) {
 
 				formEl.ajaxSubmit({
 					headers: {
-						'x-csrf-token': config.csrf_token
+						'x-csrf-token': config.csrf_token,
 					},
 					success: function (data, status) {
 						window.location.href = data + '?loggedin';
@@ -52,7 +52,7 @@ define('forum/login', ['translator'], function (translator) {
 								$('#password').select();
 							}
 						}
-					}
+					},
 				});
 			}
 		});

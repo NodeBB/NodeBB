@@ -22,7 +22,7 @@ module.exports = function (Categories) {
 				});
 
 				next(null, uids);
-			}
+			},
 		], callback);
 	};
 };

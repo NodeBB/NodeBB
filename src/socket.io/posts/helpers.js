@@ -26,7 +26,7 @@ helpers.postCommand = function (socket, command, eventName, notification, data, 
 				},
 				deleted: function (next) {
 					posts.getPostField(data.pid, 'deleted', next);
-				}
+				},
 			}, next);
 		},
 		function (results, next) {
@@ -50,7 +50,7 @@ helpers.postCommand = function (socket, command, eventName, notification, data, 
 		},
 		function (filteredData, next) {
 			executeCommand(socket, command, eventName, notification, filteredData.data, next);
-		}
+		},
 	], callback);
 };
 
@@ -71,6 +71,6 @@ function executeCommand(socket, command, eventName, notification, data, callback
 				socketHelpers.rescindUpvoteNotification(data.pid, socket.uid);
 			}
 			next(null, result);
-		}
+		},
 	], callback);
 }

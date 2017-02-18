@@ -25,20 +25,20 @@ questions.main = [
 	{
 		name: 'secret',
 		description: 'Please enter a NodeBB secret',
-		'default': nconf.get('secret') || utils.generateUUID()
+		'default': nconf.get('secret') || utils.generateUUID(),
 	},
 	{
 		name: 'database',
 		description: 'Which database to use',
-		'default': nconf.get('database') || 'mongo'
-	}
+		'default': nconf.get('database') || 'mongo',
+	},
 ];
 
 questions.optional = [
 	{
 		name: 'port',
-		default: nconf.get('port') || 4567
-	}
+		default: nconf.get('port') || 4567,
+	},
 ];
 
 function checkSetupFlag(next) {
@@ -75,7 +75,7 @@ function checkSetupFlag(next) {
 		}
 	} else if (nconf.get('database')) {
 		install.values = {
-			database: nconf.get('database')
+			database: nconf.get('database'),
 		};
 		next();
 	} else {
@@ -145,7 +145,7 @@ function setupConfig(next) {
 		},
 		function (config, next) {
 			completeConfigSetup(config, next);
-		}
+		},
 	], next);
 }
 
@@ -169,7 +169,7 @@ function completeConfigSetup(config, next) {
 		},
 		function (next) {
 			require('./database').createIndices(next);
-		}
+		},
 	], next);
 }
 
@@ -199,7 +199,7 @@ function enableDefaultTheme(next) {
 		process.stdout.write('Enabling default theme: ' + defaultTheme + '\n');
 		meta.themes.set({
 			type: 'local',
-			id: defaultTheme
+			id: defaultTheme,
 		}, next);
 	});
 }
@@ -231,25 +231,25 @@ function createAdmin(callback) {
 			name: 'username',
 			description: 'Administrator username',
 			required: true,
-			type: 'string'
+			type: 'string',
 		}, {
 			name: 'email',
 			description: 'Administrator email address',
 			pattern: /.+@.+/,
-			required: true
+			required: true,
 		}],
 		passwordQuestions = [{
 			name: 'password',
 			description: 'Password',
 			required: true,
 			hidden: true,
-			type: 'string'
+			type: 'string',
 		}, {
 			name: 'password:confirm',
 			description: 'Confirm Password',
 			required: true,
 			hidden: true,
-			type: 'string'
+			type: 'string',
 		}],
 		success = function (err, results) {
 			if (err) {
@@ -283,7 +283,7 @@ function createAdmin(callback) {
 				},
 				function (next) {
 					Groups.ownership.grant(adminUid, 'administrators', next);
-				}
+				},
 			], function (err) {
 				if (err) {
 					return callback(err);
@@ -323,7 +323,7 @@ function createAdmin(callback) {
 			username: install.values['admin:username'] || nconf.get('admin:username') || 'admin',
 			email: install.values['admin:email'] || nconf.get('admin:email') || '',
 			password: install.values['admin:password'] || nconf.get('admin:password') || password,
-			'password:confirm': install.values['admin:password:confirm'] || nconf.get('admin:password') || password
+			'password:confirm': install.values['admin:password:confirm'] || nconf.get('admin:password') || password,
 		};
 
 		success(null, results);
@@ -347,12 +347,12 @@ function createGlobalModeratorsGroup(next) {
 				description: 'Forum wide moderators',
 				hidden: 0,
 				private: 1,
-				disableJoinRequests: 1
+				disableJoinRequests: 1,
 			}, next);
 		},
 		function (groupData, next) {
 			groups.show('Global Moderators', next);
-		}
+		},
 	], next);
 }
 
@@ -406,7 +406,7 @@ function createWelcomePost(next) {
 		},
 		function (next) {
 			db.getObjectField('global', 'topicCount', next);
-		}
+		},
 	], function (err, results) {
 		if (err) {
 			return next(err);
@@ -421,7 +421,7 @@ function createWelcomePost(next) {
 				uid: 1,
 				cid: 2,
 				title: 'Welcome to your NodeBB!',
-				content: content.toString()
+				content: content.toString(),
 			}, next);
 		} else {
 			next();
@@ -441,7 +441,7 @@ function enableDefaultPlugins(next) {
 			'nodebb-rewards-essentials',
 			'nodebb-plugin-soundpack-default',
 			'nodebb-plugin-emoji-extended',
-			'nodebb-plugin-emoji-one'
+			'nodebb-plugin-emoji-one',
 		],
 		customDefaults = nconf.get('defaultPlugins');
 
@@ -478,7 +478,7 @@ function setCopyrightWidget(next) {
 		},
 		footer: function (next) {
 			db.getObjectField('widgets:global', 'footer', next);
-		}
+		},
 	}, function (err, results) {
 		if (err) {
 			return next(err);
@@ -516,7 +516,7 @@ install.setup = function (callback) {
 				if (!uptodate) { upgrade.upgrade(next); }
 				else { next(); }
 			});
-		}
+		},
 	], function (err, results) {
 		if (err) {
 			winston.warn('NodeBB Setup Aborted.\n ' + err.stack);
@@ -549,7 +549,7 @@ install.save = function (server_conf, callback) {
 		process.stdout.write('Configuration Saved OK\n');
 
 		nconf.file({
-			file: path.join(__dirname, '..', 'config.json')
+			file: path.join(__dirname, '..', 'config.json'),
 		});
 
 		callback();

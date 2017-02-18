@@ -42,7 +42,7 @@ settingsController.get = function (req, res, callback) {
 				},
 				soundsMapping: function (next) {
 					meta.sounds.getMapping(userData.uid, next);
-				}
+				},
 			}, next);
 		},
 		function (results, next) {
@@ -53,7 +53,7 @@ settingsController.get = function (req, res, callback) {
 			var soundSettings = {
 				'notificationSound': 'notification',
 				'incomingChatSound': 'chat-incoming',
-				'outgoingChatSound': 'chat-outgoing'
+				'outgoingChatSound': 'chat-outgoing',
 			};
 
 			Object.keys(soundSettings).forEach(function (setting) {
@@ -68,7 +68,7 @@ settingsController.get = function (req, res, callback) {
 			userData.customSettings = data.customSettings;
 			userData.disableEmailSubscriptions = parseInt(meta.config.disableEmailSubscriptions, 10) === 1;
 			next();
-		}
+		},
 	], function (err) {
 		if (err) {
 			return callback(err);
@@ -78,7 +78,7 @@ settingsController.get = function (req, res, callback) {
 			{value: 'off', name: '[[user:digest_off]]', selected: 'off' === userData.settings.dailyDigestFreq},
 			{value: 'day', name: '[[user:digest_daily]]', selected: 'day' === userData.settings.dailyDigestFreq},
 			{value: 'week', name: '[[user:digest_weekly]]', selected: 'week' === userData.settings.dailyDigestFreq},
-			{value: 'month', name: '[[user:digest_monthly]]', selected: 'month' === userData.settings.dailyDigestFreq}
+			{value: 'month', name: '[[user:digest_monthly]]', selected: 'month' === userData.settings.dailyDigestFreq},
 		];
 
 
@@ -99,7 +99,7 @@ settingsController.get = function (req, res, callback) {
 			{ "name": "Spacelab", "value": "spacelab" },
 			{ "name": "Superhero", "value": "superhero" },
 			{ "name": "United", "value": "united" },
-			{ "name": "Yeti", "value": "yeti" }
+			{ "name": "Yeti", "value": "yeti" },
 		];
 
 		var isCustom = true;
@@ -117,7 +117,7 @@ settingsController.get = function (req, res, callback) {
 		userData.homePageRoutes.push({
 		 	route: 'custom',
 		 	name: 'Custom',
-		 	selected: isCustom
+		 	selected: isCustom,
 		});
 
 		userData.bootswatchSkinOptions.forEach(function (skin) {
@@ -157,7 +157,7 @@ function getHomePageRoutes(callback) {
 			categoryData = categoryData.map(function (category) {
 				return {
 					route: 'category/' + category.slug,
-					name: 'Category: ' + category.name
+					name: 'Category: ' + category.name,
 				};
 			});
 
@@ -166,25 +166,25 @@ function getHomePageRoutes(callback) {
 			plugins.fireHook('filter:homepage.get', {routes: [
 				{
 					route: 'categories',
-					name: 'Categories'
+					name: 'Categories',
 				},
 				{
 					route: 'unread',
-					name: 'Unread'
+					name: 'Unread',
 				},
 				{
 					route: 'recent',
-					name: 'Recent'
+					name: 'Recent',
 				},
 				{
 					route: 'popular',
-					name: 'Popular'
-				}
+					name: 'Popular',
+				},
 			].concat(categoryData)}, next);
 		},
 		function (data, next) {
 			next(null, data.routes);
-		}
+		},
 	], callback);
 }
 

@@ -33,7 +33,7 @@ describe('List methods', function () {
 				},
 				function (next) {
 					db.listPrepend('testList2', 1, next);
-				}
+				},
 			], function (err) {
 				assert.equal(err, null);
 				done();
@@ -52,7 +52,7 @@ describe('List methods', function () {
 				},
 				function (next) {
 					db.listAppend('testList4', 5, next);
-				}
+				},
 			], done);
 		});
 
@@ -94,7 +94,7 @@ describe('List methods', function () {
 				},
 				function (next) {
 					db.listPrepend('testList4', 9, next);
-				}
+				},
 			], done);
 		});
 
@@ -115,7 +115,7 @@ describe('List methods', function () {
 				async.apply(db.listAppend, 'testList5', 1),
 				async.apply(db.listAppend, 'testList5', 1),
 				async.apply(db.listAppend, 'testList5', 2),
-				async.apply(db.listAppend, 'testList5', 5)
+				async.apply(db.listAppend, 'testList5', 5),
 			], done);
 		});
 

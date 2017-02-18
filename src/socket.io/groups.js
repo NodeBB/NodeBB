@@ -42,7 +42,7 @@ SocketGroups.join = function (socket, data, callback) {
 
 			async.parallel({
 				isAdmin: async.apply(user.isAdministrator, socket.uid),
-				groupData: async.apply(groups.getGroupData, data.groupName)
+				groupData: async.apply(groups.getGroupData, data.groupName),
 			}, next);
 		},
 		function (results, next) {
@@ -55,7 +55,7 @@ SocketGroups.join = function (socket, data, callback) {
 			} else {
 				groups.requestMembership(data.groupName, socket.uid, next);
 			}
-		}
+		},
 	], callback);
 };
 
@@ -75,7 +75,7 @@ function isOwner(next) {
 	return function (socket, data, callback) {
 		async.parallel({
 			isAdmin: async.apply(user.isAdministrator, socket.uid),
-			isOwner: async.apply(groups.ownership.isOwner, socket.uid, data.groupName)
+			isOwner: async.apply(groups.ownership.isOwner, socket.uid, data.groupName),
 		}, function (err, results) {
 			if (err || (!isOwner && !results.isAdmin)) {
 				return callback(err || new Error('[[error:no-privileges]]'));
@@ -129,7 +129,7 @@ function acceptRejectAll(method, socket, data, callback) {
 			async.each(uids, function (uid, next) {
 				method(data.groupName, uid, next);
 			}, next);
-		}
+		},
 	], callback);
 }
 
@@ -213,7 +213,7 @@ SocketGroups.delete = function (socket, data, callback) {
 
 	async.parallel({
 		isOwner: async.apply(groups.ownership.isOwner, socket.uid, data.groupName),
-		isAdmin: async.apply(user.isAdministrator, socket.uid)
+		isAdmin: async.apply(user.isAdministrator, socket.uid),
 	}, function (err, checks) {
 		if (err) {
 			return callback(err);
@@ -287,7 +287,7 @@ SocketGroups.cover.update = function (socket, data, callback) {
 			}
 
 			groups.updateCover(socket.uid, data, next);
-		}
+		},
 	], callback);
 };
 
@@ -306,7 +306,7 @@ SocketGroups.cover.remove = function (socket, data, callback) {
 			}
 
 			groups.removeCover(data, next);
-		}
+		},
 	], callback);
 };
 

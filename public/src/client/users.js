@@ -52,7 +52,7 @@ define('forum/users', ['translator'], function (translator) {
 
 		var query = {
 			section: activeSection,
-			page: 1
+			page: 1,
 		};
 
 		if (!username) {

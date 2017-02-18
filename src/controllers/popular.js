@@ -14,7 +14,7 @@ var lastUpdateTime = 0;
 var terms = {
 	daily: 'day',
 	weekly: 'week',
-	monthly: 'month'
+	monthly: 'month',
 };
 
 popularController.get = function (req, res, next) {
@@ -30,7 +30,7 @@ popularController.get = function (req, res, next) {
 		day: '[[recent:day]]',
 		week: '[[recent:week]]',
 		month: '[[recent:month]]',
-		alltime: '[[global:header.popular]]'
+		alltime: '[[global:header.popular]]',
 	};
 
 	if (!req.uid) {
@@ -49,7 +49,7 @@ popularController.get = function (req, res, next) {
 			'feeds:disableRSS': parseInt(meta.config['feeds:disableRSS'], 10) === 1,
 			rssFeedUrl: nconf.get('relative_path') + '/popular/' + (req.params.term || 'daily') + '.rss',
 			title: '[[pages:popular-' + term + ']]',
-			term: term
+			term: term,
 		};
 
 		if (req.path.startsWith('/api/popular') || req.path.startsWith('/popular')) {

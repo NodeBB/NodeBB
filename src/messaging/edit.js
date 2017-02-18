@@ -23,7 +23,7 @@ module.exports = function (Messaging) {
 
 				Messaging.setMessageFields(mid, {
 					content: content,
-					edited: Date.now()
+					edited: Date.now(),
 				}, next);
 			},
 			function (next) {
@@ -36,11 +36,11 @@ module.exports = function (Messaging) {
 			function (messages, next) {
 				uids.forEach(function (uid) {
 					sockets.in('uid_' + uid).emit('event:chats.edit', {
-						messages: messages
+						messages: messages,
 					});
 				});
 				next();
-			}
+			},
 		], callback);
 	};
 
@@ -75,7 +75,7 @@ module.exports = function (Messaging) {
 			},
 			function (isAdmin, next) {
 				next(null, isAdmin);
-			}
+			},
 		], callback);
 	};
 

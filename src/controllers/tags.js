@@ -20,7 +20,7 @@ tagsController.getTag = function (req, res, next) {
 		topics: [],
 		tag: tag,
 		breadcrumbs: helpers.buildBreadcrumbs([{text: '[[tags:tags]]', url: '/tags'}, {text: tag}]),
-		title: '[[pages:tag, ' + tag + ']]'
+		title: '[[pages:tag, ' + tag + ']]',
 	};
 	var settings;
 	var topicCount = 0;
@@ -39,7 +39,7 @@ tagsController.getTag = function (req, res, next) {
 				},
 				tids: function (next) {
 					topics.getTagTids(req.params.tag, start, stop, next);
-				}
+				},
 			}, next);
 		},
 		function (results, next) {
@@ -48,7 +48,7 @@ tagsController.getTag = function (req, res, next) {
 			}
 			topicCount = results.topicCount;
 			topics.getTopics(results.tids, req.uid, next);
-		}
+		},
 	], function (err, topics) {
 		if (err) {
 			return next(err);
@@ -57,16 +57,16 @@ tagsController.getTag = function (req, res, next) {
 		res.locals.metaTags = [
 			{
 				name: 'title',
-				content: tag
+				content: tag,
 			},
 			{
 				property: 'og:title',
-				content: tag
+				content: tag,
 			},
 			{
 				property: 'og:url',
-				content: nconf.get('url') + '/tags/' + tag
-			}
+				content: nconf.get('url') + '/tags/' + tag,
+			},
 		];
 		templateData.topics = topics;
 
@@ -87,7 +87,7 @@ tagsController.getTags = function (req, res, next) {
 			tags: tags,
 			nextStart: 100,
 			breadcrumbs: helpers.buildBreadcrumbs([{text: '[[tags:tags]]'}]),
-			title: '[[pages:tags]]'
+			title: '[[pages:tags]]',
 		};
 		res.render('tags', data);
 	});

@@ -30,7 +30,7 @@ module.exports = function (SocketPosts) {
 			function (next) {
 				socketHelpers.sendNotificationToPostOwner(data.pid, socket.uid, 'move', 'notifications:moved_your_post');
 				next();
-			}
+			},
 		], callback);
 	};
 

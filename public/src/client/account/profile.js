@@ -6,7 +6,7 @@ define('forum/account/profile', [
 	'forum/account/header',
 	'forum/infinitescroll',
 	'translator',
-	'components'
+	'components',
 ], function (header, infinitescroll, translator) {
 	var Account = {};
 	var theirid;
@@ -49,7 +49,7 @@ define('forum/account/profile', [
 
 		infinitescroll.loadMore('posts.loadMoreUserPosts', {
 			after: $('[component="posts"]').attr('data-nextstart'),
-			uid: theirid
+			uid: theirid,
 		}, function (data, done) {
 			if (data.posts && data.posts.length) {
 				onPostsLoaded(data.posts, done);

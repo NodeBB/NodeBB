@@ -17,18 +17,18 @@ social.getPostSharing = function (callback) {
 		{
 			id: "facebook",
 			name: "Facebook",
-			class: "fa-facebook"
+			class: "fa-facebook",
 		},
 		{
 			id: "twitter",
 			name: "Twitter",
-			class: "fa-twitter"
+			class: "fa-twitter",
 		},
 		{
 			id: "google",
 			name: "Google+",
-			class: "fa-google-plus"
-		}
+			class: "fa-google-plus",
+		},
 	];
 
 	async.waterfall([
@@ -48,7 +48,7 @@ social.getPostSharing = function (callback) {
 				social.postSharing = networks;
 				next(null, networks);
 			});
-		}
+		},
 	], callback);
 };
 
@@ -78,7 +78,7 @@ social.setActivePostSharingNetworks = function (networkIDs, callback) {
 		function (next) {
 			social.postSharing = null;
 			next();
-		}
+		},
 	], callback);
 };
 

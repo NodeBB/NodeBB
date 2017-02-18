@@ -41,7 +41,7 @@ function generateForTopic(req, res, callback) {
 				},
 				topic: function (next) {
 					topics.getTopicData(tid, next);
-				}
+				},
 			}, next);
 		},
 		function (results, next) {
@@ -56,7 +56,7 @@ function generateForTopic(req, res, callback) {
 			}
 			userPrivileges = results.privileges;
 			topics.getTopicWithPosts(results.topic, 'tid:' + tid + ':posts', req.uid, 0, 25, false, next);
-		}
+		},
 	], function (err, topicData) {
 		if (err) {
 			return callback(err);
@@ -75,7 +75,7 @@ function generateForTopic(req, res, callback) {
 			site_url: nconf.get('url') + '/topic/' + topicData.slug,
 			image_url: image_url,
 			author: author,
-			ttl: 60
+			ttl: 60,
 		});
 		var dateStamp;
 
@@ -92,7 +92,7 @@ function generateForTopic(req, res, callback) {
 					description: postData.content,
 					url: nconf.get('url') + '/post/' + postData.pid,
 					author: postData.user ? postData.user.username : '',
-					date: dateStamp
+					date: dateStamp,
 				});
 			}
 		});
@@ -117,7 +117,7 @@ function generateForUserTopics(req, res, callback) {
 				return callback();
 			}
 			user.getUserFields(uid, ['uid', 'username'], next);
-		}
+		},
 	], function (err, userData) {
 		if (err) {
 			return callback(err);
@@ -128,7 +128,7 @@ function generateForUserTopics(req, res, callback) {
 			title: 'Topics by ' + userData.username,
 			description: 'A list of topics that are posted by ' + userData.username,
 			feed_url: '/user/' + userslug + '/topics.rss',
-			site_url: '/user/' + userslug + '/topics'
+			site_url: '/user/' + userslug + '/topics',
 		}, 'uid:' + userData.uid + ':topics', req, res, callback);
 	});
 }
@@ -152,9 +152,9 @@ function generateForCategory(req, res, next) {
 						reverse: true,
 						start: 0,
 						stop: 25,
-						uid: req.uid
+						uid: req.uid,
 					}, next);
-				}
+				},
 			}, next);
 		},
 		function (results, next) {
@@ -168,7 +168,7 @@ function generateForCategory(req, res, next) {
 				feed_url: '/category/' + cid + '.rss',
 				site_url: '/category/' + results.category.cid,
 			}, results.category.topics, next);
-		}
+		},
 	], function (err, feed) {
 		if (err) {
 			return next(err);
@@ -186,7 +186,7 @@ function generateForRecent(req, res, next) {
 		title: 'Recently Active Topics',
 		description: 'A list of topics that have been active within the past 24 hours',
 		feed_url: '/recent.rss',
-		site_url: '/recent'
+		site_url: '/recent',
 	}, 'topics:recent', req, res, next);
 }
 
@@ -198,7 +198,7 @@ function generateForPopular(req, res, next) {
 		daily: 'day',
 		weekly: 'week',
 		monthly: 'month',
-		alltime: 'alltime'
+		alltime: 'alltime',
 	};
 	var term = terms[req.params.term] || 'day';
 
@@ -212,9 +212,9 @@ function generateForPopular(req, res, next) {
 				title: 'Popular Topics',
 				description: 'A list of topics that are sorted by post count',
 				feed_url: '/popular/' + (req.params.term || 'daily') + '.rss',
-				site_url: '/popular/' + (req.params.term || 'daily')
+				site_url: '/popular/' + (req.params.term || 'daily'),
 			}, topics, next);
-		}
+		},
 	], function (err, feed) {
 		if (err) {
 			return next(err);
@@ -232,7 +232,7 @@ function generateForTopics(options, set, req, res, next) {
 		},
 		function (data, next) {
 			generateTopicsFeed(options, data.topics, next);
-		}
+		},
 	], function (err, feed) {
 		if (err) {
 			return next(err);
@@ -259,7 +259,7 @@ function generateTopicsFeed(feedOptions, feedTopics, callback) {
 		var feedItem = {
 			title: topicData.title,
 			url: nconf.get('url') + '/topic/' + topicData.slug,
-			date: new Date(parseInt(topicData.lastposttime, 10)).toUTCString()
+			date: new Date(parseInt(topicData.lastposttime, 10)).toUTCString(),
 		};
 
 		if (topicData.teaser && topicData.teaser.user) {
@@ -306,7 +306,7 @@ function generateForRecentPosts(req, res, next) {
 			title: 'Recent Posts',
 			description: 'A list of recent posts',
 			feed_url: '/recentposts.rss',
-			site_url: '/recentposts'
+			site_url: '/recentposts',
 		}, posts);
 
 		sendFeed(feed, res);
@@ -328,7 +328,7 @@ function generateForCategoryRecentPosts(req, res, next) {
 		},
 		posts: function (next) {
 			categories.getRecentReplies(cid, req.uid, 20, next);
-		}
+		},
 	}, function (err, results) {
 		if (err) {
 			return next(err);
@@ -345,7 +345,7 @@ function generateForCategoryRecentPosts(req, res, next) {
 			title: results.category.name + ' Recent Posts',
 			description: 'A list of recent posts from ' + results.category.name,
 			feed_url: '/category/' + cid + '/recentposts.rss',
-			site_url: '/category/' + cid + '/recentposts'
+			site_url: '/category/' + cid + '/recentposts',
 		}, results.posts);
 
 		sendFeed(feed, res);
@@ -369,7 +369,7 @@ function generateForPostsFeed(feedOptions, posts) {
 			description: postData.content,
 			url: nconf.get('url') + '/post/' + postData.pid,
 			author: postData.user ? postData.user.username : '',
-			date: new Date(parseInt(postData.timestamp, 10)).toUTCString()
+			date: new Date(parseInt(postData.timestamp, 10)).toUTCString(),
 		});
 	});
 
@@ -392,7 +392,7 @@ function generateForTag(req, res, next) {
 		feed_url: '/tags/' + tag + '.rss',
 		site_url: '/tags/' + tag,
 		start: start,
-		stop: stop
+		stop: stop,
 	}, 'tag:' + tag + ':topics', req, res, next);
 }
 

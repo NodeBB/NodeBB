@@ -32,7 +32,7 @@ module.exports = function (Categories) {
 			},
 			function (results, next) {
 				next(null, {topics: results.topics, nextStart: data.stop + 1});
-			}
+			},
 		], callback);
 	};
 
@@ -76,7 +76,7 @@ module.exports = function (Categories) {
 				});
 
 				next(null, pinnedTids.concat(normalTids));
-			}
+			},
 		], callback);
 	};
 
@@ -132,14 +132,14 @@ module.exports = function (Categories) {
 					},
 					function (next) {
 						db.sortedSetIncrBy('cid:' + cid + ':tids:posts', 1, postData.tid, next);
-					}
+					},
 				], function (err) {
 					next(err);
 				});
 			},
 			function (next) {
 				Categories.updateRecentTid(cid, postData.tid, next);
-			}
+			},
 		], callback);
 	};
 

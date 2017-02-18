@@ -78,7 +78,7 @@ define('forum/register', ['translator'], function (translator) {
 
 				registerBtn.parents('form').ajaxSubmit({
 					headers: {
-						'x-csrf-token': config.csrf_token
+						'x-csrf-token': config.csrf_token,
 					},
 					success: function (data) {
 						registerBtn.removeClass('disabled');
@@ -106,7 +106,7 @@ define('forum/register', ['translator'], function (translator) {
 								registerBtn.removeClass('disabled');
 							}
 						});
-					}
+					},
 				});
 			});
 		});
@@ -122,7 +122,7 @@ define('forum/register', ['translator'], function (translator) {
 		}
 
 		socket.emit('user.emailExists', {
-			email: email
+			email: email,
 		}, function (err, exists) {
 			if (err) {
 				app.alertError(err.message);
@@ -152,7 +152,7 @@ define('forum/register', ['translator'], function (translator) {
 			showError(username_notify, '[[error:invalid-username]]');
 		} else {
 			socket.emit('user.exists', {
-				username: username
+				username: username,
 			}, function (err, exists) {
 				if (err) {
 					return app.alertError(err.message);

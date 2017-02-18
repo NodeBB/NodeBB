@@ -34,7 +34,7 @@ file.saveFileToLocal = function (filename, folder, tempPath, callback) {
 		is.on('end', function () {
 			callback(null, {
 				url: '/assets/uploads/' + folder + '/' + filename,
-				path: uploadPath
+				path: uploadPath,
 			});
 		});
 
@@ -48,7 +48,7 @@ file.base64ToLocal = function (imageData, uploadPath, callback) {
 	uploadPath = path.join(nconf.get('upload_path'), uploadPath);
 
 	fs.writeFile(uploadPath, buffer, {
-		encoding: 'base64'
+		encoding: 'base64',
 	}, function (err) {
 		callback(err, uploadPath);
 	});

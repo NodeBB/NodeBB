@@ -26,7 +26,7 @@ module.exports = function (app, middleware, controllers) {
 				res.send(data);
 			} else {
 				res.status(404).json({
-					error: "User doesn't exist!"
+					error: "User doesn't exist!",
 				});
 			}
 		});

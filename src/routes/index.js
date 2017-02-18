@@ -89,7 +89,7 @@ module.exports = function (app, middleware, hotswapIds) {
 	var routers = [
 		express.Router(),	// plugin router
 		express.Router(),	// main app router
-		express.Router()	// auth router
+		express.Router(),	// auth router
 	];
 	var router = routers[1];
 	var pluginRouter = routers[0];
@@ -203,7 +203,7 @@ module.exports = function (app, middleware, hotswapIds) {
 	async.series([
 		async.apply(plugins.reloadRoutes),
 		async.apply(authRoutes.reloadRoutes),
-		async.apply(user.addInterstitials)
+		async.apply(user.addInterstitials),
 	], function (err) {
 		if (err) {
 			return winston.error(err);

@@ -21,7 +21,7 @@
 		themes_path: path.join(__dirname, '../../node_modules'),
 		upload_path: 'public/uploads',
 		views_dir: path.join(__dirname, '../../build/public/templates'),
-		relative_path: ''
+		relative_path: '',
 	});
 
 	if (!nconf.get('isCluster')) {
@@ -60,7 +60,7 @@
 		    '    "password": "",' + '\n' +
 		    '    "database": "nodebb_test"' + '\n' +
 		    '}\n' +
-			'==========================================================='
+			'===========================================================',
 		);
 		winston.error(errorText);
 		throw new Error(errorText);
@@ -116,7 +116,7 @@
 			function (next) {
 				meta.themes.set({
 					type: 'local',
-					id: 'nodebb-theme-persona'
+					id: 'nodebb-theme-persona',
 				}, next);
 			},
 			function (next) {
@@ -151,7 +151,7 @@
 				require('../../src/user').startJobs();
 
 				webserver.listen(next);
-			}
+			},
 		], done);
 	});
 
@@ -167,7 +167,7 @@
 		winston.info('Enabling default plugins\n');
 
 		var defaultEnabled = [
-			'nodebb-plugin-dbsearch'
+			'nodebb-plugin-dbsearch',
 		];
 
 		winston.info('[install/enableDefaultPlugins] activating default plugins', defaultEnabled);

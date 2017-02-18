@@ -38,7 +38,7 @@ define('admin/manage/categories', ['vendor/jquery/serializeObject/jquery.ba-seri
 			}
 
 			templates.parse('admin/partials/categories/create', {
-				categories: categories
+				categories: categories,
 			}, function (html) {
 				function submit() {
 					var formData = modal.find('form').serializeObject();
@@ -57,9 +57,9 @@ define('admin/manage/categories', ['vendor/jquery/serializeObject/jquery.ba-seri
 						save: {
 							label: '[[global:save]]',
 							className: 'btn-primary',
-							callback: submit
-						}
-					}
+							callback: submit,
+						},
+					},
 				});
 
 				modal.find('form').on('submit', submit);
@@ -78,7 +78,7 @@ define('admin/manage/categories', ['vendor/jquery/serializeObject/jquery.ba-seri
 				title: '[[admin/manage/categories:alert.created]]',
 				message: '[[admin/manage/categories:alert.create-success]]',
 				type: 'success',
-				timeout: 2000
+				timeout: 2000,
 			});
 
 			ajaxify.go('admin/manage/categories/' + data.cid);
@@ -106,7 +106,7 @@ define('admin/manage/categories', ['vendor/jquery/serializeObject/jquery.ba-seri
 
 		cids.forEach(function (cid) {
 			payload[cid] = {
-				disabled: disabled ? 1 : 0
+				disabled: disabled ? 1 : 0,
 			};
 		});
 
@@ -132,7 +132,7 @@ define('admin/manage/categories', ['vendor/jquery/serializeObject/jquery.ba-seri
 
 			for(i; i < len; ++i) {
 				modified[list[i]] = {
-					order: (i + 1)
+					order: (i + 1),
 				};
 			}
 
@@ -176,7 +176,7 @@ define('admin/manage/categories', ['vendor/jquery/serializeObject/jquery.ba-seri
 		function continueRender() {
 			templates.parse('admin/partials/categories/category-rows', {
 				cid: parentId,
-				categories: categories
+				categories: categories,
 			}, function (html) {
 				translator.translate(html, function (html) {
 					container.append(html);
@@ -194,7 +194,7 @@ define('admin/manage/categories', ['vendor/jquery/serializeObject/jquery.ba-seri
 						dataIdAttr: 'data-cid',
 						ghostClass: "placeholder",
 						onAdd: itemDidAdd,
-						onEnd: itemDragDidEnd
+						onEnd: itemDragDidEnd,
 					});
 				});
 			});

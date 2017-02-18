@@ -27,7 +27,7 @@ describe('Categories', function () {
 			},
 			adminUid: function (next) {
 				User.create({username: 'admin'}, next);
-			}
+			},
 		}, function (err, results) {
 			assert.ifError(err);
 			posterUid = results.posterUid;
@@ -44,7 +44,7 @@ describe('Categories', function () {
 			description: 'Test category created by testing script',
 			icon: 'fa-check',
 			blockclass: 'category-blue',
-			order: '5'
+			order: '5',
 		}, function (err, category) {
 			assert.ifError(err);
 
@@ -60,7 +60,7 @@ describe('Categories', function () {
 			reverse: true,
 			start: 0,
 			stop: -1,
-			uid: 0
+			uid: 0,
 		}, function (err, categoryData) {
 			assert.equal(err, null);
 
@@ -90,7 +90,7 @@ describe('Categories', function () {
 				reverse: true,
 				start: 0,
 				stop: -1,
-				uid: 0
+				uid: 0,
 			}, function (err, categoryData) {
 				assert.ifError(err);
 				Categories.getRecentTopicReplies(categoryData, 0, function (err) {
@@ -109,7 +109,7 @@ describe('Categories', function () {
 				reverse: true,
 				start: 0,
 				stop: 10,
-				uid: 0
+				uid: 0,
 			}, function (err, result) {
 				assert.equal(err, null);
 
@@ -130,7 +130,7 @@ describe('Categories', function () {
 				start: 0,
 				stop: 10,
 				uid: 0,
-				targetUid: 1
+				targetUid: 1,
 			}, function (err, result) {
 				assert.equal(err, null);
 				assert(Array.isArray(result.topics));
@@ -151,7 +151,7 @@ describe('Categories', function () {
 				category: function (next) {
 					Categories.create({
 						name: 'Test Category 2',
-						description: 'Test category created by testing script'
+						description: 'Test category created by testing script',
 					}, next);
 				},
 				topic: function (next) {
@@ -159,9 +159,9 @@ describe('Categories', function () {
 						uid: posterUid,
 						cid: categoryObj.cid,
 						title: 'Test Topic Title',
-						content: 'The content of test topic'
+						content: 'The content of test topic',
 					}, next);
-				}
+				},
 			}, function (err, results) {
 				if (err) {
 					return done(err);
@@ -199,7 +199,7 @@ describe('Categories', function () {
 				cid: categoryObj.cid,
 				title: 'Test Topic Title',
 				content: 'The content of test topic',
-				tags: ['nodebb']
+				tags: ['nodebb'],
 			}, done);
 		});
 
@@ -318,7 +318,7 @@ describe('Categories', function () {
 				description: 'update description',
 				parentCid: categoryObj.cid,
 				icon: 'fa-check',
-				order: '5'
+				order: '5',
 			}, function (err, category) {
 				assert.ifError(err);
 
@@ -337,7 +337,7 @@ describe('Categories', function () {
 		it('should error if you try to set parent as self', function (done) {
 			var updateData = {};
 			updateData[cid] = {
-				parentCid: cid
+				parentCid: cid,
 			};
 			socketCategories.update({uid: adminUid}, updateData, function (err) {
 				assert.equal(err.message, '[[error:cant-set-self-as-parent]]');
@@ -352,7 +352,7 @@ describe('Categories', function () {
 				description: 'new description',
 				parentCid: 0,
 				order: 3,
-				icon: 'fa-hammer'
+				icon: 'fa-hammer',
 			};
 			socketCategories.update({uid: adminUid}, updateData, function (err) {
 				assert.ifError(err);
@@ -371,14 +371,14 @@ describe('Categories', function () {
 		it('should purge category', function (done) {
 			Categories.create({
 				name: 'purge me',
-				description: 'update description'
+				description: 'update description',
 			}, function (err, category) {
 				assert.ifError(err);
 				Topics.post({
 					uid: posterUid,
 					cid: category.cid,
 					title: 'Test Topic Title',
-					content: 'The content of test topic'
+					content: 'The content of test topic',
 				}, function (err) {
 					assert.ifError(err);
 					socketCategories.purge({uid: adminUid}, category.cid, function (err) {
@@ -464,7 +464,7 @@ describe('Categories', function () {
 				function (canDelete, next) {
 					assert(canDelete);
 					next();
-				}
+				},
 			], done);
 		});
 
@@ -489,7 +489,7 @@ describe('Categories', function () {
 				function (description, next) {
 					assert.equal(description, 'copy me');
 					next();
-				}
+				},
 			], done);
 		});
 
@@ -517,21 +517,21 @@ describe('Categories', function () {
 				function (canDelete, next) {
 					assert(canDelete);
 					next();
-				}
+				},
 			], done);
 		});
 	});
 
 	it('should get active users', function (done) {
 		Categories.create({
-			name: 'test'
+			name: 'test',
 		}, function (err, category) {
 			assert.ifError(err);
 			Topics.post({
 				uid: posterUid,
 				cid: category.cid,
 				title: 'Test Topic Title',
-				content: 'The content of test topic'
+				content: 'The content of test topic',
 			}, function (err) {
 				assert.ifError(err);
 				Categories.getActiveUsers(category.cid, function (err, uids) {
@@ -548,7 +548,7 @@ describe('Categories', function () {
 		var socketTopics = require('../src/socket.io/topics');
 		before(function (done) {
 			Categories.create({
-				name: 'test'
+				name: 'test',
 			}, function (err, category) {
 				assert.ifError(err);
 				cid = category.cid;
@@ -574,7 +574,7 @@ describe('Categories', function () {
 		it('should add tags to category whitelist', function (done) {
 			var data = {};
 			data[cid] = {
-				tagWhitelist: 'nodebb,jquery,javascript'
+				tagWhitelist: 'nodebb,jquery,javascript',
 			};
 			Categories.update(data, function (err) {
 				assert.ifError(err);
@@ -608,7 +608,7 @@ describe('Categories', function () {
 				cid: cid,
 				title: 'Test Topic Title',
 				content: 'The content of test topic',
-				tags: ['nodebb', 'jquery', 'notallowed']
+				tags: ['nodebb', 'jquery', 'notallowed'],
 			}, function (err, data) {
 				assert.ifError(err);
 				assert.equal(data.topicData.tags.length, 2);

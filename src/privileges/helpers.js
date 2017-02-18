@@ -43,7 +43,7 @@ function isUserAllowedToCids(privilege, uid, cids, callback) {
 		},
 		hasGroupPrivilege: function (next) {
 			groups.isMemberOfGroupsList(uid, groupKeys, next);
-		}
+		},
 	}, function (err, results) {
 		if (err) {
 			return callback(err);
@@ -75,7 +75,7 @@ function isUserAllowedToPrivileges(privileges, uid, cid, callback) {
 		},
 		hasGroupPrivilege: function (next) {
 			groups.isMemberOfGroupsList(uid, groupKeys, next);
-		}
+		},
 	}, function (err, results) {
 		if (err) {
 			return callback(err);
@@ -98,7 +98,7 @@ helpers.isUsersAllowedTo = function (privilege, uids, cid, callback) {
 		},
 		hasGroupPrivilege: function (next) {
 			groups.isMembersOfGroupList(uids, 'cid:' + cid + ':privileges:groups:' + privilege, next);
-		}
+		},
 	}, function (err, results) {
 		if (err) {
 			return callback(err);

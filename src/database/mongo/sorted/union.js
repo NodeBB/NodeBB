@@ -10,7 +10,7 @@ module.exports = function (db, module) {
 		var pipeline = [
 			{ $match: { _key: {$in: keys} } },
 			{ $group: { _id: {value: '$value' } } },
-			{ $group: { _id: null,  count: { $sum: 1 } } }
+			{ $group: { _id: null,  count: { $sum: 1 } } },
 		];
 
 		var project = { _id: 0, count: '$count' };
@@ -50,7 +50,7 @@ module.exports = function (db, module) {
 		var pipeline = [
 			{ $match: { _key: {$in: params.sets}} },
 			{ $group: { _id: {value: '$value'}, totalScore: aggregate} },
-			{ $sort: { totalScore: params.sort} }
+			{ $sort: { totalScore: params.sort} },
 		];
 
 		if (params.start) {

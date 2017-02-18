@@ -28,7 +28,7 @@ describe('User', function () {
 		Categories.create({
 			name: 'Test Category',
 			description: 'A test',
-			order: 1
+			order: 1,
 		}, function (err, categoryObj) {
 			if (err) {
 				return done(err);
@@ -45,7 +45,7 @@ describe('User', function () {
 			fullname: 'John Smith McNamara',
 			password: 'swordfish',
 			email: 'john@example.com',
-			callback: undefined
+			callback: undefined,
 		};
 	});
 
@@ -108,14 +108,14 @@ describe('User', function () {
 					uid: testUid,
 					title: 'Topic 1',
 					content: 'lorem ipsum',
-					cid: testCid
+					cid: testCid,
 				}),
 				async.apply(Topics.post, {
 					uid: testUid,
 					title: 'Topic 2',
 					content: 'lorem ipsum',
-					cid: testCid
-				})
+					cid: testCid,
+				}),
 			], function (err) {
 				assert(err);
 				done();
@@ -128,7 +128,7 @@ describe('User', function () {
 					uid: testUid,
 					title: 'Topic 3',
 					content: 'lorem ipsum',
-					cid: testCid
+					cid: testCid,
 				}, function (err) {
 					assert.ifError(err);
 					done();
@@ -145,7 +145,7 @@ describe('User', function () {
 					uid: testUid,
 					title: 'Topic 4',
 					content: 'lorem ipsum',
-					cid: testCid
+					cid: testCid,
 				}, function (err) {
 					assert(err);
 					done();
@@ -156,13 +156,13 @@ describe('User', function () {
 		it('should not error if a non-newbie user posts if the last post time is 10 < 30 seconds', function (done) {
 			User.setUserFields(testUid, {
 				lastposttime:  +new Date() - (20 * 1000),
-				reputation: 10
+				reputation: 10,
 			}, function () {
 				Topics.post({
 					uid: testUid,
 					title: 'Topic 5',
 					content: 'lorem ipsum',
-					cid: testCid
+					cid: testCid,
 				}, function (err) {
 					assert.ifError(err);
 					done();
@@ -380,7 +380,7 @@ describe('User', function () {
 				location: 'izmir',
 				groupTitle: 'testGroup',
 				birthday: '01/01/1980',
-				signature: 'nodebb is good'
+				signature: 'nodebb is good',
 			};
 			io.emit('user.updateProfile', data, function (err, result) {
 				assert.ifError(err);
@@ -499,7 +499,7 @@ describe('User', function () {
 			var picture = {
 				path: path.join(nconf.get('base_dir'), 'public', 'logo.png'),
 				size: 7189,
-				name: 'logo.png'
+				name: 'logo.png',
 			};
 			User.uploadPicture(uid, picture, function (err, uploadedPicture) {
 				assert.ifError(err);
@@ -515,7 +515,7 @@ describe('User', function () {
 			var picture = {
 				path: path.join(nconf.get('base_dir'), 'public', 'logo.png'),
 				size: 7189,
-				name: 'logo.png'
+				name: 'logo.png',
 			};
 			User.uploadPicture(uid, picture, function (err, uploadedPicture) {
 				assert.equal(err.message, '[[error:profile-image-uploads-disabled]]');
@@ -529,7 +529,7 @@ describe('User', function () {
 			var picture = {
 				path: path.join(nconf.get('base_dir'), 'public', 'logo.png'),
 				size: 265000,
-				name: 'logo.png'
+				name: 'logo.png',
 			};
 			User.uploadPicture(uid, picture, function (err, uploadedPicture) {
 				assert.equal(err.message, '[[error:file-too-big, 256]]');
@@ -542,7 +542,7 @@ describe('User', function () {
 			var picture = {
 				path: path.join(nconf.get('base_dir'), 'public', 'logo.png'),
 				size: 7189,
-				name: 'logo'
+				name: 'logo',
 			};
 			User.uploadPicture(uid, picture, function (err, uploadedPicture) {
 				assert.equal(err.message, '[[error:invalid-image-extension]]');
@@ -672,7 +672,7 @@ describe('User', function () {
 		it('should load user\'s groups page', function (done) {
 			groups.create({
 				name: 'Test',
-				description: 'Foobar!'
+				description: 'Foobar!',
 			}, function (err) {
 				assert.ifError(err);
 				groups.join('Test', uid, function (err) {
@@ -707,7 +707,7 @@ describe('User', function () {
 
 						next(err);
 					});
-				}
+				},
 			], function (err) {
 				assert.ifError(err);
 				User.unban(testUid, function (err) {
@@ -879,8 +879,8 @@ describe('User', function () {
 					followTopicsOnReply: 1,
 					notificationSound: '',
 					incomingChatSound: '',
-					outgoingChatSound: ''
-				}
+					outgoingChatSound: '',
+				},
 			};
 			socketUser.saveSettings({uid: testUid}, data, function (err) {
 				assert.ifError(err);
@@ -931,7 +931,7 @@ describe('User', function () {
 			helpers.registerUser({
 				username: 'rejectme',
 				password: '123456',
-				email: 'reject@me.com'
+				email: 'reject@me.com',
 			}, function (err) {
 				assert.ifError(err);
 				helpers.loginUser('admin', '123456', function (err, jar) {
@@ -961,7 +961,7 @@ describe('User', function () {
 			helpers.registerUser({
 				username: 'acceptme',
 				password: '123456',
-				email: 'accept@me.com'
+				email: 'accept@me.com',
 			}, function (err) {
 				assert.ifError(err);
 				socketAdmin.user.acceptRegistration({uid: adminUid}, {username: 'acceptme'}, function (err, uid) {

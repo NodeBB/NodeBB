@@ -46,7 +46,7 @@ define('forum/notifications', ['components', 'notifications', 'forum/infinitescr
 		}
 		var notifList = $('.notifications-list');
 		infinitescroll.loadMore('notifications.loadMore', {
-			after: notifList.attr('data-nextstart')
+			after: notifList.attr('data-nextstart'),
 		}, function (data, done) {
 			if (!data) {
 				return done();

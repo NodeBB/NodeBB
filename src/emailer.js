@@ -17,7 +17,7 @@ var translator = require('../public/src/modules/translator');
 
 var transports = {
 	sendmail: nodemailer.createTransport(sendmailTransport()),
-	gmail: undefined
+	gmail: undefined,
 };
 
 var app;
@@ -35,8 +35,8 @@ var fallbackTransport;
 				secure: true,
 				auth: {
 					user: meta.config['email:GmailTransport:user'],
-					pass: meta.config['email:GmailTransport:pass']
-				}
+					pass: meta.config['email:GmailTransport:pass'],
+				},
 			}));
 		} else {
 			fallbackTransport = transports.sendmail;
@@ -56,7 +56,7 @@ var fallbackTransport;
 			function (next) {
 				async.parallel({
 					email: async.apply(User.getUserField, uid, 'email'),
-					settings: async.apply(User.getSettings, uid)
+					settings: async.apply(User.getSettings, uid),
 				}, next);
 			},
 			function (results, next) {
@@ -66,7 +66,7 @@ var fallbackTransport;
 				}
 				params.uid = uid;
 				Emailer.sendToEmail(template, results.email, results.settings.userLang, params, next);
-			}
+			},
 		], callback);
 	};
 
@@ -85,7 +85,7 @@ var fallbackTransport;
 						translator.translate(params.subject, lang, function (translated) {
 							next(null, translated);
 						});
-					}
+					},
 				}, next);
 			},
 			function (results, next) {
@@ -97,12 +97,12 @@ var fallbackTransport;
 					subject: results.subject,
 					html: results.html,
 					plaintext: htmlToText.fromString(results.html, {
-						ignoreImage: true
+						ignoreImage: true,
 					}),
 					template: template,
 					uid: params.uid,
 					pid: params.pid,
-					fromUid: params.fromUid
+					fromUid: params.fromUid,
 				};
 				Plugins.fireHook('filter:email.modify', data, next);
 			},
@@ -112,7 +112,7 @@ var fallbackTransport;
 				} else {
 					Emailer.sendViaFallback(data, next);
 				}
-			}
+			},
 		], function (err) {
 			if (err && err.code === 'ENOENT') {
 				callback(new Error('[[error:sendmail-not-found]]'));

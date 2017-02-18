@@ -31,7 +31,7 @@ module.exports = function (Meta) {
 					Meta.config = config;
 					next();
 				});
-			}
+			},
 		], callback);
 	};
 
@@ -75,7 +75,7 @@ module.exports = function (Meta) {
 			function (next) {
 				updateConfig(data);
 				setImmediate(next);
-			}
+			},
 		], callback);
 	};
 
@@ -91,13 +91,13 @@ module.exports = function (Meta) {
 		async.waterfall([
 			function (next) {
 				less.render(data.customCSS, {
-					compress: true
+					compress: true,
 				}, next);
 			},
 			function (lessObject, next) {
 				data.renderedCustomCSS = lessObject.css;
 				setImmediate(next);
-			}
+			},
 		], callback);
 	}
 
@@ -133,7 +133,7 @@ module.exports = function (Meta) {
 				} else {
 					setImmediate(next);
 				}
-			}
+			},
 		], callback);
 	};
 

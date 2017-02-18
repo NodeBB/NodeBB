@@ -65,11 +65,11 @@ module.exports = function (Topics) {
 					tid: tid,
 					cid: topicData.cid,
 					isDelete: isDelete,
-					uid: uid
+					uid: uid,
 				};
 
 				next(null, data);
-			}
+			},
 		], callback);
 	}
 
@@ -99,7 +99,7 @@ module.exports = function (Topics) {
 			},
 			function (next) {
 				next(null, {tid: tid, cid: cid, uid: uid});
-			}
+			},
 		], callback);
 	};
 
@@ -139,13 +139,13 @@ module.exports = function (Topics) {
 					tid: tid,
 					isLocked: lock,
 					uid: uid,
-					cid: cid
+					cid: cid,
 				};
 
 				plugins.fireHook('action:topic.lock', data);
 
 				next(null, data);
-			}
+			},
 		], callback);
 	}
 
@@ -185,16 +185,16 @@ module.exports = function (Topics) {
 							async.parallel([
 								async.apply(db.sortedSetAdd, 'cid:' + topicData.cid + ':tids:pinned', Date.now(), tid),
 								async.apply(db.sortedSetRemove, 'cid:' + topicData.cid + ':tids', tid),
-								async.apply(db.sortedSetRemove, 'cid:' + topicData.cid + ':tids:posts', tid)
+								async.apply(db.sortedSetRemove, 'cid:' + topicData.cid + ':tids:posts', tid),
 							], next);
 						} else {
 							async.parallel([
 								async.apply(db.sortedSetRemove, 'cid:' + topicData.cid + ':tids:pinned', tid),
 								async.apply(db.sortedSetAdd, 'cid:' + topicData.cid + ':tids', topicData.lastposttime, tid),
-								async.apply(db.sortedSetAdd, 'cid:' + topicData.cid + ':tids:posts', topicData.postcount, tid)
+								async.apply(db.sortedSetAdd, 'cid:' + topicData.cid + ':tids:posts', topicData.postcount, tid),
 							], next);
 						}
-					}
+					},
 				], next);
 			},
 			function (results, next) {
@@ -202,13 +202,13 @@ module.exports = function (Topics) {
 					tid: tid,
 					isPinned: pin,
 					uid: uid,
-					cid: topicData.cid
+					cid: topicData.cid,
 				};
 
 				plugins.fireHook('action:topic.pin', data);
 
 				next(null, data);
-			}
+			},
 		], callback);
 	}
 
@@ -248,10 +248,10 @@ module.exports = function (Topics) {
 							} else {
 								setImmediate(next);
 							}
-						}
+						},
 					], next);					
 				}, next);
-			}
+			},
 		], callback);
 	};
 
@@ -272,7 +272,7 @@ module.exports = function (Topics) {
 				db.sortedSetsRemove([
 					'cid:' + topicData.cid + ':tids',
 					'cid:' + topicData.cid + ':tids:pinned',
-					'cid:' + topicData.cid + ':tids:posts'	// post count
+					'cid:' + topicData.cid + ':tids:posts',	// post count
 				], tid, next);
 			},
 			function (next) {
@@ -286,10 +286,10 @@ module.exports = function (Topics) {
 						function (next) {
 							topic.postcount = topic.postcount || 0;
 							db.sortedSetAdd('cid:' + cid + ':tids:posts', topic.postcount, tid, next);
-						}
+						},
 					], next);
 				}
-			}
+			},
 		], function (err) {
 			if (err) {
 				return callback(err);
@@ -307,9 +307,9 @@ module.exports = function (Topics) {
 				function (next) {
 					Topics.setTopicFields(tid, {
 						cid: cid,
-						oldCid: oldCid
+						oldCid: oldCid,
 					}, next);
-				}
+				},
 			], function (err) {
 				if (err) {
 					return callback(err);
@@ -318,7 +318,7 @@ module.exports = function (Topics) {
 					tid: tid,
 					fromCid: oldCid,
 					toCid: cid,
-					uid: uid
+					uid: uid,
 				});
 				callback();
 			});

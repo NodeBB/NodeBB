@@ -25,7 +25,7 @@ $(document).ready(function () {
 		if (ev !== null && ev.state) {
 			if (ev.state.url === null && ev.state.returnPath !== undefined) {
 				window.history.replaceState({
-					url: ev.state.returnPath
+					url: ev.state.returnPath,
 				}, ev.state.returnPath, config.relative_path + '/' + ev.state.returnPath);
 			} else if (ev.state.url !== undefined) {
 				ajaxify.go(ev.state.url, function () {
@@ -116,7 +116,7 @@ $(document).ready(function () {
 		url = ajaxify.removeRelativePath(url.replace(/^\/|\/$/g, ''));
 
 		var payload = {
-			url: url
+			url: url,
 		};
 
 		$(window).trigger('action:ajaxify.start', payload);
@@ -128,7 +128,7 @@ $(document).ready(function () {
 		ajaxify.currentPage = url.split(/[?#]/)[0];
 		if (window.history && window.history.pushState) {
 			window.history[!quiet ? 'pushState' : 'replaceState']({
-				url: url
+				url: url,
 			}, url, RELATIVE_PATH + '/' + url);
 		}
 	};
@@ -243,7 +243,7 @@ $(document).ready(function () {
 		}
 		var data = {
 			tpl_url: tpl_url,
-			scripts: [location + tpl_url]
+			scripts: [location + tpl_url],
 		};
 
 		$(window).trigger('action:script.load', data);
@@ -291,7 +291,7 @@ $(document).ready(function () {
 			url: RELATIVE_PATH + '/api/' + url,
 			cache: false,
 			headers: {
-				'X-Return-To': app.previousUrl
+				'X-Return-To': app.previousUrl,
 			},
 			success: function (data) {
 				if (!data) {
@@ -311,9 +311,9 @@ $(document).ready(function () {
 				}
 				callback({
 					data: data,
-					textStatus: textStatus
+					textStatus: textStatus,
 				});
-			}
+			},
 		});
 	};
 
@@ -329,7 +329,7 @@ $(document).ready(function () {
 				},
 				error: function (error) {
 					throw new Error("Unable to load template: " + template + " (" + error.statusText + ")");
-				}
+				},
 			});
 		}
 	};

@@ -22,7 +22,7 @@ SocketCategories.get = function (socket, data, callback) {
 				async.apply(db.getSortedSetRange, 'categories:cid', 0, -1),
 				async.apply(categories.getCategoriesData),
 			], next);
-		}
+		},
 	}, function (err, results) {
 		if (err) {
 			return callback(err);
@@ -39,7 +39,7 @@ SocketCategories.get = function (socket, data, callback) {
 SocketCategories.getWatchedCategories = function (socket, data, callback) {
 	async.parallel({
 		categories: async.apply(categories.getCategoriesByPrivilege, 'cid:0:children', socket.uid, 'find'),
-		ignoredCids: async.apply(user.getIgnoredCategories, socket.uid)
+		ignoredCids: async.apply(user.getIgnoredCategories, socket.uid),
 	}, function (err, results) {
 		if (err) {
 			return callback(err);
@@ -70,7 +70,7 @@ SocketCategories.loadMore = function (socket, data, callback) {
 			} else {
 				next();
 			}
-		}
+		},
 	}, function (err, results) {
 		if (err) {
 			return callback(err);
@@ -118,7 +118,7 @@ SocketCategories.loadMore = function (socket, data, callback) {
 			stop: stop,
 			uid: socket.uid,
 			targetUid: results.targetUid,
-			settings: results.settings
+			settings: results.settings,
 		}, function (err, data) {
 			if (err) {
 				return callback(err);
@@ -129,7 +129,7 @@ SocketCategories.loadMore = function (socket, data, callback) {
 			data.privileges = results.privileges;
 			data.template = {
 				category: true,
-				name: 'category'
+				name: 'category',
 			};
 
 			callback(null, data);
@@ -162,9 +162,9 @@ SocketCategories.getMoveCategories = function (socket, data, callback) {
 				},
 				function (cids, next) {
 					categories.getCategories(cids, socket.uid, next);
-				}
+				},
 			], next);
-		}
+		},
 	}, function (err, results) {
 		if (err) {
 			return callback(err);
@@ -221,7 +221,7 @@ function ignoreOrWatch(fn, socket, cid, callback) {
 		},
 		function (next) {
 			topics.pushUnreadCount(socket.uid, next);
-		}
+		},
 	], callback);
 }
 

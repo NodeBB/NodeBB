@@ -41,7 +41,7 @@ module.exports = function (Meta) {
 					}
 					next(null, sounds.concat(uploaded));
 				});
-			}
+			},
 		], function (err, files) {
 			if (err) {
 				winston.error('Could not get local sound files:' + err.message);
@@ -73,7 +73,7 @@ module.exports = function (Meta) {
 			},
 			userSettings: function (next) {
 				user.getSettings(uid, next);
-			}
+			},
 		}, function (err, results) {
 			if (err) {
 				return callback(err);
@@ -130,7 +130,7 @@ module.exports = function (Meta) {
 						},
 						function (next) {
 							mkdirp(soundsPath, next);
-						}
+						},
 					], function (err) {
 						if (err) {
 							winston.error('Could not initialise sound files:' + err.message);
@@ -153,7 +153,7 @@ module.exports = function (Meta) {
 						});
 					});
 				});
-			}
+			},
 		], callback);
 	}
 };

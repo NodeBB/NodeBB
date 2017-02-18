@@ -12,7 +12,7 @@ pagination.create = function (currentPage, pageCount, queryObj) {
 			rel: [],
 			pages: [],
 			currentPage: 1,
-			pageCount: 1
+			pageCount: 1,
 		};
 	}
 	pageCount = parseInt(pageCount, 10);
@@ -62,14 +62,14 @@ pagination.create = function (currentPage, pageCount, queryObj) {
 	if (currentPage < pageCount) {
 		data.rel.push({
 			rel: 'next',
-			href: '?page=' + next
+			href: '?page=' + next,
 		});
 	}
 
 	if (currentPage > 1) {
 		data.rel.push({
 			rel: 'prev',
-			href: '?page=' + previous
+			href: '?page=' + previous,
 		});
 	}
 	return data;

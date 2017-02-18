@@ -27,7 +27,7 @@ module.exports = function (User) {
 		var tasks = [
 			async.apply(User.setUserField, uid, 'banned', 1),
 			async.apply(db.sortedSetAdd, 'users:banned', now, uid),
-			async.apply(db.sortedSetAdd, 'uid:' + uid + ':bans', now, until)
+			async.apply(db.sortedSetAdd, 'uid:' + uid + ':bans', now, until),
 		];
 
 		if (until > 0 && now < until) {
@@ -53,7 +53,7 @@ module.exports = function (User) {
 			},
 			function (next) {
 				db.sortedSetsRemove(['users:banned', 'users:banned:expire'], uid, next);
-			}
+			},
 		], callback);
 	};
 
@@ -75,11 +75,11 @@ module.exports = function (User) {
 				async.parallel([
 					async.apply(db.sortedSetRemove.bind(db), 'users:banned:expire', uid),
 					async.apply(db.sortedSetRemove.bind(db), 'users:banned', uid),
-					async.apply(User.setUserFields, uid, {banned:0, 'banned:expire': 0})
+					async.apply(User.setUserFields, uid, {banned:0, 'banned:expire': 0}),
 				], function (err) {
 					next(err, false);
 				});
-			}
+			},
 		], callback);
 	};
 

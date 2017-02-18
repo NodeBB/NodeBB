@@ -72,7 +72,7 @@ module.exports = function (middleware) {
 						},
 						footer: function (next) {
 							renderHeaderFooter('renderFooter', req, res, options, next);
-						}
+						},
 					}, next);
 				},
 				function (results, next) {
@@ -89,7 +89,7 @@ module.exports = function (middleware) {
 						return '<script id="ajaxify-data" type="application/json">' + ajaxifyData + '</script>';
 					});
 					next(null, translated);
-				}
+				},
 			], fn);
 		};
 

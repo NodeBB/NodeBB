@@ -37,11 +37,11 @@ module.exports = function (User) {
 				invitations = invitations.map(function (invites, index) {
 					return {
 						uid: uids[index],
-						invitations: invites
+						invitations: invites,
 					};
 				});
 				next(null, invitations);
-			}
+			},
 		], callback);
 	};
 
@@ -70,7 +70,7 @@ module.exports = function (User) {
 					},
 					function (next) {
 						db.setAdd('invitation:uids', uid, next);
-					}
+					},
 				], function (err) {
 					next(err);
 				});
@@ -92,12 +92,12 @@ module.exports = function (User) {
 						registerLink: registerLink,
 						subject: subject,
 						username: username,
-						template: 'invitation'
+						template: 'invitation',
 					};
 
 					emailer.sendToEmail('invitation', email, meta.config.defaultLang, data, next);
 				});
-			}
+			},
 		], callback);
 	};
 
@@ -116,7 +116,7 @@ module.exports = function (User) {
 				}
 
 				next();
-			}
+			},
 		], callback);
 	};
 
@@ -136,11 +136,11 @@ module.exports = function (User) {
 					},
 					function deleteInviteKey(next) {
 						db.delete('invitation:email:' + email, callback);
-					}
+					},
 				], function (err) {
 					next(err);
 				});
-			}
+			},
 		], callback);
 	};
 

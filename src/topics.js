@@ -50,7 +50,7 @@ var social = require('./social');
 			},
 			function (settings, next) {
 				next(null, Math.ceil((parseInt(postCount, 10) - 1) / settings.postsPerPage));
-			}
+			},
 		], callback);
 	};
 
@@ -69,7 +69,7 @@ var social = require('./social');
 			},
 			function (topics, next) {
 				next(null, {topics: topics, nextStart: stop + 1});
-			}
+			},
 		], callback);
 	};
 
@@ -80,7 +80,7 @@ var social = require('./social');
 			},
 			function (tids, next) {
 				Topics.getTopicsByTids(tids, uid, next);
-			}
+			},
 		], callback);
 	};
 
@@ -129,7 +129,7 @@ var social = require('./social');
 					},
 					tags: function (next) {
 						Topics.getTopicsTagsObjects(tids, next);
-					}
+					},
 				}, next);
 			},
 			function (results, next) {
@@ -164,7 +164,7 @@ var social = require('./social');
 			},
 			function (data, next) {
 				next(null, data.topics);
-			}
+			},
 		], callback);
 	};
 
@@ -187,9 +187,9 @@ var social = require('./social');
 							function (tags, next) {
 								topicData.tags = tags;
 								Topics.getRelatedTopics(topicData, uid, next);
-							}
+							},
 						], next);
-					}
+					},
 				}, next);
 			},
 			function (results, next) {
@@ -214,7 +214,7 @@ var social = require('./social');
 			},
 			function (data, next) {
 				next(null, data.topic);
-			}
+			},
 		], callback);
 	};
 
@@ -253,7 +253,7 @@ var social = require('./social');
 				Topics.calculatePostIndices(replies, start, stop, topic.postcount, reverse);
 
 				Topics.addPostData(posts, uid, next);
-			}
+			},
 		], callback);
 	}
 
@@ -313,7 +313,7 @@ var social = require('./social');
 		if (plugins.hasListeners('filter:topic.search')) {
 			plugins.fireHook('filter:topic.search', {
 				tid: tid,
-				term: term
+				term: term,
 			}, callback);
 		} else {
 			callback(new Error('no-plugins-available'), []);

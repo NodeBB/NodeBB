@@ -18,12 +18,12 @@ define('admin/general/navigation', ['translator', 'iconSelect', 'jqueryui'], fun
 					connectToSortable: '#active-navigation',
 					helper: 'clone',
 					distance: 10,
-					stop: drop
+					stop: drop,
 				});
 		});
 		
 		$('#active-navigation').sortable().droppable({
-			accept: $('#available li .drag-item')
+			accept: $('#available li .drag-item'),
 		});
 
 		$('#enabled').on('click', '.iconPicker', function () {

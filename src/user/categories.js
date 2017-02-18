@@ -18,7 +18,7 @@ module.exports = function (User) {
 			},
 			all: function (next) {
 				db.getSortedSetRange('categories:cid', 0, -1, next);
-			}
+			},
 		}, function (err, results) {
 			if (err) {
 				return callback(err);
@@ -48,7 +48,7 @@ module.exports = function (User) {
 			},
 			function (next) {
 				db.sortedSetAdd('cid:' + cid + ':ignorers', Date.now(), uid, next);
-			}
+			},
 		], callback);
 	};
 
@@ -69,7 +69,7 @@ module.exports = function (User) {
 			},
 			function (next) {
 				db.sortedSetRemove('cid:' + cid + ':ignorers', uid, next);
-			}
+			},
 		], callback);
 	};
 };

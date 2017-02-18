@@ -42,12 +42,12 @@ searchController.search = function (req, res, next) {
 		sortDirection: req.query.sortDirection,
 		page: page,
 		uid: req.uid,
-		qs: req.query
+		qs: req.query,
 	};
 
 	async.parallel({
 		categories: async.apply(categories.buildForSelect, req.uid),
-		search: async.apply(search.search, data)
+		search: async.apply(search.search, data),
 	}, function (err, results) {
 		if (err) {
 			return next(err);
@@ -55,7 +55,7 @@ searchController.search = function (req, res, next) {
 
 		var categoriesData = [
 			{value: 'all', text: '[[unread:all_categories]]'},
-			{value: 'watched', text: '[[category:watched-categories]]'}
+			{value: 'watched', text: '[[category:watched-categories]]'},
 		].concat(results.categories);
 
 		var searchData = results.search;

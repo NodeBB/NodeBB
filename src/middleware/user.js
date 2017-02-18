@@ -8,7 +8,7 @@ var user = require('../user');
 var privileges = require('../privileges');
 
 var controllers = {
-	helpers: require('../controllers/helpers')
+	helpers: require('../controllers/helpers'),
 };
 
 module.exports = function (middleware) {
@@ -44,7 +44,7 @@ module.exports = function (middleware) {
 				} else {
 					next(null, false);
 				}
-			}
+			},
 		], function (err, allowed) {
 			if (err || allowed) {
 				return next(err);

@@ -53,7 +53,7 @@ var emailer = require('../emailer');
 				confirm_code = _confirm_code;
 				db.setObject('confirm:' + confirm_code, {
 					email: email.toLowerCase(),
-					uid: uid
+					uid: uid,
 				}, next);
 			},
 			function (next) {
@@ -73,7 +73,7 @@ var emailer = require('../emailer');
 
 						subject: subject,
 						template: 'welcome',
-						uid: uid
+						uid: uid,
 					};
 
 					if (plugins.hasListeners('action:user.verify')) {
@@ -83,7 +83,7 @@ var emailer = require('../emailer');
 						emailer.send('welcome', uid, data, next);
 					}
 				});
-			}
+			},
 		], callback);
 	};
 
@@ -103,7 +103,7 @@ var emailer = require('../emailer');
 					},
 					function (next) {
 						plugins.fireHook('action:user.email.confirmed', {uid: confirmObj.uid, email: confirmObj.email}, next);
-					}
+					},
 				], function (err) {
 					callback(err ? new Error('[[error:email-confirm-failed]]') : null);
 				});

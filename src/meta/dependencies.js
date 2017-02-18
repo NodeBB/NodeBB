@@ -21,7 +21,7 @@ module.exports = function (Meta) {
 
 		async.every(modules, function (module, next) {
 			fs.readFile(path.join(__dirname, '../../node_modules/', module, 'package.json'), {
-				encoding: 'utf-8'
+				encoding: 'utf-8',
 			}, function (err, pkgData) {
 				// If a bundled plugin/theme is not present, skip the dep check (#3384)
 				if (err && err.code === 'ENOENT' && (module === 'nodebb-rewards-essentials' || module.startsWith('nodebb-plugin') || module.startsWith('nodebb-theme'))) {

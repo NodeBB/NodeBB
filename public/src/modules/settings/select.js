@@ -41,7 +41,7 @@ define('settings/select', function () {
 			} else {
 				return void 0;
 			}
-		}
+		},
 	};
 
 	return SettingsSelect;

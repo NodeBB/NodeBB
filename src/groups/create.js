@@ -42,14 +42,14 @@ module.exports = function (Groups) {
 					hidden: parseInt(data.hidden, 10) === 1 ? 1 : 0,
 					system: system ? 1 : 0,
 					private: isPrivate,
-					disableJoinRequests: disableJoinRequests
+					disableJoinRequests: disableJoinRequests,
 				};
 				plugins.fireHook('filter:group.create', {group: groupData, data: data}, next);
 			},
 			function (results, next) {
 				var tasks = [
 					async.apply(db.sortedSetAdd, 'groups:createtime', groupData.createtime, groupData.name),
-					async.apply(db.setObject, 'group:' + groupData.name, groupData)
+					async.apply(db.setObject, 'group:' + groupData.name, groupData),
 				];
 
 				if (data.hasOwnProperty('ownerUid')) {
@@ -72,7 +72,7 @@ module.exports = function (Groups) {
 			function (results, next) {
 				plugins.fireHook('action:group.create', groupData);
 				next(null, groupData);
-			}
+			},
 		], callback);
 
 	};

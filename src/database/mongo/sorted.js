@@ -159,7 +159,7 @@ module.exports = function (db, module) {
 		var pipeline = [
 			{ $match : { _key : { $in: keys } } } ,
 			{ $group: { _id: {_key: '$_key'}, count: { $sum: 1 } } },
-			{ $project: { _id: 1, count: '$count' } }
+			{ $project: { _id: 1, count: '$count' } },
 		];
 		db.collection('objects').aggregate(pipeline, function (err, results) {
 			if (err) {
@@ -500,7 +500,7 @@ module.exports = function (db, module) {
 					});
 				});
 			},
-			callback
+			callback,
 		);
 	};
 

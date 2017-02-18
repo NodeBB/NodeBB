@@ -30,7 +30,7 @@ module.exports = function (Posts) {
 			},
 			hasBookmarked: function (next) {
 				Posts.hasBookmarked(pid, uid, next);
-			}
+			},
 		}, function (err, results) {
 			if (err) {
 				return callback(err);
@@ -61,7 +61,7 @@ module.exports = function (Posts) {
 				function (count, next) {
 					results.postData.bookmarks = count;
 					Posts.setPostField(pid, 'bookmarks', count, next);
-				}
+				},
 			], function (err) {
 				if (err) {
 					return callback(err);
@@ -73,12 +73,12 @@ module.exports = function (Posts) {
 					pid: pid,
 					uid: uid,
 					owner: results.owner,
-					current: current
+					current: current,
 				});
 
 				callback(null, {
 					post: results.postData,
-					isBookmarked: isBookmarking
+					isBookmarked: isBookmarking,
 				});
 			});
 		});

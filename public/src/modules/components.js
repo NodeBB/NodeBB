@@ -52,7 +52,7 @@ define('components', function () {
 		},
 		'chat/message/body': function (messageId) {
 			return $('[component="chat/message"][data-mid="' + messageId + '"] [component="chat/message/body"]');
-		}
+		},
 	};
 
 	components.get = function () {

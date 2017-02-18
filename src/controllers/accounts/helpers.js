@@ -59,7 +59,7 @@ helpers.getUserDataByUserSlug = function (userslug, callerUID, callback) {
 				},
 				sso: function (next) {
 					plugins.fireHook('filter:auth.list', {uid: uid, associations: []}, next);
-				}
+				},
 			}, next);
 		},
 		function (results, next) {
@@ -144,7 +144,7 @@ helpers.getUserDataByUserSlug = function (userslug, callerUID, callback) {
 			userData['email:disableEdit'] = !userData.isAdmin && parseInt(meta.config['email:disableEdit'], 10) === 1;
 
 			next(null, userData);
-		}
+		},
 	], callback);
 };
 

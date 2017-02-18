@@ -18,7 +18,7 @@ var userFields = ['uid', 'username', 'userslug', 'email', 'postcount', 'joindate
 usersController.search = function (req, res, next) {
 	res.render('admin/manage/users', {
 		search_display: '',
-		users: []
+		users: [],
 	});
 };
 
@@ -97,14 +97,14 @@ usersController.registrationQueue = function (req, res, next) {
 						invites.invitations = invites.invitations.map(function (email, i) {
 							return {
 								email: email,
-								username: usernames[index][i] === '[[global:guest]]' ? '' : usernames[index][i]
+								username: usernames[index][i] === '[[global:guest]]' ? '' : usernames[index][i],
 							};
 						});
 					});
 					next(null, invitations);
-				}
+				},
 			], next);
-		}
+		},
 	}, function (err, data) {
 		if (err) {
 			return next(err);
@@ -142,9 +142,9 @@ function getUsers(set, section, min, max, req, res, next) {
 				},
 				function (uids, next) {
 					user.getUsersWithFields(uids, userFields, req.uid, next);
-				}
+				},
 			], next);
-		}
+		},
 	}, function (err, results) {
 		if (err) {
 			return next(err);
@@ -157,7 +157,7 @@ function getUsers(set, section, min, max, req, res, next) {
 		var data = {
 			users: results.users,
 			page: page,
-			pageCount: Math.max(1, Math.ceil(results.count / resultsPerPage))
+			pageCount: Math.max(1, Math.ceil(results.count / resultsPerPage)),
 		};
 		data[section] = true;
 		render(req, res, data);
@@ -181,7 +181,7 @@ usersController.getCSV = function (req, res, next) {
 	events.log({
 		type: 'getUsersCSV',
 		uid: req.user.uid,
-		ip: req.ip
+		ip: req.ip,
 	});
 
 	user.getUsersCSV(function (err, data) {

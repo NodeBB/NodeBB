@@ -90,7 +90,7 @@ function resetTheme(themeId, callback) {
 		} else {
 			meta.themes.set({
 				type: 'local',
-				id: themeId
+				id: themeId,
 			}, function (err) {
 				if (err) {
 					winston.warn('[reset] Failed to reset theme to ' + themeId);
@@ -109,7 +109,7 @@ function resetThemes(callback) {
 
 	meta.themes.set({
 		type: 'local',
-		id: 'nodebb-theme-persona'
+		id: 'nodebb-theme-persona',
 	}, function (err) {
 		winston.info('[reset] Theme reset to Persona');
 		callback(err);
@@ -129,7 +129,7 @@ function resetPlugin(pluginId, callback) {
 			} else {
 				next();
 			}
-		}
+		},
 	], function (err) {
 		if (err) {
 			winston.error('[reset] Could not disable plugin: %s encountered error %s', pluginId, err.message);

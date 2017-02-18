@@ -74,7 +74,7 @@ var plugins = require('./plugins');
 				}
 				data.posts = data.posts.filter(Boolean);
 				next(null, data.posts);
-			}
+			},
 		], callback);
 	};
 
@@ -91,7 +91,7 @@ var plugins = require('./plugins');
 			},
 			function (posts, next) {
 				next(null, {posts: posts, nextStart: stop + 1});
-			}
+			},
 		], callback);
 	};
 
@@ -154,7 +154,7 @@ var plugins = require('./plugins');
 				return callback(err);
 			}
 			var data = {
-				pid: pid
+				pid: pid,
 			};
 			data[field] = value;
 			plugins.fireHook('action:post.setFields', data);
@@ -217,7 +217,7 @@ var plugins = require('./plugins');
 				}
 
 				next(null, indices);
-			}
+			},
 		], callback);
 	};
 
@@ -247,12 +247,12 @@ var plugins = require('./plugins');
 							return next();
 						}
 						db.sortedSetAdd('tid:' + postData.tid + ':posts:votes', postData.votes, postData.pid, next);
-					}
+					},
 				], next);
 			},
 			function (next) {
 				Posts.setPostFields(postData.pid, {upvotes: postData.upvotes, downvotes: postData.downvotes}, next);
-			}
+			},
 		], function (err) {
 			callback(err);
 		});

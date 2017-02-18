@@ -37,7 +37,7 @@ module.exports = function (SocketUser) {
 						plugins.fireHook('filter:user.getPicture', {
 							uid: socket.uid,
 							type: type,
-							picture: undefined
+							picture: undefined,
 						}, function (err, returnData) {
 							if (err) {
 								return next(err);
@@ -50,7 +50,7 @@ module.exports = function (SocketUser) {
 			},
 			function (picture, next) {
 				user.setUserField(data.uid, 'picture', picture, next);
-			}
+			},
 		], callback);
 	};
 
@@ -67,7 +67,7 @@ module.exports = function (SocketUser) {
 			},
 			function (uploadedImage, next) {
 				next(null, uploadedImage ? uploadedImage.url : null);
-			}
+			},
 		], callback);
 	};
 
@@ -97,9 +97,9 @@ module.exports = function (SocketUser) {
 
 				user.setUserFields(data.uid, {
 					uploadedpicture: '',
-					picture: userData.uploadedpicture === userData.picture ? '' : userData.picture	// if current picture is uploaded picture, reset to user icon
+					picture: userData.uploadedpicture === userData.picture ? '' : userData.picture,	// if current picture is uploaded picture, reset to user icon
 				}, next);
-			}
+			},
 		], callback);
 	};
 
@@ -111,9 +111,9 @@ module.exports = function (SocketUser) {
 		async.parallel({
 			list: async.apply(plugins.fireHook, 'filter:user.listPictures', {
 				uid: data.uid,
-				pictures: []
+				pictures: [],
 			}),
-			uploaded: async.apply(user.getUserField, data.uid, 'uploadedpicture')
+			uploaded: async.apply(user.getUserField, data.uid, 'uploadedpicture'),
 		}, function (err, data) {
 			if (err) {
 				return callback(err);
@@ -123,7 +123,7 @@ module.exports = function (SocketUser) {
 				data.list.pictures.push({
 					type: 'uploaded',
 					url: data.uploaded,
-					text: '[[user:uploaded_picture]]'
+					text: '[[user:uploaded_picture]]',
 				});
 			}
 

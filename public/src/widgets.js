@@ -34,7 +34,7 @@
 			template: template + '.tpl',
 			url: url,
 			cid: ajaxify.data.cid,
-			isMobile: utils.isMobile()
+			isMobile: utils.isMobile(),
 		}, function (renderedAreas) {
 			for (var x = 0; x < renderedAreas.length; ++x) {
 				var renderedWidgets = renderedAreas[x].widgets;
@@ -79,7 +79,7 @@
 			widgetAreas.find('img[title].teaser-pic,img[title].user-img').each(function () {
 				$(this).tooltip({
 					placement: 'top',
-					title: $(this).attr('title')
+					title: $(this).attr('title'),
 				});
 			});
 			$(window).trigger('action:widgets.loaded', {});

@@ -24,13 +24,13 @@ define('forum/chats/messages', ['components', 'sounds', 'translator'], function 
 		$(window).trigger('action:chat.sent', {
 			roomId: roomId,
 			message: msg,
-			mid: mid
+			mid: mid,
 		});
 		
 		if (!mid) {
 			socket.emit('modules.chats.send', {
 				roomId: roomId,
-				message: msg
+				message: msg,
 			}, function (err) {
 				if (err) {
 					inputEl.val(msg);
@@ -46,7 +46,7 @@ define('forum/chats/messages', ['components', 'sounds', 'translator'], function 
 			socket.emit('modules.chats.edit', {
 				roomId: roomId,
 				mid: mid,
-				message: msg
+				message: msg,
 			}, function (err) {
 				if (err) {
 					inputEl.val(msg);
@@ -81,7 +81,7 @@ define('forum/chats/messages', ['components', 'sounds', 'translator'], function 
 
 	messages.parseMessage = function (data, callback) {
 		templates.parse('partials/chats/message' + (Array.isArray(data) ? 's' : ''), {
-			messages: data
+			messages: data,
 		}, function (html) {
 			translator.translate(html, callback);
 		});
@@ -91,7 +91,7 @@ define('forum/chats/messages', ['components', 'sounds', 'translator'], function 
 	messages.scrollToBottom = function (containerEl) {
 		if (containerEl.length) {
 			containerEl.scrollTop(
-				containerEl[0].scrollHeight - containerEl.height()
+				containerEl[0].scrollHeight - containerEl.height(),
 			);
 		}
 	};
@@ -136,7 +136,7 @@ define('forum/chats/messages', ['components', 'sounds', 'translator'], function 
 
 				socket.emit('modules.chats.delete', {
 					messageId: messageId,
-					roomId: roomId
+					roomId: roomId,
 				}, function (err) {
 					if (err) {
 						return app.alertError(err.message);

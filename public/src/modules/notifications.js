@@ -71,7 +71,7 @@ define('notifications', ['sounds', 'translator', 'components'], function (sound,
 			var payload = {
 				alert_id: 'new_notif',
 				title: '[[notifications:new_notification]]',
-				timeout: 2000
+				timeout: 2000,
 			};
 
 			if (notifData.path) {
@@ -151,7 +151,7 @@ define('notifications', ['sounds', 'translator', 'components'], function (sound,
 
 		var payload = {
 			count: count,
-			updateFavicon: true
+			updateFavicon: true,
 		};
 		$(window).trigger('action:notification.updateCount', payload);
 

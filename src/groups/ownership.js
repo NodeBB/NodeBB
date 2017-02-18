@@ -32,7 +32,7 @@ module.exports = function (Groups) {
 			function (next) {
 				plugins.fireHook('action:group.grantOwnership', {uid: toUid, groupName: groupName});
 				next();
-			}
+			},
 		], callback);
 	};
 
@@ -53,7 +53,7 @@ module.exports = function (Groups) {
 			function (next) {
 				plugins.fireHook('action:group.rescindOwnership', {uid: toUid, groupName: groupName});
 				next();
-			}
+			},
 		], callback);
 	};
 };

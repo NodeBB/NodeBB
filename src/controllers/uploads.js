@@ -72,7 +72,7 @@ function uploadAsImage(req, uploadedFile, callback) {
 			}
 
 			resizeImage(fileObj, next);
-		}
+		},
 	], callback);
 }
 
@@ -89,7 +89,7 @@ function uploadAsFile(req, uploadedFile, callback) {
 				return next(new Error('[[error:uploads-are-disabled]]'));
 			}
 			uploadFile(req.uid, uploadedFile, next);
-		}
+		},
 	], callback);
 }
 
@@ -111,7 +111,7 @@ function resizeImage(fileObj, callback) {
 				path: fileObj.path,
 				target: path.join(dirname, basename + '-resized' + extname),
 				extension: extname,
-				width: parseInt(meta.config.maximumImageWidth, 10) || 760
+				width: parseInt(meta.config.maximumImageWidth, 10) || 760,
 			}, next);
 		},
 		function (next) {
@@ -124,7 +124,7 @@ function resizeImage(fileObj, callback) {
 			fileObj.url = path.join(dirname, basename + '-resized' + extname);
 
 			next(null, fileObj);
-		}
+		},
 	], callback);
 }
 
@@ -149,7 +149,7 @@ uploadsController.uploadThumb = function (req, res, next) {
 				path: uploadedFile.path,
 				extension: path.extname(uploadedFile.name),
 				width: size,
-				height: size
+				height: size,
 			}, function (err) {
 				if (err) {
 					return next(err);
@@ -223,7 +223,7 @@ function saveFileToLocal(uploadedFile, callback) {
 		callback(null, {
 			url: nconf.get('relative_path') + upload.url,
 			path: upload.path,
-			name: uploadedFile.name
+			name: uploadedFile.name,
 		});
 	});
 }

@@ -14,13 +14,13 @@ module.exports = function (Topics) {
 		day: 86400000,
 		week: 604800000,
 		month: 2592000000,
-		year: 31104000000
+		year: 31104000000,
 	};
 
 	Topics.getRecentTopics = function (cid, uid, start, stop, filter, callback) {
 		var recentTopics = {
 			nextStart : 0,
-			topics: []
+			topics: [],
 		};
 
 		async.waterfall([
@@ -43,7 +43,7 @@ module.exports = function (Topics) {
 				recentTopics.topics = topicData;
 				recentTopics.nextStart = stop + 1;
 				next(null, recentTopics);
-			}
+			},
 		], callback);
 	};
 
@@ -72,7 +72,7 @@ module.exports = function (Topics) {
 					},
 					topicData: function (next) {
 						Topics.getTopicsFields(tids, ['tid', 'cid'], next);
-					}
+					},
 				}, next);
 			},
 			function (results, next) {
@@ -86,7 +86,7 @@ module.exports = function (Topics) {
 					return topic.tid;
 				});
 				next(null, tids);
-			}
+			},
 		], callback);
 	}
 
@@ -101,7 +101,7 @@ module.exports = function (Topics) {
 			},
 			function (topics, next) {
 				next(null, {topics: topics, nextStart: stop + 1});
-			}
+			},
 		], callback);
 	};
 
@@ -128,12 +128,12 @@ module.exports = function (Topics) {
 							return next();
 						}
 						Topics.updateRecent(tid, timestamp, next);
-					}
+					},
 				], next);
 			},
 			function (next) {
 				Topics.setTopicField(tid, 'lastposttime', timestamp, next);
-			}
+			},
 		], function (err) {
 			callback(err);
 		});

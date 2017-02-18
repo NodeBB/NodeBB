@@ -17,7 +17,7 @@ app.cacheBuster = null;
 	app.cacheBuster = config['cache-buster'];
 
 	bootbox.setDefaults({
-		locale: config.userLang
+		locale: config.userLang,
 	});
 
 	app.load = function () {
@@ -69,7 +69,7 @@ app.cacheBuster = null;
 					clickfn: function () {
 						window.location.reload();
 					},
-					type: 'warning'
+					type: 'warning',
 				});
 			}
 		});
@@ -99,16 +99,16 @@ app.cacheBuster = null;
 		$.ajax(config.relative_path + '/logout', {
 			type: 'POST',
 			headers: {
-				'x-csrf-token': config.csrf_token
+				'x-csrf-token': config.csrf_token,
 			},
 			success: function () {
 				var payload = {
-					next: config.relative_path + '/'
+					next: config.relative_path + '/',
 				};
 
 				$(window).trigger('action:app.loggedOut', payload);
 				window.location.href = payload.next;
-			}
+			},
 		});
 	};
 
@@ -129,7 +129,7 @@ app.cacheBuster = null;
 			title: '[[global:alert.success]]',
 			message: message,
 			type: 'success',
-			timeout: timeout ? timeout : 5000
+			timeout: timeout ? timeout : 5000,
 		});
 	};
 
@@ -144,7 +144,7 @@ app.cacheBuster = null;
 			title: '[[global:alert.error]]',
 			message: message,
 			type: 'danger',
-			timeout: timeout ? timeout : 10000
+			timeout: timeout ? timeout : 10000,
 		});
 	};
 
@@ -164,7 +164,7 @@ app.cacheBuster = null;
 					closeButton: false,
 					callback: function () {
 						window.location.reload();
-					}
+					},
 				});
 			});
 		});
@@ -176,7 +176,7 @@ app.cacheBuster = null;
 			var previousRoom = app.currentRoom;
 			app.currentRoom = room;
 			socket.emit('meta.rooms.enter', {
-				enter: room
+				enter: room,
 			}, function (err) {
 				if (err) {
 					app.currentRoom = previousRoom;
@@ -214,7 +214,7 @@ app.cacheBuster = null;
 			if (!utils.isTouchDevice()) {
 				$(this).tooltip({
 					placement: placement || $(this).attr('title-placement') || 'top',
-					title: $(this).attr('title')
+					title: $(this).attr('title'),
 				});
 			}
 		});
@@ -224,7 +224,7 @@ app.cacheBuster = null;
 		if (!utils.isTouchDevice()) {
 			$('body').tooltip({
 				selector:'.fa-circle.status',
-				placement: 'top'
+				placement: 'top',
 			});
 		}
 	};
@@ -263,13 +263,13 @@ app.cacheBuster = null;
 			login: {
 				format: 'alert',
 				title: '[[global:welcome_back]] ' + app.user.username + '!',
-				message: '[[global:you_have_successfully_logged_in]]'
+				message: '[[global:you_have_successfully_logged_in]]',
 			},
 			banned: {
 				format: 'modal',
 				title: '[[error:user-banned]]',
-				message: '[[error:user-banned-reason, ' + utils.params().banned + ']]'
-			}
+				message: '[[error:user-banned-reason, ' + utils.params().banned + ']]',
+			},
 		};
 
 		function showAlert(type) {
@@ -279,7 +279,7 @@ app.cacheBuster = null;
 						type: 'success',
 						title: messages[type].title,
 						message: messages[type].message,
-						timeout: 5000
+						timeout: 5000,
 					});
 					break;
 
@@ -288,7 +288,7 @@ app.cacheBuster = null;
 						translator.translate(messages[type].message, function (translated) {
 							bootbox.alert({
 								title: messages[type].title,
-								message: translated
+								message: translated,
 							});
 						});
 					});
@@ -368,7 +368,7 @@ app.cacheBuster = null;
 	var	titleObj = {
 			active: false,
 			interval: undefined,
-			titles: []
+			titles: [],
 		};
 
 	app.alternatingTitle = function (title) {
@@ -439,7 +439,7 @@ app.cacheBuster = null;
 				$(this).tooltip({
 					placement: 'bottom',
 					trigger: 'hover',
-					title: $(this).attr('title')
+					title: $(this).attr('title'),
 				});
 			}
 		});
@@ -448,7 +448,7 @@ app.cacheBuster = null;
 			$('#search-form').parent().tooltip({
 				placement: 'bottom',
 				trigger: 'hover',
-				title: $('#search-button i').attr('title')
+				title: $('#search-button i').attr('title'),
 			});
 		}
 
@@ -456,7 +456,7 @@ app.cacheBuster = null;
 			$('#user_dropdown').tooltip({
 				placement: 'bottom',
 				trigger: 'hover',
-				title: $('#user_dropdown').attr('title')
+				title: $('#user_dropdown').attr('title'),
 			});
 		}
 	}
@@ -482,7 +482,7 @@ app.cacheBuster = null;
 			if (!config.loggedIn && !config.allowGuestSearching) {
 				app.alert({
 					message:'[[error:search-requires-login]]',
-					timeout: 3000
+					timeout: 3000,
 				});
 				ajaxify.go('login');
 				return false;
@@ -547,7 +547,7 @@ app.cacheBuster = null;
 	app.newTopic = function (cid, tags) {
 		$(window).trigger('action:composer.topic.new', {
 			cid: cid || ajaxify.data.cid || 0,
-			tags: tags || (ajaxify.data.tag ? [ajaxify.data.tag] : [])
+			tags: tags || (ajaxify.data.tag ? [ajaxify.data.tag] : []),
 		});
 	};
 
@@ -570,7 +570,7 @@ app.cacheBuster = null;
 		var msg = {
 			alert_id: 'email_confirm',
 			type: 'warning',
-			timeout: 0
+			timeout: 0,
 		};
 
 		if (!app.user.email) {

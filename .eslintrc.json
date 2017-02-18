@@ -3,7 +3,7 @@
 
     "rules": {
         "handle-callback-err": [ "error","^(e$|(e|(.*(_e|E)))rr)" ],
-        "linebreak-style": "off",
+        // "linebreak-style": "off",
         "import/no-unresolved": "off",
         "import/no-extraneous-dependencies": "off",
         "one-var": "off",
@@ -72,7 +72,7 @@
         "no-param-reassign": "off",
         "consistent-return": "off",
         "strict": "off",
-        "comma-dangle": "off",
+        // "comma-dangle": "off",
         "no-multi-spaces": "off",
         "quotes": "off",
         "keyword-spacing": "off",
@@ -99,7 +99,6 @@
         "array-bracket-spacin": "off",
         "dot-notation": "off",
         "func-call-spacing": "off",
-        "newline-per-chained-call": "off",
         "newline-per-chained-call": "off",
         "array-bracket-spacing": "off",
         "object-property-newline": "off",

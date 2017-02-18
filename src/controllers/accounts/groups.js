@@ -38,7 +38,7 @@ groupsController.get = function (req, res, callback) {
 				group.members = members[index];
 			});
 			next();
-		}
+		},
 	], function (err) {
 		if (err) {
 			return callback(err);

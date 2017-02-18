@@ -50,7 +50,7 @@ define('taskbar', function () {
 			module: module,
 			uuid: uuid,
 			options: options,
-			element: element
+			element: element,
 		};
 
 		$(window).trigger('filter:taskbar.push', data);
@@ -119,7 +119,7 @@ define('taskbar', function () {
 				'</a>')
 			.attr({
 				'data-module': data.module,
-				'data-uuid': data.uuid
+				'data-uuid': data.uuid,
 			})
 			.addClass(data.options.state !== undefined ? data.options.state : 'active');
 

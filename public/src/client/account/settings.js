@@ -99,7 +99,7 @@ define('forum/account/settings', ['forum/account/header', 'components', 'sounds'
 					timeout: 5000,
 					clickfn: function () {
 						ajaxify.refresh();
-					}
+					},
 				});
 			}
 		});

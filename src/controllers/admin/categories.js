@@ -14,7 +14,7 @@ var categoriesController = {};
 categoriesController.get = function (req, res, next) {
 	async.parallel({
 		category: async.apply(categories.getCategories, [req.params.category_id], req.user.uid),
-		privileges: async.apply(privileges.categories.list, req.params.category_id)
+		privileges: async.apply(privileges.categories.list, req.params.category_id),
 	}, function (err, data) {
 		if (err) {
 			return next(err);
@@ -32,7 +32,7 @@ categoriesController.get = function (req, res, next) {
 			data.category.name = translator.escape(String(data.category.name));
 			res.render('admin/manage/category', {
 				category: data.category,
-				privileges: data.privileges
+				privileges: data.privileges,
 			});
 		});
 	});
@@ -46,7 +46,7 @@ categoriesController.getAll = function (req, res, next) {
 categoriesController.getAnalytics = function (req, res, next) {
 	async.parallel({
 		name: async.apply(categories.getCategoryField, req.params.category_id, 'name'),
-		analytics: async.apply(analytics.getCategoryAnalytics, req.params.category_id)
+		analytics: async.apply(analytics.getCategoryAnalytics, req.params.category_id),
 	}, function (err, data) {
 		if (err) {
 			return next(err);

@@ -10,7 +10,7 @@ module.exports = function (middleware) {
 			'X-Frame-Options': meta.config['allow-from-uri'] ? 'ALLOW-FROM ' + encodeURI(meta.config['allow-from-uri']) : 'SAMEORIGIN',
 			'Access-Control-Allow-Origin': encodeURI(meta.config['access-control-allow-origin'] || 'null'),
 			'Access-Control-Allow-Methods': encodeURI(meta.config['access-control-allow-methods'] || ''),
-			'Access-Control-Allow-Headers': encodeURI(meta.config['access-control-allow-headers'] || '')
+			'Access-Control-Allow-Headers': encodeURI(meta.config['access-control-allow-headers'] || ''),
 		};
 
 		for (var key in headers) {

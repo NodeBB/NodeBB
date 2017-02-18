@@ -6,6 +6,6 @@ require.config({
 		'forum': '../client',
 		'admin': '../admin',
 		'vendor': '../../vendor',
-		'plugins': '../../plugins'
-	}
+		'plugins': '../../plugins',
+	},
 });

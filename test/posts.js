@@ -35,9 +35,9 @@ describe('Post\'s', function () {
 			category: function (next) {
 				categories.create({
 					name: 'Test Category',
-					description: 'Test category created by testing script'
+					description: 'Test category created by testing script',
 				}, next);
-			}
+			},
 		}, function (err, results) {
 			if (err) {
 				return done(err);
@@ -52,7 +52,7 @@ describe('Post\'s', function () {
 				uid: results.voteeUid,
 				cid: results.category.cid,
 				title: 'Test Topic Title',
-				content: 'The content of test topic'
+				content: 'The content of test topic',
 			}, function (err, data) {
 				if (err) {
 					return done(err);
@@ -190,14 +190,14 @@ describe('Post\'s', function () {
 				uid: voterUid,
 				cid: cid,
 				title: 'topic to delete/restore/purge',
-				content: 'A post to delete/restore/purge'
+				content: 'A post to delete/restore/purge',
 			}, function (err, topicPostData) {
 				assert.ifError(err);
 				topics.reply({
 					uid: voterUid,
 					tid: topicPostData.topicData.tid,
 					timestamp: Date.now(),
-					content: 'A post to delete/restore and purge'
+					content: 'A post to delete/restore and purge',
 				}, function (err, replyData) {
 					assert.ifError(err);
 					callback(topicPostData, replyData);
@@ -307,7 +307,7 @@ describe('Post\'s', function () {
 				uid: voterUid,
 				cid: cid,
 				title: 'topic to edit',
-				content: 'A post to edit'
+				content: 'A post to edit',
 			}, function (err, data) {
 				assert.ifError(err);
 				pid = data.postData.pid;
@@ -316,7 +316,7 @@ describe('Post\'s', function () {
 					uid: voterUid,
 					tid: tid,
 					timestamp: Date.now(),
-					content: 'A reply to edit'
+					content: 'A reply to edit',
 				}, function (err, data) {
 					assert.ifError(err);
 					replyPid = data.pid;
@@ -440,7 +440,7 @@ describe('Post\'s', function () {
 						uid: voterUid,
 						cid: cid,
 						title: 'topic 1',
-						content: 'some content'
+						content: 'some content',
 					}, next);
 				},
 				function (data, next) {
@@ -449,7 +449,7 @@ describe('Post\'s', function () {
 						uid: voterUid,
 						cid: cid,
 						title: 'topic 2',
-						content: 'some content'
+						content: 'some content',
 					}, next);
 				},
 				function (data, next) {
@@ -458,13 +458,13 @@ describe('Post\'s', function () {
 						uid: voterUid,
 						tid: tid,
 						timestamp: Date.now(),
-						content: 'A reply to move'
+						content: 'A reply to move',
 					}, function (err, data) {
 						assert.ifError(err);
 						replyPid = data.pid;
 						next();
 					});
-				}
+				},
 			], done);
 		});
 
@@ -587,8 +587,8 @@ describe('Post\'s', function () {
 						pid: postData.pid,
 						data: [
 							{name: 'assignee', value: `${globalModUid}`},
-							{name: 'notes', value: 'notes'}
-						]
+							{name: 'notes', value: 'notes'},
+						],
 					}, function (err) {
 						assert.ifError(err);
 						posts.getFlags('posts:flagged', cid, globalModUid, 0, -1, function (err, flagData) {
@@ -599,19 +599,19 @@ describe('Post\'s', function () {
 								assignee: flagData.posts[0].flagData.assignee,
 								notes: flagData.posts[0].flagData.notes,
 								state: flagData.posts[0].flagData.state,
-								labelClass: flagData.posts[0].flagData.labelClass
+								labelClass: flagData.posts[0].flagData.labelClass,
 							}, {
 								assignee: `${globalModUid}`,
 								notes: 'notes',
 								state: 'open',
-								labelClass: 'info'
+								labelClass: 'info',
 							});
 							next();
 						});
 					});
 				}, function (next) {
 					posts.updateFlagData(globalModUid, postData.pid, {
-						state: 'rejected'
+						state: 'rejected',
 					}, function (err) {
 						assert.ifError(err);
 						posts.getFlags('posts:flagged', cid, globalModUid, 0, -1, function (err, flagData) {
@@ -620,17 +620,17 @@ describe('Post\'s', function () {
 							assert.equal(flagData.posts.length, 1);
 							assert.deepEqual({
 								state: flagData.posts[0].flagData.state,
-								labelClass: flagData.posts[0].flagData.labelClass
+								labelClass: flagData.posts[0].flagData.labelClass,
 							}, {
 								state: 'rejected',
-								labelClass: 'danger'
+								labelClass: 'danger',
 							});
 							next();
 						});
 					});
 				}, function (next) {
 					posts.updateFlagData(globalModUid, postData.pid, {
-						state: 'wip'
+						state: 'wip',
 					}, function (err) {
 						assert.ifError(err);
 						posts.getFlags('posts:flagged', cid, globalModUid, 0, -1, function (err, flagData) {
@@ -639,17 +639,17 @@ describe('Post\'s', function () {
 							assert.equal(flagData.posts.length, 1);
 							assert.deepEqual({
 								state: flagData.posts[0].flagData.state,
-								labelClass: flagData.posts[0].flagData.labelClass
+								labelClass: flagData.posts[0].flagData.labelClass,
 							}, {
 								state: 'wip',
-								labelClass: 'warning'
+								labelClass: 'warning',
 							});
 							next();
 						});
 					});
 				}, function (next) {
 					posts.updateFlagData(globalModUid, postData.pid, {
-						state: 'resolved'
+						state: 'resolved',
 					}, function (err) {
 						assert.ifError(err);
 						posts.getFlags('posts:flagged', cid, globalModUid, 0, -1, function (err, flagData) {
@@ -658,15 +658,15 @@ describe('Post\'s', function () {
 							assert.equal(flagData.posts.length, 1);
 							assert.deepEqual({
 								state: flagData.posts[0].flagData.state,
-								labelClass: flagData.posts[0].flagData.labelClass
+								labelClass: flagData.posts[0].flagData.labelClass,
 							}, {
 								state: 'resolved',
-								labelClass: 'success'
+								labelClass: 'success',
 							});
 							next();
 						});
 					});
-				}
+				},
 			], done);
 		});
 	});
@@ -742,7 +742,7 @@ describe('Post\'s', function () {
 			uid: voterUid,
 			tid: topicData.tid,
 			timestamp: Date.now(),
-			content: 'some content'
+			content: 'some content',
 		}, function (err) {
 			assert.ifError(err);
 			posts.getRecentPosterUids(0, 1, function (err, uids) {

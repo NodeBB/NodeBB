@@ -62,7 +62,7 @@ profileController.get = function (req, res, callback) {
 					} else {
 						next();
 					}
-				}
+				},
 			}, next);
 		},
 		function (results, next) {
@@ -93,20 +93,20 @@ profileController.get = function (req, res, callback) {
 			res.locals.metaTags = [
 				{
 					name: "title",
-					content: userData.fullname || userData.username
+					content: userData.fullname || userData.username,
 				},
 				{
 					name: "description",
-					content: plainAboutMe
+					content: plainAboutMe,
 				},
 				{
 					property: 'og:title',
-					content: userData.fullname || userData.username
+					content: userData.fullname || userData.username,
 				},
 				{
 					property: 'og:description',
-					content: plainAboutMe
-				}
+					content: plainAboutMe,
+				},
 			];
 
 			if (userData.picture) {
@@ -114,13 +114,13 @@ profileController.get = function (req, res, callback) {
 					{
 						property: 'og:image',
 						content: userData.picture,
-						noEscape: true
+						noEscape: true,
 					},
 					{
 						property: "og:image:url",
 						content: userData.picture,
-						noEscape: true
-					}
+						noEscape: true,
+					},
 				);
 			}
 			userData.selectedGroup = userData.groups.find(function (group) {
@@ -128,7 +128,7 @@ profileController.get = function (req, res, callback) {
 			});
 
 			plugins.fireHook('filter:user.account', {userData: userData, uid: req.uid}, next);
-		}
+		},
 	], function (err, results) {
 		if (err) {
 			return callback(err);

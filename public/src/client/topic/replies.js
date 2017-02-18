@@ -45,7 +45,7 @@ define('forum/topic/replies', ['navigator', 'components', 'forum/topic/posts'], 
 					'downvote:disabled': ajaxify.data['downvote:disabled'],
 					'reputation:disabled': ajaxify.data['reputation:disabled'],
 					loggedIn: !!app.user.uid,
-					hideReplies: true
+					hideReplies: true,
 				};
 				app.parseAndTranslate('topic', 'posts', tplData, function (html) {
 					$('<div>', {component: 'post/replies'}).html(html).hide().insertAfter(button).slideDown('fast');

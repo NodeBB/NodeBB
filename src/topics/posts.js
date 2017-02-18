@@ -23,7 +23,7 @@ module.exports = function (Topics) {
 			},
 			function (next) {
 				Topics.addPostToTopic(postData.tid, postData, next);
-			}
+			},
 		], callback);
 	};
 
@@ -35,7 +35,7 @@ module.exports = function (Topics) {
 			},
 			postCount: function (next) {
 				Topics.getTopicField(tid, 'postcount', next);
-			}
+			},
 		}, function (err, results) {
 			if (err) {
 				return callback(err);
@@ -109,7 +109,7 @@ module.exports = function (Topics) {
 			},
 			parents: function (next) {
 				Topics.addParentPosts(postData, next);
-			}
+			},
 		}, function (err, results) {
 			if (err) {
 				return callback(err);
@@ -136,7 +136,7 @@ module.exports = function (Topics) {
 
 			plugins.fireHook('filter:topics.addPostData', {
 				posts: postData,
-				uid: uid
+				uid: uid,
 			}, function (err, data) {
 				callback(err, data ? data.posts : null);
 			});
@@ -193,7 +193,7 @@ module.exports = function (Topics) {
 					post.parent = parents[post.toPid];
 				});
 				next();
-			}
+			},
 		], callback);
 	};
 
@@ -223,7 +223,7 @@ module.exports = function (Topics) {
 			},
 			function (mainPost, next) {
 				next(null, parseInt(mainPost.pid, 10) && parseInt(mainPost.deleted, 10) !== 1 ? mainPost.pid.toString() : null);
-			}
+			},
 		], callback);
 	};
 
@@ -263,7 +263,7 @@ module.exports = function (Topics) {
 			},
 			function (err) {
 				callback(err, latestPid);
-			}
+			},
 		);
 	};
 
@@ -285,7 +285,7 @@ module.exports = function (Topics) {
 							var downvotes = parseInt(postData.downvotes, 10) || 0;
 							var votes = upvotes - downvotes;
 							db.sortedSetAdd('tid:' + tid + ':posts:votes', votes, postData.pid, next);
-						}
+						},
 					], function (err) {
 						next(err);
 					});
@@ -296,7 +296,7 @@ module.exports = function (Topics) {
 			},
 			function (count, next) {
 				Topics.updateTeaser(tid, next);
-			}
+			},
 		], callback);
 	};
 
@@ -305,7 +305,7 @@ module.exports = function (Topics) {
 			function (next) {
 				db.sortedSetsRemove([
 					'tid:' + tid + ':posts',
-					'tid:' + tid + ':posts:votes'
+					'tid:' + tid + ':posts:votes',
 				], postData.pid, next);
 			},
 			function (next) {
@@ -313,7 +313,7 @@ module.exports = function (Topics) {
 			},
 			function (count, next) {
 				Topics.updateTeaser(tid, next);
-			}
+			},
 		], callback);
 	};
 
@@ -324,7 +324,7 @@ module.exports = function (Topics) {
 			},
 			pids: function (next) {
 				db.getSortedSetRange('tid:' + tid + ':posts', 0, -1, next);
-			}
+			},
 		}, function (err, results) {
 			if (err) {
 				return callback(err);

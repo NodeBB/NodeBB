@@ -43,7 +43,7 @@ module.exports = function (Posts) {
 					'tid': tid,
 					'content': content,
 					'timestamp': timestamp,
-					'deleted': 0
+					'deleted': 0,
 				};
 
 				if (data.toPid) {
@@ -93,12 +93,12 @@ module.exports = function (Posts) {
 						}
 						async.parallel([
 							async.apply(db.sortedSetAdd, 'pid:' + postData.toPid + ':replies', timestamp, postData.pid),
-							async.apply(db.incrObjectField, 'post:' + postData.toPid, 'replies')
+							async.apply(db.incrObjectField, 'post:' + postData.toPid, 'replies'),
 						], next);
 					},
 					function (next) {
 						db.incrObjectField('global', 'postCount', next);
-					}
+					},
 				], function (err) {
 					if (err) {
 						return next(err);
@@ -110,7 +110,7 @@ module.exports = function (Posts) {
 				postData.isMain = isMain;
 				plugins.fireHook('action:post.save', _.clone(postData));
 				next(null, postData);
-			}
+			},
 		], callback);
 	};
 };

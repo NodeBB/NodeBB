@@ -20,7 +20,7 @@ module.exports = function (SocketUser) {
 			},
 			function (next) {
 				SocketUser.updateProfile(socket, data, next);
-			}
+			},
 		], callback);
 	};
 
@@ -34,7 +34,7 @@ module.exports = function (SocketUser) {
 			},
 			function (next) {
 				user.updateCoverPicture(data, next);
-			}
+			},
 		], callback);
 	};
 	
@@ -48,7 +48,7 @@ module.exports = function (SocketUser) {
 			},
 			function (next) {
 				user.uploadCroppedPicture(data, next);
-			}
+			},
 		], callback);
 	};
 
@@ -63,7 +63,7 @@ module.exports = function (SocketUser) {
 			},
 			function (next) {
 				user.removeCoverPicture(data, next);
-			}
+			},
 		], callback);
 	};
 
@@ -77,7 +77,7 @@ module.exports = function (SocketUser) {
 				} else {
 					next(null, false);
 				}
-			}
+			},
 		}, function (err, results) {
 			if (err) {
 				return callback(err);
@@ -114,7 +114,7 @@ module.exports = function (SocketUser) {
 				type: 'password-change',
 				uid: socket.uid,
 				targetUid: data.uid,
-				ip: socket.ip
+				ip: socket.ip,
 			});
 			callback();
 		});
@@ -146,7 +146,7 @@ module.exports = function (SocketUser) {
 					},
 					canEdit: function (next) {
 						privileges.users.canEdit(socket.uid, data.uid, next);
-					}
+					},
 				}, next);
 			},
 			function (results, next) {
@@ -183,7 +183,7 @@ module.exports = function (SocketUser) {
 				}
 
 				next(null, userData);
-			}
+			},
 		], callback);
 	};
 

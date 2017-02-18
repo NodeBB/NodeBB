@@ -117,7 +117,7 @@ User.sendValidationEmail = function (socket, uids, callback) {
 					next();
 				}
 			}, next);
-		}
+		},
 	], callback);
 };
 
@@ -177,17 +177,17 @@ function deleteUsers(socket, uids, method, callback) {
 					type: 'user-delete',
 					uid: socket.uid,
 					targetUid: uid,
-					ip: socket.ip
+					ip: socket.ip,
 				}, next);
 			},
 			function (next) {
 				plugins.fireHook('action:user.delete', {
 					callerUid: socket.uid,
 					uid: uid,
-					ip: socket.ip
+					ip: socket.ip,
 				});
 				next();
-			}
+			},
 		], next);
 	}, callback);
 }
@@ -220,7 +220,7 @@ User.search = function (socket, data, callback) {
 				}
 			});
 			next(null, searchData);
-		}
+		},
 	], callback);
 };
 
@@ -238,10 +238,10 @@ User.acceptRegistration = function (socket, data, callback) {
 				type: 'registration-approved',
 				uid: socket.uid,
 				ip: socket.ip,
-				targetUid: uid
+				targetUid: uid,
 			});
 			next(null, uid);
-		}
+		},
 	], callback);
 };
 
@@ -258,7 +258,7 @@ User.rejectRegistration = function (socket, data, callback) {
 				username: data.username,
 			});
 			next();
-		}
+		},
 	], callback);
 };
 

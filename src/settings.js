@@ -165,7 +165,7 @@ Settings.prototype.getWrapper = function () {
 Settings.prototype.createWrapper = function (version, settings) {
 	return {
 		v: version,
-		_: settings
+		_: settings,
 	};
 };
 

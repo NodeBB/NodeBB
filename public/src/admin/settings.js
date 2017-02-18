@@ -80,7 +80,7 @@ define('admin/settings', ['uploader'], function (uploader) {
 						timeout: 2500,
 						title: 'Changes Not Saved',
 						message: 'NodeBB encountered a problem saving your changes',
-						type: 'danger'
+						type: 'danger',
 					});
 				}
 
@@ -91,7 +91,7 @@ define('admin/settings', ['uploader'], function (uploader) {
 					timeout: 2500,
 					title: 'Changes Saved',
 					message: 'Your changes to the NodeBB configuration have been saved.',
-					type: 'success'
+					type: 'success',
 				});
 
 				$(window).trigger('action:admin.settingsSaved');
@@ -126,7 +126,7 @@ define('admin/settings', ['uploader'], function (uploader) {
 					route: uploadBtn.attr('data-route'),
 					params: {},
 					showHelp: uploadBtn.attr('data-help') ? uploadBtn.attr('data-help') === 1 : undefined,
-					accept: uploadBtn.attr('data-accept')
+					accept: uploadBtn.attr('data-accept'),
 				}, function (image) {
 					// need to move these into template, ex data-callback
 					if (ajaxify.currentPage === 'admin/general/sounds') {

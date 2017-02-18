@@ -5,7 +5,7 @@ define('admin/manage/flags', [
 	'autocomplete',
 	'Chart',
 	'components',
-	'translator'
+	'translator',
 ], function (autocomplete, Chart, components, translator) {
 
 	var	Flags = {};
@@ -105,10 +105,10 @@ define('admin/manage/flags', [
 						pointHoverBackgroundColor: "#fff",
 						pointBorderColor: "#fff",
 						pointHoverBorderColor: "rgba(151,187,205,1)",
-						data: ajaxify.data.analytics
-					}
-				]
-			}
+						data: ajaxify.data.analytics,
+					},
+				],
+			},
 		};
 
 		dailyCanvas.width = $(dailyCanvas).parent().width();
@@ -119,16 +119,16 @@ define('admin/manage/flags', [
 				responsive: true,
 				animation: false,
 				legend: {
-					display: false
+					display: false,
 				},
 				scales: {
 					yAxes: [{
 						ticks: {
-							beginAtZero: true
-						}
-					}]
-				}
-			}
+							beginAtZero: true,
+						},
+					}],
+				},
+			},
 		});
 	}
 
@@ -162,7 +162,7 @@ define('admin/manage/flags', [
 
 		socket.emit('posts.updateFlag', {
 			pid: pid,
-			data: formData
+			data: formData,
 		}, function (err) {
 			if (err) {
 				return app.alertError(err.message);

@@ -27,12 +27,12 @@ module.exports = function (Meta) {
 			function (next) {
 				plugins.fireHook('action:settings.set', {
 					plugin: hash,
-					settings: values
+					settings: values,
 				});
 
 				Meta.reloadRequired = true;
 				next();
-			}
+			},
 		], callback);
 	};
 
@@ -59,7 +59,7 @@ module.exports = function (Meta) {
 				} else {
 					next();
 				}
-			}
+			},
 		], callback);
 	};
 };

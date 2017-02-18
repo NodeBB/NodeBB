@@ -36,7 +36,7 @@ function getFollow(tpl, name, req, res, callback) {
 			}
 			var method = name === 'following' ? 'getFollowing' : 'getFollowers';
 			user[method](userData.uid, start, stop, next);
-		}
+		},
 	], function (err, users) {
 		if (err) {
 			return callback(err);

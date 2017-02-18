@@ -17,7 +17,7 @@ languagesController.get = function (req, res, next) {
 		});
 
 		res.render('admin/general/languages', {
-			languages: languages
+			languages: languages,
 		});
 	});
 };

@@ -40,7 +40,7 @@ module.exports = function (Meta) {
 				'public/src/ajaxify.js',
 				'public/src/overrides.js',
 				'public/src/widgets.js',
-				"./node_modules/promise-polyfill/promise.js"
+				"./node_modules/promise-polyfill/promise.js",
 			],
 
 			// files listed below are only available client-side, or are bundled in to reduce # of network requests on cold load
@@ -76,7 +76,7 @@ module.exports = function (Meta) {
 				'public/src/modules/taskbar.js',
 				'public/src/modules/helpers.js',
 				'public/src/modules/sounds.js',
-				'public/src/modules/string.js'
+				'public/src/modules/string.js',
 			],
 
 			// modules listed below are routed through express (/src/modules) so they can be defined anonymously
@@ -85,9 +85,9 @@ module.exports = function (Meta) {
 				"mousetrap.js": './node_modules/mousetrap/mousetrap.min.js',
 				"jqueryui.js": 'public/vendor/jquery/js/jquery-ui.js',
 				"buzz.js": 'public/vendor/buzz/buzz.js',
-				"cropper.js": './node_modules/cropperjs/dist/cropper.min.js'
-			}
-		}
+				"cropper.js": './node_modules/cropperjs/dist/cropper.min.js',
+			},
+		},
 	};
 	
 	Meta.js.linkModules = function (callback) {
@@ -145,7 +145,7 @@ module.exports = function (Meta) {
 			minifier.send({
 				action: 'js',
 				minify: global.env !== 'development',
-				scripts: Meta.js.target[target].scripts
+				scripts: Meta.js.target[target].scripts,
 			});
 		});
 

@@ -41,14 +41,14 @@ module.exports = function (Topics) {
 
 				async.parallel([
 					async.apply(db.setAdd, 'topic:' + tid + ':tags', tags),
-					async.apply(db.sortedSetsAdd, keys, timestamp, tid)
+					async.apply(db.sortedSetsAdd, keys, timestamp, tid),
 				], function (err) {
 					next(err);
 				});
 			},
 			function (next) {
 				async.each(tags, updateTagCount, next);
-			}
+			},
 		], callback);
 	};
 
@@ -68,7 +68,7 @@ module.exports = function (Topics) {
 					return tagWhitelist.indexOf(tag) !== -1;
 				});
 				next(null, tags);
-			}
+			},
 		], callback);
 	}
 
@@ -91,7 +91,7 @@ module.exports = function (Topics) {
 					return next();
 				}
 				db.sortedSetAdd('tags:topic:count', 0, tag, next);
-			}
+			},
 		], callback);
 	};
 
@@ -112,7 +112,7 @@ module.exports = function (Topics) {
 				count = count || 0;
 
 				db.sortedSetAdd('tags:topic:count', count, tag, next);
-			}
+			},
 		], callback);
 	}
 
@@ -146,7 +146,7 @@ module.exports = function (Topics) {
 				db.deleteAll(tags.map(function (tag) {
 					return 'tag:' + tag;
 				}), next);
-			}
+			},
 		], callback);
 	};
 
@@ -176,7 +176,7 @@ module.exports = function (Topics) {
 			},
 			function (tags, next) {
 				Topics.getTagData(tags, next);
-			}
+			},
 		], callback);
 	};
 
@@ -195,7 +195,7 @@ module.exports = function (Topics) {
 					tag.bgColor = tagData[index] ? tagData[index].bgColor : '';
 				});
 				next(null, tags);
-			}
+			},
 		], callback);
 	};
 
@@ -240,7 +240,7 @@ module.exports = function (Topics) {
 					},
 					counts: function (next) {
 						db.sortedSetScores('tags:topic:count', uniqueTopicTags, next);
-					}
+					},
 				}, next);
 			},
 			function (results, next) {
@@ -257,7 +257,7 @@ module.exports = function (Topics) {
 				});
 
 				next(null, topicTags);
-			}
+			},
 		], callback);
 	};
 
@@ -272,7 +272,7 @@ module.exports = function (Topics) {
 			},
 			function (timestamp, next) {
 				Topics.createTags(tags, tid, timestamp, next);
-			}
+			},
 		], callback);
 	};
 
@@ -297,9 +297,9 @@ module.exports = function (Topics) {
 						async.each(tags, function (tag, next) {
 							updateTagCount(tag, next);
 						}, next);
-					}
+					},
 				], next);
-			}
+			},
 		], function (err) {
 			callback(err);
 		});
@@ -323,7 +323,7 @@ module.exports = function (Topics) {
 			},
 			function (result, next) {
 				next(null, result.matches);
-			}
+			},
 		], callback);
 	};
 
@@ -342,7 +342,7 @@ module.exports = function (Topics) {
 			},
 			function (result, next) {
 				next(null, result.matches);
-			}
+			},
 		], callback);
 	};
 
@@ -379,7 +379,7 @@ module.exports = function (Topics) {
 					return a > b;
 				});
 				next(null, {matches: matches});
-			}
+			},
 		], callback);
 	}
 
@@ -387,7 +387,7 @@ module.exports = function (Topics) {
 		var searchResult = {
 			tags: [],
 			matchCount: 0,
-			pageCount: 1
+			pageCount: 1,
 		};
 
 		if (!data || !data.query || !data.query.length) {
@@ -408,7 +408,7 @@ module.exports = function (Topics) {
 						});
 
 						Topics.getTagData(tags, next);
-					}
+					},
 				}, next);
 			},
 			function (results, next) {
@@ -422,7 +422,7 @@ module.exports = function (Topics) {
 				searchResult.matchCount = results.tagData.length;
 				searchResult.pageCount = 1;
 				next(null, searchResult);
-			}
+			},
 		], callback);
 	};
 
@@ -453,7 +453,7 @@ module.exports = function (Topics) {
 					return topic && !topic.deleted && parseInt(topic.uid, 10) !== parseInt(uid, 10);
 				});
 				next(null, topics);
-			}
+			},
 		], callback);
 	};
 };

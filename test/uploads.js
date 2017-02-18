@@ -28,7 +28,7 @@ describe('Upload Controllers', function () {
 			category: function (next) {
 				categories.create({
 					name: 'Test Category',
-					description: 'Test category created by testing script'
+					description: 'Test category created by testing script',
 				}, next);
 			},
 			adminUid: function (next) {
@@ -36,7 +36,7 @@ describe('Upload Controllers', function () {
 			},
 			regularUid: function (next) {
 				user.create({username: 'regular', password: 'zugzug'}, next);
-			}
+			},
 		}, function (err, results) {
 			if (err) {
 				return done(err);

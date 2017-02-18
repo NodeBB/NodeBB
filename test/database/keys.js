@@ -78,7 +78,7 @@ describe('Key methods', function () {
 			},
 			function (next) {
 				db.set('key2', 'value2', next);
-			}
+			},
 		], function (err) {
 			if (err) {
 				return done(err);
@@ -92,7 +92,7 @@ describe('Key methods', function () {
 					},
 					key2exists: function (next) {
 						db.exists('key2', next);
-					}
+					},
 				}, function (err, results) {
 					assert.equal(err, null);
 					assert.equal(results.key1exists, false);
