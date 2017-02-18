@@ -2,9 +2,8 @@
 'use strict';
 
 var async = require('async');
-var winston = require('winston');
+
 var db = require('../database');
-var user = require('../user');
 var posts = require('../posts');
 var privileges = require('../privileges');
 var plugins = require('../plugins');

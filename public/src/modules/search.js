@@ -85,7 +85,7 @@ define('search', ['navigator', 'translator'], function (nav, translator) {
 		}
 	};
 
-	Search.queryTopic = function (tid, term, callback) {
+	Search.queryTopic = function (tid, term) {
 		socket.emit('topics.search', {
 			tid: tid,
 			term: term,

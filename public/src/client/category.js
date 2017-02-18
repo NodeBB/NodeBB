@@ -112,11 +112,11 @@ define('forum/category', [
 		});
 	};
 
-	Category.navigatorCallback = function (topIndex, bottomIndex, elementCount) {
+	Category.navigatorCallback = function (topIndex, bottomIndex) {
 		return bottomIndex;
 	};
 
-	$(window).on('action:ajaxify.contentLoaded', function (ev, data) {
+	$(window).on('action:ajaxify.contentLoaded', function () {
 		if (ajaxify.data.template.category && ajaxify.data.cid) {
 			var bookmarkIndex = localStorage.getItem('category:' + ajaxify.data.cid + ':bookmark');
 			var clickedIndex = localStorage.getItem('category:' + ajaxify.data.cid + ':bookmark:clicked');

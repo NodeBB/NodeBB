@@ -115,7 +115,7 @@ var middleware;
 
 				Object.keys(Plugins.loadedHooks).forEach(function (hook) {
 					var hooks = Plugins.loadedHooks[hook];
-					hooks = hooks.sort(function (a, b) {
+					hooks.sort(function (a, b) {
 						return a.priority - b.priority;
 					});
 				});

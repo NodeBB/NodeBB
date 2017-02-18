@@ -1,7 +1,7 @@
 'use strict';
 
 
-define('admin/advanced/errors', ['Chart', 'translator'], function (Chart, translator) {
+define('admin/advanced/errors', ['Chart'], function (Chart) {
 	var Errors = {};
 
 	Errors.init = function () {

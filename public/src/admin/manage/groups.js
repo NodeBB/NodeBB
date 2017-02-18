@@ -32,7 +32,6 @@ define('admin/manage/groups', ['translator'], function (translator) {
 				name: createGroupName.val(),
 				description: $('#create-group-desc').val(),
 			};
-			var errorText;
 
 			socket.emit('admin.groups.create', submitObj, function (err) {
 				if (err) {
@@ -62,7 +61,7 @@ define('admin/manage/groups', ['translator'], function (translator) {
 					if (confirm) {
 						socket.emit('groups.delete', {
 							groupName: groupName,
-						}, function (err, data) {
+						}, function (err) {
 							if (err) {
 								return app.alertError(err.message);
 							}

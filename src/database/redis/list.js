@@ -3,14 +3,14 @@
 module.exports = function (redisClient, module) {
 	module.listPrepend = function (key, value, callback) {
 		callback = callback || function () {};
-		redisClient.lpush(key, value, function (err, res) {
+		redisClient.lpush(key, value, function (err) {
 			callback(err);
 		});
 	};
 
 	module.listAppend = function (key, value, callback) {
 		callback = callback || function () {};
-		redisClient.rpush(key, value, function (err, res) {
+		redisClient.rpush(key, value, function (err) {
 			callback(err);
 		});
 	};
@@ -22,14 +22,14 @@ module.exports = function (redisClient, module) {
 
 	module.listRemoveAll = function (key, value, callback) {
 		callback = callback || function () {};
-		redisClient.lrem(key, 0, value, function (err, res) {
+		redisClient.lrem(key, 0, value, function (err) {
 			callback(err);
 		});
 	};
 
 	module.listTrim = function (key, start, stop, callback) {
 		callback = callback || function () {};
-		redisClient.ltrim(key, start, stop, function (err, res) {
+		redisClient.ltrim(key, start, stop, function (err) {
 			callback(err);
 		});
 	};

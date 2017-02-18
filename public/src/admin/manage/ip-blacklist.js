@@ -1,7 +1,7 @@
 'use strict';
 
 
-define('admin/manage/ip-blacklist', ['translator'], function (translator) {
+define('admin/manage/ip-blacklist', [], function () {
 	var Blacklist = {};
 
 	Blacklist.init = function () {

@@ -237,6 +237,6 @@ fs.open(path.join(__dirname, 'config.json'), 'r', function (err) {
 		});
 	} else {
 		// No config detected, kickstart web installer
-		var child = require('child_process').fork('app');
+		require('child_process').fork('app');
 	}
 });

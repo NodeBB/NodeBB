@@ -18,7 +18,7 @@ module.exports = function (db, module) {
 			}
 
 			if (exists) {
-				db.collection('objects').update({ _key: key }, { $push: { array: { $each: [value], $position: 0 } } }, { upsert: true, w: 1 }, function (err, res) {
+				db.collection('objects').update({ _key: key }, { $push: { array: { $each: [value], $position: 0 } } }, { upsert: true, w: 1 }, function (err) {
 					callback(err);
 				});
 			} else {
@@ -33,7 +33,7 @@ module.exports = function (db, module) {
 			return callback();
 		}
 		value = helpers.valueToString(value);
-		db.collection('objects').update({ _key: key }, { $push: { array: value } }, { upsert: true, w: 1 }, function (err, res) {
+		db.collection('objects').update({ _key: key }, { $push: { array: value } }, { upsert: true, w: 1 }, function (err) {
 			callback(err);
 		});
 	};
@@ -48,7 +48,7 @@ module.exports = function (db, module) {
 				return callback(err);
 			}
 
-			db.collection('objects').update({ _key: key }, { $pop: { array: 1 } }, function (err, result) {
+			db.collection('objects').update({ _key: key }, { $pop: { array: 1 } }, function (err) {
 				callback(err, (value && value.length) ? value[0] : null);
 			});
 		});
@@ -61,7 +61,7 @@ module.exports = function (db, module) {
 		}
 		value = helpers.valueToString(value);
 
-		db.collection('objects').update({ _key: key }, { $pull: { array: value } }, function (err, res) {
+		db.collection('objects').update({ _key: key }, { $pull: { array: value } }, function (err) {
 			callback(err);
 		});
 	};
@@ -76,7 +76,7 @@ module.exports = function (db, module) {
 				return callback(err);
 			}
 
-			db.collection('objects').update({ _key: key }, { $set: { array: value } }, function (err, res) {
+			db.collection('objects').update({ _key: key }, { $set: { array: value } }, function (err) {
 				callback(err);
 			});
 		});

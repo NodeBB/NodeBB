@@ -1,7 +1,6 @@
 'use strict';
 
 define('settings/array', function () {
-	var Settings = null;
 	var SettingsArray;
 	var helper = null;
 
@@ -95,7 +94,7 @@ define('settings/array', function () {
 	SettingsArray = {
 		types: ['array', 'div'],
 		use: function () {
-			helper = (Settings = this).helper;
+			helper = this.helper;
 		},
 		create: function (ignored, tagName) {
 			return helper.createElement(tagName || 'div');

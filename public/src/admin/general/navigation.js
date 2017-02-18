@@ -1,7 +1,7 @@
 'use strict';
 
 
-define('admin/general/navigation', ['translator', 'iconSelect', 'jqueryui'], function (translator, iconSelect, jqueryui) {
+define('admin/general/navigation', ['translator', 'iconSelect', 'jqueryui'], function (translator, iconSelect) {
 	var navigation = {};
 	var available;
 

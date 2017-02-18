@@ -30,7 +30,7 @@ var utils = require('../public/src/utils');
 					},
 				], next);
 			},
-		], function (err, result) {
+		], function (err) {
 			callback(err);
 		});
 	};

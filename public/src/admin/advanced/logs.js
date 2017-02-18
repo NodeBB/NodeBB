@@ -10,7 +10,7 @@ define('admin/advanced/logs', function () {
 		// Affix menu
 		$('.affix').affix();
 
-		$('.logs').find('button[data-action]').on('click', function (event) {
+		$('.logs').find('button[data-action]').on('click', function () {
 			var btnEl = $(this);
 			var action = btnEl.attr('data-action');
 

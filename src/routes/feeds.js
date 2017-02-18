@@ -13,7 +13,7 @@ var meta = require('../meta');
 var helpers = require('../controllers/helpers');
 var privileges = require('../privileges');
 
-module.exports = function (app, middleware, controllers) {
+module.exports = function (app, middleware) {
 	app.get('/topic/:topic_id.rss', middleware.maintenanceMode, generateForTopic);
 	app.get('/category/:category_id.rss', middleware.maintenanceMode, generateForCategory);
 	app.get('/recent.rss', middleware.maintenanceMode, generateForRecent);

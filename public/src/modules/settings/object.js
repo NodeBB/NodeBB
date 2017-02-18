@@ -1,7 +1,6 @@
 'use strict';
 
 define('settings/object', function () {
-	var Settings = null;
 	var SettingsObject;
 	var helper = null;
 
@@ -57,7 +56,7 @@ define('settings/object', function () {
 	SettingsObject = {
 		types: ['object'],
 		use: function () {
-			helper = (Settings = this).helper;
+			helper = this.helper;
 		},
 		create: function (ignored, tagName) {
 			return helper.createElement(tagName || 'div');

@@ -1,7 +1,7 @@
 'use strict';
 
 
-define('admin/settings/email', ['admin/settings'], function (settings) {
+define('admin/settings/email', ['admin/settings'], function () {
 	var module = {};
 	var emailEditor;
 

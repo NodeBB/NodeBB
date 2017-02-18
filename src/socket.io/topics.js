@@ -1,7 +1,4 @@
-
 'use strict';
-
-var async = require('async');
 
 var topics = require('../topics');
 var websockets = require('./index');

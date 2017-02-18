@@ -15,7 +15,7 @@ var usersController = {};
 var userFields = ['uid', 'username', 'userslug', 'email', 'postcount', 'joindate', 'banned',
 	'reputation', 'picture', 'flags', 'lastonline', 'email:confirmed'];
 
-usersController.search = function (req, res, next) {
+usersController.search = function (req, res) {
 	res.render('admin/manage/users', {
 		search_display: '',
 		users: [],

@@ -10,7 +10,6 @@ var ensureLoggedIn = require('connect-ensure-login');
 var toobusy = require('toobusy-js');
 
 var plugins = require('../plugins');
-var languages = require('../languages');
 var meta = require('../meta');
 var user = require('../user');
 var groups = require('../groups');
@@ -181,7 +180,7 @@ middleware.applyBlacklist = function (req, res, next) {
 	});
 };
 
-middleware.processTimeagoLocales = function (req, res, next) {
+middleware.processTimeagoLocales = function (req, res) {
 	var fallback = req.path.indexOf('-short') === -1 ? 'jquery.timeago.en.js' : 'jquery.timeago.en-short.js';
 	var localPath = path.join(__dirname, '../../public/vendor/jquery/timeago/locales', req.path);
 	var exists;

@@ -71,21 +71,19 @@ define('admin/extend/plugins', ['jqueryui', 'translator'], function (jqueryui, t
 					return;
 				}
 
-				require(['semver'], function (semver) {
-					if (payload.version !== 'latest') {
-						Plugins.toggleInstall(pluginID, payload.version);
-					} else if (payload.version === 'latest') {
-						confirmInstall(pluginID, function (confirm) {
-							if (confirm) {
-								Plugins.toggleInstall(pluginID, 'latest');
-							} else {
-								btn.removeAttr('disabled');
-							}
-						});
-					} else {
-						btn.removeAttr('disabled');
-					}
-				});
+				if (payload.version !== 'latest') {
+					Plugins.toggleInstall(pluginID, payload.version);
+				} else if (payload.version === 'latest') {
+					confirmInstall(pluginID, function (confirm) {
+						if (confirm) {
+							Plugins.toggleInstall(pluginID, 'latest');
+						} else {
+							btn.removeAttr('disabled');
+						}
+					});
+				} else {
+					btn.removeAttr('disabled');
+				}
 			});
 		});
 
@@ -198,7 +196,6 @@ define('admin/extend/plugins', ['jqueryui', 'translator'], function (jqueryui, t
 
 	Plugins.toggleInstall = function (pluginID, version, callback) {
 		var btn = $('li[data-plugin-id="' + pluginID + '"] button[data-action="toggleInstall"]');
-		var activateBtn = btn.siblings('[data-action="toggleActive"]');
 		btn.find('i').attr('class', 'fa fa-refresh fa-spin');
 
 		socket.emit('admin.plugins.toggleInstall', {

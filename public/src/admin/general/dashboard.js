@@ -24,7 +24,7 @@ define('admin/general/dashboard', ['semver', 'Chart', 'translator'], function (s
 		realtimeInterval: 1500,
 	};
 
-	$(window).on('action:ajaxify.start', function (ev, data) {
+	$(window).on('action:ajaxify.start', function () {
 		clearInterval(intervals.rooms);
 		clearInterval(intervals.graphs);
 

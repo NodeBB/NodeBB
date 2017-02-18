@@ -1,7 +1,5 @@
 'use strict';
 
-var winston = require('winston');
-
 module.exports = function (db, module) {
 	var helpers = module.helpers.mongo;
 
@@ -33,7 +31,7 @@ module.exports = function (db, module) {
 		if (!key) {
 			return callback();
 		}
-		db.collection('objects').remove({ _key: key }, function (err, res) {
+		db.collection('objects').remove({ _key: key }, function (err) {
 			callback(err);
 		});
 	};
@@ -43,7 +41,7 @@ module.exports = function (db, module) {
 		if (!Array.isArray(keys) || !keys.length) {
 			return callback();
 		}
-		db.collection('objects').remove({ _key: { $in: keys } }, function (err, res) {
+		db.collection('objects').remove({ _key: { $in: keys } }, function (err) {
 			callback(err);
 		});
 	};
@@ -76,7 +74,7 @@ module.exports = function (db, module) {
 
 	module.rename = function (oldKey, newKey, callback) {
 		callback = callback || helpers.noop;
-		db.collection('objects').update({ _key: oldKey }, { $set: { _key: newKey } }, { multi: true }, function (err, res) {
+		db.collection('objects').update({ _key: oldKey }, { $set: { _key: newKey } }, { multi: true }, function (err) {
 			callback(err);
 		});
 	};

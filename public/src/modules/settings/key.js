@@ -1,7 +1,6 @@
 'use strict';
 
 define('settings/key', function () {
-	var Settings = null;
 	var SettingsKey;
 	var helper = null;
 	var lastKey = null;
@@ -182,7 +181,7 @@ define('settings/key', function () {
 	SettingsKey = {
 		types: ['key'],
 		use: function () {
-			helper = (Settings = this).helper;
+			helper = this.helper;
 		},
 		init: function (element) {
 			element.focus(function () {

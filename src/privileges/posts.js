@@ -221,13 +221,11 @@ module.exports = function (privileges) {
 	};
 
 	function isPostEditable(pid, uid, callback) {
-		var tid;
 		async.waterfall([
 			function (next) {
 				posts.getPostFields(pid, ['tid', 'timestamp'], next);
 			},
 			function (postData, next) {
-				tid = postData.tid;
 				var postEditDuration = parseInt(meta.config.postEditDuration, 10);
 				if (postEditDuration && Date.now() - parseInt(postData.timestamp, 10) > postEditDuration * 1000) {
 					return callback(null, { flag: false, message: '[[error:post-edit-duration-expired, ' + meta.config.postEditDuration + ']]' });

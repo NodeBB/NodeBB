@@ -1,7 +1,7 @@
 'use strict';
 
 
-define('admin/extend/widgets', ['jqueryui'], function (jqueryui) {
+define('admin/extend/widgets', ['jqueryui'], function () {
 	var Widgets = {};
 
 	Widgets.init = function () {

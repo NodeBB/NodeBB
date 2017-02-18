@@ -38,7 +38,7 @@ categoriesController.get = function (req, res, next) {
 	});
 };
 
-categoriesController.getAll = function (req, res, next) {
+categoriesController.getAll = function (req, res) {
 	// Categories list will be rendered on client side with recursion, etc.
 	res.render('admin/manage/categories', {});
 };

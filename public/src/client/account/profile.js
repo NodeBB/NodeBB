@@ -4,9 +4,8 @@
 define('forum/account/profile', [
 	'forum/account/header',
 	'forum/infinitescroll',
-	'translator',
 	'components',
-], function (header, infinitescroll, translator) {
+], function (header, infinitescroll) {
 	var Account = {};
 	var theirid;
 

@@ -6,7 +6,6 @@
 	var semver = require('semver');
 	var session = require('express-session');
 	var redis;
-	var connectRedis;
 	var redisClient;
 
 	module.questions = [

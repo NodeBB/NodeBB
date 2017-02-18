@@ -44,7 +44,7 @@ define('iconSelect', function () {
 					success: {
 						label: 'Select',
 						className: 'btn-primary',
-						callback: function (confirm) {
+						callback: function () {
 							var iconClass = $('.bootbox .selected').attr('class');
 							var categoryIconClass = $('<div/>').addClass(iconClass).removeClass('fa').removeClass('selected').attr('class');
 

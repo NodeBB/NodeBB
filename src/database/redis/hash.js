@@ -96,13 +96,13 @@ module.exports = function (redisClient, module) {
 
 	module.deleteObjectField = function (key, field, callback) {
 		callback = callback || function () {};
-		redisClient.hdel(key, field, function (err, res) {
+		redisClient.hdel(key, field, function (err) {
 			callback(err);
 		});
 	};
 
 	module.deleteObjectFields = function (key, fields, callback) {
-		helpers.multiKeyValues(redisClient, 'hdel', key, fields, function (err, results) {
+		helpers.multiKeyValues(redisClient, 'hdel', key, fields, function (err) {
 			callback(err);
 		});
 	};

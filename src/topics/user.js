@@ -1,10 +1,6 @@
-
-
 'use strict';
 
-var async = require('async');
 var db = require('../database');
-var posts = require('../posts');
 
 module.exports = function (Topics) {
 	Topics.isOwner = function (tid, uid, callback) {

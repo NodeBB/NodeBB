@@ -75,7 +75,7 @@ $('document').ready(function () {
 			}
 		}
 
-		function validateConfirmPassword(field) {
+		function validateConfirmPassword() {
 			if ($('[name="admin:password"]').val() !== $('[name="admin:passwordConfirm"]').val()) {
 				parent.addClass('error');
 				help.html('Passwords do not match.');
@@ -116,7 +116,7 @@ $('document').ready(function () {
 
 		$.post('/launch', function () {
 			setInterval(function () {
-				$.get('/admin').done(function (data) {
+				$.get('/admin').done(function () {
 					window.location = 'admin';
 				});
 			}, 750);

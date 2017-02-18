@@ -373,7 +373,6 @@ var utils = require('../public/src/utils');
 
 	Notifications.prune = function () {
 		var	week = 604800000;
-		var numPruned = 0;
 
 		var	cutoffTime = Date.now() - week;
 
@@ -389,8 +388,6 @@ var utils = require('../public/src/utils');
 			var	keys = nids.map(function (nid) {
 				return 'notifications:' + nid;
 			});
-
-			numPruned = nids.length;
 
 			async.parallel([
 				function (next) {

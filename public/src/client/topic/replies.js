@@ -16,7 +16,7 @@ define('forum/topic/replies', ['navigator', 'components', 'forum/topic/posts'], 
 		});
 	}
 
-	function onRepliesClicked(button, tid) {
+	function onRepliesClicked(button) {
 		var post = button.closest('[data-pid]');
 		var pid = post.data('pid');
 		var open = button.children('[component="post/replies/open"]');

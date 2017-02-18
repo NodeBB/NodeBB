@@ -416,7 +416,7 @@ Controllers.handleURIErrors = function (err, req, res, next) {
 	}
 };
 
-Controllers.handleErrors = function (err, req, res, next) {
+Controllers.handleErrors = function (err, req, res) {
 	switch (err.code) {
 	case 'EBADCSRFTOKEN':
 		winston.error(req.path + '\n', err.message);

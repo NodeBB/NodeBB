@@ -44,7 +44,7 @@ module.exports = function (Plugins) {
 			if (parts.length > 2) {
 				parts.pop();
 			}
-			var hook = parts.join(':');
+			parts.join(':');
 		}
 
 		if (data.hook && data.method) {

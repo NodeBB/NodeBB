@@ -134,7 +134,7 @@ module.exports = function (User) {
 						db.setRemove('invitation:uid:' + invitedByUid, email, next);
 					},
 					function deleteInviteKey(next) {
-						db.delete('invitation:email:' + email, callback);
+						db.delete('invitation:email:' + email, next);
 					},
 				], function (err) {
 					next(err);

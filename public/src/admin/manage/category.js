@@ -26,32 +26,6 @@ define('admin/manage/category', [
 			}
 		}
 
-		function save(e) {
-			e.preventDefault();
-
-			if (Object.keys(modified_categories).length) {
-				socket.emit('admin.categories.update', modified_categories, function (err, results) {
-					if (err) {
-						return app.alertError(err.message);
-					}
-
-					if (results && results.length) {
-						app.flags._unsaved = false;
-						app.alert({
-							title: '[[admin/manage/categories:alert.updated]]',
-							message: translator.compile(
-								'admin/manage/categories:alert.updated-success',
-								results.join('&#44; ')
-							),
-							type: 'success',
-							timeout: 2000,
-						});
-					}
-				});
-				modified_categories = {};
-			}
-		}
-
 		$('.blockclass, form.category select').each(function () {
 			var $this = $(this);
 			$this.val($this.attr('data-value'));
@@ -226,7 +200,7 @@ define('admin/manage/category', [
 		ajaxify.data.category.tagWhitelist.forEach(function (tag) {
 			tagEl.tagsinput('add', tag);
 		});
-		tagEl.on('itemAdded itemRemoved', function (event) {
+		tagEl.on('itemAdded itemRemoved', function () {
 			modified(tagEl);
 		});
 	}

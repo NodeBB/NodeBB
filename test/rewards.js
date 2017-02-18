@@ -31,10 +31,10 @@ describe('rewards', function () {
 
 			async.series([
 				function (next) {
-					Groups.join('administrators', adminUid, done);
+					Groups.join('administrators', adminUid, next);
 				},
 				function (next) {
-					Groups.join('rewardGroup', adminUid, done);
+					Groups.join('rewardGroup', adminUid, next);
 				},
 			], done);
 		});

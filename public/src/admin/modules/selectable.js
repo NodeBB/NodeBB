@@ -1,7 +1,7 @@
 'use strict';
 
 
-define('admin/modules/selectable', ['jqueryui'], function (jqueryui) {
+define('admin/modules/selectable', ['jqueryui'], function () {
 	var selectable = {};
 
 	selectable.enable = function (containerEl, targets) {

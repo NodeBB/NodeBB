@@ -80,7 +80,7 @@ module.exports = function (Plugins) {
 			},
 			function (active, next) {
 				if (active) {
-					Plugins.toggleActive(id, function (err, status) {
+					Plugins.toggleActive(id, function (err) {
 						next(err);
 					});
 					return;

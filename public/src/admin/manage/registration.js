@@ -5,7 +5,7 @@ define('admin/manage/registration', function () {
 	var Registration = {};
 
 	Registration.init = function () {
-		$('.users-list').on('click', '[data-action]', function (ev) {
+		$('.users-list').on('click', '[data-action]', function () {
 			var parent = $(this).parents('[data-username]');
 			var action = $(this).attr('data-action');
 			var username = parent.attr('data-username');
@@ -20,7 +20,7 @@ define('admin/manage/registration', function () {
 			return false;
 		});
 
-		$('.invites-list').on('click', '[data-action]', function (ev) {
+		$('.invites-list').on('click', '[data-action]', function () {
 			var parent = $(this).parents('[data-invitation-mail][data-invited-by]');
 			var email = parent.attr('data-invitation-mail');
 			var invitedBy = parent.attr('data-invited-by');

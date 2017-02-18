@@ -21,7 +21,7 @@ module.exports = function (redisClient, module) {
 
 	module.delete = function (key, callback) {
 		callback = callback || function () {};
-		redisClient.del(key, function (err, res) {
+		redisClient.del(key, function (err) {
 			callback(err);
 		});
 	};
@@ -32,7 +32,7 @@ module.exports = function (redisClient, module) {
 		for (var i = 0; i < keys.length; i += 1) {
 			multi.del(keys[i]);
 		}
-		multi.exec(function (err, res) {
+		multi.exec(function (err) {
 			callback(err);
 		});
 	};
@@ -55,7 +55,7 @@ module.exports = function (redisClient, module) {
 
 	module.rename = function (oldKey, newKey, callback) {
 		callback = callback || function () {};
-		redisClient.rename(oldKey, newKey, function (err, res) {
+		redisClient.rename(oldKey, newKey, function (err) {
 			callback(err && err.message !== 'ERR no such key' ? err : null);
 		});
 	};

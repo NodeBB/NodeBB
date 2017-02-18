@@ -18,7 +18,7 @@ helpers.notAllowed = function (req, res, error) {
 		req: req,
 		res: res,
 		error: error,
-	}, function (err, data) {
+	}, function (err) {
 		if (err) {
 			return winston.error(err);
 		}

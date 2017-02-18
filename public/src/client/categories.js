@@ -35,7 +35,6 @@ define('forum/categories', ['components', 'translator'], function (components, t
 		}
 
 		var recentPosts = category.find('[component="category/posts"]');
-		var insertBefore = recentPosts.first();
 
 		parseAndTranslate([post], function (html) {
 			html.hide();

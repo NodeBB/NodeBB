@@ -13,7 +13,7 @@ var infoController = {};
 
 var info = {};
 
-infoController.get = function (req, res, next) {
+infoController.get = function (req, res) {
 	info = {};
 	pubsub.publish('sync:node:info:start');
 	setTimeout(function () {

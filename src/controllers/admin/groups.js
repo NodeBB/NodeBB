@@ -6,11 +6,8 @@ var db = require('../../database');
 var groups = require('../../groups');
 var meta = require('../../meta');
 var pagination = require('../../pagination');
-var helpers = require('../helpers');
-
 
 var groupsController = {};
-
 
 groupsController.list = function (req, res, next) {
 	var page = parseInt(req.query.page, 10) || 1;

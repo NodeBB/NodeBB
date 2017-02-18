@@ -6,7 +6,6 @@ var passport = require('passport');
 var nconf = require('nconf');
 var validator = require('validator');
 var _ = require('underscore');
-var url = require('url');
 
 var db = require('../database');
 var meta = require('../meta');
@@ -19,7 +18,7 @@ var sockets = require('../socket.io');
 
 var authenticationController = {};
 
-authenticationController.register = function (req, res, next) {
+authenticationController.register = function (req, res) {
 	var registrationType = meta.config.registrationType || 'normal';
 
 	if (registrationType === 'disabled') {

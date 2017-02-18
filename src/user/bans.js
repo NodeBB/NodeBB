@@ -1,8 +1,8 @@
 'use strict';
 
 var async = require('async');
+
 var db = require('../database');
-var plugins = require('../plugins');
 
 module.exports = function (User) {
 	User.ban = function (uid, until, reason, callback) {

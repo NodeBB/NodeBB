@@ -1,7 +1,7 @@
 'use strict';
 
 
-define('forum/login', ['translator'], function (translator) {
+define('forum/login', [], function () {
 	var	Login = {};
 
 	Login.init = function () {
@@ -35,10 +35,10 @@ define('forum/login', ['translator'], function (translator) {
 					headers: {
 						'x-csrf-token': config.csrf_token,
 					},
-					success: function (data, status) {
+					success: function (data) {
 						window.location.href = data + '?loggedin';
 					},
-					error: function (data, status) {
+					error: function (data) {
 						if (data.status === 403 && data.responseText === 'Forbidden') {
 							window.location.href = config.relative_path + '/login?error=csrf-invalid';
 						} else {

@@ -3,7 +3,6 @@
 
 define('forum/account/topics', ['forum/account/header', 'forum/infinitescroll'], function (header, infinitescroll) {
 	var AccountTopics = {};
-	var template;
 	var set;
 
 	AccountTopics.init = function () {
@@ -13,7 +12,6 @@ define('forum/account/topics', ['forum/account/header', 'forum/infinitescroll'],
 	};
 
 	AccountTopics.handleInfiniteScroll = function (_template, _set) {
-		template = _template;
 		set = _set;
 
 		if (!config.usePagination) {

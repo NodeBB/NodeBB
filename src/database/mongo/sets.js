@@ -24,7 +24,7 @@ module.exports = function (db, module) {
 		}, {
 			upsert: true,
 			w: 1,
-		}, function (err, res) {
+		}, function (err) {
 			callback(err);
 		});
 	};
@@ -54,7 +54,7 @@ module.exports = function (db, module) {
 			} });
 		}
 
-		bulk.execute(function (err, res) {
+		bulk.execute(function (err) {
 			callback(err);
 		});
 	};
@@ -69,7 +69,7 @@ module.exports = function (db, module) {
 			array[index] = helpers.valueToString(element);
 		});
 
-		db.collection('objects').update({ _key: key }, { $pullAll: { members: value } }, function (err, res) {
+		db.collection('objects').update({ _key: key }, { $pullAll: { members: value } }, function (err) {
 			callback(err);
 		});
 	};
@@ -89,7 +89,7 @@ module.exports = function (db, module) {
 			} });
 		}
 
-		bulk.execute(function (err, res) {
+		bulk.execute(function (err) {
 			callback(err);
 		});
 	};

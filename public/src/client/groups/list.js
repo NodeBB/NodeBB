@@ -5,8 +5,6 @@ define('forum/groups/list', ['forum/infinitescroll'], function (infinitescroll) 
 	var Groups = {};
 
 	Groups.init = function () {
-		var groupsEl = $('#groups-list');
-
 		infinitescroll.init(Groups.loadMoreGroups);
 
 		// Group creation
