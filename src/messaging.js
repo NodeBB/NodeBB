@@ -139,7 +139,7 @@ Messaging.getRecentChats = function (callerUid, uid, start, stop, callback) {
 							uids = uids.filter(function (value) {
 								return value && parseInt(value, 10) !== parseInt(uid, 10);
 							});
-							user.getUsersFields(uids, ['uid', 'username', 'userslug', 'picture', 'status', 'lastonline'] , next);
+							user.getUsersFields(uids, ['uid', 'username', 'userslug', 'picture', 'status', 'lastonline'], next);
 						});
 					}, next);
 				},
@@ -206,7 +206,7 @@ Messaging.getTeaser = function (uid, roomId, callback) {
 			}
 
 			teaser.timestampISO = utils.toISOString(teaser.timestamp);
-			user.getUserFields(teaser.fromuid, ['uid', 'username', 'userslug', 'picture', 'status', 'lastonline'] , next);
+			user.getUserFields(teaser.fromuid, ['uid', 'username', 'userslug', 'picture', 'status', 'lastonline'], next);
 		},
 		function (user, next) {
 			teaser.user = user;

@@ -157,7 +157,7 @@ module.exports = function (db, module) {
 			return callback();
 		}
 		var pipeline = [
-			{ $match: { _key: { $in: keys } } } ,
+			{ $match: { _key: { $in: keys } } },
 			{ $group: { _id: {_key: '$_key'}, count: { $sum: 1 } } },
 			{ $project: { _id: 1, count: '$count' } },
 		];

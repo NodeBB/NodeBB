@@ -33,7 +33,7 @@ pluginsController.get = function (req, res, next) {
 				return pkgData.name;
 			});
 
-		res.render('admin/extend/plugins' , {
+		res.render('admin/extend/plugins', {
 			installed: payload.compatible.filter(function (plugin) {
 				return plugin.installed;
 			}),

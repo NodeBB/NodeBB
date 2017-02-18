@@ -111,7 +111,7 @@ var opts = {
 		/*
 		 * This monitor's when a user clicks "save" in the Logger section of the admin panel
 		 */
-		Logger.setup_one(data.key,data.value);
+		Logger.setup_one(data.key, data.value);
 		Logger.io_close(socket);
 		Logger.io(socket);
 	};
@@ -127,14 +127,14 @@ var opts = {
 		opts.express.ofn = morgan('combined', {stream: opts.streams.log.f});
 	};
 
-	Logger.expressLogger = function (req,res,next) {
+	Logger.expressLogger = function (req, res, next) {
 		/*
 		 * The new express.logger
 		 *
 		 * This hijack allows us to turn logger on/off dynamically within express
 		 */
 		if(meta.config.loggerStatus > 0) {
-			return opts.express.ofn(req,res,next);
+			return opts.express.ofn(req, res, next);
 		} else {
 			return next();
 		}

@@ -73,7 +73,7 @@ define('admin/appearance/skins', ['translator'], function (translator) {
 				if (config['theme:src']) {
 					var skin = config['theme:src']
 					.match(/latest\/(\S+)\/bootstrap.min.css/)[1]
-					.replace(/(^|\s)([a-z])/g , function (m,p1,p2) { return p1 + p2.toUpperCase(); });
+					.replace(/(^|\s)([a-z])/g, function (m, p1, p2) { return p1 + p2.toUpperCase(); });
 
 					highlightSelectedTheme(skin);
 				}

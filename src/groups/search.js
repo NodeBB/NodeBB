@@ -119,7 +119,7 @@ module.exports = function (Groups) {
 					}
 				});
 
-				results.users.sort(function (a,b) {
+				results.users.sort(function (a, b) {
 					if (a.isOwner && !b.isOwner) {
 						return -1;
 					} else if (!a.isOwner && b.isOwner) {

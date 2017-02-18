@@ -299,7 +299,7 @@ describe('Categories', function () {
 			});
 		});
 
-		it('should get category data' , function (done) {
+		it('should get category data', function (done) {
 			socketCategories.getCategory({uid: posterUid}, categoryObj.cid, function (err, data) {
 				assert.ifError(err);
 				assert.equal(categoryObj.cid, data.cid);

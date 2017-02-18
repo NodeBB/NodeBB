@@ -126,7 +126,7 @@ define('admin/general/dashboard', ['semver', 'Chart', 'translator'], function (s
 		topics: null,
 	};
 
-	var topicColors = ["#bf616a","#5B90BF","#d08770","#ebcb8b","#a3be8c","#96b5b4","#8fa1b3","#b48ead","#ab7967","#46BFBD"];
+	var topicColors = ["#bf616a", "#5B90BF", "#d08770", "#ebcb8b", "#a3be8c", "#96b5b4", "#8fa1b3", "#b48ead", "#ab7967", "#46BFBD"];
 	var	usedTopicColors = [];
 
 	// from chartjs.org
@@ -138,7 +138,7 @@ define('admin/general/dashboard', ['semver', 'Chart', 'translator'], function (s
 			usePound = true;
 		}
 
-		var num = parseInt(col,16);
+		var num = parseInt(col, 16);
 
 		var r = (num >> 16) + amt;
 
@@ -196,7 +196,7 @@ define('admin/general/dashboard', ['semver', 'Chart', 'translator'], function (s
 						pointHoverBackgroundColor: "#fff",
 						pointBorderColor: "#fff",
 						pointHoverBorderColor: "rgba(220,220,220,1)",
-						data: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+						data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
 					},
 					{
 						label: translations[1],
@@ -206,7 +206,7 @@ define('admin/general/dashboard', ['semver', 'Chart', 'translator'], function (s
 						pointHoverBackgroundColor: "#fff",
 						pointBorderColor: "#fff",
 						pointHoverBorderColor: "rgba(151,187,205,1)",
-						data: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+						data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
 					},
 				],
 			};

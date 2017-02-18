@@ -17,7 +17,7 @@
 
 	nconf.file({ file: path.join(__dirname, '../../config.json') });
 	nconf.defaults({
-		base_dir: path.join(__dirname,'../..'),
+		base_dir: path.join(__dirname, '../..'),
 		themes_path: path.join(__dirname, '../../node_modules'),
 		upload_path: 'public/uploads',
 		views_dir: path.join(__dirname, '../../build/public/templates'),

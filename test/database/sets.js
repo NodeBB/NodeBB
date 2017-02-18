@@ -27,7 +27,7 @@ describe('Set methods', function () {
 
 	describe('getSetMembers()', function () {
 		before(function (done) {
-			db.setAdd('testSet2', [1,2,3,4,5], done);
+			db.setAdd('testSet2', [1, 2, 3, 4, 5], done);
 		});
 
 		it('should return an empty set', function (done) {
@@ -139,7 +139,7 @@ describe('Set methods', function () {
 
 	describe('setCount()', function () {
 		before(function (done) {
-			db.setAdd('testSet5', [1,2,3,4,5], done);
+			db.setAdd('testSet5', [1, 2, 3, 4, 5], done);
 		});
 
 		it('should return the element count of set', function (done) {
@@ -155,7 +155,7 @@ describe('Set methods', function () {
 	describe('setsCount()', function () {
 		before(function (done) {
 			async.parallel([
-				async.apply(db.setAdd, 'set5', [1,2,3,4,5]),
+				async.apply(db.setAdd, 'set5', [1, 2, 3, 4, 5]),
 				async.apply(db.setAdd, 'set6', 1),
 				async.apply(db.setAdd, 'set7', 2),
 			], done);
@@ -211,7 +211,7 @@ describe('Set methods', function () {
 
 	describe('setRemoveRandom()', function () {
 		before(function (done) {
-			db.setAdd('testSet7', [1,2,3,4,5], done);
+			db.setAdd('testSet7', [1, 2, 3, 4, 5], done);
 		});
 
 		it('should remove a random element from set', function (done) {

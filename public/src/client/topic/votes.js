@@ -66,7 +66,7 @@ define('forum/topic/votes', ['components', 'translator'], function (components, 
 		var post = button.parents('[data-pid]');
 		var currentState = post.find(className).length;
 
-		socket.emit(currentState ? 'posts.unvote' : method , {
+		socket.emit(currentState ? 'posts.unvote' : method, {
 			pid: post.attr('data-pid'),
 			room_id: app.currentRoom,
 		}, function (err) {

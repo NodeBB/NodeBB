@@ -473,7 +473,7 @@ describe('Topic\'s', function () {
 				function (done) {
 					topics.markUnread(newTid, uid, done);
 				},
-			],done);
+			], done);
 		});
 
 		it('should not appear in the unread list', function (done) {
@@ -626,7 +626,7 @@ describe('Topic\'s', function () {
 					assert.equal(originalBookmark, bookmark);
 					next();
 				},
-			],done);
+			], done);
 		});
 
 		it('should update the user\'s bookmark ', function (done) {
@@ -646,7 +646,7 @@ describe('Topic\'s', function () {
 					assert.equal(originalBookmark - 2, bookmark);
 					next();
 				},
-			],done);
+			], done);
 		});
 	});
 

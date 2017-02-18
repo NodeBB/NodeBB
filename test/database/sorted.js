@@ -521,8 +521,8 @@ describe('Sorted Set methods', function () {
 	describe('sortedSetsRemove()', function () {
 		before(function (done) {
 			async.parallel([
-				async.apply(db.sortedSetAdd, 'sorted4', [1,2], ['value1', 'value2']),
-				async.apply(db.sortedSetAdd, 'sorted5', [1,2], ['value1', 'value3']),
+				async.apply(db.sortedSetAdd, 'sorted4', [1, 2], ['value1', 'value2']),
+				async.apply(db.sortedSetAdd, 'sorted5', [1, 2], ['value1', 'value3']),
 			], done);
 		});
 
@@ -541,7 +541,7 @@ describe('Sorted Set methods', function () {
 
 	describe('sortedSetsRemoveRangeByScore()', function () {
 		before(function (done) {
-			db.sortedSetAdd('sorted6', [1,2,3,4,5], ['value1','value2','value3','value4','value5'], done);
+			db.sortedSetAdd('sorted6', [1, 2, 3, 4, 5], ['value1', 'value2', 'value3', 'value4', 'value5'], done);
 		});
 
 		it('should remove elements with scores between min max inclusive', function (done) {
@@ -561,10 +561,10 @@ describe('Sorted Set methods', function () {
 		before(function (done) {
 			async.parallel([
 				function (next) {
-					db.sortedSetAdd('interSet1', [1,2,3], ['value1', 'value2', 'value3'], next);
+					db.sortedSetAdd('interSet1', [1, 2, 3], ['value1', 'value2', 'value3'], next);
 				},
 				function (next) {
-					db.sortedSetAdd('interSet2', [4,5,6], ['value2', 'value3', 'value5'], next);
+					db.sortedSetAdd('interSet2', [4, 5, 6], ['value2', 'value3', 'value5'], next);
 				},
 			], done);
 		});

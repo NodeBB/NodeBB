@@ -2,6 +2,7 @@
     "extends": "airbnb",
 
     "rules": {
+        // Customized
         "handle-callback-err": [ "error","^(e$|(e|(.*(_e|E)))rr)" ],
         "comma-dangle": ["error", {
             "arrays": "always-multiline",
@@ -10,17 +11,22 @@
             "exports": "always-multiline",
             "functions": "never"
         }],
+        "no-empty": ["error", { "allowEmptyCatch": true }],
+        "no-underscore-dangle": "off",
+        "newline-per-chained-call": "off",
+        "no-console": "off",
+
+        // ES6
+        "prefer-rest-params": "off",
+        "prefer-spread": "off",
+
+        // TODO
         "import/no-unresolved": "off",
         "import/no-extraneous-dependencies": "off",
         "import/no-dynamic-require": "off",
         "import/newline-after-import": "off",
         "no-bitwise": "off",
-        "newline-per-chained-call": "off",
-        "no-console": "off",
-        "no-empty": ["error", { "allowEmptyCatch": true }],
-        "prefer-rest-params": "off",
-        "prefer-spread": "off",
-        "no-underscore-dangle": "off",
+        "global-require": "off",
 
         // "linebreak-style": "off",
         // "one-var": "off",
@@ -94,8 +100,7 @@
         "quotes": "off",
         "keyword-spacing": "off",
         "no-mixed-operators": "off",
-        "comma-spacing": "off",
-        "global-require": "off",
+        // "comma-spacing": "off",
         // "no-trailing-spaces": "off",
         // "key-spacing": "off",
         // "no-multiple-empty-lines": "off",

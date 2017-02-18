@@ -98,7 +98,7 @@ module.exports = function (app, middleware, hotswapIds) {
 	var ensureLoggedIn = require('connect-ensure-login');
 
 	if (Array.isArray(hotswapIds) && hotswapIds.length) {
-		for(var idx,x = 0; x < hotswapIds.length; x += 1) {
+		for(var idx, x = 0; x < hotswapIds.length; x += 1) {
 			idx = routers.push(express.Router()) - 1;
 			routers[idx].hotswapId = hotswapIds[x];
 		}

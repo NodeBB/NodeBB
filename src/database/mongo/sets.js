@@ -100,7 +100,7 @@ module.exports = function (db, module) {
 		}
 		value = helpers.valueToString(value);
 
-		db.collection('objects').findOne({_key: key, members: value}, {_id: 0, members: 0},function (err, item) {
+		db.collection('objects').findOne({_key: key, members: value}, {_id: 0, members: 0}, function (err, item) {
 			callback(err, item !== null && item !== undefined);
 		});
 	};

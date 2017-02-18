@@ -258,7 +258,7 @@
 		},
 
 		escapeHTML: function (raw) {
-			return raw.replace(/&/gm,"&amp;").replace(/</gm,"&lt;").replace(/>/gm,"&gt;");
+			return raw.replace(/&/gm, "&amp;").replace(/</gm, "&lt;").replace(/>/gm, "&gt;");
 		},
 
 		isAndroidBrowser: function () {

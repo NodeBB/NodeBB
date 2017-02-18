@@ -56,7 +56,7 @@
 
 	helpers.stringify = function (obj) {
 		// Turns the incoming object into a JSON string
-		return JSON.stringify(obj).replace(/&/gm,"&amp;").replace(/</gm,"&lt;").replace(/>/gm,"&gt;").replace(/"/g, '&quot;');
+		return JSON.stringify(obj).replace(/&/gm, "&amp;").replace(/</gm, "&lt;").replace(/>/gm, "&gt;").replace(/"/g, '&quot;');
 	};
 
 	helpers.escape = function (str) {
