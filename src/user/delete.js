@@ -57,7 +57,7 @@ module.exports = function (User) {
 				}
 				User.getUserFields(uid, ['username', 'userslug', 'fullname', 'email'], next);
 			},
-			function (_userData, next)  {
+			function (_userData, next) {
 				userData = _userData;
 				plugins.fireHook('static:user.delete', {uid: uid}, next);
 			},

@@ -98,7 +98,7 @@ define('forum/chats', [
 				return;
 			}
 			loading = true;
-			var start =  parseInt($('.chat-content').children('[data-index]').first().attr('data-index'), 10) + 1;
+			var start = parseInt($('.chat-content').children('[data-index]').first().attr('data-index'), 10) + 1;
 			socket.emit('modules.chats.getMessages', {roomId: roomId, uid: uid, start: start}, function (err, data) {
 				if (err) {
 					return app.alertError(err.message);

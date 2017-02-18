@@ -8,7 +8,7 @@ define('admin/manage/categories', ['vendor/jquery/serializeObject/jquery.ba-seri
 
 	Categories.init = function () {
 		socket.emit('admin.categories.getAll', function (error, payload) {
-			if(error) {
+			if (error) {
 				return app.alertError(error.message);
 			}
 
@@ -128,14 +128,14 @@ define('admin/manage/categories', ['vendor/jquery/serializeObject/jquery.ba-seri
 		var isCategoryUpdate = (newCategoryId != -1);
 
 		// Update needed?
-		if((e.newIndex != undefined && e.oldIndex != e.newIndex) || isCategoryUpdate) {
+		if ((e.newIndex != undefined && e.oldIndex != e.newIndex) || isCategoryUpdate) {
 			var parentCategory = isCategoryUpdate ? sortables[newCategoryId] : sortables[e.from.dataset.cid];
 			var modified = {};
 			var i = 0;
 			var list = parentCategory.toArray();
 			var len = list.length;
 
-			for(i; i < len; i += 1) {
+			for (i; i < len; i += 1) {
 				modified[list[i]] = {
 					order: (i + 1),
 				};
@@ -187,7 +187,7 @@ define('admin/manage/categories', ['vendor/jquery/serializeObject/jquery.ba-seri
 					container.append(html);
 
 					// Handle and children categories in this level have
-					for(var x = 0, numCategories = categories.length; x < numCategories; x += 1) {
+					for (var x = 0, numCategories = categories.length; x < numCategories; x += 1) {
 						renderList(categories[x].children, $('li[data-cid="' + categories[x].cid + '"]'), categories[x].cid);
 					}
 

@@ -29,7 +29,7 @@ uploadsController.uploadCategoryPicture = function (req, res, next) {
 	}
 
 	if (validateUpload(req, res, next, uploadedFile, allowedImageTypes)) {
-		var filename =  'category-' + params.cid + path.extname(uploadedFile.name);
+		var filename = 'category-' + params.cid + path.extname(uploadedFile.name);
 		uploadImage(filename, 'category', uploadedFile, req, res, next);
 	}
 };

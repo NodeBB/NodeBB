@@ -78,7 +78,7 @@ module.exports = function (db, module) {
 			_id: 0,
 		};
 
-		for(var i = 0; i < fields.length; i += 1) {
+		for (var i = 0; i < fields.length; i += 1) {
 			fields[i] = helpers.fieldToString(fields[i]);
 			_fields[fields[i]] = 1;
 		}
@@ -88,7 +88,7 @@ module.exports = function (db, module) {
 			}
 			item = item || {};
 			var result = {};
-			for(i = 0; i < fields.length; i += 1) {
+			for (i = 0; i < fields.length; i += 1) {
 				result[fields[i]] = item[fields[i]] !== undefined ? item[fields[i]] : null;
 			}
 			callback(null, result);
@@ -104,7 +104,7 @@ module.exports = function (db, module) {
 			_key: 1,
 		};
 
-		for(var i = 0; i < fields.length; i += 1) {
+		for (var i = 0; i < fields.length; i += 1) {
 			fields[i] = helpers.fieldToString(fields[i]);
 			_fields[fields[i]] = 1;
 		}
@@ -145,12 +145,12 @@ module.exports = function (db, module) {
 
 	module.getObjectValues = function (key, callback) {
 		module.getObject(key, function (err, data) {
-			if(err) {
+			if (err) {
 				return callback(err);
 			}
 
 			var values = [];
-			for(var key in data) {
+			for (var key in data) {
 				if (data && data.hasOwnProperty(key)) {
 					values.push(data[key]);
 				}

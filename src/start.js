@@ -56,7 +56,7 @@ start.start = function () {
 		},
 	], function (err) {
 		if (err) {
-			switch(err.message) {
+			switch (err.message) {
 				case 'schema-out-of-date':
 					winston.warn('Your NodeBB schema is out-of-date. Please run the following command to bring your dataset up to spec:');
 					winston.warn('    ./nodebb upgrade');

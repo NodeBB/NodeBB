@@ -516,7 +516,7 @@ app.cacheBuster = null;
 		$('[component="header/usercontrol"] [data-status]').off('click').on('click', function (e) {
 			var status = $(this).attr('data-status');
 			socket.emit('user.setStatus', status, function (err) {
-				if(err) {
+				if (err) {
 					return app.alertError(err.message);
 				}
 				$('[data-uid="' + app.user.uid + '"] [component="user/status"], [component="header/profilelink"] [component="user/status"]')

@@ -8,7 +8,7 @@ var validator = require('validator');
 var user = require('../user');
 var topics = require('../topics');
 var pagination = require('../pagination');
-var helpers =  require('./helpers');
+var helpers = require('./helpers');
 
 var tagsController = {};
 

@@ -100,7 +100,7 @@ file.existsSync = function (path) {
 	var exists = false;
 	try {
 		exists = fs.statSync(path);
-	} catch(err) {
+	} catch (err) {
 		exists = false;
 	}
 

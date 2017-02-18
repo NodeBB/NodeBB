@@ -106,7 +106,7 @@ function forkWorker(index, isPrimary) {
 	var ports = getPorts();
 	var args = [];
 
-	if(!ports[index]) {
+	if (!ports[index]) {
 		return console.log('[cluster] invalid port for worker : ' + index + ' ports: ' + ports.length);
 	}
 

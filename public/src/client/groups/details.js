@@ -59,7 +59,7 @@ define('forum/groups/details', [
 			var uid = userRow.attr('data-uid');
 			var action = btnEl.attr('data-action');
 
-			switch(action) {
+			switch (action) {
 				case 'toggleOwnership':
 					socket.emit('groups.' + (isOwner ? 'rescind' : 'grant'), {
 						toUid: uid,

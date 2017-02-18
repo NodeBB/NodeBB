@@ -64,7 +64,7 @@ var privileges = require('../privileges');
 		async.waterfall([
 			async.apply(db.getSortedSetRevRange, set, start, stop),
 			function (nids, next) {
-				if(!Array.isArray(nids) || !nids.length) {
+				if (!Array.isArray(nids) || !nids.length) {
 					return callback(null, []);
 				}
 

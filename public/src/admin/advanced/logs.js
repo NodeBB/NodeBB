@@ -14,7 +14,7 @@ define('admin/advanced/logs', function () {
 			var btnEl = $(this);
 			var action = btnEl.attr('data-action');
 
-			switch(action) {
+			switch (action) {
 				case 'reload':
 					socket.emit('admin.logs.get', function (err, logs) {
 						if (!err) {

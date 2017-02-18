@@ -135,9 +135,9 @@ module.exports = function (User) {
 			});
 		} else {
 			userData.sort(function (u1, u2) {
-				if(u1[sortBy] < u2[sortBy]) {
+				if (u1[sortBy] < u2[sortBy]) {
 					return -1;
-				} else if(u1[sortBy] > u2[sortBy]) {
+				} else if (u1[sortBy] > u2[sortBy]) {
 					return 1;
 				}
 				return 0;

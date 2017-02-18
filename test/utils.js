@@ -164,9 +164,9 @@ describe('Utility Methods', function () {
 		var days = utils.getDaysArray();
 		var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 		var index = 0;
-		for(var x = 29; x >= 0; x -= 1) {
+		for (var x = 29; x >= 0; x -= 1) {
 			var tmpDate = new Date(currentDay - (1000 * 60 * 60 * 24 * x));
-			assert.equal(months[tmpDate.getMonth()]  + ' ' + tmpDate.getDate(), days[index]);
+			assert.equal(months[tmpDate.getMonth()] + ' ' + tmpDate.getDate(), days[index]);
 			index += 1;
 		}
 		done();

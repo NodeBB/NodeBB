@@ -4,7 +4,7 @@ var express = require('express');
 
 var uploadsController = require('../controllers/uploads');
 
-module.exports =  function (app, middleware, controllers) {
+module.exports = function (app, middleware, controllers) {
 
 	var router = express.Router();
 	app.use('/api', router);

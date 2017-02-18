@@ -459,7 +459,7 @@ define('settings', function () {
 				}
 
 				// Parse all values. If they are json, return json
-				for(var key in values) {
+				for (var key in values) {
 					if (values.hasOwnProperty(key)) {
 						try {
 							values[key] = JSON.parse(values[key]);

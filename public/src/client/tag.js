@@ -20,7 +20,7 @@ define('forum/tag', ['forum/recent', 'forum/infinitescroll'], function (recent, 
 		}
 
 		function loadMoreTopics(direction) {
-			if(direction < 0 || !$('[component="category"]').length) {
+			if (direction < 0 || !$('[component="category"]').length) {
 				return;
 			}
 

@@ -33,7 +33,7 @@ Minifier.js.minify = function (scripts, minify, callback) {
 };
 
 process.on('message', function (payload) {
-	switch(payload.action) {
+	switch (payload.action) {
 	case 'js':
 		Minifier.js.minify(payload.scripts, payload.minify, function (minified/* , sourceMap*/) {
 			process.send({
@@ -56,7 +56,7 @@ function minifyScripts(scripts, callback) {
 			});
 
 		callback(minified.code/* , minified.map*/);
-	} catch(err) {
+	} catch (err) {
 		process.send({
 			type: 'error',
 			message: err.message,

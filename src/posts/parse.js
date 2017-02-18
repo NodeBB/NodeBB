@@ -68,7 +68,7 @@ module.exports = function (Posts) {
 
 						content = content.slice(0, current.index + 6) + absolute + content.slice(current.index + 6 + current[1].length);
 					}
-				} catch(err) {
+				} catch (err) {
 					winston.verbose(err.messsage);
 				}
 			}

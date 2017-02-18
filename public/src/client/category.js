@@ -232,7 +232,7 @@ define('forum/category', [
 							topic.insertBefore(topics[x]);
 							break;
 						}
-						if(x === numTopics - 1) {
+						if (x === numTopics - 1) {
 							topic.insertAfter(topics[x]);
 						}
 					}
@@ -253,7 +253,7 @@ define('forum/category', [
 
 	function updateTopicCount() {
 		socket.emit('categories.getTopicCount', ajaxify.data.cid, function (err, topicCount) {
-			if(err) {
+			if (err) {
 				return app.alertError(err.message);
 			}
 			navigator.setCount(topicCount);

@@ -138,7 +138,7 @@ function compileLess(callback) {
 		}
 
 		less.render(style.toString(), function (err, css) {
-			if(err) {
+			if (err) {
 				return winston.error('Unable to compile LESS: ', err);
 			}
 

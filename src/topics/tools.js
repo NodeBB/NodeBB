@@ -46,7 +46,7 @@ module.exports = function (Topics) {
 
 				if (parseInt(topicData.deleted, 10) === 1 && isDelete) {
 					return callback(new Error('[[error:topic-already-deleted]]'));
-				} else if(parseInt(topicData.deleted, 10) !== 1 && !isDelete) {
+				} else if (parseInt(topicData.deleted, 10) !== 1 && !isDelete) {
 					return callback(new Error('[[error:topic-already-restored]]'));
 				}
 

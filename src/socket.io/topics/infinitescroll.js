@@ -11,7 +11,7 @@ var social = require('../../social');
 module.exports = function (SocketTopics) {
 
 	SocketTopics.loadMore = function (socket, data, callback) {
-		if (!data || !data.tid || !utils.isNumber(data.after) || parseInt(data.after, 10) < 0)  {
+		if (!data || !data.tid || !utils.isNumber(data.after) || parseInt(data.after, 10) < 0) {
 			return callback(new Error('[[error:invalid-data]]'));
 		}
 		var userPrivileges;

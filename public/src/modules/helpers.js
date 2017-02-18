@@ -170,7 +170,7 @@
 
 	helpers.spawnPrivilegeStates = function (member, privileges) {
 		var states = [];
-		for(var priv in privileges) {
+		for (var priv in privileges) {
 			if (privileges.hasOwnProperty(priv)) {
 				states.push({
 					name: priv,
@@ -214,7 +214,7 @@
 	helpers.userAgentIcons = function (data) {
 		var icons = '';
 
-		switch(data.platform) {
+		switch (data.platform) {
 			case 'Linux':
 				icons += '<i class="fa fa-fw fa-linux"></i>';
 				break;
@@ -239,7 +239,7 @@
 				break;
 		}
 
-		switch(data.browser) {
+		switch (data.browser) {
 			case 'Chrome':
 				icons += '<i class="fa fa-fw fa-chrome"></i>';
 				break;

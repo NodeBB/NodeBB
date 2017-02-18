@@ -79,7 +79,7 @@ function getNodeInfo(callback) {
 }
 
 function getGitInfo(callback) {
-	function get(cmd,  callback) {
+	function get(cmd, callback) {
 		exec(cmd, function (err, stdout) {
 			if (err) {
 				winston.error(err);

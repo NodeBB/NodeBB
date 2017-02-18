@@ -23,11 +23,11 @@ define('forum/unread', ['forum/recent', 'topicSelect', 'forum/infinitescroll', '
 
 		$('#markSelectedRead').on('click', function () {
 			var tids = topicSelect.getSelectedTids();
-			if(!tids.length) {
+			if (!tids.length) {
 				return;
 			}
 			socket.emit('topics.markAsRead', tids, function (err) {
-				if(err) {
+				if (err) {
 					return app.alertError(err.message);
 				}
 
@@ -37,7 +37,7 @@ define('forum/unread', ['forum/recent', 'topicSelect', 'forum/infinitescroll', '
 
 		$('#markAllRead').on('click', function () {
 			socket.emit('topics.markAllRead', function (err) {
-				if(err) {
+				if (err) {
 					return app.alertError(err.message);
 				}
 
@@ -62,7 +62,7 @@ define('forum/unread', ['forum/recent', 'topicSelect', 'forum/infinitescroll', '
 			var tids = getCategoryTids(cid);
 
 			socket.emit('topics.markCategoryTopicsRead', cid, function (err) {
-				if(err) {
+				if (err) {
 					return app.alertError(err.message);
 				}
 
@@ -85,7 +85,7 @@ define('forum/unread', ['forum/recent', 'topicSelect', 'forum/infinitescroll', '
 		}
 
 		function loadMoreTopics(direction) {
-			if(direction < 0 || !$('[component="category"]').length) {
+			if (direction < 0 || !$('[component="category"]').length) {
 				return;
 			}
 			var params = utils.params();
@@ -118,7 +118,7 @@ define('forum/unread', ['forum/recent', 'topicSelect', 'forum/infinitescroll', '
 	}
 
 	function removeTids(tids) {
-		for(var i = 0; i < tids.length; i += 1) {
+		for (var i = 0; i < tids.length; i += 1) {
 			components.get('category/topic', 'tid', tids[i]).remove();
 		}
 	}

@@ -240,14 +240,14 @@ module.exports = function (Posts) {
 			function (posts, next) {
 				// Parse out flag data into its own object inside each post hash
 				async.map(posts, function (postObj, next) {
-					for(var prop in postObj) {
+					for (var prop in postObj) {
 						postObj.flagData = postObj.flagData || {};
 
 						if (postObj.hasOwnProperty(prop) && prop.startsWith('flag:')) {
 							postObj.flagData[prop.slice(5)] = postObj[prop];
 
 							if (prop === 'flag:state') {
-								switch(postObj[prop]) {
+								switch (postObj[prop]) {
 									case 'open':
 										postObj.flagData.labelClass = 'info';
 										break;
@@ -296,14 +296,14 @@ module.exports = function (Posts) {
 			}
 
 			// Track new additions
-			for(prop in flagObj) {
+			for (prop in flagObj) {
 				if (flagObj.hasOwnProperty(prop) && !postData.hasOwnProperty('flag:' + prop) && flagObj[prop].length) {
 					changes.push(prop);
 				}
 			}
 
 			// Track changed items
-			for(prop in postData) {
+			for (prop in postData) {
 				if (
 					postData.hasOwnProperty(prop) && prop.startsWith('flag:') &&
 					flagObj.hasOwnProperty(prop.slice(5)) &&
@@ -324,7 +324,7 @@ module.exports = function (Posts) {
 					var history = JSON.parse(postData['flag:history'] || '[]');
 
 					changes.forEach(function (property) {
-						switch(property) {
+						switch (property) {
 							case 'assignee':	// intentional fall-through
 							case 'state':
 								history.unshift({

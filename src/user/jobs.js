@@ -22,7 +22,7 @@ module.exports = function (User) {
 		}
 
 		// Terminate any active cron jobs
-		for(var jobId in jobs) {
+		for (var jobId in jobs) {
 			if (jobs.hasOwnProperty(jobId)) {
 				winston.verbose('[user/jobs] Terminating job (' + jobId + ')');
 				jobs[jobId].stop();

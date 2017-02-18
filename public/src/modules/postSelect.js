@@ -24,7 +24,7 @@ define('postSelect', ['components'], function (components) {
 
 		if (newPid) {
 			var index = PostSelect.pids.indexOf(newPid);
-			if(index === -1) {
+			if (index === -1) {
 				PostSelect.pids.push(newPid);
 				post.toggleClass('bg-success', true);
 			} else {

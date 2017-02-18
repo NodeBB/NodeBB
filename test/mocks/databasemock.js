@@ -9,7 +9,7 @@
 
 	var async = require('async');
 	var winston = require('winston');
-	var path  = require('path');
+	var path = require('path');
 	var nconf = require('nconf');
 	var url = require('url');
 	var errorText;

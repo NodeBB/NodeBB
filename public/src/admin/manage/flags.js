@@ -147,7 +147,7 @@ define('admin/manage/flags', [
 			el = $(el);
 
 			if (source[pid]) {
-				for(var prop in source[pid]) {
+				for (var prop in source[pid]) {
 					if (source[pid].hasOwnProperty(prop)) {
 						el.find('[name="' + prop + '"]').val(source[pid][prop]);
 					}

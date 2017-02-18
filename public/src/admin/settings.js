@@ -182,7 +182,7 @@ define('admin/settings', ['uploader'], function (uploader) {
 				return callback(err);
 			}
 
-			for(var field in data) {
+			for (var field in data) {
 				if (data.hasOwnProperty(field)) {
 					app.config[field] = data[field];
 				}

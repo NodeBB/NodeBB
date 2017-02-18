@@ -71,7 +71,7 @@ app.isConnected = false;
 		var	url_parts = window.location.pathname.slice(config.relative_path.length).split('/').slice(1);
 		var room;
 
-		switch(url_parts[0]) {
+		switch (url_parts[0]) {
 			case 'user':
 				room = 'user/' + (ajaxify.data ? ajaxify.data.theirid : 0);
 			break;

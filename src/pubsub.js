@@ -26,7 +26,7 @@ var PubSub = function () {
 			try {
 				var msg = JSON.parse(message);
 				self.emit(msg.event, msg.data);
-			} catch(err) {
+			} catch (err) {
 				winston.error(err.stack);
 			}
 		});

@@ -62,7 +62,7 @@ module.exports = function (SocketPosts) {
 				return callback(err, []);
 			}
 
-			async.map(data, function (uids, next)  {
+			async.map(data, function (uids, next) {
 				var otherCount = 0;
 				if (uids.length > 6) {
 					otherCount = uids.length - 5;

@@ -63,7 +63,7 @@ define('admin/manage/groups', ['translator'], function (translator) {
 						socket.emit('groups.delete', {
 							groupName: groupName,
 						}, function (err, data) {
-							if(err) {
+							if (err) {
 								return app.alertError(err.message);
 							}
 

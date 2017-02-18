@@ -4,7 +4,7 @@
 var async = require('async');
 var validator = require('validator');
 
-var db =  require('./database');
+var db = require('./database');
 var batch = require('./batch');
 var user = require('./user');
 var utils = require('../public/src/utils');

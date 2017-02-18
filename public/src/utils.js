@@ -91,7 +91,7 @@
 				return '';
 			}
 			str = str.replace(utils.trimRegex, '');
-			if(utils.isLatin.test(str)) {
+			if (utils.isLatin.test(str)) {
 				str = str.replace(utils.invalidLatinChars, '-');
 			} else {
 				str = XRegExp.replace(str, utils.invalidUnicodeChars, '-');
@@ -211,12 +211,12 @@
 
 		makeNumberHumanReadable: function (num) {
 			var n = parseInt(num, 10);
-			if(!n) {
+			if (!n) {
 				return num;
 			}
 			if (n > 999999) {
 				return (n / 1000000).toFixed(1) + 'm';
-			} else if(n > 999) {
+			} else if (n > 999) {
 				return (n / 1000).toFixed(1) + 'k';
 			}
 			return n;
@@ -314,7 +314,7 @@
 			var labels = [];
 			var tmpDate;
 
-			for(var x = 29; x >= 0; x -= 1) {
+			for (var x = 29; x >= 0; x -= 1) {
 				tmpDate = new Date(currentDay - (1000 * 60 * 60 * 24 * x));
 				labels.push(months[tmpDate.getMonth()] + ' ' + tmpDate.getDate());
 			}
@@ -417,15 +417,15 @@
 		// get example: utils.props(A, 'a.b.c.foo.bar') // returns undefined without throwing a TypeError
 		// credits to github.com/gkindel
 		props: function (obj, props, value) {
-			if(obj === undefined) {
+			if (obj === undefined) {
 				obj = window;
 			}
-			if(props == null) {
+			if (props == null) {
 				return undefined;
 			}
 			var i = props.indexOf('.');
-			if(i == -1) {
-				if(value !== undefined) {
+			if (i == -1) {
+				if (value !== undefined) {
 					obj[props] = value;
 				}
 				return obj[props];
@@ -433,7 +433,7 @@
 			var prop = props.slice(0, i);
 			var newProps = props.slice(i + 1);
 
-			if(props !== undefined && !(obj[prop] instanceof Object)) {
+			if (props !== undefined && !(obj[prop] instanceof Object)) {
 				obj[prop] = {};
 			}
 

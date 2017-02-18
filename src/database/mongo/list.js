@@ -55,7 +55,7 @@ module.exports = function (db, module) {
 	};
 
 	module.listRemoveAll = function (key, value, callback) {
-		callback =  callback || helpers.noop;
+		callback = callback || helpers.noop;
 		if (!key) {
 			return callback();
 		}
@@ -88,7 +88,7 @@ module.exports = function (db, module) {
 		}
 
 		db.collection('objects').findOne({_key: key}, { array: 1}, function (err, data) {
-			if(err || !(data && data.array)) {
+			if (err || !(data && data.array)) {
 				return callback(err, []);
 			}
 

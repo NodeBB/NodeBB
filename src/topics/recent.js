@@ -7,7 +7,7 @@ var db = require('../database');
 var plugins = require('../plugins');
 var privileges = require('../privileges');
 var user = require('../user');
-var categories =  require('../categories');
+var categories = require('../categories');
 
 module.exports = function (Topics) {
 	var terms = {

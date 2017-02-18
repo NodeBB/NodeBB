@@ -28,7 +28,7 @@ groupsController.list = function (req, res, next) {
 			pageCount = Math.ceil(groupNames.length / groupsPerPage);
 
 			var start = (page - 1) * groupsPerPage;
-			var stop =  start + groupsPerPage - 1;
+			var stop = start + groupsPerPage - 1;
 
 			groupNames = groupNames.slice(start, stop + 1);
 			groups.getGroupsData(groupNames, next);

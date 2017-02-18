@@ -12,7 +12,7 @@ define('forum/reset', function () {
 		$('#reset').on('click', function () {
 			if (inputEl.val() && inputEl.val().indexOf('@') !== -1) {
 				socket.emit('user.reset.send', inputEl.val(), function (err) {
-					if(err) {
+					if (err) {
 						return app.alertError(err.message);
 					}
 

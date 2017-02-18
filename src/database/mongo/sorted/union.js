@@ -10,7 +10,7 @@ module.exports = function (db, module) {
 		var pipeline = [
 			{ $match: { _key: {$in: keys} } },
 			{ $group: { _id: {value: '$value' } } },
-			{ $group: { _id: null,  count: { $sum: 1 } } },
+			{ $group: { _id: null, count: { $sum: 1 } } },
 		];
 
 		var project = { _id: 0, count: '$count' };

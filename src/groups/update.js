@@ -131,7 +131,7 @@ module.exports = function (Groups) {
 			},
 			function (currentValue, next) {
 				var currentlyPrivate = parseInt(currentValue.private, 10) === 1;
-				if (!currentlyPrivate || currentlyPrivate === isPrivate)  {
+				if (!currentlyPrivate || currentlyPrivate === isPrivate) {
 					return callback();
 				}
 				db.getSetMembers('group:' + groupName + ':pending', next);

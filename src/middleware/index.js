@@ -190,7 +190,7 @@ middleware.processTimeagoLocales = function (req, res, next) {
 
 	try {
 		exists = fs.accessSync(localPath, fs.F_OK | fs.R_OK);
-	} catch(e) {
+	} catch (e) {
 		exists = false;
 	}
 

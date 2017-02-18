@@ -126,7 +126,7 @@ module.exports = function (User) {
 				user.status = User.getStatus(user);
 			}
 
-			for(var i = 0; i < fieldsToRemove.length; i += 1) {
+			for (var i = 0; i < fieldsToRemove.length; i += 1) {
 				user[fieldsToRemove[i]] = undefined;
 			}
 

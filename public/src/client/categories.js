@@ -39,7 +39,7 @@ define('forum/categories', ['components', 'translator'], function (components, t
 
 		parseAndTranslate([post], function (html) {
 			html.hide();
-			if(recentPosts.length === 0) {
+			if (recentPosts.length === 0) {
 				html.appendTo(category);
 			} else {
 				html.insertBefore(recentPosts.first());

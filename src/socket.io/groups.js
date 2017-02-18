@@ -241,7 +241,7 @@ SocketGroups.search = function (socket, data, callback) {
 };
 
 SocketGroups.loadMore = function (socket, data, callback) {
-	if (!data.sort  || !utils.isNumber(data.after) || parseInt(data.after, 10) < 0) {
+	if (!data.sort || !utils.isNumber(data.after) || parseInt(data.after, 10) < 0) {
 		return callback();
 	}
 

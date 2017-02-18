@@ -45,7 +45,7 @@ module.exports = function (redisClient, module) {
 				return callback(null, data);
 			}
 			var objects = [];
-			for(var i = 0; i < data.length; i += 2) {
+			for (var i = 0; i < data.length; i += 2) {
 				objects.push({value: data[i], score: parseFloat(data[i + 1])});
 			}
 			callback(null, objects);
@@ -74,7 +74,7 @@ module.exports = function (redisClient, module) {
 				return callback(err);
 			}
 			var objects = [];
-			for(var i = 0; i < data.length; i += 2) {
+			for (var i = 0; i < data.length; i += 2) {
 				objects.push({value: data[i], score: parseFloat(data[i + 1])});
 			}
 			callback(null, objects);
@@ -94,7 +94,7 @@ module.exports = function (redisClient, module) {
 			return callback(null, []);
 		}
 		var multi = redisClient.multi();
-		for(var i = 0; i < keys.length; i += 1) {
+		for (var i = 0; i < keys.length; i += 1) {
 			multi.zcard(keys[i]);
 		}
 		multi.exec(callback);
@@ -106,7 +106,7 @@ module.exports = function (redisClient, module) {
 
 	module.sortedSetsRanks = function (keys, values, callback) {
 		var multi = redisClient.multi();
-		for(var i = 0; i < values.length; i += 1) {
+		for (var i = 0; i < values.length; i += 1) {
 			multi.zrank(keys[i], values[i]);
 		}
 		multi.exec(callback);
@@ -114,7 +114,7 @@ module.exports = function (redisClient, module) {
 
 	module.sortedSetRanks = function (key, values, callback) {
 		var multi = redisClient.multi();
-		for(var i = 0; i < values.length; i += 1) {
+		for (var i = 0; i < values.length; i += 1) {
 			multi.zrank(key, values[i]);
 		}
 		multi.exec(callback);

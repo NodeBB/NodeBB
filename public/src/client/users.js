@@ -65,7 +65,7 @@ define('forum/users', ['translator'], function (translator) {
 			query.onlineOnly = true;
 		}
 		if (activeSection === 'banned') {
-			query.bannedOnly =  true;
+			query.bannedOnly = true;
 		}
 		if (activeSection === 'flagged') {
 			query.flaggedOnly = true;

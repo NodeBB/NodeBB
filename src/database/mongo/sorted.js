@@ -198,7 +198,7 @@ module.exports = function (db, module) {
 		}
 		value = helpers.valueToString(value);
 		method(key, 0, -1, function (err, result) {
-			if(err) {
+			if (err) {
 				return callback(err);
 			}
 
@@ -263,7 +263,7 @@ module.exports = function (db, module) {
 			var returnData = [];
 			var item;
 
-			for(var i = 0; i < keys.length; i += 1) {
+			for (var i = 0; i < keys.length; i += 1) {
 				item = map[keys[i]];
 				returnData.push(item ? item.score : null);
 			}
@@ -290,7 +290,7 @@ module.exports = function (db, module) {
 			var returnData = new Array(values.length);
 			var score;
 
-			for(var i = 0; i < values.length; i += 1) {
+			for (var i = 0; i < values.length; i += 1) {
 				score = map[values[i]];
 				returnData[i] = utils.isNumber(score) ? score : null;
 			}
@@ -367,7 +367,7 @@ module.exports = function (db, module) {
 			});
 
 			var returnData = new Array(keys.length);
-			for(var i = 0; i < keys.length; i += 1) {
+			for (var i = 0; i < keys.length; i += 1) {
 			 	returnData[i] = sets[keys[i]] || [];
 			}
 			callback(null, returnData);

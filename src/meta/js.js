@@ -150,7 +150,7 @@ module.exports = function (Meta) {
 		});
 
 		minifier.on('message', function (message) {
-			switch(message.type) {
+			switch (message.type) {
 			case 'end':
 				Meta.js.target[target].cache = message.minified;
 				Meta.js.target[target].map = message.sourceMap;
@@ -226,7 +226,7 @@ module.exports = function (Meta) {
 		 * Check if the parent process is running with the debug option --debug (or --debug-brk)
 		 */
 		var forkProcessParams = {};
-		if(global.v8debug || parseInt(process.execArgv.indexOf('--debug'), 10) !== -1) {
+		if (global.v8debug || parseInt(process.execArgv.indexOf('--debug'), 10) !== -1) {
 			/**
 			 * use the line below if you want to debug minifier.js script too (or even --debug-brk option, but
 			 * you'll have to setup your debugger and connect to the forked process)

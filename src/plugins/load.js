@@ -140,7 +140,7 @@ module.exports = function (Plugins) {
 			} else {
 				callback();
 			}
-		} catch(err) {
+		} catch (err) {
 			winston.error(err.stack);
 			winston.warn('[plugins] Unable to parse library for: ' + pluginData.id);
 			callback();
@@ -301,7 +301,7 @@ module.exports = function (Plugins) {
 				pluginData.repository = packageData.repository;
 				pluginData.nbbpm = packageData.nbbpm;
 				pluginData.path = pluginPath;
-			} catch(err) {
+			} catch (err) {
 				var pluginDir = pluginPath.split(path.sep);
 				pluginDir = pluginDir[pluginDir.length - 1];
 

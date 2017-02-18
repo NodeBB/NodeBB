@@ -89,7 +89,7 @@ widgets.getAreas = function (templates, locations, callback) {
 				if (data && data[index] && data[index][location]) {
 					try {
 						returnData[template][location] = JSON.parse(data[index][location]);
-					} catch(err) {
+					} catch (err) {
 						winston.error('can not parse widget data. template:  ' + template + ' location: ' + location);
 						returnData[template][location] = [];
 					}
@@ -113,7 +113,7 @@ widgets.getArea = function (template, location, callback) {
 		}
 		try {
 			result = JSON.parse(result);
-		} catch(err) {
+		} catch (err) {
 			return callback(err);
 		}
 

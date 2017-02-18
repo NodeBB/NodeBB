@@ -5,7 +5,7 @@ module.exports = function (db, module) {
 
 	module.setAdd = function (key, value, callback) {
 		callback = callback || helpers.noop;
-		if(!Array.isArray(value)) {
+		if (!Array.isArray(value)) {
 			value = [value];
 		}
 
@@ -36,7 +36,7 @@ module.exports = function (db, module) {
 			return callback();
 		}
 
-		if(!Array.isArray(value)) {
+		if (!Array.isArray(value)) {
 			value = [value];
 		}
 
@@ -46,7 +46,7 @@ module.exports = function (db, module) {
 
 		var bulk = db.collection('objects').initializeUnorderedBulkOp();
 
-		for(var i = 0; i < keys.length; i += 1) {
+		for (var i = 0; i < keys.length; i += 1) {
 			bulk.find({_key: keys[i]}).upsert().updateOne({	$addToSet: {
 				members: {
 					$each: value,
@@ -61,7 +61,7 @@ module.exports = function (db, module) {
 
 	module.setRemove = function (key, value, callback) {
 		callback = callback || helpers.noop;
-		if(!Array.isArray(value)) {
+		if (!Array.isArray(value)) {
 			value = [value];
 		}
 
@@ -83,7 +83,7 @@ module.exports = function (db, module) {
 
 		var bulk = db.collection('objects').initializeUnorderedBulkOp();
 
-		for(var i = 0; i < keys.length; i += 1) {
+		for (var i = 0; i < keys.length; i += 1) {
 			bulk.find({_key: keys[i]}).updateOne({$pull: {
 				members: value,
 			}});
@@ -174,7 +174,7 @@ module.exports = function (db, module) {
 			});
 
 			var returnData = new Array(keys.length);
-			for(var i = 0; i < keys.length; i += 1) {
+			for (var i = 0; i < keys.length; i += 1) {
 				returnData[i] = sets[keys[i]] || [];
 			}
 			callback(null, returnData);
@@ -206,7 +206,7 @@ module.exports = function (db, module) {
 	module.setRemoveRandom = function (key, callback) {
 		callback = callback || function () {};
 		db.collection('objects').findOne({_key: key}, function (err, data) {
-			if(err || !data) {
+			if (err || !data) {
 				return callback(err);
 			}
 

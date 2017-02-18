@@ -52,7 +52,7 @@ module.exports = function (redisClient, module) {
 		}
 		var	multi = redisClient.multi();
 
-		for(var x = 0; x < keys.length; x += 1) {
+		for (var x = 0; x < keys.length; x += 1) {
 			multi.hmget.apply(multi, [keys[x]].concat(fields));
 		}
 

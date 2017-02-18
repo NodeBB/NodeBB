@@ -18,7 +18,7 @@ define('search', ['navigator', 'translator'], function (nav, translator) {
 
 			try {
 				term = encodeURIComponent(term);
-			} catch(e) {
+			} catch (e) {
 				return app.alertError('[[error:invalid-search-term]]');
 			}
 
@@ -81,7 +81,7 @@ define('search', ['navigator', 'translator'], function (nav, translator) {
 	Search.getSearchPreferences = function () {
 		try {
 			return JSON.parse(localStorage.getItem('search-preferences') || '{}');
-		} catch(e) {
+		} catch (e) {
 			return {};
 		}
 	};

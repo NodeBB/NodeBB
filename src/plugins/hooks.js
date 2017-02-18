@@ -160,7 +160,7 @@ module.exports = function (Plugins) {
 							next.apply(null, arguments);
 						}
 					});
-				} catch(err) {
+				} catch (err) {
 					winston.error('[plugins] Error executing \'' + hook + '\' in plugin \'' + hookObj.id + '\'');
 					winston.error(err);
 					clearTimeout(timeoutId);

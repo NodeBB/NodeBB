@@ -52,7 +52,7 @@ Upgrade.upgrade = function (callback) {
 					return next(err);
 				}
 
-				if(!value) {
+				if (!value) {
 					db.set('schemaDate', latestSchema, function () {
 						next();
 					});
@@ -317,13 +317,13 @@ Upgrade.upgrade = function (callback) {
 		// IMPORTANT: REMEMBER TO UPDATE VALUE OF latestSchema IN LINE 24!!!
 	], function (err) {
 		if (!err) {
-			if(updatesMade) {
+			if (updatesMade) {
 				winston.info('[upgrade] Schema update complete!');
 			} else {
 				winston.info('[upgrade] Schema already up to date!');
 			}
 		} else {
-			switch(err.message) {
+			switch (err.message) {
 			case 'upgrade-not-possible':
 				winston.error('[upgrade] NodeBB upgrade could not complete, as your database schema is too far out of date.');
 				winston.error('[upgrade]   Please ensure that you did not skip any minor version upgrades.');

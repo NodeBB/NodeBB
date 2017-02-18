@@ -143,12 +143,12 @@ define('admin/general/dashboard', ['semver', 'Chart', 'translator'], function (s
 		var r = (num >> 16) + amt;
 
 		if (r > 255) r = 255;
-		else if  (r < 0) r = 0;
+		else if (r < 0) r = 0;
 
 		var b = ((num >> 8) & 0x00FF) + amt;
 
 		if (b > 255) b = 255;
-		else if  (b < 0) b = 0;
+		else if (b < 0) b = 0;
 
 		var g = (num & 0x0000FF) + amt;
 
@@ -291,7 +291,7 @@ define('admin/general/dashboard', ['semver', 'Chart', 'translator'], function (s
 
 			$('[data-action="updateGraph"]').on('click', function () {
 				var until;
-				switch($(this).attr('data-until')) {
+				switch ($(this).attr('data-until')) {
 					case 'last-month':
 						var lastMonth = new Date();
 						lastMonth.setDate(lastMonth.getDate() - 30);

@@ -26,7 +26,7 @@ module.exports = function (SocketUser) {
 				user.isAdminOrGlobalModOrSelf(socket.uid, data.uid, next);
 			},
 			function (next) {
-				switch(type) {
+				switch (type) {
 					case 'default':
 						next(null, '');
 						break;

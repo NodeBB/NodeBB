@@ -120,7 +120,7 @@ function compile(callback) {
 			var matches = null;
 			var regex = /[ \t]*<!-- IMPORT ([\s\S]*?)? -->[ \t]*/;
 
-			while((matches = file.match(regex)) !== null) {
+			while ((matches = file.match(regex)) !== null) {
 				var partial = "/" + matches[1];
 
 				if (paths[partial] && relativePath !== partial) {

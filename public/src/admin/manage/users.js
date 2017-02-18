@@ -301,7 +301,7 @@ define('admin/manage/users', ['translator'], function (translator) {
 			};
 
 			socket.emit('admin.user.createUser', user, function (err) {
-				if(err) {
+				if (err) {
 					return errorEl.translateHtml('[[admin/manage/users:alerts.error-x, ' + err.message + ']]').removeClass('hide');
 				}
 
@@ -322,7 +322,7 @@ define('admin/manage/users', ['translator'], function (translator) {
 			}
 
 			var $this = $(this);
-			var type =  $this.attr('data-search-type');
+			var type = $this.attr('data-search-type');
 
 			timeoutId = setTimeout(function () {
 				$('.fa-spinner').removeClass('hidden');

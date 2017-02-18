@@ -153,7 +153,7 @@ function completeConfigSetup(config, next) {
 	// Add CI object
 	if (install.ciVals) {
 		config.test_database = {};
-		for(var prop in install.ciVals) {
+		for (var prop in install.ciVals) {
 			if (install.ciVals.hasOwnProperty(prop)) {
 				config.test_database[prop] = install.ciVals[prop];
 			}

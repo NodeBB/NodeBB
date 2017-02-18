@@ -30,7 +30,7 @@ module.exports = function (Posts) {
 			function (deleted, next) {
 				if (parseInt(deleted, 10) === 1 && isDelete) {
 					return next(new Error('[[error:post-already-deleted]]'));
-				} else if(parseInt(deleted, 10) !== 1 && !isDelete) {
+				} else if (parseInt(deleted, 10) !== 1 && !isDelete) {
 					return next(new Error('[[error:post-already-restored]]'));
 				}
 

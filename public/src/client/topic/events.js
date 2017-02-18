@@ -48,7 +48,7 @@ define('forum/topic/events', [
 
 	Events.init = function () {
 		Events.removeListeners();
-		for(var eventName in events) {
+		for (var eventName in events) {
 			if (events.hasOwnProperty(eventName)) {
 				socket.on(eventName, events[eventName]);
 			}
@@ -56,7 +56,7 @@ define('forum/topic/events', [
 	};
 
 	Events.removeListeners = function () {
-		for(var eventName in events) {
+		for (var eventName in events) {
 			if (events.hasOwnProperty(eventName)) {
 				socket.removeListener(eventName, events[eventName]);
 			}

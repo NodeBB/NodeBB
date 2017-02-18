@@ -78,7 +78,7 @@ module.exports = function (Meta) {
 			'theme:src': '',
 		};
 
-		switch(data.type) {
+		switch (data.type) {
 		case 'local':
 			async.waterfall([
 				async.apply(Meta.configs.get, 'theme:id'),

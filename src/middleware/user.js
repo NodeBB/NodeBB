@@ -1,7 +1,7 @@
 'use strict';
 
 var async = require('async');
-var nconf =  require('nconf');
+var nconf = require('nconf');
 
 var meta = require('../meta');
 var user = require('../user');

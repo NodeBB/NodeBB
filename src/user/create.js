@@ -18,7 +18,7 @@ module.exports = function (User) {
 		}
 
 		User.isDataValid(data, function (err) {
-			if (err)  {
+			if (err) {
 				return callback(err);
 			}
 			var timestamp = data.timestamp || Date.now();

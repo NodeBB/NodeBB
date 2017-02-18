@@ -31,7 +31,7 @@ module.exports = function (Meta) {
 
 				try {
 					pkgData = JSON.parse(pkgData);
-				} catch(e) {
+				} catch (e) {
 					process.stdout.write('[' + 'missing'.red + '] ' + module.bold + ' is a required dependency but could not be found\n');
 					depsMissing = true;
 					return next(true);

@@ -83,7 +83,7 @@ exports.buildTargets = function (targets, callback) {
 		function (next) {
 			async.eachSeries(targets, function (target, next) {
 				var startTime;
-				switch(target) {
+				switch (target) {
 					case 'js':
 						setImmediate(next);
 						break;

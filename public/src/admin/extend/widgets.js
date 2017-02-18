@@ -93,13 +93,13 @@ define('admin/extend/widgets', ['jqueryui'], function (jqueryui) {
 						if (data.hasOwnProperty(d)) {
 							if (data[d].name) {
 								if (widgetData[data[d].name]) {
-									if(!Array.isArray(widgetData[data[d].name])) {
+									if (!Array.isArray(widgetData[data[d].name])) {
 										widgetData[data[d].name] = [
 											widgetData[data[d].name],
 										];
 									}
 									widgetData[data[d].name].push(data[d].value);
-								}else{
+								} else {
 									widgetData[data[d].name] = data[d].value;
 								}
 							}
@@ -209,7 +209,7 @@ define('admin/extend/widgets', ['jqueryui'], function (jqueryui) {
 		$.get(RELATIVE_PATH + '/api/admin/extend/widgets', function (data) {
 			var areas = data.areas;
 
-			for(var i = 0; i < areas.length; i += 1) {
+			for (var i = 0; i < areas.length; i += 1) {
 				var area = areas[i];
 				var widgetArea = $('#widgets .area[data-template="' + area.template + '"][data-location="' + area.location + '"]').find('.widget-area');
 

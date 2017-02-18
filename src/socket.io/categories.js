@@ -44,7 +44,7 @@ SocketCategories.getWatchedCategories = function (socket, data, callback) {
 		if (err) {
 			return callback(err);
 		}
-		var watchedCategories =  results.categories.filter(function (category) {
+		var watchedCategories = results.categories.filter(function (category) {
 			return category && results.ignoredCids.indexOf(category.cid.toString()) === -1;
 		});
 

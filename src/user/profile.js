@@ -170,7 +170,7 @@ module.exports = function (User) {
 						db.sortedSetAdd('email:uid', uid, newEmail.toLowerCase(), next);
 					},
 					function (next) {
-						db.sortedSetAdd('email:sorted',  0, newEmail.toLowerCase() + ':' + uid, next);
+						db.sortedSetAdd('email:sorted', 0, newEmail.toLowerCase() + ':' + uid, next);
 					},
 					function (next) {
 						db.sortedSetAdd('user:' + uid + ':emails', Date.now(), newEmail + ':' + Date.now(), next);

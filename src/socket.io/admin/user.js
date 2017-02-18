@@ -13,7 +13,7 @@ var plugins = require('../../plugins');
 var User = {};
 
 User.makeAdmins = function (socket, uids, callback) {
-	if(!Array.isArray(uids)) {
+	if (!Array.isArray(uids)) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
 
@@ -22,7 +22,7 @@ User.makeAdmins = function (socket, uids, callback) {
 			return callback(err);
 		}
 
-		for(var i = 0; i < userData.length; i += 1) {
+		for (var i = 0; i < userData.length; i += 1) {
 			if (userData[i] && parseInt(userData[i].banned, 10) === 1) {
 				return callback(new Error('[[error:cant-make-banned-users-admin]]'));
 			}
@@ -35,7 +35,7 @@ User.makeAdmins = function (socket, uids, callback) {
 };
 
 User.removeAdmins = function (socket, uids, callback) {
-	if(!Array.isArray(uids)) {
+	if (!Array.isArray(uids)) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
 

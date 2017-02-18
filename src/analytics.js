@@ -86,7 +86,7 @@ Analytics.writeData = function (callback) {
 	}
 
 	if (Object.keys(counters).length > 0) {
-		for(var key in counters) {
+		for (var key in counters) {
 			if (counters.hasOwnProperty(key)) {
 				dbQueue.push(async.apply(db.sortedSetIncrBy, 'analytics:' + key, counters[key], today.getTime()));
 				delete counters[key];

@@ -10,9 +10,9 @@ if ('undefined' !== typeof window) {
 			$.fn.getCursorPosition = function () {
 				var el = $(this).get(0);
 				var pos = 0;
-				if('selectionStart' in el) {
+				if ('selectionStart' in el) {
 					pos = el.selectionStart;
-				} else if('selection' in document) {
+				} else if ('selection' in document) {
 					el.focus();
 					var Sel = document.selection.createRange();
 					var SelLength = document.selection.createRange().text.length;
@@ -23,7 +23,7 @@ if ('undefined' !== typeof window) {
 			};
 
 			$.fn.selectRange = function (start, end) {
-				if(!end) {
+				if (!end) {
 					end = start;
 				}
 				return this.each(function () {
@@ -95,7 +95,7 @@ if ('undefined' !== typeof window) {
 			return el.namespace === 'bs.data-api.dropdown' && el.selector === undefined;
 		});
 
-		if(_clearMenus.length) {
+		if (_clearMenus.length) {
 			_clearMenus = _clearMenus[0].handler;
 		}
 

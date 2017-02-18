@@ -107,7 +107,7 @@ helpers.isUsersAllowedTo = function (privilege, uids, cid, callback) {
 		}
 
 		var result = [];
-		for(var i = 0; i < uids.length; i += 1) {
+		for (var i = 0; i < uids.length; i += 1) {
 			result.push(results.hasUserPrivilege[i] || results.hasGroupPrivilege[i]);
 		}
 

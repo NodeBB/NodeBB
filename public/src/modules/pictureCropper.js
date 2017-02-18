@@ -114,8 +114,8 @@ define('pictureCropper', ['translator', 'cropper'], function (translator, croppe
 			return showAlert('error', '[[uploads:select-file-to-upload]]');
 		}
 
-		var file    = fileInput[0].files[0];
-		var reader  = new FileReader();
+		var file = fileInput[0].files[0];
+		var reader = new FileReader();
 		var imageUrl;
 		var imageType = file.type;
 

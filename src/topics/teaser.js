@@ -30,7 +30,7 @@ module.exports = function (Topics) {
 					delete topic.teaserPid;
 				}
 
-				switch(meta.config.teaserPost) {
+				switch (meta.config.teaserPost) {
 					case 'first':
 						teaserPids.push(topic.mainPid);
 						break;

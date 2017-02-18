@@ -460,7 +460,7 @@ var utils = require('../public/src/utils');
 					return notifications;
 				}
 
-				switch(mergeId) {
+				switch (mergeId) {
 					// intentional fall-through
 					case 'notifications:upvoted_your_post_in':
 					case 'notifications:user_started_following_you':

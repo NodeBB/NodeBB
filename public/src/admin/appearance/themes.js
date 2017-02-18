@@ -64,7 +64,7 @@ define('admin/appearance/themes', ['translator'], function (translator) {
 		});
 
 		socket.emit('admin.themes.getInstalled', function (err, themes) {
-			if(err) {
+			if (err) {
 				return app.alertError(err.message);
 			}
 

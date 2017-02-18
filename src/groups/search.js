@@ -38,7 +38,7 @@ module.exports = function (Groups) {
 	};
 
 	Groups.sort = function (strategy, groups, next) {
-		switch(strategy) {
+		switch (strategy) {
 			case 'count':
 				groups = groups.sort(function (a, b) {
 					return a.slug > b.slug;
@@ -77,7 +77,7 @@ module.exports = function (Groups) {
 				},
 				function (users, next) {
 					var uids = [];
-					for(var i = 0; i < users.length; i += 1) {
+					for (var i = 0; i < users.length; i += 1) {
 						var field = users[i][searchBy];
 						if (field.toLowerCase().startsWith(query)) {
 							uids.push(users[i].uid);
