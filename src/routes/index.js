@@ -132,7 +132,7 @@ module.exports = function (app, middleware, hotswapIds) {
 	userRoutes(router, middleware, controllers);
 	groupRoutes(router, middleware, controllers);
 
-	for (var x = 0; x < routers.length; x += 1) {
+	for (x = 0; x < routers.length; x += 1) {
 		app.use(relativePath, routers[x]);
 	}
 

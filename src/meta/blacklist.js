@@ -99,18 +99,18 @@ Blacklist.validate = function (rules, callback) {
 		if (ip.isV4Format(rule)) {
 			ipv4.push(rule);
 			return true;
-		} else if (ip.isV6Format(rule)) {
+		}
+		if (ip.isV6Format(rule)) {
 			ipv6.push(rule);
 			return true;
-		} else if (isCidrSubnet.test(rule)) {
+		}
+		if (isCidrSubnet.test(rule)) {
 			cidr.push(rule);
 			return true;
-		} else {
-			invalid.push(rule);
-			return false;
 		}
 
-		return true;
+		invalid.push(rule);
+		return false;
 	});
 
 	callback(null, {
