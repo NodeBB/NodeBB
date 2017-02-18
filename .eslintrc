@@ -47,6 +47,7 @@
 		"vars-on-top": "off",
 		"no-restricted-syntax": "off",
 		"no-shadow": "off",
+		// "no-script-url": "off",
 
 		// "linebreak-style": "off",
 		// "one-var": "off",
@@ -90,8 +91,7 @@
 		"no-extend-native": "off",
 		"no-shadow-restricted-names": "off",
 		"no-extra-boolean-cast": "off",
-		"no-script-url": "off",
-		"no-path-concat": "off",
+		// "no-path-concat": "off",
 		// "no-unused-expressions": "off",
 		// "no-return-assign": "off",
 		// "no-restricted-modules": "off",

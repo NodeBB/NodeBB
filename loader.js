@@ -11,11 +11,12 @@ var file = require('./src/file');
 var pkg = require('./package.json');
 
 nconf.argv().env().file({
-	file: path.join(__dirname, '/config.json'),
+	file: path.join(__dirname, 'config.json'),
 });
 
-var	pidFilePath = __dirname + '/pidfile';
-var output = logrotate({ file: __dirname + '/logs/output.log', size: '1m', keep: 3, compress: true });
+var	pidFilePath = path.join(__dirname, 'pidfile');
+var outputLogFilePath = path.join(__dirname, 'logs/output.log');
+var output = logrotate({ file: outputLogFilePath, size: '1m', keep: 3, compress: true });
 var silent = nconf.get('silent') === 'false' ? false : nconf.get('silent') !== false;
 var numProcs;
 var workers = [];
@@ -126,7 +127,7 @@ function forkWorker(index, isPrimary) {
 	Loader.addWorkerEvents(worker);
 
 	if (silent) {
-		var output = logrotate({ file: __dirname + '/logs/output.log', size: '1m', keep: 3, compress: true });
+		var output = logrotate({ file: outputLogFilePath, size: '1m', keep: 3, compress: true });
 		worker.stdout.pipe(output);
 		worker.stderr.pipe(output);
 	}
@@ -181,7 +182,7 @@ Loader.stop = function () {
 	killWorkers();
 
 	// Clean up the pidfile
-	fs.unlinkSync(__dirname + '/pidfile');
+	fs.unlinkSync(pidFilePath);
 };
 
 function killWorkers() {
@@ -222,7 +223,7 @@ fs.open(path.join(__dirname, 'config.json'), 'r', function (err) {
 				stderr: process.stderr,
 			});
 
-			fs.writeFile(__dirname + '/pidfile', process.pid);
+			fs.writeFile(pidFilePath, process.pid);
 		}
 
 		async.series([
