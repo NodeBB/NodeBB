@@ -228,14 +228,13 @@ define('forum/category', [
 				if (numTopics > 0) {
 					for (var x = 0; x < numTopics; x++) {
 						var pinned = $(topics[x]).hasClass('pinned');
-						if (pinned) {
-							if(x === numTopics - 1) {
-								topic.insertAfter(topics[x]);
-							}
-							continue;
+						if (!pinned) {
+							topic.insertBefore(topics[x]);
+							break;
 						}
-						topic.insertBefore(topics[x]);
-						break;
+						if(x === numTopics - 1) {
+							topic.insertAfter(topics[x]);
+						}
 					}
 				} else {
 					container.append(topic);

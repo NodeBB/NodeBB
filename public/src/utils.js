@@ -447,33 +447,28 @@
 		},
 	};
 
-	if (typeof String.prototype.startsWith != 'function') {
+	if (typeof String.prototype.startsWith !== 'function') {
 		String.prototype.startsWith = function (prefix) {
 			if (this.length < prefix.length) {
 				return false;
 			}
-			for (var i = prefix.length - 1; (i >= 0) && (this[i] === prefix[i]); --i) {
-				continue;
-			}
-			return i < 0;
+			return this.slice(0, prefix.length) === prefix;
 		};
 	}
 
-	if (typeof String.prototype.endsWith != 'function') {
+	if (typeof String.prototype.endsWith !== 'function') {
 		String.prototype.endsWith = function (suffix) {
 			if (this.length < suffix.length) {
 				return false;
 			}
-			var len = this.length;
-			var suffixLen = suffix.length;
-			for (var i = 1; (i <= suffixLen && this[len - i] === suffix[suffixLen - i]); ++i) {
-				continue;
+			if (suffix.length === 0) {
+				return true;
 			}
-			return i > suffixLen;
+			return this.slice(-suffix.length) === suffix;
 		};
 	}
 
-	if (typeof String.prototype.rtrim != 'function') {
+	if (typeof String.prototype.rtrim !== 'function') {
 		String.prototype.rtrim = function () {
 			return this.replace(/\s+$/g, '');
 		};
