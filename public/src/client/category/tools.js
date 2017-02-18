@@ -3,9 +3,9 @@
 
 
 define('forum/category/tools', [
-	'forum/topic/move', 
-	'topicSelect', 
-	'components', 
+	'forum/topic/move',
+	'topicSelect',
+	'components',
 	'translator',
 ], function (move, topicSelect, components, translator) {
 

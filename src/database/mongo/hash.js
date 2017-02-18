@@ -216,7 +216,7 @@ module.exports = function (db, module) {
 			data[field] = '';
 		});
 
-		db.collection('objects').update({_key: key}, {$unset : data}, function (err) {
+		db.collection('objects').update({_key: key}, {$unset: data}, function (err) {
 			callback(err);
 		});
 	};

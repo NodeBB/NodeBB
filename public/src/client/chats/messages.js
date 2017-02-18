@@ -25,7 +25,7 @@ define('forum/chats/messages', ['components', 'sounds', 'translator'], function 
 			message: msg,
 			mid: mid,
 		});
-		
+
 		if (!mid) {
 			socket.emit('modules.chats.send', {
 				roomId: roomId,

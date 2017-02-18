@@ -276,7 +276,7 @@ var meta = require('./meta');
 			callback();
 		});
 	};
-	
+
 	User.isAdminOrGlobalModOrSelf = function (callerUid, uid, callback) {
 		if (parseInt(callerUid, 10) === parseInt(uid, 10)) {
 			return callback();

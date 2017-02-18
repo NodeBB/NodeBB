@@ -19,7 +19,7 @@ module.exports = function (Topics) {
 
 	Topics.getRecentTopics = function (cid, uid, start, stop, filter, callback) {
 		var recentTopics = {
-			nextStart : 0,
+			nextStart: 0,
 			topics: [],
 		};
 

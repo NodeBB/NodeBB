@@ -173,7 +173,7 @@ describe('Translator.create()', function () {
 describe('Translator modules', function () {
 	it('should work before registered', function () {
 		var translator = Translator.create();
-		
+
 		Translator.registerModule('test-custom-integer-format', function (lang) {
 			return function (key, args) {
 				var num = parseInt(args[0], 10) || 0;

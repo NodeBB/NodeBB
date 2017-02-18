@@ -23,7 +23,7 @@ define('admin/general/dashboard', ['semver', 'Chart', 'translator'], function (s
 		graphInterval: 15000,
 		realtimeInterval: 1500,
 	};
-	
+
 	$(window).on('action:ajaxify.start', function (ev, data) {
 		clearInterval(intervals.rooms);
 		clearInterval(intervals.graphs);
@@ -229,7 +229,7 @@ define('admin/general/dashboard', ['semver', 'Chart', 'translator'], function (s
 					},
 				},
 			});
-			
+
 			graphs.registered = new Chart(registeredCtx, {
 				type: 'doughnut',
 				data: {
@@ -265,7 +265,7 @@ define('admin/general/dashboard', ['semver', 'Chart', 'translator'], function (s
 					},
 				},
 			});
- 			
+
 			graphs.topics = new Chart(topicsCtx, {
 				type: 'doughnut',
 				data: {
@@ -371,7 +371,7 @@ define('admin/general/dashboard', ['semver', 'Chart', 'translator'], function (s
 
 		graphs.presence.update();
 	}
-	
+
 	function updateTopicsGraph(topics) {
 		if (!Object.keys(topics).length) {
 			topics = {0: {
@@ -381,26 +381,26 @@ define('admin/general/dashboard', ['semver', 'Chart', 'translator'], function (s
 		}
 
 		var tids = Object.keys(topics);
-		
+
 		graphs.topics.data.labels = [];
 		graphs.topics.data.datasets[0].data = [];
 		graphs.topics.data.datasets[0].backgroundColor = [];
 		graphs.topics.data.datasets[0].hoverBackgroundColor = [];
-		
+
 		for (var i = 0, ii = tids.length; i < ii; i += 1) {
 			graphs.topics.data.labels.push(topics[tids[i]].title);
 			graphs.topics.data.datasets[0].data.push(topics[tids[i]].value);
 			graphs.topics.data.datasets[0].backgroundColor.push(topicColors[i]);
 			graphs.topics.data.datasets[0].hoverBackgroundColor.push(lighten(topicColors[i], 10));
 		}
- 		
+
 		function buildTopicsLegend() {
 			var legend = $('#topics-legend').html('');
 
 			for (var i = 0, ii = tids.length; i < ii; i += 1) {
 				var topic = topics[tids[i]];
 				var	label = topic.value === '0' ? topic.title : '<a title="' + topic.title + '"href="' + RELATIVE_PATH + '/topic/' + tids[i] + '" target="_blank"> ' + topic.title + '</a>';
-			
+
 				legend.append(
 					'<li>' +
 					'<div style="background-color: ' + topicColors[i] + ';"></div>' +

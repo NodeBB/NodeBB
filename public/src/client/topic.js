@@ -155,10 +155,10 @@ define('forum/topic', [
 				message: '[[topic:bookmark_instructions]]',
 				timeout: 0,
 				type: 'info',
-				clickfn : function () {
+				clickfn: function () {
 					navigator.scrollToPost(parseInt(bookmark - 1, 10), true);
 				},
-				closefn : function () {
+				closefn: function () {
 					localStorage.removeItem('topic:' + tid + ':bookmark');
 				},
 			});

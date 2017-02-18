@@ -85,7 +85,7 @@ if ('undefined' !== typeof window) {
 				});
 			}
 		});
-	}(jQuery || {fn:{}}));
+	}(jQuery || {fn: {}}));
 
 	(function () {
 		// FIX FOR #1245 - https://github.com/NodeBB/NodeBB/issues/1245

@@ -115,7 +115,7 @@
 			} else {
 				var matches = url.match(/admin\/(.+?)\/(.+?)$/);
 				mainTitle = '[[admin/menu:' + matches[1] + '/' + matches[2] + ']]';
-				pageTitle = '[[admin/menu:section-' + 
+				pageTitle = '[[admin/menu:section-' +
 					(matches[1] === 'development' ? 'advanced' : matches[1]) +
 					']]' + (matches[2] ? (' > ' + mainTitle) : '');
 				if (matches[2] === 'settings') {
@@ -176,18 +176,18 @@
 
 	function configureSlidemenu() {
 		var env = utils.findBootstrapEnvironment();
-		
+
 		var slideout = new Slideout({
 			panel: document.getElementById('panel'),
 			menu: document.getElementById('menu'),
 			padding: 256,
 			tolerance: 70,
 		});
-		
+
 		if (env === 'md' || env === 'lg') {
 			slideout.disableTouch();
 		}
-		
+
 		$('#mobile-menu').on('click', function () {
 			slideout.toggle();
 		});
@@ -198,14 +198,14 @@
 
 		$(window).on('resize', function () {
 			slideout.close();
-			
+
 			env = utils.findBootstrapEnvironment();
-			
+
 			if (env === 'md' || env === 'lg') {
 				slideout.disableTouch();
 				$('#header').css({
 					position: 'relative',
-				});	
+				});
 			} else {
 				slideout.enableTouch();
 				$('#header').css({
@@ -222,7 +222,7 @@
 		}
 
 		slideout.on('open', onOpeningMenu);
-		
+
 		slideout.on('close', function () {
 			$('#header').css({
 				top: '0px',

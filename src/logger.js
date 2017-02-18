@@ -17,13 +17,13 @@ var opts = {
 	/*
 	 * state used by Logger
 	 */
-	express : {
-		app : {},
-		set : 0,
-		ofn : null,
+	express: {
+		app: {},
+		set: 0,
+		ofn: null,
 	},
-	streams : {
-		log : { f : process.stdout },
+	streams: {
+		log: { f: process.stdout },
 	},
 };
 
@@ -124,7 +124,7 @@ var opts = {
 		/*
 		 * Always initialize "ofn" (original function) with the original logger function
 		 */
-		opts.express.ofn = morgan('combined', {stream : opts.streams.log.f});
+		opts.express.ofn = morgan('combined', {stream: opts.streams.log.f});
 	};
 
 	Logger.expressLogger = function (req,res,next) {

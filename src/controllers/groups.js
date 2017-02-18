@@ -90,7 +90,7 @@ groupsController.details = function (req, res, callback) {
 				posts: function (next) {
 					groups.getLatestMemberPosts(groupName, 10, req.uid, next);
 				},
-				isAdmin:function (next) {
+				isAdmin: function (next) {
 					user.isAdministrator(req.uid, next);
 				},
 				isGlobalMod: function (next) {

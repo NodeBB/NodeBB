@@ -120,7 +120,7 @@ function launch(req, res) {
 
 	async.parallel([
 		async.apply(fs.unlink(path.join(__dirname, '../public/installer.css'))),
-		async.apply(fs.unlink(path.join(__dirname, '../public/installer.min.js'))),	
+		async.apply(fs.unlink(path.join(__dirname, '../public/installer.min.js'))),
 	], function (err) {
 		if (err) {
 			winston.warn('Unable to remove installer files');

@@ -273,7 +273,7 @@ define('forum/groups/details', [
 				if (!confirm) {
 					return;
 				}
-						
+
 				socket.emit('groups.cover.remove', {
 					groupName: ajaxify.data.group.name,
 				}, function (err) {

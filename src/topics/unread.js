@@ -28,7 +28,7 @@ module.exports = function (Topics) {
 
 		var unreadTopics = {
 			showSelect: true,
-			nextStart : 0,
+			nextStart: 0,
 			topics: [],
 		};
 

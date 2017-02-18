@@ -89,7 +89,7 @@ define('admin/manage/tags', [
 			var title = tagsToModify.length > 1 ? '[[admin/manage/tags:alerts.editing-multiple]]' : '[[admin/manage/tags:alerts.editing-x, ' + firstTag.find('.tag-item').text() + ']]';
 
 			var modal = bootbox.dialog({
-				title:  title,
+				title: title,
 				message: firstTag.find('.tag-modal').html(),
 				buttons: {
 					success: {
@@ -155,8 +155,8 @@ define('admin/manage/tags', [
 	function save(tag) {
 		var data = {
 			tag: tag.attr('data-tag'),
-			bgColor : tag.find('[data-name="bgColor"]').val(),
-			color : tag.find('[data-name="color"]').val(),
+			bgColor: tag.find('[data-name="bgColor"]').val(),
+			color: tag.find('[data-name="color"]').val(),
 		};
 
 		socket.emit('admin.tags.update', data, function (err) {

@@ -37,7 +37,7 @@ module.exports = function (SocketUser) {
 			},
 		], callback);
 	};
-	
+
 	SocketUser.uploadCroppedPicture = function (socket, data, callback) {
 		if (!socket.uid) {
 			return callback(new Error('[[error:no-privileges]]'));

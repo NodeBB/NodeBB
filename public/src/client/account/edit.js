@@ -241,9 +241,9 @@ define('forum/account/edit', ['forum/account/header', 'translator', 'components'
 						if (!url) {
 							return;
 						}
-						
+
 						uploadModal.modal('hide');
-						
+
 						pictureCropper.handleImageCrop({
 							url: url,
 							socketMethod: 'user.uploadCroppedPicture',
@@ -251,7 +251,7 @@ define('forum/account/edit', ['forum/account/header', 'translator', 'components'
 							paramName: 'uid',
 							paramValue: ajaxify.data.theirid,
 						}, onUploadComplete);
-						
+
 						return false;
 					});
 				});

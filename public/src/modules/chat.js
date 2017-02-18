@@ -187,17 +187,17 @@ define('chat', [
 				});
 
 				chatModal.draggable({
-					start:function () {
+					start: function () {
 						module.bringModalToTop(chatModal);
 					},
-					stop:function () {
+					stop: function () {
 						chatModal.find('#chat-message-input').focus();
 					},
 					distance: 10,
 					handle: '.modal-header',
 				});
 			});
-			
+
 			scrollStop.apply(chatModal.find('[component="chat/messages"]'));
 
 			chatModal.find('#chat-close-btn').on('click', function () {

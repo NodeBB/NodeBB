@@ -21,7 +21,7 @@ define('admin/general/navigation', ['translator', 'iconSelect', 'jqueryui'], fun
 					stop: drop,
 				});
 		});
-		
+
 		$('#active-navigation').sortable().droppable({
 			accept: $('#available li .drag-item'),
 		});
@@ -81,7 +81,7 @@ define('admin/general/navigation', ['translator', 'iconSelect', 'jqueryui'], fun
 				li = $(translator.unescape(li));
 				$('#enabled').append(li);
 				componentHandler.upgradeDom();
-			});			
+			});
 		});
 	}
 

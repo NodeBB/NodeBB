@@ -161,7 +161,7 @@ describe('Hash methods', function () {
 	describe('getObjectsFields()', function () {
 		before(function (done) {
 			async.parallel([
-				async.apply(db.setObject, 'testObject8', {name: 'baris', age:99}),
+				async.apply(db.setObject, 'testObject8', {name: 'baris', age: 99}),
 				async.apply(db.setObject, 'testObject9', {name: 'ginger', age: 3}),
 			], done);
 		});

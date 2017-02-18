@@ -15,7 +15,7 @@ module.exports = function (db, module) {
 
 		value = helpers.valueToString(value);
 
-		db.collection('objects').update({_key: key, value: value}, {$set: {score: parseFloat(score)}}, {upsert:true, w: 1}, function (err) {
+		db.collection('objects').update({_key: key, value: value}, {$set: {score: parseFloat(score)}}, {upsert: true, w: 1}, function (err) {
 			if (err && err.message.startsWith('E11000 duplicate key error')) {
 				return process.nextTick(module.sortedSetAdd, key, score, value, callback);
 			}

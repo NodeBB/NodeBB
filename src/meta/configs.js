@@ -25,7 +25,7 @@ module.exports = function (Meta) {
 					if (err) {
 						return next(err);
 					}
-					
+
 					config['cache-buster'] = 'v=' + (buster || Date.now());
 
 					Meta.config = config;

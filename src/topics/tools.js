@@ -225,7 +225,7 @@ module.exports = function (Topics) {
 				var uniqueCids = _.unique(topicData.map(function (topicData) {
 					return topicData && parseInt(topicData.cid, 10);
 				}));
-				
+
 				if (uniqueCids.length > 1 || !uniqueCids.length || !uniqueCids[0]) {
 					return next(new Error('[[error:invalid-data]]'));
 				}
@@ -249,7 +249,7 @@ module.exports = function (Topics) {
 								setImmediate(next);
 							}
 						},
-					], next);					
+					], next);
 				}, next);
 			},
 		], callback);

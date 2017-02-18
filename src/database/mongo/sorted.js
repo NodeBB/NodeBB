@@ -157,7 +157,7 @@ module.exports = function (db, module) {
 			return callback();
 		}
 		var pipeline = [
-			{ $match : { _key : { $in: keys } } } ,
+			{ $match: { _key: { $in: keys } } } ,
 			{ $group: { _id: {_key: '$_key'}, count: { $sum: 1 } } },
 			{ $project: { _id: 1, count: '$count' } },
 		];
@@ -244,7 +244,7 @@ module.exports = function (db, module) {
 			return callback();
 		}
 		value = helpers.valueToString(value);
-		db.collection('objects').findOne({_key: key, value: value}, {fields:{_id: 0, score: 1}}, function (err, result) {
+		db.collection('objects').findOne({_key: key, value: value}, {fields: {_id: 0, score: 1}}, function (err, result) {
 			callback(err, result ? result.score : null);
 		});
 	};
@@ -254,7 +254,7 @@ module.exports = function (db, module) {
 			return callback();
 		}
 		value = helpers.valueToString(value);
-		db.collection('objects').find({_key:{$in:keys}, value: value}, {_id:0, _key:1, score: 1}).toArray(function (err, result) {
+		db.collection('objects').find({_key: {$in: keys}, value: value}, {_id: 0, _key: 1, score: 1}).toArray(function (err, result) {
 			if (err) {
 				return callback(err);
 			}

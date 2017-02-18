@@ -39,7 +39,7 @@ define('taskbar', function () {
 	taskbar.discard = function (module, uuid) {
 		var btnEl = taskbar.tasklist.find('[data-module="' + module + '"][data-uuid="' + uuid + '"]');
 		btnEl.remove();
-		
+
 		update();
 	};
 

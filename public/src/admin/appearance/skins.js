@@ -3,7 +3,7 @@
 
 define('admin/appearance/skins', ['translator'], function (translator) {
 	var Skins = {};
-	
+
 	Skins.init = function () {
 		// Populate skins from Bootswatch API
 		$.ajax({

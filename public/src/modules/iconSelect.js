@@ -16,7 +16,7 @@ define('iconSelect', function () {
 				$('#icons .fa-icons .fa.' + selected).addClass('selected');
 			} catch (err) {
 				selected = '';
-			}			
+			}
 		}
 
 		templates.parse('partials/fontawesome', {}, function (html) {

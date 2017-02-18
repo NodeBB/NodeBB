@@ -155,7 +155,7 @@ describe('User', function () {
 
 		it('should not error if a non-newbie user posts if the last post time is 10 < 30 seconds', function (done) {
 			User.setUserFields(testUid, {
-				lastposttime:  +new Date() - (20 * 1000),
+				lastposttime: +new Date() - (20 * 1000),
 				reputation: 10,
 			}, function () {
 				Topics.post({
@@ -508,7 +508,7 @@ describe('User', function () {
 				done();
 			});
 		});
-		
+
 		it('should return error if profile image uploads disabled', function (done) {
 			meta.config.allowProfileImageUploads = 0;
 			var path = require('path');
@@ -522,7 +522,7 @@ describe('User', function () {
 				done();
 			});
 		});
-		
+
 		it('should return error if profile image is too big', function (done) {
 			meta.config.allowProfileImageUploads = 1;
 			var path = require('path');
@@ -536,7 +536,7 @@ describe('User', function () {
 				done();
 			});
 		});
-		
+
 		it('should return error if profile image file has no extension', function (done) {
 			var path = require('path');
 			var picture = {
@@ -549,7 +549,7 @@ describe('User', function () {
 				done();
 			});
 		});
-		
+
 		it('should return error if no plugins listening for filter:uploadImage when uploading from url', function (done) {
 			var url = nconf.get('url') + '/logo.png';
 			User.uploadFromUrl(uid, url, function (err, uploadedPicture) {
@@ -557,51 +557,51 @@ describe('User', function () {
 				done();
 			});
 		});
-		
+
 		it('should return error if the extension is invalid when uploading from url', function (done) {
 			var url = nconf.get('url') + '/favicon.ico';
-			
+
 			function filterMethod(data, callback) {
 				data.foo += 5;
 				callback(null, data);
 			}
 
 			plugins.registerHook('test-plugin', {hook: 'filter:uploadImage', method: filterMethod});
-		
+
 			User.uploadFromUrl(uid, url, function (err, uploadedPicture) {
 				assert.equal(err.message, '[[error:invalid-image-extension]]');
 				done();
 			});
 		});
-		
+
 		it('should return error if the file is too big when uploading from url', function (done) {
 			var url = nconf.get('url') + '/logo.png';
 			meta.config.maximumProfileImageSize = 1;
-			
+
 			function filterMethod(data, callback) {
 				data.foo += 5;
 				callback(null, data);
 			}
 
 			plugins.registerHook('test-plugin', {hook: 'filter:uploadImage', method: filterMethod});
-		
+
 			User.uploadFromUrl(uid, url, function (err, uploadedPicture) {
 				assert.equal(err.message, '[[error:file-too-big, ' + meta.config.maximumProfileImageSize + ']]');
 				done();
 			});
 		});
-		
+
 		it('should upload picture when uploading from url', function (done) {
 			var url = nconf.get('url') + '/logo.png';
 			meta.config.maximumProfileImageSize = '';
-			
+
 			function filterMethod(data, callback) {
 				data.foo += 5;
 				callback(null, {url: url});
 			}
 
 			plugins.registerHook('test-plugin', {hook: 'filter:uploadImage', method: filterMethod});
-		
+
 			User.uploadFromUrl(uid, url, function (err, uploadedPicture) {
 				assert.ifError(err);
 				assert.equal(uploadedPicture.url, url);

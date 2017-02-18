@@ -5,7 +5,7 @@
 
 (function (module) {
 	'use strict';
-	
+
 
 	var async = require('async');
 	var winston = require('winston');

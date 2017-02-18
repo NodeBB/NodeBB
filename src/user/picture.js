@@ -222,7 +222,7 @@ module.exports = function (User) {
 			}
 		});
 	};
-	
+
 	User.uploadCroppedPicture = function (data, callback) {
 		var keepAllVersions = parseInt(meta.config['profile:keepAllUserImages'], 10) === 1;
 		var url;
@@ -231,7 +231,7 @@ module.exports = function (User) {
 		if (!data.imageData) {
 			return callback(new Error('[[error:invalid-data]]'));
 		}
-		
+
 		async.waterfall([
 			function (next) {
 				var size = data.file ? data.file.size : data.imageData.length;

@@ -18,7 +18,7 @@ module.exports = function (db, module) {
 			}
 
 			if (exists) {
-				db.collection('objects').update({_key:key}, {$push: {array: {$each: [value], $position: 0}}}, {upsert:true, w:1 }, function (err, res) {
+				db.collection('objects').update({_key: key}, {$push: {array: {$each: [value], $position: 0}}}, {upsert: true, w: 1 }, function (err, res) {
 					callback(err);
 				});
 			} else {
@@ -33,7 +33,7 @@ module.exports = function (db, module) {
 			return callback();
 		}
 		value = helpers.valueToString(value);
-		db.collection('objects').update({ _key: key }, { $push: { array: value } }, {upsert:true, w:1}, function (err, res) {
+		db.collection('objects').update({ _key: key }, { $push: { array: value } }, {upsert: true, w: 1}, function (err, res) {
 			callback(err);
 		});
 	};
@@ -87,7 +87,7 @@ module.exports = function (db, module) {
 			return callback();
 		}
 
-		db.collection('objects').findOne({_key:key}, { array: 1}, function (err, data) {
+		db.collection('objects').findOne({_key: key}, { array: 1}, function (err, data) {
 			if(err || !(data && data.array)) {
 				return callback(err, []);
 			}

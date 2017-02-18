@@ -20,14 +20,14 @@ dashboardController.get = function (req, res, next) {
 				{
 					done: !meta.reloadRequired,
 					doneText: '[[admin/general/dashboard:restart-not-required]]',
-					notDoneText:'[[admin/general/dashboard:restart-required]]',
+					notDoneText: '[[admin/general/dashboard:restart-required]]',
 				},
 				{
 					done: plugins.hasListeners('filter:search.query'),
 					doneText: '[[admin/general/dashboard:search-plugin-installed]]',
-					notDoneText:'[[admin/general/dashboard:search-plugin-not-installed]]',
+					notDoneText: '[[admin/general/dashboard:search-plugin-not-installed]]',
 					tooltip: '[[admin/general/dashboard:search-plugin-tooltip]]',
-					link:'/admin/extend/plugins',
+					link: '/admin/extend/plugins',
 				},
 			];
 			plugins.fireHook('filter:admin.notices', notices, next);

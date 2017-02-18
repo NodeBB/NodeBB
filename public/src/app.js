@@ -223,7 +223,7 @@ app.cacheBuster = null;
 	app.createStatusTooltips = function () {
 		if (!utils.isTouchDevice()) {
 			$('body').tooltip({
-				selector:'.fa-circle.status',
+				selector: '.fa-circle.status',
 				placement: 'top',
 			});
 		}
@@ -481,7 +481,7 @@ app.cacheBuster = null;
 		searchButton.on('click', function (e) {
 			if (!config.loggedIn && !config.allowGuestSearching) {
 				app.alert({
-					message:'[[error:search-requires-login]]',
+					message: '[[error:search-requires-login]]',
 					timeout: 3000,
 				});
 				ajaxify.go('login');

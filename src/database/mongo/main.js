@@ -76,7 +76,7 @@ module.exports = function (db, module) {
 
 	module.rename = function (oldKey, newKey, callback) {
 		callback = callback || helpers.noop;
-		db.collection('objects').update({_key: oldKey}, {$set:{_key: newKey}}, {multi: true}, function (err, res) {
+		db.collection('objects').update({_key: oldKey}, {$set: {_key: newKey}}, {multi: true}, function (err, res) {
 			callback(err);
 		});
 	};

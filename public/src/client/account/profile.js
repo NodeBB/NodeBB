@@ -21,10 +21,10 @@ define('forum/account/profile', [
 
 		socket.removeListener('event:user_status_change', onUserStatusChange);
 		socket.on('event:user_status_change', onUserStatusChange);
-		
+
 		if (!config.usePagination) {
-			infinitescroll.init(loadMorePosts);	
-		}		
+			infinitescroll.init(loadMorePosts);
+		}
 	};
 
 	function processPage() {

@@ -19,7 +19,7 @@ module.exports = function (grunt) {
 		var fromFile = '';
 		var compiling = '';
 		var time = Date.now();
-		
+
 		if (target === 'lessUpdated_Client') {
 			compiling = 'clientCSS';
 		} else if (target === 'lessUpdated_Admin') {
@@ -137,7 +137,7 @@ module.exports = function (grunt) {
 	} else {
 		grunt.registerTask('default', ['watch']);
 	}
-	
+
 
 	env.NODE_ENV = 'development';
 

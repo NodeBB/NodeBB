@@ -133,7 +133,7 @@ define('admin/manage/flags', [
 	}
 
 	function updateFlagDetails(source) {
-		// As the flag details are returned in the API, 
+		// As the flag details are returned in the API,
 		// update the form controls to show the correct data
 
 		// Create reference hash for use in this method

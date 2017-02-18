@@ -1,6 +1,6 @@
 (function (exports) {
 	"use strict";
-	
+
 
 	// export the class if we are in a Node-like system.
 	if (typeof module === 'object' && module.exports === exports) {

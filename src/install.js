@@ -263,12 +263,12 @@ function createAdmin(callback) {
 			winston.warn("Passwords did not match, please try again");
 			return retryPassword(results);
 		}
-		
+
 		if (results.password.length < meta.config.minimumPasswordLength) {
 			winston.warn("Password too short, please try again");
 			return retryPassword(results);
 		}
-		
+
 		var adminUid;
 		async.waterfall([
 			function (next) {

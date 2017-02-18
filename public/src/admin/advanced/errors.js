@@ -71,7 +71,7 @@ define('admin/advanced/errors', ['Chart', 'translator'], function (Chart, transl
 
 		notFoundCanvas.width = $(notFoundCanvas).parent().width();
 		tooBusyCanvas.width = $(tooBusyCanvas).parent().width();
-		
+
 		new Chart(notFoundCanvas.getContext('2d'), {
 			type: 'line',
 			data: data['not-found'],
@@ -89,7 +89,7 @@ define('admin/advanced/errors', ['Chart', 'translator'], function (Chart, transl
 				},
 			},
 		});
-		
+
 		new Chart(tooBusyCanvas.getContext('2d'), {
 			type: 'line',
 			data: data.toobusy,

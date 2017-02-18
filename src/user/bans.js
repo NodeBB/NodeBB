@@ -75,7 +75,7 @@ module.exports = function (User) {
 				async.parallel([
 					async.apply(db.sortedSetRemove.bind(db), 'users:banned:expire', uid),
 					async.apply(db.sortedSetRemove.bind(db), 'users:banned', uid),
-					async.apply(User.setUserFields, uid, {banned:0, 'banned:expire': 0}),
+					async.apply(User.setUserFields, uid, {banned: 0, 'banned:expire': 0}),
 				], function (err) {
 					next(err, false);
 				});

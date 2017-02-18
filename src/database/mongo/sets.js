@@ -133,7 +133,7 @@ module.exports = function (db, module) {
 		}
 		value = helpers.valueToString(value);
 
-		db.collection('objects').find({_key: {$in : sets}, members: value}, {_id:0, members: 0}).toArray(function (err, result) {
+		db.collection('objects').find({_key: {$in: sets}, members: value}, {_id: 0, members: 0}).toArray(function (err, result) {
 			if (err) {
 				return callback(err);
 			}
@@ -205,7 +205,7 @@ module.exports = function (db, module) {
 
 	module.setRemoveRandom = function (key, callback) {
 		callback = callback || function () {};
-		db.collection('objects').findOne({_key:key}, function (err, data) {
+		db.collection('objects').findOne({_key: key}, function (err, data) {
 			if(err || !data) {
 				return callback(err);
 			}

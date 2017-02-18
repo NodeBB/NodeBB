@@ -82,7 +82,7 @@ function resetSettings(callback) {
 function resetTheme(themeId, callback) {
 	var meta = require('./meta');
 	var fs = require('fs');
-	
+
 	fs.access('node_modules/' + themeId + '/package.json', function (err, fd) {
 		if (err) {
 			winston.warn('[reset] Theme `%s` is not installed on this forum', themeId);
@@ -99,7 +99,7 @@ function resetTheme(themeId, callback) {
 				}
 
 				callback();
-			});		
+			});
 		}
 	});
 }

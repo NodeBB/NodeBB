@@ -87,7 +87,7 @@ define('admin/manage/category-analytics', ['Chart'], function (Chart) {
 		dailyCanvas.width = $(dailyCanvas).parent().width();
 		topicsCanvas.width = $(topicsCanvas).parent().width();
 		postsCanvas.width = $(postsCanvas).parent().width();
-		
+
 		new Chart(hourlyCanvas.getContext('2d'), {
 			type: 'line',
 			data: data['pageviews:hourly'],
@@ -106,7 +106,7 @@ define('admin/manage/category-analytics', ['Chart'], function (Chart) {
 				},
 			},
 		});
-		
+
 		new Chart(dailyCanvas.getContext('2d'), {
 			type: 'line',
 			data: data['pageviews:daily'],
@@ -125,7 +125,7 @@ define('admin/manage/category-analytics', ['Chart'], function (Chart) {
 				},
 			},
 		});
-		
+
 		new Chart(topicsCanvas.getContext('2d'), {
 			type: 'line',
 			data: data['topics:daily'],
@@ -144,7 +144,7 @@ define('admin/manage/category-analytics', ['Chart'], function (Chart) {
 				},
 			},
 		});
-		
+
 		new Chart(postsCanvas.getContext('2d'), {
 			type: 'line',
 			data: data['posts:daily'],

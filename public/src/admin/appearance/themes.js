@@ -39,7 +39,7 @@ define('admin/appearance/themes', ['translator'], function (translator) {
 				});
 			}
 		});
-		
+
 		$('#revert_theme').on('click', function () {
 			bootbox.confirm('[[admin/appearance/themes:revert-confirm]]', function (confirm) {
 				if (confirm) {
@@ -72,7 +72,7 @@ define('admin/appearance/themes', ['translator'], function (translator) {
 
 			if (!themes.length) {
 				instListEl.append($('<li/ >').addClass('no-themes').translateHtml('[[admin/appearance/themes:no-themes]]'));
-				
+
 			} else {
 				templates.parse('admin/partials/theme_list', {
 					themes: themes,

@@ -89,7 +89,7 @@ module.exports = function (Meta) {
 			},
 		},
 	};
-	
+
 	Meta.js.linkModules = function (callback) {
 		rimraf(path.join(__dirname, '../../build/public/src/modules'), function (err) {
 			if (err) {

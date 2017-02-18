@@ -137,7 +137,7 @@ function initDict(language, callback) {
 						title = '[[admin/menu:general/dashboard]]';
 					} else {
 						title = title.match(/admin\/(.+?)\/(.+?)$/);
-						title = '[[admin/menu:section-' + 
+						title = '[[admin/menu:section-' +
 							(title[1] === 'development' ? 'advanced' : title[1]) +
 							']]' + (title[2] ? (' > [[admin/menu:' +
 							title[1] + '/' + title[2] + ']]') : '');

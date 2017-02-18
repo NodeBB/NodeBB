@@ -154,7 +154,7 @@ module.exports = function (app, middleware, hotswapIds) {
 	if (path.resolve(__dirname, '../../public/uploads') !== nconf.get('upload_path')) {
 		statics.unshift({ route: '/assets/uploads', path: nconf.get('upload_path') });
 	}
-	
+
 	statics.forEach(function (obj) {
 		app.use(relativePath + obj.route, express.static(obj.path, staticOptions));
 	});
@@ -180,7 +180,7 @@ module.exports = function (app, middleware, hotswapIds) {
 	];
 	app.use(relativePath, function (req, res, next) {
 		if (deprecatedPaths.some(function (path) { return req.path.startsWith(path); })) {
-			winston.warn('[deprecated] Accessing `' + req.path.slice(1) + '` from `/` is deprecated. ' + 
+			winston.warn('[deprecated] Accessing `' + req.path.slice(1) + '` from `/` is deprecated. ' +
 				'Use `/assets' + req.path + '` to access this file.');
 			res.redirect(relativePath + '/assets' + req.path + '?' + meta.config['cache-buster']);
 		} else {

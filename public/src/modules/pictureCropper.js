@@ -57,18 +57,18 @@ define('pictureCropper', ['translator', 'cropper'], function (translator, croppe
 						cropperModal.find('.reset').on('click', function () {
 							cropperTool.reset();
 						});
-						
+
 						cropperModal.find('.crop-btn').on('click', function () {
 							$(this).addClass('disabled');
 							var imageData = data.imageType ? cropperTool.getCroppedCanvas().toDataURL(data.imageType) : cropperTool.getCroppedCanvas().toDataURL();
-							
+
 							cropperModal.find('#upload-progress-bar').css('width', '100%');
 							cropperModal.find('#upload-progress-box').show().removeClass('hide');
-							
+
 							var socketData = {};
 							socketData[data.paramName] = data.paramValue;
 							socketData.imageData = imageData;
-							
+
 							socket.emit(data.socketMethod, socketData, function (err, imageData) {
 							    if (err) {
 							        cropperModal.find('#upload-progress-box').hide();

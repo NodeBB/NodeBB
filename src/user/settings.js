@@ -120,7 +120,7 @@ module.exports = function (User) {
 			restrictChat: data.restrictChat,
 			topicSearchEnabled: data.topicSearchEnabled,
 			delayImageLoading: data.delayImageLoading,
-			homePageRoute : ((data.homePageRoute === 'custom' ? data.homePageCustom : data.homePageRoute) || '').replace(/^\//, ''),
+			homePageRoute: ((data.homePageRoute === 'custom' ? data.homePageCustom : data.homePageRoute) || '').replace(/^\//, ''),
 			scrollToMyPost: data.scrollToMyPost,
 			notificationSound: data.notificationSound,
 			incomingChatSound: data.incomingChatSound,

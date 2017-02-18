@@ -128,7 +128,7 @@ define('admin/modules/search', ['mousetrap'], function (mousetrap) {
 
 			menu.toggleClass('state-start-typing', len === 0);
 			menu.toggleClass('state-keep-typing', len > 0 && len < 3);
-			
+
 			if (len >= 3) {
 				menu.prepend(find(dict, value));
 
