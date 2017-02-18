@@ -76,7 +76,7 @@ profileController.get = function (req, res, callback) {
 			userData.hasPrivateChat = results.hasPrivateChat;
 			userData.aboutme = results.aboutme;
 			userData.nextStart = results.posts.nextStart;
-			userData.breadcrumbs = helpers.buildBreadcrumbs([{text: userData.username}]);
+			userData.breadcrumbs = helpers.buildBreadcrumbs([{ text: userData.username }]);
 			userData.title = userData.username;
 			var pageCount = Math.ceil(userData.postcount / itemsPerPage);
 			userData.pagination = pagination.create(page, pageCount, req.query);
@@ -127,7 +127,7 @@ profileController.get = function (req, res, callback) {
 				return group && group.name === userData.groupTitle;
 			});
 
-			plugins.fireHook('filter:user.account', {userData: userData, uid: req.uid}, next);
+			plugins.fireHook('filter:user.account', { userData: userData, uid: req.uid }, next);
 		},
 	], function (err, results) {
 		if (err) {

@@ -31,10 +31,10 @@ describe('Upload Controllers', function () {
 				}, next);
 			},
 			adminUid: function (next) {
-				user.create({username: 'admin', password: 'barbar'}, next);
+				user.create({ username: 'admin', password: 'barbar' }, next);
 			},
 			regularUid: function (next) {
-				user.create({username: 'regular', password: 'zugzug'}, next);
+				user.create({ username: 'regular', password: 'zugzug' }, next);
 			},
 		}, function (err, results) {
 			if (err) {
@@ -44,7 +44,7 @@ describe('Upload Controllers', function () {
 			regularUid = results.regularUid;
 			cid = results.category.cid;
 
-			topics.post({uid: adminUid, title: 'test topic title', content: 'test topic content', cid: results.category.cid}, function (err, result) {
+			topics.post({ uid: adminUid, title: 'test topic title', content: 'test topic content', cid: results.category.cid }, function (err, result) {
 				tid = result.topicData.tid;
 				pid = result.postData.pid;
 				done(err);
@@ -77,7 +77,7 @@ describe('Upload Controllers', function () {
 		});
 
 		it('should upload an image to a post', function (done) {
-			helpers.uploadFile(nconf.get('url') + '/api/post/upload', path.join(__dirname, '../public/logo.png'), {cid: cid}, jar, csrf_token, function (err, res, body) {
+			helpers.uploadFile(nconf.get('url') + '/api/post/upload', path.join(__dirname, '../public/logo.png'), { cid: cid }, jar, csrf_token, function (err, res, body) {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 200);
 				assert(Array.isArray(body));
@@ -90,7 +90,7 @@ describe('Upload Controllers', function () {
 
 		it('should upload a file to a post', function (done) {
 			meta.config.allowFileUploads = 1;
-			helpers.uploadFile(nconf.get('url') + '/api/post/upload', path.join(__dirname, '../public/503.html'), {cid: cid}, jar, csrf_token, function (err, res, body) {
+			helpers.uploadFile(nconf.get('url') + '/api/post/upload', path.join(__dirname, '../public/503.html'), { cid: cid }, jar, csrf_token, function (err, res, body) {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 200);
 				assert(Array.isArray(body));
@@ -126,7 +126,7 @@ describe('Upload Controllers', function () {
 		});
 
 		it('should upload category image', function (done) {
-			helpers.uploadFile(nconf.get('url') + '/api/admin/category/uploadpicture', path.join(__dirname, '../public/logo.png'), {params: JSON.stringify({cid: cid})}, jar, csrf_token, function (err, res, body) {
+			helpers.uploadFile(nconf.get('url') + '/api/admin/category/uploadpicture', path.join(__dirname, '../public/logo.png'), { params: JSON.stringify({ cid: cid }) }, jar, csrf_token, function (err, res, body) {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 200);
 				assert(Array.isArray(body));

@@ -125,7 +125,7 @@ topicsController.get = function (req, res, callback) {
 
 			topics.modifyPostsByPrivilege(topicData, userPrivileges);
 
-			plugins.fireHook('filter:controllers.topic.get', {topicData: topicData, uid: req.uid}, next);
+			plugins.fireHook('filter:controllers.topic.get', { topicData: topicData, uid: req.uid }, next);
 		},
 		function (data, next) {
 			var breadcrumbs = [
@@ -315,7 +315,7 @@ topicsController.teaser = function (req, res, next) {
 			if (!pid) {
 				return res.status(404).json('not-found');
 			}
-			posts.getPostSummaryByPids([pid], req.uid, {stripTags: false}, next);
+			posts.getPostSummaryByPids([pid], req.uid, { stripTags: false }, next);
 		},
 	], function (err, posts) {
 		if (err) {

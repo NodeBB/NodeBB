@@ -100,7 +100,7 @@ module.exports = function (Topics) {
 				Topics.getTopics(tids, uid, next);
 			},
 			function (topics, next) {
-				next(null, {topics: topics, nextStart: stop + 1});
+				next(null, { topics: topics, nextStart: stop + 1 });
 			},
 		], callback);
 	};
@@ -142,7 +142,7 @@ module.exports = function (Topics) {
 	Topics.updateRecent = function (tid, timestamp, callback) {
 		callback = callback || function () {};
 		if (plugins.hasListeners('filter:topics.updateRecent')) {
-			plugins.fireHook('filter:topics.updateRecent', {tid: tid, timestamp: timestamp}, function (err, data) {
+			plugins.fireHook('filter:topics.updateRecent', { tid: tid, timestamp: timestamp }, function (err, data) {
 				if (err) {
 					return callback(err);
 				}

@@ -41,7 +41,7 @@ module.exports = function (User) {
 		async.waterfall([
 			function (next) {
 				if (plugins.hasListeners('filter:uploadImage')) {
-					return plugins.fireHook('filter:uploadImage', {image: picture, uid: updateUid}, next);
+					return plugins.fireHook('filter:uploadImage', { image: picture, uid: updateUid }, next);
 				}
 
 				var filename = updateUid + '-profileimg' + (keepAllVersions ? '-' + Date.now() : '') + (convertToPNG ? '.png' : extension);
@@ -77,7 +77,7 @@ module.exports = function (User) {
 			},
 			function (_image, next) {
 				uploadedImage = _image;
-				User.setUserFields(updateUid, {uploadedpicture: uploadedImage.url, picture: uploadedImage.url}, next);
+				User.setUserFields(updateUid, { uploadedpicture: uploadedImage.url, picture: uploadedImage.url }, next);
 			},
 			function (next) {
 				next(null, uploadedImage);
@@ -107,12 +107,12 @@ module.exports = function (User) {
 				return callback(new Error('[[error:file-too-big, ' + uploadSize + ']]'));
 			}
 
-			var picture = {url: url, name: ''};
-			plugins.fireHook('filter:uploadImage', {image: picture, uid: uid}, function (err, image) {
+			var picture = { url: url, name: '' };
+			plugins.fireHook('filter:uploadImage', { image: picture, uid: uid }, function (err, image) {
 				if (err) {
 					return callback(err);
 				}
-				User.setUserFields(uid, {uploadedpicture: image.url, picture: image.url});
+				User.setUserFields(uid, { uploadedpicture: image.url, picture: image.url });
 				callback(null, image);
 			});
 		});
@@ -169,7 +169,7 @@ module.exports = function (User) {
 				};
 
 				if (plugins.hasListeners('filter:uploadImage')) {
-					return plugins.fireHook('filter:uploadImage', {image: image, uid: data.uid}, next);
+					return plugins.fireHook('filter:uploadImage', { image: image, uid: data.uid }, next);
 				}
 
 				var filename = data.uid + '-profilecover' + (keepAllVersions ? '-' + Date.now() : '');
@@ -213,10 +213,10 @@ module.exports = function (User) {
 
 			if (data.position) {
 				User.updateCoverPosition(data.uid, data.position, function (err) {
-					callback(err, {url: url});
+					callback(err, { url: url });
 				});
 			} else {
-				callback(err, {url: url});
+				callback(err, { url: url });
 			}
 		});
 	};
@@ -260,7 +260,7 @@ module.exports = function (User) {
 				};
 
 				if (plugins.hasListeners('filter:uploadImage')) {
-					return plugins.fireHook('filter:uploadImage', {image: image, uid: data.uid}, next);
+					return plugins.fireHook('filter:uploadImage', { image: image, uid: data.uid }, next);
 				}
 
 				var filename = data.uid + '-profileavatar' + (keepAllVersions ? '-' + Date.now() : '');
@@ -281,7 +281,7 @@ module.exports = function (User) {
 			},
 			function (uploadData, next) {
 				url = uploadData.url;
-				User.setUserFields(data.uid, {uploadedpicture: url, picture: url}, next);
+				User.setUserFields(data.uid, { uploadedpicture: url, picture: url }, next);
 			},
 			function (next) {
 				fs.unlink(data.file.path, function (err) {
@@ -296,7 +296,7 @@ module.exports = function (User) {
 				callback(err);	// send back the original error
 			}
 
-			callback(err, {url: url});
+			callback(err, { url: url });
 		});
 	};
 

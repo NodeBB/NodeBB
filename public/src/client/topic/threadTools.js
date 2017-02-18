@@ -31,22 +31,22 @@ define('forum/topic/threadTools', [
 		});
 
 		topicContainer.on('click', '[component="topic/lock"]', function () {
-			socket.emit('topics.lock', {tids: [tid], cid: ajaxify.data.cid});
+			socket.emit('topics.lock', { tids: [tid], cid: ajaxify.data.cid });
 			return false;
 		});
 
 		topicContainer.on('click', '[component="topic/unlock"]', function () {
-			socket.emit('topics.unlock', {tids: [tid], cid: ajaxify.data.cid});
+			socket.emit('topics.unlock', { tids: [tid], cid: ajaxify.data.cid });
 			return false;
 		});
 
 		topicContainer.on('click', '[component="topic/pin"]', function () {
-			socket.emit('topics.pin', {tids: [tid], cid: ajaxify.data.cid});
+			socket.emit('topics.pin', { tids: [tid], cid: ajaxify.data.cid });
 			return false;
 		});
 
 		topicContainer.on('click', '[component="topic/unpin"]', function () {
-			socket.emit('topics.unpin', {tids: [tid], cid: ajaxify.data.cid});
+			socket.emit('topics.unpin', { tids: [tid], cid: ajaxify.data.cid });
 			return false;
 		});
 
@@ -91,7 +91,7 @@ define('forum/topic/threadTools', [
 		});
 
 		function changeWatching(type) {
-			socket.emit('topics.changeWatching', {tid: tid, type: type}, function (err) {
+			socket.emit('topics.changeWatching', { tid: tid, type: type }, function (err) {
 				if (err) {
 					return app.alert({
 						type: 'danger',
@@ -118,7 +118,7 @@ define('forum/topic/threadTools', [
 					timeout: 5000,
 				});
 
-				$(window).trigger('action:topics.changeWatching', {tid: tid, type: type});
+				$(window).trigger('action:topics.changeWatching', { tid: tid, type: type });
 			});
 
 			return false;
@@ -133,7 +133,7 @@ define('forum/topic/threadTools', [
 				return;
 			}
 
-			socket.emit('topics.loadTopicTools', {tid: ajaxify.data.tid, cid: ajaxify.data.cid}, function (err, data) {
+			socket.emit('topics.loadTopicTools', { tid: ajaxify.data.tid, cid: ajaxify.data.cid }, function (err, data) {
 				if (err) {
 					return app.alertError(err);
 				}
@@ -155,7 +155,7 @@ define('forum/topic/threadTools', [
 					return;
 				}
 
-				socket.emit('topics.' + command, {tids: [tid], cid: ajaxify.data.cid}, function (err) {
+				socket.emit('topics.' + command, { tids: [tid], cid: ajaxify.data.cid }, function (err) {
 					if (err) {
 						app.alertError(err.message);
 					}

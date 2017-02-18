@@ -39,7 +39,7 @@ define('share', function () {
 			return openShare('https://plus.google.com/share?url=', getPostUrl($(this)), 500, 570);
 		});
 
-		$(window).trigger('action:share.addHandlers', {openShare: openShare});
+		$(window).trigger('action:share.addHandlers', { openShare: openShare });
 	};
 
 	function addHandler(selector, callback) {

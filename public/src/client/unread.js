@@ -19,7 +19,7 @@ define('forum/unread', ['forum/recent', 'topicSelect', 'forum/infinitescroll', '
 
 		recent.watchForNewPosts();
 
-		$(window).trigger('action:topics.loaded', {topics: ajaxify.data.topics});
+		$(window).trigger('action:topics.loaded', { topics: ajaxify.data.topics });
 
 		$('#markSelectedRead').on('click', function () {
 			var tids = topicSelect.getSelectedTids();

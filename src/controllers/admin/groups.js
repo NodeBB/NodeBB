@@ -34,7 +34,7 @@ groupsController.list = function (req, res, next) {
 			groups.getGroupsData(groupNames, next);
 		},
 		function (groupData, next) {
-			next(null, {groups: groupData, pagination: pagination.create(page, pageCount)});
+			next(null, { groups: groupData, pagination: pagination.create(page, pageCount) });
 		},
 	], function (err, data) {
 		if (err) {
@@ -59,14 +59,14 @@ groupsController.get = function (req, res, callback) {
 			if (!exists) {
 				return callback();
 			}
-			groups.get(groupName, {uid: req.uid, truncateUserList: true, userListCount: 20}, next);
+			groups.get(groupName, { uid: req.uid, truncateUserList: true, userListCount: 20 }, next);
 		},
 	], function (err, group) {
 		if (err) {
 			return callback(err);
 		}
 		group.isOwner = true;
-		res.render('admin/manage/group', {group: group, allowPrivateGroups: parseInt(meta.config.allowPrivateGroups, 10) === 1});
+		res.render('admin/manage/group', { group: group, allowPrivateGroups: parseInt(meta.config.allowPrivateGroups, 10) === 1 });
 	});
 };
 

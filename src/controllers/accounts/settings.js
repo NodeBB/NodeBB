@@ -58,11 +58,11 @@ settingsController.get = function (req, res, callback) {
 
 			Object.keys(soundSettings).forEach(function (setting) {
 				userData[setting] = Object.keys(results.sounds).map(function (name) {
-					return {name: name, selected: name === results.soundsMapping[soundSettings[setting]]};
+					return { name: name, selected: name === results.soundsMapping[soundSettings[setting]] };
 				});
 			});
 
-			plugins.fireHook('filter:user.customSettings', {settings: results.settings, customSettings: [], uid: req.uid}, next);
+			plugins.fireHook('filter:user.customSettings', { settings: results.settings, customSettings: [], uid: req.uid }, next);
 		},
 		function (data, next) {
 			userData.customSettings = data.customSettings;
@@ -75,10 +75,10 @@ settingsController.get = function (req, res, callback) {
 		}
 
 		userData.dailyDigestFreqOptions = [
-			{value: 'off', name: '[[user:digest_off]]', selected: 'off' === userData.settings.dailyDigestFreq},
-			{value: 'day', name: '[[user:digest_daily]]', selected: 'day' === userData.settings.dailyDigestFreq},
-			{value: 'week', name: '[[user:digest_weekly]]', selected: 'week' === userData.settings.dailyDigestFreq},
-			{value: 'month', name: '[[user:digest_monthly]]', selected: 'month' === userData.settings.dailyDigestFreq},
+			{ value: 'off', name: '[[user:digest_off]]', selected: 'off' === userData.settings.dailyDigestFreq },
+			{ value: 'day', name: '[[user:digest_daily]]', selected: 'day' === userData.settings.dailyDigestFreq },
+			{ value: 'week', name: '[[user:digest_weekly]]', selected: 'week' === userData.settings.dailyDigestFreq },
+			{ value: 'month', name: '[[user:digest_monthly]]', selected: 'month' === userData.settings.dailyDigestFreq },
 		];
 
 
@@ -135,7 +135,7 @@ settingsController.get = function (req, res, callback) {
 		userData.inTopicSearchAvailable = plugins.hasListeners('filter:topic.search');
 
 		userData.title = '[[pages:account/settings]]';
-		userData.breadcrumbs = helpers.buildBreadcrumbs([{text: userData.username, url: '/user/' + userData.userslug}, {text: '[[user:settings]]'}]);
+		userData.breadcrumbs = helpers.buildBreadcrumbs([{ text: userData.username, url: '/user/' + userData.userslug }, { text: '[[user:settings]]' }]);
 
 		res.render('account/settings', userData);
 	});
@@ -163,7 +163,7 @@ function getHomePageRoutes(callback) {
 
 			categoryData = categoryData || [];
 
-			plugins.fireHook('filter:homepage.get', {routes: [
+			plugins.fireHook('filter:homepage.get', { routes: [
 				{
 					route: 'categories',
 					name: 'Categories',
@@ -180,7 +180,7 @@ function getHomePageRoutes(callback) {
 					route: 'popular',
 					name: 'Popular',
 				},
-			].concat(categoryData)}, next);
+			].concat(categoryData) }, next);
 		},
 		function (data, next) {
 			next(null, data.routes);

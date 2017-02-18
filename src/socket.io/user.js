@@ -46,7 +46,7 @@ SocketUser.deleteAccount = function (socket, data, callback) {
 			user.deleteAccount(socket.uid, next);
 		},
 		function (next) {
-			require('./index').server.sockets.emit('event:user_status_change', {uid: socket.uid, status: 'offline'});
+			require('./index').server.sockets.emit('event:user_status_change', { uid: socket.uid, status: 'offline' });
 
 			events.log({
 				type: 'user-delete',

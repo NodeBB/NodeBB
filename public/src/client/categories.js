@@ -54,12 +54,12 @@ define('forum/categories', ['components', 'translator'], function (components, t
 				recentPosts.last().remove();
 			}
 
-			$(window).trigger('action:posts.loaded', {posts: [post]});
+			$(window).trigger('action:posts.loaded', { posts: [post] });
 		});
 	}
 
 	function parseAndTranslate(posts, callback) {
-		templates.parse('categories', '(categories.)?posts', {categories: {posts: posts}}, function (html) {
+		templates.parse('categories', '(categories.)?posts', { categories: { posts: posts } }, function (html) {
 			translator.translate(html, function (translatedHTML) {
 				translatedHTML = $(translatedHTML);
 				translatedHTML.find('.post-content img:not(.not-responsive)').addClass('img-responsive');

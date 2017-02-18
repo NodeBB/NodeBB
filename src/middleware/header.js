@@ -28,7 +28,7 @@ module.exports = function (middleware) {
 						controllers.api.getConfig(req, res, next);
 					},
 					plugins: function (next) {
-						plugins.fireHook('filter:middleware.buildHeader', {req: req, locals: res.locals}, next);
+						plugins.fireHook('filter:middleware.buildHeader', { req: req, locals: res.locals }, next);
 					},
 				}, next);
 			},
@@ -139,18 +139,18 @@ module.exports = function (middleware) {
 			templateValues.privateUserInfo = parseInt(meta.config.privateUserInfo, 10) === 1;
 			templateValues.privateTagListing = parseInt(meta.config.privateTagListing, 10) === 1;
 
-			templateValues.template = {name: res.locals.template};
+			templateValues.template = { name: res.locals.template };
 			templateValues.template[res.locals.template] = true;
 
 			templateValues.scripts = results.scripts.map(function (script) {
-				return {src: script};
+				return { src: script };
 			});
 
 			if (req.route && req.route.path === '/') {
 				modifyTitle(templateValues);
 			}
 
-			plugins.fireHook('filter:middleware.renderHeader', {templateValues: templateValues, req: req, res: res}, function (err, data) {
+			plugins.fireHook('filter:middleware.renderHeader', { templateValues: templateValues, req: req, res: res }, function (err, data) {
 				if (err) {
 					return callback(err);
 				}
@@ -161,7 +161,7 @@ module.exports = function (middleware) {
 	};
 
 	middleware.renderFooter = function (req, res, data, callback) {
-		plugins.fireHook('filter:middleware.renderFooter', {templateValues: data, req: req, res: res}, function (err, data) {
+		plugins.fireHook('filter:middleware.renderFooter', { templateValues: data, req: req, res: res }, function (err, data) {
 			if (err) {
 				return callback(err);
 			}

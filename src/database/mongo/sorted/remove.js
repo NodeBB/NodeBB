@@ -14,10 +14,10 @@ module.exports = function (db, module) {
 
 		if (Array.isArray(value)) {
 			value = value.map(helpers.valueToString);
-			db.collection('objects').remove({_key: key, value: {$in: value}}, done);
+			db.collection('objects').remove({ _key: key, value: { $in: value } }, done);
 		} else {
 			value = helpers.valueToString(value);
-			db.collection('objects').remove({_key: key, value: value}, done);
+			db.collection('objects').remove({ _key: key, value: value }, done);
 		}
 	};
 
@@ -28,7 +28,7 @@ module.exports = function (db, module) {
 		}
 		value = helpers.valueToString(value);
 
-		db.collection('objects').remove({_key: {$in: keys}, value: value}, function (err) {
+		db.collection('objects').remove({ _key: { $in: keys }, value: value }, function (err) {
 			callback(err);
 		});
 	};
@@ -38,10 +38,10 @@ module.exports = function (db, module) {
 		if (!Array.isArray(keys) || !keys.length) {
 			return callback();
 		}
-		var query = {_key: {$in: keys}};
+		var query = { _key: { $in: keys } };
 
 		if (min !== '-inf') {
-			query.score = {$gte: min};
+			query.score = { $gte: min };
 		}
 		if (max !== '+inf') {
 			query.score = query.score || {};

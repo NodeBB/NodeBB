@@ -54,8 +54,8 @@ searchController.search = function (req, res, next) {
 		}
 
 		var categoriesData = [
-			{value: 'all', text: '[[unread:all_categories]]'},
-			{value: 'watched', text: '[[category:watched-categories]]'},
+			{ value: 'all', text: '[[unread:all_categories]]' },
+			{ value: 'watched', text: '[[category:watched-categories]]' },
 		].concat(results.categories);
 
 		var searchData = results.search;
@@ -65,7 +65,7 @@ searchController.search = function (req, res, next) {
 		searchData.showAsPosts = !req.query.showAs || req.query.showAs === 'posts';
 		searchData.showAsTopics = req.query.showAs === 'topics';
 		searchData.title = '[[global:header.search]]';
-		searchData.breadcrumbs = helpers.buildBreadcrumbs([{text: '[[global:search]]'}]);
+		searchData.breadcrumbs = helpers.buildBreadcrumbs([{ text: '[[global:search]]' }]);
 		searchData.expandSearch = !req.query.term;
 
 		res.render('search', searchData);

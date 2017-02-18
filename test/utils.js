@@ -70,8 +70,8 @@ describe('Utility Methods', function () {
 	});
 
 	it('should shallow merge two objects', function (done) {
-		var a = {foo: 1, cat1: 'ginger'};
-		var b = {baz: 2, cat2: 'phoebe'};
+		var a = { foo: 1, cat1: 'ginger' };
+		var b = { baz: 2, cat2: 'phoebe' };
 		var obj = utils.merge(a, b);
 		assert.strictEqual(obj.foo, 1);
 		assert.strictEqual(obj.baz, 2);

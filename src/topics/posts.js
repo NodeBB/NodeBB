@@ -185,7 +185,7 @@ module.exports = function (Topics) {
 				});
 				var parents = {};
 				parentPosts.forEach(function (post, i) {
-					parents[parentPids[i]] = {username: usersMap[post.uid]};
+					parents[parentPids[i]] = { username: usersMap[post.uid] };
 				});
 
 				postData.forEach(function (post) {

@@ -155,7 +155,7 @@ module.exports = function (User) {
 			if (err) {
 				return callback(err);
 			}
-			plugins.fireHook('action:user.set', {uid: uid, field: field, value: value, type: 'set'});
+			plugins.fireHook('action:user.set', { uid: uid, field: field, value: value, type: 'set' });
 			callback();
 		});
 	};
@@ -168,7 +168,7 @@ module.exports = function (User) {
 			}
 			for (var field in data) {
 				if (data.hasOwnProperty(field)) {
-					plugins.fireHook('action:user.set', {uid: uid, field: field, value: data[field], type: 'set'});
+					plugins.fireHook('action:user.set', { uid: uid, field: field, value: data[field], type: 'set' });
 				}
 			}
 			callback();
@@ -181,7 +181,7 @@ module.exports = function (User) {
 			if (err) {
 				return callback(err);
 			}
-			plugins.fireHook('action:user.set', {uid: uid, field: field, value: value, type: 'increment'});
+			plugins.fireHook('action:user.set', { uid: uid, field: field, value: value, type: 'increment' });
 
 			callback(null, value);
 		});
@@ -193,7 +193,7 @@ module.exports = function (User) {
 			if (err) {
 				return callback(err);
 			}
-			plugins.fireHook('action:user.set', {uid: uid, field: field, value: value, type: 'decrement'});
+			plugins.fireHook('action:user.set', { uid: uid, field: field, value: value, type: 'decrement' });
 
 			callback(null, value);
 		});

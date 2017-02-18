@@ -94,7 +94,7 @@ module.exports = function (Topics) {
 					return tidToPost[topic.tid];
 				});
 
-				plugins.fireHook('filter:teasers.get', {teasers: teasers}, next);
+				plugins.fireHook('filter:teasers.get', { teasers: teasers }, next);
 			},
 			function (data, next) {
 				next(null, data.teasers);

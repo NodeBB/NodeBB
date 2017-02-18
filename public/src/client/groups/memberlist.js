@@ -22,7 +22,7 @@ define('forum/groups/memberlist', ['components', 'forum/infinitescroll'], functi
 			}
 
 			searchInterval = setTimeout(function () {
-				socket.emit('groups.searchMembers', {groupName: groupName, query: query}, function (err, results) {
+				socket.emit('groups.searchMembers', { groupName: groupName, query: query }, function (err, results) {
 					if (err) {
 						return app.alertError(err.message);
 					}

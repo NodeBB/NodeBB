@@ -62,8 +62,8 @@ define('forum/category', [
 
 		handleIgnoreWatch(cid);
 
-		$(window).trigger('action:topics.loaded', {topics: ajaxify.data.topics});
-		$(window).trigger('action:category.loaded', {cid: ajaxify.data.cid});
+		$(window).trigger('action:topics.loaded', { topics: ajaxify.data.topics });
+		$(window).trigger('action:category.loaded', { cid: ajaxify.data.cid });
 	};
 
 	function handleScrollToTopicIndex() {
@@ -204,10 +204,10 @@ define('forum/category', [
 		var editable = !!$('.thread-tools').length;
 
 		templates.parse('category', 'topics', {
-			privileges: {editable: editable},
+			privileges: { editable: editable },
 			showSelect: editable,
 			topics: [topic],
-			template: {category: true},
+			template: { category: true },
 		}, function (html) {
 			translator.translate(html, function (translatedHTML) {
 				var topic = $(translatedHTML);
@@ -354,7 +354,7 @@ define('forum/category', [
 			app.createUserTooltips();
 			utils.makeNumbersHumanReadable(html.find('.human-readable-number'));
 
-			$(window).trigger('action:topics.loaded', {topics: data.topics});
+			$(window).trigger('action:topics.loaded', { topics: data.topics });
 
 			callback();
 		});

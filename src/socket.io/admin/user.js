@@ -196,7 +196,7 @@ User.search = function (socket, data, callback) {
 	var searchData;
 	async.waterfall([
 		function (next) {
-			user.search({query: data.query, searchBy: data.searchBy, uid: socket.uid}, next);
+			user.search({ query: data.query, searchBy: data.searchBy, uid: socket.uid }, next);
 		},
 		function (_searchData, next) {
 			searchData = _searchData;

@@ -52,10 +52,10 @@ popularController.get = function (req, res, next) {
 		};
 
 		if (req.path.startsWith('/api/popular') || req.path.startsWith('/popular')) {
-			var breadcrumbs = [{text: termToBreadcrumb[term]}];
+			var breadcrumbs = [{ text: termToBreadcrumb[term] }];
 
 			if (req.params.term) {
-				breadcrumbs.unshift({text: '[[global:header.popular]]', url: '/popular'});
+				breadcrumbs.unshift({ text: '[[global:header.popular]]', url: '/popular' });
 			}
 
 			data.breadcrumbs = helpers.buildBreadcrumbs(breadcrumbs);

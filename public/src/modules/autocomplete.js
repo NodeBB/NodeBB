@@ -14,7 +14,7 @@ define('autocomplete', function () {
 				},
 				select: onselect,
 				source: function (request, response) {
-					socket.emit('user.search', {query: request.term}, function (err, result) {
+					socket.emit('user.search', { query: request.term }, function (err, result) {
 						if (err) {
 							return app.alertError(err.message);
 						}

@@ -49,7 +49,7 @@ module.exports = function (User) {
 					renameUsername(userData, next);
 				},
 				userData: function (next) {
-					plugins.fireHook('filter:user.create', {user: userData, data: data}, next);
+					plugins.fireHook('filter:user.create', { user: userData, data: data }, next);
 				},
 			}, function (err, results) {
 				if (err) {

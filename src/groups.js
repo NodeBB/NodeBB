@@ -184,7 +184,7 @@ var utils = require('../public/src/utils');
 				results.base.isInvited = results.isInvited;
 				results.base.isOwner = results.isOwner;
 
-				plugins.fireHook('filter:group.get', {group: results.base}, function (err, data) {
+				plugins.fireHook('filter:group.get', { group: results.base }, function (err, data) {
 					callback(err, data ? data.group : null);
 				});
 			});
@@ -274,7 +274,7 @@ var utils = require('../public/src/utils');
 			if (err) {
 				return callback(err);
 			}
-			plugins.fireHook('action:group.set', {field: field, value: value, type: 'set'});
+			plugins.fireHook('action:group.set', { field: field, value: value, type: 'set' });
 			callback();
 		});
 	};
@@ -358,7 +358,7 @@ var utils = require('../public/src/utils');
 				privileges.posts.filter('read', pids, uid, next);
 			},
 			function (pids, next) {
-				posts.getPostSummaryByPids(pids, uid, {stripTags: false}, next);
+				posts.getPostSummaryByPids(pids, uid, { stripTags: false }, next);
 			},
 		], callback);
 	};
@@ -414,7 +414,7 @@ var utils = require('../public/src/utils');
 				}
 			});
 
-			plugins.fireHook('filter:groups.get', {groups: groupData}, function (err, data) {
+			plugins.fireHook('filter:groups.get', { groups: groupData }, function (err, data) {
 				callback(err, data ? data.groups : null);
 			});
 		});

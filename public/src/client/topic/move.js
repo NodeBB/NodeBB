@@ -42,7 +42,7 @@ define('forum/topic/move', function () {
 	}
 
 	function parseModal(categories, callback) {
-		templates.parse('partials/move_thread_modal', {categories: []}, function (html) {
+		templates.parse('partials/move_thread_modal', { categories: [] }, function (html) {
 			require(['translator'], function (translator) {
 				translator.translate(html, function (html) {
 					modal = $(html);

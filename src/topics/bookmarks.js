@@ -43,7 +43,7 @@ module.exports = function (Topics) {
 			},
 			function (bookmarks, next) {
 				var forkedPosts = pids.map(function (pid) {
-					return {pid: pid, tid: tid};
+					return { pid: pid, tid: tid };
 				});
 
 				var uidData = bookmarks.map(function (bookmark) {

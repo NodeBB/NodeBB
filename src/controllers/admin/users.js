@@ -71,7 +71,7 @@ usersController.registrationQueue = function (req, res, next) {
 			user.getRegistrationQueue(start, stop, next);
 		},
 		customHeaders: function (next) {
-			plugins.fireHook('filter:admin.registrationQueue.customHeaders', {headers: []}, next);
+			plugins.fireHook('filter:admin.registrationQueue.customHeaders', { headers: [] }, next);
 		},
 		invites: function (next) {
 			async.waterfall([

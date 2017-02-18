@@ -26,9 +26,9 @@ function hashPassword(password, rounds) {
 
 function done(err, result) {
 	if (err) {
-		process.send({err: err.message});
+		process.send({ err: err.message });
 		return process.disconnect();
 	}
-	process.send({result: result});
+	process.send({ result: result });
 	process.disconnect();
 }

@@ -327,7 +327,7 @@ define('admin/manage/users', ['translator'], function (translator) {
 			timeoutId = setTimeout(function () {
 				$('.fa-spinner').removeClass('hidden');
 
-				socket.emit('admin.user.search', {searchBy: type, query: $this.val()}, function (err, data) {
+				socket.emit('admin.user.search', { searchBy: type, query: $this.val() }, function (err, data) {
 					if (err) {
 						return app.alertError(err.message);
 					}

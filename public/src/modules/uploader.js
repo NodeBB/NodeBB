@@ -112,7 +112,7 @@ define('uploader', ['translator'], function (translator) {
 			try {
 				return $.parseJSON(response);
 			} catch (e) {
-				return {error: '[[error:parse-error]]'};
+				return { error: '[[error:parse-error]]' };
 			}
 		}
 		return response;

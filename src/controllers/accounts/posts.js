@@ -143,7 +143,7 @@ function getFromUserSet(template, req, res, callback) {
 
 		userData.noItemsFoundKey = data.noItemsFoundKey;
 		userData.title = '[[pages:' + data.template + ', ' + userData.username + ']]';
-		userData.breadcrumbs = helpers.buildBreadcrumbs([{text: userData.username, url: '/user/' + userData.userslug}, {text: data.crumb}]);
+		userData.breadcrumbs = helpers.buildBreadcrumbs([{ text: userData.username, url: '/user/' + userData.userslug }, { text: data.crumb }]);
 
 		res.render(data.template, userData);
 	});

@@ -175,7 +175,7 @@ module.exports = function (Posts) {
 		async.waterfall([
 			function (next) {
 				if (Array.isArray(set)) {
-					db.getSortedSetRevIntersect({sets: set, start: start, stop: -1, aggregate: 'MAX'}, next);
+					db.getSortedSetRevIntersect({ sets: set, start: start, stop: -1, aggregate: 'MAX' }, next);
 				} else {
 					db.getSortedSetRevRange(set, start, -1, next);
 				}
@@ -193,7 +193,7 @@ module.exports = function (Posts) {
 			function (posts, next) {
 				var count = posts.length;
 				var end = stop - start + 1;
-				next(null, {posts: posts.slice(0, stop === -1 ? undefined : end), count: count});
+				next(null, { posts: posts.slice(0, stop === -1 ? undefined : end), count: count });
 			},
 		], callback);
 	};
@@ -208,7 +208,7 @@ module.exports = function (Posts) {
 						}, next);
 					},
 					posts: function (next) {
-						Posts.getPostSummaryByPids(pids, uid, {stripTags: false, extraFields: ['flags', 'flag:assignee', 'flag:state', 'flag:notes', 'flag:history']}, next);
+						Posts.getPostSummaryByPids(pids, uid, { stripTags: false, extraFields: ['flags', 'flag:assignee', 'flag:state', 'flag:notes', 'flag:history'] }, next);
 					},
 				}, next);
 			},
@@ -218,7 +218,7 @@ module.exports = function (Posts) {
 						var uid = uidReason.split(':')[0];
 						var reason = uidReason.substr(uidReason.indexOf(':') + 1);
 						user.getUserFields(uid, ['username', 'userslug', 'picture'], function (err, userData) {
-							next(err, {user: userData, reason: reason});
+							next(err, { user: userData, reason: reason });
 						});
 					}, next);
 				}, function (err, reasons) {

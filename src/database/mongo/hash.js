@@ -9,7 +9,7 @@ module.exports = function (db, module) {
 			return callback();
 		}
 
-		db.collection('objects').update({_key: key}, {$set: data}, {upsert: true, w: 1}, function (err) {
+		db.collection('objects').update({ _key: key }, { $set: data }, { upsert: true, w: 1 }, function (err) {
 			callback(err);
 		});
 	};
@@ -29,14 +29,14 @@ module.exports = function (db, module) {
 		if (!key) {
 			return callback();
 		}
-		db.collection('objects').findOne({_key: key}, {_id: 0, _key: 0}, callback);
+		db.collection('objects').findOne({ _key: key }, { _id: 0, _key: 0 }, callback);
 	};
 
 	module.getObjects = function (keys, callback) {
 		if (!Array.isArray(keys) || !keys.length) {
 			return callback(null, []);
 		}
-		db.collection('objects').find({_key: {$in: keys}}, {_id: 0}).toArray(function (err, data) {
+		db.collection('objects').find({ _key: { $in: keys } }, { _id: 0 }).toArray(function (err, data) {
 			if (err) {
 				return callback(err);
 			}
@@ -61,7 +61,7 @@ module.exports = function (db, module) {
 			_id: 0,
 		};
 		_fields[field] = 1;
-		db.collection('objects').findOne({_key: key}, {fields: _fields}, function (err, item) {
+		db.collection('objects').findOne({ _key: key }, { fields: _fields }, function (err, item) {
 			if (err || !item) {
 				return callback(err, null);
 			}
@@ -82,7 +82,7 @@ module.exports = function (db, module) {
 			fields[i] = helpers.fieldToString(fields[i]);
 			_fields[fields[i]] = 1;
 		}
-		db.collection('objects').findOne({_key: key}, {fields: _fields}, function (err, item) {
+		db.collection('objects').findOne({ _key: key }, { fields: _fields }, function (err, item) {
 			if (err) {
 				return callback(err);
 			}
@@ -109,7 +109,7 @@ module.exports = function (db, module) {
 			_fields[fields[i]] = 1;
 		}
 
-		db.collection('objects').find({_key: {$in: keys}}, {fields: _fields}).toArray(function (err, items) {
+		db.collection('objects').find({ _key: { $in: keys } }, { fields: _fields }).toArray(function (err, items) {
 			if (err) {
 				return callback(err);
 			}
@@ -166,7 +166,7 @@ module.exports = function (db, module) {
 		var data = {};
 		field = helpers.fieldToString(field);
 		data[field] = '';
-		db.collection('objects').findOne({_key: key}, {fields: data}, function (err, item) {
+		db.collection('objects').findOne({ _key: key }, { fields: data }, function (err, item) {
 			callback(err, !!item && item[field] !== undefined && item[field] !== null);
 		});
 	};
@@ -182,7 +182,7 @@ module.exports = function (db, module) {
 			data[field] = '';
 		});
 
-		db.collection('objects').findOne({_key: key}, {fields: data}, function (err, item) {
+		db.collection('objects').findOne({ _key: key }, { fields: data }, function (err, item) {
 			if (err) {
 				return callback(err);
 			}
@@ -216,7 +216,7 @@ module.exports = function (db, module) {
 			data[field] = '';
 		});
 
-		db.collection('objects').update({_key: key}, {$unset: data}, function (err) {
+		db.collection('objects').update({ _key: key }, { $unset: data }, function (err) {
 			callback(err);
 		});
 	};
@@ -240,7 +240,7 @@ module.exports = function (db, module) {
 		field = helpers.fieldToString(field);
 		data[field] = value;
 
-		db.collection('objects').findAndModify({_key: key}, {}, {$inc: data}, {new: true, upsert: true}, function (err, result) {
+		db.collection('objects').findAndModify({ _key: key }, {}, { $inc: data }, { new: true, upsert: true }, function (err, result) {
 			callback(err, result && result.value ? result.value[field] : null);
 		});
 	};

@@ -24,13 +24,13 @@ describe('Post\'s', function () {
 		groups.resetCache();
 		async.series({
 			voterUid: function (next) {
-				user.create({username: 'upvoter'}, next);
+				user.create({ username: 'upvoter' }, next);
 			},
 			voteeUid: function (next) {
-				user.create({username: 'upvotee'}, next);
+				user.create({ username: 'upvotee' }, next);
 			},
 			globalModUid: function (next) {
-				user.create({username: 'globalmod'}, next);
+				user.create({ username: 'globalmod' }, next);
 			},
 			category: function (next) {
 				categories.create({
@@ -68,7 +68,7 @@ describe('Post\'s', function () {
 	describe('voting', function () {
 		var socketPosts = require('../src/socket.io/posts');
 		it('should upvote a post', function (done) {
-			socketPosts.upvote({uid: voterUid}, {pid: postData.pid, room_id: 'topic_1'}, function (err, result) {
+			socketPosts.upvote({ uid: voterUid }, { pid: postData.pid, room_id: 'topic_1' }, function (err, result) {
 				assert.ifError(err);
 				assert.equal(result.post.upvotes, 1);
 				assert.equal(result.post.downvotes, 0);
@@ -84,7 +84,7 @@ describe('Post\'s', function () {
 		});
 
 		it('should get voters', function (done) {
-			socketPosts.getVoters({uid: globalModUid}, {pid: postData.pid, cid: cid}, function (err, data) {
+			socketPosts.getVoters({ uid: globalModUid }, { pid: postData.pid, cid: cid }, function (err, data) {
 				assert.ifError(err);
 				assert.equal(data.upvoteCount, 1);
 				assert.equal(data.downvoteCount, 0);
@@ -95,7 +95,7 @@ describe('Post\'s', function () {
 		});
 
 		it('should get upvoters', function (done) {
-			socketPosts.getUpvoters({uid: globalModUid}, [postData.pid], function (err, data) {
+			socketPosts.getUpvoters({ uid: globalModUid }, [postData.pid], function (err, data) {
 				assert.ifError(err);
 				assert.equal(data[0].otherCount, 0);
 				assert.equal(data[0].usernames, 'upvoter');
@@ -104,7 +104,7 @@ describe('Post\'s', function () {
 		});
 
 		it('should unvote a post', function (done) {
-			socketPosts.unvote({uid: voterUid}, {pid: postData.pid, room_id: 'topic_1'}, function (err, result) {
+			socketPosts.unvote({ uid: voterUid }, { pid: postData.pid, room_id: 'topic_1' }, function (err, result) {
 				assert.ifError(err);
 				assert.equal(result.post.upvotes, 0);
 				assert.equal(result.post.downvotes, 0);
@@ -120,7 +120,7 @@ describe('Post\'s', function () {
 		});
 
 		it('should downvote a post', function (done) {
-			socketPosts.downvote({uid: voterUid}, {pid: postData.pid, room_id: 'topic_1'}, function (err, result) {
+			socketPosts.downvote({ uid: voterUid }, { pid: postData.pid, room_id: 'topic_1' }, function (err, result) {
 				assert.ifError(err);
 				assert.equal(result.post.upvotes, 0);
 				assert.equal(result.post.downvotes, 1);
@@ -166,14 +166,14 @@ describe('Post\'s', function () {
 		var socketPosts = require('../src/socket.io/posts');
 
 		it('should error if data is invalid', function (done) {
-			socketPosts.loadPostTools({uid: globalModUid}, null, function (err) {
+			socketPosts.loadPostTools({ uid: globalModUid }, null, function (err) {
 				assert.equal(err.message, '[[error:invalid-data]]');
 				done();
 			});
 		});
 
 		it('should load post tools', function (done) {
-			socketPosts.loadPostTools({uid: globalModUid}, {pid: postData.pid, cid: cid}, function (err, data) {
+			socketPosts.loadPostTools({ uid: globalModUid }, { pid: postData.pid, cid: cid }, function (err, data) {
 				assert.ifError(err);
 				assert(data.posts.display_edit_tools);
 				assert(data.posts.display_delete_tools);
@@ -220,14 +220,14 @@ describe('Post\'s', function () {
 		});
 
 		it('should error with invalid data', function (done) {
-			socketPosts.delete({uid: voterUid}, null, function (err) {
+			socketPosts.delete({ uid: voterUid }, null, function (err) {
 				assert.equal(err.message, '[[error:invalid-data]]');
 				done();
 			});
 		});
 
 		it('should delete a post', function (done) {
-			socketPosts.delete({uid: voterUid}, {pid: replyPid, tid: tid}, function (err) {
+			socketPosts.delete({ uid: voterUid }, { pid: replyPid, tid: tid }, function (err) {
 				assert.ifError(err);
 				posts.getPostField(replyPid, 'deleted', function (err, isDeleted) {
 					assert.ifError(err);
@@ -238,7 +238,7 @@ describe('Post\'s', function () {
 		});
 
 		it('should restore a post', function (done) {
-			socketPosts.restore({uid: voterUid}, {pid: replyPid, tid: tid}, function (err) {
+			socketPosts.restore({ uid: voterUid }, { pid: replyPid, tid: tid }, function (err) {
 				assert.ifError(err);
 				posts.getPostField(replyPid, 'deleted', function (err, isDeleted) {
 					assert.ifError(err);
@@ -249,7 +249,7 @@ describe('Post\'s', function () {
 		});
 
 		it('should delete posts', function (done) {
-			socketPosts.deletePosts({uid: globalModUid}, {pids: [replyPid, mainPid], tid: tid}, function (err) {
+			socketPosts.deletePosts({ uid: globalModUid }, { pids: [replyPid, mainPid], tid: tid }, function (err) {
 				assert.ifError(err);
 				posts.getPostField(replyPid, 'deleted', function (err, deleted) {
 					assert.ifError(err);
@@ -264,9 +264,9 @@ describe('Post\'s', function () {
 		});
 
 		it('should delete topic if last main post is deleted', function (done) {
-			topics.post({uid: voterUid, cid: cid, title: 'test topic', content: 'test topic'}, function (err, data) {
+			topics.post({ uid: voterUid, cid: cid, title: 'test topic', content: 'test topic' }, function (err, data) {
 				assert.ifError(err);
-				socketPosts.deletePosts({uid: globalModUid}, {pids: [data.postData.pid], tid: data.topicData.tid}, function (err) {
+				socketPosts.deletePosts({ uid: globalModUid }, { pids: [data.postData.pid], tid: data.topicData.tid }, function (err) {
 					assert.ifError(err);
 					topics.getTopicField(data.topicData.tid, 'deleted', function (err, deleted) {
 						assert.ifError(err);
@@ -279,7 +279,7 @@ describe('Post\'s', function () {
 
 		it('should purge posts and delete topic', function (done) {
 			createTopicWithReply(function (topicPostData, replyData) {
-				socketPosts.purgePosts({uid: voterUid}, {pids: [replyData.pid, topicPostData.postData.pid], tid: topicPostData.topicData.tid}, function (err) {
+				socketPosts.purgePosts({ uid: voterUid }, { pids: [replyData.pid, topicPostData.postData.pid], tid: topicPostData.topicData.tid }, function (err) {
 					assert.ifError(err);
 					posts.exists('post:' + replyData.pid, function (err, exists) {
 						assert.ifError(err);
@@ -325,21 +325,21 @@ describe('Post\'s', function () {
 		});
 
 		it('should error if user is not logged in', function (done) {
-			socketPosts.edit({uid: 0}, {}, function (err) {
+			socketPosts.edit({ uid: 0 }, {}, function (err) {
 				assert.equal(err.message, '[[error:not-logged-in]]');
 				done();
 			});
 		});
 
 		it('should error if data is invalid or missing', function (done) {
-			socketPosts.edit({uid: voterUid}, {}, function (err) {
+			socketPosts.edit({ uid: voterUid }, {}, function (err) {
 				assert.equal(err.message, '[[error:invalid-data]]');
 				done();
 			});
 		});
 
 		it('should error if title is too short', function (done) {
-			socketPosts.edit({uid: voterUid}, {pid: pid, content: 'edited post content', title: 'a'}, function (err) {
+			socketPosts.edit({ uid: voterUid }, { pid: pid, content: 'edited post content', title: 'a' }, function (err) {
 				assert.equal(err.message, '[[error:title-too-short, ' + meta.config.minimumTitleLength + ']]');
 				done();
 			});
@@ -347,7 +347,7 @@ describe('Post\'s', function () {
 
 		it('should error if title is too long', function (done) {
 			var longTitle = new Array(parseInt(meta.config.maximumTitleLength, 10) + 2).join('a');
-			socketPosts.edit({uid: voterUid}, {pid: pid, content: 'edited post content', title: longTitle}, function (err) {
+			socketPosts.edit({ uid: voterUid }, { pid: pid, content: 'edited post content', title: longTitle }, function (err) {
 				assert.equal(err.message, '[[error:title-too-long, ' + meta.config.maximumTitleLength + ']]');
 				done();
 			});
@@ -356,7 +356,7 @@ describe('Post\'s', function () {
 		it('should error with too few tags', function (done) {
 			var oldValue = meta.config.minimumTagsPerTopic;
 			meta.config.minimumTagsPerTopic = 1;
-			socketPosts.edit({uid: voterUid}, {pid: pid, content: 'edited post content', tags: []}, function (err) {
+			socketPosts.edit({ uid: voterUid }, { pid: pid, content: 'edited post content', tags: [] }, function (err) {
 				assert.equal(err.message, '[[error:not-enough-tags, ' + meta.config.minimumTagsPerTopic + ']]');
 				meta.config.minimumTagsPerTopic = oldValue;
 				done();
@@ -368,14 +368,14 @@ describe('Post\'s', function () {
 			for (var i = 0; i < meta.config.maximumTagsPerTopic + 1; i += 1) {
 				tags.push('tag' + i);
 			}
-			socketPosts.edit({uid: voterUid}, {pid: pid, content: 'edited post content', tags: tags}, function (err) {
+			socketPosts.edit({ uid: voterUid }, { pid: pid, content: 'edited post content', tags: tags }, function (err) {
 				assert.equal(err.message, '[[error:too-many-tags, ' + meta.config.maximumTagsPerTopic + ']]');
 				done();
 			});
 		});
 
 		it('should error if content is too short', function (done) {
-			socketPosts.edit({uid: voterUid}, {pid: pid, content: 'e'}, function (err) {
+			socketPosts.edit({ uid: voterUid }, { pid: pid, content: 'e' }, function (err) {
 				assert.equal(err.message, '[[error:content-too-short, ' + meta.config.minimumPostLength + ']]');
 				done();
 			});
@@ -383,14 +383,14 @@ describe('Post\'s', function () {
 
 		it('should error if content is too long', function (done) {
 			var longContent = new Array(parseInt(meta.config.maximumPostLength, 10) + 2).join('a');
-			socketPosts.edit({uid: voterUid}, {pid: pid, content: longContent}, function (err) {
+			socketPosts.edit({ uid: voterUid }, { pid: pid, content: longContent }, function (err) {
 				assert.equal(err.message, '[[error:content-too-long, ' + meta.config.maximumPostLength + ']]');
 				done();
 			});
 		});
 
 		it('should edit post', function (done) {
-			socketPosts.edit({uid: voterUid}, {pid: pid, content: 'edited post content', title: 'edited title', tags: ['edited']}, function (err, data) {
+			socketPosts.edit({ uid: voterUid }, { pid: pid, content: 'edited post content', title: 'edited title', tags: ['edited'] }, function (err, data) {
 				assert.ifError(err);
 				assert.equal(data.content, 'edited post content');
 				assert.equal(data.editor, voterUid);
@@ -401,9 +401,9 @@ describe('Post\'s', function () {
 		});
 
 		it('should edit a deleted post', function (done) {
-			socketPosts.delete({uid: voterUid}, {pid: pid, tid: tid}, function (err) {
+			socketPosts.delete({ uid: voterUid }, { pid: pid, tid: tid }, function (err) {
 				assert.ifError(err);
-				socketPosts.edit({uid: voterUid}, {pid: pid, content: 'edited deleted content', title: 'edited deleted title', tags: ['deleted']}, function (err, data) {
+				socketPosts.edit({ uid: voterUid }, { pid: pid, content: 'edited deleted content', title: 'edited deleted title', tags: ['deleted'] }, function (err, data) {
 					assert.ifError(err);
 					assert.equal(data.content, 'edited deleted content');
 					assert.equal(data.editor, voterUid);
@@ -415,7 +415,7 @@ describe('Post\'s', function () {
 		});
 
 		it('should edit a reply post', function (done) {
-			socketPosts.edit({uid: voterUid}, {pid: replyPid, content: 'edited reply'}, function (err, data) {
+			socketPosts.edit({ uid: voterUid }, { pid: replyPid, content: 'edited reply' }, function (err, data) {
 				assert.ifError(err);
 				assert.equal(data.content, 'edited reply');
 				assert.equal(data.editor, voterUid);
@@ -468,21 +468,21 @@ describe('Post\'s', function () {
 		});
 
 		it('should error if uid is not logged in', function (done) {
-			socketPosts.movePost({uid: 0}, {}, function (err) {
+			socketPosts.movePost({ uid: 0 }, {}, function (err) {
 				assert.equal(err.message, '[[error:not-logged-in]]');
 				done();
 			});
 		});
 
 		it('should error if data is invalid', function (done) {
-			socketPosts.movePost({uid: globalModUid}, {}, function (err) {
+			socketPosts.movePost({ uid: globalModUid }, {}, function (err) {
 				assert.equal(err.message, '[[error:invalid-data]]');
 				done();
 			});
 		});
 
 		it('should error if user does not have move privilege', function (done) {
-			socketPosts.movePost({uid: voterUid}, {pid: replyPid, tid: moveTid}, function (err) {
+			socketPosts.movePost({ uid: voterUid }, { pid: replyPid, tid: moveTid }, function (err) {
 				assert.equal(err.message, '[[error:no-privileges]]');
 				done();
 			});
@@ -490,7 +490,7 @@ describe('Post\'s', function () {
 
 
 		it('should move a post', function (done) {
-			socketPosts.movePost({uid: globalModUid}, {pid: replyPid, tid: moveTid}, function (err) {
+			socketPosts.movePost({ uid: globalModUid }, { pid: replyPid, tid: moveTid }, function (err) {
 				assert.ifError(err);
 				posts.getPostField(replyPid, 'tid', function (err, tid) {
 					assert.ifError(err);
@@ -521,9 +521,9 @@ describe('Post\'s', function () {
 		});
 
 		it('should return nothing without a uid or a reason', function (done) {
-			socketPosts.flag({uid: 0}, {pid: postData.pid, reason: 'reason'}, function (err) {
+			socketPosts.flag({ uid: 0 }, { pid: postData.pid, reason: 'reason' }, function (err) {
 				assert.equal(err.message, '[[error:not-logged-in]]');
-				socketPosts.flag({uid: voteeUid}, {}, function (err) {
+				socketPosts.flag({ uid: voteeUid }, {}, function (err) {
 					assert.equal(err.message, '[[error:invalid-data]]');
 					done();
 				});
@@ -531,14 +531,14 @@ describe('Post\'s', function () {
 		});
 
 		it('should return an error without an existing post', function (done) {
-			socketPosts.flag({uid: voteeUid}, {pid: 12312312, reason: 'reason'}, function (err) {
+			socketPosts.flag({ uid: voteeUid }, { pid: 12312312, reason: 'reason' }, function (err) {
 				assert.equal(err.message, '[[error:no-post]]');
 				done();
 			});
 		});
 
 		it('should return an error if the flag already exists', function (done) {
-			socketPosts.flag({uid: voteeUid}, {pid: postData.pid, reason: 'reason'}, function (err) {
+			socketPosts.flag({ uid: voteeUid }, { pid: postData.pid, reason: 'reason' }, function (err) {
 				assert.equal(err.message, '[[error:already-flagged]]');
 				done();
 			});
@@ -547,7 +547,7 @@ describe('Post\'s', function () {
 
 	function flagPost(next) {
 		var socketPosts = require('../src/socket.io/posts');
-		socketPosts.flag({uid: voteeUid}, {pid: postData.pid, reason: 'reason'}, next);
+		socketPosts.flag({ uid: voteeUid }, { pid: postData.pid, reason: 'reason' }, next);
 	}
 
 	describe('get flag data', function () {
@@ -582,11 +582,11 @@ describe('Post\'s', function () {
 		it('should update a flag', function (done) {
 			async.waterfall([
 				function (next) {
-					socketPosts.updateFlag({uid: globalModUid}, {
+					socketPosts.updateFlag({ uid: globalModUid }, {
 						pid: postData.pid,
 						data: [
-							{name: 'assignee', value: `${globalModUid}`},
-							{name: 'notes', value: 'notes'},
+							{ name: 'assignee', value: `${globalModUid}` },
+							{ name: 'notes', value: 'notes' },
 						],
 					}, function (err) {
 						assert.ifError(err);
@@ -674,7 +674,7 @@ describe('Post\'s', function () {
 		var socketPosts = require('../src/socket.io/posts');
 
 		it('should dismiss a flag', function (done) {
-			socketPosts.dismissFlag({uid: globalModUid}, postData.pid, function (err) {
+			socketPosts.dismissFlag({ uid: globalModUid }, postData.pid, function (err) {
 				assert.ifError(err);
 				posts.isFlaggedByUser(postData.pid, voteeUid, function (err, hasFlagged) {
 					assert.ifError(err);
@@ -702,7 +702,7 @@ describe('Post\'s', function () {
 		});
 
 		it('should dismiss all flags', function (done) {
-			socketPosts.dismissAllFlags({uid: globalModUid}, {}, function (err) {
+			socketPosts.dismissAllFlags({ uid: globalModUid }, {}, function (err) {
 				assert.ifError(err);
 				posts.isFlaggedByUser(postData.pid, voteeUid, function (err, hasFlagged) {
 					assert.ifError(err);

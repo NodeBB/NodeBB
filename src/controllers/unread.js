@@ -12,7 +12,7 @@ var helpers = require('./helpers');
 
 var unreadController = {};
 
-var validFilter = {'': true, new: true, watched: true};
+var validFilter = { '': true, new: true, watched: true };
 
 unreadController.get = function (req, res, next) {
 	var page = parseInt(req.query.page, 10) || 1;
@@ -59,7 +59,7 @@ unreadController.get = function (req, res, next) {
 		data.selectedCategory = results.watchedCategories.selectedCategory;
 
 		if (req.path.startsWith('/api/unread') || req.path.startsWith('/unread')) {
-			data.breadcrumbs = helpers.buildBreadcrumbs([{text: '[[unread:title]]'}]);
+			data.breadcrumbs = helpers.buildBreadcrumbs([{ text: '[[unread:title]]' }]);
 		}
 
 		data.title = '[[pages:unread]]';

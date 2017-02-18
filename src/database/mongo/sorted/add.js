@@ -14,7 +14,7 @@ module.exports = function (db, module) {
 
 		value = helpers.valueToString(value);
 
-		db.collection('objects').update({_key: key, value: value}, {$set: {score: parseFloat(score)}}, {upsert: true, w: 1}, function (err) {
+		db.collection('objects').update({ _key: key, value: value }, { $set: { score: parseFloat(score) } }, { upsert: true, w: 1 }, function (err) {
 			if (err && err.message.startsWith('E11000 duplicate key error')) {
 				return process.nextTick(module.sortedSetAdd, key, score, value, callback);
 			}
@@ -35,7 +35,7 @@ module.exports = function (db, module) {
 		var bulk = db.collection('objects').initializeUnorderedBulkOp();
 
 		for (var i = 0; i < scores.length; i += 1) {
-			bulk.find({_key: key, value: values[i]}).upsert().updateOne({$set: {score: parseFloat(scores[i])}});
+			bulk.find({ _key: key, value: values[i] }).upsert().updateOne({ $set: { score: parseFloat(scores[i]) } });
 		}
 
 		bulk.execute(function (err) {
@@ -53,7 +53,7 @@ module.exports = function (db, module) {
 		var bulk = db.collection('objects').initializeUnorderedBulkOp();
 
 		for (var i = 0; i < keys.length; i += 1) {
-			bulk.find({_key: keys[i], value: value}).upsert().updateOne({$set: {score: parseFloat(score)}});
+			bulk.find({ _key: keys[i], value: value }).upsert().updateOne({ $set: { score: parseFloat(score) } });
 		}
 
 		bulk.execute(function (err) {

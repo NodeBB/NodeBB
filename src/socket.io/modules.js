@@ -254,7 +254,7 @@ SocketModules.chats.markRead = function (socket, roomId, callback) {
 		}
 
 		Messaging.pushUnreadCount(socket.uid);
-		server.in('uid_' + socket.uid).emit('event:chats.markedAsRead', {roomId: roomId});
+		server.in('uid_' + socket.uid).emit('event:chats.markedAsRead', { roomId: roomId });
 
 		if (results.uidsInRoom.indexOf(socket.uid.toString()) === -1) {
 			return callback();
@@ -300,7 +300,7 @@ SocketModules.chats.renameRoom = function (socket, data, callback) {
 			Messaging.getUidsInRoom(data.roomId, 0, -1, next);
 		},
 		function (uids, next) {
-			var eventData = {roomId: data.roomId, newName: validator.escape(String(data.newName))};
+			var eventData = { roomId: data.roomId, newName: validator.escape(String(data.newName)) };
 			uids.forEach(function (uid) {
 				server.in('uid_' + uid).emit('event:chats.roomRename', eventData);
 			});

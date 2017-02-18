@@ -170,7 +170,7 @@ Messaging.getRecentChats = function (callerUid, uid, start, stop, callback) {
 				room.usernames = Messaging.generateUsernames(room.users, uid);
 			});
 
-			next(null, {rooms: results.roomData, nextStart: stop + 1});
+			next(null, { rooms: results.roomData, nextStart: stop + 1 });
 		},
 	], callback);
 };

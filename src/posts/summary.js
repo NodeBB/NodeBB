@@ -80,7 +80,7 @@ module.exports = function (Posts) {
 				parsePosts(posts, options, next);
 			},
 			function (posts, next) {
-				plugins.fireHook('filter:post.getPostSummaryByPids', {posts: posts, uid: uid}, next);
+				plugins.fireHook('filter:post.getPostSummaryByPids', { posts: posts, uid: uid }, next);
 			},
 			function (data, next) {
 				next(null, data.posts);
@@ -128,7 +128,7 @@ module.exports = function (Posts) {
 			});
 
 			categories.getCategoriesFields(cids, ['cid', 'name', 'icon', 'slug', 'parentCid', 'bgColor', 'color'], function (err, categories) {
-				callback(err, {topics: topics, categories: categories});
+				callback(err, { topics: topics, categories: categories });
 			});
 		});
 	}

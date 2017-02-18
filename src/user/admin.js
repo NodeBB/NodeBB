@@ -38,7 +38,7 @@ module.exports = function (User) {
 				uids = users.map(function (user) {
 					return user.score;
 				});
-				plugins.fireHook('filter:user.csvFields', {fields: ['uid', 'email', 'username']}, next);
+				plugins.fireHook('filter:user.csvFields', { fields: ['uid', 'email', 'username'] }, next);
 			},
 			function (data, next) {
 				User.getUsersFields(uids, data.fields, next);

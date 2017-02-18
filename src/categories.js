@@ -57,7 +57,7 @@ var privileges = require('./privileges');
 				category.isIgnored = results.isIgnored[0];
 				category.topic_count = results.topicCount;
 
-				plugins.fireHook('filter:category.get', {category: category, uid: data.uid}, next);
+				plugins.fireHook('filter:category.get', { category: category, uid: data.uid }, next);
 			},
 			function (data, next) {
 				next(null, data.category);
@@ -229,7 +229,7 @@ var privileges = require('./privileges');
 
 	Categories.getChildren = function (cids, uid, callback) {
 		var categories = cids.map(function (cid) {
-			return {cid: cid};
+			return { cid: cid };
 		});
 
 		async.each(categories, function (category, next) {

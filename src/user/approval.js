@@ -30,7 +30,7 @@ module.exports = function (User) {
 					ip: userData.ip,
 					hashedPassword: hashedPassword,
 				};
-				plugins.fireHook('filter:user.addToApprovalQueue', {data: data, userData: userData}, next);
+				plugins.fireHook('filter:user.addToApprovalQueue', { data: data, userData: userData }, next);
 			},
 			function (results, next) {
 				db.setObject('registration:queue:name:' + userData.username, results.data, next);
@@ -211,7 +211,7 @@ module.exports = function (User) {
 				}, next);
 			},
 			function (users, next) {
-				plugins.fireHook('filter:user.getRegistrationQueue', {users: users}, next);
+				plugins.fireHook('filter:user.getRegistrationQueue', { users: users }, next);
 			},
 			function (results, next) {
 				next(null, results.users);

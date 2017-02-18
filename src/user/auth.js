@@ -172,6 +172,6 @@ module.exports = function (User) {
 					], next);
 				},
 			], next);
-		}, {batch: 1000}, callback);
+		}, { batch: 1000 }, callback);
 	};
 };

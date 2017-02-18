@@ -28,7 +28,7 @@ module.exports = function (Posts) {
 				privileges.posts.filter('read', pids, uid, next);
 			},
 			function (pids, next) {
-				Posts.getPostSummaryByPids(pids, uid, {stripTags: true}, next);
+				Posts.getPostSummaryByPids(pids, uid, { stripTags: true }, next);
 			},
 		], callback);
 	};

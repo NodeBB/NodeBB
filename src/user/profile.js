@@ -17,7 +17,7 @@ module.exports = function (User) {
 
 		async.waterfall([
 			function (next) {
-				plugins.fireHook('filter:user.updateProfile', {uid: uid, data: data, fields: fields}, next);
+				plugins.fireHook('filter:user.updateProfile', { uid: uid, data: data, fields: fields }, next);
 			},
 			function (data, next) {
 				fields = data.fields;
@@ -55,7 +55,7 @@ module.exports = function (User) {
 				}, next);
 			},
 			function (next) {
-				plugins.fireHook('action:user.updateProfile', {data: data, uid: uid});
+				plugins.fireHook('action:user.updateProfile', { data: data, uid: uid });
 				User.getUserFields(uid, ['email', 'username', 'userslug', 'picture', 'icon:text', 'icon:bgColor'], next);
 			},
 		], callback);

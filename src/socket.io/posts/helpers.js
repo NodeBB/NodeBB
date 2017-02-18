@@ -46,7 +46,7 @@ helpers.postCommand = function (socket, command, eventName, notification, data, 
 				filter:post.bookmark
 				filter:post.unbookmark
 			 */
-			plugins.fireHook('filter:post.' + command, {data: data, uid: socket.uid}, next);
+			plugins.fireHook('filter:post.' + command, { data: data, uid: socket.uid }, next);
 		},
 		function (filteredData, next) {
 			executeCommand(socket, command, eventName, notification, filteredData.data, next);

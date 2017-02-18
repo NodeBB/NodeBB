@@ -99,7 +99,7 @@ describe('Groups', function () {
 		var socketGroups = require('../src/socket.io/groups');
 
 		it('should return the groups when search query is empty', function (done) {
-			socketGroups.search({uid: adminUid}, {query: ''}, function (err, groups) {
+			socketGroups.search({ uid: adminUid }, { query: '' }, function (err, groups) {
 				assert.ifError(err);
 				assert.equal(3, groups.length);
 				done();
@@ -107,7 +107,7 @@ describe('Groups', function () {
 		});
 
 		it('should return the "Test" group when searched for', function (done) {
-			socketGroups.search({uid: adminUid}, {query: 'test'}, function (err, groups) {
+			socketGroups.search({ uid: adminUid }, { query: 'test' }, function (err, groups) {
 				assert.ifError(err);
 				assert.equal(1, groups.length);
 				assert.strictEqual('Test', groups[0].name);
@@ -116,7 +116,7 @@ describe('Groups', function () {
 		});
 
 		it('should return the "Test" group when searched for and sort by member count', function (done) {
-			Groups.search('test', {filterHidden: true, sort: 'count'}, function (err, groups) {
+			Groups.search('test', { filterHidden: true, sort: 'count' }, function (err, groups) {
 				assert.ifError(err);
 				assert.equal(1, groups.length);
 				assert.strictEqual('Test', groups[0].name);
@@ -125,7 +125,7 @@ describe('Groups', function () {
 		});
 
 		it('should return the "Test" group when searched for and sort by creation time', function (done) {
-			Groups.search('test', {filterHidden: true, sort: 'date'}, function (err, groups) {
+			Groups.search('test', { filterHidden: true, sort: 'date' }, function (err, groups) {
 				assert.ifError(err);
 				assert.equal(1, groups.length);
 				assert.strictEqual('Test', groups[0].name);
@@ -141,7 +141,7 @@ describe('Groups', function () {
 				assert.ifError(err);
 				Groups.join('Test', uid, function (err) {
 					assert.ifError(err);
-					socketGroups.searchMembers({uid: adminUid}, {groupName: 'Test', query: ''}, function (err, data) {
+					socketGroups.searchMembers({ uid: adminUid }, { groupName: 'Test', query: '' }, function (err, data) {
 						assert.ifError(err);
 						assert.equal(data.users.length, 2);
 						done();
@@ -151,7 +151,7 @@ describe('Groups', function () {
 		});
 
 		it('should search group members', function (done) {
-			socketGroups.searchMembers({uid: adminUid}, {groupName: 'Test', query: 'test'}, function (err, data) {
+			socketGroups.searchMembers({ uid: adminUid }, { groupName: 'Test', query: 'test' }, function (err, data) {
 				assert.ifError(err);
 				assert.strictEqual('testuser', data.users[0].username);
 				done();
@@ -234,7 +234,7 @@ describe('Groups', function () {
 		});
 
 		it('should fail to create group with duplicate group name', function (done) {
-			Groups.create({name: 'foo'}, function (err) {
+			Groups.create({ name: 'foo' }, function (err) {
 				assert(err);
 				assert.equal(err.message, '[[error:group-already-exists]]');
 				done();
@@ -242,21 +242,21 @@ describe('Groups', function () {
 		});
 
 		it('should fail to create group if slug is empty', function (done) {
-			Groups.create({name: '>>>>'}, function (err) {
+			Groups.create({ name: '>>>>' }, function (err) {
 				assert.equal(err.message, '[[error:invalid-group-name]]');
 				done();
 			});
 		});
 
 		it('should fail if group name is invalid', function (done) {
-			Groups.create({name: 'not/valid'}, function (err) {
+			Groups.create({ name: 'not/valid' }, function (err) {
 				assert.equal(err.message, '[[error:invalid-group-name]]');
 				done();
 			});
 		});
 
 		it('should fail if group name is invalid', function (done) {
-			Groups.create({name: 'not:valid'}, function (err) {
+			Groups.create({ name: 'not:valid' }, function (err) {
 				assert.equal(err.message, '[[error:invalid-group-name]]');
 				done();
 			});
@@ -434,35 +434,35 @@ describe('Groups', function () {
 
 
 		it('should error if data is null', function (done) {
-			socketGroups.before({uid: 0}, 'groups.join', null, function (err) {
+			socketGroups.before({ uid: 0 }, 'groups.join', null, function (err) {
 				assert.equal(err.message, '[[error:invalid-data]]');
 				done();
 			});
 		});
 
 		it('should not error if data is valid', function (done) {
-			socketGroups.before({uid: 0}, 'groups.join', {}, function (err) {
+			socketGroups.before({ uid: 0 }, 'groups.join', {}, function (err) {
 				assert.ifError(err);
 				done();
 			});
 		});
 
 		it('should return error if not logged in', function (done) {
-			socketGroups.join({uid: 0}, {}, function (err) {
+			socketGroups.join({ uid: 0 }, {}, function (err) {
 				assert.equal(err.message, '[[error:invalid-uid]]');
 				done();
 			});
 		});
 
 		it('should return error if group name is special', function (done) {
-			socketGroups.join({uid: adminUid}, {groupName: 'administrators'}, function (err) {
+			socketGroups.join({ uid: adminUid }, { groupName: 'administrators' }, function (err) {
 				assert.equal(err.message, '[[error:not-allowed]]');
 				done();
 			});
 		});
 
 		it('should error if group does not exist', function (done) {
-			socketGroups.join({uid: adminUid}, {groupName: 'doesnotexist'}, function (err) {
+			socketGroups.join({ uid: adminUid }, { groupName: 'doesnotexist' }, function (err) {
 				assert.equal(err.message, '[[error:no-group]]');
 				done();
 			});
@@ -470,7 +470,7 @@ describe('Groups', function () {
 
 		it('should join test group', function (done) {
 			meta.config.allowPrivateGroups = 0;
-			socketGroups.join({uid: adminUid}, {groupName: 'Test'}, function (err) {
+			socketGroups.join({ uid: adminUid }, { groupName: 'Test' }, function (err) {
 				assert.ifError(err);
 				Groups.isMember(adminUid, 'Test', function (err, isMember) {
 					assert.ifError(err);
@@ -481,21 +481,21 @@ describe('Groups', function () {
 		});
 
 		it('should error if not logged in', function (done) {
-			socketGroups.leave({uid: 0}, {}, function (err) {
+			socketGroups.leave({ uid: 0 }, {}, function (err) {
 				assert.equal(err.message, '[[error:invalid-uid]]');
 				done();
 			});
 		});
 
 		it('should return error if group name is special', function (done) {
-			socketGroups.leave({uid: adminUid}, {groupName: 'administrators'}, function (err) {
+			socketGroups.leave({ uid: adminUid }, { groupName: 'administrators' }, function (err) {
 				assert.equal(err.message, '[[error:cant-remove-self-as-admin]]');
 				done();
 			});
 		});
 
 		it('should leave test group', function (done) {
-			socketGroups.leave({uid: adminUid}, {groupName: 'Test'}, function (err) {
+			socketGroups.leave({ uid: adminUid }, { groupName: 'Test' }, function (err) {
 				assert.ifError(err);
 				Groups.isMember('Test', adminUid, function (err, isMember) {
 					assert.ifError(err);
@@ -507,14 +507,14 @@ describe('Groups', function () {
 
 		it('should fail to join if group is private and join requests are disabled', function (done) {
 			meta.config.allowPrivateGroups = 1;
-			socketGroups.join({uid: testUid}, {groupName: 'PrivateNoJoin'}, function (err) {
+			socketGroups.join({ uid: testUid }, { groupName: 'PrivateNoJoin' }, function (err) {
 				assert.equal(err.message, '[[error:join-requests-disabled]]');
 				done();
 			});
 		});
 
 		it('should join if user is admin', function (done) {
-			socketGroups.join({uid: adminUid}, {groupName: 'PrivateCanJoin'}, function (err) {
+			socketGroups.join({ uid: adminUid }, { groupName: 'PrivateCanJoin' }, function (err) {
 				assert.ifError(err);
 				Groups.isMember(adminUid, 'PrivateCanJoin', function (err, isMember) {
 					assert.ifError(err);
@@ -525,7 +525,7 @@ describe('Groups', function () {
 		});
 
 		it('should request membership for regular user', function (done) {
-			socketGroups.join({uid: testUid}, {groupName: 'PrivateCanJoin'}, function (err) {
+			socketGroups.join({ uid: testUid }, { groupName: 'PrivateCanJoin' }, function (err) {
 				assert.ifError(err);
 				Groups.isPending(testUid, 'PrivateCanJoin', function (err, isPending) {
 					assert.ifError(err);
@@ -536,7 +536,7 @@ describe('Groups', function () {
 		});
 
 		it('should accept membership of user', function (done) {
-			socketGroups.accept({uid: adminUid}, {groupName: 'PrivateCanJoin', toUid: testUid}, function (err) {
+			socketGroups.accept({ uid: adminUid }, { groupName: 'PrivateCanJoin', toUid: testUid }, function (err) {
 				assert.ifError(err);
 				Groups.isMember(testUid, 'PrivateCanJoin', function (err, isMember) {
 					assert.ifError(err);
@@ -547,7 +547,7 @@ describe('Groups', function () {
 		});
 
 		it('should grant ownership to user', function (done) {
-			socketGroups.grant({uid: adminUid}, {groupName: 'PrivateCanJoin', toUid: testUid}, function (err) {
+			socketGroups.grant({ uid: adminUid }, { groupName: 'PrivateCanJoin', toUid: testUid }, function (err) {
 				assert.ifError(err);
 				Groups.ownership.isOwner(testUid, 'PrivateCanJoin', function (err, isOwner) {
 					assert.ifError(err);
@@ -558,7 +558,7 @@ describe('Groups', function () {
 		});
 
 		it('should rescind ownership from user', function (done) {
-			socketGroups.rescind({uid: adminUid}, {groupName: 'PrivateCanJoin', toUid: testUid}, function (err) {
+			socketGroups.rescind({ uid: adminUid }, { groupName: 'PrivateCanJoin', toUid: testUid }, function (err) {
 				assert.ifError(err);
 				Groups.ownership.isOwner(testUid, 'PrivateCanJoin', function (err, isOwner) {
 					assert.ifError(err);
@@ -569,7 +569,7 @@ describe('Groups', function () {
 		});
 
 		it('should kick user from group', function (done) {
-			socketGroups.kick({uid: adminUid}, {groupName: 'PrivateCanJoin', uid: testUid}, function (err) {
+			socketGroups.kick({ uid: adminUid }, { groupName: 'PrivateCanJoin', uid: testUid }, function (err) {
 				assert.ifError(err);
 				Groups.isMember(testUid, 'PrivateCanJoin', function (err, isMember) {
 					assert.ifError(err);
@@ -584,21 +584,21 @@ describe('Groups', function () {
 		var socketGroups = require('../src/socket.io/admin/groups');
 
 		it('should fail to create group with invalid data', function (done) {
-			socketGroups.create({uid: adminUid}, null, function (err) {
+			socketGroups.create({ uid: adminUid }, null, function (err) {
 				assert.equal(err.message, '[[error:invalid-data]]');
 				done();
 			});
 		});
 
 		it('should fail to create group if group name is privilege group', function (done) {
-			socketGroups.create({uid: adminUid}, {name: 'cid:1:privileges:read'}, function (err) {
+			socketGroups.create({ uid: adminUid }, { name: 'cid:1:privileges:read' }, function (err) {
 				assert.equal(err.message, '[[error:invalid-group-name]]');
 				done();
 			});
 		});
 
 		it('should create a group', function (done) {
-			socketGroups.create({uid: adminUid}, {name: 'newgroup', description: 'group created by admin'}, function (err, groupData) {
+			socketGroups.create({ uid: adminUid }, { name: 'newgroup', description: 'group created by admin' }, function (err, groupData) {
 				assert.ifError(err);
 				assert.equal(groupData.name, 'newgroup');
 				assert.equal(groupData.description, 'group created by admin');
@@ -610,14 +610,14 @@ describe('Groups', function () {
 		});
 
 		it('should fail to join with invalid data', function (done) {
-			socketGroups.join({uid: adminUid}, null, function (err) {
+			socketGroups.join({ uid: adminUid }, null, function (err) {
 				assert.equal(err.message, '[[error:invalid-data]]');
 				done();
 			});
 		});
 
 		it('should add user to group', function (done) {
-			socketGroups.join({uid: adminUid}, {uid: testUid, groupName: 'newgroup'}, function (err) {
+			socketGroups.join({ uid: adminUid }, { uid: testUid, groupName: 'newgroup' }, function (err) {
 				assert.ifError(err);
 				Groups.isMember(testUid, 'newgroup', function (err, isMember) {
 					assert.ifError(err);
@@ -628,35 +628,35 @@ describe('Groups', function () {
 		});
 
 		it('should fail to if user is already member', function (done) {
-			socketGroups.join({uid: adminUid}, {uid: testUid, groupName: 'newgroup'}, function (err) {
+			socketGroups.join({ uid: adminUid }, { uid: testUid, groupName: 'newgroup' }, function (err) {
 				assert.equal(err.message, '[[error:group-already-member]]');
 				done();
 			});
 		});
 
 		it('it should fail with invalid data', function (done) {
-			socketGroups.leave({uid: adminUid}, null, function (err) {
+			socketGroups.leave({ uid: adminUid }, null, function (err) {
 				assert.equal(err.message, '[[error:invalid-data]]');
 				done();
 			});
 		});
 
 		it('it should fail if admin tries to remove self', function (done) {
-			socketGroups.leave({uid: adminUid}, {uid: adminUid, groupName: 'administrators'}, function (err) {
+			socketGroups.leave({ uid: adminUid }, { uid: adminUid, groupName: 'administrators' }, function (err) {
 				assert.equal(err.message, '[[error:cant-remove-self-as-admin]]');
 				done();
 			});
 		});
 
 		it('should fail if user is not member', function (done) {
-			socketGroups.leave({uid: adminUid}, {uid: 3, groupName: 'newgroup'}, function (err) {
+			socketGroups.leave({ uid: adminUid }, { uid: 3, groupName: 'newgroup' }, function (err) {
 				assert.equal(err.message, '[[error:group-not-member]]');
 				done();
 			});
 		});
 
 		it('should remove user from group', function (done) {
-			socketGroups.leave({uid: adminUid}, {uid: testUid, groupName: 'newgroup'}, function (err) {
+			socketGroups.leave({ uid: adminUid }, { uid: testUid, groupName: 'newgroup' }, function (err) {
 				assert.ifError(err);
 				Groups.isMember(testUid, 'newgroup', function (err, isMember) {
 					assert.ifError(err);
@@ -667,7 +667,7 @@ describe('Groups', function () {
 		});
 
 		it('should fail with invalid data', function (done) {
-			socketGroups.update({uid: adminUid}, null, function (err) {
+			socketGroups.update({ uid: adminUid }, null, function (err) {
 				assert.equal(err.message, '[[error:invalid-data]]');
 				done();
 			});
@@ -686,7 +686,7 @@ describe('Groups', function () {
 					private: 0,
 				},
 			};
-			socketGroups.update({uid: adminUid}, data, function (err) {
+			socketGroups.update({ uid: adminUid }, data, function (err) {
 				assert.ifError(err);
 				Groups.get('renamedgroup', {}, function (err, groupData) {
 					assert.ifError(err);
@@ -708,7 +708,7 @@ describe('Groups', function () {
 		var logoPath = path.join(__dirname, '../public/logo.png');
 		var imagePath = path.join(__dirname, '../public/groupcover.png');
 		before(function (done) {
-			User.create({username: 'regularuser', password: '123456'}, function (err, uid) {
+			User.create({ username: 'regularuser', password: '123456' }, function (err, uid) {
 				assert.ifError(err);
 				regularUid = uid;
 				async.series([
@@ -726,9 +726,9 @@ describe('Groups', function () {
 		});
 
 		it('should fail if user is not logged in or not owner', function (done) {
-			socketGroups.cover.update({uid: 0}, {}, function (err) {
+			socketGroups.cover.update({ uid: 0 }, {}, function (err) {
 				assert.equal(err.message, '[[error:no-privileges]]');
-				socketGroups.cover.update({uid: regularUid}, {}, function (err) {
+				socketGroups.cover.update({ uid: regularUid }, {}, function (err) {
 					assert.equal(err.message, '[[error:no-privileges]]');
 					done();
 				});
@@ -740,7 +740,7 @@ describe('Groups', function () {
 				groupName: 'Test',
 				file: imagePath,
 			};
-			socketGroups.cover.update({uid: adminUid}, data, function (err, data) {
+			socketGroups.cover.update({ uid: adminUid }, data, function (err, data) {
 				assert.ifError(err);
 				Groups.getGroupFields('Test', ['cover:url'], function (err, groupData) {
 					assert.ifError(err);
@@ -756,7 +756,7 @@ describe('Groups', function () {
 				groupName: 'Test',
 				imageData: 'data:image/png;base64,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',
 			};
-			socketGroups.cover.update({uid: adminUid}, data, function (err, data) {
+			socketGroups.cover.update({ uid: adminUid }, data, function (err, data) {
 				assert.ifError(err);
 				Groups.getGroupFields('Test', ['cover:url'], function (err, groupData) {
 					assert.ifError(err);
@@ -771,7 +771,7 @@ describe('Groups', function () {
 				groupName: 'Test',
 				position: '50% 50%',
 			};
-			socketGroups.cover.update({uid: adminUid}, data, function (err) {
+			socketGroups.cover.update({ uid: adminUid }, data, function (err) {
 				assert.ifError(err);
 				Groups.getGroupFields('Test', ['cover:position'], function (err, groupData) {
 					assert.ifError(err);
@@ -791,7 +791,7 @@ describe('Groups', function () {
 		it('should error if user is not owner of group', function (done) {
 			helpers.loginUser('regularuser', '123456', function (err, jar, io, csrf_token) {
 				assert.ifError(err);
-				helpers.uploadFile(nconf.get('url') + '/api/groups/uploadpicture', logoPath, {params: JSON.stringify({groupName: 'Test'})}, jar, csrf_token, function (err, res, body) {
+				helpers.uploadFile(nconf.get('url') + '/api/groups/uploadpicture', logoPath, { params: JSON.stringify({ groupName: 'Test' }) }, jar, csrf_token, function (err, res, body) {
 					assert.ifError(err);
 					assert.equal(res.statusCode, 500);
 					assert.equal(body.error, '[[error:no-privileges]]');
@@ -803,7 +803,7 @@ describe('Groups', function () {
 		it('should upload group cover with api route', function (done) {
 			helpers.loginUser('admin', '123456', function (err, jar, io, csrf_token) {
 				assert.ifError(err);
-				helpers.uploadFile(nconf.get('url') + '/api/groups/uploadpicture', logoPath, {params: JSON.stringify({groupName: 'Test'})}, jar, csrf_token, function (err, res, body) {
+				helpers.uploadFile(nconf.get('url') + '/api/groups/uploadpicture', logoPath, { params: JSON.stringify({ groupName: 'Test' }) }, jar, csrf_token, function (err, res, body) {
 					assert.ifError(err);
 					assert.equal(res.statusCode, 200);
 					Groups.getGroupFields('Test', ['cover:url'], function (err, groupData) {
@@ -816,14 +816,14 @@ describe('Groups', function () {
 		});
 
 		it('should fail to remove cover if not owner', function (done) {
-			socketGroups.cover.remove({uid: regularUid}, {groupName: 'Test'}, function (err) {
+			socketGroups.cover.remove({ uid: regularUid }, { groupName: 'Test' }, function (err) {
 				assert.equal(err.message, '[[error:no-privileges]]');
 				done();
 			});
 		});
 
 		it('should remove cover', function (done) {
-			socketGroups.cover.remove({uid: adminUid}, {groupName: 'Test'}, function (err) {
+			socketGroups.cover.remove({ uid: adminUid }, { groupName: 'Test' }, function (err) {
 				assert.ifError(err);
 				Groups.getGroupFields('Test', ['cover:url'], function (err, groupData) {
 					assert.ifError(err);

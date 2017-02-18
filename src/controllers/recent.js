@@ -13,7 +13,7 @@ var pagination = require('../pagination');
 
 var recentController = {};
 
-var validFilter = {'': true, new: true, watched: true};
+var validFilter = { '': true, new: true, watched: true };
 
 recentController.get = function (req, res, next) {
 	var page = parseInt(req.query.page, 10) || 1;
@@ -84,7 +84,7 @@ recentController.get = function (req, res, next) {
 		data.pagination = pagination.create(page, pageCount, req.query);
 
 		if (req.path.startsWith('/api/recent') || req.path.startsWith('/recent')) {
-			data.breadcrumbs = helpers.buildBreadcrumbs([{text: '[[recent:title]]'}]);
+			data.breadcrumbs = helpers.buildBreadcrumbs([{ text: '[[recent:title]]' }]);
 		}
 
 		data.querystring = cid ? ('?cid=' + validator.escape(String(cid))) : '';

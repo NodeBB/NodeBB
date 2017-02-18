@@ -52,7 +52,7 @@ module.exports = function (Topics) {
 				if (!results.isAdminOrMod) {
 					return next(new Error('[[error:no-privileges]]'));
 				}
-				Topics.create({uid: results.postData.uid, title: title, cid: cid}, next);
+				Topics.create({ uid: results.postData.uid, title: title, cid: cid }, next);
 			},
 			function (results, next) {
 				Topics.updateTopicBookmarks(fromTid, pids, function () { next(null, results); });
@@ -134,7 +134,7 @@ module.exports = function (Topics) {
 			if (err) {
 				return callback(err);
 			}
-			plugins.fireHook('action:post.move', {post: postData, tid: tid});
+			plugins.fireHook('action:post.move', { post: postData, tid: tid });
 			callback();
 		});
 	};

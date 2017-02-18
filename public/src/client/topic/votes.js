@@ -82,7 +82,7 @@ define('forum/topic/votes', ['components', 'translator'], function (components, 
 	};
 
 	Votes.showVotes = function (pid) {
-		socket.emit('posts.getVoters', {pid: pid, cid: ajaxify.data.cid}, function (err, data) {
+		socket.emit('posts.getVoters', { pid: pid, cid: ajaxify.data.cid }, function (err, data) {
 			if (err) {
 				if (err.message === '[[error:no-privileges]]') {
 					return;

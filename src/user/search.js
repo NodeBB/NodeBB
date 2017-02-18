@@ -33,7 +33,7 @@ module.exports = function (User) {
 				filterAndSortUids(uids, data, next);
 			},
 			function (uids, next) {
-				plugins.fireHook('filter:users.search', {uids: uids, uid: uid}, next);
+				plugins.fireHook('filter:users.search', { uids: uids, uid: uid }, next);
 			},
 			function (data, next) {
 				var uids = data.uids;
@@ -156,7 +156,7 @@ module.exports = function (User) {
 			function (users, next) {
 				var diff = process.hrtime(start);
 				var timing = ((diff[0] * 1e3) + (diff[1] / 1e6)).toFixed(1);
-				next(null, {timing: timing, users: users});
+				next(null, { timing: timing, users: users });
 			},
 		], callback);
 	}

@@ -12,7 +12,7 @@ describe('authentication', function () {
 	var jar = request.jar();
 	var regularUid;
 	before(function (done) {
-		user.create({username: 'regular', password: 'regularpwd', email: 'regular@nodebb.org' }, function (err, uid) {
+		user.create({ username: 'regular', password: 'regularpwd', email: 'regular@nodebb.org' }, function (err, uid) {
 			assert.ifError(err);
 			regularUid = uid;
 			done();
@@ -136,7 +136,7 @@ describe('authentication', function () {
 		db.sortedSetCard('uid:' + regularUid + ':sessions', function (err, count) {
 			assert.ifError(err);
 			assert(count);
-			socketAdmin.deleteAllSessions({uid: 1}, {}, function (err) {
+			socketAdmin.deleteAllSessions({ uid: 1 }, {}, function (err) {
 				assert.ifError(err);
 				db.sortedSetCard('uid:' + regularUid + ':sessions', function (err, count) {
 					assert.ifError(err);

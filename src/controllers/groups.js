@@ -19,7 +19,7 @@ groupsController.list = function (req, res, next) {
 			return next(err);
 		}
 		data.title = '[[pages:groups]]';
-		data.breadcrumbs = helpers.buildBreadcrumbs([{text: '[[pages:groups]]'}]);
+		data.breadcrumbs = helpers.buildBreadcrumbs([{ text: '[[pages:groups]]' }]);
 		res.render('groups/list', data);
 	});
 };
@@ -108,7 +108,7 @@ groupsController.details = function (req, res, callback) {
 		}
 		results.group.isOwner = results.group.isOwner || results.isAdmin || (results.isGlobalMod && !results.group.system);
 		results.title = '[[pages:group, ' + results.group.displayName + ']]';
-		results.breadcrumbs = helpers.buildBreadcrumbs([{text: '[[pages:groups]]', url: '/groups' }, {text: results.group.displayName}]);
+		results.breadcrumbs = helpers.buildBreadcrumbs([{ text: '[[pages:groups]]', url: '/groups' }, { text: results.group.displayName }]);
 		results.allowPrivateGroups = parseInt(meta.config.allowPrivateGroups, 10) === 1;
 
 		res.render('groups/details', results);
@@ -145,9 +145,9 @@ groupsController.members = function (req, res, callback) {
 		}
 
 		var breadcrumbs = helpers.buildBreadcrumbs([
-			{text: '[[pages:groups]]', url: '/groups' },
-			{text: validator.escape(String(groupName)), url: '/groups/' + req.params.slug},
-			{text: '[[groups:details.members]]'},
+			{ text: '[[pages:groups]]', url: '/groups' },
+			{ text: validator.escape(String(groupName)), url: '/groups/' + req.params.slug },
+			{ text: '[[groups:details.members]]' },
 		]);
 
 		res.render('groups/members', {
@@ -180,7 +180,7 @@ groupsController.uploadCover = function (req, res, next) {
 		if (err) {
 			return next(err);
 		}
-		res.json([{url: image.url.startsWith('http') ? image.url : nconf.get('relative_path') + image.url}]);
+		res.json([{ url: image.url.startsWith('http') ? image.url : nconf.get('relative_path') + image.url }]);
 	});
 };
 

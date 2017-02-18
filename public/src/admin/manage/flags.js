@@ -62,7 +62,7 @@ define('admin/manage/flags', [
 				}
 				var pid = btn.parents('[data-pid]').attr('data-pid');
 				var tid = btn.parents('[data-pid]').attr('data-tid');
-				socket.emit('posts.delete', {pid: pid, tid: tid}, function (err) {
+				socket.emit('posts.delete', { pid: pid, tid: tid }, function (err) {
 					done(err, btn);
 				});
 			});

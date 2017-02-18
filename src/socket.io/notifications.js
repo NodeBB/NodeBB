@@ -29,7 +29,7 @@ SocketNotifs.loadMore = function (socket, data, callback) {
 			user.notifications.getAll(socket.uid, start, stop, next);
 		},
 		function (notifications, next) {
-			next(null, {notifications: notifications, nextStart: stop});
+			next(null, { notifications: notifications, nextStart: stop });
 		},
 	], callback);
 };

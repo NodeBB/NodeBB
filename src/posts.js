@@ -65,7 +65,7 @@ var plugins = require('./plugins');
 				}, next);
 			},
 			function (posts, next) {
-				plugins.fireHook('filter:post.getPosts', {posts: posts, uid: uid}, next);
+				plugins.fireHook('filter:post.getPosts', { posts: posts, uid: uid }, next);
 			},
 			function (data, next) {
 				if (!data || !Array.isArray(data.posts)) {
@@ -86,10 +86,10 @@ var plugins = require('./plugins');
 				privileges.posts.filter('read', pids, uid, next);
 			},
 			function (pids, next) {
-				Posts.getPostSummaryByPids(pids, uid, {stripTags: false}, next);
+				Posts.getPostSummaryByPids(pids, uid, { stripTags: false }, next);
 			},
 			function (posts, next) {
-				next(null, {posts: posts, nextStart: stop + 1});
+				next(null, { posts: posts, nextStart: stop + 1 });
 			},
 		], callback);
 	};
@@ -122,7 +122,7 @@ var plugins = require('./plugins');
 
 			data.pid = pid;
 
-			plugins.fireHook('filter:post.getFields', {posts: [data], fields: fields}, function (err, data) {
+			plugins.fireHook('filter:post.getFields', { posts: [data], fields: fields }, function (err, data) {
 				callback(err, (data && Array.isArray(data.posts) && data.posts.length) ? data.posts[0] : null);
 			});
 		});
@@ -141,7 +141,7 @@ var plugins = require('./plugins');
 			if (err) {
 				return callback(err);
 			}
-			plugins.fireHook('filter:post.getFields', {posts: posts, fields: fields}, function (err, data) {
+			plugins.fireHook('filter:post.getFields', { posts: posts, fields: fields }, function (err, data) {
 				callback(err, (data && Array.isArray(data.posts)) ? data.posts : null);
 			});
 		});
@@ -250,7 +250,7 @@ var plugins = require('./plugins');
 				], next);
 			},
 			function (next) {
-				Posts.setPostFields(postData.pid, {upvotes: postData.upvotes, downvotes: postData.downvotes}, next);
+				Posts.setPostFields(postData.pid, { upvotes: postData.upvotes, downvotes: postData.downvotes }, next);
 			},
 		], function (err) {
 			callback(err);

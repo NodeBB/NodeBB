@@ -141,7 +141,7 @@ module.exports = function (middleware) {
 			return next();
 		}
 
-		res.status(403).render('403', {title: '[[global:403.title]]'});
+		res.status(403).render('403', { title: '[[global:403.title]]' });
 	};
 
 	middleware.registrationComplete = function (req, res, next) {

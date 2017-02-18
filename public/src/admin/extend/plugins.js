@@ -145,7 +145,7 @@ define('admin/extend/plugins', ['jqueryui', 'translator'], function (jqueryui, t
 			var plugins = $('#order-active-plugins-modal .plugin-list').children();
 			var data = [];
 			plugins.each(function (index, el) {
-				data.push({name: $(el).text(), order: index});
+				data.push({ name: $(el).text(), order: index });
 			});
 
 			socket.emit('admin.plugins.orderActivePlugins', data, function (err) {

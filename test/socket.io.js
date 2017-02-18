@@ -28,7 +28,7 @@ describe('socket.io', function () {
 	before(function (done) {
 		async.series([
 			async.apply(user.create, { username: 'admin', password: 'adminpwd' }),
-			async.apply(user.create, { username: 'regular', password: 'regularpwd', email: 'regular@test.com'}),
+			async.apply(user.create, { username: 'regular', password: 'regularpwd', email: 'regular@test.com' }),
 			async.apply(categories.create, {
 				name: 'Test Category',
 				description: 'Test category created by testing script',
@@ -76,7 +76,7 @@ describe('socket.io', function () {
 					};
 				};
 
-				io = require('socket.io-client')(nconf.get('url'), {forceNew: true});
+				io = require('socket.io-client')(nconf.get('url'), { forceNew: true });
 
 				io.on('connect', function () {
 					done();
@@ -113,7 +113,7 @@ describe('socket.io', function () {
 	});
 
 	it('should post a topic', function (done) {
-		io.emit('topics.post', {title: 'test topic title', content: 'test topic main post content', uid: adminUid, cid: cid}, function (err, result) {
+		io.emit('topics.post', { title: 'test topic title', content: 'test topic main post content', uid: adminUid, cid: cid }, function (err, result) {
 			assert.ifError(err);
 			assert.equal(result.user.username, 'admin');
 			assert.equal(result.category.cid, cid);
@@ -124,7 +124,7 @@ describe('socket.io', function () {
 	});
 
 	it('should reply to topic', function (done) {
-		io.emit('posts.reply', {tid: tid, uid: adminUid, content: 'test post content'}, function (err, result) {
+		io.emit('posts.reply', { tid: tid, uid: adminUid, content: 'test post content' }, function (err, result) {
 			assert.ifError(err);
 			assert.equal(result.uid, adminUid);
 			assert.equal(result.user.username, 'admin');
@@ -135,7 +135,7 @@ describe('socket.io', function () {
 
 	it('should ban a user', function (done) {
 		var socketUser = require('../src/socket.io/user');
-		socketUser.banUsers({uid: adminUid}, {uids: [regularUid], reason: 'spammer'}, function (err) {
+		socketUser.banUsers({ uid: adminUid }, { uids: [regularUid], reason: 'spammer' }, function (err) {
 			assert.ifError(err);
 			user.getLatestBanInfo(regularUid, function (err, data) {
 				assert.ifError(err);
@@ -159,7 +159,7 @@ describe('socket.io', function () {
 
 	it('should unban a user', function (done) {
 		var socketUser = require('../src/socket.io/user');
-		socketUser.unbanUsers({uid: adminUid}, [regularUid], function (err) {
+		socketUser.unbanUsers({ uid: adminUid }, [regularUid], function (err) {
 			assert.ifError(err);
 			user.isBanned(regularUid, function (err, isBanned) {
 				assert.ifError(err);
@@ -171,7 +171,7 @@ describe('socket.io', function () {
 
 	it('should make user admin', function (done) {
 		var socketAdmin = require('../src/socket.io/admin');
-		socketAdmin.user.makeAdmins({uid: adminUid}, [regularUid], function (err) {
+		socketAdmin.user.makeAdmins({ uid: adminUid }, [regularUid], function (err) {
 			assert.ifError(err);
 			groups.isMember(regularUid, 'administrators', function (err, isMember) {
 				assert.ifError(err);
@@ -183,7 +183,7 @@ describe('socket.io', function () {
 
 	it('should make user non-admin', function (done) {
 		var socketAdmin = require('../src/socket.io/admin');
-		socketAdmin.user.removeAdmins({uid: adminUid}, [regularUid], function (err) {
+		socketAdmin.user.removeAdmins({ uid: adminUid }, [regularUid], function (err) {
 			assert.ifError(err);
 			groups.isMember(regularUid, 'administrators', function (err, isMember) {
 				assert.ifError(err);
@@ -197,7 +197,7 @@ describe('socket.io', function () {
 		var socketAdmin = require('../src/socket.io/admin');
 		var uid;
 		it('should create a user', function (done) {
-			socketAdmin.user.createUser({uid: adminUid}, {username: 'foo1'}, function (err, _uid) {
+			socketAdmin.user.createUser({ uid: adminUid }, { username: 'foo1' }, function (err, _uid) {
 				assert.ifError(err);
 				uid = _uid;
 				groups.isMember(uid, 'registered-users', function (err, isMember) {
@@ -209,7 +209,7 @@ describe('socket.io', function () {
 		});
 
 		it('should delete users', function (done) {
-			socketAdmin.user.deleteUsers({uid: adminUid}, [uid], function (err) {
+			socketAdmin.user.deleteUsers({ uid: adminUid }, [uid], function (err) {
 				assert.ifError(err);
 				groups.isMember(uid, 'registered-users', function (err, isMember) {
 					assert.ifError(err);
@@ -220,7 +220,7 @@ describe('socket.io', function () {
 		});
 
 		it('should delete users and their content', function (done) {
-			socketAdmin.user.deleteUsersAndContent({uid: adminUid}, [uid], function (err) {
+			socketAdmin.user.deleteUsersAndContent({ uid: adminUid }, [uid], function (err) {
 				assert.ifError(err);
 				done();
 			});
@@ -229,7 +229,7 @@ describe('socket.io', function () {
 
 	it('should error with invalid data', function (done) {
 		var socketAdmin = require('../src/socket.io/admin');
-		socketAdmin.user.createUser({uid: adminUid}, null, function (err) {
+		socketAdmin.user.createUser({ uid: adminUid }, null, function (err) {
 			assert.equal(err.message, '[[error:invalid-data]]');
 			done();
 		});
@@ -237,7 +237,7 @@ describe('socket.io', function () {
 
 	it('should reset lockouts', function (done) {
 		var socketAdmin = require('../src/socket.io/admin');
-		socketAdmin.user.resetLockouts({uid: adminUid}, [regularUid], function (err) {
+		socketAdmin.user.resetLockouts({ uid: adminUid }, [regularUid], function (err) {
 			assert.ifError(err);
 			done();
 		});
@@ -245,7 +245,7 @@ describe('socket.io', function () {
 
 	it('should reset flags', function (done) {
 		var socketAdmin = require('../src/socket.io/admin');
-		socketAdmin.user.resetFlags({uid: adminUid}, [regularUid], function (err) {
+		socketAdmin.user.resetFlags({ uid: adminUid }, [regularUid], function (err) {
 			assert.ifError(err);
 			done();
 		});
@@ -257,7 +257,7 @@ describe('socket.io', function () {
 		var meta = require('../src/meta');
 
 		it('should validate emails', function (done) {
-			socketAdmin.user.validateEmail({uid: adminUid}, [regularUid], function (err) {
+			socketAdmin.user.validateEmail({ uid: adminUid }, [regularUid], function (err) {
 				assert.ifError(err);
 				user.getUserField(regularUid, 'email:confirmed', function (err, emailConfirmed) {
 					assert.ifError(err);
@@ -269,7 +269,7 @@ describe('socket.io', function () {
 
 		it('should error with invalid uids', function (done) {
 			var socketAdmin = require('../src/socket.io/admin');
-			socketAdmin.user.sendValidationEmail({uid: adminUid}, null, function (err) {
+			socketAdmin.user.sendValidationEmail({ uid: adminUid }, null, function (err) {
 				assert.equal(err.message, '[[error:invalid-data]]');
 				done();
 			});
@@ -277,7 +277,7 @@ describe('socket.io', function () {
 
 		it('should error if email validation is not required', function (done) {
 			var socketAdmin = require('../src/socket.io/admin');
-			socketAdmin.user.sendValidationEmail({uid: adminUid}, [regularUid], function (err) {
+			socketAdmin.user.sendValidationEmail({ uid: adminUid }, [regularUid], function (err) {
 				assert.equal(err.message, '[[error:email-confirmations-are-disabled]]');
 				done();
 			});
@@ -286,7 +286,7 @@ describe('socket.io', function () {
 		it('should send validation email', function (done) {
 			var socketAdmin = require('../src/socket.io/admin');
 			meta.config.requireEmailConfirmation = 1;
-			socketAdmin.user.sendValidationEmail({uid: adminUid}, [regularUid], function (err) {
+			socketAdmin.user.sendValidationEmail({ uid: adminUid }, [regularUid], function (err) {
 				assert.ifError(err);
 				meta.config.requireEmailConfirmation = 0;
 				done();
@@ -296,7 +296,7 @@ describe('socket.io', function () {
 
 	it('should search users', function (done) {
 		var socketAdmin = require('../src/socket.io/admin');
-		socketAdmin.user.search({uid: adminUid}, {query: 'reg', searchBy: 'username'}, function (err, data) {
+		socketAdmin.user.search({ uid: adminUid }, { query: 'reg', searchBy: 'username' }, function (err, data) {
 			assert.ifError(err);
 			assert.equal(data.matchCount, 1);
 			assert.equal(data.users[0].username, 'regular');
@@ -306,7 +306,7 @@ describe('socket.io', function () {
 
 	it('should push unread notifications on reconnect', function (done) {
 		var socketMeta = require('../src/socket.io/meta');
-		socketMeta.reconnected({uid: 1}, {}, function (err) {
+		socketMeta.reconnected({ uid: 1 }, {}, function (err) {
 			assert.ifError(err);
 			done();
 		});
@@ -322,14 +322,14 @@ describe('socket.io', function () {
 
 	it('should return if uid is 0', function (done) {
 		var socketMeta = require('../src/socket.io/meta');
-		socketMeta.rooms.enter({uid: 0}, null, function (err) {
+		socketMeta.rooms.enter({ uid: 0 }, null, function (err) {
 			assert.ifError(err);
 			done();
 		});
 	});
 
 	it('should join a room', function (done) {
-		io.emit('meta.rooms.enter', {enter: 'recent_topics'}, function (err) {
+		io.emit('meta.rooms.enter', { enter: 'recent_topics' }, function (err) {
 			assert.ifError(err);
 			done();
 		});
@@ -344,7 +344,7 @@ describe('socket.io', function () {
 
 	it('should get server time', function (done) {
 		var socketMeta = require('../src/socket.io/meta');
-		socketMeta.getServerTime({uid: 1}, null, function (err, time) {
+		socketMeta.getServerTime({ uid: 1 }, null, function (err, time) {
 			assert.ifError(err);
 			assert(time);
 			done();
@@ -352,7 +352,7 @@ describe('socket.io', function () {
 	});
 
 	it('should get daily analytics', function (done) {
-		io.emit('admin.analytics.get', {graph: 'traffic', units: 'days'}, function (err, data) {
+		io.emit('admin.analytics.get', { graph: 'traffic', units: 'days' }, function (err, data) {
 			assert.ifError(err);
 			assert(data);
 			assert(data.monthlyPageViews);
@@ -361,7 +361,7 @@ describe('socket.io', function () {
 	});
 
 	it('should get hourly analytics', function (done) {
-		io.emit('admin.analytics.get', {graph: 'traffic', units: 'hours'}, function (err, data) {
+		io.emit('admin.analytics.get', { graph: 'traffic', units: 'hours' }, function (err, data) {
 			assert.ifError(err);
 			assert(data);
 			assert(data.monthlyPageViews);
@@ -371,7 +371,7 @@ describe('socket.io', function () {
 
 	it('should return error', function (done) {
 		var socketAdmin = require('../src/socket.io/admin');
-		socketAdmin.before({uid: 10}, 'someMethod', {}, function (err) {
+		socketAdmin.before({ uid: 10 }, 'someMethod', {}, function (err) {
 			assert.equal(err.message, '[[error:no-privileges]]');
 			done();
 		});
@@ -380,12 +380,12 @@ describe('socket.io', function () {
 	it('should get room stats', function (done) {
 		var socketAdmin = require('../src/socket.io/admin');
 
-		io.emit('meta.rooms.enter', {enter: 'topic_1'}, function (err) {
+		io.emit('meta.rooms.enter', { enter: 'topic_1' }, function (err) {
 			assert.ifError(err);
-			socketAdmin.rooms.getAll({uid: 10}, {}, function (err) {
+			socketAdmin.rooms.getAll({ uid: 10 }, {}, function (err) {
 				assert.ifError(err);
 				setTimeout(function () {
-					socketAdmin.rooms.getAll({uid: 10}, {}, function (err, data) {
+					socketAdmin.rooms.getAll({ uid: 10 }, {}, function (err, data) {
 						assert.ifError(err);
 						assert(data.hasOwnProperty('onlineGuestCount'));
 						assert(data.hasOwnProperty('onlineRegisteredCount'));
@@ -403,12 +403,12 @@ describe('socket.io', function () {
 	it('should get room stats', function (done) {
 		var socketAdmin = require('../src/socket.io/admin');
 
-		io.emit('meta.rooms.enter', {enter: 'category_1'}, function (err) {
+		io.emit('meta.rooms.enter', { enter: 'category_1' }, function (err) {
 			assert.ifError(err);
-			socketAdmin.rooms.getAll({uid: 10}, {}, function (err) {
+			socketAdmin.rooms.getAll({ uid: 10 }, {}, function (err) {
 				assert.ifError(err);
 				setTimeout(function () {
-					socketAdmin.rooms.getAll({uid: 10}, {}, function (err, data) {
+					socketAdmin.rooms.getAll({ uid: 10 }, {}, function (err, data) {
 						assert.ifError(err);
 						assert.equal(data.users.category, 1);
 						done();
@@ -420,7 +420,7 @@ describe('socket.io', function () {
 
 	it('should get admin search dictionary', function (done) {
 		var socketAdmin = require('../src/socket.io/admin');
-		socketAdmin.getSearchDict({uid: adminUid}, {}, function (err, data) {
+		socketAdmin.getSearchDict({ uid: adminUid }, {}, function (err, data) {
 			assert.ifError(err);
 			assert(Array.isArray(data));
 			assert(data[0].namespace);

@@ -22,7 +22,7 @@ pubsub.on('sync:stats:start', function () {
 		if (err) {
 			return winston.error(err);
 		}
-		pubsub.publish('sync:stats:end', {stats: stats, id: os.hostname() + ':' + nconf.get('port')});
+		pubsub.publish('sync:stats:end', { stats: stats, id: os.hostname() + ':' + nconf.get('port') });
 	});
 });
 
@@ -81,7 +81,7 @@ SocketRooms.getAll = function (socket, data, callback) {
 			totals.users.category += stats[instance].users.category;
 
 			stats[instance].topics.forEach(function (topic) {
-				totals.topics[topic.tid] = totals.topics[topic.tid] || {count: 0, tid: topic.tid};
+				totals.topics[topic.tid] = totals.topics[topic.tid] || { count: 0, tid: topic.tid };
 				totals.topics[topic.tid].count += topic.count;
 			});
 		}
@@ -89,7 +89,7 @@ SocketRooms.getAll = function (socket, data, callback) {
 
 	var topTenTopics = [];
 	Object.keys(totals.topics).forEach(function (tid) {
-		topTenTopics.push({tid: tid, count: totals.topics[tid].count});
+		topTenTopics.push({ tid: tid, count: totals.topics[tid].count });
 	});
 
 	topTenTopics = topTenTopics.sort(function (a, b) {
@@ -165,7 +165,7 @@ SocketRooms.getLocalStats = function (callback) {
 				tid = room.match(/^topic_(\d+)/);
 				if (tid) {
 					socketData.users.topics += roomClients[room].length;
-					topTenTopics.push({tid: tid[1], count: roomClients[room].length});
+					topTenTopics.push({ tid: tid[1], count: roomClients[room].length });
 				} else if (room.match(/^category/)) {
 					socketData.users.category += roomClients[room].length;
 				}

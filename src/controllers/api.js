@@ -311,7 +311,7 @@ apiController.getModerators = function (req, res, next) {
 		if (err) {
 			return next(err);
 		}
-		res.json({moderators: moderators});
+		res.json({ moderators: moderators });
 	});
 };
 

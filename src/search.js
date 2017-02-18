@@ -76,7 +76,7 @@ function searchInContent(data, callback) {
 
 			var matchCount = 0;
 			if (!results || (!results.pids.length && !results.tids.length)) {
-				return callback(null, {posts: [], matchCount: matchCount, pageCount: 1});
+				return callback(null, { posts: [], matchCount: matchCount, pageCount: 1 });
 			}
 
 			async.waterfall([
@@ -105,7 +105,7 @@ function searchInContent(data, callback) {
 					posts.getPostSummaryByPids(pids, data.uid, {}, next);
 				},
 				function (posts, next) {
-					next(null, {posts: posts, matchCount: matchCount, pageCount: Math.max(1, Math.ceil(parseInt(matchCount, 10) / 10))});
+					next(null, { posts: posts, matchCount: matchCount, pageCount: Math.max(1, Math.ceil(parseInt(matchCount, 10) / 10)) });
 				},
 			], callback);
 		});

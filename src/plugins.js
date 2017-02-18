@@ -135,7 +135,7 @@ var middleware;
 		};
 
 		var controllers = require('./controllers');
-		Plugins.fireHook('static:app.load', {app: app, router: router, middleware: middleware, controllers: controllers}, function (err) {
+		Plugins.fireHook('static:app.load', { app: app, router: router, middleware: middleware, controllers: controllers }, function (err) {
 			if (err) {
 				return winston.error('[plugins] Encountered error while executing post-router plugins hooks: ' + err.message);
 			}

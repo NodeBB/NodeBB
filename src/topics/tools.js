@@ -97,7 +97,7 @@ module.exports = function (Topics) {
 				Topics.purgePostsAndTopic(tid, uid, next);
 			},
 			function (next) {
-				next(null, {tid: tid, cid: cid, uid: uid});
+				next(null, { tid: tid, cid: cid, uid: uid });
 			},
 		], callback);
 	};

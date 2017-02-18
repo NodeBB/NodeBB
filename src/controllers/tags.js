@@ -19,7 +19,7 @@ tagsController.getTag = function (req, res, next) {
 	var templateData = {
 		topics: [],
 		tag: tag,
-		breadcrumbs: helpers.buildBreadcrumbs([{text: '[[tags:tags]]', url: '/tags'}, {text: tag}]),
+		breadcrumbs: helpers.buildBreadcrumbs([{ text: '[[tags:tags]]', url: '/tags' }, { text: tag }]),
 		title: '[[pages:tag, ' + tag + ']]',
 	};
 	var settings;
@@ -86,7 +86,7 @@ tagsController.getTags = function (req, res, next) {
 		var data = {
 			tags: tags,
 			nextStart: 100,
-			breadcrumbs: helpers.buildBreadcrumbs([{text: '[[tags:tags]]'}]),
+			breadcrumbs: helpers.buildBreadcrumbs([{ text: '[[tags:tags]]' }]),
 			title: '[[pages:tags]]',
 		};
 		res.render('tags', data);

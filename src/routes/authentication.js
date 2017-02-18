@@ -40,7 +40,7 @@
 			winston.warn('[authentication] Login override detected, skipping local login strategy.');
 			plugins.fireHook('action:auth.overrideLogin');
 		} else {
-			passport.use(new passportLocal({passReqToCallback: true}, controllers.authentication.localLogin));
+			passport.use(new passportLocal({ passReqToCallback: true }, controllers.authentication.localLogin));
 		}
 
 		plugins.fireHook('filter:auth.init', loginStrategies, function (err) {

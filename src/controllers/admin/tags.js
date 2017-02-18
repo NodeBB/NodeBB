@@ -10,7 +10,7 @@ tagsController.get = function (req, res, next) {
 			return next(err);
 		}
 
-		res.render('admin/manage/tags', {tags: tags});
+		res.render('admin/manage/tags', { tags: tags });
 	});
 };
 

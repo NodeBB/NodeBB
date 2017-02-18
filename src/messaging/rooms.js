@@ -79,7 +79,7 @@ module.exports = function (Messaging) {
 				db.isSortedSetMember('chat:room:' + roomId + ':uids', uid, next);
 			},
 			function (inRoom, next) {
-				plugins.fireHook('filter:messaging.isUserInRoom', {uid: uid, roomId: roomId, inRoom: inRoom}, next);
+				plugins.fireHook('filter:messaging.isUserInRoom', { uid: uid, roomId: roomId, inRoom: inRoom }, next);
 			},
 			function (data, next) {
 				next(null, data.inRoom);
@@ -214,7 +214,7 @@ module.exports = function (Messaging) {
 				db.isSortedSetMember('chat:room:' + roomId + ':uids', uid, next);
 			},
 			function (inRoom, next) {
-				plugins.fireHook('filter:messaging.canReply', {uid: uid, roomId: roomId, inRoom: inRoom, canReply: inRoom}, next);
+				plugins.fireHook('filter:messaging.canReply', { uid: uid, roomId: roomId, inRoom: inRoom, canReply: inRoom }, next);
 			},
 			function (data, next) {
 				next(null, data.canReply);

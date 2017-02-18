@@ -26,7 +26,7 @@ widgets.render = function (uid, area, req, res, callback) {
 			widgetsByLocation[location] = data.global[location].concat(data[area.template][location]);
 
 			if (!widgetsByLocation[location].length) {
-				return done(null, {location: location, widgets: []});
+				return done(null, { location: location, widgets: [] });
 			}
 
 			async.map(widgetsByLocation[location], function (widget, next) {
@@ -59,14 +59,14 @@ widgets.render = function (uid, area, req, res, callback) {
 								body: html,
 							});
 
-							next(null, {html: html});
+							next(null, { html: html });
 						});
 					} else {
-						next(null, {html: html});
+						next(null, { html: html });
 					}
 				});
 			}, function (err, result) {
-				done(err, {location: location, widgets: result.filter(Boolean)});
+				done(err, { location: location, widgets: result.filter(Boolean) });
 			});
 		}, callback);
 	});

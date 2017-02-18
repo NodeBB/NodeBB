@@ -169,7 +169,7 @@ SocketAdmin.config.setMultiple = function (socket, data, callback) {
 						value: data[field],
 					};
 					plugins.fireHook('action:config.set', setting);
-					logger.monitorConfig({io: index.server}, setting);
+					logger.monitorConfig({ io: index.server }, setting);
 				}
 			}
 			setImmediate(next);

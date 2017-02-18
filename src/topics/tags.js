@@ -20,7 +20,7 @@ module.exports = function (Topics) {
 
 		async.waterfall([
 			function (next) {
-				plugins.fireHook('filter:tags.filter', {tags: tags, tid: tid}, next);
+				plugins.fireHook('filter:tags.filter', { tags: tags, tid: tid }, next);
 			},
 			function (data, next) {
 				tags = data.tags.slice(0, meta.config.maximumTagsPerTopic || 5);
@@ -230,7 +230,7 @@ module.exports = function (Topics) {
 				uniqueTopicTags = _.uniq(_.flatten(topicTags));
 
 				var tags = uniqueTopicTags.map(function (tag) {
-					return {value: tag};
+					return { value: tag };
 				});
 
 				async.parallel({
@@ -312,13 +312,13 @@ module.exports = function (Topics) {
 		async.waterfall([
 			function (next) {
 				if (plugins.hasListeners('filter:topics.searchTags')) {
-					plugins.fireHook('filter:topics.searchTags', {data: data}, next);
+					plugins.fireHook('filter:topics.searchTags', { data: data }, next);
 				} else {
 					findMatches(data.query, 0, next);
 				}
 			},
 			function (result, next) {
-				plugins.fireHook('filter:tags.search', {data: data, matches: result.matches}, next);
+				plugins.fireHook('filter:tags.search', { data: data, matches: result.matches }, next);
 			},
 			function (result, next) {
 				next(null, result.matches);
@@ -334,7 +334,7 @@ module.exports = function (Topics) {
 		async.waterfall([
 			function (next) {
 				if (plugins.hasListeners('filter:topics.autocompleteTags')) {
-					plugins.fireHook('filter:topics.autocompleteTags', {data: data}, next);
+					plugins.fireHook('filter:topics.autocompleteTags', { data: data }, next);
 				} else {
 					findMatches(data.query, data.cid, next);
 				}
@@ -377,7 +377,7 @@ module.exports = function (Topics) {
 				matches = matches.sort(function (a, b) {
 					return a > b;
 				});
-				next(null, {matches: matches});
+				next(null, { matches: matches });
 			},
 		], callback);
 	}
@@ -403,7 +403,7 @@ module.exports = function (Topics) {
 					},
 					tagData: function (next) {
 						tags = tags.map(function (tag) {
-							return {value: tag};
+							return { value: tag };
 						});
 
 						Topics.getTagData(tags, next);
@@ -427,7 +427,7 @@ module.exports = function (Topics) {
 
 	Topics.getRelatedTopics = function (topicData, uid, callback) {
 		if (plugins.hasListeners('filter:topic.getRelatedTopics')) {
-			return plugins.fireHook('filter:topic.getRelatedTopics', {topic: topicData, uid: uid}, callback);
+			return plugins.fireHook('filter:topic.getRelatedTopics', { topic: topicData, uid: uid }, callback);
 		}
 
 		var maximumTopics = parseInt(meta.config.maximumRelatedTopics, 10) || 0;

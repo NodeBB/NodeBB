@@ -97,7 +97,7 @@ module.exports = function (Topics) {
 					async.eachLimit(pids, 10, function (pid, next) {
 						posts.purge(pid, uid, next);
 					}, next);
-				}, {alwaysStartAt: 0}, next);
+				}, { alwaysStartAt: 0 }, next);
 			},
 			function (next) {
 				posts.purge(mainPid, uid, next);

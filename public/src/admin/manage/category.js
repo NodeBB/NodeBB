@@ -134,7 +134,7 @@ define('admin/manage/category', [
 
 		$('.copy-settings').on('click', function () {
 			selectCategoryModal(function (cid) {
-				socket.emit('admin.categories.copySettingsFrom', {fromCid: cid, toCid: ajaxify.data.category.cid}, function (err) {
+				socket.emit('admin.categories.copySettingsFrom', { fromCid: cid, toCid: ajaxify.data.category.cid }, function (err) {
 					if (err) {
 						return app.alertError(err.message);
 					}
@@ -152,7 +152,7 @@ define('admin/manage/category', [
 			uploader.show({
 				title: '[[admin/manage/categories:alert.upload-image]]',
 				route: config.relative_path + '/api/admin/category/uploadpicture',
-				params: {cid: cid},
+				params: { cid: cid },
 			}, function (imageUrlOnServer) {
 				$('#category-image').val(imageUrlOnServer);
 				var previewBox = inputEl.parent().parent().siblings('.category-preview');
@@ -434,7 +434,7 @@ define('admin/manage/category', [
 
 	Category.copyPrivilegesFromCategory = function () {
 		selectCategoryModal(function (cid) {
-			socket.emit('admin.categories.copyPrivilegesFrom', {toCid: ajaxify.data.category.cid, fromCid: cid}, function (err) {
+			socket.emit('admin.categories.copyPrivilegesFrom', { toCid: ajaxify.data.category.cid, fromCid: cid }, function (err) {
 				if (err) {
 					return app.alertError(err.message);
 				}

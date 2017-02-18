@@ -92,7 +92,7 @@ function onMessage(socket, payload) {
 		if (process.env.NODE_ENV === 'development') {
 			winston.warn('[socket.io] Unrecognized message: ' + eventName);
 		}
-		return callback({message: '[[error:invalid-event]]'});
+		return callback({ message: '[[error:invalid-event]]' });
 	}
 
 	socket.previousEvents = socket.previousEvents || [];
@@ -124,7 +124,7 @@ function onMessage(socket, payload) {
 			methodToCall(socket, params, next);
 		},
 	], function (err, result) {
-		callback(err ? {message: err.message} : null, result);
+		callback(err ? { message: err.message } : null, result);
 	});
 }
 
@@ -198,7 +198,7 @@ function addRedisAdapter(io) {
 		var redis = require('../database/redis');
 		var pub = redis.connect();
 		var sub = redis.connect();
-		io.adapter(redisAdapter({pubClient: pub, subClient: sub}));
+		io.adapter(redisAdapter({ pubClient: pub, subClient: sub }));
 	} else if (nconf.get('isCluster') === 'true') {
 		winston.warn('[socket.io] Clustering detected, you are advised to configure Redis as a websocket store.');
 	}

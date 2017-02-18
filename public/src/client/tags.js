@@ -19,7 +19,7 @@ define('forum/tags', ['forum/infinitescroll'], function (infinitescroll) {
 			}
 
 			timeoutId = setTimeout(function () {
-				socket.emit('topics.searchAndLoadTags', {query: $('#tag-search').val()}, function (err, results) {
+				socket.emit('topics.searchAndLoadTags', { query: $('#tag-search').val() }, function (err, results) {
 					if (err) {
 						return app.alertError(err.message);
 					}
@@ -63,7 +63,7 @@ define('forum/tags', ['forum/infinitescroll'], function (infinitescroll) {
 
 	function onTagsLoaded(tags, replace, callback) {
 		callback = callback || function () {};
-		app.parseAndTranslate('tags', 'tags', {tags: tags}, function (html) {
+		app.parseAndTranslate('tags', 'tags', { tags: tags }, function (html) {
 			$('.tag-list')[replace ? 'html' : 'append'](html);
 			utils.makeNumbersHumanReadable(html.find('.human-readable-number'));
 			callback();

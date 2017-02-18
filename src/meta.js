@@ -47,7 +47,7 @@ var utils = require('../public/src/utils');
 	};
 
 	Meta.restart = function () {
-		pubsub.publish('meta:restart', {hostname: os.hostname()});
+		pubsub.publish('meta:restart', { hostname: os.hostname() });
 		restart();
 	};
 

@@ -20,17 +20,17 @@ module.exports = function (Categories) {
 			},
 			function (topics, next) {
 				if (!Array.isArray(topics) || !topics.length) {
-					return next(null, {topics: [], uid: data.uid});
+					return next(null, { topics: [], uid: data.uid });
 				}
 
 				for (var i = 0; i < topics.length; i += 1) {
 					topics[i].index = data.start + i;
 				}
 
-				plugins.fireHook('filter:category.topics.get', {cid: data.cid, topics: topics, uid: data.uid}, next);
+				plugins.fireHook('filter:category.topics.get', { cid: data.cid, topics: topics, uid: data.uid }, next);
 			},
 			function (results, next) {
-				next(null, {topics: results.topics, nextStart: data.stop + 1});
+				next(null, { topics: results.topics, nextStart: data.stop + 1 });
 			},
 		], callback);
 	};
@@ -64,7 +64,7 @@ module.exports = function (Categories) {
 				stop = stop === -1 ? stop : start + normalTidsToGet - 1;
 
 				if (Array.isArray(set)) {
-					db[reverse ? 'getSortedSetRevIntersect' : 'getSortedSetIntersect']({sets: set, start: start, stop: stop}, next);
+					db[reverse ? 'getSortedSetRevIntersect' : 'getSortedSetIntersect']({ sets: set, start: start, stop: stop }, next);
 				} else {
 					db[reverse ? 'getSortedSetRevRange' : 'getSortedSetRange'](set, start, stop, next);
 				}

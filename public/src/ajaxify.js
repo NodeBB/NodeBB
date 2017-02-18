@@ -29,7 +29,7 @@ $(document).ready(function () {
 				}, ev.state.returnPath, config.relative_path + '/' + ev.state.returnPath);
 			} else if (ev.state.url !== undefined) {
 				ajaxify.go(ev.state.url, function () {
-					$(window).trigger('action:popstate', {url: ev.state.url});
+					$(window).trigger('action:popstate', { url: ev.state.url });
 				}, true);
 			}
 		}
@@ -73,7 +73,7 @@ $(document).ready(function () {
 
 		// If any listeners alter url and set it to an empty string, abort the ajaxification
 		if (url === null) {
-			$(window).trigger('action:ajaxify.end', {url: url, tpl_url: ajaxify.data.template.name, title: ajaxify.data.title});
+			$(window).trigger('action:ajaxify.end', { url: url, tpl_url: ajaxify.data.template.name, title: ajaxify.data.title });
 			return false;
 		}
 
@@ -196,7 +196,7 @@ $(document).ready(function () {
 		function done() {
 			count -= 1;
 			if (count === 0) {
-				$(window).trigger('action:ajaxify.end', {url: url, tpl_url: tpl_url, title: ajaxify.data.title});
+				$(window).trigger('action:ajaxify.end', { url: url, tpl_url: tpl_url, title: ajaxify.data.title });
 			}
 		}
 		var count = 2;
@@ -205,7 +205,7 @@ $(document).ready(function () {
 
 		ajaxify.widgets.render(tpl_url, url, done);
 
-		$(window).trigger('action:ajaxify.contentLoaded', {url: url, tpl: tpl_url});
+		$(window).trigger('action:ajaxify.contentLoaded', { url: url, tpl: tpl_url });
 
 		app.processPage();
 
@@ -284,7 +284,7 @@ $(document).ready(function () {
 	ajaxify.loadData = function (url, callback) {
 		url = ajaxify.removeRelativePath(url);
 
-		$(window).trigger('action:ajaxify.loadingData', {url: url});
+		$(window).trigger('action:ajaxify.loadingData', { url: url });
 
 		apiXHR = $.ajax({
 			url: RELATIVE_PATH + '/api/' + url,
@@ -300,7 +300,7 @@ $(document).ready(function () {
 				ajaxify.data = data;
 				data.config = config;
 
-				$(window).trigger('action:ajaxify.dataLoaded', {url: url, data: data});
+				$(window).trigger('action:ajaxify.dataLoaded', { url: url, data: data });
 
 				callback(null, data);
 			},

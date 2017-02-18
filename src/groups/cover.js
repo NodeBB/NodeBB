@@ -74,7 +74,7 @@ module.exports = function (Groups) {
 				if (unlinkErr) {
 					winston.error(unlinkErr);
 				}
-				callback(err, {url: url});
+				callback(err, { url: url });
 			});
 		});
 	};

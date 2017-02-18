@@ -37,7 +37,7 @@ util.inherits(PubSub, EventEmitter);
 
 PubSub.prototype.publish = function (event, data) {
 	if (this.pubClient) {
-		this.pubClient.publish(channelName, JSON.stringify({event: event, data: data}));
+		this.pubClient.publish(channelName, JSON.stringify({ event: event, data: data }));
 	} else {
 		this.emit(event, data);
 	}

@@ -74,7 +74,7 @@ authenticationController.register = function (req, res, next) {
 		},
 		function (queue, next) {
 			res.locals.processLogin = true;	// set it to false in plugin if you wish to just register only
-			plugins.fireHook('filter:register.check', {req: req, res: res, userData: userData, queue: queue}, next);
+			plugins.fireHook('filter:register.check', { req: req, res: res, userData: userData, queue: queue }, next);
 		},
 		function (data, next) {
 			if (data.queue) {
@@ -133,7 +133,7 @@ function registerAndLoginUser(req, res, userData, callback) {
 		},
 		function (next) {
 			user.deleteInvitationKey(userData.email);
-			plugins.fireHook('filter:register.complete', {uid: uid, referrer: req.body.referrer || nconf.get('relative_path') + '/'}, next);
+			plugins.fireHook('filter:register.complete', { uid: uid, referrer: req.body.referrer || nconf.get('relative_path') + '/' }, next);
 		},
 	], callback);
 }
@@ -145,7 +145,7 @@ function addToApprovalQueue(req, userData, callback) {
 			user.addToApprovalQueue(userData, next);
 		},
 		function (next) {
-			next(null, {message: '[[register:registration-added-to-queue]]'});
+			next(null, { message: '[[register:registration-added-to-queue]]' });
 		},
 	], callback);
 }
@@ -284,7 +284,7 @@ authenticationController.doLogin = function (req, uid, callback) {
 		return callback();
 	}
 
-	req.login({uid: uid}, function (err) {
+	req.login({ uid: uid }, function (err) {
 		if (err) {
 			return callback(err);
 		}
@@ -427,7 +427,7 @@ authenticationController.logout = function (req, res, next) {
 
 			user.setUserField(uid, 'lastonline', Date.now() - 300000);
 
-			plugins.fireHook('static:user.loggedOut', {req: req, res: res, uid: uid}, function () {
+			plugins.fireHook('static:user.loggedOut', { req: req, res: res, uid: uid }, function () {
 				res.status(200).send('');
 
 				// Force session check for all connected socket.io clients with the same session id

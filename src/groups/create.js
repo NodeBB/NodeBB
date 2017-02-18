@@ -43,7 +43,7 @@ module.exports = function (Groups) {
 					private: isPrivate,
 					disableJoinRequests: disableJoinRequests,
 				};
-				plugins.fireHook('filter:group.create', {group: groupData, data: data}, next);
+				plugins.fireHook('filter:group.create', { group: groupData, data: data }, next);
 			},
 			function (results, next) {
 				var tasks = [

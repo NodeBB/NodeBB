@@ -29,7 +29,7 @@ module.exports = function (Groups) {
 				db.setAdd('group:' + groupName + ':owners', toUid, next);
 			},
 			function (next) {
-				plugins.fireHook('action:group.grantOwnership', {uid: toUid, groupName: groupName});
+				plugins.fireHook('action:group.grantOwnership', { uid: toUid, groupName: groupName });
 				next();
 			},
 		], callback);
@@ -50,7 +50,7 @@ module.exports = function (Groups) {
 				db.setRemove('group:' + groupName + ':owners', toUid, next);
 			},
 			function (next) {
-				plugins.fireHook('action:group.rescindOwnership', {uid: toUid, groupName: groupName});
+				plugins.fireHook('action:group.rescindOwnership', { uid: toUid, groupName: groupName });
 				next();
 			},
 		], callback);

@@ -130,6 +130,6 @@ var utils = require('../public/src/utils');
 
 		batch.processSortedSet('events:time', function (eids, next) {
 			events.deleteEvents(eids, next);
-		}, {alwaysStartAt: 0}, callback);
+		}, { alwaysStartAt: 0 }, callback);
 	};
 }(module.exports));

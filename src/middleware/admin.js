@@ -64,7 +64,7 @@ module.exports = function (middleware) {
 						}
 						var arr = [];
 						scripts.forEach(function (script) {
-							arr.push({src: script});
+							arr.push({ src: script });
 						});
 
 						next(null, arr);
@@ -107,7 +107,7 @@ module.exports = function (middleware) {
 					bodyClass: data.bodyClass,
 				};
 
-				templateValues.template = {name: res.locals.template};
+				templateValues.template = { name: res.locals.template };
 				templateValues.template[res.locals.template] = true;
 
 				req.app.render('admin/header', templateValues, next);

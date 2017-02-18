@@ -17,18 +17,18 @@ module.exports = function (privileges) {
 		// Method used in admin/category controller to show all users/groups with privs in that given cid
 
 		var privilegeLabels = [
-			{name: 'Find Category'},
-			{name: 'Access Category'},
-			{name: 'Access Topics'},
-			{name: 'Create Topics'},
-			{name: 'Reply to Topics'},
-			{name: 'Edit Posts'},
-			{name: 'Delete Posts'},
-			{name: 'Delete Topics'},
-			{name: 'Upload Images'},
-			{name: 'Upload Files'},
-			{name: 'Purge'},
-			{name: 'Moderate'},
+			{ name: 'Find Category' },
+			{ name: 'Access Category' },
+			{ name: 'Access Topics' },
+			{ name: 'Create Topics' },
+			{ name: 'Reply to Topics' },
+			{ name: 'Edit Posts' },
+			{ name: 'Delete Posts' },
+			{ name: 'Delete Topics' },
+			{ name: 'Upload Images' },
+			{ name: 'Upload Files' },
+			{ name: 'Purge' },
+			{ name: 'Moderate' },
 		];
 
 		async.parallel({

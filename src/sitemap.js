@@ -72,7 +72,7 @@ sitemap.getPages = function (callback) {
 		priority: 0.4,
 	}];
 
-	plugins.fireHook('filter:sitemap.getPages', {urls: urls}, function (err, data) {
+	plugins.fireHook('filter:sitemap.getPages', { urls: urls }, function (err, data) {
 		if (err) {
 			return callback(err);
 		}

@@ -130,7 +130,7 @@ define('notifications', ['sounds', 'translator', 'components'], function (sound,
 			}
 			translator.toggleTimeagoShorthand();
 
-			templates.parse('partials/notifications_list', {notifications: notifs}, function (html) {
+			templates.parse('partials/notifications_list', { notifications: notifs }, function (html) {
 				notifList.translateHtml(html);
 			});
 		});

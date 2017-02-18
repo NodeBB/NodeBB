@@ -63,7 +63,7 @@ var meta = require('./meta');
 			},
 			function (next) {
 				topics.pushUnreadCount(uid);
-				plugins.fireHook('action:user.online', {uid: uid, timestamp: now});
+				plugins.fireHook('action:user.online', { uid: uid, timestamp: now });
 				next();
 			},
 		], callback);
@@ -93,7 +93,7 @@ var meta = require('./meta');
 	User.getUsersWithFields = function (uids, fields, uid, callback) {
 		async.waterfall([
 			function (next) {
-				plugins.fireHook('filter:users.addFields', {fields: fields}, next);
+				plugins.fireHook('filter:users.addFields', { fields: fields }, next);
 			},
 			function (data, next) {
 				data.fields = data.fields.filter(function (field, index, array) {
@@ -120,7 +120,7 @@ var meta = require('./meta');
 						user['email:confirmed'] = parseInt(user['email:confirmed'], 10) === 1;
 					}
 				});
-				plugins.fireHook('filter:userlist.get', {users: results.userData, uid: uid}, next);
+				plugins.fireHook('filter:userlist.get', { users: results.userData, uid: uid }, next);
 			},
 			function (data, next) {
 				next(null, data.users);

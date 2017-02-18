@@ -317,7 +317,7 @@ module.exports = function (Groups) {
 	});
 
 	function clearCache(uid, groupName) {
-		pubsub.publish('group:cache:del', {uid: uid, groupName: groupName});
+		pubsub.publish('group:cache:del', { uid: uid, groupName: groupName });
 		cache.del(uid + ':' + groupName);
 	}
 

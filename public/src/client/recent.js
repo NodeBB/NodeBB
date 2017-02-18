@@ -26,7 +26,7 @@ define('forum/recent', ['forum/infinitescroll', 'components'], function (infinit
 			infinitescroll.init(Recent.loadMoreTopics);
 		}
 
-		$(window).trigger('action:topics.loaded', {topics: ajaxify.data.topics});
+		$(window).trigger('action:topics.loaded', { topics: ajaxify.data.topics });
 	};
 
 	Recent.watchForNewPosts = function () {
@@ -154,14 +154,14 @@ define('forum/recent', ['forum/infinitescroll', 'components'], function (infinit
 			return callback();
 		}
 
-		app.parseAndTranslate(templateName, 'topics', {topics: topics, showSelect: showSelect}, function (html) {
+		app.parseAndTranslate(templateName, 'topics', { topics: topics, showSelect: showSelect }, function (html) {
 			$('#category-no-topics').remove();
 
 			$('[component="category"]').append(html);
 			html.find('.timeago').timeago();
 			app.createUserTooltips();
 			utils.makeNumbersHumanReadable(html.find('.human-readable-number'));
-			$(window).trigger('action:topics.loaded', {topics: topics});
+			$(window).trigger('action:topics.loaded', { topics: topics });
 			callback();
 		});
 	};

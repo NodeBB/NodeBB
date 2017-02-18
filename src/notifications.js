@@ -171,7 +171,7 @@ var utils = require('../public/src/utils');
 		setTimeout(function () {
 			batch.processArray(uids, function (uids, next) {
 				pushToUids(uids, notification, next);
-			}, {interval: 1000}, function (err) {
+			}, { interval: 1000 }, function (err) {
 				if (err) {
 					winston.error(err.stack);
 				}
@@ -188,7 +188,7 @@ var utils = require('../public/src/utils');
 
 		async.waterfall([
 			function (next) {
-				plugins.fireHook('filter:notification.push', {notification: notification, uids: uids}, next);
+				plugins.fireHook('filter:notification.push', { notification: notification, uids: uids }, next);
 			},
 			function (data, next) {
 				uids = data.uids;
@@ -218,7 +218,7 @@ var utils = require('../public/src/utils');
 					});
 				}
 
-				plugins.fireHook('action:notification.pushed', {notification: notification, uids: uids});
+				plugins.fireHook('action:notification.pushed', { notification: notification, uids: uids });
 				next();
 			},
 		], callback);

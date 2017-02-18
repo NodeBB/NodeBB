@@ -11,7 +11,7 @@ define('admin/manage/registration', function () {
 			var username = parent.attr('data-username');
 			var method = action === 'accept' ? 'admin.user.acceptRegistration' : 'admin.user.rejectRegistration';
 
-			socket.emit(method, {username: username}, function (err) {
+			socket.emit(method, { username: username }, function (err) {
 				if (err) {
 					return app.alertError(err.message);
 				}
@@ -39,7 +39,7 @@ define('admin/manage/registration', function () {
 			if (action === 'delete') {
 				bootbox.confirm('[[admin/manage/registration:invitations.confirm-delete]]', function (confirm) {
 					if (confirm) {
-						socket.emit(method, {email: email, invitedBy: invitedBy}, function (err) {
+						socket.emit(method, { email: email, invitedBy: invitedBy }, function (err) {
 							if (err) {
 								return app.alertError(err.message);
 							}

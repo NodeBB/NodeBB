@@ -57,7 +57,7 @@ describe('rewards', function () {
 				},
 			];
 
-			socketAdmin.rewards.save({uid: adminUid}, data, function (err) {
+			socketAdmin.rewards.save({ uid: adminUid }, data, function (err) {
 				assert.ifError(err);
 				done();
 			});

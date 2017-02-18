@@ -80,7 +80,7 @@ middleware.pageView = function (req, res, next) {
 		uid: req.uid,
 	});
 
-	plugins.fireHook('action:middleware.pageView', {req: req});
+	plugins.fireHook('action:middleware.pageView', { req: req });
 
 	if (req.user) {
 		user.updateLastOnlineTime(req.user.uid);

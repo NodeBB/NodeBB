@@ -13,7 +13,7 @@ var privileges = require('../privileges');
 (function (UserNotifications) {
 	UserNotifications.get = function (uid, callback) {
 		if (!parseInt(uid, 10)) {
-			return callback(null, {read: [], unread: []});
+			return callback(null, { read: [], unread: [] });
 		}
 		getNotifications(uid, 0, 9, function (err, notifications) {
 			if (err) {

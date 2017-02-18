@@ -60,7 +60,7 @@ categoriesController.list = function (req, res, next) {
 		};
 
 		if (req.path.startsWith('/api/categories') || req.path.startsWith('/categories')) {
-			data.breadcrumbs = helpers.buildBreadcrumbs([{text: data.title}]);
+			data.breadcrumbs = helpers.buildBreadcrumbs([{ text: data.title }]);
 		}
 
 		data.categories.forEach(function (category) {

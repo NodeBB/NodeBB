@@ -14,10 +14,10 @@ module.exports = function (Posts) {
 		var postData;
 		async.waterfall([
 			function (next) {
-				plugins.fireHook('filter:post.delete', {pid: pid, uid: uid}, next);
+				plugins.fireHook('filter:post.delete', { pid: pid, uid: uid }, next);
 			},
 			function (data, next) {
-				Posts.setPostFields(pid, {deleted: 1, deleterUid: uid}, next);
+				Posts.setPostFields(pid, { deleted: 1, deleterUid: uid }, next);
 			},
 			function (next) {
 				Posts.getPostFields(pid, ['pid', 'tid', 'uid', 'timestamp'], next);
@@ -50,10 +50,10 @@ module.exports = function (Posts) {
 		var postData;
 		async.waterfall([
 			function (next) {
-				plugins.fireHook('filter:post.restore', {pid: pid, uid: uid}, next);
+				plugins.fireHook('filter:post.restore', { pid: pid, uid: uid }, next);
 			},
 			function (data, next) {
-				Posts.setPostFields(pid, {deleted: 0, deleterUid: 0}, next);
+				Posts.setPostFields(pid, { deleted: 0, deleterUid: 0 }, next);
 			},
 			function (next) {
 				Posts.getPostFields(pid, ['pid', 'tid', 'uid', 'content', 'timestamp'], next);
@@ -121,7 +121,7 @@ module.exports = function (Posts) {
 				if (!exists) {
 					return callback();
 				}
-				plugins.fireHook('filter:post.purge', {pid: pid, uid: uid}, next);
+				plugins.fireHook('filter:post.purge', { pid: pid, uid: uid }, next);
 			},
 			function (data, next) {
 				async.parallel([

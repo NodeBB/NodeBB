@@ -33,7 +33,7 @@ module.exports = function (User) {
 			async.eachSeries(ids, function (pid, next) {
 				posts.purge(pid, callerUid, next);
 			}, next);
-		}, {alwaysStartAt: 0}, callback);
+		}, { alwaysStartAt: 0 }, callback);
 	}
 
 	function deleteTopics(callerUid, uid, callback) {
@@ -41,7 +41,7 @@ module.exports = function (User) {
 			async.eachSeries(ids, function (tid, next) {
 				topics.purge(tid, callerUid, next);
 			}, next);
-		}, {alwaysStartAt: 0}, callback);
+		}, { alwaysStartAt: 0 }, callback);
 	}
 
 	User.deleteAccount = function (uid, callback) {
@@ -58,7 +58,7 @@ module.exports = function (User) {
 			},
 			function (_userData, next) {
 				userData = _userData;
-				plugins.fireHook('static:user.delete', {uid: uid}, next);
+				plugins.fireHook('static:user.delete', { uid: uid }, next);
 			},
 			function (next) {
 				deleteVotes(uid, next);

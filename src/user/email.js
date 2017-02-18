@@ -76,7 +76,7 @@ var emailer = require('../emailer');
 					};
 
 					if (plugins.hasListeners('action:user.verify')) {
-						plugins.fireHook('action:user.verify', {uid: uid, data: data});
+						plugins.fireHook('action:user.verify', { uid: uid, data: data });
 						next();
 					} else {
 						emailer.send('welcome', uid, data, next);
@@ -101,7 +101,7 @@ var emailer = require('../emailer');
 						db.sortedSetRemove('users:notvalidated', confirmObj.uid, next);
 					},
 					function (next) {
-						plugins.fireHook('action:user.email.confirmed', {uid: confirmObj.uid, email: confirmObj.email}, next);
+						plugins.fireHook('action:user.email.confirmed', { uid: confirmObj.uid, email: confirmObj.email }, next);
 					},
 				], function (err) {
 					callback(err ? new Error('[[error:email-confirm-failed]]') : null);

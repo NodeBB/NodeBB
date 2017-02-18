@@ -44,7 +44,7 @@ define('forum/topic/move-post', [], function () {
 	}
 
 	function movePost(post, pid, tid, callback) {
-		socket.emit('posts.movePost', {pid: pid, tid: tid}, function (err) {
+		socket.emit('posts.movePost', { pid: pid, tid: tid }, function (err) {
 			if (err) {
 				app.alertError(err.message);
 				return callback();

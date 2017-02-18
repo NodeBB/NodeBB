@@ -70,7 +70,7 @@ define('forum/account/settings', ['forum/account/header', 'components', 'sounds'
 	}
 
 	function saveSettings(settings) {
-		socket.emit('user.saveSettings', {uid: ajaxify.data.theirid, settings: settings}, function (err, newSettings) {
+		socket.emit('user.saveSettings', { uid: ajaxify.data.theirid, settings: settings }, function (err, newSettings) {
 			if (err) {
 				return app.alertError(err.message);
 			}

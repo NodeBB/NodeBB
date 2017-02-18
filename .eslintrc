@@ -46,6 +46,7 @@
 		"no-prototype-builtins": "off",
 		"vars-on-top": "off",
 		"no-restricted-syntax": "off",
+		"no-shadow": "off",
 
 		// "linebreak-style": "off",
 		// "one-var": "off",
@@ -95,8 +96,7 @@
 		"no-restricted-module": "off",
 		"no-return-assign": "off",
 		"no-restricted-modules": "off",
-		"object-curly-spacing": "off",
-		"no-shadow": "off",
+		// "object-curly-spacing": "off",
 		// "indent": "off",
 		// "padded-blocks": "off",
 		// "eol-last": "off",

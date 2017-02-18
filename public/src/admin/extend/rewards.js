@@ -28,7 +28,7 @@ define('admin/extend/rewards', ['translator'], function (translator) {
 				var parent = $(this).parents('[data-id]');
 				var id = parent.attr('data-id');
 
-				socket.emit('admin.rewards.delete', {id: id}, function (err) {
+				socket.emit('admin.rewards.delete', { id: id }, function (err) {
 					if (err) {
 						app.alertError(err.message);
 					} else {
@@ -153,7 +153,7 @@ define('admin/extend/rewards', ['translator'], function (translator) {
 		var activeRewards = [];
 
 		$('#active li').each(function () {
-			var data = {rewards: {}};
+			var data = { rewards: {} };
 			var main = $(this).find('form.main').serializeArray();
 			var rewards = $(this).find('form.rewards').serializeArray();
 

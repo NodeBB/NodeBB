@@ -17,7 +17,7 @@ define('admin/settings/email', ['admin/settings'], function (settings) {
 
 	function configureEmailTester() {
 		$('button[data-action="email.test"]').off('click').on('click', function () {
-			socket.emit('admin.email.test', {template: $('#test-email').val()}, function (err) {
+			socket.emit('admin.email.test', { template: $('#test-email').val() }, function (err) {
 				if (err) {
 					return app.alertError(err.message);
 				}

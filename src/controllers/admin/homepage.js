@@ -35,7 +35,7 @@ homePageController.get = function (req, res, next) {
 			categoryData = [];
 		}
 
-		plugins.fireHook('filter:homepage.get', {routes: [
+		plugins.fireHook('filter:homepage.get', { routes: [
 			{
 				route: 'categories',
 				name: 'Categories',
@@ -48,7 +48,7 @@ homePageController.get = function (req, res, next) {
 				route: 'popular',
 				name: 'Popular',
 			},
-		].concat(categoryData)}, function (err, data) {
+		].concat(categoryData) }, function (err, data) {
 			if (err) {
 				return next(err);
 			}

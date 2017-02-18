@@ -70,7 +70,7 @@ define('forum/account/edit', ['forum/account/header', 'translator', 'components'
 
 	function handleImageChange() {
 		$('#changePictureBtn').on('click', function () {
-			socket.emit('user.getProfilePictures', {uid: ajaxify.data.uid}, function (err, pictures) {
+			socket.emit('user.getProfilePictures', { uid: ajaxify.data.uid }, function (err, pictures) {
 				if (err) {
 					return app.alertError(err.message);
 				}
@@ -259,7 +259,7 @@ define('forum/account/edit', ['forum/account/header', 'translator', 'components'
 		});
 
 		modal.find('[data-action="remove-uploaded"]').on('click', function () {
-			socket.emit('user.removeUploadedPicture', {uid: ajaxify.data.theirid}, function (err) {
+			socket.emit('user.removeUploadedPicture', { uid: ajaxify.data.theirid }, function (err) {
 				modal.modal('hide');
 				if (err) {
 					return app.alertError(err.message);

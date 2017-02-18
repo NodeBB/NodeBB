@@ -7,8 +7,8 @@ module.exports = function (db, module) {
 		}
 
 		var pipeline = [
-			{ $match: { _key: {$in: keys} } },
-			{ $group: { _id: {value: '$value' } } },
+			{ $match: { _key: { $in: keys } } },
+			{ $group: { _id: { value: '$value' } } },
 			{ $group: { _id: null, count: { $sum: 1 } } },
 		];
 
@@ -47,9 +47,9 @@ module.exports = function (db, module) {
 		}
 
 		var pipeline = [
-			{ $match: { _key: {$in: params.sets}} },
-			{ $group: { _id: {value: '$value'}, totalScore: aggregate} },
-			{ $sort: { totalScore: params.sort} },
+			{ $match: { _key: { $in: params.sets } } },
+			{ $group: { _id: { value: '$value' }, totalScore: aggregate } },
+			{ $sort: { totalScore: params.sort } },
 		];
 
 		if (params.start) {

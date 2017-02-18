@@ -22,10 +22,10 @@ describe('Categories', function () {
 		groups.resetCache();
 		async.parallel({
 			posterUid: function (next) {
-				User.create({username: 'poster'}, next);
+				User.create({ username: 'poster' }, next);
 			},
 			adminUid: function (next) {
-				User.create({username: 'admin'}, next);
+				User.create({ username: 'admin' }, next);
 			},
 		}, function (err, results) {
 			assert.ifError(err);
@@ -166,7 +166,7 @@ describe('Categories', function () {
 				}
 				moveCid = results.category.cid;
 				moveTid = results.topic.topicData.tid;
-				Topics.reply({uid: posterUid, content: 'test post', tid: moveTid}, function (err) {
+				Topics.reply({ uid: posterUid, content: 'test post', tid: moveTid }, function (err) {
 					done(err);
 				});
 			});
@@ -202,7 +202,7 @@ describe('Categories', function () {
 		});
 
 		it('should get recent replies in category', function (done) {
-			socketCategories.getRecentReplies({uid: posterUid}, categoryObj.cid, function (err, data) {
+			socketCategories.getRecentReplies({ uid: posterUid }, categoryObj.cid, function (err, data) {
 				assert.ifError(err);
 				assert(Array.isArray(data));
 				done();
@@ -210,7 +210,7 @@ describe('Categories', function () {
 		});
 
 		it('should get categories', function (done) {
-			socketCategories.get({uid: posterUid}, {}, function (err, data) {
+			socketCategories.get({ uid: posterUid }, {}, function (err, data) {
 				assert.ifError(err);
 				assert(Array.isArray(data));
 				done();
@@ -218,7 +218,7 @@ describe('Categories', function () {
 		});
 
 		it('should get watched categories', function (done) {
-			socketCategories.getWatchedCategories({uid: posterUid}, {}, function (err, data) {
+			socketCategories.getWatchedCategories({ uid: posterUid }, {}, function (err, data) {
 				assert.ifError(err);
 				assert(Array.isArray(data));
 				done();
@@ -226,7 +226,7 @@ describe('Categories', function () {
 		});
 
 		it('should load more topics', function (done) {
-			socketCategories.loadMore({uid: posterUid}, {cid: categoryObj.cid, after: 0, author: 'poster', tag: 'nodebb'}, function (err, data) {
+			socketCategories.loadMore({ uid: posterUid }, { cid: categoryObj.cid, after: 0, author: 'poster', tag: 'nodebb' }, function (err, data) {
 				assert.ifError(err);
 				assert(Array.isArray(data.topics));
 				assert.equal(data.topics[0].user.username, 'poster');
@@ -237,7 +237,7 @@ describe('Categories', function () {
 		});
 
 		it('should load page count', function (done) {
-			socketCategories.getPageCount({uid: posterUid}, categoryObj.cid, function (err, pageCount) {
+			socketCategories.getPageCount({ uid: posterUid }, categoryObj.cid, function (err, pageCount) {
 				assert.ifError(err);
 				assert.equal(pageCount, 1);
 				done();
@@ -245,7 +245,7 @@ describe('Categories', function () {
 		});
 
 		it('should load page count', function (done) {
-			socketCategories.getTopicCount({uid: posterUid}, categoryObj.cid, function (err, topicCount) {
+			socketCategories.getTopicCount({ uid: posterUid }, categoryObj.cid, function (err, topicCount) {
 				assert.ifError(err);
 				assert.equal(topicCount, 2);
 				done();
@@ -253,7 +253,7 @@ describe('Categories', function () {
 		});
 
 		it('should load category by privilege', function (done) {
-			socketCategories.getCategoriesByPrivilege({uid: posterUid}, 'find', function (err, data) {
+			socketCategories.getCategoriesByPrivilege({ uid: posterUid }, 'find', function (err, data) {
 				assert.ifError(err);
 				assert(Array.isArray(data));
 				done();
@@ -261,7 +261,7 @@ describe('Categories', function () {
 		});
 
 		it('should get move categories', function (done) {
-			socketCategories.getMoveCategories({uid: posterUid}, {}, function (err, data) {
+			socketCategories.getMoveCategories({ uid: posterUid }, {}, function (err, data) {
 				assert.ifError(err);
 				assert(Array.isArray(data));
 				done();
@@ -269,7 +269,7 @@ describe('Categories', function () {
 		});
 
 		it('should ignore category', function (done) {
-			socketCategories.ignore({uid: posterUid}, categoryObj.cid, function (err) {
+			socketCategories.ignore({ uid: posterUid }, categoryObj.cid, function (err) {
 				assert.ifError(err);
 				Categories.isIgnored([categoryObj.cid], posterUid, function (err, isIgnored) {
 					assert.ifError(err);
@@ -280,7 +280,7 @@ describe('Categories', function () {
 		});
 
 		it('should watch category', function (done) {
-			socketCategories.watch({uid: posterUid}, categoryObj.cid, function (err) {
+			socketCategories.watch({ uid: posterUid }, categoryObj.cid, function (err) {
 				assert.ifError(err);
 				Categories.isIgnored([categoryObj.cid], posterUid, function (err, isIgnored) {
 					assert.ifError(err);
@@ -291,7 +291,7 @@ describe('Categories', function () {
 		});
 
 		it('should check if user is moderator', function (done) {
-			socketCategories.isModerator({uid: posterUid}, {}, function (err, isModerator) {
+			socketCategories.isModerator({ uid: posterUid }, {}, function (err, isModerator) {
 				assert.ifError(err);
 				assert(!isModerator);
 				done();
@@ -299,7 +299,7 @@ describe('Categories', function () {
 		});
 
 		it('should get category data', function (done) {
-			socketCategories.getCategory({uid: posterUid}, categoryObj.cid, function (err, data) {
+			socketCategories.getCategory({ uid: posterUid }, categoryObj.cid, function (err, data) {
 				assert.ifError(err);
 				assert.equal(categoryObj.cid, data.cid);
 				done();
@@ -311,7 +311,7 @@ describe('Categories', function () {
 		var socketCategories = require('../src/socket.io/admin/categories');
 		var cid;
 		before(function (done) {
-			socketCategories.create({uid: adminUid}, {
+			socketCategories.create({ uid: adminUid }, {
 				name: 'update name',
 				description: 'update description',
 				parentCid: categoryObj.cid,
@@ -326,7 +326,7 @@ describe('Categories', function () {
 		});
 
 		it('should return error with invalid data', function (done) {
-			socketCategories.update({uid: adminUid}, null, function (err) {
+			socketCategories.update({ uid: adminUid }, null, function (err) {
 				assert.equal(err.message, '[[error:invalid-data]]');
 				done();
 			});
@@ -337,7 +337,7 @@ describe('Categories', function () {
 			updateData[cid] = {
 				parentCid: cid,
 			};
-			socketCategories.update({uid: adminUid}, updateData, function (err) {
+			socketCategories.update({ uid: adminUid }, updateData, function (err) {
 				assert.equal(err.message, '[[error:cant-set-self-as-parent]]');
 				done();
 			});
@@ -352,7 +352,7 @@ describe('Categories', function () {
 				order: 3,
 				icon: 'fa-hammer',
 			};
-			socketCategories.update({uid: adminUid}, updateData, function (err) {
+			socketCategories.update({ uid: adminUid }, updateData, function (err) {
 				assert.ifError(err);
 				Categories.getCategoryData(cid, function (err, data) {
 					assert.ifError(err);
@@ -379,7 +379,7 @@ describe('Categories', function () {
 					content: 'The content of test topic',
 				}, function (err) {
 					assert.ifError(err);
-					socketCategories.purge({uid: adminUid}, category.cid, function (err) {
+					socketCategories.purge({ uid: adminUid }, category.cid, function (err) {
 						assert.ifError(err);
 						done();
 					});
@@ -388,14 +388,14 @@ describe('Categories', function () {
 		});
 
 		it('should get all categories', function (done) {
-			socketCategories.getAll({uid: adminUid}, {}, function (err, data) {
+			socketCategories.getAll({ uid: adminUid }, {}, function (err, data) {
 				assert.ifError(err);
 				done();
 			});
 		});
 
 		it('should get all category names', function (done) {
-			socketCategories.getNames({uid: adminUid}, {}, function (err, data) {
+			socketCategories.getNames({ uid: adminUid }, {}, function (err, data) {
 				assert.ifError(err);
 				assert(Array.isArray(data));
 				done();
@@ -403,7 +403,7 @@ describe('Categories', function () {
 		});
 
 		it('should give privilege', function (done) {
-			socketCategories.setPrivilege({uid: adminUid}, {cid: categoryObj.cid, privilege: ['groups:topics:delete'], set: true, member: 'registered-users'}, function (err) {
+			socketCategories.setPrivilege({ uid: adminUid }, { cid: categoryObj.cid, privilege: ['groups:topics:delete'], set: true, member: 'registered-users' }, function (err) {
 				assert.ifError(err);
 				privileges.categories.can('topics:delete', categoryObj.cid, posterUid, function (err, canDeleteTopcis) {
 					assert.ifError(err);
@@ -414,7 +414,7 @@ describe('Categories', function () {
 		});
 
 		it('should remove privilege', function (done) {
-			socketCategories.setPrivilege({uid: adminUid}, {cid: categoryObj.cid, privilege: 'groups:topics:delete', set: false, member: 'registered-users'}, function (err) {
+			socketCategories.setPrivilege({ uid: adminUid }, { cid: categoryObj.cid, privilege: 'groups:topics:delete', set: false, member: 'registered-users' }, function (err) {
 				assert.ifError(err);
 				privileges.categories.can('topics:delete', categoryObj.cid, posterUid, function (err, canDeleteTopcis) {
 					assert.ifError(err);
@@ -425,7 +425,7 @@ describe('Categories', function () {
 		});
 
 		it('should get privilege settings', function (done) {
-			socketCategories.getPrivilegeSettings({uid: adminUid}, categoryObj.cid, function (err, data) {
+			socketCategories.getPrivilegeSettings({ uid: adminUid }, categoryObj.cid, function (err, data) {
 				assert.ifError(err);
 				assert(data);
 				done();
@@ -438,22 +438,22 @@ describe('Categories', function () {
 			var child2Cid;
 			async.waterfall([
 				function (next) {
-					Categories.create({name: 'parent'}, next);
+					Categories.create({ name: 'parent' }, next);
 				},
 				function (category, next) {
 					parentCid = category.cid;
-					Categories.create({name: 'child1', parentCid: parentCid}, next);
+					Categories.create({ name: 'child1', parentCid: parentCid }, next);
 				},
 				function (category, next) {
 					child1Cid = category.cid;
-					Categories.create({name: 'child2', parentCid: child1Cid}, next);
+					Categories.create({ name: 'child2', parentCid: child1Cid }, next);
 				},
 				function (category, next) {
 					child2Cid = category.cid;
-					socketCategories.setPrivilege({uid: adminUid}, {cid: parentCid, privilege: 'groups:topics:delete', set: true, member: 'registered-users'}, next);
+					socketCategories.setPrivilege({ uid: adminUid }, { cid: parentCid, privilege: 'groups:topics:delete', set: true, member: 'registered-users' }, next);
 				},
 				function (next) {
-					socketCategories.copyPrivilegesToChildren({uid: adminUid}, parentCid, next);
+					socketCategories.copyPrivilegesToChildren({ uid: adminUid }, parentCid, next);
 				},
 				function (next) {
 					privileges.categories.can('topics:delete', child2Cid, posterUid, next);
@@ -470,15 +470,15 @@ describe('Categories', function () {
 			var parentCid;
 			async.waterfall([
 				function (next) {
-					Categories.create({name: 'parent', description: 'copy me'}, next);
+					Categories.create({ name: 'parent', description: 'copy me' }, next);
 				},
 				function (category, next) {
 					parentCid = category.cid;
-					Categories.create({name: 'child1'}, next);
+					Categories.create({ name: 'child1' }, next);
 				},
 				function (category, next) {
 					child1Cid = category.cid;
-					socketCategories.copySettingsFrom({uid: adminUid}, {fromCid: parentCid, toCid: child1Cid}, next);
+					socketCategories.copySettingsFrom({ uid: adminUid }, { fromCid: parentCid, toCid: child1Cid }, next);
 				},
 				function (canDelete, next) {
 					Categories.getCategoryField(child1Cid, 'description', next);
@@ -495,18 +495,18 @@ describe('Categories', function () {
 			var parentCid;
 			async.waterfall([
 				function (next) {
-					Categories.create({name: 'parent', description: 'copy me'}, next);
+					Categories.create({ name: 'parent', description: 'copy me' }, next);
 				},
 				function (category, next) {
 					parentCid = category.cid;
-					Categories.create({name: 'child1'}, next);
+					Categories.create({ name: 'child1' }, next);
 				},
 				function (category, next) {
 					child1Cid = category.cid;
-					socketCategories.setPrivilege({uid: adminUid}, {cid: parentCid, privilege: 'groups:topics:delete', set: true, member: 'registered-users'}, next);
+					socketCategories.setPrivilege({ uid: adminUid }, { cid: parentCid, privilege: 'groups:topics:delete', set: true, member: 'registered-users' }, next);
 				},
 				function (next) {
-					socketCategories.copyPrivilegesFrom({uid: adminUid}, {fromCid: parentCid, toCid: child1Cid}, next);
+					socketCategories.copyPrivilegesFrom({ uid: adminUid }, { fromCid: parentCid, toCid: child1Cid }, next);
 				},
 				function (next) {
 					privileges.categories.can('topics:delete', child1Cid, posterUid, next);
@@ -554,14 +554,14 @@ describe('Categories', function () {
 		});
 
 		it('should error if data is invalid', function (done) {
-			socketTopics.isTagAllowed({uid: posterUid}, null, function (err) {
+			socketTopics.isTagAllowed({ uid: posterUid }, null, function (err) {
 				assert.equal(err.message, '[[error:invalid-data]]');
 				done();
 			});
 		});
 
 		it('should return true if category whitelist is empty', function (done) {
-			socketTopics.isTagAllowed({uid: posterUid}, {tag: 'notallowed', cid: cid}, function (err, allowed) {
+			socketTopics.isTagAllowed({ uid: posterUid }, { tag: 'notallowed', cid: cid }, function (err, allowed) {
 				assert.ifError(err);
 				assert(allowed);
 				done();
@@ -584,7 +584,7 @@ describe('Categories', function () {
 		});
 
 		it('should return false if category whitelist does not have tag', function (done) {
-			socketTopics.isTagAllowed({uid: posterUid}, {tag: 'notallowed', cid: cid}, function (err, allowed) {
+			socketTopics.isTagAllowed({ uid: posterUid }, { tag: 'notallowed', cid: cid }, function (err, allowed) {
 				assert.ifError(err);
 				assert(!allowed);
 				done();
@@ -592,7 +592,7 @@ describe('Categories', function () {
 		});
 
 		it('should return true if category whitelist has tag', function (done) {
-			socketTopics.isTagAllowed({uid: posterUid}, {tag: 'nodebb', cid: cid}, function (err, allowed) {
+			socketTopics.isTagAllowed({ uid: posterUid }, { tag: 'nodebb', cid: cid }, function (err, allowed) {
 				assert.ifError(err);
 				assert(allowed);
 				done();

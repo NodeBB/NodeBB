@@ -75,7 +75,7 @@ define('chat', [
 					});
 				}
 			} else {
-				socket.emit('modules.chats.loadRoom', {roomId: data.roomId}, function (err, roomData) {
+				socket.emit('modules.chats.loadRoom', { roomId: data.roomId }, function (err, roomData) {
 					if (err) {
 						return app.alertError(err.message);
 					}
@@ -108,7 +108,7 @@ define('chat', [
 	};
 
 	module.loadChatsDropdown = function (chatsListEl) {
-		socket.emit('modules.chats.getRecentChats', {uid: app.user.uid, after: 0}, function (err, data) {
+		socket.emit('modules.chats.getRecentChats', { uid: app.user.uid, after: 0 }, function (err, data) {
 			if (err) {
 				return app.alertError(err.message);
 			}

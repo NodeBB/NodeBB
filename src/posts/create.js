@@ -59,7 +59,7 @@ module.exports = function (Posts) {
 				plugins.fireHook('filter:post.save', postData, next);
 			},
 			function (postData, next) {
-				plugins.fireHook('filter:post.create', {post: postData, data: data}, next);
+				plugins.fireHook('filter:post.create', { post: postData, data: data }, next);
 			},
 			function (data, next) {
 				postData = data.post;

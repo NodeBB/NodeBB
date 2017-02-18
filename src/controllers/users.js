@@ -146,22 +146,22 @@ usersController.renderUsersPage = function (set, req, res, next) {
 
 usersController.getUsers = function (set, uid, query, callback) {
 	var setToData = {
-		'users:postcount': {title: '[[pages:users/sort-posts]]', crumb: '[[users:top_posters]]'},
-		'users:reputation': {title: '[[pages:users/sort-reputation]]', crumb: '[[users:most_reputation]]'},
-		'users:joindate': {title: '[[pages:users/latest]]', crumb: '[[global:users]]'},
-		'users:online': {title: '[[pages:users/online]]', crumb: '[[global:online]]'},
-		'users:banned': {title: '[[pages:users/banned]]', crumb: '[[user:banned]]'},
-		'users:flags': {title: '[[pages:users/most-flags]]', crumb: '[[users:most_flags]]'},
+		'users:postcount': { title: '[[pages:users/sort-posts]]', crumb: '[[users:top_posters]]' },
+		'users:reputation': { title: '[[pages:users/sort-reputation]]', crumb: '[[users:most_reputation]]' },
+		'users:joindate': { title: '[[pages:users/latest]]', crumb: '[[global:users]]' },
+		'users:online': { title: '[[pages:users/online]]', crumb: '[[global:online]]' },
+		'users:banned': { title: '[[pages:users/banned]]', crumb: '[[user:banned]]' },
+		'users:flags': { title: '[[pages:users/most-flags]]', crumb: '[[users:most_flags]]' },
 	};
 
 	if (!setToData[set]) {
-		setToData[set] = {title: '', crumb: ''};
+		setToData[set] = { title: '', crumb: '' };
 	}
 
-	var breadcrumbs = [{text: setToData[set].crumb}];
+	var breadcrumbs = [{ text: setToData[set].crumb }];
 
 	if (set !== 'users:joindate') {
-		breadcrumbs.unshift({text: '[[global:users]]', url: '/users'});
+		breadcrumbs.unshift({ text: '[[global:users]]', url: '/users' });
 	}
 
 	var page = parseInt(query.page, 10) || 1;

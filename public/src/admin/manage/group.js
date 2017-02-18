@@ -40,7 +40,7 @@ define('admin/manage/group', [
 				var searchText = groupDetailsSearch.val();
 				var foundUser;
 
-				socket.emit('admin.user.search', {query: searchText}, function (err, results) {
+				socket.emit('admin.user.search', { query: searchText }, function (err, results) {
 					if (!err && results && results.users.length > 0) {
 						var numResults = results.users.length;
 						var x;
@@ -53,7 +53,7 @@ define('admin/manage/group', [
 						for (x = 0; x < numResults; x += 1) {
 							foundUser = $('<li />');
 							foundUser
-								.attr({title: results.users[x].username,
+								.attr({ title: results.users[x].username,
 									'data-uid': results.users[x].uid,
 									'data-username': results.users[x].username,
 									'data-userslug': results.users[x].userslug,
@@ -96,7 +96,7 @@ define('admin/manage/group', [
 					'icon:text': userLabel.attr('data-usericon-text'),
 				};
 
-				templates.parse('partials/groups/memberlist', 'members', {group: {isOwner: ajaxify.data.group.isOwner, members: [member]}}, function (html) {
+				templates.parse('partials/groups/memberlist', 'members', { group: { isOwner: ajaxify.data.group.isOwner, members: [member] } }, function (html) {
 					translator.translate(html, function (html) {
 						$('[component="groups/members"] tbody').prepend(html);
 					});

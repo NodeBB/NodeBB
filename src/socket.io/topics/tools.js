@@ -32,7 +32,7 @@ module.exports = function (SocketTopics) {
 			function (results, next) {
 				topic = results.topic;
 				topic.privileges = results.privileges;
-				plugins.fireHook('filter:topic.thread_tools', {topic: results.topic, uid: socket.uid, tools: []}, next);
+				plugins.fireHook('filter:topic.thread_tools', { topic: results.topic, uid: socket.uid, tools: [] }, next);
 			},
 			function (data, next) {
 				topic.deleted = parseInt(topic.deleted, 10) === 1;

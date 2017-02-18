@@ -174,11 +174,11 @@ module.exports = function (SocketUser) {
 				}
 
 				if (userData.email !== oldUserData.email) {
-					log('email-change', {oldEmail: oldUserData.email, newEmail: userData.email});
+					log('email-change', { oldEmail: oldUserData.email, newEmail: userData.email });
 				}
 
 				if (userData.username !== oldUserData.username) {
-					log('username-change', {oldUsername: oldUserData.username, newUsername: userData.username});
+					log('username-change', { oldUsername: oldUserData.username, newUsername: userData.username });
 				}
 
 				next(null, userData);

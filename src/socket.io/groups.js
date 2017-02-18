@@ -265,7 +265,7 @@ SocketGroups.loadMoreMembers = function (socket, data, callback) {
 			return callback(err);
 		}
 
-		callback(null, {users: users, nextStart: data.after + 10});
+		callback(null, { users: users, nextStart: data.after + 10 });
 	});
 };
 

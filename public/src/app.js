@@ -326,7 +326,7 @@ app.cacheBuster = null;
 			if (chat.modalExists(roomId)) {
 				loadAndCenter(chat.getModal(roomId));
 			} else {
-				socket.emit('modules.chats.loadRoom', {roomId: roomId, uid: uid || app.user.uid}, function (err, roomData) {
+				socket.emit('modules.chats.loadRoom', { roomId: roomId, uid: uid || app.user.uid }, function (err, roomData) {
 					if (err) {
 						return app.alertError(err.message);
 					}
@@ -350,7 +350,7 @@ app.cacheBuster = null;
 			return app.alertError('[[error:cant-chat-with-yourself]]');
 		}
 
-		socket.emit('modules.chats.newRoom', {touid: touid}, function (err, roomId) {
+		socket.emit('modules.chats.newRoom', { touid: touid }, function (err, roomId) {
 			if (err) {
 				return app.alertError(err.message);
 			}

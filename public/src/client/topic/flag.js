@@ -46,7 +46,7 @@ define('forum/topic/flag', [], function () {
 		if (!pid || !reason) {
 			return;
 		}
-		socket.emit('posts.flag', {pid: pid, reason: reason}, function (err) {
+		socket.emit('posts.flag', { pid: pid, reason: reason }, function (err) {
 			if (err) {
 				return app.alertError(err.message);
 			}

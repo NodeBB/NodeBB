@@ -63,7 +63,7 @@ module.exports = function (Posts) {
 
 	Posts.hasVoted = function (pid, uid, callback) {
 		if (!parseInt(uid, 10)) {
-			return callback(null, {upvoted: false, downvoted: false});
+			return callback(null, { upvoted: false, downvoted: false });
 		}
 
 		db.isMemberOfSets(['pid:' + pid + ':upvote', 'pid:' + pid + ':downvote'], uid, function (err, hasVoted) {
@@ -71,14 +71,14 @@ module.exports = function (Posts) {
 				return callback(err);
 			}
 
-			callback(null, {upvoted: hasVoted[0], downvoted: hasVoted[1]});
+			callback(null, { upvoted: hasVoted[0], downvoted: hasVoted[1] });
 		});
 	};
 
 	Posts.getVoteStatusByPostIDs = function (pids, uid, callback) {
 		if (!parseInt(uid, 10)) {
 			var data = pids.map(function () { return false; });
-			return callback(null, {upvotes: data, downvotes: data});
+			return callback(null, { upvotes: data, downvotes: data });
 		}
 		var upvoteSets = [];
 		var downvoteSets = [];

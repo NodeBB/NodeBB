@@ -26,7 +26,7 @@ module.exports = function (Posts) {
 			postData.content = postData.content.toString();
 		}
 
-		plugins.fireHook('filter:parse.post', {postData: postData}, function (err, data) {
+		plugins.fireHook('filter:parse.post', { postData: postData }, function (err, data) {
 			if (err) {
 				return callback(err);
 			}
@@ -43,7 +43,7 @@ module.exports = function (Posts) {
 
 	Posts.parseSignature = function (userData, uid, callback) {
 		userData.signature = sanitizeSignature(userData.signature || '');
-		plugins.fireHook('filter:parse.signature', {userData: userData, uid: uid}, callback);
+		plugins.fireHook('filter:parse.signature', { userData: userData, uid: uid }, callback);
 	};
 
 	Posts.relativeToAbsolute = function (content) {

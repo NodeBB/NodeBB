@@ -235,7 +235,7 @@ module.exports = function (Meta) {
 			/**
 			 * otherwise, just clean up --debug/--debug-brk options which are set up by default from the parent one
 			 */
-			forkProcessParams = {execArgv: []};
+			forkProcessParams = { execArgv: [] };
 		}
 
 		return forkProcessParams;

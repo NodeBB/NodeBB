@@ -100,7 +100,7 @@ function checkCondition(reward, method, callback) {
 			return callback(err);
 		}
 
-		plugins.fireHook('filter:rewards.checkConditional:' + reward.conditional, {left: value, right: reward.value}, function (err, bool) {
+		plugins.fireHook('filter:rewards.checkConditional:' + reward.conditional, { left: value, right: reward.value }, function (err, bool) {
 			callback(err || bool);
 		});
 	});
@@ -113,7 +113,7 @@ function giveRewards(uid, rewards, callback) {
 		}
 
 		async.each(rewards, function (reward, next) {
-			plugins.fireHook('action:rewards.award:' + reward.rid, {uid: uid, reward: rewardData[rewards.indexOf(reward)]});
+			plugins.fireHook('action:rewards.award:' + reward.rid, { uid: uid, reward: rewardData[rewards.indexOf(reward)] });
 			db.sortedSetIncrBy('uid:' + uid + ':rewards', 1, reward.id, next);
 		}, callback);
 	});

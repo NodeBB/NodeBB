@@ -61,7 +61,7 @@ module.exports = function (Topics) {
 					return callback();
 				}
 
-				plugins.fireHook('filter:uploadImage', {image: {path: pathToUpload, name: ''}, uid: data.uid}, next);
+				plugins.fireHook('filter:uploadImage', { image: { path: pathToUpload, name: '' }, uid: data.uid }, next);
 			},
 			function (uploadedFile, next) {
 				deleteFile(pathToUpload);

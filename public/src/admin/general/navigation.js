@@ -63,12 +63,12 @@ define('admin/general/navigation', ['translator', 'iconSelect', 'jqueryui'], fun
 	function drop(ev, ui) {
 		var id = ui.helper.attr('data-id');
 		var el = $('#active-navigation [data-id="' + id + '"]');
-		var data = id === 'custom' ? {iconClass: 'fa-navicon'} : available[id];
+		var data = id === 'custom' ? { iconClass: 'fa-navicon' } : available[id];
 
 		data.enabled = false;
 		data.index = (parseInt($('#enabled').children().last().attr('data-index'), 10) || 0) + 1;
 
-		templates.parse('admin/general/navigation', 'navigation', {navigation: [data]}, function (li) {
+		templates.parse('admin/general/navigation', 'navigation', { navigation: [data] }, function (li) {
 			translator.translate(li, function (li) {
 				li = $(translator.unescape(li));
 				el.after(li);
@@ -76,7 +76,7 @@ define('admin/general/navigation', ['translator', 'iconSelect', 'jqueryui'], fun
 			});
 		});
 
-		templates.parse('admin/general/navigation', 'enabled', {enabled: [data]}, function (li) {
+		templates.parse('admin/general/navigation', 'enabled', { enabled: [data] }, function (li) {
 			translator.translate(li, function (li) {
 				li = $(translator.unescape(li));
 				$('#enabled').append(li);

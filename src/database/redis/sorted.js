@@ -28,7 +28,7 @@ module.exports = function (redisClient, module) {
 
 	function sortedSetRange(method, key, start, stop, withScores, callback) {
 		if (Array.isArray(key)) {
-			return module.sortedSetUnion({method: method, sets: key, start: start, stop: stop, withScores: withScores}, callback);
+			return module.sortedSetUnion({ method: method, sets: key, start: start, stop: stop, withScores: withScores }, callback);
 		}
 
 		var params = [key, start, stop];
@@ -45,7 +45,7 @@ module.exports = function (redisClient, module) {
 			}
 			var objects = [];
 			for (var i = 0; i < data.length; i += 2) {
-				objects.push({value: data[i], score: parseFloat(data[i + 1])});
+				objects.push({ value: data[i], score: parseFloat(data[i + 1]) });
 			}
 			callback(null, objects);
 		});
@@ -74,7 +74,7 @@ module.exports = function (redisClient, module) {
 			}
 			var objects = [];
 			for (var i = 0; i < data.length; i += 2) {
-				objects.push({value: data[i], score: parseFloat(data[i + 1])});
+				objects.push({ value: data[i], score: parseFloat(data[i + 1]) });
 			}
 			callback(null, objects);
 		});

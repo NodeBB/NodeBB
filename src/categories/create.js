@@ -43,7 +43,7 @@ module.exports = function (Categories) {
 					imageClass: 'cover',
 				};
 
-				plugins.fireHook('filter:category.create', {category: category, data: data}, next);
+				plugins.fireHook('filter:category.create', { category: category, data: data }, next);
 			},
 			function (data, next) {
 				category = data.category;

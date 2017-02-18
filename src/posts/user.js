@@ -71,7 +71,7 @@ module.exports = function (Posts) {
 						Posts.parseSignature(userData, uid, next);
 					},
 					customProfileInfo: function (next) {
-						plugins.fireHook('filter:posts.custom_profile_info', {profile: [], uid: userData.uid}, next);
+						plugins.fireHook('filter:posts.custom_profile_info', { profile: [], uid: userData.uid }, next);
 					},
 				}, function (err, results) {
 					if (err) {

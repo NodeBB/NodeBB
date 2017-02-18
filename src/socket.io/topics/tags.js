@@ -48,7 +48,7 @@ module.exports = function (SocketTopics) {
 			},
 			function (tags, next) {
 				tags = tags.filter(Boolean);
-				next(null, {tags: tags, nextStart: stop + 1});
+				next(null, { tags: tags, nextStart: stop + 1 });
 			},
 		], callback);
 	};

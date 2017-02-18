@@ -54,7 +54,7 @@ define('forum/infinitescroll', function () {
 		}
 		loadingMore = true;
 
-		var hookData = {method: method, data: data};
+		var hookData = { method: method, data: data };
 		$(window).trigger('action:infinitescroll.loadmore', hookData);
 
 		socket.emit(hookData.method, hookData.data, function (err, data) {

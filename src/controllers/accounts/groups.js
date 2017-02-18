@@ -46,7 +46,7 @@ groupsController.get = function (req, res, callback) {
 
 		userData.groups = groupsData;
 		userData.title = '[[pages:account/groups, ' + userData.username + ']]';
-		userData.breadcrumbs = helpers.buildBreadcrumbs([{text: userData.username, url: '/user/' + userData.userslug}, {text: '[[global:header.groups]]'}]);
+		userData.breadcrumbs = helpers.buildBreadcrumbs([{ text: userData.username, url: '/user/' + userData.userslug }, { text: '[[global:header.groups]]' }]);
 		res.render('account/groups', userData);
 	});
 };

@@ -74,7 +74,7 @@ module.exports = function (Topics) {
 				method2(tid, uid, next);
 			},
 			function (next) {
-				plugins.fireHook(hook, {uid: uid, tid: tid});
+				plugins.fireHook(hook, { uid: uid, tid: tid });
 				next();
 			},
 		], callback);

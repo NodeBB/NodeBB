@@ -374,10 +374,10 @@ define('admin/general/dashboard', ['semver', 'Chart', 'translator'], function (s
 
 	function updateTopicsGraph(topics) {
 		if (!Object.keys(topics).length) {
-			topics = {0: {
+			topics = { 0: {
 				title: 'No users browsing',
 				value: 1,
-			}};
+			} };
 		}
 
 		var tids = Object.keys(topics);

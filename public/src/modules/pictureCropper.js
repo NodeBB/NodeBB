@@ -32,7 +32,7 @@ define('pictureCropper', ['translator', 'cropper'], function (translator, croppe
 
 	module.handleImageCrop = function (data, callback) {
 		$('#crop-picture-modal').remove();
-		templates.parse('modals/crop_picture', {url: data.url}, function (cropperHtml) {
+		templates.parse('modals/crop_picture', { url: data.url }, function (cropperHtml) {
 			translator.translate(cropperHtml, function (translated) {
 				var cropperModal = $(translated);
 				cropperModal.modal('show');

@@ -27,7 +27,7 @@ describe('Pagination', function () {
 	});
 
 	it('should create pagination for 3 pages with query params', function (done) {
-		var data = pagination.create(1, 3, {key: 'value'});
+		var data = pagination.create(1, 3, { key: 'value' });
 		assert.equal(data.pages.length, 3);
 		assert.equal(data.rel.length, 1);
 		assert.equal(data.pageCount, 3);

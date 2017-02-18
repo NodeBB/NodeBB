@@ -123,7 +123,7 @@ module.exports = function (privileges) {
 	}
 
 	function filterIsModerator(cid, uid, isModerator, callback) {
-		plugins.fireHook('filter:user.isModerator', {uid: uid, cid: cid, isModerator: isModerator}, function (err, data) {
+		plugins.fireHook('filter:user.isModerator', { uid: uid, cid: cid, isModerator: isModerator }, function (err, data) {
 			if (err) {
 				return callback(err);
 			}

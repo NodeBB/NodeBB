@@ -37,10 +37,10 @@ describe('Plugins', function () {
 			callback(null, data);
 		}
 
-		plugins.registerHook('test-plugin', {hook: 'filter:test.hook', method: filterMethod1});
-		plugins.registerHook('test-plugin', {hook: 'filter:test.hook', method: filterMethod2});
+		plugins.registerHook('test-plugin', { hook: 'filter:test.hook', method: filterMethod1 });
+		plugins.registerHook('test-plugin', { hook: 'filter:test.hook', method: filterMethod2 });
 
-		plugins.fireHook('filter:test.hook', {foo: 1}, function (err, data) {
+		plugins.fireHook('filter:test.hook', { foo: 1 }, function (err, data) {
 			assert.ifError(err);
 			assert.equal(data.foo, 7);
 			done();
@@ -53,8 +53,8 @@ describe('Plugins', function () {
 			done();
 		}
 
-		plugins.registerHook('test-plugin', {hook: 'action:test.hook', method: actionMethod});
-		plugins.fireHook('action:test.hook', {bar: 'test'});
+		plugins.registerHook('test-plugin', { hook: 'action:test.hook', method: actionMethod });
+		plugins.fireHook('action:test.hook', { bar: 'test' });
 	});
 
 	it('should register and fire a static hook', function (done) {
@@ -63,8 +63,8 @@ describe('Plugins', function () {
 			callback();
 		}
 
-		plugins.registerHook('test-plugin', {hook: 'static:test.hook', method: actionMethod});
-		plugins.fireHook('static:test.hook', {bar: 'test'}, function (err) {
+		plugins.registerHook('test-plugin', { hook: 'static:test.hook', method: actionMethod });
+		plugins.fireHook('static:test.hook', { bar: 'test' }, function (err) {
 			assert.ifError(err);
 			done();
 		});

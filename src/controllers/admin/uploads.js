@@ -49,7 +49,7 @@ uploadsController.uploadFavicon = function (req, res, next) {
 				return next(err);
 			}
 
-			res.json([{name: uploadedFile.name, url: image.url}]);
+			res.json([{ name: uploadedFile.name, url: image.url }]);
 		});
 	}
 };
@@ -87,7 +87,7 @@ uploadsController.uploadTouchIcon = function (req, res, next) {
 					return next(err);
 				}
 
-				res.json([{name: uploadedFile.name, url: imageObj.url}]);
+				res.json([{ name: uploadedFile.name, url: imageObj.url }]);
 			});
 		});
 	}
@@ -145,7 +145,7 @@ function validateUpload(req, res, next, uploadedFile, allowedTypes) {
 			}
 		});
 
-		res.json({error: '[[error:invalid-image-type, ' + allowedTypes.join('&#44; ') + ']]'});
+		res.json({ error: '[[error:invalid-image-type, ' + allowedTypes.join('&#44; ') + ']]' });
 		return false;
 	}
 
@@ -163,11 +163,11 @@ function uploadImage(filename, folder, uploadedFile, req, res, next) {
 			return next(err);
 		}
 
-		res.json([{name: uploadedFile.name, url: image.url.startsWith('http') ? image.url : nconf.get('relative_path') + image.url}]);
+		res.json([{ name: uploadedFile.name, url: image.url.startsWith('http') ? image.url : nconf.get('relative_path') + image.url }]);
 	}
 
 	if (plugins.hasListeners('filter:uploadImage')) {
-		plugins.fireHook('filter:uploadImage', {image: uploadedFile, uid: req.user.uid}, done);
+		plugins.fireHook('filter:uploadImage', { image: uploadedFile, uid: req.user.uid }, done);
 	} else {
 		file.saveFileToLocal(filename, folder, uploadedFile.path, done);
 	}

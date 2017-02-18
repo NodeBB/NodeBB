@@ -57,12 +57,12 @@ module.exports = function (Plugins) {
 				winston.warn('[plugins] Could not toggle active state on plugin \'' + id + '\'');
 				return callback(err);
 			}
-			callback(null, {id: id, active: !isActive});
+			callback(null, { id: id, active: !isActive });
 		});
 	};
 
 	Plugins.toggleInstall = function (id, version, callback) {
-		pubsub.publish('plugins:toggleInstall', {hostname: os.hostname(), id: id, version: version});
+		pubsub.publish('plugins:toggleInstall', { hostname: os.hostname(), id: id, version: version });
 		toggleInstall(id, version, callback);
 	};
 
@@ -112,7 +112,7 @@ module.exports = function (Plugins) {
 	}
 
 	Plugins.upgrade = function (id, version, callback) {
-		pubsub.publish('plugins:upgrade', {hostname: os.hostname(), id: id, version: version});
+		pubsub.publish('plugins:upgrade', { hostname: os.hostname(), id: id, version: version });
 		upgrade(id, version, callback);
 	};
 

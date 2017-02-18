@@ -36,7 +36,7 @@ module.exports = function (SocketPosts) {
 						posts.hasBookmarked(data.pid, socket.uid, next);
 					},
 					tools: function (next) {
-						plugins.fireHook('filter:post.tools', {pid: data.pid, uid: socket.uid, tools: []}, next);
+						plugins.fireHook('filter:post.tools', { pid: data.pid, uid: socket.uid, tools: [] }, next);
 					},
 					postSharing: function (next) {
 						social.getActivePostSharing(next);
@@ -121,7 +121,7 @@ module.exports = function (SocketPosts) {
 			return callback(new Error('[[error:invalid-data]]'));
 		}
 		async.eachSeries(data.pids, function (pid, next) {
-			SocketPosts.delete(socket, {pid: pid, tid: data.tid}, next);
+			SocketPosts.delete(socket, { pid: pid, tid: data.tid }, next);
 		}, callback);
 	};
 
@@ -130,7 +130,7 @@ module.exports = function (SocketPosts) {
 			return callback(new Error('[[error:invalid-data]]'));
 		}
 		async.eachSeries(data.pids, function (pid, next) {
-			SocketPosts.purge(socket, {pid: pid, tid: data.tid}, next);
+			SocketPosts.purge(socket, { pid: pid, tid: data.tid }, next);
 		}, callback);
 	};
 
@@ -156,7 +156,7 @@ module.exports = function (SocketPosts) {
 				posts.getPostField(data.pid, 'toPid', next);
 			},
 			function (toPid, next) {
-				postData = {pid: data.pid, toPid: toPid};
+				postData = { pid: data.pid, toPid: toPid };
 				posts.tools.purge(socket.uid, data.pid, next);
 			},
 			function (next) {
@@ -181,7 +181,7 @@ module.exports = function (SocketPosts) {
 				posts.getTopicFields(pid, ['tid', 'cid'], next);
 			},
 			function (topic, next) {
-				socketTopics.doTopicAction('delete', 'event:topic_deleted', socket, {tids: [topic.tid], cid: topic.cid}, next);
+				socketTopics.doTopicAction('delete', 'event:topic_deleted', socket, { tids: [topic.tid], cid: topic.cid }, next);
 			},
 		], callback);
 	}

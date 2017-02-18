@@ -59,7 +59,7 @@ function uploadAsImage(req, uploadedFile, callback) {
 				return next(new Error('[[error:no-privileges]]'));
 			}
 			if (plugins.hasListeners('filter:uploadImage')) {
-				return plugins.fireHook('filter:uploadImage', {image: uploadedFile, uid: req.uid}, callback);
+				return plugins.fireHook('filter:uploadImage', { image: uploadedFile, uid: req.uid }, callback);
 			}
 			file.isFileTypeAllowed(uploadedFile.path, next);
 		},
@@ -155,7 +155,7 @@ uploadsController.uploadThumb = function (req, res, next) {
 				}
 
 				if (plugins.hasListeners('filter:uploadImage')) {
-					return plugins.fireHook('filter:uploadImage', {image: uploadedFile, uid: req.uid}, next);
+					return plugins.fireHook('filter:uploadImage', { image: uploadedFile, uid: req.uid }, next);
 				}
 
 				uploadFile(req.uid, uploadedFile, next);
@@ -166,11 +166,11 @@ uploadsController.uploadThumb = function (req, res, next) {
 
 uploadsController.uploadGroupCover = function (uid, uploadedFile, callback) {
 	if (plugins.hasListeners('filter:uploadImage')) {
-		return plugins.fireHook('filter:uploadImage', {image: uploadedFile, uid: uid}, callback);
+		return plugins.fireHook('filter:uploadImage', { image: uploadedFile, uid: uid }, callback);
 	}
 
 	if (plugins.hasListeners('filter:uploadFile')) {
-		return plugins.fireHook('filter:uploadFile', {file: uploadedFile, uid: uid}, callback);
+		return plugins.fireHook('filter:uploadFile', { file: uploadedFile, uid: uid }, callback);
 	}
 
 	file.isFileTypeAllowed(uploadedFile.path, function (err) {
@@ -183,7 +183,7 @@ uploadsController.uploadGroupCover = function (uid, uploadedFile, callback) {
 
 function uploadFile(uid, uploadedFile, callback) {
 	if (plugins.hasListeners('filter:uploadFile')) {
-		return plugins.fireHook('filter:uploadFile', {file: uploadedFile, uid: uid}, callback);
+		return plugins.fireHook('filter:uploadFile', { file: uploadedFile, uid: uid }, callback);
 	}
 
 	if (!uploadedFile) {

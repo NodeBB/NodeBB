@@ -47,7 +47,7 @@ module.exports = function (User) {
 	};
 
 	function onSettingsLoaded(uid, settings, callback) {
-		plugins.fireHook('filter:user.getSettings', {uid: uid, settings: settings}, function (err, data) {
+		plugins.fireHook('filter:user.getSettings', { uid: uid, settings: settings }, function (err, data) {
 			if (err) {
 				return callback(err);
 			}
@@ -101,7 +101,7 @@ module.exports = function (User) {
 
 		data.userLang = data.userLang || meta.config.defaultLang;
 
-		plugins.fireHook('action:user.saveSettings', {uid: uid, settings: data});
+		plugins.fireHook('action:user.saveSettings', { uid: uid, settings: data });
 
 		var settings = {
 			showemail: data.showemail,

@@ -36,7 +36,7 @@ infoController.get = function (req, res, callback) {
 		userData.usernames = data.usernames;
 		userData.emails = data.emails;
 		userData.title = '[[pages:account/info]]';
-		userData.breadcrumbs = helpers.buildBreadcrumbs([{text: userData.username, url: '/user/' + userData.userslug}, {text: '[[user:account_info]]'}]);
+		userData.breadcrumbs = helpers.buildBreadcrumbs([{ text: userData.username, url: '/user/' + userData.userslug }, { text: '[[user:account_info]]' }]);
 
 		res.render('account/info', userData);
 	});

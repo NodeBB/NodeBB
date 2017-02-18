@@ -87,8 +87,8 @@ define('forum/topic/posts', [
 	}
 
 	function updatePagination() {
-		$.get(config.relative_path + '/api/topic/pagination/' + ajaxify.data.tid, {page: ajaxify.data.pagination.currentPage}, function (paginationData) {
-			app.parseAndTranslate('partials/paginator', {pagination: paginationData}, function (html) {
+		$.get(config.relative_path + '/api/topic/pagination/' + ajaxify.data.tid, { page: ajaxify.data.pagination.currentPage }, function (paginationData) {
+			app.parseAndTranslate('partials/paginator', { pagination: paginationData }, function (html) {
 				$('[component="pagination"]').after(html).remove();
 			});
 		});
@@ -174,7 +174,7 @@ define('forum/topic/posts', [
 
 		data.slug = ajaxify.data.slug;
 
-		$(window).trigger('action:posts.loading', {posts: data.posts, after: after, before: before});
+		$(window).trigger('action:posts.loading', { posts: data.posts, after: after, before: before });
 
 		app.parseAndTranslate('topic', 'posts', data, function (html) {
 			html = html.filter(function () {
@@ -199,7 +199,7 @@ define('forum/topic/posts', [
 
 			infinitescroll.removeExtra($('[component="post"]'), direction, 40);
 
-			$(window).trigger('action:posts.loaded', {posts: data.posts});
+			$(window).trigger('action:posts.loaded', { posts: data.posts });
 
 			Posts.processPage(html);
 

@@ -272,7 +272,7 @@ function createAdmin(callback) {
 		var adminUid;
 		async.waterfall([
 			function (next) {
-				User.create({username: results.username, password: results.password, email: results.email}, next);
+				User.create({ username: results.username, password: results.password, email: results.email }, next);
 			},
 			function (uid, next) {
 				adminUid = uid;

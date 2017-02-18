@@ -52,13 +52,13 @@ helpers.getUserDataByUserSlug = function (userslug, callerUID, callback) {
 					plugins.fireHook('filter:user.profileLinks', [], next);
 				},
 				profile_menu: function (next) {
-					plugins.fireHook('filter:user.profileMenu', {uid: uid, callerUID: callerUID, links: []}, next);
+					plugins.fireHook('filter:user.profileMenu', { uid: uid, callerUID: callerUID, links: [] }, next);
 				},
 				groups: function (next) {
 					groups.getUserGroups([uid], next);
 				},
 				sso: function (next) {
-					plugins.fireHook('filter:auth.list', {uid: uid, associations: []}, next);
+					plugins.fireHook('filter:auth.list', { uid: uid, associations: [] }, next);
 				},
 			}, next);
 		},

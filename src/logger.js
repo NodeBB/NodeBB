@@ -77,13 +77,13 @@ var opts = {
 				var stats = fs.statSync(value);
 				if (stats) {
 					if (stats.isDirectory()) {
-						stream = fs.createWriteStream(path.join(value, 'nodebb.log'), {flags: 'a'});
+						stream = fs.createWriteStream(path.join(value, 'nodebb.log'), { flags: 'a' });
 					} else {
-						stream = fs.createWriteStream(value, {flags: 'a'});
+						stream = fs.createWriteStream(value, { flags: 'a' });
 					}
 				}
 			} else {
-				stream = fs.createWriteStream(value, {flags: 'a'});
+				stream = fs.createWriteStream(value, { flags: 'a' });
 			}
 
 			if (stream) {
@@ -121,7 +121,7 @@ var opts = {
 		/*
 		 * Always initialize "ofn" (original function) with the original logger function
 		 */
-		opts.express.ofn = morgan('combined', {stream: opts.streams.log.f});
+		opts.express.ofn = morgan('combined', { stream: opts.streams.log.f });
 	};
 
 	Logger.expressLogger = function (req, res, next) {

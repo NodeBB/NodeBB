@@ -16,7 +16,7 @@ module.exports = function (Categories) {
 					async.eachLimit(tids, 10, function (tid, next) {
 						topics.purgePostsAndTopic(tid, uid, next);
 					}, next);
-				}, {alwaysStartAt: 0}, next);
+				}, { alwaysStartAt: 0 }, next);
 			},
 			function (next) {
 				Categories.getPinnedTids('cid:' + cid + ':tids:pinned', 0, -1, next);

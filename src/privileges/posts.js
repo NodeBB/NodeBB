@@ -144,7 +144,7 @@ module.exports = function (privileges) {
 				return callback(err);
 			}
 			if (results.isAdminOrMod) {
-				return callback(null, {flag: true});
+				return callback(null, { flag: true });
 			}
 
 			callback(null, results.isEditable);
@@ -172,24 +172,24 @@ module.exports = function (privileges) {
 			}
 
 			if (results.isAdminOrMod) {
-				return callback(null, {flag: true});
+				return callback(null, { flag: true });
 			}
 
 			if (results.isLocked) {
-				return callback(null, {flag: false, message: '[[error:topic-locked]]'});
+				return callback(null, { flag: false, message: '[[error:topic-locked]]' });
 			}
 
 			if (!results['posts:delete']) {
-				return callback(null, {flag: false, message: '[[error:no-privileges]]'});
+				return callback(null, { flag: false, message: '[[error:no-privileges]]' });
 			}
 
 			var postDeleteDuration = parseInt(meta.config.postDeleteDuration, 10);
 			if (postDeleteDuration && (Date.now() - parseInt(postData.timestamp, 10) > postDeleteDuration * 1000)) {
-				return callback(null, {flag: false, message: '[[error:post-delete-duration-expired, ' + meta.config.postDeleteDuration + ']]'});
+				return callback(null, { flag: false, message: '[[error:post-delete-duration-expired, ' + meta.config.postDeleteDuration + ']]' });
 			}
 			var deleterUid = parseInt(postData.deleterUid, 10) || 0;
 			var flag = results.isOwner && (deleterUid === 0 || deleterUid === parseInt(postData.uid, 10));
-			callback(null, {flag: flag, message: '[[error:no-privileges]]'});
+			callback(null, { flag: flag, message: '[[error:no-privileges]]' });
 		});
 	};
 
@@ -230,13 +230,13 @@ module.exports = function (privileges) {
 				tid = postData.tid;
 				var postEditDuration = parseInt(meta.config.postEditDuration, 10);
 				if (postEditDuration && Date.now() - parseInt(postData.timestamp, 10) > postEditDuration * 1000) {
-					return callback(null, {flag: false, message: '[[error:post-edit-duration-expired, ' + meta.config.postEditDuration + ']]'});
+					return callback(null, { flag: false, message: '[[error:post-edit-duration-expired, ' + meta.config.postEditDuration + ']]' });
 				}
 				topics.isLocked(postData.tid, next);
 			},
 			function (isLocked, next) {
 				if (isLocked) {
-					return callback(null, {flag: false, message: '[[error:topic-locked]]'});
+					return callback(null, { flag: false, message: '[[error:topic-locked]]' });
 				}
 
 				async.parallel({
@@ -245,7 +245,7 @@ module.exports = function (privileges) {
 				}, next);
 			},
 			function (result, next) {
-				next(null, {flag: result.owner && result.edit, message: '[[error:no-privileges]]'});
+				next(null, { flag: result.owner && result.edit, message: '[[error:no-privileges]]' });
 			},
 		], callback);
 	}

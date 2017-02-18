@@ -45,7 +45,7 @@ helpers.loginUser = function (username, password, callback) {
 
 			var socketClient = require('socket.io-client');
 
-			var io = socketClient.connect(nconf.get('url'), {forceNew: true, multiplex: false});
+			var io = socketClient.connect(nconf.get('url'), { forceNew: true, multiplex: false });
 			io.on('connect', function () {
 				callback(null, jar, io, body.csrf_token);
 			});
@@ -77,7 +77,7 @@ helpers.initSocketIO = function (callback) {
 			};
 		};
 
-		var io = require('socket.io-client')(nconf.get('url'), {forceNew: true});
+		var io = require('socket.io-client')(nconf.get('url'), { forceNew: true });
 
 		io.on('connect', function () {
 			callback(null, jar, io);

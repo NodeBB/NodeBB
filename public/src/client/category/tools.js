@@ -35,7 +35,7 @@ define('forum/category/tools', [
 		components.get('topic/lock').on('click', function () {
 			var tids = topicSelect.getSelectedTids();
 			if (tids.length) {
-				socket.emit('topics.lock', {tids: tids, cid: CategoryTools.cid}, onCommandComplete);
+				socket.emit('topics.lock', { tids: tids, cid: CategoryTools.cid }, onCommandComplete);
 			}
 			return false;
 		});
@@ -43,7 +43,7 @@ define('forum/category/tools', [
 		components.get('topic/unlock').on('click', function () {
 			var tids = topicSelect.getSelectedTids();
 			if (tids.length) {
-				socket.emit('topics.unlock', {tids: tids, cid: CategoryTools.cid}, onCommandComplete);
+				socket.emit('topics.unlock', { tids: tids, cid: CategoryTools.cid }, onCommandComplete);
 			}
 			return false;
 		});
@@ -51,7 +51,7 @@ define('forum/category/tools', [
 		components.get('topic/pin').on('click', function () {
 			var tids = topicSelect.getSelectedTids();
 			if (tids.length) {
-				socket.emit('topics.pin', {tids: tids, cid: CategoryTools.cid}, onCommandComplete);
+				socket.emit('topics.pin', { tids: tids, cid: CategoryTools.cid }, onCommandComplete);
 			}
 			return false;
 		});
@@ -59,7 +59,7 @@ define('forum/category/tools', [
 		components.get('topic/unpin').on('click', function () {
 			var tids = topicSelect.getSelectedTids();
 			if (tids.length) {
-				socket.emit('topics.unpin', {tids: tids, cid: CategoryTools.cid}, onCommandComplete);
+				socket.emit('topics.unpin', { tids: tids, cid: CategoryTools.cid }, onCommandComplete);
 			}
 			return false;
 		});
@@ -123,7 +123,7 @@ define('forum/category/tools', [
 					return;
 				}
 
-				socket.emit('topics.' + command, {tids: tids, cid: CategoryTools.cid}, onDeletePurgeComplete);
+				socket.emit('topics.' + command, { tids: tids, cid: CategoryTools.cid }, onDeletePurgeComplete);
 			});
 		});
 	}
@@ -250,7 +250,7 @@ define('forum/category/tools', [
 
 					var pinnedTopics = $('[component="category/topic"].pinned');
 					pinnedTopics.each(function (index, element) {
-						data.push({tid: $(element).attr('data-tid'), order: pinnedTopics.length - index - 1});
+						data.push({ tid: $(element).attr('data-tid'), order: pinnedTopics.length - index - 1 });
 					});
 
 					socket.emit('topics.orderPinnedTopics', data, function (err) {

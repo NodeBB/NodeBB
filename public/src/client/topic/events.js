@@ -111,7 +111,7 @@ define('forum/topic/events', [
 		if (topicTitle.length && data.topic.title && topicTitle.html() !== data.topic.title) {
 			ajaxify.data.title = data.topic.title;
 			var newUrl = 'topic/' + data.topic.slug + (window.location.search ? window.location.search : '');
-			history.replaceState({url: newUrl}, null, window.location.protocol + '//' + window.location.host + config.relative_path + '/' + newUrl);
+			history.replaceState({ url: newUrl }, null, window.location.protocol + '//' + window.location.host + config.relative_path + '/' + newUrl);
 
 			topicTitle.fadeOut(250, function () {
 				topicTitle.html(data.topic.title).fadeIn(250);
@@ -149,7 +149,7 @@ define('forum/topic/events', [
 		});
 
 		if (data.topic.tags && tagsUpdated(data.topic.tags)) {
-			templates.parse('partials/post_bar', 'tags', {tags: data.topic.tags}, function (html) {
+			templates.parse('partials/post_bar', 'tags', { tags: data.topic.tags }, function (html) {
 				var tags = $('.tags');
 
 				tags.fadeOut(250, function () {

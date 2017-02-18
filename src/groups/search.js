@@ -91,7 +91,7 @@ module.exports = function (Groups) {
 				if (err) {
 					return callback(err);
 				}
-				callback(null, {users: users});
+				callback(null, { users: users });
 			});
 			return;
 		}

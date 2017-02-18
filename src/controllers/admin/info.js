@@ -24,7 +24,7 @@ infoController.get = function (req, res, next) {
 		data.sort(function (a, b) {
 			return (a.os.hostname < b.os.hostname) ? -1 : (a.os.hostname > b.os.hostname) ? 1 : 0;
 		});
-		res.render('admin/development/info', {info: data, infoJSON: JSON.stringify(data, null, 4), host: os.hostname(), port: nconf.get('port')});
+		res.render('admin/development/info', { info: data, infoJSON: JSON.stringify(data, null, 4), host: os.hostname(), port: nconf.get('port') });
 	}, 500);
 };
 
@@ -33,7 +33,7 @@ pubsub.on('sync:node:info:start', function () {
 		if (err) {
 			return winston.error(err);
 		}
-		pubsub.publish('sync:node:info:end', {data: data, id: os.hostname() + ':' + nconf.get('port')});
+		pubsub.publish('sync:node:info:end', { data: data, id: os.hostname() + ':' + nconf.get('port') });
 	});
 });
 

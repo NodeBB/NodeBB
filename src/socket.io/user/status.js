@@ -30,7 +30,7 @@ module.exports = function (SocketUser) {
 			return callback(new Error('[[error:invalid-user-status]]'));
 		}
 
-		var data = {status: status};
+		var data = { status: status };
 		if (status !== 'offline') {
 			data.lastonline = Date.now();
 		}

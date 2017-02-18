@@ -164,7 +164,7 @@ helpers.getWatchedCategories = function (uid, selectedCid, callback) {
 				recursive(category, categoriesData, '');
 			});
 
-			next(null, {categories: categoriesData, selectedCategory: selectedCategory});
+			next(null, { categories: categoriesData, selectedCategory: selectedCategory });
 		},
 	], callback);
 };

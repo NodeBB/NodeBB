@@ -178,7 +178,7 @@ Analytics.getMonthlyPageViews = function (callback) {
 		if (err) {
 			return callback(err);
 		}
-		callback(null, {thisMonth: scores[0] || 0, lastMonth: scores[1] || 0});
+		callback(null, { thisMonth: scores[0] || 0, lastMonth: scores[1] || 0 });
 	});
 };
 

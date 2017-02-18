@@ -48,7 +48,7 @@ module.exports = function (Topics) {
 					topicData.thumb = data.thumb;
 				}
 
-				plugins.fireHook('filter:topic.create', {topic: topicData, data: data}, next);
+				plugins.fireHook('filter:topic.create', { topic: topicData, data: data }, next);
 			},
 			function (data, next) {
 				topicData = data.topic;
