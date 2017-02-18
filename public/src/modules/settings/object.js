@@ -1,3 +1,5 @@
+'use strict';
+
 define('settings/object', function () {
 
 	var Settings = null;

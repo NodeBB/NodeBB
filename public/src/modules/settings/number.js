@@ -1,3 +1,5 @@
+'use strict';
+
 define('settings/number', function () {
 
 	return {

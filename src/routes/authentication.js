@@ -1,6 +1,6 @@
-(function (Auth) {
-	'use strict';
+'use strict';
 
+(function (Auth) {
 	var passport = require('passport');
 	var	passportLocal = require('passport-local').Strategy;
 	var	nconf = require('nconf');

@@ -1,3 +1,5 @@
+'use strict';
+
 define('settings/select', function () {
 
 	var Settings = null;

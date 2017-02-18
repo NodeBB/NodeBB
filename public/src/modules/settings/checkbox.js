@@ -1,3 +1,5 @@
+'use strict';
+
 define('settings/checkbox', function () {
 
 	var Settings = null;

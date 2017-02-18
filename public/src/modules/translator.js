@@ -1,7 +1,6 @@
-
+'use strict';
 
 (function (factory) {
-	'use strict';
 	function loadClient(language, namespace) {
 		return Promise.resolve(jQuery.getJSON(config.relative_path + '/assets/language/' + language + '/' + namespace + '.json?' + config['cache-buster']));
 	}
@@ -44,7 +43,6 @@
 		window.translator = factory(window.string, loadClient, warn);
 	}
 }(function (string, load, warn) {
-	'use strict';
 	var assign = Object.assign || jQuery.extend;
 	function classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 

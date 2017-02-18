@@ -1,6 +1,6 @@
-(function (module) {
-	'use strict';
+'use strict';
 
+(function (module) {
 	var utils;
 	var fs;
 	var XRegExp;

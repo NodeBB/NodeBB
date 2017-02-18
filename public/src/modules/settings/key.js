@@ -1,3 +1,5 @@
+'use strict';
+
 define('settings/key', function () {
 
 	var Settings = null;

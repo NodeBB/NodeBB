@@ -1,3 +1,5 @@
+'use strict';
+
 var	LRU = require('lru-cache');
 var meta = require('../meta');
 

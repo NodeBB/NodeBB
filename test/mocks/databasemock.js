@@ -1,12 +1,11 @@
+'use strict';
+
 /**
  * Database Mock - wrapper for database.js, makes system use separate test db, instead of production
  * ATTENTION: testing db is flushed before every use!
  */
 
 (function (module) {
-	'use strict';
-
-
 	var async = require('async');
 	var winston = require('winston');
 	var path = require('path');
