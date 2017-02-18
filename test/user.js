@@ -453,12 +453,9 @@ describe('User', function () {
 			var socketUser = require('../src/socket.io/user');
 			socketUser.uploadCroppedPicture({uid: uid}, {uid: uid, imageData: imageData}, function (err, result) {
 				assert.ifError(err);
-				console.log(result);
 				assert(result.url);
 				db.getObjectFields('user:' + uid, ['uploadedpicture', 'picture'], function (err, data) {
 					assert.ifError(err);
-					console.log(data);
-					//{ url: '/assets/uploads/profile/4-profileavatar.png' }
 					assert.equal(result.url, data.uploadedpicture);
 					assert.equal(result.url, data.picture);
 					done();
