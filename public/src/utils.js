@@ -5,7 +5,7 @@
 	var fs;
 	var XRegExp;
 
-	if ('undefined' === typeof window) {
+	if (typeof window === 'undefined') {
 		fs = require('fs');
 		XRegExp = require('xregexp');
 
@@ -448,7 +448,7 @@
 		},
 	};
 
-	if ('undefined' !== typeof window) {
+	if (typeof window !== 'undefined') {
 		window.utils = module.exports;
 	}
 
@@ -479,7 +479,7 @@
 			return this.replace(/\s+$/g, '');
 		};
 	}
-}('undefined' === typeof module ? {
+}(typeof module === 'undefined' ? {
 	module: {
 		exports: {},
 	},

@@ -75,10 +75,10 @@ settingsController.get = function (req, res, callback) {
 		}
 
 		userData.dailyDigestFreqOptions = [
-			{ value: 'off', name: '[[user:digest_off]]', selected: 'off' === userData.settings.dailyDigestFreq },
-			{ value: 'day', name: '[[user:digest_daily]]', selected: 'day' === userData.settings.dailyDigestFreq },
-			{ value: 'week', name: '[[user:digest_weekly]]', selected: 'week' === userData.settings.dailyDigestFreq },
-			{ value: 'month', name: '[[user:digest_monthly]]', selected: 'month' === userData.settings.dailyDigestFreq },
+			{ value: 'off', name: '[[user:digest_off]]', selected: userData.settings.dailyDigestFreq === 'off' },
+			{ value: 'day', name: '[[user:digest_daily]]', selected: userData.settings.dailyDigestFreq === 'day' },
+			{ value: 'week', name: '[[user:digest_weekly]]', selected: userData.settings.dailyDigestFreq === 'week' },
+			{ value: 'month', name: '[[user:digest_monthly]]', selected: userData.settings.dailyDigestFreq === 'month' },
 		];
 
 

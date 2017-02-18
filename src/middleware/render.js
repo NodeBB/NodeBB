@@ -23,11 +23,11 @@ module.exports = function (middleware) {
 			};
 
 			options = options || {};
-			if ('function' === typeof options) {
+			if (typeof options === 'function') {
 				fn = options;
 				options = {};
 			}
-			if ('function' !== typeof fn) {
+			if (typeof fn !== 'function') {
 				fn = defaultFn;
 			}
 

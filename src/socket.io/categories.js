@@ -204,16 +204,15 @@ function ignoreOrWatch(fn, socket, cid, callback) {
 
 			// filter to subcategories of cid
 
-			var any = true;
-			while (any) {
-				any = false;
-				categoryData.forEach(function (c) {
-					if (cids.indexOf(c.cid) === -1 && cids.indexOf(c.parentCid) !== -1) {
-						cids.push(c.cid);
-						any = true;
-					}
+			var cat;
+			do {
+				cat = categoryData.find(function (c) {
+					return cids.indexOf(c.cid) === -1 && cids.indexOf(c.parentCid) !== -1;
 				});
-			}
+				if (cat) {
+					cids.push(cat.cid);
+				}
+			} while (cat);
 
 			async.each(cids, function (cid, next) {
 				fn(socket.uid, cid, next);
