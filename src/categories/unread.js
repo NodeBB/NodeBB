@@ -5,7 +5,6 @@ var async = require('async');
 var db = require('../database');
 
 module.exports = function (Categories) {
-
 	Categories.markAsRead = function (cids, uid, callback) {
 		callback = callback || function () {};
 		if (!Array.isArray(cids) || !cids.length) {
@@ -53,5 +52,4 @@ module.exports = function (Categories) {
 	Categories.hasReadCategory = function (cid, uid, callback) {
 		db.isSetMember('cid:' + cid + ':read_by_uid', uid, callback);
 	};
-
 };

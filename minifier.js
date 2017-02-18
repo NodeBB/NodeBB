@@ -11,7 +11,6 @@ var Minifier = {
 
 /* Javascript */
 Minifier.js.minify = function (scripts, minify, callback) {
-
 	scripts = scripts.filter(function (file) {
 		return file && file.endsWith('.js');
 	});

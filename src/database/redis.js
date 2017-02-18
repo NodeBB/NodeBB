@@ -1,7 +1,6 @@
 'use strict';
 
 (function (module) {
-
 	var winston = require('winston');
 	var nconf = require('nconf');
 	var semver = require('semver');

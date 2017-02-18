@@ -17,7 +17,6 @@
 			var diff = process.hrtime(start);
 			return (diff[0] * 1e3) + (diff[1] / 1e6);
 		};
-
 	} else {
 		XRegExp = window.XRegExp;
 	}
@@ -479,7 +478,6 @@
 	if ('undefined' !== typeof window) {
 		window.utils = module.exports;
 	}
-
 }('undefined' === typeof module ? {
 	module: {
 		exports: {},

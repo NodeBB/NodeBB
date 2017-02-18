@@ -8,11 +8,9 @@ define('forum/topic/threadTools', [
 	'components',
 	'translator',
 ], function (fork, move, deletePosts, components, translator) {
-
 	var ThreadTools = {};
 
 	ThreadTools.init = function (tid) {
-
 		renderMenu();
 
 		var topicContainer = $('.topic');

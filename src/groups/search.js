@@ -7,7 +7,6 @@ var db = require('./../database');
 
 
 module.exports = function (Groups) {
-
 	Groups.search = function (query, options, callback) {
 		if (!query) {
 			return callback(null, []);
@@ -64,7 +63,6 @@ module.exports = function (Groups) {
 	};
 
 	Groups.searchMembers = function (data, callback) {
-
 		function findUids(query, searchBy, callback) {
 			query = query.toLowerCase();
 
@@ -112,7 +110,6 @@ module.exports = function (Groups) {
 				Groups.ownership.isOwners(uids, data.groupName, next);
 			},
 			function (isOwners, next) {
-
 				results.users.forEach(function (user, index) {
 					if (user) {
 						user.isOwner = isOwners[index];

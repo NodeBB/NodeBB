@@ -9,7 +9,6 @@ var groups = require('../groups');
 var privileges = require('../privileges');
 
 module.exports = function (Categories) {
-
 	Categories.purge = function (cid, uid, callback) {
 		async.waterfall([
 			function (next) {

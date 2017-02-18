@@ -6,7 +6,6 @@ var plugins = require('../plugins');
 var db = require('../database');
 
 module.exports = function (User) {
-
 	User.follow = function (uid, followuid, callback) {
 		toggleFollow('follow', uid, followuid, callback);
 	};
@@ -97,5 +96,4 @@ module.exports = function (User) {
 		}
 		db.isSortedSetMember('following:' + uid, theirid, callback);
 	};
-
 };

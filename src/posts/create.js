@@ -12,7 +12,6 @@ var categories = require('../categories');
 var utils = require('../../public/src/utils');
 
 module.exports = function (Posts) {
-
 	Posts.create = function (data, callback) {
 		// This is an internal method, consider using Topics.reply instead
 		var uid = data.uid;
@@ -36,7 +35,6 @@ module.exports = function (Posts) {
 				db.incrObjectField('global', 'nextPid', next);
 			},
 			function (pid, next) {
-
 				postData = {
 					pid: pid,
 					uid: uid,

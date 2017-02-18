@@ -1,7 +1,6 @@
 'use strict';
 
 define('settings/key', function () {
-
 	var Settings = null;
 	var SettingsKey;
 	var helper = null;
@@ -219,5 +218,4 @@ define('settings/key', function () {
 	};
 
 	return SettingsKey;
-
 });

@@ -11,7 +11,6 @@ var utils = require('../../public/src/utils');
 
 
 module.exports = function (Topics) {
-
 	Topics.createTags = function (tags, tid, timestamp, callback) {
 		callback = callback || function () {};
 

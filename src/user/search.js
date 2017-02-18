@@ -7,7 +7,6 @@ var plugins = require('../plugins');
 var db = require('../database');
 
 module.exports = function (User) {
-
 	User.search = function (data, callback) {
 		var query = data.query || '';
 		var searchBy = data.searchBy || 'username';

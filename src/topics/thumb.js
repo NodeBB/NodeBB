@@ -16,7 +16,6 @@ var file = require('../file');
 var plugins = require('../plugins');
 
 module.exports = function (Topics) {
-
 	Topics.resizeAndUploadThumb = function (data, callback) {
 		if (!data.thumb || !validator.isURL(data.thumb)) {
 			return callback();
@@ -30,7 +29,6 @@ module.exports = function (Topics) {
 				request.head(data.thumb, next);
 			},
 			function (res, body, next) {
-
 				var type = res.headers['content-type'];
 				if (!type.match(/image./)) {
 					return next(new Error('[[error:invalid-file]]'));
@@ -87,5 +85,4 @@ module.exports = function (Topics) {
 			});
 		}
 	}
-
 };

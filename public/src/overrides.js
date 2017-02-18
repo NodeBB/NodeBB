@@ -4,7 +4,6 @@
 var overrides = overrides || {};
 
 if ('undefined' !== typeof window) {
-
 	(function ($, undefined) {
 		require(['translator'], function (translator) {
 			$.fn.getCursorPosition = function () {
@@ -135,5 +134,4 @@ if ('undefined' !== typeof window) {
 			timeagoFn.apply(this, arguments);
 		};
 	};
-
 }

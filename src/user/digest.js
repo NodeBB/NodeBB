@@ -129,5 +129,4 @@ var utils = require('../../public/src/utils');
 			callback(err);
 		});
 	};
-
 }(module.exports));

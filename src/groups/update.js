@@ -9,7 +9,6 @@ var db = require('../database');
 
 
 module.exports = function (Groups) {
-
 	Groups.update = function (groupName, values, callback) {
 		callback = callback || function () {};
 

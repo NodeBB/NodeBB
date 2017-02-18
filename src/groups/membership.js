@@ -19,7 +19,6 @@ var cache = LRU({
 });
 
 module.exports = function (Groups) {
-
 	Groups.cache = cache;
 
 	Groups.join = function (groupName, uid, callback) {

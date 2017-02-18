@@ -11,7 +11,6 @@ define('chat', [
 	'translator',
 	'scrollStop',
 ], function (components, taskbar, S, sounds, Chats, ChatsMessages, translator, scrollStop) {
-
 	var module = {};
 	var newMessage = false;
 
@@ -157,7 +156,6 @@ define('chat', [
 
 	module.createModal = function (data, callback) {
 		app.parseAndTranslate('chat', data, function (chatModal) {
-
 			var uuid = utils.generateUUID();
 			var dragged = false;
 

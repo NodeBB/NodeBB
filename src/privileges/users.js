@@ -7,7 +7,6 @@ var groups = require('../groups');
 var plugins = require('../plugins');
 
 module.exports = function (privileges) {
-
 	privileges.users = {};
 
 	privileges.users.isAdministrator = function (uid, callback) {
@@ -160,5 +159,4 @@ module.exports = function (privileges) {
 			callback(null, canEdit);
 		});
 	};
-
 };

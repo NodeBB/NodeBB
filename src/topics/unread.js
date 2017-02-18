@@ -12,7 +12,6 @@ var meta = require('../meta');
 var utils = require('../../public/src/utils');
 
 module.exports = function (Topics) {
-
 	Topics.getTotalUnread = function (uid, filter, callback) {
 		if (!callback) {
 			callback = filter;
@@ -25,7 +24,6 @@ module.exports = function (Topics) {
 
 
 	Topics.getUnreadTopics = function (cid, uid, start, stop, filter, callback) {
-
 		var unreadTopics = {
 			showSelect: true,
 			nextStart: 0,
@@ -141,7 +139,6 @@ module.exports = function (Topics) {
 				}
 			},
 			function (tids, next) {
-
 				tids = tids.slice(0, 200);
 
 				filterTopics(uid, tids, cid, ignoredCids, filter, next);
@@ -375,5 +372,4 @@ module.exports = function (Topics) {
 			callback(null, tids);
 		});
 	};
-
 };

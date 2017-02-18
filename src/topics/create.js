@@ -15,7 +15,6 @@ var privileges = require('../privileges');
 var categories = require('../categories');
 
 module.exports = function (Topics) {
-
 	Topics.create = function (data, callback) {
 		// This is an internal method, consider using Topics.post instead
 		var timestamp = data.timestamp || Date.now();
@@ -356,5 +355,4 @@ module.exports = function (Topics) {
 		}
 		callback();
 	}
-
 };

@@ -48,7 +48,6 @@ describe('Topic\'s', function () {
 	});
 
 	describe('.post', function () {
-
 		it('should create a new topic with proper parameters', function (done) {
 			topics.post({uid: topic.userId, title: topic.title, content: topic.content, cid: topic.categoryId}, function (err, result) {
 				assert.equal(err, null, 'was created with error');
@@ -205,7 +204,6 @@ describe('Topic\'s', function () {
 	});
 
 	describe('Title escaping', function () {
-
 		it('should properly escape topic title', function (done) {
 			var title = '"<script>alert(\'ok1\');</script> new topic test';
 			var titleEscaped = validator.escape(title);
@@ -448,7 +446,6 @@ describe('Topic\'s', function () {
 				});
 			});
 		});
-
 	});
 
 
@@ -749,7 +746,6 @@ describe('Topic\'s', function () {
 				done();
 			});
 		});
-
 	});
 
 	describe('suggested topics', function () {

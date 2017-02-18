@@ -14,7 +14,6 @@ var meta = require('../../meta');
 var utils = require('../../../public/src/utils');
 
 module.exports = function (SocketPosts) {
-
 	SocketPosts.flag = function (socket, data, callback) {
 		if (!socket.uid) {
 			return callback(new Error('[[error:not-logged-in]]'));

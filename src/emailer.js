@@ -163,6 +163,5 @@ var fallbackTransport;
 
 		return parsed.hostname;
 	}
-
 }(module.exports));
 

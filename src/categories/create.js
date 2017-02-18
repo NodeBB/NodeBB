@@ -9,7 +9,6 @@ var privileges = require('../privileges');
 var utils = require('../../public/src/utils');
 
 module.exports = function (Categories) {
-
 	Categories.create = function (data, callback) {
 		var category;
 		var parentCid = data.parentCid ? data.parentCid : 0;
@@ -168,5 +167,4 @@ module.exports = function (Categories) {
 			},
 		], callback);
 	}
-
 };

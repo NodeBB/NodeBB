@@ -147,7 +147,6 @@ module.exports = function (User) {
 	User.auth.deleteAllSessions = function (callback) {
 		var _ = require('underscore');
 		batch.processSortedSet('users:joindate', function (uids, next) {
-
 			var sessionKeys = uids.map(function (uid) {
 				return 'uid:' + uid + ':sessions';
 			});

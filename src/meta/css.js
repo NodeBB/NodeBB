@@ -16,7 +16,6 @@ var file = require('../file');
 var utils = require('../../public/src/utils');
 
 module.exports = function (Meta) {
-
 	Meta.css = {};
 
 	var buildImports = {

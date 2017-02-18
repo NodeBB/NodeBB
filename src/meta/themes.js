@@ -56,7 +56,6 @@ module.exports = function (Meta) {
 							next(null, null);
 						}
 					});
-
 				}, function (err, themes) {
 					if (err) {
 						return callback(err);

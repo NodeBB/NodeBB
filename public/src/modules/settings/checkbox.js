@@ -1,7 +1,6 @@
 'use strict';
 
 define('settings/checkbox', function () {
-
 	var Settings = null;
 	var SettingsCheckbox;
 
@@ -35,5 +34,4 @@ define('settings/checkbox', function () {
 	};
 
 	return SettingsCheckbox;
-
 });

@@ -1,7 +1,6 @@
 'use strict';
 
 module.exports = function (db, module) {
-
 	module.sortedSetUnionCard = function (keys, callback) {
 		if (!Array.isArray(keys) || !keys.length) {
 			return callback(null, 0);
@@ -81,5 +80,4 @@ module.exports = function (db, module) {
 			callback(null, data);
 		});
 	}
-
 };

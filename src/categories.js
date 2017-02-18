@@ -10,7 +10,6 @@ var plugins = require('./plugins');
 var privileges = require('./privileges');
 
 (function (Categories) {
-
 	require('./categories/data')(Categories);
 	require('./categories/create')(Categories);
 	require('./categories/delete')(Categories);
@@ -363,6 +362,4 @@ var privileges = require('./privileges');
 			},
 		], callback);
 	};
-
-
 }(exports));

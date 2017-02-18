@@ -9,7 +9,6 @@ var user = require('../../user');
 var plugins = require('../../plugins');
 
 module.exports = function (SocketUser) {
-
 	SocketUser.changePicture = function (socket, data, callback) {
 		if (!socket.uid) {
 			return callback(new Error('[[error:invalid-uid]]'));

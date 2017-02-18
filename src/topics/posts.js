@@ -12,7 +12,6 @@ var meta = require('../meta');
 var plugins = require('../plugins');
 
 module.exports = function (Topics) {
-
 	Topics.onNewPostMade = function (postData, callback) {
 		async.series([
 			function (next) {
@@ -383,5 +382,4 @@ module.exports = function (Topics) {
 	Topics.getPostCount = function (tid, callback) {
 		db.getObjectField('topic:' + tid, 'postcount', callback);
 	};
-
 };

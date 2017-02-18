@@ -15,7 +15,6 @@ var controllers = {
 };
 
 module.exports = function (middleware) {
-
 	middleware.buildHeader = function (req, res, next) {
 		res.locals.renderHeader = true;
 		res.locals.isAPI = false;
@@ -184,6 +183,5 @@ module.exports = function (middleware) {
 
 		return title;
 	}
-
 };
 

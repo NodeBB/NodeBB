@@ -13,7 +13,6 @@ var plugins = require('../../plugins');
 var social = require('../../social');
 
 module.exports = function (SocketPosts) {
-
 	SocketPosts.loadPostTools = function (socket, data, callback) {
 		if (!data || !data.pid || !data.cid) {
 			return callback(new Error('[[error:invalid-data]]'));
@@ -103,7 +102,6 @@ module.exports = function (SocketPosts) {
 				posts.tools.restore(socket.uid, data.pid, next);
 			},
 			function (postData, next) {
-
 				websockets.in('topic_' + data.tid).emit('event:post_restored', postData);
 
 				events.log({
@@ -200,5 +198,4 @@ module.exports = function (SocketPosts) {
 			},
 		}, callback);
 	}
-
 };

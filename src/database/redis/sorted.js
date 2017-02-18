@@ -1,7 +1,6 @@
 'use strict';
 
 module.exports = function (redisClient, module) {
-
 	var utils = require('../../../public/src/utils');
 
 	var helpers = module.helpers.redis;

@@ -7,7 +7,6 @@ var categories = require('../categories');
 var utils = require('../../public/src/utils');
 
 module.exports = function (Topics) {
-
 	Topics.getTopicField = function (tid, field, callback) {
 		db.getObjectField('topic:' + tid, field, callback);
 	};
@@ -87,5 +86,4 @@ module.exports = function (Topics) {
 	Topics.deleteTopicField = function (tid, field, callback) {
 		db.deleteObjectField('topic:' + tid, field, callback);
 	};
-
 };

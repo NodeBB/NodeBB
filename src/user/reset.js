@@ -165,5 +165,4 @@ var emailer = require('../emailer');
 			},
 		], callback);
 	};
-
 }(exports));

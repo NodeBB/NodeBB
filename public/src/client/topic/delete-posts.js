@@ -2,7 +2,6 @@
 
 
 define('forum/topic/delete-posts', ['components', 'postSelect'], function (components, postSelect) {
-
 	var DeletePosts = {};
 	var modal;
 	var deleteBtn;

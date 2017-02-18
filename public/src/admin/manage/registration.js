@@ -5,7 +5,6 @@ define('admin/manage/registration', function () {
 	var Registration = {};
 
 	Registration.init = function () {
-
 		$('.users-list').on('click', '[data-action]', function (ev) {
 			var parent = $(this).parents('[data-username]');
 			var action = $(this).attr('data-action');

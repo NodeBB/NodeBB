@@ -8,7 +8,6 @@ var categories = require('../categories');
 var search = require('../search');
 
 module.exports = function (Topics) {
-
 	Topics.getSuggestedTopics = function (tid, uid, start, stop, callback) {
 		async.parallel({
 			tagTids: function (next) {
@@ -76,5 +75,4 @@ module.exports = function (Topics) {
 			},
 		], callback);
 	}
-
 };

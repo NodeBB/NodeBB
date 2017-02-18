@@ -14,7 +14,6 @@ var pubsub = require('../pubsub');
 var utils = require('../../public/src/utils');
 
 module.exports = function (Posts) {
-
 	pubsub.on('post:edit', function (pid) {
 		cache.del(pid);
 	});
@@ -153,6 +152,4 @@ module.exports = function (Posts) {
 			], callback);
 		});
 	}
-
-
 };

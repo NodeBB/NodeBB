@@ -227,7 +227,6 @@ describe('Messaging Library', function () {
 				done();
 			});
 		});
-
 	});
 
 	describe('logged in chat controller', function () {

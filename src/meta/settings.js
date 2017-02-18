@@ -6,7 +6,6 @@ var db = require('../database');
 var plugins = require('../plugins');
 
 module.exports = function (Meta) {
-
 	Meta.settings = {};
 
 	Meta.settings.get = function (hash, callback) {

@@ -2,7 +2,6 @@
 'use strict';
 
 module.exports = function (redisClient, module) {
-
 	module.sortedSetIntersectCard = function (keys, callback) {
 		if (!Array.isArray(keys) || !keys.length) {
 			return callback(null, 0);

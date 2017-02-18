@@ -9,7 +9,6 @@ define('forum/topic/postTools', [
 	'forum/topic/votes',
 	'forum/topic/move-post',
 ], function (share, navigator, components, translator, votes, movePost) {
-
 	var PostTools = {};
 
 	var staleReplyAnyway = false;
@@ -231,7 +230,6 @@ define('forum/topic/postTools', [
 		var selectedNode = getSelectedNode();
 
 		showStaleWarning(function () {
-
 			function quote(text) {
 				$(window).trigger('action:composer.addQuote', {
 					tid: tid,

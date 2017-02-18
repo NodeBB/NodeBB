@@ -1,7 +1,6 @@
 'use strict';
 
 module.exports = function (redisClient, module) {
-
 	var helpers = module.helpers.redis;
 
 	module.setObject = function (key, data, callback) {

@@ -11,7 +11,6 @@ var privileges = require('./privileges');
 var meta = require('./meta');
 
 (function (User) {
-
 	User.email = require('./user/email');
 	User.notifications = require('./user/notifications');
 	User.reset = require('./user/reset');
@@ -162,7 +161,6 @@ var meta = require('./meta');
 				callback(null, isOnline);
 			});
 		}
-
 	};
 
 	User.exists = function (uid, callback) {
@@ -382,6 +380,4 @@ var meta = require('./meta');
 
 		callback();
 	};
-
-
 }(exports));

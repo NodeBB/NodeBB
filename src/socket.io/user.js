@@ -300,7 +300,6 @@ SocketUser.invite = function (socket, email, callback) {
 			user.sendInvitationEmail(socket.uid, email, callback);
 		}
 	});
-
 };
 
 SocketUser.getUserByUID = function (socket, uid, callback) {

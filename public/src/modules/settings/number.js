@@ -1,7 +1,6 @@
 'use strict';
 
 define('settings/number', function () {
-
 	return {
 		types: ['number'],
 		get: function (element, trim, empty) {
@@ -12,5 +11,4 @@ define('settings/number', function () {
 			return value ? +value : 0;
 		},
 	};
-
 });

@@ -278,7 +278,6 @@ describe('Post\'s', function () {
 		});
 
 		it('should purge posts and delete topic', function (done) {
-
 			createTopicWithReply(function (topicPostData, replyData) {
 				socketPosts.purgePosts({uid: voterUid}, {pids: [replyData.pid, topicPostData.postData.pid], tid: topicPostData.topicData.tid}, function (err) {
 					assert.ifError(err);

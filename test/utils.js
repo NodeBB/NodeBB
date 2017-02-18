@@ -171,5 +171,4 @@ describe('Utility Methods', function () {
 		}
 		done();
 	});
-
 });

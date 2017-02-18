@@ -81,7 +81,6 @@ $(document).ready(function () {
 		$('#footer, #content').removeClass('hide').addClass('ajaxifying');
 
 		ajaxify.loadData(url, function (err, data) {
-
 			if (!err || (err && err.data && (parseInt(err.data.status, 10) !== 302 && parseInt(err.data.status, 10) !== 308))) {
 				ajaxify.updateHistory(url, quiet);
 			}
@@ -158,7 +157,6 @@ $(document).ready(function () {
 				app.alertError('[[global:please_log_in]]');
 				app.previousUrl = url;
 				window.location.href = config.relative_path + '/login';
-
 			} else if (status === 302 || status === 308) {
 				if (data.responseJSON && data.responseJSON.external) {
 					window.location.href = data.responseJSON.external;
@@ -422,5 +420,4 @@ $(document).ready(function () {
 		templates.cache[$(this).attr('data-template')] = $('<div/>').html($(this).html()).text();
 		$(this).parent().remove();
 	});
-
 });

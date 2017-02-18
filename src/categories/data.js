@@ -7,7 +7,6 @@ var winston = require('winston');
 var db = require('../database');
 
 module.exports = function (Categories) {
-
 	Categories.getCategoryData = function (cid, callback) {
 		db.getObject('category:' + cid, function (err, category) {
 			if (err) {
@@ -111,5 +110,4 @@ module.exports = function (Categories) {
 	Categories.incrementCategoryFieldBy = function (cid, field, value, callback) {
 		db.incrObjectFieldBy('category:' + cid, field, value, callback);
 	};
-
 };

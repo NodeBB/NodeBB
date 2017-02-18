@@ -6,7 +6,6 @@ var db = require('../database');
 var categories = require('../categories');
 
 module.exports = function (User) {
-
 	User.getIgnoredCategories = function (uid, callback) {
 		db.getSortedSetRange('uid:' + uid + ':ignored:cids', 0, -1, callback);
 	};

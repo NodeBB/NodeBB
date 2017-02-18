@@ -1,7 +1,6 @@
 'use strict';
 
 module.exports = function (db, module) {
-
 	var helpers = module.helpers.mongo;
 
 	module.sortedSetAdd = function (key, score, value, callback) {
@@ -61,5 +60,4 @@ module.exports = function (db, module) {
 			callback(err);
 		});
 	};
-
 };

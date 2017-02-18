@@ -2,11 +2,9 @@
 
 
 define('share', function () {
-
 	var module = {};
 
 	module.addShareHandlers = function (name) {
-
 		var baseUrl = window.location.protocol + '//' + window.location.host;
 
 		function openShare(url, urlToPost, width, height) {
@@ -15,7 +13,6 @@ define('share', function () {
 		}
 
 		$('#content').off('shown.bs.dropdown', '.share-dropdown').on('shown.bs.dropdown', '.share-dropdown', function () {
-
 			var postLink = $(this).find('.post-link');
 			postLink.val(baseUrl + getPostUrl($(this)));
 

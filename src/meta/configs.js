@@ -9,7 +9,6 @@ var pubsub = require('../pubsub');
 var cacheBuster = require('./cacheBuster');
 
 module.exports = function (Meta) {
-
 	Meta.config = {};
 	Meta.configs = {};
 
@@ -140,5 +139,4 @@ module.exports = function (Meta) {
 	Meta.configs.remove = function (field, callback) {
 		db.deleteObjectField('config', field, callback);
 	};
-
 };

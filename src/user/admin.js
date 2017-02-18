@@ -8,7 +8,6 @@ var plugins = require('../plugins');
 var winston = require('winston');
 
 module.exports = function (User) {
-
 	User.logIP = function (uid, ip) {
 		var now = Date.now();
 		db.sortedSetAdd('uid:' + uid + ':ip', now, ip || 'Unknown');

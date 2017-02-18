@@ -12,7 +12,6 @@ var meta = require('../meta');
 
 
 module.exports = function (Topics) {
-
 	Topics.createTopicFromPosts = function (uid, title, pids, fromTid, callback) {
 		if (title) {
 			title = title.trim();
@@ -174,6 +173,4 @@ module.exports = function (Topics) {
 			},
 		], callback);
 	}
-
-
 };

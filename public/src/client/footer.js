@@ -2,7 +2,6 @@
 
 
 define('forum/footer', ['notifications', 'chat', 'components', 'translator'], function (Notifications, Chat, components, translator) {
-
 	Notifications.prepareDOM();
 	Chat.prepareDOM();
 	translator.prepareDOM();

@@ -2,7 +2,6 @@
 'use strict';
 
 (function (module) {
-
 	var winston = require('winston');
 	var async = require('async');
 	var nconf = require('nconf');
@@ -246,5 +245,4 @@
 	module.close = function () {
 		db.close();
 	};
-
 }(exports));

@@ -11,7 +11,6 @@ var privileges = require('./privileges');
 var plugins = require('./plugins');
 
 (function (Posts) {
-
 	require('./posts/create')(Posts);
 	require('./posts/delete')(Posts);
 	require('./posts/edit')(Posts);
@@ -266,6 +265,4 @@ var plugins = require('./plugins');
 			}
 		}
 	};
-
-
 }(exports));

@@ -18,7 +18,6 @@ var terms = {
 };
 
 popularController.get = function (req, res, next) {
-
 	var term = terms[req.params.term];
 
 	if (!term && req.params.term) {

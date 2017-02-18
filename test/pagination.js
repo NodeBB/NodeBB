@@ -5,7 +5,6 @@ var	assert = require('assert');
 var pagination = require('../src/pagination');
 
 describe('Pagination', function () {
-
 	it('should create empty pagination for 1 page', function (done) {
 		var data = pagination.create(1, 1);
 		assert.equal(data.pages.length, 0);

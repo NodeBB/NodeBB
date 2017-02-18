@@ -132,6 +132,4 @@ var utils = require('../public/src/utils');
 			events.deleteEvents(eids, next);
 		}, {alwaysStartAt: 0}, callback);
 	};
-
-
 }(module.exports));

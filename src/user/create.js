@@ -9,7 +9,6 @@ var groups = require('../groups');
 var meta = require('../meta');
 
 module.exports = function (User) {
-
 	User.create = function (data, callback) {
 		data.username = data.username.trim();
 		data.userslug = utils.slugify(data.username);
@@ -225,5 +224,4 @@ module.exports = function (User) {
 			});
 		});
 	}
-
 };

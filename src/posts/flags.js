@@ -9,7 +9,6 @@ var user = require('../user');
 var analytics = require('../analytics');
 
 module.exports = function (Posts) {
-
 	Posts.flag = function (post, uid, reason, callback) {
 		if (!parseInt(uid, 10) || !reason) {
 			return callback();

@@ -13,7 +13,6 @@ var plugins = require('../plugins');
 var utils = require('../../public/src/utils');
 
 module.exports = function (Meta) {
-
 	Meta.js = {
 		target: {},
 		scripts: {

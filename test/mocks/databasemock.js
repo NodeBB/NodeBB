@@ -175,5 +175,4 @@
 	}
 
 	module.exports = db;
-
 }(module));

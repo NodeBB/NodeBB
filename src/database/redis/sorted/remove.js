@@ -2,7 +2,6 @@
 'use strict';
 
 module.exports = function (redisClient, module) {
-
 	var helpers = module.helpers.redis;
 
 	module.sortedSetRemove = function (key, value, callback) {

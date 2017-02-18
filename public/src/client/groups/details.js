@@ -10,7 +10,6 @@ define('forum/groups/details', [
 	'translator',
 	'vendor/colorpicker/colorpicker',
 ], function (memberList, iconSelect, components, coverPhoto, pictureCropper, translator) {
-
 	var Details = {};
 	var groupName;
 

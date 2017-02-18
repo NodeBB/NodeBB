@@ -16,7 +16,6 @@ var plugins = require('./plugins');
 var utils = require('../public/src/utils');
 
 (function (Notifications) {
-
 	Notifications.init = function () {
 		winston.verbose('[notifications.init] Registering jobs.');
 		new cron('*/30 * * * *', Notifications.prune, null, true);
@@ -510,6 +509,5 @@ var utils = require('../public/src/utils');
 			callback(err, data.notifications);
 		});
 	};
-
 }(exports));
 

@@ -3,7 +3,6 @@
 var meta = require('../meta');
 
 module.exports = function (middleware) {
-
 	middleware.addHeaders = function (req, res, next) {
 		var headers = {
 			'X-Powered-By': encodeURI(meta.config['powered-by'] || 'NodeBB'),
@@ -33,6 +32,5 @@ module.exports = function (middleware) {
 
 		next();
 	};
-
 };
 

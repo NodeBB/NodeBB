@@ -51,7 +51,6 @@ define('topicSelect', ['components'], function (components) {
 	};
 
 	function selectRange(clickedTid) {
-
 		if (!lastSelected) {
 			lastSelected = $('[component="category/topic"]').first().find('[component="topic/select"]');
 		}

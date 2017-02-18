@@ -1,7 +1,6 @@
 'use strict';
 
 define('settings/array', function () {
-
 	var Settings = null;
 	var SettingsArray;
 	var helper = null;
@@ -145,5 +144,4 @@ define('settings/array', function () {
 	};
 
 	return SettingsArray;
-
 });

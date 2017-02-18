@@ -4,7 +4,6 @@ var async = require('async');
 var db = require('../database');
 
 module.exports = function (Messaging) {
-
 	Messaging.deleteMessage = function (mid, roomId, callback) {
 		async.waterfall([
 			function (next) {

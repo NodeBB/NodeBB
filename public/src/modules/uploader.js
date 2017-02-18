@@ -2,7 +2,6 @@
 
 
 define('uploader', ['translator'], function (translator) {
-
 	var module = {};
 
 	module.open = function (route, params, fileSize, callback) {

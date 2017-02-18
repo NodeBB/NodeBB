@@ -10,7 +10,6 @@ var privileges = require('../privileges');
 
 
 module.exports = function (Topics) {
-
 	var topicTools = {};
 	Topics.tools = topicTools;
 
@@ -324,6 +323,4 @@ module.exports = function (Topics) {
 			});
 		});
 	};
-
-
 };

@@ -32,7 +32,6 @@ define('admin/manage/group', [
 		});
 
 		groupDetailsSearch.on('keyup', function () {
-
 			if (searchDelay) {
 				clearTimeout(searchDelay);
 			}
@@ -140,7 +139,6 @@ define('admin/manage/group', [
 							}
 							userRow.slideUp().remove();
 						});
-
 					});
 					break;
 				default:
@@ -186,7 +184,6 @@ define('admin/manage/group', [
 			});
 			return false;
 		});
-
 	};
 
 	return Groups;

@@ -5,7 +5,6 @@ var meta = require('../meta');
 var user = require('../user');
 
 module.exports = function (middleware) {
-
 	middleware.maintenanceMode = function (req, res, next) {
 		if (parseInt(meta.config.maintenanceMode, 10) !== 1) {
 			return next();
@@ -36,5 +35,4 @@ module.exports = function (middleware) {
 			});
 		});
 	};
-
 };

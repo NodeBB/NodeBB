@@ -8,7 +8,6 @@ var db = require('../database');
 
 
 module.exports = function (Messaging) {
-
 	Messaging.sendMessage = function (uid, roomId, content, timestamp, callback) {
 		async.waterfall([
 			function (next) {

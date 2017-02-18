@@ -6,7 +6,6 @@ var utils = require('../../public/src/utils');
 var db = require('./../database');
 
 module.exports = function (Groups) {
-
 	Groups.destroy = function (groupName, callback) {
 		Groups.getGroupsData([groupName], function (err, groupsData) {
 			if (err) {

@@ -8,7 +8,6 @@ var db = require('../database');
 var topics = require('../topics');
 
 module.exports = function (Posts) {
-
 	Posts.getCidByPid = function (pid, callback) {
 		async.waterfall([
 			function (next) {

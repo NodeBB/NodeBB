@@ -4,7 +4,6 @@
 define('coverPhoto', [
 	'vendor/jquery/draggable-background/backgroundDraggable',
 ], function () {
-
 	var coverPhoto = {
 		coverEl: null,
 		saveFn: null,

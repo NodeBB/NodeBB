@@ -16,7 +16,6 @@ var emailer = require('../emailer');
 var plugins = require('../plugins');
 
 module.exports = function (Topics) {
-
 	Topics.toggleFollow = function (tid, uid, callback) {
 		callback = callback || function () {};
 		var isFollowing;

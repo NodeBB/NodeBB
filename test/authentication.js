@@ -145,13 +145,11 @@ describe('authentication', function () {
 				});
 			});
 		});
-
 	});
 
 
 	after(function (done) {
 		db.emptydb(done);
 	});
-
 });
 

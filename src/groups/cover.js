@@ -13,7 +13,6 @@ var db = require('../database');
 var uploadsController = require('../controllers/uploads');
 
 module.exports = function (Groups) {
-
 	Groups.updateCoverPosition = function (groupName, position, callback) {
 		if (!groupName) {
 			return callback(new Error('[[error:invalid-data]]'));
@@ -22,7 +21,6 @@ module.exports = function (Groups) {
 	};
 
 	Groups.updateCover = function (uid, data, callback) {
-
 		// Position only? That's fine
 		if (!data.imageData && !data.file && data.position) {
 			return Groups.updateCoverPosition(data.groupName, data.position, callback);
@@ -118,5 +116,4 @@ module.exports = function (Groups) {
 	Groups.removeCover = function (data, callback) {
 		db.deleteObjectFields('group:' + data.groupName, ['cover:url', 'cover:thumb:url', 'cover:position'], callback);
 	};
-
 };

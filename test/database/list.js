@@ -6,7 +6,6 @@ var assert = require('assert');
 var db = require('../mocks/databasemock');
 
 describe('List methods', function () {
-
 	describe('listAppend()', function () {
 		it('should append to a list', function (done) {
 			db.listAppend('testList1', 5, function (err) {

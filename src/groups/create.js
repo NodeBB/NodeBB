@@ -7,7 +7,6 @@ var utils = require('../../public/src/utils');
 var db = require('../database');
 
 module.exports = function (Groups) {
-
 	Groups.create = function (data, callback) {
 		var system = isSystemGroup(data);
 		var groupData;
@@ -74,7 +73,6 @@ module.exports = function (Groups) {
 				next(null, groupData);
 			},
 		], callback);
-
 	};
 
 	function isSystemGroup(data) {

@@ -387,5 +387,4 @@ var middleware;
 			},
 		], callback);
 	};
-
 }(exports));

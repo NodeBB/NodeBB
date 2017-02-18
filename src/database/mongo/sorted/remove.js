@@ -1,7 +1,6 @@
 'use strict';
 
 module.exports = function (db, module) {
-
 	var helpers = module.helpers.mongo;
 
 	module.sortedSetRemove = function (key, value, callback) {
@@ -53,5 +52,4 @@ module.exports = function (db, module) {
 			callback(err);
 		});
 	};
-
 };

@@ -13,7 +13,6 @@ var plugins = require('../plugins');
 var db = require('../database');
 
 module.exports = function (Meta) {
-
 	Meta.sounds = {};
 
 	Meta.sounds.init = function (callback) {

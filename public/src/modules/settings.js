@@ -2,7 +2,6 @@
 
 
 define('settings', function () {
-
 	var DEFAULT_PLUGINS = [
 		'settings/checkbox',
 		'settings/number',
@@ -541,5 +540,4 @@ define('settings', function () {
 	});
 
 	return Settings;
-
 });

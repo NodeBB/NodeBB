@@ -12,7 +12,6 @@ var plugins = require('../plugins');
 var utils = require('../../public/src/utils');
 
 module.exports = function (Topics) {
-
 	Topics.getTeasers = function (topics, callback) {
 		if (!Array.isArray(topics) || !topics.length) {
 			return callback(null, []);

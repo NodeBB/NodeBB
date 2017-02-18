@@ -157,7 +157,6 @@ describe('Groups', function () {
 				done();
 			});
 		});
-
 	});
 
 	describe('.isMember()', function () {
@@ -579,7 +578,6 @@ describe('Groups', function () {
 				});
 			});
 		});
-
 	});
 
 	describe('admin socket methods', function () {

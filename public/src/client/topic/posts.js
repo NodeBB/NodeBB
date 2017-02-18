@@ -8,7 +8,6 @@ define('forum/topic/posts', [
 	'navigator',
 	'components',
 ], function (pagination, infinitescroll, postTools, navigator, components) {
-
 	var Posts = {
 		_imageLoaderTimeout: undefined,
 	};
@@ -178,7 +177,6 @@ define('forum/topic/posts', [
 		$(window).trigger('action:posts.loading', {posts: data.posts, after: after, before: before});
 
 		app.parseAndTranslate('topic', 'posts', data, function (html) {
-
 			html = html.filter(function () {
 				var pid = $(this).attr('data-pid');
 				return pid && $('[component="post"][data-pid="' + pid + '"]').length === 0;
@@ -396,5 +394,4 @@ define('forum/topic/posts', [
 	}
 
 	return Posts;
-
 });

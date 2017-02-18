@@ -6,7 +6,6 @@ var meta = require('../meta');
 var privileges = require('../privileges');
 
 module.exports = function (User) {
-
 	User.isReadyToPost = function (uid, cid, callback) {
 		if (parseInt(uid, 10) === 0) {
 			return callback();
@@ -101,5 +100,4 @@ module.exports = function (User) {
 			callback(err, Array.isArray(pids) ? pids : []);
 		});
 	};
-
 };

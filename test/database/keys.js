@@ -6,7 +6,6 @@ var assert = require('assert');
 var db = require('../mocks/databasemock');
 
 describe('Key methods', function () {
-
 	beforeEach(function (done) {
 		db.set('testKey', 'testValue', done);
 	});

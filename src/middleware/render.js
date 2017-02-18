@@ -9,7 +9,6 @@ var plugins = require('../plugins');
 var translator = require('../../public/src/modules/translator');
 
 module.exports = function (middleware) {
-
 	middleware.processRender = function (req, res, next) {
 		// res.render post-processing, modified from here: https://gist.github.com/mrlannigan/5051687
 		var render = res.render;
@@ -129,5 +128,4 @@ module.exports = function (middleware) {
 		});
 		return parts.join(' ');
 	}
-
 };

@@ -14,7 +14,6 @@ var batch = require('../batch');
 
 
 module.exports = function (Categories) {
-
 	Categories.getRecentReplies = function (cid, uid, count, callback) {
 		if (!parseInt(count, 10)) {
 			return callback(null, []);

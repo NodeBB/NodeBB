@@ -6,7 +6,6 @@ var assert = require('assert');
 var db = require('../mocks/databasemock');
 
 describe('Sorted Set methods', function () {
-
 	before(function (done) {
 		async.parallel([
 			function (next) {
@@ -659,7 +658,6 @@ describe('Sorted Set methods', function () {
 				done();
 			});
 		});
-
 	});
 
 	describe('sortedSetIntersectCard', function () {

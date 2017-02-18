@@ -10,7 +10,6 @@ var batch = require('../batch');
 
 
 module.exports = function (Topics) {
-
 	Topics.delete = function (tid, uid, callback) {
 		Topics.getTopicFields(tid, ['cid'], function (err, topicData) {
 			if (err) {

@@ -243,13 +243,11 @@ define('forum/topic', [
 		var newUrl = 'topic/' + ajaxify.data.slug + (index > 1 ? ('/' + index) : '');
 
 		if (newUrl !== currentUrl) {
-
 			if (Topic.replaceURLTimeout) {
 				clearTimeout(Topic.replaceURLTimeout);
 			}
 
 			Topic.replaceURLTimeout = setTimeout(function () {
-
 				if (index >= elementCount && app.user.uid) {
 					socket.emit('topics.markAsRead', [ajaxify.data.tid]);
 				}
@@ -296,7 +294,6 @@ define('forum/topic', [
 		if (!currentBookmark || parseInt(index, 10) >= parseInt(currentBookmark, 10)) {
 			app.removeAlert('bookmark');
 		}
-
 	}
 
 

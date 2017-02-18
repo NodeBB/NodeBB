@@ -280,7 +280,6 @@
 	if (typeof define === 'function' && define.amd) {
 	  define('helpers', exports);
 	}
-
 }(
 	typeof exports === 'object' ? exports :
 	typeof define === 'function' && define.amd ? {} :

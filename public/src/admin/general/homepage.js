@@ -2,7 +2,6 @@
 
 
 define('admin/general/homepage', ['admin/settings'], function (Settings) {
-
 	function toggleCustomRoute() {
 		if ($('[data-field="homePageRoute"]').val()) {
 			$('#homePageCustom').hide();

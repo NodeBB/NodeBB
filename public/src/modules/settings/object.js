@@ -1,7 +1,6 @@
 'use strict';
 
 define('settings/object', function () {
-
 	var Settings = null;
 	var SettingsObject;
 	var helper = null;
@@ -117,5 +116,4 @@ define('settings/object', function () {
 	};
 
 	return SettingsObject;
-
 });

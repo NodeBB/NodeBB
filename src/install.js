@@ -430,7 +430,6 @@ function createWelcomePost(next) {
 }
 
 function enableDefaultPlugins(next) {
-
 	process.stdout.write('Enabling default plugins\n');
 
 	var defaultEnabled = [
@@ -493,7 +492,6 @@ function setCopyrightWidget(next) {
 }
 
 install.setup = function (callback) {
-
 	async.series([
 		checkSetupFlag,
 		checkCIFlag,

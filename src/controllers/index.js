@@ -147,7 +147,6 @@ Controllers.login = function (req, res, next) {
 	} else {
 		res.render('login', data);
 	}
-
 };
 
 Controllers.register = function (req, res, next) {
@@ -413,8 +412,6 @@ Controllers.handleURIErrors = function (err, req, res, next) {
 				});
 			}
 		}
-
-
 	} else {
 		next(err);
 	}

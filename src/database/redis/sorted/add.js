@@ -1,7 +1,6 @@
 'use strict';
 
 module.exports = function (redisClient, module) {
-
 	module.sortedSetAdd = function (key, score, value, callback) {
 		callback = callback || function () {};
 		if (Array.isArray(score) && Array.isArray(value)) {
@@ -44,6 +43,4 @@ module.exports = function (redisClient, module) {
 			callback(err);
 		});
 	};
-
-
 };

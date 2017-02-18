@@ -9,7 +9,6 @@ define('forum/topic/events', [
 	'components',
 	'translator',
 ], function (postTools, threadTools, posts, components, translator) {
-
 	var Events = {};
 
 	var events = {

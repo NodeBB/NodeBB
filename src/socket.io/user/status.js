@@ -6,7 +6,6 @@ var user = require('../../user');
 var websockets = require('../index');
 
 module.exports = function (SocketUser) {
-
 	SocketUser.checkStatus = function (socket, uid, callback) {
 		if (!socket.uid) {
 			return callback(new Error('[[error:invalid-uid]]'));

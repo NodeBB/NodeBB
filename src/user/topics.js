@@ -4,7 +4,6 @@ var async = require('async');
 var db = require('../database');
 
 module.exports = function (User) {
-
 	User.getIgnoredTids = function (uid, start, stop, callback) {
 		db.getSortedSetRevRange('uid:' + uid + ':ignored_tids', start, stop, callback);
 	};
@@ -15,5 +14,4 @@ module.exports = function (User) {
 			async.apply(User.incrementUserFieldBy, uid, 'topiccount', 1),
 		], callback);
 	};
-
 };

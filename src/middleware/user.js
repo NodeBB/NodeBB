@@ -12,7 +12,6 @@ var controllers = {
 };
 
 module.exports = function (middleware) {
-
 	middleware.checkGlobalPrivacySettings = function (req, res, next) {
 		if (!req.user && !!parseInt(meta.config.privateUserInfo, 10)) {
 			return middleware.authenticate(req, res, next);
@@ -157,5 +156,4 @@ module.exports = function (middleware) {
 			}
 		}
 	};
-
 };

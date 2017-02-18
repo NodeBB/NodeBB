@@ -2,7 +2,6 @@
 
 
 define('forum/topic/votes', ['components', 'translator'], function (components, translator) {
-
 	var Votes = {};
 
 	Votes.addVoteHandler = function () {
@@ -105,7 +104,6 @@ define('forum/topic/votes', ['components', 'translator'], function (components, 
 					dialog.on('click', function () {
 						dialog.modal('hide');
 					});
-
 				});
 			});
 		});

@@ -13,7 +13,6 @@ var meta = require('../src/meta');
 
 
 describe('Controllers', function () {
-
 	var tid;
 	var cid;
 	var pid;
@@ -674,7 +673,6 @@ describe('Controllers', function () {
 
 
 	describe('maintenance mode', function () {
-
 		before(function (done) {
 			meta.config.maintenanceMode = 1;
 			done();

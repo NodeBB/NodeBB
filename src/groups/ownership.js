@@ -5,7 +5,6 @@ var db = require('../database');
 var plugins = require('../plugins');
 
 module.exports = function (Groups) {
-
 	Groups.ownership = {};
 
 	Groups.ownership.isOwner = function (uid, groupName, callback) {

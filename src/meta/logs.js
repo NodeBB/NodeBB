@@ -25,5 +25,4 @@ module.exports = function (Meta) {
 	Meta.logs.clear = function (callback) {
 		fs.truncate(Meta.logs.path, 0, callback);
 	};
-
 };

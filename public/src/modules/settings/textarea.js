@@ -1,7 +1,6 @@
 'use strict';
 
 define('settings/textarea', function () {
-
 	var Settings = null;
 	var SettingsArea;
 
@@ -33,5 +32,4 @@ define('settings/textarea', function () {
 	};
 
 	return SettingsArea;
-
 });

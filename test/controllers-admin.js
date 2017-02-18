@@ -13,7 +13,6 @@ var groups = require('../src/groups');
 var helpers = require('./helpers');
 
 describe('Admin Controllers', function () {
-
 	var tid;
 	var cid;
 	var pid;

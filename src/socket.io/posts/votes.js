@@ -9,7 +9,6 @@ var privileges = require('../../privileges');
 var helpers = require('./helpers');
 
 module.exports = function (SocketPosts) {
-
 	SocketPosts.getVoters = function (socket, data, callback) {
 		if (!data || !data.pid || !data.cid) {
 			return callback(new Error('[[error:invalid-data]]'));

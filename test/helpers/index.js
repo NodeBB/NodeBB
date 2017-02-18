@@ -144,7 +144,6 @@ helpers.registerUser = function (data, callback) {
 
 // http://stackoverflow.com/a/14387791/583363
 helpers.copyFile = function (source, target, callback) {
-
 	var cbCalled = false;
 
 	var rd = fs.createReadStream(source);

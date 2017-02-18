@@ -6,7 +6,6 @@ var assert = require('assert');
 var db = require('../mocks/databasemock');
 
 describe('Set methods', function () {
-
 	describe('setAdd()', function () {
 		it('should add to a set', function (done) {
 			db.setAdd('testSet1', 5, function (err) {

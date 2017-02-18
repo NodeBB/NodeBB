@@ -14,7 +14,6 @@ var utils = require('../../public/src/utils');
 var plugins = require('../plugins');
 
 module.exports = function (User) {
-
 	User.addToApprovalQueue = function (userData, callback) {
 		userData.userslug = utils.slugify(userData.username);
 		async.waterfall([
@@ -219,6 +218,4 @@ module.exports = function (User) {
 			},
 		], callback);
 	};
-
-
 };

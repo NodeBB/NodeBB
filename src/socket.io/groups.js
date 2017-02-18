@@ -187,7 +187,6 @@ SocketGroups.kick = isOwner(function (socket, data, callback) {
 		}
 		groups.kick(data.uid, data.groupName, isOwner, callback);
 	});
-
 });
 
 SocketGroups.create = function (socket, data, callback) {

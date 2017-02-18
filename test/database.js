@@ -25,5 +25,4 @@ describe('Test database', function () {
 	require('./database/sets');
 	require('./database/hash');
 	require('./database/sorted');
-
 });

@@ -10,9 +10,7 @@ var translator = require('../../public/src/modules/translator');
 var plugins = require('../plugins');
 
 module.exports = function (Categories) {
-
 	Categories.update = function (modified, callback) {
-
 		var cids = Object.keys(modified);
 
 		async.each(cids, function (cid, next) {
@@ -166,5 +164,4 @@ module.exports = function (Categories) {
 			},
 		], callback);
 	};
-
 };

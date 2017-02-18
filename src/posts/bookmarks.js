@@ -6,7 +6,6 @@ var db = require('../database');
 var plugins = require('../plugins');
 
 module.exports = function (Posts) {
-
 	Posts.bookmark = function (pid, uid, callback) {
 		toggleBookmark('bookmark', pid, uid, callback);
 	};

@@ -8,7 +8,6 @@ var events = require('../../events');
 var privileges = require('../../privileges');
 
 module.exports = function (SocketUser) {
-
 	SocketUser.changeUsernameEmail = function (socket, data, callback) {
 		if (!data || !data.uid || !socket.uid) {
 			return callback(new Error('[[error:invalid-data]]'));
@@ -186,6 +185,4 @@ module.exports = function (SocketUser) {
 			},
 		], callback);
 	};
-
-
 };

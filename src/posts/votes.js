@@ -8,7 +8,6 @@ var user = require('../user');
 var plugins = require('../plugins');
 
 module.exports = function (Posts) {
-
 	var votesInProgress = {};
 
 	Posts.upvote = function (pid, uid, callback) {

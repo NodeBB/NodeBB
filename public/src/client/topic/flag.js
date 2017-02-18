@@ -2,7 +2,6 @@
 
 
 define('forum/topic/flag', [], function () {
-
 	var Flag = {};
 	var flagModal;
 	var flagCommit;

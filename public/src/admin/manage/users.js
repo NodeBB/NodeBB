@@ -360,7 +360,6 @@ define('admin/manage/users', ['translator'], function (translator) {
 		handleUserCreate();
 
 		handleInvite();
-
 	};
 
 	function handleInvite() {

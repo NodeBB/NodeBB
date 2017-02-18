@@ -22,7 +22,6 @@ describe('User', function () {
 	var testCid;
 
 	before(function (done) {
-
 		groups.resetCache();
 
 		Categories.create({
@@ -292,7 +291,6 @@ describe('User', function () {
 	});
 
 	describe('hash methods', function () {
-
 		it('should return uid from email', function (done) {
 			User.getUidByEmail('john@example.com', function (err, uid) {
 				assert.ifError(err);
@@ -686,7 +684,6 @@ describe('User', function () {
 					});
 				});
 			});
-
 		});
 	});
 
@@ -903,7 +900,6 @@ describe('User', function () {
 					});
 				});
 			});
-
 		});
 	});
 
@@ -978,7 +974,6 @@ describe('User', function () {
 				});
 			});
 		});
-
 	});
 
 

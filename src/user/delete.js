@@ -10,7 +10,6 @@ var plugins = require('../plugins');
 var batch = require('../batch');
 
 module.exports = function (User) {
-
 	User.delete = function (callerUid, uid, callback) {
 		if (!parseInt(uid, 10)) {
 			return callback(new Error('[[error:invalid-uid]]'));

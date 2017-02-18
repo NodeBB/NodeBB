@@ -10,7 +10,6 @@ var notifications = require('../notifications');
 var plugins = require('../plugins');
 
 module.exports = function (Posts) {
-
 	Posts.delete = function (pid, uid, callback) {
 		var postData;
 		async.waterfall([
@@ -294,6 +293,4 @@ module.exports = function (Posts) {
 			], callback);
 		});
 	}
-
-
 };

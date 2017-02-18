@@ -124,5 +124,4 @@ app.isConnected = false;
 	function onEventBanned() {
 		window.location.href = config.relative_path + '/';
 	}
-
 }());

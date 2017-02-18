@@ -31,8 +31,6 @@ var opts = {
 /* -- Logger -- */
 
 (function (Logger) {
-
-
 	Logger.init = function (app) {
 		opts.express.app = app;
 		/* Open log file stream & initialize express logging if meta.config.logger* variables are set */
@@ -86,7 +84,6 @@ var opts = {
 				}
 			} else {
 				stream = fs.createWriteStream(value, {flags: 'a'});
-
 			}
 
 			if (stream) {
@@ -222,5 +219,4 @@ var opts = {
 			socket.$emit = override($emit, 'on', 'Logger.io_one: $emit.apply: Failed');
 		}
 	};
-
 }(exports));

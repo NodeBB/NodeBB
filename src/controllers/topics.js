@@ -128,7 +128,6 @@ topicsController.get = function (req, res, callback) {
 			plugins.fireHook('filter:controllers.topic.get', {topicData: topicData, uid: req.uid}, next);
 		},
 		function (data, next) {
-
 			var breadcrumbs = [
 				{
 					text: data.topicData.category.name,

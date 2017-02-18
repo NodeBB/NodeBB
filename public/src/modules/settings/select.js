@@ -1,7 +1,6 @@
 'use strict';
 
 define('settings/select', function () {
-
 	var Settings = null;
 	var SettingsSelect;
 
@@ -47,5 +46,4 @@ define('settings/select', function () {
 	};
 
 	return SettingsSelect;
-
 });

@@ -2,7 +2,6 @@
 
 
 define('forum/chats/recent', function () {
-
 	var recent = {};
 
 	recent.init = function () {

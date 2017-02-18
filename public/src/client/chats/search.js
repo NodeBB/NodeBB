@@ -2,7 +2,6 @@
 
 
 define('forum/chats/search', ['components'], function (components) {
-
 	var search = {};
 
 	search.init = function () {

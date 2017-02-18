@@ -115,7 +115,6 @@ function resizeImage(fileObj, callback) {
 			}, next);
 		},
 		function (next) {
-
 			// Return the resized version to the composer/postData
 			var dirname = path.dirname(fileObj.url);
 			var extname = path.extname(fileObj.url);

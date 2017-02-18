@@ -16,7 +16,6 @@ var helpers = require('./helpers');
 
 
 describe('Upload Controllers', function () {
-
 	var tid;
 	var cid;
 	var pid;
@@ -100,7 +99,6 @@ describe('Upload Controllers', function () {
 				done();
 			});
 		});
-
 	});
 
 

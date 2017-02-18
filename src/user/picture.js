@@ -17,9 +17,7 @@ var meta = require('../meta');
 var db = require('../database');
 
 module.exports = function (User) {
-
 	User.uploadPicture = function (uid, picture, callback) {
-
 		var uploadSize = parseInt(meta.config.maximumProfileImageSize, 10) || 256;
 		var extension = path.extname(picture.name);
 		var updateUid = uid;

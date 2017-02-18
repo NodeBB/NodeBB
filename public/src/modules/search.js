@@ -2,7 +2,6 @@
 
 
 define('search', ['navigator', 'translator'], function (nav, translator) {
-
 	var Search = {
 		current: {},
 	};

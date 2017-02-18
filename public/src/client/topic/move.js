@@ -2,7 +2,6 @@
 
 
 define('forum/topic/move', function () {
-
 	var Move = {};
 	var modal;
 	var selectedEl;
@@ -22,7 +21,6 @@ define('forum/topic/move', function () {
 		}
 
 		parseModal(categories, function () {
-
 			modal.on('hidden.bs.modal', function () {
 				modal.remove();
 			});

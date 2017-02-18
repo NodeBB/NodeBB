@@ -62,8 +62,6 @@ module.exports = function (User) {
 		if (typeof callback === 'function') {
 			callback();
 		}
-
-
 	};
 };
 

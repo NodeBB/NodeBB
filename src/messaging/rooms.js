@@ -8,7 +8,6 @@ var user = require('../user');
 var plugins = require('../plugins');
 
 module.exports = function (Messaging) {
-
 	Messaging.getRoomData = function (roomId, callback) {
 		db.getObject('chat:room:' + roomId, function (err, data) {
 			if (err || !data) {
@@ -222,5 +221,4 @@ module.exports = function (Messaging) {
 			},
 		], callback);
 	};
-
 };

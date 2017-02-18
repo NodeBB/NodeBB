@@ -11,7 +11,6 @@ var privileges = require('./privileges');
 var utils = require('../public/src/utils');
 
 (function (Groups) {
-
 	require('./groups/create')(Groups);
 	require('./groups/delete')(Groups);
 	require('./groups/update')(Groups);
@@ -454,5 +453,4 @@ var utils = require('../public/src/utils');
 			},
 		], callback);
 	};
-
 }(module.exports));

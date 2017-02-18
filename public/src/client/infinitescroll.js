@@ -2,7 +2,6 @@
 
 
 define('forum/infinitescroll', function () {
-
 	var scroll = {};
 	var callback;
 	var previousScrollTop = 0;

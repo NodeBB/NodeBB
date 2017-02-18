@@ -1,7 +1,6 @@
 'use strict';
 
 module.exports = function (redisClient, module) {
-
 	module.flushdb = function (callback) {
 		redisClient.send_command('flushdb', [], function (err) {
 			if (typeof callback === 'function') {

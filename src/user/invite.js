@@ -12,7 +12,6 @@ var utils = require('../../public/src/utils');
 
 
 module.exports = function (User) {
-
 	User.getInvites = function (uid, callback) {
 		db.getSetMembers('invitation:uid:' + uid, callback);
 	};
@@ -148,5 +147,4 @@ module.exports = function (User) {
 		callback = callback || function () {};
 		db.delete('invitation:email:' + email, callback);
 	};
-
 };

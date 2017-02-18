@@ -2,7 +2,6 @@
 
 
 define('forum/chats/messages', ['components', 'sounds', 'translator'], function (components, sounds, translator) {
-
 	var messages = {};
 
 	messages.sendMessage = function (roomId, inputEl) {
@@ -57,7 +56,6 @@ define('forum/chats/messages', ['components', 'sounds', 'translator'], function 
 	};
 
 	messages.appendChatMessage = function (chatContentEl, data) {
-
 		var lastSpeaker = parseInt(chatContentEl.find('.chat-message').last().attr('data-uid'), 10);
 		if (!Array.isArray(data)) {
 			data.newSet = lastSpeaker !== data.fromuid;

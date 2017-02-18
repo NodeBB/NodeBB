@@ -9,7 +9,6 @@ var meta = require('../meta');
 var plugins = require('../plugins');
 
 module.exports = function (Posts) {
-
 	Posts.getUserInfoForPosts = function (uids, uid, callback) {
 		var groupsMap = {};
 		var userData;

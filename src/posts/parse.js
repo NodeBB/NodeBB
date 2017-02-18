@@ -13,7 +13,6 @@ var translator = require('../../public/src/modules/translator');
 var urlRegex = /href="([^"]+)"/g;
 
 module.exports = function (Posts) {
-
 	Posts.parsePost = function (postData, callback) {
 		postData.content = postData.content || '';
 

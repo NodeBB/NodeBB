@@ -13,7 +13,6 @@ var pubsub = require('../pubsub');
 
 
 module.exports = function (Plugins) {
-
 	if (nconf.get('isPrimary') === 'true') {
 		pubsub.on('plugins:toggleInstall', function (data) {
 			if (data.hostname !== os.hostname()) {

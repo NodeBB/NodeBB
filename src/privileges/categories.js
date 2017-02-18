@@ -11,7 +11,6 @@ var helpers = require('./helpers');
 var plugins = require('../plugins');
 
 module.exports = function (privileges) {
-
 	privileges.categories = {};
 
 	privileges.categories.list = function (cid, callback) {
@@ -50,7 +49,6 @@ module.exports = function (privileges) {
 						}), next);
 					},
 					function (memberSets, next) {
-
 						memberSets = memberSets.map(function (set) {
 							return set.map(function (uid) {
 								return parseInt(uid, 10);
@@ -87,7 +85,6 @@ module.exports = function (privileges) {
 						}), next);
 					},
 					function (memberSets, next) {
-
 						var uniqueGroups = _.unique(_.flatten(memberSets));
 
 						groups.getGroups('groups:createtime', 0, -1, function (err, groupNames) {
@@ -402,5 +399,4 @@ module.exports = function (privileges) {
 			},
 		}, callback);
 	};
-
 };

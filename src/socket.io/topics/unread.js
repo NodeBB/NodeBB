@@ -6,7 +6,6 @@ var user = require('../../user');
 var topics = require('../../topics');
 
 module.exports = function (SocketTopics) {
-
 	SocketTopics.markAsRead = function (socket, tids, callback) {
 		if (!Array.isArray(tids) || !socket.uid) {
 			return callback(new Error('[[error:invalid-data]]'));

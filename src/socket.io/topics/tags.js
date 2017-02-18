@@ -6,7 +6,6 @@ var topics = require('../../topics');
 var utils = require('../../../public/src/utils');
 
 module.exports = function (SocketTopics) {
-
 	SocketTopics.isTagAllowed = function (socket, data, callback) {
 		if (!data || !data.cid || !data.tag) {
 			return callback(new Error('[[error:invalid-data]]'));

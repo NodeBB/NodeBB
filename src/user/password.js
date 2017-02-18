@@ -7,7 +7,6 @@ var db = require('../database');
 var Password = require('../password');
 
 module.exports = function (User) {
-
 	User.hashPassword = function (password, callback) {
 		if (!password) {
 			return callback(null, password);
@@ -43,5 +42,4 @@ module.exports = function (User) {
 			callback(err, !!hashedPassword);
 		});
 	};
-
 };

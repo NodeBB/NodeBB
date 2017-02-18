@@ -95,7 +95,6 @@ describe('Search', function () {
 	});
 
 	it('should search term in titles and posts', function (done) {
-
 		var meta = require('../src/meta');
 		meta.config.allowGuestSearching = 1;
 		var qs = '/api/search?term=cucumber&in=titlesposts&categories[]=' + cid1 + '&by=phoebe&replies=1&repliesFilter=atleast&sortBy=timestamp&sortDirection=desc&showAs=posts';

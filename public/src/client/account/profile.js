@@ -70,7 +70,6 @@ define('forum/account/profile', [
 		}
 
 		app.parseAndTranslate('account/profile', 'posts', {posts: posts}, function (html) {
-
 			$('[component="posts"]').append(html);
 			html.find('.timeago').timeago();
 

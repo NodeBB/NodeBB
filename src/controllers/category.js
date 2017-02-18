@@ -124,7 +124,6 @@ categoryController.get = function (req, res, callback) {
 			], next);
 		},
 		function (categoryData, next) {
-
 			categories.modifyTopicsByPrivilege(categoryData.topics, userPrivileges);
 
 			if (categoryData.link) {

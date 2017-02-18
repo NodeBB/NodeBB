@@ -9,7 +9,6 @@ var sockets = require('../socket.io');
 
 
 module.exports = function (Messaging) {
-
 	Messaging.editMessage = function (uid, mid, roomId, content, callback) {
 		var uids;
 		async.waterfall([
@@ -78,5 +77,4 @@ module.exports = function (Messaging) {
 			},
 		], callback);
 	};
-
 };

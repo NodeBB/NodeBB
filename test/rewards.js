@@ -72,7 +72,6 @@ describe('rewards', function () {
 				done();
 			});
 		});
-
 	});
 
 

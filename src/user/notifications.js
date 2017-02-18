@@ -11,7 +11,6 @@ var notifications = require('../notifications');
 var privileges = require('../privileges');
 
 (function (UserNotifications) {
-
 	UserNotifications.get = function (uid, callback) {
 		if (!parseInt(uid, 10)) {
 			return callback(null, {read: [], unread: []});
@@ -287,5 +286,4 @@ var privileges = require('../privileges');
 			websockets.in('uid_' + uid).emit('event:notifications.updateCount', count);
 		});
 	};
-
 }(exports));

@@ -10,7 +10,6 @@ var db = require('./mocks/databasemock');
 var plugins = require('../src/plugins');
 
 describe('Plugins', function () {
-
 	it('should load plugin data', function (done) {
 		var pluginId = 'nodebb-plugin-markdown';
 		plugins.loadPlugin(path.join(nconf.get('base_dir'), 'node_modules/' + pluginId), function (err) {
@@ -46,7 +45,6 @@ describe('Plugins', function () {
 			assert.equal(data.foo, 7);
 			done();
 		});
-
 	});
 
 	it('should register and fire an action hook', function (done) {
@@ -179,7 +177,5 @@ describe('Plugins', function () {
 			});
 		});
 	});
-
-
 });
 

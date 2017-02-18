@@ -13,7 +13,6 @@ var privileges = require('./privileges');
 var social = require('./social');
 
 (function (Topics) {
-
 	require('./topics/data')(Topics);
 	require('./topics/create')(Topics);
 	require('./topics/delete')(Topics);
@@ -321,5 +320,4 @@ var social = require('./social');
 			callback(new Error('no-plugins-available'), []);
 		}
 	};
-
 }(exports));

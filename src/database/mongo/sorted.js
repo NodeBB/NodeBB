@@ -503,5 +503,4 @@ module.exports = function (db, module) {
 			callback
 		);
 	};
-
 };

@@ -2,7 +2,6 @@
 
 
 define('admin/manage/ip-blacklist', ['translator'], function (translator) {
-
 	var Blacklist = {};
 
 	Blacklist.init = function () {

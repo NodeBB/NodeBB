@@ -2,7 +2,6 @@
 
 
 define('forum/topic/move-post', [], function () {
-
 	var MovePost = {};
 
 
@@ -33,7 +32,6 @@ define('forum/topic/move-post', [], function () {
 					topicId.val('');
 				});
 			});
-
 		});
 	};
 

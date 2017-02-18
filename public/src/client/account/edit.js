@@ -5,7 +5,6 @@ define('forum/account/edit', ['forum/account/header', 'translator', 'components'
 	var AccountEdit = {};
 
 	AccountEdit.init = function () {
-
 		header.init();
 
 		$('#submitBtn').on('click', updateProfile);
@@ -70,7 +69,6 @@ define('forum/account/edit', ['forum/account/header', 'translator', 'components'
 	}
 
 	function handleImageChange() {
-
 		$('#changePictureBtn').on('click', function () {
 			socket.emit('user.getProfilePictures', {uid: ajaxify.data.uid}, function (err, pictures) {
 				if (err) {

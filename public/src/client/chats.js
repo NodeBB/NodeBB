@@ -60,7 +60,6 @@ define('forum/chats', [
 		Chats.addSendHandlers(ajaxify.data.roomId, $('.chat-input'), $('.expanded-chat button[data-action="send"]'));
 
 		$('[data-action="pop-out"]').on('click', function () {
-
 			var text = components.get('chat/input').val();
 			var roomId = ajaxify.data.roomId;
 

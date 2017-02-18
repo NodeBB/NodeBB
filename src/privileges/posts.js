@@ -11,7 +11,6 @@ var helpers = require('./helpers');
 var plugins = require('../plugins');
 
 module.exports = function (privileges) {
-
 	privileges.posts = {};
 
 	privileges.posts.get = function (pids, uid, callback) {
@@ -91,7 +90,6 @@ module.exports = function (privileges) {
 				topics.getTopicsFields(tids, ['deleted', 'cid'], next);
 			},
 			function (topicData, next) {
-
 				topicData.forEach(function (topic, index) {
 					if (topic) {
 						tidToTopic[tids[index]] = topic;
@@ -111,7 +109,6 @@ module.exports = function (privileges) {
 				privileges.categories.getBase(privilege, cids, uid, next);
 			},
 			function (results, next) {
-
 				var isModOf = {};
 				cids = cids.filter(function (cid, index) {
 					isModOf[cid] = results.isModerators[index];

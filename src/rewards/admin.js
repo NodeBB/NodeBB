@@ -7,9 +7,7 @@ var db = require('../database');
 var rewards = module.exports;
 
 rewards.save = function (data, callback) {
-
 	async.each(data, function save(data, next) {
-
 		if (!Object.keys(data.rewards).length) {
 			return next();
 		}
@@ -26,7 +24,6 @@ rewards.save = function (data, callback) {
 				}
 			},
 			function (rid, next) {
-
 				data.id = rid;
 
 				async.series([
@@ -45,7 +42,6 @@ rewards.save = function (data, callback) {
 				], next);
 			},
 		], next);
-
 	}, function (err) {
 		if (err) {
 			return callback(err);

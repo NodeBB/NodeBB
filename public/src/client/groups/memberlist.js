@@ -2,7 +2,6 @@
 
 
 define('forum/groups/memberlist', ['components', 'forum/infinitescroll'], function (components, infinitescroll) {
-
 	var MemberList = {};
 	var searchInterval;
 	var groupName;

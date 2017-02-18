@@ -8,7 +8,6 @@ var events = require('../../events');
 var plugins = require('../../plugins');
 
 module.exports = function (SocketUser) {
-
 	SocketUser.banUsers = function (socket, data, callback) {
 		if (!data || !Array.isArray(data.uids)) {
 			return callback(new Error('[[error:invalid-data]]'));

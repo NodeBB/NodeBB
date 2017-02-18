@@ -12,7 +12,6 @@ var categories = require('../categories');
 var plugins = require('../plugins');
 
 module.exports = function (privileges) {
-
 	privileges.topics = {};
 
 	privileges.topics.get = function (tid, uid, callback) {
@@ -93,7 +92,6 @@ module.exports = function (privileges) {
 				privileges.categories.getBase(privilege, cids, uid, next);
 			},
 			function (results, next) {
-
 				var isModOf = {};
 				cids = cids.filter(function (cid, index) {
 					isModOf[cid] = results.isModerators[index];

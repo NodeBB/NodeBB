@@ -7,7 +7,6 @@ define('admin/manage/flags', [
 	'components',
 	'translator',
 ], function (autocomplete, Chart, components, translator) {
-
 	var	Flags = {};
 
 	Flags.init = function () {

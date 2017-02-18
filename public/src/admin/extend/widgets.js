@@ -132,7 +132,6 @@ define('admin/extend/widgets', ['jqueryui'], function (jqueryui) {
 							timeout: 2500,
 						});
 					}
-
 				});
 			});
 		}

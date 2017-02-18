@@ -126,7 +126,6 @@ module.exports = function (Plugins) {
 			return callback();
 		}
 		async.each(hookList, function (hookObj, next) {
-
 			if (typeof hookObj.method !== 'function') {
 				if (global.env === 'development') {
 					winston.warn('[plugins] Expected method for hook \'' + hook + '\' in plugin \'' + hookObj.id + '\' not found, skipping.');

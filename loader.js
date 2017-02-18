@@ -48,7 +48,6 @@ Loader.displayStartupMessages = function (callback) {
 };
 
 Loader.addWorkerEvents = function (worker) {
-
 	worker.on('exit', function (code, signal) {
 		if (code !== 0) {
 			if (Loader.timesStarted < numProcs * 3) {

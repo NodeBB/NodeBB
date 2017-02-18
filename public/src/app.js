@@ -657,6 +657,5 @@ app.cacheBuster = null;
 				});
 			});
 		});
-
 	};
 }());

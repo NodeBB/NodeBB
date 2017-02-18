@@ -13,7 +13,6 @@ var utils = require('../../public/src/utils');
 
 
 module.exports = function (Posts) {
-
 	Posts.getPostSummaryByPids = function (pids, uid, options, callback) {
 		if (!Array.isArray(pids) || !pids.length) {
 			return callback(null, []);

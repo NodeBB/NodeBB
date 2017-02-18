@@ -19,7 +19,6 @@ var categories = require('../src/categories');
 
 
 describe('socket.io', function () {
-
 	var io;
 	var cid;
 	var tid;
@@ -435,6 +434,5 @@ describe('socket.io', function () {
 	after(function (done) {
 		db.emptydb(done);
 	});
-
 });
 

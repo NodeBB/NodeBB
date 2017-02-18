@@ -146,7 +146,6 @@ define('forum/recent', ['forum/infinitescroll', 'components'], function (infinit
 	};
 
 	Recent.onTopicsLoaded = function (templateName, topics, showSelect, callback) {
-
 		topics = topics.filter(function (topic) {
 			return !components.get('category/topic', 'tid', topic.tid).length;
 		});

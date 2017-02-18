@@ -10,7 +10,6 @@ var plugins = require('../../plugins');
 var socketHelpers = require('../helpers');
 
 module.exports = function (SocketTopics) {
-
 	SocketTopics.loadTopicTools = function (socket, data, callback) {
 		if (!socket.uid) {
 			return callback(new Error('[[error:no-privileges]]'));
@@ -128,5 +127,4 @@ module.exports = function (SocketTopics) {
 
 		topics.tools.orderPinnedTopics(socket.uid, data, callback);
 	};
-
 };

@@ -37,7 +37,6 @@ describe('Categories', function () {
 
 
 	it('should create a new category', function (done) {
-
 		Categories.create({
 			name: 'Test Category',
 			description: 'Test category created by testing script',
@@ -385,7 +384,6 @@ describe('Categories', function () {
 						done();
 					});
 				});
-
 			});
 		});
 

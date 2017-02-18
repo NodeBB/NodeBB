@@ -7,7 +7,6 @@ var topics = require('../topics');
 var utils = require('../../public/src/utils');
 
 module.exports = function (Posts) {
-
 	Posts.getPostsFromSet = function (set, start, stop, uid, reverse, callback) {
 		async.waterfall([
 			function (next) {
@@ -84,5 +83,4 @@ module.exports = function (Posts) {
 			},
 		], callback);
 	};
-
 };

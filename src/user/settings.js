@@ -7,7 +7,6 @@ var db = require('../database');
 var plugins = require('../plugins');
 
 module.exports = function (User) {
-
 	User.getSettings = function (uid, callback) {
 		if (!parseInt(uid, 10)) {
 			return onSettingsLoaded(0, {}, callback);

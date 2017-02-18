@@ -11,7 +11,6 @@ var meta = require('../../meta');
 var websockets = require('../index');
 
 module.exports = function (SocketPosts) {
-
 	SocketPosts.edit = function (socket, data, callback) {
 		if (!socket.uid) {
 			return callback(new Error('[[error:not-logged-in]]'));

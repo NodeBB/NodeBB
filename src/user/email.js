@@ -13,7 +13,6 @@ var meta = require('../meta');
 var emailer = require('../emailer');
 
 (function (UserEmail) {
-
 	UserEmail.exists = function (email, callback) {
 		user.getUidByEmail(email.toLowerCase(), function (err, exists) {
 			callback(err, !!exists);
@@ -112,5 +111,4 @@ var emailer = require('../emailer');
 			}
 		});
 	};
-
 }(exports));

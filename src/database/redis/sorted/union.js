@@ -2,7 +2,6 @@
 'use strict';
 
 module.exports = function (redisClient, module) {
-
 	module.sortedSetUnionCard = function (keys, callback) {
 		var tempSetName = 'temp_' + Date.now();
 
@@ -30,7 +29,6 @@ module.exports = function (redisClient, module) {
 	};
 
 	module.sortedSetUnion = function (params, callback) {
-
 		var tempSetName = 'temp_' + Date.now();
 
 		var rangeParams = [tempSetName, params.start, params.stop];

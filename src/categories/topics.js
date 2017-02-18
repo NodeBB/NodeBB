@@ -7,7 +7,6 @@ var topics = require('../topics');
 var plugins = require('../plugins');
 
 module.exports = function (Categories) {
-
 	Categories.getCategoryTopics = function (data, callback) {
 		async.waterfall([
 			function (next) {
@@ -142,5 +141,4 @@ module.exports = function (Categories) {
 			},
 		], callback);
 	};
-
 };

@@ -7,7 +7,6 @@ var db = require('../database');
 var posts = require('../posts');
 
 module.exports = function (Topics) {
-
 	Topics.getUserBookmark = function (tid, uid, callback) {
 		db.sortedSetScore('tid:' + tid + ':bookmarks', uid, callback);
 	};
@@ -79,5 +78,4 @@ module.exports = function (Topics) {
 			callback(err);
 		});
 	};
-
 };

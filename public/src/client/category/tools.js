@@ -8,7 +8,6 @@ define('forum/category/tools', [
 	'components',
 	'translator',
 ], function (move, topicSelect, components, translator) {
-
 	var CategoryTools = {};
 
 	CategoryTools.init = function (cid) {
@@ -161,7 +160,6 @@ define('forum/category/tools', [
 	}
 
 	function updateDropdownOptions() {
-
 		var tids = topicSelect.getSelectedTids();
 		var isAnyDeleted = isAny(isTopicDeleted, tids);
 		var areAllDeleted = areAll(isTopicDeleted, tids);

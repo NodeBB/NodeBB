@@ -17,7 +17,6 @@ var search = {};
 module.exports = search;
 
 search.search = function (data, callback) {
-
 	var start = process.hrtime();
 	var searchIn = data.searchIn || 'titlesposts';
 
@@ -253,7 +252,6 @@ function getMatchedPosts(pids, data, callback) {
 			}, next);
 		},
 		function (results, next) {
-
 			posts.forEach(function (post, index) {
 				if (results.topics && results.topics[index]) {
 					post.topic = results.topics[index];

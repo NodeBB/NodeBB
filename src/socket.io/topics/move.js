@@ -7,7 +7,6 @@ var privileges = require('../../privileges');
 var socketHelpers = require('../helpers');
 
 module.exports = function (SocketTopics) {
-
 	SocketTopics.move = function (socket, data, callback) {
 		if (!data || !Array.isArray(data.tids) || !data.cid) {
 			return callback(new Error('[[error:invalid-data]]'));
