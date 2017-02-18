@@ -414,7 +414,7 @@ Controllers.handleURIErrors = function (err, req, res, next) {
 			}
 		}
 
-		return;
+		
 	} else {
 		next(err);
 	}

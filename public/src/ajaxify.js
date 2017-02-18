@@ -158,7 +158,7 @@ $(document).ready(function () {
 				app.alertError('[[global:please_log_in]]');
 				app.previousUrl = url;
 				window.location.href = config.relative_path + '/login';
-				return;
+				
 			} else if (status === 302 || status === 308) {
 				if (data.responseJSON && data.responseJSON.external) {
 					window.location.href = data.responseJSON.external;

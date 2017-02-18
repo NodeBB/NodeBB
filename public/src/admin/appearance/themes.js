@@ -72,7 +72,7 @@ define('admin/appearance/themes', ['translator'], function (translator) {
 
 			if (!themes.length) {
 				instListEl.append($('<li/ >').addClass('no-themes').translateHtml('[[admin/appearance/themes:no-themes]]'));
-				return;
+				
 			} else {
 				templates.parse('admin/partials/theme_list', {
 					themes: themes,
