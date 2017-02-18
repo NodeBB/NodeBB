@@ -131,7 +131,11 @@ define('settings', function () {
 			for (var i = 0; i < array.length; i += 1) {
 				var value = array[i];
 				if (trim) {
-					value = value === true ? 1 : value === false ? 0 : typeof value.trim === 'function' ? value.trim() : value;
+					if (value === !!value) {
+						value = +value;
+					} else if (value && typeof value.trim === 'function') {
+						value = value.trim();
+					}
 				}
 				if (empty || (value != null ? value.length : void 0)) {
 					cleaned.push(value);

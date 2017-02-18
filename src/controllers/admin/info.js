@@ -22,7 +22,13 @@ infoController.get = function (req, res, next) {
 			data.push(info[key]);
 		});
 		data.sort(function (a, b) {
-			return (a.os.hostname < b.os.hostname) ? -1 : (a.os.hostname > b.os.hostname) ? 1 : 0;
+			if (a.os.hostname < b.os.hostname) {
+				return -1;
+			}
+			if (a.os.hostname > b.os.hostname) {
+				return 1;
+			}
+			return 0;
 		});
 		res.render('admin/development/info', { info: data, infoJSON: JSON.stringify(data, null, 4), host: os.hostname(), port: nconf.get('port') });
 	}, 500);

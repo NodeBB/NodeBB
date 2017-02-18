@@ -48,13 +48,15 @@ define('settings/array', function () {
 		delete attributes['data-type'];
 		delete attributes.tagName;
 		for (var name in attributes) {
-			var val = attributes[name];
-			if (name.search('data-') === 0) {
-				element.data(name.substring(5), val);
-			} else if (name.search('prop-') === 0) {
-				element.prop(name.substring(5), val);
-			} else {
-				element.attr(name, val);
+			if (attributes.hasOwnProperty(name)) {
+				var val = attributes[name];
+				if (name.search('data-') === 0) {
+					element.data(name.substring(5), val);
+				} else if (name.search('prop-') === 0) {
+					element.prop(name.substring(5), val);
+				} else {
+					element.attr(name, val);
+				}
 			}
 		}
 		helper.fillField(element, value);

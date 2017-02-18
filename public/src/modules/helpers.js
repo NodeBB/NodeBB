@@ -1,11 +1,6 @@
 'use strict';
 
 (function (exports) {
-	// export the class if we are in a Node-like system.
-	if (typeof module === 'object' && module.exports === exports) {
-		exports = module.exports/* = SemVer*/;
-	}
-
 	var helpers = {};
 
 	helpers.displayMenuItem = function (data, index) {
@@ -276,12 +271,13 @@
 		});
 	};
 
-	// Use the define() function if we're in AMD land
-	if (typeof define === 'function' && define.amd) {
+	// export the class if we are in a Node-like system.
+	if (typeof module === 'object' && module.exports === exports) {
+		exports = module.exports/* = SemVer*/;
+	} else if (typeof define === 'function' && define.amd) {
+		// Use the define() function if we're in AMD land
 	  define('helpers', exports);
+	} else if (typeof window === 'object') {
+		window.helpers = exports;
 	}
-}(
-	typeof exports === 'object' ? exports :
-	typeof define === 'function' && define.amd ? {} :
-	window.helpers = {}
-));
+}(typeof exports === 'object' ? exports : {}));

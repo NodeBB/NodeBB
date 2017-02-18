@@ -240,29 +240,31 @@ module.exports = function (Posts) {
 				// Parse out flag data into its own object inside each post hash
 				async.map(posts, function (postObj, next) {
 					for (var prop in postObj) {
-						postObj.flagData = postObj.flagData || {};
+						if (postObj.hasOwnProperty(prop)) {
+							postObj.flagData = postObj.flagData || {};
 
-						if (postObj.hasOwnProperty(prop) && prop.startsWith('flag:')) {
-							postObj.flagData[prop.slice(5)] = postObj[prop];
+							if (prop.startsWith('flag:')) {
+								postObj.flagData[prop.slice(5)] = postObj[prop];
 
-							if (prop === 'flag:state') {
-								switch (postObj[prop]) {
-								case 'open':
-									postObj.flagData.labelClass = 'info';
-									break;
-								case 'wip':
-									postObj.flagData.labelClass = 'warning';
-									break;
-								case 'resolved':
-									postObj.flagData.labelClass = 'success';
-									break;
-								case 'rejected':
-									postObj.flagData.labelClass = 'danger';
-									break;
+								if (prop === 'flag:state') {
+									switch (postObj[prop]) {
+									case 'open':
+										postObj.flagData.labelClass = 'info';
+										break;
+									case 'wip':
+										postObj.flagData.labelClass = 'warning';
+										break;
+									case 'resolved':
+										postObj.flagData.labelClass = 'success';
+										break;
+									case 'rejected':
+										postObj.flagData.labelClass = 'danger';
+										break;
+									}
 								}
-							}
 
-							delete postObj[prop];
+								delete postObj[prop];
+							}
 						}
 					}
 

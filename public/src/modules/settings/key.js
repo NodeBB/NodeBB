@@ -118,7 +118,15 @@ define('settings/key', function () {
 		if (key.m) {
 			str += (short ? 'M' : 'Meta') + separator;
 		}
-		return str + (human ? key.char : key.code ? '#' + key.code : '');
+
+		var out;
+		if (human) {
+			out = key.char;
+		} else if (key.code) {
+			out = '#' + key.code || '';
+		}
+
+		return str + out;
 	}
 
 	/**

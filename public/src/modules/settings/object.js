@@ -30,13 +30,15 @@ define('settings/object', function () {
 		delete attributes['data-type'];
 		delete attributes.tagName;
 		for (var name in attributes) {
-			var val = attributes[name];
-			if (name.search('data-') === 0) {
-				element.data(name.substring(5), val);
-			} else if (name.search('prop-') === 0) {
-				element.prop(name.substring(5), val);
-			} else {
-				element.attr(name, val);
+			if (attributes.hasOwnProperty(name)) {
+				var val = attributes[name];
+				if (name.search('data-') === 0) {
+					element.data(name.substring(5), val);
+				} else if (name.search('prop-') === 0) {
+					element.prop(name.substring(5), val);
+				} else {
+					element.attr(name, val);
+				}
 			}
 		}
 		helper.fillField(element, value);
@@ -80,17 +82,19 @@ define('settings/object', function () {
 			}
 			if (Array.isArray(properties)) {
 				for (propertyIndex in properties) {
-					attributes = properties[propertyIndex];
-					if (typeof attributes !== 'object') {
-						attributes = {};
+					if (properties.hasOwnProperty(propertyIndex)) {
+						attributes = properties[propertyIndex];
+						if (typeof attributes !== 'object') {
+							attributes = {};
+						}
+						propertyName = attributes['data-prop'] || attributes['data-property'] || propertyIndex;
+						if (value[propertyName] === void 0 && attributes['data-new'] !== void 0) {
+							value[propertyName] = attributes['data-new'];
+						}
+						addObjectPropertyElement(element, key, attributes, propertyName, value[propertyName], separator.clone(), function (el) {
+							element.append(el);
+						});
 					}
-					propertyName = attributes['data-prop'] || attributes['data-property'] || propertyIndex;
-					if (value[propertyName] === void 0 && attributes['data-new'] !== void 0) {
-						value[propertyName] = attributes['data-new'];
-					}
-					addObjectPropertyElement(element, key, attributes, propertyName, value[propertyName], separator.clone(), function (el) {
-						element.append(el);
-					});
 				}
 			}
 		},
