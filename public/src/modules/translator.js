@@ -489,7 +489,7 @@
 		prepareDOM: function prepareDOM() {
 			// Load the appropriate timeago locale file,
 			// and correct NodeBB language codes to timeago codes, if necessary
-			var languageCode = void 0;
+			var languageCode;
 			switch (config.userLang) {
 			case 'en-GB':
 			case 'en-US':

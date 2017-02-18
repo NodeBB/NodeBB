@@ -215,13 +215,9 @@ define('settings/key', function () {
 			if (trim) {
 				if (empty || (key != null && key.char)) {
 					return getKeyString(key, false, short, separator);
-				} else {
-					return void 0;
 				}
 			} else if (empty || (key != null && key.code)) {
 				return key;
-			} else {
-				return void 0;
 			}
 		},
 	};

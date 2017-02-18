@@ -49,10 +49,10 @@ module.exports = function (Posts) {
 	Posts.relativeToAbsolute = function (content) {
 		// Turns relative links in post body to absolute urls
 		var parsed;
-		var current;
+		var current = urlRegex.exec(content);
 		var absolute;
 
-		while ((current = urlRegex.exec(content)) !== null) {
+		while (current !== null) {
 			if (current[1]) {
 				try {
 					parsed = url.parse(current[1]);
@@ -71,6 +71,7 @@ module.exports = function (Posts) {
 					winston.verbose(err.messsage);
 				}
 			}
+			current = urlRegex.exec(content);
 		}
 
 		return content;

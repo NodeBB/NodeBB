@@ -21,10 +21,13 @@ define('settings/checkbox', function () {
 		get: function (element, trim, empty) {
 			var value = element.prop('checked');
 			if (value == null) {
-				return void 0;
+				return;
 			}
 			if (!empty) {
-				return value || void 0;
+				if (value) {
+					return value;
+				}
+				return;
 			}
 			if (trim) {
 				return value ? 1 : 0;

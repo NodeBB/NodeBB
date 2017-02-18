@@ -21,12 +21,14 @@ define('settings/textarea', function () {
 		get: function (element, trim, empty) {
 			var value = element.val();
 			if (trim) {
-				value = value == null ? void 0 : value.trim();
+				if (value == null) {
+					value = undefined;
+				} else {
+					value = value.trim();
+				}
 			}
 			if (empty || value) {
 				return value;
-			} else {
-				return void 0;
 			}
 		},
 	};

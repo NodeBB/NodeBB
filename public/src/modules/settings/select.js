@@ -39,8 +39,6 @@ define('settings/select', function () {
 			var value = element.val();
 			if (empty || value) {
 				return value;
-			} else {
-				return void 0;
 			}
 		},
 	};

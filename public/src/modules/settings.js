@@ -31,7 +31,7 @@ define('settings', function () {
 		}
 		plugin = Settings.plugins[type.toLowerCase()];
 		if (plugin == null) {
-			return void 0;
+			return;
 		}
 		hook = plugin[name];
 		if (typeof hook === 'function') {
@@ -137,7 +137,7 @@ define('settings', function () {
 						value = value.trim();
 					}
 				}
-				if (empty || (value != null ? value.length : void 0)) {
+				if (empty || (value != null && value.length)) {
 					cleaned.push(value);
 				}
 			}
@@ -167,17 +167,15 @@ define('settings', function () {
 			if (split != null) {
 				empty = helper.isTrue(element.data('empty')); // default empty-value is false for arrays
 				value = element.val();
-				var array = (value != null ? value.split(split || ',') : void 0) || [];
+				var array = (value != null && value.split(split || ',')) || [];
 				return helper.cleanArray(array, trim, empty);
 			} else {
 				value = element.val();
 				if (trim && value != null && typeof value.trim === 'function') {
 					value = value.trim();
 				}
-				if (empty || (value !== void 0 && (value == null || value.length !== 0))) {
+				if (empty || (value !== undefined && (value == null || value.length !== 0))) {
 					return value;
-				} else {
-					return void 0;
 				}
 			}
 		},
@@ -212,7 +210,7 @@ define('settings', function () {
 			} else {
 				value = '';
 			}
-			if (value !== void 0) {
+			if (value !== undefined) {
 				element.val(value);
 			}
 		},
@@ -337,7 +335,7 @@ define('settings', function () {
 		 @returns Object The settings.
 		 */
 		get: function () {
-			if (Settings.cfg != null && Settings.cfg._ !== void 0) {
+			if (Settings.cfg != null && Settings.cfg._ !== undefined) {
 				return Settings.cfg._;
 			}
 			return Settings.cfg;

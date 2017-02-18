@@ -117,10 +117,10 @@ function compile(callback) {
 
 		async.each(Object.keys(paths), function (relativePath, next) {
 			var file = fs.readFileSync(paths[relativePath]).toString();
-			var matches = null;
 			var regex = /[ \t]*<!-- IMPORT ([\s\S]*?)? -->[ \t]*/;
+			var matches = file.match(regex);
 
-			while ((matches = file.match(regex)) !== null) {
+			while (matches !== null) {
 				var partial = '/' + matches[1];
 
 				if (paths[partial] && relativePath !== partial) {
@@ -129,6 +129,7 @@ function compile(callback) {
 					winston.warn('[meta/templates] Partial not loaded: ' + matches[1]);
 					file = file.replace(regex, '');
 				}
+				matches = file.match(regex);
 			}
 
 			mkdirp.sync(path.join(viewsPath, relativePath.split('/').slice(0, -1).join('/')));

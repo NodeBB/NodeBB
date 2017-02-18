@@ -24,6 +24,7 @@
 		"func-names": "off",
 		"no-tabs": "off",
 		"indent": ["error", "tab"],
+		"no-eq-null": "off",
 
 		// ES6
 		"prefer-rest-params": "off",
@@ -76,11 +77,9 @@
 		"yoda": "off",
 		"no-use-before-define": "off",
 		"no-loop-func": "off",
-		"no-void": "off",
-		"valid-jsdoc": "off",
-		"o-eq-null": "off",
-		"no-cond-assign": "off",
-		"no-eq-null": "off",
+		// "no-void": "off",
+		// "valid-jsdoc": "off",
+		// "no-cond-assign": "off",
 		// "no-redeclare": "off",
 		// "no-unreachable": "off",
 		// "no-nested-ternary": "off",

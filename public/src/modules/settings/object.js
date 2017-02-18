@@ -88,7 +88,7 @@ define('settings/object', function () {
 							attributes = {};
 						}
 						propertyName = attributes['data-prop'] || attributes['data-property'] || propertyIndex;
-						if (value[propertyName] === void 0 && attributes['data-new'] !== void 0) {
+						if (value[propertyName] === undefined && attributes['data-new'] !== undefined) {
 							value[propertyName] = attributes['data-new'];
 						}
 						addObjectPropertyElement(element, key, attributes, propertyName, value[propertyName], separator.clone(), function (el) {
@@ -107,15 +107,13 @@ define('settings/object', function () {
 				var val = helper.readValue(property);
 				var prop = property.data('prop');
 				var empty = helper.isTrue(property.data('empty'));
-				if (empty || (val !== void 0 && (val == null || val.length !== 0))) {
+				if (empty || (val !== undefined && (val == null || val.length !== 0))) {
 					value[prop] = val;
 					return val;
 				}
 			});
 			if (empty || Object.keys(value).length) {
 				return value;
-			} else {
-				return void 0;
 			}
 		},
 	};

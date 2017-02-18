@@ -6,7 +6,10 @@ define('settings/number', function () {
 		get: function (element, trim, empty) {
 			var value = element.val();
 			if (!empty) {
-				return value ? +value : void 0;
+				if (value) {
+					return +value;
+				}
+				return;
 			}
 			return value ? +value : 0;
 		},

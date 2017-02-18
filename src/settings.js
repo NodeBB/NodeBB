@@ -140,8 +140,8 @@ Settings.prototype.get = function (key, def) {
 			obj = obj[part];
 		}
 	}
-	if (obj === void 0) {
-		if (def === void 0) {
+	if (obj === undefined) {
+		if (def === undefined) {
 			def = this.defCfg;
 			for (var j = 0; j < parts.length; j += 1) {
 				part = parts[j];
@@ -198,7 +198,8 @@ Settings.prototype.set = function (key, val) {
 		obj = this.cfg._;
 		parts = key.split('.');
 		for (var i = 0, _len = parts.length - 1; i < _len; i += 1) {
-			if (part = parts[i]) {
+			part = parts[i];
+			if (part) {
 				if (!obj.hasOwnProperty(part)) {
 					obj[part] = {};
 				}
