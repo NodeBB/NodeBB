@@ -247,4 +247,4 @@
 		db.close();
 	};
 
-} (exports));
+}(exports));

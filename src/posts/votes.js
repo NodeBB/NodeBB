@@ -72,7 +72,7 @@ module.exports = function (Posts) {
 				return callback(err);
 			}
 
-			callback (null, {upvoted: hasVoted[0], downvoted: hasVoted[1]});
+			callback(null, {upvoted: hasVoted[0], downvoted: hasVoted[1]});
 		});
 	};
 
