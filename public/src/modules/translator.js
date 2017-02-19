@@ -289,7 +289,8 @@
 				warn('[translator] Parameter `namespace` is ' + namespace + (namespace === '' ? '(empty string)' : ''));
 				translation = Promise.resolve({});
 			} else {
-				translation = this.translations[namespace] = this.translations[namespace] || this.load(this.lang, namespace).catch(function () { return {}; });
+				this.translations[namespace] = this.translations[namespace] || this.load(this.lang, namespace).catch(function () { return {}; });
+				translation = this.translations[namespace];
 			}
 
 			if (key) {

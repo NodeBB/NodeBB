@@ -108,7 +108,8 @@
 			var mainTitle;
 			var pageTitle;
 			if (/admin\/general\/dashboard$/.test(url)) {
-				mainTitle = pageTitle = '[[admin/menu:general/dashboard]]';
+				pageTitle = '[[admin/menu:general/dashboard]]';
+				mainTitle = pageTitle;
 			} else if (/admin\/plugins\//.test(url)) {
 				mainTitle = fallback;
 				pageTitle = '[[admin/menu:section-plugins]] > ' + mainTitle;

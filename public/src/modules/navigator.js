@@ -75,7 +75,8 @@ define('navigator', ['forum/pagination', 'components'], function (pagination, co
 	navigator.disable = function () {
 		count = 0;
 		index = 1;
-		navigator.selector = navigator.callback = null;
+		navigator.callback = null;
+		navigator.selector = null;
 		$(window).off('scroll', navigator.update);
 
 		toggle(false);

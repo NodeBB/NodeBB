@@ -45,11 +45,13 @@ module.exports = function (Categories) {
 		category.disabled = category.hasOwnProperty('disabled') ? parseInt(category.disabled, 10) === 1 : undefined;
 		category.icon = category.icon || 'hidden';
 		if (category.hasOwnProperty('post_count')) {
-			category.post_count = category.totalPostCount = category.post_count || 0;
+			category.post_count = category.post_count || 0;
+			category.totalPostCount = category.post_count;
 		}
 
 		if (category.hasOwnProperty('topic_count')) {
-			category.topic_count = category.totalTopicCount = category.topic_count || 0;
+			category.topic_count = category.topic_count || 0;
+			category.totalTopicCount = category.topic_count;
 		}
 
 		if (category.image) {

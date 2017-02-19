@@ -22,7 +22,7 @@
 	}
 
 
-	module.exports = utils = {
+	utils = {
 		generateUUID: function () {
 			return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
 				var r = Math.random() * 16 | 0;
@@ -447,6 +447,7 @@
 		},
 	};
 
+	module.exports = utils;
 	if (typeof window !== 'undefined') {
 		window.utils = module.exports;
 	}

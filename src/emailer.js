@@ -29,7 +29,7 @@ var fallbackTransport;
 
 		// Enable Gmail transport if enabled in ACP
 		if (parseInt(meta.config['email:GmailTransport:enabled'], 10) === 1) {
-			fallbackTransport = transports.gmail = nodemailer.createTransport(smtpTransport({
+			transports.gmail = nodemailer.createTransport(smtpTransport({
 				host: 'smtp.gmail.com',
 				port: 465,
 				secure: true,
@@ -38,6 +38,7 @@ var fallbackTransport;
 					pass: meta.config['email:GmailTransport:pass'],
 				},
 			}));
+			fallbackTransport = transports.gmail;
 		} else {
 			fallbackTransport = transports.sendmail;
 		}

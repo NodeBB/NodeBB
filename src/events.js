@@ -61,7 +61,11 @@ var utils = require('../public/src/utils');
 						}
 					});
 					var e = utils.merge(event);
-					e.eid = e.uid = e.type = e.ip = e.user = undefined;
+					e.eid = undefined;
+					e.uid = undefined;
+					e.type = undefined;
+					e.ip = undefined;
+					e.user = undefined;
 					event.jsonString = JSON.stringify(e, null, 4);
 					event.timestampISO = new Date(parseInt(event.timestamp, 10)).toUTCString();
 				});

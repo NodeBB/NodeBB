@@ -36,9 +36,10 @@ module.exports = function (Messaging) {
 				queueObj.message.content += '\n' + messageObj.content;
 				clearTimeout(queueObj.timeout);
 			} else {
-				queueObj = Messaging.notifyQueue[fromUid + ':' + roomId] = {
+				queueObj = {
 					message: messageObj,
 				};
+				Messaging.notifyQueue[fromUid + ':' + roomId] = queueObj;
 			}
 
 			queueObj.timeout = setTimeout(function () {

@@ -131,7 +131,9 @@ module.exports = function (Categories) {
 					if (teaser) {
 						teaser.cid = topicData[index].cid;
 						teaser.parentCid = parseInt(parentCids[teaser.cid], 10) || 0;
-						teaser.tid = teaser.uid = teaser.user.uid = undefined;
+						teaser.tid = undefined;
+						teaser.uid = undefined;
+						teaser.user.uid = undefined;
 						teaser.topic = {
 							slug: topicData[index].slug,
 							title: validator.escape(String(topicData[index].title)),

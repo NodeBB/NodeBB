@@ -133,7 +133,8 @@ module.exports = function (Meta) {
 		winston.verbose('[meta/js] Minifying ' + target);
 
 		var forkProcessParams = setupDebugging();
-		var minifier = Meta.js.minifierProc = fork('minifier.js', [], forkProcessParams);
+		var minifier = fork('minifier.js', [], forkProcessParams);
+		Meta.js.minifierProc = minifier;
 
 		Meta.js.target[target] = {};
 
