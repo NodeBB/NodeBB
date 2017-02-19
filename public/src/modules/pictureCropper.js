@@ -44,7 +44,30 @@ define('pictureCropper', ['translator', 'cropper'], function (translator, croppe
 				var cropperTool = new cropper.default(img, {
 					aspectRatio: data.aspectRatio,
 					viewMode: 1,
+					cropmove: function (e) {
+						if (data.restrictImageDimension) {
+							if (cropperTool.cropBoxData.width > data.imageDimension) {
+								cropperTool.setCropBoxData({
+									width: data.imageDimension
+								});
+							}
+							if (cropperTool.cropBoxData.height > data.imageDimension) {
+								cropperTool.setCropBoxData({
+									height: data.imageDimension
+								});
+							}
+						}
+					},
 					ready: function () {
+						if (data.restrictImageDimension) {
+							var origDimension = (img.width < img.height) ? img.width : img.height;
+							var dimension = (origDimension > data.imageDimension) ? data.imageDimension : origDimension;
+							cropperTool.setCropBoxData({
+								width: dimension,
+								height: dimension
+							});
+						}
+
 						cropperModal.find('.rotate').on('click', function () {
 							var degrees = this.getAttribute("data-degrees");
 							cropperTool.rotate(degrees);
@@ -132,6 +155,9 @@ define('pictureCropper', ['translator', 'cropper'], function (translator, croppe
 				imageType: imageType,
 				socketMethod: data.socketMethod,
 				aspectRatio: data.aspectRatio,
+				allowSkippingCrop: data.allowSkippingCrop,
+				restrictImageDimension: data.restrictImageDimension,
+				imageDimension: data.imageDimension,
 				paramName: data.paramName,
 				paramValue: data.paramValue
 			}, callback);
