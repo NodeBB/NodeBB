@@ -221,7 +221,7 @@ define('admin/manage/category', [
 						if (confirm) {
 							Category.setPrivilege(member, privilege, state, checkboxEl);
 						} else {
-							checkboxEl.prop('checked', checkboxEl.prop('checked') ^ 1);
+							checkboxEl.prop('checked', !checkboxEl.prop('checked'));
 						}
 					});
 				} else {
@@ -427,13 +427,6 @@ define('admin/manage/category', [
 				categories: categories,
 			}, function (html) {
 				translator.translate(html, function (html) {
-					function submit() {
-						var formData = modal.find('form').serializeObject();
-						callback(formData['select-cid']);
-						modal.modal('hide');
-						return false;
-					}
-
 					var modal = bootbox.dialog({
 						title: 'Select a Category',
 						message: html,
@@ -445,6 +438,13 @@ define('admin/manage/category', [
 							},
 						},
 					});
+
+					function submit() {
+						var formData = modal.find('form').serializeObject();
+						callback(formData['select-cid']);
+						modal.modal('hide');
+						return false;
+					}
 
 					modal.find('form').on('submit', submit);
 				});

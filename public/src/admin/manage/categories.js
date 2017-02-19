@@ -42,16 +42,6 @@ define('admin/manage/categories', ['vendor/jquery/serializeObject/jquery.ba-seri
 			templates.parse('admin/partials/categories/create', {
 				categories: categories,
 			}, function (html) {
-				function submit() {
-					var formData = modal.find('form').serializeObject();
-					formData.description = '';
-					formData.icon = 'fa-comments';
-
-					Categories.create(formData);
-					modal.modal('hide');
-					return false;
-				}
-
 				var modal = bootbox.dialog({
 					title: '[[admin/manage/categories:alert.create]]',
 					message: html,
@@ -63,6 +53,16 @@ define('admin/manage/categories', ['vendor/jquery/serializeObject/jquery.ba-seri
 						},
 					},
 				});
+
+				function submit() {
+					var formData = modal.find('form').serializeObject();
+					formData.description = '';
+					formData.icon = 'fa-comments';
+
+					Categories.create(formData);
+					modal.modal('hide');
+					return false;
+				}
 
 				modal.find('form').on('submit', submit);
 			});

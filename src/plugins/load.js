@@ -148,6 +148,8 @@ module.exports = function (Plugins) {
 	}
 
 	function mapStaticDirectories(pluginData, pluginPath, callback) {
+		var validMappedPath = /^[\w\-_]+$/;
+
 		function mapStaticDirs(mappedPath, callback) {
 			if (Plugins.staticDirs[mappedPath]) {
 				winston.warn('[plugins/' + pluginData.id + '] Mapped path (' + mappedPath + ') already specified!');
@@ -169,8 +171,6 @@ module.exports = function (Plugins) {
 				});
 			}
 		}
-
-		var validMappedPath = /^[\w\-_]+$/;
 
 		pluginData.staticDirs = pluginData.staticDirs || {};
 

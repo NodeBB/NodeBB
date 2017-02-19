@@ -76,6 +76,8 @@ define('admin/manage/groups', ['translator'], function (translator) {
 	};
 
 	function handleSearch() {
+		var queryEl = $('#group-search');
+
 		function doSearch() {
 			if (!queryEl.val()) {
 				return ajaxify.refresh();
@@ -102,8 +104,6 @@ define('admin/manage/groups', ['translator'], function (translator) {
 				});
 			});
 		}
-
-		var queryEl = $('#group-search');
 
 		queryEl.on('keyup', function () {
 			if (intervalId) {

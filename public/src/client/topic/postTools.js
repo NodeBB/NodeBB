@@ -230,6 +230,9 @@ define('forum/topic/postTools', [
 		var selectedNode = getSelectedNode();
 
 		showStaleWarning(function () {
+			var username = getUserName(button);
+			var toPid = getData(button, 'data-pid');
+
 			function quote(text) {
 				$(window).trigger('action:composer.addQuote', {
 					tid: tid,
@@ -239,9 +242,6 @@ define('forum/topic/postTools', [
 					text: text,
 				});
 			}
-
-			var username = getUserName(button);
-			var toPid = getData(button, 'data-pid');
 
 			if (selectedNode.text && toPid && toPid === selectedNode.pid) {
 				return quote(selectedNode.text);

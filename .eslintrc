@@ -28,6 +28,9 @@
 		"camelcase": "off",
 		"no-new": "off",
 		"no-shadow": "off",
+		"no-use-before-define": ["error", "nofunc"],
+		"no-prototype-builtins": "off",
+		"new-cap": "off",
 
 		// ES6
 		"prefer-rest-params": "off",
@@ -36,6 +39,7 @@
 		"prefer-template": "off",
 		"no-var": "off",
 		"object-shorthand": "off",
+		"vars-on-top": "off",
 
 		// TODO
 		"import/no-unresolved": "off",
@@ -46,13 +50,9 @@
 		"global-require": "off",
 		"max-len": "off",
 		"no-param-reassign": "off",
-		"no-prototype-builtins": "off",
-		"vars-on-top": "off",
 		"no-restricted-syntax": "off",
 		"no-script-url": "off",
-		"no-use-before-define": "off",
 		"default-case": "off",
-		"new-cap": "off",
 
 		// "no-multi-assign": "off",
 		// "linebreak-style": "off",

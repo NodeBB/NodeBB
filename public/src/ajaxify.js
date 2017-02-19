@@ -1,7 +1,7 @@
 'use strict';
 
 
-var ajaxify = ajaxify || {};
+var ajaxify = window.ajaxify || {};
 
 $(document).ready(function () {
 	var location = document.location || window.location;
@@ -193,14 +193,14 @@ $(document).ready(function () {
 	}
 
 	ajaxify.end = function (url, tpl_url) {
+		var count = 2;
+
 		function done() {
 			count -= 1;
 			if (count === 0) {
 				$(window).trigger('action:ajaxify.end', { url: url, tpl_url: tpl_url, title: ajaxify.data.title });
 			}
 		}
-		var count = 2;
-
 		ajaxify.loadScript(tpl_url, done);
 
 		ajaxify.widgets.render(tpl_url, url, done);
@@ -343,6 +343,12 @@ $(document).ready(function () {
 		// Enhancing all anchors to ajaxify...
 		$(document.body).on('click', 'a', function (e) {
 			var _self = this;
+			if (this.target !== '' || (this.protocol !== 'http:' && this.protocol !== 'https:')) {
+				return;
+			}
+
+			var internalLink = utils.isInternalURI(this, window.location, RELATIVE_PATH);
+
 			var process = function () {
 				if (!e.ctrlKey && !e.shiftKey && !e.metaKey && e.which === 1) {
 					if (internalLink) {
@@ -365,12 +371,6 @@ $(document).ready(function () {
 					}
 				}
 			};
-
-			if (this.target !== '' || (this.protocol !== 'http:' && this.protocol !== 'https:')) {
-				return;
-			}
-
-			var internalLink = utils.isInternalURI(this, window.location, RELATIVE_PATH);
 
 			if ($(this).attr('data-ajaxify') === 'false') {
 				if (!internalLink) {

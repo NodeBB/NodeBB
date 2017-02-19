@@ -1,7 +1,7 @@
 'use strict';
 
 
-var app = app || {};
+var app = window.app || {};
 var socket;
 app.isConnected = false;
 

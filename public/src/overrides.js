@@ -1,7 +1,7 @@
 'use strict';
 
 
-var overrides = overrides || {};
+var overrides = window.overrides || {};
 
 if (typeof window !== 'undefined') {
 	(function ($) {

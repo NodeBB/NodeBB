@@ -24,6 +24,8 @@ define('admin/general/dashboard', ['semver', 'Chart', 'translator'], function (s
 		realtimeInterval: 1500,
 	};
 
+	var	usedTopicColors = [];
+
 	$(window).on('action:ajaxify.start', function () {
 		clearInterval(intervals.rooms);
 		clearInterval(intervals.graphs);
@@ -127,8 +129,8 @@ define('admin/general/dashboard', ['semver', 'Chart', 'translator'], function (s
 	};
 
 	var topicColors = ['#bf616a', '#5B90BF', '#d08770', '#ebcb8b', '#a3be8c', '#96b5b4', '#8fa1b3', '#b48ead', '#ab7967', '#46BFBD'];
-	var	usedTopicColors = [];
 
+	/* eslint-disable */
 	// from chartjs.org
 	function lighten(col, amt) {
 		var usePound = false;
@@ -157,6 +159,7 @@ define('admin/general/dashboard', ['semver', 'Chart', 'translator'], function (s
 
 		return (usePound ? '#' : '') + (g | (b << 8) | (r << 16)).toString(16);
 	}
+	/* eslint-enable */
 
 	function setupGraphs() {
 		var trafficCanvas = document.getElementById('analytics-traffic');
