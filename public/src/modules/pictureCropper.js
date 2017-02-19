@@ -18,7 +18,7 @@ define('pictureCropper', ['translator', 'cropper'], function (translator, croppe
 			uploadModal = $(uploadModal);
 
 			uploadModal.modal('show');
-		 	uploadModal.on('hidden.bs.modal', function () {
+			uploadModal.on('hidden.bs.modal', function () {
 				uploadModal.remove();
 			});
 
@@ -31,9 +31,11 @@ define('pictureCropper', ['translator', 'cropper'], function (translator, croppe
 		});
 	};
 
-    module.handleImageCrop = function (data, callback) {
+	module.handleImageCrop = function (data, callback) {
 		$('#crop-picture-modal').remove();
-		templates.parse('modals/crop_picture', {url: data.url}, function (cropperHtml) {
+		templates.parse('modals/crop_picture', {
+			url: data.url
+		}, function (cropperHtml) {
 			translator.translate(cropperHtml, function (translated) {
 				var cropperModal = $(translated);
 				cropperModal.modal('show');
@@ -58,28 +60,28 @@ define('pictureCropper', ['translator', 'cropper'], function (translator, croppe
 						cropperModal.find('.reset').on('click', function () {
 							cropperTool.reset();
 						});
-						
+
 						cropperModal.find('.crop-btn').on('click', function () {
 							$(this).addClass('disabled');
 							var imageData = data.imageType ? cropperTool.getCroppedCanvas().toDataURL(data.imageType) : cropperTool.getCroppedCanvas().toDataURL();
-							
+
 							cropperModal.find('#upload-progress-bar').css('width', '100%');
 							cropperModal.find('#upload-progress-box').show().removeClass('hide');
-							
+
 							var socketData = {};
 							socketData[data.paramName] = data.paramValue;
 							socketData['imageData'] = imageData;
-							
-							socket.emit(data.socketMethod, socketData, function (err, imageData) {
-							    if (err) {
-							        cropperModal.find('#upload-progress-box').hide();
-							        cropperModal.find('.upload-btn').removeClass('disabled');
-							        cropperModal.find('.crop-btn').removeClass('disabled');
-							        return app.alertError(err.message);
-							    }
 
-							    callback(imageData.url);
-							    cropperModal.modal('hide');
+							socket.emit(data.socketMethod, socketData, function (err, imageData) {
+								if (err) {
+									cropperModal.find('#upload-progress-box').hide();
+									cropperModal.find('.upload-btn').removeClass('disabled');
+									cropperModal.find('.crop-btn').removeClass('disabled');
+									return app.alertError(err.message);
+								}
+
+								callback(imageData.url);
+								cropperModal.modal('hide');
 							});
 						});
 
@@ -115,8 +117,8 @@ define('pictureCropper', ['translator', 'cropper'], function (translator, croppe
 			return showAlert('error', '[[uploads:select-file-to-upload]]');
 		}
 
-		var file    = fileInput[0].files[0];
-		var reader  = new FileReader();
+		var file = fileInput[0].files[0];
+		var reader = new FileReader();
 		var imageUrl;
 		var imageType = file.type;
 
