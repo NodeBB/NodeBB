@@ -71,7 +71,7 @@ exports.buildTargets = function (targets, callback) {
 				winston.info('[build] Building javascript');
 				var startTime = Date.now();
 				async.series([
-					meta.js.linkModules,
+					meta.js.buildModules,
 					meta.js.linkStatics,
 					async.apply(meta.js.minify, 'nodebb.min.js'),
 					async.apply(meta.js.minify, 'acp.min.js')
