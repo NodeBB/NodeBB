@@ -583,7 +583,6 @@ describe('User', function () {
 			var url = nconf.get('url') + '/favicon.ico';
 
 			function filterMethod(data, callback) {
-				data.foo += 5;
 				callback(null, data);
 			}
 
@@ -600,7 +599,6 @@ describe('User', function () {
 			meta.config.maximumProfileImageSize = 1;
 
 			function filterMethod(data, callback) {
-				data.foo += 5;
 				callback(null, data);
 			}
 
@@ -612,20 +610,29 @@ describe('User', function () {
 			});
 		});
 
+		it('should error with invalid data', function (done) {
+			var socketUser = require('../src/socket.io/user');
+
+			socketUser.uploadProfileImageFromUrl({uid: uid}, {uid: uid, url: ''}, function (err, uploadedPicture) {
+				assert.equal(err.message, '[[error:invalid-data]]');
+				done();
+			});
+		});
+
 		it('should upload picture when uploading from url', function (done) {
+			var socketUser = require('../src/socket.io/user');
 			var url = nconf.get('url') + '/logo.png';
 			meta.config.maximumProfileImageSize = '';
 
 			function filterMethod(data, callback) {
-				data.foo += 5;
 				callback(null, {url: url});
 			}
 
 			plugins.registerHook('test-plugin', {hook: 'filter:uploadImage', method: filterMethod});
 
-			User.uploadFromUrl(uid, url, function (err, uploadedPicture) {
+			socketUser.uploadProfileImageFromUrl({uid: uid}, {uid: uid, url: url}, function (err, uploadedPicture) {
 				assert.ifError(err);
-				assert.equal(uploadedPicture.url, url);
+				assert.equal(uploadedPicture, url);
 				done();
 			});
 		});
