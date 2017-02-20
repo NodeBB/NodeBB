@@ -3,7 +3,7 @@
 var uglifyjs = require('uglify-js');
 var async = require('async');
 var fs = require('fs');
-var file = require('./src/file');
+var file = require('../file');
 
 var Minifier = {
 	js: {}

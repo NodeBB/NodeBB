@@ -13,6 +13,8 @@ var file = require('../file');
 var plugins = require('../plugins');
 var utils = require('../../public/src/utils');
 
+var minifierPath = path.join(__dirname, 'minifier.js');
+
 module.exports = function (Meta) {
 
 	Meta.js = {
@@ -236,7 +238,7 @@ module.exports = function (Meta) {
 		winston.verbose('[meta/js] Minifying ' + target);
 
 		var forkProcessParams = setupDebugging();
-		var minifier = Meta.js.minifierProc = fork('minifier.js', [], forkProcessParams);
+		var minifier = Meta.js.minifierProc = fork(minifierPath, [], forkProcessParams);
 
 		Meta.js.target[target] = {};
 
