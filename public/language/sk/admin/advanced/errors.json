@@ -1,14 +1,14 @@
 {
 	"figure-x": "Znázorniť %1",
 	"error-events-per-day": "<code>%1</code> events per day",
-	"error.404": "404 Not Found",
-	"error.503": "503 Service Unavailable",
+	"error.404": "404 Nenájdené",
+	"error.503": "503 Služba nie je k dispozícií",
 	"manage-error-log": "Manage Error Log",
 	"export-error-log": "Export Error Log (CSV)",
 	"clear-error-log": "Clear Error Log",
 	"route": "Route",
 	"count": "Count",
-	"no-routes-not-found": "Hooray! No 404 errors!",
+	"no-routes-not-found": "Hurá! Žiadne chyby 404!",
 	"clear404-confirm": "Are you sure you wish to clear the 404 error logs?",
-	"clear404-success": "\"404 Not Found\" errors cleared"
+	"clear404-success": "Chybné hlásenia \"404 Nenájdené\" vyčistené"
 }

@@ -389,8 +389,8 @@ function createMenuItems(next) {
 		if (err || exists) {
 			return next(err);
 		}
-		var navigation = require('./navigation/admin'),
-			data = require('../install/data/navigation.json');
+		var navigation = require('./navigation/admin');
+		var data = require('../install/data/navigation.json');
 
 		navigation.save(data, next);
 	});

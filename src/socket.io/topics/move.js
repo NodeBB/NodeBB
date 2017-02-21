@@ -23,9 +23,7 @@ module.exports = function (SocketTopics) {
 					if (!canMove) {
 						return next(new Error('[[error:no-privileges]]'));
 					}
-					next();
-				},
-				function (next) {
+
 					topics.getTopicFields(tid, ['cid', 'slug'], next);
 				},
 				function (_topicData, next) {

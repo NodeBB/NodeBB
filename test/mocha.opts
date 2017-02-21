@@ -1,2 +1,2 @@
 --reporter dot
---timeout 15000
+--timeout 25000
