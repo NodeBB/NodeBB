@@ -1078,7 +1078,8 @@ describe('User', function () {
 		it('should get user\'s invites', function (done) {
 			User.getInvites(inviterUid, function (err, data) {
 				assert.ifError(err);
-				assert.deepEqual(data, ['invite1@test.com', 'invite2@test.com']);
+				assert.notEqual(data.indexOf('invite1@test.com'), -1);
+				assert.notEqual(data.indexOf('invite2@test.com'), -1);
 				done();
 			});
 		});
@@ -1086,7 +1087,9 @@ describe('User', function () {
 		it('should get all invites', function (done) {
 			User.getAllInvites(function (err, data) {
 				assert.ifError(err);
-				assert.deepEqual(data, [ { uid: inviterUid, invitations: [ 'invite1@test.com', 'invite2@test.com' ] } ]);
+				assert.equal(data[0].uid, inviterUid);
+				assert.notEqual(data[0].invitations.indexOf('invite1@test.com'), -1);
+				assert.notEqual(data[0].invitations.indexOf('invite2@test.com'), -1);
 				done();
 			});
 		});
