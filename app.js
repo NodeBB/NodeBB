@@ -189,13 +189,17 @@ function upgrade() {
 	var meta = require('./src/meta');
 	var upgrade = require('./src/upgrade');
 	var build = require('./src/meta/build');
+	var tasks = [db.init, meta.configs.init, upgrade.run, build.buildAll];
 
-	async.series([
-		async.apply(db.init),
-		async.apply(meta.configs.init),
-		async.apply(upgrade.upgrade),
-		async.apply(build.buildAll)
-	], function (err) {
+	if (nconf.get('upgrade') !== true) {
+		// Likely an upgrade script name passed in
+		tasks[2] = async.apply(upgrade.runSingle, nconf.get('upgrade'));
+
+		// Skip build
+		tasks.pop();
+	}
+
+	async.series(tasks, function (err) {
 		if (err) {
 			winston.error(err.stack);
 			process.exit(1);
