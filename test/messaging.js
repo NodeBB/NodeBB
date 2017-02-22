@@ -121,6 +121,28 @@ describe('Messaging Library', function () {
 			});
 		});
 
+		it('should notify offline users of message', function (done) {
+			Messaging.notificationSendDelay = 100;
+
+			db.sortedSetAdd('users:online', Date.now() - 350000, herpUid, function (err) {
+				assert.ifError(err);
+				socketModules.chats.send({uid: fooUid}, {roomId: roomId, message: 'second chat message'}, function (err) {
+					assert.ifError(err);
+					setTimeout(function () {
+						User.notifications.get(herpUid, function (err, data) {
+							assert.ifError(err);
+							assert(data.unread[0]);
+							var notification = data.unread[0];
+							assert.equal(notification.bodyShort, '[[notifications:new_message_from, foo]]');
+							assert.equal(notification.nid, 'chat_' + fooUid + '_' + roomId);
+							assert.equal(notification.path, '/chats/' + roomId);
+							done();
+						});
+					}, 1500);
+				});
+			});
+		});
+
 		it('should get messages from room', function (done) {
 			socketModules.chats.getMessages({uid: fooUid}, {
 				uid: fooUid,
