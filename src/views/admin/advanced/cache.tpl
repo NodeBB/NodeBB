@@ -1,5 +1,5 @@
 
-<div class="post-cache">
+<div class="row post-cache">
 	<div class="col-lg-9">
 		<div class="panel panel-default">
 			<div class="panel-heading"><i class="fa fa-calendar-o"></i> [[admin/advanced/cache:post-cache]]</div>

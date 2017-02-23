@@ -1,4 +1,4 @@
-<div class="events">
+<div class="row events">
 	<div class="col-lg-9">
 		<div class="panel panel-default">
 			<div class="panel-heading"><i class="fa fa-calendar-o"></i> [[admin/advanced/events:events]]</div>

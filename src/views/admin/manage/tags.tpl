@@ -1,5 +1,4 @@
 <div class="tags row">
-
 	<div class="col-lg-9">
 		<div class="panel panel-default tag-management">
 			<div class="panel-body">
@@ -76,5 +75,4 @@
 			</div>
 		</div>
 	</div>
-
 </div>

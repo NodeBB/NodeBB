@@ -1,4 +1,4 @@
-<div id="skins" class="row skins">
+<div id="skins" class="skins">
 	<div class="directory row" id="bootstrap_themes">
 		<i class="fa fa-refresh fa-spin"></i> [[admin/appearance/skins:loading]]
 	</div>

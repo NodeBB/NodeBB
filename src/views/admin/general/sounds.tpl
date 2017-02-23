@@ -1,4 +1,4 @@
-<div class="sounds settings" class="row">
+<div class="sounds settings row">
 	<div class="col-xs-12">
 		<form role="form">
 			<div class="row">
@@ -74,13 +74,13 @@
 
 					<div class="input-group">
 						<span class="input-group-btn">
-							<input 
+							<input
 								data-action="upload"
 								data-title="Upload Sound"
 								data-route="{config.relative_path}/api/admin/upload/sound"
 								data-accept="audio/*"
-								type="button" 
-								class="btn btn-primary" 
+								type="button"
+								class="btn btn-primary"
 								value="[[admin/general/sounds:upload-new-sound]]"
 							></input>
 						</span>
