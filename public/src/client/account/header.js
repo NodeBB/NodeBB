@@ -84,7 +84,9 @@ define('forum/account/header', [
 				pictureCropper.show({
 					title: '[[user:upload_cover_picture]]',
 					socketMethod: 'user.updateCover',
-					aspectRatio: '16 / 9',
+					aspectRatio: NaN,
+					allowSkippingCrop: true,
+					restrictImageDimension: false,
 					paramName: 'uid',
 					paramValue: ajaxify.data.theirid,
 					accept: '.png,.jpg,.bmp'
@@ -132,7 +134,11 @@ define('forum/account/header', [
 							}, {});
 							var until = parseInt(formData.length, 10) ? (Date.now() + formData.length * 1000 * 60 * 60 * (parseInt(formData.unit, 10) ? 24 : 1)) : 0;
 
-							socket.emit('user.banUsers', { uids: [ajaxify.data.theirid], until: until, reason: formData.reason || '' }, function (err) {
+							socket.emit('user.banUsers', {
+								uids: [ajaxify.data.theirid],
+								until: until,
+								reason: formData.reason || ''
+							}, function (err) {
 								if (err) {
 									return app.alertError(err.message);
 								}

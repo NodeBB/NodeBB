@@ -58,7 +58,7 @@
     "nodebb-plugin-emoji-one": "1.1.5",
     "nodebb-plugin-markdown": "7.1.0",
     "nodebb-plugin-mentions": "2.0.1",
-    "nodebb-plugin-soundpack-default": "0.1.6",
+    "nodebb-plugin-soundpack-default": "1.0.0",
     "nodebb-plugin-spam-be-gone": "0.4.10",
     "nodebb-rewards-essentials": "0.0.9",
     "nodebb-theme-lavender": "3.0.15",

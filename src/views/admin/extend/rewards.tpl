@@ -1,4 +1,4 @@
-<div id="rewards">
+<div id="rewards" class="row">
 	<div class="col-lg-9">
 		<div class="panel panel-default">
 			<div class="panel-heading">[[admin/extend/rewards:rewards]]</div>

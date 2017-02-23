@@ -103,9 +103,9 @@ function initializeNodeBB(callback) {
 		},
 		function (next) {
 			async.series([
-				async.apply(meta.sounds.init),
-				async.apply(languages.init),
-				async.apply(meta.blacklist.load)
+				meta.sounds.addUploads,
+				languages.init,
+				meta.blacklist.load,
 			], next);
 		}
 	], callback);

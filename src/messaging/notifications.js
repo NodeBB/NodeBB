@@ -14,79 +14,75 @@ module.exports = function (Messaging) {
 
 	Messaging.notifyQueue = {};	// Only used to notify a user of a new chat message, see Messaging.notifyUser
 
+	Messaging.notificationSendDelay = 1000 * 60;
+
 	Messaging.notifyUsersInRoom = function (fromUid, roomId, messageObj) {
-		async.parallel({
-			uids: function (next) {
+		async.waterfall([
+			function (next) {
 				Messaging.getUidsInRoom(roomId, 0, -1, next);
 			},
-			roomData: function (next) {
-				Messaging.getRoomData(roomId, next);
-			}
-		}, function (err, results) {
-			if (err) {
-				return;
-			}
-
-			var data = {
-				roomId: roomId,
-				fromUid: fromUid,
-				message: messageObj,
-				roomName: results.roomData.roomName
-			};
-			results.uids.forEach(function (uid) {
-				data.self = parseInt(uid, 10) === parseInt(fromUid) ? 1 : 0;
-				Messaging.pushUnreadCount(uid);
-				sockets.in('uid_' + uid).emit('event:chats.receive', data);
-			});
-
-			// Delayed notifications
-			var queueObj = Messaging.notifyQueue[fromUid + ':' + roomId];
-			if (queueObj) {
-				queueObj.message.content += '\n' + messageObj.content;
-				clearTimeout(queueObj.timeout);
-			} else {
-				queueObj = Messaging.notifyQueue[fromUid + ':' + roomId] = {
+			function (uids, next) {
+				var data = {
+					roomId: roomId,
+					fromUid: fromUid,
 					message: messageObj
 				};
-			}
 
-			queueObj.timeout = setTimeout(function () {
-				sendNotifications(fromUid, results.uids, roomId, queueObj.message, function (err) {
-					if (!err) {
-						delete Messaging.notifyQueue[fromUid + ':' + roomId];
-					}
+				uids.forEach(function (uid) {
+					data.self = parseInt(uid, 10) === parseInt(fromUid) ? 1 : 0;
+					Messaging.pushUnreadCount(uid);
+					sockets.in('uid_' + uid).emit('event:chats.receive', data);
 				});
-			}, 1000 * 60); // wait 60s before sending
-		});
+
+				// Delayed notifications
+				var queueObj = Messaging.notifyQueue[fromUid + ':' + roomId];
+				if (queueObj) {
+					queueObj.message.content += '\n' + messageObj.content;
+					clearTimeout(queueObj.timeout);
+				} else {
+					queueObj = Messaging.notifyQueue[fromUid + ':' + roomId] = {
+						message: messageObj
+					};
+				}
+
+				queueObj.timeout = setTimeout(function () {
+					sendNotifications(fromUid, uids, roomId, queueObj.message);
+				}, Messaging.notificationSendDelay);
+				next();
+			}
+		]);
 	};
 
-	function sendNotifications(fromuid, uids, roomId, messageObj, callback) {
-		user.isOnline(uids, function (err, isOnline) {
-			if (err) {
-				return callback(err);
-			}
+	function sendNotifications(fromuid, uids, roomId, messageObj) {
+		async.waterfall([
+			function (next) {
+				user.isOnline(uids, next);
+			},
+			function (isOnline, next) {
+				uids = uids.filter(function (uid, index) {
+					return !isOnline[index] && parseInt(fromuid, 10) !== parseInt(uid, 10);
+				});
 
-			uids = uids.filter(function (uid, index) {
-				return !isOnline[index] && parseInt(fromuid, 10) !== parseInt(uid, 10);
-			});
-
-			if (!uids.length) {
-				return callback();
-			}
-
-			notifications.create({
-				bodyShort: '[[notifications:new_message_from, ' + messageObj.fromUser.username + ']]',
-				bodyLong: messageObj.content,
-				nid: 'chat_' + fromuid + '_' + roomId,
-				from: fromuid,
-				path: '/chats/' + messageObj.roomId
-			}, function (err, notification) {
-				if (!err && notification) {
-					notifications.push(notification, uids, callback);
+				if (!uids.length) {
+					return;
 				}
-			});
 
-			sendNotificationEmails(uids, messageObj);
+				notifications.create({
+					bodyShort: '[[notifications:new_message_from, ' + messageObj.fromUser.username + ']]',
+					bodyLong: messageObj.content,
+					nid: 'chat_' + fromuid + '_' + roomId,
+					from: fromuid,
+					path: '/chats/' + messageObj.roomId
+				}, next);
+			}
+		], function (err, notification) {
+			if (!err) {
+				delete Messaging.notifyQueue[fromuid + ':' + roomId];
+				if (notification) {
+					notifications.push(notification, uids);
+				}
+				sendNotificationEmails(uids, messageObj);
+			}
 		});
 	}
 
@@ -95,38 +91,38 @@ module.exports = function (Messaging) {
 			return;
 		}
 
-		async.parallel({
-			userData: function (next) {
-				user.getUsersFields(uids, ['uid', 'username', 'userslug'], next);
+		async.waterfall([
+			function (next) {
+				async.parallel({
+					userData: function (next) {
+						user.getUsersFields(uids, ['uid', 'username', 'userslug'], next);
+					},
+					userSettings: function (next) {
+						user.getMultipleUserSettings(uids, next);
+					}
+				}, next);
 			},
-			userSettings: function (next) {
-				user.getMultipleUserSettings(uids, next);
+			function (results, next) {
+				results.userData = results.userData.filter(function (userData, index) {
+					return userData && results.userSettings[index] && results.userSettings[index].sendChatNotifications;
+				});
+				async.each(results.userData, function (userData, next) {
+					emailer.send('notif_chat', userData.uid, {
+						subject: '[[email:notif.chat.subject, ' + messageObj.fromUser.username + ']]',
+						summary: '[[notifications:new_message_from, ' + messageObj.fromUser.username + ']]',
+						message: messageObj,
+						site_title: meta.config.title || 'NodeBB',
+						url: nconf.get('url'),
+						roomId: messageObj.roomId,
+						username: userData.username,
+						userslug: userData.userslug
+					}, next);
+				}, next);
 			}
-		}, function (err, results) {
+		], function (err) {
 			if (err) {
 				return winston.error(err);
 			}
-
-			results.userData = results.userData.filter(function (userData, index) {
-				return userData && results.userSettings[index] && results.userSettings[index].sendChatNotifications;
-			});
-
-			async.each(results.userData, function (userData, next) {
-				emailer.send('notif_chat', userData.uid, {
-					subject: '[[email:notif.chat.subject, ' + messageObj.fromUser.username + ']]',
-					summary: '[[notifications:new_message_from, ' + messageObj.fromUser.username + ']]',
-					message: messageObj,
-					site_title: meta.config.title || 'NodeBB',
-					url: nconf.get('url'),
-					roomId: messageObj.roomId,
-					username: userData.username,
-					userslug: userData.userslug
-				}, next);
-			}, function (err) {
-				if (err) {
-					winston.error(err);
-				}
-			});
 		});
 	}
 };

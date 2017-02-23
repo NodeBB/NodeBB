@@ -130,6 +130,13 @@ describe('Topic\'s', function () {
 			});
 		});
 
+		it('should error if pid is not a number', function (done) {
+			socketPosts.getReplies({uid: 0}, 'abc', function (err) {
+				assert.equal(err.message, '[[error:invalid-data]]');
+				done();
+			});
+		});
+
 		it('should fail to create new reply with invalid user id', function (done) {
 			topics.reply({uid: null, content: 'test post', tid: newTopic.tid}, function (err) {
 				assert.equal(err.message, '[[error:no-privileges]]');

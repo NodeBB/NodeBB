@@ -540,6 +540,144 @@ describe('Post\'s', function () {
 		});
 	});
 
+	describe('socket methods', function () {
+
+		var pid;
+		before(function (done) {
+			topics.reply({
+				uid: voterUid,
+				tid: topicData.tid,
+				timestamp: Date.now(),
+				content: 'raw content'
+			}, function (err, postData) {
+				assert.ifError(err);
+				pid = postData.pid;
+				privileges.categories.rescind(['read'], cid, 'guests', done);
+			});
+		});
+
+		var socketPosts = require('../src/socket.io/posts');
+		it('should error with invalid data', function (done) {
+			socketPosts.reply({uid: 0}, null, function (err) {
+				assert.equal(err.message, '[[error:invalid-data]]');
+				done();
+			});
+		});
+
+		it('should error with invalid tid', function (done) {
+			socketPosts.reply({uid: 0}, {tid: 0, content: 'derp'}, function (err) {
+				assert.equal(err.message, '[[error:invalid-data]]');
+				done();
+			});
+		});
+
+		it('should fail to get raw post because of privilege', function (done) {
+			socketPosts.getRawPost({uid: 0}, pid, function (err) {
+				assert.equal(err.message, '[[error:no-privileges]]');
+				done();
+			});
+		});
+
+		it('should fail to get raw post because post is deleted', function (done) {
+			posts.setPostField(pid, 'deleted', 1, function (err) {
+				assert.ifError(err);
+				socketPosts.getRawPost({uid: voterUid}, pid, function (err) {
+					assert.equal(err.message, '[[error:no-post]]');
+					done();
+				});
+			});
+		});
+
+		it('should get raw post content', function (done) {
+			posts.setPostField(pid, 'deleted', 0, function (err) {
+				assert.ifError(err);
+				socketPosts.getRawPost({uid: voterUid}, pid, function (err, postContent) {
+					assert.ifError(err);
+					assert.equal(postContent, 'raw content');
+					done();
+				});
+			});
+		});
+
+		it('should get post', function (done) {
+			socketPosts.getPost({uid: voterUid}, pid, function (err, postData) {
+				assert.ifError(err);
+				assert(postData);
+				done();
+			});
+		});
+
+		it('shold error with invalid data', function (done) {
+			socketPosts.loadMoreBookmarks({uid: voterUid}, {uid: voterUid, after: null}, function (err, postData) {
+				assert.equal(err.message, '[[error:invalid-data]]');
+				done();
+			});
+		});
+
+		it('should load more bookmarks', function (done) {
+			socketPosts.loadMoreBookmarks({uid: voterUid}, {uid: voterUid, after: 0}, function (err, data) {
+				assert.ifError(err);
+				assert(data);
+				done();
+			});
+		});
+
+		it('should load more user posts', function (done) {
+			socketPosts.loadMoreUserPosts({uid: voterUid}, {uid: voterUid, after: 0}, function (err, data) {
+				assert.ifError(err);
+				assert(data);
+				done();
+			});
+		});
+
+		it('should load more best posts', function (done) {
+			socketPosts.loadMoreBestPosts({uid: voterUid}, {uid: voterUid, after: 0}, function (err, data) {
+				assert.ifError(err);
+				assert(data);
+				done();
+			});
+		});
+
+		it('should load more up voted posts', function (done) {
+			socketPosts.loadMoreUpVotedPosts({uid: voterUid}, {uid: voterUid, after: 0}, function (err, data) {
+				assert.ifError(err);
+				assert(data);
+				done();
+			});
+		});
+
+		it('should load more down voted posts', function (done) {
+			socketPosts.loadMoreDownVotedPosts({uid: voterUid}, {uid: voterUid, after: 0}, function (err, data) {
+				assert.ifError(err);
+				assert(data);
+				done();
+			});
+		});
+
+		it('should get post category', function (done) {
+			socketPosts.getCategory({uid: voterUid}, pid, function (err, postCid) {
+				assert.ifError(err);
+				assert.equal(cid, postCid);
+				done();
+			});
+		});
+
+		it('should error with invalid data', function (done) {
+			socketPosts.getPidIndex({uid: voterUid}, null, function (err) {
+				assert.equal(err.message, '[[error:invalid-data]]');
+				done();
+			});
+		});
+
+		it('should get pid index', function (done) {
+			socketPosts.getPidIndex({uid: voterUid}, {pid: pid, tid: topicData.tid, topicPostSort: 'oldest-to-newest'}, function (err, index) {
+				assert.ifError(err);
+				assert.equal(index, 2);
+				done();
+			});
+		});
+	});
+
 	after(function (done) {
 		db.emptydb(done);
 	});

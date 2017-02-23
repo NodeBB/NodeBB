@@ -1,4 +1,4 @@
-<div class="database">
+<div class="row database">
 	<div class="col-sm-9">
 		<!-- IF mongo -->
 		<div class="panel panel-default">

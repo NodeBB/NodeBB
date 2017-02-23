@@ -33,6 +33,28 @@ Sockets.init = function (server) {
 
 	io.on('connection', onConnection);
 
+	/*
+	 * Restrict socket.io listener to cookie domain. If none is set, infer based on url.
+	 * Production only so you don't get accidentally locked out.
+	 * Can be overridden via config (socket.io:origins)
+	 */
+	if (process.env.NODE_ENV !== 'development') {
+		var domain = nconf.get('cookieDomain');
+		var parsedUrl = url.parse(nconf.get('url'));
+		var override = nconf.get('socket.io:origins');
+		if (!domain) {
+			domain = parsedUrl.hostname;	// cookies don't provide isolation by port: http://stackoverflow.com/a/16328399/122353
+		}
+
+		if (!override) {
+			io.set('origins', parsedUrl.protocol + '//' + domain + ':*');
+			winston.info('[socket.io] Restricting access to origin: ' + parsedUrl.protocol + '//' + domain + ':*');
+		} else {
+			io.set('origins', override);
+			winston.info('[socket.io] Restricting access to origin: ' + override);
+		}
+	}
+
 	io.listen(server, {
 		transports: nconf.get('socket.io:transports')
 	});
