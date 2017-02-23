@@ -182,12 +182,27 @@ describe('Topic\'s', function () {
 			});
 		});
 
-		describe('.getTopicData', function () {
-			it('should not receive errors', function (done) {
-				topics.getTopicData(newTopic.tid, done);
+		
+		it('should not receive errors', function (done) {
+			topics.getTopicData(newTopic.tid, done);
+		});
+
+		it('should get topic title by pid', function (done) {
+			topics.getTitleByPid(newPost.pid, function (err, title) {
+				assert.ifError(err);
+				assert.equal(title, topic.title);
+				done();
 			});
 		});
 
+		it('should get topic data by pid', function (done) {
+			topics.getTopicDataByPid(newPost.pid, function (err, data) {
+				assert.ifError(err);
+				assert.equal(data.tid, newTopic.tid);
+				done();
+			});
+		});
+				
 		describe('.getTopicWithPosts', function () {
 			it('should get a topic with posts and other data', function (done) {
 				topics.getTopicData(newTopic.tid, function (err, topicData) {
