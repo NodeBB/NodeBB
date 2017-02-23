@@ -1,4 +1,4 @@
-<div class="logs">
+<div class="row logs">
 	<div class="col-lg-9">
 		<div class="panel panel-default">
 			<div class="panel-heading"><i class="fa fa-file-text-o"></i> [[admin/advanced/logs:logs]]</div>

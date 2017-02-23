@@ -3,15 +3,18 @@
 var ip = require('ip');
 var winston = require('winston');
 var async = require('async');
+
 var db = require('../database');
+var pubsub = require('../pubsub');
 
 var Blacklist = {
-		_rules: []
-	};
+	_rules: []
+};
 
 Blacklist.load = function (callback) {
+	callback = callback || function () {};
 	async.waterfall([
-		async.apply(db.get, 'ip-blacklist-rules'),
+		async.apply(Blacklist.get),
 		async.apply(Blacklist.validate)
 	], function (err, rules) {
 		if (err) {
@@ -33,13 +36,18 @@ Blacklist.load = function (callback) {
 	});
 };
 
+pubsub.on('blacklist:reload', Blacklist.load);
+
 Blacklist.save = function (rules, callback) {
-	db.set('ip-blacklist-rules', rules, function (err) {
-		if (err) {
-			return callback(err);
+	async.waterfall([
+		function (next) {
+			db.set('ip-blacklist-rules', rules, next);
+		},
+		function (next) {
+			Blacklist.load(next);
+			pubsub.publish('blacklist:reload');
 		}
-		Blacklist.load(callback);
-	});
+	], callback);
 };
 
 Blacklist.get = function (callback) {
@@ -48,14 +56,14 @@ Blacklist.get = function (callback) {
 
 Blacklist.test = function (clientIp, callback) {
 	if (
-		Blacklist._rules.ipv4.indexOf(clientIp) === -1	// not explicitly specified in ipv4 list
-		&& Blacklist._rules.ipv6.indexOf(clientIp) === -1	// not explicitly specified in ipv6 list
-		&& !Blacklist._rules.cidr.some(function (subnet) {
+		Blacklist._rules.ipv4.indexOf(clientIp) === -1	&&// not explicitly specified in ipv4 list
+		Blacklist._rules.ipv6.indexOf(clientIp) === -1	&&// not explicitly specified in ipv6 list
+		!Blacklist._rules.cidr.some(function (subnet) {
 			return ip.cidrSubnet(subnet).contains(clientIp);
 		})	// not in a blacklisted cidr range
 	) {
 		if (typeof callback === 'function') {
-			callback();
+			setImmediate(callback);
 		} else {
 			return false;
 		}
@@ -64,7 +72,7 @@ Blacklist.test = function (clientIp, callback) {
 		err.code = 'blacklisted-ip';
 
 		if (typeof callback === 'function') {
-			callback(err);
+			setImmediate(callback, err);
 		} else {
 			return true;
 		}
@@ -78,9 +86,9 @@ Blacklist.validate = function (rules, callback) {
 	var cidr = [];
 	var invalid = [];
 
-	var isCidrSubnet = /^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\/([0-9]|[1-2][0-9]|3[0-2]))$/,
-		inlineCommentMatch = /#.*$/,
-		whitelist = ['127.0.0.1', '::1', '::ffff:0:127.0.0.1'];
+	var isCidrSubnet = /^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(\/([0-9]|[1-2][0-9]|3[0-2]))$/;
+	var inlineCommentMatch = /#.*$/;
+	var whitelist = ['127.0.0.1', '::1', '::ffff:0:127.0.0.1'];
 
 	// Filter out blank lines and lines starting with the hash character (comments)
 	// Also trim inputs and remove inline comments

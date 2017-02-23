@@ -1,4 +1,4 @@
-<div class="logger">
+<div class="row logger">
 	<div class="col-lg-9">
 		<div class="panel panel-default">
 			<div class="panel-heading">[[admin/development/logger:logger-settings]]</div>

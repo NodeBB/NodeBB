@@ -2,6 +2,7 @@
 
 var assert = require('assert');
 var async = require('async');
+var path = require('path');
 var nconf = require('nconf');
 var request = require('request');
 
@@ -510,27 +511,32 @@ describe('User', function () {
 		});
 
 		it('should upload profile picture', function (done) {
-			var path = require('path');
-			var picture = {
-				path: path.join(nconf.get('base_dir'), 'public', 'logo.png'),
-				size: 7189,
-				name: 'logo.png'
-			};
-			User.uploadPicture(uid, picture, function (err, uploadedPicture) {
+			helpers.copyFile(
+				path.join(nconf.get('base_dir'), 'test/files/test.png'),
+				path.join(nconf.get('base_dir'), 'test/files/test_copy.png'), function (err) {
 				assert.ifError(err);
-				assert.equal(uploadedPicture.url, '/assets/uploads/profile/' + uid + '-profileimg.png');
-				assert.equal(uploadedPicture.path, path.join(nconf.get('base_dir'), 'public', 'uploads', 'profile', uid + '-profileimg.png'));
-				done();
+				var picture = {
+					path: path.join(nconf.get('base_dir'), 'test/files/test_copy.png'),
+					size: 7189,
+					name: 'test_copy.png',
+					type: 'image/png'
+				};
+				User.uploadPicture(uid, picture, function (err, uploadedPicture) {
+					assert.ifError(err);
+					assert.equal(uploadedPicture.url, '/assets/uploads/profile/' + uid + '-profileavatar.png');
+					assert.equal(uploadedPicture.path, path.join(nconf.get('base_dir'), 'public', 'uploads', 'profile', uid + '-profileavatar.png'));
+					done();
+				});
 			});
 		});
 
 		it('should return error if profile image uploads disabled', function (done) {
 			meta.config.allowProfileImageUploads = 0;
-			var path = require('path');
 			var picture = {
-				path: path.join(nconf.get('base_dir'), 'public', 'logo.png'),
+				path: path.join(nconf.get('base_dir'), 'test/files/test.png'),
 				size: 7189,
-				name: 'logo.png'
+				name: 'test.png',
+				type: 'image/png'
 			};
 			User.uploadPicture(uid, picture, function (err) {
 				assert.equal(err.message, '[[error:profile-image-uploads-disabled]]');
@@ -540,11 +546,11 @@ describe('User', function () {
 
 		it('should return error if profile image is too big', function (done) {
 			meta.config.allowProfileImageUploads = 1;
-			var path = require('path');
 			var picture = {
-				path: path.join(nconf.get('base_dir'), 'public', 'logo.png'),
+				path: path.join(nconf.get('base_dir'), 'test/files/test.png'),
 				size: 265000,
-				name: 'logo.png'
+				name: 'test.png',
+				type: 'image/png'
 			};
 			User.uploadPicture(uid, picture, function (err) {
 				assert.equal(err.message, '[[error:file-too-big, 256]]');
@@ -552,12 +558,11 @@ describe('User', function () {
 			});
 		});
 
-		it('should return error if profile image file has no extension', function (done) {
-			var path = require('path');
+		it('should return error if profile image has no mime type', function (done) {
 			var picture = {
-				path: path.join(nconf.get('base_dir'), 'public', 'logo.png'),
+				path: path.join(nconf.get('base_dir'), 'test/files/test.png'),
 				size: 7189,
-				name: 'logo'
+				name: 'test'
 			};
 			User.uploadPicture(uid, picture, function (err) {
 				assert.equal(err.message, '[[error:invalid-image-extension]]');
@@ -566,7 +571,7 @@ describe('User', function () {
 		});
 
 		it('should return error if no plugins listening for filter:uploadImage when uploading from url', function (done) {
-			var url = nconf.get('url') + '/logo.png';
+			var url = nconf.get('url') + '/assets/logo.png';
 			User.uploadFromUrl(uid, url, function (err) {
 				assert.equal(err.message, '[[error:no-plugin]]');
 				done();
@@ -577,7 +582,6 @@ describe('User', function () {
 			var url = nconf.get('url') + '/favicon.ico';
 
 			function filterMethod(data, callback) {
-				data.foo += 5;
 				callback(null, data);
 			}
 
@@ -590,11 +594,10 @@ describe('User', function () {
 		});
 
 		it('should return error if the file is too big when uploading from url', function (done) {
-			var url = nconf.get('url') + '/logo.png';
+			var url = nconf.get('url') + '/assets/logo.png';
 			meta.config.maximumProfileImageSize = 1;
 
 			function filterMethod(data, callback) {
-				data.foo += 5;
 				callback(null, data);
 			}
 
@@ -606,20 +609,29 @@ describe('User', function () {
 			});
 		});
 
+		it('should error with invalid data', function (done) {
+			var socketUser = require('../src/socket.io/user');
+
+			socketUser.uploadProfileImageFromUrl({uid: uid}, {uid: uid, url: ''}, function (err) {
+				assert.equal(err.message, '[[error:invalid-data]]');
+				done();
+			});
+		});
+
 		it('should upload picture when uploading from url', function (done) {
-			var url = nconf.get('url') + '/logo.png';
+			var socketUser = require('../src/socket.io/user');
+			var url = nconf.get('url') + '/assets/logo.png';
 			meta.config.maximumProfileImageSize = '';
 
 			function filterMethod(data, callback) {
-				data.foo += 5;
 				callback(null, {url: url});
 			}
 
 			plugins.registerHook('test-plugin', {hook: 'filter:uploadImage', method: filterMethod});
 
-			User.uploadFromUrl(uid, url, function (err, uploadedPicture) {
+			socketUser.uploadProfileImageFromUrl({uid: uid}, {uid: uid, url: url}, function (err, uploadedPicture) {
 				assert.ifError(err);
-				assert.equal(uploadedPicture.url, url);
+				assert.equal(uploadedPicture, url);
 				done();
 			});
 		});
@@ -989,6 +1001,152 @@ describe('User', function () {
 							assert.equal(users.length, 0);
 							done();
 						});
+					});
+				});
+			});
+		});
+	});
+
+	describe('invites', function () {
+		var socketUser = require('../src/socket.io/user');
+		var inviterUid;
+
+		before(function (done) {
+			User.create({
+				username: 'inviter',
+				email: 'inviter@nodebb.org'
+			}, function (err, uid) {
+				assert.ifError(err);
+				inviterUid = uid;
+				done();
+			});
+		});
+
+		it('should error with invalid data', function (done) {
+			socketUser.invite({uid: inviterUid}, null, function (err) {
+				assert.equal(err.message, '[[error:invalid-data]]');
+				done();
+			});
+		});
+
+		it('should eror if forum is not invite only', function (done) {
+			socketUser.invite({uid: inviterUid}, 'invite1@test.com', function (err) {
+				assert.equal(err.message, '[[error:forum-not-invite-only]]');
+				done();
+			});
+		});
+
+		it('should error if user is not admin and type is admin-invite-only', function (done) {
+			meta.config.registrationType = 'admin-invite-only';
+			socketUser.invite({uid: inviterUid}, 'invite1@test.com', function (err) {
+				assert.equal(err.message, '[[error:no-privileges]]');
+				done();
+			});
+		});
+
+		it('should send invitation email', function (done) {
+			meta.config.registrationType = 'invite-only';
+			socketUser.invite({uid: inviterUid}, 'invite1@test.com', function (err) {
+				assert.ifError(err);
+				done();
+			});
+		});
+
+		it('should error if ouf of invitations', function (done) {
+			meta.config.maximumInvites = 1;
+			socketUser.invite({uid: inviterUid}, 'invite2@test.com', function (err) {
+				assert.equal(err.message, '[[error:invite-maximum-met, ' + 1 + ', ' + 1 + ']]');
+				meta.config.maximumInvites = 5;
+				done();
+			});
+		});
+
+		it('should error if email exists', function (done) {
+			socketUser.invite({uid: inviterUid}, 'inviter@nodebb.org', function (err) {
+				assert.equal(err.message, '[[error:email-taken]]');
+				done();
+			});
+		});
+
+		it('should send invitation email', function (done) {
+			socketUser.invite({uid: inviterUid}, 'invite2@test.com', function (err) {
+				assert.ifError(err);
+				done();
+			});
+		});
+
+		it('should get user\'s invites', function (done) {
+			User.getInvites(inviterUid, function (err, data) {
+				assert.ifError(err);
+				assert.notEqual(data.indexOf('invite1@test.com'), -1);
+				assert.notEqual(data.indexOf('invite2@test.com'), -1);
+				done();
+			});
+		});
+
+		it('should get all invites', function (done) {
+			User.getAllInvites(function (err, data) {
+				assert.ifError(err);
+				assert.equal(data[0].uid, inviterUid);
+				assert.notEqual(data[0].invitations.indexOf('invite1@test.com'), -1);
+				assert.notEqual(data[0].invitations.indexOf('invite2@test.com'), -1);
+				done();
+			});
+		});
+
+		it('should fail to verify invitation with invalid data', function (done) {
+			User.verifyInvitation({token: '', email: ''}, function (err) {
+				assert.equal(err.message, '[[error:invalid-data]]');
+				done();
+			});
+		});
+
+		it('should fail to verify invitation with invalid email', function (done) {
+			User.verifyInvitation({token: 'test', email: 'doesnotexist@test.com'}, function (err) {
+				assert.equal(err.message, '[[error:invalid-token]]');
+				done();
+			});
+		});
+
+		it('should verify installation with no errors', function (done) {
+			db.get('invitation:email:' + 'invite1@test.com', function (err, token) {
+				assert.ifError(err);
+				User.verifyInvitation({token: token, email: 'invite1@test.com'}, function (err) {
+					assert.ifError(err);
+					done();
+				});
+			});
+		});
+
+		it('should error with invalid username', function (done) {
+			User.deleteInvitation('doesnotexist', 'test@test.com', function (err) {
+				assert.equal(err.message, '[[error:invalid-username]]');
+				done();
+			});
+		});
+
+		it('should delete invitation', function (done) {
+			var socketAdmin = require('../src/socket.io/admin');
+			socketAdmin.user.deleteInvitation({uid: inviterUid}, {invitedBy: 'inviter', email: 'invite1@test.com'}, function (err) {
+				assert.ifError(err);
+				db.isSetMember('invitation:uid:' + inviterUid, 'invite1@test.com', function (err, isMember) {
+					assert.ifError(err);
+					assert.equal(isMember, false);
+					done();
+				});
+			});
+		});
+
+		it('should delete invitation key', function (done) {
+			User.deleteInvitationKey('invite2@test.com', function (err) {
+				assert.ifError(err);
+				db.isSetMember('invitation:uid:' + inviterUid, 'invite2@test.com', function (err, isMember) {
+					assert.ifError(err);
+					assert.equal(isMember, false);
+					db.isSetMember('invitation:uids', inviterUid, function (err, isMember) {
+						assert.ifError(err);
+						assert.equal(isMember, false);
+						done();
 					});
 				});
 			});

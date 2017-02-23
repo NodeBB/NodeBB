@@ -1,4 +1,4 @@
-<div class="flags">
+<div class="row ip-blacklist">
 	<div class="col-lg-12">
 		<p class="lead">
 			[[admin/manage/ip-blacklist:lead]]

@@ -7,10 +7,13 @@ var async = require('async');
 var fs = require('fs');
 var mkdirp = require('mkdirp');
 var rimraf = require('rimraf');
+var uglifyjs = require('uglify-js');
 
 var file = require('../file');
 var plugins = require('../plugins');
 var utils = require('../../public/src/utils');
+
+var minifierPath = path.join(__dirname, 'minifier.js');
 
 module.exports = function (Meta) {
 
@@ -79,7 +82,7 @@ module.exports = function (Meta) {
 				'public/src/modules/string.js'
 			],
 
-			// modules listed below are routed through express (/src/modules) so they can be defined anonymously
+			// modules listed below are built (/src/modules) so they can be defined anonymously
 			modules: {
 				"Chart.js": './node_modules/chart.js/dist/Chart.min.js',
 				"mousetrap.js": './node_modules/mousetrap/mousetrap.min.js',
@@ -89,25 +92,120 @@ module.exports = function (Meta) {
 			}
 		}
 	};
-	
-	Meta.js.linkModules = function (callback) {
-		rimraf(path.join(__dirname, '../../build/public/src/modules'), function (err) {
-			if (err) {
-				return callback(err);
-			}
-			async.eachLimit(Object.keys(Meta.js.scripts.modules), 1000, function (relPath, next) {
-				var filePath = path.join(__dirname, '../../', Meta.js.scripts.modules[relPath]);
-				var destPath = path.join(__dirname, '../../build/public/src/modules', relPath);
 
-				mkdirp(path.dirname(destPath), function (err) {
-					if (err) {
-						return next(err);
-					}
+	function minifyModules(modules, callback) {
+		async.eachLimit(modules, 500, function (mod, next) {
+			var filePath = mod.filePath;
+			var destPath = mod.destPath;
+			var minified;
 
-					file.link(filePath, destPath, next);
-				});
-			}, callback);
+			async.parallel([
+				function (cb) {
+					mkdirp(path.dirname(destPath), cb);
+				},
+				function (cb) {
+					fs.readFile(filePath, function (err, buffer) {
+						if (err) {
+							return cb(err);
+						}
+						try {
+							minified = uglifyjs.minify(buffer.toString(), {
+								fromString: true,
+								compress: false,
+							});
+						} catch (e) {
+							return cb(e);
+						}
+
+						cb();
+					});
+				}
+			], function (err) {
+				if (err) {
+					return next(err);
+				}
+
+				fs.writeFile(destPath, minified.code, next);
+			});
+		}, callback);
+	};
+
+	function linkModules(callback) {
+		var modules = Meta.js.scripts.modules;
+
+		async.eachLimit(Object.keys(modules), 1000, function (relPath, next) {
+			var filePath = path.join(__dirname, '../../', modules[relPath]);
+			var destPath = path.join(__dirname, '../../build/public/src/modules', relPath);
+
+			mkdirp(path.dirname(destPath), function (err) {
+				if (err) {
+					return next(err);
+				}
+
+				file.link(filePath, destPath, next);
+			});
+		}, callback);
+	};
+
+	var moduleDirs = ['modules', 'admin', 'client'];
+
+	function getModuleList(callback) {
+		var modules = Object.keys(Meta.js.scripts.modules).map(function (relPath) {
+			return {
+				filePath: path.join(__dirname, '../../', Meta.js.scripts.modules[relPath]),
+				destPath: path.join(__dirname, '../../build/public/src/modules', relPath),
+			};
 		});
+
+		var dirs = moduleDirs.map(function (dir) {
+			return path.join(__dirname, '../../public/src', dir);
+		});
+
+		async.each(dirs, function (dir, next) {
+			utils.walk(dir, function (err, files) {
+				if (err) {
+					return next(err);
+				}
+
+				modules = modules.concat(files.map(function (filePath) {
+					return {
+						filePath: filePath,
+						destPath: path.join(__dirname, '../../build/public/src', path.relative(path.dirname(dir), filePath)),
+					};
+				}));
+
+				next();
+			});
+		}, function (err) {
+			callback(err, modules);
+		});
+	}
+
+	function clearModules(callback) {
+		var builtPaths = moduleDirs.map(function (p) {
+			return '../../build/public/src/' + p;
+		});
+		async.each(builtPaths, function (builtPath, next) {
+			rimraf(path.join(__dirname, builtPath), next);
+		}, function (err) {
+			callback(err);
+		});
+	}
+
+	Meta.js.buildModules = function (callback) {
+		async.waterfall([
+			clearModules,
+			function (next) {
+				if (global.env === 'development') {
+					return linkModules(callback);
+				}
+
+				getModuleList(next);
+			},
+			function (modules, next) {
+				minifyModules(modules, next);
+			}
+		], callback);
 	};
 
 	Meta.js.linkStatics = function (callback) {
@@ -134,7 +232,7 @@ module.exports = function (Meta) {
 		winston.verbose('[meta/js] Minifying ' + target);
 
 		var forkProcessParams = setupDebugging();
-		var minifier = Meta.js.minifierProc = fork('minifier.js', [], forkProcessParams);
+		var minifier = Meta.js.minifierProc = fork(minifierPath, [], forkProcessParams);
 
 		Meta.js.target[target] = {};
 

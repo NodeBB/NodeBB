@@ -707,8 +707,8 @@ describe('Groups', function () {
 	describe('groups cover', function () {
 		var socketGroups = require('../src/socket.io/groups');
 		var regularUid;
-		var logoPath = path.join(__dirname, '../public/logo.png');
-		var imagePath = path.join(__dirname, '../public/groupcover.png');
+		var logoPath = path.join(__dirname, '../test/files/test.png');
+		var imagePath = path.join(__dirname, '../test/files/groupcover.png');
 		before(function (done) {
 			User.create({username: 'regularuser', password: '123456'}, function (err, uid) {
 				assert.ifError(err);
