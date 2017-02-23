@@ -1,5 +1,4 @@
-<div class="flags">
-
+<div class="row flags">
 	<div class="col-lg-12">
 
 		<div class="text-center">
@@ -106,7 +105,7 @@
 										</div>
 										<small>
 											<span class="pull-right">
-												[[posted-in, <a href="{config.relative_path}/category/{posts.category.slug}" target="_blank"><i class="fa {posts.category.icon}"></i> {posts.category.name}</a>]], 
+												[[posted-in, <a href="{config.relative_path}/category/{posts.category.slug}" target="_blank"><i class="fa {posts.category.icon}"></i> {posts.category.name}</a>]],
 												<span class="timeago" title="{posts.timestampISO}"></span> &bull;
 												<a href="{config.relative_path}/post/{posts.pid}" target="_blank">[[admin/manage/flags:read-more]]</a>
 											</span>
@@ -114,7 +113,7 @@
 									</div>
 								</div>
 								<div class="col-sm-4">
-									<i class="fa fa-flag"></i> 
+									<i class="fa fa-flag"></i>
 									[[admin/manage/flags:flagged-x-times, {posts.flags}]]
 									<blockquote class="flag-reporters">
 										<ul>
