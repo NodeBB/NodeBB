@@ -47,10 +47,10 @@ Sockets.init = function (server) {
 		}
 
 		if (!override) {
-			io.set('origins', parsedUrl.protocol + '//' + domain + ':*');
+			io.origins(parsedUrl.protocol + '//' + domain + ':*');
 			winston.info('[socket.io] Restricting access to origin: ' + parsedUrl.protocol + '//' + domain + ':*');
 		} else {
-			io.set('origins', override);
+			io.origins(override);
 			winston.info('[socket.io] Restricting access to origin: ' + override);
 		}
 	}
