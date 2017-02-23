@@ -129,10 +129,10 @@ module.exports = function (Meta) {
 			});
 		}, callback);
 	};
-	
+
 	function linkModules(callback) {
 		var modules = Meta.js.scripts.modules;
-		
+
 		async.eachLimit(Object.keys(modules), 1000, function (relPath, next) {
 			var filePath = path.join(__dirname, '../../', modules[relPath]);
 			var destPath = path.join(__dirname, '../../build/public/src/modules', relPath);
@@ -177,41 +177,35 @@ module.exports = function (Meta) {
 				next();
 			});
 		}, function (err) {
-			if (err) {
-				return callback(err);
-			}
-
-			callback(null, modules);
+			callback(err, modules);
 		});
 	}
-	
+
 	function clearModules(callback) {
 		var builtPaths = moduleDirs.map(function (p) {
 			return '../../build/public/src/' + p;
 		});
 		async.each(builtPaths, function (builtPath, next) {
 			rimraf(path.join(__dirname, builtPath), next);
-		}, callback);
+		}, function (err) {
+			callback(err);
+		});
 	}
 
 	Meta.js.buildModules = function (callback) {
-		clearModules(function (err) {
-			if (err) {
-				return callback(err);
-			}
-
-			if (global.env === 'development') {
-				return linkModules(callback);
-			}
-
-			getModuleList(function (err, modules) {
-				if (err) {
-					return callback(err);
+		async.waterfall([
+			clearModules,
+			function (next) {
+				if (global.env === 'development') {
+					return linkModules(callback);
 				}
 
-				minifyModules(modules, callback);
-			});
-		});
+				getModuleList(next);
+			},
+			function (modules, next) {
+				minifyModules(modules, next);
+			}
+		], callback);
 	};
 
 	Meta.js.linkStatics = function (callback) {
