@@ -22,10 +22,6 @@ Sockets.init = function (server) {
 
 	var SocketIO = require('socket.io');
 	var socketioWildcard = require('socketio-wildcard')();
-	var ioConfig = {
-		transports: nconf.get('socket.io:transports')
-	};
-
 	io = new SocketIO({
 		path: nconf.get('relative_path') + '/socket.io'
 	});
@@ -51,15 +47,17 @@ Sockets.init = function (server) {
 		}
 
 		if (!override) {
-			ioConfig.origins = parsedUrl.protocol + '//' + domain + ':*';
+			io.set('origins', parsedUrl.protocol + '//' + domain + ':*');
 			winston.info('[socket.io] Restricting access to origin: ' + parsedUrl.protocol + '//' + domain + ':*');
 		} else {
-			ioConfig.origins = override;
+			io.set('origins', override);
 			winston.info('[socket.io] Restricting access to origin: ' + override);
 		}
 	}
 
-	io.listen(server, ioConfig);
+	io.listen(server, {
+		transports: nconf.get('socket.io:transports')
+	});
 
 	Sockets.server = io;
 };
