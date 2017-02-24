@@ -1,18 +1,16 @@
 'use strict';
 
-/* globals define, app, socket, templates */
 
 define('forum/topic/move', function () {
-
-	var Move = {},
-		modal,
-		selectedEl;
+	var Move = {};
+	var modal;
+	var selectedEl;
 
 	Move.init = function (tids, currentCid, onComplete) {
 		Move.tids = tids;
 		Move.currentCid = currentCid;
 		Move.onComplete = onComplete;
-		Move.moveAll = tids ? false : true;
+		Move.moveAll = !tids;
 
 		socket.emit('categories.getMoveCategories', onCategoriesLoaded);
 	};
@@ -23,7 +21,6 @@ define('forum/topic/move', function () {
 		}
 
 		parseModal(categories, function () {
-
 			modal.on('hidden.bs.modal', function () {
 				modal.remove();
 			});
@@ -45,7 +42,7 @@ define('forum/topic/move', function () {
 	}
 
 	function parseModal(categories, callback) {
-		templates.parse('partials/move_thread_modal', {categories: []}, function (html) {
+		templates.parse('partials/move_thread_modal', { categories: [] }, function (html) {
 			require(['translator'], function (translator) {
 				translator.translate(html, function (html) {
 					modal = $(html);
@@ -109,7 +106,7 @@ define('forum/topic/move', function () {
 		socket.emit(Move.moveAll ? 'topics.moveAll' : 'topics.move', {
 			tids: Move.tids,
 			cid: selectedEl.attr('data-cid'),
-			currentCid: Move.currentCid
+			currentCid: Move.currentCid,
 		}, function (err) {
 			modal.modal('hide');
 

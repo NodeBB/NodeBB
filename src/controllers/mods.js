@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 var async = require('async');
 
@@ -8,13 +8,13 @@ var flags = require('../flags');
 var analytics = require('../analytics');
 
 var modsController = {
-	flags: {}
+	flags: {},
 };
 
 modsController.flags.list = function (req, res, next) {
 	async.parallel({
 		isAdminOrGlobalMod: async.apply(user.isAdminOrGlobalMod, req.uid),
-		moderatedCids: async.apply(user.getModeratedCids, req.uid)
+		moderatedCids: async.apply(user.getModeratedCids, req.uid),
 	}, function (err, results) {
 		if (err) {
 			return next(err);
@@ -42,23 +42,21 @@ modsController.flags.list = function (req, res, next) {
 			if (!filters.cid) {
 				// If mod and no cid filter, add filter for their modded categories
 				filters.cid = res.locals.cids;
-			} else {
+			} else if (Array.isArray(filters.cid)) {
 				// Remove cids they do not moderate
-				if (Array.isArray(filters.cid)) {
-					filters.cid = filters.cid.filter(function (cid) {
-						return res.locals.cids.indexOf(String(cid)) !== -1;
-					});
-				} else if (res.locals.cids.indexOf(String(filters.cid)) === -1) {
-					filters.cid = res.locals.cids;
-					hasFilter = false;
-				}
+				filters.cid = filters.cid.filter(function (cid) {
+					return res.locals.cids.indexOf(String(cid)) !== -1;
+				});
+			} else if (res.locals.cids.indexOf(String(filters.cid)) === -1) {
+				filters.cid = res.locals.cids;
+				hasFilter = false;
 			}
 		}
 
 		async.parallel({
 			flags: async.apply(flags.list, filters, req.uid),
 			analytics: async.apply(analytics.getDailyStatsForSet, 'analytics:flags', Date.now(), 30),
-			categories: async.apply(categories.buildForSelect, req.uid)
+			categories: async.apply(categories.buildForSelect, req.uid),
 		}, function (err, data) {
 			if (err) {
 				return next(err);
@@ -92,7 +90,7 @@ modsController.flags.list = function (req, res, next) {
 				categories: data.categories,
 				hasFilter: hasFilter,
 				filters: filters,
-				title: '[[pages:flags]]'
+				title: '[[pages:flags]]',
 			});
 		});
 	});
@@ -103,7 +101,7 @@ modsController.flags.detail = function (req, res, next) {
 		isAdminOrGlobalMod: async.apply(user.isAdminOrGlobalMod, req.uid),
 		moderatedCids: async.apply(user.getModeratedCids, req.uid),
 		flagData: async.apply(flags.get, req.params.flagId),
-		assignees: async.apply(user.getAdminsandGlobalModsandModerators)
+		assignees: async.apply(user.getAdminsandGlobalModsandModerators),
 	}, function (err, results) {
 		if (err || !results.flagData) {
 			return next(err || new Error('[[error:invalid-data]]'));
@@ -122,7 +120,7 @@ modsController.flags.detail = function (req, res, next) {
 
 				return memo;
 			}, {}),
-			title: '[[pages:flag-details, ' + req.params.flagId + ']]'
+			title: '[[pages:flag-details, ' + req.params.flagId + ']]',
 		}));
 	});
 };

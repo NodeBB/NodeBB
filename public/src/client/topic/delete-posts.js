@@ -1,9 +1,7 @@
 'use strict';
 
-/* globals define, app, ajaxify, socket */
 
 define('forum/topic/delete-posts', ['components', 'postSelect'], function (components, postSelect) {
-
 	var DeletePosts = {};
 	var modal;
 	var deleteBtn;
@@ -49,7 +47,7 @@ define('forum/topic/delete-posts', ['components', 'postSelect'], function (compo
 		btn.attr('disabled', true);
 		socket.emit(command, {
 			tid: ajaxify.data.tid,
-			pids: postSelect.pids
+			pids: postSelect.pids,
 		}, function (err) {
 			btn.removeAttr('disabled');
 			if (err) {

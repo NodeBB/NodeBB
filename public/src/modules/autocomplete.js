@@ -1,7 +1,6 @@
 
 'use strict';
 
-/* globals define, socket, app */
 
 define('autocomplete', function () {
 	var module = {};
@@ -15,7 +14,7 @@ define('autocomplete', function () {
 				},
 				select: onselect,
 				source: function (request, response) {
-					socket.emit('user.search', {query: request.term}, function (err, result) {
+					socket.emit('user.search', { query: request.term }, function (err, result) {
 						if (err) {
 							return app.alertError(err.message);
 						}
@@ -29,15 +28,15 @@ define('autocomplete', function () {
 									user: {
 										uid: user.uid,
 										name: user.username,
-										slug: user.userslug
-									}
+										slug: user.userslug,
+									},
 								};
 							});
 							response(names);
 						}
 						$('.ui-autocomplete a').attr('data-ajaxify', 'false');
 					});
-				}
+				},
 			});
 		});
 	};
@@ -49,7 +48,7 @@ define('autocomplete', function () {
 				select: onselect,
 				source: function (request, response) {
 					socket.emit('groups.search', {
-						query: request.term
+						query: request.term,
 					}, function (err, results) {
 						if (err) {
 							return app.alertError(err.message);
@@ -62,15 +61,15 @@ define('autocomplete', function () {
 									value: group.name,
 									group: {
 										name: group.name,
-										slug: group.slug
-									}
+										slug: group.slug,
+									},
 								};
 							});
 							response(names);
 						}
 						$('.ui-autocomplete a').attr('data-ajaxify', 'false');
 					});
-				}
+				},
 			});
 		});
 	};
@@ -95,7 +94,7 @@ define('autocomplete', function () {
 				source: function (request, response) {
 					socket.emit('topics.autocompleteTags', {
 						query: request.term,
-						cid: ajaxify.data.cid || 0
+						cid: ajaxify.data.cid || 0,
 					}, function (err, tags) {
 						if (err) {
 							return app.alertError(err.message);
@@ -105,7 +104,7 @@ define('autocomplete', function () {
 						}
 						$('.ui-autocomplete a').attr('data-ajaxify', 'false');
 					});
-				}
+				},
 			});
 		});
 	};

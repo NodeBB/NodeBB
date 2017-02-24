@@ -1,5 +1,5 @@
-"use strict";
-/* globals app, define, socket, templates, utils, ajaxify */
+'use strict';
+
 
 define('chat', [
 	'components',
@@ -9,9 +9,8 @@ define('chat', [
 	'forum/chats',
 	'forum/chats/messages',
 	'translator',
-	'scrollStop'
+	'scrollStop',
 ], function (components, taskbar, S, sounds, Chats, ChatsMessages, translator, scrollStop) {
-
 	var module = {};
 	var newMessage = false;
 
@@ -67,16 +66,16 @@ define('chat', [
 
 				if (!isSelf && (!modal.is(':visible') || !app.isFocused)) {
 					app.alternatingTitle('[[modules:chat.user_has_messaged_you, ' + username + ']]');
-					sounds.play('chat-incoming');
+					sounds.play('chat-incoming', 'chat.incoming:' + data.message.mid);
 
 					taskbar.push('chat', modal.attr('UUID'), {
 						title: data.roomName || username,
 						touid: data.message.fromUser.uid,
-						roomId: data.roomId
+						roomId: data.roomId,
 					});
 				}
 			} else {
-				socket.emit('modules.chats.loadRoom', {roomId: data.roomId}, function (err, roomData) {
+				socket.emit('modules.chats.loadRoom', { roomId: data.roomId }, function (err, roomData) {
 					if (err) {
 						return app.alertError(err.message);
 					}
@@ -89,7 +88,7 @@ define('chat', [
 						module.toggleNew(modal.attr('UUID'), !isSelf, true);
 						if (!isSelf) {
 							app.alternatingTitle('[[modules:chat.user_has_messaged_you, ' + username + ']]');
-							sounds.play('chat-incoming');
+							sounds.play('chat-incoming', 'chat.incoming:' + data.message.mid);
 						}
 					});
 				});
@@ -112,17 +111,17 @@ define('chat', [
 	};
 
 	module.loadChatsDropdown = function (chatsListEl) {
-		socket.emit('modules.chats.getRecentChats', {uid: app.user.uid, after: 0}, function (err, data) {
+		socket.emit('modules.chats.getRecentChats', { uid: app.user.uid, after: 0 }, function (err, data) {
 			if (err) {
 				return app.alertError(err.message);
 			}
 
 			var rooms = data.rooms.filter(function (room) {
-			    return room.teaser;
+				return room.teaser;
 			});
 
 			templates.parse('partials/chats/dropdown', {
-				rooms: rooms
+				rooms: rooms,
 			}, function (html) {
 				translator.translate(html, function (translated) {
 					chatsListEl.empty().html(translated);
@@ -160,7 +159,6 @@ define('chat', [
 
 	module.createModal = function (data, callback) {
 		app.parseAndTranslate('chat', data, function (chatModal) {
-
 			var uuid = utils.generateUUID();
 			var dragged = false;
 
@@ -178,7 +176,7 @@ define('chat', [
 				chatModal.find('.modal-content').resizable({
 					handles: 'n, e, s, w, se',
 					minHeight: 250,
-					minWidth: 400
+					minWidth: 400,
 				});
 
 				chatModal.find('.modal-content').on('resize', function (event, ui) {
@@ -190,14 +188,14 @@ define('chat', [
 				});
 
 				chatModal.draggable({
-					start:function () {
+					start: function () {
 						module.bringModalToTop(chatModal);
 					},
-					stop:function () {
+					stop: function () {
 						chatModal.find('#chat-message-input').focus();
 					},
 					distance: 10,
-					handle: '.modal-header'
+					handle: '.modal-header',
 				});
 			});
 
@@ -267,7 +265,7 @@ define('chat', [
 				title: data.roomName || (data.users.length ? data.users[0].username : ''),
 				roomId: data.roomId,
 				icon: 'fa-comment',
-				state: ''
+				state: '',
 			});
 
 			$(window).trigger('action:chat.loaded', chatModal);
@@ -301,7 +299,7 @@ define('chat', [
 			hideAfter = true;
 		}
 		chatModal.css('left', Math.max(0, (($(window).width() - $(chatModal).outerWidth()) / 2) + $(window).scrollLeft()) + 'px');
-		chatModal.css('top', Math.max(0, $(window).height() / 2 - $(chatModal).outerHeight() / 2) + 'px');
+		chatModal.css('top', Math.max(0, ($(window).height() / 2) - ($(chatModal).outerHeight() / 2)) + 'px');
 
 		if (hideAfter) {
 			chatModal.addClass('hide');

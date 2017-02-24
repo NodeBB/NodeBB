@@ -7,13 +7,15 @@ var async = require('async');
 var fs = require('fs');
 var mkdirp = require('mkdirp');
 var rimraf = require('rimraf');
+var uglifyjs = require('uglify-js');
 
 var file = require('../file');
 var plugins = require('../plugins');
 var utils = require('../../public/src/utils');
 
-module.exports = function (Meta) {
+var minifierPath = path.join(__dirname, 'minifier.js');
 
+module.exports = function (Meta) {
 	Meta.js = {
 		target: {},
 		scripts: {
@@ -40,7 +42,7 @@ module.exports = function (Meta) {
 				'public/src/ajaxify.js',
 				'public/src/overrides.js',
 				'public/src/widgets.js',
-				"./node_modules/promise-polyfill/promise.js"
+				'./node_modules/promise-polyfill/promise.js',
 			],
 
 			// files listed below are only available client-side, or are bundled in to reduce # of network requests on cold load
@@ -76,38 +78,137 @@ module.exports = function (Meta) {
 				'public/src/modules/helpers.js',
 				'public/src/modules/sounds.js',
 				'public/src/modules/string.js',
-				'public/src/modules/flags.js'
+				'public/src/modules/flags.js',
 			],
 
-			// modules listed below are routed through express (/src/modules) so they can be defined anonymously
+			// modules listed below are built (/src/modules) so they can be defined anonymously
 			modules: {
-				"Chart.js": './node_modules/chart.js/dist/Chart.min.js',
-				"mousetrap.js": './node_modules/mousetrap/mousetrap.min.js',
-				"jqueryui.js": 'public/vendor/jquery/js/jquery-ui.js',
-				"buzz.js": 'public/vendor/buzz/buzz.js',
-				"cropper.js": './node_modules/cropperjs/dist/cropper.min.js'
-			}
-		}
+				'Chart.js': './node_modules/chart.js/dist/Chart.min.js',
+				'mousetrap.js': './node_modules/mousetrap/mousetrap.min.js',
+				'jqueryui.js': 'public/vendor/jquery/js/jquery-ui.js',
+				'buzz.js': 'public/vendor/buzz/buzz.js',
+				'cropper.js': './node_modules/cropperjs/dist/cropper.min.js',
+			},
+		},
 	};
-	
-	Meta.js.linkModules = function (callback) {
-		rimraf(path.join(__dirname, '../../build/public/src/modules'), function (err) {
-			if (err) {
-				return callback(err);
-			}
-			async.eachLimit(Object.keys(Meta.js.scripts.modules), 1000, function (relPath, next) {
-				var filePath = path.join(__dirname, '../../', Meta.js.scripts.modules[relPath]);
-				var destPath = path.join(__dirname, '../../build/public/src/modules', relPath);
 
-				mkdirp(path.dirname(destPath), function (err) {
-					if (err) {
-						return next(err);
-					}
+	function minifyModules(modules, callback) {
+		async.eachLimit(modules, 500, function (mod, next) {
+			var filePath = mod.filePath;
+			var destPath = mod.destPath;
+			var minified;
 
-					file.link(filePath, destPath, next);
-				});
-			}, callback);
+			async.parallel([
+				function (cb) {
+					mkdirp(path.dirname(destPath), cb);
+				},
+				function (cb) {
+					fs.readFile(filePath, function (err, buffer) {
+						if (err) {
+							return cb(err);
+						}
+						try {
+							minified = uglifyjs.minify(buffer.toString(), {
+								fromString: true,
+								compress: false,
+							});
+						} catch (e) {
+							return cb(e);
+						}
+
+						cb();
+					});
+				},
+			], function (err) {
+				if (err) {
+					return next(err);
+				}
+
+				fs.writeFile(destPath, minified.code, next);
+			});
+		}, callback);
+	}
+
+	function linkModules(callback) {
+		var modules = Meta.js.scripts.modules;
+
+		async.eachLimit(Object.keys(modules), 1000, function (relPath, next) {
+			var filePath = path.join(__dirname, '../../', modules[relPath]);
+			var destPath = path.join(__dirname, '../../build/public/src/modules', relPath);
+
+			mkdirp(path.dirname(destPath), function (err) {
+				if (err) {
+					return next(err);
+				}
+
+				file.link(filePath, destPath, next);
+			});
+		}, callback);
+	}
+
+	var moduleDirs = ['modules', 'admin', 'client'];
+
+	function getModuleList(callback) {
+		var modules = Object.keys(Meta.js.scripts.modules).map(function (relPath) {
+			return {
+				filePath: path.join(__dirname, '../../', Meta.js.scripts.modules[relPath]),
+				destPath: path.join(__dirname, '../../build/public/src/modules', relPath),
+			};
 		});
+
+		var dirs = moduleDirs.map(function (dir) {
+			return path.join(__dirname, '../../public/src', dir);
+		});
+
+		async.each(dirs, function (dir, next) {
+			utils.walk(dir, function (err, files) {
+				if (err) {
+					return next(err);
+				}
+
+				var mods = files.filter(function (filePath) {
+					return path.extname(filePath) === '.js';
+				}).map(function (filePath) {
+					return {
+						filePath: filePath,
+						destPath: path.join(__dirname, '../../build/public/src', path.relative(path.dirname(dir), filePath)),
+					};
+				});
+
+				modules = modules.concat(mods);
+
+				next();
+			});
+		}, function (err) {
+			callback(err, modules);
+		});
+	}
+
+	function clearModules(callback) {
+		var builtPaths = moduleDirs.map(function (p) {
+			return '../../build/public/src/' + p;
+		});
+		async.each(builtPaths, function (builtPath, next) {
+			rimraf(path.join(__dirname, builtPath), next);
+		}, function (err) {
+			callback(err);
+		});
+	}
+
+	Meta.js.buildModules = function (callback) {
+		async.waterfall([
+			clearModules,
+			function (next) {
+				if (global.env === 'development') {
+					return linkModules(callback);
+				}
+
+				getModuleList(next);
+			},
+			function (modules, next) {
+				minifyModules(modules, next);
+			},
+		], callback);
 	};
 
 	Meta.js.linkStatics = function (callback) {
@@ -134,7 +235,8 @@ module.exports = function (Meta) {
 		winston.verbose('[meta/js] Minifying ' + target);
 
 		var forkProcessParams = setupDebugging();
-		var minifier = Meta.js.minifierProc = fork('minifier.js', [], forkProcessParams);
+		var minifier = fork(minifierPath, [], forkProcessParams);
+		Meta.js.minifierProc = minifier;
 
 		Meta.js.target[target] = {};
 
@@ -145,12 +247,12 @@ module.exports = function (Meta) {
 			minifier.send({
 				action: 'js',
 				minify: global.env !== 'development',
-				scripts: Meta.js.target[target].scripts
+				scripts: Meta.js.target[target].scripts,
 			});
 		});
 
 		minifier.on('message', function (message) {
-			switch(message.type) {
+			switch (message.type) {
 			case 'end':
 				Meta.js.target[target].cache = message.minified;
 				Meta.js.target[target].map = message.sourceMap;
@@ -226,17 +328,17 @@ module.exports = function (Meta) {
 		 * Check if the parent process is running with the debug option --debug (or --debug-brk)
 		 */
 		var forkProcessParams = {};
-		if(global.v8debug || parseInt(process.execArgv.indexOf('--debug'), 10) !== -1) {
+		if (global.v8debug || parseInt(process.execArgv.indexOf('--debug'), 10) !== -1) {
 			/**
 			 * use the line below if you want to debug minifier.js script too (or even --debug-brk option, but
 			 * you'll have to setup your debugger and connect to the forked process)
 			 */
-			//forkProcessParams = {execArgv: ['--debug=' + (global.process.debugPort + 1), '--nolazy']};
+			// forkProcessParams = {execArgv: ['--debug=' + (global.process.debugPort + 1), '--nolazy']};
 
 			/**
 			 * otherwise, just clean up --debug/--debug-brk options which are set up by default from the parent one
 			 */
-			forkProcessParams = {execArgv: []};
+			forkProcessParams = { execArgv: [] };
 		}
 
 		return forkProcessParams;

@@ -11,12 +11,12 @@ settingsController.get = function (req, res, next) {
 	var term = req.params.term ? req.params.term : 'general';
 
 	switch (req.params.term) {
-		case 'email':
-			renderEmail(req, res, next);
-			break;
+	case 'email':
+		renderEmail(req, res, next);
+		break;
 
-		default:
-			res.render('admin/settings/' + term);
+	default:
+		res.render('admin/settings/' + term);
 	}
 };
 
@@ -47,11 +47,11 @@ function renderEmail(req, res, next) {
 						path: path,
 						fullpath: email,
 						text: text,
-						original: original.toString()
+						original: original.toString(),
 					});
 				});
 			}, next);
-		}
+		},
 	], function (err, emails) {
 		if (err) {
 			return next(err);
@@ -61,7 +61,7 @@ function renderEmail(req, res, next) {
 			emails: emails,
 			sendable: emails.filter(function (email) {
 				return email.path.indexOf('_plaintext') === -1 && email.path.indexOf('partials') === -1;
-			})
+			}),
 		});
 	});
 }

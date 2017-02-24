@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 var async = require('async');
 var winston = require('winston');
@@ -26,7 +26,7 @@ widgets.render = function (uid, area, req, res, callback) {
 			widgetsByLocation[location] = data.global[location].concat(data[area.template][location]);
 
 			if (!widgetsByLocation[location].length) {
-				return done(null, {location: location, widgets: []});
+				return done(null, { location: location, widgets: [] });
 			}
 
 			async.map(widgetsByLocation[location], function (widget, next) {
@@ -42,7 +42,7 @@ widgets.render = function (uid, area, req, res, callback) {
 					area: area,
 					data: widget.data,
 					req: req,
-					res: res
+					res: res,
 				}, function (err, html) {
 					if (err || html === null) {
 						return next(err);
@@ -56,17 +56,17 @@ widgets.render = function (uid, area, req, res, callback) {
 						translator.translate(widget.data.title, function (title) {
 							html = templates.parse(widget.data.container, {
 								title: title,
-								body: html
+								body: html,
 							});
 
-							next(null, {html: html});
+							next(null, { html: html });
 						});
 					} else {
-						next(null, {html: html});
+						next(null, { html: html });
 					}
 				});
 			}, function (err, result) {
-				done(err, {location: location, widgets: result.filter(Boolean)});
+				done(err, { location: location, widgets: result.filter(Boolean) });
 			});
 		}, callback);
 	});
@@ -89,7 +89,7 @@ widgets.getAreas = function (templates, locations, callback) {
 				if (data && data[index] && data[index][location]) {
 					try {
 						returnData[template][location] = JSON.parse(data[index][location]);
-					} catch(err) {
+					} catch (err) {
 						winston.error('can not parse widget data. template:  ' + template + ' location: ' + location);
 						returnData[template][location] = [];
 					}
@@ -113,7 +113,7 @@ widgets.getArea = function (template, location, callback) {
 		}
 		try {
 			result = JSON.parse(result);
-		} catch(err) {
+		} catch (err) {
 			return callback(err);
 		}
 
@@ -133,7 +133,7 @@ widgets.reset = function (callback) {
 	var defaultAreas = [
 		{ name: 'Draft Zone', template: 'global', location: 'header' },
 		{ name: 'Draft Zone', template: 'global', location: 'footer' },
-		{ name: 'Draft Zone', template: 'global', location: 'sidebar' }
+		{ name: 'Draft Zone', template: 'global', location: 'sidebar' },
 	];
 
 	async.parallel({
@@ -142,7 +142,7 @@ widgets.reset = function (callback) {
 		},
 		drafts: function (next) {
 			widgets.getArea('global', 'drafts', next);
-		}
+		},
 	}, function (err, results) {
 		if (err) {
 			return callback(err);
@@ -167,7 +167,7 @@ widgets.reset = function (callback) {
 			widgets.setArea({
 				template: 'global',
 				location: 'drafts',
-				widgets: drafts
+				widgets: drafts,
 			}, callback);
 		});
 	});

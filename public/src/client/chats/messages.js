@@ -1,9 +1,7 @@
 'use strict';
 
-/* globals define, socket, app, ajaxify, templates, bootbox */
 
 define('forum/chats/messages', ['components', 'sounds', 'translator'], function (components, sounds, translator) {
-
 	var messages = {};
 
 	messages.sendMessage = function (roomId, inputEl) {
@@ -24,13 +22,13 @@ define('forum/chats/messages', ['components', 'sounds', 'translator'], function 
 		$(window).trigger('action:chat.sent', {
 			roomId: roomId,
 			message: msg,
-			mid: mid
+			mid: mid,
 		});
-		
+
 		if (!mid) {
 			socket.emit('modules.chats.send', {
 				roomId: roomId,
-				message: msg
+				message: msg,
 			}, function (err) {
 				if (err) {
 					inputEl.val(msg);
@@ -46,7 +44,7 @@ define('forum/chats/messages', ['components', 'sounds', 'translator'], function 
 			socket.emit('modules.chats.edit', {
 				roomId: roomId,
 				mid: mid,
-				message: msg
+				message: msg,
 			}, function (err) {
 				if (err) {
 					inputEl.val(msg);
@@ -58,7 +56,6 @@ define('forum/chats/messages', ['components', 'sounds', 'translator'], function 
 	};
 
 	messages.appendChatMessage = function (chatContentEl, data) {
-
 		var lastSpeaker = parseInt(chatContentEl.find('.chat-message').last().attr('data-uid'), 10);
 		if (!Array.isArray(data)) {
 			data.newSet = lastSpeaker !== data.fromuid;
@@ -81,7 +78,7 @@ define('forum/chats/messages', ['components', 'sounds', 'translator'], function 
 
 	messages.parseMessage = function (data, callback) {
 		templates.parse('partials/chats/message' + (Array.isArray(data) ? 's' : ''), {
-			messages: data
+			messages: data,
 		}, function (html) {
 			translator.translate(html, callback);
 		});
@@ -114,10 +111,10 @@ define('forum/chats/messages', ['components', 'sounds', 'translator'], function 
 	messages.onChatMessageEdit = function () {
 		socket.on('event:chats.edit', function (data) {
 			data.messages.forEach(function (message) {
-				var self = parseInt(message.fromuid, 10) === parseInt(app.user.uid);
+				var self = parseInt(message.fromuid, 10) === parseInt(app.user.uid, 10);
 				message.self = self ? 1 : 0;
 				messages.parseMessage(message, function (html) {
-				    var body = components.get('chat/message', message.messageId);
+					var body = components.get('chat/message', message.messageId);
 					if (body.length) {
 						body.replaceWith(html);
 						components.get('chat/message', message.messageId).find('.timeago').timeago();
@@ -136,7 +133,7 @@ define('forum/chats/messages', ['components', 'sounds', 'translator'], function 
 
 				socket.emit('modules.chats.delete', {
 					messageId: messageId,
-					roomId: roomId
+					roomId: roomId,
 				}, function (err) {
 					if (err) {
 						return app.alertError(err.message);

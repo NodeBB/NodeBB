@@ -1,4 +1,5 @@
-"use strict";
+'use strict';
+
 define('components', function () {
 	var components = {};
 
@@ -6,14 +7,13 @@ define('components', function () {
 		'topic/teaser': function (tid) {
 			if (tid) {
 				return $('[component="category/topic"][data-tid="' + tid + '"] [component="topic/teaser"]');
-			} else {
-				return $('[component="topic/teaser"]');
 			}
+			return $('[component="topic/teaser"]');
 		},
-		'topic': function (name, value) {
+		topic: function (name, value) {
 			return $('[component="topic"][data-' + name + '="' + value + '"]');
 		},
-		'post': function (name, value) {
+		post: function (name, value) {
 			return $('[component="post"][data-' + name + '="' + value + '"]');
 		},
 		'post/content': function (pid) {
@@ -52,7 +52,7 @@ define('components', function () {
 		},
 		'chat/message/body': function (messageId) {
 			return $('[component="chat/message"][data-mid="' + messageId + '"] [component="chat/message/body"]');
-		}
+		},
 	};
 
 	components.get = function () {
@@ -60,9 +60,8 @@ define('components', function () {
 
 		if (components.core[arguments[0]] && args.length) {
 			return components.core[arguments[0]].apply(this, args);
-		} else {
-			return $('[component="' + arguments[0] + '"]');
 		}
+		return $('[component="' + arguments[0] + '"]');
 	};
 
 	return components;

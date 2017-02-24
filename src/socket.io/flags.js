@@ -1,17 +1,8 @@
 'use strict';
 
 var async = require('async');
-var S = require('string');
 
 var user = require('../user');
-var groups = require('../groups');
-var posts = require('../posts');
-var topics = require('../topics');
-var privileges = require('../privileges');
-var notifications = require('../notifications');
-var plugins = require('../plugins');
-var meta = require('../meta');
-var utils = require('../../public/src/utils');
 var flags = require('../flags');
 
 var SocketFlags = {};
@@ -29,12 +20,12 @@ SocketFlags.create = function (socket, data, callback) {
 		async.apply(flags.validate, {
 			uid: socket.uid,
 			type: data.type,
-			id: data.id
+			id: data.id,
 		}),
 		function (next) {
 			// If we got here, then no errors occurred
 			flags.create(data.type, data.id, socket.uid, data.reason, next);
-		}
+		},
 	], function (err, flagObj) {
 		if (err) {
 			return callback(err);
@@ -56,7 +47,7 @@ SocketFlags.update = function (socket, data, callback) {
 		function (next) {
 			async.parallel([
 				async.apply(user.isAdminOrGlobalMod, socket.uid),
-				async.apply(user.isModeratorOfAnyCategory, socket.uid)
+				async.apply(user.isModeratorOfAnyCategory, socket.uid),
 			], function (err, results) {
 				next(err, results[0] || results[1]);
 			});
@@ -74,7 +65,7 @@ SocketFlags.update = function (socket, data, callback) {
 
 			flags.update(data.flagId, socket.uid, payload, next);
 		},
-		async.apply(flags.getHistory, data.flagId)
+		async.apply(flags.getHistory, data.flagId),
 	], callback);
 };
 
@@ -87,7 +78,7 @@ SocketFlags.appendNote = function (socket, data, callback) {
 		function (next) {
 			async.parallel([
 				async.apply(user.isAdminOrGlobalMod, socket.uid),
-				async.apply(user.isModeratorOfAnyCategory, socket.uid)
+				async.apply(user.isModeratorOfAnyCategory, socket.uid),
 			], function (err, results) {
 				next(err, results[0] || results[1]);
 			});
@@ -101,10 +92,10 @@ SocketFlags.appendNote = function (socket, data, callback) {
 		},
 		function (next) {
 			async.parallel({
-				"notes": async.apply(flags.getNotes, data.flagId),
-				"history": async.apply(flags.getHistory, data.flagId)
+				notes: async.apply(flags.getNotes, data.flagId),
+				history: async.apply(flags.getHistory, data.flagId),
 			}, next);
-		}
+		},
 	], callback);
 };
 

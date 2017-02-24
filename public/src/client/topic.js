@@ -1,8 +1,6 @@
 'use strict';
 
 
-/* globals define, app, socket, config, ajaxify, RELATIVE_PATH, utils */
-
 define('forum/topic', [
 	'forum/infinitescroll',
 	'forum/topic/threadTools',
@@ -12,10 +10,10 @@ define('forum/topic', [
 	'forum/topic/replies',
 	'navigator',
 	'sort',
-	'components'
+	'components',
 ], function (infinitescroll, threadTools, postTools, events, posts, replies, navigator, sort, components) {
-	var	Topic = {},
-		currentUrl = '';
+	var	Topic = {};
+	var currentUrl = '';
 
 	$(window).on('action:ajaxify.start', function (ev, data) {
 		if (Topic.replaceURLTimeout) {
@@ -112,8 +110,8 @@ define('forum/topic', [
 			mousetrap.bind('ctrl+f', function (e) {
 				if (config.topicSearchEnabled) {
 					// If in topic, open search window and populate, otherwise regular behaviour
-					var match = ajaxify.currentPage.match(/^topic\/([\d]+)/),
-						tid;
+					var match = ajaxify.currentPage.match(/^topic\/([\d]+)/);
+					var tid;
 					if (match) {
 						e.preventDefault();
 						tid = match[1];
@@ -157,12 +155,12 @@ define('forum/topic', [
 				message: '[[topic:bookmark_instructions]]',
 				timeout: 0,
 				type: 'info',
-				clickfn : function () {
+				clickfn: function () {
 					navigator.scrollToPost(parseInt(bookmark - 1, 10), true);
 				},
-				closefn : function () {
+				closefn: function () {
 					localStorage.removeItem('topic:' + tid + ':bookmark');
-				}
+				},
 			});
 			setTimeout(function () {
 				app.removeAlert('bookmark');
@@ -245,13 +243,11 @@ define('forum/topic', [
 		var newUrl = 'topic/' + ajaxify.data.slug + (index > 1 ? ('/' + index) : '');
 
 		if (newUrl !== currentUrl) {
-
 			if (Topic.replaceURLTimeout) {
 				clearTimeout(Topic.replaceURLTimeout);
 			}
 
 			Topic.replaceURLTimeout = setTimeout(function () {
-
 				if (index >= elementCount && app.user.uid) {
 					socket.emit('topics.markAsRead', [ajaxify.data.tid]);
 				}
@@ -266,7 +262,7 @@ define('forum/topic', [
 					}
 
 					history.replaceState({
-						url: newUrl + search
+						url: newUrl + search,
 					}, null, window.location.protocol + '//' + window.location.host + RELATIVE_PATH + '/' + newUrl + search);
 				}
 				currentUrl = newUrl;
@@ -281,8 +277,8 @@ define('forum/topic', [
 		if (ajaxify.data.postcount > ajaxify.data.bookmarkThreshold && (!currentBookmark || parseInt(index, 10) > parseInt(currentBookmark, 10))) {
 			if (app.user.uid) {
 				socket.emit('topics.bookmark', {
-					'tid': ajaxify.data.tid,
-					'index': index
+					tid: ajaxify.data.tid,
+					index: index,
 				}, function (err) {
 					if (err) {
 						return app.alertError(err.message);
@@ -298,7 +294,6 @@ define('forum/topic', [
 		if (!currentBookmark || parseInt(index, 10) >= parseInt(currentBookmark, 10)) {
 			app.removeAlert('bookmark');
 		}
-
 	}
 
 

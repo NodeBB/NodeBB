@@ -9,7 +9,6 @@ var user = require('../../user');
 var plugins = require('../../plugins');
 
 module.exports = function (SocketUser) {
-
 	SocketUser.changePicture = function (socket, data, callback) {
 		if (!socket.uid) {
 			return callback(new Error('[[error:invalid-uid]]'));
@@ -26,31 +25,31 @@ module.exports = function (SocketUser) {
 				user.isAdminOrGlobalModOrSelf(socket.uid, data.uid, next);
 			},
 			function (next) {
-				switch(type) {
-					case 'default':
-						next(null, '');
-						break;
-					case 'uploaded':
-						user.getUserField(data.uid, 'uploadedpicture', next);
-						break;
-					default:
-						plugins.fireHook('filter:user.getPicture', {
-							uid: socket.uid,
-							type: type,
-							picture: undefined
-						}, function (err, returnData) {
-							if (err) {
-								return next(err);
-							}
+				switch (type) {
+				case 'default':
+					next(null, '');
+					break;
+				case 'uploaded':
+					user.getUserField(data.uid, 'uploadedpicture', next);
+					break;
+				default:
+					plugins.fireHook('filter:user.getPicture', {
+						uid: socket.uid,
+						type: type,
+						picture: undefined,
+					}, function (err, returnData) {
+						if (err) {
+							return next(err);
+						}
 
-							next(null, returnData.picture || '');
-						});
-						break;
+						next(null, returnData.picture || '');
+					});
+					break;
 				}
 			},
 			function (picture, next) {
 				user.setUserField(data.uid, 'picture', picture, next);
-			}
+			},
 		], callback);
 	};
 
@@ -67,7 +66,7 @@ module.exports = function (SocketUser) {
 			},
 			function (uploadedImage, next) {
 				next(null, uploadedImage ? uploadedImage.url : null);
-			}
+			},
 		], callback);
 	};
 
@@ -97,12 +96,12 @@ module.exports = function (SocketUser) {
 
 				user.setUserFields(data.uid, {
 					uploadedpicture: '',
-					picture: userData.uploadedpicture === userData.picture ? '' : userData.picture	// if current picture is uploaded picture, reset to user icon
+					picture: userData.uploadedpicture === userData.picture ? '' : userData.picture,	// if current picture is uploaded picture, reset to user icon
 				}, next);
 			},
 			function (next) {
-				plugins.fireHook('action:user.removeUploadedPicture', {callerUid: socket.uid, uid: data.uid}, next);
-			}
+				plugins.fireHook('action:user.removeUploadedPicture', { callerUid: socket.uid, uid: data.uid }, next);
+			},
 		], callback);
 	};
 
@@ -114,9 +113,9 @@ module.exports = function (SocketUser) {
 		async.parallel({
 			list: async.apply(plugins.fireHook, 'filter:user.listPictures', {
 				uid: data.uid,
-				pictures: []
+				pictures: [],
 			}),
-			uploaded: async.apply(user.getUserField, data.uid, 'uploadedpicture')
+			uploaded: async.apply(user.getUserField, data.uid, 'uploadedpicture'),
 		}, function (err, data) {
 			if (err) {
 				return callback(err);
@@ -126,7 +125,7 @@ module.exports = function (SocketUser) {
 				data.list.pictures.push({
 					type: 'uploaded',
 					url: data.uploaded,
-					text: '[[user:uploaded_picture]]'
+					text: '[[user:uploaded_picture]]',
 				});
 			}
 

@@ -33,7 +33,7 @@ var helpers = require('../public/src/modules/helpers');
 if (nconf.get('ssl')) {
 	server = require('https').createServer({
 		key: fs.readFileSync(nconf.get('ssl').key),
-		cert: fs.readFileSync(nconf.get('ssl').cert)
+		cert: fs.readFileSync(nconf.get('ssl').cert),
 	}, app);
 } else {
 	server = require('http').createServer(app);
@@ -69,7 +69,7 @@ module.exports.listen = function (callback) {
 		winston.info('NodeBB Ready');
 
 		require('./socket.io').server.emit('event:nodebb.ready', {
-			'cache-buster': meta.config['cache-buster']
+			'cache-buster': meta.config['cache-buster'],
 		});
 
 		plugins.fireHook('action:nodebb.ready');
@@ -91,7 +91,7 @@ function initializeNodeBB(callback) {
 		function (next) {
 			plugins.fireHook('static:app.preload', {
 				app: app,
-				middleware: middleware
+				middleware: middleware,
 			}, next);
 		},
 		function (next) {
@@ -103,11 +103,11 @@ function initializeNodeBB(callback) {
 		},
 		function (next) {
 			async.series([
-				async.apply(meta.sounds.init),
-				async.apply(languages.init),
-				async.apply(meta.blacklist.load)
+				meta.sounds.addUploads,
+				languages.init,
+				meta.blacklist.load,
 			], next);
-		}
+		},
 	], callback);
 }
 
@@ -146,7 +146,7 @@ function setupExpressApp(app) {
 		key: nconf.get('sessionKey'),
 		cookie: setupCookie(),
 		resave: true,
-		saveUninitialized: true
+		saveUninitialized: true,
 	}));
 
 	app.use(middleware.addHeaders);
@@ -159,7 +159,8 @@ function setupExpressApp(app) {
 }
 
 function setupFavicon(app) {
-	var faviconPath = path.join(nconf.get('base_dir'), 'public', meta.config['brand:favicon'] ? meta.config['brand:favicon'] : 'favicon.ico');
+	var faviconPath = meta.config['brand:favicon'] || 'favicon.ico';
+	faviconPath = path.join(nconf.get('base_dir'), 'public', faviconPath.replace(/assets\/uploads/, 'uploads'));
 	if (file.existsSync(faviconPath)) {
 		app.use(nconf.get('relative_path'), favicon(faviconPath));
 	}
@@ -171,7 +172,7 @@ function setupCookie() {
 	var ttl = ttlSeconds || ttlDays || 1209600000; // Default to 14 days
 
 	var cookie = {
-		maxAge: ttl
+		maxAge: ttl,
 	};
 
 	if (nconf.get('cookieDomain') || meta.config.cookieDomain) {
@@ -220,7 +221,7 @@ function listen(callback) {
 		winston.info('Using ports 80 and 443 is not recommend; use a proxy instead. See README.md');
 	}
 
-	var bind_address = ((nconf.get('bind_address') === "0.0.0.0" || !nconf.get('bind_address')) ? '0.0.0.0' : nconf.get('bind_address'));
+	var bind_address = ((nconf.get('bind_address') === '0.0.0.0' || !nconf.get('bind_address')) ? '0.0.0.0' : nconf.get('bind_address'));
 	var args = isSocket ? [socketPath] : [port, bind_address];
 	var oldUmask;
 
@@ -283,5 +284,4 @@ module.exports.testSocket = function (socketPath, callback) {
 		async.apply(fs.unlink, socketPath),	// The socket was stale, kick it out of the way
 	], callback);
 };
-
 

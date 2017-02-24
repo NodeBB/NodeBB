@@ -37,12 +37,9 @@ settingsController.get = function (req, res, callback) {
 				homePageRoutes: function (next) {
 					getHomePageRoutes(next);
 				},
-				sounds: function (next) {
-					meta.sounds.getFiles(next);
-				},
 				soundsMapping: function (next) {
-					meta.sounds.getMapping(userData.uid, next);
-				}
+					meta.sounds.getUserSoundMap(userData.uid, next);
+				},
 			}, next);
 		},
 		function (results, next) {
@@ -50,56 +47,84 @@ settingsController.get = function (req, res, callback) {
 			userData.languages = results.languages;
 			userData.homePageRoutes = results.homePageRoutes;
 
-			var soundSettings = {
-				'notificationSound': 'notification',
-				'incomingChatSound': 'chat-incoming',
-				'outgoingChatSound': 'chat-outgoing'
+			var types = [
+				'notification',
+				'chat-incoming',
+				'chat-outgoing',
+			];
+			var aliases = {
+				notification: 'notificationSound',
+				'chat-incoming': 'incomingChatSound',
+				'chat-outgoing': 'outgoingChatSound',
 			};
 
-			Object.keys(soundSettings).forEach(function (setting) {
-				userData[setting] = Object.keys(results.sounds).map(function (name) {
-					return {name: name, selected: name === results.soundsMapping[soundSettings[setting]]};
+			types.forEach(function (type) {
+				var soundpacks = plugins.soundpacks.map(function (pack) {
+					var sounds = Object.keys(pack.sounds).map(function (soundName) {
+						var value = pack.name + ' | ' + soundName;
+						return {
+							name: soundName,
+							value: value,
+							selected: value === results.soundsMapping[type],
+						};
+					});
+
+					return {
+						name: pack.name,
+						sounds: sounds,
+					};
 				});
+
+				userData[type + '-sound'] = soundpacks;
+				// fallback
+				userData[aliases[type]] = soundpacks.concat.apply([], soundpacks.map(function (pack) {
+					return pack.sounds.map(function (sound) {
+						return {
+							name: sound.value,
+							selected: sound.selected,
+						};
+					});
+				}));
 			});
 
-			plugins.fireHook('filter:user.customSettings', {settings: results.settings, customSettings: [], uid: req.uid}, next);
+			plugins.fireHook('filter:user.customSettings', { settings: results.settings, customSettings: [], uid: req.uid }, next);
 		},
 		function (data, next) {
 			userData.customSettings = data.customSettings;
 			userData.disableEmailSubscriptions = parseInt(meta.config.disableEmailSubscriptions, 10) === 1;
 			next();
-		}
+		},
 	], function (err) {
 		if (err) {
 			return callback(err);
 		}
 
 		userData.dailyDigestFreqOptions = [
-			{value: 'off', name: '[[user:digest_off]]', selected: 'off' === userData.settings.dailyDigestFreq},
-			{value: 'day', name: '[[user:digest_daily]]', selected: 'day' === userData.settings.dailyDigestFreq},
-			{value: 'week', name: '[[user:digest_weekly]]', selected: 'week' === userData.settings.dailyDigestFreq},
-			{value: 'month', name: '[[user:digest_monthly]]', selected: 'month' === userData.settings.dailyDigestFreq}
+			{ value: 'off', name: '[[user:digest_off]]', selected: userData.settings.dailyDigestFreq === 'off' },
+			{ value: 'day', name: '[[user:digest_daily]]', selected: userData.settings.dailyDigestFreq === 'day' },
+			{ value: 'week', name: '[[user:digest_weekly]]', selected: userData.settings.dailyDigestFreq === 'week' },
+			{ value: 'month', name: '[[user:digest_monthly]]', selected: userData.settings.dailyDigestFreq === 'month' },
 		];
 
 
 		userData.bootswatchSkinOptions = [
-			{ "name": "Default", "value": "default" },
-			{ "name": "Cerulean", "value": "cerulean" },
-			{ "name": "Cosmo", "value": "cosmo"	},
-			{ "name": "Cyborg", "value": "cyborg" },
-			{ "name": "Darkly", "value": "darkly" },
-			{ "name": "Flatly", "value": "flatly" },
-			{ "name": "Journal", "value": "journal"	},
-			{ "name": "Lumen", "value": "lumen" },
-			{ "name": "Paper", "value": "paper" },
-			{ "name": "Readable", "value": "readable" },
-			{ "name": "Sandstone", "value": "sandstone" },
-			{ "name": "Simplex", "value": "simplex" },
-			{ "name": "Slate", "value": "slate"	},
-			{ "name": "Spacelab", "value": "spacelab" },
-			{ "name": "Superhero", "value": "superhero" },
-			{ "name": "United", "value": "united" },
-			{ "name": "Yeti", "value": "yeti" }
+			{ name: 'Default', value: 'default' },
+			{ name: 'Cerulean', value: 'cerulean' },
+			{ name: 'Cosmo', value: 'cosmo'	},
+			{ name: 'Cyborg', value: 'cyborg' },
+			{ name: 'Darkly', value: 'darkly' },
+			{ name: 'Flatly', value: 'flatly' },
+			{ name: 'Journal', value: 'journal'	},
+			{ name: 'Lumen', value: 'lumen' },
+			{ name: 'Paper', value: 'paper' },
+			{ name: 'Readable', value: 'readable' },
+			{ name: 'Sandstone', value: 'sandstone' },
+			{ name: 'Simplex', value: 'simplex' },
+			{ name: 'Slate', value: 'slate'	},
+			{ name: 'Spacelab', value: 'spacelab' },
+			{ name: 'Superhero', value: 'superhero' },
+			{ name: 'United', value: 'united' },
+			{ name: 'Yeti', value: 'yeti' },
 		];
 
 		var isCustom = true;
@@ -115,9 +140,9 @@ settingsController.get = function (req, res, callback) {
 		}
 
 		userData.homePageRoutes.push({
-		 	route: 'custom',
-		 	name: 'Custom',
-		 	selected: isCustom
+			route: 'custom',
+			name: 'Custom',
+			selected: isCustom,
 		});
 
 		userData.bootswatchSkinOptions.forEach(function (skin) {
@@ -135,7 +160,7 @@ settingsController.get = function (req, res, callback) {
 		userData.inTopicSearchAvailable = plugins.hasListeners('filter:topic.search');
 
 		userData.title = '[[pages:account/settings]]';
-		userData.breadcrumbs = helpers.buildBreadcrumbs([{text: userData.username, url: '/user/' + userData.userslug}, {text: '[[user:settings]]'}]);
+		userData.breadcrumbs = helpers.buildBreadcrumbs([{ text: userData.username, url: '/user/' + userData.userslug }, { text: '[[user:settings]]' }]);
 
 		res.render('account/settings', userData);
 	});
@@ -157,34 +182,34 @@ function getHomePageRoutes(callback) {
 			categoryData = categoryData.map(function (category) {
 				return {
 					route: 'category/' + category.slug,
-					name: 'Category: ' + category.name
+					name: 'Category: ' + category.name,
 				};
 			});
 
 			categoryData = categoryData || [];
 
-			plugins.fireHook('filter:homepage.get', {routes: [
+			plugins.fireHook('filter:homepage.get', { routes: [
 				{
 					route: 'categories',
-					name: 'Categories'
+					name: 'Categories',
 				},
 				{
 					route: 'unread',
-					name: 'Unread'
+					name: 'Unread',
 				},
 				{
 					route: 'recent',
-					name: 'Recent'
+					name: 'Recent',
 				},
 				{
 					route: 'popular',
-					name: 'Popular'
-				}
-			].concat(categoryData)}, next);
+					name: 'Popular',
+				},
+			].concat(categoryData) }, next);
 		},
 		function (data, next) {
 			next(null, data.routes);
-		}
+		},
 	], callback);
 }
 

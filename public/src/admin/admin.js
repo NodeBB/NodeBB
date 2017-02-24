@@ -1,5 +1,4 @@
-"use strict";
-/*global config, componentHandler, socket, app, bootbox, Slideout, NProgress, utils*/
+'use strict';
 
 (function () {
 	var logoutTimer = 0;
@@ -14,7 +13,7 @@
 				message: '[[login:logged-out-due-to-inactivity]]',
 				callback: function () {
 					window.location.reload();
-				}
+				},
 			});
 		}, 3600000);
 	}
@@ -34,7 +33,7 @@
 	$(document).ready(function () {
 		setupKeybindings();
 
-		if(!/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+		if (!/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
 			require(['admin/modules/search'], function (search) {
 				search.init();
 			});
@@ -109,14 +108,15 @@
 			var mainTitle;
 			var pageTitle;
 			if (/admin\/general\/dashboard$/.test(url)) {
-				mainTitle = pageTitle = '[[admin/menu:general/dashboard]]';
+				pageTitle = '[[admin/menu:general/dashboard]]';
+				mainTitle = pageTitle;
 			} else if (/admin\/plugins\//.test(url)) {
 				mainTitle = fallback;
 				pageTitle = '[[admin/menu:section-plugins]] > ' + mainTitle;
 			} else {
 				var matches = url.match(/admin\/(.+?)\/(.+?)$/);
 				mainTitle = '[[admin/menu:' + matches[1] + '/' + matches[2] + ']]';
-				pageTitle = '[[admin/menu:section-' + 
+				pageTitle = '[[admin/menu:section-' +
 					(matches[1] === 'development' ? 'advanced' : matches[1]) +
 					']]' + (matches[2] ? (' > ' + mainTitle) : '');
 				if (matches[2] === 'settings') {
@@ -158,14 +158,14 @@
 	}
 
 	function launchSnackbar(params) {
-		var message = (params.title ? "<strong>" + params.title + "</strong>" : '') + (params.message ? params.message : '');
+		var message = (params.title ? '<strong>' + params.title + '</strong>' : '') + (params.message ? params.message : '');
 
 		require(['translator'], function (translator) {
 			translator.translate(message, function (html) {
 				var bar = $.snackbar({
 					content: html,
 					timeout: params.timeout || 3000,
-					htmlAllowed: true
+					htmlAllowed: true,
 				});
 
 				if (params.clickfn) {
@@ -177,18 +177,18 @@
 
 	function configureSlidemenu() {
 		var env = utils.findBootstrapEnvironment();
-		
+
 		var slideout = new Slideout({
-			'panel': document.getElementById('panel'),
-			'menu': document.getElementById('menu'),
-			'padding': 256,
-			'tolerance': 70
+			panel: document.getElementById('panel'),
+			menu: document.getElementById('menu'),
+			padding: 256,
+			tolerance: 70,
 		});
-		
+
 		if (env === 'md' || env === 'lg') {
 			slideout.disableTouch();
 		}
-		
+
 		$('#mobile-menu').on('click', function () {
 			slideout.toggle();
 		});
@@ -199,35 +199,35 @@
 
 		$(window).on('resize', function () {
 			slideout.close();
-			
+
 			env = utils.findBootstrapEnvironment();
-			
+
 			if (env === 'md' || env === 'lg') {
 				slideout.disableTouch();
 				$('#header').css({
-					'position': 'relative'
-				});	
+					position: 'relative',
+				});
 			} else {
 				slideout.enableTouch();
 				$('#header').css({
-					'position': 'fixed'
+					position: 'fixed',
 				});
 			}
 		});
 
 		function onOpeningMenu() {
 			$('#header').css({
-				'top': $('#panel').position().top * -1 + 'px',
-				'position': 'absolute'
+				top: ($('#panel').position().top * -1) + 'px',
+				position: 'absolute',
 			});
 		}
 
 		slideout.on('open', onOpeningMenu);
-		
+
 		slideout.on('close', function () {
 			$('#header').css({
-				'top': '0px',
-				'position': 'fixed'
+				top: '0px',
+				position: 'fixed',
 			});
 		});
 	}

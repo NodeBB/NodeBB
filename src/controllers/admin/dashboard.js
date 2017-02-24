@@ -20,18 +20,26 @@ dashboardController.get = function (req, res, next) {
 				{
 					done: !meta.reloadRequired,
 					doneText: '[[admin/general/dashboard:restart-not-required]]',
-					notDoneText:'[[admin/general/dashboard:restart-required]]'
+					notDoneText: '[[admin/general/dashboard:restart-required]]',
 				},
 				{
 					done: plugins.hasListeners('filter:search.query'),
 					doneText: '[[admin/general/dashboard:search-plugin-installed]]',
-					notDoneText:'[[admin/general/dashboard:search-plugin-not-installed]]',
+					notDoneText: '[[admin/general/dashboard:search-plugin-not-installed]]',
 					tooltip: '[[admin/general/dashboard:search-plugin-tooltip]]',
-					link:'/admin/extend/plugins'
-				}
+					link: '/admin/extend/plugins',
+				},
 			];
+
+			if (global.env !== 'production') {
+				notices.push({
+					done: false,
+					notDoneText: '[[admin/general/dashboard:running-in-development]]',
+				});
+			}
+
 			plugins.fireHook('filter:admin.notices', notices, next);
-		}
+		},
 	}, function (err, results) {
 		if (err) {
 			return next(err);
@@ -39,7 +47,7 @@ dashboardController.get = function (req, res, next) {
 		res.render('admin/general/dashboard', {
 			version: nconf.get('version'),
 			notices: results.notices,
-			stats: results.stats
+			stats: results.stats,
 		});
 	});
 };
@@ -57,7 +65,7 @@ function getStats(callback) {
 		},
 		function (next) {
 			getStatsForSet('topics:tid', 'topicCount', next);
-		}
+		},
 	], function (err, results) {
 		if (err) {
 			return callback(err);
@@ -75,7 +83,7 @@ function getStatsForSet(set, field, callback) {
 	var terms = {
 		day: 86400000,
 		week: 604800000,
-		month: 2592000000
+		month: 2592000000,
 	};
 
 	var now = Date.now();
@@ -91,7 +99,7 @@ function getStatsForSet(set, field, callback) {
 		},
 		alltime: function (next) {
 			getGlobalField(field, next);
-		}
+		},
 	}, callback);
 }
 

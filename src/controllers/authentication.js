@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 var async = require('async');
 var winston = require('winston');
@@ -6,7 +6,6 @@ var passport = require('passport');
 var nconf = require('nconf');
 var validator = require('validator');
 var _ = require('underscore');
-var url = require('url');
 
 var db = require('../database');
 var meta = require('../meta');
@@ -19,7 +18,7 @@ var sockets = require('../socket.io');
 
 var authenticationController = {};
 
-authenticationController.register = function (req, res, next) {
+authenticationController.register = function (req, res) {
 	var registrationType = meta.config.registrationType || 'normal';
 
 	if (registrationType === 'disabled') {
@@ -74,7 +73,7 @@ authenticationController.register = function (req, res, next) {
 		},
 		function (queue, next) {
 			res.locals.processLogin = true;	// set it to false in plugin if you wish to just register only
-			plugins.fireHook('filter:register.check', {req: req, res: res, userData: userData, queue: queue}, next);
+			plugins.fireHook('filter:register.check', { req: req, res: res, userData: userData, queue: queue }, next);
 		},
 		function (data, next) {
 			if (data.queue) {
@@ -82,7 +81,7 @@ authenticationController.register = function (req, res, next) {
 			} else {
 				registerAndLoginUser(req, res, userData, next);
 			}
-		}
+		},
 	], function (err, data) {
 		if (err) {
 			return res.status(400).send(err.message);
@@ -102,7 +101,7 @@ function registerAndLoginUser(req, res, userData, callback) {
 		function (next) {
 			plugins.fireHook('filter:register.interstitial', {
 				userData: userData,
-				interstitials: []
+				interstitials: [],
 			}, function (err, data) {
 				if (err) {
 					return next(err);
@@ -113,11 +112,10 @@ function registerAndLoginUser(req, res, userData, callback) {
 
 				if (!deferRegistration) {
 					return next();
-				} else {
-					userData.register = true;
-					req.session.registration = userData;
-					return res.json({ referrer: nconf.get('relative_path') + '/register/complete' });
 				}
+				userData.register = true;
+				req.session.registration = userData;
+				return res.json({ referrer: nconf.get('relative_path') + '/register/complete' });
 			});
 		},
 		function (next) {
@@ -133,8 +131,8 @@ function registerAndLoginUser(req, res, userData, callback) {
 		},
 		function (next) {
 			user.deleteInvitationKey(userData.email);
-			plugins.fireHook('filter:register.complete', {uid: uid, referrer: req.body.referrer || nconf.get('relative_path') + '/'}, next);
-		}
+			plugins.fireHook('filter:register.complete', { uid: uid, referrer: req.body.referrer || nconf.get('relative_path') + '/' }, next);
+		},
 	], callback);
 }
 
@@ -145,8 +143,8 @@ function addToApprovalQueue(req, userData, callback) {
 			user.addToApprovalQueue(userData, next);
 		},
 		function (next) {
-			next(null, {message: '[[register:registration-added-to-queue]]'});
-		}
+			next(null, { message: '[[register:registration-added-to-queue]]' });
+		},
 	], callback);
 }
 
@@ -154,7 +152,7 @@ authenticationController.registerComplete = function (req, res, next) {
 	// For the interstitials that respond, execute the callback with the form body
 	plugins.fireHook('filter:register.interstitial', {
 		userData: req.session.registration,
-		interstitials: []
+		interstitials: [],
 	}, function (err, data) {
 		if (err) {
 			return next(err);
@@ -214,7 +212,7 @@ authenticationController.login = function (req, res, next) {
 			if (err) {
 				return next(err);
 			}
-			req.body.username = username ? username : req.body.username;
+			req.body.username = username || req.body.username;
 			continueLogin(req, res, next);
 		});
 	} else if (loginWith.indexOf('username') !== -1 && !validator.isEmail(req.body.username)) {
@@ -284,7 +282,7 @@ authenticationController.doLogin = function (req, uid, callback) {
 		return callback();
 	}
 
-	req.login({uid: uid}, function (err) {
+	req.login({ uid: uid }, function (err) {
 		if (err) {
 			return callback(err);
 		}
@@ -310,7 +308,7 @@ authenticationController.onSuccessfulLogin = function (req, uid, callback) {
 		datetime: Date.now(),
 		platform: req.useragent.platform,
 		browser: req.useragent.browser,
-		version: req.useragent.version
+		version: req.useragent.version,
 	});
 
 	// Associate login session with user
@@ -323,7 +321,7 @@ authenticationController.onSuccessfulLogin = function (req, uid, callback) {
 		},
 		function (next) {
 			user.updateLastOnlineTime(uid, next);
-		}
+		},
 	], function (err) {
 		if (err) {
 			return callback(err);
@@ -332,7 +330,7 @@ authenticationController.onSuccessfulLogin = function (req, uid, callback) {
 		// Force session check for all connected socket.io clients with the same session id
 		sockets.in('sess_' + req.sessionID).emit('checkSession', uid);
 
-		plugins.fireHook('action:user.loggedIn', {uid: uid, req: req});
+		plugins.fireHook('action:user.loggedIn', { uid: uid, req: req });
 		callback();
 	});
 };
@@ -343,7 +341,8 @@ authenticationController.localLogin = function (req, username, password, next) {
 	}
 
 	var userslug = utils.slugify(username);
-	var uid, userData = {};
+	var uid;
+	var userData = {};
 
 	async.waterfall([
 		function (next) {
@@ -369,7 +368,7 @@ authenticationController.localLogin = function (req, username, password, next) {
 				},
 				banned: function (next) {
 					user.isBanned(uid, next);
-				}
+				},
 			}, next);
 		},
 		function (result, next) {
@@ -408,7 +407,7 @@ authenticationController.localLogin = function (req, username, password, next) {
 			}
 			user.auth.clearLoginAttempts(uid);
 			next(null, userData, '[[success:authentication-successful]]');
-		}
+		},
 	], next);
 };
 
@@ -426,7 +425,7 @@ authenticationController.logout = function (req, res, next) {
 
 			user.setUserField(uid, 'lastonline', Date.now() - 300000);
 
-			plugins.fireHook('static:user.loggedOut', {req: req, res: res, uid: uid}, function () {
+			plugins.fireHook('static:user.loggedOut', { req: req, res: res, uid: uid }, function () {
 				res.status(200).send('');
 
 				// Force session check for all connected socket.io clients with the same session id

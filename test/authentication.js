@@ -1,5 +1,5 @@
 'use strict';
-/*global require, before*/
+
 
 var	assert = require('assert');
 var nconf = require('nconf');
@@ -12,7 +12,7 @@ describe('authentication', function () {
 	var jar = request.jar();
 	var regularUid;
 	before(function (done) {
-		user.create({username: 'regular', password: 'regularpwd', email: 'regular@nodebb.org' }, function (err, uid) {
+		user.create({ username: 'regular', password: 'regularpwd', email: 'regular@nodebb.org' }, function (err, uid) {
 			assert.ifError(err);
 			regularUid = uid;
 			done();
@@ -23,7 +23,7 @@ describe('authentication', function () {
 		request({
 			url: nconf.get('url') + '/api/config',
 			json: true,
-			jar: jar
+			jar: jar,
 		}, function (err, response, body) {
 			assert.ifError(err);
 
@@ -36,8 +36,8 @@ describe('authentication', function () {
 				json: true,
 				jar: jar,
 				headers: {
-					'x-csrf-token': body.csrf_token
-				}
+					'x-csrf-token': body.csrf_token,
+				},
 			}, function (err, response, body) {
 				assert.ifError(err);
 				assert(body);
@@ -45,7 +45,7 @@ describe('authentication', function () {
 				request({
 					url: nconf.get('url') + '/api/me',
 					json: true,
-					jar: jar
+					jar: jar,
 				}, function (err, response, body) {
 					assert.ifError(err);
 					assert(body);
@@ -61,7 +61,7 @@ describe('authentication', function () {
 		request({
 			url: nconf.get('url') + '/api/config',
 			json: true,
-			jar: jar
+			jar: jar,
 		}, function (err, response, body) {
 			assert.ifError(err);
 
@@ -70,15 +70,15 @@ describe('authentication', function () {
 				json: true,
 				jar: jar,
 				headers: {
-					'x-csrf-token': body.csrf_token
-				}
+					'x-csrf-token': body.csrf_token,
+				},
 			}, function (err) {
 				assert.ifError(err);
 
 				request({
 					url: nconf.get('url') + '/api/me',
 					json: true,
-					jar: jar
+					jar: jar,
 				}, function (err, response, body) {
 					assert.ifError(err);
 					assert.equal(body, 'not-authorized');
@@ -93,7 +93,7 @@ describe('authentication', function () {
 		request({
 			url: nconf.get('url') + '/api/config',
 			json: true,
-			jar: jar
+			jar: jar,
 		}, function (err, response, body) {
 			assert.ifError(err);
 
@@ -105,8 +105,8 @@ describe('authentication', function () {
 				json: true,
 				jar: jar,
 				headers: {
-					'x-csrf-token': body.csrf_token
-				}
+					'x-csrf-token': body.csrf_token,
+				},
 			}, function (err, response, body) {
 				assert.ifError(err);
 				assert(body);
@@ -114,7 +114,7 @@ describe('authentication', function () {
 				request({
 					url: nconf.get('url') + '/api/me',
 					json: true,
-					jar: jar
+					jar: jar,
 				}, function (err, response, body) {
 					assert.ifError(err);
 					assert(body);
@@ -136,7 +136,7 @@ describe('authentication', function () {
 		db.sortedSetCard('uid:' + regularUid + ':sessions', function (err, count) {
 			assert.ifError(err);
 			assert(count);
-			socketAdmin.deleteAllSessions({uid: 1}, {}, function (err) {
+			socketAdmin.deleteAllSessions({ uid: 1 }, {}, function (err) {
 				assert.ifError(err);
 				db.sortedSetCard('uid:' + regularUid + ':sessions', function (err, count) {
 					assert.ifError(err);
@@ -145,13 +145,11 @@ describe('authentication', function () {
 				});
 			});
 		});
-
 	});
 
 
 	after(function (done) {
 		db.emptydb(done);
 	});
-
 });
 

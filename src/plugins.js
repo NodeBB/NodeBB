@@ -32,6 +32,7 @@ var middleware;
 	Plugins.libraryPaths = [];
 	Plugins.versionWarning = [];
 	Plugins.languageCodes = [];
+	Plugins.soundpacks = [];
 
 	Plugins.initialized = false;
 
@@ -107,7 +108,7 @@ var middleware;
 				if (Plugins.versionWarning.length && nconf.get('isPrimary') === 'true') {
 					process.stdout.write('\n');
 					winston.warn('[plugins/load] The following plugins may not be compatible with your version of NodeBB. This may cause unintended behaviour or crashing. In the event of an unresponsive NodeBB caused by this plugin, run `./nodebb reset -p PLUGINNAME` to disable it.');
-					for(var x = 0,numPlugins = Plugins.versionWarning.length; x < numPlugins; x++) {
+					for (var x = 0, numPlugins = Plugins.versionWarning.length; x < numPlugins; x += 1) {
 						process.stdout.write('  * '.yellow + Plugins.versionWarning[x] + '\n');
 					}
 					process.stdout.write('\n');
@@ -115,13 +116,13 @@ var middleware;
 
 				Object.keys(Plugins.loadedHooks).forEach(function (hook) {
 					var hooks = Plugins.loadedHooks[hook];
-					hooks = hooks.sort(function (a, b) {
+					hooks.sort(function (a, b) {
 						return a.priority - b.priority;
 					});
 				});
 
 				next();
-			}
+			},
 		], callback);
 	};
 
@@ -135,7 +136,7 @@ var middleware;
 		};
 
 		var controllers = require('./controllers');
-		Plugins.fireHook('static:app.load', {app: app, router: router, middleware: middleware, controllers: controllers}, function (err) {
+		Plugins.fireHook('static:app.load', { app: app, router: router, middleware: middleware, controllers: controllers }, function (err) {
 			if (err) {
 				return winston.error('[plugins] Encountered error while executing post-router plugins hooks: ' + err.message);
 			}
@@ -147,8 +148,8 @@ var middleware;
 	};
 
 	Plugins.getTemplates = function (callback) {
-		var templates = {},
-			tplName;
+		var templates = {};
+		var tplName;
 
 		async.waterfall([
 			async.apply(db.getSortedSetRange, 'plugins:active', 0, -1),
@@ -163,7 +164,7 @@ var middleware;
 			},
 			function (paths, next) {
 				async.map(paths, Plugins.loadPluginInfo, next);
-			}
+			},
 		], function (err, plugins) {
 			if (err) {
 				return callback(err);
@@ -177,7 +178,7 @@ var middleware;
 						if (pluginTemplates) {
 							pluginTemplates.forEach(function (pluginTemplate) {
 								if (pluginTemplate.endsWith('.tpl')) {
-									tplName = "/" + pluginTemplate.replace(templatesPath, '').substring(1);
+									tplName = '/' + pluginTemplate.replace(templatesPath, '').substring(1);
 
 									if (templates.hasOwnProperty(tplName)) {
 										winston.verbose('[plugins] ' + tplName + ' replaced by ' + plugin.id);
@@ -188,12 +189,10 @@ var middleware;
 									winston.warn('[plugins] Skipping ' + pluginTemplate + ' by plugin ' + plugin.id);
 								}
 							});
+						} else if (err) {
+							winston.error(err);
 						} else {
-							if (err) {
-								winston.error(err);
-							} else {
-								winston.warn('[plugins/' + plugin.id + '] A templates directory was defined for this plugin, but was not found.');
-							}
+							winston.warn('[plugins/' + plugin.id + '] A templates directory was defined for this plugin, but was not found.');
 						}
 
 						next(false);
@@ -211,7 +210,7 @@ var middleware;
 		var url = (nconf.get('registry') || 'https://packages.nodebb.org') + '/api/v1/plugins/' + id;
 
 		require('request')(url, {
-			json: true
+			json: true,
 		}, function (err, res, body) {
 			if (res.statusCode === 404 || !body.payload) {
 				return callback(err, {});
@@ -235,7 +234,7 @@ var middleware;
 		var url = (nconf.get('registry') || 'https://packages.nodebb.org') + '/api/v1/plugins' + (matching !== false ? '?version=' + version : '');
 
 		require('request')(url, {
-			json: true
+			json: true,
 		}, function (err, res, body) {
 			if (err) {
 				winston.error('Error parsing plugins : ' + err.message);
@@ -250,11 +249,11 @@ var middleware;
 		var pluginMap = {};
 		var dependencies = require(path.join(nconf.get('base_dir'), 'package.json')).dependencies;
 		apiReturn = apiReturn || [];
-		for(var i = 0; i < apiReturn.length; ++i) {
+		for (var i = 0; i < apiReturn.length; i += 1) {
 			apiReturn[i].id = apiReturn[i].name;
 			apiReturn[i].installed = false;
 			apiReturn[i].active = false;
-			apiReturn[i].url = apiReturn[i].url ? apiReturn[i].url : apiReturn[i].repository ? apiReturn[i].repository.url : '';
+			apiReturn[i].url = apiReturn[i].url || (apiReturn[i].repository ? apiReturn[i].repository.url : '');
 			pluginMap[apiReturn[i].name] = apiReturn[i];
 		}
 
@@ -310,13 +309,12 @@ var middleware;
 				}
 
 				pluginArray.sort(function (a, b) {
-					if (a.name > b.name ) {
+					if (a.name > b.name) {
 						return 1;
-					} else if (a.name < b.name ) {
+					} else if (a.name < b.name) {
 						return -1;
-					} else {
-						return 0;
 					}
+					return 0;
 				});
 
 				callback(null, pluginArray);
@@ -374,7 +372,7 @@ var middleware;
 								pluginData.error = false;
 								next(null, pluginData);
 							});
-						}
+						},
 					], function (err, pluginData) {
 						if (err) {
 							return next(); // Silently fail
@@ -386,8 +384,7 @@ var middleware;
 				}, function (err) {
 					next(err, plugins);
 				});
-			}
+			},
 		], callback);
 	};
-
 }(exports));

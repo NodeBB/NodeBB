@@ -1,5 +1,5 @@
-"use strict";
-/*globals define, app, ajaxify, socket, config*/
+'use strict';
+
 
 define('forum/reset_code', function () {
 	var	ResetCode = {};
@@ -20,7 +20,7 @@ define('forum/reset_code', function () {
 				resetEl.prop('disabled', true).html('<i class="fa fa-spin fa-refresh"></i> Changing Password');
 				socket.emit('user.reset.commit', {
 					code: reset_code,
-					password: password.val()
+					password: password.val(),
 				}, function (err) {
 					if (err) {
 						ajaxify.refresh();

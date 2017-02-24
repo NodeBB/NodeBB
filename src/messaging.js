@@ -57,7 +57,7 @@ Messaging.getMessages = function (params, callback) {
 				messageData.index = indices[messageData.messageId.toString()];
 			});
 			next(null, messageData);
-		}
+		},
 	], callback);
 };
 
@@ -65,7 +65,7 @@ function canGet(hook, callerUid, uid, callback) {
 	plugins.fireHook(hook, {
 		callerUid: callerUid,
 		uid: uid,
-		canGet: parseInt(callerUid, 10) === parseInt(uid, 10)
+		canGet: parseInt(callerUid, 10) === parseInt(uid, 10),
 	}, function (err, data) {
 		callback(err, data ? data.canGet : false);
 	});
@@ -84,7 +84,7 @@ Messaging.parse = function (message, fromuid, uid, roomId, isNew, callback) {
 			uid: uid,
 			roomId: roomId,
 			isNew: isNew,
-			parsedMessage: parsed
+			parsedMessage: parsed,
 		};
 
 		plugins.fireHook('filter:messaging.parse', messageData, function (err, messageData) {
@@ -106,7 +106,7 @@ Messaging.isNewSet = function (uid, roomId, timestamp, callback) {
 			} else {
 				next(null, true);
 			}
-		}
+		},
 	], callback);
 };
 
@@ -139,7 +139,7 @@ Messaging.getRecentChats = function (callerUid, uid, start, stop, callback) {
 							uids = uids.filter(function (value) {
 								return value && parseInt(value, 10) !== parseInt(uid, 10);
 							});
-							user.getUsersFields(uids, ['uid', 'username', 'userslug', 'picture', 'status', 'lastonline'] , next);
+							user.getUsersFields(uids, ['uid', 'username', 'userslug', 'picture', 'status', 'lastonline'], next);
 						});
 					}, next);
 				},
@@ -147,7 +147,7 @@ Messaging.getRecentChats = function (callerUid, uid, start, stop, callback) {
 					async.map(roomIds, function (roomId, next) {
 						Messaging.getTeaser(uid, roomId, next);
 					}, next);
-				}
+				},
 			}, next);
 		},
 		function (results, next) {
@@ -170,8 +170,8 @@ Messaging.getRecentChats = function (callerUid, uid, start, stop, callback) {
 				room.usernames = Messaging.generateUsernames(room.users, uid);
 			});
 
-			next(null, {rooms: results.roomData, nextStart: stop + 1});
-		}
+			next(null, { rooms: results.roomData, nextStart: stop + 1 });
+		},
 	], callback);
 };
 
@@ -206,19 +206,19 @@ Messaging.getTeaser = function (uid, roomId, callback) {
 			}
 
 			teaser.timestampISO = utils.toISOString(teaser.timestamp);
-			user.getUserFields(teaser.fromuid, ['uid', 'username', 'userslug', 'picture', 'status', 'lastonline'] , next);
+			user.getUserFields(teaser.fromuid, ['uid', 'username', 'userslug', 'picture', 'status', 'lastonline'], next);
 		},
 		function (user, next) {
 			teaser.user = user;
 			plugins.fireHook('filter:messaging.getTeaser', { teaser: teaser }, function (err, data) {
 				next(err, data.teaser);
 			});
-		}
+		},
 	], callback);
 };
 
 Messaging.canMessageUser = function (uid, toUid, callback) {
-	if (parseInt(meta.config.disableChat) === 1 || !uid || uid === toUid) {
+	if (parseInt(meta.config.disableChat, 10) === 1 || !uid || uid === toUid) {
 		return callback(new Error('[[error:chat-disabled]]'));
 	}
 
@@ -248,7 +248,7 @@ Messaging.canMessageUser = function (uid, toUid, callback) {
 			async.parallel({
 				settings: async.apply(user.getSettings, toUid),
 				isAdmin: async.apply(user.isAdministrator, uid),
-				isFollowing: async.apply(user.isFollowing, toUid, uid)
+				isFollowing: async.apply(user.isFollowing, toUid, uid),
 			}, next);
 		},
 		function (results, next) {
@@ -256,13 +256,13 @@ Messaging.canMessageUser = function (uid, toUid, callback) {
 				return next();
 			}
 
-				next(new Error('[[error:chat-restricted]]'));
-		}
+			next(new Error('[[error:chat-restricted]]'));
+		},
 	], callback);
 };
 
 Messaging.canMessageRoom = function (uid, roomId, callback) {
-	if (parseInt(meta.config.disableChat) === 1 || !uid) {
+	if (parseInt(meta.config.disableChat, 10) === 1 || !uid) {
 		return callback(new Error('[[error:chat-disabled]]'));
 	}
 
@@ -294,7 +294,7 @@ Messaging.canMessageRoom = function (uid, roomId, callback) {
 			}
 
 			next();
-		}
+		},
 	], callback);
 };
 
@@ -306,7 +306,7 @@ Messaging.hasPrivateChat = function (uid, withUid, callback) {
 		function (next) {
 			async.parallel({
 				myRooms: async.apply(db.getSortedSetRevRange, 'uid:' + uid + ':chat:rooms', 0, -1),
-				theirRooms: async.apply(db.getSortedSetRevRange, 'uid:' + withUid + ':chat:rooms', 0, -1)
+				theirRooms: async.apply(db.getSortedSetRevRange, 'uid:' + withUid + ':chat:rooms', 0, -1),
 			}, next);
 		},
 		function (results, next) {
@@ -331,13 +331,13 @@ Messaging.hasPrivateChat = function (uid, withUid, callback) {
 						roomId = roomIds[index];
 						next(null, roomId);
 					} else {
-						++ index;
+						index += 1;
 						next();
 					}
 				});
 			}, function (err) {
 				next(err, roomId);
 			});
-		}
+		},
 	], callback);
 };

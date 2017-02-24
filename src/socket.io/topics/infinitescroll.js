@@ -9,9 +9,8 @@ var utils = require('../../../public/src/utils');
 var social = require('../../social');
 
 module.exports = function (SocketTopics) {
-
 	SocketTopics.loadMore = function (socket, data, callback) {
-		if (!data || !data.tid || !utils.isNumber(data.after) || parseInt(data.after, 10) < 0)  {
+		if (!data || !data.tid || !utils.isNumber(data.after) || parseInt(data.after, 10) < 0) {
 			return callback(new Error('[[error:invalid-data]]'));
 		}
 		var userPrivileges;
@@ -24,7 +23,7 @@ module.exports = function (SocketTopics) {
 					},
 					topic: function (next) {
 						topics.getTopicFields(data.tid, ['postcount', 'deleted'], next);
-					}
+					},
 				}, next);
 			},
 			function (results, next) {
@@ -47,12 +46,10 @@ module.exports = function (SocketTopics) {
 					if (reverse) {
 						start = results.topic.postcount - start;
 					}
+				} else if (reverse) {
+					start = results.topic.postcount - start - infScrollPostsPerPage - 1;
 				} else {
-					if (reverse) {
-						start = results.topic.postcount - start - infScrollPostsPerPage - 1;
-					} else {
-						start = start - infScrollPostsPerPage - 1;
-					}
+					start = start - infScrollPostsPerPage - 1;
 				}
 
 				var stop = start + (infScrollPostsPerPage - 1);
@@ -72,7 +69,7 @@ module.exports = function (SocketTopics) {
 					},
 					postSharing: function (next) {
 						social.getActivePostSharing(next);
-					}
+					},
 				}, next);
 			},
 			function (topicData, next) {
@@ -86,7 +83,7 @@ module.exports = function (SocketTopics) {
 
 				topics.modifyPostsByPrivilege(topicData, userPrivileges);
 				next(null, topicData);
-			}
+			},
 		], callback);
 	};
 
@@ -98,7 +95,7 @@ module.exports = function (SocketTopics) {
 		var start = parseInt(data.after, 10);
 		var stop = start + 9;
 
-		topics.getUnreadTopics({cid: data.cid, uid: socket.uid, start: start, stop: stop, filter: data.filter}, callback);
+		topics.getUnreadTopics({ cid: data.cid, uid: socket.uid, start: start, stop: stop, filter: data.filter }, callback);
 	};
 
 	SocketTopics.loadMoreRecentTopics = function (socket, data, callback) {
@@ -122,5 +119,4 @@ module.exports = function (SocketTopics) {
 
 		topics.getTopicsFromSet(data.set, socket.uid, start, stop, callback);
 	};
-
 };

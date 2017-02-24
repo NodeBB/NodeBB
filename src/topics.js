@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 var async = require('async');
 var _ = require('underscore');
@@ -13,7 +13,6 @@ var privileges = require('./privileges');
 var social = require('./social');
 
 (function (Topics) {
-
 	require('./topics/data')(Topics);
 	require('./topics/create')(Topics);
 	require('./topics/delete')(Topics);
@@ -50,7 +49,7 @@ var social = require('./social');
 			},
 			function (settings, next) {
 				next(null, Math.ceil((parseInt(postCount, 10) - 1) / settings.postsPerPage));
-			}
+			},
 		], callback);
 	};
 
@@ -68,8 +67,8 @@ var social = require('./social');
 				Topics.getTopics(tids, uid, next);
 			},
 			function (topics, next) {
-				next(null, {topics: topics, nextStart: stop + 1});
-			}
+				next(null, { topics: topics, nextStart: stop + 1 });
+			},
 		], callback);
 	};
 
@@ -80,7 +79,7 @@ var social = require('./social');
 			},
 			function (tids, next) {
 				Topics.getTopicsByTids(tids, uid, next);
-			}
+			},
 		], callback);
 	};
 
@@ -89,7 +88,9 @@ var social = require('./social');
 			return callback(null, []);
 		}
 
-		var uids, cids, topics;
+		var uids;
+		var cids;
+		var topics;
 
 		async.waterfall([
 			function (next) {
@@ -129,14 +130,14 @@ var social = require('./social');
 					},
 					tags: function (next) {
 						Topics.getTopicsTagsObjects(tids, next);
-					}
+					},
 				}, next);
 			},
 			function (results, next) {
 				var users = _.object(uids, results.users);
 				var categories = _.object(cids, results.categories);
 
-				for (var i = 0; i < topics.length; ++i) {
+				for (var i = 0; i < topics.length; i += 1) {
 					if (topics[i]) {
 						topics[i].category = categories[topics[i].cid];
 						topics[i].user = users[topics[i].uid];
@@ -160,11 +161,11 @@ var social = require('./social');
 					return topic &&	topic.category && !topic.category.disabled;
 				});
 
-				plugins.fireHook('filter:topics.get', {topics: topics, uid: uid}, next);
+				plugins.fireHook('filter:topics.get', { topics: topics, uid: uid }, next);
 			},
 			function (data, next) {
 				next(null, data.topics);
-			}
+			},
 		], callback);
 	};
 
@@ -174,7 +175,7 @@ var social = require('./social');
 				async.parallel({
 					posts: async.apply(getMainPostAndReplies, topicData, set, uid, start, stop, reverse),
 					category: async.apply(Topics.getCategoryData, topicData.tid),
-					threadTools: async.apply(plugins.fireHook, 'filter:topic.thread_tools', {topic: topicData, uid: uid, tools: []}),
+					threadTools: async.apply(plugins.fireHook, 'filter:topic.thread_tools', { topic: topicData, uid: uid, tools: [] }),
 					isFollowing: async.apply(Topics.isFollowing, [topicData.tid], uid),
 					isIgnoring: async.apply(Topics.isIgnoring, [topicData.tid], uid),
 					bookmark: async.apply(Topics.getUserBookmark, topicData.tid, uid),
@@ -187,9 +188,9 @@ var social = require('./social');
 							function (tags, next) {
 								topicData.tags = tags;
 								Topics.getRelatedTopics(topicData, uid, next);
-							}
+							},
 						], next);
-					}
+					},
 				}, next);
 			},
 			function (results, next) {
@@ -210,11 +211,11 @@ var social = require('./social');
 
 				topicData.icons = [];
 
-				plugins.fireHook('filter:topic.get', {topic: topicData, uid: uid}, next);
+				plugins.fireHook('filter:topic.get', { topic: topicData, uid: uid }, next);
 			},
 			function (data, next) {
 				next(null, data.topic);
-			}
+			},
 		], callback);
 	};
 
@@ -222,9 +223,9 @@ var social = require('./social');
 		async.waterfall([
 			function (next) {
 				if (stop > 0) {
-					stop--;
+					stop -= 1;
 					if (start > 0) {
-						start --;
+						start -= 1;
 					}
 				}
 
@@ -253,7 +254,7 @@ var social = require('./social');
 				Topics.calculatePostIndices(replies, start, stop, topic.postcount, reverse);
 
 				Topics.addPostData(posts, uid, next);
-			}
+			},
 		], callback);
 	}
 
@@ -313,11 +314,10 @@ var social = require('./social');
 		if (plugins.hasListeners('filter:topic.search')) {
 			plugins.fireHook('filter:topic.search', {
 				tid: tid,
-				term: term
+				term: term,
 			}, callback);
 		} else {
 			callback(new Error('no-plugins-available'), []);
 		}
 	};
-
 }(exports));

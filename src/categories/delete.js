@@ -9,7 +9,6 @@ var groups = require('../groups');
 var privileges = require('../privileges');
 
 module.exports = function (Categories) {
-
 	Categories.purge = function (cid, uid, callback) {
 		async.waterfall([
 			function (next) {
@@ -17,7 +16,7 @@ module.exports = function (Categories) {
 					async.eachLimit(tids, 10, function (tid, next) {
 						topics.purgePostsAndTopic(tid, uid, next);
 					}, next);
-				}, {alwaysStartAt: 0}, next);
+				}, { alwaysStartAt: 0 }, next);
 			},
 			function (next) {
 				Categories.getPinnedTids('cid:' + cid + ':tids:pinned', 0, -1, next);
@@ -31,9 +30,9 @@ module.exports = function (Categories) {
 				purgeCategory(cid, next);
 			},
 			function (next) {
-				plugins.fireHook('action:category.delete', {cid: cid, uid: uid});
+				plugins.fireHook('action:category.delete', { cid: cid, uid: uid });
 				next();
-			}
+			},
 		], callback);
 	};
 
@@ -55,14 +54,14 @@ module.exports = function (Categories) {
 					'cid:' + cid + ':ignorers',
 					'cid:' + cid + ':children',
 					'cid:' + cid + ':tag:whitelist',
-					'category:' + cid
+					'category:' + cid,
 				], next);
 			},
 			function (next) {
 				async.each(privileges.privilegeList, function (privilege, next) {
 					groups.destroy('cid:' + cid + ':privileges:' + privilege, next);
 				}, next);
-			}
+			},
 		], function (err) {
 			callback(err);
 		});
@@ -77,7 +76,7 @@ module.exports = function (Categories) {
 					},
 					children: function (next) {
 						db.getSortedSetRange('cid:' + cid + ':children', 0, -1, next);
-					}
+					},
 				}, next);
 			},
 			function (results, next) {
@@ -94,12 +93,12 @@ module.exports = function (Categories) {
 								},
 								function (next) {
 									db.sortedSetAdd('cid:0:children', cid, cid, next);
-								}
+								},
 							], next);
 						}, next);
-					}
+					},
 				], next);
-			}
+			},
 		], function (err) {
 			callback(err);
 		});

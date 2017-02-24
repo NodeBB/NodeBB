@@ -1,4 +1,5 @@
 /* jslint node: true */
+
 'use strict';
 
 var async = require('async');
@@ -10,22 +11,22 @@ var utils = require('../public/src/utils');
 var Upgrade = {
 	available: [
 		{
-			version: "1.2.0",
-			upgrades: ['category_recent_tids']
+			version: '1.2.0',
+			upgrades: ['category_recent_tids'],
 		},
 		{
-			version: "1.3.0",
-			upgrades: ['favourites_to_bookmarks', 'sorted_sets_for_post_replies']
+			version: '1.3.0',
+			upgrades: ['favourites_to_bookmarks', 'sorted_sets_for_post_replies'],
 		},
 		{
-			version: "1.4.0",
-			upgrades: ['global_and_user_language_keys', 'sorted_set_for_pinned_topics']
+			version: '1.4.0',
+			upgrades: ['global_and_user_language_keys', 'sorted_set_for_pinned_topics'],
 		},
 		{
-			version: "1.5.0",
-			upgrades: ['flags_refactor']
-		}
-	]
+			version: '1.5.0',
+			upgrades: ['flags_refactor'],
+		},
+	],
 };
 
 Upgrade.run = function (callback) {
@@ -44,7 +45,7 @@ Upgrade.run = function (callback) {
 				if (completed.indexOf(filename) === -1) {
 					memo.push(path.join(__dirname, './upgrades', filename));
 				} else {
-					++skipped;
+					skipped += 1;
 				}
 			});
 
@@ -64,7 +65,7 @@ Upgrade.runSingle = function (query, callback) {
 			next(null, files.filter(function (file) {
 				return file.search(new RegExp(query)) !== -1;
 			}));
-		}
+		},
 	], function (err, files) {
 		if (err) {
 			return callback(err);

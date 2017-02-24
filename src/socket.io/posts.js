@@ -1,6 +1,6 @@
-"use strict";
+'use strict';
 
-var	async = require('async');
+var async = require('async');
 
 var posts = require('../posts');
 var privileges = require('../privileges');
@@ -30,25 +30,26 @@ SocketPosts.reply = function (socket, data, callback) {
 	data.req = websockets.reqFromSocket(socket);
 	data.timestamp = Date.now();
 
-	topics.reply(data, function (err, postData) {
-		if (err) {
-			return callback(err);
-		}
+	async.waterfall([
+		function (next) {
+			topics.reply(data, next);
+		},
+		function (postData, next) {
+			var result = {
+				posts: [postData],
+				'reputation:disabled': parseInt(meta.config['reputation:disabled'], 10) === 1,
+				'downvote:disabled': parseInt(meta.config['downvote:disabled'], 10) === 1,
+			};
 
-		var result = {
-			posts: [postData],
-			'reputation:disabled': parseInt(meta.config['reputation:disabled'], 10) === 1,
-			'downvote:disabled': parseInt(meta.config['downvote:disabled'], 10) === 1,
-		};
+			next(null, postData);
 
-		callback(null, postData);
+			websockets.in('uid_' + socket.uid).emit('event:new_post', result);
 
-		websockets.in('uid_' + socket.uid).emit('event:new_post', result);
+			user.updateOnlineUsers(socket.uid);
 
-		user.updateOnlineUsers(socket.uid);
-
-		socketHelpers.notifyNew(socket.uid, 'newPost', result);
-	});
+			socketHelpers.notifyNew(socket.uid, 'newPost', result);
+		},
+	], callback);
 };
 
 SocketPosts.getRawPost = function (socket, pid, callback) {
@@ -67,7 +68,7 @@ SocketPosts.getRawPost = function (socket, pid, callback) {
 				return next(new Error('[[error:no-post]]'));
 			}
 			next(null, postData.content);
-		}
+		},
 	], callback);
 };
 
@@ -119,7 +120,7 @@ SocketPosts.getPidIndex = function (socket, data, callback) {
 
 SocketPosts.getReplies = function (socket, pid, callback) {
 	if (!utils.isNumber(pid)) {
-		return callback(new Error('[[error:invalid-data]'));
+		return callback(new Error('[[error:invalid-data]]'));
 	}
 	var postPrivileges;
 	async.waterfall([
@@ -133,7 +134,7 @@ SocketPosts.getReplies = function (socket, pid, callback) {
 				},
 				privileges: function (next) {
 					privileges.posts.get(pids, socket.uid, next);
-				}
+				},
 			}, next);
 		},
 		function (results, next) {
@@ -148,7 +149,7 @@ SocketPosts.getReplies = function (socket, pid, callback) {
 				posts.modifyPostByPrivilege(postData, postPrivileges.isAdminOrMod);
 			});
 			next(null, postData);
-		}
+		},
 	], callback);
 };
 

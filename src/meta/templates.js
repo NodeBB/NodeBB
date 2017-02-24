@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 var mkdirp = require('mkdirp');
 var rimraf = require('rimraf');
@@ -21,8 +21,9 @@ Templates.compile = function (callback) {
 
 
 function getBaseTemplates(theme) {
-	var baseTemplatesPaths = [],
-		baseThemePath, baseThemeConfig;
+	var baseTemplatesPaths = [];
+	var baseThemePath;
+	var baseThemeConfig;
 
 	while (theme) {
 		baseThemePath = path.join(nconf.get('themes_path'), theme);
@@ -51,7 +52,7 @@ function preparePaths(baseTemplatesPaths, callback) {
 		},
 		function (next) {
 			plugins.getTemplates(next);
-		}
+		},
 	], function (err, pluginTemplates) {
 		if (err) {
 			return callback(err);
@@ -69,18 +70,18 @@ function preparePaths(baseTemplatesPaths, callback) {
 						paths = paths.map(function (tpl) {
 							return {
 								base: baseTemplatePath,
-								path: tpl.replace(baseTemplatePath, '')
+								path: tpl.replace(baseTemplatePath, ''),
 							};
 						});
 
 						next(err, paths);
 					});
 				}, next);
-			}
+			},
 		}, function (err, data) {
-			var baseThemes = data.baseThemes,
-				coreTpls = data.coreTpls,
-				paths = {};
+			var baseThemes = data.baseThemes;
+			var coreTpls = data.coreTpls;
+			var paths = {};
 
 			coreTpls.forEach(function (el, i) {
 				paths[coreTpls[i].replace(coreTemplatesPath, '')] = coreTpls[i];
@@ -104,9 +105,9 @@ function preparePaths(baseTemplatesPaths, callback) {
 }
 
 function compile(callback) {
-	var themeConfig = require(nconf.get('theme_config')),
-		baseTemplatesPaths = themeConfig.baseTheme ? getBaseTemplates(themeConfig.baseTheme) : [nconf.get('base_templates_path')],
-		viewsPath = nconf.get('views_dir');
+	var themeConfig = require(nconf.get('theme_config'));
+	var baseTemplatesPaths = themeConfig.baseTheme ? getBaseTemplates(themeConfig.baseTheme) : [nconf.get('base_templates_path')];
+	var viewsPath = nconf.get('views_dir');
 
 
 	preparePaths(baseTemplatesPaths, function (err, paths) {
@@ -115,19 +116,20 @@ function compile(callback) {
 		}
 
 		async.each(Object.keys(paths), function (relativePath, next) {
-			var file = fs.readFileSync(paths[relativePath]).toString(),
-				matches = null,
-				regex = /[ \t]*<!-- IMPORT ([\s\S]*?)? -->[ \t]*/;
+			var file = fs.readFileSync(paths[relativePath]).toString();
+			var regex = /[ \t]*<!-- IMPORT ([\s\S]*?)? -->[ \t]*/;
+			var matches = file.match(regex);
 
-			while((matches = file.match(regex)) !== null) {
-				var partial = "/" + matches[1];
+			while (matches !== null) {
+				var partial = '/' + matches[1];
 
 				if (paths[partial] && relativePath !== partial) {
 					file = file.replace(regex, fs.readFileSync(paths[partial]).toString());
 				} else {
 					winston.warn('[meta/templates] Partial not loaded: ' + matches[1]);
-					file = file.replace(regex, "");
+					file = file.replace(regex, '');
 				}
+				matches = file.match(regex);
 			}
 
 			mkdirp.sync(path.join(viewsPath, relativePath.split('/').slice(0, -1).join('/')));

@@ -5,7 +5,6 @@ var posts = require('../posts');
 var db = require('../database');
 
 module.exports = function (Categories) {
-
 	Categories.getActiveUsers = function (cid, callback) {
 		async.waterfall([
 			function (next) {
@@ -22,7 +21,7 @@ module.exports = function (Categories) {
 				});
 
 				next(null, uids);
-			}
+			},
 		], callback);
 	};
 };

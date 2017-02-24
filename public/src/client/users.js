@@ -1,6 +1,5 @@
 'use strict';
 
-/* globals define, socket, app, templates, bootbox, utils */
 
 define('forum/users', ['translator'], function (translator) {
 	var	Users = {};
@@ -52,7 +51,7 @@ define('forum/users', ['translator'], function (translator) {
 
 		var query = {
 			section: activeSection,
-			page: 1
+			page: 1,
 		};
 
 		if (!username) {
@@ -66,7 +65,7 @@ define('forum/users', ['translator'], function (translator) {
 			query.onlineOnly = true;
 		}
 		if (activeSection === 'banned') {
-			query.bannedOnly =  true;
+			query.bannedOnly = true;
 		}
 		if (activeSection === 'flagged') {
 			query.flaggedOnly = true;
@@ -99,7 +98,7 @@ define('forum/users', ['translator'], function (translator) {
 	}
 
 	function renderSearchResults(data) {
-		templates.parse('partials/paginator', {pagination: data.pagination}, function (html) {
+		templates.parse('partials/paginator', { pagination: data.pagination }, function (html) {
 			$('.pagination-container').replaceWith(html);
 		});
 

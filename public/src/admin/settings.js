@@ -1,5 +1,5 @@
 'use strict';
-/*global define, app, socket, ajaxify */
+
 
 define('admin/settings', ['uploader'], function (uploader) {
 	var Settings = {};
@@ -11,8 +11,8 @@ define('admin/settings', ['uploader'], function (uploader) {
 
 	Settings.populateTOC = function () {
 		$('.settings-header').each(function () {
-			var header = $(this).text(),
-				anchor = header.toLowerCase().replace(/ /g, '-').trim();
+			var header = $(this).text();
+			var anchor = header.toLowerCase().replace(/ /g, '-').trim();
 
 			$(this).prepend('<a name="' + anchor + '"></a>');
 			$('.section-content ul').append('<li><a href="#' + anchor + '">' + header + '</a></li>');
@@ -21,11 +21,14 @@ define('admin/settings', ['uploader'], function (uploader) {
 
 	Settings.prepare = function (callback) {
 		// Populate the fields on the page from the config
-		var fields = $('#content [data-field]'),
-			numFields = fields.length,
-			saveBtn = $('#save'),
-			revertBtn = $('#revert'),
-			x, key, inputType, field;
+		var fields = $('#content [data-field]');
+		var	numFields = fields.length;
+		var	saveBtn = $('#save');
+		var	revertBtn = $('#revert');
+		var	x;
+		var key;
+		var inputType;
+		var field;
 
 		// Handle unsaved changes
 		$(fields).on('change', function () {
@@ -33,7 +36,7 @@ define('admin/settings', ['uploader'], function (uploader) {
 			app.flags._unsaved = true;
 		});
 
-		for (x = 0; x < numFields; x++) {
+		for (x = 0; x < numFields; x += 1) {
 			field = fields.eq(x);
 			key = field.attr('data-field');
 			inputType = field.attr('type');
@@ -80,7 +83,7 @@ define('admin/settings', ['uploader'], function (uploader) {
 						timeout: 2500,
 						title: 'Changes Not Saved',
 						message: 'NodeBB encountered a problem saving your changes',
-						type: 'danger'
+						type: 'danger',
 					});
 				}
 
@@ -91,7 +94,7 @@ define('admin/settings', ['uploader'], function (uploader) {
 					timeout: 2500,
 					title: 'Changes Saved',
 					message: 'Your changes to the NodeBB configuration have been saved.',
-					type: 'success'
+					type: 'success',
 				});
 
 				$(window).trigger('action:admin.settingsSaved');
@@ -126,7 +129,7 @@ define('admin/settings', ['uploader'], function (uploader) {
 					route: uploadBtn.attr('data-route'),
 					params: {},
 					showHelp: uploadBtn.attr('data-help') ? uploadBtn.attr('data-help') === 1 : undefined,
-					accept: uploadBtn.attr('data-accept')
+					accept: uploadBtn.attr('data-accept'),
 				}, function (image) {
 					// need to move these into template, ex data-callback
 					if (ajaxify.currentPage === 'admin/general/sounds') {
@@ -148,8 +151,9 @@ define('admin/settings', ['uploader'], function (uploader) {
 
 		fields.each(function () {
 			var field = $(this);
-			var key = field.attr('data-field'),
-				value, inputType;
+			var key = field.attr('data-field');
+			var value;
+			var inputType;
 
 			if (field.is('input')) {
 				inputType = field.attr('type');
@@ -178,7 +182,7 @@ define('admin/settings', ['uploader'], function (uploader) {
 				return callback(err);
 			}
 
-			for(var field in data) {
+			for (var field in data) {
 				if (data.hasOwnProperty(field)) {
 					app.config[field] = data[field];
 				}

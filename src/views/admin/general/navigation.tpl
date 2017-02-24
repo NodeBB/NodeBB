@@ -1,4 +1,4 @@
-<div id="navigation">
+<div class="row" id="navigation">
 	<div class="col-lg-9">
 		<div class="clearfix">
 			<ul id="active-navigation" class="nav navbar-nav">
@@ -74,7 +74,7 @@
 					</div>
 					<div class="checkbox">
 						<label class="mdl-switch mdl-js-switch mdl-js-ripple-effect">
-							<input class="mdl-switch__input" type="checkbox" name="property:loggedIn" <!-- IF enabled.properties.loggedIn -->checked<!-- ENDIF enabled.properties.loggedIn -->/> 
+							<input class="mdl-switch__input" type="checkbox" name="property:loggedIn" <!-- IF enabled.properties.loggedIn -->checked<!-- ENDIF enabled.properties.loggedIn -->/>
 							<span class="mdl-switch__label"><strong>[[admin/general/navigation:only-logged-in]]</strong></span>
 						</label>
 					</div>

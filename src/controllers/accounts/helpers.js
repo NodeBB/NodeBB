@@ -52,14 +52,14 @@ helpers.getUserDataByUserSlug = function (userslug, callerUID, callback) {
 					plugins.fireHook('filter:user.profileLinks', [], next);
 				},
 				profile_menu: function (next) {
-					plugins.fireHook('filter:user.profileMenu', {uid: uid, callerUID: callerUID, links: []}, next);
+					plugins.fireHook('filter:user.profileMenu', { uid: uid, callerUID: callerUID, links: [] }, next);
 				},
 				groups: function (next) {
 					groups.getUserGroups([uid], next);
 				},
 				sso: function (next) {
-					plugins.fireHook('filter:auth.list', {uid: uid, associations: []}, next);
-				}
+					plugins.fireHook('filter:auth.list', { uid: uid, associations: [] }, next);
+				},
 			}, next);
 		},
 		function (results, next) {
@@ -124,7 +124,7 @@ helpers.getUserDataByUserSlug = function (userslug, callerUID, callback) {
 				other: !isSelf,
 				moderator: isModerator,
 				globalMod: isGlobalModerator,
-				admin: isAdmin
+				admin: isAdmin,
 			});
 
 			userData.sso = results.sso.associations;
@@ -150,7 +150,7 @@ helpers.getUserDataByUserSlug = function (userslug, callerUID, callback) {
 			userData['email:disableEdit'] = !userData.isAdmin && parseInt(meta.config['email:disableEdit'], 10) === 1;
 
 			next(null, userData);
-		}
+		},
 	], callback);
 };
 
@@ -174,7 +174,7 @@ function filterLinks(links, states) {
 			other: true,
 			moderator: true,
 			globalMod: true,
-			admin: true
+			admin: true,
 		}, link.visibility);
 
 		// Iterate through states and permit if every test passes (or is not defined)

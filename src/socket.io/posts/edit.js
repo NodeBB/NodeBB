@@ -11,7 +11,6 @@ var meta = require('../../meta');
 var websockets = require('../index');
 
 module.exports = function (SocketPosts) {
-
 	SocketPosts.edit = function (socket, data, callback) {
 		if (!socket.uid) {
 			return callback(new Error('[[error:not-logged-in]]'));
@@ -47,11 +46,11 @@ module.exports = function (SocketPosts) {
 						uid: socket.uid,
 						ip: socket.ip,
 						oldTitle: validator.escape(String(result.topic.oldTitle)),
-						newTitle: validator.escape(String(result.topic.title))
+						newTitle: validator.escape(String(result.topic.title)),
 					});
 				}
 
-				if (parseInt(result.post.deleted) !== 1) {
+				if (parseInt(result.post.deleted, 10) !== 1) {
 					websockets.in('topic_' + result.topic.tid).emit('event:post_edited', result);
 					return callback(null, result.post);
 				}
@@ -60,7 +59,7 @@ module.exports = function (SocketPosts) {
 					'administrators',
 					'Global Moderators',
 					'cid:' + result.topic.cid + ':privileges:mods',
-					'cid:' + result.topic.cid + ':privileges:groups:moderate'
+					'cid:' + result.topic.cid + ':privileges:groups:moderate',
 				], next);
 			},
 			function (results, next) {
@@ -69,7 +68,7 @@ module.exports = function (SocketPosts) {
 					websockets.in('uid_' + uid).emit('event:post_edited', editResult);
 				});
 				next(null, editResult.post);
-			}
+			},
 		], callback);
 	};
 };

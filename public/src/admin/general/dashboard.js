@@ -1,30 +1,32 @@
-"use strict";
-/*global define, ajaxify, app, socket, utils, bootbox, RELATIVE_PATH*/
+'use strict';
+
 
 define('admin/general/dashboard', ['semver', 'Chart', 'translator'], function (semver, Chart, translator) {
 	var	Admin = {};
 	var	intervals = {
 		rooms: false,
-		graphs: false
+		graphs: false,
 	};
 	var	isMobile = false;
 	var	isPrerelease = /^v?\d+\.\d+\.\d+-.+$/;
 	var	graphData = {
 		rooms: {},
-		traffic: {}
+		traffic: {},
 	};
 	var	currentGraph = {
 		units: 'hours',
-		until: undefined
+		until: undefined,
 	};
 
 	var DEFAULTS = {
 		roomInterval: 10000,
 		graphInterval: 15000,
-		realtimeInterval: 1500
+		realtimeInterval: 1500,
 	};
-	
-	$(window).on('action:ajaxify.start', function (ev, data) {
+
+	var	usedTopicColors = [];
+
+	$(window).on('action:ajaxify.start', function () {
 		clearInterval(intervals.rooms);
 		clearInterval(intervals.graphs);
 
@@ -50,10 +52,10 @@ define('admin/general/dashboard', ['semver', 'Chart', 'translator'], function (s
 				return !isPrerelease.test(version.name);	// filter out automated prerelease versions
 			});
 
-			var	version = $('#version').html(),
-				latestVersion = releases[0].name.slice(1),
-				checkEl = $('.version-check'),
-				text;
+			var	version = $('#version').html();
+			var latestVersion = releases[0].name.slice(1);
+			var checkEl = $('.version-check');
+			var text;
 
 			// Alter box colour accordingly
 			if (semver.eq(latestVersion, version)) {
@@ -121,51 +123,52 @@ define('admin/general/dashboard', ['semver', 'Chart', 'translator'], function (s
 		traffic: null,
 		registered: null,
 		presence: null,
-		topics: null
+		topics: null,
 	};
 
-	var topicColors = ["#bf616a","#5B90BF","#d08770","#ebcb8b","#a3be8c","#96b5b4","#8fa1b3","#b48ead","#ab7967","#46BFBD"];
-	var	usedTopicColors = [];
+	var topicColors = ['#bf616a', '#5B90BF', '#d08770', '#ebcb8b', '#a3be8c', '#96b5b4', '#8fa1b3', '#b48ead', '#ab7967', '#46BFBD'];
 
+	/* eslint-disable */
 	// from chartjs.org
 	function lighten(col, amt) {
 		var usePound = false;
 
-		if (col[0] == "#") {
+		if (col[0] === '#') {
 			col = col.slice(1);
 			usePound = true;
 		}
 
-		var num = parseInt(col,16);
+		var num = parseInt(col, 16);
 
 		var r = (num >> 16) + amt;
 
 		if (r > 255) r = 255;
-		else if  (r < 0) r = 0;
+		else if (r < 0) r = 0;
 
 		var b = ((num >> 8) & 0x00FF) + amt;
 
 		if (b > 255) b = 255;
-		else if  (b < 0) b = 0;
+		else if (b < 0) b = 0;
 
 		var g = (num & 0x0000FF) + amt;
 
 		if (g > 255) g = 255;
 		else if (g < 0) g = 0;
 
-		return (usePound ? "#" : "") + (g | (b << 8) | (r << 16)).toString(16);
+		return (usePound ? '#' : '') + (g | (b << 8) | (r << 16)).toString(16);
 	}
+	/* eslint-enable */
 
 	function setupGraphs() {
-		var trafficCanvas = document.getElementById('analytics-traffic'),
-			registeredCanvas = document.getElementById('analytics-registered'),
-			presenceCanvas = document.getElementById('analytics-presence'),
-			topicsCanvas = document.getElementById('analytics-topics'),
-			trafficCtx = trafficCanvas.getContext('2d'),
-			registeredCtx = registeredCanvas.getContext('2d'),
-			presenceCtx = presenceCanvas.getContext('2d'),
-			topicsCtx = topicsCanvas.getContext('2d'),
-			trafficLabels = utils.getHoursArray();
+		var trafficCanvas = document.getElementById('analytics-traffic');
+		var registeredCanvas = document.getElementById('analytics-registered');
+		var presenceCanvas = document.getElementById('analytics-presence');
+		var topicsCanvas = document.getElementById('analytics-topics');
+		var trafficCtx = trafficCanvas.getContext('2d');
+		var registeredCtx = registeredCanvas.getContext('2d');
+		var presenceCtx = presenceCanvas.getContext('2d');
+		var topicsCtx = topicsCanvas.getContext('2d');
+		var trafficLabels = utils.getHoursArray();
 
 		if (isMobile) {
 			Chart.defaults.global.tooltips.enabled = false;
@@ -188,25 +191,25 @@ define('admin/general/dashboard', ['semver', 'Chart', 'translator'], function (s
 				datasets: [
 					{
 						label: translations[0],
-						backgroundColor: "rgba(220,220,220,0.2)",
-						borderColor: "rgba(220,220,220,1)",
-						pointBackgroundColor: "rgba(220,220,220,1)",
-						pointHoverBackgroundColor: "#fff",
-						pointBorderColor: "#fff",
-						pointHoverBorderColor: "rgba(220,220,220,1)",
-						data: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
+						backgroundColor: 'rgba(220,220,220,0.2)',
+						borderColor: 'rgba(220,220,220,1)',
+						pointBackgroundColor: 'rgba(220,220,220,1)',
+						pointHoverBackgroundColor: '#fff',
+						pointBorderColor: '#fff',
+						pointHoverBorderColor: 'rgba(220,220,220,1)',
+						data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
 					},
 					{
 						label: translations[1],
-						backgroundColor: "rgba(151,187,205,0.2)",
-						borderColor: "rgba(151,187,205,1)",
-						pointBackgroundColor: "rgba(151,187,205,1)",
-						pointHoverBackgroundColor: "#fff",
-						pointBorderColor: "#fff",
-						pointHoverBorderColor: "rgba(151,187,205,1)",
-						data: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
-					}
-				]
+						backgroundColor: 'rgba(151,187,205,0.2)',
+						borderColor: 'rgba(151,187,205,1)',
+						pointBackgroundColor: 'rgba(151,187,205,1)',
+						pointHoverBackgroundColor: '#fff',
+						pointBorderColor: '#fff',
+						pointHoverBorderColor: 'rgba(151,187,205,1)',
+						data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+					},
+				],
 			};
 
 			trafficCanvas.width = $(trafficCanvas).parent().width();
@@ -216,34 +219,34 @@ define('admin/general/dashboard', ['semver', 'Chart', 'translator'], function (s
 				options: {
 					responsive: true,
 					legend: {
-						display: false
+						display: false,
 					},
 					scales: {
 						yAxes: [{
 							ticks: {
-								beginAtZero: true
-							}
-						}]
-					}
-				}
+								beginAtZero: true,
+							},
+						}],
+					},
+				},
 			});
-			
+
 			graphs.registered = new Chart(registeredCtx, {
 				type: 'doughnut',
 				data: {
 					labels: translations.slice(2, 4),
 					datasets: [{
 						data: [1, 1],
-						backgroundColor: ["#F7464A", "#46BFBD"],
-						hoverBackgroundColor: ["#FF5A5E", "#5AD3D1"]
-					}]
+						backgroundColor: ['#F7464A', '#46BFBD'],
+						hoverBackgroundColor: ['#FF5A5E', '#5AD3D1'],
+					}],
 				},
 				options: {
 					responsive: true,
 					legend: {
-						display: false
-					}
-				}
+						display: false,
+					},
+				},
 			});
 
 			graphs.presence = new Chart(presenceCtx, {
@@ -252,18 +255,18 @@ define('admin/general/dashboard', ['semver', 'Chart', 'translator'], function (s
 					labels: translations.slice(4, 9),
 					datasets: [{
 						data: [1, 1, 1, 1, 1],
-						backgroundColor: ["#F7464A", "#46BFBD", "#FDB45C", "#949FB1", "#9FB194"],
-						hoverBackgroundColor: ["#FF5A5E", "#5AD3D1", "#FFC870", "#A8B3C5", "#A8B3C5"]
-					}]
+						backgroundColor: ['#F7464A', '#46BFBD', '#FDB45C', '#949FB1', '#9FB194'],
+						hoverBackgroundColor: ['#FF5A5E', '#5AD3D1', '#FFC870', '#A8B3C5', '#A8B3C5'],
+					}],
 				},
 				options: {
 					responsive: true,
 					legend: {
-						display: false
-					}
-				}
+						display: false,
+					},
+				},
 			});
- 			
+
 			graphs.topics = new Chart(topicsCtx, {
 				type: 'doughnut',
 				data: {
@@ -271,15 +274,15 @@ define('admin/general/dashboard', ['semver', 'Chart', 'translator'], function (s
 					datasets: [{
 						data: [],
 						backgroundColor: [],
-						hoverBackgroundColor: []
-					}]
+						hoverBackgroundColor: [],
+					}],
 				},
 				options: {
 					responsive: true,
 					legend: {
-						display: false
-					}
-				}
+						display: false,
+					},
+				},
 			});
 
 			updateTrafficGraph();
@@ -289,11 +292,11 @@ define('admin/general/dashboard', ['semver', 'Chart', 'translator'], function (s
 
 			$('[data-action="updateGraph"]').on('click', function () {
 				var until;
-				switch($(this).attr('data-until')) {
-					case 'last-month':
-						var lastMonth = new Date();
-						lastMonth.setDate(lastMonth.getDate() - 30);
-						until = lastMonth.getTime();
+				switch ($(this).attr('data-until')) {
+				case 'last-month':
+					var lastMonth = new Date();
+					lastMonth.setDate(lastMonth.getDate() - 30);
+					until = lastMonth.getTime();
 				}
 				updateTrafficGraph($(this).attr('data-units'), until);
 				$('[data-action="updateGraph"]').removeClass('active');
@@ -325,7 +328,7 @@ define('admin/general/dashboard', ['semver', 'Chart', 'translator'], function (s
 		socket.emit('admin.analytics.get', {
 			graph: 'traffic',
 			units: units || 'hours',
-			until: until
+			until: until,
 		}, function (err, data) {
 			if (err) {
 				return app.alertError(err.message);
@@ -374,36 +377,36 @@ define('admin/general/dashboard', ['semver', 'Chart', 'translator'], function (s
 
 		graphs.presence.update();
 	}
-	
+
 	function updateTopicsGraph(topics) {
 		if (!Object.keys(topics).length) {
-			topics = {"0": {
-				title: "No users browsing",
-				value: 1
-			}};
+			topics = { 0: {
+				title: 'No users browsing',
+				value: 1,
+			} };
 		}
 
 		var tids = Object.keys(topics);
-		
+
 		graphs.topics.data.labels = [];
 		graphs.topics.data.datasets[0].data = [];
 		graphs.topics.data.datasets[0].backgroundColor = [];
 		graphs.topics.data.datasets[0].hoverBackgroundColor = [];
-		
-		for (var i = 0, ii = tids.length; i < ii; i++) {
+
+		for (var i = 0, ii = tids.length; i < ii; i += 1) {
 			graphs.topics.data.labels.push(topics[tids[i]].title);
 			graphs.topics.data.datasets[0].data.push(topics[tids[i]].value);
 			graphs.topics.data.datasets[0].backgroundColor.push(topicColors[i]);
 			graphs.topics.data.datasets[0].hoverBackgroundColor.push(lighten(topicColors[i], 10));
 		}
- 		
+
 		function buildTopicsLegend() {
 			var legend = $('#topics-legend').html('');
 
-			for (var i = 0, ii = tids.length; i < ii; i++) {
+			for (var i = 0, ii = tids.length; i < ii; i += 1) {
 				var topic = topics[tids[i]];
 				var	label = topic.value === '0' ? topic.title : '<a title="' + topic.title + '"href="' + RELATIVE_PATH + '/topic/' + tids[i] + '" target="_blank"> ' + topic.title + '</a>';
-			
+
 				legend.append(
 					'<li>' +
 					'<div style="background-color: ' + topicColors[i] + ';"></div>' +

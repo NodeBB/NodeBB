@@ -5,7 +5,6 @@ var meta = require('../../meta');
 var pagination = require('../../pagination');
 
 module.exports = function (SocketUser) {
-
 	SocketUser.search = function (socket, data, callback) {
 		if (!data) {
 			return callback(new Error('[[error:invalid-data]]'));
@@ -21,7 +20,7 @@ module.exports = function (SocketUser) {
 			onlineOnly: data.onlineOnly,
 			bannedOnly: data.bannedOnly,
 			flaggedOnly: data.flaggedOnly,
-			uid: socket.uid
+			uid: socket.uid,
 		}, function (err, result) {
 			if (err) {
 				return callback(err);
@@ -31,5 +30,4 @@ module.exports = function (SocketUser) {
 			callback(null, result);
 		});
 	};
-
 };

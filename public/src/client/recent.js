@@ -1,6 +1,5 @@
 'use strict';
 
-/* globals define, app, socket, utils, ajaxify, config */
 
 define('forum/recent', ['forum/infinitescroll', 'components'], function (infinitescroll, components) {
 	var	Recent = {};
@@ -27,7 +26,7 @@ define('forum/recent', ['forum/infinitescroll', 'components'], function (infinit
 			infinitescroll.init(Recent.loadMoreTopics);
 		}
 
-		$(window).trigger('action:topics.loaded', {topics: ajaxify.data.topics});
+		$(window).trigger('action:topics.loaded', { topics: ajaxify.data.topics });
 	};
 
 	Recent.watchForNewPosts = function () {
@@ -47,13 +46,13 @@ define('forum/recent', ['forum/infinitescroll', 'components'], function (infinit
 			return;
 		}
 
-		++newTopicCount;
+		newTopicCount += 1;
 		Recent.updateAlertText();
 	}
 
 	function onNewPost(data) {
 		function showAlert() {
-			++newPostCount;
+			newPostCount += 1;
 			Recent.updateAlertText();
 		}
 
@@ -135,7 +134,7 @@ define('forum/recent', ['forum/infinitescroll', 'components'], function (infinit
 			after: $('[component="category"]').attr('data-nextstart'),
 			cid: utils.params().cid,
 			filter: ajaxify.data.selectedFilter.filter,
-			set: $('[component="category"]').attr('data-set') ? $('[component="category"]').attr('data-set') : 'topics:recent'
+			set: $('[component="category"]').attr('data-set') ? $('[component="category"]').attr('data-set') : 'topics:recent',
 		}, function (data, done) {
 			if (data.topics && data.topics.length) {
 				Recent.onTopicsLoaded('recent', data.topics, false, done);
@@ -147,7 +146,6 @@ define('forum/recent', ['forum/infinitescroll', 'components'], function (infinit
 	};
 
 	Recent.onTopicsLoaded = function (templateName, topics, showSelect, callback) {
-
 		topics = topics.filter(function (topic) {
 			return !components.get('category/topic', 'tid', topic.tid).length;
 		});
@@ -156,14 +154,14 @@ define('forum/recent', ['forum/infinitescroll', 'components'], function (infinit
 			return callback();
 		}
 
-		app.parseAndTranslate(templateName, 'topics', {topics: topics, showSelect: showSelect}, function (html) {
+		app.parseAndTranslate(templateName, 'topics', { topics: topics, showSelect: showSelect }, function (html) {
 			$('#category-no-topics').remove();
 
 			$('[component="category"]').append(html);
 			html.find('.timeago').timeago();
 			app.createUserTooltips();
 			utils.makeNumbersHumanReadable(html.find('.human-readable-number'));
-			$(window).trigger('action:topics.loaded', {topics: topics});
+			$(window).trigger('action:topics.loaded', { topics: topics });
 			callback();
 		});
 	};

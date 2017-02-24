@@ -1,12 +1,11 @@
 'use strict';
-/*global require, after*/
 
-var	async = require('async'),
-	assert = require('assert'),
-	db = require('../mocks/databasemock');
+
+var	async = require('async');
+var assert = require('assert');
+var db = require('../mocks/databasemock');
 
 describe('Key methods', function () {
-
 	beforeEach(function (done) {
 		db.set('testKey', 'testValue', done);
 	});
@@ -78,7 +77,7 @@ describe('Key methods', function () {
 			},
 			function (next) {
 				db.set('key2', 'value2', next);
-			}
+			},
 		], function (err) {
 			if (err) {
 				return done(err);
@@ -92,7 +91,7 @@ describe('Key methods', function () {
 					},
 					key2exists: function (next) {
 						db.exists('key2', next);
-					}
+					},
 				}, function (err, results) {
 					assert.equal(err, null);
 					assert.equal(results.key1exists, false);

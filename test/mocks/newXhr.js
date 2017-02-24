@@ -1,3 +1,5 @@
+'use strict';
+
 // see https://gist.github.com/jfromaniello/4087861#gistcomment-1447029
 // XMLHttpRequest to override.
 
@@ -35,7 +37,7 @@ var callbacks = {};
 var newXhr = function () {
 	stdXhr.apply(this, arguments);
 	for (var method in callbacks) {
-		if (typeof callbacks[method] == "function") {
+		if (typeof callbacks[method] === 'function') {
 			callbacks[method].apply(this, arguments);
 		}
 	}

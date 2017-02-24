@@ -1,18 +1,17 @@
 'use strict';
 
 var async = require('async');
-var nconf =  require('nconf');
+var nconf = require('nconf');
 
 var meta = require('../meta');
 var user = require('../user');
 var privileges = require('../privileges');
 
 var controllers = {
-	helpers: require('../controllers/helpers')
+	helpers: require('../controllers/helpers'),
 };
 
 module.exports = function (middleware) {
-
 	middleware.checkGlobalPrivacySettings = function (req, res, next) {
 		if (!req.user && !!parseInt(meta.config.privateUserInfo, 10)) {
 			return middleware.authenticate(req, res, next);
@@ -44,7 +43,7 @@ module.exports = function (middleware) {
 				} else {
 					next(null, false);
 				}
-			}
+			},
 		], function (err, allowed) {
 			if (err || allowed) {
 				return next(err);
@@ -142,20 +141,18 @@ module.exports = function (middleware) {
 			return next();
 		}
 
-		res.status(403).render('403', {title: '[[global:403.title]]'});
+		res.status(403).render('403', { title: '[[global:403.title]]' });
 	};
 
 	middleware.registrationComplete = function (req, res, next) {
 		// If the user's session contains registration data, redirect the user to complete registration
 		if (!req.session.hasOwnProperty('registration')) {
 			return next();
+		}
+		if (!req.path.endsWith('/register/complete')) {
+			controllers.helpers.redirect(res, '/register/complete');
 		} else {
-			if (!req.path.endsWith('/register/complete')) {
-				controllers.helpers.redirect(res, '/register/complete');
-			} else {
-				return next();
-			}
+			return next();
 		}
 	};
-
 };

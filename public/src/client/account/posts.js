@@ -1,10 +1,10 @@
 'use strict';
 
-/* globals define, app, socket, utils, config, ajaxify */
 
 define('forum/account/posts', ['forum/account/header', 'forum/infinitescroll'], function (header, infinitescroll) {
 	var AccountPosts = {};
-	var method, template;
+	var method;
+	var template;
 
 	AccountPosts.init = function () {
 		header.init();
@@ -29,7 +29,7 @@ define('forum/account/posts', ['forum/account/header', 'forum/infinitescroll'], 
 
 		infinitescroll.loadMore(method, {
 			uid: ajaxify.data.theirid,
-			after: $('[component="posts"]').attr('data-nextstart')
+			after: $('[component="posts"]').attr('data-nextstart'),
 		}, function (data, done) {
 			if (data.posts && data.posts.length) {
 				onPostsLoaded(data.posts, done);
@@ -41,7 +41,7 @@ define('forum/account/posts', ['forum/account/header', 'forum/infinitescroll'], 
 	}
 
 	function onPostsLoaded(posts, callback) {
-		app.parseAndTranslate(template, 'posts', {posts: posts}, function (html) {
+		app.parseAndTranslate(template, 'posts', { posts: posts }, function (html) {
 			$('[component="posts"]').append(html);
 			html.find('img:not(.not-responsive)').addClass('img-responsive');
 			html.find('.timeago').timeago();

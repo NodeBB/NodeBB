@@ -1,22 +1,22 @@
-"use strict";
-/*global define, templates, socket, ajaxify, app, bootbox */
+'use strict';
+
 
 define('admin/manage/group', [
 	'forum/groups/memberlist',
 	'iconSelect',
 	'admin/modules/colorpicker',
-	'translator'
+	'translator',
 ], function (memberList, iconSelect, colorpicker, translator) {
-	var	Groups = {};
+	var Groups = {};
 
 	Groups.init = function () {
-		var	groupDetailsSearch = $('#group-details-search'),
-			groupDetailsSearchResults = $('#group-details-search-results'),
-			groupIcon = $('#group-icon'),
-			changeGroupUserTitle = $('#change-group-user-title'),
-			changeGroupLabelColor = $('#change-group-label-color'),
-			groupLabelPreview = $('#group-label-preview'),
-			searchDelay;
+		var	groupDetailsSearch = $('#group-details-search');
+		var groupDetailsSearchResults = $('#group-details-search-results');
+		var groupIcon = $('#group-icon');
+		var changeGroupUserTitle = $('#change-group-user-title');
+		var changeGroupLabelColor = $('#change-group-label-color');
+		var groupLabelPreview = $('#group-label-preview');
+		var searchDelay;
 
 
 		var groupName = ajaxify.data.group.name;
@@ -32,34 +32,37 @@ define('admin/manage/group', [
 		});
 
 		groupDetailsSearch.on('keyup', function () {
-
 			if (searchDelay) {
 				clearTimeout(searchDelay);
 			}
 
 			searchDelay = setTimeout(function () {
-				var searchText = groupDetailsSearch.val(),
-					foundUser;
+				var searchText = groupDetailsSearch.val();
+				var foundUser;
 
-				socket.emit('admin.user.search', {query: searchText}, function (err, results) {
+				socket.emit('admin.user.search', {
+					query: searchText,
+				}, function (err, results) {
 					if (!err && results && results.users.length > 0) {
-						var numResults = results.users.length, x;
+						var numResults = results.users.length;
+						var x;
 						if (numResults > 20) {
 							numResults = 20;
 						}
 
 						groupDetailsSearchResults.empty();
 
-						for (x = 0; x < numResults; x++) {
+						for (x = 0; x < numResults; x += 1) {
 							foundUser = $('<li />');
 							foundUser
-								.attr({title: results.users[x].username,
+								.attr({
+									title: results.users[x].username,
 									'data-uid': results.users[x].uid,
 									'data-username': results.users[x].username,
 									'data-userslug': results.users[x].userslug,
 									'data-picture': results.users[x].picture,
 									'data-usericon-bgColor': results.users[x]['icon:bgColor'],
-									'data-usericon-text': results.users[x]['icon:text']
+									'data-usericon-text': results.users[x]['icon:text'],
 								})
 								.append(results.users[x].picture ?
 									$('<img />').addClass('avatar avatar-sm').attr('src', results.users[x].picture) :
@@ -76,12 +79,12 @@ define('admin/manage/group', [
 		});
 
 		groupDetailsSearchResults.on('click', 'li[data-uid]', function () {
-			var userLabel = $(this),
-				uid = parseInt(userLabel.attr('data-uid'), 10);
+			var userLabel = $(this);
+			var uid = parseInt(userLabel.attr('data-uid'), 10);
 
 			socket.emit('admin.groups.join', {
 				groupName: groupName,
-				uid: uid
+				uid: uid,
 			}, function (err) {
 				if (err) {
 					return app.alertError(err.message);
@@ -92,11 +95,16 @@ define('admin/manage/group', [
 					username: userLabel.attr('data-username'),
 					userslug: userLabel.attr('data-userslug'),
 					picture: userLabel.attr('data-picture'),
-					"icon:bgColor": userLabel.attr('data-usericon-bgColor'),
-					"icon:text": userLabel.attr('data-usericon-text')
+					'icon:bgColor': userLabel.attr('data-usericon-bgColor'),
+					'icon:text': userLabel.attr('data-usericon-text'),
 				};
 
-				templates.parse('partials/groups/memberlist', 'members', {group: {isOwner: ajaxify.data.group.isOwner, members: [member]}}, function (html) {
+				templates.parse('admin/partials/groups/memberlist', 'members', {
+					group: {
+						isOwner: ajaxify.data.group.isOwner,
+						members: [member],
+					},
+				}, function (html) {
 					translator.translate(html, function (html) {
 						$('[component="groups/members"] tbody').prepend(html);
 					});
@@ -105,45 +113,44 @@ define('admin/manage/group', [
 		});
 
 		$('[component="groups/members"]').on('click', '[data-action]', function () {
-			var btnEl = $(this),
-				userRow = btnEl.parents('[data-uid]'),
-				ownerFlagEl = userRow.find('.member-name i'),
-				isOwner = !ownerFlagEl.hasClass('invisible') ? true : false,
-				uid = userRow.attr('data-uid'),
-				action = btnEl.attr('data-action');
+			var btnEl = $(this);
+			var userRow = btnEl.parents('[data-uid]');
+			var ownerFlagEl = userRow.find('.member-name i');
+			var isOwner = !ownerFlagEl.hasClass('invisible');
+			var uid = userRow.attr('data-uid');
+			var action = btnEl.attr('data-action');
 
-			switch(action) {
-				case 'toggleOwnership':
-					socket.emit('groups.' + (isOwner ? 'rescind' : 'grant'), {
-						toUid: uid,
-						groupName: groupName
+			switch (action) {
+			case 'toggleOwnership':
+				socket.emit('groups.' + (isOwner ? 'rescind' : 'grant'), {
+					toUid: uid,
+					groupName: groupName,
+				}, function (err) {
+					if (err) {
+						return app.alertError(err.message);
+					}
+					ownerFlagEl.toggleClass('invisible');
+				});
+				break;
+
+			case 'kick':
+				bootbox.confirm('[[admin/manage/groups:edit.confirm-remove-user]]', function (confirm) {
+					if (!confirm) {
+						return;
+					}
+					socket.emit('admin.groups.leave', {
+						uid: uid,
+						groupName: groupName,
 					}, function (err) {
 						if (err) {
 							return app.alertError(err.message);
 						}
-						ownerFlagEl.toggleClass('invisible');
+						userRow.slideUp().remove();
 					});
-					break;
-
-				case 'kick':
-					bootbox.confirm('[[admin/manage/groups:edit.confirm-remove-user]]', function (confirm) {
-						if (!confirm) {
-							return;
-						}
-						socket.emit('admin.groups.leave', {
-							uid: uid,
-							groupName: groupName
-						}, function (err) {
-							if (err) {
-								return app.alertError(err.message);
-							}
-							userRow.slideUp().remove();
-						});
-
-					});
-					break;
-				default:
-					break;
+				});
+				break;
+			default:
+				break;
 			}
 		});
 
@@ -155,7 +162,7 @@ define('admin/manage/group', [
 			groupLabelPreview.css('background-color', '#' + hex);
 		});
 
-		$('.save').on('click', function () {
+		$('#save').on('click', function () {
 			socket.emit('admin.groups.update', {
 				groupName: groupName,
 				values: {
@@ -167,8 +174,8 @@ define('admin/manage/group', [
 					userTitleEnabled: $('#group-userTitleEnabled').is(':checked'),
 					private: $('#group-private').is(':checked'),
 					hidden: $('#group-hidden').is(':checked'),
-					disableJoinRequests: $('#group-disableJoinRequests').is(':checked')
-				}
+					disableJoinRequests: $('#group-disableJoinRequests').is(':checked'),
+				},
 			}, function (err) {
 				if (err) {
 					return app.alertError(err.message);
@@ -185,7 +192,6 @@ define('admin/manage/group', [
 			});
 			return false;
 		});
-
 	};
 
 	return Groups;

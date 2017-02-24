@@ -1,5 +1,4 @@
 'use strict';
-/*global require, after, before*/
 
 
 var assert = require('assert');
@@ -15,7 +14,7 @@ describe('Notifications', function () {
 	var notification;
 
 	before(function (done) {
-		user.create({username: 'poster'}, function (err, _uid) {
+		user.create({ username: 'poster' }, function (err, _uid) {
 			if (err) {
 				return done(err);
 			}
@@ -29,7 +28,7 @@ describe('Notifications', function () {
 		notifications.create({
 			bodyShort: 'bodyShort',
 			nid: 'notification_id',
-			path: '/notification/path'
+			path: '/notification/path',
 		}, function (err, _notification) {
 			notification = _notification;
 			assert.ifError(err);
@@ -96,7 +95,7 @@ describe('Notifications', function () {
 	});
 
 	it('should mark a notification read', function (done) {
-		socketNotifications.markRead({uid: uid}, notification.nid, function (err) {
+		socketNotifications.markRead({ uid: uid }, notification.nid, function (err) {
 			assert.ifError(err);
 			db.isSortedSetMember('uid:' + uid + ':notifications:unread', notification.nid, function (err, isMember) {
 				assert.ifError(err);
@@ -111,7 +110,7 @@ describe('Notifications', function () {
 	});
 
 	it('should mark a notification unread', function (done) {
-		socketNotifications.markUnread({uid: uid}, notification.nid, function (err) {
+		socketNotifications.markUnread({ uid: uid }, notification.nid, function (err) {
 			assert.ifError(err);
 			db.isSortedSetMember('uid:' + uid + ':notifications:unread', notification.nid, function (err, isMember) {
 				assert.ifError(err);
@@ -119,7 +118,7 @@ describe('Notifications', function () {
 				db.isSortedSetMember('uid:' + uid + ':notifications:read', notification.nid, function (err, isMember) {
 					assert.ifError(err);
 					assert.equal(isMember, false);
-					socketNotifications.getCount({uid: uid}, null, function (err, count) {
+					socketNotifications.getCount({ uid: uid }, null, function (err, count) {
 						assert.ifError(err);
 						assert.equal(count, 1);
 						done();
@@ -130,7 +129,7 @@ describe('Notifications', function () {
 	});
 
 	it('should mark all notifications read', function (done) {
-		socketNotifications.markAllRead({uid: uid}, null, function (err) {
+		socketNotifications.markAllRead({ uid: uid }, null, function (err) {
 			assert.ifError(err);
 			db.isSortedSetMember('uid:' + uid + ':notifications:unread', notification.nid, function (err, isMember) {
 				assert.ifError(err);
@@ -155,14 +154,14 @@ describe('Notifications', function () {
 
 		async.waterfall([
 			function (next) {
-				user.create({username: 'watcher'}, next);
+				user.create({ username: 'watcher' }, next);
 			},
 			function (_watcherUid, next) {
 				watcherUid = _watcherUid;
 
 				categories.create({
 					name: 'Test Category',
-					description: 'Test category created by testing script'
+					description: 'Test category created by testing script',
 				}, next);
 			},
 			function (category, next) {
@@ -172,7 +171,7 @@ describe('Notifications', function () {
 					uid: watcherUid,
 					cid: cid,
 					title: 'Test Topic Title',
-					content: 'The content of test topic'
+					content: 'The content of test topic',
 				}, next);
 			},
 			function (topic, next) {
@@ -184,7 +183,7 @@ describe('Notifications', function () {
 				topics.reply({
 					uid: uid,
 					content: 'This is the first reply.',
-					tid: tid
+					tid: tid,
 				}, next);
 			},
 			function (post, next) {
@@ -193,7 +192,7 @@ describe('Notifications', function () {
 				topics.reply({
 					uid: uid,
 					content: 'This is the second reply.',
-					tid: tid
+					tid: tid,
 				}, next);
 			},
 			function (post, next) {
@@ -207,7 +206,7 @@ describe('Notifications', function () {
 				assert.equal(notifications.unread.length, 1, 'there should be 1 unread notification');
 				assert.equal('/post/' + pid, notifications.unread[0].path, 'the notification should link to the first unread post');
 				next();
-			}
+			},
 		], function (err) {
 			assert.ifError(err);
 			done();
@@ -215,7 +214,7 @@ describe('Notifications', function () {
 	});
 
 	it('should get notification by nid', function (done) {
-		socketNotifications.get({uid: uid}, {nids: [notification.nid]}, function (err, data) {
+		socketNotifications.get({ uid: uid }, { nids: [notification.nid] }, function (err, data) {
 			assert.ifError(err);
 			assert.equal(data[0].bodyShort, 'bodyShort');
 			assert.equal(data[0].nid, 'notification_id');
@@ -225,7 +224,7 @@ describe('Notifications', function () {
 	});
 
 	it('should get user\'s notifications', function (done) {
-		socketNotifications.get({uid: uid}, {}, function (err, data) {
+		socketNotifications.get({ uid: uid }, {}, function (err, data) {
 			assert.ifError(err);
 			assert.equal(data.unread.length, 0);
 			assert.equal(data.read[0].nid, 'notification_id');
@@ -234,21 +233,21 @@ describe('Notifications', function () {
 	});
 
 	it('should error with invalid data', function (done) {
-		socketNotifications.loadMore({uid: uid}, {after: 'test'}, function (err) {
+		socketNotifications.loadMore({ uid: uid }, { after: 'test' }, function (err) {
 			assert.equal(err.message, '[[error:invalid-data]]');
 			done();
 		});
 	});
 
 	it('should error if not logged in', function (done) {
-		socketNotifications.loadMore({uid: 0}, {after: 10}, function (err) {
+		socketNotifications.loadMore({ uid: 0 }, { after: 10 }, function (err) {
 			assert.equal(err.message, '[[error:no-privileges]]');
 			done();
 		});
 	});
 
 	it('should load more notifications', function (done) {
-		socketNotifications.loadMore({uid: uid}, {after: 0}, function (err, data) {
+		socketNotifications.loadMore({ uid: uid }, { after: 0 }, function (err, data) {
 			assert.ifError(err);
 			assert.equal(data.notifications[0].bodyShort, 'bodyShort');
 			assert.equal(data.notifications[0].nid, 'notification_id');
@@ -259,16 +258,16 @@ describe('Notifications', function () {
 
 
 	it('should error if not logged in', function (done) {
-		socketNotifications.deleteAll({uid: 0}, null, function (err) {
+		socketNotifications.deleteAll({ uid: 0 }, null, function (err) {
 			assert.equal(err.message, '[[error:no-privileges]]');
 			done();
 		});
 	});
 
 	it('should delete all user notifications', function (done) {
-		socketNotifications.deleteAll({uid: uid}, null, function (err) {
+		socketNotifications.deleteAll({ uid: uid }, null, function (err) {
 			assert.ifError(err);
-			socketNotifications.get({uid: uid}, {}, function (err, data) {
+			socketNotifications.get({ uid: uid }, {}, function (err, data) {
 				assert.ifError(err);
 				assert.equal(data.unread.length, 0);
 				assert.equal(data.read.length, 0);

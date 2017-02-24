@@ -8,7 +8,6 @@ var user = require('../user');
 var utils = require('../../public/src/utils');
 
 module.exports = function (Messaging) {
-
 	Messaging.getMessageField = function (mid, field, callback) {
 		Messaging.getMessageFields(mid, [field], function (err, fields) {
 			callback(err, fields ? fields[field] : null);
@@ -28,7 +27,6 @@ module.exports = function (Messaging) {
 	};
 
 	Messaging.getMessagesData = function (mids, uid, roomId, isNew, callback) {
-
 		var messages;
 
 		async.waterfall([
@@ -110,7 +108,7 @@ module.exports = function (Messaging) {
 						},
 						function (mid, next) {
 							Messaging.getMessageFields(mid, ['fromuid', 'timestamp'], next);
-						}
+						},
 					], function (err, fields) {
 						if (err) {
 							return next(err);
@@ -129,8 +127,7 @@ module.exports = function (Messaging) {
 				} else {
 					next(null, []);
 				}
-			}
+			},
 		], callback);
 	};
-
 };

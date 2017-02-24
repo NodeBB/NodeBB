@@ -7,7 +7,6 @@ var plugins = require('../plugins');
 var db = require('../database');
 
 module.exports = function (User) {
-
 	User.search = function (data, callback) {
 		var query = data.query || '';
 		var searchBy = data.searchBy || 'username';
@@ -34,7 +33,7 @@ module.exports = function (User) {
 				filterAndSortUids(uids, data, next);
 			},
 			function (uids, next) {
-				plugins.fireHook('filter:users.search', {uids: uids, uid: uid}, next);
+				plugins.fireHook('filter:users.search', { uids: uids, uid: uid }, next);
 			},
 			function (data, next) {
 				var uids = data.uids;
@@ -54,7 +53,7 @@ module.exports = function (User) {
 				searchResult.timing = (process.elapsedTimeSince(startTime) / 1000).toFixed(2);
 				searchResult.users = userData;
 				next(null, searchResult);
-			}
+			},
 		], callback);
 	};
 
@@ -135,9 +134,9 @@ module.exports = function (User) {
 			});
 		} else {
 			userData.sort(function (u1, u2) {
-				if(u1[sortBy] < u2[sortBy]) {
+				if (u1[sortBy] < u2[sortBy]) {
 					return -1;
-				} else if(u1[sortBy] > u2[sortBy]) {
+				} else if (u1[sortBy] > u2[sortBy]) {
 					return 1;
 				}
 				return 0;
@@ -156,9 +155,9 @@ module.exports = function (User) {
 			},
 			function (users, next) {
 				var diff = process.hrtime(start);
-				var timing = (diff[0] * 1e3 + diff[1] / 1e6).toFixed(1);
-				next(null, {timing: timing, users: users});
-			}
+				var timing = ((diff[0] * 1e3) + (diff[1] / 1e6)).toFixed(1);
+				next(null, { timing: timing, users: users });
+			},
 		], callback);
 	}
 };

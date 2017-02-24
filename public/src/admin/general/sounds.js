@@ -1,7 +1,7 @@
-"use strict";
-/* global app, define, socket */
+'use strict';
 
-define('admin/general/sounds', ['sounds', 'settings'], function (Sounds, Settings) {
+
+define('admin/general/sounds', ['sounds', 'settings', 'admin/settings'], function (Sounds, Settings, AdminSettings) {
 	var	SoundsAdmin = {};
 
 	SoundsAdmin.init = function () {
@@ -9,8 +9,8 @@ define('admin/general/sounds', ['sounds', 'settings'], function (Sounds, Setting
 		$('.sounds').find('button[data-action="play"]').on('click', function (e) {
 			e.preventDefault();
 
-			var	fileName = $(this).parent().parent().find('select').val();
-			Sounds.playFile(fileName);
+			var	soundName = $(this).parent().parent().find('select').val();
+			Sounds.playSound(soundName);
 		});
 
 		// Load Form Values
@@ -21,11 +21,13 @@ define('admin/general/sounds', ['sounds', 'settings'], function (Sounds, Setting
 		saveEl.on('click', function () {
 			Settings.save('sounds', $('.sounds form'), function () {
 				socket.emit('admin.fireEvent', {
-					name: 'event:sounds.reloadMapping'
+					name: 'event:sounds.reloadMapping',
 				});
 				app.alertSuccess('[[admin/general/sounds:saved]]');
 			});
 		});
+
+		AdminSettings.prepare();
 	};
 
 	return SoundsAdmin;

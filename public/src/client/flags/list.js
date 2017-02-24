@@ -16,7 +16,9 @@ define('forum/flags/list', ['components', 'Chart'], function (components, Chart)
 
 		// Parse ajaxify data to set form values to reflect current filters
 		for (var filter in ajaxify.data.filters) {
-			filtersEl.find('[name="' + filter + '"]').val(ajaxify.data.filters[filter]);
+			if (ajaxify.data.filters.hasOwnProperty(filter)) {
+				filtersEl.find('[name="' + filter + '"]').val(ajaxify.data.filters[filter]);
+			}
 		}
 
 		filtersEl.find('button').on('click', function () {
@@ -47,17 +49,17 @@ define('forum/flags/list', ['components', 'Chart'], function (components, Chart)
 				labels: dailyLabels,
 				datasets: [
 					{
-						label: "",
-						backgroundColor: "rgba(151,187,205,0.2)",
-						borderColor: "rgba(151,187,205,1)",
-						pointBackgroundColor: "rgba(151,187,205,1)",
-						pointHoverBackgroundColor: "#fff",
-						pointBorderColor: "#fff",
-						pointHoverBorderColor: "rgba(151,187,205,1)",
-						data: ajaxify.data.analytics
-					}
-				]
-			}
+						label: '',
+						backgroundColor: 'rgba(151,187,205,0.2)',
+						borderColor: 'rgba(151,187,205,1)',
+						pointBackgroundColor: 'rgba(151,187,205,1)',
+						pointHoverBackgroundColor: '#fff',
+						pointBorderColor: '#fff',
+						pointHoverBorderColor: 'rgba(151,187,205,1)',
+						data: ajaxify.data.analytics,
+					},
+				],
+			},
 		};
 
 		dailyCanvas.width = $(dailyCanvas).parent().width();
@@ -68,17 +70,17 @@ define('forum/flags/list', ['components', 'Chart'], function (components, Chart)
 				responsive: true,
 				animation: false,
 				legend: {
-					display: false
+					display: false,
 				},
 				scales: {
 					yAxes: [{
 						ticks: {
 							beginAtZero: true,
-							stepSize: 1
-						}
-					}]
-				}
-			}
+							stepSize: 1,
+						},
+					}],
+				},
+			},
 		});
 	};
 

@@ -1,5 +1,5 @@
-"use strict";
-/* globals socket, app, define, ajaxify, config */
+'use strict';
+
 
 define('admin/modules/search', ['mousetrap'], function (mousetrap) {
 	var search = {};
@@ -73,7 +73,7 @@ define('admin/modules/search', ['mousetrap'], function (mousetrap) {
 			if (!selected.length) {
 				selected = menu.find('li.result > a').first().attr('href');
 			}
-			var href = selected ? selected : config.relative_path + '/search/' + input.val();
+			var href = selected || config.relative_path + '/search/' + input.val();
 
 			ajaxify.go(href.replace(/^\//, ''));
 
@@ -128,7 +128,7 @@ define('admin/modules/search', ['mousetrap'], function (mousetrap) {
 
 			menu.toggleClass('state-start-typing', len === 0);
 			menu.toggleClass('state-keep-typing', len > 0 && len < 3);
-			
+
 			if (len >= 3) {
 				menu.prepend(find(dict, value));
 

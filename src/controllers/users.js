@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 var async = require('async');
 var user = require('../user');
@@ -20,7 +20,7 @@ usersController.index = function (req, res, next) {
 		'sort-posts': usersController.getUsersSortedByPosts,
 		'sort-reputation': usersController.getUsersSortedByReputation,
 		banned: usersController.getBannedUsers,
-		flagged: usersController.getFlaggedUsers
+		flagged: usersController.getFlaggedUsers,
 	};
 
 	if (req.query.term) {
@@ -42,12 +42,12 @@ usersController.search = function (req, res, next) {
 				sortBy: req.query.sortBy,
 				onlineOnly: req.query.onlineOnly === 'true',
 				bannedOnly: req.query.bannedOnly === 'true',
-				flaggedOnly: req.query.flaggedOnly === 'true'
+				flaggedOnly: req.query.flaggedOnly === 'true',
 			}, next);
 		},
 		isAdminOrGlobalMod: function (next) {
 			user.isAdminOrGlobalMod(req.uid, next);
-		}
+		},
 	}, function (err, results) {
 		if (err) {
 			return next(err);
@@ -69,7 +69,7 @@ usersController.getOnlineUsers = function (req, res, next) {
 		},
 		guests: function (next) {
 			require('../socket.io/admin/rooms').getTotalGuestCount(next);
-		}
+		},
 	}, function (err, results) {
 		if (err) {
 			return next(err);
@@ -79,7 +79,7 @@ usersController.getOnlineUsers = function (req, res, next) {
 		if (!userData.isAdminOrGlobalMod) {
 			userData.users = userData.users.filter(function (user) {
 				if (user && user.status === 'offline') {
-					hiddenCount ++;
+					hiddenCount += 1;
 				}
 				return user && user.status !== 'offline';
 			});
@@ -146,22 +146,22 @@ usersController.renderUsersPage = function (set, req, res, next) {
 
 usersController.getUsers = function (set, uid, query, callback) {
 	var setToData = {
-		'users:postcount': {title: '[[pages:users/sort-posts]]', crumb: '[[users:top_posters]]'},
-		'users:reputation': {title: '[[pages:users/sort-reputation]]', crumb: '[[users:most_reputation]]'},
-		'users:joindate': {title: '[[pages:users/latest]]', crumb: '[[global:users]]'},
-		'users:online': {title: '[[pages:users/online]]', crumb: '[[global:online]]'},
-		'users:banned': {title: '[[pages:users/banned]]', crumb: '[[user:banned]]'},
-		'users:flags': {title: '[[pages:users/most-flags]]', crumb: '[[users:most_flags]]'},
+		'users:postcount': { title: '[[pages:users/sort-posts]]', crumb: '[[users:top_posters]]' },
+		'users:reputation': { title: '[[pages:users/sort-reputation]]', crumb: '[[users:most_reputation]]' },
+		'users:joindate': { title: '[[pages:users/latest]]', crumb: '[[global:users]]' },
+		'users:online': { title: '[[pages:users/online]]', crumb: '[[global:online]]' },
+		'users:banned': { title: '[[pages:users/banned]]', crumb: '[[user:banned]]' },
+		'users:flags': { title: '[[pages:users/most-flags]]', crumb: '[[users:most_flags]]' },
 	};
 
 	if (!setToData[set]) {
-		setToData[set] = {title: '', crumb: ''};
+		setToData[set] = { title: '', crumb: '' };
 	}
 
-	var breadcrumbs = [{text: setToData[set].crumb}];
+	var breadcrumbs = [{ text: setToData[set].crumb }];
 
 	if (set !== 'users:joindate') {
-		breadcrumbs.unshift({text: '[[global:users]]', url: '/users'});
+		breadcrumbs.unshift({ text: '[[global:users]]', url: '/users' });
 	}
 
 	var page = parseInt(query.page, 10) || 1;
@@ -175,7 +175,7 @@ usersController.getUsers = function (set, uid, query, callback) {
 		},
 		usersData: function (next) {
 			usersController.getUsersAndCount(set, uid, start, stop, next);
-		}
+		},
 	}, function (err, results) {
 		if (err) {
 			return callback(err);
@@ -188,7 +188,7 @@ usersController.getUsers = function (set, uid, query, callback) {
 			userCount: results.usersData.count,
 			title: setToData[set].title || '[[pages:users/latest]]',
 			breadcrumbs: helpers.buildBreadcrumbs(breadcrumbs),
-			isAdminOrGlobalMod: results.isAdminOrGlobalMod
+			isAdminOrGlobalMod: results.isAdminOrGlobalMod,
 		};
 		userData['section_' + (query.section || 'joindate')] = true;
 		callback(null, userData);
@@ -211,7 +211,7 @@ usersController.getUsersAndCount = function (set, uid, start, stop, callback) {
 			} else {
 				db.getObjectField('global', 'userCount', next);
 			}
-		}
+		},
 	}, function (err, results) {
 		if (err) {
 			return callback(err);

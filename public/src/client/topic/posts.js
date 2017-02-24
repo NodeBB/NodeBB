@@ -1,17 +1,15 @@
 'use strict';
 
-/* globals config, app, ajaxify, define, utils */
 
 define('forum/topic/posts', [
 	'forum/pagination',
 	'forum/infinitescroll',
 	'forum/topic/postTools',
 	'navigator',
-	'components'
+	'components',
 ], function (pagination, infinitescroll, postTools, navigator, components) {
-
 	var Posts = {
-		_imageLoaderTimeout: undefined
+		_imageLoaderTimeout: undefined,
 	};
 
 	Posts.onNewPost = function (data) {
@@ -23,13 +21,13 @@ define('forum/topic/posts', [
 			return;
 		}
 
-		data.loggedIn = app.user.uid ? true : false;
+		data.loggedIn = !!app.user.uid;
 		data.privileges = ajaxify.data.privileges;
 		Posts.modifyPostsByPrivileges(data.posts);
 
 		updatePostCounts(data.posts);
 
-		ajaxify.data.postcount ++;
+		ajaxify.data.postcount += 1;
 		postTools.updatePostCount(ajaxify.data.postcount);
 
 		if (config.usePagination) {
@@ -55,7 +53,7 @@ define('forum/topic/posts', [
 	};
 
 	function updatePostCounts(posts) {
-		for (var i = 0; i < posts.length; ++i) {
+		for (var i = 0; i < posts.length; i += 1) {
 			var cmp = components.get('user/postcount', posts[i].uid);
 			cmp.html(parseInt(cmp.attr('data-postcount'), 10) + 1);
 			utils.addCommasToNumbers(cmp);
@@ -89,8 +87,8 @@ define('forum/topic/posts', [
 	}
 
 	function updatePagination() {
-		$.get(config.relative_path + '/api/topic/pagination/' + ajaxify.data.tid, {page: ajaxify.data.pagination.currentPage}, function (paginationData) {
-			app.parseAndTranslate('partials/paginator', {pagination: paginationData}, function (html) {
+		$.get(config.relative_path + '/api/topic/pagination/' + ajaxify.data.tid, { page: ajaxify.data.pagination.currentPage }, function (paginationData) {
+			app.parseAndTranslate('partials/paginator', { pagination: paginationData }, function (html) {
 				$('[component="pagination"]').after(html).remove();
 			});
 		});
@@ -165,7 +163,8 @@ define('forum/topic/posts', [
 			return callback();
 		}
 
-		var after, before;
+		var after;
+		var before;
 
 		if (direction > 0 && repliesSelector.length) {
 			after = repliesSelector.last();
@@ -175,10 +174,9 @@ define('forum/topic/posts', [
 
 		data.slug = ajaxify.data.slug;
 
-		$(window).trigger('action:posts.loading', {posts: data.posts, after: after, before: before});
+		$(window).trigger('action:posts.loading', { posts: data.posts, after: after, before: before });
 
 		app.parseAndTranslate('topic', 'posts', data, function (html) {
-
 			html = html.filter(function () {
 				var pid = $(this).attr('data-pid');
 				return pid && $('[component="post"][data-pid="' + pid + '"]').length === 0;
@@ -188,8 +186,8 @@ define('forum/topic/posts', [
 				html.insertAfter(after);
 			} else if (before) {
 				// Save document height and position for future reference (about 5 lines down)
-				var height = $(document).height(),
-					scrollTop = $(window).scrollTop();
+				var height = $(document).height();
+				var scrollTop = $(window).scrollTop();
 
 				html.insertBefore(before);
 
@@ -201,7 +199,7 @@ define('forum/topic/posts', [
 
 			infinitescroll.removeExtra($('[component="post"]'), direction, 40);
 
-			$(window).trigger('action:posts.loaded', {posts: data.posts});
+			$(window).trigger('action:posts.loaded', { posts: data.posts });
 
 			Posts.processPage(html);
 
@@ -235,7 +233,7 @@ define('forum/topic/posts', [
 			tid: tid,
 			after: after,
 			direction: direction,
-			topicPostSort: config.topicPostSort
+			topicPostSort: config.topicPostSort,
 		}, function (data, done) {
 			indicatorEl.fadeOut();
 
@@ -290,40 +288,42 @@ define('forum/topic/posts', [
 				default
 			*/
 
-			var images = components.get('post/content').find('img[data-state="unloaded"]'),
-				visible = images.filter(function () {
-					return utils.isElementInViewport(this);
-				}),
-				posts = $.unique(visible.map(function () {
-					return $(this).parents('[component="post"]').get(0);
-				})),
-				scrollTop = $(window).scrollTop(),
-				adjusting = false,
-				adjustQueue = [],
-				adjustPosition = function () {
-					adjusting = true;
-					oldHeight = document.body.clientHeight;
+			var images = components.get('post/content').find('img[data-state="unloaded"]');
+			var visible = images.filter(function () {
+				return utils.isElementInViewport(this);
+			});
+			var posts = $.unique(visible.map(function () {
+				return $(this).parents('[component="post"]').get(0);
+			}));
+			var scrollTop = $(window).scrollTop();
+			var adjusting = false;
+			var adjustQueue = [];
+			var oldHeight;
+			var newHeight;
 
-					// Display the image
-					$(this).attr('data-state', 'loaded');
-					newHeight = document.body.clientHeight;
+			function adjustPosition() {
+				adjusting = true;
+				oldHeight = document.body.clientHeight;
 
-					var imageRect = this.getBoundingClientRect();
-					if (imageRect.top < threshold) {
-						scrollTop = scrollTop + (newHeight - oldHeight);
-						$(window).scrollTop(scrollTop);
-					}
+				// Display the image
+				$(this).attr('data-state', 'loaded');
+				newHeight = document.body.clientHeight;
 
-					if (adjustQueue.length) {
-						adjustQueue.pop()();
-					} else {
-						adjusting = false;
+				var imageRect = this.getBoundingClientRect();
+				if (imageRect.top < threshold) {
+					scrollTop += newHeight - oldHeight;
+					$(window).scrollTop(scrollTop);
+				}
 
-						Posts.wrapImagesInLinks(posts);
-						posts.length = 0;
-					}
-				},
-				oldHeight, newHeight;
+				if (adjustQueue.length) {
+					adjustQueue.pop()();
+				} else {
+					adjusting = false;
+
+					Posts.wrapImagesInLinks(posts);
+					posts.length = 0;
+				}
+			}
 
 			// For each image, reset the source and adjust scrollTop when loaded
 			visible.attr('data-state', 'loading');
@@ -346,9 +346,9 @@ define('forum/topic/posts', [
 
 	Posts.wrapImagesInLinks = function (posts) {
 		posts.find('[component="post/content"] img:not(.emoji)').each(function () {
-			var $this = $(this),
-				src = $this.attr('src'),
-				suffixRegex = /-resized(\.[\w]+)?$/;
+			var $this = $(this);
+			var src = $this.attr('src');
+			var suffixRegex = /-resized(\.[\w]+)?$/;
 
 			if (src === 'about:blank') {
 				return;
@@ -394,5 +394,4 @@ define('forum/topic/posts', [
 	}
 
 	return Posts;
-
 });

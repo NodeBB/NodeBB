@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 var async = require('async');
 var nconf = require('nconf');
@@ -23,7 +23,7 @@ Sockets.init = function (server) {
 	var SocketIO = require('socket.io');
 	var socketioWildcard = require('socketio-wildcard')();
 	io = new SocketIO({
-		path: nconf.get('relative_path') + '/socket.io'
+		path: nconf.get('relative_path') + '/socket.io',
 	});
 
 	addRedisAdapter(io);
@@ -33,8 +33,30 @@ Sockets.init = function (server) {
 
 	io.on('connection', onConnection);
 
+	/*
+	 * Restrict socket.io listener to cookie domain. If none is set, infer based on url.
+	 * Production only so you don't get accidentally locked out.
+	 * Can be overridden via config (socket.io:origins)
+	 */
+	if (process.env.NODE_ENV !== 'development') {
+		var domain = nconf.get('cookieDomain');
+		var parsedUrl = url.parse(nconf.get('url'));
+		var override = nconf.get('socket.io:origins');
+		if (!domain) {
+			domain = parsedUrl.hostname;	// cookies don't provide isolation by port: http://stackoverflow.com/a/16328399/122353
+		}
+
+		if (!override) {
+			io.origins(parsedUrl.protocol + '//' + domain + ':*');
+			winston.info('[socket.io] Restricting access to origin: ' + parsedUrl.protocol + '//' + domain + ':*');
+		} else {
+			io.origins(override);
+			winston.info('[socket.io] Restricting access to origin: ' + override);
+		}
+	}
+
 	io.listen(server, {
-		transports: nconf.get('socket.io:transports')
+		transports: nconf.get('socket.io:transports'),
 	});
 
 	Sockets.server = io;
@@ -83,16 +105,15 @@ function onMessage(socket, payload) {
 	var methodToCall = parts.reduce(function (prev, cur) {
 		if (prev !== null && prev[cur]) {
 			return prev[cur];
-		} else {
-			return null;
 		}
+		return null;
 	}, Namespaces);
 
 	if (!methodToCall) {
 		if (process.env.NODE_ENV === 'development') {
 			winston.warn('[socket.io] Unrecognized message: ' + eventName);
 		}
-		return callback({message: '[[error:invalid-event]]'});
+		return callback({ message: '[[error:invalid-event]]' });
 	}
 
 	socket.previousEvents = socket.previousEvents || [];
@@ -122,15 +143,15 @@ function onMessage(socket, payload) {
 		},
 		function (next) {
 			methodToCall(socket, params, next);
-		}
+		},
 	], function (err, result) {
-		callback(err ? {message: err.message} : null, result);
+		callback(err ? { message: err.message } : null, result);
 	});
 }
 
 function requireModules() {
 	var modules = ['admin', 'categories', 'groups', 'meta', 'modules',
-		'notifications', 'plugins', 'posts', 'topics', 'user', 'blacklist', 'flags'
+		'notifications', 'plugins', 'posts', 'topics', 'user', 'blacklist', 'flags',
 	];
 
 	modules.forEach(function (module) {
@@ -188,7 +209,7 @@ function authorize(socket, callback) {
 				}
 				next();
 			});
-		}
+		},
 	], callback);
 }
 
@@ -198,7 +219,7 @@ function addRedisAdapter(io) {
 		var redis = require('../database/redis');
 		var pub = redis.connect();
 		var sub = redis.connect();
-		io.adapter(redisAdapter({pubClient: pub, subClient: sub}));
+		io.adapter(redisAdapter({ pubClient: pub, subClient: sub }));
 	} else if (nconf.get('isCluster') === 'true') {
 		winston.warn('[socket.io] Clustering detected, you are advised to configure Redis as a websocket store.');
 	}
@@ -240,8 +261,7 @@ Sockets.reqFromSocket = function (socket, payload, event) {
 		secure: encrypted,
 		url: referer,
 		path: referer.substr(referer.indexOf(host) + host.length),
-		headers: headers
+		headers: headers,
 	};
 };
-
 

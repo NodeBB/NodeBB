@@ -1,11 +1,10 @@
 'use strict';
 
-var	async = require('async'),
-	db = require('../database'),
-	plugins = require('../plugins');
+var	async = require('async');
+var db = require('../database');
+var plugins = require('../plugins');
 
 module.exports = function (Groups) {
-
 	Groups.ownership = {};
 
 	Groups.ownership.isOwner = function (uid, groupName, callback) {
@@ -30,9 +29,9 @@ module.exports = function (Groups) {
 				db.setAdd('group:' + groupName + ':owners', toUid, next);
 			},
 			function (next) {
-				plugins.fireHook('action:group.grantOwnership', {uid: toUid, groupName: groupName});
+				plugins.fireHook('action:group.grantOwnership', { uid: toUid, groupName: groupName });
 				next();
-			}
+			},
 		], callback);
 	};
 
@@ -51,9 +50,9 @@ module.exports = function (Groups) {
 				db.setRemove('group:' + groupName + ':owners', toUid, next);
 			},
 			function (next) {
-				plugins.fireHook('action:group.rescindOwnership', {uid: toUid, groupName: groupName});
+				plugins.fireHook('action:group.rescindOwnership', { uid: toUid, groupName: groupName });
 				next();
-			}
+			},
 		], callback);
 	};
 };

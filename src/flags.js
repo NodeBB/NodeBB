@@ -1,7 +1,6 @@
 'use strict';
 
 var async = require('async');
-var winston = require('winston');
 var db = require('./database');
 var user = require('./user');
 var groups = require('./groups');
@@ -24,13 +23,13 @@ Flags.get = function (flagId, callback) {
 		async.apply(async.parallel, {
 			base: async.apply(db.getObject.bind(db), 'flag:' + flagId),
 			history: async.apply(Flags.getHistory, flagId),
-			notes: async.apply(Flags.getNotes, flagId)
+			notes: async.apply(Flags.getNotes, flagId),
 		}),
 		function (data, next) {
 			// Second stage
 			async.parallel({
 				userObj: async.apply(user.getUserFields, data.base.uid, ['username', 'userslug', 'picture']),
-				targetObj: async.apply(Flags.getTarget, data.base.type, data.base.targetId, data.base.uid)
+				targetObj: async.apply(Flags.getTarget, data.base.type, data.base.targetId, data.base.uid),
 			}, function (err, payload) {
 				// Final object return construction
 				next(err, Object.assign(data.base, {
@@ -39,10 +38,10 @@ Flags.get = function (flagId, callback) {
 					target: payload.targetObj,
 					history: data.history,
 					notes: data.notes,
-					reporter: payload.userObj
+					reporter: payload.userObj,
 				}));
 			});
-		}
+		},
 	], callback);
 };
 
@@ -63,13 +62,14 @@ Flags.list = function (filters, uid, callback) {
 			});
 		} else {
 			// Empty array, do nothing
-			return;
+
 		}
 	};
 
 	if (Object.keys(filters).length > 0) {
 		for (var type in filters) {
-			switch (type) {
+			if (filters.hasOwnProperty(type)) {
+				switch (type) {
 				case 'type':
 					prepareSets('flags:byType:', filters[type]);
 					break;
@@ -77,11 +77,11 @@ Flags.list = function (filters, uid, callback) {
 				case 'state':
 					prepareSets('flags:byState:', filters[type]);
 					break;
-				
+
 				case 'reporterId':
 					prepareSets('flags:byReporter:', filters[type]);
 					break;
-				
+
 				case 'assignee':
 					prepareSets('flags:byAssignee:', filters[type]);
 					break;
@@ -96,11 +96,12 @@ Flags.list = function (filters, uid, callback) {
 
 				case 'quick':
 					switch (filters.quick) {
-						case 'mine':
-							sets.push('flags:byAssignee:' + uid);
-							break;
+					case 'mine':
+						sets.push('flags:byAssignee:' + uid);
+						break;
 					}
 					break;
+				}
 			}
 		}
 	}
@@ -147,38 +148,38 @@ Flags.list = function (filters, uid, callback) {
 									username: userObj.username,
 									picture: userObj.picture,
 									'icon:bgColor': userObj['icon:bgColor'],
-									'icon:text': userObj['icon:text']
-								}
+									'icon:text': userObj['icon:text'],
+								},
 							}));
 						});
-					}
+					},
 				], function (err, flagObj) {
 					if (err) {
 						return next(err);
 					}
 
-					switch(flagObj.state) {
-						case 'open':
-							flagObj.labelClass = 'info';
-							break;
-						case 'wip':
-							flagObj.labelClass = 'warning';
-							break;
-						case 'resolved':
-							flagObj.labelClass = 'success';
-							break;
-						case 'rejected':
-							flagObj.labelClass = 'danger';
-							break;
+					switch (flagObj.state) {
+					case 'open':
+						flagObj.labelClass = 'info';
+						break;
+					case 'wip':
+						flagObj.labelClass = 'warning';
+						break;
+					case 'resolved':
+						flagObj.labelClass = 'success';
+						break;
+					case 'rejected':
+						flagObj.labelClass = 'danger';
+						break;
 					}
 
 					next(null, Object.assign(flagObj, {
 						target_readable: flagObj.type.charAt(0).toUpperCase() + flagObj.type.slice(1) + ' ' + flagObj.targetId,
-						datetimeISO: new Date(parseInt(flagObj.datetime, 10)).toISOString()
+						datetimeISO: new Date(parseInt(flagObj.datetime, 10)).toISOString(),
 					}));
 				});
-			},  next);
-		}
+			}, next);
+		},
 	], callback);
 };
 
@@ -186,7 +187,7 @@ Flags.validate = function (payload, callback) {
 	async.parallel({
 		targetExists: async.apply(Flags.targetExists, payload.type, payload.id),
 		target: async.apply(Flags.getTarget, payload.type, payload.id, payload.uid),
-		reporter: async.apply(user.getUserData, payload.uid)
+		reporter: async.apply(user.getUserData, payload.uid),
 	}, function (err, data) {
 		if (err) {
 			return callback(err);
@@ -199,42 +200,42 @@ Flags.validate = function (payload, callback) {
 		}
 
 		switch (payload.type) {
-			case 'post':
-				privileges.posts.canEdit(payload.id, payload.uid, function (err, editable) {
-					if (err) {
-						return callback(err);
-					}
+		case 'post':
+			privileges.posts.canEdit(payload.id, payload.uid, function (err, editable) {
+				if (err) {
+					return callback(err);
+				}
 
-					var minimumReputation = utils.isNumber(meta.config['privileges:flag']) ? parseInt(meta.config['privileges:flag'], 10) : 1;
+				var minimumReputation = utils.isNumber(meta.config['privileges:flag']) ? parseInt(meta.config['privileges:flag'], 10) : 1;
 					// Check if reporter meets rep threshold (or can edit the target post, in which case threshold does not apply)
-					if (!editable.flag && parseInt(data.reporter.reputation, 10) < minimumReputation) {
-						return callback(new Error('[[error:not-enough-reputation-to-flag]]'));
-					}
+				if (!editable.flag && parseInt(data.reporter.reputation, 10) < minimumReputation) {
+					return callback(new Error('[[error:not-enough-reputation-to-flag]]'));
+				}
 
-					callback();
-				});
-				break;
-			
-			case 'user':
-				privileges.users.canEdit(payload.uid, payload.id, function (err, editable) {
-					if (err) {
-						return callback(err);
-					}
+				callback();
+			});
+			break;
 
-					var minimumReputation = utils.isNumber(meta.config['privileges:flag']) ? parseInt(meta.config['privileges:flag'], 10) : 1;
+		case 'user':
+			privileges.users.canEdit(payload.uid, payload.id, function (err, editable) {
+				if (err) {
+					return callback(err);
+				}
+
+				var minimumReputation = utils.isNumber(meta.config['privileges:flag']) ? parseInt(meta.config['privileges:flag'], 10) : 1;
 					// Check if reporter meets rep threshold (or can edit the target user, in which case threshold does not apply)
-					if (!editable && parseInt(data.reporter.reputation, 10) < minimumReputation) {
-						return callback(new Error('[[error:not-enough-reputation-to-flag]]'));
-					}
+				if (!editable && parseInt(data.reporter.reputation, 10) < minimumReputation) {
+					return callback(new Error('[[error:not-enough-reputation-to-flag]]'));
+				}
 
-					callback();
-				});
-				break;
-			
-			default:
-				callback(new Error('[[error:invalid-data]]'));
-				break;
-		} 
+				callback();
+			});
+			break;
+
+		default:
+			callback(new Error('[[error:invalid-data]]'));
+			break;
+		}
 	});
 };
 
@@ -252,7 +253,7 @@ Flags.getNotes = function (flagId, callback) {
 						uid: noteObj[0],
 						content: noteObj[1],
 						datetime: note.score,
-						datetimeISO: new Date(parseInt(note.score, 10)).toISOString()
+						datetimeISO: new Date(parseInt(note.score, 10)).toISOString(),
 					};
 				} catch (e) {
 					return next(e);
@@ -271,7 +272,7 @@ Flags.getNotes = function (flagId, callback) {
 					return note;
 				}));
 			});
-		}
+		},
 	], callback);
 };
 
@@ -296,7 +297,7 @@ Flags.create = function (type, id, uid, reason, timestamp, callback) {
 
 				// Extra data for zset insertion
 				async.apply(Flags.getTargetUid, type, id),
-				async.apply(Flags.getTargetCid, type, id)
+				async.apply(Flags.getTargetCid, type, id),
 			], function (err, checks) {
 				if (err) {
 					return next(err);
@@ -309,9 +310,8 @@ Flags.create = function (type, id, uid, reason, timestamp, callback) {
 					return next(new Error('[[error:already-flagged]]'));
 				} else if (!checks[1]) {
 					return next(new Error('[[error:invalid-data]]'));
-				} else {
-					next();
 				}
+				next();
 			});
 		},
 		async.apply(db.incrObjectField, 'global', 'nextFlagId'),
@@ -323,13 +323,13 @@ Flags.create = function (type, id, uid, reason, timestamp, callback) {
 					targetId: id,
 					description: reason,
 					uid: uid,
-					datetime: timestamp
+					datetime: timestamp,
 				}),
 				async.apply(db.sortedSetAdd.bind(db), 'flags:datetime', timestamp, flagId),	// by time, the default
 				async.apply(db.sortedSetAdd.bind(db), 'flags:byReporter:' + uid, timestamp, flagId),	// by reporter
 				async.apply(db.sortedSetAdd.bind(db), 'flags:byType:' + type, timestamp, flagId),	// by flag type
 				async.apply(db.sortedSetAdd.bind(db), 'flags:hash', flagId, [type, id, uid].join(':')),	// save zset for duplicate checking
-				async.apply(analytics.increment, 'flags')	// some fancy analytics
+				async.apply(analytics.increment, 'flags'),	// some fancy analytics
 			];
 
 			if (targetUid) {
@@ -341,20 +341,20 @@ Flags.create = function (type, id, uid, reason, timestamp, callback) {
 			if (type === 'post') {
 				tasks.push(async.apply(db.sortedSetAdd.bind(db), 'flags:byPid:' + id, timestamp, flagId));	// by target pid
 			}
-		
-			async.parallel(tasks, function (err, data) {
+
+			async.parallel(tasks, function (err) {
 				if (err) {
 					return next(err);
 				}
 
 				if (doHistoryAppend) {
-					Flags.update(flagId, uid, { "state": "open" });
+					Flags.update(flagId, uid, { state: 'open' });
 				}
 
 				next(null, flagId);
 			});
 		},
-		async.apply(Flags.get)
+		async.apply(Flags.get),
 	], callback);
 };
 
@@ -368,72 +368,72 @@ Flags.getTarget = function (type, id, uid, callback) {
 		function (exists, next) {
 			if (exists) {
 				switch (type) {
-					case 'post':
-						async.waterfall([
-							async.apply(posts.getPostsByPids, [id], uid),
-							function (posts, next) {
-								topics.addPostData(posts, uid, next);
-							}
-						], function (err, posts) {
-							next(err, posts[0]);
-						});
-						break;
+				case 'post':
+					async.waterfall([
+						async.apply(posts.getPostsByPids, [id], uid),
+						function (posts, next) {
+							topics.addPostData(posts, uid, next);
+						},
+					], function (err, posts) {
+						next(err, posts[0]);
+					});
+					break;
 
-					case 'user':
-						user.getUsersData([id], function (err, users) {
-							next(err, users ? users[0] : undefined);
-						});
-						break;
+				case 'user':
+					user.getUsersData([id], function (err, users) {
+						next(err, users ? users[0] : undefined);
+					});
+					break;
 
-					default:
-						next(new Error('[[error:invalid-data]]'));
-						break;
+				default:
+					next(new Error('[[error:invalid-data]]'));
+					break;
 				}
 			} else {
 				// Target used to exist (otherwise flag creation'd fail), but no longer
 				next(null, {});
 			}
-		}
+		},
 	], callback);
 };
 
 Flags.targetExists = function (type, id, callback) {
 	switch (type) {
-		case 'post':
-			posts.exists(id, callback);
-			break;
-		
-		case 'user':
-			user.exists(id, callback);
-			break;
+	case 'post':
+		posts.exists(id, callback);
+		break;
 
-		default:
-			callback(new Error('[[error:invalid-data]]'));
-			break;
+	case 'user':
+		user.exists(id, callback);
+		break;
+
+	default:
+		callback(new Error('[[error:invalid-data]]'));
+		break;
 	}
 };
 
 Flags.getTargetUid = function (type, id, callback) {
 	switch (type) {
-		case 'post':
-			posts.getPostField(id, 'uid', callback);
-			break;
-		
-		default:
-			setImmediate(callback, null, id);
-			break; 
+	case 'post':
+		posts.getPostField(id, 'uid', callback);
+		break;
+
+	default:
+		setImmediate(callback, null, id);
+		break;
 	}
 };
 
 Flags.getTargetCid = function (type, id, callback) {
 	switch (type) {
-		case 'post':
-			posts.getCidByPid(id, callback);
-			break;
+	case 'post':
+		posts.getCidByPid(id, callback);
+		break;
 
-		default:
-			setImmediate(callback, null, id);
-			break;
+	default:
+		setImmediate(callback, null, id);
+		break;
 	}
 };
 
@@ -453,14 +453,14 @@ Flags.update = function (flagId, uid, changeset, callback) {
 					} else {
 						// Add tasks as necessary
 						switch (prop) {
-							case 'state':
-								tasks.push(async.apply(db.sortedSetAdd.bind(db), 'flags:byState:' + changeset[prop], now, flagId));
-								tasks.push(async.apply(db.sortedSetRemove.bind(db), 'flags:byState:' + current[prop], flagId));
-								break;
-							
-							case 'assignee':
-								tasks.push(async.apply(db.sortedSetAdd.bind(db), 'flags:byAssignee:' + changeset[prop], now, flagId));
-								break;
+						case 'state':
+							tasks.push(async.apply(db.sortedSetAdd.bind(db), 'flags:byState:' + changeset[prop], now, flagId));
+							tasks.push(async.apply(db.sortedSetRemove.bind(db), 'flags:byState:' + current[prop], flagId));
+							break;
+
+						case 'assignee':
+							tasks.push(async.apply(db.sortedSetAdd.bind(db), 'flags:byAssignee:' + changeset[prop], now, flagId));
+							break;
 						}
 					}
 				}
@@ -480,10 +480,10 @@ Flags.update = function (flagId, uid, changeset, callback) {
 			// Fire plugin hook
 			tasks.push(async.apply(plugins.fireHook, 'action:flag.update', { flagId: flagId, changeset: changeset, uid: uid }));
 
-			async.parallel(tasks, function (err, data) {
+			async.parallel(tasks, function (err) {
 				return next(err);
 			});
-		}
+		},
 	], callback);
 };
 
@@ -512,12 +512,12 @@ Flags.getHistory = function (flagId, callback) {
 					uid: entry.value[0],
 					fields: changeset,
 					datetime: entry.score,
-					datetimeISO: new Date(parseInt(entry.score, 10)).toISOString()
+					datetimeISO: new Date(parseInt(entry.score, 10)).toISOString(),
 				};
 			});
 
 			user.getUsersFields(uids, ['username', 'userslug', 'picture'], next);
-		}
+		},
 	], function (err, users) {
 		if (err) {
 			return callback(err);
@@ -564,8 +564,8 @@ Flags.appendNote = function (flagId, uid, note, datetime, callback) {
 		async.apply(db.sortedSetAdd, 'flag:' + flagId + ':notes', datetime, payload),
 		async.apply(Flags.appendHistory, flagId, uid, {
 			notes: null,
-			datetime: datetime
-		})
+			datetime: datetime,
+		}),
 	], callback);
 };
 
@@ -576,87 +576,87 @@ Flags.notify = function (flagObj, uid, callback) {
 	}
 
 	switch (flagObj.type) {
-		case 'post':
-			async.parallel({
-				post: function (next) {
-					async.waterfall([
-						async.apply(posts.getPostData, flagObj.targetId),
-						async.apply(posts.parsePost)
-					], next);
-				},
-				title: async.apply(topics.getTitleByPid, flagObj.targetId),
-				admins: async.apply(groups.getMembers, 'administrators', 0, -1),
-				globalMods: async.apply(groups.getMembers, 'Global Moderators', 0, -1),
-				moderators: function (next) {
-					async.waterfall([
-						async.apply(posts.getCidByPid, flagObj.targetId),
-						function (cid, next) {
-							groups.getMembers('cid:' + cid + ':privileges:mods', 0, -1, next);
-						}
-					], next);
-				}
-			}, function (err, results) {
-				if (err) {
+	case 'post':
+		async.parallel({
+			post: function (next) {
+				async.waterfall([
+					async.apply(posts.getPostData, flagObj.targetId),
+					async.apply(posts.parsePost),
+				], next);
+			},
+			title: async.apply(topics.getTitleByPid, flagObj.targetId),
+			admins: async.apply(groups.getMembers, 'administrators', 0, -1),
+			globalMods: async.apply(groups.getMembers, 'Global Moderators', 0, -1),
+			moderators: function (next) {
+				async.waterfall([
+					async.apply(posts.getCidByPid, flagObj.targetId),
+					function (cid, next) {
+						groups.getMembers('cid:' + cid + ':privileges:mods', 0, -1, next);
+					},
+				], next);
+			},
+		}, function (err, results) {
+			if (err) {
+				return callback(err);
+			}
+
+			var title = S(results.title).decodeHTMLEntities().s;
+			var titleEscaped = title.replace(/%/g, '&#37;').replace(/,/g, '&#44;');
+
+			notifications.create({
+				bodyShort: '[[notifications:user_flagged_post_in, ' + flagObj.reporter.username + ', ' + titleEscaped + ']]',
+				bodyLong: flagObj.description,
+				pid: flagObj.targetId,
+				path: '/post/' + flagObj.targetId,
+				nid: 'flag:post:' + flagObj.targetId + ':uid:' + uid,
+				from: uid,
+				mergeId: 'notifications:user_flagged_post_in|' + flagObj.targetId,
+				topicTitle: results.title,
+			}, function (err, notification) {
+				if (err || !notification) {
 					return callback(err);
 				}
 
-				var title = S(results.title).decodeHTMLEntities().s;
-				var titleEscaped = title.replace(/%/g, '&#37;').replace(/,/g, '&#44;');
-
-				notifications.create({
-					bodyShort: '[[notifications:user_flagged_post_in, ' + flagObj.reporter.username + ', ' + titleEscaped + ']]',
-					bodyLong: flagObj.description,
-					pid: flagObj.targetId,
-					path: '/post/' + flagObj.targetId,
-					nid: 'flag:post:' + flagObj.targetId + ':uid:' + uid,
-					from: uid,
-					mergeId: 'notifications:user_flagged_post_in|' + flagObj.targetId,
-					topicTitle: results.title
-				}, function (err, notification) {
-					if (err || !notification) {
-						return callback(err);
-					}
-
-					plugins.fireHook('action:flag.create', {
-						flag: flagObj
-					});
-					notifications.push(notification, results.admins.concat(results.moderators).concat(results.globalMods), callback);
+				plugins.fireHook('action:flag.create', {
+					flag: flagObj,
 				});
+				notifications.push(notification, results.admins.concat(results.moderators).concat(results.globalMods), callback);
 			});
-			break;
+		});
+		break;
 
-		case 'user':
-			async.parallel({
-				admins: async.apply(groups.getMembers, 'administrators', 0, -1),
-				globalMods: async.apply(groups.getMembers, 'Global Moderators', 0, -1),
-			}, function (err, results) {
-				if (err) {
+	case 'user':
+		async.parallel({
+			admins: async.apply(groups.getMembers, 'administrators', 0, -1),
+			globalMods: async.apply(groups.getMembers, 'Global Moderators', 0, -1),
+		}, function (err, results) {
+			if (err) {
+				return callback(err);
+			}
+
+			notifications.create({
+				bodyShort: '[[notifications:user_flagged_user, ' + flagObj.reporter.username + ', ' + flagObj.target.username + ']]',
+				bodyLong: flagObj.description,
+				path: '/uid/' + flagObj.targetId,
+				nid: 'flag:user:' + flagObj.targetId + ':uid:' + uid,
+				from: uid,
+				mergeId: 'notifications:user_flagged_user|' + flagObj.targetId,
+			}, function (err, notification) {
+				if (err || !notification) {
 					return callback(err);
 				}
 
-				notifications.create({
-					bodyShort: '[[notifications:user_flagged_user, ' + flagObj.reporter.username + ', ' + flagObj.target.username + ']]',
-					bodyLong: flagObj.description,
-					path: '/uid/' + flagObj.targetId,
-					nid: 'flag:user:' + flagObj.targetId + ':uid:' + uid,
-					from: uid,
-					mergeId: 'notifications:user_flagged_user|' + flagObj.targetId
-				}, function (err, notification) {
-					if (err || !notification) {
-						return callback(err);
-					}
-
-					plugins.fireHook('action:flag.create', {
-						flag: flagObj
-					});
-					notifications.push(notification, results.admins.concat(results.globalMods), callback);
+				plugins.fireHook('action:flag.create', {
+					flag: flagObj,
 				});
+				notifications.push(notification, results.admins.concat(results.globalMods), callback);
 			});
-			break;
-		
-		default:
-			callback(new Error('[[error:invalid-data]]'));
-			break;
+		});
+		break;
+
+	default:
+		callback(new Error('[[error:invalid-data]]'));
+		break;
 	}
 };
 

@@ -42,20 +42,20 @@ searchController.search = function (req, res, next) {
 		sortDirection: req.query.sortDirection,
 		page: page,
 		uid: req.uid,
-		qs: req.query
+		qs: req.query,
 	};
 
 	async.parallel({
 		categories: async.apply(categories.buildForSelect, req.uid),
-		search: async.apply(search.search, data)
+		search: async.apply(search.search, data),
 	}, function (err, results) {
 		if (err) {
 			return next(err);
 		}
 
 		var categoriesData = [
-			{value: 'all', text: '[[unread:all_categories]]'},
-			{value: 'watched', text: '[[category:watched-categories]]'}
+			{ value: 'all', text: '[[unread:all_categories]]' },
+			{ value: 'watched', text: '[[category:watched-categories]]' },
 		].concat(results.categories);
 
 		var searchData = results.search;
@@ -65,7 +65,7 @@ searchController.search = function (req, res, next) {
 		searchData.showAsPosts = !req.query.showAs || req.query.showAs === 'posts';
 		searchData.showAsTopics = req.query.showAs === 'topics';
 		searchData.title = '[[global:header.search]]';
-		searchData.breadcrumbs = helpers.buildBreadcrumbs([{text: '[[global:search]]'}]);
+		searchData.breadcrumbs = helpers.buildBreadcrumbs([{ text: '[[global:search]]' }]);
 		searchData.expandSearch = !req.query.term;
 		searchData.searchDefaultSortBy = meta.config.searchDefaultSortBy || '';
 

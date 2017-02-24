@@ -14,9 +14,8 @@ var meta = require('../meta');
 var db = require('../database');
 
 module.exports = function (User) {
-
 	User.uploadPicture = function (uid, picture, callback) {
-		User.uploadCroppedPicture({uid: uid, file: picture}, callback);
+		User.uploadCroppedPicture({ uid: uid, file: picture }, callback);
 	};
 
 	User.uploadFromUrl = function (uid, url, callback) {
@@ -46,18 +45,18 @@ module.exports = function (User) {
 					uid: uid,
 					image: {
 						url: url,
-						name: ''
-					}
+						name: '',
+					},
 				}, next);
 			},
 			function (image, next) {
 				User.setUserFields(uid, {
 					uploadedpicture: image.url,
-					picture: image.url
+					picture: image.url,
 				}, function (err) {
 					next(err, image);
 				});
-			}
+			},
 		], callback);
 	};
 
@@ -66,11 +65,10 @@ module.exports = function (User) {
 	};
 
 	User.updateCoverPicture = function (data, callback) {
-
 		var url;
 		var picture = {
 			name: 'profileCover',
-			uid: data.uid
+			uid: data.uid,
 		};
 
 		if (!data.imageData && data.position) {
@@ -112,18 +110,17 @@ module.exports = function (User) {
 				} else {
 					setImmediate(next);
 				}
-			}
+			},
 		], function (err) {
 			deleteFile(picture.path);
 			callback(err, {
-				url: url
+				url: url,
 			});
 		});
 	};
 
 	User.uploadCroppedPicture = function (data, callback) {
-
-		if (parseInt(meta.config.allowProfileImageUploads) !== 1) {
+		if (parseInt(meta.config.allowProfileImageUploads, 10) !== 1) {
 			return callback(new Error('[[error:profile-image-uploads-disabled]]'));
 		}
 
@@ -147,7 +144,7 @@ module.exports = function (User) {
 
 		var picture = {
 			name: 'profileAvatar',
-			uid: data.uid
+			uid: data.uid,
 		};
 
 		async.waterfall([
@@ -168,7 +165,7 @@ module.exports = function (User) {
 					path: picture.path,
 					extension: extension,
 					width: imageDimension,
-					height: imageDimension
+					height: imageDimension,
 				}, next);
 			},
 			function (next) {
@@ -180,9 +177,9 @@ module.exports = function (User) {
 
 				User.setUserFields(data.uid, {
 					uploadedpicture: uploadedImage.url,
-					picture: uploadedImage.url
+					picture: uploadedImage.url,
 				}, next);
-			}
+			},
 		], function (err) {
 			deleteFile(picture.path);
 			callback(err, uploadedImage);
@@ -208,7 +205,7 @@ module.exports = function (User) {
 		if (plugins.hasListeners('filter:uploadImage')) {
 			return plugins.fireHook('filter:uploadImage', {
 				image: image,
-				uid: image.uid
+				uid: image.uid,
 			}, callback);
 		}
 
@@ -233,9 +230,9 @@ module.exports = function (User) {
 				next(null, {
 					url: nconf.get('relative_path') + upload.url,
 					path: upload.path,
-					name: image.name
+					name: image.name,
 				});
-			}
+			},
 		], callback);
 	}
 

@@ -16,7 +16,6 @@ var privileges = require('../privileges');
 var categories = require('../categories');
 
 module.exports = function (Topics) {
-
 	Topics.create = function (data, callback) {
 		// This is an internal method, consider using Topics.post instead
 		var timestamp = data.timestamp || Date.now();
@@ -31,26 +30,26 @@ module.exports = function (Topics) {
 			},
 			function (tid, next) {
 				topicData = {
-					'tid': tid,
-					'uid': data.uid,
-					'cid': data.cid,
-					'mainPid': 0,
-					'title': data.title,
-					'slug': tid + '/' + (utils.slugify(data.title) || 'topic'),
-					'timestamp': timestamp,
-					'lastposttime': 0,
-					'postcount': 0,
-					'viewcount': 0,
-					'locked': 0,
-					'deleted': 0,
-					'pinned': 0
+					tid: tid,
+					uid: data.uid,
+					cid: data.cid,
+					mainPid: 0,
+					title: data.title,
+					slug: tid + '/' + (utils.slugify(data.title) || 'topic'),
+					timestamp: timestamp,
+					lastposttime: 0,
+					postcount: 0,
+					viewcount: 0,
+					locked: 0,
+					deleted: 0,
+					pinned: 0,
 				};
 
 				if (data.thumb) {
 					topicData.thumb = data.thumb;
 				}
 
-				plugins.fireHook('filter:topic.create', {topic: topicData, data: data}, next);
+				plugins.fireHook('filter:topic.create', { topic: topicData, data: data }, next);
 			},
 			function (data, next) {
 				topicData = data.topic;
@@ -62,7 +61,7 @@ module.exports = function (Topics) {
 						db.sortedSetsAdd([
 							'topics:tid',
 							'cid:' + topicData.cid + ':tids',
-							'cid:' + topicData.cid + ':uid:' + topicData.uid + ':tids'
+							'cid:' + topicData.cid + ':uid:' + topicData.uid + ':tids',
 						], timestamp, topicData.tid, next);
 					},
 					function (next) {
@@ -79,13 +78,13 @@ module.exports = function (Topics) {
 					},
 					function (next) {
 						Topics.createTags(data.tags, topicData.tid, timestamp, next);
-					}
+					},
 				], next);
 			},
 			function (results, next) {
-				plugins.fireHook('action:topic.save', {topic: _.clone(topicData)});
+				plugins.fireHook('action:topic.save', { topic: _.clone(topicData) });
 				next(null, topicData.tid);
-			}
+			},
 		], callback);
 	};
 
@@ -161,7 +160,7 @@ module.exports = function (Topics) {
 					},
 					topicData: function (next) {
 						Topics.getTopicsByTids([postData.tid], uid, next);
-					}
+					},
 				}, next);
 			},
 			function (data, next) {
@@ -175,7 +174,7 @@ module.exports = function (Topics) {
 				data.postData.index = 0;
 
 				analytics.increment(['topics', 'topics:byCid:' + data.topicData.cid]);
-				plugins.fireHook('action:topic.post', {topic: data.topicData, post: data.postData});
+				plugins.fireHook('action:topic.post', { topic: data.topicData, post: data.postData });
 
 				if (parseInt(uid, 10)) {
 					user.notifications.sendTopicNotificationToFollowers(uid, data.topicData, data.postData);
@@ -183,9 +182,9 @@ module.exports = function (Topics) {
 
 				next(null, {
 					topicData: data.topicData,
-					postData: data.postData
+					postData: data.postData,
 				});
-			}
+			},
 		], callback);
 	};
 
@@ -249,7 +248,7 @@ module.exports = function (Topics) {
 					content: content,
 					toPid: data.toPid,
 					timestamp: data.timestamp,
-					ip: data.req ? data.req.ip : null
+					ip: data.req ? data.req.ip : null,
 				}, next);
 			},
 			function (_postData, next) {
@@ -270,10 +269,10 @@ module.exports = function (Topics) {
 
 				Topics.notifyFollowers(postData, uid);
 				analytics.increment(['posts', 'posts:byCid:' + cid]);
-				plugins.fireHook('action:topic.reply', {post: _.clone(postData)});
+				plugins.fireHook('action:topic.reply', { post: _.clone(postData) });
 
 				next(null, postData);
-			}
+			},
 		], callback);
 	};
 
@@ -300,7 +299,7 @@ module.exports = function (Topics) {
 					},
 					content: function (next) {
 						posts.parsePost(postData, next);
-					}
+					},
 				}, next);
 			},
 			function (results, next) {
@@ -324,7 +323,7 @@ module.exports = function (Topics) {
 				postData.topic.title = validator.escape(String(postData.topic.title));
 
 				next(null, postData);
-			}
+			},
 		], callback);
 	}
 
@@ -357,5 +356,4 @@ module.exports = function (Topics) {
 		}
 		callback();
 	}
-
 };

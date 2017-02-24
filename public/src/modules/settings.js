@@ -1,8 +1,7 @@
-"use strict";
-/*global define, app, socket*/
+'use strict';
+
 
 define('settings', function () {
-
 	var DEFAULT_PLUGINS = [
 		'settings/checkbox',
 		'settings/number',
@@ -10,13 +9,13 @@ define('settings', function () {
 		'settings/select',
 		'settings/array',
 		'settings/key',
-		'settings/object'
+		'settings/object',
 	];
 
-	var Settings,
-		onReady = [],
-		waitingJobs = 0,
-		helper;
+	var Settings;
+	var onReady = [];
+	var waitingJobs = 0;
+	var helper;
 
 	/**
 	 Returns the hook of given name that matches the given type or element.
@@ -24,21 +23,21 @@ define('settings', function () {
 	 @param name The name of the hook.
 	 */
 	function getHook(type, name) {
-		var hook, plugin;
+		var hook;
+		var plugin;
 		if (typeof type !== 'string') {
 			type = $(type);
 			type = type.data('type') || type.attr('type') || type.prop('tagName');
 		}
 		plugin = Settings.plugins[type.toLowerCase()];
 		if (plugin == null) {
-			return void 0;
+			return;
 		}
 		hook = plugin[name];
 		if (typeof hook === 'function') {
 			return hook;
-		} else {
-			return null;
 		}
+		return null;
 	}
 
 	helper = {
@@ -48,9 +47,8 @@ define('settings', function () {
 		deepClone: function (obj) {
 			if (typeof obj === 'object') {
 				return JSON.parse(JSON.stringify(obj));
-			} else {
-				return obj;
 			}
+			return obj;
 		},
 		/**
 		 Creates a new Element with given data.
@@ -99,7 +97,8 @@ define('settings', function () {
 		 @returns JQuery The created element.
 		 */
 		createElementOfType: function (type, tagName, data) {
-			var element, hook = getHook(type, 'create');
+			var element;
+			var hook = getHook(type, 'create');
 			if (hook != null) {
 				element = $(hook.call(Settings, type, tagName, data));
 			} else {
@@ -127,12 +126,16 @@ define('settings', function () {
 			if (!trim && empty) {
 				return array;
 			}
-			for (var i = 0; i < array.length; i++) {
+			for (var i = 0; i < array.length; i += 1) {
 				var value = array[i];
 				if (trim) {
-					value = value === true ? 1 : value === false ? 0 : typeof value.trim === 'function' ? value.trim() : value;
+					if (value === !!value) {
+						value = +value;
+					} else if (value && typeof value.trim === 'function') {
+						value = value.trim();
+					}
 				}
-				if (empty || (value != null ? value.length : void 0)) {
+				if (empty || (value != null && value.length)) {
 					cleaned.push(value);
 				}
 			}
@@ -151,29 +154,26 @@ define('settings', function () {
 		 @returns Object The value of the element.
 		 */
 		readValue: function (element) {
-			var empty = !helper.isFalse(element.data('empty')),
-				trim = !helper.isFalse(element.data('trim')),
-				split = element.data('split'),
-				hook = getHook(element, 'get'),
-				value;
+			var empty = !helper.isFalse(element.data('empty'));
+			var trim = !helper.isFalse(element.data('trim'));
+			var split = element.data('split');
+			var hook = getHook(element, 'get');
+			var value;
 			if (hook != null) {
 				return hook.call(Settings, element, trim, empty);
 			}
 			if (split != null) {
 				empty = helper.isTrue(element.data('empty')); // default empty-value is false for arrays
 				value = element.val();
-				var array = (value != null ? value.split(split || ',') : void 0) || [];
+				var array = (value != null && value.split(split || ',')) || [];
 				return helper.cleanArray(array, trim, empty);
-			} else {
-				value = element.val();
-				if (trim && value != null && typeof value.trim === 'function') {
-					value = value.trim();
-				}
-				if (empty || value !== void 0 && (value == null || value.length !== 0)) {
-					return value;
-				} else {
-					return void 0;
-				}
+			}
+			value = element.val();
+			if (trim && value != null && typeof value.trim === 'function') {
+				value = value.trim();
+			}
+			if (empty || (value !== undefined && (value == null || value.length !== 0))) {
+				return value;
 			}
 		},
 		/**
@@ -183,8 +183,8 @@ define('settings', function () {
 		 @param value The value to set.
 		 */
 		fillField: function (element, value) {
-			var hook = getHook(element, 'set'),
-				trim = element.data('trim');
+			var hook = getHook(element, 'set');
+			var trim = element.data('trim');
 			trim = trim !== 'false' && +trim !== 0;
 			if (hook != null) {
 				return hook.call(Settings, element, value, trim);
@@ -207,7 +207,7 @@ define('settings', function () {
 			} else {
 				value = '';
 			}
-			if (value !== void 0) {
+			if (value !== undefined) {
 				element.val(value);
 			}
 		},
@@ -218,13 +218,13 @@ define('settings', function () {
 		initFields: function (wrapper) {
 			$('[data-key]', wrapper).each(function (ignored, field) {
 				field = $(field);
-				var hook = getHook(field, 'init'),
-					keyParts = field.data('key').split('.'),
-					value = Settings.get();
+				var hook = getHook(field, 'init');
+				var keyParts = field.data('key').split('.');
+				var value = Settings.get();
 				if (hook != null) {
 					hook.call(Settings, field);
 				}
-				for (var i = 0; i < keyParts.length; i++) {
+				for (var i = 0; i < keyParts.length; i += 1) {
 					var part = keyParts[i];
 					if (part && value != null) {
 						value = value[part];
@@ -238,7 +238,8 @@ define('settings', function () {
 		 @param amount The amount of jobs to register.
 		 */
 		registerReadyJobs: function (amount) {
-			return waitingJobs += amount;
+			waitingJobs += amount;
+			return waitingJobs;
 		},
 		/**
 		 Decreases the amount of jobs before settings are ready by given amount or 1.
@@ -252,7 +253,7 @@ define('settings', function () {
 			if (waitingJobs > 0) {
 				waitingJobs -= amount;
 				if (waitingJobs <= 0) {
-					for (var i = 0; i < onReady.length; i++) {
+					for (var i = 0; i < onReady.length; i += 1) {
 						onReady[i]();
 					}
 					onReady = [];
@@ -284,22 +285,22 @@ define('settings', function () {
 			}
 			socket.emit('admin.settings.set', {
 				hash: hash,
-				values: settings
+				values: settings,
 			}, function (err) {
 				if (notify) {
 					if (err) {
 						app.alert({
 							title: 'Settings Not Saved',
 							type: 'danger',
-							message: "NodeBB failed to save the settings.",
-							timeout: 5000
+							message: 'NodeBB failed to save the settings.',
+							timeout: 5000,
 						});
 					} else {
 						app.alert({
 							title: 'Settings Saved',
 							type: 'success',
-							message: "Settings have been successfully saved",
-							timeout: 2500
+							message: 'Settings have been successfully saved',
+							timeout: 2500,
 						});
 					}
 				}
@@ -317,7 +318,7 @@ define('settings', function () {
 				settings._ = JSON.parse(settings._);
 			} catch (_error) {}
 			Settings.cfg = settings;
-		}
+		},
 	};
 
 
@@ -331,7 +332,7 @@ define('settings', function () {
 		 @returns Object The settings.
 		 */
 		get: function () {
-			if (Settings.cfg != null && Settings.cfg._ !== void 0) {
+			if (Settings.cfg != null && Settings.cfg._ !== undefined) {
 				return Settings.cfg._;
 			}
 			return Settings.cfg;
@@ -350,7 +351,7 @@ define('settings', function () {
 			if (typeof service.use === 'function') {
 				service.use.call(Settings);
 			}
-			for (var i = 0; i < types.length; i++) {
+			for (var i = 0; i < types.length; i += 1) {
 				var type = types[i].toLowerCase();
 				if (Settings.plugins[type] == null) {
 					Settings.plugins[type] = service;
@@ -383,7 +384,7 @@ define('settings', function () {
 		 */
 		sync: function (hash, wrapper, callback) {
 			socket.emit('admin.settings.get', {
-				hash: hash
+				hash: hash,
 			}, function (err, values) {
 				if (err) {
 					if (typeof callback === 'function') {
@@ -408,19 +409,19 @@ define('settings', function () {
 		 @param notify Whether to send notification when settings got saved.
 		 */
 		persist: function (hash, wrapper, callback, notify) {
-			var notSaved = [],
-				fields = $('[data-key]', wrapper || 'form').toArray();
+			var notSaved = [];
+			var fields = $('[data-key]', wrapper || 'form').toArray();
 			if (notify == null) {
 				notify = true;
 			}
-			for (var i = 0; i < fields.length; i++) {
-				var field = $(fields[i]),
-					value = helper.readValue(field),
-					parentCfg = Settings.get(),
-					keyParts = field.data('key').split('.'),
-					lastKey = keyParts[keyParts.length - 1];
+			for (var i = 0; i < fields.length; i += 1) {
+				var field = $(fields[i]);
+				var value = helper.readValue(field);
+				var parentCfg = Settings.get();
+				var keyParts = field.data('key').split('.');
+				var lastKey = keyParts[keyParts.length - 1];
 				if (keyParts.length > 1) {
-					for (var j = 0; j < keyParts.length - 1; j++) {
+					for (var j = 0; j < keyParts.length - 1; j += 1) {
 						var part = keyParts[j];
 						if (part && parentCfg != null) {
 							parentCfg = parentCfg[part];
@@ -442,7 +443,7 @@ define('settings', function () {
 					title: 'Attributes Not Saved',
 					message: "'" + (notSaved.join(', ')) + "' could not be saved. Please contact the plugin-author!",
 					type: 'danger',
-					timeout: 5000
+					timeout: 5000,
 				});
 			}
 			helper.persistSettings(hash, Settings.cfg, notify, callback);
@@ -450,14 +451,14 @@ define('settings', function () {
 		load: function (hash, formEl, callback) {
 			callback = callback || function () {};
 			socket.emit('admin.settings.get', {
-				hash: hash
+				hash: hash,
 			}, function (err, values) {
 				if (err) {
 					return callback(err);
 				}
 
 				// Parse all values. If they are json, return json
-				for(var key in values) {
+				for (var key in values) {
 					if (values.hasOwnProperty(key)) {
 						try {
 							values[key] = JSON.parse(values[key]);
@@ -502,42 +503,39 @@ define('settings', function () {
 
 				socket.emit('admin.settings.set', {
 					hash: hash,
-					values: values
+					values: values,
 				}, function (err) {
 					// Remove unsaved flag to re-enable ajaxify
 					app.flags._unsaved = false;
 
 					if (typeof callback === 'function') {
 						callback(err);
+					} else if (err) {
+						app.alert({
+							title: 'Error while saving settings',
+							type: 'error',
+							timeout: 2500,
+						});
 					} else {
-						if (err) {
-							app.alert({
-								title: 'Error while saving settings',
-								type: 'error',
-								timeout: 2500
-							});
-						} else {
-							app.alert({
-								title: 'Settings Saved',
-								type: 'success',
-								timeout: 2500
-							});
-						}
+						app.alert({
+							title: 'Settings Saved',
+							type: 'success',
+							timeout: 2500,
+						});
 					}
 				});
 			}
-		}
+		},
 	};
 
 
 	helper.registerReadyJobs(1);
 	require(DEFAULT_PLUGINS, function () {
-		for (var i = 0; i < arguments.length; i++) {
+		for (var i = 0; i < arguments.length; i += 1) {
 			Settings.registerPlugin(arguments[i]);
 		}
 		helper.beforeReadyJobsDecreased();
 	});
 
 	return Settings;
-
 });

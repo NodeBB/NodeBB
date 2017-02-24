@@ -13,7 +13,6 @@ var utils = require('../../public/src/utils');
 
 
 module.exports = function (Posts) {
-
 	Posts.getPostSummaryByPids = function (pids, uid, options, callback) {
 		if (!Array.isArray(pids) || !pids.length) {
 			return callback(null, []);
@@ -50,7 +49,7 @@ module.exports = function (Posts) {
 					},
 					topicsAndCategories: function (next) {
 						getTopicAndCategories(topicKeys, next);
-					}
+					},
 				}, next);
 			},
 			function (results, next) {
@@ -81,11 +80,11 @@ module.exports = function (Posts) {
 				parsePosts(posts, options, next);
 			},
 			function (posts, next) {
-				plugins.fireHook('filter:post.getPostSummaryByPids', {posts: posts, uid: uid}, next);
+				plugins.fireHook('filter:post.getPostSummaryByPids', { posts: posts, uid: uid }, next);
 			},
 			function (data, next) {
 				next(null, data.posts);
-			}
+			},
 		], callback);
 	};
 
@@ -129,14 +128,14 @@ module.exports = function (Posts) {
 			});
 
 			categories.getCategoriesFields(cids, ['cid', 'name', 'icon', 'slug', 'parentCid', 'bgColor', 'color'], function (err, categories) {
-				callback(err, {topics: topics, categories: categories});
+				callback(err, { topics: topics, categories: categories });
 			});
 		});
 	}
 
 	function toObject(key, data) {
 		var obj = {};
-		for(var i = 0; i < data.length; ++i) {
+		for (var i = 0; i < data.length; i += 1) {
 			obj[data[i][key]] = data[i];
 		}
 		return obj;

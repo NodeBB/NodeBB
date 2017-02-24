@@ -1,9 +1,7 @@
 'use strict';
 
-/* globals define, app, ajaxify, socket */
 
 define('forum/topic/replies', ['navigator', 'components', 'forum/topic/posts'], function (navigator, components, posts) {
-
 	var Replies = {};
 
 	Replies.init = function (tid) {
@@ -18,7 +16,7 @@ define('forum/topic/replies', ['navigator', 'components', 'forum/topic/posts'], 
 		});
 	}
 
-	function onRepliesClicked(button, tid) {
+	function onRepliesClicked(button) {
 		var post = button.closest('[data-pid]');
 		var pid = post.data('pid');
 		var open = button.find('[component="post/replies/open"]');
@@ -45,12 +43,12 @@ define('forum/topic/replies', ['navigator', 'components', 'forum/topic/posts'], 
 					'downvote:disabled': ajaxify.data['downvote:disabled'],
 					'reputation:disabled': ajaxify.data['reputation:disabled'],
 					loggedIn: !!app.user.uid,
-					hideReplies: true
+					hideReplies: true,
 				};
 				app.parseAndTranslate('topic', 'posts', tplData, function (html) {
-					$('<div>', {component: 'post/replies'}).html(html).hide().insertAfter(button).slideDown('fast');
+					$('<div>', { component: 'post/replies' }).html(html).hide().insertAfter(button).slideDown('fast');
 					posts.processPage(html);
-					$(window).trigger('action:posts.loaded', {posts: data});
+					$(window).trigger('action:posts.loaded', { posts: data });
 				});
 			});
 		} else if (close.is(':not(.hidden)')) {

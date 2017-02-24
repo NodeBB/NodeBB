@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 var plugins = require('./plugins');
 var db = require('./database');
@@ -15,20 +15,20 @@ social.getPostSharing = function (callback) {
 
 	var networks = [
 		{
-			id: "facebook",
-			name: "Facebook",
-			class: "fa-facebook"
+			id: 'facebook',
+			name: 'Facebook',
+			class: 'fa-facebook',
 		},
 		{
-			id: "twitter",
-			name: "Twitter",
-			class: "fa-twitter"
+			id: 'twitter',
+			name: 'Twitter',
+			class: 'fa-twitter',
 		},
 		{
-			id: "google",
-			name: "Google+",
-			class: "fa-google-plus"
-		}
+			id: 'google',
+			name: 'Google+',
+			class: 'fa-google-plus',
+		},
 	];
 
 	async.waterfall([
@@ -48,7 +48,7 @@ social.getPostSharing = function (callback) {
 				social.postSharing = networks;
 				next(null, networks);
 			});
-		}
+		},
 	], callback);
 };
 
@@ -78,7 +78,7 @@ social.setActivePostSharingNetworks = function (networkIDs, callback) {
 		function (next) {
 			social.postSharing = null;
 			next();
-		}
+		},
 	], callback);
 };
 

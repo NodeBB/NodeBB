@@ -23,13 +23,12 @@ describe('User', function () {
 	var testCid;
 
 	before(function (done) {
-
 		groups.resetCache();
 
 		Categories.create({
 			name: 'Test Category',
 			description: 'A test',
-			order: 1
+			order: 1,
 		}, function (err, categoryObj) {
 			if (err) {
 				return done(err);
@@ -46,14 +45,14 @@ describe('User', function () {
 			fullname: 'John Smith McNamara',
 			password: 'swordfish',
 			email: 'john@example.com',
-			callback: undefined
+			callback: undefined,
 		};
 	});
 
 
 	describe('.create(), when created', function () {
 		it('should be created properly', function (done) {
-			User.create({username: userData.username, password: userData.password, email: userData.email}, function (error,userId) {
+			User.create({ username: userData.username, password: userData.password, email: userData.email }, function (error, userId) {
 				assert.equal(error, null, 'was created with error');
 				assert.ok(userId);
 
@@ -63,7 +62,7 @@ describe('User', function () {
 		});
 
 		it('should have a valid email, if using an email', function (done) {
-			User.create({username: userData.username, password: userData.password, email: 'fakeMail'},function (err) {
+			User.create({ username: userData.username, password: userData.password, email: 'fakeMail' }, function (err) {
 				assert(err);
 				assert.equal(err.message, '[[error:invalid-email]]');
 				done();
@@ -109,14 +108,14 @@ describe('User', function () {
 					uid: testUid,
 					title: 'Topic 1',
 					content: 'lorem ipsum',
-					cid: testCid
+					cid: testCid,
 				}),
 				async.apply(Topics.post, {
 					uid: testUid,
 					title: 'Topic 2',
 					content: 'lorem ipsum',
-					cid: testCid
-				})
+					cid: testCid,
+				}),
 			], function (err) {
 				assert(err);
 				done();
@@ -129,7 +128,7 @@ describe('User', function () {
 					uid: testUid,
 					title: 'Topic 3',
 					content: 'lorem ipsum',
-					cid: testCid
+					cid: testCid,
 				}, function (err) {
 					assert.ifError(err);
 					done();
@@ -146,7 +145,7 @@ describe('User', function () {
 					uid: testUid,
 					title: 'Topic 4',
 					content: 'lorem ipsum',
-					cid: testCid
+					cid: testCid,
 				}, function (err) {
 					assert(err);
 					done();
@@ -156,14 +155,14 @@ describe('User', function () {
 
 		it('should not error if a non-newbie user posts if the last post time is 10 < 30 seconds', function (done) {
 			User.setUserFields(testUid, {
-				lastposttime:  +new Date() - (20 * 1000),
-				reputation: 10
+				lastposttime: +new Date() - (20 * 1000),
+				reputation: 10,
 			}, function () {
 				Topics.post({
 					uid: testUid,
 					title: 'Topic 5',
 					content: 'lorem ipsum',
-					cid: testCid
+					cid: testCid,
 				}, function (err) {
 					assert.ifError(err);
 					done();
@@ -175,7 +174,7 @@ describe('User', function () {
 	describe('.search()', function () {
 		var socketUser = require('../src/socket.io/user');
 		it('should return an object containing an array of matching users', function (done) {
-			User.search({query: 'john'}, function (err, searchData) {
+			User.search({ query: 'john' }, function (err, searchData) {
 				assert.ifError(err);
 				assert.equal(Array.isArray(searchData.users) && searchData.users.length > 0, true);
 				assert.equal(searchData.users[0].username, 'John Smith');
@@ -184,7 +183,7 @@ describe('User', function () {
 		});
 
 		it('should search user', function (done) {
-			socketUser.search({uid: testUid}, {query: 'john'}, function (err, searchData) {
+			socketUser.search({ uid: testUid }, { query: 'john' }, function (err, searchData) {
 				assert.ifError(err);
 				assert.equal(searchData.users[0].username, 'John Smith');
 				done();
@@ -193,7 +192,7 @@ describe('User', function () {
 
 		it('should error for guest', function (done) {
 			Meta.config.allowGuestUserSearching = 0;
-			socketUser.search({uid: 0}, {query: 'john'}, function (err) {
+			socketUser.search({ uid: 0 }, { query: 'john' }, function (err) {
 				assert.equal(err.message, '[[error:not-logged-in]]');
 				Meta.config.allowGuestUserSearching = 1;
 				done();
@@ -201,7 +200,7 @@ describe('User', function () {
 		});
 
 		it('should error with invalid data', function (done) {
-			socketUser.search({uid: testUid}, null, function (err) {
+			socketUser.search({ uid: testUid }, null, function (err) {
 				assert.equal(err.message, '[[error:invalid-data]]');
 				done();
 			});
@@ -211,7 +210,7 @@ describe('User', function () {
 	describe('.delete()', function () {
 		var uid;
 		before(function (done) {
-			User.create({username: 'usertodelete', password: '123456', email: 'delete@me.com'}, function (err, newUid) {
+			User.create({ username: 'usertodelete', password: '123456', email: 'delete@me.com' }, function (err, newUid) {
 				assert.ifError(err);
 				uid = newUid;
 				done();
@@ -231,10 +230,10 @@ describe('User', function () {
 	});
 
 	describe('passwordReset', function () {
-		var uid,
-			code;
+		var uid;
+		var code;
 		before(function (done) {
-			User.create({username: 'resetuser', password: '123456', email: 'reset@me.com'}, function (err, newUid) {
+			User.create({ username: 'resetuser', password: '123456', email: 'reset@me.com' }, function (err, newUid) {
 				assert.ifError(err);
 				uid = newUid;
 				done();
@@ -293,7 +292,6 @@ describe('User', function () {
 	});
 
 	describe('hash methods', function () {
-
 		it('should return uid from email', function (done) {
 			User.getUidByEmail('john@example.com', function (err, uid) {
 				assert.ifError(err);
@@ -345,7 +343,7 @@ describe('User', function () {
 		var io;
 
 		before(function (done) {
-			User.create({username: 'updateprofile', email: 'update@me.com', password: '123456'}, function (err, newUid) {
+			User.create({ username: 'updateprofile', email: 'update@me.com', password: '123456' }, function (err, newUid) {
 				assert.ifError(err);
 				uid = newUid;
 				helpers.loginUser('updateprofile', '123456', function (err, _jar, _io) {
@@ -365,7 +363,7 @@ describe('User', function () {
 		});
 
 		it('should return error if data is missing uid', function (done) {
-			io.emit('user.updateProfile', {username: 'bip', email: 'bop'}, function (err) {
+			io.emit('user.updateProfile', { username: 'bip', email: 'bop' }, function (err) {
 				assert.equal(err.message, '[[error:invalid-data]]');
 				done();
 			});
@@ -381,14 +379,14 @@ describe('User', function () {
 				location: 'izmir',
 				groupTitle: 'testGroup',
 				birthday: '01/01/1980',
-				signature: 'nodebb is good'
+				signature: 'nodebb is good',
 			};
 			io.emit('user.updateProfile', data, function (err, result) {
 				assert.ifError(err);
 
-  				assert.equal(result.username, 'updatedUserName');
-  				assert.equal(result.userslug, 'updatedusername');
-  				assert.equal(result.email, 'updatedEmail@me.com');
+				assert.equal(result.username, 'updatedUserName');
+				assert.equal(result.userslug, 'updatedusername');
+				assert.equal(result.email, 'updatedEmail@me.com');
 
 				db.getObject('user:' + uid, function (err, userData) {
 					assert.ifError(err);
@@ -402,7 +400,7 @@ describe('User', function () {
 
 		it('should change a user\'s password', function (done) {
 			this.timeout(20000);
-			io.emit('user.changePassword', {uid: uid, newPassword: '654321', currentPassword: '123456'}, function (err) {
+			io.emit('user.changePassword', { uid: uid, newPassword: '654321', currentPassword: '123456' }, function (err) {
 				assert.ifError(err);
 				User.isPasswordCorrect(uid, '654321', function (err, correct) {
 					assert.ifError(err);
@@ -413,7 +411,7 @@ describe('User', function () {
 		});
 
 		it('should change username', function (done) {
-			io.emit('user.changeUsernameEmail', {uid: uid, username: 'updatedAgain', password: '654321'}, function (err) {
+			io.emit('user.changeUsernameEmail', { uid: uid, username: 'updatedAgain', password: '654321' }, function (err) {
 				assert.ifError(err);
 				db.getObjectField('user:' + uid, 'username', function (err, username) {
 					assert.ifError(err);
@@ -424,7 +422,7 @@ describe('User', function () {
 		});
 
 		it('should change email', function (done) {
-			io.emit('user.changeUsernameEmail', {uid: uid, email: 'updatedAgain@me.com', password: '654321'}, function (err) {
+			io.emit('user.changeUsernameEmail', { uid: uid, email: 'updatedAgain@me.com', password: '654321' }, function (err) {
 				assert.ifError(err);
 				db.getObjectField('user:' + uid, 'email', function (err, email) {
 					assert.ifError(err);
@@ -437,7 +435,7 @@ describe('User', function () {
 		it('should update cover image', function (done) {
 			var imageData = 'data:image/png;base64,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';
 			var position = '50.0301% 19.2464%';
-			io.emit('user.updateCover', {uid: uid, imageData: imageData, position: position}, function (err, result) {
+			io.emit('user.updateCover', { uid: uid, imageData: imageData, position: position }, function (err, result) {
 				assert.ifError(err);
 				assert(result.url);
 				db.getObjectFields('user:' + uid, ['cover:url', 'cover:position'], function (err, data) {
@@ -452,7 +450,7 @@ describe('User', function () {
 		it('should upload cropped profile picture', function (done) {
 			var imageData = 'data:image/png;base64,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';
 			var socketUser = require('../src/socket.io/user');
-			socketUser.uploadCroppedPicture({uid: uid}, {uid: uid, imageData: imageData}, function (err, result) {
+			socketUser.uploadCroppedPicture({ uid: uid }, { uid: uid, imageData: imageData }, function (err, result) {
 				assert.ifError(err);
 				assert(result.url);
 				db.getObjectFields('user:' + uid, ['uploadedpicture', 'picture'], function (err, data) {
@@ -465,7 +463,7 @@ describe('User', function () {
 		});
 
 		it('should remove cover image', function (done) {
-			io.emit('user.removeCover', {uid: uid}, function (err) {
+			io.emit('user.removeCover', { uid: uid }, function (err) {
 				assert.ifError(err);
 				db.getObjectField('user:' + uid, 'cover:url', function (err, url) {
 					assert.ifError(err);
@@ -500,7 +498,7 @@ describe('User', function () {
 		});
 
 		it('should change user picture', function (done) {
-			io.emit('user.changePicture', {type: 'default', uid: uid}, function (err) {
+			io.emit('user.changePicture', { type: 'default', uid: uid }, function (err) {
 				assert.ifError(err);
 				User.getUserField(uid, 'picture', function (err, picture) {
 					assert.ifError(err);
@@ -513,21 +511,23 @@ describe('User', function () {
 		it('should upload profile picture', function (done) {
 			helpers.copyFile(
 				path.join(nconf.get('base_dir'), 'test/files/test.png'),
-				path.join(nconf.get('base_dir'), 'test/files/test_copy.png'), function (err) {
-				assert.ifError(err);
-				var picture = {
-					path: path.join(nconf.get('base_dir'), 'test/files/test_copy.png'),
-					size: 7189,
-					name: 'test_copy.png',
-					type: 'image/png'
-				};
-				User.uploadPicture(uid, picture, function (err, uploadedPicture) {
+				path.join(nconf.get('base_dir'), 'test/files/test_copy.png'),
+				function (err) {
 					assert.ifError(err);
-					assert.equal(uploadedPicture.url, '/assets/uploads/profile/' + uid + '-profileavatar.png');
-					assert.equal(uploadedPicture.path, path.join(nconf.get('base_dir'), 'public', 'uploads', 'profile', uid + '-profileavatar.png'));
-					done();
-				});
-			});
+					var picture = {
+						path: path.join(nconf.get('base_dir'), 'test/files/test_copy.png'),
+						size: 7189,
+						name: 'test_copy.png',
+						type: 'image/png',
+					};
+					User.uploadPicture(uid, picture, function (err, uploadedPicture) {
+						assert.ifError(err);
+						assert.equal(uploadedPicture.url, '/assets/uploads/profile/' + uid + '-profileavatar.png');
+						assert.equal(uploadedPicture.path, path.join(nconf.get('base_dir'), 'public', 'uploads', 'profile', uid + '-profileavatar.png'));
+						done();
+					});
+				}
+			);
 		});
 
 		it('should return error if profile image uploads disabled', function (done) {
@@ -536,7 +536,7 @@ describe('User', function () {
 				path: path.join(nconf.get('base_dir'), 'test/files/test.png'),
 				size: 7189,
 				name: 'test.png',
-				type: 'image/png'
+				type: 'image/png',
 			};
 			User.uploadPicture(uid, picture, function (err) {
 				assert.equal(err.message, '[[error:profile-image-uploads-disabled]]');
@@ -550,7 +550,7 @@ describe('User', function () {
 				path: path.join(nconf.get('base_dir'), 'test/files/test.png'),
 				size: 265000,
 				name: 'test.png',
-				type: 'image/png'
+				type: 'image/png',
 			};
 			User.uploadPicture(uid, picture, function (err) {
 				assert.equal(err.message, '[[error:file-too-big, 256]]');
@@ -562,7 +562,7 @@ describe('User', function () {
 			var picture = {
 				path: path.join(nconf.get('base_dir'), 'test/files/test.png'),
 				size: 7189,
-				name: 'test'
+				name: 'test',
 			};
 			User.uploadPicture(uid, picture, function (err) {
 				assert.equal(err.message, '[[error:invalid-image-extension]]');
@@ -585,7 +585,7 @@ describe('User', function () {
 				callback(null, data);
 			}
 
-			plugins.registerHook('test-plugin', {hook: 'filter:uploadImage', method: filterMethod});
+			plugins.registerHook('test-plugin', { hook: 'filter:uploadImage', method: filterMethod });
 
 			User.uploadFromUrl(uid, url, function (err) {
 				assert.equal(err.message, '[[error:invalid-image-extension]]');
@@ -601,7 +601,7 @@ describe('User', function () {
 				callback(null, data);
 			}
 
-			plugins.registerHook('test-plugin', {hook: 'filter:uploadImage', method: filterMethod});
+			plugins.registerHook('test-plugin', { hook: 'filter:uploadImage', method: filterMethod });
 
 			User.uploadFromUrl(uid, url, function (err) {
 				assert.equal(err.message, '[[error:file-too-big, ' + meta.config.maximumProfileImageSize + ']]');
@@ -612,7 +612,7 @@ describe('User', function () {
 		it('should error with invalid data', function (done) {
 			var socketUser = require('../src/socket.io/user');
 
-			socketUser.uploadProfileImageFromUrl({uid: uid}, {uid: uid, url: ''}, function (err) {
+			socketUser.uploadProfileImageFromUrl({ uid: uid }, { uid: uid, url: '' }, function (err) {
 				assert.equal(err.message, '[[error:invalid-data]]');
 				done();
 			});
@@ -624,12 +624,12 @@ describe('User', function () {
 			meta.config.maximumProfileImageSize = '';
 
 			function filterMethod(data, callback) {
-				callback(null, {url: url});
+				callback(null, { url: url });
 			}
 
-			plugins.registerHook('test-plugin', {hook: 'filter:uploadImage', method: filterMethod});
+			plugins.registerHook('test-plugin', { hook: 'filter:uploadImage', method: filterMethod });
 
-			socketUser.uploadProfileImageFromUrl({uid: uid}, {uid: uid, url: url}, function (err, uploadedPicture) {
+			socketUser.uploadProfileImageFromUrl({ uid: uid }, { uid: uid, url: url }, function (err, uploadedPicture) {
 				assert.ifError(err);
 				assert.equal(uploadedPicture, url);
 				done();
@@ -637,7 +637,7 @@ describe('User', function () {
 		});
 
 		it('should get profile pictures', function (done) {
-			io.emit('user.getProfilePictures', {uid: uid}, function (err, data) {
+			io.emit('user.getProfilePictures', { uid: uid }, function (err, data) {
 				assert.ifError(err);
 				assert(data);
 				assert(Array.isArray(data));
@@ -648,7 +648,7 @@ describe('User', function () {
 		});
 
 		it('should remove uploaded picture', function (done) {
-			io.emit('user.removeUploadedPicture', {uid: uid}, function (err) {
+			io.emit('user.removeUploadedPicture', { uid: uid }, function (err) {
 				assert.ifError(err);
 				User.getUserField(uid, 'uploadedpicture', function (err, uploadedpicture) {
 					assert.ifError(err);
@@ -659,7 +659,7 @@ describe('User', function () {
 		});
 
 		it('should load profile page', function (done) {
-			request(nconf.get('url') + '/api/user/updatedagain', {jar: jar, json: true}, function (err, res, body) {
+			request(nconf.get('url') + '/api/user/updatedagain', { jar: jar, json: true }, function (err, res, body) {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 200);
 				assert(body);
@@ -668,7 +668,7 @@ describe('User', function () {
 		});
 
 		it('should load settings page', function (done) {
-			request(nconf.get('url') + '/api/user/updatedagain/settings', {jar: jar, json: true}, function (err, res, body) {
+			request(nconf.get('url') + '/api/user/updatedagain/settings', { jar: jar, json: true }, function (err, res, body) {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 200);
 				assert(body.settings);
@@ -679,7 +679,7 @@ describe('User', function () {
 		});
 
 		it('should load edit page', function (done) {
-			request(nconf.get('url') + '/api/user/updatedagain/edit', {jar: jar, json: true}, function (err, res, body) {
+			request(nconf.get('url') + '/api/user/updatedagain/edit', { jar: jar, json: true }, function (err, res, body) {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 200);
 				assert(body);
@@ -688,7 +688,7 @@ describe('User', function () {
 		});
 
 		it('should load edit/email page', function (done) {
-			request(nconf.get('url') + '/api/user/updatedagain/edit/email', {jar: jar, json: true}, function (err, res, body) {
+			request(nconf.get('url') + '/api/user/updatedagain/edit/email', { jar: jar, json: true }, function (err, res, body) {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 200);
 				assert(body);
@@ -699,12 +699,12 @@ describe('User', function () {
 		it('should load user\'s groups page', function (done) {
 			groups.create({
 				name: 'Test',
-				description: 'Foobar!'
+				description: 'Foobar!',
 			}, function (err) {
 				assert.ifError(err);
 				groups.join('Test', uid, function (err) {
 					assert.ifError(err);
-					request(nconf.get('url') + '/api/user/updatedagain/groups', {jar: jar, json: true}, function (err, res, body) {
+					request(nconf.get('url') + '/api/user/updatedagain/groups', { jar: jar, json: true }, function (err, res, body) {
 						assert.ifError(err);
 						assert.equal(res.statusCode, 200);
 						assert(Array.isArray(body.groups));
@@ -713,7 +713,6 @@ describe('User', function () {
 					});
 				});
 			});
-
 		});
 	});
 
@@ -734,7 +733,7 @@ describe('User', function () {
 
 						next(err);
 					});
-				}
+				},
 			], function (err) {
 				assert.ifError(err);
 				User.unban(testUid, function (err) {
@@ -748,7 +747,7 @@ describe('User', function () {
 	describe('digests', function () {
 		var uid;
 		before(function (done) {
-			User.create({username: 'digestuser', email: 'test@example.com'}, function (err, _uid) {
+			User.create({ username: 'digestuser', email: 'test@example.com' }, function (err, _uid) {
 				assert.ifError(err);
 				uid = _uid;
 				done();
@@ -758,7 +757,7 @@ describe('User', function () {
 		it('should send digests', function (done) {
 			User.updateDigestSetting(uid, 'day', function (err) {
 				assert.ifError(err);
-					User.digest.execute('day', function (err) {
+				User.digest.execute('day', function (err) {
 					assert.ifError(err);
 					done();
 				});
@@ -770,14 +769,14 @@ describe('User', function () {
 		var socketUser = require('../src/socket.io/user');
 
 		it('should fail with invalid data', function (done) {
-			socketUser.exists({uid: testUid}, null, function (err) {
+			socketUser.exists({ uid: testUid }, null, function (err) {
 				assert.equal(err.message, '[[error:invalid-data]]');
 				done();
 			});
 		});
 
 		it('should return true if user/group exists', function (done) {
-			socketUser.exists({uid: testUid}, {username: 'registered-users'}, function (err, exists) {
+			socketUser.exists({ uid: testUid }, { username: 'registered-users' }, function (err, exists) {
 				assert.ifError(err);
 				assert(exists);
 				done();
@@ -785,7 +784,7 @@ describe('User', function () {
 		});
 
 		it('should return true if user/group exists', function (done) {
-			socketUser.exists({uid: testUid}, {username: 'John Smith'}, function (err, exists) {
+			socketUser.exists({ uid: testUid }, { username: 'John Smith' }, function (err, exists) {
 				assert.ifError(err);
 				assert(exists);
 				done();
@@ -793,7 +792,7 @@ describe('User', function () {
 		});
 
 		it('should return false if user/group does not exists', function (done) {
-			socketUser.exists({uid: testUid}, {username: 'doesnot exist'}, function (err, exists) {
+			socketUser.exists({ uid: testUid }, { username: 'doesnot exist' }, function (err, exists) {
 				assert.ifError(err);
 				assert(!exists);
 				done();
@@ -801,11 +800,11 @@ describe('User', function () {
 		});
 
 		it('should delete user', function (done) {
-			User.create({username: 'tobedeleted'}, function (err, _uid) {
+			User.create({ username: 'tobedeleted' }, function (err, _uid) {
 				assert.ifError(err);
-				socketUser.deleteAccount({uid: _uid}, {}, function (err) {
+				socketUser.deleteAccount({ uid: _uid }, {}, function (err) {
 					assert.ifError(err);
-					socketUser.exists({uid: testUid}, {username: 'doesnot exist'}, function (err, exists) {
+					socketUser.exists({ uid: testUid }, { username: 'doesnot exist' }, function (err, exists) {
 						assert.ifError(err);
 						assert(!exists);
 						done();
@@ -815,14 +814,14 @@ describe('User', function () {
 		});
 
 		it('should fail if data is invalid', function (done) {
-			socketUser.emailExists({uid: testUid}, null, function (err) {
+			socketUser.emailExists({ uid: testUid }, null, function (err) {
 				assert.equal(err.message, '[[error:invalid-data]]');
 				done();
 			});
 		});
 
 		it('should return true if email exists', function (done) {
-			socketUser.emailExists({uid: testUid}, {email: 'john@example.com'}, function (err, exists) {
+			socketUser.emailExists({ uid: testUid }, { email: 'john@example.com' }, function (err, exists) {
 				assert.ifError(err);
 				assert(exists);
 				done();
@@ -830,7 +829,7 @@ describe('User', function () {
 		});
 
 		it('should return false if email does not exist', function (done) {
-			socketUser.emailExists({uid: testUid}, {email: 'does@not.exist'}, function (err, exists) {
+			socketUser.emailExists({ uid: testUid }, { email: 'does@not.exist' }, function (err, exists) {
 				assert.ifError(err);
 				assert(!exists);
 				done();
@@ -838,7 +837,7 @@ describe('User', function () {
 		});
 
 		it('should error if requireEmailConfirmation is disabled', function (done) {
-			socketUser.emailConfirm({uid: testUid}, {}, function (err) {
+			socketUser.emailConfirm({ uid: testUid }, {}, function (err) {
 				assert.equal(err.message, '[[error:email-confirmations-are-disabled]]');
 				done();
 			});
@@ -846,7 +845,7 @@ describe('User', function () {
 
 		it('should send email confirm', function (done) {
 			Meta.config.requireEmailConfirmation = 1;
-			socketUser.emailConfirm({uid: testUid}, {}, function (err) {
+			socketUser.emailConfirm({ uid: testUid }, {}, function (err) {
 				assert.ifError(err);
 				Meta.config.requireEmailConfirmation = 0;
 				done();
@@ -854,21 +853,21 @@ describe('User', function () {
 		});
 
 		it('should send reset email', function (done) {
-			socketUser.reset.send({uid: 0}, 'john@example.com', function (err) {
+			socketUser.reset.send({ uid: 0 }, 'john@example.com', function (err) {
 				assert.ifError(err);
 				done();
 			});
 		});
 
 		it('should return invalid-data error', function (done) {
-			socketUser.reset.send({uid: 0}, null, function (err) {
+			socketUser.reset.send({ uid: 0 }, null, function (err) {
 				assert.equal(err.message, '[[error:invalid-data]]');
 				done();
 			});
 		});
 
 		it('should not error', function (done) {
-			socketUser.reset.send({uid: 0}, 'doestnot@exist.com', function (err) {
+			socketUser.reset.send({ uid: 0 }, 'doestnot@exist.com', function (err) {
 				assert.ifError(err);
 				done();
 			});
@@ -878,7 +877,7 @@ describe('User', function () {
 			db.getObject('reset:uid', function (err, data) {
 				assert.ifError(err);
 				var code = Object.keys(data)[0];
-				socketUser.reset.commit({uid: 0}, {code: code, password: 'swordfish'}, function (err) {
+				socketUser.reset.commit({ uid: 0 }, { code: code, password: 'swordfish' }, function (err) {
 					assert.ifError(err);
 					done();
 				});
@@ -906,21 +905,21 @@ describe('User', function () {
 					followTopicsOnReply: 1,
 					notificationSound: '',
 					incomingChatSound: '',
-					outgoingChatSound: ''
-				}
+					outgoingChatSound: '',
+				},
 			};
-			socketUser.saveSettings({uid: testUid}, data, function (err) {
+			socketUser.saveSettings({ uid: testUid }, data, function (err) {
 				assert.ifError(err);
 				done();
 			});
 		});
 
 		it('should set moderation note', function (done) {
-			User.create({username: 'noteadmin'}, function (err, adminUid) {
+			User.create({ username: 'noteadmin' }, function (err, adminUid) {
 				assert.ifError(err);
 				groups.join('administrators', adminUid, function (err) {
 					assert.ifError(err);
-					socketUser.setModerationNote({uid: adminUid}, {uid: testUid, note: 'this is a test user'}, function (err) {
+					socketUser.setModerationNote({ uid: adminUid }, { uid: testUid, note: 'this is a test user' }, function (err) {
 						assert.ifError(err);
 						User.getUserField(testUid, 'moderationNote', function (err, note) {
 							assert.ifError(err);
@@ -930,7 +929,6 @@ describe('User', function () {
 					});
 				});
 			});
-
 		});
 	});
 
@@ -942,7 +940,7 @@ describe('User', function () {
 		before(function (done) {
 			oldRegistrationType = Meta.config.registrationType;
 			Meta.config.registrationType = 'admin-approval';
-			User.create({username: 'admin', password: '123456'}, function (err, uid) {
+			User.create({ username: 'admin', password: '123456' }, function (err, uid) {
 				assert.ifError(err);
 				adminUid = uid;
 				groups.join('administrators', uid, done);
@@ -958,12 +956,12 @@ describe('User', function () {
 			helpers.registerUser({
 				username: 'rejectme',
 				password: '123456',
-				email: 'reject@me.com'
+				email: 'reject@me.com',
 			}, function (err) {
 				assert.ifError(err);
 				helpers.loginUser('admin', '123456', function (err, jar) {
 					assert.ifError(err);
-					request(nconf.get('url') + '/api/admin/manage/registration', {jar: jar, json: true}, function (err, res, body) {
+					request(nconf.get('url') + '/api/admin/manage/registration', { jar: jar, json: true }, function (err, res, body) {
 						assert.ifError(err);
 						assert.equal(body.users[0].username, 'rejectme');
 						assert.equal(body.users[0].email, 'reject@me.com');
@@ -974,7 +972,7 @@ describe('User', function () {
 		});
 
 		it('should reject user registration', function (done) {
-			socketAdmin.user.rejectRegistration({uid: adminUid}, {username: 'rejectme'}, function (err) {
+			socketAdmin.user.rejectRegistration({ uid: adminUid }, { username: 'rejectme' }, function (err) {
 				assert.ifError(err);
 				User.getRegistrationQueue(0, -1, function (err, users) {
 					assert.ifError(err);
@@ -988,10 +986,10 @@ describe('User', function () {
 			helpers.registerUser({
 				username: 'acceptme',
 				password: '123456',
-				email: 'accept@me.com'
+				email: 'accept@me.com',
 			}, function (err) {
 				assert.ifError(err);
-				socketAdmin.user.acceptRegistration({uid: adminUid}, {username: 'acceptme'}, function (err, uid) {
+				socketAdmin.user.acceptRegistration({ uid: adminUid }, { username: 'acceptme' }, function (err, uid) {
 					assert.ifError(err);
 					User.exists(uid, function (err, exists) {
 						assert.ifError(err);
@@ -1014,7 +1012,7 @@ describe('User', function () {
 		before(function (done) {
 			User.create({
 				username: 'inviter',
-				email: 'inviter@nodebb.org'
+				email: 'inviter@nodebb.org',
 			}, function (err, uid) {
 				assert.ifError(err);
 				inviterUid = uid;
@@ -1023,14 +1021,14 @@ describe('User', function () {
 		});
 
 		it('should error with invalid data', function (done) {
-			socketUser.invite({uid: inviterUid}, null, function (err) {
+			socketUser.invite({ uid: inviterUid }, null, function (err) {
 				assert.equal(err.message, '[[error:invalid-data]]');
 				done();
 			});
 		});
 
 		it('should eror if forum is not invite only', function (done) {
-			socketUser.invite({uid: inviterUid}, 'invite1@test.com', function (err) {
+			socketUser.invite({ uid: inviterUid }, 'invite1@test.com', function (err) {
 				assert.equal(err.message, '[[error:forum-not-invite-only]]');
 				done();
 			});
@@ -1038,7 +1036,7 @@ describe('User', function () {
 
 		it('should error if user is not admin and type is admin-invite-only', function (done) {
 			meta.config.registrationType = 'admin-invite-only';
-			socketUser.invite({uid: inviterUid}, 'invite1@test.com', function (err) {
+			socketUser.invite({ uid: inviterUid }, 'invite1@test.com', function (err) {
 				assert.equal(err.message, '[[error:no-privileges]]');
 				done();
 			});
@@ -1046,7 +1044,7 @@ describe('User', function () {
 
 		it('should send invitation email', function (done) {
 			meta.config.registrationType = 'invite-only';
-			socketUser.invite({uid: inviterUid}, 'invite1@test.com', function (err) {
+			socketUser.invite({ uid: inviterUid }, 'invite1@test.com', function (err) {
 				assert.ifError(err);
 				done();
 			});
@@ -1054,7 +1052,7 @@ describe('User', function () {
 
 		it('should error if ouf of invitations', function (done) {
 			meta.config.maximumInvites = 1;
-			socketUser.invite({uid: inviterUid}, 'invite2@test.com', function (err) {
+			socketUser.invite({ uid: inviterUid }, 'invite2@test.com', function (err) {
 				assert.equal(err.message, '[[error:invite-maximum-met, ' + 1 + ', ' + 1 + ']]');
 				meta.config.maximumInvites = 5;
 				done();
@@ -1062,14 +1060,14 @@ describe('User', function () {
 		});
 
 		it('should error if email exists', function (done) {
-			socketUser.invite({uid: inviterUid}, 'inviter@nodebb.org', function (err) {
+			socketUser.invite({ uid: inviterUid }, 'inviter@nodebb.org', function (err) {
 				assert.equal(err.message, '[[error:email-taken]]');
 				done();
 			});
 		});
 
 		it('should send invitation email', function (done) {
-			socketUser.invite({uid: inviterUid}, 'invite2@test.com', function (err) {
+			socketUser.invite({ uid: inviterUid }, 'invite2@test.com', function (err) {
 				assert.ifError(err);
 				done();
 			});
@@ -1095,23 +1093,24 @@ describe('User', function () {
 		});
 
 		it('should fail to verify invitation with invalid data', function (done) {
-			User.verifyInvitation({token: '', email: ''}, function (err) {
+			User.verifyInvitation({ token: '', email: '' }, function (err) {
 				assert.equal(err.message, '[[error:invalid-data]]');
 				done();
 			});
 		});
 
 		it('should fail to verify invitation with invalid email', function (done) {
-			User.verifyInvitation({token: 'test', email: 'doesnotexist@test.com'}, function (err) {
+			User.verifyInvitation({ token: 'test', email: 'doesnotexist@test.com' }, function (err) {
 				assert.equal(err.message, '[[error:invalid-token]]');
 				done();
 			});
 		});
 
 		it('should verify installation with no errors', function (done) {
-			db.get('invitation:email:' + 'invite1@test.com', function (err, token) {
+			var email = 'invite1@test.com';
+			db.get('invitation:email:' + email, function (err, token) {
 				assert.ifError(err);
-				User.verifyInvitation({token: token, email: 'invite1@test.com'}, function (err) {
+				User.verifyInvitation({ token: token, email: 'invite1@test.com' }, function (err) {
 					assert.ifError(err);
 					done();
 				});
@@ -1127,7 +1126,7 @@ describe('User', function () {
 
 		it('should delete invitation', function (done) {
 			var socketAdmin = require('../src/socket.io/admin');
-			socketAdmin.user.deleteInvitation({uid: inviterUid}, {invitedBy: 'inviter', email: 'invite1@test.com'}, function (err) {
+			socketAdmin.user.deleteInvitation({ uid: inviterUid }, { invitedBy: 'inviter', email: 'invite1@test.com' }, function (err) {
 				assert.ifError(err);
 				db.isSetMember('invitation:uid:' + inviterUid, 'invite1@test.com', function (err, isMember) {
 					assert.ifError(err);
@@ -1151,7 +1150,6 @@ describe('User', function () {
 				});
 			});
 		});
-
 	});
 
 

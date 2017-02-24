@@ -1,13 +1,12 @@
-"use strict";
-/* globals define, app */
+'use strict';
+
 
 define('coverPhoto', [
-	'vendor/jquery/draggable-background/backgroundDraggable'
+	'vendor/jquery/draggable-background/backgroundDraggable',
 ], function () {
-
 	var coverPhoto = {
 		coverEl: null,
-		saveFn: null
+		saveFn: null,
 	};
 
 	coverPhoto.init = function (coverEl, saveFn, uploadFn, removeFn) {
@@ -38,8 +37,8 @@ define('coverPhoto', [
 		e.stopPropagation();
 		e.preventDefault();
 
-		var files = e.originalEvent.dataTransfer.files,
-		reader = new FileReader();
+		var files = e.originalEvent.dataTransfer.files;
+		var reader = new FileReader();
 
 		if (files.length && files[0].type.match('image.*')) {
 			reader.onload = function (e) {
@@ -56,14 +55,14 @@ define('coverPhoto', [
 		coverEl.toggleClass('active', 1)
 			.backgroundDraggable({
 				axis: 'y',
-				units: 'percent'
+				units: 'percent',
 			});
 
 		app.alert({
 			alert_id: 'drag_start',
 			title: '[[modules:cover.dragging_title]]',
 			message: '[[modules:cover.dragging_message]]',
-			timeout: 5000
+			timeout: 5000,
 		});
 	}
 

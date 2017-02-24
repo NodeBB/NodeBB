@@ -10,7 +10,6 @@ var batch = require('../batch');
 
 
 module.exports = function (Topics) {
-
 	Topics.delete = function (tid, uid, callback) {
 		Topics.getTopicFields(tid, ['cid'], function (err, topicData) {
 			if (err) {
@@ -31,7 +30,7 @@ module.exports = function (Topics) {
 						}
 						db.sortedSetRemove('cid:' + topicData.cid + ':pids', pids, next);
 					});
-				}
+				},
 			], function (err) {
 				callback(err);
 			});
@@ -70,7 +69,8 @@ module.exports = function (Topics) {
 							postData = postData.filter(function (post) {
 								return post && parseInt(post.deleted, 10) !== 1;
 							});
-							var pidsToAdd = [], scores = [];
+							var pidsToAdd = [];
+							var scores = [];
 							postData.forEach(function (post) {
 								pidsToAdd.push(post.pid);
 								scores.push(post.timestamp);
@@ -78,7 +78,7 @@ module.exports = function (Topics) {
 							db.sortedSetAdd('cid:' + topicData.cid + ':pids', scores, pidsToAdd, next);
 						});
 					});
-				}
+				},
 			], function (err) {
 				callback(err);
 			});
@@ -97,14 +97,14 @@ module.exports = function (Topics) {
 					async.eachLimit(pids, 10, function (pid, next) {
 						posts.purge(pid, uid, next);
 					}, next);
-				}, {alwaysStartAt: 0}, next);
+				}, { alwaysStartAt: 0 }, next);
 			},
 			function (next) {
 				posts.purge(mainPid, uid, next);
 			},
 			function (next) {
 				Topics.purge(tid, uid, next);
-			}
+			},
 		], callback);
 	};
 
@@ -122,7 +122,7 @@ module.exports = function (Topics) {
 							'tid:' + tid + ':posts',
 							'tid:' + tid + ':posts:votes',
 							'tid:' + tid + ':bookmarks',
-							'tid:' + tid + ':posters'
+							'tid:' + tid + ':posters',
 						], next);
 					},
 					function (next) {
@@ -136,7 +136,7 @@ module.exports = function (Topics) {
 					},
 					function (next) {
 						reduceCounters(tid, next);
-					}
+					},
 				], function (err) {
 					next(err);
 				});
@@ -145,9 +145,9 @@ module.exports = function (Topics) {
 				Topics.getTopicData(tid, next);
 			},
 			function (topicData, next) {
-				plugins.fireHook('action:topic.purge', {topic: topicData, uid: uid});
+				plugins.fireHook('action:topic.purge', { topic: topicData, uid: uid });
 				db.delete('topic:' + tid, next);
-			}
+			},
 		], callback);
 	};
 
@@ -156,7 +156,7 @@ module.exports = function (Topics) {
 			function (next) {
 				async.parallel({
 					followers: async.apply(db.getSetMembers, 'tid:' + tid + ':followers'),
-					ignorers: async.apply(db.getSetMembers, 'tid:' + tid + ':ignorers')
+					ignorers: async.apply(db.getSetMembers, 'tid:' + tid + ':ignorers'),
 				}, next);
 			},
 			function (results, next) {
@@ -167,7 +167,7 @@ module.exports = function (Topics) {
 					return 'uid:' + uid + 'ignored_tids';
 				});
 				db.sortedSetsRemove(followerKeys.concat(ignorerKeys), tid, next);
-			}
+			},
 		], callback);
 	}
 
@@ -183,12 +183,12 @@ module.exports = function (Topics) {
 						'cid:' + topicData.cid + ':tids:pinned',
 						'cid:' + topicData.cid + ':tids:posts',
 						'cid:' + topicData.cid + ':uid:' + topicData.uid + ':tids',
-						'uid:' + topicData.uid + ':topics'
+						'uid:' + topicData.uid + ':topics',
 					], tid, next);
 				},
 				function (next) {
 					user.decrementUserFieldBy(topicData.uid, 'topiccount', 1, next);
-				}
+				},
 			], callback);
 		});
 	}
@@ -217,10 +217,10 @@ module.exports = function (Topics) {
 						},
 						function (next) {
 							db.incrObjectFieldBy('category:' + topicData.cid, 'topic_count', incr, next);
-						}
+						},
 					], next);
 				});
-			}
+			},
 		], callback);
 	}
 };

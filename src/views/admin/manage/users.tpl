@@ -70,37 +70,41 @@
 
 				<div class="table-responsive">
 					<table class="table table-striped users-table">
-						<tr>
-							<th><input component="user/select/all" type="checkbox"/></th>
-							<th>[[admin/manage/users:users.uid]]</th>
-							<th>[[admin/manage/users:users.username]]</th>
-							<th>[[admin/manage/users:users.email]]</th>
-							<th class="text-right">[[admin/manage/users:users.postcount]]</th>
-							<th class="text-right">[[admin/manage/users:users.reputation]]</th>
-							<th class="text-right">[[admin/manage/users:users.flags]]</th>
-							<th>[[admin/manage/users:users.joined]]</th>
-							<th>[[admin/manage/users:users.last-online]]</th>
-							<th>[[admin/manage/users:users.banned]]</th>
-						</tr>
-						<!-- BEGIN users -->
-						<tr class="user-row">
-							<th><input component="user/select/single" data-uid="{users.uid}" type="checkbox"/></th>
-							<td class="text-right">{users.uid}</td>
-							<td><i class="administrator fa fa-shield text-success<!-- IF !users.administrator --> hidden<!-- ENDIF !users.administrator -->"></i><a href="{config.relative_path}/user/{users.userslug}"> {users.username}</a></td>
-	
-							<td>
-							<!-- IF config.requireEmailConfirmation -->
-							<i class="validated fa fa-check text-success<!-- IF !users.email:confirmed --> hidden<!-- ENDIF !users.email:confirmed -->" title="validated"></i>
-							<i class="notvalidated fa fa-times text-danger<!-- IF users.email:confirmed --> hidden<!-- ENDIF users.email:confirmed -->" title="not validated"></i>
-							<!-- ENDIF config.requireEmailConfirmation --> {users.email}</td>
-							<td class="text-right">{users.postcount}</td>
-							<td class="text-right">{users.reputation}</td>
-							<td class="text-right"><!-- IF users.flags -->{users.flags}<!-- ELSE -->0<!-- ENDIF users.flags --></td>
-							<td><span class="timeago" title="{users.joindateISO}"></span></td>
-							<td><span class="timeago" title="{users.lastonlineISO}"></span></td>
-							<td class="text-center"><i class="ban fa fa-gavel text-danger<!-- IF !users.banned --> hidden<!-- ENDIF !users.banned -->"></i></td>
-						</tr>
-						<!-- END users -->
+						<thead>
+							<tr>
+								<th><input component="user/select/all" type="checkbox"/></th>
+								<th>[[admin/manage/users:users.uid]]</th>
+								<th>[[admin/manage/users:users.username]]</th>
+								<th>[[admin/manage/users:users.email]]</th>
+								<th class="text-right">[[admin/manage/users:users.postcount]]</th>
+								<th class="text-right">[[admin/manage/users:users.reputation]]</th>
+								<th class="text-right">[[admin/manage/users:users.flags]]</th>
+								<th>[[admin/manage/users:users.joined]]</th>
+								<th>[[admin/manage/users:users.last-online]]</th>
+								<th>[[admin/manage/users:users.banned]]</th>
+							</tr>
+						</thead>
+						<tbody>
+							<!-- BEGIN users -->
+							<tr class="user-row">
+								<th><input component="user/select/single" data-uid="{users.uid}" type="checkbox"/></th>
+								<td class="text-right">{users.uid}</td>
+								<td><i class="administrator fa fa-shield text-success<!-- IF !users.administrator --> hidden<!-- ENDIF !users.administrator -->"></i><a href="{config.relative_path}/user/{users.userslug}"> {users.username}</a></td>
+
+								<td>
+								<!-- IF config.requireEmailConfirmation -->
+								<i class="validated fa fa-check text-success<!-- IF !users.email:confirmed --> hidden<!-- ENDIF !users.email:confirmed -->" title="validated"></i>
+								<i class="notvalidated fa fa-times text-danger<!-- IF users.email:confirmed --> hidden<!-- ENDIF users.email:confirmed -->" title="not validated"></i>
+								<!-- ENDIF config.requireEmailConfirmation --> {users.email}</td>
+								<td class="text-right">{users.postcount}</td>
+								<td class="text-right">{users.reputation}</td>
+								<td class="text-right"><!-- IF users.flags -->{users.flags}<!-- ELSE -->0<!-- ENDIF users.flags --></td>
+								<td><span class="timeago" title="{users.joindateISO}"></span></td>
+								<td><span class="timeago" title="{users.lastonlineISO}"></span></td>
+								<td class="text-center"><i class="ban fa fa-gavel text-danger<!-- IF !users.banned --> hidden<!-- ENDIF !users.banned -->"></i></td>
+							</tr>
+							<!-- END users -->
+						</tbody>
 					</table>
 				</div>
 
