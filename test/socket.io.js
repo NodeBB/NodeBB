@@ -244,14 +244,6 @@ describe('socket.io', function () {
 		});
 	});
 
-	it('should reset flags', function (done) {
-		var socketAdmin = require('../src/socket.io/admin');
-		socketAdmin.user.resetFlags({ uid: adminUid }, [regularUid], function (err) {
-			assert.ifError(err);
-			done();
-		});
-	});
-
 	describe('validation emails', function () {
 		var socketAdmin = require('../src/socket.io/admin');
 		var meta = require('../src/meta');
