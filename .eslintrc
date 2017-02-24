@@ -31,6 +31,7 @@
 		"no-use-before-define": ["error", "nofunc"],
 		"no-prototype-builtins": "off",
 		"new-cap": "off",
+		"no-plusplus": ["error", { "allowForLoopAfterthoughts": true }],
 
 		// ES6
 		"prefer-rest-params": "off",
@@ -114,7 +115,6 @@
 		// "block-spacing": "off",
 		// "quote-props": "off",
 		// "space-unary-ops": "off",
-		// "no-plusplus": "off",
 		// "no-empty": "off",
 		// "dot-notation": "off",
 		// "func-call-spacing": "off",
