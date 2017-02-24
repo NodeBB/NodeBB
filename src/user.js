@@ -258,7 +258,7 @@ var meta = require('./meta');
 		async.parallel([
 			async.apply(User.isAdministrator, uid),
 			async.apply(User.isGlobalModerator, uid),
-			async.apply(User.isModeratorOfAnyCategory, uid)
+			async.apply(User.isModeratorOfAnyCategory, uid),
 		], function (err, results) {
 			callback(err, results ? results.some(Boolean) : false);
 		});

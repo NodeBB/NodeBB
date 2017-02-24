@@ -42,7 +42,7 @@ module.exports = function (Groups) {
 					return callback(err);
 				}
 				Groups.resetCache();
-				plugins.fireHook('action:group.destroy', {group: groupObj});
+				plugins.fireHook('action:group.destroy', { group: groupObj });
 				callback();
 			});
 		});

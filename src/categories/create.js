@@ -72,7 +72,7 @@ module.exports = function (Categories) {
 				next(null, category);
 			},
 			function (category, next) {
-				plugins.fireHook('action:category.create', {category: category});
+				plugins.fireHook('action:category.create', { category: category });
 				next(null, category);
 			},
 		], callback);
@@ -143,14 +143,14 @@ module.exports = function (Categories) {
 				plugins.fireHook('filter:categories.copyPrivilegesFrom', {
 					privileges: privileges.privilegeList,
 					fromCid: fromCid,
-					toCid: toCid
+					toCid: toCid,
 				}, next);
 			},
 			function (data, next) {
 				async.each(data.privileges, function (privilege, next) {
 					copyPrivilege(privilege, data.fromCid, data.toCid, next);
 				}, next);
-			}
+			},
 		], callback);
 	};
 

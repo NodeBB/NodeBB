@@ -65,7 +65,7 @@ module.exports = function (Posts) {
 
 				postData.cid = results.topic.cid;
 				postData.topic = results.topic;
-				plugins.fireHook('action:post.edit', {post: _.clone(postData), uid: data.uid});
+				plugins.fireHook('action:post.edit', { post: _.clone(postData), uid: data.uid });
 
 				cache.del(String(postData.pid));
 				pubsub.publish('post:edit', String(postData.pid));
@@ -136,7 +136,7 @@ module.exports = function (Posts) {
 				function (tags, next) {
 					topicData.tags = data.tags;
 					topicData.oldTitle = results.topic.title;
-					plugins.fireHook('action:topic.edit', {topic: topicData, uid: data.uid});
+					plugins.fireHook('action:topic.edit', { topic: topicData, uid: data.uid });
 					next(null, {
 						tid: tid,
 						cid: results.topic.cid,

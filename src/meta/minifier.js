@@ -20,7 +20,7 @@ Minifier.js.minify = function (scripts, minify, callback) {
 			if (err) {
 				return next(err);
 			}
-			
+
 			if (!exists) {
 				console.warn('[minifier] file not found, ' + script);
 			}
@@ -30,7 +30,7 @@ Minifier.js.minify = function (scripts, minify, callback) {
 		if (err) {
 			return callback(err);
 		}
-		
+
 		if (minify) {
 			minifyScripts(scripts, callback);
 		} else {

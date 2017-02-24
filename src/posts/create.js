@@ -106,7 +106,7 @@ module.exports = function (Posts) {
 			},
 			function (postData, next) {
 				postData.isMain = isMain;
-				plugins.fireHook('action:post.save', {post: _.clone(postData)});
+				plugins.fireHook('action:post.save', { post: _.clone(postData) });
 				next(null, postData);
 			},
 		], callback);

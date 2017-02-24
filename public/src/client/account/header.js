@@ -182,7 +182,7 @@ define('forum/account/header', [
 		require(['flags'], function (flags) {
 			flags.showFlagModal({
 				type: 'user',
-				id: ajaxify.data.uid
+				id: ajaxify.data.uid,
 			});
 		});
 	}

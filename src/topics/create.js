@@ -82,7 +82,7 @@ module.exports = function (Topics) {
 				], next);
 			},
 			function (results, next) {
-				plugins.fireHook('action:topic.save', {topic: _.clone(topicData)});
+				plugins.fireHook('action:topic.save', { topic: _.clone(topicData) });
 				next(null, topicData.tid);
 			},
 		], callback);
@@ -174,7 +174,7 @@ module.exports = function (Topics) {
 				data.postData.index = 0;
 
 				analytics.increment(['topics', 'topics:byCid:' + data.topicData.cid]);
-				plugins.fireHook('action:topic.post', {topic: data.topicData, post: data.postData});
+				plugins.fireHook('action:topic.post', { topic: data.topicData, post: data.postData });
 
 				if (parseInt(uid, 10)) {
 					user.notifications.sendTopicNotificationToFollowers(uid, data.topicData, data.postData);
@@ -269,7 +269,7 @@ module.exports = function (Topics) {
 
 				Topics.notifyFollowers(postData, uid);
 				analytics.increment(['posts', 'posts:byCid:' + cid]);
-				plugins.fireHook('action:topic.reply', {post: _.clone(postData)});
+				plugins.fireHook('action:topic.reply', { post: _.clone(postData) });
 
 				next(null, postData);
 			},

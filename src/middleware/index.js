@@ -86,9 +86,8 @@ middleware.ensureSelfOrPrivileged = function (req, res, next) {
 				return next(err);
 			} else if (ok) {
 				return next();
-			} else {
-				controllers.helpers.notAllowed(req, res);
 			}
+			controllers.helpers.notAllowed(req, res);
 		});
 	} else {
 		controllers.helpers.notAllowed(req, res);

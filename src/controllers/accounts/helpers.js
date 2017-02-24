@@ -124,7 +124,7 @@ helpers.getUserDataByUserSlug = function (userslug, callerUID, callback) {
 				other: !isSelf,
 				moderator: isModerator,
 				globalMod: isGlobalModerator,
-				admin: isAdmin
+				admin: isAdmin,
 			});
 
 			userData.sso = results.sso.associations;
@@ -174,7 +174,7 @@ function filterLinks(links, states) {
 			other: true,
 			moderator: true,
 			globalMod: true,
-			admin: true
+			admin: true,
 		}, link.visibility);
 
 		// Iterate through states and permit if every test passes (or is not defined)

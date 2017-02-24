@@ -1,5 +1,6 @@
 'use strict';
-/*globals require, before, after, describe, it*/
+
+/* globals require, before, after, describe, it*/
 
 var assert = require('assert');
 var async = require('async');
@@ -17,10 +18,10 @@ describe('Flags', function () {
 	before(function (done) {
 		// Create some stuff to flag
 		async.waterfall([
-			async.apply(User.create, {username: 'testUser', password: 'abcdef', email: 'b@c.com'}),
+			async.apply(User.create, { username: 'testUser', password: 'abcdef', email: 'b@c.com' }),
 			function (uid, next) {
 				Categories.create({
-					name: 'test category'
+					name: 'test category',
 				}, function (err, category) {
 					if (err) {
 						return done(err);
@@ -30,13 +31,13 @@ describe('Flags', function () {
 						cid: category.cid,
 						uid: uid,
 						title: 'Topic to flag',
-						content: 'This is flaggable content'
+						content: 'This is flaggable content',
 					}, next);
 				});
 			},
 			function (topicData, next) {
 				User.create({
-					username: 'testUser2', password: 'abcdef', email: 'c@d.com'
+					username: 'testUser2', password: 'abcdef', email: 'c@d.com',
 				}, next);
 			},
 			function (uid, next) {
@@ -44,9 +45,9 @@ describe('Flags', function () {
 			},
 			function (next) {
 				User.create({
-					username: 'unprivileged', password: 'abcdef', email: 'd@e.com'
+					username: 'unprivileged', password: 'abcdef', email: 'd@e.com',
 				}, next);
-			}
+			},
 		], done);
 	});
 
@@ -59,10 +60,10 @@ describe('Flags', function () {
 					uid: 1,
 					targetId: 1,
 					type: 'post',
-					description: 'Test flag'
+					description: 'Test flag',
 				};
 
-				for(var key in compare) {
+				for (var key in compare) {
 					if (compare.hasOwnProperty(key)) {
 						assert.ok(flagData[key]);
 						assert.equal(flagData[key], compare[key]);
@@ -136,10 +137,10 @@ describe('Flags', function () {
 					targetId: 1,
 					type: 'post',
 					description: 'Test flag',
-					state: 'open'
+					state: 'open',
 				};
 
-				for(var key in compare) {
+				for (var key in compare) {
 					if (compare.hasOwnProperty(key)) {
 						assert.ok(flagData[key]);
 						assert.equal(flagData[key], compare[key]);
@@ -157,7 +158,7 @@ describe('Flags', function () {
 				assert.ifError(err);
 				assert.ok(Array.isArray(flags));
 				assert.equal(flags.length, 1);
-				
+
 				Flags.get(flags[0].flagId, function (err, flagData) {
 					assert.ifError(err);
 					assert.equal(flags[0].flagId, flagData.flagId);
@@ -170,7 +171,7 @@ describe('Flags', function () {
 		describe('(with filters)', function () {
 			it('should return a filtered list of flags if said filters are passed in', function (done) {
 				Flags.list({
-					state: 'open'
+					state: 'open',
 				}, 1, function (err, flags) {
 					assert.ifError(err);
 					assert.ok(Array.isArray(flags));
@@ -181,7 +182,7 @@ describe('Flags', function () {
 
 			it('should return no flags if a filter with no matching flags is used', function (done) {
 				Flags.list({
-					state: 'rejected'
+					state: 'rejected',
 				}, 1, function (err, flags) {
 					assert.ifError(err);
 					assert.ok(Array.isArray(flags));
@@ -192,7 +193,7 @@ describe('Flags', function () {
 
 			it('should return a flag when filtered by cid 1', function (done) {
 				Flags.list({
-					cid: 1
+					cid: 1,
 				}, 1, function (err, flags) {
 					assert.ifError(err);
 					assert.ok(Array.isArray(flags));
@@ -203,7 +204,7 @@ describe('Flags', function () {
 
 			it('shouldn\'t return a flag when filtered by cid 2', function (done) {
 				Flags.list({
-					cid: 2
+					cid: 2,
 				}, 1, function (err, flags) {
 					assert.ifError(err);
 					assert.ok(Array.isArray(flags));
@@ -214,7 +215,7 @@ describe('Flags', function () {
 
 			it('should return a flag when filtered by both cid 1 and 2', function (done) {
 				Flags.list({
-					cid: [1, 2]
+					cid: [1, 2],
 				}, 1, function (err, flags) {
 					assert.ifError(err);
 					assert.ok(Array.isArray(flags));
@@ -226,7 +227,7 @@ describe('Flags', function () {
 			it('should return one flag if filtered by both cid 1 and 2 and open state', function (done) {
 				Flags.list({
 					cid: [1, 2],
-					state: 'open'
+					state: 'open',
 				}, 1, function (err, flags) {
 					assert.ifError(err);
 					assert.ok(Array.isArray(flags));
@@ -238,7 +239,7 @@ describe('Flags', function () {
 			it('should return no flag if filtered by both cid 1 and 2 and non-open state', function (done) {
 				Flags.list({
 					cid: [1, 2],
-					state: 'resolved'
+					state: 'resolved',
 				}, 1, function (err, flags) {
 					assert.ifError(err);
 					assert.ok(Array.isArray(flags));
@@ -252,8 +253,8 @@ describe('Flags', function () {
 	describe('.update()', function () {
 		it('should alter a flag\'s various attributes and persist them to the database', function (done) {
 			Flags.update(1, 1, {
-				"state": "wip",
-				"assignee": 1
+				state: 'wip',
+				assignee: 1,
 			}, function (err) {
 				assert.ifError(err);
 				db.getObjectFields('flag:1', ['state', 'assignee'], function (err, data) {
@@ -277,13 +278,13 @@ describe('Flags', function () {
 
 				history.forEach(function (change) {
 					switch (change.attribute) {
-						case 'state':
-							assert.strictEqual('[[flags:state-wip]]', change.value);
-							break;
-						
-						case 'assignee':
-							assert.strictEqual(1, change.value);
-							break;
+					case 'state':
+						assert.strictEqual('[[flags:state-wip]]', change.value);
+						break;
+
+					case 'assignee':
+						assert.strictEqual(1, change.value);
+						break;
 					}
 				});
 
@@ -299,10 +300,10 @@ describe('Flags', function () {
 				var compare = {
 					uid: 1,
 					pid: 1,
-					content: 'This is flaggable content'
+					content: 'This is flaggable content',
 				};
 
-				for(var key in compare) {
+				for (var key in compare) {
 					if (compare.hasOwnProperty(key)) {
 						assert.ok(data[key]);
 						assert.equal(data[key], compare[key]);
@@ -319,10 +320,10 @@ describe('Flags', function () {
 				var compare = {
 					uid: 1,
 					username: 'testUser',
-					email: 'b@c.com'
+					email: 'b@c.com',
 				};
 
-				for(var key in compare) {
+				for (var key in compare) {
 					if (compare.hasOwnProperty(key)) {
 						assert.ok(data[key]);
 						assert.equal(data[key], compare[key]);
@@ -352,7 +353,7 @@ describe('Flags', function () {
 				Flags.validate({
 					type: 'post',
 					id: 1,
-					uid: 1
+					uid: 1,
 				}, function (err) {
 					assert.ok(err);
 					assert.strictEqual('[[error:post-deleted]]', err.message);
@@ -368,7 +369,7 @@ describe('Flags', function () {
 				Flags.validate({
 					type: 'post',
 					id: 1,
-					uid: 3
+					uid: 3,
 				}, function (err) {
 					assert.ok(err);
 					assert.strictEqual('[[error:not-enough-reputation-to-flag]]', err.message);
@@ -382,7 +383,7 @@ describe('Flags', function () {
 		it('should add a note to a flag', function (done) {
 			Flags.appendNote(1, 1, 'this is my note', function (err) {
 				assert.ifError(err);
-				
+
 				db.getSortedSetRange('flag:1:notes', 0, -1, function (err, notes) {
 					if (err) {
 						throw err;
@@ -422,11 +423,11 @@ describe('Flags', function () {
 				assert.ifError(err);
 				var compare = {
 					uid: 1,
-					content: 'this is my note'
+					content: 'this is my note',
 				};
-				
+
 				var data = notes[1];
-				for(var key in compare) {
+				for (var key in compare) {
 					if (compare.hasOwnProperty(key)) {
 						assert.ok(data[key]);
 						assert.strictEqual(data[key], compare[key]);
@@ -458,7 +459,7 @@ describe('Flags', function () {
 
 		it('should add a new entry into a flag\'s history', function (done) {
 			Flags.appendHistory(1, 1, {
-				state: 'rejected'
+				state: 'rejected',
 			}, function (err) {
 				assert.ifError(err);
 
@@ -486,14 +487,16 @@ describe('Flags', function () {
 
 	describe('(websockets)', function () {
 		var SocketFlags = require('../src/socket.io/flags.js');
-		var tid, pid, flag;
+		var tid,
+			pid,
+			flag;
 
 		before(function (done) {
 			Topics.post({
 				cid: 1,
 				uid: 1,
 				title: 'Another topic',
-				content: 'This is flaggable content'
+				content: 'This is flaggable content',
 			}, function (err, topic) {
 				tid = topic.postData.tid;
 				pid = topic.postData.pid;
@@ -507,7 +510,7 @@ describe('Flags', function () {
 				SocketFlags.create({ uid: 2 }, {
 					type: 'post',
 					id: pid,
-					reason: 'foobar'
+					reason: 'foobar',
 				}, function (err, flagObj) {
 					flag = flagObj;
 					assert.ifError(err);
@@ -527,8 +530,8 @@ describe('Flags', function () {
 					flagId: 2,
 					data: [{
 						name: 'state',
-						value: 'wip'
-					}]
+						value: 'wip',
+					}],
 				}, function (err, history) {
 					assert.ifError(err);
 					assert(Array.isArray(history));
@@ -543,7 +546,7 @@ describe('Flags', function () {
 			it('should append a note to the flag', function (done) {
 				SocketFlags.appendNote({ uid: 2 }, {
 					flagId: 2,
-					note: 'lorem ipsum dolor sit amet'
+					note: 'lorem ipsum dolor sit amet',
 				}, function (err, data) {
 					assert.ifError(err);
 					assert(data.hasOwnProperty('notes'));

@@ -334,11 +334,11 @@ Upgrade.upgrade = function (callback) {
 						posts = posts.filter(function (post) {
 							return post.hasOwnProperty('flags');
 						});
-						
+
 						async.each(posts, function (post, next) {
 							async.parallel({
 								uids: async.apply(db.getSortedSetRangeWithScores, 'pid:' + post.pid + ':flag:uids', 0, -1),
-								reasons: async.apply(db.getSortedSetRange, 'pid:' + post.pid + ':flag:uid:reason', 0, -1)
+								reasons: async.apply(db.getSortedSetRange, 'pid:' + post.pid + ':flag:uid:reason', 0, -1),
 							}, function (err, data) {
 								if (err) {
 									return next(err);
@@ -362,7 +362,7 @@ Upgrade.upgrade = function (callback) {
 											flags.update(flagObj.flagId, 1, {
 												state: post['flag:state'],
 												assignee: post['flag:assignee'],
-												datetime: datetime
+												datetime: datetime,
 											}, next);
 										} else {
 											setImmediate(next);
@@ -383,7 +383,7 @@ Upgrade.upgrade = function (callback) {
 										} else {
 											setImmediate(next);
 										}
-									}
+									},
 								], function (err) {
 									if (err && err.message === '[[error:already-flagged]]') {
 										// Already flagged, no need to parse, but not an error
@@ -407,7 +407,7 @@ Upgrade.upgrade = function (callback) {
 				winston.info('[2016/12/07] Migrating flags to new schema (#5232) - skipped!');
 				next();
 			}
-		}
+		},
 		// Add new schema updates here
 		// IMPORTANT: REMEMBER TO UPDATE VALUE OF latestSchema IN LINE 24!!!
 	], function (err) {

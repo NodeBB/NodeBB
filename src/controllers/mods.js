@@ -8,7 +8,7 @@ var flags = require('../flags');
 var analytics = require('../analytics');
 
 var modsController = {
-	flags: {}
+	flags: {},
 };
 
 modsController.flags.list = function (req, res, next) {
@@ -58,7 +58,7 @@ modsController.flags.list = function (req, res, next) {
 		async.parallel({
 			flags: async.apply(flags.list, filters, req.uid),
 			analytics: async.apply(analytics.getDailyStatsForSet, 'analytics:flags', Date.now(), 30),
-			categories: async.apply(categories.buildForSelect, req.uid)
+			categories: async.apply(categories.buildForSelect, req.uid),
 		}, function (err, data) {
 			if (err) {
 				return next(err);
@@ -92,7 +92,7 @@ modsController.flags.list = function (req, res, next) {
 				categories: data.categories,
 				hasFilter: hasFilter,
 				filters: filters,
-				title: '[[pages:flags]]'
+				title: '[[pages:flags]]',
 			});
 		});
 	});
@@ -103,7 +103,7 @@ modsController.flags.detail = function (req, res, next) {
 		isAdminOrGlobalMod: async.apply(user.isAdminOrGlobalMod, req.uid),
 		moderatedCids: async.apply(user.getModeratedCids, req.uid),
 		flagData: async.apply(flags.get, req.params.flagId),
-		assignees: async.apply(user.getAdminsandGlobalModsandModerators)
+		assignees: async.apply(user.getAdminsandGlobalModsandModerators),
 	}, function (err, results) {
 		if (err || !results.flagData) {
 			return next(err || new Error('[[error:invalid-data]]'));
@@ -122,7 +122,7 @@ modsController.flags.detail = function (req, res, next) {
 
 				return memo;
 			}, {}),
-			title: '[[pages:flag-details, ' + req.params.flagId + ']]'
+			title: '[[pages:flag-details, ' + req.params.flagId + ']]',
 		}));
 	});
 };

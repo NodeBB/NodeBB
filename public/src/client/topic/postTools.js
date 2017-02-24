@@ -119,7 +119,7 @@ define('forum/topic/postTools', [
 			require(['flags'], function (flags) {
 				flags.showFlagModal({
 					type: 'post',
-					id: pid
+					id: pid,
 				});
 			});
 		});
