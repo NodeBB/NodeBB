@@ -1,7 +1,6 @@
 'use strict';
 
 var async = require('async');
-var winston = require('winston');
 var db = require('./database');
 var user = require('./user');
 var groups = require('./groups');
@@ -69,38 +68,40 @@ Flags.list = function (filters, uid, callback) {
 
 	if (Object.keys(filters).length > 0) {
 		for (var type in filters) {
-			switch (type) {
-			case 'type':
-				prepareSets('flags:byType:', filters[type]);
-				break;
+			if (filters.hasOwnProperty(type)) {
+				switch (type) {
+				case 'type':
+					prepareSets('flags:byType:', filters[type]);
+					break;
 
-			case 'state':
-				prepareSets('flags:byState:', filters[type]);
-				break;
+				case 'state':
+					prepareSets('flags:byState:', filters[type]);
+					break;
 
-			case 'reporterId':
-				prepareSets('flags:byReporter:', filters[type]);
-				break;
+				case 'reporterId':
+					prepareSets('flags:byReporter:', filters[type]);
+					break;
 
-			case 'assignee':
-				prepareSets('flags:byAssignee:', filters[type]);
-				break;
+				case 'assignee':
+					prepareSets('flags:byAssignee:', filters[type]);
+					break;
 
-			case 'targetUid':
-				prepareSets('flags:byTargetUid:', filters[type]);
-				break;
+				case 'targetUid':
+					prepareSets('flags:byTargetUid:', filters[type]);
+					break;
 
-			case 'cid':
-				prepareSets('flags:byCid:', filters[type]);
-				break;
+				case 'cid':
+					prepareSets('flags:byCid:', filters[type]);
+					break;
 
-			case 'quick':
-				switch (filters.quick) {
-				case 'mine':
-					sets.push('flags:byAssignee:' + uid);
+				case 'quick':
+					switch (filters.quick) {
+					case 'mine':
+						sets.push('flags:byAssignee:' + uid);
+						break;
+					}
 					break;
 				}
-				break;
 			}
 		}
 	}
@@ -341,7 +342,7 @@ Flags.create = function (type, id, uid, reason, timestamp, callback) {
 				tasks.push(async.apply(db.sortedSetAdd.bind(db), 'flags:byPid:' + id, timestamp, flagId));	// by target pid
 			}
 
-			async.parallel(tasks, function (err, data) {
+			async.parallel(tasks, function (err) {
 				if (err) {
 					return next(err);
 				}
@@ -479,7 +480,7 @@ Flags.update = function (flagId, uid, changeset, callback) {
 			// Fire plugin hook
 			tasks.push(async.apply(plugins.fireHook, 'action:flag.update', { flagId: flagId, changeset: changeset, uid: uid }));
 
-			async.parallel(tasks, function (err, data) {
+			async.parallel(tasks, function (err) {
 				return next(err);
 			});
 		},

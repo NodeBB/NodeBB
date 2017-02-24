@@ -42,16 +42,14 @@ modsController.flags.list = function (req, res, next) {
 			if (!filters.cid) {
 				// If mod and no cid filter, add filter for their modded categories
 				filters.cid = res.locals.cids;
-			} else {
+			} else if (Array.isArray(filters.cid)) {
 				// Remove cids they do not moderate
-				if (Array.isArray(filters.cid)) {
-					filters.cid = filters.cid.filter(function (cid) {
-						return res.locals.cids.indexOf(String(cid)) !== -1;
-					});
-				} else if (res.locals.cids.indexOf(String(filters.cid)) === -1) {
-					filters.cid = res.locals.cids;
-					hasFilter = false;
-				}
+				filters.cid = filters.cid.filter(function (cid) {
+					return res.locals.cids.indexOf(String(cid)) !== -1;
+				});
+			} else if (res.locals.cids.indexOf(String(filters.cid)) === -1) {
+				filters.cid = res.locals.cids;
+				hasFilter = false;
 			}
 		}
 

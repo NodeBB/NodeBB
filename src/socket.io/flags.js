@@ -1,17 +1,8 @@
 'use strict';
 
 var async = require('async');
-var S = require('string');
 
 var user = require('../user');
-var groups = require('../groups');
-var posts = require('../posts');
-var topics = require('../topics');
-var privileges = require('../privileges');
-var notifications = require('../notifications');
-var plugins = require('../plugins');
-var meta = require('../meta');
-var utils = require('../../public/src/utils');
 var flags = require('../flags');
 
 var SocketFlags = {};

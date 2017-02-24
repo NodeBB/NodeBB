@@ -92,7 +92,7 @@ file.allowedExtensions = function () {
 };
 
 file.exists = function (path, callback) {
-	fs.stat(path, function (err, stat) {
+	fs.stat(path, function (err) {
 		if (err) {
 			if (err.code === 'ENOENT') {
 				return callback(null, false);

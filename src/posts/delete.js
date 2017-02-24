@@ -8,7 +8,6 @@ var topics = require('../topics');
 var user = require('../user');
 var notifications = require('../notifications');
 var plugins = require('../plugins');
-var flags = require('../flags');
 
 module.exports = function (Posts) {
 	Posts.delete = function (pid, uid, callback) {

@@ -487,9 +487,9 @@ describe('Flags', function () {
 
 	describe('(websockets)', function () {
 		var SocketFlags = require('../src/socket.io/flags.js');
-		var tid,
-			pid,
-			flag;
+		var tid;
+		var pid;
+		var flag;
 
 		before(function (done) {
 			Topics.post({

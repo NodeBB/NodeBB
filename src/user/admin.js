@@ -3,10 +3,8 @@
 
 var async = require('async');
 var db = require('../database');
-var posts = require('../posts');
 var plugins = require('../plugins');
 var winston = require('winston');
-var flags = require('../flags');
 
 module.exports = function (User) {
 	User.logIP = function (uid, ip) {

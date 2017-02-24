@@ -323,7 +323,6 @@ Upgrade.upgrade = function (callback) {
 				var batch = require('./batch');
 				var posts = require('./posts');
 				var flags = require('./flags');
-				var migrated = 0;
 
 				batch.processSortedSet('posts:pid', function (ids, next) {
 					posts.getPostsByPids(ids, 1, function (err, posts) {
