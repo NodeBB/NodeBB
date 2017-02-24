@@ -51,6 +51,7 @@ apiController.getConfig = function (req, res, next) {
 	config.topicsPerPage = meta.config.topicsPerPage || 20;
 	config.postsPerPage = meta.config.postsPerPage || 20;
 	config.maximumFileSize = meta.config.maximumFileSize;
+	config.showMultipleBadges = parseInt(meta.config.showMultipleBadges, 10) === 1;
 	config['theme:id'] = meta.config['theme:id'];
 	config['theme:src'] = meta.config['theme:src'];
 	config.defaultLang = meta.config.defaultLang || 'en-GB';
