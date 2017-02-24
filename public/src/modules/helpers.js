@@ -7,7 +7,7 @@
 		exports = module.exports/* = SemVer*/;
 	}
 
-	var helpers = {};
+	var helpers = exports;
 
 	helpers.displayMenuItem = function (data, index) {
 		var item = data.navigation[index];
