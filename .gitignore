@@ -57,3 +57,4 @@ tx.exe
 coverage
 
 build
+*.log
