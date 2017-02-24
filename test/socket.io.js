@@ -75,6 +75,7 @@ describe('socket.io', function () {
 					this.open = function () {
 						stdOpen.apply(this, arguments);
 						this.setRequestHeader('Cookie', res.headers['set-cookie'][0].split(';')[0]);
+						this.setRequestHeader('Origin', nconf.get('url'));
 					};
 				};
 
@@ -418,6 +419,18 @@ describe('socket.io', function () {
 					});
 				}, 1000);
 			});
+		});
+	});
+
+	it('should get admin search dictionary', function (done) {
+		var socketAdmin = require('../src/socket.io/admin');
+		socketAdmin.getSearchDict({uid: adminUid}, {}, function (err, data) {
+			assert.ifError(err);
+			assert(Array.isArray(data));
+			assert(data[0].namespace);
+			assert(data[0].translations);
+			assert(data[0].title);
+			done();
 		});
 	});
 

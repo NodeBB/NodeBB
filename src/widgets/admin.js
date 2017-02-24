@@ -3,6 +3,7 @@
 var fs = require('fs');
 var path = require('path');
 var async = require('async');
+var nconf = require('nconf');
 var plugins = require('../plugins');
 
 var admin = {};
@@ -25,7 +26,7 @@ admin.get = function (callback) {
 			plugins.fireHook('filter:widgets.getWidgets', [], next);
 		},
 		adminTemplate: function (next) {
-			fs.readFile(path.resolve(__dirname, '../../public/templates/admin/partials/widget-settings.tpl'), 'utf8', next);
+			fs.readFile(path.resolve(nconf.get('views_dir'), 'admin/partials/widget-settings.tpl'), 'utf8', next);
 		}
 	}, function (err, widgetData) {
 		if (err) {

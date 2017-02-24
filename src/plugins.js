@@ -32,6 +32,7 @@ var middleware;
 	Plugins.libraryPaths = [];
 	Plugins.versionWarning = [];
 	Plugins.languageCodes = [];
+	Plugins.soundpacks = [];
 
 	Plugins.initialized = false;
 

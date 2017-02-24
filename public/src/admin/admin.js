@@ -1,5 +1,5 @@
 "use strict";
-/*global config, componentHandler, socket, app, bootbox, Slideout, NProgress*/
+/*global config, componentHandler, socket, app, bootbox, Slideout, NProgress, utils*/
 
 (function () {
 	var logoutTimer = 0;
@@ -176,13 +176,19 @@
 	}
 
 	function configureSlidemenu() {
+		var env = utils.findBootstrapEnvironment();
+		
 		var slideout = new Slideout({
 			'panel': document.getElementById('panel'),
 			'menu': document.getElementById('menu'),
 			'padding': 256,
 			'tolerance': 70
 		});
-
+		
+		if (env === 'md' || env === 'lg') {
+			slideout.disableTouch();
+		}
+		
 		$('#mobile-menu').on('click', function () {
 			slideout.toggle();
 		});
@@ -193,6 +199,20 @@
 
 		$(window).on('resize', function () {
 			slideout.close();
+			
+			env = utils.findBootstrapEnvironment();
+			
+			if (env === 'md' || env === 'lg') {
+				slideout.disableTouch();
+				$('#header').css({
+					'position': 'relative'
+				});	
+			} else {
+				slideout.enableTouch();
+				$('#header').css({
+					'position': 'fixed'
+				});
+			}
 		});
 
 		function onOpeningMenu() {
@@ -202,10 +222,8 @@
 			});
 		}
 
-		slideout.on('beforeopen', onOpeningMenu);
 		slideout.on('open', onOpeningMenu);
-		slideout.on('translate', onOpeningMenu);
-
+		
 		slideout.on('close', function () {
 			$('#header').css({
 				'top': '0px',

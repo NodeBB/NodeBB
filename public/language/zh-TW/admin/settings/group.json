@@ -1,12 +1,12 @@
 {
-	"general": "General",
-	"private-groups": "Private Groups",
-	"private-groups.help": "If enabled, joining of groups requires the approval of the group owner <em>(Default: enabled)</em>",
+	"general": "一般",
+	"private-groups": "私人群組",
+	"private-groups.help": "如果開啟，加入群組需要經過群組擁有者批準 <em>(預設: enabled)</em>",
 	"private-groups.warning": "<strong>Beware!</strong> If this option is disabled and you have private groups, they automatically become public.",
-	"allow-creation": "Allow Group Creation",
-	"allow-creation-help": "If enabled, users can create groups <em>(Default: disabled)</em>",
-	"max-name-length": "Maximum Group Name Length",
-	"cover-image": "Group Cover Image",
-	"default-cover": "Default Cover Images",
+	"allow-creation": "允許建立群組",
+	"allow-creation-help": "如果開啟，使用者可自行建立群組 <em>(預設: disabled)</em>",
+	"max-name-length": "群組最大名稱長度",
+	"cover-image": "群組封面圖像",
+	"default-cover": "預設封面圖像",
 	"default-cover-help": "Add comma-separated default cover images for groups that don't have an uploaded cover image"
 }

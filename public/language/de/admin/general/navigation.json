@@ -4,17 +4,17 @@
 	"route": "Pfad:",
 	"tooltip": "Tooltip:",
 	"text": "Text:",
-	"text-class": "Text Stil: <small>optional</small>",
+	"text-class": "Text Klasse: <small>optional</small>",
 	"id": "ID: <small>optional</small>",
 
 	"properties": "Eigenschaften:",
-	"only-admins": "Nur sichtbar für Admins",
-	"only-global-mods-and-admins": "Nur sichtbar für Globale Moderatoren und Admins",
-	"only-logged-in": "Nur sichtbar für angemeldete Benutzer",
+	"only-admins": "Nur für Admins sichtbar",
+	"only-global-mods-and-admins": "Nur für Globale Moderatoren und Admins sichtbar",
+	"only-logged-in": "Nur für angemeldete Benutzer sichtbar",
 	"open-new-window": "In neuem Fenster öffnen",
 
-	"installed-plugins-required": "Installierte Plugins notwendig:",
-	"search-plugin": "Search plugin",
+	"installed-plugins-required": "Benötigte installierte Plugins:",
+	"search-plugin": "Such-Plugin",
 
 	"btn.delete": "Löschen",
 	"btn.disable": "Deaktivieren",

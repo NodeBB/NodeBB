@@ -45,7 +45,7 @@ server.on('error', function (err) {
 	winston.error(err);
 	if (err.code === 'EADDRINUSE') {
 		winston.error('NodeBB address in use, exiting...');
-		process.exit(0);
+		process.exit(1);
 	} else {
 		throw err;
 	}
@@ -88,7 +88,6 @@ function initializeNodeBB(callback) {
 			plugins.init(app, middleware, next);
 		},
 		async.apply(plugins.fireHook, 'static:assets.prepare', {}),
-		async.apply(meta.js.bridgeModules, app),
 		function (next) {
 			plugins.fireHook('static:app.preload', {
 				app: app,
@@ -104,12 +103,9 @@ function initializeNodeBB(callback) {
 		},
 		function (next) {
 			async.series([
-				async.apply(meta.js.getFromFile, 'nodebb.min.js'),
-				async.apply(meta.js.getFromFile, 'acp.min.js'),
-				async.apply(meta.css.getFromFile),
-				async.apply(meta.sounds.init),
-				async.apply(languages.init),
-				async.apply(meta.blacklist.load)
+				meta.sounds.addUploads,
+				languages.init,
+				meta.blacklist.load,
 			], next);
 		}
 	], callback);
@@ -163,7 +159,8 @@ function setupExpressApp(app) {
 }
 
 function setupFavicon(app) {
-	var faviconPath = path.join(nconf.get('base_dir'), 'public', meta.config['brand:favicon'] ? meta.config['brand:favicon'] : 'favicon.ico');
+	var faviconPath = meta.config['brand:favicon'] || 'favicon.ico';
+	faviconPath = path.join(nconf.get('base_dir'), 'public', faviconPath.replace(/assets\/uploads/, 'uploads'));
 	if (file.existsSync(faviconPath)) {
 		app.use(nconf.get('relative_path'), favicon(faviconPath));
 	}

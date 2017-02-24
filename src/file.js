@@ -5,6 +5,8 @@ var nconf = require('nconf');
 var path = require('path');
 var winston = require('winston');
 var jimp = require('jimp');
+var mkdirp = require('mkdirp');
+var mime = require('mime');
 
 var utils = require('../public/src/utils');
 
@@ -12,35 +14,39 @@ var file = {};
 
 file.saveFileToLocal = function (filename, folder, tempPath, callback) {
 	/*
-	* remarkable doesn't allow spaces in hyperlinks, once that's fixed, remove this.
-	*/
+	 * remarkable doesn't allow spaces in hyperlinks, once that's fixed, remove this.
+	 */
 	filename = filename.split('.');
 	filename.forEach(function (name, idx) {
 		filename[idx] = utils.slugify(name);
 	});
 	filename = filename.join('.');
 
-	var uploadPath = path.join(nconf.get('base_dir'), nconf.get('upload_path'), folder, filename);
+	var uploadPath = path.join(nconf.get('upload_path'), folder, filename);
 
 	winston.verbose('Saving file ' + filename + ' to : ' + uploadPath);
+	mkdirp(path.dirname(uploadPath), function (err) {
+		if (err) {
+			callback(err);
+		}
 
-	var is = fs.createReadStream(tempPath);
-	var os = fs.createWriteStream(uploadPath);
-	is.on('end', function () {
-		callback(null, {
-			url: nconf.get('upload_url') + '/' + folder + '/' + filename,
-			path: uploadPath
+		var is = fs.createReadStream(tempPath);
+		var os = fs.createWriteStream(uploadPath);
+		is.on('end', function () {
+			callback(null, {
+				url: '/assets/uploads/' + folder + '/' + filename,
+				path: uploadPath
+			});
 		});
+
+		os.on('error', callback);
+		is.pipe(os);
 	});
-
-	os.on('error', callback);
-
-	is.pipe(os);
 };
 
 file.base64ToLocal = function (imageData, uploadPath, callback) {
 	var buffer = new Buffer(imageData.slice(imageData.indexOf('base64') + 7), 'base64');
-	uploadPath = path.join(nconf.get('base_dir'), nconf.get('upload_path'), uploadPath);
+	uploadPath = path.join(nconf.get('upload_path'), uploadPath);
 
 	fs.writeFile(uploadPath, buffer, {
 		encoding: 'base64'
@@ -95,11 +101,34 @@ file.existsSync = function (path) {
 	var exists = false;
 	try {
 		exists = fs.statSync(path);
-	} catch(err) {
+	}
+	catch (err) {
 		exists = false;
 	}
 
 	return !!exists;
+};
+
+file.link = function link(filePath, destPath, cb) {
+	if (process.platform === 'win32') {
+		fs.link(filePath, destPath, cb);
+	}
+	else {
+		fs.symlink(filePath, destPath, 'file', cb);
+	}
+};
+
+file.linkDirs = function linkDirs(sourceDir, destDir, callback) {
+	var type = (process.platform === 'win32') ? 'junction' : 'dir';
+	fs.symlink(sourceDir, destDir, type, callback);
+};
+
+file.typeToExtension = function (type) {
+	var extension;
+	if (type) {
+		extension = '.' + mime.extension(type);
+	}
+	return extension;
 };
 
 module.exports = file;

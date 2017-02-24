@@ -20,7 +20,7 @@ define('admin/manage/ip-blacklist', ['translator'], function (translator) {
 				app.alert({
 					type: 'success',
 					alert_id: 'blacklist-saved',
-					title: '[[admin/manage/ip-blacklist:alerts.applied]]',
+					title: '[[admin/manage/ip-blacklist:alerts.applied-success]]',
 				});
 			});
 		});

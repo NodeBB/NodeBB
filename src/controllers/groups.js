@@ -32,17 +32,18 @@ groupsController.getGroupsFromSet = function (uid, sort, start, stop, callback) 
 		set = 'groups:visible:createtime';
 	}
 
-	groups.getGroupsFromSet(set, uid, start, stop, function (err, groups) {
-		if (err) {
-			return callback(err);
+	async.waterfall([
+		function (next) {
+			groups.getGroupsFromSet(set, uid, start, stop, next);
+		},
+		function (groupsData, next) {
+			next(null, {
+				groups: groupsData,
+				allowGroupCreation: parseInt(meta.config.allowGroupCreation, 10) === 1,
+				nextStart: stop + 1
+			});
 		}
-
-		callback(null, {
-			groups: groups,
-			allowGroupCreation: parseInt(meta.config.allowGroupCreation, 10) === 1,
-			nextStart: stop + 1
-		});
-	});
+	], callback);
 };
 
 groupsController.details = function (req, res, callback) {

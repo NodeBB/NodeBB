@@ -13,7 +13,6 @@
 	"manage/users": "Usuarios",
 	"manage/registration": "Cola de Registro",
 	"manage/groups": "Grupos",
-	"manage/flags": "Reportes",
 	"manage/ip-blacklist": "Lista negra de IP",
 
 	"section-settings": "Opciones",

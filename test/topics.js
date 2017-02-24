@@ -10,6 +10,7 @@ var topics = require('../src/topics');
 var categories = require('../src/categories');
 var User = require('../src/user');
 var groups = require('../src/groups');
+var helpers = require('./helpers');
 var socketPosts = require('../src/socket.io/posts');
 
 describe('Topic\'s', function () {
@@ -19,7 +20,7 @@ describe('Topic\'s', function () {
 
 	before(function (done) {
 		groups.resetCache();
-		User.create({username: 'admin'}, function (err, uid) {
+		User.create({username: 'admin', password: '123456'}, function (err, uid) {
 			if (err) {
 				return done(err);
 			}
@@ -130,6 +131,13 @@ describe('Topic\'s', function () {
 			});
 		});
 
+		it('should error if pid is not a number', function (done) {
+			socketPosts.getReplies({uid: 0}, 'abc', function (err) {
+				assert.equal(err.message, '[[error:invalid-data]]');
+				done();
+			});
+		});
+
 		it('should fail to create new reply with invalid user id', function (done) {
 			topics.reply({uid: null, content: 'test post', tid: newTopic.tid}, function (err) {
 				assert.equal(err.message, '[[error:no-privileges]]');
@@ -175,9 +183,24 @@ describe('Topic\'s', function () {
 			});
 		});
 
-		describe('.getTopicData', function () {
-			it('should not receive errors', function (done) {
-				topics.getTopicData(newTopic.tid, done);
+
+		it('should not receive errors', function (done) {
+			topics.getTopicData(newTopic.tid, done);
+		});
+
+		it('should get topic title by pid', function (done) {
+			topics.getTitleByPid(newPost.pid, function (err, title) {
+				assert.ifError(err);
+				assert.equal(title, topic.title);
+				done();
+			});
+		});
+
+		it('should get topic data by pid', function (done) {
+			topics.getTopicDataByPid(newPost.pid, function (err, data) {
+				assert.ifError(err);
+				assert.equal(data.tid, newTopic.tid);
+				done();
 			});
 		});
 
@@ -445,7 +468,7 @@ describe('Topic\'s', function () {
 						assert.equal(pinnedTids[1], tid2);
 						done();
 					});
-				});			
+				});
 			});
 		});
 
@@ -650,25 +673,176 @@ describe('Topic\'s', function () {
 		});
 	});
 
-	it('should load topic', function (done) {
-		topics.post({
-			uid: topic.userId,
-			title: 'topic for controller test',
-			content: 'topic content',
-			cid: topic.categoryId,
-			thumb: 'http://i.imgur.com/64iBdBD.jpg'
-		}, function (err, result) {
-			assert.ifError(err);
-			assert.ok(result);
-			var request = require('request');
-			request(nconf.get('url') + '/topic/' + result.topicData.slug, function (err, response, body) {
+	describe('controller', function () {
+		var request = require('request');
+		var topicData;
+
+		before(function (done) {
+			topics.post({
+				uid: topic.userId,
+				title: 'topic for controller test',
+				content: 'topic content',
+				cid: topic.categoryId,
+				thumb: 'http://i.imgur.com/64iBdBD.jpg'
+			}, function (err, result) {
+				assert.ifError(err);
+				assert.ok(result);
+				topicData = result.topicData;
+				done();
+			});
+		});
+
+		it('should load topic', function (done) {
+			request(nconf.get('url') + '/topic/' + topicData.slug, function (err, response, body) {
 				assert.ifError(err);
 				assert.equal(response.statusCode, 200);
 				assert(body);
 				done();
 			});
 		});
+
+		it('should 404 if post index is invalid', function (done) {
+			request(nconf.get('url') + '/topic/' + topicData.slug + '/derp', function (err, response) {
+				assert.ifError(err);
+				assert.equal(response.statusCode, 404);
+				done();
+			});
+		});
+
+		it('should 404 if topic does not exist', function (done) {
+			request(nconf.get('url') + '/topic/123123/does-not-exist', function (err, response) {
+				assert.ifError(err);
+				assert.equal(response.statusCode, 404);
+				done();
+			});
+		});
+
+		it('should 401 if not allowed to read as guest', function (done) {
+			var privileges = require('../src/privileges');
+			privileges.categories.rescind(['read'], topicData.cid, 'guests', function (err) {
+				assert.ifError(err);
+				request(nconf.get('url') + '/api/topic/' + topicData.slug, function (err, response, body) {
+					assert.ifError(err);
+					assert.equal(response.statusCode, 401);
+					assert(body);
+					privileges.categories.give(['read'], topicData.cid, 'guests', done);
+				});
+			});
+		});
+
+		it('should redirect to correct topic if slug is missing', function (done) {
+			request(nconf.get('url') + '/topic/' + topicData.tid + '/herpderp/1?page=2', function (err, response, body) {
+				assert.ifError(err);
+				assert.equal(response.statusCode, 200);
+				assert(body);
+				done();
+			});
+		});
+
+		it('should redirect if post index is out of range', function (done) {
+			request(nconf.get('url') + '/api/topic/' + topicData.slug + '/-1', function (err, response, body) {
+				assert.ifError(err);
+				assert.equal(response.statusCode, 308);
+				assert.equal(body, '"/topic/13/topic-for-controller-test"');
+				done();
+			});
+		});
+
+		it('should 404 if page is out of bounds', function (done) {
+			var meta = require('../src/meta');
+			meta.config.usePagination = 1;
+			request(nconf.get('url') + '/topic/' + topicData.slug + '?page=100', function (err, response) {
+				assert.ifError(err);
+				assert.equal(response.statusCode, 404);
+				done();
+			});
+		});
+
+		it('should mark topic read', function (done) {
+			helpers.loginUser('admin', '123456', function (err, jar) {
+				assert.ifError(err);
+				request(nconf.get('url') + '/topic/' + topicData.slug, {
+					jar: jar
+				}, function (err, res) {
+					assert.ifError(err);
+					assert.equal(res.statusCode, 200);
+					topics.hasReadTopics([topicData.tid], adminUid, function (err, hasRead) {
+						assert.ifError(err);
+						assert.equal(hasRead[0], true);
+						done();
+					});
+				});
+			});
+		});
+
+		it('should 404 if tid is not a number', function (done) {
+			request(nconf.get('url') + '/api/topic/teaser/nan', {json: true}, function (err, response, body) {
+				assert.ifError(err);
+				assert.equal(response.statusCode, 404);
+				done();
+			});
+		});
+
+		it('should 403 if cant read', function (done) {
+			request(nconf.get('url') + '/api/topic/teaser/' + 123123, {json: true}, function (err, response, body) {
+				assert.ifError(err);
+				assert.equal(response.statusCode, 403);
+				assert.equal(body, '[[error:no-privileges]]');
+
+				done();
+			});
+		});
+
+		it('should load topic teaser', function (done) {
+			request(nconf.get('url') + '/api/topic/teaser/' + topicData.tid, {json: true}, function (err, response, body) {
+				assert.ifError(err);
+				assert.equal(response.statusCode, 200);
+				assert(body);
+				assert.equal(body.tid, topicData.tid);
+				assert.equal(body.content, 'topic content');
+				assert(body.user);
+				assert(body.topic);
+				assert(body.category);
+				done();
+			});
+		});
+
+
+		it('should 404 if tid is not a number', function (done) {
+			request(nconf.get('url') + '/api/topic/pagination/nan', {json: true}, function (err, response, body) {
+				assert.ifError(err);
+				assert.equal(response.statusCode, 404);
+				done();
+			});
+		});
+
+		it('should 404 if tid does not exist', function (done) {
+			request(nconf.get('url') + '/api/topic/pagination/1231231', {json: true}, function (err, response, body) {
+				assert.ifError(err);
+				assert.equal(response.statusCode, 404);
+				done();
+			});
+		});
+
+		it('should load pagination', function (done) {
+			request(nconf.get('url') + '/api/topic/pagination/' + topicData.tid, {json: true}, function (err, response, body) {
+				assert.ifError(err);
+				assert.equal(response.statusCode, 200);
+				assert(body);
+				assert.deepEqual(body, {
+					prev: { page: 1, active: false },
+					next: { page: 1, active: false },
+					rel: [],
+					pages: [],
+					currentPage: 1,
+					pageCount: 1
+				});
+				done();
+			});
+		});
+
 	});
+
 
 	describe('infinitescroll', function () {
 		var socketTopics = require('../src/socket.io/topics');
@@ -1197,8 +1371,65 @@ describe('Topic\'s', function () {
 				});
 			});
 		});
+	});
 
+	describe('follow/unfollow', function () {
+		var socketTopics = require('../src/socket.io/topics');
+		var tid;
+		var followerUid;
+		before(function (done) {
+			User.create({username: 'follower'}, function (err, uid) {
+				if (err) {
+					return done(err);
+				}
+				followerUid = uid;
+				topics.post({uid: adminUid, title: 'topic title', content: 'some content', cid: topic.categoryId}, function (err, result) {
+					if (err) {
+						return done(err);
+					}
+					tid = result.topicData.tid;
+					done();
+				});
+			});
+		});
 
+		it('should filter ignoring uids', function (done) {
+			socketTopics.changeWatching({uid: followerUid}, {tid: tid, type: 'ignore'}, function (err) {
+				assert.ifError(err);
+				topics.filterIgnoringUids(tid, [adminUid, followerUid], function (err, uids) {
+					assert.ifError(err);
+					assert.equal(uids.length, 1);
+					assert.equal(uids[0], adminUid);
+					done();
+				});
+			});
+		});
+
+		it('should error with invalid data', function (done) {
+			socketTopics.changeWatching({uid: followerUid}, {}, function (err) {
+				assert.equal(err.message, '[[error:invalid-data]]');
+				done();
+			});
+		});
+
+		it('should error with invalid type', function (done) {
+			socketTopics.changeWatching({uid: followerUid}, {tid: tid, type: 'derp'}, function (err) {
+				assert.equal(err.message, '[[error:invalid-command]]');
+				done();
+			});
+		});
+
+		it('should follow topic', function (done) {
+			topics.toggleFollow(tid, followerUid, function (err, isFollowing) {
+				assert.ifError(err);
+				assert(isFollowing);
+				topics.isFollowing([tid], followerUid, function (err, isFollowing) {
+					assert.ifError(err);
+					assert(isFollowing);
+					done();
+				});
+			});
+		});
 	});
 
 

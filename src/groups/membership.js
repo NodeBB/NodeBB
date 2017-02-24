@@ -1,6 +1,6 @@
 'use strict';
 
-var	async = require('async');
+var async = require('async');
 var winston = require('winston');
 var _ = require('underscore');
 
@@ -138,7 +138,6 @@ module.exports = function (Groups) {
 	};
 
 	Groups.acceptMembership = function (groupName, uid, callback) {
-		// Note: For simplicity, this method intentially doesn't check the caller uid for ownership!
 		async.waterfall([
 			async.apply(db.setRemove, 'group:' + groupName + ':pending', uid),
 			async.apply(db.setRemove, 'group:' + groupName + ':invited', uid),
@@ -147,7 +146,6 @@ module.exports = function (Groups) {
 	};
 
 	Groups.rejectMembership = function (groupName, uid, callback) {
-		// Note: For simplicity, this method intentially doesn't check the caller uid for ownership!
 		async.parallel([
 			async.apply(db.setRemove, 'group:' + groupName + ':pending', uid),
 			async.apply(db.setRemove, 'group:' + groupName + ':invited', uid)

@@ -135,5 +135,41 @@ describe('Utility Methods', function () {
 		done();
 	});
 
+	it('escape html', function (done) {
+		var escaped = utils.escapeHTML('&<>');
+		assert.equal(escaped, '&amp;&lt;&gt;');
+		done();
+	});
+
+	it('should escape regex chars', function (done) {
+		var escaped = utils.escapeRegexChars('some text {}');
+		assert.equal(escaped, 'some\\ text\\ \\{\\}');
+		done();
+	});
+
+	it('should get hours array', function (done) {
+		var currentHour = new Date().getHours();
+		var hours = utils.getHoursArray();
+		var index = hours.length - 1;
+		for (var i = currentHour, ii = currentHour - 24; i > ii; i--) {
+			var hour = i < 0 ? 24 + i : i;
+			assert.equal(hours[index], hour + ':00');
+			-- index;
+		}
+		done();
+	});
+
+	it('should get days array', function (done) {
+		var currentDay = new Date(Date.now()).getTime();
+		var days = utils.getDaysArray();
+		var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+		var index = 0;
+		for(var x = 29; x >= 0; x--) {
+			var tmpDate = new Date(currentDay - (1000 * 60 * 60 * 24 * x));
+			assert.equal(months[tmpDate.getMonth()]  + ' ' + tmpDate.getDate(), days[index]);
+			++ index;
+		}
+		done();
+	});
 
 });

@@ -5,7 +5,7 @@ var winston = require('winston');
 
 var buildStart;
 
-var valid = ['js', 'clientCSS', 'acpCSS', 'tpl', 'lang'];
+var valid = ['js', 'clientCSS', 'acpCSS', 'tpl', 'lang', 'sound'];
 
 exports.buildAll = function (callback) {
 	exports.build(valid.join(','), callback);
@@ -14,9 +14,9 @@ exports.buildAll = function (callback) {
 exports.build = function build(targets, callback) {
 	buildStart = Date.now();
 
-	var db = require('./src/database');
-	var meta = require('./src/meta');
-	var plugins = require('./src/plugins');
+	var db = require('../database');
+	var meta = require('../meta');
+	var plugins = require('../plugins');
 
 
 	targets = (targets === true ? valid : targets.split(',').filter(function (target) {
@@ -43,20 +43,36 @@ exports.build = function build(targets, callback) {
 };
 
 exports.buildTargets = function (targets, callback) {
-	var meta = require('./src/meta');
+	var cacheBuster = require('./cacheBuster');
+	var meta = require('../meta');
+	var numCpus = require('os').cpus().length;
+	var parallel = targets.length > 1 && numCpus > 1;
+
 	buildStart = buildStart || Date.now();
 
-	var step = function (startTime, target, next) {
+	var step = function (startTime, target, next, err) {
+		if (err) {
+			winston.error('Build failed: ' + err.message);
+			process.exit(1);
+		}
 		winston.info('[build] ' + target + ' => Completed in ' + ((Date.now() - startTime) / 1000) + 's');
 		next();
 	};
 
-	async.parallel([
+	if (parallel) {
+		winston.verbose('[build] Utilising multiple cores/processes');
+	} else {
+		winston.verbose('[build] Utilising single-core');
+	}
+
+	async[parallel ? 'parallel' : 'series']([
 		function (next) {
 			if (targets.indexOf('js') !== -1) {
 				winston.info('[build] Building javascript');
 				var startTime = Date.now();
 				async.series([
+					meta.js.buildModules,
+					meta.js.linkStatics,
 					async.apply(meta.js.minify, 'nodebb.min.js'),
 					async.apply(meta.js.minify, 'acp.min.js')
 				], step.bind(this, startTime, 'js', next));
@@ -74,13 +90,13 @@ exports.buildTargets = function (targets, callback) {
 					case 'clientCSS':
 						winston.info('[build] Building client-side CSS');
 						startTime = Date.now();
-						meta.css.minify('stylesheet.css', step.bind(this, startTime, target, next));
+						meta.css.minify('client', step.bind(this, startTime, target, next));
 						break;
 
 					case 'acpCSS':
 						winston.info('[build] Building admin control panel CSS');
 						startTime = Date.now();
-						meta.css.minify('admin.css', step.bind(this, startTime, target, next));
+						meta.css.minify('admin', step.bind(this, startTime, target, next));
 						break;
 
 					case 'tpl':
@@ -88,11 +104,17 @@ exports.buildTargets = function (targets, callback) {
 						startTime = Date.now();
 						meta.templates.compile(step.bind(this, startTime, target, next));
 						break;
-					
+
 					case 'lang':
 						winston.info('[build] Building language files');
 						startTime = Date.now();
 						meta.languages.build(step.bind(this, startTime, target, next));
+						break;
+
+					case 'sound':
+						winston.info('[build] Linking sound files');
+						startTime = Date.now();
+						meta.sounds.build(step.bind(this, startTime, target, next));
 						break;
 
 					default:
@@ -108,14 +130,21 @@ exports.buildTargets = function (targets, callback) {
 			return process.exit(1);
 		}
 
-		var time = (Date.now() - buildStart) / 1000;
+		cacheBuster.write(function (err) {
+			if (err) {
+				winston.error('[build] Failed to write `cache-buster.conf`: ' + err.message);
+				return process.exit(1);
+			}
 
-		winston.info('[build] Asset compilation successful. Completed in ' + time + 's.');
+			var time = (Date.now() - buildStart) / 1000;
 
-		if (typeof callback === 'function') {
-			callback();
-		} else {
-			process.exit(0);
-		}
+			winston.info('[build] Asset compilation successful. Completed in ' + time + 's.');
+
+			if (typeof callback === 'function') {
+				callback();
+			} else {
+				process.exit(0);
+			}
+		});
 	});
 };

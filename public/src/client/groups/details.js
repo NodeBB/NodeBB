@@ -6,10 +6,10 @@ define('forum/groups/details', [
 	'iconSelect',
 	'components',
 	'coverPhoto',
-	'uploader',
+	'pictureCropper',
 	'translator',
 	'vendor/colorpicker/colorpicker'
-], function (memberList, iconSelect, components, coverPhoto, uploader, translator) {
+], function (memberList, iconSelect, components, coverPhoto, pictureCropper, translator) {
 
 	var Details = {};
 	var groupName;
@@ -31,10 +31,14 @@ define('forum/groups/details', [
 					}, callback);
 				},
 				function () {
-					uploader.show({
+					pictureCropper.show({
 						title: '[[groups:upload-group-cover]]',
-						route: config.relative_path + '/api/groups/uploadpicture',
-						params: {groupName: groupName}
+						socketMethod: 'groups.cover.update',
+						aspectRatio: NaN,
+						allowSkippingCrop: true,
+						restrictImageDimension: false,
+						paramName: 'groupName',
+						paramValue: groupName
 					}, function (imageUrlOnServer) {
 						components.get('groups/cover').css('background-image', 'url(' + imageUrlOnServer + ')');
 					});
@@ -57,62 +61,62 @@ define('forum/groups/details', [
 				uid = userRow.attr('data-uid'),
 				action = btnEl.attr('data-action');
 
-			switch(action) {
-				case 'toggleOwnership':
-					socket.emit('groups.' + (isOwner ? 'rescind' : 'grant'), {
-						toUid: uid,
-						groupName: groupName
-					}, function (err) {
-						if (!err) {
-							ownerFlagEl.toggleClass('invisible');
-						} else {
-							app.alertError(err.message);
-						}
-					});
-					break;
+			switch (action) {
+			case 'toggleOwnership':
+				socket.emit('groups.' + (isOwner ? 'rescind' : 'grant'), {
+					toUid: uid,
+					groupName: groupName
+				}, function (err) {
+					if (!err) {
+						ownerFlagEl.toggleClass('invisible');
+					} else {
+						app.alertError(err.message);
+					}
+				});
+				break;
 
-				case 'kick':
-					socket.emit('groups.kick', {
-						uid: uid,
-						groupName: groupName
-					}, function (err) {
-						if (!err) {
-							userRow.slideUp().remove();
-						} else {
-							app.alertError(err.message);
-						}
-					});
-					break;
+			case 'kick':
+				socket.emit('groups.kick', {
+					uid: uid,
+					groupName: groupName
+				}, function (err) {
+					if (!err) {
+						userRow.slideUp().remove();
+					} else {
+						app.alertError(err.message);
+					}
+				});
+				break;
 
-				case 'update':
-					Details.update();
-					break;
+			case 'update':
+				Details.update();
+				break;
 
-				case 'delete':
-					Details.deleteGroup();
-					break;
+			case 'delete':
+				Details.deleteGroup();
+				break;
 
-				case 'join':	// intentional fall-throughs!
-				case 'leave':
-				case 'accept':
-				case 'reject':
-				case 'issueInvite':
-				case 'rescindInvite':
-				case 'acceptInvite':
-				case 'rejectInvite':
-				case 'acceptAll':
-				case 'rejectAll':
-					socket.emit('groups.' + action, {
-						toUid: uid,
-						groupName: groupName
-					}, function (err) {
-						if (!err) {
-							ajaxify.refresh();
-						} else {
-							app.alertError(err.message);
-						}
-					});
-					break;
+			case 'join': // intentional fall-throughs!
+			case 'leave':
+			case 'accept':
+			case 'reject':
+			case 'issueInvite':
+			case 'rescindInvite':
+			case 'acceptInvite':
+			case 'rejectInvite':
+			case 'acceptAll':
+			case 'rejectAll':
+				socket.emit('groups.' + action, {
+					toUid: uid,
+					groupName: groupName
+				}, function (err) {
+					if (!err) {
+						ajaxify.refresh();
+					} else {
+						app.alertError(err.message);
+					}
+				});
+				break;
 			}
 		});
 	};
@@ -271,7 +275,7 @@ define('forum/groups/details', [
 				if (!confirm) {
 					return;
 				}
-						
+
 				socket.emit('groups.cover.remove', {
 					groupName: ajaxify.data.group.name
 				}, function (err) {

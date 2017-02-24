@@ -272,35 +272,34 @@ SocketUser.invite = function (socket, email, callback) {
 		return callback(new Error('[[error:forum-not-invite-only]]'));
 	}
 
-	var max = meta.config.maximumInvites;
+	async.waterfall([
+		function (next) {
+			user.isAdministrator(socket.uid, next);
+		},
+		function (isAdmin, next) {
+			if (registrationType === 'admin-invite-only' && !isAdmin) {
+				return next(new Error('[[error:no-privileges]]'));
+			}
 
-	user.isAdministrator(socket.uid, function (err, admin) {
-		if (err) {
-			return callback(err);
-		}
-		if (registrationType === 'admin-invite-only' && !admin) {
-			return callback(new Error('[[error:no-privileges]]'));
-		}
-		if (max) {
+			var max = parseInt(meta.config.maximumInvites, 10);
+			if (!max) {
+				return user.sendInvitationEmail(socket.uid, email, callback);
+			}
+
 			async.waterfall([
 				function (next) {
 					user.getInvitesNumber(socket.uid, next);
 				},
 				function (invites, next) {
-					if (!admin && invites > max) {
+					if (!isAdmin && invites >= max) {
 						return next(new Error('[[error:invite-maximum-met, ' + invites + ', ' + max + ']]'));
 					}
-					next();
-				},
-				function (next) {
+
 					user.sendInvitationEmail(socket.uid, email, next);
 				}
-			], callback);
-		} else {
-			user.sendInvitationEmail(socket.uid, email, callback);
+			], next);
 		}
-	});
-
+	], callback);
 };
 
 SocketUser.getUserByUID = function (socket, uid, callback) {

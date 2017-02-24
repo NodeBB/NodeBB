@@ -1,9 +1,9 @@
 {
 	"loading": "Lade Aussehen...",
 	"homepage": "Homepage",
-	"select-skin": "Wähle Aussehen",
+	"select-skin": "Aussehen auswählen",
 	"current-skin": "Aktuelles Aussehen",
 	"skin-updated": "Aussehen aktualisiert",
-	"applied-success": "%1 Aussehen wurde erfolgreich angewendet",
-	"revert-success": "Aussehen wieder auf Basisfarben zurückgestellt."
+	"applied-success": "Aussehen %1 wurde erfolgreich angewendet",
+	"revert-success": "Aussehen auf Basisfarben zurückgestellt."
 }

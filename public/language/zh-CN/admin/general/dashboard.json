@@ -2,6 +2,9 @@
 	"forum-traffic": "论坛流量",
 	"page-views": "PV 数量",
 	"unique-visitors": "单一访客",
+	"users": "用户",
+	"posts": "发帖",
+	"topics": "主题",
 	"page-views-last-month": "上个月 PV 数量",
 	"page-views-this-month": "本月 PV 数量",
 	"page-views-last-day": "过去24小时 PV 数量",
@@ -20,6 +23,11 @@
 	"prerelease-warning": "<p>正在使用<strong>测试版</strong> NodeBB。可能会出现意外的 Bug。<i class=\"fa fa-exclamation-triangle\"></i></p>",
 
 	"notices": "提醒",
+	"restart-not-required": "不需要重启",
+	"restart-required": "需要重启",
+	"search-plugin-installed": "已安装搜索插件",
+	"search-plugin-not-installed": "未安装搜索插件",
+	"search-plugin-tooltip": "在插件页面安装搜索插件来激活搜索功能",
 
 	"control-panel": "系统控制",
 	"reload": "重载",

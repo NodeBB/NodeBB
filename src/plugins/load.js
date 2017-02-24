@@ -41,6 +41,7 @@ module.exports = function (Plugins) {
 		Plugins.lessFiles.length = 0;
 		Plugins.clientScripts.length = 0;
 		Plugins.acpScripts.length = 0;
+		Plugins.soundpacks.length = 0;
 
 		async.waterfall([
 			async.apply(Plugins.getPluginPaths),
@@ -54,7 +55,10 @@ module.exports = function (Plugins) {
 					async.parallel([
 						async.apply(mapFiles, pluginData, 'css', 'cssFiles'),
 						async.apply(mapFiles, pluginData, 'less', 'lessFiles'),
-						async.apply(mapClientSideScripts, pluginData)
+						async.apply(mapClientSideScripts, pluginData),
+						async.apply(mapClientModules, pluginData),
+						async.apply(mapStaticDirectories, pluginData, pluginData.path),
+						async.apply(mapSoundpack, pluginData),
 					], next);
 				}, next);
 			}
@@ -90,6 +94,9 @@ module.exports = function (Plugins) {
 				},
 				function (next) {
 					mapClientModules(pluginData, next);
+				},
+				function (next) {
+					mapSoundpack(pluginData, next);
 				},
 			], function (err) {
 				if (err) {
@@ -249,6 +256,35 @@ module.exports = function (Plugins) {
 		callback();
 	}
 
+	function mapSoundpack(pluginData, callback) {
+		var soundpack = pluginData.soundpack;
+		if (!soundpack || !soundpack.dir || !soundpack.sounds) {
+			return callback();
+		}
+		soundpack.name = soundpack.name || pluginData.name;
+		soundpack.id = pluginData.id;
+		soundpack.dir = path.join(pluginData.path, soundpack.dir);
+		async.each(Object.keys(soundpack.sounds), function (key, next) {
+			file.exists(path.join(soundpack.dir, soundpack.sounds[key]), function (exists) {
+				if (!exists) {
+					delete soundpack.sounds[key];
+				}
+
+				next();
+			});
+		}, function (err) {
+			if (err) {
+				return callback(err);
+			}
+
+			if (Object.keys(soundpack.sounds).length) {
+				Plugins.soundpacks.push(soundpack);
+			}
+
+			callback();
+		});
+	}
+
 	function resolveModulePath(fullPath, relPath) {
 		/**
 		  * With npm@3, dependencies can become flattened, and appear at the root level.
@@ -298,6 +334,7 @@ module.exports = function (Plugins) {
 				pluginData.version = packageData.version;
 				pluginData.repository = packageData.repository;
 				pluginData.nbbpm = packageData.nbbpm;
+				pluginData.path = pluginPath;
 			} catch(err) {
 				var pluginDir = pluginPath.split(path.sep);
 				pluginDir = pluginDir[pluginDir.length - 1];

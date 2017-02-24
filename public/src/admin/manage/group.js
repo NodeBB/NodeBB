@@ -7,10 +7,10 @@ define('admin/manage/group', [
 	'admin/modules/colorpicker',
 	'translator'
 ], function (memberList, iconSelect, colorpicker, translator) {
-	var	Groups = {};
+	var Groups = {};
 
 	Groups.init = function () {
-		var	groupDetailsSearch = $('#group-details-search'),
+		var groupDetailsSearch = $('#group-details-search'),
 			groupDetailsSearchResults = $('#group-details-search-results'),
 			groupIcon = $('#group-icon'),
 			changeGroupUserTitle = $('#change-group-user-title'),
@@ -41,9 +41,12 @@ define('admin/manage/group', [
 				var searchText = groupDetailsSearch.val(),
 					foundUser;
 
-				socket.emit('admin.user.search', {query: searchText}, function (err, results) {
+				socket.emit('admin.user.search', {
+					query: searchText
+				}, function (err, results) {
 					if (!err && results && results.users.length > 0) {
-						var numResults = results.users.length, x;
+						var numResults = results.users.length,
+							x;
 						if (numResults > 20) {
 							numResults = 20;
 						}
@@ -53,7 +56,8 @@ define('admin/manage/group', [
 						for (x = 0; x < numResults; x++) {
 							foundUser = $('<li />');
 							foundUser
-								.attr({title: results.users[x].username,
+								.attr({
+									title: results.users[x].username,
 									'data-uid': results.users[x].uid,
 									'data-username': results.users[x].username,
 									'data-userslug': results.users[x].userslug,
@@ -96,7 +100,12 @@ define('admin/manage/group', [
 					"icon:text": userLabel.attr('data-usericon-text')
 				};
 
-				templates.parse('partials/groups/memberlist', 'members', {group: {isOwner: ajaxify.data.group.isOwner, members: [member]}}, function (html) {
+				templates.parse('admin/partials/groups/memberlist', 'members', {
+					group: {
+						isOwner: ajaxify.data.group.isOwner,
+						members: [member]
+					}
+				}, function (html) {
 					translator.translate(html, function (html) {
 						$('[component="groups/members"] tbody').prepend(html);
 					});
@@ -112,38 +121,38 @@ define('admin/manage/group', [
 				uid = userRow.attr('data-uid'),
 				action = btnEl.attr('data-action');
 
-			switch(action) {
-				case 'toggleOwnership':
-					socket.emit('groups.' + (isOwner ? 'rescind' : 'grant'), {
-						toUid: uid,
+			switch (action) {
+			case 'toggleOwnership':
+				socket.emit('groups.' + (isOwner ? 'rescind' : 'grant'), {
+					toUid: uid,
+					groupName: groupName
+				}, function (err) {
+					if (err) {
+						return app.alertError(err.message);
+					}
+					ownerFlagEl.toggleClass('invisible');
+				});
+				break;
+
+			case 'kick':
+				bootbox.confirm('[[admin/manage/groups:edit.confirm-remove-user]]', function (confirm) {
+					if (!confirm) {
+						return;
+					}
+					socket.emit('admin.groups.leave', {
+						uid: uid,
 						groupName: groupName
 					}, function (err) {
 						if (err) {
 							return app.alertError(err.message);
 						}
-						ownerFlagEl.toggleClass('invisible');
+						userRow.slideUp().remove();
 					});
-					break;
 
-				case 'kick':
-					bootbox.confirm('[[admin/manage/groups:edit.confirm-remove-user]]', function (confirm) {
-						if (!confirm) {
-							return;
-						}
-						socket.emit('admin.groups.leave', {
-							uid: uid,
-							groupName: groupName
-						}, function (err) {
-							if (err) {
-								return app.alertError(err.message);
-							}
-							userRow.slideUp().remove();
-						});
-
-					});
-					break;
-				default:
-					break;
+				});
+				break;
+			default:
+				break;
 			}
 		});
 
@@ -155,7 +164,7 @@ define('admin/manage/group', [
 			groupLabelPreview.css('background-color', '#' + hex);
 		});
 
-		$('.save').on('click', function () {
+		$('#save').on('click', function () {
 			socket.emit('admin.groups.update', {
 				groupName: groupName,
 				values: {

@@ -2,13 +2,18 @@
 	display: none;
 }
 
-@media (max-width: 1200px) {
-
-}
-
 @media (max-width: 991px) {
 	body {
 		height: 100%;
+	}
+	
+	#panel {
+		background-color: inherit;
+		min-height: 100%;
+	}
+
+	body, #panel, .slideout-menu {
+		-webkit-overflow-scrolling: touch;
 	}
 
 	.header {

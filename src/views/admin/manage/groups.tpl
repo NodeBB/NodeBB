@@ -1,47 +1,45 @@
-<div class="groups">
-	<div class="col-lg-9">
-		<div class="panel panel-default">
-			<div class="panel-body">
-				<table class="table table-striped groups-list">
-					<tr>
-						<th>[[admin/manage/groups:name]]</th>
-						<th>[[admin/manage/groups:description]]</th>
-					</tr>
-					<!-- BEGIN groups -->
-					<tr data-groupname="{groups.displayName}">
-						<td>
-							{groups.displayName}
-							<!-- IF groups.system -->
-							<span class="badge">[[admin/manage/groups:system]]</span>
-							<!-- ENDIF groups.system -->
-						</td>
-						<td>
-							<div class="btn-group pull-right">
-								<a href="{config.relative_path}/admin/manage/groups/{groups.nameEncoded}" class="btn btn-default btn-xs">
-									<i class="fa fa-edit"></i> [[admin/manage/groups:edit]]
-								</a>
-								<!-- IF !groups.system -->
-								<button class="btn btn-danger btn-xs" data-action="delete"><i class="fa fa-times"></i></button>
-								<!-- ENDIF !groups.system -->
-							</div>
-							<p class="description">{groups.description}</p>
-						</td>
-					</tr>
-					<!-- END groups -->
-				</table>
-				<!-- IMPORT partials/paginator.tpl -->
-			</div>
+<div class="row groups">
+	<div class="col-xs-12">
+		<div>
+			<input id="group-search" type="text" class="form-control" placeholder="[[admin/manage/groups:search-placeholder]]" />
 		</div>
-	</div>
 
-	<div class="col-lg-3 acp-sidebar">
-		<div class="panel panel-default">
-			<div class="panel-body">
-				<div>
-					<input id="group-search" type="text" class="form-control" placeholder="[[admin/manage/groups:search-placeholder]]" />
-				</div>
-			</div>
-		</div>
+		<table class="table table-striped groups-list">
+			<thead>
+				<tr>
+					<th>[[admin/manage/groups:name]]</th>
+					<th class="hidden-xs">[[admin/manage/groups:description]]</th>
+					<th></th>
+				</tr>
+			</thead>
+			<tbody>
+				<!-- BEGIN groups -->
+				<tr data-groupname="{groups.displayName}">
+					<td>
+						{groups.displayName}
+						<!-- IF groups.system -->
+						<span class="badge">[[admin/manage/groups:system]]</span>
+						<!-- ENDIF groups.system -->
+					</td>
+					<td class="hidden-xs">
+						<p class="description">{groups.description}</p>
+					</td>
+					<td>
+						<div class="btn-group ">
+							<a href="{config.relative_path}/admin/manage/groups/{groups.nameEncoded}" class="btn btn-default btn-xs">
+								<i class="fa fa-edit"></i> [[admin/manage/groups:edit]]
+							</a>
+							<!-- IF !groups.system -->
+							<button class="btn btn-danger btn-xs" data-action="delete"><i class="fa fa-times"></i></button>
+							<!-- ENDIF !groups.system -->
+						</div>
+					</td>
+				</tr>
+				<!-- END groups -->
+			</tbody>
+		</table>
+
+		<!-- IMPORT partials/paginator.tpl -->
 	</div>
 
 	<div class="modal fade" id="create-modal">
@@ -75,9 +73,7 @@
 			</div>
 		</div>
 	</div>
-
 </div>
-
 
 <button id="create" class="floating-button mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored">
     <i class="material-icons">add</i>

@@ -29,17 +29,26 @@ module.exports = function (Meta) {
 					property: 'og:site_name',
 					content: Meta.config.title || 'NodeBB'
 				}, {
-					name: 'keywords',
-					content: Meta.config.keywords || ''
-				}, {
 					name: 'msapplication-badge',
 					content: 'frequency=30; polling-uri=' + nconf.get('url') + '/sitemap.xml',
 					noEscape: true
-				}, {
-					name: 'msapplication-square150x150logo',
-					content: Meta.config['brand:logo'] || '',
-					noEscape: true
 				}];
+
+				if (Meta.config.keywords) {
+					defaultTags.push({
+						name: 'keywords',
+						content: Meta.config.keywords
+					});
+				}
+
+				if (Meta.config['brand:logo']) {
+					defaultTags.push({
+						name: 'msapplication-square150x150logo',
+						content: Meta.config['brand:logo'],
+						noEscape: true
+					});
+				}
+
 				plugins.fireHook('filter:meta.getMetaTags', defaultTags, next);
 			},
 			links: function (next) {
@@ -60,27 +69,27 @@ module.exports = function (Meta) {
 					}, {
 						rel: 'icon',
 						sizes: '36x36',
-						href: nconf.get('relative_path') + '/uploads/system/touchicon-36.png'
+						href: nconf.get('relative_path') + '/assets/uploads/system/touchicon-36.png'
 					}, {
 						rel: 'icon',
 						sizes: '48x48',
-						href: nconf.get('relative_path') + '/uploads/system/touchicon-48.png'
+						href: nconf.get('relative_path') + '/assets/uploads/system/touchicon-48.png'
 					}, {
 						rel: 'icon',
 						sizes: '72x72',
-						href: nconf.get('relative_path') + '/uploads/system/touchicon-72.png'
+						href: nconf.get('relative_path') + '/assets/uploads/system/touchicon-72.png'
 					}, {
 						rel: 'icon',
 						sizes: '96x96',
-						href: nconf.get('relative_path') + '/uploads/system/touchicon-96.png'
+						href: nconf.get('relative_path') + '/assets/uploads/system/touchicon-96.png'
 					}, {
 						rel: 'icon',
 						sizes: '144x144',
-						href: nconf.get('relative_path') + '/uploads/system/touchicon-144.png'
+						href: nconf.get('relative_path') + '/assets/uploads/system/touchicon-144.png'
 					}, {
 						rel: 'icon',
 						sizes: '192x192',
-						href: nconf.get('relative_path') + '/uploads/system/touchicon-192.png'
+						href: nconf.get('relative_path') + '/assets/uploads/system/touchicon-192.png'
 					});
 				}
 				plugins.fireHook('filter:meta.getLinkTags', defaultLinks, next);

@@ -5,6 +5,8 @@ var path = require('path');
 var async = require('async');
 var nconf = require('nconf');
 var winston = require('winston');
+
+var meta = require('../../meta');
 var file = require('../../file');
 var image = require('../../image');
 var plugins = require('../../plugins');
@@ -70,7 +72,7 @@ uploadsController.uploadTouchIcon = function (req, res, next) {
 				async.series([
 					async.apply(file.saveFileToLocal, 'touchicon-' + size + '.png', 'system', uploadedFile.path),
 					async.apply(image.resizeImage, {
-						path: path.join(nconf.get('base_dir'), nconf.get('upload_path'), 'system', 'touchicon-' + size + '.png'),
+						path: path.join(nconf.get('upload_path'), 'system', 'touchicon-' + size + '.png'),
 						extension: 'png',
 						width: size,
 						height: size
@@ -105,16 +107,7 @@ uploadsController.uploadSound = function (req, res, next) {
 			return next(err);
 		}
 
-		var	soundsPath = path.join(__dirname, '../../../public/sounds'),
-			filePath = path.join(__dirname, '../../../public/uploads/sounds', uploadedFile.name);
-
-		if (process.platform === 'win32') {
-			fs.link(filePath, path.join(soundsPath, path.basename(filePath)));
-		} else {
-			fs.symlink(filePath, path.join(soundsPath, path.basename(filePath)), 'file');
-		}
-
-		fs.unlink(uploadedFile.path, function (err) {
+		meta.sounds.build(function (err) {
 			if (err) {
 				return next(err);
 			}

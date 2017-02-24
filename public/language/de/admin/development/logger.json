@@ -1,12 +1,12 @@
 {
-	"logger-settings": "Logger Settings",
-	"description": "By enabling the check boxes, you will receive logs to your terminal. If you specify a path, logs will then be saved to a file instead. HTTP logging is useful for collecting statistics about who, when, and what people access on your forum. In addition to logging HTTP requests, we can also log socket.io events. Socket.io logging, in combination with redis-cli monitor, can be very helpful for learning NodeBB's internals.",
-	"explanation": "Simply check/uncheck the logging settings to enable or disable logging on the fly. No restart needed.",
-	"enable-http": "Enable HTTP logging",
-	"enable-socket": "Enable socket.io event logging",
-	"file-path": "Path to log file",
-	"file-path-placeholder": "/path/to/log/file.log ::: leave blank to log to your terminal",
+	"logger-settings": "Protokollierungseinstellungen",
+	"description": "Durch das markieren der Auswahlkästchen werden sie Protokolle in ihrem Terminal finden. Wenn sie einen Dateipfad angeben, werden die Protokolle stattdessen in einer Datei gespeichert. HTTP-Logging ist nützlich um Statistiken zu sammeln darüber, wer, wann was in ihrem Forum angesehen hat. Zusätzlich kann NodeBB auch Socket.io Events Protokollieren. In Kombination mit dem redis-cli Monitor kann dies ziemlich hilfreich sein um mehr über die Interne Struktur von NodeBB zu lernen.",
+	"explanation": "Markiere die Protokollierungseinstellungen nebenher um die Protokollierung zu (de-)aktivieren. Ein Neustart wird nicht benötigt.",
+	"enable-http": "HTTP-Protokollierung aktivieren",
+	"enable-socket": "Socket.io-Event-Protokollierung aktivieren",
+	"file-path": "Dateipfad zur Protokolldatei",
+	"file-path-placeholder": "/pfad/zur/protokoll/datei.log ::: Feld leer lassen um im Terminal zu protokollieren",
 
-	"control-panel": "Logger Control Panel",
-	"update-settings": "Update Logger Settings"
+	"control-panel": "Protokollsteuerung",
+	"update-settings": "Protokollierungseinstellungen aktualisieren"
 }

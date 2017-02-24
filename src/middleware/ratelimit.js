@@ -3,7 +3,7 @@
 'use strict';
 var winston = require('winston');
 
-var ratelimit = {};
+var ratelimit = module.exports;
 
 var allowedCalls = 100;
 var timeframe = 10000;
@@ -31,5 +31,3 @@ ratelimit.isFlooding = function (socket) {
 	socket.lastCallTime = now;
 	return false;
 };
-
-module.exports = ratelimit;

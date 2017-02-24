@@ -58,11 +58,24 @@ define('forum/category', [
 			});
 		});
 
+		handleScrollToTopicIndex();
+
 		handleIgnoreWatch(cid);
 
 		$(window).trigger('action:topics.loaded', {topics: ajaxify.data.topics});
 		$(window).trigger('action:category.loaded', {cid: ajaxify.data.cid});
 	};
+
+	function handleScrollToTopicIndex() {
+		var parts = window.location.pathname.split('/');
+		var topicIndex = parts[parts.length - 1];
+		if (topicIndex && utils.isNumber(topicIndex)) {
+			topicIndex = Math.max(0, parseInt(topicIndex, 10) - 1);
+			if (topicIndex && window.location.search.indexOf('page=') === -1) {
+				navigator.scrollToElement($('[component="category/topic"][data-index="' + topicIndex + '"]'), true, 0);
+			}
+		}
+	}
 
 	function handleIgnoreWatch(cid) {
 		$('[component="category/watching"], [component="category/ignoring"]').on('click', function () {
@@ -104,14 +117,10 @@ define('forum/category', [
 	};
 
 	$(window).on('action:ajaxify.contentLoaded', function (ev, data) {
-		if (ajaxify.data.template.category) {
-			var cid = ajaxify.data.cid;
-			if (!cid) {
-				return;
-			}
+		if (ajaxify.data.template.category && ajaxify.data.cid) {
 
-			var bookmarkIndex = localStorage.getItem('category:' + cid + ':bookmark');
-			var clickedIndex = localStorage.getItem('category:' + cid + ':bookmark:clicked');
+			var bookmarkIndex = localStorage.getItem('category:' + ajaxify.data.cid + ':bookmark');
+			var clickedIndex = localStorage.getItem('category:' + ajaxify.data.cid + ':bookmark:clicked');
 
 			bookmarkIndex = Math.max(0, parseInt(bookmarkIndex, 10) || 0);
 			clickedIndex = Math.max(0, parseInt(clickedIndex, 10) || 0);

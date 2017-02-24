@@ -29,6 +29,12 @@ describe('Controllers', function () {
 			},
 			user: function (next) {
 				user.create({username: 'foo', password: 'barbar'}, next);
+			},
+			navigation: function (next) {
+				var navigation = require('../src/navigation/admin');
+				var data = require('../install/data/navigation.json');
+
+				navigation.save(data, next);
 			}
 		}, function (err, results) {
 			if (err) {
@@ -281,6 +287,15 @@ describe('Controllers', function () {
 
 	it('should load user topics rss feed', function (done) {
 		request(nconf.get('url') + '/user/foo/topics.rss', function (err, res, body) {
+			assert.ifError(err);
+			assert.equal(res.statusCode, 200);
+			assert(body);
+			done();
+		});
+	});
+
+	it('should load tag rss feed', function (done) {
+		request(nconf.get('url') + '/tags/nodebb.rss', function (err, res, body) {
 			assert.ifError(err);
 			assert.equal(res.statusCode, 200);
 			assert(body);

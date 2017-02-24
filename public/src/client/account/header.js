@@ -3,10 +3,10 @@
 
 define('forum/account/header', [
 	'coverPhoto',
-	'uploader',
+	'pictureCropper',
 	'components',
 	'translator'
-], function (coverPhoto, uploader, components, translator) {
+], function (coverPhoto, pictureCropper, components, translator) {
 	var AccountHeader = {};
 	var isAdminOrSelfOrGlobalMod;
 
@@ -42,7 +42,9 @@ define('forum/account/header', [
 		});
 
 		components.get('account/new-chat').on('click', function () {
-			app.newChat(ajaxify.data.uid);
+			app.newChat(ajaxify.data.uid, function () {
+				components.get('account/chat').parent().removeClass('hidden');
+			});
 		});
 
 
@@ -78,13 +80,17 @@ define('forum/account/header', [
 				}, callback);
 			},
 			function () {
-				uploader.show({
+				pictureCropper.show({
 					title: '[[user:upload_cover_picture]]',
-					route: config.relative_path + '/api/user/' + ajaxify.data.userslug + '/uploadcover',
-					params: {uid: ajaxify.data.uid },
+					socketMethod: 'user.updateCover',
+					aspectRatio: NaN,
+					allowSkippingCrop: true,
+					restrictImageDimension: false,
+					paramName: 'uid',
+					paramValue: ajaxify.data.theirid,
 					accept: '.png,.jpg,.bmp'
 				}, function (imageUrlOnServer) {
-					components.get('account/cover').css('background-image', 'url(' + imageUrlOnServer + '?v=' + Date.now() + ')');
+					components.get('account/cover').css('background-image', 'url(' + imageUrlOnServer + '?' + config['cache-buster'] + ')');
 				});
 			},
 			removeCover
@@ -127,7 +133,11 @@ define('forum/account/header', [
 							}, {});
 							var until = parseInt(formData.length, 10) ? (Date.now() + formData.length * 1000 * 60 * 60 * (parseInt(formData.unit, 10) ? 24 : 1)) : 0;
 
-							socket.emit('user.banUsers', { uids: [ajaxify.data.theirid], until: until, reason: formData.reason || '' }, function (err) {
+							socket.emit('user.banUsers', {
+								uids: [ajaxify.data.theirid],
+								until: until,
+								reason: formData.reason || ''
+							}, function (err) {
 								if (err) {
 									return app.alertError(err.message);
 								}
@@ -173,7 +183,7 @@ define('forum/account/header', [
 				if (!confirm) {
 					return;
 				}
-						
+
 				socket.emit('user.removeCover', {
 					uid: ajaxify.data.uid
 				}, function (err) {
