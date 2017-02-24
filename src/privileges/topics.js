@@ -68,7 +68,7 @@ module.exports = function (privileges) {
 			},
 			function (cid, next) {
 				privileges.categories.can(privilege, cid, uid, next);
-			}
+			},
 		], callback);
 	};
 

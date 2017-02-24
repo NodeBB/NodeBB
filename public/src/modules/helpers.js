@@ -1,6 +1,6 @@
-(function (exports) {
-	'use strict';
+'use strict';
 
+(function (exports) {
 	/* globals define, utils, config */
 
 	// export the class if we are in a Node-like system.
