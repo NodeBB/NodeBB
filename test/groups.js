@@ -433,7 +433,6 @@ describe('Groups', function () {
 		var socketGroups = require('../src/socket.io/groups');
 		var meta = require('../src/meta');
 
-
 		it('should error if data is null', function (done) {
 			socketGroups.before({uid: 0}, 'groups.join', null, function (err) {
 				assert.equal(err.message, '[[error:invalid-data]]');
@@ -623,6 +622,99 @@ describe('Groups', function () {
 			});
 		});
 
+		it('should issue invite to user', function (done) {
+			User.create({username: 'invite1'}, function (err, uid) {
+				assert.ifError(err);
+				socketGroups.issueInvite({uid: adminUid}, {groupName: 'PrivateCanJoin', toUid: uid}, function (err) {
+					assert.ifError(err);
+					Groups.isInvited(uid, 'PrivateCanJoin', function (err, isInvited) {
+						assert.ifError(err);
+						assert(isInvited);
+						done();
+					});
+				});
+			});
+		});
+
+		it('should fail with invalid data', function (done) {
+			socketGroups.issueMassInvite({uid: adminUid}, {groupName: 'PrivateCanJoin', usernames: null}, function (err) {
+				assert.equal(err.message, '[[error:invalid-data]]');
+				done();
+			});
+		});
+
+		it('should issue mass invite to users', function (done) {
+			User.create({username: 'invite2'}, function (err, uid) {
+				assert.ifError(err);
+				socketGroups.issueMassInvite({uid: adminUid}, {groupName: 'PrivateCanJoin', usernames: 'invite1, invite2'}, function (err) {
+					assert.ifError(err);
+					Groups.isInvited(uid, 'PrivateCanJoin', function (err, isInvited) {
+						assert.ifError(err);
+						assert(isInvited);
+						done();
+					});
+				});
+			});
+		});
+
+		it('should rescind invite', function (done) {
+			User.create({username: 'invite3'}, function (err, uid) {
+				assert.ifError(err);
+				socketGroups.issueInvite({uid: adminUid}, {groupName: 'PrivateCanJoin', toUid: uid}, function (err) {
+					assert.ifError(err);
+					socketGroups.rescindInvite({uid: adminUid}, {groupName: 'PrivateCanJoin', toUid: uid}, function (err) {
+						assert.ifError(err);
+						Groups.isInvited(uid, 'PrivateCanJoin', function (err, isInvited) {
+							assert.ifError(err);
+							assert(!isInvited);
+							done();
+						});
+					});
+				});
+			});
+		});
+
+		it('should error if user is not invited', function (done) {
+			socketGroups.acceptInvite({uid: adminUid}, {groupName: 'PrivateCanJoin'}, function (err) {
+				assert.equal(err.message, '[[error:not-invited]]');
+				done();
+			});
+		});
+
+		it('should accept invite', function (done) {
+			User.create({username: 'invite4'}, function (err, uid) {
+				assert.ifError(err);
+				socketGroups.issueInvite({uid: adminUid}, {groupName: 'PrivateCanJoin', toUid: uid}, function (err) {
+					assert.ifError(err);
+					socketGroups.acceptInvite({uid: uid}, {groupName: 'PrivateCanJoin'}, function (err) {
+						assert.ifError(err);
+						Groups.isMember(uid, 'PrivateCanJoin', function (err, isMember) {
+							assert.ifError(err);
+							assert(isMember);
+							done();
+						});
+					});
+				});
+			});
+		});
+
+		it('should reject invite', function (done) {
+			User.create({username: 'invite5'}, function (err, uid) {
+				assert.ifError(err);
+				socketGroups.issueInvite({uid: adminUid}, {groupName: 'PrivateCanJoin', toUid: uid}, function (err) {
+					assert.ifError(err);
+					socketGroups.rejectInvite({uid: uid}, {groupName: 'PrivateCanJoin'}, function (err) {
+						assert.ifError(err);
+						Groups.isInvited(uid, 'PrivateCanJoin', function (err, isInvited) {
+							assert.ifError(err);
+							assert(!isInvited);
+							done();
+						});
+					});
+				});
+			});
+		});
+
 		it('should grant ownership to user', function (done) {
 			socketGroups.grant({uid: adminUid}, {groupName: 'PrivateCanJoin', toUid: testUid}, function (err) {
 				assert.ifError(err);
@@ -645,6 +737,13 @@ describe('Groups', function () {
 			});
 		});
 
+		it('should fail to kick user with invalid data', function (done) {
+			socketGroups.kick({uid: adminUid}, {groupName: 'PrivateCanJoin', uid: adminUid}, function (err) {
+				assert.equal(err.message, '[[error:cant-kick-self]]');
+				done();
+			});
+		});
+
 		it('should kick user from group', function (done) {
 			socketGroups.kick({uid: adminUid}, {groupName: 'PrivateCanJoin', uid: testUid}, function (err) {
 				assert.ifError(err);
@@ -656,8 +755,130 @@ describe('Groups', function () {
 			});
 		});
 
+		it('should fail to create group with invalid data', function (done) {
+			socketGroups.create({uid: 0}, {}, function (err) {
+				assert.equal(err.message, '[[error:no-privileges]]');
+				done();
+			});
+		});
+
+		it('should fail to create group if group creation is disabled', function (done) {
+			var oldValue = meta.config.allowGroupCreation;
+			meta.config.allowGroupCreation = 0;
+			socketGroups.create({uid: 1}, {}, function (err) {
+				assert.equal(err.message, '[[error:group-creation-disabled]]');
+				meta.config.allowGroupCreation = oldValue;
+				done();
+			});
+		});
+
+		it('should fail to create group if name is privilege group', function (done) {
+			var oldValue = meta.config.allowGroupCreation;
+			meta.config.allowGroupCreation = 1;
+			socketGroups.create({uid: 1}, {name: 'cid:1:privileges:groups:find'}, function (err) {
+				assert.equal(err.message, '[[error:invalid-group-name]]');
+				meta.config.allowGroupCreation = oldValue;
+				done();
+			});
+		});
 
 
+		it('should create/update group', function (done) {
+			var oldValue = meta.config.allowGroupCreation;
+			meta.config.allowGroupCreation = 1;
+			socketGroups.create({uid: adminUid}, {name: 'createupdategroup'}, function (err, groupData) {
+				meta.config.allowGroupCreation = oldValue;
+				assert.ifError(err);
+				assert(groupData);
+				var data = {
+					groupName: 'createupdategroup',
+					values: {
+						name: 'renamedupdategroup',
+						description: 'cat group',
+						userTitle: 'cats',
+						userTitleEnabled: 1,
+						disableJoinRequests: 1,
+						hidden: 1,
+						private: 0
+					}
+				};
+				socketGroups.update({uid: adminUid}, data, function (err) {
+					assert.ifError(err);
+					Groups.get('renamedupdategroup', {}, function (err, groupData) {
+						assert.ifError(err);
+						assert.equal(groupData.name, 'renamedupdategroup');
+						assert.equal(groupData.userTitle, 'cats');
+						assert.equal(groupData.description, 'cat group');
+						assert.equal(groupData.hidden, true);
+						assert.equal(groupData.disableJoinRequests, true);
+						assert.equal(groupData.private, false);
+						done();
+					});
+				});
+			});
+		});
+
+		it('should delete group', function (done) {
+			socketGroups.delete({uid: adminUid}, {groupName: 'renamedupdategroup'}, function (err) {
+				assert.ifError(err);
+				Groups.exists('renamedupdategroup', function (err, exists) {
+					assert.ifError(err);
+					assert(!exists);
+					done();
+				});
+			});
+		});
+
+		it('should fail to delete group if name is special', function (done) {
+			socketGroups.delete({uid: adminUid}, {groupName: 'administrators'}, function (err) {
+				assert.equal(err.message, '[[error:not-allowed]]');
+				done();
+			});
+		});
+
+		it('should fail to delete group if name is special', function (done) {
+			socketGroups.delete({uid: adminUid}, {groupName: 'registered-users'}, function (err) {
+				assert.equal(err.message, '[[error:not-allowed]]');
+				done();
+			});
+		});
+
+		it('should fail to delete group if name is special', function (done) {
+			socketGroups.delete({uid: adminUid}, {groupName: 'Global Moderators'}, function (err) {
+				assert.equal(err.message, '[[error:not-allowed]]');
+				done();
+			});
+		});
+
+		it('should fail to load more groups with invalid data', function (done) {
+			socketGroups.loadMore({uid: adminUid}, {}, function (err) {
+				assert.equal(err.message, '[[error:invalid-data]]');
+				done();
+			});
+		});
+
+		it('should load more groups', function (done) {
+			socketGroups.loadMore({uid: adminUid}, {after: 0, sort: 'count'}, function (err, data) {
+				assert.ifError(err);
+				assert(Array.isArray(data.groups));
+				done();
+			});
+		});
+
+		it('should fail to load more members with invalid data', function (done) {
+			socketGroups.loadMoreMembers({uid: adminUid}, {}, function (err) {
+				assert.equal(err.message, '[[error:invalid-data]]');
+				done();
+			});
+		});
+
+		it('should load more members', function (done) {
+			socketGroups.loadMoreMembers({uid: adminUid}, {after: 0, groupName: 'PrivateCanJoin'}, function (err, data) {
+				assert.ifError(err);
+				assert(Array.isArray(data.users));
+				done();
+			});
+		});
 	});
 
 	describe('admin socket methods', function () {
@@ -892,6 +1113,13 @@ describe('Groups', function () {
 						done();
 					});
 				});
+			});
+		});
+
+		it('should fail to remove cover if not logged in', function (done) {
+			socketGroups.cover.remove({uid: 0}, {groupName: 'Test'}, function (err) {
+				assert.equal(err.message, '[[error:no-privileges]]');
+				done();
 			});
 		});
 

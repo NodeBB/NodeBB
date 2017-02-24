@@ -141,22 +141,25 @@ SocketGroups.issueMassInvite = isOwner(function (socket, data, callback) {
 	if (!data || !data.usernames || !data.groupName) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
-	var usernames = data.usernames.split(',');
+	var usernames = String(data.usernames).split(',');
 	usernames = usernames.map(function (username) {
 		return username && username.trim();
 	});
-	user.getUidsByUsernames(usernames, function (err, uids) {
-		if (err) {
-			return callback(err);
-		}
-		uids = uids.filter(function (uid) {
-			return !!uid && parseInt(uid, 10);
-		});
 
-		async.eachSeries(uids, function (uid, next) {
-			groups.invite(data.groupName, uid, next);
-		}, callback);
-	});
+	async.waterfall([
+		function (next) {
+			user.getUidsByUsernames(usernames, next);
+		},
+		function (uids, next) {
+			uids = uids.filter(function (uid) {
+				return !!uid && parseInt(uid, 10);
+			});
+
+			async.eachSeries(uids, function (uid, next) {
+				groups.invite(data.groupName, uid, next);
+			}, next);
+		}
+	], callback);
 });
 
 SocketGroups.rescindInvite = isOwner(function (socket, data, callback) {
@@ -181,13 +184,14 @@ SocketGroups.kick = isOwner(function (socket, data, callback) {
 		return callback(new Error('[[error:cant-kick-self]]'));
 	}
 
-	groups.ownership.isOwner(data.uid, data.groupName, function (err, isOwner) {
-		if (err) {
-			return callback(err);
+	async.waterfall([
+		function (next) {
+			groups.ownership.isOwner(data.uid, data.groupName, next);
+		},
+		function (isOwner, next) {
+			groups.kick(data.uid, data.groupName, isOwner, next);
 		}
-		groups.kick(data.uid, data.groupName, isOwner, callback);
-	});
-
+	], callback);
 });
 
 SocketGroups.create = function (socket, data, callback) {
@@ -199,32 +203,19 @@ SocketGroups.create = function (socket, data, callback) {
 		return callback(new Error('[[error:invalid-group-name]]'));
 	}
 
-
 	data.ownerUid = socket.uid;
 	groups.create(data, callback);
 };
 
-SocketGroups.delete = function (socket, data, callback) {
+SocketGroups.delete = isOwner(function (socket, data, callback) {
 	if (data.groupName === 'administrators' ||
 		data.groupName === 'registered-users' ||
 		data.groupName === 'Global Moderators') {
 		return callback(new Error('[[error:not-allowed]]'));
 	}
 
-	async.parallel({
-		isOwner: async.apply(groups.ownership.isOwner, socket.uid, data.groupName),
-		isAdmin: async.apply(user.isAdministrator, socket.uid)
-	}, function (err, checks) {
-		if (err) {
-			return callback(err);
-		}
-		if (!checks.isOwner && !checks.isAdmin) {
-			return callback(new Error('[[error:no-privileges]]'));
-		}
-
-		groups.destroy(data.groupName, callback);
-	});
-};
+	groups.destroy(data.groupName, callback);
+});
 
 SocketGroups.search = function (socket, data, callback) {
 	data.options = data.options || {};
@@ -242,7 +233,7 @@ SocketGroups.search = function (socket, data, callback) {
 
 SocketGroups.loadMore = function (socket, data, callback) {
 	if (!data.sort  || !utils.isNumber(data.after) || parseInt(data.after, 10) < 0) {
-		return callback();
+		return callback(new Error('[[error:invalid-data]]'));
 	}
 
 	var groupsPerPage = 9;
@@ -261,13 +252,17 @@ SocketGroups.loadMoreMembers = function (socket, data, callback) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
 	data.after = parseInt(data.after, 10);
-	user.getUsersFromSet('group:' + data.groupName + ':members', socket.uid, data.after, data.after + 9, function (err, users) {
-		if (err) {
-			return callback(err);
+	async.waterfall([
+		function (next) {
+			user.getUsersFromSet('group:' + data.groupName + ':members', socket.uid, data.after, data.after + 9, next);
+		},
+		function (users, next) {
+			next(null, {
+				users: users,
+				nextStart: data.after + 10
+			});
 		}
-
-		callback(null, {users: users, nextStart: data.after + 10});
-	});
+	], callback);
 };
 
 SocketGroups.cover = {};
