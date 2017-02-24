@@ -5,6 +5,8 @@ var path = require('path');
 var async = require('async');
 var nconf = require('nconf');
 var winston = require('winston');
+
+var meta = require('../../meta');
 var file = require('../../file');
 var image = require('../../image');
 var plugins = require('../../plugins');
@@ -105,12 +107,7 @@ uploadsController.uploadSound = function (req, res, next) {
 			return next(err);
 		}
 
-		var	soundsPath = path.join(__dirname, '../../../build/public/sounds');
-		var filePath = path.join(nconf.get('upload_path'), 'sounds', uploadedFile.name);
-
-		file.link(filePath, path.join(soundsPath, path.basename(filePath)));
-
-		fs.unlink(uploadedFile.path, function (err) {
+		meta.sounds.build(function (err) {
 			if (err) {
 				return next(err);
 			}

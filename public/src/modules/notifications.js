@@ -1,7 +1,7 @@
 'use strict';
 
 
-define('notifications', ['sounds', 'translator', 'components'], function (sound, translator, components) {
+define('notifications', ['sounds', 'translator', 'components'], function (sounds, translator, components) {
 	var Notifications = {};
 
 	var unreadNotifs = {};
@@ -104,7 +104,7 @@ define('notifications', ['sounds', 'translator', 'components'], function (sound,
 			});
 
 			if (!unreadNotifs[notifData.nid]) {
-				sound.play('notification');
+				sounds.play('notification', notifData.nid);
 				unreadNotifs[notifData.nid] = true;
 			}
 		});

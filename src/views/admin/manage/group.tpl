@@ -39,7 +39,7 @@
 				<fieldset>
 					<div class="checkbox">
 						<label>
-							<input id="group-private" name="private" type="checkbox"<!-- IF group.private --> checked<!-- ENDIF group.private -->> 
+							<input id="group-private" name="private" type="checkbox"<!-- IF group.private --> checked<!-- ENDIF group.private -->>
 							<strong>[[groups:details.private]]</strong>
 							<p class="help-block">
 								[[admin/manage/groups:edit.private-details]]
@@ -56,7 +56,7 @@
 				<fieldset>
 					<div class="checkbox">
 						<label>
-							<input id="group-disableJoinRequests" name="disableJoinRequests" type="checkbox"<!-- IF group.disableJoinRequests --> checked<!-- ENDIF group.disableJoinRequests -->> 
+							<input id="group-disableJoinRequests" name="disableJoinRequests" type="checkbox"<!-- IF group.disableJoinRequests --> checked<!-- ENDIF group.disableJoinRequests -->>
 							<strong>[[admin/manage/groups:edit.disable-requests]]</strong>
 						</label>
 					</div>
@@ -65,7 +65,7 @@
 				<fieldset>
 					<div class="checkbox">
 						<label>
-							<input id="group-hidden" name="hidden" type="checkbox"<!-- IF group.hidden --> checked<!-- ENDIF group.hidden -->> 
+							<input id="group-hidden" name="hidden" type="checkbox"<!-- IF group.hidden --> checked<!-- ENDIF group.hidden -->>
 							<strong>[[admin/manage/groups:edit.hidden]]</strong>
 							<p class="help-block">
 								[[admin/manage/groups:edit.hidden-details]]
@@ -87,35 +87,18 @@
 							<h3 class="panel-title"><i class="fa fa-users"></i> [[admin/manage/groups:edit.members]]</h3>
 						</div>
 						<div class="panel-body">
-							<!-- IMPORT partials/groups/memberlist.tpl -->
+							<!-- IMPORT admin/partials/groups/memberlist.tpl -->
 						</div>
 					</div>
-
-
 				</fieldset>
 			</div>
 		</div>
-
-		<div class="col-md-3 options acp-sidebar">
-			<div class="panel panel-default">
-				<div class="panel-heading">[[admin/manage/groups:control-panel]]</div>
-				<div class="panel-body">
-					<div class="btn-group btn-group-justified">
-						<div class="btn-group">
-							<button class="btn btn-primary save">[[global:save]]</button>
-						</div>
-						<div class="btn-group">
-							<button class="btn btn-default revert">
-								[[admin/manage/groups:revert]]
-							</button>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-
 	</form>
 </div>
+
+<button id="save" class="floating-button mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect mdl-button--colored">
+    <i class="material-icons">save</i>
+</button>
 
 <div id="icons" style="display:none;">
 	<div class="icon-container">
@@ -125,4 +108,3 @@
 		</div>
 	</div>
 </div>
-

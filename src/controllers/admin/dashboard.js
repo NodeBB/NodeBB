@@ -30,6 +30,14 @@ dashboardController.get = function (req, res, next) {
 					link: '/admin/extend/plugins',
 				},
 			];
+
+			if (global.env !== 'production') {
+				notices.push({
+					done: false,
+					notDoneText: '[[admin/general/dashboard:running-in-development]]',
+				});
+			}
+
 			plugins.fireHook('filter:admin.notices', notices, next);
 		},
 	}, function (err, results) {

@@ -29,6 +29,12 @@ describe('Controllers', function () {
 			user: function (next) {
 				user.create({ username: 'foo', password: 'barbar' }, next);
 			},
+			navigation: function (next) {
+				var navigation = require('../src/navigation/admin');
+				var data = require('../install/data/navigation.json');
+
+				navigation.save(data, next);
+			},
 		}, function (err, results) {
 			if (err) {
 				return done(err);

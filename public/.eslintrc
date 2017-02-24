@@ -12,11 +12,47 @@
 		"bootbox": true,
 		"templates": true,
 		"Visibility": true,
-		"Tinycon": true
+		"Tinycon": true,
+		"Promise": true
 	},
 	"env": {
 		"jquery": true,
 		"amd": true,
-		"browser": true
+		"browser": true,
+		"es6": false
+	},
+	"rules": {
+		"no-dupe-class-members": "off",
+		"no-var": "off",
+		"object-shorthand": "off",
+		"prefer-arrow-callback": "off",
+		"prefer-spread": "off",
+		"prefer-reflect": "off",
+		"prefer-template": "off"
+	},
+	"parserOptions": {
+		"ecmaVersion": 5,
+		"ecmaFeatures": {
+			"arrowFunctions": false,
+			"classes": false,
+			"defaultParams": false,
+			"destructuring": false,
+			"experimentalObjectRestSpread": false,
+			"blockBindings": false,
+			"forOf": false,
+			"generators": false,
+			"globalReturn": false,
+			"jsx": false,
+			"modules": false,
+			"objectLiteralComputedProperties": false,
+			"objectLiteralDuplicateProperties": false,
+			"objectLiteralShorthandMethods": false,
+			"objectLiteralShorthandProperties": false,
+			"impliedStrict": false,
+			"restParams": false,
+			"spread": false,
+			"superInFunctions": false,
+			"templateStrings": false
+		}
 	}
 }

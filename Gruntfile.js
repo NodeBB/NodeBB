@@ -4,14 +4,16 @@ var fork = require('child_process').fork;
 var env = process.env;
 var worker;
 var updateWorker;
+var initWorker;
 var incomplete = [];
 var running = 0;
 
-
 module.exports = function (grunt) {
 	var args = [];
+	var initArgs = ['--build'];
 	if (!grunt.option('verbose')) {
 		args.push('--log-level=info');
+		initArgs.push('--log-level=info');
 	}
 
 	function update(action, filepath, target) {
@@ -49,7 +51,9 @@ module.exports = function (grunt) {
 		updateWorker.on('exit', function () {
 			running -= 1;
 			if (running === 0) {
-				worker = fork('app.js', args, { env: env });
+				worker = fork('app.js', args, {
+					env: env,
+				});
 				worker.on('message', function () {
 					if (incomplete.length) {
 						incomplete = [];
@@ -131,15 +135,24 @@ module.exports = function (grunt) {
 
 	grunt.loadNpmTasks('grunt-contrib-watch');
 
-	if (grunt.option('skip')) {
-		grunt.registerTask('default', ['watch:serverUpdated']);
-	} else {
-		grunt.registerTask('default', ['watch']);
-	}
-
-
+	grunt.registerTask('default', ['watch']);
 	env.NODE_ENV = 'development';
 
-	worker = fork('app.js', args, { env: env });
+	if (grunt.option('skip')) {
+		worker = fork('app.js', args, {
+			env: env,
+		});
+	} else {
+		initWorker = fork('app.js', initArgs, {
+			env: env,
+		});
+
+		initWorker.on('exit', function () {
+			worker = fork('app.js', args, {
+				env: env,
+			});
+		});
+	}
+
 	grunt.event.on('watch', update);
 };

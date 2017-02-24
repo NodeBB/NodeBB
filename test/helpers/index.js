@@ -40,6 +40,7 @@ helpers.loginUser = function (username, password, callback) {
 				this.open = function () {
 					stdOpen.apply(this, arguments);
 					this.setRequestHeader('Cookie', res.headers['set-cookie'][0].split(';')[0]);
+					this.setRequestHeader('Origin', nconf.get('url'));
 				};
 			};
 
@@ -74,6 +75,7 @@ helpers.initSocketIO = function (callback) {
 			this.open = function () {
 				stdOpen.apply(this, arguments);
 				this.setRequestHeader('Cookie', res.headers['set-cookie'][0].split(';')[0]);
+				this.setRequestHeader('Origin', nconf.get('url'));
 			};
 		};
 

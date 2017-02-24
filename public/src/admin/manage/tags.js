@@ -61,12 +61,16 @@ define('admin/manage/tags', [
 			}
 
 			timeoutId = setTimeout(function () {
-				socket.emit('topics.searchAndLoadTags', { query: $('#tag-search').val() }, function (err, result) {
+				socket.emit('topics.searchAndLoadTags', {
+					query: $('#tag-search').val(),
+				}, function (err, result) {
 					if (err) {
 						return app.alertError(err.message);
 					}
 
-					app.parseAndTranslate('admin/manage/tags', 'tags', { tags: result.tags }, function (html) {
+					app.parseAndTranslate('admin/manage/tags', 'tags', {
+						tags: result.tags,
+					}, function (html) {
 						$('.tag-list').html(html);
 						utils.makeNumbersHumanReadable(html.find('.human-readable-number'));
 						timeoutId = 0;
@@ -86,7 +90,7 @@ define('admin/manage/tags', [
 			}
 
 			var firstTag = $(tagsToModify[0]);
-			var title = tagsToModify.length > 1 ? '[[admin/manage/tags:alerts.editing-multiple]]' : '[[admin/manage/tags:alerts.editing-x, ' + firstTag.find('.tag-item').text() + ']]';
+			var title = tagsToModify.length > 1 ? '[[admin/manage/tags:alerts.editing-multiple]]' : '[[admin/manage/tags:alerts.editing-x, ' + firstTag.find('.tag-item').attr('data-tag') + ']]';
 
 			var modal = bootbox.dialog({
 				title: title,
@@ -133,7 +137,9 @@ define('admin/manage/tags', [
 				tagsToDelete.each(function (index, el) {
 					tags.push($(el).attr('data-tag'));
 				});
-				socket.emit('admin.tags.deleteTags', { tags: tags }, function (err) {
+				socket.emit('admin.tags.deleteTags', {
+					tags: tags,
+				}, function (err) {
 					if (err) {
 						return app.alertError(err.message);
 					}

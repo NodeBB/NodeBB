@@ -66,18 +66,18 @@ describe('Upload Controllers', function () {
 		});
 
 		it('should upload a profile picture', function (done) {
-			helpers.uploadFile(nconf.get('url') + '/api/user/regular/uploadpicture', path.join(__dirname, '../public/logo.png'), {}, jar, csrf_token, function (err, res, body) {
+			helpers.uploadFile(nconf.get('url') + '/api/user/regular/uploadpicture', path.join(__dirname, '../test/files/test.png'), {}, jar, csrf_token, function (err, res, body) {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 200);
 				assert(Array.isArray(body));
 				assert.equal(body.length, 1);
-				assert.equal(body[0].url, '/assets/uploads/profile/' + regularUid + '-profileimg.png');
+				assert.equal(body[0].url, '/assets/uploads/profile/' + regularUid + '-profileavatar.png');
 				done();
 			});
 		});
 
 		it('should upload an image to a post', function (done) {
-			helpers.uploadFile(nconf.get('url') + '/api/post/upload', path.join(__dirname, '../public/logo.png'), { cid: cid }, jar, csrf_token, function (err, res, body) {
+			helpers.uploadFile(nconf.get('url') + '/api/post/upload', path.join(__dirname, '../test/files/test.png'), { cid: cid }, jar, csrf_token, function (err, res, body) {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 200);
 				assert(Array.isArray(body));
@@ -90,7 +90,7 @@ describe('Upload Controllers', function () {
 
 		it('should upload a file to a post', function (done) {
 			meta.config.allowFileUploads = 1;
-			helpers.uploadFile(nconf.get('url') + '/api/post/upload', path.join(__dirname, '../public/503.html'), { cid: cid }, jar, csrf_token, function (err, res, body) {
+			helpers.uploadFile(nconf.get('url') + '/api/post/upload', path.join(__dirname, '../test/files/503.html'), { cid: cid }, jar, csrf_token, function (err, res, body) {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 200);
 				assert(Array.isArray(body));
@@ -116,7 +116,7 @@ describe('Upload Controllers', function () {
 		});
 
 		it('should upload site logo', function (done) {
-			helpers.uploadFile(nconf.get('url') + '/api/admin/uploadlogo', path.join(__dirname, '../public/logo.png'), {}, jar, csrf_token, function (err, res, body) {
+			helpers.uploadFile(nconf.get('url') + '/api/admin/uploadlogo', path.join(__dirname, '../test/files/test.png'), {}, jar, csrf_token, function (err, res, body) {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 200);
 				assert(Array.isArray(body));
@@ -126,7 +126,7 @@ describe('Upload Controllers', function () {
 		});
 
 		it('should upload category image', function (done) {
-			helpers.uploadFile(nconf.get('url') + '/api/admin/category/uploadpicture', path.join(__dirname, '../public/logo.png'), { params: JSON.stringify({ cid: cid }) }, jar, csrf_token, function (err, res, body) {
+			helpers.uploadFile(nconf.get('url') + '/api/admin/category/uploadpicture', path.join(__dirname, '../test/files/test.png'), { params: JSON.stringify({ cid: cid }) }, jar, csrf_token, function (err, res, body) {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 200);
 				assert(Array.isArray(body));
@@ -136,7 +136,7 @@ describe('Upload Controllers', function () {
 		});
 
 		it('should upload favicon', function (done) {
-			helpers.uploadFile(nconf.get('url') + '/api/admin/uploadfavicon', path.join(__dirname, '../public/favicon.ico'), {}, jar, csrf_token, function (err, res, body) {
+			helpers.uploadFile(nconf.get('url') + '/api/admin/uploadfavicon', path.join(__dirname, '../test/files/favicon.ico'), {}, jar, csrf_token, function (err, res, body) {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 200);
 				assert(Array.isArray(body));
@@ -146,7 +146,7 @@ describe('Upload Controllers', function () {
 		});
 
 		it('should upload touch icon', function (done) {
-			helpers.uploadFile(nconf.get('url') + '/api/admin/uploadTouchIcon', path.join(__dirname, '../public/logo.png'), {}, jar, csrf_token, function (err, res, body) {
+			helpers.uploadFile(nconf.get('url') + '/api/admin/uploadTouchIcon', path.join(__dirname, '../test/files/test.png'), {}, jar, csrf_token, function (err, res, body) {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 200);
 				assert(Array.isArray(body));

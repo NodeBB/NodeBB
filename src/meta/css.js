@@ -31,7 +31,9 @@ module.exports = function (Meta) {
 				'@import "../../public/less/generics.less";',
 				'@import "../../public/less/mixins.less";',
 				'@import "../../public/less/global.less";',
-			].map(function (str) { return str.replace(/\//g, path.sep); }).join('\n');
+			].map(function (str) {
+				return str.replace(/\//g, path.sep);
+			}).join('\n');
 		},
 		admin: function (source) {
 			return source + '\n' + [
@@ -41,7 +43,10 @@ module.exports = function (Meta) {
 				'@import (inline) "../public/vendor/colorpicker/colorpicker.css";',
 				'@import (inline) "../public/vendor/jquery/css/smoothness/jquery-ui.css";',
 				'@import (inline) "../public/vendor/jquery/bootstrap-tagsinput/bootstrap-tagsinput.css";',
-			].map(function (str) { return str.replace(/\//g, path.sep); }).join('\n');
+				'@import (inline) "../public/vendor/mdl/material.css";',
+			].map(function (str) {
+				return str.replace(/\//g, path.sep);
+			}).join('\n');
 		},
 	};
 

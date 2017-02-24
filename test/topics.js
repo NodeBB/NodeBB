@@ -129,6 +129,13 @@ describe('Topic\'s', function () {
 			});
 		});
 
+		it('should error if pid is not a number', function (done) {
+			socketPosts.getReplies({ uid: 0 }, 'abc', function (err) {
+				assert.equal(err.message, '[[error:invalid-data]]');
+				done();
+			});
+		});
+
 		it('should fail to create new reply with invalid user id', function (done) {
 			topics.reply({ uid: null, content: 'test post', tid: newTopic.tid }, function (err) {
 				assert.equal(err.message, '[[error:no-privileges]]');
@@ -174,9 +181,24 @@ describe('Topic\'s', function () {
 			});
 		});
 
-		describe('.getTopicData', function () {
-			it('should not receive errors', function (done) {
-				topics.getTopicData(newTopic.tid, done);
+
+		it('should not receive errors', function (done) {
+			topics.getTopicData(newTopic.tid, done);
+		});
+
+		it('should get topic title by pid', function (done) {
+			topics.getTitleByPid(newPost.pid, function (err, title) {
+				assert.ifError(err);
+				assert.equal(title, topic.title);
+				done();
+			});
+		});
+
+		it('should get topic data by pid', function (done) {
+			topics.getTopicDataByPid(newPost.pid, function (err, data) {
+				assert.ifError(err);
+				assert.equal(data.tid, newTopic.tid);
+				done();
 			});
 		});
 

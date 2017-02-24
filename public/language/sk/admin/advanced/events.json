@@ -1,6 +1,6 @@
 {
 	"events": "Udalosti",
-	"no-events": "There are no events",
-	"control-panel": "Events Control Panel",
-	"delete-events": "Delete Events"
+	"no-events": "Zatiaľ neexistujô žiadne udalosti",
+	"control-panel": "Ovládací panel udalostí",
+	"delete-events": "Odstrániť udalosť"
 }

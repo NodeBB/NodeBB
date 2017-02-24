@@ -1,15 +1,13 @@
 'use strict';
 
 var async = require('async');
-var nconf = require('nconf');
-var path = require('path');
 var fs = require('fs');
-var crypto = require('crypto');
 var Jimp = require('jimp');
 var mime = require('mime');
 var winston = require('winston');
 
 var db = require('../database');
+var image = require('../image');
 var uploadsController = require('../controllers/uploads');
 
 module.exports = function (Groups) {
@@ -35,7 +33,7 @@ module.exports = function (Groups) {
 				if (tempPath) {
 					return next(null, tempPath);
 				}
-				writeImageDataToFile(data.imageData, next);
+				image.writeImageDataToTempFile(data.imageData, next);
 			},
 			function (_tempPath, next) {
 				tempPath = _tempPath;
@@ -92,24 +90,6 @@ module.exports = function (Groups) {
 			},
 		], function (err) {
 			callback(err);
-		});
-	}
-
-	function writeImageDataToFile(imageData, callback) {
-		// Calculate md5sum of image
-		// This is required because user data can be private
-		var md5sum = crypto.createHash('md5');
-		md5sum.update(imageData);
-		md5sum = md5sum.digest('hex');
-
-		// Save image
-		var tempPath = path.join(nconf.get('upload_path'), md5sum + '.png');
-		var buffer = new Buffer(imageData.slice(imageData.indexOf('base64') + 7), 'base64');
-
-		fs.writeFile(tempPath, buffer, {
-			encoding: 'base64',
-		}, function (err) {
-			callback(err, tempPath);
 		});
 	}
 

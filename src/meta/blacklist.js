@@ -3,16 +3,19 @@
 var ip = require('ip');
 var winston = require('winston');
 var async = require('async');
+
 var db = require('../database');
+var pubsub = require('../pubsub');
 
 var Blacklist = {
 	_rules: [],
 };
 
 Blacklist.load = function (callback) {
+	callback = callback || function () {};
 	async.waterfall([
-		async.apply(db.get, 'ip-blacklist-rules'),
-		async.apply(Blacklist.validate),
+		Blacklist.get,
+		Blacklist.validate,
 	], function (err, rules) {
 		if (err) {
 			return callback(err);
@@ -33,13 +36,18 @@ Blacklist.load = function (callback) {
 	});
 };
 
+pubsub.on('blacklist:reload', Blacklist.load);
+
 Blacklist.save = function (rules, callback) {
-	db.set('ip-blacklist-rules', rules, function (err) {
-		if (err) {
-			return callback(err);
-		}
-		Blacklist.load(callback);
-	});
+	async.waterfall([
+		function (next) {
+			db.set('ip-blacklist-rules', rules, next);
+		},
+		function (next) {
+			Blacklist.load(next);
+			pubsub.publish('blacklist:reload');
+		},
+	], callback);
 };
 
 Blacklist.get = function (callback) {
@@ -48,14 +56,14 @@ Blacklist.get = function (callback) {
 
 Blacklist.test = function (clientIp, callback) {
 	if (
-		Blacklist._rules.ipv4.indexOf(clientIp) === -1	// not explicitly specified in ipv4 list
-		&& Blacklist._rules.ipv6.indexOf(clientIp) === -1	// not explicitly specified in ipv6 list
-		&& !Blacklist._rules.cidr.some(function (subnet) {
+		Blacklist._rules.ipv4.indexOf(clientIp) === -1	&&// not explicitly specified in ipv4 list
+		Blacklist._rules.ipv6.indexOf(clientIp) === -1	&&// not explicitly specified in ipv6 list
+		!Blacklist._rules.cidr.some(function (subnet) {
 			return ip.cidrSubnet(subnet).contains(clientIp);
 		})	// not in a blacklisted cidr range
 	) {
 		if (typeof callback === 'function') {
-			callback();
+			setImmediate(callback);
 		} else {
 			return false;
 		}
@@ -64,7 +72,7 @@ Blacklist.test = function (clientIp, callback) {
 		err.code = 'blacklisted-ip';
 
 		if (typeof callback === 'function') {
-			callback(err);
+			setImmediate(callback, err);
 		} else {
 			return true;
 		}

@@ -35,8 +35,8 @@ define('forum/account/settings', ['forum/account/header', 'components', 'sounds'
 		$('.account').find('button[data-action="play"]').on('click', function (e) {
 			e.preventDefault();
 
-			var	fileName = $(this).parent().parent().find('select').val();
-			sounds.playFile(fileName);
+			var	soundName = $(this).parent().parent().find('select').val();
+			sounds.playSound(soundName);
 		});
 
 		toggleCustomRoute();
@@ -88,7 +88,7 @@ define('forum/account/settings', ['forum/account/header', 'components', 'sounds'
 				}
 			}
 
-			sounds.reloadMapping();
+			sounds.loadMap();
 
 			if (requireReload && parseInt(app.user.uid, 10) === parseInt(ajaxify.data.theirid, 10)) {
 				app.alert({

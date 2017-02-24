@@ -27,23 +27,23 @@ module.exports = function (Topics) {
 	};
 
 	Topics.getTopicPosts = function (tid, set, start, stop, uid, reverse, callback) {
-		callback = callback || function () {};
-		async.parallel({
-			posts: function (next) {
-				posts.getPostsFromSet(set, start, stop, uid, reverse, next);
+		async.waterfall([
+			function (next) {
+				async.parallel({
+					posts: function (next) {
+						posts.getPostsFromSet(set, start, stop, uid, reverse, next);
+					},
+					postCount: function (next) {
+						Topics.getTopicField(tid, 'postcount', next);
+					},
+				}, next);
 			},
-			postCount: function (next) {
-				Topics.getTopicField(tid, 'postcount', next);
+			function (results, next) {
+				Topics.calculatePostIndices(results.posts, start, stop, results.postCount, reverse);
+
+				Topics.addPostData(results.posts, uid, next);
 			},
-		}, function (err, results) {
-			if (err) {
-				return callback(err);
-			}
-
-			Topics.calculatePostIndices(results.posts, start, stop, results.postCount, reverse);
-
-			Topics.addPostData(results.posts, uid, callback);
-		});
+		], callback);
 	};
 
 	Topics.addPostData = function (postData, uid, callback) {
@@ -58,88 +58,81 @@ module.exports = function (Topics) {
 			return callback(null, []);
 		}
 
-		async.parallel({
-			bookmarks: function (next) {
-				posts.hasBookmarked(pids, uid, next);
-			},
-			voteData: function (next) {
-				posts.getVoteStatusByPostIDs(pids, uid, next);
-			},
-			userData: function (next) {
-				var uids = [];
+		function getPostUserData(field, method, callback) {
+			var uids = [];
 
-				for (var i = 0; i < postData.length; i += 1) {
-					if (postData[i] && uids.indexOf(postData[i].uid) === -1) {
-						uids.push(postData[i].uid);
-					}
+			postData.forEach(function (postData) {
+				if (postData && postData[field] && uids.indexOf(postData[field]) === -1) {
+					uids.push(postData[field]);
 				}
+			});
 
-				posts.getUserInfoForPosts(uids, uid, function (err, users) {
-					if (err) {
-						return next(err);
-					}
-
+			async.waterfall([
+				function (next) {
+					method(uids, next);
+				},
+				function (users, next) {
 					var userData = {};
 					users.forEach(function (user, index) {
 						userData[uids[index]] = user;
 					});
-
 					next(null, userData);
+				},
+			], callback);
+		}
+
+		async.waterfall([
+			function (next) {
+				async.parallel({
+					bookmarks: function (next) {
+						posts.hasBookmarked(pids, uid, next);
+					},
+					voteData: function (next) {
+						posts.getVoteStatusByPostIDs(pids, uid, next);
+					},
+					userData: function (next) {
+						getPostUserData('uid', function (uids, next) {
+							posts.getUserInfoForPosts(uids, uid, next);
+						}, next);
+					},
+					editors: function (next) {
+						getPostUserData('editor', function (uids, next) {
+							user.getUsersFields(uids, ['uid', 'username', 'userslug'], next);
+						}, next);
+					},
+					parents: function (next) {
+						Topics.addParentPosts(postData, next);
+					},
+				}, next);
+			},
+			function (results, next) {
+				postData.forEach(function (postObj, i) {
+					if (postObj) {
+						postObj.deleted = parseInt(postObj.deleted, 10) === 1;
+						postObj.user = parseInt(postObj.uid, 10) ? results.userData[postObj.uid] : _.clone(results.userData[postObj.uid]);
+						postObj.editor = postObj.editor ? results.editors[postObj.editor] : null;
+						postObj.bookmarked = results.bookmarks[i];
+						postObj.upvoted = results.voteData.upvotes[i];
+						postObj.downvoted = results.voteData.downvotes[i];
+						postObj.votes = postObj.votes || 0;
+						postObj.replies = postObj.replies || 0;
+						postObj.selfPost = !!parseInt(uid, 10) && parseInt(uid, 10) === parseInt(postObj.uid, 10);
+
+						// Username override for guests, if enabled
+						if (parseInt(meta.config.allowGuestHandles, 10) === 1 && parseInt(postObj.uid, 10) === 0 && postObj.handle) {
+							postObj.user.username = validator.escape(String(postObj.handle));
+						}
+					}
 				});
+				plugins.fireHook('filter:topics.addPostData', {
+					posts: postData,
+					uid: uid,
+				}, next);
 			},
-			editors: function (next) {
-				var editors = [];
-				for (var i = 0; i < postData.length; i += 1) {
-					if (postData[i] && postData[i].editor && editors.indexOf(postData[i].editor) === -1) {
-						editors.push(postData[i].editor);
-					}
-				}
-
-				user.getUsersFields(editors, ['uid', 'username', 'userslug'], function (err, editors) {
-					if (err) {
-						return next(err);
-					}
-					var editorData = {};
-					editors.forEach(function (editor) {
-						editorData[editor.uid] = editor;
-					});
-					next(null, editorData);
-				});
+			function (data, next) {
+				next(null, data.posts);
 			},
-			parents: function (next) {
-				Topics.addParentPosts(postData, next);
-			},
-		}, function (err, results) {
-			if (err) {
-				return callback(err);
-			}
-
-			postData.forEach(function (postObj, i) {
-				if (postObj) {
-					postObj.deleted = parseInt(postObj.deleted, 10) === 1;
-					postObj.user = parseInt(postObj.uid, 10) ? results.userData[postObj.uid] : _.clone(results.userData[postObj.uid]);
-					postObj.editor = postObj.editor ? results.editors[postObj.editor] : null;
-					postObj.bookmarked = results.bookmarks[i];
-					postObj.upvoted = results.voteData.upvotes[i];
-					postObj.downvoted = results.voteData.downvotes[i];
-					postObj.votes = postObj.votes || 0;
-					postObj.replies = postObj.replies || 0;
-					postObj.selfPost = !!parseInt(uid, 10) && parseInt(uid, 10) === parseInt(postObj.uid, 10);
-
-					// Username override for guests, if enabled
-					if (parseInt(meta.config.allowGuestHandles, 10) === 1 && parseInt(postObj.uid, 10) === 0 && postObj.handle) {
-						postObj.user.username = validator.escape(String(postObj.handle));
-					}
-				}
-			});
-
-			plugins.fireHook('filter:topics.addPostData', {
-				posts: postData,
-				uid: uid,
-			}, function (err, data) {
-				callback(err, data ? data.posts : null);
-			});
-		});
+		], callback);
 	};
 
 	Topics.modifyPostsByPrivilege = function (topicData, topicPrivileges) {
@@ -172,7 +165,9 @@ module.exports = function (Topics) {
 			async.apply(posts.getPostsFields, parentPids, ['uid']),
 			function (_parentPosts, next) {
 				parentPosts = _parentPosts;
-				var parentUids = parentPosts.map(function (postObj) { return parseInt(postObj.uid, 10); }).filter(function (uid, idx, users) {
+				var parentUids = parentPosts.map(function (postObj) {
+					return parseInt(postObj.uid, 10);
+				}).filter(function (uid, idx, users) {
 					return users.indexOf(uid) === idx;
 				});
 
@@ -231,31 +226,31 @@ module.exports = function (Topics) {
 		var done = false;
 		var latestPid = null;
 		var index = 0;
+		var pids;
 		async.doWhilst(
 			function (next) {
-				db.getSortedSetRevRange('tid:' + tid + ':posts', index, index, function (err, pids) {
-					if (err) {
-						return next(err);
-					}
-
-					if (!Array.isArray(pids) || !pids.length) {
-						done = true;
-						return next();
-					}
-
-					posts.getPostField(pids[0], 'deleted', function (err, deleted) {
-						if (err) {
-							return next(err);
+				async.waterfall([
+					function (_next) {
+						db.getSortedSetRevRange('tid:' + tid + ':posts', index, index, _next);
+					},
+					function (_pids, _next) {
+						pids = _pids;
+						if (!Array.isArray(pids) || !pids.length) {
+							done = true;
+							return next();
 						}
 
+						posts.getPostField(pids[0], 'deleted', _next);
+					},
+					function (deleted, _next) {
 						isDeleted = parseInt(deleted, 10) === 1;
 						if (!isDeleted) {
 							latestPid = pids[0];
 						}
 						index += 1;
-						next();
-					});
-				});
+						_next();
+					},
+				], next);
 			},
 			function () {
 				return isDeleted && !done;
@@ -317,22 +312,24 @@ module.exports = function (Topics) {
 	};
 
 	Topics.getPids = function (tid, callback) {
-		async.parallel({
-			mainPid: function (next) {
-				Topics.getTopicField(tid, 'mainPid', next);
+		async.waterfall([
+			function (next) {
+				async.parallel({
+					mainPid: function (next) {
+						Topics.getTopicField(tid, 'mainPid', next);
+					},
+					pids: function (next) {
+						db.getSortedSetRange('tid:' + tid + ':posts', 0, -1, next);
+					},
+				}, next);
 			},
-			pids: function (next) {
-				db.getSortedSetRange('tid:' + tid + ':posts', 0, -1, next);
+			function (results, next) {
+				if (results.mainPid) {
+					results.pids = [results.mainPid].concat(results.pids);
+				}
+				next(null, results.pids);
 			},
-		}, function (err, results) {
-			if (err) {
-				return callback(err);
-			}
-			if (results.mainPid) {
-				results.pids = [results.mainPid].concat(results.pids);
-			}
-			callback(null, results.pids);
-		});
+		], callback);
 	};
 
 	Topics.increasePostCount = function (tid, callback) {
@@ -349,12 +346,14 @@ module.exports = function (Topics) {
 
 	function incrementFieldAndUpdateSortedSet(tid, field, by, set, callback) {
 		callback = callback || function () {};
-		db.incrObjectFieldBy('topic:' + tid, field, by, function (err, value) {
-			if (err) {
-				return callback(err);
-			}
-			db.sortedSetAdd(set, value, tid, callback);
-		});
+		async.waterfall([
+			function (next) {
+				db.incrObjectFieldBy('topic:' + tid, field, by, next);
+			},
+			function (value, next) {
+				db.sortedSetAdd(set, value, tid, next);
+			},
+		], callback);
 	}
 
 	Topics.getTitleByPid = function (pid, callback) {
@@ -362,21 +361,25 @@ module.exports = function (Topics) {
 	};
 
 	Topics.getTopicFieldByPid = function (field, pid, callback) {
-		posts.getPostField(pid, 'tid', function (err, tid) {
-			if (err) {
-				return callback(err);
-			}
-			Topics.getTopicField(tid, field, callback);
-		});
+		async.waterfall([
+			function (next) {
+				posts.getPostField(pid, 'tid', next);
+			},
+			function (tid, next) {
+				Topics.getTopicField(tid, field, next);
+			},
+		], callback);
 	};
 
 	Topics.getTopicDataByPid = function (pid, callback) {
-		posts.getPostField(pid, 'tid', function (err, tid) {
-			if (err) {
-				return callback(err);
-			}
-			Topics.getTopicData(tid, callback);
-		});
+		async.waterfall([
+			function (next) {
+				posts.getPostField(pid, 'tid', next);
+			},
+			function (tid, next) {
+				Topics.getTopicData(tid, next);
+			},
+		], callback);
 	};
 
 	Topics.getPostCount = function (tid, callback) {

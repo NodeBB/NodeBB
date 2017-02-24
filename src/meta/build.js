@@ -5,7 +5,7 @@ var winston = require('winston');
 
 var buildStart;
 
-var valid = ['js', 'clientCSS', 'acpCSS', 'tpl', 'lang'];
+var valid = ['js', 'clientCSS', 'acpCSS', 'tpl', 'lang', 'sound'];
 
 exports.buildAll = function (callback) {
 	exports.build(valid.join(','), callback);
@@ -46,32 +46,32 @@ exports.buildTargets = function (targets, callback) {
 	var cacheBuster = require('./cacheBuster');
 	var meta = require('../meta');
 	var numCpus = require('os').cpus().length;
-	var strategy = (targets.length > 1 && numCpus > 1);
+	var parallel = targets.length > 1 && numCpus > 1;
 
 	buildStart = buildStart || Date.now();
 
 	var step = function (startTime, target, next, err) {
 		if (err) {
-			winston.error('Build failed: ' + err.message);
+			winston.error('Build failed: ' + err.stack);
 			process.exit(1);
 		}
 		winston.info('[build] ' + target + ' => Completed in ' + ((Date.now() - startTime) / 1000) + 's');
 		next();
 	};
 
-	if (strategy) {
+	if (parallel) {
 		winston.verbose('[build] Utilising multiple cores/processes');
 	} else {
 		winston.verbose('[build] Utilising single-core');
 	}
 
-	async[strategy ? 'parallel' : 'series']([
+	async[parallel ? 'parallel' : 'series']([
 		function (next) {
 			if (targets.indexOf('js') !== -1) {
 				winston.info('[build] Building javascript');
 				var startTime = Date.now();
 				async.series([
-					meta.js.linkModules,
+					meta.js.buildModules,
 					meta.js.linkStatics,
 					async.apply(meta.js.minify, 'nodebb.min.js'),
 					async.apply(meta.js.minify, 'acp.min.js'),
@@ -109,6 +109,12 @@ exports.buildTargets = function (targets, callback) {
 					winston.info('[build] Building language files');
 					startTime = Date.now();
 					meta.languages.build(step.bind(this, startTime, target, next));
+					break;
+
+				case 'sound':
+					winston.info('[build] Linking sound files');
+					startTime = Date.now();
+					meta.sounds.build(step.bind(this, startTime, target, next));
 					break;
 
 				default:

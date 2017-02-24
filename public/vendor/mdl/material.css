@@ -1,6 +1,6 @@
 /**
  * material-design-lite - Material Design Components in CSS, JS and HTML
- * @version v1.0.3
+ * @version v1.3.0
  * @license Apache-2.0
  * @copyright 2015 Google, Inc.
  * @link https://github.com/google/material-design-lite
@@ -62,6 +62,15 @@
  * -----Shadows
  * -----Grid
  * -----Data table
+ * -----Dialog
+ * -----Snackbar
+ * -----Tooltip
+ * -----Chip
+ *
+ * Even though all variables have the `!default` directive, most of them
+ * should not be changed as they are dependent one another. This can cause
+ * visual distortions (like alignment issues) that are hard to track down
+ * and fix.
  */
 /* ==========  TYPOGRAPHY  ========== */
 /* We're splitting fonts into "preferred" and "performance" in order to optimize
@@ -113,6 +122,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+/* ==========  IMAGES  ========== */
 /* ==========  Color & Themes  ========== */
 /* ==========  Typography  ========== */
 /* ==========  Components  ========== */
@@ -161,7 +171,10 @@
 /* SHADOWS */
 /* GRID */
 /* DATA TABLE */
+/* DIALOG */
+/* SNACKBAR */
 /* TOOLTIP */
+/* CHIP */
 /**
  * Copyright 2015 Google Inc. All Rights Reserved.
  *
@@ -180,6 +193,7 @@
 /* Typography */
 /* Shadows */
 /* Animations */
+/* Dialog */
 /**
  * Copyright 2015 Google Inc. All Rights Reserved.
  *
@@ -250,6 +264,15 @@
  * -----Shadows
  * -----Grid
  * -----Data table
+ * -----Dialog
+ * -----Snackbar
+ * -----Tooltip
+ * -----Chip
+ *
+ * Even though all variables have the `!default` directive, most of them
+ * should not be changed as they are dependent one another. This can cause
+ * visual distortions (like alignment issues) that are hard to track down
+ * and fix.
  */
 /* ==========  TYPOGRAPHY  ========== */
 /* We're splitting fonts into "preferred" and "performance" in order to optimize
@@ -301,6 +324,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+/* ==========  IMAGES  ========== */
 /* ==========  Color & Themes  ========== */
 /* ==========  Typography  ========== */
 /* ==========  Components  ========== */
@@ -349,7 +373,10 @@
 /* SHADOWS */
 /* GRID */
 /* DATA TABLE */
+/* DIALOG */
+/* SNACKBAR */
 /* TOOLTIP */
+/* CHIP */
 /*
  * What follows is the result of much research on cross-browser styling.
  * Credit left inline and big thanks to Nicolas Gallagher, Jonathan Neal,
@@ -496,6 +523,12 @@ textarea {
    These examples override the primary ('mobile first') styles.
    Modify as content requires.
    ========================================================================== */
+@media only screen and (min-width: 35em) {
+  /* Style adjustments for viewports that meet the condition */ }
+
+@media print, (-webkit-min-device-pixel-ratio: 1.25), (min-resolution: 1.25dppx), (min-resolution: 120dpi) {
+  /* Style adjustments for high resolution devices */ }
+
 /* ==========================================================================
    Print styles.
    Inlined to avoid the additional HTTP request:
@@ -505,13 +538,11 @@ textarea {
   *,
   *:before,
   *:after,
-  *:first-letter,
-  *:first-line {
+  *:first-letter {
     background: transparent !important;
     color: #000 !important;
     /* Black prints faster: http://www.sanbeiji.com/archives/953 */
-    box-shadow: none !important;
-    text-shadow: none !important; }
+    box-shadow: none !important; }
   a,
   a:visited {
     text-decoration: underline; }
@@ -660,6 +691,15 @@ main {
  * -----Shadows
  * -----Grid
  * -----Data table
+ * -----Dialog
+ * -----Snackbar
+ * -----Tooltip
+ * -----Chip
+ *
+ * Even though all variables have the `!default` directive, most of them
+ * should not be changed as they are dependent one another. This can cause
+ * visual distortions (like alignment issues) that are hard to track down
+ * and fix.
  */
 /* ==========  TYPOGRAPHY  ========== */
 /* We're splitting fonts into "preferred" and "performance" in order to optimize
@@ -711,6 +751,7 @@ main {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+/* ==========  IMAGES  ========== */
 /* ==========  Color & Themes  ========== */
 /* ==========  Typography  ========== */
 /* ==========  Components  ========== */
@@ -759,7 +800,10 @@ main {
 /* SHADOWS */
 /* GRID */
 /* DATA TABLE */
+/* DIALOG */
+/* SNACKBAR */
 /* TOOLTIP */
+/* CHIP */
 /**
  * Copyright 2015 Google Inc. All Rights Reserved.
  *
@@ -778,6 +822,7 @@ main {
 /* Typography */
 /* Shadows */
 /* Animations */
+/* Dialog */
 /*html, body {
   font-family: "Helvetica", "Arial", sans-serif;
   font-size: 14px;
@@ -1160,6 +1205,21 @@ ul, ol {
 .mdl-typography--font-black {
   font-weight: 900 !important; }
 
+.material-icons {
+  font-family: 'Material Icons';
+  font-weight: normal;
+  font-style: normal;
+  font-size: 24px;
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none;
+  display: inline-block;
+  word-wrap: normal;
+  -moz-font-feature-settings: 'liga';
+       font-feature-settings: 'liga';
+  -webkit-font-feature-settings: 'liga';
+  -webkit-font-smoothing: antialiased; }
+
 /**
  * Copyright 2015 Google Inc. All Rights Reserved.
  *
@@ -1215,6 +1275,15 @@ ul, ol {
  * -----Shadows
  * -----Grid
  * -----Data table
+ * -----Dialog
+ * -----Snackbar
+ * -----Tooltip
+ * -----Chip
+ *
+ * Even though all variables have the `!default` directive, most of them
+ * should not be changed as they are dependent one another. This can cause
+ * visual distortions (like alignment issues) that are hard to track down
+ * and fix.
  */
 /* ==========  TYPOGRAPHY  ========== */
 /* We're splitting fonts into "preferred" and "performance" in order to optimize
@@ -1266,6 +1335,7 @@ ul, ol {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+/* ==========  IMAGES  ========== */
 /* ==========  Color & Themes  ========== */
 /* ==========  Typography  ========== */
 /* ==========  Components  ========== */
@@ -1314,7 +1384,10 @@ ul, ol {
 /* SHADOWS */
 /* GRID */
 /* DATA TABLE */
+/* DIALOG */
+/* SNACKBAR */
 /* TOOLTIP */
+/* CHIP */
 .mdl-color-text--red {
   color: rgb(244,67,54) !important; }
 
@@ -3050,6 +3123,15 @@ ul, ol {
  * -----Shadows
  * -----Grid
  * -----Data table
+ * -----Dialog
+ * -----Snackbar
+ * -----Tooltip
+ * -----Chip
+ *
+ * Even though all variables have the `!default` directive, most of them
+ * should not be changed as they are dependent one another. This can cause
+ * visual distortions (like alignment issues) that are hard to track down
+ * and fix.
  */
 /* ==========  TYPOGRAPHY  ========== */
 /* We're splitting fonts into "preferred" and "performance" in order to optimize
@@ -3101,6 +3183,7 @@ ul, ol {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+/* ==========  IMAGES  ========== */
 /* ==========  Color & Themes  ========== */
 /* ==========  Typography  ========== */
 /* ==========  Components  ========== */
@@ -3149,7 +3232,10 @@ ul, ol {
 /* SHADOWS */
 /* GRID */
 /* DATA TABLE */
+/* DIALOG */
+/* SNACKBAR */
 /* TOOLTIP */
+/* CHIP */
 .mdl-ripple {
   background: rgb(0,0,0);
   border-radius: 50%;
@@ -3160,13 +3246,13 @@ ul, ol {
   position: absolute;
   top: 0;
   -webkit-transform: translate(-50%, -50%);
-      -ms-transform: translate(-50%, -50%);
           transform: translate(-50%, -50%);
   width: 50px;
   overflow: hidden; }
   .mdl-ripple.is-animating {
-    -webkit-transition: -webkit-transform 0.3s cubic-bezier(0, 0, 0.2, 1), width 0.3s cubic-bezier(0, 0, 0.2, 1), height 0.3s cubic-bezier(0, 0, 0.2, 1), opacity 0.6s cubic-bezier(0, 0, 0.2, 1);
-            transition: transform 0.3s cubic-bezier(0, 0, 0.2, 1), width 0.3s cubic-bezier(0, 0, 0.2, 1), height 0.3s cubic-bezier(0, 0, 0.2, 1), opacity 0.6s cubic-bezier(0, 0, 0.2, 1); }
+    transition: width 0.3s cubic-bezier(0, 0, 0.2, 1), height 0.3s cubic-bezier(0, 0, 0.2, 1), opacity 0.6s cubic-bezier(0, 0, 0.2, 1), -webkit-transform 0.3s cubic-bezier(0, 0, 0.2, 1);
+    transition: transform 0.3s cubic-bezier(0, 0, 0.2, 1), width 0.3s cubic-bezier(0, 0, 0.2, 1), height 0.3s cubic-bezier(0, 0, 0.2, 1), opacity 0.6s cubic-bezier(0, 0, 0.2, 1);
+    transition: transform 0.3s cubic-bezier(0, 0, 0.2, 1), width 0.3s cubic-bezier(0, 0, 0.2, 1), height 0.3s cubic-bezier(0, 0, 0.2, 1), opacity 0.6s cubic-bezier(0, 0, 0.2, 1), -webkit-transform 0.3s cubic-bezier(0, 0, 0.2, 1); }
   .mdl-ripple.is-visible {
     opacity: 0.3; }
 
@@ -3225,6 +3311,15 @@ ul, ol {
  * -----Shadows
  * -----Grid
  * -----Data table
+ * -----Dialog
+ * -----Snackbar
+ * -----Tooltip
+ * -----Chip
+ *
+ * Even though all variables have the `!default` directive, most of them
+ * should not be changed as they are dependent one another. This can cause
+ * visual distortions (like alignment issues) that are hard to track down
+ * and fix.
  */
 /* ==========  TYPOGRAPHY  ========== */
 /* We're splitting fonts into "preferred" and "performance" in order to optimize
@@ -3276,6 +3371,7 @@ ul, ol {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+/* ==========  IMAGES  ========== */
 /* ==========  Color & Themes  ========== */
 /* ==========  Typography  ========== */
 /* ==========  Components  ========== */
@@ -3324,22 +3420,21 @@ ul, ol {
 /* SHADOWS */
 /* GRID */
 /* DATA TABLE */
+/* DIALOG */
+/* SNACKBAR */
 /* TOOLTIP */
+/* CHIP */
 .mdl-animation--default {
-  -webkit-transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-          transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1); }
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1); }
 
 .mdl-animation--fast-out-slow-in {
-  -webkit-transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-          transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1); }
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1); }
 
 .mdl-animation--linear-out-slow-in {
-  -webkit-transition-timing-function: cubic-bezier(0, 0, 0.2, 1);
-          transition-timing-function: cubic-bezier(0, 0, 0.2, 1); }
+  transition-timing-function: cubic-bezier(0, 0, 0.2, 1); }
 
 .mdl-animation--fast-out-linear-in {
-  -webkit-transition-timing-function: cubic-bezier(0.4, 0, 1, 1);
-          transition-timing-function: cubic-bezier(0.4, 0, 1, 1); }
+  transition-timing-function: cubic-bezier(0.4, 0, 1, 1); }
 
 /**
  * Copyright 2015 Google Inc. All Rights Reserved.
@@ -3396,6 +3491,15 @@ ul, ol {
  * -----Shadows
  * -----Grid
  * -----Data table
+ * -----Dialog
+ * -----Snackbar
+ * -----Tooltip
+ * -----Chip
+ *
+ * Even though all variables have the `!default` directive, most of them
+ * should not be changed as they are dependent one another. This can cause
+ * visual distortions (like alignment issues) that are hard to track down
+ * and fix.
  */
 /* ==========  TYPOGRAPHY  ========== */
 /* We're splitting fonts into "preferred" and "performance" in order to optimize
@@ -3447,6 +3551,7 @@ ul, ol {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+/* ==========  IMAGES  ========== */
 /* ==========  Color & Themes  ========== */
 /* ==========  Typography  ========== */
 /* ==========  Components  ========== */
@@ -3495,7 +3600,10 @@ ul, ol {
 /* SHADOWS */
 /* GRID */
 /* DATA TABLE */
+/* DIALOG */
+/* SNACKBAR */
 /* TOOLTIP */
+/* CHIP */
 .mdl-badge {
   position: relative;
   white-space: nowrap;
@@ -3504,26 +3612,21 @@ ul, ol {
     margin-right: auto; }
   .mdl-badge[data-badge]:after {
     content: attr(data-badge);
-    display: -webkit-box;
     display: -webkit-flex;
     display: -ms-flexbox;
     display: flex;
-    -webkit-box-orient: horizontal;
-    -webkit-box-direction: normal;
     -webkit-flex-direction: row;
         -ms-flex-direction: row;
             flex-direction: row;
     -webkit-flex-wrap: wrap;
         -ms-flex-wrap: wrap;
             flex-wrap: wrap;
-    -webkit-box-pack: center;
     -webkit-justify-content: center;
         -ms-flex-pack: center;
             justify-content: center;
     -webkit-align-content: center;
         -ms-flex-line-pack: center;
             align-content: center;
-    -webkit-box-align: center;
     -webkit-align-items: center;
         -ms-flex-align: center;
             align-items: center;
@@ -3545,6 +3648,10 @@ ul, ol {
     color: rgb(255,64,129);
     background: rgba(255,255,255,0.2);
     box-shadow: 0 0 1px gray; }
+  .mdl-badge.mdl-badge--overlap {
+    margin-right: 10px; }
+    .mdl-badge.mdl-badge--overlap:after {
+      right: -10px; }
 
 /**
  * Copyright 2015 Google Inc. All Rights Reserved.
@@ -3601,6 +3708,15 @@ ul, ol {
  * -----Shadows
  * -----Grid
  * -----Data table
+ * -----Dialog
+ * -----Snackbar
+ * -----Tooltip
+ * -----Chip
+ *
+ * Even though all variables have the `!default` directive, most of them
+ * should not be changed as they are dependent one another. This can cause
+ * visual distortions (like alignment issues) that are hard to track down
+ * and fix.
  */
 /* ==========  TYPOGRAPHY  ========== */
 /* We're splitting fonts into "preferred" and "performance" in order to optimize
@@ -3652,6 +3768,7 @@ ul, ol {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+/* ==========  IMAGES  ========== */
 /* ==========  Color & Themes  ========== */
 /* ==========  Typography  ========== */
 /* ==========  Components  ========== */
@@ -3700,7 +3817,10 @@ ul, ol {
 /* SHADOWS */
 /* GRID */
 /* DATA TABLE */
+/* DIALOG */
+/* SNACKBAR */
 /* TOOLTIP */
+/* CHIP */
 /**
  * Copyright 2015 Google Inc. All Rights Reserved.
  *
@@ -3719,6 +3839,7 @@ ul, ol {
 /* Typography */
 /* Shadows */
 /* Animations */
+/* Dialog */
 .mdl-button {
   background: transparent;
   border: none;
@@ -3726,8 +3847,9 @@ ul, ol {
   color: rgb(0,0,0);
   position: relative;
   height: 36px;
+  margin: 0;
   min-width: 64px;
-  padding: 0 8px;
+  padding: 0 16px;
   display: inline-block;
   font-family: "Roboto", "Helvetica", "Arial", sans-serif;
   font-size: 14px;
@@ -3736,9 +3858,8 @@ ul, ol {
   line-height: 1;
   letter-spacing: 0;
   overflow: hidden;
-  will-change: box-shadow, transform;
-  -webkit-transition: box-shadow 0.2s cubic-bezier(0.4, 0, 1, 1), background-color 0.2s cubic-bezier(0.4, 0, 0.2, 1), color 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-          transition: box-shadow 0.2s cubic-bezier(0.4, 0, 1, 1), background-color 0.2s cubic-bezier(0.4, 0, 0.2, 1), color 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: box-shadow;
+  transition: box-shadow 0.2s cubic-bezier(0.4, 0, 1, 1), background-color 0.2s cubic-bezier(0.4, 0, 0.2, 1), color 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   outline: none;
   cursor: pointer;
   text-decoration: none;
@@ -3800,7 +3921,6 @@ input.mdl-button[type="submit"] {
     top: 50%;
     left: 50%;
     -webkit-transform: translate(-12px, -12px);
-        -ms-transform: translate(-12px, -12px);
             transform: translate(-12px, -12px);
     line-height: 24px;
     width: 24px; }
@@ -3846,7 +3966,6 @@ input.mdl-button[type="submit"] {
     top: 50%;
     left: 50%;
     -webkit-transform: translate(-12px, -12px);
-        -ms-transform: translate(-12px, -12px);
             transform: translate(-12px, -12px);
     line-height: 24px;
     width: 24px; }
@@ -3890,26 +4009,21 @@ input.mdl-button[type="submit"] {
     color: rgb(255,255,255);
     background-color: rgb(255,64,129); }
 
-.mdl-button[disabled][disabled],
-.mdl-button.mdl-button--disabled.mdl-button--disabled {
+.mdl-button[disabled][disabled], .mdl-button.mdl-button--disabled.mdl-button--disabled {
   color: rgba(0,0,0, 0.26);
-  cursor: auto;
+  cursor: default;
   background-color: transparent; }
 
-.mdl-button--fab[disabled][disabled],
-.mdl-button--fab.mdl-button--disabled.mdl-button--disabled {
+.mdl-button--fab[disabled][disabled], .mdl-button--fab.mdl-button--disabled.mdl-button--disabled {
+  background-color: rgba(0,0,0, 0.12);
+  color: rgba(0,0,0, 0.26); }
+
+.mdl-button--raised[disabled][disabled], .mdl-button--raised.mdl-button--disabled.mdl-button--disabled {
   background-color: rgba(0,0,0, 0.12);
   color: rgba(0,0,0, 0.26);
-  box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 1px 5px 0 rgba(0, 0, 0, 0.12); }
+  box-shadow: none; }
 
-.mdl-button--raised[disabled][disabled],
-.mdl-button--raised.mdl-button--disabled.mdl-button--disabled {
-  background-color: rgba(0,0,0, 0.12);
-  color: rgba(0,0,0, 0.26);
-  box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 1px 5px 0 rgba(0, 0, 0, 0.12); }
-
-.mdl-button--colored[disabled][disabled],
-.mdl-button--colored.mdl-button--disabled.mdl-button--disabled {
+.mdl-button--colored[disabled][disabled], .mdl-button--colored.mdl-button--disabled.mdl-button--disabled {
   color: rgba(0,0,0, 0.26); }
 
 .mdl-button .material-icons {
@@ -3970,6 +4084,15 @@ input.mdl-button[type="submit"] {
  * -----Shadows
  * -----Grid
  * -----Data table
+ * -----Dialog
+ * -----Snackbar
+ * -----Tooltip
+ * -----Chip
+ *
+ * Even though all variables have the `!default` directive, most of them
+ * should not be changed as they are dependent one another. This can cause
+ * visual distortions (like alignment issues) that are hard to track down
+ * and fix.
  */
 /* ==========  TYPOGRAPHY  ========== */
 /* We're splitting fonts into "preferred" and "performance" in order to optimize
@@ -4021,6 +4144,7 @@ input.mdl-button[type="submit"] {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+/* ==========  IMAGES  ========== */
 /* ==========  Color & Themes  ========== */
 /* ==========  Typography  ========== */
 /* ==========  Components  ========== */
@@ -4069,14 +4193,14 @@ input.mdl-button[type="submit"] {
 /* SHADOWS */
 /* GRID */
 /* DATA TABLE */
+/* DIALOG */
+/* SNACKBAR */
 /* TOOLTIP */
+/* CHIP */
 .mdl-card {
-  display: -webkit-box;
   display: -webkit-flex;
   display: -ms-flexbox;
   display: flex;
-  -webkit-box-orient: vertical;
-  -webkit-box-direction: normal;
   -webkit-flex-direction: column;
       -ms-flex-direction: column;
           flex-direction: column;
@@ -4101,17 +4225,14 @@ input.mdl-button[type="submit"] {
   box-sizing: border-box; }
 
 .mdl-card__title {
-  -webkit-box-align: center;
   -webkit-align-items: center;
       -ms-flex-align: center;
           align-items: center;
   color: rgb(0,0,0);
   display: block;
-  display: -webkit-box;
   display: -webkit-flex;
   display: -ms-flexbox;
   display: flex;
-  -webkit-box-pack: stretch;
   -webkit-justify-content: stretch;
       -ms-flex-pack: stretch;
           justify-content: stretch;
@@ -4120,7 +4241,6 @@ input.mdl-button[type="submit"] {
   -webkit-perspective-origin: 165px 56px;
           perspective-origin: 165px 56px;
   -webkit-transform-origin: 165px 56px;
-      -ms-transform-origin: 165px 56px;
           transform-origin: 165px 56px;
   box-sizing: border-box; }
   .mdl-card__title.mdl-card--border {
@@ -4132,7 +4252,6 @@ input.mdl-button[type="submit"] {
           align-self: flex-end;
   color: inherit;
   display: block;
-  display: -webkit-box;
   display: -webkit-flex;
   display: -ms-flexbox;
   display: flex;
@@ -4141,22 +4260,23 @@ input.mdl-button[type="submit"] {
   line-height: normal;
   overflow: hidden;
   -webkit-transform-origin: 149px 48px;
-      -ms-transform-origin: 149px 48px;
           transform-origin: 149px 48px;
   margin: 0; }
 
 .mdl-card__subtitle-text {
   font-size: 14px;
-  color: grey;
+  color: rgba(0,0,0, 0.54);
   margin: 0; }
 
 .mdl-card__supporting-text {
   color: rgba(0,0,0, 0.54);
-  font-size: 13px;
+  font-size: 1rem;
   line-height: 18px;
   overflow: hidden;
   padding: 16px 16px;
   width: 90%; }
+  .mdl-card__supporting-text.mdl-card--border {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1); }
 
 .mdl-card__actions {
   font-size: 16px;
@@ -4169,7 +4289,6 @@ input.mdl-button[type="submit"] {
     border-top: 1px solid rgba(0, 0, 0, 0.1); }
 
 .mdl-card--expand {
-  -webkit-box-flex: 1;
   -webkit-flex-grow: 1;
       -ms-flex-positive: 1;
           flex-grow: 1; }
@@ -4234,6 +4353,15 @@ input.mdl-button[type="submit"] {
  * -----Shadows
  * -----Grid
  * -----Data table
+ * -----Dialog
+ * -----Snackbar
+ * -----Tooltip
+ * -----Chip
+ *
+ * Even though all variables have the `!default` directive, most of them
+ * should not be changed as they are dependent one another. This can cause
+ * visual distortions (like alignment issues) that are hard to track down
+ * and fix.
  */
 /* ==========  TYPOGRAPHY  ========== */
 /* We're splitting fonts into "preferred" and "performance" in order to optimize
@@ -4285,6 +4413,7 @@ input.mdl-button[type="submit"] {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+/* ==========  IMAGES  ========== */
 /* ==========  Color & Themes  ========== */
 /* ==========  Typography  ========== */
 /* ==========  Components  ========== */
@@ -4333,7 +4462,10 @@ input.mdl-button[type="submit"] {
 /* SHADOWS */
 /* GRID */
 /* DATA TABLE */
+/* DIALOG */
+/* SNACKBAR */
 /* TOOLTIP */
+/* CHIP */
 /**
  * Copyright 2015 Google Inc. All Rights Reserved.
  *
@@ -4352,6 +4484,7 @@ input.mdl-button[type="submit"] {
 /* Typography */
 /* Shadows */
 /* Animations */
+/* Dialog */
 .mdl-checkbox {
   position: relative;
   z-index: 1;
@@ -4396,6 +4529,7 @@ input.mdl-button[type="submit"] {
   z-index: 2; }
   .mdl-checkbox.is-checked .mdl-checkbox__box-outline {
     border: 2px solid rgb(63,81,181); }
+  fieldset[disabled] .mdl-checkbox .mdl-checkbox__box-outline,
   .mdl-checkbox.is-disabled .mdl-checkbox__box-outline {
     border: 2px solid rgba(0,0,0, 0.26);
     cursor: auto; }
@@ -4426,14 +4560,12 @@ input.mdl-button[type="submit"] {
   -webkit-mask: url("data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9Im5vIj8+CjxzdmcKICAgeG1sbnM6ZGM9Imh0dHA6Ly9wdXJsLm9yZy9kYy9lbGVtZW50cy8xLjEvIgogICB4bWxuczpjYz0iaHR0cDovL2NyZWF0aXZlY29tbW9ucy5vcmcvbnMjIgogICB4bWxuczpyZGY9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkvMDIvMjItcmRmLXN5bnRheC1ucyMiCiAgIHhtbG5zOnN2Zz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciCiAgIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIKICAgdmVyc2lvbj0iMS4xIgogICB2aWV3Qm94PSIwIDAgMSAxIgogICBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJ4TWluWU1pbiBtZWV0Ij4KICA8ZGVmcz4KICAgIDxjbGlwUGF0aCBpZD0iY2xpcCI+CiAgICAgIDxwYXRoCiAgICAgICAgIGQ9Ik0gMCwwIDAsMSAxLDEgMSwwIDAsMCB6IE0gMC44NTM0Mzc1LDAuMTY3MTg3NSAwLjk1OTY4NzUsMC4yNzMxMjUgMC40MjkzNzUsMC44MDM0Mzc1IDAuMzIzMTI1LDAuOTA5Njg3NSAwLjIxNzE4NzUsMC44MDM0Mzc1IDAuMDQwMzEyNSwwLjYyNjg3NSAwLjE0NjU2MjUsMC41MjA2MjUgMC4zMjMxMjUsMC42OTc1IDAuODUzNDM3NSwwLjE2NzE4NzUgeiIKICAgICAgICAgc3R5bGU9ImZpbGw6I2ZmZmZmZjtmaWxsLW9wYWNpdHk6MTtzdHJva2U6bm9uZSIgLz4KICAgIDwvY2xpcFBhdGg+CiAgICA8bWFzayBpZD0ibWFzayIgbWFza1VuaXRzPSJvYmplY3RCb3VuZGluZ0JveCIgbWFza0NvbnRlbnRVbml0cz0ib2JqZWN0Qm91bmRpbmdCb3giPgogICAgICA8cGF0aAogICAgICAgICBkPSJNIDAsMCAwLDEgMSwxIDEsMCAwLDAgeiBNIDAuODUzNDM3NSwwLjE2NzE4NzUgMC45NTk2ODc1LDAuMjczMTI1IDAuNDI5Mzc1LDAuODAzNDM3NSAwLjMyMzEyNSwwLjkwOTY4NzUgMC4yMTcxODc1LDAuODAzNDM3NSAwLjA0MDMxMjUsMC42MjY4NzUgMC4xNDY1NjI1LDAuNTIwNjI1IDAuMzIzMTI1LDAuNjk3NSAwLjg1MzQzNzUsMC4xNjcxODc1IHoiCiAgICAgICAgIHN0eWxlPSJmaWxsOiNmZmZmZmY7ZmlsbC1vcGFjaXR5OjE7c3Ryb2tlOm5vbmUiIC8+CiAgICA8L21hc2s+CiAgPC9kZWZzPgogIDxyZWN0CiAgICAgd2lkdGg9IjEiCiAgICAgaGVpZ2h0PSIxIgogICAgIHg9IjAiCiAgICAgeT0iMCIKICAgICBjbGlwLXBhdGg9InVybCgjY2xpcCkiCiAgICAgc3R5bGU9ImZpbGw6IzAwMDAwMDtmaWxsLW9wYWNpdHk6MTtzdHJva2U6bm9uZSIgLz4KPC9zdmc+Cg==");
           mask: url("data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9Im5vIj8+CjxzdmcKICAgeG1sbnM6ZGM9Imh0dHA6Ly9wdXJsLm9yZy9kYy9lbGVtZW50cy8xLjEvIgogICB4bWxuczpjYz0iaHR0cDovL2NyZWF0aXZlY29tbW9ucy5vcmcvbnMjIgogICB4bWxuczpyZGY9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkvMDIvMjItcmRmLXN5bnRheC1ucyMiCiAgIHhtbG5zOnN2Zz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciCiAgIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIKICAgdmVyc2lvbj0iMS4xIgogICB2aWV3Qm94PSIwIDAgMSAxIgogICBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJ4TWluWU1pbiBtZWV0Ij4KICA8ZGVmcz4KICAgIDxjbGlwUGF0aCBpZD0iY2xpcCI+CiAgICAgIDxwYXRoCiAgICAgICAgIGQ9Ik0gMCwwIDAsMSAxLDEgMSwwIDAsMCB6IE0gMC44NTM0Mzc1LDAuMTY3MTg3NSAwLjk1OTY4NzUsMC4yNzMxMjUgMC40MjkzNzUsMC44MDM0Mzc1IDAuMzIzMTI1LDAuOTA5Njg3NSAwLjIxNzE4NzUsMC44MDM0Mzc1IDAuMDQwMzEyNSwwLjYyNjg3NSAwLjE0NjU2MjUsMC41MjA2MjUgMC4zMjMxMjUsMC42OTc1IDAuODUzNDM3NSwwLjE2NzE4NzUgeiIKICAgICAgICAgc3R5bGU9ImZpbGw6I2ZmZmZmZjtmaWxsLW9wYWNpdHk6MTtzdHJva2U6bm9uZSIgLz4KICAgIDwvY2xpcFBhdGg+CiAgICA8bWFzayBpZD0ibWFzayIgbWFza1VuaXRzPSJvYmplY3RCb3VuZGluZ0JveCIgbWFza0NvbnRlbnRVbml0cz0ib2JqZWN0Qm91bmRpbmdCb3giPgogICAgICA8cGF0aAogICAgICAgICBkPSJNIDAsMCAwLDEgMSwxIDEsMCAwLDAgeiBNIDAuODUzNDM3NSwwLjE2NzE4NzUgMC45NTk2ODc1LDAuMjczMTI1IDAuNDI5Mzc1LDAuODAzNDM3NSAwLjMyMzEyNSwwLjkwOTY4NzUgMC4yMTcxODc1LDAuODAzNDM3NSAwLjA0MDMxMjUsMC42MjY4NzUgMC4xNDY1NjI1LDAuNTIwNjI1IDAuMzIzMTI1LDAuNjk3NSAwLjg1MzQzNzUsMC4xNjcxODc1IHoiCiAgICAgICAgIHN0eWxlPSJmaWxsOiNmZmZmZmY7ZmlsbC1vcGFjaXR5OjE7c3Ryb2tlOm5vbmUiIC8+CiAgICA8L21hc2s+CiAgPC9kZWZzPgogIDxyZWN0CiAgICAgd2lkdGg9IjEiCiAgICAgaGVpZ2h0PSIxIgogICAgIHg9IjAiCiAgICAgeT0iMCIKICAgICBjbGlwLXBhdGg9InVybCgjY2xpcCkiCiAgICAgc3R5bGU9ImZpbGw6IzAwMDAwMDtmaWxsLW9wYWNpdHk6MTtzdHJva2U6bm9uZSIgLz4KPC9zdmc+Cg==");
   background: transparent;
-  -webkit-transition-duration: 0.28s;
-          transition-duration: 0.28s;
-  -webkit-transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-          transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-  -webkit-transition-property: background;
-          transition-property: background; }
+  transition-duration: 0.28s;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-property: background; }
   .mdl-checkbox.is-checked .mdl-checkbox__tick-outline {
     background: rgb(63,81,181) url("data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9Im5vIj8+CjxzdmcKICAgeG1sbnM6ZGM9Imh0dHA6Ly9wdXJsLm9yZy9kYy9lbGVtZW50cy8xLjEvIgogICB4bWxuczpjYz0iaHR0cDovL2NyZWF0aXZlY29tbW9ucy5vcmcvbnMjIgogICB4bWxuczpyZGY9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkvMDIvMjItcmRmLXN5bnRheC1ucyMiCiAgIHhtbG5zOnN2Zz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciCiAgIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIKICAgdmVyc2lvbj0iMS4xIgogICB2aWV3Qm94PSIwIDAgMSAxIgogICBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJ4TWluWU1pbiBtZWV0Ij4KICA8cGF0aAogICAgIGQ9Ik0gMC4wNDAzODA1OSwwLjYyNjc3NjcgMC4xNDY0NDY2MSwwLjUyMDcxMDY4IDAuNDI5Mjg5MzIsMC44MDM1NTMzOSAwLjMyMzIyMzMsMC45MDk2MTk0MSB6IE0gMC4yMTcxNTcyOSwwLjgwMzU1MzM5IDAuODUzNTUzMzksMC4xNjcxNTcyOSAwLjk1OTYxOTQxLDAuMjczMjIzMyAwLjMyMzIyMzMsMC45MDk2MTk0MSB6IgogICAgIGlkPSJyZWN0Mzc4MCIKICAgICBzdHlsZT0iZmlsbDojZmZmZmZmO2ZpbGwtb3BhY2l0eToxO3N0cm9rZTpub25lIiAvPgo8L3N2Zz4K"); }
+  fieldset[disabled] .mdl-checkbox.is-checked .mdl-checkbox__tick-outline,
   .mdl-checkbox.is-checked.is-disabled .mdl-checkbox__tick-outline {
     background: rgba(0,0,0, 0.26) url("data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9Im5vIj8+CjxzdmcKICAgeG1sbnM6ZGM9Imh0dHA6Ly9wdXJsLm9yZy9kYy9lbGVtZW50cy8xLjEvIgogICB4bWxuczpjYz0iaHR0cDovL2NyZWF0aXZlY29tbW9ucy5vcmcvbnMjIgogICB4bWxuczpyZGY9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkvMDIvMjItcmRmLXN5bnRheC1ucyMiCiAgIHhtbG5zOnN2Zz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciCiAgIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIKICAgdmVyc2lvbj0iMS4xIgogICB2aWV3Qm94PSIwIDAgMSAxIgogICBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJ4TWluWU1pbiBtZWV0Ij4KICA8cGF0aAogICAgIGQ9Ik0gMC4wNDAzODA1OSwwLjYyNjc3NjcgMC4xNDY0NDY2MSwwLjUyMDcxMDY4IDAuNDI5Mjg5MzIsMC44MDM1NTMzOSAwLjMyMzIyMzMsMC45MDk2MTk0MSB6IE0gMC4yMTcxNTcyOSwwLjgwMzU1MzM5IDAuODUzNTUzMzksMC4xNjcxNTcyOSAwLjk1OTYxOTQxLDAuMjczMjIzMyAwLjMyMzIyMzMsMC45MDk2MTk0MSB6IgogICAgIGlkPSJyZWN0Mzc4MCIKICAgICBzdHlsZT0iZmlsbDojZmZmZmZmO2ZpbGwtb3BhY2l0eToxO3N0cm9rZTpub25lIiAvPgo8L3N2Zz4K"); }
 
@@ -4443,6 +4575,7 @@ input.mdl-button[type="submit"] {
   font-size: 16px;
   line-height: 24px;
   margin: 0; }
+  fieldset[disabled] .mdl-checkbox .mdl-checkbox__label,
   .mdl-checkbox.is-disabled .mdl-checkbox__label {
     color: rgba(0,0,0, 0.26);
     cursor: auto; }
@@ -4461,8 +4594,10 @@ input.mdl-button[type="submit"] {
   -webkit-mask-image: -webkit-radial-gradient(circle, white, black); }
   .mdl-checkbox__ripple-container .mdl-ripple {
     background: rgb(63,81,181); }
+  fieldset[disabled] .mdl-checkbox .mdl-checkbox__ripple-container,
   .mdl-checkbox.is-disabled .mdl-checkbox__ripple-container {
     cursor: auto; }
+  fieldset[disabled] .mdl-checkbox .mdl-checkbox__ripple-container .mdl-ripple,
   .mdl-checkbox.is-disabled .mdl-checkbox__ripple-container .mdl-ripple {
     background: transparent; }
 
@@ -4521,6 +4656,15 @@ input.mdl-button[type="submit"] {
  * -----Shadows
  * -----Grid
  * -----Data table
+ * -----Dialog
+ * -----Snackbar
+ * -----Tooltip
+ * -----Chip
+ *
+ * Even though all variables have the `!default` directive, most of them
+ * should not be changed as they are dependent one another. This can cause
+ * visual distortions (like alignment issues) that are hard to track down
+ * and fix.
  */
 /* ==========  TYPOGRAPHY  ========== */
 /* We're splitting fonts into "preferred" and "performance" in order to optimize
@@ -4572,6 +4716,7 @@ input.mdl-button[type="submit"] {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+/* ==========  IMAGES  ========== */
 /* ==========  Color & Themes  ========== */
 /* ==========  Typography  ========== */
 /* ==========  Components  ========== */
@@ -4620,7 +4765,10 @@ input.mdl-button[type="submit"] {
 /* SHADOWS */
 /* GRID */
 /* DATA TABLE */
+/* DIALOG */
+/* SNACKBAR */
 /* TOOLTIP */
+/* CHIP */
 /**
  * Copyright 2015 Google Inc. All Rights Reserved.
  *
@@ -4639,6 +4787,249 @@ input.mdl-button[type="submit"] {
 /* Typography */
 /* Shadows */
 /* Animations */
+/* Dialog */
+.mdl-chip {
+  height: 32px;
+  font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+  line-height: 32px;
+  padding: 0 12px;
+  border: 0;
+  border-radius: 16px;
+  background-color: #dedede;
+  display: inline-block;
+  color: rgba(0,0,0, 0.87);
+  margin: 2px 0;
+  font-size: 0;
+  white-space: nowrap; }
+  .mdl-chip__text {
+    font-size: 13px;
+    vertical-align: middle;
+    display: inline-block; }
+  .mdl-chip__action {
+    height: 24px;
+    width: 24px;
+    background: transparent;
+    opacity: 0.54;
+    display: inline-block;
+    cursor: pointer;
+    text-align: center;
+    vertical-align: middle;
+    padding: 0;
+    margin: 0 0 0 4px;
+    font-size: 13px;
+    text-decoration: none;
+    color: rgba(0,0,0, 0.87);
+    border: none;
+    outline: none;
+    overflow: hidden; }
+  .mdl-chip__contact {
+    height: 32px;
+    width: 32px;
+    border-radius: 16px;
+    display: inline-block;
+    vertical-align: middle;
+    margin-right: 8px;
+    overflow: hidden;
+    text-align: center;
+    font-size: 18px;
+    line-height: 32px; }
+  .mdl-chip:focus {
+    outline: 0;
+    box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 1px 5px 0 rgba(0, 0, 0, 0.12); }
+  .mdl-chip:active {
+    background-color: #d6d6d6; }
+  .mdl-chip--deletable {
+    padding-right: 4px; }
+  .mdl-chip--contact {
+    padding-left: 0; }
+
+/**
+ * Copyright 2015 Google Inc. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+/**
+ * Copyright 2015 Google Inc. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+/*------------------------------------*    $CONTENTS
+\*------------------------------------*/
+/**
+ * STYLE GUIDE VARIABLES------------------Declarations of Sass variables
+ * -----Typography
+ * -----Colors
+ * -----Textfield
+ * -----Switch
+ * -----Spinner
+ * -----Radio
+ * -----Menu
+ * -----List
+ * -----Layout
+ * -----Icon toggles
+ * -----Footer
+ * -----Column
+ * -----Checkbox
+ * -----Card
+ * -----Button
+ * -----Animation
+ * -----Progress
+ * -----Badge
+ * -----Shadows
+ * -----Grid
+ * -----Data table
+ * -----Dialog
+ * -----Snackbar
+ * -----Tooltip
+ * -----Chip
+ *
+ * Even though all variables have the `!default` directive, most of them
+ * should not be changed as they are dependent one another. This can cause
+ * visual distortions (like alignment issues) that are hard to track down
+ * and fix.
+ */
+/* ==========  TYPOGRAPHY  ========== */
+/* We're splitting fonts into "preferred" and "performance" in order to optimize
+   page loading. For important text, such as the body, we want it to load
+   immediately and not wait for the web font load, whereas for other sections,
+   such as headers and titles, we're OK with things taking a bit longer to load.
+   We do have some optional classes and parameters in the mixins, in case you
+   definitely want to make sure you're using the preferred font and don't mind
+   the performance hit.
+   We should be able to improve on this once CSS Font Loading L3 becomes more
+   widely available.
+*/
+/* ==========  COLORS  ========== */
+/**
+*
+* Material design color palettes.
+* @see http://www.google.com/design/spec/style/color.html
+*
+**/
+/**
+ * Copyright 2015 Google Inc. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+/* ==========  Color Palettes  ========== */
+/* colors.scss */
+/**
+ * Copyright 2015 Google Inc. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+/* ==========  IMAGES  ========== */
+/* ==========  Color & Themes  ========== */
+/* ==========  Typography  ========== */
+/* ==========  Components  ========== */
+/* ==========  Standard Buttons  ========== */
+/* ==========  Icon Toggles  ========== */
+/* ==========  Radio Buttons  ========== */
+/* ==========  Ripple effect  ========== */
+/* ==========  Layout  ========== */
+/* ==========  Content Tabs  ========== */
+/* ==========  Checkboxes  ========== */
+/* ==========  Switches  ========== */
+/* ==========  Spinner  ========== */
+/* ==========  Text fields  ========== */
+/* ==========  Card  ========== */
+/* ==========  Sliders ========== */
+/* ========== Progress ========== */
+/* ==========  List ========== */
+/* ==========  Item ========== */
+/* ==========  Dropdown menu ========== */
+/* ==========  Tooltips  ========== */
+/* ==========  Footer  ========== */
+/* TEXTFIELD */
+/* SWITCH */
+/* SPINNER */
+/* RADIO */
+/* MENU */
+/* LIST */
+/* LAYOUT */
+/* ICON TOGGLE */
+/* FOOTER */
+/*mega-footer*/
+/*mini-footer*/
+/* CHECKBOX */
+/* CARD */
+/* Card dimensions */
+/* Cover image */
+/* BUTTON */
+/**
+ *
+ * Dimensions
+ *
+ */
+/* ANIMATION */
+/* PROGRESS */
+/* BADGE */
+/* SHADOWS */
+/* GRID */
+/* DATA TABLE */
+/* DIALOG */
+/* SNACKBAR */
+/* TOOLTIP */
+/* CHIP */
+/**
+ * Copyright 2015 Google Inc. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+/* Typography */
+/* Shadows */
+/* Animations */
+/* Dialog */
 .mdl-data-table {
   position: relative;
   border: 1px solid rgba(0, 0, 0, 0.12);
@@ -4653,18 +5044,15 @@ input.mdl-button[type="submit"] {
   .mdl-data-table tbody tr {
     position: relative;
     height: 48px;
-    -webkit-transition-duration: 0.28s;
-            transition-duration: 0.28s;
-    -webkit-transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-            transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-    -webkit-transition-property: background-color;
-            transition-property: background-color; }
+    transition-duration: 0.28s;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-property: background-color; }
     .mdl-data-table tbody tr.is-selected {
       background-color: #e0e0e0; }
     .mdl-data-table tbody tr:hover {
       background-color: #eeeeee; }
   .mdl-data-table td, .mdl-data-table th {
-    padding: 0 18px 0 18px;
+    padding: 0 18px 12px 18px;
     text-align: right; }
     .mdl-data-table td:first-of-type, .mdl-data-table th:first-of-type {
       padding-left: 24px; }
@@ -4672,16 +5060,14 @@ input.mdl-button[type="submit"] {
       padding-right: 24px; }
   .mdl-data-table td {
     position: relative;
-    vertical-align: top;
+    vertical-align: middle;
     height: 48px;
     border-top: 1px solid rgba(0, 0, 0, 0.12);
     border-bottom: 1px solid rgba(0, 0, 0, 0.12);
     padding-top: 12px;
     box-sizing: border-box; }
     .mdl-data-table td .mdl-data-table__select {
-      vertical-align: top;
-      position: absolute;
-      left: 24px; }
+      vertical-align: middle; }
   .mdl-data-table th {
     position: relative;
     vertical-align: bottom;
@@ -4695,10 +5081,32 @@ input.mdl-button[type="submit"] {
     color: rgba(0, 0, 0, 0.54);
     padding-bottom: 8px;
     box-sizing: border-box; }
-    .mdl-data-table th .mdl-data-table__select {
-      position: absolute;
-      bottom: 8px;
-      left: 24px; }
+    .mdl-data-table th.mdl-data-table__header--sorted-ascending, .mdl-data-table th.mdl-data-table__header--sorted-descending {
+      color: rgba(0, 0, 0, 0.87); }
+      .mdl-data-table th.mdl-data-table__header--sorted-ascending:before, .mdl-data-table th.mdl-data-table__header--sorted-descending:before {
+        font-family: 'Material Icons';
+        font-weight: normal;
+        font-style: normal;
+        font-size: 24px;
+        line-height: 1;
+        letter-spacing: normal;
+        text-transform: none;
+        display: inline-block;
+        word-wrap: normal;
+        -moz-font-feature-settings: 'liga';
+             font-feature-settings: 'liga';
+        -webkit-font-feature-settings: 'liga';
+        -webkit-font-smoothing: antialiased;
+        font-size: 16px;
+        content: "\e5d8";
+        margin-right: 5px;
+        vertical-align: sub; }
+      .mdl-data-table th.mdl-data-table__header--sorted-ascending:hover, .mdl-data-table th.mdl-data-table__header--sorted-descending:hover {
+        cursor: pointer; }
+        .mdl-data-table th.mdl-data-table__header--sorted-ascending:hover:before, .mdl-data-table th.mdl-data-table__header--sorted-descending:hover:before {
+          color: rgba(0, 0, 0, 0.26); }
+    .mdl-data-table th.mdl-data-table__header--sorted-descending:before {
+      content: "\e5db"; }
 
 .mdl-data-table__select {
   width: 16px; }
@@ -4761,6 +5169,15 @@ input.mdl-button[type="submit"] {
  * -----Shadows
  * -----Grid
  * -----Data table
+ * -----Dialog
+ * -----Snackbar
+ * -----Tooltip
+ * -----Chip
+ *
+ * Even though all variables have the `!default` directive, most of them
+ * should not be changed as they are dependent one another. This can cause
+ * visual distortions (like alignment issues) that are hard to track down
+ * and fix.
  */
 /* ==========  TYPOGRAPHY  ========== */
 /* We're splitting fonts into "preferred" and "performance" in order to optimize
@@ -4812,6 +5229,7 @@ input.mdl-button[type="submit"] {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+/* ==========  IMAGES  ========== */
 /* ==========  Color & Themes  ========== */
 /* ==========  Typography  ========== */
 /* ==========  Components  ========== */
@@ -4860,7 +5278,10 @@ input.mdl-button[type="submit"] {
 /* SHADOWS */
 /* GRID */
 /* DATA TABLE */
+/* DIALOG */
+/* SNACKBAR */
 /* TOOLTIP */
+/* CHIP */
 /**
  * Copyright 2015 Google Inc. All Rights Reserved.
  *
@@ -4879,6 +5300,232 @@ input.mdl-button[type="submit"] {
 /* Typography */
 /* Shadows */
 /* Animations */
+/* Dialog */
+.mdl-dialog {
+  border: none;
+  box-shadow: 0 9px 46px 8px rgba(0, 0, 0, 0.14), 0 11px 15px -7px rgba(0, 0, 0, 0.12), 0 24px 38px 3px rgba(0, 0, 0, 0.2);
+  width: 280px; }
+  .mdl-dialog__title {
+    padding: 24px 24px 0;
+    margin: 0;
+    font-size: 2.5rem; }
+  .mdl-dialog__actions {
+    padding: 8px 8px 8px 24px;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-flex-direction: row-reverse;
+        -ms-flex-direction: row-reverse;
+            flex-direction: row-reverse;
+    -webkit-flex-wrap: wrap;
+        -ms-flex-wrap: wrap;
+            flex-wrap: wrap; }
+    .mdl-dialog__actions > * {
+      margin-right: 8px;
+      height: 36px; }
+      .mdl-dialog__actions > *:first-child {
+        margin-right: 0; }
+    .mdl-dialog__actions--full-width {
+      padding: 0 0 8px 0; }
+      .mdl-dialog__actions--full-width > * {
+        height: 48px;
+        -webkit-flex: 0 0 100%;
+            -ms-flex: 0 0 100%;
+                flex: 0 0 100%;
+        padding-right: 16px;
+        margin-right: 0;
+        text-align: right; }
+  .mdl-dialog__content {
+    padding: 20px 24px 24px 24px;
+    color: rgba(0,0,0, 0.54); }
+
+/**
+ * Copyright 2015 Google Inc. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+/**
+ * Copyright 2015 Google Inc. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+/*------------------------------------*    $CONTENTS
+\*------------------------------------*/
+/**
+ * STYLE GUIDE VARIABLES------------------Declarations of Sass variables
+ * -----Typography
+ * -----Colors
+ * -----Textfield
+ * -----Switch
+ * -----Spinner
+ * -----Radio
+ * -----Menu
+ * -----List
+ * -----Layout
+ * -----Icon toggles
+ * -----Footer
+ * -----Column
+ * -----Checkbox
+ * -----Card
+ * -----Button
+ * -----Animation
+ * -----Progress
+ * -----Badge
+ * -----Shadows
+ * -----Grid
+ * -----Data table
+ * -----Dialog
+ * -----Snackbar
+ * -----Tooltip
+ * -----Chip
+ *
+ * Even though all variables have the `!default` directive, most of them
+ * should not be changed as they are dependent one another. This can cause
+ * visual distortions (like alignment issues) that are hard to track down
+ * and fix.
+ */
+/* ==========  TYPOGRAPHY  ========== */
+/* We're splitting fonts into "preferred" and "performance" in order to optimize
+   page loading. For important text, such as the body, we want it to load
+   immediately and not wait for the web font load, whereas for other sections,
+   such as headers and titles, we're OK with things taking a bit longer to load.
+   We do have some optional classes and parameters in the mixins, in case you
+   definitely want to make sure you're using the preferred font and don't mind
+   the performance hit.
+   We should be able to improve on this once CSS Font Loading L3 becomes more
+   widely available.
+*/
+/* ==========  COLORS  ========== */
+/**
+*
+* Material design color palettes.
+* @see http://www.google.com/design/spec/style/color.html
+*
+**/
+/**
+ * Copyright 2015 Google Inc. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+/* ==========  Color Palettes  ========== */
+/* colors.scss */
+/**
+ * Copyright 2015 Google Inc. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+/* ==========  IMAGES  ========== */
+/* ==========  Color & Themes  ========== */
+/* ==========  Typography  ========== */
+/* ==========  Components  ========== */
+/* ==========  Standard Buttons  ========== */
+/* ==========  Icon Toggles  ========== */
+/* ==========  Radio Buttons  ========== */
+/* ==========  Ripple effect  ========== */
+/* ==========  Layout  ========== */
+/* ==========  Content Tabs  ========== */
+/* ==========  Checkboxes  ========== */
+/* ==========  Switches  ========== */
+/* ==========  Spinner  ========== */
+/* ==========  Text fields  ========== */
+/* ==========  Card  ========== */
+/* ==========  Sliders ========== */
+/* ========== Progress ========== */
+/* ==========  List ========== */
+/* ==========  Item ========== */
+/* ==========  Dropdown menu ========== */
+/* ==========  Tooltips  ========== */
+/* ==========  Footer  ========== */
+/* TEXTFIELD */
+/* SWITCH */
+/* SPINNER */
+/* RADIO */
+/* MENU */
+/* LIST */
+/* LAYOUT */
+/* ICON TOGGLE */
+/* FOOTER */
+/*mega-footer*/
+/*mini-footer*/
+/* CHECKBOX */
+/* CARD */
+/* Card dimensions */
+/* Cover image */
+/* BUTTON */
+/**
+ *
+ * Dimensions
+ *
+ */
+/* ANIMATION */
+/* PROGRESS */
+/* BADGE */
+/* SHADOWS */
+/* GRID */
+/* DATA TABLE */
+/* DIALOG */
+/* SNACKBAR */
+/* TOOLTIP */
+/* CHIP */
+/**
+ * Copyright 2015 Google Inc. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+/* Typography */
+/* Shadows */
+/* Animations */
+/* Dialog */
 .mdl-mega-footer {
   padding: 16px 40px;
   color: rgb(158,158,158);
@@ -4986,21 +5633,27 @@ input.mdl-button[type="submit"] {
   cursor: pointer;
   z-index: 1;
   opacity: 0; }
-  .mdl-mega-footer--heading-checkbox ~ .mdl-mega-footer--heading:after,
-  .mdl-mega-footer--heading-checkbox ~ .mdl-mega-footer__heading:after,
-  .mdl-mega-footer__heading-checkbox ~ .mdl-mega-footer--heading:after,
-  .mdl-mega-footer__heading-checkbox ~ .mdl-mega-footer__heading:after {
+  .mdl-mega-footer--heading-checkbox + .mdl-mega-footer--heading:after,
+  .mdl-mega-footer--heading-checkbox + .mdl-mega-footer__heading:after,
+  .mdl-mega-footer__heading-checkbox + .mdl-mega-footer--heading:after,
+  .mdl-mega-footer__heading-checkbox + .mdl-mega-footer__heading:after {
     font-family: 'Material Icons';
     content: '\E5CE'; }
 
-.mdl-mega-footer--heading-checkbox:checked ~ ul,
-.mdl-mega-footer__heading-checkbox:checked ~ ul {
+.mdl-mega-footer--heading-checkbox:checked ~ .mdl-mega-footer--link-list,
+.mdl-mega-footer--heading-checkbox:checked ~ .mdl-mega-footer__link-list,
+.mdl-mega-footer--heading-checkbox:checked + .mdl-mega-footer--heading + .mdl-mega-footer--link-list,
+.mdl-mega-footer--heading-checkbox:checked + .mdl-mega-footer__heading + .mdl-mega-footer__link-list,
+.mdl-mega-footer__heading-checkbox:checked ~ .mdl-mega-footer--link-list,
+.mdl-mega-footer__heading-checkbox:checked ~ .mdl-mega-footer__link-list,
+.mdl-mega-footer__heading-checkbox:checked + .mdl-mega-footer--heading + .mdl-mega-footer--link-list,
+.mdl-mega-footer__heading-checkbox:checked + .mdl-mega-footer__heading + .mdl-mega-footer__link-list {
   display: none; }
 
-.mdl-mega-footer--heading-checkbox:checked ~ .mdl-mega-footer--heading:after,
-.mdl-mega-footer--heading-checkbox:checked ~ .mdl-mega-footer__heading:after,
-.mdl-mega-footer__heading-checkbox:checked ~ .mdl-mega-footer--heading:after,
-.mdl-mega-footer__heading-checkbox:checked ~ .mdl-mega-footer__heading:after {
+.mdl-mega-footer--heading-checkbox:checked + .mdl-mega-footer--heading:after,
+.mdl-mega-footer--heading-checkbox:checked + .mdl-mega-footer__heading:after,
+.mdl-mega-footer__heading-checkbox:checked + .mdl-mega-footer--heading:after,
+.mdl-mega-footer__heading-checkbox:checked + .mdl-mega-footer__heading:after {
   font-family: 'Material Icons';
   content: '\E5CF'; }
 
@@ -5060,18 +5713,24 @@ input.mdl-button[type="submit"] {
   .mdl-mega-footer--heading-checkbox,
   .mdl-mega-footer__heading-checkbox {
     display: none; }
-    .mdl-mega-footer--heading-checkbox ~ .mdl-mega-footer--heading:after,
-    .mdl-mega-footer--heading-checkbox ~ .mdl-mega-footer__heading:after,
-    .mdl-mega-footer__heading-checkbox ~ .mdl-mega-footer--heading:after,
-    .mdl-mega-footer__heading-checkbox ~ .mdl-mega-footer__heading:after {
-      background-image: none; }
-  .mdl-mega-footer--heading-checkbox:checked ~ ul,
-  .mdl-mega-footer__heading-checkbox:checked ~ ul {
+    .mdl-mega-footer--heading-checkbox + .mdl-mega-footer--heading:after,
+    .mdl-mega-footer--heading-checkbox + .mdl-mega-footer__heading:after,
+    .mdl-mega-footer__heading-checkbox + .mdl-mega-footer--heading:after,
+    .mdl-mega-footer__heading-checkbox + .mdl-mega-footer__heading:after {
+      content: ''; }
+  .mdl-mega-footer--heading-checkbox:checked ~ .mdl-mega-footer--link-list,
+  .mdl-mega-footer--heading-checkbox:checked ~ .mdl-mega-footer__link-list,
+  .mdl-mega-footer--heading-checkbox:checked + .mdl-mega-footer__heading + .mdl-mega-footer__link-list,
+  .mdl-mega-footer--heading-checkbox:checked + .mdl-mega-footer--heading + .mdl-mega-footer--link-list,
+  .mdl-mega-footer__heading-checkbox:checked ~ .mdl-mega-footer--link-list,
+  .mdl-mega-footer__heading-checkbox:checked ~ .mdl-mega-footer__link-list,
+  .mdl-mega-footer__heading-checkbox:checked + .mdl-mega-footer__heading + .mdl-mega-footer__link-list,
+  .mdl-mega-footer__heading-checkbox:checked + .mdl-mega-footer--heading + .mdl-mega-footer--link-list {
     display: block; }
-  .mdl-mega-footer--heading-checkbox:checked ~ .mdl-mega-footer--heading:after,
-  .mdl-mega-footer--heading-checkbox:checked ~ .mdl-mega-footer__heading:after,
-  .mdl-mega-footer__heading-checkbox:checked ~ .mdl-mega-footer--heading:after,
-  .mdl-mega-footer__heading-checkbox:checked ~ .mdl-mega-footer__heading:after {
+  .mdl-mega-footer--heading-checkbox:checked + .mdl-mega-footer--heading:after,
+  .mdl-mega-footer--heading-checkbox:checked + .mdl-mega-footer__heading:after,
+  .mdl-mega-footer__heading-checkbox:checked + .mdl-mega-footer--heading:after,
+  .mdl-mega-footer__heading-checkbox:checked + .mdl-mega-footer__heading:after {
     content: ''; } }
 
 .mdl-mega-footer--bottom-section,
@@ -5150,6 +5809,15 @@ input.mdl-button[type="submit"] {
  * -----Shadows
  * -----Grid
  * -----Data table
+ * -----Dialog
+ * -----Snackbar
+ * -----Tooltip
+ * -----Chip
+ *
+ * Even though all variables have the `!default` directive, most of them
+ * should not be changed as they are dependent one another. This can cause
+ * visual distortions (like alignment issues) that are hard to track down
+ * and fix.
  */
 /* ==========  TYPOGRAPHY  ========== */
 /* We're splitting fonts into "preferred" and "performance" in order to optimize
@@ -5201,6 +5869,7 @@ input.mdl-button[type="submit"] {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+/* ==========  IMAGES  ========== */
 /* ==========  Color & Themes  ========== */
 /* ==========  Typography  ========== */
 /* ==========  Components  ========== */
@@ -5249,16 +5918,17 @@ input.mdl-button[type="submit"] {
 /* SHADOWS */
 /* GRID */
 /* DATA TABLE */
+/* DIALOG */
+/* SNACKBAR */
 /* TOOLTIP */
+/* CHIP */
 .mdl-mini-footer {
-  display: -webkit-box;
   display: -webkit-flex;
   display: -ms-flexbox;
   display: flex;
   -webkit-flex-flow: row wrap;
       -ms-flex-flow: row wrap;
           flex-flow: row wrap;
-  -webkit-box-pack: justify;
   -webkit-justify-content: space-between;
       -ms-flex-pack: justify;
           justify-content: space-between;
@@ -5273,7 +5943,6 @@ input.mdl-button[type="submit"] {
 
 .mdl-mini-footer--link-list,
 .mdl-mini-footer__link-list {
-  display: -webkit-box;
   display: -webkit-flex;
   display: -ms-flexbox;
   display: flex;
@@ -5300,7 +5969,6 @@ input.mdl-button[type="submit"] {
 .mdl-mini-footer--left-section,
 .mdl-mini-footer__left-section {
   display: inline-block;
-  -webkit-box-ordinal-group: 1;
   -webkit-order: 0;
       -ms-flex-order: 0;
           order: 0; }
@@ -5308,7 +5976,6 @@ input.mdl-button[type="submit"] {
 .mdl-mini-footer--right-section,
 .mdl-mini-footer__right-section {
   display: inline-block;
-  -webkit-box-ordinal-group: 2;
   -webkit-order: 1;
       -ms-flex-order: 1;
           order: 1; }
@@ -5377,6 +6044,15 @@ input.mdl-button[type="submit"] {
  * -----Shadows
  * -----Grid
  * -----Data table
+ * -----Dialog
+ * -----Snackbar
+ * -----Tooltip
+ * -----Chip
+ *
+ * Even though all variables have the `!default` directive, most of them
+ * should not be changed as they are dependent one another. This can cause
+ * visual distortions (like alignment issues) that are hard to track down
+ * and fix.
  */
 /* ==========  TYPOGRAPHY  ========== */
 /* We're splitting fonts into "preferred" and "performance" in order to optimize
@@ -5428,6 +6104,7 @@ input.mdl-button[type="submit"] {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+/* ==========  IMAGES  ========== */
 /* ==========  Color & Themes  ========== */
 /* ==========  Typography  ========== */
 /* ==========  Components  ========== */
@@ -5476,7 +6153,10 @@ input.mdl-button[type="submit"] {
 /* SHADOWS */
 /* GRID */
 /* DATA TABLE */
+/* DIALOG */
+/* SNACKBAR */
 /* TOOLTIP */
+/* CHIP */
 .mdl-icon-toggle {
   position: relative;
   z-index: 1;
@@ -5516,8 +6196,7 @@ input.mdl-button[type="submit"] {
   text-align: center;
   background-color: transparent;
   will-change: background-color;
-  -webkit-transition: background-color 0.2s cubic-bezier(0.4, 0, 0.2, 1), color 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-          transition: background-color 0.2s cubic-bezier(0.4, 0, 0.2, 1), color 0.2s cubic-bezier(0.4, 0, 0.2, 1); }
+  transition: background-color 0.2s cubic-bezier(0.4, 0, 0.2, 1), color 0.2s cubic-bezier(0.4, 0, 0.2, 1); }
   .mdl-icon-toggle__label.material-icons {
     line-height: 32px;
     font-size: 24px; }
@@ -5526,8 +6205,7 @@ input.mdl-button[type="submit"] {
   .mdl-icon-toggle.is-disabled .mdl-icon-toggle__label {
     color: rgba(0,0,0, 0.26);
     cursor: auto;
-    -webkit-transition: none;
-            transition: none; }
+    transition: none; }
   .mdl-icon-toggle.is-focused .mdl-icon-toggle__label {
     background-color: rgba(0,0,0, 0.12); }
   .mdl-icon-toggle.is-focused.is-checked .mdl-icon-toggle__label {
@@ -5607,6 +6285,15 @@ input.mdl-button[type="submit"] {
  * -----Shadows
  * -----Grid
  * -----Data table
+ * -----Dialog
+ * -----Snackbar
+ * -----Tooltip
+ * -----Chip
+ *
+ * Even though all variables have the `!default` directive, most of them
+ * should not be changed as they are dependent one another. This can cause
+ * visual distortions (like alignment issues) that are hard to track down
+ * and fix.
  */
 /* ==========  TYPOGRAPHY  ========== */
 /* We're splitting fonts into "preferred" and "performance" in order to optimize
@@ -5658,6 +6345,7 @@ input.mdl-button[type="submit"] {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+/* ==========  IMAGES  ========== */
 /* ==========  Color & Themes  ========== */
 /* ==========  Typography  ========== */
 /* ==========  Components  ========== */
@@ -5706,7 +6394,10 @@ input.mdl-button[type="submit"] {
 /* SHADOWS */
 /* GRID */
 /* DATA TABLE */
+/* DIALOG */
+/* SNACKBAR */
 /* TOOLTIP */
+/* CHIP */
 /**
  * Copyright 2015 Google Inc. All Rights Reserved.
  *
@@ -5725,6 +6416,328 @@ input.mdl-button[type="submit"] {
 /* Typography */
 /* Shadows */
 /* Animations */
+/* Dialog */
+.mdl-list {
+  display: block;
+  padding: 8px 0;
+  list-style: none; }
+
+.mdl-list__item {
+  font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 24px;
+  letter-spacing: 0.04em;
+  line-height: 1;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  min-height: 48px;
+  box-sizing: border-box;
+  -webkit-flex-direction: row;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  -webkit-flex-wrap: nowrap;
+      -ms-flex-wrap: nowrap;
+          flex-wrap: nowrap;
+  -webkit-align-items: center;
+      -ms-flex-align: center;
+          align-items: center;
+  padding: 16px;
+  cursor: default;
+  color: rgba(0,0,0, 0.87);
+  overflow: hidden; }
+  .mdl-list__item .mdl-list__item-primary-content {
+    -webkit-order: 0;
+        -ms-flex-order: 0;
+            order: 0;
+    -webkit-flex-grow: 2;
+        -ms-flex-positive: 2;
+            flex-grow: 2;
+    text-decoration: none;
+    box-sizing: border-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-align-items: center;
+        -ms-flex-align: center;
+            align-items: center; }
+    .mdl-list__item .mdl-list__item-primary-content .mdl-list__item-icon {
+      margin-right: 32px; }
+    .mdl-list__item .mdl-list__item-primary-content .mdl-list__item-avatar {
+      margin-right: 16px; }
+  .mdl-list__item .mdl-list__item-secondary-content {
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-flex-flow: column;
+        -ms-flex-flow: column;
+            flex-flow: column;
+    -webkit-align-items: flex-end;
+        -ms-flex-align: end;
+            align-items: flex-end;
+    margin-left: 16px; }
+    .mdl-list__item .mdl-list__item-secondary-content .mdl-list__item-secondary-action label {
+      display: inline; }
+    .mdl-list__item .mdl-list__item-secondary-content .mdl-list__item-secondary-info {
+      font-size: 12px;
+      font-weight: 400;
+      line-height: 1;
+      letter-spacing: 0;
+      color: rgba(0,0,0, 0.54); }
+    .mdl-list__item .mdl-list__item-secondary-content .mdl-list__item-sub-header {
+      padding: 0 0 0 16px; }
+
+.mdl-list__item-icon,
+.mdl-list__item-icon.material-icons {
+  height: 24px;
+  width: 24px;
+  font-size: 24px;
+  box-sizing: border-box;
+  color: rgb(117,117,117); }
+
+.mdl-list__item-avatar,
+.mdl-list__item-avatar.material-icons {
+  height: 40px;
+  width: 40px;
+  box-sizing: border-box;
+  border-radius: 50%;
+  background-color: rgb(117,117,117);
+  font-size: 40px;
+  color: white; }
+
+.mdl-list__item--two-line {
+  height: 72px; }
+  .mdl-list__item--two-line .mdl-list__item-primary-content {
+    height: 36px;
+    line-height: 20px;
+    display: block; }
+    .mdl-list__item--two-line .mdl-list__item-primary-content .mdl-list__item-avatar {
+      float: left; }
+    .mdl-list__item--two-line .mdl-list__item-primary-content .mdl-list__item-icon {
+      float: left;
+      margin-top: 6px; }
+    .mdl-list__item--two-line .mdl-list__item-primary-content .mdl-list__item-secondary-content {
+      height: 36px; }
+    .mdl-list__item--two-line .mdl-list__item-primary-content .mdl-list__item-sub-title {
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 24px;
+      letter-spacing: 0;
+      line-height: 18px;
+      color: rgba(0,0,0, 0.54);
+      display: block;
+      padding: 0; }
+
+.mdl-list__item--three-line {
+  height: 88px; }
+  .mdl-list__item--three-line .mdl-list__item-primary-content {
+    height: 52px;
+    line-height: 20px;
+    display: block; }
+    .mdl-list__item--three-line .mdl-list__item-primary-content .mdl-list__item-avatar,
+    .mdl-list__item--three-line .mdl-list__item-primary-content .mdl-list__item-icon {
+      float: left; }
+  .mdl-list__item--three-line .mdl-list__item-secondary-content {
+    height: 52px; }
+  .mdl-list__item--three-line .mdl-list__item-text-body {
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 24px;
+    letter-spacing: 0;
+    line-height: 18px;
+    height: 52px;
+    color: rgba(0,0,0, 0.54);
+    display: block;
+    padding: 0; }
+
+/**
+ * Copyright 2015 Google Inc. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+/**
+ * Copyright 2015 Google Inc. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+/*------------------------------------*    $CONTENTS
+\*------------------------------------*/
+/**
+ * STYLE GUIDE VARIABLES------------------Declarations of Sass variables
+ * -----Typography
+ * -----Colors
+ * -----Textfield
+ * -----Switch
+ * -----Spinner
+ * -----Radio
+ * -----Menu
+ * -----List
+ * -----Layout
+ * -----Icon toggles
+ * -----Footer
+ * -----Column
+ * -----Checkbox
+ * -----Card
+ * -----Button
+ * -----Animation
+ * -----Progress
+ * -----Badge
+ * -----Shadows
+ * -----Grid
+ * -----Data table
+ * -----Dialog
+ * -----Snackbar
+ * -----Tooltip
+ * -----Chip
+ *
+ * Even though all variables have the `!default` directive, most of them
+ * should not be changed as they are dependent one another. This can cause
+ * visual distortions (like alignment issues) that are hard to track down
+ * and fix.
+ */
+/* ==========  TYPOGRAPHY  ========== */
+/* We're splitting fonts into "preferred" and "performance" in order to optimize
+   page loading. For important text, such as the body, we want it to load
+   immediately and not wait for the web font load, whereas for other sections,
+   such as headers and titles, we're OK with things taking a bit longer to load.
+   We do have some optional classes and parameters in the mixins, in case you
+   definitely want to make sure you're using the preferred font and don't mind
+   the performance hit.
+   We should be able to improve on this once CSS Font Loading L3 becomes more
+   widely available.
+*/
+/* ==========  COLORS  ========== */
+/**
+*
+* Material design color palettes.
+* @see http://www.google.com/design/spec/style/color.html
+*
+**/
+/**
+ * Copyright 2015 Google Inc. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+/* ==========  Color Palettes  ========== */
+/* colors.scss */
+/**
+ * Copyright 2015 Google Inc. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+/* ==========  IMAGES  ========== */
+/* ==========  Color & Themes  ========== */
+/* ==========  Typography  ========== */
+/* ==========  Components  ========== */
+/* ==========  Standard Buttons  ========== */
+/* ==========  Icon Toggles  ========== */
+/* ==========  Radio Buttons  ========== */
+/* ==========  Ripple effect  ========== */
+/* ==========  Layout  ========== */
+/* ==========  Content Tabs  ========== */
+/* ==========  Checkboxes  ========== */
+/* ==========  Switches  ========== */
+/* ==========  Spinner  ========== */
+/* ==========  Text fields  ========== */
+/* ==========  Card  ========== */
+/* ==========  Sliders ========== */
+/* ========== Progress ========== */
+/* ==========  List ========== */
+/* ==========  Item ========== */
+/* ==========  Dropdown menu ========== */
+/* ==========  Tooltips  ========== */
+/* ==========  Footer  ========== */
+/* TEXTFIELD */
+/* SWITCH */
+/* SPINNER */
+/* RADIO */
+/* MENU */
+/* LIST */
+/* LAYOUT */
+/* ICON TOGGLE */
+/* FOOTER */
+/*mega-footer*/
+/*mini-footer*/
+/* CHECKBOX */
+/* CARD */
+/* Card dimensions */
+/* Cover image */
+/* BUTTON */
+/**
+ *
+ * Dimensions
+ *
+ */
+/* ANIMATION */
+/* PROGRESS */
+/* BADGE */
+/* SHADOWS */
+/* GRID */
+/* DATA TABLE */
+/* DIALOG */
+/* SNACKBAR */
+/* TOOLTIP */
+/* CHIP */
+/**
+ * Copyright 2015 Google Inc. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+/* Typography */
+/* Shadows */
+/* Animations */
+/* Dialog */
 .mdl-menu__container {
   display: block;
   margin: 0;
@@ -5736,8 +6749,7 @@ input.mdl-button[type="submit"] {
   width: 0;
   visibility: hidden;
   z-index: -1; }
-  .mdl-menu__container.is-visible,
-  .mdl-menu__container.is-animating {
+  .mdl-menu__container.is-visible, .mdl-menu__container.is-animating {
     z-index: 999;
     visibility: visible; }
 
@@ -5754,33 +6766,28 @@ input.mdl-button[type="submit"] {
   overflow: hidden;
   opacity: 0;
   -webkit-transform: scale(0);
-      -ms-transform: scale(0);
           transform: scale(0);
   -webkit-transform-origin: 0 0;
-      -ms-transform-origin: 0 0;
           transform-origin: 0 0;
   box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 1px 5px 0 rgba(0, 0, 0, 0.12);
   will-change: transform;
-  -webkit-transition: -webkit-transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-          transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: opacity 0.2s cubic-bezier(0.4, 0, 0.2, 1), -webkit-transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.2s cubic-bezier(0.4, 0, 0.2, 1), -webkit-transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   z-index: -1; }
   .mdl-menu__container.is-visible .mdl-menu__outline {
     opacity: 1;
     -webkit-transform: scale(1);
-        -ms-transform: scale(1);
             transform: scale(1);
     z-index: 999; }
   .mdl-menu__outline.mdl-menu--bottom-right {
     -webkit-transform-origin: 100% 0;
-        -ms-transform-origin: 100% 0;
             transform-origin: 100% 0; }
   .mdl-menu__outline.mdl-menu--top-left {
     -webkit-transform-origin: 0 100%;
-        -ms-transform-origin: 0 100%;
             transform-origin: 0 100%; }
   .mdl-menu__outline.mdl-menu--top-right {
     -webkit-transform-origin: 100% 100%;
-        -ms-transform-origin: 100% 100%;
             transform-origin: 100% 100%; }
 
 .mdl-menu {
@@ -5800,8 +6807,7 @@ input.mdl-button[type="submit"] {
     opacity: 1;
     z-index: 999; }
   .mdl-menu.is-animating {
-    -webkit-transition: opacity 0.2s cubic-bezier(0.4, 0, 0.2, 1), clip 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            transition: opacity 0.2s cubic-bezier(0.4, 0, 0.2, 1), clip 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+    transition: opacity 0.2s cubic-bezier(0.4, 0, 0.2, 1), clip 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
   .mdl-menu.mdl-menu--bottom-right {
     left: auto;
     right: 0; }
@@ -5838,8 +6844,7 @@ input.mdl-button[type="submit"] {
   line-height: 48px;
   white-space: nowrap;
   opacity: 0;
-  -webkit-transition: opacity 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-          transition: opacity 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: opacity 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   -webkit-user-select: none;
      -moz-user-select: none;
       -ms-user-select: none;
@@ -5848,15 +6853,17 @@ input.mdl-button[type="submit"] {
     opacity: 1; }
   .mdl-menu__item::-moz-focus-inner {
     border: 0; }
-  .mdl-menu__item[disabled] {
+  .mdl-menu__item--full-bleed-divider {
+    border-bottom: 1px solid rgba(0,0,0, 0.12); }
+  .mdl-menu__item[disabled], .mdl-menu__item[data-mdl-disabled] {
     color: rgb(189,189,189);
     background-color: transparent;
     cursor: auto; }
-    .mdl-menu__item[disabled]:hover {
+    .mdl-menu__item[disabled]:hover, .mdl-menu__item[data-mdl-disabled]:hover {
       background-color: transparent; }
-    .mdl-menu__item[disabled]:focus {
+    .mdl-menu__item[disabled]:focus, .mdl-menu__item[data-mdl-disabled]:focus {
       background-color: transparent; }
-    .mdl-menu__item[disabled] .mdl-ripple {
+    .mdl-menu__item[disabled] .mdl-ripple, .mdl-menu__item[data-mdl-disabled] .mdl-ripple {
       background: transparent; }
   .mdl-menu__item:hover {
     background-color: rgb(238,238,238); }
@@ -5931,6 +6938,15 @@ input.mdl-button[type="submit"] {
  * -----Shadows
  * -----Grid
  * -----Data table
+ * -----Dialog
+ * -----Snackbar
+ * -----Tooltip
+ * -----Chip
+ *
+ * Even though all variables have the `!default` directive, most of them
+ * should not be changed as they are dependent one another. This can cause
+ * visual distortions (like alignment issues) that are hard to track down
+ * and fix.
  */
 /* ==========  TYPOGRAPHY  ========== */
 /* We're splitting fonts into "preferred" and "performance" in order to optimize
@@ -5982,6 +6998,7 @@ input.mdl-button[type="submit"] {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+/* ==========  IMAGES  ========== */
 /* ==========  Color & Themes  ========== */
 /* ==========  Typography  ========== */
 /* ==========  Components  ========== */
@@ -6030,12 +7047,16 @@ input.mdl-button[type="submit"] {
 /* SHADOWS */
 /* GRID */
 /* DATA TABLE */
+/* DIALOG */
+/* SNACKBAR */
 /* TOOLTIP */
+/* CHIP */
 .mdl-progress {
   display: block;
   position: relative;
   height: 4px;
-  width: 500px; }
+  width: 500px;
+  max-width: 100%; }
 
 .mdl-progress > .bar {
   display: block;
@@ -6043,8 +7064,7 @@ input.mdl-button[type="submit"] {
   top: 0;
   bottom: 0;
   width: 0%;
-  -webkit-transition: width 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-          transition: width 0.2s cubic-bezier(0.4, 0, 0.2, 1); }
+  transition: width 0.2s cubic-bezier(0.4, 0, 0.2, 1); }
 
 .mdl-progress > .progressbar {
   background-color: rgb(63,81,181);
@@ -6052,7 +7072,6 @@ input.mdl-button[type="submit"] {
   left: 0; }
 
 .mdl-progress > .bufferbar {
-  background-image: -webkit-linear-gradient(left, rgba(255,255,255, 0.7), rgba(255,255,255, 0.7)), -webkit-linear-gradient(left, rgb(63,81,181), rgb(63,81,181));
   background-image: linear-gradient(to right, rgba(255,255,255, 0.7), rgba(255,255,255, 0.7)), linear-gradient(to right, rgb(63,81,181), rgb(63,81,181));
   z-index: 0;
   left: 0; }
@@ -6061,16 +7080,17 @@ input.mdl-button[type="submit"] {
   right: 0; }
 
 @supports (-webkit-appearance: none) {
+  .mdl-progress:not(.mdl-progress--indeterminate):not(.mdl-progress--indeterminate) > .auxbar,
   .mdl-progress:not(.mdl-progress__indeterminate):not(.mdl-progress__indeterminate) > .auxbar {
-    background-image: -webkit-linear-gradient(left, rgba(255,255,255, 0.7), rgba(255,255,255, 0.7)), -webkit-linear-gradient(left, rgb(63,81,181), rgb(63,81,181));
     background-image: linear-gradient(to right, rgba(255,255,255, 0.7), rgba(255,255,255, 0.7)), linear-gradient(to right, rgb(63,81,181), rgb(63,81,181));
     -webkit-mask: url("data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIj8+Cjxzdmcgd2lkdGg9IjEyIiBoZWlnaHQ9IjQiIHZpZXdQb3J0PSIwIDAgMTIgNCIgdmVyc2lvbj0iMS4xIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPgogIDxlbGxpcHNlIGN4PSIyIiBjeT0iMiIgcng9IjIiIHJ5PSIyIj4KICAgIDxhbmltYXRlIGF0dHJpYnV0ZU5hbWU9ImN4IiBmcm9tPSIyIiB0bz0iLTEwIiBkdXI9IjAuNnMiIHJlcGVhdENvdW50PSJpbmRlZmluaXRlIiAvPgogIDwvZWxsaXBzZT4KICA8ZWxsaXBzZSBjeD0iMTQiIGN5PSIyIiByeD0iMiIgcnk9IjIiIGNsYXNzPSJsb2FkZXIiPgogICAgPGFuaW1hdGUgYXR0cmlidXRlTmFtZT0iY3giIGZyb209IjE0IiB0bz0iMiIgZHVyPSIwLjZzIiByZXBlYXRDb3VudD0iaW5kZWZpbml0ZSIgLz4KICA8L2VsbGlwc2U+Cjwvc3ZnPgo=");
             mask: url("data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIj8+Cjxzdmcgd2lkdGg9IjEyIiBoZWlnaHQ9IjQiIHZpZXdQb3J0PSIwIDAgMTIgNCIgdmVyc2lvbj0iMS4xIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPgogIDxlbGxpcHNlIGN4PSIyIiBjeT0iMiIgcng9IjIiIHJ5PSIyIj4KICAgIDxhbmltYXRlIGF0dHJpYnV0ZU5hbWU9ImN4IiBmcm9tPSIyIiB0bz0iLTEwIiBkdXI9IjAuNnMiIHJlcGVhdENvdW50PSJpbmRlZmluaXRlIiAvPgogIDwvZWxsaXBzZT4KICA8ZWxsaXBzZSBjeD0iMTQiIGN5PSIyIiByeD0iMiIgcnk9IjIiIGNsYXNzPSJsb2FkZXIiPgogICAgPGFuaW1hdGUgYXR0cmlidXRlTmFtZT0iY3giIGZyb209IjE0IiB0bz0iMiIgZHVyPSIwLjZzIiByZXBlYXRDb3VudD0iaW5kZWZpbml0ZSIgLz4KICA8L2VsbGlwc2U+Cjwvc3ZnPgo="); } }
 
+.mdl-progress:not(.mdl-progress--indeterminate) > .auxbar,
 .mdl-progress:not(.mdl-progress__indeterminate) > .auxbar {
-  background-image: -webkit-linear-gradient(left, rgba(255,255,255, 0.9), rgba(255,255,255, 0.9)), -webkit-linear-gradient(left, rgb(63,81,181), rgb(63,81,181));
   background-image: linear-gradient(to right, rgba(255,255,255, 0.9), rgba(255,255,255, 0.9)), linear-gradient(to right, rgb(63,81,181), rgb(63,81,181)); }
 
+.mdl-progress.mdl-progress--indeterminate > .bar1,
 .mdl-progress.mdl-progress__indeterminate > .bar1 {
   background-color: rgb(63,81,181);
   -webkit-animation-name: indeterminate1;
@@ -6082,6 +7102,7 @@ input.mdl-button[type="submit"] {
   -webkit-animation-timing-function: linear;
           animation-timing-function: linear; }
 
+.mdl-progress.mdl-progress--indeterminate > .bar3,
 .mdl-progress.mdl-progress__indeterminate > .bar3 {
   background-image: none;
   background-color: rgb(63,81,181);
@@ -6199,6 +7220,15 @@ input.mdl-button[type="submit"] {
  * -----Shadows
  * -----Grid
  * -----Data table
+ * -----Dialog
+ * -----Snackbar
+ * -----Tooltip
+ * -----Chip
+ *
+ * Even though all variables have the `!default` directive, most of them
+ * should not be changed as they are dependent one another. This can cause
+ * visual distortions (like alignment issues) that are hard to track down
+ * and fix.
  */
 /* ==========  TYPOGRAPHY  ========== */
 /* We're splitting fonts into "preferred" and "performance" in order to optimize
@@ -6250,6 +7280,7 @@ input.mdl-button[type="submit"] {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+/* ==========  IMAGES  ========== */
 /* ==========  Color & Themes  ========== */
 /* ==========  Typography  ========== */
 /* ==========  Components  ========== */
@@ -6298,7 +7329,10 @@ input.mdl-button[type="submit"] {
 /* SHADOWS */
 /* GRID */
 /* DATA TABLE */
+/* DIALOG */
+/* SNACKBAR */
 /* TOOLTIP */
+/* CHIP */
 /**
  * Copyright 2015 Google Inc. All Rights Reserved.
  *
@@ -6317,8 +7351,8 @@ input.mdl-button[type="submit"] {
 /* Typography */
 /* Shadows */
 /* Animations */
+/* Dialog */
 .mdl-navigation {
-  display: -webkit-box;
   display: -webkit-flex;
   display: -ms-flexbox;
   display: flex;
@@ -6330,19 +7364,21 @@ input.mdl-button[type="submit"] {
 .mdl-navigation__link {
   color: rgb(66,66,66);
   text-decoration: none;
-  font-weight: 500;
-  font-size: 13px;
-  margin: 0; }
+  margin: 0;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 24px;
+  letter-spacing: 0;
+  opacity: 0.87; }
+  .mdl-navigation__link .material-icons {
+    vertical-align: middle; }
 
 .mdl-layout {
   width: 100%;
   height: 100%;
-  display: -webkit-box;
   display: -webkit-flex;
   display: -ms-flexbox;
   display: flex;
-  -webkit-box-orient: vertical;
-  -webkit-box-direction: normal;
   -webkit-flex-direction: column;
       -ms-flex-direction: column;
           flex-direction: column;
@@ -6362,6 +7398,7 @@ input.mdl-button[type="submit"] {
   width: 100%;
   height: 100%; }
 
+.mdl-layout__title,
 .mdl-layout-title {
   display: block;
   position: relative;
@@ -6374,18 +7411,14 @@ input.mdl-button[type="submit"] {
   box-sizing: border-box; }
 
 .mdl-layout-spacer {
-  -webkit-box-flex: 1;
   -webkit-flex-grow: 1;
       -ms-flex-positive: 1;
           flex-grow: 1; }
 
 .mdl-layout__drawer {
-  display: -webkit-box;
   display: -webkit-flex;
   display: -ms-flexbox;
   display: flex;
-  -webkit-box-orient: vertical;
-  -webkit-box-direction: normal;
   -webkit-flex-direction: column;
       -ms-flex-direction: column;
           flex-direction: column;
@@ -6403,43 +7436,41 @@ input.mdl-button[type="submit"] {
   border-right: 1px solid rgb(224,224,224);
   background: rgb(250,250,250);
   -webkit-transform: translateX(-250px);
-      -ms-transform: translateX(-250px);
           transform: translateX(-250px);
   -webkit-transform-style: preserve-3d;
           transform-style: preserve-3d;
   will-change: transform;
-  -webkit-transition-duration: 0.2s;
-          transition-duration: 0.2s;
-  -webkit-transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-          transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-  -webkit-transition-property: -webkit-transform;
-          transition-property: transform;
+  transition-duration: 0.2s;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-property: -webkit-transform;
+  transition-property: transform;
+  transition-property: transform, -webkit-transform;
   color: rgb(66,66,66);
   overflow: visible;
   overflow-y: auto;
   z-index: 5; }
   .mdl-layout__drawer.is-visible {
     -webkit-transform: translateX(0);
-        -ms-transform: translateX(0);
             transform: translateX(0); }
+    .mdl-layout__drawer.is-visible ~ .mdl-layout__content.mdl-layout__content {
+      overflow: hidden; }
   .mdl-layout__drawer > * {
     -webkit-flex-shrink: 0;
         -ms-flex-negative: 0;
             flex-shrink: 0; }
+  .mdl-layout__drawer > .mdl-layout__title,
   .mdl-layout__drawer > .mdl-layout-title {
     line-height: 64px;
     padding-left: 40px; }
     @media screen and (max-width: 1024px) {
+      .mdl-layout__drawer > .mdl-layout__title,
       .mdl-layout__drawer > .mdl-layout-title {
         line-height: 56px;
         padding-left: 16px; } }
   .mdl-layout__drawer .mdl-navigation {
-    -webkit-box-orient: vertical;
-    -webkit-box-direction: normal;
     -webkit-flex-direction: column;
         -ms-flex-direction: column;
             flex-direction: column;
-    -webkit-box-align: stretch;
     -webkit-align-items: stretch;
         -ms-flex-align: stretch;
             align-items: stretch;
@@ -6458,12 +7489,11 @@ input.mdl-button[type="submit"] {
       .mdl-layout__drawer .mdl-navigation .mdl-navigation__link:hover {
         background-color: rgb(224,224,224); }
       .mdl-layout__drawer .mdl-navigation .mdl-navigation__link--current {
-        background-color: rgb(0,0,0);
-        color: rgb(63,81,181); }
+        background-color: rgb(224,224,224);
+        color: rgb(0,0,0); }
   @media screen and (min-width: 1025px) {
     .mdl-layout--fixed-drawer > .mdl-layout__drawer {
       -webkit-transform: translateX(0);
-          -ms-transform: translateX(0);
               transform: translateX(0); } }
 
 .mdl-layout__drawer-button {
@@ -6479,9 +7509,9 @@ input.mdl-button[type="submit"] {
   text-align: center;
   cursor: pointer;
   font-size: 26px;
-  line-height: 50px;
+  line-height: 56px;
   font-family: Helvetica, Arial, sans-serif;
-  margin: 10px 12px;
+  margin: 8px 12px;
   top: 0;
   left: 0;
   color: rgb(255,255,255);
@@ -6498,23 +7528,23 @@ input.mdl-button[type="submit"] {
       margin: 4px;
       color: rgba(0, 0, 0, 0.5); } }
   @media screen and (min-width: 1025px) {
-    .mdl-layout--fixed-drawer > .mdl-layout__drawer-button {
-      display: none; } }
+    .mdl-layout__drawer-button {
+      line-height: 54px; }
+      .mdl-layout--no-desktop-drawer-button .mdl-layout__drawer-button,
+      .mdl-layout--fixed-drawer > .mdl-layout__drawer-button,
+      .mdl-layout--no-drawer-button .mdl-layout__drawer-button {
+        display: none; } }
 
 .mdl-layout__header {
-  display: -webkit-box;
   display: -webkit-flex;
   display: -ms-flexbox;
   display: flex;
-  -webkit-box-orient: vertical;
-  -webkit-box-direction: normal;
   -webkit-flex-direction: column;
       -ms-flex-direction: column;
           flex-direction: column;
   -webkit-flex-wrap: nowrap;
       -ms-flex-wrap: nowrap;
           flex-wrap: nowrap;
-  -webkit-box-pack: start;
   -webkit-justify-content: flex-start;
       -ms-flex-pack: start;
           justify-content: flex-start;
@@ -6532,19 +7562,16 @@ input.mdl-button[type="submit"] {
   background-color: rgb(63,81,181);
   color: rgb(255,255,255);
   box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 1px 5px 0 rgba(0, 0, 0, 0.12);
-  -webkit-transition-duration: 0.2s;
-          transition-duration: 0.2s;
-  -webkit-transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-          transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-  -webkit-transition-property: max-height, box-shadow;
-          transition-property: max-height, box-shadow; }
+  transition-duration: 0.2s;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-property: max-height, box-shadow; }
   @media screen and (max-width: 1024px) {
     .mdl-layout__header {
       min-height: 56px; } }
-  .mdl-layout--fixed-drawer:not(.is-small-screen) > .mdl-layout__header {
+  .mdl-layout--fixed-drawer.is-upgraded:not(.is-small-screen) > .mdl-layout__header {
     margin-left: 240px;
     width: calc(100% - 240px); }
-  @media screen and (min-width: 1024px) {
+  @media screen and (min-width: 1025px) {
     .mdl-layout--fixed-drawer > .mdl-layout__header .mdl-layout__header-row {
       padding-left: 40px; } }
   .mdl-layout__header > .mdl-layout-icon {
@@ -6576,7 +7603,6 @@ input.mdl-button[type="submit"] {
     .mdl-layout__header {
       display: none; }
     .mdl-layout--fixed-header > .mdl-layout__header {
-      display: -webkit-box;
       display: -webkit-flex;
       display: -ms-flexbox;
       display: flex; } }
@@ -6596,14 +7622,15 @@ input.mdl-button[type="submit"] {
   overflow: hidden; }
   .mdl-layout__header--waterfall.is-casting-shadow {
     box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 1px 5px 0 rgba(0, 0, 0, 0.12); }
+  .mdl-layout__header--waterfall.mdl-layout__header--waterfall-hide-top {
+    -webkit-justify-content: flex-end;
+        -ms-flex-pack: end;
+            justify-content: flex-end; }
 
 .mdl-layout__header-row {
-  display: -webkit-box;
   display: -webkit-flex;
   display: -ms-flexbox;
   display: flex;
-  -webkit-box-orient: horizontal;
-  -webkit-box-direction: normal;
   -webkit-flex-direction: row;
       -ms-flex-direction: row;
           flex-direction: row;
@@ -6617,17 +7644,23 @@ input.mdl-button[type="submit"] {
   -webkit-align-self: stretch;
       -ms-flex-item-align: stretch;
           align-self: stretch;
-  -webkit-box-align: center;
   -webkit-align-items: center;
       -ms-flex-align: center;
           align-items: center;
   height: 64px;
   margin: 0;
   padding: 0 40px 0 80px; }
+  .mdl-layout--no-drawer-button .mdl-layout__header-row {
+    padding-left: 40px; }
+  @media screen and (min-width: 1025px) {
+    .mdl-layout--no-desktop-drawer-button .mdl-layout__header-row {
+      padding-left: 40px; } }
   @media screen and (max-width: 1024px) {
     .mdl-layout__header-row {
       height: 56px;
-      padding: 0 16px 0 72px; } }
+      padding: 0 16px 0 72px; }
+      .mdl-layout--no-drawer-button .mdl-layout__header-row {
+        padding-left: 16px; } }
   .mdl-layout__header-row > * {
     -webkit-flex-shrink: 0;
         -ms-flex-negative: 0;
@@ -6638,12 +7671,9 @@ input.mdl-button[type="submit"] {
     margin: 0;
     padding: 0;
     height: 64px;
-    -webkit-box-orient: horizontal;
-    -webkit-box-direction: normal;
     -webkit-flex-direction: row;
         -ms-flex-direction: row;
             flex-direction: row;
-    -webkit-box-align: center;
     -webkit-align-items: center;
         -ms-flex-align: center;
             align-items: center; }
@@ -6669,22 +7699,29 @@ input.mdl-button[type="submit"] {
   width: 100%;
   z-index: 4;
   visibility: hidden;
-  -webkit-transition-property: background-color;
-          transition-property: background-color;
-  -webkit-transition-duration: 0.2s;
-          transition-duration: 0.2s;
-  -webkit-transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-          transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1); }
-  .mdl-layout__drawer.is-visible ~ .mdl-layout__obfuscator {
+  transition-property: background-color;
+  transition-duration: 0.2s;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1); }
+  .mdl-layout__obfuscator.is-visible {
     background-color: rgba(0, 0, 0, 0.5);
     visibility: visible; }
+  @supports (pointer-events: auto) {
+    .mdl-layout__obfuscator {
+      background-color: rgba(0, 0, 0, 0.5);
+      opacity: 0;
+      transition-property: opacity;
+      visibility: visible;
+      pointer-events: none; }
+      .mdl-layout__obfuscator.is-visible {
+        pointer-events: auto;
+        opacity: 1; } }
 
 .mdl-layout__content {
   -ms-flex: 0 1 auto;
+  position: relative;
   display: inline-block;
   overflow-y: auto;
   overflow-x: hidden;
-  -webkit-box-flex: 1;
   -webkit-flex-grow: 1;
       -ms-flex-positive: 1;
           flex-grow: 1;
@@ -6704,9 +7741,8 @@ input.mdl-button[type="submit"] {
 .mdl-layout__tab-bar {
   height: 96px;
   margin: 0;
-  width: calc(100% -         112px);
+  width: calc(100% - 112px);
   padding: 0 0 0 56px;
-  display: -webkit-box;
   display: -webkit-flex;
   display: -ms-flexbox;
   display: flex;
@@ -6715,10 +7751,20 @@ input.mdl-button[type="submit"] {
   overflow-x: scroll; }
   .mdl-layout__tab-bar::-webkit-scrollbar {
     display: none; }
+  .mdl-layout--no-drawer-button .mdl-layout__tab-bar {
+    padding-left: 16px;
+    width: calc(100% - 32px); }
+  @media screen and (min-width: 1025px) {
+    .mdl-layout--no-desktop-drawer-button .mdl-layout__tab-bar {
+      padding-left: 16px;
+      width: calc(100% - 32px); } }
   @media screen and (max-width: 1024px) {
     .mdl-layout__tab-bar {
-      width: calc(100% -           60px);
-      padding: 0 0 0 60px; } }
+      width: calc(100% - 60px);
+      padding: 0 0 0 60px; }
+      .mdl-layout--no-drawer-button .mdl-layout__tab-bar {
+        width: calc(100% - 8px);
+        padding-left: 4px; } }
   .mdl-layout--fixed-tabs .mdl-layout__tab-bar {
     padding: 0;
     overflow: hidden;
@@ -6731,7 +7777,6 @@ input.mdl-button[type="submit"] {
   border: none;
   margin: 0;
   z-index: 2;
-  -webkit-box-flex: 0;
   -webkit-flex-grow: 0;
       -ms-flex-positive: 0;
           flex-grow: 0;
@@ -6759,9 +7804,15 @@ input.mdl-button[type="submit"] {
      -moz-user-select: none;
       -ms-user-select: none;
           user-select: none; }
+  .mdl-layout--no-desktop-drawer-button .mdl-layout__tab-bar-button,
+  .mdl-layout--no-drawer-button .mdl-layout__tab-bar-button {
+    width: 16px; }
+    .mdl-layout--no-desktop-drawer-button .mdl-layout__tab-bar-button .material-icons,
+    .mdl-layout--no-drawer-button .mdl-layout__tab-bar-button .material-icons {
+      position: relative;
+      left: -4px; }
   @media screen and (max-width: 1024px) {
     .mdl-layout__tab-bar-button {
-      display: none;
       width: 60px; } }
   .mdl-layout--fixed-tabs .mdl-layout__tab-bar-button {
     display: none; }
@@ -6783,7 +7834,6 @@ input.mdl-button[type="submit"] {
   float: left;
   position: relative;
   display: block;
-  -webkit-box-flex: 0;
   -webkit-flex-grow: 0;
       -ms-flex-positive: 0;
           flex-grow: 0;
@@ -6804,7 +7854,6 @@ input.mdl-button[type="submit"] {
       padding: 0 12px 0 12px; } }
   .mdl-layout--fixed-tabs .mdl-layout__tab {
     float: none;
-    -webkit-box-flex: 1;
     -webkit-flex-grow: 1;
         -ms-flex-positive: 1;
             flex-grow: 1;
@@ -6822,8 +7871,7 @@ input.mdl-button[type="submit"] {
     background: rgb(255,64,129);
     -webkit-animation: border-expand 0.2s cubic-bezier(0.4, 0, 0.4, 1) 0.01s alternate forwards;
             animation: border-expand 0.2s cubic-bezier(0.4, 0, 0.4, 1) 0.01s alternate forwards;
-    -webkit-transition: all 1s cubic-bezier(0.4, 0, 1, 1);
-            transition: all 1s cubic-bezier(0.4, 0, 1, 1); }
+    transition: all 1s cubic-bezier(0.4, 0, 1, 1); }
   .mdl-layout__tab .mdl-layout__tab-ripple-container {
     display: block;
     position: absolute;
@@ -6898,6 +7946,15 @@ input.mdl-button[type="submit"] {
  * -----Shadows
  * -----Grid
  * -----Data table
+ * -----Dialog
+ * -----Snackbar
+ * -----Tooltip
+ * -----Chip
+ *
+ * Even though all variables have the `!default` directive, most of them
+ * should not be changed as they are dependent one another. This can cause
+ * visual distortions (like alignment issues) that are hard to track down
+ * and fix.
  */
 /* ==========  TYPOGRAPHY  ========== */
 /* We're splitting fonts into "preferred" and "performance" in order to optimize
@@ -6949,6 +8006,7 @@ input.mdl-button[type="submit"] {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+/* ==========  IMAGES  ========== */
 /* ==========  Color & Themes  ========== */
 /* ==========  Typography  ========== */
 /* ==========  Components  ========== */
@@ -6997,7 +8055,10 @@ input.mdl-button[type="submit"] {
 /* SHADOWS */
 /* GRID */
 /* DATA TABLE */
+/* DIALOG */
+/* SNACKBAR */
 /* TOOLTIP */
+/* CHIP */
 /**
  * Copyright 2015 Google Inc. All Rights Reserved.
  *
@@ -7016,12 +8077,15 @@ input.mdl-button[type="submit"] {
 /* Typography */
 /* Shadows */
 /* Animations */
+/* Dialog */
 .mdl-radio {
   position: relative;
   font-size: 16px;
   line-height: 24px;
   display: inline-block;
+  vertical-align: middle;
   box-sizing: border-box;
+  height: 24px;
   margin: 0;
   padding-left: 0; }
   .mdl-radio.is-upgraded {
@@ -7057,6 +8121,7 @@ input.mdl-button[type="submit"] {
   z-index: 2; }
   .mdl-radio.is-checked .mdl-radio__outer-circle {
     border: 2px solid rgb(63,81,181); }
+  .mdl-radio__outer-circle fieldset[disabled] .mdl-radio,
   .mdl-radio.is-disabled .mdl-radio__outer-circle {
     border: 2px solid rgba(0,0,0, 0.26);
     cursor: auto; }
@@ -7071,19 +8136,19 @@ input.mdl-button[type="submit"] {
   width: 8px;
   height: 8px;
   cursor: pointer;
-  -webkit-transition-duration: 0.28s;
-          transition-duration: 0.28s;
-  -webkit-transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-          transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-  -webkit-transition-property: -webkit-transform;
-          transition-property: transform;
-  -webkit-transform: scale3d(0, 0, 0);
-          transform: scale3d(0, 0, 0);
+  transition-duration: 0.28s;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-property: -webkit-transform;
+  transition-property: transform;
+  transition-property: transform, -webkit-transform;
+  -webkit-transform: scale(0, 0);
+          transform: scale(0, 0);
   border-radius: 50%;
   background: rgb(63,81,181); }
   .mdl-radio.is-checked .mdl-radio__inner-circle {
-    -webkit-transform: scale3d(1, 1, 1);
-            transform: scale3d(1, 1, 1); }
+    -webkit-transform: scale(1, 1);
+            transform: scale(1, 1); }
+  fieldset[disabled] .mdl-radio .mdl-radio__inner-circle,
   .mdl-radio.is-disabled .mdl-radio__inner-circle {
     background: rgba(0,0,0, 0.26);
     cursor: auto; }
@@ -7092,6 +8157,7 @@ input.mdl-button[type="submit"] {
 
 .mdl-radio__label {
   cursor: pointer; }
+  fieldset[disabled] .mdl-radio .mdl-radio__label,
   .mdl-radio.is-disabled .mdl-radio__label {
     color: rgba(0,0,0, 0.26);
     cursor: auto; }
@@ -7110,8 +8176,10 @@ input.mdl-button[type="submit"] {
   -webkit-mask-image: -webkit-radial-gradient(circle, white, black); }
   .mdl-radio__ripple-container .mdl-ripple {
     background: rgb(63,81,181); }
+  fieldset[disabled] .mdl-radio .mdl-radio__ripple-container,
   .mdl-radio.is-disabled .mdl-radio__ripple-container {
     cursor: auto; }
+  fieldset[disabled] .mdl-radio .mdl-radio__ripple-container .mdl-ripple,
   .mdl-radio.is-disabled .mdl-radio__ripple-container .mdl-ripple {
     background: transparent; }
 
@@ -7170,6 +8238,15 @@ input.mdl-button[type="submit"] {
  * -----Shadows
  * -----Grid
  * -----Data table
+ * -----Dialog
+ * -----Snackbar
+ * -----Tooltip
+ * -----Chip
+ *
+ * Even though all variables have the `!default` directive, most of them
+ * should not be changed as they are dependent one another. This can cause
+ * visual distortions (like alignment issues) that are hard to track down
+ * and fix.
  */
 /* ==========  TYPOGRAPHY  ========== */
 /* We're splitting fonts into "preferred" and "performance" in order to optimize
@@ -7221,6 +8298,7 @@ input.mdl-button[type="submit"] {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+/* ==========  IMAGES  ========== */
 /* ==========  Color & Themes  ========== */
 /* ==========  Typography  ========== */
 /* ==========  Components  ========== */
@@ -7269,7 +8347,10 @@ input.mdl-button[type="submit"] {
 /* SHADOWS */
 /* GRID */
 /* DATA TABLE */
+/* DIALOG */
+/* SNACKBAR */
 /* TOOLTIP */
+/* CHIP */
 _:-ms-input-placeholder, :root .mdl-slider.mdl-slider.is-upgraded {
   -ms-appearance: none;
   height: 32px;
@@ -7293,6 +8374,7 @@ _:-ms-input-placeholder, :root .mdl-slider.mdl-slider.is-upgraded {
     color: rgb(63,81,181);
     -webkit-align-self: center;
         -ms-flex-item-align: center;
+                -ms-grid-row-align: center;
             align-self: center;
     z-index: 1;
     cursor: pointer;
@@ -7329,8 +8411,9 @@ _:-ms-input-placeholder, :root .mdl-slider.mdl-slider.is-upgraded {
       border-radius: 50%;
       background: rgb(63,81,181);
       border: none;
-      -webkit-transition: -webkit-transform 0.18s cubic-bezier(0.4, 0, 0.2, 1), border 0.18s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.18s cubic-bezier(0.4, 0, 0.2, 1), background 0.28s cubic-bezier(0.4, 0, 0.2, 1);
-              transition: transform 0.18s cubic-bezier(0.4, 0, 0.2, 1), border 0.18s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.18s cubic-bezier(0.4, 0, 0.2, 1), background 0.28s cubic-bezier(0.4, 0, 0.2, 1); }
+      transition: border 0.18s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.18s cubic-bezier(0.4, 0, 0.2, 1), background 0.28s cubic-bezier(0.4, 0, 0.2, 1), -webkit-transform 0.18s cubic-bezier(0.4, 0, 0.2, 1);
+      transition: transform 0.18s cubic-bezier(0.4, 0, 0.2, 1), border 0.18s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.18s cubic-bezier(0.4, 0, 0.2, 1), background 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+      transition: transform 0.18s cubic-bezier(0.4, 0, 0.2, 1), border 0.18s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.18s cubic-bezier(0.4, 0, 0.2, 1), background 0.28s cubic-bezier(0.4, 0, 0.2, 1), -webkit-transform 0.18s cubic-bezier(0.4, 0, 0.2, 1); }
     .mdl-slider.is-upgraded::-moz-range-thumb {
       -moz-appearance: none;
       width: 12px;
@@ -7359,24 +8442,23 @@ _:-ms-input-placeholder, :root .mdl-slider.mdl-slider.is-upgraded {
       border: none;
       border-radius: 50%;
       background: rgb(63,81,181);
-      -ms-transform: scale(0.375);
-          transform: scale(0.375);
-      transition: transform 0.18s cubic-bezier(0.4, 0, 0.2, 1), background 0.28s cubic-bezier(0.4, 0, 0.2, 1); }
+      transform: scale(0.375);
+      transition: background 0.28s cubic-bezier(0.4, 0, 0.2, 1), -webkit-transform 0.18s cubic-bezier(0.4, 0, 0.2, 1);
+      transition: transform 0.18s cubic-bezier(0.4, 0, 0.2, 1), background 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+      transition: transform 0.18s cubic-bezier(0.4, 0, 0.2, 1), background 0.28s cubic-bezier(0.4, 0, 0.2, 1), -webkit-transform 0.18s cubic-bezier(0.4, 0, 0.2, 1); }
     .mdl-slider.is-upgraded:focus:not(:active)::-ms-thumb {
       background: radial-gradient(circle closest-side, rgb(63,81,181) 0%, rgb(63,81,181) 37.5%, rgba(63,81,181, 0.26) 37.5%, rgba(63,81,181, 0.26) 100%);
-      -ms-transform: scale(1);
-          transform: scale(1); }
+      transform: scale(1); }
     .mdl-slider.is-upgraded:active::-ms-thumb {
       background: rgb(63,81,181);
-      -ms-transform: scale(0.5625);
-          transform: scale(0.5625); }
+      transform: scale(0.5625); }
     .mdl-slider.is-upgraded.is-lowest-value::-webkit-slider-thumb {
       border: 2px solid rgba(0,0,0, 0.26);
       background: transparent; }
     .mdl-slider.is-upgraded.is-lowest-value::-moz-range-thumb {
       border: 2px solid rgba(0,0,0, 0.26);
       background: transparent; }
-    .mdl-slider.is-upgraded.is-lowest-value ~
+    .mdl-slider.is-upgraded.is-lowest-value +
 .mdl-slider__background-flex > .mdl-slider__background-upper {
       left: 6px; }
     .mdl-slider.is-upgraded.is-lowest-value:focus:not(:active)::-webkit-slider-thumb {
@@ -7389,7 +8471,7 @@ _:-ms-input-placeholder, :root .mdl-slider.mdl-slider.is-upgraded {
       border: 1.6px solid rgba(0,0,0, 0.26);
       -webkit-transform: scale(1.5);
               transform: scale(1.5); }
-    .mdl-slider.is-upgraded.is-lowest-value:active ~
+    .mdl-slider.is-upgraded.is-lowest-value:active +
 .mdl-slider__background-flex > .mdl-slider__background-upper {
       left: 9px; }
     .mdl-slider.is-upgraded.is-lowest-value:active::-moz-range-thumb {
@@ -7399,11 +8481,9 @@ _:-ms-input-placeholder, :root .mdl-slider.mdl-slider.is-upgraded {
       background: radial-gradient(circle closest-side, transparent 0%, transparent 66.67%, rgba(0,0,0, 0.26) 66.67%, rgba(0,0,0, 0.26) 100%); }
     .mdl-slider.is-upgraded.is-lowest-value:focus:not(:active)::-ms-thumb {
       background: radial-gradient(circle closest-side, rgba(0,0,0, 0.12) 0%, rgba(0,0,0, 0.12) 25%, rgba(0,0,0, 0.26) 25%, rgba(0,0,0, 0.26) 37.5%, rgba(0,0,0, 0.12) 37.5%, rgba(0,0,0, 0.12) 100%);
-      -ms-transform: scale(1);
-          transform: scale(1); }
+      transform: scale(1); }
     .mdl-slider.is-upgraded.is-lowest-value:active::-ms-thumb {
-      -ms-transform: scale(0.5625);
-          transform: scale(0.5625);
+      transform: scale(0.5625);
       background: radial-gradient(circle closest-side, transparent 0%, transparent 77.78%, rgba(0,0,0, 0.26) 77.78%, rgba(0,0,0, 0.26) 100%); }
     .mdl-slider.is-upgraded.is-lowest-value::-ms-fill-lower {
       background: transparent; }
@@ -7411,51 +8491,37 @@ _:-ms-input-placeholder, :root .mdl-slider.mdl-slider.is-upgraded {
       margin-left: 6px; }
     .mdl-slider.is-upgraded.is-lowest-value:active::-ms-fill-upper {
       margin-left: 9px; }
-    .mdl-slider.is-upgraded:disabled:focus::-webkit-slider-thumb,
-    .mdl-slider.is-upgraded:disabled:active::-webkit-slider-thumb,
-    .mdl-slider.is-upgraded:disabled::-webkit-slider-thumb {
+    .mdl-slider.is-upgraded:disabled:focus::-webkit-slider-thumb, .mdl-slider.is-upgraded:disabled:active::-webkit-slider-thumb, .mdl-slider.is-upgraded:disabled::-webkit-slider-thumb {
       -webkit-transform: scale(0.667);
               transform: scale(0.667);
       background: rgba(0,0,0, 0.26); }
-    .mdl-slider.is-upgraded:disabled:focus::-moz-range-thumb,
-    .mdl-slider.is-upgraded:disabled:active::-moz-range-thumb,
-    .mdl-slider.is-upgraded:disabled::-moz-range-thumb {
+    .mdl-slider.is-upgraded:disabled:focus::-moz-range-thumb, .mdl-slider.is-upgraded:disabled:active::-moz-range-thumb, .mdl-slider.is-upgraded:disabled::-moz-range-thumb {
       transform: scale(0.667);
       background: rgba(0,0,0, 0.26); }
-    .mdl-slider.is-upgraded:disabled ~
+    .mdl-slider.is-upgraded:disabled +
 .mdl-slider__background-flex > .mdl-slider__background-lower {
       background-color: rgba(0,0,0, 0.26);
       left: -6px; }
-    .mdl-slider.is-upgraded:disabled ~
+    .mdl-slider.is-upgraded:disabled +
 .mdl-slider__background-flex > .mdl-slider__background-upper {
       left: 6px; }
-    .mdl-slider.is-upgraded.is-lowest-value:disabled:focus::-webkit-slider-thumb,
-    .mdl-slider.is-upgraded.is-lowest-value:disabled:active::-webkit-slider-thumb,
-    .mdl-slider.is-upgraded.is-lowest-value:disabled::-webkit-slider-thumb {
+    .mdl-slider.is-upgraded.is-lowest-value:disabled:focus::-webkit-slider-thumb, .mdl-slider.is-upgraded.is-lowest-value:disabled:active::-webkit-slider-thumb, .mdl-slider.is-upgraded.is-lowest-value:disabled::-webkit-slider-thumb {
       border: 3px solid rgba(0,0,0, 0.26);
       background: transparent;
       -webkit-transform: scale(0.667);
               transform: scale(0.667); }
-    .mdl-slider.is-upgraded.is-lowest-value:disabled:focus::-moz-range-thumb,
-    .mdl-slider.is-upgraded.is-lowest-value:disabled:active::-moz-range-thumb,
-    .mdl-slider.is-upgraded.is-lowest-value:disabled::-moz-range-thumb {
+    .mdl-slider.is-upgraded.is-lowest-value:disabled:focus::-moz-range-thumb, .mdl-slider.is-upgraded.is-lowest-value:disabled:active::-moz-range-thumb, .mdl-slider.is-upgraded.is-lowest-value:disabled::-moz-range-thumb {
       border: 3px solid rgba(0,0,0, 0.26);
       background: transparent;
       transform: scale(0.667); }
-    .mdl-slider.is-upgraded.is-lowest-value:disabled:active ~
+    .mdl-slider.is-upgraded.is-lowest-value:disabled:active +
 .mdl-slider__background-flex > .mdl-slider__background-upper {
       left: 6px; }
-    .mdl-slider.is-upgraded:disabled:focus::-ms-thumb,
-    .mdl-slider.is-upgraded:disabled:active::-ms-thumb,
-    .mdl-slider.is-upgraded:disabled::-ms-thumb {
-      -ms-transform: scale(0.25);
-          transform: scale(0.25);
+    .mdl-slider.is-upgraded:disabled:focus::-ms-thumb, .mdl-slider.is-upgraded:disabled:active::-ms-thumb, .mdl-slider.is-upgraded:disabled::-ms-thumb {
+      transform: scale(0.25);
       background: rgba(0,0,0, 0.26); }
-    .mdl-slider.is-upgraded.is-lowest-value:disabled:focus::-ms-thumb,
-    .mdl-slider.is-upgraded.is-lowest-value:disabled:active::-ms-thumb,
-    .mdl-slider.is-upgraded.is-lowest-value:disabled::-ms-thumb {
-      -ms-transform: scale(0.25);
-          transform: scale(0.25);
+    .mdl-slider.is-upgraded.is-lowest-value:disabled:focus::-ms-thumb, .mdl-slider.is-upgraded.is-lowest-value:disabled:active::-ms-thumb, .mdl-slider.is-upgraded.is-lowest-value:disabled::-ms-thumb {
+      transform: scale(0.25);
       background: radial-gradient(circle closest-side, transparent 0%, transparent 50%, rgba(0,0,0, 0.26) 50%, rgba(0,0,0, 0.26) 100%); }
     .mdl-slider.is-upgraded:disabled::-ms-fill-lower {
       margin-right: 6px;
@@ -7476,12 +8542,9 @@ _:-ms-input-placeholder, :root .mdl-slider.mdl-slider.is-upgraded {
   height: 18px;
   position: relative;
   background: none;
-  display: -webkit-box;
   display: -webkit-flex;
   display: -ms-flexbox;
   display: flex;
-  -webkit-box-orient: horizontal;
-  -webkit-box-direction: normal;
   -webkit-flex-direction: row;
       -ms-flex-direction: row;
           flex-direction: row; }
@@ -7494,7 +8557,6 @@ _:-ms-input-placeholder, :root .mdl-slider.mdl-slider.is-upgraded {
   top: 50%;
   left: 0;
   margin: 0 26px;
-  display: -webkit-box;
   display: -webkit-flex;
   display: -ms-flexbox;
   display: flex;
@@ -7502,12 +8564,10 @@ _:-ms-input-placeholder, :root .mdl-slider.mdl-slider.is-upgraded {
   border: 0;
   padding: 0;
   -webkit-transform: translate(0, -1px);
-      -ms-transform: translate(0, -1px);
           transform: translate(0, -1px); }
 
 .mdl-slider__background-lower {
   background: rgb(63,81,181);
-  -webkit-box-flex: 0;
   -webkit-flex: 0;
       -ms-flex: 0;
           flex: 0;
@@ -7517,15 +8577,13 @@ _:-ms-input-placeholder, :root .mdl-slider.mdl-slider.is-upgraded {
 
 .mdl-slider__background-upper {
   background: rgba(0,0,0, 0.26);
-  -webkit-box-flex: 0;
   -webkit-flex: 0;
       -ms-flex: 0;
           flex: 0;
   position: relative;
   border: 0;
   padding: 0;
-  -webkit-transition: left 0.18s cubic-bezier(0.4, 0, 0.2, 1);
-          transition: left 0.18s cubic-bezier(0.4, 0, 0.2, 1); }
+  transition: left 0.18s cubic-bezier(0.4, 0, 0.2, 1); }
 
 /**
  * Copyright 2015 Google Inc. All Rights Reserved.
@@ -7582,6 +8640,15 @@ _:-ms-input-placeholder, :root .mdl-slider.mdl-slider.is-upgraded {
  * -----Shadows
  * -----Grid
  * -----Data table
+ * -----Dialog
+ * -----Snackbar
+ * -----Tooltip
+ * -----Chip
+ *
+ * Even though all variables have the `!default` directive, most of them
+ * should not be changed as they are dependent one another. This can cause
+ * visual distortions (like alignment issues) that are hard to track down
+ * and fix.
  */
 /* ==========  TYPOGRAPHY  ========== */
 /* We're splitting fonts into "preferred" and "performance" in order to optimize
@@ -7633,6 +8700,7 @@ _:-ms-input-placeholder, :root .mdl-slider.mdl-slider.is-upgraded {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+/* ==========  IMAGES  ========== */
 /* ==========  Color & Themes  ========== */
 /* ==========  Typography  ========== */
 /* ==========  Components  ========== */
@@ -7681,7 +8749,278 @@ _:-ms-input-placeholder, :root .mdl-slider.mdl-slider.is-upgraded {
 /* SHADOWS */
 /* GRID */
 /* DATA TABLE */
+/* DIALOG */
+/* SNACKBAR */
 /* TOOLTIP */
+/* CHIP */
+/**
+ * Copyright 2015 Google Inc. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+/* Typography */
+/* Shadows */
+/* Animations */
+/* Dialog */
+.mdl-snackbar {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  cursor: default;
+  background-color: #323232;
+  z-index: 3;
+  display: block;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-justify-content: space-between;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+  font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+  will-change: transform;
+  -webkit-transform: translate(0, 80px);
+          transform: translate(0, 80px);
+  transition: -webkit-transform 0.25s cubic-bezier(0.4, 0, 1, 1);
+  transition: transform 0.25s cubic-bezier(0.4, 0, 1, 1);
+  transition: transform 0.25s cubic-bezier(0.4, 0, 1, 1), -webkit-transform 0.25s cubic-bezier(0.4, 0, 1, 1);
+  pointer-events: none; }
+  @media (max-width: 479px) {
+    .mdl-snackbar {
+      width: 100%;
+      left: 0;
+      min-height: 48px;
+      max-height: 80px; } }
+  @media (min-width: 480px) {
+    .mdl-snackbar {
+      min-width: 288px;
+      max-width: 568px;
+      border-radius: 2px;
+      -webkit-transform: translate(-50%, 80px);
+              transform: translate(-50%, 80px); } }
+  .mdl-snackbar--active {
+    -webkit-transform: translate(0, 0);
+            transform: translate(0, 0);
+    pointer-events: auto;
+    transition: -webkit-transform 0.25s cubic-bezier(0, 0, 0.2, 1);
+    transition: transform 0.25s cubic-bezier(0, 0, 0.2, 1);
+    transition: transform 0.25s cubic-bezier(0, 0, 0.2, 1), -webkit-transform 0.25s cubic-bezier(0, 0, 0.2, 1); }
+    @media (min-width: 480px) {
+      .mdl-snackbar--active {
+        -webkit-transform: translate(-50%, 0);
+                transform: translate(-50%, 0); } }
+  .mdl-snackbar__text {
+    padding: 14px 12px 14px 24px;
+    vertical-align: middle;
+    color: white;
+    float: left; }
+  .mdl-snackbar__action {
+    background: transparent;
+    border: none;
+    color: rgb(255,64,129);
+    float: right;
+    text-transform: uppercase;
+    padding: 14px 24px 14px 12px;
+    font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    text-transform: uppercase;
+    line-height: 1;
+    letter-spacing: 0;
+    overflow: hidden;
+    outline: none;
+    opacity: 0;
+    pointer-events: none;
+    cursor: pointer;
+    text-decoration: none;
+    text-align: center;
+    -webkit-align-self: center;
+        -ms-flex-item-align: center;
+                -ms-grid-row-align: center;
+            align-self: center; }
+    .mdl-snackbar__action::-moz-focus-inner {
+      border: 0; }
+    .mdl-snackbar__action:not([aria-hidden]) {
+      opacity: 1;
+      pointer-events: auto; }
+
+/**
+ * Copyright 2015 Google Inc. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+/**
+ * Copyright 2015 Google Inc. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+/*------------------------------------*    $CONTENTS
+\*------------------------------------*/
+/**
+ * STYLE GUIDE VARIABLES------------------Declarations of Sass variables
+ * -----Typography
+ * -----Colors
+ * -----Textfield
+ * -----Switch
+ * -----Spinner
+ * -----Radio
+ * -----Menu
+ * -----List
+ * -----Layout
+ * -----Icon toggles
+ * -----Footer
+ * -----Column
+ * -----Checkbox
+ * -----Card
+ * -----Button
+ * -----Animation
+ * -----Progress
+ * -----Badge
+ * -----Shadows
+ * -----Grid
+ * -----Data table
+ * -----Dialog
+ * -----Snackbar
+ * -----Tooltip
+ * -----Chip
+ *
+ * Even though all variables have the `!default` directive, most of them
+ * should not be changed as they are dependent one another. This can cause
+ * visual distortions (like alignment issues) that are hard to track down
+ * and fix.
+ */
+/* ==========  TYPOGRAPHY  ========== */
+/* We're splitting fonts into "preferred" and "performance" in order to optimize
+   page loading. For important text, such as the body, we want it to load
+   immediately and not wait for the web font load, whereas for other sections,
+   such as headers and titles, we're OK with things taking a bit longer to load.
+   We do have some optional classes and parameters in the mixins, in case you
+   definitely want to make sure you're using the preferred font and don't mind
+   the performance hit.
+   We should be able to improve on this once CSS Font Loading L3 becomes more
+   widely available.
+*/
+/* ==========  COLORS  ========== */
+/**
+*
+* Material design color palettes.
+* @see http://www.google.com/design/spec/style/color.html
+*
+**/
+/**
+ * Copyright 2015 Google Inc. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+/* ==========  Color Palettes  ========== */
+/* colors.scss */
+/**
+ * Copyright 2015 Google Inc. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+/* ==========  IMAGES  ========== */
+/* ==========  Color & Themes  ========== */
+/* ==========  Typography  ========== */
+/* ==========  Components  ========== */
+/* ==========  Standard Buttons  ========== */
+/* ==========  Icon Toggles  ========== */
+/* ==========  Radio Buttons  ========== */
+/* ==========  Ripple effect  ========== */
+/* ==========  Layout  ========== */
+/* ==========  Content Tabs  ========== */
+/* ==========  Checkboxes  ========== */
+/* ==========  Switches  ========== */
+/* ==========  Spinner  ========== */
+/* ==========  Text fields  ========== */
+/* ==========  Card  ========== */
+/* ==========  Sliders ========== */
+/* ========== Progress ========== */
+/* ==========  List ========== */
+/* ==========  Item ========== */
+/* ==========  Dropdown menu ========== */
+/* ==========  Tooltips  ========== */
+/* ==========  Footer  ========== */
+/* TEXTFIELD */
+/* SWITCH */
+/* SPINNER */
+/* RADIO */
+/* MENU */
+/* LIST */
+/* LAYOUT */
+/* ICON TOGGLE */
+/* FOOTER */
+/*mega-footer*/
+/*mini-footer*/
+/* CHECKBOX */
+/* CARD */
+/* Card dimensions */
+/* Cover image */
+/* BUTTON */
+/**
+ *
+ * Dimensions
+ *
+ */
+/* ANIMATION */
+/* PROGRESS */
+/* BADGE */
+/* SHADOWS */
+/* GRID */
+/* DATA TABLE */
+/* DIALOG */
+/* SNACKBAR */
+/* TOOLTIP */
+/* CHIP */
 .mdl-spinner {
   display: inline-block;
   position: relative;
@@ -7929,6 +9268,10 @@ _:-ms-input-placeholder, :root .mdl-slider.mdl-slider.is-upgraded {
   height: 100%;
   overflow: hidden;
   border-color: inherit; }
+  .mdl-spinner__circle-clipper.mdl-spinner__left {
+    float: left; }
+  .mdl-spinner__circle-clipper.mdl-spinner__right {
+    float: right; }
   .mdl-spinner__circle-clipper .mdl-spinner__circle {
     width: 200%; }
 
@@ -7950,7 +9293,6 @@ _:-ms-input-placeholder, :root .mdl-slider.mdl-slider.is-upgraded {
   .mdl-spinner__left .mdl-spinner__circle {
     border-right-color: transparent !important;
     -webkit-transform: rotate(129deg);
-        -ms-transform: rotate(129deg);
             transform: rotate(129deg); }
     .mdl-spinner.is-active .mdl-spinner__left .mdl-spinner__circle {
       -webkit-animation: mdl-spinner__left-spin 1333ms cubic-bezier(0.4, 0, 0.2, 1) infinite both;
@@ -7959,7 +9301,6 @@ _:-ms-input-placeholder, :root .mdl-slider.mdl-slider.is-upgraded {
     left: -100%;
     border-left-color: transparent !important;
     -webkit-transform: rotate(-129deg);
-        -ms-transform: rotate(-129deg);
             transform: rotate(-129deg); }
     .mdl-spinner.is-active .mdl-spinner__right .mdl-spinner__circle {
       -webkit-animation: mdl-spinner__right-spin 1333ms cubic-bezier(0.4, 0, 0.2, 1) infinite both;
@@ -8064,6 +9405,15 @@ _:-ms-input-placeholder, :root .mdl-slider.mdl-slider.is-upgraded {
  * -----Shadows
  * -----Grid
  * -----Data table
+ * -----Dialog
+ * -----Snackbar
+ * -----Tooltip
+ * -----Chip
+ *
+ * Even though all variables have the `!default` directive, most of them
+ * should not be changed as they are dependent one another. This can cause
+ * visual distortions (like alignment issues) that are hard to track down
+ * and fix.
  */
 /* ==========  TYPOGRAPHY  ========== */
 /* We're splitting fonts into "preferred" and "performance" in order to optimize
@@ -8115,6 +9465,7 @@ _:-ms-input-placeholder, :root .mdl-slider.mdl-slider.is-upgraded {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+/* ==========  IMAGES  ========== */
 /* ==========  Color & Themes  ========== */
 /* ==========  Typography  ========== */
 /* ==========  Components  ========== */
@@ -8163,7 +9514,10 @@ _:-ms-input-placeholder, :root .mdl-slider.mdl-slider.is-upgraded {
 /* SHADOWS */
 /* GRID */
 /* DATA TABLE */
+/* DIALOG */
+/* SNACKBAR */
 /* TOOLTIP */
+/* CHIP */
 /**
  * Copyright 2015 Google Inc. All Rights Reserved.
  *
@@ -8182,6 +9536,7 @@ _:-ms-input-placeholder, :root .mdl-slider.mdl-slider.is-upgraded {
 /* Typography */
 /* Shadows */
 /* Animations */
+/* Dialog */
 .mdl-switch {
   position: relative;
   z-index: 1;
@@ -8227,6 +9582,7 @@ _:-ms-input-placeholder, :root .mdl-slider.mdl-slider.is-upgraded {
   cursor: pointer; }
   .mdl-switch.is-checked .mdl-switch__track {
     background: rgba(63,81,181, 0.5); }
+  .mdl-switch__track fieldset[disabled] .mdl-switch,
   .mdl-switch.is-disabled .mdl-switch__track {
     background: rgba(0,0,0, 0.12);
     cursor: auto; }
@@ -8241,16 +9597,14 @@ _:-ms-input-placeholder, :root .mdl-slider.mdl-slider.is-upgraded {
   border-radius: 50%;
   cursor: pointer;
   box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 1px 5px 0 rgba(0, 0, 0, 0.12);
-  -webkit-transition-duration: 0.28s;
-          transition-duration: 0.28s;
-  -webkit-transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-          transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-  -webkit-transition-property: left;
-          transition-property: left; }
+  transition-duration: 0.28s;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-property: left; }
   .mdl-switch.is-checked .mdl-switch__thumb {
     background: rgb(63,81,181);
     left: 16px;
     box-shadow: 0 3px 4px 0 rgba(0, 0, 0, 0.14), 0 3px 3px -2px rgba(0, 0, 0, 0.2), 0 1px 8px 0 rgba(0, 0, 0, 0.12); }
+  .mdl-switch__thumb fieldset[disabled] .mdl-switch,
   .mdl-switch.is-disabled .mdl-switch__thumb {
     background: rgb(189,189,189);
     cursor: auto; }
@@ -8260,7 +9614,6 @@ _:-ms-input-placeholder, :root .mdl-slider.mdl-slider.is-upgraded {
   top: 50%;
   left: 50%;
   -webkit-transform: translate(-4px, -4px);
-      -ms-transform: translate(-4px, -4px);
           transform: translate(-4px, -4px);
   display: inline-block;
   box-sizing: border-box;
@@ -8282,6 +9635,7 @@ _:-ms-input-placeholder, :root .mdl-slider.mdl-slider.is-upgraded {
   line-height: 24px;
   margin: 0;
   left: 24px; }
+  .mdl-switch__label fieldset[disabled] .mdl-switch,
   .mdl-switch.is-disabled .mdl-switch__label {
     color: rgb(189,189,189);
     cursor: auto; }
@@ -8298,20 +9652,18 @@ _:-ms-input-placeholder, :root .mdl-slider.mdl-slider.is-upgraded {
   cursor: pointer;
   overflow: hidden;
   -webkit-mask-image: -webkit-radial-gradient(circle, white, black);
-  -webkit-transition-duration: 0.40s;
-          transition-duration: 0.40s;
-  -webkit-transition-timing-function: step-end;
-          transition-timing-function: step-end;
-  -webkit-transition-property: left;
-          transition-property: left; }
+  transition-duration: 0.40s;
+  transition-timing-function: step-end;
+  transition-property: left; }
   .mdl-switch__ripple-container .mdl-ripple {
     background: rgb(63,81,181); }
+  .mdl-switch__ripple-container fieldset[disabled] .mdl-switch,
   .mdl-switch.is-disabled .mdl-switch__ripple-container {
     cursor: auto; }
+  fieldset[disabled] .mdl-switch .mdl-switch__ripple-container .mdl-ripple,
   .mdl-switch.is-disabled .mdl-switch__ripple-container .mdl-ripple {
     background: transparent; }
   .mdl-switch.is-checked .mdl-switch__ripple-container {
-    cursor: auto;
     left: 2px; }
 
 /**
@@ -8369,6 +9721,15 @@ _:-ms-input-placeholder, :root .mdl-slider.mdl-slider.is-upgraded {
  * -----Shadows
  * -----Grid
  * -----Data table
+ * -----Dialog
+ * -----Snackbar
+ * -----Tooltip
+ * -----Chip
+ *
+ * Even though all variables have the `!default` directive, most of them
+ * should not be changed as they are dependent one another. This can cause
+ * visual distortions (like alignment issues) that are hard to track down
+ * and fix.
  */
 /* ==========  TYPOGRAPHY  ========== */
 /* We're splitting fonts into "preferred" and "performance" in order to optimize
@@ -8420,6 +9781,7 @@ _:-ms-input-placeholder, :root .mdl-slider.mdl-slider.is-upgraded {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+/* ==========  IMAGES  ========== */
 /* ==========  Color & Themes  ========== */
 /* ==========  Typography  ========== */
 /* ==========  Components  ========== */
@@ -8468,29 +9830,27 @@ _:-ms-input-placeholder, :root .mdl-slider.mdl-slider.is-upgraded {
 /* SHADOWS */
 /* GRID */
 /* DATA TABLE */
+/* DIALOG */
+/* SNACKBAR */
 /* TOOLTIP */
+/* CHIP */
 .mdl-tabs {
   display: block;
   width: 100%; }
 
 .mdl-tabs__tab-bar {
-  display: -webkit-box;
   display: -webkit-flex;
   display: -ms-flexbox;
   display: flex;
-  -webkit-box-orient: horizontal;
-  -webkit-box-direction: normal;
   -webkit-flex-direction: row;
       -ms-flex-direction: row;
           flex-direction: row;
-  -webkit-box-pack: center;
   -webkit-justify-content: center;
       -ms-flex-pack: center;
           justify-content: center;
   -webkit-align-content: space-between;
       -ms-flex-line-pack: justify;
           align-content: space-between;
-  -webkit-box-align: start;
   -webkit-align-items: flex-start;
       -ms-flex-align: start;
           align-items: flex-start;
@@ -8506,7 +9866,6 @@ _:-ms-input-placeholder, :root .mdl-slider.mdl-slider.is-upgraded {
   float: left;
   position: relative;
   display: block;
-  color: red;
   text-decoration: none;
   height: 48px;
   line-height: 48px;
@@ -8529,8 +9888,7 @@ _:-ms-input-placeholder, :root .mdl-slider.mdl-slider.is-upgraded {
     background: rgb(63,81,181);
     -webkit-animation: border-expand 0.2s cubic-bezier(0.4, 0, 0.4, 1) 0.01s alternate forwards;
             animation: border-expand 0.2s cubic-bezier(0.4, 0, 0.4, 1) 0.01s alternate forwards;
-    -webkit-transition: all 1s cubic-bezier(0.4, 0, 1, 1);
-            transition: all 1s cubic-bezier(0.4, 0, 1, 1); }
+    transition: all 1s cubic-bezier(0.4, 0, 1, 1); }
   .mdl-tabs__tab .mdl-tabs__ripple-container {
     display: block;
     position: absolute;
@@ -8621,6 +9979,15 @@ _:-ms-input-placeholder, :root .mdl-slider.mdl-slider.is-upgraded {
  * -----Shadows
  * -----Grid
  * -----Data table
+ * -----Dialog
+ * -----Snackbar
+ * -----Tooltip
+ * -----Chip
+ *
+ * Even though all variables have the `!default` directive, most of them
+ * should not be changed as they are dependent one another. This can cause
+ * visual distortions (like alignment issues) that are hard to track down
+ * and fix.
  */
 /* ==========  TYPOGRAPHY  ========== */
 /* We're splitting fonts into "preferred" and "performance" in order to optimize
@@ -8672,6 +10039,7 @@ _:-ms-input-placeholder, :root .mdl-slider.mdl-slider.is-upgraded {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+/* ==========  IMAGES  ========== */
 /* ==========  Color & Themes  ========== */
 /* ==========  Typography  ========== */
 /* ==========  Components  ========== */
@@ -8720,7 +10088,10 @@ _:-ms-input-placeholder, :root .mdl-slider.mdl-slider.is-upgraded {
 /* SHADOWS */
 /* GRID */
 /* DATA TABLE */
+/* DIALOG */
+/* SNACKBAR */
 /* TOOLTIP */
+/* CHIP */
 /**
  * Copyright 2015 Google Inc. All Rights Reserved.
  *
@@ -8739,6 +10110,7 @@ _:-ms-input-placeholder, :root .mdl-slider.mdl-slider.is-upgraded {
 /* Typography */
 /* Shadows */
 /* Animations */
+/* Dialog */
 .mdl-textfield {
   position: relative;
   font-size: 16px;
@@ -8762,22 +10134,32 @@ _:-ms-input-placeholder, :root .mdl-slider.mdl-slider.is-upgraded {
   min-width: 32px;
   width: auto;
   min-height: 32px; }
+  .mdl-textfield--expandable .mdl-button--icon {
+    top: 16px; }
 
 .mdl-textfield__input {
   border: none;
   border-bottom: 1px solid rgba(0,0,0, 0.12);
   display: block;
   font-size: 16px;
+  font-family: "Helvetica", "Arial", sans-serif;
   margin: 0;
   padding: 4px 0;
   width: 100%;
+  background: none;
   text-align: left;
   color: inherit; }
+  .mdl-textfield__input[type="number"] {
+    -moz-appearance: textfield; }
+  .mdl-textfield__input[type="number"]::-webkit-inner-spin-button, .mdl-textfield__input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0; }
   .mdl-textfield.is-focused .mdl-textfield__input {
     outline: none; }
   .mdl-textfield.is-invalid .mdl-textfield__input {
-    border-color: rgb(222, 50, 38);
+    border-color: rgb(213,0,0);
     box-shadow: none; }
+  fieldset[disabled] .mdl-textfield .mdl-textfield__input,
   .mdl-textfield.is-disabled .mdl-textfield__input {
     background-color: transparent;
     border-bottom: 1px dotted rgba(0,0,0, 0.12);
@@ -8800,26 +10182,30 @@ _:-ms-input-placeholder, :root .mdl-slider.mdl-slider.is-upgraded {
   overflow: hidden;
   white-space: nowrap;
   text-align: left; }
-  .mdl-textfield.is-dirty .mdl-textfield__label {
+  .mdl-textfield.is-dirty .mdl-textfield__label,
+  .mdl-textfield.has-placeholder .mdl-textfield__label {
     visibility: hidden; }
   .mdl-textfield--floating-label .mdl-textfield__label {
-    -webkit-transition-duration: 0.2s;
-            transition-duration: 0.2s;
-    -webkit-transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-            transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1); }
+    transition-duration: 0.2s;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1); }
+  .mdl-textfield--floating-label.has-placeholder .mdl-textfield__label {
+    transition: none; }
+  fieldset[disabled] .mdl-textfield .mdl-textfield__label,
   .mdl-textfield.is-disabled.is-disabled .mdl-textfield__label {
     color: rgba(0,0,0, 0.26); }
   .mdl-textfield--floating-label.is-focused .mdl-textfield__label,
-  .mdl-textfield--floating-label.is-dirty .mdl-textfield__label {
+  .mdl-textfield--floating-label.is-dirty .mdl-textfield__label,
+  .mdl-textfield--floating-label.has-placeholder .mdl-textfield__label {
     color: rgb(63,81,181);
     font-size: 12px;
     top: 4px;
     visibility: visible; }
   .mdl-textfield--floating-label.is-focused .mdl-textfield__expandable-holder .mdl-textfield__label,
-  .mdl-textfield--floating-label.is-dirty .mdl-textfield__expandable-holder .mdl-textfield__label {
+  .mdl-textfield--floating-label.is-dirty .mdl-textfield__expandable-holder .mdl-textfield__label,
+  .mdl-textfield--floating-label.has-placeholder .mdl-textfield__expandable-holder .mdl-textfield__label {
     top: -16px; }
   .mdl-textfield--floating-label.is-invalid .mdl-textfield__label {
-    color: rgb(222, 50, 38);
+    color: rgb(213,0,0);
     font-size: 12px; }
   .mdl-textfield__label:after {
     background-color: rgb(63,81,181);
@@ -8828,10 +10214,8 @@ _:-ms-input-placeholder, :root .mdl-slider.mdl-slider.is-upgraded {
     height: 2px;
     left: 45%;
     position: absolute;
-    -webkit-transition-duration: 0.2s;
-            transition-duration: 0.2s;
-    -webkit-transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-            transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 0.2s;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
     visibility: hidden;
     width: 10px; }
   .mdl-textfield.is-focused .mdl-textfield__label:after {
@@ -8839,10 +10223,10 @@ _:-ms-input-placeholder, :root .mdl-slider.mdl-slider.is-upgraded {
     visibility: visible;
     width: 100%; }
   .mdl-textfield.is-invalid .mdl-textfield__label:after {
-    background-color: rgb(222, 50, 38); }
+    background-color: rgb(213,0,0); }
 
 .mdl-textfield__error {
-  color: rgb(222, 50, 38);
+  color: rgb(213,0,0);
   position: absolute;
   font-size: 12px;
   margin-top: 3px;
@@ -8855,10 +10239,8 @@ _:-ms-input-placeholder, :root .mdl-slider.mdl-slider.is-upgraded {
   display: inline-block;
   position: relative;
   margin-left: 32px;
-  -webkit-transition-duration: 0.2s;
-          transition-duration: 0.2s;
-  -webkit-transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-          transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 0.2s;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   display: inline-block;
   max-width: 0.1px; }
   .mdl-textfield.is-focused .mdl-textfield__expandable-holder, .mdl-textfield.is-dirty .mdl-textfield__expandable-holder {
@@ -8921,6 +10303,15 @@ _:-ms-input-placeholder, :root .mdl-slider.mdl-slider.is-upgraded {
  * -----Shadows
  * -----Grid
  * -----Data table
+ * -----Dialog
+ * -----Snackbar
+ * -----Tooltip
+ * -----Chip
+ *
+ * Even though all variables have the `!default` directive, most of them
+ * should not be changed as they are dependent one another. This can cause
+ * visual distortions (like alignment issues) that are hard to track down
+ * and fix.
  */
 /* ==========  TYPOGRAPHY  ========== */
 /* We're splitting fonts into "preferred" and "performance" in order to optimize
@@ -8972,6 +10363,7 @@ _:-ms-input-placeholder, :root .mdl-slider.mdl-slider.is-upgraded {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+/* ==========  IMAGES  ========== */
 /* ==========  Color & Themes  ========== */
 /* ==========  Typography  ========== */
 /* ==========  Components  ========== */
@@ -9020,15 +10412,15 @@ _:-ms-input-placeholder, :root .mdl-slider.mdl-slider.is-upgraded {
 /* SHADOWS */
 /* GRID */
 /* DATA TABLE */
+/* DIALOG */
+/* SNACKBAR */
 /* TOOLTIP */
+/* CHIP */
 .mdl-tooltip {
   -webkit-transform: scale(0);
-      -ms-transform: scale(0);
           transform: scale(0);
   -webkit-transform-origin: top center;
-      -ms-transform-origin: top center;
           transform-origin: top center;
-  will-change: transform;
   z-index: 999;
   background: rgba(97,97,97, 0.9);
   border-radius: 2px;
@@ -9136,6 +10528,15 @@ _:-ms-input-placeholder, :root .mdl-slider.mdl-slider.is-upgraded {
  * -----Shadows
  * -----Grid
  * -----Data table
+ * -----Dialog
+ * -----Snackbar
+ * -----Tooltip
+ * -----Chip
+ *
+ * Even though all variables have the `!default` directive, most of them
+ * should not be changed as they are dependent one another. This can cause
+ * visual distortions (like alignment issues) that are hard to track down
+ * and fix.
  */
 /* ==========  TYPOGRAPHY  ========== */
 /* We're splitting fonts into "preferred" and "performance" in order to optimize
@@ -9187,6 +10588,7 @@ _:-ms-input-placeholder, :root .mdl-slider.mdl-slider.is-upgraded {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+/* ==========  IMAGES  ========== */
 /* ==========  Color & Themes  ========== */
 /* ==========  Typography  ========== */
 /* ==========  Components  ========== */
@@ -9235,7 +10637,10 @@ _:-ms-input-placeholder, :root .mdl-slider.mdl-slider.is-upgraded {
 /* SHADOWS */
 /* GRID */
 /* DATA TABLE */
+/* DIALOG */
+/* SNACKBAR */
 /* TOOLTIP */
+/* CHIP */
 /**
  * Copyright 2015 Google Inc. All Rights Reserved.
  *
@@ -9254,6 +10659,7 @@ _:-ms-input-placeholder, :root .mdl-slider.mdl-slider.is-upgraded {
 /* Typography */
 /* Shadows */
 /* Animations */
+/* Dialog */
 .mdl-shadow--2dp {
   box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 1px 5px 0 rgba(0, 0, 0, 0.12); }
 
@@ -9271,6 +10677,9 @@ _:-ms-input-placeholder, :root .mdl-slider.mdl-slider.is-upgraded {
 
 .mdl-shadow--16dp {
   box-shadow: 0 16px 24px 2px rgba(0, 0, 0, 0.14), 0 6px 30px 5px rgba(0, 0, 0, 0.12), 0 8px 10px -5px rgba(0, 0, 0, 0.2); }
+
+.mdl-shadow--24dp {
+  box-shadow: 0 9px 46px 8px rgba(0, 0, 0, 0.14), 0 11px 15px -7px rgba(0, 0, 0, 0.12), 0 24px 38px 3px rgba(0, 0, 0, 0.2); }
 
 /**
  * Copyright 2015 Google Inc. All Rights Reserved.
@@ -9332,6 +10741,15 @@ _:-ms-input-placeholder, :root .mdl-slider.mdl-slider.is-upgraded {
  * -----Shadows
  * -----Grid
  * -----Data table
+ * -----Dialog
+ * -----Snackbar
+ * -----Tooltip
+ * -----Chip
+ *
+ * Even though all variables have the `!default` directive, most of them
+ * should not be changed as they are dependent one another. This can cause
+ * visual distortions (like alignment issues) that are hard to track down
+ * and fix.
  */
 /* ==========  TYPOGRAPHY  ========== */
 /* We're splitting fonts into "preferred" and "performance" in order to optimize
@@ -9383,6 +10801,7 @@ _:-ms-input-placeholder, :root .mdl-slider.mdl-slider.is-upgraded {
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+/* ==========  IMAGES  ========== */
 /* ==========  Color & Themes  ========== */
 /* ==========  Typography  ========== */
 /* ==========  Components  ========== */
@@ -9431,9 +10850,11 @@ _:-ms-input-placeholder, :root .mdl-slider.mdl-slider.is-upgraded {
 /* SHADOWS */
 /* GRID */
 /* DATA TABLE */
+/* DIALOG */
+/* SNACKBAR */
 /* TOOLTIP */
+/* CHIP */
 .mdl-grid {
-  display: -webkit-box;
   display: -webkit-flex;
   display: -ms-flexbox;
   display: flex;
@@ -9441,7 +10862,6 @@ _:-ms-input-placeholder, :root .mdl-slider.mdl-slider.is-upgraded {
       -ms-flex-flow: row wrap;
           flex-flow: row wrap;
   margin: 0 auto 0 auto;
-  -webkit-box-align: stretch;
   -webkit-align-items: stretch;
       -ms-flex-align: stretch;
           align-items: stretch; }
@@ -9459,6 +10879,7 @@ _:-ms-input-placeholder, :root .mdl-slider.mdl-slider.is-upgraded {
 .mdl-cell--middle {
   -webkit-align-self: center;
       -ms-flex-item-align: center;
+              -ms-grid-row-align: center;
           align-self: center; }
 
 .mdl-cell--bottom {
@@ -9469,10 +10890,71 @@ _:-ms-input-placeholder, :root .mdl-slider.mdl-slider.is-upgraded {
 .mdl-cell--stretch {
   -webkit-align-self: stretch;
       -ms-flex-item-align: stretch;
+              -ms-grid-row-align: stretch;
           align-self: stretch; }
 
 .mdl-grid.mdl-grid--no-spacing > .mdl-cell {
   margin: 0; }
+
+.mdl-cell--order-1 {
+  -webkit-order: 1;
+      -ms-flex-order: 1;
+          order: 1; }
+
+.mdl-cell--order-2 {
+  -webkit-order: 2;
+      -ms-flex-order: 2;
+          order: 2; }
+
+.mdl-cell--order-3 {
+  -webkit-order: 3;
+      -ms-flex-order: 3;
+          order: 3; }
+
+.mdl-cell--order-4 {
+  -webkit-order: 4;
+      -ms-flex-order: 4;
+          order: 4; }
+
+.mdl-cell--order-5 {
+  -webkit-order: 5;
+      -ms-flex-order: 5;
+          order: 5; }
+
+.mdl-cell--order-6 {
+  -webkit-order: 6;
+      -ms-flex-order: 6;
+          order: 6; }
+
+.mdl-cell--order-7 {
+  -webkit-order: 7;
+      -ms-flex-order: 7;
+          order: 7; }
+
+.mdl-cell--order-8 {
+  -webkit-order: 8;
+      -ms-flex-order: 8;
+          order: 8; }
+
+.mdl-cell--order-9 {
+  -webkit-order: 9;
+      -ms-flex-order: 9;
+          order: 9; }
+
+.mdl-cell--order-10 {
+  -webkit-order: 10;
+      -ms-flex-order: 10;
+          order: 10; }
+
+.mdl-cell--order-11 {
+  -webkit-order: 11;
+      -ms-flex-order: 11;
+          order: 11; }
+
+.mdl-cell--order-12 {
+  -webkit-order: 12;
+      -ms-flex-order: 12;
+          order: 12; }
 
 @media (max-width: 479px) {
   .mdl-grid {
@@ -9484,78 +10966,144 @@ _:-ms-input-placeholder, :root .mdl-slider.mdl-slider.is-upgraded {
       width: 100%; }
   .mdl-cell--hide-phone {
     display: none !important; }
+  .mdl-cell--order-1-phone.mdl-cell--order-1-phone {
+    -webkit-order: 1;
+        -ms-flex-order: 1;
+            order: 1; }
+  .mdl-cell--order-2-phone.mdl-cell--order-2-phone {
+    -webkit-order: 2;
+        -ms-flex-order: 2;
+            order: 2; }
+  .mdl-cell--order-3-phone.mdl-cell--order-3-phone {
+    -webkit-order: 3;
+        -ms-flex-order: 3;
+            order: 3; }
+  .mdl-cell--order-4-phone.mdl-cell--order-4-phone {
+    -webkit-order: 4;
+        -ms-flex-order: 4;
+            order: 4; }
+  .mdl-cell--order-5-phone.mdl-cell--order-5-phone {
+    -webkit-order: 5;
+        -ms-flex-order: 5;
+            order: 5; }
+  .mdl-cell--order-6-phone.mdl-cell--order-6-phone {
+    -webkit-order: 6;
+        -ms-flex-order: 6;
+            order: 6; }
+  .mdl-cell--order-7-phone.mdl-cell--order-7-phone {
+    -webkit-order: 7;
+        -ms-flex-order: 7;
+            order: 7; }
+  .mdl-cell--order-8-phone.mdl-cell--order-8-phone {
+    -webkit-order: 8;
+        -ms-flex-order: 8;
+            order: 8; }
+  .mdl-cell--order-9-phone.mdl-cell--order-9-phone {
+    -webkit-order: 9;
+        -ms-flex-order: 9;
+            order: 9; }
+  .mdl-cell--order-10-phone.mdl-cell--order-10-phone {
+    -webkit-order: 10;
+        -ms-flex-order: 10;
+            order: 10; }
+  .mdl-cell--order-11-phone.mdl-cell--order-11-phone {
+    -webkit-order: 11;
+        -ms-flex-order: 11;
+            order: 11; }
+  .mdl-cell--order-12-phone.mdl-cell--order-12-phone {
+    -webkit-order: 12;
+        -ms-flex-order: 12;
+            order: 12; }
   .mdl-cell--1-col,
   .mdl-cell--1-col-phone.mdl-cell--1-col-phone {
     width: calc(25% - 16px); }
-    .mdl-grid--no-spacing > .mdl-cell--1-col,
-    .mdl-grid--no-spacing > .mdl-cell--1-col-phone.mdl-cell--1-col-phone {
+    .mdl-grid--no-spacing > .mdl-cell--1-col, .mdl-grid--no-spacing >
+    .mdl-cell--1-col-phone.mdl-cell--1-col-phone {
       width: 25%; }
   .mdl-cell--2-col,
   .mdl-cell--2-col-phone.mdl-cell--2-col-phone {
     width: calc(50% - 16px); }
-    .mdl-grid--no-spacing > .mdl-cell--2-col,
-    .mdl-grid--no-spacing > .mdl-cell--2-col-phone.mdl-cell--2-col-phone {
+    .mdl-grid--no-spacing > .mdl-cell--2-col, .mdl-grid--no-spacing >
+    .mdl-cell--2-col-phone.mdl-cell--2-col-phone {
       width: 50%; }
   .mdl-cell--3-col,
   .mdl-cell--3-col-phone.mdl-cell--3-col-phone {
     width: calc(75% - 16px); }
-    .mdl-grid--no-spacing > .mdl-cell--3-col,
-    .mdl-grid--no-spacing > .mdl-cell--3-col-phone.mdl-cell--3-col-phone {
+    .mdl-grid--no-spacing > .mdl-cell--3-col, .mdl-grid--no-spacing >
+    .mdl-cell--3-col-phone.mdl-cell--3-col-phone {
       width: 75%; }
   .mdl-cell--4-col,
   .mdl-cell--4-col-phone.mdl-cell--4-col-phone {
     width: calc(100% - 16px); }
-    .mdl-grid--no-spacing > .mdl-cell--4-col,
-    .mdl-grid--no-spacing > .mdl-cell--4-col-phone.mdl-cell--4-col-phone {
+    .mdl-grid--no-spacing > .mdl-cell--4-col, .mdl-grid--no-spacing >
+    .mdl-cell--4-col-phone.mdl-cell--4-col-phone {
       width: 100%; }
   .mdl-cell--5-col,
   .mdl-cell--5-col-phone.mdl-cell--5-col-phone {
     width: calc(100% - 16px); }
-    .mdl-grid--no-spacing > .mdl-cell--5-col,
-    .mdl-grid--no-spacing > .mdl-cell--5-col-phone.mdl-cell--5-col-phone {
+    .mdl-grid--no-spacing > .mdl-cell--5-col, .mdl-grid--no-spacing >
+    .mdl-cell--5-col-phone.mdl-cell--5-col-phone {
       width: 100%; }
   .mdl-cell--6-col,
   .mdl-cell--6-col-phone.mdl-cell--6-col-phone {
     width: calc(100% - 16px); }
-    .mdl-grid--no-spacing > .mdl-cell--6-col,
-    .mdl-grid--no-spacing > .mdl-cell--6-col-phone.mdl-cell--6-col-phone {
+    .mdl-grid--no-spacing > .mdl-cell--6-col, .mdl-grid--no-spacing >
+    .mdl-cell--6-col-phone.mdl-cell--6-col-phone {
       width: 100%; }
   .mdl-cell--7-col,
   .mdl-cell--7-col-phone.mdl-cell--7-col-phone {
     width: calc(100% - 16px); }
-    .mdl-grid--no-spacing > .mdl-cell--7-col,
-    .mdl-grid--no-spacing > .mdl-cell--7-col-phone.mdl-cell--7-col-phone {
+    .mdl-grid--no-spacing > .mdl-cell--7-col, .mdl-grid--no-spacing >
+    .mdl-cell--7-col-phone.mdl-cell--7-col-phone {
       width: 100%; }
   .mdl-cell--8-col,
   .mdl-cell--8-col-phone.mdl-cell--8-col-phone {
     width: calc(100% - 16px); }
-    .mdl-grid--no-spacing > .mdl-cell--8-col,
-    .mdl-grid--no-spacing > .mdl-cell--8-col-phone.mdl-cell--8-col-phone {
+    .mdl-grid--no-spacing > .mdl-cell--8-col, .mdl-grid--no-spacing >
+    .mdl-cell--8-col-phone.mdl-cell--8-col-phone {
       width: 100%; }
   .mdl-cell--9-col,
   .mdl-cell--9-col-phone.mdl-cell--9-col-phone {
     width: calc(100% - 16px); }
-    .mdl-grid--no-spacing > .mdl-cell--9-col,
-    .mdl-grid--no-spacing > .mdl-cell--9-col-phone.mdl-cell--9-col-phone {
+    .mdl-grid--no-spacing > .mdl-cell--9-col, .mdl-grid--no-spacing >
+    .mdl-cell--9-col-phone.mdl-cell--9-col-phone {
       width: 100%; }
   .mdl-cell--10-col,
   .mdl-cell--10-col-phone.mdl-cell--10-col-phone {
     width: calc(100% - 16px); }
-    .mdl-grid--no-spacing > .mdl-cell--10-col,
-    .mdl-grid--no-spacing > .mdl-cell--10-col-phone.mdl-cell--10-col-phone {
+    .mdl-grid--no-spacing > .mdl-cell--10-col, .mdl-grid--no-spacing >
+    .mdl-cell--10-col-phone.mdl-cell--10-col-phone {
       width: 100%; }
   .mdl-cell--11-col,
   .mdl-cell--11-col-phone.mdl-cell--11-col-phone {
     width: calc(100% - 16px); }
-    .mdl-grid--no-spacing > .mdl-cell--11-col,
-    .mdl-grid--no-spacing > .mdl-cell--11-col-phone.mdl-cell--11-col-phone {
+    .mdl-grid--no-spacing > .mdl-cell--11-col, .mdl-grid--no-spacing >
+    .mdl-cell--11-col-phone.mdl-cell--11-col-phone {
       width: 100%; }
   .mdl-cell--12-col,
   .mdl-cell--12-col-phone.mdl-cell--12-col-phone {
     width: calc(100% - 16px); }
-    .mdl-grid--no-spacing > .mdl-cell--12-col,
-    .mdl-grid--no-spacing > .mdl-cell--12-col-phone.mdl-cell--12-col-phone {
-      width: 100%; } }
+    .mdl-grid--no-spacing > .mdl-cell--12-col, .mdl-grid--no-spacing >
+    .mdl-cell--12-col-phone.mdl-cell--12-col-phone {
+      width: 100%; }
+  .mdl-cell--1-offset,
+  .mdl-cell--1-offset-phone.mdl-cell--1-offset-phone {
+    margin-left: calc(25% + 8px); }
+    .mdl-grid.mdl-grid--no-spacing > .mdl-cell--1-offset, .mdl-grid.mdl-grid--no-spacing >
+    .mdl-cell--1-offset-phone.mdl-cell--1-offset-phone {
+      margin-left: 25%; }
+  .mdl-cell--2-offset,
+  .mdl-cell--2-offset-phone.mdl-cell--2-offset-phone {
+    margin-left: calc(50% + 8px); }
+    .mdl-grid.mdl-grid--no-spacing > .mdl-cell--2-offset, .mdl-grid.mdl-grid--no-spacing >
+    .mdl-cell--2-offset-phone.mdl-cell--2-offset-phone {
+      margin-left: 50%; }
+  .mdl-cell--3-offset,
+  .mdl-cell--3-offset-phone.mdl-cell--3-offset-phone {
+    margin-left: calc(75% + 8px); }
+    .mdl-grid.mdl-grid--no-spacing > .mdl-cell--3-offset, .mdl-grid.mdl-grid--no-spacing >
+    .mdl-cell--3-offset-phone.mdl-cell--3-offset-phone {
+      margin-left: 75%; } }
 
 @media (min-width: 480px) and (max-width: 839px) {
   .mdl-grid {
@@ -9567,78 +11115,168 @@ _:-ms-input-placeholder, :root .mdl-slider.mdl-slider.is-upgraded {
       width: 50%; }
   .mdl-cell--hide-tablet {
     display: none !important; }
+  .mdl-cell--order-1-tablet.mdl-cell--order-1-tablet {
+    -webkit-order: 1;
+        -ms-flex-order: 1;
+            order: 1; }
+  .mdl-cell--order-2-tablet.mdl-cell--order-2-tablet {
+    -webkit-order: 2;
+        -ms-flex-order: 2;
+            order: 2; }
+  .mdl-cell--order-3-tablet.mdl-cell--order-3-tablet {
+    -webkit-order: 3;
+        -ms-flex-order: 3;
+            order: 3; }
+  .mdl-cell--order-4-tablet.mdl-cell--order-4-tablet {
+    -webkit-order: 4;
+        -ms-flex-order: 4;
+            order: 4; }
+  .mdl-cell--order-5-tablet.mdl-cell--order-5-tablet {
+    -webkit-order: 5;
+        -ms-flex-order: 5;
+            order: 5; }
+  .mdl-cell--order-6-tablet.mdl-cell--order-6-tablet {
+    -webkit-order: 6;
+        -ms-flex-order: 6;
+            order: 6; }
+  .mdl-cell--order-7-tablet.mdl-cell--order-7-tablet {
+    -webkit-order: 7;
+        -ms-flex-order: 7;
+            order: 7; }
+  .mdl-cell--order-8-tablet.mdl-cell--order-8-tablet {
+    -webkit-order: 8;
+        -ms-flex-order: 8;
+            order: 8; }
+  .mdl-cell--order-9-tablet.mdl-cell--order-9-tablet {
+    -webkit-order: 9;
+        -ms-flex-order: 9;
+            order: 9; }
+  .mdl-cell--order-10-tablet.mdl-cell--order-10-tablet {
+    -webkit-order: 10;
+        -ms-flex-order: 10;
+            order: 10; }
+  .mdl-cell--order-11-tablet.mdl-cell--order-11-tablet {
+    -webkit-order: 11;
+        -ms-flex-order: 11;
+            order: 11; }
+  .mdl-cell--order-12-tablet.mdl-cell--order-12-tablet {
+    -webkit-order: 12;
+        -ms-flex-order: 12;
+            order: 12; }
   .mdl-cell--1-col,
   .mdl-cell--1-col-tablet.mdl-cell--1-col-tablet {
     width: calc(12.5% - 16px); }
-    .mdl-grid--no-spacing > .mdl-cell--1-col,
-    .mdl-grid--no-spacing > .mdl-cell--1-col-tablet.mdl-cell--1-col-tablet {
+    .mdl-grid--no-spacing > .mdl-cell--1-col, .mdl-grid--no-spacing >
+    .mdl-cell--1-col-tablet.mdl-cell--1-col-tablet {
       width: 12.5%; }
   .mdl-cell--2-col,
   .mdl-cell--2-col-tablet.mdl-cell--2-col-tablet {
     width: calc(25% - 16px); }
-    .mdl-grid--no-spacing > .mdl-cell--2-col,
-    .mdl-grid--no-spacing > .mdl-cell--2-col-tablet.mdl-cell--2-col-tablet {
+    .mdl-grid--no-spacing > .mdl-cell--2-col, .mdl-grid--no-spacing >
+    .mdl-cell--2-col-tablet.mdl-cell--2-col-tablet {
       width: 25%; }
   .mdl-cell--3-col,
   .mdl-cell--3-col-tablet.mdl-cell--3-col-tablet {
     width: calc(37.5% - 16px); }
-    .mdl-grid--no-spacing > .mdl-cell--3-col,
-    .mdl-grid--no-spacing > .mdl-cell--3-col-tablet.mdl-cell--3-col-tablet {
+    .mdl-grid--no-spacing > .mdl-cell--3-col, .mdl-grid--no-spacing >
+    .mdl-cell--3-col-tablet.mdl-cell--3-col-tablet {
       width: 37.5%; }
   .mdl-cell--4-col,
   .mdl-cell--4-col-tablet.mdl-cell--4-col-tablet {
     width: calc(50% - 16px); }
-    .mdl-grid--no-spacing > .mdl-cell--4-col,
-    .mdl-grid--no-spacing > .mdl-cell--4-col-tablet.mdl-cell--4-col-tablet {
+    .mdl-grid--no-spacing > .mdl-cell--4-col, .mdl-grid--no-spacing >
+    .mdl-cell--4-col-tablet.mdl-cell--4-col-tablet {
       width: 50%; }
   .mdl-cell--5-col,
   .mdl-cell--5-col-tablet.mdl-cell--5-col-tablet {
     width: calc(62.5% - 16px); }
-    .mdl-grid--no-spacing > .mdl-cell--5-col,
-    .mdl-grid--no-spacing > .mdl-cell--5-col-tablet.mdl-cell--5-col-tablet {
+    .mdl-grid--no-spacing > .mdl-cell--5-col, .mdl-grid--no-spacing >
+    .mdl-cell--5-col-tablet.mdl-cell--5-col-tablet {
       width: 62.5%; }
   .mdl-cell--6-col,
   .mdl-cell--6-col-tablet.mdl-cell--6-col-tablet {
     width: calc(75% - 16px); }
-    .mdl-grid--no-spacing > .mdl-cell--6-col,
-    .mdl-grid--no-spacing > .mdl-cell--6-col-tablet.mdl-cell--6-col-tablet {
+    .mdl-grid--no-spacing > .mdl-cell--6-col, .mdl-grid--no-spacing >
+    .mdl-cell--6-col-tablet.mdl-cell--6-col-tablet {
       width: 75%; }
   .mdl-cell--7-col,
   .mdl-cell--7-col-tablet.mdl-cell--7-col-tablet {
     width: calc(87.5% - 16px); }
-    .mdl-grid--no-spacing > .mdl-cell--7-col,
-    .mdl-grid--no-spacing > .mdl-cell--7-col-tablet.mdl-cell--7-col-tablet {
+    .mdl-grid--no-spacing > .mdl-cell--7-col, .mdl-grid--no-spacing >
+    .mdl-cell--7-col-tablet.mdl-cell--7-col-tablet {
       width: 87.5%; }
   .mdl-cell--8-col,
   .mdl-cell--8-col-tablet.mdl-cell--8-col-tablet {
     width: calc(100% - 16px); }
-    .mdl-grid--no-spacing > .mdl-cell--8-col,
-    .mdl-grid--no-spacing > .mdl-cell--8-col-tablet.mdl-cell--8-col-tablet {
+    .mdl-grid--no-spacing > .mdl-cell--8-col, .mdl-grid--no-spacing >
+    .mdl-cell--8-col-tablet.mdl-cell--8-col-tablet {
       width: 100%; }
   .mdl-cell--9-col,
   .mdl-cell--9-col-tablet.mdl-cell--9-col-tablet {
     width: calc(100% - 16px); }
-    .mdl-grid--no-spacing > .mdl-cell--9-col,
-    .mdl-grid--no-spacing > .mdl-cell--9-col-tablet.mdl-cell--9-col-tablet {
+    .mdl-grid--no-spacing > .mdl-cell--9-col, .mdl-grid--no-spacing >
+    .mdl-cell--9-col-tablet.mdl-cell--9-col-tablet {
       width: 100%; }
   .mdl-cell--10-col,
   .mdl-cell--10-col-tablet.mdl-cell--10-col-tablet {
     width: calc(100% - 16px); }
-    .mdl-grid--no-spacing > .mdl-cell--10-col,
-    .mdl-grid--no-spacing > .mdl-cell--10-col-tablet.mdl-cell--10-col-tablet {
+    .mdl-grid--no-spacing > .mdl-cell--10-col, .mdl-grid--no-spacing >
+    .mdl-cell--10-col-tablet.mdl-cell--10-col-tablet {
       width: 100%; }
   .mdl-cell--11-col,
   .mdl-cell--11-col-tablet.mdl-cell--11-col-tablet {
     width: calc(100% - 16px); }
-    .mdl-grid--no-spacing > .mdl-cell--11-col,
-    .mdl-grid--no-spacing > .mdl-cell--11-col-tablet.mdl-cell--11-col-tablet {
+    .mdl-grid--no-spacing > .mdl-cell--11-col, .mdl-grid--no-spacing >
+    .mdl-cell--11-col-tablet.mdl-cell--11-col-tablet {
       width: 100%; }
   .mdl-cell--12-col,
   .mdl-cell--12-col-tablet.mdl-cell--12-col-tablet {
     width: calc(100% - 16px); }
-    .mdl-grid--no-spacing > .mdl-cell--12-col,
-    .mdl-grid--no-spacing > .mdl-cell--12-col-tablet.mdl-cell--12-col-tablet {
-      width: 100%; } }
+    .mdl-grid--no-spacing > .mdl-cell--12-col, .mdl-grid--no-spacing >
+    .mdl-cell--12-col-tablet.mdl-cell--12-col-tablet {
+      width: 100%; }
+  .mdl-cell--1-offset,
+  .mdl-cell--1-offset-tablet.mdl-cell--1-offset-tablet {
+    margin-left: calc(12.5% + 8px); }
+    .mdl-grid.mdl-grid--no-spacing > .mdl-cell--1-offset, .mdl-grid.mdl-grid--no-spacing >
+    .mdl-cell--1-offset-tablet.mdl-cell--1-offset-tablet {
+      margin-left: 12.5%; }
+  .mdl-cell--2-offset,
+  .mdl-cell--2-offset-tablet.mdl-cell--2-offset-tablet {
+    margin-left: calc(25% + 8px); }
+    .mdl-grid.mdl-grid--no-spacing > .mdl-cell--2-offset, .mdl-grid.mdl-grid--no-spacing >
+    .mdl-cell--2-offset-tablet.mdl-cell--2-offset-tablet {
+      margin-left: 25%; }
+  .mdl-cell--3-offset,
+  .mdl-cell--3-offset-tablet.mdl-cell--3-offset-tablet {
+    margin-left: calc(37.5% + 8px); }
+    .mdl-grid.mdl-grid--no-spacing > .mdl-cell--3-offset, .mdl-grid.mdl-grid--no-spacing >
+    .mdl-cell--3-offset-tablet.mdl-cell--3-offset-tablet {
+      margin-left: 37.5%; }
+  .mdl-cell--4-offset,
+  .mdl-cell--4-offset-tablet.mdl-cell--4-offset-tablet {
+    margin-left: calc(50% + 8px); }
+    .mdl-grid.mdl-grid--no-spacing > .mdl-cell--4-offset, .mdl-grid.mdl-grid--no-spacing >
+    .mdl-cell--4-offset-tablet.mdl-cell--4-offset-tablet {
+      margin-left: 50%; }
+  .mdl-cell--5-offset,
+  .mdl-cell--5-offset-tablet.mdl-cell--5-offset-tablet {
+    margin-left: calc(62.5% + 8px); }
+    .mdl-grid.mdl-grid--no-spacing > .mdl-cell--5-offset, .mdl-grid.mdl-grid--no-spacing >
+    .mdl-cell--5-offset-tablet.mdl-cell--5-offset-tablet {
+      margin-left: 62.5%; }
+  .mdl-cell--6-offset,
+  .mdl-cell--6-offset-tablet.mdl-cell--6-offset-tablet {
+    margin-left: calc(75% + 8px); }
+    .mdl-grid.mdl-grid--no-spacing > .mdl-cell--6-offset, .mdl-grid.mdl-grid--no-spacing >
+    .mdl-cell--6-offset-tablet.mdl-cell--6-offset-tablet {
+      margin-left: 75%; }
+  .mdl-cell--7-offset,
+  .mdl-cell--7-offset-tablet.mdl-cell--7-offset-tablet {
+    margin-left: calc(87.5% + 8px); }
+    .mdl-grid.mdl-grid--no-spacing > .mdl-cell--7-offset, .mdl-grid.mdl-grid--no-spacing >
+    .mdl-cell--7-offset-tablet.mdl-cell--7-offset-tablet {
+      margin-left: 87.5%; } }
 
 @media (min-width: 840px) {
   .mdl-grid {
@@ -9650,75 +11288,189 @@ _:-ms-input-placeholder, :root .mdl-slider.mdl-slider.is-upgraded {
       width: 33.3333333333%; }
   .mdl-cell--hide-desktop {
     display: none !important; }
+  .mdl-cell--order-1-desktop.mdl-cell--order-1-desktop {
+    -webkit-order: 1;
+        -ms-flex-order: 1;
+            order: 1; }
+  .mdl-cell--order-2-desktop.mdl-cell--order-2-desktop {
+    -webkit-order: 2;
+        -ms-flex-order: 2;
+            order: 2; }
+  .mdl-cell--order-3-desktop.mdl-cell--order-3-desktop {
+    -webkit-order: 3;
+        -ms-flex-order: 3;
+            order: 3; }
+  .mdl-cell--order-4-desktop.mdl-cell--order-4-desktop {
+    -webkit-order: 4;
+        -ms-flex-order: 4;
+            order: 4; }
+  .mdl-cell--order-5-desktop.mdl-cell--order-5-desktop {
+    -webkit-order: 5;
+        -ms-flex-order: 5;
+            order: 5; }
+  .mdl-cell--order-6-desktop.mdl-cell--order-6-desktop {
+    -webkit-order: 6;
+        -ms-flex-order: 6;
+            order: 6; }
+  .mdl-cell--order-7-desktop.mdl-cell--order-7-desktop {
+    -webkit-order: 7;
+        -ms-flex-order: 7;
+            order: 7; }
+  .mdl-cell--order-8-desktop.mdl-cell--order-8-desktop {
+    -webkit-order: 8;
+        -ms-flex-order: 8;
+            order: 8; }
+  .mdl-cell--order-9-desktop.mdl-cell--order-9-desktop {
+    -webkit-order: 9;
+        -ms-flex-order: 9;
+            order: 9; }
+  .mdl-cell--order-10-desktop.mdl-cell--order-10-desktop {
+    -webkit-order: 10;
+        -ms-flex-order: 10;
+            order: 10; }
+  .mdl-cell--order-11-desktop.mdl-cell--order-11-desktop {
+    -webkit-order: 11;
+        -ms-flex-order: 11;
+            order: 11; }
+  .mdl-cell--order-12-desktop.mdl-cell--order-12-desktop {
+    -webkit-order: 12;
+        -ms-flex-order: 12;
+            order: 12; }
   .mdl-cell--1-col,
   .mdl-cell--1-col-desktop.mdl-cell--1-col-desktop {
     width: calc(8.3333333333% - 16px); }
-    .mdl-grid--no-spacing > .mdl-cell--1-col,
-    .mdl-grid--no-spacing > .mdl-cell--1-col-desktop.mdl-cell--1-col-desktop {
+    .mdl-grid--no-spacing > .mdl-cell--1-col, .mdl-grid--no-spacing >
+    .mdl-cell--1-col-desktop.mdl-cell--1-col-desktop {
       width: 8.3333333333%; }
   .mdl-cell--2-col,
   .mdl-cell--2-col-desktop.mdl-cell--2-col-desktop {
     width: calc(16.6666666667% - 16px); }
-    .mdl-grid--no-spacing > .mdl-cell--2-col,
-    .mdl-grid--no-spacing > .mdl-cell--2-col-desktop.mdl-cell--2-col-desktop {
+    .mdl-grid--no-spacing > .mdl-cell--2-col, .mdl-grid--no-spacing >
+    .mdl-cell--2-col-desktop.mdl-cell--2-col-desktop {
       width: 16.6666666667%; }
   .mdl-cell--3-col,
   .mdl-cell--3-col-desktop.mdl-cell--3-col-desktop {
     width: calc(25% - 16px); }
-    .mdl-grid--no-spacing > .mdl-cell--3-col,
-    .mdl-grid--no-spacing > .mdl-cell--3-col-desktop.mdl-cell--3-col-desktop {
+    .mdl-grid--no-spacing > .mdl-cell--3-col, .mdl-grid--no-spacing >
+    .mdl-cell--3-col-desktop.mdl-cell--3-col-desktop {
       width: 25%; }
   .mdl-cell--4-col,
   .mdl-cell--4-col-desktop.mdl-cell--4-col-desktop {
     width: calc(33.3333333333% - 16px); }
-    .mdl-grid--no-spacing > .mdl-cell--4-col,
-    .mdl-grid--no-spacing > .mdl-cell--4-col-desktop.mdl-cell--4-col-desktop {
+    .mdl-grid--no-spacing > .mdl-cell--4-col, .mdl-grid--no-spacing >
+    .mdl-cell--4-col-desktop.mdl-cell--4-col-desktop {
       width: 33.3333333333%; }
   .mdl-cell--5-col,
   .mdl-cell--5-col-desktop.mdl-cell--5-col-desktop {
     width: calc(41.6666666667% - 16px); }
-    .mdl-grid--no-spacing > .mdl-cell--5-col,
-    .mdl-grid--no-spacing > .mdl-cell--5-col-desktop.mdl-cell--5-col-desktop {
+    .mdl-grid--no-spacing > .mdl-cell--5-col, .mdl-grid--no-spacing >
+    .mdl-cell--5-col-desktop.mdl-cell--5-col-desktop {
       width: 41.6666666667%; }
   .mdl-cell--6-col,
   .mdl-cell--6-col-desktop.mdl-cell--6-col-desktop {
     width: calc(50% - 16px); }
-    .mdl-grid--no-spacing > .mdl-cell--6-col,
-    .mdl-grid--no-spacing > .mdl-cell--6-col-desktop.mdl-cell--6-col-desktop {
+    .mdl-grid--no-spacing > .mdl-cell--6-col, .mdl-grid--no-spacing >
+    .mdl-cell--6-col-desktop.mdl-cell--6-col-desktop {
       width: 50%; }
   .mdl-cell--7-col,
   .mdl-cell--7-col-desktop.mdl-cell--7-col-desktop {
     width: calc(58.3333333333% - 16px); }
-    .mdl-grid--no-spacing > .mdl-cell--7-col,
-    .mdl-grid--no-spacing > .mdl-cell--7-col-desktop.mdl-cell--7-col-desktop {
+    .mdl-grid--no-spacing > .mdl-cell--7-col, .mdl-grid--no-spacing >
+    .mdl-cell--7-col-desktop.mdl-cell--7-col-desktop {
       width: 58.3333333333%; }
   .mdl-cell--8-col,
   .mdl-cell--8-col-desktop.mdl-cell--8-col-desktop {
     width: calc(66.6666666667% - 16px); }
-    .mdl-grid--no-spacing > .mdl-cell--8-col,
-    .mdl-grid--no-spacing > .mdl-cell--8-col-desktop.mdl-cell--8-col-desktop {
+    .mdl-grid--no-spacing > .mdl-cell--8-col, .mdl-grid--no-spacing >
+    .mdl-cell--8-col-desktop.mdl-cell--8-col-desktop {
       width: 66.6666666667%; }
   .mdl-cell--9-col,
   .mdl-cell--9-col-desktop.mdl-cell--9-col-desktop {
     width: calc(75% - 16px); }
-    .mdl-grid--no-spacing > .mdl-cell--9-col,
-    .mdl-grid--no-spacing > .mdl-cell--9-col-desktop.mdl-cell--9-col-desktop {
+    .mdl-grid--no-spacing > .mdl-cell--9-col, .mdl-grid--no-spacing >
+    .mdl-cell--9-col-desktop.mdl-cell--9-col-desktop {
       width: 75%; }
   .mdl-cell--10-col,
   .mdl-cell--10-col-desktop.mdl-cell--10-col-desktop {
     width: calc(83.3333333333% - 16px); }
-    .mdl-grid--no-spacing > .mdl-cell--10-col,
-    .mdl-grid--no-spacing > .mdl-cell--10-col-desktop.mdl-cell--10-col-desktop {
+    .mdl-grid--no-spacing > .mdl-cell--10-col, .mdl-grid--no-spacing >
+    .mdl-cell--10-col-desktop.mdl-cell--10-col-desktop {
       width: 83.3333333333%; }
   .mdl-cell--11-col,
   .mdl-cell--11-col-desktop.mdl-cell--11-col-desktop {
     width: calc(91.6666666667% - 16px); }
-    .mdl-grid--no-spacing > .mdl-cell--11-col,
-    .mdl-grid--no-spacing > .mdl-cell--11-col-desktop.mdl-cell--11-col-desktop {
+    .mdl-grid--no-spacing > .mdl-cell--11-col, .mdl-grid--no-spacing >
+    .mdl-cell--11-col-desktop.mdl-cell--11-col-desktop {
       width: 91.6666666667%; }
   .mdl-cell--12-col,
   .mdl-cell--12-col-desktop.mdl-cell--12-col-desktop {
     width: calc(100% - 16px); }
-    .mdl-grid--no-spacing > .mdl-cell--12-col,
-    .mdl-grid--no-spacing > .mdl-cell--12-col-desktop.mdl-cell--12-col-desktop {
-      width: 100%; } }
+    .mdl-grid--no-spacing > .mdl-cell--12-col, .mdl-grid--no-spacing >
+    .mdl-cell--12-col-desktop.mdl-cell--12-col-desktop {
+      width: 100%; }
+  .mdl-cell--1-offset,
+  .mdl-cell--1-offset-desktop.mdl-cell--1-offset-desktop {
+    margin-left: calc(8.3333333333% + 8px); }
+    .mdl-grid.mdl-grid--no-spacing > .mdl-cell--1-offset, .mdl-grid.mdl-grid--no-spacing >
+    .mdl-cell--1-offset-desktop.mdl-cell--1-offset-desktop {
+      margin-left: 8.3333333333%; }
+  .mdl-cell--2-offset,
+  .mdl-cell--2-offset-desktop.mdl-cell--2-offset-desktop {
+    margin-left: calc(16.6666666667% + 8px); }
+    .mdl-grid.mdl-grid--no-spacing > .mdl-cell--2-offset, .mdl-grid.mdl-grid--no-spacing >
+    .mdl-cell--2-offset-desktop.mdl-cell--2-offset-desktop {
+      margin-left: 16.6666666667%; }
+  .mdl-cell--3-offset,
+  .mdl-cell--3-offset-desktop.mdl-cell--3-offset-desktop {
+    margin-left: calc(25% + 8px); }
+    .mdl-grid.mdl-grid--no-spacing > .mdl-cell--3-offset, .mdl-grid.mdl-grid--no-spacing >
+    .mdl-cell--3-offset-desktop.mdl-cell--3-offset-desktop {
+      margin-left: 25%; }
+  .mdl-cell--4-offset,
+  .mdl-cell--4-offset-desktop.mdl-cell--4-offset-desktop {
+    margin-left: calc(33.3333333333% + 8px); }
+    .mdl-grid.mdl-grid--no-spacing > .mdl-cell--4-offset, .mdl-grid.mdl-grid--no-spacing >
+    .mdl-cell--4-offset-desktop.mdl-cell--4-offset-desktop {
+      margin-left: 33.3333333333%; }
+  .mdl-cell--5-offset,
+  .mdl-cell--5-offset-desktop.mdl-cell--5-offset-desktop {
+    margin-left: calc(41.6666666667% + 8px); }
+    .mdl-grid.mdl-grid--no-spacing > .mdl-cell--5-offset, .mdl-grid.mdl-grid--no-spacing >
+    .mdl-cell--5-offset-desktop.mdl-cell--5-offset-desktop {
+      margin-left: 41.6666666667%; }
+  .mdl-cell--6-offset,
+  .mdl-cell--6-offset-desktop.mdl-cell--6-offset-desktop {
+    margin-left: calc(50% + 8px); }
+    .mdl-grid.mdl-grid--no-spacing > .mdl-cell--6-offset, .mdl-grid.mdl-grid--no-spacing >
+    .mdl-cell--6-offset-desktop.mdl-cell--6-offset-desktop {
+      margin-left: 50%; }
+  .mdl-cell--7-offset,
+  .mdl-cell--7-offset-desktop.mdl-cell--7-offset-desktop {
+    margin-left: calc(58.3333333333% + 8px); }
+    .mdl-grid.mdl-grid--no-spacing > .mdl-cell--7-offset, .mdl-grid.mdl-grid--no-spacing >
+    .mdl-cell--7-offset-desktop.mdl-cell--7-offset-desktop {
+      margin-left: 58.3333333333%; }
+  .mdl-cell--8-offset,
+  .mdl-cell--8-offset-desktop.mdl-cell--8-offset-desktop {
+    margin-left: calc(66.6666666667% + 8px); }
+    .mdl-grid.mdl-grid--no-spacing > .mdl-cell--8-offset, .mdl-grid.mdl-grid--no-spacing >
+    .mdl-cell--8-offset-desktop.mdl-cell--8-offset-desktop {
+      margin-left: 66.6666666667%; }
+  .mdl-cell--9-offset,
+  .mdl-cell--9-offset-desktop.mdl-cell--9-offset-desktop {
+    margin-left: calc(75% + 8px); }
+    .mdl-grid.mdl-grid--no-spacing > .mdl-cell--9-offset, .mdl-grid.mdl-grid--no-spacing >
+    .mdl-cell--9-offset-desktop.mdl-cell--9-offset-desktop {
+      margin-left: 75%; }
+  .mdl-cell--10-offset,
+  .mdl-cell--10-offset-desktop.mdl-cell--10-offset-desktop {
+    margin-left: calc(83.3333333333% + 8px); }
+    .mdl-grid.mdl-grid--no-spacing > .mdl-cell--10-offset, .mdl-grid.mdl-grid--no-spacing >
+    .mdl-cell--10-offset-desktop.mdl-cell--10-offset-desktop {
+      margin-left: 83.3333333333%; }
+  .mdl-cell--11-offset,
+  .mdl-cell--11-offset-desktop.mdl-cell--11-offset-desktop {
+    margin-left: calc(91.6666666667% + 8px); }
+    .mdl-grid.mdl-grid--no-spacing > .mdl-cell--11-offset, .mdl-grid.mdl-grid--no-spacing >
+    .mdl-cell--11-offset-desktop.mdl-cell--11-offset-desktop {
+      margin-left: 91.6666666667%; } }

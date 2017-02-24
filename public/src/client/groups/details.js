@@ -33,7 +33,9 @@ define('forum/groups/details', [
 					pictureCropper.show({
 						title: '[[groups:upload-group-cover]]',
 						socketMethod: 'groups.cover.update',
-						aspectRatio: '16 / 9',
+						aspectRatio: NaN,
+						allowSkippingCrop: true,
+						restrictImageDimension: false,
 						paramName: 'groupName',
 						paramValue: groupName,
 					}, function (imageUrlOnServer) {

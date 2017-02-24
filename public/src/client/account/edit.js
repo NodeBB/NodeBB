@@ -70,7 +70,9 @@ define('forum/account/edit', ['forum/account/header', 'translator', 'components'
 
 	function handleImageChange() {
 		$('#changePictureBtn').on('click', function () {
-			socket.emit('user.getProfilePictures', { uid: ajaxify.data.uid }, function (err, pictures) {
+			socket.emit('user.getProfilePictures', {
+				uid: ajaxify.data.uid,
+			}, function (err, pictures) {
 				if (err) {
 					return app.alertError(err.message);
 				}
@@ -212,10 +214,13 @@ define('forum/account/edit', ['forum/account/header', 'translator', 'components'
 
 			pictureCropper.show({
 				socketMethod: 'user.uploadCroppedPicture',
-				aspectRatio: '1 / 1',
+				aspectRatio: 1 / 1,
 				paramName: 'uid',
 				paramValue: ajaxify.data.theirid,
 				fileSize: ajaxify.data.maximumProfileImageSize,
+				allowSkippingCrop: false,
+				restrictImageDimension: true,
+				imageDimension: ajaxify.data.profileImageDimension,
 				title: '[[user:upload_picture]]',
 				description: '[[user:upload_a_picture]]',
 				accept: '.png,.jpg,.bmp',
@@ -245,6 +250,9 @@ define('forum/account/edit', ['forum/account/header', 'translator', 'components'
 							url: url,
 							socketMethod: 'user.uploadCroppedPicture',
 							aspectRatio: '1 / 1',
+							allowSkippingCrop: false,
+							restrictImageDimension: true,
+							imageDimension: ajaxify.data.profileImageDimension,
 							paramName: 'uid',
 							paramValue: ajaxify.data.theirid,
 						}, onUploadComplete);
@@ -258,7 +266,9 @@ define('forum/account/edit', ['forum/account/header', 'translator', 'components'
 		});
 
 		modal.find('[data-action="remove-uploaded"]').on('click', function () {
-			socket.emit('user.removeUploadedPicture', { uid: ajaxify.data.theirid }, function (err) {
+			socket.emit('user.removeUploadedPicture', {
+				uid: ajaxify.data.theirid,
+			}, function (err) {
 				modal.modal('hide');
 				if (err) {
 					return app.alertError(err.message);

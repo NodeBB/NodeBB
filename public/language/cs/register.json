@@ -1,6 +1,6 @@
 {
     "register": "Registrace",
-    "cancel_registration": "Cancel Registration",
+    "cancel_registration": "Zrušit registraci",
     "help.email": "Ve výchozím nastavení bude váš e-mail skrytý.",
     "help.username_restrictions": "Jedinečné uživatelské jméno dlouhé %1 až %2 znaků. Ostatní uživatelé Vás mohou zmínit jako @<span id='yourUsername'>uživatelské-jméno</span>.",
     "help.minimum_password_length": "Délka vašeho hesla musí být alespoň %1 znaků.",

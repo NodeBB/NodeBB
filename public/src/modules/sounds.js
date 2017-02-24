@@ -1,90 +1,95 @@
 'use strict';
 
 
-define('sounds', ['buzz'], function (buzz) {
+define('sounds', function () {
 	var	Sounds = {};
 
-	var loadedSounds = {};
-	var eventSoundMapping;
-	var files;
+	var fileMap;
+	var soundMap;
+	var cache = {};
 
-	socket.on('event:sounds.reloadMapping', function () {
-		Sounds.reloadMapping();
-	});
-
-	Sounds.reloadMapping = function () {
-		socket.emit('modules.sounds.getMapping', function (err, mapping) {
+	Sounds.loadMap = function loadMap(callback) {
+		socket.emit('modules.sounds.getUserSoundMap', function (err, map) {
 			if (err) {
 				return app.alertError(err.message);
 			}
-			eventSoundMapping = mapping;
+			soundMap = map;
+			if (callback) {
+				callback();
+			}
 		});
 	};
 
 	function loadData(callback) {
-		socket.emit('modules.sounds.getData', function (err, data) {
-			if (err) {
-				return app.alertError('[sounds] Could not load sound mapping!');
-			}
-			eventSoundMapping = data.mapping;
-			files = data.files;
-			callback();
-		});
-	}
-
-	function isSoundLoaded(fileName) {
-		return loadedSounds[fileName];
-	}
-
-	function loadFile(fileName, callback) {
-		function createSound() {
-			if (files && files[fileName]) {
-				loadedSounds[fileName] = new buzz.sound(files[fileName]);
-			}
-			callback();
-		}
-
-		if (isSoundLoaded(fileName)) {
-			return callback();
-		}
-
-		if (!files || !files[fileName]) {
-			return loadData(createSound);
-		}
-		createSound();
-	}
-
-	Sounds.play = function (name) {
-		function play() {
-			Sounds.playFile(eventSoundMapping[name]);
-		}
-
-		if (!eventSoundMapping) {
-			return loadData(play);
-		}
-
-		play();
-	};
-
-	Sounds.playFile = function (fileName) {
-		if (!fileName) {
-			return;
-		}
-
-		function play() {
-			if (loadedSounds[fileName]) {
-				loadedSounds[fileName].play();
-			} else {
-				app.alertError('[sounds] Not found: ' + fileName);
+		var outstanding = 2;
+		function after() {
+			outstanding -= 1;
+			if (outstanding === 0 && callback) {
+				callback();
 			}
 		}
-
-		if (isSoundLoaded(fileName)) {
-			play();
+		if (fileMap) {
+			outstanding -= 1;
 		} else {
-			loadFile(fileName, play);
+			$.getJSON(config.relative_path + '/assets/sounds/fileMap.json', function (map) {
+				fileMap = map;
+				after();
+			});
 		}
+
+		Sounds.loadMap(after);
+	}
+
+	Sounds.playSound = function playSound(soundName) {
+		if (!soundMap || !fileMap) {
+			return loadData(after);
+		}
+
+		function after() {
+			if (!fileMap[soundName]) {
+				return;
+			}
+			var audio = cache[soundName] || new Audio(config.relative_path + '/assets/sounds/' + fileMap[soundName]);
+			cache[soundName] = audio;
+			audio.pause();
+			audio.currentTime = 0;
+			audio.play();
+		}
+
+		after();
 	};
+
+	Sounds.play = function play(type, id) {
+		function after() {
+			if (!soundMap[type]) {
+				return;
+			}
+
+			if (id) {
+				var item = 'sounds.handled:' + id;
+				if (sessionStorage.getItem(item)) {
+					return;
+				}
+				sessionStorage.setItem(item, true);
+
+				setTimeout(function () {
+					sessionStorage.removeItem(item);
+				}, 5000);
+			}
+
+			Sounds.playSound(soundMap[type]);
+		}
+
+		if (!soundMap || !fileMap) {
+			return loadData(after);
+		}
+
+		after();
+	};
+
+	socket.on('event:sounds.reloadMapping', function () {
+		Sounds.loadMap();
+	});
 
 	return Sounds;
 });

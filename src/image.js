@@ -1,8 +1,13 @@
 'use strict';
 
+var os = require('os');
 var fs = require('fs');
+var path = require('path');
 var Jimp = require('jimp');
 var async = require('async');
+var crypto = require('crypto');
+
+var file = require('./file');
 var plugins = require('./plugins');
 
 var image = module.exports;
@@ -65,9 +70,6 @@ image.resizeImage = function (data, callback) {
 					}
 				},
 				function (image, next) {
-					if (data.write === false) {
-						return next();
-					}
 					image.write(data.target || data.path, next);
 				},
 			], function (err) {
@@ -83,7 +85,7 @@ image.normalise = function (path, extension, callback) {
 			path: path,
 			extension: extension,
 		}, function (err) {
-			callback(err);
+			callback(err, path + '.png');
 		});
 	} else {
 		new Jimp(path, function (err, image) {
@@ -91,7 +93,7 @@ image.normalise = function (path, extension, callback) {
 				return callback(err);
 			}
 			image.write(path + '.png', function (err) {
-				callback(err);
+				callback(err, path + '.png');
 			});
 		});
 	}
@@ -114,5 +116,30 @@ image.size = function (path, callback) {
 image.convertImageToBase64 = function (path, callback) {
 	fs.readFile(path, function (err, data) {
 		callback(err, data ? data.toString('base64') : null);
+	});
+};
+
+image.mimeFromBase64 = function (imageData) {
+	return imageData.slice(5, imageData.indexOf('base64') - 1);
+};
+
+image.extensionFromBase64 = function (imageData) {
+	return file.typeToExtension(image.mimeFromBase64(imageData));
+};
+
+image.writeImageDataToTempFile = function (imageData, callback) {
+	var filename = crypto.createHash('md5').update(imageData).digest('hex');
+
+	var type = image.mimeFromBase64(imageData);
+	var extension = file.typeToExtension(type);
+
+	var filepath = path.join(os.tmpdir(), filename + extension);
+
+	var buffer = new Buffer(imageData.slice(imageData.indexOf('base64') + 7), 'base64');
+
+	fs.writeFile(filepath, buffer, {
+		encoding: 'base64',
+	}, function (err) {
+		callback(err, filepath);
 	});
 };

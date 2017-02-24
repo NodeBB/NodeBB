@@ -1,7 +1,7 @@
 {
-	"logs": "Protokoly",
-	"control-panel": "Logs Control Panel",
-	"reload": "Reload Logs",
-	"clear": "Clear Logs",
-	"clear-success": "Logs Cleared!"
+	"logs": "Záznamy",
+	"control-panel": "Ovládací panel záznamov",
+	"reload": "Znovu načítať záznamy",
+	"clear": "Vyčistiť záznamy",
+	"clear-success": "Záznamy vyčistené!"
 }

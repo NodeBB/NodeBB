@@ -66,7 +66,7 @@ define('chat', [
 
 				if (!isSelf && (!modal.is(':visible') || !app.isFocused)) {
 					app.alternatingTitle('[[modules:chat.user_has_messaged_you, ' + username + ']]');
-					sounds.play('chat-incoming');
+					sounds.play('chat-incoming', 'chat.incoming:' + data.message.mid);
 
 					taskbar.push('chat', modal.attr('UUID'), {
 						title: username,
@@ -88,7 +88,7 @@ define('chat', [
 						module.toggleNew(modal.attr('UUID'), !isSelf, true);
 						if (!isSelf) {
 							app.alternatingTitle('[[modules:chat.user_has_messaged_you, ' + username + ']]');
-							sounds.play('chat-incoming');
+							sounds.play('chat-incoming', 'chat.incoming:' + data.message.mid);
 						}
 					});
 				});

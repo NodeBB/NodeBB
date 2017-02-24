@@ -1,11 +1,11 @@
 {
 	"post-cache": "Кэш записи",
 	"posts-in-cache": "Записей в кэше",
-	"average-post-size": "Average Post Size",
-	"length-to-max": "Length / Max",
+	"average-post-size": "Средний размер записи",
+	"length-to-max": "Длина / Максимальная",
 	"percent-full": "%1% Full",
-	"post-cache-size": "Post Cache Size",
+	"post-cache-size": "Размер записи в кэше",
 	"items-in-cache": "Items in Cache",
-	"control-panel": "Control Panel",
-	"update-settings": "Update Cache Settings"
+	"control-panel": "Панель управления",
+	"update-settings": "Обновить настройки кэша"
 }
