@@ -9,8 +9,6 @@ var async = require('async');
 var file = require('../file');
 var plugins = require('../plugins');
 var user = require('../user');
-var db = require('../database');
-
 
 var soundsPath = path.join(__dirname, '../../build/public/sounds');
 var uploadsPath = path.join(__dirname, '../../public/uploads/sounds');
@@ -100,7 +98,7 @@ module.exports = function (Meta) {
 	Meta.sounds.getUserSoundMap = function getUserSoundMap(uid, callback) {
 		async.parallel({
 			defaultMapping: function (next) {
-				db.getObject('settings:sounds', next);
+				Meta.configs.getFields(keys, next);
 			},
 			userSettings: function (next) {
 				user.getSettings(uid, next);
@@ -112,18 +110,18 @@ module.exports = function (Meta) {
 
 			var userSettings = results.userSettings;
 			userSettings = {
-				notification: userSettings.notificationSound,
-				'chat-incoming': userSettings.incomingChatSound,
-				'chat-outgoing': userSettings.outgoingChatSound,
+				notification: userSettings.notificationSound || userSettings['notification-sound'],
+				'chat-incoming': userSettings.incomingChatSound || userSettings['chat-incoming-sound'],
+				'chat-outgoing': userSettings.outgoingChatSound || userSettings['chat-outgoing-sound'],
 			};
 			var defaultMapping = results.defaultMapping || {};
 			var soundMapping = {};
 
 			keys.forEach(function (key) {
 				if (userSettings[key] || userSettings[key] === '') {
-					soundMapping[key] = userSettings[key] || null;
+					soundMapping[key] = userSettings[key] || '';
 				} else {
-					soundMapping[key] = defaultMapping[key] || null;
+					soundMapping[key] = defaultMapping[key] || '';
 				}
 			});
 
