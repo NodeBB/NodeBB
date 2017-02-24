@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 var async = require('async');
 var winston = require('winston');
@@ -8,7 +8,7 @@ var plugins = require('../plugins');
 
 var controllers = {
 	api: require('../controllers/api'),
-	helpers: require('../controllers/helpers')
+	helpers: require('../controllers/helpers'),
 };
 
 module.exports = function (middleware) {
@@ -44,8 +44,8 @@ module.exports = function (middleware) {
 
 	middleware.admin.renderHeader = function (req, res, data, next) {
 		var custom_header = {
-			'plugins': [],
-			'authentication': []
+			plugins: [],
+			authentication: [],
 		};
 
 		user.getUserFields(req.uid, ['username', 'userslug', 'email', 'picture', 'email:confirmed'], function (err, userData) {
@@ -64,7 +64,7 @@ module.exports = function (middleware) {
 						}
 						var arr = [];
 						scripts.forEach(function (script) {
-							arr.push({src: script});
+							arr.push({ src: script });
 						});
 
 						next(null, arr);
@@ -78,7 +78,7 @@ module.exports = function (middleware) {
 				},
 				configs: function (next) {
 					meta.configs.list(next);
-				}
+				},
 			}, function (err, results) {
 				if (err) {
 					return next(err);
@@ -102,12 +102,12 @@ module.exports = function (middleware) {
 					authentication: results.custom_header.authentication,
 					scripts: results.scripts,
 					'cache-buster': meta.config['cache-buster'] || '',
-					env: process.env.NODE_ENV ? true : false,
+					env: !!process.env.NODE_ENV,
 					title: (acpPath || 'Dashboard') + ' | NodeBB Admin Control Panel',
-					bodyClass: data.bodyClass
+					bodyClass: data.bodyClass,
 				};
 
-				templateValues.template = {name: res.locals.template};
+				templateValues.template = { name: res.locals.template };
 				templateValues.template[res.locals.template] = true;
 
 				req.app.render('admin/header', templateValues, next);

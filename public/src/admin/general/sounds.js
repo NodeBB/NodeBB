@@ -1,5 +1,5 @@
-"use strict";
-/* global app, define, socket */
+'use strict';
+
 
 define('admin/general/sounds', ['sounds', 'settings', 'admin/settings'], function (Sounds, Settings, AdminSettings) {
 	var	SoundsAdmin = {};
@@ -21,7 +21,7 @@ define('admin/general/sounds', ['sounds', 'settings', 'admin/settings'], functio
 		saveEl.on('click', function () {
 			Settings.save('sounds', $('.sounds form'), function () {
 				socket.emit('admin.fireEvent', {
-					name: 'event:sounds.reloadMapping'
+					name: 'event:sounds.reloadMapping',
 				});
 				app.alertSuccess('[[admin/general/sounds:saved]]');
 			});

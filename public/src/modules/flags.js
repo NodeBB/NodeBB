@@ -1,11 +1,10 @@
 'use strict';
 
-/* globals define, app, socket, templates */
 
 define('flags', [], function () {
-	var Flag = {},
-		flagModal,
-		flagCommit;
+	var Flag = {};
+	var flagModal;
+	var flagCommit;
 
 	Flag.showFlagModal = function (data) {
 		parseModal(data, function (html) {
@@ -43,7 +42,7 @@ define('flags', [], function () {
 		if (!type || !id || !reason) {
 			return;
 		}
-		socket.emit('flags.create', {type: type, id: id, reason: reason}, function (err) {
+		socket.emit('flags.create', { type: type, id: id, reason: reason }, function (err) {
 			if (err) {
 				return app.alertError(err.message);
 			}

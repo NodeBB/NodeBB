@@ -1,6 +1,5 @@
 'use strict';
 
-/* globals define, socket, ajaxify, app */
 
 define('forum/account/info', ['forum/account/header', 'components'], function (header, components) {
 	var Info = {};
@@ -14,7 +13,7 @@ define('forum/account/info', ['forum/account/header', 'components'], function (h
 	function handleModerationNote() {
 		$('[component="account/save-moderation-note"]').on('click', function () {
 			var note = $('[component="account/moderation-note"]').val();
-			socket.emit('user.setModerationNote', {uid: ajaxify.data.uid, note: note}, function (err) {
+			socket.emit('user.setModerationNote', { uid: ajaxify.data.uid, note: note }, function (err) {
 				if (err) {
 					return app.alertError(err.message);
 				}
@@ -35,8 +34,8 @@ define('forum/account/info', ['forum/account/header', 'components'], function (h
 					url: config.relative_path + '/api/user/' + ajaxify.data.userslug + '/session/' + uuid,
 					method: 'delete',
 					headers: {
-						'x-csrf-token': config.csrf_token
-					}
+						'x-csrf-token': config.csrf_token,
+					},
 				}).done(function () {
 					parentEl.remove();
 				}).fail(function (err) {

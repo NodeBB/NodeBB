@@ -1,11 +1,10 @@
-"use strict";
+'use strict';
 
 var express = require('express');
 
 var uploadsController = require('../controllers/uploads');
 
-module.exports =  function (app, middleware, controllers) {
-
+module.exports = function (app, middleware, controllers) {
 	var router = express.Router();
 	app.use('/api', router);
 
@@ -36,6 +35,5 @@ module.exports =  function (app, middleware, controllers) {
 
 	router.post('/user/:userslug/uploadcover', middlewares.concat([middleware.authenticate, middleware.checkGlobalPrivacySettings, middleware.checkAccountPermissions]), controllers.accounts.edit.uploadCoverPicture);
 	router.post('/groups/uploadpicture', middlewares.concat([middleware.authenticate]), controllers.groups.uploadCover);
-
 };
 

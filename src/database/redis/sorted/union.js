@@ -2,7 +2,6 @@
 'use strict';
 
 module.exports = function (redisClient, module) {
-
 	module.sortedSetUnionCard = function (keys, callback) {
 		var tempSetName = 'temp_' + Date.now();
 
@@ -30,7 +29,6 @@ module.exports = function (redisClient, module) {
 	};
 
 	module.sortedSetUnion = function (params, callback) {
-
 		var tempSetName = 'temp_' + Date.now();
 
 		var rangeParams = [tempSetName, params.start, params.stop];
@@ -51,8 +49,8 @@ module.exports = function (redisClient, module) {
 			}
 			results = results[1] || [];
 			var objects = [];
-			for(var i = 0; i < results.length; i += 2) {
-				objects.push({value: results[i], score: parseFloat(results[i + 1])});
+			for (var i = 0; i < results.length; i += 2) {
+				objects.push({ value: results[i], score: parseFloat(results[i + 1]) });
 			}
 			callback(null, objects);
 		});

@@ -11,32 +11,31 @@ var helpers = require('./helpers');
 var plugins = require('../plugins');
 
 module.exports = function (privileges) {
-
 	privileges.categories = {};
 
 	privileges.categories.list = function (cid, callback) {
 		// Method used in admin/category controller to show all users/groups with privs in that given cid
 
 		var privilegeLabels = [
-			{name: 'Find Category'},
-			{name: 'Access Category'},
-			{name: 'Access Topics'},
-			{name: 'Create Topics'},
-			{name: 'Reply to Topics'},
-			{name: 'Edit Posts'},
-			{name: 'Delete Posts'},
-			{name: 'Delete Topics'},
-			{name: 'Upload Images'},
-			{name: 'Upload Files'},
-			{name: 'Purge'},
-			{name: 'Moderate'}
+			{ name: 'Find Category' },
+			{ name: 'Access Category' },
+			{ name: 'Access Topics' },
+			{ name: 'Create Topics' },
+			{ name: 'Reply to Topics' },
+			{ name: 'Edit Posts' },
+			{ name: 'Delete Posts' },
+			{ name: 'Delete Topics' },
+			{ name: 'Upload Images' },
+			{ name: 'Upload Files' },
+			{ name: 'Purge' },
+			{ name: 'Moderate' },
 		];
 
 		async.parallel({
 			labels: function (next) {
 				async.parallel({
 					users: async.apply(plugins.fireHook, 'filter:privileges.list_human', privilegeLabels),
-					groups: async.apply(plugins.fireHook, 'filter:privileges.groups.list_human', privilegeLabels)
+					groups: async.apply(plugins.fireHook, 'filter:privileges.groups.list_human', privilegeLabels),
 				}, next);
 			},
 			users: function (next) {
@@ -50,7 +49,6 @@ module.exports = function (privileges) {
 						}), next);
 					},
 					function (memberSets, next) {
-
 						memberSets = memberSets.map(function (set) {
 							return set.map(function (uid) {
 								return parseInt(uid, 10);
@@ -66,14 +64,14 @@ module.exports = function (privileges) {
 
 							memberData.forEach(function (member) {
 								member.privileges = {};
-								for(var x = 0,numPrivs = userPrivileges.length; x < numPrivs; x++) {
+								for (var x = 0, numPrivs = userPrivileges.length; x < numPrivs; x += 1) {
 									member.privileges[userPrivileges[x]] = memberSets[x].indexOf(parseInt(member.uid, 10)) !== -1;
 								}
 							});
 
 							next(null, memberData);
 						});
-					}
+					},
 				], next);
 			},
 			groups: function (next) {
@@ -87,7 +85,6 @@ module.exports = function (privileges) {
 						}), next);
 					},
 					function (memberSets, next) {
-
 						var uniqueGroups = _.unique(_.flatten(memberSets));
 
 						groups.getGroups('groups:createtime', 0, -1, function (err, groupNames) {
@@ -117,7 +114,7 @@ module.exports = function (privileges) {
 							var memberData = groupNames.map(function (member) {
 								memberPrivs = {};
 
-								for(var x = 0,numPrivs = groupPrivileges.length; x < numPrivs; x++) {
+								for (var x = 0, numPrivs = groupPrivileges.length; x < numPrivs; x += 1) {
 									memberPrivs[groupPrivileges[x]] = memberSets[x].indexOf(member) !== -1;
 								}
 								return {
@@ -141,9 +138,9 @@ module.exports = function (privileges) {
 								next(null, member);
 							});
 						}, next);
-					}
+					},
 				], next);
-			}
+			},
 		}, function (err, payload) {
 			if (err) {
 				return callback(err);
@@ -167,7 +164,7 @@ module.exports = function (privileges) {
 			},
 			isModerator: function (next) {
 				user.isModerator(uid, cid, next);
-			}
+			},
 		}, function (err, results) {
 			if (err) {
 				return callback(err);
@@ -183,7 +180,7 @@ module.exports = function (privileges) {
 				uid: uid,
 				editable: isAdminOrMod,
 				view_deleted: isAdminOrMod,
-				isAdminOrMod: isAdminOrMod
+				isAdminOrMod: isAdminOrMod,
 			}, callback);
 		});
 	};
@@ -198,7 +195,7 @@ module.exports = function (privileges) {
 			},
 			function (next) {
 				user.isAdministrator(uid, next);
-			}
+			},
 		], callback);
 	};
 
@@ -236,7 +233,7 @@ module.exports = function (privileges) {
 				},
 				function (next) {
 					user.isAdministrator(uid, next);
-				}
+				},
 			], callback);
 		});
 	};
@@ -277,7 +274,7 @@ module.exports = function (privileges) {
 			},
 			isAdmin: function (next) {
 				user.isAdministrator(uid, next);
-			}
+			},
 		}, callback);
 	};
 
@@ -299,7 +296,7 @@ module.exports = function (privileges) {
 			},
 			isAdmin: function (next) {
 				user.isAdministrator(uids, next);
-			}
+			},
 		}, function (err, results) {
 			if (err) {
 				return callback(err);
@@ -336,7 +333,7 @@ module.exports = function (privileges) {
 			},
 			moderatorOfTarget: function (next) {
 				user.isModerator(uid, targetCid, next);
-			}
+			},
 		}, function (err, results) {
 			if (err) {
 				return callback(err);
@@ -372,7 +369,7 @@ module.exports = function (privileges) {
 			},
 			mods: function (next) {
 				user.isModerator(uid, cid, next);
-			}
+			},
 		}, callback);
 	};
 
@@ -399,8 +396,7 @@ module.exports = function (privileges) {
 			},
 			'groups:topics:read': function (next) {
 				groups.isMember(groupName, 'cid:' + cid + ':privileges:groups:topics:read', next);
-			}
+			},
 		}, callback);
 	};
-
 };

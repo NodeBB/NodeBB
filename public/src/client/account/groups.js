@@ -1,6 +1,5 @@
 'use strict';
 
-/* globals ajaxify, define, app, socket, utils */
 
 define('forum/account/groups', ['forum/account/header'], function (header) {
 	var AccountTopics = {};

@@ -5,7 +5,7 @@ var fs = require('fs');
 var async = require('async');
 var semver = require('semver');
 var winston = require('winston');
-var colors = require('colors');
+require('colors');
 
 var pkg = require('../../package.json');
 
@@ -21,7 +21,7 @@ module.exports = function (Meta) {
 
 		async.each(modules, function (module, next) {
 			fs.readFile(path.join(__dirname, '../../node_modules/', module, 'package.json'), {
-				encoding: 'utf-8'
+				encoding: 'utf-8',
 			}, function (err, pkgData) {
 				if (err) {
 					// If a bundled plugin/theme is not present, skip the dep check (#3384)
@@ -34,7 +34,7 @@ module.exports = function (Meta) {
 
 				try {
 					pkgData = JSON.parse(pkgData);
-				} catch(e) {
+				} catch (e) {
 					process.stdout.write('[' + 'missing'.red + '] ' + module.bold + ' is a required dependency but could not be found\n');
 					depsMissing = true;
 					return next();
@@ -54,7 +54,7 @@ module.exports = function (Meta) {
 			if (err) {
 				return callback(err);
 			}
-			
+
 			if (depsMissing) {
 				callback(new Error('dependencies-missing'));
 			} else if (depsOutdated) {

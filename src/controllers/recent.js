@@ -13,7 +13,7 @@ var pagination = require('../pagination');
 
 var recentController = {};
 
-var validFilter = {'': true, 'new': true, 'watched': true};
+var validFilter = { '': true, new: true, watched: true };
 
 recentController.get = function (req, res, next) {
 	var page = parseInt(req.query.page, 10) || 1;
@@ -35,7 +35,7 @@ recentController.get = function (req, res, next) {
 				},
 				watchedCategories: function (next) {
 					helpers.getWatchedCategories(req.uid, cid, next);
-				}
+				},
 			}, next);
 		},
 		function (results, next) {
@@ -46,7 +46,7 @@ recentController.get = function (req, res, next) {
 			stop = start + settings.topicsPerPage - 1;
 
 			topics.getRecentTopics(cid, req.uid, start, stop, filter, next);
-		}
+		},
 	], function (err, data) {
 		if (err) {
 			return next(err);
@@ -63,17 +63,17 @@ recentController.get = function (req, res, next) {
 			name: '[[unread:all-topics]]',
 			url: 'recent',
 			selected: filter === '',
-			filter: ''
+			filter: '',
 		}, {
 			name: '[[unread:new-topics]]',
 			url: 'recent/new',
 			selected: filter === 'new',
-			filter: 'new'
+			filter: 'new',
 		}, {
 			name: '[[unread:watched-topics]]',
 			url: 'recent/watched',
 			selected: filter === 'watched',
-			filter: 'watched'
+			filter: 'watched',
 		}];
 
 		data.selectedFilter = data.filters.find(function (filter) {
@@ -84,7 +84,7 @@ recentController.get = function (req, res, next) {
 		data.pagination = pagination.create(page, pageCount, req.query);
 
 		if (req.path.startsWith('/api/recent') || req.path.startsWith('/recent')) {
-			data.breadcrumbs = helpers.buildBreadcrumbs([{text: '[[recent:title]]'}]);
+			data.breadcrumbs = helpers.buildBreadcrumbs([{ text: '[[recent:title]]' }]);
 		}
 
 		data.querystring = cid ? ('?cid=' + validator.escape(String(cid))) : '';

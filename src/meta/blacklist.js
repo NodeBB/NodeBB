@@ -8,14 +8,14 @@ var db = require('../database');
 var pubsub = require('../pubsub');
 
 var Blacklist = {
-	_rules: []
+	_rules: [],
 };
 
 Blacklist.load = function (callback) {
 	callback = callback || function () {};
 	async.waterfall([
-		async.apply(Blacklist.get),
-		async.apply(Blacklist.validate)
+		Blacklist.get,
+		Blacklist.validate,
 	], function (err, rules) {
 		if (err) {
 			return callback(err);
@@ -29,7 +29,7 @@ Blacklist.load = function (callback) {
 		Blacklist._rules = {
 			ipv4: rules.ipv4,
 			ipv6: rules.ipv6,
-			cidr: rules.cidr
+			cidr: rules.cidr,
 		};
 
 		callback();
@@ -46,7 +46,7 @@ Blacklist.save = function (rules, callback) {
 		function (next) {
 			Blacklist.load(next);
 			pubsub.publish('blacklist:reload');
-		}
+		},
 	], callback);
 };
 
@@ -107,18 +107,18 @@ Blacklist.validate = function (rules, callback) {
 		if (ip.isV4Format(rule)) {
 			ipv4.push(rule);
 			return true;
-		} else if (ip.isV6Format(rule)) {
+		}
+		if (ip.isV6Format(rule)) {
 			ipv6.push(rule);
 			return true;
-		} else if (isCidrSubnet.test(rule)) {
+		}
+		if (isCidrSubnet.test(rule)) {
 			cidr.push(rule);
 			return true;
-		} else {
-			invalid.push(rule);
-			return false;
 		}
 
-		return true;
+		invalid.push(rule);
+		return false;
 	});
 
 	callback(null, {
@@ -127,7 +127,7 @@ Blacklist.validate = function (rules, callback) {
 		ipv6: ipv6,
 		cidr: cidr,
 		valid: rules,
-		invalid: invalid
+		invalid: invalid,
 	});
 };
 

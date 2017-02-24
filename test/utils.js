@@ -1,5 +1,5 @@
 'use strict';
-/*global require*/
+
 
 var assert = require('assert');
 var utils = require('./../public/src/utils.js');
@@ -30,15 +30,15 @@ describe('Utility Methods', function () {
 
 	describe('UUID generation', function () {
 		it('return unique random value every time', function () {
-			var uuid1 = utils.generateUUID(),
-				uuid2 = utils.generateUUID();
+			var uuid1 = utils.generateUUID();
+			var uuid2 = utils.generateUUID();
 			assert.notEqual(uuid1, uuid2, 'matches');
 		});
 	});
 
 	describe('cleanUpTag', function () {
 		it('should cleanUp a tag', function (done) {
-			var cleanedTag = utils.cleanUpTag(',\/#!$%\^\*;TaG1:{}=_`<>\'"~()?\|');
+			var cleanedTag = utils.cleanUpTag(',/#!$%^*;TaG1:{}=_`<>\'"~()?|');
 			assert.equal(cleanedTag, 'tag1');
 			done();
 		});
@@ -70,8 +70,8 @@ describe('Utility Methods', function () {
 	});
 
 	it('should shallow merge two objects', function (done) {
-		var a = {foo: 1, cat1: 'ginger'};
-		var b = {baz: 2, cat2: 'phoebe'};
+		var a = { foo: 1, cat1: 'ginger' };
+		var b = { baz: 2, cat2: 'phoebe' };
 		var obj = utils.merge(a, b);
 		assert.strictEqual(obj.foo, 1);
 		assert.strictEqual(obj.baz, 2);
@@ -151,10 +151,10 @@ describe('Utility Methods', function () {
 		var currentHour = new Date().getHours();
 		var hours = utils.getHoursArray();
 		var index = hours.length - 1;
-		for (var i = currentHour, ii = currentHour - 24; i > ii; i--) {
+		for (var i = currentHour, ii = currentHour - 24; i > ii; i -= 1) {
 			var hour = i < 0 ? 24 + i : i;
 			assert.equal(hours[index], hour + ':00');
-			-- index;
+			index -= 1;
 		}
 		done();
 	});
@@ -164,12 +164,11 @@ describe('Utility Methods', function () {
 		var days = utils.getDaysArray();
 		var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 		var index = 0;
-		for(var x = 29; x >= 0; x--) {
+		for (var x = 29; x >= 0; x -= 1) {
 			var tmpDate = new Date(currentDay - (1000 * 60 * 60 * 24 * x));
-			assert.equal(months[tmpDate.getMonth()]  + ' ' + tmpDate.getDate(), days[index]);
-			++ index;
+			assert.equal(months[tmpDate.getMonth()] + ' ' + tmpDate.getDate(), days[index]);
+			index += 1;
 		}
 		done();
 	});
-
 });

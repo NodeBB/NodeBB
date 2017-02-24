@@ -1,6 +1,6 @@
-"use strict";
+'use strict';
 
-var	async = require('async');
+var async = require('async');
 
 var groups = require('../groups');
 var meta = require('../meta');
@@ -42,7 +42,7 @@ SocketGroups.join = function (socket, data, callback) {
 
 			async.parallel({
 				isAdmin: async.apply(user.isAdministrator, socket.uid),
-				groupData: async.apply(groups.getGroupData, data.groupName)
+				groupData: async.apply(groups.getGroupData, data.groupName),
 			}, next);
 		},
 		function (results, next) {
@@ -55,7 +55,7 @@ SocketGroups.join = function (socket, data, callback) {
 			} else {
 				groups.requestMembership(data.groupName, socket.uid, next);
 			}
-		}
+		},
 	], callback);
 };
 
@@ -75,9 +75,9 @@ function isOwner(next) {
 	return function (socket, data, callback) {
 		async.parallel({
 			isAdmin: async.apply(user.isAdministrator, socket.uid),
-			isOwner: async.apply(groups.ownership.isOwner, socket.uid, data.groupName)
+			isOwner: async.apply(groups.ownership.isOwner, socket.uid, data.groupName),
 		}, function (err, results) {
-			if (err || (!isOwner && !results.isAdmin)) {
+			if (err || (!results.isOwner && !results.isAdmin)) {
 				return callback(err || new Error('[[error:no-privileges]]'));
 			}
 			next(socket, data, callback);
@@ -129,7 +129,7 @@ function acceptRejectAll(method, socket, data, callback) {
 			async.each(uids, function (uid, next) {
 				method(data.groupName, uid, next);
 			}, next);
-		}
+		},
 	], callback);
 }
 
@@ -141,22 +141,25 @@ SocketGroups.issueMassInvite = isOwner(function (socket, data, callback) {
 	if (!data || !data.usernames || !data.groupName) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
-	var usernames = data.usernames.split(',');
+	var usernames = String(data.usernames).split(',');
 	usernames = usernames.map(function (username) {
 		return username && username.trim();
 	});
-	user.getUidsByUsernames(usernames, function (err, uids) {
-		if (err) {
-			return callback(err);
-		}
-		uids = uids.filter(function (uid) {
-			return !!uid && parseInt(uid, 10);
-		});
 
-		async.eachSeries(uids, function (uid, next) {
-			groups.invite(data.groupName, uid, next);
-		}, callback);
-	});
+	async.waterfall([
+		function (next) {
+			user.getUidsByUsernames(usernames, next);
+		},
+		function (uids, next) {
+			uids = uids.filter(function (uid) {
+				return !!uid && parseInt(uid, 10);
+			});
+
+			async.eachSeries(uids, function (uid, next) {
+				groups.invite(data.groupName, uid, next);
+			}, next);
+		},
+	], callback);
 });
 
 SocketGroups.rescindInvite = isOwner(function (socket, data, callback) {
@@ -181,13 +184,14 @@ SocketGroups.kick = isOwner(function (socket, data, callback) {
 		return callback(new Error('[[error:cant-kick-self]]'));
 	}
 
-	groups.ownership.isOwner(data.uid, data.groupName, function (err, isOwner) {
-		if (err) {
-			return callback(err);
-		}
-		groups.kick(data.uid, data.groupName, isOwner, callback);
-	});
-
+	async.waterfall([
+		function (next) {
+			groups.ownership.isOwner(data.uid, data.groupName, next);
+		},
+		function (isOwner, next) {
+			groups.kick(data.uid, data.groupName, isOwner, next);
+		},
+	], callback);
 });
 
 SocketGroups.create = function (socket, data, callback) {
@@ -199,32 +203,19 @@ SocketGroups.create = function (socket, data, callback) {
 		return callback(new Error('[[error:invalid-group-name]]'));
 	}
 
-
 	data.ownerUid = socket.uid;
 	groups.create(data, callback);
 };
 
-SocketGroups.delete = function (socket, data, callback) {
+SocketGroups.delete = isOwner(function (socket, data, callback) {
 	if (data.groupName === 'administrators' ||
 		data.groupName === 'registered-users' ||
 		data.groupName === 'Global Moderators') {
 		return callback(new Error('[[error:not-allowed]]'));
 	}
 
-	async.parallel({
-		isOwner: async.apply(groups.ownership.isOwner, socket.uid, data.groupName),
-		isAdmin: async.apply(user.isAdministrator, socket.uid)
-	}, function (err, checks) {
-		if (err) {
-			return callback(err);
-		}
-		if (!checks.isOwner && !checks.isAdmin) {
-			return callback(new Error('[[error:no-privileges]]'));
-		}
-
-		groups.destroy(data.groupName, callback);
-	});
-};
+	groups.destroy(data.groupName, callback);
+});
 
 SocketGroups.search = function (socket, data, callback) {
 	data.options = data.options || {};
@@ -241,8 +232,8 @@ SocketGroups.search = function (socket, data, callback) {
 };
 
 SocketGroups.loadMore = function (socket, data, callback) {
-	if (!data.sort  || !utils.isNumber(data.after) || parseInt(data.after, 10) < 0) {
-		return callback();
+	if (!data.sort || !utils.isNumber(data.after) || parseInt(data.after, 10) < 0) {
+		return callback(new Error('[[error:invalid-data]]'));
 	}
 
 	var groupsPerPage = 9;
@@ -261,13 +252,17 @@ SocketGroups.loadMoreMembers = function (socket, data, callback) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
 	data.after = parseInt(data.after, 10);
-	user.getUsersFromSet('group:' + data.groupName + ':members', socket.uid, data.after, data.after + 9, function (err, users) {
-		if (err) {
-			return callback(err);
-		}
-
-		callback(null, {users: users, nextStart: data.after + 10});
-	});
+	async.waterfall([
+		function (next) {
+			user.getUsersFromSet('group:' + data.groupName + ':members', socket.uid, data.after, data.after + 9, next);
+		},
+		function (users, next) {
+			next(null, {
+				users: users,
+				nextStart: data.after + 10,
+			});
+		},
+	], callback);
 };
 
 SocketGroups.cover = {};
@@ -287,7 +282,7 @@ SocketGroups.cover.update = function (socket, data, callback) {
 			}
 
 			groups.updateCover(socket.uid, data, next);
-		}
+		},
 	], callback);
 };
 
@@ -306,7 +301,7 @@ SocketGroups.cover.remove = function (socket, data, callback) {
 			}
 
 			groups.removeCover(data, next);
-		}
+		},
 	], callback);
 };
 

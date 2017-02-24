@@ -6,7 +6,6 @@ var utils = require('../../public/src/utils');
 var db = require('./../database');
 
 module.exports = function (Groups) {
-
 	Groups.destroy = function (groupName, callback) {
 		Groups.getGroupsData([groupName], function (err, groupsData) {
 			if (err) {
@@ -37,7 +36,7 @@ module.exports = function (Groups) {
 							db.sortedSetRemove('group:' + group + ':members', groupName, next);
 						}, next);
 					});
-				}
+				},
 			], function (err) {
 				if (err) {
 					return callback(err);

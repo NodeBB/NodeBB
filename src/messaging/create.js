@@ -8,7 +8,6 @@ var db = require('../database');
 
 
 module.exports = function (Messaging) {
-
 	Messaging.sendMessage = function (uid, roomId, content, timestamp, callback) {
 		async.waterfall([
 			function (next) {
@@ -23,7 +22,7 @@ module.exports = function (Messaging) {
 				}
 
 				Messaging.addMessage(uid, roomId, content, timestamp, next);
-			}
+			},
 		], callback);
 	};
 
@@ -56,7 +55,7 @@ module.exports = function (Messaging) {
 					content: content,
 					timestamp: timestamp,
 					fromuid: fromuid,
-					roomId: roomId
+					roomId: roomId,
 				};
 
 				plugins.fireHook('filter:messaging.save', message, next);
@@ -76,13 +75,13 @@ module.exports = function (Messaging) {
 					async.apply(Messaging.addRoomToUsers, roomId, uids, timestamp),
 					async.apply(Messaging.addMessageToUsers, roomId, uids, mid, timestamp),
 					async.apply(Messaging.markUnread, uids, roomId),
-					async.apply(Messaging.addUsersToRoom, fromuid, [fromuid], roomId)
+					async.apply(Messaging.addUsersToRoom, fromuid, [fromuid], roomId),
 				], next);
 			},
 			function (results, next) {
 				async.parallel({
 					markRead: async.apply(Messaging.markRead, fromuid, roomId),
-					messages: async.apply(Messaging.getMessagesData, [mid], fromuid, roomId, true)
+					messages: async.apply(Messaging.getMessagesData, [mid], fromuid, roomId, true),
 				}, next);
 			},
 			function (results, next) {
@@ -94,7 +93,7 @@ module.exports = function (Messaging) {
 				results.messages[0].mid = mid;
 				results.messages[0].roomId = roomId;
 				next(null, results.messages[0]);
-			}
+			},
 		], callback);
 	};
 

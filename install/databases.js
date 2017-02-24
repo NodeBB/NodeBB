@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 var async = require('async');
 var prompt = require('prompt');
@@ -6,7 +6,7 @@ var winston = require('winston');
 
 var questions = {
 	redis: require('../src/database/redis').questions,
-	mongo: require('../src/database/mongo').questions
+	mongo: require('../src/database/mongo').questions,
 };
 
 module.exports = function (config, callback) {
@@ -18,7 +18,7 @@ module.exports = function (config, callback) {
 		},
 		function (databaseConfig, next) {
 			saveDatabaseConfig(config, databaseConfig, next);
-		}
+		},
 	], callback);
 };
 
@@ -55,7 +55,7 @@ function saveDatabaseConfig(config, databaseConfig, callback) {
 			host: databaseConfig['redis:host'],
 			port: databaseConfig['redis:port'],
 			password: databaseConfig['redis:password'],
-			database: databaseConfig['redis:database']
+			database: databaseConfig['redis:database'],
 		};
 
 		if (config.redis.host.slice(0, 1) === '/') {
@@ -67,14 +67,14 @@ function saveDatabaseConfig(config, databaseConfig, callback) {
 			port: databaseConfig['mongo:port'],
 			username: databaseConfig['mongo:username'],
 			password: databaseConfig['mongo:password'],
-			database: databaseConfig['mongo:database']
+			database: databaseConfig['mongo:database'],
 		};
 	} else {
 		return callback(new Error('unknown database : ' + config.database));
 	}
 
 	var allQuestions = questions.redis.concat(questions.mongo);
-	for (var x = 0; x < allQuestions.length; x++) {
+	for (var x = 0; x < allQuestions.length; x += 1) {
 		delete config[allQuestions[x].name];
 	}
 

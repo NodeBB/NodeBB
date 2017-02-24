@@ -10,7 +10,7 @@ var accountsController = {
 	posts: require('./accounts/posts'),
 	notifications: require('./accounts/notifications'),
 	chats: require('./accounts/chats'),
-	session: require('./accounts/session')
+	session: require('./accounts/session'),
 };
 
 module.exports = accountsController;

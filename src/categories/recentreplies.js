@@ -14,7 +14,6 @@ var batch = require('../batch');
 
 
 module.exports = function (Categories) {
-
 	Categories.getRecentReplies = function (cid, uid, count, callback) {
 		if (!parseInt(count, 10)) {
 			return callback(null, []);
@@ -28,8 +27,8 @@ module.exports = function (Categories) {
 				privileges.posts.filter('read', pids, uid, next);
 			},
 			function (pids, next) {
-				posts.getPostSummaryByPids(pids, uid, {stripTags: true}, next);
-			}
+				posts.getPostSummaryByPids(pids, uid, { stripTags: true }, next);
+			},
 		], callback);
 	};
 
@@ -40,7 +39,7 @@ module.exports = function (Categories) {
 			},
 			numRecentReplies: function (next) {
 				db.getObjectField('category:' + cid, 'numRecentReplies', next);
-			}
+			},
 		}, function (err, results) {
 			if (err) {
 				return callback(err);
@@ -61,7 +60,7 @@ module.exports = function (Categories) {
 				},
 				function (next) {
 					db.sortedSetAdd('cid:' + cid + ':recent_tids', Date.now(), tid, next);
-				}
+				},
 			], callback);
 		});
 	};
@@ -95,7 +94,7 @@ module.exports = function (Categories) {
 				bubbleUpChildrenPosts(categoryData);
 
 				next();
-			}
+			},
 		], callback);
 	};
 
@@ -131,17 +130,19 @@ module.exports = function (Categories) {
 				results.teasers.forEach(function (teaser, index) {
 					if (teaser) {
 						teaser.cid = topicData[index].cid;
-						teaser.parentCid = parseInt(parentCids[teaser.cid]) || 0;
-						teaser.tid = teaser.uid = teaser.user.uid = undefined;
+						teaser.parentCid = parseInt(parentCids[teaser.cid], 10) || 0;
+						teaser.tid = undefined;
+						teaser.uid = undefined;
+						teaser.user.uid = undefined;
 						teaser.topic = {
 							slug: topicData[index].slug,
-							title: validator.escape(String(topicData[index].title))
+							title: validator.escape(String(topicData[index].title)),
 						};
 					}
 				});
 				results.teasers = results.teasers.filter(Boolean);
 				next(null, results.teasers);
-			}
+			},
 		], callback);
 	}
 
@@ -211,9 +212,9 @@ module.exports = function (Categories) {
 							},
 							function (next) {
 								db.sortedSetAdd('cid:' + cid + ':pids', timestamps, pids, next);
-							}
+							},
 						], next);
-					}
+					},
 				], next);
 			}, function (err) {
 				if (err) {
@@ -238,7 +239,7 @@ module.exports = function (Categories) {
 				},
 				function (next) {
 					db.incrObjectFieldBy('category:' + newCid, 'post_count', postCount, next);
-				}
+				},
 			], function (err) {
 				if (err) {
 					winston.error(err.message);
@@ -247,5 +248,4 @@ module.exports = function (Categories) {
 		});
 	}
 };
-
 

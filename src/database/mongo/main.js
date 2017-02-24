@@ -1,6 +1,4 @@
-"use strict";
-
-var winston = require('winston');
+'use strict';
 
 module.exports = function (db, module) {
 	var helpers = module.helpers.mongo;
@@ -23,7 +21,7 @@ module.exports = function (db, module) {
 		if (!key) {
 			return callback();
 		}
-		db.collection('objects').findOne({_key: key}, function (err, item) {
+		db.collection('objects').findOne({ _key: key }, function (err, item) {
 			callback(err, item !== undefined && item !== null);
 		});
 	};
@@ -33,7 +31,7 @@ module.exports = function (db, module) {
 		if (!key) {
 			return callback();
 		}
-		db.collection('objects').remove({_key: key}, function (err, res) {
+		db.collection('objects').remove({ _key: key }, function (err) {
 			callback(err);
 		});
 	};
@@ -43,7 +41,7 @@ module.exports = function (db, module) {
 		if (!Array.isArray(keys) || !keys.length) {
 			return callback();
 		}
-		db.collection('objects').remove({_key: {$in: keys}}, function (err, res) {
+		db.collection('objects').remove({ _key: { $in: keys } }, function (err) {
 			callback(err);
 		});
 	};
@@ -60,7 +58,7 @@ module.exports = function (db, module) {
 		if (!key) {
 			return callback();
 		}
-		var data = {value: value};
+		var data = { value: value };
 		module.setObject(key, data, callback);
 	};
 
@@ -69,14 +67,14 @@ module.exports = function (db, module) {
 		if (!key) {
 			return callback();
 		}
-		db.collection('objects').findAndModify({_key: key}, {}, {$inc: {value: 1}}, {new: true, upsert: true}, function (err, result) {
+		db.collection('objects').findAndModify({ _key: key }, {}, { $inc: { value: 1 } }, { new: true, upsert: true }, function (err, result) {
 			callback(err, result && result.value ? result.value.value : null);
 		});
 	};
 
 	module.rename = function (oldKey, newKey, callback) {
 		callback = callback || helpers.noop;
-		db.collection('objects').update({_key: oldKey}, {$set:{_key: newKey}}, {multi: true}, function (err, res) {
+		db.collection('objects').update({ _key: oldKey }, { $set: { _key: newKey } }, { multi: true }, function (err) {
 			callback(err);
 		});
 	};

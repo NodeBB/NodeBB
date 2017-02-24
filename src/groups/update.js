@@ -9,7 +9,6 @@ var db = require('../database');
 
 
 module.exports = function (Groups) {
-
 	Groups.update = function (groupName, values, callback) {
 		callback = callback || function () {};
 
@@ -23,7 +22,7 @@ module.exports = function (Groups) {
 				}
 				plugins.fireHook('filter:group.update', {
 					groupName: groupName,
-					values: values
+					values: values,
 				}, next);
 			},
 			function (result, next) {
@@ -32,7 +31,7 @@ module.exports = function (Groups) {
 				var payload = {
 					description: values.description || '',
 					icon: values.icon || '',
-					labelColor: values.labelColor || '#000000'
+					labelColor: values.labelColor || '#000000',
 				};
 
 				if (values.hasOwnProperty('userTitle')) {
@@ -71,16 +70,16 @@ module.exports = function (Groups) {
 						}
 					},
 					async.apply(db.setObject, 'group:' + groupName, payload),
-					async.apply(renameGroup, groupName, values.name)
+					async.apply(renameGroup, groupName, values.name),
 				], next);
 			},
 			function (result, next) {
 				plugins.fireHook('action:group.update', {
 					name: groupName,
-					values: values
+					values: values,
 				});
 				next();
-			}
+			},
 		], callback);
 	};
 
@@ -118,7 +117,7 @@ module.exports = function (Groups) {
 		callback = callback || function () {};
 		async.parallel([
 			async.apply(db.setObjectField, 'group:' + groupName, 'hidden', hidden ? 1 : 0),
-			async.apply(updateVisibility, groupName, hidden)
+			async.apply(updateVisibility, groupName, hidden),
 		], function (err) {
 			callback(err);
 		});
@@ -131,7 +130,7 @@ module.exports = function (Groups) {
 			},
 			function (currentValue, next) {
 				var currentlyPrivate = parseInt(currentValue.private, 10) === 1;
-				if (!currentlyPrivate || currentlyPrivate === isPrivate)  {
+				if (!currentlyPrivate || currentlyPrivate === isPrivate) {
 					return callback();
 				}
 				db.getSetMembers('group:' + groupName + ':pending', next);
@@ -146,9 +145,9 @@ module.exports = function (Groups) {
 				winston.verbose('[groups.update] Group is now public, automatically adding ' + uids.length + ' new members, who were pending prior.');
 				async.series([
 					async.apply(db.sortedSetAdd, 'group:' + groupName + ':members', scores, uids),
-					async.apply(db.delete, 'group:' + groupName + ':pending')
+					async.apply(db.delete, 'group:' + groupName + ':pending'),
 				], next);
-			}
+			},
 		], function (err) {
 			callback(err);
 		});
@@ -218,11 +217,11 @@ module.exports = function (Groups) {
 					function (next) {
 						plugins.fireHook('action:group.rename', {
 							old: oldName,
-							new: newName
+							new: newName,
 						});
 
 						next();
-					}
+					},
 				], callback);
 			});
 		});
@@ -244,7 +243,7 @@ module.exports = function (Groups) {
 				},
 				function (next) {
 					db.sortedSetAdd(group, score, newName, next);
-				}
+				},
 			], callback);
 		});
 	}

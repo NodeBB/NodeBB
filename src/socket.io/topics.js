@@ -1,7 +1,4 @@
-
 'use strict';
-
-var async = require('async');
 
 var topics = require('../topics');
 var websockets = require('./index');
@@ -33,10 +30,10 @@ SocketTopics.post = function (socket, data, callback) {
 
 		callback(null, result.topicData);
 
-		socket.emit('event:new_post', {posts: [result.postData]});
+		socket.emit('event:new_post', { posts: [result.postData] });
 		socket.emit('event:new_topic', result.topicData);
 
-		socketHelpers.notifyNew(socket.uid, 'newTopic', {posts: [result.postData], topic: result.topicData});
+		socketHelpers.notifyNew(socket.uid, 'newTopic', { posts: [result.postData], topic: result.topicData });
 	});
 };
 

@@ -6,7 +6,6 @@ var db = require('../database');
 var sockets = require('../socket.io');
 
 module.exports = function (Messaging) {
-
 	Messaging.getUnreadCount = function (uid, callback) {
 		if (!parseInt(uid, 10)) {
 			return callback(null, 0);
@@ -16,7 +15,7 @@ module.exports = function (Messaging) {
 
 	Messaging.pushUnreadCount = function (uid) {
 		if (!parseInt(uid, 10)) {
-			return callback(null, 0);
+			return;
 		}
 		Messaging.getUnreadCount(uid, function (err, unreadCount) {
 			if (err) {
@@ -48,8 +47,7 @@ module.exports = function (Messaging) {
 				});
 
 				db.sortedSetsAdd(keys, Date.now(), roomId, next);
-			}
+			},
 		], callback);
 	};
-
 };

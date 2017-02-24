@@ -1,5 +1,5 @@
-"use strict";
-/*global define, templates, socket, ajaxify, app, admin, bootbox, utils, config */
+'use strict';
+
 
 define('admin/manage/groups', ['translator'], function (translator) {
 	var	Groups = {};
@@ -7,10 +7,10 @@ define('admin/manage/groups', ['translator'], function (translator) {
 	var intervalId = 0;
 
 	Groups.init = function () {
-		var	createModal = $('#create-modal'),
-			createGroupName = $('#create-group-name'),
-			createModalGo = $('#create-modal-go'),
-			createModalError = $('#create-modal-error');
+		var	createModal = $('#create-modal');
+		var createGroupName = $('#create-group-name');
+		var createModalGo = $('#create-modal-go');
+		var createModalError = $('#create-modal-error');
 
 		handleSearch();
 
@@ -29,10 +29,9 @@ define('admin/manage/groups', ['translator'], function (translator) {
 
 		createModalGo.on('click', function () {
 			var submitObj = {
-					name: createGroupName.val(),
-					description: $('#create-group-desc').val()
-				},
-				errorText;
+				name: createGroupName.val(),
+				description: $('#create-group-desc').val(),
+			};
 
 			socket.emit('admin.groups.create', submitObj, function (err) {
 				if (err) {
@@ -52,18 +51,18 @@ define('admin/manage/groups', ['translator'], function (translator) {
 		});
 
 		$('.groups-list').on('click', 'button[data-action]', function () {
-			var el = $(this),
-				action = el.attr('data-action'),
-				groupName = el.parents('tr[data-groupname]').attr('data-groupname');
+			var el = $(this);
+			var action = el.attr('data-action');
+			var groupName = el.parents('tr[data-groupname]').attr('data-groupname');
 
 			switch (action) {
 			case 'delete':
 				bootbox.confirm('[[admin/manage/groups:alerts.confirm-delete]]', function (confirm) {
 					if (confirm) {
 						socket.emit('groups.delete', {
-							groupName: groupName
-						}, function (err, data) {
-							if(err) {
+							groupName: groupName,
+						}, function (err) {
+							if (err) {
 								return app.alertError(err.message);
 							}
 
@@ -77,6 +76,8 @@ define('admin/manage/groups', ['translator'], function (translator) {
 	};
 
 	function handleSearch() {
+		var queryEl = $('#group-search');
+
 		function doSearch() {
 			if (!queryEl.val()) {
 				return ajaxify.refresh();
@@ -86,15 +87,15 @@ define('admin/manage/groups', ['translator'], function (translator) {
 			socket.emit('groups.search', {
 				query: queryEl.val(),
 				options: {
-					sort: 'date'
-				}
+					sort: 'date',
+				},
 			}, function (err, groups) {
 				if (err) {
 					return app.alertError(err.message);
 				}
 
 				templates.parse('admin/manage/groups', 'groups', {
-					groups: groups
+					groups: groups,
 				}, function (html) {
 					translator.translate(html, function (html) {
 						groupsEl.find('[data-groupname]').remove();
@@ -103,8 +104,6 @@ define('admin/manage/groups', ['translator'], function (translator) {
 				});
 			});
 		}
-
-		var queryEl = $('#group-search');
 
 		queryEl.on('keyup', function () {
 			if (intervalId) {

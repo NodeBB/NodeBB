@@ -1,7 +1,8 @@
-define('settings/textarea', function () {
+'use strict';
 
-	var Settings = null,
-		SettingsArea;
+define('settings/textarea', function () {
+	var Settings = null;
+	var SettingsArea;
 
 	SettingsArea = {
 		types: ['textarea'],
@@ -20,16 +21,17 @@ define('settings/textarea', function () {
 		get: function (element, trim, empty) {
 			var value = element.val();
 			if (trim) {
-				value = value == null ? void 0 : value.trim();
+				if (value == null) {
+					value = undefined;
+				} else {
+					value = value.trim();
+				}
 			}
 			if (empty || value) {
 				return value;
-			} else {
-				return void 0;
 			}
-		}
+		},
 	};
 
 	return SettingsArea;
-
 });

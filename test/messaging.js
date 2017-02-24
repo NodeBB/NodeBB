@@ -25,7 +25,7 @@ describe('Messaging Library', function () {
 		async.series([
 			async.apply(User.create, { username: 'foo', password: 'barbar' }),	// admin
 			async.apply(User.create, { username: 'baz', password: 'quuxquux' }),	// restricted user
-			async.apply(User.create, { username: 'herp', password: 'derpderp' })	// regular user
+			async.apply(User.create, { username: 'herp', password: 'derpderp' }),	// regular user
 		], function (err, uids) {
 			if (err) {
 				return done(err);
@@ -37,7 +37,7 @@ describe('Messaging Library', function () {
 
 			async.parallel([
 				async.apply(Groups.join, 'administrators', fooUid),
-				async.apply(User.setSetting, bazUid, 'restrictChat', '1')
+				async.apply(User.setSetting, bazUid, 'restrictChat', '1'),
 			], done);
 		});
 	});
@@ -80,7 +80,7 @@ describe('Messaging Library', function () {
 	describe('rooms', function () {
 		var socketModules = require('../src/socket.io/modules');
 		it('should create a new chat room', function (done) {
-			socketModules.chats.newRoom({uid: fooUid}, {touid: bazUid}, function (err, _roomId) {
+			socketModules.chats.newRoom({ uid: fooUid }, { touid: bazUid }, function (err, _roomId) {
 				roomId = _roomId;
 				assert.ifError(err);
 				assert(roomId);
@@ -89,14 +89,14 @@ describe('Messaging Library', function () {
 		});
 
 		it('should add a user to room', function (done) {
-			socketModules.chats.addUserToRoom({uid: fooUid}, {roomId: roomId, username: 'herp'}, function (err) {
+			socketModules.chats.addUserToRoom({ uid: fooUid }, { roomId: roomId, username: 'herp' }, function (err) {
 				assert.ifError(err);
 				done();
 			});
 		});
 
 		it('should leave the chat room', function (done) {
-			socketModules.chats.leave({uid: bazUid}, roomId, function (err) {
+			socketModules.chats.leave({ uid: bazUid }, roomId, function (err) {
 				assert.ifError(err);
 				Messaging.isUserInRoom(bazUid, roomId, function (err, isUserInRoom) {
 					assert.ifError(err);
@@ -107,13 +107,13 @@ describe('Messaging Library', function () {
 		});
 
 		it('should send a message to a room', function (done) {
-			socketModules.chats.send({uid: fooUid}, {roomId: roomId, message: 'first chat message'}, function (err, messageData) {
+			socketModules.chats.send({ uid: fooUid }, { roomId: roomId, message: 'first chat message' }, function (err, messageData) {
 				assert.ifError(err);
 				assert(messageData);
 				assert.equal(messageData.content, 'first chat message');
 				assert(messageData.fromUser);
 				assert(messageData.roomId, roomId);
-				socketModules.chats.getRaw({uid: fooUid}, {roomId: roomId, mid: messageData.mid}, function (err, raw) {
+				socketModules.chats.getRaw({ uid: fooUid }, { roomId: roomId, mid: messageData.mid }, function (err, raw) {
 					assert.ifError(err);
 					assert.equal(raw, 'first chat message');
 					done();
@@ -126,7 +126,7 @@ describe('Messaging Library', function () {
 
 			db.sortedSetAdd('users:online', Date.now() - 350000, herpUid, function (err) {
 				assert.ifError(err);
-				socketModules.chats.send({uid: fooUid}, {roomId: roomId, message: 'second chat message'}, function (err) {
+				socketModules.chats.send({ uid: fooUid }, { roomId: roomId, message: 'second chat message' }, function (err) {
 					assert.ifError(err);
 					setTimeout(function () {
 						User.notifications.get(herpUid, function (err, data) {
@@ -144,10 +144,10 @@ describe('Messaging Library', function () {
 		});
 
 		it('should get messages from room', function (done) {
-			socketModules.chats.getMessages({uid: fooUid}, {
+			socketModules.chats.getMessages({ uid: fooUid }, {
 				uid: fooUid,
 				roomId: roomId,
-				start: 0
+				start: 0,
 			}, function (err, messages) {
 				assert.ifError(err);
 				assert(Array.isArray(messages));
@@ -158,21 +158,21 @@ describe('Messaging Library', function () {
 		});
 
 		it('should mark room read', function (done) {
-			socketModules.chats.markRead({uid: fooUid}, roomId, function (err) {
+			socketModules.chats.markRead({ uid: fooUid }, roomId, function (err) {
 				assert.ifError(err);
 				done();
 			});
 		});
 
 		it('should mark all rooms read', function (done) {
-			socketModules.chats.markAllRead({uid: fooUid}, {}, function (err) {
+			socketModules.chats.markAllRead({ uid: fooUid }, {}, function (err) {
 				assert.ifError(err);
 				done();
 			});
 		});
 
 		it('should rename room', function (done) {
-			socketModules.chats.renameRoom({uid: fooUid}, {roomId: roomId, newName: 'new room name'}, function (err) {
+			socketModules.chats.renameRoom({ uid: fooUid }, { roomId: roomId, newName: 'new room name' }, function (err) {
 				assert.ifError(err);
 
 				done();
@@ -180,7 +180,7 @@ describe('Messaging Library', function () {
 		});
 
 		it('should load chat room', function (done) {
-			socketModules.chats.loadRoom({uid: fooUid}, {roomId: roomId}, function (err, data) {
+			socketModules.chats.loadRoom({ uid: fooUid }, { roomId: roomId }, function (err, data) {
 				assert.ifError(err);
 				assert(data);
 				assert.equal(data.roomName, 'new room name');
@@ -193,7 +193,7 @@ describe('Messaging Library', function () {
 		var socketModules = require('../src/socket.io/modules');
 		var mid;
 		before(function (done) {
-			socketModules.chats.send({uid: fooUid}, {roomId: roomId, message: 'first chat message'}, function (err, messageData) {
+			socketModules.chats.send({ uid: fooUid }, { roomId: roomId, message: 'first chat message' }, function (err, messageData) {
 				assert.ifError(err);
 				mid = messageData.mid;
 				done();
@@ -201,9 +201,9 @@ describe('Messaging Library', function () {
 		});
 
 		it('should edit message', function (done) {
-			socketModules.chats.edit({uid: fooUid}, {mid: mid, roomId: roomId, message: 'message edited'}, function (err) {
+			socketModules.chats.edit({ uid: fooUid }, { mid: mid, roomId: roomId, message: 'message edited' }, function (err) {
 				assert.ifError(err);
-				socketModules.chats.getRaw({uid: fooUid}, {roomId: roomId, mid: mid}, function (err, raw) {
+				socketModules.chats.getRaw({ uid: fooUid }, { roomId: roomId, mid: mid }, function (err, raw) {
 					assert.ifError(err);
 					assert.equal(raw, 'message edited');
 					done();
@@ -212,7 +212,7 @@ describe('Messaging Library', function () {
 		});
 
 		it('should delete message', function (done) {
-			socketModules.chats.delete({uid: fooUid}, {messageId: mid, roomId: roomId}, function (err) {
+			socketModules.chats.delete({ uid: fooUid }, { messageId: mid, roomId: roomId }, function (err) {
 				assert.ifError(err);
 				db.exists('message:' + mid, function (err, exists) {
 					assert.ifError(err);
@@ -249,7 +249,6 @@ describe('Messaging Library', function () {
 				done();
 			});
 		});
-
 	});
 
 	describe('logged in chat controller', function () {
@@ -263,7 +262,7 @@ describe('Messaging Library', function () {
 		});
 
 		it('should return chats page data', function (done) {
-			request(nconf.get('url') + '/api/user/herp/chats', {json: true, jar: jar}, function (err, response, body) {
+			request(nconf.get('url') + '/api/user/herp/chats', { json: true, jar: jar }, function (err, response, body) {
 				assert.ifError(err);
 				assert.equal(response.statusCode, 200);
 				assert(Array.isArray(body.rooms));
@@ -274,7 +273,7 @@ describe('Messaging Library', function () {
 		});
 
 		it('should return room data', function (done) {
-			request(nconf.get('url') + '/api/user/herp/chats/' + roomId, {json: true, jar: jar}, function (err, response, body) {
+			request(nconf.get('url') + '/api/user/herp/chats/' + roomId, { json: true, jar: jar }, function (err, response, body) {
 				assert.ifError(err);
 				assert.equal(response.statusCode, 200);
 				assert.equal(body.roomId, roomId);
@@ -284,7 +283,7 @@ describe('Messaging Library', function () {
 		});
 
 		it('should redirect to chats page', function (done) {
-			request(nconf.get('url') + '/api/chats', {jar: jar}, function (err, response, body) {
+			request(nconf.get('url') + '/api/chats', { jar: jar }, function (err, response, body) {
 				assert.ifError(err);
 				assert.equal(body, '"/user/herp/chats"');
 				assert.equal(response.statusCode, 308);
@@ -295,7 +294,7 @@ describe('Messaging Library', function () {
 		it('should return 404 if user is not in room', function (done) {
 			helpers.loginUser('baz', 'quuxquux', function (err, jar) {
 				assert.ifError(err);
-				request(nconf.get('url') + '/api/user/baz/chats/' + roomId, {json: true, jar: jar}, function (err, response, body) {
+				request(nconf.get('url') + '/api/user/baz/chats/' + roomId, { json: true, jar: jar }, function (err, response, body) {
 					assert.ifError(err);
 					assert.equal(response.statusCode, 404);
 					done();

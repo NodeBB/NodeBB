@@ -9,7 +9,6 @@ var groups = require('../groups');
 var meta = require('../meta');
 
 module.exports = function (User) {
-
 	User.create = function (data, callback) {
 		data.username = data.username.trim();
 		data.userslug = utils.slugify(data.username);
@@ -18,31 +17,31 @@ module.exports = function (User) {
 		}
 
 		User.isDataValid(data, function (err) {
-			if (err)  {
+			if (err) {
 				return callback(err);
 			}
 			var timestamp = data.timestamp || Date.now();
 
 			var userData = {
-				'username': data.username,
-				'userslug': data.userslug,
-				'email': data.email || '',
-				'joindate': timestamp,
-				'lastonline': timestamp,
-				'picture': '',
-				'fullname': data.fullname || '',
-				'location': '',
-				'birthday': '',
-				'website': '',
-				'signature': '',
-				'uploadedpicture': '',
-				'profileviews': 0,
-				'reputation': 0,
-				'postcount': 0,
-				'topiccount': 0,
-				'lastposttime': 0,
-				'banned': 0,
-				'status': 'online'
+				username: data.username,
+				userslug: data.userslug,
+				email: data.email || '',
+				joindate: timestamp,
+				lastonline: timestamp,
+				picture: '',
+				fullname: data.fullname || '',
+				location: '',
+				birthday: '',
+				website: '',
+				signature: '',
+				uploadedpicture: '',
+				profileviews: 0,
+				reputation: 0,
+				postcount: 0,
+				topiccount: 0,
+				lastposttime: 0,
+				banned: 0,
+				status: 'online',
 			};
 
 			async.parallel({
@@ -50,8 +49,8 @@ module.exports = function (User) {
 					renameUsername(userData, next);
 				},
 				userData: function (next) {
-					plugins.fireHook('filter:user.create', {user: userData, data: data}, next);
-				}
+					plugins.fireHook('filter:user.create', { user: userData, data: data }, next);
+				},
 			}, function (err, results) {
 				if (err) {
 					return callback(err);
@@ -106,7 +105,7 @@ module.exports = function (User) {
 								if (userData.email) {
 									async.parallel([
 										async.apply(db.sortedSetAdd, 'email:uid', userData.uid, userData.email.toLowerCase()),
-										async.apply(db.sortedSetAdd, 'email:sorted', 0, userData.email.toLowerCase() + ':' + userData.uid)
+										async.apply(db.sortedSetAdd, 'email:sorted', 0, userData.email.toLowerCase() + ':' + userData.uid),
 									], next);
 
 									if (parseInt(userData.uid, 10) !== 1 && parseInt(meta.config.requireEmailConfirmation, 10) === 1) {
@@ -128,13 +127,13 @@ module.exports = function (User) {
 
 									async.parallel([
 										async.apply(User.setUserField, userData.uid, 'password', hash),
-										async.apply(User.reset.updateExpiry, userData.uid)
+										async.apply(User.reset.updateExpiry, userData.uid),
 									], next);
 								});
 							},
 							function (next) {
 								User.updateDigestSetting(userData.uid, meta.config.dailyDigestFreq, next);
-							}
+							},
 						], next);
 					},
 					function (results, next) {
@@ -143,7 +142,7 @@ module.exports = function (User) {
 						}
 						plugins.fireHook('action:user.create', {user: userData});
 						next(null, userData.uid);
-					}
+					},
 				], callback);
 			});
 		});
@@ -179,7 +178,7 @@ module.exports = function (User) {
 				} else {
 					next();
 				}
-			}
+			},
 		}, function (err) {
 			callback(err);
 		});
@@ -225,5 +224,4 @@ module.exports = function (User) {
 			});
 		});
 	}
-
 };

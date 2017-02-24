@@ -35,7 +35,7 @@ start.start = function () {
 				},
 				function (next) {
 					require('./upgrade').check(next);
-				}
+				},
 			], function (err) {
 				next(err);
 			});
@@ -53,25 +53,25 @@ start.start = function () {
 			}
 
 			webserver.listen(next);
-		}
+		},
 	], function (err) {
 		if (err) {
-			switch(err.message) {
-				case 'schema-out-of-date':
-					winston.warn('Your NodeBB schema is out-of-date. Please run the following command to bring your dataset up to spec:');
-					winston.warn('    ./nodebb upgrade');
-					break;
-				case 'dependencies-out-of-date':
-					winston.warn('One or more of NodeBB\'s dependent packages are out-of-date. Please run the following command to update them:');
-					winston.warn('    ./nodebb upgrade');
-					break;
-				case 'dependencies-missing':
-					winston.warn('One or more of NodeBB\'s dependent packages are missing. Please run the following command to update them:');
-					winston.warn('    ./nodebb upgrade');
-					break;
-				default:
-					winston.error(err);
-					break;
+			switch (err.message) {
+			case 'schema-out-of-date':
+				winston.warn('Your NodeBB schema is out-of-date. Please run the following command to bring your dataset up to spec:');
+				winston.warn('    ./nodebb upgrade');
+				break;
+			case 'dependencies-out-of-date':
+				winston.warn('One or more of NodeBB\'s dependent packages are out-of-date. Please run the following command to update them:');
+				winston.warn('    ./nodebb upgrade');
+				break;
+			case 'dependencies-missing':
+				winston.warn('One or more of NodeBB\'s dependent packages are missing. Please run the following command to update them:');
+				winston.warn('    ./nodebb upgrade');
+				break;
+			default:
+				winston.error(err);
+				break;
 			}
 
 			// Either way, bad stuff happened. Abort start.
@@ -80,7 +80,7 @@ start.start = function () {
 
 		if (process.send) {
 			process.send({
-				action: 'listening'
+				action: 'listening',
 			});
 		}
 	});
@@ -126,8 +126,8 @@ function addProcessHandlers() {
 		var meta = require('./meta');
 
 		switch (message.action) {
-			case 'reload':
-				meta.reload();
+		case 'reload':
+			meta.reload();
 			break;
 		}
 	});
@@ -144,7 +144,7 @@ function restart() {
 	if (process.send) {
 		winston.info('[app] Restarting...');
 		process.send({
-			action: 'restart'
+			action: 'restart',
 		});
 	} else {
 		winston.error('[app] Could not restart server. Shutting down.');

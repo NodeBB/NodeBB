@@ -8,7 +8,6 @@ var user = require('../user');
 var plugins = require('../plugins');
 
 module.exports = function (Messaging) {
-
 	Messaging.getRoomData = function (roomId, callback) {
 		db.getObject('chat:room:' + roomId, function (err, data) {
 			if (err || !data) {
@@ -55,7 +54,7 @@ module.exports = function (Messaging) {
 				roomId = _roomId;
 				var room = {
 					owner: uid,
-					roomId: roomId
+					roomId: roomId,
 				};
 				db.setObject('chat:room:' + roomId, room, next);
 			},
@@ -70,7 +69,7 @@ module.exports = function (Messaging) {
 			},
 			function (next) {
 				next(null, roomId);
-			}
+			},
 		], callback);
 	};
 
@@ -80,11 +79,11 @@ module.exports = function (Messaging) {
 				db.isSortedSetMember('chat:room:' + roomId + ':uids', uid, next);
 			},
 			function (inRoom, next) {
-				plugins.fireHook('filter:messaging.isUserInRoom', {uid: uid, roomId: roomId, inRoom: inRoom}, next);
+				plugins.fireHook('filter:messaging.isUserInRoom', { uid: uid, roomId: roomId, inRoom: inRoom }, next);
 			},
 			function (data, next) {
 				next(null, data.inRoom);
-			}
+			},
 		], callback);
 	};
 
@@ -124,7 +123,7 @@ module.exports = function (Messaging) {
 			function (next) {
 				async.parallel({
 					userCount: async.apply(db.sortedSetCard, 'chat:room:' + roomId + ':uids'),
-					roomData: async.apply(db.getObject, 'chat:room:' + roomId)
+					roomData: async.apply(db.getObject, 'chat:room:' + roomId),
 				}, next);
 			},
 			function (results, next) {
@@ -132,7 +131,7 @@ module.exports = function (Messaging) {
 					return db.setObjectField('chat:room:' + roomId, 'groupChat', 1, next);
 				}
 				next();
-			}
+			},
 		], callback);
 	};
 
@@ -141,7 +140,7 @@ module.exports = function (Messaging) {
 			function (next) {
 				async.parallel({
 					isOwner: async.apply(Messaging.isRoomOwner, uid, roomId),
-					userCount: async.apply(Messaging.getUserCountInRoom, roomId)
+					userCount: async.apply(Messaging.getUserCountInRoom, roomId),
 				}, next);
 			},
 			function (results, next) {
@@ -152,7 +151,7 @@ module.exports = function (Messaging) {
 					return next(new Error('[[error:cant-remove-last-user]]'));
 				}
 				Messaging.leaveRoom(uids, roomId, next);
-			}
+			},
 		], callback);
 	};
 
@@ -169,7 +168,7 @@ module.exports = function (Messaging) {
 					return 'uid:' + uid + ':chat:rooms:unread';
 				}));
 				db.sortedSetsRemove(keys, roomId, next);
-			}
+			},
 		], callback);
 	};
 
@@ -184,7 +183,7 @@ module.exports = function (Messaging) {
 			},
 			function (uids, next) {
 				user.getUsersFields(uids, ['uid', 'username', 'picture', 'status'], next);
-			}
+			},
 		], callback);
 	};
 
@@ -205,7 +204,7 @@ module.exports = function (Messaging) {
 					return next(new Error('[[error:no-privileges]]'));
 				}
 				db.setObjectField('chat:room:' + roomId, 'roomName', newName, next);
-			}
+			},
 		], callback);
 	};
 
@@ -215,12 +214,11 @@ module.exports = function (Messaging) {
 				db.isSortedSetMember('chat:room:' + roomId + ':uids', uid, next);
 			},
 			function (inRoom, next) {
-				plugins.fireHook('filter:messaging.canReply', {uid: uid, roomId: roomId, inRoom: inRoom, canReply: inRoom}, next);
+				plugins.fireHook('filter:messaging.canReply', { uid: uid, roomId: roomId, inRoom: inRoom, canReply: inRoom }, next);
 			},
 			function (data, next) {
 				next(null, data.canReply);
-			}
+			},
 		], callback);
 	};
-
 };

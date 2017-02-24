@@ -1,5 +1,5 @@
 'use strict';
-/* globals define, config, socket, app, ajaxify, templates */
+
 
 define('sort', ['components'], function (components) {
 	var module = {};

@@ -9,7 +9,6 @@ var privileges = require('../../privileges');
 var helpers = require('./helpers');
 
 module.exports = function (SocketPosts) {
-
 	SocketPosts.getVoters = function (socket, data, callback) {
 		if (!data || !data.pid || !data.cid) {
 			return callback(new Error('[[error:invalid-data]]'));
@@ -30,7 +29,7 @@ module.exports = function (SocketPosts) {
 					},
 					downvoteUids: function (next) {
 						db.getSetMembers('pid:' + data.pid + ':downvote', next);
-					}
+					},
 				}, next);
 			},
 			function (results, next) {
@@ -46,9 +45,9 @@ module.exports = function (SocketPosts) {
 					},
 					downvoteCount: function (next) {
 						next(null, results.downvoteUids.length);
-					}
+					},
 				}, next);
-			}
+			},
 		], callback);
 	};
 
@@ -62,7 +61,7 @@ module.exports = function (SocketPosts) {
 				return callback(err, []);
 			}
 
-			async.map(data, function (uids, next)  {
+			async.map(data, function (uids, next) {
 				var otherCount = 0;
 				if (uids.length > 6) {
 					otherCount = uids.length - 5;
@@ -71,7 +70,7 @@ module.exports = function (SocketPosts) {
 				user.getUsernamesByUids(uids, function (err, usernames) {
 					next(err, {
 						otherCount: otherCount,
-						usernames: usernames
+						usernames: usernames,
 					});
 				});
 			}, callback);

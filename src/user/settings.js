@@ -7,7 +7,6 @@ var db = require('../database');
 var plugins = require('../plugins');
 
 module.exports = function (User) {
-
 	User.getSettings = function (uid, callback) {
 		if (!parseInt(uid, 10)) {
 			return onSettingsLoaded(0, {}, callback);
@@ -18,7 +17,7 @@ module.exports = function (User) {
 				return callback(err);
 			}
 
-			onSettingsLoaded(uid, settings ? settings : {}, callback);
+			onSettingsLoaded(uid, settings || {}, callback);
 		});
 	};
 
@@ -36,7 +35,7 @@ module.exports = function (User) {
 				return callback(err);
 			}
 
-			for (var i = 0; i < settings.length; ++i) {
+			for (var i = 0; i < settings.length; i += 1) {
 				settings[i] = settings[i] || {};
 				settings[i].uid = uids[i];
 			}
@@ -48,7 +47,7 @@ module.exports = function (User) {
 	};
 
 	function onSettingsLoaded(uid, settings, callback) {
-		plugins.fireHook('filter:user.getSettings', {uid: uid, settings: settings}, function (err, data) {
+		plugins.fireHook('filter:user.getSettings', { uid: uid, settings: settings }, function (err, data) {
 			if (err) {
 				return callback(err);
 			}
@@ -102,7 +101,7 @@ module.exports = function (User) {
 
 		data.userLang = data.userLang || meta.config.defaultLang;
 
-		plugins.fireHook('action:user.saveSettings', {uid: uid, settings: data});
+		plugins.fireHook('action:user.saveSettings', { uid: uid, settings: data });
 
 		var settings = {
 			showemail: data.showemail,
@@ -120,11 +119,11 @@ module.exports = function (User) {
 			restrictChat: data.restrictChat,
 			topicSearchEnabled: data.topicSearchEnabled,
 			delayImageLoading: data.delayImageLoading,
-			homePageRoute : ((data.homePageRoute === 'custom' ? data.homePageCustom : data.homePageRoute) || '').replace(/^\//, ''),
+			homePageRoute: ((data.homePageRoute === 'custom' ? data.homePageCustom : data.homePageRoute) || '').replace(/^\//, ''),
 			scrollToMyPost: data.scrollToMyPost,
 			notificationSound: data.notificationSound,
 			incomingChatSound: data.incomingChatSound,
-			outgoingChatSound: data.outgoingChatSound
+			outgoingChatSound: data.outgoingChatSound,
 		};
 
 		if (data.bootswatchSkin) {
@@ -140,7 +139,7 @@ module.exports = function (User) {
 			},
 			function (next) {
 				User.getSettings(uid, next);
-			}
+			},
 		], callback);
 	};
 
@@ -155,7 +154,7 @@ module.exports = function (User) {
 				} else {
 					next();
 				}
-			}
+			},
 		], callback);
 	};
 

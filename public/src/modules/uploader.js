@@ -1,9 +1,7 @@
 'use strict';
 
-/* globals define, templates */
 
 define('uploader', ['translator'], function (translator) {
-
 	var module = {};
 
 	module.open = function (route, params, fileSize, callback) {
@@ -11,7 +9,7 @@ define('uploader', ['translator'], function (translator) {
 		module.show({
 			route: route,
 			params: params,
-			fileSize: fileSize
+			fileSize: fileSize,
 		}, callback);
 	};
 
@@ -23,12 +21,12 @@ define('uploader', ['translator'], function (translator) {
 			title: data.title || '[[global:upload_file]]',
 			description: data.description || '',
 			button: data.button || '[[global:upload]]',
-			accept: data.accept ? data.accept.replace(/,/g, '&#44; ') : ''
+			accept: data.accept ? data.accept.replace(/,/g, '&#44; ') : '',
 		}, function (uploadModal) {
 			uploadModal = $(uploadModal);
 
 			uploadModal.modal('show');
-		 	uploadModal.on('hidden.bs.modal', function () {
+			uploadModal.on('hidden.bs.modal', function () {
 				uploadModal.remove();
 			});
 
@@ -76,7 +74,7 @@ define('uploader', ['translator'], function (translator) {
 
 		uploadModal.find('#uploadForm').ajaxSubmit({
 			headers: {
-				'x-csrf-token': config.csrf_token
+				'x-csrf-token': config.csrf_token,
 			},
 			error: function (xhr) {
 				xhr = maybeParse(xhr);
@@ -99,7 +97,7 @@ define('uploader', ['translator'], function (translator) {
 					module.hideAlerts(uploadModal);
 					uploadModal.modal('hide');
 				}, 750);
-			}
+			},
 		});
 	}
 
@@ -114,7 +112,7 @@ define('uploader', ['translator'], function (translator) {
 			try {
 				return $.parseJSON(response);
 			} catch (e) {
-				return {error: '[[error:parse-error]]'};
+				return { error: '[[error:parse-error]]' };
 			}
 		}
 		return response;

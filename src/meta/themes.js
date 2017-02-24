@@ -66,7 +66,6 @@ module.exports = function (Meta) {
 							next(null, null);
 						}
 					});
-
 				}, function (err, themes) {
 					if (err) {
 						return callback(err);
@@ -85,17 +84,17 @@ module.exports = function (Meta) {
 			'theme:id': data.id,
 			'theme:staticDir': '',
 			'theme:templates': '',
-			'theme:src': ''
+			'theme:src': '',
 		};
 
-		switch(data.type) {
+		switch (data.type) {
 		case 'local':
 			async.waterfall([
 				async.apply(Meta.configs.get, 'theme:id'),
 				function (current, next) {
 					async.series([
 						async.apply(db.sortedSetRemove, 'plugins:active', current),
-						async.apply(db.sortedSetAdd, 'plugins:active', 0, data.id)
+						async.apply(db.sortedSetAdd, 'plugins:active', 0, data.id),
 					], function (err) {
 						next(err);
 					});
@@ -119,7 +118,7 @@ module.exports = function (Meta) {
 
 					// Re-set the themes path (for when NodeBB is reloaded)
 					Meta.themes.setPath(config);
-				}
+				},
 			], callback);
 
 			Meta.reloadRequired = true;
@@ -136,7 +135,7 @@ module.exports = function (Meta) {
 			themesData: Meta.themes.get,
 			currentThemeId: function (next) {
 				db.getObjectField('config', 'theme:id', next);
-			}
+			},
 		}, function (err, data) {
 			if (err) {
 				return callback(err);
@@ -145,8 +144,8 @@ module.exports = function (Meta) {
 			var themeId = data.currentThemeId || 'nodebb-theme-persona';
 
 			var	themeObj = data.themesData.filter(function (themeObj) {
-					return themeObj.id === themeId;
-				})[0];
+				return themeObj.id === themeId;
+			})[0];
 
 			if (process.env.NODE_ENV === 'development') {
 				winston.info('[themes] Using theme ' + themeId);
@@ -163,8 +162,8 @@ module.exports = function (Meta) {
 
 	Meta.themes.setPath = function (themeObj) {
 		// Theme's templates path
-		var themePath = nconf.get('base_templates_path'),
-			fallback = path.join(nconf.get('themes_path'), themeObj.id, 'templates');
+		var themePath = nconf.get('base_templates_path');
+		var fallback = path.join(nconf.get('themes_path'), themeObj.id, 'templates');
 
 		if (themeObj.templates) {
 			themePath = path.join(nconf.get('themes_path'), themeObj.id, themeObj.templates);

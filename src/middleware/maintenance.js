@@ -5,7 +5,6 @@ var meta = require('../meta');
 var user = require('../user');
 
 module.exports = function (middleware) {
-
 	middleware.maintenanceMode = function (req, res, next) {
 		if (parseInt(meta.config.maintenanceMode, 10) !== 1) {
 			return next();
@@ -24,7 +23,7 @@ module.exports = function (middleware) {
 			res.status(503);
 			var data = {
 				site_title: meta.config.title || 'NodeBB',
-				message: meta.config.maintenanceModeMessage
+				message: meta.config.maintenanceModeMessage,
 			};
 
 			if (res.locals.isAPI) {
@@ -36,5 +35,4 @@ module.exports = function (middleware) {
 			});
 		});
 	};
-
 };

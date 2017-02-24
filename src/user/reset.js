@@ -1,16 +1,16 @@
 'use strict';
 
-var async = require('async'),
-	nconf = require('nconf'),
-	winston = require('winston'),
+var async = require('async');
+var nconf = require('nconf');
+var winston = require('winston');
 
-	user = require('../user'),
-	utils = require('../../public/src/utils'),
-	translator = require('../../public/src/modules/translator'),
+var user = require('../user');
+var utils = require('../../public/src/utils');
+var translator = require('../../public/src/modules/translator');
 
-	db = require('../database'),
-	meta = require('../meta'),
-	emailer = require('../emailer');
+var db = require('../database');
+var meta = require('../meta');
+var emailer = require('../emailer');
 
 (function (UserReset) {
 	var twoHours = 7200000;
@@ -28,7 +28,7 @@ var async = require('async'),
 			},
 			function (issueDate, next) {
 				next(null, parseInt(issueDate, 10) > Date.now() - twoHours);
-			}
+			},
 		], callback);
 	};
 
@@ -36,7 +36,7 @@ var async = require('async'),
 		var code = utils.generateUUID();
 		async.parallel([
 			async.apply(db.setObjectField, 'reset:uid', code, uid),
-			async.apply(db.sortedSetAdd, 'reset:issueDate', Date.now(), code)
+			async.apply(db.sortedSetAdd, 'reset:issueDate', Date.now(), code),
 		], function (err) {
 			callback(err, code);
 		});
@@ -48,11 +48,11 @@ var async = require('async'),
 				db.sortedSetScore('reset:issueDate:uid', uid, next);
 			},
 			function (score, next) {
-				if (score > Date.now() - 1000 * 60) {
+				if (score > Date.now() - (1000 * 60)) {
 					return next(new Error('[[error:cant-reset-password-more-than-once-a-minute]]'));
 				}
 				next();
-			}
+			},
 		], callback);
 	}
 
@@ -88,9 +88,9 @@ var async = require('async'),
 					reset_link: reset_link,
 					subject: subject,
 					template: 'reset',
-					uid: uid
+					uid: uid,
 				}, next);
-			}
+			},
 		], callback);
 	};
 
@@ -124,9 +124,9 @@ var async = require('async'),
 					async.apply(db.sortedSetRemove, 'reset:issueDate', code),
 					async.apply(db.sortedSetRemove, 'reset:issueDate:uid', uid),
 					async.apply(user.reset.updateExpiry, uid),
-					async.apply(user.auth.resetLockout, uid)
+					async.apply(user.auth.resetLockout, uid),
 				], next);
-			}
+			},
 		], callback);
 	};
 
@@ -148,7 +148,7 @@ var async = require('async'),
 					},
 					uids: function (next) {
 						db.getSortedSetRangeByScore('reset:issueDate:uid', 0, -1, '-inf', Date.now() - twoHours, next);
-					}
+					},
 				}, next);
 			},
 			function (results, next) {
@@ -160,10 +160,9 @@ var async = require('async'),
 				async.parallel([
 					async.apply(db.deleteObjectFields, 'reset:uid', results.tokens),
 					async.apply(db.sortedSetRemove, 'reset:issueDate', results.tokens),
-					async.apply(db.sortedSetRemove, 'reset:issueDate:uid', results.uids)
+					async.apply(db.sortedSetRemove, 'reset:issueDate:uid', results.uids),
 				], next);
-			}
+			},
 		], callback);
 	};
-
 }(exports));

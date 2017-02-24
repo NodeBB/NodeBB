@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 var async = require('async');
 var plugins = require('../plugins');
@@ -7,9 +7,7 @@ var db = require('../database');
 var rewards = module.exports;
 
 rewards.save = function (data, callback) {
-
 	async.each(data, function save(data, next) {
-
 		if (!Object.keys(data.rewards).length) {
 			return next();
 		}
@@ -26,7 +24,6 @@ rewards.save = function (data, callback) {
 				}
 			},
 			function (rid, next) {
-
 				data.id = rid;
 
 				async.series([
@@ -41,11 +38,10 @@ rewards.save = function (data, callback) {
 					},
 					function (next) {
 						db.setObject('rewards:id:' + data.id + ':rewards', rewardsData, next);
-					}
+					},
 				], next);
-			}
+			},
 		], next);
-
 	}, function (err) {
 		if (err) {
 			return callback(err);
@@ -65,7 +61,7 @@ rewards.delete = function (data, callback) {
 		},
 		function (next) {
 			db.delete('rewards:id:' + data.id + ':rewards', next);
-		}
+		},
 	], callback);
 };
 
@@ -80,7 +76,7 @@ rewards.get = function (callback) {
 		},
 		rewards: function (next) {
 			plugins.fireHook('filter:rewards.rewards', [], next);
-		}
+		},
 	}, callback);
 };
 
@@ -105,7 +101,7 @@ function saveConditions(data, callback) {
 			async.each(Object.keys(rewardsPerCondition), function (condition, next) {
 				db.setAdd('condition:' + condition + ':rewards', rewardsPerCondition[condition], next);
 			}, next);
-		}
+		},
 	], function (err) {
 		callback(err);
 	});
@@ -121,7 +117,7 @@ function getActiveRewards(callback) {
 			},
 			rewards: function (next) {
 				db.getObject('rewards:id:' + id + ':rewards', next);
-			}
+			},
 		}, function (err, data) {
 			if (data.main) {
 				data.main.disabled = data.main.disabled === 'true';

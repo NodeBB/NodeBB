@@ -39,7 +39,7 @@ settingsController.get = function (req, res, callback) {
 				},
 				soundsMapping: function (next) {
 					meta.sounds.getUserSoundMap(userData.uid, next);
-				}
+				},
 			}, next);
 		},
 		function (results, next) {
@@ -53,7 +53,7 @@ settingsController.get = function (req, res, callback) {
 				'chat-outgoing',
 			];
 			var aliases = {
-				'notification': 'notificationSound',
+				notification: 'notificationSound',
 				'chat-incoming': 'incomingChatSound',
 				'chat-outgoing': 'outgoingChatSound',
 			};
@@ -93,38 +93,38 @@ settingsController.get = function (req, res, callback) {
 			userData.customSettings = data.customSettings;
 			userData.disableEmailSubscriptions = parseInt(meta.config.disableEmailSubscriptions, 10) === 1;
 			next();
-		}
+		},
 	], function (err) {
 		if (err) {
 			return callback(err);
 		}
 
 		userData.dailyDigestFreqOptions = [
-			{ value: 'off', name: '[[user:digest_off]]', selected: 'off' === userData.settings.dailyDigestFreq },
-			{ value: 'day', name: '[[user:digest_daily]]', selected: 'day' === userData.settings.dailyDigestFreq },
-			{ value: 'week', name: '[[user:digest_weekly]]', selected: 'week' === userData.settings.dailyDigestFreq },
-			{ value: 'month', name: '[[user:digest_monthly]]', selected: 'month' === userData.settings.dailyDigestFreq }
+			{ value: 'off', name: '[[user:digest_off]]', selected: userData.settings.dailyDigestFreq === 'off' },
+			{ value: 'day', name: '[[user:digest_daily]]', selected: userData.settings.dailyDigestFreq === 'day' },
+			{ value: 'week', name: '[[user:digest_weekly]]', selected: userData.settings.dailyDigestFreq === 'week' },
+			{ value: 'month', name: '[[user:digest_monthly]]', selected: userData.settings.dailyDigestFreq === 'month' },
 		];
 
 
 		userData.bootswatchSkinOptions = [
-			{ "name": "Default", "value": "default" },
-			{ "name": "Cerulean", "value": "cerulean" },
-			{ "name": "Cosmo", "value": "cosmo"	},
-			{ "name": "Cyborg", "value": "cyborg" },
-			{ "name": "Darkly", "value": "darkly" },
-			{ "name": "Flatly", "value": "flatly" },
-			{ "name": "Journal", "value": "journal"	},
-			{ "name": "Lumen", "value": "lumen" },
-			{ "name": "Paper", "value": "paper" },
-			{ "name": "Readable", "value": "readable" },
-			{ "name": "Sandstone", "value": "sandstone" },
-			{ "name": "Simplex", "value": "simplex" },
-			{ "name": "Slate", "value": "slate"	},
-			{ "name": "Spacelab", "value": "spacelab" },
-			{ "name": "Superhero", "value": "superhero" },
-			{ "name": "United", "value": "united" },
-			{ "name": "Yeti", "value": "yeti" }
+			{ name: 'Default', value: 'default' },
+			{ name: 'Cerulean', value: 'cerulean' },
+			{ name: 'Cosmo', value: 'cosmo'	},
+			{ name: 'Cyborg', value: 'cyborg' },
+			{ name: 'Darkly', value: 'darkly' },
+			{ name: 'Flatly', value: 'flatly' },
+			{ name: 'Journal', value: 'journal'	},
+			{ name: 'Lumen', value: 'lumen' },
+			{ name: 'Paper', value: 'paper' },
+			{ name: 'Readable', value: 'readable' },
+			{ name: 'Sandstone', value: 'sandstone' },
+			{ name: 'Simplex', value: 'simplex' },
+			{ name: 'Slate', value: 'slate'	},
+			{ name: 'Spacelab', value: 'spacelab' },
+			{ name: 'Superhero', value: 'superhero' },
+			{ name: 'United', value: 'united' },
+			{ name: 'Yeti', value: 'yeti' },
 		];
 
 		var isCustom = true;
@@ -140,9 +140,9 @@ settingsController.get = function (req, res, callback) {
 		}
 
 		userData.homePageRoutes.push({
-		 	route: 'custom',
-		 	name: 'Custom',
-		 	selected: isCustom
+			route: 'custom',
+			name: 'Custom',
+			selected: isCustom,
 		});
 
 		userData.bootswatchSkinOptions.forEach(function (skin) {
@@ -160,7 +160,7 @@ settingsController.get = function (req, res, callback) {
 		userData.inTopicSearchAvailable = plugins.hasListeners('filter:topic.search');
 
 		userData.title = '[[pages:account/settings]]';
-		userData.breadcrumbs = helpers.buildBreadcrumbs([{text: userData.username, url: '/user/' + userData.userslug}, {text: '[[user:settings]]'}]);
+		userData.breadcrumbs = helpers.buildBreadcrumbs([{ text: userData.username, url: '/user/' + userData.userslug }, { text: '[[user:settings]]' }]);
 
 		res.render('account/settings', userData);
 	});
@@ -182,34 +182,34 @@ function getHomePageRoutes(callback) {
 			categoryData = categoryData.map(function (category) {
 				return {
 					route: 'category/' + category.slug,
-					name: 'Category: ' + category.name
+					name: 'Category: ' + category.name,
 				};
 			});
 
 			categoryData = categoryData || [];
 
-			plugins.fireHook('filter:homepage.get', {routes: [
+			plugins.fireHook('filter:homepage.get', { routes: [
 				{
 					route: 'categories',
-					name: 'Categories'
+					name: 'Categories',
 				},
 				{
 					route: 'unread',
-					name: 'Unread'
+					name: 'Unread',
 				},
 				{
 					route: 'recent',
-					name: 'Recent'
+					name: 'Recent',
 				},
 				{
 					route: 'popular',
-					name: 'Popular'
-				}
-			].concat(categoryData)}, next);
+					name: 'Popular',
+				},
+			].concat(categoryData) }, next);
 		},
 		function (data, next) {
 			next(null, data.routes);
-		}
+		},
 	], callback);
 }
 

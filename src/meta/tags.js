@@ -14,30 +14,30 @@ module.exports = function (Meta) {
 			tags: function (next) {
 				var defaultTags = [{
 					name: 'viewport',
-					content: 'width=device-width, initial-scale=1.0'
+					content: 'width=device-width, initial-scale=1.0',
 				}, {
 					name: 'content-type',
 					content: 'text/html; charset=UTF-8',
-					noEscape: true
+					noEscape: true,
 				}, {
 					name: 'apple-mobile-web-app-capable',
-					content: 'yes'
+					content: 'yes',
 				}, {
 					name: 'mobile-web-app-capable',
-					content: 'yes'
+					content: 'yes',
 				}, {
 					property: 'og:site_name',
-					content: Meta.config.title || 'NodeBB'
+					content: Meta.config.title || 'NodeBB',
 				}, {
 					name: 'msapplication-badge',
 					content: 'frequency=30; polling-uri=' + nconf.get('url') + '/sitemap.xml',
-					noEscape: true
+					noEscape: true,
 				}];
 
 				if (Meta.config.keywords) {
 					defaultTags.push({
 						name: 'keywords',
-						content: Meta.config.keywords
+						content: Meta.config.keywords,
 					});
 				}
 
@@ -45,7 +45,7 @@ module.exports = function (Meta) {
 					defaultTags.push({
 						name: 'msapplication-square150x150logo',
 						content: Meta.config['brand:logo'],
-						noEscape: true
+						noEscape: true,
 					});
 				}
 
@@ -53,47 +53,47 @@ module.exports = function (Meta) {
 			},
 			links: function (next) {
 				var defaultLinks = [{
-					rel: "icon",
-					type: "image/x-icon",
-					href: nconf.get('relative_path') + '/favicon.ico' + (Meta.config['cache-buster'] ? '?' + Meta.config['cache-buster'] : '')
+					rel: 'icon',
+					type: 'image/x-icon',
+					href: nconf.get('relative_path') + '/favicon.ico' + (Meta.config['cache-buster'] ? '?' + Meta.config['cache-buster'] : ''),
 				}, {
-					rel: "manifest",
-					href: nconf.get('relative_path') + '/manifest.json'
+					rel: 'manifest',
+					href: nconf.get('relative_path') + '/manifest.json',
 				}];
 
 				// Touch icons for mobile-devices
 				if (Meta.config['brand:touchIcon']) {
 					defaultLinks.push({
 						rel: 'apple-touch-icon',
-						href: nconf.get('relative_path') + '/apple-touch-icon'
+						href: nconf.get('relative_path') + '/apple-touch-icon',
 					}, {
 						rel: 'icon',
 						sizes: '36x36',
-						href: nconf.get('relative_path') + '/assets/uploads/system/touchicon-36.png'
+						href: nconf.get('relative_path') + '/assets/uploads/system/touchicon-36.png',
 					}, {
 						rel: 'icon',
 						sizes: '48x48',
-						href: nconf.get('relative_path') + '/assets/uploads/system/touchicon-48.png'
+						href: nconf.get('relative_path') + '/assets/uploads/system/touchicon-48.png',
 					}, {
 						rel: 'icon',
 						sizes: '72x72',
-						href: nconf.get('relative_path') + '/assets/uploads/system/touchicon-72.png'
+						href: nconf.get('relative_path') + '/assets/uploads/system/touchicon-72.png',
 					}, {
 						rel: 'icon',
 						sizes: '96x96',
-						href: nconf.get('relative_path') + '/assets/uploads/system/touchicon-96.png'
+						href: nconf.get('relative_path') + '/assets/uploads/system/touchicon-96.png',
 					}, {
 						rel: 'icon',
 						sizes: '144x144',
-						href: nconf.get('relative_path') + '/assets/uploads/system/touchicon-144.png'
+						href: nconf.get('relative_path') + '/assets/uploads/system/touchicon-144.png',
 					}, {
 						rel: 'icon',
 						sizes: '192x192',
-						href: nconf.get('relative_path') + '/assets/uploads/system/touchicon-192.png'
+						href: nconf.get('relative_path') + '/assets/uploads/system/touchicon-192.png',
 					});
 				}
 				plugins.fireHook('filter:meta.getLinkTags', defaultLinks, next);
-			}
+			},
 		}, function (err, results) {
 			if (err) {
 				return callback(err);
@@ -118,7 +118,7 @@ module.exports = function (Meta) {
 
 			callback(null, {
 				meta: meta,
-				link: link
+				link: link,
 			});
 		});
 	};
@@ -134,7 +134,7 @@ module.exports = function (Meta) {
 		if (!hasDescription) {
 			meta.push({
 				name: 'description',
-				content: validator.escape(String(Meta.config.description || ''))
+				content: validator.escape(String(Meta.config.description || '')),
 			});
 		}
 	}

@@ -14,5 +14,4 @@ helpers.setupAdminPageRoute = function (router, name, middleware, middlewares, c
 	router.get('/api' + name, middlewares, controller);
 };
 
-
 module.exports = helpers;

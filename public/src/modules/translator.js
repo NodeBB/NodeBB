@@ -1,7 +1,6 @@
-/* global define, jQuery, config, utils, window, Promise */
+'use strict';
 
 (function (factory) {
-	'use strict';
 	function loadClient(language, namespace) {
 		return Promise.resolve(jQuery.getJSON(config.relative_path + '/assets/language/' + language + '/' + namespace + '.json?' + config['cache-buster']));
 	}
@@ -44,9 +43,8 @@
 		window.translator = factory(window.string, loadClient, warn);
 	}
 }(function (string, load, warn) {
-	'use strict';
 	var assign = Object.assign || jQuery.extend;
-	function classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	function classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
 	var Translator = (function () {
 		/**
@@ -291,7 +289,8 @@
 				warn('[translator] Parameter `namespace` is ' + namespace + (namespace === '' ? '(empty string)' : ''));
 				translation = Promise.resolve({});
 			} else {
-				translation = this.translations[namespace] = this.translations[namespace] || this.load(this.lang, namespace).catch(function () { return {}; });
+				this.translations[namespace] = this.translations[namespace] || this.load(this.lang, namespace).catch(function () { return {}; });
+				translation = this.translations[namespace];
 			}
 
 			if (key) {
@@ -491,28 +490,28 @@
 		prepareDOM: function prepareDOM() {
 			// Load the appropriate timeago locale file,
 			// and correct NodeBB language codes to timeago codes, if necessary
-			var languageCode = void 0;
+			var languageCode;
 			switch (config.userLang) {
-				case 'en-GB':
-				case 'en-US':
-					languageCode = 'en';
-					break;
+			case 'en-GB':
+			case 'en-US':
+				languageCode = 'en';
+				break;
 
-				case 'fa-IR':
-					languageCode = 'fa';
-					break;
+			case 'fa-IR':
+				languageCode = 'fa';
+				break;
 
-				case 'pt-BR':
-					languageCode = 'pt-br';
-					break;
+			case 'pt-BR':
+				languageCode = 'pt-br';
+				break;
 
-				case 'nb':
-					languageCode = 'no';
-					break;
+			case 'nb':
+				languageCode = 'no';
+				break;
 
-				default:
-					languageCode = config.userLang;
-					break;
+			default:
+				languageCode = config.userLang;
+				break;
 			}
 
 			jQuery.getScript(config.relative_path + '/assets/vendor/jquery/timeago/locales/jquery.timeago.' + languageCode + '.js').done(function () {
@@ -532,7 +531,7 @@
 					jQuery('html').css('direction', value).attr('data-dir', value);
 				}
 			});
-		}
+		},
 	};
 
 	return adaptor;

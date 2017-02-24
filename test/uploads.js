@@ -16,7 +16,6 @@ var helpers = require('./helpers');
 
 
 describe('Upload Controllers', function () {
-
 	var tid;
 	var cid;
 	var pid;
@@ -28,15 +27,15 @@ describe('Upload Controllers', function () {
 			category: function (next) {
 				categories.create({
 					name: 'Test Category',
-					description: 'Test category created by testing script'
+					description: 'Test category created by testing script',
 				}, next);
 			},
 			adminUid: function (next) {
-				user.create({username: 'admin', password: 'barbar'}, next);
+				user.create({ username: 'admin', password: 'barbar' }, next);
 			},
 			regularUid: function (next) {
-				user.create({username: 'regular', password: 'zugzug'}, next);
-			}
+				user.create({ username: 'regular', password: 'zugzug' }, next);
+			},
 		}, function (err, results) {
 			if (err) {
 				return done(err);
@@ -45,7 +44,7 @@ describe('Upload Controllers', function () {
 			regularUid = results.regularUid;
 			cid = results.category.cid;
 
-			topics.post({uid: adminUid, title: 'test topic title', content: 'test topic content', cid: results.category.cid}, function (err, result) {
+			topics.post({ uid: adminUid, title: 'test topic title', content: 'test topic content', cid: results.category.cid }, function (err, result) {
 				tid = result.topicData.tid;
 				pid = result.postData.pid;
 				done(err);
@@ -78,12 +77,26 @@ describe('Upload Controllers', function () {
 		});
 
 		it('should upload an image to a post', function (done) {
-			helpers.uploadFile(nconf.get('url') + '/api/post/upload', path.join(__dirname, '../test/files/test.png'), {cid: cid}, jar, csrf_token, function (err, res, body) {
+			helpers.uploadFile(nconf.get('url') + '/api/post/upload', path.join(__dirname, '../test/files/test.png'), { cid: cid }, jar, csrf_token, function (err, res, body) {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 200);
 				assert(Array.isArray(body));
 				assert(body[0].path);
 				assert(body[0].url);
+				done();
+			});
+		});
+
+		it('should resize and upload an image to a post', function (done) {
+			var oldValue = meta.config.maximumImageWidth;
+			meta.config.maximumImageWidth = 10;
+			helpers.uploadFile(nconf.get('url') + '/api/post/upload', path.join(__dirname, '../test/files/test.png'), { cid: cid }, jar, csrf_token, function (err, res, body) {
+				assert.ifError(err);
+				assert.equal(res.statusCode, 200);
+				assert(Array.isArray(body));
+				assert(body[0].path);
+				assert(body[0].url);
+				meta.config.maximumImageWidth = oldValue;
 				done();
 			});
 		});
@@ -91,7 +104,7 @@ describe('Upload Controllers', function () {
 
 		it('should upload a file to a post', function (done) {
 			meta.config.allowFileUploads = 1;
-			helpers.uploadFile(nconf.get('url') + '/api/post/upload', path.join(__dirname, '../test/files/503.html'), {cid: cid}, jar, csrf_token, function (err, res, body) {
+			helpers.uploadFile(nconf.get('url') + '/api/post/upload', path.join(__dirname, '../test/files/503.html'), { cid: cid }, jar, csrf_token, function (err, res, body) {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 200);
 				assert(Array.isArray(body));
@@ -101,6 +114,36 @@ describe('Upload Controllers', function () {
 			});
 		});
 
+		it('should fail if topic thumbs are disabled', function (done) {
+			helpers.uploadFile(nconf.get('url') + '/api/topic/thumb/upload', path.join(__dirname, '../test/files/test.png'), {}, jar, csrf_token, function (err, res, body) {
+				assert.ifError(err);
+				assert.equal(res.statusCode, 500);
+				assert.equal(body.error, '[[error:topic-thumbnails-are-disabled]]');
+				done();
+			});
+		});
+
+		it('should fail if file is not image', function (done) {
+			meta.config.allowTopicsThumbnail = 1;
+			helpers.uploadFile(nconf.get('url') + '/api/topic/thumb/upload', path.join(__dirname, '../test/files/503.html'), {}, jar, csrf_token, function (err, res, body) {
+				assert.ifError(err);
+				assert.equal(res.statusCode, 500);
+				assert.equal(body.error, '[[error:invalid-file]]');
+				done();
+			});
+		});
+
+		it('should upload topic thumb', function (done) {
+			meta.config.allowTopicsThumbnail = 1;
+			helpers.uploadFile(nconf.get('url') + '/api/topic/thumb/upload', path.join(__dirname, '../test/files/test.png'), {}, jar, csrf_token, function (err, res, body) {
+				assert.ifError(err);
+				assert.equal(res.statusCode, 200);
+				assert(Array.isArray(body));
+				assert(body[0].path);
+				assert(body[0].url);
+				done();
+			});
+		});
 	});
 
 
@@ -128,7 +171,7 @@ describe('Upload Controllers', function () {
 		});
 
 		it('should upload category image', function (done) {
-			helpers.uploadFile(nconf.get('url') + '/api/admin/category/uploadpicture', path.join(__dirname, '../test/files/test.png'), {params: JSON.stringify({cid: cid})}, jar, csrf_token, function (err, res, body) {
+			helpers.uploadFile(nconf.get('url') + '/api/admin/category/uploadpicture', path.join(__dirname, '../test/files/test.png'), { params: JSON.stringify({ cid: cid }) }, jar, csrf_token, function (err, res, body) {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 200);
 				assert(Array.isArray(body));
@@ -157,8 +200,6 @@ describe('Upload Controllers', function () {
 			});
 		});
 	});
-
-
 
 
 	after(function (done) {

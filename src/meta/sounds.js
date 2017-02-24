@@ -11,6 +11,7 @@ var plugins = require('../plugins');
 var user = require('../user');
 var db = require('../database');
 
+
 var soundsPath = path.join(__dirname, '../../build/public/sounds');
 var uploadsPath = path.join(__dirname, '../../public/uploads/sounds');
 
@@ -103,7 +104,7 @@ module.exports = function (Meta) {
 			},
 			userSettings: function (next) {
 				user.getSettings(uid, next);
-			}
+			},
 		}, function (err, results) {
 			if (err) {
 				return callback(err);

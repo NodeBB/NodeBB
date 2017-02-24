@@ -8,7 +8,6 @@ var user = require('../user');
 var plugins = require('../plugins');
 
 module.exports = function (Posts) {
-
 	var votesInProgress = {};
 
 	Posts.upvote = function (pid, uid, callback) {
@@ -64,7 +63,7 @@ module.exports = function (Posts) {
 
 	Posts.hasVoted = function (pid, uid, callback) {
 		if (!parseInt(uid, 10)) {
-			return callback(null, {upvoted: false, downvoted: false});
+			return callback(null, { upvoted: false, downvoted: false });
 		}
 
 		db.isMemberOfSets(['pid:' + pid + ':upvote', 'pid:' + pid + ':downvote'], uid, function (err, hasVoted) {
@@ -72,19 +71,19 @@ module.exports = function (Posts) {
 				return callback(err);
 			}
 
-			callback (null, {upvoted: hasVoted[0], downvoted: hasVoted[1]});
+			callback(null, { upvoted: hasVoted[0], downvoted: hasVoted[1] });
 		});
 	};
 
 	Posts.getVoteStatusByPostIDs = function (pids, uid, callback) {
 		if (!parseInt(uid, 10)) {
 			var data = pids.map(function () { return false; });
-			return callback(null, {upvotes: data, downvotes: data});
+			return callback(null, { upvotes: data, downvotes: data });
 		}
 		var upvoteSets = [];
 		var downvoteSets = [];
 
-		for (var i = 0; i < pids.length; ++i) {
+		for (var i = 0; i < pids.length; i += 1) {
 			upvoteSets.push('pid:' + pids[i] + ':upvote');
 			downvoteSets.push('pid:' + pids[i] + ':downvote');
 		}
@@ -95,7 +94,7 @@ module.exports = function (Posts) {
 			},
 			downvotes: function (next) {
 				db.isMemberOfSets(downvoteSets, uid, next);
-			}
+			},
 		}, callback);
 	};
 
@@ -144,7 +143,7 @@ module.exports = function (Posts) {
 			},
 			reputation: function (next) {
 				user.getUserField(uid, 'reputation', next);
-			}
+			},
 		}, function (err, results) {
 			if (err) {
 				return callback(err);
@@ -154,15 +153,15 @@ module.exports = function (Posts) {
 				return callback(new Error('self-vote'));
 			}
 
-			if (command === 'downvote' && parseInt(results.reputation) < parseInt(meta.config['privileges:downvote'], 10)) {
+			if (command === 'downvote' && parseInt(results.reputation, 10) < parseInt(meta.config['privileges:downvote'], 10)) {
 				return callback(new Error('[[error:not-enough-reputation-to-downvote]]'));
 			}
 
-			var voteStatus = results.voteStatus,
-				hook,
-				current = voteStatus.upvoted ? 'upvote' : 'downvote';
+			var voteStatus = results.voteStatus;
+			var hook;
+			var current = voteStatus.upvoted ? 'upvote' : 'downvote';
 
-			if (voteStatus.upvoted && command === 'downvote' || voteStatus.downvoted && command === 'upvote') {	// e.g. User *has* upvoted, and clicks downvote
+			if ((voteStatus.upvoted && command === 'downvote') || (voteStatus.downvoted && command === 'upvote')) {	// e.g. User *has* upvoted, and clicks downvote
 				hook = command;
 			} else if (voteStatus.upvoted || voteStatus.downvoted) {	// e.g. User *has* upvoted, clicks upvote (so we "unvote")
 				hook = 'unvote';
@@ -175,7 +174,7 @@ module.exports = function (Posts) {
 				pid: pid,
 				uid: uid,
 				owner: results.owner,
-				current: current
+				current: current,
 			});
 
 			if (!voteStatus || (!voteStatus.upvoted && !voteStatus.downvoted)) {
@@ -224,11 +223,11 @@ module.exports = function (Posts) {
 				adjustPostVotes(postData, uid, type, unvote, function (err) {
 					callback(err, {
 						user: {
-							reputation: newreputation
+							reputation: newreputation,
 						},
 						post: postData,
 						upvote: type === 'upvote' && !unvote,
-						downvote: type === 'downvote' && !unvote
+						downvote: type === 'downvote' && !unvote,
 					});
 				});
 			});
@@ -248,7 +247,7 @@ module.exports = function (Posts) {
 			},
 			function (next) {
 				db.setRemove('pid:' + postData.pid + ':' + notType, uid, next);
-			}
+			},
 		], function (err) {
 			if (err) {
 				return callback(err);
@@ -260,7 +259,7 @@ module.exports = function (Posts) {
 				},
 				downvotes: function (next) {
 					db.setCount('pid:' + postData.pid + ':downvote', next);
-				}
+				},
 			}, function (err, results) {
 				if (err) {
 					return callback(err);

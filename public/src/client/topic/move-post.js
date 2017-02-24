@@ -1,9 +1,7 @@
 'use strict';
 
-/* globals define, app, socket */
 
 define('forum/topic/move-post', [], function () {
-
 	var MovePost = {};
 
 
@@ -11,8 +9,8 @@ define('forum/topic/move-post', [], function () {
 		app.parseAndTranslate('partials/move_post_modal', {}, function (html) {
 			var moveModal = $(html);
 
-			var	moveBtn = moveModal.find('#move_post_commit'),
-				topicId = moveModal.find('#topicId');
+			var	moveBtn = moveModal.find('#move_post_commit');
+			var topicId = moveModal.find('#topicId');
 
 			moveModal.on('hidden.bs.modal', function () {
 				moveModal.remove();
@@ -34,20 +32,19 @@ define('forum/topic/move-post', [], function () {
 					topicId.val('');
 				});
 			});
-
 		});
 	};
 
 	function showMoveModal(modal) {
 		modal.modal('show')
-			.css("position", "fixed")
-			.css("left", Math.max(0, (($(window).width() - modal.outerWidth()) / 2) + $(window).scrollLeft()) + "px")
-			.css("top", "0px")
-			.css("z-index", "2000");
+			.css('position', 'fixed')
+			.css('left', Math.max(0, (($(window).width() - modal.outerWidth()) / 2) + $(window).scrollLeft()) + 'px')
+			.css('top', '0px')
+			.css('z-index', '2000');
 	}
 
 	function movePost(post, pid, tid, callback) {
-		socket.emit('posts.movePost', {pid: pid, tid: tid}, function (err) {
+		socket.emit('posts.movePost', { pid: pid, tid: tid }, function (err) {
 			if (err) {
 				app.alertError(err.message);
 				return callback();

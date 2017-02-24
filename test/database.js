@@ -1,5 +1,5 @@
 'use strict';
-/*global require*/
+
 
 var	assert = require('assert');
 var db = require('./mocks/databasemock');
@@ -25,5 +25,4 @@ describe('Test database', function () {
 	require('./database/sets');
 	require('./database/hash');
 	require('./database/sorted');
-
 });

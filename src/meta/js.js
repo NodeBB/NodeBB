@@ -16,7 +16,6 @@ var utils = require('../../public/src/utils');
 var minifierPath = path.join(__dirname, 'minifier.js');
 
 module.exports = function (Meta) {
-
 	Meta.js = {
 		target: {},
 		scripts: {
@@ -43,7 +42,7 @@ module.exports = function (Meta) {
 				'public/src/ajaxify.js',
 				'public/src/overrides.js',
 				'public/src/widgets.js',
-				"./node_modules/promise-polyfill/promise.js"
+				'./node_modules/promise-polyfill/promise.js',
 			],
 
 			// files listed below are only available client-side, or are bundled in to reduce # of network requests on cold load
@@ -79,18 +78,18 @@ module.exports = function (Meta) {
 				'public/src/modules/helpers.js',
 				'public/src/modules/sounds.js',
 				'public/src/modules/string.js',
-				'public/src/modules/flags.js'
+				'public/src/modules/flags.js',
 			],
 
 			// modules listed below are built (/src/modules) so they can be defined anonymously
 			modules: {
-				"Chart.js": './node_modules/chart.js/dist/Chart.min.js',
-				"mousetrap.js": './node_modules/mousetrap/mousetrap.min.js',
-				"jqueryui.js": 'public/vendor/jquery/js/jquery-ui.js',
-				"buzz.js": 'public/vendor/buzz/buzz.js',
-				"cropper.js": './node_modules/cropperjs/dist/cropper.min.js'
-			}
-		}
+				'Chart.js': './node_modules/chart.js/dist/Chart.min.js',
+				'mousetrap.js': './node_modules/mousetrap/mousetrap.min.js',
+				'jqueryui.js': 'public/vendor/jquery/js/jquery-ui.js',
+				'buzz.js': 'public/vendor/buzz/buzz.js',
+				'cropper.js': './node_modules/cropperjs/dist/cropper.min.js',
+			},
+		},
 	};
 
 	function minifyModules(modules, callback) {
@@ -119,7 +118,7 @@ module.exports = function (Meta) {
 
 						cb();
 					});
-				}
+				},
 			], function (err) {
 				if (err) {
 					return next(err);
@@ -128,7 +127,7 @@ module.exports = function (Meta) {
 				fs.writeFile(destPath, minified.code, next);
 			});
 		}, callback);
-	};
+	}
 
 	function linkModules(callback) {
 		var modules = Meta.js.scripts.modules;
@@ -145,7 +144,7 @@ module.exports = function (Meta) {
 				file.link(filePath, destPath, next);
 			});
 		}, callback);
-	};
+	}
 
 	var moduleDirs = ['modules', 'admin', 'client'];
 
@@ -167,12 +166,16 @@ module.exports = function (Meta) {
 					return next(err);
 				}
 
-				modules = modules.concat(files.map(function (filePath) {
+				var mods = files.filter(function (filePath) {
+					return path.extname(filePath) === '.js';
+				}).map(function (filePath) {
 					return {
 						filePath: filePath,
 						destPath: path.join(__dirname, '../../build/public/src', path.relative(path.dirname(dir), filePath)),
 					};
-				}));
+				});
+
+				modules = modules.concat(mods);
 
 				next();
 			});
@@ -204,7 +207,7 @@ module.exports = function (Meta) {
 			},
 			function (modules, next) {
 				minifyModules(modules, next);
-			}
+			},
 		], callback);
 	};
 
@@ -232,7 +235,8 @@ module.exports = function (Meta) {
 		winston.verbose('[meta/js] Minifying ' + target);
 
 		var forkProcessParams = setupDebugging();
-		var minifier = Meta.js.minifierProc = fork(minifierPath, [], forkProcessParams);
+		var minifier = fork(minifierPath, [], forkProcessParams);
+		Meta.js.minifierProc = minifier;
 
 		Meta.js.target[target] = {};
 
@@ -243,12 +247,12 @@ module.exports = function (Meta) {
 			minifier.send({
 				action: 'js',
 				minify: global.env !== 'development',
-				scripts: Meta.js.target[target].scripts
+				scripts: Meta.js.target[target].scripts,
 			});
 		});
 
 		minifier.on('message', function (message) {
-			switch(message.type) {
+			switch (message.type) {
 			case 'end':
 				Meta.js.target[target].cache = message.minified;
 				Meta.js.target[target].map = message.sourceMap;
@@ -324,17 +328,17 @@ module.exports = function (Meta) {
 		 * Check if the parent process is running with the debug option --debug (or --debug-brk)
 		 */
 		var forkProcessParams = {};
-		if(global.v8debug || parseInt(process.execArgv.indexOf('--debug'), 10) !== -1) {
+		if (global.v8debug || parseInt(process.execArgv.indexOf('--debug'), 10) !== -1) {
 			/**
 			 * use the line below if you want to debug minifier.js script too (or even --debug-brk option, but
 			 * you'll have to setup your debugger and connect to the forked process)
 			 */
-			//forkProcessParams = {execArgv: ['--debug=' + (global.process.debugPort + 1), '--nolazy']};
+			// forkProcessParams = {execArgv: ['--debug=' + (global.process.debugPort + 1), '--nolazy']};
 
 			/**
 			 * otherwise, just clean up --debug/--debug-brk options which are set up by default from the parent one
 			 */
-			forkProcessParams = {execArgv: []};
+			forkProcessParams = { execArgv: [] };
 		}
 
 		return forkProcessParams;

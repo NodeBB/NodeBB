@@ -1,17 +1,16 @@
 'use strict';
 
 module.exports = function (db, module) {
-
 	module.sortedSetIntersectCard = function (keys, callback) {
 		if (!Array.isArray(keys) || !keys.length) {
 			return callback(null, 0);
 		}
 
 		var pipeline = [
-			{ $match: { _key: {$in: keys}} },
-			{ $group: { _id: {value: '$value'}, count: {$sum: 1}} },
-			{ $match: { count: keys.length} },
-			{ $group: { _id: null,  count: { $sum: 1 } } }
+			{ $match: { _key: { $in: keys } } },
+			{ $group: { _id: { value: '$value' }, count: { $sum: 1 } } },
+			{ $match: { count: keys.length } },
+			{ $group: { _id: null, count: { $sum: 1 } } },
 		];
 
 		db.collection('objects').aggregate(pipeline, function (err, data) {
@@ -48,7 +47,7 @@ module.exports = function (db, module) {
 			limit = 0;
 		}
 
-		var pipeline = [{ $match: { _key: {$in: sets}} }];
+		var pipeline = [{ $match: { _key: { $in: sets } } }];
 
 		weights.forEach(function (weight, index) {
 			if (weight !== 1) {
@@ -56,16 +55,24 @@ module.exports = function (db, module) {
 					$project: {
 						value: 1,
 						score: {
-							$cond: { if: { $eq: [ "$_key", sets[index] ] }, then: { $multiply: [ '$score', weight ] }, else: '$score' }
-						}
-					}
+							$cond: {
+								if: {
+									$eq: ['$_key', sets[index]],
+								},
+								then: {
+									$multiply: ['$score', weight],
+								},
+								else: '$score',
+							},
+						},
+					},
 				});
 			}
 		});
 
-		pipeline.push({ $group: { _id: {value: '$value'}, totalScore: aggregate, count: {$sum: 1}} });
-		pipeline.push({ $match: { count: sets.length} });
-		pipeline.push({ $sort: { totalScore: params.sort} });
+		pipeline.push({ $group: { _id: { value: '$value' }, totalScore: aggregate, count: { $sum: 1 } } });
+		pipeline.push({ $match: { count: sets.length } });
+		pipeline.push({ $sort: { totalScore: params.sort } });
 
 		if (start) {
 			pipeline.push({ $skip: start });
@@ -75,7 +82,7 @@ module.exports = function (db, module) {
 			pipeline.push({ $limit: limit });
 		}
 
-		var project = { _id: 0, value: '$_id.value'};
+		var project = { _id: 0, value: '$_id.value' };
 		if (params.withScores) {
 			project.score = '$totalScore';
 		}
@@ -95,5 +102,4 @@ module.exports = function (db, module) {
 			callback(null, data);
 		});
 	}
-
 };

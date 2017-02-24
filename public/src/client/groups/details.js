@@ -1,5 +1,5 @@
-"use strict";
-/* globals define, socket, ajaxify, app, bootbox, utils, config */
+'use strict';
+
 
 define('forum/groups/details', [
 	'forum/groups/memberlist',
@@ -8,9 +8,8 @@ define('forum/groups/details', [
 	'coverPhoto',
 	'pictureCropper',
 	'translator',
-	'vendor/colorpicker/colorpicker'
+	'vendor/colorpicker/colorpicker',
 ], function (memberList, iconSelect, components, coverPhoto, pictureCropper, translator) {
-
 	var Details = {};
 	var groupName;
 
@@ -27,7 +26,7 @@ define('forum/groups/details', [
 					socket.emit('groups.cover.update', {
 						groupName: groupName,
 						imageData: imageData,
-						position: position
+						position: position,
 					}, callback);
 				},
 				function () {
@@ -38,7 +37,7 @@ define('forum/groups/details', [
 						allowSkippingCrop: true,
 						restrictImageDimension: false,
 						paramName: 'groupName',
-						paramValue: groupName
+						paramValue: groupName,
 					}, function (imageUrlOnServer) {
 						components.get('groups/cover').css('background-image', 'url(' + imageUrlOnServer + ')');
 					});
@@ -54,18 +53,18 @@ define('forum/groups/details', [
 		components.get('groups/activity').find('.content img:not(.not-responsive)').addClass('img-responsive');
 
 		detailsPage.on('click', '[data-action]', function () {
-			var btnEl = $(this),
-				userRow = btnEl.parents('[data-uid]'),
-				ownerFlagEl = userRow.find('.member-name > i'),
-				isOwner = !ownerFlagEl.hasClass('invisible') ? true : false,
-				uid = userRow.attr('data-uid'),
-				action = btnEl.attr('data-action');
+			var btnEl = $(this);
+			var userRow = btnEl.parents('[data-uid]');
+			var ownerFlagEl = userRow.find('.member-name > i');
+			var isOwner = !ownerFlagEl.hasClass('invisible');
+			var uid = userRow.attr('data-uid');
+			var action = btnEl.attr('data-action');
 
 			switch (action) {
 			case 'toggleOwnership':
 				socket.emit('groups.' + (isOwner ? 'rescind' : 'grant'), {
 					toUid: uid,
-					groupName: groupName
+					groupName: groupName,
 				}, function (err) {
 					if (!err) {
 						ownerFlagEl.toggleClass('invisible');
@@ -78,7 +77,7 @@ define('forum/groups/details', [
 			case 'kick':
 				socket.emit('groups.kick', {
 					uid: uid,
-					groupName: groupName
+					groupName: groupName,
 				}, function (err) {
 					if (!err) {
 						userRow.slideUp().remove();
@@ -96,7 +95,7 @@ define('forum/groups/details', [
 				Details.deleteGroup();
 				break;
 
-			case 'join': // intentional fall-throughs!
+			case 'join':	// intentional fall-throughs!
 			case 'leave':
 			case 'accept':
 			case 'reject':
@@ -108,7 +107,7 @@ define('forum/groups/details', [
 			case 'rejectAll':
 				socket.emit('groups.' + action, {
 					toUid: uid,
-					groupName: groupName
+					groupName: groupName,
 				}, function (err) {
 					if (!err) {
 						ajaxify.refresh();
@@ -122,15 +121,15 @@ define('forum/groups/details', [
 	};
 
 	Details.prepareSettings = function () {
-		var settingsFormEl = components.get('groups/settings'),
-			colorBtn = settingsFormEl.find('[data-action="color-select"]'),
-			colorValueEl = settingsFormEl.find('[name="labelColor"]'),
-			iconBtn = settingsFormEl.find('[data-action="icon-select"]'),
-			previewEl = settingsFormEl.find('.label'),
-			previewIcon = previewEl.find('i'),
-			userTitleEl = settingsFormEl.find('[name="userTitle"]'),
-			userTitleEnabledEl = settingsFormEl.find('[name="userTitleEnabled"]'),
-			iconValueEl = settingsFormEl.find('[name="icon"]');
+		var settingsFormEl = components.get('groups/settings');
+		var colorBtn = settingsFormEl.find('[data-action="color-select"]');
+		var colorValueEl = settingsFormEl.find('[name="labelColor"]');
+		var iconBtn = settingsFormEl.find('[data-action="icon-select"]');
+		var previewEl = settingsFormEl.find('.label');
+		var previewIcon = previewEl.find('i');
+		var userTitleEl = settingsFormEl.find('[name="userTitle"]');
+		var userTitleEnabledEl = settingsFormEl.find('[name="userTitleEnabled"]');
+		var iconValueEl = settingsFormEl.find('[name="icon"]');
 
 		// Add color picker to settings form
 		colorBtn.ColorPicker({
@@ -141,7 +140,7 @@ define('forum/groups/details', [
 			},
 			onShow: function (colpkr) {
 				$(colpkr).css('z-index', 1051);
-			}
+			},
 		});
 
 		// Add icon selection interface
@@ -173,8 +172,8 @@ define('forum/groups/details', [
 	};
 
 	Details.update = function () {
-		var settingsFormEl = components.get('groups/settings'),
-			checkboxes = settingsFormEl.find('input[type="checkbox"][name]');
+		var settingsFormEl = components.get('groups/settings');
+		var checkboxes = settingsFormEl.find('input[type="checkbox"][name]');
 
 		if (settingsFormEl.length) {
 			require(['vendor/jquery/serializeObject/jquery.ba-serializeobject.min'], function () {
@@ -190,7 +189,7 @@ define('forum/groups/details', [
 
 				socket.emit('groups.update', {
 					groupName: groupName,
-					values: settings
+					values: settings,
 				}, function (err) {
 					if (err) {
 						return app.alertError(err.message);
@@ -216,7 +215,7 @@ define('forum/groups/details', [
 				bootbox.prompt('Please enter the name of this group in order to delete it:', function (response) {
 					if (response === groupName) {
 						socket.emit('groups.delete', {
-							groupName: groupName
+							groupName: groupName,
 						}, function (err) {
 							if (!err) {
 								app.alertSuccess('[[groups:event.deleted, ' + utils.escapeHTML(groupName) + ']]');
@@ -241,7 +240,7 @@ define('forum/groups/details', [
 			autocomplete.user(searchInput, function (event, selected) {
 				socket.emit('groups.issueInvite', {
 					toUid: selected.item.user.uid,
-					groupName: ajaxify.data.group.name
+					groupName: ajaxify.data.group.name,
 				}, function (err) {
 					if (err) {
 						return app.alertError(err.message);
@@ -258,7 +257,7 @@ define('forum/groups/details', [
 			}
 			socket.emit('groups.issueMassInvite', {
 				usernames: usernames,
-				groupName: ajaxify.data.group.name
+				groupName: ajaxify.data.group.name,
 			}, function (err) {
 				if (err) {
 					return app.alertError(err.message);
@@ -277,7 +276,7 @@ define('forum/groups/details', [
 				}
 
 				socket.emit('groups.cover.remove', {
-					groupName: ajaxify.data.group.name
+					groupName: ajaxify.data.group.name,
 				}, function (err) {
 					if (!err) {
 						ajaxify.refresh();

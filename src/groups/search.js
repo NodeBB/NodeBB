@@ -7,7 +7,6 @@ var db = require('./../database');
 
 
 module.exports = function (Groups) {
-
 	Groups.search = function (query, options, callback) {
 		if (!query) {
 			return callback(null, []);
@@ -33,38 +32,37 @@ module.exports = function (Groups) {
 				}
 
 				Groups.sort(options.sort, groupsData, next);
-			}
+			},
 		], callback);
 	};
 
 	Groups.sort = function (strategy, groups, next) {
-		switch(strategy) {
-			case 'count':
-				groups = groups.sort(function (a, b) {
-					return a.slug > b.slug;
-				}).sort(function (a, b) {
-					return b.memberCount - a.memberCount;
-				});
-				break;
+		switch (strategy) {
+		case 'count':
+			groups = groups.sort(function (a, b) {
+				return a.slug > b.slug;
+			}).sort(function (a, b) {
+				return b.memberCount - a.memberCount;
+			});
+			break;
 
-			case 'date':
-				groups = groups.sort(function (a, b) {
-					return b.createtime - a.createtime;
-				});
-				break;
+		case 'date':
+			groups = groups.sort(function (a, b) {
+				return b.createtime - a.createtime;
+			});
+			break;
 
-			case 'alpha':	// intentional fall-through
-			default:
-				groups = groups.sort(function (a, b) {
-					return a.slug > b.slug ? 1 : -1;
-				});
+		case 'alpha':	// intentional fall-through
+		default:
+			groups = groups.sort(function (a, b) {
+				return a.slug > b.slug ? 1 : -1;
+			});
 		}
 
 		next(null, groups);
 	};
 
 	Groups.searchMembers = function (data, callback) {
-
 		function findUids(query, searchBy, callback) {
 			query = query.toLowerCase();
 
@@ -77,14 +75,14 @@ module.exports = function (Groups) {
 				},
 				function (users, next) {
 					var uids = [];
-					for(var i = 0; i < users.length; ++i) {
+					for (var i = 0; i < users.length; i += 1) {
 						var field = users[i][searchBy];
 						if (field.toLowerCase().startsWith(query)) {
 							uids.push(users[i].uid);
 						}
 					}
 					next(null, uids);
-				}
+				},
 			], callback);
 		}
 
@@ -93,7 +91,7 @@ module.exports = function (Groups) {
 				if (err) {
 					return callback(err);
 				}
-				callback(null, {users: users});
+				callback(null, { users: users });
 			});
 			return;
 		}
@@ -112,24 +110,22 @@ module.exports = function (Groups) {
 				Groups.ownership.isOwners(uids, data.groupName, next);
 			},
 			function (isOwners, next) {
-
 				results.users.forEach(function (user, index) {
 					if (user) {
 						user.isOwner = isOwners[index];
 					}
 				});
 
-				results.users.sort(function (a,b) {
+				results.users.sort(function (a, b) {
 					if (a.isOwner && !b.isOwner) {
 						return -1;
 					} else if (!a.isOwner && b.isOwner) {
 						return 1;
-					} else {
-						return 0;
 					}
+					return 0;
 				});
 				next(null, results);
-			}
+			},
 		], callback);
 	};
 };

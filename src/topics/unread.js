@@ -12,13 +12,12 @@ var meta = require('../meta');
 var utils = require('../../public/src/utils');
 
 module.exports = function (Topics) {
-
 	Topics.getTotalUnread = function (uid, filter, callback) {
 		if (!callback) {
 			callback = filter;
 			filter = '';
 		}
-		Topics.getUnreadTids({cid: 0, uid: uid, filter: filter}, function (err, tids) {
+		Topics.getUnreadTids({ cid: 0, uid: uid, filter: filter }, function (err, tids) {
 			callback(err, Array.isArray(tids) ? tids.length : 0);
 		});
 	};
@@ -27,8 +26,8 @@ module.exports = function (Topics) {
 	Topics.getUnreadTopics = function (params, callback) {
 		var unreadTopics = {
 			showSelect: true,
-			nextStart : 0,
-			topics: []
+			nextStart: 0,
+			topics: [],
 		};
 
 		async.waterfall([
@@ -58,12 +57,13 @@ module.exports = function (Topics) {
 				unreadTopics.topics = topicData;
 				unreadTopics.nextStart = params.stop + 1;
 				next(null, unreadTopics);
-			}
+			},
 		], callback);
 	};
 
 	Topics.unreadCutoff = function () {
-		return Date.now() - (parseInt(meta.config.unreadCutoff, 10) || 2) * 86400000;
+		var cutoff = parseInt(meta.config.unreadCutoff, 10) || 2;
+		return Date.now() - (cutoff * 86400000);
 	};
 
 	Topics.getUnreadTids = function (params, callback) {
@@ -94,7 +94,7 @@ module.exports = function (Topics) {
 					},
 					tids_unread: function (next) {
 						db.getSortedSetRevRangeWithScores('uid:' + uid + ':tids_unread', 0, -1, next);
-					}
+					},
 				}, next);
 			},
 			function (results, next) {
@@ -119,10 +119,10 @@ module.exports = function (Topics) {
 						return false;
 					}
 					switch (params.filter) {
-						case 'new':
-							return !userRead[recentTopic.value];
-						default:
-							return !userRead[recentTopic.value] || recentTopic.score > userRead[recentTopic.value];
+					case 'new':
+						return !userRead[recentTopic.value];
+					default:
+						return !userRead[recentTopic.value] || recentTopic.score > userRead[recentTopic.value];
 					}
 				}).map(function (topic) {
 					return topic.value;
@@ -137,11 +137,10 @@ module.exports = function (Topics) {
 				}
 			},
 			function (tids, next) {
-
 				tids = tids.slice(0, 200);
 
 				filterTopics(uid, tids, params.cid, ignoredCids, params.filter, next);
-			}
+			},
 		], callback);
 	};
 
@@ -165,7 +164,7 @@ module.exports = function (Topics) {
 							return next(null, []);
 						}
 						db.sortedSetScores('uid:' + uid + ':followed_tids', tids, next);
-					}
+					},
 				}, next);
 			},
 			function (results, next) {
@@ -178,7 +177,7 @@ module.exports = function (Topics) {
 					return topic.tid;
 				});
 				next(null, tids);
-			}
+			},
 		], callback);
 	}
 
@@ -220,7 +219,7 @@ module.exports = function (Topics) {
 			function (next) {
 				async.parallel({
 					topicScores: async.apply(db.sortedSetScores, 'topics:recent', tids),
-					userScores: async.apply(db.sortedSetScores, 'uid:' + uid + ':tids_read', tids)
+					userScores: async.apply(db.sortedSetScores, 'uid:' + uid + ':tids_read', tids),
 				}, next);
 			},
 			function (results, next) {
@@ -240,7 +239,7 @@ module.exports = function (Topics) {
 				async.parallel({
 					markRead: async.apply(db.sortedSetAdd, 'uid:' + uid + ':tids_read', scores, tids),
 					markUnread: async.apply(db.sortedSetRemove, 'uid:' + uid + ':tids_unread', tids),
-					topicData: async.apply(Topics.getTopicsFields, tids, ['cid'])
+					topicData: async.apply(Topics.getTopicsFields, tids, ['cid']),
 				}, next);
 			},
 			function (results, next) {
@@ -254,7 +253,7 @@ module.exports = function (Topics) {
 			},
 			function (next) {
 				next(null, true);
-			}
+			},
 		], callback);
 	};
 
@@ -269,7 +268,7 @@ module.exports = function (Topics) {
 			},
 			function (markedRead, next) {
 				db.delete('uid:' + uid + ':tids_unread', next);
-			}
+			},
 		], callback);
 	};
 
@@ -289,7 +288,7 @@ module.exports = function (Topics) {
 			function (next) {
 				user.notifications.pushCount(uid);
 				next();
-			}
+			},
 		], callback);
 	};
 
@@ -300,7 +299,7 @@ module.exports = function (Topics) {
 			},
 			function (cid, next) {
 				categories.markAsUnreadForAll(cid, next);
-			}
+			},
 		], callback);
 	};
 
@@ -320,7 +319,7 @@ module.exports = function (Topics) {
 			},
 			tids_unread: function (next) {
 				db.sortedSetScores('uid:' + uid + ':tids_unread', tids, next);
-			}
+			},
 		}, function (err, results) {
 			if (err) {
 				return callback(err);
@@ -356,7 +355,7 @@ module.exports = function (Topics) {
 			},
 			function (next) {
 				db.sortedSetAdd('uid:' + uid + ':tids_unread', Date.now(), tid, next);
-			}
+			},
 		], callback);
 	};
 
@@ -371,5 +370,4 @@ module.exports = function (Topics) {
 			callback(null, tids);
 		});
 	};
-
 };

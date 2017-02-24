@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 var uglifyjs = require('uglify-js');
 var async = require('async');
@@ -6,12 +6,11 @@ var fs = require('fs');
 var file = require('../file');
 
 var Minifier = {
-	js: {}
+	js: {},
 };
 
 /* Javascript */
 Minifier.js.minify = function (scripts, minify, callback) {
-
 	scripts = scripts.filter(function (file) {
 		return file && file.endsWith('.js');
 	});
@@ -41,13 +40,13 @@ Minifier.js.minify = function (scripts, minify, callback) {
 };
 
 process.on('message', function (payload) {
-	switch(payload.action) {
+	switch (payload.action) {
 	case 'js':
-		Minifier.js.minify(payload.scripts, payload.minify, function (minified/*, sourceMap*/) {
+		Minifier.js.minify(payload.scripts, payload.minify, function (minified/* , sourceMap*/) {
 			process.send({
 				type: 'end',
 				// sourceMap: sourceMap,
-				minified: minified
+				minified: minified,
 			});
 		});
 		break;
@@ -59,15 +58,15 @@ function minifyScripts(scripts, callback) {
 	// Follow along here: https://github.com/mishoo/UglifyJS2/issues/700
 	try {
 		var minified = uglifyjs.minify(scripts, {
-				// outSourceMap: "nodebb.min.js.map",
-				compress: false
-			});
+			// outSourceMap: "nodebb.min.js.map",
+			compress: false,
+		});
 
-		callback(minified.code/*, minified.map*/);
-	} catch(err) {
+		callback(minified.code/* , minified.map*/);
+	} catch (err) {
 		process.send({
 			type: 'error',
-			message: err.message
+			message: err.message,
 		});
 	}
 }
@@ -77,7 +76,7 @@ function concatenateScripts(scripts, callback) {
 		if (err) {
 			process.send({
 				type: 'error',
-				message: err.message
+				message: err.message,
 			});
 			return;
 		}

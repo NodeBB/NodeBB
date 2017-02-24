@@ -1,6 +1,5 @@
 'use strict';
 
-/* globals define, app, socket */
 
 define('forum/unread', ['forum/recent', 'topicSelect', 'forum/infinitescroll', 'components'], function (recent, topicSelect, infinitescroll, components) {
 	var Unread = {};
@@ -20,15 +19,15 @@ define('forum/unread', ['forum/recent', 'topicSelect', 'forum/infinitescroll', '
 
 		recent.watchForNewPosts();
 
-		$(window).trigger('action:topics.loaded', {topics: ajaxify.data.topics});
+		$(window).trigger('action:topics.loaded', { topics: ajaxify.data.topics });
 
 		$('#markSelectedRead').on('click', function () {
 			var tids = topicSelect.getSelectedTids();
-			if(!tids.length) {
+			if (!tids.length) {
 				return;
 			}
 			socket.emit('topics.markAsRead', tids, function (err) {
-				if(err) {
+				if (err) {
 					return app.alertError(err.message);
 				}
 
@@ -38,7 +37,7 @@ define('forum/unread', ['forum/recent', 'topicSelect', 'forum/infinitescroll', '
 
 		$('#markAllRead').on('click', function () {
 			socket.emit('topics.markAllRead', function (err) {
-				if(err) {
+				if (err) {
 					return app.alertError(err.message);
 				}
 
@@ -63,7 +62,7 @@ define('forum/unread', ['forum/recent', 'topicSelect', 'forum/infinitescroll', '
 			var tids = getCategoryTids(cid);
 
 			socket.emit('topics.markCategoryTopicsRead', cid, function (err) {
-				if(err) {
+				if (err) {
 					return app.alertError(err.message);
 				}
 
@@ -73,7 +72,7 @@ define('forum/unread', ['forum/recent', 'topicSelect', 'forum/infinitescroll', '
 
 		topicSelect.init();
 
-		if ($("body").height() <= $(window).height() && $('[component="category"]').children().length >= 20) {
+		if ($('body').height() <= $(window).height() && $('[component="category"]').children().length >= 20) {
 			$('#load-more-btn').show();
 		}
 
@@ -86,7 +85,7 @@ define('forum/unread', ['forum/recent', 'topicSelect', 'forum/infinitescroll', '
 		}
 
 		function loadMoreTopics(direction) {
-			if(direction < 0 || !$('[component="category"]').length) {
+			if (direction < 0 || !$('[component="category"]').length) {
 				return;
 			}
 			var params = utils.params();
@@ -94,7 +93,7 @@ define('forum/unread', ['forum/recent', 'topicSelect', 'forum/infinitescroll', '
 			infinitescroll.loadMore('topics.loadMoreUnreadTopics', {
 				after: $('[component="category"]').attr('data-nextstart'),
 				cid: cid,
-				filter: ajaxify.data.selectedFilter.filter
+				filter: ajaxify.data.selectedFilter.filter,
 			}, function (data, done) {
 				if (data.topics && data.topics.length) {
 					recent.onTopicsLoaded('unread', data.topics, true, done);
@@ -119,7 +118,7 @@ define('forum/unread', ['forum/recent', 'topicSelect', 'forum/infinitescroll', '
 	}
 
 	function removeTids(tids) {
-		for(var i = 0; i < tids.length; ++i) {
+		for (var i = 0; i < tids.length; i += 1) {
 			components.get('category/topic', 'tid', tids[i]).remove();
 		}
 	}

@@ -1,11 +1,8 @@
+'use strict';
 
-"use strict";
-
-var async = require('async');
 var db = require('../database');
 
 module.exports = function (Categories) {
-
 	Categories.markAsRead = function (cids, uid, callback) {
 		callback = callback || function () {};
 		if (!Array.isArray(cids) || !cids.length) {
@@ -43,7 +40,7 @@ module.exports = function (Categories) {
 	Categories.hasReadCategories = function (cids, uid, callback) {
 		var sets = [];
 
-		for (var i = 0, ii = cids.length; i < ii; i++) {
+		for (var i = 0, ii = cids.length; i < ii; i += 1) {
 			sets.push('cid:' + cids[i] + ':read_by_uid');
 		}
 
@@ -53,5 +50,4 @@ module.exports = function (Categories) {
 	Categories.hasReadCategory = function (cid, uid, callback) {
 		db.isSetMember('cid:' + cid + ':read_by_uid', uid, callback);
 	};
-
 };

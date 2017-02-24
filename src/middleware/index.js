@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 var async = require('async');
 var fs = require('fs');
@@ -10,7 +10,6 @@ var ensureLoggedIn = require('connect-ensure-login');
 var toobusy = require('toobusy-js');
 
 var plugins = require('../plugins');
-var languages = require('../languages');
 var meta = require('../meta');
 var user = require('../user');
 var groups = require('../groups');
@@ -19,7 +18,7 @@ var analytics = require('../analytics');
 
 var controllers = {
 	api: require('./../controllers/api'),
-	helpers: require('../controllers/helpers')
+	helpers: require('../controllers/helpers'),
 };
 
 var middleware = {};
@@ -42,7 +41,7 @@ middleware.authenticate = function (req, res, next) {
 		return plugins.fireHook('action:middleware.authenticate', {
 			req: req,
 			res: res,
-			next: next
+			next: next,
 		});
 	}
 
@@ -64,9 +63,8 @@ middleware.ensureSelfOrGlobalPrivilege = function (req, res, next) {
 				return next(err);
 			} else if (ok) {
 				return next();
-			} else {
-				controllers.helpers.notAllowed(req, res);
 			}
+			controllers.helpers.notAllowed(req, res);
 		});
 	} else {
 		controllers.helpers.notAllowed(req, res);
@@ -101,10 +99,10 @@ middleware.pageView = function (req, res, next) {
 	analytics.pageView({
 		ip: req.ip,
 		path: req.path,
-		uid: req.uid
+		uid: req.uid,
 	});
 
-	plugins.fireHook('action:middleware.pageView', {req: req});
+	plugins.fireHook('action:middleware.pageView', { req: req });
 
 	if (req.user) {
 		user.updateLastOnlineTime(req.user.uid);
@@ -145,11 +143,10 @@ middleware.prepareAPI = function (req, res, next) {
 middleware.routeTouchIcon = function (req, res) {
 	if (meta.config['brand:touchIcon'] && validator.isURL(meta.config['brand:touchIcon'])) {
 		return res.redirect(meta.config['brand:touchIcon']);
-	} else {
-		return res.sendFile(path.join(__dirname, '../../public', meta.config['brand:touchIcon'] || '/logo.png'), {
-			maxAge: req.app.enabled('cache') ? 5184000000 : 0
-		});
 	}
+	return res.sendFile(path.join(__dirname, '../../public', meta.config['brand:touchIcon'] || '/logo.png'), {
+		maxAge: req.app.enabled('cache') ? 5184000000 : 0,
+	});
 };
 
 middleware.privateTagListing = function (req, res, next) {
@@ -207,24 +204,24 @@ middleware.applyBlacklist = function (req, res, next) {
 	});
 };
 
-middleware.processTimeagoLocales = function (req, res, next) {
-	var fallback = req.path.indexOf('-short') === -1 ? 'jquery.timeago.en.js' : 'jquery.timeago.en-short.js',
-		localPath = path.join(__dirname, '../../public/vendor/jquery/timeago/locales', req.path),
-		exists;
+middleware.processTimeagoLocales = function (req, res) {
+	var fallback = req.path.indexOf('-short') === -1 ? 'jquery.timeago.en.js' : 'jquery.timeago.en-short.js';
+	var localPath = path.join(__dirname, '../../public/vendor/jquery/timeago/locales', req.path);
+	var exists;
 
 	try {
 		exists = fs.accessSync(localPath, fs.F_OK | fs.R_OK);
-	} catch(e) {
+	} catch (e) {
 		exists = false;
 	}
 
 	if (exists) {
 		res.status(200).sendFile(localPath, {
-			maxAge: req.app.enabled('cache') ? 5184000000 : 0
+			maxAge: req.app.enabled('cache') ? 5184000000 : 0,
 		});
 	} else {
 		res.status(200).sendFile(path.join(__dirname, '../../public/vendor/jquery/timeago/locales', fallback), {
-			maxAge: req.app.enabled('cache') ? 5184000000 : 0
+			maxAge: req.app.enabled('cache') ? 5184000000 : 0,
 		});
 	}
 };

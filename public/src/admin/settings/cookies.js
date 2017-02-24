@@ -1,9 +1,8 @@
 'use strict';
 
-/* globals define */
 
 define('admin/settings/cookies', [
-	'admin/modules/colorpicker'
+	'admin/modules/colorpicker',
 ], function (colorpicker) {
 	var Module = {};
 

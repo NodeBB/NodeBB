@@ -1,6 +1,10 @@
 # Submitting a Pull Request to NodeBB?
 
-First of all, thank you! Please consider this [style guide](https://docs.nodebb.org/en/latest/contributing/style-guide.html) when submitting your changes. Also, please join our [community](https://community.nodebb.org) to meet other NodeBB developers and designers :) 
+First of all, thank you! Before submission, please run `npm test` to lint and run the automated NodeBB tests. If everything passes, you're good to go. If you have any errors, please fix them and re-run `npm test` to make sure there aren't any others.
+
+## Styleguide and linting
+
+NodeBB mostly conforms to the [AirBnB Javascript style guide](https://github.com/airbnb/javascript#readme). If you're running into a lot of ESlint errors, you may want to install an editor plugin to display them in real time.
 
 ## Contributor License Agreement
 
@@ -51,12 +55,13 @@ $ git rev-parse HEAD
 If you have downloaded the `.zip` or `.tar.gz` packages from GitHub (or elsewhere), please let us know.
 
 ## Provide theme versions if issue is related to the theme/display
+Use `npm ls` to list the versions of the theme you're using. In this example, we're running the Persona theme, which depends on the Vanilla theme.
 
 ``` bash
-$ npm ls nodebb-theme-vanilla nodebb-theme-lavender
-nodebb@0.7.0-dev /home/julian/Projects/nodebb/forum
-├── nodebb-theme-lavender@0.2.13
-└── nodebb-theme-vanilla@0.2.35
+$ npm ls nodebb-theme-vanilla nodebb-theme-persona
+nodebb@1.4.3 /path/to/nodebb
++-- nodebb-theme-persona@4.2.4
+`-- nodebb-theme-vanilla@5.2.0
 ```
 
 ## Attempt to use `git bisect`

@@ -1,13 +1,11 @@
 'use strict';
 
-/* globals define, ajaxify, app, socket, bootbox */
 
 define('forum/account/profile', [
 	'forum/account/header',
 	'forum/infinitescroll',
-	'translator',
-	'components'
-], function (header, infinitescroll, translator) {
+	'components',
+], function (header, infinitescroll) {
 	var Account = {};
 	var theirid;
 
@@ -22,10 +20,10 @@ define('forum/account/profile', [
 
 		socket.removeListener('event:user_status_change', onUserStatusChange);
 		socket.on('event:user_status_change', onUserStatusChange);
-		
+
 		if (!config.usePagination) {
-			infinitescroll.init(loadMorePosts);	
-		}		
+			infinitescroll.init(loadMorePosts);
+		}
 	};
 
 	function processPage() {
@@ -49,7 +47,7 @@ define('forum/account/profile', [
 
 		infinitescroll.loadMore('posts.loadMoreUserPosts', {
 			after: $('[component="posts"]').attr('data-nextstart'),
-			uid: theirid
+			uid: theirid,
 		}, function (data, done) {
 			if (data.posts && data.posts.length) {
 				onPostsLoaded(data.posts, done);
@@ -70,8 +68,7 @@ define('forum/account/profile', [
 			return callback();
 		}
 
-		app.parseAndTranslate('account/profile', 'posts', {posts: posts}, function (html) {
-
+		app.parseAndTranslate('account/profile', 'posts', { posts: posts }, function (html) {
 			$('[component="posts"]').append(html);
 			html.find('.timeago').timeago();
 

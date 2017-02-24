@@ -1,16 +1,15 @@
 'use strict';
 
 module.exports = function (db, module) {
-
 	module.sortedSetUnionCard = function (keys, callback) {
 		if (!Array.isArray(keys) || !keys.length) {
 			return callback(null, 0);
 		}
 
 		var pipeline = [
-			{ $match: { _key: {$in: keys} } },
-			{ $group: { _id: {value: '$value' } } },
-			{ $group: { _id: null,  count: { $sum: 1 } } }
+			{ $match: { _key: { $in: keys } } },
+			{ $group: { _id: { value: '$value' } } },
+			{ $group: { _id: null, count: { $sum: 1 } } },
 		];
 
 		var project = { _id: 0, count: '$count' };
@@ -48,9 +47,9 @@ module.exports = function (db, module) {
 		}
 
 		var pipeline = [
-			{ $match: { _key: {$in: params.sets}} },
-			{ $group: { _id: {value: '$value'}, totalScore: aggregate} },
-			{ $sort: { totalScore: params.sort} }
+			{ $match: { _key: { $in: params.sets } } },
+			{ $group: { _id: { value: '$value' }, totalScore: aggregate } },
+			{ $sort: { totalScore: params.sort } },
 		];
 
 		if (params.start) {
@@ -81,5 +80,4 @@ module.exports = function (db, module) {
 			callback(null, data);
 		});
 	}
-
 };

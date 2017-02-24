@@ -1,6 +1,5 @@
 'use strict';
 
-/* globals define */
 
 define('forum/compose', [], function () {
 	var Compose = {};
@@ -10,7 +9,7 @@ define('forum/compose', [], function () {
 
 		if (container.length) {
 			$(window).trigger('action:composer.enhance', {
-				container: container
+				container: container,
 			});
 		}
 	};

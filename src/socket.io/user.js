@@ -46,16 +46,16 @@ SocketUser.deleteAccount = function (socket, data, callback) {
 			user.deleteAccount(socket.uid, next);
 		},
 		function (next) {
-			require('./index').server.sockets.emit('event:user_status_change', {uid: socket.uid, status: 'offline'});
+			require('./index').server.sockets.emit('event:user_status_change', { uid: socket.uid, status: 'offline' });
 
 			events.log({
 				type: 'user-delete',
 				uid: socket.uid,
 				targetUid: socket.uid,
-				ip: socket.ip
+				ip: socket.ip,
 			});
 			next();
-		}
+		},
 	], callback);
 };
 
@@ -85,7 +85,7 @@ SocketUser.emailConfirm = function (socket, data, callback) {
 			}
 
 			user.email.sendValidationEmail(socket.uid, email, next);
-		}
+		},
 	], callback);
 };
 
@@ -120,7 +120,7 @@ SocketUser.reset.commit = function (socket, data, callback) {
 		function (next) {
 			async.parallel({
 				uid: async.apply(db.getObjectField, 'reset:uid', data.code),
-				reset: async.apply(user.reset.commit, data.code, data.password)
+				reset: async.apply(user.reset.commit, data.code, data.password),
 			}, next);
 		},
 		function (results, next) {
@@ -128,7 +128,7 @@ SocketUser.reset.commit = function (socket, data, callback) {
 			events.log({
 				type: 'password-reset',
 				uid: uid,
-				ip: socket.ip
+				ip: socket.ip,
 			});
 
 			user.getUserField(uid, 'username', next);
@@ -140,11 +140,11 @@ SocketUser.reset.commit = function (socket, data, callback) {
 				username: username,
 				date: parsedDate,
 				site_title: meta.config.title || 'NodeBB',
-				subject: '[[email:reset.notify.subject]]'
+				subject: '[[email:reset.notify.subject]]',
 			});
 
 			next();
-		}
+		},
 	], callback);
 };
 
@@ -175,7 +175,7 @@ SocketUser.follow = function (socket, data, callback) {
 				nid: 'follow:' + data.uid + ':uid:' + socket.uid,
 				from: socket.uid,
 				path: '/uid/' + data.uid + '/followers',
-				mergeId: 'notifications:user_started_following_you'
+				mergeId: 'notifications:user_started_following_you',
 			}, next);
 		},
 		function (notification, next) {
@@ -184,7 +184,7 @@ SocketUser.follow = function (socket, data, callback) {
 			}
 			notification.user = userData;
 			notifications.push(notification, [data.uid], next);
-		}
+		},
 	], callback);
 };
 
@@ -203,7 +203,7 @@ function toggleFollow(method, uid, theiruid, callback) {
 
 		plugins.fireHook('action:user.' + method, {
 			fromUid: uid,
-			toUid: theiruid
+			toUid: theiruid,
 		});
 		callback();
 	});
@@ -223,7 +223,7 @@ SocketUser.saveSettings = function (socket, data, callback) {
 				return next(new Error('[[error:no-privileges]]'));
 			}
 			user.saveSettings(data.uid, data.settings, next);
-		}
+		},
 	], callback);
 };
 
@@ -257,7 +257,7 @@ SocketUser.getUnreadCounts = function (socket, data, callback) {
 		unreadTopicCount: async.apply(topics.getTotalUnread, socket.uid),
 		unreadNewTopicCount: async.apply(topics.getTotalUnread, socket.uid, 'new'),
 		unreadChatCount: async.apply(messaging.getUnreadCount, socket.uid),
-		unreadNotificationCount: async.apply(user.notifications.getUnreadCount, socket.uid)
+		unreadNotificationCount: async.apply(user.notifications.getUnreadCount, socket.uid),
 	}, callback);
 };
 
@@ -296,9 +296,9 @@ SocketUser.invite = function (socket, email, callback) {
 					}
 
 					user.sendInvitationEmail(socket.uid, email, next);
-				}
+				},
 			], next);
-		}
+		},
 	], callback);
 };
 
@@ -339,7 +339,7 @@ SocketUser.setModerationNote = function (socket, data, callback) {
 			} else {
 				db.deleteObjectField('user:' + data.uid, 'moderationNote', next);
 			}
-		}
+		},
 	], callback);
 };
 

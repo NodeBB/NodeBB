@@ -22,7 +22,7 @@ SocketCategories.get = function (socket, data, callback) {
 				async.apply(db.getSortedSetRange, 'categories:cid', 0, -1),
 				async.apply(categories.getCategoriesData),
 			], next);
-		}
+		},
 	}, function (err, results) {
 		if (err) {
 			return callback(err);
@@ -39,12 +39,12 @@ SocketCategories.get = function (socket, data, callback) {
 SocketCategories.getWatchedCategories = function (socket, data, callback) {
 	async.parallel({
 		categories: async.apply(categories.getCategoriesByPrivilege, 'cid:0:children', socket.uid, 'find'),
-		ignoredCids: async.apply(user.getIgnoredCategories, socket.uid)
+		ignoredCids: async.apply(user.getIgnoredCategories, socket.uid),
 	}, function (err, results) {
 		if (err) {
 			return callback(err);
 		}
-		var watchedCategories =  results.categories.filter(function (category) {
+		var watchedCategories = results.categories.filter(function (category) {
 			return category && results.ignoredCids.indexOf(category.cid.toString()) === -1;
 		});
 
@@ -70,7 +70,7 @@ SocketCategories.loadMore = function (socket, data, callback) {
 			} else {
 				next();
 			}
-		}
+		},
 	}, function (err, results) {
 		if (err) {
 			return callback(err);
@@ -94,7 +94,7 @@ SocketCategories.loadMore = function (socket, data, callback) {
 		var start = Math.max(0, parseInt(data.after, 10));
 
 		if (data.direction === -1) {
-			start = start - (reverse ? infScrollTopicsPerPage : -infScrollTopicsPerPage);
+			start -= reverse ? infScrollTopicsPerPage : -infScrollTopicsPerPage;
 		}
 
 		var stop = start + infScrollTopicsPerPage - 1;
@@ -118,7 +118,7 @@ SocketCategories.loadMore = function (socket, data, callback) {
 			stop: stop,
 			uid: socket.uid,
 			targetUid: results.targetUid,
-			settings: results.settings
+			settings: results.settings,
 		}, function (err, data) {
 			if (err) {
 				return callback(err);
@@ -129,7 +129,7 @@ SocketCategories.loadMore = function (socket, data, callback) {
 			data.privileges = results.privileges;
 			data.template = {
 				category: true,
-				name: 'category'
+				name: 'category',
 			};
 
 			callback(null, data);
@@ -162,9 +162,9 @@ SocketCategories.getMoveCategories = function (socket, data, callback) {
 				},
 				function (cids, next) {
 					categories.getCategories(cids, socket.uid, next);
-				}
+				},
 			], next);
-		}
+		},
 	}, function (err, results) {
 		if (err) {
 			return callback(err);
@@ -204,16 +204,15 @@ function ignoreOrWatch(fn, socket, cid, callback) {
 
 			// filter to subcategories of cid
 
-			var any = true;
-			while (any) {
-				any = false;
-				categoryData.forEach(function (c) {
-					if (cids.indexOf(c.cid) === -1 && cids.indexOf(c.parentCid) !== -1) {
-						cids.push(c.cid);
-						any = true;
-					}
+			var cat;
+			do {
+				cat = categoryData.find(function (c) {
+					return cids.indexOf(c.cid) === -1 && cids.indexOf(c.parentCid) !== -1;
 				});
-			}
+				if (cat) {
+					cids.push(cat.cid);
+				}
+			} while (cat);
 
 			async.each(cids, function (cid, next) {
 				fn(socket.uid, cid, next);
@@ -221,7 +220,7 @@ function ignoreOrWatch(fn, socket, cid, callback) {
 		},
 		function (next) {
 			topics.pushUnreadCount(socket.uid, next);
-		}
+		},
 	], callback);
 }
 

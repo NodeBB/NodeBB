@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 var async = require('async');
 
@@ -14,7 +14,7 @@ var modsController = {
 modsController.flags.list = function (req, res, next) {
 	async.parallel({
 		isAdminOrGlobalMod: async.apply(user.isAdminOrGlobalMod, req.uid),
-		moderatedCids: async.apply(user.getModeratedCids, req.uid)
+		moderatedCids: async.apply(user.getModeratedCids, req.uid),
 	}, function (err, results) {
 		if (err) {
 			return next(err);

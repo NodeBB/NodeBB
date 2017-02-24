@@ -1,6 +1,5 @@
-"use strict";
+'use strict';
 
-/* globals console, require */
 
 var db = require('./database');
 var async = require('async');
@@ -53,7 +52,7 @@ Upgrade.upgrade = function (callback) {
 					return next(err);
 				}
 
-				if(!value) {
+				if (!value) {
 					db.set('schemaDate', latestSchema, function () {
 						next();
 					});
@@ -131,7 +130,7 @@ Upgrade.upgrade = function (callback) {
 							},
 							function (next) {
 								db.deleteObjectField('post:' + id, 'reputation', next);
-							}
+							},
 						], next);
 					}, next);
 				}, {}, next);
@@ -187,7 +186,7 @@ Upgrade.upgrade = function (callback) {
 							console.log('processing pid: ' + postData.pid + ' toPid: ' + postData.toPid);
 							async.parallel([
 								async.apply(db.sortedSetAdd, 'pid:' + postData.toPid + ':replies', postData.timestamp, postData.pid),
-								async.apply(db.incrObjectField, 'post:' + postData.toPid, 'replies')
+								async.apply(db.incrObjectField, 'post:' + postData.toPid, 'replies'),
 							], next);
 						}, next);
 					});
@@ -242,23 +241,23 @@ Upgrade.upgrade = function (callback) {
 								async.waterfall([
 									async.apply(db.getObjectField, 'user:' + uid + ':settings', 'userLang'),
 									function (language, next) {
-										++i;
+										i += 1;
 										if (!language) {
 											return setImmediate(next);
 										}
 
 										newLanguage = language.replace('_', '-').replace('@', '-x-');
 										if (newLanguage !== language) {
-											++j;
+											j += 1;
 											user.setSetting(uid, 'userLang', newLanguage, next);
 										} else {
 											setImmediate(next);
 										}
-									}
+									},
 								], next);
 							}, next);
 						}, next);
-					}
+					},
 				], function (err) {
 					if (err) {
 						return next(err);
@@ -297,7 +296,7 @@ Upgrade.upgrade = function (callback) {
 							async.parallel([
 								async.apply(db.sortedSetAdd, 'cid:' + topicData.cid + ':tids:pinned', Date.now(), topicData.tid),
 								async.apply(db.sortedSetRemove, 'cid:' + topicData.cid + ':tids', topicData.tid),
-								async.apply(db.sortedSetRemove, 'cid:' + topicData.cid + ':tids:posts', topicData.tid)
+								async.apply(db.sortedSetRemove, 'cid:' + topicData.cid + ':tids:posts', topicData.tid),
 							], next);
 						}, next);
 					});
@@ -413,13 +412,13 @@ Upgrade.upgrade = function (callback) {
 		// IMPORTANT: REMEMBER TO UPDATE VALUE OF latestSchema IN LINE 24!!!
 	], function (err) {
 		if (!err) {
-			if(updatesMade) {
+			if (updatesMade) {
 				winston.info('[upgrade] Schema update complete!');
 			} else {
 				winston.info('[upgrade] Schema already up to date!');
 			}
 		} else {
-			switch(err.message) {
+			switch (err.message) {
 			case 'upgrade-not-possible':
 				winston.error('[upgrade] NodeBB upgrade could not complete, as your database schema is too far out of date.');
 				winston.error('[upgrade]   Please ensure that you did not skip any minor version upgrades.');

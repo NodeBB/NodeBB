@@ -19,7 +19,7 @@ image.resizeImage = function (data, callback) {
 			target: data.target,
 			extension: data.extension,
 			width: data.width,
-			height: data.height
+			height: data.height,
 		}, function (err) {
 			callback(err);
 		});
@@ -29,13 +29,13 @@ image.resizeImage = function (data, callback) {
 				return callback(err);
 			}
 
-			var w = image.bitmap.width,
-				h = image.bitmap.height,
-				origRatio = w / h,
-				desiredRatio = data.width && data.height ? data.width / data.height : origRatio,
-				x = 0,
-				y = 0,
-				crop;
+			var w = image.bitmap.width;
+			var h = image.bitmap.height;
+			var origRatio = w / h;
+			var desiredRatio = data.width && data.height ? data.width / data.height : origRatio;
+			var x = 0;
+			var y = 0;
+			var crop;
 
 			if (origRatio !== desiredRatio) {
 				if (desiredRatio > origRatio) {
@@ -47,7 +47,7 @@ image.resizeImage = function (data, callback) {
 					crop = async.apply(image.crop.bind(image), x, y, h * desiredRatio, h);
 				} else {
 					x = 0;	// width is the smaller dimension here
-					y = Math.floor(h / 2 - (w * desiredRatio / 2));
+					y = Math.floor((h / 2) - (w * desiredRatio / 2));
 					crop = async.apply(image.crop.bind(image), x, y, w, w * desiredRatio);
 				}
 			} else {
@@ -71,7 +71,7 @@ image.resizeImage = function (data, callback) {
 				},
 				function (image, next) {
 					image.write(data.target || data.path, next);
-				}
+				},
 			], function (err) {
 				callback(err);
 			});
@@ -83,7 +83,7 @@ image.normalise = function (path, extension, callback) {
 	if (plugins.hasListeners('filter:image.normalise')) {
 		plugins.fireHook('filter:image.normalise', {
 			path: path,
-			extension: extension
+			extension: extension,
 		}, function (err) {
 			callback(err, path + '.png');
 		});
@@ -138,7 +138,7 @@ image.writeImageDataToTempFile = function (imageData, callback) {
 	var buffer = new Buffer(imageData.slice(imageData.indexOf('base64') + 7), 'base64');
 
 	fs.writeFile(filepath, buffer, {
-		encoding: 'base64'
+		encoding: 'base64',
 	}, function (err) {
 		callback(err, filepath);
 	});

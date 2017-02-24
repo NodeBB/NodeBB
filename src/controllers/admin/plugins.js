@@ -24,22 +24,22 @@ pluginsController.get = function (req, res, next) {
 
 				next(null, plugins);
 			});
-		}
+		},
 	}, function (err, payload) {
 		if (err) {
 			return next(err);
 		}
 		var compatiblePkgNames = payload.compatible.map(function (pkgData) {
-				return pkgData.name;
-			});
+			return pkgData.name;
+		});
 
-		res.render('admin/extend/plugins' , {
+		res.render('admin/extend/plugins', {
 			installed: payload.compatible.filter(function (plugin) {
 				return plugin.installed;
 			}),
 			upgradeCount: payload.compatible.reduce(function (count, current) {
 				if (current.installed && current.outdated) {
-					++count;
+					count += 1;
 				}
 				return count;
 			}, 0),
@@ -48,7 +48,7 @@ pluginsController.get = function (req, res, next) {
 			}),
 			incompatible: payload.all.filter(function (plugin) {
 				return compatiblePkgNames.indexOf(plugin.name) === -1;
-			})
+			}),
 		});
 	});
 };

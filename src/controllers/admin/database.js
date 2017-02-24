@@ -6,7 +6,6 @@ var nconf = require('nconf');
 var databaseController = {};
 
 
-
 databaseController.get = function (req, res, next) {
 	async.parallel({
 		redis: function (next) {
@@ -24,7 +23,7 @@ databaseController.get = function (req, res, next) {
 			} else {
 				next();
 			}
-		}
+		},
 	}, function (err, results) {
 		if (err) {
 			return next(err);

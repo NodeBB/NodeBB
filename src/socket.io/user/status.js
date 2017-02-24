@@ -6,7 +6,6 @@ var user = require('../../user');
 var websockets = require('../index');
 
 module.exports = function (SocketUser) {
-
 	SocketUser.checkStatus = function (socket, uid, callback) {
 		if (!socket.uid) {
 			return callback(new Error('[[error:invalid-uid]]'));
@@ -17,7 +16,7 @@ module.exports = function (SocketUser) {
 			},
 			function (userData, next) {
 				next(null, user.getStatus(userData));
-			}
+			},
 		], callback);
 	};
 
@@ -31,7 +30,7 @@ module.exports = function (SocketUser) {
 			return callback(new Error('[[error:invalid-user-status]]'));
 		}
 
-		var data = {status: status};
+		var data = { status: status };
 		if (status !== 'offline') {
 			data.lastonline = Date.now();
 		}
@@ -43,11 +42,11 @@ module.exports = function (SocketUser) {
 			function (next) {
 				var data = {
 					uid: socket.uid,
-					status: status
+					status: status,
 				};
 				websockets.server.emit('event:user_status_change', data);
 				next(null, data);
-			}
+			},
 		], callback);
 	};
 };

@@ -1,9 +1,7 @@
 'use strict';
 
-/* globals define, app, socket, ajaxify, templates, bootbox */
 
 define('forum/topic/votes', ['components', 'translator'], function (components, translator) {
-
 	var Votes = {};
 
 	Votes.addVoteHandler = function () {
@@ -64,12 +62,12 @@ define('forum/topic/votes', ['components', 'translator'], function (components, 
 
 
 	Votes.toggleVote = function (button, className, method) {
-		var post = button.parents('[data-pid]'),
-			currentState = post.find(className).length;
+		var post = button.parents('[data-pid]');
+		var currentState = post.find(className).length;
 
-		socket.emit(currentState ? 'posts.unvote' : method , {
+		socket.emit(currentState ? 'posts.unvote' : method, {
 			pid: post.attr('data-pid'),
-			room_id: app.currentRoom
+			room_id: app.currentRoom,
 		}, function (err) {
 			if (err) {
 				if (err.message === 'self-vote') {
@@ -84,7 +82,7 @@ define('forum/topic/votes', ['components', 'translator'], function (components, 
 	};
 
 	Votes.showVotes = function (pid) {
-		socket.emit('posts.getVoters', {pid: pid, cid: ajaxify.data.cid}, function (err, data) {
+		socket.emit('posts.getVoters', { pid: pid, cid: ajaxify.data.cid }, function (err, data) {
 			if (err) {
 				if (err.message === '[[error:no-privileges]]') {
 					return;
@@ -100,13 +98,12 @@ define('forum/topic/votes', ['components', 'translator'], function (components, 
 						title: 'Voters',
 						message: translated,
 						className: 'vote-modal',
-						show: true
+						show: true,
 					});
 
 					dialog.on('click', function () {
 						dialog.modal('hide');
 					});
-
 				});
 			});
 		});

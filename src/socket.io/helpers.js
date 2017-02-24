@@ -32,8 +32,8 @@ SocketHelpers.notifyNew = function (uid, type, result) {
 			filterTidCidIgnorers(uids, result.posts[0].topic.tid, result.posts[0].topic.cid, next);
 		},
 		function (uids, next) {
-			plugins.fireHook('filter:sockets.sendNewPostToUids', {uidsTo: uids, uidFrom: uid, type: type}, next);
-		}
+			plugins.fireHook('filter:sockets.sendNewPostToUids', { uidsTo: uids, uidFrom: uid, type: type }, next);
+		},
 	], function (err, data) {
 		if (err) {
 			return winston.error(err.stack);
@@ -64,7 +64,7 @@ function filterTidCidIgnorers(uids, tid, cid, callback) {
 				},
 				categoryIgnored: function (next) {
 					db.sortedSetScores('cid:' + cid + ':ignorers', uids, next);
-				}
+				},
 			}, next);
 		},
 		function (results, next) {
@@ -73,7 +73,7 @@ function filterTidCidIgnorers(uids, tid, cid, callback) {
 					(!results.topicFollowed[index] && !results.topicIgnored[index] && !results.categoryIgnored[index]);
 			});
 			next(null, uids);
-		}
+		},
 	], callback);
 }
 
@@ -98,7 +98,7 @@ SocketHelpers.sendNotificationToPostOwner = function (pid, fromuid, command, not
 			async.parallel({
 				username: async.apply(user.getUserField, fromuid, 'username'),
 				topicTitle: async.apply(topics.getTopicField, postData.tid, 'title'),
-				postObj: async.apply(posts.parsePost, postData)
+				postObj: async.apply(posts.parsePost, postData),
 			}, next);
 		},
 		function (results, next) {
@@ -113,9 +113,9 @@ SocketHelpers.sendNotificationToPostOwner = function (pid, fromuid, command, not
 				nid: command + ':post:' + pid + ':uid:' + fromuid,
 				from: fromuid,
 				mergeId: notification + '|' + pid,
-				topicTitle: results.topicTitle
+				topicTitle: results.topicTitle,
 			}, next);
-		}
+		},
 	], function (err, notification) {
 		if (err) {
 			return winston.error(err);
@@ -154,9 +154,9 @@ SocketHelpers.sendNotificationToTopicOwner = function (tid, fromuid, command, no
 				bodyShort: '[[' + notification + ', ' + results.username + ', ' + titleEscaped + ']]',
 				path: '/topic/' + results.topicData.slug,
 				nid: command + ':tid:' + tid + ':uid:' + fromuid,
-				from: fromuid
+				from: fromuid,
 			}, next);
-		}
+		},
 	], function (err, notification) {
 		if (err) {
 			return winston.error(err);

@@ -6,7 +6,6 @@ var db = require('../database');
 var analytics = require('../analytics');
 
 module.exports = function (Meta) {
-
 	Meta.errors = {};
 
 	Meta.errors.log404 = function (route, callback) {

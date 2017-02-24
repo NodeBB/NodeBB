@@ -10,12 +10,11 @@
 					<!-- BEGIN tags -->
 					<div class="tag-row" data-tag="{tags.value}">
 						<div data-value="{tags.value}">
-							<span class="tag-item" data-tag="{tags.value}" style="
+							<span class="mdl-chip mdl-chip--contact tag-item" data-tag="{tags.value}" style="
 								<!-- IF tags.color -->color: {tags.color};<!-- ENDIF tags.color -->
-								<!-- IF tags.bgColor -->background-color: {tags.bgColor};<!-- ENDIF tags.bgColor -->
-							">{tags.value}</span>
-							<span class="tag-topic-count">
-								<a href="{config.relative_path}/tags/{tags.value}" target="_blank">{tags.score}</a>
+								<!-- IF tags.bgColor -->background-color: {tags.bgColor};<!-- ENDIF tags.bgColor -->">
+							    <span class="mdl-chip__contact mdl-color--light-blue mdl-color-text--white tag-topic-count">{tags.score}</span>
+							    <span class="mdl-chip__text">{tags.value}</span>
 							</span>
 						</div>
 						<div class="tag-modal hidden">

@@ -1,5 +1,5 @@
-"use strict";
-/*global define, app, templates*/
+'use strict';
+
 
 define('taskbar', function () {
 	var taskbar = {};
@@ -13,9 +13,9 @@ define('taskbar', function () {
 			$(document.body).append(self.taskbar);
 
 			self.taskbar.on('click', 'li', function () {
-				var	$btn = $(this),
-					module = $btn.attr('data-module'),
-					uuid = $btn.attr('data-uuid');
+				var	$btn = $(this);
+				var module = $btn.attr('data-module');
+				var uuid = $btn.attr('data-uuid');
 
 				require([module], function (module) {
 					if (!$btn.hasClass('active')) {
@@ -50,7 +50,7 @@ define('taskbar', function () {
 			module: module,
 			uuid: uuid,
 			options: options,
-			element: element
+			element: element,
 		};
 
 		$(window).trigger('filter:taskbar.push', data);
@@ -119,7 +119,7 @@ define('taskbar', function () {
 				'</a>')
 			.attr({
 				'data-module': data.module,
-				'data-uuid': data.uuid
+				'data-uuid': data.uuid,
 			})
 			.addClass(data.options.state !== undefined ? data.options.state : 'active');
 

@@ -1,5 +1,5 @@
-"use strict";
-/* global app, define, socket, config */
+'use strict';
+
 
 define('sounds', function () {
 	var	Sounds = {};
@@ -31,7 +31,7 @@ define('sounds', function () {
 		if (fileMap) {
 			outstanding -= 1;
 		} else {
-			$.getJSON(config.relative_path  + '/assets/sounds/fileMap.json', function (map) {
+			$.getJSON(config.relative_path + '/assets/sounds/fileMap.json', function (map) {
 				fileMap = map;
 				after();
 			});
@@ -49,9 +49,10 @@ define('sounds', function () {
 			if (!fileMap[soundName]) {
 				return;
 			}
-			var audio = cache[soundName] = cache[soundName] || new Audio(config.relative_path + '/assets/sounds/' + fileMap[soundName]);
+			var audio = cache[soundName] || new Audio(config.relative_path + '/assets/sounds/' + fileMap[soundName]);
+			cache[soundName] = audio;
 			audio.pause();
- 			audio.currentTime = 0;
+			audio.currentTime = 0;
 			audio.play();
 		}
 
@@ -63,7 +64,7 @@ define('sounds', function () {
 			if (!soundMap[type]) {
 				return;
 			}
-			
+
 			if (id) {
 				var item = 'sounds.handled:' + id;
 				if (sessionStorage.getItem(item)) {

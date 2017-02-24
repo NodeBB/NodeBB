@@ -59,7 +59,7 @@ module.exports = function (Plugins) {
 						async.apply(mapSoundpack, pluginData),
 					], next);
 				}, next);
-			}
+			},
 		], callback);
 	};
 
@@ -143,7 +143,7 @@ module.exports = function (Plugins) {
 			} else {
 				callback();
 			}
-		} catch(err) {
+		} catch (err) {
 			winston.error(err.stack);
 			winston.warn('[plugins] Unable to parse library for: ' + pluginData.id);
 			callback();
@@ -151,6 +151,8 @@ module.exports = function (Plugins) {
 	}
 
 	function mapStaticDirectories(pluginData, pluginPath, callback) {
+		var validMappedPath = /^[\w\-_]+$/;
+
 		function mapStaticDirs(mappedPath, callback) {
 			if (Plugins.staticDirs[mappedPath]) {
 				winston.warn('[plugins/' + pluginData.id + '] Mapped path (' + mappedPath + ') already specified!');
@@ -172,8 +174,6 @@ module.exports = function (Plugins) {
 				});
 			}
 		}
-
-		var validMappedPath = /^[\w\-_]+$/;
 
 		pluginData.staticDirs = pluginData.staticDirs || {};
 
@@ -228,7 +228,7 @@ module.exports = function (Plugins) {
 
 			pluginData.modules.forEach(function (file) {
 				if (strip) {
-					modules[file.replace(new RegExp('\.?(\/[^\/]+){' + strip + '}\/'), '')] = path.join('./node_modules/', pluginData.id, file);
+					modules[file.replace(new RegExp('.?(/[^/]+){' + strip + '}/'), '')] = path.join('./node_modules/', pluginData.id, file);
 				} else {
 					modules[path.basename(file)] = path.join('./node_modules/', pluginData.id, file);
 				}
@@ -300,11 +300,10 @@ module.exports = function (Plugins) {
 			if (!atRootLevel && relPath) {
 				winston.verbose('[plugins/load] File not found: ' + fullPath + ' (Ascending)');
 				return resolveModulePath(path.join(__dirname, '../..', relPath));
-			} else {
-				// Already at root level, file was simply not found
-				winston.warn('[plugins/load] File not found: ' + fullPath + ' (Ignoring)');
-				return null;
 			}
+				// Already at root level, file was simply not found
+			winston.warn('[plugins/load] File not found: ' + fullPath + ' (Ignoring)');
+			return null;
 		}
 	}
 
@@ -315,7 +314,7 @@ module.exports = function (Plugins) {
 			},
 			plugin: function (next) {
 				fs.readFile(path.join(pluginPath, 'plugin.json'), next);
-			}
+			},
 		}, function (err, results) {
 			if (err) {
 				return callback(err);
@@ -333,7 +332,7 @@ module.exports = function (Plugins) {
 				pluginData.repository = packageData.repository;
 				pluginData.nbbpm = packageData.nbbpm;
 				pluginData.path = pluginPath;
-			} catch(err) {
+			} catch (err) {
 				var pluginDir = pluginPath.split(path.sep);
 				pluginDir = pluginDir[pluginDir.length - 1];
 

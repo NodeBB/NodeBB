@@ -1,5 +1,5 @@
-"use strict";
-/* global define, config, templates, app, utils, ajaxify, socket */
+'use strict';
+
 
 define('forum/category', [
 	'forum/infinitescroll',
@@ -10,7 +10,7 @@ define('forum/category', [
 	'components',
 	'translator',
 	'topicSelect',
-	'forum/pagination'
+	'forum/pagination',
 ], function (infinitescroll, share, navigator, categoryTools, sort, components, translator, topicSelect, pagination) {
 	var Category = {};
 
@@ -62,8 +62,8 @@ define('forum/category', [
 
 		handleIgnoreWatch(cid);
 
-		$(window).trigger('action:topics.loaded', {topics: ajaxify.data.topics});
-		$(window).trigger('action:category.loaded', {cid: ajaxify.data.cid});
+		$(window).trigger('action:topics.loaded', { topics: ajaxify.data.topics });
+		$(window).trigger('action:category.loaded', { cid: ajaxify.data.cid });
 	};
 
 	function handleScrollToTopicIndex() {
@@ -112,13 +112,12 @@ define('forum/category', [
 		});
 	};
 
-	Category.navigatorCallback = function (topIndex, bottomIndex, elementCount) {
+	Category.navigatorCallback = function (topIndex, bottomIndex) {
 		return bottomIndex;
 	};
 
-	$(window).on('action:ajaxify.contentLoaded', function (ev, data) {
+	$(window).on('action:ajaxify.contentLoaded', function () {
 		if (ajaxify.data.template.category && ajaxify.data.cid) {
-
 			var bookmarkIndex = localStorage.getItem('category:' + ajaxify.data.cid + ':bookmark');
 			var clickedIndex = localStorage.getItem('category:' + ajaxify.data.cid + ':bookmark:clicked');
 
@@ -178,7 +177,7 @@ define('forum/category', [
 
 		if (scrollTo.length) {
 			$('html, body').animate({
-				scrollTop: (scrollTo.offset().top - offset) + 'px'
+				scrollTop: (scrollTo.offset().top - offset) + 'px',
 			}, duration !== undefined ? duration : 400, function () {
 				Category.highlightTopic(clickedIndex);
 				navigator.update();
@@ -205,16 +204,16 @@ define('forum/category', [
 		var editable = !!$('.thread-tools').length;
 
 		templates.parse('category', 'topics', {
-			privileges: {editable: editable},
+			privileges: { editable: editable },
 			showSelect: editable,
 			topics: [topic],
-			template: {category: true}
+			template: { category: true },
 		}, function (html) {
 			translator.translate(html, function (translatedHTML) {
-				var topic = $(translatedHTML),
-					container = $('[component="category"]'),
-					topics = $('[component="category/topic"]'),
-					numTopics = topics.length;
+				var topic = $(translatedHTML);
+				var container = $('[component="category"]');
+				var topics = $('[component="category/topic"]');
+				var numTopics = topics.length;
 
 				$('[component="category"]').removeClass('hidden');
 				$('.category-sidebar').removeClass('hidden');
@@ -226,16 +225,15 @@ define('forum/category', [
 				}
 
 				if (numTopics > 0) {
-					for (var x = 0; x < numTopics; x++) {
+					for (var x = 0; x < numTopics; x += 1) {
 						var pinned = $(topics[x]).hasClass('pinned');
-						if (pinned) {
-							if(x === numTopics - 1) {
-								topic.insertAfter(topics[x]);
-							}
-							continue;
+						if (!pinned) {
+							topic.insertBefore(topics[x]);
+							break;
 						}
-						topic.insertBefore(topics[x]);
-						break;
+						if (x === numTopics - 1) {
+							topic.insertAfter(topics[x]);
+						}
 					}
 				} else {
 					container.append(topic);
@@ -254,7 +252,7 @@ define('forum/category', [
 
 	function updateTopicCount() {
 		socket.emit('categories.getTopicCount', ajaxify.data.cid, function (err, topicCount) {
-			if(err) {
+			if (err) {
 				return app.alertError(err.message);
 			}
 			navigator.setCount(topicCount);
@@ -287,7 +285,7 @@ define('forum/category', [
 			direction: direction,
 			author: params.author,
 			tag: params.tag,
-			categoryTopicSort: config.categoryTopicSort
+			categoryTopicSort: config.categoryTopicSort,
 		}, function (data, done) {
 			if (data.topics && data.topics.length) {
 				Category.onTopicsLoaded(data, direction, done);
@@ -319,7 +317,8 @@ define('forum/category', [
 
 		data.showSelect = data.privileges.editable;
 
-		var after, before;
+		var after;
+		var before;
 		var topics = $('[component="category/topic"]');
 
 		if (direction > 0 && topics.length) {
@@ -337,8 +336,8 @@ define('forum/category', [
 			if (after) {
 				html.insertAfter(after);
 			} else if (before) {
-				var height = $(document).height(),
-				 	scrollTop = $(window).scrollTop();
+				var height = $(document).height();
+				var scrollTop = $(window).scrollTop();
 
 				html.insertBefore(before);
 
@@ -355,7 +354,7 @@ define('forum/category', [
 			app.createUserTooltips();
 			utils.makeNumbersHumanReadable(html.find('.human-readable-number'));
 
-			$(window).trigger('action:topics.loaded', {topics: data.topics});
+			$(window).trigger('action:topics.loaded', { topics: data.topics });
 
 			callback();
 		});
