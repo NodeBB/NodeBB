@@ -416,7 +416,9 @@ Controllers.handleURIErrors = function (err, req, res, next) {
 	}
 };
 
-Controllers.handleErrors = function (err, req, res) {
+// this needs to have four arguments or express treats it as `(req, res, next)`
+// don't remove `next`!
+Controllers.handleErrors = function (err, req, res, next) { // eslint-disable-line no-unused-vars
 	switch (err.code) {
 	case 'EBADCSRFTOKEN':
 		winston.error(req.path + '\n', err.message);

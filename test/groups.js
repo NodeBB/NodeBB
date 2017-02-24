@@ -794,7 +794,7 @@ describe('Groups', function () {
 				helpers.uploadFile(nconf.get('url') + '/api/groups/uploadpicture', logoPath, { params: JSON.stringify({ groupName: 'Test' }) }, jar, csrf_token, function (err, res, body) {
 					assert.ifError(err);
 					assert.equal(res.statusCode, 500);
-					assert(/\[\[error:no-privileges\]\]/.test(body));
+					assert.equal(body.error, '[[error:no-privileges]]');
 					done();
 				});
 			});
