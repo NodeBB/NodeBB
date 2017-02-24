@@ -536,14 +536,90 @@ describe('Groups', function () {
 			});
 		});
 
-		it('should accept membership of user', function (done) {
-			socketGroups.accept({uid: adminUid}, {groupName: 'PrivateCanJoin', toUid: testUid}, function (err) {
+		it('should reject membership of user', function (done) {
+			socketGroups.reject({uid: adminUid}, {groupName: 'PrivateCanJoin', toUid: testUid}, function (err) {
 				assert.ifError(err);
-				Groups.isMember(testUid, 'PrivateCanJoin', function (err, isMember) {
+				Groups.isInvited(testUid, 'PrivateCanJoin', function (err, invited) {
 					assert.ifError(err);
-					assert(isMember);
+					assert.equal(invited, false);
 					done();
 				});
+			});
+		});
+
+		it('should error if not owner or admin', function (done) {
+			socketGroups.accept({uid: 0}, {groupName: 'PrivateCanJoin', toUid: testUid}, function (err) {
+				assert.equal(err.message, '[[error:no-privileges]]');
+				done();
+			});
+		});
+
+		it('should accept membership of user', function (done) {
+			socketGroups.join({uid: testUid}, {groupName: 'PrivateCanJoin'}, function (err) {
+				assert.ifError(err);
+				socketGroups.accept({uid: adminUid}, {groupName: 'PrivateCanJoin', toUid: testUid}, function (err) {
+					assert.ifError(err);
+					Groups.isMember(testUid, 'PrivateCanJoin', function (err, isMember) {
+						assert.ifError(err);
+						assert(isMember);
+						done();
+					});
+				});
+			});
+		});
+
+		it('should reject/accept all memberships requests', function (done) {
+			function requestMembership(uids, callback) {
+				async.series([
+					function (next) {
+						socketGroups.join({uid: uids.uid1}, {groupName: 'PrivateCanJoin'}, next);
+					},
+					function (next) {
+						socketGroups.join({uid: uids.uid2}, {groupName: 'PrivateCanJoin'}, next);
+					}
+				], function (err) {
+					callback(err);
+				});
+			}
+			var uids;
+			async.waterfall([
+				function (next) {
+					async.parallel({
+						uid1: function (next) {
+							User.create({username: 'groupuser1'}, next);
+						},
+						uid2: function (next) {
+							User.create({username: 'groupuser2'}, next);
+						}
+					}, next);
+				},
+				function (results, next) {
+					uids = results;
+					requestMembership(results, next);
+				},
+				function (next) {
+					socketGroups.rejectAll({uid: adminUid}, {groupName: 'PrivateCanJoin'}, next);
+				},
+				function (next) {
+					Groups.getPending('PrivateCanJoin', next);
+				},
+				function (pending, next) {
+					assert.equal(pending.length, 0);
+					requestMembership(uids, next);
+				},
+				function (next) {
+					socketGroups.acceptAll({uid: adminUid}, {groupName: 'PrivateCanJoin'}, next);
+				},
+				function (next) {
+					Groups.isMembers([uids.uid1, uids.uid2], 'PrivateCanJoin', next);
+				},
+				function (isMembers, next) {
+					assert(isMembers[0]);
+					assert(isMembers[1]);
+					next();
+				}
+			], function (err) {
+				done(err);
 			});
 		});
 
@@ -579,6 +655,8 @@ describe('Groups', function () {
 				});
 			});
 		});
+
+
 
 	});
 

@@ -1,6 +1,6 @@
 "use strict";
 
-var	async = require('async');
+var async = require('async');
 
 var groups = require('../groups');
 var meta = require('../meta');
@@ -77,7 +77,7 @@ function isOwner(next) {
 			isAdmin: async.apply(user.isAdministrator, socket.uid),
 			isOwner: async.apply(groups.ownership.isOwner, socket.uid, data.groupName)
 		}, function (err, results) {
-			if (err || (!isOwner && !results.isAdmin)) {
+			if (err || (!results.isOwner && !results.isAdmin)) {
 				return callback(err || new Error('[[error:no-privileges]]'));
 			}
 			next(socket, data, callback);
