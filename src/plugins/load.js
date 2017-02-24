@@ -65,7 +65,13 @@ module.exports = function (Plugins) {
 		], callback);
 	};
 
-	Plugins.loadPlugin = function (pluginPath, callback) {
+	Plugins.loadPlugin = function (pluginPath, api, callback) {
+		var args = _.toArray(arguments);
+
+		if (args.length === 2) {
+			callback = api;
+			api = null;
+		}
 		Plugins.loadPluginInfo(pluginPath, function (err, pluginData) {
 			if (err) {
 				if (err.message === '[[error:parse-error]]') {
@@ -78,7 +84,7 @@ module.exports = function (Plugins) {
 
 			async.parallel([
 				function (next) {
-					registerHooks(pluginData, pluginPath, next);
+					registerHooks(pluginData, pluginPath, api, next);
 				},
 				function (next) {
 					mapStaticDirectories(pluginData, pluginPath, next);
@@ -126,16 +132,23 @@ module.exports = function (Plugins) {
 		}
 	}
 
-	function registerHooks(pluginData, pluginPath, callback) {
+	function registerHooks(pluginData, pluginPath, api, callback) {
 		if (!pluginData.library) {
 			return callback();
+		}
+
+		var args = _.toArray(arguments);
+
+		if (args.length === 3) {
+			callback = api;
+			api = null;
 		}
 
 		var libraryPath = path.join(pluginPath, pluginData.library);
 
 		try {
 			if (!Plugins.libraries[pluginData.id]) {
-				Plugins.requireLibrary(pluginData.id, libraryPath);
+				Plugins.requireLibrary(pluginData.id, libraryPath, api);
 			}
 
 			if (Array.isArray(pluginData.hooks) && pluginData.hooks.length > 0) {
