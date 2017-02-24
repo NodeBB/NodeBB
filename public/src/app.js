@@ -77,7 +77,6 @@ app.cacheBuster = null;
 		require(['taskbar', 'helpers', 'forum/pagination'], function (taskbar, helpers, pagination) {
 			taskbar.init();
 
-			// templates.js helpers
 			helpers.register();
 
 			pagination.init();

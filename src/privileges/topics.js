@@ -62,13 +62,14 @@ module.exports = function (privileges) {
 	};
 
 	privileges.topics.can = function (privilege, tid, uid, callback) {
-		topics.getTopicField(tid, 'cid', function (err, cid) {
-			if (err) {
-				return callback(err);
+		async.waterfall([
+			function (next) {
+				topics.getTopicField(tid, 'cid', next);
+			},
+			function (cid, next) {
+				privileges.categories.can(privilege, cid, uid, next);
 			}
-
-			privileges.categories.can(privilege, cid, uid, callback);
-		});
+		], callback);
 	};
 
 	privileges.topics.filterTids = function (privilege, tids, uid, callback) {

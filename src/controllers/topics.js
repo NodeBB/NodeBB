@@ -298,7 +298,7 @@ topicsController.teaser = function (req, res, next) {
 	var tid = req.params.topic_id;
 
 	if (!utils.isNumber(tid)) {
-		return next(new Error('[[error:invalid-tid]]'));
+		return next();
 	}
 
 	async.waterfall([

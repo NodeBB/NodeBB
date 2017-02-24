@@ -1,7 +1,14 @@
-'use strict';
-
 (function (exports) {
-	var helpers = {};
+	'use strict';
+
+	/* globals define, utils, config */
+
+	// export the class if we are in a Node-like system.
+	if (typeof module === 'object' && module.exports === exports) {
+		exports = module.exports/* = SemVer*/;
+	}
+
+	var helpers = exports;
 
 	helpers.displayMenuItem = function (data, index) {
 		var item = data.navigation[index];
