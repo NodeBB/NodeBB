@@ -10,7 +10,6 @@ var plugins = require('./plugins');
 var privileges = require('./privileges');
 
 (function (Categories) {
-
 	require('./categories/data')(Categories);
 	require('./categories/create')(Categories);
 	require('./categories/delete')(Categories);
@@ -49,7 +48,7 @@ var privileges = require('./privileges');
 					},
 					isIgnored: function (next) {
 						Categories.isIgnored([data.cid], data.uid, next);
-					}
+					},
 				}, next);
 			},
 			function (results, next) {
@@ -58,11 +57,11 @@ var privileges = require('./privileges');
 				category.isIgnored = results.isIgnored[0];
 				category.topic_count = results.topicCount;
 
-				plugins.fireHook('filter:category.get', {category: category, uid: data.uid}, next);
+				plugins.fireHook('filter:category.get', { category: category, uid: data.uid }, next);
 			},
 			function (data, next) {
 				next(null, data.category);
-			}
+			},
 		], callback);
 	};
 
@@ -73,7 +72,7 @@ var privileges = require('./privileges');
 	Categories.getPageCount = function (cid, uid, callback) {
 		async.parallel({
 			topicCount: async.apply(Categories.getCategoryField, cid, 'topic_count'),
-			settings: async.apply(user.getSettings, uid)
+			settings: async.apply(user.getSettings, uid),
 		}, function (err, results) {
 			if (err) {
 				return callback(err);
@@ -107,7 +106,7 @@ var privileges = require('./privileges');
 			},
 			function (cids, next) {
 				Categories.getCategories(cids, uid, next);
-			}
+			},
 		], callback);
 	};
 
@@ -146,7 +145,7 @@ var privileges = require('./privileges');
 			},
 			hasRead: function (next) {
 				Categories.hasReadCategories(cids, uid, next);
-			}
+			},
 		}, function (err, results) {
 			if (err) {
 				return callback(err);
@@ -214,7 +213,7 @@ var privileges = require('./privileges');
 				});
 
 				if (!parentCids.length) {
-					return callback(null, cids.map(function () {return null;}));
+					return callback(null, cids.map(function () { return null; }));
 				}
 
 				Categories.getCategoriesData(parentCids, next);
@@ -224,13 +223,13 @@ var privileges = require('./privileges');
 					return parentData[parentCids.indexOf(parseInt(category.parentCid, 10))];
 				});
 				next(null, parentData);
-			}
+			},
 		], callback);
 	};
 
 	Categories.getChildren = function (cids, uid, callback) {
 		var categories = cids.map(function (cid) {
-			return {cid: cid};
+			return { cid: cid };
 		});
 
 		async.each(categories, function (category, next) {
@@ -266,7 +265,7 @@ var privileges = require('./privileges');
 				async.each(category.children, function (child, next) {
 					getChildrenRecursive(child, uid, next);
 				}, next);
-			}
+			},
 		], callback);
 	}
 
@@ -293,9 +292,12 @@ var privileges = require('./privileges');
 	 * @param parentCid {number} start from 0 to build full tree
 	 */
 	Categories.getTree = function (categories, parentCid) {
-		var tree = [], i = 0, len = categories.length, category;
+		var tree = [];
+		var i = 0;
+		var len = categories.length;
+		var category;
 
-		for (i; i < len; ++i) {
+		for (i; i < len; i += 1) {
 			category = categories[i];
 			if (!category.hasOwnProperty('parentCid') || category.parentCid === null) {
 				category.parentCid = 0;
@@ -357,9 +359,7 @@ var privileges = require('./privileges');
 					return uid && !isIgnoring[index];
 				});
 				next(null, readingUids);
-			}
+			},
 		], callback);
 	};
-
-
 }(exports));

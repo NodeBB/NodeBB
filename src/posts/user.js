@@ -9,7 +9,6 @@ var meta = require('../meta');
 var plugins = require('../plugins');
 
 module.exports = function (Posts) {
-
 	Posts.getUserInfoForPosts = function (uids, uid, callback) {
 		var groupsMap = {};
 		var userData;
@@ -25,7 +24,7 @@ module.exports = function (Posts) {
 					return groupTitle && array.indexOf(groupTitle) === index;
 				});
 				groups.getGroupsData(groupTitles, next);
-			}
+			},
 		], function (err, groupsData) {
 			if (err) {
 				return callback(err);
@@ -38,7 +37,7 @@ module.exports = function (Posts) {
 						slug: group.slug,
 						labelColor: group.labelColor,
 						icon: group.icon,
-						userTitle: group.userTitle
+						userTitle: group.userTitle,
 					};
 				}
 			});
@@ -72,8 +71,8 @@ module.exports = function (Posts) {
 						Posts.parseSignature(userData, uid, next);
 					},
 					customProfileInfo: function (next) {
-						plugins.fireHook('filter:posts.custom_profile_info', {profile: [], uid: userData.uid}, next);
-					}
+						plugins.fireHook('filter:posts.custom_profile_info', { profile: [], uid: userData.uid }, next);
+					},
 				}, function (err, results) {
 					if (err) {
 						return next(err);
@@ -95,7 +94,7 @@ module.exports = function (Posts) {
 		uid = parseInt(uid, 10);
 		if (Array.isArray(pid)) {
 			if (!uid) {
-				return callback(null, pid.map(function () {return false;}));
+				return callback(null, pid.map(function () { return false; }));
 			}
 			Posts.getPostsFields(pid, ['uid'], function (err, posts) {
 				if (err) {
@@ -118,7 +117,7 @@ module.exports = function (Posts) {
 
 	Posts.isModerator = function (pids, uid, callback) {
 		if (!parseInt(uid, 10)) {
-			return callback(null, pids.map(function () {return false;}));
+			return callback(null, pids.map(function () { return false; }));
 		}
 		Posts.getCidsByPids(pids, function (err, cids) {
 			if (err) {

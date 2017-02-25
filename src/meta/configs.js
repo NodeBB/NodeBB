@@ -9,7 +9,6 @@ var pubsub = require('../pubsub');
 var cacheBuster = require('./cacheBuster');
 
 module.exports = function (Meta) {
-
 	Meta.config = {};
 	Meta.configs = {};
 
@@ -25,13 +24,13 @@ module.exports = function (Meta) {
 					if (err) {
 						return next(err);
 					}
-					
+
 					config['cache-buster'] = 'v=' + (buster || Date.now());
 
 					Meta.config = config;
 					next();
 				});
-			}
+			},
 		], callback);
 	};
 
@@ -75,7 +74,7 @@ module.exports = function (Meta) {
 			function (next) {
 				updateConfig(data);
 				setImmediate(next);
-			}
+			},
 		], callback);
 	};
 
@@ -91,13 +90,13 @@ module.exports = function (Meta) {
 		async.waterfall([
 			function (next) {
 				less.render(data.customCSS, {
-					compress: true
+					compress: true,
 				}, next);
 			},
 			function (lessObject, next) {
 				data.renderedCustomCSS = lessObject.css;
 				setImmediate(next);
-			}
+			},
 		], callback);
 	}
 
@@ -133,12 +132,11 @@ module.exports = function (Meta) {
 				} else {
 					setImmediate(next);
 				}
-			}
+			},
 		], callback);
 	};
 
 	Meta.configs.remove = function (field, callback) {
 		db.deleteObjectField('config', field, callback);
 	};
-
 };

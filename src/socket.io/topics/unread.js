@@ -6,7 +6,6 @@ var user = require('../../user');
 var topics = require('../../topics');
 
 module.exports = function (SocketTopics) {
-
 	SocketTopics.markAsRead = function (socket, tids, callback) {
 		if (!Array.isArray(tids) || !socket.uid) {
 			return callback(new Error('[[error:invalid-data]]'));
@@ -22,7 +21,7 @@ module.exports = function (SocketTopics) {
 					topics.markTopicNotificationsRead(tids, socket.uid);
 				}
 				next();
-			}
+			},
 		], callback);
 	};
 
@@ -44,7 +43,7 @@ module.exports = function (SocketTopics) {
 			function (next) {
 				topics.pushUnreadCount(socket.uid);
 				next();
-			}
+			},
 		], callback);
 	};
 
@@ -55,7 +54,7 @@ module.exports = function (SocketTopics) {
 			},
 			function (tids, next) {
 				SocketTopics.markAsRead(socket, tids, next);
-			}
+			},
 		], callback);
 	};
 
@@ -70,7 +69,7 @@ module.exports = function (SocketTopics) {
 			function (next) {
 				topics.pushUnreadCount(socket.uid);
 				next();
-			}
+			},
 		], callback);
 	};
 
@@ -110,14 +109,14 @@ module.exports = function (SocketTopics) {
 						},
 						function (next) {
 							topics.updateRecent(tid, Date.now(), next);
-						}
+						},
 					], next);
 				}, next);
 			},
 			function (next) {
 				topics.pushUnreadCount(socket.uid);
 				next();
-			}
+			},
 		], callback);
 	};
 };

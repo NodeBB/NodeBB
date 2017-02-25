@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 var nconf = require('nconf');
 var winston = require('winston');
@@ -89,7 +89,7 @@ module.exports = function (app, middleware, hotswapIds) {
 	var routers = [
 		express.Router(),	// plugin router
 		express.Router(),	// main app router
-		express.Router()	// auth router
+		express.Router(),	// auth router
 	];
 	var router = routers[1];
 	var pluginRouter = routers[0];
@@ -97,8 +97,11 @@ module.exports = function (app, middleware, hotswapIds) {
 	var relativePath = nconf.get('relative_path');
 	var ensureLoggedIn = require('connect-ensure-login');
 
+	var idx;
+	var x;
+
 	if (Array.isArray(hotswapIds) && hotswapIds.length) {
-		for(var idx,x = 0; x < hotswapIds.length; x++) {
+		for (x = 0; x < hotswapIds.length; x += 1) {
 			idx = routers.push(express.Router()) - 1;
 			routers[idx].hotswapId = hotswapIds[x];
 		}
@@ -132,7 +135,7 @@ module.exports = function (app, middleware, hotswapIds) {
 	userRoutes(router, middleware, controllers);
 	groupRoutes(router, middleware, controllers);
 
-	for(var x = 0; x < routers.length; x++) {
+	for (x = 0; x < routers.length; x += 1) {
 		app.use(relativePath, routers[x]);
 	}
 
@@ -154,7 +157,7 @@ module.exports = function (app, middleware, hotswapIds) {
 	if (path.resolve(__dirname, '../../public/uploads') !== nconf.get('upload_path')) {
 		statics.unshift({ route: '/assets/uploads', path: nconf.get('upload_path') });
 	}
-	
+
 	statics.forEach(function (obj) {
 		app.use(relativePath + obj.route, express.static(obj.path, staticOptions));
 	});
@@ -180,7 +183,7 @@ module.exports = function (app, middleware, hotswapIds) {
 	];
 	app.use(relativePath, function (req, res, next) {
 		if (deprecatedPaths.some(function (path) { return req.path.startsWith(path); })) {
-			winston.warn('[deprecated] Accessing `' + req.path.slice(1) + '` from `/` is deprecated. ' + 
+			winston.warn('[deprecated] Accessing `' + req.path.slice(1) + '` from `/` is deprecated. ' +
 				'Use `/assets' + req.path + '` to access this file.');
 			res.redirect(relativePath + '/assets' + req.path + '?' + meta.config['cache-buster']);
 		} else {
@@ -203,7 +206,7 @@ module.exports = function (app, middleware, hotswapIds) {
 	async.series([
 		async.apply(plugins.reloadRoutes),
 		async.apply(authRoutes.reloadRoutes),
-		async.apply(user.addInterstitials)
+		async.apply(user.addInterstitials),
 	], function (err) {
 		if (err) {
 			return winston.error(err);

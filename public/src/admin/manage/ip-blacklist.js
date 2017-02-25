@@ -1,15 +1,14 @@
 'use strict';
-/* globals $, app, socket, templates, define, bootbox */
 
-define('admin/manage/ip-blacklist', ['translator'], function (translator) {
 
+define('admin/manage/ip-blacklist', [], function () {
 	var Blacklist = {};
 
 	Blacklist.init = function () {
 		var blacklist = $('#blacklist-rules');
 
 		blacklist.on('keyup', function () {
-		    $('#blacklist-rules-holder').val(blacklist.val());
+			$('#blacklist-rules-holder').val(blacklist.val());
 		});
 
 		$('[data-action="apply"]').on('click', function () {
@@ -27,7 +26,7 @@ define('admin/manage/ip-blacklist', ['translator'], function (translator) {
 
 		$('[data-action="test"]').on('click', function () {
 			socket.emit('blacklist.validate', {
-				rules: blacklist.val()
+				rules: blacklist.val(),
 			}, function (err, data) {
 				if (err) {
 					return app.alertError(err.message);

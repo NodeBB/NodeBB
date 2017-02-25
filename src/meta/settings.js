@@ -6,7 +6,6 @@ var db = require('../database');
 var plugins = require('../plugins');
 
 module.exports = function (Meta) {
-
 	Meta.settings = {};
 
 	Meta.settings.get = function (hash, callback) {
@@ -27,12 +26,12 @@ module.exports = function (Meta) {
 			function (next) {
 				plugins.fireHook('action:settings.set', {
 					plugin: hash,
-					settings: values
+					settings: values,
 				});
 
 				Meta.reloadRequired = true;
 				next();
-			}
+			},
 		], callback);
 	};
 
@@ -59,7 +58,7 @@ module.exports = function (Meta) {
 				} else {
 					next();
 				}
-			}
+			},
 		], callback);
 	};
 };

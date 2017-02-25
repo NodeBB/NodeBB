@@ -1,12 +1,14 @@
-"use strict";
-/*global define, socket, app, bootbox, templates, ajaxify, Sortable */
+'use strict';
+
 
 define('admin/manage/categories', ['vendor/jquery/serializeObject/jquery.ba-serializeobject.min', 'translator'], function (serialize, translator) {
-	var	Categories = {}, newCategoryId = -1, sortables;
+	var	Categories = {};
+	var newCategoryId = -1;
+	var sortables;
 
 	Categories.init = function () {
 		socket.emit('admin.categories.getAll', function (error, payload) {
-			if(error) {
+			if (error) {
 				return app.alertError(error.message);
 			}
 
@@ -17,10 +19,10 @@ define('admin/manage/categories', ['vendor/jquery/serializeObject/jquery.ba-seri
 
 		// Enable/Disable toggle events
 		$('.categories').on('click', 'button[data-action="toggle"]', function () {
-			var $this = $(this),
-				cid = $this.attr('data-cid'),
-				parentEl = $this.parents('li[data-cid="' + cid + '"]'),
-				disabled = parentEl.hasClass('disabled');
+			var $this = $(this);
+			var cid = $this.attr('data-cid');
+			var parentEl = $this.parents('li[data-cid="' + cid + '"]');
+			var disabled = parentEl.hasClass('disabled');
 
 			var children = parentEl.find('li[data-cid]').map(function () {
 				return $(this).attr('data-cid');
@@ -38,8 +40,20 @@ define('admin/manage/categories', ['vendor/jquery/serializeObject/jquery.ba-seri
 			}
 
 			templates.parse('admin/partials/categories/create', {
-				categories: categories
+				categories: categories,
 			}, function (html) {
+				var modal = bootbox.dialog({
+					title: '[[admin/manage/categories:alert.create]]',
+					message: html,
+					buttons: {
+						save: {
+							label: '[[global:save]]',
+							className: 'btn-primary',
+							callback: submit,
+						},
+					},
+				});
+
 				function submit() {
 					var formData = modal.find('form').serializeObject();
 					formData.description = '';
@@ -49,18 +63,6 @@ define('admin/manage/categories', ['vendor/jquery/serializeObject/jquery.ba-seri
 					modal.modal('hide');
 					return false;
 				}
-
-				var modal = bootbox.dialog({
-					title: '[[admin/manage/categories:alert.create]]',
-					message: html,
-					buttons: {
-						save: {
-							label: '[[global:save]]',
-							className: 'btn-primary',
-							callback: submit
-						}
-					}
-				});
 
 				modal.find('form').on('submit', submit);
 			});
@@ -78,7 +80,7 @@ define('admin/manage/categories', ['vendor/jquery/serializeObject/jquery.ba-seri
 				title: '[[admin/manage/categories:alert.created]]',
 				message: '[[admin/manage/categories:alert.create-success]]',
 				type: 'success',
-				timeout: 2000
+				timeout: 2000,
 			});
 
 			ajaxify.go('admin/manage/categories/' + data.cid);
@@ -106,7 +108,7 @@ define('admin/manage/categories', ['vendor/jquery/serializeObject/jquery.ba-seri
 
 		cids.forEach(function (cid) {
 			payload[cid] = {
-				disabled: disabled ? 1 : 0
+				disabled: disabled ? 1 : 0,
 			};
 		});
 
@@ -123,16 +125,19 @@ define('admin/manage/categories', ['vendor/jquery/serializeObject/jquery.ba-seri
 	}
 
 	function itemDragDidEnd(e) {
-		var isCategoryUpdate = (newCategoryId != -1);
+		var isCategoryUpdate = parseInt(newCategoryId, 10) !== -1;
 
-		//Update needed?
-		if((e.newIndex != undefined && e.oldIndex != e.newIndex) || isCategoryUpdate) {
-			var parentCategory = isCategoryUpdate ? sortables[newCategoryId] : sortables[e.from.dataset.cid],
-				modified = {}, i = 0, list = parentCategory.toArray(), len = list.length;
+		// Update needed?
+		if ((e.newIndex != null && parseInt(e.oldIndex, 10) !== parseInt(e.newIndex, 10)) || isCategoryUpdate) {
+			var parentCategory = isCategoryUpdate ? sortables[newCategoryId] : sortables[e.from.dataset.cid];
+			var modified = {};
+			var i = 0;
+			var list = parentCategory.toArray();
+			var len = list.length;
 
-			for(i; i < len; ++i) {
+			for (i; i < len; i += 1) {
 				modified[list[i]] = {
-					order: (i + 1)
+					order: (i + 1),
 				};
 			}
 
@@ -161,7 +166,7 @@ define('admin/manage/categories', ['vendor/jquery/serializeObject/jquery.ba-seri
 				if (category.name !== translated) {
 					category.name = translated;
 				}
-				++count;
+				count += 1;
 
 				if (count === parent.length) {
 					continueRender();
@@ -176,13 +181,13 @@ define('admin/manage/categories', ['vendor/jquery/serializeObject/jquery.ba-seri
 		function continueRender() {
 			templates.parse('admin/partials/categories/category-rows', {
 				cid: parentId,
-				categories: categories
+				categories: categories,
 			}, function (html) {
 				translator.translate(html, function (html) {
 					container.append(html);
 
 					// Handle and children categories in this level have
-					for(var x = 0,numCategories = categories.length; x < numCategories; x++) {
+					for (var x = 0, numCategories = categories.length; x < numCategories; x += 1) {
 						renderList(categories[x].children, $('li[data-cid="' + categories[x].cid + '"]'), categories[x].cid);
 					}
 
@@ -192,9 +197,9 @@ define('admin/manage/categories', ['vendor/jquery/serializeObject/jquery.ba-seri
 						animation: 150,
 						handle: '.icon',
 						dataIdAttr: 'data-cid',
-						ghostClass: "placeholder",
+						ghostClass: 'placeholder',
 						onAdd: itemDidAdd,
-						onEnd: itemDragDidEnd
+						onEnd: itemDragDidEnd,
 					});
 				});
 			});

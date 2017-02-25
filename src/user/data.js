@@ -9,7 +9,6 @@ var plugins = require('../plugins');
 var utils = require('../../public/src/utils');
 
 module.exports = function (User) {
-
 	var iconBackgrounds = ['#f44336', '#e91e63', '#9c27b0', '#673ab7', '#3f51b5', '#2196f3',
 		'#009688', '#1b5e20', '#33691e', '#827717', '#e65100', '#ff5722', '#795548', '#607d8b'];
 
@@ -117,7 +116,8 @@ module.exports = function (User) {
 			}
 
 			if (user.picture && user.picture === user.uploadedpicture) {
-				user.picture = user.uploadedpicture = user.picture.startsWith('http') ? user.picture : nconf.get('relative_path') + user.picture;
+				user.uploadedpicture = user.picture.startsWith('http') ? user.picture : nconf.get('relative_path') + user.picture;
+				user.picture = user.uploadedpicture;
 			} else if (user.uploadedpicture) {
 				user.uploadedpicture = user.uploadedpicture.startsWith('http') ? user.uploadedpicture : nconf.get('relative_path') + user.uploadedpicture;
 			}
@@ -126,7 +126,7 @@ module.exports = function (User) {
 				user.status = User.getStatus(user);
 			}
 
-			for(var i = 0; i < fieldsToRemove.length; ++i) {
+			for (var i = 0; i < fieldsToRemove.length; i += 1) {
 				user[fieldsToRemove[i]] = undefined;
 			}
 
@@ -156,7 +156,7 @@ module.exports = function (User) {
 			if (err) {
 				return callback(err);
 			}
-			plugins.fireHook('action:user.set', {uid: uid, field: field, value: value, type: 'set'});
+			plugins.fireHook('action:user.set', { uid: uid, field: field, value: value, type: 'set' });
 			callback();
 		});
 	};
@@ -169,7 +169,7 @@ module.exports = function (User) {
 			}
 			for (var field in data) {
 				if (data.hasOwnProperty(field)) {
-					plugins.fireHook('action:user.set', {uid: uid, field: field, value: data[field], type: 'set'});
+					plugins.fireHook('action:user.set', { uid: uid, field: field, value: data[field], type: 'set' });
 				}
 			}
 			callback();
@@ -182,7 +182,7 @@ module.exports = function (User) {
 			if (err) {
 				return callback(err);
 			}
-			plugins.fireHook('action:user.set', {uid: uid, field: field, value: value, type: 'increment'});
+			plugins.fireHook('action:user.set', { uid: uid, field: field, value: value, type: 'increment' });
 
 			callback(null, value);
 		});
@@ -194,10 +194,9 @@ module.exports = function (User) {
 			if (err) {
 				return callback(err);
 			}
-			plugins.fireHook('action:user.set', {uid: uid, field: field, value: value, type: 'decrement'});
+			plugins.fireHook('action:user.set', { uid: uid, field: field, value: value, type: 'decrement' });
 
 			callback(null, value);
 		});
 	};
-
 };

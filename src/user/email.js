@@ -13,7 +13,6 @@ var meta = require('../meta');
 var emailer = require('../emailer');
 
 (function (UserEmail) {
-
 	UserEmail.exists = function (email, callback) {
 		user.getUidByEmail(email.toLowerCase(), function (err, exists) {
 			callback(err, !!exists);
@@ -53,11 +52,11 @@ var emailer = require('../emailer');
 				confirm_code = _confirm_code;
 				db.setObject('confirm:' + confirm_code, {
 					email: email.toLowerCase(),
-					uid: uid
+					uid: uid,
 				}, next);
 			},
 			function (next) {
-				db.expireAt('confirm:' + confirm_code, Math.floor(Date.now() / 1000 + 60 * 60 * 24), next);
+				db.expireAt('confirm:' + confirm_code, Math.floor((Date.now() / 1000) + (60 * 60 * 24)), next);
 			},
 			function (next) {
 				user.getUserField(uid, 'username', next);
@@ -73,17 +72,17 @@ var emailer = require('../emailer');
 
 						subject: subject,
 						template: 'welcome',
-						uid: uid
+						uid: uid,
 					};
 
 					if (plugins.hasListeners('action:user.verify')) {
-						plugins.fireHook('action:user.verify', {uid: uid, data: data});
+						plugins.fireHook('action:user.verify', { uid: uid, data: data });
 						next();
 					} else {
 						emailer.send('welcome', uid, data, next);
 					}
 				});
-			}
+			},
 		], callback);
 	};
 
@@ -102,8 +101,8 @@ var emailer = require('../emailer');
 						db.sortedSetRemove('users:notvalidated', confirmObj.uid, next);
 					},
 					function (next) {
-						plugins.fireHook('action:user.email.confirmed', {uid: confirmObj.uid, email: confirmObj.email}, next);
-					}
+						plugins.fireHook('action:user.email.confirmed', { uid: confirmObj.uid, email: confirmObj.email }, next);
+					},
 				], function (err) {
 					callback(err ? new Error('[[error:email-confirm-failed]]') : null);
 				});
@@ -112,5 +111,4 @@ var emailer = require('../emailer');
 			}
 		});
 	};
-
 }(exports));

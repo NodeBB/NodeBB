@@ -1,9 +1,7 @@
 'use strict';
 
-/* globals define, socket, app */
 
 define('forum/chats/search', ['components'], function (components) {
-
 	var search = {};
 
 	search.init = function () {
@@ -29,7 +27,7 @@ define('forum/chats/search', ['components'], function (components) {
 
 		socket.emit('user.search', {
 			query: username,
-			searchBy: 'username'
+			searchBy: 'username',
 		}, function (err, data) {
 			if (err) {
 				return app.alertError(err.message);
@@ -41,11 +39,11 @@ define('forum/chats/search', ['components'], function (components) {
 
 	function displayResults(chatsListEl, data) {
 		chatsListEl.empty();
-		
+
 		data.users = data.users.filter(function (user) {
 			return parseInt(user.uid, 10) !== parseInt(app.user.uid, 10);
 		});
-		
+
 		if (!data.users.length) {
 			return chatsListEl.translateHtml('<li><div><span>[[users:no-users-found]]</span></div></li>');
 		}

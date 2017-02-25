@@ -8,7 +8,6 @@ var plugins = require('../plugins');
 var winston = require('winston');
 
 module.exports = function (User) {
-
 	User.logIP = function (uid, ip) {
 		var now = Date.now();
 		db.sortedSetAdd('uid:' + uid + ':ip', now, ip || 'Unknown');
@@ -39,7 +38,7 @@ module.exports = function (User) {
 				uids = users.map(function (user) {
 					return user.score;
 				});
-				plugins.fireHook('filter:user.csvFields', {fields: ['uid', 'email', 'username']}, next);
+				plugins.fireHook('filter:user.csvFields', { fields: ['uid', 'email', 'username'] }, next);
 			},
 			function (data, next) {
 				User.getUsersFields(uids, data.fields, next);
@@ -52,7 +51,7 @@ module.exports = function (User) {
 				});
 
 				next(null, csvContent);
-			}
+			},
 		], callback);
 	};
 

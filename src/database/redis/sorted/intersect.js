@@ -2,7 +2,6 @@
 'use strict';
 
 module.exports = function (redisClient, module) {
-
 	module.sortedSetIntersectCard = function (keys, callback) {
 		if (!Array.isArray(keys) || !keys.length) {
 			return callback(null, 0);
@@ -70,8 +69,8 @@ module.exports = function (redisClient, module) {
 			}
 			results = results[1] || [];
 			var objects = [];
-			for(var i = 0; i < results.length; i += 2) {
-				objects.push({value: results[i], score: parseFloat(results[i + 1])});
+			for (var i = 0; i < results.length; i += 2) {
+				objects.push({ value: results[i], score: parseFloat(results[i + 1]) });
 			}
 			callback(null, objects);
 		});

@@ -1,13 +1,13 @@
-"use strict";
-/*global define, socket, app, utils, bootbox, ajaxify*/
+'use strict';
+
 
 define('admin/manage/tags', [
 	'forum/infinitescroll',
 	'admin/modules/selectable',
-	'admin/modules/colorpicker'
+	'admin/modules/colorpicker',
 ], function (infinitescroll, selectable, colorpicker) {
-	var Tags = {},
-		timeoutId = 0;
+	var	Tags = {};
+	var timeoutId = 0;
 
 	Tags.init = function () {
 		selectable.enable('.tag-management', '.tag-row');
@@ -38,7 +38,7 @@ define('admin/manage/tags', [
 
 		createModalGo.on('click', function () {
 			socket.emit('admin.tags.create', {
-				tag: createTagName.val()
+				tag: createTagName.val(),
 			}, function (err) {
 				if (err) {
 					return app.alertError(err.message);
@@ -62,14 +62,14 @@ define('admin/manage/tags', [
 
 			timeoutId = setTimeout(function () {
 				socket.emit('topics.searchAndLoadTags', {
-					query: $('#tag-search').val()
+					query: $('#tag-search').val(),
 				}, function (err, result) {
 					if (err) {
 						return app.alertError(err.message);
 					}
 
 					app.parseAndTranslate('admin/manage/tags', 'tags', {
-						tags: result.tags
+						tags: result.tags,
 					}, function (html) {
 						$('.tag-list').html(html);
 						utils.makeNumbersHumanReadable(html.find('.human-readable-number'));
@@ -89,20 +89,20 @@ define('admin/manage/tags', [
 				return;
 			}
 
-			var firstTag = $(tagsToModify[0]),
-				title = tagsToModify.length > 1 ? '[[admin/manage/tags:alerts.editing-multiple]]' : '[[admin/manage/tags:alerts.editing-x, ' + firstTag.find('.tag-item').attr('data-tag') + ']]';
+			var firstTag = $(tagsToModify[0]);
+			var title = tagsToModify.length > 1 ? '[[admin/manage/tags:alerts.editing-multiple]]' : '[[admin/manage/tags:alerts.editing-x, ' + firstTag.find('.tag-item').attr('data-tag') + ']]';
 
 			var modal = bootbox.dialog({
 				title: title,
 				message: firstTag.find('.tag-modal').html(),
 				buttons: {
 					success: {
-						label: "Save",
-						className: "btn-primary save",
+						label: 'Save',
+						className: 'btn-primary save',
 						callback: function () {
-							var modal = $('.bootbox'),
-								bgColor = modal.find('[data-name="bgColor"]').val(),
-								color = modal.find('[data-name="color"]').val();
+							var modal = $('.bootbox');
+							var bgColor = modal.find('[data-name="bgColor"]').val();
+							var color = modal.find('[data-name="color"]').val();
 
 							tagsToModify.each(function (idx, tag) {
 								tag = $(tag);
@@ -113,9 +113,9 @@ define('admin/manage/tags', [
 
 								save(tag);
 							});
-						}
-					}
-				}
+						},
+					},
+				},
 			});
 
 			handleColorPickers(modal);
@@ -138,7 +138,7 @@ define('admin/manage/tags', [
 					tags.push($(el).attr('data-tag'));
 				});
 				socket.emit('admin.tags.deleteTags', {
-					tags: tags
+					tags: tags,
 				}, function (err) {
 					if (err) {
 						return app.alertError(err.message);
@@ -162,7 +162,7 @@ define('admin/manage/tags', [
 		var data = {
 			tag: tag.attr('data-tag'),
 			bgColor: tag.find('[data-name="bgColor"]').val(),
-			color: tag.find('[data-name="color"]').val()
+			color: tag.find('[data-name="color"]').val(),
 		};
 
 		socket.emit('admin.tags.update', data, function (err) {

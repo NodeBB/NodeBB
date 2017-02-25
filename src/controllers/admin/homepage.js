@@ -25,37 +25,37 @@ homePageController.get = function (req, res, next) {
 			categoryData = categoryData.map(function (category) {
 				return {
 					route: 'category/' + category.slug,
-					name: 'Category: ' + category.name
+					name: 'Category: ' + category.name,
 				};
 			});
 			next(null, categoryData);
-		}
+		},
 	], function (err, categoryData) {
 		if (err || !categoryData) {
 			categoryData = [];
 		}
 
-		plugins.fireHook('filter:homepage.get', {routes: [
+		plugins.fireHook('filter:homepage.get', { routes: [
 			{
 				route: 'categories',
-				name: 'Categories'
+				name: 'Categories',
 			},
 			{
 				route: 'recent',
-				name: 'Recent'
+				name: 'Recent',
 			},
 			{
 				route: 'popular',
-				name: 'Popular'
-			}
-		].concat(categoryData)}, function (err, data) {
+				name: 'Popular',
+			},
+		].concat(categoryData) }, function (err, data) {
 			if (err) {
 				return next(err);
 			}
 
 			data.routes.push({
 				route: '',
-				name: 'Custom'
+				name: 'Custom',
 			});
 
 			res.render('admin/general/homepage', data);

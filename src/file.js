@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 var fs = require('fs');
 var nconf = require('nconf');
@@ -35,7 +35,7 @@ file.saveFileToLocal = function (filename, folder, tempPath, callback) {
 		is.on('end', function () {
 			callback(null, {
 				url: '/assets/uploads/' + folder + '/' + filename,
-				path: uploadPath
+				path: uploadPath,
 			});
 		});
 
@@ -49,7 +49,7 @@ file.base64ToLocal = function (imageData, uploadPath, callback) {
 	uploadPath = path.join(nconf.get('upload_path'), uploadPath);
 
 	fs.writeFile(uploadPath, buffer, {
-		encoding: 'base64'
+		encoding: 'base64',
 	}, function (err) {
 		callback(err, uploadPath);
 	});
@@ -101,8 +101,7 @@ file.existsSync = function (path) {
 	var exists = false;
 	try {
 		exists = fs.statSync(path);
-	}
-	catch (err) {
+	} catch (err) {
 		exists = false;
 	}
 
@@ -112,8 +111,7 @@ file.existsSync = function (path) {
 file.link = function link(filePath, destPath, cb) {
 	if (process.platform === 'win32') {
 		fs.link(filePath, destPath, cb);
-	}
-	else {
+	} else {
 		fs.symlink(filePath, destPath, 'file', cb);
 	}
 };

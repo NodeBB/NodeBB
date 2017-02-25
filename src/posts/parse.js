@@ -13,7 +13,6 @@ var translator = require('../../public/src/modules/translator');
 var urlRegex = /href="([^"]+)"/g;
 
 module.exports = function (Posts) {
-
 	Posts.parsePost = function (postData, callback) {
 		postData.content = postData.content || '';
 
@@ -27,7 +26,7 @@ module.exports = function (Posts) {
 			postData.content = postData.content.toString();
 		}
 
-		plugins.fireHook('filter:parse.post', {postData: postData}, function (err, data) {
+		plugins.fireHook('filter:parse.post', { postData: postData }, function (err, data) {
 			if (err) {
 				return callback(err);
 			}
@@ -44,14 +43,16 @@ module.exports = function (Posts) {
 
 	Posts.parseSignature = function (userData, uid, callback) {
 		userData.signature = sanitizeSignature(userData.signature || '');
-		plugins.fireHook('filter:parse.signature', {userData: userData, uid: uid}, callback);
+		plugins.fireHook('filter:parse.signature', { userData: userData, uid: uid }, callback);
 	};
 
 	Posts.relativeToAbsolute = function (content) {
 		// Turns relative links in post body to absolute urls
-		var parsed, current, absolute;
+		var parsed;
+		var current = urlRegex.exec(content);
+		var absolute;
 
-		while ((current = urlRegex.exec(content)) !== null) {
+		while (current !== null) {
 			if (current[1]) {
 				try {
 					parsed = url.parse(current[1]);
@@ -66,18 +67,19 @@ module.exports = function (Posts) {
 
 						content = content.slice(0, current.index + 6) + absolute + content.slice(current.index + 6 + current[1].length);
 					}
-				} catch(err) {
+				} catch (err) {
 					winston.verbose(err.messsage);
 				}
 			}
+			current = urlRegex.exec(content);
 		}
 
 		return content;
 	};
 
 	function sanitizeSignature(signature) {
-		var	string = S(signature),
-			tagsToStrip = [];
+		var	string = S(signature);
+		var tagsToStrip = [];
 
 		if (parseInt(meta.config['signatures:disableLinks'], 10) === 1) {
 			tagsToStrip.push('a');

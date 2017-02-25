@@ -1,6 +1,5 @@
 'use strict';
 
-/*global define, socket, app, ajaxify, config*/
 
 define('forum/account/settings', ['forum/account/header', 'components', 'sounds'], function (header, components, sounds) {
 	var	AccountSettings = {};
@@ -57,13 +56,13 @@ define('forum/account/settings', ['forum/account/header', 'components', 'sounds'
 			}
 
 			switch (input.attr('type')) {
-				case 'text':
-				case 'textarea':
-					settings[setting] = input.val();
-					break;
-				case 'checkbox':
-					settings[setting] = input.is(':checked') ? 1 : 0;
-					break;
+			case 'text':
+			case 'textarea':
+				settings[setting] = input.val();
+				break;
+			case 'checkbox':
+				settings[setting] = input.is(':checked') ? 1 : 0;
+				break;
 			}
 		});
 
@@ -71,7 +70,7 @@ define('forum/account/settings', ['forum/account/header', 'components', 'sounds'
 	}
 
 	function saveSettings(settings) {
-		socket.emit('user.saveSettings', {uid: ajaxify.data.theirid, settings: settings}, function (err, newSettings) {
+		socket.emit('user.saveSettings', { uid: ajaxify.data.theirid, settings: settings }, function (err, newSettings) {
 			if (err) {
 				return app.alertError(err.message);
 			}
@@ -99,7 +98,7 @@ define('forum/account/settings', ['forum/account/header', 'components', 'sounds'
 					timeout: 5000,
 					clickfn: function () {
 						ajaxify.refresh();
-					}
+					},
 				});
 			}
 		});

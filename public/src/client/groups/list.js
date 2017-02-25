@@ -1,12 +1,10 @@
-"use strict";
-/* globals app, define, ajaxify, socket, bootbox, utils, templates */
+'use strict';
+
 
 define('forum/groups/list', ['forum/infinitescroll'], function (infinitescroll) {
 	var Groups = {};
 
 	Groups.init = function () {
-		var groupsEl = $('#groups-list');
-
 		infinitescroll.init(Groups.loadMoreGroups);
 
 		// Group creation
@@ -14,7 +12,7 @@ define('forum/groups/list', ['forum/infinitescroll'], function (infinitescroll) 
 			bootbox.prompt('[[groups:new-group.group_name]]', function (name) {
 				if (name && name.length) {
 					socket.emit('groups.create', {
-						name: name
+						name: name,
 					}, function (err) {
 						if (!err) {
 							ajaxify.go('groups/' + utils.slugify(name));
@@ -43,11 +41,11 @@ define('forum/groups/list', ['forum/infinitescroll'], function (infinitescroll) 
 
 		infinitescroll.loadMore('groups.loadMore', {
 			sort: $('#search-sort').val(),
-			after: $('[component="groups/container"]').attr('data-nextstart')
+			after: $('[component="groups/container"]').attr('data-nextstart'),
 		}, function (data, done) {
 			if (data && data.groups.length) {
 				templates.parse('partials/groups/list', {
-					groups: data.groups
+					groups: data.groups,
 				}, function (html) {
 					$('#groups-list').append(html);
 					done();
@@ -63,16 +61,16 @@ define('forum/groups/list', ['forum/infinitescroll'], function (infinitescroll) 
 	};
 
 	Groups.search = function () {
-		var groupsEl = $('#groups-list'),
-			queryEl = $('#search-text'),
-			sortEl = $('#search-sort');
+		var groupsEl = $('#groups-list');
+		var queryEl = $('#search-text');
+		var sortEl = $('#search-sort');
 
 		socket.emit('groups.search', {
 			query: queryEl.val(),
 			options: {
 				sort: sortEl.val(),
-				filterHidden: true
-			}
+				filterHidden: true,
+			},
 		}, function (err, groups) {
 			if (err) {
 				return app.alertError(err.message);
@@ -81,7 +79,7 @@ define('forum/groups/list', ['forum/infinitescroll'], function (infinitescroll) 
 				return group.name !== 'registered-users' && group.name !== 'guests';
 			});
 			templates.parse('partials/groups/list', {
-				groups: groups
+				groups: groups,
 			}, function (html) {
 				groupsEl.empty().append(html);
 			});

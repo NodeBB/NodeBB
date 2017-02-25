@@ -1,8 +1,10 @@
-"use strict";
+'use strict';
 
 var fork = require('child_process').fork;
 var env = process.env;
-var worker, updateWorker, initWorker;
+var worker;
+var updateWorker;
+var initWorker;
 var incomplete = [];
 var running = 0;
 
@@ -44,15 +46,13 @@ module.exports = function (grunt) {
 		if (updateWorker) {
 			updateWorker.kill('SIGKILL');
 		}
-		updateWorker = fork('app.js', updateArgs, {
-			env: env
-		});
-		++running;
+		updateWorker = fork('app.js', updateArgs, { env: env });
+		running += 1;
 		updateWorker.on('exit', function () {
-			--running;
+			running -= 1;
 			if (running === 0) {
 				worker = fork('app.js', args, {
-					env: env
+					env: env,
 				});
 				worker.on('message', function () {
 					if (incomplete.length) {
@@ -74,17 +74,17 @@ module.exports = function (grunt) {
 					'public/*.less',
 					'node_modules/nodebb-*/*.less', 'node_modules/nodebb-*/**/*.less',
 					'!node_modules/nodebb-*/node_modules/**',
-					'!node_modules/nodebb-*/.git/**'
+					'!node_modules/nodebb-*/.git/**',
 				],
 				options: {
-					interval: 1000
-				}
+					interval: 1000,
+				},
 			},
 			lessUpdated_Admin: {
 				files: ['public/**/*.less'],
 				options: {
-					interval: 1000
-				}
+					interval: 1000,
+				},
 			},
 			clientUpdated: {
 				files: [
@@ -92,28 +92,28 @@ module.exports = function (grunt) {
 					'node_modules/nodebb-*/*.js', 'node_modules/nodebb-*/**/*.js',
 					'!node_modules/nodebb-*/node_modules/**',
 					'node_modules/templates.js/lib/templates.js',
-					'!node_modules/nodebb-*/.git/**'
+					'!node_modules/nodebb-*/.git/**',
 				],
 				options: {
-					interval: 1000
-				}
+					interval: 1000,
+				},
 			},
 			serverUpdated: {
 				files: ['*.js', 'install/*.js', 'src/**/*.js'],
 				options: {
-					interval: 1000
-				}
+					interval: 1000,
+				},
 			},
 			templatesUpdated: {
 				files: [
 					'src/views/**/*.tpl',
 					'node_modules/nodebb-*/*.tpl', 'node_modules/nodebb-*/**/*.tpl',
 					'!node_modules/nodebb-*/node_modules/**',
-					'!node_modules/nodebb-*/.git/**'
+					'!node_modules/nodebb-*/.git/**',
 				],
 				options: {
-					interval: 1000
-				}
+					interval: 1000,
+				},
 			},
 			langUpdated: {
 				files: [
@@ -127,10 +127,10 @@ module.exports = function (grunt) {
 					'!node_modules/nodebb-*/theme.json',
 				],
 				options: {
-					interval: 1000
-				}
+					interval: 1000,
+				},
 			},
-		}
+		},
 	});
 
 	grunt.loadNpmTasks('grunt-contrib-watch');
@@ -140,16 +140,16 @@ module.exports = function (grunt) {
 
 	if (grunt.option('skip')) {
 		worker = fork('app.js', args, {
-			env: env
+			env: env,
 		});
 	} else {
 		initWorker = fork('app.js', initArgs, {
-			env: env
+			env: env,
 		});
 
 		initWorker.on('exit', function () {
 			worker = fork('app.js', args, {
-				env: env
+				env: env,
 			});
 		});
 	}

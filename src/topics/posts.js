@@ -12,7 +12,6 @@ var meta = require('../meta');
 var plugins = require('../plugins');
 
 module.exports = function (Topics) {
-
 	Topics.onNewPostMade = function (postData, callback) {
 		async.series([
 			function (next) {
@@ -23,7 +22,7 @@ module.exports = function (Topics) {
 			},
 			function (next) {
 				Topics.addPostToTopic(postData.tid, postData, next);
-			}
+			},
 		], callback);
 	};
 
@@ -36,14 +35,14 @@ module.exports = function (Topics) {
 					},
 					postCount: function (next) {
 						Topics.getTopicField(tid, 'postcount', next);
-					}
+					},
 				}, next);
 			},
 			function (results, next) {
 				Topics.calculatePostIndices(results.posts, start, stop, results.postCount, reverse);
 
 				Topics.addPostData(results.posts, uid, next);
-			}
+			},
 		], callback);
 	};
 
@@ -78,7 +77,7 @@ module.exports = function (Topics) {
 						userData[uids[index]] = user;
 					});
 					next(null, userData);
-				}
+				},
 			], callback);
 		}
 
@@ -95,7 +94,6 @@ module.exports = function (Topics) {
 						getPostUserData('uid', function (uids, next) {
 							posts.getUserInfoForPosts(uids, uid, next);
 						}, next);
-						
 					},
 					editors: function (next) {
 						getPostUserData('editor', function (uids, next) {
@@ -104,7 +102,7 @@ module.exports = function (Topics) {
 					},
 					parents: function (next) {
 						Topics.addParentPosts(postData, next);
-					}
+					},
 				}, next);
 			},
 			function (results, next) {
@@ -128,12 +126,12 @@ module.exports = function (Topics) {
 				});
 				plugins.fireHook('filter:topics.addPostData', {
 					posts: postData,
-					uid: uid
+					uid: uid,
 				}, next);
 			},
 			function (data, next) {
 				next(null, data.posts);
-			}
+			},
 		], callback);
 	};
 
@@ -167,8 +165,8 @@ module.exports = function (Topics) {
 			async.apply(posts.getPostsFields, parentPids, ['uid']),
 			function (_parentPosts, next) {
 				parentPosts = _parentPosts;
-				var parentUids = parentPosts.map(function (postObj) { 
-					return parseInt(postObj.uid, 10); 
+				var parentUids = parentPosts.map(function (postObj) {
+					return parseInt(postObj.uid, 10);
 				}).filter(function (uid, idx, users) {
 					return users.indexOf(uid) === idx;
 				});
@@ -182,14 +180,14 @@ module.exports = function (Topics) {
 				});
 				var parents = {};
 				parentPosts.forEach(function (post, i) {
-					parents[parentPids[i]] = {username: usersMap[post.uid]};
+					parents[parentPids[i]] = { username: usersMap[post.uid] };
 				});
 
 				postData.forEach(function (post) {
 					post.parent = parents[post.toPid];
 				});
 				next();
-			}
+			},
 		], callback);
 	};
 
@@ -219,7 +217,7 @@ module.exports = function (Topics) {
 			},
 			function (mainPost, next) {
 				next(null, parseInt(mainPost.pid, 10) && parseInt(mainPost.deleted, 10) !== 1 ? mainPost.pid.toString() : null);
-			}
+			},
 		], callback);
 	};
 
@@ -249,9 +247,9 @@ module.exports = function (Topics) {
 						if (!isDeleted) {
 							latestPid = pids[0];
 						}
-						++index;
+						index += 1;
 						_next();
-					}
+					},
 				], next);
 			},
 			function () {
@@ -281,7 +279,7 @@ module.exports = function (Topics) {
 							var downvotes = parseInt(postData.downvotes, 10) || 0;
 							var votes = upvotes - downvotes;
 							db.sortedSetAdd('tid:' + tid + ':posts:votes', votes, postData.pid, next);
-						}
+						},
 					], function (err) {
 						next(err);
 					});
@@ -292,7 +290,7 @@ module.exports = function (Topics) {
 			},
 			function (count, next) {
 				Topics.updateTeaser(tid, next);
-			}
+			},
 		], callback);
 	};
 
@@ -301,7 +299,7 @@ module.exports = function (Topics) {
 			function (next) {
 				db.sortedSetsRemove([
 					'tid:' + tid + ':posts',
-					'tid:' + tid + ':posts:votes'
+					'tid:' + tid + ':posts:votes',
 				], postData.pid, next);
 			},
 			function (next) {
@@ -309,7 +307,7 @@ module.exports = function (Topics) {
 			},
 			function (count, next) {
 				Topics.updateTeaser(tid, next);
-			}
+			},
 		], callback);
 	};
 
@@ -322,7 +320,7 @@ module.exports = function (Topics) {
 					},
 					pids: function (next) {
 						db.getSortedSetRange('tid:' + tid + ':posts', 0, -1, next);
-					}
+					},
 				}, next);
 			},
 			function (results, next) {
@@ -330,7 +328,7 @@ module.exports = function (Topics) {
 					results.pids = [results.mainPid].concat(results.pids);
 				}
 				next(null, results.pids);
-			}
+			},
 		], callback);
 	};
 
@@ -354,7 +352,7 @@ module.exports = function (Topics) {
 			},
 			function (value, next) {
 				db.sortedSetAdd(set, value, tid, next);
-			}
+			},
 		], callback);
 	}
 
@@ -369,7 +367,7 @@ module.exports = function (Topics) {
 			},
 			function (tid, next) {
 				Topics.getTopicField(tid, field, next);
-			}
+			},
 		], callback);
 	};
 
@@ -380,12 +378,11 @@ module.exports = function (Topics) {
 			},
 			function (tid, next) {
 				Topics.getTopicData(tid, next);
-			}
+			},
 		], callback);
 	};
 
 	Topics.getPostCount = function (tid, callback) {
 		db.getObjectField('topic:' + tid, 'postcount', callback);
 	};
-
 };

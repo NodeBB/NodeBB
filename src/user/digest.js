@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 var async = require('async');
 var winston = require('winston');
@@ -31,7 +31,7 @@ var utils = require('../../public/src/utils');
 			function (next) {
 				async.parallel({
 					topics: async.apply(topics.getLatestTopics, 0, 0, 9, interval),
-					subscribers: async.apply(Digest.getSubscribers, interval)
+					subscribers: async.apply(Digest.getSubscribers, interval),
 				}, next);
 			},
 			function (data, next) {
@@ -52,7 +52,7 @@ var utils = require('../../public/src/utils');
 
 				data.interval = interval;
 				Digest.send(data, next);
-			}
+			},
 		], function (err) {
 			if (err) {
 				winston.error('[user/jobs] Could not send digests (' + interval + '): ' + err.message);
@@ -72,12 +72,12 @@ var utils = require('../../public/src/utils');
 			function (subscribers, next) {
 				plugins.fireHook('filter:digest.subscribers', {
 					interval: interval,
-					subscribers: subscribers
+					subscribers: subscribers,
 				}, next);
 			},
 			function (results, next) {
 				next(null, results.subscribers);
-			}
+			},
 		], callback);
 	};
 
@@ -118,16 +118,15 @@ var utils = require('../../public/src/utils');
 								site_title: meta.config.title || meta.config.browserTitle || 'NodeBB',
 								notifications: notifications,
 								recent: data.topics.topics,
-								interval: data.interval
+								interval: data.interval,
 							});
 							next();
-						}
+						},
 					], next);
 				}, next);
-			}
+			},
 		], function (err) {
 			callback(err);
 		});
 	};
-
 }(module.exports));

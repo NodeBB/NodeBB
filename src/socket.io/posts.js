@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 var async = require('async');
 
@@ -49,7 +49,7 @@ SocketPosts.reply = function (socket, data, callback) {
 			user.updateOnlineUsers(socket.uid);
 
 			socketHelpers.notifyNew(socket.uid, 'newPost', result);
-		}
+		},
 	], callback);
 };
 
@@ -69,7 +69,7 @@ SocketPosts.getRawPost = function (socket, pid, callback) {
 				return next(new Error('[[error:no-post]]'));
 			}
 			next(null, postData.content);
-		}
+		},
 	], callback);
 };
 
@@ -135,7 +135,7 @@ SocketPosts.getReplies = function (socket, pid, callback) {
 				},
 				privileges: function (next) {
 					privileges.posts.get(pids, socket.uid, next);
-				}
+				},
 			}, next);
 		},
 		function (results, next) {
@@ -150,7 +150,7 @@ SocketPosts.getReplies = function (socket, pid, callback) {
 				posts.modifyPostByPrivilege(postData, postPrivileges.isAdminOrMod);
 			});
 			next(null, postData);
-		}
+		},
 	], callback);
 };
 

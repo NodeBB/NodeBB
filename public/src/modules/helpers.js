@@ -1,5 +1,6 @@
-;(function (exports) {
-	"use strict";
+'use strict';
+
+(function (exports) {
 	/* globals define, utils, config */
 
 	// export the class if we are in a Node-like system.
@@ -37,43 +38,41 @@
 	};
 
 	helpers.buildMetaTag = function (tag) {
-		var name = tag.name ? 'name="' + tag.name + '" ' : '',
-			property = tag.property ? 'property="' + tag.property + '" ' : '',
-			content = tag.content ? 'content="' + tag.content.replace(/\n/g, ' ') + '" ' : '';
+		var name = tag.name ? 'name="' + tag.name + '" ' : '';
+		var property = tag.property ? 'property="' + tag.property + '" ' : '';
+		var content = tag.content ? 'content="' + tag.content.replace(/\n/g, ' ') + '" ' : '';
 
 		return '<meta ' + name + property + content + '/>\n\t';
 	};
 
 	helpers.buildLinkTag = function (tag) {
-		var link = tag.link ? 'link="' + tag.link + '" ' : '',
-			rel = tag.rel ? 'rel="' + tag.rel + '" ' : '',
-			type = tag.type ? 'type="' + tag.type + '" ' : '',
-			href = tag.href ? 'href="' + tag.href + '" ' : '',
-			sizes = tag.sizes ? 'sizes="' + tag.sizes + '" ' : '';
+		var link = tag.link ? 'link="' + tag.link + '" ' : '';
+		var rel = tag.rel ? 'rel="' + tag.rel + '" ' : '';
+		var type = tag.type ? 'type="' + tag.type + '" ' : '';
+		var href = tag.href ? 'href="' + tag.href + '" ' : '';
+		var sizes = tag.sizes ? 'sizes="' + tag.sizes + '" ' : '';
 
 		return '<link ' + link + rel + type + sizes + href + '/>\n\t';
 	};
 
 	helpers.stringify = function (obj) {
 		// Turns the incoming object into a JSON string
-		return JSON.stringify(obj).replace(/&/gm,"&amp;").replace(/</gm,"&lt;").replace(/>/gm,"&gt;").replace(/"/g, '&quot;');
+		return JSON.stringify(obj).replace(/&/gm, '&amp;').replace(/</gm, '&lt;').replace(/>/gm, '&gt;').replace(/"/g, '&quot;');
 	};
 
 	helpers.escape = function (str) {
 		if (typeof utils !== 'undefined') {
 			return utils.escapeHTML(str);
-		} else {
-			return require('../utils').escapeHTML(str);
 		}
+		return require('../utils').escapeHTML(str);
 	};
 
 	helpers.stripTags = function (str) {
-		if (typeof S !== 'undefined') {
-			return S(String(str)).stripTags().s;
-		} else {
-			var S = require('string');
-			return S(String(str)).stripTags().s;
+		if (typeof window !== 'undefined' && window.S) {
+			return window.S(String(str)).stripTags().s;
 		}
+		var S = require('string');
+		return S(String(str)).stripTags().s;
 	};
 
 	helpers.generateCategoryBackground = function (category) {
@@ -163,18 +162,17 @@
 			return '<button class="btn btn-link" data-action="rejectInvite" data-group="' + groupObj.displayName + '">[[groups:membership.reject]]</button><button class="btn btn-success" data-action="acceptInvite" data-group="' + groupObj.name + '"><i class="fa fa-plus"></i> [[groups:membership.accept-invitation]]</button>';
 		} else if (!groupObj.disableJoinRequests && groupObj.name !== 'administrators') {
 			return '<button class="btn btn-success" data-action="join" data-group="' + groupObj.displayName + '"><i class="fa fa-plus"></i> [[groups:membership.join-group]]</button>';
-		} else {
-			return '';
 		}
+		return '';
 	};
 
 	helpers.spawnPrivilegeStates = function (member, privileges) {
 		var states = [];
-		for(var priv in privileges) {
+		for (var priv in privileges) {
 			if (privileges.hasOwnProperty(priv)) {
 				states.push({
 					name: priv,
-					state: privileges[priv]
+					state: privileges[priv],
 				});
 			}
 		}
@@ -190,74 +188,70 @@
 	helpers.renderTopicImage = function (topicObj) {
 		if (topicObj.thumb) {
 			return '<img src="' + topicObj.thumb + '" class="img-circle user-img" title="' + topicObj.user.username + '" />';
-		} else {
-			return '<img component="user/picture" data-uid="' + topicObj.user.uid + '" src="' + topicObj.user.picture + '" class="user-img" title="' + topicObj.user.username + '" />';
 		}
+		return '<img component="user/picture" data-uid="' + topicObj.user.uid + '" src="' + topicObj.user.picture + '" class="user-img" title="' + topicObj.user.username + '" />';
 	};
 
 	helpers.renderDigestAvatar = function (block) {
 		if (block.teaser) {
 			if (block.teaser.user.picture) {
 				return '<img style="vertical-align: middle; width: 16px; height: 16px; padding-right: 1em;" src="' + block.teaser.user.picture + '" title="' + block.teaser.user.username + '" />';
-			} else {
-				return '<div style="width: 16px; height: 16px; line-height: 16px; font-size: 10px; margin-right: 1em; background-color: ' + block.teaser.user['icon:bgColor'] + '; color: white; text-align: center; display: inline-block;">' + block.teaser.user['icon:text'] + '</div>';
 			}
-		} else {
-			if (block.user.picture) {
-				return '<img style="vertical-align: middle; width: 16px; height: 16px; padding-right: 1em;" src="' + block.user.picture + '" title="' + block.user.username + '" />';
-			} else {
-				return '<div style="width: 16px; height: 16px; line-height: 16px; font-size: 10px; margin-right: 1em; background-color: ' + block.user['icon:bgColor'] + '; color: white; text-align: center; display: inline-block;">' + block.user['icon:text'] + '</div>';
-			}
+			return '<div style="width: 16px; height: 16px; line-height: 16px; font-size: 10px; margin-right: 1em; background-color: ' + block.teaser.user['icon:bgColor'] + '; color: white; text-align: center; display: inline-block;">' + block.teaser.user['icon:text'] + '</div>';
 		}
+		if (block.user.picture) {
+			return '<img style="vertical-align: middle; width: 16px; height: 16px; padding-right: 1em;" src="' + block.user.picture + '" title="' + block.user.username + '" />';
+		}
+		return '<div style="width: 16px; height: 16px; line-height: 16px; font-size: 10px; margin-right: 1em; background-color: ' + block.user['icon:bgColor'] + '; color: white; text-align: center; display: inline-block;">' + block.user['icon:text'] + '</div>';
 	};
 
 	helpers.userAgentIcons = function (data) {
 		var icons = '';
 
-		switch(data.platform) {
-			case 'Linux':
-				icons += '<i class="fa fa-fw fa-linux"></i>';
-				break;
-			case 'Microsoft Windows':
-				icons += '<i class="fa fa-fw fa-windows"></i>';
-				break;
-			case 'Apple Mac':
-				icons += '<i class="fa fa-fw fa-apple"></i>';
-				break;
-			case 'Android':
-				icons += '<i class="fa fa-fw fa-android"></i>';
-				break;
-			case 'iPad':
-				icons += '<i class="fa fa-fw fa-tablet"></i>';
-				break;
-			case 'iPod':	// intentional fall-through
-			case 'iPhone':
-				icons += '<i class="fa fa-fw fa-mobile"></i>';
-				break;
-			default:
-				icons += '<i class="fa fa-fw fa-question-circle"></i>';
-				break;
+		switch (data.platform) {
+		case 'Linux':
+			icons += '<i class="fa fa-fw fa-linux"></i>';
+			break;
+		case 'Microsoft Windows':
+			icons += '<i class="fa fa-fw fa-windows"></i>';
+			break;
+		case 'Apple Mac':
+			icons += '<i class="fa fa-fw fa-apple"></i>';
+			break;
+		case 'Android':
+			icons += '<i class="fa fa-fw fa-android"></i>';
+			break;
+		case 'iPad':
+			icons += '<i class="fa fa-fw fa-tablet"></i>';
+			break;
+		case 'iPod':	// intentional fall-through
+		case 'iPhone':
+			icons += '<i class="fa fa-fw fa-mobile"></i>';
+			break;
+		default:
+			icons += '<i class="fa fa-fw fa-question-circle"></i>';
+			break;
 		}
 
-		switch(data.browser) {
-			case 'Chrome':
-				icons += '<i class="fa fa-fw fa-chrome"></i>';
-				break;
-			case 'Firefox':
-				icons += '<i class="fa fa-fw fa-firefox"></i>';
-				break;
-			case 'Safari':
-				icons += '<i class="fa fa-fw fa-safari"></i>';
-				break;
-			case 'IE':
-				icons += '<i class="fa fa-fw fa-internet-explorer"></i>';
-				break;
-			case 'Edge':
-				icons += '<i class="fa fa-fw fa-edge"></i>';
-				break;
-			default:
-				icons += '<i class="fa fa-fw fa-question-circle"></i>';
-				break;
+		switch (data.browser) {
+		case 'Chrome':
+			icons += '<i class="fa fa-fw fa-chrome"></i>';
+			break;
+		case 'Firefox':
+			icons += '<i class="fa fa-fw fa-firefox"></i>';
+			break;
+		case 'Safari':
+			icons += '<i class="fa fa-fw fa-safari"></i>';
+			break;
+		case 'IE':
+			icons += '<i class="fa fa-fw fa-internet-explorer"></i>';
+			break;
+		case 'Edge':
+			icons += '<i class="fa fa-fw fa-edge"></i>';
+			break;
+		default:
+			icons += '<i class="fa fa-fw fa-question-circle"></i>';
+			break;
 		}
 
 		return icons;
@@ -277,13 +271,13 @@
 		});
 	};
 
-	// Use the define() function if we're in AMD land
-	if (typeof define === 'function' && define.amd) {
-	  define('helpers', exports);
+	// export the class if we are in a Node-like system.
+	if (typeof module === 'object' && module.exports === exports) {
+		exports = module.exports/* = SemVer*/;
+	} else if (typeof define === 'function' && define.amd) {
+		// Use the define() function if we're in AMD land
+		define('helpers', exports);
+	} else if (typeof window === 'object') {
+		window.helpers = exports;
 	}
-
-}(
-	typeof exports === 'object' ? exports :
-	typeof define === 'function' && define.amd ? {} :
-	helpers = {}
-));
+}(typeof exports === 'object' ? exports : {}));

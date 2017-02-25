@@ -1,6 +1,6 @@
 'use strict';
 
-/* globals define, app, socket, utils */
+
 define('forum/account/watched', ['forum/account/header', 'forum/account/topics'], function (header, topics) {
 	var AccountWatched = {};
 

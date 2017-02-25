@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 var async = require('async');
 var nconf = require('nconf');
@@ -28,7 +28,7 @@ var Controllers = {
 	admin: require('./admin'),
 	globalMods: require('./globalmods'),
 	mods: require('./mods'),
-	sitemap: require('./sitemap')
+	sitemap: require('./sitemap'),
 };
 
 
@@ -46,7 +46,7 @@ Controllers.home = function (req, res, next) {
 		var hook = 'action:homepage.get:' + route;
 
 		if (plugins.hasListeners(hook)) {
-			return plugins.fireHook(hook, {req: req, res: res, next: next});
+			return plugins.fireHook(hook, { req: req, res: res, next: next });
 		}
 
 		if (route === 'categories' || route === '/') {
@@ -61,7 +61,7 @@ Controllers.home = function (req, res, next) {
 			var match = /^category\/(\d+)\/(.*)$/.exec(route);
 
 			if (match) {
-				req.params.topic_index = "1";
+				req.params.topic_index = '1';
 				req.params.category_id = match[1];
 				req.params.slug = match[2];
 				Controllers.category.get(req, res, next);
@@ -83,8 +83,8 @@ Controllers.reset = function (req, res, next) {
 				displayExpiryNotice: req.session.passwordExpired,
 				code: req.params.code,
 				minimumPasswordLength: parseInt(meta.config.minimumPasswordLength, 10),
-				breadcrumbs: helpers.buildBreadcrumbs([{text: '[[reset_password:reset_password]]', url: '/reset'}, {text: '[[reset_password:update_password]]'}]),
-				title: '[[pages:reset]]'
+				breadcrumbs: helpers.buildBreadcrumbs([{ text: '[[reset_password:reset_password]]', url: '/reset' }, { text: '[[reset_password:update_password]]' }]),
+				title: '[[pages:reset]]',
 			});
 
 			delete req.session.passwordExpired;
@@ -92,8 +92,8 @@ Controllers.reset = function (req, res, next) {
 	} else {
 		res.render('reset', {
 			code: null,
-			breadcrumbs: helpers.buildBreadcrumbs([{text: '[[reset_password:reset_password]]'}]),
-			title: '[[pages:reset]]'
+			breadcrumbs: helpers.buildBreadcrumbs([{ text: '[[reset_password:reset_password]]' }]),
+			title: '[[pages:reset]]',
 		});
 	}
 };
@@ -122,18 +122,17 @@ Controllers.login = function (req, res, next) {
 	data.allowLocalLogin = parseInt(meta.config.allowLocalLogin, 10) === 1 || parseInt(req.query.local, 10) === 1;
 	data.allowRegistration = registrationType === 'normal' || registrationType === 'admin-approval' || registrationType === 'admin-approval-ip';
 	data.allowLoginWith = '[[login:' + allowLoginWith + ']]';
-	data.breadcrumbs = helpers.buildBreadcrumbs([{text: '[[global:login]]'}]);
+	data.breadcrumbs = helpers.buildBreadcrumbs([{ text: '[[global:login]]' }]);
 	data.error = req.flash('error')[0] || errorText;
 	data.title = '[[pages:login]]';
 
 	if (!data.allowLocalLogin && !data.allowRegistration && data.alternate_logins && data.authentication.length === 1) {
 		if (res.locals.isAPI) {
 			return helpers.redirect(res, {
-				external: data.authentication[0].url
+				external: data.authentication[0].url,
 			});
-		} else {
-			return res.redirect(nconf.get('relative_path') + data.authentication[0].url);
 		}
+		return res.redirect(nconf.get('relative_path') + data.authentication[0].url);
 	}
 	if (req.uid) {
 		user.getUserFields(req.uid, ['username', 'email'], function (err, user) {
@@ -147,7 +146,6 @@ Controllers.login = function (req, res, next) {
 	} else {
 		res.render('login', data);
 	}
-
 };
 
 Controllers.register = function (req, res, next) {
@@ -171,8 +169,8 @@ Controllers.register = function (req, res, next) {
 			}
 		},
 		function (next) {
-			plugins.fireHook('filter:parse.post', {postData: {content: meta.config.termsOfUse || ''}}, next);
-		}
+			plugins.fireHook('filter:parse.post', { postData: { content: meta.config.termsOfUse || '' } }, next);
+		},
 	], function (err, termsOfUse) {
 		if (err) {
 			return next(err);
@@ -180,7 +178,7 @@ Controllers.register = function (req, res, next) {
 		var loginStrategies = require('../routes/authentication').getLoginStrategies();
 		var data = {
 			'register_window:spansize': loginStrategies.length ? 'col-md-6' : 'col-md-12',
-			'alternate_logins': !!loginStrategies.length
+			alternate_logins: !!loginStrategies.length,
 		};
 
 		data.authentication = loginStrategies;
@@ -189,7 +187,7 @@ Controllers.register = function (req, res, next) {
 		data.maximumUsernameLength = parseInt(meta.config.maximumUsernameLength, 10);
 		data.minimumPasswordLength = parseInt(meta.config.minimumPasswordLength, 10);
 		data.termsOfUse = termsOfUse.postData.content;
-		data.breadcrumbs = helpers.buildBreadcrumbs([{text: '[[register:register]]'}]);
+		data.breadcrumbs = helpers.buildBreadcrumbs([{ text: '[[register:register]]' }]);
 		data.regFormEntry = [];
 		data.error = req.flash('error')[0] || errorText;
 		data.title = '[[pages:register]]';
@@ -205,7 +203,7 @@ Controllers.registerInterstitial = function (req, res, next) {
 
 	plugins.fireHook('filter:register.interstitial', {
 		userData: req.session.registration,
-		interstitials: []
+		interstitials: [],
 	}, function (err, data) {
 		if (err) {
 			return next(err);
@@ -230,7 +228,7 @@ Controllers.registerInterstitial = function (req, res, next) {
 			res.render('registerComplete', {
 				title: '[[pages:registration-complete]]',
 				errors: errors,
-				sections: sections
+				sections: sections,
 			});
 		});
 	});
@@ -241,7 +239,7 @@ Controllers.compose = function (req, res, next) {
 		req: req,
 		res: res,
 		next: next,
-		templateData: {}
+		templateData: {},
 	}, function (err, data) {
 		if (err) {
 			return next(err);
@@ -249,7 +247,7 @@ Controllers.compose = function (req, res, next) {
 
 		if (data.templateData.disabled) {
 			res.render('', {
-				title: '[[modules:composer.compose]]'
+				title: '[[modules:composer.compose]]',
 			});
 		} else {
 			data.templateData.title = '[[modules:composer.compose]]';
@@ -270,12 +268,12 @@ Controllers.confirmEmail = function (req, res) {
 Controllers.robots = function (req, res) {
 	res.set('Content-Type', 'text/plain');
 
-	if (meta.config["robots.txt"]) {
-		res.send(meta.config["robots.txt"]);
+	if (meta.config['robots.txt']) {
+		res.send(meta.config['robots.txt']);
 	} else {
-		res.send("User-agent: *\n" +
-			"Disallow: " + nconf.get('relative_path') + "/admin/\n" +
-			"Sitemap: " + nconf.get('url') + "/sitemap.xml");
+		res.send('User-agent: *\n' +
+			'Disallow: ' + nconf.get('relative_path') + '/admin/\n' +
+			'Sitemap: ' + nconf.get('url') + '/sitemap.xml');
 	}
 };
 
@@ -285,7 +283,7 @@ Controllers.manifest = function (req, res) {
 		start_url: nconf.get('relative_path') + '/',
 		display: 'standalone',
 		orientation: 'portrait',
-		icons: []
+		icons: [],
 	};
 
 	if (meta.config['brand:touchIcon']) {
@@ -293,32 +291,32 @@ Controllers.manifest = function (req, res) {
 			src: nconf.get('relative_path') + '/assets/uploads/system/touchicon-36.png',
 			sizes: '36x36',
 			type: 'image/png',
-			density: 0.75
+			density: 0.75,
 		}, {
 			src: nconf.get('relative_path') + '/assets/uploads/system/touchicon-48.png',
 			sizes: '48x48',
 			type: 'image/png',
-			density: 1.0
+			density: 1.0,
 		}, {
 			src: nconf.get('relative_path') + '/assets/uploads/system/touchicon-72.png',
 			sizes: '72x72',
 			type: 'image/png',
-			density: 1.5
+			density: 1.5,
 		}, {
 			src: nconf.get('relative_path') + '/assets/uploads/system/touchicon-96.png',
 			sizes: '96x96',
 			type: 'image/png',
-			density: 2.0
+			density: 2.0,
 		}, {
 			src: nconf.get('relative_path') + '/assets/uploads/system/touchicon-144.png',
 			sizes: '144x144',
 			type: 'image/png',
-			density: 3.0
+			density: 3.0,
 		}, {
 			src: nconf.get('relative_path') + '/assets/uploads/system/touchicon-192.png',
 			sizes: '192x192',
 			type: 'image/png',
-			density: 4.0
+			density: 4.0,
 		});
 	}
 
@@ -330,7 +328,7 @@ Controllers.outgoing = function (req, res) {
 	var data = {
 		outgoing: validator.escape(String(url)),
 		title: meta.config.title,
-		breadcrumbs: helpers.buildBreadcrumbs([{text: '[[notifications:outgoing_link]]'}])
+		breadcrumbs: helpers.buildBreadcrumbs([{ text: '[[notifications:outgoing_link]]' }]),
 	};
 
 	if (url) {
@@ -344,7 +342,7 @@ Controllers.termsOfUse = function (req, res, next) {
 	if (!meta.config.termsOfUse) {
 		return next();
 	}
-	res.render('tos', {termsOfUse: meta.config.termsOfUse});
+	res.render('tos', { termsOfUse: meta.config.termsOfUse });
 };
 
 Controllers.ping = function (req, res) {
@@ -359,7 +357,7 @@ Controllers.handle404 = function (req, res) {
 		return plugins.fireHook('action:meta.override404', {
 			req: req,
 			res: res,
-			error: {}
+			error: {},
 		});
 	}
 
@@ -379,11 +377,11 @@ Controllers.handle404 = function (req, res) {
 		var path = String(req.path || '');
 
 		if (res.locals.isAPI) {
-			return res.json({path: validator.escape(path.replace(/^\/api/, '')), title: '[[global:404.title]]'});
+			return res.json({ path: validator.escape(path.replace(/^\/api/, '')), title: '[[global:404.title]]' });
 		}
 		var middleware = require('../middleware');
 		middleware.buildHeader(req, res, function () {
-			res.render('404', {path: validator.escape(path), title: '[[global:404.title]]'});
+			res.render('404', { path: validator.escape(path), title: '[[global:404.title]]' });
 		});
 	} else {
 		res.status(404).type('txt').send('Not found');
@@ -404,7 +402,7 @@ Controllers.handleURIErrors = function (err, req, res, next) {
 			winston.warn('[controller] Bad request: ' + req.path);
 			if (res.locals.isAPI) {
 				res.status(400).json({
-					error: '[[global:400.title]]'
+					error: '[[global:400.title]]',
 				});
 			} else {
 				var middleware = require('../middleware');
@@ -413,20 +411,20 @@ Controllers.handleURIErrors = function (err, req, res, next) {
 				});
 			}
 		}
-
-		return;
 	} else {
 		next(err);
 	}
 };
 
-Controllers.handleErrors = function (err, req, res, next) {
+// this needs to have four arguments or express treats it as `(req, res, next)`
+// don't remove `next`!
+Controllers.handleErrors = function (err, req, res, next) { // eslint-disable-line no-unused-vars
 	switch (err.code) {
-		case 'EBADCSRFTOKEN':
-			winston.error(req.path + '\n', err.message);
-			return res.sendStatus(403);
-		case 'blacklisted-ip':
-			return res.status(403).type('text/plain').send(err.message);
+	case 'EBADCSRFTOKEN':
+		winston.error(req.path + '\n', err.message);
+		return res.sendStatus(403);
+	case 'blacklisted-ip':
+		return res.status(403).type('text/plain').send(err.message);
 	}
 
 	if (parseInt(err.status, 10) === 302 && err.path) {
@@ -439,7 +437,7 @@ Controllers.handleErrors = function (err, req, res, next) {
 
 	var path = String(req.path || '');
 	if (res.locals.isAPI) {
-		res.json({path: validator.escape(path), error: err.message});
+		res.json({ path: validator.escape(path), error: err.message });
 	} else {
 		var middleware = require('../middleware');
 		middleware.buildHeader(req, res, function () {

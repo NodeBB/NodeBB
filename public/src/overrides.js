@@ -1,19 +1,17 @@
 'use strict';
 
-/* global bootbox */
 
-var overrides = overrides || {};
+var overrides = window.overrides || {};
 
-if ('undefined' !== typeof window) {
-
-	(function ($, undefined) {
+if (typeof window !== 'undefined') {
+	(function ($) {
 		require(['translator'], function (translator) {
 			$.fn.getCursorPosition = function () {
 				var el = $(this).get(0);
 				var pos = 0;
-				if('selectionStart' in el) {
+				if ('selectionStart' in el) {
 					pos = el.selectionStart;
-				} else if('selection' in document) {
+				} else if ('selection' in document) {
 					el.focus();
 					var Sel = document.selection.createRange();
 					var SelLength = document.selection.createRange().text.length;
@@ -24,7 +22,7 @@ if ('undefined' !== typeof window) {
 			};
 
 			$.fn.selectRange = function (start, end) {
-				if(!end) {
+				if (!end) {
 					end = start;
 				}
 				return this.each(function () {
@@ -41,7 +39,7 @@ if ('undefined' !== typeof window) {
 				});
 			};
 
-			//http://stackoverflow.com/questions/511088/use-javascript-to-place-cursor-at-end-of-text-in-text-input-element
+			// http://stackoverflow.com/questions/511088/use-javascript-to-place-cursor-at-end-of-text-in-text-input-element
 			$.fn.putCursorAtEnd = function () {
 				return this.each(function () {
 					$(this).focus();
@@ -86,17 +84,17 @@ if ('undefined' !== typeof window) {
 				});
 			}
 		});
-	}(jQuery || {fn:{}}));
+	}(jQuery || { fn: {} }));
 
 	(function () {
 		// FIX FOR #1245 - https://github.com/NodeBB/NodeBB/issues/1245
 		// from http://stackoverflow.com/questions/15931962/bootstrap-dropdown-disappear-with-right-click-on-firefox
 		// obtain a reference to the original handler
-		var _clearMenus = $._data(document, "events").click.filter(function (el) {
+		var _clearMenus = $._data(document, 'events').click.filter(function (el) {
 			return el.namespace === 'bs.data-api.dropdown' && el.selector === undefined;
 		});
 
-		if(_clearMenus.length) {
+		if (_clearMenus.length) {
 			_clearMenus = _clearMenus[0].handler;
 		}
 
@@ -136,5 +134,4 @@ if ('undefined' !== typeof window) {
 			timeagoFn.apply(this, arguments);
 		};
 	};
-
 }

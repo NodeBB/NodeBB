@@ -5,7 +5,7 @@ var fs = require('fs');
 var async = require('async');
 var semver = require('semver');
 var winston = require('winston');
-var colors = require('colors');
+require('colors');
 
 var pkg = require('../../package.json');
 
@@ -21,7 +21,7 @@ module.exports = function (Meta) {
 
 		async.every(modules, function (module, next) {
 			fs.readFile(path.join(__dirname, '../../node_modules/', module, 'package.json'), {
-				encoding: 'utf-8'
+				encoding: 'utf-8',
 			}, function (err, pkgData) {
 				// If a bundled plugin/theme is not present, skip the dep check (#3384)
 				if (err && err.code === 'ENOENT' && (module === 'nodebb-rewards-essentials' || module.startsWith('nodebb-plugin') || module.startsWith('nodebb-theme'))) {
@@ -31,7 +31,7 @@ module.exports = function (Meta) {
 
 				try {
 					pkgData = JSON.parse(pkgData);
-				} catch(e) {
+				} catch (e) {
 					process.stdout.write('[' + 'missing'.red + '] ' + module.bold + ' is a required dependency but could not be found\n');
 					depsMissing = true;
 					return next(true);
@@ -47,7 +47,7 @@ module.exports = function (Meta) {
 					next(true);
 				}
 			});
-		}, function (ok) {
+		}, function () {
 			if (depsMissing) {
 				callback(new Error('dependencies-missing'));
 			} else if (depsOutdated) {

@@ -1,13 +1,12 @@
-"use strict";
+'use strict';
 
-/*globals define*/
 
-define('admin/modules/selectable', ['jqueryui'], function (jqueryui) {
+define('admin/modules/selectable', ['jqueryui'], function () {
 	var selectable = {};
 
 	selectable.enable = function (containerEl, targets) {
 		$(containerEl).selectable({
-			filter: targets
+			filter: targets,
 		});
 	};
 

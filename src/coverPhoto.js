@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 var coverPhoto = {};
 var meta = require('./meta');
@@ -14,13 +14,13 @@ coverPhoto.getDefaultProfileCover = function (uid) {
 };
 
 function getCover(type, id) {
-	if (meta.config[type + ':defaultCovers']) {		
+	if (meta.config[type + ':defaultCovers']) {
 		var covers = meta.config[type + ':defaultCovers'].trim().split(/[\s,]+/g);
-		
+
 		if (typeof id === 'string') {
 			id = (id.charCodeAt(0) + id.charCodeAt(1)) % covers.length;
 		} else {
-			id = id % covers.length;
+			id %= covers.length;
 		}
 
 		return covers[id];

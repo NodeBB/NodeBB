@@ -1,12 +1,12 @@
-"use strict";
-/* global define, app, socket, bootbox */
+'use strict';
+
 
 define('admin/extend/plugins', ['jqueryui', 'translator'], function (jqueryui, translator) {
 	var Plugins = {};
 	Plugins.init = function () {
-		var pluginsList = $('.plugins'),
-			numPlugins = pluginsList[0].querySelectorAll('li').length,
-			pluginID;
+		var pluginsList = $('.plugins');
+		var numPlugins = pluginsList[0].querySelectorAll('li').length;
+		var pluginID;
 
 		if (!numPlugins) {
 			translator.translate('<li><p><i>[[admin/extend/plugins:none-found]]</i></p></li>', function (html) {
@@ -29,7 +29,7 @@ define('admin/extend/plugins', ['jqueryui', 'translator'], function (jqueryui, t
 					btn.html(buttonText);
 					btn.toggleClass('btn-warning', status.active).toggleClass('btn-success', !status.active);
 
-					//clone it to active plugins tab
+					// clone it to active plugins tab
 					if (status.active && !$('#active #' + pluginID).length) {
 						$('#active ul').prepend(pluginEl.clone(true));
 					}
@@ -44,7 +44,7 @@ define('admin/extend/plugins', ['jqueryui', 'translator'], function (jqueryui, t
 							require(['admin/modules/instance'], function (instance) {
 								instance.restart();
 							});
-						}
+						},
 					});
 				});
 			});
@@ -71,21 +71,19 @@ define('admin/extend/plugins', ['jqueryui', 'translator'], function (jqueryui, t
 					return;
 				}
 
-				require(['semver'], function (semver) {
-					if (payload.version !== 'latest') {
-						Plugins.toggleInstall(pluginID, payload.version);
-					} else if (payload.version === 'latest') {
-						confirmInstall(pluginID, function (confirm) {
-							if (confirm) {
-								Plugins.toggleInstall(pluginID, 'latest');
-							} else {
-								btn.removeAttr('disabled');
-							}
-						});
-					} else {
-						btn.removeAttr('disabled');
-					}
-				});
+				if (payload.version !== 'latest') {
+					Plugins.toggleInstall(pluginID, payload.version);
+				} else if (payload.version === 'latest') {
+					confirmInstall(pluginID, function (confirm) {
+						if (confirm) {
+							Plugins.toggleInstall(pluginID, 'latest');
+						} else {
+							btn.removeAttr('disabled');
+						}
+					});
+				} else {
+					btn.removeAttr('disabled');
+				}
 			});
 		});
 
@@ -145,7 +143,7 @@ define('admin/extend/plugins', ['jqueryui', 'translator'], function (jqueryui, t
 			var plugins = $('#order-active-plugins-modal .plugin-list').children();
 			var data = [];
 			plugins.each(function (index, el) {
-				data.push({name: $(el).text(), order: index});
+				data.push({ name: $(el).text(), order: index });
 			});
 
 			socket.emit('admin.plugins.orderActivePlugins', data, function (err) {
@@ -162,7 +160,7 @@ define('admin/extend/plugins', ['jqueryui', 'translator'], function (jqueryui, t
 
 	function confirmInstall(pluginID, callback) {
 		bootbox.confirm(translator.compile('admin/extend/plugins:alert.possibly-incompatible', pluginID), function (confirm) {
-				callback(confirm);
+			callback(confirm);
 		});
 	}
 
@@ -170,7 +168,7 @@ define('admin/extend/plugins', ['jqueryui', 'translator'], function (jqueryui, t
 		btn.attr('disabled', true).find('i').attr('class', 'fa fa-refresh fa-spin');
 		socket.emit('admin.plugins.upgrade', {
 			id: pluginID,
-			version: version
+			version: version,
 		}, function (err, isActive) {
 			if (err) {
 				return app.alertError(err.message);
@@ -190,7 +188,7 @@ define('admin/extend/plugins', ['jqueryui', 'translator'], function (jqueryui, t
 						require(['admin/modules/instance'], function (instance) {
 							instance.reload();
 						});
-					}
+					},
 				});
 			}
 		});
@@ -198,12 +196,11 @@ define('admin/extend/plugins', ['jqueryui', 'translator'], function (jqueryui, t
 
 	Plugins.toggleInstall = function (pluginID, version, callback) {
 		var btn = $('li[data-plugin-id="' + pluginID + '"] button[data-action="toggleInstall"]');
-		var activateBtn = btn.siblings('[data-action="toggleActive"]');
 		btn.find('i').attr('class', 'fa fa-refresh fa-spin');
 
 		socket.emit('admin.plugins.toggleInstall', {
 			id: pluginID,
-			version: version
+			version: version,
 		}, function (err, pluginData) {
 			if (err) {
 				btn.removeAttr('disabled');
@@ -217,7 +214,7 @@ define('admin/extend/plugins', ['jqueryui', 'translator'], function (jqueryui, t
 				title: '[[admin/extend/plugins:alert.' + (pluginData.installed ? 'installed' : 'uninstalled') + ']]',
 				message: '[[admin/extend/plugins:alert.' + (pluginData.installed ? 'install-success' : 'uninstall-success') + ']]',
 				type: 'info',
-				timeout: 5000
+				timeout: 5000,
 			});
 
 			if (typeof callback === 'function') {
@@ -232,9 +229,9 @@ define('admin/extend/plugins', ['jqueryui', 'translator'], function (jqueryui, t
 			type: 'GET',
 			data: {
 				package: pluginId,
-				version: nbbVersion[0]
+				version: nbbVersion[0],
 			},
-			dataType: 'json'
+			dataType: 'json',
 		}).done(function (payload) {
 			callback(undefined, payload);
 		}).fail(callback);

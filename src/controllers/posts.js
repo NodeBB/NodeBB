@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 var posts = require('../posts');
 var helpers = require('./helpers');

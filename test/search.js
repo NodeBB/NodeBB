@@ -1,5 +1,5 @@
 'use strict';
-/*global require, before, after*/
+
 
 var	assert = require('assert');
 var async = require('async');
@@ -29,23 +29,23 @@ describe('Search', function () {
 			function (next) {
 				async.series({
 					phoebe: function (next) {
-						user.create({username: 'phoebe'}, next);
+						user.create({ username: 'phoebe' }, next);
 					},
 					ginger: function (next) {
-						user.create({username: 'ginger'}, next);
+						user.create({ username: 'ginger' }, next);
 					},
 					category1: function (next) {
 						categories.create({
 							name: 'Test Category',
-							description: 'Test category created by testing script'
+							description: 'Test category created by testing script',
 						}, next);
 					},
 					category2: function (next) {
 						categories.create({
 							name: 'Test Category',
-							description: 'Test category created by testing script'
+							description: 'Test category created by testing script',
 						}, next);
-					}
+					},
 				}, next);
 			},
 			function (results, next) {
@@ -61,7 +61,7 @@ describe('Search', function () {
 							cid: cid1,
 							title: 'nodebb mongodb bugs',
 							content: 'avocado cucumber apple orange fox',
-							tags: ['nodebb', 'bug', 'plugin', 'nodebb-plugin', 'jquery']
+							tags: ['nodebb', 'bug', 'plugin', 'nodebb-plugin', 'jquery'],
 						}, next);
 					},
 					function (results, next) {
@@ -73,7 +73,7 @@ describe('Search', function () {
 							cid: cid2,
 							title: 'java mongodb redis',
 							content: 'avocado cucumber carrot armadillo',
-							tags: ['nodebb', 'bug', 'plugin', 'nodebb-plugin', 'javascript']
+							tags: ['nodebb', 'bug', 'plugin', 'nodebb-plugin', 'javascript'],
 						}, next);
 					},
 					function (results, next) {
@@ -82,27 +82,26 @@ describe('Search', function () {
 						topics.reply({
 							uid: phoebeUid,
 							content: 'reply post apple',
-							tid: topic2Data.tid
+							tid: topic2Data.tid,
 						}, next);
 					},
 					function (_post3Data, next) {
 						post3Data = _post3Data;
 						setTimeout(next, 500);
-					}
+					},
 				], next);
-			}
+			},
 		], done);
 	});
 
 	it('should search term in titles and posts', function (done) {
-
 		var meta = require('../src/meta');
 		meta.config.allowGuestSearching = 1;
 		var qs = '/api/search?term=cucumber&in=titlesposts&categories[]=' + cid1 + '&by=phoebe&replies=1&repliesFilter=atleast&sortBy=timestamp&sortDirection=desc&showAs=posts';
 
 		request({
 			url: nconf.get('url') + qs,
-			json: true
+			json: true,
 		}, function (err, response, body) {
 			assert.ifError(err);
 			assert(body);
@@ -118,7 +117,7 @@ describe('Search', function () {
 	it('should search for a user', function (done) {
 		search.search({
 			query: 'gin',
-			searchIn: 'users'
+			searchIn: 'users',
 		}, function (err, data) {
 			assert.ifError(err);
 			assert(data);
@@ -133,7 +132,7 @@ describe('Search', function () {
 	it('should search for a tag', function (done) {
 		search.search({
 			query: 'plug',
-			searchIn: 'tags'
+			searchIn: 'tags',
 		}, function (err, data) {
 			assert.ifError(err);
 			assert(data);
@@ -148,7 +147,7 @@ describe('Search', function () {
 	it('should fail if searchIn is wrong', function (done) {
 		search.search({
 			query: 'plug',
-			searchIn: 'invalidfilter'
+			searchIn: 'invalidfilter',
 		}, function (err) {
 			assert.equal(err.message, '[[error:unknown-search-filter]]');
 			done();
@@ -159,7 +158,7 @@ describe('Search', function () {
 		search.search({
 			query: 'mongodb',
 			searchIn: 'titles',
-			hasTags: ['nodebb', 'javascript']
+			hasTags: ['nodebb', 'javascript'],
 		}, function (err, data) {
 			assert.ifError(err);
 			assert.equal(data.posts[0].tid, topic2Data.tid);

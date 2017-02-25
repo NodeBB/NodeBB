@@ -1,8 +1,7 @@
-"use strict";
-/*globals define, app, socket*/
+'use strict';
+
 
 define('forum/footer', ['notifications', 'chat', 'components', 'translator'], function (Notifications, Chat, components, translator) {
-
 	Notifications.prepareDOM();
 	Chat.prepareDOM();
 	translator.prepareDOM();

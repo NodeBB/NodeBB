@@ -1,5 +1,5 @@
-"use strict";
-/*global ajaxify, templates, config, utils*/
+'use strict';
+
 
 (function (ajaxify) {
 	ajaxify.widgets = {};
@@ -29,19 +29,19 @@
 			}
 		});
 
-		$.get(config.relative_path + '/api/widgets/render' + '?' + config['cache-buster'], {
+		$.get(config.relative_path + '/api/widgets/render?' + config['cache-buster'], {
 			locations: widgetLocations,
 			template: template + '.tpl',
 			url: url,
 			cid: ajaxify.data.cid,
-			isMobile: utils.isMobile()
+			isMobile: utils.isMobile(),
 		}, function (renderedAreas) {
-			for (var x = 0; x < renderedAreas.length; ++x) {
+			for (var x = 0; x < renderedAreas.length; x += 1) {
 				var renderedWidgets = renderedAreas[x].widgets;
 				var location = renderedAreas[x].location;
 				var html = '';
 
-				for (var i = 0; i < renderedWidgets.length; ++i) {
+				for (var i = 0; i < renderedWidgets.length; i += 1) {
 					html += templates.parse(renderedWidgets[i].html, {});
 				}
 
@@ -79,7 +79,7 @@
 			widgetAreas.find('img[title].teaser-pic,img[title].user-img').each(function () {
 				$(this).tooltip({
 					placement: 'top',
-					title: $(this).attr('title')
+					title: $(this).attr('title'),
 				});
 			});
 			$(window).trigger('action:widgets.loaded', {});

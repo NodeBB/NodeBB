@@ -1,7 +1,7 @@
-"use strict";
-/*global templates, ajaxify, utils, bootbox, overrides, socket, config, Visibility*/
+'use strict';
 
-var app = app || {};
+
+var app = window.app || {};
 
 app.isFocused = true;
 app.currentRoom = null;
@@ -17,7 +17,7 @@ app.cacheBuster = null;
 	app.cacheBuster = config['cache-buster'];
 
 	bootbox.setDefaults({
-		locale: config.userLang
+		locale: config.userLang,
 	});
 
 	app.load = function () {
@@ -69,7 +69,7 @@ app.cacheBuster = null;
 					clickfn: function () {
 						window.location.reload();
 					},
-					type: 'warning'
+					type: 'warning',
 				});
 			}
 		});
@@ -98,16 +98,16 @@ app.cacheBuster = null;
 		$.ajax(config.relative_path + '/logout', {
 			type: 'POST',
 			headers: {
-				'x-csrf-token': config.csrf_token
+				'x-csrf-token': config.csrf_token,
 			},
 			success: function () {
 				var payload = {
-					next: config.relative_path + '/'
+					next: config.relative_path + '/',
 				};
 
 				$(window).trigger('action:app.loggedOut', payload);
 				window.location.href = payload.next;
-			}
+			},
 		});
 	};
 
@@ -128,7 +128,7 @@ app.cacheBuster = null;
 			title: '[[global:alert.success]]',
 			message: message,
 			type: 'success',
-			timeout: timeout ? timeout : 5000
+			timeout: timeout || 5000,
 		});
 	};
 
@@ -143,7 +143,7 @@ app.cacheBuster = null;
 			title: '[[global:alert.error]]',
 			message: message,
 			type: 'danger',
-			timeout: timeout ? timeout : 10000
+			timeout: timeout || 10000,
 		});
 	};
 
@@ -163,7 +163,7 @@ app.cacheBuster = null;
 					closeButton: false,
 					callback: function () {
 						window.location.reload();
-					}
+					},
 				});
 			});
 		});
@@ -175,7 +175,7 @@ app.cacheBuster = null;
 			var previousRoom = app.currentRoom;
 			app.currentRoom = room;
 			socket.emit('meta.rooms.enter', {
-				enter: room
+				enter: room,
 			}, function (err) {
 				if (err) {
 					app.currentRoom = previousRoom;
@@ -213,7 +213,7 @@ app.cacheBuster = null;
 			if (!utils.isTouchDevice()) {
 				$(this).tooltip({
 					placement: placement || $(this).attr('title-placement') || 'top',
-					title: $(this).attr('title')
+					title: $(this).attr('title'),
 				});
 			}
 		});
@@ -222,8 +222,8 @@ app.cacheBuster = null;
 	app.createStatusTooltips = function () {
 		if (!utils.isTouchDevice()) {
 			$('body').tooltip({
-				selector:'.fa-circle.status',
-				placement: 'top'
+				selector: '.fa-circle.status',
+				placement: 'top',
 			});
 		}
 	};
@@ -262,36 +262,36 @@ app.cacheBuster = null;
 			login: {
 				format: 'alert',
 				title: '[[global:welcome_back]] ' + app.user.username + '!',
-				message: '[[global:you_have_successfully_logged_in]]'
+				message: '[[global:you_have_successfully_logged_in]]',
 			},
 			banned: {
 				format: 'modal',
 				title: '[[error:user-banned]]',
-				message: '[[error:user-banned-reason, ' + utils.params().banned + ']]'
-			}
+				message: '[[error:user-banned-reason, ' + utils.params().banned + ']]',
+			},
 		};
 
 		function showAlert(type) {
 			switch (messages[type].format) {
-				case 'alert':
-					app.alert({
-						type: 'success',
-						title: messages[type].title,
-						message: messages[type].message,
-						timeout: 5000
-					});
-					break;
+			case 'alert':
+				app.alert({
+					type: 'success',
+					title: messages[type].title,
+					message: messages[type].message,
+					timeout: 5000,
+				});
+				break;
 
-				case 'modal':
-					require(['translator'], function (translator) {
-						translator.translate(messages[type].message, function (translated) {
-							bootbox.alert({
-								title: messages[type].title,
-								message: translated
-							});
+			case 'modal':
+				require(['translator'], function (translator) {
+					translator.translate(messages[type].message, function (translated) {
+						bootbox.alert({
+							title: messages[type].title,
+							message: translated,
 						});
 					});
-					break;
+				});
+				break;
 			}
 		}
 
@@ -325,7 +325,7 @@ app.cacheBuster = null;
 			if (chat.modalExists(roomId)) {
 				loadAndCenter(chat.getModal(roomId));
 			} else {
-				socket.emit('modules.chats.loadRoom', {roomId: roomId, uid: uid || app.user.uid}, function (err, roomData) {
+				socket.emit('modules.chats.loadRoom', { roomId: roomId, uid: uid || app.user.uid }, function (err, roomData) {
 					if (err) {
 						return app.alertError(err.message);
 					}
@@ -349,7 +349,7 @@ app.cacheBuster = null;
 			return app.alertError('[[error:cant-chat-with-yourself]]');
 		}
 
-		socket.emit('modules.chats.newRoom', {touid: touid}, function (err, roomId) {
+		socket.emit('modules.chats.newRoom', { touid: touid }, function (err, roomId) {
 			if (err) {
 				return app.alertError(err.message);
 			}
@@ -365,10 +365,10 @@ app.cacheBuster = null;
 	};
 
 	var	titleObj = {
-			active: false,
-			interval: undefined,
-			titles: []
-		};
+		active: false,
+		interval: undefined,
+		titles: [],
+	};
 
 	app.alternatingTitle = function (title) {
 		if (typeof title !== 'string') {
@@ -424,7 +424,7 @@ app.cacheBuster = null;
 	app.toggleNavbar = function (state) {
 		var navbarEl = $('.navbar');
 		if (navbarEl) {
-			navbarEl.toggleClass('hidden', !!!state);
+			navbarEl.toggleClass('hidden', !state);
 		}
 	};
 
@@ -438,7 +438,7 @@ app.cacheBuster = null;
 				$(this).tooltip({
 					placement: 'bottom',
 					trigger: 'hover',
-					title: $(this).attr('title')
+					title: $(this).attr('title'),
 				});
 			}
 		});
@@ -447,7 +447,7 @@ app.cacheBuster = null;
 			$('#search-form').parent().tooltip({
 				placement: 'bottom',
 				trigger: 'hover',
-				title: $('#search-button i').attr('title')
+				title: $('#search-button i').attr('title'),
 			});
 		}
 
@@ -455,15 +455,15 @@ app.cacheBuster = null;
 			$('#user_dropdown').tooltip({
 				placement: 'bottom',
 				trigger: 'hover',
-				title: $('#user_dropdown').attr('title')
+				title: $('#user_dropdown').attr('title'),
 			});
 		}
 	}
 
 	app.handleSearch = function () {
-		var searchButton = $("#search-button"),
-			searchFields = $("#search-fields"),
-			searchInput = $('#search-fields input');
+		var searchButton = $('#search-button');
+		var searchFields = $('#search-fields');
+		var searchInput = $('#search-fields input');
 
 		$('#search-form .advanced-search-link').on('mousedown', function () {
 			ajaxify.go('/search');
@@ -480,8 +480,8 @@ app.cacheBuster = null;
 		searchButton.on('click', function (e) {
 			if (!config.loggedIn && !config.allowGuestSearching) {
 				app.alert({
-					message:'[[error:search-requires-login]]',
-					timeout: 3000
+					message: '[[error:search-requires-login]]',
+					timeout: 3000,
 				});
 				ajaxify.go('login');
 				return false;
@@ -506,8 +506,8 @@ app.cacheBuster = null;
 	};
 
 	app.prepareSearch = function () {
-		$("#search-fields").removeClass('hidden');
-		$("#search-button").addClass('hidden');
+		$('#search-fields').removeClass('hidden');
+		$('#search-button').addClass('hidden');
 		$('#search-fields input').focus();
 	};
 
@@ -515,7 +515,7 @@ app.cacheBuster = null;
 		$('[component="header/usercontrol"] [data-status]').off('click').on('click', function (e) {
 			var status = $(this).attr('data-status');
 			socket.emit('user.setStatus', status, function (err) {
-				if(err) {
+				if (err) {
 					return app.alertError(err.message);
 				}
 				$('[data-uid="' + app.user.uid + '"] [component="user/status"], [component="header/profilelink"] [component="user/status"]')
@@ -546,7 +546,7 @@ app.cacheBuster = null;
 	app.newTopic = function (cid, tags) {
 		$(window).trigger('action:composer.topic.new', {
 			cid: cid || ajaxify.data.cid || 0,
-			tags: tags || (ajaxify.data.tag ? [ajaxify.data.tag] : [])
+			tags: tags || (ajaxify.data.tag ? [ajaxify.data.tag] : []),
 		});
 	};
 
@@ -557,7 +557,7 @@ app.cacheBuster = null;
 
 		var scriptEl = document.createElement('script');
 		scriptEl.type = 'text/javascript';
-		scriptEl.src = config.relative_path + '/assets/vendor/jquery/js/jquery-ui.js' + '?' + config['cache-buster'];
+		scriptEl.src = config.relative_path + '/assets/vendor/jquery/js/jquery-ui.js?' + config['cache-buster'];
 		scriptEl.onload = callback;
 		document.head.appendChild(scriptEl);
 	};
@@ -569,7 +569,7 @@ app.cacheBuster = null;
 		var msg = {
 			alert_id: 'email_confirm',
 			type: 'warning',
-			timeout: 0
+			timeout: 0,
 		};
 
 		if (!app.user.email) {
@@ -656,6 +656,5 @@ app.cacheBuster = null;
 				});
 			});
 		});
-
 	};
 }());

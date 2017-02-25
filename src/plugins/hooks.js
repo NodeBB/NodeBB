@@ -1,13 +1,13 @@
 'use strict';
 
-var winston = require('winston'),
-	async = require('async');
+var winston = require('winston');
+var async = require('async');
 
 module.exports = function (Plugins) {
 	Plugins.deprecatedHooks = {
 		'filter:user.custom_fields': null,	// remove in v1.1.0
 		'filter:post.save': 'filter:post.create',
-		'filter:user.profileLinks': 'filter:user.profileMenu'
+		'filter:user.profileLinks': 'filter:user.profileMenu',
 	};
 	/*
 		`data` is an object consisting of (* is required):
@@ -44,7 +44,7 @@ module.exports = function (Plugins) {
 			if (parts.length > 2) {
 				parts.pop();
 			}
-			var hook = parts.join(':');
+			parts.join(':');
 		}
 
 		if (data.hook && data.method) {
@@ -57,10 +57,9 @@ module.exports = function (Plugins) {
 				method = data.method.split('.').reduce(function (memo, prop) {
 					if (memo && memo[prop]) {
 						return memo[prop];
-					} else {
-						// Couldn't find method by path, aborting
-						return null;
 					}
+						// Couldn't find method by path, aborting
+					return null;
 				}, Plugins.libraries[data.id]);
 
 				// Write the actual method reference to the hookObj
@@ -83,18 +82,18 @@ module.exports = function (Plugins) {
 		var hookType = hook.split(':')[0];
 
 		switch (hookType) {
-			case 'filter':
-				fireFilterHook(hook, hookList, params, callback);
-				break;
-			case 'action':
-				fireActionHook(hook, hookList, params, callback);
-				break;
-			case 'static':
-				fireStaticHook(hook, hookList, params, callback);
-				break;
-			default:
-				winston.warn('[plugins] Unknown hookType: ' + hookType + ', hook : ' + hook);
-				break;
+		case 'filter':
+			fireFilterHook(hook, hookList, params, callback);
+			break;
+		case 'action':
+			fireActionHook(hook, hookList, params, callback);
+			break;
+		case 'static':
+			fireStaticHook(hook, hookList, params, callback);
+			break;
+		default:
+			winston.warn('[plugins] Unknown hookType: ' + hookType + ', hook : ' + hook);
+			break;
 		}
 	};
 
@@ -126,7 +125,6 @@ module.exports = function (Plugins) {
 			return callback();
 		}
 		async.each(hookList, function (hookObj, next) {
-
 			if (typeof hookObj.method !== 'function') {
 				if (global.env === 'development') {
 					winston.warn('[plugins] Expected method for hook \'' + hook + '\' in plugin \'' + hookObj.id + '\' not found, skipping.');
@@ -160,7 +158,7 @@ module.exports = function (Plugins) {
 							next.apply(null, arguments);
 						}
 					});
-				} catch(err) {
+				} catch (err) {
 					winston.error('[plugins] Error executing \'' + hook + '\' in plugin \'' + hookObj.id + '\'');
 					winston.error(err);
 					clearTimeout(timeoutId);

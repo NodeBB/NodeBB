@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 var fs = require('fs');
 var path = require('path');
@@ -31,7 +31,7 @@ uploadsController.uploadCategoryPicture = function (req, res, next) {
 	}
 
 	if (validateUpload(req, res, next, uploadedFile, allowedImageTypes)) {
-		var filename =  'category-' + params.cid + path.extname(uploadedFile.name);
+		var filename = 'category-' + params.cid + path.extname(uploadedFile.name);
 		uploadImage(filename, 'category', uploadedFile, req, res, next);
 	}
 };
@@ -51,15 +51,15 @@ uploadsController.uploadFavicon = function (req, res, next) {
 				return next(err);
 			}
 
-			res.json([{name: uploadedFile.name, url: image.url}]);
+			res.json([{ name: uploadedFile.name, url: image.url }]);
 		});
 	}
 };
 
 uploadsController.uploadTouchIcon = function (req, res, next) {
-	var uploadedFile = req.files.files[0],
-		allowedTypes = ['image/png'],
-		sizes = [36, 48, 72, 96, 144, 192];
+	var uploadedFile = req.files.files[0];
+	var allowedTypes = ['image/png'];
+	var sizes = [36, 48, 72, 96, 144, 192];
 
 	if (validateUpload(req, res, next, uploadedFile, allowedTypes)) {
 		file.saveFileToLocal('touchicon-orig.png', 'system', uploadedFile.path, function (err, imageObj) {
@@ -75,8 +75,8 @@ uploadsController.uploadTouchIcon = function (req, res, next) {
 						path: path.join(nconf.get('upload_path'), 'system', 'touchicon-' + size + '.png'),
 						extension: 'png',
 						width: size,
-						height: size
-					})
+						height: size,
+					}),
 				], next);
 			}, function (err) {
 				fs.unlink(uploadedFile.path, function (err) {
@@ -89,7 +89,7 @@ uploadsController.uploadTouchIcon = function (req, res, next) {
 					return next(err);
 				}
 
-				res.json([{name: uploadedFile.name, url: imageObj.url}]);
+				res.json([{ name: uploadedFile.name, url: imageObj.url }]);
 			});
 		});
 	}
@@ -142,7 +142,7 @@ function validateUpload(req, res, next, uploadedFile, allowedTypes) {
 			}
 		});
 
-		res.json({error: '[[error:invalid-image-type, ' + allowedTypes.join('&#44; ') + ']]'});
+		res.json({ error: '[[error:invalid-image-type, ' + allowedTypes.join('&#44; ') + ']]' });
 		return false;
 	}
 
@@ -160,11 +160,11 @@ function uploadImage(filename, folder, uploadedFile, req, res, next) {
 			return next(err);
 		}
 
-		res.json([{name: uploadedFile.name, url: image.url.startsWith('http') ? image.url : nconf.get('relative_path') + image.url}]);
+		res.json([{ name: uploadedFile.name, url: image.url.startsWith('http') ? image.url : nconf.get('relative_path') + image.url }]);
 	}
 
 	if (plugins.hasListeners('filter:uploadImage')) {
-		plugins.fireHook('filter:uploadImage', {image: uploadedFile, uid: req.user.uid}, done);
+		plugins.fireHook('filter:uploadImage', { image: uploadedFile, uid: req.user.uid }, done);
 	} else {
 		file.saveFileToLocal(filename, folder, uploadedFile.path, done);
 	}

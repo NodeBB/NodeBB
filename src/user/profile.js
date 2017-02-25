@@ -11,14 +11,13 @@ var groups = require('../groups');
 var plugins = require('../plugins');
 
 module.exports = function (User) {
-
 	User.updateProfile = function (uid, data, callback) {
 		var fields = ['username', 'email', 'fullname', 'website', 'location',
 			'groupTitle', 'birthday', 'signature', 'aboutme'];
 
 		async.waterfall([
 			function (next) {
-				plugins.fireHook('filter:user.updateProfile', {uid: uid, data: data, fields: fields}, next);
+				plugins.fireHook('filter:user.updateProfile', { uid: uid, data: data, fields: fields }, next);
 			},
 			function (data, next) {
 				fields = data.fields;
@@ -29,7 +28,7 @@ module.exports = function (User) {
 					async.apply(isSignatureValid, data),
 					async.apply(isEmailAvailable, data, uid),
 					async.apply(isUsernameAvailable, data, uid),
-					async.apply(isGroupTitleValid, data)
+					async.apply(isGroupTitleValid, data),
 				], function (err) {
 					next(err);
 				});
@@ -56,9 +55,9 @@ module.exports = function (User) {
 				}, next);
 			},
 			function (next) {
-				plugins.fireHook('action:user.updateProfile', {data: data, uid: uid});
+				plugins.fireHook('action:user.updateProfile', { data: data, uid: uid });
 				User.getUserFields(uid, ['email', 'username', 'userslug', 'picture', 'icon:text', 'icon:bgColor'], next);
-			}
+			},
 		], callback);
 	};
 
@@ -99,7 +98,7 @@ module.exports = function (User) {
 			},
 			function (available, next) {
 				next(!available ? new Error('[[error:email-taken]]') : null);
-			}
+			},
 		], callback);
 	}
 
@@ -134,7 +133,7 @@ module.exports = function (User) {
 			},
 			function (exists, next) {
 				next(exists ? new Error('[[error:username-taken]]') : null);
-			}
+			},
 		], callback);
 	}
 
@@ -159,7 +158,7 @@ module.exports = function (User) {
 				}
 				async.series([
 					async.apply(db.sortedSetRemove, 'email:uid', oldEmail.toLowerCase()),
-					async.apply(db.sortedSetRemove, 'email:sorted', oldEmail.toLowerCase() + ':' + uid)
+					async.apply(db.sortedSetRemove, 'email:sorted', oldEmail.toLowerCase() + ':' + uid),
 				], function (err) {
 					next(err);
 				});
@@ -170,7 +169,7 @@ module.exports = function (User) {
 						db.sortedSetAdd('email:uid', uid, newEmail.toLowerCase(), next);
 					},
 					function (next) {
-						db.sortedSetAdd('email:sorted',  0, newEmail.toLowerCase() + ':' + uid, next);
+						db.sortedSetAdd('email:sorted', 0, newEmail.toLowerCase() + ':' + uid, next);
 					},
 					function (next) {
 						db.sortedSetAdd('user:' + uid + ':emails', Date.now(), newEmail + ':' + Date.now(), next);
@@ -186,11 +185,11 @@ module.exports = function (User) {
 					},
 					function (next) {
 						db.sortedSetAdd('users:notvalidated', Date.now(), uid, next);
-					}
+					},
 				], function (err) {
 					next(err);
 				});
-			}
+			},
 		], callback);
 	}
 
@@ -216,7 +215,7 @@ module.exports = function (User) {
 					async.series([
 						async.apply(db.sortedSetRemove, 'username:sorted', userData.username.toLowerCase() + ':' + uid),
 						async.apply(db.sortedSetAdd, 'username:sorted', 0, newUsername.toLowerCase() + ':' + uid),
-						async.apply(db.sortedSetAdd, 'user:' + uid + ':usernames', Date.now(), newUsername + ':' + Date.now())
+						async.apply(db.sortedSetAdd, 'user:' + uid + ':usernames', Date.now(), newUsername + ':' + Date.now()),
 					], next);
 				},
 			], callback);
@@ -241,7 +240,7 @@ module.exports = function (User) {
 				} else {
 					next();
 				}
-			}
+			},
 		], callback);
 	}
 
@@ -252,7 +251,7 @@ module.exports = function (User) {
 			},
 			function (fullname, next) {
 				updateUidMapping('fullname', uid, newFullname, fullname, next);
-			}
+			},
 		], callback);
 	}
 
@@ -282,11 +281,11 @@ module.exports = function (User) {
 			function (hashedPassword, next) {
 				async.parallel([
 					async.apply(User.setUserField, data.uid, 'password', hashedPassword),
-					async.apply(User.reset.updateExpiry, data.uid)
+					async.apply(User.reset.updateExpiry, data.uid),
 				], function (err) {
 					next(err);
 				});
-			}
+			},
 		], callback);
 	};
 };

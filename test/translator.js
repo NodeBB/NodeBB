@@ -1,5 +1,5 @@
 'use strict';
-/*global require*/
+
 
 var assert = require('assert');
 var shim = require('../public/src/modules/translator.js');
@@ -119,7 +119,7 @@ describe('new Translator(language)', function () {
 			var translator = Translator.create('en-GB');
 
 			var title = 'Test 1\\, 2\\, 3 % salmon';
-			var key = "[[topic:composer.replying_to, " + title + "]]";
+			var key = '[[topic:composer.replying_to, ' + title + ']]';
 			return translator.translate(key).then(function (translated) {
 				assert.strictEqual(translated, 'Replying to Test 1&#44; 2&#44; 3 &#37; salmon');
 			});
@@ -173,7 +173,7 @@ describe('Translator.create()', function () {
 describe('Translator modules', function () {
 	it('should work before registered', function () {
 		var translator = Translator.create();
-		
+
 		Translator.registerModule('test-custom-integer-format', function (lang) {
 			return function (key, args) {
 				var num = parseInt(args[0], 10) || 0;

@@ -1,5 +1,5 @@
-"use strict";
-/*global define, socket*/
+'use strict';
+
 
 define('admin/general/social', [], function () {
 	var social = {};
@@ -12,7 +12,7 @@ define('admin/general/social', [], function () {
 					networks.push($(this).attr('id'));
 				}
 			});
-			
+
 			socket.emit('admin.social.savePostSharingNetworks', networks, function (err) {
 				if (err) {
 					return app.alertError(err);

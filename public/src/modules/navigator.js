@@ -1,11 +1,8 @@
 
 'use strict';
 
-/* globals define, ajaxify, utils, config */
-
 
 define('navigator', ['forum/pagination', 'components'], function (pagination, components) {
-
 	var navigator = {};
 	var index = 1;
 	var count = 0;
@@ -78,7 +75,8 @@ define('navigator', ['forum/pagination', 'components'], function (pagination, co
 	navigator.disable = function () {
 		count = 0;
 		index = 1;
-		navigator.selector = navigator.callback = null;
+		navigator.callback = null;
+		navigator.selector = null;
 		$(window).off('scroll', navigator.update);
 
 		toggle(false);
@@ -116,7 +114,7 @@ define('navigator', ['forum/pagination', 'components'], function (pagination, co
 		var scrollTop = $(window).scrollTop();
 		var windowHeight = $(window).height();
 		var documentHeight = $(document).height();
-		var middleOfViewport = scrollTop + windowHeight / 2;
+		var middleOfViewport = scrollTop + (windowHeight / 2);
 		var previousDistance = Number.MAX_VALUE;
 		els.each(function () {
 			var distanceToMiddle = Math.abs(middleOfViewport - $(this).offset().top);
@@ -173,13 +171,13 @@ define('navigator', ['forum/pagination', 'components'], function (pagination, co
 
 	navigator.scrollUp = function () {
 		$('body,html').animate({
-			scrollTop: $(window).scrollTop() - $(window).height()
+			scrollTop: $(window).scrollTop() - $(window).height(),
 		});
 	};
 
 	navigator.scrollDown = function () {
 		$('body,html').animate({
-			scrollTop: $(window).scrollTop() + $(window).height()
+			scrollTop: $(window).scrollTop() + $(window).height(),
 		});
 	};
 
@@ -266,7 +264,7 @@ define('navigator', ['forum/pagination', 'components'], function (pagination, co
 			}
 
 			$('html, body').animate({
-				scrollTop: scrollTop + 'px'
+				scrollTop: scrollTop + 'px',
 			}, duration, function () {
 				if (done) {
 					// Re-enable onScroll behaviour

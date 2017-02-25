@@ -1,8 +1,8 @@
 
 'use strict';
 
-var bcrypt = require('bcryptjs'),
-	async = require('async');
+var bcrypt = require('bcryptjs');
+var async = require('async');
 
 
 process.on('message', function (msg) {
@@ -20,15 +20,15 @@ function hashPassword(password, rounds) {
 		},
 		function (salt, next) {
 			bcrypt.hash(password, salt, next);
-		}
+		},
 	], done);
 }
 
 function done(err, result) {
 	if (err) {
-		process.send({err: err.message});
+		process.send({ err: err.message });
 		return process.disconnect();
 	}
-	process.send({result: result});
+	process.send({ result: result });
 	process.disconnect();
 }

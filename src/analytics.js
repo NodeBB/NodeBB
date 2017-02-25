@@ -25,12 +25,12 @@ Analytics.increment = function (keys) {
 
 	keys.forEach(function (key) {
 		counters[key] = counters[key] || 0;
-		++counters[key];
+		counters[key] += 1;
 	});
 };
 
 Analytics.pageView = function (payload) {
-	++pageViews;
+	pageViews += 1;
 
 	if (payload.ip) {
 		db.sortedSetScore('ip:recent', payload.ip, function (err, score) {
@@ -38,20 +38,20 @@ Analytics.pageView = function (payload) {
 				return;
 			}
 			if (!score) {
-				++uniqueIPCount;
+				uniqueIPCount += 1;
 			}
 			var today = new Date();
 			today.setHours(today.getHours(), 0, 0, 0);
 			if (!score || score < today.getTime()) {
-				++uniquevisitors;
+				uniquevisitors += 1;
 				db.sortedSetAdd('ip:recent', Date.now(), payload.ip);
 			}
 		});
 	}
 
 	if (payload.path) {
-		var categoryMatch = payload.path.match(isCategory),
-			cid = categoryMatch ? parseInt(categoryMatch[1], 10) : null;
+		var categoryMatch = payload.path.match(isCategory);
+		var cid = categoryMatch ? parseInt(categoryMatch[1], 10) : null;
 
 		if (cid) {
 			Analytics.increment(['pageviews:byCid:' + cid]);
@@ -86,7 +86,7 @@ Analytics.writeData = function (callback) {
 	}
 
 	if (Object.keys(counters).length > 0) {
-		for(var key in counters) {
+		for (var key in counters) {
 			if (counters.hasOwnProperty(key)) {
 				dbQueue.push(async.apply(db.sortedSetIncrBy, 'analytics:' + key, counters[key], today.getTime()));
 				delete counters[key];
@@ -103,13 +103,13 @@ Analytics.writeData = function (callback) {
 };
 
 Analytics.getHourlyStatsForSet = function (set, hour, numHours, callback) {
-	var terms = {},
-		hoursArr = [];
+	var terms = {};
+	var hoursArr = [];
 
 	hour = new Date(hour);
 	hour.setHours(hour.getHours(), 0, 0, 0);
 
-	for (var i = 0, ii = numHours; i < ii; i++) {
+	for (var i = 0, ii = numHours; i < ii; i += 1) {
 		hoursArr.push(hour.getTime());
 		hour.setHours(hour.getHours() - 1, 0, 0, 0);
 	}
@@ -142,7 +142,8 @@ Analytics.getDailyStatsForSet = function (set, day, numDays, callback) {
 	day.setHours(0, 0, 0, 0);
 
 	async.whilst(function () {
-		return numDays--;
+		numDays -= 1;
+		return numDays + 1;
 	}, function (next) {
 		Analytics.getHourlyStatsForSet(set, day.getTime() - (1000 * 60 * 60 * 24 * numDays), 24, function (err, day) {
 			if (err) {
@@ -177,7 +178,7 @@ Analytics.getMonthlyPageViews = function (callback) {
 		if (err) {
 			return callback(err);
 		}
-		callback(null, {thisMonth: scores[0] || 0, lastMonth: scores[1] || 0});
+		callback(null, { thisMonth: scores[0] || 0, lastMonth: scores[1] || 0 });
 	});
 };
 
@@ -193,7 +194,7 @@ Analytics.getCategoryAnalytics = function (cid, callback) {
 Analytics.getErrorAnalytics = function (callback) {
 	async.parallel({
 		'not-found': async.apply(Analytics.getDailyStatsForSet, 'analytics:errors:404', Date.now(), 7),
-		'toobusy': async.apply(Analytics.getDailyStatsForSet, 'analytics:errors:503', Date.now(), 7)
+		toobusy: async.apply(Analytics.getDailyStatsForSet, 'analytics:errors:503', Date.now(), 7),
 	}, callback);
 };
 

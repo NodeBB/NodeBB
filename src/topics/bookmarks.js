@@ -7,7 +7,6 @@ var db = require('../database');
 var posts = require('../posts');
 
 module.exports = function (Topics) {
-
 	Topics.getUserBookmark = function (tid, uid, callback) {
 		db.sortedSetScore('tid:' + tid + ':bookmarks', uid, callback);
 	};
@@ -44,13 +43,13 @@ module.exports = function (Topics) {
 			},
 			function (bookmarks, next) {
 				var forkedPosts = pids.map(function (pid) {
-					return {pid: pid, tid: tid};
+					return { pid: pid, tid: tid };
 				});
 
 				var uidData = bookmarks.map(function (bookmark) {
 					return {
 						uid: bookmark.value,
-						bookmark: bookmark.score
+						bookmark: bookmark.score,
 					};
 				});
 
@@ -63,8 +62,8 @@ module.exports = function (Topics) {
 						var bookmark = data.bookmark;
 						bookmark = bookmark < maxIndex ? bookmark : maxIndex;
 
-						for (var i = 0; i < postIndices.length && postIndices[i] < data.bookmark; ++i) {
-							--bookmark;
+						for (var i = 0; i < postIndices.length && postIndices[i] < data.bookmark; i += 1) {
+							bookmark -= 1;
 						}
 
 						if (parseInt(bookmark, 10) !== parseInt(data.bookmark, 10)) {
@@ -74,10 +73,9 @@ module.exports = function (Topics) {
 						}
 					});
 				}, next);
-			}
+			},
 		], function (err) {
 			callback(err);
 		});
 	};
-
 };

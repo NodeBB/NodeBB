@@ -1,19 +1,16 @@
 'use strict';
 
-/* globals define, app, ajaxify, socket, bootbox, templates */
 
 define('forum/topic/threadTools', [
 	'forum/topic/fork',
 	'forum/topic/move',
 	'forum/topic/delete-posts',
 	'components',
-	'translator'
+	'translator',
 ], function (fork, move, deletePosts, components, translator) {
-
 	var ThreadTools = {};
 
 	ThreadTools.init = function (tid) {
-
 		renderMenu();
 
 		var topicContainer = $('.topic');
@@ -34,22 +31,22 @@ define('forum/topic/threadTools', [
 		});
 
 		topicContainer.on('click', '[component="topic/lock"]', function () {
-			socket.emit('topics.lock', {tids: [tid], cid: ajaxify.data.cid});
+			socket.emit('topics.lock', { tids: [tid], cid: ajaxify.data.cid });
 			return false;
 		});
 
 		topicContainer.on('click', '[component="topic/unlock"]', function () {
-			socket.emit('topics.unlock', {tids: [tid], cid: ajaxify.data.cid});
+			socket.emit('topics.unlock', { tids: [tid], cid: ajaxify.data.cid });
 			return false;
 		});
 
 		topicContainer.on('click', '[component="topic/pin"]', function () {
-			socket.emit('topics.pin', {tids: [tid], cid: ajaxify.data.cid});
+			socket.emit('topics.pin', { tids: [tid], cid: ajaxify.data.cid });
 			return false;
 		});
 
 		topicContainer.on('click', '[component="topic/unpin"]', function () {
-			socket.emit('topics.unpin', {tids: [tid], cid: ajaxify.data.cid});
+			socket.emit('topics.unpin', { tids: [tid], cid: ajaxify.data.cid });
 			return false;
 		});
 
@@ -94,14 +91,14 @@ define('forum/topic/threadTools', [
 		});
 
 		function changeWatching(type) {
-			socket.emit('topics.changeWatching', {tid: tid, type: type}, function (err) {
+			socket.emit('topics.changeWatching', { tid: tid, type: type }, function (err) {
 				if (err) {
 					return app.alert({
 						type: 'danger',
 						alert_id: 'topic_follow',
 						title: '[[global:please_log_in]]',
 						message: '[[topic:login_to_subscribe]]',
-						timeout: 5000
+						timeout: 5000,
 					});
 				}
 				var message = '';
@@ -118,10 +115,10 @@ define('forum/topic/threadTools', [
 					alert_id: 'follow_thread',
 					message: message,
 					type: 'success',
-					timeout: 5000
+					timeout: 5000,
 				});
 
-				$(window).trigger('action:topics.changeWatching', {tid: tid, type: type});
+				$(window).trigger('action:topics.changeWatching', { tid: tid, type: type });
 			});
 
 			return false;
@@ -136,7 +133,7 @@ define('forum/topic/threadTools', [
 				return;
 			}
 
-			socket.emit('topics.loadTopicTools', {tid: ajaxify.data.tid, cid: ajaxify.data.cid}, function (err, data) {
+			socket.emit('topics.loadTopicTools', { tid: ajaxify.data.tid, cid: ajaxify.data.cid }, function (err, data) {
 				if (err) {
 					return app.alertError(err);
 				}
@@ -158,7 +155,7 @@ define('forum/topic/threadTools', [
 					return;
 				}
 
-				socket.emit('topics.' + command, {tids: [tid], cid: ajaxify.data.cid}, function (err) {
+				socket.emit('topics.' + command, { tids: [tid], cid: ajaxify.data.cid }, function (err) {
 					if (err) {
 						app.alertError(err.message);
 					}
@@ -237,7 +234,7 @@ define('forum/topic/threadTools', [
 		components.get('topic/not-following/check').toggleClass('fa-check', state === 'unfollow');
 
 		menu = components.get('topic/ignoring/menu');
-		menu.toggleClass('hidden', state !== 'ignore' );
+		menu.toggleClass('hidden', state !== 'ignore');
 		components.get('topic/ignoring/check').toggleClass('fa-check', state === 'ignore');
 	}
 

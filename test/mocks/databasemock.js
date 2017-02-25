@@ -1,15 +1,14 @@
+'use strict';
+
 /**
  * Database Mock - wrapper for database.js, makes system use separate test db, instead of production
  * ATTENTION: testing db is flushed before every use!
  */
 
 (function (module) {
-	'use strict';
-	/*global require, before, __dirname*/
-
 	var async = require('async');
 	var winston = require('winston');
-	var path  = require('path');
+	var path = require('path');
 	var nconf = require('nconf');
 	var url = require('url');
 	var errorText;
@@ -17,11 +16,11 @@
 
 	nconf.file({ file: path.join(__dirname, '../../config.json') });
 	nconf.defaults({
-		base_dir: path.join(__dirname,'../..'),
+		base_dir: path.join(__dirname, '../..'),
 		themes_path: path.join(__dirname, '../../node_modules'),
 		upload_path: 'public/uploads',
 		views_dir: path.join(__dirname, '../../build/public/templates'),
-		relative_path: ''
+		relative_path: '',
 	});
 
 	if (!nconf.get('isCluster')) {
@@ -39,27 +38,27 @@
 			'\n===========================================================\n' +
 			'Please, add parameters for test database in config.json\n' +
 			'For example (redis):\n' +
-				'"test_database": {' + '\n' +
-				'    "host": "127.0.0.1",' + '\n' +
-				'    "port": "6379",' + '\n' +
-				'    "password": "",' + '\n' +
-				'    "database": "1"' + '\n' +
+			'"test_database": {\n' +
+			'    "host": "127.0.0.1",\n' +
+			'    "port": "6379",\n' +
+			'    "password": "",\n' +
+			'    "database": "1"\n' +
 			'}\n' +
 			' or (mongo):\n' +
-				'"test_database": {' + '\n' +
-				'    "host": "127.0.0.1",' + '\n' +
-				'    "port": "27017",' + '\n' +
-				'    "password": "",' + '\n' +
-				'    "database": "1"' + '\n' +
+			'"test_database": {\n' +
+			'    "host": "127.0.0.1",\n' +
+			'    "port": "27017",\n' +
+			'    "password": "",\n' +
+			'    "database": "1\n' +
 			'}\n' +
-			' or (mongo) in a replicaset' + '\n' +
-			'"test_database": {' + '\n' +
-		    '    "host": "127.0.0.1,127.0.0.1,127.0.0.1",' + '\n' +
-		    '    "port": "27017,27018,27019",' + '\n' +
-		    '    "username": "",' + '\n' +
-		    '    "password": "",' + '\n' +
-		    '    "database": "nodebb_test"' + '\n' +
-		    '}\n' +
+			' or (mongo) in a replicaset\n' +
+			'"test_database": {\n' +
+			'    "host": "127.0.0.1,127.0.0.1,127.0.0.1",\n' +
+			'    "port": "27017,27018,27019",\n' +
+			'    "username": "",\n' +
+			'    "password": "",\n' +
+			'    "database": "nodebb_test"\n' +
+			'}\n' +
 			'==========================================================='
 		);
 		winston.error(errorText);
@@ -116,7 +115,7 @@
 			function (next) {
 				meta.themes.set({
 					type: 'local',
-					id: 'nodebb-theme-persona'
+					id: 'nodebb-theme-persona',
 				}, next);
 			},
 			function (next) {
@@ -151,7 +150,7 @@
 				require('../../src/user').startJobs();
 
 				webserver.listen(next);
-			}
+			},
 		], done);
 	});
 
@@ -167,7 +166,7 @@
 		winston.info('Enabling default plugins\n');
 
 		var defaultEnabled = [
-			'nodebb-plugin-dbsearch'
+			'nodebb-plugin-dbsearch',
 		];
 
 		winston.info('[install/enableDefaultPlugins] activating default plugins', defaultEnabled);
@@ -176,5 +175,4 @@
 	}
 
 	module.exports = db;
-
 }(module));

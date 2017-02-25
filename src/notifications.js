@@ -16,7 +16,6 @@ var plugins = require('./plugins');
 var utils = require('../public/src/utils');
 
 (function (Notifications) {
-
 	Notifications.init = function () {
 		winston.verbose('[notifications.init] Registering jobs.');
 		new cron('*/30 * * * *', Notifications.prune, null, true);
@@ -143,7 +142,7 @@ var utils = require('../public/src/utils');
 				},
 				function (next) {
 					db.setObject('notifications:' + data.nid, data, next);
-				}
+				},
 			], function (err) {
 				callback(err, data);
 			});
@@ -172,7 +171,7 @@ var utils = require('../public/src/utils');
 		setTimeout(function () {
 			batch.processArray(uids, function (uids, next) {
 				pushToUids(uids, notification, next);
-			}, {interval: 1000}, function (err) {
+			}, { interval: 1000 }, function (err) {
 				if (err) {
 					winston.error(err.stack);
 				}
@@ -189,7 +188,7 @@ var utils = require('../public/src/utils');
 
 		async.waterfall([
 			function (next) {
-				plugins.fireHook('filter:notification.push', {notification: notification, uids: uids}, next);
+				plugins.fireHook('filter:notification.push', { notification: notification, uids: uids }, next);
 			},
 			function (data, next) {
 				uids = data.uids;
@@ -219,9 +218,9 @@ var utils = require('../public/src/utils');
 					});
 				}
 
-				plugins.fireHook('action:notification.pushed', {notification: notification, uids: uids});
+				plugins.fireHook('action:notification.pushed', { notification: notification, uids: uids });
 				next();
-			}
+			},
 		], callback);
 	}
 
@@ -254,7 +253,7 @@ var utils = require('../public/src/utils');
 
 		async.parallel([
 			async.apply(db.sortedSetRemove, 'notifications', nid),
-			async.apply(db.delete, 'notifications:' + nid)
+			async.apply(db.delete, 'notifications:' + nid),
 		], function (err) {
 			if (err) {
 				winston.error('Encountered error rescinding notification (' + nid + '): ' + err.message);
@@ -288,7 +287,7 @@ var utils = require('../public/src/utils');
 
 			async.parallel([
 				async.apply(db.sortedSetRemove, 'uid:' + uid + ':notifications:read', nid),
-				async.apply(db.sortedSetAdd, 'uid:' + uid + ':notifications:unread', notification.datetime, nid)
+				async.apply(db.sortedSetAdd, 'uid:' + uid + ':notifications:unread', notification.datetime, nid),
 			], callback);
 		});
 	};
@@ -325,7 +324,7 @@ var utils = require('../public/src/utils');
 				});
 
 				db.getObjectsFields(notificationKeys, ['nid', 'datetime'], next);
-			}
+			},
 		], function (err, notificationData) {
 			if (err) {
 				return callback(err);
@@ -351,7 +350,7 @@ var utils = require('../public/src/utils');
 				},
 				function (next) {
 					db.sortedSetAdd('uid:' + uid + ':notifications:read', datetimes, nids, next);
-				}
+				},
 			], function (err) {
 				callback(err);
 			});
@@ -373,8 +372,7 @@ var utils = require('../public/src/utils');
 	};
 
 	Notifications.prune = function () {
-		var	week = 604800000,
-			numPruned = 0;
+		var	week = 604800000;
 
 		var	cutoffTime = Date.now() - week;
 
@@ -391,15 +389,13 @@ var utils = require('../public/src/utils');
 				return 'notifications:' + nid;
 			});
 
-			numPruned = nids.length;
-
 			async.parallel([
 				function (next) {
 					db.sortedSetRemove('notifications', nids, next);
 				},
 				function (next) {
 					db.deleteAll(keys, next);
-				}
+				},
 			], function (err) {
 				if (err) {
 					return winston.error('Encountered error pruning notifications: ' + err.message);
@@ -411,13 +407,17 @@ var utils = require('../public/src/utils');
 	Notifications.merge = function (notifications, callback) {
 		// When passed a set of notification objects, merge any that can be merged
 		var mergeIds = [
-				'notifications:upvoted_your_post_in',
-				'notifications:user_started_following_you',
-				'notifications:user_posted_to',
-				'notifications:user_flagged_post_in',
-				'new_register'
-			],
-			isolated, differentiators, differentiator, modifyIndex, set;
+			'notifications:upvoted_your_post_in',
+			'notifications:user_started_following_you',
+			'notifications:user_posted_to',
+			'notifications:user_flagged_post_in',
+			'new_register',
+		];
+		var isolated;
+		var differentiators;
+		var differentiator;
+		var modifyIndex;
+		var set;
 
 		notifications = mergeIds.reduce(function (notifications, mergeId) {
 			isolated = notifications.filter(function (notifObj) {
@@ -456,35 +456,35 @@ var utils = require('../public/src/utils');
 					return notifications;
 				}
 
-				switch(mergeId) {
+				switch (mergeId) {
 					// intentional fall-through
-					case 'notifications:upvoted_your_post_in':
-					case 'notifications:user_started_following_you':
-					case 'notifications:user_posted_to':
-					case 'notifications:user_flagged_post_in':
-						var usernames = set.map(function (notifObj) {
-							return notifObj && notifObj.user && notifObj.user.username;
-						}).filter(function (username, idx, array) {
-							return array.indexOf(username) === idx;
-						});
-						var numUsers = usernames.length;
+				case 'notifications:upvoted_your_post_in':
+				case 'notifications:user_started_following_you':
+				case 'notifications:user_posted_to':
+				case 'notifications:user_flagged_post_in':
+					var usernames = set.map(function (notifObj) {
+						return notifObj && notifObj.user && notifObj.user.username;
+					}).filter(function (username, idx, array) {
+						return array.indexOf(username) === idx;
+					});
+					var numUsers = usernames.length;
 
-						var title = S(notifications[modifyIndex].topicTitle || '').decodeHTMLEntities().s;
-						var titleEscaped = title.replace(/%/g, '&#37;').replace(/,/g, '&#44;');
-						titleEscaped = titleEscaped ? (', ' + titleEscaped) : '';
+					var title = S(notifications[modifyIndex].topicTitle || '').decodeHTMLEntities().s;
+					var titleEscaped = title.replace(/%/g, '&#37;').replace(/,/g, '&#44;');
+					titleEscaped = titleEscaped ? (', ' + titleEscaped) : '';
 
-						if (numUsers === 2) {
-							notifications[modifyIndex].bodyShort = '[[' + mergeId + '_dual, ' + usernames.join(', ') + titleEscaped + ']]';
-						} else if (numUsers > 2) {
-							notifications[modifyIndex].bodyShort = '[[' + mergeId + '_multiple, ' + usernames[0] + ', ' + (numUsers - 1) + titleEscaped + ']]';
-						}
+					if (numUsers === 2) {
+						notifications[modifyIndex].bodyShort = '[[' + mergeId + '_dual, ' + usernames.join(', ') + titleEscaped + ']]';
+					} else if (numUsers > 2) {
+						notifications[modifyIndex].bodyShort = '[[' + mergeId + '_multiple, ' + usernames[0] + ', ' + (numUsers - 1) + titleEscaped + ']]';
+					}
 
-						notifications[modifyIndex].path = set[set.length - 1].path;
-						break;
+					notifications[modifyIndex].path = set[set.length - 1].path;
+					break;
 
-					case 'new_register':
-						notifications[modifyIndex].bodyShort = '[[notifications:' + mergeId + '_multiple, ' + set.length + ']]';
-						break;
+				case 'new_register':
+					notifications[modifyIndex].bodyShort = '[[notifications:' + mergeId + '_multiple, ' + set.length + ']]';
+					break;
 				}
 
 				// Filter out duplicates
@@ -501,11 +501,10 @@ var utils = require('../public/src/utils');
 		}, notifications);
 
 		plugins.fireHook('filter:notifications.merge', {
-			notifications: notifications
+			notifications: notifications,
 		}, function (err, data) {
 			callback(err, data.notifications);
 		});
 	};
-
 }(exports));
 

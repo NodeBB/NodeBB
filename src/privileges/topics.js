@@ -12,7 +12,6 @@ var categories = require('../categories');
 var plugins = require('../plugins');
 
 module.exports = function (privileges) {
-
 	privileges.topics = {};
 
 	privileges.topics.get = function (tid, uid, callback) {
@@ -26,9 +25,9 @@ module.exports = function (privileges) {
 					privileges: async.apply(helpers.isUserAllowedTo, privs, uid, topic.cid),
 					isAdministrator: async.apply(user.isAdministrator, uid),
 					isModerator: async.apply(user.isModerator, uid, topic.cid),
-					disabled: async.apply(categories.getCategoryField, topic.cid, 'disabled')
+					disabled: async.apply(categories.getCategoryField, topic.cid, 'disabled'),
 				}, next);
-			}
+			},
 		], function (err, results) {
 			if (err) {
 				return callback(err);
@@ -57,7 +56,7 @@ module.exports = function (privileges) {
 				isAdminOrMod: isAdminOrMod,
 				disabled: disabled,
 				tid: tid,
-				uid: uid
+				uid: uid,
 			}, callback);
 		});
 	};
@@ -69,7 +68,7 @@ module.exports = function (privileges) {
 			},
 			function (cid, next) {
 				privileges.categories.can(privilege, cid, uid, next);
-			}
+			},
 		], callback);
 	};
 
@@ -94,7 +93,6 @@ module.exports = function (privileges) {
 				privileges.categories.getBase(privilege, cids, uid, next);
 			},
 			function (results, next) {
-
 				var isModOf = {};
 				cids = cids.filter(function (cid, index) {
 					isModOf[cid] = results.isModerators[index];
@@ -112,11 +110,11 @@ module.exports = function (privileges) {
 				plugins.fireHook('filter:privileges.topics.filter', {
 					privilege: privilege,
 					uid: uid,
-					tids: tids
+					tids: tids,
 				}, function (err, data) {
 					next(err, data ? data.tids : null);
 				});
-			}
+			},
 		], callback);
 	};
 
@@ -146,7 +144,7 @@ module.exports = function (privileges) {
 					},
 					isAdmins: function (next) {
 						user.isAdministrator(uids, next);
-					}
+					},
 				}, function (err, results) {
 					if (err) {
 						return next(err);
@@ -159,7 +157,7 @@ module.exports = function (privileges) {
 
 					next(null, uids);
 				});
-			}
+			},
 		], callback);
 	};
 
@@ -172,12 +170,12 @@ module.exports = function (privileges) {
 				async.parallel({
 					purge: async.apply(privileges.categories.isUserAllowedTo, 'purge', cid, uid),
 					owner: async.apply(topics.isOwner, tid, uid),
-					isAdminOrMod: async.apply(privileges.categories.isAdminOrMod, cid, uid)
+					isAdminOrMod: async.apply(privileges.categories.isAdminOrMod, cid, uid),
 				}, next);
 			},
 			function (results, next) {
 				next(null, results.isAdminOrMod || (results.purge && results.owner));
-			}
+			},
 		], callback);
 	};
 
@@ -193,9 +191,9 @@ module.exports = function (privileges) {
 					isModerator: async.apply(user.isModerator, uid, topicData.cid),
 					isAdministrator: async.apply(user.isAdministrator, uid),
 					isOwner: async.apply(topics.isOwner, tid, uid),
-					'topics:delete': async.apply(helpers.isUserAllowedTo, 'topics:delete', uid, [topicData.cid])
+					'topics:delete': async.apply(helpers.isUserAllowedTo, 'topics:delete', uid, [topicData.cid]),
 				}, next);
-			}
+			},
 		], function (err, results) {
 			if (err) {
 				return callback(err);
@@ -232,7 +230,7 @@ module.exports = function (privileges) {
 			},
 			function (next) {
 				privileges.topics.isAdminOrMod(tid, uid, next);
-			}
+			},
 		], callback);
 	};
 
@@ -249,7 +247,7 @@ module.exports = function (privileges) {
 			},
 			function (next) {
 				user.isAdministrator(uid, next);
-			}
+			},
 		], callback);
 	};
 };

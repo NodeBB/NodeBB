@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 var async = require('async');
 var nconf = require('nconf');
@@ -19,7 +19,7 @@ groupsController.list = function (req, res, next) {
 			return next(err);
 		}
 		data.title = '[[pages:groups]]';
-		data.breadcrumbs = helpers.buildBreadcrumbs([{text: '[[pages:groups]]'}]);
+		data.breadcrumbs = helpers.buildBreadcrumbs([{ text: '[[pages:groups]]' }]);
 		res.render('groups/list', data);
 	});
 };
@@ -40,9 +40,9 @@ groupsController.getGroupsFromSet = function (uid, sort, start, stop, callback) 
 			next(null, {
 				groups: groupsData,
 				allowGroupCreation: parseInt(meta.config.allowGroupCreation, 10) === 1,
-				nextStart: stop + 1
+				nextStart: stop + 1,
 			});
-		}
+		},
 	], callback);
 };
 
@@ -59,7 +59,7 @@ groupsController.details = function (req, res, callback) {
 			}
 			async.parallel({
 				exists: async.apply(groups.exists, groupName),
-				hidden: async.apply(groups.isHidden, groupName)
+				hidden: async.apply(groups.isHidden, groupName),
 			}, next);
 		},
 		function (results, next) {
@@ -71,7 +71,7 @@ groupsController.details = function (req, res, callback) {
 			}
 			async.parallel({
 				isMember: async.apply(groups.isMember, req.uid, groupName),
-				isInvited: async.apply(groups.isInvited, req.uid, groupName)
+				isInvited: async.apply(groups.isInvited, req.uid, groupName),
 			}, function (err, checks) {
 				if (err || checks.isMember || checks.isInvited) {
 					return next(err);
@@ -85,20 +85,20 @@ groupsController.details = function (req, res, callback) {
 					groups.get(groupName, {
 						uid: req.uid,
 						truncateUserList: true,
-						userListCount: 20
+						userListCount: 20,
 					}, next);
 				},
 				posts: function (next) {
 					groups.getLatestMemberPosts(groupName, 10, req.uid, next);
 				},
-				isAdmin:function (next) {
+				isAdmin: function (next) {
 					user.isAdministrator(req.uid, next);
 				},
 				isGlobalMod: function (next) {
 					user.isGlobalModerator(req.uid, next);
-				}
+				},
 			}, next);
-		}
+		},
 	], function (err, results) {
 		if (err) {
 			return callback(err);
@@ -109,7 +109,7 @@ groupsController.details = function (req, res, callback) {
 		}
 		results.group.isOwner = results.group.isOwner || results.isAdmin || (results.isGlobalMod && !results.group.system);
 		results.title = '[[pages:group, ' + results.group.displayName + ']]';
-		results.breadcrumbs = helpers.buildBreadcrumbs([{text: '[[pages:groups]]', url: '/groups' }, {text: results.group.displayName}]);
+		results.breadcrumbs = helpers.buildBreadcrumbs([{ text: '[[pages:groups]]', url: '/groups' }, { text: results.group.displayName }]);
 		results.allowPrivateGroups = parseInt(meta.config.allowPrivateGroups, 10) === 1;
 
 		res.render('groups/details', results);
@@ -130,7 +130,7 @@ groupsController.members = function (req, res, callback) {
 			async.parallel({
 				isAdminOrGlobalMod: async.apply(user.isAdminOrGlobalMod, req.uid),
 				isMember: async.apply(groups.isMember, req.uid, groupName),
-				isHidden: async.apply(groups.isHidden, groupName)
+				isHidden: async.apply(groups.isHidden, groupName),
 			}, next);
 		},
 		function (results, next) {
@@ -146,16 +146,16 @@ groupsController.members = function (req, res, callback) {
 		}
 
 		var breadcrumbs = helpers.buildBreadcrumbs([
-			{text: '[[pages:groups]]', url: '/groups' },
-			{text: validator.escape(String(groupName)), url: '/groups/' + req.params.slug},
-			{text: '[[groups:details.members]]'}
+			{ text: '[[pages:groups]]', url: '/groups' },
+			{ text: validator.escape(String(groupName)), url: '/groups/' + req.params.slug },
+			{ text: '[[groups:details.members]]' },
 		]);
 
 		res.render('groups/members', {
 			users: users,
 			nextStart: 50,
 			loadmore_display: users.length > 50 ? 'block' : 'hide',
-			breadcrumbs: breadcrumbs
+			breadcrumbs: breadcrumbs,
 		});
 	});
 };
@@ -174,14 +174,14 @@ groupsController.uploadCover = function (req, res, next) {
 
 			groups.updateCover(req.uid, {
 				file: req.files.files[0].path,
-				groupName: params.groupName
+				groupName: params.groupName,
 			}, next);
-		}
+		},
 	], function (err, image) {
 		if (err) {
 			return next(err);
 		}
-		res.json([{url: image.url.startsWith('http') ? image.url : nconf.get('relative_path') + image.url}]);
+		res.json([{ url: image.url.startsWith('http') ? image.url : nconf.get('relative_path') + image.url }]);
 	});
 };
 

@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 var fs = require('fs');
 var path = require('path');
@@ -30,7 +30,7 @@ uploadsController.upload = function (req, res, filesIterator) {
 		deleteTempFiles(files);
 
 		if (err) {
-			return res.status(500).json({path: req.path, error: err.message});
+			return res.status(500).json({ path: req.path, error: err.message });
 		}
 
 		res.status(200).send(images);
@@ -60,7 +60,7 @@ function uploadAsImage(req, uploadedFile, callback) {
 			if (plugins.hasListeners('filter:uploadImage')) {
 				return plugins.fireHook('filter:uploadImage', {
 					image: uploadedFile,
-					uid: req.uid
+					uid: req.uid,
 				}, callback);
 			}
 			file.isFileTypeAllowed(uploadedFile.path, next);
@@ -74,7 +74,7 @@ function uploadAsImage(req, uploadedFile, callback) {
 			}
 
 			resizeImage(fileObj, next);
-		}
+		},
 	], callback);
 }
 
@@ -91,7 +91,7 @@ function uploadAsFile(req, uploadedFile, callback) {
 				return next(new Error('[[error:uploads-are-disabled]]'));
 			}
 			uploadFile(req.uid, uploadedFile, next);
-		}
+		},
 	], callback);
 }
 
@@ -113,11 +113,10 @@ function resizeImage(fileObj, callback) {
 				path: fileObj.path,
 				target: path.join(dirname, basename + '-resized' + extname),
 				extension: extname,
-				width: parseInt(meta.config.maximumImageWidth, 10) || 760
+				width: parseInt(meta.config.maximumImageWidth, 10) || 760,
 			}, next);
 		},
 		function (next) {
-
 			// Return the resized version to the composer/postData
 			var dirname = path.dirname(fileObj.url);
 			var extname = path.extname(fileObj.url);
@@ -126,7 +125,7 @@ function resizeImage(fileObj, callback) {
 			fileObj.url = path.join(dirname, basename + '-resized' + extname);
 
 			next(null, fileObj);
-		}
+		},
 	], callback);
 }
 
@@ -151,19 +150,19 @@ uploadsController.uploadThumb = function (req, res, next) {
 					path: uploadedFile.path,
 					extension: path.extname(uploadedFile.name),
 					width: size,
-					height: size
+					height: size,
 				}, next);
 			},
 			function (next) {
 				if (plugins.hasListeners('filter:uploadImage')) {
 					return plugins.fireHook('filter:uploadImage', {
 						image: uploadedFile,
-						uid: req.uid
+						uid: req.uid,
 					}, next);
 				}
 
 				uploadFile(req.uid, uploadedFile, next);
-			}
+			},
 		], next);
 	}, next);
 };
@@ -172,14 +171,14 @@ uploadsController.uploadGroupCover = function (uid, uploadedFile, callback) {
 	if (plugins.hasListeners('filter:uploadImage')) {
 		return plugins.fireHook('filter:uploadImage', {
 			image: uploadedFile,
-			uid: uid
+			uid: uid,
 		}, callback);
 	}
 
 	if (plugins.hasListeners('filter:uploadFile')) {
 		return plugins.fireHook('filter:uploadFile', {
 			file: uploadedFile,
-			uid: uid
+			uid: uid,
 		}, callback);
 	}
 
@@ -189,7 +188,7 @@ uploadsController.uploadGroupCover = function (uid, uploadedFile, callback) {
 		},
 		function (next) {
 			saveFileToLocal(uploadedFile, next);
-		}
+		},
 	], callback);
 };
 
@@ -197,7 +196,7 @@ function uploadFile(uid, uploadedFile, callback) {
 	if (plugins.hasListeners('filter:uploadFile')) {
 		return plugins.fireHook('filter:uploadFile', {
 			file: uploadedFile,
-			uid: uid
+			uid: uid,
 		}, callback);
 	}
 
@@ -237,9 +236,9 @@ function saveFileToLocal(uploadedFile, callback) {
 			next(null, {
 				url: nconf.get('relative_path') + upload.url,
 				path: upload.path,
-				name: uploadedFile.name
+				name: uploadedFile.name,
 			});
-		}
+		},
 	], callback);
 }
 

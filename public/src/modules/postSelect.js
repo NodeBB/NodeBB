@@ -1,6 +1,5 @@
 'use strict';
 
-/* globals define*/
 
 define('postSelect', ['components'], function (components) {
 	var PostSelect = {};
@@ -25,7 +24,7 @@ define('postSelect', ['components'], function (components) {
 
 		if (newPid) {
 			var index = PostSelect.pids.indexOf(newPid);
-			if(index === -1) {
+			if (index === -1) {
 				PostSelect.pids.push(newPid);
 				post.toggleClass('bg-success', true);
 			} else {
@@ -34,7 +33,7 @@ define('postSelect', ['components'], function (components) {
 			}
 
 			if (PostSelect.pids.length) {
-				PostSelect.pids.sort(function (a,b) { return a - b; });
+				PostSelect.pids.sort(function (a, b) { return a - b; });
 			}
 			callback();
 		}
@@ -52,7 +51,6 @@ define('postSelect', ['components'], function (components) {
 	PostSelect.enableClicksOnPosts = function () {
 		components.get('post').off('click', 'button,a', disableClicks);
 	};
-
 
 
 	return PostSelect;

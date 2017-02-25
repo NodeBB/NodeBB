@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 var async = require('async');
 var validator = require('validator');
@@ -13,7 +13,7 @@ var plugins = require('../../plugins');
 var User = {};
 
 User.makeAdmins = function (socket, uids, callback) {
-	if(!Array.isArray(uids)) {
+	if (!Array.isArray(uids)) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
 
@@ -22,7 +22,7 @@ User.makeAdmins = function (socket, uids, callback) {
 			return callback(err);
 		}
 
-		for(var i = 0; i < userData.length; i++) {
+		for (var i = 0; i < userData.length; i += 1) {
 			if (userData[i] && parseInt(userData[i].banned, 10) === 1) {
 				return callback(new Error('[[error:cant-make-banned-users-admin]]'));
 			}
@@ -35,7 +35,7 @@ User.makeAdmins = function (socket, uids, callback) {
 };
 
 User.removeAdmins = function (socket, uids, callback) {
-	if(!Array.isArray(uids)) {
+	if (!Array.isArray(uids)) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
 
@@ -117,7 +117,7 @@ User.sendValidationEmail = function (socket, uids, callback) {
 					next();
 				}
 			}, next);
-		}
+		},
 	], callback);
 };
 
@@ -177,17 +177,17 @@ function deleteUsers(socket, uids, method, callback) {
 					type: 'user-delete',
 					uid: socket.uid,
 					targetUid: uid,
-					ip: socket.ip
+					ip: socket.ip,
 				}, next);
 			},
 			function (next) {
 				plugins.fireHook('action:user.delete', {
 					callerUid: socket.uid,
 					uid: uid,
-					ip: socket.ip
+					ip: socket.ip,
 				});
 				next();
-			}
+			},
 		], next);
 	}, callback);
 }
@@ -196,7 +196,7 @@ User.search = function (socket, data, callback) {
 	var searchData;
 	async.waterfall([
 		function (next) {
-			user.search({query: data.query, searchBy: data.searchBy, uid: socket.uid}, next);
+			user.search({ query: data.query, searchBy: data.searchBy, uid: socket.uid }, next);
 		},
 		function (_searchData, next) {
 			searchData = _searchData;
@@ -220,7 +220,7 @@ User.search = function (socket, data, callback) {
 				}
 			});
 			next(null, searchData);
-		}
+		},
 	], callback);
 };
 
@@ -238,10 +238,10 @@ User.acceptRegistration = function (socket, data, callback) {
 				type: 'registration-approved',
 				uid: socket.uid,
 				ip: socket.ip,
-				targetUid: uid
+				targetUid: uid,
 			});
 			next(null, uid);
-		}
+		},
 	], callback);
 };
 
@@ -258,7 +258,7 @@ User.rejectRegistration = function (socket, data, callback) {
 				username: data.username,
 			});
 			next();
-		}
+		},
 	], callback);
 };
 

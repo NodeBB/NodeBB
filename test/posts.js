@@ -1,5 +1,5 @@
 'use strict';
-/*global require, before, after*/
+
 
 var	assert = require('assert');
 var async = require('async');
@@ -24,20 +24,20 @@ describe('Post\'s', function () {
 		groups.resetCache();
 		async.series({
 			voterUid: function (next) {
-				user.create({username: 'upvoter'}, next);
+				user.create({ username: 'upvoter' }, next);
 			},
 			voteeUid: function (next) {
-				user.create({username: 'upvotee'}, next);
+				user.create({ username: 'upvotee' }, next);
 			},
 			globalModUid: function (next) {
-				user.create({username: 'globalmod'}, next);
+				user.create({ username: 'globalmod' }, next);
 			},
 			category: function (next) {
 				categories.create({
 					name: 'Test Category',
-					description: 'Test category created by testing script'
+					description: 'Test category created by testing script',
 				}, next);
-			}
+			},
 		}, function (err, results) {
 			if (err) {
 				return done(err);
@@ -52,7 +52,7 @@ describe('Post\'s', function () {
 				uid: results.voteeUid,
 				cid: results.category.cid,
 				title: 'Test Topic Title',
-				content: 'The content of test topic'
+				content: 'The content of test topic',
 			}, function (err, data) {
 				if (err) {
 					return done(err);
@@ -68,7 +68,7 @@ describe('Post\'s', function () {
 	describe('voting', function () {
 		var socketPosts = require('../src/socket.io/posts');
 		it('should upvote a post', function (done) {
-			socketPosts.upvote({uid: voterUid}, {pid: postData.pid, room_id: 'topic_1'}, function (err, result) {
+			socketPosts.upvote({ uid: voterUid }, { pid: postData.pid, room_id: 'topic_1' }, function (err, result) {
 				assert.ifError(err);
 				assert.equal(result.post.upvotes, 1);
 				assert.equal(result.post.downvotes, 0);
@@ -84,7 +84,7 @@ describe('Post\'s', function () {
 		});
 
 		it('should get voters', function (done) {
-			socketPosts.getVoters({uid: globalModUid}, {pid: postData.pid, cid: cid}, function (err, data) {
+			socketPosts.getVoters({ uid: globalModUid }, { pid: postData.pid, cid: cid }, function (err, data) {
 				assert.ifError(err);
 				assert.equal(data.upvoteCount, 1);
 				assert.equal(data.downvoteCount, 0);
@@ -95,7 +95,7 @@ describe('Post\'s', function () {
 		});
 
 		it('should get upvoters', function (done) {
-			socketPosts.getUpvoters({uid: globalModUid}, [postData.pid], function (err, data) {
+			socketPosts.getUpvoters({ uid: globalModUid }, [postData.pid], function (err, data) {
 				assert.ifError(err);
 				assert.equal(data[0].otherCount, 0);
 				assert.equal(data[0].usernames, 'upvoter');
@@ -104,7 +104,7 @@ describe('Post\'s', function () {
 		});
 
 		it('should unvote a post', function (done) {
-			socketPosts.unvote({uid: voterUid}, {pid: postData.pid, room_id: 'topic_1'}, function (err, result) {
+			socketPosts.unvote({ uid: voterUid }, { pid: postData.pid, room_id: 'topic_1' }, function (err, result) {
 				assert.ifError(err);
 				assert.equal(result.post.upvotes, 0);
 				assert.equal(result.post.downvotes, 0);
@@ -120,7 +120,7 @@ describe('Post\'s', function () {
 		});
 
 		it('should downvote a post', function (done) {
-			socketPosts.downvote({uid: voterUid}, {pid: postData.pid, room_id: 'topic_1'}, function (err, result) {
+			socketPosts.downvote({ uid: voterUid }, { pid: postData.pid, room_id: 'topic_1' }, function (err, result) {
 				assert.ifError(err);
 				assert.equal(result.post.upvotes, 0);
 				assert.equal(result.post.downvotes, 1);
@@ -166,14 +166,14 @@ describe('Post\'s', function () {
 		var socketPosts = require('../src/socket.io/posts');
 
 		it('should error if data is invalid', function (done) {
-			socketPosts.loadPostTools({uid: globalModUid}, null, function (err) {
+			socketPosts.loadPostTools({ uid: globalModUid }, null, function (err) {
 				assert.equal(err.message, '[[error:invalid-data]]');
 				done();
 			});
 		});
 
 		it('should load post tools', function (done) {
-			socketPosts.loadPostTools({uid: globalModUid}, {pid: postData.pid, cid: cid}, function (err, data) {
+			socketPosts.loadPostTools({ uid: globalModUid }, { pid: postData.pid, cid: cid }, function (err, data) {
 				assert.ifError(err);
 				assert(data.posts.display_edit_tools);
 				assert(data.posts.display_delete_tools);
@@ -190,14 +190,14 @@ describe('Post\'s', function () {
 				uid: voterUid,
 				cid: cid,
 				title: 'topic to delete/restore/purge',
-				content: 'A post to delete/restore/purge'
+				content: 'A post to delete/restore/purge',
 			}, function (err, topicPostData) {
 				assert.ifError(err);
 				topics.reply({
 					uid: voterUid,
 					tid: topicPostData.topicData.tid,
 					timestamp: Date.now(),
-					content: 'A post to delete/restore and purge'
+					content: 'A post to delete/restore and purge',
 				}, function (err, replyData) {
 					assert.ifError(err);
 					callback(topicPostData, replyData);
@@ -220,14 +220,14 @@ describe('Post\'s', function () {
 		});
 
 		it('should error with invalid data', function (done) {
-			socketPosts.delete({uid: voterUid}, null, function (err) {
+			socketPosts.delete({ uid: voterUid }, null, function (err) {
 				assert.equal(err.message, '[[error:invalid-data]]');
 				done();
 			});
 		});
 
 		it('should delete a post', function (done) {
-			socketPosts.delete({uid: voterUid}, {pid: replyPid, tid: tid}, function (err) {
+			socketPosts.delete({ uid: voterUid }, { pid: replyPid, tid: tid }, function (err) {
 				assert.ifError(err);
 				posts.getPostField(replyPid, 'deleted', function (err, isDeleted) {
 					assert.ifError(err);
@@ -238,7 +238,7 @@ describe('Post\'s', function () {
 		});
 
 		it('should restore a post', function (done) {
-			socketPosts.restore({uid: voterUid}, {pid: replyPid, tid: tid}, function (err) {
+			socketPosts.restore({ uid: voterUid }, { pid: replyPid, tid: tid }, function (err) {
 				assert.ifError(err);
 				posts.getPostField(replyPid, 'deleted', function (err, isDeleted) {
 					assert.ifError(err);
@@ -249,7 +249,7 @@ describe('Post\'s', function () {
 		});
 
 		it('should delete posts', function (done) {
-			socketPosts.deletePosts({uid: globalModUid}, {pids: [replyPid, mainPid], tid: tid}, function (err) {
+			socketPosts.deletePosts({ uid: globalModUid }, { pids: [replyPid, mainPid], tid: tid }, function (err) {
 				assert.ifError(err);
 				posts.getPostField(replyPid, 'deleted', function (err, deleted) {
 					assert.ifError(err);
@@ -264,9 +264,9 @@ describe('Post\'s', function () {
 		});
 
 		it('should delete topic if last main post is deleted', function (done) {
-			topics.post({uid: voterUid, cid: cid, title: 'test topic', content: 'test topic'}, function (err, data) {
+			topics.post({ uid: voterUid, cid: cid, title: 'test topic', content: 'test topic' }, function (err, data) {
 				assert.ifError(err);
-				socketPosts.deletePosts({uid: globalModUid}, {pids: [data.postData.pid], tid: data.topicData.tid}, function (err) {
+				socketPosts.deletePosts({ uid: globalModUid }, { pids: [data.postData.pid], tid: data.topicData.tid }, function (err) {
 					assert.ifError(err);
 					topics.getTopicField(data.topicData.tid, 'deleted', function (err, deleted) {
 						assert.ifError(err);
@@ -278,9 +278,8 @@ describe('Post\'s', function () {
 		});
 
 		it('should purge posts and delete topic', function (done) {
-
 			createTopicWithReply(function (topicPostData, replyData) {
-				socketPosts.purgePosts({uid: voterUid}, {pids: [replyData.pid, topicPostData.postData.pid], tid: topicPostData.topicData.tid}, function (err) {
+				socketPosts.purgePosts({ uid: voterUid }, { pids: [replyData.pid, topicPostData.postData.pid], tid: topicPostData.topicData.tid }, function (err) {
 					assert.ifError(err);
 					posts.exists('post:' + replyData.pid, function (err, exists) {
 						assert.ifError(err);
@@ -307,7 +306,7 @@ describe('Post\'s', function () {
 				uid: voterUid,
 				cid: cid,
 				title: 'topic to edit',
-				content: 'A post to edit'
+				content: 'A post to edit',
 			}, function (err, data) {
 				assert.ifError(err);
 				pid = data.postData.pid;
@@ -316,7 +315,7 @@ describe('Post\'s', function () {
 					uid: voterUid,
 					tid: tid,
 					timestamp: Date.now(),
-					content: 'A reply to edit'
+					content: 'A reply to edit',
 				}, function (err, data) {
 					assert.ifError(err);
 					replyPid = data.pid;
@@ -326,21 +325,21 @@ describe('Post\'s', function () {
 		});
 
 		it('should error if user is not logged in', function (done) {
-			socketPosts.edit({uid: 0}, {}, function (err) {
+			socketPosts.edit({ uid: 0 }, {}, function (err) {
 				assert.equal(err.message, '[[error:not-logged-in]]');
 				done();
 			});
 		});
 
 		it('should error if data is invalid or missing', function (done) {
-			socketPosts.edit({uid: voterUid}, {}, function (err) {
+			socketPosts.edit({ uid: voterUid }, {}, function (err) {
 				assert.equal(err.message, '[[error:invalid-data]]');
 				done();
 			});
 		});
 
 		it('should error if title is too short', function (done) {
-			socketPosts.edit({uid: voterUid}, {pid: pid, content: 'edited post content', title: 'a'}, function (err) {
+			socketPosts.edit({ uid: voterUid }, { pid: pid, content: 'edited post content', title: 'a' }, function (err) {
 				assert.equal(err.message, '[[error:title-too-short, ' + meta.config.minimumTitleLength + ']]');
 				done();
 			});
@@ -348,7 +347,7 @@ describe('Post\'s', function () {
 
 		it('should error if title is too long', function (done) {
 			var longTitle = new Array(parseInt(meta.config.maximumTitleLength, 10) + 2).join('a');
-			socketPosts.edit({uid: voterUid}, {pid: pid, content: 'edited post content', title: longTitle}, function (err) {
+			socketPosts.edit({ uid: voterUid }, { pid: pid, content: 'edited post content', title: longTitle }, function (err) {
 				assert.equal(err.message, '[[error:title-too-long, ' + meta.config.maximumTitleLength + ']]');
 				done();
 			});
@@ -357,7 +356,7 @@ describe('Post\'s', function () {
 		it('should error with too few tags', function (done) {
 			var oldValue = meta.config.minimumTagsPerTopic;
 			meta.config.minimumTagsPerTopic = 1;
-			socketPosts.edit({uid: voterUid}, {pid: pid, content: 'edited post content', tags: []}, function (err) {
+			socketPosts.edit({ uid: voterUid }, { pid: pid, content: 'edited post content', tags: [] }, function (err) {
 				assert.equal(err.message, '[[error:not-enough-tags, ' + meta.config.minimumTagsPerTopic + ']]');
 				meta.config.minimumTagsPerTopic = oldValue;
 				done();
@@ -366,17 +365,17 @@ describe('Post\'s', function () {
 
 		it('should error with too many tags', function (done) {
 			var tags = [];
-			for(var i = 0; i < meta.config.maximumTagsPerTopic + 1; ++i) {
+			for (var i = 0; i < meta.config.maximumTagsPerTopic + 1; i += 1) {
 				tags.push('tag' + i);
 			}
-			socketPosts.edit({uid: voterUid}, {pid: pid, content: 'edited post content', tags: tags}, function (err) {
+			socketPosts.edit({ uid: voterUid }, { pid: pid, content: 'edited post content', tags: tags }, function (err) {
 				assert.equal(err.message, '[[error:too-many-tags, ' + meta.config.maximumTagsPerTopic + ']]');
 				done();
 			});
 		});
 
 		it('should error if content is too short', function (done) {
-			socketPosts.edit({uid: voterUid}, {pid: pid, content: 'e'}, function (err) {
+			socketPosts.edit({ uid: voterUid }, { pid: pid, content: 'e' }, function (err) {
 				assert.equal(err.message, '[[error:content-too-short, ' + meta.config.minimumPostLength + ']]');
 				done();
 			});
@@ -384,14 +383,14 @@ describe('Post\'s', function () {
 
 		it('should error if content is too long', function (done) {
 			var longContent = new Array(parseInt(meta.config.maximumPostLength, 10) + 2).join('a');
-			socketPosts.edit({uid: voterUid}, {pid: pid, content: longContent}, function (err) {
+			socketPosts.edit({ uid: voterUid }, { pid: pid, content: longContent }, function (err) {
 				assert.equal(err.message, '[[error:content-too-long, ' + meta.config.maximumPostLength + ']]');
 				done();
 			});
 		});
 
 		it('should edit post', function (done) {
-			socketPosts.edit({uid: voterUid}, {pid: pid, content: 'edited post content', title: 'edited title', tags: ['edited']}, function (err, data) {
+			socketPosts.edit({ uid: voterUid }, { pid: pid, content: 'edited post content', title: 'edited title', tags: ['edited'] }, function (err, data) {
 				assert.ifError(err);
 				assert.equal(data.content, 'edited post content');
 				assert.equal(data.editor, voterUid);
@@ -402,9 +401,9 @@ describe('Post\'s', function () {
 		});
 
 		it('should edit a deleted post', function (done) {
-			socketPosts.delete({uid: voterUid}, {pid: pid, tid: tid}, function (err) {
+			socketPosts.delete({ uid: voterUid }, { pid: pid, tid: tid }, function (err) {
 				assert.ifError(err);
-				socketPosts.edit({uid: voterUid}, {pid: pid, content: 'edited deleted content', title: 'edited deleted title', tags: ['deleted']}, function (err, data) {
+				socketPosts.edit({ uid: voterUid }, { pid: pid, content: 'edited deleted content', title: 'edited deleted title', tags: ['deleted'] }, function (err, data) {
 					assert.ifError(err);
 					assert.equal(data.content, 'edited deleted content');
 					assert.equal(data.editor, voterUid);
@@ -416,7 +415,7 @@ describe('Post\'s', function () {
 		});
 
 		it('should edit a reply post', function (done) {
-			socketPosts.edit({uid: voterUid}, {pid: replyPid, content: 'edited reply'}, function (err, data) {
+			socketPosts.edit({ uid: voterUid }, { pid: replyPid, content: 'edited reply' }, function (err, data) {
 				assert.ifError(err);
 				assert.equal(data.content, 'edited reply');
 				assert.equal(data.editor, voterUid);
@@ -440,7 +439,7 @@ describe('Post\'s', function () {
 						uid: voterUid,
 						cid: cid,
 						title: 'topic 1',
-						content: 'some content'
+						content: 'some content',
 					}, next);
 				},
 				function (data, next) {
@@ -449,7 +448,7 @@ describe('Post\'s', function () {
 						uid: voterUid,
 						cid: cid,
 						title: 'topic 2',
-						content: 'some content'
+						content: 'some content',
 					}, next);
 				},
 				function (data, next) {
@@ -458,32 +457,32 @@ describe('Post\'s', function () {
 						uid: voterUid,
 						tid: tid,
 						timestamp: Date.now(),
-						content: 'A reply to move'
+						content: 'A reply to move',
 					}, function (err, data) {
 						assert.ifError(err);
 						replyPid = data.pid;
 						next();
 					});
-				}
+				},
 			], done);
 		});
 
 		it('should error if uid is not logged in', function (done) {
-			socketPosts.movePost({uid: 0}, {}, function (err) {
+			socketPosts.movePost({ uid: 0 }, {}, function (err) {
 				assert.equal(err.message, '[[error:not-logged-in]]');
 				done();
 			});
 		});
 
 		it('should error if data is invalid', function (done) {
-			socketPosts.movePost({uid: globalModUid}, {}, function (err) {
+			socketPosts.movePost({ uid: globalModUid }, {}, function (err) {
 				assert.equal(err.message, '[[error:invalid-data]]');
 				done();
 			});
 		});
 
 		it('should error if user does not have move privilege', function (done) {
-			socketPosts.movePost({uid: voterUid}, {pid: replyPid, tid: moveTid}, function (err) {
+			socketPosts.movePost({ uid: voterUid }, { pid: replyPid, tid: moveTid }, function (err) {
 				assert.equal(err.message, '[[error:no-privileges]]');
 				done();
 			});
@@ -491,7 +490,7 @@ describe('Post\'s', function () {
 
 
 		it('should move a post', function (done) {
-			socketPosts.movePost({uid: globalModUid}, {pid: replyPid, tid: moveTid}, function (err) {
+			socketPosts.movePost({ uid: globalModUid }, { pid: replyPid, tid: moveTid }, function (err) {
 				assert.ifError(err);
 				posts.getPostField(replyPid, 'tid', function (err, tid) {
 					assert.ifError(err);
@@ -522,9 +521,9 @@ describe('Post\'s', function () {
 		});
 
 		it('should return nothing without a uid or a reason', function (done) {
-			socketPosts.flag({uid: 0}, {pid: postData.pid, reason: 'reason'}, function (err) {
+			socketPosts.flag({ uid: 0 }, { pid: postData.pid, reason: 'reason' }, function (err) {
 				assert.equal(err.message, '[[error:not-logged-in]]');
-				socketPosts.flag({uid: voteeUid}, {}, function (err) {
+				socketPosts.flag({ uid: voteeUid }, {}, function (err) {
 					assert.equal(err.message, '[[error:invalid-data]]');
 					done();
 				});
@@ -532,14 +531,14 @@ describe('Post\'s', function () {
 		});
 
 		it('should return an error without an existing post', function (done) {
-			socketPosts.flag({uid: voteeUid}, {pid: 12312312, reason: 'reason'}, function (err) {
+			socketPosts.flag({ uid: voteeUid }, { pid: 12312312, reason: 'reason' }, function (err) {
 				assert.equal(err.message, '[[error:no-post]]');
 				done();
 			});
 		});
 
 		it('should return an error if the flag already exists', function (done) {
-			socketPosts.flag({uid: voteeUid}, {pid: postData.pid, reason: 'reason'}, function (err) {
+			socketPosts.flag({ uid: voteeUid }, { pid: postData.pid, reason: 'reason' }, function (err) {
 				assert.equal(err.message, '[[error:already-flagged]]');
 				done();
 			});
@@ -548,7 +547,7 @@ describe('Post\'s', function () {
 
 	function flagPost(next) {
 		var socketPosts = require('../src/socket.io/posts');
-		socketPosts.flag({uid: voteeUid}, {pid: postData.pid, reason: 'reason'}, next);
+		socketPosts.flag({ uid: voteeUid }, { pid: postData.pid, reason: 'reason' }, next);
 	}
 
 	describe('get flag data', function () {
@@ -583,12 +582,12 @@ describe('Post\'s', function () {
 		it('should update a flag', function (done) {
 			async.waterfall([
 				function (next) {
-					socketPosts.updateFlag({uid: globalModUid}, {
+					socketPosts.updateFlag({ uid: globalModUid }, {
 						pid: postData.pid,
 						data: [
-							{name: 'assignee', value: `${globalModUid}`},
-							{name: 'notes', value: 'notes'}
-						]
+							{ name: 'assignee', value: `${globalModUid}` },
+							{ name: 'notes', value: 'notes' },
+						],
 					}, function (err) {
 						assert.ifError(err);
 						posts.getFlags('posts:flagged', cid, globalModUid, 0, -1, function (err, flagData) {
@@ -599,19 +598,19 @@ describe('Post\'s', function () {
 								assignee: flagData.posts[0].flagData.assignee,
 								notes: flagData.posts[0].flagData.notes,
 								state: flagData.posts[0].flagData.state,
-								labelClass: flagData.posts[0].flagData.labelClass
+								labelClass: flagData.posts[0].flagData.labelClass,
 							}, {
 								assignee: `${globalModUid}`,
 								notes: 'notes',
 								state: 'open',
-								labelClass: 'info'
+								labelClass: 'info',
 							});
 							next();
 						});
 					});
 				}, function (next) {
 					posts.updateFlagData(globalModUid, postData.pid, {
-						state: 'rejected'
+						state: 'rejected',
 					}, function (err) {
 						assert.ifError(err);
 						posts.getFlags('posts:flagged', cid, globalModUid, 0, -1, function (err, flagData) {
@@ -620,17 +619,17 @@ describe('Post\'s', function () {
 							assert.equal(flagData.posts.length, 1);
 							assert.deepEqual({
 								state: flagData.posts[0].flagData.state,
-								labelClass: flagData.posts[0].flagData.labelClass
+								labelClass: flagData.posts[0].flagData.labelClass,
 							}, {
 								state: 'rejected',
-								labelClass: 'danger'
+								labelClass: 'danger',
 							});
 							next();
 						});
 					});
 				}, function (next) {
 					posts.updateFlagData(globalModUid, postData.pid, {
-						state: 'wip'
+						state: 'wip',
 					}, function (err) {
 						assert.ifError(err);
 						posts.getFlags('posts:flagged', cid, globalModUid, 0, -1, function (err, flagData) {
@@ -639,17 +638,17 @@ describe('Post\'s', function () {
 							assert.equal(flagData.posts.length, 1);
 							assert.deepEqual({
 								state: flagData.posts[0].flagData.state,
-								labelClass: flagData.posts[0].flagData.labelClass
+								labelClass: flagData.posts[0].flagData.labelClass,
 							}, {
 								state: 'wip',
-								labelClass: 'warning'
+								labelClass: 'warning',
 							});
 							next();
 						});
 					});
 				}, function (next) {
 					posts.updateFlagData(globalModUid, postData.pid, {
-						state: 'resolved'
+						state: 'resolved',
 					}, function (err) {
 						assert.ifError(err);
 						posts.getFlags('posts:flagged', cid, globalModUid, 0, -1, function (err, flagData) {
@@ -658,15 +657,15 @@ describe('Post\'s', function () {
 							assert.equal(flagData.posts.length, 1);
 							assert.deepEqual({
 								state: flagData.posts[0].flagData.state,
-								labelClass: flagData.posts[0].flagData.labelClass
+								labelClass: flagData.posts[0].flagData.labelClass,
 							}, {
 								state: 'resolved',
-								labelClass: 'success'
+								labelClass: 'success',
 							});
 							next();
 						});
 					});
-				}
+				},
 			], done);
 		});
 	});
@@ -675,7 +674,7 @@ describe('Post\'s', function () {
 		var socketPosts = require('../src/socket.io/posts');
 
 		it('should dismiss a flag', function (done) {
-			socketPosts.dismissFlag({uid: globalModUid}, postData.pid, function (err) {
+			socketPosts.dismissFlag({ uid: globalModUid }, postData.pid, function (err) {
 				assert.ifError(err);
 				posts.isFlaggedByUser(postData.pid, voteeUid, function (err, hasFlagged) {
 					assert.ifError(err);
@@ -703,7 +702,7 @@ describe('Post\'s', function () {
 		});
 
 		it('should dismiss all flags', function (done) {
-			socketPosts.dismissAllFlags({uid: globalModUid}, {}, function (err) {
+			socketPosts.dismissAllFlags({ uid: globalModUid }, {}, function (err) {
 				assert.ifError(err);
 				posts.isFlaggedByUser(postData.pid, voteeUid, function (err, hasFlagged) {
 					assert.ifError(err);
@@ -742,7 +741,7 @@ describe('Post\'s', function () {
 			uid: voterUid,
 			tid: topicData.tid,
 			timestamp: Date.now(),
-			content: 'some content'
+			content: 'some content',
 		}, function (err) {
 			assert.ifError(err);
 			posts.getRecentPosterUids(0, 1, function (err, uids) {
@@ -756,14 +755,13 @@ describe('Post\'s', function () {
 	});
 
 	describe('socket methods', function () {
-
 		var pid;
 		before(function (done) {
 			topics.reply({
 				uid: voterUid,
 				tid: topicData.tid,
 				timestamp: Date.now(),
-				content: 'raw content'
+				content: 'raw content',
 			}, function (err, postData) {
 				assert.ifError(err);
 				pid = postData.pid;
@@ -773,21 +771,21 @@ describe('Post\'s', function () {
 
 		var socketPosts = require('../src/socket.io/posts');
 		it('should error with invalid data', function (done) {
-			socketPosts.reply({uid: 0}, null, function (err) {
+			socketPosts.reply({ uid: 0 }, null, function (err) {
 				assert.equal(err.message, '[[error:invalid-data]]');
 				done();
 			});
 		});
 
 		it('should error with invalid tid', function (done) {
-			socketPosts.reply({uid: 0}, {tid: 0, content: 'derp'}, function (err) {
+			socketPosts.reply({ uid: 0 }, { tid: 0, content: 'derp' }, function (err) {
 				assert.equal(err.message, '[[error:invalid-data]]');
 				done();
 			});
 		});
 
 		it('should fail to get raw post because of privilege', function (done) {
-			socketPosts.getRawPost({uid: 0}, pid, function (err) {
+			socketPosts.getRawPost({ uid: 0 }, pid, function (err) {
 				assert.equal(err.message, '[[error:no-privileges]]');
 				done();
 			});
@@ -796,7 +794,7 @@ describe('Post\'s', function () {
 		it('should fail to get raw post because post is deleted', function (done) {
 			posts.setPostField(pid, 'deleted', 1, function (err) {
 				assert.ifError(err);
-				socketPosts.getRawPost({uid: voterUid}, pid, function (err) {
+				socketPosts.getRawPost({ uid: voterUid }, pid, function (err) {
 					assert.equal(err.message, '[[error:no-post]]');
 					done();
 				});
@@ -806,7 +804,7 @@ describe('Post\'s', function () {
 		it('should get raw post content', function (done) {
 			posts.setPostField(pid, 'deleted', 0, function (err) {
 				assert.ifError(err);
-				socketPosts.getRawPost({uid: voterUid}, pid, function (err, postContent) {
+				socketPosts.getRawPost({ uid: voterUid }, pid, function (err, postContent) {
 					assert.ifError(err);
 					assert.equal(postContent, 'raw content');
 					done();
@@ -815,7 +813,7 @@ describe('Post\'s', function () {
 		});
 
 		it('should get post', function (done) {
-			socketPosts.getPost({uid: voterUid}, pid, function (err, postData) {
+			socketPosts.getPost({ uid: voterUid }, pid, function (err, postData) {
 				assert.ifError(err);
 				assert(postData);
 				done();
@@ -823,14 +821,14 @@ describe('Post\'s', function () {
 		});
 
 		it('shold error with invalid data', function (done) {
-			socketPosts.loadMoreBookmarks({uid: voterUid}, {uid: voterUid, after: null}, function (err, postData) {
+			socketPosts.loadMoreBookmarks({ uid: voterUid }, { uid: voterUid, after: null }, function (err, postData) {
 				assert.equal(err.message, '[[error:invalid-data]]');
 				done();
 			});
 		});
 
 		it('should load more bookmarks', function (done) {
-			socketPosts.loadMoreBookmarks({uid: voterUid}, {uid: voterUid, after: 0}, function (err, data) {
+			socketPosts.loadMoreBookmarks({ uid: voterUid }, { uid: voterUid, after: 0 }, function (err, data) {
 				assert.ifError(err);
 				assert(data);
 				done();
@@ -838,7 +836,7 @@ describe('Post\'s', function () {
 		});
 
 		it('should load more user posts', function (done) {
-			socketPosts.loadMoreUserPosts({uid: voterUid}, {uid: voterUid, after: 0}, function (err, data) {
+			socketPosts.loadMoreUserPosts({ uid: voterUid }, { uid: voterUid, after: 0 }, function (err, data) {
 				assert.ifError(err);
 				assert(data);
 				done();
@@ -846,7 +844,7 @@ describe('Post\'s', function () {
 		});
 
 		it('should load more best posts', function (done) {
-			socketPosts.loadMoreBestPosts({uid: voterUid}, {uid: voterUid, after: 0}, function (err, data) {
+			socketPosts.loadMoreBestPosts({ uid: voterUid }, { uid: voterUid, after: 0 }, function (err, data) {
 				assert.ifError(err);
 				assert(data);
 				done();
@@ -854,7 +852,7 @@ describe('Post\'s', function () {
 		});
 
 		it('should load more up voted posts', function (done) {
-			socketPosts.loadMoreUpVotedPosts({uid: voterUid}, {uid: voterUid, after: 0}, function (err, data) {
+			socketPosts.loadMoreUpVotedPosts({ uid: voterUid }, { uid: voterUid, after: 0 }, function (err, data) {
 				assert.ifError(err);
 				assert(data);
 				done();
@@ -862,7 +860,7 @@ describe('Post\'s', function () {
 		});
 
 		it('should load more down voted posts', function (done) {
-			socketPosts.loadMoreDownVotedPosts({uid: voterUid}, {uid: voterUid, after: 0}, function (err, data) {
+			socketPosts.loadMoreDownVotedPosts({ uid: voterUid }, { uid: voterUid, after: 0 }, function (err, data) {
 				assert.ifError(err);
 				assert(data);
 				done();
@@ -870,7 +868,7 @@ describe('Post\'s', function () {
 		});
 
 		it('should get post category', function (done) {
-			socketPosts.getCategory({uid: voterUid}, pid, function (err, postCid) {
+			socketPosts.getCategory({ uid: voterUid }, pid, function (err, postCid) {
 				assert.ifError(err);
 				assert.equal(cid, postCid);
 				done();
@@ -878,14 +876,14 @@ describe('Post\'s', function () {
 		});
 
 		it('should error with invalid data', function (done) {
-			socketPosts.getPidIndex({uid: voterUid}, null, function (err) {
+			socketPosts.getPidIndex({ uid: voterUid }, null, function (err) {
 				assert.equal(err.message, '[[error:invalid-data]]');
 				done();
 			});
 		});
 
 		it('should get pid index', function (done) {
-			socketPosts.getPidIndex({uid: voterUid}, {pid: pid, tid: topicData.tid, topicPostSort: 'oldest-to-newest'}, function (err, index) {
+			socketPosts.getPidIndex({ uid: voterUid }, { pid: pid, tid: topicData.tid, topicPostSort: 'oldest-to-newest' }, function (err, index) {
 				assert.ifError(err);
 				assert.equal(index, 2);
 				done();

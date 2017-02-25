@@ -9,7 +9,6 @@ var privileges = require('../privileges');
 var utils = require('../../public/src/utils');
 
 module.exports = function (Categories) {
-
 	Categories.create = function (data, callback) {
 		var category;
 		var parentCid = data.parentCid ? data.parentCid : 0;
@@ -40,11 +39,11 @@ module.exports = function (Categories) {
 					order: order,
 					link: '',
 					numRecentReplies: 1,
-					class: ( data.class ? data.class : 'col-md-3 col-xs-6' ),
-					imageClass: 'cover'
+					class: (data.class ? data.class : 'col-md-3 col-xs-6'),
+					imageClass: 'cover',
 				};
 
-				plugins.fireHook('filter:category.create', {category: category, data: data}, next);
+				plugins.fireHook('filter:category.create', { category: category, data: data }, next);
 			},
 			function (data, next) {
 				category = data.category;
@@ -63,7 +62,7 @@ module.exports = function (Categories) {
 					async.apply(db.sortedSetAdd, 'cid:' + parentCid + ':children', category.order, category.cid),
 					async.apply(privileges.categories.give, defaultPrivileges, category.cid, 'administrators'),
 					async.apply(privileges.categories.give, defaultPrivileges, category.cid, 'registered-users'),
-					async.apply(privileges.categories.give, ['find', 'read', 'topics:read'], category.cid, 'guests')
+					async.apply(privileges.categories.give, ['find', 'read', 'topics:read'], category.cid, 'guests'),
 				], next);
 			},
 			function (results, next) {
@@ -75,7 +74,7 @@ module.exports = function (Categories) {
 			function (category, next) {
 				plugins.fireHook('action:category.create', category);
 				next(null, category);
-			}
+			},
 		], callback);
 	};
 
@@ -93,7 +92,7 @@ module.exports = function (Categories) {
 			function (next) {
 				async.parallel({
 					source: async.apply(db.getObject, 'category:' + fromCid),
-					destination: async.apply(db.getObject, 'category:' + toCid)
+					destination: async.apply(db.getObject, 'category:' + toCid),
 				}, next);
 			},
 			function (results, next) {
@@ -132,7 +131,7 @@ module.exports = function (Categories) {
 			},
 			function (results, next) {
 				Categories.copyPrivilegesFrom(fromCid, toCid, next);
-			}
+			},
 		], function (err) {
 			callback(err, destination);
 		});
@@ -165,8 +164,7 @@ module.exports = function (Categories) {
 				async.eachSeries(members, function (member, next) {
 					groups.join('cid:' + toCid + ':privileges:' + privilege, member, next);
 				}, next);
-			}
+			},
 		], callback);
 	}
-
 };

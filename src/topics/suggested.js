@@ -8,7 +8,6 @@ var categories = require('../categories');
 var search = require('../search');
 
 module.exports = function (Topics) {
-
 	Topics.getSuggestedTopics = function (tid, uid, start, stop, callback) {
 		async.parallel({
 			tagTids: function (next) {
@@ -19,7 +18,7 @@ module.exports = function (Topics) {
 			},
 			categoryTids: function (next) {
 				getCategoryTids(tid, next);
-			}
+			},
 		}, function (err, results) {
 			if (err) {
 				return callback(err);
@@ -51,7 +50,7 @@ module.exports = function (Topics) {
 			},
 			function (data, next) {
 				next(null, _.unique(_.flatten(data)));
-			}
+			},
 		], callback);
 	}
 
@@ -62,7 +61,7 @@ module.exports = function (Topics) {
 			},
 			function (title, next) {
 				search.searchQuery('topic', title, [], [], next);
-			}
+			},
 		], callback);
 	}
 
@@ -73,8 +72,7 @@ module.exports = function (Topics) {
 			},
 			function (cid, next) {
 				categories.getTopicIds(cid, 'cid:' + cid + ':tids', true, 0, 9, next);
-			}
+			},
 		], callback);
 	}
-
 };

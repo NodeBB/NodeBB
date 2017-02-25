@@ -11,7 +11,6 @@ var privileges = require('./privileges');
 var utils = require('../public/src/utils');
 
 (function (Groups) {
-
 	require('./groups/create')(Groups);
 	require('./groups/delete')(Groups);
 	require('./groups/update')(Groups);
@@ -20,30 +19,29 @@ var utils = require('../public/src/utils');
 	require('./groups/search')(Groups);
 	require('./groups/cover')(Groups);
 
-	var ephemeralGroups = ['guests'],
+	var ephemeralGroups = ['guests'];
 
-		internals = {
-			getEphemeralGroup: function (groupName) {
-				return {
-					name: groupName,
-					slug: utils.slugify(groupName),
-					description: '',
-					deleted: '0',
-					hidden: '0',
-					system: '1'
-				};
-			},
-			removeEphemeralGroups: function (groups) {
-				var x = groups.length;
-				while(x--) {
-					if (ephemeralGroups.indexOf(groups[x]) !== -1) {
-						groups.splice(x, 1);
-					}
+	var internals = {
+		getEphemeralGroup: function (groupName) {
+			return {
+				name: groupName,
+				slug: utils.slugify(groupName),
+				description: '',
+				deleted: '0',
+				hidden: '0',
+				system: '1',
+			};
+		},
+		removeEphemeralGroups: function (groups) {
+			for (var x = groups.length; x >= 0; x -= 1) {
+				if (ephemeralGroups.indexOf(groups[x]) !== -1) {
+					groups.splice(x, 1);
 				}
-
-				return groups;
 			}
-		};
+
+			return groups;
+		},
+	};
 
 	Groups.internals = internals;
 
@@ -73,7 +71,7 @@ var utils = require('../public/src/utils');
 				}
 
 				Groups.getGroupsAndMembers(groupNames, next);
-			}
+			},
 		], callback);
 	};
 
@@ -88,7 +86,7 @@ var utils = require('../public/src/utils');
 			},
 			members: function (next) {
 				Groups.getMemberUsers(groupNames, 0, 3, next);
-			}
+			},
 		}, function (err, data) {
 			if (err) {
 				return callback(err);
@@ -132,7 +130,7 @@ var utils = require('../public/src/utils');
 					},
 					function (uids, next) {
 						user.getUsersData(uids, next);
-					}
+					},
 				], next);
 			},
 			invited: function (next) {
@@ -142,13 +140,13 @@ var utils = require('../public/src/utils');
 					},
 					function (uids, next) {
 						user.getUsersData(uids, next);
-					}
+					},
 				], next);
 			},
 			isMember: async.apply(Groups.isMember, options.uid, groupName),
 			isPending: async.apply(Groups.isPending, options.uid, groupName),
 			isInvited: async.apply(Groups.isInvited, options.uid, groupName),
-			isOwner: async.apply(Groups.ownership.isOwner, options.uid, groupName)
+			isOwner: async.apply(Groups.ownership.isOwner, options.uid, groupName),
 		}, function (err, results) {
 			if (err) {
 				return callback(err);
@@ -186,7 +184,7 @@ var utils = require('../public/src/utils');
 				results.base.isInvited = results.isInvited;
 				results.base.isOwner = results.isOwner;
 
-				plugins.fireHook('filter:group.get', {group: results.base}, function (err, data) {
+				plugins.fireHook('filter:group.get', { group: results.base }, function (err, data) {
 					callback(err, data ? data.group : null);
 				});
 			});
@@ -206,12 +204,12 @@ var utils = require('../public/src/utils');
 					},
 					function (uids, next) {
 						user.getUsers(uids, uid, next);
-					}
+					},
 				], next);
 			},
 			members: function (next) {
 				user.getUsersFromSet('group:' + groupName + ':members', uid, start, stop, next);
-			}
+			},
 		}, function (err, results) {
 			if (err) {
 				return callback(err);
@@ -276,7 +274,7 @@ var utils = require('../public/src/utils');
 			if (err) {
 				return callback(err);
 			}
-			plugins.fireHook('action:group.set', {field: field, value: value, type: 'set'});
+			plugins.fireHook('action:group.set', { field: field, value: value, type: 'set' });
 			callback();
 		});
 	};
@@ -287,7 +285,7 @@ var utils = require('../public/src/utils');
 				return callback(err);
 			}
 
-			callback(null, (parseInt(isPrivate, 10) === 0) ? false : true);
+			callback(null, parseInt(isPrivate, 10) !== 0);
 		});
 	};
 
@@ -304,15 +302,15 @@ var utils = require('../public/src/utils');
 	Groups.exists = function (name, callback) {
 		if (Array.isArray(name)) {
 			var slugs = name.map(function (groupName) {
-					return utils.slugify(groupName);
-				});
+				return utils.slugify(groupName);
+			});
 			async.parallel([
 				function (next) {
 					next(null, slugs.map(function (slug) {
 						return ephemeralGroups.indexOf(slug) !== -1;
 					}));
 				},
-				async.apply(db.isSortedSetMembers, 'groups:createtime', name)
+				async.apply(db.isSortedSetMembers, 'groups:createtime', name),
 			], function (err, results) {
 				if (err) {
 					return callback(err);
@@ -327,7 +325,7 @@ var utils = require('../public/src/utils');
 				function (next) {
 					next(null, ephemeralGroups.indexOf(slug) !== -1);
 				},
-				async.apply(db.isSortedSetMember, 'groups:createtime', name)
+				async.apply(db.isSortedSetMember, 'groups:createtime', name),
 			], function (err, results) {
 				callback(err, !err ? (results[0] || results[1]) : null);
 			});
@@ -360,8 +358,8 @@ var utils = require('../public/src/utils');
 				privileges.posts.filter('read', pids, uid, next);
 			},
 			function (pids, next) {
-				posts.getPostSummaryByPids(pids, uid, {stripTags: false}, next);
-			}
+				posts.getPostSummaryByPids(pids, uid, { stripTags: false }, next);
+			},
 		], callback);
 	};
 
@@ -408,7 +406,7 @@ var utils = require('../public/src/utils');
 					group.hidden = parseInt(group.hidden, 10) === 1;
 					group.system = parseInt(group.system, 10) === 1;
 					group.private = (group.private === null || group.private === undefined) ? true : !!parseInt(group.private, 10);
-					group.disableJoinRequests = parseInt(group.disableJoinRequests) === 1;
+					group.disableJoinRequests = parseInt(group.disableJoinRequests, 10) === 1;
 
 					group['cover:url'] = group['cover:url'] || require('./coverPhoto').getDefaultGroupCover(group.name);
 					group['cover:thumb:url'] = group['cover:thumb:url'] || group['cover:url'];
@@ -416,7 +414,7 @@ var utils = require('../public/src/utils');
 				}
 			});
 
-			plugins.fireHook('filter:groups.get', {groups: groupData}, function (err, data) {
+			plugins.fireHook('filter:groups.get', { groups: groupData }, function (err, data) {
 				callback(err, data ? data.groups : null);
 			});
 		});
@@ -452,8 +450,7 @@ var utils = require('../public/src/utils');
 						Groups.getGroupsData(memberOf, next);
 					});
 				}, next);
-			}
+			},
 		], callback);
 	};
-
 }(module.exports));

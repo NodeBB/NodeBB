@@ -10,7 +10,6 @@ var plugins = require('../../plugins');
 var socketHelpers = require('../helpers');
 
 module.exports = function (SocketTopics) {
-
 	SocketTopics.loadTopicTools = function (socket, data, callback) {
 		if (!socket.uid) {
 			return callback(new Error('[[error:no-privileges]]'));
@@ -27,13 +26,13 @@ module.exports = function (SocketTopics) {
 					},
 					privileges: function (next) {
 						privileges.topics.get(data.tid, socket.uid, next);
-					}
+					},
 				}, next);
 			},
 			function (results, next) {
 				topic = results.topic;
 				topic.privileges = results.privileges;
-				plugins.fireHook('filter:topic.thread_tools', {topic: results.topic, uid: socket.uid, tools: []}, next);
+				plugins.fireHook('filter:topic.thread_tools', { topic: results.topic, uid: socket.uid, tools: [] }, next);
 			},
 			function (data, next) {
 				topic.deleted = parseInt(topic.deleted, 10) === 1;
@@ -41,7 +40,7 @@ module.exports = function (SocketTopics) {
 				topic.pinned = parseInt(topic.pinned, 10) === 1;
 				topic.thread_tools = data.tools;
 				next(null, topic);
-			}
+			},
 		], callback);
 	};
 
@@ -95,7 +94,7 @@ module.exports = function (SocketTopics) {
 				function (data, next) {
 					socketHelpers.emitToTopicAndCategory(event, data);
 					logTopicAction(action, socket, tid, next);
-				}
+				},
 			], next);
 		}, callback);
 	};
@@ -115,9 +114,9 @@ module.exports = function (SocketTopics) {
 					uid: socket.uid,
 					ip: socket.ip,
 					tid: tid,
-					title: validator.escape(String(title))
+					title: validator.escape(String(title)),
 				}, next);
-			}
+			},
 		], callback);
 	}
 
@@ -128,5 +127,4 @@ module.exports = function (SocketTopics) {
 
 		topics.tools.orderPinnedTopics(socket.uid, data, callback);
 	};
-
 };
