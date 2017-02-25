@@ -11,8 +11,20 @@ var utils = require('../public/src/utils');
 var Upgrade = {
 	available: [
 		{
+			version: '1.0.0',
+			upgrades: ['chat_upgrade', 'chat_room_hashes', 'theme_to_active_plugins', 'user_best_posts', 'users_notvalidated', 'global_moderators', 'social_post_sharing'],
+		},
+		{
+			version: '1.1.0',
+			upgrades: ['group_title_update', 'user_post_count_per_tid', 'dismiss_flags_from_deleted_topics', 'assign_topic_read_privilege', 'separate_upvote_downvote'],
+		},
+		{
+			version: '1.1.1',
+			upgrades: ['upload_privileges', 'remove_negative_best_posts'],
+		},
+		{
 			version: '1.2.0',
-			upgrades: ['category_recent_tids'],
+			upgrades: ['category_recent_tids', 'edit_delete_deletetopic_privileges'],
 		},
 		{
 			version: '1.3.0',
@@ -85,7 +97,7 @@ Upgrade.process = function (files, skipCount, callback) {
 		var scriptExport = require(file);
 		var date = new Date(scriptExport.timestamp);
 
-		process.stdout.write('  → '.white + String('[' + [date.getFullYear(), date.getMonth() + 1, date.getDate() + 1].join('/') + '] ').gray + String(scriptExport.name).reset + '... ');
+		process.stdout.write('  → '.white + String('[' + [date.getUTCFullYear(), date.getUTCMonth() + 1, date.getUTCDate()].join('/') + '] ').gray + String(scriptExport.name).reset + '... ');
 
 		// Do the upgrade...
 		scriptExport.method(function (err) {
