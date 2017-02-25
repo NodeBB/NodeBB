@@ -1,6 +1,6 @@
 'use strict';
 
-var async = require('async');
+var nconf = require('nconf');
 var assert = require('assert');
 
 var db = require('./mocks/databasemock');
@@ -87,7 +87,7 @@ describe('helpers', function () {
 			],
 		};
 		var html = helpers.generateChildrenCategories(category);
-		assert.equal(html, '<span class="category-children"><a href="/category/undefined"><span class="fa-stack fa-lg"><i style="color:#ff0000;" class="fa fa-circle fa-stack-2x"></i><i style="color:#00ff00;" class="fa fa-stack-1x undefined"></i></span><small>children</small></a> </span>');
+		assert.equal(html, '<span class="category-children"><a href="' + nconf.get('relative_path') + '/category/undefined"><span class="fa-stack fa-lg"><i style="color:#ff0000;" class="fa fa-circle fa-stack-2x"></i><i style="color:#00ff00;" class="fa fa-stack-1x undefined"></i></span><small>children</small></a> </span>');
 		done();
 	});
 

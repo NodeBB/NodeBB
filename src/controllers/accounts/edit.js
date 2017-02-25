@@ -2,7 +2,6 @@
 
 var async = require('async');
 var fs = require('fs');
-var nconf = require('nconf');
 var winston = require('winston');
 
 var db = require('../../database');
@@ -158,7 +157,7 @@ editController.uploadPicture = function (req, res, next) {
 
 		res.json([{
 			name: userPhoto.name,
-			url: image.url.startsWith('http') ? image.url : nconf.get('relative_path') + image.url,
+			url: image.url,
 		}]);
 	});
 };

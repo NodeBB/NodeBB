@@ -12,11 +12,10 @@ var request = require('request');
 var cookies = request.jar();
 
 var db = require('./mocks/databasemock');
-var myXhr = require('./mocks/newXhr');
 var user = require('../src/user');
 var groups = require('../src/groups');
 var categories = require('../src/categories');
-
+var helpers = require('./helpers');
 
 describe('socket.io', function () {
 	var io;
@@ -64,26 +63,12 @@ describe('socket.io', function () {
 					'x-csrf-token': body.csrf_token,
 				},
 				json: true,
-			}, function (err, res, body) {
+			}, function (err, res) {
 				assert.ifError(err);
 
-				myXhr.callbacks.test2 = function () {
-					this.setDisableHeaderCheck(true);
-					var stdOpen = this.open;
-					this.open = function () {
-						stdOpen.apply(this, arguments);
-						this.setRequestHeader('Cookie', res.headers['set-cookie'][0].split(';')[0]);
-						this.setRequestHeader('Origin', nconf.get('url'));
-					};
-				};
-
-				io = require('socket.io-client')(nconf.get('url'), { forceNew: true });
-
-				io.on('connect', function () {
-					done();
-				});
-
-				io.on('error', function (err) {
+				helpers.connectSocketIO(res, function (err, _io) {
+					io = _io;
+					assert.ifError(err);
 					done(err);
 				});
 			});
