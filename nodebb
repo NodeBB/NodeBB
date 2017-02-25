@@ -29,7 +29,7 @@ if (args.dev) {
 
 function getRunningPid(callback) {
 	fs.readFile(__dirname + '/pidfile', {
-		encoding: 'utf-8'
+		encoding: 'utf-8',
 	}, function (err, pid) {
 		if (err) {
 			return callback(err);
@@ -38,7 +38,7 @@ function getRunningPid(callback) {
 		try {
 			process.kill(parseInt(pid, 10), 0);
 			callback(null, parseInt(pid, 10));
-		} catch(e) {
+		} catch (e) {
 			callback(e);
 		}
 	});
@@ -52,7 +52,7 @@ function getCurrentVersion(callback) {
 		try {
 			pkg = JSON.parse(pkg);
 			return callback(null, pkg.version);
-		} catch(err) {
+		} catch (err) {
 			return callback(err);
 		}
 	});
@@ -60,20 +60,21 @@ function getCurrentVersion(callback) {
 function fork(args) {
 	return cproc.fork('app.js', args, {
 		cwd: __dirname,
-		silent: false
+		silent: false,
 	});
 }
 function getInstalledPlugins(callback) {
 	async.parallel({
 		files: async.apply(fs.readdir, path.join(__dirname, 'node_modules')),
-		deps: async.apply(fs.readFile, path.join(__dirname, 'package.json'), { encoding: 'utf-8' })
+		deps: async.apply(fs.readFile, path.join(__dirname, 'package.json'), { encoding: 'utf-8' }),
 	}, function (err, payload) {
 		if (err) {
 			return callback(err);
 		}
 
-		var isNbbModule = /^nodebb-(?:plugin|theme|widget|rewards)-[\w\-]+$/,
-			moduleName, isGitRepo;
+		var isNbbModule = /^nodebb-(?:plugin|theme|widget|rewards)-[\w\-]+$/;
+		var moduleName;
+		var isGitRepo;
 
 		payload.files = payload.files.filter(function (file) {
 			return isNbbModule.test(file);
@@ -98,7 +99,7 @@ function getInstalledPlugins(callback) {
 			try {
 				fs.accessSync(path.join(__dirname, 'node_modules/' + moduleName, '.git'));
 				isGitRepo = true;
-			} catch(e) {
+			} catch (e) {
 				isGitRepo = false;
 			}
 
@@ -144,7 +145,7 @@ function checkPlugins(standalone, callback) {
 	async.waterfall([
 		async.apply(async.parallel, {
 			plugins: async.apply(getInstalledPlugins),
-			version: async.apply(getCurrentVersion)
+			version: async.apply(getCurrentVersion),
 		}),
 		function (payload, next) {
 			var toCheck = Object.keys(payload.plugins);
@@ -157,7 +158,7 @@ function checkPlugins(standalone, callback) {
 			request({
 				method: 'GET',
 				url: 'https://packages.nodebb.org/api/v1/suggest?version=' + payload.version + '&package[]=' + toCheck.join('&package[]='),
-				json: true
+				json: true,
 			}, function (err, res, body) {
 				if (err) {
 					process.stdout.write('error'.red + '\n'.reset);
@@ -169,7 +170,8 @@ function checkPlugins(standalone, callback) {
 					body = [body];
 				}
 
-				var current, suggested,
+				var current,
+					suggested,
 					upgradable = body.map(function (suggestObj) {
 						current = payload.plugins[suggestObj.package];
 						suggested = suggestObj.version;
@@ -178,16 +180,15 @@ function checkPlugins(standalone, callback) {
 							return {
 								name: suggestObj.package,
 								current: current,
-								suggested: suggested
+								suggested: suggested,
 							};
-						} else {
-							return null;
 						}
+						return null;
 					}).filter(Boolean);
 
 				next(null, upgradable);
 			});
-		}
+		},
 	], callback);
 }
 function upgradePlugins(callback) {
@@ -223,7 +224,7 @@ function upgradePlugins(callback) {
 		prompt.get({
 			name: 'upgrade',
 			description: 'Proceed with upgrade (y|n)?'.reset,
-			type: 'string'
+			type: 'string',
 		}, function (err, result) {
 			if (err) {
 				return callback(err);
@@ -280,7 +281,7 @@ var commands = {
 
 			// Spawn a new NodeBB process
 			cproc.fork(__dirname + '/loader.js', {
-				env: process.env
+				env: process.env,
 			});
 		},
 	},
@@ -320,7 +321,7 @@ var commands = {
 			process.stdout.write('\n\n'.reset);
 			cproc.spawn('tail', ['-F', './logs/output.log'], {
 				cwd: __dirname,
-				stdio: 'inherit'
+				stdio: 'inherit',
 			});
 		},
 	},
@@ -334,11 +335,11 @@ var commands = {
 
 			// Spawn a new NodeBB process
 			cproc.fork(__dirname + '/loader.js', {
-				env: process.env
+				env: process.env,
 			});
 			cproc.spawn('tail', ['-F', './logs/output.log'], {
 				cwd: __dirname,
-				stdio: 'inherit'
+				stdio: 'inherit',
 			});
 		},
 	},
@@ -348,13 +349,13 @@ var commands = {
 		handler: function () {
 			process.env.NODE_ENV = 'development';
 			cproc.fork(__dirname + '/loader.js', ['--no-daemon', '--no-silent'], {
-				env: process.env
+				env: process.env,
 			});
 		},
 	},
 	build: {
 		description: 'Compile static assets (CSS, Javascript, etc)',
-		usage: 'Usage: ' + './nodebb build'.yellow + ' [js,clientCSS,acpCSS,tpl,lang]'.red + '\n' + 
+		usage: 'Usage: ' + './nodebb build'.yellow + ' [js,clientCSS,acpCSS,tpl,lang]'.red + '\n' +
 			'    e.g. ' + './nodebb build js,tpl'.yellow + '\tbuilds JS and templates\n' +
 			'         ' + './nodebb build'.yellow + '\t\tbuilds all targets\n',
 		handler: function () {
@@ -434,7 +435,7 @@ var commands = {
 					var upgradeProc = fork(arr);
 
 					upgradeProc.on('close', next);
-				}
+				},
 			], function (err) {
 				if (err) {
 					process.stdout.write('\nError'.red + ': ' + err.message + '\n');
@@ -442,7 +443,7 @@ var commands = {
 					var message = 'NodeBB Upgrade Complete!';
 					// some consoles will return undefined/zero columns, so just use 2 spaces in upgrade script if we can't get our column count
 					var columns = process.stdout.columns;
-					var spaces = columns ? new Array(Math.floor(columns / 2) - (message.length / 2) + 1).join(' ') : "  ";
+					var spaces = columns ? new Array(Math.floor(columns / 2) - (message.length / 2) + 1).join(' ') : '  ';
 
 					process.stdout.write('OK\n'.green);
 					process.stdout.write('\n' + spaces + message.green.bold + '\n\n'.reset);
