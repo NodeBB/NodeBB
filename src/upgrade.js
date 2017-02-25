@@ -75,7 +75,7 @@ Upgrade.runSingle = function (query, callback) {
 		async.apply(utils.walk, path.join(__dirname, './upgrades')),
 		function (files, next) {
 			next(null, files.filter(function (file) {
-				return file.search(new RegExp(query)) !== -1;
+				return path.basename(file, '.js') === query;
 			}));
 		},
 	], function (err, files) {
