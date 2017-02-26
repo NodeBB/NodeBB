@@ -51,6 +51,22 @@ var Upgrade = {
 	],
 };
 
+Upgrade.check = function (callback) {
+	// Throw 'schema-out-of-date' if not all upgrade scripts have run
+	var all = Upgrade.available.reduce(function (memo, current) {
+		memo = memo.concat(current.upgrades);
+		return memo;
+	}, []);
+
+	db.getSortedSetRange('schemaLog', 0, -1, function (err, executed) {
+		var remainder = all.filter(function (name) {
+			return executed.indexOf(name) === -1;
+		});
+
+		callback(remainder.length > 1 ? new Error('schema-out-of-date') : null);
+	});
+};
+
 Upgrade.run = function (callback) {
 	process.stdout.write('\nParsing upgrade scripts... ');
 	var queue = [];
