@@ -1,4 +1,5 @@
 /* jslint node: true */
+
 'use strict';
 
 var db = require('../database');
@@ -25,10 +26,10 @@ module.exports = {
 					winston.verbose('processing pid: ' + postData.pid + ' toPid: ' + postData.toPid);
 					async.parallel([
 						async.apply(db.sortedSetAdd, 'pid:' + postData.toPid + ':replies', postData.timestamp, postData.pid),
-						async.apply(db.incrObjectField, 'post:' + postData.toPid, 'replies')
+						async.apply(db.incrObjectField, 'post:' + postData.toPid, 'replies'),
 					], next);
 				}, next);
 			});
 		}, callback);
-	}
+	},
 };

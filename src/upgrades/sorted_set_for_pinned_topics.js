@@ -1,4 +1,5 @@
 /* jslint node: true */
+
 'use strict';
 
 var db = require('../database');
@@ -28,10 +29,10 @@ module.exports = {
 					async.parallel([
 						async.apply(db.sortedSetAdd, 'cid:' + topicData.cid + ':tids:pinned', Date.now(), topicData.tid),
 						async.apply(db.sortedSetRemove, 'cid:' + topicData.cid + ':tids', topicData.tid),
-						async.apply(db.sortedSetRemove, 'cid:' + topicData.cid + ':tids:posts', topicData.tid)
+						async.apply(db.sortedSetRemove, 'cid:' + topicData.cid + ':tids:posts', topicData.tid),
 					], next);
 				}, next);
 			});
 		}, callback);
-	}
+	},
 };

@@ -59,6 +59,10 @@ Upgrade.check = function (callback) {
 	}, []);
 
 	db.getSortedSetRange('schemaLog', 0, -1, function (err, executed) {
+		if (err) {
+			return callback(err);
+		}
+
 		var remainder = all.filter(function (name) {
 			return executed.indexOf(name) === -1;
 		});

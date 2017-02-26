@@ -1,10 +1,10 @@
 /* jslint node: true */
+
 'use strict';
 
 var db = require('../database');
 
 var async = require('async');
-var winston = require('winston');
 
 module.exports = {
 	name: 'Favourites to Bookmarks',
@@ -31,7 +31,7 @@ module.exports = {
 						},
 						function (next) {
 							db.deleteObjectField('post:' + id, 'reputation', next);
-						}
+						},
 					], next);
 				}, next);
 			}, {}, next);
@@ -48,5 +48,5 @@ module.exports = {
 		}
 
 		async.series([upgradePosts, upgradeUsers], callback);
-	}
+	},
 };

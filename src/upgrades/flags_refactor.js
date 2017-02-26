@@ -1,4 +1,5 @@
 /* jslint node: true */
+
 'use strict';
 
 var db = require('../database');
@@ -12,7 +13,6 @@ module.exports = {
 		var batch = require('../batch');
 		var posts = require('../posts');
 		var flags = require('../flags');
-		var migrated = 0;
 
 		batch.processSortedSet('posts:pid', function (ids, next) {
 			posts.getPostsByPids(ids, 1, function (err, posts) {
@@ -23,11 +23,11 @@ module.exports = {
 				posts = posts.filter(function (post) {
 					return post.hasOwnProperty('flags');
 				});
-				
+
 				async.each(posts, function (post, next) {
 					async.parallel({
 						uids: async.apply(db.getSortedSetRangeWithScores, 'pid:' + post.pid + ':flag:uids', 0, -1),
-						reasons: async.apply(db.getSortedSetRange, 'pid:' + post.pid + ':flag:uid:reason', 0, -1)
+						reasons: async.apply(db.getSortedSetRange, 'pid:' + post.pid + ':flag:uid:reason', 0, -1),
 					}, function (err, data) {
 						if (err) {
 							return next(err);
@@ -51,7 +51,7 @@ module.exports = {
 									flags.update(flagObj.flagId, 1, {
 										state: post['flag:state'],
 										assignee: post['flag:assignee'],
-										datetime: datetime
+										datetime: datetime,
 									}, next);
 								} else {
 									setImmediate(next);
@@ -72,7 +72,7 @@ module.exports = {
 								} else {
 									setImmediate(next);
 								}
-							}
+							},
 						], function (err) {
 							if (err && err.message === '[[error:already-flagged]]') {
 								// Already flagged, no need to parse, but not an error
@@ -85,5 +85,5 @@ module.exports = {
 				}, next);
 			});
 		}, callback);
-	}
+	},
 };

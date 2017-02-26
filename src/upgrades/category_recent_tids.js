@@ -1,10 +1,10 @@
 /* jslint node: true */
+
 'use strict';
 
 var db = require('../database');
 
 var async = require('async');
-var winston = require('winston');
 
 module.exports = {
 	name: 'Category recent tids',
@@ -29,5 +29,5 @@ module.exports = {
 				});
 			}, callback);
 		});
-	}
+	},
 };

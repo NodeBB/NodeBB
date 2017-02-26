@@ -1,10 +1,10 @@
 /* jslint node: true */
+
 'use strict';
 
 var db = require('../database');
 
 var async = require('async');
-var winston = require('winston');
 
 module.exports = {
 	name: 'Update global and user language keys',
@@ -14,8 +14,6 @@ module.exports = {
 		var meta = require('../meta');
 		var batch = require('../batch');
 		var newLanguage;
-		var i = 0;
-		var j = 0;
 		async.parallel([
 			function (next) {
 				meta.configs.get('defaultLang', function (err, defaultLang) {
@@ -41,23 +39,21 @@ module.exports = {
 						async.waterfall([
 							async.apply(db.getObjectField, 'user:' + uid + ':settings', 'userLang'),
 							function (language, next) {
-								++i;
 								if (!language) {
 									return setImmediate(next);
 								}
 
 								newLanguage = language.replace('_', '-').replace('@', '-x-');
 								if (newLanguage !== language) {
-									++j;
 									user.setSetting(uid, 'userLang', newLanguage, next);
 								} else {
 									setImmediate(next);
 								}
-							}
+							},
 						], next);
 					}, next);
 				}, next);
-			}
+			},
 		], callback);
-	}
+	},
 };
