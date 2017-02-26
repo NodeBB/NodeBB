@@ -319,7 +319,7 @@ Upgrade.upgrade = function (callback) {
 
 			if (schemaDate < thisSchemaDate) {
 				updatesMade = true;
-				winston.info(schemaName);
+				winston.verbose(schemaName);
 
 				var user = require('./user');
 				var meta = require('./meta');
@@ -374,11 +374,11 @@ Upgrade.upgrade = function (callback) {
 					if (err) {
 						return next(err);
 					}
-					winston.info(schemaName + ' - done');
+					winston.verbose(schemaName + ' - done');
 					Upgrade.update(thisSchemaDate, next);
 				});
 			} else {
-				winston.info(schemaName + ' - skipped!');
+				winston.verbose(schemaName + ' - skipped!');
 				next();
 			}
 		},
