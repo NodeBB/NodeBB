@@ -110,9 +110,9 @@ module.exports = function (Meta) {
 
 			var userSettings = results.userSettings;
 			userSettings = {
-				notification: userSettings.notificationSound || userSettings['notification-sound'],
-				'chat-incoming': userSettings.incomingChatSound || userSettings['chat-incoming-sound'],
-				'chat-outgoing': userSettings.outgoingChatSound || userSettings['chat-outgoing-sound'],
+				notification: userSettings.notificationSound,
+				'chat-incoming': userSettings.incomingChatSound,
+				'chat-outgoing': userSettings.outgoingChatSound,
 			};
 			var defaultMapping = results.defaultMapping || {};
 			var soundMapping = {};
