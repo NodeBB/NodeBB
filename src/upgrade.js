@@ -8,6 +8,16 @@ var path = require('path');
 var db = require('./database');
 var utils = require('../public/src/utils');
 
+/*
+ * Need to write an upgrade script for NodeBB? Cool.
+ *
+ * 1. Copy TEMPLATE to a file name of your choice. Try to be succinct.
+ * 2. Open up that file and change the user-friendly name (can be longer/more descriptive than the file name)
+ *    and timestamp
+ * 3. Add your script under the "method" property
+ * 4. Append your filename to the array below for the next NodeBB version.
+ */
+
 var Upgrade = {
 	available: [
 		{
@@ -35,7 +45,7 @@ var Upgrade = {
 			upgrades: ['global_and_user_language_keys', 'sorted_set_for_pinned_topics'],
 		},
 		{
-			version: '1.5.0',
+			version: 'develop',	// rename this to whatever the next NodeBB version is
 			upgrades: ['flags_refactor'],
 		},
 	],
