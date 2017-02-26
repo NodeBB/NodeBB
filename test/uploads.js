@@ -71,7 +71,7 @@ describe('Upload Controllers', function () {
 				assert.equal(res.statusCode, 200);
 				assert(Array.isArray(body));
 				assert.equal(body.length, 1);
-				assert.equal(body[0].url, '/assets/uploads/profile/' + regularUid + '-profileavatar.png');
+				assert.equal(body[0].url, nconf.get('relative_path') + '/assets/uploads/profile/' + regularUid + '-profileavatar.png');
 				done();
 			});
 		});
@@ -165,7 +165,7 @@ describe('Upload Controllers', function () {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 200);
 				assert(Array.isArray(body));
-				assert.equal(body[0].url, '/assets/uploads/system/site-logo.png');
+				assert.equal(body[0].url, nconf.get('relative_path') + '/assets/uploads/system/site-logo.png');
 				done();
 			});
 		});
@@ -175,7 +175,7 @@ describe('Upload Controllers', function () {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 200);
 				assert(Array.isArray(body));
-				assert.equal(body[0].url, '/assets/uploads/category/category-1.png');
+				assert.equal(body[0].url, nconf.get('relative_path') + '/assets/uploads/category/category-1.png');
 				done();
 			});
 		});

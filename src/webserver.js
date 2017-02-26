@@ -79,7 +79,6 @@ module.exports.listen = function (callback) {
 };
 
 function initializeNodeBB(callback) {
-	winston.info('initializing NodeBB ...');
 	var middleware = require('./middleware');
 
 	async.waterfall([
