@@ -489,16 +489,14 @@ Upgrade.upgrade = function (callback) {
 
 				require('./batch').processSortedSet('posts:pid', function (pids, next) {
 					async.each(pids, function (pid, next) {
-						async.each(pids, function (pid, next) {
-							db.getObjectFields('post:' + pid, ['upvotes', 'downvotes'], function (err, postData) {
-								if (err || !postData) {
-									return next(err);
-								}
+						db.getObjectFields('post:' + pid, ['upvotes', 'downvotes'], function (err, postData) {
+							if (err || !postData) {
+								return next(err);
+							}
 
-								var votes = parseInt(postData.upvotes || 0, 10) - parseInt(postData.downvotes || 0, 10);
-								db.sortedSetAdd('posts:votes', votes, pid, next);
-							});
-						}, next);
+							var votes = parseInt(postData.upvotes || 0, 10) - parseInt(postData.downvotes || 0, 10);
+							db.sortedSetAdd('posts:votes', votes, pid, next);
+						});
 					}, next);
 				}, {}, function (err) {
 					if (err) {
