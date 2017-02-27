@@ -480,43 +480,33 @@ Upgrade.upgrade = function (callback) {
 			}
 		},
 		function (next) {
-			thisSchemaDate = Date.UTC(2017, 1, 27);
+			thisSchemaDate = Date.UTC(2017, 1, 28);
 			var schemaName = '[2017/2/27] New sorted set posts:votes';
 
 			if (schemaDate < thisSchemaDate) {
 				updatesMade = true;
 				winston.verbose(schemaName);
 
-				db.getSortedSetRange('categories:cid', 0, -1, function (err, cids) {
+				require('./batch').processSortedSet('posts:pid', function (pids, next) {
+					async.each(pids, function (pid, next) {
+						async.each(pids, function (pid, next) {
+							db.getObjectFields('post:' + pid, ['upvotes', 'downvotes'], function (err, postData) {
+								if (err || !postData) {
+									return next(err);
+								}
+
+								var votes = parseInt(postData.upvotes || 0, 10) - parseInt(postData.downvotes || 0, 10);
+								db.sortedSetAdd('posts:votes', votes, pid, next);
+							});
+						}, next);
+					}, next);
+				}, {}, function (err) {
 					if (err) {
 						return next(err);
 					}
 
-					async.eachSeries(cids, function (cid, next) {
-						db.getSortedSetRevRange('cid:' + cid + ':pids', 0, -1, function (err, pids) {
-							if (err || !pids) {
-								return next(err);
-							}
-
-							async.each(pids, function(pid, next) {
-								db.getObjectFields('post:' + pid, ['upvotes', 'downvotes'], function (err, postData) {
-									if (err || !postData) {
-										return next(err);
-									}
-
-									var votes = parseInt(postData.upvotes || 0, 10) - parseInt(postData.downvotes || 0, 10);
-									db.sortedSetAdd('posts:votes', votes, pid, next);
-								});
-							}, next);
-						});
-					}, function (err) {
-						if (err) {
-							return next(err);
-						}
-
-						winston.info(schemaName + ' - done');
-						Upgrade.update(thisSchemaDate, next);
-					});
+					winston.info(schemaName + ' - done');
+					Upgrade.update(thisSchemaDate, next);
 				});
 			} else {
 				winston.info(schemaName + ' - skipped!');
