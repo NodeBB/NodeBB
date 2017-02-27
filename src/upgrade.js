@@ -45,7 +45,11 @@ var Upgrade = {
 			upgrades: ['global_and_user_language_keys', 'sorted_set_for_pinned_topics'],
 		},
 		{
-			version: 'develop',	// rename this to whatever the next NodeBB version is
+			version: 'master',	// rename this to whenever the next NodeBB version is (non-breaking)
+			upgrades: ['sound_settings'],
+		},
+		{
+			version: 'develop',	// rename this to whatever the next NodeBB version is (breaking)
 			upgrades: ['flags_refactor'],
 		},
 	],

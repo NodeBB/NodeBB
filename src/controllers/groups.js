@@ -1,7 +1,6 @@
 'use strict';
 
 var async = require('async');
-var nconf = require('nconf');
 var validator = require('validator');
 
 var meta = require('../meta');
@@ -181,7 +180,7 @@ groupsController.uploadCover = function (req, res, next) {
 		if (err) {
 			return next(err);
 		}
-		res.json([{ url: image.url.startsWith('http') ? image.url : nconf.get('relative_path') + image.url }]);
+		res.json([{ url: image.url }]);
 	});
 };
 

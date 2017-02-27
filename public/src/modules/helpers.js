@@ -102,19 +102,18 @@
 	helpers.generateChildrenCategories = function (category) {
 		var html = '';
 		var relative_path = (typeof config !== 'undefined' ? config.relative_path : require('nconf').get('relative_path'));
-		if (!category || !category.children) {
+		if (!category || !category.children || !category.children.length) {
 			return html;
 		}
 		category.children.forEach(function (child) {
-			if (!child) {
-				return;
+			if (child) {
+				var link = child.link ? child.link : (relative_path + '/category/' + child.slug);
+				html += '<a href="' + link + '">' +
+						'<span class="fa-stack fa-lg">' +
+						'<i style="color:' + child.bgColor + ';" class="fa fa-circle fa-stack-2x"></i>' +
+						'<i style="color:' + child.color + ';" class="fa fa-stack-1x ' + child.icon + '"></i>' +
+						'</span><small>' + child.name + '</small></a> ';
 			}
-			var link = child.link ? child.link : (relative_path + '/category/' + child.slug);
-			html += '<a href="' + link + '">' +
-					'<span class="fa-stack fa-lg">' +
-					'<i style="color:' + child.bgColor + ';" class="fa fa-circle fa-stack-2x"></i>' +
-					'<i style="color:' + child.color + ';" class="fa fa-stack-1x ' + child.icon + '"></i>' +
-					'</span><small>' + child.name + '</small></a> ';
 		});
 		html = html ? ('<span class="category-children">' + html + '</span>') : html;
 		return html;
@@ -140,10 +139,6 @@
 		}
 
 		return style.join(' ');
-	};
-
-	helpers.getBookmarkFromIndex = function (topic) {
-		return (topic.index || 0) + 1;
 	};
 
 	helpers.displayUserSearch = function (data, allowGuestUserSearching) {

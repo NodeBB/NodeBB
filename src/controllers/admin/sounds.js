@@ -1,23 +1,23 @@
 'use strict';
 
 var plugins = require('../../plugins');
-var db = require('../../database');
+var meta = require('../../meta');
 
 var soundsController = {};
 
 soundsController.get = function (req, res, next) {
-	db.getObject('settings:sounds', function (err, settings) {
+	var types = [
+		'notification',
+		'chat-incoming',
+		'chat-outgoing',
+	];
+	meta.configs.getFields(types, function (err, settings) {
 		if (err) {
 			return next(err);
 		}
 
 		settings = settings || {};
 
-		var types = [
-			'notification',
-			'chat-incoming',
-			'chat-outgoing',
-		];
 		var output = {};
 
 		types.forEach(function (type) {

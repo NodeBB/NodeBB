@@ -9,8 +9,6 @@ var async = require('async');
 var file = require('../file');
 var plugins = require('../plugins');
 var user = require('../user');
-var db = require('../database');
-
 
 var soundsPath = path.join(__dirname, '../../build/public/sounds');
 var uploadsPath = path.join(__dirname, '../../public/uploads/sounds');
@@ -100,7 +98,7 @@ module.exports = function (Meta) {
 	Meta.sounds.getUserSoundMap = function getUserSoundMap(uid, callback) {
 		async.parallel({
 			defaultMapping: function (next) {
-				db.getObject('settings:sounds', next);
+				Meta.configs.getFields(keys, next);
 			},
 			userSettings: function (next) {
 				user.getSettings(uid, next);
@@ -121,9 +119,9 @@ module.exports = function (Meta) {
 
 			keys.forEach(function (key) {
 				if (userSettings[key] || userSettings[key] === '') {
-					soundMapping[key] = userSettings[key] || null;
+					soundMapping[key] = userSettings[key] || '';
 				} else {
-					soundMapping[key] = defaultMapping[key] || null;
+					soundMapping[key] = defaultMapping[key] || '';
 				}
 			});
 
