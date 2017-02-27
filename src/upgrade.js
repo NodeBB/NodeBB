@@ -12,7 +12,7 @@ var schemaDate;
 var thisSchemaDate;
 
 // IMPORTANT: REMEMBER TO UPDATE VALUE OF latestSchema
-var latestSchema = Date.UTC(2016, 10, 22);
+var latestSchema = Date.UTC(2017, 1, 25);
 
 Upgrade.check = function (callback) {
 	db.get('schemaDate', function (err, value) {
@@ -310,6 +310,75 @@ Upgrade.upgrade = function (callback) {
 				});
 			} else {
 				winston.info('[2016/11/25] Creating sorted sets for pinned topics - skipped!');
+				next();
+			}
+		},
+		function (next) {
+			thisSchemaDate = Date.UTC(2017, 1, 25);
+			var schemaName = '[2017/2/25] Update global and user sound settings';
+
+			if (schemaDate < thisSchemaDate) {
+				updatesMade = true;
+				winston.verbose(schemaName);
+
+				var user = require('./user');
+				var meta = require('./meta');
+				var batch = require('./batch');
+
+				var map = {
+					'notification.mp3': 'Default | Deedle-dum',
+					'waterdrop-high.mp3': 'Default | Water drop (high)',
+					'waterdrop-low.mp3': 'Default | Water drop (low)',
+				};
+
+				async.parallel([
+					function (cb) {
+						var keys = ['chat-incoming', 'chat-outgoing', 'notification'];
+
+						db.getObject('settings:sounds', function (err, settings) {
+							if (err) {
+								return cb(err);
+							}
+
+							keys.forEach(function (key) {
+								if (settings[key] && settings[key].indexOf(' | ') === -1) {
+									settings[key] = map[settings[key]] || '';
+								}
+							});
+
+							meta.configs.setMultiple(settings, cb);
+						});
+					},
+					function (cb) {
+						var keys = ['notificationSound', 'incomingChatSound', 'outgoingChatSound'];
+
+						batch.processSortedSet('users:joindate', function (ids, next) {
+							async.each(ids, function (uid, next) {
+								user.getSettings(uid, function (err, settings) {
+									if (err) {
+										return next(err);
+									}
+
+									keys.forEach(function (key) {
+										if (settings[key] && settings[key].indexOf(' | ') === -1) {
+											settings[key] = map[settings[key]] || '';
+										}
+									});
+
+									user.saveSettings(uid, settings, next);
+								});
+							}, next);
+						}, cb);
+					},
+				], function (err) {
+					if (err) {
+						return next(err);
+					}
+					winston.verbose(schemaName + ' - done');
+					Upgrade.update(thisSchemaDate, next);
+				});
+			} else {
+				winston.verbose(schemaName + ' - skipped!');
 				next();
 			}
 		},
