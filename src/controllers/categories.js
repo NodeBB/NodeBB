@@ -13,10 +13,10 @@ var categoriesController = {};
 categoriesController.list = function (req, res, next) {
 	res.locals.metaTags = [{
 		name: 'title',
-		content: validator.escape(String(meta.config.title || 'NodeBB')),
+		content: String(meta.config.title || 'NodeBB'),
 	}, {
 		name: 'description',
-		content: validator.escape(String(meta.config.description || '')),
+		content: String(meta.config.description || ''),
 	}, {
 		property: 'og:title',
 		content: '[[pages:categories]]',
