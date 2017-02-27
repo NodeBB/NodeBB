@@ -12,7 +12,7 @@ var schemaDate;
 var thisSchemaDate;
 
 // IMPORTANT: REMEMBER TO UPDATE VALUE OF latestSchema
-var latestSchema = Date.UTC(2017, 1, 25);
+var latestSchema = Date.UTC(2017, 1, 27);
 
 Upgrade.check = function (callback) {
 	db.get('schemaDate', function (err, value) {
@@ -473,6 +473,38 @@ Upgrade.upgrade = function (callback) {
 						winston.info(schemaName + ' - done');
 						Upgrade.update(thisSchemaDate, next);
 					});
+				});
+			} else {
+				winston.info(schemaName + ' - skipped!');
+				next();
+			}
+		},
+		function (next) {
+			thisSchemaDate = Date.UTC(2017, 1, 27);
+			var schemaName = '[2017/2/27] New sorted set posts:votes';
+
+			if (schemaDate < thisSchemaDate) {
+				updatesMade = true;
+				winston.verbose(schemaName);
+
+				require('./batch').processSortedSet('posts:pid', function (pids, next) {
+					async.each(pids, function (pid, next) {
+						db.getObjectFields('post:' + pid, ['upvotes', 'downvotes'], function (err, postData) {
+							if (err || !postData) {
+								return next(err);
+							}
+
+							var votes = parseInt(postData.upvotes || 0, 10) - parseInt(postData.downvotes || 0, 10);
+							db.sortedSetAdd('posts:votes', votes, pid, next);
+						});
+					}, next);
+				}, {}, function (err) {
+					if (err) {
+						return next(err);
+					}
+
+					winston.info(schemaName + ' - done');
+					Upgrade.update(thisSchemaDate, next);
 				});
 			} else {
 				winston.info(schemaName + ' - skipped!');
