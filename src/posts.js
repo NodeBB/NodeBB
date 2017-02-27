@@ -249,6 +249,9 @@ var plugins = require('./plugins');
 				], next);
 			},
 			function (next) {
+				db.sortedSetAdd('posts:votes', postData.votes, postData.pid, next);
+			},
+			function (next) {
 				Posts.setPostFields(postData.pid, { upvotes: postData.upvotes, downvotes: postData.downvotes }, next);
 			},
 		], function (err) {
