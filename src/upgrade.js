@@ -480,7 +480,7 @@ Upgrade.upgrade = function (callback) {
 			}
 		},
 		function (next) {
-			thisSchemaDate = Date.UTC(2017, 1, 28);
+			thisSchemaDate = Date.UTC(2017, 1, 27);
 			var schemaName = '[2017/2/27] New sorted set posts:votes';
 
 			if (schemaDate < thisSchemaDate) {
