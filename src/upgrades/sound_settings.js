@@ -25,7 +25,7 @@ module.exports = {
 				var keys = ['chat-incoming', 'chat-outgoing', 'notification'];
 
 				db.getObject('settings:sounds', function (err, settings) {
-					if (err) {
+					if (err || !settings) {
 						return cb(err);
 					}
 
