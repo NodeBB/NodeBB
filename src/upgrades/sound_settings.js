@@ -20,14 +20,14 @@ module.exports = {
 			'waterdrop-low.mp3': 'Default | Water drop (low)',
 		};
 
-		async.parallel([
-			function (cb) {
-				var keys = ['chat-incoming', 'chat-outgoing', 'notification'];
+		db.getObject('settings:sounds', function (err, settings) {
+			if (err || !settings) {
+				return callback(err);
+			}
 
-				db.getObject('settings:sounds', function (err, settings) {
-					if (err || !settings) {
-						return cb(err);
-					}
+			async.parallel([
+				function (cb) {
+					var keys = ['chat-incoming', 'chat-outgoing', 'notification'];
 
 					keys.forEach(function (key) {
 						if (settings[key] && settings[key].indexOf(' | ') === -1) {
@@ -36,29 +36,29 @@ module.exports = {
 					});
 
 					meta.configs.setMultiple(settings, cb);
-				});
-			},
-			function (cb) {
-				var keys = ['notificationSound', 'incomingChatSound', 'outgoingChatSound'];
+				},
+				function (cb) {
+					var keys = ['notificationSound', 'incomingChatSound', 'outgoingChatSound'];
 
-				batch.processSortedSet('users:joindate', function (ids, next) {
-					async.each(ids, function (uid, next) {
-						user.getSettings(uid, function (err, settings) {
-							if (err) {
-								return next(err);
-							}
-
-							keys.forEach(function (key) {
-								if (settings[key] && settings[key].indexOf(' | ') === -1) {
-									settings[key] = map[settings[key]] || '';
+					batch.processSortedSet('users:joindate', function (ids, next) {
+						async.each(ids, function (uid, next) {
+							user.getSettings(uid, function (err, settings) {
+								if (err) {
+									return next(err);
 								}
-							});
 
-							user.saveSettings(uid, settings, next);
-						});
-					}, next);
-				}, cb);
-			},
-		], callback);
+								keys.forEach(function (key) {
+									if (settings[key] && settings[key].indexOf(' | ') === -1) {
+										settings[key] = map[settings[key]] || '';
+									}
+								});
+
+								user.saveSettings(uid, settings, next);
+							});
+						}, next);
+					}, cb);
+				},
+			], callback);
+		});
 	},
 };
