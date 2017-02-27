@@ -7,7 +7,7 @@
 					<label for="notification">[[admin/general/sounds:notifications]]</label>
 					<div class="row">
 						<div class="form-group col-xs-9">
-							<select class="form-control" id="notification" name="notification">
+							<select class="form-control" id="notification" data-field="notification">
 								<option value="">[[user:no-sound]]</option>
 								<!-- BEGIN notification-sound -->
 								<optgroup label="{notification-sound.name}">
@@ -33,7 +33,7 @@
 					<label for="chat-incoming">[[admin/general/sounds:incoming-message]]</label>
 					<div class="row">
 						<div class="form-group col-xs-9">
-							<select class="form-control" id="chat-incoming" name="chat-incoming">
+							<select class="form-control" id="chat-incoming" data-field="chat-incoming">
 								<option value="">[[user:no-sound]]</option>
 								<!-- BEGIN chat-incoming-sound -->
 								<optgroup label="{chat-incoming-sound.name}">
@@ -54,7 +54,7 @@
 					<label for="chat-outgoing">[[admin/general/sounds:outgoing-message]]</label>
 					<div class="row">
 						<div class="form-group col-xs-9">
-							<select class="form-control" id="chat-outgoing" name="chat-outgoing">
+							<select class="form-control" id="chat-outgoing" data-field="chat-outgoing">
 								<option value="">[[user:no-sound]]</option>
 								<!-- BEGIN chat-outgoing-sound -->
 								<optgroup label="{chat-outgoing-sound.name}">
