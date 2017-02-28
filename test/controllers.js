@@ -136,6 +136,59 @@ describe('Controllers', function () {
 		});
 	});
 
+	it('should load /register/complete', function (done) {
+		var plugins = require('../src/plugins');
+		function hookMethod(data, next) {
+			data.interstitials.push({ template: 'topic.tpl', data: {} });
+			next(null, data);
+		}
+
+		plugins.registerHook('myTestPlugin', {
+			hook: 'filter:register.interstitial',
+			method: hookMethod,
+		});
+
+		var data = {
+			username: 'interstitial',
+			password: '123456',
+			email: 'test@me.com',
+		};
+
+		var jar = request.jar();
+		request({
+			url: nconf.get('url') + '/api/config',
+			json: true,
+			jar: jar,
+		}, function (err, response, body) {
+			assert.ifError(err);
+
+			request.post(nconf.get('url') + '/register', {
+				form: data,
+				json: true,
+				jar: jar,
+				headers: {
+					'x-csrf-token': body.csrf_token,
+				},
+			}, function (err, res, body) {
+				assert.ifError(err);
+				assert.equal(res.statusCode, 200);
+				assert.equal(body.referrer, nconf.get('relative_path') + '/register/complete');
+				request(nconf.get('url') + '/api/register/complete', {
+					jar: jar,
+					json: true,
+				}, function (err, res, body) {
+					assert.ifError(err);
+					assert.equal(res.statusCode, 200);
+					assert(body.sections);
+					assert(body.errors);
+					assert(body.title);
+					plugins.unregisterHook('myTestPlugin', 'filter:register.interstitial', hookMethod);
+					done();
+				});
+			});
+		});
+	});
+
 	it('should load /robots.txt', function (done) {
 		request(nconf.get('url') + '/robots.txt', function (err, res, body) {
 			assert.ifError(err);
@@ -471,7 +524,7 @@ describe('Controllers', function () {
 			hidden: 1,
 		}, function (err) {
 			assert.ifError(err);
-			request(nconf.get('url') + '/groups/hidden-group/members', function (err, res, body) {
+			request(nconf.get('url') + '/groups/hidden-group/members', function (err, res) {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 404);
 				done();
@@ -531,7 +584,7 @@ describe('Controllers', function () {
 				headers: {
 					'x-csrf-token': csrf_token,
 				},
-			}, function (err, res, body) {
+			}, function (err, res) {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 404);
 				done();
@@ -689,7 +742,7 @@ describe('Controllers', function () {
 		});
 
 		it('should return 503 in maintenance mode', function (done) {
-			request(nconf.get('url') + '/recent', { json: true }, function (err, res, body) {
+			request(nconf.get('url') + '/recent', { json: true }, function (err, res) {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 503);
 				done();
