@@ -2,7 +2,6 @@
 
 var async = require('async');
 var nconf = require('nconf');
-var validator = require('validator');
 
 var categories = require('../categories');
 var meta = require('../meta');
