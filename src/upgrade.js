@@ -356,8 +356,8 @@ Upgrade.upgrade = function (callback) {
 
 							batch.processSortedSet('users:joindate', function (ids, next) {
 								async.each(ids, function (uid, next) {
-									user.getSettings(uid, function (err, settings) {
-										if (err) {
+									db.getObject('user:' + uid + ':settings', function (err, settings) {
+										if (err || !settings) {
 											return next(err);
 										}
 
