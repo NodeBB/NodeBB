@@ -75,6 +75,13 @@ module.exports = function (Plugins) {
 		}
 	};
 
+	Plugins.unregisterHook = function (id, hook, method) {
+		var hooks = Plugins.loadedHooks[hook] || [];
+		Plugins.loadedHooks[hook] = hooks.filter(function (hookData) {
+			return hookData && hookData.id !== id && hookData.method !== method;
+		});
+	};
+
 	Plugins.fireHook = function (hook, params, callback) {
 		callback = typeof callback === 'function' ? callback : function () {};
 
