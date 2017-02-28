@@ -123,6 +123,17 @@ describe('meta', function () {
 			});
 		});
 
+		it('should set single config value', function (done) {
+			socketAdmin.config.set({ uid: fooUid }, { key: 'someKey', value: 'someValue' }, function (err) {
+				assert.ifError(err);
+				meta.configs.getFields(['someKey'], function (err, data) {
+					assert.ifError(err);
+					assert.equal(data.someKey, 'someValue');
+					done();
+				});
+			});
+		});
+
 		it('should set config value', function (done) {
 			meta.configs.set('someField', 'someValue', function (err) {
 				assert.ifError(err);

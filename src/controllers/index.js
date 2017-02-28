@@ -201,37 +201,35 @@ Controllers.registerInterstitial = function (req, res, next) {
 		return res.redirect(nconf.get('relative_path') + '/register');
 	}
 
-	plugins.fireHook('filter:register.interstitial', {
-		userData: req.session.registration,
-		interstitials: [],
-	}, function (err, data) {
-		if (err) {
-			return next(err);
-		}
-
-		if (!data.interstitials.length) {
-			// No interstitials, redirect to home
-			delete req.session.registration;
-			return res.redirect('/');
-		}
-
-		var renders = data.interstitials.map(function (interstitial) {
-			return async.apply(req.app.render.bind(req.app), interstitial.template, interstitial.data || {});
-		});
-		var errors = req.flash('error');
-
-		async.parallel(renders, function (err, sections) {
-			if (err) {
-				return next(err);
+	async.waterfall([
+		function (next) {
+			plugins.fireHook('filter:register.interstitial', {
+				userData: req.session.registration,
+				interstitials: [],
+			}, next);
+		},
+		function (data, next) {
+			if (!data.interstitials.length) {
+				// No interstitials, redirect to home
+				delete req.session.registration;
+				return res.redirect('/');
 			}
+			var renders = data.interstitials.map(function (interstitial) {
+				return async.apply(req.app.render.bind(req.app), interstitial.template, interstitial.data || {});
+			});
 
+
+			async.parallel(renders, next);
+		},
+		function (sections) {
+			var errors = req.flash('error');
 			res.render('registerComplete', {
 				title: '[[pages:registration-complete]]',
 				errors: errors,
 				sections: sections,
 			});
-		});
-	});
+		},
+	], next);
 };
 
 Controllers.compose = function (req, res, next) {
