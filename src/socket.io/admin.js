@@ -93,17 +93,18 @@ SocketAdmin.themes.set = function (socket, data, callback) {
 		return callback(new Error('[[error:invalid-data]]'));
 	}
 
-	var wrappedCallback = function (err) {
-		if (err) {
-			return callback(err);
-		}
-		meta.themes.set(data, callback);
-	};
-	if (data.type === 'bootswatch') {
-		wrappedCallback();
-	} else {
-		widgets.reset(wrappedCallback);
-	}
+	async.waterfall([
+		function (next) {
+			if (data.type === 'bootswatch') {
+				setImmediate(next);
+			} else {
+				widgets.reset(next);
+			}
+		},
+		function (next) {
+			meta.themes.set(data, next);
+		},
+	], callback);
 };
 
 SocketAdmin.plugins.toggleActive = function (socket, plugin_id, callback) {
@@ -125,7 +126,7 @@ SocketAdmin.plugins.orderActivePlugins = function (socket, data, callback) {
 		if (plugin && plugin.name) {
 			db.sortedSetAdd('plugins:active', plugin.order || 0, plugin.name, next);
 		} else {
-			next();
+			setImmediate(next);
 		}
 	}, callback);
 };
@@ -148,7 +149,7 @@ SocketAdmin.config.set = function (socket, data, callback) {
 	}
 	var _data = {};
 	_data[data.key] = data.value;
-	SocketAdmin.config.setMultiple(socket, data, callback);
+	SocketAdmin.config.setMultiple(socket, _data, callback);
 };
 
 SocketAdmin.config.setMultiple = function (socket, data, callback) {
@@ -204,6 +205,10 @@ SocketAdmin.email.test = function (socket, data, callback) {
 };
 
 SocketAdmin.analytics.get = function (socket, data, callback) {
+	if (!data || !data.graph || !data.units) {
+		return callback(new Error('[[error:invalid-data]]'));
+	}
+
 	// Default returns views from past 24 hours, by hour
 	if (data.units === 'days') {
 		data.amount = 30;
@@ -211,34 +216,30 @@ SocketAdmin.analytics.get = function (socket, data, callback) {
 		data.amount = 24;
 	}
 
-	if (data && data.graph && data.units && data.amount) {
-		if (data.graph === 'traffic') {
-			async.parallel({
-				uniqueVisitors: function (next) {
-					if (data.units === 'days') {
-						analytics.getDailyStatsForSet('analytics:uniquevisitors', data.until || Date.now(), data.amount, next);
-					} else {
-						analytics.getHourlyStatsForSet('analytics:uniquevisitors', data.until || Date.now(), data.amount, next);
-					}
-				},
-				pageviews: function (next) {
-					if (data.units === 'days') {
-						analytics.getDailyStatsForSet('analytics:pageviews', data.until || Date.now(), data.amount, next);
-					} else {
-						analytics.getHourlyStatsForSet('analytics:pageviews', data.until || Date.now(), data.amount, next);
-					}
-				},
-				monthlyPageViews: function (next) {
-					analytics.getMonthlyPageViews(next);
-				},
-			}, function (err, data) {
-				data.pastDay = data.pageviews.reduce(function (a, b) { return parseInt(a, 10) + parseInt(b, 10); });
-				data.pageviews[data.pageviews.length - 1] = parseInt(data.pageviews[data.pageviews.length - 1], 10) + analytics.getUnwrittenPageviews();
-				callback(err, data);
-			});
-		}
-	} else {
-		callback(new Error('Invalid analytics call'));
+	if (data.graph === 'traffic') {
+		async.parallel({
+			uniqueVisitors: function (next) {
+				if (data.units === 'days') {
+					analytics.getDailyStatsForSet('analytics:uniquevisitors', data.until || Date.now(), data.amount, next);
+				} else {
+					analytics.getHourlyStatsForSet('analytics:uniquevisitors', data.until || Date.now(), data.amount, next);
+				}
+			},
+			pageviews: function (next) {
+				if (data.units === 'days') {
+					analytics.getDailyStatsForSet('analytics:pageviews', data.until || Date.now(), data.amount, next);
+				} else {
+					analytics.getHourlyStatsForSet('analytics:pageviews', data.until || Date.now(), data.amount, next);
+				}
+			},
+			monthlyPageViews: function (next) {
+				analytics.getMonthlyPageViews(next);
+			},
+		}, function (err, data) {
+			data.pastDay = data.pageviews.reduce(function (a, b) { return parseInt(a, 10) + parseInt(b, 10); });
+			data.pageviews[data.pageviews.length - 1] = parseInt(data.pageviews[data.pageviews.length - 1], 10) + analytics.getUnwrittenPageviews();
+			callback(err, data);
+		});
 	}
 };
 
@@ -259,13 +260,15 @@ SocketAdmin.deleteAllEvents = function (socket, data, callback) {
 };
 
 SocketAdmin.getSearchDict = function (socket, data, callback) {
-	user.getSettings(socket.uid, function (err, settings) {
-		if (err) {
-			return callback(err);
-		}
-		var lang = settings.userLang || meta.config.defaultLang || 'en-GB';
-		getAdminSearchDict(lang, callback);
-	});
+	async.waterfall([
+		function (next) {
+			user.getSettings(socket.uid, next);
+		},
+		function (settings, next) {
+			var lang = settings.userLang || meta.config.defaultLang || 'en-GB';
+			getAdminSearchDict(lang, next);
+		},
+	], callback);
 };
 
 SocketAdmin.deleteAllSessions = function (socket, data, callback) {

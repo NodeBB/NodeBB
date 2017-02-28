@@ -1,5 +1,6 @@
 'use strict';
 
+var async = require('async');
 var validator = require('validator');
 
 var db = require('../database');
@@ -16,18 +17,19 @@ module.exports = function (Meta) {
 	};
 
 	Meta.errors.get = function (escape, callback) {
-		db.getSortedSetRevRangeWithScores('errors:404', 0, -1, function (err, data) {
-			if (err) {
-				return callback(err);
-			}
+		async.waterfall([
+			function (next) {
+				db.getSortedSetRevRangeWithScores('errors:404', 0, -1, next);
+			},
+			function (data, next) {
+				data = data.map(function (nfObject) {
+					nfObject.value = escape ? validator.escape(String(nfObject.value || '')) : nfObject.value;
+					return nfObject;
+				});
 
-			data = data.map(function (nfObject) {
-				nfObject.value = escape ? validator.escape(String(nfObject.value || '')) : nfObject.value;
-				return nfObject;
-			});
-
-			callback(null, data);
-		});
+				next(null, data);
+			},
+		], callback);
 	};
 
 	Meta.errors.clear = function (callback) {
