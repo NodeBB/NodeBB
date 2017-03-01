@@ -12,7 +12,7 @@ var schemaDate;
 var thisSchemaDate;
 
 // IMPORTANT: REMEMBER TO UPDATE VALUE OF latestSchema
-var latestSchema = Date.UTC(2017, 1, 27);
+var latestSchema = Date.UTC(2017, 1, 28);
 
 Upgrade.check = function (callback) {
 	db.get('schemaDate', function (err, value) {
@@ -415,7 +415,6 @@ Upgrade.upgrade = function (callback) {
 				updatesMade = true;
 				winston.verbose(schemaName);
 
-				var user = require('./user');
 				var meta = require('./meta');
 				var batch = require('./batch');
 
@@ -425,17 +424,14 @@ Upgrade.upgrade = function (callback) {
 					'waterdrop-low.mp3': 'Default | Water drop (low)',
 				};
 
-				db.getObject('settings:sounds', function (err, settings) {
-					if (err) {
-						return next(err);
-					} else if (!settings) {
-						winston.info(schemaName + ' - done');
-						return Upgrade.update(thisSchemaDate, next);
-					}
+				async.parallel([
+					function (cb) {
+						var keys = ['chat-incoming', 'chat-outgoing', 'notification'];
 
-					async.parallel([
-						function (cb) {
-							var keys = ['chat-incoming', 'chat-outgoing', 'notification'];
+						db.getObject('settings:sounds', function (err, settings) {
+							if (err || !settings) {
+								return cb(err);
+							}
 
 							keys.forEach(function (key) {
 								if (settings[key] && settings[key].indexOf(' | ') === -1) {
@@ -444,36 +440,80 @@ Upgrade.upgrade = function (callback) {
 							});
 
 							meta.configs.setMultiple(settings, cb);
-						},
-						function (cb) {
-							var keys = ['notificationSound', 'incomingChatSound', 'outgoingChatSound'];
+						});
+					},
+					function (cb) {
+						var keys = ['notificationSound', 'incomingChatSound', 'outgoingChatSound'];
 
-							batch.processSortedSet('users:joindate', function (ids, next) {
-								async.each(ids, function (uid, next) {
-									db.getObject('user:' + uid + ':settings', function (err, settings) {
-										if (err || !settings) {
-											return next(err);
+						batch.processSortedSet('users:joindate', function (ids, next) {
+							async.each(ids, function (uid, next) {
+								db.getObject('user:' + uid + ':settings', function (err, settings) {
+									if (err || !settings) {
+										return next(err);
+									}
+									var newSettings = {};
+									keys.forEach(function (key) {
+										if (settings[key] && settings[key].indexOf(' | ') === -1) {
+											newSettings[key] = map[settings[key]] || '';
 										}
-
-										keys.forEach(function (key) {
-											if (settings[key] && settings[key].indexOf(' | ') === -1) {
-												settings[key] = map[settings[key]] || '';
-											}
-										});
-
-										user.saveSettings(uid, settings, next);
 									});
-								}, next);
-							}, cb);
-						},
-					], function (err) {
-						if (err) {
-							return next(err);
+
+									if (Object.keys(newSettings).length) {
+										db.setObject('user:' + uid + ':settings', newSettings, next);
+									} else {
+										setImmediate(next);
+									}
+								});
+							}, next);
+						}, cb);
+					},
+				], function (err) {
+					if (err) {
+						return next(err);
+					}
+					winston.info(schemaName + ' - done');
+					Upgrade.update(thisSchemaDate, next);
+				});
+			} else {
+				winston.info(schemaName + ' - skipped!');
+				next();
+			}
+		},
+		function (next) {
+			thisSchemaDate = Date.UTC(2017, 1, 28);
+			var schemaName = '[2017/2/28] Update urls in config to `/assets`';
+
+			if (schemaDate < thisSchemaDate) {
+				updatesMade = true;
+				winston.info(schemaName);
+				async.waterfall([
+					function (cb) {
+						db.getObject('config', cb);
+					},
+					function (config, cb) {
+						if (!config) {
+							return cb();
 						}
+
+						var keys = ['brand:favicon', 'brand:touchicon', 'og:image', 'brand:logo:url', 'defaultAvatar', 'profile:defaultCovers'];
+
+						keys.forEach(function (key) {
+							var oldValue = config[key];
+
+							if (!oldValue || typeof oldValue !== 'string') {
+								return;
+							}
+
+							config[key] = oldValue.replace(/(?:\/assets)?\/(images|uploads)\//g, '/assets/$1/');
+						});
+
+						db.setObject('config', config, cb);
+					},
+					function (next) {
 						winston.info(schemaName + ' - done');
 						Upgrade.update(thisSchemaDate, next);
-					});
-				});
+					},
+				], next);
 			} else {
 				winston.info(schemaName + ' - skipped!');
 				next();
