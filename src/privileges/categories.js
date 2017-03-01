@@ -96,7 +96,7 @@ module.exports = function (privileges) {
 								return groupName.indexOf(':privileges:') === -1 && uniqueGroups.indexOf(groupName) !== -1;
 							});
 
-							groupNames = groups.getEphemeralGroups().concat(groupNames);
+							groupNames = groups.ephemeralGroups.concat(groupNames);
 							var registeredUsersIndex = groupNames.indexOf('registered-users');
 							if (registeredUsersIndex !== -1) {
 								groupNames.splice(0, 0, groupNames.splice(registeredUsersIndex, 1)[0]);
