@@ -46,11 +46,11 @@ var Upgrade = {
 		},
 		{
 			version: 'master',	// rename this to whenever the next NodeBB version is (non-breaking)
-			upgrades: ['sound_settings', 'post_votes_zset', 'config_urls_update'],
+			upgrades: ['sound_settings', 'config_urls_update'],
 		},
 		{
 			version: 'develop',	// rename this to whatever the next NodeBB version is (breaking)
-			upgrades: ['flags_refactor'],
+			upgrades: ['flags_refactor', 'post_votes_zset'],
 		},
 	],
 };
