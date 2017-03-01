@@ -321,7 +321,6 @@ Upgrade.upgrade = function (callback) {
 				updatesMade = true;
 				winston.verbose(schemaName);
 
-				var user = require('./user');
 				var meta = require('./meta');
 				var batch = require('./batch');
 
@@ -360,14 +359,18 @@ Upgrade.upgrade = function (callback) {
 										if (err || !settings) {
 											return next(err);
 										}
-
+										var newSettings = {};
 										keys.forEach(function (key) {
 											if (settings[key] && settings[key].indexOf(' | ') === -1) {
-												settings[key] = map[settings[key]] || '';
+												newSettings[key] = map[settings[key]] || '';
 											}
 										});
 
-										user.saveSettings(uid, settings, next);
+										if (Object.keys(newSettings).length) {
+											db.setObject('user:' + uid + ':settings', newSettings, next);
+										} else {
+											setImmediate(next);
+										}
 									});
 								}, next);
 							}, cb);
