@@ -357,18 +357,18 @@ Upgrade.upgrade = function (callback) {
 									if (err || !settings) {
 										return next(err);
 									}
-                  var newSettings = {};
+									var newSettings = {};
 									keys.forEach(function (key) {
 										if (settings[key] && settings[key].indexOf(' | ') === -1) {
 											newSettings[key] = map[settings[key]] || '';
 										}
 									});
                   
-                  if (Object.keys(newSettings).length) {
-									  user.saveSettings(uid, settings, next);
-                  } else {
-                    setImmediate(next);
-                  }
+									if (Object.keys(newSettings).length) {
+										user.saveSettings(uid, settings, next);
+									} else {
+										setImmediate(next);
+									}
 								});
 							}, next);
 						}, cb);
