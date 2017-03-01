@@ -365,7 +365,7 @@ Upgrade.upgrade = function (callback) {
 									});
                   
 									if (Object.keys(newSettings).length) {
-										user.saveSettings(uid, settings, next);
+										db.setObject('user:' + uid + ':settings', newSettings, next);
 									} else {
 										setImmediate(next);
 									}
