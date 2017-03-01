@@ -408,6 +408,46 @@ Upgrade.upgrade = function (callback) {
 			}
 		},
 		function (next) {
+			thisSchemaDate = Date.UTC(2017, 1, 28);
+			var schemaName = '[2017/2/28] Update urls in config to `/assets`';
+
+			if (schemaDate < thisSchemaDate) {
+				updatesMade = true;
+				winston.info(schemaName);
+				async.waterfall([
+					function (cb) {
+						db.getObject('config', cb);
+					},
+					function (config, cb) {
+						if (!config) {
+							return cb();
+						}
+
+						var keys = ['brand:favicon', 'brand:touchicon', 'og:image', 'brand:logo:url', 'defaultAvatar', 'profile:defaultCovers'];
+
+						keys.forEach(function (key) {
+							var oldValue = config[key];
+
+							if (!oldValue || typeof oldValue !== 'string') {
+								return;
+							}
+
+							config[key] = oldValue.replace(/(?:\/assets)?\/(images|uploads)\//g, '/assets/$1/');
+						});
+
+						db.setObject('config', config, cb);
+					},
+					function (next) {
+						winston.info(schemaName + ' - done');
+						Upgrade.update(thisSchemaDate, next);
+					},
+				], next);
+			} else {
+				winston.info(schemaName + ' - skipped!');
+				next();
+			}
+		},
+		function (next) {
 			thisSchemaDate = Date.UTC(2017, 1, 25);
 			var schemaName = '[2017/2/25] Update global and user sound settings';
 
@@ -474,46 +514,6 @@ Upgrade.upgrade = function (callback) {
 					winston.info(schemaName + ' - done');
 					Upgrade.update(thisSchemaDate, next);
 				});
-			} else {
-				winston.info(schemaName + ' - skipped!');
-				next();
-			}
-		},
-		function (next) {
-			thisSchemaDate = Date.UTC(2017, 1, 28);
-			var schemaName = '[2017/2/28] Update urls in config to `/assets`';
-
-			if (schemaDate < thisSchemaDate) {
-				updatesMade = true;
-				winston.info(schemaName);
-				async.waterfall([
-					function (cb) {
-						db.getObject('config', cb);
-					},
-					function (config, cb) {
-						if (!config) {
-							return cb();
-						}
-
-						var keys = ['brand:favicon', 'brand:touchicon', 'og:image', 'brand:logo:url', 'defaultAvatar', 'profile:defaultCovers'];
-
-						keys.forEach(function (key) {
-							var oldValue = config[key];
-
-							if (!oldValue || typeof oldValue !== 'string') {
-								return;
-							}
-
-							config[key] = oldValue.replace(/(?:\/assets)?\/(images|uploads)\//g, '/assets/$1/');
-						});
-
-						db.setObject('config', config, cb);
-					},
-					function (next) {
-						winston.info(schemaName + ' - done');
-						Upgrade.update(thisSchemaDate, next);
-					},
-				], next);
 			} else {
 				winston.info(schemaName + ' - skipped!');
 				next();
