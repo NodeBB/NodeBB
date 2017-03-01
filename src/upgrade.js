@@ -363,7 +363,7 @@ Upgrade.upgrade = function (callback) {
 											newSettings[key] = map[settings[key]] || '';
 										}
 									});
-                  
+
 									if (Object.keys(newSettings).length) {
 										db.setObject('user:' + uid + ':settings', newSettings, next);
 									} else {
