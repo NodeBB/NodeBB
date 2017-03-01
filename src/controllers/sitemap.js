@@ -23,15 +23,11 @@ sitemapController.render = function (req, res, next) {
 };
 
 sitemapController.getPages = function (req, res, next) {
-	sendSitemap(function (callback) {
-		sitemap.getPages(callback);
-	}, res, next);
+	sendSitemap(sitemap.getPages, res, next);
 };
 
 sitemapController.getCategories = function (req, res, next) {
-	sendSitemap(function (callback) {
-		sitemap.getCategories(callback);
-	}, res, next);
+	sendSitemap(sitemap.getCategories, res, next);
 };
 
 sitemapController.getTopicPage = function (req, res, next) {
