@@ -532,6 +532,15 @@ describe('Controllers', function () {
 		});
 	});
 
+	it('should get recent posts', function (done) {
+		request(nconf.get('url') + '/api/recent/posts/month', function (err, res, body) {
+			assert.ifError(err);
+			assert.equal(res.statusCode, 200);
+			assert(body);
+			done();
+		});
+	});
+
 	it('should get post data', function (done) {
 		request(nconf.get('url') + '/api/post/pid/' + pid, function (err, res, body) {
 			assert.ifError(err);
@@ -943,7 +952,7 @@ describe('Controllers', function () {
 
 	describe('post redirect', function () {
 		it('should 404 for invalid pid', function (done) {
-			request(nconf.get('url') + '/post/fail', function (err, res) {
+			request(nconf.get('url') + '/api/post/fail', function (err, res) {
 				assert.ifError(err);
 				assert.equal(res.statusCode, 404);
 				done();
