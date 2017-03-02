@@ -59,6 +59,7 @@ module.exports = function (Meta) {
 				'public/src/client/topic/fork.js',
 				'public/src/client/topic/move.js',
 				'public/src/client/topic/posts.js',
+				'public/src/client/topic/images.js',
 				'public/src/client/topic/postTools.js',
 				'public/src/client/topic/threadTools.js',
 				'public/src/client/categories.js',

@@ -12,11 +12,7 @@ define('forum/topic/posts', [
 	var Posts = { };
 
 	Posts.onNewPost = function (data) {
-		if (!data || !data.posts || !data.posts.length) {
-			return;
-		}
-
-		if (parseInt(data.posts[0].tid, 10) !== parseInt(ajaxify.data.tid, 10)) {
+		if (!data || !data.posts || !data.posts.length || parseInt(data.posts[0].tid, 10) !== parseInt(ajaxify.data.tid, 10)) {
 			return;
 		}
 
