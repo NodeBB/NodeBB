@@ -12,7 +12,7 @@ var meta = require('../meta');
 var events = require('../events');
 var emailer = require('../emailer');
 var db = require('../database');
-var apiController = require('../controllers/api');
+var userController = require('../controllers/user');
 var privileges = require('../privileges');
 
 var SocketUser = {};
@@ -303,15 +303,15 @@ SocketUser.invite = function (socket, email, callback) {
 };
 
 SocketUser.getUserByUID = function (socket, uid, callback) {
-	apiController.getUserDataByField(socket.uid, 'uid', uid, callback);
+	userController.getUserDataByField(socket.uid, 'uid', uid, callback);
 };
 
 SocketUser.getUserByUsername = function (socket, username, callback) {
-	apiController.getUserDataByField(socket.uid, 'username', username, callback);
+	userController.getUserDataByField(socket.uid, 'username', username, callback);
 };
 
 SocketUser.getUserByEmail = function (socket, email, callback) {
-	apiController.getUserDataByField(socket.uid, 'email', email, callback);
+	userController.getUserDataByField(socket.uid, 'email', email, callback);
 };
 
 SocketUser.setModerationNote = function (socket, data, callback) {

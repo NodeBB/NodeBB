@@ -20,6 +20,7 @@ Controllers.recent = require('./recent');
 Controllers.popular = require('./popular');
 Controllers.tags = require('./tags');
 Controllers.search = require('./search');
+Controllers.user = require('./user');
 Controllers.users = require('./users');
 Controllers.groups = require('./groups');
 Controllers.accounts = require('./accounts');
