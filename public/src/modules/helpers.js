@@ -16,9 +16,9 @@
 			return false;
 		}
 		var properties = item.properties;
-
+		var loggedIn = data.config ? data.config.loggedIn : false;
 		if (properties) {
-			if ((properties.loggedIn && !data.config.loggedIn) ||
+			if ((properties.loggedIn && !loggedIn) ||
 				(properties.globalMod && !data.isGlobalMod && !data.isAdmin) ||
 				(properties.adminOnly && !data.isAdmin) ||
 				(properties.searchInstalled && !data.searchEnabled)) {
@@ -26,11 +26,11 @@
 			}
 		}
 
-		if (item.route.match('/users') && data.privateUserInfo && !data.config.loggedIn) {
+		if (item.route.match('/users') && data.privateUserInfo && !loggedIn) {
 			return false;
 		}
 
-		if (item.route.match('/tags') && data.privateTagListing && !data.config.loggedIn) {
+		if (item.route.match('/tags') && data.privateTagListing && !loggedIn) {
 			return false;
 		}
 
