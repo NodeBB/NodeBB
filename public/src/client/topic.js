@@ -7,11 +7,12 @@ define('forum/topic', [
 	'forum/topic/postTools',
 	'forum/topic/events',
 	'forum/topic/posts',
+	'forum/topic/images',
 	'forum/topic/replies',
 	'navigator',
 	'sort',
 	'components',
-], function (infinitescroll, threadTools, postTools, events, posts, replies, navigator, sort, components) {
+], function (infinitescroll, threadTools, postTools, events, posts, images, replies, navigator, sort, components) {
 	var	Topic = {};
 	var currentUrl = '';
 
@@ -238,7 +239,7 @@ define('forum/topic', [
 			return;
 		}
 
-		posts.loadImages(threshold);
+		images.loadImages(threshold);
 
 		var newUrl = 'topic/' + ajaxify.data.slug + (index > 1 ? ('/' + index) : '');
 

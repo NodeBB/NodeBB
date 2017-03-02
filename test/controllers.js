@@ -507,7 +507,7 @@ describe('Controllers', function () {
 					cid: cid,
 				}, function (err) {
 					assert.ifError(err);
-					request(nconf.get('url') + '/api/groups/group-details', {json: true}, function (err, res, body) {
+					request(nconf.get('url') + '/api/groups/group-details', { json: true }, function (err, res, body) {
 						assert.ifError(err);
 						assert.equal(res.statusCode, 200);
 						assert(body);
