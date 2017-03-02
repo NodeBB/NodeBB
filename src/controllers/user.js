@@ -48,7 +48,7 @@ function byType(type, req, res, next) {
 				return next();
 			}
 			res.json(data);
-		}
+		},
 	], next);
 }
 
@@ -62,12 +62,12 @@ userController.getUserDataByField = function (callerUid, field, fieldValue, call
 			} else if (field === 'email') {
 				user.getUidByEmail(fieldValue, next);
 			} else {
-				next();
+				next(null, null);
 			}
 		},
 		function (uid, next) {
 			if (!uid) {
-				return next();
+				return next(null, null);
 			}
 			userController.getUserDataByUID(callerUid, uid, next);
 		},
