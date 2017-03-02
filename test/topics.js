@@ -12,6 +12,7 @@ var User = require('../src/user');
 var groups = require('../src/groups');
 var helpers = require('./helpers');
 var socketPosts = require('../src/socket.io/posts');
+var socketTopics = require('../src/socket.io/topics');
 
 describe('Topic\'s', function () {
 	var topic;
@@ -49,11 +50,34 @@ describe('Topic\'s', function () {
 	});
 
 	describe('.post', function () {
+		it('should fail to create topic with invalid data', function (done) {
+			socketTopics.post({ uid: 0 }, null, function (err) {
+				assert.equal(err.message, '[[error:invalid-data]]');
+				done();
+			});
+		});
+
 		it('should create a new topic with proper parameters', function (done) {
 			topics.post({ uid: topic.userId, title: topic.title, content: topic.content, cid: topic.categoryId }, function (err, result) {
-				assert.equal(err, null, 'was created with error');
-				assert.ok(result);
+				assert.ifError(err);
+				assert(result);
+				topic.tid = result.topicData.tid;
+				done();
+			});
+		});
 
+		it('should get post count', function (done) {
+			socketTopics.postcount({ uid: adminUid }, topic.tid, function (err, count) {
+				assert.ifError(err);
+				assert.equal(count, 1);
+				done();
+			});
+		});
+
+		it('should load topic', function (done) {
+			socketTopics.getTopic({ uid: adminUid }, topic.tid, function (err, data) {
+				assert.ifError(err);
+				assert.equal(data.tid, topic.tid);
 				done();
 			});
 		});
@@ -246,7 +270,7 @@ describe('Topic\'s', function () {
 		var newTopic;
 		var followerUid;
 		var moveCid;
-		var socketTopics = require('../src/socket.io/topics');
+
 		before(function (done) {
 			async.waterfall([
 				function (next) {
@@ -589,8 +613,7 @@ describe('Topic\'s', function () {
 				assert.ok(result);
 				replies.push(result);
 				next();
-			}
-			);
+			});
 		}
 
 		before(function (done) {
@@ -619,7 +642,7 @@ describe('Topic\'s', function () {
 				function (next) { postReply(next); },
 				function (next) {
 					topicPids = replies.map(function (reply) { return reply.pid; });
-					topics.setUserBookmark(newTopic.tid, topic.userId, originalBookmark, next);
+					socketTopics.bookmark({ uid: topic.userId }, { tid: newTopic.tid, index: originalBookmark }, next);
 				}],
 				done);
 		});
@@ -629,15 +652,28 @@ describe('Topic\'s', function () {
 			done();
 		});
 
+		it('should fail with invalid data', function (done) {
+			socketTopics.createTopicFromPosts({ uid: 0 }, null, function (err) {
+				assert.equal(err.message, '[[error:not-logged-in]]');
+				done();
+			});
+		});
+
+		it('should fail with invalid data', function (done) {
+			socketTopics.createTopicFromPosts({ uid: 1 }, null, function (err) {
+				assert.equal(err.message, '[[error:invalid-data]]');
+				done();
+			});
+		});
+
 		it('should not update the user\'s bookmark', function (done) {
 			async.waterfall([
 				function (next) {
-					topics.createTopicFromPosts(
-						topic.userId,
-						'Fork test, no bookmark update',
-						topicPids.slice(-2),
-						newTopic.tid,
-						next);
+					socketTopics.createTopicFromPosts({ uid: topic.userId }, {
+						title: 'Fork test, no bookmark update',
+						pids: topicPids.slice(-2),
+						fromTid: newTopic.tid,
+					}, next);
 				},
 				function (forkedTopicData, next) {
 					topics.getUserBookmark(newTopic.tid, topic.userId, next);
@@ -1388,6 +1424,13 @@ describe('Topic\'s', function () {
 			});
 		});
 
+		it('should error if not logged in', function (done) {
+			socketTopics.changeWatching({ uid: 0 }, { tid: tid, type: 'ignore' }, function (err) {
+				assert.equal(err.message, '[[error:not-logged-in]]');
+				done();
+			});
+		});
+
 		it('should filter ignoring uids', function (done) {
 			socketTopics.changeWatching({ uid: followerUid }, { tid: tid, type: 'ignore' }, function (err) {
 				assert.ifError(err);
@@ -1418,7 +1461,7 @@ describe('Topic\'s', function () {
 			topics.toggleFollow(tid, followerUid, function (err, isFollowing) {
 				assert.ifError(err);
 				assert(isFollowing);
-				topics.isFollowing([tid], followerUid, function (err, isFollowing) {
+				socketTopics.isFollowed({ uid: followerUid }, tid, function (err, isFollowing) {
 					assert.ifError(err);
 					assert(isFollowing);
 					done();
@@ -1427,6 +1470,44 @@ describe('Topic\'s', function () {
 		});
 	});
 
+	describe('topics search', function () {
+		it('should error with invalid data', function (done) {
+			socketTopics.search({ uid: adminUid }, null, function (err) {
+				assert.equal(err.message, '[[error:invalid-data]]');
+				done();
+			});
+		});
+
+		it('should error if no search plugin', function (done) {
+			socketTopics.search({ uid: adminUid }, { tid: topic.tid, term: 'test' }, function (err) {
+				assert.equal(err.message, '[[error:no-plugins-available]]');
+				done();
+			});
+		});
+
+		it('should return results', function (done) {
+			var plugins = require('../src/plugins');
+			plugins.registerHook('myTestPlugin', {
+				hook: 'filter:topic.search',
+				method: function (data, callback) {
+					callback(null, [1, 2, 3]);
+				},
+			});
+			socketTopics.search({ uid: adminUid }, { tid: topic.tid, term: 'test' }, function (err, results) {
+				assert.ifError(err);
+				assert.deepEqual(results, [1, 2, 3]);
+				done();
+			});
+		});
+	});
+
+	it('should check if user is moderator', function (done) {
+		socketTopics.isModerator({ uid: adminUid }, topic.tid, function (err, isModerator) {
+			assert.ifError(err);
+			assert(!isModerator);
+			done();
+		});
+	});
 
 	after(function (done) {
 		db.emptydb(done);

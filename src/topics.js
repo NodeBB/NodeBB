@@ -317,7 +317,7 @@ var social = require('./social');
 				term: term,
 			}, callback);
 		} else {
-			callback(new Error('no-plugins-available'), []);
+			callback(new Error('[[error:no-plugins-available]]'), []);
 		}
 	};
 }(exports));
