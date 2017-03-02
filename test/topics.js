@@ -647,6 +647,13 @@ describe('Topic\'s', function () {
 				done);
 		});
 
+		it('should fail with invalid data', function (done) {
+			socketTopics.bookmark({ uid: topic.userId }, null, function (err) {
+				assert.equal(err.message, '[[error:invalid-data]]');
+				done();
+			});
+		});
+
 		it('should have 12 replies', function (done) {
 			assert.equal(12, replies.length);
 			done();
