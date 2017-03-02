@@ -498,11 +498,23 @@ describe('Controllers', function () {
 			hidden: 0,
 		}, function (err) {
 			assert.ifError(err);
-			request(nconf.get('url') + '/groups/group-details', function (err, res, body) {
+			groups.join('group-details', fooUid, function (err) {
 				assert.ifError(err);
-				assert.equal(res.statusCode, 200);
-				assert(body);
-				done();
+				topics.post({
+					uid: fooUid,
+					title: 'topic title',
+					content: 'test topic content',
+					cid: cid,
+				}, function (err) {
+					assert.ifError(err);
+					request(nconf.get('url') + '/api/groups/group-details', {json: true}, function (err, res, body) {
+						assert.ifError(err);
+						assert.equal(res.statusCode, 200);
+						assert(body);
+						assert.equal(body.posts[0].content, 'test topic content');
+						done();
+					});
+				});
 			});
 		});
 	});
