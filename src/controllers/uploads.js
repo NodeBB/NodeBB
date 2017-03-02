@@ -66,7 +66,7 @@ function uploadAsImage(req, uploadedFile, callback) {
 			file.isFileTypeAllowed(uploadedFile.path, next);
 		},
 		function (next) {
-			uploadFile(req.uid, uploadedFile, next);
+			uploadsController.uploadFile(req.uid, uploadedFile, next);
 		},
 		function (fileObj, next) {
 			if (parseInt(meta.config.maximumImageWidth, 10) === 0) {
@@ -90,7 +90,7 @@ function uploadAsFile(req, uploadedFile, callback) {
 			if (parseInt(meta.config.allowFileUploads, 10) !== 1) {
 				return next(new Error('[[error:uploads-are-disabled]]'));
 			}
-			uploadFile(req.uid, uploadedFile, next);
+			uploadsController.uploadFile(req.uid, uploadedFile, next);
 		},
 	], callback);
 }
@@ -161,7 +161,7 @@ uploadsController.uploadThumb = function (req, res, next) {
 					}, next);
 				}
 
-				uploadFile(req.uid, uploadedFile, next);
+				uploadsController.uploadFile(req.uid, uploadedFile, next);
 			},
 		], next);
 	}, next);
@@ -192,7 +192,7 @@ uploadsController.uploadGroupCover = function (uid, uploadedFile, callback) {
 	], callback);
 };
 
-function uploadFile(uid, uploadedFile, callback) {
+uploadsController.uploadFile = function (uid, uploadedFile, callback) {
 	if (plugins.hasListeners('filter:uploadFile')) {
 		return plugins.fireHook('filter:uploadFile', {
 			file: uploadedFile,
@@ -217,7 +217,7 @@ function uploadFile(uid, uploadedFile, callback) {
 	}
 
 	saveFileToLocal(uploadedFile, callback);
-}
+};
 
 function saveFileToLocal(uploadedFile, callback) {
 	var extension = file.typeToExtension(uploadedFile.type);
