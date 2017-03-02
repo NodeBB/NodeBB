@@ -243,26 +243,23 @@ Groups.getGroupNameByGroupSlug = function (slug, callback) {
 };
 
 Groups.isPrivate = function (groupName, callback) {
-	async.waterfall([
-		function (next) {
-			db.getObjectField('group:' + groupName, 'private', next);
-		},
-		function (isPrivate, next) {
-			next(null, parseInt(isPrivate, 10) !== 0);
-		},
-	], callback);
+	isFieldOn(groupName, 'private', callback);
 };
 
 Groups.isHidden = function (groupName, callback) {
+	isFieldOn(groupName, 'hidden', callback);
+};
+
+function isFieldOn(groupName, field, callback) {
 	async.waterfall([
 		function (next) {
-			db.getObjectField('group:' + groupName, 'hidden', next);
+			db.getObjectField('group:' + groupName, field, next);
 		},
-		function (isHidden, next) {
-			next(null, parseInt(isHidden, 10) === 1);
+		function (value, next) {
+			next(null, parseInt(value, 10) === 1);
 		},
 	], callback);
-};
+}
 
 Groups.exists = function (name, callback) {
 	if (Array.isArray(name)) {
