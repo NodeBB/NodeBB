@@ -39,12 +39,17 @@ userController.getUserByEmail = function (req, res, next) {
 };
 
 function byType(type, req, res, next) {
-	userController.getUserDataByField(req.uid, type, req.params[type], function (err, data) {
-		if (err || !data) {
-			return next(err);
+	async.waterfall([
+		function (next) {
+			userController.getUserDataByField(req.uid, type, req.params[type], next);
+		},
+		function (data, next) {
+			if (!data) {
+				return next();
+			}
+			res.json(data);
 		}
-		res.json(data);
-	});
+	], next);
 }
 
 userController.getUserDataByField = function (callerUid, field, fieldValue, callback) {

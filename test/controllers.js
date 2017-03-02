@@ -27,7 +27,7 @@ describe('Controllers', function () {
 				}, next);
 			},
 			user: function (next) {
-				user.create({ username: 'foo', password: 'barbar' }, next);
+				user.create({ username: 'foo', password: 'barbar', email: 'foo@test.com' }, next);
 			},
 			navigation: function (next) {
 				var navigation = require('../src/navigation/admin');
@@ -910,6 +910,42 @@ describe('Controllers', function () {
 					next();
 				},
 			], done);
+		});
+
+		it('should 404 if user does not exist', function (done) {
+			request(nconf.get('url') + '/api/user/email/doesnotexist', function (err, res, body) {
+				assert.ifError(err);
+				assert.equal(res.statusCode, 404);
+				assert(body);
+				done();
+			});
+		});
+
+		it('should load user by uid', function (done) {
+			request(nconf.get('url') + '/api/user/uid/' + fooUid, function (err, res, body) {
+				assert.ifError(err);
+				assert.equal(res.statusCode, 200);
+				assert(body);
+				done();
+			});
+		});
+
+		it('should load user by username', function (done) {
+			request(nconf.get('url') + '/api/user/username/foo', function (err, res, body) {
+				assert.ifError(err);
+				assert.equal(res.statusCode, 200);
+				assert(body);
+				done();
+			});
+		});
+
+		it('should load user by email', function (done) {
+			request(nconf.get('url') + '/api/user/email/foo@test.com', function (err, res, body) {
+				assert.ifError(err);
+				assert.equal(res.statusCode, 200);
+				assert(body);
+				done();
+			});
 		});
 	});
 
