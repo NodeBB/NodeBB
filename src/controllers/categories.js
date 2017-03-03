@@ -24,7 +24,7 @@ categoriesController.list = function (req, res, next) {
 	if (meta.config.description) {
 		res.locals.metaTags.push({
 			name: 'description',
-			content: String(meta.config.description || ''),
+			content: String(meta.config.description),
 		});
 	}
 
