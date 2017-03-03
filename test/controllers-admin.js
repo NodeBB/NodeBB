@@ -21,6 +21,7 @@ describe('Admin Controllers', function () {
 	var jar;
 
 	before(function (done) {
+		groups.resetCache();
 		async.series({
 			category: function (next) {
 				categories.create({
@@ -43,9 +44,10 @@ describe('Admin Controllers', function () {
 			cid = results.category.cid;
 
 			topics.post({ uid: adminUid, title: 'test topic title', content: 'test topic content', cid: results.category.cid }, function (err, result) {
+				assert.ifError(err);
 				tid = result.topicData.tid;
 				pid = result.postData.pid;
-				done(err);
+				done();
 			});
 		});
 	});
