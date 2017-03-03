@@ -21,13 +21,6 @@ categoriesController.list = function (req, res, next) {
 		content: 'website',
 	}];
 
-	if (meta.config.description) {
-		res.locals.metaTags.push({
-			name: 'description',
-			content: String(meta.config.description),
-		});
-	}
-
 	var ogImage = meta.config['og:image'] || meta.config['brand:logo'] || '';
 	if (ogImage) {
 		if (!ogImage.startsWith('http')) {
