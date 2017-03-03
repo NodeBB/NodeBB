@@ -11,6 +11,7 @@ var categories = require('../src/categories');
 var privileges = require('../src/privileges');
 var user = require('../src/user');
 var groups = require('../src/groups');
+var socketPosts = require('../src/socket.io/posts');
 
 describe('Post\'s', function () {
 	var voterUid;
@@ -66,7 +67,6 @@ describe('Post\'s', function () {
 	});
 
 	describe('voting', function () {
-		var socketPosts = require('../src/socket.io/posts');
 		it('should upvote a post', function (done) {
 			socketPosts.upvote({ uid: voterUid }, { pid: postData.pid, room_id: 'topic_1' }, function (err, result) {
 				assert.ifError(err);
@@ -138,7 +138,7 @@ describe('Post\'s', function () {
 
 	describe('bookmarking', function () {
 		it('should bookmark a post', function (done) {
-			posts.bookmark(postData.pid, voterUid, function (err, data) {
+			socketPosts.bookmark({ uid: voterUid }, { pid: postData.pid, room_id: 'topic_' + postData.tid }, function (err, data) {
 				assert.ifError(err);
 				assert.equal(data.isBookmarked, true);
 				posts.hasBookmarked(postData.pid, voterUid, function (err, hasBookmarked) {
@@ -150,7 +150,7 @@ describe('Post\'s', function () {
 		});
 
 		it('should unbookmark a post', function (done) {
-			posts.unbookmark(postData.pid, voterUid, function (err, data) {
+			socketPosts.unbookmark({ uid: voterUid }, { pid: postData.pid, room_id: 'topic_' + postData.tid }, function (err, data) {
 				assert.ifError(err);
 				assert.equal(data.isBookmarked, false);
 				posts.hasBookmarked([postData.pid], voterUid, function (err, hasBookmarked) {
@@ -163,8 +163,6 @@ describe('Post\'s', function () {
 	});
 
 	describe('post tools', function () {
-		var socketPosts = require('../src/socket.io/posts');
-
 		it('should error if data is invalid', function (done) {
 			socketPosts.loadPostTools({ uid: globalModUid }, null, function (err) {
 				assert.equal(err.message, '[[error:invalid-data]]');
@@ -209,7 +207,6 @@ describe('Post\'s', function () {
 		var mainPid;
 		var replyPid;
 
-		var socketPosts = require('../src/socket.io/posts');
 		before(function (done) {
 			createTopicWithReply(function (topicPostData, replyData) {
 				tid = topicPostData.topicData.tid;
@@ -299,7 +296,6 @@ describe('Post\'s', function () {
 		var pid;
 		var replyPid;
 		var tid;
-		var socketPosts = require('../src/socket.io/posts');
 		var meta = require('../src/meta');
 		before(function (done) {
 			topics.post({
@@ -430,7 +426,6 @@ describe('Post\'s', function () {
 		var replyPid;
 		var tid;
 		var moveTid;
-		var socketPosts = require('../src/socket.io/posts');
 
 		before(function (done) {
 			async.waterfall([
@@ -503,7 +498,6 @@ describe('Post\'s', function () {
 
 	describe('flagging a post', function () {
 		var meta = require('../src/meta');
-		var socketPosts = require('../src/socket.io/posts');
 		it('should fail to flag a post due to low reputation', function (done) {
 			meta.config['privileges:flag'] = 10;
 			flagPost(function (err) {
@@ -546,7 +540,6 @@ describe('Post\'s', function () {
 	});
 
 	function flagPost(next) {
-		var socketPosts = require('../src/socket.io/posts');
 		socketPosts.flag({ uid: voteeUid }, { pid: postData.pid, reason: 'reason' }, next);
 	}
 
@@ -577,8 +570,6 @@ describe('Post\'s', function () {
 	});
 
 	describe('updating a flag', function () {
-		var socketPosts = require('../src/socket.io/posts');
-
 		it('should update a flag', function (done) {
 			async.waterfall([
 				function (next) {
@@ -671,8 +662,6 @@ describe('Post\'s', function () {
 	});
 
 	describe('dismissing a flag', function () {
-		var socketPosts = require('../src/socket.io/posts');
-
 		it('should dismiss a flag', function (done) {
 			socketPosts.dismissFlag({ uid: globalModUid }, postData.pid, function (err) {
 				assert.ifError(err);
@@ -769,7 +758,6 @@ describe('Post\'s', function () {
 			});
 		});
 
-		var socketPosts = require('../src/socket.io/posts');
 		it('should error with invalid data', function (done) {
 			socketPosts.reply({ uid: 0 }, null, function (err) {
 				assert.equal(err.message, '[[error:invalid-data]]');
