@@ -4,6 +4,12 @@
 define('forum/account/settings', ['forum/account/header', 'components', 'sounds'], function (header, components, sounds) {
 	var	AccountSettings = {};
 
+	$(window).on('action:ajaxify.start', function () {
+		if (ajaxify.data.template.name === 'account/settings' && $('#bootswatchSkin').val() !== config.bootswatchSkin) {
+			changePageSkin(config.bootswatchSkin);
+		}
+	});
+
 	AccountSettings.init = function () {
 		header.init();
 
@@ -24,10 +30,7 @@ define('forum/account/settings', ['forum/account/header', 'components', 'sounds'
 		});
 
 		$('#bootswatchSkin').on('change', function () {
-			var css = $('#bootswatchCSS');
-			var val = $(this).val() === 'default' ? config['theme:src'] : '//maxcdn.bootstrapcdn.com/bootswatch/latest/' + $(this).val() + '/bootstrap.min.css';
-
-			css.attr('href', val);
+			changePageSkin($(this).val());
 		});
 
 		$('[data-property="homePageRoute"]').on('change', toggleCustomRoute);
@@ -43,6 +46,26 @@ define('forum/account/settings', ['forum/account/header', 'components', 'sounds'
 
 		components.get('user/sessions').find('.timeago').timeago();
 	};
+
+	function changePageSkin(skinName) {
+		var css = $('#bootswatchCSS');
+		if (skinName === 'default') {
+			css.remove();
+		} else {
+			var cssSource = '//maxcdn.bootstrapcdn.com/bootswatch/latest/' + skinName + '/bootstrap.min.css';
+			if (css.length) {
+				css.attr('href', cssSource);
+			} else {
+				css = $('<link id="bootswatchCSS" href="' + cssSource + '" rel="stylesheet" media="screen">');
+				$('head').append(css);
+			}
+		}
+
+		var currentSkinClassName = $('body').attr('class').split(/\s+/).filter(function (className) {
+			return className.startsWith('skin-');
+		});
+		$('body').removeClass(currentSkinClassName.join(' ')).addClass('skin-' + skinName);
+	}
 
 	function loadSettings() {
 		var settings = {};

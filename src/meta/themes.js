@@ -104,7 +104,7 @@ module.exports = function (Meta) {
 					themeData['theme:templates'] = config.templates ? config.templates : '';
 					themeData['theme:src'] = '';
 
-					db.setObject('config', themeData, next);
+					Meta.configs.setMultiple(themeData, next);
 
 					// Re-set the themes path (for when NodeBB is reloaded)
 					Meta.themes.setPath(config);
@@ -115,7 +115,10 @@ module.exports = function (Meta) {
 			break;
 
 		case 'bootswatch':
-			Meta.configs.set('theme:src', data.src, callback);
+			Meta.configs.setMultiple({
+				'theme:src': data.src,
+				bootswatchSkin: data.id.toLowerCase(),
+			}, callback);
 			break;
 		}
 	};

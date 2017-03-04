@@ -427,11 +427,16 @@ describe('socket.io', function () {
 	});
 
 	it('should set theme to bootswatch', function (done) {
-		socketAdmin.themes.set({ uid: adminUid }, { type: 'bootswatch', src: 'darkly' }, function (err) {
+		socketAdmin.themes.set({ uid: adminUid }, {
+			type: 'bootswatch',
+			src: '//maxcdn.bootstrapcdn.com/bootswatch/latest/darkly/bootstrap.min.css',
+			id: 'darkly',
+		}, function (err) {
 			assert.ifError(err);
-			meta.configs.get('theme:src', function (err, id) {
+			meta.configs.getFields(['theme:src', 'bootswatchSkin'], function (err, fields) {
 				assert.ifError(err);
-				assert.equal(id, 'darkly');
+				assert.equal(fields['theme:src'], '//maxcdn.bootstrapcdn.com/bootswatch/latest/darkly/bootstrap.min.css');
+				assert.equal(fields.bootswatchSkin, 'darkly');
 				done();
 			});
 		});
