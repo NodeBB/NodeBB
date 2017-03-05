@@ -15,7 +15,7 @@ module.exports = function (Meta) {
 				{
 					_attr: {
 						xmlns: 'http://a9.com/-/spec/opensearch/1.1/',
-					}
+					},
 				},
 				{
 					ShortName: String(Meta.config.title || Meta.config.browserTitle || 'NodeBB'),
@@ -30,11 +30,11 @@ module.exports = function (Meta) {
 								type: 'text/html',
 								method: 'get',
 								template: nconf.get('url') + '/search?term={searchTerms}&in=titlesposts',
-							}
-						}
+							},
+						},
 					]
-				}
-			]
+				},
+			],
 		};
 		fs.writeFile(osdFilePath, xml([osdObject], { declaration: true, indent: '\t' }), callback);
 	};
