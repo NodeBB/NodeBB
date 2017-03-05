@@ -94,6 +94,7 @@
     "underscore.deep": "^0.5.1",
     "validator": "^6.1.0",
     "winston": "^2.1.0",
+    "xml": "^1.0.1",
     "xregexp": "~3.1.0"
   },
   "devDependencies": {
