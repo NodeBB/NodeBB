@@ -60,6 +60,14 @@ module.exports = function (Meta) {
 					rel: 'manifest',
 					href: nconf.get('relative_path') + '/manifest.json',
 				}];
+				
+				if(plugins.hasListeners('filter:search.query')){
+					defaultLinks.push({
+					rel: 'search',
+					type: 'application/opensearchdescription+xml',
+					href: nconf.get('relative_path') + '/assets/osd.xml',
+				});
+				}
 
 				// Touch icons for mobile-devices
 				if (Meta.config['brand:touchIcon']) {

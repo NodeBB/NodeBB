@@ -5,7 +5,7 @@ var winston = require('winston');
 
 var buildStart;
 
-var valid = ['js', 'clientCSS', 'acpCSS', 'tpl', 'lang', 'sound'];
+var valid = ['js', 'clientCSS', 'acpCSS', 'tpl', 'lang', 'sound', 'osd'];
 
 exports.buildAll = function (callback) {
 	exports.build(valid.join(','), callback);
@@ -117,6 +117,12 @@ exports.buildTargets = function (targets, callback) {
 					meta.sounds.build(step.bind(this, startTime, target, next));
 					break;
 
+				case 'osd':
+					winston.info('[build] Building OpenSearchDocument XML');
+					startTime = Date.now();
+					meta.osd.build(step.bind(this, startTime, target, next));
+					break;
+				
 				default:
 					winston.warn('[build] Unknown build target: \'' + target + '\'');
 					setImmediate(next);
