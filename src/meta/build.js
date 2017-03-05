@@ -122,7 +122,7 @@ exports.buildTargets = function (targets, callback) {
 					startTime = Date.now();
 					meta.osd.build(step.bind(this, startTime, target, next));
 					break;
-				
+
 				default:
 					winston.warn('[build] Unknown build target: \'' + target + '\'');
 					setImmediate(next);

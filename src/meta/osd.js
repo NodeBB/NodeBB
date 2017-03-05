@@ -7,35 +7,35 @@ var nconf = require('nconf');
 
 var osdFilePath = path.join(__dirname, '../../build/public/osd.xml');
 
-module.exports = function(Meta){
+module.exports = function (Meta) {
 	Meta.osd = {};
-	Meta.osd.build = function(callback){
+	Meta.osd.build = function (callback) {
 		var osdObject = {
-			"OpenSearchDescription": [
+			OpenSearchDescription: [
 				{
 					_attr: {
-						"xmlns": "http://a9.com/-/spec/opensearch/1.1/"
+						xmlns: 'http://a9.com/-/spec/opensearch/1.1/',
 					}
 				},
 				{
-					"ShortName": String(Meta.config.title || Meta.config.browserTitle || 'NodeBB')
+					ShortName: String(Meta.config.title || Meta.config.browserTitle || 'NodeBB'),
 				},
 				{
-					"Description": String(Meta.config.description || '')
+					Description: String(Meta.config.description || ''),
 				},
 				{
-					"Url": [
+					Url: [
 						{
 							_attr: {
-								"type": "text/html",
-								"method": "get",
-								"template": nconf.get('url') + '/search?term={searchTerms}&in=titlesposts'
+								type: 'text/html',
+								method: 'get',
+								template: nconf.get('url') + '/search?term={searchTerms}&in=titlesposts',
 							}
 						}
 					]
 				}
 			]
 		};
-		fs.writeFile(osdFilePath, xml([osdObject], {declaration: true, indent: '\t'}), callback);	
-	}
+		fs.writeFile(osdFilePath, xml([osdObject], { declaration: true, indent: '\t' }), callback);
+	};
 };
