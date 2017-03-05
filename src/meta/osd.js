@@ -32,7 +32,7 @@ module.exports = function (Meta) {
 								template: nconf.get('url') + '/search?term={searchTerms}&in=titlesposts',
 							},
 						},
-					]
+					],
 				},
 			],
 		};
