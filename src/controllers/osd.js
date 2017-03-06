@@ -24,9 +24,9 @@ function generateXML() {
 				_attr: {
 					type: 'text/html',
 					method: 'get',
-					template: nconf.get('url') + '/search?term={searchTerms}&in=titlesposts' },
-				}],
-			},
+					template: nconf.get('url') + '/search?term={searchTerms}&in=titlesposts',
+				},
+			}]},
 		],
 	}], { declaration: true, indent: '\t' });
 }
