@@ -42,6 +42,7 @@ define('pictureCropper', ['translator', 'cropper'], function (translator, croppe
 				var img = document.getElementById('cropped-image');
 				var cropperTool = new cropper.default(img, {
 					aspectRatio: data.aspectRatio,
+					autoCropArea: 1,
 					viewMode: 1,
 					cropmove: function () {
 						if (data.restrictImageDimension) {
