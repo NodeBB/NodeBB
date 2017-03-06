@@ -30,9 +30,9 @@ Controllers.admin = require('./admin');
 Controllers.globalMods = require('./globalmods');
 Controllers.mods = require('./mods');
 Controllers.sitemap = require('./sitemap');
+Controllers.osd = require('./osd');
 Controllers['404'] = require('./404');
 Controllers.errors = require('./errors');
-Controllers.handleOSDRequest = require('./osd');
 
 Controllers.home = function (req, res, next) {
 	var route = meta.config.homePageRoute || (meta.config.homePageCustom || '').replace(/^\/+/, '') || 'categories';

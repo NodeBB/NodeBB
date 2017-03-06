@@ -6,7 +6,7 @@ var nconf = require('nconf');
 var plugins = require('../plugins');
 var meta = require('../meta');
 
-module.exports = function (req, res, next) {
+module.exports.handle = function (req, res, next) {
 	if (plugins.hasListeners('filter:search.query')) {
 		res.type('application/xml').send(generateXML());
 	} else {
